@@ -64,8 +64,7 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 			if(ggz_game_launch() == 0)
 			{
 				ggz_debug("\tGame launch ok\n");
-				status = game_update(ESCAPE_EVENT_LAUNCH,
-						     NULL, NULL);
+				status = game_update(ESCAPE_EVENT_LAUNCH, NULL);
 			}else{
 				ggz_debug("\tGame launch failed\n");
 			}
@@ -74,8 +73,7 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 			ggz_debug("op == REQ_GAME_JOIN\n");
 			if(ggz_player_join(&seat, p_fd) == 0) {
 				ggz_debug("\tggz_player_join(%d, p_fd) ok\n",seat);
-				status = game_update(ESCAPE_EVENT_JOIN, &seat,
-						     NULL);
+				status = game_update(ESCAPE_EVENT_JOIN, &seat);
 				status = 1;
 			}else{
 				ggz_debug("\tggz_player_join(%d, p_fd) failed\n",seat);
@@ -85,7 +83,7 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 			ggz_debug("\top == REQ_GAME_LEAVE\n");
 			if((status = ggz_player_leave(&seat, p_fd)) == 0) {
 				ggz_debug("\tggz_player_leave(%d, p_fd) ok\n",seat);
-				game_update(ESCAPE_EVENT_LEAVE, &seat, NULL);
+				game_update(ESCAPE_EVENT_LEAVE, &seat);
 				status = 2;
 			}else{
 				ggz_debug("\tggz_player_leave(%d, p_fd) failed\n",seat);
@@ -157,54 +155,54 @@ static int game_get_options(int seat)
 	ggz_debug("game_get_options(%d)\n", seat);
 
 	if(es_read_char(fd, &escape_game.boardheight) < 0
-	   || es_read_char(fd, &escape_game.wallwidth) < 0)
+	   || es_read_char(fd, &escape_game.wallwidth) < 0
 	   || es_read_char(fd, &escape_game.goalwidth) < 0)
 		return -1;
 
 	ggz_debug("\tOptions recieved ok\n\tboardheight=%d\n\twallwidth=%d\n\tgoalwidth=%d\n",escape_game.boardheight, escape_game.wallwidth, escape_game.goalwidth);
 
-	for(p = 0;p<wallwidth * 2 + goalwidth;p++){
-		for(q = 0;q<boardheight;q++){
+	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
+		for(q = 0;q<escape_game.boardheight;q++){
 			for(d = 0;d<10;d++){
 				escape_game.board[p][q][d] = dtEmpty;
             	}
 		}
 	}
     
-    	for(p = 0;p<wallwidth * 2 + goalwidth;p++){
+    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
       	escape_game.board[p][0][4] = dtBlocked;
         	escape_game.board[p][0][7] = dtBlocked;
         	escape_game.board[p][0][8] = dtBlocked;
         	escape_game.board[p][0][9] = dtBlocked;
         	escape_game.board[p][0][6] = dtBlocked;
         
-        	escape_game.board[p][boardheight][4] = dtBlocked;
-        	escape_game.board[p][boardheight][1] = dtBlocked;
-        	escape_game.board[p][boardheight][2] = dtBlocked;
-        	escape_game.board[p][boardheight][3] = dtBlocked;
-        	escape_game.board[p][boardheight][6] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight][4] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight][1] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight][2] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight][3] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight][6] = dtBlocked;
 	}
     
-	for(q = 0;q<boardheight;q++){
-        	escape_game.board[0][q]][1] = dtBlocked;
-        	escape_game.board[0][q]][4] = dtBlocked;
-        	escape_game.board[0][q]][7] = dtBlocked;
-        	escape_game.board[0][q]][8] = dtBlocked;
-        	escape_game.board[0][q]][2] = dtBlocked;
+	for(q = 0;q<escape_game.boardheight;q++){
+        	escape_game.board[0][q][1] = dtBlocked;
+        	escape_game.board[0][q][4] = dtBlocked;
+        	escape_game.board[0][q][7] = dtBlocked;
+        	escape_game.board[0][q][8] = dtBlocked;
+        	escape_game.board[0][q][2] = dtBlocked;
         
-        	escape_game.board[wallwidth * 2 + goalwidth][q][8] = dtBlocked;
-        	escape_game.board[wallwidth * 2 + goalwidth][q][9] = dtBlocked;
-        	escape_game.board[wallwidth * 2 + goalwidth][q][6] = dtBlocked;
-        	escape_game.board[wallwidth * 2 + goalwidth][q][3] = dtBlocked;
-        	escape_game.board[wallwidth * 2 + goalwidth][q][2] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][8] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][9] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][6] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][3] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][2] = dtBlocked;
 	}
     
 	escape_game.board[1][1][7] = dtBlocked;
-    	escape_game.board[1][boardheight - 1][1] = dtBlocked;
-    	escape_game.board[goalwidth + 2 * wallwidth - 1][1][9] = dtBlocked;
-    	escape_game.board[goalwidth + 2 * wallwidth - 1][boardheight - 1][3] = dtBlocked;
+    	escape_game.board[1][escape_game.boardheight - 1][1] = dtBlocked;
+    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtBlocked;
+    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtBlocked;
 
-	return game_update(ESCAPE_EVENT_OPTIONS, NULL, NULL);
+	return game_update(ESCAPE_EVENT_OPTIONS, NULL);
 }
 
 
@@ -217,7 +215,7 @@ int game_send_options(int seat)
 
 	if(es_write_int(fd, ESCAPE_MSG_OPTIONS) < 0
 	   || es_write_char(fd, escape_game.boardheight) < 0
-	   || es_write_char(fd, escape_game.goalwidth) < 0)
+	   || es_write_char(fd, escape_game.goalwidth) < 0
 	   || es_write_char(fd, escape_game.wallwidth) < 0)
 		return -1;
 
@@ -304,7 +302,7 @@ int game_send_move(int num, int event, char direction)
 		   num, escape_game.opponent);
 
 	if(es_write_int(fd, ESCAPE_MSG_MOVE) < 0
-	   || es_write_char(fd, direction) < 0
+	   || es_write_char(fd, direction) < 0){
 		return -1;
 	}
 	
@@ -320,7 +318,7 @@ int game_send_sync(int num)
 	ggz_debug("Handling sync for player %d", num);
 
 	if(es_write_int(fd, ESCAPE_SND_SYNC) < 0
-	   || es_write_char(fd, escape_game.turn) < 0
+	   || es_write_char(fd, escape_game.turn) < 0)
 		return -1;
 
 	for(p=0; p<escape_game.goalwidth+escape_game.wallwidth*2; p++)
@@ -376,7 +374,7 @@ int game_req_move(int num)
 {
 	int fd = ggz_seats[num].fd;
 
-	ggz_debug("game_req_move()\n);
+	ggz_debug("game_req_move()\n");
 
 	if(es_write_int(fd, ESCAPE_REQ_MOVE) < 0)
 		return -1;
@@ -401,34 +399,42 @@ int game_handle_move(int num, unsigned char *direction)
 		return -1;
 
 
-	if(escape_game.board[escape_game.x][escape_game.y][direction]!=dtEmpty)
+	if(escape_game.board[escape_game.x][escape_game.y][*direction]!=dtEmpty)
 		status = ESCAPE_ERR_FULL;
 	else {
-		switch(direction){
-			Case 7 //northwest
-				newx = escape_game.x - 1
-				newy = escape_game.y - 1
-			Case 8 //north
-				newx = escape_game.x
-            		newy = escape_game.y - 1
-        		Case 9 //northeast
-            		newx = escape_game.x + 1
-            		newy = escape_game.y - 1
-        		Case 6 //east
-            		newx = escape_game.x + 1
-				newy = escape_game.y
-        		Case 3 //southeast
-            		newx = escape_game.x + 1
-            		newy = escape_game.y + 1
-        		Case 2 //south
-				newx = escape_game.x
-            		newy = escape_game.y + 1
-        		Case 1 //southwest
-            		newx = escape_game.x - 1
-            		newy = escape_game.y + 1
-        		Case 4 //west
-            		newx = escape_game.x - 1
-				newy = escape_game.y
+		switch(*direction){
+			case 7: //northwest
+				newx = escape_game.x - 1;
+				newy = escape_game.y - 1;
+				break;
+			case 8: //north
+				newx = escape_game.x;
+            		newy = escape_game.y - 1;
+				break;
+        		case 9: //northeast
+            		newx = escape_game.x + 1;
+            		newy = escape_game.y - 1;
+				break;
+        		case 6: //east
+            		newx = escape_game.x + 1;
+				newy = escape_game.y;
+				break;
+        		case 3: //southeast
+            		newx = escape_game.x + 1;
+            		newy = escape_game.y + 1;
+				break;
+        		case 2: //south
+				newx = escape_game.x;
+            		newy = escape_game.y + 1;
+				break;
+        		case 1: //southwest
+            		newx = escape_game.x - 1;
+            		newy = escape_game.y + 1;
+				break;
+        		case 4: //west
+            		newx = escape_game.x - 1;
+				newy = escape_game.y;
+				break;
 		}
 		if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight))
 			status = ESCAPE_ERR_BOUND;
@@ -440,9 +446,10 @@ int game_handle_move(int num, unsigned char *direction)
 			{
 				if((escape_game.board[newx][newy][i]!=dtEmpty)&&
 						(!((newx==1)&&(newy==1)&&(i==7))||
-						((newx==1)&&(newy==escape_game.boardheight-1)&&(d==1))||
+						((newx==1)&&(newy==escape_game.boardheight-1)&&(i==1))||
 						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==1)&&(i==9))||
-						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight-1)&&(i==3))){
+						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight-1)&&(i==3))))
+				{
 					// give new move
 				}else{
 					// pass move on
@@ -450,11 +457,11 @@ int game_handle_move(int num, unsigned char *direction)
 				}
 			}		
 			if(num%2){
-				escape_game.board[escape_game.x][escape_game.y][direction]=dtPlayer1;
-				escape_game.board[newx][newy][revdir(direction)]=dtPlayer1;
+				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer1;
+				escape_game.board[newx][newy][revdir(*direction)]=dtPlayer1;
 			}else{
-				escape_game.board[escape_game.x][escape_game.y][direction]=dtPlayer2;
-				escape_game.board[newx][newy][revdir(direction)]=dtPlayer2;
+				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer2;
+				escape_game.board[newx][newy][revdir(*direction)]=dtPlayer2;
 			}
 			escape_game.x = newx;
 			escape_game.y = newy;
@@ -466,7 +473,7 @@ int game_handle_move(int num, unsigned char *direction)
 	/* Send back move status */
 	if(es_write_int(fd, ESCAPE_RSP_MOVE) < 0
 	    || es_write_char(fd, status) < 0
-	    || es_write_char(fd, direction) < 0
+	    || es_write_char(fd, *direction) < 0)
 		return -1;
 
 	/* If move simply invalid, ask for resubmit */
@@ -509,7 +516,7 @@ char game_check_win(void)
 			return 1;
 
 	for(i=1; i<10; i++)
-		if((escape_game[escape_game.x][escape_game.y][i]!=dtEmpty) && (i!=5))
+		if((escape_game.board[escape_game.x][escape_game.y][i]!=dtEmpty) && (i!=5))
 			count++;
 
 	if(count==8)
@@ -664,21 +671,29 @@ unsigned char revdir(unsigned char direction)
 {
 	switch(direction)
 	{
-       	Case 1
-			return 9
-        	Case 2
+       	case 1:
+			return 9;
+			break;
+        	case 2:
 			return 8;
-        	Case 3
+			break;
+        	case 3:
 			return 7;
-        	Case 4
+			break;
+        	case 4:
 			return 6;
-        	Case 6
+			break;
+        	case 6:
 			return 4;
-        	Case 7
+			break;
+        	case 7:
 			return 3;
-        	Case 8
+			break;
+        	case 8:
 			return 2;
-        	Case 9
+			break;
+        	case 9:
             	return 1;
+			break;
 	}
 }
