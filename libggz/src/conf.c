@@ -550,7 +550,7 @@ int ggz_conf_parse(const char *path, const unsigned char options)
 {
 	static int	next_handle=0;
 
-	conf_file_t	*file_data;
+	conf_file_t	*file_data = NULL;
 	GGZList		*section_list;
 	GGZListEntry	*file_entry;
 
@@ -658,8 +658,9 @@ int ggz_conf_parse(const char *path, const unsigned char options)
  */
 static GGZList * file_parser(const char *path)
 {
-	FILE		*c_file;
-	char		line[1024];
+	int		c_file;
+	GGZFile		*c_struct;
+	char		*line;
 	char		*varname, *varvalue;
 	int		linenum = 0;
 	GGZList		*s_list;
@@ -677,21 +678,26 @@ static GGZList * file_parser(const char *path)
 		return NULL;
 
 	/* Open the input config file */
-	if((c_file = fopen(path, "r")) == NULL) {
+	if((c_file = open(path, O_RDONLY)) == -1) {
 		/* This should be impossible now, due to checks made earlier? */
 		ggz_error_sys("Unable to read file %s", path);
 		return NULL;
 	}
 
+	/* Get a GGZFile struct */
+	c_struct = ggz_get_file_struct(c_file);
+
 	/* Setup some temp storage to use */
 	e_data = malloc(sizeof(conf_entry_t));
 
 	/* Read individual lines and pass them off to be parsed */
-	while(fgets(line, 1024, c_file)) {
+	while((line = ggz_read_line(c_struct)) != NULL) {
 		linenum++;
 		parse_line(line, &varname, &varvalue);
-		if(varname == NULL)
+		if(varname == NULL) {
+			ggz_free(line);
 			continue;	/* Blank line or comment */
+		}
 		if(varvalue == NULL) {
 			/* Might be a [SectionID] */
 			if(varname[0] == '['
@@ -706,6 +712,7 @@ static GGZList * file_parser(const char *path)
 			} else
 				ggz_error_msg("Syntax error, %s (line %d)",
 					 path, linenum);
+			ggz_free(line);
 			continue;
 		}
 
@@ -714,17 +721,20 @@ static GGZList * file_parser(const char *path)
 			/* We haven't seen a [SectionID] yet :( */
 			ggz_error_msg("Syntax error, %s (line %d)",
 				 path, linenum);
+			ggz_free(line);
 			continue;
 		}
 		e_data->key = varname;
 		e_data->value = varvalue;
 		if(ggz_list_insert(s_data->entry_list, e_data) < 0)
 			ggz_error_sys_exit("list insert error: file_parser");
+		ggz_free(line);
 	}
 
 	/* Cleanup after ourselves */
 	free(e_data);
-	fclose(c_file);
+	ggz_free(c_struct);
+	close(c_file);
 
 	return s_list;
 }

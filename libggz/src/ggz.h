@@ -586,6 +586,39 @@ char * ggz_xml_escape(char *str);
  * is returned.
  */
 char * ggz_xml_unescape(char *str);
+
+/**
+ * Structure used internally by ggz_read_line()
+ */
+struct _GGZFile {
+	int fdes;	/* File descriptor */
+	char *buf;	/* Data buffer */
+	char *p;	/* Current position in buffer */
+	char *e;	/* Points one char past end of valid data in buffer */
+	int bufsize;	/* Current buffer size */
+};
+
+typedef struct _GGZFile GGZFile;
+
+/**
+ * Setup a file structure to use with ggz_read_line()
+ * @param fdes A preopened integer file descriptor to read from
+ * @return A pointer to a dynamically allocated GGZFile structure
+ * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * expected to later free this memory using ggz_free().  The user MUST have
+ * opened the requested file for reading before using this function.
+ */
+GGZFile * ggz_get_file_struct(int fdes);
+/**
+ * Read a line of arbitrary length from a file
+ * @param file A GGZFile structure allocated via ggz_get_file_struct()
+ * @return A NULL terminated line from the file of arbitrary length or
+ * NULL at end of file.
+ * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * expected to later free this memory using ggz_free().
+ */
+char * ggz_read_line(GGZFile *file);
+
 /** @} */
 
 #endif  /* __GGZCORE_H__ */

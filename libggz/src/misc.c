@@ -28,9 +28,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "ggz.h"
 
+static char * _fill_buffer(char *low_byte, GGZFile *file);
 
 char * ggz_xml_unescape(char *str)
 {
@@ -150,4 +152,89 @@ char * ggz_xml_escape(char *str)
 	*q = '\0';
 
 	return new;
+}
+
+
+#define START_BUF_SIZE 1024
+#define INC_BUF_SIZE   512
+
+GGZFile * ggz_get_file_struct(int fdes)
+{
+	GGZFile *new;
+	int bytes_read;
+
+	/* Setup a new GGZFile struct */
+	new = ggz_malloc(sizeof(GGZFile));
+	new->fdes = fdes;
+
+	/* Allocate and prefill the data buffer */
+	new->bufsize = START_BUF_SIZE;
+	new->p = new->buf = ggz_malloc(new->bufsize);
+	bytes_read = read(fdes, new->p, new->bufsize);
+	new->e = new->p + bytes_read;
+
+	return new;
+}
+
+
+char * ggz_read_line(GGZFile *file)
+{
+	char *data_line;
+	int d_off;
+
+	data_line = file->p;
+	while(1) {
+		if(file->p == file->e) {
+			data_line = _fill_buffer(data_line, file);
+			/* EOF Check */
+			if(file->p == file->e) {
+				/* Must guarantee NULL term */
+				/* We KNOW that p is a valid mem location */
+				/* because we just tried to expand the buf */
+				*file->p = '\0';
+				break;
+			}
+		}
+		if(*file->p == '\n') {
+			*file->p = '\0';
+			file->p++;
+			break;
+		}
+		file->p++;
+	}
+
+	if(data_line == file->p)
+		return NULL;
+	else
+		return ggz_strdup(data_line);
+}
+
+
+static char * _fill_buffer(char *low_byte, GGZFile *file)
+{
+	int off, len;
+
+	if(low_byte == file->buf) {
+		/* Buffer expansion required to fit data line */
+		off = file->p - file->buf;	/* Save p/e offsets */
+
+		file->bufsize += INC_BUF_SIZE;	/* Make a bigger buffer */
+		file->buf = ggz_realloc(file->buf, file->bufsize);
+
+		file->p = file->e = file->buf + off; /* Setup new p/e offsets */
+	} else {
+		/* Relocate bytes to low end of buffer to make space */
+		if((len = file->e - low_byte) > 0)
+			memmove(file->buf, low_byte, len);
+		file->p = file->buf + len;
+		file->e = file->p;
+	}
+	low_byte = file->buf;		/* low is now at start */
+
+	/* Now that we've made space, fill the buffer */
+	len = file->bufsize - (file->e - low_byte);
+	if((len = read(file->fdes, file->e, len)) >= 0)
+		file->e += len;
+
+	return low_byte;
 }
