@@ -13,6 +13,7 @@
 ///// GGZ Server /////////////////////////////////////////////////
 
 #include "GGZCoreServer.h"
+#include "config.h"
 
 GGZCoreServer* GGZCoreServer::m_instance = 0;
 
@@ -54,9 +55,13 @@ int GGZCoreServer::removeHook(const GGZCoreServerEvent event, const unsigned int
 }
 
 
-int GGZCoreServer::setHost(const char* host, const unsigned int port)
+int GGZCoreServer::setHost(const char* host, const unsigned int port, const int encryption)
 {
+#ifdef KGGZ_PATCH_ENCRYPTION
+	return ggzcore_server_set_hostinfo(m_server, host, port, encryption);
+#else
 	return ggzcore_server_set_hostinfo(m_server, host, port);
+#endif
 }
 
 int GGZCoreServer::setLogin(const int type, const char* username, const char* password)
@@ -303,4 +308,14 @@ int GGZCoreServer::logSession(const char *filename)
 {
 	return ggzcore_server_log_session(m_server, filename);
 }
+
+int GGZCoreServer::encryption()
+{
+#ifdef KGGZ_PATCH_ENCRYPTION
+	return ggzcore_server_get_encryption(m_server);
+#else
+	return 0;
+#endif
+}
+
 

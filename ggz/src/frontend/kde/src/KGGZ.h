@@ -240,7 +240,7 @@ class KGGZ : public QWidget
 		// User data saved from connection dialog
 		char *m_save_username, *m_save_password, *m_save_host;
 		// Connection data saved from connection dialog
-		int m_save_loginmode, m_save_port;
+		int m_save_loginmode, m_save_port, m_save_encryption;
 		// Lock for time-critical operations
 		int m_lock;
 		// Special flag for failed negotiations

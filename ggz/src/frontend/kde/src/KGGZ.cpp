@@ -193,7 +193,7 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 
 	if(m_connect->optionSecure())
 	{
-		KMessageBox::information(this, i18n("Please note that secure connections are not implemented yet!"), i18n("Connection security"));
+		KMessageBox::information(this, i18n("Although the TLS implementation may work, it is not widely tested yet and in no way secure!"), i18n("Security warning"));
 	}
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
@@ -208,6 +208,7 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	m_save_password = strdup(password);
 	m_save_host = strdup(host);
 	m_save_port = port;
+	m_save_encryption = m_connect->optionSecure();
 	KGGZDEBUG("Values are: username=%s password=%s mode=%i\n", m_save_username, m_save_password, m_save_loginmode);
 }
 
@@ -232,7 +233,7 @@ void KGGZ::slotConnectedStart()
 	kggzserver->logSession(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
 	KGGZCommon::clear();
 
-	kggzserver->setHost(m_save_host, m_save_port);
+	kggzserver->setHost(m_save_host, m_save_port, m_save_encryption);
 	KGGZDEBUG("connect now!\n");
 	result = kggzserver->connect();
 	if(m_killserver)
@@ -767,7 +768,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			buffer.sprintf(i18n("KGGZ - [logged in as %s@%s:%i]"), m_save_username, m_save_host, m_save_port);
+			buffer.sprintf(i18n("KGGZ - [logged in as %s@%s:%i] (using TLS: %i)"), m_save_username, m_save_host, m_save_port, m_save_encryption);
 			emit signalCaption(buffer);
 			menuView(VIEW_CHAT);
 			if(m_save_loginmode == GGZCoreServer::firsttime)

@@ -71,7 +71,7 @@ class GGZCoreServer
 		int removeHook(const GGZCoreServerEvent event, const unsigned int id);
 
 		/** Specify the host data. */
-		int setHost(const char* host, const unsigned int port);
+		int setHost(const char* host, const unsigned int port, const int encryption);
 		/** Specify the login information. */
 		int setLogin(const int type, const char* username, const char* password);
 
@@ -89,6 +89,8 @@ class GGZCoreServer
 		int fd();
 		/** Return the current server state. */
 		GGZStateID state();
+		/** Return the encryption status. */
+		int encryption();
 
 		/** The number of available rooms. */
 		int countRooms();

@@ -116,7 +116,10 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	mode_normal->setChecked(TRUE);
 
 	option_server = new QCheckBox(i18n("Start ggzd server locally"), this);
+
+#ifdef KGGZ_PATCH_ENCRYPTION
 	option_tls = new QCheckBox(i18n("Use secure connection (TLS)"), this);
+#endif
 
 	sep1 = new KGGZLineSeparator(this);
 	sep2 = new KGGZLineSeparator(m_pane);
@@ -155,7 +158,9 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	vbox1->add(m_pane);
 
 	vbox1->add(option_server);
+#ifdef KGGZ_PATCH_ENCRYPTION
 	vbox1->add(option_tls);
+#endif
 
 	hbox1 = new QHBoxLayout(vbox1, 5);
 	hbox1->add(button_ok);
@@ -497,6 +502,10 @@ int KGGZConnect::optionServer()
 
 int KGGZConnect::optionSecure()
 {
+#ifdef KGGZ_PATCH_ENCRYPTION
 	return option_tls->isChecked();
+#else
+	return 0;
+#endif
 }
 
