@@ -1,0 +1,39 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Sobre a GGZ Gaming Zone</b><br>
+O projeto GGZ, fundado no início do ano 2000, nasceu de uma arquitetura
+de redes simples para um centro de jogos da rede muito flexível.
+Ele é baseado completamente no Software Livre (ou seja, Open Source).
+Com um sistema de valorização de jogadores integrado, e funcionalidades
+como espetadores, convites, jogadores sem cadastramento e um sistema de
+bate-papo é muito facil desenvolver os jogos.
+Existem algumas bibliotécas de código fonte para conseguir mais rápidamente
+ainda.
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Algumas estatísticas</i><br>
+<ul>
+<li>13 pacotes (módules CVS) disponível, mais uma versão para o Windows
+<li>16 jogos independentes e 25 clientes para nuncar parar jogar
+<li>Mais de 130 000 linhas de código fonte em C, C++ e Python
+</ul>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

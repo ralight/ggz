@@ -17,7 +17,7 @@ Jogos na internet para todos.
 
 <i>O que é GGZ?</i><br>
 GGZ (uma abreviatura de GGZ Gaming Zone) desinvolve jogos e programas parentes
-para jogar online (típo client-servidor). Valorizações dos jogadores, espetadores,
+para jogar online (tipo client-servidor). Valorizações dos jogadores, espetadores,
 jogadores artifiçais e um chatbot são peças do projeto.
 
 </td></tr>
@@ -42,19 +42,10 @@ O GGZ Gaming Zone 0.0.9 é disponível desde 17/Jul/2004.<br>
 </table>
 
 <b>Notícias</b><br>
-<i>17/10/2004: Desenvolvemento</i> (por josef)<br>
-Nós começamos desenvolver a proxima versão. Quem quer ser informado
-sobre o progresso, cadastre-se para a nossa lista ggz-dev :)
-<br><br>
 
-<i>17/07/2004: GGZ 0.0.9</i> (por josef)<br>
-GGZ 0.0.9 foi lançeado oficialmente hoje. Veja as links em cima para
-mais informações sobre esta versão.
-<br><br>
+<?php include_once("site/newsparser.php"); ?>
 
-<i>07.04.2004: Versão portuguêsa</i> (por josef)<br>
-Eu tentei traduzir a primeira página. Se você gosta, posso
-traduzir mais no futuro.
+Notícias antigas podem ser procurado nos <a href="news.php">arquivos</a>.
 <br>
 
 </font>

@@ -5,8 +5,8 @@
 <td>
 <font size="3">
 
-<b>GGZ Gaming Zone News</b><br>
-News archive.
+<b>Notícias da GGZ Gaming Zone</b><br>
+Arquivos das notícias.
 <br><br>
 
 <?php include_once("site/newsparser.php"); ?>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
+ "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+<channel>
+
+<title>GGZ Neuigkeiten</title>
+<link>http://www.ggzgamingzone.org/changes.rss</link>
+<description>GGZ Neuigkeiten</description>
+<language>de-de</language>
+
+<item>
+<title><i>17.10.2004: Entwicklungsstand</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Die Entwicklungen, welche zur nächsten Version führen sollen, haben
+bereits angefangen. Wer über neue Funktionen oder Spiele informiert sein
+möchte, sollte unsere Entwicklerliste ggz-dev abonnieren :)
+</full>
+</item>
+
+<item>
+<title><i>16.07.2004: GGZ 0.0.9</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+GGZ 0.0.9 wurde heute offiziell veröffentlicht. Siehe die obigen Links für weitere
+Informationen darüber.
+</full>
+</item>
+
+<item>
+<title><i>24.04.2004: Server-Umzug</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Das GGZ-Projekt ist mit seinem Hauptserver, welcher auf User-Mode-Linux
+(UML) läuft, zu einem anderen Anbieter umgezogen.
+Die Downtime der letzten Tage ist damit vorüber.
+</full>
+</item>
+
+<item>
+<title><i>07.02.2004: GGZ 0.0.8</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Die neue Version ist endlich da. Die alten Webseiten sind nun offiziell durch
+diese hier ersetzt. Viel Spaß :)
+</full>
+</item>
+
+<item>
+<title><i>27.07.2003: Ankündigung von beta.ggzgamingzone.org</i> (von josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Die GGZ Gaming Zone-Homepage wird ein neues Design bekommen.
+Alle Seiten werden im CVS gepflegt werden, und mit modernisiertem
+HTML-Code sowie Übersetzungen aufwarten können.
+</full>
+</item>
+
+</channel>
+</rss>
+

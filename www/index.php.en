@@ -40,20 +40,8 @@ The GGZ Gaming Zone 0.0.9 has been released on Jul 17 2004.<br>
 </table>
 
 <b>News</b><br>
-<i>17.10.2004: Progress</i> (by josef)<br>
-Development has started to shape the next version. To be informed about
-new features, join our ggz-dev mailing list :)
-<br><br>
 
-<i>17.07.2004: GGZ 0.0.9</i> (by josef)<br>
-GGZ 0.0.9 has officially been released today. See the above links for
-further version specific information.
-<br><br>
-
-<i>24.04.2004: Server move</i> (by josef)<br>
-The GGZ project has switched hosting of its main server, running on
-User-Mode-Linux (UML), to another provider. Sorry for the downtime during the last days.
-<br><br>
+<?php include_once("site/newsparser.php"); ?>
 
 Read older news in the <a href="news.php">archive</a>.
 <br>
