@@ -119,23 +119,31 @@ fi
 if test "$enable_python" = yes; then
 	echo -n "Extra check: python... "
 
-	incs="/usr/local/include/python2.2 /usr/include/python2.2"
-	AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
-	python_includes="$python_incdir"
+	usever=""
+	for ver in 2.2 2.3; do
+		incs="/usr/local/include/python$ver /usr/include/python$ver"
+		AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
+		python_includes="$python_incdir"
 
-	libs="/usr/local/lib /usr/lib"
-	AC_GGZ_FIND_FILE("libpython2.2.so", $libs, python_libdir)
-	python_libraries="$python_libdir"
+		libs="/usr/local/lib /usr/lib"
+		AC_GGZ_FIND_FILE(libpython$ver.so, $libs, python_libdir)
+		python_libraries="$python_libdir"
 
-	if test "x$python_includes" = "xNO" || test "x$python_libraries" = "xNO"; then
+		if test "x$python_includes" = "xNO" || test "x$python_libraries" = "xNO"; then
+			python_includes=""
+			python_libraries=""
+			enable_python=no
+		else
+			python_includes="-I $python_includes"
+			python_libraries="-L $python_libraries -lpython$i"
+			usever=$ver
+		fi
+	done
+
+	if test "x$usever" = "x"; then
 		AC_MSG_RESULT(no.)
-		python_includes=""
-		python_libraries=""
-		enable_python=no
 	else
-		python_includes="-I $python_includes"
-		python_libraries="-L $python_libraries -lpython2.2"
-		AC_MSG_RESULT(ok.)
+		AC_MSG_RESULT([ok, version $usever.])
 		AC_SUBST(python_includes)
 		AC_SUBST(python_libraries)
 		AC_DEFINE([EMBED_PYTHON], 1, [Define to use embedded Python])
