@@ -52,6 +52,7 @@ static void room_notify_change(char* name, const int, const int);
 static int room_list_send(GGZPlayer* player, const int p_fd);
 static int room_handle_join(GGZPlayer* player, const int);
 static int room_event_callback(GGZPlayer* player, int size, void* data);
+static int show_server_info(GGZPlayer *player, const int p_fd);
 
 /* Handle opcodes from player_handle() */
 int room_handle_request(const int request, GGZPlayer* player, const int p_fd)
@@ -231,6 +232,9 @@ int room_handle_join(GGZPlayer* player, const int p_fd)
 	   || es_write_char(p_fd, result) < 0)
 		return GGZ_REQ_DISCONNECT;
 
+	if(room == 0 && show_server_info(player, p_fd) < 0)
+		return GGZ_REQ_DISCONNECT;
+
 	return GGZ_REQ_OK;
 }
 
@@ -390,4 +394,32 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 		return -1;
 	
 	return 0;
+}
+
+
+/* This is more or less a temporary hack to get some server info on login */
+static int show_server_info(GGZPlayer *player, const int p_fd)
+{
+	int players;
+	int status;
+	char msg[128];
+
+	pthread_rwlock_rdlock(&state.lock);
+	players = state.players;
+	pthread_rwlock_unlock(&state.lock);
+
+	if(players == 1) {
+		status = chat_server_2_player(player->name,
+			    "You are the only player currently logged in.");
+	} else if(players == 2) {
+		status = chat_server_2_player(player->name,
+			    "There is one other player currently logged in.");
+	} else {
+		snprintf(msg, 128,
+			"There are %d other players currently logged in.",
+		 	players-1);
+		status = chat_server_2_player(player->name, msg);
+	}
+
+	return status;
 }

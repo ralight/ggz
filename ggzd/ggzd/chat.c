@@ -181,3 +181,18 @@ static int chat_event_callback(void* target, int size, void* data)
 }
 
 
+/* This is more or less a temporary hack for show_server_info() - room.c */
+/* Although this could be a useful function for other uses. */
+int chat_server_2_player(char *name, char *msg)
+{
+	void *data = NULL;
+	int size, status;
+
+	/* Pack up chat message */
+	size = chat_pack(&data, GGZ_CHAT_PERSONAL, "[Server]", msg);
+	
+	/* Queue chat event for individual player */
+	status = event_player_enqueue(name, chat_event_callback, size, data);
+
+	return status;
+}

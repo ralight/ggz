@@ -34,6 +34,5 @@ int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender,
 int chat_player_enqueue(char* receiver, unsigned char opcode, 
 			GGZPlayer* sender, char *msg);
 
-			
-			
-
+/* Queue up a server announcement to a specific player's chat window */
+int chat_server_2_player(char *player_name, char *msg);
