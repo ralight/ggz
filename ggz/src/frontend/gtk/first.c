@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: first.c 6645 2005-01-13 06:42:30Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -157,11 +157,12 @@ static void first_button_no_activate(GtkButton *button, gpointer data)
 static void first_generate_password(char *pw)   
 {
         int word, d1, d2;
-        
-        srandom(time(NULL));
-        word = random() % (sizeof(pw_words) / sizeof(pw_words[0]));
-        d1 = random() % 10;
-        d2 = random() % 10;
+
+	/* rand/srand are more portable than random/srandom */
+	srand(time(NULL));
+	word = rand() % (sizeof(pw_words) / sizeof(pw_words[0]));
+	d1 = rand() % 10;
+	d2 = rand() % 10;
         /* FIXME: shouldn't we translate the pw_words entry here?  --JDS */
         sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
 }

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6496 2004-12-15 22:01:41Z josef $
+dnl $Id: configure.ac 6645 2005-01-13 06:42:30Z jdorje $
 
 AC_INIT([GGZ Gtk+ client], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -16,6 +16,7 @@ AC_PROG_INSTALL
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 
 dnl Check for GGZ Requirements
@@ -35,21 +36,21 @@ AC_GAIM
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h libintl.h locale.h netinet/in.h sys/socket.h \
-                  sys/time.h sys/wait.h], [],
-                 [AC_MSG_ERROR([cannot find required header file])])
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
+AC_CHECK_HEADERS([arpa/inet.h netinet/in.h sys/time.h sys/socket.h winsock.h])
+AC_CHECK_HEADERS([sys/stat.h unistd.h assert.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
 
 
 # Check for library functions
 # ===========================
+# We don't use AC_FUNC_MALLOC or AC_FUNC_REALLOC.  See the manual.
 AC_CHECK_FUNCS([memset setlocale strcasecmp strchr strncasecmp strrchr \
-                fork malloc realloc stat], [],
+                malloc realloc stat strdup strstr rand srand], [],
                [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([execvp])
 AC_FUNC_FORK
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
 AC_FUNC_STAT
 
 

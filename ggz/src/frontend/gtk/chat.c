@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 6286 2004-11-06 08:34:37Z jdorje $
+ * $Id: chat.c 6645 2005-01-13 06:42:30Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -33,9 +33,19 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#ifdef HAVE_SYS_SOCKET_H
+#  include <sys/socket.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#  include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
+#  include <arpa/inet.h>
+#endif
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
+
 #include <glib.h>
 
 #include "chat.h"

@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 6391 2004-11-16 07:15:24Z jdorje $
+ * $Id: support.c 6645 2005-01-13 06:42:30Z jdorje $
  *
  * Support code
  *
@@ -28,7 +28,9 @@
 #endif
 
 #include <sys/types.h>
-#include <sys/wait.h>
+#ifdef HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
 #include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -196,19 +198,26 @@ void support_goto_url(gchar * url)
 
 void support_exec(char *cmd)
 {
-	int pid;
+#if defined HAVE_FORK && defined HAVE_EXECVP
+	pid_t pid;
+#endif
 	char **argv;
 	int argc;
 
 	if (my_poptParseArgvString(cmd, &argc, &argv) != 0)
 		return;
 
+#if defined HAVE_FORK && defined HAVE_EXECVP
 	if ((pid = fork()) < 0) {
 		return;
 	} else if (pid == 0) {
 		execvp(argv[0], argv);
-		_exit(0);
+		_exit(0); /* Use _exit to avoid any atexit handlers. */
 	}
+#else
+	/* TODO: An implementation for windows using CreateProcess. */
+#endif
+
 	free(argv);
 }
 
