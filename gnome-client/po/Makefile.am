@@ -4,6 +4,8 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
+EXTRA_DIST = ggz-gnome-client.pot de.po
+
 messages:
 	$(XGETTEXT) -k_ -kN_ ../src/*.c -o ggz-gnome-client.pot
 	@for j in `ls -1 *.po`; do \
@@ -20,5 +22,13 @@ install-data-local:
 		echo "installing $$dir/ggz-gnome-client.mo ($$k)"; \
 		install -d $$dir; \
 		$(MSGFMT) -o $$dir/ggz-gnome-client.mo $$j; \
+	done
+
+uninstall-local:
+	for j in $(top_srcdir)/po/*.po; do \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
+		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		rm -f $$dir/ggz-gnome-client.mo; \
 	done
 
