@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4571 2002-09-16 04:09:39Z jdorje $
+ * $Id: players.c 4576 2002-09-16 04:57:02Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -234,7 +234,7 @@ int player_get_room(GGZPlayer *player)
 
 GGZPlayerType player_get_type(GGZPlayer *player)
 {
-	int type;
+	GGZPlayerType type;
 
 	pthread_rwlock_rdlock(&player->lock);
 	if(player->login_status == GGZ_LOGIN_ANON)
