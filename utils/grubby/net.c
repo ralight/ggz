@@ -9,13 +9,13 @@
  * May 23rd, 2000
  */
 
-#include <easysock.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
 #include <ggzcore.h>
+
 #include "chat.h"
 #include "datatypes.h"
 #include "log.h"

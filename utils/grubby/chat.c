@@ -8,7 +8,6 @@
  * May 23rd, 2000
  */
 
-#include <easysock.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
