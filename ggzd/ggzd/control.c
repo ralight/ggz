@@ -71,11 +71,6 @@ void init_data(void)
 	/* This is not necessary since game_types is in BSS */
 	for (i = 0; i < MAX_GAME_TYPES; i++)
 		game_types.info[i].enabled = 0;
-
-	/* Initialize chat room information */
-	/* For now, we just dump a 1 into num_rooms */
-	opt.num_rooms = 2;
-	room_initialize_lists();
 }
 
 
@@ -117,6 +112,7 @@ int main(int argc, const char *argv[])
 	
 	init_data();
 	parse_game_files();
+	parse_room_files();
 	/* If the motd option is present, pre-read the file */
 	if (motd_info.use_motd)
 		motd_read_file();

@@ -37,11 +37,12 @@
 #define MAX_GAME_TYPES 5
 #define MAX_TABLES  50
 #define MAX_USERS 500
-#define MAX_ROOM_USERS 100
 #define MAX_CHAT_LEN 512
 #define MAX_CHAT_BUFFER 32
 #define MAX_TABLE_SIZE 8
 #define MAX_MOTD_LINES 80
+#define DEFAULT_MAX_ROOM_USERS 100
+#define DEFAULT_MAX_ROOM_TABLES 50
 
 /* Bitmasks for allowable player numbers */
 #define PLAY_ALLOW_ZERO    0

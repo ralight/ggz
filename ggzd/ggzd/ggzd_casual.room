@@ -1,0 +1,9 @@
+# This is the short name for the room
+Name = NetSpades - Casual
+# This is the long descriptive name for the room
+Description = This is the place for a friendly, chatty game of NetSpades.
+# The gametype should match up to the Name of an added game
+GameType = NetSpades
+# These set maximum values for this room
+MaxPlayers = 150
+MaxTables = 45

@@ -31,3 +31,6 @@ void parse_conf_file(void);
 
 /* Main entry point for parsing the game files */
 void parse_game_files(void);
+
+/* Main entry point for parsing the room files */
+void parse_room_files(void);

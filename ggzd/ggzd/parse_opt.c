@@ -35,6 +35,7 @@
 #include <datatypes.h>
 #include <err_func.h>
 #include <motd.h>
+#include <room.h>
 
 /* Stuff from control.c we need access to */
 extern Options opt;
@@ -49,10 +50,12 @@ typedef struct AddIgnore {
 /* Private file parsing functions */
 static void parse_file(FILE *);
 static void parse_line(char *);
-static void parse_put_add_ignore_list(char *);
-static void parse_cleanup_add_ignore_list(void);
+static AddIgnoreStruct *parse_put_add_ignore_list(char *, AddIgnoreStruct *);
+static AddIgnoreStruct *parse_cleanup_add_ignore_list(AddIgnoreStruct *);
 static void parse_game(char *);
-static int parse_dselect(struct dirent *);
+static void parse_room(char *);
+static int parse_gselect(struct dirent *);
+static int parse_rselect(struct dirent *);
 static unsigned parse_log_types(char *, int);
 static unsigned parse_dbg_types(char *, int);
 
@@ -86,8 +89,10 @@ static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
 /* Module local variables for parsing */
 static char *varname;
 static char *varvalue;
-static AddIgnoreStruct *add_ignore_list = NULL;
+static AddIgnoreStruct *add_ignore_games = NULL;
 static char add_all_games = 't';
+static AddIgnoreStruct *add_ignore_rooms = NULL;
+static char add_all_rooms = 't';
 
 /* Convience macro for parse_file(), parse_game() */
 #define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
@@ -253,7 +258,9 @@ static void parse_file(FILE *configfile)
 				PARSE_ERR("AddGame after AddAllGames ignored");
 			else {
 				add_all_games = 'F';
-				parse_put_add_ignore_list(varvalue);
+				add_ignore_games =
+					parse_put_add_ignore_list(varvalue,
+							 add_ignore_games);
 			}
 			continue;
 		}
@@ -268,7 +275,52 @@ static void parse_file(FILE *configfile)
 				PARSE_ERR("IgnoreGame after AddGame ignored");
 			else {
 				add_all_games = 'T';
-				parse_put_add_ignore_list(varvalue);
+				add_ignore_games =
+					parse_put_add_ignore_list(varvalue,
+							add_ignore_games);
+			}
+			continue;
+		}
+
+		/*** AddAllRooms ***/
+		if(!strcmp(varname, "addallrooms")) {
+			if(add_all_rooms == 'F')
+				PARSE_ERR("AddAllRooms after AddRoom ignored");
+			else
+				add_all_rooms = 'T';
+			continue;
+		}
+
+		/*** AddRoom = ROOM ***/
+		if(!strcmp(varname, "addroom")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if(add_all_rooms == 'T')
+				PARSE_ERR("AddRoom after AddAllRooms ignored");
+			else {
+				add_all_rooms = 'F';
+				add_ignore_rooms =
+					parse_put_add_ignore_list(varvalue,
+							 add_ignore_rooms);
+			}
+			continue;
+		}
+
+		/*** IgnoreRoom = ROOM ***/
+		if(!strcmp(varname, "ignoreroom")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if(add_all_rooms == 'F')
+				PARSE_ERR("IgnoreRoom after AddRoom ignored");
+			else {
+				add_all_rooms = 'T';
+				add_ignore_rooms =
+					parse_put_add_ignore_list(varvalue,
+							add_ignore_rooms);
 			}
 			continue;
 		}
@@ -473,12 +525,24 @@ static void parse_file(FILE *configfile)
 
 #ifdef DEBUG
 	{
-	  AddIgnoreStruct *AI = add_ignore_list;
+	  AddIgnoreStruct *AI = add_ignore_games;
 	  if(AI) {
 	    if(add_all_games == 'T')
 	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game ignore list:");
 	    else
 	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game add list:");
+	    while(AI)
+	    {
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "  %s", AI->name);
+	      AI = AI->next;
+	    }
+	  }
+	  AI = add_ignore_rooms;
+	  if(AI) {
+	    if(add_all_rooms == 'T')
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "Room ignore list:");
+	    else
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "Room add list:");
 	    while(AI)
 	    {
 	      dbg_msg(GGZ_DBG_CONFIGURATION, "  %s", AI->name);
@@ -502,7 +566,7 @@ void parse_game_files(void)
 	if(add_all_games == 'F') {
 		/* Go through all games explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding games in add list");
-		game = add_ignore_list;
+		game = add_ignore_games;
 		while(game) {
 			parse_game(game->name);
 			game = game->next;
@@ -511,7 +575,7 @@ void parse_game_files(void)
 		/* Scan for all .dsc files in the game_dir */
 		dbg_msg(GGZ_DBG_CONFIGURATION,
 			"Addding all games in %s", opt.game_dir);
-		num_games = scandir(opt.game_dir, &namelist, parse_dselect, 0);
+		num_games = scandir(opt.game_dir, &namelist, parse_gselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
 			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
@@ -519,7 +583,7 @@ void parse_game_files(void)
 			strcpy(name, namelist[i]->d_name);
 			name[strlen(name)-4] = '\0';
 			/* Check to see if this game is on the ignore list */
-			game = add_ignore_list;
+			game = add_ignore_games;
 			addit = 1;
 			while(game) {
 				if(strncmp(name,game->name,strlen(game->name)))
@@ -541,7 +605,7 @@ void parse_game_files(void)
 		}
 	}
 
-	parse_cleanup_add_ignore_list();
+	add_ignore_games = parse_cleanup_add_ignore_list(add_ignore_games);
 }
 
 
@@ -686,6 +750,20 @@ static void parse_game(char *name)
 					  "%s/%s", opt.game_dir, varvalue);
 		}
 
+		/*** AllowLeave = 0,1 ***/
+		if(!strcmp(varname, "allowleave")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval != 0 || intval != 1) {
+				PARSE_ERR("AllowLeave value invalid");
+				continue;
+			}
+			game_info->allow_leave = intval;
+		}
+
 		/*** GameDisabled ***/
 		if(!strcmp(varname, "gamedisabled"))
 			game_info->enabled = 0;
@@ -695,6 +773,210 @@ static void parse_game(char *name)
 	game_types.count++;
 
 	free(game_info);
+	free(fname);
+}
+
+
+/* Main entry point for parsing the room files */
+void parse_room_files(void)
+{
+	AddIgnoreStruct *room;
+	struct dirent **namelist;
+	char *name;
+	int num_rooms, i;
+	int addit;
+
+	if(add_all_rooms == 'F') {
+		/* Go through all rooms explicitly included in the add list */
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
+		room = add_ignore_rooms;
+		while(room) {
+			parse_room(room->name);
+			room = room->next;
+		}
+	} else {
+		/* Scan for all .room files in the game_dir */
+		dbg_msg(GGZ_DBG_CONFIGURATION,
+			"Addding all rooms in %s", opt.game_dir);
+		num_rooms = scandir(opt.game_dir, &namelist, parse_rselect, 0);
+		for(i=0; i<num_rooms; i++) {
+			/* Make a temporary copy of the name w/o .room */
+			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
+			       err_sys_exit("malloc error in parse_game_files");
+			strcpy(name, namelist[i]->d_name);
+			name[strlen(name)-5] = '\0';
+			/* Check to see if this game is on the ignore list */
+			room = add_ignore_rooms;
+			addit = 1;
+			while(room) {
+				if(strncmp(name,room->name,strlen(room->name)))
+					room = room->next;
+				else {
+					addit=0;
+					break;
+				}
+			}
+
+			/* Add it if it's not on the ignore list */
+			if(addit)
+				parse_room(name);
+			else
+				dbg_msg(GGZ_DBG_CONFIGURATION,
+					"Ignoring room %s", name);
+
+			free(name);
+		}
+	}
+
+	add_ignore_rooms = parse_cleanup_add_ignore_list(add_ignore_rooms);
+
+	/* At this point, we should have at least one working room */
+	if(opt.num_rooms == 0)
+		err_msg_exit("No rooms defined, ggzd unusable");
+}
+
+
+/* Parse a single room file, adding it's values to the room table */
+static void parse_room(char *name)
+{
+	char *fname;
+	FILE *roomfile;
+	char line[256];
+	int linenum = 0;
+	int intval;
+	char *strval;
+	int num;
+	int i;
+
+	/* Allocate space and setup a full pathname to description file */
+	if((fname = malloc(strlen(name)+strlen(opt.game_dir)+7)) == NULL)
+		err_sys_exit("malloc error in parse_game()");
+	sprintf(fname, "%s/%s.room", opt.game_dir, name);
+
+	if((roomfile = fopen(fname, "r")) == NULL) {
+		err_msg("Ignoring %s, could not open %s", name, fname);
+		free(fname);
+		return;
+	}
+
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding room %s from %s", name, fname);
+
+	/* Allocate a room struct for this room */
+	if(opt.num_rooms == 0)
+		room_initialize();
+	else
+		room_create_additional();
+	num = opt.num_rooms - 1;
+	chat_room[num].game_type = -1;
+
+	while(fgets(line, 256, roomfile)) {
+		linenum++;
+		parse_line(line);
+		if(varname == NULL)
+			continue; /* Blank line or comment */
+		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
+			varname, varvalue);
+
+		/*** Name = String ***/
+		if(!strcmp(varname, "name")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("malloc failed in parse_room()");
+			strcpy(strval, varvalue);
+			chat_room[num].name = strval;
+		}
+
+		/*** Description = String ***/
+		if(!strcmp(varname, "description")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("malloc failed in parse_room()");
+			strcpy(strval, varvalue);
+			chat_room[num].description = strval;
+		}
+
+		/*** MaxPlayers = # ***/
+		if(!strcmp(varname, "maxplayers")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 1) {
+				PARSE_ERR("MaxPlayers value invalid");
+				continue;
+			}
+			chat_room[num].max_players = intval;
+		}
+
+		/*** MaxTables = # ***/
+		if(!strcmp(varname, "maxtables")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 1) {
+				PARSE_ERR("MaxTables value invalid");
+				continue;
+			}
+			chat_room[num].max_tables = intval;
+		}
+
+		/*** GameType = String ***/
+		if(!strcmp(varname, "gametype")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			for(i=0; i<game_types.count; i++)
+				if(!strcmp(varvalue, game_types.info[i].name))
+					break;
+			if(i != game_types.count)
+				chat_room[num].game_type = i;
+			else
+				PARSE_ERR("Invalid game type specified");
+		}
+	}
+
+	if(chat_room[num].name == NULL) {
+		err_msg("No Name given for room %s", name);
+		if((strval = malloc(5)) == NULL)
+			err_sys_exit("malloc failed in parse_room()");
+		strcpy(strval, "none");
+		chat_room[num].name = strval;
+	}
+	if(chat_room[num].description == NULL) {
+		err_msg("No Description given for room %s", name);
+		if((strval = malloc(5)) == NULL)
+			err_sys_exit("malloc failed in parse_room()");
+		strcpy(strval, "none");
+		chat_room[num].description = strval;
+	}
+	if(chat_room[num].max_players == 0) {
+		err_msg("No MaxPlayers given for room %s", name);
+		chat_room[num].max_players = DEFAULT_MAX_ROOM_USERS;
+	}
+	if(chat_room[num].max_tables == 0) {
+		err_msg("No MaxTables given for room %s", name);
+		chat_room[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
+	}
+	if(chat_room[num].game_type == -1) {
+		err_msg("No GameType given for room %s", name);
+		chat_room[num].game_type = 0;
+	}
+
+	chat_room[num].player_index = calloc(chat_room[num].max_players,
+					     sizeof(int));
+	if(chat_room[num].player_index == NULL)
+		err_sys_exit("calloc failed in parse_room()");
+
 	free(fname);
 }
 
@@ -751,7 +1033,7 @@ static void parse_line(char *p)
 
 
 /* Put a string onto the Add/Ignore list */
-static void parse_put_add_ignore_list(char *s)
+static AddIgnoreStruct *parse_put_add_ignore_list(char *s, AddIgnoreStruct *old)
 {
 	AddIgnoreStruct *new_listitem;
 	char *newstring;
@@ -763,28 +1045,37 @@ static void parse_put_add_ignore_list(char *s)
 
 	strcpy(newstring, s);
 	new_listitem->name = newstring;
-	new_listitem->next = add_ignore_list;
-	add_ignore_list = new_listitem;
+	new_listitem->next = old;
+	return new_listitem;
 }
 
 
 /* Cleanup the Add/Ignore list after we are finished */
-static void parse_cleanup_add_ignore_list(void)
+static AddIgnoreStruct *parse_cleanup_add_ignore_list(AddIgnoreStruct *start)
 {
 	AddIgnoreStruct *temp;
 
-	while((temp = add_ignore_list)) {
-		free(add_ignore_list->name);
-		add_ignore_list = add_ignore_list->next;
+	while((temp = start)) {
+		free(start->name);
+		start = start->next;
 		free(temp);
 	}
+
+	return start;
 }
 
 
 /* Return 1 if filename matches our pattern (ends in '.dsc') */
-static int parse_dselect(struct dirent *dent)
+static int parse_gselect(struct dirent *dent)
 {
 	return(!strcmp(".dsc", dent->d_name+strlen(dent->d_name)-4));
+}
+
+
+/* Return 1 if filename matches our pattern (ends in '.room') */
+static int parse_rselect(struct dirent *dent)
+{
+	return(!strcmp(".room", dent->d_name+strlen(dent->d_name)-5));
 }
 
 

@@ -61,6 +61,7 @@ typedef struct {
 	char homepage[MAX_GAME_WEB_LEN];
 	unsigned char num_play_allow;
 	unsigned char comp_allow;
+	unsigned char allow_leave;
 	int options_size;
 	unsigned char enabled;
 	GameLaunchFunc *launch;
@@ -119,8 +120,13 @@ typedef struct ChatItem {
 /* A Room Structure */
 typedef struct {
 	pthread_rwlock_t lock;
+	char *name;
+	char *description;
 	int player_count;
-	int player_index[MAX_ROOM_USERS];
+	int max_players;
+	int max_tables;
+	int game_type;
+	int *player_index;
 	ChatItemStruct *chat_tail;
 #ifdef DEBUG
 	ChatItemStruct *chat_head;

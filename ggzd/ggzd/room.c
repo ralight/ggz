@@ -49,23 +49,46 @@ static void room_notify_change(const int, const int, const int);
 static void room_dequeue_chat(const int p);
 
 
-/* Initialize the chat lists */
-void room_initialize_lists(void)
+/* Initialize the first room */
+void room_initialize(void)
 {
-	int	i;
+	dbg_msg(GGZ_DBG_ROOM, "Initializing room array");
 
-	dbg_msg(GGZ_DBG_ROOM, "Initializing %d rooms", opt.num_rooms);
+	opt.num_rooms=1;
 
-	/* Calloc a big enough array to hold all our rooms */
-	if((chat_room = calloc(opt.num_rooms, sizeof(RoomStruct)))
-	    == NULL)
-		err_sys_exit("calloc failed in chat_initialize_lists()");
+	/* Calloc a big enough array to hold all our first room */
+	if((chat_room = calloc(opt.num_rooms, sizeof(RoomStruct))) == NULL)
+		err_sys_exit("calloc failed in room_initialize_lists()");
 
-	/* Initialize all vars for each room */
-	for(i=0; i<opt.num_rooms; i++) {
-		pthread_rwlock_init(&chat_room[i].lock, NULL);
-		chat_room[i].chat_tail = NULL; /* Not strictly necessary */
-	}
+	/* Initialize the lock */
+	pthread_rwlock_init(&chat_room[0].lock, NULL);
+}
+
+
+/* Initialize an additional room */
+void room_create_additional(void)
+{
+	RoomStruct *new;
+	int i;
+
+	/* Right now this is only used at startup, so we don't lock anything */
+	dbg_msg(GGZ_DBG_ROOM, "Creating a new room");
+
+	opt.num_rooms++;
+
+	/* Calloc a new array to make more rooms */
+	if((new = calloc(opt.num_rooms, sizeof(RoomStruct))) == NULL)
+		err_sys_exit("calloc failed in room_create_new()");
+
+	/* Copy the stuff over */
+	for(i=0; i<opt.num_rooms-1; i++)
+		memcpy(&new[i], &chat_room[i], sizeof(RoomStruct));
+
+	free(chat_room);
+	chat_room = new;
+
+	/* Initialize the lock on the new one */
+	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
 }
 
 
@@ -100,7 +123,8 @@ int room_join(const int p_index, const int room)
 	}
 
 	/* Check for room full condition */
-	if(room != -1 && chat_room[room].player_count == MAX_ROOM_USERS) {
+	if(room != -1
+	   && chat_room[room].player_count == chat_room[room].max_players) {
 		pthread_rwlock_unlock(&chat_room[room].lock);
 		if(old_room != -1)
 			pthread_rwlock_unlock(&chat_room[old_room].lock);

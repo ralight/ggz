@@ -424,7 +424,6 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 static void player_remove(int p_index)
 {
 	int fd;
-	int room;
 
 	pthread_rwlock_wrlock(&players.lock);
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
