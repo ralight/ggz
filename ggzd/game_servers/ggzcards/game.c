@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 4239 2002-06-09 18:58:47Z jdorje $
+ * $Id: game.c 5017 2002-10-23 22:19:46Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -82,6 +82,10 @@ void game_get_options(void)
 	add_option("open_hands",
 	           "Select this option to have all hands visible to everyone.",
 	           1, 0, "Play with open hands");
+	add_option("blind_spectators",
+		   "Select this option to hide everybody's hand from all "
+		   "spectators.",
+		   1, 0, "Hide hands from spectators");
 	add_option("rated_game",
 	           "Select this option to have the game rated.",
 	           1, 1, "Play a rated game");
@@ -96,6 +100,8 @@ int game_handle_option(char *option, int value)
 {
 	if (!strcmp("open_hands", option))
 		game.open_hands = value;
+	else if (!strcmp("blind_spectators", option))
+		 game.blind_spectators = value;
 	else if (!strcmp("rated_game", option))
 		game.rated = value;
 	else
@@ -113,6 +119,11 @@ char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 			snprintf(buf, bufsz, "Playing with open hands.");
 		else
 			*buf = 0;
+	} else if (!strcmp("blind_spectators", option)) {
+		if (value)
+			snprintf(buf, bufsz, "Spectators can't see cards.");
+		else
+			buf[0] = 0;
 	} else if (!strcmp("rated_game", option)) {
 		if (value)
 			snprintf(buf, bufsz, "This is a rated game.");

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4498 2002-09-09 17:44:45Z jdorje $
+ * $Id: common.h 5017 2002-10-23 22:19:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -100,6 +100,7 @@ typedef struct {
 
 	/* Table options */
 	bool open_hands;	/**< are we playing with open hands? */
+	bool blind_spectators;	/**< are hands hidden from spectators? */
 
 	/* State-tracking data: dealing */
 	int hand_num;		/**< the number of the current hand (counting

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 5015 2002-10-23 22:01:40Z jdorje $
+ * $Id: common.c 5017 2002-10-23 22:19:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -746,7 +746,8 @@ void send_hand(const player_t p, const seat_t s,
 
 	/* The open_hands option causes everyone's hand to always be
 	   revealed. */
-	if (game.open_hands)
+	if (game.open_hands
+	    || (p < 0 && !game.blind_spectators))
 		show_fronts = show_backs = TRUE;
 		
 	net_send_hand(p, s, show_fronts, show_backs);
