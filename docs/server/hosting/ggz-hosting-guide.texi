@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.5 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.6 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -18,7 +18,7 @@ Copyright (C) 2001, 2002 Josef Spillner
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.5 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.6 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author Josef Spillner
 
@@ -44,6 +44,7 @@ See http://ggz.sourceforge.net/docs/ for the latest edition.
 * Foreword:: General notes about this document
 * Game Servers:: History and Diversity
 * Installation:: How to prepare and survive a GGZ installation
+* Databases:: Where to store player information
 * Internal Games:: Description of available games
 * External Games:: Additional games for GGZ
 * Other GGZ Servers:: How to install the Meta Server and TelGGZ
@@ -85,13 +86,13 @@ GGZ does now (experimentally) support permanent game servers too; see the
 section about the game Keepalive below. This might however be subject to
 change for 0.0.6.
 
-@node Installation, Internal Games, Game Servers, Top
+@node Installation, Databases, Game Servers, Top
 @chapter Installation
 @c @cindex Index entry for Second Chapter
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.5.
+This describes a typical setup for GGZ 0.0.6.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -104,7 +105,7 @@ according to the requirements given in the release information; at present,
 this is:
 
 @itemize
-@item libdb 2 or 3
+@item libdb 2 or 3, optionally mysql or postgresql
 @item libpopt
 @item libexpat
 @item perl
@@ -219,9 +220,52 @@ very specialized. TelGGZ, the telnet wrapper which allows world-wide
 participation in GGZ chat sessions over the telnet protocol, is one such
 candidate.
 
-@node Internal Games, External Games, Installation, Top
-@chapter Internal Games
+Have a look at the next chapter on how to set up GGZ with enhanced database
+support.
+
+@node Databases, Internal Games, Installation, Top
+@chapter Databases
 @c @cindex Index entry for Third Chapter
+
+@section Database choices
+
+The GGZ server is able to store its data in various database formats.
+Currently, not only the traditional libdb format is supported (db2 and db3),
+but also MySQL and PostgreSQL. The latter ones are more difficult to set up,
+but provide greater flexibility because there exist a lot of standard tools to
+use the data in them.
+
+@section SQL setup
+
+The libdb databases are stored in ggzd's variable datadir (usually
+/var/ggzd), whereas SQL databases can even be located on other hosts.
+To set them up, make sure ggzd has support for them compiled in (using
+--with-database=mysql or pgsql), and setup the following values in ggzd.conf:
+
+@itemize
+@item DatabaseHost
+@item DatabaseName
+@item DatabaseUsername
+@item DatabasePassword
+@end itemize
+
+@section Format
+
+The database format is the same for every configuration.
+
+@verbatim
+id/user_id: unsigned int (4 bytes)
+handle: string (currently 16 bytes)
+password: string (16 bytes)
+name: string (32 bytes)
+email: string (32 bytes)
+last_login: time_t/unsigned int (4 bytes)
+perms: unsigned int (4 bytes), interpreted as a bitfield
+@end verbatim
+
+@node Internal Games, External Games, Databases, Top
+@chapter Internal Games
+@c @cindex Index entry for Fourth Chapter
 
 @section Scope
 
@@ -237,6 +281,13 @@ with different protocols.
 Each game has its homepage on:
 
 @url{http://ggz.sourceforge.net/games/<gamename>}
+
+@section Server-side game storage
+
+From release 0.0.6 on, each game stores its dynamic data within the hierarchy
+of ggzd's variable data dir, e.g. /var/ggzd/gamedata/<gamename>.
+All the directories there are created automatically, if they are missing after
+the server start something went wrong.
 
 @section Overview on the games
 
@@ -278,7 +329,7 @@ The escape server serves the Windows game client Escape, see
 
 This is a special game, it provides different game servers for one game client.
 The following games are currently supported: Bridge, Euchre, Hearts, LaPocha,
-Spades, Suaro, Sueca and Whist.
+Spades, Suaro, Sueca, Whist and FortyTwo.
 There will be more in the future, for example Skat.
 
 @subsection Hastings1066
@@ -323,7 +374,7 @@ game development.
 
 @node External Games, Other GGZ Servers, Internal Games, Top
 @chapter External Games
-@c @cindex Index entry for Fourth Chapter
+@c @cindex Index entry for Fifth Chapter
 
 @section Scope
 
@@ -396,7 +447,7 @@ src/server.
 
 @node Other GGZ Servers, GGZ Server Tools, External Games, Top
 @chapter Other GGZ Servers
-@c @cindex Index entry for Fifth Chapter
+@c @cindex Index entry for Sixth Chapter
 
 @section The GGZ Meta Server (ggzmetaserv)
 
@@ -434,7 +485,7 @@ advantage of its facilities like logging or memorizing things.
 
 @node GGZ Server Tools, Server Maintaining, Other GGZ Servers, Top
 @chapter GGZ Server Tools
-@c @cindex Index entry for Sixth Chapter
+@c @cindex Index entry for Seventh Chapter
 
 @section The ggz-cmd command line utily
 
@@ -457,9 +508,21 @@ It is also very helpful for debugging.
 If any user should get admin privileges on the server, then this can be
 adjusted using ggzduedit as well.
 
+@section Network traffic tool: colorsniff
+
+The 'colorsniff' program can be used to track problems if there are GGZ
+connection or communication problems. It is currently available via the
+playground CVS module.
+The tool 'ngrep' must be installed to make it work:
+
+@command{ngrep -d lo | colorsniff --noping}
+
+The @command{--noping} option tells the program to ignore the permanent
+PING/PONG command which are used to measure the player lag.
+
 @node Server Maintaining, (dir), GGZ Server Tools, Top
 @chapter Server Maintaining
-@c @cindex Index entry for Seventh Chapter
+@c @cindex Index entry for Eighth Chapter
 
 @section Security
 
@@ -497,7 +560,7 @@ flooding or similar.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.5 installation if one doesn't have
+These instructions apply to a vanilla 0.0.6 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 
@@ -506,12 +569,12 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.5
-cd ggz-0.0.5
+mkdir ggz-0.0.6
+cd ggz-0.0.6
 export CVSROOT=:pserver:anonymous \
 	@cvs.ggz.sourceforge.net:/cvsroot/ggz
 cvs login
-cvs -z3 co -rGGZ_0_0_5_RELEASE libggz ggzd
+cvs -z3 co -rggz-0-0-6 libggz ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
