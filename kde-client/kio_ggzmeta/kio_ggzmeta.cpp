@@ -19,7 +19,7 @@
 GGZMetaProtocol *me;
 
 GGZMetaProtocol::GGZMetaProtocol(const QCString& pool, const QCString& app)
-: SlaveBase("ggzmeta", pool, app)
+: QObject(), SlaveBase("ggzmeta", pool, app)
 {
 	m_sock = NULL;
 	me = this;
@@ -91,27 +91,45 @@ void GGZMetaProtocol::slotRead()
 	QDomNode node;
 	QDomElement element;
 	QString pref;
+	QStringList list;
+	QString host, hostname;
 
 	debug("ggz -> slotRead");
-	rdata = m_sock->readLine();
-	rdata.truncate(rdata.length() - 1);
-	 
-	dom.setContent(rdata);
-	node = dom.documentElement().firstChild();
-	while(!node.isNull())
+
+	if(m_class == "crossfire")
 	{
-		element = node.toElement();
-		if(!element.firstChild().isNull())
+// 131.246.89.16|38|bratwurst.unix-ag.uni-kl.de|0|1.0.0-07-30|Running CVS of 2001-09-06|151725|3503971|51698
+		while(m_sock->bytesAvailable())
 		{
-			element = element.firstChild().toElement();
-			pref = element.attribute("preference", "20");
-			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1);
-			listEntry(entry, false);
+			rdata = m_sock->readLine();
+			list = list.split('|', rdata);
+			host = *(list.at(0));
+			hostname = *(list.at(1));
+			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(hostname), 1);
 		}
-		node = node.nextSibling();
 	}
-	listEntry(entry, true);
-	finished();
+	else
+	{
+		rdata = m_sock->readLine();
+		rdata.truncate(rdata.length() - 1);
+	 
+		dom.setContent(rdata);
+		node = dom.documentElement().firstChild();
+		while(!node.isNull())
+		{
+			element = node.toElement();
+			if(!element.firstChild().isNull())
+			{
+				element = element.firstChild().toElement();
+				pref = element.attribute("preference", "20");
+				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1);
+				listEntry(entry, false);
+			}
+			node = node.nextSibling();
+		}
+		listEntry(entry, true);
+		finished();
+	}
 
 	delete m_sock;
 
@@ -151,6 +169,12 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 			KIO::NetAccess::removeTempFile(tmp);
 		}
 		else error(0, QString("Couldn't process atlantik query: %1").arg(query));
+	}
+	else if(queryclass == "crossfire")
+	{
+		m_sock = new QSocket();
+		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+		m_sock->connectToHost("crossfire.real-time.com", 13326);
 	}
 	else
 	{
@@ -205,6 +229,8 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 		QDomDocument dom;
 		QDomNode node;
 		QDomElement element;
+
+		debug("*** delegation: atlantik ***");
 		// ... (there is nothing yet except <monopigator></monopigator>)
 		finished();
 	}

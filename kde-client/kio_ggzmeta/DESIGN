@@ -21,7 +21,7 @@
  and b) registered as delegate in order to force the ggzmeta:// protocol to not
  use the GGZ Meta Server.
  The list of delegates does currently only consist of 'freeciv' and 'atlantik'
- (non-GGZ version).
+ (non-GGZ version), and the 'crossfire' game.
 
  3) FreeCiv
  Just issue something like ggzmeta://freeciv/ to get a list of current
@@ -37,6 +37,15 @@
  (The URL is: http://gator.monopd.net)
  IMO Atlantik doesn't support a host and port argument yet, so this should be
  fixed.
+
+ 5) Crossfire
+ See http://cross-fire.realtime.com/metaserver/ for a list of current servers.
+ The data does however come from port 13326, single fields separated by a bar.
+ Example:
+ 131.246.89.16|38|bratwurst.unix-ag.uni-kl.de|0|1.0.0-07-30|Running CVS of
+ 2001-09-06|151725|3503971|51698
+ It can be launched based on this data:
+ cfclient -server $host
 
  Josef
 
