@@ -320,15 +320,11 @@ char *KGGZChat::plaintext(const char *text)
 			strcat(ret, "&gt;");
 			j += 4;
 		}
-		else if(text[i] == ' ')
+		else if((text[i] == ' ') && (i < 60))
 		{
 			// quick hack
-			if(i < 60)
-			{
-				strcat(ret, "&nbsp;");
-				j += 6;
-			}
-			else j++;
+			strcat(ret, "&nbsp;");
+			j += 6;
 		}
 		else
 		{
