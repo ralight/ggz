@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4081 2002-04-25 21:23:26Z jdorje $
+ * $Id: common.c 4082 2002-04-26 04:34:13Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -485,7 +485,8 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (game.state > STATE_WAITFORPLAYERS)
 		net_send_newgame(player);
 
-	/* send all table info to joiner */
+	/* Send all table info to joiner.  This will also make any new
+	   options requests, if necessary. */
 	send_sync(player);
 
 	/* We send player list to everyone.  This used to skip over the
@@ -499,11 +500,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	    !(game.state == STATE_WAITFORPLAYERS
 	      && game.saved_state == STATE_NOTPLAYING))
 		send_player_message_toall(seat);
-
-	/* If we have not know what type of game to play, and this
-	   is the first player joining, request the type of game. */
-	if (player == game.host && game.data == NULL)
-		request_client_gametype();
 
 	if (seats_full()
 	    && game.data != NULL) {
