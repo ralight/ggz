@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 6827 2005-01-23 09:04:26Z jdorje $
+ * $Id: easysock.c 6978 2005-03-11 07:11:26Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -225,6 +225,12 @@ int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port,
 	return sock;
 }
 
+/* A fallback SUN_LEN (this macro isn't entirely portable).  Taken from
+ * the GNU C library. */
+#ifndef SUN_LEN
+#  define SUN_LEN(ptr) \
+  ((size_t) (((struct sockaddr_un *) 0)->sun_path) + strlen((ptr)->sun_path))
+#endif
 
 int ggz_make_unix_socket(const GGZSockType type, const char* name) 
 {
