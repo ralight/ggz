@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3404 2002-02-17 15:16:39Z jdorje $
+ * $Id: dlg_main.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -267,9 +267,6 @@ GtkWidget *create_dlg_main(void)
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
 				  GTK_SIGNAL_FUNC(on_fixed1_button_press_event),
-				  NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "expose_event",
-				  GTK_SIGNAL_FUNC(on_fixed1_expose_event),
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
 				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),

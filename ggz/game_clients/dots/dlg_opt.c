@@ -37,6 +37,7 @@
 #include "cb_opt.h"
 #include "dlg_opt.h"
 #include "support.h"
+#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_opt (void)
@@ -56,7 +57,7 @@ create_dlg_opt (void)
 
   dlg_opt = gtk_window_new (GTK_WINDOW_DIALOG);
   gtk_object_set_data (GTK_OBJECT (dlg_opt), "dlg_opt", dlg_opt);
-  gtk_window_set_title (GTK_WINDOW (dlg_opt), "Game Options");
+  gtk_window_set_title (GTK_WINDOW (dlg_opt), _("Game Options"));
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -66,7 +67,7 @@ create_dlg_opt (void)
   gtk_container_add (GTK_CONTAINER (dlg_opt), vbox1);
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 1);
 
-  frame1 = gtk_frame_new ("Number of squares ");
+  frame1 = gtk_frame_new (_("Number of squares "));
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_opt), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -80,7 +81,7 @@ create_dlg_opt (void)
   gtk_widget_show (table1);
   gtk_container_add (GTK_CONTAINER (frame1), table1);
 
-  label2 = gtk_label_new ("Vertical");
+  label2 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_opt), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -111,7 +112,7 @@ create_dlg_opt (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (opt_spin_x), TRUE);
 
-  label1 = gtk_label_new ("Horizontal");
+  label1 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_opt), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);

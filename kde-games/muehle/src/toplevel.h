@@ -55,7 +55,7 @@ class Toplevel : public KMainWindow
 	public slots:
 		void slotMenu(int id);
 		void slotStatus(const QString &message);
-		void slotScore(const QString &player, int num, int score);
+		void slotScore(const QString &player, int num, int score, int stones);
 		void slotEnd();
 
 	private:

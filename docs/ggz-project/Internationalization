@@ -1,5 +1,3 @@
-/* This file needs a real update. See below for more unordered thoughts. */
-
 How to internationalize GGZ
 ---------------------------
 
@@ -8,18 +6,14 @@ from America to Europe, from the frosty North to the warm South. In order to
 let everyone participate as easy as possible, translation is probably among the
 most important parts.
 
-This document is neither complete nor do I have a plan how to complete it - but
-it contains some usefule ideas which some people have assembled over the past
-months.
+GGZ-KDE-Client: To update the message catalog, type 'make messages' in the
+kde-client/ggz-kde/po directory.
+This is now a po/ directory in the root directory of the CVS module. This is
+used for all apps beside kggz.
 
-GGZ-KDE-Client: We have KGGZ internationalized under kde-client/ggz-kde/po, all
-other apps are not yet i18n'd. Whenever you plan an translation update, please
-call "make messages-update" in this directory first. Before that, please make
-sure you call "make messages" in the following order:
-1. in src/widgets/
-2. in src/
 If a language hasn't been created yet, you only need to copy kggz.pot to
-<cc>.po, and add it to po/Makefile.am.
+<cc>.po, and add it to po/Makefile.am. The same applies for all other .pot
+files as well.
 
 GGZ-Gtk-Games: This is very easy. Every game and every language form a matrix.
 Please have a look at po/*, it should be self-explanatory. If you write a new
@@ -33,8 +27,13 @@ process is nearly the same as with GGZ-Gtk-Games, but it is already sufficient
 to copy a .po file in there. Very easy.
 
 Both Gtk modules are now designed to not touch the translations at all, so
-don't forget to run a "make messages" in their po directories (as opposed to
+don't forget to run a "make messages" in their po directories (just like with
 kggz).
+
+Grubby: This is the first of our apps which uses run-time language switches,
+based on the player it is talking with. It has some interesting i18n stuff in
+it which might be interesting for other areas too, for example once we start to
+internationalize the servers.
 
 Documentation: Feel free to translate as you like - we will be thankful for
 every bit! Especially for docs which have yet to be written ;)
@@ -52,12 +51,19 @@ assembled at run time.
 Maybe someone should try out new internationalization techniques here. I wish
 the C interface of gettext would perform perl variable substitution :)
 
-For the next release, it is very important to have an introductory file,
-preferably in HTML format, which tells all about the mainstream focus of GGZ,
-e.g. the games, the chat and so on. This could then placed as a link on the
-various international news sites.
+For the next release, it is very important to have an introductory file in many
+languages, preferably in HTML format, which tells all about the main
+focus of GGZ, e.g. the games, the chat and so on. This could then placed
+as a link on the various international news sites.
+
+Need advice?
+------------
+
+If you want to help out with translation but don't know where to start, please
+ask on the GGZ developers mailing list <ggz-dev@lists.sourceforge.net>.
 
 Josef
 written: 2001-06-02
 updated: 2001-09-09
+updated: 2002-03-20
 

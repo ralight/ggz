@@ -1,0 +1,230 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-03-20 22:01+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../dots/dlg_about.c:54
+msgid "About Connect the Dots"
+msgstr ""
+
+#: ../dots/dlg_about.c:76
+msgid ""
+"Authors:\n"
+"        Gtk+ Client:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"        Windows 9X Client:\n"
+"            Doug Hudson  <djh@users.sourceforge.net>\n"
+"\n"
+"        Game Server:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"Website:\n"
+"        http://ggz.sourceforge.net/"
+msgstr ""
+
+#: ../dots/dlg_main.c:97
+msgid "_Game"
+msgstr ""
+
+#: ../dots/dlg_main.c:115
+msgid "E_xit"
+msgstr ""
+
+#: ../dots/dlg_main.c:126
+msgid "_Settings"
+msgstr ""
+
+#: ../dots/dlg_main.c:144
+msgid "_Preferences"
+msgstr ""
+
+#: ../dots/dlg_main.c:155
+msgid "_Help"
+msgstr ""
+
+#: ../dots/dlg_main.c:174
+msgid "_About"
+msgstr ""
+
+#: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:230
+#: ../dots/main.c:231
+msgid "No Score"
+msgstr ""
+
+#: ../dots/dlg_main.c:229
+msgid "Opponent"
+msgstr ""
+
+#: ../dots/dlg_new.c:58
+msgid "Game Over"
+msgstr ""
+
+#: ../dots/dlg_new.c:73
+msgid "You beat NAME"
+msgstr ""
+
+#: ../dots/dlg_new.c:80
+msgid "SCR to SCR"
+msgstr ""
+
+#: ../dots/dlg_new.c:87
+msgid "Play another game?"
+msgstr ""
+
+#: ../dots/dlg_new.c:108
+msgid "     Yes     "
+msgstr ""
+
+#: ../dots/dlg_new.c:115
+msgid "     No     "
+msgstr ""
+
+#: ../dots/dlg_opt.c:60
+msgid "Game Options"
+msgstr ""
+
+#: ../dots/dlg_opt.c:70
+msgid "Number of squares "
+msgstr ""
+
+#: ../dots/dlg_opt.c:84
+msgid "Vertical"
+msgstr ""
+
+#: ../dots/dlg_opt.c:115
+msgid "Horizontal"
+msgstr ""
+
+#: ../dots/dlg_pref.c:68
+msgid "Dots - Color Preferences"
+msgstr ""
+
+#: ../dots/dlg_pref.c:77
+msgid "Click a colorspot to change"
+msgstr ""
+
+#: ../dots/dlg_pref.c:94
+msgid "Foreground Color"
+msgstr ""
+
+#: ../dots/dlg_pref.c:116
+msgid "Player One Color"
+msgstr ""
+
+#: ../dots/dlg_pref.c:126
+msgid "Player Two Color"
+msgstr ""
+
+#: ../dots/dlg_pref.c:172
+msgid "Background Color"
+msgstr ""
+
+#: ../dots/dlg_pref.c:216
+msgid "OK"
+msgstr ""
+
+#: ../dots/dlg_pref.c:225
+msgid "Apply"
+msgstr ""
+
+#: ../dots/dlg_pref.c:234
+msgid "Cancel"
+msgstr ""
+
+#: ../dots/game.c:189
+msgid "Waiting for server"
+msgstr ""
+
+#: ../dots/game.c:214
+msgid "Wait for your turn to move"
+msgstr ""
+
+#: ../dots/game.c:254 ../dots/game.c:281
+msgid "Lost server connection"
+msgstr ""
+
+#: ../dots/game.c:293
+msgid "Waiting for "
+msgstr ""
+
+#: ../dots/game.c:300
+msgid "Waiting for server response"
+msgstr ""
+
+#: ../dots/game.c:363 ../dots/game.c:366 ../dots/game.c:473 ../dots/game.c:476
+#: ../dots/main.c:360 ../dots/main.c:363
+#, c-format
+msgid "Score = %d"
+msgstr ""
+
+#: ../dots/game.c:519
+msgid "Game Messages"
+msgstr ""
+
+#: ../dots/ggzintl.c:13
+#, c-format
+msgid "nls enabled: %s"
+msgstr ""
+
+#: ../dots/main.c:286
+#, c-format
+msgid "%s joined the table"
+msgstr ""
+
+#: ../dots/main.c:292
+msgid "Empty Seat"
+msgstr ""
+
+#: ../dots/main.c:294
+#, c-format
+msgid "%s left the table"
+msgstr ""
+
+#: ../dots/main.c:325
+msgid "Client cheater!"
+msgstr ""
+
+#: ../dots/main.c:387
+msgid "Game over, you beat "
+msgstr ""
+
+#: ../dots/main.c:391
+msgid "You beat "
+msgstr ""
+
+#: ../dots/main.c:393
+msgid "Game over, "
+msgstr ""
+
+#: ../dots/main.c:394
+msgid " won :("
+msgstr ""
+
+#: ../dots/main.c:397
+msgid "You lost to "
+msgstr ""
+
+#: ../dots/main.c:400
+msgid "Game over, you tied with "
+msgstr ""
+
+#: ../dots/main.c:404
+msgid "You tied with "
+msgstr ""
+
+#: ../dots/main.c:409
+#, c-format
+msgid "%d to %d."
+msgstr ""

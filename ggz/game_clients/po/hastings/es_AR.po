@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-02 05:08+0200\n"
+"POT-Creation-Date: 2002-03-20 22:01+0100\n"
 "PO-Revision-Date: 2001-06-01 18:59BRT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -15,7 +15,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.2alpha\n"
 
-#: ../hastings/dlg_about.c:77
+#: ../hastings/dlg_about.c:81
+#, fuzzy
 msgid ""
 "Authors:\n"
 "        Gtk+ Client:\n"
@@ -25,7 +26,7 @@ msgid ""
 "            Josef Spillner        <dr_maux@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://mindx.sourceforge.net/"
+"        http://ggz.sourceforge.net/games/hastings/"
 msgstr ""
 "Autores:\n"
 "        Client Gtk+:\n"
@@ -37,163 +38,180 @@ msgstr ""
 "Sitio Web:\n"
 "        http://mindx.sourceforge.net/"
 
-#: ../hastings/ggzintl.c:11
-msgid "nls enabled\n"
+#: ../hastings/dlg_yesno.c:60
+msgid "Question"
+msgstr ""
+
+#: ../hastings/dlg_yesno.c:87
+msgid "Yes"
+msgstr ""
+
+#: ../hastings/dlg_yesno.c:95
+msgid "No"
+msgstr ""
+
+#: ../hastings/ggzintl.c:13
+#, fuzzy, c-format
+msgid "nls enabled: %s"
 msgstr "nls habilitado\n"
 
-#: ../hastings/main.c:90
+#: ../hastings/main.c:134
 #, c-format
 msgid "Your move: select a knight (you are number %d)"
-msgstr "Tu jugada: selecciona un cavallare (tu número %d)"
+msgstr "Tu jugada: selecciona un cavallare (tu nmero %d)"
 
-#: ../hastings/main.c:115
+#: ../hastings/main.c:159
 msgid "Getting seat number"
-msgstr "Obteniendo número de lugar"
+msgstr "Obteniendo nmero de lugar"
 
-#: ../hastings/main.c:119
+#: ../hastings/main.c:163
 #, c-format
 msgid "Received seat number: %i"
-msgstr "Número de lugar recivido: %i"
+msgstr "Nmero de lugar recivido: %i"
 
-#: ../hastings/main.c:132
+#: ../hastings/main.c:176
 msgid "Getting player names"
 msgstr "Obteniendo nombre de jugadores"
 
-#: ../hastings/main.c:146
+#: ../hastings/main.c:190
 #, c-format
 msgid "Player %d named: %s"
 msgstr "Jugador %d es: %s"
 
-#: ../hastings/main.c:151
+#: ../hastings/main.c:195
 msgid "Your turn will be soon... have a look at the map in the meantime."
-msgstr "Pronto será tu turno... mientras tanto mira el mapa"
+msgstr "Pronto ser tu turno... mientras tanto mira el mapa"
 
-#: ../hastings/main.c:159
+#: ../hastings/main.c:203
 msgid "Getting opponent's move"
 msgstr "Obteniendo jugada del oponente"
 
-#: ../hastings/main.c:180
+#: ../hastings/main.c:225
 msgid "Requesting synchronization"
-msgstr "Pidiendo sincronización"
+msgstr "Pidiendo sincronizacin"
 
-#: ../hastings/main.c:193
+#: ../hastings/main.c:238
 msgid "Getting re-sync"
-msgstr "Obteniendo re-sincronización"
+msgstr "Obteniendo re-sincronizacin"
 
-#: ../hastings/main.c:197
+#: ../hastings/main.c:242
 #, c-format
 msgid "Player %d's turn"
 msgstr "El jugador %d tiene el turno"
 
-#: ../hastings/main.c:216
+#: ../hastings/main.c:258
 msgid "Sync completed"
-msgstr "Sincronización completada"
+msgstr "Sincronizacin completada"
 
-#: ../hastings/main.c:226
+#: ../hastings/main.c:268
 msgid "Game over"
 msgstr "Juego terminado"
 
-#: ../hastings/main.c:234
+#: ../hastings/main.c:276
 #, c-format
 msgid "Player %d won"
 msgstr "El jugador %d es el ganador"
 
-#: ../hastings/main.c:246
+#: ../hastings/main.c:288
 msgid "Requesting game initialization"
-msgstr "Pidiendo inicialización del juego"
+msgstr "Pidiendo inicializacin del juego"
 
-#: ../hastings/main.c:254
+#: ../hastings/main.c:296
 #, c-format
 msgid "Sending my move: %d/%d to %d/%d"
 msgstr "Enviando jugada: %d/%d para %d/%d"
 
-#: ../hastings/main.c:264
+#: ../hastings/main.c:307
 msgid "My status: I'm waiting (what for? AI players!)"
 msgstr "Mi estado: Estoy esperando (Jugadores robots)"
 
-#: ../hastings/main.c:286
+#: ../hastings/main.c:329
 msgid "Server not ready!!"
 msgstr "El servidor no esta listo "
 
-#: ../hastings/main.c:289
+#: ../hastings/main.c:332
 msgid "Not my turn !!"
 msgstr "No es mi turno"
 
-#: ../hastings/main.c:292
+#: ../hastings/main.c:335
 msgid "Move out of bounds"
-msgstr "Movimento fuera de límite"
+msgstr "Movimento fuera de lmite"
 
-#: ../hastings/main.c:295
+#: ../hastings/main.c:338
 msgid "Nothing to move (erm?)"
 msgstr "Nada para mover (mmm?)"
 
-#: ../hastings/main.c:298
+#: ../hastings/main.c:341
 msgid "Space already occupied"
 msgstr "Espacio ocupado"
 
-#: ../hastings/main.c:301
+#: ../hastings/main.c:344
 msgid "Hey, that is far too far!"
 msgstr "Oye, eso es demasiado lejos!"
 
-#: ../hastings/main.c:304
+#: ../hastings/main.c:347
 msgid "Argh! You should play 'sink the ship' for that purpose!"
-msgstr "Argh!! Deberías jugar al Batalla Naval para ese proposito!"
+msgstr "Argh!! Deberas jugar al Batalla Naval para ese proposito!"
 
-#: ../hastings/main.c:307
+#: ../hastings/main.c:350
 #, c-format
 msgid "Moved knight from %i/%i to %i/%i"
 msgstr "Cavallero modido de %i/%i hacia %i/%i"
 
-#: ../hastings/main_win.c:331
+#: ../hastings/main_win.c:281
+msgid "Do you really want to quit Hastings1066?"
+msgstr ""
+
+#: ../hastings/main_win.c:346
 msgid "Not my turn yet"
-msgstr "Todavía no es mi turno"
+msgstr "Todava no es mi turno"
 
-#: ../hastings/main_win.c:355
+#: ../hastings/main_win.c:370
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
-msgstr "¿Buscando submarinos? Todavía no estan inventados (Es el año 1066)"
+msgstr "Buscando submarinos? Todava no estan inventados (Es el ao 1066)"
 
-#: ../hastings/main_win.c:360
+#: ../hastings/main_win.c:375
 msgid "I can't see anyone here. Can you?"
-msgstr "No puedo ver más aca. ¿Vos podes?"
+msgstr "No puedo ver ms aca. Vos podes?"
 
-#: ../hastings/main_win.c:365
+#: ../hastings/main_win.c:380
 #, c-format
 msgid "Don't cheat! That's not yours! You are number %i, this is %i."
 msgstr ""
-"¡No hagas trampa! Es no es tuyo. Vos tenes el número %i, y este es  el %i"
+"No hagas trampa! Es no es tuyo. Vos tenes el nmero %i, y este es  el %i"
 
-#: ../hastings/main_win.c:371
+#: ../hastings/main_win.c:386
 msgid "Where shall I go?"
-msgstr "¿A dónde debo ir?"
+msgstr "A dnde debo ir?"
 
-#: ../hastings/main_win.c:409
+#: ../hastings/main_win.c:423
 msgid "Hastings1066"
 msgstr "Hastings1066"
 
-#: ../hastings/main_win.c:428
+#: ../hastings/main_win.c:442
 msgid "_Game"
 msgstr "_Juego"
 
-#: ../hastings/main_win.c:446
+#: ../hastings/main_win.c:460
 msgid "Re_sync"
 msgstr "Re_sincronizar"
 
-#: ../hastings/main_win.c:457
+#: ../hastings/main_win.c:471
 msgid "E_xit"
 msgstr "Sal_ir"
 
-#: ../hastings/main_win.c:468
+#: ../hastings/main_win.c:482
 msgid "_Help"
 msgstr "A_yuda"
 
-#: ../hastings/main_win.c:487
+#: ../hastings/main_win.c:501
 msgid "_About"
 msgstr "_Acerca"
 
 #: ../hastings/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "No se encontró el pixmap: %s"
+msgstr "No se encontr el pixmap: %s"
 
 #: ../hastings/support.c:127
 #, c-format

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3376 2002-02-17 02:05:13Z jdorje $
+ * $Id: animation.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -388,7 +388,7 @@ static gint animation_callback(gpointer ignored)
 	/* Now draw from the animation buffer to the screen.  This could
 	   probably be done more easily if we just drew the _whole screen_,
 	   but that could have bad side effects. */
-	gdk_draw_pixmap(table->window,
+	gdk_draw_pixmap(table_drawing_area->window,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
 			anim_buf,
 			min_x, min_y,
@@ -439,7 +439,7 @@ void animation_stop(int success)
 		if (!anim[player].animating)
 			continue;
 	
-		table_draw_table(table->window,
+		table_draw_table(NULL,
 				 anim[player].cur_x, anim[player].cur_y,
 				 CARDWIDTH, CARDHEIGHT);
 				

@@ -36,6 +36,7 @@
 
 #include "dlg_about.h"
 #include "support.h"
+#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_about (void)
@@ -50,7 +51,7 @@ create_dlg_about (void)
 
   dlg_about = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dlg_about", dlg_about);
-  gtk_window_set_title (GTK_WINDOW (dlg_about), "About Connect the Dots");
+  gtk_window_set_title (GTK_WINDOW (dlg_about), _("About Connect the Dots"));
   GTK_WINDOW (dlg_about)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_about), TRUE, TRUE, FALSE);
 
@@ -72,7 +73,7 @@ create_dlg_about (void)
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (vbox1), label3, FALSE, FALSE, 0);
 
-  label4 = gtk_label_new ("Authors:\n        Gtk+ Client:\n            Rich Gade        <rgade@users.sourceforge.net>\n\n        Windows 9X Client:\n            Doug Hudson  <djh@users.sourceforge.net>\n\n        Game Server:\n            Rich Gade        <rgade@users.sourceforge.net>\n\nWebsite:\n        http://ggz.sourceforge.net/");
+  label4 = gtk_label_new (_("Authors:\n        Gtk+ Client:\n            Rich Gade        <rgade@users.sourceforge.net>\n\n        Windows 9X Client:\n            Doug Hudson  <djh@users.sourceforge.net>\n\n        Game Server:\n            Rich Gade        <rgade@users.sourceforge.net>\n\nWebsite:\n        http://ggz.sourceforge.net/"));
   gtk_widget_ref (label4);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);

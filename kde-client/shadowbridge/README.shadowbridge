@@ -1,0 +1,28 @@
+ShadowBridge - Graphical GGZ game debugging and development tool
+================================================================
+
+If you're a developer you might be interested in this, otherwise
+probably not :)
+
+Instead of launching a game on the client side, use this program
+(i.e. set CommandLine=/usr/local/bin/shadowbridge).
+
+From there you can then launch several games (although mostly only
+one makes sense), and at a point you decide to start the game. Only
+one game can be active, it receives all incoming traffic, and produces
+all outgoing traffic.
+
+GGZ games should automatically be recognized (together with their frontend),
+other programs can individually be added including their fd for read and
+write operations, which makes ShadowBridge a graphical equivalent of the
+ggzwrap tool.
+
+If you really really really want to be uberl33t, you can even put some
+ShadowBridge's into a chain, producing some weird results :-)
+You will have to press the 'start' button for each shadow bridge then.
+
+Josef
+
+(And the question is why this is indeed a shadow bridge and not a
+simple TCP/IP one...)
+

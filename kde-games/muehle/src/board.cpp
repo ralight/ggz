@@ -60,6 +60,7 @@ Board::Board(QWidget *parent, const char *name)
 	m_wait = 0;
 	m_whitescore = 0;
 	m_blackscore = 0;
+	m_phase = phasestart;
 
 	web = NULL;
 	setVariant("classic");
@@ -265,7 +266,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 				stonelist.remove(stone);
 				m_take = 0;
 				m_turn = 0;
-				emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+				emit signalStatus(i18n("Opponent's turn"));
 
 				if(net) net->output(QString("[%1,%1].").arg(x).arg(y));
 
@@ -281,33 +282,49 @@ void Board::mousePressEvent(QMouseEvent *e)
 		// If click on stone, change it
 		if(stone)
 		{
-			if(m_color == colorwhite)
+			if(m_phase == phasemove)
 			{
-				if((stone->owner() == Stone::white) && (!active))
-					stone->assign(Stone::whiteactive);
-				else if(stone->owner() == Stone::whiteactive)
-					stone->assign(Stone::white);
+				if(m_color == colorwhite)
+				{
+					if((stone->owner() == Stone::white) && (!active))
+						stone->assign(Stone::whiteactive);
+					else if(stone->owner() == Stone::whiteactive)
+						stone->assign(Stone::white);
+				}
+				else if(m_color == colorblack)
+				{
+					if((stone->owner() == Stone::black) && (!active))
+						stone->assign(Stone::blackactive);
+					else if(stone->owner() == Stone::blackactive)
+						stone->assign(Stone::black);
+				}
 			}
-			else if(m_color == colorblack)
-			{
-				if((stone->owner() == Stone::black) && (!active))
-					stone->assign(Stone::blackactive);
-				else if(stone->owner() == Stone::blackactive)
-					stone->assign(Stone::black);
-			}
+			else KMessageBox::sorry(this, i18n("Moves aren't allowed while placing the stones initially"), i18n("Client message"));
 		}
 		else
 		{
 			// If click on empty field, fill it
-			if((count < 9) || (astone))
+			if((((m_color == colorwhite) && (m_whitestones))
+			|| ((m_color == colorblack) && (m_blackstones)))
+			|| (astone))
 			{
 				stone = new Stone();
 				stone->move(x, y);
 				if(m_color == colorwhite)
+				{
 					stone->assign(Stone::white);
+					if(m_phase == phaseset) m_whitestones--;
+					if((!m_whitestones) && (m_color == colorwhite)) m_phase = phasemove;
+				}
 				else if(m_color == colorblack)
+				{
 					stone->assign(Stone::black);
+					if(m_phase == phaseset) m_blackstones--;
+					if((!m_blackstones) && (m_color == colorblack)) m_phase = phasemove;
+				}
 				stonelist.append(stone);
+
+				updateStatus();
 
 				if(astone)
 				{
@@ -316,7 +333,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 						// Move a stone
 						net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
 						m_turn = 0;
-						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+						emit signalStatus(i18n("Opponent's turn"));
 					}
 					stonelist.remove(astone);
 				}
@@ -327,14 +344,20 @@ void Board::mousePressEvent(QMouseEvent *e)
 						// Place a new stone
 						net->output(QString("[%1,%2].").arg(x).arg(y));
 						m_turn = 0;
-						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+						emit signalStatus(i18n("Opponent's turn"));
 					}
 				}
 			}
 			else
 			{
 				// FIXME: this is a pseudo win situation
-				emit signalEnd();
+				//emit signalEnd();
+				if(m_phase == phaseset)
+				{
+					m_phase = phasemove;
+					KMessageBox::information(this, i18n("You must now move your stones."), i18n("Client message"));
+				}
+				return;
 			}
 		}
 
@@ -350,6 +373,7 @@ void Board::check(int x, int y, Stone *stone)
 	int xrow, yrow, xrows, yrows;
 	int color;
 
+kdDebug(12101) << "scen 1.2" << endl;
 	// Check for turn-win situation (muehle)
 	xrow = x;
 	yrow = y;
@@ -357,6 +381,7 @@ void Board::check(int x, int y, Stone *stone)
 	yrows = 0;
 	pointlist = web->pointlist();
 	QWebPoint *xp;
+kdDebug(12101) << "scen 1.2.5" << endl;
 	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		if((p->point().x() == x) && (p->point().y() == y)) xp = p;
 	peerlist = xp->peerlist();
@@ -368,6 +393,7 @@ void Board::check(int x, int y, Stone *stone)
 	path = new QWebPath(web, xp);
 	path->create(2);
 	pointlist = path->pathlist();
+
 
 	// Look for longest stones-in-a-row
 	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
@@ -406,33 +432,45 @@ void Board::check(int x, int y, Stone *stone)
 		if(((m_color == colorwhite) && (stone->owner() == Stone::whitemuehle))
 		|| ((m_color == colorblack) && (stone->owner() == Stone::blackmuehle)))
 		{
-			emit signalScore(i18n("Take a stone from your opponent"), Toplevel::statushint, 0);
+			emit signalStatus(i18n("Take a stone from your opponent"));
 			m_turn = 1;
 			m_take = 1;
 			kdDebug(12101) << "TAKE" << endl;
 		}
 		else
 		{
-			emit signalScore(i18n("Waiting for opponent's action"), Toplevel::statushint, 0);
+			emit signalStatus(i18n("Waiting for opponent's action"));
 			m_turn = 0;
 			m_wait = 1;
 			kdDebug(12101) << "GIVE" << endl;
 		}
 
-		if(stone->owner() == Stone::whitemuehle)
+		/*if(stone->owner() == Stone::whitemuehle)
 		{
 			if(m_color == colorwhite)
-				emit signalScore(i18n("White"), Toplevel::statusplayer, ++m_whitescore);
+				emit signalScore(i18n("White"), Toplevel::statusplayer, ++m_whitescore, m_whitestones);
 			else
-				emit signalScore(i18n("White"), Toplevel::statusopponent, ++m_whitescore);
+				emit signalScore(i18n("White"), Toplevel::statusopponent, ++m_whitescore, m_whitestones);
 		}
 		else
 		{
 			if(m_color == colorwhite)
-				emit signalScore(i18n("Black"), Toplevel::statusopponent, ++m_blackscore);
+				emit signalScore(i18n("Black"), Toplevel::statusopponent, ++m_blackscore, m_blackstones);
 			else
-				emit signalScore(i18n("Black"), Toplevel::statusplayer, ++m_blackscore);
+				emit signalScore(i18n("Black"), Toplevel::statusplayer, ++m_blackscore, m_blackstones);
+		}*/
+		if(stone->owner() == Stone::whitemuehle) m_whitescore++;
+		else if(stone->owner() == Stone::blackmuehle) m_blackscore++;
+
+		if(((m_color == colorwhite) && (m_whitescore == 6))
+		|| ((m_color == colorblack) && (m_blackscore == 6)))
+		{
+			net->output("gameover.");
+			KMessageBox::information(this, i18n("You have won the game!"), i18n("Client message"));
+			m_turn = -1;
+			emit signalEnd();
 		}
+		updateStatus();
 	}
 
 	delete path;
@@ -535,9 +573,9 @@ void Board::enableNetwork(bool enabled)
 
 	if(!enabled)
 	{
-		emit signalScore(i18n("You"), Toplevel::statusplayer, 0);
-		emit signalScore(i18n("AI"), Toplevel::statusopponent, 0);
-		emit signalScore(i18n("Good luck."), Toplevel::statushint, 0);
+		emit signalScore(i18n("You"), Toplevel::statusplayer, 0, 9);
+		emit signalScore(i18n("AI"), Toplevel::statusopponent, 0, 9);
+		emit signalStatus(i18n("Good luck."));
 
 		init();
 	}
@@ -561,7 +599,7 @@ void Board::slotInput()
 	QString s;
 	int error;
 	int ret;
-	int x, y;
+	int x, y, x2, y2;
 
 	error = 0;
 
@@ -573,18 +611,22 @@ void Board::slotInput()
 		m_color = colorwhite;
 		KMessageBox::information(this, i18n("Your turn, you play with the white stones."), i18n("Server message"));
 		m_turn = 1;
-		signalScore(i18n("White"), Toplevel::statusplayer, 0);
-		signalScore(i18n("Black"), Toplevel::statusopponent, 0);
-		signalScore(i18n("Your turn"), Toplevel::statushint, 0);
+		m_phase = phaseset;
+		m_whitestones = 9;
+		m_blackstones = 9;
+		signalStatus(i18n("Your turn"));
+		updateStatus();
 	}
 	else if((s == "black.") && (m_color == colornone))
 	{
 		m_color = colorblack;
 		KMessageBox::information(this, i18n("You play with the black stones, but wait for your opponent first."), i18n("Server message"));
 		m_turn = 0;
-		emit signalScore(i18n("Black"), Toplevel::statusplayer, 0);
-		emit signalScore(i18n("White"), Toplevel::statusopponent, 0);
-		emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+		m_phase = phaseset;
+		m_whitestones = 9;
+		m_blackstones = 9;
+		emit signalStatus(i18n("Opponent's turn"));
+		updateStatus();
 	}
 	else if((s.left(1) == "[") && (s.right(2) == "].") && (m_color != colornone) && ((!m_turn) || (m_wait)))
 	{
@@ -592,6 +634,12 @@ void Board::slotInput()
 		Stone *stone;
 
 		l = l.split(",", s.mid(1, s.length() - 3));
+		if(l.count() < 2)
+		{
+			kdDebug(12101) << "Wrong input data!" << endl;
+			return;
+		}
+
 		kdDebug(12101) << "Parts: " << l.count() << " in " << s.mid(1, s.length() - 3) << endl;
 
 		x = (*(l.at(0))).toInt();
@@ -605,10 +653,17 @@ void Board::slotInput()
 					stone = new Stone();
 					stone->move(x, y);
 					if(m_color == colorwhite)
+					{
 						stone->assign(Stone::black);
+						m_blackstones--;
+					}
 					else if(m_color == colorblack)
+					{
 						stone->assign(Stone::white);
+						m_whitestones--;
+					}
 					stonelist.append(stone);
+					updateStatus();
 
 					check(x, y, stone);
 				}
@@ -620,15 +675,24 @@ void Board::slotInput()
 					m_wait = 0;
 					resetStones();
 					repaint();
-					kdDebug(12101) << "GAVE" << endl;
 				}
 				if(!m_wait)
 				{
 					m_turn = 1;
-					emit signalScore(i18n("Your turn"), Toplevel::statushint, 0);
+					emit signalStatus(i18n("Your turn"));
 				}
 				break;
 			case 4:
+				x2 = (*(l.at(2))).toInt();
+				y2 = (*(l.at(3))).toInt();
+				for(stone = stonelist.first(); stone; stone = stonelist.next())
+					if((stone->x() == x) && (stone->y() == y))
+					{
+						m_turn = 1;
+						emit signalStatus(i18n("Your turn"));
+						stone->move(x2, y2);
+						check(x2, y2, stone);
+					}
 				break;
 			case 6:
 				break;
@@ -659,9 +723,18 @@ void Board::slotInput()
 	{
 		KMessageBox::sorry(this, i18n("Your opponent refuses to give you remis."), i18n("Opponent message"));
 	}
-	else if((s == "loose.") || (s == "gameover."))
+	else if(s == "loose.")
 	{
-		KMessageBox::information(this, i18n("Your opponent has given up."), i18n("Server message"));
+		if(m_turn != -1)
+		{
+			KMessageBox::information(this, i18n("Your opponent has given up."), i18n("Server message"));
+			m_turn = -1;
+			emit signalEnd();
+		}
+	}
+	else if(s == "gameover.")
+	{
+		KMessageBox::information(this, i18n("Your opponent has won the game! You have lost!"), i18n("Server message"));
 		m_turn = -1;
 		emit signalEnd();
 	}
@@ -680,12 +753,24 @@ void Board::resetStones()
 	// Reset the muehle to normal colors
 	for(Stone *s = stonelist.first(); s; s = stonelist.next())
 	{
-		//if(m_color == colorwhite)
-			if(s->owner() == Stone::whitemuehle)
-				s->assign(Stone::white);
-		//if(m_color == colorblack)
-			if(s->owner() == Stone::blackmuehle)
-				s->assign(Stone::black);
+		if(s->owner() == Stone::whitemuehle)
+			s->assign(Stone::white);
+		if(s->owner() == Stone::blackmuehle)
+			s->assign(Stone::black);
+	}
+}
+
+void Board::updateStatus()
+{
+	if(m_color == colorblack)
+	{
+		emit signalScore(i18n("Black"), Toplevel::statusplayer, m_blackscore, m_blackstones);
+		emit signalScore(i18n("White"), Toplevel::statusopponent, m_whitescore, m_whitestones);
+	}
+	else if(m_color == colorwhite)
+	{
+		emit signalScore(i18n("Black"), Toplevel::statusopponent, m_blackscore, m_blackstones);
+		emit signalScore(i18n("White"), Toplevel::statusplayer, m_whitescore, m_whitestones);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 3555 2002-03-15 14:39:37Z jdorje $
+ * $Id: cb_main.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -130,8 +130,8 @@ gboolean on_fixed1_button_press_event(GtkWidget * widget,
 }
 
 
-gboolean on_fixed1_expose_event(GtkWidget * widget, GdkEventExpose * event,
-				gpointer user_data)
+gboolean on_table_expose_event(GtkWidget *widget, GdkEventExpose *event,
+                               gpointer user_data)
 {
 	table_handle_expose_event(event);
 

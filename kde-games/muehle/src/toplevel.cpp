@@ -101,7 +101,8 @@ Toplevel::Toplevel()
 
 	connect(board, SIGNAL(signalEnd()), SLOT(slotEnd()));
 	connect(board, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
-	connect(board, SIGNAL(signalScore(const QString &, int, int)), SLOT(slotScore(const QString &, int, int)));
+	connect(board, SIGNAL(signalScore(const QString &, int, int, int)),
+		SLOT(slotScore(const QString &, int, int, int)));
 
 	resize(600, 620);
 }
@@ -147,12 +148,12 @@ void Toplevel::slotStatus(const QString &message)
 }
 
 // Update the scores in the status bar
-void Toplevel::slotScore(const QString &player, int num, int score)
+void Toplevel::slotScore(const QString &player, int num, int score, int stones)
 {
-	if(num != statushint)
-		statusBar()->changeItem(QString("%1: %1").arg(player).arg(score), num);
+	if(stones)
+		statusBar()->changeItem(QString("%1: %1 points, %1 stones left").arg(player).arg(score).arg(stones), num);
 	else
-		statusBar()->changeItem(QString("%1").arg(player), num);
+		statusBar()->changeItem(QString("%1: %1 points").arg(player).arg(score), num);
 }
 
 // Turn the game client into a network game interface

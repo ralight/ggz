@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-02 13:10-0300\n"
+"POT-Creation-Date: 2002-03-20 22:01+0100\n"
 "PO-Revision-Date: 2001-06-01 18:59BRT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -15,79 +15,79 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.2alpha\n"
 
-#: ../tictactoe/main.c:90
+#: ../tictactoe/main.c:98
 msgid "Your move"
-msgstr "Tú movida"
+msgstr "T movida"
 
-#: ../tictactoe/main.c:119
+#: ../tictactoe/main.c:127
 msgid "Getting seat number"
-msgstr "Obteniendo número de lugar"
+msgstr "Obteniendo nmero de lugar"
 
-#: ../tictactoe/main.c:132
+#: ../tictactoe/main.c:140
 msgid "Getting player names"
 msgstr "Obteniendo nombre de jugadores"
 
-#: ../tictactoe/main.c:152
+#: ../tictactoe/main.c:160
 msgid "Getting opponent's move"
 msgstr "Obteniendo jugada del oponente"
 
-#: ../tictactoe/main.c:169
+#: ../tictactoe/main.c:177
 msgid "Getting re-sync"
-msgstr "Obteniendo re-sincronización"
+msgstr "Obteniendo re-sincronizacin"
 
-#: ../tictactoe/main.c:174
+#: ../tictactoe/main.c:182
 #, c-format
 msgid "Player %d's turn"
 msgstr "El jugador %d tiene el turno"
 
-#: ../tictactoe/main.c:179
+#: ../tictactoe/main.c:187
 #, c-format
 msgid "Read a %d "
-msgstr "Se leyó un %d"
+msgstr "Se ley un %d"
 
-#: ../tictactoe/main.c:184
+#: ../tictactoe/main.c:192
 msgid "Sync completed"
-msgstr "Sincronización completada"
+msgstr "Sincronizacin completada"
 
-#: ../tictactoe/main.c:193
+#: ../tictactoe/main.c:201
 msgid "Game over"
 msgstr "Juego terminado"
 
-#: ../tictactoe/main.c:201
+#: ../tictactoe/main.c:209
 #, c-format
 msgid "Player %d won"
 msgstr "El jugador %d es el ganador"
 
-#: ../tictactoe/main.c:204
+#: ../tictactoe/main.c:212
 msgid "Tie game!"
-msgstr "¡Juego empatado!"
+msgstr "Juego empatado!"
 
-#: ../tictactoe/main.c:225
+#: ../tictactoe/main.c:233
 #, c-format
 msgid "Sending my move: %d"
 msgstr "Enviando jugada: %d"
 
-#: ../tictactoe/main.c:237
+#: ../tictactoe/main.c:245
 msgid "Sending NULL options"
 msgstr "Enviando opciones NULL"
 
-#: ../tictactoe/main.c:251
+#: ../tictactoe/main.c:259
 msgid "Server not ready!!"
 msgstr "El servidor no esta listo "
 
-#: ../tictactoe/main.c:254
+#: ../tictactoe/main.c:262
 msgid "Not my turn !!"
 msgstr "No es mi turno"
 
-#: ../tictactoe/main.c:257
+#: ../tictactoe/main.c:265
 msgid "Move out of bounds"
-msgstr "Movimento fuera de límite"
+msgstr "Movimento fuera de lmite"
 
-#: ../tictactoe/main.c:260
+#: ../tictactoe/main.c:268
 msgid "Space already occupied"
 msgstr "Espacio ocupado"
 
-#: ../tictactoe/main.c:263
+#: ../tictactoe/main.c:271
 msgid "Move OK"
 msgstr "Movida OK"
 
@@ -118,7 +118,7 @@ msgstr "_Acerca"
 #: ../tictactoe/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "No se encontró el pixmap: %s"
+msgstr "No se encontr el pixmap: %s"
 
 #: ../tictactoe/support.c:127
 #, c-format

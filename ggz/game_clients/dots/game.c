@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 3385 2002-02-17 08:36:07Z jdorje $
+ * $Id: game.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include "support.h"
 #include "main.h"
 #include "game.h"
+#include "ggzintl.h"
 
 guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
@@ -185,7 +186,7 @@ void board_init(guint8 width, guint8 height)
 	game.move = -1;
 
 
-	statusbar_message("Waiting for server");
+	statusbar_message(_("Waiting for server"));
 }
 
 
@@ -210,7 +211,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	gchar *tstr;
 
 	if(game.state != DOTS_STATE_MOVE) {
-		statusbar_message("Wait for your turn to move");
+		statusbar_message(_("Wait for your turn to move"));
 		return;
 	}
 
@@ -250,7 +251,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		if(ggz_write_int(game.fd, DOTS_SND_MOVE_V) < 0
 		   || ggz_write_char(game.fd, line_x) < 0
 		   || ggz_write_char(game.fd, top) < 0) {
-			ggz_error_msg("Lost server connection");
+			ggz_error_msg(_("Lost server connection"));
 			exit(1);
 		}
 	} else {
@@ -277,7 +278,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		if(ggz_write_int(game.fd, DOTS_SND_MOVE_H) < 0
 		   || ggz_write_char(game.fd, left) < 0
 		   || ggz_write_char(game.fd, line_y) < 0) {
-			ggz_error_msg("Lost server connection");
+			ggz_error_msg(_("Lost server connection"));
 			exit(1);
 		}
 	}
@@ -289,14 +290,14 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	gtk_widget_draw(widget, &update_rect);
 
 	if(result <= 0) {
-		tstr = g_strconcat("Waiting for ",
+		tstr = g_strconcat(_("Waiting for "),
 				   game.names[game.opponent], "...", NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
 		game.move = game.opponent;
 		game.state = DOTS_STATE_OPPONENT;
 	} else {
-		statusbar_message("Waiting for server response");
+		statusbar_message(_("Waiting for server response"));
 		game.state = DOTS_STATE_WAIT;
 	}
 }
@@ -359,10 +360,10 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
                 game.score[(int)game.move] += result;
                 l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
                 l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
-                text = g_strdup_printf("Score = %d", game.score[0]);
+                text = g_strdup_printf(_("Score = %d"), game.score[0]);
                 gtk_label_set_text(GTK_LABEL(l1), text);
                 g_free(text);
-                text = g_strdup_printf("Score = %d", game.score[1]);
+                text = g_strdup_printf(_("Score = %d"), game.score[1]);
                 gtk_label_set_text(GTK_LABEL(l2), text);
                 g_free(text);
 	}
@@ -469,10 +470,10 @@ gint8 board_opponent_move(guint8 dir)
                 game.score[(int)game.move] += result;
                 l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
                 l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
-                text = g_strdup_printf("Score = %d", game.score[0]);
+                text = g_strdup_printf(_("Score = %d"), game.score[0]);
                 gtk_label_set_text(GTK_LABEL(l1), text);
                 g_free(text);
-                text = g_strdup_printf("Score = %d", game.score[1]);
+                text = g_strdup_printf(_("Score = %d"), game.score[1]);
                 gtk_label_set_text(GTK_LABEL(l2), text);
                 g_free(text);
 	}
@@ -515,7 +516,7 @@ void statusbar_message(char *msg)
 	if(statusbar == NULL) {
 		statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
 		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
-						  "Game Messages");
+						  _("Game Messages"));
 	}
 
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), sb_context);

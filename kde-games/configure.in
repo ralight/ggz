@@ -50,6 +50,7 @@ AC_OUTPUT(Makefile
 	muehle/Makefile
 	muehle/module.dsc
 	muehle/src/Makefile
+	muehle/src/ai/Makefile
 	muehle/src/ggzwrap/Makefile
 	muehle/pics/Makefile
 	muehle/pics/standard/Makefile
@@ -59,7 +60,8 @@ AC_OUTPUT(Makefile
 	keepalive/Makefile
 	keepalive/module.dsc
 	keepalive/src/Makefile
-	keepalive/pics/Makefile)
+	keepalive/pics/Makefile
+	man/Makefile)
 
 dnl Report success
 dnl ==============

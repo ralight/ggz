@@ -7,6 +7,8 @@ In order to raise the quality of both source and binary packages,
 CVS modules (which mostly represent packages) should follow some
 rules.
 
+Documentation
+-------------
 A common directory called "man" which contains man pages should be present.
 Build sources for both Debian and RPM backages, most likely in the form
 of a "debian" subdirectory and a "<packagename>.spec" file, enable that
@@ -15,7 +17,18 @@ these packages can be built on-the-fly.
 Documentation should not be contained in the modules themselves, because
 we have a documentation module. However, small texts and such can of course
 be included.
+If you add README files, it is very convenient to name them README.<project>,
+like README.telggz.
+In addition, each package must come with contact information, at least the GGZ
+development mailinglist <ggz-dev@lists.sourceforge.net> should be mentioned
+prominently, but also the individual authors (for bug reporting purtpose) and
+on the server side maybe the ggz-servers mailing list.
 
+Some parts of the documentation also belongs online. For example, you find the
+API docs under http://ggz.sourceforge.net/api.
+
+Sources and configuration
+-------------------------
 Sources should be used in a shared way. For example, the M4 macros to detect
 the GGZ libraries and tools, or the i18n stuff. If there are differences, it
 should be discussed which way to go, or one should find a compromise.
@@ -37,19 +50,19 @@ files inside a module.
 
 Please don't import new modules without asking first. Modules should be
 self-contained, which means they're later used to create the packages. Make
-sure you don't introduce new unnecessary dependencies when importin sources.
+sure you don't introduce new unnecessary dependencies when importing sources.
 
 Please don't include configure's in sub directories, this is known to cause
-problems. It's better to have one configure process per module.
+problems. It's better to have one configure process per CVS module.
 
 Don't feel annoyed by these rules. They can be changed everytime if something
 is odd.
 
 Files to keep synchronized
 --------------------------
-all: README.GGZ (contains general setup information)
+all: README.GGZ (contains general setup information), QuickStart
 all: acinclude.ggz
-kde: acinclude.kde
+kde: acinclude.kde, am_edit
 games: libcgc files, protocol.h
 
 How to determine the setup, directories etc.
@@ -78,4 +91,5 @@ rpm --build (or what it's called)
 Josef
 written: June 8, 2001
 updated: September 9, 2001
+updated: March 20, 2002
 

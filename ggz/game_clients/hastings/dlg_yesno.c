@@ -57,7 +57,7 @@ GtkWidget* create_dlg_yesno(const char *question)
 
   dlg_yesno = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_yesno), "dlg_yesno", dlg_yesno);
-  gtk_window_set_title (GTK_WINDOW (dlg_yesno), "Question");
+  gtk_window_set_title (GTK_WINDOW (dlg_yesno), _("Question"));
   GTK_WINDOW (dlg_yesno)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_yesno), TRUE, TRUE, FALSE);
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: table.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include "client.h"
 
 #include "animation.h"
+#include "cb_main.h"
 #include "dlg_bid.h"
 #include "dlg_main.h"
 #include "dlg_players.h"
@@ -59,6 +60,7 @@ GtkRcStyle *fixed_font_style = NULL;
 
 /* Table data */
 GtkWidget *table = NULL;		/* widget containing the whole table */
+GtkWidget *table_drawing_area = NULL;	/* widget for actually drawing the table on */
 GtkStyle *table_style;		/* Style for the table */
 static GdkPixmap *table_buf = NULL;	/* backing store for the table */
 
@@ -89,15 +91,19 @@ static void table_display_all_hands(int write_to_screen);
 void table_draw_table(GdkPixmap *pixmap,
 		      int x, int y, int w, int h)
 {
+	if (pixmap == NULL)
+		pixmap = table_drawing_area->window;
+		
 	/* Display the buffer */
 	gdk_draw_pixmap(pixmap,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
 			table_buf, x, y, x, y, w, h);
 }
 
+/* FIXME: maybe this function should be dropped... */
 void table_show_table(int x, int y, int w, int h)
 {
-	table_draw_table(table->window, x, y, w, h);
+	table_draw_table(NULL, x, y, w, h);
 }
 
 /* Draw the box around the player text */
@@ -220,8 +226,18 @@ void table_initialize(void)
 				  "for orientation %d.",
 				  i);
 	}
+	
+	table_drawing_area = gtk_drawing_area_new();
+	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
+	                      get_table_width(), get_table_height());
+	gtk_fixed_put(GTK_FIXED(table), table_drawing_area, 0, 0);
+	gtk_widget_show(table_drawing_area);
+	(void) gtk_signal_connect(GTK_OBJECT(table_drawing_area),
+	                          "expose_event",
+	                          GTK_SIGNAL_FUNC(on_table_expose_event),
+	                          NULL);
 
-	assert(table->window);
+	assert(table_drawing_area->window);
 	assert(get_table_width() > 0 && get_table_height > 0);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
@@ -259,6 +275,8 @@ void table_setup(void)
 
 	/* We may need to resize the table */
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
+	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
+	                      get_table_width(), get_table_height());
 
 	/* And resize the table buffer... */
 	/* Note: I'm not entirely sure how reference counts work for gdk.
@@ -478,8 +496,8 @@ void table_redraw(void)
 		table_show_table(0, 0, get_table_width(), get_table_height());
 		
 		/* There has GOT to be a better way to force the redraw! */
-		gdk_window_hide(table->window);
-		gdk_window_show(table->window);
+		gdk_window_hide(table_drawing_area->window);
+		gdk_window_show(table_drawing_area->window);
 	} else {		/* not if (table_ready) */
 		if (table_buf)
 			draw_splash_screen();

@@ -37,6 +37,7 @@
 #include "cb_new.h"
 #include "dlg_new.h"
 #include "support.h"
+#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_new (void)
@@ -54,7 +55,7 @@ create_dlg_new (void)
 
   dlg_new = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_new), "dlg_new", dlg_new);
-  gtk_window_set_title (GTK_WINDOW (dlg_new), "Game Over");
+  gtk_window_set_title (GTK_WINDOW (dlg_new), _("Game Over"));
   GTK_WINDOW (dlg_new)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_new), TRUE, TRUE, FALSE);
 
@@ -69,21 +70,21 @@ create_dlg_new (void)
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, FALSE, FALSE, 0);
 
-  lbl_winner = gtk_label_new ("You beat NAME");
+  lbl_winner = gtk_label_new (_("You beat NAME"));
   gtk_widget_ref (lbl_winner);
   gtk_object_set_data_full (GTK_OBJECT (dlg_new), "lbl_winner", lbl_winner,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lbl_winner);
   gtk_box_pack_start (GTK_BOX (vbox1), lbl_winner, FALSE, FALSE, 0);
 
-  lbl_score = gtk_label_new ("SCR to SCR");
+  lbl_score = gtk_label_new (_("SCR to SCR"));
   gtk_widget_ref (lbl_score);
   gtk_object_set_data_full (GTK_OBJECT (dlg_new), "lbl_score", lbl_score,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lbl_score);
   gtk_box_pack_start (GTK_BOX (vbox1), lbl_score, FALSE, FALSE, 0);
 
-  label3 = gtk_label_new ("Play another game?");
+  label3 = gtk_label_new (_("Play another game?"));
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_new), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -104,14 +105,14 @@ create_dlg_new (void)
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox1, TRUE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hbox1), 1);
 
-  new_btn_yes = gtk_button_new_with_label ("     Yes     ");
+  new_btn_yes = gtk_button_new_with_label (_("     Yes     "));
   gtk_widget_ref (new_btn_yes);
   gtk_object_set_data_full (GTK_OBJECT (dlg_new), "new_btn_yes", new_btn_yes,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_btn_yes);
   gtk_box_pack_start (GTK_BOX (hbox1), new_btn_yes, FALSE, FALSE, 0);
 
-  new_btn_no = gtk_button_new_with_label ("     No     ");
+  new_btn_no = gtk_button_new_with_label (_("     No     "));
   gtk_widget_ref (new_btn_no);
   gtk_object_set_data_full (GTK_OBJECT (dlg_new), "new_btn_no", new_btn_no,
                             (GtkDestroyNotify) gtk_widget_unref);

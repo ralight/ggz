@@ -4,7 +4,7 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-MODULES = hastings tictactoe
+MODULES = hastings tictactoe dots
 
 messages:
 	@for i in $(MODULES); do \

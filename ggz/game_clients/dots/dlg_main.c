@@ -37,6 +37,7 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "support.h"
+#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_main (void)
@@ -93,7 +94,7 @@ create_dlg_main (void)
 
   mnu_game = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_game)->child),
-                                   "_Game");
+                                   _("_Game"));
   gtk_widget_add_accelerator (mnu_game, "activate_item", accel_group,
                               tmp_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (mnu_game);
@@ -111,7 +112,7 @@ create_dlg_main (void)
 
   mnu_exit = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_exit)->child),
-                                   "E_xit");
+                                   _("E_xit"));
   gtk_widget_add_accelerator (mnu_exit, "activate_item", mnu_game_menu_accels,
                               tmp_key, 0, 0);
   gtk_widget_ref (mnu_exit);
@@ -122,7 +123,7 @@ create_dlg_main (void)
 
   mnu_settings = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_settings)->child),
-                                   "_Settings");
+                                   _("_Settings"));
   gtk_widget_add_accelerator (mnu_settings, "activate_item", accel_group,
                               tmp_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (mnu_settings);
@@ -140,7 +141,7 @@ create_dlg_main (void)
 
   mnu_preferences = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_preferences)->child),
-                                   "_Preferences");
+                                   _("_Preferences"));
   gtk_widget_add_accelerator (mnu_preferences, "activate_item", mnu_settings_menu_accels,
                               tmp_key, 0, 0);
   gtk_widget_ref (mnu_preferences);
@@ -151,7 +152,7 @@ create_dlg_main (void)
 
   mnu_help = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_help)->child),
-                                   "_Help");
+                                   _("_Help"));
   gtk_widget_add_accelerator (mnu_help, "activate_item", accel_group,
                               tmp_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (mnu_help);
@@ -170,7 +171,7 @@ create_dlg_main (void)
 
   mnu_about = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_about)->child),
-                                   "_About");
+                                   _("_About"));
   gtk_widget_add_accelerator (mnu_about, "activate_item", mnu_help_menu_accels,
                               tmp_key, 0, 0);
   gtk_widget_ref (mnu_about);
@@ -218,14 +219,14 @@ create_dlg_main (void)
   gtk_box_pack_start (GTK_BOX (hbox2), p1b, FALSE, TRUE, 5);
   gtk_widget_set_usize (p1b, 15, -2);
 
-  lbl_score0 = gtk_label_new ("No Score");
+  lbl_score0 = gtk_label_new (_("No Score"));
   gtk_widget_ref (lbl_score0);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "lbl_score0", lbl_score0,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lbl_score0);
   gtk_box_pack_start (GTK_BOX (hbox2), lbl_score0, FALSE, FALSE, 0);
 
-  frame_right = gtk_frame_new ("Opponent");
+  frame_right = gtk_frame_new (_("Opponent"));
   gtk_widget_ref (frame_right);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "frame_right", frame_right,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -248,7 +249,7 @@ create_dlg_main (void)
   gtk_box_pack_start (GTK_BOX (hbox3), p2b, FALSE, TRUE, 5);
   gtk_widget_set_usize (p2b, 15, -2);
 
-  lbl_score1 = gtk_label_new ("No Score");
+  lbl_score1 = gtk_label_new (_("No Score"));
   gtk_widget_ref (lbl_score1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "lbl_score1", lbl_score1,
                             (GtkDestroyNotify) gtk_widget_unref);

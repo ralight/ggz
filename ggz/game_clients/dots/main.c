@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 3385 2002-02-17 08:36:07Z jdorje $
+ * $Id: main.c 3609 2002-03-21 11:10:29Z dr_maux $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -45,6 +45,7 @@
 #include "support.h"
 #include "main.h"
 #include "game.h"
+#include "ggzintl.h"
 
 GtkWidget *main_win = NULL;
 GtkWidget *opt_dialog;
@@ -68,6 +69,8 @@ int main(int argc, char *argv[])
 	char *filename;
 	
 	initialize_debugging();
+
+	ggz_intl_init("dots");
 
 	gtk_init(&argc, &argv);
 
@@ -224,8 +227,8 @@ void game_init(void)
 		main_win = create_dlg_main();
 	l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
 	l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
-	gtk_label_set_text(GTK_LABEL(l1), "No Score");
-	gtk_label_set_text(GTK_LABEL(l2), "No Score");
+	gtk_label_set_text(GTK_LABEL(l1), _("No Score"));
+	gtk_label_set_text(GTK_LABEL(l2), _("No Score"));
 	gtk_widget_show(main_win);
 	board_init(0, 0);
 
@@ -280,15 +283,15 @@ static int get_players(void)
 			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
 			g_free(temp);
 			if(i != game.me) {
-				temp = g_strdup_printf("%s joined the table",
+				temp = g_strdup_printf(_("%s joined the table"),
 							game.names[i]);
 				statusbar_message(temp);
 				g_free(temp);
 			}
 		} else {
-			gtk_frame_set_label(GTK_FRAME(frame[i]), "Empty Seat");
+			gtk_frame_set_label(GTK_FRAME(frame[i]), _("Empty Seat"));
 			if(game.got_players) {
-				temp = g_strdup_printf("%s left the table",
+				temp = g_strdup_printf(_("%s left the table"),
 							game.names[i]);
 				statusbar_message(temp);
 				g_free(temp);
@@ -319,7 +322,7 @@ static int get_move_status(void)
 	}
 
 	if(status < 0)
-		ggz_error_msg("Client cheater!");
+		ggz_error_msg(_("Client cheater!"));
 
 	return (int)status;
 }
@@ -354,10 +357,10 @@ static int get_sync_info(void)
 	{
 		l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
 		l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
-		text = g_strdup_printf("Score = %d", game.score[0]);
+		text = g_strdup_printf(_("Score = %d"), game.score[0]);
 		gtk_label_set_text(GTK_LABEL(l1), text);
 		g_free(text);
-		text = g_strdup_printf("Score = %d", game.score[1]);
+		text = g_strdup_printf(_("Score = %d"), game.score[1]);
 		gtk_label_set_text(GTK_LABEL(l2), text);
 		g_free(text);
 	}
@@ -381,29 +384,29 @@ static int get_gameover_status(void)
 	lbl_score = gtk_object_get_data(GTK_OBJECT(new_dialog), "lbl_score");
 
 	if(status == game.me) {
-		tstr = g_strconcat("Game over, you beat ",
+		tstr = g_strconcat(_("Game over, you beat "),
 				   game.names[game.opponent], "!", NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat("You beat ", game.names[game.opponent],NULL);
+		tstr = g_strconcat(_("You beat "), game.names[game.opponent],NULL);
 	} else if(status == game.opponent) {
-		tstr = g_strconcat("Game over, ",
-				   game.names[game.opponent], " won :(", NULL);
+		tstr = g_strconcat(_("Game over, "),
+				   game.names[game.opponent], _(" won :("), NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat("You lost to ", game.names[game.opponent],
+		tstr = g_strconcat(_("You lost to "), game.names[game.opponent],
 				   NULL);
 	} else {
-		tstr = g_strconcat("Game over, you tied with ",
+		tstr = g_strconcat(_("Game over, you tied with "),
 				   game.names[game.opponent], ".", NULL);
 		statusbar_message(tstr);
 		g_free(tstr);
-		tstr = g_strconcat("You tied with ", game.names[game.opponent],
+		tstr = g_strconcat(_("You tied with "), game.names[game.opponent],
 				   NULL);
 	}
 	gtk_label_set_text(GTK_LABEL(lbl_winner), tstr);
 	g_free(tstr);
-	tstr = g_strdup_printf("%d to %d.", game.score[game.me],
+	tstr = g_strdup_printf(_("%d to %d."), game.score[game.me],
 					    game.score[game.opponent]);
 	gtk_label_set_text(GTK_LABEL(lbl_score), tstr);
 	g_free(tstr);

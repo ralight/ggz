@@ -6,87 +6,87 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-02 05:08+0200\n"
+"POT-Creation-Date: 2002-03-20 22:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: ../tictactoe/main.c:90
+#: ../tictactoe/main.c:98
 msgid "Your move"
 msgstr ""
 
-#: ../tictactoe/main.c:119
+#: ../tictactoe/main.c:127
 msgid "Getting seat number"
 msgstr ""
 
-#: ../tictactoe/main.c:132
+#: ../tictactoe/main.c:140
 msgid "Getting player names"
 msgstr ""
 
-#: ../tictactoe/main.c:152
+#: ../tictactoe/main.c:160
 msgid "Getting opponent's move"
 msgstr ""
 
-#: ../tictactoe/main.c:169
+#: ../tictactoe/main.c:177
 msgid "Getting re-sync"
 msgstr ""
 
-#: ../tictactoe/main.c:174
+#: ../tictactoe/main.c:182
 #, c-format
 msgid "Player %d's turn"
 msgstr ""
 
-#: ../tictactoe/main.c:179
+#: ../tictactoe/main.c:187
 #, c-format
 msgid "Read a %d "
 msgstr ""
 
-#: ../tictactoe/main.c:184
+#: ../tictactoe/main.c:192
 msgid "Sync completed"
 msgstr ""
 
-#: ../tictactoe/main.c:193
+#: ../tictactoe/main.c:201
 msgid "Game over"
 msgstr ""
 
-#: ../tictactoe/main.c:201
+#: ../tictactoe/main.c:209
 #, c-format
 msgid "Player %d won"
 msgstr ""
 
-#: ../tictactoe/main.c:204
+#: ../tictactoe/main.c:212
 msgid "Tie game!"
 msgstr ""
 
-#: ../tictactoe/main.c:225
+#: ../tictactoe/main.c:233
 #, c-format
 msgid "Sending my move: %d"
 msgstr ""
 
-#: ../tictactoe/main.c:237
+#: ../tictactoe/main.c:245
 msgid "Sending NULL options"
 msgstr ""
 
-#: ../tictactoe/main.c:251
+#: ../tictactoe/main.c:259
 msgid "Server not ready!!"
 msgstr ""
 
-#: ../tictactoe/main.c:254
+#: ../tictactoe/main.c:262
 msgid "Not my turn !!"
 msgstr ""
 
-#: ../tictactoe/main.c:257
+#: ../tictactoe/main.c:265
 msgid "Move out of bounds"
 msgstr ""
 
-#: ../tictactoe/main.c:260
+#: ../tictactoe/main.c:268
 msgid "Space already occupied"
 msgstr ""
 
-#: ../tictactoe/main.c:263
+#: ../tictactoe/main.c:271
 msgid "Move OK"
 msgstr ""
 

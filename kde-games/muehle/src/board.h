@@ -49,7 +49,7 @@ class Board : public QWidget
 
 	signals:
 		void signalStatus(const QString &message);
-		void signalScore(const QString &player, int num, int score);
+		void signalScore(const QString &player, int num, int score, int stones);
 		void signalEnd();
 
 	protected:
@@ -61,12 +61,19 @@ class Board : public QWidget
 	private:
 		void paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner);
 		void resetStones();
+		void updateStatus();
 
 		enum Colors
 		{
 			colornone,
 			colorwhite,
 			colorblack
+		};
+		enum Phases
+		{
+			phasestart,
+			phaseset,
+			phasemove
 		};
 
 		QList<Stone> stonelist;
@@ -75,10 +82,12 @@ class Board : public QWidget
 		QPixmap *black, *white;
 		Net *net;
 		int m_color;
+		int m_phase;
 		int m_turn;
 		int m_take;
 		int m_wait;
 		int m_whitescore, m_blackscore;
+		int m_whitestones, m_blackstones;
 };
 
 #endif

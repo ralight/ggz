@@ -217,13 +217,39 @@ There is a ruby wrapper for ggzdmod: ruggzdmod.
 @chapter Programming Details
 @c @cindex Index entry for Fourth Chapter
 
+@section General purpose wrappers
+
+GGZ as of version 0.0.5 provides two wrappers which make life easier for game
+developers. Either of these wrappers replaces a game of choice, while the game
+itself is kept to be launched by the wrapper then.
+
+@subsection ggzwrap
+
+This one should be used in production code, and it's very suitable for the
+server, because it is small, has no GUI and supports command line options. Its
+arguments are the program to be executed (--exec), the inbound and outbound
+file descriptors to be redirected (--fdin, --fdout), and an option whether the
+received strings should be converted between 'traditional GGZ' easysock order
+and normal C string order (--convert).
+So a sample call may look like this:
+@command{ExecutablePath=/usr/local/ggz/lib/ggzwrap
+--exec=/usr/local/ggz/lib/tictactoe --fdin=3 --fdout=3}
+
+@subsection ShadowBridge
+
+The KDE equivalent of ggzwrap can be used to debug network connections
+visually. It displays incoming and outgoing traffic between the game and the
+game server, which is (technically) between the game client and ggzcore for
+most of our games (those without direct connections, anyway).
+
 @section Network connections
 
 @subsection Easysock (C)
 
 A very easy and convenious library for those who don't need any fancy features
 for TCP connections. This library is part of GGZ and therefore always
-available.
+available. It has been merged into libggz, so all functions are prefixed with
+ggz_ now.
 
 @subsection Qt (C++)
 

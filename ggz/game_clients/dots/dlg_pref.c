@@ -37,6 +37,7 @@
 #include "cb_pref.h"
 #include "dlg_pref.h"
 #include "support.h"
+#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_pref (void)
@@ -64,7 +65,7 @@ create_dlg_pref (void)
   dlg_pref = gtk_dialog_new ();
   gtk_widget_set_name (dlg_pref, "dlg_pref");
   gtk_object_set_data (GTK_OBJECT (dlg_pref), "dlg_pref", dlg_pref);
-  gtk_window_set_title (GTK_WINDOW (dlg_pref), "Dots - Color Preferences");
+  gtk_window_set_title (GTK_WINDOW (dlg_pref), _("Dots - Color Preferences"));
   GTK_WINDOW (dlg_pref)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_pref), FALSE, FALSE, FALSE);
 
@@ -73,7 +74,7 @@ create_dlg_pref (void)
   gtk_object_set_data (GTK_OBJECT (dlg_pref), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
-  frame1 = gtk_frame_new ("Click a colorspot to change");
+  frame1 = gtk_frame_new (_("Click a colorspot to change"));
   gtk_widget_set_name (frame1, "frame1");
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "frame1", frame1,
@@ -90,7 +91,7 @@ create_dlg_pref (void)
   gtk_widget_show (table1);
   gtk_container_add (GTK_CONTAINER (frame1), table1);
 
-  label5 = gtk_label_new ("Foreground Color");
+  label5 = gtk_label_new (_("Foreground Color"));
   gtk_widget_set_name (label5, "label5");
   gtk_widget_ref (label5);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "label5", label5,
@@ -112,7 +113,7 @@ create_dlg_pref (void)
   gtk_widget_set_usize (bg_colorspot, 16, 16);
   gtk_widget_set_events (bg_colorspot, GDK_BUTTON_PRESS_MASK);
 
-  label7 = gtk_label_new ("Player One Color");
+  label7 = gtk_label_new (_("Player One Color"));
   gtk_widget_set_name (label7, "label7");
   gtk_widget_ref (label7);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "label7", label7,
@@ -122,7 +123,7 @@ create_dlg_pref (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  label8 = gtk_label_new ("Player Two Color");
+  label8 = gtk_label_new (_("Player Two Color"));
   gtk_widget_set_name (label8, "label8");
   gtk_widget_ref (label8);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "label8", label8,
@@ -168,7 +169,7 @@ create_dlg_pref (void)
   gtk_widget_set_usize (fg_colorspot, 16, 16);
   gtk_widget_set_events (fg_colorspot, GDK_BUTTON_PRESS_MASK);
 
-  label6 = gtk_label_new ("Background Color");
+  label6 = gtk_label_new (_("Background Color"));
   gtk_widget_set_name (label6, "label6");
   gtk_widget_ref (label6);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "label6", label6,
@@ -212,7 +213,7 @@ create_dlg_pref (void)
   gtk_widget_show (hbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox1, TRUE, TRUE, 0);
 
-  pref_button_ok = gtk_button_new_with_label ("OK");
+  pref_button_ok = gtk_button_new_with_label (_("OK"));
   gtk_widget_set_name (pref_button_ok, "pref_button_ok");
   gtk_widget_ref (pref_button_ok);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "pref_button_ok", pref_button_ok,
@@ -221,7 +222,7 @@ create_dlg_pref (void)
   gtk_box_pack_start (GTK_BOX (hbox1), pref_button_ok, FALSE, FALSE, 0);
   gtk_widget_set_usize (pref_button_ok, 64, -2);
 
-  pref_button_apply = gtk_button_new_with_label ("Apply");
+  pref_button_apply = gtk_button_new_with_label (_("Apply"));
   gtk_widget_set_name (pref_button_apply, "pref_button_apply");
   gtk_widget_ref (pref_button_apply);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "pref_button_apply", pref_button_apply,
@@ -230,7 +231,7 @@ create_dlg_pref (void)
   gtk_box_pack_start (GTK_BOX (hbox1), pref_button_apply, FALSE, FALSE, 0);
   gtk_widget_set_usize (pref_button_apply, 64, -2);
 
-  pref_button_cancel = gtk_button_new_with_label ("Cancel");
+  pref_button_cancel = gtk_button_new_with_label (_("Cancel"));
   gtk_widget_set_name (pref_button_cancel, "pref_button_cancel");
   gtk_widget_ref (pref_button_cancel);
   gtk_object_set_data_full (GTK_OBJECT (dlg_pref), "pref_button_cancel", pref_button_cancel,

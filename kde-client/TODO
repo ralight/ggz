@@ -1,15 +1,15 @@
 todo for 0.0.5:
-- fix KGGZ's connection dialog
-+ implement lag display in KGGZ
-- replace current dummy player types with real ones (GGZPlayerType)
-- replace GGZap's UI with GGZap-NG
+DONE: fix KGGZ's connection dialog
+DONE: implement lag display in KGGZ
+DONE: replace current dummy player types with real ones (GGZPlayerType)
+DONE: replace GGZap's UI with GGZap-NG
 - figure out why kio_ggzmeta won't do anything on some URI's
 - finish kcontrol module
-- actually implement shadowbridge to do something useful
+DONE: actually implement shadowbridge to do something useful
 - support for local module.dsc files? (-> ggz-config)
-- add icons for the new games
-- make URL in game information dialog clickable
-+ new splash screen :)
+DONE: add icons for the new games
+DONE: make URL in game information dialog clickable
+DONE: new splash screen :)
 
 todo for 0.0.6:
 - configurability: component-based architecture with custem chat window etc.
