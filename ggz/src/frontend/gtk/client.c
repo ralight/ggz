@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4942 2002-10-18 01:18:38Z jdorje $
+ * $Id: client.c 5063 2002-10-27 12:46:52Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1212,13 +1212,14 @@ void display_players(void)
 	gint i, num;
 	/* Some of the fields of the clist receive pixmaps
 	 * instead, and are therefore set to NULL. */
-	gchar *player[4] = {NULL, NULL, NULL, NULL} ;
+	gchar *player[5] = {NULL, NULL, NULL, NULL, NULL};
 	gchar *path = NULL;
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
 	GdkBitmap *mask1, *mask2;
+	int wins, losses, ties;
 	
 	/* Retrieve the player list (CList) widget. */
 	tmp = lookup_widget(win_main, "player_clist");
@@ -1243,7 +1244,22 @@ void display_players(void)
 			player[1] = g_strdup("--");
 		else
 			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
-		player[2] = g_strdup(ggzcore_player_get_name(p));
+
+		ggzcore_player_get_record(p, &wins, &losses, &ties);
+		if (wins >= 0) {
+			if (ties > 0) {
+				player[2] = g_strdup_printf(_("%d-%d-%d"),
+							    wins,
+							    losses,
+							    ties);
+			} else {
+				player[2] = g_strdup_printf(_("%d-%d"),
+							    wins, losses);
+			}
+		} else
+			player[2] = g_strdup("");
+
+		player[3] = g_strdup(ggzcore_player_get_name(p));
 		
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
@@ -1289,7 +1305,7 @@ void display_players(void)
 			pixmap2 = gdk_pixmap_create_from_xpm(tmp->window, &mask2,
 							    NULL, path);
 			if (pixmap2)
-				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap2, mask2);
+				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 3, player[3], 5, pixmap2, mask2);
 			g_free(path);
 		}
 		
@@ -1297,6 +1313,7 @@ void display_players(void)
 		   have to come way down here. */
 		g_free(player[1]);
 		g_free(player[2]);
+		g_free(player[3]);
 	}
 	
 	/* "Thaw" the clist (it was "frozen" up above). */
@@ -1373,6 +1390,7 @@ create_win_main (void)
   GtkWidget *player_clist;
   GtkWidget *player_lag_label;
   GtkWidget *player_table_label;
+  GtkWidget *player_record_label;
   GtkWidget *player_name_label;
   GtkWidget *table_vpaned;
   GtkWidget *scrolledwindow3;
@@ -2001,7 +2019,7 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  player_clist = gtk_clist_new (3);
+  player_clist = gtk_clist_new (4);
   gtk_widget_ref (player_clist);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "player_clist", player_clist,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2011,7 +2029,8 @@ create_win_main (void)
   GTK_WIDGET_UNSET_FLAGS (player_clist, GTK_CAN_FOCUS);
   gtk_clist_set_column_width (GTK_CLIST (player_clist), 0, 15);
   gtk_clist_set_column_width (GTK_CLIST (player_clist), 1, 15);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 2, 80);
+  gtk_clist_set_column_width (GTK_CLIST (player_clist), 2, 35);
+  gtk_clist_set_column_width (GTK_CLIST (player_clist), 3, 65);
   gtk_clist_column_titles_show (GTK_CLIST (player_clist));
 
   player_lag_label = gtk_label_new (_("L"));
@@ -2028,12 +2047,21 @@ create_win_main (void)
   gtk_widget_show (player_table_label);
   gtk_clist_set_column_widget (GTK_CLIST (player_clist), 1, player_table_label);
 
+  player_record_label = gtk_label_new (_("R"));
+  gtk_widget_ref (player_record_label);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_record_label",
+			    player_record_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (player_record_label);
+  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 2,
+			       player_record_label);
+
   player_name_label = gtk_label_new (_("Player"));
   gtk_widget_ref (player_name_label);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "player_name_label", player_name_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (player_name_label);
-  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 2, player_name_label);
+  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 3, player_name_label);
 
   table_vpaned = gtk_vpaned_new ();
   gtk_widget_ref (table_vpaned);
