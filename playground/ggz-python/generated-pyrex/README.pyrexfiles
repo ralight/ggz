@@ -1,0 +1,8 @@
+Pyrex python wrapper definition files for ggzcore.
+Contributed by ha shao <hashao2@myrealbox.com> under ??? license.
+Probably to be used after the GGZ 0.0.9 release.
+
+Note, that this wrapper tries to map the C version 1:1.
+For a more abstract wrapper, please have a look at the (old) pyggzcore
+wrapper in ggz-python (from 0.0.9 on).
+
