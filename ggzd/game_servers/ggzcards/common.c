@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4082 2002-04-26 04:34:13Z jdorje $
+ * $Id: common.c 4091 2002-04-27 21:09:21Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -463,11 +463,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	assert(game.state == STATE_WAITFORPLAYERS);
 
-	/* get player's name */
-	if (seat >= 0) {	/* see above comment about seat==-1 */
-		game.seats[seat].name = get_player_name(player);
-	}
-
 	/* set the age of the player */
 	game.players[player].age = game.player_count;
 	game.player_count++;
@@ -518,7 +513,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
    applicable. */
 static void set_player_name(player_t p, const char *name)
 {
-	int s = game.players[p].seat;
 	GGZSeat player_seat = ggzdmod_get_seat(game.ggz, p);
 	player_seat.name = (char *) name;	/* discard const */
 	
@@ -531,10 +525,6 @@ static void set_player_name(player_t p, const char *name)
 			    p, name);
 		name = NULL;
 	}
-	
-	/* s might be -1 if seats aren't assigned yet. */
-	if (s >= 0)
-		game.seats[s].name = name;
 }
 
 /* This handles the event of a player leaving */
@@ -551,9 +541,6 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* There's a big problem here since if the players join/leave before
 	   the game type is set, we won't know the seat number of the player
 	   - it'll be -1.  We thus have to special-case that entirely. */
-
-	/* seat name */
-	set_player_name(player, "Empty Seat");
 
 	/* send new seat data */
 	net_broadcast_player_list();
@@ -988,9 +975,6 @@ void assign_seat(seat_t s, player_t p)
 {
 	game.seats[s].player = p;
 	game.players[p].seat = s;
-
-	/* set up name for seat */
-	game.seats[s].name = get_player_name(p);
 }
 
 void empty_seat(seat_t s, char *name)
@@ -1002,36 +986,21 @@ void empty_seat(seat_t s, char *name)
 
 const char *get_seat_name(seat_t s)
 {
-	const char *name = NULL;
-	
 	switch (get_seat_status(s)) {
 	case GGZ_SEAT_PLAYER:
 	case GGZ_SEAT_BOT:
-		name = ggzdmod_get_seat(game.ggz, game.seats[s].player).name;
+	case GGZ_SEAT_RESERVED:
+		return ggzdmod_get_seat(game.ggz, game.seats[s].player).name;
 		break;
 	case GGZ_SEAT_OPEN:
-		name = "Empty Seat"; /* Not really necessary. */
-		break;
-	case GGZ_SEAT_RESERVED:
-		name = ggzdmod_get_seat(game.ggz, game.seats[s].player).name;
+		return "Empty Seat"; /* Not really necessary. */
 		break;
 	case GGZ_SEAT_NONE:
-		name = game.seats[s].name;
+		return game.seats[s].name;
 		break;
 	}
 	
-	/* For some reason, this error occurs, as some seat names may
-	   get overwritten.  This could be the symptom of a serious
-	   bug. */
-	if (!name || !game.seats[s].name
-	    || strcmp(name, game.seats[s].name))
-		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-		            "Seat %d names (%s/%s) do not match up.",
-		            s,
-		            name,
-		            game.seats[s].name);
-
-	return name;
+	return "Unknown Seat";
 }
 
 GGZSeatType get_seat_status(seat_t s)
