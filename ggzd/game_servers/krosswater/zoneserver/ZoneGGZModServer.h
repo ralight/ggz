@@ -1,38 +1,63 @@
+// ZoneServer - small C++ game support library
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 #ifndef ZONE_GGZ_MOD_SERVER_H
 #define ZONE_GGZ_MOD_SERVER_H
 
-#include "ZoneGGZ.h"
+// GGZdmod includes
+#include <ggzdmod.h>
 
 class ZoneGGZModServer
 {
-public:
-	ZoneGGZModServer();
-	~ZoneGGZModServer();
-	virtual int slotZoneInput(int fd, int i);
-	virtual void slotZoneAI();
-	int zoneMainLoop();
-	void ZoneRegister(char* gamename, int gamemode, int maxplayers);
-	void zoneNextTurn();
+	public:
+		ZoneGGZModServer();
+		~ZoneGGZModServer();
+		virtual int slotZoneInput(int fd, int i);
+		virtual void slotZoneAI();
+		int zoneMainLoop();
+		void ZoneRegister(char* gamename, int gamemode, int maxplayers);
+		void zoneNextTurn();
 
-	int zoneTurn();
+		int zoneTurn();
 
-	int m_maxplayers;
-	int m_numplayers;
+		int m_maxplayers;
+		int m_numplayers;
 
-private:
-	int game_send_seat(int seat);
-	int game_send_players();
-	void game_send_rules();
-	int game_input(int zone_fd, int *p_fd);
-	int game_update(int event, void* data);
+	protected:
+		// Global ggzdmod object
+		GGZdMod *ggzdmod;
 
-	int m_gamemode;
-	int* m_players;
-	int m_turn;
-	int m_state;
-	char* m_gamename;
-	int ggz_sock;
-	int m_ready;
+	private:
+		int game_send_seat(int seat);
+		int game_send_players();
+		void game_send_rules();
+		int game_update(int event, void* data);
+
+		static void hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* data);
+		static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void* data);
+
+		int m_gamemode;
+		int* m_players;
+		int m_turn;
+		int m_state;
+		char* m_gamename;
+		int ggz_sock;
+		int m_ready;
 };
 
 #endif
+
