@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: hearts.c 3909 2002-04-12 07:20:52Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -108,7 +108,7 @@ static void hearts_get_options(void)
 	add_option("jack_diamonds",
 	           "The jack of diamonds rule is that whoever wins the jack "
 	           "of diamonds gets -10 points.",
-	           1, 0, "Use the jack of diamons rule");
+	           1, 0, "Use the jack of diamonds rule");
 	add_option("no_blood",
 	           "If selected, nobody will be allowed to play point cards "
 	           "on the first trick.",
