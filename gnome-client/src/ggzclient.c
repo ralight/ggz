@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4911 2002-10-14 20:17:50Z jzaun $
+ * $Id: ggzclient.c 4953 2002-10-19 21:03:17Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -613,6 +613,7 @@ static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, vo
 
 	msg = g_strdup_printf("Error launching table: %s", (char*)event_data);
 //	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_print("%s\n", msg);
 	g_free(msg);
 
 //	game_quit();

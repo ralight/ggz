@@ -46,7 +46,7 @@ on_entLogin_changed			(GtkEntry       *widget,
 {
 
 	static gint form[6] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
-	gint val;
+	gint val = 0;
 	const gchar *text;
 	GtkWidget *tmp;
 	
@@ -321,23 +321,21 @@ create_custChatXText (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2)
 {
 	GtkXText *tmp;
-	GdkFont *font;
 	GdkPixmap *background;
 	GdkColormap *system;
 	gchar *bgfile;
 	
 	tmp = GTK_XTEXT(gtk_xtext_new (colors, TRUE));
-	font = gdk_font_load("-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1");
-	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+	gtk_xtext_set_font(tmp, "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1");
 	system = gdk_colormap_get_system();
 	bgfile = g_strdup_printf("%s/ggz-gnome/Default/chatbackground.xpm", GGZDATADIR);
 	background = gdk_pixmap_colormap_create_from_xpm(NULL, system, NULL, NULL, bgfile);
 	g_free (bgfile);
-	gtk_xtext_set_background(GTK_XTEXT(tmp), background, 0, 0);
+	gtk_xtext_set_background(tmp, background, 0, 0);
 	tmp->auto_indent = TRUE;
 	tmp->wordwrap = TRUE;
 	tmp->max_auto_indent = 200;
-	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors);
+	gtk_xtext_set_palette (tmp, colors);
 
 	return GTK_WIDGET(tmp);
 }
@@ -370,7 +368,7 @@ on_btnJoin_clicked                 (GtkButton       *button,
 {
 	GtkWidget *tmp;
 	GtkTreeSelection *selection;
-	GtkTreeIter *iter;
+	GtkTreeIter iter;
 	GtkTreeModel *model;
 	gint id, open, total;
 	gchar *desc;
@@ -386,9 +384,9 @@ on_btnJoin_clicked                 (GtkButton       *button,
 	tmp = lookup_widget (interface, "treTables");
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(tmp));
 
-	if (gtk_tree_selection_get_selected (selection, &model, iter))
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
-		gtk_tree_model_get (model, iter, 1, &id, 1, &open, 1, &total, 0, &desc,	-1);
+		gtk_tree_model_get (model, &iter, 1, &id, 1, &open, 1, &total, 0, &desc,	-1);
 
 		room = ggzcore_server_get_cur_room(server);
 		type = ggzcore_room_get_gametype(room);
@@ -399,7 +397,7 @@ on_btnJoin_clicked                 (GtkButton       *button,
 		game = ggzcore_game_new();
 
 		ggzcore_room_join_table(room, id, FALSE);
-		ggzcore_game_init(game, module, server);
+		ggzcore_game_init(game, server, module);
 		ggzcore_game_launch(game);
 
 	}
@@ -410,7 +408,41 @@ void
 on_btnWatch_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
+	GtkWidget *tmp;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	gint id, open, total;
+	gchar *desc;
+	GGZRoom *room;
+	GGZGameType *type;
+	gchar *name, *engine, *version;
+	GGZModule *module;
+	GGZGame *game;
 
+	int status;
+
+	/* Get current row */
+	tmp = lookup_widget (interface, "treTables");
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(tmp));
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+	{
+		gtk_tree_model_get (model, &iter, 1, &id, 1, &open, 1, &total, 0, &desc,	-1);
+
+		room = ggzcore_server_get_cur_room(server);
+		type = ggzcore_room_get_gametype(room);
+		name = ggzcore_gametype_get_name(type);
+		engine = ggzcore_gametype_get_prot_engine(type);
+		version = ggzcore_gametype_get_prot_version(type);
+		module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
+		game = ggzcore_game_new();
+
+		ggzcore_room_join_table(room, id, TRUE);
+		ggzcore_game_init(game, server, module);
+		ggzcore_game_launch(game);
+
+	}
 }
 
 

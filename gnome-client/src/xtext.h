@@ -2,6 +2,9 @@
 #define __XTEXT_H__
 
 #include <gtk/gtkadjustment.h>
+#ifdef USE_XFT
+#include <X11/Xft/Xft.h>
+#endif
 
 #define GTK_TYPE_XTEXT              (gtk_xtext_get_type ())
 #define GTK_XTEXT(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GTK_TYPE_XTEXT, GtkXText))
@@ -19,7 +22,6 @@
 #define ATTR_BEEP '\007'
 #define ATTR_RESET '\017'
 #define ATTR_REVERSE '\026'
-#define ATTR_ESCAPE '\033'
 #define ATTR_UNDERLINE '\037'
 
 typedef struct _GtkXText GtkXText;
@@ -32,7 +34,7 @@ typedef struct {
 	gfloat old_value;					/* last known adj->value */
 	textentry *text_first;
 	textentry *text_last;
-	short grid_offset[256];
+	gint16 grid_offset[256];
 
 	textentry *last_ent_start;	  /* this basically describes the last rendered */
 	textentry *last_ent_end;	  /* selection. */
@@ -60,6 +62,7 @@ struct _GtkXText
 
 	xtext_buffer *buffer;
 	xtext_buffer *orig_buffer;
+	xtext_buffer *selection_buffer;
 
 	GtkAdjustment *adj;
 	GdkPixmap *pixmap;				/* 0 = use palette[19] */
@@ -101,8 +104,6 @@ struct _GtkXText
 
 	int depth;						  /* gdk window depth */
 
-/*   int frozen;*/
-
 	char num[8];					  /* for parsing mirc color */
 	int nc;							  /* offset into xtext->num */
 
@@ -110,10 +111,33 @@ struct _GtkXText
 	int hilight_start;
 	int hilight_end;
 
-	guint16 fontwidth[256];		  /* each char's width, only for FONT_1BYTE type */
+#ifdef USE_XFT
+	XftColor color[20];
+	XftColor *xft_fg;
+	XftColor *xft_bg;				/* both point into color[20] */
+	guint16 fontwidth[128];	  /* each char's width, only the ASCII ones */
+	XftDraw *xftdraw;
+	XftFont *font;
+#endif
+
+#ifdef USE_PANGO
+	guint16 fontwidth[128];	  /* each char's width, only the ASCII ones */
+	struct
+	{
+		PangoFontDescription *font;
+		int ascent;
+		int descent;
+	} *font, pango_font;
+	PangoLayout *layout;
+#endif
+
+#if !defined(USE_PANGO) && !defined(USE_XFT)
+	guint16 fontwidth[256];	  /* each char's width, only for FONT_1BYTE type */
 	GdkFont *font;
+#endif
+
+	int fonttype;				/* FONT_* (unused for xft) */
 	int fontsize;
-	int fonttype;
 	int space_width;				  /* width (pixels) of the space " " character */
 	int stamp_width;				  /* width of "[88:88:88]" */
 	int max_auto_indent;
@@ -122,6 +146,9 @@ struct _GtkXText
 
 	GtkWidget *(*error_function) (char *text);
 	int (*urlcheck_function) (GtkWidget * xtext, char *word);
+
+	int jump_out_offset;	/* point at which to stop rendering */
+	int jump_in_offset;	/* "" start rendering */
 
 	unsigned int auto_indent:1;
 	unsigned int moving_separator:1;
@@ -140,12 +167,14 @@ struct _GtkXText
 	unsigned int shaded:1;
 	unsigned int wordwrap:1;
 	unsigned int dont_render:1;
+	unsigned int dont_render2:1;
 	unsigned int cursor_hand:1;
 	unsigned int skip_fills:1;
 	unsigned int skip_border_fills:1;
 	unsigned int skip_stamp:1;
-	unsigned int do_underline_fills_only:1;
-	unsigned int jump_out_early:1;
+	unsigned int render_hilights_only:1;
+	unsigned int in_hilight:1;
+	unsigned int un_hilight:1;
 	unsigned int recycle:1;
 };
 
@@ -155,21 +184,18 @@ struct _GtkXTextClass
 	void (*word_click) (GtkXText * xtext, char *word, GdkEventButton * event);
 };
 
-GtkType gtk_xtext_get_type (void);
 GtkWidget *gtk_xtext_new (GdkColor palette[], int separator);
 void gtk_xtext_append (xtext_buffer *buf, unsigned char *text, int len);
 void gtk_xtext_append_indent (xtext_buffer *buf,
 										unsigned char *left_text, int left_len,
 										unsigned char *right_text, int right_len);
-void gtk_xtext_set_font (GtkXText * xtext, GdkFont * font, char *name);
+int gtk_xtext_set_font (GtkXText *xtext, char *name);
 void gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap,
 			       int trans, int shaded);
 void gtk_xtext_set_palette (GtkXText * xtext, GdkColor palette[]);
 void gtk_xtext_clear (xtext_buffer *buf);
 void gtk_xtext_save (GtkXText * xtext, int fh);
 void gtk_xtext_refresh (GtkXText * xtext, int do_trans);
-void gtk_xtext_thaw (GtkXText * xtext);
-void gtk_xtext_freeze (GtkXText * xtext);
 void *gtk_xtext_search (GtkXText * xtext, const unsigned char *text, void *start);
 
 gboolean gtk_xtext_is_empty (GtkXText * xtext);
