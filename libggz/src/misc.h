@@ -23,17 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-/* Libggz internal debugging function */
-#ifdef DEBUG
-void _ggz_debug(const char *type, const char *fmt, ...);
-#else
-#  define _ggz_debug(type, fmt, args...) (void)0
-#endif
-
-/* Libggz internal message output function */
-void _ggz_msg(const char *fmt, ...);
-
 struct _GGZFile {
 	int fdes;	/* File descriptor */
 	char *buf;	/* Data buffer */

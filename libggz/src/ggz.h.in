@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5857 2004-02-09 00:02:31Z jdorje $
+ * $Id: ggz.h.in 5905 2004-02-11 04:14:40Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -76,6 +76,11 @@ extern "C" {
  * 
  * @{
  */
+
+/** @brief Debugging type for memory debugging.
+ *  @see ggz_debug_enable
+ */
+#define GGZ_MEM_DEBUG "ggz_mem"
 
 /** 
  * Macro for memory allocation
@@ -235,6 +240,11 @@ int ggz_memory_check(void);
  * but values will be lost.
  * @{
  */
+
+/** @brief Debugging type for config-file debugging.
+ *  @see ggz_debug_enable
+ */
+#define GGZ_CONF_DEBUG "ggz_conf"
 
 /** 
  * Specifies the mode for opening a configuration file

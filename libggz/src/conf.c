@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 5859 2004-02-09 01:38:22Z jdorje $
+ * $Id: conf.c 5905 2004-02-11 04:14:40Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -272,7 +272,8 @@ int ggz_conf_write_string(int handle, const char *section,
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug("CONF", "ggz_conf_write_string: file is read-only");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "ggz_conf_write_string: file is read-only");
 		return -1;
 	}
 
@@ -281,7 +282,7 @@ int ggz_conf_write_string(int handle, const char *section,
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
 		if(ggz_list_insert(f_data->section_list, (void*)section) < 0) {
-			_ggz_debug("CONF",
+			ggz_debug(GGZ_CONF_DEBUG,
 				  "ggz_conf_write_string: insertion error");
 			return -1;
 		}
@@ -293,7 +294,8 @@ int ggz_conf_write_string(int handle, const char *section,
 	e_data.key = (char*)key;
 	e_data.value = (char*)value;
 	if(ggz_list_insert(s_data->entry_list, &e_data) < 0) {
-		_ggz_debug("CONF", "ggz_conf_write_string: insertion error");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "ggz_conf_write_string: insertion error");
 			  
 		return -1;
 	}
@@ -385,7 +387,8 @@ int ggz_conf_remove_section(int handle, const char *section)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug("CONF", "ggz_conf_remove_section: file is read-only");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "ggz_conf_remove_section: file is read-only");
 			  
 		return -1;
 	}
@@ -425,8 +428,8 @@ int ggz_conf_remove_key(int handle, const char *section, const char *key)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug("CONF",
-		      "ggzcore_confio_remove_key: file is read-only");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "ggzcore_confio_remove_key: file is read-only");
 		return -1;
 	}
 
@@ -473,15 +476,15 @@ int ggz_conf_commit(int handle)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug("CONF",
-		      "ggzcore_confio_commit: file is read-only");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "ggzcore_confio_commit: file is read-only");
 		return -1;
 	}
 
 	/* Open our configuration file for writing */
 	if((c_file = fopen(f_data->path, "w")) == NULL) {
-		_ggz_debug("CONF", "Unable to write config file %s",
-			      f_data->path);
+		ggz_debug(GGZ_CONF_DEBUG, "Unable to write config file %s",
+			  f_data->path);
 		return -1;
 	}
 
@@ -860,8 +863,8 @@ static conf_file_t * get_file_data(int handle)
 		f_entry = ggz_list_next(f_entry);
 	}
 	if(f_entry == NULL) {
-		_ggz_debug("CONF",
-			      "get_file_data:  Invalid conf handle requested");
+		ggz_debug(GGZ_CONF_DEBUG,
+			  "get_file_data:  Invalid conf handle requested");
 		f_data = NULL;
 	}
 

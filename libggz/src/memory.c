@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 5843 2004-02-08 08:06:50Z jdorje $
+ * $Id: memory.c 5905 2004-02-11 04:14:40Z jdorje $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -96,8 +96,8 @@ static void * _ggz_allocate(const unsigned int size,
 		UNLOCK();
 	}
 
-	_ggz_debug("MEMDETAIL", "%d bytes allocated at %p from %s/%d",
-		   size, newmem->ptr, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG, "%d bytes allocated at %p from %s/%d",
+		  size, newmem->ptr, tag, line);
 
 	return newmem->ptr;
 }
@@ -172,9 +172,9 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 		memcpy(new, targetmem->ptr, size);
 	UNLOCK();
 
-	_ggz_debug("MEMDETAIL",
-		   "Reallocated %d bytes at %p to %d bytes from %s/%d",
-		   targetmem->size, targetmem->ptr, size, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG,
+		  "Reallocated %d bytes at %p to %d bytes from %s/%d",
+		  targetmem->size, targetmem->ptr, size, tag, line);
 
 	/* And free the old chunk */
 	_ggz_free(targetmem->ptr, tag, line);
@@ -217,8 +217,8 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 	oldsize = targetmem->size;
 	UNLOCK();
 
-	_ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
-		   oldsize, ptr, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG, "%d bytes deallocated at %p from %s/%d",
+		  oldsize, ptr, tag, line);
 
 	free(targetmem); /* should be the only "free" call */
 
@@ -231,25 +231,26 @@ int ggz_memory_check(void)
 	int flag = 0;
 	struct _memptr *memptr;
 
-	_ggz_msg("*** Memory Leak Check ***");
+	ggz_log(GGZ_MEM_DEBUG, "*** Memory Leak Check ***");
 
 	LOCK();
 	if(alloc != NULL) {
 		memptr = alloc;
 		while(memptr != NULL) {
-			_ggz_msg("%d bytes left allocated at %p by %s/%d",
-				 memptr->size, memptr->ptr,
-				 memptr->tag, memptr->line);
+			ggz_log(GGZ_MEM_DEBUG,
+				"%d bytes left allocated at %p by %s/%d",
+				memptr->size, memptr->ptr,
+				memptr->tag, memptr->line);
 			memptr = memptr->next;
 		}
 		
 		flag = -1;
+	} else {
+		ggz_log(GGZ_MEM_DEBUG, "All clean!");
 	}
-	else
-		_ggz_msg("All clean!");
 	UNLOCK();
 
-	_ggz_msg("*** End Memory Leak Check ***");
+	ggz_log(GGZ_MEM_DEBUG, "*** End Memory Leak Check ***");
 
 	return flag;
 }
@@ -271,9 +272,9 @@ char * _ggz_strdup(const char *src, const char *tag, int line)
 
 	len = strlen(src);
 
-	_ggz_debug("MEMDETAIL",
-		   "Allocating memory for length %d string from %s/%d",
-		   len+1, tag, line);
+	ggz_debug(GGZ_MEM_DEBUG,
+		  "Allocating memory for length %d string from %s/%d",
+		  len+1, tag, line);
 
 	new = _ggz_allocate(len+1, tag, line, NEED_LOCK);
 
