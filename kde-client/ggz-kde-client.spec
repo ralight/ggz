@@ -2,11 +2,11 @@
 
 Summary: GGZ Client for KDE
 Name: ggz-kde-client
-Version: 0.0.4
+Version: 0.0.5
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-kde-client-0.0.4.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-kde-client-0.0.5.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -19,10 +19,13 @@ The official Gnu Gaming Zone client for the KDE user interface.
 %setup
 
 %build
+# Can't do SMP builds
+export MAKEFLAGS=j1
 ./configure --prefix=/usr --sysconfdir=/etc
 make
 
 %install
+export MAKEFLAGS=j1
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
@@ -39,11 +42,12 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog INSTALL NEWS README
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS README DESIGN README.GGZ QuickStart.GGZ
 
 /usr/bin/kggz
 /usr/bin/ggzap
 /usr/bin/ggzmodsniff
+/usr/bin/shadowbridge
 
 /usr/include/GGZCore.h
 /usr/include/GGZCoreCommon.h
@@ -59,28 +63,53 @@ PATH="$PATH:/sbin" ldconfig
 
 /usr/lib/libggzcorepp.la
 /usr/lib/libggzcorepp.so
-/usr/lib/libggzcorepp.so.0
-/usr/lib/libggzcorepp.so.0.0.1
+/usr/lib/libggzcorepp.so.1
+/usr/lib/libggzcorepp.so.1.0.0
 
-/usr/share/applnk/Games/ggz/games
-/usr/share/applnk/Games/ggz/ggzmodsniff.desktop
-/usr/share/applnk/Games/ggz/kggz.desktop
+/usr/lib/kde2/libkcm_ggz.la
+/usr/lib/kde2/libkcm_ggz.so
+/usr/lib/kde2/libkcm_ggz_default.la
+/usr/lib/kde2/libkcm_ggz_default.so
+/usr/lib/kde2/libkcm_ggz_games.la
+/usr/lib/kde2/libkcm_ggz_games.so
+/usr/lib/kde2/libkcm_ggz_ggzd.la
+/usr/lib/kde2/libkcm_ggz_ggzd.so
+/usr/lib/kde2/libkcm_ggz_metaserver.la
+/usr/lib/kde2/libkcm_ggz_metaserver.so
+/usr/lib/kde2/libkio_ggz.la
+/usr/lib/kde2/libkio_ggz.so
+/usr/lib/kde2/libkio_ggzmeta.la
+/usr/lib/kde2/libkio_ggzmeta.so
+
+/usr/share/applnk/Games/ggz
+/usr/share/applnk/Settings/Network/kcmggz.desktop
 
 /usr/share/apps/kggz
 
-/usr/share/icons/locolor/16x16/apps/ggz.png
-/usr/share/icons/locolor/16x16/apps/ggzap.png
-/usr/share/icons/locolor/16x16/apps/ggzmodsniff.png
-/usr/share/icons/locolor/16x16/apps/ggzquick.png
-/usr/share/icons/locolor/16x16/apps/kggz.png
-/usr/share/icons/locolor/32x32/apps/ggzmodsniff.png
-/usr/share/icons/locolor/32x32/apps/kggz.png
+/usr/share/icons/hicolor/16x16/apps/ggz.png
+/usr/share/icons/hicolor/16x16/apps/ggzap.png
+/usr/share/icons/hicolor/16x16/apps/ggzmodsniff.png
+/usr/share/icons/hicolor/16x16/apps/ggzquick.png
+/usr/share/icons/hicolor/16x16/apps/kggz.png
+/usr/share/icons/hicolor/32x32/apps/ggzmodsniff.png
+/usr/share/icons/hicolor/32x32/apps/kggz.png
 
+/usr/share/locale/de/LC_MESSAGES/ggzap.mo
+/usr/share/locale/de/LC_MESSAGES/kcm_ggz.mo
 /usr/share/locale/de/LC_MESSAGES/kggz.mo
+/usr/share/locale/de/LC_MESSAGES/modsniff.mo
+/usr/share/locale/de/LC_MESSAGES/shadowbridge.mo
 /usr/share/locale/es/LC_MESSAGES/kggz.mo
 /usr/share/locale/fr/LC_MESSAGES/kggz.mo
 /usr/share/locale/pt_BR/LC_MESSAGES/kggz.mo
 
+/usr/share/services/ggz.protocol
+/usr/share/services/ggzmeta.protocol
+
+
 %changelog
+* Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
+- Updated for 0.0.5
+
 * Fri Apr 27 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file
