@@ -1,0 +1,51 @@
+The GGZ Gaming Zone Build System
+--------------------------------
+
+GGZ uses the GNU autotools to guarantee maximum availability on all system
+which provide interfaces compliant to or similar to POSIX.
+
+This includes:
+- autoconf (with autoheader)
+- automake (with aclocal)
+- libtool (with libtoolize)
+
+Other components which are almost always needed are:
+- perl
+- gettext
+
+To easy the life for the GGZ developers, the file acinclude.ggz has been
+written which checks for a proper environment for both GGZ programs and
+external programs using GGZ libraries.
+
+The following macros are relevant:
+
+AC_GGZ_INIT
+  Initializes the build system. This is not strictly necessary, but includes
+  some search directories by default which would otherwise have to be specified
+  by the user.
+  It takes no arguments by default, but understands two of them:
+  * defaults
+    Adds a bunch standard paths for headers, libraries and binaries to the
+    search path
+  * export
+    The default search path is made available to external checks
+
+AC_GGZ_LIBGGZ
+AC_GGZ_GGZCORE
+AC_GGZ_GGZMOD
+AC_GGZ_GGZDMOD
+  Searches the GGZ libraries. Both header file and shared library must be
+  present in order to be accepted.
+  Those values are cached, so config.cache must be removed upon recheck.
+  It takes no arguments by default, but will bail out if a library is not
+  found. This can be prevented by giving an argument:
+  * ignore
+    Tells about the error, and leaves it to the configure.in check to further
+    decide what to do.
+
+AC_GGZ_INTL
+  Sets up standard tools for internationalization.
+  Takes no arguments.
+
+Josef, 25.09.2002
+
