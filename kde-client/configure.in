@@ -138,6 +138,9 @@ AC_OUTPUT(Makefile
 	compcal/src/Makefile
 	compcal/src/lib/Makefile
 	compcal/data/Makefile
+	keepalivecontrol/Makefile
+	keepalivecontrol/src/Makefile
+	keepalivecontrol/data/Makefile
 	ggz-kde/Makefile
 	ggz-kde/ggzcore++/Makefile
 	ggz-kde/ggzcore++/src/Makefile
