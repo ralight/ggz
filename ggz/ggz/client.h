@@ -25,11 +25,6 @@
  */
 
 
-#ifndef _CLIENT_H
-#define _CLIENT_H
-
-#include <gtk/gtk.h>
-
 #define NET_FAIL      -3
 #define NET_OK         0
 
@@ -42,7 +37,3 @@ int CheckReadInt(int msgsock, int *message);
 void NetClose(void);
 RETSIGTYPE die(int sig);
 
-GtkWidget *main_win;
-GtkWidget *dlg_login;
-
-#endif
