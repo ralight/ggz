@@ -386,6 +386,12 @@ eval "$ac_cv_have_ggz_config"
 if test "$have_ggz_config" != yes; then
   if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
+    GGZ_CONFIG="/bin/true"
+    AC_SUBST(GGZ_CONFIG)
+    ggzexecmoddir="\${prefix}/lib/ggz"
+    ggzdatadir="\${prefix}/share/ggz"
+    AC_DEFINE_UNQUOTED(GAMEDIR, "${prefix}/lib/ggz", [Path where to install the games])
+    AC_DEFINE_UNQUOTED(GGZDATADIR, "${prefix}/share/ggz", [Path where the games should look for their data files])
   else
     AC_MSG_RESULT([$have_ggz_config])
     if test "x$2" = "x"; then
