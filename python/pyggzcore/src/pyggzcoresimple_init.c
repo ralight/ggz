@@ -30,6 +30,9 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event
 static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_data, void *user_data);
 static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, void *event_data, void *user_data);
 
+static void pyggzcoresimple_set_handler_game(void);
+static PyObject *pyggzcoresimple_new_game(PyObject *self, PyObject *args);
+
 /**********************************************/
 /* Global variables                           */
 /**********************************************/
@@ -48,6 +51,8 @@ static GGZGame *ggzgame = NULL;
 static PyObject *pyggzcoresimple_cb_server = NULL;
 static PyObject *pyggzcoresimple_cb_room = NULL;
 static PyObject *pyggzcoresimple_cb_game = NULL;
+
+static int join_table = -1;
 
 /**********************************************/
 /* Object definitions                         */
@@ -92,7 +97,7 @@ static void pyggzcoresimple_delete_room(PyObject *self)
 	if(ggzroom)
 	{
 		/*ggzcore_room_free(ggzroom);*/
-		ggzroom = NULL;
+		/*ggzroom = NULL;*/ /*!!! this would also destroy the current one*/
 	}
 	coreroom = Py_None;
 
@@ -247,6 +252,13 @@ static PyObject *pyggzcoresimple_server_process(PyObject *self, PyObject *args)
 	if(ggzcore_server_data_is_pending(ggzserver))
 		ret = ggzcore_server_read_data(ggzserver, ggzcore_server_get_fd(ggzserver));
 	else ret = 0;
+
+	if(ggzcore_server_get_channel(ggzserver) != -1)
+		ggzcore_server_read_data(ggzserver, ggzcore_server_get_channel(ggzserver));
+
+	if(ggzgame)
+	if(ggzcore_game_get_control_fd(ggzgame) != -1)
+		ggzcore_game_read_data(ggzgame);
 	return Py_BuildValue("i", ret);
 }
 
@@ -314,6 +326,49 @@ static PyObject *pyggzcoresimple_room_play(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", ret);
 }
 
+static PyObject *pyggzcoresimple_room_join(PyObject *self, PyObject *args)
+{
+	int table;
+	int ret;
+	int i, modnum;
+	GGZGameType *gametype;
+	GGZModule *module;
+
+	if(!PyArg_ParseTuple(args, "i", &table)) return NULL;
+printf("(pyggzcoresimple) join table: %i\n", table);
+	join_table = table;
+
+	ret = 1;
+	module = NULL;
+	gametype = ggzcore_room_get_gametype(ggzroom);
+	modnum = ggzcore_module_get_num_by_type(
+		ggzcore_gametype_get_name(gametype),
+		ggzcore_gametype_get_prot_engine(gametype),
+		ggzcore_gametype_get_prot_version(gametype));
+	for(i = 0; i < modnum; i++)
+	{
+		module = ggzcore_module_get_nth_by_type(
+			ggzcore_gametype_get_name(gametype),
+			ggzcore_gametype_get_prot_engine(gametype),
+			ggzcore_gametype_get_prot_version(gametype),
+			i);
+		if(ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_XWINDOW) break;
+		if(ggzcore_module_get_environment(module) == GGZ_ENVIRONMENT_XFULLSCREEN) break;
+	}
+	if(!module) ret = 0;
+	ggzgame = ggzcore_game_new();
+	ggzcore_game_init(ggzgame, ggzserver, module);
+
+	pyggzcoresimple_set_handler_game();
+
+	coregame = pyggzcoresimple_new_game(NULL, NULL);
+	PyModule_AddObject(core, "game", coregame);
+
+	ggzcore_game_launch(ggzgame);
+
+	return Py_BuildValue("i", ret);
+}
+
 static void pyggzcoresimple_set_handler_server(void)
 {
 	if(!ggzserver) return;
@@ -337,6 +392,27 @@ static void pyggzcoresimple_set_handler_server(void)
 	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_CONNECTED, pyggzcoresimple_cb_server_hook);
 	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_READY, pyggzcoresimple_cb_server_hook);
 	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_FAIL, pyggzcoresimple_cb_server_hook);
+}
+
+static void pyggzcoresimple_remove_handler_room(void)
+{
+	if(!ggzroom) return;
+
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_PLAYER_LIST, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_LIST, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_CHAT_EVENT, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_ROOM_ENTER, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_ROOM_LEAVE, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_UPDATE, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_LAUNCHED, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_LAUNCH_FAIL, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_JOINED, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_JOIN_FAIL, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_LEFT, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_TABLE_LEAVE_FAIL, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_PLAYER_LAG, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_PLAYER_STATS, pyggzcoresimple_cb_room_hook);
+	ggzcore_room_remove_event_hook(ggzroom, GGZ_PLAYER_COUNT, pyggzcoresimple_cb_room_hook);
 }
 
 static void pyggzcoresimple_set_handler_room(void)
@@ -391,13 +467,13 @@ static PyObject *pyggzcoresimple_set_handler(PyObject *self, PyObject *args)
 			Py_XDECREF(pyggzcoresimple_cb_room);
 			pyggzcoresimple_cb_room = temp;
 			
-			pyggzcoresimple_set_handler_room();
+			//pyggzcoresimple_set_handler_room();
 			break;
 		case GGZCORE_EVENT_GAME:
 			Py_XDECREF(pyggzcoresimple_cb_game);
 			pyggzcoresimple_cb_game = temp;
 
-			pyggzcoresimple_set_handler_game();
+			//pyggzcoresimple_set_handler_game();
 			break;
 	}
 	Py_INCREF(Py_None);
@@ -431,6 +507,7 @@ static PyMethodDef pyggzcoresimple_room_methods[] =
 	{"get_desc", pyggzcoresimple_room_get_desc, METH_VARARGS},
 	{"chat", pyggzcoresimple_room_chat, METH_VARARGS},
 	{"play", pyggzcoresimple_room_play, METH_VARARGS},
+	{"join", pyggzcoresimple_room_join, METH_VARARGS},
 	{NULL, NULL, 0}
 };
 
@@ -567,8 +644,8 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event
 	}
 	if(id == GGZ_ENTERED)
 	{
+		pyggzcoresimple_remove_handler_room();
 		ggzroom = ggzcore_server_get_cur_room(ggzserver);
-
 		pyggzcoresimple_set_handler_room();
 
 		coreroom = pyggzcoresimple_new_room(NULL, NULL);
@@ -596,10 +673,19 @@ static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event
 	if(id == GGZ_LOGGED_IN)
 	{
 		ggzcore_server_list_rooms(ggzserver, 0, 1);
+		ggzcore_server_list_gametypes(ggzserver, 1);
 	}
 	if(id == GGZ_ENTERED)
 	{
 		ggzcore_room_list_players(ggzroom);
+		ggzcore_room_list_tables(ggzroom, -1, 0);
+	}
+	if(id == GGZ_CHANNEL_CONNECTED)
+	{
+	}
+	if(id == GGZ_CHANNEL_READY)
+	{
+		ggzcore_game_set_server_fd(ggzgame, ggzcore_server_get_channel(ggzserver));
 	}
 
 	return GGZ_HOOK_OK;
@@ -630,11 +716,13 @@ static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_d
 	PyObject *list, *element;
 	char *str;
 	GGZChatEventData *cd;
-	PyObject *playerlist;
+	PyObject *playerlist, *tablelist;
 	GGZPlayer *player;
-	int i;
+	GGZTable *table;
+	int i, j;
 
 	/*printf("(pyggzcore) room event: %i %p %p\n", id, event_data, user_data);*/
+printf("(pyggzcore) room event: %i %p %p\n", id, event_data, user_data);
 
 	arg = NULL;
 	str = NULL;
@@ -670,6 +758,30 @@ static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_d
 		}
 		arg = Py_BuildValue("(iO)", id, playerlist);
 	}
+	if((id == GGZ_TABLE_LIST) || (id == GGZ_TABLE_UPDATE))
+	{
+		tablelist = PyList_New(0);
+		for(i = 0; i < ggzcore_room_get_num_tables(ggzroom); i++)
+		{
+			table = ggzcore_room_get_nth_table(ggzroom, i);
+			element = Py_BuildValue("si",
+				ggzcore_table_get_desc(table),
+				ggzcore_table_get_num_seats(table));
+			PyList_Append(tablelist, element);
+			for(j = 0; j < ggzcore_table_get_num_seats(table); j++)
+			{
+				if(ggzcore_table_get_nth_player_type(table, j) == GGZ_SEAT_PLAYER)
+					element = Py_BuildValue("s",
+						ggzcore_table_get_nth_player_name(table, j));
+				else if(ggzcore_table_get_nth_player_type(table, j) == GGZ_SEAT_BOT)
+					element = Py_BuildValue("s", "(bot)");
+				else
+					element = Py_BuildValue("s", "");
+				PyList_Append(tablelist, element);
+			}
+		}
+		arg = Py_BuildValue("(iO)", id, tablelist);
+	}
 	if(id == GGZ_TABLE_LAUNCHED) /* launched or joined? */
 	{
 		ggzgame = NULL; //ggzcore_server_get_cur_game(ggzserver);
@@ -678,6 +790,9 @@ static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_d
 
 		coregame = pyggzcoresimple_new_game(NULL, NULL);
 		PyModule_AddObject(core, "game", coregame);
+	}
+	if(id == GGZ_TABLE_JOINED) /* launched or joined? */
+	{
 	}
 
 	if(!arg)
@@ -705,10 +820,27 @@ static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, void *event_d
 	char *str;
 
 	/*printf("(pyggzcore) game event: %i %p %p\n", id, event_data, user_data);*/
+printf("(pyggzcore) game event: %i %p %p\n", id, event_data, user_data);
 
+	arg = NULL;
 	str = NULL;
 
-	arg = Py_BuildValue("(is)", id, str);
+	if(id == GGZ_GAME_LAUNCHED)
+	{
+	}
+	if(id == GGZ_GAME_NEGOTIATED)
+	{
+		ggzcore_server_create_channel(ggzserver);
+	}
+	if(id == GGZ_GAME_PLAYING)
+	{
+		ggzcore_room_join_table(ggzroom, join_table, 0);
+	}
+
+	if(!arg)
+	{
+		arg = Py_BuildValue("(is)", id, str);
+	}
 	res = PyEval_CallObject(pyggzcoresimple_cb_game, arg);
 	if(res == NULL)
 	{
