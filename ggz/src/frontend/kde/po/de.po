@@ -183,7 +183,7 @@ msgstr "/msg &lt;Spieler&gt; - Private Nachricht an diesen Spieler senden."
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:212
 msgid "/wall &lt;message&gt; - sends a message to all rooms."
-msgstr "/wall &lt;Nachricht&gt; - Administrationsnachricht an alle Räume senden."
+msgstr "/wall &lt;Nachricht&gt; - Administrationsnachricht an alle RÃ¤ume senden."
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:89 ../../ggz-kde/src/KGGZConnect.cpp:488
 msgid "<< Edit"
