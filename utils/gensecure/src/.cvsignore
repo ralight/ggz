@@ -5,3 +5,6 @@ genserver
 genclient
 .deps
 .libs
+*.la
+*.lo
+
