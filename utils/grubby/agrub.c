@@ -55,8 +55,9 @@ char out_msg[1024];
 int player_greet = 0;
 int last_used = 0;
 int sig_logout = 0;
-FILE *log_file;
 int stay_still = 0;
+FILE *log_file;
+char log_type[4] = "HTML";
 
 #define MAX_KNOWN 50
 #define MAX_MESSAGES 4
@@ -372,6 +373,7 @@ void handle_read(void)
 				es_read_int(my_socket, &num2);
 				es_read_string_alloc(my_socket, &string);
 				room_list[i] = string;
+				free(string);
 				es_read_int(my_socket, &num2);
 			}
 			break;
@@ -1193,11 +1195,18 @@ void queue_message(char *sender, char *command)
 
 log_it(char *left, char *right)
 {
-	if (log_file != NULL)
+	if (log_file != NULL && log_type == "HTML")
 	{
 		if(!strcmp("-->",left) || !strcmp("<--",left) || !strcmp("---",left) || !strcmp("*",left))
 			fprintf(log_file, "<tr><td valign=top align=right>%s</td><td bgcolor=\"#777777\">&nbsp</td><td valign=top>%s</td></td>\n",left, right);
 		else
 			fprintf(log_file, "<tr><td valign=top align=right>[%s]</td><td bgcolor=\"#777777\">&nbsp</td><td valign=top>%s</td></td>\n",left, right);
+	}
+	if (log_file != NULL && log_type == "TEXT")
+	{
+		if(!strcmp("-->",left) || !strcmp("<--",left) || !strcmp("---",left) || !strcmp("*",left))
+			fprintf(log_file, "%s | %s%s\n",left, right);
+		else
+			fprintf(log_file, "[%s] | %s%s\n",left, right);
 	}
 }
