@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6727 2005-01-18 16:35:50Z josef $
+#  $Id: Makefile.am 6740 2005-01-19 07:46:46Z jdorje $
 
 SUBDIRS = .
 
@@ -9,10 +9,10 @@ AM_CPPFLAGS = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
 bin_PROGRAMS = ggz-gtk
 
 ggzdata_DATA =		about_bg.png		\
-			ggz_gtk_admin.png 	\
-			ggz_gtk_guest.png 	\
-			ggz_gtk_registered.png	\
-			ggz_gtk_bot.png	\
+			ggz_gtk_admin.svg 	\
+			ggz_gtk_guest.svg 	\
+			ggz_gtk_registered.svg	\
+			ggz_gtk_bot.svg		\
 			ggz_gtk_lag0.svg 	\
 			ggz_gtk_lag1.svg 	\
 			ggz_gtk_lag2.svg	\

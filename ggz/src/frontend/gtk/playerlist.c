@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6727 2005-01-18 16:35:50Z josef $
+ * $Id: playerlist.c 6740 2005-01-19 07:46:46Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -233,10 +233,10 @@ void update_player_list(void)
 			snprintf(name, sizeof(name), "ggz_gtk_lag%d", i);
 			lag[i] = load_svg_pixbuf(name, ICON_SIZE, ICON_SIZE);
 		}
-		guest = load_pixbuf("ggz_gtk_guest");
-		registered = load_pixbuf("ggz_gtk_registered");
-		admin = load_pixbuf("ggz_gtk_admin");
-		bot = load_pixbuf("ggz_gtk_bot");
+		guest = load_svg_pixbuf("ggz_gtk_guest", 16, 24);
+		registered = load_svg_pixbuf("ggz_gtk_registered", 16, 24);
+		admin = load_svg_pixbuf("ggz_gtk_admin", 16, 24);
+		bot = load_svg_pixbuf("ggz_gtk_bot", 16, 24);
 		pixmaps_initted = TRUE;
 	}
 
