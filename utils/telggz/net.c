@@ -152,7 +152,7 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 
 GGZHookReturn net_hook_failure(unsigned int id, void *event_data, void *user_data)
 {
-	printf("TelGGZ: Error! Hook error\n");
+	printf("TelGGZ: Error! Hook error (%i)\n", id);
 	fflush(NULL);
 	exit(-1);
 
