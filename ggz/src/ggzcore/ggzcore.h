@@ -139,6 +139,18 @@ typedef enum {
 
 
 typedef enum {
+	GGZ_PLAYER_LIST,
+	GGZ_CHAT,
+	GGZ_ANNOUNCE,
+	GGZ_PRVMSG,
+	GGZ_BEEP,
+	GGZ_ROOM_ENTER,
+	GGZ_ROOM_LEAVE,
+	GGZ_TABLE_UPDATE,
+} GGZRoomEvent;
+
+
+typedef enum {
 	GGZ_STATE_OFFLINE,
 	GGZ_STATE_CONNECTING,
 	GGZ_STATE_ONLINE,
@@ -153,8 +165,18 @@ typedef enum {
 	GGZ_STATE_LOGGING_OUT,
 } GGZStateID;
 
+/* Chat subops */					/* PMCCCCCC */
+typedef enum {
+	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
+	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
+	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
+	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
+} GGZChatOp;
+
+
+
 typedef struct _GGZServer GGZServer;
-typedef struct _GGZRoomList GGZRoomList;
+typedef struct _GGZRoom GGZRoom;
 
 /* Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(const char *host,
@@ -190,16 +212,10 @@ char*        ggzcore_server_get_handle(GGZServer *server);
 char*        ggzcore_server_get_password(GGZServer *server);
 int          ggzcore_server_get_fd(GGZServer *server);
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
-int          ggzcore_server_get_cur_room(GGZServer *server);
-GGZRoomList* ggzcore_server_get_roomlist(GGZServer *server);
+GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
+GGZRoom*     ggzcore_server_get_room(GGZServer *server, const unsigned int id);
 int          ggzcore_server_get_num_rooms(GGZServer *server);
 char**       ggzcore_server_get_room_names(GGZServer *server);
-char*        ggzcore_server_get_room_name(GGZServer *server, 
-					  const unsigned int);
-char*        ggzcore_server_get_room_desc(GGZServer *server, 
-					  const unsigned int);
-int          ggzcore_server_get_room_gametype(GGZServer *server, 
-					      const unsigned int id);
 
 
 /* ggzcore_server_is_XXXX()
@@ -219,21 +235,6 @@ void ggzcore_server_list_rooms(GGZServer *server, const int type, const char ver
 void ggzcore_server_join_room(GGZServer *server, const int room);
 void ggzcore_server_logout(GGZServer *server);
 
-/* Chat subops */					/* PMCCCCCC */
-typedef enum {
-	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
-	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
-	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
-	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
-} GGZChatOp;
-
-
-/* Temporary hack until GGZRoom is done */
-void ggzcore_server_chat(GGZServer *server, 
-			 const GGZChatOp opcode,
-			 const char *player,
-			 const char *msg);
-
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);
 int ggzcore_server_read_data(GGZServer *server);
@@ -241,6 +242,39 @@ int ggzcore_server_write_data(GGZServer *server);
 
 /* Free GGZServer object and accompanying data */
 void ggzcore_server_free(GGZServer *server);
+
+
+
+/* Functions for attaching hooks to GGZRoom events */
+int ggzcore_room_add_event_hook(GGZRoom *room,
+				const GGZRoomEvent event, 
+				const GGZHookFunc func);
+
+int ggzcore_room_add_event_hook_full(GGZRoom *room,
+				     const GGZRoomEvent event, 
+				     const GGZHookFunc func,
+				     void *data);
+
+/* Functions for removing hooks from GGZRoom events */
+int ggzcore_room_remove_event_hook(GGZRoom *room,
+				   const GGZRoomEvent event, 
+				   const GGZHookFunc func);
+
+int ggzcore_room_remove_event_hook_id(GGZRoom *room,
+				      const GGZRoomEvent event, 
+				      const unsigned int hook_id);
+
+/* Functions for querying a GGZRoom object for information */
+int   ggzcore_room_get_num(GGZRoom *room);
+char* ggzcore_room_get_name(GGZRoom *room);
+char* ggzcore_room_get_desc(GGZRoom *room);
+int   ggzcore_room_get_gametype(GGZRoom *room);
+
+
+void ggzcore_room_chat(GGZRoom *room,
+		       const GGZChatOp opcode,
+		       const char *player,
+		       const char *msg);
 
 
 typedef enum {
@@ -254,10 +288,6 @@ typedef enum {
 /* IDs for all GGZ events */
 typedef enum {
 	GGZ_SERVER_LIST_PLAYERS,
-	GGZ_SERVER_CHAT_MSG,
-	GGZ_SERVER_CHAT_ANNOUNCE,
-	GGZ_SERVER_CHAT_PRVMSG,
-	GGZ_SERVER_CHAT_BEEP,
 	GGZ_SERVER_ROOM_ENTER,
 	GGZ_SERVER_ROOM_LEAVE,
 	GGZ_SERVER_TABLE_UPDATE,

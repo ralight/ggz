@@ -37,32 +37,6 @@
  * the tables in the current room .
  */
 
-/* Table Information */
-struct _GGZTable {
- 
-        /* Table number */
-        int number;
- 
-        /* Game Type */
-        int type;
-
-        /* Table state */
-        char *state;
-
-        /* Total seats */
-        int seats;
-
-        /* Open seats */
-        int open;
-        
-        /* Computer seats */
-        int computers;
-
-	/* Table description */
-	char *desc;        
-};
-
-
 /* List of tables in current room */
 static struct _ggzcore_list *table_list;
 static unsigned int num_tables;

@@ -31,6 +31,7 @@
 #include "hook.h"
 #include "state.h"
 #include "roomlist.h"
+#include "room.h"
 
 #define GGZ_NUM_SERVER_EVENTS 13
 
@@ -59,24 +60,33 @@ struct _GGZServer {
 	/* Current state */
 	GGZStateID state;
 	
+	/* Number of rooms */
+	int num_rooms;
+	
 	/* List of rooms in this server */
-	GGZRoomList *room_list;
+	struct _ggzcore_list *room_list;
+	
+	/* Current room on game server */
+	struct _GGZRoom *room;
+
+	/* Room to which we are transitioning */
+	struct _GGZRoom *new_room;
+
+	/* Room verbosity (need to save) */
+	char room_verbose;
 
 	/* List of game types */
 	struct _ggzcore_list *gametype_list;
 
-	/* Current room on game server */
-	int room;
-
-	/* Room to which we are transitioning */
-	int new_room;
-
-	/* Server events */
+       	/* Server events */
 	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
 
-	/* Room verbosity (need to save) */
-	char room_verbose;
 };
+
+void _ggzcore_server_chat(GGZServer *server, 
+			  const GGZChatOp opcode,
+			  const char *player,
+			  const char *msg);
 
 
 #endif /* __SERVER_H__ */

@@ -32,20 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* 
- * The Player structure is meant to be a node in a linked list of
- * the players in the current room .
- */
-struct _GGZPlayer {
-	
-	/* Name of player */
-	char* name;	
-
-	/* Index of table at which this player is "sitting" */
-	int table;
-};
-
-
 /* List of players in current room */
 static struct _ggzcore_list *player_list;
 static unsigned int num_players;

@@ -31,7 +31,6 @@
 #include "protocol.h"
 #include "net.h"
 #include "errno.h"
-#include "roomlist.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -75,10 +74,10 @@ struct _GGZServerMsg {
 
 /* Array of all server messages */
 static struct _GGZServerMsg _ggzcore_server_msgs[] = {
-	{MSG_SERVER_ID, "msg_server_id", _ggzcore_server_handle_server_id},
+	{MSG_SERVER_ID,      "msg_server_id", _ggzcore_server_handle_server_id},
 	{MSG_SERVER_FULL, "msg_server_full", NULL },
 	{MSG_MOTD, "msg_motd", _ggzcore_server_handle_motd},
-	{MSG_CHAT, "msg_chat", _ggzcore_server_handle_chat},
+	{MSG_CHAT,           "msg_chat", _ggzcore_server_handle_chat},
 	{MSG_UPDATE_PLAYERS, "msg_update_players", _ggzcore_server_handle_update_players},
 	{MSG_UPDATE_TYPES, "msg_update_types", NULL},
 	{MSG_UPDATE_TABLES,  "msg_update_tables", _ggzcore_server_handle_update_tables},
@@ -144,7 +143,7 @@ GGZServer* ggzcore_server_new(const char *host,
 		server->password = strdup(password);
 	server->state = GGZ_STATE_OFFLINE;
 	server->fd = -1;
-	server->room = -1;
+	server->num_rooms = 0;
 
 	ggzcore_debug(GGZ_DBG_INIT, "New GGZServer: %s:%d, %d, %s, %s",
 		      server->host, server->port, server->type, server->handle,
@@ -185,8 +184,8 @@ int ggzcore_server_add_event_hook_full(GGZServer *server,
 
 
 int ggzcore_server_remove_event_hook(GGZServer *server,
-					 const GGZServerEvent event, 
-					 const GGZHookFunc func)
+				     const GGZServerEvent event, 
+				     const GGZHookFunc func)
 {
 	if (!server)
 		return -1;
@@ -223,13 +222,18 @@ void ggzcore_server_free(GGZServer *server)
 	free(server->handle);
 	if (server->password)
 		free(server->password);
+
 	/* Free room list */
 	/* Free type list */
+
+	_ggzcore_room_free(server->room);
+
 	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
 		_ggzcore_hook_list_destroy(server->event_hooks[i]);
 
 	free(server);
 }
+
 
 char* ggzcore_server_get_host(GGZServer *server)
 {
@@ -302,12 +306,28 @@ GGZStateID ggzcore_server_get_state(GGZServer *server)
 }
 
 
-int ggzcore_server_get_cur_room(GGZServer *server)
+GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 {
 	if (!server)
-		return -1;
+		return NULL;
 
 	return server->room;
+}
+
+
+GGZRoom* ggzcore_server_get_room(GGZServer *server, const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZRoom data;
+
+	if (!server)
+		return NULL;
+	
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(server->room_list, &data)))
+		return NULL;
+	
+	return _ggzcore_list_get_data(entry);
 }
 
 
@@ -316,51 +336,30 @@ int ggzcore_server_get_num_rooms(GGZServer *server)
 	if (!server)
 		return -1;
 
-	return _ggzcore_roomlist_get_num(server->room_list);
-}
-
-GGZRoomList* ggzcore_server_get_roomlist(GGZServer *server)
-{
-	if (!server)
-		return NULL;
-
-	return server->room_list;
+	return server->num_rooms;
 }
 
 
 char** ggzcore_server_get_room_names(GGZServer *server)
 {
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZRoom *room;
+	
 	if (!server)
 		return NULL;
-
-	return _ggzcore_roomlist_get_room_names(server->room_list);
-}
-
-
-char* ggzcore_server_get_room_name(GGZServer *server, const unsigned int id)
-{
-	if (!server || !server->room_list)
-		return NULL;
 	
-	return _ggzcore_roomlist_get_room_name(server->room_list, id);
-}
-
-				    
-char* ggzcore_server_get_room_desc(GGZServer *server, const unsigned int id)
-{
-	if (!server || !server->room_list)
-		return NULL;
+	if (!(names = calloc((server->num_rooms + 1), sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_get_room_names");
+	cur = _ggzcore_list_head(server->room_list);
+	while (cur) {
+		room = _ggzcore_list_get_data(cur);
+		names[i++] = room->name;
+		cur = _ggzcore_list_next(cur);
+	}
 	
-	return _ggzcore_roomlist_get_room_desc(server->room_list, id);
-}
-
-				    
-int ggzcore_server_get_room_gametype(GGZServer *server, const unsigned int id)
-{
-	if (!server || !server->room_list)
-		return -1;
-	
-	return _ggzcore_roomlist_get_room_type(server->room_list, id);
+	return names;
 }
 
 
@@ -465,7 +464,8 @@ void ggzcore_server_join_room(GGZServer *server, const int room)
 	status = _ggzcore_net_send_join_room(server->fd, room);
 	/* FIXME: handle errors */
 
-	server->new_room = room;
+	server->new_room = ggzcore_server_get_room(server, room);
+	
 	_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
 }
 
@@ -485,22 +485,6 @@ void ggzcore_server_logout(GGZServer *server)
 	/* FIXME: handle errors */
 
 	_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
-}
-
-
-void ggzcore_server_chat(GGZServer *server, 
-			 const GGZChatOp opcode,
-			 const char *player,
-			 const char *msg)
-{
-	int status;
-
-	if (!server)
-		return;
-	
-	status = _ggzcore_net_send_chat(server->fd, opcode, player, msg);
-
-	return GGZ_HOOK_OK;
 }
 
 
@@ -567,7 +551,20 @@ int ggzcore_server_write_data(GGZServer *server)
 	return 0;
 }
 
-/* Internal library functions (prototypes in connection.h) */
+/* Internal library functions (prototypes in room.h) */
+
+void _ggzcore_server_chat(GGZServer *server, 
+			  const GGZChatOp opcode,
+			  const char *player,
+			  const char *msg)
+{
+	int status;
+
+	status = _ggzcore_net_send_chat(server->fd, opcode, player, msg);
+	/* FIXME: check for errors */
+}
+
+
 
 /* Static functions internal to this file */
 
@@ -711,11 +708,18 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 	int i, num, id, game, status;
 	char *name;
 	char *desc = NULL;
+	struct _GGZRoom *room;
 
-	if (server->room_list)
-		_ggzcore_roomlist_free(server->room_list);
-
-	server->room_list = _ggzcore_roomlist_new();
+	/* Clear existing list (if any) */
+	if (server->room_list) {
+		_ggzcore_list_destroy(server->room_list);
+		server->num_rooms = 0;
+	}
+	
+	server->room_list = _ggzcore_list_create(_ggzcore_room_compare,
+						 _ggzcore_room_copy,
+						 _ggzcore_room_destroy,
+						 0);
 	
 	status = _ggzcore_net_read_num_rooms(server->fd, &num);
 	/* FIXME: handle errors */
@@ -726,9 +730,14 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 		status = _ggzcore_net_read_room(server->fd, 
 						server->room_verbose,
 						&id, &name, &game, &desc);
+		
+		ggzcore_debug(GGZ_DBG_ROOM, "Adding room %d to room list", id);
+		
+		room = _ggzcore_room_new(server, id, name, game, desc);
 		/* FIXME: handle errors */
-		_ggzcore_roomlist_add(server->room_list, id, name, game, desc);
-
+		if ( (_ggzcore_list_insert(server->room_list, room) == 0))
+			server->num_rooms++;
+		
 		/* Free allocated memory */
 		if (desc)
 			free(desc);
@@ -751,28 +760,27 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 
 	switch (status) {
 	case 0:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		server->room = server->new_room;
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
-		/* FIXME: create new GGZRoom object */
 		break;
 	case E_AT_TABLE:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
 				      "Can't change rooms while at a table");
 		break;
 		
 	case E_IN_TRANSIT:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
 				      "Can't change rooms while joining/leaving a table");
 		break;
 		
 	case E_BAD_OPTIONS:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
 				      "Bad room number");
 				      
@@ -788,19 +796,31 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 }
 
 
+static void _ggzcore_server_handle_chat(GGZServer *server)
+{
+	GGZChatOp op;
+	char *name, *msg;
+	int status;
+	
+	status = _ggzcore_net_read_chat(server->fd, &op, &name, &msg);
+	/* FIXME: handle errors */
+	
+	_ggzcore_room_add_chat(server->room, op, name, msg);
+	
+	if (name)
+		free(name);
+
+	if (msg)
+		free(msg);
+}
+
+
 static void _ggzcore_server_handle_list_players(GGZServer *server){}
 static void _ggzcore_server_handle_list_tables(GGZServer *server){}
 static void _ggzcore_server_handle_list_types(GGZServer *server){}
 
 
 /* completely bogus functions to avoid messiness */
-static void _ggzcore_server_handle_chat(GGZServer *server)
-{
-	_ggzcore_net_read_chat(server->fd);
-	ggzcore_event_process_all();
-}
-
-
 static void _ggzcore_server_handle_update_players(GGZServer *server)
 {
 	_ggzcore_net_read_update_players(server->fd);

@@ -1,22 +1,13 @@
-- try doing state as a single GGZServer event: GGZ_STATE_CHANGE
-
-- implement GGZ_NET_ERROR event
-
-- implement GGZ_PROTO_ERROR event
-
-- commit
-
-- start implementing room object with all its events
+- finish up room object: player and table lists
 
 - eliminate USER events.  User actions will be performed via function
   calls and will take place immediately.
 
-- rather than permanently having a callback for events like
-  SERVER_ROOM_CHANGE, we will register one when the client makes a
-  request for a room change.  This hook then gets removed after it is
-  called.  We can use this mechanism to pass information such as
-  whether a verbose listing was requested, or what room was requested
-  (this is really a frontend TODO)
+- remove event.c
+
+- implement GGZ_NET_ERROR event
+
+- implement GGZ_PROTO_ERROR event
 
 - an error sybsystem is crucial
   Kinds of errors:
@@ -27,5 +18,11 @@
   Bad data from user: report or ignore
   What to do when an error occurs during a callback?1
 
-- remove event.c
+- rather than permanently having a callback for events like
+  SERVER_ROOM_CHANGE, we will register one when the client makes a
+  request for a room change.  This hook then gets removed after it is
+  called.  We can use this mechanism to pass information such as
+  whether a verbose listing was requested, or what room was requested
+  (this is really a frontend TODO)
+
 

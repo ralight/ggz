@@ -124,7 +124,6 @@ static GGZStateID _server_chat_fail_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };
-#endif
 
 static GGZStateID _server_chat_msg_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -160,7 +159,6 @@ static GGZStateID _server_chat_beep_states[] = {
 	-1          
 };                  
 
-#if 0
 static GGZStateID _server_logout_states[] = {
 	GGZ_STATE_LOGGING_OUT,
 	-1          
@@ -342,22 +340,6 @@ static struct _GGZEvent _ggz_events[] = {
 	{GGZ_SERVER_LIST_PLAYERS,   
 	 "server_list_players",               
 	 _server_list_players_states},
-
-	{GGZ_SERVER_CHAT_MSG,       
-	 "server_chat_msg",                   
-	 _server_chat_msg_states},
-
-	{GGZ_SERVER_CHAT_ANNOUNCE,  
-	 "server_chat_announce",              
-	 _server_chat_announce_states},
-
-	{GGZ_SERVER_CHAT_PRVMSG,    
-	 "server_chat_prvmsg",                
-	 _server_chat_prvmsg_states},
-
-	{GGZ_SERVER_CHAT_BEEP,      
-	 "server_chat_beep",                  
-	 _server_chat_beep_states},
 
 	{GGZ_SERVER_ROOM_ENTER,     
 	 "server_room_enter",                        

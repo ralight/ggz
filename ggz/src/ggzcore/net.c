@@ -43,6 +43,7 @@
 #include <errno.h>
 
 /* Handlers for various server commands */
+#if 0
 static void _ggzcore_net_read_list_players(const unsigned int fd);
 static void _ggzcore_net_read_list_tables(const unsigned int fd);
 static void _ggzcore_net_read_list_types(const unsigned int fd);
@@ -51,6 +52,8 @@ static void _ggzcore_net_read_list_types(const unsigned int fd);
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
 				  const EsDataType);
 			 
+#endif
+
 
 void _ggzcore_net_init(void)
 {
@@ -181,11 +184,10 @@ int _ggzcore_net_send_chat(const unsigned int fd,
 	return 0;
 }
 
-
+#if 0
 static void _ggzcore_net_err_func(const char * msg, const EsOpType op, 
 				  const EsDataType data)
 {
-#if 0
 	switch(op) {
 	case ES_CREATE:
 		ggzcore_event_enqueue(GGZ_SERVER_CONNECT_FAIL, (void*)msg, 
@@ -199,8 +201,8 @@ static void _ggzcore_net_err_func(const char * msg, const EsOpType op,
 	default:
 		break;
 	}
-#endif
 }
+#endif
 			 
 
 int _ggzcore_net_read_opcode(const unsigned int fd, GGZServerOp *op)
@@ -230,7 +232,7 @@ int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol)
 int _ggzcore_net_read_login(const unsigned int fd)
 {
 	char status, res;
-	int checksum, reservations;
+	int checksum;
 
 	if (es_read_char(fd, &status) < 0)
 		return -1;
@@ -338,7 +340,7 @@ int _ggzcore_net_read_room_join(const unsigned int fd, char *status)
 	return 0;
 }
 		
-
+#if 0
 static void _ggzcore_net_read_list_players(const unsigned int fd)
 {
 	int i, num, table;
@@ -361,7 +363,7 @@ static void _ggzcore_net_read_list_players(const unsigned int fd)
 	/* FIXME: read in information and actually pass back to client */
 	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
 }
-
+#endif
 
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status)
 {
@@ -375,38 +377,23 @@ int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status)
 }
 
 
-int _ggzcore_net_read_chat(const unsigned int fd)
+int _ggzcore_net_read_chat(const unsigned int fd, GGZChatOp *op, char **name, 
+			   char **msg)
 {
-	unsigned char subop;
-	char** data;
+	unsigned char opcode;
 
-	if (!(data = calloc(2, sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in net_read_chat");
-
-	if (es_read_char(fd, &subop) < 0
-	    || es_read_string_alloc(fd, &(data[0])) < 0)
+	if (es_read_char(fd, &opcode) < 0
+	    || es_read_string_alloc(fd, name) < 0)
 		return -1;
+	
+	ggzcore_debug(GGZ_DBG_SERVER, "opcode = %d", opcode);	
 
-	if (subop & GGZ_CHAT_M_MESSAGE) 
-		if (es_read_string_alloc(fd, &(data[1])) < 0)
+	*op = opcode;
+
+	if (opcode & GGZ_CHAT_M_MESSAGE) 
+		if (es_read_string_alloc(fd, msg) < 0)
 			return -1;
 
-	switch((GGZChatOp)subop) {
-	case GGZ_CHAT_NORMAL:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_MSG, data, NULL);
-		break;
-	case GGZ_CHAT_ANNOUNCE:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
-		break;
-	case GGZ_CHAT_PERSONAL:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
-		break;
-	case GGZ_CHAT_BEEP:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_BEEP, data, NULL);
-		break;
-	}
-
-	/* FIXME: come up with a function to free data */
 	return 0;
 }
 
@@ -525,7 +512,7 @@ int _ggzcore_net_read_update_tables(const unsigned int fd)
 	return 0;
 }
 
-
+#if 0
 static void _ggzcore_net_read_list_tables(const unsigned int fd)
 {
 	int total, id, room, type, num, i, x, open;
@@ -589,3 +576,4 @@ static void _ggzcore_net_read_list_types(const unsigned int fd)
 					bots, desc, author, url);
 	}
 }
+#endif

@@ -24,6 +24,35 @@
  */
 
 
+#ifndef __TABLE_H_
+#define __TABLE_H_
+
+/* Table Information */
+struct _GGZTable {
+ 
+        /* Table number */
+        int number;
+ 
+        /* Game Type */
+        int type;
+
+        /* Table state */
+        char *state;
+
+        /* Total seats */
+        int seats;
+
+        /* Open seats */
+        int open;
+        
+        /* Computer seats */
+        int computers;
+
+	/* Table description */
+	char *desc;        
+};
+
+
 
 void _ggzcore_table_list_clear(void);
 
@@ -38,15 +67,4 @@ int _ggzcore_table_list_leave(const int number);
 int _ggzcore_table_list_replace(const char* name, const int table);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+#endif /* __TABLE_H_ */
