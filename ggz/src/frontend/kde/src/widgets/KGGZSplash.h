@@ -34,11 +34,9 @@
 #ifndef KGGZ_SPLASH_H
 #define KGGZ_SPLASH_H
 
-// KGGZ includes
-#include "KGGZSplashScreen.h"
-
 // Qt includes
 #include <qwidget.h>
+#include <qstringlist.h>
 
 // Cover main window with nice image
 class KGGZSplash : public QWidget
@@ -50,9 +48,24 @@ class KGGZSplash : public QWidget
 		// Destructor
 		~KGGZSplash();
 
+	protected:
+		// Drawing uzdates
+		void paintEvent(QPaintEvent *e);
+		// Animation trigger
+		void timerEvent(QTimerEvent *e);
+
 	private:
-		// Widget holding the image
-		KGGZSplashScreen *m_splash;
+		// move the banners
+		void paintTitle();
+		// Draw the TV containing game shots
+		void paintTV();
+
+		// Widget holding the banners
+		QWidget *m_kggz, *m_version, *m_ggz;
+		// List of images to show in the animation
+		QStringList m_list;
+		// Current animation frame
+		int m_current;
 };
 
 #endif

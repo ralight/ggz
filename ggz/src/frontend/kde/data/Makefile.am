@@ -1,4 +1,4 @@
-SUBDIRS = icons kde browser .
+SUBDIRS = icons kde browser splash .
 
 pix_DATA = startup.png grubbybig.png
 

@@ -15,7 +15,6 @@ libkggzui_a_SOURCES = \
 	KGGZSplash.cpp \
 	KGGZLogo.cpp \
 	KGGZMotd.cpp \
-	KGGZSplashScreen.cpp \
 	KGGZChatLine.cpp \
 	KGGZGrubby.cpp \
 	KGGZPrefEnv.cpp \
@@ -33,7 +32,6 @@ noinst_HEADERS = \
 	KGGZSplash.h \
 	KGGZLogo.h \
 	KGGZMotd.h \
-	KGGZSplashScreen.h \
 	KGGZChatLine.h \
 	KGGZGrubby.h \
 	KGGZPrefEnv.h \
