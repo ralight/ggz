@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: game.c 3484 2002-02-27 05:40:53Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -44,35 +44,6 @@
 #include "net.h"
 #include "options.h"
 #include "play.h"
-
-struct game_function_pointers game_funcs = {
-	game_is_valid_game,
-	game_init_game,
-	game_get_options,
-	game_handle_option,
-	game_get_option_text,
-	game_set_player_message,
-	game_get_bid_text,
-	game_start_bidding,
-	game_get_bid,
-	game_handle_bid,
-	game_next_bid,
-	game_start_playing,
-	game_verify_play,
-	game_next_play,
-	game_get_play,
-	game_handle_play,
-	game_deal_hand,
-	game_end_trick,
-	game_end_hand,
-	game_start_game,
-	game_test_for_gameover,
-	game_handle_gameover,
-	game_map_card,
-	game_compare_cards,
-	game_send_hand
-};
-
 
 static void bad_game(char *func)
 {

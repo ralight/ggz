@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: game.h 3484 2002-02-27 05:40:53Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -32,8 +32,6 @@
 #include "types.h"
 
 /* Game-specific functions */
-
-extern struct game_function_pointers game_funcs;
 
 /** @brief Is this game valid?
  *  @return TRUE iff the game is valid with the current settings. */
