@@ -15,6 +15,8 @@ ggzd_dots_SOURCES = ggz.c \
 		    main.c \
 		    game.c \
                     game.h \
+		    ai.c \
+		    ai.h \
 		    protocols.h
 
 

@@ -26,6 +26,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <time.h>
 #include <ggz.h>
 
 #include <game.h>
@@ -42,6 +44,9 @@ int main(void)
 	
 	if ( (ggz_sock = ggz_connect()) < 0)
 		return -1;
+
+	/* Seed the random number generator */
+	srandom((unsigned)time(NULL));
 	
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggz_sock, &active_fd_set);

@@ -258,16 +258,17 @@ int game_send_gameover(char winner)
 int game_move(void)
 {
 	int num = dots_game.turn;
-	
-#if 0
-	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
-		move = game_bot_move();
-		game_update(DOTS_EVENT_MOVE, &move);
-	}
-	else
-#endif
+	unsigned char dir, x, y;
 
-	game_req_move(num);
+	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
+		dir = ai_move(&x, &y);
+		if(dir == 0)
+			/* FIXME: These will cause recursion on score */
+			game_update(DOTS_EVENT_MOVE_V, &x, &y);
+		else
+			game_update(DOTS_EVENT_MOVE_H, &x, &y);
+	} else
+		game_req_move(num);
 
 	return 0;
 }
