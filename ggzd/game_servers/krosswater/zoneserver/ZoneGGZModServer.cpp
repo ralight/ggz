@@ -42,26 +42,33 @@ int ZoneGGZModServer::game_input(int zone_fd, int *p_fd)
 	switch(op)
 	{
 		case ZoneGGZ::gamelaunch:
+			ZONEDEBUG("--> gamelaunch?\n");
 			if(ZoneGGZModGGZ::ggz_game_launch() == 0)
 			{
+				ZONEDEBUG("<-- gamelaunch!\n");
 				status = game_update(ZoneGGZ::launch, NULL);
 			}
 			break;
 		case ZoneGGZ::gamejoin:
+			ZONEDEBUG("--> gamejoin?\n");
 			if(ZoneGGZModGGZ::ggz_player_join(&seat, p_fd) == 0)
 			{
+				ZONEDEBUG("<-- gamejoin!\n");
 				game_update(ZoneGGZ::join, &seat);
 				status = 1;
 			}
 			break;
 		case ZoneGGZ::gameleave:
+			ZONEDEBUG("--> gameleave?\n");
 			if((status = ZoneGGZModGGZ::ggz_player_leave(&seat, p_fd)) == 0)
 			{
+				ZONEDEBUG("<-- gameleave!\n");
 				game_update(ZoneGGZ::leave, &seat);
 				status = 2;
 			}
 			break;
 		case ZoneGGZ::gameover:
+			ZONEDEBUG("--> gameover?\n");
 			status = 3;
 			break;
 		default:
