@@ -1,9 +1,0 @@
-*.debhelper
-*.substvars
-files
-tmp
-libggzcore1
-libggzcore-dev
-libggzmod0
-libggzmod-dev
-
