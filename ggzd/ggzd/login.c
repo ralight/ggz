@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 3740 2002-04-05 05:05:53Z jdorje $
+ * $Id: login.c 3744 2002-04-05 05:54:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -97,12 +97,19 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	/* Check guest names vs. the database */
 	strcpy(db_pe.handle, name);
 	db_status = ggzdb_player_get(&db_pe);
-	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND)
-			name_ok = 0;
+	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND) {
+		dbg_msg(GGZ_DBG_CONNECTION,
+		        "Guest player trying to use actual login name %s.",
+		        name);
+		name_ok = 0;
+	}
 	
 	/* Add the player name to the hash table */
-	if (name_ok)
-		name_ok = hash_player_add(name, player);
+	if (name_ok && !hash_player_add(name, player)) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Could not add player %s to hash.",
+		        name);
+		name_ok = 0;
+	}
 
 
 	/* Error if the name is already in the hash table or guest
