@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6335 2004-11-12 04:40:58Z jdorje $
+ * $Id: main_win.c 6341 2004-11-12 17:32:37Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -476,7 +476,7 @@ GtkWidget *create_main_win(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(drawingarea);
 	gtk_box_pack_start(GTK_BOX(main_box), drawingarea, TRUE, TRUE, 0);
-	gtk_widget_set_usize(drawingarea, 510, 510);
+	gtk_widget_set_size_request(drawingarea, 510, 510);
 	gtk_widget_set_events(drawingarea,
 			      GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 

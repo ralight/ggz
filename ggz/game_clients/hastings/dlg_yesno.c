@@ -98,7 +98,6 @@ GtkWidget *create_dlg_yesno(const char *question)
 	gtk_widget_show(yes_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), yes_button, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(yes_button, 64, -2);
 
 	no_button = gtk_button_new_with_label(_("No"));
 	gtk_widget_ref(no_button);
@@ -107,7 +106,6 @@ GtkWidget *create_dlg_yesno(const char *question)
 	gtk_widget_show(no_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), no_button, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(no_button, 64, -2);
 
 	g_signal_connect_swapped(GTK_OBJECT(dlg_yesno), "delete_event",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
