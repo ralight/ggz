@@ -356,6 +356,29 @@ on_btnChatSend_clicked                 (GtkButton       *button,
 }
 
 
+void
+on_btnLaunch_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_btnJoin_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+on_btnWatch_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
 
 void
 on_entCharNew_activate                 (GtkEntry        *entry,

@@ -171,7 +171,7 @@ create_winProfiles (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnNew);
   GTK_WIDGET_SET_FLAGS (btnNew, GTK_CAN_DEFAULT);
 
-  btnApply = gtk_button_new_with_mnemonic (_("_Apply"));
+  btnApply = gtk_button_new_with_mnemonic (_("_Modify"));
   gtk_widget_set_name (btnApply, "btnApply");
   gtk_widget_show (btnApply);
   gtk_widget_set_sensitive (GTK_WIDGET(btnApply), FALSE);
@@ -233,10 +233,10 @@ create_winProfiles (void)
                       GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnApply), "clicked",
                       GTK_SIGNAL_FUNC (on_btnApply_clicked),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnDelete), "clicked",
                       GTK_SIGNAL_FUNC (on_btnDelete_clicked),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnDone), "clicked",
                       GTK_SIGNAL_FUNC (on_btnDone_clicked),
                       GTK_OBJECT (winProfiles));

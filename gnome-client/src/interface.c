@@ -434,6 +434,8 @@ create_login (void)
   GtkTreeViewColumn *colTables;
   GtkWidget *hbuttonbox1;
   GtkWidget *btnLaunch;
+  GtkWidget *btnJoin;
+  GtkWidget *btnWatch;
   gint user_data;
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -906,7 +908,7 @@ create_login (void)
   gtk_widget_show (vbTables);
   gtk_fixed_put (GTK_FIXED (fixMain), vbTables, 191, 110);
   gtk_widget_set_usize (vbTables, 428, 348);
-//---------------
+
   stoTables = gtk_list_store_new (4, G_TYPE_UINT, G_TYPE_UINT, G_TYPE_UINT, G_TYPE_STRING);
   treTables = gtk_tree_view_new_with_model (GTK_TREE_MODEL (stoTables));
   gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treTables), TRUE);
@@ -940,10 +942,22 @@ create_login (void)
   gtk_box_pack_start (GTK_BOX (vbTables), hbuttonbox1, FALSE, FALSE, 5);
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 0);
 
-  btnLaunch = gtk_button_new_with_mnemonic (_("Launch New Game"));
+  btnLaunch = gtk_button_new_with_mnemonic (_("Launch Game"));
   gtk_widget_set_name (btnLaunch, "btnLaunch");
   gtk_widget_show (btnLaunch);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnLaunch);
+  GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
+
+  btnJoin = gtk_button_new_with_mnemonic (_("Join Game"));
+  gtk_widget_set_name (btnJoin, "btnJoin");
+  gtk_widget_show (btnJoin);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnJoin);
+  GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
+
+  btnWatch = gtk_button_new_with_mnemonic (_("Watch Game"));
+  gtk_widget_set_name (btnWatch, "btnWatch");
+  gtk_widget_show (btnWatch);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnWatch);
   GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
 
   pmStar1 = create_pixmap (window, "star1.xpm");
@@ -1081,6 +1095,15 @@ create_login (void)
 		      NULL);
   gtk_signal_connect (GTK_OBJECT (btnChatLogoff), "clicked",
                       GTK_SIGNAL_FUNC (on_btnChatLogoff_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (btnLaunch), "clicked",
+                      GTK_SIGNAL_FUNC (on_btnLaunch_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (btnJoin), "clicked",
+                      GTK_SIGNAL_FUNC (on_btnJoin_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (btnWatch), "clicked",
+                      GTK_SIGNAL_FUNC (on_btnWatch_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (btnChatSend), "clicked",
                       GTK_SIGNAL_FUNC (on_btnChatSend_clicked),
