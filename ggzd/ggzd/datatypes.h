@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: datatypes.h 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -45,7 +45,7 @@ typedef struct {
 	char clear_stats;
 	int stat_clr_time;
 	int main_port;
-	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
+	char *game_dir;		/* CLEANUP CANDIDATE - should be deallocated */
 	char *tmp_dir;		/* cleanup() */
 	char *conf_dir;		/* cleanup() */
 	char *data_dir;		/* cleanup() */

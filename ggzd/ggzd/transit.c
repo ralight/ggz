@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4497 2002-09-09 10:28:33Z jdorje $
+ * $Id: transit.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -82,8 +82,7 @@ int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *call
 	int status;
 	struct GGZSeatEvent *data;
 
-	if ( (data = malloc(sizeof(struct GGZSeatEvent))) == NULL)
-		err_sys_exit("malloc failed in transit_seat_event");
+	data = ggz_malloc(sizeof(struct GGZSeatEvent));
 
 	data->seat = seat;
 	strcpy(data->caller, caller);
@@ -98,8 +97,7 @@ int transit_spectator_event(int room, int index, struct GGZTableSpectator specta
 	int status;
 	struct GGZSpectatorEvent *data;
 
-	if ( (data = malloc(sizeof(struct GGZSpectatorEvent))) == NULL)
-		err_sys_exit("malloc failed in transit_spectator_event");
+	data = ggz_malloc(sizeof(struct GGZSpectatorEvent));
 
 	data->spectator = spectator;
 	strcpy(data->caller, caller);
@@ -121,8 +119,7 @@ int transit_player_event(char* name, char opcode, int status, int index)
 	if ((opcode == GGZ_TRANSIT_JOIN || opcode == GGZ_TRANSIT_JOIN_SPECTATOR) && status == 0)
 		size += sizeof(int);
 
-	if ( (data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in transit_player_event");
+	data = ggz_malloc(size);
 	
 	/* Start packing the data */
 	current = (char*)data;
@@ -358,16 +355,17 @@ static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event
 		table->index, table->room);
 	
 	/* Save transit info so we have it when game module responds */
-	table->transit_name = strdup(event->caller);
+	table->transit_name = ggz_strdup(event->caller);
 	table->transit_seat = event->seat.index;
 
 	/* Assemble seat structure */
 	seat.num = event->seat.index;
 	seat.type = event->seat.type;
 	seat.fd = event->seat.fd;
-	/* Only dup name if it's not empty */
+
+	/* Only send name if it's not empty */
 	if (event->seat.name[0] != '\0')
-		seat.name = strdup(event->seat.name);
+		seat.name = event->seat.name;
 	else
 		seat.name = NULL;
 
@@ -377,9 +375,6 @@ static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event
 		status = -1;
 	}
 
-	if (seat.name)
-		free(seat.name);
-	
 	/* Must close remote end of socketpair */
 	if (event->seat.type == GGZ_SEAT_PLAYER)
 		close(seat.fd);
@@ -401,17 +396,18 @@ static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEv
 	dbg_msg(GGZ_DBG_TABLE,
 		"Sending spectator for table %d in room %d, index %d",
 		table->index, table->room, event->spectator.index);
-	
+
 	/* Save transit info so we have it when game module responds */
-	table->transit_name = strdup(event->caller);
+	table->transit_name = ggz_strdup(event->caller);
 	table->transit_seat = event->spectator.index;
 
 	/* Assemble seat structure */
 	spectator.num = event->spectator.index;
 	spectator.fd = event->spectator.fd;
-	/* Only dup name if it's not empty */
+
+	/* Only send name if it's not empty */
 	if (event->spectator.name[0] != '\0')
-		spectator.name = strdup(event->spectator.name);
+		spectator.name = event->spectator.name;
 	else
 		spectator.name = NULL;
 
@@ -424,9 +420,6 @@ static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEv
 		status = -1;
 	}
 
-	if (spectator.name)
-		free(spectator.name);
-	
 	/* Must close remote end of socketpair */
 	close(spectator.fd);
 	
@@ -473,8 +466,8 @@ static int transit_find_spectator(GGZTable *table, char *name)
 	/* Otherwise increase the size of the spectator array. */
 	old = table->max_num_spectators;
 	new = old ? old * 2 : 1;
-	table->spectators = realloc(table->spectators,
-				    new * sizeof(*table->spectators));
+	table->spectators = ggz_realloc(table->spectators,
+					new * sizeof(*table->spectators));
 	for (i = old; i < new; i++)
 		table->spectators[i][0] = '\0';
 	table->max_num_spectators = new;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 3762 2002-04-06 06:00:40Z jdorje $
+ * $Id: motd.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -79,9 +79,9 @@ void motd_read_file(void)
 		fullpath = motd_info.motd_file;
 	else {
 		len = strlen(motd_info.motd_file) + strlen(opt.conf_dir) + 2;
-		if((fullpath = malloc(len)) == NULL)
-			err_sys_exit("malloc error in motd_read_file()");
-		snprintf(fullpath, len, "%s/%s", opt.conf_dir, motd_info.motd_file);
+		fullpath = ggz_malloc(len);
+		snprintf(fullpath, len, "%s/%s",
+			 opt.conf_dir, motd_info.motd_file);
 	}
 
 	/* Try to open the file */
@@ -114,24 +114,18 @@ void motd_read_file(void)
 	/* Initialize stuff that is constant as long as the server is up */
 
 	/* Get the hostname */
-	if((motd_info.hostname = malloc(128)) == NULL)
-		err_sys_exit("malloc error in motd_read_file()");
+	motd_info.hostname = ggz_malloc(128);
 	if(gethostname(motd_info.hostname, 127) != 0)
 		strcpy(motd_info.hostname, "hostname.toolong.fixme");
 
 	/* Get the OS and CPU Type */
 	if(uname(&unames) < 0)
 		err_sys_exit("uname error in motd_parse_motd()");
-	if((motd_info.sysname = malloc(strlen(unames.sysname)+1)) == NULL)
-		err_sys_exit("malloc error in motd_read_file()");
-	strcpy(motd_info.sysname, unames.sysname);
-	if((motd_info.cputype = malloc(strlen(unames.machine)+1)) == NULL)
-		err_sys_exit("malloc error in motd_read_file()");
-	strcpy(motd_info.cputype, unames.machine);
+	motd_info.sysname = ggz_strdup(unames.sysname);
+	motd_info.cputype = ggz_strdup(unames.machine);
 
 	/* Get our port number */
-	if((motd_info.port = malloc(6)) == NULL)
-		err_sys_exit("malloc error in motd_read_file()");
+	motd_info.port = ggz_malloc(6);
 	snprintf(motd_info.port, 6, "%d", opt.main_port);
 }
 

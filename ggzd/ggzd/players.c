@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4465 2002-09-08 06:34:27Z jdorje $
+ * $Id: players.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -91,8 +91,7 @@ GGZPlayer* player_new(GGZClient *client)
 	GGZPlayer *player;
 	
 	/* Allocate new player structure */
-	if ( (player = malloc(sizeof(GGZPlayer))) == NULL)
-		err_sys_exit("malloc error in player_new()");
+	player = ggz_malloc(sizeof(GGZPlayer));
 	
 	/* Initialize player data */
 	pthread_rwlock_init(&player->lock, NULL);
@@ -726,33 +725,34 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 
 	pthread_rwlock_rdlock(&rooms[room].lock);
 	count = rooms[room].player_count;
-	if ( (data = calloc(count, sizeof(GGZPlayer))) == NULL) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		err_sys_exit("calloc error in player_list_players()");
-	}
+	/* FIXME: data should be allocated on the stack, not in the heap. */
+	data = ggz_malloc(count * sizeof(GGZPlayer));
 	for (i = 0; i < count; i++) {
 		p = rooms[room].players[i];
 		pthread_rwlock_rdlock(&p->lock);
+		/* Does this copy all applicable player data? */
 		data[i] = *p;
 		pthread_rwlock_unlock(&p->lock);
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	if (net_send_player_list_count(player->client->net, count) < 0) {
-		free(data);
+		ggz_free(data);
 		return GGZ_REQ_DISCONNECT;
 	}
 
 	for (i = 0; i < count; i++)
 		if (net_send_player(player->client->net, &data[i]) < 0) {
-			free(data);
+			ggz_free(data);
 			return GGZ_REQ_DISCONNECT;
 		}
 
-	if (net_send_player_list_end(player->client->net) < 0)
+	if (net_send_player_list_end(player->client->net) < 0) {
+		ggz_free(data);
 		return GGZ_REQ_DISCONNECT;
+	}
 
-	free(data);
+	ggz_free(data);
 	return GGZ_REQ_OK;
 }
 
@@ -845,7 +845,7 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 		return GGZ_REQ_DISCONNECT;
 
 	if (count > 0)
-		free(my_tables);
+		ggz_free(my_tables);
 	
 	return GGZ_REQ_OK;
 }
@@ -969,5 +969,3 @@ void player_handle_pong(GGZPlayer *player)
 	/* Queue our next ping */
 	player->next_ping = time(NULL) + opt.ping_freq;
 }
-
-

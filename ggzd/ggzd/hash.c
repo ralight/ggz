@@ -100,10 +100,8 @@ int hash_player_add(char *orig_name, GGZPlayer* player)
 	/* If it doesn't exist, we can add it */
 	if(not_exist) {
 		/* Allocate space for hash entry and name */
-		if((hl = malloc(sizeof(HashList))) == NULL)
-			err_sys_exit("malloc failed in hash_player_add()");
-		if((hl->name = strdup(name)) == NULL)
-			err_sys_exit("malloc failed in hash_player_add()");
+		hl = ggz_malloc(sizeof(HashList));
+		hl->name = ggz_strdup(name);
 
 		/* Set the data items (name was set above) */
 		hl->player = player;
@@ -229,8 +227,8 @@ void hash_player_delete(char *orig_name)
 	pthread_rwlock_unlock(&hash_list_lock[hash_num]);
 
 	/* Finally we can free up the memory for our entry */
-	free(hl->name);
-	free(hl);
+	ggz_free(hl->name);
+	ggz_free(hl);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4479 2002-09-09 02:50:06Z jdorje $
+ * $Id: room.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -118,9 +118,8 @@ void room_initialize(void)
 
 	room_info.num_rooms=1;
 
-	/* Calloc a big enough array to hold all our first room */
-	if((rooms = calloc(room_info.num_rooms, sizeof(RoomStruct))) == NULL)
-		err_sys_exit("calloc failed in room_initialize_lists()");
+	/* Allocate a big enough array to hold all our first room */
+	rooms = ggz_malloc(room_info.num_rooms * sizeof(RoomStruct));
 
 	/* Initialize the chat_tail and lock */
 	rooms[0].event_tail = NULL;
@@ -139,10 +138,8 @@ void room_create_additional(void)
 
 	room_info.num_rooms++;
 
-	/* Realloc the rooms array */
-	rooms = realloc(rooms, room_info.num_rooms * sizeof(RoomStruct));
-	if(rooms == NULL)
-		err_sys_exit("realloc failed in room_create_new()");
+	/* Reallocate the room's array */
+	rooms = ggz_realloc(rooms, room_info.num_rooms * sizeof(RoomStruct));
 
 	/* Initialize the chat_tail and lock on the new one */
 	rooms[room_info.num_rooms-1].player_count = 0;
@@ -187,12 +184,12 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 	/* Generate a log entry if room was full */
 	if(result == E_ROOM_FULL) {
 		pthread_rwlock_rdlock(&rooms[room].lock);
-		rname = strdup(rooms[room].name);
+		rname = ggz_strdup(rooms[room].name);
 		pthread_rwlock_unlock(&rooms[room].lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"ROOM_FULL - %s rejected entry to %s",
 			player->name, rname);
-		free(rname);
+		ggz_free(rname);
 	}
 
 	if (net_send_room_join(player->client->net, result) < 0)
@@ -314,8 +311,7 @@ static void room_notify_change(char* name, const int old, const int new)
 	
 	if (old != -1) {
 	/* Send DELETE update to old room */
-		if ( (data = malloc(size)) == NULL)
-			err_sys_exit("malloc failed in room_notify_change");
+		data = ggz_malloc(size);
 
 		current = (char*)data;
 
@@ -331,8 +327,7 @@ static void room_notify_change(char* name, const int old, const int new)
 
 	/* Send ADD update to new room */
 	if (new != -1) {
-		if ( (data = malloc(size)) == NULL)
-			err_sys_exit("malloc failed in room_notify_change");
+		data = ggz_malloc(size);
 
 		current = (char*)data;
 
@@ -354,8 +349,7 @@ void room_notify_lag(char *name, int room)
 	int datalen;
 
 	datalen = strlen(name) + 2;
-	if((data = malloc(datalen)) == NULL)
-		err_sys_exit("malloc failed in player_handle_pong()");
+	data = ggz_malloc(datalen);
 	data[0] = GGZ_UPDATE_LAG;
 	strcpy(data+1, name);
 	event_room_enqueue(room, (GGZEventFunc) room_event_callback,

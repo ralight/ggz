@@ -61,7 +61,7 @@ void daemon_init(void)
 	int fd;
 	FILE *fp;
 	char pid_filename[] = "ggzd.pid";
-	char* pid_file;
+	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
 
 	if ((pid = fork()) < 0)
 		err_sys_exit("fork failed");
@@ -80,12 +80,8 @@ void daemon_init(void)
 	old_umask = umask(S_IWGRP | S_IWOTH);
 
 	/* Form absolute path of pid file */
-	pid_file = malloc(strlen(opt.data_dir) + strlen(pid_filename) + 2);
-	if (pid_file == NULL)
-		err_sys_exit("malloc() failed in daemon_init()");
-	strcpy(pid_file, opt.data_dir);
-	strcat(pid_file, "/");
-	strcat(pid_file, pid_filename);
+	snprintf(pid_file, sizeof(pid_file),
+		 "%s/%s", opt.data_dir, pid_filename);
 
 	if ( (fd = open(pid_file, O_RDWR | O_CREAT | O_EXCL, 
 			S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH)) == -1) {
@@ -134,7 +130,6 @@ void daemon_init(void)
 	 */
 	fflush(fp);
 	fcntl(fd, F_SETFD, (long)1);
-	free(pid_file);
 
 	return;
 }
@@ -143,16 +138,11 @@ void daemon_init(void)
 void daemon_cleanup()
 {
 	char pid_filename[] = "ggzd.pid";
-	char* pid_file;
+	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
 
 	/* Form absolute path of pid file */
-	pid_file = malloc(strlen(opt.data_dir) + strlen(pid_filename) + 2);
-	if (pid_file == NULL)
-		err_sys_exit("malloc() failed in daemon_init()");
-	strcpy(pid_file, opt.data_dir);
-	strcat(pid_file, "/");
-	strcat(pid_file, pid_filename);
+	snprintf(pid_file, sizeof(pid_file), "%s/%s",
+		 opt.data_dir, pid_filename);
 	
 	unlink(pid_file);
-	free(pid_file);
 }

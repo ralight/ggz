@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzdb.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,7 +51,8 @@ static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 /* Function to initialize the database system */
 int ggzdb_init(void)
 {
-	char *fname;
+	const char *suffix = "/ggzdb.ver";
+	char fname[strlen(opt.data_dir) + strlen(suffix) + 1];
 	char vid[7];	/* Space for 123.45 */
 	char version_ok=0;
 	FILE *vfile;
@@ -59,10 +60,8 @@ int ggzdb_init(void)
 	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
-	if((fname = malloc(strlen(opt.data_dir)+11)) == NULL)
-		err_sys_exit("malloc() failed in ggzdb_init()");
-	strcpy(fname, opt.data_dir);
-	strcat(fname, "/ggzdb.ver");
+	snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
+
 	if((vfile = fopen(fname, "r")) == NULL) {
 		/* File not found, so we can create it */
 		if((vfile = fopen(fname, "w")) == NULL)
@@ -76,7 +75,6 @@ int ggzdb_init(void)
 			version_ok = 1;
 	}
 	fclose(vfile);
-	free(fname);
 
 	if(!version_ok)
 		err_msg_exit("Bad db version id, remove or convert db files");

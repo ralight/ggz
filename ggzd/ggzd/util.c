@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.c 4150 2002-05-04 23:46:47Z jdorje $
+ * $Id: util.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -44,15 +44,15 @@
 static int make_path(const char* full, mode_t mode)
 {
 	const char* slash = "/";
-	char* copy, *dir, *path;
+	char *dir, *copy;
 	struct stat stats;
+	char file[strlen(full) + 1];
+	char path[strlen(full) + 1];
 
-	copy = strdup(full);
+	strcpy(file, full);
+	copy = file;
+	path[0] = 0;
 
-	/* FIXME: check validity */
-	if ( (path = calloc(sizeof(char), strlen(full)+1)) == NULL)
-		err_sys_exit("malloc failed in make_path");
-	
 	/* Skip preceding / */
 	if (copy[0] == '/')
 		copy++;
@@ -60,11 +60,8 @@ static int make_path(const char* full, mode_t mode)
 	while ((dir = strsep(&copy, slash))) {
 		strcat(strcat(path, "/"), dir);
 		if (mkdir(path, mode) < 0
-		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-			free(path);
-			free(copy);
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode)))
 			return -1;
-		}
 	}
 
 	return 0;

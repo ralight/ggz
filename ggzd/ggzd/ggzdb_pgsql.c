@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzdb_pgsql.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,9 +95,10 @@ static PGconn *claimconnection()
 		pthread_mutex_lock(&mutex);
 		if(ggz_list_count(list) < SQL_MAXCONNECTIONS)
 		{
-			conn = (connection_t*)malloc(sizeof(connection_t));
-			snprintf(conninfo, sizeof(conninfo), "host=%s dbname=%s user=%s password=%s",
-				dbhost, dbname, dbusername, dbpassword);
+			conn = ggz_malloc(sizeof(*conn));
+			snprintf(conninfo, sizeof(conninfo),
+				 "host=%s dbname=%s user=%s password=%s",
+				 dbhost, dbname, dbusername, dbpassword);
 			conn->conn = PQconnectdb(conninfo);
 			if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
 			{
@@ -195,7 +196,7 @@ void _ggzdb_close(void)
 	{
 		conn2 = ggz_list_get_data(entry);
 		PQfinish(conn2->conn);
-		free(conn2);
+		ggz_free(conn2);
 		entry = ggz_list_next(entry);
 	}
 	ggz_list_free(list);

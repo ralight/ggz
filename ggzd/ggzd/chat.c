@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4479 2002-09-09 02:50:06Z jdorje $
+ * $Id: chat.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -138,8 +138,7 @@ static int chat_pack(void** data, unsigned char opcode, char* sender,
 	if (msg)
 		size += strlen(msg) + 1;
 	
-	if ( (*data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in chat_room_enqueue");
+	*data = ggz_malloc(size);
 	
 	/* Package data */
 	current = (char*)*data;

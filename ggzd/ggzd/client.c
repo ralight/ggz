@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4161 2002-05-05 18:43:52Z bmh $
+ * $Id: client.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -75,13 +75,14 @@ static void client_create_channel(GGZClient *client);
 void client_handler_launch(int sock)
 {
 	pthread_t thread;
-	void *arg_ptr;
+	int *arg_ptr;
 	int status;
 
-	/* Temporary storage to pass fd */
-	if ((arg_ptr = malloc(sizeof(int))) == NULL)
-		err_sys_exit("malloc error in client_handler_launch()");
-	*((int *)arg_ptr) = sock;
+	/* Temporary storage to pass fd.  This must be malloc'd so that it
+	   will stay intact.  It is deallocated at the beginning of
+	   client_thread_init. */
+	arg_ptr = ggz_malloc(sizeof(*arg_ptr));
+	*arg_ptr = sock;
 
 	status = pthread_create(&thread, NULL, client_thread_init, arg_ptr);
 	if (status != 0) {
@@ -111,7 +112,7 @@ static void* client_thread_init(void *arg_ptr)
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *)arg_ptr);
-	free(arg_ptr);
+	ggz_free(arg_ptr);
 
 	/* Detach thread since no one needs to join us */
 	status = pthread_detach(pthread_self());
@@ -198,8 +199,7 @@ GGZClient* client_new(int fd)
 	GGZClient *client;
 	
 	/* Allocate new client structure */
-	if ( (client = malloc(sizeof(GGZClient))) == NULL)
-		err_sys_exit("malloc error in client_new()");
+	client = ggz_malloc(sizeof(GGZClient));
 
 	client->type = GGZ_CLIENT_GENERIC;
 	client->net = net_new(fd, client);
@@ -322,8 +322,8 @@ static void client_free(GGZClient *client)
 {
 	net_free(client->net);
 	if (client->data)
-		free(client->data);
-	free(client);
+		ggz_free(client->data);
+	ggz_free(client);
 }
 
 

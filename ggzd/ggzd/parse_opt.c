@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: parse_opt.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -162,7 +162,6 @@ void parse_args(int argc, const char *argv[])
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void)
 {
-	char *tempstr;
 	int c_handle = -1;
 
 	/* Use conf_parse on an approrpriate configuration file */
@@ -173,19 +172,16 @@ void parse_conf_file(void)
 		} else
 			err_msg("WARNING:  Local conf file not found!");
 	} else {
-		if((tempstr=malloc(strlen(GGZDCONFDIR)+11)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
+		const char *suffix = "/ggzd.conf";
+		char tmp[strlen(GGZDCONFDIR) + strlen(suffix) + 1];
 
-		strcpy(tempstr, GGZDCONFDIR);  /* If this changes be sure to */
-		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
+		snprintf(tmp, sizeof(tmp), "%s%s", GGZDCONFDIR, suffix);
 
-		if((c_handle = ggz_conf_parse(tempstr, GGZ_CONF_RDONLY)) >= 0) {
+		if((c_handle = ggz_conf_parse(tmp, GGZ_CONF_RDONLY)) >= 0)
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Reading global conf file : %s", tempstr);
-		} else
+				"Reading global conf file : %s", tmp);
+		else
 			err_msg("WARNING:  No configuration file loaded!");
-
-		free(tempstr);
 	}
 
 	/* Get options from the file */
@@ -195,55 +191,30 @@ void parse_conf_file(void)
 	/* Add any defaults which were not config'ed */
 
 	/* If no game_dir, default it to GAMEDIR */
-	if(!opt.game_dir) {
-		if((tempstr=malloc(strlen(GAMEDIR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, GAMEDIR);
-		opt.game_dir = tempstr;
-	}
+	if(!opt.game_dir)
+		opt.game_dir = ggz_strdup(GAMEDIR);
 
 	/* If no conf_dir, default it to GGZDCONFDIR */
-	if(!opt.conf_dir) {
-		if((tempstr=malloc(strlen(GGZDCONFDIR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, GGZDCONFDIR);
-		opt.conf_dir = tempstr;
-	}
+	if(!opt.conf_dir)
+		opt.conf_dir = ggz_strdup(GGZDCONFDIR);
 
 	/* If no data_dir, default it to DATADIR */
-	if(!opt.data_dir) {
-		if((tempstr=malloc(strlen(DATADIR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, DATADIR);
-		opt.data_dir = tempstr;
-	}
+	if(!opt.data_dir)
+		opt.data_dir = ggz_strdup(DATADIR);
 
 	/* If no tmp_dir, default it to TMPDIR */
-	if(!opt.tmp_dir) {
-		if((tempstr=malloc(strlen(TMPDIR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, TMPDIR);
-		opt.tmp_dir = tempstr;
-	}
-
+	if(!opt.tmp_dir)
+		opt.tmp_dir = ggz_strdup(TMPDIR);
 
 	/* If no main_port, default it to 5688 (or whatever) */
 	if(!opt.main_port)
 		opt.main_port = DEFAULT_GGZD_PORT;
 
 	/* Set admin stuff to ADMIN_ERR if not specified */
-	if(!opt.admin_name) {
-		if((tempstr=malloc(strlen(ADMIN_ERR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, ADMIN_ERR);
-		opt.admin_name = tempstr;
-	}
-	if(!opt.admin_email) {
-		if((tempstr=malloc(strlen(ADMIN_ERR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, ADMIN_ERR);
-		opt.admin_email = tempstr;
-	}
+	if(!opt.admin_name)
+		opt.admin_name = ggz_strdup(ADMIN_ERR);
+	if(!opt.admin_email)
+		opt.admin_email = ggz_strdup(ADMIN_ERR);
 }
 
 
@@ -356,16 +327,13 @@ static void get_config_options(int ch)
 void parse_game_files(void)
 {
 	struct dirent **namelist;
-	char *name;
-	char *dir;
+	const char *suffix = "/games/";
+	char dir[strlen(opt.conf_dir) + strlen(suffix) + 1];
 	int num_games, i, j;
 	int addit;
 
 	/* Setup our directory to "conf_dir/games/" */
-	if((dir = malloc(strlen(opt.conf_dir)+8)) == NULL)
-		err_sys_exit("malloc error in parse_game_files()");
-	strcpy(dir, opt.conf_dir);
-	strcat(dir, "/games/");
+	snprintf(dir, sizeof(dir), "%s%s", opt.conf_dir, suffix);
 
 	if(g_count > 0) {
 		/* Go through all games explicitly included in the add list */
@@ -378,8 +346,8 @@ void parse_game_files(void)
 		num_games = scandir(dir, &namelist, parse_gselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
-			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
-			       err_sys_exit("malloc error in parse_game_files");
+			char name[strlen(namelist[i]->d_name) + 1];
+
 			strcpy(name, namelist[i]->d_name);
 			name[strlen(name)-4] = '\0';
 
@@ -397,20 +365,16 @@ void parse_game_files(void)
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring game %s", name);
-
-			free(name);
 		}
 	}
-
-	free(dir);
 
 	/* Cleanup the g_list */
 	if(g_count < 0)
 		g_count = -g_count;
 	if(g_count > 0) {
 		for(i=0; i<g_count; i++)
-			free(g_list[i]);
-		free(g_list);
+			ggz_free(g_list[i]);
+		ggz_free(g_list);
 		g_list = NULL;
 		g_count = 0;
 	}
@@ -422,10 +386,10 @@ void parse_game_files(void)
 /* Parse a single game file, adding it's values to the game table */
 static void parse_game(char *name, char *dir)
 {
-	char *fname;
+	char fname[strlen(name) + strlen(dir) + 6];
 	int ch;
-	GameInfo *game_info;
-	int intval, len, i, num_args;
+	GameInfo game_info;
+	int intval, i, len, num_args;
 	char **b_list;
 	int b_count = 0;
 
@@ -435,73 +399,68 @@ static void parse_game(char *name, char *dir)
 		return;
 	}
 
-	/* Allocate space and setup a full pathname to description file */
-	len = strlen(name)+strlen(dir)+6;
-	if((fname = malloc(len)) == NULL)
-		err_sys_exit("malloc error in parse_game()");
-	snprintf(fname, len, "%s/%s.dsc", dir, name);
+	/* Setup a full pathname to description file */
+	snprintf(fname, sizeof(fname), "%s/%s.dsc", dir, name);
 
 	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
-		free(fname);
 		return;
 	}
 
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding game %s from %s", name, fname);
 
-	/* Allocate a game_info struct for this game and default to enabled */
-	if((game_info = malloc(sizeof(GameInfo))) == NULL)
-		err_sys_exit("malloc error in parse_game()");
-	memset(game_info, 0, sizeof(GameInfo));
-	pthread_rwlock_init(&game_info->lock, NULL);	
+	/* Initialize the basic data for the game info struct. */
+	memset(&game_info, 0, sizeof(GameInfo));
+	pthread_rwlock_init(&game_info.lock, NULL);	
 
 	/* [GameInfo] */
 	/* FIXME: this data is never free'd.  This isn't really a problem,
 	   but... */
-	game_info->name = ggz_conf_read_string(ch, "GameInfo",
-					       "Name", "<Unnamed Game>");
-	game_info->version = ggz_conf_read_string(ch, "GameInfo",
-						  "Version", "");
-	game_info->desc = ggz_conf_read_string(ch, "GameInfo",
-					       "Description", "");
-	game_info->author = ggz_conf_read_string(ch, "GameInfo",
-						 "Author", "");
-	game_info->homepage = ggz_conf_read_string(ch, "GameInfo",
-						   "Homepage", "");
+	game_info.name = ggz_conf_read_string(ch, "GameInfo",
+					      "Name", "<Unnamed Game>");
+	game_info.version = ggz_conf_read_string(ch, "GameInfo",
+						 "Version", "");
+	game_info.desc = ggz_conf_read_string(ch, "GameInfo",
+					      "Description", "");
+	game_info.author = ggz_conf_read_string(ch, "GameInfo",
+						"Author", "");
+	game_info.homepage = ggz_conf_read_string(ch, "GameInfo",
+						  "Homepage", "");
 
 	/* [LaunchInfo] */
 	ggz_conf_read_list(ch, "LaunchInfo", "ExecutablePath",
-			   &num_args, &game_info->exec_args);
-	if (!game_info->exec_args[0]) {
+			   &num_args, &game_info.exec_args);
+	if (!game_info.exec_args[0]) {
 		err_msg("Missing ExecutablePath for game %s.",
-			game_info->name);
-		/* This leaves some memory leak, but its better than
-		   nothing. */
+			game_info.name);
+		/* This leaves some memory leak, but it's acceptable under
+		   the circumstances. */
 		return;
 	}
 	/* If there's no absolute path given, we prepend the game_dir. */
-	if (game_info->exec_args[0][0] != '/') {
-		int len = strlen(game_info->exec_args[0]) +
-			  strlen(opt.game_dir) + 2;
+	if (game_info.exec_args[0][0] != '/') {
+		len = strlen(game_info.exec_args[0])+strlen(opt.game_dir)+2;
 		char *new_exec = ggz_malloc(len);
 		snprintf(new_exec, len, "%s/%s",
-			 opt.game_dir, game_info->exec_args[0]);
-		ggz_free(game_info->exec_args[0]);
-		game_info->exec_args[0] = new_exec;
+			 opt.game_dir, game_info.exec_args[0]);
+		ggz_free(game_info.exec_args[0]);
+		game_info.exec_args[0] = new_exec;
 	}
 
 	/* [Protocol] */
-	game_info->p_engine = ggz_conf_read_string(ch, "Protocol",
-						   "Engine", "");
-	game_info->p_version = ggz_conf_read_string(ch, "Protocol",
-						    "Version", "");
+	game_info.p_engine = ggz_conf_read_string(ch, "Protocol",
+						  "Engine", "");
+	game_info.p_version = ggz_conf_read_string(ch, "Protocol",
+						   "Version", "");
 
 	/* [TableOptions] */
-	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
-	game_info->kill_when_empty =
-		ggz_conf_read_int(ch, "TableOptions", "KillWhenEmpty", 1);
+	game_info.allow_leave = ggz_conf_read_int(ch, "TableOptions", 
+						  "AllowLeave",0);
+	game_info.kill_when_empty = ggz_conf_read_int(ch, "TableOptions",
+						      "KillWhenEmpty", 1);
 
-	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
+	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed",
+			   &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
@@ -511,14 +470,13 @@ static void parse_game(char *name, char *dir)
 				continue;
 			}
 			if (intval > 0)
-				game_info->bot_allow_mask |= 1 << (intval - 1);
+				game_info.bot_allow_mask |= 1 << (intval - 1);
 			ggz_free(b_list[i]);
 		}
 		ggz_free(b_list);
-		b_list = NULL;
-		b_count = 0;
 	}
-	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
+	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed",
+			   &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
@@ -526,28 +484,24 @@ static void parse_game(char *name, char *dir)
 				err_msg("PlayersAllowed has invalid value");
 				continue;
 			}
-			game_info->player_allow_mask |= 1 << (intval - 1);
+			game_info.player_allow_mask |= 1 << (intval - 1);
 			ggz_free(b_list[i]);
 		}
 		ggz_free(b_list);
 	}
-	game_info->allow_spectators = ggz_conf_read_int(ch, "TableOptions", "AllowSpectators",0);
+	game_info.allow_spectators = ggz_conf_read_int(ch, "TableOptions",
+						       "AllowSpectators", 0);
 
 	/* Set up data_dir. */
 	len = strlen(opt.data_dir) + strlen("/gamedata/")
-              + strlen(game_info->name) + 1;
-	game_info->data_dir = malloc(len);
-	if (game_info->data_dir == NULL)
-		err_sys_exit("malloc error in parse_game()");
-	snprintf(game_info->data_dir, len, "%s/gamedata/%s",
-	         opt.data_dir, game_info->name);
-	check_path(game_info->data_dir);
+              + strlen(game_info.name) + 1;
+	game_info.data_dir = ggz_malloc(len);
+	snprintf(game_info.data_dir, len, "%s/gamedata/%s",
+	         opt.data_dir, game_info.name);
+	check_path(game_info.data_dir);
 
-	game_types[state.types] = *game_info;
+	game_types[state.types] = game_info;
 	state.types++;
-
-	free(game_info);
-	free(fname);
 }
 
 
@@ -555,16 +509,13 @@ static void parse_game(char *name, char *dir)
 void parse_room_files(void)
 {
 	struct dirent **namelist;
-	char *dir;
-	char *name;
+	const char *suffix = "/rooms/";
+	char dir[strlen(opt.conf_dir) + strlen(suffix) + 1];
 	int num_rooms, i, j;
 	int addit;
 
 	/* Setup our directory to "conf_dir/rooms/" */
-	if((dir = malloc(strlen(opt.conf_dir)+8)) == NULL)
-		err_sys_exit("malloc error in parse_game_files()");
-	strcpy(dir, opt.conf_dir);
-	strcat(dir, "/rooms/");
+	snprintf(dir, sizeof(dir), "%s%s", opt.conf_dir, suffix);
 
 	parse_room("entry", dir);
 
@@ -581,10 +532,10 @@ void parse_room_files(void)
 		num_rooms = scandir(dir, &namelist, parse_rselect, 0);
 		for(i=0; i<num_rooms; i++) {
 			/* Make a temporary copy of the name w/o .room */
-			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
-			       err_sys_exit("malloc error in parse_game_files");
+			char name[strlen(namelist[i]->d_name) + 1];
 			strcpy(name, namelist[i]->d_name);
 			name[strlen(name)-5] = '\0';
+
 			/* Don't readd the entry room */
 			if(!strcmp(name, "entry"))
 				continue;
@@ -602,12 +553,8 @@ void parse_room_files(void)
 			else
 				dbg_msg(GGZ_DBG_CONFIGURATION,
 					"Ignoring room %s", name);
-
-			free(name);
 		}
 	}
-
-	free(dir);
 
 	/* At this point, we should have at least one working room */
 	if(room_info.num_rooms == 0)
@@ -618,8 +565,8 @@ void parse_room_files(void)
 		r_count = -r_count;
 	if(r_count > 0) {
 		for(i=0; i<r_count; i++)
-			free(r_list[i]);
-		free(r_list);
+			ggz_free(r_list[i]);
+		ggz_free(r_list);
 		r_list = NULL;
 		r_count = 0;
 	}
@@ -629,22 +576,15 @@ void parse_room_files(void)
 /* Parse a single room file, adding it's values to the room table */
 static void parse_room(char *name, char *dir)
 {
-	char *fname;
-	int ch;
+	char fname[strlen(name) + strlen(dir) + 7];
 	char *strval;
-	int num;
-	int i;
-	int len;
+	int ch, num, i;
 
 	/* Allocate space and setup a full pathname to description file */
-	len = strlen(name)+strlen(dir)+7;
-	if((fname = malloc(len)) == NULL)
-		err_sys_exit("malloc error in parse_game()");
-	snprintf(fname, len, "%s/%s.room", dir, name);
+	snprintf(fname, sizeof(fname), "%s/%s.room", dir, name);
 
 	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
-		free(fname);
 		return;
 	}
 
@@ -661,10 +601,12 @@ static void parse_room(char *name, char *dir)
 
 	/* [RoomInfo] */
 	rooms[num].name = ggz_conf_read_string(ch, "RoomInfo", "Name", NULL);
-	rooms[num].description = ggz_conf_read_string(ch, "RoomInfo", "Description",
-						  NULL);
-	rooms[num].max_players = ggz_conf_read_int(ch, "RoomInfo", "MaxPlayers", 0);
-	rooms[num].max_tables = ggz_conf_read_int(ch, "RoomInfo", "MaxTables", -1);
+	rooms[num].description = ggz_conf_read_string(ch, "RoomInfo",
+						      "Description", NULL);
+	rooms[num].max_players = ggz_conf_read_int(ch, "RoomInfo",
+						   "MaxPlayers", 0);
+	rooms[num].max_tables = ggz_conf_read_int(ch, "RoomInfo",
+						  "MaxTables", -1);
 	strval = ggz_conf_read_string(ch, "RoomInfo", "GameType", NULL);
 	if(strval) {
 		for(i=0; i<state.types; i++)
@@ -678,7 +620,8 @@ static void parse_room(char *name, char *dir)
 			err_msg("Invalid GameType specified in room %s", name);
 		ggz_free(strval);
 	}
-	strval = ggz_conf_read_string(ch, "RoomInfo", "EntryRestriction", NULL);
+	strval = ggz_conf_read_string(ch, "RoomInfo",
+				      "EntryRestriction", NULL);
 	if(strval) {
 		if(!strcasecmp(strval, "Admin"))
 			rooms[num].perms = PERMS_ROOMS_ADMIN;
@@ -693,17 +636,11 @@ static void parse_room(char *name, char *dir)
 
 	if(rooms[num].name == NULL) {
 		err_msg("No Name given for room %s", name);
-		if((strval = malloc(5)) == NULL)
-			err_sys_exit("malloc failed in parse_room()");
-		strcpy(strval, "none");
-		rooms[num].name = strval;
+		rooms[num].name = ggz_strdup("none");
 	}
 	if(rooms[num].description == NULL) {
 		err_msg("No Description given for room %s", name);
-		if((strval = malloc(5)) == NULL)
-			err_sys_exit("malloc failed in parse_room()");
-		strcpy(strval, "none");
-		rooms[num].description = strval;
+		rooms[num].description = ggz_strdup("none");
 	}
 	if(rooms[num].max_players <= 0) {
 		if(rooms[num].max_players < 0)
@@ -720,15 +657,10 @@ static void parse_room(char *name, char *dir)
 		rooms[num].game_type = -1;
 	}
 
-	rooms[num].players = calloc(rooms[num].max_players, sizeof(GGZPlayer*));
-	if(rooms[num].players == NULL)
-		err_sys_exit("calloc failed in parse_room()");
-	rooms[num].tables = calloc(rooms[num].max_tables, sizeof(GGZTable*));
-					
-	if(rooms[num].tables == NULL)
-		err_sys_exit("calloc failed in parse_room()");
-
-	free(fname);
+	rooms[num].players = ggz_malloc(rooms[num].max_players
+					* sizeof(GGZPlayer*));
+	rooms[num].tables = ggz_malloc(rooms[num].max_tables
+				       * sizeof(GGZTable*));
 }
 
 

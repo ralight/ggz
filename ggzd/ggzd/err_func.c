@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 4173 2002-05-06 05:48:44Z jdorje $
+ * $Id: err_func.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -280,12 +280,10 @@ void logfile_initialize(void)
 /* Open a logfile and return a FILE pointer */
 static FILE *log_open_logfile(char *fname)
 {
-	char pidname[strlen(fname) + 9];
 	char *f=fname;
+	char pidname[strlen(fname) + 9];
 
 	if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
-		/*if((pidname = malloc(strlen(fname) + 9)) == NULL)
-			err_sys_exit("malloc error in log_open_logfile()");*/
 		snprintf(pidname, sizeof(pidname), "%s_%u", fname, getpid());
 		f = pidname;
 	}

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4497 2002-09-09 10:28:33Z jdorje $
+ * $Id: net.c 4501 2002-09-10 06:42:12Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -167,8 +167,7 @@ GGZNetIO* net_new(int fd, GGZClient *client)
 {
 	GGZNetIO *net = NULL;
 
-	if ( (net = malloc(sizeof(GGZNetIO))) == NULL)
-		err_sys_exit("malloc error in net_new()");
+	net = ggz_malloc(sizeof(GGZNetIO));
 	
 	/* Set fd to invalid value */
 	net->fd = fd;
@@ -219,12 +218,12 @@ int net_get_fd(GGZNetIO *net)
 }
 
 
-/* For debugging purposes only! */
-/*static void net_set_fd(GGZNetIO *net, int fd)
+#if 0  /* For debugging purposes only! */
+static void net_set_fd(GGZNetIO *net, int fd)
 {
 	net->fd = fd;
-}*/
-
+}
+#endif
 
 /* Disconnect from network */
 void net_disconnect(GGZNetIO* net)
@@ -253,7 +252,7 @@ void net_free(GGZNetIO *net)
 		if (net->parser)
 			XML_ParserFree(net->parser);
 		
-		free(net);
+		ggz_free(net);
 	}
 }
 
@@ -958,7 +957,7 @@ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel)
 		/* FIXME: perhaps lookup table and point net->client->data at it */
 		
 		client_set_type(net->client, GGZ_CLIENT_CHANNEL);
-		net->client->data = strdup(id);
+		net->client->data = ggz_strdup(id);
 	}
 }
 
@@ -1021,8 +1020,7 @@ static GGZAuthData* _net_authdata_new(void)
 {
 	GGZAuthData *data;
 
-	if ( (data = malloc(sizeof(GGZAuthData))) == NULL)
-		err_sys_exit("malloc error in net_authdata_new()");
+	data = ggz_malloc(sizeof(GGZAuthData));
 	
 	data->name = NULL;
 	data->password = NULL;
@@ -1067,10 +1065,10 @@ static void _net_authdata_free(GGZAuthData *data)
 {
 	if (data) {
 		if (data->name)
-			free(data->name);
+			ggz_free(data->name);
 		if (data->password)
-			free(data->password);
-		free(data);
+			ggz_free(data->password);
+		ggz_free(data);
 	}
 }
 
@@ -1455,8 +1453,7 @@ static GGZTableData* _net_tabledata_new(void)
 {
 	struct _GGZTableData *data;
 
-	if ( (data = malloc(sizeof(struct _GGZTableData))) == NULL)
-		err_sys_exit("malloc error in net_tabledata_new()");
+	data = ggz_malloc(sizeof(struct _GGZTableData));
 	
 	data->desc = NULL;
 	data->seats = ggz_list_create(NULL, 
@@ -1472,10 +1469,10 @@ static void _net_tabledata_free(GGZTableData *data)
 {
 	if (data) {
 		if (data->desc)
-			free(data->desc);
+			ggz_free(data->desc);
 		if (data->seats)
 			ggz_list_free(data->seats);
-		free(data);
+		ggz_free(data);
 	}
 }
 
@@ -1516,7 +1513,7 @@ static void* _net_seat_copy(void *data)
 
 	seat1 = (GGZSeatData*)data;
 
-	seat2 = calloc(1, sizeof(struct _GGZSeatData));
+	seat2 = ggz_malloc(sizeof(struct _GGZSeatData));
 
 	seat2->index = seat1->index;
 	seat2->type = safe_strdup(seat1->type);
@@ -1530,10 +1527,10 @@ static void _net_seat_free(GGZSeatData *seat)
 {
 	if (seat) {
 		if (seat->type)
-			free(seat->type);
+			ggz_free(seat->type);
 		if (seat->name)
-			free(seat->name);
-		free(seat);
+			ggz_free(seat->name);
+		ggz_free(seat);
 	}
 }
 
@@ -1593,7 +1590,7 @@ static int safe_atoi(char *string)
 
 static char* safe_strdup(char *str)
 {
-	return str ? strdup(str) : NULL;
+	return str ? ggz_strdup(str) : NULL;
 }
 
 

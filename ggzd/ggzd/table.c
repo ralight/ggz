@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4500 2002-09-10 00:11:01Z jdorje $
+ * $Id: table.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -127,9 +127,7 @@ GGZTable* table_new(void)
 	GGZTable *table;
 	
 	/* Allocate a new table structure */
-	if ( (table = calloc(1, sizeof(GGZTable))) == NULL)
-		err_sys_exit("malloc error in net_handle_table()");
-	
+	table = ggz_malloc(sizeof(*table));
 	
 	pthread_rwlock_init(&table->lock, NULL);
 	table->type = -1;
@@ -264,13 +262,11 @@ int table_handler_launch(GGZTable* table)
 	int status;
 	
 	/* Temporary storage to pass table pointer */
-	if ( (index_ptr = malloc(sizeof(GGZTable*))) == NULL)
-		err_sys_exit("malloc error");
+	index_ptr = ggz_malloc(sizeof(*index_ptr));
 	*index_ptr = table;
 	status = pthread_create(&thread, NULL, table_new_thread, index_ptr);
-	if (status != 0) {
-		free(index_ptr);
-	}
+	if (status != 0)
+		ggz_free(index_ptr);
 
 	return status;
 }
@@ -289,7 +285,7 @@ static void* table_new_thread(void *index_ptr)
 	char *rname, *gname;
 
 	table = *((GGZTable**)index_ptr);
-	free(index_ptr);
+	ggz_free(index_ptr);
 
 	/* Detach thread since no one needs to join us */
 	if ((status = pthread_detach(pthread_self())) != 0) {
@@ -316,13 +312,13 @@ static void* table_new_thread(void *index_ptr)
 
 	/* Setup an entry in the rooms */
 	pthread_rwlock_wrlock(&rooms[table->room].lock);
-	rname = strdup(rooms[table->room].name);
+	rname = ggz_strdup(rooms[table->room].name);
 	if (rooms[table->room].table_count == rooms[table->room].max_tables) {
 		pthread_rwlock_unlock(&rooms[table->room].lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"ROOM_FULL - %s could not create table in %s",
 			table->owner, rname);
-		free(rname);
+		ggz_free(rname);
 		table_launch_event(table->owner, E_ROOM_FULL, 0);
 		return NULL;
 	}
@@ -342,7 +338,7 @@ static void* table_new_thread(void *index_ptr)
 
 	/* Get the name of this game type */
 	pthread_rwlock_rdlock(&game_types[table->type].lock);
-	gname = strdup(game_types[table->type].name);
+	gname = ggz_strdup(game_types[table->type].name);
 	pthread_rwlock_unlock(&game_types[table->type].lock);
 
 	/* Let the game begin...*/
@@ -350,14 +346,14 @@ static void* table_new_thread(void *index_ptr)
 		log_msg(GGZ_LOG_TABLES,
 			"TABLE_START - %s started a new game of %s in %s",
 			table->owner, gname, rname);
-		free(rname);
+		ggz_free(rname);
 
 		table_loop(table);
 
 		log_msg(GGZ_LOG_TABLES,
 			"TABLE_END - Game of %s started by %s has ended",
 			gname, table->owner);
-		free(gname);
+		ggz_free(gname);
 	}
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Table %d failed to start game module", 
@@ -485,7 +481,7 @@ static void table_loop(GGZTable* table)
 
 /*
  * table_game_join handles the RSP_GAME_JOIN from the table
- * Note: table->transit_name contains malloced mem on entry
+ * Note: table->transit_name contains allocated mem on entry
  */
 static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
@@ -539,7 +535,7 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	/* Clear table for next transit */
 	pthread_rwlock_wrlock(&table->lock);
 	table->transit = 0;
-	free(table->transit_name);
+	ggz_free(table->transit_name);
 	table->transit_name = NULL;
 	pthread_rwlock_unlock(&table->lock);
 }
@@ -591,7 +587,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	transit_player_event(name, GGZ_TRANSIT_LEAVE, status, 0);
 
 	/* Free strdup'd player name */
-	free(table->transit_name);
+	ggz_free(table->transit_name);
 
 	table->transit = 0;
 	table->transit_name = NULL;
@@ -607,7 +603,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 /*
  * table_game_seatchange handles the RSP_GAME_SEAT from the table
- * Note: table->transit_name contains malloced mem on entry
+ * Note: table->transit_name contains allocated mem on entry
  */
 static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
@@ -660,14 +656,14 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	/* Clear table for next transit */
 	pthread_rwlock_wrlock(&table->lock);
 	table->transit = 0;
-	free(table->transit_name);
+	ggz_free(table->transit_name);
 	table->transit_name = NULL;
 	pthread_rwlock_unlock(&table->lock);
 }
 
 /*
  * table_game_spectator_join handles the RSP_GAME_JOIN_SPECTATOR from the table
- * Note: table->transit_name contains malloced mem on entry
+ * Note: table->transit_name contains allocated mem on entry
  */
 static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
@@ -719,7 +715,7 @@ static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void
 	/* Clear table for next transit */
 	pthread_rwlock_wrlock(&table->lock);
 	table->transit = 0;
-	free(table->transit_name);
+	ggz_free(table->transit_name);
 	table->transit_name = NULL;
 	pthread_rwlock_unlock(&table->lock);
 }
@@ -767,7 +763,7 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 	transit_player_event(name, GGZ_TRANSIT_LEAVE_SPECTATOR, status, 0);
 
 	/* Free strdup'd player name */
-	free(table->transit_name);
+	ggz_free(table->transit_name);
 
 	table->transit = 0;
 	table->transit_name = NULL;
@@ -981,8 +977,7 @@ int table_kill(int room, int index, char *name)
 	dbg_msg(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
 		room);
 	
-	if ( (data = strdup(name)) == NULL)
-		err_sys_exit("strdup failed in transit_pack");
+	data = ggz_strdup(name);
 
 	status = event_table_enqueue(room, index, table_kill_callback, 
 				     strlen(data)+1, data);
@@ -1019,10 +1014,8 @@ int table_search(char* name, int room, int type, char global,
 		return 0;
 
 #if 0
-		if ( (*my_tables = calloc(MAX_TABLES, sizeof(GGZTable))) == NULL)
-			err_sys_exit("calloc error in player_list_tables()");
-		if ( (*indices = calloc(MAX_TABLES, sizeof(int))) == NULL)
-			err_sys_exit("calloc error in player_list_tables()");
+		*my_tables = ggz_malloc(MAX_TABLES * sizeof(GGZTable));
+		*indices = ggz_malloc(MAX_TABLES * sizeof(int));
 		
 		pthread_rwlock_rdlock(&state.lock);
 		t_count = state.tables;
@@ -1054,10 +1047,7 @@ int table_search(char* name, int room, int type, char global,
 		return 0;
 	}
 
-	if ( (*tables = calloc(t_count, sizeof(GGZTable))) == NULL) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		err_sys_exit("calloc error in player_list_tables()");
-	}
+	*tables = ggz_malloc(t_count * sizeof(GGZTable));
 
 	/* Copy the tables we want */
 	if (type == -1) {
@@ -1169,8 +1159,7 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	int status;
 	struct GGZSeatChange *data;
 
-	if ( (data = malloc(sizeof(struct GGZSeatChange))) == NULL)
-		err_sys_exit("malloc failed in table_seat_event_enqueue");
+	data = ggz_malloc(sizeof(struct GGZSeatChange));
 
 	/* Copy seat data into structure for passing to event */
 	data->seat.index = seat_num;
@@ -1185,26 +1174,27 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	return status;
 }
 
-/*static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
+#if 0
+static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	unsigned int spectator_num)
 {
 	int status;
 	struct GGZSpectatorChange *data;
 
-	if ( (data = malloc(sizeof(struct GGZSpectatorChange))) == NULL)
-		err_sys_exit("malloc failed in table_spectator_event_enqueue");*/
+	data = ggz_malloc(sizeof(struct GGZSpectatorChange));
 
 	/* Copy seat data into structure for passing to event */
-/*	data->spectator.index = spectator_num;
+	data->spectator.index = spectator_num;
 	strcpy(data->spectator.name, table->spectators[spectator_num]);
 	data->table = table->index;
-	data->num_spectators = spectators_count(table);*/
+	data->num_spectators = spectators_count(table);
 
 	/* Queue table event for whole room */
-/*	status = event_room_enqueue(table->room, table_spectator_event_callback, sizeof(data), data);
+	status = event_room_enqueue(table->room, table_spectator_event_callback, sizeof(data), data);
 	
 	return status;
-}*/
+}
+#endif
 
 
 static int table_pack(void** data, unsigned char opcode, GGZTable* table)
@@ -1216,8 +1206,7 @@ static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 	/* Allocate space for opcode and table */
 	size = sizeof(char) + sizeof(GGZTable);
 
-	if ( (*data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in table_pack");
+	*data = ggz_malloc(size);
 	
 	pthread_rwlock_rdlock(&table->lock);
 	info = *table;
@@ -1249,8 +1238,7 @@ static int table_transit_pack(void** data, unsigned char opcode,
 	info = *table;
 	pthread_rwlock_unlock(&table->lock);
 	
-	if ( (*data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in table_transit_pack");
+	*data = ggz_malloc(size);
 	
 	current = (char*)*data;
 	
@@ -1411,8 +1399,7 @@ static int table_launch_event(char* name, int status, int index)
 	if (status == 0)
 		size += sizeof(int);
 
-	if ( (data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in table_launch_event");
+	data = ggz_malloc(size);
 	
 	/* Start packing the data */
 	current = (char*)data;
@@ -1432,21 +1419,23 @@ static int table_launch_event(char* name, int status, int index)
 /* Free dynamically allocated memory associated with a table*/
 static void table_free(GGZTable* table)
 {
+#if 0
 	int i;
+
+	for (i = 0; i < MAX_TABLE_SIZE; i++) {
+		ggz_free(table->seats[i]);
+		if (table->reserve[i])
+			ggz_free(table->reserve[i]);
+	}
+#endif
 
 	/* FIXME: do we need to free transit too? */
 
-	for (i = 0; i < MAX_TABLE_SIZE; i++) {
-		/*free(table->seats[i]);*/
-		/*if (table->reserve[i])
-		  free (table->reserve[i]);*/
-	}
-
 	if (table->spectators)
-		free(table->spectators);
+		ggz_free(table->spectators);
 
 	ggzdmod_free(table->ggzdmod);
-	free(table);
+	ggz_free(table);
 }
 
 

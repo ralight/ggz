@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4173 2002-05-06 05:48:44Z jdorje $
+ * $Id: event.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,11 +69,7 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 	}
 
 	/* Allocate a new event item */
-	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
-		if (data)
-			free(data);
-		err_sys_exit("malloc failed in event_room_enqueue()");
-	}
+	event = ggz_malloc(sizeof(GGZEvent));
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
 
 	pthread_rwlock_wrlock(&rooms[room].lock);
@@ -81,9 +77,9 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 	/* Check for empty room (event might be last player leaving) */
 	if (rooms[room].player_count == 0) {
 		pthread_rwlock_unlock(&rooms[room].lock);
-		free(event);
+		ggz_free(event);
 		if (data)
-			free(data);
+			ggz_free(data);
 		dbg_msg(GGZ_DBG_LISTS,
 			"Deallocated event %p (empty room)", event);
 		return 0;
@@ -182,8 +178,8 @@ int event_room_handle(GGZPlayer* player)
 	while ( (event = rm_list) != NULL) {
 		rm_list = event->next;
 		if (event->data)
-			free(event->data);
-		free(event);
+			ggz_free(event->data);
+		ggz_free(event);
 	}
 	
 	return 0;
@@ -209,8 +205,8 @@ int event_room_flush(GGZPlayer* player)
 			rooms[room].event_head = event->next;
 #endif /* DEBUG */
 			if (event->data)
-				free(event->data);
-			free(event);
+				ggz_free(event->data);
+			ggz_free(event);
 		}
 	}
 
@@ -231,11 +227,7 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	GGZPlayer *player;
 
 	/* Allocate a new event item */
-	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
-		if (data)
-			free(data);
-		err_sys_exit("malloc failed in event_player_enqueue()");
-	}
+	event = ggz_malloc(sizeof(GGZEvent));
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
 
 	/* Fill in event structure */
@@ -248,8 +240,8 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	/* Find target player.  Returns with player write-locked */
 	if ( (player = hash_player_lookup(name)) == NULL ) {
 		if (data)
-			free(data);
-		free(event);
+			ggz_free(data);
+		ggz_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
 			event);		
 		return -1;
@@ -259,8 +251,8 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	if (net_get_fd(player->client->net) == -1) {
 		pthread_rwlock_unlock(&player->lock);
 		if (data)
-			free(data);
-		free(event);
+			ggz_free(data);
+		ggz_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
 			event);
 		return -1;
@@ -306,8 +298,8 @@ int event_player_handle(GGZPlayer* player)
 				dbg_msg(GGZ_DBG_LISTS, "Removing event %p", 
 					event);
 				if (event->data)
-					free(event->data);
-				free(event);
+					ggz_free(event->data);
+				ggz_free(event);
 			}
 			break;
 		case GGZ_EVENT_DEFER:
@@ -347,8 +339,8 @@ int event_player_flush(GGZPlayer* player)
 		if (--(event->ref_count) == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
 			if (event->data)
-				free(event->data);
-			free(event);
+				ggz_free(event->data);
+			ggz_free(event);
 		}
 		event = next;
 	}
@@ -395,11 +387,7 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
 	GGZTable *table;
 	
 	/* Allocate a new event item */
-	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
-		if (data)
-			free(data);
-		err_sys_exit("malloc failed in event_table_enqueue()");
-	}
+	event = ggz_malloc(sizeof(GGZEvent));
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
 
 	/* Fill in event structure */
@@ -412,8 +400,8 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
 	/* Find target table.  Returns with table write-locked */
 	if ( (table = table_lookup(room, index)) == NULL) {
 		if (data)
-			free(data);
-		free(event);
+			ggz_free(data);
+		ggz_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no table)", 
 			event);				
 		return E_NO_TABLE;
@@ -460,8 +448,8 @@ int event_table_handle(GGZTable* table)
 				dbg_msg(GGZ_DBG_LISTS, "Removing event %p", 
 					event);
 				if (event->data)
-					free(event->data);
-				free(event);
+					ggz_free(event->data);
+				ggz_free(event);
 			}
 			break;
 		case GGZ_EVENT_DEFER:
@@ -501,8 +489,8 @@ int event_table_flush(GGZTable* table)
 		if (--(event->ref_count) == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
 			if (event->data)
-				free(event->data);
-			free(event);
+				ggz_free(event->data);
+			ggz_free(event);
 		}
 		event = next;
 	}

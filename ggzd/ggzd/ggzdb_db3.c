@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db3.c 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzdb_db3.c 4501 2002-09-10 06:42:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -184,7 +184,7 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	/* Copy it to the user data buffer */
 	if(rc == 0) {
 		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data);
+		free(data.data); /* Allocated by db3? */
 	}
 
 	return rc;
@@ -264,7 +264,7 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 		err_sys("Failed to get DB_FIRST record");
 	else {
 		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data);
+		free(data.data); /* Allocated by db3? */
 	}
 
 	return rc;
@@ -293,7 +293,7 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 	} else {
 		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data);
+		free(data.data); /* Allocated by db3? */
 	}
 
 	return rc;
