@@ -1,7 +1,7 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 #
 # GGZ Gaming Zone TicTacToe server
-# Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+# Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 # Original C version Copyright (C) 2000 Brent Hendricks
 # Published under GNU GPL conditions
 
@@ -64,7 +64,10 @@ def ttt_send_seat (seat):
 	pass
 
 def ttt_recv_op (seat):
-	fd = ggzdmod.getPlayerSocket(seat)
+	#ggzseat = ggzdmod.getSeat(seat)
+	#fd = ggzseat.fd
+	#fd = ggzdmod.getPlayerSocket(seat)
+	fd = 0
 	sock = socket.fromfd(fd, socket.AF_UNIX, socket.SOCK_STREAM)
 	op = sock.ntohl(sock.read(4))
 	print "Opcode: ", op
@@ -84,8 +87,8 @@ def ttt_update (type, move):
 # Network hooks ##################################################
 
 # Launch the game
-def hook_launch ():
-	print "* launch"
+def hook_state ():
+	print "* state"
 	game.state = STATE_WAIT
 
 # A player joins
@@ -126,7 +129,7 @@ def hook_player (seat):
 # Main program ###################################################
 
 # Setup hooks
-ggzdmod.setHandler(ggzdmod.EVENT_LAUNCH, hook_launch)
+ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
 ggzdmod.setHandler(ggzdmod.EVENT_PLAYER, hook_player)
