@@ -6,5 +6,6 @@ CommandLine = @ggzexecmoddir@/ggz.kreversi --ggz
 Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/reversi/
 ProtocolEngine = Reversi
-ProtocolVersion = 3
-Version = 0.0.2
+ProtocolVersion = 4
+Version = 0.0.3
+
