@@ -1,3 +1,58 @@
+GGZ Server compilation and installation
+---------------------------------------
+
+For general instructions on how to use the 'configure' script to set
+compile-time options, please see the second half of the file under
+"Basic Installation."
+
+There are several options available when configuring the GGZ server
+for compilation.  At the very least, most people will want to specify
+where to install the various files.
+
+The default installation uses the following directory structure:
+
+(prefix)/etc/ggzd/	(configuration files)  
+(prefix)/bin/		(main executable)      
+(prefix)/lib/ggzd/	(game server modules)  
+
+where (prefix) defaults to /usr/local
+
+You may want to fine-tune things just a bit.  We recommend using the
+setup that we use for our distributed RPM files:
+
+/etc/ggzd/       (configuration files)  
+/usr/bin/	 (main executable)      
+/usr/lib/ggzd/	 (game server modules)  
+
+This set of directories can easily be chosen by running configure as:
+
+./configure --prefix=/usr --sysconfdir=/etc
+
+
+Since this is a developers release of the GGZ server, debugging is
+enabled by default.  To turn this off, you may pass the
+'--disable-debug' option to configure.  
+
+
+Once you have run 'configure' with the options setup the way you
+prefer, simply type 'make' to build the executable files.  Assuming
+you have the required libraries and headers, the program should build
+without any difficulties.  If you have problems, please report them to
+one of our web forums, or to the ggz-dev mailing list
+(ggz-dev@lists.sourceforge.net)
+
+If you would like to test the server before installing it, do a 'make
+test' which prepare a mini-installation in the build directory.  You
+can then run the command 'ggzd -f ggzd.test' from the ggzd subdir to
+test the server.
+
+Once you are satisfied that server built properly, you will probably
+want to run 'make -n install' to see what will happen when you
+actually do type 'make install' Once you are satisfied that all is
+well, login as root (you didn't build this as root did you?) and
+perform the installation using 'make install'
+
+
 Basic Installation
 ==================
 
