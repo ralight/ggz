@@ -119,10 +119,8 @@ int ggzrc_initialize(void)
 		dbg_msg("ggzrc: Reading %s", tempstr);
 		ggzrc_load_rc(rc_file);
 		status = 0;
-	} else {
+	} else
 		dbg_msg("ggzrc: Unable to open %s/ggz.rc", SYSCONFDIR);
-		return -1;
-	}
 	g_free(tempstr);
 
 	/* Open and parse the ~/.ggzrc file */
