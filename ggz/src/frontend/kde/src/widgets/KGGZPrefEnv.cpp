@@ -119,7 +119,7 @@ void KGGZPrefEnv::loadSettings()
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	KGGZCommon::clear();
 
-	server = config->read("Environment", "Server", "");
+	server = config->read("Environment", "Server", "/usr/bin/ggzd");
 	host = config->read("Environment", "Host", "jzaun.com");
 
 	m_server->setText(server);
