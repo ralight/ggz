@@ -26,7 +26,10 @@
 #define GHEARTS ( *(hearts_game_t *)(game.specific) )
 typedef struct hearts_game_t {
 	int points_on_hand[10];	/* the points each player has taken this hand.  Works for up to 10 players. */
+
+	/* options */
 	int jack_diamonds;	/* is the jack-of-diamonds rule in effect? */
+	int no_blood;		/* no blood on the first trick */
 
 	int jack_winner;	/* who has won the jack of diamonds this hand? */
 	char lead_card_face;	/* the card that leads first.  It's a club.  Two-deck issues aren't dealt with. */

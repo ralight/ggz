@@ -86,11 +86,14 @@ static void hearts_init_game()
 	game.max_bid_length = 0;
 	game.target_score = 100;
 	game.name = "Hearts";
+
+	GHEARTS.no_blood = 1;
 }
 
 static void hearts_get_options()
 {
 	add_option("jack_diamonds", 1, 0, "The jack of diamonds counts -10");
+	add_option("no_blood", 1, 1, "No blood on the first trick");
 	game_get_options();
 }
 
@@ -98,6 +101,8 @@ static int hearts_handle_option(char* option, int value)
 {
 	if (!strcmp("jack_diamonds", option))
 		GHEARTS.jack_diamonds = value;
+	else if (!strcmp("no_blood", option))
+		GHEARTS.no_blood = value;
 	else
 		return game_handle_option(option, value);
 	return 0;
@@ -174,7 +179,7 @@ static char* hearts_verify_play( card_t card)
 {
 	seat_t s = game.play_seat;
 
-	/* in hearts, we have two additional rules:
+	/* in hearts, we have two additional rules about leading:
 	 * the low club must lead the first trick, and
 	 * hearts cannot be lead until broken. */
 
@@ -191,6 +196,22 @@ static char* hearts_verify_play( card_t card)
 			/* their entire hand is hearts */
 			return NULL;
 		return "Hearts have not yet been broken.";
+	}
+
+	/* also in hearts, the "no blood on the first trick" rule
+	 * means you can't play points onto the first trick (unless
+	 * that's all you have) */
+	if (GHEARTS.no_blood &&
+	    game.trick_count == 0 &&
+	    (card.suit == HEARTS || (card.suit == SPADES && card.face == QUEEN))) {
+		int i;
+		card_t c;
+		for (i=0; i < game.seats[game.play_seat].hand.hand_size; i++) {
+			c = game.seats[game.play_seat].hand.cards[i];
+			if (c.suit == HEARTS) continue;
+			if (c.suit == SPADES && c.face == QUEEN) continue;
+			return "No blood on the first trick!";
+		}
 	}
 
 	return game_verify_play(card);
