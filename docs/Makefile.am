@@ -1,4 +1,4 @@
-docdirs = games ggz-project coreclients grubby overview server articles
+docdirs = games ggz-project coreclients grubby overview server articles intro
 
 SUBDIRS = $(docdirs) @EXTRA_SUBDIRS@
 DIST_SUBDIRS = $(docdirs) spec

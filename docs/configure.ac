@@ -66,6 +66,7 @@ dnl Create the Makefiles
 dnl ====================
 
 AC_CONFIG_FILES([Makefile
+	intro/Makefile
 	games/Makefile
 	games/hastings/Makefile
 	games/external-games/Makefile
