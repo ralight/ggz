@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4546 2002-09-13 15:48:13Z jdorje $
+ * $Id: parse_opt.c 4625 2002-09-18 19:11:26Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -556,7 +556,7 @@ static void parse_room(char *name, char *dir)
 {
 	char fname[strlen(name) + strlen(dir) + 7];
 	char *strval;
-	int ch, num, i;
+	int ch, num;
 
 	/* Allocate space and setup a full pathname to description file */
 	snprintf(fname, sizeof(fname), "%s/%s.room", dir, name);
@@ -587,6 +587,7 @@ static void parse_room(char *name, char *dir)
 						  "MaxTables", -1);
 	strval = ggz_conf_read_string(ch, "RoomInfo", "GameType", NULL);
 	if(strval) {
+		unsigned int i;
 		for(i=0; i<state.types; i++)
 			if(!strcmp(strval, game_types[i].name))
 				break;
