@@ -11,6 +11,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "combat.h"
 #include "support.h"
 #include "dlg_options.h"
 #include <stdio.h>
@@ -476,7 +477,28 @@ create_dlg_options (void)
 
 void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data) {
+  combat_game *preview_game;
+  char **filenames;
+  unsigned int hash;
+  char hash_str[32];
+  char *new_filename;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
+  filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
+  preview_game = quick_load_map_on_struct(filenames[row]);
+  /* TODO: Show preview */
+  // Well, now that we have loaded the map, let's check it's hash!
+  hash = generate_hash( combat_options_string_write(preview_game, 1) );
+  sprintf(hash_str, ".%u", hash);
+  if (strstr(filenames[row], hash_str) == NULL) {
+    // Hash don't match!!
+    printf("Filename for map %s should be %s.%u, and not %s\n", preview_game->name, preview_game->name, hash, filenames[row]);
+    // Let's rename it!
+    new_filename = (char *)malloc(strlen("maps/") + strlen(preview_game->name) + 1 + strlen(hash_str) + 1);
+    sprintf(new_filename, "maps/%s.%u", preview_game->name, hash);
+    rename(filenames[row], new_filename);
+    dlg_options_list_maps(GTK_WIDGET(clist));
+  }
+
 }
 
 void load_button_clicked(GtkButton *button, gpointer dialog) {
@@ -547,8 +569,70 @@ void load_map(char *filename, GtkWidget *dialog) {
 
   dlg_options_update(dialog);
 
-
 }
+
+combat_game *quick_load_map_on_struct(char *filename) {
+  int handle;
+  int a, b;
+  combat_game *_game = (combat_game *)malloc(sizeof(combat_game));
+  char *terrain_data;
+  handle = _ggzcore_confio_parse(filename, 0);
+  if (handle < 0)
+    return NULL;
+  /* Get the data from the file */
+  // Width / Height
+  _game->width = _ggzcore_confio_read_int(handle, "map", "width", 10);
+  _game->height = _ggzcore_confio_read_int(handle, "map", "height", 10);
+  // Army -> Quick load, like if there is only no player
+  _game->number = 0;
+  _game->army = (char **)calloc(1, sizeof(char *));
+  _game->army[0] = (char *)calloc(12, sizeof(char));
+  for (a = 0; a < 12; a++) {
+    _game->army[0][a] = _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
+  }
+  // Terrain data
+  terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
+  _game->map = (tile *)malloc(_game->width * _game->height * sizeof(tile));
+  if (terrain_data) {
+    a = strlen(terrain_data);
+    while (--a>=0) {
+      switch(terrain_data[a]) {
+        case 'O':
+          _game->map[a].type = T_OPEN;
+          break;
+        case 'L':
+          _game->map[a].type = T_LAKE;
+          break;
+        case 'N':
+          _game->map[a].type = T_NULL;
+          break;
+        case '1':
+          _game->map[a].type = OWNER(0) + T_OPEN;
+          break;
+        case '2':
+          _game->map[a].type = OWNER(1) + T_OPEN;
+          break;
+        default:
+          _game->map[a].type = T_OPEN;
+          break;
+      }
+    }
+  }
+  a = strlen(filename) - 1;
+  while (a >= 0 && filename[a] != '/')
+    a--;
+  b = a + 1;
+  while (b < strlen(filename) && filename[b]!='.')
+    b++;
+  _game->name = (char *)malloc( b - a );
+  strncpy(_game->name, filename+a+1, b - a - 1 );
+  _game->name[b - a - 1] = 0;
+
+  return _game;
+}
+
+
+
 
 
 GtkWidget*
@@ -677,7 +761,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 int maps_only(const struct dirent *entry);
 
 void dlg_options_list_maps(GtkWidget *dlg) {
-  int n;
+  int n, len;
   struct dirent **dirlist;
   char **clist_names;
   char **names;
@@ -686,8 +770,12 @@ void dlg_options_list_maps(GtkWidget *dlg) {
   clist_names = (char **)calloc(1, sizeof(char *));
   names = (char **)calloc(n, sizeof(char *));
   printf("Number of maps: %d\n", n);
+  gtk_clist_clear(GTK_CLIST(dlg));
   while (n-- > 0) {
-    clist_names[0] = dirlist[n]->d_name;
+    len = strlen(dirlist[n]->d_name)-strlen(strchr(dirlist[n]->d_name,'.'))+1;
+    clist_names[0] = (char *)malloc(len);
+    strncpy(clist_names[0], dirlist[n]->d_name, len-1);
+    clist_names[0][len-1] = 0;
     names[n] = (char *)malloc(15 + strlen(dirlist[n]->d_name));
     strcpy(names[n], "maps/");
     strcat(names[n], dirlist[n]->d_name);

@@ -9,6 +9,8 @@ void load_button_clicked(GtkButton *, gpointer dialog);
 
 void load_map(char *filename, GtkWidget *dialog);
 
+combat_game *quick_load_map_on_struct(char *filename);
+
 void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data);
 
