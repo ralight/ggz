@@ -1,7 +1,8 @@
-ttt3d
+ggz.ttt3d
 *.o
 Makefile
 Makefile.in
 .deps
 .libs
+module.dsc
 
