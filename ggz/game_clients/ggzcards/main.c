@@ -38,6 +38,8 @@
 #include <easysock.h>
 #include <ggz_client.h>
 
+#include "common.h"
+
 #include "main.h"
 #include "dlg_main.h"
 #include "dlg_bid.h"
@@ -60,15 +62,10 @@ static int get_trick_winner(void);
 
 int main(int argc, char *argv[])
 {
-	ggz_debug("Launching.");
-
 	gtk_init(&argc, &argv);
-	ggz_debug("gtk_init completed.");
 
-	ggz_client_init("GGZCards");
-	game.fd = ggz_client_connect();
-	if (game.fd < 0)
-		exit(-1);
+	client_initialize();
+	game.fd = ggzfd;
 
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
@@ -77,20 +74,16 @@ int main(int argc, char *argv[])
 	fixed_font_style->fontset_name = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
 
 	dlg_main = create_dlg_main();
-	ggz_debug("dlg_main completed.");
 
 	gtk_widget_show(dlg_main);
-	ggz_debug("gtk_widget_show completed.");
 
 	table_initialize();
-	ggz_debug("table_initialize completed.");
 	game_init();
-	ggz_debug("game_init completed.");
 
 	gtk_main();
-	ggz_debug("Exiting normally.");
 
-	ggz_client_quit();
+	client_quit();
+
 	return 0;
 }
 

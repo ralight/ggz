@@ -30,7 +30,9 @@ ggz_ggzcards_SOURCES = \
 	cb_bid.c cb_bid.h \
 	dlg_about.c dlg_about.h \
 	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
-	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm
+	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm \
+	\
+	common.c common.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD)
