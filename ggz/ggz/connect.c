@@ -122,17 +122,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   int count, i, j;
   TableInfo Table;
 
-  if (opt.playing) {
-	  size = read(source, buf, 4096);
-	  status = es_writen(opt.game_fd, buf, size);
-	  if (status <= 0) { /* Game over */
-		  dbg_msg("Game is over (msg from server)");
-		  opt.playing = 0;
-		  close(opt.game_fd);
-	  }
-	  return;
-  }
-
   CheckReadInt(source, (int*)&op);
   
   switch (op) {
@@ -228,6 +217,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  }
 	  break;
 	  
+
+  case RSP_GAME:	  
+	  es_read_int(source, &size);
+	  connect_msg("[RSP_GAME] %d bytes\n", size);
+	  es_readn(source, buf, size);
+	  status = es_writen(opt.game_fd, buf, size);
+	  if (status <= 0) { /* Game over */
+		  dbg_msg("Game is over");
+		  opt.playing = 0;
+		  close(opt.game_fd);
+	  }
+	  break;
+	  
   case MSG_SERVER_FULL:
   case RSP_NEW_LOGIN:
   case RSP_LOGIN:
@@ -317,6 +319,7 @@ void add_table_list( gint TableNum, TableInfo Table) {
 
 }
 
+
 int anon_login( void ) {
   
   CheckWriteInt(opt.sock, REQ_ANON_LOGIN);
@@ -329,10 +332,10 @@ int anon_login( void ) {
 /* Complete sync with server */
 static void server_sync()
 {
-	  tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
-	  gtk_clist_clear (GTK_CLIST (tmpWidget));
-	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
-	  CheckWriteInt(opt.sock, REQ_TABLE_LIST);  
-	  CheckWriteInt(opt.sock, -1);  
+        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+	gtk_clist_clear (GTK_CLIST (tmpWidget));
+	CheckWriteInt(opt.sock, REQ_USER_LIST);  
+	CheckWriteInt(opt.sock, REQ_TABLE_LIST);  
+	CheckWriteInt(opt.sock, -1);  
 }
 

@@ -104,9 +104,12 @@ void
 join_game                              (GtkButton       *button,
                                         gpointer         user_data) 
 {
+
+	/* FIXME: Don't hardcode table numnber!*/
 	dbg_msg("joining game");
 	CheckWriteInt(opt.sock, REQ_JOIN_GAME);
 	CheckWriteInt(opt.sock, 0);
+	launch_game(0, 0);
 }
 
 
@@ -119,7 +122,7 @@ get_game_options                       (GtkButton       *button,
 	if (!opt.connected) 
 		DisplayWarning("Not connected!");
 	else {
-		launch_game(type);
+		launch_game(type, 1);
 	}
 }
 
