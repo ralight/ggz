@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4968 2002-10-21 04:27:00Z jdorje $
+# $Id: Makefile.am 5567 2003-05-11 09:21:50Z dr_maux $
 
 EXTRA_DIST = Doxyfile
 
@@ -16,7 +16,7 @@ libggzmod_la_SOURCES =	ggzmod.c \
 include_HEADERS = ggzmod.h ggzmod-ggz.h
 
 libggzmod_la_LIBADD = @LDADD@ $(LIB_GGZ)
-libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 1:0:0
+libggzmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 1:1:0
 
 INCLUDES = $(LIBGGZ_INCLUDES)
 

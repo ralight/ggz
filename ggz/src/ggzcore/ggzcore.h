@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5348 2003-01-23 17:12:19Z dr_maux $
+ * $Id: ggzcore.h 5567 2003-05-11 09:21:50Z dr_maux $
  *
  * Interface file to be included by client frontends
  *
@@ -31,7 +31,7 @@
 #define GGZCORE_VERSION_MAJOR 0
 #define GGZCORE_VERSION_MINOR 0
 #define GGZCORE_VERSION_MICRO 7
-#define GGZCORE_VERSION_IFACE "2:0:0"
+#define GGZCORE_VERSION_IFACE "3:0:0"
 
 #include <poll.h>
 #include <stdarg.h>
@@ -609,6 +609,7 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
  *  @param server The GGZ server object.
  *  @param host A string containing the hostname.
  *  @param port The port to connect to.
+ *  @param use_tls If set, the connection will be encrypted.
  *  @return 0 on success, -1 on error.
  *  @note Should never fail when given valid input.
  *  @see ggzcore_server_connect
@@ -982,6 +983,7 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 int ggzcore_room_list_players(GGZRoom *room);
 
 /** @brief Call to request a list of tables in the room.
+ *  @param room Your current room
  *  @param type currently ignored (???)
  *  @param global currently ignored (???)
  *  @see GGZ_TABLE_LIST */
@@ -991,7 +993,7 @@ int ggzcore_room_list_tables(GGZRoom *room,
 
 /** @brief Chat!
  *  @param room Your current room.
- *  @param type The chat type.
+ *  @param opcode The chat type.
  *  @param player The name of the target player (only for certain chat types)
  *  @param msg The text of the chat message (some chat types don't need it)
  *  @return 0 on success, negative on (any) failure */
@@ -1025,7 +1027,7 @@ int ggzcore_room_join_table(GGZRoom *room, const unsigned int table_id,
  *  will destroy the game server as well.
  *  @param room Your current room.
  *  @param force TRUE to force the leave, FALSE to leave it up to ggzd
- *  @param 0 on success, negative on (any) failure */
+ *  @return 0 on success, negative on (any) failure */
 int ggzcore_room_leave_table(GGZRoom *room, int force);
 
 

@@ -3,7 +3,7 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = GGZCore
-PROJECT_NUMBER         = 0.0.7pre
+PROJECT_NUMBER         = 0.0.7
 OUTPUT_DIRECTORY       = api/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO

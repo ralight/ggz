@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 5347 2003-01-23 17:11:10Z dr_maux $
+ * $Id: ggzmod.h 5567 2003-05-11 09:21:50Z dr_maux $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -60,7 +60,7 @@
 #define GGZMOD_VERSION_MAJOR 0
 #define GGZMOD_VERSION_MINOR 0
 #define GGZMOD_VERSION_MICRO 7
-#define GGZMOD_VERSION_IFACE "1:0:0"
+#define GGZMOD_VERSION_IFACE "1:1:0"
 
 #include <ggz_common.h>
 
@@ -282,7 +282,7 @@ int ggzmod_get_num_spectator_seats(GGZMod *ggzmod);
 
 /** @brief Get a spectator's data.
  *  @param ggzmod The GGZdMod object.
- *  @param spectator The number, between 0 and (number of spectators - 1).
+ *  @param seat The number, between 0 and (number of spectators - 1).
  *  @return A valid GGZSpectator structure, if given a valid seat.
  */
 GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod, int seat);
@@ -321,7 +321,7 @@ void ggzmod_set_gamedata(GGZMod * ggzmod, void * data);
  *  time an event is called, the event handler (there can be only one)
  *  for that event will be called.  This function registers such an
  *  event handler.
- *  @param mod The GGZmod object.
+ *  @param ggzmod The GGZmod object.
  *  @param e The GGZmod event.
  *  @param func The handler function being registered.
  *  @see ggzmod_get_gamedata
