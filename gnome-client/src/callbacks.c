@@ -46,7 +46,7 @@ on_entLogin_changed			(GtkEntry       *widget,
 
 	static gint form[6] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
 	gint val;
-	gchar *text;
+	const gchar *text;
 	GtkWidget *tmp;
 	
 	/*What widget we dealin with?*/
@@ -69,13 +69,13 @@ on_entLogin_changed			(GtkEntry       *widget,
 	text = gtk_entry_get_text (GTK_ENTRY (widget));
 	if (strlen(text) > 0)
 	{
-		form[val] = TRUE;;
+		form[val] = TRUE;
 	} else if (strlen(text) == 0){
 		form[val] = FALSE;
 	}
 
 	/*Set the buttons sensitivity*/
-	if (form[0] == TRUE && form[1] == TRUE && form[2] == TRUE)
+	if (form[0] && form[1] && form[2])
 	{
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
@@ -84,7 +84,8 @@ on_entLogin_changed			(GtkEntry       *widget,
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
 	}
 	tmp = lookup_widget (interface, "btnGuest");
-	if (form[0] == TRUE && form[2] == TRUE && gtk_toggle_button_get_active (tmp) == TRUE)
+	if (form[0] && form[2] &&
+	    gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(tmp)))
 	{
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
@@ -92,7 +93,7 @@ on_entLogin_changed			(GtkEntry       *widget,
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
 	}tmp = lookup_widget (interface, "btnNewCreate");
-	if (form[3] == TRUE && form[4] == TRUE && form[5] == TRUE)
+	if (form[3] && form[4] && form[5])
 	{
 		gtk_widget_set_sensitive (GTK_WIDGET (tmp), TRUE);
 	} else {
@@ -344,7 +345,7 @@ on_pmStar_timeout                 (gpointer         user_data)
 	static gint counter;
 	static gint countup = TRUE;
 	
-	if(countup == TRUE)
+	if(countup)
 		counter++;
 	else
 		counter--;
