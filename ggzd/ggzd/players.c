@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: players.c 5075 2002-10-28 02:02:59Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1098,8 +1098,10 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	for (i = 0; i < count; i++) {
 		p = rooms[room].players[i];
 		pthread_rwlock_rdlock(&p->lock);
+		pthread_rwlock_rdlock(&p->stats_lock);
 		/* Does this copy all applicable player data? */
 		data[i] = *p;
+		pthread_rwlock_unlock(&p->stats_lock);
 		pthread_rwlock_unlock(&p->lock);
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);

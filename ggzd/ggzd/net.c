@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5073 2002-10-28 00:09:53Z jdorje $
+ * $Id: net.c 5075 2002-10-28 02:02:59Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -676,6 +676,7 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 				 GGZPlayerUpdateType opcode, const char *name)
 {
 	GGZPlayer *player;
+	GGZPlayer p2;
 	int room;
 
 	room = player_get_room(net->client->data);
@@ -693,11 +694,12 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 			err_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
 		pthread_rwlock_rdlock(&player->stats_lock);
-		net_send_player(net, player);
+		p2 = *player;
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
+		net_send_player(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 
 	case GGZ_PLAYER_UPDATE_LAG:
@@ -707,9 +709,10 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 			err_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
-		_net_send_player_lag(net, player);
+		p2 = *player;
 		pthread_rwlock_unlock(&player->lock);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
+		_net_send_player_lag(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 	case GGZ_PLAYER_UPDATE_STATS:
 		/* This returns with player's write lock held, so drop it  */
@@ -718,11 +721,12 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 			err_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' ROOM='%d'>", room);
 		pthread_rwlock_rdlock(&player->stats_lock);
-		_net_send_player_stats(net, player);
+		p2 = *player;
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' ROOM='%d'>", room);
+		_net_send_player_stats(net, player);
 		return _net_send_line(net, "</UPDATE>");
 	}
 
