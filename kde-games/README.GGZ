@@ -1,0 +1,224 @@
+The GGZ Gaming Zone - Client Setup
+==================================
+
+Installation Requirements
+-------------------------
+
+The GGZ Gaming Zone client is built from three separate packages (these may be
+available as an integrated package in the future), upon which any number of
+game clients may be installed.  It is important that each package be built
+and installed in the proper sequence in order that all library dependencies
+are properly resolved.  In other words, build and install the easysock package
+before even building the ggz-client-libs.  The reason things are packaged this
+way is that easysock, and the ggz-client-libs will change very rarely once
+they have stabilized;  so we will be able to release a new version of a client
+or game module without requiring every subsystem to be replaced anew.
+
+If you are missing a package, they are freely downloadable in tarball and
+RPM format from:
+   http://ggz.sourceforge.net/
+
+The packages have been tested on a variety of systems, including Linux,
+FreeBSD and Solaris.  It should work on pretty much any type of UNIX system
+that supports X Windows and sockets, though it may require some changes in
+order to work.  We will be glad to assist anyone who wishes to port the
+software to other UNIX platforms.
+
+The remainder of this document assumes that you are installing from source
+code.  The two important things to remember when installing RPM packages:
+
+1) The order of installation should be the same as when installing from
+   source.  RPM dependencies should enforce this automatically.
+2) If you are performing an RPM upgrade, you should make sure that you
+   obtained the upgrade from the same source so that directory location
+   requirements are not broken.  If you obtain your RPMS from the GGZ
+   homepage (noted above) you will always be safe in that regard.
+
+
+General Installation Guidelines
+-------------------------------
+
+Client packages should be installed in this order:
+   easysock
+   ggz-client-libs
+   xxx-client (where xxx is the user interface the client supports)
+
+Following this, the game packages (xxx-games) and/or individual games may
+be installed.
+
+Decide where you want to install the packages - by default, installations will
+occur under the /usr/local/ however many would prefer to install under the
+/usr/ directory hierarchy.  This can be specified with the --prefix=/usr option
+to the configure scripts.  For most packages, a default installation as simple
+as:
+
+./configure
+make
+make install (as root)
+
+for the easysock, ggz-client-libs and kde-client you will need to update
+the shared library cache, eg:
+
+ldconfig /usr/local/lib  (as root, and assuming --prefix was not specified)
+
+Finally, at the end of each section, there is a "typical installation".
+These are the directories and settings we use for our RPM builds, and are
+very sane and safe.  If you want to install mindlessly, use those samples!
+
+
+Installing easysock
+-------------------
+
+easysock should compile and install easily on most systems.  By default,
+configure is setup to build both static and shared versions of the easysock
+library - however this behavior may be altered with the --disable-shared and
+--disable-static options to the configure script.
+
+We strongly encourage the installation of easysock as a shared library, as it
+is heavily used by the other GGZ packages.  Remember, after installing as a
+shared library to run ldconfig on the lib directory BEFORE moving on to build
+ggz-client-libs.  If this is not performed, ggz-client-libs will link to the
+static libeasysock if it was installed which will inflate the size of all
+the other packages.
+
+Typical Installation:
+./configure --prefix=/usr
+make
+make install (as root)
+ldconfig /usr/lib (as root)
+
+
+Installing ggz-client-libs
+--------------------------
+
+ggz-client-libs is also a very straight-forward installation.  By default,
+both static and shared versions of the libraries will be built, and this may
+be configured with the --disable-shared and --disable-static options to
+configure.  You are once again urged to install as a shared library and you
+must run ldconfig before proceeding to a client installation.
+
+The ggz-client-libs installation controls several file locations which will
+be used by the client and game installations.  These directories are as
+follows:
+
+  Directory	Default			What Goes Here
+  ----------	--------------------	--------------
+  GGZCONFDIR	$(prefix)/etc/		ggz.modules (config file)
+  GGZGAMEDIR	$(prefix)/lib/ggz/	game module executables
+  GGZDATADIR	$(prefix)/share/ggz/	game module datafiles (pixmaps, etc)
+
+The default settings are sane for the standard install prefix of /usr/local,
+however, if you are using /usr you will probably want to change the location
+of GGZCONFDIR to /etc (rather than /usr/etc).  Here's how to configure the
+three directories:
+
+GGZCONFDIR can be set with the --sysconfdir option of configure.  GGZGAMEDIR
+should be set with the --exec-prefix option to configure.  Note that this is
+a prefix, and as such, a ggz subdirectory will be automatically created under
+whatever path you choose.
+
+GGZDATADIR should be set using --datadir.  Again, this will be treated as a
+prefix, and the ggz subdirectory will be created automatically.
+
+If you change these locations at a later time it is possible that the client
+and/or games will stop working.  This can happen if a game cannot find it's
+datafiles, or if ggz-client-libs cannot find a game module due to it being
+installed under an old location.
+
+No games will work at all if ggz-client-libs can no longer find the
+ggz.modules file!  This is what keeps track of every game you have installed.
+
+If you MUST move these directories at a later time, you should uninstall all
+games and clients and rebuild them after reinstalling ggz-client-libs with
+it's new values.
+
+ggz-client-libs will install a simple program, ggz-config, which will enable
+the client packages and game packages to install themselves properly with
+the ggz-client-libs directory specifications.  This binary will end up in
+the --bindir, which is $(prefix)/bin by default.  This can be anywhere as long
+as it is in your path for future make invocations.
+
+Typical Installation:
+./configure --sysconfdir=/etc --prefix=/usr
+make
+make install (as root)
+ldconfig /usr/lib (as root)
+
+
+Gtk Client Installation
+-----------------------
+
+gtk-client is one of the easiest packages to install.  The installation
+consists of one executable program which will be placed in the --bindir.
+
+Typical Installation:
+./configure --prefix=/usr
+make
+make install (as root)
+
+
+KDE Client Installation
+-----------------------
+
+I don't know much about customizing the KDE client installation, so I'll
+just give you what works great for me and hopefully one of the KDE maintainers
+will expand on this:
+
+Typical Installation:
+./configure --prefix=/usr
+make
+make install (as root)
+
+
+Gtk/KDE Games Installation
+--------------------------
+
+Whether you are installing a single game, or the full gtk-games or kde-games
+package, the instructions are the same.  The ggz-config program must be on the
+path, and it will automatically set all the proper installation directory
+options for you.
+
+Typical Installation:
+./configure
+make
+make install (as root)
+
+
+Troubleshooting/Tips
+--------------------
+
+1) Remember, if you are going to be altering the locations of files in
+   ggz-client-libs, you should uninstall all client and game packages first.
+   If you are changing ONLY the GGZCONFDIR, then it is possible to simply
+   move the ggz.modules file to the new location after reinstalling
+   ggz-client-libs - this will save you from recompiling all of the clients
+   and games.
+
+2) Both easysock and ggz-client-libs require you to run ldconfig after
+   installing!
+
+3) Always use the 'make (un)install' script to add or remove a game client.
+   This insures that the ggz-config program will update ggz.modules to note
+   the presence of the game module.
+
+4) If you can't launch a game, execute this command to view the ggz.module
+   file that is being used by the programs:
+      more `ggz-config --configdir`/ggz.modules
+   You can then see if the game you are attempting to run is even present
+   in the *GameList*
+
+5) Do not manually edit the ggz.modules file unless you are quite certain
+   that you know what you are doing.  This file is meant to be completely
+   maintained by the ggz-config program which should automatically be launched
+   by the (un)installation scripts.
+
+6) Severe compilation or install issues should be brought up with the GGZ
+   maintainers.  You can either contact us on the ggz-dev mailing list or
+   via the trackers or forums on our SourceForge project page
+   (http://sourceforge.net/projects/ggz/) - A link to join the mailing
+   list is also available here.
+
+7) Once you have everything compiled you need a server to connect to!  There
+   is a permanent server installed at ggz.morat.net on port 5688.  Check the
+   FAQ on our webpage (http://ggz.sourceforge.net) for any other permanent
+   servers that may get setup.
