@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2192 2001-08-23 08:50:43Z jdorje $	*/
+/*	$Id: ggz.c 2200 2001-08-23 19:56:45Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -293,19 +293,10 @@ int ggzdmod_fd_max(void)
 /* IO: Hold the handlers here */
 /* this is all hard-coded in conjunction with the
  * GGZ_EVENT_*** definitions.  Not good, but it'll do.  --JDS */
-static GGZHandler handlers[5] = {NULL, NULL, NULL, NULL, NULL};
+static GGZHandler handlers[6] = {NULL, NULL, NULL, NULL, NULL, NULL};
 
 void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 {
-	/* singularity: this function handles all unhandled events */
-	if (event_id == GGZ_EVENT_DEFAULT) {
-		for (event_id = 0;
-		     event_id < sizeof(handlers)/sizeof(handlers[0]);
-		     event_id++)
-			if (handlers[event_id] == NULL)
-				handlers[event_id] = handler;
-	}
-
 	/* regular case */
 	if (event_id >= sizeof(handlers)/sizeof(handlers[0])
 	    || event_id < 0)
@@ -397,6 +388,9 @@ int ggzdmod_main(void)
 			}
 		}
 
+		/* A "tick" event is sent once each time through the loop */
+		if (handlers[GGZ_EVENT_TICK] != NULL)
+			(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
 	}
 
 	if (ggzdmod_disconnect() < 0)

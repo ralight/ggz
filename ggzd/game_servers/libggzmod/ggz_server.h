@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2198 2001-08-23 09:55:56Z jdorje $	*/
+/*	$Id: ggz_server.h 2200 2001-08-23 19:56:45Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -113,12 +113,12 @@ int ggzdmod_player_leave(int* seat, int *fd);
  */
 
 enum {
-	GGZ_EVENT_DEFAULT	= -1, /**< any event */
 	GGZ_EVENT_LAUNCH	= 0,  /**< a game launch event from ggzd */
 	GGZ_EVENT_JOIN		= 1,  /**< a player join event from ggzd */
 	GGZ_EVENT_LEAVE		= 2,  /**< a player leave event from ggzd */
 	GGZ_EVENT_QUIT		= 3,  /**< a game over event from ggzd */
-	GGZ_EVENT_PLAYER	= 4   /**< a message from a client/player */
+	GGZ_EVENT_PLAYER	= 4,  /**< a message from a client/player */
+	GGZ_EVENT_TICK		= 5   /**< a passed-time event */
 };
 
 /* Set a handler for a specific event.
