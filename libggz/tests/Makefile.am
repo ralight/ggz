@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5667 2003-10-25 12:30:12Z dr_maux $
+#  $Id: Makefile.am 6175 2004-09-04 07:09:37Z jdorje $
 
 INCLUDES = -I$(top_srcdir)/src/
 LDADD = @LDADD@ $(top_builddir)/src/libggz.la
 
-noinst_PROGRAMS =	\
+check_PROGRAMS =	\
 	debugmsg	\
 	cfgtest		\
 	ggzcommon	\
