@@ -13,9 +13,20 @@ Other components which are almost always needed are:
 - perl
 - gettext
 
-To easy the life for the GGZ developers, the file acinclude.ggz has been
-written which checks for a proper environment for both GGZ programs and
-external programs using GGZ libraries.
+To easy the life for the GGZ developers, the file ggz.m4 (formerly
+acinclude.ggz) has been written which checks for a proper environment for both
+GGZ programs and external programs using GGZ libraries.
+
+Also, other checks such as for POSIX compatibility, debugging options,
+package-specific checks (like ggzd databases) should be written as
+additional *.m4 files. This helps keeping configure.ac clean.
+
+Macro schema
+------------
+
+Macros are named AC_GGZ_FOO. They take either zero, one or two arguments.
+In the latter case, for most it's the action to be executed if the check
+succeeds and the action if it doesn't.
 
 The following macros are relevant:
 ----------------------------------
@@ -39,27 +50,34 @@ AC_GGZ_GGZDMOD
   present in order to be accepted.
   Those values are cached, so config.cache must be removed upon recheck.
   It takes no arguments by default, but will bail out if a library is not
-  found. This can be prevented by giving an argument:
-  * ignore
+  found. This can be prevented by giving two arguments:
+  * "true" (1st arg)
+  * ignore (2nd arg)
     Tells about the error, and leaves it to the configure.in check to further
     decide what to do.
 
 AC_GGZ_INTL
   Sets up standard tools for internationalization.
-  Takes no arguments.
+  Takes either no or two arguments:
+  * "true" (1st arg)
+  * ignore (2nd arg)
+    Tells about missing i18n tools but does not abort.
 
 AC_GGZ_SERVER
   Searches location where to install game server room and game files to.
-  Again, one argument is possible:
-  * ignore
+  Again, two arguments are possible:
+  * "true" (1st arg)
+  * ignore (2nd arg)
     Gives only a warning if no ggzd installation is found.
 
 AC_GGZ_CONFIG
   Looks up the tool ggz-config which is used to install game client information
-  files. One argument is possible:
-  * ignore
-    Ignores missing ggz-config, in case GGZ support should be disabled at
-    compile time.
+  files. Zero or two arguments are possible:
+  * "true" (1st arg)
+  * ignore (2nd arg)
+    Ignores missing ggz-config. In this case, no *.dsc files are installed.
+	This is useful for binary package creation which register the games
+	after the package has been installed.
 
 How to use conditional macros:
 ------------------------------
@@ -74,5 +92,13 @@ libggz_includes, libggz_libraries
   -> "lowercase" variables intended to be used in configure.in.
      They're also empty when a check failed, but can be catched thereafter.
 
+Notes
+-----
+
+On Linux, a full shared library install takes place, meaning .so and .la files.
+On FreeBSD, libtool information is omitted. Only .so files are installed.
+On Windows, static libraries are built. Only .a and .la files are installed.
+
 Josef, 25.09.2002
+Update: 04.02.2005
 
