@@ -1,8 +1,0 @@
-.deps
-.libs
-kggz
-Makefile
-Makefile.in
-*.o
-*.moc.cpp
-.user.*
