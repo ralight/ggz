@@ -39,7 +39,7 @@ KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 	for(QStringList::Iterator it = pathlist.begin(); it != pathlist.end(); it++)
 	{
 		dir = new QDir((*it), "libkcm_ggz_*.so");
-		for(int i = 0; i < dir->count(); i++)
+		for(unsigned int i = 0; i < dir->count(); i++)
 		{
 			if(!error.isEmpty()) error.append("\n");
 			handle = dlopen(QString("%1/%2").arg((*it)).arg((*dir)[i].latin1()), RTLD_NOW);

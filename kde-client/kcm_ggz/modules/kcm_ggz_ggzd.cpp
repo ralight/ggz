@@ -168,6 +168,9 @@ void KCMGGZGgzd::reload()
 					"All information is read-only."),
 					i18n("Write error"));
 				break;
+			case KSimpleConfig::ReadWrite:
+				// ok
+				break;
 		}
 
 		emit signalChanged();

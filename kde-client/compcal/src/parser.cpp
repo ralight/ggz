@@ -37,10 +37,10 @@ Parser::Parser(const char *file)
 
 	m_series = NULL;
 
-	for(int j = 0; j < m_eventgrouplist.count(); j++)
+	for(unsigned int j = 0; j < m_eventgrouplist.count(); j++)
 	{
 		Eventgroup *eventgroup = m_eventgrouplist.at(j);
-		for(int i = 0; i < m_eventlist.count(); i++)
+		for(unsigned int i = 0; i < m_eventlist.count(); i++)
 		{
 			Event *event = m_eventlist.at(i);
 			if(event->eventgroup() == eventgroup->id())
@@ -54,7 +54,7 @@ Parser::Parser(const char *file)
 	if(m_serieslist.count() > 0)
 	{
 		Series *series = m_serieslist.at(0);
-		for(int i = 0; i < m_eventgrouplist.count(); i++)
+		for(unsigned int i = 0; i < m_eventgrouplist.count(); i++)
 		{
 			Eventgroup *eventgroup = m_eventgrouplist.at(i);
 			series->addEventgroup(eventgroup);
@@ -256,7 +256,7 @@ int Parser::parseEvent(QDomNode *pnode)
 	event->setEventgroup(pnode->toElement().attribute("eventgroup"));
 	m_eventlist.append(event);
 
-	for(int i = 0; i < m_participantlist.count(); i++)
+	for(unsigned int i = 0; i < m_participantlist.count(); i++)
 	{
 		Participant *p = m_participantlist.at(i);
 		event->addParticipant(p);

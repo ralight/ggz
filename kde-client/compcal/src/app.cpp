@@ -98,7 +98,7 @@ void App::view(int mode)
 
 void App::load()
 {
-	QListViewItem *tmp, *tmp2, *tmp3;
+	QListViewItem *tmp = NULL, *tmp2 = NULL, *tmp3 = NULL;
 	KStandardDirs d;
 	Series *s;
 	QString icontheme;
