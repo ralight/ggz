@@ -42,7 +42,8 @@ typedef enum {
 	REQ_TABLE_LEAVE,
 
 	REQ_GAME,
-	REQ_CHAT
+	REQ_CHAT,
+        REQ_MOTD
 } UserToControl;
 
 
@@ -74,7 +75,8 @@ typedef enum {
 	RSP_TABLE_LEAVE,
 
 	RSP_GAME,
-	RSP_CHAT
+	RSP_CHAT,
+        RSP_MOTD
 } ControlToUser;
 
 
@@ -82,6 +84,8 @@ typedef enum {
 	RSP_GAME_LAUNCH,
 	RSP_GAME_JOIN,
 	RSP_GAME_LEAVE,
+        MSG_LOG,
+        MSG_DBG,
 	MSG_GAME_OVER
 } TableToControl;
 

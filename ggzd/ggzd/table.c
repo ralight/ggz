@@ -347,9 +347,10 @@ static void table_loop(int t_index)
 
 static int table_handle(int request, int index, int fd)
 {
-
 	int status;
-	TableToControl op = (TableToControl) request;
+	unsigned int level;
+	char* msg;
+	TableToControl op = (TableToControl)request;
 
 	switch (op) {
 
@@ -358,6 +359,22 @@ static int table_handle(int request, int index, int fd)
 		status = -1;
 		break;
 
+	case MSG_LOG:
+		if (es_read_int(fd, &level) < 0
+		    || es_read_string_alloc(fd, &msg) < 0)
+			return -1;
+		log_msg(level, msg);
+		free(msg);
+		status = 0;
+		break;
+	case MSG_DBG:
+		if (es_read_int(fd, &level) < 0
+		    || es_read_string_alloc(fd, &msg) < 0)
+			return -1;
+		dbg_msg(level, msg);
+		free(msg);
+		status = 0;
+		break;
 	default:
 		dbg_msg(GGZ_DBG_PROTOCOL,
 			"Table %d requested unimplemented op %d", index,

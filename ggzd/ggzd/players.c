@@ -84,6 +84,7 @@ static int   player_list_types(int p_index, int fd);
 static int   player_list_tables(int p_index, int fd);
 static int   player_send_error(int p_index, int fd);
 static int   player_handle_chat_enqueue(int p_index, int p_fd);
+static int   player_motd(int p_index, int fd);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -388,6 +389,10 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		}
 		break;
 
+	case REQ_MOTD:
+		status = player_motd(p_index, p_fd);
+		break;
+	  
 	case REQ_LOGIN_NEW:
 	case REQ_LOGIN:
 	case REQ_PREF_CHANGE:
@@ -542,7 +547,9 @@ static int player_login_new(int p)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) {
+	if (motd_info.use_motd
+	    && (es_write_int(players.info[p].fd, MSG_MOTD) < 0
+		|| motd_send_motd(players.info[p].fd) < 0)) {
 		player_remove(p);
 		return GGZ_REQ_DISCONNECT;
 	}
@@ -606,8 +613,12 @@ static int player_login_anon(int p, int fd)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) 
+	if (motd_info.use_motd
+	    && (es_write_int(fd, MSG_MOTD) < 0
+		|| motd_send_motd(fd) < 0)) {
+		player_remove(p);
 		return GGZ_REQ_DISCONNECT;
+	}
 	
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful anonymous login of %s", name);
 
@@ -1177,4 +1188,18 @@ int player_handle_chat_enqueue(int p_index, int p_fd)
 		return (-1);
 
 	return 0;
+}
+
+
+int player_motd(int p_index, int fd)
+{
+	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for player %d", p_index);
+  	if (!motd_info.use_motd)
+		return GGZ_REQ_OK;
+	
+	if (es_write_int(fd, RSP_MOTD) < 0
+	    || motd_send_motd(fd) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	return GGZ_REQ_OK;
 }

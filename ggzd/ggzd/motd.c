@@ -121,14 +121,13 @@ void motd_read_file(void)
 }
 
 
-/* Send out the message of the day, return TRUE on success */
+/* Send out the message of the day, return 0 on success */
 int motd_send_motd(int sock)
 {
 	int i;
 	char pline[1024];
 
-	if(es_write_int(sock, MSG_MOTD) < 0 ||
-	   es_write_int(sock, motd_info.motd_lines) < 0)
+	if (es_write_int(sock, motd_info.motd_lines) < 0)
 		return -1;
 	
 	for(i=0; i<motd_info.motd_lines; i++) {
