@@ -15,7 +15,7 @@
 #ifndef GGZCONFIO_H
 #define GGZCONFIO_H
 
-#include <ggzcore.h>
+#include <ggz.h>
 
 /**
 *
@@ -30,9 +30,9 @@ class GGZCoreConfio
 		/** Options which are passed to the constructor as an or'd list. */
 		enum GGZCoreConfioOptions
 		{
-			readonly  = 1,
-			readwrite = 2,
-			create    = 4
+			readonly  = GGZ_CONF_RDONLY,
+			readwrite = GGZ_CONF_RDWR,
+			create    = GGZ_CONF_CREATE
 		};
 
 		/** Constructor. Its arguments specify the configuration file path and the options to operate on this file. */
