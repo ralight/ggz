@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^www.ggzgamingzone.org$
+RewriteRule (.*\.png)$ http://wwwmirror.ggzgamingzone.org/screenshots/$1
+RewriteRule (.*\.jpg)$ http://wwwmirror.ggzgamingzone.org/screenshots/$1
+
