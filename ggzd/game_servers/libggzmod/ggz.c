@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2294 2001-08-28 04:12:57Z jdorje $
+ * $Id: ggz.c 2318 2001-08-29 06:06:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,6 +95,8 @@ const char* ggzd_get_player_name(int seat)
 
 int ggzd_set_player_name(int seat, char* name)
 {
+	/* you can set player names, but only for Bots
+	 * which have artificial names anyway */
 	if (!name
 	    || seat < 0
 	    || seat >= num_seats
@@ -192,10 +194,42 @@ int ggzd_disconnect(void)
 }
 
 
+/* If anyone is left out or would prefer a different name, go right
+ * ahead and change it.  No longer than 13 characters.  --JDS */
+static char* bot_names[] = {
+	"bcox",     "Crouton", "Boffo", "Bugg",  "DJH",    "Dobey",
+	"Dr. Maux", "jDorje",  "Jzaun", "Oojah", "Perdig", "RGade",
+	"riq",      "rpd"
+};
+
+/* This function randomizes the order of the names assigned to bots.
+ * It is ENTIRELY UNNECESSARY but entertaining.  --JDS */
+static void randomize_names(char** names,
+			    char** randnames,
+			    int num)
+{
+	char* rnames2[num];
+	int i, choice;
+
+	/* copy names array to rnames2 array */
+	for (i=0; i<num; i++) rnames2[i] = names[i];
+
+	/* now pick names from rnames2 */
+	for(i=0; i<num; i++) {
+		choice = random() % (num-i);
+		randnames[i] = rnames2[choice];
+		rnames2[choice] = rnames2[num-i-1];
+	}
+}
+
+
 static int ggzdmod_game_launch(void)
 {
-	int i, status = 0;
+	int i, status = 0, bots = 0;
+#define NUM_BOT_NAMES (sizeof(bot_names)/sizeof(bot_names[0]))
+	char* rand_bot_names[NUM_BOT_NAMES];
 
+	randomize_names(bot_names, rand_bot_names, NUM_BOT_NAMES);
 
 	if (es_read_int(ggzfd, &num_seats) < 0)
 		return -1;
@@ -224,9 +258,10 @@ static int ggzdmod_game_launch(void)
 			ggzd_debug("GGZDMOD: Seat %d is open", i);
 			break;
 		case GGZ_SEAT_BOT:
-			ggzd_debug("GGZDMOD: Seat %d is a bot", i);
-			/* Set up a default name.  Surely we can do better than "bot", though. */
-			strcpy(seat_data[i].name, "[bot]"); /* TODO: should this be NULL? */
+			/* FIXME: we should truncate the name not the AI */
+			snprintf(seat_data[i].name, MAX_USER_NAME_LEN+1, "%s-AI", rand_bot_names[bots]);
+			ggzd_debug("GGZDMOD: Seat %d is a bot named %s", i, rand_bot_names[bots]);
+			bots++;
 			break;
 		case GGZ_SEAT_RESV:
 			ggzd_debug("GGZDMOD: Seat %d reserved for %s", i, seat_data[i].name);
