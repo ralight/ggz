@@ -50,8 +50,6 @@ char *gurupassword = NULL;
 FILE *logstream = NULL;
 /*char *playername;*/
 
-int joinedroom = 0;
-
 static SilcClient client;
 static SilcClientConnection connection;
 static SilcPKCS pkcs;
@@ -234,6 +232,8 @@ void net_connect(const char *host, int port, const char *name, const char *passw
 /* Join a SILC channel */
 void net_join(const char *room)
 {
+	fprintf(stderr, "Join room: %s\n", room);
+	silc_client_command_call(client, connection, NULL, "JOIN", room, NULL);
 }
 
 /* Loop function */
@@ -382,11 +382,7 @@ static void silc_notify(SilcClient client, SilcClientConnection conn, SilcNotify
 		str = va_arg(ap, char*);
 		fprintf(stderr, "Notify MOTD: %s\n", str);
 
-		if(!joinedroom)
-		{
-			joinedroom = 1;
-			silc_client_command_call(client, connection, "JOIN grubbyonsilc");
-		}
+		status = NET_LOGIN;
 	}
 	else if(type == SILC_NOTIFY_TYPE_JOIN)
 	{
@@ -421,7 +417,7 @@ static void silc_connected(SilcClient client, SilcClientConnection conn, SilcCli
 
 	connection = conn;
 
-	status = NET_LOGIN;
+	/*status = NET_LOGIN;*/
 }
 
 static void silc_disconnected(SilcClient client, SilcClientConnection conn, SilcStatus status, const char *message)
