@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: spades.c 3360 2002-02-15 03:38:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -232,6 +232,7 @@ static int spades_get_bid(void)
 static void spades_handle_bid(player_t p, bid_t bid)
 {
 	assert(game.next_bid == p);
+	
 	/* Regular bids don't need any special handling; however blind bids
 	   do. */
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
@@ -277,8 +278,11 @@ static void spades_set_player_message(player_t p)
 	clear_player_message(p);
 	add_player_rating_message(p);
 	add_player_score_message(p);
-	if (game.state != STATE_NEXT_BID) {
-		/* we show both the individual and team contract */
+	
+	/* we show both the individual and team contract, if applicable.
+	   But is this really the best way to tell if it's applicable? */
+	if (game.state != STATE_NEXT_BID
+	    && game.state != STATE_NONE) {
 		char bid_text[512];
 		int contract =
 			game.players[p].bid.sbid.val +
@@ -289,6 +293,8 @@ static void spades_set_player_message(player_t p)
 			add_player_message(s, "Contract: %s (%d)\n", bid_text,
 					   contract);
 	}
+	
+	/* Are these the right times? */
 	if (game.state == STATE_WAIT_FOR_PLAY
 	    || game.state == STATE_NEXT_TRICK
 	    || game.state == STATE_NEXT_PLAY) {
@@ -297,6 +303,7 @@ static void spades_set_player_message(player_t p)
 				   game.players[p].tricks +
 				   game.players[(p + 2) % 4].tricks);
 	}
+	
 	add_player_bid_message(p);
 	add_player_action_message(p);
 }
