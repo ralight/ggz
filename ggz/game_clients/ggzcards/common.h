@@ -1,4 +1,4 @@
-/* $Id: common.h 2545 2001-10-08 23:09:23Z jdorje $ */
+/* $Id: common.h 2621 2001-10-28 09:50:30Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -198,12 +198,28 @@ extern void table_alert_trick(int player);
 extern void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
 			      char ***option_choices);
 
-/** A gui-dependent function called to set the global message.
+/** A gui-dependent function called to set a global TEXT message.
  *  This should be defined by the frontend code and is accessed by a
- *  callback from handle_message_global.
+ *  callback from within client_handle_server.  The message is a single
+ *  string intended to be displayed as-is in a fixed-width font by the
+ *  client.  A typical client will display most such messages in pop-up
+ *  windows; however, those with special marks may have special
+ *  significance.
  *  @param mark The "mark" ID tag string of the message.
  *  @param msg The message itself. */
-extern void table_set_global_message(const char *mark, const char *msg);
+extern void table_set_global_text_message(const char *mark, const char *msg);
+
+/** A gui-dependent function called to set a global CARDLIST message.
+ *  This should be defined by the frontend code and is accessed by a
+ *  callback from within client_handle_server.  The message is a list
+ *  of cards, an equal number for each player.
+ *  @param mark The "mark" ID tag string of the message.
+ *  @param length The number of cards in the list per player.
+ *  @param cardlist The list of cards; cards are sorted by player.
+ *  @see table_set_global_text_message
+ */
+extern void table_set_global_cardlist_message(const char *mark, int *lengths,
+					      card_t ** cardlist);
 
 /** A gui-dependent function called to set a player message.
  *  This should be defined by the frontend code and is accessed by a

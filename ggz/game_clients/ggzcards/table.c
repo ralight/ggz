@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2545 2001-10-08 23:09:23Z jdorje $
+ * $Id: table.c 2621 2001-10-28 09:50:30Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -281,9 +281,10 @@ void table_set_player_message(int player, const char *message)
 }
 
 /* Displays a global message (any global message). */
-void table_set_global_message(const char *mark, const char *message)
+void table_set_global_text_message(const char *mark, const char *message)
 {
-	assert(table_initialized);
+	if (!table_initialized)
+		return;
 	if (!*mark)
 		/* This is the "global" global message that has mark "". it
 		   gets displayed on the messagebar. */
@@ -299,6 +300,12 @@ void table_set_global_message(const char *mark, const char *message)
 		   access. */
 		menubar_message(mark, message);
 	}
+}
+
+void table_set_global_cardlist_message(const char *mark, int *lengths,
+				       card_t ** cardlist)
+{
+	client_debug("Unusable cardlist message received.");
 }
 
 /* Handle a redraw of necessary items when a Gtk style change is signaled. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2618 2001-10-28 07:54:44Z jdorje $
+ * $Id: protocol.h 2621 2001-10-28 09:50:30Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -69,11 +69,9 @@ typedef enum {
 typedef enum {
 	GL_MESSAGE_TEXT,	/* A simple text message, containing only a
 				   single string. */
-	GL_MESSAGE_CARDGROUP,	/* A card group: one card played for each
-				   player. */
 	GL_MESSAGE_CARDLIST,	/* A list of cards for each player, sent as
-				   an integer (n) plus n cards for each
-				   player. */
+				   (for each player) a length n plus n cards
+				   for that player. */
 	GL_MESSAGE_BLOCK,	/* Block data that may be game-specific.  An
 				   integer (n) followed by n bytes of data.
 				   It is up to the client frontend to

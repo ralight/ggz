@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2618 2001-10-28 07:54:44Z jdorje $
+ * $Id: common.c 2621 2001-10-28 09:50:30Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -122,34 +122,37 @@ static int handle_global_message_text(char *mark)
 	char *message;
 	if (es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
-	table_set_global_message(mark, message);
-	return 0;
-}
-
-static int handle_global_message_cardgroup(char *mark)
-{
-	int p;
-	card_t card;
-	for (p = 0; p < game.num_players; p++)
-		if (read_card(ggzfd, &card) < 0)
-			return -1;
-
-	/* do nothing...yet */
+	table_set_global_text_message(mark, message);
 	return 0;
 }
 
 static int handle_global_message_cardlist(char *mark)
 {
-	int p, len;
-	card_t card;
-	if (es_read_int(ggzfd, &len) < 0)
-		return -1;
-	for (p = 0; p < game.num_players * len; p++)
-		if (read_card(ggzfd, &card) < 0)
-			return -1;
+	int status = 0, p, i;
+	card_t **cardlist = malloc(game.num_players * sizeof(*cardlist));
+	int *lengths = malloc(game.num_players * sizeof(*lengths));
 
-	/* do nothing...yet */
-	return 0;
+	if (!cardlist || !lengths)
+		abort();
+
+	for (p = 0; p < game.num_players; p++) {
+		if (es_read_int(ggzfd, &lengths[p]))
+			status = -1;
+		cardlist[p] = malloc(lengths[p] * sizeof(**cardlist));
+		for (i = 0; i < lengths[p]; i++)
+			if (read_card(ggzfd, &cardlist[p][i]) < 0)
+				status = -1;
+	}
+
+	if (status == 0)
+		table_set_global_cardlist_message(mark, lengths, cardlist);
+
+	for (p = 0; p < game.num_players; p++)
+		free(cardlist[p]);
+	free(cardlist);
+	free(lengths);
+
+	return status;
 }
 
 static int handle_global_message_block(char *mark)
@@ -187,9 +190,6 @@ static int handle_message_global()
 	switch (op) {
 	case GL_MESSAGE_TEXT:
 		status = handle_global_message_text(mark);
-		break;
-	case GL_MESSAGE_CARDGROUP:
-		status = handle_global_message_cardgroup(mark);
 		break;
 	case GL_MESSAGE_CARDLIST:
 		status = handle_global_message_cardlist(mark);
