@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5106 2002-10-29 11:32:21Z jdorje $
+ * $Id: net.c 5136 2002-11-01 21:30:17Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1897,7 +1897,7 @@ static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 					    char *password)
 {
 	/* Try to send login status */
-	_net_send_line(net, "<RESULT ACTION='login' CODE='%s'/>",
+	_net_send_line(net, "<RESULT ACTION='login' CODE='%s'>",
 		       ggz_error_to_string(status));
 
 	/* Try to send checksum if successful */
