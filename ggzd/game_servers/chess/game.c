@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6743 2005-01-19 22:07:16Z jdorje $
+ * $Id: game.c 6746 2005-01-19 23:15:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -47,7 +47,8 @@ struct chess_info game_info;
  * Use to store the time of the current play */
 struct timeval chronometer;
 
-static void game_stop_chronometer(void);
+static void game_restart_chronometer(void);
+static int game_read_chronometer(void);
 
 /* All the important stuff happens here */
 static int game_update(int event_id, void *data);
@@ -135,7 +136,6 @@ static int game_update(int event_id, void *data)
   int from, to;
   int ret;
   char botmove[6];
-  struct timeval now;
 
   switch (event_id) {
     case CHESS_EVENT_LAUNCH:
@@ -213,7 +213,7 @@ static int game_update(int event_id, void *data)
       /* Stop the chronometer if it's the case */
       if (game_info.clock_type == CHESS_CLOCK_SERVERLAG ||
           game_info.clock_type == CHESS_CLOCK_SERVER)
-        game_stop_chronometer();
+        game_restart_chronometer();
       /* Update state */
       game_info.state = CHESS_STATE_PLAYING;
       break;
@@ -252,7 +252,7 @@ static int game_update(int event_id, void *data)
           game_info.seconds[game_info.turn % 2] = 0;
         /* If server, stop the chronometer */
         if (game_info.clock_type != CHESS_CLOCK_CLIENT)
-          game_stop_chronometer();
+          game_restart_chronometer();
         /* Send the move */
         game_send_move((char *)data, time);
       }
@@ -333,9 +333,8 @@ static int game_update(int event_id, void *data)
         break;
       /* If we have server clock, then update the time */
       if (game_info.clock_type == CHESS_CLOCK_SERVER) {
-        gettimeofday(&now, NULL);
-        time = now.tv_sec - chronometer.tv_sec;
-        game_stop_chronometer();
+	time = game_read_chronometer();
+        game_restart_chronometer();
         game_info.seconds[game_info.turn%2] -= time;
       }
       if (OUT_OF_TIME(0))
@@ -421,7 +420,6 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
   int fd, time;
   char op;
   void *data;
-  struct timeval now;
 
   /* Is the seat valid? */
   fd = ggzdmod_get_seat(ggz, *seat).fd;
@@ -491,8 +489,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
           /* Now put it on the data buffer */
         } else {
           /* How much type did that player take ? */
-          gettimeofday(&now, NULL);
-          time = now.tv_sec - chronometer.tv_sec;
+          time = game_read_chronometer();
         }
         /* If first turn, there is no time! */
         if (game_info.turn == 0 || game_info.turn == 1)
@@ -529,8 +526,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
       /* If server clock, get the time until now*/
       if (game_info.clock_type == CHESS_CLOCK_SERVER ||
           game_info.clock_type == CHESS_CLOCK_SERVERLAG) {
-        gettimeofday(&now, NULL);
-        time = now.tv_sec - chronometer.tv_sec;
+        time = game_read_chronometer();
       }
       /* Check if this player can claim */
       if (game_info.turn % 2 == *seat && game_info.seconds[*seat] - time <= 0)
@@ -586,9 +582,17 @@ static void game_send_players(void)
 	}
 }
 
-static void game_stop_chronometer(void)
+static void game_restart_chronometer(void)
 {
   gettimeofday(&chronometer, NULL);
+}
+
+static int game_read_chronometer(void)
+{
+  struct timeval now;
+
+  gettimeofday(&now, NULL);
+  return now.tv_sec - chronometer.tv_sec;
 }
 
 static void game_request_time(int seat)
