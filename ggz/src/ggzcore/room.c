@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: room.c 4827 2002-10-09 22:56:43Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -675,30 +675,17 @@ int _ggzcore_room_chat(struct _GGZRoom *room,
 void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatType type,
 			    char *name, char *msg)
 {
-	char *data[2];
+	GGZChatEventData data = { type : type,
+				  sender : name,
+				  message : msg };
 
-	data[0] = name;
-	data[1] = msg;
+	ggz_debug(GGZCORE_DBG_ROOM, "Chat (%s) from %s",
+		  ggz_chattype_to_string(type), name);
 
-	ggz_debug(GGZCORE_DBG_ROOM, "op = %d", type);
-
-	switch (type) {
-	case GGZ_CHAT_NORMAL:
-		_ggzcore_room_event(room, GGZ_CHAT, data);
-		break;
-	case GGZ_CHAT_ANNOUNCE:
-		_ggzcore_room_event(room, GGZ_ANNOUNCE, data);		
-		break;
-	case GGZ_CHAT_PERSONAL:
-		_ggzcore_room_event(room, GGZ_PRVMSG, data);
-		break;
-	case GGZ_CHAT_BEEP:
-		_ggzcore_room_event(room, GGZ_BEEP, data);
-		break;
-	case GGZ_CHAT_NONE:
+	if (type == GGZ_CHAT_NONE)
 		ggz_error_msg("_ggzcore_room_add_chat: invalid chat type.");
-		break;
-	}
+
+	_ggzcore_room_event(room, GGZ_CHAT_EVENT, &data);
 }
 
 

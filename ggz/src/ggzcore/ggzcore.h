@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: ggzcore.h 4827 2002-10-09 22:56:43Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -217,6 +217,12 @@ typedef enum {
 	GGZ_CHANNEL_FAIL
 } GGZServerEvent;
 
+/** @brief The data associated with a GGZ_CHAT_EVENT room event. */
+typedef struct {
+	GGZChatType type;
+	const char *sender;
+	const char *message;
+} GGZChatEventData;
 
 typedef enum {
 	/** The list of players in a room has arrived. */
@@ -225,17 +231,9 @@ typedef enum {
 	/** Received the list of active tables. */
 	GGZ_TABLE_LIST,
 
-	/** Received a normal chat message, sent to all players. */
-	GGZ_CHAT,
-
-	/** A chat announcement of a player, sent to all players. */
-	GGZ_ANNOUNCE,
-
-	/** Private message from a player to the receiver. */
-	GGZ_PRVMSG,
-
-	/** Beep message to the receiver. */
-	GGZ_BEEP,
+	/** Received a normal chat message, sent to all players.
+	 *  @see GGZChatEventData */
+	GGZ_CHAT_EVENT,
 
 	/** Attempt to enter a room has been successful. */
 	GGZ_ROOM_ENTER,
