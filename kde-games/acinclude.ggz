@@ -10,7 +10,8 @@ dnl ======================================
 dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
 dnl between them all.  Currently the following modules use it:
-dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby.
+dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
+dnl ggz-client-libs, ggzd.
 dnl
 dnl ======================================
 dnl
@@ -19,7 +20,7 @@ dnl 2001-05-??: first version to find easysock and ggzcore
 dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
 dnl 2001-11-05: backport from copenhagen, and more macros
 dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
-dnl 2002-01-12: include libggz support (copied from ggzcore checks)
+dnl 2002-01-12: include libggz support; imported to ggz-client-libs and ggzd
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
