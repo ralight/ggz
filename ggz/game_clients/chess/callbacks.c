@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Desc: GTK Callback functions
- * $Id: callbacks.c 6240 2004-11-03 19:24:53Z jdorje $
+ * $Id: callbacks.c 6270 2004-11-05 19:26:41Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -95,19 +95,17 @@ gboolean on_board_configure_event(GtkWidget *widget,
 }
 
 
-gboolean
-on_board_expose_event                  (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+gboolean on_board_expose_event(GtkWidget *widget, GdkEventExpose *event,
+			       gpointer user_data)
 {
-	gdk_draw_pixmap( widget->window,
-			 widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-			 board_buf,
-			 event->area.x, event->area.y,
-			 event->area.x, event->area.y,
-			 event->area.width, event->area.height);
+	gdk_draw_drawable(widget->window,
+			  widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+			  board_buf,
+			  event->area.x, event->area.y,
+			  event->area.x, event->area.y,
+			  event->area.width, event->area.height);
 
-  return FALSE;
+	return FALSE;
 }
 
 
@@ -122,8 +120,8 @@ on_board_button_press_event            (GtkWidget       *widget,
   x = event->x / PIXSIZE;
   y = event->y / PIXSIZE;
   /* Set the last pressed data */
-  gtk_object_set_data(GTK_OBJECT(widget), "from_x", GINT_TO_POINTER(x));
-  gtk_object_set_data(GTK_OBJECT(widget), "from_y", GINT_TO_POINTER(y));
+  g_object_set_data(G_OBJECT(widget), "from_x", GINT_TO_POINTER(x));
+  g_object_set_data(G_OBJECT(widget), "from_y", GINT_TO_POINTER(y));
 
   if (output[x+(y*9)] == '-' || (game_info.seat == 1 && output[x+(y*9)] < 'Z' ) || (game_info.seat == 0 && !(output[x+(y*9)] < 'Z')))
     gtk_drag_source_unset(widget);
@@ -139,11 +137,10 @@ on_board_drag_begin                    (GtkWidget       *widget,
                                         GdkDragContext  *drag_context,
                                         gpointer         user_data)
 {
-  int x, y;
-  x = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
-  y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
-  board_dnd_highlight(x, y, drag_context);
+  int x = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_x"));
+  int y = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_y"));
 
+  board_dnd_highlight(x, y, drag_context);
 }
 
 gboolean
@@ -154,12 +151,12 @@ on_board_drag_motion                   (GtkWidget       *widget,
                                         guint            time,
                                         gpointer         user_data)
 {
-  int f_x, f_y, t_x, t_y, retval;
-  f_x = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
-  f_y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
-  t_x = x / PIXSIZE;
-  t_y = y / PIXSIZE;
-  retval = cgc_valid_move(game, f_x, 7-f_y, t_x, 7-t_y, 0);
+  int f_x = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_x"));
+  int f_y = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_y"));
+  int t_x = x / PIXSIZE;
+  int t_y = y / PIXSIZE;
+  int retval = cgc_valid_move(game, f_x, 7-f_y, t_x, 7-t_y, 0);
+
   if (retval == VALID) {
     game_info.dest_x = t_x;
     game_info.dest_y = t_y;
@@ -187,8 +184,8 @@ on_board_drag_drop                     (GtkWidget       *widget,
   int promote = 0;
 	cgc_getboard(output, game->board);
 
-  arg[0] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
-  arg[1] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
+  arg[0] = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_x"));
+  arg[1] = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "from_y"));
 
   arg[2] = x / PIXSIZE;
   arg[3] = y / PIXSIZE;
@@ -214,7 +211,7 @@ on_board_drag_drop                     (GtkWidget       *widget,
   if (!promote && cgc_valid_move(game, arg[0], 7-arg[1], arg[2], 7-arg[3], 0) == VALID) {
     game_update(CHESS_EVENT_MOVE_END, move);
   } else if (promote) {
-    gtk_object_set_data(GTK_OBJECT(main_win), "promote", g_strdup(move));
+    g_object_set_data(G_OBJECT(main_win), "promote", g_strdup(move));
     gtk_widget_show(create_promote_dialog());
   }
 

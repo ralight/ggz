@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 6237 2004-11-03 06:54:59Z jdorje $
+ * $Id: main.c 6270 2004-11-05 19:26:41Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -57,18 +57,21 @@ static void initialize_about_dialog(void);
 
 static GGZMod *mod;
 
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+static gboolean handle_ggz(GIOChannel *source, GIOCondition condition,
+			   gpointer data)
 {
 	ggzmod_dispatch(mod);
+	return TRUE;
 }
 
 static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 {
 	int fd = *(int*)data;
+	GIOChannel *channel = g_io_channel_unix_new(fd);
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	game_info.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, net_handle_input, NULL);
+	g_io_add_watch(channel, G_IO_IN, net_handle_input, NULL);
 }
 
 int main(int argc, char *argv[]) {	
@@ -80,7 +83,6 @@ int main(int argc, char *argv[]) {
 
 	gtk_init(&argc, &argv);
 	initialize_about_dialog();
-	add_pixmap_directory(".");
 
 	main_win = create_main_win();
 	gtk_widget_realize(main_win);
@@ -105,7 +107,8 @@ int main(int argc, char *argv[]) {
 	if (ret != 0)
 		return -1;
 
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
+	g_io_add_watch(g_io_channel_unix_new(ggzmod_get_fd(mod)),
+		       G_IO_IN, handle_ggz, NULL);
 
 	gtk_main();
 	

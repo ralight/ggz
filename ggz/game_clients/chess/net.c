@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 4491 2002-09-09 04:51:32Z jdorje $
+ * $Id: net.c 6270 2004-11-05 19:26:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,7 +43,10 @@
 
 extern struct chess_info game_info;
 
-void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
+gboolean net_handle_input(GIOChannel *source, GIOCondition condition,
+			  gpointer data)
+{
+  int fd = g_io_channel_unix_get_fd(source);
   char op;
   char args[15];
   int a = 0;
@@ -51,7 +54,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
 
   /* Get the opcode */
   if (ggz_read_char(fd, &op) < 0)
-    return;
+    return FALSE;
 
   switch (op) {
     case CHESS_MSG_SEAT:
@@ -128,6 +131,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       break;
   }
 
+  return TRUE;
 }
 
 void net_send_time(int time_option) {

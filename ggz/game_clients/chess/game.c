@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5201 2002-11-04 02:47:56Z jdorje $
+ * $Id: game.c 6270 2004-11-05 19:26:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -96,8 +96,9 @@ void game_popup(const char *format, ...) {
   /* Ensure that the dialog box is destroyed when
    * the user clicks ok. */
  
-  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dialog));
+  g_signal_connect_swapped(ok, "clicked",
+			   GTK_SIGNAL_FUNC(gtk_widget_destroy),
+			   dialog);
 
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
                      ok);
@@ -220,7 +221,7 @@ void game_update(int event, void *arg) {
         break;
       game_info.state = CHESS_STATE_PLAYING;
       if (game_info.clock_type != CHESS_CLOCK_NOCLOCK)
-        gtk_timeout_add(1000, game_timer, NULL);
+        g_timeout_add(1000, game_timer, NULL);
       game_message("The game has started!");
       break;
     case CHESS_EVENT_MOVE_END:
@@ -231,7 +232,7 @@ void game_update(int event, void *arg) {
 			if (game_info.clock_type != CHESS_CLOCK_CLIENT)
 				net_send_move(arg, -1);
 			else {
-				gtk_timeout_remove(timeout_id);
+				g_source_remove(timeout_id);
 				if (game_info.turn == 0 || game_info.turn == 1)
 					net_send_move(arg, 0);
 				else
@@ -273,7 +274,7 @@ void game_update(int event, void *arg) {
 				/* Starts the timer ! */
 				g_timer_start(game_info.timer);
 				/* Starts the timeout for MSG_UPDATE */
-				timeout_id = gtk_timeout_add(15000, game_update_server, NULL);
+				timeout_id = g_timeout_add(15000, game_update_server, NULL);
 			}
 			board_info_update();
       board_info_add_move(move);

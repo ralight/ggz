@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6240 2004-11-03 19:24:53Z jdorje $
+ * $Id: board.c 6270 2004-11-05 19:26:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -153,12 +153,12 @@ void board_init(void)
 	//board_info_init();
 }
 
-void board_info_init(void) {
+void board_info_init(void)
+{
 	GtkWidget *black, *white;
 	GtkWidget *black_arrow, *white_arrow;
 	GdkColor color;
 	GtkStyle *style;
-	GdkFont *font;
 	int j;
 
 	black = lookup_widget(main_win, "black_time");
@@ -173,8 +173,8 @@ void board_info_init(void) {
 		style->fg[j] = gtk_widget_get_style(main_win)->black;
 		style->bg[j] = gtk_widget_get_style(main_win)->black;
 	}
-	font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
-	gtk_style_set_font(style, font);
+	pango_font_description_set_weight(style->font_desc, PANGO_WEIGHT_BOLD);
+	pango_font_description_set_size(style->font_desc, 14);
 
 	gtk_widget_set_style(black, style);
 	/* Arrows */
@@ -193,13 +193,14 @@ void board_info_init(void) {
 		style->fg[j] = color;
 		style->bg[j] = color;
 	}
-	font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
-	gtk_style_set_font(style, font);
+	pango_font_description_set_weight(style->font_desc, PANGO_WEIGHT_BOLD);
+	pango_font_description_set_size(style->font_desc, 14);
 	gtk_widget_set_style(white, style);
 
 }
 
-void board_info_update(void) {
+void board_info_update(void)
+{
 	GtkWidget *black, *white;
 	char text[32];
 
@@ -229,7 +230,8 @@ void board_info_update(void) {
 	
 
 
-void board_dnd_init(void) {
+void board_dnd_init(void)
+{
   GtkWidget *board;
   target = (GtkTargetEntry *)malloc(sizeof(GtkTargetEntry));
 
@@ -245,15 +247,17 @@ void board_dnd_init(void) {
 
 }
 
-void board_draw(void) {
+void board_draw(void)
+{
   board_draw_bg();
   board_draw_pieces();
   board_draw_highlights();
 
-  gtk_widget_draw(lookup_widget(main_win, "board"), NULL);
+  gtk_widget_queue_draw(lookup_widget(main_win, "board"));
 }
 
-void board_draw_highlights(void) {
+void board_draw_highlights(void)
+{
   int x, y;
 	char output[80];
 	cgc_getboard(output, game->board);
@@ -272,7 +276,8 @@ void board_draw_highlights(void) {
   }
 }
 
-void board_draw_outline(int x, int y, GdkGC *gc) {
+void board_draw_outline(int x, int y, GdkGC *gc)
+{
   /* Outside outline */
   gdk_draw_rectangle(board_buf,
       gc,
@@ -291,7 +296,8 @@ void board_draw_outline(int x, int y, GdkGC *gc) {
 
   
 
-void board_draw_bg(void) {
+void board_draw_bg(void)
+{
   int i, j;
   if (!pieces)
     board_init();
@@ -325,7 +331,8 @@ void board_draw_bg(void) {
 
 }
 
-void board_draw_pieces(void) {
+void board_draw_pieces(void)
+{
   int x, y;
 	char output[80];
 
@@ -342,7 +349,8 @@ void board_draw_pieces(void) {
 
 }
 
-int board_translate(int cgc_val) {
+int board_translate(int cgc_val)
+{
   switch(cgc_val) {
     case 'P':
       return PAWN_W;
@@ -372,18 +380,18 @@ int board_translate(int cgc_val) {
   return -1;
 }
 
-void board_draw_piece(int piece, int x, int y) {
-
+void board_draw_piece(int piece, int x, int y)
+{
   if (piece < 0)
     return;
 
-  gdk_pixbuf_render_to_drawable(pieces[piece], board_buf,
-				piece_gc, 0, 0, x * PIXSIZE, y * PIXSIZE,
-				PIXSIZE, PIXSIZE,
-				GDK_RGB_DITHER_NONE, 0, 0);
+  gdk_draw_pixbuf(board_buf, piece_gc, pieces[piece],
+		  0, 0, x * PIXSIZE, y * PIXSIZE, PIXSIZE, PIXSIZE,
+		  GDK_RGB_DITHER_NONE, 0, 0);
 }
 
-void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
+void board_dnd_highlight( int x, int y, GdkDragContext *drag_context)
+{
 	char output[80];
   int piece;	
 	cgc_getboard(output, game->board);
@@ -393,23 +401,27 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
   game_info.src_y = y;
 }
 
-void board_request_draw(void) {
+void board_request_draw(void)
+{
   game_message("Requesting draw!");
   net_send_draw();
 }
 
-void board_call_flag(void) {
+void board_call_flag(void)
+{
   game_message("Calling flag");
   net_call_flag();
 }
 
-int board_auto_call(void) {
+int board_auto_call(void)
+{
   GtkWidget *auto_call;
   auto_call = lookup_widget(main_win, "auto_call_flag");
   return GTK_CHECK_MENU_ITEM(auto_call)->active;
 }
 
-void board_info_add_move(char *move) {
+void board_info_add_move(char *move)
+{
   GtkWidget *move_list = lookup_widget(main_win, "last_moves");
   char *text= g_strdup_printf("%s -> %s\n",
 			      game_info.turn % 2 ? "White" : "Black",
@@ -422,13 +434,12 @@ void board_info_add_move(char *move) {
   free(text);
 }
 
-void
-promote_piece                          (GtkButton       *button,
-                                        gpointer         user_data)
+void promote_piece(GtkButton *button, gpointer user_data)
 {
   GtkWidget *widget;
   char promote = 0;
-  char *move = gtk_object_get_data(GTK_OBJECT(main_win), "promote");
+  char *move = g_object_get_data(G_OBJECT(main_win), "promote");
+
   /* It's the queen ? */
   widget = lookup_widget(user_data, "queen");
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
@@ -455,6 +466,7 @@ promote_piece                          (GtkButton       *button,
 
 }
 
-void board_request_update(void) {
+void board_request_update(void)
+{
 	net_request_update();
 }
