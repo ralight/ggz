@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2695 2001-11-08 09:41:54Z jdorje $
+ * $Id: main.c 2696 2001-11-08 10:09:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -305,7 +305,7 @@ void menubar_text_message(const char *mark, const char *msg)
 void menubar_cardlist_message(const char *mark, int *lengths,
 			      card_t ** cardlist)
 {
-	GtkWidget *dlg, *canvas;
+	GtkWidget *dlg, *canvas, *layout, **name_labels;
 	GdkPixmap *image = NULL;
 	int p, i, max_len = 0;
 	extern GtkWidget *table;	/* Damn, why can't I figure out
@@ -332,25 +332,50 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 
 		canvas = gtk_pixmap_new(image, NULL);
 		gtk_widget_ref(canvas);
-		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
-				  canvas);
 
 		gtk_object_set_data(GTK_OBJECT(dlg), "canvas", canvas);
 		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
+
+#if 1
+		layout = gtk_table_new(game.num_players, 2, FALSE);
+		gtk_table_attach(GTK_TABLE(layout), canvas, 1, 2, 0,
+				 game.num_players, 0, 0, 0, 0);
+
+		name_labels =
+			g_malloc(game.num_players * sizeof(*name_labels));
+		gtk_object_set_data(GTK_OBJECT(dlg), "names", name_labels);
+		for (p = 0; p < game.num_players; p++) {
+			name_labels[p] = gtk_label_new(game.players[p].name);
+			gtk_table_attach(GTK_TABLE(layout), name_labels[p], 0,
+					 1, p, p + 1, 0, 0, 0, 0);
+		}
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
+				  layout);
+		gtk_widget_show_all(layout);
+
+#else
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
+				  canvas);
+#endif
+
 	}
 
 	/* Retrieve data.  If the cardlist maxlength has changed, we're in
 	   trouble. */
 	image = gtk_object_get_data(GTK_OBJECT(dlg), "image");
 	canvas = gtk_object_get_data(GTK_OBJECT(dlg), "canvas");
-	assert(image && canvas);
+	name_labels = gtk_object_get_data(GTK_OBJECT(dlg), "names");
+	assert(image && canvas && name_labels);
 
 	/* Redraw image */
-	for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < game.num_players; p++) {
 		for (i = 0; i < lengths[p]; i++) {
 			draw_card(cardlist[p][i], 0, i * CARDWIDTH / 4,
 				  p * CARDHEIGHT, image);
 		}
+		gtk_label_set_text(GTK_LABEL(name_labels[p]),
+				   game.players[p].name);
+	}
 
 
 	/* Update widget. Ugly. */

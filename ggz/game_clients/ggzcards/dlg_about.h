@@ -1,5 +1,5 @@
-/* $Id: dlg_about.h 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* $Id: dlg_about.h 2696 2001-11-08 10:09:24Z jdorje $ */
+/* 
  * File: dlg_about.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -23,4 +23,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_dlg_about (void);
+GtkWidget *create_dlg_about(void);

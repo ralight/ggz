@@ -1,5 +1,5 @@
-/* $Id: cb_main.c 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* $Id: cb_main.c 2696 2001-11-08 10:09:24Z jdorje $ */
+/* 
  * File: cb_main.c
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -35,29 +35,23 @@
 #include "table.h"
 
 
-void
-on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	gtk_main_quit();
 }
 
 
-void
-on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 
 }
 
 
-void
-on_mnu_about_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	static GtkWidget *dlg_about = NULL;
 
-	if(dlg_about != NULL) {
+	if (dlg_about != NULL) {
 		gdk_window_show(dlg_about->window);
 		gdk_window_raise(dlg_about->window);
 	} else {
@@ -72,9 +66,8 @@ on_mnu_about_activate                  (GtkMenuItem     *menuitem,
 
 
 gboolean
-on_dlg_main_delete_event               (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_dlg_main_delete_event(GtkWidget * widget,
+			 GdkEvent * event, gpointer user_data)
 {
 	gtk_main_quit();
 
@@ -83,11 +76,10 @@ on_dlg_main_delete_event               (GtkWidget       *widget,
 
 
 gboolean
-on_fixed1_button_press_event           (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
+on_fixed1_button_press_event(GtkWidget * widget,
+			     GdkEventButton * event, gpointer user_data)
 {
-	if(event->button == 1)
+	if (event->button == 1)
 		table_handle_click_event(event);
 
 	return FALSE;
@@ -95,9 +87,8 @@ on_fixed1_button_press_event           (GtkWidget       *widget,
 
 
 gboolean
-on_fixed1_expose_event                 (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data)
+on_fixed1_expose_event(GtkWidget * widget,
+		       GdkEventExpose * event, gpointer user_data)
 {
 	table_handle_expose_event(event);
 
@@ -106,9 +97,8 @@ on_fixed1_expose_event                 (GtkWidget       *widget,
 
 
 void
-on_fixed1_style_set		       (GtkWidget	*widget,
-					GtkStyle	*previous_style,
-					gpointer	 user_data)
+on_fixed1_style_set(GtkWidget * widget,
+		    GtkStyle * previous_style, gpointer user_data)
 {
 	table_style_change();
 }

@@ -1,5 +1,5 @@
-/* $Id: dlg_main.h 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* $Id: dlg_main.h 2696 2001-11-08 10:09:24Z jdorje $ */
+/* 
  * File: dlg_main.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -24,4 +24,4 @@
  */
 
 
-GtkWidget* create_dlg_main (void);
+GtkWidget *create_dlg_main(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 2413 2001-09-09 02:44:20Z jdorje $
+ * $Id: protocol.c 2696 2001-11-08 10:09:24Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -66,7 +66,7 @@ int read_opcode(int fd, int *opcode)
 int write_opcode(int fd, int opcode)
 {
 	char op = opcode;
-	assert (opcode >= 0 && opcode < 128);
+	assert(opcode >= 0 && opcode < 128);
 	return es_write_char(fd, op);
 }
 
@@ -82,6 +82,6 @@ int read_seat(int fd, int *seat)
 int write_seat(int fd, int seat)
 {
 	char s = seat;
-	assert (seat >= 0 && seat < 127);
+	assert(seat >= 0 && seat < 127);
 	return es_write_char(fd, s);
 }

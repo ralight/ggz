@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2695 2001-11-08 09:41:54Z jdorje $
+ * $Id: table.c 2696 2001-11-08 10:09:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,7 +65,7 @@ static GdkPixmap *table_buf = NULL;	/* backing store for the table */
 static GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 
-static GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
+GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
 static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
 
 /* static GtkWidget *msglabel = NULL; *//* global label; put in place of old l_trump */

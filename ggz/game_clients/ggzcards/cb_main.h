@@ -1,5 +1,5 @@
-/* $Id: cb_main.h 2070 2001-07-23 00:03:11Z jdorje $ */
-/*
+/* $Id: cb_main.h 2696 2001-11-08 10:09:24Z jdorje $ */
+/* 
  * File: cb_main.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -26,34 +26,24 @@
 #include <gtk/gtk.h>
 
 
-void
-on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data);
 
-void
-on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data);
 
-void
-on_mnu_about_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 gboolean
-on_dlg_main_delete_event               (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+on_dlg_main_delete_event(GtkWidget * widget,
+			 GdkEvent * event, gpointer user_data);
 
 gboolean
-on_fixed1_button_press_event           (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+on_fixed1_button_press_event(GtkWidget * widget,
+			     GdkEventButton * event, gpointer user_data);
 
 gboolean
-on_fixed1_expose_event                 (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data);
+on_fixed1_expose_event(GtkWidget * widget,
+		       GdkEventExpose * event, gpointer user_data);
 
 void
-on_fixed1_style_set		       (GtkWidget	*widget,
-					GtkStyle	*previous_style,
-					gpointer	 user_data);
+on_fixed1_style_set(GtkWidget * widget,
+		    GtkStyle * previous_style, gpointer user_data);
