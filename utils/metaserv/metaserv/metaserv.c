@@ -17,6 +17,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "minidom.h"
 
@@ -841,6 +842,8 @@ static void metaserv_daemon()
 	if(ret < 0) return;
 
 	pthread_mutex_init(&mutex, NULL);
+
+	signal(SIGPIPE, SIG_IGN);
 
 	while(1)
 	{
