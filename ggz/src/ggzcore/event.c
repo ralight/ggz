@@ -414,7 +414,10 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
 		ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
 	
 	if (do_net && fds[nfds+1].revents) {
-		_ggzcore_net_process();
+		if (fds[nfds+1].revents == POLLHUP)
+			_ggzcore_net_disconnect();
+		else 
+			_ggzcore_net_process();
 		count--;
 	}
 

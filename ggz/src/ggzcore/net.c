@@ -146,6 +146,9 @@ void _ggzcore_net_connect(const char* server, const unsigned int port)
 
 void _ggzcore_net_disconnect(void)
 {
+	if (ggzcore_state_get_id() == GGZ_STATE_OFFLINE)
+		return;
+
 	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
 	close(ggz_server_sock);
 	ggz_server_sock = -1;
