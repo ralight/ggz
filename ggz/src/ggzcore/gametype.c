@@ -24,19 +24,21 @@
  */
 
 
-#include <config.h>
-#include <gametype.h>
-#include <lists.h>
-#include <msg.h>
+#include "config.h"
+#include "gametype.h"
+#include "lists.h"
+#include "msg.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 
 /* Utility functions used by _ggzcore_list */
+#if 0
 static int   _ggzcore_gametype_compare(void* p, void* q);
 static void* _ggzcore_gametype_create(void* p);
 static void  _ggzcore_gametype_destroy(void* p);
+#endif
 
 
 /* Publicly exported functions */
@@ -246,6 +248,7 @@ int _ggzcore_gametype_list_remove(const unsigned int id)
 
 /* Private functions internal to this file */
 
+#if 0
 /* Return 0 if equal, -1 greaterthan, 1 lessthan */
 static int _ggzcore_gametype_compare(void* p, void* q)
 {
@@ -293,7 +296,7 @@ static void  _ggzcore_gametype_destroy(void* p)
 {
 	_ggzcore_gametype_free(p);
 }
-
+#endif
 
 
 

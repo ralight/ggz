@@ -226,13 +226,17 @@ char*        ggzcore_server_get_handle(GGZServer *server);
 char*        ggzcore_server_get_password(GGZServer *server);
 int          ggzcore_server_get_fd(GGZServer *server);
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
-GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
-GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, const unsigned int id);
-int          ggzcore_server_get_num_rooms(GGZServer *server);
-char**       ggzcore_server_get_room_names(GGZServer *server);
-int          ggzcore_server_get_num_gametypes(GGZServer *server);
-char**       ggzcore_server_get_gametype_names(GGZServer *server);
 
+int          ggzcore_server_get_num_rooms(GGZServer *server);
+GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
+GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, 
+					 const unsigned int num);
+char**       ggzcore_server_get_room_names(GGZServer *server);
+
+int          ggzcore_server_get_num_gametypes(GGZServer *server);
+GGZGameType* ggzcore_server_get_nth_gametpe(GGZServer *server, 
+					    const unsigned int num);
+char**       ggzcore_server_get_gametype_names(GGZServer *server);
 
 
 /* ggzcore_server_is_XXXX()
