@@ -4,6 +4,7 @@
 # Published under GNU GPL conditions
 
 import ggzmod
+import socket
 
 class NetworkInfo:
 	def __init__(self):
@@ -17,6 +18,8 @@ class NetworkBase:
 	def __init__(self):
 		self.sock = None
 		self.gamefd = -1
+		self.errorcode = 0
+		self.inputallowed = 0
 
 	def handle_network(self):
 		networked = 0
@@ -30,19 +33,33 @@ class NetworkBase:
 			ggzmod.dispatch()
 
 	def network(self):
-		print "ERROR: PURE VIRTUAL FUNCTION!"
+		print "ERROR: PURE VIRTUAL METHOD!"
 
 	def handle_server(self, fd):
 		ggzmod.setState(ggzmod.STATE_PLAYING)
 
 		self.gamefd = fd
-		self.init(net.gamefd)
+		self.init(self.gamefd)
 
 	def init(self, fd):
 		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
 
+	def connect(self):
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, self.handle_server)
+		ret = ggzmod.connect()
+		return ret
+
+	def error(self):
+		return self.errorcode
+
+	def allowed(self):
+		return self.inputallowed
+
 	def getbyte(self):
 		opstr = self.sock.recv(4)
+		if len(opstr) < 4:
+			self.errorcode = 1
+			return 0
 		op = ord(opstr[0]) * 256 * 256 * 256
 		op += ord(opstr[1]) * 256 * 256
 		op += ord(opstr[2]) * 256
@@ -51,12 +68,19 @@ class NetworkBase:
 
 	def getchar(self):
 		opstr = self.sock.recv(1)
+		if len(opstr) < 1:
+			self.errorcode = 1
+			return 0
 		op = ord(opstr[0])
 		return op
 
 	def getstring(self):
 		length = self.getbyte()
-		opstr = self.sock.recv(length)
+		if not self.errorcode:
+			opstr = self.sock.recv(length)
+			if len(opstr) < length:
+				self.errorcode = 1
+				return ""
 		return opstr
 
 	def sendbyte(self, byte):
@@ -106,10 +130,45 @@ class Network(NetworkBase, NetworkInfo):
 
 		op = self.getbyte()
 
-		if op == self.MSG_PLAYERS:
+		if op == self.MSG_SEAT:
+			print "- seat"
+			myseat = self.getbyte()
+			print " + seat", myseat
+		elif op == self.MSG_PLAYERS:
 			print "- players"
+			for i in range(2):
+				seat = self.getbyte()
+				print " + seat", seat
+				if seat != 1: #ggzmod.SEAT_OPEN:
+					player = self.getstring()
+					print " + player", player
+		elif op == self.MSG_MOVE:
+			print "- move"
+			move = self.getbyte()
+			print " + move", move
+			# ...
+		elif op == self.MSG_GAMEOVER:
+			print "- gameover"
+#		elif op == self.REQ_MOVE:
+#			print "- req move"
+		elif op == self.MSG_START:
+			print "- start"
+			self.inputallowed = 1
+		elif op == self.MSG_SYNC:
+			print "- sync"
+		elif op == self.REQ_SYNC:
+			print "- req sync"
+		elif op == self.REQ_AGAIN:
+			print "- req again"
 		else:
 			print "- unknown opcode"
+			self.errorcode = 1
+
+	def domove(self, frompos, topos):
+		self.sendbyte(self.REQ_MOVE)
+		(x, y) = topos
+		toposval = y * 16 + x
+		self.sendbyte(toposval)
 
 ggzboardnet = Network()
 

@@ -86,9 +86,15 @@ class GGZBoard:
 	def __init__(self):
 		self.conf = None
 		self.game = None
+		self.net = None
 		self.modulelist = []
 		self.modulefilelist = []
 		self.ui = None
+		self.ggzmode = 0
+		self.ggzsuccess = 0
+
+	def ggzinit(self, ggzmode):
+		self.ggzmode = ggzmode
 
 	def rect(self, surface, color, x1, y1, w, h, bgcolor):
 		tmp = pygame.Surface((w, h))
@@ -129,7 +135,14 @@ class GGZBoard:
 		fileobj.close()
 		self.game = mod.ggzboardgame
 
-	def main(self, ggzmode):
+		if self.ggzmode:
+			(fileobj, filename, desc) = imp.find_module("net_" + gamename, ["."])
+			mod = imp.load_module("ggzboardnet", fileobj, filename, desc)
+			fileobj.close()
+			self.net = mod.ggzboardnet
+			self.ggzsuccess = 1
+
+	def main(self):
 		self.conf = Conf()
 		self.ui = GGZBoardUI(self.conf.resolution)
 
@@ -223,12 +236,23 @@ class GGZBoard:
 		conf = self.conf
 		game = self.game
 		ui = self.ui
+		net = self.net
+
+		if self.ggzsuccess:
+			ret = net.connect()
+			if ret < 0:
+				self.ggzsuccess = 0
 
 		self.ui.backgroundarea = self.ui.deepcopy(self.ui.surface)
 
 		pygame.display.set_caption("GGZBoard: " + game.name())
 
-		title = ui.font.render("GGZBoard: " + game.name(), 1, (255, 200, 0))
+		ggzstr = ""
+		if self.ggzmode:
+			ggzstr = " (running on GGZ)"
+			if not self.ggzsuccess:
+				ggzstr += " (unavailable)"
+		title = ui.font.render("GGZBoard: " + game.name() + ggzstr, 1, (255, 200, 0))
 
 		pygame.event.clear()
 
@@ -241,13 +265,29 @@ class GGZBoard:
 		oldy = -1
 		aiturn = 0
 		shift = 0
+
 		inputallowed = 1
+		if self.ggzmode:
+				inputallowed = 0
 
 		(posx, posy) = pygame.mouse.get_pos()
 
 		while 1:
+			if self.ggzsuccess:
+				net.handle_network()
+				if net.error():
+					ggzstr = " (running on GGZ)"
+					ggzstr += " (unavailable)"
+					title = ui.font.render("GGZBoard: " + game.name() + ggzstr, 1, (255, 200, 0))
+					self.ggzsuccess = 0
+					updatescreen = 1
+				else:
+					if net.allowed() != inputallowed:
+						inputallowed = net.allowed()
+						updatescreen = 1
+
 			pygame.event.pump()
-			if updatescreen:
+			if updatescreen or self.ggzsuccess:
 				event = pygame.event.poll()
 			else:
 				event = pygame.event.wait()
@@ -300,8 +340,11 @@ class GGZBoard:
 						if game.setonly:
 							ret = game.trymove(None, (x, y))
 							if ret:
-								game.domove(None, (x, y))
-								aiturn = 1
+								if self.ggzmode:
+									net.domove(None, (x, y))
+								else:
+									game.domove(None, (x, y))
+									aiturn = 1
 						else:
 							oldx = x
 							oldy = y
@@ -312,8 +355,11 @@ class GGZBoard:
 						ret = game.trymove(frompos, topos)
 						print "RET(trymove)", ret
 						if ret:
-							game.domove(frompos, topos)
-							aiturn = 1
+							if self.ggzmode:
+								net.domove(frompos, topos)
+							else:
+								game.domove(frompos, topos)
+								aiturn = 1
 
 						updatescreen = 1
 
@@ -403,6 +449,7 @@ if __name__ == "__main__":
 		sys.exit(0)
 
 	core = GGZBoard()
+	core.ggzinit(ggzmode)
 	core.load(gamename)
-	core.main(ggzmode)
+	core.main()
 
