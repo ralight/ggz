@@ -1,10 +1,10 @@
 /* 
- * File: common.c
+ * File: client.c
  * Author: Jason Short
  * Project: GGZCards Client-Common
- * Date: 07/22/2001
+ * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3429 2002-02-21 02:09:24Z jdorje $
+ * $Id: client.c 3432 2002-02-21 02:55:26Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -58,22 +58,23 @@ struct ggzcards_game_t ggzcards = { 0 };
 
 int client_initialize(void)
 {
-	/* A word on debugging: the client-common code uses ggz for internal
-	   memory management; i.e. ggz_malloc+ggz_free. Anything allocated
-	   with easysock will be allocated with malloc and must be freed with 
-	   free.  The table code (which is gui-specific) may use whatever
-	   memory management routines it wants (currently the GTK client uses 
-	   g_malloc and g_free). This may be unnecessarily complicated, but
-	   remember that the internal client-common variables are always kept 
-	   separate from the GUI variables, so there should be no confusion
-	   there. And all of the easysock-allocated variables are labelled. */
-	
+	/* A word on memory management: the client-common code uses ggz for
+	   internal memory management; i.e. ggz_malloc+ggz_free. Anything
+	   allocated with easysock will be allocated with malloc and must be
+	   freed with free.  The table code (which is gui-specific) may use
+	   whatever memory management routines it wants (currently the GTK
+	   client uses g_malloc and g_free). This may be unnecessarily
+	   complicated, but remember that the internal client-common
+	   variables are always kept separate from the GUI variables, so
+	   there should be no confusion there. And all of the
+	   easysock-allocated variables are labelled. */
+
 	srandom((unsigned) time(NULL));
 
 	game_internal.fd = -1;
 	game_internal.max_hand_size = 0;
 
-	game_internal.fd = 3; /* FIXME */
+	game_internal.fd = 3;	/* FIXME */
 	if (game_internal.fd < 0) {
 		ggz_error_msg_exit("Couldn't connect to ggz.");
 	}
@@ -94,7 +95,7 @@ void client_quit(void)
 			ggz_free(ggzcards.players[p].hand.card);
 		if (ggzcards.players[p].name)
 			ggz_free(ggzcards.players[p].name);
-				
+
 	}
 	if (ggzcards.players != NULL)
 		ggz_free(ggzcards.players);
@@ -134,8 +135,7 @@ static const char *get_state_name(client_state_t state)
 static void set_game_state(client_state_t state)
 {
 	if (state == ggzcards.state) {
-		ggz_debug("core-error", "ERROR: Staying in state %d.",
-			  ggzcards.state);
+		ggz_error_msg("Staying in state %d.", ggzcards.state);
 	} else {
 		ggz_debug("core", "Changing state from %s to %s.",
 			  get_state_name(ggzcards.state),
@@ -175,7 +175,7 @@ static int handle_cardlist_message(void)
 			status = -1;
 		if (lengths[p] > 0)
 			cardlist[p] = ggz_malloc(lengths[p]
-			                         * sizeof(**cardlist));
+						 * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
 			if (read_card(game_internal.fd, &cardlist[p][i]) < 0)
 				status = -1;
@@ -267,7 +267,7 @@ static int handle_message_global(void)
 	op = opcode;
 
 	ggz_debug("core", "Received %s global message opcode.",
-	          get_game_message_name(op));
+		  get_game_message_name(op));
 
 	switch (op) {
 	case GAME_MESSAGE_TEXT:
@@ -355,9 +355,9 @@ static int handle_msg_players(void)
 			ggzcards.players[p].hand.hand_size = 0;
 			ggzcards.players[p].hand.card = NULL;
 		}
-		
+
 		/* this forces reallocating later */
-		game_internal.max_hand_size = 0;	
+		game_internal.max_hand_size = 0;
 	}
 
 	/* TODO: support for changing the number of players */
@@ -366,11 +366,11 @@ static int handle_msg_players(void)
 	for (i = 0; i < numplayers; i++) {
 		int _assign;
 		GGZSeatType assign;
-		
+
 		if (ggz_read_int(game_internal.fd, &_assign) < 0 ||
 		    ggz_read_string_alloc(game_internal.fd, &t_name) < 0)
 			return -1;
-			
+
 		assign = _assign;
 
 		game_alert_player(i, assign, t_name);
@@ -483,13 +483,14 @@ static int handle_req_bid(void)
 	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
 		return -1;
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
-	bid_descriptions = ggz_malloc(possible_bids * sizeof(*bid_descriptions));
+	bid_descriptions =
+		ggz_malloc(possible_bids * sizeof(*bid_descriptions));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
 		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
 		    ggz_read_string_alloc(game_internal.fd,
-		                          &bid_descriptions[i]) < 0)
+					  &bid_descriptions[i]) < 0)
 			return -1;
 	}
 
@@ -511,13 +512,13 @@ static int handle_msg_bid(void)
 {
 	bid_t bid;
 	int bidder;
-	
+
 	if (read_seat(game_internal.fd, &bidder) < 0 ||
 	    read_bid(game_internal.fd, &bid) < 0)
 		return -1;
-	
+
 	game_alert_bid(bidder, bid);
-		
+
 	return 0;
 }
 
@@ -604,7 +605,7 @@ static int match_card(card_t card, hand_t * hand)
 		   are equally good it will be a random pick. */
 		if (tc_matches > matches
 		    || (tc_matches == matches
-		        && (random() % (hand->hand_size + 1 - tc)) == 0)) {
+			&& (random() % (hand->hand_size + 1 - tc)) == 0)) {
 			matches = tc_matches;
 			match = tc;
 		}
@@ -624,22 +625,21 @@ static int handle_msg_play(void)
 	if (read_seat(game_internal.fd, &p) < 0
 	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
-		
+
 	assert(p >= 0 && p < ggzcards.num_players);
 	assert(ggzcards.play_hand < 0 || p == ggzcards.play_hand);
-	
+
 	/* Reset the play_hand, just to be safe. */
 	if (p == ggzcards.play_hand)
 		ggzcards.play_hand = -1;
-	
-	/* Place the card on the table.  Note, this contradicts what
-	   the table code does, since that runs animation that may
-	   assume the card has not yet been placed on the table.
-	   Nonetheless, this is the correct thing to do - it is the
-	   table code that needs to be fixed (to keep separate track
-	   of what cards are being _drawn_ on the table, as opposed
-	   to what cards are _supposed to be_ on the table which is
-	   what this is). */
+
+	/* Place the card on the table.  Note, this contradicts what the
+	   table code does, since that runs animation that may assume the
+	   card has not yet been placed on the table. Nonetheless, this is
+	   the correct thing to do - it is the table code that needs to be
+	   fixed (to keep separate track of what cards are being _drawn_ on
+	   the table, as opposed to what cards are _supposed to be_ on the
+	   table which is what this is). */
 	ggzcards.players[p].table_card = card;
 
 	/* Find the hand the card is to be removed from. */
@@ -662,8 +662,8 @@ static int handle_msg_play(void)
 		return 0;
 	}
 
-	/* Remove the card.  This is a bit inefficient.  It's also tricky,
-	   so be careful not to go off-by-one and overrun the buffer! */
+	/* Remove the card.  This is a bit inefficient.  It's also tricky, so 
+	   be careful not to go off-by-one and overrun the buffer! */
 	hand->hand_size--;
 	for (c = tc; c < hand->hand_size; c++)
 		hand->card[c] = hand->card[c + 1];
@@ -692,7 +692,8 @@ static int handle_msg_table(void)
 		ggzcards.players[p].table_card = card;
 	}
 
-	/* TODO: verify that the table cards have been removed from the hands */
+	/* TODO: verify that the table cards have been removed from the hands 
+	 */
 
 	game_alert_table();
 
@@ -791,7 +792,7 @@ static int handle_req_options(void)
 int client_send_newgame(void)
 {
 	if (write_opcode(game_internal.fd, RSP_NEWGAME) < 0) {
-		ggz_debug("core-error", "Couldn't send newgame.");
+		ggz_error_msg("Couldn't send newgame.");
 		return -1;
 	}
 	return 0;
@@ -804,7 +805,7 @@ int client_send_bid(int bid)
 	set_game_state(STATE_WAIT);
 	if (write_opcode(game_internal.fd, RSP_BID) < 0
 	    || ggz_write_int(game_internal.fd, bid) < 0) {
-		ggz_debug("core-error", "Couldn't send bid.");
+		ggz_error_msg("Couldn't send bid.");
 		return -1;
 	}
 	return 0;
@@ -825,7 +826,7 @@ int client_send_options(int option_cnt, int *options)
 	set_game_state(STATE_WAIT);
 
 	if (status < 0) {
-		ggz_debug("core-error", "Couldn't send options.");
+		ggz_error_msg("Couldn't send options.");
 		return -1;
 	}
 	return status;
@@ -838,7 +839,7 @@ int client_send_play(card_t card)
 	set_game_state(STATE_WAIT);
 	if (write_opcode(game_internal.fd, RSP_PLAY) < 0
 	    || write_card(game_internal.fd, card) < 0) {
-		ggz_debug("core-error", "Couldn't send play.");
+		ggz_error_msg("Couldn't send play.");
 		return -1;
 	}
 	return 0;
@@ -850,7 +851,7 @@ int client_send_sync_request(void)
 {
 	ggz_debug("core", "Sending sync request to server.");
 	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
-		ggz_debug("core-error", "Couldn't send sync request.");
+		ggz_error_msg("Couldn't send sync request.");
 		return -1;
 	}
 	return 0;
@@ -869,9 +870,9 @@ int client_handle_server(void)
 		return -1;
 	}
 	op = opcode;
-	
+
 	ggz_debug("core", "Received %s opcode from the server.",
-	          get_server_opcode_name(op));
+		  get_server_opcode_name(op));
 
 	switch (op) {
 	case REQ_NEWGAME:
@@ -927,8 +928,7 @@ int client_handle_server(void)
 	}
 
 	if (status < 0)
-		ggz_debug("core-error",
-			  "Error handling message from server (opcode %d).",
-			  op);
+		ggz_error_msg("Error handling message"
+			      " from server (opcode %d).", op);
 	return status;
 }

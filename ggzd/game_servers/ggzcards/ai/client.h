@@ -1,12 +1,12 @@
 /* 
- * File: common.h
+ * File: client.h
  * Author: Jason Short
  * Project: GGZCards Client-Common
- * Date: 07/22/2001
+ * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3426 2002-02-20 03:51:03Z jdorje $
+ * $Id: client.h 3432 2002-02-21 02:55:26Z jdorje $
  *
- * Copyright (C) 2001--2002 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
