@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -16,61 +16,91 @@
 #define mode_none  0
 #define mode_teach 1
 #define mode_learn 2
+#define mode_try   3
 
 /* Grubby's knowledge base */
 #define db_file "/grubby/learning.db"
 
 /* Globals */
-char *database;
+static char *database = NULL;
+static char **knowledge = NULL;
+static int knowledgecounter = 0;
 
 /* Learn a word and its meaning */
 static void learn(char **wordlist)
 {
 	FILE *f;
-	int i;
+	int i, len;
+
+	if((!wordlist) || (!wordlist[0]) || (!wordlist[1]) || (!wordlist[2])) return;
+
+	knowledge = (char**)realloc(knowledge, (knowledgecounter + 2) * sizeof(char*));
+	knowledge[knowledgecounter] = strdup(wordlist[1]);
+	knowledge[knowledgecounter + 1] = strdup(wordlist[2]);
+	i = 3;
+	len = 0;
+	while(wordlist[i])
+	{
+		len += strlen(wordlist[i]) + 1;
+		knowledge[knowledgecounter + 1] = (char*)realloc(knowledge[knowledgecounter + 1], len + 1);
+		strcat(knowledge[knowledgecounter + 1], " ");
+		strcat(knowledge[knowledgecounter + 1], wordlist[i]);
+		i++;
+	}
 
 	f = fopen(database, "a");
 	if(!f) return;
-	i = 0;
-	while((wordlist) && (wordlist[i]))
-	{
-		if(i == 1) fprintf(f, "%s\t", wordlist[i]);
-		if(i > 2) fprintf(f, "%s ", wordlist[i]);
-		i++;
-	}
-	fprintf(f, "\n");
+	fprintf(f, "%s\t%s\n", knowledge[knowledgecounter], knowledge[knowledgecounter + 1]);
 	fclose(f);
+
+	knowledgecounter += 2;
 }
 
 /* Teach a learned word to a player if known */
 static char *teach(const char *word)
 {
-	FILE *f;
 	static char *ret = NULL;
-	char buffer[128];
+	int i;
+
+	for(i = 0; i < knowledgecounter; i++)
+	{
+		if((knowledge[i]) && (!strcmp(knowledge[i], word)))
+		{
+			if(ret) free(ret);
+			ret = strdup(knowledge[i + 1]);
+			return ret;
+		}
+	}
+	return NULL;
+}
+
+/* Read in all the knowledge */
+static void cache(void)
+{
+	FILE *f;
+	char buffer[256];
 	char *token;
 
-	if(!word) return NULL;
 	f = fopen(database, "r");
-	if(!f) return NULL;
+	if(!f) return;
 	while(fgets(buffer, sizeof(buffer), f))
 	{
 		token = strtok(buffer, "\t");
-		if((token) && (!strcasecmp(token, word)))
+		if(token)
 		{
+			knowledge = (char**)realloc(knowledge, (knowledgecounter + 2) * sizeof(char*));
+			knowledge[knowledgecounter] = strdup(token);
+			knowledge[knowledgecounter + 1] = NULL;
 			token = strtok(NULL, "\t");
 			if(token)
 			{
-				if(ret) free(ret);
-				ret = strdup(token);
-				fclose(f);
-				ret[strlen(ret) - 1] = 0;
-				return ret;
+				token[strlen(token) - 1] = 0;
+				knowledge[knowledgecounter + 1] = strdup(token);
 			}
+			knowledgecounter += 2;
 		}
 	}
 	fclose(f);
-	return NULL;
 }
 
 /* Get message and decide what to do with it */
@@ -99,7 +129,7 @@ Guru *gurumod_exec(Guru *message)
 	}
 	if(i == 2)
 	{
-		mode = mode_teach;
+		mode = mode_try;
 		request = message->list[1];
 	}
 	if(mode == mode_learn)
@@ -123,6 +153,7 @@ Guru *gurumod_exec(Guru *message)
 			ret = __("OK, learned that.");
 			break;
 		case mode_teach:
+		case mode_try:
 			ret = teach(request);
 			if(!ret) ret = __("You're too curious - I don't know everything.");
 			break;
@@ -138,5 +169,7 @@ void gurumod_init(const char *datadir)
 	database = (char*)malloc(strlen(datadir) + strlen(db_file) + 1);
 	strcpy(database, datadir);
 	strcat(database, db_file);
+
+	cache();
 }
 
