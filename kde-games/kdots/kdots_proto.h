@@ -74,7 +74,7 @@ class KDotsProto
 		void sendMove(int x, int y, int direction);
 		void sendOptions(int wantwidth, int wantheight);
 		void getOptions();
-		void getMove();
+		int getMove();
 		void getOppMove(int direction);
 		
 		int state;

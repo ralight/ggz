@@ -13,6 +13,7 @@
 #define KDOTS_HELP_H
 
 #include <qwidget.h>
+#include <qevent.h>
 
 class KDotsHelp : public QWidget
 {
@@ -22,6 +23,10 @@ class KDotsHelp : public QWidget
 		~KDotsHelp();
 	public slots:
 		void slotAccepted();
+	protected:
+		void paintEvent(QPaintEvent *e);
+	private:
+		QWidget *m_pane;
 };
 
 #endif

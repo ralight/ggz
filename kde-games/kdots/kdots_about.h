@@ -13,6 +13,7 @@
 #define KDOTS_ABOUT_H
 
 #include <qwidget.h>
+#include <qevent.h>
 
 class KDotsAbout : public QWidget
 {
@@ -22,6 +23,8 @@ class KDotsAbout : public QWidget
 		~KDotsAbout();
 	public slots:
 		void slotAccepted();
+	protected:
+		void paintEvent(QPaintEvent *e);
 };
 
 #endif

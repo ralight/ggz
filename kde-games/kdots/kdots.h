@@ -22,18 +22,19 @@ class KDots : public QWidget
 	public:
 		KDots(QWidget *parent, char *name);
 		~KDots();
+		void gameinit();
+		void gamesync();
 	public slots:
 		void slotOptions();
-		void slotAbout();
-		void slotQuit();
 		void slotStart(int horizontal, int vertical);
-		void slotHelp();
 		void slotTurn(int x, int y, int direction);
 		void slotInput();
+		void slotSync();
+	signals:
+		void signalStatus(const char *message);
 	private:
 		int m_rows;
 		int m_cols;
-		int m_running;
 		int *m_field;
 		KDotsProto *proto;
 };

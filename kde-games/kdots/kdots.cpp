@@ -11,8 +11,9 @@
 
 #include "kdots.h"
 #include "kdots_options.h"
-#include "kdots_about.h"
-#include "kdots_help.h"
+
+#include <kmessagebox.h>
+#include <klocale.h>
 
 #include <qmenubar.h>
 #include <qlayout.h>
@@ -25,57 +26,28 @@
 
 #include <stdio.h>
 
-KDotsAbout *kdots_about;
 KDotsOptions *kdots_options;
-KDotsHelp *kdots_help;
 QDots *dots;
 
 KDots::KDots(QWidget *parent, char *name)
 : QWidget(parent, name)
 {
-	QMenuBar *menubar;
-	QPopupMenu *menu_game, *menu_help;
 	QVBoxLayout *vbox;
 	QSocketNotifier *sn;
 
-cout << "fire up kdots" << endl;
-
-	menu_game = new QPopupMenu();
-	menu_game->insertItem("Quit", this, SLOT(slotQuit()));
-
-	menu_help = new QPopupMenu();
-	menu_help->insertItem("About", this, SLOT(slotAbout()));
-	menu_help->insertSeparator();
-	menu_help->insertItem("Help", this, SLOT(slotHelp()));
-
-	menubar = new QMenuBar(this);
-	menubar->insertItem("Game", menu_game);
-	menubar->insertSeparator();
-	menubar->insertItem("Help", menu_help);
-
-cout << "create qdots" << endl;
-
 	dots = new QDots(this, "qdots");
-
-cout << "ready" << endl;
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(dots);
 
-	m_running = 0;
-	kdots_help = NULL;
-	kdots_about = NULL;
 	kdots_options = NULL;
 
 	connect(dots, SIGNAL(signalTurn(int, int, int)), SLOT(slotTurn(int, int, int)));
 
-cout << "kdots ready" << endl;
-
 	setCaption("KDE Dots");
-	dots->resize(390, 390);
-	resize(400, 400);
+	//dots->setFixedSize(400, 400);
+	setFixedSize(400, 400);
 	show();
-	//slotOptions();
 
 	proto = new KDotsProto();
 	proto->connect();
@@ -91,40 +63,23 @@ KDots::~KDots()
 	delete proto;
 }
 
-void KDots::slotAbout()
-{
-	if(!kdots_about) kdots_about = new KDotsAbout(NULL, "kdots_about");
-}
-
 void KDots::slotOptions()
 {
+	emit signalStatus(i18n("Requesting game options"));
+
 	if(!kdots_options)
 	{
 		kdots_options = new KDotsOptions(NULL, "kdots_options");
 		connect(kdots_options, SIGNAL(signalAccepted(int, int)), this, SLOT(slotStart(int, int)));
 	}
-}
-
-void KDots::slotHelp()
-{
-	if(!kdots_help) kdots_help = new KDotsHelp(NULL, "kdots_help");
-}
-
-void KDots::slotQuit()
-{
-	close();
+	kdots_options->show();
 }
 
 void KDots::slotStart(int horizontal, int vertical)
 {
-	/*
-	dots->resizeBoard(horizontal, vertical);
-	dots->refreshBoard();
-	*/
+	emit signalStatus(i18n("Sending game options"));
 
-	if(kdots_options) proto->sendOptions(horizontal, vertical);
-
-	m_running = 1;
+	if(kdots_options) proto->sendOptions(horizontal + 1, vertical + 1);
 }
 
 void KDots::slotTurn(int x, int y, int direction)
@@ -133,33 +88,58 @@ void KDots::slotTurn(int x, int y, int direction)
 
 	if(proto->turn != proto->num)
 	{
-		cout << "not your turn!" << endl;
+		emit signalStatus(i18n("Not your turn!"));
 		return;
 	}
 
 	sdotx = x;
 	sdoty = y;
 
-	if(direction == QDots::up) sdoty--;
-	if(direction == QDots::left) sdotx--;
+	proto->m_lastdir = direction;
 
-	cout << "*** SLOT TURN ***" << endl;
-	cout << "Send to server: " << endl;
+	if(direction == QDots::up)
+	{
+		proto->m_lastdir = QDots::down;
+		sdoty--;
+	}
+	if(direction == QDots::left)
+	{
+		proto->m_lastdir = QDots::right;
+		sdotx--;
+	}
+
+	emit signalStatus(i18n("Sending move"));
+
 	if((direction == QDots::up) || (direction == QDots::down))
 	{
-		cout << "VERTICAL " << sdotx << ", " << sdoty << endl;
 		proto->sendMove(sdotx, sdoty, proto->sndmovev);
 	}
 	else
 	{
-		cout << "HORIZONTAL " << sdotx << ", " << sdoty << endl;
 		proto->sendMove(sdotx, sdoty, proto->sndmoveh);
 	}
+}
+
+void KDots::slotSync()
+{
+	if(proto->turn == -1)
+	{
+		KMessageBox::information(this, i18n("No game running yet!"), i18n("Error"));
+		return;
+	}
+	es_write_int(proto->fd, proto->reqsync);
 }
 
 void KDots::slotInput()
 {
 	int op;
+	int ret;
+	QString str;
+	char status;
+
+	if(proto->state == proto->statedone) return;
+
+	emit signalStatus(i18n("Receiving data"));
 
 	es_read_int(proto->fd, &op);
 
@@ -178,48 +158,97 @@ printf("##### msgplayers\n");
 printf("##### msgoptions\n");
 			proto->getOptions();
 			//slotStart(proto->width, proto->height);
-			dots->resizeBoard(proto->width, proto->height);
+			dots->resizeBoard(proto->width - 1, proto->height - 1);
 			dots->refreshBoard();
 			break;
 		case proto->reqmove:
 printf("##### reqmove\n");
+			emit signalStatus(i18n("Your turn."));
 			proto->state = proto->statemove;
 			proto->turn = proto->num;
 			break;
 		case proto->msgmoveh:
 printf("##### msgmoveh\n");
 			proto->getOppMove(proto->sndmoveh);
-			dots->setBorderValue(proto->movex, proto->movey, proto->sndmoveh, proto->turn);
+			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, 1);
+			dots->repaint();
 			break;
 		case proto->msgmovev:
 printf("##### msgmovev\n");
-			proto->getOppMove(proto->sndmoveh);
-			dots->setBorderValue(proto->movex, proto->movey, proto->sndmovev, proto->turn);
+			proto->getOppMove(proto->sndmovev);
+			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, 1);
+			dots->repaint();
 			break;
 		case proto->rspmove:
 printf("##### rspmove\n");
-			proto->getMove();
-			if(proto->m_lastx != -1)
+			if(proto->getMove() != -1)
 			{
-				printf("setBorderValue(%i, %i, %i, %i); ", proto->m_lasty, proto->m_lasty, proto->m_lastdir, proto->turn);
-				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn);
+				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, 1);
+				dots->repaint();
 				proto->turn = (proto->num + 1) % 2;
 			}
 			else
 			{
-				printf("INVALID MOVE!!! %i/%i\n", proto->movex, proto->movey);
+				emit signalStatus(i18n("Invalid move, please try again!"));
 			}
 			break;
 		case proto->msggameover:
 printf("##### msggameover\n");
+			es_read_char(proto->fd, &status);
+			if(status == -1) exit(-1);
+			proto->state = proto->statechoose;
+			proto->turn = -1;
+			emit signalStatus(i18n("Game over!"));
+			str.sprintf(i18n("The game is over.\nYou reached %i points, your opponent %i.\n\nPlay another game?"),
+				dots->count(proto->num), dots->count((proto->num + 1) % 2));
+			ret = KMessageBox::questionYesNo(this, str, i18n("Game over"));
+			if(ret == KMessageBox::Yes) gameinit();
+			else
+			{
+				proto->state = proto->statedone;
+				exit(-1);
+			}
 			break;
 		case proto->sndsync:
 printf("##### sndsync\n");
+			gamesync();
 			break;
 		case proto->reqoptions:
 printf("##### reqoptions\n");
 			slotOptions();
 			break;
+		default:
+printf("##### unknown opcode -> %i\n", op);
 	}
+}
+
+void KDots::gameinit()
+{
+	proto->state = proto->stateinit;
+	es_write_int(proto->fd, proto->reqnewgame);
+}
+
+void KDots::gamesync()
+{
+	char move;
+	int score;
+	char dot;
+
+	es_read_char(proto->fd, &move);
+	proto->turn = move;
+	es_read_int(proto->fd, &score);
+	es_read_int(proto->fd, &score);
+
+	for(int i = 0; i < proto->width; i++)
+		for(int j = 0; j < proto->height - 1; j++)
+			es_read_char(proto->fd, &dot);
+
+	for(int i = 0; i < proto->width - 1; i++)
+		for(int j = 0; j < proto->height; j++)
+			es_read_char(proto->fd, &dot);
+
+	for(int i = 0; i < proto->width - 1; i++)
+		for(int j = 0; j < proto->height - 1; j++)
+			es_read_char(proto->fd, &dot);
 }
 

@@ -9,23 +9,35 @@
 //
 ///////////////////////////////////////////////////////////////
 
-#include "kdots.h"
+#include "kdots_win.h"
 
 #include <kapp.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
+#include <klocale.h>
 
 int main(int argc, char **argv)
 {
 	KApplication *a;
-	KDots *kdots;
+	KDotsWin *kdotswin;
 	KAboutData *about;
 
-	about = new KAboutData("", "", "");
+	about = new KAboutData("kdots",
+		I18N_NOOP("Connect The Dots for KDE"),
+		"0.0.4",
+		I18N_NOOP("test."),
+		KAboutData::License_GPL,
+		"Copyright (C) 2001 Josef Spillner",
+		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
+		"http://mindx.sourceforge.net",
+		"dr_maux@users.sourceforge.net");
+	about->addAuthor("Josef Spillner", I18N_NOOP("Author."), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+
 	KCmdLineArgs::init(argc, argv, about);
 
 	a = new KApplication();
-	kdots = new KDots(NULL, "KDots");
-	a->setMainWidget(kdots);
+	kdotswin = new KDotsWin("KDotsWin");
+	a->setMainWidget(kdotswin);
 	return a->exec();
 }
+
