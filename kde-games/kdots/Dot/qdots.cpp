@@ -49,7 +49,7 @@ QDots::~QDots()
 	if(m_shadowlines) delete m_shadowlines;
 }
 
-QPixmap *QDots::grayscale(QPixmap *pix)
+void QDots::grayscale(QPixmap *pix)
 {
 	QPainter p;
 	QImage *tmp;

@@ -31,7 +31,7 @@ class QDots : public QWidget, public VDots
 		void paintEvent(QPaintEvent *e);
 		void mousePressEvent(QMouseEvent *e);
 	private:
-		QPixmap *grayscale(QPixmap *pix);
+		void grayscale(QPixmap *pix);
 
 		int m_xoffset, m_yoffset;
 };
