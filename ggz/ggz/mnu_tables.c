@@ -130,7 +130,7 @@ void on_players1_activate(GtkButton * button, gpointer user_data)
 		|| (tables.info[selected_table].seats[i] == GGZ_SEAT_RESV))
 		{
 			strcat(buf,"\t");
-			strcat(buf,&tables.info[selected_table].names[i]);
+			strcat(buf, (char*)&tables.info[selected_table].names[i]);
 			strcat(buf,"\n");
 		}
 	}

@@ -694,7 +694,8 @@ void handle_list_tables(gint op, gint fd)
 			es_read_int(fd, &tables.info[i].seats[j]);
 			if (tables.info[i].seats[j] >= 0
 			    || tables.info[i].seats[j] == GGZ_SEAT_RESV) 
-				es_read_string(fd, &tables.info[i].names[j],
+				es_read_string(fd, 
+					       (char*)&tables.info[i].names[j],
 					       MAX_USER_NAME_LEN+1);
 		}
 		for (j = num; j < MAX_TABLE_SIZE; j++)

@@ -253,18 +253,15 @@ gint launch_seat_type(gint i)
 	g_free(widget);
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		return GGZ_SEAT_COMP;
-
-	widget = g_strdup_printf("seat%d_open", i+1);
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), widget);
-	g_free(widget);
-	if (GTK_TOGGLE_BUTTON(tmp)->active)
-		return GGZ_SEAT_OPEN;
-
+	
 	widget = g_strdup_printf("seat%d_resv", i+1);
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), widget);
 	g_free(widget);
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 		return GGZ_SEAT_RESV;
+
+	/* If we get this far it has to have been an open seat */
+	return GGZ_SEAT_OPEN;
 }
 
 

@@ -124,6 +124,9 @@ void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 		case ES_STRING:
 			err_dlg("Error reading string from socket: %s\n", err);
 			break;
+		default:
+			err_dlg("Error reading from socket: %s\n", err);
+			break;
 		}
 		break;
 	case ES_WRITE:
@@ -136,6 +139,9 @@ void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 			break;
 		case ES_STRING:
 			err_dlg("Error writing string from socket: %s\n", err);
+			break;
+		default:
+			err_dlg("Error writing to socket: %s\n", err);
 			break;
 		}
 		break;
