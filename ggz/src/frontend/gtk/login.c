@@ -52,7 +52,7 @@ static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
 static void login_relogin(GtkButton *button, gpointer user_data);
-static void login_reconnect(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user_data);
 static void login_set_entries(Server server);
 
 void
@@ -257,9 +257,9 @@ login_start_session                    (GtkButton       *button,
 
 	if(ggzcore_state_is_online()) {
 		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
-		ggzcore_event_add_callback_full(GGZ_SERVER_LOGOUT,
+		ggzcore_event_add_hook_full(GGZ_SERVER_LOGOUT,
 						login_reconnect,
-						profile, NULL);
+						profile);
 		/* If currently online, disconnect */
 		ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
 		
@@ -270,7 +270,7 @@ login_start_session                    (GtkButton       *button,
 }
 
 
-static void
+static void 
 login_relogin                          (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -309,17 +309,20 @@ login_relogin                          (GtkButton       *button,
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
+
 }
 
 
-void login_reconnect(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user_data)
 {
 	/* Now that we're disconnected, login to new server */
 	/* FIXME: provide a destroy function that frees profile */
 	ggzcore_event_enqueue(GGZ_USER_LOGIN, user_data, NULL);
 
 	/* Remove this function from the list of callbacks*/
-	ggzcore_event_remove_callback(GGZ_SERVER_LOGOUT, login_reconnect);
+	ggzcore_event_remove_hook(GGZ_SERVER_LOGOUT, login_reconnect);
+
+	return GGZ_HOOK_OK;
 }
 
 
