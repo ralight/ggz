@@ -1,0 +1,86 @@
+/* This is a first suggestion. Il faut que beaucoup des joueurs disent: d'accord :) */
+
+The required security and privacy rules for GGZ
+===============================================
+
+These are the rules which should apply within a few months, as soon as all the
+possibilities are available. We consider privacy and security to have a very
+high priority.
+Maybe it is wise to split into a "concept" and an "implementation" part, so
+coming applications can adapt the concepts more easily, and other projects can
+follow the guidelines too and improve them where necessary.
+It should always be stressed that there isn't total security, but that we try
+our best to support all possible concepts, so that negative cases don't affect
+the project in a negative way, but rather encourage for researching even harder.
+
+What people have learned from the past months is that some online game
+providers didn't care about personal data - not only didn't protect they the
+information, but they also abused it. In many cases people are forced to take
+some steps of registration, which is clearly against what is considered to be
+free fun. Also, it is clear that more and more governments have high interest in
+undergoing the constitutions, so the right to express own opinions should
+always be given and the players should be safe to do so, everywhere in the
+world.
+
+These are the suggestion of the rules. They are by no means fixed yet, so
+comments are as always appreciated. Once this list is "stable", it'll be always
+available in the documentation package.
+
+1. Anonymous players
+Every player should stay anonymous unless he wishes that to change. This
+affects the following:
+- Login: Guest logins shouldn't have unnecessary disadvantages
+- Registered logins as protection for the player to prevent fakers
+- Direct IP exchange: The Core Client should always warn users if a game
+  requests the client's IP - and client-to-client games should be avoided
+  generally, but they seem necessary for fast games
+- Buddy list: This list isn't mandatory
+- Personal information: Always confirm before passing that to another client
+
+2. Chat security
+- Use TLS tunneling whereever possible
+- Don't let the Core Clients execute local programs
+- let both grubby and the server tell whether they log or not
+- Flood protection etc. must be handled by ggzd to avoid traffic
+- Never put chat log files online, except the participants agree, e.g. for
+  developer meetings
+- People who troll should be ignored. People who do forbidden or criminal
+  actions should be out-locked, if other players are annoyed by that.
+
+3. Stored data
+- For competition etc. it may be necessary to store an email address, and
+  furthermore the delivery address of players. This information should,
+  whenever possible, be kept outside of the server, and/or deleted as soon as
+  it isn't required anymore.
+- Anonymous data like interests or favorite games are preferably handled by the
+  clients, unless otherwise wanted by the player
+
+4. Servers, trusted network
+- Only the source provided by the GGZ Gaming Zone development team is
+  considered trusted; binary packages are a convenience solution
+- malicios servers are to be ignored for the network of trust
+- always provide an abuse contact for both players and server hosters so the
+  problems can be faced.
+- There should be the possibility to reconfigure ggzd at runtime, like a
+  "reload" of the configuration, which is important for network blacklists etc.
+- Use some kind of ACL for the meta server information, to not let bad hosts
+  get their listing in them
+
+5. Display
+- always let the Core Client display whether the current state is secure or
+  insecure
+- provide more accurate log files
+
+6. Buzzwords
+Maybe someone has more ideas when reading the following:
+- trust
+- security
+- privacy
+- freedom
+
+7. References (URL's for reports to follow)
+- chat issues at Yahoo
+- privacy ignorance at Blizzard Online
+- Echelon and other intruding systems
+- Address sale from online entertainment systems
+
