@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -12,11 +12,14 @@
 #include "gurumod.h"
 #include "i18n.h"
 
+#define COMMAND_NONE 0
 #define COMMAND_SAY 1
 #define COMMAND_HI 2
 #define COMMAND_FUNNY 3
 #define COMMAND_FUNNY2 4
-#define COMMAND_NONE 0
+#define COMMAND_SHUTUP 5
+
+static int noop_countdown = 0;
 
 /* React on hello messages and say-commands and LOL's */
 Guru *gurumod_exec(Guru *message)
@@ -24,6 +27,12 @@ Guru *gurumod_exec(Guru *message)
 	int command;
 	static char *buf = NULL;
 	int i, len;
+
+	if(noop_countdown > 0)
+	{
+		noop_countdown--;
+		return NULL;
+	}
 
 	command = COMMAND_NONE;
 	if((message->list)
@@ -50,7 +59,7 @@ Guru *gurumod_exec(Guru *message)
 	&& (message->list[1]))
 	{
 		if(((!strcmp(message->list[0], "hi"))
-		|| (!strcasecmp(message->list[1], "hey"))
+		|| (!strcasecmp(message->list[0], "hey"))
 		|| (!strcasecmp(message->list[0], "hello"))
 		|| (!strcasecmp(message->list[0], "moin"))
 		|| (!strcasecmp(message->list[0], "welcome"))
@@ -74,6 +83,19 @@ Guru *gurumod_exec(Guru *message)
 		}
 	}
 
+	if((command == COMMAND_NONE)
+	&& (message->list)
+	&& (message->list[0])
+	&& (message->list[1])
+	&& (message->list[2]))
+	{
+		if((!strcmp(message->list[0], message->guru))
+		&& (!strcmp(message->list[1], "shut"))
+		&& (!strcmp(message->list[2], "up")))
+		{
+			command = COMMAND_SHUTUP;
+		}
+	}
 	if(buf)
 	{
 		free(buf);
@@ -116,6 +138,11 @@ Guru *gurumod_exec(Guru *message)
 			break;
 		case COMMAND_FUNNY2:
 			message->message = _("hehe");
+			return message;
+			break;
+		case COMMAND_SHUTUP:
+			noop_countdown = 2 * 10;
+			message->message = _("bleh :(");
 			return message;
 			break;
 	}
