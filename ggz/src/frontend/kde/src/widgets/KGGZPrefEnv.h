@@ -61,6 +61,8 @@ class KGGZPrefEnv : public QWidget
 			QLineEdit *m_server;
 			// Whether to show connection dialog or not
 			QCheckBox *m_startup;
+			// Enable chat logging
+			QCheckBox *m_chatlog;
 };
 
 #endif

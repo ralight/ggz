@@ -117,8 +117,8 @@ void GGZap::launch()
 	}
 	show();
 	fat(m_connect);
-	m_handler->init();
 	emit signalMenu(GGZapTray::menulaunch);
+	m_handler->init();
 printf("GGZap::launch() has emitted\n");
 }
 

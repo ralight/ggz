@@ -60,12 +60,16 @@ void GGZapHandler::init()
 
 	m_server->setHost(m_confserver, 5688);
 	result = m_server->connect();
-	if(result == -1) emit signalState(connectfail);
+	//if(result == -1) emit signalState(connectfail);
 }
 
 void GGZapHandler::shutdown()
 {
-	if(m_zapuser) free(m_zapuser);
+	if(m_zapuser)
+	{
+		free(m_zapuser);
+		m_zapuser = NULL;
+	}
 	if(m_server)
 	{
 		m_server->logout();

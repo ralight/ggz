@@ -86,6 +86,7 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
 
 	m_listusers = 0;
+	m_log = 0;
 
 	input->setFocus();
 }
@@ -112,6 +113,11 @@ long KGGZChat::setLag(long lagid)
 		KGGZDEBUG("--SET %lu on %i\n", lag[i].lagid, i);
 	}
 	return -1;
+}
+
+void KGGZChat::setLogging(int log)
+{
+	m_log = log;
 }
 
 // Call takes lagid and returns time difference, or -1 on error
@@ -518,13 +524,14 @@ void KGGZChat::checkLag(const char *text)
 }
 
 // Log chat messages
-// FIXME: only when user has logging enabled
-// FIXME 2: append with date !!!
+// FIXME: append with date !!!
 void KGGZChat::logChat(QString text)
 {
 	FILE *f;
 	//char s[1024];
 	QString s;
+
+	if(!m_log) return;
 
 	//strcpy(s, getenv("HOME"));
 	//strcat(s, "/.ggz/kggzlog.html");

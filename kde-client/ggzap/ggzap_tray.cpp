@@ -31,6 +31,8 @@ GGZapTray::GGZapTray(QWidget *parent, const char *name)
 	connect(contextMenu(), SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu, SIGNAL(activated(int)), SLOT(slotLaunch(int)));
 
+	m_launched = 0;
+
 	show();
 }
 
@@ -63,12 +65,14 @@ void GGZapTray::slotMenu(int id)
 	{
 		case menulaunch:
 printf("==LAUNCH\n");
+			//m_launched = 1;
 			contextMenu()->removeItem(menulaunch);
 			contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
 			setMovie(QMovie(KGGZ_DIRECTORY "/ggzap/trayradar.mng"));
 			break;
 		case menucancel:
 printf("CANCEL\n");
+			//if(!m_launched) return;
 			emit signalCancel();
 			contextMenu()->removeItem(menucancel);
 			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);

@@ -126,8 +126,13 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	{
 		if(m_config->read("Preferences", "Showdialog", 0))
 		{
-			KGGZDEBUG("- load connection dialog");
+			KGGZDEBUG("- load connection dialog\n");
 			menuConnect();
+		}
+		if(m_config->read("Preferences", "Chatlog", 0))
+		{
+			KGGZDEBUG("- enable chat logging\n");
+			m_workspace->widgetChat()->setLogging(1);
 		}
 	}
 
