@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4577 2002-09-16 05:13:00Z jdorje $
+ * $Id: players.c 4582 2002-09-16 06:07:30Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -665,7 +665,8 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 {
 	struct GGZTableSeat seat;
 	struct GGZTableSpectator spectator;
-	int status, spectating, seat_num, try;
+	GGZReturn status;
+	int spectating, seat_num, try;
 
 	/* Do some quick sanity checking */
 	if (player->room == -1) 
@@ -755,12 +756,12 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		break;
 	default:
 		/* Should never get here */
-		status = -1;
+		status = GGZ_ERROR;
 		break;
 	}
 	
 	/* If enqueue fails, it's because the table has been removed */
-	if (status < 0)
+	if (status != GGZ_OK)
 		return E_NO_TABLE;
 
 	/* Mark player as "in transit" */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4551 2002-09-13 17:25:48Z jdorje $
+ * $Id: ggzd.h 4582 2002-09-16 06:07:30Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -56,7 +56,10 @@ typedef enum {
 	GGZ_CLIENT_PLAYER,
 	GGZ_CLIENT_CHANNEL
 } GGZClientType;
-
+//typedef char* GGZClientType;
+//#define GGZ_CLIENT_GENERIC "0"
+//#define GGZ_CLIENT_PLAYER "1"
+//#define GGZ_CLIENT_CHANNEL "2"
 
 typedef struct _GGZNetIO GGZNetIO;
 
@@ -66,6 +69,10 @@ typedef enum {
 	GGZ_LOGIN_NONE = 0,
 	GGZ_LOGIN_REGISTERED = 1
 } GGZLoginStatus;
+//typedef char* GGZLoginStatus;
+//#define GGZ_LOGIN_ANON "-1"
+//#define GGZ_LOGIN_NONE "0"
+//#define GGZ_LOGIN_REGISTERED "1"
 
 typedef enum {
 	GGZ_PLAYER_NONE,
@@ -73,6 +80,11 @@ typedef enum {
 	GGZ_PLAYER_GUEST,
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
+//typedef char* GGZPlayerType;
+//#define GGZ_PLAYER_NONE "0"
+//#define GGZ_PLAYER_NORMAL "1"
+//#define GGZ_PLAYER_GUEST "2"
+//#define GGZ_PLAYER_ADMIN "3"
 
 typedef struct _GGZPlayer GGZPlayer; 
 
@@ -85,6 +97,10 @@ typedef enum {
 	GGZ_TYPE_RES	= -2,
 	GGZ_TYPE_OPEN	= -3,
 } GGZTableFilter;
+//typedef char* GGZTableFilter;
+//#define GGZ_TYPE_ALL "-1"
+//#define GGZ_TYPE_RES "-2"
+//#define GGZ_TYPE_OPEN "-3"
 
 /* Player Handler return values */
 typedef enum {
@@ -94,6 +110,12 @@ typedef enum {
 	GGZ_REQ_TABLE_JOIN	= 2,
 	GGZ_REQ_TABLE_LEAVE	= 3,
 } GGZPlayerHandlerStatus;
+//typedef char* GGZPlayerHandlerStatus;
+//#define GGZ_REQ_OK "0"
+//#define GGZ_REQ_DISCONNECT "-1"
+//#define GGZ_REQ_FAIL "1"
+//#define GGZ_REQ_TABLE_JOIN "2"
+//#define GGZ_REQ_TABLE_LEAVE "3"
 
 
 /* GGZEventFunc return values */
@@ -103,15 +125,21 @@ typedef enum {
 	GGZ_EVENT_OK	= 0,
 	GGZ_EVENT_DEFER	= 1
 } GGZEventFuncReturn;
+//typedef char* GGZEventFuncReturn;
+//#define GGZ_EVENT_ERROR "-1"
+//#define GGZ_EVENT_OK "0"
+//#define GGZ_EVENT_DEFER "1"
 
 
 /* Many functions return 0 on success, -1 on error: this just
    formalizes it. */
-typedef enum {
-	GGZ_OK = 0,
-	GGZ_ERROR = -1
-} GGZReturn;
-
+//typedef enum {
+//	GGZ_OK = 0,
+//	GGZ_ERROR = -1
+//} GGZReturn;
+typedef char* GGZReturn;
+#define GGZ_OK "0"
+#define GGZ_ERROR "-1"
 
 /*
  * Configuration options

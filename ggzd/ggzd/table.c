@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4572 2002-09-16 04:26:07Z jdorje $
+ * $Id: table.c 4582 2002-09-16 06:07:30Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -233,12 +233,11 @@ static GGZTable *table_copy(GGZTable *table)
  */
 static GGZReturn table_check(GGZTable* table)
 {
-	int i, status = GGZ_OK;
+	GGZReturn status = GGZ_OK;
 	int ai_total = seats_count(table, GGZ_SEAT_BOT);
 	int seat_total = seats_num(table);
 	int spectator_total = spectators_count(table);
-	int g_type = table->type;
-	int room_type;
+	int g_type = table->type, room_type, i;
 	
 	pthread_rwlock_rdlock(&rooms[table->room].lock);
 	room_type = rooms[table->room].game_type;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4577 2002-09-16 05:13:00Z jdorje $
+ * $Id: client.c 4582 2002-09-16 06:07:30Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -231,7 +231,7 @@ static void client_loop(GGZClient* client)
 
 		/* Process player events */
 		if (client->type == GGZ_CLIENT_PLAYER) {
-			if ( (status = player_updates(client->data)) < 0)
+			if (player_updates(client->data) != GGZ_OK)
 				break;
 		}
 
@@ -243,7 +243,6 @@ static void client_loop(GGZClient* client)
 		timer.tv_usec = GGZ_RESYNC_USEC;
 		
 		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
-		
 		if (status <= 0) {
 			if (status == 0 || errno == EINTR)
 				continue;
