@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 3604 2002-03-20 05:24:35Z jdorje $
+ * $Id: err_func.c 4173 2002-05-06 05:48:44Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -76,63 +76,30 @@ static struct {
 static FILE *log_open_logfile(char *);
 
 
-static void err_doit(int flag, int priority, const char *fmt, va_list ap)
+static void send_debug_output(int priority,
+                              const char *header,
+                              const char *msg)
 {
-
-	char buf[4096];
-	int bsize;
-	time_t now;
-	struct tm localtm;
-	int kill_me = 0;
 	FILE *f;
-
-	/* I subtract one from the buffer size since we */
-	/* always want room for a '\n' at the end       */
-	bsize = sizeof(buf) - 1;
-
-	/* Include the PID if PIDInLogs is on */
-	if((log_info.options & GGZ_LOGOPT_INC_PID) || priority == LOG_DEBUG)
-		snprintf(buf, bsize-1, "[%d]: ", getpid());
-	else
-		buf[0] = '\0';
-
-	/* Include the timestamp if TimeInLogs is on */
-	if(log_info.options & GGZ_LOGOPT_INC_TIME) {
-		time(&now);
-		if(localtime_r(&now, &localtm) == NULL)
-			/* Can't err_sys_exit, might cause a loop */
-			kill_me = 1;
-		else
-			strftime(buf + strlen(buf), bsize - strlen(buf),
-				"%b %d %T ", &localtm);
-	}
-
-	/* Put the actual message into the buffer */
-	vsnprintf(buf + strlen(buf), bsize - strlen(buf), fmt, ap);
-	if (flag)
-		snprintf(buf + strlen(buf), bsize - strlen(buf),
-			 ": %s", strerror(errno));
-	strcat(buf, "\n");
-
-	if(kill_me)
-		snprintf(buf + strlen(buf), bsize - strlen(buf),
-			"\nlocaltime_r failed in err_func.c, aborting\n");
-
-
+	
 	/* If logs not yet initialized, send to stderr */
 	if(!log_info.log_initialized) {
 		fflush(stdout);
-		fputs(buf, stderr);
+		fputs(header, stderr);
+		fputs(msg, stderr);
+		fputs("\n", stderr);
 		fflush(NULL);
 	} else if(priority != LOG_DEBUG) {
 		if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
-			syslog(priority, "%s", buf);
+			syslog(priority, "%s%s\n", header, msg);
 		} else {
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				f = log_open_logfile(log_info.log_fname);
 			else
 				f = log_info.logfile;
-			fputs(buf, f);
+			fputs(header, f);
+			fputs(msg, f);
+			fputs("\n", f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				fclose(f);
@@ -141,89 +108,53 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 #ifdef DEBUG
 	  else {
 		if(log_info.options & GGZ_DBGOPT_USE_SYSLOG) {
-			syslog(priority, "%s", buf);
+			syslog(priority, "%s%s\n", header, msg);
 		} else {
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				f = log_open_logfile(log_info.dbg_fname);
 			else
 				f = log_info.dbgfile;
-			fputs(buf, f);
+			fputs(header, f);
+			fputs(msg, f);
+			fputs("\n", f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				fclose(f);
 		}
 	}
 #endif
+}
 
-	if(kill_me) {
+static void debug_handler(int priority, const char *msg)
+{
+	char hdr[128];
+	time_t now;
+	struct tm localtm;
+	int kill_me = 0;
+
+	if((log_info.options & GGZ_LOGOPT_INC_PID) || priority == LOG_DEBUG)
+		snprintf(hdr, sizeof(hdr), "[%d]: ", getpid());
+	else
+		hdr[0] = '\0';
+
+	/* Include the timestamp if TimeInLogs is on */
+	if(log_info.options & GGZ_LOGOPT_INC_TIME) {
+		time(&now);
+		if(localtime_r(&now, &localtm) == NULL)
+			/* Can't err_sys_exit, might cause a loop */
+			kill_me = 1;
+		else
+			strftime(hdr + strlen(hdr), sizeof(hdr) - strlen(hdr),
+				"%b %d %T ", &localtm);
+	}
+
+	send_debug_output(priority, hdr, msg);
+	
+	if (kill_me) {
+		send_debug_output(LOG_CRIT, "", "localtime_r failed in err_func.c, aborting");
 		/* cleanup() */
 		exit(-1);
 	}
-}
-
-
-void err_sys(const char *fmt, ...)
-{
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	err_doit(1, LOG_ERR, fmt, ap);
-	va_end(ap);
-
-}
-
-
-void err_sys_exit(const char *fmt, ...)
-{
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	err_doit(1, LOG_CRIT, fmt, ap);
-	va_end(ap);
-	/*cleanup(); */
-	exit(-1);
-
-}
-
-
-void err_msg(const char *fmt, ...)
-{
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	err_doit(0, LOG_ERR, fmt, ap);
-	va_end(ap);
-
-}
-
-
-void err_msg_exit(const char *fmt, ...)
-{
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	err_doit(0, LOG_CRIT, fmt, ap);
-	va_end(ap);
-	/*cleanup(); */
-	exit(-1);
-
-}
-
-
-void dbg_msg(const unsigned dbg_type, const char *fmt, ...)
-{
-#ifdef DEBUG
-	va_list ap;
-
-	va_start(ap, fmt);
-	if(dbg_type & log_info.dbg_types)
-		err_doit(0, LOG_DEBUG, fmt, ap);
-	va_end(ap);
-#endif
 }
 
 
@@ -231,10 +162,15 @@ void dbg_msg(const unsigned dbg_type, const char *fmt, ...)
 void log_msg(const unsigned log_type, const char *fmt, ...)
 {
 	va_list ap;
-	int priority;
-
+	
 	va_start(ap, fmt);
+	
 	if((log_type == 0) || (log_type & log_info.log_types)) {
+		int priority;
+		char msg[4096];
+
+		vsnprintf(msg, sizeof(msg), fmt, ap);
+	
 		switch(log_type) {
 			case GGZ_LOG_ALWAYS:
 				priority = LOG_WARNING;
@@ -246,29 +182,10 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 				priority = LOG_INFO;
 				break;
 		}
-		err_doit(0, priority, fmt, ap);
+		debug_handler(priority, msg);
 	}
+	
 	va_end(ap);
-}
-
-
-void err_sock(const char *err, const GGZIOType op, const GGZDataType type)
-{
-
-	switch (op) {
-	case GGZ_IO_CREATE:
-		err_msg("Error while creating socket: %s\n", err);
-		break;
-	case GGZ_IO_READ:
-		err_msg("Error while reading from socket: %s\n", err);
-		break;
-	case GGZ_IO_WRITE:
-		err_msg("Error while writing to socket: %s\n", err);
-		break;
-	case GGZ_IO_ALLOCATE:
-		err_msg("Error while allocating memory: %s\n", err);
-		break;
-	}
 }
 
 
@@ -294,6 +211,10 @@ int logfile_set_facility(char *facstr)
 /* Initialize the log files */
 void logfile_initialize(void)
 {
+	const char *debug_types[] = {NULL}; /* Initialized in the config file */
+	ggz_debug_init(debug_types, NULL);
+	ggz_debug_set_func(debug_handler);
+
 	if(log_info.log_fname) {
 		if(strcmp("syslogd", log_info.log_fname)) {
 			log_info.logfile = log_open_logfile(log_info.log_fname);

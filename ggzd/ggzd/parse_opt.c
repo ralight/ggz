@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4151 2002-05-05 00:22:08Z jdorje $
+ * $Id: parse_opt.c 4173 2002-05-06 05:48:44Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -59,7 +59,7 @@ static int parse_gselect(const struct dirent *);
 static int parse_rselect(const struct dirent *);
 static unsigned parse_log_types(int, char **);
 #ifdef DEBUG
-static unsigned parse_dbg_types(int, char **);
+static void parse_dbg_types(int, char **);
 #endif
 
 /* Log types name lookup tables*/
@@ -78,22 +78,21 @@ static const struct LogTypes log_types[] = {
 static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
 
 #ifdef DEBUG
-static struct LogTypes dbg_types[] = {
-	{ "all",		GGZ_DBG_ALL },
-	{ "configuration",	GGZ_DBG_CONFIGURATION },
-	{ "process",		GGZ_DBG_PROCESS },
-	{ "connection",		GGZ_DBG_CONNECTION },
-	{ "chat",		GGZ_DBG_CHAT },
-	{ "table",		GGZ_DBG_TABLE },
-	{ "protocol",		GGZ_DBG_PROTOCOL },
-	{ "update",		GGZ_DBG_UPDATE },
-	{ "misc",		GGZ_DBG_MISC },
-	{ "room",		GGZ_DBG_ROOM },
-	{ "lists",		GGZ_DBG_LISTS },
-	{ "game_msg",           GGZ_DBG_GAME_MSG},
-	{ "xml",                GGZ_DBG_XML}
+static char *dbg_types[] = {
+	GGZ_DBG_CONFIGURATION,
+	GGZ_DBG_PROCESS,
+	GGZ_DBG_CONNECTION,
+	GGZ_DBG_CHAT,
+	GGZ_DBG_TABLE,
+	GGZ_DBG_PROTOCOL,
+	GGZ_DBG_UPDATE,
+	GGZ_DBG_MISC,
+	GGZ_DBG_ROOM,
+	GGZ_DBG_LISTS,
+	GGZ_DBG_GAME_MSG,
+	GGZ_DBG_XML,
+	NULL
 };
-static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
 #endif
 
 /* Game and room lists */
@@ -116,10 +115,6 @@ static const struct poptOption args[] = {
 	 "Configuration file", "FILE"},
 	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,
 	 "Types of logging to perform", "LEVEL"},
-#ifdef DEBUG
-	{"debug", 'd', POPT_ARG_INT, &log_info.dbg_types, 2,
-	 "Types of debug logging to perform", "DBGLEVEL"},
-#endif
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
 	 "GGZ port number", "PORT"},
 	{"version", 'V', POPT_ARG_NONE, NULL, 1},
@@ -305,7 +300,7 @@ static void get_config_options(int ch)
 	t_count = 0;
 	ggz_conf_read_list(ch, "Logs", "DebugTypes", &t_count, &t_list);
 	if(t_count > 0)
-		log_info.dbg_types |= parse_dbg_types(t_count, t_list);
+		parse_dbg_types(t_count, t_list);
 #endif /*DEBUG*/
 	strval = ggz_conf_read_string(ch, "Logs", "Facility", NULL);
 	if(strval) {
@@ -771,29 +766,36 @@ static unsigned parse_log_types(int num, char **entry)
 
 
 #ifdef DEBUG
+
 /* Parse the debugging types into an unsigned int bitfield */
-static unsigned parse_dbg_types(int num, char **entry)
+static void parse_dbg_types(int num, char **entry)
 {
-	unsigned types=0;
 	int i, j;
 
 	for(i=0; i<num; i++) {
-		for(j=0; j<num_dbg_types; j++)
-			if(!strcasecmp(entry[i], dbg_types[j].name))
+		for (j = 0; dbg_types[j]; j++)
+			if(!strcasecmp(entry[i], dbg_types[j]))
 				break;
-		if(j == num_dbg_types)
-			err_msg("Config: Invalid debug type '%s' specified",
-				entry[i]);
-		else {
+				
+		if (dbg_types[j] == NULL) {
+			if (!strcasecmp(entry[i], "all")) {
+				/* Enable all debugging types */
+				for (j = 0; dbg_types[j]; j++)
+					ggz_debug_enable(dbg_types[j]);
+			} else
+				err_msg("Config: Invalid debug type '%s' specified",
+					entry[i]);
+		} else {
+			/* FIXME: how does this work if debugging isn't set up
+			   yet??? */
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"%s added to debug types", dbg_types[j].name);
-			types |= dbg_types[j].type;
+				"%s added to debug types", dbg_types[j]);
+			ggz_debug_enable(dbg_types[j]);
 		}
 
 		ggz_free(entry[i]);
 	}
 
 	ggz_free(entry);
-	return types;
 }
 #endif

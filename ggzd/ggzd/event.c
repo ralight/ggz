@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: event.c 4173 2002-05-06 05:48:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -111,8 +111,7 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 #ifdef DEBUG
 	if (rooms[room].event_head == NULL)
 		rooms[room].event_head = event;
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_room_spew(room);
+	event_room_spew(room);
 #endif
 
 	pthread_rwlock_unlock(&rooms[room].lock);
@@ -168,8 +167,7 @@ int event_room_handle(GGZPlayer* player)
 			rm_list = event;
 		}
 #ifdef DEBUG
-		if (log_info.dbg_types & GGZ_DBG_LISTS)
-			event_room_spew(room);
+		event_room_spew(room);
 #endif /* DEBUG */
 
 		/* 
@@ -217,8 +215,7 @@ int event_room_flush(GGZPlayer* player)
 	}
 
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_room_spew(room);
+	event_room_spew(room);
 #endif /* DEBUG */
 
 	return 0;
@@ -325,8 +322,7 @@ int event_player_handle(GGZPlayer* player)
 	}
 
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(player);
+	event_player_spew(player);
 #endif
 
 	return 0;
@@ -358,8 +354,7 @@ int event_player_flush(GGZPlayer* player)
 	}
 
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(player);
+	event_player_spew(player);
 #endif
 
 	return 0;
@@ -386,8 +381,7 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 		player->my_events_head = event;
 	
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(player);
+	event_player_spew(player);
 #endif
 
 }
@@ -482,8 +476,7 @@ int event_table_handle(GGZTable* table)
 	}
 
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_table_spew(table);
+	event_table_spew(table);
 #endif
 
 	return 0;
@@ -515,8 +508,7 @@ int event_table_flush(GGZTable* table)
 	}
 
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_table_spew(table);
+	event_table_spew(table);
 #endif
 
 	return 0;
@@ -543,8 +535,7 @@ static void event_table_do_enqueue(GGZTable* table, GGZEvent* event) {
 		table->events_head = event;
 	
 #ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_table_spew(table);
+	event_table_spew(table);
 #endif
 
 }

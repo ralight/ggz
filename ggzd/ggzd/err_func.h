@@ -40,19 +40,18 @@
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Debug levels for dbg_msg */
-#define GGZ_DBG_CONFIGURATION	(unsigned) 0x00000001
-#define GGZ_DBG_PROCESS		(unsigned) 0x00000002
-#define GGZ_DBG_CONNECTION	(unsigned) 0x00000004
-#define GGZ_DBG_CHAT		(unsigned) 0x00000008
-#define GGZ_DBG_TABLE		(unsigned) 0x00000010
-#define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020
-#define GGZ_DBG_UPDATE		(unsigned) 0x00000040
-#define GGZ_DBG_MISC		(unsigned) 0x00000080
-#define GGZ_DBG_ROOM		(unsigned) 0x00000100
-#define GGZ_DBG_LISTS		(unsigned) 0x00000200
-#define GGZ_DBG_GAME_MSG	(unsigned) 0x00000400
-#define GGZ_DBG_XML             (unsigned) 0x00000800
-#define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
+#define GGZ_DBG_CONFIGURATION	"configuration"
+#define GGZ_DBG_PROCESS		"process"
+#define GGZ_DBG_CONNECTION	"connection"
+#define GGZ_DBG_CHAT		"chat"
+#define GGZ_DBG_TABLE		"table"
+#define GGZ_DBG_PROTOCOL	"protocol"
+#define GGZ_DBG_UPDATE		"update"
+#define GGZ_DBG_MISC		"misc"
+#define GGZ_DBG_ROOM		"room"
+#define GGZ_DBG_LISTS		"lists"
+#define GGZ_DBG_GAME_MSG	"game_msg"
+#define GGZ_DBG_XML             "xml"
 
 /* Logging options */
 #define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001
@@ -77,39 +76,16 @@ typedef struct {
 	char popt_dbg;
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
-	unsigned dbg_types;
 	int verbose_updates;
 #endif
 } LogInfo;
 
+#define dbg_msg ggz_debug
+#define err_msg ggz_error_msg
+#define err_msg_exit ggz_error_msg_exit
+#define err_sys ggz_error_sys
+#define err_sys_exit ggz_error_sys_exit
 
-/*
- * Error printing functions based on those found in W. Richard Stevens book: 
- * "Advanced Programming in the Unix Environment"
- * 
- * err_msg : print a message
- * err_sys : print a message and the appropriate text for errno.
- * 
- * err_xxx_exit : does the above and then exits
- * 
- * dbg_msg : print a debugging message if DEBUG is defined
- */
-void err_msg(const char *fmt, ...)
-	     ggz__attribute((format(printf, 1, 2)));
-void err_sys(const char *fmt, ...)
-	     ggz__attribute((format(printf, 1, 2)));
-void err_msg_exit(const char *fmt, ...)
-		  ggz__attribute((format(printf, 1, 2)));
-void err_sys_exit(const char *fmt, ...)
-		  ggz__attribute((format(printf, 1, 2)));
-void dbg_msg(const unsigned, const char *fmt, ...)
-	     ggz__attribute((format(printf, 2, 3)));
-
-
-/*
- * Error fprinting function for easysock lib
- */
-void err_sock(const char *, const GGZIOType, const GGZDataType);
 
 /* Logfile info */
 extern LogInfo log_info;
