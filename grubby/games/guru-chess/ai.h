@@ -41,7 +41,7 @@ int chess_ai_find(int color, int *from, int *to);
 void chess_ai_output(void);
 
 /* Rochade */
-int chess_ai_rochade(int color);
+int chess_ai_rochade(int color, int which);
 
 /* Pawn exchange */
 int chess_ai_exchange(int pos, int *figure);

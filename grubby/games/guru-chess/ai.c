@@ -162,7 +162,11 @@ static void chess_ai_init_movements(void)
 	movements[C_KING][0][C_MULTI] = 0;
 	movements[C_KING][1][C_MOVE] = 1;
 	movements[C_KING][1][C_MULTI] = 0;
-	movements[C_KING][2][C_MOVE] = 0;
+	movements[C_KING][2][C_MOVE] = 7;
+	movements[C_KING][2][C_MULTI] = 0;
+	movements[C_KING][3][C_MOVE] = 9;
+	movements[C_KING][3][C_MULTI] = 0;
+	movements[C_KING][4][C_MOVE] = 0;
 }
 
 static void chess_ai_init_movementsinverse(void)
@@ -326,10 +330,12 @@ printf("take-consider: figure %i has higher value %i\n", oldfigure, value);
 	return 1;
 }
 
-int chess_ai_rochade(int color)
+int chess_ai_rochade(int color, int which)
 {
 	int from, to;
+	int i, step;
 
+	step = 1;
 	if(color == C_WHITE)
 	{
 		from = 4;
@@ -342,12 +348,19 @@ int chess_ai_rochade(int color)
 	}
 	else return 0;
 
+	if(which)
+	{
+		step = -1;
+		if(color == C_WHITE) to = 0;
+		else if(color == C_BLACK) to = 56;
+	}
+
 // FIXME: not allowed to ever have moved king or rook
 	if(chess_ai_table[from][C_FIGURE] != C_KING) return 0;
 	if(chess_ai_table[to][C_FIGURE] != C_ROOK) return 0;
 
-	if(chess_ai_table[from + 1][C_FIGURE] != C_EMPTY) return 0;
-	if(chess_ai_table[from + 2][C_FIGURE] != C_EMPTY) return 0;
+	for(i = from + step; i != to; i += step)
+		if(chess_ai_table[i][C_FIGURE] != C_EMPTY) return 0;
 
 	return 1;
 }
