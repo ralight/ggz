@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 5905 2004-02-11 04:14:40Z jdorje $
+ * $Id: msg.c 6125 2004-07-17 00:58:43Z josef $
  *
  * Debug and error messages
  *
@@ -40,6 +40,22 @@
 
 #include "misc.h" /* Internal data/functions */
 #include "support.h"
+
+#if GGZ_HAVE_SYSLOG_H
+# include <syslog.h>
+#else
+/** @brief Log types for ggz logging functions.
+ *
+ *  @see GGZDebugHandlerFunc.
+ *  @note If syslog.h is present the syslog types are used instead.
+ */
+enum {
+	LOG_DEBUG,	/**< A debugging message from ggz_debug. */
+	LOG_NOTICE,	/**< A general notice from ggz_log. */
+	LOG_ERR,	/**< An error from ggz_error_[msg|sys]. */
+	LOG_CRIT	/**< An error from ggz_error_[msg|sys]_exit. */
+};
+#endif
 
 /* Workhorse function for actually outputting messages */
 static void err_doit(int priority, const char *prefix,

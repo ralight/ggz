@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5926 2004-02-15 01:23:56Z jdorje $
+ * $Id: ggz.h 6125 2004-07-17 00:58:43Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -29,8 +29,8 @@
 
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 0
-#define LIBGGZ_VERSION_MICRO 8
-#define LIBGGZ_VERSION_IFACE "2:0:1"
+#define LIBGGZ_VERSION_MICRO 9
+#define LIBGGZ_VERSION_IFACE "2:1:1"
 
 #include <sys/types.h>
 
@@ -916,23 +916,6 @@ typedef enum {
 	GGZ_CHECK_MEM = 0x01   /**< Memory (leak) checks. */
 } GGZCheckType;
 
-#define GGZ_HAVE_SYSLOG_H @GGZ_HAVE_SYSLOG_H@
-#if GGZ_HAVE_SYSLOG_H
-# include <syslog.h>
-#else
-/** @brief Log types for ggz logging functions.
- *
- *  @see GGZDebugHandlerFunc.
- *  @note If syslog.h is present the syslog types are used instead.
- */
-enum {
-	LOG_DEBUG,	/**< A debugging message from ggz_debug. */
-	LOG_NOTICE,	/**< A general notice from ggz_log. */
-	LOG_ERR,	/**< An error from ggz_error_[msg|sys]. */
-	LOG_CRIT	/**< An error from ggz_error_[msg|sys]_exit. */
-};
-#endif
-
 /** @brief A callback function to handle debugging output.
  *
  *  A function of this type can be registered as a callback handler to handle
@@ -1337,9 +1320,6 @@ int ggz_make_socket_or_die(const GGZSockType type,
 			   const unsigned short port, 
 			   const char *server);
 
-#define GGZ_HAVE_PF_LOCAL @GGZ_HAVE_PF_LOCAL@
-
-#if GGZ_HAVE_PF_LOCAL
 /** @brief Connect to a unix domain socket.
  *
  *  This function connects to a unix domain socket, a socket associated with
@@ -1360,7 +1340,6 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name);
  *  Aside from the error condition, this is identical to ggz_make_unix_socket.
  */
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
-#endif
 
 
 /** @brief Write a character value to the given socket.
@@ -1531,9 +1510,7 @@ int ggz_read_string_alloc(const int sock, char **data);
 void ggz_read_string_alloc_or_die(const int sock, char **data);
 
 /* ggz_write_fd/ggz_read_fd are not supported on all systems. */
-#define GGZ_HAVE_SENDMSG @GGZ_HAVE_SENDMSG@
 
-#if GGZ_HAVE_SENDMSG
 /** @brief Write a file descriptor to the given (local) socket.
  *
  *  ggz_write_fd and ggz_read_fd handle the rather tricky task of sending
@@ -1557,7 +1534,6 @@ int ggz_write_fd(const int sock, int sendfd);
  *  @return 0 on success, -1 on error.
  **/
 int ggz_read_fd(const int sock, int *recvfd);
-#endif
 
 /** @brief Write a sequence of bytes to the socket.
  *

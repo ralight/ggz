@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5857 2004-02-09 00:02:31Z jdorje $
+ * $Id: easysock.c 6125 2004-07-17 00:58:43Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -191,9 +191,9 @@ int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port,
 }
 
 
-#if GGZ_HAVE_PF_LOCAL
 int ggz_make_unix_socket(const GGZSockType type, const char* name) 
 {
+#if GGZ_HAVE_PF_LOCAL
 	int sock;
 	struct sockaddr_un addr;
 	
@@ -230,19 +230,25 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 		break;
 	}
 	return sock;
+#else
+	return -1;
+#endif
 }
 
 
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name) 
 {
+#if GGZ_HAVE_PF_LOCAL
 	int sock;
 	
 	if ( (sock = ggz_make_unix_socket(type, name)) < 0)
 		(*_exit_func) (-1);
 	
 	return sock;
-}
+#else
+	return -1;
 #endif
+}
 
 
 int ggz_write_char(const int sock, const char message)
@@ -565,10 +571,10 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 }
 
 
-#if GGZ_HAVE_SENDMSG
 int ggz_write_fd(int sock, int sendfd)
 {
-        struct msghdr msg;
+#if GGZ_HAVE_SENDMSG
+	struct msghdr msg;
 	struct iovec iov[1];
 
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
@@ -610,11 +616,15 @@ int ggz_write_fd(int sock, int sendfd)
 
 	ggz_debug(GGZ_SOCKET_DEBUG, "Sent \"%d\" : fd.", sendfd);
 	return 0;
+#else
+	return -1;
+#endif
 }
 
 
 int ggz_read_fd(int sock, int *recvfd)
 {
+#if GGZ_HAVE_SENDMSG
 	struct msghdr msg;
 	struct iovec iov[1];
 	ssize_t	n;
@@ -701,5 +711,7 @@ int ggz_read_fd(int sock, int *recvfd)
 	
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : fd.", *recvfd);
         return 0;
-}
+#else
+	return -1;
 #endif
+}
