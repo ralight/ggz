@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3434 2002-02-21 07:42:14Z jdorje $
+ * $Id: spades.c 3436 2002-02-21 08:41:19Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -651,11 +651,14 @@ static int consider_bidding_nil(int points)
 	return 0;
 }
 
-/** "If you are going to bid aggressive you must play like an expert."
-                            --Jay Tomlinson. */
-/* Unfortunately, we certainly don't play like an expert.  It seems easier to
-   adjust the bidding code to bid like an expert than to make the AI play like 
-   an expert. */
+/*
+ * "If you are going to bid aggressive you must play like an expert."
+ *                          --Jay Tomlinson
+ *
+ * Unfortunately, we certainly don't play like an expert.  It seems easier to
+ * adjust the bidding code to bid like an expert than to make the AI play like
+ * an expert.
+ */
 bid_t get_bid(bid_t * bid_choices, int bid_count)
 {
 	int points;
@@ -706,7 +709,7 @@ card_t get_play(int play_seat, int *valid_plays)
 		lead = ggzcards.players[get_leader()].table_card;
 		high = get_leader();
 		hi_card = ggzcards.players[get_leader()].table_card;
-		for (i = (get_leader() + 1) % 4; i != ME; i = (i + 1) % 4) {
+		for (i = get_leader() + 1; i <= R_OPP; i++) {
 			card_t p_card = ggzcards.players[i].table_card;
 			if (((p_card.suit == SPADES)
 			     && (hi_card.suit != SPADES))
@@ -717,6 +720,7 @@ card_t get_play(int play_seat, int *valid_plays)
 			}
 		}
 	}
+	
 	if (get_leader() == ME)
 		ggz_debug("ai", "My lead.");
 	else
@@ -734,18 +738,18 @@ card_t get_play(int play_seat, int *valid_plays)
 	/* First determine how many more tricks we need. */
 	totTricks = ggzcards.players[ME].hand.hand_size;
 	myNeed = bids[ME].sbid.val + bids[PARTNER].sbid.val;
-	if (nil_tricks_count || bids[ME].sbid.val > 0)
+	if (nil_tricks_count || bids[ME].sbid.spec == 0)
 		myNeed -= get_tricks(ME);
-	if (nil_tricks_count || bids[PARTNER].sbid.val > 0)
+	if (nil_tricks_count || bids[PARTNER].sbid.spec == 0)
 		myNeed -= get_tricks(PARTNER);
 	if (myNeed < 0)
 		myNeed = 0;
 
 	/* Now determine how many more tricks the opponent needs. */
 	oppNeed = bids[L_OPP].sbid.val + bids[R_OPP].sbid.val;
-	if (nil_tricks_count || bids[L_OPP].sbid.val > 0)
+	if (nil_tricks_count || bids[L_OPP].sbid.spec == 0)
 		oppNeed -= get_tricks(L_OPP);
-	if (nil_tricks_count || bids[R_OPP].sbid.val > 0)
+	if (nil_tricks_count || bids[R_OPP].sbid.spec == 0)
 		oppNeed -= get_tricks(R_OPP);
 	if (oppNeed < 0)
 		oppNeed = 0;
