@@ -3,11 +3,11 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 6642 2005-01-13 01:55:40Z jdorje $
+ * $Id: output.c 6695 2005-01-16 06:54:26Z jdorje $
  *
  * Functions for display text/messages
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2005 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/ioctl.h>
+#ifdef HAVE_SYS_IOCTL_H
+#  include <sys/ioctl.h>
+#endif
 #include <time.h>
 
 #include <ggzcore.h>

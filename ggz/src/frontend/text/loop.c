@@ -3,11 +3,11 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 6640 2005-01-13 01:01:18Z jdorje $
+ * $Id: loop.c 6695 2005-01-16 06:54:26Z jdorje $
  *
  * Functions for handling main IO loop
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2005 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,21 @@
 #  include <config.h>
 #endif
 
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
+
+#include <ggz.h>
+
 #include "loop.h"
 #include "input.h"
 #include "output.h"
 #include "server.h"
 
-#include <ggz.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
 
 /* Information about a fd and what to do under various conditions */
