@@ -1,0 +1,69 @@
+HTTP Structure:
+
+                   (from playground/maintenance/webroot)
+ggz                (redirect to www)
+  +-www            (from www)
+  |   +-games
+  |   +-admin
+  |   +-clients
+  |   +-docs
+  |   |   +-api    (generated)
+  |   |   +-guides (generated)
+  |   +-dev
+  |   |   +-pics   (derived from www/pics)
+  |   |   +-site   (derived from www/site)
+  |   +-pics
+  |   +-screenshots
+  |   |   +-<versions>
+  |   +-site
+  |   +-utils
+  +-dev            (content from www/dev)
+  +-mail
+    +-pipermail    (current archives, generated)
+	+-hypermail    (old archives, generated)
+  +-cvs
+  +-bugs
+    +-mantis       (external, only conf)
+  +-live
+  +-rankings       (from playground/db2web)
+  +-pub
+    +-ggz
+	  +-<versions>
+
+Services (may be on different physical machines):
+
+http: htdig mail search (on mail)
+      mailman subscription and archives (on mail)
+      webcvs access (on cvs)
+mail: address forwards and project mailing lists
+      ggz-announce, ggz-dev, ggz-cvs, ggz-bugs, ggz-servers
+live: permanent ggz server and database
+      ggzd(5688), xinetd/telggz(15688), metaserv(15689), tracker(10000)
+bugs: bug database
+cvs:  cvs server
+
+Redundancy:
+
+http: provides no redundancy
+      goal: trusted (dynamic) or untrusted (static) mirror
+      possible for mantis and rankings, not for webcvs and mailman interface
+mail: is supported by fail-over mx (mail.hostsharing.net)
+      mailing lists are write-only!
+live: is supported by alternative server (uk.ggzgamingzone.org)
+      uses another database!
+bugs: provices no redundancy
+      goal: not needed
+cvs:  provides no redundancy
+      goal: wait for distributed rcs
+
+Backups:
+
+http: none, maintained via cvs
+mail: user-defined for address forwards
+      mailing lists: tarball (/var/lib/mailman)
+live: database: tarball (/var/lib/postgres)
+bugs: database: tarball (/var/lib/mysql)
+cvs:  repository: tarball (/var/lib/cvs)
+      unscheduled rsync backups
+system: tarballs (/etc, /home/ggz)
+
