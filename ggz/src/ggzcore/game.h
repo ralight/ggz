@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.h 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: game.h 6879 2005-01-24 07:28:38Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -33,37 +33,38 @@
 #include "table.h"
 
 
-struct _GGZGame* _ggzcore_game_new(void);
+struct _GGZGame *_ggzcore_game_new(void);
 
-void _ggzcore_game_init(struct _GGZGame *game, GGZServer *server,
-			struct _GGZModule *module);
+void _ggzcore_game_init(struct _GGZGame *game, GGZServer * server,
+			GGZModule * module);
 void _ggzcore_game_free(struct _GGZGame *game);
 
-void _ggzcore_game_set_table(GGZGame *game, int room_id, int table_id);
-void _ggzcore_game_set_seat(GGZGame *game, GGZTableSeat *seat);
-void _ggzcore_game_set_spectator_seat(GGZGame *game, GGZTableSeat *seat);
-void _ggzcore_game_set_player(GGZGame *game, int is_spectator, int seat_num);
-void _ggzcore_game_inform_chat(GGZGame *game,
-			       const char *player, const char *msg);
+void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id);
+void _ggzcore_game_set_seat(GGZGame * game, GGZTableSeat * seat);
+void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat);
+void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
+			      int seat_num);
+void _ggzcore_game_inform_chat(GGZGame * game, const char *player,
+			       const char *msg);
 
-int _ggzcore_game_is_spectator(GGZGame *game);
-int _ggzcore_game_get_seat_num(GGZGame *game);
-int _ggzcore_game_get_room_id(GGZGame *game);
-int _ggzcore_game_get_table_id(GGZGame *game);
+int _ggzcore_game_is_spectator(GGZGame * game);
+int _ggzcore_game_get_seat_num(GGZGame * game);
+int _ggzcore_game_get_room_id(GGZGame * game);
+int _ggzcore_game_get_table_id(GGZGame * game);
 
 /* Functions for attaching hooks to struct _GGZGame events */
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,
-				      const GGZGameEvent event, 
+				      const GGZGameEvent event,
 				      const GGZHookFunc func,
 				      const void *data);
 
 /* Functions for removing hooks from struct _GGZGame events */
 int _ggzcore_game_remove_event_hook(struct _GGZGame *game,
-				    const GGZGameEvent event, 
+				    const GGZGameEvent event,
 				    const GGZHookFunc func);
 
 int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
-				       const GGZGameEvent event, 
+				       const GGZGameEvent event,
 				       const unsigned int hook_id);
 
 int _ggzcore_game_data_is_pending(struct _GGZGame *game);
@@ -71,12 +72,11 @@ int _ggzcore_game_read_data(struct _GGZGame *game);
 int _ggzcore_game_write_data(struct _GGZGame *game);
 
 int _ggzcore_game_get_control_fd(struct _GGZGame *game);
-struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
+GGZModule *_ggzcore_game_get_module(struct _GGZGame *game);
 
 void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd);
 
 int _ggzcore_game_launch(struct _GGZGame *game);
-RETSIGTYPE _ggzcore_game_dead(int sig);			    
+RETSIGTYPE _ggzcore_game_dead(int sig);
 
 #endif /* __GAME_H_ */
-

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6874 2005-01-24 04:27:30Z jdorje $
+ * $Id: ggzcore.h 6879 2005-01-24 07:28:38Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1421,10 +1421,11 @@ GGZModule* ggzcore_module_get_nth_by_type(const char *game,
 					  const unsigned int num);
 
 
+#ifndef GGZ_DISABLE_DEPRECATED
 /** This attempts to launch the specified module and returns 0 if
     successful or -1 on error. */
-int ggzcore_module_launch(GGZModule *module);
-
+#define ggzcore_module_launch(m) ((int)(-1)
+#endif
 
 /** @brief Return the name of the module. */
 const char * ggzcore_module_get_name(GGZModule *module);

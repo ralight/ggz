@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: init.c 6614 2005-01-08 19:03:18Z josef $
+ * $Id: init.c 6879 2005-01-24 07:28:38Z jdorje $
  *
  * Initialization code
  *
@@ -25,7 +25,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>		/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <ggz.h>
@@ -42,13 +42,13 @@ int ggzcore_init(GGZOptions options)
 {
 #if 0
 	if (options.flags & GGZ_OPT_PARSER) {
-		ggz_debug(GGZCORE_DBG_CONF, "Parsing global conf file: %s", 
+		ggz_debug(GGZCORE_DBG_CONF, "Parsing global conf file: %s",
 			  options.global_conf);
-		ggz_debug(GGZCORE_DBG_CONF, "Parsing user conf file: %s", 
+		ggz_debug(GGZCORE_DBG_CONF, "Parsing user conf file: %s",
 			  options.user_conf);
 		ggzcore_conf_initialize(options.global_conf,
 					options.user_conf);
-		}
+	}
 #endif
 
 
@@ -57,7 +57,7 @@ int ggzcore_init(GGZOptions options)
 		_ggzcore_module_setup();
 
 	if (options.flags & GGZ_OPT_EMBEDDED)
-		_ggzcore_module_embedded();
+		_ggzcore_module_set_embedded();
 
 	return 0;
 }
@@ -75,6 +75,3 @@ void ggzcore_destroy(void)
 	_ggzcore_module_cleanup();
 	ggz_conf_cleanup();
 }
-	
-
-

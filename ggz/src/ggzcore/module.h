@@ -26,77 +26,37 @@
 #ifndef __MODULE_H_
 #define __MODULE_H_
 
-/* Structure describing particular client-side game module */
-struct _GGZModule {
-
-	/* Name of module */
-	const char *name;
-
-	/* Game module version */
-	const char *version;
-
-	/* Protocol engine implemented */
-	const char *prot_engine;
-
-	/* Protocol version implemented */
-	const char *prot_version;
-
-	/* Supported games */
-	char **games;
-
-	/* Module author */
-	const char *author;
-
-	/* Native frontend */
-	const char *frontend;
-
-	/* Hopepage for this module */
-	const char *url;
-
-	/* Commandline for executing module */
-	char **argv;
-
-	/* Path to icon for this game module */
-	const char *icon;
-
-	/* Path to help file */
-	const char *help;
-
-	/* Preferred runtime environment */
-	GGZModuleEnvironment environment;
-};
-
 int _ggzcore_module_setup(void);
 unsigned int _ggzcore_module_get_num(void);
 
-void _ggzcore_module_embedded(void);
+void _ggzcore_module_set_embedded(void);
 int _ggzcore_module_is_embedded(void);
 
 /* Returns how many modules support this game and protocol */
-int _ggzcore_module_get_num_by_type(const char *game, 
+int _ggzcore_module_get_num_by_type(const char *game,
 				    const char *engine,
 				    const char *version);
 
 /* Returns n-th module that supports this game and protocol */
-struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, 
-						   const char *engine,
-						   const char *version,
-						   const unsigned int num);
+GGZModule *_ggzcore_module_get_nth_by_type(const char *game,
+					   const char *engine,
+					   const char *version,
+					   const unsigned int num);
 
 
-int _ggzcore_module_launch(struct _GGZModule *module);
 void _ggzcore_module_cleanup(void);
 
-const char* _ggzcore_module_get_name(struct _GGZModule *module);
-const char* _ggzcore_module_get_version(struct _GGZModule *module);
-const char* _ggzcore_module_get_prot_engine(struct _GGZModule *module);
-const char* _ggzcore_module_get_prot_version(struct _GGZModule *module);
-const char* _ggzcore_module_get_author(struct _GGZModule *module);
-const char* _ggzcore_module_get_frontend(struct _GGZModule *module);
-const char* _ggzcore_module_get_url(struct _GGZModule *module);
-const char* _ggzcore_module_get_icon_path(struct _GGZModule *module);
-const char* _ggzcore_module_get_help_path(struct _GGZModule *module);
-char** _ggzcore_module_get_argv(struct _GGZModule *module);
-GGZModuleEnvironment _ggzcore_module_get_environment(struct _GGZModule *module);
+const char *_ggzcore_module_get_name(const GGZModule * module);
+const char *_ggzcore_module_get_version(const GGZModule * module);
+const char *_ggzcore_module_get_prot_engine(const GGZModule * module);
+const char *_ggzcore_module_get_prot_version(const GGZModule * module);
+const char *_ggzcore_module_get_author(const GGZModule * module);
+const char *_ggzcore_module_get_frontend(const GGZModule * module);
+const char *_ggzcore_module_get_url(const GGZModule * module);
+const char *_ggzcore_module_get_icon_path(const GGZModule * module);
+const char *_ggzcore_module_get_help_path(const GGZModule * module);
+char **_ggzcore_module_get_argv(const GGZModule * module);
+GGZModuleEnvironment _ggzcore_module_get_environment(const GGZModule *
+						     module);
 
 #endif /* __MODULE_H_ */

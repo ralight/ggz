@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6878 2005-01-24 06:52:49Z jdorje $
+ * $Id: game.c 6879 2005-01-24 07:28:38Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -92,7 +92,7 @@ static unsigned int _ggzcore_num_events =
 struct _GGZGame {
 
 	/* Pointer to module this game is playing */
-	struct _GGZModule *module;
+	GGZModule *module;
 
 	/* Room events */
 	GGZHookList *event_hooks[sizeof(_ggzcore_game_events) /
@@ -271,7 +271,7 @@ struct _GGZGame *_ggzcore_game_new(void)
 
 
 void _ggzcore_game_init(struct _GGZGame *game,
-			GGZServer * server, struct _GGZModule *module)
+			GGZServer * server, GGZModule * module)
 {
 	int i;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
@@ -674,7 +674,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 }
 
 
-struct _GGZModule *_ggzcore_game_get_module(struct _GGZGame *game)
+GGZModule *_ggzcore_game_get_module(struct _GGZGame * game)
 {
 	return game->module;
 }
