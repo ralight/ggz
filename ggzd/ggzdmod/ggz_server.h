@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: ggz_server.h 2822 2001-12-09 08:04:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,11 +46,6 @@ extern "C" {
 #define ggzd_get_player_socket(seat) (ggzdmod_get_seat(ggzdmod, seat).fd)
 
 	int ggzd_debug(const char *fmt, ...);
-
-#define ggzd_seats_open() ggzd_get_seat_count(GGZ_SEAT_OPEN)
-#define ggzd_seats_num() ggzdmod_get_num_seats(ggzdmod)
-
-#define ggzd_get_seat_count(status) ggzdmod_count_seats(ggzdmod, status)
 
 #ifdef __cplusplus
 }

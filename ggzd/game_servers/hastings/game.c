@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: game.c 2822 2001-12-09 08:04:08Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -125,7 +125,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 		case HASTINGS_REQ_INIT:
 			game_init(hastings_game.ggz);
 			game_send_sync(num);
-			if (!ggzd_seats_open())
+			if (!ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN))
 			{
 				hastings_game.state = HASTINGS_STATE_PLAYING;
 				game_move();
@@ -161,7 +161,7 @@ int game_send_players(void)
 	int i, j, fd;
 
 	/* Determine number of players, 8 at a maximum */
-	hastings_game.playernum = ggzd_seats_num();
+	hastings_game.playernum = ggzdmod_get_num_seats(hastings_game.ggz);
 	ggzd_debug("%i players found; sending number to clients...\n", hastings_game.playernum);
 
 	for (j = 0; j < hastings_game.playernum; j++)

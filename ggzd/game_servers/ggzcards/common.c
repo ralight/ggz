@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: common.c 2822 2001-12-09 08:04:08Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -172,7 +172,8 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 				init_game();
 				(void) send_sync_all();
 
-				if (!ggzd_seats_open())
+				if (!ggzdmod_count_seats
+				    (game.ggz, GGZ_SEAT_OPEN))
 					next_play();
 			} else {
 				handle_options();
@@ -427,7 +428,9 @@ void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	}
 
 	/* determine number of players. */
-	game.num_players = ggzd_seats_num();	/* ggz seats == players */
+	game.num_players = ggzdmod_get_num_seats(game.ggz);	/* ggz seats
+								   == players 
+								 */
 	game.host = -1;		/* no host since none has joined yet */
 
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
@@ -483,7 +486,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* if all seats are occupied, we restore the former state and
 	   continue playing (below).  The state is restored up here so that
 	   the sync will be handled correctly. */
-	if (!ggzd_seats_open())
+	if (!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN))
 		restore_game_state();
 
 	/* send all table info to joiner */
@@ -505,7 +508,8 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
 
-	if (!ggzd_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
+	if (!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
+	    && game.which_game != GGZ_GAME_UNKNOWN) {
 		/* (Re)Start game play */
 		if (game.state != STATE_NONE
 		    && game.state != STATE_WAIT_FOR_PLAY)
@@ -549,7 +553,9 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	set_player_message(player);
 
 	/* save old state and enter waiting phase */
-	if (ggzd_seats_open() > 0)	/* should be a given... */
+	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0)	/* should be
+								   a given... 
+								 */
 		save_game_state();
 
 	return;
