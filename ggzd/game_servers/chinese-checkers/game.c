@@ -38,7 +38,6 @@ struct game_t game;
 static void game_handle_newgame(void);
 static void game_setup_board(void);
 static int game_find_path(int, int, int, int, int);
-static void game_print_board(void);
 
 
 /* Setup game state and board */
@@ -480,37 +479,6 @@ static void game_setup_board(void)
 			game.board[x][y] = i+1;
 		}
 	}
-
-	game_print_board();
-}
-
-
-/* Display the game board in text format */
-static void game_print_board(void)
-{
-        int i, j;
-
-        printf("Current game board:\n");
-        for(i=0; i<17; i++) {
-                for(j=0; j<25; j++)
-                        switch(game.board[i][j]) {
-                                case -1:
-				        printf(" ");
-                                        break;
-                                case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-					printf("%c", '0'+game.board[i][j]);
-					break;
-                                default:
-				        printf("?");
-                        }
-                printf("\n");
-        }
 }
 
 
@@ -631,7 +599,7 @@ char game_check_win(void)
 {
 	int i, dest, x, y;
 
-	dest = (homes[seats-1][game.turn] + 3) % 6;
+	dest = (homes[seats-1][(int)game.turn] + 3) % 6;
 	for(i=0; i<10; i++) {
 		x = homexy[dest][i][0];
 		y = homexy[dest][i][1];
