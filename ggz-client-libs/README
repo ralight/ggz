@@ -1,61 +1,35 @@
-See the README.GGZ file for complete information on compiling the GGZ
-client system.
+===========================================
+The GGZ Gaming Zone - Core Client Libraries
+===========================================
 
-ggz-client-libs requires that easysock be properly installed before
-it can be built.
+GGZ Gaming Zone core client libraries provides the common procedures
+and utilities required to run the GGZ client and games.  The routines
+are shared by other modules in order to ease coding and promote
+compatibility and stability.
 
-Installing ggz-client-libs
---------------------------
+This version of the client libraries (0.0.4) should provide compatibility
+with version 0.0.4 clients and version 0.0.3-4 servers.
 
-ggz-client-libs is also a very straight-forward installation.  By default,
-both static and shared versions of the libraries will be built, and this may
-be configured with the --disable-shared and --disable-static options to
-configure.  You are once again urged to install as a shared library and you
-must run ldconfig before proceeding to a client installation.
+The core client libraries is only one part of the GGZ Gaming Zone
+client setup.  The following additional modules are required:
+  - easysock - provides low-level communications between client
+    modules and the GGZ servers
+  - gtk-client/kde-client - one or more of the GGZ clients will be
+    required in order to login to a server, chat and launch games
+  - gtk-games/kde-games - one or more games or game packs are required
+    in order to launch and play games
 
-The ggz-client-libs installation controls several file locations which will
-be used by the client and game installations.  These directories are as
-follows:
+The order in which these components are compiled and installed is very
+important.  See the README.GGZ file for complete information on compiling
+the GGZ client system.
 
-  Directory	Default			What Goes Here
-  ----------	--------------------	--------------
-  GGZCONFDIR	$(prefix)/etc/		ggz.modules (config file)
-  GGZGAMEDIR	$(prefix)/lib/ggz/	game module executables
-  GGZDATADIR	$(prefix)/share/ggz/	game module datafiles (pixmaps, etc)
+If you encounter any bugs or have difficulty compiling, please report bugs
+via the bug tracker on our SourceForge project page, or send an email to the
+developer's mailing list.
 
-The default settings are sane for the standard install prefix of /usr/local,
-however, if you are using /usr you will probably want to change the location
-of GGZCONFDIR to /etc (rather than /usr/etc).  Here's how to configure the
-three directories:
+  SF Project Page:	http://sourceforge.net/projects/ggz
+  Dev Mailing List:	ggz-dev@lists.sourceforge.net
 
-GGZCONFDIR can be set with the --sysconfdir option of configure.  GGZGAMEDIR
-should be set with the --exec-prefix option to configure.  Note that this is
-a prefix, and as such, a ggz subdirectory will be automatically created under
-whatever path you choose.
-
-GGZDATADIR should be set using --datadir.  Again, this will be treated as a
-prefix, and the ggz subdirectory will be created automatically.
-
-If you change these locations at a later time it is possible that the client
-and/or games will stop working.  This can happen if a game cannot find it's
-datafiles, or if ggz-client-libs cannot find a game module due to it being
-installed under an old location.
-
-No games will work at all if ggz-client-libs can no longer find the
-ggz.modules file!  This is what keeps track of every game you have installed.
-
-If you MUST move these directories at a later time, you should uninstall all
-games and clients and rebuild them after reinstalling ggz-client-libs with
-it's new values.
-
-ggz-client-libs will install a simple program, ggz-config, which will enable
-the client packages and game packages to install themselves properly with
-the ggz-client-libs directory specifications.  This binary will end up in
-the --bindir, which is $(prefix)/bin by default.  This can be anywhere as long
-as it is in your path for future make invocations.
-
-Typical Installation:
-./configure --sysconfdir=/etc --prefix=/usr
-make
-make install (as root)
-ldconfig /usr/lib (as root)
+If you wish to help out the project with your coding and/or ideas, join
+the developer's mailing list and start talking!  If you just want to play
+games, then enjoy the programs and we hope they work well for you!
