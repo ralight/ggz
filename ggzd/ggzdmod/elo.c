@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.c 4237 2002-06-09 06:20:58Z jdorje $
+ * $Id: elo.c 4382 2002-08-20 22:22:39Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -393,7 +393,7 @@ static double elo_integrate_all(int num, int i, double *ratings)
 	return prob;
 }
 
-void elo_compute_expectations(int num, float *ratings, float *probs)
+static void elo_compute_expectations(int num, float *ratings, float *probs)
 {
 	double myratings[num];
 	int i;
