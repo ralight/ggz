@@ -2,6 +2,7 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -10,9 +11,8 @@ msgstr ""
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO 8859-1\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.6\n"
 
 #: ../ggz-gtk/about.c:104
 msgid "About"
@@ -24,16 +24,14 @@ msgid "OK"
 msgstr "OK"
 
 #: ../ggz-gtk/chat.c:328
-#, fuzzy
 msgid "Usage: /msg <username> <message>"
-msgstr "/msg <usuario> <mensaje>"
+msgstr "Uso: /msg <usuario> <mensaje>"
 
 #: ../ggz-gtk/chat.c:329
 msgid "    Sends a private message to a user on the network."
 msgstr ""
 
 #: ../ggz-gtk/chat.c:377
-#, fuzzy
 msgid "Beep Sent"
 msgstr "Beep enviado"
 
@@ -47,52 +45,51 @@ msgstr "-------------"
 
 #: ../ggz-gtk/chat.c:434
 msgid "/me <action> .............. Send an action"
-msgstr ""
+msgstr "/me <accion> .............. Enviar una accion"
 
 #: ../ggz-gtk/chat.c:435
-#, fuzzy
 msgid "/msg <username> <message> . Private message a player"
-msgstr "/msg <usuario> <mensaje>"
+msgstr "/msg <usuario> <mensaje> . Mensaje privado a jugador"
 
 #: ../ggz-gtk/chat.c:436
 msgid "/beep <username> .......... Beep a player"
-msgstr ""
+msgstr "/beep <jugador> .......... Beep a un jugador"
 
 #: ../ggz-gtk/chat.c:437
 msgid "/friends .................. List your friends"
-msgstr ""
+msgstr "/friends .................. Lista de amigos"
 
 #: ../ggz-gtk/chat.c:438
 msgid "/ignore ................... List people your ignoring"
-msgstr ""
+msgstr "/ignore ................... Lista de ignorados"
 
 #: ../ggz-gtk/chat.c:439
 msgid "/wall <message> ........... Admin command"
-msgstr ""
+msgstr "/wall <mensaje> ........... Mensaje a todos"
 
 #: ../ggz-gtk/chat.c:628
 #, c-format
 msgid "Added %s to your friends list."
-msgstr ""
+msgstr "%s fue agregado a tu lista de amigos"
 
 #: ../ggz-gtk/chat.c:652
 #, c-format
 msgid "Removed %s from your friends list."
-msgstr ""
+msgstr "%s fue sacado de tu lista de amigos."
 
 #: ../ggz-gtk/chat.c:683
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr ""
+msgstr "%s fue agregado a tus lista de ignorados."
 
 #: ../ggz-gtk/chat.c:708
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr ""
+msgstr "%s fue sacado de tus lista de ignorados."
 
 #: ../ggz-gtk/chat.c:839
 msgid "Multiple matches:"
-msgstr ""
+msgstr "Multiples matches:"
 
 #: ../ggz-gtk/client.c:168
 msgid "Are you sure you want to quit?"
@@ -135,73 +132,68 @@ msgid "Join Error"
 msgstr "Error en la entrada"
 
 #: ../ggz-gtk/client.c:924
-#, fuzzy
 msgid "Connect to a server"
-msgstr "Desconectado del servidor."
+msgstr "Conectado al servidor."
 
 #: ../ggz-gtk/client.c:924
-#, fuzzy
 msgid "Connect to a GGZ Gaming Zone server"
-msgstr "GGZ Gaming Zone"
+msgstr "Conectar a GGZ Gaming Zone"
 
 #: ../ggz-gtk/client.c:926
-#, fuzzy
 msgid "Disconnect from server"
 msgstr "Desconectado del servidor."
 
 #: ../ggz-gtk/client.c:926
-#, fuzzy
 msgid "Disconnect from the GGZ Gaming Zone server"
-msgstr "Desconectado del servidor."
+msgstr "Desconectado del servidor GGZ Gaming Zone."
 
 #: ../ggz-gtk/client.c:928
 msgid "Launch a new game"
-msgstr ""
+msgstr "Correr un nuevo juego"
 
 #: ../ggz-gtk/client.c:928
 msgid "Start playing a game at a new table"
-msgstr ""
+msgstr "Empezar juego en una nueva tabla"
 
 #: ../ggz-gtk/client.c:930
 msgid "Join a game"
-msgstr ""
+msgstr "Unirte al juego"
 
 #: ../ggz-gtk/client.c:930
 msgid "Join an existing game"
-msgstr ""
+msgstr "Unirte a juego existente"
 
 #: ../ggz-gtk/client.c:932
 msgid "Lave a game"
-msgstr ""
+msgstr "Abandonar juego"
 
 #: ../ggz-gtk/client.c:932
 msgid "Leave the game you're currently playing"
-msgstr ""
+msgstr "Abandor juego que estas jugando"
 
 #: ../ggz-gtk/client.c:934
-#, fuzzy
 msgid "Show properties dialog"
-msgstr "Propriedades actualizadas"
+msgstr "Mostrar propiedades"
 
 #: ../ggz-gtk/client.c:934
 msgid "Show the properties dialog to change the client settings"
-msgstr ""
+msgstr "Mostrar dialog de propiedades del cliente"
 
 #: ../ggz-gtk/client.c:936
 msgid "Show game stats"
-msgstr ""
+msgstr "Mostrar estado del juego"
 
 #: ../ggz-gtk/client.c:936
 msgid "Show the game stats for the current room's game type"
-msgstr ""
+msgstr "Mostrar estado del juego de la sala"
 
 #: ../ggz-gtk/client.c:938
 msgid "Exit the client"
-msgstr ""
+msgstr "Salir del cliente"
 
 #: ../ggz-gtk/client.c:938
 msgid "Exit the application."
-msgstr ""
+msgstr "Salir de la aplicacion"
 
 #: ../ggz-gtk/client.c:970
 #, c-format
@@ -339,7 +331,7 @@ msgstr "Propiedades"
 
 #: ../ggz-gtk/client.c:1620
 msgid "Stats"
-msgstr ""
+msgstr "Estadisticas"
 
 #: ../ggz-gtk/client.c:1632
 msgid "Exit"
@@ -355,11 +347,11 @@ msgstr "Salas"
 
 #: ../ggz-gtk/client.c:1723
 msgid "L"
-msgstr "L"
+msgstr ""
 
 #: ../ggz-gtk/client.c:1730
 msgid "T"
-msgstr "M"
+msgstr ""
 
 #: ../ggz-gtk/client.c:1737
 msgid "Player"
@@ -371,7 +363,7 @@ msgstr "No."
 
 #: ../ggz-gtk/client.c:1782
 msgid "Seats"
-msgstr "Lugares"
+msgstr "Asientos"
 
 #: ../ggz-gtk/client.c:1789 ../ggz-gtk/types.c:227
 msgid "Description"
@@ -390,40 +382,36 @@ msgid "Info"
 msgstr "Información"
 
 #: ../ggz-gtk/client.c:2150
-#, fuzzy
 msgid "Friends"
-msgstr "Color amigo"
+msgstr "Amigos"
 
 #: ../ggz-gtk/client.c:2158
-#, fuzzy
 msgid "Ignore"
-msgstr "Información"
+msgstr "Ignorar"
 
 #: ../ggz-gtk/client.c:2174
 msgid "Send Private message"
-msgstr ""
+msgstr "Enviar mensaje privado"
 
 #: ../ggz-gtk/first.c:61
 msgid "Wizard"
-msgstr ""
+msgstr "Maestro"
 
 #: ../ggz-gtk/first.c:61
-#, fuzzy
 msgid "Deity"
-msgstr "Ciudad:"
+msgstr ""
 
 #: ../ggz-gtk/first.c:61
 msgid "Sentinel"
-msgstr ""
+msgstr "Sentinela"
 
 #: ../ggz-gtk/first.c:61
-#, fuzzy
 msgid "Captain"
-msgstr "Conversando"
+msgstr "Capitan"
 
 #: ../ggz-gtk/first.c:62
 msgid "Knight"
-msgstr ""
+msgstr "Caballero"
 
 #: ../ggz-gtk/first.c:62
 msgid "Angel"
@@ -446,9 +434,8 @@ msgid "Chief"
 msgstr ""
 
 #: ../ggz-gtk/first.c:63
-#, fuzzy
 msgid "Colonel"
-msgstr "Cancelar"
+msgstr "Coronel"
 
 #: ../ggz-gtk/first.c:63
 msgid "General"
@@ -459,18 +446,16 @@ msgid "Major"
 msgstr ""
 
 #: ../ggz-gtk/first.c:64
-#, fuzzy
 msgid "Scout"
-msgstr "Acerca"
+msgstr ""
 
 #: ../ggz-gtk/first.c:64
 msgid "Lieutenant"
 msgstr ""
 
 #: ../ggz-gtk/first.c:64
-#, fuzzy
 msgid "Stalker"
-msgstr "Estado:"
+msgstr ""
 
 #: ../ggz-gtk/first.c:65
 msgid "Scientist"
@@ -481,9 +466,8 @@ msgid "Scholar"
 msgstr ""
 
 #: ../ggz-gtk/first.c:65
-#, fuzzy
 msgid "Entity"
-msgstr "Salir"
+msgstr "Entidad"
 
 #: ../ggz-gtk/first.c:65
 msgid "Creator"
@@ -501,7 +485,7 @@ msgstr "Esta es la 1ra vez que corres el cliente GTK+ de GGZ.¿Querés que se cree
 
 #: ../ggz-gtk/first.c:225
 msgid "Yes"
-msgstr "Sí"
+msgstr "Si"
 
 #: ../ggz-gtk/first.c:233
 msgid "No"
@@ -567,24 +551,20 @@ msgstr ""
 "Lanzamiento abortado."
 
 #: ../ggz-gtk/game.c:173
-#, fuzzy
 msgid "Launching game"
-msgstr "Iniciar"
+msgstr "Ejecutando juego"
 
 #: ../ggz-gtk/game.c:219
-#, fuzzy
 msgid "Launched game"
-msgstr "Iniciar"
+msgstr "Juego ejecutado"
 
 #: ../ggz-gtk/game.c:234
-#, fuzzy
 msgid "Launch failed"
-msgstr "Iniciar"
+msgstr "Ejecucion fallada"
 
 #: ../ggz-gtk/game.c:273
-#, fuzzy
 msgid "Game Over"
-msgstr "Tipo de juego"
+msgstr "Juego Terminado"
 
 #: ../ggz-gtk/game.c:285 ../ggz-gtk/game.c:304
 msgid "Error leaving table"
@@ -658,7 +638,6 @@ msgid "No description available."
 msgstr ""
 
 #: ../ggz-gtk/ggzclient.c:1098
-#, fuzzy
 msgid "Disconnected from server."
 msgstr "Desconectado del servidor."
 
@@ -972,22 +951,18 @@ msgid "White Background"
 msgstr "Fondo blanco"
 
 #: ../ggz-gtk/props.c:1243
-#, fuzzy
 msgid "Black Background"
-msgstr "Fondo blanco"
+msgstr "Fondo negro"
 
 #: ../ggz-gtk/props.c:1253
-#, fuzzy
 msgid "Normal Color"
-msgstr "Tu color"
+msgstr "Color normal"
 
 #: ../ggz-gtk/props.c:1265
-#, fuzzy
 msgid "Highlight Color"
-msgstr "Color del chat"
+msgstr "Color resaltado"
 
 #: ../ggz-gtk/props.c:1277
-#, fuzzy
 msgid "Friend Color"
 msgstr "Color amigo"
 
@@ -1036,7 +1011,6 @@ msgid "User Information"
 msgstr "Información de usuario"
 
 #: ../ggz-gtk/props.c:1539
-#, fuzzy
 msgid "Single Click Room Entry"
 msgstr "Un solo click para entrar a una sala"
 
