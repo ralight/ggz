@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-data = 8x8.* Bridge.* Checkers.* Default.* Island\ I.*
+data = 8x8.* Bridge.* Checkers.* Corridors.* Default.* In\ The\ Wild.* Island\ I.* Island\ II.* Isles.* Pipes.* Small.*
 
 install-data-local:
 	$(mkinstalldirs) $(ggzexecmoddir)/combat/maps ;\

@@ -744,7 +744,7 @@
 	<widget>
 	  <class>GtkEventBox</class>
 	  <name>eventbox13</name>
-	  <tooltip>If set, the sergeant of all the teams will have been through a higly rigorous training, and will be able to walk through lakes. It won't be able to stay in a lake, instead, it will be able to appear at the opposite margin of a lake (it must go through a straight line, and it must be only like tiles between the source and the destination)</tooltip>
+	  <tooltip>If set, the sergeant of all the teams will have been through a higly rigorous training, and will be able to walk through lakes. It won't be able to stay in a lake, instead, it will be able to appear at the opposite margin of a lake (it must go through a straight line, and it must be only lake tiles between the source and the destination)</tooltip>
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
@@ -802,7 +802,7 @@
 	<widget>
 	  <class>GtkEventBox</class>
 	  <name>eventbox15</name>
-	  <tooltip>If set, the bomb will be inofensive, ie, it won't kill any unit. It will work as a wall, however. (although miners can still destroy it)</tooltip>
+	  <tooltip>If set, the players won't be able to see the remaining units for the opponent, ie, they won't know how many units of each type their opponent has left. Please note that this option can't be enforceable by the server, so just use it against trusted opponents.</tooltip>
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>
@@ -822,7 +822,7 @@
 	    <class>GtkCheckButton</class>
 	    <name>opt_wall_bomb</name>
 	    <can_focus>True</can_focus>
-	    <label>Wall-like bomb</label>
+	    <label>Hide enemy's unit list</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
 	  </widget>

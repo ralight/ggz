@@ -1,0 +1,18 @@
+[army]
+bomb = 3
+captain = 3
+colonel = 0
+flag = 4
+general = 0
+lieutenant = 3
+major = 0
+marshall = 0
+miner = 5
+scout = 4
+sergeant = 0
+spy = 0
+
+[map]
+data = NNNNN1111NOON11ONNNNOOOON11ON22NON11NNNON222ON1122NON222ON1122NONNNNNNOOOOOOOOOOOOOONNNONONONONN11NON2NON22N111ON2NON22N111ON2NON22NNNNNN2NOOOOO
+height = 12
+width = 12
