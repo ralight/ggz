@@ -255,10 +255,12 @@ int room_send_chat(const int p)
 	/* 3) No one can alter or remove the chat strings while */
 	/*    we still have a reference_count to it             */
 	while(cur_chat) {
+		pthread_rwlock_rdlock(&chat_room[room].lock);
 		if (es_write_int(fd, MSG_CHAT) < 0
 		    || es_write_string(fd, cur_chat->chat_sender) < 0
 		    || es_write_string(fd, cur_chat->chat_msg) < 0)
 			return(-1);
+		pthread_rwlock_unlock(&chat_room[room].lock);
 		/* Now we gotta do strict locks */
 		/* We ALWAYS lock players before chat rooms */
 		pthread_rwlock_wrlock(&players.lock);
