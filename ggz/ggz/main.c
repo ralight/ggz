@@ -41,6 +41,7 @@
 #include "mnu_tables.h"
 #include "mnu_players.h"
 #include "game.h"
+#include "support.h"
 
 /* Main global data structures */
 struct ConnectInfo connection;
@@ -88,11 +89,17 @@ gint main(gint argc, gchar *argv[])
 {
 	gint i;
 
+	/* This sets the location of the translations of all the text in the
+	   interface. */
+	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+	textdomain (PACKAGE);
+
+	
 	/* Read configuration values */
 	parse_args(argc, argv);
 	if(ggzrc_initialize(local_conf_fname) != 0) {
-		fprintf(stderr, "ERROR: No valid configuration file loaded\n");
-		fprintf(stderr, "Gnu Gaming Zone can not continue\n");
+		fprintf(stderr, _("ERROR: No valid configuration file loaded\n"));
+		fprintf(stderr, _("Gnu Gaming Zone can not continue\n"));
 		exit(1);
 	}
 

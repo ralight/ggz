@@ -32,6 +32,16 @@ AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(sys/time.h unistd.h)
 
+dnl Check for gettext support
+dnl =========================
+
+ALL_LINGUAS="de"
+AM_GNU_GETTEXT
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
+fi
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
@@ -162,6 +172,8 @@ AC_OUTPUT([Makefile
 	   game_clients/spades/Makefile
 	   game_clients/tictactoe/Makefile	
 	   game_clients/dots/Makefile
+	   intl/Makefile
+	   po/Makefile.in
 	   ])
 
 

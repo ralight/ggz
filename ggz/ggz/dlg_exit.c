@@ -32,6 +32,8 @@
 #include <dlg_exit.h>
 #include <game.h>
 
+#include "support.h"
+
 static void exit_do(GtkWidget * widget, gpointer data);
 
 
@@ -55,18 +57,18 @@ void exit_dlg(GtkWidget * widget, gpointer data)
 	GtkWidget *cancelButton;
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), "Really Exit?");
+	gtk_window_set_title(GTK_WINDOW(window), _("Really Exit?"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */
-	label = gtk_label_new("Exit: Are you sure?");
+	label = gtk_label_new(_("Exit: Are you sure?"));
 	gtk_widget_show(label);
 
 
 	/* Button widgets */
-	exitButton = gtk_button_new_with_label("Exit");
-	cancelButton = gtk_button_new_with_label("Cancel");
+	exitButton = gtk_button_new_with_label(_("Exit"));
+	cancelButton = gtk_button_new_with_label(_("Cancel"));
 
 	gtk_signal_connect(GTK_OBJECT(exitButton), "clicked",
 			   GTK_SIGNAL_FUNC(exit_do), NULL);

@@ -4,7 +4,7 @@ EXTRA_DIST = ggzrc.test.in
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock -I$(top_srcdir)/intl
 
 bin_PROGRAMS = ggz
 
@@ -56,6 +56,6 @@ ggz_SOURCES = 	main.c \
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la 
+ggz_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la @LIBS@
 ggz_LDFLAGS = -static
 

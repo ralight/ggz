@@ -35,6 +35,7 @@
 #include "dlg_error.h"
 #include "game.h"
 #include "err_func.h"
+#include "support.h"
 
 
 /* Globals neaded by this dialog */
@@ -363,7 +364,7 @@ create_dlg_launch (void)
 
   dlg_launch = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_launch), "dlg_launch", dlg_launch);
-  gtk_window_set_title (GTK_WINDOW (dlg_launch), "Seat Assignments");
+  gtk_window_set_title (GTK_WINDOW (dlg_launch), _("Seat Assignments"));
   gtk_window_set_policy (GTK_WINDOW (dlg_launch), FALSE, FALSE, TRUE);
 
   vbox1 = GTK_DIALOG (dlg_launch)->vbox;
@@ -385,7 +386,7 @@ create_dlg_launch (void)
   gtk_widget_show (seats_box);
   gtk_box_pack_start (GTK_BOX (main_box), seats_box, TRUE, TRUE, 5);
 
-  type_label = gtk_label_new ("Game Type:");
+  type_label = gtk_label_new (_("Game Type:"));
   gtk_widget_ref (type_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "type_label", type_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -417,7 +418,7 @@ create_dlg_launch (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seats_entry);
 
-  players_label = gtk_label_new ("Number of seats");
+  players_label = gtk_label_new (_("Number of seats"));
   gtk_widget_ref (players_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "players_label", players_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -431,7 +432,7 @@ create_dlg_launch (void)
   gtk_widget_show (author_box);
   gtk_box_pack_start (GTK_BOX (main_box), author_box, FALSE, FALSE, 0);
 
-  author_label = gtk_label_new ("Author:");
+  author_label = gtk_label_new (_("Author:"));
   gtk_widget_ref (author_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "author_label", author_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -446,7 +447,7 @@ create_dlg_launch (void)
   gtk_widget_show (type_desc_box);
   gtk_box_pack_start (GTK_BOX (main_box), type_desc_box, FALSE, FALSE, 0);
 
-  type_desc_label = gtk_label_new ("Description:");
+  type_desc_label = gtk_label_new (_("Description:"));
   gtk_widget_ref (type_desc_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "type_desc_label", type_desc_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -461,7 +462,7 @@ create_dlg_launch (void)
   gtk_widget_show (web_box);
   gtk_box_pack_start (GTK_BOX (main_box), web_box, FALSE, FALSE, 0);
 
-  web_label = gtk_label_new ("Homepage:");
+  web_label = gtk_label_new (_("Homepage:"));
   gtk_widget_ref (web_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "web_label", web_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -483,14 +484,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat1_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat1_box, FALSE, FALSE, 0);
 
-  seat1_label = gtk_label_new ("Seat 1:");
+  seat1_label = gtk_label_new (_("Seat 1:"));
   gtk_widget_ref (seat1_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat1_label", seat1_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat1_label);
   gtk_box_pack_start (GTK_BOX (seat1_box), seat1_label, FALSE, FALSE, 0);
 
-  seat1_bot = gtk_radio_button_new_with_label (seat1_group, "Computer");
+  seat1_bot = gtk_radio_button_new_with_label (seat1_group, _("Computer"));
   seat1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat1_bot));
   gtk_widget_ref (seat1_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat1_bot", seat1_bot,
@@ -498,7 +499,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat1_bot);
   gtk_box_pack_start (GTK_BOX (seat1_box), seat1_bot, FALSE, FALSE, 3);
 
-  seat1_open = gtk_radio_button_new_with_label (seat1_group, "Open");
+  seat1_open = gtk_radio_button_new_with_label (seat1_group, _("Open"));
   seat1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat1_open));
   gtk_widget_ref (seat1_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat1_open", seat1_open,
@@ -506,7 +507,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat1_open);
   gtk_box_pack_start (GTK_BOX (seat1_box), seat1_open, FALSE, FALSE, 0);
 
-  seat1_resv = gtk_radio_button_new_with_label (seat1_group, "Reserved for");
+  seat1_resv = gtk_radio_button_new_with_label (seat1_group, _("Reserved for"));
   seat1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat1_resv));
   gtk_widget_ref (seat1_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat1_resv", seat1_resv,
@@ -530,14 +531,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat2_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat2_box, TRUE, TRUE, 0);
 
-  seat2_label = gtk_label_new ("Seat 2:");
+  seat2_label = gtk_label_new (_("Seat 2:"));
   gtk_widget_ref (seat2_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat2_label", seat2_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat2_label);
   gtk_box_pack_start (GTK_BOX (seat2_box), seat2_label, FALSE, FALSE, 0);
 
-  seat2_bot = gtk_radio_button_new_with_label (seat2_group, "Computer");
+  seat2_bot = gtk_radio_button_new_with_label (seat2_group, _("Computer"));
   seat2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat2_bot));
   gtk_widget_ref (seat2_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat2_bot", seat2_bot,
@@ -545,7 +546,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat2_bot);
   gtk_box_pack_start (GTK_BOX (seat2_box), seat2_bot, FALSE, FALSE, 3);
 
-  seat2_open = gtk_radio_button_new_with_label (seat2_group, "Open");
+  seat2_open = gtk_radio_button_new_with_label (seat2_group, _("Open"));
   seat2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat2_open));
   gtk_widget_ref (seat2_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat2_open", seat2_open,
@@ -553,7 +554,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat2_open);
   gtk_box_pack_start (GTK_BOX (seat2_box), seat2_open, FALSE, FALSE, 0);
 
-  seat2_resv = gtk_radio_button_new_with_label (seat2_group, "Reserved for");
+  seat2_resv = gtk_radio_button_new_with_label (seat2_group, _("Reserved for"));
   seat2_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat2_resv));
   gtk_widget_ref (seat2_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat2_resv", seat2_resv,
@@ -577,14 +578,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat3_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat3_box, TRUE, TRUE, 0);
 
-  seat3_label = gtk_label_new ("Seat 3:");
+  seat3_label = gtk_label_new (_("Seat 3:"));
   gtk_widget_ref (seat3_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat3_label", seat3_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat3_label);
   gtk_box_pack_start (GTK_BOX (seat3_box), seat3_label, FALSE, FALSE, 0);
 
-  seat3_bot = gtk_radio_button_new_with_label (seat3_group, "Computer");
+  seat3_bot = gtk_radio_button_new_with_label (seat3_group, _("Computer"));
   seat3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat3_bot));
   gtk_widget_ref (seat3_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat3_bot", seat3_bot,
@@ -592,7 +593,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat3_bot);
   gtk_box_pack_start (GTK_BOX (seat3_box), seat3_bot, FALSE, FALSE, 3);
 
-  seat3_open = gtk_radio_button_new_with_label (seat3_group, "Open");
+  seat3_open = gtk_radio_button_new_with_label (seat3_group, _("Open"));
   seat3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat3_open));
   gtk_widget_ref (seat3_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat3_open", seat3_open,
@@ -600,7 +601,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat3_open);
   gtk_box_pack_start (GTK_BOX (seat3_box), seat3_open, FALSE, FALSE, 0);
 
-  seat3_resv = gtk_radio_button_new_with_label (seat3_group, "Reserved for");
+  seat3_resv = gtk_radio_button_new_with_label (seat3_group, _("Reserved for"));
   seat3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat3_resv));
   gtk_widget_ref (seat3_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat3_resv", seat3_resv,
@@ -624,14 +625,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat4_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat4_box, TRUE, TRUE, 0);
 
-  seat4_label = gtk_label_new ("Seat 4:");
+  seat4_label = gtk_label_new (_("Seat 4:"));
   gtk_widget_ref (seat4_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat4_label", seat4_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat4_label);
   gtk_box_pack_start (GTK_BOX (seat4_box), seat4_label, FALSE, FALSE, 0);
 
-  seat4_bot = gtk_radio_button_new_with_label (seat4_group, "Computer");
+  seat4_bot = gtk_radio_button_new_with_label (seat4_group, _("Computer"));
   seat4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat4_bot));
   gtk_widget_ref (seat4_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat4_bot", seat4_bot,
@@ -639,7 +640,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat4_bot);
   gtk_box_pack_start (GTK_BOX (seat4_box), seat4_bot, FALSE, FALSE, 3);
 
-  seat4_open = gtk_radio_button_new_with_label (seat4_group, "Open");
+  seat4_open = gtk_radio_button_new_with_label (seat4_group, _("Open"));
   seat4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat4_open));
   gtk_widget_ref (seat4_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat4_open", seat4_open,
@@ -647,7 +648,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat4_open);
   gtk_box_pack_start (GTK_BOX (seat4_box), seat4_open, FALSE, FALSE, 0);
 
-  seat4_resv = gtk_radio_button_new_with_label (seat4_group, "Reserved for");
+  seat4_resv = gtk_radio_button_new_with_label (seat4_group, _("Reserved for"));
   seat4_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat4_resv));
   gtk_widget_ref (seat4_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat4_resv", seat4_resv,
@@ -671,14 +672,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat5_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat5_box, TRUE, TRUE, 0);
 
-  seat5_label = gtk_label_new ("Seat 5:");
+  seat5_label = gtk_label_new (_("Seat 5:"));
   gtk_widget_ref (seat5_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat5_label", seat5_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat5_label);
   gtk_box_pack_start (GTK_BOX (seat5_box), seat5_label, FALSE, FALSE, 0);
 
-  seat5_bot = gtk_radio_button_new_with_label (seat5_group, "Computer");
+  seat5_bot = gtk_radio_button_new_with_label (seat5_group, _("Computer"));
   seat5_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat5_bot));
   gtk_widget_ref (seat5_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat5_bot", seat5_bot,
@@ -686,7 +687,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat5_bot);
   gtk_box_pack_start (GTK_BOX (seat5_box), seat5_bot, FALSE, FALSE, 3);
 
-  seat5_open = gtk_radio_button_new_with_label (seat5_group, "Open");
+  seat5_open = gtk_radio_button_new_with_label (seat5_group, _("Open"));
   seat5_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat5_open));
   gtk_widget_ref (seat5_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat5_open", seat5_open,
@@ -694,7 +695,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat5_open);
   gtk_box_pack_start (GTK_BOX (seat5_box), seat5_open, FALSE, FALSE, 0);
 
-  seat5_resv = gtk_radio_button_new_with_label (seat5_group, "Reserved for");
+  seat5_resv = gtk_radio_button_new_with_label (seat5_group, _("Reserved for"));
   seat5_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat5_resv));
   gtk_widget_ref (seat5_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat5_resv", seat5_resv,
@@ -718,14 +719,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat6_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat6_box, TRUE, TRUE, 0);
 
-  seat6_label = gtk_label_new ("Seat 6:");
+  seat6_label = gtk_label_new (_("Seat 6:"));
   gtk_widget_ref (seat6_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat6_label", seat6_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat6_label);
   gtk_box_pack_start (GTK_BOX (seat6_box), seat6_label, FALSE, FALSE, 0);
 
-  seat6_bot = gtk_radio_button_new_with_label (seat6_group, "Computer");
+  seat6_bot = gtk_radio_button_new_with_label (seat6_group, _("Computer"));
   seat6_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat6_bot));
   gtk_widget_ref (seat6_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat6_bot", seat6_bot,
@@ -733,7 +734,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat6_bot);
   gtk_box_pack_start (GTK_BOX (seat6_box), seat6_bot, FALSE, FALSE, 3);
 
-  seat6_open = gtk_radio_button_new_with_label (seat6_group, "Open");
+  seat6_open = gtk_radio_button_new_with_label (seat6_group, _("Open"));
   seat6_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat6_open));
   gtk_widget_ref (seat6_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat6_open", seat6_open,
@@ -741,7 +742,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat6_open);
   gtk_box_pack_start (GTK_BOX (seat6_box), seat6_open, FALSE, FALSE, 0);
 
-  seat6_resv = gtk_radio_button_new_with_label (seat6_group, "Reserved for");
+  seat6_resv = gtk_radio_button_new_with_label (seat6_group, _("Reserved for"));
   seat6_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat6_resv));
   gtk_widget_ref (seat6_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat6_resv", seat6_resv,
@@ -765,14 +766,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat7_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat7_box, TRUE, TRUE, 0);
 
-  seat7_label = gtk_label_new ("Seat 7:");
+  seat7_label = gtk_label_new (_("Seat 7:"));
   gtk_widget_ref (seat7_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat7_label", seat7_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat7_label);
   gtk_box_pack_start (GTK_BOX (seat7_box), seat7_label, FALSE, FALSE, 0);
 
-  seat7_bot = gtk_radio_button_new_with_label (seat7_group, "Computer");
+  seat7_bot = gtk_radio_button_new_with_label (seat7_group, _("Computer"));
   seat7_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat7_bot));
   gtk_widget_ref (seat7_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat7_bot", seat7_bot,
@@ -780,7 +781,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat7_bot);
   gtk_box_pack_start (GTK_BOX (seat7_box), seat7_bot, FALSE, FALSE, 3);
 
-  seat7_open = gtk_radio_button_new_with_label (seat7_group, "Open");
+  seat7_open = gtk_radio_button_new_with_label (seat7_group, _("Open"));
   seat7_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat7_open));
   gtk_widget_ref (seat7_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat7_open", seat7_open,
@@ -788,7 +789,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat7_open);
   gtk_box_pack_start (GTK_BOX (seat7_box), seat7_open, FALSE, FALSE, 0);
 
-  seat7_resv = gtk_radio_button_new_with_label (seat7_group, "Reserved for");
+  seat7_resv = gtk_radio_button_new_with_label (seat7_group, _("Reserved for"));
   seat7_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat7_resv));
   gtk_widget_ref (seat7_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat7_resv", seat7_resv,
@@ -812,14 +813,14 @@ create_dlg_launch (void)
   gtk_widget_show (seat8_box);
   gtk_box_pack_start (GTK_BOX (main_box), seat8_box, TRUE, TRUE, 0);
 
-  seat8_label = gtk_label_new ("Seat 8:");
+  seat8_label = gtk_label_new (_("Seat 8:"));
   gtk_widget_ref (seat8_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat8_label", seat8_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (seat8_label);
   gtk_box_pack_start (GTK_BOX (seat8_box), seat8_label, FALSE, FALSE, 0);
 
-  seat8_bot = gtk_radio_button_new_with_label (seat8_group, "Computer");
+  seat8_bot = gtk_radio_button_new_with_label (seat8_group, _("Computer"));
   seat8_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat8_bot));
   gtk_widget_ref (seat8_bot);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat8_bot", seat8_bot,
@@ -827,7 +828,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat8_bot);
   gtk_box_pack_start (GTK_BOX (seat8_box), seat8_bot, FALSE, FALSE, 3);
 
-  seat8_open = gtk_radio_button_new_with_label (seat8_group, "Open");
+  seat8_open = gtk_radio_button_new_with_label (seat8_group, _("Open"));
   seat8_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat8_open));
   gtk_widget_ref (seat8_open);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat8_open", seat8_open,
@@ -835,7 +836,7 @@ create_dlg_launch (void)
   gtk_widget_show (seat8_open);
   gtk_box_pack_start (GTK_BOX (seat8_box), seat8_open, FALSE, FALSE, 0);
 
-  seat8_resv = gtk_radio_button_new_with_label (seat8_group, "Reserved for");
+  seat8_resv = gtk_radio_button_new_with_label (seat8_group, _("Reserved for"));
   seat8_group = gtk_radio_button_group (GTK_RADIO_BUTTON (seat8_resv));
   gtk_widget_ref (seat8_resv);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat8_resv", seat8_resv,
@@ -859,7 +860,7 @@ create_dlg_launch (void)
   gtk_widget_show (desc_box);
   gtk_box_pack_start (GTK_BOX (main_box), desc_box, TRUE, TRUE, 0);
 
-  game_desc_label = gtk_label_new ("Game Description   ");
+  game_desc_label = gtk_label_new (_("Game Description   "));
   gtk_widget_ref (game_desc_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "game_desc_label", game_desc_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -885,7 +886,7 @@ create_dlg_launch (void)
   gtk_widget_show (button_box);
   gtk_box_pack_start (GTK_BOX (hbox11), button_box, TRUE, TRUE, 0);
 
-  launch_button = gtk_button_new_with_label ("Launch");
+  launch_button = gtk_button_new_with_label (_("Launch"));
   gtk_widget_ref (launch_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "launch_button", launch_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -893,7 +894,7 @@ create_dlg_launch (void)
   gtk_container_add (GTK_CONTAINER (button_box), launch_button);
   GTK_WIDGET_SET_FLAGS (launch_button, GTK_CAN_DEFAULT);
 
-  cancel_button = gtk_button_new_with_label ("Cancel");
+  cancel_button = gtk_button_new_with_label (_("Cancel"));
   gtk_widget_ref (cancel_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "cancel_button", cancel_button,
                             (GtkDestroyNotify) gtk_widget_unref);

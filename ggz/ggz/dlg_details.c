@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_details.h"
+#include "support.h"
 
 
 /* Global GtkWidget for this dialog */
@@ -28,7 +29,7 @@ create_dlg_details (void)
 
   dlg_details = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_details), "dlg_details", dlg_details);
-  gtk_window_set_title (GTK_WINDOW (dlg_details), "Connection Messages");
+  gtk_window_set_title (GTK_WINDOW (dlg_details), _("Connection Messages"));
   gtk_window_set_position (GTK_WINDOW (dlg_details), GTK_WIN_POS_CENTER);
   gtk_window_set_default_size (GTK_WINDOW (dlg_details), 400, 300);
   gtk_window_set_policy (GTK_WINDOW (dlg_details), TRUE, TRUE, FALSE);
@@ -65,7 +66,7 @@ create_dlg_details (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
-  cancel_button = gtk_button_new_with_label ("Cancel");
+  cancel_button = gtk_button_new_with_label (_("Cancel"));
   gtk_widget_ref (cancel_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_details), "cancel_button", cancel_button,
                             (GtkDestroyNotify) gtk_widget_unref);

@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_motd.h"
+#include "support.h"
 
 /* Global GtkWidget for this dialog */
 GtkWidget *dlg_motd;
@@ -47,7 +48,7 @@ create_dlgMOTD (void)
   dlgMOTD = gtk_window_new (GTK_WINDOW_DIALOG);
   gtk_object_set_data (GTK_OBJECT (dlgMOTD), "dlgMOTD", dlgMOTD);
   gtk_widget_set_usize (dlgMOTD, 300, 350);
-  gtk_window_set_title (GTK_WINDOW (dlgMOTD), "MOTD");
+  gtk_window_set_title (GTK_WINDOW (dlgMOTD), _("MOTD"));
   gtk_window_set_policy (GTK_WINDOW (dlgMOTD), FALSE, FALSE, FALSE);
 
   vbox2 = gtk_vbox_new (FALSE, 5);
@@ -73,7 +74,7 @@ create_dlgMOTD (void)
   gtk_widget_show (text1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), text1);
 
-  button3 = gtk_button_new_with_label ("OK");
+  button3 = gtk_button_new_with_label (_("OK"));
   gtk_widget_ref (button3);
   gtk_object_set_data_full (GTK_OBJECT (dlgMOTD), "button3", button3,
                             (GtkDestroyNotify) gtk_widget_unref);

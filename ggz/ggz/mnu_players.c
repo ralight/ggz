@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "mnu_players.h"
+#include "support.h"
 
 
 /* Global GtkWidget for this dialog */
@@ -27,14 +28,14 @@ create_mnu_players (void)
   gtk_object_set_data (GTK_OBJECT (mnu_players), "mnu_players", mnu_players);
   mnu_players_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_players));
 
-  info1 = gtk_menu_item_new_with_label ("Info");
+  info1 = gtk_menu_item_new_with_label (_("Info"));
   gtk_widget_ref (info1);
   gtk_object_set_data_full (GTK_OBJECT (mnu_players), "info1", info1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (info1);
   gtk_container_add (GTK_CONTAINER (mnu_players), info1);
 
-  stats1 = gtk_menu_item_new_with_label ("Stats");
+  stats1 = gtk_menu_item_new_with_label (_("Stats"));
   gtk_widget_ref (stats1);
   gtk_object_set_data_full (GTK_OBJECT (mnu_players), "stats1", stats1,
                             (GtkDestroyNotify) gtk_widget_unref);

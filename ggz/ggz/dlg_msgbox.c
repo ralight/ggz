@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_msgbox.h"
+#include "support.h"
 
 /* Local varibles */
 GtkWidget *dlg_msgbox;
@@ -31,7 +32,7 @@ create_msgbox (void)
   msgbox = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (msgbox), "msgbox", msgbox);
   gtk_widget_set_usize (msgbox, 260, 150);
-  gtk_window_set_title (GTK_WINDOW (msgbox), "Message Box");
+  gtk_window_set_title (GTK_WINDOW (msgbox), _("Message Box"));
   gtk_window_set_policy (GTK_WINDOW (msgbox), FALSE, FALSE, FALSE);
 
   vbox6 = GTK_DIALOG (msgbox)->vbox;
@@ -66,7 +67,7 @@ create_msgbox (void)
   gtk_widget_show (hbox14);
   gtk_box_pack_start (GTK_BOX (hbox13), hbox14, FALSE, FALSE, 0);
 
-  button6 = gtk_button_new_with_label ("OK");
+  button6 = gtk_button_new_with_label (_("OK"));
   gtk_widget_ref (button6);
   gtk_object_set_data_full (GTK_OBJECT (msgbox), "button6", button6,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -74,7 +75,7 @@ create_msgbox (void)
   gtk_box_pack_start (GTK_BOX (hbox14), button6, FALSE, FALSE, 0);
   gtk_widget_set_usize (button6, 75, -2);
 
-  button7 = gtk_button_new_with_label ("Close");
+  button7 = gtk_button_new_with_label (_("Close"));
   gtk_widget_ref (button7);
   gtk_object_set_data_full (GTK_OBJECT (msgbox), "button7", button7,
                             (GtkDestroyNotify) gtk_widget_unref);
