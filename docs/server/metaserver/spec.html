@@ -1,0 +1,223 @@
+<HTML>
+<HEAD>
+<TITLE>
+The GGZ Gaming Zone Meta Server Project: Specification
+</TITLE>
+</HEAD>
+<BODY BGCOLOR="#334433" LINK="#ffffbb" ALINK="#ffffff" VLINK="#ffffbb">
+<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
+<B>
+
+<CENTER>
+<IMG SRC="pics/title.png">
+</CENTER>
+ 
+<BR><BR>
+<A HREF="index.html"><IMG SRC="pics/back.png" BORDER="0"></A><BR CLEAR="ALL">
+
+<PRE>
+
+Specification for the GGZ Gaming Zone Meta Server Protocol
+==========================================================
+
+Author: Josef Spillner, dr_maux@users.sourceforge.net
+Version: 0.5
+Date: 09.12.2001
+GGZ Gaming Zone Version: 0.0.5
+Meta Server Version: 0.1
+
+0. Content
+----------
+1) Scope of this document
+2) Client-Server URI Queries
+3) Client-Server XML Queries
+4) Server-Server XML Communication
+5) Recommendations
+6) Examples
+7) Status of this specification
+
+1. Scope of this document
+-------------------------
+The GGZ Gaming Zone Meta Server is a service to provide dynamic entries for
+queries issued by client programs. Mostly the entries represent URIs to which
+the client can connect, but the format does not restrict what kind of
+information can be transmitted.
+This specification describes the necessary protocol for the queries and the
+automatic communication among the servers, and gives some hints for client and
+server implementations in the last paragraph.
+
+2. Client-Server URI Queries
+----------------------------
+A simple URI consists of a protocol, a host and a port part, in the form
+PROTOCOL://HOST:PORT. GGZ clients use this data to connect to GGZ servers,
+although they don't have to use an URI format, rather separate components which
+would result in an URI like ggz://somehost.org:5688.
+The URI query is used to get a single entry of this format. It expects a query
+URI as input and outputs a connection URI then, or an empty string if either
+the format, the class (protocol) or the subclass (type) is not supported:
+
+<FONT COLOR="#ffffbb">
+	C -&gt; S:
+	query://CLASS/TYPE/ARGUMENT
+</FONT>
+
+In this case, 'ggz' might be the class, and 'connection' might be the type of
+information the client wishes. The argument could be '0.0.5' which indicates
+that only servers of version 0.0.5 should be included in the list of possible
+results. The result, if not empty, is a simple URI:
+
+<FONT COLOR="#ffffbb">
+	S -&gt; C:
+	PROTOCOL://HOST:PORT
+</FONT>
+
+3. Client-Server XML Queries
+----------------------------
+A XML query is issued by passing the same data to the server as in the URI
+query, but in XML protocol format:
+
+<FONT COLOR="#ffffbb">
+	C -&gt; S:
+	&lt;?xml version="1.0"?&gt;
+	&lt;query class="CLASS" type="TYPE"&gt;
+	ARGUMENT
+	&lt;/query&gt;
+</FONT>
+
+The server can, however, pass multiple results back, which are all embedded in
+a result set:
+
+<FONT COLOR="#ffffbb">
+	S -&gt; C:
+	&lt;?xml version="1.0"?&gt;
+	&lt;resultset referer="query"&gt;
+	&lt;result preference="PREFERENCE"&gt;
+	...
+	&lt;/result&gt;
+	&lt;/resultset&gt;
+</FONT>
+
+The preference ranges from 1 (low) to 100 (high) and is used by clients to do
+their selection.
+The contents of the result have no fixed format, although the following is used
+within the GGZ class of queries and recommended for others:
+
+<FONT COLOR="#ffffbb">
+	&lt;uri&gt;PROTOCOL://HOST:PORT&lt;/uri&gt;
+	&lt;location&gt;LOCATION&lt;/location&gt;
+</FONT>
+
+4. Server-Server XML Communication
+----------------------------------
+In order to let different server implementations interact properly, their data
+exchange must follow the specified format.
+While this communication does mainly concern servers themselves, it is also
+important for the administrators who want to initiate the changes on the first
+server in the web.
+There exist three forms of updates: additions, deletions and modifications. The
+addition has the following format:
+
+<FONT COLOR="#ffffbb">
+	S1 -&gt; S2, or C -&gt; S:
+	&lt;?xml version="1.0"?&gt;
+	&lt;update class="CLASS" type="CONNECTION" username="USERNAME" password="PASSWORD"&gt;
+	&lt;option name="NAME"&gt;ARGUMENT</option>
+	...
+	&lt;/update&gt;
+</FONT>
+
+The number of options is not restricted.
+A server responds with a status code which can be one of:
+
+<FONT COLOR="#ffffbb">
+	accepted (The update was successful and will be broadcasted)
+	rejected (The authentification has failed)
+	wrong (Wrong format or missing attributes)
+	error (An internal error occured)
+</FONT>
+
+The following is a complete server answer:
+
+<FONT COLOR="#ffffbb">
+	S2 -&gt; S1, or S -&gt; C:
+	&lt;?xml version="1.0"?&gt;
+	&lt;resultset referer="update"&gt;
+	&lt;result&gt;
+	&lt;status&gt;STATUS&lt;/status&gt;
+	&lt;/result&gt;
+	&lt;/resultset&gt;
+</FONT>
+
+Each server does then compare certain arguments and, if no one matches, adds
+the entry to its list. If certain arguments match, the entry is updated. The
+third form, deletions, can be present if the following option is used:
+	&lt;option name="mode"&gt;MODE&lt;/option&gt;
+Mode can be one of the following three:
+
+<FONT COLOR="#ffffbb">
+	add (optional)
+	modify (optional)
+	delete (required)
+</FONT>
+
+5. Recommendations
+------------------
+a) Meta Servers should avoid loops when issuing updates. This can be resolved
+in keeping a list of all broadcasted updates, and dropping an incoming update
+if it is already in this list.
+
+b) Clients which use the XML query format should either offer the result list
+to the user so one entry can be selected, or select one entry on its own, or
+support both ways. When selecting an entry, a high priority should increase the
+chance of being selected, while those entries with a low priority should be
+avoided as this may indicate slow connections (bandwidth) or filled-up or
+special-purpose servers.
+
+c) Meta Servers should log each and every conversation with both other servers
+and with individuals.
+
+d) Communication among meta servers should only be done with protection
+mechanisms like Transport Layer Security. Queries, however, should not be
+restricted as no sensible data is transmitted.
+
+6. Examples
+-----------
+This is a list of possible communications using the 'ggz' class.
+
+<FONT COLOR="#ffffbb">
+	S1 -&gt; S2:
+	&lt;?xml version="1.0"?&gt;
+	&lt;update class="ggz" type="connection" username="joeuser" password="mypass"&gt;
+		&lt;option name="mode"&gt;delete&lt;/option&gt;
+		&lt;option name="version"&gt;0.0.5pre&lt;/option&gt;
+		&lt;option name="uri"&gt;ggz://somehost.net:5688&lt;/option&gt;
+	&lt;/update&gt;
+
+	S2 -&gt; S1:
+	&lt;?xml version="1.0"?&gt;
+	&lt;resultset referer="update"&gt;
+		&lt;result&gt;
+			&lt;status&gt;rejected&lt;/status&gt;
+		&lt;/result&gt;
+	&lt;/resultset&gt;
+</FONT>
+
+7. Status of this specification
+-------------------------------
+Everyone is welcome to modify this document and redistribute either the
+original or the modified version. However, no such change is part of the
+official GGZ Gaming Zone Meta Server Protocol unless the GGZ Development Team
+has been contacted to incorporate changes into a new version of the protocol.
+Modified versions should indicate clearly that they are modified, by whom and
+which parts differ from the original specification.
+
+</PRE>
+
+<BR><BR>
+<A HREF="index.html"><IMG SRC="pics/back.png" BORDER="0"></A><BR CLEAR="ALL">
+
+</B>
+<BR><BR>
+</BODY>
+</HTML>
+

@@ -1,0 +1,161 @@
+<HTML>
+<HEAD>
+<TITLE>
+The GGZ Gaming Zone Meta Server Project
+</TITLE>
+</HEAD>
+<BODY BGCOLOR="#334433" LINK="#ffffbb" ALINK="#ffffff" VLINK="#ffffbb">
+<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
+<B>
+
+<CENTER>
+<IMG SRC="pics/title.png">
+</CENTER>
+
+<BR><BR>
+<IMG SRC="pics/about.png"><BR CLEAR="ALL">
+
+This project has been founded to allow GGZ client programs to connect
+dynamically to GGZ servers, without knowing their version numbers or host name.
+Meta servers store lists of GGZ servers and pass them to the client on request.
+Furthermore, they store lists of peer servers to distribute changes
+automatically world-wide.
+
+<BR><BR>
+<IMG SRC="pics/clients.png"><BR CLEAR="ALL">
+
+GGZ Core Clients, such like KGGZ or GGZ-Gtk, can use the meta servers to
+allow random connections, or to update their list of available hosts to connect
+to. This ensures that servers with too old or too new versions of ggzd are
+excluded automatically.
+The GGZ Telnet Wrapper (TelGGZ) uses this functionality for a similar task.
+<BR><BR>
+There is only one mode the clients use (query connections), but there are two
+different modes of doing this: Either they do a simple query using the URI
+notation, or a more complex one using the XML protocol. For a detailed format
+definition, see the specification below. The following could be an example of
+such a query:
+<BR><BR>
+
+<CENTER>
+<TABLE BORDER="0">
+<TR>
+<TD BGCOLOR="#445544">
+<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
+Query Client -&gt; Server:<BR>
+<FONT COLOR="#ffffbb">
+query://ggz/connection/0.0.5pre<BR>
+</FONT>
+Result Server -&gt; Client:<BR>
+<FONT COLOR="#ffffbb">
+ggz://ggz.snafu.de:5688<BR>
+</FONT>
+</TD>
+</TR>
+</TABLE>
+</CENTER>
+<BR>
+
+In the issued query, 'ggz' is the class and 'connection' the subclass (named
+'type') of the query, while '0.0.5pre' is the value. As one can see, other
+classes can be used as well, which ensures the usage of the meta server is not
+restricted to GGZ projects.
+The result simply returns an URI which is understood by the GGZ core clients.
+<BR><BR>
+
+Using the XML format is not so easy but instead it provides a higher
+flexibility. Let's repeat the example from above using XML notation:
+<BR><BR>
+
+<CENTER>
+<TABLE BORDER="0">
+<TR>
+<TD BGCOLOR="#445544">
+<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
+Query Client -&gt; Server:<BR>
+<FONT COLOR="#ffffbb">
+
+&lt;?xml version="1.0"?&gt;<BR>
+&lt;query class="ggz" type="connection"&gt;<BR>
+0.0.5pre<BR>
+&lt;/query&gt;<BR>
+
+</FONT>
+Result Server -&gt; Client:<BR>
+<FONT COLOR="#ffffbb">
+
+&lt;?xml version="1.0"?&gt;<BR>
+&lt;resultset referer="query"&gt;<BR>
+&lt;result preference="100"&gt;<BR>
+&lt;uri&gt;ggz://jzaun.com:5688&lt;/uri&gt;<BR>
+&lt;location&gt;pennsylvania, us&lt;/location&gt;<BR>
+&lt;/result&gt;<BR>
+&lt;/resultset&gt;<BR>
+
+</FONT>
+</TD>
+</TR>
+</TABLE>
+</CENTER>
+<BR>
+
+It is now the client's task to build a list from this result set and either
+choose one host from it (preferably the one with the highest priority), or let
+the user select one.
+
+<BR><BR>
+<IMG SRC="pics/servers.png"><BR CLEAR="ALL">
+
+The role of meta servers among each other is to distribte changes they received
+from an administrator. The distribution follows several rules, and happens
+automatically, while incorrect configuration of one server in such a web of
+trust should leave most parts of the web intact.
+<BR><BR>
+Each meta server stores a list of peer servers which are to be notified when changes
+occur, and each entry has the login data needed to authenticate on the peer
+host. Logically each meta server does also store a list of logins, consisting
+of username and password, of persons or servers which are allowed to issue
+updates. The following illustration gives you an overview about the whole
+update process. Note that updates can be additions, deletions and
+modifications.
+<BR><BR>
+
+<CENTER>
+<TABLE BORDER="0">
+<TR>
+<TD BGCOLOR="#445544">
+<FONT COLOR="#ffffff" SIZE="4" FACE="arial,helvetica">
+A typical web of GGZ meta servers<BR>
+<IMG SRC="pics/web.png">
+</TD>
+</TR>
+</TABLE>
+</CENTER>
+<BR>
+
+In the example above, the green boxes are players, and the ones with the black
+point in them are administrators, who have direct access to the meta server
+configuration.
+The red disks are GGZ servers, and the blue disks represent meta servers, with
+blue lines for the updates and dotted black lines for queries.
+<BR><BR>
+
+There exist currently two tools for administrators to update the meta servers:
+A perl script named metaconf.pl, and a Qt GUI named QMetaGUI. Both fulfil the
+task of avoiding typos and handling the XML embedding of the data.
+
+<BR><BR>
+<IMG SRC="pics/spec.png"><BR CLEAR="ALL">
+
+The complete specification is available in text format. It does however only
+describe the protocol, not the local configuration file format, so other meta
+server implementations supporting the same protocol may be written.
+A HTML page containing this specification is available
+<A HREF="spec.html">here</A>.
+
+</B>
+<BR><BR>
+</FONT>
+</BODY>
+</HTML>
+
