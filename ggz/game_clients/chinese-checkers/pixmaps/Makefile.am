@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6246 2004-11-03 22:55:53Z jdorje $
+#  $Id: Makefile.am 6263 2004-11-05 02:42:59Z jdorje $
 
 SUBDIRS	= .
 
@@ -16,14 +16,14 @@ default_DATA	=	default/blue.png	\
 			default/yellow.png
 defaultdir	=	$(pixmap_dir)/default
 
-templates_DATA	=	templates/blue.png	\
-			templates/board.png	\
-			templates/cyan.png	\
-			templates/green.png	\
-			templates/hole.png	\
-			templates/purple.png	\
-			templates/red.png	\
-			templates/yellow.png	\
+templates_DATA	=	templates/blue.svg	\
+			templates/board.svg	\
+			templates/cyan.svg	\
+			templates/green.svg	\
+			templates/hole.svg	\
+			templates/purple.svg	\
+			templates/red.svg	\
+			templates/yellow.svg	\
 			templates/README
 templatesdir	=	$(pixmap_dir)/templates
 

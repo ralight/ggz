@@ -26,10 +26,11 @@
 #  include <config.h>
 #endif
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
 #include <ggz.h>	/* libggz */
 
 #include "display.h"
@@ -63,15 +64,21 @@ static char *label_color[6] = {
 static void display_draw_holes(void);
 
 
-static GdkPixbuf *display_load_pixmap(const char *name)
+static GdkPixbuf *display_load_pixmap(const char *name, int size)
 {
 	char *fullpath;
 	GdkPixbuf *image;
 	GError *error = NULL;
 
+	fullpath = g_strdup_printf("%s/%s.svg", get_theme_dir(), name);
+	image = rsvg_pixbuf_from_file_at_size(fullpath, size, size, &error);
+	free(fullpath);
+	if (image) return image;
+
 	fullpath = g_strdup_printf("%s/%s.png", get_theme_dir(), name);
+	error = NULL;
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
-	if(image == NULL) {
+	if (image == NULL) {
 		ggz_error_msg("Can't load pixmap %s", fullpath);
 		/* non-fatal error */
 	}
@@ -112,7 +119,7 @@ int display_init(void)
 						  "Game Messages");
 
 	/* Create a pixmap buffer from our xpm */
-	board_img = display_load_pixmap("board");
+	board_img = display_load_pixmap("board", 400);
 	if (!board_img)
 		return -1;
 
@@ -123,12 +130,12 @@ int display_init(void)
 	draw(board_img, 0, 0, 400, 400);
 
 	/* Convert the rest of our xpms to masked pixmaps */
-	hole_img = display_load_pixmap("hole");
+	hole_img = display_load_pixmap("hole", 12);
 	if (!hole_img)
 		return -1;
 
 	for (i = 0; i < 6; i++) {
-		marble_img[i] = display_load_pixmap(colors[i]);
+		marble_img[i] = display_load_pixmap(colors[i], 12);
 		if (marble_img[i] == NULL)
 			return -1;	  
 	}

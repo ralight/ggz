@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   id="svg2776"
+   sodipodi:version="0.32"
+   inkscape:version="0.39"
+   width="100.00000pt"
+   height="100.00000pt"
+   sodipodi:docname="yellow.svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   sodipodi:docbase="/home/jdorje/src/ggz/gtk-games/chinese-checkers/pixmaps/templates">
+  <defs
+     id="defs2778" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.6400000"
+     inkscape:cx="50.000000"
+     inkscape:cy="50.000000"
+     inkscape:window-width="640"
+     inkscape:window-height="529"
+     inkscape:window-x="508"
+     inkscape:window-y="338" />
+  <metadata
+     id="metadata2779">
+    <rdf:RDF
+       id="RDF2780">
+      <cc:Work
+         rdf:about=""
+         id="Work2781">
+        <dc:format
+           id="format2782">image/svg+xml</dc:format>
+        <dc:type
+           id="type2784"
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     sodipodi:type="arc"
+     style="fill:#ffff00;fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:1.0000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;"
+     id="path2785"
+     sodipodi:cx="60.782967"
+     sodipodi:cy="31.936813"
+     sodipodi:rx="55.288460"
+     sodipodi:ry="26.785715"
+     d="M 116.07143 31.936813 A 55.288460 26.785715 0 1 0 5.4945068,31.936813 A 55.288460 26.785715 0 1 0 116.07143 31.936813 z"
+     transform="matrix(0.904348,0.000000,0.000000,1.866667,7.531054,2.884615)" />
+</svg>
