@@ -15,7 +15,7 @@
 
 #include "config.h"
 
-typedef KCMGGZPane* (*panefunc)(QWidget *parent = NULL, const char *name = NULL);
+typedef KCMGGZPane* (*panefunc)(QWidget *parent, const char *name);
 
 KCMGGZ::KCMGGZ(KInstance *instance, QWidget *parent, const char *name)
 : KCModule(instance, parent, name)
@@ -50,7 +50,7 @@ KCMGGZ::KCMGGZ(KInstance *instance, QWidget *parent, const char *name)
 				if(func)
 				{
 					init = (panefunc)func;
-					pane = (*init)(ctl);
+					pane = (*init)(ctl, 0);
 					if(pane)
 					{
 						panelist.append(pane);
