@@ -1,0 +1,33 @@
+How to internationalize GGZ
+---------------------------
+
+The GGZ Gaming Zone is a truly international project. Its contributors range
+from America to Europe, from the frosty North to the warm South. In order to
+let everyone participate as easy as possible, translation is probably among the
+most important parts.
+
+This document is neither complete nor do I have a plan how to complete it - but
+it contains some usefule ideas which some people have assembled over the past
+months.
+
+GGZ-KDE-Client: We have KGGZ internationalized under kde-client/ggz-kde/po, all
+other apps are not yet i18n'd. Whenever you plan an translation update, please
+call "make messages-update" in this directory first. Before that, please make
+sure you call "make messages" in the following order:
+1. in src/widgets/
+2. in src/
+If a language hasn't been created yet, you only need to copy kggz.pot to
+<cc>.po, and add it to po/Makefile.am.
+
+GGZ-Gtk-Games: This is very easy. Every game and every language form a matrix.
+Please have a look at po/*, it should be self-explanatory. If you write a new
+game, please add it to SUBDIRS (although that may even be abolished). Languages
+are then recognized automatically.
+The games may have different concepts of adding gettext support - right now the
+TicTacToe and Hastings games show how that can easily be done via ggzintl.c.
+
+Documentation: Feel free to translate as you like - we will be thankful for
+every bit! Especially for docs which have yet to be written ;)
+
+Other packages: No i18n yet, but this will change. Please hold on.
+
