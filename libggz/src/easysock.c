@@ -54,21 +54,6 @@ static ggzIOError _err_func = NULL;
 static ggzIOExit _exit_func = exit;
 static unsigned int ggz_alloc_limit = 32768;
 
-static void _debug(const char *fmt, ...)
-{
-#ifdef DEBUG_SOCKET
-	char buf[4096];
-	va_list ap;
-
-	va_start(ap, fmt);
-	sprintf(buf, "[%d]: ", getpid());
-	vsprintf(buf + strlen(buf), fmt, ap);
-	
-	fputs(buf, stderr);
-	va_end(ap);
-#endif
-}
-
 
 int ggz_set_io_error_func(ggzIOError func)
 {
@@ -234,13 +219,13 @@ int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name)
 int ggz_write_char(const int sock, const char message)
 {
 	if (ggz_writen(sock, &message, sizeof(char)) < 0) {
-		_debug("Error sending char\n");
+		ggz_debug("easysock", "Error sending char.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_WRITE, GGZ_DATA_CHAR);
 		return -1;
 	}
 
-	_debug("Sent \"%d\" : char\n", message);
+	ggz_debug("easysock", "Sent \"%d\" : char.", message);
 	return 0;
 }
 
@@ -257,20 +242,20 @@ int ggz_read_char(const int sock, char *message)
 	int status;
 
 	if ( (status = ggz_readn(sock, message, sizeof(char))) < 0) {
-		_debug("Error receiving char\n");
+		ggz_debug("easysock", "Error receiving char.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_CHAR);
 		return -1;
 	} 
 
 	if (status < sizeof(char)) {
-		_debug("Warning: fd is closed\n");
+		ggz_debug("easysock", "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, GGZ_DATA_CHAR);
 		return -1;
 	} 
 	
-	_debug("Received \"%d\" : char\n", *message);
+	ggz_debug("easysock", "Received \"%d\" : char.", *message);
 	return 0;
 }
 
@@ -291,13 +276,13 @@ int ggz_write_int(const int sock, const int message)
 	int data = htonl(message);
 
 	if (ggz_writen(sock, &data, sizeof(int)) < 0) {
-		_debug("Error sending int\n");
+		ggz_debug("easysock", "Error sending int.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_WRITE, GGZ_DATA_INT);
 		return -1;
 	}
 
-	_debug("Sent \"%d\" : int\n", message);
+	ggz_debug("easysock", "Sent \"%d\" : int.", message);
 	return 0;
 }
 
@@ -318,21 +303,21 @@ int ggz_read_int(const int sock, int *message)
 	int data, status;
 	
 	if ( (status = ggz_readn(sock, &data, sizeof(int))) < 0) {
-		_debug("Error receiving int\n");
+		ggz_debug("easysock", "Error receiving int.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_INT);
 		return -1;
 	}
 	
 	if (status < sizeof(int)) {
-		_debug("Warning: fd is closed\n");
+		ggz_debug("easysock", "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, GGZ_DATA_INT);
 		return -1;
 	}
 	
 	*message = ntohl(data);
-	_debug("Received \"%d\" : int\n", *message);
+	ggz_debug("easysock", "Received \"%d\" : int.", *message);
 	return 0;
 }
 
@@ -355,13 +340,13 @@ int ggz_write_string(const int sock, const char *message)
 		return -1;
 	
 	if (ggz_writen(sock, message, size) < 0) {
-		_debug("Error sending string\n");
+		ggz_debug("easysock", "Error sending string.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_WRITE, GGZ_DATA_STRING);
 		return -1;
 	}
 	
-	_debug("Sent \"%s\" : string \n", message);
+	ggz_debug("easysock", "Sent \"%s\" : string.", message);
 	return 0;
 }
 
@@ -411,21 +396,21 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 		return -1;
 	
 	if (size > len) {
-		_debug("String too long for buffer\n");
+		ggz_debug("easysock", "String too long for buffer.");
 		if (_err_func)
 			(*_err_func) ("String too long", GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
 	}
 	
        	if ( (status = ggz_readn(sock, message, size)) < 0) {
-		_debug("Error receiving string\n");
+		ggz_debug("easysock", "Error receiving string.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
 	} 
 
 	if (status < size) {
-		_debug("Warning: fd is closed\n");
+		ggz_debug("easysock", "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
@@ -434,7 +419,7 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 	/* Guarantee NULL-termination */
 	message[len-1] = '\0';
 	
-	_debug("Received \"%s\" : string\n", message);
+	ggz_debug("easysock", "Received \"%s\" : string.", message);
 	return 0;
 }
 
@@ -458,7 +443,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 		return -1;
 
 	if (size > ggz_alloc_limit) {
-		_debug("Error: Easysock allocation limit exceeded\n");
+		ggz_debug("easysock", "Error: Easysock allocation limit exceeded.");
 		if (_err_func)
 			(*_err_func) ("Allocation limit exceeded", GGZ_IO_ALLOCATE,
 				      GGZ_DATA_STRING);
@@ -470,7 +455,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 	*message = ggz_malloc((size+1) * sizeof(char));
 
 	if ( (status = ggz_readn(sock, *message, size)) < 0) {
-		_debug("Error receiving string\n");
+		ggz_debug("easysock", "Error receiving string.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
@@ -480,13 +465,13 @@ int ggz_read_string_alloc(const int sock, char **message)
 	(*message)[size] = 0;
 
 	if (status < size) {
-		_debug("Warning: fd is closed\n");
+		ggz_debug("easysock", "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
 	} 
 
-	_debug("Received \"%s\" : string\n", *message);
+	ggz_debug("easysock", "Received \"%s\" : string.", *message);
 	return 0;
 }
 
@@ -519,7 +504,7 @@ int ggz_writen(int fd, const void *vptr, size_t n)
 		nleft -= nwritten;
 		ptr += nwritten;
 	}
-	_debug("Wrote %d bytes\n", n);
+	ggz_debug("easysock", "Wrote %d bytes.", n);
 	return (n);
 }
 
@@ -546,7 +531,7 @@ int ggz_readn(int fd, void *vptr, size_t n)
 		nleft -= nread;
 		ptr += nread;
 	}
-	_debug("Read %d bytes\n", (n - nleft));
+	ggz_debug("easysock", "Read %d bytes.", (n - nleft));
 	return (n - nleft);	/* return >= 0 */
 }
 
@@ -587,13 +572,13 @@ int ggz_write_fd(int fd, int sendfd)
 	msg.msg_iovlen = 1;
 
 	if (sendmsg(fd, &msg, 0) < 0) {
-		_debug("Error sending fd\n");
+		ggz_debug("easysock", "Error sending fd.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_WRITE, GGZ_DATA_FD);
 		return -1;
 	}
 
-	_debug("Sent \"%d\" : fd\n", sendfd);
+	ggz_debug("easysock", "Sent \"%d\" : fd.", sendfd);
 	return 0;
 }
 
@@ -634,14 +619,14 @@ int ggz_read_fd(int fd, int *recvfd)
 	msg.msg_iovlen = 1;
 
 	if ( (n = recvmsg(fd, &msg, 0)) < 0) {
-		_debug("Error reading fd msg\n");
+		ggz_debug("easysock", "Error reading fd msg.");
 		if (_err_func)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
 	}
 
         if (n == 0) {
-		_debug("Warning: fd is closed\n");
+		ggz_debug("easysock", "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, GGZ_DATA_FD);
 	        return -1; 
@@ -650,21 +635,21 @@ int ggz_read_fd(int fd, int *recvfd)
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
         if ( (cmptr = CMSG_FIRSTHDR(&msg)) == NULL 
 	     || cmptr->cmsg_len != CMSG_LEN(sizeof(int))) {
-		_debug("Bad cmsg\n");
+		ggz_debug("easysock", "Bad cmsg.");
 		if (_err_func)
 			(*_err_func) ("Bad cmsg", GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
 	}
 
 	if (cmptr->cmsg_level != SOL_SOCKET) {
-		_debug("Bad cmsg\n");
+		ggz_debug("easysock", "Bad cmsg.");
 		if (_err_func)
 			(*_err_func) ("level != SOL_SOCKET", GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
 	}
 
 	if (cmptr->cmsg_type != SCM_RIGHTS) {
-		_debug("Bad cmsg\n");
+		ggz_debug("easysock", "Bad cmsg.");
 		if (_err_func)
 			(*_err_func) ("type != SCM_RIGHTS", GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
@@ -674,7 +659,7 @@ int ggz_read_fd(int fd, int *recvfd)
 	*recvfd = *((int *) CMSG_DATA(cmptr));
 #else
 	if (msg.msg_accrightslen != sizeof(int)) {
-		_debug("Bad msg\n");
+		ggz_debug("easysock", "Bad msg.");
 		if (_err_func)
 			(*_err_func) ("Bad msg", GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
@@ -684,7 +669,7 @@ int ggz_read_fd(int fd, int *recvfd)
 	*recvfd = newfd;
 #endif
 	
-	_debug("Received \"%d\" : fd\n", *recvfd);
+	ggz_debug("easysock", "Received \"%d\" : fd.", *recvfd);
         return 0;
 }
 

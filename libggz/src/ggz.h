@@ -714,7 +714,8 @@ void ggz_free_file_struct(GGZFile *file);
 /**
  * @defgroup easysock Easysock IO
  * 
- * Simple functions for reading/writing binary data across file descriptors
+ * Simple functions for reading/writing binary data across file descriptors.
+ * @note To enable debugging output, enable GGZ debugging type "easysock".
  *
  * @{
  */
