@@ -102,7 +102,7 @@ fi
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS=""
+SUBDIRS="man"
 
 if test "$enable_agrue" = yes; then
     SUBDIRS="$SUBDIRS agrue"
