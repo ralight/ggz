@@ -19,7 +19,7 @@ ggz_txt_SOURCES = 	game.c \
 			state.c \
 			state.h 
 
-ggz_txt_LDADD = $(LIB_GGZCORE) $(LIB_GGZ) $(LIB_READLINE)
+ggz_txt_LDADD = $(LIB_GGZCORE) $(LIB_GGZ) $(LIB_READLINE) $(LIB_CURSES)
 ggz_txt_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 INCLUDES = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)

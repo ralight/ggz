@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5601 2003-05-19 20:27:49Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -84,9 +84,12 @@ fi
 dnl Readline support
 dnl ================
 
+LIB_CURSES="-lncurses"
 LIB_READLINE=""
 AC_CHECK_HEADERS(readline/readline.h, [LIB_READLINE="-lreadline"], [], [])
 AC_CHECK_HEADERS(readline/history.h, [], [], [])
+
+AC_SUBST(LIB_CURSES)
 AC_SUBST(LIB_READLINE)
 
 dnl Various dirs
