@@ -28,10 +28,15 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+// Static variables
+ZoneGGZModUI *ZoneGGZModUI::self;
+
 // Constructor
 ZoneGGZModUI::ZoneGGZModUI(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
+	self = this;
+
 	for(int i = 0; i < 16; i++)
 	{
 		strcpy(ZonePlayers[i], "");
@@ -43,17 +48,32 @@ ZoneGGZModUI::ZoneGGZModUI(QWidget *parent, const char *name)
 	ZoneGamePlayers = 0;
 	m_ready = 0;
 	m_turn = 0;
+
+	zone_fd = -1;
+	zone_fd_ctl = -1;
+
+	mod = NULL;
 }
 
 // Destructor
 ZoneGGZModUI::~ZoneGGZModUI()
 {
+	if(mod)
+	{
+		ggzmod_disconnect(mod);
+		ggzmod_free(mod);
+	}
 }
 
 // private: create socket, connect to fd
 int ZoneGGZModUI::zoneCreateFd(char *modulename)
 {
-	zone_fd = 3;
+	/*zone_fd = 3;*/
+
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_server);
+	ggzmod_connect(mod);
+	zone_fd_ctl = ggzmod_get_fd(mod);
 	return 0;
 }
 
@@ -66,10 +86,16 @@ void ZoneGGZModUI::ZoneRegister(char *modulename)
 		return;
 	}
 
-	zone_sn = new QSocketNotifier(zone_fd, QSocketNotifier::Read);
-	connect(zone_sn, SIGNAL(activated(int)), SLOT(slotZoneInput()));
+	zone_sn_ctl = new QSocketNotifier(zone_fd_ctl, QSocketNotifier::Read);
+	connect(zone_sn_ctl, SIGNAL(activated(int)), SLOT(slotZoneControlInput()));
 
 	setCaption(modulename);
+}
+
+// private: read from control channel
+void ZoneGGZModUI::slotZoneControlInput()
+{
+	ggzmod_dispatch(mod);
 }
 
 // private: get standard input from network
@@ -232,3 +258,13 @@ int ZoneGGZModUI::zonePlayers()
 {
 	return m_players;
 }
+
+void ZoneGGZModUI::handle_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	self->zone_fd = (int)data;
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+
+	self->zone_sn = new QSocketNotifier(self->zone_fd, QSocketNotifier::Read, self);
+	self->connect(self->zone_sn, SIGNAL(activated(int)), self, SLOT(slotZoneInput()));
+}
+

@@ -28,6 +28,9 @@
 // Zone includes
 #include "ZoneGGZ.h"
 
+// GGZ includes
+#include <ggzmod.h>
+
 class ZoneGGZModUI : public KMainWindow
 {
 	Q_OBJECT
@@ -57,6 +60,7 @@ class ZoneGGZModUI : public KMainWindow
 
 	private slots:
 		void slotZoneInput();
+		void slotZoneControlInput();
 
 	private:
 		int zoneCreateFd(char *modulename);
@@ -68,11 +72,15 @@ class ZoneGGZModUI : public KMainWindow
 		void zoneCallOver();
 		void zoneCallInvalid();
 
-		QSocketNotifier *zone_sn;
-		int zone_fd;
+		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
+
+		QSocketNotifier *zone_sn, *zone_sn_ctl;
+		int zone_fd, zone_fd_ctl;
 		int m_ready;
 		int m_turn;
 		int m_players;
+		GGZMod *mod;
+		static ZoneGGZModUI *self;
 };
 
 #endif

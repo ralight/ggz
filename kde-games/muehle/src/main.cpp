@@ -24,9 +24,6 @@
 // Muehle includes
 #include "toplevel.h"
 
-// System includes
-#include <iostream>
-
 // Main functions: start game with the given options
 int main(int argc, char **argv)
 {

@@ -24,17 +24,22 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#include <ggzmod.h>
 
 /* Global variables */
 int fdin = -1;
 int fdout = -1;
+int fdserver = -1;
+int fdgame = -1;
 char *exec = NULL;
 int convert = 0;
+GGZMod *mod = NULL;
 
 /* Execute a program with the given argument vector */
 void simpleexec(const char *argvec)
@@ -66,7 +71,7 @@ void simpleexec(const char *argvec)
 }
 
 /* Launch a child program and reassign some fd's */
-void startup(int fdin, int fdout, const char *exec, int convert)
+int startup(int fdin, int fdout, const char *exec, int convert)
 {
 	int fd[2];
 	int res;
@@ -76,7 +81,7 @@ void startup(int fdin, int fdout, const char *exec, int convert)
 	if(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == -1)
 	{
 		fprintf(stderr, "Couldn't create a pipe.\n");
-		exit(-1);
+		return -1;
 	}
 
 	switch(fork())
@@ -89,16 +94,16 @@ void startup(int fdin, int fdout, const char *exec, int convert)
 			/* Try to start the child program */
 			simpleexec(exec);
 			fprintf(stderr, "Execution failed.\n");
-			exit(-1);
+			return -1;
 			break;
 		case -1:
 			fprintf(stderr, "Fork failed.\n");
-			exit(-1);
+			return -1;
 			break;
 		default:
 			/* Non-blocking operation */
 			fcntl(fd[1], F_SETFL, O_NONBLOCK);
-			fcntl(3, F_SETFL, O_NONBLOCK);
+			fcntl(fdgame, F_SETFL, O_NONBLOCK);
 
 			while(1)
 			{
@@ -107,7 +112,7 @@ void startup(int fdin, int fdout, const char *exec, int convert)
 				if((res == -1) && (errno != EAGAIN))
 				{
 					fprintf(stderr, "Read error from child.\n");
-					exit(-1);
+					return -1;
 				}
 				else if(res > 0)
 				{
@@ -115,21 +120,21 @@ void startup(int fdin, int fdout, const char *exec, int convert)
 					buffer[res] = 0;
 					fprintf(stderr, ">> %i bytes child -> server: %s <<\n", res, buffer);
 					if(!convert)
-						write(3, buffer, res);
+						write(fdgame, buffer, res);
 					else
 					{
 						len = htonl(res + 1);
-						write(3, &len, sizeof(int));
-						write(3, buffer, res + 1);
+						write(fdgame, &len, sizeof(int));
+						write(fdgame, buffer, res + 1);
 					}
 				}
 
 				/* Handle server messages */
-				res = read(3, buffer, sizeof(buffer));
+				res = read(fdgame, buffer, sizeof(buffer));
 				if((res == -1) && (errno != EAGAIN))
 				{
 					fprintf(stderr, "Read error from server.\n");
-					exit(-1);
+					return -1;
 				}
 				else if(res > 0)
 				{
@@ -148,6 +153,8 @@ void startup(int fdin, int fdout, const char *exec, int convert)
 			}
 			break;
 	}
+
+	return 0;
 }
 
 /* Signal handler */
@@ -157,6 +164,14 @@ void sighandler(int foo)
 
 	wait(&status);
 	exit(-1);
+}
+
+/* GGZ handler */
+void callback(GGZMod *mod, GGZModEvent e, void *data)
+{
+	fdgame = (int)data;
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	
 }
 
 /* Main function */
@@ -173,6 +188,10 @@ int main(int argc, char *argv[])
 	};
 	int optindex;
 	char opt;
+
+	fd_set set;
+	struct timeval tv;
+	int ret;
 
 	/* Parse all options */
 	while(1)
@@ -217,9 +236,33 @@ int main(int argc, char *argv[])
 	/* Install the signal handler */
 	signal(SIGCHLD, sighandler);
 
-	/* Try to launch the child program */
-	startup(fdin, fdout, exec, convert);
+	/* Start communication with server */
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &callback);
+	ggzmod_connect(mod);
+	fdserver = ggzmod_get_fd(mod);
 
-	return 0;
+	FD_ZERO(&set);
+	FD_SET(fdserver, &set);
+	tv.tv_sec = 2;
+	tv.tv_usec = 0;
+	//ret = select(1, &set, NULL, NULL, &tv);
+	ret = 1; // FIXME!!!
+
+	if(ret == 1)
+	{
+		while(fdgame < 0) ggzmod_dispatch(mod);
+
+		/* Try to launch the child program */
+		ret = startup(fdin, fdout, exec, convert);
+
+		ggzmod_disconnect(mod);
+		ggzmod_free(mod);
+
+		return ret;
+	}
+	else fprintf(stderr, "Unable to connect using ggzmod (%i).\n", ret);
+
+	return -1;
 }
 
