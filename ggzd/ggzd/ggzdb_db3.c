@@ -48,7 +48,7 @@ int _ggzdb_player_add(ggzdbPlayerEntry *);
 
 
 /* Function to initialize the db3 database system */
-int _ggzdb_init(char *datadir, int set_standalone)
+int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	u_int32_t flags;
@@ -60,7 +60,7 @@ int _ggzdb_init(char *datadir, int set_standalone)
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
 	if((rc = db_env_create(&db_e, 0)) != 0)
 		err_sys("db_env_create() failed in _ggzdb_init()");
-	else if((rc = db_e->open(db_e, datadir, flags , 0600)) != 0)
+	else if((rc = db_e->open(db_e, connection.datadir, flags , 0600)) != 0)
 		err_sys("db_e->open() failed in _ggzdb_init()");
 
 	return rc;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4173 2002-05-06 05:48:44Z jdorje $
+ * $Id: parse_opt.c 4299 2002-07-13 10:20:00Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -272,6 +272,12 @@ static void get_config_options(int ch)
 	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);
 	opt.conf_dir = ggz_conf_read_string(ch, "Directories", "ConfDir", NULL);
 	opt.data_dir = ggz_conf_read_string(ch, "Directories", "DataDir", NULL);
+
+	/* [Database] */
+	opt.dbhost = ggz_conf_read_string(ch, "General", "DatabaseHost", NULL);
+	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
+	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
+	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

@@ -49,7 +49,7 @@ int _ggzdb_player_add(ggzdbPlayerEntry *);
 
 
 /* Function to initialize the db2 database system */
-int _ggzdb_init(char *datadir, int set_standalone)
+int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	u_int32_t flags;
@@ -62,7 +62,7 @@ int _ggzdb_init(char *datadir, int set_standalone)
 		standalone = 1;
 	} else
 		flags = DB_CREATE | DB_INIT_LOCK | DB_THREAD | DB_INIT_MPOOL;
-	rc = db_appinit(datadir, NULL, &db_e, flags);
+	rc = db_appinit(connection.datadir, NULL, &db_e, flags);
 	if(rc != 0)
 		err_sys("db_appinit() failed in _ggzdb_init()");
 

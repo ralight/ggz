@@ -48,7 +48,7 @@ static int ggzdb_player_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Back-end functions */
-extern int _ggzdb_init(char *datadir, int standalone);
+extern int _ggzdb_init(ggzdbConnection connection, int standalone);
 extern void _ggzdb_close(void);
 extern void _ggzdb_enter(void);
 extern void _ggzdb_exit(void);
@@ -67,6 +67,7 @@ int ggzdb_init(void)
 	char version_ok=0;
 	FILE *vfile;
 	int rc;
+	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
 	if((fname = malloc(strlen(opt.data_dir)+11)) == NULL)
@@ -92,7 +93,12 @@ int ggzdb_init(void)
 		err_msg_exit("Bad db version id, remove or convert db files");
 
 	/* Call backend's initialization */
-	rc = _ggzdb_init(opt.data_dir, 0);
+	connection.datadir = opt.data_dir;
+	connection.host = opt.dbhost;
+	connection.database = opt.dbname;
+	connection.username = opt.dbusername;
+	connection.password = opt.dbpassword;
+	rc = _ggzdb_init(connection, 0);
 	if(rc == 0)
 		db_needs_init = 0;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4151 2002-05-05 00:22:08Z jdorje $
+ * $Id: datatypes.h 4299 2002-07-13 10:20:00Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -54,6 +54,10 @@ typedef struct {
 	int perform_lookups;
 	int ping_freq;
 	int lag_class[4];
+	char *dbhost;
+	char *dbname;
+	char *dbusername;
+	char *dbpassword;
 } Options;
 
 

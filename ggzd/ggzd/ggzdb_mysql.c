@@ -53,9 +53,7 @@ int _ggzdb_init(char *datadir, int set_standalone)
 	if(conn) return 0;
 
 	conn = mysql_init(conn);
-	pthread_mutex_lock(&mutex);
 	conn = mysql_real_connect(conn, "localhost", "ggzd", "ggzd", "ggz", 0, NULL, 0);
-	pthread_mutex_unlock(&mutex);
 
 	if(!conn)
 	{
@@ -94,7 +92,10 @@ int _ggzdb_init_player(char *datadir)
 	snprintf(query, sizeof(query), "CREATE TABLE users "
 		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
 		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
+
+	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
 
 	/* Hack. */
 	rc = 0;
@@ -111,7 +112,10 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u)",
 		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+
+	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
 
 	if(rc)
 	{
@@ -131,7 +135,10 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		"password, name, email, lastlogin, permissions FROM users WHERE "
 		"handle = '%s'",
 		pe->handle);
+
+	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
 
 	if(!rc)
 	{
@@ -170,7 +177,10 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
 		"handle = '%s'",
 		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+
+	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
+	pthread_mutex_unlock(&mutex);
 
 	if(rc)
 	{

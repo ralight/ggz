@@ -352,6 +352,7 @@ int main_menu(void)
 int main(int argc, char **argv)
 {
 	int	rc;
+	ggzdbConnection conn;
 
 	if(argc > 2) {
 		fprintf(stderr, "usage: ggzduedit [datadir]\n");
@@ -361,7 +362,9 @@ int main(int argc, char **argv)
 		datadir = argv[1];
 	printf("GGZD user editor, version %s\n", VERSION);
 	printf("Using '%s' for data directory\n", datadir);
-	if((rc = _ggzdb_init(datadir, 1)) != 0) {
+
+	conn.datadir = datadir;
+	if((rc = _ggzdb_init(conn, 1)) != 0) {
 		fprintf(stderr, "_ggzdb_init() rc=%d\n", rc);
 		return 1;
 	}

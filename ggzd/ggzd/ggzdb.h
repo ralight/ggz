@@ -44,6 +44,15 @@ typedef struct ggzdbPlayerEntry {
 	unsigned int perms;			/* Permission settings */
 } ggzdbPlayerEntry;
 
+/* Connection information */
+typedef struct ggzdbConnection {
+	char *datadir;
+	char *host;
+	char *database;
+	char *username;
+	char *password;
+} ggzdbConnection;
+
 
 /* Error codes */
 typedef enum {
@@ -66,7 +75,7 @@ extern unsigned int ggzdb_player_next_uid(void);
 
 #ifdef DB_STANDALONE
 /* For standalone programs */
-extern int _ggzdb_init(char *datadir, int standalone);
+extern int _ggzdb_init(ggzdbConnection connection, int standalone);
 extern void _ggzdb_close(void);
 extern void _ggzdb_enter(void);
 extern void _ggzdb_exit(void);

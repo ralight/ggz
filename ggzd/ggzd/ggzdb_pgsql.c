@@ -27,6 +27,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <limits.h>
+#include <pthread.h>
+#include <ggz.h>
+#include <unistd.h>
 
 #include <postgresql/libpq-fe.h>
 
@@ -34,36 +37,166 @@
 #include "ggzdb.h"
 #include "err_func.h"
 
+#define SQL_MAXCONNECTIONS 10
+#define SQL_TIMEOUT 3
+
 /* Internal variables */
-static PGconn *conn = NULL;
-static PGresult *res = NULL;
 static PGresult *iterres = NULL;
 static int itercount;
-static char query[4096];
 
-#define PGSQLCONNECTION "user=ggzd password=ggzd dbname=ggz"
+static pthread_mutex_t mutex;
+static GGZList *list;
+
+static char *dbhost;
+static char *dbname;
+static char *dbusername;
+static char *dbpassword;
+
+/* Entry type for the connection pool */
+typedef struct connection_t
+{
+	PGconn *conn;
+	int used;
+}
+connection_t;
 
 /* Internal functions */
 
+/* Take a connection from the pool */
+static PGconn *claimconnection()
+{
+	GGZListEntry *entry;
+	connection_t *conn;
+	int i = 0;
+	time_t timeout;
+	char conninfo[4096];
+
+	timeout = time(NULL) + SQL_TIMEOUT;
+	while(time(NULL) < timeout)
+	{
+		pthread_mutex_lock(&mutex);
+		entry = ggz_list_head(list);
+		while(entry)
+		{
+			conn = ggz_list_get_data(entry);
+			if(!conn->used)
+			{
+				conn->used = 1;
+				pthread_mutex_unlock(&mutex);
+				return conn->conn;
+			}
+			entry = ggz_list_next(entry);
+			i++;
+		}
+		pthread_mutex_unlock(&mutex);
+
+		pthread_mutex_lock(&mutex);
+		if(ggz_list_count(list) < SQL_MAXCONNECTIONS)
+		{
+			conn = (connection_t*)malloc(sizeof(connection_t));
+			snprintf(conninfo, sizeof(conninfo), "host=%s dbname=%s user=%s password=%s",
+				dbhost, dbname, dbusername, dbpassword);
+			conn->conn = PQconnectdb(conninfo);
+			if((!conn->conn) || (PQstatus(conn->conn) == CONNECTION_BAD))
+			{
+				err_sys("Could not connect to database.\n");
+				pthread_mutex_unlock(&mutex);
+				return NULL;
+			}
+			conn->used = 1;
+			ggz_list_insert(list, conn);
+			pthread_mutex_unlock(&mutex);
+			return conn->conn;
+		}
+		pthread_mutex_unlock(&mutex);
+
+		sleep(1);
+	}
+
+	err_sys("Number of database connections exceeded.\n");
+	return NULL;
+}
+
+/* Put a connection back into the pool */
+static void releaseconnection(PGconn *conn)
+{
+	GGZListEntry *entry;
+	connection_t *conn2;
+	int i = 0;
+
+	if(!conn) return;
+	pthread_mutex_lock(&mutex);
+	entry = ggz_list_head(list);
+	while(entry)
+	{
+		conn2 = ggz_list_get_data(entry);
+		if(conn2->conn == conn)
+		{
+			conn2->used = 0;
+			break;
+		}
+		entry = ggz_list_next(entry);
+		i++;
+	}
+	pthread_mutex_unlock(&mutex);
+}
+
+/* Exported functions */
 
 /* Function to initialize the pgsql database system */
-int _ggzdb_init(char *datadir, int set_standalone)
+int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
-	conn = PQconnectdb(PGSQLCONNECTION);
-	if((!conn) || (PQstatus(conn) == CONNECTION_BAD))
-	{
-		err_sys("Couldn't initialize database.");
-		return 1;
-	}
-	return 0;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc;
+
+	dbhost = connection.host;
+	dbname = connection.database;
+	dbusername = connection.username;
+	dbpassword = connection.password;
+
+	list = ggz_list_create(NULL, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+
+	pthread_mutex_init(&mutex, NULL);
+
+	conn = claimconnection();
+	if(!conn) return 1;
+
+	/* Hack: Fire-and-forget table initialization. It might already be
+	 * present, or the database user doesn't have the privileges. */
+	snprintf(query, sizeof(query), "CREATE TABLE users "
+		"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
+		"lastlogin int8, permissions int8)");
+
+	res = PQexec(conn, query);
+
+	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	/* Hack is here ;) */
+	rc = 0;
+	return rc;
 }
 
 
 /* Function to deinitialize the pgsql database system */
 void _ggzdb_close(void)
 {
-	PQfinish(conn);
-	conn = NULL;
+	GGZListEntry *entry;
+	connection_t *conn2;
+
+	entry = ggz_list_head(list);
+	while(entry)
+	{
+		conn2 = ggz_list_get_data(entry);
+		PQfinish(conn2->conn);
+		free(conn2);
+		entry = ggz_list_next(entry);
+	}
+	ggz_list_free(list);
 }
 
 
@@ -84,21 +217,7 @@ void _ggzdb_exit(void)
 /* Function to initialize the player table */
 int _ggzdb_init_player(char *datadir)
 {
-	int rc;
-
-	/* Hack: Fire-and-forget table initialization. It might already be
-	 * present, or the database user doesn't have the privileges. */
-	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
-		"lastlogin int8, permissions int8)");
-	res = PQexec(conn, query);
-
-	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-	PQclear(res);
-
-	/* Hack is here ;) */
-	rc = 0;
-	return rc;
+	return 0;
 }
 
 
@@ -106,19 +225,29 @@ int _ggzdb_init_player(char *datadir)
 int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
 
-	snprintf(query, sizeof(query), "INSERT INTO users "
-		"(handle, password, name, email, lastlogin, permissions) VALUES "
-		"('%s', '%s', '%s', '%s', %li, %u)",
-		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
-	res = PQexec(conn, query);
+	conn = claimconnection();
 
-	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-	if(rc)
+	if(!conn) rc = 1;
+	else
 	{
-		err_sys("Couldn't add player.");
+		snprintf(query, sizeof(query), "INSERT INTO users "
+			"(handle, password, name, email, lastlogin, permissions) VALUES "
+			"('%s', '%s', '%s', '%s', %li, %u)",
+			pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+
+		res = PQexec(conn, query);
+
+		rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
+		PQclear(res);
 	}
-	PQclear(res);
+
+	if(rc) err_sys("Couldn't add player.");
+
+	releaseconnection(conn);
 
 	return rc;
 }
@@ -128,14 +257,26 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
 
-	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, permissions FROM users WHERE "
-		"handle = '%s'",
-		pe->handle);
-	res = PQexec(conn, query);
+	res = NULL;
+	conn = claimconnection();
+	if(conn)
+	{
 
-	rc = !(PQresultStatus(res) == PGRES_TUPLES_OK);
+		snprintf(query, sizeof(query), "SELECT "
+			"password, name, email, lastlogin, permissions FROM users WHERE "
+			"handle = '%s'",
+			pe->handle);
+
+		res = PQexec(conn, query);
+
+		rc = !(PQresultStatus(res) == PGRES_TUPLES_OK);
+	}
+	else rc = 1;
+
 	if(!rc)
 	{
 		if(PQntuples(res) == 1)
@@ -152,11 +293,10 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			rc = GGZDB_ERR_NOTFOUND;
 		}
 	}
-	else
-	{
-		err_sys("Couldn't lookup player.");
-	}
-	PQclear(res);
+	else err_sys("Couldn't lookup player.");
+	if(res) PQclear(res);
+
+	releaseconnection(conn);
 
 	return rc;
 }
@@ -166,19 +306,28 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
 
-	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
-		"handle = '%s'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
-	res = PQexec(conn, query);
-
-	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-	if(rc)
+	res = NULL;
+	conn = claimconnection();
+	if(conn)
 	{
-		err_sys("Couldn't update player.");
+		snprintf(query, sizeof(query), "UPDATE users SET "
+			"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
+			"handle = '%s'",
+			pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+
+		res = PQexec(conn, query);
+		rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
+		PQclear(res);
 	}
-	PQclear(res);
+	else rc = 1;
+
+	if(rc) err_sys("Couldn't update player.");
+
+	releaseconnection(conn);
 
 	return rc;
 }
@@ -192,45 +341,55 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	char query[4096];
+	PGconn *conn;
 
 	if(iterres)
 	{
 		PQclear(iterres);
 	}
 
-	snprintf(query, sizeof(query), "SELECT "
-		"id, handle, password, name, email, lastlogin, permissions FROM users");
-	iterres = PQexec(conn, query);
+	conn = claimconnection();
 
-	rc = !(PQresultStatus(iterres) == PGRES_TUPLES_OK);
-	if(!rc)
+	if(conn)
 	{
-		if(PQntuples(iterres) > 0)
+		snprintf(query, sizeof(query), "SELECT "
+			"id, handle, password, name, email, lastlogin, permissions FROM users");
+		iterres = PQexec(conn, query);
+
+		rc = !(PQresultStatus(iterres) == PGRES_TUPLES_OK);
+		if(!rc)
 		{
-			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
-			strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
-			strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
-			strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
-			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
-			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
-			pe->perms = atol(PQgetvalue(iterres, 0, 6));
+			if(PQntuples(iterres) > 0)
+			{
+				pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
+				strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
+				strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
+				strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
+				strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
+				pe->last_login = atol(PQgetvalue(iterres, 0, 5));
+				pe->perms = atol(PQgetvalue(iterres, 0, 6));
+			}
+			else
+			{
+				err_sys("No entries found.");
+				rc = GGZDB_ERR_NOTFOUND;
+				PQclear(iterres);
+				iterres = NULL;
+			}
 		}
 		else
 		{
-			err_sys("No entries found.");
-			rc = GGZDB_ERR_NOTFOUND;
+			err_sys("Couldn't lookup player.");
 			PQclear(iterres);
 			iterres = NULL;
 		}
 	}
-	else
-	{
-		err_sys("Couldn't lookup player.");
-		PQclear(iterres);
-		iterres = NULL;
-	}
+	else rc = 1;
 
 	itercount = 0;
+
+	releaseconnection(conn);
 
 	return rc;
 }
