@@ -142,8 +142,12 @@ void room_initialize(void)
 	if((chat_room = calloc(opt.num_rooms, sizeof(RoomStruct))) == NULL)
 		err_sys_exit("calloc failed in room_initialize_lists()");
 
-	/* Initialize the lock */
+	/* Initialize the chat_tail and lock */
+	chat_room[0].chat_tail = NULL;
 	pthread_rwlock_init(&chat_room[0].lock, NULL);
+#ifdef DEBUG
+	chat_room[0].chat_head = NULL;
+#endif
 }
 
 
@@ -160,8 +164,12 @@ void room_create_additional(void)
 	if(chat_room == NULL)
 		err_sys_exit("realloc failed in room_create_new()");
 
-	/* Initialize the lock on the new one */
+	/* Initialize the chat_tail and lock on the new one */
+	chat_room[opt.num_rooms-1].chat_tail = NULL;
 	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
+#ifdef DEBUG
+	chat_room[opt.num_rooms-1].chat_head = NULL;
+#endif
 }
 
 
