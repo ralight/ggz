@@ -38,6 +38,8 @@ static void ggzrc_load_rc(FILE *);
 static void ggzrc_parse_line(char *);
 static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
 static gint ggzrc_strcmp(gconstpointer, gconstpointer);
+static char *ggzrc_encoded_string(char *);
+static char *ggzrc_decoded_string(char *);
 
 /* Local use only variables */
 static char *varname;
@@ -106,6 +108,107 @@ int ggzrc_read_int(const char *section, const char *key, const int def)
 	return retval;
 }
 
+
+/* Wrap the string write function for lists */
+void ggzrc_write_list(const char *section, const char *key,
+		       const int argc, const char **argv)
+{
+	int i;
+	char *current_item;
+	char *final_str;
+	char *tmp;
+	char *dest_ptr;
+	const char *src_ptr;
+
+	final_str = g_strdup("");
+	
+	for (i = 0; i < argc; i++) {
+		current_item = g_malloc((strlen(argv[i]) * 2) + 1);
+		dest_ptr = current_item;
+		src_ptr = argv[i];
+		
+		while(*src_ptr != '\0') {
+			if (*src_ptr == ' ') {
+				*dest_ptr++ = '\\';
+			}
+			*dest_ptr++ = *src_ptr++;
+		}
+		*dest_ptr = '\0';
+
+		tmp = g_strdup_printf("%s %s", final_str, current_item);
+		g_free(final_str);
+		g_free(current_item);
+		final_str = tmp;
+	}
+
+	ggzrc_write_string(section, key, final_str);
+	g_free(final_str);
+}
+
+
+/* Wrap the string read function for lists */
+void ggzrc_read_list(const char *section, const char *key,
+		      int *argcp, char ***argvp)
+{
+	int index;
+	char *p, *s1, *s2;
+	char *tmp;
+	char *str = ggzrc_read_string(section, key, NULL);
+	gboolean saw_space = FALSE;
+	gboolean saw_backspace;
+	
+	if (str != NULL) {
+		for (*argcp = 1, p = str; *p != '\0'; p++) {
+			if (*p == '\\' && *(p+1)) {
+				p++;
+				if (saw_space) {
+					*argcp += 1;
+					saw_space = FALSE;
+				}
+			} else if (*p == ' ') {
+				saw_space = TRUE;
+			} else if (saw_space) {
+				*argcp += 1;
+				saw_space = FALSE;
+			}
+		}
+
+		*argvp = (char **) g_malloc((*argcp + 1) * sizeof(char *));
+
+		p = str;
+		index = 0;
+		do {
+			tmp = p;
+			
+			for (saw_backspace = FALSE;
+			     *p != '\0' && (saw_backspace ? 1 : (*p != ' '));
+			     p++) {
+				if (*p == '\\')
+					saw_backspace = TRUE;
+				else
+					saw_backspace = FALSE;
+			}
+			
+			(*argvp)[index] = (char *) g_strndup(tmp, p - tmp);
+			s1 = s2 = (*argvp)[index++];
+			
+			while (*s1) {
+				if (*s1 == '\\')
+					s1++;
+				if (!*s1) break;
+				*s2++ = *s1++;
+			}
+			*s2 = '\0';
+			
+			while (*p && *p == ' ')
+				p++;
+		} while (*p);
+
+		g_free(str);		
+	} else {
+		*argcp = 0;
+	}
+}
 
 /* Initialize and read in the configuration file(s) */
 int ggzrc_initialize(char *rc_fname)
@@ -199,7 +302,8 @@ static void ggzrc_load_rc(FILE *rc_file)
 			/* If it didn't exist, put it into the rc_list */
 			rc_list = g_slist_prepend(rc_list, hashkey);
 		}
-		g_hash_table_insert(rc_hash, hashkey, g_strdup(varvalue));
+		g_hash_table_insert(rc_hash, hashkey,
+				    ggzrc_decoded_string(varvalue));
 	}
 
 	/* Do time intensive stuff now that we are out of the loop */
@@ -218,6 +322,7 @@ int ggzrc_commit_changes(void)
 	char *filename;
 	char *home;
 	char *data;
+	char *encoded_value;
 	char *cur_section;
 	int first_section;
 	char *tmp, *section, *key, *value;
@@ -256,7 +361,10 @@ int ggzrc_commit_changes(void)
 			} else
 				fprintf(rc_file, "\n[%s]\n", cur_section);
 		}
-		fprintf(rc_file, "%s = %s\n", key, value);
+		encoded_value = ggzrc_encoded_string(value);
+		fprintf(rc_file, "%s = %s\n", key,
+			(encoded_value != NULL) ? encoded_value : value);
+		if (encoded_value != NULL) g_free(encoded_value);
 		g_free(data);
 		iter_list = g_slist_next(iter_list);
 	}
@@ -340,4 +448,100 @@ static void ggzrc_parse_line(char *p)
 	p++;
 	/* Finally terminate it with a NUL */
 	*p = '\0'; /* Might have already been the NUL, but who cares? */
+}
+
+/* Encode special characters within string using C notation.          */
+/* The string returned by this function must be free'd by the caller. */
+/* On error, returns NULL.                                            */
+static char *ggzrc_encoded_string(char *str)
+{
+	char *buffer;
+	char *encoded_str;
+	char *buffer_ptr;
+	
+	buffer = g_malloc((strlen(str) * 2) + 1);
+	if (buffer != NULL) {
+		buffer_ptr = buffer;
+		while (*str != '\0') {
+			switch(*str) {
+			case '\n':
+				*buffer_ptr++ = '\\';
+				*buffer_ptr++ = 'n';
+				break;
+
+			case '\r':
+				*buffer_ptr++ = '\\';
+				*buffer_ptr++ = 'r';
+				break;
+
+			case '\t':
+				*buffer_ptr++ = '\\';
+				*buffer_ptr++ = 't';
+				break;
+
+			case '\\':
+				*buffer_ptr++ = '\\';
+				*buffer_ptr++ = '\\';
+				break;
+
+			default:
+				*buffer_ptr++ = *str;
+				break;
+			}
+			str++;
+		}
+		*buffer_ptr = '\0';
+
+		encoded_str = g_strdup(buffer);
+		g_free(buffer);
+	} else {
+		encoded_str = NULL;
+	}
+
+	return encoded_str;
+}
+
+/* Unencode escaped characters into ASCII equivalents.                */
+/* The string returned by this function must be free'd by the caller. */
+static char *ggzrc_decoded_string(char *str)
+{
+	char *decoded_str;
+	char *dest_ptr;
+	
+	decoded_str = g_strdup(str);
+	dest_ptr = decoded_str;
+
+	while (*str != '\0') {
+		if(*str == '\\') {
+			switch(*(str+1)) {
+			case 'n':
+				*dest_ptr++ = '\n';
+				break;
+
+			case 'r':
+				*dest_ptr++ = '\r';
+				break;
+
+			case 't':
+				*dest_ptr++ = '\t';
+				break;
+
+			case '\\':
+				*dest_ptr++ = '\\';
+				break;
+
+			default:
+				*dest_ptr++ = '\\';
+				*dest_ptr++ = *(str+1);
+			}
+			str++;
+		} else {
+			*dest_ptr++ = *str;
+		}
+
+		str++;
+	}
+	*dest_ptr = '\0';
+
+	return decoded_str;
 }
