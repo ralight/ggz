@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4490 2002-09-09 04:44:53Z jdorje $
+ * $Id: main_win.c 4629 2002-09-18 22:28:26Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -66,6 +66,8 @@
 
 /* GGZ includes */
 #include <ggz.h>	/* libggz */
+
+/* #define USE_SHADOW */
 
 /* Unit pictures */
 /* Red is 0, blue is 1, green is 2, yellow is 3.
@@ -142,6 +144,7 @@ static void highlight(int col, int row, int widgetstate)
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_lr_pix, 0, 0, offsetx + 11, offsety + 11, 5, 5);
 }
 
+#ifdef USE_SHADOW
 /* Mark own knights with shadow */
 static void shadow(int col, int row, int widgetstate)
 {
@@ -154,6 +157,7 @@ static void shadow(int col, int row, int widgetstate)
 
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], shadow_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
 }
+#endif
 
 /* Draw a single hexagon */
 static void hexagon(GtkWidget *widget, int offsetx, int offsety)
@@ -231,7 +235,9 @@ void display_board(void)
 					gdk_gc_set_clip_origin(shadow_gc, offsetx - 16, offsety - 16);
 					gdk_gc_set_clip_mask(shadow_gc, shadow_mask);
 					gdk_draw_rectangle(hastings_buf, shadow_gc, TRUE, offsetx - 16, offsety - 16, 32, 32);
-					/*shadow(i, j, GTK_WIDGET_STATE(tmp));*/
+#ifdef USE_SHADOW
+					shadow(i, j, GTK_WIDGET_STATE(tmp));
+#endif
 				}
 			}
 		}
