@@ -1,11 +1,16 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4649 2002-09-21 20:11:01Z jdorje $
+# $Id: Makefile.am 4658 2002-09-23 02:36:37Z jdorje $
 
 SUBDIRS = .
 
 noinst_LIBRARIES = libclient.a
 
-libclient_a_CFLAGS = -DAI_CLIENT
+# We want to define AI_CLIENT for this code.  Using libclient_a_CFLAGS seems
+# better, but doesn't seem to work for automake<1.5.  So I manipulate CFLAGS
+# directly...
+# libclient_a_CFLAGS = -DAI_CLIENT
+CFLAGS = @CFLAGS@ -DAI_CLIENT
+
 libclient_a_SOURCES = client.c client.h
 
 INCLUDES = -I$(top_srcdir)/game_servers/ggzcards/common $(LIBGGZ_INCLUDES)
