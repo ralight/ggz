@@ -28,7 +28,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdio.h>
+
 #include "ggzcore.h"
 #include "chat.h"
 #include "xtext.h"
@@ -287,11 +287,6 @@ int chat_checkurl(GtkXText *xtext, char *word)
 void chat_word_clicked(GtkXText *xtext, char *word,
         GdkEventButton *event)
 {
-//	if(event->state & GDK_CONTROL_MASK)
-//	{
-		printf("%s - %d\n", word, chat_checkurl(xtext, word));
-		if(chat_checkurl(xtext, word) != 0)
-				goto_url(word);
-//	}
-//	return;
+	if(chat_checkurl(xtext, word) != 0)
+			goto_url(word);
 }
