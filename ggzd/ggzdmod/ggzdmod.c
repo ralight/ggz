@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 6113 2004-07-16 17:44:10Z jdorje $
+ * $Id: ggzdmod.c 6885 2005-01-24 20:15:57Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1276,13 +1276,13 @@ void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 		   separately change states when the launch packet
 		   is sent. */
 		set_state(ggzdmod, state);
+		/* Is this right? has the gameover happened yet? */   
+		return;
+	case GGZDMOD_STATE_CREATED:
 		break;
-	default:
-		_ggzdmod_error(ggzdmod,
-			       "Game requested incorrect state value");
 	}
-	
-	/* Is this right? has the gameover happened yet? */   
+
+	_ggzdmod_error(ggzdmod, "Game requested incorrect state value");
 }
 
 
@@ -1318,9 +1318,12 @@ void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spec
 
 void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 {
+	int status = -1;
+
 	switch (seat.type) {
 	case GGZ_SEAT_OPEN:
 		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is open", seat.num);
+		status = 0;
 		break;
 
 	case GGZ_SEAT_BOT:
@@ -1337,19 +1340,27 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 #endif
 		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is a bot named %s",
 			    seat.num, seat.name);
+		status = 0;
 		break;
 
 	case GGZ_SEAT_RESERVED:
 		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d reserved for %s",
 			    seat.num, seat.name);
+		status = 0;
 		break;
-	default:
+	case GGZ_SEAT_NONE:
+	case GGZ_SEAT_PLAYER:
+		break;
+	}
+
+
+	if (status < 0) {
 		_ggzdmod_error(ggzdmod,
 			       "Error: received unknown seat from GGZ");
 		ggzdmod_log(ggzdmod, "GGZDMOD: Unknown seat type %d",
 			    seat.type);
+		return;
 	}
-
 
 	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
 		_ggzdmod_error(ggzdmod, "Error setting seat");
