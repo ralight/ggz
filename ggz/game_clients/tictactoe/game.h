@@ -58,7 +58,7 @@ struct game_state_t {
 	int fd;
 	int num;
 	int seats[2];
-	char names[2][9];
+	char names[2][17];
 	
 	/* TTT game specifics */
 	char board[9];
