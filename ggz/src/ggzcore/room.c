@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6446 2004-12-11 20:45:05Z jdorje $
+ * $Id: room.c 6451 2004-12-12 05:35:52Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -585,6 +585,8 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
 		player.name = name;
 		entry = ggz_list_search(room->players, &player);
 		if (entry) {
+			GGZServer *server = _ggzcore_room_get_server(room);
+
 			ggz_list_delete_entry(room->players, entry);
 			room->num_players--;
 			room->player_count = room->num_players;
@@ -592,8 +594,9 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
 			data.player_name = name;
 			data.from_room = room->id;
 			data.to_room = to_room;
-			
+
 			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, &data);
+			_ggzcore_server_queue_players_changed(server);
 		}
 	}
 
