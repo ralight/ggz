@@ -2,8 +2,16 @@
 #define CGC_BOARD_H
 
 #include <sys/types.h>
+#ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#endif
 
-typedef u_int8_t piece_t;
+#ifndef HAVE_UINT8_T
+typedef unsigned char uint8_t;
+#define HAVE_UINT8_T
+#endif
+
+typedef uint8_t piece_t;
 
 #define NHASH 12
 #define MULTIPLIER  31

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6652 2005-01-13 19:37:24Z jdorje $
+dnl $Id: configure.ac 6656 2005-01-14 01:20:45Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -67,13 +67,13 @@ AC_GGZ_INTL
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h libintl.h locale.h netdb.h netinet/in.h \
-                  sys/socket.h], [],
-                 [AC_MSG_ERROR([cannot find required header file])])
 AC_HEADER_DIRENT
 AC_HEADER_STDBOOL
 AC_HEADER_SYS_WAIT
-
+AC_CHECK_HEADERS([fcntl.h libintl.h locale.h netdb.h netinet/in.h \
+                  sys/socket.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_CHECK_HEADERS([stdint.h])
 
 # Check for library functions
 # ===========================
@@ -102,6 +102,7 @@ dnl ============================================================
 AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
+AC_CHECK_TYPES([uint8_t])
 
 
 dnl Check for libs
