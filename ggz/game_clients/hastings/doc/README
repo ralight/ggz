@@ -1,0 +1,42 @@
+Hastings1066 - the game
+-----------------------
+Invented in September 2000 or so, it was the 5th game for GGZ. Unfortunately it laid lazy on my hard disk
+and was only online for testing purposes. Now, the version 0.0.4 is ready for GGZ 0.0.4.
+
+News in 0.0.4
+-------------
+-Game over state handled correctly
+-synchronisation
+-map requested from server
+-transparent pixmaps
+
+Hastings1066 features
+---------------------
+Up to 8 players, up to 7 of them may be AI, are playing in 2 teams against each other.
+The historical background is the battle of Hastings which took part in 1066, between the English and the
+Normans/French.
+
+Some words about Hastings1066 coding
+------------------------------------
+1. The server sends all necessary information. This is the seat and the player configuration.
+HASTINGS_MSG_SEAT passes the seat number to the client; number 0 starts playing.
+HASTINGS_MSG_PLAYERS passes the number and names as well as the type (human, bot) of players to the client;
+as a maximum there may be 8 players.
+They are shared between 2 teams. There is no team configuration yet.
+The client is now in state STATE_PREINIT.
+
+2. A HASTINGS_REQ_INIT requests the map. As this is technically the same as syncing, the server responds with
+HASTINGS_RSP_SYNC, as it would on a HASTINGS_REQ_SYNC.
+The client does then switch its state from STATE_PREINIT to STATE_INIT.
+The server switches to STATE_PLAYING.
+
+3. The player whose turn it is selects a knight to move. The state is now STATE_SELECT.
+
+4. The player sends the knight to his destination. The client's state is now STATE_MOVE.
+
+5. The server responds: STATE_DONE finishes the move.
+
+6. If any AI players exist, their moves are reported by the server.
+
+7. When the game is done, the client's state changes to STATE_DONE.
+No more moves are allowed then.
