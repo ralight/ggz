@@ -1,3 +1,5 @@
+EXTRA_DIST = blend/*.png blend/themerc default/*.png default/kreversi.blend gtk-client/*.png gtk-client/themerc
+
 SUBDIRS = .
 
 data = default blend gtk-client
