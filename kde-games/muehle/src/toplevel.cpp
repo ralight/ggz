@@ -78,8 +78,8 @@ Toplevel::Toplevel()
 		conf.setGroup((*it));
 		QString file = conf.readEntry("file");
 		QString description = conf.readEntry("description");
-		int width = conf.readNumEntry("width");
-		int height = conf.readNumEntry("height");
+		/*int width = conf.readNumEntry("width");
+		int height = conf.readNumEntry("height");*/
 		menu_variants->insertItem(QIconSet(QPixmap(pixvariant)), description, menuvariants + counter++);
 	}
 

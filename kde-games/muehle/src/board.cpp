@@ -103,8 +103,9 @@ void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 	QPixmap pix;
 	QImage im, im2;
 	int r, g, b, a;
-	QRgb rgba, rgba2;
-	int r2, g2, b2;
+	QRgb rgba;
+	/*QRgb rgba2;
+	int r2, g2, b2;*/
 
 	if((owner == Stone::white) || (owner == Stone::whiteactive) || (owner == Stone::whitemuehle))
 		pix = *white;
@@ -389,9 +390,10 @@ void Board::check(int x, int y, Stone *stone)
 	xrows = 0;
 	yrows = 0;
 	pointlist = web->pointlist();
-	QWebPoint *xp;
+	QWebPoint *xp = NULL;
 	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		if((p->point().x() == x) && (p->point().y() == y)) xp = p;
+	if(!xp) return;
 	peerlist = xp->peerlist();
 	wp = xp;
 	color = stone->owner();
