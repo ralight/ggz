@@ -465,12 +465,9 @@ int ggz_read_string_alloc(const int sock, char **message)
 		return -1;
 	}
 	
-	if ( (*message = calloc((size+1), sizeof(char))) == NULL) {
-		_debug("Error: Not enough memory\n");
-		if (_err_func)
-			(*_err_func) (strerror(errno), GGZ_IO_ALLOCATE, GGZ_DATA_STRING);
-		return -1;
-	}
+	/* FIXME: what happens if we don't have enough memory?  Exiting in
+	   this case seems like a security risk. */
+	*message = ggz_malloc((size+1) * sizeof(char));
 
 	if ( (status = ggz_readn(sock, *message, size)) < 0) {
 		_debug("Error receiving string\n");
@@ -478,6 +475,9 @@ int ggz_read_string_alloc(const int sock, char **message)
 			(*_err_func) (strerror(errno), GGZ_IO_READ, GGZ_DATA_STRING);
 		return -1;
 	}
+	
+	/* ggz_malloc zeroes memory, but we do it again anyway. */
+	message[size] = 0;
 
 	if (status < size) {
 		_debug("Warning: fd is closed\n");

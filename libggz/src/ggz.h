@@ -718,6 +718,7 @@ unsigned int ggz_get_io_alloc_limit(void);
  *  @param limit The new limit (in bytes) to allow on alloc-style calls.
  *  @return The previous limit.
  *  @see ggz_get_io_alloc_limit
+ *  @see ggz_read_string_alloc
  */
 unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
 
@@ -814,13 +815,94 @@ void ggz_read_int_or_die(const int sock, int *data);
  * Returns 0 if successful, -1 on error.
  *
  ***************************************************************************/
+/** @brief Write a string to the given socket.
+ *
+ *  This function will write a full string to the given socket.  The string
+ *  may be read at the other end by ggz_read_string and friends.
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param data A pointer to the string to write.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_write_string(const int sock, const char *data);
+
+/** @brief Write a string to the given socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_write_string.
+ */
 void ggz_write_string_or_die(const int sock, const char *data);
-int ggz_va_write_string(const int sock, const char *fmt, ...);
-void ggz_va_write_string_or_die(const int sock, const char *fmt, ...);
+
+/** @brief Write a printf-style formatted string to the given socket.
+ *
+ *  This function allows a format string and a list of arguments
+ *  to be passed in.  The function will assemble the string (printf-style)
+ *  and write it to the socket.
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param fmt A printf-style formatting string.
+ *  @param ... A printf-style list of arguments.
+ *  @note This function will write identically to ggz_write_string.
+ */
+int ggz_va_write_string(const int sock, const char *fmt, ...)
+                        ggz__attribute((format(printf, 2, 3)));
+			
+/** @brief Write a formatted string to the socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_va_write_string.
+ */
+void ggz_va_write_string_or_die(const int sock, const char *fmt, ...)
+                                ggz__attribute((format(printf, 2, 3)));
+			
+/** @brief Read a string from the given socket.
+ *
+ *  This function will read a full string from the given socket.  The string
+ *  may be written at the other end by ggz_write_string and friends.  The
+ *  length of the string is given as well to avoid buffer overruns; any
+ *  characters beyond this will be lost.
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param data A pointer to the string to read; it will be changed.
+ *  @param len The length of the string pointed to by len
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_read_string(const int sock, char *data, const unsigned int len);
+
+/** @brief Read a string from the given socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_read_string.
+ */
 void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
+
+/** @brief Read and allocate a string from the given socket.
+ *
+ *  This function reads a string from the socket, just like ggz_read_string.
+ *  But instead of passing in a pre-allocated buffer to write in, here
+ *  we pass a pointer to a string pointer:
+ *
+ *  @code
+ *    char* str;
+ *    if (ggz_read_string_alloc(fd, &str) >= 0) {
+ *        // ... handle the string ...
+ *        ggz_free(str);
+ *    }
+ *  @code
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param data A pointer to an empty string pointer.
+ *  @return 0 on success, -1 on error.
+ *  @note The use of this function is a security risk.
+ *  @see ggz_set_io_alloc_limit
+ */
 int ggz_read_string_alloc(const int sock, char **data);
+
+/** @brief Read and allocate string from the given socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_read_string_alloc.
+ */
 void ggz_read_string_alloc_or_die(const int sock, char **data);
 
 
