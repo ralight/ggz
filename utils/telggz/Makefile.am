@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3767 2002-04-06 07:50:08Z jdorje $
+# $Id: Makefile.am 3769 2002-04-06 08:02:03Z jdorje $
 
 SUBDIRS = .
 
@@ -10,7 +10,8 @@ telggz_SOURCES = chat.c chat.h \
 		 meta.c meta.h \
 		 net.c net.h
 
-telggz_LDADD = -L/usr/local/lib \
-	       -lggzcore $(top_srcdir)/metaserv/minidom/libminidom.a
+telggz_LDADD = $(LDADD) \
+               $(LIB_GGZCORE) \
+               $(top_builddir)/metaserv/minidom/libminidom.a
 
 INCLUDES = -I/usr/local/include -I$(top_srcdir)/metaserv/minidom
