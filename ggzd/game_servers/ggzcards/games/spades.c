@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 4107 2002-04-29 04:03:17Z jdorje $
+ * $Id: spades.c 4110 2002-04-29 06:47:54Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -136,6 +136,8 @@ static void spades_init_game(void)
 	GSPADES.nil_tricks_count = 1;
 }
 
+#define MAX_TARGET_SCORE 1000000
+
 static void spades_get_options(void)
 {
 	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
@@ -147,9 +149,12 @@ static void spades_get_options(void)
 		   "Nil is worth 100");
 	add_option("target_score",
 	           "How many points does each team need to win?",
-	           4, 2,
+	           5,
+	           2,
 	           "Game to 100", "Game to 250",
-		   "Game to 500", "Game to 1000");
+		   "Game to 500", "Game to 1000",
+	           "Unending game"
+		   );
 	add_option("minimum_bid",
 	           "What is the minimum bid that each team must meet?",
 	           5, 3,
@@ -183,6 +188,9 @@ static int spades_handle_option(char *option, int value)
 		case 3:
 			game.target_score = 1000;
 			break;
+		case 4:
+			game.target_score = MAX_TARGET_SCORE;
+			break;
 		default:
 			break;
 	} else if (!strcmp("minimum_bid", option))
@@ -203,10 +211,13 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 		else
 			snprintf(buf, bufsz, "Nil is worth %d points.",
 				 50 * value);
-	} else if (!strcmp(option, "target_score"))
-		snprintf(buf, bufsz, "The game is being played to %d.",
-			 game.target_score);
-	else if (!strcmp(option, "minimum_bid"))
+	} else if (!strcmp(option, "target_score")) {
+		if (game.target_score == MAX_TARGET_SCORE)
+			snprintf(buf, bufsz, "The game will never end."); 	
+		else
+			snprintf(buf, bufsz, "The game is being played to %d.",
+				 game.target_score);
+	} else if (!strcmp(option, "minimum_bid"))
 		snprintf(buf, bufsz, "The minimum team bid is %d.",
 			 GSPADES.minimum_team_bid);
 	else if (!strcmp(option, "double_nil")) {
