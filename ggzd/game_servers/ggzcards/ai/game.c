@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: game.c 3988 2002-04-15 05:03:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <assert.h>
 #include <stdlib.h>
