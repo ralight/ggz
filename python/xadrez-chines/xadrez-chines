@@ -17,7 +17,17 @@ import re
 import ggzmod
 from xadrezlib import *
 
-def network(message):
+path = sys.argv[0]
+path = os.path.abspath(path)
+
+if path.startswith("/usr/local"):
+	DATAPATH = "/usr/local/share/ggz/xadrez-chines/"
+elif path.startswith("/usr"):
+	DATAPATH = "/usr/share/ggz/xadrez-chines/"
+else:
+	DATAPATH = "./"
+
+def networkprocess(message):
 	turn = re.compile("your turn")
 	responseok = re.compile("move was ok")
 	responseinvalid = re.compile("move was invalid")
@@ -57,7 +67,83 @@ def network(message):
 	if m:
 		winner = m.group(1)
 
-def main():
+class Network:
+	def __init__(self):
+		self.sock = None
+		self.gamefd = -1
+
+		#self.game = Game()
+
+	def init(self, fd):
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+	def getbyte(self):
+		opstr = self.sock.recv(4)
+		op = ord(opstr[0]) * 256 * 256 * 256
+		op += ord(opstr[1]) * 256 * 256
+		op += ord(opstr[2]) * 256
+		op += ord(opstr[3])
+		return op
+
+	def getchar(self):
+		opstr = self.sock.recv(1)
+		op = ord(opstr[0])
+		return op
+
+	def getstring(self):
+		length = self.getbyte()
+		opstr = self.sock.recv(length)
+		return opstr
+
+	def sendbyte(self, byte):
+		nbyte = socket.htonl(byte)
+		c1 = (nbyte >> 0) & 0xFF
+		c2 = (nbyte >> 8) & 0xFF
+		c3 = (nbyte >> 16) & 0xFF
+		c4 = (nbyte >> 24) & 0xFF
+		self.sock.send(chr(c1))
+		self.sock.send(chr(c2))
+		self.sock.send(chr(c3))
+		self.sock.send(chr(c4))
+
+	def sendchar(self, char):
+		self.sock.send(chr(char))
+
+	def sendstring(self, str):
+		self.sendbyte(len(str))
+		self.sock.send(str)
+
+def network():
+	global net
+
+	print "network!"
+
+	message = net.getstring()
+
+	networkprocess(message)
+
+def handle_server(fd):
+	global net
+
+	ggzmod.setState(ggzmod.STATE_PLAYING)
+
+	net.gamefd = fd
+	net.init(net.gamefd)
+
+def handle_network():
+	global net
+
+	networked = 0
+	if net.gamefd != -1:
+		networked = 1
+
+	ret = ggzmod.autonetwork(networked, net.gamefd)
+	if ret == 1 or ret == 3:
+		network()
+	if ret == 2 or ret == 3:
+		ggzmod.dispatch()
+
+def main(ggzmode):
 	global net
 	global madeturn
 	global surface
@@ -113,13 +199,13 @@ def main():
 	""" Game stones """
 
 	img = {}
-	img['pawn:white'] = pygame.image.load("pawn.png")
-	img['bodyguard:white'] = pygame.image.load("bodyguard.png")
-	img['bishop:white'] = pygame.image.load("bishop.png")
-	img['knight:white'] = pygame.image.load("knight.png")
-	img['cannon:white'] = pygame.image.load("cannon.png")
-	img['rock:white'] = pygame.image.load("rock.png")
-	img['king:white'] = pygame.image.load("king.png")
+	img['pawn:white'] = pygame.image.load(DATAPATH + "pawn.png")
+	img['bodyguard:white'] = pygame.image.load(DATAPATH + "bodyguard.png")
+	img['bishop:white'] = pygame.image.load(DATAPATH + "bishop.png")
+	img['knight:white'] = pygame.image.load(DATAPATH + "knight.png")
+	img['cannon:white'] = pygame.image.load(DATAPATH + "cannon.png")
+	img['rock:white'] = pygame.image.load(DATAPATH + "rock.png")
+	img['king:white'] = pygame.image.load(DATAPATH + "king.png")
 
 	alphapix = img['pawn:white']
 
@@ -213,6 +299,29 @@ def main():
 	surface.blit(svline, (261, 467))
 	surface.blit(svline, (316, 467))
 
+	""" Network setup """
+
+	ggzsuccess = 0
+
+	if ggzmode:
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
+
+		ret = ggzmod.connect()
+		if ret < 0:
+			ggzsuccess = 0
+		else:
+			ggzsuccess = 1
+			net = Network()
+
+	if ggzmode:
+		ggzfont = pygame.font.Font(None, 20)
+		if ggzsuccess:
+			ggz = ggzfont.render("Running on GGZ", 1, (165, 140, 0))
+		else:
+			ggz = ggzfont.render("GGZ unavailable", 1, (165, 140, 0))
+
+		surface.blit(ggz, (580, 160))
+
 	""" Main loop """
 
 	madeturn = 0
@@ -231,6 +340,8 @@ def main():
 	pygame.event.clear()
 
 	while 1:
+		if ggzsuccess:
+			handle_network()
 		pygame.event.pump()
 
 		keyinput = pygame.key.get_pressed()
@@ -341,5 +452,8 @@ def main():
 			#	aierror = 1
 
 if __name__ == "__main__":
-	main()
+	if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
+		main(1)
+	else:
+		main(0)
 

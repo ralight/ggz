@@ -1,7 +1,9 @@
 Protocol used by Xadrez Chines
 ==============================
 
-- client and server assume the same board setup (for now)
+The protocol consists of clear text messages, which are parsed
+using regular expressions.
+Client and server assume the same board setup (for now).
 
 - server sends move request
   "your turn"

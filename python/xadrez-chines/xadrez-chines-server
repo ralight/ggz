@@ -14,15 +14,55 @@ import re
 import ggzdmod
 from xadrezlib import *
 
+def hook_state ():
+	print "* state"
+
+def hook_join (seat):
+	print "* join: ", seat
+	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+
+def hook_leave (seat):
+	print "* leave: ", seat
+	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+
+def hook_log ():
+	print "* log"
+
+def hook_data (seat):
+	print "* data: ", seat
+	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+
+def hook_error (arg):
+	print "* error"
+
+def initggz():
+	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
+	ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
+	ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
+	ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
+	ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
+	ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
+
 def main():
 	global net
 	global madeturn
 	global surface
 	global winner
 
+	print "### launched"
+
 	""" Setup """
 
 	xadrez = Xadrez()
+
+	print "### go init ggz"
+
+	initggz()
+
+	print "### now go loop"
+
+	ggzdmod.connect()
+	ggzdmod.mainLoop()
 
 	""" Main loop """
 
