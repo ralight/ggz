@@ -68,7 +68,9 @@ class KGGZBase : public KMainWindow
 		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
 		// Receive a room to be added to the menu
-		void slotRoom(const char *roomname, const char *category, int numplayers);
+		void slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers);
+		// The number of players in a room has changed
+		void slotRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Receive the caption dynamically from KGGZ
 		void slotCaption(const char *caption);
 		// Display the state in the status bar
@@ -144,6 +146,8 @@ class KGGZBase : public KMainWindow
 		KSystemTray *tray;
 		// The current activity status
 		int m_activity;
+		// Temporary variable for menu icon
+		QString m_lastgame;
 };
 
 #endif

@@ -130,7 +130,9 @@ class KGGZ : public QWidget
 		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
 		// Emitted to announce new room
-		void signalRoom(const char *roomname, const char *category, int numplayers);
+		void signalRoom(const char *roomname, const char *protocolname, const char *category, int numplayers);
+		// Emitted to announce room player changes
+		void signalRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Emitted to change window caption
 		void signalCaption(const char *caption);
 		// Emitted if connection state changes
@@ -313,6 +315,8 @@ class KGGZ : public QWidget
 		QSocketNotifier *m_sn_game;
 		// Server socket notifier
 		QSocketNotifier *m_sn_server;
+		// Room to room number mapping
+		QMap<QString, int> m_roommap;
 };
 
 #endif

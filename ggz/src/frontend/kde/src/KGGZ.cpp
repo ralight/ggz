@@ -750,6 +750,11 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	GGZRoomChangeEventData *event;
 	QString toroom;
 	QString fromroom;
+	int roomnumber;
+	QString player;
+	GGZRoom *room;
+
+	roomnumber = 0;
 
 	if(id == GGZCoreRoom::chatevent)
 		emit signalActivity(ACTIVITY_DIRECT);
@@ -768,6 +773,12 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 				KGGZDEBUG("Critical: Workspace/Chat absent!\n");
 				return;
 			}
+			break;
+		case GGZCoreRoom::stats:
+			player = QString((char*)data);
+			break;
+		case GGZCoreRoom::count:
+			roomnumber = *(int*)data;
 			break;
 	}
 
@@ -834,6 +845,9 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			m_workspace->widgetUsers()->add(event->player_name);
 			m_workspace->widgetChat()->chatline()->addPlayer(event->player_name);
 			if(m_grubby) m_grubby->addPlayer(event->player_name);
+			roomnumber = event->to_room;
+			kggzroom = kggzserver->room(roomnumber);
+			emit signalRoomChanged(kggzroom->name(), kggzroom->gametype()->protocolEngine(), roomnumber, kggzroom->countPlayers());
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
@@ -850,6 +864,9 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			m_workspace->widgetUsers()->remove(event->player_name);
 			KGGZDEBUG("remove from chatline\n");
 			m_workspace->widgetChat()->chatline()->removePlayer(event->player_name);
+			roomnumber = event->from_room;
+			kggzroom = kggzserver->room(roomnumber);
+			emit signalRoomChanged(kggzroom->name(), kggzroom->gametype()->protocolEngine(), roomnumber, kggzroom->countPlayers());
 			KGGZDEBUG("Leave room event: ready\n");
 			break;
 		case GGZCoreRoom::tableupdate:
@@ -901,6 +918,17 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::playerlag:
 			lagPlayers();
 			break;
+		case GGZCoreRoom::stats:
+			m_workspace->widgetChat()->receive(NULL, i18n("Info: Statistics for %1 changed.").arg(player), KGGZChat::RECEIVE_ADMIN);
+			break;
+		case GGZCoreRoom::count:
+			//GGZCoreRoom *tmproom = new GGZCoreRoom();
+			KGGZDEBUG("count\n");
+			room = ggzcore_server_get_nth_room(kggzserver->server(), roomnumber);
+			emit signalRoomChanged(ggzcore_room_get_name(room),
+				ggzcore_gametype_get_prot_engine(ggzcore_room_get_gametype(room)),
+				roomnumber, ggzcore_room_get_num_players(room));
+			break;
 		default:
 			KGGZDEBUG("unknown\n");
 			break;
@@ -916,6 +944,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	KWallet::Wallet *w = NULL;
 	QString entry;
 #endif
+	int roomnumber;
 
 	emit signalActivity(ACTIVITY_ROOM);
 
@@ -1017,14 +1046,19 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::roomlist:
 			KGGZDEBUG("roomlist\n");
-			emit signalMenu(MENUSIG_ROOMLIST);
-			for(int i = 0; i < kggzserver->countRooms(); i++)
-				emit signalRoom(kggzserver->room(i)->name(),
-					kggzserver->room(i)->category(),
-					kggzserver->room(i)->countPlayers());
 			break;
 		case GGZCoreServer::typelist:
 			KGGZDEBUG("typelist\n");
+
+			emit signalMenu(MENUSIG_ROOMLIST);
+			for(int i = 0; i < kggzserver->countRooms(); i++)
+			{
+				emit signalRoom(kggzserver->room(i)->name(),
+					kggzserver->room(i)->gametype()->protocolEngine(),
+					kggzserver->room(i)->category(),
+					kggzserver->room(i)->countPlayers());
+				m_roommap[kggzserver->room(i)->gametype()->protocolEngine()] = i;
+			}
 
 			if(!kggzroom)
 			{
@@ -1052,6 +1086,10 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("Spectators allowed here? %i\n", gametype->maxSpectators());
 			if(gametype->maxSpectators()) emit signalMenu(MENUSIG_SPECTATORS);
 			else emit signalMenu(MENUSIG_NOSPECTATORS);
+
+			roomnumber = m_roommap[kggzroom->gametype()->protocolEngine()];
+			emit signalRoomChanged(kggzroom->name(), kggzroom->gametype()->protocolEngine(),
+				roomnumber, kggzroom->countPlayers() + 1); // FIXME: bug in ggzcore?
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
@@ -1216,7 +1254,8 @@ void KGGZ::attachRoomCallbacks()
 	kggzroom->addHook(GGZCoreRoom::tableleft, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::tableleavefail, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	/*kggzroom->addHook(GGZCoreRoom::tabledata, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);*/
-	kggzroom->addHook(GGZCoreRoom::playerlag, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
+	kggzroom->addHook(GGZCoreRoom::stats, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
+	kggzroom->addHook(GGZCoreRoom::count, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 }
 
 void KGGZ::detachRoomCallbacks()
@@ -1236,6 +1275,8 @@ void KGGZ::detachRoomCallbacks()
 	kggzroom->removeHook(GGZCoreRoom::tableleavefail, &KGGZ::hookOpenCollector);
 	/*kggzroom->removeHook(GGZCoreRoom::tabledata, &KGGZ::hookOpenCollector);*/
 	kggzroom->removeHook(GGZCoreRoom::playerlag, &KGGZ::hookOpenCollector);
+	kggzroom->removeHook(GGZCoreRoom::stats, &KGGZ::hookOpenCollector);
+	kggzroom->removeHook(GGZCoreRoom::count, &KGGZ::hookOpenCollector);
 }
 
 void KGGZ::attachServerCallbacks()

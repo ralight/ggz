@@ -143,7 +143,8 @@ KGGZBase::KGGZBase()
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(const char*, const char*, int)), SLOT(slotRoom(const char*, const char*, int)));
+	connect(kggz, SIGNAL(signalRoom(const char*, const char*, const char*, int)), SLOT(slotRoom(const char*, const char*, const char*, int)));
+	connect(kggz, SIGNAL(signalRoomChanged(const char*, const char*, int, int)), SLOT(slotRoomChanged(const char*, const char*, int, int)));
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
@@ -181,7 +182,7 @@ void KGGZBase::autoconnect(QString uri)
 
 QIconSet KGGZBase::kggzGetIcon(int menuid)
 {
-	const char *icon = NULL;
+	QString icon;
 	QIconSet iconset;
 
 	switch(menuid)
@@ -252,10 +253,11 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 
 	if(menuid >= MENU_ROOMS_SLOTS)
 	{
-		icon = "unknown.png";
+		icon = QString("games/%1.png").arg(m_lastgame); //"unknown.png";
+		KGGZDEBUG("gameicon: %s", icon.latin1());
 	}
 
-	iconset = QIconSet(QPixmap(QString(KGGZ_DIRECTORY "/images/icons/") + QString(icon)));
+	iconset = QIconSet(QPixmap(QString(KGGZ_DIRECTORY "/images/icons/") + icon));
 	return iconset;
 }
 
@@ -429,18 +431,31 @@ void KGGZBase::slotMenuSignal(int signal)
 	}
 }
 
-void KGGZBase::slotRoom(const char *roomname, const char *category, int numplayers)
+void KGGZBase::slotRoom(const char *roomname, const char *protocolname, const char *category, int numplayers)
 {
 	QString caption;
 
 #ifdef KGGZ_PATCH_C_AND_R
 	caption = QString("%1 (%2)").arg(roomname).arg(category);
 #else
-	//caption = roomname;
-	caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
+	caption = roomname;
+	if(numplayers > 0) caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
 #endif
+	m_lastgame = protocolname;
 	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
 	m_rooms++;
+}
+
+void KGGZBase::slotRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers)
+{
+	QString caption;
+
+	caption = roomname;
+	if(numplayers > 0) caption = QString("%1 (%2)").arg(roomname).arg(numplayers);
+
+	m_lastgame = protocolname;
+	m_menu_rooms->changeItem(MENU_ROOMS_SLOTS + roomnumber, kggzGetIcon(MENU_ROOMS_SLOTS + roomnumber), caption);
+	KGGZDEBUG("***** ROOMS CHANGED: %s(%i)=%i", roomname, roomnumber, numplayers);
 }
 
 void KGGZBase::slotCaption(const char *caption)
