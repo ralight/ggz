@@ -345,11 +345,11 @@ client_chat_entry_activate		(GtkEditable	*editable,
 
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
-		if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), "/msg", 3))
+		if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/msg"), 3))
 			chat_send_prvmsg();
-		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), "/beep", 4))
+		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/beep"), 4))
 			chat_send_beep();
-		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), "/help", 4))
+		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/help"), 4))
 			chat_help();
 		else
 			chat_send_msg();
@@ -523,16 +523,16 @@ client_realize                    (GtkWidget       *widget,
 	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
 
 	/* Print out client information */
-	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);
+	buf = g_strdup_printf(_("Client Version:\00314 %s"), VERSION);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf)); 
 	g_free(buf);
-	buf = g_strdup_printf("GTK+ Version:\00314 %d.%d.%d\n",
+	buf = g_strdup_printf(_("GTK+ Version:\00314 %d.%d.%d\n"),
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
 	g_free(buf);
 
 #ifdef DEBUG
-	gtk_xtext_append_indent(tmp,"---",3,"Compiled with debugging.", 24);
+	gtk_xtext_append_indent(tmp, "---", 3, _("Compiled with debugging."), 24);
 #endif
 
 }

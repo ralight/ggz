@@ -36,6 +36,7 @@
 #include "login.h"
 #include "server.h"
 #include "support.h"
+#include "props.h"
 
 GtkWidget *login_dialog;
 static GtkWidget *create_dlg_login(void);
@@ -89,11 +90,11 @@ login_failed(void)
 	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
 	
 	tmp = lookup_widget(login_dialog, "profile_frame");
-	gtk_frame_set_label(GTK_FRAME(tmp), "Sorry!");
+	gtk_frame_set_label(GTK_FRAME(tmp), _("Sorry!"));
 	
 	tmp = lookup_widget(login_dialog, "msg_label");
 	gtk_label_set_text(GTK_LABEL(tmp),
-			   "That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
+			   _("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name"));
 }
 
 

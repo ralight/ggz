@@ -117,7 +117,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 	gchar *player;
 
 	player = ((char**)(event_data))[0];
-	message = g_strdup_printf("You've been beeped by %s.", player);
+	message = g_strdup_printf(_("You've been beeped by %s."), player);
 	chat_display_message(CHAT_BEEP, "---", message);
 	if( ggzcore_conf_read_int("CHAT", "SOUND", TRUE) )
 		gdk_beep();
@@ -127,7 +127,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	chat_display_message(CHAT_BEEP, "---", "Disconnected from Server.");
+	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
 }
 
 
@@ -196,12 +196,12 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
-	name = g_strdup_printf("Current Room: %s", ggzcore_room_get_name(ggzcore_state_get_room()));
+	name = g_strdup_printf(_("Current Room: %s"), ggzcore_room_get_name(ggzcore_state_get_room()));
 	gtk_label_set_text(GTK_LABEL(tmp), name);
 	g_free(name);
 
 	/* Display message in chat area */
-	message = g_strdup_printf("You've joined room \"%s\".", ggzcore_room_get_name(ggzcore_state_get_room()));
+	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_state_get_room()));
 	chat_display_message(CHAT_BEEP, "---", message);
 	g_free(message);
 	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_state_get_room()));
@@ -407,41 +407,41 @@ static void ggz_state_change(GGZStateID id, void* event_data, void* user_data)
 
 	switch (id) {
 	case GGZ_STATE_OFFLINE:
-		state = "Offline";
+		state = _("Offline");
 		break;
 	case GGZ_STATE_CONNECTING:
-		state = "Connecting";
+		state = _("Connecting");
 		break;
 	case GGZ_STATE_ONLINE:
-		state = "Online";
+		state = _("Online");
 		break;
 	case GGZ_STATE_LOGGING_IN:
-		state = "Logging In";
+		state = _("Logging In");
 		break;
 	case GGZ_STATE_LOGGED_IN:
-		state = "Logged In";
+		state = _("Logged In");
 		break;
 	case GGZ_STATE_BETWEEN_ROOMS:
 	case GGZ_STATE_ENTERING_ROOM:
-		state = "--> Room";
+		state = _("--> Room");
 		break;
 	case GGZ_STATE_IN_ROOM:
-		state = "Chatting";
+		state = _("Chatting");
 		break;
 	case GGZ_STATE_JOINING_TABLE:
-		state = "--> Table";
+		state = _("--> Table");
 		break;
 	case GGZ_STATE_AT_TABLE:
-		state = "Playing";
+		state = _("Playing");
 		break;
 	case GGZ_STATE_LEAVING_TABLE:
-		state = "<-- Table";
+		state = _("<-- Table");
 		break;
 	case GGZ_STATE_LOGGING_OUT:
-		state = "Logging Out";
+		state = _("Logging Out");
 		break;
 	default:
-		state = "**none**";
+		state = _("**none**");
 		
 	}
 

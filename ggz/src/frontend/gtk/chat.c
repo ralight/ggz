@@ -230,7 +230,7 @@ void chat_send_beep(void)
         gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, "Beep sent", 9);
+        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, _("Beep sent"), 9);
 
 }
 
@@ -285,11 +285,11 @@ void chat_part(gchar *player)
 
 void chat_help(void)
 {
-	chat_display_message(CHAT_BEEP, "---", "Chat Commands");
-	chat_display_message(CHAT_BEEP, "---", "-------------");
-	chat_display_message(CHAT_BEEP, "---", "/me <action>");
-	chat_display_message(CHAT_BEEP, "---", "/msg <username> <message>");
-	chat_display_message(CHAT_BEEP, "---", "/beep <username>");
+	chat_display_message(CHAT_BEEP, "---", _("Chat Commands"));
+	chat_display_message(CHAT_BEEP, "---", _("-------------"));
+	chat_display_message(CHAT_BEEP, "---", _("/me <action>"));
+	chat_display_message(CHAT_BEEP, "---", _("/msg <username> <message>"));
+	chat_display_message(CHAT_BEEP, "---", _("/beep <username>"));
 }
 
 
