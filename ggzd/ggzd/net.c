@@ -231,6 +231,25 @@ int net_send_chat_result(GGZPlayer *player, char status)
 }
 
 
+int net_send_table_launch(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_TABLE_LAUNCH, status);
+}
+
+
+int net_send_table_join(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_TABLE_JOIN, status);
+}
+
+
+int net_send_table_leave(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_TABLE_LEAVE, status);
+}
+
+
+
 int net_send_logout(GGZPlayer *player, char status)
 {
 	return _net_send_result(player, RSP_LOGOUT, status);

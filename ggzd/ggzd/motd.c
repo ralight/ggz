@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 2307 2001-08-28 23:31:51Z bmh $
+ * $Id: motd.c 2308 2001-08-29 00:29:20Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,7 +36,6 @@
 #include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
-#include <easysock.h>
 #include <protocols.h>
 #include <table.h>
 #include <motd.h>

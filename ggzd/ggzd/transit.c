@@ -39,6 +39,7 @@
 #include <easysock.h>
 #include <seats.h>
 #include <event.h>
+#include <net.h>
 
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
@@ -230,9 +231,8 @@ static int transit_player_event_callback(void* target, int size, void* data)
 		if (status == 0)
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
-
-		if (es_write_int(player->fd, RSP_TABLE_LEAVE) < 0
-		    || es_write_char(player->fd, (char)status) < 0)
+		
+		if (net_send_table_leave(player, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
@@ -245,8 +245,7 @@ static int transit_player_event_callback(void* target, int size, void* data)
 		}
 		pthread_rwlock_unlock(&player->lock);		
 
-		if (es_write_int(player->fd, RSP_TABLE_JOIN) < 0
-		    || es_write_char(player->fd, (char)status) < 0)
+		if (net_send_table_join(player, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	}
