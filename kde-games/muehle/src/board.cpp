@@ -232,22 +232,45 @@ void Board::mousePressEvent(QMouseEvent *e)
 		{
 			if((s->x() == x) && (s->y() == y))
 				stone = s;
-			if((s->owner() == Stone::white) || (s->owner() == Stone::whiteactive) || (s->owner() == Stone::whitemuehle))
-				count++;
-			if(s->owner() == Stone::whiteactive)
+			if(m_color == colorwhite)
 			{
-				astone = s;
-				active++;
+				if((s->owner() == Stone::white) || (s->owner() == Stone::whiteactive) || (s->owner() == Stone::whitemuehle))
+					count++;
+				if(s->owner() == Stone::whiteactive)
+				{
+					astone = s;
+					active++;
+				}
+			}
+			else if(m_color == colorblack)
+			{
+				if((s->owner() == Stone::black) || (s->owner() == Stone::blackactive) || (s->owner() == Stone::blackmuehle))
+					count++;
+				if(s->owner() == Stone::blackactive)
+				{
+					astone = s;
+					active++;
+				}
 			}
 		}
 
 		// If click on stone, change it
 		if(stone)
 		{
-			if((stone->owner() == Stone::white) && (!active))
-				stone->assign(Stone::whiteactive);
-			else if(stone->owner() == Stone::whiteactive)
-				stone->assign(Stone::white);
+			if(m_color == colorwhite)
+			{
+				if((stone->owner() == Stone::white) && (!active))
+					stone->assign(Stone::whiteactive);
+				else if(stone->owner() == Stone::whiteactive)
+					stone->assign(Stone::white);
+			}
+			else if(m_color == colorblack)
+			{
+				if((stone->owner() == Stone::black) && (!active))
+					stone->assign(Stone::blackactive);
+				else if(stone->owner() == Stone::blackactive)
+					stone->assign(Stone::black);
+			}
 		}
 		else
 		{
@@ -256,7 +279,10 @@ void Board::mousePressEvent(QMouseEvent *e)
 			{
 				stone = new Stone();
 				stone->move(x, y);
-				stone->assign(Stone::white);
+				if(m_color == colorwhite)
+					stone->assign(Stone::white);
+				else if(m_color == colorblack)
+					stone->assign(Stone::black);
 				stonelist.append(stone);
 
 				if(astone)
@@ -310,11 +336,11 @@ void Board::mousePressEvent(QMouseEvent *e)
 		{
 			if(p->point().x() == xrow)
 				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
+					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (stone->owner() == s2->owner()))
 						xrows++;
 			if(p->point().y() == yrow)
 				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
+					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (stone->owner() == s2->owner()))
 						yrows++;
 		}
 
@@ -326,7 +352,12 @@ void Board::mousePressEvent(QMouseEvent *e)
 			{
 				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
 					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
-						s2->assign(Stone::whitemuehle);
+					{
+						if(m_color == colorwhite)
+							s2->assign(Stone::whitemuehle);
+						else if(m_color == colorblack)
+							s2->assign(Stone::blackmuehle);
+					}
 			}
 		}
 		if((xrows == 3) || (yrows == 3))
@@ -461,6 +492,7 @@ void Board::slotInput()
 {
 	QString s;
 	int error;
+	int ret;
 
 	error = 0;
 
@@ -497,7 +529,10 @@ void Board::slotInput()
 			case 2:
 				stone = new Stone();
 				stone->move((*(l.at(0))).toInt(), (*(l.at(1))).toInt());
-				stone->assign(Stone::black);
+				if(m_color == colorwhite)
+					stone->assign(Stone::black);
+				else if(m_color == colorblack)
+					stone->assign(Stone::white);
 				stonelist.append(stone);
 				m_turn = 1;
 				emit signalScore(i18n("Your turn"), Toplevel::statushint, 0);
@@ -512,6 +547,24 @@ void Board::slotInput()
 	else if(s == "invalid.")
 	{
 		error = 1;
+	}
+	else if(s == "remis.")
+	{
+		ret = KMessageBox::questionYesNo(this, i18n("Your opponent wants to get a remis. Do you accept this?"), i18n("Opponent message"));
+		if(ret == KMessageBox::Yes)
+		{
+			net->output("loose.");
+			m_turn = -1;
+			emit signalEnd();
+		}
+		else
+		{
+			net->output("reject.");
+		}
+	}
+	else if(s == "reject.")
+	{
+		KMessageBox::sorry(this, i18n("Your opponent refuses to give you remis."), i18n("Opponent message"));
 	}
 	else if(s == "loose.")
 	{
