@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5023 2002-10-24 09:56:04Z jdorje $
+ * $Id: ggzcore.h 5054 2002-10-26 22:35:59Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -289,6 +289,16 @@ typedef struct {
 	const char *message;
 } GGZChatEventData;
 
+/** @brief The data associated with a GGZ_TABLE_LEFT room event. */
+typedef struct {
+	/** @brief This is the reason for why we left. */
+	GGZLeaveType reason;
+
+	/** If we were booted from the table (GGZ_LEAVE_BOOT), this is
+	 *  the player who kicked us out. */
+	const char *player;
+} GGZTableLeaveEventData;
+
 typedef enum {
 	/** The list of players in a room has arrived.
 	 *  @param data NULL
@@ -331,7 +341,7 @@ typedef enum {
 
 	/** Your table join attempt has succeeded.
 	 *  @see ggzcore_room_join_table
-	 *  @param data NULL. */
+	 *  @param data The table index (int*) of the table we joined. */
 	GGZ_TABLE_JOINED,
 
 	/** Joining a table did not succeed.
@@ -341,7 +351,8 @@ typedef enum {
 
 	/** You have successfully left the table you were at.
 	 *  @see ggzcore_room_leave_table
-	 *  @param data NULL */
+	 *  @param data The GGZTableLeaveEventData associated with the leave.
+	 *  @see GGZTableLeaveEventData */
 	GGZ_TABLE_LEFT,
 
 	/** Your attempt to leave the table has failed.

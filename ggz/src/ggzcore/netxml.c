@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5008 2002-10-23 18:01:43Z jdorje $
+ * $Id: netxml.c 5054 2002-10-26 22:35:59Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -143,6 +143,8 @@ static void _ggzcore_net_handle_seat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_spectator_seat(GGZNet *net,
 					       GGZXMLElement *seat);
 static void _ggzcore_net_handle_chat(GGZNet*, GGZXMLElement*);
+static void _ggzcore_net_handle_leave(GGZNet *net, GGZXMLElement *element);
+static void _ggzcore_net_handle_join(GGZNet *net, GGZXMLElement *element);
 static void _ggzcore_net_handle_ping(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_session(GGZNet*, GGZXMLElement*);
 
@@ -175,6 +177,7 @@ static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 	ggz__attribute((format(printf, 2, 3)));
 static int safe_atoi(char *string);
+static int str_to_int(const char *str, int dflt);
 
 
 
@@ -824,6 +827,10 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 		process_func = _ggzcore_net_handle_seat;
 	else if (strcmp(tag, "SPECTATOR") == 0)
 		process_func = _ggzcore_net_handle_spectator_seat;
+	else if (strcmp(tag, "LEAVE") == 0)
+		process_func = _ggzcore_net_handle_leave;
+	else if (strcmp(tag, "JOIN") == 0)
+		process_func = _ggzcore_net_handle_join;
 	else if (strcmp(tag, "CHAT") == 0)
 		process_func = _ggzcore_net_handle_chat;
 	else if (strcmp(tag, "DESC") == 0)
@@ -949,7 +956,8 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 			_ggzcore_room_set_table_leave_status(room, code);
 		else if  (strcmp(action, "chat") == 0) {
 			switch (code) {
-			case 0: /* Do nothing if successful */
+			case E_OK:
+				/* Do nothing if successful */
 				break;
 			case E_NOT_IN_ROOM:
 				_ggzcore_server_event(net->server, GGZ_CHAT_FAIL, "Not in a room");
@@ -1792,6 +1800,36 @@ static void _ggzcore_net_seat_free(struct _GGZSeat *seat)
 }
 
 
+static void _ggzcore_net_handle_leave(GGZNet *net, GGZXMLElement *element)
+{
+	GGZRoom *room;
+	GGZLeaveType reason;
+	const char *player;
+
+	if (!element) return;
+
+	room = _ggzcore_server_get_cur_room(net->server);
+	reason = ggz_string_to_leavetype(ggz_xmlelement_get_attr(element,
+								 "REASON"));
+	player = ggz_xmlelement_get_attr(element, "PLAYER");
+
+	_ggzcore_room_set_table_leave(room, reason, player);
+}
+
+
+static void _ggzcore_net_handle_join(GGZNet *net, GGZXMLElement *element)
+{
+	GGZRoom *room;
+	int table;
+
+	if (!element) return;
+
+	room = _ggzcore_server_get_cur_room(net->server);
+	table = str_to_int(ggz_xmlelement_get_attr(element, "TABLE"), -1);
+
+	_ggzcore_room_set_table_join(room, table);
+}
+
 
 /* Functions for <CHAT> tag */
 static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
@@ -1871,4 +1909,14 @@ static int safe_atoi(char *string)
 		return 0;
 	else
 		return atoi(string);
+}
+
+static int str_to_int(const char *str, int dflt)
+{
+	int val;
+
+	if (!str || sscanf(str, "%d", &val) < 1)
+		return dflt;
+
+	return val;
 }

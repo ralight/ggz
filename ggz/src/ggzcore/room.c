@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4974 2002-10-22 01:03:23Z jdorje $
+ * $Id: room.c 5054 2002-10-26 22:35:59Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -749,17 +749,29 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 		break;
 	}
 }
+
+
+void _ggzcore_room_set_table_join(GGZRoom *room, int table_index)
+{
+	ggz_debug(GGZCORE_DBG_ROOM, "Player joined table %d.", table_index);
+	_ggzcore_server_set_table_join_status(room->server, E_OK);
+	_ggzcore_room_event(room, GGZ_TABLE_JOINED, &table_index);
+}
 					   
 
-void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
+void _ggzcore_room_set_table_join_status(struct _GGZRoom *room,
+					 GGZClientReqError status)
 {
 	char buf[128];
-	
-	_ggzcore_server_set_table_join_status(room->server, status);
+
+	if (status != E_OK)
+		_ggzcore_server_set_table_join_status(room->server, status);
 	
 	switch (status) {
-	case 0:
-		_ggzcore_room_event(room, GGZ_TABLE_JOINED, NULL);
+	case E_OK:
+		/* Do nothing if successful.  The join itself will
+		   be handled separately.  See
+		   _ggzcore_room_set_table_join. */
 		break;
 
 	case E_NOT_IN_ROOM:
@@ -809,16 +821,30 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 	}
 }
 
+void _ggzcore_room_set_table_leave(GGZRoom *room,
+				   GGZLeaveType reason, const char *player)
+{
+	GGZTableLeaveEventData event_data = {reason: reason,
+					     player: player};
+	ggz_debug(GGZCORE_DBG_ROOM, "Player left table: %s (%s).",
+		  ggz_leavetype_to_string(reason), player);
+	_ggzcore_server_set_table_leave_status(room->server, E_OK);
+	_ggzcore_room_event(room, GGZ_TABLE_LEFT, &event_data);
+}
 
-void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
+void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room,
+					  GGZClientReqError status)
 {
 	char buf[128];
-	
-	_ggzcore_server_set_table_leave_status(room->server, status);
+
+	if (status != E_OK)
+		_ggzcore_server_set_table_leave_status(room->server, status);
 
 	switch (status) {
-	case 0:
-		_ggzcore_room_event(room, GGZ_TABLE_LEFT, NULL);
+	case E_OK:
+		/* Do nothing if successful.  The join itself will
+		   be handled separately.  See
+		   _ggzcore_room_set_table_leave. */
 		break;
 
 	case E_NOT_IN_ROOM:
