@@ -189,6 +189,7 @@ on_text1_changed                       (GtkEditable     *editable,
 }
 
 
+#if 0
 void
 on_text1_move_cursor                   (GtkEditable     *editable,
                                         gint             x,
@@ -197,6 +198,7 @@ on_text1_move_cursor                   (GtkEditable     *editable,
 {
 
 }
+#endif
 
 
 void
