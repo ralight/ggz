@@ -68,11 +68,14 @@ void output_display_help(void)
 	output_text("--- GNU Gaming Zone -- Help");
 	output_text("--- -----------------------");
 	output_text("---");
+	output_text("--- /beep <player>                          Beep player <player>");
 	output_text("--- /connect [<server>[:<port>]] [<nick>]   Connect to a GGZ server");
 	output_text("--- /disconnect                             Disconnect from server");
+	output_text("--- /exit                                   Quit GNU Gaming Zone");
 	output_text("--- /join <room>                            Join room number <room>");
-	output_text("--- /beep <player>                          Beep player <player>");
 	output_text("--- /msg <player> <msg>                     Send a msg to a player");
+	output_text("--- /version                                Display the client version");
+	output_text("--- /who                                    List current player in the room");
 }
 
 void output_banner(void)

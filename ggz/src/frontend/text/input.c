@@ -43,6 +43,7 @@ static void input_handle_join(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
 static void input_handle_beep(char* line);
+static void input_handle_exit(void);
 
 static char delim[] = " \n";
 static char command_prefix = '/';
@@ -93,6 +94,15 @@ int input_command(short events)
 			}
 			else if (strcmp(command, "msg") == 0) {
 				input_handle_msg(current);
+			}
+			else if (strcmp(command, "who") == 0) {
+				input_handle_list("players");
+			}
+			else if (strcmp(command, "exit") == 0) {
+				input_handle_exit();
+			}
+			else if (strcmp(command, "version") == 0) {
+				output_text("--- Client version: %s", VERSION);
 			}
 		} else {
 			/* Its a chat */
@@ -214,3 +224,10 @@ static void input_handle_msg(char* line)
 	}
 }
 
+static void input_handle_exit(void)
+{
+        ggzcore_event_process_all();
+        ggzcore_destroy();
+        output_shutdown();
+        exit(1);
+}
