@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3843 2002-04-07 22:07:10Z jdorje $
+ * $Id: ggzdmod.h 3845 2002-04-07 22:41:05Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -266,8 +266,7 @@ typedef enum {
 	/** @brief Data avilable from player
 	 *  This event occurs when there is data ready to be read from
 	 *  one of the player sockets.  The player number (an int*) is
-	 *  passed as the event's data.  This event will not be
-	 *  generated from within ggzdmod_dispatch. */
+	 *  passed as the event's data. */
 	GGZDMOD_EVENT_PLAYER_DATA,	
 	
 	/** @brief An error has occurred
@@ -332,6 +331,7 @@ typedef struct {
 /** @brief Create a new ggzdmod object.
  *
  *  Before connecting through ggzdmod, a new ggzdmod object is needed.
+ *  @param type The type of ggzdmod.  Should be GGZDMOD_GAME for game servers.
  *  @see GGZdModType
  */
 GGZdMod *ggzdmod_new(GGZdModType type);
@@ -339,7 +339,7 @@ GGZdMod *ggzdmod_new(GGZdModType type);
 /** @brief Destroy a finished ggzdmod object.
  *
  *  After the connection is through, the object may be freed.
- *  @param mod The GGZdMod object.
+ *  @param ggzdmod The GGZdMod object.
  */
 void ggzdmod_free(GGZdMod * ggzdmod);
 
@@ -347,46 +347,60 @@ void ggzdmod_free(GGZdMod * ggzdmod);
  * Accessor functions
  */
 
-/** @brief Get the file descriptor for the ggzdmod socket.
+/** @brief Get the file descriptor for the GGZdMod socket.
  *
- *  @param mod The GGZdMod object.
- *  @return GGZdmod's main ggzd<->table socket FD.
- *  @note Games should not use this; in fact it probably shouldn't be used at all!
- *  @todo Should this be removed?
+ *  @param ggzdmod The GGZdMod object.
+ *  @return GGZdMod's main ggzd <-> table socket FD.
+ *  @note Don't use this; use ggzdmod_loop and friends instead.
  */
 int ggzdmod_get_fd(GGZdMod * ggzdmod);
 
-/** @brief Get the type of the ggzdmod object. */
+/** @brief Get the type of the ggzdmod object.
+ *  @param ggzdmod The GGZdMod object.
+ *  @return The type of the GGZdMod object (GGZ or GAME).
+ */
 GGZdModType ggzdmod_get_type(GGZdMod * ggzdmod);
 
-/** @brief Get the current state of the table. */
+/** @brief Get the current state of the table.
+ *  @param ggzdmod The GGZdMod object.
+ *  @return The state of the table.
+ */
 GGZdModState ggzdmod_get_state(GGZdMod * ggzdmod);
 
 /** @brief Get the total number of seats at the table.
  *  @return The number of seats, or -1 on error.
  *  @note If no connection is present, -1 will be returned.
- *  @note We don't know the number of seats until we receive a launch event.
+ *  @note While in GGZDMOD_STATE_CREATED, we don't know the number of seats.
  */
 int ggzdmod_get_num_seats(GGZdMod * ggzdmod);
 
 /** @brief Get all data for the specified seat.
- *  @return A valid GGZSeat structure, if seat is a valid seat. */
+ *  @param ggzdmod The GGZdMod object.
+ *  @param seat The seat number (0..(number of seats - 1)).
+ *  @return A valid GGZSeat structure, if seat is a valid seat.
+ */
 GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int seat);
 
 /** @brief Return gamedata pointer
  *
- *  Each GGZdmod object can be given a "gamedata" pointer,
- *  that is returned by this function.  This is useful for
- *  when a single process serves multiple GGZdmod's.
+ *  Each GGZdMod object can be given a "gamedata" pointer that is returned
+ *  by this function.  This is useful for when a single process serves
+ *  multiple GGZdmod's.
+ *  @param ggzdmod The GGZdMod object.
+ *  @return A pointer to the gamedata block (or NULL if none).
  *  @see ggzdmod_set_gamedata */
 void * ggzdmod_get_gamedata(GGZdMod * ggzdmod);
 
 /** @brief Set the number of seats for the table.
+ *  @param ggzdmod The GGZdMod object.
+ *  @param num_seats The number of seats to set.
  *  @note This will only work for ggzd.
  *  @todo Allow the table to change the number of seats. */
 void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
 
 /** @brief Set gamedata pointer
+ *  @param ggzdmod The GGZdMod object.
+ *  @param data The gamedata block (or NULL for none).
  *  @see ggzdmod_get_gamedata */
 void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
 
@@ -399,15 +413,16 @@ void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
  *  @param mod The GGZdmod object.
  *  @param e The GGZdmod event.
  *  @param func The handler function being registered.
- *  @see ggzdmod_get_gamedata */
+ *  @see ggzdmod_get_gamedata
+ */
 void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 			 GGZdModHandler func);
 
 /** @brief Set the module executable and it's arguments
  *
- *  @note This should not be called by the table, only ggzd.
  *  GGZdmod must execute and launch the game to start a table; this
  *  function allows ggzd to specify how this should be done.
+ *  @note This should not be called by the table, only ggzd.
  *  @param mod The GGZdmod object.
  *  @param args The arguments for the program, as needed by exec.
  */
@@ -419,6 +434,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod, char **args);
  *  data about a seat.  The game server may only change the following
  *  things about a seat:
  *    - The name (only if the seat is a bot).
+ *    - The socket FD (only if the FD is -1).
  *  @param seat The new seat structure (which includes seat number).
  *  @return 0 on success, negative on failure.
  *  @todo The game should be able to toggle between BOT and OPEN seats.
@@ -451,14 +467,17 @@ int ggzdmod_count_seats(GGZdMod * ggzdmod, GGZSeatType seat_type);
  *    - It will monitor input from player sockets only if a handler is
  *      registered for the PLAYER_DATA event.
  *    - It will call an event handler as necessary.
+ *  @param ggzdmod The ggzdmod object.
+ *  @return -1 on error, the number of events handled (0-1) on success.
  */
 int ggzdmod_dispatch(GGZdMod * ggzdmod);
 
 /** @brief Loop while handling input.
  *
  *  This function repeatedly handles input from all sockets.  It will
- *  only stop once the game state has been changed to DONE.
- *  @param mod The ggzdmod object.
+ *  only stop once the game state has been changed to DONE (or if there
+ *  has been an error).
+ *  @param ggzdmod The ggzdmod object.
  *  @return 0 on success, -1 on error.
  *  @see ggzdmod_dispatch
  *  @see ggzdmod_set_state
@@ -474,7 +493,7 @@ int ggzdmod_loop(GGZdMod * ggzdmod);
  *  This function should be called to change the state of a table.
  *  A game can use this function to change state between WAITING
  *  and PLAYING, or to set it to DONE.
- *  @param mod The ggzdmod object.
+ *  @param ggzdmod The ggzdmod object.
  *  @param state The new state.
  *  @return 0 on success, -1 on failure/error.
  */
@@ -482,11 +501,12 @@ int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state);
 
 /** @brief Connect to ggz.
  *
+ *  Call this function to make an initial GGZ <-> game connection.
  *  - When called by the game server, this function makes the
  *    physical connection to ggz.
  *  - When called by ggzd, it will launch a table and connect
  *    to it.
- *  @param mod The ggzdmod object.
+ *  @param ggzdmod The ggzdmod object.
  *  @return 0 on success, -1 on failure.
  */
 int ggzdmod_connect(GGZdMod * ggzdmod);
@@ -498,7 +518,7 @@ int ggzdmod_connect(GGZdMod * ggzdmod);
  *    when the table is ready to exit.
  *  - When called by the GGZ server, this function will
  *    kill and clean up after the table.
- *  @param mod The ggzdmod object.
+ *  @param ggzdmod The ggzdmod object.
  *  @return 0 on success, -1 on failure.
  */
 int ggzdmod_disconnect(GGZdMod * ggzdmod);
@@ -509,7 +529,7 @@ int ggzdmod_disconnect(GGZdMod * ggzdmod);
  *
  *  This function sends the specified string (printf-style) to
  *  the GGZ server to be logged.
- *  @param mod The GGZdmod object.
+ *  @param ggzdmod The GGZdmod object.
  *  @param fmt A printf-style format string.
  *  @return 0 on success, -1 on failure.
  */
