@@ -38,7 +38,8 @@
 #include "support.h"
 #include "config.h"
 
-#define DEFAULTDIR GAMEDIR "/combat/pixmaps/default/"
+#define DEFAULTINSTALLEDDIR GAMEDIR "/combat/pixmaps/default/"
+#define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/game_clients/combat/pixmaps/default"
 
 // GGZ connect
 void ggz_connect();
@@ -60,7 +61,8 @@ int main(int argc, char *argv[]) {
 
 	// TODO: Check for directory the user wants
 	add_pixmap_directory("tiles/default");
-	add_pixmap_directory(DEFAULTDIR);
+	add_pixmap_directory(DEFAULTINSTALLEDDIR);
+	add_pixmap_directory(DEFAULTSOURCEDIR);
 
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
