@@ -100,9 +100,23 @@ fi
 dnl Various dirs
 dnl ============
 
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    ggzdatadir="${ac_default_prefix}/share/pixmaps/ggz"
+  else
+    ggzdatadir="${prefix}/share/pixmaps/ggz"
+  fi
+else
+  ggzdatadir=${datadir}
+fi
+
+
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
+
 SUBDIRS=$allsubdirs
 AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
+AC_SUBST(ggzdatadir)
 
 AC_OUTPUT([Makefile 
 	   ggz-gtk/Makefile
