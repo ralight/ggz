@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5661 2003-10-02 05:50:31Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -36,29 +36,14 @@ dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
 
-subdirs="ggz-gtk man"
-
-
 dnl Check for NLS
 dnl ============================================================
-if test "x$MSGFMT" != "x"; then
-	AC_DEFINE([ENABLE_NLS], 1, [Define to use NLS (i18n)])
-	allsubdirs="$subdirs po"
-	enable_gettext="yes"
-	if test "x${prefix}" = "xNONE"; then
-		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-                                   "${ac_default_prefix}/share/locale",
-                                   [The location to put message catalogs])
-	else
-		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-                                   "${prefix}/share/locale",
-                                   [The location to put message catalogs])
-	fi
-
-else
-	allsubdirs="$subdirs"
-	enable_gettext="no"
+AM_WITH_NLS
+if test "${prefix}" = "NONE"; then
+	prefix=${ac_default_prefix}
 fi
+AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR], ["${prefix}/share/locale"],
+                   [The location to put message catalogs])
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
@@ -150,9 +135,7 @@ fi
 
 AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Location of GGZ module data])
 
-SUBDIRS=$allsubdirs
 AC_SUBST(LDADD)
-AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdatadir)
 
 AC_CONFIG_FILES([Makefile 
