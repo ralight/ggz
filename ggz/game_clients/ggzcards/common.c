@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3333 2002-02-11 23:07:12Z jdorje $
+ * $Id: common.c 3334 2002-02-11 23:26:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -402,21 +402,12 @@ static void increase_max_hand_size(int max_hand_size)
 	game_alert_hand_size(game_internal.max_hand_size);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
-#if 0
-		/* TODO: figure out how this code could even fail at all. In
-		   the meantime, I've disabled the call to free (realloc),
-		   conceding the memory leak so that we don't have an
-		   unexplained seg fault (which we would have if the realloc
-		   method were used instead!!). */
+		/* This reallocates the hand to be larger, but leaves the
+		   unused cards uninitialized.  This should be acceptable. */
 		ggzcards.players[p].hand.card =
 			ggz_realloc(ggzcards.players[p].hand.card,
 				    game_internal.max_hand_size *
 				    sizeof(*ggzcards.players[p].hand.card));
-#else
-		ggzcards.players[p].hand.card =
-			ggz_malloc(game_internal.max_hand_size *
-				   sizeof(*ggzcards.players[p].hand.card));
-#endif
 	}
 }
 
