@@ -2,11 +2,14 @@
 #include "kcm_ggz_default.moc"
 
 #include <klocale.h>
+#include <ksimpleconfig.h>
 
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qgroupbox.h>
 #include <qpixmap.h>
+
+#include <stdlib.h>
 
 #include "config.h"
 
@@ -72,10 +75,18 @@ KCMGGZDefault::~KCMGGZDefault()
 
 void KCMGGZDefault::load()
 {
+	KSimpleConfig conf(QString("%1/.ggz/ggzap.rc").arg(getenv("HOME")));
+	conf.setGroup("Global");
+	m_server->setText(conf.readEntry("Server"));
+	m_username->setText(conf.readEntry("Username"));
 }
 
 void KCMGGZDefault::save()
 {
+	KSimpleConfig conf(QString("%1/.ggz/ggzap.rc").arg(getenv("HOME")));
+	conf.setGroup("Global");
+	conf.writeEntry("Server", m_server->text());
+	conf.writeEntry("Username", m_username->text());
 }
 
 QString KCMGGZDefault::caption()
