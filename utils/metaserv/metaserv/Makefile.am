@@ -10,7 +10,7 @@ noinst_HEADERS = helper.h
 INCLUDES = -I $(top_srcdir)/metaserv/minidom
 
 confdir = $(prefix)/share/metaserv
-conf_DATA = metaservconf.xml
+dist_conf_DATA = metaservconf.xml
 
 EXTRA_DIST = README.metaserv
 
