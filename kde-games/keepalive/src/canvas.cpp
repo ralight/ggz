@@ -54,8 +54,7 @@ Canvas::Canvas(QWidget *parent, const char *name)
 
 	setAdvancePeriod(50);
 
-	// FIXME: I'm afraid we have to do this here (spectators catch-22 problem)
-	init();
+	//init();
 	m_spectator = 0;
 
 	startTimer(100);
@@ -292,6 +291,7 @@ void Canvas::domove(int x, int y)
 void Canvas::login(QString username, QString password)
 {
 	if(m_spectator) return;
+	if(!m_network) return;
 
 	if(!m_net)
 	{

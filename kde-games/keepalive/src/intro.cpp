@@ -187,7 +187,7 @@ void Intro::drawalllogin()
 			p.end();
 			imbuf = pix.convertToImage();
 
-			delete av1;
+			if(av1) delete av1;
 
 			edit_username->show();
 			edit_password->show();
@@ -457,21 +457,21 @@ void Intro::drawallavatar2()
 			p.end();
 			imbuf = pix.convertToImage();
 
-			if(av1->count())
+			if((av1) && (av1->count()))
 			{
 				imtmp = av1->image(3)->convertToImage();
 				imtmpbm = av1->image(3)->createHeuristicMask().convertToImage();
 				if(avatar == 1) draw(imtmp, imtmpbm, 50, 220, 100);
 				else draw(imtmp, imtmpbm, 50, 220, 40);
 			}
-			if(av2->count())
+			if((av2) && (av2->count()))
 			{
 				imtmp = av2->image(3)->convertToImage();
 				imtmpbm = av2->image(3)->createHeuristicMask().convertToImage();
 				if(avatar == 2) draw(imtmp, imtmpbm, 150, 220, 100);
 				else draw(imtmp, imtmpbm, 150, 220, 40);
 			}
-			if(av3->count())
+			if((av3) && (av3->count()))
 			{
 				imtmp = av3->image(3)->convertToImage();
 				imtmpbm = av3->image(3)->createHeuristicMask().convertToImage();

@@ -59,15 +59,22 @@ int main(int argc, char **argv)
 
 	if(args->isSet("ggz")) ggz = 1;
 
-	if(!ggz)
-	{
-		std::cerr << i18n("This game cannot be launched from the command line.").latin1() << std::endl;
-		std::cerr << i18n("Please use a GGZ core client.").latin1() << std::endl;
-		exit(-1);
-	}
-
 	KApplication a;
 	win = new Win();
+
+	if(!ggz)
+	{
+		//std::cerr << i18n("This game cannot be launched from the command line.").latin1() << std::endl;
+		//std::cerr << i18n("Please use a GGZ core client.").latin1() << std::endl;
+		//exit(-1);
+		std::cout << "Network mode disabled" << std::endl;
+	}
+	else
+	{
+		std::cout << "Network mode enabled" << std::endl;
+		win->init();
+	}
+
 	a.setMainWidget(win);
 	return a.exec();
 }

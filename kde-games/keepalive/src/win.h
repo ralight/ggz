@@ -37,6 +37,7 @@ class Win : public QWidget
 	public:
 		Win(QWidget *parent = NULL, const char *name = NULL);
 		~Win();
+		void init();
 
 	public slots:
 		void slotLogin(QString username, QString password);

@@ -176,3 +176,9 @@ void Win::slotUnit(QCanvasPixmapArray *a)
 	m_anim->show();
 }
 
+void Win::init()
+{
+	// FIXME: I'm afraid we have to do this here (spectators catch-22 problem)
+	m_canvas->init();
+}
+

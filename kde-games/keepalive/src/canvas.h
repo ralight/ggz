@@ -34,6 +34,7 @@ class Canvas : public QCanvas
 	public:
 		Canvas(QWidget *parent = NULL, const char *name = NULL);
 		~Canvas();
+		void init();
 		void load();
 		void move(int x, int y);
 		void moveTo(int x, int y);
@@ -53,7 +54,6 @@ class Canvas : public QCanvas
 		void timerEvent(QTimerEvent *e);
 
 	private:
-		void init();
 		void moves();
 		void domove(int x, int y);
 
