@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3512 2002-03-02 17:16:48Z bmh $
+ * $Id: table.c 3606 2002-03-21 02:52:30Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -99,6 +99,7 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
                                                  void* data);
 static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 						    void* data);
+static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data);
 static int   table_launch_event(char* name, int status, int index);
 static void  table_free(GGZTable* table);
 
@@ -419,6 +420,10 @@ static void table_loop(GGZTable* table)
 		/* Process queued up events */
 		if (table->events_head && event_table_handle(table) < 0)
 			break;
+
+		/* An event might cause the table to be done */
+		if (table->state == GGZ_TABLE_DONE)
+			break;
 		
 		read_fd_set = active_fd_set;
 		
@@ -438,6 +443,7 @@ static void table_loop(GGZTable* table)
 		if (ggzdmod_dispatch(table->ggzdmod) < 0)
 			break;
 
+		/* ggzdmod might cause the table to be done */
 		if (table->state == GGZ_TABLE_DONE)
 			break;
 	}
@@ -815,6 +821,40 @@ void table_set_desc(GGZTable *table, char *desc)
         table_event_enqueue(table, GGZ_UPDATE_DESC);
 }
 
+
+/* Kill the table */
+int table_kill(int room, int index, char *name)
+{
+	int status;
+	char *data;
+
+	dbg_msg(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
+		room);
+	
+	if ( (data = strdup(name)) == NULL)
+		err_sys_exit("strdup failed in transit_pack");
+
+	status = event_table_enqueue(room, index, table_kill_callback, 
+				     strlen(data)+1, data);
+	return status;
+}
+
+
+static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data)
+{
+	GGZTable *table = target;
+	char *caller = data;
+
+	dbg_msg(GGZ_DBG_TABLE, "%s requested death of table %d in room %d",
+		caller, table->index, table->room);
+
+	/* FIXME: we should make sure that the caller is either the
+           owner or one of the players first */
+
+	table->state = GGZ_TABLE_DONE;
+	return GGZ_EVENT_OK;
+}
+					      
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 

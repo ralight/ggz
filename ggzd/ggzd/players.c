@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3596 2002-03-17 06:29:49Z jdorje $
+ * $Id: players.c 3606 2002-03-21 02:52:30Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -704,18 +704,37 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  
  */
-int player_table_leave(GGZPlayer* player)
+GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 {
-	int status;
+	int status, gametype;
+	char allow;
+	GGZTableState state;
+	GGZTable *table;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for %s", player->name);
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d (force: %d)", 
+		player->name, player->table, force);
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d", player->name,
-		player->table);
-	
+	/* Check if leave during gameplay is allowed */
+	table = table_lookup(player->room, player->table);
+	gametype = table->type;
+	state = table->state;
+	pthread_rwlock_unlock(&table->lock);
+	pthread_rwlock_rdlock(&game_types[gametype].lock);
+	allow = game_types[gametype].allow_leave;
+	pthread_rwlock_unlock(&game_types[gametype].lock);
+
+	/* Error if we're already in transit */
 	if (player->transit)
 		status = E_IN_TRANSIT;
-	else /* Send leave event to table */
+	else if (state == GGZ_TABLE_PLAYING && !allow) {
+		if (force) {
+			status = table_kill(player->room, player->table, player->name);
+		}
+		else 
+			status = E_LEAVE_FORBIDDEN;
+	}
+	else 
+		/* All clear: send leave event to table */
 		status = player_transit(player, GGZ_TRANSIT_LEAVE, 
 					player->table);
 	
@@ -743,7 +762,7 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 
 	/* Implement LEAVE by setting my seat to open */
 	switch (opcode) {
-	case GGZ_TRANSIT_LEAVE:
+	case GGZ_TRANSIT_LEAVE: 
 		seat.index = table_find_player(player->room, index, player->name);
 		seat.type = GGZ_SEAT_OPEN;
 		seat.name[0] = '\0';

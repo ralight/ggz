@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3513 2002-03-02 18:42:05Z bmh $
+ * $Id: transit.c 3606 2002-03-21 02:52:30Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -161,10 +161,6 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		return GGZ_EVENT_OK;
 	}
 
-	/* Check if seat assignment during gameplay is allowed */
-	pthread_rwlock_rdlock(&game_types[table->type].lock);
-	allow = game_types[table->type].allow_leave;
-	pthread_rwlock_unlock(&game_types[table->type].lock);
 
 	/* Try to find a seat if one isn't specified */
 	if (seat->type == GGZ_SEAT_PLAYER && seat->index == GGZ_SEATNUM_ANY) {
@@ -175,12 +171,6 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		}
 	}
 		
-	/* If this isn't a join, the game type must explicityly allow assignments */
-	if (table->state == GGZ_TABLE_PLAYING && !(seat->type == GGZ_SEAT_PLAYER || allow)) {
-		transit_player_event(event->caller, action, E_LEAVE_FORBIDDEN, 0, 0);
-		return GGZ_EVENT_OK;
-	}
-	
 	status = transit_send_seat_to_game(table, event);
 
 	/* If we sent it successfully, mark this table as in transit */

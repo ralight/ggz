@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3512 2002-03-02 17:16:48Z bmh $
+ * $Id: table.h 3606 2002-03-21 02:52:30Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -101,6 +101,9 @@ int table_launch(GGZTable *table, char* name);
 
 /* Change table description of running table */
 void table_set_desc(GGZTable *table, char *desc);
+
+/* Kill the table */
+int table_kill(int room, int index, char *name);
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 

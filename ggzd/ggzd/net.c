@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: net.c 3606 2002-03-21 02:52:30Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1205,11 +1205,14 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <LEAVE> tag */
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *force;
+	char *att;
+	char force = 0;
 	
 	if (element) {
-		force = ggz_xmlelement_get_attr(element, "FORCE");
-		player_table_leave(net->player);
+		att = ggz_xmlelement_get_attr(element, "FORCE");
+		if (att && strcmp(att, "true") == 0)
+			force = 1;
+		player_table_leave(net->player, force);
 	}
 }
 

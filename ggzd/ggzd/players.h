@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 3433 2002-02-21 04:01:18Z bmh $
+ * $Id: players.h 3606 2002-03-21 02:52:30Z bmh $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -119,7 +119,7 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
 GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table);
 GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index);
-int   player_table_leave(GGZPlayer* player);
+GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force);
 GGZPlayerHandlerStatus player_list_players(GGZPlayer* player);
 GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose);
 GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
