@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: playerlist.c 5890 2004-02-10 08:59:29Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -116,11 +116,11 @@ client_player_clist_event(GtkWidget * widget, GdkEvent * event, gpointer data)
 	GdkEventButton *buttonevent = (GdkEventButton *) event;
 	GtkWidget *clist = lookup_widget(win_main, "player_clist");
 
-	gtk_clist_get_selection_info(GTK_CLIST(clist),
-				     buttonevent->x,
-				     buttonevent->y, &row, &column);
-	if (row < 0 || row > GTK_CLIST(clist)->rows)
+	if (!gtk_clist_get_selection_info(GTK_CLIST(clist),
+					  buttonevent->x,
+					  buttonevent->y, &row, &column)) {
 		return FALSE;
+	}
 
 	if (event->type == GDK_BUTTON_PRESS) {
 		/* Single click */

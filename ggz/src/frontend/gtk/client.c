@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5874 2004-02-10 01:48:49Z jdorje $
+ * $Id: client.c 5890 2004-02-10 08:59:29Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -590,12 +590,12 @@ client_room_clist_event			(GtkWidget	*widget,
 	GdkEventButton* buttonevent = (GdkEventButton*)event;
 	GtkWidget *clist= lookup_widget(win_main, "room_clist");
 
-	gtk_clist_get_selection_info(GTK_CLIST(clist),
-				     buttonevent->x,
-				     buttonevent->y,
-				     &row, &column);
-	if (row < 0 || row >= numrooms)
+	if (!gtk_clist_get_selection_info(GTK_CLIST(clist),
+					  buttonevent->x,
+					  buttonevent->y,
+					  &row, &column)) {
 		return FALSE;
+	}
 
 	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
 
