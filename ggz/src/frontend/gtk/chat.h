@@ -2,7 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.h 5873 2004-02-09 22:11:24Z jdorje $
+ * $Id: chat.h 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -28,11 +28,7 @@
 
 #include <ggzcore.h>
 
-#ifdef GTK2
-#  include "xtext-gtk2.h"
-#else
-#  include "xtext.h"
-#endif
+#include "xtext.h"
 
 /* Local chat types */
 typedef enum {

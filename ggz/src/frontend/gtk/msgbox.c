@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 5203 2002-11-04 04:56:43Z jdorje $
+ * $Id: msgbox.c 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -35,7 +35,6 @@
 #include "msg_info.xpm"
 #include "msg_stop.xpm"
 
-#ifdef GTK2
 /* Creates a button with a stock icon and custom text.  Code stolen
    from FreeCiv.  Thanks Vasco (or glade; who knows?). */
 GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text)
@@ -64,7 +63,6 @@ GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text)
 	gtk_widget_show_all(align);
 	return button;
 }
-#endif
 
 static MBReturn mb_status;
 
@@ -171,32 +169,16 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialogwindow)->action_area),
 			   buttonbox, FALSE, FALSE, 0);
 
-#ifdef GTK2
 	btnok = gtk_button_new_from_stock(GTK_STOCK_OK);
-#else
-	btnok = gtk_button_new_with_label ("OK");
-#endif
 	GTK_WIDGET_SET_FLAGS (btnok, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
 	btncancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-#else
-	btncancel = gtk_button_new_with_label ("Cancel");
-#endif
 	GTK_WIDGET_SET_FLAGS (btncancel, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
 	btnyes = gtk_button_new_from_stock(GTK_STOCK_YES);
-#else
-	btnyes = gtk_button_new_with_label ("Yes");
-#endif
 	GTK_WIDGET_SET_FLAGS (btnyes, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
 	btnno = gtk_button_new_from_stock(GTK_STOCK_NO);
-#else
-	btnno = gtk_button_new_with_label ("No");
-#endif
 	GTK_WIDGET_SET_FLAGS (btnno, GTK_CAN_DEFAULT);
 
 	if (type == MSGBOX_OKCANCEL)

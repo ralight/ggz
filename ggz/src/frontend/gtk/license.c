@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 5203 2002-11-04 04:56:43Z jdorje $
+ * $Id: license.c 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -62,11 +62,7 @@ static void license_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 	tmp = lookup_widget(license_dialog, "license_text");
-#ifdef GTK2
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tmp), GTK_WRAP_WORD);
-#else
-	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
-#endif
 }
 
 
@@ -108,26 +104,17 @@ create_dlg_license (void)
   gtk_widget_set_usize (scrolledwindow1, 440, 350);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-#ifdef GTK2
   license_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
   gtk_text_view_set_editable(GTK_TEXT_VIEW(license_text), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(license_text), FALSE);
-#else
-  license_text = gtk_text_new (NULL, NULL);
-#endif
   gtk_widget_ref (license_text);
   gtk_object_set_data_full (GTK_OBJECT (dlg_license), "license_text", license_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (license_text);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), license_text);
-#ifdef GTK2
   gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer(
 					   GTK_TEXT_VIEW(license_text)),
 				   license, strlen(license));
-#else
-  gtk_text_insert (GTK_TEXT (license_text), NULL, NULL, NULL,
-		   license, strlen(license));
-#endif
 
   dialog_action_area1 = GTK_DIALOG (dlg_license)->action_area;
   gtk_object_set_data (GTK_OBJECT (dlg_license), "dialog_action_area1", dialog_action_area1);
@@ -141,11 +128,7 @@ create_dlg_license (void)
   gtk_widget_show (button_box);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), button_box, TRUE, TRUE, 0);
 
-#ifdef GTK2
   close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-#else
-  close_button = gtk_button_new_with_label (_("Close"));
-#endif
   gtk_widget_ref (close_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_license),
 			    "close_button", close_button,

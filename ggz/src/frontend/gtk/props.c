@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 5874 2004-02-10 01:48:49Z jdorje $
+ * $Id: props.c 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -90,9 +90,6 @@ static void props_update(void)
 {
 	GtkWidget *tmp;
 	GtkXText *xtext = (GtkXText *)lookup_widget(win_main, "xtext_custom");
-#ifndef GTK2
-	GdkFont *font;
-#endif
 	GList *items;
 	const char *text;
 
@@ -156,7 +153,6 @@ static void props_update(void)
 
 	/* Comments */
 	tmp = lookup_widget((props_dialog), "info_comments");
-#ifdef GTK2
 	{
 		GtkTextIter start, end;
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
@@ -165,10 +161,6 @@ static void props_update(void)
 		text = gtk_text_buffer_get_text(buffer,
 						&start, &end, FALSE);
 	}
-#else
-	text = gtk_editable_get_chars(GTK_EDITABLE(tmp), 0,
-				      gtk_text_get_length(GTK_TEXT(tmp)));
-#endif
 	ggzcore_conf_write_string("USER INFO", "COMMENTS", text);
 
 	/* Single click room entry */
@@ -204,13 +196,8 @@ static void props_update(void)
 	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
 
-#ifdef GTK2
 	gtk_xtext_set_font((GtkXText *)xtext,
 			   (char*)gtk_entry_get_text(GTK_ENTRY(xtext)));
-#else
-	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(xtext)));
-	gtk_xtext_set_font(GTK_XTEXT(xtext), font, 0);
-#endif
 
 	/* Auto-Indent */
 	tmp = lookup_widget((props_dialog), "indent_check");
@@ -219,29 +206,18 @@ static void props_update(void)
 		xtext->auto_indent = TRUE;
 	}else{
 		xtext->auto_indent = FALSE;
-#ifndef GTK2 /* ??? */
-		xtext->indent = 0;
-#endif
 	}
 
 	/* Timestamp */
 	tmp = lookup_widget((props_dialog), "timestamp_check");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
-#ifdef GTK2
 		gtk_xtext_set_time_stamp(xtext->buffer, TRUE);
-#else
-		xtext->time_stamp = TRUE;
-#endif
 #if 0 /* Disabled */
 		xtext->indent = xtext->indent + xtext->stamp_width;
 #endif /* 0 */
 	}else{
-#ifdef GTK2
 		gtk_xtext_set_time_stamp(xtext->buffer, FALSE);
-#else
-		xtext->time_stamp = FALSE;
-#endif
 #if 0 /* Disabled */
 		xtext->indent = xtext->indent - xtext->stamp_width;
 #endif /* 0 */
@@ -355,12 +331,8 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* Comments */
 	tmp = lookup_widget((props_dialog), "info_comments");
 	old = ggzcore_conf_read_string("USER INFO", "COMMENTS", ".");
-#ifdef GTK2
 	gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(tmp)),
 				 old, strlen(old));
-#else
-	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, old, strlen(old));
-#endif
 	ggz_free(old);
 
 	/* Single click room entry */
@@ -1119,11 +1091,7 @@ create_dlg_props (void)
   gtk_widget_show (buttonbox);
   gtk_box_pack_end (GTK_BOX (edit_box), buttonbox, FALSE, FALSE, 0);
 
-#ifdef GTK2
   add_button = gtk_button_new_from_stock(GTK_STOCK_ADD);
-#else
-  add_button = gtk_button_new_with_label (_("Add"));
-#endif
   gtk_widget_ref (add_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "add_button", add_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1131,11 +1099,7 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (buttonbox), add_button);
   GTK_WIDGET_SET_FLAGS (add_button, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
   modify_button = stockbutton_new(GTK_STOCK_SAVE, _("Modify"));
-#else
-  modify_button = gtk_button_new_with_label (_("Modify"));
-#endif
   gtk_widget_ref (modify_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "modify_button", modify_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1143,11 +1107,7 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (buttonbox), modify_button);
   GTK_WIDGET_SET_FLAGS (modify_button, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
   delete_button = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-#else
-  delete_button = gtk_button_new_with_label (_("Delete"));
-#endif
   gtk_widget_ref (delete_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "delete_button", delete_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1549,19 +1509,12 @@ create_dlg_props (void)
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-#ifdef GTK2
   info_comments = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
-#else
-  info_comments = gtk_text_new (NULL, NULL);
-#endif
   gtk_widget_ref (info_comments);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "info_comments", info_comments,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (info_comments);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), info_comments);
-#ifndef GTK2
-  gtk_text_set_editable (GTK_TEXT (info_comments), TRUE);
-#endif
 
   label3 = gtk_label_new (_("User Information"));
   gtk_widget_ref (label3);
@@ -1727,11 +1680,7 @@ create_dlg_props (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
-#ifdef GTK2
   button1 = gtk_button_new_from_stock(GTK_STOCK_OK);
-#else
-  button1 = gtk_button_new_with_label (_("OK"));
-#endif
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1739,11 +1688,7 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), button1);
   GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
   button2 = gtk_button_new_from_stock(GTK_STOCK_APPLY);
-#else
-  button2 = gtk_button_new_with_label (_("Apply"));
-#endif
   gtk_widget_ref (button2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button2", button2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1751,11 +1696,7 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), button2);
   GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
 
-#ifdef GTK2
   button3 = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-#else
-  button3 = gtk_button_new_with_label (_("Cancel"));
-#endif
   gtk_widget_ref (button3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button3", button3,
                             (GtkDestroyNotify) gtk_widget_unref);

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 5891 2004-02-10 09:21:36Z jdorje $
+ * $Id: tablelist.c 5963 2004-02-28 05:05:41Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -111,9 +111,6 @@ static int client_find_table_by_id(int table_id)
 static GtkWidget *create_mnu_table(void)
 {
 	GtkWidget *mnu_table;
-#ifndef GTK2
-	GtkAccelGroup *mnu_table_accels;
-#endif
 	GtkWidget *join;
 	GtkWidget *leave;
 	GtkWidget *menuitem3;
@@ -121,10 +118,6 @@ static GtkWidget *create_mnu_table(void)
 
 	mnu_table = gtk_menu_new();
 	gtk_object_set_data(GTK_OBJECT(mnu_table), "mnu_table", mnu_table);
-#ifndef GTK2
-	mnu_table_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_table));
-#endif
 
 	join = gtk_menu_item_new_with_label(_("Join"));
 	gtk_widget_ref(join);

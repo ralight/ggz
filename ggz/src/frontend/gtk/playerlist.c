@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 5909 2004-02-11 13:53:01Z josef $
+ * $Id: playerlist.c 5963 2004-02-28 05:05:41Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -155,9 +155,6 @@ static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
 				    gboolean is_ignore)
 {
 	GtkWidget *mnu_player;
-#ifndef GTK2
-	GtkAccelGroup *mnu_player_accels;
-#endif
 	GtkWidget *info;
 	GtkWidget *separator9;
 	GtkWidget *friends;
@@ -165,10 +162,6 @@ static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
 
 	mnu_player = gtk_menu_new();
 	gtk_object_set_data(GTK_OBJECT(mnu_player), "mnu_player", mnu_player);
-#ifndef GTK2
-	mnu_player_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_player));
-#endif
 
 	info = gtk_menu_item_new_with_label(_("Info"));
 	gtk_widget_ref(info);

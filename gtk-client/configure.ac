@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5790 2004-02-05 10:46:53Z josef $
+dnl $Id: configure.ac 5963 2004-02-28 05:05:41Z jdorje $
 
 AC_INIT([GGZ Gtk+ client], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -16,11 +16,6 @@ AC_PROG_INSTALL
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
 
-
-dnl Compiling Options
-dnl =================
-AC_ARG_ENABLE(gtk, AC_HELP_STRING([--enable-gtk=[gtk1.2/gtk2]],
-                                  [Specify GTK+-1.2 or GTK+-2.0 linkage]))
 
 dnl Check for GGZ Requirements
 dnl ==========================
@@ -72,40 +67,8 @@ AC_TYPE_SIZE_T
 dnl Check for library functions
 dnl ===========================
 
-# Check for GTK linkage
-
-case "$enable_gtk" in
-  gtk)    enable_gtk="gtk" ;;
-  gtk1)   enable_gtk="gtk" ;;
-  gtk1.2) enable_gtk="gtk" ;;
-  gtk2)   enable_gtk="gtk2" ;;
-  gtk2.0) enable_gtk="gtk2" ;;
-  gtk20)  enable_gtk="gtk2" ;;
-  *)      enable_gtk="yes" ;;
-esac
-
-if test "$enable_gtk" = "gtk2" || test "$enable_gtk" = "yes"; then
-  AM_PATH_GTK_2_0([2.0.0], [found_gtk2="yes"], [found_gtk2="no"])
-  if test "$found_gtk2" = "yes"; then
-    enable_gtk="gtk2"
-    AC_DEFINE(GTK2, 1, [Define to link against GTK+-2.0 libraries])
-  elif test "$enable_gtk" = "gtk2"; then
-    AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])
-  fi
-fi
-
-if test "$enable_gtk" = "gtk" || test "$enable_gtk" = "yes"; then
-  AM_PATH_GTK([1.2.0], [found_gtk="yes"], [found_gtk="no"])
-  if test "$found_gtk" = "yes"; then
-    enable_gtk="gtk"
-  elif test "$enable_gtk" = "gtk"; then
-    AC_MSG_ERROR([*** Can't build GTK+-1.2 frontend: GTK+-1.2 not found])
-  fi
-fi
-
-if test "$enable_gtk" = "yes"; then
-  AC_MSG_ERROR([*** Can't build GTK frontend: GTK not found])
-fi
+AM_PATH_GTK_2_0([2.0.0], [],
+		AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found]))
 
 
 dnl Debug modes

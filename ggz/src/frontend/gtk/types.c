@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: types.c 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -233,11 +233,7 @@ create_dlg_types (void)
   gtk_widget_show (label9);
   gtk_clist_set_column_widget (GTK_CLIST (types_clist), 3, label9);
 
-#ifdef GTK2
   toolbar1 = gtk_toolbar_new();
-#else
-  toolbar1 = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_TEXT);
-#endif
   gtk_widget_ref (toolbar1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_types), "toolbar1", toolbar1,
                             (GtkDestroyNotify) gtk_widget_unref);

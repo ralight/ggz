@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5911 2004-02-11 14:06:39Z josef $
+ * $Id: chat.c 5963 2004-02-28 05:05:41Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -227,11 +227,7 @@ void chat_display_server(GGZChatType type,
 			m = g_strdup_printf(_("You have received an "
 					      "unknown message from %s."),
 					    sender);
-#ifdef GTK2
 			gtk_xtext_append_indent(tmp->buffer,
-#else
-			gtk_xtext_append_indent(tmp,
-#endif
 						name, strlen(name),
 						m, strlen(m));
 			g_free(m);
@@ -243,11 +239,7 @@ void chat_display_server(GGZChatType type,
 	case GGZ_CHAT_TABLE:
 		if (!strncasecmp(message, "/me ", 4)) {
 			name = g_strdup_printf("%s %s", sender, message+4);
-#ifdef GTK2
 			gtk_xtext_append_indent(tmp->buffer,
-#else
-			gtk_xtext_append_indent(tmp,
-#endif
 						"*", 1, name, strlen(name));
 			g_free(name);
 		} else {
@@ -263,16 +255,10 @@ void chat_display_server(GGZChatType type,
 					       chat_get_color(sender, message),
 					       sender,
 					       bracketr);
-#ifdef GTK2
 			gtk_xtext_append_indent(tmp->buffer,
 						name, strlen(name),
 						(char*)message,
 						strlen(message));
-#else
-			gtk_xtext_append_indent(tmp,
-						name, strlen(name),
-						message, strlen(message));
-#endif
 			g_free(name);
 		}
 		if (ggzcore_conf_read_int("CHAT", "RSYNTH", FALSE)) {
@@ -287,30 +273,18 @@ void chat_display_server(GGZChatType type,
 		name = g_strdup_printf(">\003%s%s\003<",
 				       chat_get_color(sender, message),
 				       sender);
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
-#else
-		gtk_xtext_append_indent(tmp,
-					name, strlen(name),
-					message, strlen(message));
-#endif
 		g_free(name);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
 		name = g_strdup_printf("[\003%s%s\003]",
 				       chat_get_color(sender, message),
 				       sender);
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
-#else
-		gtk_xtext_append_indent(tmp,
-					name, strlen(name),
-					message, strlen(message));
-#endif
 		g_free(name);
 		break;
 	case GGZ_CHAT_BEEP:
@@ -336,38 +310,20 @@ void chat_display_local(LocalChatType type,
 	switch (type) {
 	case CHAT_SEND_PERSONAL:
 		name = g_strdup_printf("--> %s", target);
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
-#else
-		gtk_xtext_append_indent(tmp,
-					name, strlen(name),
-					message, strlen(message));
-#endif
 		g_free(name);
 		break;
 	case CHAT_LOCAL_NORMAL:
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					"---", 3,
 					(char*)message, strlen(message));
-#else
-		gtk_xtext_append_indent(tmp,
-					"---", 3,
-					message, strlen(message));
-#endif
 		break;
 	case CHAT_LOCAL_HIGH:
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					"***", 3,
 					(char*)message, strlen(message));
-#else
-		gtk_xtext_append_indent(tmp,
-					"***", 3,
-					message, strlen(message));
-#endif
 		break;
 
 	}
@@ -549,13 +505,8 @@ void chat_enter(const gchar *player, int from_room)
 		}
 
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					"-->", 3, message, strlen(message));
-#else
-        	gtk_xtext_append_indent(tmp,
-					"-->", 3, message, strlen(message));
-#endif
 	}
 }
 
@@ -593,13 +544,8 @@ void chat_part(const gchar *player, int to_room)
 		}
 
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-#ifdef GTK2
 		gtk_xtext_append_indent(tmp->buffer,
 					"<--", 3, message, strlen(message));
-#else
-        	gtk_xtext_append_indent(tmp,
-					"<--", 3, message, strlen(message));
-#endif
 	}
 }
 
