@@ -1,49 +1,71 @@
 protocol description
---------------------
+--------------------i
+
+all opcodes are sent as chars
 
 upon player join:
 
 	server sends greeting + version number
-		op_greeting
+		op_server_greeting
 		[string] "geekgame"
 		[int] 1
 
 	client sends name and picture URL
-		op_presentation
+		op_client_presentation
 		[string] "hans"
 		[string] "http://www.thisisme.com/me.png"
 
 	server broadcasts information
-		op_newplayer
+		op_server_newplayer
 		[string] "hans"
 		[string] "http://www.thisisme.com/me.png"
+
+game host (1st player must select game mode)
+
+	client sends mode
+		op_client_ruleset
+		[int] mode
+
+	server evaluates mode
+		op_server_moderesult
+		[int] result
 
 when all players have joined (and game mode is selected)
 
 	server broadcasts game start
-		op_newgame
+		op_server_gamestart
 		[char**] <gameboard>
-		op_turn
-		[int] 0
+#		op_server_turn
+#		[int] 0
 
 	client sends move
-		op_move
+		op_client_move
 		[int] 10
 		[int] 7
 
 	server broadcasts move and scoring
-		op_moved
+		op_server_moveresult
 		[int] 0
 		[int] 10
 		[int] 7
-		op_score
-		[int] 0
-		[int] 1
+#		op_server_score
+#		[int] 0
+#		[int] 1
 
-	finally, one player will win
-		op_winner
-		[int] 0
-		op_gamestop
+game interruptions by leaving/rejoining players are covered just fine
+
+	game is interrupted
+		op_server_gamestop
+
+	game is being continued
+		op_server_gamestart
+
+finally, one player will win
+
+	the winner gets announced
+#		op_server_winner
+#		[int] 0
+		op_server_gameend
 
 
 game modes
