@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.h 3457 2002-02-24 19:57:25Z jdorje $
+ * $Id: game.h 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -41,8 +41,11 @@ void game_alert_badplay(char *err_msg);
 void game_alert_play(int player, card_t card, int pos);
 void game_alert_table(void);
 void game_alert_trick(int player);
-int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
-			    char ***option_choices);
+int game_get_options(int option_cnt,
+                     char **descriptions,
+                     int *choice_cnt,
+                     int *defaults,
+                     char ***option_choices);
 void game_set_text_message(const char *mark, const char *msg);
 void game_set_cardlist_message(const char *mark, int *lengths,
 				      card_t ** cardlist);

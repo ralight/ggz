@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: protocol.h 3700 2002-03-28 01:18:27Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -77,12 +77,15 @@ typedef enum {
 	MSG_PLAYERS,
 
 	/* Requests options from the client.  It is followed by an integer n
-	   followed by n option requests.  Each option request consists of an 
-	   integer m followed by m strings representing the option choices.
-	   For each of the n options, the client must choose one of the m
-	   choices and send this back to the server with a RSP_OPTIONS.  If
-	   m==1 then the option is considered "boolean" and either a 0 or 1
-	   may be sent.  It needs a RSP_OPTIONS in response. */
+	   followed by n option requests.  Each option request consists of a
+	   descriptive text for the option, an integer m telling how many
+	   choices there are for this option, and integer in the range
+	   0..(m-1) giving the default option choice, then  m strings
+	   representing the option choices themselves.  For each of the n
+	   options, the client must choose one of the m choices and send this
+	   back to the server with a RSP_OPTIONS.  If m==1 then the option is
+	   considered "boolean" and either a 0 or 1 may be sent.  It needs a
+	   RSP_OPTIONS in response. */
 	REQ_OPTIONS,
 	
 	/* Tells the client a new hand is starting.  No data. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_options.c 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -120,12 +120,19 @@ static void dlg_options_submit(GtkWidget * widget, gpointer data)
 	destroy_options_selection();
 }
 
-void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
+void dlg_option_display(int option_cnt,
+                        char **descriptions,
+                        int *option_sizes,
+                        int *defaults,
 			char ***options)
 {
 	GtkWidget *box;
 	GtkWidget *button;
 	gint i, j;
+	GtkTooltips *tooltips;
+	
+	/* FIXME: do the tooltips need to be freed later? */
+	tooltips = gtk_tooltips_new();
 
 	/* options_selected is freed in destroy_options_selection */
 	option_count = option_cnt;
@@ -152,6 +159,9 @@ void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
 			(void) gtk_signal_connect(GTK_OBJECT(subbox), "toggled",
 					   GTK_SIGNAL_FUNC
 					   (dlg_option_checked), user_data);
+			if (descriptions[i] && descriptions[i][0] != '\0');
+				gtk_tooltips_set_tip(tooltips, subbox,
+				                     descriptions[i], NULL);
 		} else {
 			GSList *group = NULL;
 			GtkWidget *active_radio = NULL;
@@ -172,6 +182,12 @@ void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
 						   GTK_SIGNAL_FUNC
 						   (dlg_option_toggled),
 						   user_data);
+		
+				if (descriptions[i]
+				    && descriptions[i][0] != '\0');
+					gtk_tooltips_set_tip(tooltips, radio,
+		        			             descriptions[i],
+		        			             NULL);
 
 				gtk_box_pack_start(GTK_BOX(subbox), radio,
 						   FALSE, FALSE, 0);

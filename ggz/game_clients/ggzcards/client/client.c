@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: client.c 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -735,6 +735,7 @@ static int handle_req_options(void)
 {
 	int i, j;
 	int option_cnt;		/* the number of options */
+	char **descs;		/* Descriptive texts for the options. */
 	int *choice_cnt;	/* The number of choices for each option */
 	int *defaults;		/* What option choice is currently chosen for
 				   each option */
@@ -754,13 +755,15 @@ static int handle_req_options(void)
 	assert(option_cnt > 0);
 
 	/* Allocate all data */
+	descs = ggz_malloc(option_cnt * sizeof(*descs));
 	choice_cnt = ggz_malloc(option_cnt * sizeof(*choice_cnt));
 	defaults = ggz_malloc(option_cnt * sizeof(*defaults));
 	option_choices = ggz_malloc(option_cnt * sizeof(*option_choices));
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
-		if (ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0 ||
+		if (ggz_read_string_alloc(game_internal.fd, &descs[i]) < 0 ||
+		    ggz_read_int(game_internal.fd, &choice_cnt[i]) < 0 ||
 		    ggz_read_int(game_internal.fd, &defaults[i]) < 0)
 			return -1;	/* read the default */
 		option_choices[i] =
@@ -774,8 +777,8 @@ static int handle_req_options(void)
 
 	/* Get the options. */
 	set_game_state(STATE_OPTIONS);
-	if (game_get_options(option_cnt, choice_cnt, defaults, option_choices)
-	    < 0) {
+	if (game_get_options(option_cnt, descs, choice_cnt,
+	                     defaults, option_choices) < 0) {
 		(void) client_send_options(option_cnt, defaults);
 	}
 
@@ -785,10 +788,12 @@ static int handle_req_options(void)
 			ggz_free(option_choices[i][j]);	/* allocated by
 							   easysock */
 		ggz_free(option_choices[i]);
+		ggz_free(descs[i]);
 	}
 	ggz_free(defaults);
 	ggz_free(option_choices);
 	ggz_free(choice_cnt);
+	ggz_free(descs);
 
 	return 0;
 }

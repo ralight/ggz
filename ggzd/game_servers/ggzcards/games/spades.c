@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3579 2002-03-16 16:27:49Z jdorje $
+ * $Id: spades.c 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -137,13 +137,25 @@ static void spades_get_options(void)
 {
 	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
 	   100 minimum team bid: 0, 1, 2, 3, 4 double nil value: 0, 100, 200 */
-	add_option("nil_value", 3, 2, "No nil bids", "Nil is worth 50",
+	add_option("nil_value",
+	           "How much is nil worth (win or lose)?",
+	           3, 2,
+	           "No nil bids", "Nil is worth 50",
 		   "Nil is worth 100");
-	add_option("target_score", 4, 2, "Game to 100", "Game to 250",
+	add_option("target_score",
+	           "How many points does each team need to win?",
+	           4, 2,
+	           "Game to 100", "Game to 250",
 		   "Game to 500", "Game to 1000");
-	add_option("minimum_bid", 5, 3, "Minimum bid 0", "Minimum bid 1",
+	add_option("minimum_bid",
+	           "What is the minimum bid that each team must meet?",
+	           5, 3,
+	           "Minimum bid 0", "Minimum bid 1",
 		   "Minimum bid 2", "Minimum bid 3", "Minimum bid 4");
-	add_option("double_nil", 3, 0, "No blind (double) nil",
+	add_option("double_nil",
+	           "How many points is blind (double) nil worth (win or lose)?",
+	           3, 0,
+	           "No blind (double) nil",
 		   "Blind (double) nil worth 100",
 		   "Blind (double) nil worth 200");
 

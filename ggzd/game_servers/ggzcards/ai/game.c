@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: game.c 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -143,8 +143,11 @@ void game_alert_trick(int player)
 	ailib_alert_trick(player);
 }
 
-int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
-			    char ***option_choices)
+int game_get_options(int option_cnt,
+                     char **descriptions,
+                     int *choice_cnt,
+                     int *defaults,
+                     char ***option_choices)
 {
 	/* nothing */
 	return -1;

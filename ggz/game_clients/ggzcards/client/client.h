@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: client.h 3700 2002-03-28 01:18:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -222,7 +222,10 @@ extern void game_alert_trick(int player);
  *  @param option_choices Text message for each choice of each option.
  *  @return 0 if you are going to handle the option request, -1 if you aren't
  *  @note All parameters are freed after the function returns. */
-extern int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
+extern int game_get_options(int option_cnt,
+                            char **descriptions,
+                            int *choice_cnt,
+                            int *defaults,
 			    char ***option_choices);
 
 /** A gui-dependent function called to set a global TEXT message.

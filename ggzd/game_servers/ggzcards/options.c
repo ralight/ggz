@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: options.c 3700 2002-03-28 01:18:27Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -57,7 +57,7 @@ static struct option_t {
 
 static struct pending_option_t {
 	char *key;
-	/* char* text; */
+	char *desc;
 	int num;
 	int dflt;
 	char **choices;
@@ -81,7 +81,7 @@ void set_option(char *key, int value)
 	optionlist = option;
 }
 
-void add_option(char *key, int num, int dflt, ...)
+void add_option(char *key, char *desc, int num, int dflt, ...)
 {
 	va_list ap;
 	int i;
@@ -98,6 +98,7 @@ void add_option(char *key, int num, int dflt, ...)
 
 	po = ggz_malloc(sizeof(*po));
 	po->key = key;
+	po->desc = desc;
 	po->num = num;
 	po->dflt = dflt;
 	po->choices = ggz_malloc(num * sizeof(char *));
@@ -136,6 +137,7 @@ void get_options()
 		write_opcode(fd, REQ_OPTIONS);
 		ggz_write_int(fd, pending_option_count);
 		for (op = 0; op < pending_option_count; op++) {
+			ggz_write_string(fd, po->desc);
 			ggz_write_int(fd, po->num);
 			ggz_write_int(fd, po->dflt);
 			for (choice = 0; choice < po->num; choice++)
