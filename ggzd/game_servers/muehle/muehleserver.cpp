@@ -29,7 +29,7 @@
 MuehleServer::MuehleServer ()
 : GGZGameServer () {
 	m_net = new MuehleNet ();
-	m_web = MuehleLoader::loadVariant ( "twelvemensmorris" );
+	m_web = MuehleLoader::loadVariant ( "classic" );
 	m_players = 0;
 }
 
@@ -52,7 +52,7 @@ void MuehleServer::joinEvent ( int player ) {
 
 	m_players++;
 
-	if ( m_players == 2) {
+	if ( m_players == 2 ) {
 		m_net->write ( fd ( 0 ), "white.\n");
 		m_net->write ( fd ( 1 ), "black.\n");
 	}
@@ -61,6 +61,14 @@ void MuehleServer::joinEvent ( int player ) {
 // Player leave event
 void MuehleServer::leaveEvent ( int player ) {
 	std::cout << "Muehle: leaveEvent" << std::endl;
+
+	if ( m_players == 2 ) {
+		m_net->write ( fd ( !player ), "loose.\n" );
+		m_players--;
+	}
+	if ( m_players == 1 ) {
+		delete this;
+	}
 }
 
 // Game data event
