@@ -52,19 +52,23 @@ Game Protocol Comparison:
 <br>
 
 Library API for libggz:
-<a href="/docs/api/libggz/">HTML</a>
+<a href="/docs/api/libggz/">HTML</a>,
+<a href="/docs/api/libggz.pdf">PDF</a>
 <br>
 
 Library API for ggzcore:
-<a href="/docs/api/ggzcore/">HTML</a>
+<a href="/docs/api/ggzcore/">HTML</a>,
+<a href="/docs/api/ggzcore.pdf">PDF</a>
 <br>
 
 Library API for ggzmod:
-<a href="/docs/api/ggzmod/">HTML</a>
+<a href="/docs/api/ggzmod/">HTML</a>,
+<a href="/docs/api/ggzmod.pdf">PDF</a>
 <br>
 
 Library API for ggzdmod:
-<a href="/docs/api/ggzdmod/">HTML</a>
+<a href="/docs/api/ggzdmod/">HTML</a>,
+<a href="/docs/api/ggzdmod.pdf">PDF</a>
 <br><br>
 
 <i>Admin docs</i><br>

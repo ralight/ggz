@@ -53,19 +53,23 @@ Vergleich der Protokolle von Spielen:
 <br>
 
 API der Bibliothek libggz:
-<a href="/docs/api/libggz/">HTML</a>
+<a href="/docs/api/libggz/">HTML</a>,
+<a href="/docs/api/libggz.pdf">PDF</a>
 <br>
 
 API der Bibliothek ggzcore:
 <a href="/docs/api/ggzcore/">HTML</a>
+<a href="/docs/api/ggzcore.pdf">PDF</a>
 <br>
 
 API der Bibliothek ggzmod:
 <a href="/docs/api/ggzmod/">HTML</a>
+<a href="/docs/api/ggzmod.pdf">PDF</a>
 <br>
 
 API der Bibliothek ggzdmod:
 <a href="/docs/api/ggzdmod/">HTML</a>
+<a href="/docs/api/ggzdmod.pdf">PDF</a>
 <br><br>
 
 <i>Administrator-Dokumentation</i><br>
