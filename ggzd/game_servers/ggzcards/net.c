@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: net.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -87,8 +87,7 @@ void broadcast_player_list(void)
 	player_t p;
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_player_list(p);
+		(void) send_player_list(p);
 }
 
 /* Send out play for player to _all_ players. Also symbolizes that this play
@@ -114,8 +113,7 @@ void broadcast_play(seat_t player, card_t card)
 	player_t p;
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_play(p, player, card);
+		(void) send_play(p, player, card);
 }
 
 /* Send a gameover to all players. cnt is the number of winners, plist is the
@@ -151,8 +149,6 @@ int send_gameover(int winner_cnt, player_t * winners)
 		set_player_message(p);	/* some data could have changed */
 
 		fd = get_player_socket(p);
-		if (fd == -1)
-			continue;
 
 		if (write_opcode(fd, MSG_GAMEOVER) < 0 ||
 		    ggz_write_int(fd, winner_cnt) < 0)
@@ -180,11 +176,6 @@ int send_table(player_t p)
 
 	ggzdmod_log(game.ggz, "Sending table to player %d/%s.", p,
 		    get_player_name(p));
-
-	if (fd == -1) {
-		ggzdmod_log(game.ggz, "ERROR: send_table: fd==-1.");
-		return -1;
-	}
 
 	if (write_opcode(fd, MSG_TABLE) < 0)
 		status = -1;
@@ -252,8 +243,7 @@ void broadcast_sync(void)
 	player_t p;
 
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_sync(p);
+		(void) send_sync(p);
 }
 
 /* Request a bid from player p.  bid_count is the number of bids; bids is an
@@ -298,14 +288,14 @@ void broadcast_bid(player_t bidder, bid_t bid)
 	player_t p;
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_bid(p, bidder, bid);
+		(void) send_bid(p, bidder, bid);
 }
 
 /* Request a player p to make a play from a specific seat s's hand */
 int send_play_request(player_t p, seat_t s)
 {
 	seat_t s_r = CONVERT_SEAT(s, p);
+	int fd = get_player_socket(p);
 
 	ggzdmod_log(game.ggz, "Requesting player %d/%s "
 		    "to play from seat %d/%s's hand.", p,
@@ -319,18 +309,8 @@ int send_play_request(player_t p, seat_t s)
 	set_game_state(STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
 
-	if (get_player_status(p) == GGZ_SEAT_BOT) {
-		/* request a play from the ai */
-		handle_play_event(ai_get_play(p, s));
-	} else {
-		int fd = get_player_socket(p);
-		if (fd == -1)
-			ggzdmod_log(game.ggz,
-				    "ERROR: SERVER BUG: "
-				    "-1 fd in req_play");
-		if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
-			return -1;
-	}
+	if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
+		return -1;
 
 	return 0;
 }
@@ -338,8 +318,6 @@ int send_play_request(player_t p, seat_t s)
 int send_badplay(player_t p, char *msg)
 {
 	int fd = get_player_socket(p);
-	if (fd == -1)		/* don't send to bots */
-		return 0;
 	set_game_state(STATE_WAIT_FOR_PLAY);
 	if (write_opcode(fd, MSG_BADPLAY) < 0 || ggz_write_string(fd, msg) < 0)
 		return -1;
@@ -352,9 +330,6 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 {
 	int fd = get_player_socket(p);
 	int i, status = 0;
-
-	if (fd == -1)		/* Don't send to a bot */
-		return 0;
 
 	/* We used to refuse to send hands of size 0, but some games may need
 	   to do this! */
@@ -408,8 +383,6 @@ int send_trick(player_t winner)
 
 	for (p = 0; p < game.num_players; p++) {
 		fd = get_player_socket(p);
-		if (fd == -1)
-			continue;
 
 		if (write_opcode(fd, MSG_TRICK) < 0 ||
 		    write_seat(fd,
@@ -425,12 +398,6 @@ int send_newgame_request(player_t p)
 {
 	int fd, status;
 	fd = get_player_socket(p);
-	if (fd == -1) {
-		ggzdmod_log(game.ggz, "ERROR: "
-			    "req_newgame: fd is -1 for player %d/%s.", p,
-			    get_player_name(p));
-		return -1;
-	}
 
 	ggzdmod_log(game.ggz, "Sending out a REQ_NEWGAME to player %d/%s.", p,
 		    get_player_name(p));
@@ -447,8 +414,6 @@ int send_newgame(player_t p)
 {
 	int fd = get_player_socket(p);
 	
-	assert(get_player_status(p) == GGZ_SEAT_PLAYER);
-	
 	return write_opcode(fd, MSG_NEWGAME);
 }
 
@@ -459,8 +424,7 @@ void broadcast_newgame(void)
 	ggzdmod_log(game.ggz, "Broadcasting a newgame message.");
 
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_newgame(p);
+		(void) send_newgame(p);
 }
 
 
@@ -477,8 +441,7 @@ void broadcast_newhand(void)
 	player_t p;
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_newhand(p);
+		(void) send_newhand(p);
 }
 
 
@@ -574,8 +537,7 @@ void broadcast_global_text_message(const char *mark, const char* message)
 	player_t p;
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_global_text_message(p, mark, message);
+		(void) send_global_text_message(p, mark, message);
 }
 
 int send_global_cardlist_message(player_t p, const char *mark, int *lengths,
@@ -611,6 +573,5 @@ void broadcast_global_cardlist_message(const char *mark, int *lengths,
 {
 	player_t p;
 	for (p = 0; p < game.num_players; p++)
-		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
-			(void) send_global_cardlist_message(p, mark, lengths, cardlist);
+		(void) send_global_cardlist_message(p, mark, lengths, cardlist);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3378 2002-02-17 02:12:15Z jdorje $
+ * $Id: spades.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -32,6 +32,23 @@
 #include "common.h"
 
 #include "spades.h"
+
+
+#define GSPADES ( *(spades_game_t *)(game.specific) )
+typedef struct spades_game_t {
+	/* options */
+	int nil_value;		/* 0 for none; generally 50 or 100 */
+	int double_nil_value;	/* 0 for none; generally 100 or 200 */
+	int minimum_team_bid;	/* the minimum bid by one team */
+	int nil_tricks_count;	/* do tricks by a nil bidder count toward the
+				   bid? */
+
+	/* data */
+	int show_hand[4];	/* this is 0 if we're supposed to conceal the
+				   hand (for blind bids */
+	int bags[2];		/* # of overtricks ("sandbags") taken by each
+				   team */
+} spades_game_t;
 
 static int spades_is_valid_game(void);
 static void spades_init_game(void);
@@ -97,7 +114,8 @@ static void spades_init_game(void)
 					   until it's broken */
 	game.target_score = 500;	/* adjustable by options */
 	game.trump = SPADES;
-	game.ai_type = GGZ_AI_SPADES;
+	
+	game.ai_type = "spades";
 
 	GSPADES.nil_value = 100;
 	GSPADES.nil_tricks_count = 1;

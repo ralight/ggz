@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: ai.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -35,123 +35,80 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
-#include "ai/aicommon.h"
 #include "ai.h"
 #include "common.h"
 
-extern struct ai_function_pointers random_ai_funcs;
-extern struct ai_function_pointers spades_ai_funcs;
-extern struct ai_function_pointers suaro_ai_funcs;
-
-struct ai_function_pointers *ai_funcs[] = { &random_ai_funcs,
-	&spades_ai_funcs,
-	&suaro_ai_funcs
-};
+static char* path = NULL;
 
 const char *ai_get_name(player_t p)
 {
 	const char *name;
-	name = ai_funcs[game.ai_type]->get_name(p);
-	if (name == NULL)
-		name = get_player_name(p);
+	
+	name = get_player_name(p);
 	if (name == NULL)
 		name = "Bot";
 	return name;
 }
 
-/* this inits AI static data at the start of a hand */
-void ai_start_hand()
+
+void start_ai(player_t p, char* ai_type)
 {
-	ailib_start_hand();
-	ai_funcs[game.ai_type]->start_hand();
-}
-
-/* this alerts the ai to someone else's bid/play */
-void ai_alert_bid(player_t p, bid_t bid)
-{
-	ailib_alert_bid(p, bid);
-	ai_funcs[game.ai_type]->alert_bid(p, bid);
-}
-
-void ai_alert_play(player_t p, card_t card)
-{
-	ailib_alert_play(p, card);
-	ai_funcs[game.ai_type]->alert_play(p, card);
-}
-
-/* this gets a bid or play from the ai */
-bid_t ai_get_bid(player_t p, bid_t * bid_choices, int bid_count)
-{
-	bid_t bid =
-		ai_funcs[game.ai_type]->get_bid(p, bid_choices, bid_count);
-#ifdef AI_DEBUG
-	char buf[100];
-	int i;
-	game.funcs->get_bid_text(buf, sizeof(buf), bid);
-	ai_debug("AI chose to bid %s.", buf);
-	for (i = 0; i < bid_count; i++)
-		if (bid_choices[i].bid == bid.bid)
-			break;
-	if (i > bid_count)
-		ai_debug("AI chose invalid bid!!!");
-#endif /* AI_DEBUG */
-	return bid;
-}
-
-card_t ai_get_play(player_t p, seat_t s)
-{
-	card_t card = ai_funcs[game.ai_type]->get_play(p, s);
-#ifdef AI_DEBUG
-	int i;
-	ai_debug("AI selected card (%d %d %d) to play.", card.face,
-		 card.suit, card.deck);
-	for (i = 0; i < game.seats[s].hand.hand_size; i++)
-		if (are_cards_equal(game.seats[s].hand.cards[i], card) &&
-		    game.funcs->verify_play(card) == NULL)
-			break;
-	if (i > game.seats[s].hand.hand_size)
-		ai_debug("AI chose invalid play!");
-#endif /* AI_DEBUG */
-	return card;
-}
-
-void ai_debug(const char *fmt, ...)
-{
-	va_list ap;
-	char buf[4096];
-#if 0				/* FIXME: ifdef AI_DEBUG */
-	char *mode;
-	player_t player;
-	const char *pname;
-
-	va_start(ap, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, ap);
-	va_end(ap);
-
-	switch (game.state) {
-	case STATE_WAIT_FOR_BID:
-		mode = "BID ";
-		player = game.next_bid;	/* FIXME */
-		break;
-	case STATE_WAIT_FOR_PLAY:
-		mode = "PLAY";
-		player = game.curr_play;
-		break;
-	default:
-		mode = "????";
-		player = -1;
-	}
-
-	pname = get_player_name(player);
-
-	(void) ggzdmod_log(game.ggz, "AI-DEBUG: %s: %s: %s", mode, pname,
-			   buf);
-#else  /* AI_DEBUG */
-	va_start(ap, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, ap);
-	va_end(ap);
+	/* It would be really cool if we could use the ggzmod library
+	   to do this part... */
+	int fd_pair[2];
+	int pid;
+	char cmd[1024];
+	char *argv[] = {cmd, NULL};
 	
-	(void) ggzdmod_log(game.ggz, "AI-DEBUG: %s", buf);
-#endif /* AI_DEBUG */
+	if (ai_type == NULL)
+		ai_type = "random";
+		
+	assert(get_player_status(p) == GGZ_SEAT_BOT);
+	
+	snprintf(cmd, sizeof(cmd),
+	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
+	
+	printf("We're going to exec %s.\n\n", cmd);
+	
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
+		ggz_error_sys_exit("socketpair failed");
+		
+	if ( (pid = fork()) < 0)
+		ggz_error_sys_exit("fork failed");
+	else if (pid == 0) {
+		/* child */
+		close(fd_pair[0]);
+		
+		if (fd_pair[1] != 3) {
+			if (dup2(fd_pair[1], 3) != 3
+			    || close(fd_pair[1]) < 0)
+				ggz_error_sys_exit("dup/close failed");
+		}
+		
+		execv(argv[0], argv);
+		
+		ggz_error_sys_exit("exec of %s failed", argv[0]);
+	} else {
+		/* parent */
+		close(fd_pair[1]);
+		
+		game.players[p].fd = fd_pair[0];
+		game.players[p].pid = pid;
+	}	
+}
+			
+void init_path(const char *exec_cmd)
+{
+	int i = strlen(exec_cmd);
+	
+	path = ggz_strdup(exec_cmd);
+	
+	while (path[i] != '/') {
+		path[i] = '\0';
+		i--;
+	}
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: common.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -251,8 +251,7 @@ static int try_to_start_game(void)
 	int ready = 1;
 
 	for (p = 0; p < game.num_players; p++)
-		if (!game.players[p].ready
-		    && get_player_status(p) != GGZ_SEAT_BOT) {
+		if (!game.players[p].ready) {
 			/* we could send another REQ_NEWGAME as a reminder,
 			   but there would be no way for the client to know
 			   that it was a duplicate. */
@@ -312,8 +311,7 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
-			if (get_player_status(p) != GGZ_SEAT_BOT)
-				(void) send_newgame_request(p);
+			(void) send_newgame_request(p);
 		break;
 	case STATE_NEXT_HAND:
 		ggzdmod_log(game.ggz, "Next play: dealing a new hand.");
@@ -366,7 +364,6 @@ void next_play(void)
 		}
 		game.bid_count = 0;
 
-		ai_start_hand();
 		game.funcs->start_bidding();
 		next_play();	/* recursion */
 		break;
@@ -454,6 +451,7 @@ static void handle_launch_event(void)
 	for (p = 0; p < game.num_players; p++) {
 		game.players[p].seat = -1;
 		game.players[p].allbids = NULL;
+		game.players[p].fd = -1;
 	}
 
 	/* we don't yet know the number of seats */
@@ -681,7 +679,6 @@ int handle_play_event(card_t card)
 	/* do extra handling */
 	if (card.suit == game.trump)
 		game.trump_broken = 1;
-	ai_alert_play(game.next_play, card);
 	game.funcs->handle_play(card);
 
 	/* set up next move */
@@ -746,7 +743,6 @@ int handle_bid_event(player_t p, bid_t bid)
 	game.players[p].bid = bid;
 
 	/* handle the bid */
-	ai_alert_bid(p, bid);
 	game.players[p].bid_count++;
 	game.funcs->handle_bid(p, bid);
 
@@ -841,7 +837,15 @@ void init_game()
 	game.name = game_data[game.which_game].full_name;
 
 	/* now we do all the game-specific initialization... */
+	assert(game.ai_type == NULL);
 	game.funcs->init_game();
+	
+	for (p = 0; p < game.num_players; p++)
+		if (get_player_status(p) == GGZ_SEAT_BOT) {
+			printf("Starting AI on seat %d.\n\n", p);
+			start_ai(p, game.ai_type);
+		} else
+			printf("Skipping seat %d.\n\n", p);
 
 	game.deck = cards_create_deck(game.deck_type);
 	if (game.max_hand_length == 0)
@@ -939,6 +943,25 @@ GGZSeatType get_seat_status(seat_t s)
 		return get_player_status(game.seats[s].player);
 	else
 		return GGZ_SEAT_NONE;
+}
+
+int get_player_socket(int p)
+{
+	GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+	int fd;
+	
+	switch (seat.type) {
+	case GGZ_SEAT_PLAYER:
+		fd = seat.fd;
+		break;
+	case GGZ_SEAT_BOT:
+		fd = game.players[p].fd;
+		break;
+	default:
+		fd = -1;
+		break;
+	}
+	return fd;
 }
 
 /* libggz should handle this instead! */

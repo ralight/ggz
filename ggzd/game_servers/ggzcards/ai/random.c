@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: random.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -36,75 +36,47 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
+#include <ggz.h>
 
-static char *get_name(player_t p);
-static void start_hand(void);
-static void alert_bid(player_t p, bid_t bid);
-static void alert_play(player_t p, card_t card);
-static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count);
-static card_t get_play(player_t p, seat_t s);
+#include "client.h"
+#include "game.h"
 
-struct ai_function_pointers random_ai_funcs = {
-	get_name,
-	start_hand,
-	alert_bid,
-	alert_play,
-	get_bid,
-	get_play
-};
-
-static char *get_name(player_t p)
-{
-	char buf[17];
-	snprintf(buf, sizeof(buf), "Random %d", p);
-	return ggz_strdup(buf);
-}
+void start_hand(void);
+void alert_bid(int p, bid_t bid);
+void alert_play(int p, card_t card);
+bid_t get_bid(bid_t * bid_choices, int bid_count);
+card_t get_play(int play_hand, int *valid_plays);
 
 /* this inits AI static data at the start of a hand */
-static void start_hand(void)
+void start_hand(void)
 {
 	/* nothing */
 }
 
 /* this alerts the ai to someone else's bid/play */
-static void alert_bid(player_t p, bid_t bid)
+void alert_bid(int p, bid_t bid)
 {
 	/* nothing */
 }
 
-static void alert_play(player_t p, card_t card)
+void alert_play(int p, card_t card)
 {
 	/* nothing */
 }
 
 /* this gets a bid or play from the ai */
-static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
+bid_t get_bid(bid_t * bid_choices, int bid_count)
 {
 	int choice = random() % bid_count;
 	return bid_choices[choice];
 }
 
-static card_t get_play(player_t p, seat_t s)
+card_t get_play(int play_hand, int *valid_plays)
 {
-	hand_t *hand = &game.seats[s].hand;
-	int choices[hand->hand_size], i, max;
-
-	for (i = 0; i < hand->hand_size; i++)
-		choices[i] = i;
-
-	/* This clever algorithm will search at most n times to find at
-	   random a correct element from the set of n */
-	for (max = hand->hand_size; max > 0; max--) {
-		int choice = random() % max;
-		card_t selection = hand->cards[choices[choice]];
-		char *error = game.funcs->verify_play(selection);
-		if (error == NULL)
-			return selection;
-
-		choices[choice] = choices[max - 1];
-	}
-
-	ggzdmod_log(game.ggz, "RANDOM-AI: get_play: " "no valid play found.");
-	return UNKNOWN_CARD;
+	hand_t *hand = &ggzcards.players[play_hand].hand;
+	int choice;
+	
+	choice = random() % hand->hand_size;
+	
+	return hand->card[choice];
 }

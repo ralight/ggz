@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: cards.h 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -30,11 +30,6 @@
 #include <config.h>		/* Site-specific config */
 
 #include "protocol.h"		/* contains actual card structures */
-
-extern char *suit_names[];
-extern char *short_suit_names[];
-extern char *face_names[];
-extern char *short_face_names[];
 
 /* A hand structure */
 typedef struct hand_t {

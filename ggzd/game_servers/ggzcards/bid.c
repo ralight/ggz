@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: bid.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -84,14 +84,7 @@ int req_bid(player_t p)
 	set_player_message(p);
 	set_game_state(STATE_NONE);
 
-	if (get_player_status(p) == GGZ_SEAT_BOT) {
-		/* request a bid from the ai */
-		handle_bid_event(p,
-				 ai_get_bid(p, bid_data->bids,
-					    bid_data->bid_count));
-		return 0;
-	} else
-		return send_bid_request(p, bid_data->bid_count,
+	return send_bid_request(p, bid_data->bid_count,
 					bid_data->bids);
 }
 
@@ -103,7 +96,6 @@ int request_all_bids(void)
 {
 	player_t p;
 	int status = 0;
-	bid_t *bids;
 
 	ggzdmod_log(game.ggz, "Requesting bids from some/all players.");
 
@@ -121,29 +113,12 @@ int request_all_bids(void)
 
 	/* Send all human-player bid requests */
 	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].bid_data.bid_count > 0
-		    && get_player_status(p) == GGZ_SEAT_PLAYER) {
+		if (game.players[p].bid_data.bid_count > 0) {
 			if (send_bid_request
 			    (p, game.players[p].bid_data.bid_count,
 			     game.players[p].bid_data.bids) < 0)
 				status = -1;
 		}
-
-	/* Now calculate all bot-player bid requests. */
-	bids = ggz_malloc(sizeof(*bids) * game.num_players);
-	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].bid_data.bid_count > 0
-		    && get_player_status(p) == GGZ_SEAT_BOT)
-			bids[p] =
-				ai_get_bid(p, game.players[p].bid_data.bids,
-					   game.players[p].bid_data.
-					   bid_count);
-
-	/* Now register all bot-player bid requests. */
-	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].bid_data.bid_count > 0
-		    && get_player_status(p) == GGZ_SEAT_BOT)
-			handle_bid_event(p, bids[p]);
 
 	/* OK, we're done.  We return now, and continue to wait for responses
 	   from non-AI players. There's still a potential problem because as

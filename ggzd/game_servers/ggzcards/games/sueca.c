@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: sueca.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -90,7 +90,7 @@ static void sueca_init_game(void)
 	game.target_score = 4;
 	/* Must break trump */
 	game.must_break_trump = 1;
-	game.ai_type = GGZ_AI_RANDOM;
+	
 	/* Use the SUECA deck */
 	game.deck_type = GGZ_DECK_SUECA;
 	/* Point to the game rules */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: cards.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -37,17 +37,6 @@ struct deck_t {
 	card_t *cards;
 	int size;
 	int ptr;		/* a pointer into the deck used for dealing */
-};
-
-char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
-char *short_suit_names[4] = { "C", "D", "H", "S" };
-char *face_names[15] =
-	{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
-	"eight", "nine", "ten", "jack", "queen", "king", "ace"
-};
-char *short_face_names[15] =
-	{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
-	"K", "A"
 };
 
 /* cards_create_deck() set up the deck of the given type This is more complex 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: suaro.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -32,6 +32,28 @@
 #include "common.h"
 
 #include "suaro.h"
+
+#define SUARO ( *(suaro_game_t *)(game.specific) )
+typedef struct suaro_game_t {
+	/* options */
+	int shotgun;		/* are we playing shotgun suaro? */
+	int unlimited_redoubling;	/* can doubling continue
+					   indefinitely? */
+	int persistent_doubles;	/* a double isn't negated by another bid */
+
+	int pass_count;		/* number of passes in a row */
+
+	/* contract information */
+	int contract;		/* value of the contract */
+	int kitty;		/* 0=>no kitty; 1=>kitty.  Only applicable in
+				   shotgun suaro. */
+	int contract_suit;	/* 0=>low, 5=>high, as above */
+	int bonus;		/* 1 = regular; 2 = doubled; 4 = redoubled;
+				   etc. */
+	player_t declarer;	/* player with the contract */
+
+	int kitty_revealed;
+} suaro_game_t;
 
 static int suaro_is_valid_game(void);
 static void suaro_init_game(void);
@@ -105,7 +127,8 @@ static void suaro_init_game(void)
 	game.max_hand_length = 9;
 	game.rules_url = "http://suaro.dhs.org/";
 	game.target_score = 50;
-	game.ai_type = GGZ_AI_SUARO;
+	
+	game.ai_type = "suaro";
 
 	SUARO.shotgun = 1;	/* shotgun suaro */
 	SUARO.declarer = -1;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3412 2002-02-18 09:02:33Z jdorje $
+ * $Id: common.h 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -75,7 +75,8 @@ struct game_t {
 	/* Game meta-data */
 	game_type_t which_game;	/**< the type of game game */
 	struct game_function_pointers *funcs;	/**< an array of game-specific functions */
-	ai_type_t ai_type;	/**< the type of AI we're using */
+	
+	char* ai_type;	/**< the type of AI we're using */
 
 	deck_type_t deck_type;	/**< the type of deck used */
 	deck_t *deck;		/**< the deck being used */
@@ -218,7 +219,7 @@ GGZSeatType get_seat_status(seat_t s);
 
 #define get_player_name(p) (ggzdmod_get_seat(game.ggz, p).name)
 #define get_player_status(p) (ggzdmod_get_seat(game.ggz, p).type)
-#define get_player_socket(p) (ggzdmod_get_seat(game.ggz, p).fd)
+int get_player_socket(int p);
 
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);

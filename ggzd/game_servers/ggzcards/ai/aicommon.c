@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3424 2002-02-19 14:41:25Z jdorje $
+ * $Id: aicommon.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -32,9 +32,10 @@
 #  include <config.h>		/* Site-specific config */
 #endif
 
+#include <assert.h>
 #include <string.h>
 
-#include "common.h"
+#include "client.h"
 
 #include "aicommon.h"
 
@@ -43,27 +44,44 @@ static int playcount[4][4];	/* how many cards each player has played from
 				   each suit */
 static int suits[4][4];		/* information about what each of the 4
 				   players might hold in each of the 4 suits */
+				
+static int leader = -1;
+static int tricks[4];
 
 void ailib_start_hand(void)
 {
 	/* reset cards played */
 	memset(played, 0, 4 * sizeof(int));
 	memset(playcount, 0, 4 * 4 * sizeof(int));
+	
+	memset(tricks, 0, 4 * sizeof(int));
+	leader = -1;
 
 	/* anyone _could_ have any card */
 	memset(suits, 255, 4 * 4 * sizeof(int));
 }
 
-void ailib_alert_bid(player_t p, bid_t bid)
+void ailib_alert_trick(int p)
+{
+	leader = -1;
+	tricks[p]++;		
+}
+
+void ailib_alert_bid(int p, bid_t bid)
 {
 
 }
 
-void ailib_alert_play(player_t p, card_t play)
+void ailib_alert_play(int p, card_t play)
 {
 	/* there's a lot of information we can track from players' plays */
-	card_t lead = game.seats[game.players[game.leader].seat].table;
-	player_t p2;
+	card_t lead;
+	int p2;
+	
+	if (leader < 0)
+		leader = p;
+	
+	lead = ggzcards.players[leader].table_card;
 
 	/* remember which cards have been played. */
 	played[(int) play.suit] |= 1 << play.face;
@@ -79,43 +97,66 @@ void ailib_alert_play(player_t p, card_t play)
 
 }
 
+void ailib_our_play(int play_hand)
+{
+	if (leader < 0)
+		leader = play_hand;
+}
+
+
+
+int get_tricks(int player)
+{
+	assert(player >= 0 && player < 4);
+	return tricks[player];
+}
+
+int get_leader(void)
+{
+	assert(leader >= 0);
+	return leader;
+}
+
 int libai_is_card_played(char suit, char face)
 {
 	return played[(int) suit] & (1 << face);
 }
 
-void libai_player_doesnt_have_card(player_t p, card_t card)
+void libai_player_doesnt_have_card(int p, card_t card)
 {
 	suits[p][(int) card.suit] &= ~(1 << card.face);
 }
 
-int libai_get_suit_map(player_t p, char suit)
+int libai_get_suit_map(int p, char suit)
 {
 	return suits[p][(int) suit];
 }
 
-int libai_might_player_have_card(player_t p, card_t card)
+int libai_might_player_have_card(int p, card_t card)
 {
 	return suits[p][(int) card.suit] & (1 << card.face);
 }
 
-int libai_is_card_in_hand(seat_t seat, card_t card)
+int libai_is_card_in_hand(int seat, card_t card)
 {
+	hand_t *hand = &ggzcards.players[seat].hand;
+	
 	/* TODO: avoid cheating! */
 	int i;
-	for (i = 0; i < game.seats[seat].hand.hand_size; i++)
-		if (are_cards_equal(game.seats[seat].hand.cards[i], card))
+	for (i = 0; i < hand->hand_size; i++)
+		if (are_cards_equal(hand->card[i], card))
 			return 1;
 	return 0;
 }
 
-card_t libai_get_highest_card_in_suit(seat_t seat, char suit)
+card_t libai_get_highest_card_in_suit(int seat, char suit)
 {
 	card_t highest = UNKNOWN_CARD;
 	int i;
+	hand_t *hand = &ggzcards.players[seat].hand;
 
-	for (i = 0; i < game.seats[seat].hand.hand_size; i++) {
-		card_t card = game.seats[seat].hand.cards[i];
+	for (i = 0; i < hand->hand_size; i++) {
+		card_t card = hand->card[i];
 		if (card.suit == suit && card.face > highest.face)
 			highest = card;
 	}
@@ -145,23 +186,23 @@ int libai_cards_played_in_suit(char suit)
 }
 
 
-int libai_cards_played_in_suit_p(seat_t s, char suit)
+int libai_cards_played_in_suit_p(int s, char suit)
 {
 	return playcount[s][(int) suit];
 }
 
 
-int libai_count_suit(seat_t seat, char suit)
+int libai_count_suit(int seat, char suit)
 {
-	hand_t *hand = &game.seats[seat].hand;
+	hand_t *hand = &ggzcards.players[seat].hand;
 	int i, total = 0;
 	for (i = 0; i < hand->hand_size; i++)
-		if (hand->cards[i].suit == suit)
+		if (hand->card[i].suit == suit)
 			total++;
 	return total;
 }
 
-void libai_forget_players_hand(player_t p, char suit)
+void libai_forget_players_hand(int p, char suit)
 {
 	suits[p][(int) suit] = (~played[(int) suit]) & 0x7ffff;
 }

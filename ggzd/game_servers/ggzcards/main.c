@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: main.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -34,12 +34,21 @@
 #include <stdlib.h>
 #include <ggz.h>
 
+/* Needed for "select" loop only */
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "common.h"
 
 /* Both of these functions are taken from FreeCiv. */
 /* static int is_option(const char *option_name,char *option); */
 static char *get_option(const char *option_name, char **argv, int *i,
 			int argc);
+			
+			
+static void main_loop(GGZdMod *ggz);
 
 /***************************************************************
  ...
@@ -116,8 +125,10 @@ int main(int argc, char **argv)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_join_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
-			    &handle_player_event);
+	/* ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
+			    &handle_player_event); */
+			
+	init_path(argv[0]);
 	
 	/* See bid union in types.h */
 	assert(sizeof(int) == 4 && sizeof(char) == 1);
@@ -162,10 +173,54 @@ int main(int argc, char **argv)
 	if (ggzdmod_connect(ggz) < 0)
 		return -1;
 	(void) ggzdmod_log(ggz, "Starting table.");
-	(void) ggzdmod_loop(ggz);
+	
+	main_loop(ggz);
+	
 	(void) ggzdmod_log(ggz, "Halting table.");
 	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
 	return 0;
+}
+
+static void main_loop(GGZdMod *ggz)
+{
+	/* FIXME: I'd like to just use ggzdmod_loop, but it won't montitor
+	   the bot channels. */
+	/* (void) ggzdmod_loop(ggz); */
+	do {
+		/* FIXME: this is a whole lot of unnecessary code... */
+		fd_set fd_set;
+		int max_fd = ggzdmod_get_fd(ggz), p, status;
+		
+		FD_ZERO(&fd_set);
+		FD_SET(max_fd, &fd_set);
+		
+		for (p = 0; p < game.num_players; p++) {
+			int fd = get_player_socket(p);
+			if (fd < 0)
+				continue;
+			if (fd > max_fd)
+				max_fd = fd;
+			FD_SET(fd, &fd_set);			
+		}
+		
+		status = select(max_fd + 1, &fd_set, NULL, NULL, NULL);
+		
+		if (status <= 0) {
+			if (errno != EINTR)
+				break;
+			continue;
+		}
+		
+		if (FD_ISSET(ggzdmod_get_fd(ggz), &fd_set))
+			ggzdmod_dispatch(ggz);
+			
+		for (p = 0; p < game.num_players; p++) {
+			int fd = get_player_socket(p);
+			
+			if (fd >= 0 && FD_ISSET(fd, &fd_set))
+				handle_player_event(ggz, GGZDMOD_EVENT_PLAYER_DATA, &p);		
+		}	
+	} while (ggzdmod_get_state(ggz) < GGZDMOD_STATE_DONE);
 }

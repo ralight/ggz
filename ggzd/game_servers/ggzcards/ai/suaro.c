@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: suaro.c 3425 2002-02-20 03:45:35Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -29,42 +29,39 @@
 #  include <config.h>		/* Site-specific config */
 #endif
 
+#include <assert.h>
 #include <stdlib.h>
 
-#include "ai.h"
-#include "common.h"
+#include <ggz.h>
 
-#include "games/suaro.h"
-
+#include "client.h"
+#include "game.h"
+#include "suaro.h"
 #include "aicommon.h"
 
-static char *get_name(player_t p);
-static void start_hand(void);
-static void alert_bid(player_t p, bid_t bid);
-static void alert_play(player_t p, card_t card);
-static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count);
-static card_t get_play(player_t p, seat_t s);
+static char *short_suaro_suit_names[] = { "lo", "C", "D", "H", "S", "hi" };
 
-struct ai_function_pointers suaro_ai_funcs = {
-	get_name,
-	start_hand,
-	alert_bid,
-	alert_play,
-	get_bid,
-	get_play
-};
+void start_hand(void);
+void alert_bid(int p, bid_t bid);
+void alert_play(int p, card_t card);
+bid_t get_bid(bid_t * bid_choices, int bid_count);
+card_t get_play(int play_hand, int *valid_plays);
 
-/* 
+static int declarer = -1;
+static bid_t contract;
+static char trump = -1;
+
+/*
  *
  *  This is a simple expert system.  It follows the following algorithm:
  *
  * BIDDING
  *
- * We basically count the number of "points" we have, where 100 points 
+ * We basically count the number of "points" we have, where 100 points
  * equals one trick.
  *
  * - Find longest, strongest [1] suit.  Let this be trump.
- * - Assign yourself 20 points for a 3-card trump, 50 points for a 4+ card 
+ * - Assign yourself 20 points for a 3-card trump, 50 points for a 4+ card
  *   trump.
  * - For each suit, count the estimated number of points:
  *   - Figure that the opponent has a 60% chance of having any card
@@ -83,11 +80,11 @@ struct ai_function_pointers suaro_ai_funcs = {
  *               A-K-Q-8 => 4 tricks
  *               A-K-8   => 2.6 tricks (expext opponent to have 2.4 cards)
  * - Total up the number of points, and divide by 100 rounding down.
- * - This is our bid: suit and count.  If we can't make this bid (opponent 
+ * - This is our bid: suit and count.  If we can't make this bid (opponent
  *   already bid too high), just pass.
  *
- * Problems: it doesn't take into account opponents bidding.  There's no 
- * chance of it bidding on the kitty.  It is too conservative, and always 
+ * Problems: it doesn't take into account opponents bidding.  There's no
+ * chance of it bidding on the kitty.  It is too conservative, and always
  * makes its bid (but doesn't bid often enough).
  *
  *
@@ -105,38 +102,44 @@ struct ai_function_pointers suaro_ai_funcs = {
  *     - Play our lowest card higher than the card lead, if possible.
  *     - Otherwise play our lowest card.
  *
- * Problems: it never throws.  It never considers splits, and will lead from 
- * a K-J rather than a Q-J.  It never tries to put the opponent in the lead, 
+ * Problems: it never throws.  It never considers splits, and will lead from
+ * a K-J rather than a Q-J.  It never tries to put the opponent in the lead,
  * but always leads the highest card available.
  *
  */
 
-
-static char *get_name(player_t p)
-{
-	return NULL;
-}
-
 /* this inits AI static data at the start of a hand */
-static void start_hand(void)
+void start_hand(void)
 {
-
+	declarer = -1;
+	trump = -1;
 }
 
 /* this alerts the ai to someone else's bid/play */
-static void alert_bid(player_t p, bid_t bid)
+void alert_bid(int p, bid_t bid)
 {
 	/* we really need to take advantage of this information! */
+	
+	if (bid.sbid.val > 0) {
+		declarer = p;
+		contract = bid;
+		
+		contract.sbid.suit = bid.sbid.suit;
+		if (contract.sbid.suit == SUARO_HIGH || contract.sbid.suit == SUARO_LOW)
+			trump = -1;
+		else
+			trump = contract.sbid.suit - 1;
+	}
 }
 
-static void alert_play(player_t p, card_t card)
+void alert_play(int p, card_t card)
 {
-
+	/* nothing */
 }
 
 /* This just gives an arbitrary impression of suit strength, sort-of
    accounting for cards that have already been played. */
-static int count_suit_strength(seat_t seat, char suit, int lo)
+static int count_suit_strength(int seat, char suit, int lo)
 {
 	card_t card;
 	int coefficient = 100;
@@ -170,7 +173,7 @@ static int count_suit_strength(seat_t seat, char suit, int lo)
 
 /* Finds a normal suit (not a suaro suit) that is strongest, using
    count_suit_strength. */
-static char find_best_suit(seat_t seat, int lo)
+static char find_best_suit(int seat, int lo)
 {
 	int bestsuit = -1, bestsuitlength = -1, bestsuitstrength = -1;
 	char suit;
@@ -193,25 +196,24 @@ static char find_best_suit(seat_t seat, int lo)
 }
 
 /* this gets a bid or play from the ai */
-static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
+bid_t get_bid(bid_t * bid_choices, int bid_count)
 {
 	bid_t min_bid = bid_choices[0];	/* FIXME: assumes correct ordering */
 	bid_t my_bid;
 	int tricks = 0;		/* number of tricks; x100 */
-	seat_t seat = game.players[p].seat;
 	card_t c;
 	char bidsuit;
 
 	/* Our strategy is fairly simple: we figure out what we should bid
 	   and we bid it.  If the opponent has already bid higher, we pass. */
 
-	bidsuit = find_best_suit(seat, 0) + 1;
-	ai_debug("Best suit is %s.", short_suaro_suit_names[(int) bidsuit]);
+	bidsuit = find_best_suit(0, 0) + 1;
+	ggz_debug("ai", "Best suit is %s.", short_suaro_suit_names[(int) bidsuit]);
 
 	/* This really needs to be more accurate.  It basically just affects
 	   rounding (way below). */
-	tricks = (libai_count_suit(seat, bidsuit - 1) > 3) ? 50 : 20;
-	ai_debug("Counting %d points for trump strength.", tricks);
+	tricks = (libai_count_suit(0, bidsuit - 1) > 3) ? 50 : 20;
+	ggz_debug("ai", "Counting %d points for trump strength.", tricks);
 
 	/* Count expected tricks in each suit.  For any card that we don't
 	   have, we figure the opponent has (at a conservative estimate) a
@@ -226,10 +228,10 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 		/* We also track the number of cards the opponent might have
 		   in the suit, and figure it to be up to 60% of the total
 		   missing cards.  Thus if we have A-K-Q-8, all 4 of these
-		   should be counted as winners.  If we have A-K-8, we figure 
+		   should be counted as winners.  If we have A-K-8, we figure
 		   the opponent has about 2.4 cards in the suit, so we'll
 		   expect to get 2.6 tricks. */
-		int ourcount = libai_count_suit(seat, c.suit);
+		int ourcount = libai_count_suit(0, c.suit);
 		int oppcount = 60 * (7 - ourcount);
 
 		int tricks_in_suit = 0;
@@ -237,11 +239,11 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 		/* This actually counts badly because it doesn't consider
 		   that _we_ might run out of cards.  Oh well. */
 
-		ai_debug("We have %d cards in %s.  Figure opponent has %d.",
+		ggz_debug("ai", "We have %d cards in %s.  Figure opponent has %d.",
 			 ourcount, suit_names[(int) c.suit], oppcount);
 
 		for (c.face = ACE_HIGH; c.face >= 8; c.face--) {
-			if (libai_is_card_in_hand(seat, c)) {
+			if (libai_is_card_in_hand(0, c)) {
 				int value;
 
 				cardvalue += 100;
@@ -249,7 +251,7 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 
 				tricks_in_suit += value;
 
-				ai_debug("Counting %s of %s as %d (%d) points.", face_names[(int) c.face], suit_names[(int) c.suit], value, cardvalue);
+				ggz_debug("ai", "Counting %d of %s as %d (%d) points.", c.face, suit_names[(int) c.suit], value, cardvalue);
 
 				cardvalue = MIN(cardvalue, 0);
 
@@ -257,7 +259,7 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 				oppcount -= 100;
 			} else {
 				if (oppcount > 0) {
-					/* guess 60% chance opponent has card 
+					/* guess 60% chance opponent has card
 					 */
 					oppcount -= 60;
 					cardvalue -= 60;
@@ -269,14 +271,14 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 			}
 		}
 
-		ai_debug("Counting %d points in %s.",
+		ggz_debug("ai", "Counting %d points in %s.",
 			 tricks_in_suit, suit_names[(int) c.suit]);
 		tricks += tricks_in_suit;
 
 	}
 
 	/* Now compute final # of tricks */
-	ai_debug("Total number of points: %d.", tricks);
+	ggz_debug("ai", "Total number of points: %d.", tricks);
 	tricks /= 100;
 
 	my_bid.bid = 0;
@@ -284,52 +286,54 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 	    (tricks == min_bid.sbid.val && bidsuit > min_bid.sbid.suit)) {
 		my_bid.sbid.val = tricks;
 		my_bid.sbid.suit = bidsuit;
-		ai_debug("Bidding %d %s.", (int) my_bid.sbid.val,
+		ggz_debug("ai", "Bidding %d %s.", (int) my_bid.sbid.val,
 			 short_suaro_suit_names[(int) my_bid.sbid.suit]);
 	} else {
 		my_bid.sbid.spec = SUARO_PASS;
-		ai_debug("Passing.");
+		ggz_debug("ai", "Passing.");
 	}
 	return my_bid;
 }
 
-static card_t get_play(player_t p, seat_t seat)
+card_t get_play(int play_seat, int *valid_plays)
 {
-	if (game.leader == p) {
+	assert(play_seat == 0);
+
+	if (get_leader() == 0) {
 		/* Pick a good lead. */
 		char suit;
 
 		/* If we're the declarer and there is a trump, we want to
 		   pull trump. Otherwise just pick a strong suit. */
-		if (SUARO.declarer == p
-		    && game.trump >= 0
-		    && libai_count_suit(seat, game.trump) > 1)
-			suit = game.trump;
+		if (declarer == 0
+		    && trump >= 0
+		    && libai_count_suit(0, trump) > 1)
+			suit = trump;
 		else
-			suit = find_best_suit(seat,
-					      SUARO.contract_suit ==
+			suit = find_best_suit(0,
+					      contract.sbid.suit ==
 					      SUARO_LOW);
 
-		return libai_get_highest_card_in_suit(seat, suit);
+		return libai_get_highest_card_in_suit(0, suit);
 	} else {
 		/* Pick a good response. */
 
-		card_t opp_card = game.seats[2 - seat].table;
+		card_t opp_card = ggzcards.players[2].table_card;
 
 		/* FIXME: none of this section can deal with low bids. */
 
-		if (libai_count_suit(seat, opp_card.suit) == 0) {
+		if (libai_count_suit(0, opp_card.suit) == 0) {
 			card_t card;
 
 			/* Try to trump. */
-			if (game.trump >= 0
-			    && libai_count_suit(seat, game.trump) > 0) {
+			if (trump >= 0
+			    && libai_count_suit(0, trump) > 0) {
 				card_t card;
 
-				for (card.suit = game.trump, card.face =
+				for (card.suit = trump, card.face =
 				     8, card.deck = 0; card.face <= ACE_HIGH;
 				     card.face++) {
-					if (libai_is_card_in_hand(seat, card)) {
+					if (libai_is_card_in_hand(0, card)) {
 						/* Lowest possible winner -
 						   take it. */
 						return card;
@@ -343,7 +347,7 @@ static card_t get_play(player_t p, seat_t seat)
 			     card.suit++, card.face =
 			     (card.suit > SPADES ? card.face + 1 : card.face),
 			     card.suit %= 4) {
-				if (libai_is_card_in_hand(seat, card)) {
+				if (libai_is_card_in_hand(0, card)) {
 					/* Lowest possible trash card - toss
 					   it. */
 					return card;
@@ -356,7 +360,7 @@ static card_t get_play(player_t p, seat_t seat)
 			/* Try to win trick. */
 			for (card = opp_card; card.face <= ACE_HIGH;
 			     card.face++) {
-				if (libai_is_card_in_hand(seat, card)) {
+				if (libai_is_card_in_hand(0, card)) {
 					/* Lowest possible winner - take it. */
 					return card;
 				}
@@ -366,7 +370,7 @@ static card_t get_play(player_t p, seat_t seat)
 			for (card.face = 8, card.suit =
 			     opp_card.suit, card.deck = 0;
 			     card.face < opp_card.face; card.face++) {
-				if (libai_is_card_in_hand(seat, card)) {
+				if (libai_is_card_in_hand(0, card)) {
 					/* Lowest possible loser - take it. */
 					return card;
 				}

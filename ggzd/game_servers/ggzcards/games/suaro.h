@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: suaro.h 3425 2002-02-20 03:45:35Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -23,9 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include "types.h"
-
 /* special bids */
 #define SUARO_PASS	1
 #define SUARO_DOUBLE	2
@@ -36,27 +33,3 @@
 #define SUARO_LOW 0
 	/* clubs-spades = 1-4 = regular values + 1 */
 #define SUARO_HIGH 5
-
-#define SUARO ( *(suaro_game_t *)(game.specific) )
-typedef struct suaro_game_t {
-	/* options */
-	int shotgun;		/* are we playing shotgun suaro? */
-	int unlimited_redoubling;	/* can doubling continue
-					   indefinitely? */
-	int persistent_doubles;	/* a double isn't negated by another bid */
-
-	int pass_count;		/* number of passes in a row */
-
-	/* contract information */
-	int contract;		/* value of the contract */
-	int kitty;		/* 0=>no kitty; 1=>kitty.  Only applicable in 
-				   shotgun suaro. */
-	int contract_suit;	/* 0=>low, 5=>high, as above */
-	int bonus;		/* 1 = regular; 2 = doubled; 4 = redoubled;
-				   etc. */
-	player_t declarer;	/* player with the contract */
-
-	int kitty_revealed;
-} suaro_game_t;
-
-extern char *short_suaro_suit_names[];
