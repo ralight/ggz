@@ -33,6 +33,7 @@
 
 #include "motd.h"
 #include "support.h"
+#include "ggz.h"
 
 extern GdkColor colors[];
 static GtkWidget *motd_dialog;
@@ -66,9 +67,10 @@ void motd_create_or_raise(void)
 
 void motd_print_line(gchar *line)
 {                                       
-        gchar out[1024];
+        gchar *out=NULL;
         gint lindex=0;
         gint oindex=0;                          
+	gint outlen=0;
         GtkWidget *temp_widget;
         GdkColormap *cmap;
         GdkFont *fixed_font;
@@ -90,6 +92,11 @@ void motd_print_line(gchar *line)
         fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
         {
+		if(oindex % 256 == 0) {
+			outlen += 256;
+			out = ggz_realloc(out, outlen);
+		}
+
                 if (line[lindex] == '%')
                 {
                         lindex++;
@@ -108,6 +115,7 @@ void motd_print_line(gchar *line)
                                                 g_error("couldn't allocate color");
                                         }
                                         oindex=0;
+					outlen=0;
                                         lindex++;
                                 }else {
                                         lindex--;
@@ -121,11 +129,16 @@ void motd_print_line(gchar *line)
                 lindex++;
                 oindex++;
         }
+	if(oindex % 256 == 0) {
+		outlen += 1;
+		out = ggz_realloc(out, outlen);
+	}
         out[oindex]='\0';
         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                         &colors[color_index], NULL, out, -1);
 
 	gtk_text_thaw(GTK_TEXT(temp_widget));
+	ggz_free(out);
 }
 
 
