@@ -20,7 +20,8 @@ dnl ==============================================================
 if test "$game" != ""; then
    subdirs=$game
    version=`cat $game/module.dsc | grep Version | sed 's/Version = //'`
-   package=`cat $game/module.dsc | grep Name | sed 's/Name = //'`
+   game=`cat $game/module.dsc | grep Name | sed 's/Name = //' | tr [A-Z] [a-z]`
+   package=ggz-gtk-$game
 elif test "$OVERRIDE_PACKAGE" != ""; then 
    package=$OVERRIDE_PACKAGE
    version=$OVERRIDE_VERSION

@@ -40,7 +40,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/ggz/ggz-config
 GAMES="chess chinese-checkers combat dots hastings lapocha reversi
        spades tictactoe"
 for i in $GAMES; do
-  cp $i/module.dsc $RPM_BUILD_ROOT/usr/share/ggz/ggz-config/$i.dsc
+  cp $i/module.dsc $RPM_BUILD_ROOT/usr/share/ggz/ggz-config/gtk-$i.dsc
 done
 
 
@@ -54,7 +54,16 @@ rm -rf $RPM_BUILD_ROOT
 GAMES="chess chinese-checkers combat dots hastings lapocha reversi
        spades tictactoe"
 for i in $GAMES; do
-  ggz-config --install --fromfile=/usr/share/ggz/ggz-config/$i.dsc --force
+  ggz-config --install --fromfile=/usr/share/ggz/ggz-config/gtk-$i.dsc --force
+done
+
+
+%preun
+# Run ggz-config to uninstall all the games
+GAMES="chess chinese-checkers combat dots hastings lapocha reversi
+       spades tictactoe"
+for i in $GAMES; do
+  ggz-config --remove --fromfile=/usr/share/ggz/ggz-config/gtk-$i.dsc
 done
 
 
@@ -62,10 +71,35 @@ done
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README
 
-/usr/lib
-/usr/share/ggz
+/usr/lib/ggz/ggz.ccheckers
+/usr/lib/ggz/ggz.chess
+/usr/lib/ggz/ggz.combat
+/usr/lib/ggz/ggz.dots
+/usr/lib/ggz/ggz.hastings
+/usr/lib/ggz/ggz.lapocha
+/usr/lib/ggz/ggz.reversi
+/usr/lib/ggz/ggz.spades
+/usr/lib/ggz/ggz.ttt
+
+/usr/share/ggz/ggz-config/gtk-chess.dsc
+/usr/share/ggz/ggz-config/gtk-chinese-checkers.dsc
+/usr/share/ggz/ggz-config/gtk-combat.dsc
+/usr/share/ggz/ggz-config/gtk-dots.dsc
+/usr/share/ggz/ggz-config/gtk-hastings.dsc
+/usr/share/ggz/ggz-config/gtk-lapocha.dsc
+/usr/share/ggz/ggz-config/gtk-reversi.dsc
+/usr/share/ggz/ggz-config/gtk-spades.dsc
+/usr/share/ggz/ggz-config/gtk-tictactoe.dsc
+
+/usr/share/ggz/ccheckers
+/usr/share/ggz/combat
 
 
 %changelog
+* Sun Apr 22 2001 Rich Gade <rgade@users.sourceforge.net>
+- Added the pre-uninstall script
+- Made included files more explicit where we don't absolutely own the dir
+- Added gtk- prefix to dsc files
+
 * Sun Apr 22 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file
