@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 2972 2001-12-21 01:45:19Z jdorje $
+ * $Id: dlg_prefs.c 2974 2001-12-21 04:19:31Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -102,7 +102,8 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_widget_ref(button);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+				     preferences.cardlists);
 	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_cardlists_toggled), NULL);
 	gtk_widget_set_sensitive(button, FALSE);	/* not implemented */
