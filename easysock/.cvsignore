@@ -1,3 +1,5 @@
+easysock.lo
+libeasysock.la
 Makefile
 Makefile.in
 aclocal.m4
