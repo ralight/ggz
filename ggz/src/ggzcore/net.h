@@ -41,6 +41,9 @@ int _ggzcore_net_send_login(const unsigned int fd,
 			    const char* login, 
 			    const char* pass);
 int _ggzcore_net_send_logout(const unsigned int fd);
+int _ggzcore_net_send_motd(const unsigned int fd);
+int _ggzcore_net_send_list_types(const unsigned int fd, 
+				 const char verbose);
 int _ggzcore_net_send_list_rooms(const unsigned int fd, 
 				 const int type, 
 				 const char verbose);
@@ -68,6 +71,10 @@ int _ggzcore_net_read_room(const unsigned int fd,
 			   char **name,
 			   int *game,
 			   char **desc);
+
+void _ggzcore_net_read_list_types(const unsigned int fd);
+void _ggzcore_net_read_list_tables(const unsigned int fd);
+
 int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
 int _ggzcore_net_read_num_players(const unsigned int fd, int *num);
 int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table);

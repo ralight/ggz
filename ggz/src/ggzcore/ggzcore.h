@@ -240,7 +240,9 @@ int ggzcore_server_is_at_table(GGZServer *server);
 /* GGZ Server Actions */
 void ggzcore_server_connect(GGZServer *server);
 void ggzcore_server_login(GGZServer *server);
+void ggzcore_server_motd(GGZServer *server);
 void ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
+void ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
 void ggzcore_server_join_room(GGZServer *server, const int room);
 void ggzcore_server_logout(GGZServer *server);
 
@@ -282,7 +284,10 @@ int    ggzcore_room_get_num_players(GGZRoom *room);
 char** ggzcore_room_get_player_names(GGZRoom *room);
 
 void ggzcore_room_list_players(GGZRoom *room);
-void ggzcore_room_list_tables(GGZRoom *room);
+void ggzcore_room_list_tables(GGZRoom *room, 
+			      const int type,
+			      const char global);
+
 void ggzcore_room_chat(GGZRoom *room,
 		       const GGZChatOp opcode,
 		       const char *player,
@@ -296,122 +301,6 @@ typedef enum {
 	GGZ_SEAT_NONE   = -4,
 	GGZ_SEAT_PLAYER = -5
 } GGZSeatType;
-
-/* IDs for all GGZ events */
-typedef enum {
-	GGZ_SERVER_TABLE_UPDATE,
-	GGZ_USER_LIST_TYPES,
-	GGZ_USER_LIST_TABLES,
-	GGZ_USER_MOTD,
-} GGZEventID;
-
-
-
-/* ggzcore_event_add_hook() - Register hook for specific GGZ-event
- *
- * Receives:
- * GGZEventID id    : ID code of event
- * GGZHookFunc hook : Hook function
- *
- * Returns:
- * int : id for this hook 
- */
-int ggzcore_event_add_hook(const GGZEventID id, const GGZHookFunc func);
-			  
-
-/* ggzcore_event_add_hook_full() - Register hook for specific GGZ-event
- *                                 specifying all parameters
- * 
- * Receives:
- * GGZEventID id    : ID code of event
- * GGZHookFunc hook : Hook function
- * void* user_data  : "User" data to pass to hook
- *
- * Returns:
- * int : id for this hook 
- */
-int ggzcore_event_add_hook_full(const GGZEventID id, 
-				    const GGZHookFunc func, 
-				    void* user_data);
-
-
-/* ggzcore_event_remove_hook()    - Remove specific hook from an event
- * ggzcore_event_remove_hook_id() - Remove specific hook from an event
- *
- * Receives:
- * GGZEventID id        : ID code of event
- * unsigned int hook_id : ID of hook to remove
- *
- * Returns:
- * int : 0 if successful, -1 on error
- */
-int ggzcore_event_remove_hook(const GGZEventID id, const GGZHookFunc func);
-int ggzcore_event_remove_hook_id(const GGZEventID id, 
-				     const unsigned int hook_id);
-
-
-
-/* ggzcore_event_get_fd() - Get a copy of the event pipe fd
- * Receives:
- *
- * Returns:
- * int : event pipe fd
- *
- * Note: this is for detecting event arrivals only.  Do *NOT* attempt
- * to write to this fd.
- */
-int ggzcore_event_get_fd(void);
-
-
-/* ggzcore_event_ispending() - Determine if there are pending GGZ events
- *
- * Receives:
- *
- * Returns:
- * int : 1 if there is at least one event pending, 0 otherwise
- */
-int ggzcore_event_ispending(void);
-
-
-/* ggzcore_event_poll() - Replacement poll command for use in event loops 
- *                        
- * Receives:
- * struct pollfd *ufds : array of file descriptors to poll
- * unsigned int nfds   : number of file descriptors to poll
- * int timeout         : poll timeout in milliseconds
- *
- * Returns:
- * int : number of fds on which data is waiting, 0 if timed out, -1 on error 
- */
-int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout);
-
-
-/* ggzcore_event_process_all() - Process all pending events
- *
- * Receives:
- *
- * Returns:
- * int : 0 if successful, -1 otherwise
- */
-int ggzcore_event_process_all(void);
-
-
-/* ggzcore_event_enqueue() - Queue up an event for processing
- *
- * Receives:
- * GGZEventID id       : ID code of event
- * void* data          : Data specific to this occurance of the event
- * GGZDestroyFunc func : function to free event data
- *
- * Returns:
- * int : 0 if successful, -1 otherwise
- *
- * Note that event_data should *not* point to local variables, as they
- * will not be in scope when the event is processed
- */
-int ggzcore_event_enqueue(const GGZEventID id, void *data, 
-			  const GGZDestroyFunc func);
-
 
 /* ggzcore_error_sys()
  * ggzcore_error_sys_exit()

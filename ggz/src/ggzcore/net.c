@@ -44,14 +44,9 @@
 
 /* Handlers for various server commands */
 #if 0
-static void _ggzcore_net_read_list_players(const unsigned int fd);
-static void _ggzcore_net_read_list_tables(const unsigned int fd);
-static void _ggzcore_net_read_list_types(const unsigned int fd);
-
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
 				  const EsDataType);
-			 
 #endif
 
 
@@ -136,6 +131,19 @@ int _ggzcore_net_send_list_rooms(const unsigned fd,
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
 	if (es_write_int(fd, REQ_LIST_ROOMS) < 0
 	    || es_write_int(fd, type) < 0
+	    || es_write_char(fd, verbose) < 0)
+		status = -1;
+
+	return status;
+}
+
+
+int _ggzcore_net_send_list_types(const unsigned int fd, const char verbose)
+{
+	int status = 0;
+
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TYPES");	
+	if (es_write_int(fd, REQ_LIST_TYPES) < 0
 	    || es_write_char(fd, verbose) < 0)
 		status = -1;
 
@@ -495,21 +503,23 @@ int _ggzcore_net_read_update_tables(const unsigned int fd)
 		break;
 	}
 
+#if 0
 	/*ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);*/
 	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
+#endif
 
 	return 0;
 }
 
-#if 0
-static void _ggzcore_net_read_list_tables(const unsigned int fd)
+
+void _ggzcore_net_read_list_tables(const unsigned int fd)
 {
 	int total, id, room, type, num, i, x, open;
 	char *player = NULL, *desc = NULL;
 	char state;
 	int seat;
-
-	_ggzcore_table_list_clear();
+	
+	/*_ggzcore_table_list_clear();*/
 		
 	if (es_read_int(fd, &total) < 0)
 		return;
@@ -533,15 +543,16 @@ static void _ggzcore_net_read_list_tables(const unsigned int fd)
 			if (seat == GGZ_SEAT_OPEN)
 				open++;
 		}
-		_ggzcore_table_list_add(id, type, desc, state, num, open);
+		/*_ggzcore_table_list_add(id, type, desc, state, num, open);*/
 		free(desc);
+		ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", id);
 	}
 
-	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
+	/*ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);*/
 }
 
 
-static void _ggzcore_net_read_list_types(const unsigned int fd)
+void _ggzcore_net_read_list_types(const unsigned int fd)
 {
 	int count, i;
 	int id;
@@ -561,8 +572,10 @@ static void _ggzcore_net_read_list_types(const unsigned int fd)
 		es_read_string_alloc(fd, &desc);
 		es_read_string_alloc(fd, &author);
 		es_read_string_alloc(fd, &url);
-		_ggzcore_gametype_list_add(id, name, version, players,
-					bots, desc, author, url);
+		ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s",
+			      id, name);
+		/*_ggzcore_gametype_list_add(id, name, version, players,
+		  bots, desc, author, url);*/
 	}
 }
-#endif
+

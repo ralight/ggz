@@ -27,7 +27,6 @@
 #define __SERVER_H__
 
 #include "ggzcore.h"
-#include "event.h"
 #include "hook.h"
 #include "state.h"
 #include "room.h"
@@ -74,8 +73,14 @@ struct _GGZServer {
 	/* Room verbosity (need to save) */
 	char room_verbose;
 
+	/* Number of gametypes */
+	int num_gametypes;
+
 	/* List of game types */
 	struct _ggzcore_list *gametype_list;
+
+	/* Gametype verbosity (need to save) */
+	char gametype_verbose;
 
        	/* Server events */
 	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
@@ -85,7 +90,7 @@ struct _GGZServer {
 
 void _ggzcore_server_list_players(GGZServer *server);
 
-void _ggzcore_server_list_tables(GGZServer *server);
+void _ggzcore_server_list_tables(GGZServer *server, const int type, const char global);
 
 void _ggzcore_server_chat(GGZServer *server, 
 			  const GGZChatOp opcode,

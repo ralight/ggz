@@ -133,7 +133,9 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 
 void _ggzcore_room_list_players(struct _GGZRoom *room);
 
-void _ggzcore_room_list_tables(struct _GGZRoom *room);
+void _ggzcore_room_list_tables(struct _GGZRoom *room, 
+			       const int type, 
+			       const char global);
 
 void _ggzcore_room_chat(struct _GGZRoom *room,
 			const GGZChatOp opcode,

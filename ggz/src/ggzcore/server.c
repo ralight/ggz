@@ -24,7 +24,6 @@
  */
 
 #include "ggzcore.h"
-#include "event.h"
 #include "hook.h"
 #include "state.h"
 #include "server.h"
@@ -439,6 +438,18 @@ void ggzcore_server_login(GGZServer *server)
 }
 
 
+void ggzcore_server_motd(GGZServer *server)
+{
+	int status;
+
+	if (!server)
+		return;
+
+	status = _ggzcore_net_send_motd(server->fd);
+	/* FIXME: handle errors */
+}
+
+
 void ggzcore_server_list_rooms(GGZServer *server, 
 			       const int type, 
 			       const char verbose)
@@ -451,6 +462,19 @@ void ggzcore_server_list_rooms(GGZServer *server,
 
 	server->room_verbose = verbose;
 	status = _ggzcore_net_send_list_rooms(server->fd, type, verbose);
+	/* FIXME: handle errors */
+}
+
+
+void ggzcore_server_list_gametypes(GGZServer *server, const char verbose)
+{
+	int status;
+
+	if (!server)
+		return;
+
+	server->gametype_verbose = verbose;
+	status = _ggzcore_net_send_list_types(server->fd, verbose);
 	/* FIXME: handle errors */
 }
 
@@ -565,11 +589,11 @@ void _ggzcore_server_list_players(GGZServer *server)
 }
 
 
-void _ggzcore_server_list_tables(GGZServer *server)
+void _ggzcore_server_list_tables(GGZServer *server, const int type, const char global)
 {
 	int status;
 
-	status = _ggzcore_net_send_list_tables(server->fd, -1, 0);
+	status = _ggzcore_net_send_list_tables(server->fd, type, global);
 }
 
 
@@ -896,15 +920,22 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 }
 
 
-static void _ggzcore_server_handle_list_tables(GGZServer *server){}
-static void _ggzcore_server_handle_list_types(GGZServer *server){}
-
-
 /* completely bogus functions to avoid messiness */
+static void _ggzcore_server_handle_list_tables(GGZServer *server)
+{
+	_ggzcore_net_read_list_tables(server->fd);
+}
+
+
+static void _ggzcore_server_handle_list_types(GGZServer *server)
+{
+	_ggzcore_net_read_list_types(server->fd);
+}
+
+
 static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
 	_ggzcore_net_read_update_tables(server->fd);
-	ggzcore_event_process_all();
 }
 
 

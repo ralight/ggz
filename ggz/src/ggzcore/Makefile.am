@@ -9,8 +9,6 @@ libggzcore_a_SOURCES =	conf.c \
 			conf.h \
 			confio.c \
 			confio.h \
-			event.c \
-		      	event.h \
 		      	init.c \
 		      	gametype.c \
 		      	gametype.h \
@@ -36,5 +34,3 @@ libggzcore_a_SOURCES =	conf.c \
 			state.h \
 			table.c \
 			table.h \
-			user.c \
-			user.h 

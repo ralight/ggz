@@ -37,8 +37,10 @@ static struct _ggzcore_list *player_list;
 static unsigned int num_players;
 
 /* Local functions for manipulating player list */
+#if 0
 static void _ggzcore_player_list_print(void);
 static void _ggzcore_player_print(struct _GGZPlayer*);
+#endif
 
 /* Utility functions used by _ggzcore_list */
 static int   _ggzcore_player_compare(void* p, void* q);
@@ -233,7 +235,7 @@ static void  _ggzcore_player_destroy(void* p)
 	free(p);
 }
 
-
+#if 0
 static void _ggzcore_player_list_print(void)
 {
 	struct _ggzcore_list_entry *cur;
@@ -248,3 +250,4 @@ static void _ggzcore_player_print(struct _GGZPlayer *player)
 	ggzcore_debug(GGZ_DBG_PLAYER, "Player name: %s", player->name);
 	ggzcore_debug(GGZ_DBG_PLAYER, "Player table: %d", player->table);
 }
+#endif

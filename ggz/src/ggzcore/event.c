@@ -243,7 +243,6 @@ static GGZStateID _user_list_rooms_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };                   
-#endif
 
 static GGZStateID _user_list_types_states[] = {
 	GGZ_STATE_ONLINE,        
@@ -258,7 +257,6 @@ static GGZStateID _user_list_types_states[] = {
 	-1          
 };                   
 
-#if 0
 static GGZStateID _user_join_room_states[] = {
 	GGZ_STATE_LOGGED_IN,
 	GGZ_STATE_IN_ROOM,
@@ -304,7 +302,6 @@ static GGZStateID _user_chat_beep_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };                    
-#endif
 
 static GGZStateID _user_motd_states[] = {
 	GGZ_STATE_ONLINE,        
@@ -319,7 +316,6 @@ static GGZStateID _user_motd_states[] = {
 	-1          
 };                        
 
-#if 0
 static GGZStateID _user_logout_states[] = {
 	GGZ_STATE_ONLINE,
 	GGZ_STATE_LOGGING_IN,
@@ -339,17 +335,9 @@ static struct _GGZEvent _ggz_events[] = {
 	 "server_table_update",
 	 _server_table_update_states},
 
-	{GGZ_USER_LIST_TYPES,       
-	 "user_list_types",                   
-	 _user_list_types_states},
-
 	{GGZ_USER_LIST_TABLES,      
 	 "user_list_tables",                  
 	 _user_list_tables_states},
-
-	{GGZ_USER_MOTD,             
-	 "user_motd",                         
-	 _user_motd_states},
 
 };
 

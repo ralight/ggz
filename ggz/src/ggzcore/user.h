@@ -24,5 +24,3 @@
  */
 
 
-void _ggzcore_user_register(void);
-

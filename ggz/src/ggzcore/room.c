@@ -161,9 +161,14 @@ void ggzcore_room_list_players(GGZRoom *room)
 }
 
 
-void ggzcore_room_list_tables(GGZRoom *room)
+void ggzcore_room_list_tables(GGZRoom *room, 
+			      const int type,
+			      const char global)
 {
+	if (!room)
+		return;
 
+	_ggzcore_room_list_tables(room, type, global);
 }
 
 
@@ -358,9 +363,9 @@ void _ggzcore_room_list_players(struct _GGZRoom *room)
 }
 
 
-void _ggzcore_room_list_tables(struct _GGZRoom *room)
+void _ggzcore_room_list_tables(struct _GGZRoom *room, const int type, const char global)
 {
-	_ggzcore_server_list_tables(room->server);
+	_ggzcore_server_list_tables(room->server, type, global);
 }
 
 
