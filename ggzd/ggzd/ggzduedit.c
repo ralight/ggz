@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 5335 2003-01-16 22:15:22Z dr_maux $
+ * $Id: ggzduedit.c 5383 2003-02-04 17:09:50Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -367,7 +367,7 @@ static int main_menu(void)
 }
 
 /* Password input mode, inspired by psql */
-void echomode(int echo)
+static void echomode(int echo)
 {
 	static struct termios t_orig;
 	struct termios t;
