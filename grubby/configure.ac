@@ -11,6 +11,7 @@ dnl =====================
 AC_ARG_ENABLE(perl,  [  --disable-perl        Exclude perl modules],, enable_perl=yes)
 AC_ARG_ENABLE(ruby,  [  --disable-ruby        Exclude ruby modules],, enable_ruby=yes)
 AC_ARG_ENABLE(python,[  --disable-python      Exclude python modules],, enable_python=yes)
+AC_ARG_ENABLE(silc,  [  --disable-silc        Exclude SILC network module],, enable_silc=yes)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -148,6 +149,35 @@ if test "$enable_python" = yes; then
 	fi
 fi
 
+if test "$enable_silc" = yes; then
+	echo -n "Extra check: SILC... "
+
+	incs="/usr/include/silc"
+	libs="/usr/lib"
+
+	AC_GGZ_FIND_FILE("silcclient.h", $incs, silc_incdir)
+	silc_includes="$silc_incdir"
+
+	AC_GGZ_FIND_FILE("libsilcclient.so", $libs, silc_libdir)
+	silc_libraries="$silc_libdir"
+
+	if test "x$silc_includes" = "xNO" || test "x$silc_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+		silc_includes=""
+		silc_libraries=""
+		enable_silc=no
+	else
+		SILC_INCLUDES="-I $silc_includes"
+		SILC_LDFLAGS="-L $silc_libraries"
+        LIB_SILC="-lsilcclient -lsilc"
+		AC_MSG_RESULT(ok.)
+		AC_SUBST(SILC_INCLUDES)
+		AC_SUBST(SILC_LDFLAGS)
+		AC_SUBST(LIB_SILC)
+	fi
+fi
+AM_CONDITIONAL([GRUBBY_SILC], [test "$enable_silc" = "yes"])
+
 dnl Create files
 dnl ============
 
@@ -192,5 +222,6 @@ echo "Python support: $enable_python"
 echo "Ruby support: $enable_ruby"
 echo "Perl support: $enable_perl"
 echo "Game engines: $enable_games"
+echo "SILC network support: $enable_silc"
 echo ""
 
