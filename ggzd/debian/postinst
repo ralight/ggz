@@ -6,7 +6,7 @@ case "$1" in
 	configure*)
 	ldconfig
 	update-rc.d ggzd defaults >/dev/null
-	/etc/init.d/ggzd start
+	/etc/init.d/ggzd start || true
 	;;
 	*)
 	;;
