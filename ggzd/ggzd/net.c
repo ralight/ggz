@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
- * $Id: net.c 3185 2002-01-24 10:59:56Z jdorje $
+ * $Id: net.c 3193 2002-01-25 00:49:45Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include "err_func.h"
+#include "ggzdb.h"
 #include "hash.h"
 #include "motd.h"
 #include "net.h"
@@ -1172,7 +1173,7 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <TABLE> tag */
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 {
-	int type;
+	int type, db_status;
 	GGZTable *table;
 	GGZTableData *data;
 	GGZSeatData *seat;
@@ -1181,6 +1182,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	GGZListEntry *entry;
 	char *parent_tag;
 	GGZXMLElement *parent;
+	ggzdbPlayerEntry player;
 
 	parent = ggz_stack_top(net->stack);
 	
@@ -1225,11 +1227,22 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		case GGZ_SEAT_NONE:
 			break;
 		case GGZ_SEAT_RESERVED:
-			/*
-			 * FIXME: lookup reserve name to verify.
-			 * upon error, send E_USR_LOOKUP
-			 */
-			strcpy(table->seat_names[seat->index], seat->name);
+			/* We verify that this is a real,
+			   registered player name. */
+			snprintf(player.handle, MAX_USER_NAME_LEN+1,
+				 "%s", seat->name ? seat->name : "");
+			db_status = ggzdb_player_get(&player);
+			if (db_status == 0) {
+				strcpy(table->seat_names[seat->index],
+				       seat->name);
+			} else {
+				/* This is some kind of error...but for now we
+				   just cover it up. */
+				dbg_msg(GGZ_DBG_TABLE, "Invalid name sent for "
+				        "reserved seat.  Changing it to an "
+				        "open seat.");
+				seat_type = GGZ_SEAT_OPEN;
+			}
 			break;
 		case GGZ_SEAT_PLAYER:
 			/* A bad client might send this...how should
