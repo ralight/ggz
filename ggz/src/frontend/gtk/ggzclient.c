@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3196 2002-01-30 07:35:39Z jdorje $
+ * $Id: ggzclient.c 3201 2002-02-01 04:55:51Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -905,7 +905,7 @@ void display_tables(void)
 {
 	GtkWidget *tmp;
 	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
-	gint i, num, open, seats;
+	gint i, num, avail, seats;
 	GGZRoom *room;
 	GGZTable *t = NULL;
 
@@ -927,15 +927,23 @@ void display_tables(void)
 	
 	numtables = ggzcore_room_get_num_tables(room);
 	for (i = 0; i < numtables; i++) {
-
+	
 		t = ggzcore_room_get_nth_table(room, i);
 		num   = ggzcore_table_get_id(t);
-		open = ggzcore_table_get_num_open(t);
+		avail = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
+			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
 		seats = ggzcore_table_get_num_seats(t);
 		desc = ggzcore_table_get_desc(t);
+		
+		/* FIXME: we have a significant problem here.  Do we
+		   display the number of open seats, the number of
+		   available-to-us seats, or the total number of
+		   unfilled seats?  Any way we do it we'll have
+		   problems.  Right now I just show the total
+		   number of unfilled seats. */
 			
 		table[0] = g_strdup_printf("%d", num);
-		table[1] = g_strdup_printf("%d/%d", open, seats);
+		table[1] = g_strdup_printf("%d/%d", avail, seats);
 		table[2] = g_strdup_printf("%s", desc);
 		gtk_clist_append(GTK_CLIST(tmp), table);
 		g_free(table[0]);
