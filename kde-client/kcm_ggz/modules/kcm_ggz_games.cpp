@@ -25,6 +25,7 @@ KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
 
 	view = new KListView(this);
 	view->addColumn(i18n("Game"));
+	view->addColumn(i18n("Name"));
 	view->addColumn(i18n("Version"));
 	view->addColumn(i18n("Protocol"));
 	view->addColumn(i18n("Homepage"));
@@ -68,7 +69,8 @@ void KCMGGZGames::load()
 			QString version = conf.readEntry("Version");
 			QString protocol = conf.readEntry("ProtocolVersion");
 			QString homepage = conf.readEntry("Homepage");
-			add(i18n("System"), (*it), frontend, author, homepage, version, protocol);
+			QString gamename = conf.readEntry("Name");
+			add(i18n("System"), (*it), frontend, author, homepage, version, protocol, gamename);
 		}
 	}
 
@@ -102,6 +104,7 @@ void KCMGGZGames::information(QString name, QString frontend)
 					QString protocol = conf.readEntry("ProtocolVersion");
 					QString homepage = conf.readEntry("Homepage");
 					QString engine = conf.readEntry("ProtocolEngine");
+					QString gamename = conf.readEntry("Name");
 					QString commandline = conf.readEntry("CommandLine");
 					QString environment = conf.readEntry("Environment", "xwindow");
 
@@ -114,7 +117,7 @@ void KCMGGZGames::information(QString name, QString frontend)
 					if(environment == "xfullscreen") environment = i18n("Entire screen (%1)").arg(environment);
 
 					KMessageBox::information(this,
-						i18n("Name: ") + name + "\n" +
+						i18n("Name: ") + gamename + "\n" +
 						i18n("Author: ") + author + "\n" +
 						i18n("Frontend: ") + frontend + "\n" +
 						i18n("Environment: ") + environment + "\n" +
@@ -148,7 +151,7 @@ extern "C"
 	}
 }
 
-void KCMGGZGames::add(QString location, QString name, QString frontend, QString authors, QString homepage, QString version, QString protocol)
+void KCMGGZGames::add(QString location, QString engine, QString frontend, QString authors, QString homepage, QString version, QString protocol, QString name)
 {
 	KListViewItem *loc, *item;
 	QString value;
@@ -169,16 +172,16 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 	item = NULL;
 	for(QListViewItem *i = loc->firstChild(); i; i = i->nextSibling())
 	{
-		if(i->text(0) == name)
+		if(i->text(0) == engine)
 		{
 			item = reinterpret_cast<KListViewItem*>(i);
 			break;
 		}
 	}
-	if(!item) item = new KListViewItem(loc, name);
+	if(!item) item = new KListViewItem(loc, engine);
 	item->setOpen(true);
 
-	item = new KListViewItem(item, frontend, version, protocol, homepage, authors);
+	item = new KListViewItem(item, frontend, name, version, protocol, homepage, authors);
 
 	pixname = "game.png";
 	if((frontend == "gtk") || (frontend == "gnome")) pixname = "game_gnome.png";

@@ -32,7 +32,7 @@ class KCMGGZGames : public KCMGGZPane
 
 	private:
 		void information(QString name, QString frontend);
-		void add(QString location, QString name, QString frontend, QString authors, QString homepage, QString version, QString protocol);
+		void add(QString location, QString engine, QString frontend, QString authors, QString homepage, QString version, QString protocol, QString name);
 
 		KListView *view;
 		QPopupMenu *popup;
