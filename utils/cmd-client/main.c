@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4591 2002-09-16 23:59:31Z jdorje $
+ * $Id: main.c 4592 2002-09-17 00:15:20Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -132,23 +132,27 @@ static void wait_for_input(int fd)
 {
 	fd_set my_fd_set;
 	int status;
+	struct timeval timeout = {tv_sec: 10, tv_usec: 0};
 
 	assert(fd >= 0);
 
-	do {
-		FD_ZERO(&my_fd_set);
-		FD_SET(fd, &my_fd_set);
+	FD_ZERO(&my_fd_set);
+	FD_SET(fd, &my_fd_set);
 
-		status = select(fd + 1, &my_fd_set, NULL, NULL, NULL);
-		if (status < 0)
-			ggz_error_sys_exit("Select error while blocking.");
-	} while (status < 0);
+	status = select(fd + 1, &my_fd_set, NULL, NULL, &timeout);
+	if (status < 0)
+		ggz_error_sys_exit("Select error while blocking.");
+
+	if (!FD_ISSET(fd, &my_fd_set)) {
+		fprintf(stderr, "Connection to server timed out.\n");
+		exit(-1);
+	}
 }
 
 static GGZHookReturn server_failure(GGZServerEvent id,
 				    void *event_data, void *user_data)
 {
-	ggz_debug(DBG_MAIN, "GGZ failure: event %d.\n", id);
+	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(stderr, "Could not connect to server.\n");
 	exit(-1);
 }
@@ -156,7 +160,7 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 static GGZHookReturn server_connected(GGZServerEvent id,
 				      void *event_data, void *user_data)
 {
-	ggz_debug(DBG_MAIN, "Connected to server.\n");
+	ggz_debug(DBG_MAIN, "Connected to server.");
 	server_fd = ggzcore_server_get_fd(server);
 	return GGZ_HOOK_OK;
 }
@@ -164,7 +168,7 @@ static GGZHookReturn server_connected(GGZServerEvent id,
 static GGZHookReturn server_negotiated(GGZServerEvent id,
 				       void *event_data, void *user_data)
 {
-	ggz_debug(DBG_MAIN, "Server negotiated.\n");
+	ggz_debug(DBG_MAIN, "Server negotiated.");
 	ggzcore_server_login(server);
 	return GGZ_HOOK_OK;
 }
@@ -172,7 +176,7 @@ static GGZHookReturn server_negotiated(GGZServerEvent id,
 static GGZHookReturn server_logged_in(GGZServerEvent id,
 				      void *event_data, void *user_data)
 {
-	ggz_debug(DBG_MAIN, "Logged in to server.\n");
+	ggz_debug(DBG_MAIN, "Logged in to server.");
 
 	ggzcore_server_list_rooms(server, 0, 0);
 
@@ -182,7 +186,7 @@ static GGZHookReturn server_logged_in(GGZServerEvent id,
 static GGZHookReturn server_room_entered(GGZServerEvent id,
 					 void *event_data, void *user_data)
 {
-	ggz_debug(DBG_MAIN, "Entered room 0.\n");
+	ggz_debug(DBG_MAIN, "Entered room 0.");
 	in_room = 1;
 	return GGZ_HOOK_OK;
 }
@@ -215,7 +219,7 @@ static void exec_command(GGZCommand * cmd)
 
 	do {
 		wait_for_input(server_fd);
-		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
+		ggzcore_server_read_data(server, server_fd);
 	} while (ggzcore_server_get_num_rooms(server) <= 0);
 
 
@@ -228,7 +232,7 @@ static void exec_command(GGZCommand * cmd)
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, server_failure);
 	if (ggzcore_server_join_room(server, 0) < 0) {
 		ggz_debug(DBG_MAIN, "Server join room failed.  "
-			  "There are %d rooms.\n",
+			  "There are %d rooms.",
 			  ggzcore_server_get_num_rooms(server));
 		exit(-1);
 	}
@@ -241,7 +245,7 @@ static void exec_command(GGZCommand * cmd)
 	assert(command.data);
 	ggzcore_room_chat(ggzcore_server_get_cur_room(server),
 			  GGZ_CHAT_ANNOUNCE, NULL, command.data);
-	ggz_debug(DBG_MAIN, "Sending announcement.\n");
+	ggz_debug(DBG_MAIN, "Sending announcement.");
 
 	/* FIXME: we don't officially disconnect, we just close
 	   the communication! */
