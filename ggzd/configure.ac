@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5388 2003-02-04 17:55:14Z jdorje $
+dnl $Id: configure.ac 5397 2003-02-09 22:50:10Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -75,7 +75,13 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
         AC_MSG_ERROR(*** Cannot find popt.h header); exit)],
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
 
+# Strsep is implemented in ggzd/strsep.c, this is used if needed.
 AC_REPLACE_FUNCS([strsep])
+AH_VERBATIM([strsep],
+[/* Implement strsep if it's not available (see ggzd/strsep.c). */
+#ifndef HAVE_STRSEP
+char* strsep(char **stringp, const char *delim);
+#endif])
 
 dnl Find pthread library
 dnl ====================
