@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 
 #include <ggzmod.h>
 
-#include <qsocket.h>
-#include <qdatastream.h>
+class QSocketDevice;
+class QDataStream;
 
 class GGZ : public QObject
 {
@@ -34,11 +34,13 @@ class GGZ : public QObject
 		void connect(const QString&);
 		void disconnect();
 
-		char getChar(void) { char value; Q_INT8 v; *net >> v; value = v; return value; }
-		void putChar(char value) { *net << (Q_INT8)value; }
+		void fetch(int bytes);
 
-		int getInt(void) { int value; *net >> value; return value; }
-		void putInt(int value) { *net << (Q_INT32)value;  }
+		char getChar(void);
+		void putChar(char value);
+
+		int getInt(void);
+		void putInt(int value);
 	
 		char *getString(void);
 		QString getString(int maxlength);
@@ -54,7 +56,7 @@ class GGZ : public QObject
 	private:
 		static void recvEvent(GGZMod *mod, GGZModEvent e, void *data);
 
-		QSocket *socket;
+		QSocketDevice *socket;
 		QDataStream *net;
 		GGZMod *mod;
 		static GGZ *self;

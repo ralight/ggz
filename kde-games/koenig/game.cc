@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -62,10 +62,9 @@ void Game::handleNetInput(void)
 	char opcode, value;
 	char cval;
 	QString s;
-	int x, y, x2, y2, time;
+	int x, y, x2, y2, time, length;
 
-	if ((opcode = ggz->getChar()) < 0)
-		return;
+	opcode = ggz->getChar();
 
 	kdDebug(12101) << "Game::handleNetInput(); opcode: " << opcode << endl;
 
@@ -79,7 +78,8 @@ void Game::handleNetInput(void)
 
 			chessInfo.seat = ggz->getChar();
 			chessInfo.version = ggz->getChar();
-			kdDebug(12101) << "Got seat " << chessInfo.seat << " and version " << chessInfo.version << endl;
+			kdDebug(12101) << "Got seat " << chessInfo.seat
+				<< " and version " << chessInfo.version << endl;
 			emit signalMessage(i18n("Received seat."));
 
 			if (chessInfo.version != PROTOCOL_VERSION)
@@ -101,8 +101,14 @@ void Game::handleNetInput(void)
 			if (GGZ_SEAT_OPEN != (chessInfo.assign[1] = ggz->getChar()))
 				chessInfo.name[1] = ggz->getString();
 
-			kdDebug(12101) << "Got players " << chessInfo.name[0] << " and " << chessInfo.name[1] << endl;
-			emit signalMessage(i18n("Received player names."));
+			kdDebug(12101) << "Got players " << chessInfo.name[0]
+				<< " and " << chessInfo.name[1] << endl;
+			if (chessInfo.name[1].isEmpty())
+				emit signalMessage(i18n("Received first player name: %1").arg(
+					chessInfo.name[0]));
+			else
+				emit signalMessage(i18n("Received both player names: %1 and %2").arg(
+					chessInfo.name[0]).arg(chessInfo.name[1]));
 			break;
 
 		case CHESS_REQ_TIME:
@@ -147,13 +153,32 @@ void Game::handleNetInput(void)
 			kdDebug(12101) << "Got an MSG_MOVE" << endl;
 
 			//s = ggz->getString(6);
-			ggz->getChar();ggz->getChar();ggz->getChar();ggz->getChar(); // FIXME: read string length
-			x = ggz->getChar();
-			y = ggz->getChar();
-			x2 = ggz->getChar();
-			y2 = ggz->getChar();
-			cval = ggz->getChar();
-			kdDebug(12101) << "Args: from " << x << ", " << y << " to " << x2 << ", " << y2 << " - " << cval << endl; // cval should be 0 no?
+			/*ggz->getChar();
+			ggz->getChar();
+			ggz->getChar();
+			ggz->getChar();*/
+			// FIXME: read string length
+			length = ggz->getInt();
+			kdDebug() << "move is " << length << " bytes long" << endl;
+			if(length == 5)
+			{
+				x = ggz->getChar();
+				y = ggz->getChar();
+				x2 = ggz->getChar();
+				y2 = ggz->getChar();
+				cval = ggz->getChar();
+			}
+			else
+			{
+				x = -1;
+				y = -1;
+				x2 = -1;
+				y2 = -1;
+				cval = 0;
+			}
+			kdDebug(12101) << "Args: from " << x << ", " << y << " to "
+				<< x2 << ", " << y2 << " - " << cval << endl; // cval should be 0 no?
+			
 			if (chessInfo.clock_type != CHESS_CLOCK_NOCLOCK)
 			{
 				time = ggz->getInt();
@@ -161,8 +186,10 @@ void Game::handleNetInput(void)
 			}
 			if((x >= 0) && (y >= 0) && (x2 >= 0) && (y2 >= 0))
 			{
-				emit signalMove(QString(i18n("Net: from %1/%2 to %3/%4")).arg(QChar(x)).arg(QChar(y)).arg(QChar(x2)).arg(QChar(y2)));
-				emit signalDoMove(x - 'A', y - '1', x2 - 'A', y2 - '1'); // FIXME: this is overhead, merge somewhere
+				emit signalMove(QString(i18n("Net: from %1/%2 to %3/%4")).arg(
+					QChar(x)).arg(QChar(y)).arg(QChar(x2)).arg(QChar(y2)));
+				emit signalDoMove(x - 'A', y - '1', x2 - 'A', y2 - '1');
+				// FIXME: this is overhead, merge somewhere
 			}
 			else
 				emit signalMessage(i18n("Invalid move - try again!"));

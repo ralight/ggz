@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

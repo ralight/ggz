@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include <qsocket.h>
+#include <qsocketdevice.h>
 #include <qsocketnotifier.h>
 #include <qstring.h>
+#include <qapplication.h>
 
 #include <kdebug.h>
 
@@ -69,28 +70,43 @@ void GGZ::recvControl()
 
 void GGZ::recvRawData()
 {
-	while(socket->size())
-	{
-		emit recvData();
-	}
+	emit recvData();
 }
 
 void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, void *data)
 {
-	self->socket = new QSocket();
-	self->socket->setSocket(*(int*)data);
+	QSocketNotifier *sn;
+	self->socket = new QSocketDevice(*(int*)data, QSocketDevice::Stream);
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
-	QObject::connect(self->socket, SIGNAL(readyRead()), self, SLOT(recvRawData()));
 	self->net = new QDataStream(self->socket);
+	self->net->setVersion(5);
+
+	sn = new QSocketNotifier(*(int*)data, QSocketNotifier::Read, self);
+	QObject::connect(sn, SIGNAL(activated(int)), self, SLOT(recvRawData()));
+}
+
+void GGZ::fetch(int bytes)
+{
+	int cycles = 0;
+
+	while(socket->bytesAvailable() < bytes)
+	{
+		socket->waitForMore(100);
+		//qApp->processEvents();
+		cycles++;
+	}
+	kdDebug() << ":: waitformore: " << cycles << " bytes: " << socket->bytesAvailable() << endl;
 }
 
 char *GGZ::getString(void)
 {
 	char *s;
 
+	fetch(5);
 	*net >> s;
+	//kdDebug() << "--- " << s << endl;
 	return s;
 }
 
@@ -106,5 +122,37 @@ void GGZ::putString(const QString& msg)
 	
 	for(unsigned int i = 0; i < msg.length(); i++)
 		socket->putch(msg[i]);
+}
+
+char GGZ::getChar(void)
+{
+	char value;
+	Q_INT8 v;
+
+	fetch(sizeof(char));
+	*net >> v;
+	value = v;
+	//kdDebug() << "--- " << v << endl;
+	return value;
+}
+
+void GGZ::putChar(char value)
+{
+	*net << (Q_INT8)value;
+}
+
+int GGZ::getInt(void)
+{
+	int value;
+
+	fetch(sizeof(int));
+	*net >> value;
+	//kdDebug() << "--- " << value << endl;
+	return value;
+}
+
+void GGZ::putInt(int value)
+{
+	*net << (Q_INT32)value;
 }
 

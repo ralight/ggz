@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@ int main(int argc, char **argv)
 		"0.0.6",
 		I18N_NOOP("GGZ Chess Frontend for KDE"),
 		KAboutData::License_GPL_V2,
-		"Copyright (C) 2001, 2002 Tobias Koenig & Josef Spillner",
+		"Copyright (C) 2001 - 2004 Tobias Koenig & Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://ggz.sourceforge.net/games/koenig/",
-		"dr_maux@users.sourceforge.net");
+		"http://www.ggzgamingzone.org/games/koenig/",
+		"josef@ggzgamingzone.org");
 
-	aboutData.addAuthor("Tobias Koenig", "Creator", "tokoe82@yahoo.de", "http://www.geocities.com/linuxcode");
-	aboutData.addAuthor("Josef Spillner", "Maintainer", "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData.addAuthor("Tobias KÃ¶nig", "Creator", "tokoe@kde.org");
+	aboutData.addAuthor("Josef Spillner", "Maintainer", "josef@ggzgamingzone.org");
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(op);
