@@ -315,8 +315,8 @@ int _ggzcore_module_get_num_by_type(const char *game,
 	char **ids;
 	struct _GGZModule module;
 
-	/* Get total count for this game (regardless of version) */
-	status = ggzcore_confio_read_list(mod_handle, "Games", game,
+	/* Get total count for this engine (regardless of version) */
+	status = ggzcore_confio_read_list(mod_handle, "Games", engine,
 					  &count, &ids);
 	if (status < 0)
 		return 0;
@@ -325,7 +325,8 @@ int _ggzcore_module_get_num_by_type(const char *game,
 		_ggzcore_module_read(&module, ids[i]);
 		/* Subtract out modules that aren't the same protocol */
 		if (strcmp(engine, module.prot_engine) != 0
-		    || strcmp(version, module.prot_version) != 0)
+		    || strcmp(version, module.prot_version) != 0
+		    /* || game not included in game list */)
 			count--;
 	}
 
