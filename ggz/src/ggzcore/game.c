@@ -236,7 +236,7 @@ void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module)
 
      	game->module = module;
 
-	ggz_debug("GGZCORE:GAME", "Initializing new game");
+	ggz_debug(GGZCORE_DBG_GAME, "Initializing new game");
 
 	/* Setup event hook list */
 	for (i = 0; i < _ggzcore_num_events; i++)
@@ -260,22 +260,22 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *dat
 
 	switch (cur) {
 	case GGZMOD_STATE_WAITING:
-		ggz_debug("GGZCORE:GAME", "Game now waiting");
+		ggz_debug(GGZCORE_DBG_GAME, "Game now waiting");
 		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
 		break;
 
 	case GGZMOD_STATE_PLAYING:
-		ggz_debug("GGZCORE:GAME", "Game now playing");
+		ggz_debug(GGZCORE_DBG_GAME, "Game now playing");
 		_ggzcore_game_event(game, GGZ_GAME_PLAYING, NULL);
 		break;
 		
 	case GGZMOD_STATE_DONE:
-		ggz_debug("GGZCORE:GAME", "Game now done");
+		ggz_debug(GGZCORE_DBG_GAME, "Game now done");
 		/*_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);*/
 		break;
 
 	default:
-		ggz_debug("GGZCORE:GAME", "Game now in state %d", cur);
+		ggz_debug(GGZCORE_DBG_GAME, "Game now in state %d", cur);
 		break;
 
 	}
@@ -286,7 +286,7 @@ void _ggzcore_game_free(struct _GGZGame *game)
 {
 	int i;
 
-	ggz_debug("GGZCORE:GAME", "Destroying game object");
+	ggz_debug(GGZCORE_DBG_GAME, "Destroying game object");
 
 	ggzmod_disconnect(game->client);
 	ggzmod_free(game->client);
@@ -334,7 +334,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	int status;
 
 	status = ggzmod_dispatch(game->client);
-	ggz_debug("GGZCORE:GAME", "Result of reading from game: %d", status);
+	ggz_debug(GGZCORE_DBG_GAME, "Result of reading from game: %d", status);
 
 	if (status < 0) {
 		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
@@ -362,15 +362,16 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 {
 	int status;
 
-	ggz_debug("GGZCORE:GAME", "Launching game of %s",
+	ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
 		      _ggzcore_module_get_name(game->module));
 
 	if ( (status = ggzmod_connect(game->client)) == 0) {
-		ggz_debug("GGZCORE:GAME", "Launched game module");
+		ggz_debug(GGZCORE_DBG_GAME, "Launched game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
 	}
 	else {
-		ggz_debug("GGZCORE:GAME", "Failed to connect to game module");
+		ggz_debug(GGZCORE_DBG_GAME,
+			  "Failed to connect to game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL, NULL);
 	}
 		
@@ -407,7 +408,8 @@ static char* _ggzcore_game_get_path(char **argv)
 	mod_path = argv[0];
 	
 	if (mod_path[0] != '/') {
-		ggz_debug("GGZCORE:GAME", "Module has relative path, prepending gamedir");
+		ggz_debug(GGZCORE_DBG_GAME,
+			  "Module has relative path, prepending gamedir");
 		/* Calcualate string length, leaving room for a slash 
 		   and the trailing null */
 		len = strlen(GAMEDIR) + strlen(mod_path) + 2;

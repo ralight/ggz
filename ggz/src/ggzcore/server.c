@@ -677,7 +677,7 @@ void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, struct _GGZ
 
 void _ggzcore_server_set_login_status(struct _GGZServer *server, int status)
 {
-	ggz_debug("GGZCORE:SERVER", "Status of login: %d", status);
+	ggz_debug(GGZCORE_DBG_SERVER, "Status of login: %d", status);
 
 	switch (status) {
 	case 0:
@@ -862,12 +862,12 @@ int _ggzcore_server_create_channel(struct _GGZServer *server)
 	status = _ggzcore_net_connect(server->channel);
 	
 	if (status < 0) {
-		ggz_debug("GGZCORE:SERVER", "Channel creation failed");
+		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
 		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, 
 				      strerror(errno));
 	}
 	else {
-		ggz_debug("GGZCORE:SERVER", "Channel created");
+		ggz_debug(GGZCORE_DBG_SERVER, "Channel created");
 		_ggzcore_server_event(server, GGZ_CHANNEL_CONNECTED, NULL);
 	}
 
@@ -879,7 +879,7 @@ int _ggzcore_server_login(struct _GGZServer *server)
 {
 	int status;
 
-	ggz_debug("GGZCORE:SERVER", "Login (%d), %s, %s", server->type, 
+	ggz_debug(GGZCORE_DBG_SERVER, "Login (%d), %s, %s", server->type, 
 		      server->handle, server->password);
 
 	status = _ggzcore_net_send_login(server->net);
@@ -919,7 +919,7 @@ int _ggzcore_server_join_room(struct _GGZServer *server, const unsigned int room
 	room = _ggzcore_server_get_nth_room(server, room_num);
 	room_id = _ggzcore_room_get_id(room);
 	
-	ggz_debug("GGZCORE:SERVER", "Moving to room %d", room_num);
+	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
 	
 	status = _ggzcore_net_send_join_room(server->net, room_id);
 
@@ -934,7 +934,7 @@ int _ggzcore_server_logout(struct _GGZServer *server)
 {
 	int status;
 
-	ggz_debug("GGZCORE:SERVER", "Logging out");
+	ggz_debug(GGZCORE_DBG_SERVER, "Logging out");
 	status = _ggzcore_net_send_logout(server->net);
 	if (status == 0)
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
@@ -945,7 +945,7 @@ int _ggzcore_server_logout(struct _GGZServer *server)
 
 int _ggzcore_server_disconnect(struct _GGZServer *server)
 {
-	ggz_debug("GGZCORE:SERVER", "Disconnecting");
+	ggz_debug(GGZCORE_DBG_SERVER, "Disconnecting");
 	_ggzcore_net_disconnect(server->net);
 
 	/* Force the server object into the offline state */
@@ -1142,7 +1142,7 @@ void _ggzcore_server_net_error(struct _GGZServer *server, char* message)
 
 void _ggzcore_server_protocol_error(GGZServer *server, char* message)
 {
-	ggz_debug("GGZCORE:SERVER", "Protocol error: disconnecting");
+	ggz_debug(GGZCORE_DBG_SERVER, "Protocol error: disconnecting");
 	_ggzcore_net_disconnect(server->net);
 	_ggzcore_server_change_state(server, GGZ_TRANS_PROTO_ERROR);
 	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, message);

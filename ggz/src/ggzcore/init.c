@@ -36,15 +36,16 @@
 
 int ggzcore_init(GGZOptions options)
 {
-	/*
+#if 0
 	if (options.flags & GGZ_OPT_PARSER) {
-		ggz_debug("GGZCORE:CONF", "Parsing global conf file: %s", 
-			      options.global_conf);
-		ggz_debug("GGZCORE:CONF", "Parsing user conf file: %s", 
-			      options.user_conf);
-		ggzcore_conf_initialize(options.global_conf, options.user_conf);
-		}*/
-	
+		ggz_debug(GGZCORE_DBG_CONF, "Parsing global conf file: %s", 
+			  options.global_conf);
+		ggz_debug(GGZCORE_DBG_CONF, "Parsing user conf file: %s", 
+			  options.user_conf);
+		ggzcore_conf_initialize(options.global_conf,
+					options.user_conf);
+		}
+#endif
 
 
 	/* Initialize various systems */

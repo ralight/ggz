@@ -202,7 +202,7 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 	}
 
 	if (next != *cur && next != -1) {
-		ggz_debug("GGZCORE:STATE", "State transition %s -> %s", 
+		ggz_debug(GGZCORE_DBG_STATE, "State transition %s -> %s", 
 			  _ggz_states[*cur].name, 
 			  _ggz_states[next].name);
 		*cur = next;

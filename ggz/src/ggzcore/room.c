@@ -524,7 +524,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType t
 {
 	struct _GGZPlayer *player;
 
-	ggz_debug("GGZCORE:ROOM", "Adding player %s", name);
+	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", name);
 
 	/* Create the list if it doesn't exist yet */
 	if (!room->players)
@@ -546,7 +546,7 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 	struct _GGZPlayer player;
 	GGZListEntry *entry;
 
-	ggz_debug("GGZCORE:ROOM", "Removing player %s", name);
+	ggz_debug(GGZCORE_DBG_ROOM, "Removing player %s", name);
 
 	/* Only try to delete if the list exists */
 	if (room->players) {	
@@ -566,7 +566,7 @@ void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag)
 	/* FIXME: This should be sending a player "class-based" event */
 	struct _GGZPlayer *player;
 
-	ggz_debug("GGZCORE:ROOM", "Setting lag to %d for %s", lag, name);
+	ggz_debug(GGZCORE_DBG_ROOM, "Setting lag to %d for %s", lag, name);
 
 	if (room->players) {
 		player = _ggzcore_room_get_player_by_name(room, name);
@@ -581,7 +581,7 @@ void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag)
 
 void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
-	ggz_debug("GGZCORE:ROOM", "Adding table %d", 
+	ggz_debug(GGZCORE_DBG_ROOM, "Adding table %d", 
 		      _ggzcore_table_get_id(table));
 	
 	/* Set table to point to this room */
@@ -603,7 +603,7 @@ void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id)
 	GGZListEntry *entry;
 	struct _GGZTable table;
 
-	ggz_debug("GGZCORE:ROOM", "Deleting table: %d", id);
+	ggz_debug(GGZCORE_DBG_ROOM, "Deleting table: %d", id);
 
 	/* Only try to delete if the list exists */
 	if (room->tables) {
@@ -622,7 +622,7 @@ void _ggzcore_room_player_set_table(struct _GGZRoom *room, char *name, int table
 {
 	struct _GGZPlayer *player;
 
-	ggz_debug("GGZCORE:ROOM", "%s table is now %d", name, table);
+	ggz_debug(GGZCORE_DBG_ROOM, "%s table is now %d", name, table);
 
 	if (room->players) {
 		/* make sure they're still in room */
@@ -672,7 +672,7 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 	data[0] = name;
 	data[1] = msg;
 
-	ggz_debug("GGZCORE:ROOM", "op = %d", op);
+	ggz_debug(GGZCORE_DBG_ROOM, "op = %d", op);
 
 	switch(op) {
 	case GGZ_CHAT_NORMAL:

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4265 2002-06-22 05:13:14Z bmh $
+ * $Id: ggzcore.h 4335 2002-08-05 12:11:00Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -41,6 +41,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* GGZCore debugging codes.  Use with ggz_debug and friends. */
+#define GGZCORE_DBG_CONF   "GGZCORE:CONF"
+#define GGZCORE_DBG_GAME   "GGZCORE:GAME"
+#define GGZCORE_DBG_HOOK   "GGZCORE:HOOK"
+#define GGZCORE_DBG_MODULE "GGZCORE:MODULE"
+#define GGZCORE_DBG_NET    "GGZCORE:NET"
+#define GGZCORE_DBG_POLL   "GGZCORE:POLL"
+#define GGZCORE_DBG_ROOM   "GGZCORE:ROOM"
+#define GGZCORE_DBG_SERVER "GGZCORE:SERVER"
+#define GGZCORE_DBG_STATE  "GGZCORE:STATE"
+#define GGZCORE_DBG_TABLE  "GGZCORE:TABLE"
+#define GGZCORE_DBG_XML    "GGZCORE:XML"
 
 /* GGZCore library features */
 typedef enum {
