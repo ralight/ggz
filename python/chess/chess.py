@@ -88,6 +88,7 @@ def main():
 	oldx = -1
 	oldy = -1
 	aiturn = 0
+	shift = 0
 
 	ggzchess.init(ggzchess.WHITE, 1)
 
@@ -100,17 +101,32 @@ def main():
 			if key == K_ESCAPE or pygame.event.peek(QUIT):
 				break
 			if key == K_r:
-				ret = ggzchess.rochade(ggzchess.WHITE)
-				print "rochade", ret
+				ret = ggzchess.rochade(ggzchess.WHITE, shift)
+				print "rochade", shift, ret
+				kold = 4
+				knew = 6
+				rold = 7
+				rnew = 5
+				if shift:
+					rold = 0
+					rnew = 3
+					knew = 2
 				if ret:
-					ggzchess.move(4, 6, 1)
-					ggzchess.move(7, 5, 1)
-					board[0][6] = board[0][4]
-					board[0][4] = None
-					board[0][5] = board[0][7]
-					board[0][7] = None
+					ggzchess.move(kold, knew, 1)
+					ggzchess.move(rold, rnew, 1)
+					board[0][knew] = board[0][kold]
+					board[0][kold] = None
+					board[0][rnew] = board[0][rold]
+					board[0][rold] = None
 					updatescreen = 1
 					aiturn = 1
+			if key == K_LSHIFT or key == K_RSHIFT:
+				shift = 1
+
+		if event.type == KEYUP:
+			key = event.key
+			if key == K_LSHIFT or key == K_RSHIFT:
+				shift = 0
 
 		if event.type == MOUSEMOTION:
 			(posx, posy) = event.pos
