@@ -1,0 +1,15 @@
+Source: ggz-gtk-games
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-gtk-games
+Architecture: any
+Depends: ${shlibs:Depends}
+Pre-Depends: libggz-client-libs
+Recommends: ggz-core-client
+Description: A collection of Gtk+ games for GGZ
+ This is the complete collection of GGZ games which
+ make use of the Gtk+ toolkit.

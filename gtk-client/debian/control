@@ -1,0 +1,15 @@
+Source: ggz-gtk-client
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-gtk-client
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: ggz-core-client
+Description: Gtk+/Gnome frontend for the GGZ Gaming Zone
+ This is one of the two graphical core clients currently
+ available. It is able to handle a chat, many different
+ kinds of online games, and personal configuration.

@@ -1,0 +1,15 @@
+Source: ggz-client-libs
+Section: devel
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: libggz-client-libs
+Architecture: any
+Depends: ${shlibs:Depends}, libc6-dev
+Description: GGZ Core Library
+ Software which wants to use the GGZ Gaming Zone should use
+ this library to get an event-driven backend for the UI.
+ .
+ This package does also contain the ggz-config utily.
