@@ -45,6 +45,7 @@
 #include <easysock.h>
 
 #include "confio.h"
+#include "about_dlg.h"
 
 
 /* Pixmaps */
@@ -316,9 +317,8 @@ void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 
 void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
-/*
-
-*/
+  GtkWidget *dialog = create_about_dialog();
+  gtk_widget_show_all(dialog);
 }
 
 

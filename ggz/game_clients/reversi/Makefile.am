@@ -17,6 +17,8 @@ ggz_reversi_SOURCES = game.h \
         lists.h \
         options_dlg.c \
         options_dlg.h \
+        about_dlg.c \
+        about_dlh.h \
         confio.c \
         confio.h \
 	      x.xpm \
