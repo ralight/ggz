@@ -32,8 +32,8 @@ function random_array($size)
 
 $conn = pg_connect("host=localhost dbname=ggz user=ggzd password=ggzd");
 
-$datestamp = 0; // use $form_date
-$datestring = date("d/m/Y", $datestamp);
+$datestamp = strtotime($form_date);
+$datestring = date("d.m.Y", $datestamp);
 
 echo "Tournament $form_name of $form_game will start on $datestring.\n";
 echo "<br><br>\n";

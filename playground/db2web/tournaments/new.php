@@ -20,8 +20,11 @@ Game type:
 
 <br><br>
 
-Start date (DD/MM/YYYY):
-<input type="text" name="form_date">
+Start date (MM/DD/YYYY):
+<?php
+$startdate = date("m/d/Y", time());
+echo "<input type='text' name='form_date' value='$startdate'>\n";
+?>
 
 <br><br>
 

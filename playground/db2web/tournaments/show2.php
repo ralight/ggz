@@ -97,6 +97,7 @@ $names = array("Finals", "Semi-finals", "Quarter-finals", "Qualification", "Pre-
 
 $level = log($num) / log(2); // 2^$level=$num -> $level=ld($num)=log($num)/log(2)
 
+$open = false;
 $op = 1;
 $xnum = $num / 2;
 $winners = array();
@@ -113,11 +114,11 @@ for($i = $level; $i > 0; $i--)
 			$winner = played($player1, $player2);
 			if ($winner) :
 				$winners[$op] = $winner;
-				$winner = "<b>$winner</b>";
+				$winnerstr = "<b>$winner</b>";
 			else:
-				$winner = "<b>(open)</b>";
+				$winnerstr = "<b>(open)</b>";
 			endif;
-			echo "($op) $player1 vs. $player2: $winner<br>\n";
+			echo "($op) $player1 vs. $player2: $winnerstr<br>\n";
 
 			$op += 1;
 		}
@@ -139,11 +140,12 @@ for($i = $level; $i > 0; $i--)
 			$winner = played($player1, $player2);
 			if ($winner) :
 				$winners[$op] = $winner;
-				$winner = "<b>$winner</b>";
+				$winnerstr = "<b>$winner</b>";
 			else:
-				$winner = "<b>(open)</b>";
+				$winnerstr = "<b>(open)</b>";
+				$open = true;
 			endif;
-			echo "($op) $player1 vs. $player2: $winner<br>\n";
+			echo "($op) $player1 vs. $player2: $winnerstr<br>\n";
 			$op1 += 2;
 			$op2 += 2;
 			$op += 1;
@@ -153,9 +155,49 @@ for($i = $level; $i > 0; $i--)
 	endif;
 }
 
+$res = pg_exec($conn, "SELECT * FROM placements WHERE tournament = $id");
+if (pg_numrows($res) > 0) :
+	$already_approved = 1;
+else :
+	$already_approved = 0;
+endif;
+
+if (($approved) && (!$already_approved) && (!$open)) :
+	if ($player1 == $winner) :
+		$second = $player2;
+	else:
+		$second = $player1;
+	endif;
+	pg_exec($conn, "INSERT INTO placements " .
+		"(tournament, place, handle) VALUES " .
+		"($id, 2, '$second')");
+	pg_exec($conn, "INSERT INTO placements " .
+		"(tournament, place, handle) VALUES " .
+		"($id, 1, '$winner')");
+endif;
+
 ?>
 
 <br><br>
+
+</td></tr></table>
+</td></tr>
+<tr><td bgcolor='#000000'>
+<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#e07f00'>
+
+<?php
+
+if (!$open) :
+
+if ($already_approved) :
+	echo "This result has been approved.\n";
+else:
+	echo "<a href='show2.php?id=$id&approved=1'>Approve this result!</a>\n";
+endif;
+
+endif;
+
+?>
 
 </td></tr></table>
 </td></tr>

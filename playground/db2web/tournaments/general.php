@@ -8,7 +8,8 @@
 <br><br>
 <a href="show.php">Show tournaments</a>
 <br><br>
-<a href="http://rankings.ggzgamingzone.org/">Rankings page</a>
+<br>
+<a href="http://rankings.ggzgamingzone.org/">Back to Rankings page</a>
 
 </td></tr></table>
 </td></tr></table>
