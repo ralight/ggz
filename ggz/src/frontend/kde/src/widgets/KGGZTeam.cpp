@@ -38,6 +38,7 @@
 #include "KGGZCaption.h"
 #include "KGGZLineSeparator.h"
 #include "KGGZCommon.h"
+#include "KGGZInput.h"
 
 // KDE includes
 #include <klocale.h>
@@ -58,6 +59,9 @@ KGGZTeam::KGGZTeam(QWidget *parent, const char *name)
 	QHBoxLayout *hbox;
 	QPushButton *b_ok, *b_add, *b_found;
 	KGGZLineSeparator *sep;
+
+	input_team = NULL;
+	input_member = NULL;
 
 	title = new KGGZCaption(i18n("Teams"), i18n("Manage your team memberships."), this);
 
@@ -84,6 +88,8 @@ KGGZTeam::KGGZTeam(QWidget *parent, const char *name)
 	hbox->add(b_ok);
 
 	connect(b_ok, SIGNAL(clicked()), SLOT(slotAccept()));
+	connect(b_found, SIGNAL(clicked()), SLOT(slotFound()));
+	connect(b_add, SIGNAL(clicked()), SLOT(slotAdd()));
 
 	setCaption(i18n("Teams"));
 	resize(300, 300);
@@ -104,16 +110,52 @@ void KGGZTeam::slotAccept()
 
 void KGGZTeam::load()
 {
+}
+
+void KGGZTeam::slotAdd()
+{
+	if(!input_member)
+	{
+		input_member = new KGGZInput(NULL, NULL,
+			i18n("New team member"), i18n("Name of the player who joins the team."));
+		connect(input_member, SIGNAL(signalText(const char*)), SLOT(slotAdded(const char*)));
+	}
+	input_member->show();
+}
+
+void KGGZTeam::slotFound()
+{
+	if(!input_team)
+	{
+		input_team = new KGGZInput(NULL, NULL,
+			i18n("Team foundation"), i18n("What should the name of the new team be?"));
+		connect(input_team, SIGNAL(signalText(const char*)), SLOT(slotFounded(const char*)));
+	}
+	input_team->show();
+}
+
+void KGGZTeam::slotAdded(const char *name)
+{
 	QListViewItem *tmp, *tmp2;
+	
+	tmp = list->currentItem();
+	if(!tmp) return;
+	if(tmp->parent()) return;
 
-	tmp = new QListViewItem(list, "Bielefeld Connection", "", "102");
-	tmp2 = new QListViewItem(tmp, "Some guy", "founder", "57");
-	tmp2->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/team-founder.png"));
-	tmp2 = new QListViewItem(tmp, "Some other guy", "member", "45");
-	tmp2->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/team-member.png"));
+	if(!tmp->childCount())
+	{
+		tmp2 = new QListViewItem(tmp, name, "founder", "100");
+		tmp2->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/team-founder.png"));
+	}
+	else
+	{
+		tmp2 = new QListViewItem(tmp, name, "member", "80");
+		tmp2->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/team-member.png"));
+	}
+}
 
-	tmp = new QListViewItem(list, "Joe's Chicken Club", "", "0");
-	tmp2 = new QListViewItem(tmp, "Anonymous", "member", "0");
-	tmp2->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/team-member.png"));
+void KGGZTeam::slotFounded(const char *name)
+{
+	(void)new QListViewItem(list, name, "", "0");
 }
 

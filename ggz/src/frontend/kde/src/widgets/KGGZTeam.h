@@ -39,6 +39,7 @@
 
 // Forward declarations
 class KListView;
+class KGGZInput;
 
 // KGGZTeam: Team management dialog
 class KGGZTeam : public QWidget
@@ -55,10 +56,19 @@ class KGGZTeam : public QWidget
 		public slots:
 			// Close the dialog
 			void slotAccept();
+			// Found a new team
+			void slotFound();
+			// Add a team member
+			void slotAdd();
+			// New team was founded
+			void slotFounded(const char *name);
+			// New member was added
+			void slotAdded(const char *name);
 
 		private:
 			// List view for the team members
 			KListView *list;
+			KGGZInput *input_team, *input_member;
 };
 
 #endif

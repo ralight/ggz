@@ -275,7 +275,7 @@ void KGGZBase::slotMenu(int id)
 			kggz->menuServerKill();
 			break;
    		case MENU_GGZ_QUIT:
-			ret = KMessageBox::questionYesNo(this, "Do you really want to quit?", "Quit KGGZ");
+			ret = KMessageBox::questionYesNo(this, i18n("Do you really want to quit?"), i18n("Quit KGGZ"));
 			if(ret == KMessageBox::Yes) close();
 			break;
 		case MENU_CLIENT_STARTUP:
