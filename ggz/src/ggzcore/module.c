@@ -43,6 +43,7 @@ static int mod_handle = -1;
 
 /* static internal functions */
 static struct _GGZModule* _ggzcore_module_new(void);
+#if 0
 static void _ggzcore_module_init(struct _GGZModule *module,
 				 const char *name,
 				 const char *version,
@@ -54,6 +55,7 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 				 const char *exec_path,
 				 const char *icon_path,
 				 const char *help_path);
+#endif /* #if 0 */
 static void _ggzcore_module_free(struct _GGZModule *module);
 static void _ggzcore_module_read(struct _GGZModule *mod, char *id);
 static int _ggzcore_module_add(struct _GGZModule *module);
@@ -65,8 +67,8 @@ static void _ggzcore_module_list_print(void);
 static int   _ggzcore_module_compare(void* p, void* q);
 #if 0
 static int   _ggzcore_module_match_version(void *p, void *q);
-#endif
 static void* _ggzcore_module_create(void* p);
+#endif /* #if 0 */
 static void  _ggzcore_module_destroy(void* p);
 
 
@@ -462,7 +464,7 @@ static struct _GGZModule* _ggzcore_module_new(void)
 	return module;
 }
 
-		
+#if 0
 static void _ggzcore_module_init(struct _GGZModule *module,
 				 const char *name,
 				 const char *version,
@@ -486,6 +488,7 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 	module->icon = ggz_strdup(icon_path);
 	module->help = ggz_strdup(help_path);
 }
+#endif /* #if 0 */
 
 
 static void _ggzcore_module_free(struct _GGZModule *module)
@@ -625,7 +628,6 @@ static int _ggzcore_module_match_version(void *p, void *q)
 	else
 		return strcmp(pmod->protocol, qmod->protocol);
 }
-#endif
 
 static void* _ggzcore_module_create(void* p)
 {
@@ -641,7 +643,7 @@ static void* _ggzcore_module_create(void* p)
 
 	return (void*)new;
 }
-
+#endif /* #if 0 */
 
 static void _ggzcore_module_destroy(void* p)
 {
