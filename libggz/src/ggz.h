@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3713 2002-03-28 20:33:43Z jdorje $
+ * $Id: ggz.h 3889 2002-04-11 03:04:16Z bmh $
  * 
  * Header file for ggz componenets lib
  *
@@ -383,81 +383,262 @@ int ggz_conf_remove_key	(int	handle,
 
 /**
  * @defgroup list List functions 
- * 
+ *
+ * Data Structures and functions for manipulating linked-lists
  * @{
  */
 
-/** @brief A function type to compare two entries in a GGZList.
+/** @brief A function type for doing data comparison on two items in a
+ *  ::GGZList.
  *
  *  @param a An arbitrary element in the GGZList.
  *  @param b An arbitrary element in the GGZList.
- *  @return Negative if a < b; 0 if a == b; positive if a > b.
- */
+ *  @return Negative if a < b; 0 if a == b; positive if a > b.  */
 typedef int	(*ggzEntryCompare)	(void *a, void *b);
 
-/** @brief A function type to create an entry in a GGZList.
+
+/** @brief A function type for creating a copy of a data item for
+ *  insertion into a ::GGZList.
  *
- *  A function of this type will be called on an element when
+ *  A function of this type may be called on an element when
  *  it is first inserted into a GGZList.
- *  @param data The data given to the list for insertion.
- *  @return The actual inserted value.
+ *  @param data A pointer to the data given to the list for insertion.
+ *  @return A new copy of the data, safe for list insertion
  */
 typedef	void *	(*ggzEntryCreate)	(void *data);
 
+
 /** @brief A function type to destroy an entry in a GGZList.
  *
- *  A function of this type will be called on an element when
+ *  A function of this type may be called on an element when
  *  it is removed from a GGZList.
  *  @param data The entry being removed.
  */
 typedef	void	(*ggzEntryDestroy)	(void *data);
 
 
+/** @brief A single entry in a GGZList
+ *
+ *  Do not access these members directly, but use the
+ *  ggz_list_get_data(), ggz_list_next() and ggz_list_prev()
+ *  accessor functions instead 
+ */
 typedef struct _GGZListEntry {
-	void				*data;
-	struct _GGZListEntry	*next, *prev;
+	void		     *data; /**< Pointer to data for this node */
+	struct _GGZListEntry *next, /**< Pointer to next nodes in the list */
+		             *prev; /**< Pointer to previous node in the list */
 } GGZListEntry;
 
 
+/** @brief Simple doubly-linked list
+ *
+ *  Do not access these members directly.  Instead use accessor functions.
+ */
 typedef struct _GGZList {
-	GGZListEntry	*head, *tail;
-	ggzEntryCompare		compare_func;
-	ggzEntryCreate		create_func;
-	ggzEntryDestroy		destroy_func;
-	int			options;
-	int			entries;
+	GGZListEntry	*head,         /**< Pointer to the first node in the list */
+		        *tail;         /**< Pointer to the last node in the list */
+	ggzEntryCompare	compare_func;  /**< Function used to compare data entries */
+	ggzEntryCreate	create_func;   /**< Function used to copy data entries */
+	ggzEntryDestroy	destroy_func;  /**< Function used to destroy data entries */
+	int		options;       /**< List options */
+	int		entries;       /**< The current number of list entries (ie. list length) */
 } GGZList;
 
 
 
-#define GGZ_LIST_REPLACE_DUPS       0x00
-#define GGZ_LIST_ALLOW_DUPS         0x01
+#define GGZ_LIST_REPLACE_DUPS       0x00 /**< Overwrite duplicate values on insert */
+#define GGZ_LIST_ALLOW_DUPS         0x01 /**< Allow duplicate data entries to exist in the list */
 
-
-
+/** @brief Create a new ::GGZList
+ *
+ * When creating a a new list, you have some control over its
+ * behavior.  The first parameter, compare_func allows you to specify
+ * a comparison for sorting the list elements.  If you specify NULL
+ * for compare_func, the list will be unordered.  The second
+ * parameter, create_func allows you to specify how new copies of data
+ * will be created during insertion.  ::GGZList objects stores
+ * pointers to your data in ::GGZListEntry nodes. If you specify NULL
+ * for create_func, the list will store the actual pointer to your
+ * data when you call ggz_list_insert().  If you specify a
+ * create_func, it will be called to create a new copy of the object
+ * for storage in the list.  You are then safely deallocate the
+ * original copy of the data.  The third parameter, destroy_func
+ * allows you to specify a deallocation function for data entries when
+ * they are removed from the list.  @note The functions
+ * ggz_list_compare_str(), ggz_list_create_str()
+ * ggz_list_destroy_str() are provided for use with character string
+ * data.
+ *
+ * The last argument must be one of #GGZ_LIST_REPLACE_DUPS or
+ * #GGZ_LIST_ALLOW_DUPS, to specify how the list will behave with
+ * respect to duplicate data entries.  If #GGZ_LIST_REPLACE_DUPS is
+ * passed, duplicate entries (as determined by compare_func) will be
+ * replaced upon ggz_list_insert().  If #GGZ_LIST_ALLOW_DUPS is
+ * specified, duplicate ata entries will be allowed to exist in the
+ * list.
+ *
+ * @note If compare_func is NULL, #GGZ_LIST_REPLACE_DUPS has no meaning
+ *
+ * @param compare_func Function to use for comparing data items
+ * @param create_func Function to use for allocating and copying data items
+ * @param destroy_func Function to use for dellocating data items
+ * @param options One of #GGZ_LIST_REPLACE_DUPS or #GGZ_LIST_ALLOW_DUPS
+ * specifying how the list should handle duplicate data entries
+ * @return A pointer to a newly allocated ::GGZList */
 GGZList *ggz_list_create (ggzEntryCompare compare_func,
-			   ggzEntryCreate create_func,
-			   ggzEntryDestroy destroy_func,
-			   int options);
+			  ggzEntryCreate create_func,
+			  ggzEntryDestroy destroy_func,
+			  int options);
 
+
+/** @brief Insert data into a list
+ *
+ * @param list Pointer to a ::GGZList 
+ * @param data Pointer to data to be inserted
+ * @return -1 on failure, 0 is the item was inserted, and 1 if the
+ * item replaced an existing list item.  @note Replacement of
+ * duplicate items only occurs if #GGZ_LIST_REPLACE_DUPS was passed to
+ * ggz_list_create() */
 int ggz_list_insert		(GGZList *list, void *data);
+
+
+/** @brief Get the first node of a list
+ *
+ * @param list Pointer to a ::GGZList
+ * @return The ::GGZListEntry that is first in the list
+ */
 GGZListEntry *ggz_list_head	(GGZList *list);
+
+
+/** @brief Get the last node of a list
+ *
+ * @param list Pointer to a ::GGZList
+ * @return The ::GGZListEntry that is last in the list
+ */
 GGZListEntry *ggz_list_tail	(GGZList *list);
+
+
+/** @brief Get the next node of a list
+ *
+ * @param entry Pointer to a ::GGZListEntry in a ::GGZList
+ * @return The next ::GGZListEntry in the list
+ */
 GGZListEntry *ggz_list_next  	(GGZListEntry *entry);
+
+
+/** @brief Get the previous node of a list
+ *
+ * @param entry Pointer to a ::GGZListEntry in a ::GGZList
+ * @return The previous ::GGZListEntry in the list
+ */
 GGZListEntry *ggz_list_prev	(GGZListEntry *entry);
+
+
+/** @brief Retrieve the data stored in a list entry
+ *
+ * @param entry Pointer to a ::GGZListEntry
+ * @return Pointer to the data stored in the specifed node (::GGZListEntry)
+ */
 void *ggz_list_get_data		(GGZListEntry *entry);
+
+
+/** @brief Search for a specified data item in the list
+ *
+ * ggz_list_search() searches a list for a particular data item using
+ * the ggzEntryCompare function provided as compare_func to
+ * ggz_list_create().  If you wish to search using an alternative
+ * comparison function, see ggz_list_search_alt()
+ *
+ * @param list Pointer to a ::GGZList
+ * @param data Pointer to data to search for
+ * @return Pointer to the ::GGZListEntry containing the specifed node
+ * (NULL if the data could not be found or if no compare_func was
+ * specified at list-creation time) 
+ */
 GGZListEntry *ggz_list_search	(GGZList *list, void *data);
+
+
+/** @brief Search for a specified data item in the list using a provided comparison function
+ *
+ * ggz_list_search_alt() searches a list for a particular data item
+ * using the passed ggzEntryCompare function.
+ *
+ * @param list Pointer to a ::GGZList
+ * @param data Pointer to data to search for
+ * @param compare_func Comparison function
+ * @return Pointer to the ::GGZListEntry containing the specifed node
+ * (NULL if the data could not be found or if no compare_func was
+ * specified) 
+ */
 GGZListEntry *ggz_list_search_alt(GGZList *list, void *data,
 				  ggzEntryCompare compare_func);
 
+/** @brief Removes an entry from a list, calling a destructor if registered
+ *
+ * ggz_list_delete_entry() removes the specifed entry from the list.
+ * If a ggzEntryDestroy function was passed as destroy_func to
+ * ggz_list_create(), it will be called on the data item after it has
+ * been removed.
+ *
+ * @param list Pointer to a ::GGZList 
+ * @param entry Pointer to the ::GGZListEntry to remove */
 void ggz_list_delete_entry	(GGZList *list, GGZListEntry *entry);
+
+
+/** @brief Free all resources associated with a list
+ *
+ * ggz_list_free() will free all resources allocated by the list.  If
+ * a ggzEntryDestroy function was passed as destroy_func to
+ * ggz_list_create(), it will be called on all data items in the list
+ * as well.
+ *
+ * @param list Pointer to a ::GGZList */
 void ggz_list_free		(GGZList *list);
+
+
+/** @brief Get the length of the list
+ *
+ * @param list Pointer to a ::GGZList
+ * @return The number of entries in the list 
+ */
 int ggz_list_count		(GGZList *list);
 
 
 /* String list functions */
+
+/** @brief Compare two character strings
+ *
+ *  This function is intended to be passed as the compare_func of
+ *  ggz_list_create() when creating a list that stores character
+ *  strings.
+ *
+ * @param a A string to compare 
+ * @param b A second string to compare 
+ * @return The result of strcmp() on a and b, or 1 if either is NULL
+ * */
 int ggz_list_compare_str	(void *a, void *b);
+
+
+/** @brief Copy a character string
+ *
+ *  This function is intended to be passed as the create_func of
+ *  ggz_list_create() when creating a list that stores character
+ *  strings.
+ *
+ *  @param data A string to copy
+ *  @return A newly allocated copy of the string
+ */
 void * ggz_list_create_str	(void *data);
+
+
+/** @brief Free a character string
+ *
+ *  This function is intended to be passed as the destroy_func of
+ *  ggz_list_create() when creating a list that stores character
+ *  strings.
+ *
+ *  @param data The string to deallocate
+ */
 void ggz_list_destroy_str	(void *data);
 
 /** @} */
@@ -466,16 +647,56 @@ void ggz_list_destroy_str	(void *data);
 /**
  * @defgroup stack Stacks
  *
+ * Data Structures and functions for manipulating stacks
+ *
  * @{
  */
 
+/** @brief Simple implementation of stacks using ::GGZList
+ *
+ */
 typedef struct _GGZList GGZStack;
 
+
+
+/** @brief Create a new stack
+ *
+ * @return Pointer to a newly allocated ::GGZStack object
+ */
 GGZStack* ggz_stack_new(void);
-void ggz_stack_push(GGZStack*, void*);
-void* ggz_stack_pop(GGZStack*);
-void* ggz_stack_top(GGZStack*);
-void ggz_stack_free(GGZStack*);
+
+
+/** @brief Push a data item onto the top of the stack
+ *
+ * @param stack Pointer to a ::GGZStack
+ * @param data Pointer to data to insert onto stack
+ */
+void ggz_stack_push(GGZStack *stack, void *data);
+
+
+/** @brief Pop the top item off of the stack
+ *
+ * @param stack Pointer to a ::GGZStack
+ * @return Pointer to the data item on the top of the stack
+ */
+void* ggz_stack_pop(GGZStack *stack);
+
+
+/** @brief Get the top item on the stack without popping it
+ *
+ * @param stack Pointer to a ::GGZList
+ * @return Pointer to the data item currently in to of the stack
+ */
+void* ggz_stack_top(GGZStack *stack);
+
+
+/** @brief Free the stack
+ *
+ * @note This does not free the data stored in the stack
+ *
+ * @param stack Pointer to a ::GGZStack
+ */
+void ggz_stack_free(GGZStack *stack);
 
 /** @} */
 
