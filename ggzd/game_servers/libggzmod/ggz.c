@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2360 2001-09-05 02:47:42Z jdorje $
+ * $Id: ggz.c 2362 2001-09-05 05:08:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/un.h>
 
