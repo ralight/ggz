@@ -76,7 +76,7 @@ int GGZapHandler::init()
 	strcpy(confdir, getenv("HOME"));
 	strcat(confdir, "/.ggz/ggzap.rc");
 	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
-	m_confserver = conf->read("Global", "Server", "ggz.snafu.de");
+	m_confserver = conf->read("Global", "Server", "live.ggzgamingzone.org");
 	user = conf->read("Global", "Username", (char*)NULL);
 	delete conf;
 

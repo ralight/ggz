@@ -91,7 +91,7 @@ void GGZapConfig::configLoad()
 	QString type;
 
 	conf = new GGZCoreConfio(configfile->latin1(), GGZCoreConfio::readonly);
-	m_server->setText(conf->read("Global", "Server", "ggz.snafu.de"));
+	m_server->setText(conf->read("Global", "Server", "live.ggzgamingzone.org"));
 	m_username->setText(conf->read("Global", "Username", getenv("USER")));
 	delete conf;
 

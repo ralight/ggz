@@ -124,7 +124,7 @@ void KCMGGZMetaserver::slotAuto()
 	connect(sock, SIGNAL(connected()), SLOT(slotAutoConnected()));
 	connect(sock, SIGNAL(readyRead()), SLOT(slotAutoRead()));
 	connect(sock, SIGNAL(error(int)), SLOT(slotAutoError(int)));
-	sock->connectToHost("ggz.snafu.de", 15689);
+	sock->connectToHost("live.ggzgamingzone.org", 15689);
 }
 
 void KCMGGZMetaserver::slotAutoServer()
@@ -134,7 +134,7 @@ void KCMGGZMetaserver::slotAutoServer()
 	connect(sock, SIGNAL(connected()), SLOT(slotAutoConnected()));
 	connect(sock, SIGNAL(readyRead()), SLOT(slotAutoRead()));
 	connect(sock, SIGNAL(error(int)), SLOT(slotAutoError(int)));
-	sock->connectToHost("ggz.snafu.de", 15689);
+	sock->connectToHost("live.ggzgamingzone.org", 15689);
 }
 
 void KCMGGZMetaserver::slotAutoError(int error)
@@ -278,7 +278,7 @@ void KCMGGZMetaserver::load()
 	if(!found)
 	{
 		addURI("ggzmeta://mindx.dyndns.org", "ggz");
-		addURI("ggzmeta://ggz.snafu.de", "ggz");
+		addURI("ggzmeta://live.ggzgamingzone.org", "ggz");
 		addURI("http://www.freeciv.org/metaserver.html", "freeciv");
 	}
 
@@ -300,7 +300,7 @@ void KCMGGZMetaserver::load()
 	if(!found)
 	{
 		addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Pennsylvania/USA", QString::null, "Justin's Developer server");
-		addServerURI("ggz://ggz.snafu.de", "GGZ Gaming Zone", "10", "Berlin/Germany", QString::null, "GGZ Europe One server");
+		addServerURI("ggz://live.ggzgamingzone.org", "GGZ Gaming Zone", "10", "Berlin/Germany", QString::null, "GGZ Europe One server");
 		addServerURI("kmonop://somewhere.org", "Atlantik", "10", "Whereever", QString::null, "Yet another host");
 		addServerURI("freeciv://civserver.freeciv.org", "FreeCiv", "10", "Anywhere", QString::null, "SmallPox is cool");
 	}

@@ -337,7 +337,7 @@ void KGGZConnect::slotAccept()
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("ggz.snafu.de", 15689);
+		m_sock->connectToHost("live.ggzgamingzone.org", 15689);
 	}
 }
 
