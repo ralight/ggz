@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6728 2005-01-18 17:06:14Z oojah $
+ * $Id: ggzmod.c 6795 2005-01-21 22:11:45Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -88,8 +88,11 @@ static void spectator_seat_free(GGZSpectatorSeat *seat);
  * Creating/destroying a ggzmod object
  */
 
-static int stats_compare(void *p, void *q) {
-	return (((GGZStat*)p)->number == *(int*)q);
+static int stats_compare(const void *p, const void *q)
+{
+	const GGZStat *s_p = p, *s_q = q;
+
+	return s_p->number - s_q->number;
 }
 
 /*
@@ -162,8 +165,11 @@ GGZMod *ggzmod_new(GGZModType type)
 				GGZ_LIST_REPLACE_DUPS);
 	ggzmod->num_seats = ggzmod->num_spectator_seats = 0;
 
-	ggzmod->stats = ggz_list_create(stats_compare, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
-	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+	printf("Creating lists.\n");
+	ggzmod->stats = ggz_list_create(stats_compare, NULL, NULL,
+					GGZ_LIST_ALLOW_DUPS);
+	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL,
+						  GGZ_LIST_ALLOW_DUPS);
 
 #ifdef HAVE_FORK
 	ggzmod->pid = -1;
@@ -1302,8 +1308,10 @@ int ggzmod_player_get_record(GGZMod *ggzmod, GGZSeat *seat,
 			     int *wins, int *losses,
 			     int *ties, int *forfeits)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*wins = stat->wins;
 	*losses = stat->losses;
@@ -1314,8 +1322,10 @@ int ggzmod_player_get_record(GGZMod *ggzmod, GGZSeat *seat,
 
 int ggzmod_player_get_rating(GGZMod *ggzmod, GGZSeat *seat, int *rating)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*rating = stat->rating;
 	return 1;
@@ -1323,8 +1333,10 @@ int ggzmod_player_get_rating(GGZMod *ggzmod, GGZSeat *seat, int *rating)
 
 int ggzmod_player_get_ranking(GGZMod *ggzmod, GGZSeat *seat, int *ranking)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*ranking = stat->ranking;
 	return 1;
@@ -1332,8 +1344,10 @@ int ggzmod_player_get_ranking(GGZMod *ggzmod, GGZSeat *seat, int *ranking)
 
 int ggzmod_player_get_highscore(GGZMod *ggzmod, GGZSeat *seat, int *highscore)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*highscore = stat->highscore;
 	return 1;
@@ -1343,8 +1357,11 @@ int ggzmod_spectator_get_record(GGZMod *ggzmod, GGZSpectatorSeat *seat,
 				int *wins, int *losses,
 				int *ties, int *forfeits)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats,
+					      &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*wins = stat->wins;
 	*losses = stat->losses;
@@ -1355,8 +1372,11 @@ int ggzmod_spectator_get_record(GGZMod *ggzmod, GGZSpectatorSeat *seat,
 
 int ggzmod_spectator_get_rating(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *rating)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats,
+					      &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*rating = stat->rating;
 	return 1;
@@ -1364,8 +1384,11 @@ int ggzmod_spectator_get_rating(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *rat
 
 int ggzmod_spectator_get_ranking(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *ranking)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats,
+					      &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*ranking = stat->ranking;
 	return 1;
@@ -1373,8 +1396,11 @@ int ggzmod_spectator_get_ranking(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *ra
 
 int ggzmod_spectator_get_highscore(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *highscore)
 {
-	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat search_stat = {.number = seat->num};
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats,
+					      &search_stat);
 	GGZStat *stat = ggz_list_get_data(entry);
+
 	if(!stat) return 0;
 	*highscore = stat->highscore;
 	return 1;
