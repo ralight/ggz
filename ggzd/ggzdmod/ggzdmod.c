@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2635 2001-11-03 10:02:39Z jdorje $
+ * $Id: ggzdmod.c 2639 2001-11-03 19:47:39Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -41,9 +41,10 @@
 
 #include <easysock.h>
 #include <ggz.h>
-#include "../game_servers/libggzmod/ggz_protocols.h"	/* FIXME */
 
 #include "ggzdmod.h"
+#include "protocol.h"
+
 
 /* This checks the ggzdmod object for validity.  It could do more checking if
    desired. */
@@ -103,7 +104,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 
 	/* initialize */
 	ggzdmod->type = type;
-	ggzdmod->state = GGZ_STATE_INIT;
+	ggzdmod->state = GGZ_STATE_CREATED;
 	ggzdmod->fd = -1;
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
@@ -125,10 +126,10 @@ void ggzdmod_free(GGZdMod * mod)
 	/* Free any fields the object contains */
 	ggzdmod->type = -1;
 	if (ggzdmod->seats)
-		free(ggzdmod->seats);
+		ggz_free(ggzdmod->seats);
 
 	/* Free the object */
-	free(ggzdmod);
+	ggz_free(ggzdmod);
 }
 
 
@@ -412,7 +413,7 @@ static void game_leave(_GGZdMod * ggzdmod)
 static void game_over(_GGZdMod * ggzdmod)
 {
 	ggzdmod_halt_table(ggzdmod);
-	set_state(ggzdmod, GGZ_STATE_GAMEOVER);
+	set_state(ggzdmod, GGZ_STATE_DONE);
 }
 
 static void ggz_rsp_launch(_GGZdMod * ggzdmod)
@@ -447,7 +448,7 @@ static void ggz_rsp_leave(_GGZdMod * ggzdmod)
 static void ggz_req_gameover(_GGZdMod * ggzdmod)
 {
 	es_write_int(ggzdmod->fd, RSP_GAME_OVER);	/* ignore error */
-	set_state(ggzdmod, GGZ_STATE_GAMEOVER);	/* Is this right? has the
+	set_state(ggzdmod, GGZ_STATE_DONE);	/* Is this right? has the
 						   gameover happened yet? */
 }
 
@@ -584,7 +585,7 @@ int ggzdmod_loop(GGZdMod * mod)
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
-	while (ggzdmod->state != GGZ_STATE_GAMEOVER) {
+	while (ggzdmod->state != GGZ_STATE_DONE) {
 		fd_set read_fd_set;
 		int status;
 
@@ -615,7 +616,7 @@ int ggzdmod_halt_table(GGZdMod * mod)
 	if (ggzdmod->type == GGZDMOD_GAME) {
 		/* FIXME: do we really want to call the event handler
 		   function in this case? */
-		set_state(ggzdmod, GGZ_STATE_GAMEOVER);
+		set_state(ggzdmod, GGZ_STATE_DONE);
 	} else {
 		/* TODO: an extension to the communications protocol will be
 		   needed for halt_game to work ggz-side.  Let's get the rest 
