@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 5224 2002-11-05 10:28:24Z jdorje $
+ * $Id: pick_module.c 6089 2004-07-12 16:50:18Z josef $
  *
  * Dialog window to pick a module for your game
  *
@@ -61,7 +61,7 @@ static void on_preserve_toggled(GtkToggleButton * widget, gpointer data)
 	preserve = widget->active;
 }
 
-static GtkWidget *create_pick_module_dlg(GGZModule **modules)
+static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers)
 {
 	GtkWidget *pick_module_dlg;
 	GtkWidget *vbox1;
@@ -113,12 +113,12 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules)
 
 		if (i == 0 || strcasecmp(fe, "gtk") == 0) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(frontend), TRUE);
-			choice = i;
+			choice = modulenumbers[i];
 		}
 
 		gtk_signal_connect(GTK_OBJECT(frontend), "toggled",
 				   GTK_SIGNAL_FUNC(on_button_toggled),
-				   GINT_TO_POINTER(i));
+				   GINT_TO_POINTER(modulenumbers[i]));
 	}
 
 	hseparator1 = gtk_hseparator_new();
@@ -164,13 +164,13 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules)
 }
 
 
-int ask_user_to_pick_module(GGZModule **modules, int *dopreserve)
+int ask_user_to_pick_module(GGZModule **modules, int *modulenumbers, int *dopreserve)
 {
 	if (dialog)
 		return -1; /* FIXME: this shouldn't be allowed to happen */
 
 	preserve = 0;
-	dialog = create_pick_module_dlg(modules);
+	dialog = create_pick_module_dlg(modules, modulenumbers);
 
 	gtk_widget_show(dialog);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5974 2004-03-22 17:08:23Z josef $
+ * $Id: game.c 6089 2004-07-12 16:50:18Z josef $
  *
  * Functions for handling game events
  *
@@ -67,6 +67,7 @@ static GGZModule * pick_module(GGZGameType *gt)
 	int i, j, preserve;
 	GGZModule * module;
 	GGZModule **frontends;
+	int *modulenumbers;
 	char *preferred;
 	int num;
 	GGZModuleEnvironment env;
@@ -113,6 +114,7 @@ static GGZModule * pick_module(GGZGameType *gt)
 	/* More than one frontend: pop up a window and let the player
 	   choose. */
 	frontends = ggz_malloc((num + 1) * sizeof(*frontends));
+	modulenumbers = ggz_malloc((num + 1) * sizeof(int));
 
 	j = 0;
 	for (i = 0; i < num; i++) {
@@ -121,17 +123,19 @@ static GGZModule * pick_module(GGZGameType *gt)
 		env = ggzcore_module_get_environment(module);
 		if ((env == GGZ_ENVIRONMENT_XWINDOW) || (env == GGZ_ENVIRONMENT_XFULLSCREEN)) {
 			frontends[j] = module;
+			modulenumbers[j] = i;
 			j++;
 		}
 	}
 	frontends[j] = NULL;
 
-	i = ask_user_to_pick_module(frontends, &preserve);
+	i = ask_user_to_pick_module(frontends, modulenumbers, &preserve);
 	if (i < 0)
 		return NULL;
 	module = ggzcore_module_get_nth_by_type(name, engine, version, i);
 
 	ggz_free(frontends);
+	ggz_free(modulenumbers);
 
 	if (preserve) {
 		const char *frontend = ggzcore_module_get_frontend(module);
