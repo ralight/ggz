@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4299 2002-07-13 10:20:00Z dr_maux $
+ * $Id: parse_opt.c 4311 2002-07-20 16:24:54Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -733,14 +733,18 @@ static void parse_room(char *name, char *dir)
 /* Return 1 if filename matches our pattern (ends in '.dsc') */
 static int parse_gselect(const struct dirent *dent)
 {
-	return(!strcmp(".dsc", dent->d_name+strlen(dent->d_name)-4));
+	/* Note: be careful to avoid underflow when the name is too short. */
+	int len = strlen(dent->d_name);
+	return len > 4 && !strcmp(".dsc", dent->d_name + len - 4);
 }
 
 
 /* Return 1 if filename matches our pattern (ends in '.room') */
 static int parse_rselect(const struct dirent *dent)
 {
-	return(!strcmp(".room", dent->d_name+strlen(dent->d_name)-5));
+	/* Note: be careful to avoid underflow when the name is too short. */
+	int len = strlen(dent->d_name);
+	return len > 5 && !strcmp(".room", dent->d_name + len - 5);
 }
 
 
