@@ -1,0 +1,89 @@
+Game data formats using GHNS
+============================
+
+GHNS
+----
+
+The "Get Hot New Stuff" framework allows applications to handle
+up- and downloads of data including author, versioning and installation
+information. It is currently supported by KDE (since kdelibs-3.3) but
+should be used in more projects in the future.
+For GGZ games, integration will help keep distribution sizes small and
+make it easier to contribute data.
+In the process of migrating, it also allows for a documentation of game
+data (level, themes, ...) formats, which follows below.
+A notable number of games should support GHNS in GGZ version 0.0.10.
+
+For more information about GHNS, have a look at:
+
+	http://www.kstuff.org/
+
+KNewStuff
+---------
+
+This KDE library provides an easy-to-use dialog for KDE applications.
+Also included is an upload dialog and some tools.
+In order to start an external upload, invoke:
+
+	ghns_context file:/home/.../harold.hastings
+
+This comes in handy since most games will only support downloads.
+Level editor and such on the other hand will support uploads.
+
+SDLNewStuff
+-----------
+
+A drop-in dialog for SDL games written in Python. This is currently specific
+to GGZ but might well be used by other games too in the future.
+As opposed to the KDE counterpart, it is highly configurable in appearance and
+behaviour.
+
+Game data format descriptions
+=============================
+
+General information
+-------------------
+
+GHNS works independent of the game protocol name and version.
+It is however recommended that games which share the same protocol, i.e. are
+presented only as different interfaces to the same game to the user,
+share their data. Most of the times this can be done rather trivially.
+
+Fyrdman/Hastings1066
+--------------------
+*.hastings: Levels including associated themes
+ - foo.png: map image
+ - bar: level file referencing map
+Fyrdman/knewstuff:
+ - downloads to .kde/share/apps/fyrdman
+ - extracts to .ggz/games/fyrdman (without subdirs)
+- Hastings1066 (Gtk+):
+	TODO
+
+Chinese Checkers/KCC
+--------------------
+*.ccheckers: Themes
+ - board.png/xpm: game board background
+ - mask.png, main.png: board shape files (optional)
+ - hole.png/xpm, red.png/xpm, ...: game stones
+KCC/knewstuff:
+ - downloads to .kde/share/apps/kcc
+ - extracts to .ggz/games/kcc (in a subdirs)
+Chinese Checkers (Gtk+):
+	TODO
+Notes:
+ - Gtk+ client does not support xpm (I think?)
+ - theme names determined by directories
+
+Dots
+----
+- TODO
+
+TicTacToe
+---------
+- TODO (but started in ktictactux)
+
+Muehle
+------
+- TODO (but started)
+

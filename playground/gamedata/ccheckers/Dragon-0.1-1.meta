@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knewstuff>
+<knewstuff>
+ <stuff type="ccheckers/theme" >
+  <name>Dragon</name>
+  <author>Jonas Ström</author>
+  <licence>GPL</licence>
+  <version>0.1</version>
+  <release>1</release>
+  <rating>0</rating>
+  <downloads>0</downloads>
+  <releasedate>2004-10-24</releasedate>
+  <summary lang="de" >Dragon Chinese Checker theme</summary>
+  <preview lang="de" >preview_dragon.png</preview>
+  <payload lang="de" >dragon.ccheckers</payload>
+ </stuff>
+</knewstuff>

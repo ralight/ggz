@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knewstuff>
+<knewstuff>
+ <stuff type="hastings/level" >
+  <name>Harold's return</name>
+  <author>Josef Spillner</author>
+  <licence>GPL</licence>
+  <version>0.0.9</version>
+  <release>1</release>
+  <rating>0</rating>
+  <downloads>0</downloads>
+  <releasedate>2004-10-15</releasedate>
+  <summary lang="de" >Harold will return!</summary>
+  <preview lang="de" >preview_haroldsreturn.png</preview>
+  <payload lang="de" >harold.hastings</payload>
+ </stuff>
+</knewstuff>

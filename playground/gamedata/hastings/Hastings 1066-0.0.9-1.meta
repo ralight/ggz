@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knewstuff>
+<knewstuff>
+ <stuff type="hastings/level" >
+  <name>Hastings 1066</name>
+  <author>Josef Spillner</author>
+  <licence>GPL</licence>
+  <version>0.0.9</version>
+  <release>1</release>
+  <rating>0</rating>
+  <downloads>0</downloads>
+  <releasedate>2004-10-15</releasedate>
+  <summary lang="de" >The default level</summary>
+  <preview lang="de" >preview_hastings.png</preview>
+  <payload lang="de" >hastings.hastings</payload>
+ </stuff>
+</knewstuff>
