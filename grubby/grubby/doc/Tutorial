@@ -59,7 +59,16 @@ argv[3] = priority
 Also take care that scripts have the executable flags set after installation,
 else they won't respond anything.
 
-4. Player interface
+4. Embedded scripts
+-------------------
+
+Using mod_embed, scripts of supported programming languages can now also be
+executed with no time loss as embedded scripts (yet running as external process
+to achieve higher security).
+For ruby scripts, the variable $answer serves as both input and output
+interface.
+
+5. Player interface
 -------------------
 Some modules want to know when a player was last seen, if he logged in at all
 and more. For those, the file player.c contains some useful functions. Have a
@@ -67,7 +76,7 @@ look at test_player.c on how to use it.
 Grubby commands like "have you seen Keeper" or his automatical first-time
 introduction haven't been coded yet. They should use this easy interface.
 
-5. Internationalization
+6. Internationalization
 -----------------------
 Never care about input in foreign languages. Although it is planned to add i18n
 support to both input and output dynamically, the language switch is done in

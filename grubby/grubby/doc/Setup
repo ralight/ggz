@@ -1,4 +1,5 @@
-This is my setup for the current version of grubby:
+This is my setup for the current version of grubby.
+Note that you can easily setup grubby using the 'grubby-config' tool.
 
 ===========================
 /home/josef/.ggz/grubby.rc:
@@ -11,13 +12,13 @@ autojoin = 0
 owner = josef
 host = localhost
 logfile = /tmp/guruchatlog
- 
+
 [guru]
 player = /usr/local/lib/libguru_player.so
 net = /usr/local/lib/libguru_netggz.so
 i18n = /usr/local/lib/libguru_i18n.so
 modules = self people badword programming exec simplereturn learning
-  
+
 [modules]
 simplereturn = /usr/local/lib/libgurumod_simplereturn.so
 exec = /usr/local/lib/libgurumod_exec.so
@@ -37,6 +38,14 @@ meeting = /usr/local/share/grubby/meeting.rb
 messages = /usr/local/share/grubby/messages.rb
 news = /usr/local/share/grubby/rdf.pl
 dict = /usr/local/share/grubby/dict.pl
+
+================================
+/home/josef/.ggz/grubby/modembed.rc
+================================
+
+[scripts]
+scripts = embedtest
+embedtest = /usr/local/share/grubby/embedtest.rb
 
 ===================================
 /home/josef/.ggz/grubby/modbadword.rc
