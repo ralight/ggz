@@ -45,6 +45,7 @@ static void game_print_board(void);
 void game_init(void)
 {
 	game.turn = -1;
+	game.turn_count = 0;
 	game.state = CC_STATE_INIT;
 }
 
@@ -237,6 +238,9 @@ int game_move(void)
 {
 	int num = game.turn;
 	unsigned char ro, co, rd, cd;
+
+	if(num == 0)
+		game.turn_count++;
 
 	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
 		ai_move(&ro, &co, &rd, &cd);

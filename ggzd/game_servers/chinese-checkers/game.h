@@ -63,6 +63,7 @@ struct game_t {
 	char board[17][25];
 	char state;
 	char turn;
+	int turn_count;
 	unsigned char play_again;
 };
 

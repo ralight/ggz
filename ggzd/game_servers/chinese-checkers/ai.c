@@ -59,13 +59,13 @@ void ai_move(unsigned char *ro, unsigned char *co,
 {
 	int dest, dest_r, dest_c;
 	int temp;
-	int i, j, k;
+	int i, j;
 	int or[10], oc[10];
 	float max_dist, t_dist;
 	int max_rd=0, max_cd=0, max_ro=0, max_co=0, t_rd, t_cd;
 
 	/* Calculate the point we want to move to */
-	dest = (homes[seats-1][game.turn]+3) % 6;
+	dest = (homes[seats-1][(int)game.turn]+3) % 6;
 	dest_r = homexy[dest][0];
 	dest_c = homexy[dest][1];
 
@@ -83,16 +83,16 @@ void ai_move(unsigned char *ro, unsigned char *co,
 	assert(temp == 10);
 
 	/* Randomize the order the marbles are checked */
-	for(i=0; i<20; i++) {
-		j = k = random() % 10;
-		while(k == j)
-			k = random() % 10;
+	for(i=0; i<10; i++) {
+		j = random() % 10;
+		while(i == j)
+			j = random() % 10;
 		t_rd = or[j];
 		t_cd = oc[j];
-		or[j] = or[k];
-		oc[j] = oc[k];
-		or[k] = t_rd;
-		oc[k] = t_cd;
+		or[j] = or[i];
+		oc[j] = oc[i];
+		or[i] = t_rd;
+		oc[i] = t_cd;
 	}
 		
 
@@ -102,7 +102,6 @@ void ai_move(unsigned char *ro, unsigned char *co,
 		t_dist = ai_find_max_for_marble(0, or[i], oc[i],
 						dest_r, dest_c,
 						&t_rd, &t_cd);
-printf("Marble %d dist = %f\n", i, t_dist);
 		if(t_dist >= max_dist) {
 			max_rd = t_rd;
 			max_cd = t_cd;
@@ -143,12 +142,15 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 
 		/* Find what our current distance is */
 		initial_dist = ai_calc_dist(ro, co, rd, cd);
+		if(game.turn_count > 8 && initial_dist > 19)
+			initial_dist *= 1.3;
+		if(game.turn_count > 15 && initial_dist > 15)
+			initial_dist *= 1.6;
 
 		/* Dir 1, no jump */
 		if(co-2 >= 0
 		   && game.board[ro][co-2] == 0) {
-			dist = ai_calc_dist(ro, co-2, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro, co-2, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro;
 				*max_cd = co-2;
@@ -159,8 +161,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 		/* Dir 2, no jump */
 		if(ro-1 >= 0 && co-1 >= 0
 		   && game.board[ro-1][co-1] == 0) {
-			dist = ai_calc_dist(ro-1, co-1, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro-1, co-1, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro-1;
 				*max_cd = co-1;
@@ -171,8 +172,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 		/* Dir 3, no jump */
 		if(ro-1 >=0 && co+1 < 25
 		   && game.board[ro-1][co+1] == 0) {
-			dist = ai_calc_dist(ro-1, co+1, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro-1, co+1, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro-1;
 				*max_cd = co+1;
@@ -183,8 +183,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 		/* Dir 4, no jump */
 		if(co+2 < 25
 		   && game.board[ro][co+2] == 0) {
-			dist = ai_calc_dist(ro, co+2, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro, co+2, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro;
 				*max_cd = co+2;
@@ -195,8 +194,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 		/* Dir 5, no jump */
 		if(ro+1 < 17 && co+1 < 25
 		   && game.board[ro+1][co+1] == 0) {
-			dist = ai_calc_dist(ro+1, co+1, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro+1, co+1, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro+1;
 				*max_cd = co+1;
@@ -207,8 +205,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 		/* Dir 6, no jump */
 		if(ro+1 < 17 && co-1 >= 0
 		   && game.board[ro+1][co-1] == 0) {
-			dist = ai_calc_dist(ro+1, co-1, rd, cd);
-			dist = initial_dist - dist;
+			dist = initial_dist - ai_calc_dist(ro+1, co-1, rd, cd);
 			if(dist >= max_dist) {
 				*max_rd = ro+1;
 				*max_cd = co-1;
@@ -265,8 +262,7 @@ static float ai_find_max_for_marble(int from, int ro, int co,
 	visited[ro][co] = 1;
 
 	/* Check and store our current distance if it's a good one */
-	dist = ai_calc_dist(ro, co, rd, cd);
-	dist = initial_dist - dist;
+	dist = initial_dist - ai_calc_dist(ro, co, rd, cd);
 	if(dist >= max_dist) {
 		*max_rd = ro;
 		*max_cd = co;
@@ -327,5 +323,7 @@ static float ai_calc_dist(int r1, int c1, int r2, int c2)
 {
 	if(r1 == r2 && c1 == c2)
 		return 0;
-	return hypot( (r1-r2)*1.25, (c1-c2) );
+
+	/* 1.47 = ratio that rows are > in dist than cols */
+	return hypot( (r1-r2)*1.47, (c1-c2) );
 }
