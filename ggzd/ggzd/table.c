@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3076 2002-01-12 06:02:51Z jdorje $
+ * $Id: table.c 3080 2002-01-12 08:06:23Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -332,8 +332,8 @@ static int table_start_game(GGZTable *table)
 #if 0
 	char *args[] = {"logmod", NULL};
 #endif
-	char *path, **args;
-	int type, n_args, i, num_seats, status = 0;
+	char **args;
+	int type, i, num_seats, status = 0;
 	GGZSeat seat;
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -347,16 +347,9 @@ static int table_start_game(GGZTable *table)
 	/* Build our argument list */
 	type = table->type;
 	pthread_rwlock_rdlock(&game_types[type].lock);
-	path = game_types[type].path;
-	n_args = game_types[type].n_args;
-	/* Leave enough room for executable and terminating NULL */
-	args = calloc(n_args + 2, sizeof(char *));
-	if (!(args[0] = strdup(path)))
-		err_sys_exit("strdup failure in table_fork()");
-	for (i = 0; i < n_args; i++) {
-		if (!(args[i+1] = strdup(game_types[type].args[i])))
-			err_sys_exit("strdup failure in table_fork()");
-	}
+	/* Why do we need a lock for accessing this read-only
+	   piece of memory?  --JDS */
+	args = game_types[type].exec_args;
 	pthread_rwlock_unlock(&game_types[type].lock);
 
 	/* Set a pointer to the table so we can get it back in the
@@ -388,11 +381,6 @@ static int table_start_game(GGZTable *table)
 	ggzdmod_set_module(table->ggzdmod, args);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
 		status = -1;
-
-	/* Free arguments */
-	for (i = 0; i < n_args + 1; i++)
-		free(args[i]);
-	free(args);
 
 	return status;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3079 2002-01-12 06:26:11Z jdorje $
+ * $Id: parse_opt.c 3080 2002-01-12 08:06:23Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -407,8 +407,7 @@ static void parse_game(char *name, char *dir)
 	char *fname;
 	int ch;
 	GameInfo *game_info;
-	char *strval;
-	int intval, len, i;
+	int intval, len, i, num_args;
 	char **b_list;
 	int b_count = 0;
 	char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
@@ -456,28 +455,30 @@ static void parse_game(char *name, char *dir)
 						   "Homepage", "");
 
 	/* [LaunchInfo] */
-	strval = ggz_conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
-	if(strval) {
-		/* Check for spaces, which shouldn't be there. */
-		/* FIXME: should be instead unify ExecutablePath
-		   with ArgList? */
-		char *space = strpbrk(strval, " \t\n");
-		if (space) {
-			err_msg("Invalid ExecutablePath %s.  "
-				"Use ArgList instead.", strval);
-			*space = 0;
-		}
-		
-		/* Copy just the string if we have an absolute path */
-		if(*strval == '/')
-			strncpy(game_info->path, strval, MAX_PATH_LEN);
-		else
-			snprintf(game_info->path, MAX_PATH_LEN,
-				  "%s/%s", opt.game_dir, strval);
-		free(strval);
+	ggz_conf_read_list(ch, "LaunchInfo", "ExecutablePath",
+			   &num_args, &game_info->exec_args);
+	if (!game_info->exec_args[0]) {
+		err_msg("Missing ExecutablePath for game %s.",
+			game_info->name);
+		/* This leaves some memory leak, but its better than
+		   nothing. */
+		return;
 	}
-	ggz_conf_read_list(ch, "LaunchInfo", "ArgList",
-		       &game_info->n_args, &game_info->args);
+	/* We must realloc to NULL-terminate the list.  It's too bad libggz
+	   can't do this for us. */
+	game_info->exec_args = realloc(game_info->exec_args,
+				(num_args+1)*sizeof(*game_info->exec_args));
+	game_info->exec_args[num_args] = NULL;
+	/* If there's no absolute path given, we prepend the game_dir. */
+	if (game_info->exec_args[0][0] != '/') {
+		int len = strlen(game_info->exec_args[0]) +
+			  strlen(opt.game_dir) + 2;
+		char *new_exec = ggz_malloc(len);
+		snprintf(new_exec, len, "%s/%s",
+			 opt.game_dir, game_info->exec_args[0]);
+		free(game_info->exec_args[0]);
+		game_info->exec_args[0] = new_exec;
+	}
 
 	/* [Protocol] */
 	game_info->p_engine = ggz_conf_read_string(ch, "Protocol",

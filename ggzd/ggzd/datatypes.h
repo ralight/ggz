@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 3079 2002-01-12 06:26:11Z jdorje $
+ * $Id: datatypes.h 3080 2002-01-12 08:06:23Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -82,13 +82,24 @@ typedef struct GameInfo {
 	char *desc;     /* Game description string. */
 	char *author;   /* String containing name(s) of author(s) */
 	char *homepage; /* Contains a web address for the game */
+	
+	/* Masks for how many overall players and bots are allowed
+	   to be selected for the game. */
 	unsigned char player_allow_mask;
 	unsigned char bot_allow_mask;
+	
+	/* Are players allowed to leave mid-game?  (i.e. does the
+	   game support this?) */
 	unsigned char allow_leave;
+	
+	/* Should we automatically kill the game server (table) when the
+	   last player leaves? */
 	unsigned char kill_when_empty;
-	char path[MAX_PATH_LEN];
-	char **args;
-	int n_args;
+	
+	/* Executable information: a NULL-terminated list of
+	   command-line arguments for the program.  The first argument
+	   is the executable itself. */
+	char **exec_args;
 } GameInfo;
 
 
