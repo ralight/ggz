@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: game.c 2279 2001-08-27 18:01:30Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -45,6 +45,25 @@ struct timeval cronometer;
 /* Lazy way of doing things */
 #define OUT_OF_TIME(a) (game_info.seconds[a] <= 0)
 
+/* This translates a GGZ event into a chess event.
+ * It's really a hack just to make sure things work out.
+ * Note that before ggzdmod was used, this wasn't done
+ * either!  --JDS */
+int ggz_update(ggzd_event_t event_id, void *data) {
+  switch(event_id) {
+    case GGZ_EVENT_LAUNCH:
+      return game_update(CHESS_EVENT_LAUNCH, NULL);
+    case GGZ_EVENT_JOIN:
+      return game_update(CHESS_EVENT_JOIN, data);
+    case GGZ_EVENT_LEAVE:
+      return game_update(CHESS_EVENT_LEAVE, data);
+    case GGZ_EVENT_QUIT:
+      return game_update(CHESS_EVENT_QUIT, NULL);
+    default: /* EVENT_PLAYER and EVENT_TICK not handled */
+      return 0;
+  }
+}
+
 /* game_update(int event_id, void *data) 
  * event_id is a id of the CHESS_EVENT_* family
  * data should be;
@@ -61,7 +80,7 @@ struct timeval cronometer;
  *  CHESS_EVENT_FLAG: (int)time until now for move
  *  CHESS_EVENT_DRAW: (int)What to add to the draw char
  *  CHESS_EVENT_START: NULL */
-int game_update(ggzd_event_t event_id, void *data) {
+int game_update(int event_id, void *data) {
   int time, st;
   struct timeval now;
   switch (event_id) {

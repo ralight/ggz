@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: main.c 2279 2001-08-27 18:01:30Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -48,10 +48,10 @@ int main(void)
   game_info.turn = 0;
 
   /* Set the handlers */
-  ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_update);
-  ggzd_set_handler(GGZ_EVENT_JOIN, &game_update);
-  ggzd_set_handler(GGZ_EVENT_LEAVE, &game_update);
-  ggzd_set_handler(GGZ_EVENT_QUIT, &game_update);
+  ggzd_set_handler(GGZ_EVENT_LAUNCH, &ggz_update);
+  ggzd_set_handler(GGZ_EVENT_JOIN, &ggz_update);
+  ggzd_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
+  ggzd_set_handler(GGZ_EVENT_QUIT, &ggz_update);
   ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
   ggzd_main();
