@@ -251,7 +251,15 @@ within the [General] section:
 
 @section MySQL setup
 
-To be done.
+If ggzd uses MySQL as its database, the data structures are initialized
+automatically, but a database user and the database itself must be created
+prior to starting the server.
+To accomplish this, the tool 'mysql_setpermission' should be used. When running
+this program as the database superuser, selecting the second menu entry leads
+straightforward to a ready-to-use database.
+
+If the MySQL server runs on a different host than the ggzd server, the
+skip-networking option in my.cnf must be disabled.
 
 @section PostgreSQL setup
 
