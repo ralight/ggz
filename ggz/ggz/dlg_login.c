@@ -395,6 +395,8 @@ void login_start_session(GtkButton * button, gpointer window)
 {
 	GtkWidget *tmp;
 
+	gtk_widget_set_sensitive(GTK_WIDGET(button),FALSE);
+
         if (connection.connected) {
         	tmp = gtk_object_get_data(GTK_OBJECT(window), "name_entry");
 	        connection.username = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
@@ -419,7 +421,7 @@ void login_start_session(GtkButton * button, gpointer window)
                 	return;
 	        }
 	}
-        /* Close connect dialog if we were successful */
+
         connection.connected = TRUE;
 
         /*FIXME: Other session starting things ? */
@@ -443,6 +445,7 @@ void login_bad_name()
 
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "server_frame");
 	gtk_widget_hide(tmp);
 }
