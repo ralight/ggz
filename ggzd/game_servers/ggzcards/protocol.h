@@ -1,9 +1,12 @@
 /*
  * File: protocol.h
  * Author: Jason Short
- * Project: GGZ
+ * Project: GGZCards Server
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
+ * $Id: protocol.h 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * This just contains the communications protocol information.
  *
  * Copyright (C) 1999 Brent Hendricks.
  *

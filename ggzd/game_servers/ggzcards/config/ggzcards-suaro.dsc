@@ -1,4 +1,5 @@
-# GGZ Cards description file
+# $Id: ggzcards-suaro.dsc 2189 2001-08-23 07:59:17Z jdorje $
+
 Name = GGZCards-Suaro
 ProtocolEngine = GGZCards
 ProtocolVersion = 1

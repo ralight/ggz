@@ -1,12 +1,14 @@
 /*
  * File: ai.h
  * Author: Jason Short
- * Project: Front end for AI routines
+ * Project: GGZCards Server
  * Date: 07/03/2001
+ * Desc: interface for AI module system
+ * $Id: ai.h 2189 2001-08-23 07:59:17Z jdorje $
  *
- * This file contains the AI functions for playing spades.
- * The AI routines were adapted from Britt Yenne's spades game for
- * the palm pilot.  Thanks Britt!
+ * This file contains the frontend for GGZCards' AI module.
+ * Specific AI's are in the ai/ directory.  This file contains an array
+ * of AI function sets.  Each game specifies its AI.
  *
  * Copyright (C) 1998 Brent Hendricks.
  *

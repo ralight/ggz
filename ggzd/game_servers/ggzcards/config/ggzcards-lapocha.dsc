@@ -1,4 +1,5 @@
-# GGZ Cards description file
+# $Id: ggzcards-lapocha.dsc 2189 2001-08-23 07:59:17Z jdorje $
+
 Name = GGZCards-LaPocha
 ProtocolEngine = GGZCards
 ProtocolVersion = 1

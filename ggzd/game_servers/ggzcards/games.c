@@ -1,9 +1,14 @@
 /*
  * File: games.c
  * Author: Jason Short
- * Project: GGZCards game module
+ * Project: GGZCards Server
  * Date: 06/20/2001
- * Desc: Data and functions related to all games
+ * Desc: multi-game code
+ * $Id: games.c 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * This file contains the data and functions that allow the game type to
+ * be picked and the right functions for that game to be set up.  It's
+ * pretty messy.
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -1,4 +1,5 @@
-# GGZ Cards description file
+# $Id: ggzcards-spades.dsc 2189 2001-08-23 07:59:17Z jdorje $
+
 Name = GGZCards-Spades
 ProtocolEngine = GGZCards
 ProtocolVersion = 1

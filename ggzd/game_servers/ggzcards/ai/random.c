@@ -1,11 +1,10 @@
-
-
-
 /*
- * File: random.c
+ * File: ai/random.c
  * Author: Jason Short
- * Project: A "random" ai routine
+ * Project: GGZCards Server
  * Date: 07/03/2001
+ * Desc: a "random" AI
+ * $Id: random.c 2189 2001-08-23 07:59:17Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of

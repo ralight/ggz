@@ -1,8 +1,10 @@
 /*
  * File: ai/spades.c
  * Author: Brent Hendricks
- * Project: GGZCards (NetSpades)
+ * Project: GGZCards Server
  * Date: 8/4/99
+ * Desc: NetSpades algorithms for Spades AI
+ * $Id: spades.c 2189 2001-08-23 07:59:17Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -10,6 +12,9 @@
  *
  * Later, they were stolen from NetSpades and integrated directly into
  * GGZCards for use with the spades game here.  Thanks Brent!
+ *
+ * There's a big bug in here that causes the AI to be really stupid.
+ * Oddly, it works pretty well for Hearts.
  *
  * Copyright (C) 1998 Brent Hendricks.
  *

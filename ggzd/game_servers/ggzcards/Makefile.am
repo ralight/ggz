@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2189 2001-08-23 07:59:17Z jdorje $
 
 SUBDIRS = config games ai .
 

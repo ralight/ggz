@@ -1,9 +1,21 @@
 /*
  * File: options.c
  * Author: Jason Short
- * Project: GGZCards GGZ Server
+ * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
+ * $Id: options.c 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * GGZCards has a rather nifty option system.  Each option has a name as
+ * its "key".  Each option has a certain number of possible values, in
+ * the integer range 0..(n-1).  Each value is linked to a text description.
+ * All of these are created by the individual games using the interface
+ * functions in this file.
+ *
+ * When the game starts, the server automatically asks the client (host
+ * player) what options (s)he wants.  Options can also be passed in
+ * through the command line to the server, and are handled at game start
+ * time.
  *
  * Copyright (C) 2001 Brent Hendricks.
  *

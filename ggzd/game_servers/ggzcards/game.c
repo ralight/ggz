@@ -1,9 +1,15 @@
 /*
  * File: game.c
  * Author: Rich Gade, Jason Short
- * Project: GGZCards game module
+ * Project: GGZCards Server
  * Date: 06/29/2000
- * Desc: Game-dependent game functions
+ * Desc: default game functions
+ * $Id: game.c 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * This file was originally taken from La Pocha by Rich Gade.  It now
+ * contains the default game functions; that is, the set of game functions
+ * that may be used as defaults.  Each game (in games/) will define its
+ * own functions as well.
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -1,9 +1,10 @@
 /*
  * File: games/suaro.h
  * Author: Jason Short
- * Project: GGZCards game module
+ * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
+ * $Id: suaro.h 2189 2001-08-23 07:59:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

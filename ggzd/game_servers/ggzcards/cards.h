@@ -1,9 +1,12 @@
 /*
  * File: cards.h
  * Author: Rich Gade, Jason Short
- * Project: GGZCards GGZ Server
+ * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
+ * $Id: cards.h 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * This file was originally taken from La Pocha by Rich Gade.
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

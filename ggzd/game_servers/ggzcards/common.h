@@ -1,9 +1,15 @@
 /*
  * File: common.h
- * Author: Rich Gade, Jason Short
- * Project: GGZCards GGZ Server
+ * Author: Jason Short
+ * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
+ * $Id: common.h 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * This file contains code that controls the flow of a general
+ * trick-taking game.  Game states, event handling, etc. are all
+ * handled within this code.  For specialty handling we call a
+ * game-specific function from game.c or games/<game>.c.
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

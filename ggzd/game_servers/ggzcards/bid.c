@@ -1,9 +1,10 @@
 /*
  * File: bid.c
  * Author: Jason Short
- * Project: GGZCards GGZ Server
+ * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
+ * $Id: bid.c 2189 2001-08-23 07:59:17Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *

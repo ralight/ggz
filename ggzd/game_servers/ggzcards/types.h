@@ -1,9 +1,12 @@
 /*
  * File: types.h
  * Author: Jason Short
- * Project: GGZCards game module
+ * Project: GGZCards Server
  * Date: 06/29/2000
- * Desc: Special types for GGZ cards game data
+ * Desc: Special types for GGZCards game data
+ * $Id: types.h 2189 2001-08-23 07:59:17Z jdorje $
+ *
+ * These are a few random type definitions used all over the place.
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
