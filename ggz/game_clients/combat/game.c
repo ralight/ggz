@@ -90,7 +90,6 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
     return;
   }
 
-  // FIXME: Erase this
   printf("Got message from the server! (%d)\n", op);
 
   switch (op) {
@@ -282,8 +281,6 @@ void game_init_board() {
   int a;
   GdkColormap *sys_colormap;
 
-  printf("Initializing board\n");
-
   // TODO: Get this information from a tileset file
 
   // Loads colors
@@ -318,8 +315,6 @@ void game_init_board() {
   tile_gc = gdk_gc_new(main_win->window);
   gdk_gc_ref(tile_gc);
   gdk_gc_set_fill(tile_gc, GDK_TILED);
-
-  printf("Board initialized\n");
 
 }
 
@@ -791,8 +786,6 @@ void game_send_setup() {
 
   // TODO: Check for validity
   
-  printf("Sending setup...");
-
   // Gets the number of setup tiles
   for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
     if (GET_OWNER(cbt_game.map[a].type) == cbt_info.seat)
@@ -824,8 +817,6 @@ void game_send_setup() {
   callback_widget_set_enabled("send_setup", FALSE);
   // Update the state (NULL state)
   cbt_game.state = CBT_STATE_NULL;
-
-  printf("done!\n");
 
 }
 
@@ -1050,8 +1041,6 @@ int game_send_options(GtkWidget *options_dialog) {
 
   _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
 
-  printf("Number: %d", _game->number);
-
   if (!_game) {
     game_message("No options?");
     return -1;
@@ -1077,8 +1066,6 @@ int game_send_options(GtkWidget *options_dialog) {
   if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
     return -1;
 
-
-  printf("Options: %ld\n", _game->options);
 
   gtk_widget_destroy(options_dialog);
 

@@ -228,7 +228,6 @@ void map_load(combat_game *_game, char *filename, int *changed) {
     strncpy(new_filename, filename, a);
     new_filename[a] = 0;
     strcat(new_filename, hash_str);
-    printf("New filename: %s\n", new_filename);
     a = rename(filename, new_filename);
     if (changed)
       *changed = a;
@@ -255,13 +254,10 @@ char **map_list() {
   names[map_number] = 0;
   for (a = 0; a < 2; a++) {
     while (n[a]-- > 0) {
-      printf("%s\n", namelist[a][n[a]]->d_name);
       names[b] = (char *)malloc(strlen(dir[a]) + strlen(namelist[a][n[a]]->d_name) + 3);
       sprintf(names[b], "%s/%s", dir[a], namelist[a][n[a]]->d_name);
       b++;
     }
   }
-  for (a = 0; names[a]; a++)
-    printf("%s\n", names[a]);
   return names;
 }

@@ -1068,7 +1068,6 @@ void load_button_clicked(GtkButton *button, gpointer dialog) {
   char **namelist;
   selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
   namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
-  printf("Selected: %s\n", namelist[selection]);
   load_map(namelist[selection], (GtkWidget *)dialog);
 }
 
@@ -1230,7 +1229,6 @@ void dlg_options_update(GtkWidget *dlg_options) {
     options = (combat_game *)malloc(sizeof(combat_game));
     options->number = GPOINTER_TO_INT(
                       gtk_object_get_data(GTK_OBJECT(dlg_options), "number"));
-    printf("DLG number: %d\n", options->number);
     options->army = (char **)calloc(options->number+1, sizeof(char *));
     options->army[options->number] = (char *)calloc(12, sizeof(char));
     options->map = NULL;
@@ -1573,7 +1571,6 @@ void init_mini_board(GtkWidget *dlg_options) {
 
 	// Init the pixmap
 	gdk_window_get_size(widget->window, &width, &height);
-	printf("W: %d, H: %d\n", width, height);
 	if (mini_buf)
 		gdk_pixmap_unref(mini_buf);
 	mini_buf = gdk_pixmap_new( widget->window, width, height, -1 );
@@ -1591,7 +1588,7 @@ void draw_mini_board(GtkWidget *dlg_options) {
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options)
     dlg_options_update(dlg_options);
-  if (!widget)
+  if (!widget || !widget->window)
     return;
 
 	solid_gc = gdk_gc_new(widget->window);

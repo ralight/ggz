@@ -1,8 +1,3 @@
-What *must* be done before next version of GGZ:
-
-- Clean up the debug messages
-- Update the version number
-
 What should be done someday
 
 - Add a "ignore client-side checks" option in the client

@@ -1,0 +1,21 @@
+[army]
+bomb = 6
+captain = 4
+colonel = 2
+flag = 1
+general = 1
+lieutenant = 4
+major = 3
+marshall = 1
+miner = 5
+scout = 8
+sergeant = 4
+spy = 1
+
+[map]
+data = 1111111111111111111111111111111111111111OLLLLLLLLOOLLLLLLLLO2222222222222222222222222222222222222222
+height = 10
+width = 10
+
+[options]
+bin1 = 909E
