@@ -46,6 +46,7 @@
 #include "KGGZGrubby.h"
 #include "KGGZPrefEnv.h"
 #include "KGGZSelector.h"
+#include "KGGZGameInfoDialog.h"
 
 // KDE includes
 #include <kmessagebox.h>
@@ -94,6 +95,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_connect = NULL;
 	m_killserver = 0;
 	m_dns = NULL;
+	m_gameinfodialog = NULL;
 
 	setBackgroundColor(QColor(0, 0, 0));
 
@@ -127,20 +129,13 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	}
 	else
 	{
-		if(m_config->read("Preferences", "Showdialog", 0))
-		{
-			KGGZDEBUG("- load connection dialog\n");
+		// Read out configuration and setup things
+		if(m_config->read("Preferences", "Showdialog", 1))
 			menuConnect();
-		}
 		if(m_config->read("Preferences", "Chatlog", 0))
-		{
-			KGGZDEBUG("- enable chat logging\n");
 			m_workspace->widgetChat()->setLogging(1);
-		}
 		if(m_config->read("Preferences", "Speech", 0))
-		{
 			m_workspace->widgetChat()->setSpeech(1);
-		}
 	}
 
 	kggzroomcallback = new KGGZCallback(this, COLLECTOR_ROOM);
@@ -162,27 +157,19 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 
 KGGZ::~KGGZ()
 {
-	KGGZDEBUGF("KGGZ::~KGGZ()\n");
-
 	dispatcher();
 
-	KGGZDEBUGF("KGGZ::~KGGZ() ready\n");
 	exit(0);
 }
 
 void KGGZ::resizeEvent(QResizeEvent *e)
 {
 	m_workspace->resize(e->size());
-	//resize(e->size());
-	//m_workspace->setGeometry(0, 30, e->size().width(), e->size().height() - 30);
-	//m_menu->setGeometry(0, 0, e->size().width(), 20);
 }
 
 void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
 	KGGZDEBUGF("KGGZ::slotConnected()\n");
-	/*delete m_connect;
-	m_connect = NULL;*/
 
 	if(m_connect->optionServer())
 	{
@@ -220,7 +207,7 @@ void KGGZ::slotConnectedStart()
 	KGGZDEBUGF("KGGZ::slotConnectedStart()\n");
 	if(m_dns->addresses().isEmpty())
 	{
-		KMessageBox::error(this, i18n("Host not found!"), "Error!");
+		KMessageBox::error(this, i18n("Host not found!"), i18n("Error!"));
 		menuConnect();
 		return;
 	}
@@ -251,7 +238,7 @@ void KGGZ::slotConnectedStart()
 			detachServerCallbacks();
 			delete kggzserver;
 			kggzserver = NULL;
-			KMessageBox::error(this, i18n("Attempt to connect refused!"), "Error!");
+			KMessageBox::error(this, i18n("Attempt to connect refused!"), i18n("Error!"));
 			menuConnect();
 		}
 		return;
@@ -302,10 +289,10 @@ void KGGZ::menuServerLaunch()
 	switch(result)
 	{
 		case -1:
-			KMessageBox::error(this, i18n("Could not start the server!"), "Error!");
+			KMessageBox::error(this, i18n("Could not start the server!"), i18n("Error!"));
 			break;
 		case -2:
-			KMessageBox::error(this, i18n("The GGZ server is already running!"), "Error!");
+			KMessageBox::error(this, i18n("The GGZ server is already running!"), i18n("Error!"));
 			break;
 		default:
 			emit signalMenu(MENUSIG_SERVERSTART);
@@ -342,7 +329,6 @@ void KGGZ::menuServerKill()
 
 void KGGZ::menuConnect()
 {
-KGGZDEBUG("releasecritical: menuconnect is: %i\n", m_connect);
 	if(!m_connect)
 	{
 		m_connect = new KGGZConnect(NULL, "connect");
@@ -426,7 +412,7 @@ void KGGZ::listTables()
 	GGZCoreGametype *gametype;
 	int tableseats, tableseatsopen;
 	char *tabledescription;
-	char *playername;
+	const char *playername;
 
 	KGGZDEBUGF("KGGZ::listTables()\n");
 	if(!kggzroom)
@@ -490,10 +476,9 @@ void KGGZ::listTables()
 					playername = table->playerName(j);
 					if(strlen(playername) == 0)
 					{
-						playername = (char*)"(unknown)";
+						playername = i18n("(unknown)").latin1();
 						tableseatsopen++;
 					}
-					KGGZDEBUG("Going to add: %s\n", playername);
 					m_workspace->widgetUsers()->addTablePlayer(i, playername);
 				}
 			}
@@ -515,7 +500,6 @@ void KGGZ::listPlayers()
 	m_workspace->widgetUsers()->removeall();
 	m_workspace->widgetChat()->chatline()->removeAll();
 	if(m_grubby) m_grubby->removeAll();
-	KGGZDEBUG("* Removed all, now adding anew...\n");
 	number = kggzroom->countPlayers();
 	for(int i = 0; i < number; i++)
 	{
@@ -582,12 +566,6 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreGame::data:
 			KGGZDEBUG("data\n");
-			/*if(!kggzgame)
-			{
-				KGGZDEBUG("Panic! No game running!\n");
-				return;
-			}
-			kggzgame->dataSend((char*)data);*/
 			if(!kggzroom)
 			{
 				KGGZDEBUG("Panic! No room found!\n");
@@ -616,7 +594,6 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
 	char *chatsender = NULL, *chatmessage = NULL;
-	//char buffer[1024];
 	QString buffer;
 
 	switch(id)
@@ -689,8 +666,6 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("leave\n");
 			buffer.append((char*)data);
 			buffer.append(i18n(" has left the room."));
-			//strcpy(buffer, (char*)data);
-			//strcat(buffer, i18n(" has left the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove((char*)data);
 			KGGZDEBUG("remove from chatline\n");
@@ -699,41 +674,34 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tableupdate:
 			KGGZDEBUG("tableupdate\n");
-			//m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tablelaunched:
 			KGGZDEBUG("tablelaunched\n");
-			//m_workspace->widgetUsers()->removeall();
 			m_workspace->widgetChat()->receive(NULL, i18n("Launched table"), KGGZChat::RECEIVE_ADMIN);
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tablelaunchfail:
 			KGGZDEBUG("tablelaunchfail\n");
-			KMessageBox::information(this, i18n("ERROR: Couldn't launch table!"), "Error!");
+			KMessageBox::error(this, i18n("ERROR: Couldn't launch table!"), i18n("Error!"));
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tablejoined:
 			KGGZDEBUG("tablejoined\n");
-			//m_workspace->widgetUsers()->removeall();
 			m_workspace->widgetChat()->receive(NULL, i18n("Joined table"), KGGZChat::RECEIVE_ADMIN);
-			//listPlayers();
-			//listTables();
-			//slotLaunchGame(kggzroom->gametype());
 			slotGameFire();
 			break;
 		case GGZCoreRoom::tablejoinfail:
 			KGGZDEBUG("tablejoinfail\n");
-			KMessageBox::information(this, i18n("ERROR: Couldn't join table!"), "Error");
+			KMessageBox::error(this, i18n("ERROR: Couldn't join table!"), i18n("Error"));
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
-			//m_workspace->widgetUsers()->removeall();
 			KGGZDEBUG("SHALL I QUIT THE GAME HERE???\n");
 			eventLeaveGame();
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
@@ -748,8 +716,6 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			if(!kggzgame)
 			{
 				KGGZDEBUG("Don't wanna bother, but... we don't have any game running!!\n");
-				//return;
-				//kggzroom->sendData((char*)data);
 			}
 			else
 			{
@@ -766,7 +732,6 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 void KGGZ::serverCollector(unsigned int id, void* data)
 {
 	int result;
-	//char buffer[1024];
 	QString buffer;
 
 	switch(id)
@@ -784,7 +749,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				detachServerCallbacks();
 				delete kggzserver;
 				kggzserver = NULL;
-				KMessageBox::error(this, i18n("Attempt to login refused!"), "Error!");
+				KMessageBox::error(this, i18n("Attempt to login refused!"), i18n("Error!"));
 				menuConnect();
 				return;
 			}
@@ -794,7 +759,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			detachServerCallbacks();
 			delete kggzserver;
 			kggzserver = NULL;
-			KMessageBox::error(this, i18n("Couldn't connect to server!"), "Error!");
+			KMessageBox::error(this, i18n("Couldn't connect to server!"), i18n("Error!"));
 			menuConnect();
 			break;
 		case GGZCoreServer::negotiated:
@@ -803,7 +768,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
 			m_killserver = 1;
-			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), "Error!");
+			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
 			menuConnect();
 			// quick hack!
 			KGGZDEBUG("Free ggzcore server object\n");
@@ -821,8 +786,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				KGGZDEBUG("First time login!\n");
 				buffer.sprintf(i18n("You are welcome as a new GGZ Gaming Zone player.\n"
 					"Your personal password is: %s"), kggzserver->password());
-				KMessageBox::information(this, buffer, "Information");
-				//if(m_motd) m_motd->show();
+				KMessageBox::information(this, buffer, i18n("Information"));
 			}
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
@@ -837,7 +801,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
-			KMessageBox::error(this, i18n("Login refused!"), "Error!");
+			KMessageBox::error(this, i18n("Login refused!"), i18n("Error!"));
 			// TODO: do something here !? 2001-07-17 josef
 			menuConnect();
 			break;
@@ -865,7 +829,6 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_lock = 1;
 			eventLeaveRoom();
 			kggzroom = kggzserver->room();
-			//kggzroom = new GGZCoreRoom(ggzcore_server_get_cur_room(kggzserver->server()));
 			attachRoomCallbacks();
 			m_lock = 0;
 			kggzroom->listPlayers();
@@ -879,7 +842,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
-			KMessageBox::information(this, i18n("Sorry, you cannot change the room while playing!"), i18n("Room join error"));
+			KMessageBox::sorry(this, i18n("Sorry, you cannot change the room while playing!"), i18n("Room join failure"));
 			break;
 		case GGZCoreServer::loggedout:
 			KGGZDEBUG("loggedout\n");
@@ -907,7 +870,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			detachServerCallbacks();
 			delete kggzserver;
 			kggzserver = NULL;
-			KMessageBox::error(this, "A protocol error occured!", "Error!");
+			KMessageBox::error(this, i18n("A protocol error occured!"), i18n("Error!"));
 			menuConnect();
 			break;
 		case GGZCoreServer::chatfail:
@@ -941,8 +904,6 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* u
 	KGGZCallback* kggzcallback;
 	KGGZ* kggz;
 	int opcode;
-
-	KGGZDEBUGF("KGGZ::hookOpenCollector()\n");
 
 	KGGZDEBUG("Received a KGGZCallback atom\n");
 	kggzcallback = (KGGZCallback*)user_data;
@@ -994,7 +955,7 @@ void KGGZ::slotChat(const char *text, char *player, int mode)
 			case KGGZChat::RECEIVE_ANNOUNCE:
 				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, sendtext) < 0)
 				{
-					m_workspace->widgetChat()->receive(NULL, "Only administrators are allowed to broadcast messages.", KGGZChat::RECEIVE_ADMIN);
+					m_workspace->widgetChat()->receive(NULL, i18n("Only administrators are allowed to broadcast messages."), KGGZChat::RECEIVE_ADMIN);
 				}
 				break;
 			case KGGZChat::RECEIVE_BEEP:
@@ -1137,7 +1098,6 @@ void KGGZ::slotGameFire()
 	}
 
 	m_module->setActive(m_gameinfo->frontend());
-	//m_module->launch();
 
 	if(kggzgame)
 	{
@@ -1157,8 +1117,7 @@ void KGGZ::slotGameFire()
 	{
 		KGGZDEBUG("Red Alert! Game launching failed immedeately!\n");
 		eventLeaveGame();
-		KMessageBox::information(this, i18n("Couldn't launch game!"), "Error!");
-		KGGZDEBUG("Phew.. the crisis is over, let's continue with normal work.\n");
+		KMessageBox::error(this, i18n("Couldn't launch game!"), i18n("Error!"));
 		return;
 	}
 
@@ -1166,8 +1125,6 @@ void KGGZ::slotGameFire()
 
 	// not already at slotLaunchGame!
 	emit signalMenu(MENUSIG_GAMESTART);
-
-	//delete module;
 }
 
 void KGGZ::menuView(int viewtype)
@@ -1187,16 +1144,10 @@ void KGGZ::menuView(int viewtype)
 			m_workspace->widgetUsers()->show();
 			break;
 		case VIEW_USERS:
-			//m_workspace->hideBar(1);
 			m_workspace->widgetChat()->hide();
 			m_workspace->widgetUsers()->show();
 			m_workspace->widgetLogo()->hide();
 			m_workspace->widgetTables()->hide();
-			//m_workspace->widgetUsers()->resize(width(), height());
-			//m_workspace->widgetLogo()->setFixedHeight(1);
-			//m_workspace->widgetTables()->setFixedHeight(1);
-			//m_workspace->widgetUsers()->resize(width(), height());
-			//m_workspace->updateGeometry();
 			m_workspace->hideBar(1);
 			break;
 		case VIEW_TABLES:
@@ -1234,7 +1185,7 @@ void KGGZ::menuGameLaunch()
 
 	if(!kggzroom)
 	{
-		KMessageBox::information(this, i18n("You cannot launch a game outside a room!"), "Error!");
+		KMessageBox::sorry(this, i18n("You cannot launch a game outside a room!"), i18n("Game launch failure"));
 		return;
 	}
 	gametype = kggzroom->gametype();
@@ -1252,20 +1203,16 @@ void KGGZ::menuGameJoin()
 
 	if(!kggzroom)
 	{
-		KMessageBox::information(this, "You must be in a room to join a table!", "Error!");
+		KMessageBox::sorry(this, i18n("You must be in a room to join a table!"), i18n("Table join failure"));
 		return;
 	}
 	number = m_workspace->widgetTables()->tablenum();
 	if(number == -1)
 	{
-		if(kggzroom->countTables() == 1)
-		{
-			KGGZDEBUG("Phew... what a luck this is the only table here. Gonna take this!\n");
-			number = 0;
-		}
+		if(kggzroom->countTables() == 1) number = 0;
 		else
 		{
-			KMessageBox::information(this, i18n("Please select a table to join!"), "Error!");
+			KMessageBox::sorry(this, i18n("Please select a table to join!"), i18n("Table join failure"));
 			return;
 		}
 	}
@@ -1276,7 +1223,6 @@ void KGGZ::menuGameJoin()
 	m_gameinfo->setTable(number);
 
 	slotGameFrontend();
-	//kggzroom->joinTable(number);
 }
 
 void KGGZ::slotGameFrontend()
@@ -1303,19 +1249,16 @@ void KGGZ::slotGameFrontend()
 		m_module->init(gametype->name(), NULL, gametype->protocolEngine());
 		modules = m_module->count();
 		if(modules == 0)
-			KMessageBox::information(this, i18n("Sorry, no game modules found for this game type."), "Error!");
+			KMessageBox::sorry(this, i18n("Sorry, no game modules found for this game type."), i18n("Game selection failure"));
 		else
-			KMessageBox::information(this,
+			KMessageBox::sorry(this,
 				i18n(QString("The installed game modules for this game type are all incompatible.\n")) +
 				i18n(QString("Please look for a game with the protocol engine '%1' and the protocol version '%2'.").arg(
-				gametype->protocolEngine()).arg(gametype->protocolVersion())), "Error!");
+				gametype->protocolEngine()).arg(gametype->protocolVersion())), i18n("Game selection failure"));
 		delete m_module;
 		m_module = NULL;
-		//eventLeaveGame();
 		return;
 	}
-
-	//emit signalMenu(MENUSIG_GAMESTART);
 
 	if(modules == 1) slotGamePrepare(0);
 	else
@@ -1434,7 +1377,7 @@ void KGGZ::slotGameStart()
 			m_module = NULL;
 			delete m_table;
 			m_table = NULL;
-			KMessageBox::error(this, i18n("Failed launching the requested table!"), "Error!");
+			KMessageBox::error(this, i18n("Failed launching the requested table!"), i18n("Error!"));
 			return;
 		}
 	}
@@ -1445,7 +1388,7 @@ void KGGZ::slotGameStart()
 		{
 			delete m_module;
 			m_module = NULL;
-			KMessageBox::error(this, i18n("Failed joining the requested table!"), "Error!");
+			KMessageBox::error(this, i18n("Failed joining the requested table!"), i18n("Error!"));
 			return;
 		}
 	}
@@ -1455,20 +1398,19 @@ void KGGZ::slotGameStart()
 		delete m_table;
 		m_table = NULL;
 	}
-
-	//slotGameFire();
 }
 
 void KGGZ::menuGameInfo()
 {
 	GGZCoreGametype *gametype;
-	QString buffer;
+	GGZCoreModule *module;
+	QString buffer, buffer2;
 
 	if(!kggzserver)
 		return;
 	if(!kggzroom)
 	{
-		KMessageBox::information(this, i18n("Please join a room first."), "Info:");
+		KMessageBox::sorry(this, i18n("Please join a room first."), i18n("Game information failure"));
 		return;
 	}
 	gametype = kggzroom->gametype();
@@ -1477,33 +1419,58 @@ void KGGZ::menuGameInfo()
 	if(!gametype->name())
 		return;
 
+	buffer.append(QString("<b>%1</b>").arg(i18n("Game server")));
+	buffer.append("<br>");
 	buffer.append(i18n("Name: "));
 	buffer.append(gametype->name());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Description: "));
 	buffer.append(gametype->description());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Author: "));
 	buffer.append(gametype->author());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Version: "));
 	buffer.append(gametype->version());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Protocol: "));
 	buffer.append(gametype->protocolVersion());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Engine: "));
 	buffer.append(gametype->protocolEngine());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("URL: "));
 	buffer.append(gametype->url());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Game Category: "));
 	buffer.append(gametype->category());
-	buffer.append("\n");
+	buffer.append("<br>");
 	buffer.append(i18n("Rating: "));
 	buffer.append(gametype->rating());
-	KMessageBox::information(this, buffer, i18n("Game Type Information"));
+	buffer.append("<br><br>");
+
+	module = new GGZCoreModule();
+	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
+	for(int i = 0; i < module->count(); i++)
+	{
+		module->setActive(i);
+KGGZDEBUG("Frontend [%i] is %s!\n", i, module->frontend());
+
+		buffer.append(QString("<b>%1</b>").arg(i18n("Game client")));
+		buffer.append("<br>");
+		buffer.append(i18n("Frontend: "));
+		buffer.append(module->frontend());
+		buffer.append("<br>");
+		buffer.append(i18n("Author: "));
+		buffer.append(module->author());
+		buffer.append("<br><br>");
+	}
+	delete module;
+
+	//KMessageBox::information(this, buffer, i18n("Game Type Information"));
+	if(!m_gameinfodialog) m_gameinfodialog = new KGGZGameInfoDialog(NULL);
+	m_gameinfodialog->setInformation(buffer);
+	m_gameinfodialog->show();
 }
 
 void KGGZ::menuRoom(int room)
@@ -1539,6 +1506,7 @@ void KGGZ::slotLoadLogo()
 	if(module->count() == 0)
 	{
 		m_workspace->widgetLogo()->setLogo(NULL, "notinstalled");
+		delete module;
 		return;
 	}
 	module->setActive(0);
@@ -1553,7 +1521,7 @@ void KGGZ::menuGrubby()
 {
 	if(!kggzroom)
 	{
-		KMessageBox::information(this, i18n("Please join a room first."), "Error!");
+		KMessageBox::sorry(this, i18n("Please join a room first."), i18n("Grubby failure"));
 		return;
 	}
 	if(m_grubby) delete m_grubby;
@@ -1593,7 +1561,7 @@ void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
 			slotChat(QString("%1 who is %2").arg(grubby).arg(argument), NULL, KGGZChat::RECEIVE_CHAT);
 			break;
 		default:
-			KMessageBox::information(m_grubby, i18n("I don't know that command, sorry."), "Error!");
+			KMessageBox::sorry(m_grubby, i18n("I don't know that command, sorry."), i18n("Grubby communication failure"));
 	}
 }
 

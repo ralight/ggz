@@ -69,6 +69,7 @@ class KGGZBrowser;
 class KGGZGrubby;
 class KGGZPrefEnv;
 class KGGZSelector;
+class KGGZGameInfoDialog;
 
 // Here comes KGGZ.
 class KGGZ : public QWidget
@@ -267,6 +268,8 @@ class KGGZ : public QWidget
 		KGGZPrefEnv *m_prefenv;
 		// Frontend selection
 		KGGZSelector *m_selector;
+		// Game information
+		KGGZGameInfoDialog *m_gameinfodialog;
 
 		// Non-blocking DNS for easysock's gethostbyname
 		QDns *m_dns;

@@ -27,137 +27,72 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZMeta: Present a list of GGZ servers which are fetched from metaserver list. //
+// KGGZGameInfoDialogDialog: Show detailed game client and server information and specs. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 // Header file
-#include "KGGZMeta.h"
+#include "KGGZGameInfoDialog.h"
 
 // KGGZ includes
-#include "KGGZCommon.h"
 #include "KGGZCaption.h"
+#include "KGGZLineSeparator.h"
 
 // KDE includes
 #include <klocale.h>
-#include <klistview.h>
 
 // Qt includes
+#include <qlabel.h>
 #include <qlayout.h>
-#include <qdom.h>
 #include <qpushbutton.h>
-#include <qsocket.h>
 
-KGGZMeta::KGGZMeta(QWidget *parent, const char *name)
+// Constructor
+KGGZGameInfoDialog::KGGZGameInfoDialog(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
+	KGGZCaption *title;
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
-	QPushButton *cancel;
-	KGGZCaption *caption;
+	QPushButton *ok;
+	KGGZLineSeparator *sep;
 
-	caption = new KGGZCaption(i18n("Server selection"), i18n("Metaserver-based GGZ server selection."), this);
+	title = new KGGZCaption(i18n("Game information"), i18n("Properties of the game played in this room."), this);
 
-	m_ok = new QPushButton("OK", this);
-	m_ok->setEnabled(false);
-	cancel = new QPushButton(i18n("Cancel"), this);
+	m_information = new QLabel("", this);
+	m_information->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	sep = new KGGZLineSeparator(this);
 
-	m_view = new KListView(this);
-	m_view->addColumn("URI");
-	m_view->addColumn("Preference");
+	ok = new QPushButton(i18n("OK"), this);
 
 	vbox = new QVBoxLayout(this, 5);
-	vbox->add(caption);
-	vbox->add(m_view);
+	vbox->add(title);
+	vbox->add(m_information);
+	vbox->add(sep);
 
 	hbox = new QHBoxLayout(vbox, 5);
-	hbox->add(m_ok);
-	hbox->add(cancel);
+	hbox->add(ok);
 
-	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccept()));
-	connect(cancel, SIGNAL(clicked()), SLOT(close()));
-	connect(m_view, SIGNAL(pressed(QListViewItem*)), SLOT(slotSelection(QListViewItem*)));
+	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 
-	setFixedSize(300, 300);
-	setCaption(i18n("Server selection"));
+	//setFixedSize(300, 210);
+	setCaption(i18n("Game information"));
 	show();
-
-	load();
 }
 
-KGGZMeta::~KGGZMeta()
+// Destructor
+KGGZGameInfoDialog::~KGGZGameInfoDialog()
 {
 }
 
-void KGGZMeta::slotAccept()
+void KGGZGameInfoDialog::slotAccept()
 {
-	QString host, port;
-	QStringList list;
-
-	if(m_view->selectedItem())
-	{
-		list = list.split(':', m_view->selectedItem()->text(0));
-		if(list.count() == 3)
-		{
-			host = *(list.at(1));
-			port = *(list.at(2));
-			host = host.right(host.length() - 2);
-			emit signalData(host, port);
-		}
-	}
+	close();
 }
 
-void KGGZMeta::load()
+void KGGZGameInfoDialog::setInformation(const QString& information)
 {
-	m_sock = new QSocket();
-	connect(m_sock, SIGNAL(connected()), SLOT(slotConnected()));
-	connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-	m_sock->connectToHost("mindx.dyndns.org", 15689);
-}
-
-void KGGZMeta::slotConnected()
-{
-	QString s;
-
-	s = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.5pre</query>\n";
-	m_sock->writeBlock(s.latin1(), s.length());
-	m_sock->flush();
-}
-
-void KGGZMeta::slotRead()
-{
-	QString rdata;
-	QDomDocument dom;
-	QDomNode node;
-	QDomElement element;
-	QString pref;
-	QListViewItem *item;
-
-	rdata = m_sock->readLine();
-	rdata.truncate(rdata.length() - 1);
-
-	dom.setContent(rdata);
-	node = dom.documentElement().firstChild();
-
-	while(!node.isNull())
-	{
-		element = node.toElement();
-		if(!element.firstChild().isNull())
-		{
-			element = element.firstChild().toElement();
-			pref = element.attribute("preference", "20");
-			item = new QListViewItem(m_view, element.text(), pref);
-			item->setPixmap(0, QPixmap(KGGZ_DIRECTORY "/images/icons/serverred.png"));
-		}
-		node = node.nextSibling();
-	}
-
-	delete m_sock;
-}
-
-void KGGZMeta::slotSelection(QListViewItem *item)
-{
-	if((item) || (m_ok->isEnabled())) m_ok->setEnabled(true);
-	else m_ok->setEnabled(false);
+	m_information->setText(information);
+	update();
+	resize(m_information->width() + 20, m_information->height() + 100);
 }
 

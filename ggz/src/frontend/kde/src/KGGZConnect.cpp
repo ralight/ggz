@@ -256,18 +256,19 @@ void KGGZConnect::slotLoadProfile(int profile)
 	if(profile == -1)
 	{
 		profile_select->clear();
-		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
 		listentry = config->read("Session", "Defaultserver", (char*)NULL);
 		if(listentry)
 		{
-			if(strcmp(listentry, i18n("GGZ Meta Server")))
+			if(strcmp(listentry, i18n("GGZ Meta Server").latin1()))
 				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
-			profile_select->setCurrentItem(1);
+			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
+			profile_select->setCurrentItem(0);
 		}
 		else
 		{
-			//listentry = i18n("Default CVS Developer Server");
-			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), i18n("Default CVS Developer Server"));
+			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
+			profile_select->setCurrentItem(0);
+			modifyServerList(i18n("Default CVS Developer Server"), 1);
 		}
 		
 		config->read("Servers", "Servers", &i, &list);
@@ -278,14 +279,13 @@ void KGGZConnect::slotLoadProfile(int profile)
 			GGZCoreConfio::free(list[j]);
 		}
 		if(list) GGZCoreConfio::free(list);
-		if(i == 0) modifyServerList(i18n("Default CVS Developer Server"), 1);
 	}
 	else listentry = profile_select->text(profile);
 
 	// read values for selected server
-	if((profile < 0) || (profile_select->text(profile) == i18n("GGZ Meta Server")))
+	if(profile_select->currentText() == i18n("GGZ Meta Server"))
 	{
-		host = strdup("Automatic");
+		host = strdup(i18n("Automatic"));
 		port = strdup("5688");
 		input_host->setEnabled(false);
 		input_port->setEnabled(false);
@@ -301,7 +301,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 		button_select->setEnabled(true);
 		profile_delete->setEnabled(true);
 	}
-	username = config->read(listentry, "Login", "kde-cvs-player");
+	username = config->read(listentry, "Login", i18n("GGZocker"));
 	password = config->read(listentry, "Password", "");
 	type = config->read(listentry, "Type", 1);
 
@@ -332,7 +332,7 @@ void KGGZConnect::slotAccept()
 {
 	slotSaveProfile();
 
-	if(input_host->text() != "Automatic")
+	if(input_host->text() != i18n("Automatic"))
 	{
 		close();
 		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
@@ -342,7 +342,7 @@ void KGGZConnect::slotAccept()
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("localhost", 15689);
+		m_sock->connectToHost("mindx.dyndns.org", 15689);
 	}
 }
 
