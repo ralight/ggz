@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6500 2004-12-16 00:20:36Z josef $
+ * $Id: server.c 6635 2005-01-11 02:46:46Z jdorje $
  *
  * Functions for handling server events
  *
@@ -23,6 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include "server.h"
 #include "loop.h"
@@ -273,7 +277,7 @@ static GGZHookReturn room_list_tables(GGZRoomEvent id, void* event_data, void* u
 static void checkplayer()
 {
 	GGZRoom *room;
-	GGZPlayer *player;
+	GGZPlayer *player = NULL;
 	GGZTable *table;
 	GGZGameType *gt;
 	GGZModule *module;
@@ -281,7 +285,11 @@ static void checkplayer()
 	int bot;
 
 	if(playing) return;
+#ifdef HAVE_ALARM
 	alarm(15);
+#else
+	/* FIXME */
+#endif
 
 	bot = 0;
 	room = ggzcore_server_get_cur_room(server);
@@ -323,7 +331,11 @@ static void checkplayer()
 		return;
 	}
 	printf(_("checkplayer: We're playing...\n"));
+#ifdef HAVE_ALARM
 	alarm(0);
+#else
+	/* FIXME */
+#endif
 	playing = 1;
 	game_init(module, gt, table_id, NULL, bot);
 	return;

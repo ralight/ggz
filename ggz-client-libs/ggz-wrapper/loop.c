@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 6493 2004-12-15 21:16:47Z josef $
+ * $Id: loop.c 6635 2005-01-11 02:46:46Z jdorje $
  *
  * Functions for handling main IO loop
  *
@@ -24,6 +24,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 #include "loop.h"
 #include "server.h"
 
@@ -32,6 +36,12 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#ifdef HAVE_WINSOCK_H
+# include <winsock.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif
 
 
 /* Information about a fd and what to do under various conditions */
