@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4858 2002-10-10 21:04:56Z jdorje $
+ * $Id: players.c 4957 2002-10-19 22:36:07Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -965,11 +965,13 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 	
 	/* Parse type */
 	switch (type) {
-	case GGZ_CHAT_NONE:
+	case GGZ_CHAT_UNKNOWN:
 		/* An unrecognized chat op will be here.  This is probably
 		   a future chat type - not implemented yet.  We should
 		   handle it gracefully if possible.  So fall through
 		   to the "normal" case... */
+		/* FIXME: perhaps if there is a target we should treat it
+		   as a personal message instead? */
 	case GGZ_CHAT_NORMAL:
 		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
 		status = chat_room_enqueue(player->room, type, player, msg);
