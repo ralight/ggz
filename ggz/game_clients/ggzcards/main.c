@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4917 2002-10-14 22:27:43Z jdorje $
+ * $Id: main.c 5044 2002-10-26 04:43:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -40,6 +40,7 @@
 #include "dlg_about.h"
 #include "dlg_players.h"
 #include "ggzintl.h"
+#include "menus.h"
 
 #include "client.h"
 

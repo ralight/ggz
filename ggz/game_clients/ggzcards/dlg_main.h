@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.h 4902 2002-10-13 08:06:19Z jdorje $
+ * $Id: dlg_main.h 5044 2002-10-26 04:43:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -26,4 +26,3 @@
 #include <gtk/gtk.h>
 
 GtkWidget *create_dlg_main(void);
-GtkWidget *get_menu_item(const char *item);

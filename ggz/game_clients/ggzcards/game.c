@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 5042 2002-10-26 04:00:32Z jdorje $
+ * $Id: game.c 5044 2002-10-26 04:43:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include <ggz.h>
 
 #include "ggzintl.h"
+#include "menus.h"
 
 #include "client.h"
 
@@ -181,20 +182,14 @@ static void game_play_card2(card_t card)
 
 void game_send_newgame(void)
 {
-	GtkWidget *menu;
-	int status;
-
 	ggz_debug(DBG_MAIN, "Sending newgame to server.");
 
-	status = client_send_newgame();
+	if (client_send_newgame() < 0)
+		assert(FALSE);
 
-	menu = get_menu_item(_("<main>/Game/Start game"));
-	assert(menu);
-	gtk_widget_set_sensitive(menu, FALSE);
+	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
 
 	statusbar_message(_("Waiting for the other players..."));
-
-	assert(status == 0);
 }
 
 void game_resync(void)
@@ -221,8 +216,7 @@ void game_get_newgame(void)
 	if (preferences.autostart) {
 		(void) game_send_newgame();
 	} else {
-		GtkWidget *menu = get_menu_item(_("<main>/Game/Start game"));
-		gtk_widget_set_sensitive(menu, TRUE);
+		set_menu_sensitive(_("<main>/Game/Start game"), TRUE);
 
 		ggz_debug(DBG_MAIN, "Handling newgame request from server.");
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5042 2002-10-26 04:00:32Z jdorje $
+ * $Id: dlg_main.c 5044 2002-10-26 04:43:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -45,11 +45,8 @@
 #include "layout.h"
 #include "table.h"
 
-static GtkItemFactory *menu;
-
 static GtkWidget *create_menus(GtkWidget *window)
 {
-	GtkAccelGroup *accel_group;
 	GtkItemFactoryEntry items[] = {
 		TABLE_MENU,
 		{_("/_Game"), NULL, NULL, 0, "<Branch>"},
@@ -65,26 +62,15 @@ static GtkWidget *create_menus(GtkWidget *window)
 		 on_mnu_preferences_activate, 0, NULL},
 		HELP_MENU,
 	};
-	const int num = sizeof(items) / sizeof(items[0]);
-	GtkWidget *item;
+	GtkWidget *menubar;
 
-	accel_group = gtk_accel_group_new();
+	menubar = ggz_create_menus(window,
+				   items,
+				   sizeof(items) / sizeof(items[0]));
 
-	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-	gtk_item_factory_create_items(menu, num, items, NULL);
-	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
 
-	gtk_object_set_data(GTK_OBJECT(window), "mbar", menu);
-
-	item = get_menu_item(_("<main>/Game/Start game"));
-	gtk_widget_set_sensitive(item, FALSE);
-
-	return gtk_item_factory_get_widget(menu, "<main>");
-}
-
-GtkWidget *get_menu_item(const char *item)
-{
-	return gtk_item_factory_get_widget(menu, item);
+	return menubar;
 }
 
 GtkWidget *create_dlg_main(void)
