@@ -31,6 +31,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "chat.h"
 #include "props.h"
 #include "support.h"
 #include "xtext.h"
@@ -81,11 +82,59 @@ static void props_update(void)
 	GtkWidget *tmp;
 	GdkFont *font;
 
+	/* Save Changes */
+
+
+	/* Activate Changes */
+
+	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
 	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	tmp = lookup_widget((win_main), "xtext_custom");
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
-	gtk_xtext_refresh(GTK_XTEXT(tmp),0);
+
+	/* Auto-Indent */
+	tmp = lookup_widget((props_dialog), "indent_check");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+	{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->auto_indent = TRUE;
+	}else{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->auto_indent = FALSE;
+		GTK_XTEXT(tmp)->indent = 0;
+	}
+
+	/* Timestamp */
+	tmp = lookup_widget((props_dialog), "timestamp_check");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+	{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->time_stamp = TRUE;
+		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent + GTK_XTEXT(tmp)->stamp_width; */
+	}else{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->time_stamp = FALSE;
+		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent - GTK_XTEXT(tmp)->stamp_width; */
+	}
+
+	/* Word Wrap */
+	tmp = lookup_widget((props_dialog), "wrap_check");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+	{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->wordwrap = TRUE;
+	}else{
+		tmp = lookup_widget((win_main), "xtext_custom");
+		GTK_XTEXT(tmp)->wordwrap = FALSE;
+	}
+
+	/* Refresh XText to make changed take affect */
+	tmp = lookup_widget((win_main), "xtext_custom");
+	gtk_xtext_refresh(GTK_XTEXT(tmp), 0);
+
+	/* Display a status Message */
+	chat_display_message(CHAT_BEEP, "---", _("Properties Updated"));
 }
 
 
@@ -93,6 +142,7 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 
+	/* Set a default font */
 	tmp = lookup_widget((props_dialog), "chat_font");
 	gtk_entry_set_text(GTK_ENTRY(tmp), "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8");
 }
