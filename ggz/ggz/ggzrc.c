@@ -75,8 +75,11 @@ char *ggzrc_read_string(const char *section, const char *key, const char *def)
 	hashkey = g_strdup_printf("[%s]%s", section, key);
 	data = g_hash_table_lookup(rc_hash, hashkey);
 	if(data == NULL) {
-		ggzrc_write_string(section, key, def);
-		return g_strdup(def);
+		if(def) {
+			ggzrc_write_string(section, key, def);
+			return g_strdup(def);
+		} else
+			return NULL;
 	}
 	return g_strdup(data);
 }
