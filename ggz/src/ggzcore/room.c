@@ -813,6 +813,12 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
 				    "No such table");
 		break;
+		
+	case E_TABLE_FULL:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "The table is full "
+				    "(or has reserved seats)");
+		break;
 
 	default:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
