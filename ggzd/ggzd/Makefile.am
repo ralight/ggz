@@ -8,10 +8,14 @@ INCLUDES = -I$(top_srcdir)/easysock
 
 bin_PROGRAMS = ggzd
 
-ggzd_SOURCES =	control.c \
+ggzd_SOURCES =	chat.c\
+		chat.h\
+		control.c \
 		datatypes.h \
 		err_func.c \
 		err_func.h \
+		event.c \
+		event.h \
 		ggzd.h \
 		parse_opt.c \
 		parse_opt.h \

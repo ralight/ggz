@@ -31,6 +31,7 @@
 #include <time.h>
 
 #include <ggzd.h>
+#include <event.h>
 
 /* Datatypes for server options*/
 typedef struct {
@@ -110,15 +111,6 @@ struct GameTables {
 };
 
 
-/* A list item for chats */
-typedef struct ChatItem {
-	int reference_count;
-	char *chat_sender;
-	char *chat_msg;
-	struct ChatItem *next;
-} ChatItemStruct;
-
-
 /* A Room Structure */
 typedef struct {
 	pthread_rwlock_t lock;
@@ -133,15 +125,16 @@ typedef struct {
 	time_t table_timestamp;
 	int *player_index;
 	int *table_index;
-	ChatItemStruct *chat_tail;
+	GGZEvent *event_tail;
 #ifdef DEBUG
-	ChatItemStruct *chat_head;
+	GGZEvent *event_head;
 #endif
 } RoomStruct;
 
 
 /* Info about a logged-in user */
 typedef struct {
+	pthread_rwlock_t lock;
 	int uid;
 	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
 	int fd;
@@ -150,8 +143,9 @@ typedef struct {
 	char ip_addr[16];
 	char *hostname;				/* cleanup() */
 	int room;
-	ChatItemStruct *chat_head;
-	ChatItemStruct *personal_head;
+	GGZEvent *room_events;                  /* protected by room lock*/
+        GGZEvent *my_events_head;
+        GGZEvent *my_events_tail;
 } UserInfo;
 
 
@@ -161,25 +155,6 @@ struct Users {
 	int count;
 	pthread_rwlock_t lock;
 	time_t timestamp;
-};
-
-
-/* A chat consists of the message and a flag of who hasn't read it*/
-typedef struct {
-	char msg[MAX_CHAT_LEN + 1];
-	int p_index;
-	char p_name[MAX_USER_NAME_LEN + 1];
-	char unread[MAX_USERS];
-	int unread_count;
-} ChatInfo;
-
-
-/* Array of chats in buffer, their mutex, and a counter */
-struct Chats {
-	ChatInfo info[MAX_CHAT_BUFFER];
-	int count;
-	int player_unread_count[MAX_USERS];
-	pthread_rwlock_t lock;
 };
 
 

@@ -1,9 +1,9 @@
 /*
- * File: room.h
+ * File: chat.h
  * Author: Brent Hendricks
  * Project: GGZ Server
- * Date: 3/20/00
- * Desc: Functions for interfacing with the room and chat facility
+ * Date: 5/10/00
+ * Desc: Functions for handling/manipulating GGZ chat/messaging
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,10 +22,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-extern RoomStruct *chat_room;
-extern RoomInfo room_info;
 
-extern void room_initialize(void);
-extern void room_create_additional(void);
-extern int room_join(const int, const int, const int);
-extern int room_handle_request(const int, const int, const int);
+/* Queue up chat message for room consumption */
+int chat_room_enqueue(int room, unsigned char opcode, int sender, char *msg);
+
+/* Queue up a chat to a specific player */
+int chat_player_enqueue(char receiver[], unsigned char opcode, int sender, 
+			char *msg);
+			
+			
+

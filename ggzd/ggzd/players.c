@@ -49,6 +49,7 @@
 #include <seats.h>
 #include <motd.h>
 #include <room.h>
+#include <chat.h>
 
 
 /* Timeout for server resync */
@@ -86,9 +87,6 @@ static int   player_send_error(int p_index, int fd);
 static int   player_motd(int p_index, int fd);
 static int player_list_tables_room(const int, const int, const int);
 static int player_list_tables_global(const int, const int);
-static int player_queue_personal(const int, const unsigned char,
-				 const char *, char *);
-static int player_send_personal(const int, const int);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -176,6 +174,7 @@ static void* player_new(void *arg_ptr)
 			break;
 	
 	/* Initialize player data */
+	pthread_rwlock_init(&players.info[i].lock, NULL);
 	players.info[i].fd = sock;
 	players.info[i].table_index = -1;
 	players.info[i].uid = GGZ_UID_NONE;
@@ -186,8 +185,9 @@ static void* player_new(void *arg_ptr)
 	players.info[i].hostname = hostname;
 	players.count++;
 	players.info[i].room = -1;
-	players.info[i].chat_head = NULL;
-	players.info[i].personal_head = NULL;
+	players.info[i].room_events = NULL;
+	players.info[i].my_events_head = NULL;
+	players.info[i].my_events_tail = NULL;
 	pthread_rwlock_unlock(&players.lock);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "New player %d connected", i);
@@ -508,14 +508,12 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	    || (room_update && es_write_int(fd, MSG_UPDATE_ROOMS) < 0))
 		return GGZ_REQ_DISCONNECT;
 	
-	/* Send any unread chats */
-	if (players.info[p].room != -1
-	    && (room_send_chat(p, fd) < 0))
+	/* Process events from queue */
+	if (players.info[p].room != -1 && event_room_handle(p) < 0)
 		return GGZ_REQ_DISCONNECT;
-	if (players.info[p].personal_head
-	    && (player_send_personal(p, fd) < 0))
+	if (players.info[p].my_events_head && event_player_handle(p) < 0)
 		return GGZ_REQ_DISCONNECT;
-
+	
 	return GGZ_REQ_OK;
 }
 
@@ -1345,22 +1343,25 @@ static int player_msg_from_sized(int in, int out)
 static int player_chat(int p_index, int p_fd) 
 {
 	unsigned char subop;
-	char *msg=NULL, t_player[MAX_USER_NAME_LEN+1];
+	char *msg = NULL;
+	char t_player[MAX_USER_NAME_LEN+1];
 	int status;
 
-	if(es_read_char(p_fd, &subop) < 0)
+	if (es_read_char(p_fd, &subop) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
 
 	/* Get arguments if they are used for this subop */
-	if(subop & GGZ_CHAT_M_PLAYER) {
-		if(es_read_string(p_fd, t_player, MAX_USER_NAME_LEN+1) < 0)
+	if (subop & GGZ_CHAT_M_PLAYER) {
+		if (es_read_string(p_fd, t_player, MAX_USER_NAME_LEN+1) < 0)
 			return GGZ_REQ_DISCONNECT;
 	}
-	if(subop & GGZ_CHAT_M_MESSAGE) {
-		if((msg = malloc(MAX_CHAT_LEN)+1) == NULL)
+
+	if (subop & GGZ_CHAT_M_MESSAGE) {
+		if ( (msg = malloc(MAX_CHAT_LEN+1)) == NULL)
 			err_sys_exit("malloc error in player_chat()");
+		/* FIXME: use es_r_s_a() once it supports max length*/
 		if (es_read_string(p_fd, msg, MAX_CHAT_LEN+1) < 0) {
 			free(msg);
 			return GGZ_REQ_DISCONNECT;
@@ -1371,38 +1372,43 @@ static int player_chat(int p_index, int p_fd)
 	/* No lock needed, no one can change our room but us */
 	if (players.info[p_index].room == -1) {
 		dbg_msg(GGZ_DBG_CHAT, 
-			"Player %d tried to chat from room -1",
-			p_index);
-		free(msg);
+			"Player %d tried to chat from room -1", p_index);
+		if (msg)
+			free(msg);
+		
 		if (es_write_int(p_fd, RSP_CHAT) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
+	
 
-	switch(subop) {
-		case GGZ_CHAT_NORMAL:
-			dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s",
-					      p_index, msg);
-			status = room_emit(players.info[p_index].room,
+	/* Parse subop */
+	switch (subop) {
+	case GGZ_CHAT_NORMAL:
+		dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s", p_index, msg);
+		status = chat_room_enqueue(players.info[p_index].room, subop, 
 					   p_index, msg);
-			break;
-		case GGZ_CHAT_BEEP:
-		case GGZ_CHAT_PERSONAL:
-			status = player_queue_personal(p_index, subop,
-						       t_player, msg);
-			break;
-		default:
-			dbg_msg(GGZ_DBG_PROTOCOL,
-				"Player %d (uid %d) sent invalid chat subop %d",
-				p_index, players.info[p_index].uid, subop);
-			status = E_BAD_OPTIONS;
+		break;
+	case GGZ_CHAT_BEEP:
+	case GGZ_CHAT_PERSONAL:
+		status = chat_player_enqueue(t_player, subop, p_index, msg);
+		break;
+	default:
+		dbg_msg(GGZ_DBG_PROTOCOL,
+			"Player %d (uid %d) sent invalid chat subop %d",
+			p_index, players.info[p_index].uid, subop);
+		status = E_BAD_OPTIONS;
 	}
 
-	if(es_write_int(p_fd, RSP_CHAT) < 0
+	/* Free message now it's been copied to chat queue */
+	if (msg)
+		free(msg);
+	
+	if (es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)
 		return GGZ_REQ_DISCONNECT;
-
+	
 	/* Don't return the chat error code */
 	return 0;
 }
@@ -1467,94 +1473,4 @@ int player_motd(int p_index, int fd)
 		return GGZ_REQ_DISCONNECT;
 
 	return GGZ_REQ_OK;
-}
-
-
-static int player_queue_personal(const int p_index, const unsigned char subop,
-				 const char *t_player, char *msg)
-{
-	int room, t_pidx=0, i;
-	ChatItemStruct *new_chat;
-
-	room = players.info[p_index].room;
-
-	/* Search for player name in this room */
-	pthread_rwlock_rdlock(&chat_room[room].lock);
-	for(i=0; i<chat_room[room].player_count; i++) {
-		/* FIXME: */
-		/* Technically we should lock the player in case the name */
-		/* is changing, realistically this can't happen right now */
-		/* anyway, but that could change in the future */
-		t_pidx = chat_room[room].player_index[i];
-		if(!strcmp(t_player, players.info[t_pidx].name))
-			break;
-	}
-
-	if(i == chat_room[room].player_count) {
-		/* Player not in this room, can't send him the msg */
-		pthread_rwlock_unlock(&chat_room[room].lock);
-		if(msg)
-			free(msg);
-		return E_USR_LOOKUP;
-	}
-	pthread_rwlock_unlock(&chat_room[room].lock);
-
-	/* Setup the chat item */
-	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL) {
-		if(msg)
-			free(msg);
-		err_sys_exit("malloc failed in player_queue_personal()");
-	}
-	dbg_msg(GGZ_DBG_LISTS, "Allocated personal chat %p", new_chat);
-	if((new_chat->chat_sender =malloc(strlen(players.info[p_index].name+1)))
-	   == NULL) {
-		free(new_chat);
-		if(msg)
-			free(msg);
-		err_sys_exit("malloc failed in palyer_queue_personal()");
-	}
-	strcpy(new_chat->chat_sender, players.info[p_index].name);
-	new_chat->chat_msg = msg;
-	new_chat->reference_count = subop;     /*Ref_count is otherwise unused*/
-
-	/* Now lock the target user and add this to their queue */
-	pthread_rwlock_wrlock(&players.lock);
-	new_chat->next = players.info[t_pidx].personal_head;
-	players.info[t_pidx].personal_head = new_chat;
-	pthread_rwlock_unlock(&players.lock);
-
-	return 0;
-}
-
-
-static int player_send_personal(const int p_index, const int fd)
-{
-	unsigned char subop;
-	ChatItemStruct *cur_chat, *t_chat;
-	int status = 0;
-
-	pthread_rwlock_rdlock(&players.lock);
-	cur_chat = players.info[p_index].personal_head;
-	players.info[p_index].personal_head = NULL;
-	pthread_rwlock_unlock(&players.lock);
-
-	while(cur_chat != NULL) {
-		subop = cur_chat->reference_count;
-		if(status == 0 && (es_write_int(fd, MSG_CHAT) < 0
-		   || es_write_char(fd, subop) < 0
-		   || es_write_string(fd, cur_chat->chat_sender) < 0))
-			status = GGZ_REQ_DISCONNECT;
-		if(subop & GGZ_CHAT_M_MESSAGE
-		   && status == 0
-		   && es_write_string(fd, cur_chat->chat_msg) < 0)
-			status = GGZ_REQ_DISCONNECT;
-		free(cur_chat->chat_sender);
-		if(cur_chat->chat_msg)
-			free(cur_chat->chat_msg);
-		t_chat = cur_chat;
-		cur_chat = cur_chat->next;
-		free(t_chat);
-	}
-
-	return status;
 }

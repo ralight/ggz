@@ -35,6 +35,8 @@
 #include <room.h>
 #include <err_func.h>
 #include <protocols.h>
+#include <event.h>
+#include <chat.h>
 
 
 /* Server wide data structures */
@@ -47,9 +49,7 @@ RoomStruct *chat_room;
 RoomInfo room_info;
 
 /* Internal use only */
-static void room_spew_chat_room(const int);
 static void room_notify_change(const int, const int, const int);
-static void room_dequeue_chat(const int p);
 static int room_list_send(const int p, const int p_fd);
 static int room_handle_join(const int, const int);
 
@@ -159,10 +159,10 @@ void room_initialize(void)
 		err_sys_exit("calloc failed in room_initialize_lists()");
 
 	/* Initialize the chat_tail and lock */
-	chat_room[0].chat_tail = NULL;
+	chat_room[0].event_tail = NULL;
 	pthread_rwlock_init(&chat_room[0].lock, NULL);
 #ifdef DEBUG
-	chat_room[0].chat_head = NULL;
+	chat_room[0].event_head = NULL;
 #endif
 }
 
@@ -183,10 +183,10 @@ void room_create_additional(void)
 	/* Initialize the chat_tail and lock on the new one */
 	chat_room[room_info.num_rooms-1].player_count = 0;
 	chat_room[room_info.num_rooms-1].table_count = 0;
-	chat_room[room_info.num_rooms-1].chat_tail = NULL;
+	chat_room[room_info.num_rooms-1].event_tail = NULL;
 	pthread_rwlock_init(&chat_room[room_info.num_rooms-1].lock, NULL);
 #ifdef DEBUG
-	chat_room[room_info.num_rooms-1].chat_head = NULL;
+	chat_room[room_info.num_rooms-1].event_head = NULL;
 #endif
 }
 
@@ -236,9 +236,9 @@ int room_join(const int p_index, const int room, const int fd)
 	if(room > room_info.num_rooms || room < -2)
 		return E_BAD_OPTIONS;
 
-	/* Send queued messages unless they are connecting/disconnecting */
+	/* Process queued messages unless they are connecting/disconnecting */
 	if (old_room != -1 && room != -1)
-		if(room_send_chat(p_index, fd) < 0)
+		if(event_room_handle(p_index) < 0)
 			return GGZ_REQ_DISCONNECT;
 
 	/* We ALWAYS lock the lower ordered room first! */
@@ -263,8 +263,8 @@ int room_join(const int p_index, const int room, const int fd)
 
 	/* Yank them from this room */
 	if(old_room != -1) {
-		if(players.info[p_index].chat_head != NULL)
-			room_dequeue_chat(p_index);
+		if (players.info[p_index].room_events)
+			event_room_flush(p_index);
 		count = -- chat_room[old_room].player_count;
 		last = chat_room[old_room].player_index[count];
 		for(i=0; i<=count; i++)
@@ -303,219 +303,12 @@ int room_join(const int p_index, const int room, const int fd)
 /* Notifies clients that someone has entered/left the room */
 static void room_notify_change(const int p, const int old, const int new)
 {
-	char *part_msg, *join_msg;
-
 	dbg_msg(GGZ_DBG_ROOM,
 		"Player %d moved from room %d to %d", p, old, new);
 
-	if(old != -1) {
-		if((part_msg = malloc(8)) == NULL)
-			err_sys_exit("malloc error in room_notify_change");
-		strcpy(part_msg, "/SpartS");
-		room_emit(old, p, part_msg);
-	}
+	if(old != -1)
+		chat_room_enqueue(old, GGZ_CHAT_NORMAL, p, "/SpartS");
 
-	if(new != -1) {
-		if((join_msg = malloc(8)) == NULL)
-			err_sys_exit("malloc error in room_notify_change");
-		strcpy(join_msg, "/SjoinS");
-		room_emit(new, p, join_msg);
-	}
+	if(new != -1)
+		chat_room_enqueue(new, GGZ_CHAT_NORMAL, p, "/SjoinS");
 }
-
-
-/* Queue up a chat emission for the room */
-/* Messages passed to room_emit() MUST be dynamically allocated via malloc */
-/* the caller MUST NOT free the msg as we need to keep it!                 */
-int room_emit(const int room, const int sender, char *msg)
-{
-	ChatItemStruct *new_chat;
-	int i, t_p;
-
-	/* Allocate a new chat item */
-	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL) {
-		free(msg);
-		err_sys_exit("malloc failed in room_emit()");
-	}
-	dbg_msg(GGZ_DBG_LISTS, "Allocated chat %p", new_chat);
-
-	pthread_rwlock_wrlock(&chat_room[room].lock);
-
-	/*Let's not assume anyone is here (might be player exiting empty room)*/
-	if(chat_room[room].player_count == 0) {
-		pthread_rwlock_unlock(&chat_room[room].lock);
-		free(new_chat);
-		free(msg);
-		dbg_msg(GGZ_DBG_LISTS,
-			"Deallocated chat %p (empty room)", new_chat);
-		return GGZ_REQ_OK;
-	}
-
-	/* Since we are the sender, we don't need lock to get our own name */
-	if((new_chat->chat_sender = malloc(strlen(players.info[sender].name)+1))
-	   == NULL) {
-		pthread_rwlock_unlock(&chat_room[room].lock);
-		free(new_chat);
-		free(msg);
-		err_sys_exit("malloc failed in room_emit()");
-	}
-	strcpy(new_chat->chat_sender, players.info[sender].name);
-
-	/* If players in this room don't have a chat head, put this item */
-	for(i=0; i<chat_room[room].player_count; i++) {
-		t_p = chat_room[room].player_index[i];
-		if(players.info[t_p].chat_head == NULL)
-			players.info[t_p].chat_head = new_chat;
-	}
-
-	/* Now we can finish setting up the chat list item */
-	new_chat->chat_msg = msg;
-	new_chat->reference_count = chat_room[room].player_count;
-	new_chat->next = NULL;
-
-	/* Finally, add this to the list itself */
-	if(chat_room[room].chat_tail != NULL)
-		(chat_room[room].chat_tail)->next = new_chat;
-	chat_room[room].chat_tail = new_chat;
-
-#ifdef DEBUG
-	if(chat_room[room].chat_head == NULL)
-		chat_room[room].chat_head = new_chat;
-	if(log_info.dbg_types & GGZ_DBG_LISTS)
-		room_spew_chat_room(room);
-#endif
-
-	pthread_rwlock_unlock(&chat_room[room].lock);
-	return GGZ_REQ_OK;
-}
-
-
-/* Queue up a chat emission to a specific player */
-int room_pemit(const int room, const int sender, char *stmt)
-{
-	free(stmt);
-
-	return GGZ_REQ_OK;
-}
-
-
-/* Send out all chat to a player from his current room */
-int room_send_chat(const int p_index, const int fd)
-{
-	ChatItemStruct *cur_chat, *rm_list=NULL;
-	int room;
-
-	/* Our room can't change unless we change it */
-	room = players.info[p_index].room;
-
-	pthread_rwlock_rdlock(&chat_room[room].lock);
-	cur_chat = players.info[p_index].chat_head;
-	pthread_rwlock_unlock(&chat_room[room].lock);
-
-	while(cur_chat) {
-		/* We obviously have a reference to it, so it can't change */
-		if(es_write_int(fd, MSG_CHAT) < 0
-		   || es_write_char(fd, GGZ_CHAT_NORMAL) < 0
-		   || es_write_string(fd, cur_chat->chat_sender) < 0
-		   || es_write_string(fd, cur_chat->chat_msg) < 0)
-			return GGZ_REQ_DISCONNECT;
-
-		/* We need a lock now to alter our chat_head */
-		pthread_rwlock_wrlock(&chat_room[room].lock);
-		players.info[p_index].chat_head = cur_chat->next;
-		cur_chat->reference_count --;
-
-		/* And add the chat to the remove list if necessary  */
-		if(cur_chat->reference_count == 0) {
-			if(chat_room[room].chat_tail == cur_chat) {
-				chat_room[room].chat_tail = NULL;
-			}
-#ifdef DEBUG
-			chat_room[room].chat_head = cur_chat->next;
-#endif DEBUG
-			cur_chat->next = rm_list;
-			rm_list = cur_chat;
-		}
-#ifdef DEBUG
-		if(log_info.dbg_types & GGZ_DBG_LISTS)
-			room_spew_chat_room(room);
-#endif
-
-		/* Finally, point us to the next chat */
-		cur_chat = players.info[p_index].chat_head;
-		pthread_rwlock_unlock(&chat_room[room].lock);
-	}
-
-	/* Finally, free the list of chats to remove */
-	while((cur_chat = rm_list)) {
-		rm_list = cur_chat->next;
-		free(cur_chat->chat_sender);
-		free(cur_chat->chat_msg);
-		free(cur_chat);
-	}
-
-	return GGZ_REQ_OK;
-}
-
-
-/* Zap all chats to this player in the current room */
-/* Note: this function MUST be called with the chat room already locked! */
-static void room_dequeue_chat(const int p)
-{
-	ChatItemStruct *chat_item;
-	int room = players.info[p].room;
-
-	dbg_msg(GGZ_DBG_LISTS, "Dequeuing all room chat for %d in %d", p, room);
-
-	while((chat_item = players.info[p].chat_head)) {
-		players.info[p].chat_head = chat_item->next;
-		chat_item->reference_count --;
-		if(chat_item->reference_count == 0) {
-			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", chat_item);
-			if(chat_room[room].chat_tail == chat_item) {
-				chat_room[room].chat_tail = NULL;
-			}
-#ifdef DEBUG
-			chat_room[room].chat_head = chat_item->next;
-#endif DEBUG
-			free(chat_item->chat_sender);
-			free(chat_item->chat_msg);
-			free(chat_item);
-		}
-	}
-
-#ifdef DEBUG
-	if(chat_room[room].chat_tail == NULL)
-		chat_room[room].chat_head = NULL;
-	if(log_info.dbg_types & GGZ_DBG_LISTS)
-		room_spew_chat_room(room);
-#endif
-}
-
-
-/* Zap all personal chat to this player */
-void room_dequeue_personal(const int p)
-{
-
-}
-
-
-/* Spew out the entire chat list for a room */
-/* To make a consistent view, read lock should be held when calling this dbg */
-#ifdef DEBUG
-static void room_spew_chat_room(const int room)
-{
-	ChatItemStruct *chat_item;
-
-	dbg_msg(GGZ_DBG_LISTS, "------ Chat List ------");
-	chat_item = chat_room[room].chat_head;
-	dbg_msg(GGZ_DBG_LISTS, "Chat head is %p", chat_item);
-	while(chat_item != NULL) {
-		dbg_msg(GGZ_DBG_LISTS, "  Chain item %p (%d)",
-			chat_item, chat_item->reference_count);
-		chat_item = chat_item->next;
-	}
-	dbg_msg(GGZ_DBG_LISTS, "Chat tail is %p", chat_room[room].chat_tail);
-	dbg_msg(GGZ_DBG_LISTS, "-----------------------");
-}
-#endif /* DEBUG */
