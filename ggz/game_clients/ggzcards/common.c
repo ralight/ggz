@@ -1,4 +1,4 @@
-/* $Id: common.c 2083 2001-07-23 23:47:14Z jdorje $ */
+/* $Id: common.c 2084 2001-07-24 00:01:53Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -496,7 +496,7 @@ static int handle_msg_trick()
 }
 
 
-int handle_req_options()
+static int handle_req_options()
 {
 	int i, j;
 	int option_cnt;		/* the number of options */
@@ -625,8 +625,6 @@ int client_handle_server()
 	if (es_read_int(ggzfd, &op) < 0)
 		return -1;
 
-	status = 0;
-
 	if (op >= WH_REQ_NEWGAME && op <= WH_REQ_OPTIONS)
 		client_debug("Received opcode: %s", opstr[op]);
 	else
@@ -649,14 +647,13 @@ int client_handle_server()
 		status = handle_msg_hand();
 		break;
 	case WH_REQ_BID:
-		if (handle_req_bid() < 0)
-			client_debug("Error or bug: -1 returned by handle_bid_request.");	/* TODO */
+		status = handle_req_bid();
 		break;
 	case WH_REQ_PLAY:
 		status = handle_req_play();
 		break;
 	case WH_MSG_BADPLAY:
-		handle_msg_badplay();
+		status = handle_msg_badplay();
 		break;
 	case WH_MSG_PLAY:
 		status = handle_msg_play();
