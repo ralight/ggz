@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 6112 2004-07-16 17:31:15Z jdorje $
+ * $Id: ggzmod-ggz.h 6151 2004-07-17 22:45:57Z josef $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -115,6 +115,7 @@ int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
 int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg);
 
 typedef struct GGZStat {
+	int number;
 	int have_record, have_rating, have_ranking, have_highscore;
 	int wins, losses, ties, forfeits;
 	int rating, ranking, highscore;

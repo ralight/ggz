@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 6112 2004-07-16 17:31:15Z jdorje $
+ * $Id: mod.h 6151 2004-07-17 22:45:57Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -61,8 +61,10 @@ struct GGZMod {
 	/* Seat and spectator seat data. */
 	int num_seats;
 	GGZList *seats;
+	GGZList *stats;
 	int num_spectator_seats;
 	GGZList *spectator_seats;
+	GGZList *spectator_stats;
 
 	/* ggz-only data */
 #ifdef HAVE_FORK

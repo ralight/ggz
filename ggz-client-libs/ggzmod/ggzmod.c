@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6150 2004-07-17 20:42:55Z josef $
+ * $Id: ggzmod.c 6151 2004-07-17 22:45:57Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -87,6 +87,10 @@ static void spectator_seat_free(GGZSpectatorSeat *seat);
  * Creating/destroying a ggzmod object
  */
 
+static int stats_compare(void *p, void *q) {
+	return (((GGZStat*)p)->number == *(int*)q);
+}
+
 /* Creates a new ggzmod object. */
 GGZMod *ggzmod_new(GGZModType type)
 {
@@ -120,6 +124,9 @@ GGZMod *ggzmod_new(GGZModType type)
 				(ggzEntryDestroy)spectator_seat_free,
 				GGZ_LIST_REPLACE_DUPS);
 	ggzmod->num_seats = ggzmod->num_spectator_seats = 0;
+
+	ggzmod->stats = ggz_list_create(stats_compare, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
+	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL, GGZ_LIST_ALLOW_DUPS);
 
 #ifdef HAVE_FORK
 	ggzmod->pid = -1;
@@ -591,7 +598,29 @@ void _ggzmod_handle_chat(GGZMod *ggzmod, char *player, char *chat_msg)
 void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
 			  GGZStat *spectator_stats)
 {
-	/* TODO */
+	GGZListEntry *entry;
+	GGZSeat *seat;
+	GGZSpectatorSeat *spectator;
+	GGZStat stat;
+	int i;
+
+	i = 0;
+	for(entry = ggz_list_head(ggzmod->seats); entry; entry = ggz_list_next(entry)) {
+		seat = ggz_list_get_data(entry);
+		stat = player_stats[i];
+		stat.number = seat->num;
+		ggz_list_insert(ggzmod->stats, &stat);
+		i++;
+	}
+
+	i = 0;
+	for(entry = ggz_list_head(ggzmod->spectator_seats); entry; entry = ggz_list_next(entry)) {
+		spectator = ggz_list_get_data(entry);
+		stat = spectator_stats[i];
+		stat.number = spectator->num;
+		ggz_list_insert(ggzmod->spectator_stats, &stat);
+		i++;
+	}
 }
 
 int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
@@ -1060,46 +1089,84 @@ int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
 			      ggzmod->num_spectator_seats, spectator_stats);
 }
 
-int ggzmod_player_get_record(GGZSeat *seat,
+int ggzmod_player_get_record(GGZMod *ggzmod, GGZSeat *seat,
 			     int *wins, int *losses,
 			     int *ties, int *forfeits)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*wins = stat->wins;
+	*losses = stat->losses;
+	*ties = stat->ties;
+	*forfeits = stat->forfeits;
+	return 1;
 }
 
-int ggzmod_player_get_rating(GGZSeat *seat, int *rating)
+int ggzmod_player_get_rating(GGZMod *ggzmod, GGZSeat *seat, int *rating)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*rating = stat->rating;
+	return 1;
 }
 
-int ggzmod_player_get_ranking(GGZSeat *seat, int *ranking)
+int ggzmod_player_get_ranking(GGZMod *ggzmod, GGZSeat *seat, int *ranking)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*ranking = stat->ranking;
+	return 1;
 }
 
-int ggzmod_player_get_highscore(GGZSeat *seat, int *highscore)
+int ggzmod_player_get_highscore(GGZMod *ggzmod, GGZSeat *seat, int *highscore)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*highscore = stat->highscore;
+	return 1;
 }
 
-int ggzmod_spectator_get_record(GGZSpectatorSeat *seat,
+int ggzmod_spectator_get_record(GGZMod *ggzmod, GGZSpectatorSeat *seat,
 				int *wins, int *losses,
 				int *ties, int *forfeits)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*wins = stat->wins;
+	*losses = stat->losses;
+	*ties = stat->ties;
+	*forfeits = stat->forfeits;
+	return 1;
 }
 
-int ggzmod_spectator_get_rating(GGZSpectatorSeat *seat, int *rating)
+int ggzmod_spectator_get_rating(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *rating)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*rating = stat->rating;
+	return 1;
 }
 
-int ggzmod_spectator_get_ranking(GGZSpectatorSeat *seat, int *ranking)
+int ggzmod_spectator_get_ranking(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *ranking)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*ranking = stat->ranking;
+	return 1;
 }
 
-int ggzmod_spectator_get_highscore(GGZSpectatorSeat *seat, int *highscore)
+int ggzmod_spectator_get_highscore(GGZMod *ggzmod, GGZSpectatorSeat *seat, int *highscore)
 {
-	return 0;
+	GGZListEntry *entry = ggz_list_search(ggzmod->spectator_stats, &seat->num);
+	GGZStat *stat = ggz_list_get_data(entry);
+	if(!stat) return 0;
+	*highscore = stat->highscore;
+	return 1;
 }
