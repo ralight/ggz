@@ -1,3 +1,0 @@
-
-#undef KGGZ_DIRECTORY
-
