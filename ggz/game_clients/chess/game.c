@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: game.c 2907 2001-12-17 01:50:25Z dr_maux $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -143,7 +143,7 @@ void game_message(const char *format, ...) {
  */
 void game_update(int event, void *arg) {
   char move[6];
-	int diff[2];
+  /*int diff[2];*/
   int retval = 0;
   switch (event) {
     case CHESS_EVENT_INIT:
