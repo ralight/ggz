@@ -107,15 +107,28 @@ int game_compare_cards(const void *c1, const void *c2)
 	register card_t card1 = *(card_t *)c1;
 	register card_t card2 = *(card_t *)c2;
 	switch (game.which_game) {
+		case GGZ_GAME_SKAT:
+			/* TODO: we've got to do a lot more here, since the ordering changes
+			 * quite a bit depending on what the bid is! */
+			if (card1.suit == card2.suit) {
+				/* Skat cards go 7-Ace, but the ordering is 7, 8, 9, J, Q, K, 10, A */
+				static char ordering[8] = {7, 8, 9, 13, 10, 11, 12, 14};
+				char o1 = ordering[card1.face-7];
+				char o2 = ordering[card2.face-7];
+				if (o1 < o2) return -1;
+				if (o2 > o1) return 1;
+				return 0;
+			}			
+			goto normal_sorting;
 		case GGZ_GAME_BRIDGE:
 			/* in Bridge, the trump suit is always supposed to be shown on the left */
-			ggz_debug("Cards_compare_hand: suit 1 is %d, suit 2 %d, trump %d.", card1.suit, card2.suit, game.trump);
 			if (card1.suit == game.trump && card2.suit != game.trump)
 				return -1;
 			if (card2.suit == game.trump && card1.suit != game.trump)
 				return 1;
 			/* fall through */
 		default:
+normal_sorting:
 			if (card1.suit < card2.suit) return -1;
 			if (card1.suit > card2.suit) return 1;
 			if (card1.face < card2.face) return -1;
