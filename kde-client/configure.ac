@@ -174,6 +174,7 @@ AC_CONFIG_FILES([Makefile
 	po/shadowbridge/Makefile
 	po/modsniff/Makefile
 	po/kcm_ggz/Makefile
+	po/compcal/Makefile
 	])
 AC_OUTPUT
 
