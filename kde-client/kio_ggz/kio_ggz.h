@@ -39,7 +39,7 @@ class GGZProtocol : public KIO::SlaveBase
 		GGZCore *m_core;
 		GGZCoreServer *m_server;
 		KIO::UDSEntry entry;
-		char *savemotd;
+		QString savemotd;
 };
 
 #endif

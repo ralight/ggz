@@ -39,7 +39,7 @@ void GGZProtocol::jobOperator(const KURL& url)
 	QString h, vh, p;
 
 	u = url;
-	u.cleanPath();
+	u.cleanPath(true);
 	p = u.path(1);
 
 	if(u.host())
@@ -176,14 +176,20 @@ void GGZProtocol::showMotd()
 	mimeType("text/plain");
 
 	if(!savemotd) output.sprintf("No MOTD found.\n");
-	else output.sprintf("This is the MOTD:\n\n%s\n", savemotd);
+	else output.sprintf("This is the MOTD:\n\n%1\n", savemotd.latin1());
 	data(output);
 	finished();
 }
 
 void GGZProtocol::init(const KURL& url)
 {
+	int port;
+
 	debug(QString("Set host: %1").arg(url.host()));
+	debug(QString("Port is: %1").arg(url.port()));
+
+	if(url.port()) port = url.port();
+	else port = 5688;
 
 	m_core = new GGZCore();
 	m_core->init(GGZCore::parser | GGZCore::modules);
@@ -200,7 +206,7 @@ void GGZProtocol::init(const KURL& url)
 	m_server->addHook(GGZCoreServer::negotiatefail, hook_server_error);
 	m_server->addHook(GGZCoreServer::loginfail, hook_server_error);
 
-	m_server->setHost(url.host().latin1(), 5688, 0);
+	m_server->setHost(url.host().latin1(), port, 0);
 	//m_server->setLogin(GGZCoreServer::guest, "guest", NULL);
 
 	debug("Connecting...");
