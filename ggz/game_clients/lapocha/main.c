@@ -172,6 +172,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		case LP_MSG_PLAY:
 			status = get_opponent_play();
 			break;
+		case LP_SND_SYNC:
+			status = get_sync_info();
+			break;
 		case LP_MSG_TRUMP:
 			status = get_trump_suit();
 			break;
@@ -223,25 +226,29 @@ static int get_players(void)
 {
 	int i;
 	char *temp;
+	char t_name[17];
 
 	for(i=0; i<4; i++) {
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(es_read_string(game.fd, (char*)&game.names[i], 17)<0)
+			if(es_read_string(game.fd, (char *)&t_name, 17) < 0)
 				return -1;
-			table_set_name(i, game.names[i]);
-			if(i != game.me) {
+			if(i != game.me && game.got_players
+			   &&  strcmp(t_name, game.names[i])) {
 				temp = g_strdup_printf("%s joined the table",
-							game.names[i]);
+							t_name);
 				statusbar_message(temp);
 				g_free(temp);
 			}
+			strcpy(game.names[i], t_name);
+			table_set_name(i, game.names[i]);
 		} else {
 			table_set_name(i, "Empty Seat");
-			if(game.got_players) {
+			if(game.names[i][0] != '\0' && game.got_players) {
 				temp = g_strdup_printf("%s left the table",
 							game.names[i]);
+				game.names[i][0] = '\0';
 				statusbar_message(temp);
 				g_free(temp);
 			}
@@ -256,6 +263,80 @@ static int get_players(void)
 
 static int get_sync_info(void)
 {
+	int i;
+	char state, tosschar;
+	char cur_table[4];
+
+	/* Receive game turn */
+	if(es_read_char(game.fd, &tosschar) < 0)
+		return -1;
+
+	/* Receive scores from the server */
+	for(i=0; i<4; i++) {
+		if(es_read_int(game.fd, &game.score[i]) < 0)
+			return -1;
+		table_set_score(i, game.score[i]);
+	}
+
+	/* Get our game hand */
+	if(hand_read_hand() < 0)
+		return -1;
+
+	/* Get the server's game state */
+	if(es_read_char(game.fd, &state) < 0)
+		return -1;
+
+	/* Get info based on state */
+	switch(state) {
+		case LP_SERVER_INIT:
+			/* Can't occur */
+			break;
+		case LP_SERVER_WAIT:
+			/* Can't occur */
+			break;
+		case LP_SERVER_NEW_HAND:
+			/* Can't occur */
+			break;
+		case LP_SERVER_GET_TRUMP:
+			/* Can't occur */
+			break;
+		case LP_SERVER_BIDDING:
+			/* Can't occur */
+			break;
+		case LP_SERVER_PLAYING:
+			if(es_read_char(game.fd, &game.dealer) < 0
+			   || es_read_char(game.fd, &tosschar) < 0
+			   || es_read_char(game.fd, &game.trump_suit) < 0
+			   || es_read_char(game.fd, &game.lead) < 0)
+				return -1;
+
+			table_set_trump();
+
+			/* Get all four bids, trick counts and cards on table */
+			for(i=0; i<4; i++) {
+				if(es_read_int(game.fd, &game.bid[i]) < 0)
+					return -1;
+				table_set_bid(i, game.bid[i]);
+			}
+			for(i=0; i<4; i++) {
+				if(es_read_int(game.fd, &game.tricks[i]) < 0)
+					return -1;
+				table_set_tricks(i, game.tricks[i]);
+			}
+			for(i=0; i<4; i++)
+				if(es_read_char(game.fd, &cur_table[i]) < 0)
+					return -1;
+
+			/* Display the cards on the table */
+			table_show_cards_pnum(cur_table[0], cur_table[1],
+					      cur_table[2], cur_table[3]);
+
+			game.state = LP_STATE_WAIT;
+		case LP_SERVER_DONE:
+			/* Can't occur */
+			break;
+	}
+
 	return 0;
 }
 
@@ -281,7 +362,6 @@ static void handle_req_newgame(void)
 {
 	/* Reinitialize the game data and board */
 	game_init();
-	game.got_players = 1;
 
 	/* Send a game request to the server */
 	es_write_int(game.fd, LP_REQ_NEWGAME);
@@ -369,12 +449,9 @@ static int get_player_bid(void)
 
 static int get_trump_suit(void)
 {
-	char trump;
-
-	if(es_read_char(game.fd, &trump) < 0)
+	if(es_read_char(game.fd, &game.trump_suit) < 0)
 		return -1;
 
-	game.trump_suit = trump;
 	table_set_trump();
 	return 0;
 }

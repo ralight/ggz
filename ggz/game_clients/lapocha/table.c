@@ -1159,6 +1159,29 @@ void table_clear_table(void)
 }
 
 
+/* table_show_cards_pnum()
+ *   Exposed function to call table_show_cards with proper ordering
+ *   for cards in player order rather than position order
+ */
+void table_show_cards_pnum(char c1, char c2, char c3, char c4)
+{
+	switch(game.me) {
+		case 0:
+			table_show_cards(c1, c2, c3, c4);
+			break;
+		case 1:
+			table_show_cards(c2, c3, c4, c1);
+			break;
+		case 2:
+			table_show_cards(c3, c4, c1, c2);
+			break;
+		case 3:
+			table_show_cards(c4, c1, c2, c3);
+			break;
+	}
+}
+
+
 /* table_show_cards()
  *   Exposed function to show four cards on the table area
  */

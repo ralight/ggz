@@ -38,5 +38,6 @@ extern void table_animation_abort(void);
 extern void table_animation_zip(gboolean);
 extern void table_animation_opponent(char, char);
 extern void table_clear_table(void);
+extern void table_show_cards_pnum(char, char, char, char);
 extern void table_show_cards(char, char, char, char);
 extern void table_style_change(void);

@@ -33,7 +33,7 @@ struct game_t {
 	char names[4][17];
 	char state;
 	char move;
-	int trump_suit;
+	char trump_suit;
 	char got_players;
 	char dealer;
 	char lead;
@@ -87,6 +87,15 @@ extern void game_handle_table_click(char);
 #define LP_STATE_OPPONENT	6
 #define LP_STATE_CHOOSE		7
 #define LP_STATE_TRUMP		8
+
+/* LaPocha server states (for resync) */
+#define LP_SERVER_INIT		0
+#define LP_SERVER_WAIT		1
+#define LP_SERVER_NEW_HAND	2
+#define LP_SERVER_GET_TRUMP	3
+#define LP_SERVER_BIDDING	4
+#define LP_SERVER_PLAYING	5
+#define LP_SERVER_DONE		6
 
 /* LaPocha game events */
 #define LP_EVENT_LAUNCH      0
