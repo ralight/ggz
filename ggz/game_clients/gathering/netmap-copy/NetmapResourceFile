@@ -1,0 +1,60 @@
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+// The Netmap C++ Class Library                                           //
+//                                                                        //
+// Copyright (C) 2001 Josef Spillner                                      //
+// dr_maux@users.sourceforge.net                                          //
+// The MindX Open Source Project                                          //
+// http://mindx.sourceforge.net/development/netmap                        //
+//                                                                        //
+// Published under GNU GPL conditions                                     //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
+#ifndef NETMAP_RESOURCE_FILE
+#define NETMAP_RESOURCE_FILE
+
+// Netmap include files
+#include <NetmapResource>
+
+// C++ include files
+#include <iostream>
+
+/**
+	This is a class inherited from @ref NetmapResource. It handles the actual input from a map
+	and provides the Resource Manager with exact tile information.
+*/
+
+class NetmapResourceFile : public NetmapResource
+{
+	public:
+		/** Constructor */
+		NetmapResourceFile();
+
+		/** Destructor */
+		~NetmapResourceFile();
+
+		/** Open a map file locally. Such files do only contain raw data. */
+		virtual void openFile(char *filename);
+
+		/** Close an open file. */
+		virtual void closeFile();
+
+		/** Specify the x and y coordinates to read one tile. */
+		virtual Ntile *readTileAbsolute(Ncoord x, Ncoord y);
+
+		/** Read a tile relative to the specified Vtile. */
+		virtual Ntile *readTileRelative(Ncoord vx, Ncoord vy, Ncoord x, Ncoord y);
+
+		/** Specify the vx and vy coordinates to read one vtile. */
+		virtual Nvtile *readVtileAbsolute(Ncoord vx, Ncoord vy);
+
+	protected:
+		/** Number of tiles a vtile contains horizontally */
+		Ncoord m_vtile_width;
+
+		/** Number of tiles a vtile contains vertically */
+		Ncoord m_vtile_height;
+};
+
+#endif

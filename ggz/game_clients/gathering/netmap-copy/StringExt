@@ -1,0 +1,11 @@
+#include <string>
+#include <list>
+
+class StringExt : public string
+{
+	public:
+		StringExt();
+		~StringExt();
+		list<string> explode(string delimiter);
+		string operator=(const char assignment[]);
+};

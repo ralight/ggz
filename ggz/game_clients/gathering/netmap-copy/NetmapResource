@@ -1,0 +1,57 @@
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+// The Netmap C++ Class Library                                           //
+//                                                                        //
+// Copyright (C) 2001 Josef Spillner                                      //
+// dr_maux@users.sourceforge.net                                          //
+// The MindX Open Source Project                                          //
+// http://mindx.sourceforge.net/development/netmap                        //
+//                                                                        //
+// Published under GNU GPL conditions                                     //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
+#ifndef NETMAP_RESOURCE
+#define NETMAP_RESOURCE
+
+// Netmap include files
+#include <Netmap>
+
+/**
+	The Netmap Resource manager. Exactly one instance is needed within a game. It can be passed
+	to a @ref NetmapMap object for easy handling, but it may be used alone too - this is of course
+	not recommended and only useful in very few situations.
+
+	Many NetmapResource functions are virtual; they are reimplemented by e.g. @ref NetmapResourceFile.
+*/
+
+class NetmapResource
+{
+	public:
+		/** Constructor */
+		NetmapResource();
+
+		/** Destructor */
+		~NetmapResource();
+
+		/** Read one tile from the map. This is not very efficient. */
+		virtual Ntile *readTileAbsolute(Ncoord x, Ncoord y);
+
+		/** Alternative: Specify both block and tile coordinates, with the latter ones being relative. */
+		virtual Ntile *readTileRelative(Ncoord vx, Ncoord vy, Ncoord x, Ncoord y);
+
+		/** Read a vtile (block of tiles) from the map. This is the recommended way to go. */
+		virtual Nvtile *readVtileAbsolute(Ncoord vx, Ncoord vy);
+
+		/** Return the width of the map (to be set by a subclass on loading). */
+		Ncoord mapWidth();
+
+		/** Return the height of the map (to be set by a subclass on loading). */
+		Ncoord mapHeight();
+
+	protected:
+		/** The width and height of the loaded map */
+		Ncoord m_map_width, m_map_height;
+};
+
+#endif

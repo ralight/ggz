@@ -1,0 +1,74 @@
+////////////////////////////////////////////////////////////////////////////
+//                                                                        //
+// The Netmap C++ Class Library                                           //
+//                                                                        //
+// Copyright (C) 2001 Josef Spillner                                      //
+// dr_maux@users.sourceforge.net                                          //
+// The MindX Open Source Project                                          //
+// http://mindx.sourceforge.net/development/netmap                        //
+//                                                                        //
+// Published under GNU GPL conditions                                     //
+//                                                                        //
+////////////////////////////////////////////////////////////////////////////
+
+#ifndef N_VTILE
+#define N_VTILE
+
+// Netmap includes
+#include <Netmap>
+
+// C++ includes
+#include <vector>
+
+/**
+	This is a special data type which has been invented for performance reasons.
+	You can think of such a vtile (virtual tile) as a kind of mini-cache inside the
+	main cache (@ref NetmapMap). Normally this data type is only used internally by Netmap,
+	but you can use it too as it is fully functional.
+*/
+
+class Nvtile
+{
+	public:
+		/** Constructor */
+		Nvtile();
+
+		/** Destructor */
+		~Nvtile();
+
+		/** Specifies how much tiles this vtile can hold both horizontally and vertically. */
+		void setSize(Ncoord width, Ncoord height);
+
+		/** Returns the number of horizontal tiles in this vtile. */
+		Ncoord width();
+
+		/** Returns the number of vertical tiles in this vtile. */
+		Ncoord height();
+
+		/** Returns the position of this vtile on the map, x value. */
+		Ncoord x();
+
+		/** Returns the position of this vtile on the map, y value. */
+		Ncoord y();
+
+		/** Insert a tile value at the given position. */
+		void setTile(Ncoord x, Ncoord y, Ntile tile);
+
+		/** Return a tile value at the given position. */
+		Ntile *tile(Ncoord x, Ncoord y);
+
+		/** Set the position of the vtile */
+		void setPosition(Ncoord vx, Ncoord vy);
+
+	private:
+		/** List to hold all tiles within the vtile */
+		vector<Ntile> tilevec;
+
+		/** The vtile size variables */
+		Ncoord m_vtile_width, m_vtile_height;
+
+		/** The vtile position variables */
+		Ncoord m_vtile_x, m_vtile_y;
+};
+
+#endif
