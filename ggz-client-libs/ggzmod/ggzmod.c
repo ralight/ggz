@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6106 2004-07-15 18:06:13Z jdorje $
+ * $Id: ggzmod.c 6112 2004-07-16 17:31:15Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -588,6 +588,12 @@ void _ggzmod_handle_chat(GGZMod *ggzmod, char *player, char *chat_msg)
 	call_handler(ggzmod, GGZMOD_EVENT_CHAT, &chat);
 }
 
+void _ggzmod_handle_stats(GGZMod *ggzmod, GGZStat *player_stats,
+			  GGZStat *spectator_stats)
+{
+	/* TODO */
+}
+
 int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 {
 	if (!seat) return -1;
@@ -1037,6 +1043,21 @@ void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
 {
 	ggzmod->server_fd = fd;
 	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
+}
+  
+int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,
+		     GGZStat *spectator_stats)
+{
+	if (!player_stats
+	    || !ggzmod
+	    || (!spectator_stats && ggzmod->num_spectator_seats > 0)
+	    || ggzmod->type != GGZMOD_GGZ
+	    || ggzmod->state != GGZMOD_STATE_CREATED) {
+		return -1;
+	}
+
+	return _io_send_stats(ggzmod->fd, ggzmod->num_seats, player_stats,
+			      ggzmod->num_spectator_seats, spectator_stats);
 }
 
 int ggzmod_player_get_record(GGZSeat *seat,

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: io.c 6112 2004-07-16 17:31:15Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -49,6 +49,7 @@ static int _io_read_msg_player(GGZMod *ggzmod);
 static int _io_read_msg_seat(GGZMod *ggzmod);
 static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
 static int _io_read_msg_chat(GGZMod *ggzmod);
+static int _io_read_stats(GGZMod *ggzmod);
 
 static int _io_read_msg_state(GGZMod *ggzmod);
 static int _io_read_req_stand(GGZMod *ggzmod);
@@ -131,6 +132,39 @@ int _io_send_msg_chat(int fd, const char *player, const char *chat_msg)
 	return 0;
 }
 
+int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
+		   int num_spectators, GGZStat *spectator_stats)
+{
+	int i;
+	GGZStat *stat;
+
+	if (ggz_write_int(fd, MSG_GAME_STATS) < 0)
+		return -1;
+
+	for (i = 0; i < num_players + num_spectators; i++) {
+		if (i >= num_players) {
+			stat = &spectator_stats[i - num_players];
+		} else {
+			stat = &player_stats[i];
+		}
+
+		if (ggz_write_int(fd, stat->have_record) < 0
+		    || ggz_write_int(fd, stat->have_rating) < 0
+		    || ggz_write_int(fd, stat->have_ranking) < 0
+		    || ggz_write_int(fd, stat->have_highscore) < 0
+		    || ggz_write_int(fd, stat->wins) < 0
+		    || ggz_write_int(fd, stat->losses) < 0
+		    || ggz_write_int(fd, stat->ties) < 0
+		    || ggz_write_int(fd, stat->forfeits) < 0
+		    || ggz_write_int(fd, stat->rating) < 0
+		    || ggz_write_int(fd, stat->ranking) < 0
+		    || ggz_write_int(fd, stat->highscore) < 0) {
+			return -1;
+		}
+	}
+	return 0;
+}
+
 int _io_send_req_stand(int fd)
 {
 	if (ggz_write_int(fd, REQ_STAND) < 0)
@@ -201,6 +235,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_msg_spectator_seat(ggzmod);
 		case MSG_GAME_CHAT:
 			return _io_read_msg_chat(ggzmod);
+		case MSG_GAME_STATS:
+			return _io_read_stats(ggzmod);
 		}
 	} else {
 		switch ((TableToControl)op) {
@@ -399,5 +435,39 @@ static int _io_read_msg_chat(GGZMod *ggzmod)
 
 	ggz_free(player);
 	ggz_free(chat);
+	return 0;
+}
+
+static int _io_read_stats(GGZMod *ggzmod)
+{
+	int players = ggzmod->num_seats;
+	int spectators = ggzmod->num_spectator_seats;
+	GGZStat player_stats[players], *stat, spectator_stats[spectators];
+	int i;
+
+	for (i = 0; i < players + spectators; i++) {
+		if (i >= players) {
+			stat = &spectator_stats[i - players];
+		} else {
+			stat = &player_stats[i];
+		}
+
+		if (ggz_read_int(ggzmod->fd, &stat->have_record) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->have_rating) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->have_ranking) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->have_highscore) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->wins) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->losses) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->ties) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->forfeits) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->rating) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->ranking) < 0
+		    || ggz_read_int(ggzmod->fd, &stat->highscore) < 0) {
+			return -1;
+		}
+	}
+
+	  _ggzmod_handle_stats(ggzmod, player_stats, spectator_stats);
+
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: io.h 6112 2004-07-16 17:31:15Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -40,6 +40,8 @@ int _io_send_player(int fd, const char *name, int is_spectator, int seat_num);
 int _io_send_seat(int fd, GGZSeat *seat);
 int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat);
 int _io_send_msg_chat(int fd, const char *player, const char *chat_msg);
+int _io_send_stats(int fd, int num_players, GGZStat *player_stats,
+		   int num_spectators, GGZStat *spectator_stats);
 
 int _io_send_req_stand(int fd);
 int _io_send_req_sit(int fd, int seat_num);
