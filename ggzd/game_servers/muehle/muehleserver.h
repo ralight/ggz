@@ -39,6 +39,7 @@ class MuehleServer : public GGZGameServer {
 		QWeb* m_web;
 		MuehleNet* m_net;
 		int m_players;
+		int m_valid[2];
 };
 
 #endif

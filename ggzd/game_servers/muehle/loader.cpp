@@ -31,12 +31,13 @@ QWeb *MuehleLoader::loadVariant ( const char *file ) {
 	std::fstream f;
 	std::string s;
 	QWeb *web;
+	char buffer[ 256 ];
 
 	s = GGZDDATADIR;
 	s.append ( "/muehle/" );
 	s.append ( file );
 
-	f.open( s.data(), std::ios::in );
+	f.open ( s.data(), std::ios::in );
 	if ( !f.is_open () ) {
 		return NULL;
 	}
@@ -45,10 +46,12 @@ QWeb *MuehleLoader::loadVariant ( const char *file ) {
 
 	// Format: "(x1, y1), (x2, y2)\n"
 	while ( !f.eof() ) {
-		f >> s;
+		f.getline ( buffer, sizeof ( buffer ) );
+		s = buffer;
+
 		std::cout << "Load: " << s << std::endl;
 	}
-	f.close();
+	f.close ();
 
 	return web;
 }

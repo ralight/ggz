@@ -18,6 +18,9 @@
 // Muehle includes
 #include "net.h"
 
+// GGZ includes
+#include <ggz.h>
+
 // System includes
 #include <unistd.h>
 #include <cstring>
@@ -29,6 +32,7 @@ MuehleNet::~MuehleNet () {
 }
 
 void MuehleNet::write ( int fd, const char* s ) {
-	::write(fd, s, strlen(s));
+	//::write(fd, s, strlen(s));
+	ggz_write_string ( fd, s );
 }
 

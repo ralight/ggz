@@ -34,6 +34,8 @@ MuehleServer::MuehleServer ()
 	m_net = new MuehleNet ();
 	m_web = MuehleLoader::loadVariant ( "classic" );
 	m_players = 0;
+	m_valid[0] = 1;
+	m_valid[1] = 1;
 }
 
 // Destructor
@@ -85,15 +87,17 @@ void MuehleServer::dataEvent ( int player ) {
 	if ( ret )
 		delete this;
 
-	if ( data[strlen ( data ) - 1 ] == '\n')
-		data[strlen ( data ) - 1] = 0;
+	if ( data[ strlen ( data ) - 1 ] == '\n')
+		data[ strlen ( data ) - 1 ] = 0;
 
 	std::cout << "DEBUG: " << data << std::endl;
 
-	if ( m_players == 2 )
+	if ( ( m_players == 2 ) && ( !m_valid[ 0 ] ) && ( !m_valid[ 1 ] ) )
 		m_net->write ( fd ( !player ), data);
-	else
+	else if ( !m_valid[ player ] )
 		m_net->write ( fd (player), "invalid.\n");
+
+	m_valid[ player ] = 0;
 }
 
 // Error handling event
