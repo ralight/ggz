@@ -160,7 +160,7 @@ int ZoneGGZModServer::game_send_players()
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		fd = seat.fd;
-		if(seat.type = GGZ_SEAT_PLAYER)
+		if(seat.type == GGZ_SEAT_PLAYER)
 		{
 			m_numplayers++;
 			ZONEDEBUG("seat number: %i (step %i) => %i\n", fd, i, m_numplayers);
@@ -198,7 +198,7 @@ int ZoneGGZModServer::game_send_players()
 		m_ready = 1;
 		for(i = 0; i < m_numplayers; i++)
 		{
-			GGZSeat seat2;
+			GGZSeat seat2 = ggzdmod_get_seat(ggzdmod, i);
 			if(ggz_write_int(fd, seat2.type) < 0)
 			{
 				ZONEERROR("couldn't send seat assignments\n");
@@ -345,6 +345,6 @@ void ZoneGGZModServer::hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* da
 // Callback for game data
 void ZoneGGZModServer::hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void* data)
 {
-	//self->game_input();
+	self->slotZoneInput(ggzdmod_get_seat(ggzdmod, *(int*)data).fd, 0);
 }
 

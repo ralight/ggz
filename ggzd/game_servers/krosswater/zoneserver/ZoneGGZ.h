@@ -18,11 +18,19 @@
 #ifndef ZONE_GGZ_H
 #define ZONE_GGZ_H
 
-#define ZONE_SEAT_OPEN -1
-#define ZONE_SEAT_BOT -2
+// System includes
+#include <stdio.h>
 
-#define ZONEDEBUG(fmt, args...) printf("ZONE:" fmt, ##args);
-#define ZONEERROR(fmt, args...) printf("# ZONE ERROR:" fmt, ##args);
+// GGZ includes
+#include <ggz_common.h>
+
+#define ZONE_SEAT_OPEN GGZ_SEAT_OPEN
+#define ZONE_SEAT_BOT GGZ_SEAT_BOT
+
+//#define ZONEDEBUG(fmt, args...) printf("ZONE: " fmt, ##args);
+//#define ZONEERROR(fmt, args...) printf("# ZONE ERROR: " fmt, ##args);
+#define ZONEDEBUG
+#define ZONEERROR
 
 class ZoneGGZ
 {
