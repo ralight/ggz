@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 173 $</revnumber>
-	<date>$Date: 2000-03-07 16:18:50 -0800 (Tue, 07 Mar 2000) $</date>
+	<revnumber>$Revision: 180 $</revnumber>
+	<date>$Date: 2000-03-08 20:09:27 -0800 (Wed, 08 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -163,7 +163,9 @@
 	  MSG_SERVER_FULL
 
 	  MSG_MOTD
-	    str: message of the day (useful or otherwise information from server)
+            int: number of MOTD lines
+            sequence of
+	      str: message of the day line
 
 	  MSG_CHAT
             str: name of user who sent chat
@@ -528,7 +530,8 @@
                fd: a file descriptor passed via sendmsg() along with a
                single byte of dummy data
                </para>
-	  </itemizedlist>
+	    </listitem>
+	</itemizedlist>
       </para>
 	
 	<para>
@@ -717,8 +720,80 @@
   
       <section id="motd"><title>MOTD System</title>
 	<para>
-        This section documents the MOTD facility written by rich.
+	  The message of the day is read at initialization time from a file
+	  pointed to by the MOTD configuration file option.  The file can
+	  consist of up to 80 lines (this is configurable at build via
+	  MAX_MOTD_LINES).
 	</para>
+
+	<para>
+	  The message of the day file can contain % specifiers which are
+	  replaced by the server before sending to the client.  The following
+	  codes are supported:
+	  <itemizedlist>
+	    <listitem>
+	      <para>
+		%a - Server administrator's name
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%d - Current date on server
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%e - Server administrator's email address
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%g - Current number of game tables
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%G - Current number of game tables with free seats
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%h - Server's hostname
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%o - Server's OS name
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%p - Port number for this server
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%t - Current local time on server
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%u - Current server uptime statistic
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%U - Current numbers of users on system
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		%v - Version of running server
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+
       </section>
   
       <section id="stats"><title>Player Statistics</title>
