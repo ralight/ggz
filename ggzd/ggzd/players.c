@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5076 2002-10-28 02:58:08Z jdorje $
+ * $Id: players.c 5275 2002-12-07 06:13:17Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -360,6 +360,18 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		return GGZ_REQ_FAIL;
 	}
 
+	/* Currently a <LAUNCH> implies an immediate <JOIN> as well.  So you
+	   need to have a connection already established. */
+	if (player->game_fd < 0) {
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tries to launch table without connection",
+			player->name);
+		if (net_send_table_launch(player->client->net,
+					  E_NO_CHANNEL) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
 	/* Do actual launch of table */
 	status = table_launch(table, player->name);
 	
@@ -599,7 +611,11 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 		status = E_IN_TRANSIT;
 	else if (perms_check(player, PERMS_JOIN_TABLE) == PERMS_DENY)
 		status = E_NO_PERMISSION;
-	else /* Send a join event to the table */
+	else if (player->game_fd < 0) {
+		/* You have to establish the channel (direct connection)
+		   BEFORE sending the <JOIN> request. */
+		status = E_NO_CHANNEL;
+	} else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN,
 					player->name,
 					table_index, seat_num,
