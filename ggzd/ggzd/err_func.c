@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 3296 2002-02-10 06:30:07Z rgade $
+ * $Id: err_func.c 3604 2002-03-20 05:24:35Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -415,12 +415,14 @@ void log_generate_update(void)
 
 	pthread_mutex_unlock(&update_info.mut);
 
+#ifdef DEBUG
 	if(log_info.verbose_updates) {
 		log_msg(GGZ_LOG_UPDATE, "UPDATE Uptime=%d sec", uptime);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE There are %d anonymous users and %d registered users online", anon, regd);
 		log_msg(GGZ_LOG_UPDATE, "UPDATE Since the last update, %d users have logged in, %d logged out", login, logout);
 		
 	} else
+#endif
 		log_msg(GGZ_LOG_UPDATE, "UPDATE %d %d %d %d %d",
 			uptime, anon, regd, login, logout);
 }

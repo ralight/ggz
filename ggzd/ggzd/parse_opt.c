@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3409 2002-02-18 07:55:49Z jdorje $
+ * $Id: parse_opt.c 3604 2002-03-20 05:24:35Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -56,7 +56,9 @@ static void parse_room(char *, char *);
 static int parse_gselect(const struct dirent *);
 static int parse_rselect(const struct dirent *);
 static unsigned parse_log_types(int, char **);
+#ifdef DEBUG
 static unsigned parse_dbg_types(int, char **);
+#endif
 
 /* Log types name lookup tables*/
 struct LogTypes {
@@ -72,6 +74,8 @@ static const struct LogTypes log_types[] = {
 	{ "tables",		GGZ_LOG_TABLES }
 };
 static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
+
+#ifdef DEBUG
 static struct LogTypes dbg_types[] = {
 	{ "all",		GGZ_DBG_ALL },
 	{ "configuration",	GGZ_DBG_CONFIGURATION },
@@ -88,6 +92,7 @@ static struct LogTypes dbg_types[] = {
 	{ "xml",                GGZ_DBG_XML}
 };
 static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
+#endif
 
 /* Game and room lists */
 static int g_count = 0;
@@ -326,7 +331,9 @@ static void get_config_options(int ch)
 		log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
+#ifdef DEBUG
 	log_info.verbose_updates = ggz_conf_read_int(ch, "Logs", "VerboseUpdates", 1);
+#endif
 	intval = ggz_conf_read_int(ch, "Logs", "UpdateInterval", 600);
 	log_update_set_interval(intval);
 
@@ -756,6 +763,7 @@ static unsigned parse_log_types(int num, char **entry)
 }
 
 
+#ifdef DEBUG
 /* Parse the debugging types into an unsigned int bitfield */
 static unsigned parse_dbg_types(int num, char **entry)
 {
@@ -781,3 +789,4 @@ static unsigned parse_dbg_types(int num, char **entry)
 	ggz_free(entry);
 	return types;
 }
+#endif
