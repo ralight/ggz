@@ -132,8 +132,10 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	char buf[4096];
 	TableInfo tmp_table;
 
-        if (FAIL(es_read_int(source, &op)))
-                return;
+        if (FAIL(es_read_int(source, &op))) {
+	        disconnect(NULL, NULL);
+	        return;
+	}
 	
 	switch (op) {
 	case MSG_SERVER_ID:
