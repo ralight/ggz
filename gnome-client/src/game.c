@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5004 2002-10-23 00:51:53Z jzaun $
+ * $Id: game.c 5005 2002-10-23 00:59:25Z jzaun $
  *
  * Functions for handling game events
  *
@@ -30,6 +30,7 @@
 #include <gnome.h>
 #include <ggz.h>
 #include <ggzcore.h>
+#include "game.h"
 
 
 /* Hooks for game events */
