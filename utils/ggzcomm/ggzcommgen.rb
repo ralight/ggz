@@ -157,8 +157,14 @@ class GGZCommEvent
 					seq += 1
 					x = x + indent + "\tif("
 					@evallist.each do |name, result, type|
-						if type == "="
+						if type == "equal"
 							type = "=="
+						elsif type == "unequal"
+							type = "!="
+						elsif type == "smaller"
+							type = "<"
+						elsif type == "larger"
+							type = ">"
 						end
 						x = x + name + " " + type + " " + result
 					end
@@ -278,7 +284,7 @@ class GGZComm
 	def handle_event_condition(data)
 		xname = 0
 		xresult = 0
-		xtype = '='
+		xtype = "equal"
 		data.each do |key, value|
 			if @verbose then
 				puts "eval:" + key + "=" + value
@@ -295,6 +301,9 @@ class GGZComm
 			end
 		end
 		if xname && xresult
+			if xtype != "equal" and xtype != "smaller" and xtype != "larger" and xtype != "unequal" then
+				error "Tag 'condition' does not know operator type '" + xtype + "'."
+			end
 			@evallist.push [xname, xresult, xtype]
 		else
 			error "Tag 'condition' requires both 'name' and 'result' as attribute."
