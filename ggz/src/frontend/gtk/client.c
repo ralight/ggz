@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6417 2004-11-18 04:03:01Z jdorje $
+ * $Id: client.c 6443 2004-12-11 13:52:20Z oojah $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1402,6 +1402,7 @@ create_win_main (void)
   gtk_widget_ref (messagebar);
   g_object_set_data_full(G_OBJECT (win_main), "messagebar", messagebar,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (messagebar), FALSE);
   gtk_widget_show (messagebar);
   gtk_box_pack_start (GTK_BOX (status_box), messagebar, TRUE, TRUE, 0);
 
@@ -1409,15 +1410,18 @@ create_win_main (void)
   gtk_widget_ref (statusbar);
   g_object_set_data_full(G_OBJECT (win_main), "statusbar", statusbar,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (statusbar), FALSE);
+  gtk_widget_set_size_request(GTK_WIDGET (statusbar), 150, -1);
   gtk_widget_show (statusbar);
-  gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (status_box), statusbar, FALSE, TRUE, 0);
 
   statebar = gtk_statusbar_new ();
   gtk_widget_ref (statebar);
   g_object_set_data_full(G_OBJECT (win_main), "statebar", statebar,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_size_request(GTK_WIDGET (statebar), 150, -1);
   gtk_widget_show (statebar);
-  gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (status_box), statebar, FALSE, TRUE, 0);
 
   g_signal_connect (GTK_OBJECT (win_main), "realize",
                       GTK_SIGNAL_FUNC (client_realize),
