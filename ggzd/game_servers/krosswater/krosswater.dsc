@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
 Description = Try to cross the water first.
-Homepage = http://mindx.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/krosswater/
 Name = Krosswater
 Version = 0.0.4
 
@@ -16,3 +16,4 @@ Version = 0.0.4
 AllowLeave = 1
 BotsAllowed = 0 1 2 3
 PlayersAllowed = 2 3 4
+

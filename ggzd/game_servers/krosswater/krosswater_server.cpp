@@ -1,3 +1,20 @@
+// Krosswater - Server for the Krosswater game
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 // Header file
 #include "krosswater_server.h"
 
@@ -5,13 +22,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <iostream>
+
+// Stackpath includes
+#include "cwpathitem.h"
 
 // Zone includes
-#include <ZoneProtocols.h>
-#include <easysock.h>
-#include <ZoneGGZModGGZ.h>
+#include "ZoneGGZ.h"
+#include <ggzdmod.h>
 
-#include <iostream>
+// Easysock includes
+#include <easysock.h>
 
 // Gives a console output of the map
 void printpath(int width, int height, int **field)
@@ -29,6 +50,7 @@ void printpath(int width, int height, int **field)
 	std::cout << "\e[0m\e[39m";
 }
 
+// Constructor: setup game and enter main loop
 KrosswaterServer::KrosswaterServer()
 : ZoneGGZModServer()
 {
@@ -42,6 +64,7 @@ KrosswaterServer::KrosswaterServer()
 	zoneMainLoop();
 }
 
+// Destructor: free allocated memory
 KrosswaterServer::~KrosswaterServer()
 {
 	if(map)
@@ -54,6 +77,7 @@ KrosswaterServer::~KrosswaterServer()
 	if(players) free(players);
 }
 
+// Handle input from game client
 int KrosswaterServer::slotZoneInput(int fd, int i)
 {
 	char string[256];
@@ -94,6 +118,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	return status;
 }
 
+// Read a move from a client
 void KrosswaterServer::getMove()
 {
 	int fromx, fromy, tox, toy;
@@ -145,6 +170,7 @@ void KrosswaterServer::getMove()
 	}
 }
 
+// Broadcast map to joining players
 void KrosswaterServer::sendMap()
 {
 	// Create the map and pass it to Stackpath
@@ -213,6 +239,7 @@ void KrosswaterServer::sendMap()
 		}
 }
 
+// Handle AI player
 void KrosswaterServer::slotZoneAI()
 {
 	int fromx, fromy, tox, toy;
@@ -240,6 +267,7 @@ void KrosswaterServer::slotZoneAI()
 	else zoneNextTurn();
 }
 
+// Accept a move and broadcast it
 int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 {
 	int yl, yr;
@@ -251,13 +279,16 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 	// broadcast changes here!
 	for(int i = 0; i < m_numplayers; i++)
-		if((ZoneGGZModGGZ::ggz_seats[i].assign == -5) && (i != zoneTurn()))
-	  		if((es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, proto_move_broadcast) < 0)
-			|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, fromx) < 0)
-			|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, fromy) < 0)
-			|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, tox) < 0)
-			|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, toy) < 0))
+	{
+		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+		if((seat.type == GGZ_SEAT_PLAYER) && (i != zoneTurn()))
+	  		if((es_write_int(seat.fd, proto_move_broadcast) < 0)
+			|| (es_write_int(seat.fd, fromx) < 0)
+			|| (es_write_int(seat.fd, fromy) < 0)
+			|| (es_write_int(seat.fd, tox) < 0)
+			|| (es_write_int(seat.fd, toy) < 0))
 				ZONEERROR("couldn't send move broadcast!\n");
+	}
 
 
 	ZONEDEBUG("path >>> setValue\n");
@@ -279,30 +310,40 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 		// prepare for backtrace broadcast
 		for(int i = 0; i < m_numplayers; i++)
-			if(ZoneGGZModGGZ::ggz_seats[i].assign == -5)
-	  			if((es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, proto_map_backtrace) < 0)
-				|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, zoneTurn()) < 0))
+		{
+			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+			if(seat.type == GGZ_SEAT_PLAYER)
+	  			if((es_write_int(seat.fd, proto_map_backtrace) < 0)
+				|| (es_write_int(seat.fd, zoneTurn()) < 0))
 					ZONEERROR("couldn't send backtrace control\n");
+		}
+
 		do
 		{
 			// send everyone the good message
 			cout << backtrace->x() << "," << backtrace->y() << endl;
 			for(int i = 0; i < m_numplayers; i++)
-				if(ZoneGGZModGGZ::ggz_seats[i].assign == -5)
+			{
+				GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+				if(seat.type == GGZ_SEAT_PLAYER)
 				{
-	  				if((es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, backtrace->x()) < 0)
-	  				|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, backtrace->y()) < 0))
+	  				if((es_write_int(seat.fd, backtrace->x()) < 0)
+	  				|| (es_write_int(seat.fd, backtrace->y()) < 0))
 						ZONEERROR("couldn't send part of backtrace\n");
 				}
+			}
 			backtrace = backtrace->parent();
 		}
 		while(backtrace->parent() != NULL);
 
 		// mark the end
 		for(int i = 0; i < m_numplayers; i++)
-			if(ZoneGGZModGGZ::ggz_seats[i].assign == -5)
-	  			if(es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, -1) < 0)
+		{
+			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+			if(seat.type == GGZ_SEAT_PLAYER)
+	  			if(es_write_int(seat.fd, -1) < 0)
 					ZONEERROR("couldn't send backtrace control\n");
+		}
 		ret = 1;
 	}
 	else
@@ -317,10 +358,14 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	if(ret)
 	{
 		for(int i = 0; i < m_numplayers; i++)
-			if(ZoneGGZModGGZ::ggz_seats[i].assign == -5)
-	  			if(es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, ZoneGGZ::gameover) < 0)
-					ZONEERROR("couldn't send ZoneGGZ::invalid\n");
+		{
+			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+			if(seat.type == GGZ_SEAT_PLAYER)
+	  			if(es_write_int(seat.fd, ZoneGGZ::over) < 0)
+					ZONEERROR("couldn't send ZoneGGZ::over\n");
+		}
 	}
 
 	return ret;
 }
+
