@@ -63,10 +63,11 @@ Gurucore *guru_module_init()
 	printf("OK\n");
 
 	ret = ggzcore_confio_read_list(handler, "guru", "modules", &count, &list);
-	if(ret < 0) return NULL;
-
-	for(i = 0; i < count; i++)
-		guru_module_add(list[i]);
+	if(ret >= 0)
+	{
+		for(i = 0; i < count; i++)
+			guru_module_add(list[i]);
+	}
 
 	return core;
 }
