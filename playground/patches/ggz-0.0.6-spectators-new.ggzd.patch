@@ -1,0 +1,648 @@
+Index: ggzdmod/elo.h
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/elo.h,v
+retrieving revision 1.2
+diff -u -3 -p -r1.2 elo.h
+--- ggzdmod/elo.h	7 May 2002 16:51:35 -0000	1.2
++++ ggzdmod/elo.h	15 May 2002 21:01:42 -0000
+@@ -23,7 +23,7 @@
+  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+  */
+ 
+-/** Recaulate player rankings based on an ELO system, given a set of teams
++/** Recalculate player rankings based on an ELO system, given a set of teams
+  *  with pre-averaged rankings.
+  *
+  *  @param num_players The number of players involved.
+Index: ggzdmod/ggzdmod.c
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/ggzdmod.c,v
+retrieving revision 1.84
+diff -u -3 -p -r1.84 ggzdmod.c
+--- ggzdmod/ggzdmod.c	5 May 2002 00:22:08 -0000	1.84
++++ ggzdmod/ggzdmod.c	15 May 2002 21:01:43 -0000
+@@ -64,6 +64,7 @@ static void call_handler(GGZdMod *ggzdmo
+ static int get_fd_max(GGZdMod * ggzdmod);
+ static fd_set get_active_fd_set(GGZdMod * ggzdmod);
+ static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
++static void _ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators);
+ static int strings_differ(char *s1, char *s2);
+ static void set_state(GGZdMod * ggzdmod, GGZdModState state);
+ static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
+@@ -76,6 +77,12 @@ static int seat_compare(GGZSeat *a, GGZS
+ static int seat_find_player(GGZSeat *a, GGZSeat *b);
+ static void seat_free(GGZSeat *seat);
+ 
++/* Functions for manipulating spectators */
++static GGZSpectator* spectator_copy(GGZSpectator *orig);
++static int spectator_compare(GGZSpectator *a, GGZSpectator *b);
++static int spectator_find_player(GGZSpectator *a, GGZSpectator *b);
++static void spectator_free(GGZSpectator *spectator);
++
+ /* Debugging function (see also ggzdmod_check) */
+ static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
+ 
+@@ -179,6 +186,12 @@ GGZdMod *ggzdmod_new(GGZdModType type)
+ 					 (ggzEntryCreate)seat_copy,
+ 					 (ggzEntryDestroy)seat_free,
+ 					 GGZ_LIST_REPLACE_DUPS);
++	ggzdmod->spectators = ggz_list_create((ggzEntryCompare)spectator_compare,
++					(ggzEntryCreate)spectator_copy,
++					(ggzEntryDestroy)spectator_free,
++					GGZ_LIST_REPLACE_DUPS);
++	ggzdmod->num_seats = 0;
++	ggzdmod->num_spectators = 0;
+ 
+ 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
+ 		ggzdmod->handlers[i] = NULL;
+@@ -208,6 +221,8 @@ void ggzdmod_free(GGZdMod * ggzdmod)
+ 	
+ 	ggz_list_free(ggzdmod->seats);
+ 	ggzdmod->num_seats = 0;
++	ggz_list_free(ggzdmod->spectators);
++	ggzdmod->num_spectators = 0;
+ 
+ 	ggzdmod->type = -1;
+ 
+@@ -269,6 +284,16 @@ int ggzdmod_get_num_seats(GGZdMod * ggzd
+ }
+ 
+ 
++int ggzdmod_get_num_spectators(GGZdMod * ggzdmod)
++{
++	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd < 0) {
++		return -1;
++	}
++
++	return ggzdmod->num_spectators;
++}
++
++
+ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
+ {
+ 	GGZSeat seat = {num, GGZ_SEAT_NONE, NULL, -1};
+@@ -283,6 +308,19 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdm
+ }
+ 
+ 
++GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
++{
++	GGZSpectator spectator = {num, NULL, -1};
++	GGZListEntry *entry;
++
++	if (CHECK_GGZDMOD(ggzdmod) && num >= 0 && num < ggzdmod->num_spectators) {
++		if ((entry = ggz_list_search(ggzdmod->spectators, &spectator)))
++			spectator = *(GGZSpectator*)ggz_list_get_data(entry);
++	}
++
++	return spectator;
++}
++
+ void* ggzdmod_get_gamedata(GGZdMod * ggzdmod)
+ {
+ 	if (!CHECK_GGZDMOD(ggzdmod)) {
+@@ -318,6 +356,30 @@ static void _ggzdmod_set_num_seats(GGZdM
+ }
+ 
+ 
++static void _ggzdmod_set_num_spectators(GGZdMod *ggzdmod, int num_spectators)
++{
++	GGZSpectator spectator;
++	int i, old_num;
++
++	old_num = ggzdmod->num_spectators;
++	
++	/* See the appropriate seat function */
++	if (num_spectators > old_num) {
++		for (i = old_num; i < num_spectators; i++) {
++			spectator.num = i;
++			spectator.name = NULL;
++			spectator.fd = -1;
++			ggz_list_insert(ggzdmod->spectators, &spectator);
++		}
++	}
++	else if (num_spectators < old_num) {
++		/* FIXME: delete extra spectators */
++	}
++	
++	ggzdmod->num_spectators = num_spectators;
++}
++
++
+ void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
+ {
+ 	/* Check parameters */
+@@ -735,7 +797,7 @@ static int send_game_launch(GGZdMod * gg
+ 	GGZSeat *seat;
+ 		
+ 
+-	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats) < 0) {
++	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats, ggzdmod->num_spectators) < 0) {
+ 		_ggzdmod_error(ggzdmod, "Error writing to game");
+ 		return -1;
+ 	}
+@@ -970,6 +1032,24 @@ void _ggzdmod_handle_seat_response(GGZdM
+ }
+ 
+ 
++void _ggzdmod_handle_spectator_join_response(GGZdMod * ggzdmod, char status)
++{
++	if (status == 0)
++		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, NULL);
++	else
++		_ggzdmod_error(ggzdmod, "Spectator failed to join");
++}
++
++
++void _ggzdmod_handle_spectator_leave_response(GGZdMod * ggzdmod, char status)
++{
++	if (status == 0)
++		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, NULL);
++	else
++		_ggzdmod_error(ggzdmod, "Spectator failed to leave");
++}
++
++
+ void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
+ {
+ 	_io_respond_state(ggzdmod->fd);
+@@ -1011,7 +1091,7 @@ void _ggzdmod_handle_log(GGZdMod * ggzdm
+ 
+ 
+ /* Game-side event: launch event received from ggzd */
+-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats)
++void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spectators)
+ {
+ #if 0
+ 	int bots = 0;
+@@ -1021,15 +1101,16 @@ void _ggzdmod_handle_launch_begin(GGZdMo
+ 	randomize_names(bot_names, rand_bot_names, NUM_BOT_NAMES);
+ #endif
+ 
+-	if (num_seats <= 0) {
+-		_ggzdmod_error(ggzdmod, "Error: %d seats received from GGZ");
++	if ((num_seats <= 0) || (num_spectators <= 0)) {
++		_ggzdmod_error(ggzdmod, "Error: < 0 seats or < 0 spectators received from GGZ");
+ 		ggzdmod_log(ggzdmod,
+-			    "GGZDMOD: ERROR: %d seats sent upon launch.",
+-			    num_seats);
++			    "GGZDMOD: ERROR: %d seats, %d spectators sent upon launch.",
++			    num_seats, num_spectators);
+ 		return;
+ 	}
+ 
+ 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
++	_ggzdmod_set_num_spectators(ggzdmod, num_spectators);
+ }
+ 
+ 
+@@ -1100,17 +1181,17 @@ void _ggzdmod_handle_join(GGZdMod * ggzd
+ 	}
+ 	old_seat = (GGZSeat*)ggz_list_get_data(entry);
+ 	old_seat = seat_copy(old_seat);
+-      
++
+ 	/* Place the new seat into the list */
+ 	ggz_list_insert(ggzdmod->seats, &seat);
+ 	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+-	seat.name, seat.fd, seat.num);
++		seat.name, seat.fd, seat.num);
+ 	
+ 	/* Invoke the handler.  Most games will want to change their
+ 	   status to PLAYING at this point, but we leave that entirely
+ 	   up to them (via ggzdmod_set_state()). */
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, old_seat);
+-      
++
+ 	/* Free old_seat */
+ 	seat_free(old_seat);
+ 
+@@ -1139,12 +1220,12 @@ void _ggzdmod_handle_leave(GGZdMod * ggz
+ 		               "non-existant player tried to leave.");
+ 		return;
+ 	}
+-              
++
+ 	status = 0;
+ 	seat = *(GGZSeat*)ggz_list_get_data(entry);
+ 	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
+ 	           seat.name, seat.num);
+-              
++
+ 	/* Copy seat to old_seat. */
+ 	old_seat = seat_copy(&seat);
+ 
+@@ -1174,7 +1255,6 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+ 	GGZSeat *old_seat;
+ 	GGZListEntry *entry;
+ 
+-
+ 	/* Copy current seat to old_seat */
+ 	entry = ggz_list_search(ggzdmod->seats, &seat);
+ 	if (!entry) {
+@@ -1185,15 +1265,15 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+ 	}
+ 	old_seat = (GGZSeat*)ggz_list_get_data(entry);
+ 	old_seat = seat_copy(old_seat);
+-      
++
+ 	/* Place the new seat into the list */
+ 	ggz_list_insert(ggzdmod->seats, &seat);
+ 	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+ 	            seat.name, seat.fd, seat.num);
+-              
++
+ 	/* Invoke the handler */
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, old_seat);
+-      
++
+ 	/* Free old_seat */
+ 	seat_free(old_seat);
+  
+@@ -1201,6 +1281,83 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+ 		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
+ }
+ 
++/* game-side event: spectator join event received from ggzd.  */
++void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator)
++{
++	GGZSpectator *old_spectator;
++	GGZListEntry *entry;
++
++	/* Copy current spectator to old_spectator */
++	entry = ggz_list_search(ggzdmod->spectators, &spectator);
++	if (!entry) {
++		_ggzdmod_error(ggzdmod,
++		               "GGZDMOD: Error: "
++		               "non-existant spectator tried to join.");
++		return;
++	}
++	old_spectator = (GGZSpectator*)ggz_list_get_data(entry);
++	old_spectator = spectator_copy(old_spectator);
++
++	/* Place the new spectator into the list */
++	ggz_list_insert(ggzdmod->spectators, &spectator);
++	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in spectator %d",
++		spectator.name, spectator.fd, spectator.num);
++	
++	/* Invoke the handler.  */
++	call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, old_spectator);
++
++	/* Free old_spectator */
++	spectator_free(old_spectator);
++
++	/* Send response to GGZ */
++	if (_io_respond_join(ggzdmod->fd) < 0)
++		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
++}
++
++
++/* game-side event: spectator leave received from ggzd */
++void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name)
++{
++	char status = -1;
++	GGZListEntry *entry;
++	GGZSpectator spectator;
++	GGZSpectator *old_seat;
++
++	/* Set spectator name, and see if we find anybody who matches */
++	spectator.name = name;
++	entry = ggz_list_search_alt(ggzdmod->spectators, &spectator,
++		(ggzEntryCompare)spectator_find_player);
++
++	if (!entry) {
++		_ggzdmod_error(ggzdmod,
++		               "GGZDMOD: Error: "
++		               "non-existant spectator tried to leave.");
++		return;
++	}
++
++	status = 0;
++	spectator = *(GGZSpectator*)ggz_list_get_data(entry);
++	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
++	           spectator.name, spectator.num);
++
++	/* Copy seat to old_seat. */
++	old_seat = spectator_copy(&spectator);
++
++	/* Reset seat to open state, and reinsert into list */
++	spectator.fd = -1;
++	spectator.name = NULL;
++	ggz_list_insert(ggzdmod->spectators, &spectator);
++
++	/* Invoke the handler. */
++	call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, old_seat);
++
++	/* Delete old_seat */
++	spectator_free(old_seat);
++
++	if (_io_respond_leave(ggzdmod->fd, status) < 0)
++		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
++}
++
+ 
+ /* game-side event: game state response received from ggzd */
+ void _ggzdmod_handle_state_response(GGZdMod * ggzdmod)
+@@ -1265,6 +1422,50 @@ static void seat_print(GGZdMod * ggzdmod
+ 	char *type = ggz_seattype_to_string(seat->type);
+ 	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
+ 		    seat->num, type, seat->name, seat->fd);
++}
++
++
++/* Create a new copy of a spectator object */
++static GGZSpectator* spectator_copy(GGZSpectator *orig)
++{
++	GGZSpectator *spectator;
++
++	spectator = ggz_malloc(sizeof(GGZSpectator));
++
++	spectator->num = orig->num;
++	spectator->fd = orig->fd;
++	
++	/* The name may be NULL if unknown. */
++	spectator->name = orig->name ? ggz_strdup(orig->name) : NULL;
++	
++	return spectator;
++}
++
++
++static int spectator_compare(GGZSpectator *a, GGZSpectator *b)
++{
++	return a->num - b->num;
++}
++
++
++/* See the appropriate seat function */
++static int spectator_find_player(GGZSpectator *a, GGZSpectator *b)
++{
++	if (!a->name || !b->name)
++		return 1;
++
++	return strcmp(a->name, b->name);
++}
++
++
++static void spectator_free(GGZSpectator *spectator)
++{
++	if (spectator->fd != -1)
++		close(spectator->fd);
++	if (spectator->name)
++		ggz_free(spectator->name);
++
++	ggz_free(spectator);
+ }
+ 
+ 
+Index: ggzdmod/ggzdmod.h
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/ggzdmod.h,v
+retrieving revision 1.47
+diff -u -3 -p -r1.47 ggzdmod.h
+--- ggzdmod/ggzdmod.h	13 May 2002 18:46:16 -0000	1.47
++++ ggzdmod/ggzdmod.h	15 May 2002 21:01:43 -0000
+@@ -233,23 +233,33 @@ typedef enum {
+ 	 *  state (a GGZdModState*) is passed as the event's data.
+ 	 *  @see GGZdModState */
+ 	GGZDMOD_EVENT_STATE,
+-	
++
+ 	/** @brief Player joined
+ 	 *  This event occurs when a player joins the table.  The
+ 	 *  old seat (a GGZSeat*) is passed as the event's data.
+ 	 *  The seat information will be updated before the event
+ 	 *  is invoked.
+ 	 *  @note This may be dropped in favor of the SEAT event. */
+-	GGZDMOD_EVENT_JOIN,		
+-	
++	GGZDMOD_EVENT_JOIN,
++
+ 	/** @brief Player left
+ 	 *  This event occurs when a player leaves the table.  The
+ 	 *  old seat (a GGZSeat*) is passed as the event's data.
+ 	 *  The seat information will be updated before the event
+ 	 *  is invoked.
+ 	 *  @note This may be dropped in favor of the SEAT event */
+-	GGZDMOD_EVENT_LEAVE,		
+-	
++	GGZDMOD_EVENT_LEAVE,
++
++	/** @brief A spectator joins the game
++	 *  The spectator information is passed as a (GGZSpectator*) with the event
++	 *  data. */
++	GGZDMOD_EVENT_SPECTATOR_JOIN,
++
++	/** @brief A spectator left the game
++	 *  The old spectator data can be obtained via the (GGZSpectator) which is
++	 *  passed as the event data. */
++	GGZDMOD_EVENT_SPECTATOR_LEAVE,
++
+ 	/** @brief General seat change
+ 	 *  This event occurs when a seat change other than a player
+ 	 *  leave/join happens (which is currently impossible).  The
+@@ -257,27 +267,27 @@ typedef enum {
+ 	 *  seat information will be updated before the event is invoked.
+ 	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
+ 	 */
+-	GGZDMOD_EVENT_SEAT,		
+-	
++	GGZDMOD_EVENT_SEAT,
++
+ 	/** @brief Module log request
+ 	 *  This event occurs when a log request happens.  This will
+ 	 *  only be used by the GGZ server; the game server should
+ 	 *  use ggzdmod_log to generate the log. */
+-	GGZDMOD_EVENT_LOG,		
+-	
++	GGZDMOD_EVENT_LOG,
++
+ 	/** @brief Data available from player
+ 	 *  This event occurs when there is data ready to be read from
+ 	 *  one of the player sockets.  The player number (an int*) is
+ 	 *  passed as the event's data. */
+-	GGZDMOD_EVENT_PLAYER_DATA,	
+-	
++	GGZDMOD_EVENT_PLAYER_DATA,
++
+ 	/** @brief An error has occurred
+ 	 *  This event occurs when a GGZdMod error has occurred.  An
+ 	 *  error message (a char*) will be passed as the event's data.
+ 	 *  GGZdMod may attempt to recover from the error, but it is
+ 	 *  not guaranteed that the GGZ connection will continue to
+ 	 *  work after an error has happened. */
+-	GGZDMOD_EVENT_ERROR		
++	GGZDMOD_EVENT_ERROR
+ } GGZdModEvent;
+ 
+ /** @brief The "type" of ggzdmod.
+@@ -309,6 +319,8 @@ typedef struct GGZdMod GGZdMod;
+  *    - GGZDMOD_EVENT_JOIN: The old seat (GGZSeat*)
+  *    - GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
+  *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
++ *    - GGZDMOD_EVENT_SPECTATOR_JOIN: The spectator as in (GGZSpectator*)
++ *    - GGZDMOD_EVENT_SPECTATOR_LEAVE: The old spectator's data (GGZSpectator*)
+  *    - GGZDMOD_EVENT_LOG: The message string (char*)
+  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
+  *    - GGZDMOD_EVENT_ERROR: An error string (char*)
+@@ -326,6 +338,16 @@ typedef struct {
+ 	int fd;			/**< fd to communicate with seat occupant. */
+ } GGZSeat;
+ 
++/** @brief A game spectator entry
++ *
++ *  Spectators are handles differently from other player types.
++ */
++typedef struct {
++	int num;		/**< Spectator seat index */
++	char *name;		/**< The spectator's name */
++	int fd;			/**< File descriptor for communication */
++} GGZSpectator;
++
+ /* 
+  * Creation functions
+  */
+@@ -405,6 +427,19 @@ void ggzdmod_set_num_seats(GGZdMod * ggz
+  *  @param data The gamedata block (or NULL for none).
+  *  @see ggzdmod_get_gamedata */
+ void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
++
++/** @brief Get the number of spectators in the game.
++ *  @return The number of spectators, or -1 on error.
++ *  @note If no connection is present, -1 will be returned.
++ */
++int ggzdmod_get_num_spectators(GGZdMod *ggzdmod);
++
++/** @brief Get a spectator's data.
++ *  @param ggzdmod The GGZdMod object.
++ *  @param spectator The number, between 0 and (number of spectators - 1).
++ *  @return A valid GGZSpectator structure, if arguments are valid.
++ */
++GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
+ 
+ /** @brief Set a handler for the given event.
+  *
+Index: ggzdmod/io.c
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/io.c,v
+retrieving revision 1.10
+diff -u -3 -p -r1.10 io.c
+--- ggzdmod/io.c	2 Mar 2002 01:06:30 -0000	1.10
++++ ggzdmod/io.c	15 May 2002 21:01:43 -0000
+@@ -51,10 +51,11 @@ static int _io_read_rsp_seat(GGZdMod *gg
+ 
+ 
+ /* Functions for sending IO messages */
+-int _io_send_launch(int fd, int seats)
++int _io_send_launch(int fd, int seats, int spectators)
+ {
+ 	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0 
+-	    || ggz_write_int(fd, seats) < 0)
++	    || ggz_write_int(fd, seats) < 0
++		|| ggz_write_int(fd, spectators) < 0)
+ 		return -1;
+ 	else
+ 		return 0;
+@@ -304,13 +305,15 @@ static int _io_read_msg_log(GGZdMod * gg
+ 
+ static int _io_read_req_launch(GGZdMod * ggzdmod)
+ {
+-	int seats, i;
++	int seats, spectators, i;
+ 	GGZSeat seat;
+ 	
+ 	if (ggz_read_int(ggzdmod->fd, &seats) < 0)
+ 		return -1;
++	if (ggz_read_int(ggzdmod->fd, &spectators) < 0)
++		return -1;
+ 
+-	_ggzdmod_handle_launch_begin(ggzdmod, seats);
++	_ggzdmod_handle_launch_begin(ggzdmod, seats, spectators);
+ 
+ 	for (i = 0; i < seats; i++) {
+ 		/* Reset seat */
+Index: ggzdmod/io.h
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/io.h,v
+retrieving revision 1.4
+diff -u -3 -p -r1.4 io.h
+--- ggzdmod/io.h	2 Mar 2002 01:06:31 -0000	1.4
++++ ggzdmod/io.h	15 May 2002 21:01:43 -0000
+@@ -33,7 +33,7 @@
+ #include "mod.h"
+ 
+ /* Functions for sending IO messages */
+-int _io_send_launch(int fd, int seats);
++int _io_send_launch(int fd, int seats, int spectators);
+ int _io_send_join(int fd, GGZSeat *seat);
+ int _io_send_leave(int fd, GGZSeat *seat);
+ int _io_send_seat_change(int fd, GGZSeat *seat);
+Index: ggzdmod/mod.h
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/mod.h,v
+retrieving revision 1.4
+diff -u -3 -p -r1.4 mod.h
+--- ggzdmod/mod.h	5 May 2002 00:22:08 -0000	1.4
++++ ggzdmod/mod.h	15 May 2002 21:01:44 -0000
+@@ -1,5 +1,5 @@
+ /* 
+- * File: io.h
++ * File: mod.h
+  * Author: GGZ Dev Team
+  * Project: ggzdmod
+  * Date: 11/18/01
+@@ -37,7 +37,7 @@
+ #include "ggzdmod.h"
+ 
+ /* The number of event handlers there are. */
+-#define GGZDMOD_NUM_HANDLERS 7
++#define GGZDMOD_NUM_HANDLERS 9
+ 
+ /* This is the actual structure, but it's only visible internally. */
+ struct GGZdMod {
+@@ -46,7 +46,9 @@ struct GGZdMod {
+ 	int fd;			/* file descriptor */
+ 	int num_seats;
+ 	int num_open;
++	int num_spectators;
+ 	GGZList *seats;
++	GGZList *spectators;
+ 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
+ 	void *gamedata;         /* game-specific data */
+ 
+@@ -64,16 +66,20 @@ void _ggzdmod_error(GGZdMod *ggzdmod, ch
+ void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status);
+ void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status);
+ void _ggzdmod_handle_seat_response(GGZdMod * ggzdmod, char status);
++void _ggzdmod_handle_spectator_join_response(GGZdMod * ggzdmod, char status);
++void _ggzdmod_handle_spectator_leave_response(GGZdMod * ggzdmod, char status);
+ void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state);
+ void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg);
+ 
+ /* Game side functions for handling various messages */
+-void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats);
++void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spectators);
+ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat);
+ void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod);
+ void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat);
+ void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name);
+ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat);
++void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator);
++void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name);
+ void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
+ 
+ 
+Index: ggzdmod/protocol.h
+===================================================================
+RCS file: /cvsroot/ggz/ggzd/ggzdmod/protocol.h,v
+retrieving revision 1.7
+diff -u -3 -p -r1.7 protocol.h
+--- ggzdmod/protocol.h	2 Mar 2002 01:06:32 -0000	1.7
++++ ggzdmod/protocol.h	15 May 2002 21:01:44 -0000
+@@ -95,6 +95,7 @@ typedef enum {
+ 	 *  The packet is composed of:
+ 	 *    - An integer containing MSG_GAME_LAUNCH.
+ 	 *    - An integer containing the number of seats at the table.
++	 *    - An integer containing the number of spectators
+ 	 *    - Seat data for every seat at the table:
+ 	 *      - An integer containing the seat type (GGZSeatType).
+ 	 *      - If the seat type is GGZ_SEAT_RESERVED, the name of the
