@@ -13,7 +13,8 @@ libkggzui_a_SOURCES = \
 	KGGZWorkspace.cpp \
 	KGGZAbout.cpp \
 	KGGZSplash.cpp \
-	KGGZLogo.cpp
+	KGGZLogo.cpp \
+	KGGZMotd.cpp
 
 noinst_HEADERS = \
 	KGGZBase.h \
@@ -24,7 +25,8 @@ noinst_HEADERS = \
 	KGGZWidgetCommon.h \
 	KGGZAbout.h \
 	KGGZSplash.h \
-	KGGZLogo.h
+	KGGZLogo.h \
+	KGGZMotd.h
 
 EXTRA_HEADERS = 
 
