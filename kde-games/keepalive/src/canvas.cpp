@@ -183,14 +183,14 @@ void Canvas::slotInput()
 			free(name);
 			break;
 		case op_loginfailed:
-			//*m_net >> name;
-			//*m_net >> message;
 			QMessageBox::information(NULL, "Notice", "Login failed");
-			//free(name);
-			//free(message);
 			break;
-		case op_chat:
+		case op_chatted:
+			*m_net >> name;
+			*m_net >> message;
 			QMessageBox::information(NULL, "Chat", QString("Chat from %1:\n%2").arg(name).arg(message));
+			free(name);
+			free(message);
 			break;
 		case op_quit:
 			*m_net >> name;

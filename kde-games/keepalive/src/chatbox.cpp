@@ -37,6 +37,7 @@ Chatbox::Chatbox(QWidget *parent, const char *name)
 
 	connect(edit, SIGNAL(returnPressed()), SLOT(slotChat()));
 
+	setCaption("Chat message to other players");
 	resize(400, 50);
 	show();
 }
@@ -49,5 +50,7 @@ Chatbox::~Chatbox()
 void Chatbox::slotChat()
 {
 	emit signalChat(edit->text());
+	edit->setText("");
+	close();
 }
 
