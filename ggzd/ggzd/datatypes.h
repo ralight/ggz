@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: datatypes.h 4702 2002-09-25 19:38:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -47,7 +47,7 @@ typedef struct {
 	char clear_stats;
 	int stat_clr_time;
 	int main_port;
-	char *game_dir;		/* CLEANUP CANDIDATE - should be deallocated */
+	char *game_dir;		/* cleanup() */
 	char *tmp_dir;		/* cleanup() */
 	char *conf_dir;		/* cleanup() */
 	char *data_dir;		/* cleanup() */
@@ -77,20 +77,20 @@ typedef struct GGZState {
 /* Info about a particular type of game*/
 typedef struct GameInfo {
 	pthread_rwlock_t lock;
-	char *name;    /* Game name */
-	char *version; /* Game version */
+	char *name;    /* Game name; cleanup() */
+	char *version; /* Game version; cleanup() */
 	
 	/* Protocol data - the protocol engine is the name of the
 	   protocol, and the version is the protocol version.  These
 	   need not match up with the gametype. */
-	char *p_engine;
-	char *p_version;
+	char *p_engine;	/* cleanup() */
+	char *p_version;/* cleanup() */
 
-	char *data_dir;	/* The game's working directory. */
-	
-	char *desc;     /* Game description string. */
-	char *author;   /* String containing name(s) of author(s) */
-	char *homepage; /* Contains a web address for the game */
+	char *data_dir;	/* The game's working directory; cleanup() */
+
+	char *desc;     /* Game description string; cleanup() */
+	char *author;   /* String containing name(s) of author(s); cleanup() */
+	char *homepage; /* Contains a web address for the game; cleanup() */
 	
 	/* Masks for how many overall players, bots and spectators are allowed
 	   to be selected for the game. */
@@ -109,7 +109,7 @@ typedef struct GameInfo {
 	/* Executable information: a NULL-terminated list of
 	   command-line arguments for the program.  The first argument
 	   is the executable itself. */
-	char **exec_args;
+	char **exec_args;/* cleanup() */
 } GameInfo;
 
 

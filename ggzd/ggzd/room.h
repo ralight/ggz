@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 4580 2002-09-16 05:55:58Z jdorje $
+ * $Id: room.h 4702 2002-09-25 19:38:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,10 +44,10 @@ typedef struct {
 	pthread_rwlock_t lock;
 
 	/* Room name */
-	char *name;
+	char *name;			/* cleanup() */
 
 	/* Room description */
-	char *description;
+	char *description;		/* cleanup() */
 
 	/* Number of players curently in room */
 	int player_count;
@@ -68,10 +68,10 @@ typedef struct {
 	unsigned int perms;	/* Set bits to equal perms in perms.h */
 
 	/* Array of pointers to players in this room (dynamcially allocated) */
-	GGZPlayer **players;
+	GGZPlayer **players;		/* cleanup() */
 
 	/* Array of pointers to tables in this room (dynamcially allocated) */
-	GGZTable **tables;
+	GGZTable **tables;		/* cleanup() */
 
 	/* Linked lists of events */
 	GGZEvent *event_tail;
@@ -88,7 +88,7 @@ typedef struct {
 } RoomInfo;
 
 
-extern RoomStruct *rooms;
+extern RoomStruct *rooms;		/* cleanup() */
 extern RoomInfo room_info;
 
 extern void room_initialize(void);

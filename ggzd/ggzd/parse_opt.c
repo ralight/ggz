@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4689 2002-09-25 05:04:53Z jdorje $
+ * $Id: parse_opt.c 4702 2002-09-25 19:38:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -224,7 +224,7 @@ static void get_config_options(int ch)
 	int intval;
 	char *strval;
 	char **t_list;
-	int t_count = 0;
+	int t_count = 0, i;
 
 	/* [General] */
 	if(opt.main_port == 0)
@@ -238,6 +238,11 @@ static void get_config_options(int ch)
 					   "An Unconfigured GGZ Server");
 	ggz_conf_read_list(ch, "General", "IPBanList", &t_count, &t_list);
 	client_set_ip_ban_list(t_count, t_list);
+	for (i = 0; i < t_count; i++)
+	  ggz_free(t_list[i]);
+	if (t_list)
+		ggz_free(t_list);
+	t_count = 0;
 
 	/* [Directories] */
 	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);

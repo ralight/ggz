@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4689 2002-09-25 05:04:53Z jdorje $
+ * $Id: control.c 4702 2002-09-25 19:38:01Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -116,12 +116,60 @@ static void init_data(void)
 
 static void cleanup_data(void)
 {
+#define data_free(ptr) \
+  do {                 \
+    ggz_free(ptr);     \
+    ptr = NULL;        \
+  } while(0)
+
+	int i;
+
 	/* FIXME: must destroy all threads first */
 	if (term_signal || !hup_signal) return;
 
 	motd_read_file(NULL);
 
-	ggz_memory_check();
+	data_free(opt.game_dir);
+	data_free(opt.tmp_dir);
+	data_free(opt.conf_dir);
+	data_free(opt.data_dir);
+	data_free(opt.admin_name);
+	data_free(opt.admin_email);
+	data_free(opt.server_name);
+
+	/* We don't bother with locking anything... */
+	for (i = 0; i < room_info.num_rooms; i++) {
+		data_free(rooms[i].name);
+		data_free(rooms[i].description);
+		data_free(rooms[i].players);
+		if (rooms[i].max_tables > 0)
+			data_free(rooms[i].tables);
+	}
+	data_free(rooms);
+
+	for (i = 0; game_types[i].name && i < MAX_GAME_TYPES; i++) {
+		char **args;
+		data_free(game_types[i].name);
+		data_free(game_types[i].version);
+		data_free(game_types[i].p_engine);
+		data_free(game_types[i].p_version);
+		data_free(game_types[i].data_dir);
+		data_free(game_types[i].desc);
+		data_free(game_types[i].author);
+		data_free(game_types[i].homepage);
+		for (args = game_types[i].exec_args; *args; args++)
+			data_free(*args);
+		data_free(game_types[i].exec_args);
+	}
+
+	data_free(log_info.log_fname);
+	data_free(log_info.dbg_fname);
+
+	ggz_conf_cleanup();
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+
+	/* No more debug logging after this! */
+#undef data_free
 }
 
 int main(int argc, const char *argv[])
@@ -253,6 +301,7 @@ int main(int argc, const char *argv[])
 	ggzdb_close();
 
 	if (!opt.foreground) {
+		/* This must come AFTER ggzdb_close but BEFORE cleanup_data. */
 		daemon_cleanup();
 	}
 
