@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: game.c 2451 2001-09-11 08:35:40Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -326,7 +326,7 @@ void game_get_play(player_t p)
 {
 	/* in almost all cases, we just want the player to play from their
 	   own hand */
-	req_play(p, game.players[p].seat);
+	(void) req_play(p, game.players[p].seat);
 }
 
 

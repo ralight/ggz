@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: games.c 2451 2001-09-11 08:35:40Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -157,7 +157,7 @@ int games_req_gametype()
 			   game_types[0]);
 		game.which_game = game_types[0];
 		init_game();
-		send_sync_all();
+		(void) send_sync_all();
 		return 0;
 	}
 
