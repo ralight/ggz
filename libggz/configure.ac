@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5726 2003-12-31 16:45:29Z dr_maux $
+dnl $Id: configure.ac 5745 2004-01-24 22:12:23Z josef $
 
 AC_INIT([GGZ common libraries], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -82,7 +82,7 @@ AC_EGREP_CPP(PF_LOCAL,
 # =================
 AC_MSG_CHECKING([for SUN_LEN])
 AC_LINK_IFELSE([
-	AC_LANG_SOURCE([[
+	AC_LANG_PROGRAM([[
 		#include<sys/types.h>
 		#include<sys/un.h>
 		]],
@@ -100,7 +100,7 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 			  [Define if msghdr has a msg_controllen member])
 			AC_MSG_CHECKING([for CMSG_ALIGN])
 			AC_LINK_IFELSE([
-				AC_LANG_SOURCE([[
+				AC_LANG_PROGRAM([[
 					#include<sys/types.h>
 					#include<sys/socket.h>
 					]],
@@ -113,7 +113,7 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 
 			AC_MSG_CHECKING([for CMSG_LEN])
 			AC_LINK_IFELSE([
-				AC_LANG_SOURCE([[
+				AC_LANG_PROGRAM([[
 					#include<sys/types.h>
 					#include<sys/socket.h>
 					]],
@@ -126,7 +126,7 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 
 			AC_MSG_CHECKING([for CMSG_SPACE])
 			AC_LINK_IFELSE([
-				IF_LANG_SOURCE([[
+				IF_LANG_PROGRAM([[
 					#include<sys/types.h>
 					#include<sys/socket.h>
 					]],

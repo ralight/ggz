@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5537 2003-05-10 14:32:19Z dr_maux $
+ * $Id: easysock.c 5745 2004-01-24 22:12:23Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -38,6 +38,7 @@
 #include <sys/un.h>
 #include <sys/uio.h>
 #include <sys/param.h>
+#include <arpa/inet.h>
 
 #include <netinet/in.h>
 #include <netdb.h>
@@ -123,7 +124,11 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 	switch (type) {
 
 	case GGZ_SOCK_SERVER:
-		name.sin_addr.s_addr = htonl(INADDR_ANY);
+		if(server) {
+			inet_pton(AF_INET, server, &name.sin_addr.s_addr);
+		} else {
+			name.sin_addr.s_addr = htonl(INADDR_ANY);
+		}
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&on, 
 			       sizeof(on)) < 0
 		    || bind(sock, (SA *)&name, sizeof(name)) < 0) {
@@ -140,7 +145,6 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 				(*_err_func) ("Lookup failure", GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
 			return -2;
-			break;
 		}
 		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
 		if (connect(sock, (SA *)&name, sizeof(name)) < 0) {

@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5565 2003-05-11 09:08:52Z dr_maux $
+ * $Id: ggz.h 5745 2004-01-24 22:12:23Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1291,7 +1291,7 @@ typedef enum {
  *
  *  @param type The type of socket (server or client).
  *  @param port The port to listen/connect to.
- *  @param server The server hostname, for client sockets.
+ *  @param server The server hostname for clients, the interface address else
  *  @return File descriptor on success, -1 on creation error, -2 on lookup
  *  error.
  */
