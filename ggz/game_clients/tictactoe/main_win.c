@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6247 2004-11-03 23:30:47Z jdorje $
+ * $Id: main_win.c 6248 2004-11-03 23:55:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,7 +47,9 @@
 
 
 /* Pixmaps */
-#define PIXSIZE 20
+#define PIXSIZE 30
+#define GRIDSIZE 60
+#define BORDERSIZE 10
 
 GdkPixbuf *x_pix, *o_pix;
 GdkPixmap* ttt_buf;
@@ -108,8 +110,8 @@ void display_board(void)
 		else 
 			continue;
 		
-		x = (i % 3)*60 + 10 + 20;
-		y = (i / 3)*60 + 10 + 20;
+		x = (i % 3) * GRIDSIZE + BORDERSIZE + (GRIDSIZE - PIXSIZE) / 2;
+		y = (i / 3) * GRIDSIZE + BORDERSIZE + (GRIDSIZE - PIXSIZE) / 2;
 
 		gdk_pixbuf_render_to_drawable(piece, ttt_buf,
 					style->fg_gc[GTK_WIDGET_STATE(tmp)],
@@ -231,8 +233,8 @@ static gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user
 {
 	int x = (int)(event->x);
 	int y = (int)(event->y);
-	int col = (x - 10) / 60;
-	int row = (y - 10) / 60;
+	int col = (x - BORDERSIZE) / GRIDSIZE;
+	int row = (y - BORDERSIZE) / GRIDSIZE;
 
 	if (game.state != STATE_MOVE) {
 		if (game.num >= 0)
