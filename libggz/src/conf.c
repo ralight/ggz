@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: conf.c 5859 2004-02-09 01:38:22Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -57,6 +57,10 @@
  *	a) the key (variable name)
  *	b) the value (variable data)
  */
+
+#ifdef MKDIR_TAKES_ONE_ARG
+#define mkdir(a, b) (mkdir) (a)
+#endif
 
 
 /****
