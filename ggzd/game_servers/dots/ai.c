@@ -4,6 +4,7 @@
  * Project: GGZ Connect the Dots AI module
  * Date: 05/11/2000
  * Desc: Artificial Intelligence for CtD
+ * $Id: ai.c 2263 2001-08-26 21:30:10Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,7 +38,9 @@ struct dots_game_t dots_game;
 static char ai_find_scoring_line(unsigned char *, unsigned char *);
 static char ai_find_safe_line(unsigned char *, unsigned char *);
 static char ai_find_best_giveaway(unsigned char *, unsigned char *);
+#if 0
 static char ai_find_random_line(unsigned char *, unsigned char *);
+#endif /* #if 0 */
 static unsigned char ai_lookahead(unsigned char, unsigned char, unsigned char);
 static void ai_handle_move(int, unsigned char *, unsigned char *);
 
@@ -321,6 +324,7 @@ static unsigned char ai_lookahead(unsigned char dir,
 }
 
 
+#if 0
 /* This chooses a random line to draw */
 static char ai_find_random_line(unsigned char *x, unsigned char *y)
 {
@@ -346,6 +350,7 @@ static char ai_find_random_line(unsigned char *x, unsigned char *y)
 	*y = try_y;
 	return try_dir;
 }
+#endif /* #if 0 */
 
 
 static void ai_handle_move(int dir, unsigned char *x, unsigned char *y)
