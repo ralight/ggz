@@ -1,10 +1,10 @@
-/* $Id: dlg_about.c 2892 2001-12-13 15:53:48Z jdorje $ */
-/* 
+/*
  * File: dlg_about.c
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
+ * $Id: dlg_about.c 2901 2001-12-17 00:59:09Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,17 +27,8 @@
 #  include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-
-#include "game.h"		/* for _( macro only */
-
 #include "dlg_about.h"
+#include "game.h"		/* for _( macro only */
 
 GtkWidget *create_dlg_about(void)
 {
@@ -49,12 +40,18 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *dialog_action_area1;
 	GtkWidget *close_button;
 
+	/*
+	 * Create outer window.
+	 */
 	dlg_about = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dlg_about), "dlg_about", dlg_about);
 	gtk_window_set_title(GTK_WINDOW(dlg_about), _("About GGZCards"));
 	GTK_WINDOW(dlg_about)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dlg_about), TRUE, TRUE, FALSE);
 
+	/*
+	 * Create vertical box packing widget.
+	 */
 	dialog_vbox1 = GTK_DIALOG(dlg_about)->vbox;
 	gtk_object_set_data(GTK_OBJECT(dlg_about), "dialog_vbox1",
 			    dialog_vbox1);
@@ -67,7 +64,9 @@ GtkWidget *create_dlg_about(void)
 	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), vbox1, TRUE, TRUE, 0);
 
-	label3 = gtk_label_new(_("GGZ Gaming Zone\nGGZ Cards Version 0.0.4"));
+	label3 = gtk_label_new(_
+			       ("GGZ Gaming Zone\n"
+				"GGZ Cards Version 0.0.5pre"));
 	gtk_widget_ref(label3);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "label3", label3,
 				 (GtkDestroyNotify) gtk_widget_unref);
