@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4877 2002-10-12 05:49:45Z jdorje $
+ * $Id: launch.c 4930 2002-10-16 05:13:21Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -36,6 +36,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <ggz.h>
 
 #include "launch.h"
 #include "support.h"
@@ -375,6 +377,13 @@ GtkWidget *create_dlg_launch(void)
 		GtkWidget *name;
 	} seats[num_seats];
 	int i;
+
+	/* Sanity check.  This can actually fail if GGZ gets confused
+	   elsewhere. */
+	if (num_seats <= 0) {
+		ggz_error_msg("Tried to launch table for invalid game.");
+		return NULL;
+	}
 
 	dlg_launch = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dlg_launch), "dlg_launch", dlg_launch);
