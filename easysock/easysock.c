@@ -354,7 +354,7 @@ int es_read_string(const int sock, char *message)
 		return -1;
 	} 
 	
-	_debug("Received \"%s\" : string\n", *message);
+	_debug("Received \"%s\" : string\n", message);
 	return 0;
 }
 
