@@ -146,6 +146,7 @@ static void _ggzcore_net_handle_seat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_chat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_data(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_ping(GGZNet*, GGZXMLElement*);
+static void _ggzcore_net_handle_session(GGZNet*, GGZXMLElement*);
 
 /* Extra functions fot handling data associated with specific tags */
 static void _ggzcore_net_list_insert(GGZXMLElement*, void*);
@@ -625,10 +626,11 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
 	if (done) {
+		_ggzcore_server_protocol_error(net->server, "Server disconnected");
 		_ggzcore_net_disconnect(net);
-		_ggzcore_server_set_logout_status(net->server, 1);
+		_ggzcore_server_set_logout_status(net->server, -1);
 	}
-	if (!XML_ParseBuffer(net->parser, len, done)) {
+	else if (!XML_ParseBuffer(net->parser, len, done)) {
 		ggzcore_debug(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
 			      XML_GetCurrentLineNumber(net->parser),
 			      XML_GetCurrentColumnNumber(net->parser),
@@ -747,6 +749,8 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 		process_func = _ggzcore_net_handle_password;
 	else if (strcmp(tag, "PING") == 0)
 		process_func = _ggzcore_net_handle_ping;
+	else if (strcmp(tag, "SESSION") == 0)
+		process_func = _ggzcore_net_handle_session;
 	else
 		process_func = NULL;
 	
@@ -1652,6 +1656,15 @@ static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
 {
 	/* No need to bother the client or anything, just send pong */
 	_ggzcore_net_send_line(net, "<PONG/>");
+}
+
+
+/* Function for <SESSION> tag */
+static void _ggzcore_net_handle_session(GGZNet *net, GGZXMLElement *data)
+{
+	/* Server is ending session */
+	_ggzcore_net_disconnect(net);
+	_ggzcore_server_set_logout_status(net->server, 1);
 }
 
 
