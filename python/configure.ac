@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([GGZ python package], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE
