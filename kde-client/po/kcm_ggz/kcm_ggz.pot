@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 16:50+0100\n"
+"POT-Creation-Date: 2002-03-27 01:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,4 +21,157 @@ msgid ""
 "theirselves, some default data can be entered here which takes then "
 "precedence.<p> Please take a look at <a href='http://ggz.sourceforge."
 "net'>ggz.sourceforge.net</a> if you want to learn more."
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:101
+msgid ""
+"<h1>GGZ Gaming Zone</h1>  is a common way for playing internet games. "
+"Although it is possible to set all options from within the applications "
+"theirselves, some default data can be entered here which takes then "
+"precedence.<p> Please take a look at <a href='http://ggz.sourceforge."
+"net'>ggz.sourceforge.net</a> if you want to learn more."
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:37
+msgid "Add a metaserver"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:41
+msgid "Add a server"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:29
+msgid "Author(s)"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:39
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:43
+msgid "Autoconfigure"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:31
+msgid "Available game servers"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:84
+msgid "Available games"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:30
+msgid "Available meta servers"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:75
+msgid "Configuration of ggzd"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:70
+msgid "Default Settings"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:48
+msgid "Description"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:65
+msgid "Error!"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:25
+msgid "Game"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:53
+msgid "Got a NULL object."
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:28
+msgid "Homepage"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:32
+msgid "Local"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:67
+msgid "Online Games Configuration"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:15
+msgid "Parameters"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:27
+msgid "Preferred connection server"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:27
+msgid "Protocol"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:38
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:42
+msgid "Remove server"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:207
+msgid "Servers"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:135
+msgid "Show all information"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:35
+msgid "Supported classes"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:73
+msgid "System"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:32
+msgid ""
+"The GGZ Gaming Zone needs some information\n"
+" to be configured properly. You can specify here what is needed as\n"
+" default value for KGGZ, GGZap, the IO Slave and other applications.\n"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:65
+msgid ""
+"The KCM_GGZ modules couldn't be loaded!\n"
+"(%1)"
+msgstr ""
+
+#: ../../kcm_ggz/kcm_ggz.cpp:55
+msgid "This is no KCM_GGZ module."
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:47
+msgid "Type"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:34
+#: ../../kcm_ggz/modules/kcm_ggz_metaserver.cpp:46
+msgid "URI"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:34
+msgid "Update local game information"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_ggzd.cpp:16
+msgid "Values"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:26
+msgid "Version"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_games.cpp:134
+msgid "Visit the project home page"
+msgstr ""
+
+#: ../../kcm_ggz/modules/kcm_ggz_default.cpp:29
+msgid "Your login username"
 msgstr ""

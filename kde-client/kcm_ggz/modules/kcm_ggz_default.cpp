@@ -1,6 +1,8 @@
 #include "kcm_ggz_default.h"
 #include "kcm_ggz_default.moc"
 
+#include <klocale.h>
+
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qgroupbox.h>
@@ -22,14 +24,14 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	m_server = new QLineEdit(box);
 	m_username = new QLineEdit(box);
 
-	label_server = new QLabel("Preferred connection server", box);
+	label_server = new QLabel(i18n("Preferred connection server"), box);
 	label_server->setBackgroundColor(QColor(255, 200, 0));
-	label_username = new QLabel("Your login username", box);
+	label_username = new QLabel(i18n("Your login username"), box);
 	label_username->setBackgroundColor(QColor(255, 200, 0));
 
-	label_explanation = new QLabel("The GGZ Gaming Zone needs some information\n"
+	label_explanation = new QLabel(i18n("The GGZ Gaming Zone needs some information\n"
 		" to be configured properly. You can specify here what is needed as\n"
-		" default value for KGGZ, GGZap, the IO Slave and other applications.\n",
+		" default value for KGGZ, GGZap, the IO Slave and other applications.\n"),
 		this);
 	label_explanation->setBackgroundColor(QColor(255, 200, 0));
 
@@ -65,7 +67,7 @@ void KCMGGZDefault::save()
 
 const char *KCMGGZDefault::caption()
 {
-	return "Default Settings";
+	return i18n("Default Settings");
 }
 
 extern "C"

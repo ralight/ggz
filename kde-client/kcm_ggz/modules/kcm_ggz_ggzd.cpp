@@ -2,6 +2,8 @@
 #include "kcm_ggz_ggzd.moc"
 
 #include <klistview.h>
+#include <klocale.h>
+
 #include <qlayout.h>
 
 KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
@@ -10,8 +12,8 @@ KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
 	QVBoxLayout *vbox;
 
 	view = new KListView(this);
-	view->addColumn("Parameters");
-	view->addColumn("Values");
+	view->addColumn(i18n("Parameters"));
+	view->addColumn(i18n("Values"));
 	view->setRootIsDecorated(true);
 
 	add("General", "Server");
@@ -70,7 +72,7 @@ void KCMGGZGgzd::save()
 
 const char *KCMGGZGgzd::caption()
 {
-	return "Configuration of ggzd";
+	return i18n("Configuration of ggzd");
 }
 
 extern "C"

@@ -1,4 +1,4 @@
-SUBDIRS = . html
+SUBDIRS = html
 
 EXTRA_DIST = README.ggzcore++ kdoc-generated.html
 

@@ -10,8 +10,10 @@
 
 #include <dlfcn.h>
 
+#include "config.h"
+
 typedef KCMGGZPane* (*panefunc)(QWidget *parent = NULL, const char *name = NULL);
-#define PATH "/usr/local/lib"
+#define PATH PREFIX "/lib"
 
 KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 : KCModule(parent, name)
@@ -48,9 +50,9 @@ KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 					ctl->addTab(pane, pane->caption());
 					connect(pane, SIGNAL(signalChanged()), SLOT(slotChanged()));
 				}
-				else error.append("Got a NULL object.");
+				else error.append(i18n("Got a NULL object."));
 			}
-			else error.append("This is no KCM_GGZ module.");
+			else error.append(i18n("This is no KCM_GGZ module."));
 		}
 		else error.append(dlerror());
 	}
@@ -60,9 +62,9 @@ KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 
 	load();
 
-	if(!error.isEmpty()) KMessageBox::error(this, QString("The KCM_GGZ modules couldn't be loaded!\n(%1)").arg(error), "Error!");
+	if(!error.isEmpty()) KMessageBox::error(this, QString(i18n("The KCM_GGZ modules couldn't be loaded!\n(%1)")).arg(error), i18n("Error!"));
 
-	setCaption("Online Games Configuration");
+	setCaption(i18n("Online Games Configuration"));
 }
 
 KCMGGZ::~KCMGGZ()
@@ -96,7 +98,7 @@ void KCMGGZ::slotChanged()
 
 QString KCMGGZ::quickHelp()
 {
-	return i18n("<h1>GGZ Gaming Zone</1> "
+	return i18n("<h1>GGZ Gaming Zone</h1> "
 				" is a common way for playing internet games. Although it"
 				" is possible to set all options from within the applications theirselves,"
 				" some default data can be entered here which takes then precedence.<p>"

@@ -5,8 +5,10 @@
 #include "metaserver_add_server.h"
 
 #include <klistview.h>
-#include <qlayout.h>
 #include <kpushbutton.h>
+#include <klocale.h>
+
+#include <qlayout.h>
 #include <qgroupbox.h>
 #include <qsocket.h>
 #include <qdom.h>
@@ -25,25 +27,25 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	dialog_servers = NULL;
 	m_query = query_invalid;
 
-	box = new QGroupBox("Available meta servers", this);
-	box_servers = new QGroupBox("Available game servers", this);
+	box = new QGroupBox(i18n("Available meta servers"), this);
+	box_servers = new QGroupBox(i18n("Available game servers"), this);
 
 	view = new KListView(box);
-	view->addColumn("URI");
-	view->addColumn("Supported classes");
+	view->addColumn(i18n("URI"));
+	view->addColumn(i18n("Supported classes"));
 
-	add = new KPushButton("Add a metaserver", box);
-	remove = new KPushButton("Remove server", box);
-	autoconfig = new KPushButton("Autoconfigure", box);
+	add = new KPushButton(i18n("Add a metaserver"), box);
+	remove = new KPushButton(i18n("Remove server"), box);
+	autoconfig = new KPushButton(i18n("Autoconfigure"), box);
 
-	add_servers = new KPushButton("Add a server", box_servers);
-	remove_servers = new KPushButton("Remove server", box_servers);
-	autoconfig_servers = new KPushButton("Autoconfigure", box_servers);
+	add_servers = new KPushButton(i18n("Add a server"), box_servers);
+	remove_servers = new KPushButton(i18n("Remove server"), box_servers);
+	autoconfig_servers = new KPushButton(i18n("Autoconfigure"), box_servers);
 
 	view_servers = new KListView(box_servers);
-	view_servers->addColumn("URI");
-	view_servers->addColumn("Type");
-	view_servers->addColumn("Description");
+	view_servers->addColumn(i18n("URI"));
+	view_servers->addColumn(i18n("Type"));
+	view_servers->addColumn(i18n("Description"));
 
 	vboxroot = new QVBoxLayout(this, 5);
 
@@ -202,7 +204,7 @@ void KCMGGZMetaserver::save()
 
 const char *KCMGGZMetaserver::caption()
 {
-	return "Servers";
+	return i18n("Servers");
 }
 
 extern "C"

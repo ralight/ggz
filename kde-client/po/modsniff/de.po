@@ -16,35 +16,35 @@ msgstr ""
 
 #: ../../modsniff/main.cpp:25
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 #: ../../modsniff/kmodsniff.cpp:41
 msgid "Exit"
-msgstr ""
+msgstr "Beenden"
 
 #: ../../modsniff/kmodsniff.cpp:43
 msgid "Find games"
-msgstr ""
+msgstr "Spiele suchen"
 
 #: ../../modsniff/main.cpp:21
 msgid "GGZ ModSniffer"
-msgstr ""
+msgstr "GGZ ModSniffer"
 
 #: ../../modsniff/main.cpp:15
 msgid "ModSniffer"
-msgstr ""
+msgstr "ModSniffer"
 
 #: ../../modsniff/kmodsniff.cpp:100
 msgid "No new games found. All GGZ games are already configured."
-msgstr ""
+msgstr "Keine neuen Spiele gefunden. Alle GGZ-Spiele sind bereits konfiguriert."
 
 #: ../../modsniff/kmodsniff.cpp:50
 msgid "Press 'Find games' to search for GGZ compliant games."
-msgstr ""
+msgstr "Führe 'Spiele suchen' aus um nach GGZ-fähigen Spielen zu suchen."
 
 #: ../../modsniff/kmodsniff.cpp:93
 msgid "The following games have been added:"
-msgstr ""
+msgstr "Die folgenden Spiele wurden hinzugefügt:"
 
 #: ../../modsniff/kmodsniff.cpp:45
 msgid ""
@@ -52,7 +52,11 @@ msgid ""
 "and enters them into the quick start menu.\n"
 "The following games have been found:"
 msgstr ""
+"Dieses Werkzeug sucht nach neuen GGZ-Spielen\n"
+"und trägt sie in das Schnellstart-Menü ein.\n"
+"Die folgenden Spiele wurden gefunden:"
 
 #: ../../modsniff/main.cpp:17
 msgid "Utily to find locally installed GGZ game modules."
-msgstr ""
+msgstr "Hilfsmittel um lokal installierte GGZ-Spiele zu finden."
+

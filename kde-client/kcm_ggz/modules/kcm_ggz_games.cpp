@@ -2,12 +2,15 @@
 #include "kcm_ggz_games.moc"
 
 #include <klistview.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <qpopupmenu.h>
 #include <kpushbutton.h>
 #include <ksimpleconfig.h>
 #include <kapp.h>
+#include <klocale.h>
+
+#include <qlayout.h>
+#include <qpixmap.h>
+#include <qpopupmenu.h>
+
 #include "config.h"
 
 KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
@@ -19,16 +22,16 @@ KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
 	popup = NULL;
 
 	view = new KListView(this);
-	view->addColumn("Game");
-	view->addColumn("Version");
-	view->addColumn("Protocol");
-	view->addColumn("Homepage");
-	view->addColumn("Author(s)");
+	view->addColumn(i18n("Game"));
+	view->addColumn(i18n("Version"));
+	view->addColumn(i18n("Protocol"));
+	view->addColumn(i18n("Homepage"));
+	view->addColumn(i18n("Author(s)"));
 	view->setRootIsDecorated(true);
 
-	add("Local", "KaBoom!!", "KDE", "Josef Spillner & Tobias König", "http://games.kde.org", "0.1", "1");
+	add(i18n("Local"), "KaBoom!!", "KDE", "Josef Spillner & Tobias König", "http://games.kde.org", "0.1", "1");
 
-	look = new KPushButton("Update local game information", this);
+	look = new KPushButton(i18n("Update local game information"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(view);
@@ -47,7 +50,7 @@ KCMGGZGames::~KCMGGZGames()
 void KCMGGZGames::load()
 {
 	QStringList enginelist, gameslist;
-	KSimpleConfig conf("/usr/local/etc/ggz.modules");
+	KSimpleConfig conf(PREFIX "/etc/ggz.modules");
 
 	view->clear();
 
@@ -67,7 +70,7 @@ void KCMGGZGames::load()
 			QString version = conf.readEntry("Version");
 			QString protocol = conf.readEntry("ProtocolVersion");
 			QString homepage = conf.readEntry("Homepage");
-			add("System", (*it), frontend, author, homepage, version, protocol);
+			add(i18n("System"), (*it), frontend, author, homepage, version, protocol);
 		}
 	}
 }
@@ -78,7 +81,7 @@ void KCMGGZGames::save()
 
 const char *KCMGGZGames::caption()
 {
-	return "Available games";
+	return i18n("Available games");
 }
 
 extern "C"
@@ -128,8 +131,8 @@ void KCMGGZGames::slotSelected(QListViewItem *item, const QPoint& point, int col
 	if(!popup)
 	{
 		popup = new QPopupMenu(this);
-		popup->insertItem("Visit the project home page", menuhomepage);
-		popup->insertItem("Show all information", menuinformation);
+		popup->insertItem(i18n("Visit the project home page"), menuhomepage);
+		popup->insertItem(i18n("Show all information"), menuinformation);
 		connect(popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
 	}
 

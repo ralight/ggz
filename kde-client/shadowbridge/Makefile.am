@@ -21,6 +21,6 @@ METASOURCES = AUTO
 
 INCLUDES = -I $(top_srcdir)/ggz-kde/ggzcore++/src $(all_includes)
 LDFLAGS = $(all_libraries) $(LIB_KDEUI) -lqt
-LDADD = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la
+LDADD = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la
 CXXFLAGS = -ggdb3
 
