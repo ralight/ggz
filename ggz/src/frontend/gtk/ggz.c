@@ -360,5 +360,12 @@ void ggz_sensitivity_init(void)
 
 void ggz_motd(GGZEventID id, void* event_data, void* user_data)
 {
+	gint i;
+	gchar **motd;
+
+	motd = event_data;
+
 	motd_create_or_raise();
+	for(i = 0; motd[i] != NULL; i++)
+		motd_print_line(motd[i]);
 }

@@ -45,6 +45,9 @@ void motd_create_or_raise(void)
 
         if (!dlg_motd) {
                 dlg_motd = create_dlg_motd();
+
+		tmp = lookup_widget(dlg_motd, "motd_text");
+		gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
                 gtk_widget_show(dlg_motd);
         }
         else {
