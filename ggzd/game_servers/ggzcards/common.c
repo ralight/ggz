@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: common.c 2450 2001-09-11 07:58:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -43,12 +43,34 @@
 /* Global game variables */
 struct wh_game_t game = { 0 };
 
-char *game_states[] = { "WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING",
-	"WH_STATE_WAITFORPLAYERS", "WH_STATE_NEXT_HAND", "WH_STATE_FIRST_BID",
-	"WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID", "WH_STATE_FIRST_TRICK",
-	"WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY", "WH_STATE_WAIT_FOR_PLAY"
-};
-
+static const char *get_state_name(server_state_t state)
+{
+	switch (state) {
+	case WH_STATE_PRELAUNCH:
+		return "PRELAUNCH";
+	case WH_STATE_NOTPLAYING:
+		return "NOTPLAYING";
+	case WH_STATE_WAITFORPLAYERS:
+		return "WAITFORPLAYERS";
+	case WH_STATE_NEXT_HAND:
+		return "NEXT_HAND";
+	case WH_STATE_FIRST_BID:
+		return "FIRST_BID";
+	case WH_STATE_NEXT_BID:
+		return "NEXT_BID";
+	case WH_STATE_WAIT_FOR_BID:
+		return "WAIT_FOR_BID";
+	case WH_STATE_FIRST_TRICK:
+		return "FIRST_TRICK";
+	case WH_STATE_NEXT_TRICK:
+		return "NEXT_TRICK";
+	case WH_STATE_NEXT_PLAY:
+		return "NEXT_PLAY";
+	case WH_STATE_WAIT_FOR_PLAY:
+		return "WAIT_FOR_PLAY";
+	}
+	return "[unknown state]";
+}
 
 static int try_to_start_game();
 static void newgame();
@@ -65,12 +87,12 @@ void set_game_state(server_state_t state)
 		if (game.saved_state != state)
 			ggzd_debug("ERROR: SERVER BUG: "
 				   "Setting game saved state to %d - %ws.",
-				   state, game_states[state]);
+				   state, get_state_name(state));
 		game.saved_state = state;
 	} else {
 		if (game.state != state)
 			ggzd_debug("Setting game state to %d - %s.", state,
-				   game_states[state]);
+				   get_state_name(state));
 		game.state = state;
 	}
 }
@@ -80,7 +102,7 @@ void save_game_state()
 	if (game.state == WH_STATE_WAITFORPLAYERS)
 		return;
 	ggzd_debug("Entering waiting state; old state was %d - %s.",
-		   game.state, game_states[game.state]);
+		   game.state, get_state_name(game.state));
 	game.saved_state = game.state;
 	game.state = WH_STATE_WAITFORPLAYERS;
 }
@@ -88,7 +110,7 @@ void save_game_state()
 void restore_game_state()
 {
 	ggzd_debug("Ending waiting state; new state is %d - %s.",
-		   game.saved_state, game_states[game.saved_state]);
+		   game.saved_state, get_state_name(game.saved_state));
 	game.state = game.saved_state;
 }
 
@@ -233,7 +255,7 @@ int send_sync(player_t p)
 	int status = 0;
 
 	ggzd_debug("Sending sync to player %d/%s.  State is %s.", p,
-		   ggzd_get_player_name(p), game_states[game.state]);
+		   ggzd_get_player_name(p), get_state_name(game.state));
 
 	if (send_player_list(p) < 0)
 		status = -1;
@@ -533,7 +555,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 		} else {
 			ggzd_debug
 				("SERVER/CLIENT bug?: received WH_RSP_NEWGAME while we were in state %d (%s).",
-				 game.state, game_states[game.state]);
+				 game.state, get_state_name(game.state));
 			status = -1;
 		}
 		break;
@@ -665,7 +687,7 @@ void next_play(void)
 	/* TODO: use looping instead of recursion */
 
 	ggzd_debug("Next play called while state is %s.",
-		   game_states[game.state]);
+		   get_state_name(game.state));
 
 	switch (game.state) {
 	case WH_STATE_NOTPLAYING:
