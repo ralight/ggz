@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
+AC_INIT([GGZ chat bot], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-grubby])
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-grubby, 0.0.8pre)
 AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
 dnl Compiling Options

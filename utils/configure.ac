@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
+AC_INIT([GGZ utilities], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-utils])
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-utils, 0.0.7)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
 dnl Compiling Options
