@@ -1652,7 +1652,7 @@ msgstr "Passwort benutzen:"
 #: ../../ggz-kde/src/KGGZConnect.cpp:134 ../../ggz-kde/src/KGGZConnect.cpp:133
 #: ../../ggz-kde/src/KGGZConnect.cpp:139 ../../ggz-kde/src/KGGZConnect.cpp:150
 msgid "Use secure connection (TLS)"
-msgstr "Sicher Verbindung (TLS) verwenden"
+msgstr "Sichere Verbindung (TLS) verwenden"
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:116 ../../ggz-kde/src/KGGZConnect.cpp:127
 msgid "Using KWallet"
