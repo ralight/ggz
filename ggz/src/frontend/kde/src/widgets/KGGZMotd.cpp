@@ -36,12 +36,14 @@
 
 // KGGZ includes
 #include "KGGZCommon.h"
+#include "KGGZCaption.h"
 
 // KDE includes
 #include <klocale.h>
 
 // Qt includes
 #include <qpushbutton.h>
+#include <qlayout.h>
 
 // System includes
 #include <stdio.h>
@@ -53,13 +55,22 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QPushButton *button;
+	KGGZCaption *caption;
+	QVBoxLayout *vbox;
 
 	m_edit = new QTextView(this);
 	m_edit->setGeometry(5, 5, 310, 360);
-	m_edit->setFont(QFont("Courier", 10, QFont::Bold));
+	m_edit->setFont(QFont("Courier", 10/*, QFont::Bold*/));
 
 	button = new QPushButton("OK", this);
-	button->setGeometry(100, 370, 120, 20);
+	//button->setGeometry(100, 370, 120, 20);
+
+	caption = new KGGZCaption("MOTD", "GGZ Gaming Zone message of the day", this);
+
+	vbox = new QVBoxLayout(this, 5);
+	vbox->add(caption);
+	vbox->add(m_edit);
+	vbox->add(button);
 
 	connect(button, SIGNAL(clicked()), SLOT(close()));
 
@@ -81,16 +92,11 @@ void KGGZMotd::append(char *text)
 {
 	unsigned int i;
 	int j, count;
-	//char tmp[8];
 	const char *html[] = {"000000", "20ff00", "0000ff", "ffa000", "ff00ff", "300fff", "a0d000", "00ff70", "ff20ff", "777777", "AAAAAA"};
-	//char buf[1024];
 	QString buffer;
 
 	KGGZDEBUGF("KGGZMotd::append(%s)\n", text);
-	//KGGZDEBUGF("text length: %i\n", strlen(text));
 	count = 0;
-	//strcpy(buf, "");
-	//buffer = new QString();
 	for(i = 0; i < strlen(text); i++)
 	{
 		if(text[i] != '%')
@@ -98,30 +104,30 @@ void KGGZMotd::append(char *text)
 			switch(text[i])
 			{
 				case ' ':
-					//sprintf(tmp, "&nbsp;");
 					buffer.append("&nbsp;");
 					break;
 				case '<':
-					//sprintf(tmp, "&lt;");
 					buffer.append("&lt;");
 					break;
 				case '>':
-					//sprintf(tmp, "&gt;");
 					buffer.append("&gt;");
 					break;
 				case '\n':
-					buffer.append("<br>");
+					KGGZDEBUG("motd: end of line\n");
+					//if((!i) || (text[i - i] != '\n'))
+					//{
+						buffer.append("<br>\n");
+						count = 0;
+					//}
+					//else KGGZDEBUG("rejected!\n");
 					break;
 				default:
-					//sprintf(tmp, "%c", text[i]);
 					buffer.append(text[i]);
 			}
-			//strcat(buf, tmp);
 			count++;
-			if(count > 45)
+			if(count > 37)
 			{
 				count = 0;
-				//strcat(buf, "<br>");
 				buffer.append("<br>");
 			}
 		}
@@ -131,9 +137,6 @@ void KGGZMotd::append(char *text)
 			j = (int)text[i] - 48;
 			if((j >= 0) && (j <= 9))
 			{
-				//strcat(buf, "<font color=#");
-				//strcat(buf, html[j]);
-				//strcat(buf, ">");
 				buffer.append("<font color=#");
 				buffer.append(html[j]);
 				buffer.append(">");
@@ -152,20 +155,13 @@ void KGGZMotd::setSource(void *data)
 	char **motd;
 
 	KGGZDEBUGF("KGGZMotd::setSource()\n");
-	m_edit->setText("GGZ Gaming Zone Message Of The Day:<br><br>");
 
-	//KGGZDEBUG("--> cleared\n");
 	motd = (char**)data;
-	//KGGZDEBUG("--> casted\n");
 	if(!motd)
 	{
 		KGGZDEBUG("No MOTD data received!\n");
 		return;
 	}
-	//KGGZDEBUG("--> checked\n");
 	for(int i = 0; motd[i] != NULL; i++)
-	{
-		//KGGZDEBUG("--> append: %s\n", motd[i]);
 		append(motd[i]);
-	}
 }

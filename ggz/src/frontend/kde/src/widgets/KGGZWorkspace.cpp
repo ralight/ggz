@@ -47,7 +47,7 @@ KGGZWorkspace::KGGZWorkspace(QWidget *parent, const char *name)
 
 	m_firstresize = 4;
 
-	setBackgroundColor(QColor(255, 255, 0));
+	//setBackgroundColor(QColor(255, 255, 0));
 
 	m_vsbox = new QSplitter(this);
 	m_vsbox->setOrientation(QSplitter::Vertical);
