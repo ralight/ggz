@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2361 2001-09-05 04:56:14Z jdorje $
+ * $Id: common.c 2367 2001-09-05 06:57:10Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -164,7 +164,7 @@ int send_play(card_t card, seat_t seat)
  *   game-independent function to send a gameover to all players
  *   cnt is the number of winners, plist is the winner list
  */
-int send_gameover(int cnt, player_t * plist)
+int send_gameover(int winner_cnt, player_t * winners)
 {
 	player_t p;
 	int i, fd;
@@ -177,12 +177,11 @@ int send_gameover(int cnt, player_t * plist)
 		if (fd == -1)
 			continue;
 
-		if (es_write_int(fd, WH_MSG_GAMEOVER) < 0)
+		if (es_write_int(fd, WH_MSG_GAMEOVER) < 0 ||
+		    es_write_int(fd, winner_cnt) < 0)
 			status = -1;
-		if (es_write_int(fd, cnt) < 0)
-			status = -1;
-		for (i = 0; i < cnt; i++) {
-			seat_t ws = game.players[plist[i]].seat;
+		for (i = 0; i < winner_cnt; i++) {
+			seat_t ws = game.players[winners[i]].seat;
 			if (es_write_int(fd, CONVERT_SEAT(ws, p)) < 0)
 				status = -1;
 		}

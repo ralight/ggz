@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: common.h 2367 2001-09-05 06:57:10Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -45,8 +45,7 @@
 #define __COMMON_H__
 
 /* GGZCards server game states */
-typedef enum
-{
+typedef enum {
 	WH_STATE_PRELAUNCH,	/* before the launch happens */
 	WH_STATE_NOTPLAYING,	/* no game started */
 	WH_STATE_WAITFORPLAYERS,	/* waiting for players */
@@ -58,12 +57,10 @@ typedef enum
 	WH_STATE_NEXT_TRICK,	/* time for the next trick */
 	WH_STATE_NEXT_PLAY,	/* asking for a new play */
 	WH_STATE_WAIT_FOR_PLAY	/* waiting for a play */
-}
-server_state_t;
+} server_state_t;
 
 /* Data structure for generic trick-taking card game */
-struct wh_game_t
-{
+struct wh_game_t {
 	game_type_t which_game;	/* the game; currently defined in cards.h */
 	struct game_function_pointers *funcs;	/* game-specific functions */
 	ai_type_t ai_type;	/* the type of AI we're using */
@@ -151,7 +148,7 @@ int send_play(card_t card, seat_t);
 int send_table(player_t);
 int send_sync(player_t);
 int send_sync_all();
-int send_gameover(int, player_t *);
+int send_gameover(int winner_cnt, player_t * winners);
 int req_play(player_t, seat_t);
 int rec_play(player_t);
 void send_badplay(player_t, char *);
