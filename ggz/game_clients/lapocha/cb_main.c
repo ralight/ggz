@@ -4,8 +4,9 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Callbacks for La Pocha main Gtk window
+ * $Id: cb_main.c 3556 2002-03-15 14:41:08Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,7 +102,7 @@ on_fixed1_expose_event                 (GtkWidget       *widget,
 {
 	table_handle_expose_event(event);
 
-	return FALSE;
+	return TRUE;
 }
 
 
