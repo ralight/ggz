@@ -66,6 +66,8 @@ int main(void)
 	ggzcore_event_connect(GGZ_SERVER_LOGIN, server_login_ok);
 	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
 	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
+	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
+	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, server_list_players);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);

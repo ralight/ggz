@@ -24,6 +24,9 @@
  */
 
 
+#include <ggzcore.h>
+
+
 void server_login_ok(GGZEventID id, void* event_data, void* user_data);
 
 void server_connect_fail(GGZEventID id, void* event_data, void* user_data);
@@ -44,3 +47,6 @@ void server_room_enter(GGZEventID id, void* event_data, void* user_data);
 
 void server_room_leave(GGZEventID id, void* event_data, void* user_data);
 
+void server_list_rooms(GGZEventID id, void* event_data, void* user_data);
+
+void server_list_players(GGZEventID id, void* event_data, void* user_data);

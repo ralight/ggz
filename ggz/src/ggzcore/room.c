@@ -54,6 +54,8 @@ struct _GGZRoom {
 
 /* List of rooms on the server */
 static struct _ggzcore_list *room_list;
+static unsigned int num_rooms;
+
 
 /* Local functions for manipulating room list */
 static void _ggzcore_room_list_print(void);
@@ -74,6 +76,7 @@ void _ggzcore_room_list_clear(void)
 					 _ggzcore_room_create,
 					 _ggzcore_room_destroy,
 					 0);
+	num_rooms = 0;
 }
 
 
@@ -90,7 +93,8 @@ int _ggzcore_room_list_add(const unsigned int id, const char* name,
 	room.game = game;
 	room.desc = (char*)desc;
 
-	status = _ggzcore_list_insert(room_list, (void*)&room);
+	if ( (status = _ggzcore_list_insert(room_list, (void*)&room)) == 0)
+		num_rooms++;
 	_ggzcore_room_list_print();
 
 	return status;
@@ -109,6 +113,8 @@ int _ggzcore_room_list_remove(const unsigned int id)
 		return -1;
 
 	_ggzcore_list_delete_entry(room_list, entry);
+	num_rooms--;
+
 	_ggzcore_room_list_print();
 
 	return 0;
@@ -148,6 +154,12 @@ int _ggzcore_room_list_replace(const unsigned int id, const char* name,
 }
 
 
+unsigned int ggzcore_room_get_num(void)
+{
+	return num_rooms;
+}
+
+
 char* ggzcore_room_get_name(const unsigned int id)
 {
 	struct _ggzcore_list_entry *entry;
@@ -161,6 +173,29 @@ char* ggzcore_room_get_name(const unsigned int id)
 	
 	return room->name;
 }
+
+
+char** ggzcore_room_get_names(void)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZRoom *room;
+
+	if (num_rooms >= 0) {
+		if (!(names = calloc((num_rooms + 1), sizeof(char*))))
+			ggzcore_error_sys_exit("calloc() failed in room_get_names");
+		cur = _ggzcore_list_head(room_list);
+		while (cur) {
+			room = _ggzcore_list_get_data(cur);
+			names[i++] = room->name;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+				
+	return names;
+}
+
 
 /* Return 0 if equal and -1 otherwise */
 static int _ggzcore_room_compare(void* p, void* q)

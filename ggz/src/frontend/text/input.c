@@ -149,10 +149,18 @@ static void input_handle_list(char* line)
 		ggzcore_event_trigger(GGZ_USER_LIST_TYPES, NULL, NULL);
 	else if (strcmp(line, "tables") == 0)
 		ggzcore_event_trigger(GGZ_USER_LIST_TABLES, NULL, NULL);
-	else if (strcmp(line, "players") == 0)
-		ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
-	else if (strcmp(line, "rooms") == 0)
-		ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	else if (strcmp(line, "players") == 0) {
+		if (ggzcore_player_get_num() >= 1)
+			output_players();
+		else 
+			ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	}
+	else if (strcmp(line, "rooms") == 0) {
+		if (ggzcore_room_get_num() >= 1)
+			output_rooms();
+		else 
+			ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	}
 }
 
 

@@ -114,3 +114,15 @@ void server_room_leave(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("<-- %s left the room.", event_data);
 }
+
+
+void server_list_rooms(GGZEventID id, void* event_data, void* user_data)
+{
+	output_rooms();
+}
+
+void server_list_players(GGZEventID id, void* event_data, void* user_data)
+{
+	output_players();
+}
+

@@ -48,6 +48,7 @@ struct _GGZPlayer {
 
 /* List of players in current room */
 static struct _ggzcore_list *player_list;
+static unsigned int num_players;
 
 /* Local functions for manipulating player list */
 static void _ggzcore_player_list_print(void);
@@ -68,6 +69,7 @@ void _ggzcore_player_list_clear(void)
 					   _ggzcore_player_create,
 					   _ggzcore_player_destroy,
 					   0);
+	num_players = 0;
 }
 
 
@@ -81,7 +83,8 @@ int _ggzcore_player_list_add(const char* name, const int table)
 	player.name = (char*)name;
 	player.table = table;
 
-	status = _ggzcore_list_insert(player_list, (void*)&player);
+	if ( (status = _ggzcore_list_insert(player_list, (void*)&player)) == 0)
+		num_players++;
 	_ggzcore_player_list_print();
 
 	return status;
@@ -100,6 +103,7 @@ int _ggzcore_player_list_remove(const char* name)
 		return -1;
 
 	_ggzcore_list_delete_entry(player_list, entry);
+	num_players--;
 	_ggzcore_player_list_print();
 
 	return 0;
@@ -124,6 +128,34 @@ int _ggzcore_player_list_replace(const char* name, const int table)
 	_ggzcore_player_list_print();
 
 	return 0;
+}
+
+
+unsigned int ggzcore_player_get_num(void)
+{
+	return num_players;
+}
+
+
+char** ggzcore_player_get_names(void)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZPlayer *player;
+
+	if (num_players >= 0) {
+		if (!(names = calloc((num_players + 1), sizeof(char*))))
+			ggzcore_error_sys_exit("calloc() failed in player_get_names");
+		cur = _ggzcore_list_head(player_list);
+		while (cur) {
+			player = _ggzcore_list_get_data(cur);
+			names[i++] = player->name;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+				
+	return names;
 }
 
 

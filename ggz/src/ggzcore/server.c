@@ -29,6 +29,7 @@
 #include <server.h>
 #include <state.h>
 #include <net.h>
+#include <player.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -189,6 +190,7 @@ static void _ggzcore_server_room_join(GGZEventID id, void* event_data,
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing room_join");
 	_ggzcore_state_set(GGZ_STATE_IN_ROOM);
 	_ggzcore_state.room = _ggzcore_state.trans_room;
+	_ggzcore_player_list_clear();
 }
 
 

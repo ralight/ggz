@@ -283,8 +283,12 @@ char* ggzcore_state_get_profile_name(void);
 char* ggzcore_state_get_profile_host(void);
 int ggzcore_state_get_room(void);
 
+unsigned int ggzcore_room_get_num(void);
 char* ggzcore_room_get_name(const unsigned int);
+char** ggzcore_room_get_names(void);
 
+unsigned int ggzcore_player_get_num(void);
+char** ggzcore_player_get_names(void);
 
 
 /* Debugging categories */
