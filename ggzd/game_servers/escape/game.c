@@ -291,17 +291,17 @@ int game_send_players(void)
 /* Send out move for player: num */
 int game_send_move(int num, int event, char direction)
 {
-	int fd = ggz_seats[escape_game.opponent].fd;
+	int fd = ggz_seats[(escape_game.turn+1)%2].fd;
 	int i;
 
-	ggz_debug("game_send_more(%d, %d, %d)\n",num, event, direction);	
+	ggz_debug("game_send_move(%d, %d, %d)\n",num, event, direction);	
 
 	/* If player is a computer, don't need to send */
 	if(fd == -1)
 		return 0;
 
 	ggz_debug("\tSending player %d's move to player %d",
-		   num, escape_game.opponent);
+		   num, (escape_game.turn+1)%2);
 
 	if(es_write_int(fd, ESCAPE_MSG_MOVE) < 0
 	   || es_write_char(fd, direction) < 0){
@@ -320,6 +320,9 @@ int game_send_sync(int num)
 	ggz_debug("Handling sync for player %d", num);
 
 	if(es_write_int(fd, ESCAPE_SND_SYNC) < 0
+	   || es_write_char(fd, escape_game.boardheight) < 0
+	   || es_write_char(fd, escape_game.goalwidth) < 0
+	   || es_write_char(fd, escape_game.wallwidth) < 0
 	   || es_write_char(fd, escape_game.turn) < 0)
 		return -1;
 
@@ -627,11 +630,13 @@ int game_update(int event, void *d1)
 				return -1;
 		
 			direction = *(char*)d1;
-			if (turn == escape_game.turn){ // player making move has another turn
+			if (turn == escape_game.turn){ // player making move has another turn so send move to *other* player
 				ggz_debug("\tgame_send_move(%d, %d, %d)\n",(escape_game.turn+1)%2, event, direction);
+				ggz_debug("\tPlayer has another move\n");
 				game_send_move((escape_game.turn+1)%2, event, direction);
 			}else{
 				ggz_debug("\tgame_send_move(%d, %d, %d)\n",escape_game.turn, event, direction);
+				ggz_debug("\tPlayer relinquishes move\n");
 				game_send_move(escape_game.turn, event, direction);
 			}
 		
