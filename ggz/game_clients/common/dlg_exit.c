@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 3629 2002-03-23 19:31:28Z jdorje $
+ * $Id: dlg_exit.c 3633 2002-03-23 20:27:51Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -35,7 +35,6 @@
 
 void ggz_show_exit_dialog(int can_return)
 {
-
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
 	GtkWidget *label;
@@ -44,7 +43,14 @@ void ggz_show_exit_dialog(int can_return)
 	GtkWidget *labelBox;
 	GtkWidget *exitButton;
 	GtkWidget *cancelButton;
-
+	char *text;
+	
+	if (can_return) {
+		text = "Are you sure you want to exit?";
+	} else {
+		text = "Are you sure you want to exit?\n"
+	               "You will not be able to rejoin.";
+	}
 
 	window = gtk_dialog_new();
 	gtk_window_set_title(GTK_WINDOW(window), "Really Exit?");
@@ -52,10 +58,8 @@ void ggz_show_exit_dialog(int can_return)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */
-	label = gtk_label_new("Are you sure you want to exit?\n"
-	                      "You will not be able to rejoin.");
+	label = gtk_label_new(text);
 	gtk_widget_show(label);
-
 
 	/* Button widgets */
 	exitButton = gtk_button_new_with_label("Exit");
