@@ -3,10 +3,11 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
+ * $Id: game.c 3788 2002-04-06 19:12:42Z jdorje $
  *
  * Functions for handling game events
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +150,7 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 
 	game_quit();
 	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_leave_table(room);
+	ggzcore_room_leave_table(room, 0);
 
 	return GGZ_HOOK_OK;
 }
