@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: drawcard.c 5207 2002-11-04 07:19:23Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -28,6 +28,8 @@
 #endif
 
 #include <assert.h>
+#include <gtk/gtk.h>
+#include <stdio.h>
 
 #include <ggz.h>
 
@@ -36,20 +38,11 @@
 #include "game.h"		/* For preferences information */
 #include "table.h"		/* HACK: we need table_style */
 
-#include "cards-1.xpm"
-#include "cards-2.xpm"
-#include "cards-3.xpm"
-#include "cards-4.xpm"
-
-#include "cards-b1.xpm"
-#include "cards-b2.xpm"
-#include "cards-b3.xpm"
-#include "cards-b4.xpm"
-
-
-/* Card front pictures for each of the 4 orientations */
-GdkPixmap *card_fronts[4];
-static GdkPixmap *card_backs[4];
+/* Card pictures for each of the 4 orientations */
+struct {
+	GdkPixmap *front;
+	GdkPixmap *back;
+} cards[4];
 
 static cardset_type_t client_card_type = UNKNOWN_CARDSET;
 
@@ -65,32 +58,38 @@ static void draw_domino_card(card_t card, orientation_t orientation, int x,
 static int get_card_width0(void);
 static int get_card_height0(void);
 
+static GdkPixmap *load_pixmap(GdkWindow *window, GdkBitmap **mask,
+			      GdkColor *trans, const char *name)
+{
+	char *fullpath;
+	GdkPixmap *pixmap;
+
+	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
+	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+	if(pixmap == NULL)
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
+
+	return pixmap;
+}
+
 static void load_french_cardset(void)
 {
 	int i;
-	GdkBitmap *mask;
-	gchar **xpm_fronts[4] =
-		{ cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm };
-	gchar **xpm_backs[4] =
-		{ cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm };
 
 	/* build pixmaps from the xpms */
 	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
-		card_fronts[i] =
-			gdk_pixmap_create_from_xpm_d(table->window, &mask,
-						     &table_style->
-						     bg[GTK_STATE_NORMAL],
-						     (gchar **)
-						     xpm_fronts[i]);
-		card_backs[i] =
-			gdk_pixmap_create_from_xpm_d(table->window, &mask,
-						     &table_style->
-						     bg[GTK_STATE_NORMAL],
-						     (gchar **) xpm_backs[i]);
-		if (!card_fronts[i] || !card_backs[i])
-			ggz_debug(DBG_TABLE, "ERROR: "
-				  "couldn't load card pixmaps "
-				  "for orientation %d.", i);
+		char fronts[32], backs[32];
+
+		snprintf(fronts, sizeof(fronts), "cards-%d.xpm", i + 1);
+		snprintf(backs, sizeof(backs), "cards-b%d.xpm", i + 1);
+
+		cards[i].front = load_pixmap(table->window, NULL,
+					     &table_style->
+					     bg[GTK_STATE_NORMAL], fronts);
+		cards[i].back = load_pixmap(table->window, NULL,
+					    &table_style->
+					    bg[GTK_STATE_NORMAL], backs);
 	}
 }
 
@@ -113,7 +112,7 @@ void load_card_data(cardset_type_t cardset_type)
 	}
 }
 
-/* Returns the coordinates of the card out of the XPM file. */
+/* Returns the coordinates of the card out of the pixmap. */
 static void get_card_coordinates(card_t card, orientation_t orientation,
 				 int *x, int *y)
 {
@@ -167,6 +166,7 @@ static void draw_french_card(card_t card, orientation_t orientation,
 	int width, height;
 	int xc = 0, yc = 0;
 	int show = (card.suit != -1 && card.face != -1);
+	GdkPixmap *pixmap;
 
 	assert(orientation >= 0 && orientation < 4);
 
@@ -188,10 +188,11 @@ static void draw_french_card(card_t card, orientation_t orientation,
 		xc = xy[orientation][0];
 		yc = xy[orientation][1];
 	}
+
+	pixmap = show ? cards[orientation].front : cards[orientation].back;
 	gdk_draw_pixmap(image,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			show ? card_fronts[orientation] :
-			card_backs[orientation], xc, yc, x, y, width, height);
+			pixmap, xc, yc, x, y, width, height);
 }
 
 static void draw_domino_card(card_t card, orientation_t orientation,
