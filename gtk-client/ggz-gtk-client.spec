@@ -2,18 +2,18 @@
 
 Summary: GGZ Client for Gtk 1.2
 Name: ggz-gtk-client
-Version: 0.0.4
+Version: 0.0.5pre
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-gtk-client-0.0.4.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-gtk-client-0.0.5pre.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
-Packager: Rich Gade <rgade@users.sourceforge.net>
+Packager: GGZ Dev Team <ggz-dev@lists.sourceforge.net>
 BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
-The official Gnu Gaming Zone client for the Gtk 1.2 user interface.
+The official GGZ Gaming Zone client for the Gtk 1.2 user interface.
 
 %prep
 %setup
@@ -37,6 +37,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/man/man6/ggz-gtk.6.gz
 
 %changelog
+* Fri Sep 14 2001 Jason Short <jdorje@users.sourceforge.net>
+- Updated for 0.0.5pre version.
+
 * Sun Apr 22 2001 Rich Gade <rgade@users.sourceforge.net>
 - Updated for new distro name ggz-gtk-client
 
