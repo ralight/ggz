@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: client.c 4401 2002-09-03 21:19:57Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -85,7 +85,7 @@ static int handle_req_play(void);
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-	handle_server_connect( (int)data );
+	handle_server_connect(*(int*)data);
 }
 #endif
 
@@ -744,11 +744,18 @@ static int handle_msg_play(void)
 		return -1;
 
 	assert(p >= 0 && p < ggzcards.num_players);
-	assert(ggzcards.play_hand < 0 || p == ggzcards.play_hand);
 
 	/* Reset the play_hand, just to be safe. */
-	if (p == ggzcards.play_hand)
+	if (p == ggzcards.play_hand) {
+		/* We assume that if the hand the card came from is the hand
+		   we're playing from, that it's our play.  Thus there is
+		   an implicit assumption that two players can't simultaneously
+		   play from the same hand. */
 		ggzcards.play_hand = -1;
+	} else {
+		/* Either we're not playing, or someone else played during
+		   our play.  Both are possible. */
+	}
 
 	/* Place the card on the table.  Note, this contradicts what the
 	   table code does, since that runs animation that may assume the
