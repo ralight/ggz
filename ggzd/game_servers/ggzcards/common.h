@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4001 2002-04-16 19:35:22Z jdorje $
+ * $Id: common.h 4072 2002-04-24 09:21:42Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -73,9 +73,6 @@ typedef struct {
 
 	deck_type_t deck_type;	/**< the type of deck used */
 	deck_t *deck;		/**< the deck being used */
-
-	/* misc. game data */
-	char *rules_url;	/**< the URL of where to read the game's rules */
 
 	/* misc. state data */
 	bool initted;		/**< has the game been initialized? */

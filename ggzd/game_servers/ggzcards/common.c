@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: common.c 4072 2002-04-24 09:21:42Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -956,14 +956,9 @@ void init_game()
 	/* set the game message */
 	set_global_message("game", "%s", game.data->full_name);
 
-	/* set the Rules message */
-	if (game.rules_url == NULL)
-		/* Could we just refer people to ggz.sf.net? */
-		game.rules_url = "http://pagat.com/";
-
 	set_global_message("Rules",
 			   "You can read the rules of this game at\n%s.",
-			   game.rules_url);
+			   game.data->rules_url);
 
 	/* allocate hands */
 	for (s = 0; s < game.num_seats; s++) {

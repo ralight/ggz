@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4071 2002-04-24 09:05:48Z jdorje $
+ * $Id: fortytwo.c 4072 2002-04-24 09:21:42Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -67,6 +67,7 @@ static card_t fortytwo_map_card(card_t card);
 game_data_t fortytwo_data = {
 	"fortytwo",
 	N_("Forty-two"),
+	"http://pagat.com/pointtrk/42.html",
 	fortytwo_is_valid_game,
 	fortytwo_init_game,
 	game_get_options,
@@ -116,7 +117,6 @@ static void fortytwo_init_game(void)
 	game.deck_type = GGZ_DECK_DOMINOES;
 	game.target_score = 7;
 	game.cumulative_scores = TRUE;
-	game.rules_url = "---";
 	
 	/* TODO: specific fortytwo initializations */
 	FORTYTWO.declarer = -1;

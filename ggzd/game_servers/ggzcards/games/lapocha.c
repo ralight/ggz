@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 4044 2002-04-21 23:20:16Z jdorje $
+ * $Id: lapocha.c 4072 2002-04-24 09:21:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -71,6 +71,7 @@ static void lap_send_scores(void);
 game_data_t lapocha_data = {
 	"lapocha",
 	N_("La Pocha"),
+	"http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=6",
 	lapocha_is_valid_game,
 	lapocha_init_game,
 	game_get_options,
@@ -117,9 +118,7 @@ static void lapocha_init_game(void)
 	game.deck_type = GGZ_DECK_LAPOCHA;
 	game.max_hand_length = 10;
 	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump
-					   if you can */
-					
-	game.rules_url = "http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=6";				
+					   if you can */	
 }
 
 static void lapocha_handle_gameover(void)

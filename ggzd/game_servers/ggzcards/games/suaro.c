@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: suaro.c 4072 2002-04-24 09:21:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -83,6 +83,7 @@ static void suaro_end_trick(void);
 game_data_t suaro_data = {
 	"suaro",
 	N_("Suaro"),
+	"http://suaro.dhs.org/",
 	suaro_is_valid_game,
 	suaro_init_game,
 	suaro_get_options,
@@ -135,7 +136,6 @@ static void suaro_init_game(void)
 
 	game.deck_type = GGZ_DECK_SUARO;
 	game.max_hand_length = 9;
-	game.rules_url = "http://suaro.dhs.org/";
 	game.target_score = 50;
 	
 	game.ai_type = "suaro";

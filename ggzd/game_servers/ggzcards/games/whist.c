@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 4044 2002-04-21 23:20:16Z jdorje $
+ * $Id: whist.c 4072 2002-04-24 09:21:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -46,6 +46,7 @@ static void whist_end_hand(void);
 game_data_t whist_data = {
 	"whist",
 	N_("Whist"),
+	"http://pagat.com/whist/whist.html",
 	whist_is_valid_game,
 	whist_init_game,
 	game_get_options,
