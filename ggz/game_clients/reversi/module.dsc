@@ -1,5 +1,6 @@
 # Reversi description file
-[Reversi]
+[ModuleInfo]
+Name = Reversi
 Author = Ismael Orenstein
 ExecPath = ggz.reversi
 Frontend = gtk

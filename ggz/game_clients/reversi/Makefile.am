@@ -6,6 +6,14 @@ SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ -I$(top_srcdir)/src/ggzcore
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config --install --fromfile=module.dsc --force
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=module.dsc
+
 ggzexecmod_PROGRAMS = ggz.reversi
 
 ggz_reversi_SOURCES = game.h \
