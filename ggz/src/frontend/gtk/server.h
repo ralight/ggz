@@ -84,7 +84,7 @@ GList* server_get_name_list(void);
  * Return the list of profile names as an argv-style array of strings
  * The array should be free'd, but not the array elements.
  */
-const char** server_get_names(void);
+char** server_get_names(void);
 
 
 /*

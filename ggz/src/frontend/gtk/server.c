@@ -82,7 +82,7 @@ void server_profiles_load(void)
 void server_profiles_save(void)
 {
 	int count;
-	const char** profiles;
+	char** profiles;
 	Server* server;
 	GList* node;
 	
@@ -137,9 +137,9 @@ GList* server_get_name_list(void)
 }
 
 
-const char** server_get_names(void)
+char** server_get_names(void)
 {
-	const char** profiles;
+	char** profiles;
 	int i = 0;
 	GList* node;
 
