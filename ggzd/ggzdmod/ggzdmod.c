@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2602 2001-10-24 02:25:25Z jdorje $
+ * $Id: ggzdmod.c 2603 2001-10-24 02:30:03Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -46,6 +46,7 @@
    desired. */
 #define CHECK_GGZDMOD(ggzdmod) (ggzdmod)
 
+/* The number of event handlers there are. */
 #define GGZDMOD_NUM_HANDLERS 6
 
 /* The maximum length of a player name.  Does not include trailing \0. */
@@ -60,7 +61,6 @@ typedef struct _GGZdMod {
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
-	int gameover;
 	/* etc. */
 } _GGZdMod;
 
@@ -592,7 +592,7 @@ int ggzdmod_loop(GGZdMod * mod)
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
-	while (!ggzdmod->gameover) {
+	while (ggzdmod->state != GGZ_STATE_GAMEOVER) {
 		ggzdmod_io_read(mod);
 	}
 	return 0;		/* should handle errors */
@@ -605,7 +605,9 @@ int ggzdmod_halt_game(GGZdMod * mod)
 		return -1;
 	}
 	if (ggzdmod->type == GGZDMOD_GAME) {
-		ggzdmod->gameover = 1;
+		/* FIXME: do we really want to call the event handler
+		   function in this case? */
+		set_state(ggzdmod, GGZ_STATE_GAMEOVER);
 	} else {
 		/* TODO: not implemented */
 		return -1;
