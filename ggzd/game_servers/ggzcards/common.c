@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4103 2002-04-29 03:11:31Z jdorje $
+ * $Id: common.c 4104 2002-04-29 03:21:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -927,20 +927,11 @@ void empty_seat(seat_t s, char *name)
 
 const char *get_seat_name(seat_t s)
 {
-	switch (get_seat_status(s)) {
-	case GGZ_SEAT_PLAYER:
-	case GGZ_SEAT_BOT:
-	case GGZ_SEAT_RESERVED:
-		return ggzdmod_get_seat(game.ggz, game.seats[s].player).name;
-		break;
-	case GGZ_SEAT_OPEN:
-		return "Empty Seat"; /* Not really necessary. */
-		break;
-	case GGZ_SEAT_NONE:
+	player_t p = game.seats[s].player;
+	if (p >= 0)
+		return get_player_name(p);
+	if (game.seats[s].name)
 		return game.seats[s].name;
-		break;
-	}
-	
 	return "Unknown Seat";
 }
 
@@ -955,7 +946,14 @@ GGZSeatType get_seat_status(seat_t s)
 
 const char* get_player_name(player_t p)
 {
-	return ggzdmod_get_seat(game.ggz, p).name;	
+	GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+	
+	if (seat.name)
+		return seat.name;
+	if (seat.type == GGZ_SEAT_OPEN)
+		return "Empty Seat";
+	assert(FALSE);
+	return "Unknown Player";
 }
 
 GGZSeatType get_player_status(player_t p)
