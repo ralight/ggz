@@ -499,15 +499,15 @@ int chat_checkurl(GtkXText *xtext, char *word)
 			return WORD_HOST;
 	}
 
-	if (!strncasecmp (word + len - 5, ".html", 5))
+	if (len >= 5 && !strncasecmp (word + len - 5, ".html", 5))
 		return WORD_HOST;
-	if (!strncasecmp (word + len - 4, ".org", 4))
+	if (len >= 4 && !strncasecmp (word + len - 4, ".org", 4))
 		return WORD_HOST;
-	if (!strncasecmp (word + len - 4, ".net", 4))
+	if (len >= 4 && !strncasecmp (word + len - 4, ".net", 4))
 		return WORD_HOST;
-	if (!strncasecmp (word + len - 4, ".com", 4))
+	if (len >= 4 && !strncasecmp (word + len - 4, ".com", 4))
 		return WORD_HOST;
-	if (!strncasecmp (word + len - 4, ".edu", 4))
+	if (len >= 4 && !strncasecmp (word + len - 4, ".edu", 4))
 		return WORD_HOST;
 
 
