@@ -9,11 +9,11 @@ int main()
 	int from, to;
 	int color;
 
-	chess_ai_init(C_WHITE, 2);
+	chess_ai_init(C_WHITE, 5);
 
 	chess_ai_output();
 
-	ret = chess_ai_move(9, 17);
+	ret = chess_ai_move(9, 17, 0);
 	printf("Pawn move: %i\n", ret);
 
 	chess_ai_output();
@@ -24,7 +24,7 @@ int main()
 		ret = chess_ai_find(color, &from, &to);
 		if(!ret) break;
 		printf("Move found: %i (%i->%i)\n", ret, from, to);
-		ret = chess_ai_move(from, to);
+		ret = chess_ai_move(from, to, 0);
 		printf("Move validity: %i\n", ret);
 		chess_ai_output();
 		sleep(1);

@@ -123,7 +123,7 @@ static void chess_ai(void)
 				/* apply move and find countermove */
 				movefrom = movex * 8 + movey;
 				moveto = movex2 * 8 + movey2;
-				chess_ai_move(movefrom, moveto);
+				chess_ai_move(movefrom, moveto, 1);
 				if(myturn)
 				{
 					ret = chess_ai_find(C_BLACK, &movefrom, &moveto);

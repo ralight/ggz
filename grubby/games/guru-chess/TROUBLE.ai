@@ -1,0 +1,48 @@
+Currently unhandled situations in the prover:
+---------------------------------------------
+
+- two kings can never stand next to each other
+- if a king is in check, the move must take him out,
+  check-mate otherwise
+- pawns can go 2 steps initially
+- rochade, en-passant etc.?
+- pawn exchange
+
+
+Trouble for the AI
+------------------
+
+==================
+            Z1(P) -- -88
+      Y1(D)
+            Z2(-) -- -98
+
+X1(-)
+
+            Z3(P) -- 10
+      Y2(-)
+            Z4(-) -- 1
+
+X2(-) Y3(-) Z5(-) -- 1
+
+white black white
+==================
+
+trap for white in per-ending rating:
+
+(white:-) (black:-) (white:P) = 10
+(white:-) (black:D) (white:-) = -98
+=>
+(white:-) (black:D) (white:P) = -89
+
+what to do?
+per-level rating
+
+==================
+1     100   10
+X:1   Y:-99 Z:-89 -> X1 = -89
+1     1     1
+X:1   Y:0   Z:1   -> X2 = 1
+white black white
+==================
+
