@@ -46,6 +46,24 @@
 #define GGZ_DBG_GAME_MSG	(unsigned) 0x00000400
 #define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
 
+/* these two enumerations used to be in protocols.h */
+typedef enum {
+	RSP_GAME_LAUNCH,
+	RSP_GAME_JOIN,
+	RSP_GAME_LEAVE,
+        MSG_LOG,
+        MSG_DBG,
+	REQ_GAME_OVER
+} TableToControl;
+
+typedef enum {
+	REQ_GAME_LAUNCH,
+	REQ_GAME_JOIN,
+	REQ_GAME_LEAVE,
+	RSP_GAME_OVER
+} ControlToTable;
+/* end of protocols.h section */
+
 struct ggz_seat_t {
 	int assign;
 	char name[MAX_USER_NAME_LEN +1];
