@@ -44,6 +44,7 @@ struct node_t {
 };
 
 extern struct game_t game;
+extern int homes[6][6];
 
 extern void game_init(void);
 extern void game_init_board(void);

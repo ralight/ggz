@@ -30,3 +30,4 @@ extern void display_handle_click_event(GdkEventButton *event);
 extern void display_statusbar(char *);
 extern void display_show_path(GSList *);
 extern void display_set_name(int, char *);
+extern void display_set_label_colors(void);

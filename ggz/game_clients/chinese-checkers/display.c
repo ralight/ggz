@@ -75,8 +75,6 @@ void display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
-	GtkStyle *label_style;
-	int i, j;
 
 	/* Create and display the main dialog */
 	dlg_main = create_dlg_main();
@@ -165,23 +163,6 @@ void display_init(void)
 			0, 0,
 			0, 0,
 			400, 400);
-
-	/* Setup the styles for our name labels */
-	label[0] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p1_label");
-	label[1] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p2_label");
-	label[2] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p3_label");
-	label[3] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p4_label");
-	label[4] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p5_label");
-	label[5] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p6_label");
-	for(i=0; i<6; i++) {
-		gdk_color_parse(label_color[i], &color);
-		gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
-		label_style = gtk_style_new();
-		label_style->font = gdk_font_load("fixed");
-		for(j=0; j<5; j++)
-			label_style->fg[j] = color;
-		gtk_widget_set_style(label[i], label_style);
-	}
 }
 
 
@@ -387,5 +368,39 @@ void display_show_path(GSList *path_list)
 
 void display_set_name(int p, char *p_name)
 {
-	gtk_label_set_text(GTK_LABEL(label[p]), p_name);
+	int pos;
+
+	pos = homes[game.players-1][p];
+	gtk_label_set_text(GTK_LABEL(label[pos]), p_name);
+}
+
+
+void display_set_label_colors(void)
+{
+	int i, j, l_index;
+	GdkColormap *sys_colormap;
+	GdkColor color;
+	GtkStyle *label_style;
+
+	/* Setup the styles for our name labels */
+	label[0] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p1_label");
+	label[1] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p2_label");
+	label[2] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p3_label");
+	label[3] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p4_label");
+	label[4] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p5_label");
+	label[5] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p6_label");
+
+	sys_colormap = gdk_colormap_get_system();
+	for(i=0; i<6; i++) {
+		l_index = homes[game.players-1][i];
+		if(l_index == -1)
+			break;
+		gdk_color_parse(label_color[i], &color);
+		gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
+		label_style = gtk_style_new();
+		label_style->font = gdk_font_load("fixed");
+		for(j=0; j<5; j++)
+			label_style->fg[j] = color;
+		gtk_widget_set_style(label[l_index], label_style);
+	}
 }

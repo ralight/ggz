@@ -39,6 +39,15 @@
 
 
 struct game_t game;
+int homes[6][6] = {
+        { 0, -1, -1, -1, -1, -1 },      /* One player game (just filler) */
+        { 0,  3, -1, -1, -1, -1 },
+        { 0,  2,  4, -1, -1, -1 },
+        { 0,  1,  3,  4, -1, -1 },
+        { 0,  1,  2,  3,  4, -1 },      /* Five player game also filler */
+        { 0,  1,  2,  3,  4,  5 }
+};
+
 static GSList *path_list;
 
 static void game_zap_board(void);
@@ -116,15 +125,6 @@ static int homexy[6][10][2] = {
           {12, 18}, {11, 19}, {10, 20}, {9, 21} }
 };
 
-static int homes[6][6] = {
-        { 0, -1, -1, -1, -1, -1 },      /* One player game (just filler) */
-        { 0,  3, -1, -1, -1, -1 },
-        { 0,  2,  4, -1, -1, -1 },
-        { 0,  1,  3,  4, -1, -1 },
-        { 0,  1,  2,  3,  4, -1 },      /* Five player game also filler */
-        { 0,  1,  2,  3,  4,  5 }
-};
-
 static char *color[6] = { "red", "blue", "green", "yellow", "cyan", "purple" };
 
 
@@ -159,6 +159,7 @@ void game_init_board(void)
 		}
 	}
 
+	display_set_label_colors();
 	display_refresh_board();
 
 	msg = g_strdup_printf("You are playing the %s marbles",
