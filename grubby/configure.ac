@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([GGZ chat bot], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
+AC_INIT([GGZ chat bot], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-grubby])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -121,7 +121,7 @@ if test "$enable_python" = yes; then
 	echo -n "Extra check: python... "
 
 	usever=""
-	for ver in 2.2 2.3; do
+	for ver in 2.2 2.3 2.4; do
 		incs="/usr/local/include/python$ver /usr/include/python$ver"
 		AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
 		python_includes="$python_incdir"
