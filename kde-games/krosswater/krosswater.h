@@ -44,7 +44,8 @@ class Krosswater : public ZoneGGZModUI
 			proto_map = 103,
 			proto_map_respond = 104,
 			proto_map_backtrace = 105,
-			proto_move_broadcast = 106
+			proto_move_broadcast = 106,
+			proto_restart = 107
 		};
 
 	public slots:

@@ -118,6 +118,11 @@ void Krosswater::slotSelected(int person)
 	if(zonePlayers() == ZoneGamePlayers) showStatus(i18n("Game started"));
 	else showStatus(i18n("Waiting for other players..."));
 
+	qcw->setPlayerPixmap(zoneMe(), person);
+
+	for(int i = 0; i < ZoneGamePlayers; i++)
+		if(i != zoneMe()) qcw->setPlayerPixmap(i, (person + 1) % 3);
+
 	show();
 }
 
@@ -228,7 +233,7 @@ void Krosswater::slotZoneInput(int op)
 				qcw->setStone(x, y, 3);
 			}
 		}
-		if(!m_again)
+		if((!m_again) && (person == 0))
 		{
 			m_again = new DlgAgain(NULL, "DlgAgain");
 			connect(m_again, SIGNAL(signalAgain()), SLOT(slotAgain()));
@@ -344,8 +349,9 @@ void Krosswater::slotZoneBroadcast()
 	qcw->repaint();
 	sleep(1);
 	qcw->setStone(fromx, fromy, 0);
-	qcw->repaint();
 	qcw->setStone(tox, toy, 1);
+	qcw->repaint();
+	sleep(1);
 	qcw->setStoneState(tox, toy, 0);
 	qcw->setStoneState(fromx, fromy, 0);
 	qcw->repaint();
@@ -355,5 +361,7 @@ void Krosswater::slotZoneBroadcast()
 void Krosswater::slotAgain()
 {
 	m_again->close();
+	if(ggz_write_int(fd(), proto_restart) < 0)
+		protoError();
 }
 

@@ -96,8 +96,8 @@ void QCw::paintEvent(QPaintEvent *e)
 				case 3:
 					p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200, 200, 0)));
 					break;
-				default:
-					cout << "huh? " << m_board[i][j][0] << endl;
+				//default:
+					//cout << "huh? " << m_board[i][j][0] << endl;
 			}
 
 			switch(m_board[i][j][1])
