@@ -178,26 +178,26 @@ static void input_handle_list(char* line)
 	GGZRoom *room;
 
 	/* What are we listing? */
-	if (strcmp(line, "types") == 0) {
+	if (line && strcmp(line, "types") == 0) {
 		if (ggzcore_server_get_num_gametypes(server) > 0)
 			output_types();
 		else /* Get list from server */
 			ggzcore_server_list_gametypes(server, 1);
 	}
-	else if (strcmp(line, "rooms") == 0) {
+	else if (line && strcmp(line, "rooms") == 0) {
 		if (ggzcore_server_get_num_rooms(server) > 0)
 			output_rooms();
 		else /* Get list from server */
 			ggzcore_server_list_rooms(server, -1, 1);
 	}
-	else if (strcmp(line, "tables") == 0) {
+	else if (line && strcmp(line, "tables") == 0) {
 		room = ggzcore_server_get_cur_room(server);
 		if (ggzcore_room_get_num_tables(room) > 0)
 			output_tables();
 		else /* Get list from server */
 			ggzcore_room_list_tables(room, -1, 0);
 	}
-	else if (strcmp(line, "players") == 0) {
+	else if (line && strcmp(line, "players") == 0) {
 		room = ggzcore_server_get_cur_room(server);
 		if (ggzcore_room_get_num_players(room) > 0) {
 			output_players();
@@ -234,8 +234,12 @@ static void input_handle_join_room(char* line)
 {
 	int room;
 
-	room = atoi(line);
-	ggzcore_server_join_room(server, room);
+	if (line) {
+		room = atoi(line);
+		ggzcore_server_join_room(server, room);
+	} else {
+		output_text("Join which room?");
+	}
 }
 
 
@@ -243,10 +247,14 @@ static void input_handle_desc(char* line)
 {
 	int room;
 	char* desc;
-	
-	room = atoi(line);
-	desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
-	output_text(desc);
+
+	if (line) {
+		room = atoi(line);
+		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
+		output_text(desc);
+	} else {
+		output_text("Describe which room?");
+	}
 }
 
 
@@ -255,7 +263,7 @@ static void input_handle_chat(char *line)
 	char *msg;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
-	if (strcmp(line, "") != 0) {
+	if (line && strcmp(line, "") != 0) {
 		msg = strdup(line);
 		ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
 	}
@@ -267,7 +275,7 @@ static void input_handle_beep(char* line)
 	char* player;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
-	if (strcmp(line, "") != 0) {
+	if (line && strcmp(line, "") != 0) {
 		player = strdup(line);
 		ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 	}
@@ -341,6 +349,11 @@ static void input_handle_join_table(char *line)
 	GGZGameType *type;
 	GGZModule *module;
 	int table_index;
+
+	if (!line) {
+		output_text("Join which table?");
+		return;
+	}
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
