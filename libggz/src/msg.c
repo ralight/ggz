@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2710 2001-11-09 15:46:29Z bmh $
+ * $Id: msg.c 2719 2001-11-10 04:32:36Z bmh $
  *
  * Debug and error messages
  *
@@ -75,7 +75,7 @@ void ggz_debug_init(const char **types, const char* file)
 void ggz_debug_enable(const char *type)
 {
 	/* Make sure type exists and debugging is enabled */
-	if (type && debug_enabled) {
+	if (type) {
 		
 		/* if the list doesn't exist, create it */
 		if (!debug_types) {
@@ -95,7 +95,7 @@ void ggz_debug_disable(const char *type)
 {
 	GGZListEntry *entry;
 
-	if (type && debug_enabled && debug_types) {
+	if (type && debug_types) {
 		if ( (entry = ggz_list_search(debug_types, (char*)type)))
 			ggz_list_delete_entry(debug_types, entry);
 	}
