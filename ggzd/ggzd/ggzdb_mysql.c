@@ -37,30 +37,40 @@
 
 /* Internal variables */
 static MYSQL *conn = NULL;
-static MYSQL_RES *res = NULL;
 static MYSQL_RES *iterres = NULL;
-static MYSQL_ROW row = NULL;
 static int itercount;
-static char query[4096];
 static pthread_mutex_t mutex;
 
 /* Internal functions */
 
 
 /* Function to initialize the mysql database system */
-int _ggzdb_init(char *datadir, int set_standalone)
+int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
+	int rc;
+	char query[4096];
+
 	if(conn) return 0;
 
 	conn = mysql_init(conn);
-	conn = mysql_real_connect(conn, "localhost", "ggzd", "ggzd", "ggz", 0, NULL, 0);
+	conn = mysql_real_connect(conn, connection.host, connection.username,
+		connection.password, connection.database, 0, NULL, 0);
 
 	if(!conn)
 	{
 		err_sys("Couldn't initialize database.");
 		return 1;
 	}
-	return 0;
+
+	snprintf(query, sizeof(query), "CREATE TABLE users "
+		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
+		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
+
+	rc = mysql_query(conn, query);
+	/* Hack. */
+	rc = 0;
+
+	return rc;
 }
 
 
@@ -75,30 +85,20 @@ void _ggzdb_close(void)
 /* Function to enter the database */
 void _ggzdb_enter(void)
 {
+	/*mysql_thread_init();*/
 }
 
 
 /* Function to exit the database */
 void _ggzdb_exit(void)
 {
+	/*mysql_thread_end();*/
 }
 
 
 /* Function to initialize the player table */
 int _ggzdb_init_player(char *datadir)
 {
-	int rc;
-
-	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
-		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
-
-	pthread_mutex_lock(&mutex);
-	rc = mysql_query(conn, query);
-	pthread_mutex_unlock(&mutex);
-
-	/* Hack. */
-	rc = 0;
 	return 0;
 }
 
@@ -107,6 +107,7 @@ int _ggzdb_init_player(char *datadir)
 int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	char query[4096];
 
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
@@ -130,6 +131,9 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	char query[4096];
 
 	snprintf(query, sizeof(query), "SELECT "
 		"password, name, email, lastlogin, permissions FROM users WHERE "
@@ -138,11 +142,11 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
-	pthread_mutex_unlock(&mutex);
 
 	if(!rc)
 	{
 		res = mysql_store_result(conn);
+		pthread_mutex_unlock(&mutex);
 		if(mysql_num_rows(res) == 1)
 		{
 			row = mysql_fetch_row(res);
@@ -161,6 +165,7 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	}
 	else
 	{
+		pthread_mutex_unlock(&mutex);
 		err_sys("Couldn't lookup player.");
 	}
 
@@ -172,6 +177,7 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	char query[4096];
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
 		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
@@ -199,6 +205,8 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	MYSQL_ROW row;
+	char query[4096];
 
 	if(iterres)
 	{
@@ -246,6 +254,7 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
 	int rc;
+	MYSQL_ROW row;
 
 	if(!iterres)
 	{
