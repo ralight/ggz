@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3325 2002-02-11 09:12:57Z jdorje $
+ * $Id: common.c 3333 2002-02-11 23:07:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -638,11 +638,12 @@ static int handle_msg_play(void)
 		return 0;
 	}
 
-	/* Remove the card.  This is a bit inefficient. */
+	/* Remove the card.  This is a bit inefficient.  It's also tricky,
+	   so be careful not to go off-by-one and overrun the buffer! */
+	hand->hand_size--;
 	for (c = tc; c < hand->hand_size; c++)
 		hand->card[c] = hand->card[c + 1];
 	hand->card[hand->hand_size] = UNKNOWN_CARD;
-	hand->hand_size--;
 
 	/* Update the graphics */
 	game_alert_play(p, card, tc);
