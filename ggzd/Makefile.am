@@ -9,6 +9,7 @@ EXTRA_DIST = HACKING
 test: all testdir test-recursive
 
 testdir:
+	-rm -rf test
 	-mkdir -p test
 	-mkdir -p test/games
 	-mkdir -p test/rooms
