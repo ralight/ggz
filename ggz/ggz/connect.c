@@ -192,11 +192,16 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  es_read_string(source, game_types.info[ibyte].author);
 		  es_read_string(source, game_types.info[ibyte].homepage);
 
-		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].name);
-		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].version);
-		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].desc);
-		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].author);
-		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].homepage);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", 
+			      game_types.info[ibyte].name);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", 
+			      game_types.info[ibyte].version);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", 
+			      game_types.info[ibyte].desc);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", 
+			      game_types.info[ibyte].author);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", 
+			      game_types.info[ibyte].homepage);
 	  }
 	  break;
 
@@ -400,5 +405,3 @@ static void display_chat(char* name, char* msg)
 	gtk_text_insert( GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1 );
 	g_free( buf );
 }
-
-
