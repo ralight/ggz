@@ -28,43 +28,58 @@
 #include "hand.h"
 #include "layout.h"
 
+static void bottom_box(int *x, int *y) {
+	*x = XWIDTH;
+	*y = 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
+}
 
-typedef struct layout_t {
-	int orientations[MAX_NUM_PLAYERS];
-	int player_boxes[MAX_NUM_PLAYERS][2];
-} layout_t;
+static void left_box(int *x, int *y) {
+	*x = XWIDTH;
+	*y = XWIDTH;
+}
 
+static void top_box(int *x, int *y) {
+	*x = 2 * XWIDTH + TEXT_BOX_WIDTH;
+	*y = XWIDTH;
+}
 
+static void right_box(int *x, int *y) {
+	*x = 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
+	*y = 2 * XWIDTH + TEXT_BOX_WIDTH;
+}
+
+/*
 #define BOTTOM_BOX {XWIDTH, 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH}
 #define LEFT_BOX {XWIDTH, XWIDTH}
 #define TOP_BOX {2 * XWIDTH + TEXT_BOX_WIDTH, XWIDTH}
 #define RIGHT_BOX {2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH, 2 * XWIDTH + TEXT_BOX_WIDTH}
+*/
+
+typedef void (box_func)(int *, int*);
+typedef struct layout_t {
+	int orientations[MAX_NUM_PLAYERS];
+	box_func *player_boxes[MAX_NUM_PLAYERS];
+} layout_t;
 
 layout_t layout_2 = {
-			/* orientation */
 			{0, 2},
-			/* player boxes */
-			{ BOTTOM_BOX, TOP_BOX}
+			{ &bottom_box, &top_box }
 		    };
 
 layout_t layout_3 = {
-			/* orientation */
 			{0, 1, 2},
-			/* player boxes */
-			{ BOTTOM_BOX, LEFT_BOX, TOP_BOX}
+			{ &bottom_box, &left_box, &top_box }
 		    };
 
 layout_t layout_4 = {
-			/* orientation */
 			{0, 1, 2, 3},
-			/* player_boxes */
-			{ BOTTOM_BOX, LEFT_BOX, TOP_BOX, RIGHT_BOX }
+			{ &bottom_box, &left_box, &top_box, &right_box }
 		    };
 
 layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layout_4 };
 
 #define LAYOUT (layouts[game.num_players])
-
+#define BOX(p) (LAYOUT->player_boxes[p])
 
 
 int get_table_width()
@@ -88,24 +103,22 @@ void get_text_box_pos(int p, int *x, int *y)
 {
 	int or = orientation(p);
 	assert (LAYOUT);
-	*x = LAYOUT->player_boxes[p][0];
-	*y = LAYOUT->player_boxes[p][1];
+	BOX(p)(x, y);
 	if (or == 2)
-		*x = LAYOUT->player_boxes[p][0] + 2*XWIDTH + HAND_WIDTH;
+		*x += 2*XWIDTH + HAND_WIDTH;
 	else if (or == 3)
-		*y = LAYOUT->player_boxes[p][1] + 2*XWIDTH + HAND_WIDTH;
+		*y += 2*XWIDTH + HAND_WIDTH;
 }
 
 void get_card_box_pos(int p, int *x, int *y)
 {
 	int or = orientation(p);
 	assert (LAYOUT);
-	*x = LAYOUT->player_boxes[p][0];
-	*y = LAYOUT->player_boxes[p][1];
+	BOX(p)(x, y);
 	if (or == 0)
-		*x = LAYOUT->player_boxes[p][0] + 2*XWIDTH + CARDHEIGHT;
+		*x += 2*XWIDTH + CARDHEIGHT;
 	else if (or == 1)
-		*y = LAYOUT->player_boxes[p][1] + 2*XWIDTH + CARDHEIGHT;
+		*y += 2*XWIDTH + CARDHEIGHT;
 }
 
 void get_card_box_dim(int p, int *w, int *h)
