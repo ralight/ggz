@@ -233,6 +233,13 @@ AC_DEFINE_UNQUOTED(DATADIR, "${ggzdstatedir}")
 
 AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
 
+if test "x${prefix}" = "xNONE"; then
+  ggzddatadir="${ac_default_prefix}/share/ggzd"
+else
+  ggzddatadir="${prefix}/share/ggzd"
+fi
+AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}")
+
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
@@ -257,6 +264,7 @@ AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
+AC_SUBST(ggzddatadir)
 AC_SUBST(ggzdexecmoddir)
 AC_SUBST(ggzdstatedir)
 AC_SUBST(packagesrcdir)
@@ -291,6 +299,8 @@ AC_OUTPUT([Makefile
 		game_servers/krosswater/zoneserver/Makefile
 		game_servers/muehle/Makefile
 		game_servers/muehle/ggz/Makefile
+		game_servers/muehle/qtserv/Makefile
+		game_servers/muehle/variants/Makefile
 		game_servers/keepalive/Makefile
 		game_servers/keepalive/src/Makefile
 		man/Makefile

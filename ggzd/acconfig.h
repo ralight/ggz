@@ -20,6 +20,7 @@
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
 #undef GGZDCONFDIR
+#undef GGZDDATADIR
 #undef GAMEDIR
 #undef DATADIR
 #undef TMPDIR
