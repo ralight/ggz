@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5329 2003-01-15 18:40:18Z dr_maux $
+# $Id: Makefile.am 5535 2003-05-10 12:21:27Z dr_maux $
 
 SUBDIRS = krosswater KReversi kdots ktictactux koenig muehle keepalive fyrdman man po
+DIST_SUBDIRS = $(SUBDIRS) lib
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ \
 		m4/ggz.m4 m4/kde.m4

@@ -168,6 +168,7 @@ void Win::slotUnit(QCanvasPixmapArray *a)
 	s = conf->readEntry("graphics");
 	if(s == "freecraft") return;
 	conf->writeEntry("graphics", "freecraft");
+std::cout << s.latin1() << std::endl;
 
 	if(!m_anim) m_anim = new AnimDialog();
 	m_anim->setAnimation(a);
