@@ -78,6 +78,7 @@ static int   player_login_new(int p_index);
 static int   player_logout(int p, int fd);
 static int   player_table_launch(int p_index, int p_fd, int *t_fd);
 static int   player_table_join(int p_index, int p_fd, int *t_fd);
+static int   player_table_leave(int p_index, int p_fd);
 static int   player_list_players(int p_index, int fd);
 static int   player_list_types(int p_index, int fd);
 static int   player_list_tables(int p_index, int fd);
@@ -94,7 +95,6 @@ static int type_match_table(int type, int num);
  */
 void player_handler_launch(int sock)
 {
-
 	pthread_t thread;
 	void *arg_ptr;
 	int status;
@@ -177,9 +177,8 @@ static void* player_new(void *arg_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
-	strcpy(players.info[i].ip_addr, inet_ntop(AF_INET, &addr.sin_addr,
-					players.info[i].ip_addr,
-					sizeof(players.info[i].ip_addr)));
+	inet_ntop(AF_INET, &addr.sin_addr, players.info[i].ip_addr,
+		  sizeof(players.info[i].ip_addr));
 	players.info[i].hostname = hostname;
 	players.count++;
 	players.info[i].room = -1;
@@ -352,6 +351,12 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 			status = GGZ_REQ_TABLE_JOIN;
 		break;
 
+	case REQ_TABLE_LEAVE:
+		status = player_table_leave(p_index, p_fd);
+		if (status == GGZ_REQ_OK)
+			status = GGZ_REQ_TABLE_LEAVE;
+		break;
+
 	case REQ_LIST_PLAYERS:
 		status = player_list_players(p_index, p_fd);
 		break;
@@ -389,7 +394,6 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	case REQ_REMOVE_USER:
 	case REQ_TABLE_OPTIONS:
 	case REQ_USER_STAT:
-	case REQ_TABLE_LEAVE:
 	default:
 		dbg_msg(GGZ_DBG_PROTOCOL,
 			"Player %d (uid: %d) requested unimplemented op %d",
@@ -813,6 +817,47 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p_index].table_index = t_index;
+	players.timestamp = time(NULL);
+	pthread_rwlock_unlock(&players.lock);
+
+	return GGZ_REQ_OK;
+}
+
+
+static int player_table_leave(int p_index, int p_fd)
+{
+	int t_index;
+	int status = 0;
+
+	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for player %d", p_index);
+
+	pthread_rwlock_rdlock(&players.lock);
+	t_index = players.info[p_index].table_index;
+	pthread_rwlock_unlock(&players.lock);
+		
+	dbg_msg(GGZ_DBG_TABLE,
+		"Player %d attempting to leave table %d", p_index, t_index);
+
+	status = table_leave(p_index, t_index);
+
+	if (status != 0) 
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d's table leave failed with err %d", p_index, 
+			status);
+	else
+		dbg_msg(GGZ_DBG_TABLE, "Player %d's table leave successful", 
+			p_index);
+
+	/* Return status to client*/
+	if (es_write_int(p_fd, RSP_TABLE_LEAVE) < 0
+	    || es_write_char(p_fd, (char)status) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	if (status != 0)
+		return GGZ_REQ_FAIL;
+	
+	pthread_rwlock_wrlock(&players.lock);
+	players.info[p_index].table_index = -1;
 	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 

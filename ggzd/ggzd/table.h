@@ -26,3 +26,4 @@
 
 int table_launch(int p, TableInfo table, int* t_index);
 int table_join(int p, int t_index, int* t_fd);
+int table_leave(int p, int t_index);

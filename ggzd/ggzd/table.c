@@ -473,7 +473,7 @@ int table_launch(int p, TableInfo table, int* t_index)
 int table_join(int p, int index, int* t_fd)
 {
 	int seats, flag, fd;
-	
+
 	pthread_rwlock_wrlock(&tables.lock);
 	if (tables.info[index].type_index == -1) {
 		pthread_rwlock_unlock(&tables.lock);
@@ -516,6 +516,43 @@ int table_join(int p, int index, int* t_fd)
 		return E_JOIN_FAIL;
 
 	*t_fd = fd;
+ 	return 0;
+}
+
+
+int table_leave(int p, int index)
+{
+	int flag;
+	
+	if (index == -1)
+		return E_NO_TABLE;
+
+	pthread_mutex_lock(&tables.info[index].transit_lock);
+	while (tables.info[index].transit_flag != GGZ_TRANSIT_CLEAR) {
+		dbg_msg(GGZ_DBG_TABLE, "Waiting for transit from table %d", 
+			index);
+		pthread_cond_wait(&tables.info[index].transit_cond,
+				  &tables.info[index].transit_lock);
+	}
+
+	tables.info[index].transit_flag = GGZ_TRANSIT_LEAVE;
+	tables.info[index].transit = p;
+	pthread_cond_broadcast(&tables.info[index].transit_cond);
+	
+	/* Wait for leave */
+	while ( (flag = tables.info[index].transit_flag) == GGZ_TRANSIT_LEAVE) {
+		dbg_msg(GGZ_DBG_TABLE, "Waiting for table %d leave", index);
+		pthread_cond_wait(&tables.info[index].transit_cond,
+				  &tables.info[index].transit_lock);
+	}
+
+	tables.info[index].transit_flag = GGZ_TRANSIT_CLEAR;
+	pthread_cond_broadcast(&tables.info[index].transit_cond);
+	pthread_mutex_unlock(&tables.info[index].transit_lock);
+	
+	if (flag == GGZ_TRANSIT_ERROR)
+		return E_LEAVE_FAIL;
+
  	return 0;
 }
 
@@ -594,7 +631,40 @@ static int table_handle_join(int index, int t_fd)
 	
 static int table_handle_leave(int index, int t_fd)
 {
-	/* FIXME: Write GGZ_TRANSIT_LEAVE code */
-	return GGZ_TRANSIT_ERROR;
+	int i, p, op;
+	char status = 0;
+	char name[MAX_USER_NAME_LEN + 1];
+	
+	p = tables.info[index].transit;
+
+	pthread_rwlock_rdlock(&players.lock);
+	strcpy(name, players.info[p].name);
+	pthread_rwlock_unlock(&players.lock);
+
+	/* Send MSG_TABLE_LEAVE to table */
+	if (es_write_int(t_fd, REQ_GAME_LEAVE) < 0
+	    || es_write_string(t_fd, name) < 0)
+		return GGZ_TRANSIT_ERROR;
+
+	/* FIXME: Check validity */
+	if (es_read_int(t_fd, &op) < 0
+	    || es_read_char(t_fd, &status) < 0)
+		return GGZ_TRANSIT_ERROR;
+
+	pthread_rwlock_wrlock(&tables.lock);
+	/* Vacate seat */
+	for (i = 0; i < seats_num(tables.info[index]); i++)
+		if (tables.info[index].seats[i] == p) {
+			tables.info[index].seats[i] = GGZ_SEAT_OPEN;
+			close(tables.info[index].player_fd[i]);
+			break;
+		}
+	
+	tables.timestamp = time(NULL);
+	pthread_rwlock_unlock(&tables.lock);
+
+	dbg_msg(GGZ_DBG_TABLE, "Player %d left seat %d at table %d", p, i, index);
+
+	return GGZ_TRANSIT_OK;
 
 }
