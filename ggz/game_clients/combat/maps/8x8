@@ -1,0 +1,18 @@
+[map]
+width = 8
+height = 8
+data = 1111111111111111OOO11OOOOOOOOOOOOOOOOOOOOOO22OOO2222222222222222
+
+[army]
+flag = 1
+bomb = 3
+spy = 1
+scout = 3
+miner = 3
+sergeant = 1
+lieutenant = 1
+captain = 1
+major = 1
+colonel = 1
+general = 1
+marshall = 1

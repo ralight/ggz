@@ -15,6 +15,7 @@
 #include "dlg_options.h"
 #include <stdio.h>
 #include "game.h"
+#include "confio.h"
 
 GdkPixmap *mini_buf;
 extern GdkColor lake_color;
@@ -451,7 +452,7 @@ create_dlg_options (void)
 	gtk_signal_connect(GTK_OBJECT (mini_board), "button_press_event",
 									   GTK_SIGNAL_FUNC (mini_board_click), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (load), "clicked",
-									   GTK_SIGNAL_FUNC (load_button_clicked), maps_list);
+									   GTK_SIGNAL_FUNC (load_button_clicked), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
 									   GTK_SIGNAL_FUNC (maps_list_selected), dlg_options);
 	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
@@ -476,12 +477,77 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
 }
 
-void load_button_clicked(GtkButton *button, gpointer maps_list) {
+void load_button_clicked(GtkButton *button, gpointer dialog) {
+  GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
   gint selection;
   char **namelist;
   selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
   namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
   printf("Selected: %s\n", namelist[selection]);
+  load_map(namelist[selection], (GtkWidget *)dialog);
+}
+
+void load_map(char *filename, GtkWidget *dialog) {
+  int handle;
+  GtkWidget *width, *height;
+  GtkWidget *unit_spin;
+  int a;
+  char *terrain_data;
+  char file_unit_name[12][36] = {"flag", "bomb", "spy", "scout", "miner", "sergeant", "lieutenant", "captain",
+                            "major", "colonel", "general", "marshall"};
+  handle = _ggzcore_confio_parse(filename, 0);
+  if (handle < 0) {
+    printf("Can't find the map?\n");
+    return;
+  }
+  /* Get the widgets */
+  width = lookup_widget(dialog, "width");
+  height = lookup_widget(dialog, "height");
+  /* Get the data from the file */
+  // Width / Height
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(width), 
+           _ggzcore_confio_read_int(handle, "map", "width", 10));
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(height),
+           _ggzcore_confio_read_int(handle, "map", "height", 10));
+  // Army
+  for (a = 0; a < 12; a++) {
+    unit_spin = lookup_widget(dialog, spin_name[a]);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin),
+        _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0));
+  }
+  // Terrain data
+  terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
+  if (terrain_data) {
+    a = strlen(terrain_data);
+    while (--a>=0) {
+      switch(terrain_data[a]) {
+        case 'O':
+          terrain_data[a] = OPEN;
+          break;
+        case 'L':
+          terrain_data[a] = LAKE;
+          break;
+        case 'N':
+          terrain_data[a] = BLACK;
+          break;
+        case '1':
+          terrain_data[a] = PLAYER_1;
+          break;
+        case '2':
+          terrain_data[a] = PLAYER_2;
+          break;
+        default:
+          terrain_data[a] = OPEN;
+          break;
+      }
+    }
+    gtk_object_set_data(GTK_OBJECT(dialog), "map_data", terrain_data);
+    draw_mini_board(dialog);
+  }
+
+  dlg_options_update(dialog);
+
+
 }
 
 
@@ -601,10 +667,12 @@ void dlg_options_update(GtkWidget *dlg_options) {
 
 }
 
-int visible_only(const struct dirent *entry) {
-  if (*entry->d_name != '.')
-    return 1;
-  return 0;
+int maps_only(const struct dirent *entry) {
+  if (*entry->d_name == '.')
+    return 0;
+  if (strcmp(entry->d_name, "CVS") == 0)
+    return 0;
+  return 1;
 }
 
 void dlg_options_list_maps(GtkWidget *dlg) {
@@ -613,13 +681,15 @@ void dlg_options_list_maps(GtkWidget *dlg) {
   char **clist_names;
   char **names;
 
-  n = scandir("maps", &dirlist, visible_only, alphasort);
+  n = scandir("maps", &dirlist, maps_only, alphasort);
   clist_names = (char **)calloc(1, sizeof(char *));
-  names = (char **)malloc(n * sizeof(char *));
+  names = (char **)calloc(n, sizeof(char *));
   printf("Number of maps: %d\n", n);
   while (n--) {
     clist_names[0] = dirlist[n]->d_name;
-    names[n] = dirlist[n]->d_name;
+    names[n] = (char *)malloc(15 + strlen(dirlist[n]->d_name));
+    strcpy(names[n], "maps/");
+    strcat(names[n], dirlist[n]->d_name);
     gtk_clist_prepend(GTK_CLIST(dlg), clist_names);
   }
   gtk_object_set_data(GTK_OBJECT(dlg), "maps", names);

@@ -7,6 +7,8 @@ void dlg_options_list_maps(GtkWidget *);
 
 void load_button_clicked(GtkButton *, gpointer dialog);
 
+void load_map(char *filename, GtkWidget *dialog);
+
 void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data);
 
