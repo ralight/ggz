@@ -268,6 +268,12 @@ void GetGameInfo( void ) {
 		}
 	}
 	
+	/* Send everyone thir game IDs (aka player numbers) */
+	for (i=0; i<4; i++) {
+		if( gameInfo.playerSock[i] != SOCK_COMP )
+			WriteIntOrDie( gameInfo.playerSock[i], i);
+	}
+		
 	/* Everyone has joined now, read options from player 0 */	
 	ReadOptions();
 	
