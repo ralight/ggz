@@ -818,7 +818,7 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 					break;
 				case GGZCoreRoom::chatprivate:
 					KGGZDEBUG("chatprivate\n");
-					if(m_grubby->isVisible()) m_grubby->answer(chatmessage);
+					if((m_grubby) && (m_grubby->isVisible())) m_grubby->answer(chatmessage);
 					else m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
 					break;
 				case GGZCoreRoom::chatbeep:
