@@ -174,6 +174,7 @@
 // Takes a player code and transform into a seat index
 #define PLAYER2SEAT(player) ( (player==BLACK)?0:1 )
 
+#define GGZ_SEAT_OPEN -1
 
 struct game_state_t {
 	/* Connection info */
