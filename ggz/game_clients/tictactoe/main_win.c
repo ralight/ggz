@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5014 2002-10-23 21:18:44Z jdorje $
+ * $Id: main_win.c 5039 2002-10-26 03:49:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,6 +38,7 @@
 
 #include "dlg_about.h"
 #include "dlg_players.h"
+#include "menus.h"
 
 #include "main_win.h"
 #include "game.h"
@@ -258,15 +259,8 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkAccelGroup *accel_group;
 	GtkItemFactory *menu;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Table/Player _list"), "<ctrl>L",
-	   create_or_raise_dlg_players, 0, NULL},
-	  {_("/Table/Sit down"), NULL, do_sit, 0, NULL},
-	  {_("/Table/Stand up"), NULL, do_stand, 0, NULL},
-	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
-	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
-	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+		TABLE_MENU,
+		HELP_MENU
 	};
 	const int num = sizeof(items) / sizeof(items[0]);
 
@@ -276,9 +270,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	gtk_item_factory_create_items(menu, num, items, NULL);
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
-	menu_item = gtk_item_factory_get_widget(menu,
-						_("<main>/Table/"
-						  "Sync with server"));
+	menu_item = gtk_item_factory_get_widget(menu, TABLE_SYNC);
 	gtk_widget_set_sensitive(menu_item, FALSE);
 
 	return gtk_item_factory_get_widget(menu, "<main>");
