@@ -11,9 +11,15 @@ gi18n_LDADD =
 gplayer_SOURCES = player.c test_player.c
 gplayer_LDADD = -lggzcore
 
-gnet_SOURCES = net.c test_net.c
-gnet_LDADD = -lggzcore
-gnet_LDFLAGS = -L/usr/local/lib
+lib_LTLIBRARIES = libguru_netggz.la
+
+libguru_netggz_la_SOURCES = net.c
+libguru_netggz_la_LIBADD = -lggzcore
+libguru_netggz_la_LDFLAGS = -L/usr/local/lib
+
+gnet_SOURCES = test_net.c
+gnet_LDADD = libguru_netggz.la
+gnet_LDFLAGS = -ldl
 
 noinst_HEADERS = guru.h module.h i18n.h gurumod.h net.h player.h
 
