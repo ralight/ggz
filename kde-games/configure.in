@@ -55,6 +55,7 @@ AC_OUTPUT(Makefile
 	kdots/Dot/Makefile
 	ktictactux/Makefile
 	ktictactux/module.dsc
+	ktictactux/ktictactux.desktop
 	ktictactux/themes/Makefile
 	koenig/Makefile
 	koenig/module.dsc
