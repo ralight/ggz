@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6614 2005-01-08 19:03:18Z josef $
+ * $Id: game.c 6722 2005-01-18 00:50:36Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -326,32 +326,43 @@ void _ggzcore_game_init(struct _GGZGame *game,
 }
 
 
-static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *data)
+/* This function is called by ggzmod when the game state is changed.
+ *
+ * Game state changes are all initiated by the game client through ggzmod.
+ * So if we get here we just have to update ggzcore and the ggz client based
+ * on what changes have already happened. */
+static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
+				       void *data)
 {
 	GGZGame* game = ggzmod_get_gamedata(mod);
-	GGZModState cur, prev;
+	const GGZModState new = ggzmod_get_state(mod);
+	const GGZModState * const prev = data;
 
-	prev = *(GGZModState*)data;
-	cur = ggzmod_get_state(mod);
+	ggz_debug(GGZCORE_DBG_GAME, "Game now in state %d", new);
 
-	switch (cur) {
+	switch (new) {
 	case GGZMOD_STATE_WAITING:
 		ggz_debug(GGZCORE_DBG_GAME, "Game now waiting");
-		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+		if (*prev == GGZMOD_STATE_CREATED) {
+			/* The game has changed from CREATED to WAITING.
+			 * Pass this on as a GGZ_GAME_NEGOTIATED event. */
+			_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+		}
 		break;
 
 	case GGZMOD_STATE_PLAYING:
 		ggz_debug(GGZCORE_DBG_GAME, "Game now playing");
 		_ggzcore_game_event(game, GGZ_GAME_PLAYING, NULL);
 		break;
-		
+
 	case GGZMOD_STATE_DONE:
 		ggz_debug(GGZCORE_DBG_GAME, "Game now done");
 		/* Leave the game running. */
 		break;
 
-	default:
-		ggz_debug(GGZCORE_DBG_GAME, "Game now in state %d", cur);
+	case GGZMOD_STATE_CREATED:
+		ggz_debug(GGZCORE_DBG_GAME, "Game created");
+		/* Leave the game running. */
 		break;
 
 	}
