@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4057 2002-04-23 05:38:53Z jdorje $
+ * $Id: table.c 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -219,7 +219,7 @@ void table_setup(void)
 	   work.  The problem is that before you choose what game you're
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
-	if (ggzcards.num_players == 0 || table_max_hand_size == 0)
+	if (ggzcards.num_players == 0 || get_max_hand_size() == 0)
 		return;
 	if (get_card_width(0) == 0 || get_card_height(0) == 0)
 		return;
@@ -335,6 +335,8 @@ static void table_show_player_box(int player, int write_to_screen)
 	int string_y;
 	int max_width = 0;
 	
+	static int max_ascent = 0, max_descent = 0;
+	
 	assert(table_ready);
 	
 	get_text_box_pos(player, &x, &y);
@@ -362,9 +364,11 @@ static void table_show_player_box(int player, int write_to_screen)
 		gdk_string_extents(font, name, &dummy, &dummy,
 		                   &width, &ascent, &descent);
 		max_width = MAX(max_width, width);
-		printf("Width is %d for '%s'.\n", width, name);
 		
-		string_y += ascent;
+		max_ascent = MAX(max_ascent, ascent);
+		max_descent = MAX(max_descent, descent);
+		
+		string_y += max_ascent;
 			
 		gdk_draw_text(table_buf, font,
 		              table_style->fg_gc[GTK_WIDGET_STATE(table)],
@@ -372,7 +376,7 @@ static void table_show_player_box(int player, int write_to_screen)
 		              string_y,
 		              name, strlen(name));
 		
-		string_y += descent + 5;
+		string_y += max_descent + 5;
 	}
 	
 	/* Draw player message. */
@@ -384,6 +388,9 @@ static void table_show_player_box(int player, int write_to_screen)
 		gdk_string_extents(font, my_message, &dummy, &dummy,
 		                   &dummy, &ascent, &descent);
 		
+		max_ascent = MAX(max_ascent, ascent);
+		max_descent = MAX(max_descent, descent);
+		
 		/* This is so ugly!! Is there no better way?? */
 		do {
 			char *next_after_this = strchr(next, '\n');
@@ -394,7 +401,7 @@ static void table_show_player_box(int player, int write_to_screen)
 				next_after_this++;
 			}
 			
-			string_y += 3 + ascent;
+			string_y += 3 + max_ascent;
 			
 			gdk_string_extents(font, next, &dummy, &dummy,
 		        	           &width, &dummy, &dummy);
@@ -405,7 +412,7 @@ static void table_show_player_box(int player, int write_to_screen)
 				table_style->fg_gc[GTK_WIDGET_STATE(table)],
 		                x + 3, string_y, next);
 		                	
-		        string_y += descent;
+		        string_y += max_descent;
 		                	
 		        next = next_after_this;
 		} while (next && *next);
@@ -510,9 +517,8 @@ void table_handle_click_event(GdkEventButton * event)
 	int target;
 	int which = -1;
 	int x_outer, y_outer, w_outer, h_outer, xo, yo;
-	int x, y, x1, y1;
+	int x, y;
 	int p = ggzcards.play_hand;	/* player whose hand it is */
-	float xdiff, ydiff;
 	int card_width, card_height;
 
 	/* If it's not our turn to play, we don't care. */
@@ -528,7 +534,6 @@ void table_handle_click_event(GdkEventButton * event)
 	   Unfortunately, it's very dense code. */
 	get_full_card_area(p, &x_outer, &y_outer, &w_outer, &h_outer, &xo,
 			   &yo);
-	get_card_offset(p, &xdiff, &ydiff);
 	get_inner_card_area_pos(p, &x, &y);
 	card_width = get_card_width(orientation(p));
 	card_height = get_card_height(orientation(p));
@@ -541,13 +546,15 @@ void table_handle_click_event(GdkEventButton * event)
 	/* Calculate our card target */
 	for (target = 0; target < ggzcards.players[p].hand.hand_size;
 	     target++) {
-		x1 = x + .5 + (target * xdiff);
-		y1 = y + .5 + (target * ydiff);
+		int x1, y1;
+		get_card_pos(p, target, &x1, &y1);
+		
 		if (target == selected_card) {
 			/* account for the selected card being offset */
 			x1 += xo;
 			y1 += yo;
 		}
+		
 		if (event->x >= x1 && event->x <= x1 + card_width
 		    /* TODO: generalize for any orientation */
 		    && event->y >= y1 && event->y <= y1 + card_height)
@@ -584,10 +591,9 @@ static void table_card_clicked(int card_num)
 /* Exposed function to show one player's hand. */
 void table_display_hand(int p, int write_to_screen)
 {
-	int i, x, y;
+	int i;
 	int x_outer, y_outer;
 	int cx, cy, cw, ch, cxo, cyo;
-	float ow, oh;
 	card_t table_card = table_cards[p];
 
 #if 0
@@ -606,7 +612,6 @@ void table_display_hand(int p, int write_to_screen)
 	/* get layout information */
 	get_full_card_area(p, &x_outer, &y_outer, &cw, &ch, &cxo, &cyo);
 	get_inner_card_area_pos(p, &cx, &cy);
-	get_card_offset(p, &ow, &oh);
 
 	/* Clean the total drawing area */
 	gdk_draw_rectangle(table_buf,
@@ -619,18 +624,21 @@ void table_display_hand(int p, int write_to_screen)
 	/* Draw the cards */
 	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
 		card_t card = ggzcards.players[p].hand.cards[i];
+		int x, y;
+		
 		if (card.face >= 0 && card.face == table_card.face &&
 		    card.suit >= 0 && card.suit == table_card.suit &&
 		    card.deck >= 0 && card.deck == table_card.deck)
 			/* if the player has a card on the table _and_ it
 			   matches this card, skip over it. */
 			continue;
-		x = cx + 0.5 + (i * ow);
-		y = cy + 0.5 + (i * oh);
+		get_card_pos(p, i, &x, &y);
+		
 		if (i == selected_card && p == ggzcards.play_hand) {
 			x += cxo;
 			y += cyo;
 		}
+		
 		draw_card(card, orientation(p), x, y, table_buf);
 	}
 

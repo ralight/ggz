@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 4048 2002-04-22 17:19:04Z jdorje $
+ * $Id: layout.c 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -40,6 +40,20 @@
 
 static int layout_min_text_width = 0;
 
+/* This is the maximum hand size we can sustain.  The client-common code will
+   tell us when we need to increase it. */
+static int table_max_hand_size = 0;
+
+int get_num_card_rows(void)
+{
+	switch(get_cardset_type()) {
+	case CARDSET_DOMINOES:
+		return 2;
+	default:
+		return 1;
+	}
+}
+
 int get_min_text_width(void)
 {
 	return layout_min_text_width;	
@@ -53,6 +67,32 @@ bool set_min_text_width(int min_text_width)
 	}
 	return FALSE;
 }
+
+
+int get_max_hand_size(void)
+{
+	return table_max_hand_size;
+}
+
+void set_max_hand_size(int max_hand_size)
+{
+	table_max_hand_size = max_hand_size;
+
+	do {
+		/* the inner table must be at least large enough. So, if it's
+		   not we make the hand sizes larger. */
+		/* NOTE: get_table_dim/get_fulltable_size depends on
+		   table_max_hand_size, so we must increment it directly in
+		   this loop. */
+		int x, y, w, h, w1, h1, d;
+		get_table_dim(&x, &y, &w, &h);
+		get_fulltable_dim(&d, &d, &w1, &h1);
+		if (w1 > w && h1 > h)
+			break;
+		table_max_hand_size++;
+	} while (1);
+}
+
 
 static void bottom_box4(int *x, int *y)
 {
@@ -173,6 +213,24 @@ int get_table_height(void)
 	if (ggzcards.num_players <= 4)
 		return get_table_width();
 	return 3 * XWIDTH + 2 * TEXT_BOX_WIDTH + 2 * CARD_BOX_WIDTH;
+}
+
+int get_hand_width(void)
+{
+	int num_cards_wide = (get_max_hand_size() + NUM_CARD_ROWS - 1)
+	                     / NUM_CARD_ROWS;
+	float extra_width = ((float)num_cards_wide - 1.0) * CARD_VISIBILITY
+	                    + 0.5;
+	return CARDWIDTH + (int)extra_width;
+}
+
+int get_text_width(void)
+{
+	int text_width = get_min_text_width();
+	float extra_height = ((float)NUM_CARD_ROWS - 1.0) *
+	                     get_card_visibility_height() + 0.5;
+	
+	return MAX(CARDHEIGHT + (int)extra_height, text_width);
 }
 
 int orientation(int p)
@@ -319,32 +377,29 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
 
 void get_inner_card_area_pos(int p, int *x, int *y)
 {
+	float extra_card_height = ((float)NUM_CARD_ROWS - 1.0) * get_card_visibility_height();
+	int card_area_height = get_card_height(0) + (int)extra_card_height;
+	
+	int wdiff = XWIDTH;
+	int hdiff = TEXT_BOX_WIDTH / 2 - card_area_height / 2;
+	
 	get_card_box_pos(p, x, y);
+	
 	switch (orientation(p)) {
 	case 0:
 	case 2:
-		*x += XWIDTH;
-		*y += TEXT_BOX_WIDTH / 2 - get_card_height(0) / 2;
+		*x += wdiff;
+		*y += hdiff;
 		break;
 	case 1:
 	case 3:
-		*x += TEXT_BOX_WIDTH / 2 - get_card_width(1) / 2;
-		*y += XWIDTH;
+		*x += hdiff;
+		*y += wdiff;
 		break;
 	}
 }
 
-void get_card_pos(int p, int card_num, int *x, int *y)
-{
-	int x0, y0;
-	float w, h;
-	get_inner_card_area_pos(p, &x0, &y0);
-	get_card_offset(p, &w, &h);
-	*x = x0 + (((float) card_num * w) + 0.5);
-	*y = y0 + (((float) card_num * h) + 0.5);
-}
-
-void get_card_offset(int p, float *w, float *h)
+static void get_card_coloffset(int p, float *w, float *h)
 {
 	switch (orientation(p)) {
 	case 0:
@@ -357,9 +412,58 @@ void get_card_offset(int p, float *w, float *h)
 		*w = 0;
 		*h = CARD_VISIBILITY;
 		break;
-	default:
-		ggz_debug("table",
-			  "CLIENT BUG: get_card_size: unknown orientation %d.",
-			  orientation(p));
 	}
 }
+
+static void get_card_rowoffset(int p, float *w, float *h)
+{
+	switch (orientation(p)) {
+	case 0:
+	case 2:
+		*w = 0;
+		*h = get_card_visibility_height();
+		break;
+	case 1:
+	case 3:
+		*w = get_card_visibility_height();
+		*h = 0;
+		break;
+	}
+}
+
+void get_card_pos(int p, int card_num, int *x, int *y)
+{
+	int x0, y0;
+	float w, h;
+	
+	/* FIXME */
+	int cards_per_row = (table_max_hand_size + NUM_CARD_ROWS - 1) / NUM_CARD_ROWS;
+	int row = card_num / cards_per_row;
+	float col = (float)(card_num % cards_per_row);
+	int num_cards_on_row;
+	
+	if (row < NUM_CARD_ROWS - 1)
+		num_cards_on_row = cards_per_row;
+	else
+		num_cards_on_row = table_max_hand_size - (NUM_CARD_ROWS - 1) * cards_per_row;
+		
+	col += (float)(cards_per_row - num_cards_on_row) / 2.0;
+	
+	get_inner_card_area_pos(p, &x0, &y0);
+	
+	get_card_coloffset(p, &w, &h);
+	x0 += (int)(((float) col * w) + 0.5);
+	y0 += (int)(((float) col * h) + 0.5);
+	
+	if (orientation(p) == 1 || orientation(p) == 2)
+		row = NUM_CARD_ROWS - row - 1;
+	
+	get_card_rowoffset(p, &w, &h);
+	x0 += (int)(((float) row * w) + 0.5);
+	y0 += (int)(((float) row * h) + 0.5);
+
+	*x = x0;
+	*y = y0;
+}
+
+

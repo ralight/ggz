@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 4048 2002-04-22 17:19:04Z jdorje $
+ * $Id: layout.h 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -25,26 +25,38 @@
 
 #include "shared.h"
 
+#include "drawcard.h"
+
 /* no more than 6 players will work */
 #define MAX_NUM_PLAYERS 6
 
+/* Don't try to change this...yet! */
+#define NUM_CARD_ROWS get_num_card_rows()
+
 /* an interesting check of the code is to make this really big */
-#define XWIDTH		10
+#define XWIDTH		CARD_OFFSET
 
 /* #define WINDOW_WIDTH 469 */
 /* more cards will fit if you just change table_max_hand_size */
-#define HAND_WIDTH 	(CARDWIDTH + (table_max_hand_size - 1) * \
-                                     CARD_VISIBILITY + 0.5 )
-#define TEXT_WIDTH	MAX(CARDHEIGHT, get_min_text_width())
+#define HAND_WIDTH get_hand_width() 	
+#define TEXT_WIDTH get_text_width()
 
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2 * XWIDTH)
 #define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2 * XWIDTH)
+
+int get_num_card_rows(void);
 
 int get_min_text_width(void);
 bool set_min_text_width(int min_text_width);
 
 int get_table_width(void);
 int get_table_height(void);
+
+int get_hand_width(void);
+int get_text_width(void);
+
+int get_max_hand_size(void);
+void set_max_hand_size(int max_hand_size);
 
 int orientation(int p);
 
@@ -58,6 +70,6 @@ void get_card_box_dim(int p, int *w, int *h);
 void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
 			int *yo);
 void get_inner_card_area_pos(int p, int *x, int *y);
+
 void get_card_pos(int p, int card_num, int *x, int *y);
 
-void get_card_offset(int p, float *w, float *h);

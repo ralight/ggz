@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: drawcard.c 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -332,15 +332,21 @@ int get_card_height(int orientation)
 		return get_card_width0();
 }
 
-float get_card_visibility(void)
+float get_card_visibility_width(void)
 {
 	float width = (float)get_card_width0();
 	switch (client_card_type) {
 	case CARDSET_FRENCH:
 		return width / 4.0;
 	case CARDSET_DOMINOES:
-		return width * 1.1;
+		return width + (float)CARD_OFFSET;
 	default:
 		return 0.0;
 	}
+}
+
+float get_card_visibility_height(void)
+{
+	float height = (float)get_card_height0();
+	return height + (float)CARD_OFFSET;
 }

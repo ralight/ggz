@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: game.c 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -51,7 +51,6 @@
 
 Preferences preferences;
 
-int table_max_hand_size = 0;
 int game_started = FALSE;
 
 card_t table_cards[MAX_NUM_PLAYERS];
@@ -291,21 +290,7 @@ void game_alert_hand_size(int max_hand_size)
 {
 	ggz_debug("main", "Table max hand size upped to %d.", max_hand_size);
 
-	table_max_hand_size = max_hand_size;
-
-	do {
-		/* the inner table must be at least large enough. So, if it's
-		   not we make the hand sizes larger. */
-		/* NOTE: get_table_dim/get_fulltable_size depends on
-		   table_max_hand_size, so we must increment it directly in
-		   this loop. */
-		int x, y, w, h, w1, h1, d;
-		get_table_dim(&x, &y, &w, &h);
-		get_fulltable_dim(&d, &d, &w1, &h1);
-		if (w1 > w && h1 > h)
-			break;
-		table_max_hand_size++;
-	} while (1);
+	set_max_hand_size(max_hand_size);
 
 	table_setup();
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.h 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: drawcard.h 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -28,9 +28,12 @@
 
 #include <gtk/gtk.h>
 
+/* This value is used as the vertical offset for cards. */
+#define CARD_OFFSET 10
+
 #define CARDWIDTH (get_card_width(0))
 #define CARDHEIGHT (get_card_height(0))
-#define CARD_VISIBILITY (get_card_visibility())
+#define CARD_VISIBILITY (get_card_visibility_width())
 
 void load_card_data(cardset_type_t cardset_type);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
@@ -39,6 +42,7 @@ int get_card_width(int orientation);
 int get_card_height(int orientation);
 
 /* This is the minimum amount of the card that must be visible. */
-float get_card_visibility(void);
+float get_card_visibility_width(void);
+float get_card_visibility_height(void);
 
 #endif /* __DRAWCARD_H__ */

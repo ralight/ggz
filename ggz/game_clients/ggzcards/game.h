@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4057 2002-04-23 05:38:53Z jdorje $
+ * $Id: game.h 4058 2002-04-23 07:13:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -59,10 +59,6 @@ typedef struct {
 
 /* Our set of preferences.  See above. */
 extern Preferences preferences;
-
-/* This is the maximum hand size we can sustain.  The client-common code will 
-   tell us when we need to increase it. */
-extern int table_max_hand_size;
 
 /* This isn't set to 1 until we start a game; until then we keep up the
    splash screen. */
