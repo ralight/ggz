@@ -37,12 +37,6 @@
 #include "support.h"
 
 GtkWidget *login_dialog;
-
-static struct{
-	GGZProfile *profile;
-	int id;
-} reconnect;
-
 static GtkWidget *create_dlg_login(void);
 
 /* Callbacks login dialog box */
@@ -55,6 +49,7 @@ static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
+static void login_relogin(GtkButton *button, gpointer user_data);
 static void login_reconnect(GGZEventID id, void* event_data, void* user_data);
 
 void
@@ -68,6 +63,35 @@ login_create_or_raise(void)
 		gdk_window_show(login_dialog->window);
 		gdk_window_raise(login_dialog->window);
 	}
+}
+
+
+void 
+login_failed(void)
+{
+	GtkWidget *tmp;
+
+	tmp = lookup_widget(login_dialog, "connect_button");
+	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
+	gtk_widget_set_sensitive(tmp, TRUE);
+
+	/* Disconnect usual callback */
+	gtk_signal_disconnect_by_func(GTK_OBJECT(tmp), login_start_session, 
+				       login_dialog);
+	gtk_signal_connect (GTK_OBJECT(tmp), "clicked",
+			    GTK_SIGNAL_FUNC (login_relogin), NULL);
+
+
+
+	tmp = lookup_widget(login_dialog, "top_panel");
+	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
+	
+	tmp = lookup_widget(login_dialog, "profile_frame");
+	gtk_frame_set_label(GTK_FRAME(tmp), "Sorry!");
+	
+	tmp = lookup_widget(login_dialog, "msg_label");
+	gtk_label_set_text(GTK_LABEL(tmp),
+			   "That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
 }
 
 
@@ -103,6 +127,11 @@ static void
 login_fill_defaults                    (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+	GtkWidget* tmp;
+
+	/* Default to Guest login for now */
+	tmp = lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 
 }
 
@@ -195,36 +224,62 @@ login_start_session                    (GtkButton       *button,
 	/* FIXME: handle other login types */
 	profile->type = GGZ_LOGIN_GUEST;
 
-	if(ggzcore_state_is_online())
-	{
-		/* Set to connect after logout */
-		reconnect.profile = profile;
-		reconnect.id = ggzcore_event_connect(GGZ_SERVER_LOGOUT, login_reconnect);
-
+	if(ggzcore_state_is_online()) {
+		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
+		ggzcore_event_add_callback_full(GGZ_SERVER_LOGOUT,
+						login_reconnect,
+						profile, NULL);
 		/* If currently online, disconnect */
-		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
+		
 	} else {
 		/* FIXME: provide a destroy function that frees the appropriate mem */
-		ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
+		ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
 	}
 }
+
+
+static void
+login_relogin                          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *tmp;
+	GGZProfile *profile;
+
+	if (!(profile = calloc(1, sizeof(GGZProfile))))
+		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+
+	/* FIXME: grab this info from existing profile */
+	tmp = lookup_widget(login_dialog, "host_entry");
+	profile->host = gtk_entry_get_text(GTK_ENTRY(tmp));
+
+	tmp = lookup_widget(login_dialog, "port_entry");
+	profile->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(login_dialog, "name_entry");
+	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
+
+	/* FIXME: handle other login types */
+	profile->type = GGZ_LOGIN_GUEST;
+
+	/* FIXME: provide a destroy function that frees the appropriate mem */
+	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
+}
+
 
 void login_reconnect(GGZEventID id, void* event_data, void* user_data)
 {
-	/* 
-	 * Check to see if we should connect to a server
-	 * This function is needed because we can't send
-	 * a GGZ_USER_LOGIN right after a GGZ_USER_LOGOUT
-	 */
+	/* Now that we're disconnected, login to new server */
+	/* FIXME: provide a destroy function that frees profile */
+	ggzcore_event_enqueue(GGZ_USER_LOGIN, user_data, NULL);
 
-	if(reconnect.profile != NULL)
-	{
-		/* FIXME: provide a destroy function that frees the appropriate mem */
-		ggzcore_event_trigger(GGZ_USER_LOGIN, reconnect.profile, NULL);
-		reconnect.profile = NULL;
-		ggzcore_event_remove(GGZ_SERVER_LOGOUT, reconnect.id);
-	}
+	/* Remove this function from the list of callbacks*/
+	ggzcore_event_remove_callback(GGZ_SERVER_LOGOUT, login_reconnect);
 }
+
 
 static GtkWidget*
 create_dlg_login (void)

@@ -25,5 +25,6 @@
 
 
 void login_create_or_raise(void);
+void login_failed(void);
 void login_destroy(void);
 void login_goto_server(gchar *server);

@@ -106,7 +106,7 @@ client_disconnect_activate                 (GtkMenuItem     *menuitem,
 {
 	GtkCList *tmp;
 
-	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -230,7 +230,7 @@ static void
 client_motd_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-	ggzcore_event_trigger(GGZ_USER_MOTD, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_MOTD, NULL, NULL);
 }
 
 
@@ -314,7 +314,7 @@ client_disconnect_button_clicked           (GtkButton         *button,
 {
 	GtkCList *tmp;
 
-	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -449,7 +449,7 @@ client_room_clist_select_row               (GtkCList        *clist,
                                         GdkEvent        *event,
                                         gpointer         data)
 {
-	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
+	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
 	gtk_clist_unselect_row(GTK_CLIST(clist), row, column);
 }
 

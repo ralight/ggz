@@ -53,21 +53,21 @@ void ggz_room_part(GGZEventID id, void* event_data, void* user_data);
 
 void ggz_event_init(void)
 {
-	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, ggz_connect_fail);
-	ggzcore_event_connect(GGZ_SERVER_MOTD, 	ggz_motd);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN, ggz_login_ok);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, ggz_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, ggz_list_rooms);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, ggz_room_join);
-	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, ggz_chat_msg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, ggz_chat_prvmsg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, ggz_chat_beep);
-	ggzcore_event_connect(GGZ_SERVER_LOGOUT, ggz_logout);
-	ggzcore_event_connect(GGZ_SERVER_ERROR, NULL);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_ENTER, ggz_room_enter);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_LEAVE, ggz_room_part);
-	ggzcore_event_connect(GGZ_NET_ERROR, NULL);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT_FAIL, ggz_connect_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_MOTD, 	ggz_motd);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, ggz_login_ok);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN_FAIL, ggz_login_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_ROOMS, ggz_list_rooms);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_JOIN, ggz_room_join);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_MSG, ggz_chat_msg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_PRVMSG, ggz_chat_prvmsg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_BEEP, ggz_chat_beep);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGOUT, ggz_logout);
+	ggzcore_event_add_callback(GGZ_SERVER_ERROR, NULL);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, ggz_room_enter);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, ggz_room_part);
+	ggzcore_event_add_callback(GGZ_NET_ERROR, NULL);
 }
 
 
@@ -167,7 +167,7 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
@@ -231,7 +231,7 @@ void ggz_room_enter(GGZEventID id, void* event_data, void* user_data)
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 }
 
 void ggz_room_part(GGZEventID id, void* event_data, void* user_data)
@@ -244,7 +244,7 @@ void ggz_room_part(GGZEventID id, void* event_data, void* user_data)
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 }
 
 void ggz_login_ok(GGZEventID id, void* event_data, void* user_data)
@@ -255,7 +255,7 @@ void ggz_login_ok(GGZEventID id, void* event_data, void* user_data)
 	login_destroy();
 
 	/* Get list of rooms */
-	ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
 
 	/* set senditivity */
 	/* Menu bar */
@@ -308,21 +308,7 @@ void ggz_connect_fail(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-
-	tmp = lookup_widget(login_dialog, "connect_button");
-	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
-	gtk_widget_set_sensitive(tmp, TRUE);
-
-	tmp = lookup_widget(login_dialog, "top_panel");
-	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
-
-	tmp = lookup_widget(login_dialog, "profile_frame");
-	gtk_frame_set_label(GTK_FRAME(tmp), "Sorry!");
-
-	tmp = lookup_widget(login_dialog, "msg_label");
-	gtk_label_set_text(GTK_LABEL(tmp),
-		"That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
+	login_failed();
 }
 
 void ggz_sensitivity_init(void)
