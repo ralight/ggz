@@ -4,6 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
+ * $Id: protocols.h 2313 2001-08-29 03:55:39Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -22,9 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-/* libggzdmod includes the ggzd <-> game server protocols */
-#include "../game_servers/libggzmod/ggz_protocols.h"
 
 #define GGZ_CS_PROTO_VERSION  4
 

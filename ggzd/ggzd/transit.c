@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
+ * $Id: transit.c 2313 2001-08-29 03:55:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,6 +31,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "ggzdmod.h"
 
 #include <ggzd.h>
 #include <datatypes.h>
@@ -284,11 +287,8 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 	table->transit_seat = i;
 	table->transit_fd = fd[1];
 
-	/* Send MSG_TABLE_JOIN to table */
-	if (es_write_int(table->fd, REQ_GAME_JOIN) < 0
-	    || es_write_int(table->fd, i) < 0
-	    || es_write_string(table->fd, name) < 0
-	    || es_write_fd(table->fd, fd[0]) < 0)
+	/* Send info to table */
+	if (ggzdmod_req_gamejoin(table->fd, i, name, fd[0]) < 0)
 		return -1;
 
 	/* Must close remote end of socketpair */
@@ -322,10 +322,8 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	table->transit_name = strdup(name);
 	table->transit_seat = i;
 	
-	/* Send MSG_TABLE_LEAVE to table */
-	if (es_write_int(table->fd, REQ_GAME_LEAVE) < 0
-	    || es_write_string(table->fd, name) < 0)
-		return -1;
+	/* Send message to table */
+	ggzdmod_req_gameleave(table->fd, name);
 
 	return 0;
 }

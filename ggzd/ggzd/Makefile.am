@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2313 2001-08-29 03:55:39Z jdorje $
 
 SUBDIRS = .
 
@@ -22,6 +23,7 @@ ggzd_SOURCES =	chat.c\
 		event.c \
 		event.h \
 		ggzd.h \
+		ggzdmod.c ggzdmod.h \
 		parse_opt.c \
 		parse_opt.h \
 		players.c \
@@ -51,7 +53,7 @@ ggzd_SOURCES =	chat.c\
 		conf.h
 
 
-ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS)
+ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS) ../game_servers/libggzmod/libggzdmod.a
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 

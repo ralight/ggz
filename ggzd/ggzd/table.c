@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
+ * $Id: table.c 2313 2001-08-29 03:55:39Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -36,6 +37,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "ggzdmod.h"
+
 #include <ggzd.h>
 #include <datatypes.h>
 #include <protocols.h>
@@ -62,16 +65,15 @@ static int   table_handler_launch(GGZTable* table);
 static void* table_new(void *index_ptr);
 static void  table_fork(GGZTable* table);
 static void  table_loop(GGZTable* table);
-static int   table_handle(int op, GGZTable* table);
 static void  table_remove(GGZTable* table);
 static void  table_run_game(GGZTable* table, char *path);
 static char** table_split_args(char *path);
 static int   table_send_opt(GGZTable* table);
-static int   table_game_over(GGZTable* table);
-static int   table_log(GGZTable* table, char debug);
-static int   table_game_launch(GGZTable* table);
-static int   table_game_join(GGZTable* table);
-static int   table_game_leave(GGZTable* table);
+int   table_game_over(void* data);
+int   table_log(void* data, char debug);
+int   table_game_launch(void* data, char status);
+int   table_game_join(void* data, char status);
+int   table_game_leave(void* data, char status);
 static int   table_event_enqueue(GGZTable* table, unsigned char opcode);
 static int   table_update_event_enqueue(GGZTable* table,
 					 unsigned char opcode, char* name,
@@ -377,28 +379,23 @@ static char** table_split_args(char *path)
 static int table_send_opt(GGZTable* table)
 {
 	GGZTable copy;
-	int i, fd, seat;
+	int i;
 
 	pthread_rwlock_rdlock(&table->lock);
 	copy = *table;
 	pthread_rwlock_unlock(&table->lock);
 
-	fd = copy.fd;
-	
-	/* Send number of seats */
-	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0
-	    || es_write_int(fd, seats_num(&copy)) < 0)
-		return -1;
-
-	/* Send seat assignments, names, and fd's */
-	for (i = 0; i < seats_num(&copy); i++) {
-
-		seat = seats_type(&copy, i);
-		if (es_write_int(fd, seat) < 0)
-			return -1;
-		
-		if (seat == GGZ_SEAT_RESV 
-		    && es_write_string(fd, copy.reserve[i]) < 0)
+	{
+		/* This is a quick hack to get the interface to the
+		 * library working.  It should be cleaned up later. --JDS */
+		int num_seats = seats_num(&copy);
+		int assign[num_seats];
+		char* reserves[num_seats];
+		for (i=0; i<num_seats; i++) {
+			assign[i] = seats_type(&copy, i);
+			reserves[i] = copy.reserve[i];
+		}
+		if (ggzdmod_send_launch(copy.fd, num_seats, assign, reserves) < 0)
 			return -1;
 	}
 
@@ -408,7 +405,7 @@ static int table_send_opt(GGZTable* table)
 
 static void table_loop(GGZTable* table)
 {
-	int opcode, fd, status;
+	int fd, status;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
 	
@@ -436,69 +433,23 @@ static void table_loop(GGZTable* table)
 				err_sys_exit("select error");
 		}
 
-		if (es_read_int(fd, &opcode) < 0)
-			break;
-		
-		if (table_handle(opcode, table) < 0)
+		if (ggzdmod_dispatch(fd, table) < 0)
 			break;
 	}
 }
 
 
-static int table_handle(int opcode, GGZTable* table)
+int table_game_launch(void* data, char status)
 {
-	int status;
-	TableToControl request = (TableToControl)opcode;
+	GGZTable* table = data;
 
-	switch (request) {
-	case RSP_GAME_LAUNCH:
-		status = table_game_launch(table);
-		break;
-		
-	case RSP_GAME_JOIN:
-		status = table_game_join(table);
-		break;
-
-	case RSP_GAME_LEAVE:
-		status = table_game_leave(table);
-		break;
-		
-	case REQ_GAME_OVER:
-		table_game_over(table);
-		status = -1;
-		break;
-
-	case MSG_LOG:
-		status = table_log(table, 0);
-		break;
-
-	case MSG_DBG:
-		status = table_log(table, 1);
-		break;
-
-	default:
-		dbg_msg(GGZ_DBG_PROTOCOL, 
-			"Table %d in room %d sent unimplemented op %d",
-			table->index, table->room, request);
-		status = -1;
-		break;
-	}
-
-	return status;
-}
-
-
-static int table_game_launch(GGZTable* table)
-{
-	char status;
+	/* FIXME: check status */
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to launch", 
 		table->index, table->room);
-	
-	if (table->state != GGZ_TABLE_CREATED
-	    || es_read_char(table->fd, &status) < 0
-	    || status < 0)
-		return -1;
+
+	if (table->state != GGZ_TABLE_CREATED)
+		return -1;	
 	
 	pthread_rwlock_wrlock(&table->lock);
 	table->state = GGZ_TABLE_LAUNCHED;
@@ -518,9 +469,10 @@ static int table_game_launch(GGZTable* table)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains malloced mem on entry
  */
-static int table_game_join(GGZTable* table)
+int table_game_join(void* data, char status)
 {
-	char status, full;
+	GGZTable* table = data;
+	char full;
 	char* name;
 	int seat, fd, msg_status;
 
@@ -529,9 +481,6 @@ static int table_game_join(GGZTable* table)
 
 	/* Error: we didn't request a join! */
 	if (!table->transit)
-		return -1;
-
-	if (es_read_char(table->fd, &status) < 0)
 		return -1;
 
 	/* Read saved transit data */
@@ -589,9 +538,9 @@ static int table_game_join(GGZTable* table)
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-static int table_game_leave(GGZTable* table)
+int table_game_leave(void* data, char status)
 {
-	char status;
+	GGZTable *table = data;
 	char* name;
 	int seat;
 	int ret_val = 0;
@@ -601,9 +550,6 @@ static int table_game_leave(GGZTable* table)
 
 	/* Error: we didn't request a leave! */
 	if (!table->transit)
-		return -1;
-
-	if (es_read_char(table->fd, &status) < 0)
 		return -1;
 
 	/* Read in saved transit data */
@@ -644,27 +590,13 @@ static int table_game_leave(GGZTable* table)
 }
 
 
-static int table_game_over(GGZTable* table)
+int table_game_over(void* data)
 {
-	int i, num, p_index, won, lost;
+	GGZTable* table = data;
 
 	dbg_msg(GGZ_DBG_TABLE,
 		"Handling game-over request from table %d in room %d", 
 		table->index, table->room);
-	
-	/* Read number of statistics */
-	if (es_read_int(table->fd, &num) < 0)
-		return (-1);
-	
-	for (i = 0; i < num; i++) {
-		if (es_read_int(table->fd, &p_index) < 0
-		    || es_read_int(table->fd, &won) < 0 
-		    || es_read_int(table->fd, &lost) < 0)
-			return (-1);
-
-		/* FIXME: Do something with these statistics */
-
-	}
 
 	/* Mark table as done, so people don't attempt transits */
 	pthread_rwlock_wrlock(&table->lock);
@@ -672,16 +604,13 @@ static int table_game_over(GGZTable* table)
 	pthread_rwlock_unlock(&table->lock);
 	table_event_enqueue(table, GGZ_UPDATE_STATE);
 
-	/* Send response back to game server, allowing termination */
-	if (es_write_int(table->fd, RSP_GAME_OVER) < 0)
-		return -1;
-
 	return 0;
 }
 
 
-static int table_log(GGZTable* table, char debug) 
+int table_log(void* data, char debug)
 {
+	GGZTable *table = data;
 	int level, type, len, pid;
 	char name[MAX_GAME_NAME_LEN];
 	char *prescan, *msg, *p, *m;
