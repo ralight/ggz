@@ -23,16 +23,16 @@ static int b64rev(int c)
 /* Encodes to base64, allocating space as needed */
 char *ggz_base64_encode(const char *text, int length)
 {
-	char *ret, *tmp;
+	unsigned char *ret, *tmp;
 	int i, j;
 	int matrix;
 
 	if(!text) return NULL;
 
-	ret = (char*)malloc(length * 2);
+	ret = (unsigned char*)malloc(length * 2);
 
 	/* Padding with NUL bytes */
-	tmp = (char*)malloc(length + 4);
+	tmp = (unsigned char*)malloc(length + 4);
 	tmp[length + 1] = 0;
 	tmp[length + 2] = 0;
 	tmp[length + 3] = 0;
