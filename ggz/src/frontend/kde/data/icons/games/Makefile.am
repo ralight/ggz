@@ -15,5 +15,6 @@ pix_DATA = \
 	GGZCards.png \
 	Keepalive.png \
 	Muehle.png \
-	notinstalled.png
+	notinstalled.png \
+	lounge.png
 
