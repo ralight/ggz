@@ -44,6 +44,7 @@ clean:
 	-$(MAKE) distclean
 
 	dh_clean
+	rm -f config.status config.cache
 
 install: build
 	dh_testdir
