@@ -70,9 +70,9 @@ void motd_read_file(void)
 		return;
 	}
 
-	/* Read the file one line at a time (up to 15) */
+	/* Read the file one line at a time (up to 40) */
 	lines = 0;
-	while(fgets(line, 128, motd_file) && (lines < 15)) {
+	while(fgets(line, 128, motd_file) && (lines < 40)) {
 		if((motd_info.motd_text[lines] = malloc(strlen(line)+1)) ==NULL)
 			err_sys_exit("malloc error in motd_read_file()");
 		strcpy(motd_info.motd_text[lines], line);
@@ -128,6 +128,14 @@ static char *motd_parse_motd_line(char *line)
 			in++;
 			switch(*in) {
 				case 'h':
+					p = hostname;
+					while(*p && outindex < 1023) {
+						outline[outindex] = *p;
+						p++;
+						outindex++;
+					}
+					break;
+				case 'o':
 					p = hostname;
 					while(*p && outindex < 1023) {
 						outline[outindex] = *p;
