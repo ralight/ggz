@@ -87,6 +87,9 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 	GGZPlayer* rcvr = NULL;
 	void *data = NULL;
 
+	if(receiver == NULL)
+		return E_BAD_OPTIONS;
+
 	/* Don't allow personal chat from a player at a table */
 	pthread_rwlock_rdlock(&sender->lock);
 	if (sender->table != -1) {
@@ -94,7 +97,6 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 		return E_AT_TABLE;
 	}
 	pthread_rwlock_unlock(&sender->lock);	
-
 
 	/* Find target player.  Returns with player write-locked */
 	if ( (rcvr = hash_player_lookup(receiver)) == NULL )

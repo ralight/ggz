@@ -140,6 +140,9 @@ GGZPlayer* hash_player_lookup(char *name)
 	HashList *hl;
 	GGZPlayer* player = NULL;
 
+	if(name == NULL)
+		return NULL;
+
 	/* Convert name to lowercase for comparisons */
 	for(src = name, dest = lc_name; *src != '\0'; src++, dest++)
 		*dest = tolower(*src);
