@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4553 2002-09-13 17:39:35Z jdorje $
+ * $Id: event.c 4579 2002-09-16 05:33:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -128,8 +128,9 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 /* Process queued-up room-specific events for player */
 GGZReturn event_room_handle(GGZPlayer* player)
 {
+	GGZEventFuncReturn status;
 	GGZEvent *event, *rm_list = NULL;
-	int room, status;
+	int room;
 
 	/* 
 	 * We don't need player lock here, since our room can't change 
@@ -273,7 +274,7 @@ GGZReturn event_player_enqueue(char* name, GGZEventFunc func,
 /* Process queued-up player-specific events */
 GGZReturn event_player_handle(GGZPlayer* player)
 {
-	int status;
+	GGZEventFuncReturn status;
 	GGZEvent *event, *next;
 	
 	/* Grab list of personal events to handle */
@@ -417,7 +418,7 @@ GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func,
 /* Process queued-up table-specific events */
 GGZReturn event_table_handle(GGZTable* table)
 {
-	int status;
+	GGZEventFuncReturn status;
 	GGZEvent *event, *next;
 	
 	/* Grab list of private events to handle */
