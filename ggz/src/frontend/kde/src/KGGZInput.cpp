@@ -41,7 +41,7 @@
 // Qt includes
 #include <qlayout.h>
 
-KGGZInput::KGGZInput(QWidget *parent, const char *name)
+KGGZInput::KGGZInput(QWidget *parent, const char *name, QString title, QString description)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox;
@@ -49,7 +49,7 @@ KGGZInput::KGGZInput(QWidget *parent, const char *name)
 	QPushButton *cancel;
 	KGGZCaption *caption;
 
-	caption = new KGGZCaption(i18n("Profile identifier"), i18n("Chose a name for the new profile."), this);
+	caption = new KGGZCaption(title, description, this);
 
 	m_ok = new QPushButton("OK", this);
 	m_ok->setEnabled(false);

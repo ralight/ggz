@@ -38,13 +38,16 @@
 #include <klistview.h>
 
 // Qt includes
-#include <qwidget.h>
-#include <qslider.h>
-#include <qpopupmenu.h>
-#include <qlineedit.h>
 #include <qcstring.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
+#include <qwidget.h>
+
+// Forward declarations
+class KGGZInput;
+class QPushButton;
+class QLineEdit;
+class QPopupMenu;
+class QLabel;
+class QSlider;
 
 // Show the launch dialog
 class KGGZLaunch : public QWidget
@@ -57,7 +60,7 @@ class KGGZLaunch : public QWidget
 		~KGGZLaunch();
 
 		// Initialize the dialog with the given parameters
-		void initLauncher(char *playername, int maxplayers, int maxbots, int maxspectators);
+		void initLauncher(char *playername, int maxplayers, int maxbots);
 		// Return the customizable room description
 		const char *description();
 		// Return the number of seats wanted
@@ -66,6 +69,8 @@ class KGGZLaunch : public QWidget
 		int seatType(int seat);
 		// Enable/disable seat combinations
 		void setSeatAssignment(int seat, int enabled);
+		// Return the reservation name
+		QString reservation(int seat);
 
 		// All possible seat types
 		enum SeatTypes
@@ -88,6 +93,8 @@ class KGGZLaunch : public QWidget
 		void slotAccepted();
 		// The number of seats has changed
 		void slotChanged(int value);
+		// Reservation name received
+		void slotReservation(const char *player);
 
 	signals:
 		// Emitted if table is to be launched
@@ -123,6 +130,8 @@ class KGGZLaunch : public QWidget
 		int m_maxspectators;
 		// Holds the current number of players, spectators and bots
 		int m_curplayers;
+		// Reservation input dialog
+		KGGZInput *m_input;
 };
 
 #endif

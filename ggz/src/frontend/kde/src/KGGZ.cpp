@@ -651,7 +651,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 							break;
 						case KGGZLaunch::seatreserved:
 							KGGZDEBUG("* %i: reserved\n", i);
-							m_table->addReserved((char*)"RESERVED", i);
+							m_table->addReserved((char*)m_launch->reservation(i).latin1(), i);
 							break;
 						case KGGZLaunch::seatunused:
 							KGGZDEBUG("* %i: unused.\n", i);
@@ -955,6 +955,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::loggedout:
 			KGGZDEBUG("loggedout\n");
+			delete m_sn_server;
+			m_sn_server = NULL;
 			m_workspace->widgetChat()->receive(NULL, i18n("Logged out"), KGGZChat::RECEIVE_ADMIN);
 			m_killserver = 1;
 			KGGZDEBUG("Disconnection successful.\n");
@@ -1397,7 +1399,6 @@ void KGGZ::slotGameFrontend()
 void KGGZ::slotGamePrepare(int frontend)
 {
 	GGZCoreGametype *gametype;
-	int spec;
 
 	if(!kggzroom) return;
 	gametype = kggzroom->gametype();
@@ -1413,13 +1414,7 @@ void KGGZ::slotGamePrepare(int frontend)
 			m_launch = NULL;
 		}
 		if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
-#ifdef KGGZ_PATCH_SPECTATORS
-		/*spec = gametype->maxSpectators();*/
-		spec = 0;
-#else
-		spec = 0;
-#endif
-		m_launch->initLauncher(m_save_username, gametype->maxPlayers(), gametype->maxBots(), spec);
+		m_launch->initLauncher(m_save_username, gametype->maxPlayers(), gametype->maxBots());
 		for(int i = 0; i < gametype->maxPlayers(); i++)
 		{
 			KGGZDEBUG("Assignment: %i is %i\n", i, gametype->isPlayersValid(i + 1));

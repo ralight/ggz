@@ -36,14 +36,21 @@
 
 // KGGZ includes
 #include "KGGZCommon.h"
+#include "KGGZInput.h"
 
 // KDE includes
 #include <klocale.h>
-//#define i18n(x) x
 
 // Qt includes
 #include <qlayout.h>
 #include <qstring.h>
+#include <qslider.h>
+#include <qpopupmenu.h>
+#include <qlineedit.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+
+// System includes
 #include <stdlib.h>
 
 KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
@@ -59,6 +66,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_array = NULL;
 	m_assignment = NULL;
 	m_playername = NULL;
+	m_input = NULL;
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
@@ -70,6 +78,8 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_listbox = new KListView(this);
 	m_listbox->addColumn(i18n("Seat"));
 	m_listbox->addColumn(i18n("Player"));
+	m_listbox->addColumn(i18n("Reservation"));
+	m_listbox->setSorting(-1, TRUE);
 
 	m_edit = new QLineEdit(this);
 
@@ -124,9 +134,6 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 	if(seat <= m_maxbots) m_popup->insertItem(typeName(seatbot), -seatbot);
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
-#ifdef KGGZ_PATCH_SPECTATORS
-	/*m_popup->insertItem(typeName(seatspectator), -seatspectator);*/
-#endif
 	m_popup->popup(point);
 
 	connect(m_popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
@@ -142,7 +149,7 @@ void KGGZLaunch::slotActivated(int id)
 
 	id = -id;
 
-	seat = tmp->text(0).toInt();
+	seat = tmp->text(0).toInt() - 1;
 	KGGZDEBUG("Got id: %i on seat: %i\n", id, seat);
 	setSeatType(seat, id);
 }
@@ -186,11 +193,11 @@ int KGGZLaunch::seats()
 	return m_slider->value();
 }
 
-void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots, int maxspectators)
+void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
 {
 	QString str;
 
-	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i, %i)\n", playername, maxplayers, maxbots, maxspectators);
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername, maxplayers, maxbots);
 	if(m_array)
 	{
 		KGGZDEBUG("Critical: array initialized twice!\n");
@@ -206,9 +213,9 @@ void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots, int
 	m_assignment = new QByteArray(maxplayers);
 	KGGZDEBUG("array: done: size = %i\n", m_array->size());
 
-	for(int i = 0; i < maxplayers; i++)
+	for(int i = maxplayers - 1; i >= 0; i--)
 	{
-		str.setNum(i);
+		str.setNum(i + 1);
 		(void)new QListViewItem(m_listbox, str);
 	}
 
@@ -283,6 +290,18 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 
 	tmp->setText(1, typeName(seattype));
 
+	if(seattype == seatreserved)
+	{
+		if(!m_input)
+		{
+			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"), i18n("Name of the player whom the seat is reserved for"));
+		}
+		m_listbox->setEnabled(false);
+		m_input->show();
+		connect(m_input, SIGNAL(signalText(const char*)), SLOT(slotReservation(const char*)));
+	}
+	else tmp->setText(2, QString::null);
+
 	KGGZDEBUG("within setSeatType: arry size is: %i (set at %i)\n", m_array->size(), seat);
 	m_array->at(seat) = seattype;
 	KGGZDEBUG("after setSeatType: arry size is: %i\n", m_array->size());
@@ -309,14 +328,39 @@ QString KGGZLaunch::typeName(int seattype)
 		case seatunused:
 			ret.append(i18n("(unused)"));
 			break;
-		case seatspectator:
-			ret.append(i18n("Spectator"));
-			break;
 		default:
 			ret.append(i18n("unknown"));
 	}
 
 	KGGZDEBUG("return: %s for %i\n", ret.latin1(), seattype);
 	return ret;
+}
+
+void KGGZLaunch::slotReservation(const char *player)
+{
+	QListViewItem *tmp;
+
+	tmp = m_listbox->selectedItem();
+	if(tmp)
+	{
+		tmp->setText(2, player);
+	}
+	m_listbox->setEnabled(true);
+}
+
+QString KGGZLaunch::reservation(int seat)
+{
+	QListViewItem *tmp;
+
+	if((seat < 0) || (seat >= (int)m_array->size())) return QString::null;
+
+	tmp = m_listbox->firstChild();
+	if(!tmp) return QString::null;
+
+	for(int i = 0; i < seat; i++)
+		if(tmp) tmp = tmp->itemBelow();
+
+	if(!tmp) return QString::null;
+	return tmp->text(2);
 }
 

@@ -44,8 +44,8 @@ class KGGZInput : public QWidget
 {
 	Q_OBJECT
 	public:
-		// Constructor
-		KGGZInput(QWidget *parent = NULL, const char *name = NULL);
+		// Constructor which takes the input arguments
+		KGGZInput(QWidget *parent = NULL, const char *name = NULL, QString title = QString::null, QString description = QString::null);
 		// Destructor
 		~KGGZInput();
 
