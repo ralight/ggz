@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5075 2002-10-28 02:02:59Z jdorje $
+ * $Id: net.c 5101 2002-10-29 09:41:07Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -751,9 +751,11 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 		action = "add";
 		break;
 	case GGZ_TABLE_UPDATE_LEAVE:
+	case GGZ_TABLE_UPDATE_SPECTATOR_LEAVE:
 		action = "leave";
 		break;
 	case GGZ_TABLE_UPDATE_JOIN:
+	case GGZ_TABLE_UPDATE_SPECTATOR_JOIN:
 		action = "join";
 		break;
 	case GGZ_TABLE_UPDATE_STATE:
@@ -764,12 +766,6 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 		break;
 	case GGZ_TABLE_UPDATE_SEAT:
 		action = "seat";
-		break;
-	case GGZ_TABLE_UPDATE_SPECTATOR_JOIN:
-		action = "joinspectator";
-		break;
-	case GGZ_TABLE_UPDATE_SPECTATOR_LEAVE:
-		action = "leavespectator";
 		break;
 	}
 
