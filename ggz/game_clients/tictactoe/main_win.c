@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4918 2002-10-14 22:35:52Z jdorje $
+ * $Id: main_win.c 5014 2002-10-23 21:18:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -261,6 +261,8 @@ static GtkWidget *create_menus(GtkWidget *window)
 	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Table/Player _list"), "<ctrl>L",
 	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/Sit down"), NULL, do_sit, 0, NULL},
+	  {_("/Table/Stand up"), NULL, do_stand, 0, NULL},
 	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
 	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
 	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
