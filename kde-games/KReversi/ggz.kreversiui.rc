@@ -1,0 +1,12 @@
+
+<!DOCTYPE kpartgui>
+<kpartgui name="kggzreversi">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+  </Menu>
+  <Menu name="game"><text>&amp;Custom</text>
+    <Action name="requestSync" />
+    <Action name="playAgain" />
+  </Menu>
+</MenuBar>
+</kpartgui>
