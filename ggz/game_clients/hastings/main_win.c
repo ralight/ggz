@@ -177,10 +177,10 @@ void display_board(void)
 			if(game.board[i][j] > -1)
 			{
 				/* draw mask */
-				gdk_gc_set_ts_origin(man_gc[game.board[i][j] % 4], offsetx - 16, offsety - 16);
-				gdk_gc_set_clip_origin(man_gc[game.board[i][j] % 4], offsetx - 16, offsety - 16);
-				gdk_gc_set_clip_mask(man_gc[game.board[i][j] % 4], man_mask[game.board[i][j] % 4]);
-				gdk_draw_rectangle(hastings_buf, man_gc[game.board[i][j] % 4], TRUE, offsetx - 16, offsety - 16, 32, 32);
+				gdk_gc_set_ts_origin(man_gc[game.board[i][j] / 2], offsetx - 16, offsety - 16);
+				gdk_gc_set_clip_origin(man_gc[game.board[i][j] / 2], offsetx - 16, offsety - 16);
+				gdk_gc_set_clip_mask(man_gc[game.board[i][j] / 2], man_mask[game.board[i][j] % 4]);
+				gdk_draw_rectangle(hastings_buf, man_gc[game.board[i][j] / 2], TRUE, offsetx - 16, offsety - 16, 32, 32);
 
 				/* which nation is the knight of? */
 				/*gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
