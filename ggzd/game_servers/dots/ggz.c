@@ -101,8 +101,6 @@ int ggz_game_launch(void)
 		
 	/* Read options (if any to read */
 	if (len != 0) {
-		if ( (opt = malloc(len)) == NULL)
-			return -1;
 		if (es_readn(fd, opt, len) < len) {
 			free(opt);
 			return -1;

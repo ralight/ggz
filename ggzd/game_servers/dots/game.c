@@ -112,12 +112,28 @@ int game_handle_player(int num)
 		case DOTS_REQ_SYNC:
 			status = game_send_sync(num);
 			break;
+		case DOTS_REQ_OPTIONS:
+			status = game_send_options(num);
+			break;
 		default:
 			/* Unrecognized opcode */
 			status = -1;
 			break;
 	}
 	return status;
+}
+
+
+/* Send out options */
+int game_send_options(int seat)
+{
+	int fd = ggz_seats[seat].fd;
+
+	if(es_write_int(fd, DOTS_RSP_OPTIONS) < 0
+	   || es_write_char(fd, dots_game.board_width) < 0
+	   || es_write_char(fd, dots_game.board_height) < 0)
+		return -1;
+	return 0;
 }
 
 
@@ -386,6 +402,8 @@ int game_update(int event, void *d1, void *d2)
 			if(dots_game.state != DOTS_STATE_INIT)
 				return -1;
 			dots_game.state = DOTS_STATE_WAIT;
+			dots_game.board_width = dots_game.options[0];
+			dots_game.board_height = dots_game.options[1];
 			break;
 		case DOTS_EVENT_JOIN:
 			if(dots_game.state != DOTS_STATE_WAIT)
