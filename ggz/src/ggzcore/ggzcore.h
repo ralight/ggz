@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3612 2002-03-21 18:14:52Z jdorje $
+ * $Id: ggzcore.h 3734 2002-04-04 09:26:47Z dr_maux $
  *
  * Interface file to be included by client frontends
  *
@@ -814,7 +814,7 @@ int ggzcore_module_launch(GGZModule *module);
    icon to the list we discussed at the meeting.  This is an optional xpm
    file that the module can provide to use for representing the game
    graphically.*/
-char* ggzcore_module_get_game(GGZModule *module);
+char* ggzcore_module_get_name(GGZModule *module);
 char* ggzcore_module_get_version(GGZModule *module);
 char* ggzcore_module_get_prot_engine(GGZModule *module);
 char* ggzcore_module_get_prot_version(GGZModule *module);
