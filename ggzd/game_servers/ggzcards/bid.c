@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4136 2002-05-02 16:52:55Z jdorje $
+ * $Id: bid.c 4138 2002-05-02 17:32:40Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -223,6 +223,8 @@ void handle_bid_event(player_t p, bid_t bid)
 		return;
 	}
 	
+	set_game_state(STATE_NEXT_BID);
+	
 	/* Get the game code to handle the bid. */		
 	game.data->next_bid();
 
@@ -230,11 +232,9 @@ void handle_bid_event(player_t p, bid_t bid)
 	   changed the game's state.  If that happened, we don't want to
 	   change it back!  And it's necessary for this to come below
 	   the next_bid call, since next_bid may change bid_total... */
-	if (game.state == STATE_WAIT_FOR_BID
+	if (game.state == STATE_NEXT_BID
 	    && game.bid_count == game.bid_total)
 		set_game_state(STATE_FIRST_TRICK);
-	else
-		set_game_state(STATE_NEXT_BID);
 
 	/* do next move */
 	next_move();
