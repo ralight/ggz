@@ -1,5 +1,5 @@
-/* $Id: common.h 2387 2001-09-07 09:55:05Z jdorje $ */
-/*
+/* $Id: common.h 2415 2001-09-09 02:54:18Z jdorje $ */
+/* 
  * File: common.h
  * Author: Jason Short
  * Project: GGZCards Client-Common
@@ -40,21 +40,18 @@
 /** Hand structure.
  *  @todo Should this be merged into struct seat_t?
  */
-struct hand_t
-{
+struct hand_t {
 	int hand_size;		/**< the number of cards in the hand */
 	card_t *card;		/**< the list of cards */
 };
 
 /** Contains all information about a seat at the table. */
-typedef struct seat_t
-{
-	int seat;		/**< ggz seating assignment info */
+typedef struct seat_t {
+	int assign;		/**< ggz seating assignment info; unused */
 	char *name;		/**< player's name */
 	card_t table_card;	/**< card on table */
 	struct hand_t hand;	/**< player's hand */
-}
-seat_t;
+} seat_t;
 
 /** @} end of Player group */
 
@@ -65,20 +62,17 @@ seat_t;
 
 /** GGZCards client game states
  *  @note Any additional state data should be stored separately, while maintaining the state here. */
-typedef enum
-{
+typedef enum {
 	WH_STATE_INIT,		/**< game hasn't started yet */
 	WH_STATE_WAIT,		/**< waiting for others */
 	WH_STATE_PLAY,		/**< our turn to play */
 	WH_STATE_BID,		/**< our turn to bid */
 	WH_STATE_DONE,		/**< game's over */
 	WH_STATE_OPTIONS	/**< determining options */
-}
-client_state_t;
+} client_state_t;
 
 /** The game_t structure contains all global game data. */
-struct game_t
-{
+struct game_t {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
