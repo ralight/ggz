@@ -209,7 +209,6 @@ void chat_send_prvmsg(GGZServer *server)
         GtkEntry *tmp = NULL;
 	gchar *name = NULL;
 	gint i;
-	char **data;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
         if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
@@ -220,11 +219,8 @@ void chat_send_prvmsg(GGZServer *server)
 			if(name[i] == ' ')
 			{
 				name[i] = '\0';
-				if(!(data = calloc(2, sizeof(char*))))
-					ggzcore_error_sys_exit("calloc() failed in chat_send_prvmsg");
-
 				ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, name+1+i);
-				chat_display_message(CHAT_SEND_PRVMSG, data[0], data[1]);
+				chat_display_message(CHAT_SEND_PRVMSG, name, name+1+i);
 				i = strlen(name)+1;
 			}
 		}
