@@ -105,7 +105,7 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	frame = new QFrame(m_pane);
 	frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
-	button_select = new QPushButton("Select", frame);
+	button_select = new QPushButton(i18n("Select"), frame);
 
 	input_host = new QLineEdit(frame);
 	input_port = new QLineEdit(m_pane);
