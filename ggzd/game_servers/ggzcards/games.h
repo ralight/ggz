@@ -46,4 +46,6 @@ extern char* game_names[];
 #define GGZ_NUM_GAMES		7	/* the _number_ of valid games */
 
 extern int game_types[];
-extern int games_req_gametype();
+
+extern int games_get_gametype(char*);	/* which game is this? */
+extern int games_req_gametype();	/* what do you want to play today? */

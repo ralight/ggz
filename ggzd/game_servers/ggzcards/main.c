@@ -98,7 +98,9 @@ int main(int argc, char** argv)
 	for (i=1; i<argc; i++) {
 		char* option;
 		if ( (option = get_option("--game", argv, &i, argc)) != NULL) {
-			which_game = game_get_gametype(option);
+			which_game = games_get_gametype(option);
+		} else {
+			/* bad option */
 		}
 	}
 

@@ -37,8 +37,8 @@
 #include "protocols.h"
 
 /* TODO: these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
-char* suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
-char* bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
+static char* suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
+static char* bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 
 /* helper functions */
 static char** alloc_string_array(int, int);
@@ -48,6 +48,10 @@ static char** alloc_string_array(int, int);
 /* JDS: these are just helper functions which should be moved to another
  * file */
 
+/* alloc
+ *   this helper function checks to see if allocation fails, and also
+ *   zeroes all the memory
+ */
 void* alloc(int size)
 {
 	void* ret = malloc(size);
@@ -91,37 +95,12 @@ static void free_string_array(char** bids)
 }
 */
 
-
-/*
- * JDS: these functions are game-specific or contain game-specific code
+/* game_init_game
+ *   as soon as the game type is determined, the game should be initialized.  This is called
+ *   by game-independent code, but may be called in one of several places (e.g. launch, connection, newgame)
  */
-
-/* will be used to determine the game type from command-line parameter  */
-int game_get_gametype(char* text)
-{
-	if (!strcmp(text, "bridge"))
-		return GGZ_GAME_BRIDGE;
-
-	if (!strcmp(text, "suaro"))
-		return GGZ_GAME_SUARO;
-
-	if (!strcmp(text, "lapocha"))
-		return GGZ_GAME_LAPOCHA;
-
-	if (!strcmp(text, "spades"))
-		return GGZ_GAME_SPADES;
-
-	if (!strcmp(text, "hearts"))
-		return GGZ_GAME_HEARTS;
-
-	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
-	ggz_debug("Unknown game for '%s'.", text);
-	return GGZ_GAME_UNKNOWN;
-}
-
-/* as soon as the game type is determined, the game should be initialized.  This is called
- * by game-independent code, but may be called in one of several places (e.g. launch, connection, newgame) */
-/* TODO: it may be necessary to uninitialize a game before initializing a new one */
+/* TODO: it may be necessary to uninitialize a game before initializing a new one, but currently
+ * we can't "switch" games after choosing one. */
 void game_init_game()
 {
 	player_t p;
@@ -286,13 +265,12 @@ void game_init_game()
 
 /* game_get_options
  *   this is very clunky; this must request options from the client
- *   also, everything in it is closely tied to game_handle_options()
+ *   everything in it is closely tied to game_handle_options()
  */
 int game_get_options()
 {
 	int fd;
 	fd = ggz_seats[game.host].fd;
-	ggz_debug("Entering game_get_options.");
 	if (fd == -1) {
 		ggz_debug("SERVER BUG: nonexistent host.");
 		return -1;
@@ -358,10 +336,11 @@ int game_get_options()
 
 /* game_handle_options
  *   handles options being sent from the client
- *   a value of -1 will be passed in as an option to indicate an error */
+ *   a value of -1 will be passed in as an option to indicate an error
+ *   corresponds very closely to game_get_options, above
+ */
 void game_handle_options(int *options)
 {
-	ggz_debug("Entering game_handle_options.");
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
 			if (options[0] >= 0) SUARO.shotgun = options[0];
@@ -402,7 +381,7 @@ void game_handle_options(int *options)
 }
 
 /* game_start_game
- *   Called at the beginning of a game!
+ *   Called at the beginning of a game, it initializes any necessary data.
  */
 void game_start_game(void)
 {
@@ -414,13 +393,17 @@ void game_start_game(void)
 		game.players[p].score = 0;
 	}
 
-	ggz_debug("Game start completed successfully.");
+	switch (game.which_game) {
+		default:
+			/* nothing else to do... */
+	}
 }
 
 /* game_handle_gameover
- *   The game is over; end out game-over message
+ *   The game is over; send out game-over message.
  *   game-specific code to determine the winner(s) and
- *   call send_gameover */
+ *   call send_gameover
+ */
 int game_handle_gameover(void)
 {
 	player_t p;
@@ -666,13 +649,15 @@ int game_get_bid()
 	return status;
 }
 
-/* Handle incoming bid from player */
+/* game_handle_bid
+ *   Handle incoming bid from player.  Note that the player's bid (i.e. game.players[p].bid)
+ *   will already have been set automatically; all we need to do is any additional
+ *   game-specific stuff.
+ */
 int game_handle_bid(int bid_index)
 {
 	bid_t bid;
 	bid.bid = -1;
-
-	ggz_debug("Entering game_handle_bid(%d).", bid_index);
 
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
@@ -757,11 +742,14 @@ int game_handle_bid(int bid_index)
 	return 0;	
 }
 
-/* sets up for the next bid
- * note that game.bid_count has already been incremented */
+/* game_next_bid
+ *   sets up for the next bid
+ *   note that game.bid_count has already been incremented, and will now
+ *   equal the number of the current bid (counting from 0).  game.next_bid
+ *   should equal the player who is bidding.
+ */
 void game_next_bid()
 {
-	ggz_debug("Determining next bid.");
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
 			/* closely based on Suaro code, below */
@@ -817,7 +805,10 @@ normal_order:
 	
 }
 
-/* called between the bidding and playing sequences */
+/* game_start_playing
+ *   called between the bidding and playing sequences.  A lot of stuff is done
+ *   automatically at this point, all we have to do is any game-specific stuff.
+ */
 void game_start_playing(void)
 {
 	player_t p;
@@ -873,8 +864,12 @@ void game_start_playing(void)
 	}
 }
 
-/* verify that the play is legal; return NULL if it is an an error message otherwise
- * the error message should be statically declared! */
+/* game_verify_play
+ *   verify that the play is legal; return NULL if it is an an error message otherwise
+ *   the error message must be statically declared!!!
+ *   Note that we've already checked that the play is legal _in general_, here we
+ *   only check that it's legal _for this game_.
+ */
 char* game_verify_play(int card_index)
 {
 	card_t card = game.seats[game.play_seat].hand.cards[card_index], c;
@@ -937,15 +932,19 @@ char* game_verify_play(int card_index)
 	return NULL;	
 }
 
-/* sets up for the next play
- * note that game.play_count has already been incremented */
+/* game_next_play
+ *   sets up for the next play
+ *   note that game.play_count has already been incremented
+ */
 void game_next_play()
 {
 	game.next_play = (game.next_play + 1) % game.num_players;
 }
 
-/* this gets a play.  It most likely just requests one from the player, but
- * AI can be inserted to call update on a WH_EVENT_PLAY */
+/* game_get_play
+ *   this gets a play.  It most likely just requests one from the player, but
+ *   AI can be inserted to call update on a WH_EVENT_PLAY.
+ */
 void game_get_play(player_t p)
 {
 	switch (game.which_game) {
@@ -963,9 +962,11 @@ void game_get_play(player_t p)
 	}
 }
 
-/* this handles a play.  Just about everything is taken care of by the
- * game-independent code; all that needs to be done here is anything
- * game-specific. */
+/* game_handle_play
+ *   this handles a play.  Just about everything is taken care of by the
+ *   game-independent code; all that needs to be done here is anything
+ *   game-specific.
+ */
 void game_handle_play(card_t c)
 {
 	switch (game.which_game) {
@@ -988,7 +989,8 @@ void game_handle_play(card_t c)
 }
 
 /* game_test_for_gameover
- *   called at the beginning of a new hand to determine if the game is over
+ *   called at the beginning of a new hand to determine if the game is over.
+ *   Return 1 for gameover, 0 otherwise.
  */
 int game_test_for_gameover()
 {
@@ -1021,13 +1023,13 @@ static int lap_card_count[] = { 1, 1, 1, 1,
 			    9, 8, 7, 6, 5, 4, 3, 2,
 			    1, 1, 1, 1 };
 
-/* Generate and send out a new hand */
+/* game_deal_hand
+ *   Generate and send out a new hand
+ */
 int game_deal_hand(void)
 {
 	seat_t s;
 	int result=0;
-
-	ggz_debug("Dealing hand %d.", game.hand_num);
 
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
@@ -1051,18 +1053,18 @@ int game_deal_hand(void)
 		default:
 			game.hand_size = 52 / game.num_players;
 regular_deal:
+			/* in a regular deal, we just deal out hand_size cards to everyone */
 			for (s = 0; s < game.num_seats; s++)
 				cards_deal_hand(game.hand_size, &game.seats[s].hand);
 	}
-
-	ggz_debug("Dealt hand with result %d.", result);
 
 	return result;
 }
 
 
 /* game_send_hand
- *   Show a player a hand.
+ *   Show a player a hand.  This has to determine whether the hand is going to
+ *   be revealed to the player or not.
  */
 int game_send_hand(player_t p, seat_t s)
 {
@@ -1077,6 +1079,8 @@ int game_send_hand(player_t p, seat_t s)
 			 * joins late won't see it.  We have the same problem with Suaro. */
 			/* fall through */
 		default:
+			/* in most cases, we want to reveal the hand only to the player
+			 * who owns it. */
 			return send_hand(p, s, game.players[p].seat == s);
 	}
 	return -1;
@@ -1087,6 +1091,7 @@ int game_send_hand(player_t p, seat_t s)
  */
 int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
+	/* TODO: in case of an overflow, the result from snprintf probably isn't what we want to return. */
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
 			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
@@ -1107,6 +1112,9 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 	}
 }
 
+/* game_set_player_message
+ *   sets the player message for a given player.
+ */
 void game_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
@@ -1175,14 +1183,15 @@ bid_message_only:
 	send_player_message_toall(s);
 }
 
-/* Figure who won the trick
- * game.winner will be announced as the winner */
+/* game_end_trick
+ *   Figure who won the trick.
+ *   game.winner will be announced as the winner; game.leader
+ *   will lead the next trick.
+ */
 void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p, lo_player = game.leader;
 	card_t hi_card = game.lead_card, lo_card = game.lead_card;
-
-	ggz_debug("Scoring trick.");
 
 	/* default method of winning tricks: the winning card is the highest
 	 * card of the suit lead, or the highest trump if there is trump */
@@ -1246,7 +1255,9 @@ void game_end_trick(void)
 }
 
 
-/* Calculate scores for this hand and announce */
+/* game_end_hand
+ *   Calculate scores for this hand and announce
+ */
 void game_end_hand(void)
 {
 	player_t p;
@@ -1383,7 +1394,11 @@ void game_end_hand(void)
 	}                                                         	
 }
 
-/* returns a boolean */
+/* game_valid_game
+ *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
+ *   currently, the "current setup" is just the number of players (which is set automatically
+ *   by ggz)
+ */
 int game_valid_game(int which_game)
 {
 	switch (which_game) {

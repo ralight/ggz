@@ -60,10 +60,9 @@ typedef struct hearts_game_t {
 #define BRIDGE_PASS 1
 #define BRIDGE_DOUBLE 2
 
+/* special suits */
 	/* clubs-spades = 0-3 = regular values */
 #define BRIDGE_NOTRUMP 4
-
-extern char* bridge_suit_names[5]; /* clubs-spades, notrump */
 
 #define BRIDGE ( *(bridge_game_t *)(game.specific) )
 typedef struct bridge_game_t {
@@ -88,11 +87,10 @@ typedef struct bridge_game_t {
 #define SUARO_DOUBLE 2
 #define SUARO_KITTY 3
 
+/* special suits */
 #define SUARO_LOW 0
 	/* clubs-spades = 1-4 = regular values + 1 */
 #define SUARO_HIGH 5
-
-extern char* suaro_suit_names[6]; /* low, clubs-spades, high */
 
 #define SUARO ( *(suaro_game_t *)(game.specific) )
 typedef struct suaro_game_t {
@@ -117,7 +115,6 @@ typedef struct suaro_game_t {
 
 /* Game-specific functions */
 
-extern int game_get_gametype(char*); /* which game is this? */
 extern int game_send_hand(int, int);		/* send a hand to a player */
 
 extern void game_set_player_message(player_t); /* determine and send the player message */

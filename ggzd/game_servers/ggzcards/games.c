@@ -31,7 +31,8 @@
 #include "games.h"
 #include "ggz.h"
 
-/* TODO: make this into game_get_name. */
+/* These names are sent to the client when options are requested.  They're different
+ * from what's sent to the client as the game name later */
 char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchre", "Rook"};
 
 /* these aren't *quite* worthy of being in the game struct */
@@ -39,7 +40,37 @@ char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchr
 int game_types[GGZ_NUM_GAMES];	/* possible types of games; used for option requests */
 
 
+/* games_get_gametype
+ *   determines which game the text corresponds to.  If the --game=<game> parameter
+ *   is passed to the server on startup, <game> is passed here to determine the
+ *   type of game. */
+int games_get_gametype(char* text)
+{
+	if (!strcmp(text, "bridge"))
+		return GGZ_GAME_BRIDGE;
 
+	if (!strcmp(text, "suaro"))
+		return GGZ_GAME_SUARO;
+
+	if (!strcmp(text, "lapocha"))
+		return GGZ_GAME_LAPOCHA;
+
+	if (!strcmp(text, "spades"))
+		return GGZ_GAME_SPADES;
+
+	if (!strcmp(text, "hearts"))
+		return GGZ_GAME_HEARTS;
+
+	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
+	ggz_debug("Unknown game for '%s'.", text);
+	return GGZ_GAME_UNKNOWN;
+}
+
+
+/* games_req_gametype
+ *   this function requests the game type from the host client.  It's only called if
+ *   this information isn't determined automatically (i.e. via --game=spades parameter).
+ *   the reply is sent to games_handle_gametype, below. */
 int games_req_gametype()
 {
 	int fd = ggz_seats[game.host].fd;

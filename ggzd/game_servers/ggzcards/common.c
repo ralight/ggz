@@ -703,6 +703,7 @@ int handle_player(player_t p)
 				} else {
 					int options[game.num_options];
 					rec_options(game.num_options, options);
+					ggz_debug("Entering game_handle_options.");
 					game_handle_options(options);
 					if (game.options_initted)
 						/* TODO: what if options aren't initted? */
@@ -764,6 +765,9 @@ int newgame()
 	send_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state( WH_STATE_NEXT_HAND );
+
+	ggz_debug("Game start completed successfully.");
+
 	next_play();
 }
 
@@ -800,8 +804,11 @@ void next_play(void)
 			cards_shuffle_deck();
 			for(p=0; p<game.num_players; p++)
 				game.players[p].tricks = 0;
+
+			ggz_debug("Dealing hand %d.", game.hand_num);
 			if(game_deal_hand() < 0)
 				return;
+			ggz_debug("Dealt hand successfully.");
 
 			/* Now send the resulting hands to each player */
 			for(p=0; p<game.num_players; p++)
@@ -932,6 +939,7 @@ int update(int event, void *data)
 			ggz_debug("Handling a WH_EVENT_NEWGAME for player %d.", player);
 			game.players[player].ready = 1;
 			ready = 1;
+			ggz_debug("Determining options.");
 			if (player == game.host && !game.options_initted &&
 			    game_get_options() < 0) {
 				ggz_debug("Error in game_get_options.  Using defaults.");
@@ -992,7 +1000,7 @@ int update(int event, void *data)
 				set_game_state(WH_STATE_NEXT_PLAY);
 			else {
 				/* end of trick */
-				ggz_debug("End of trick; %d/%d.", game.trick_count, game.trick_total);
+				ggz_debug("End of trick; %d/%d.  Scoring it.", game.trick_count, game.trick_total);
 				sleep(1);
 				game_end_trick();
 				send_trick(game.winner);
@@ -1032,9 +1040,11 @@ int update(int event, void *data)
 			game.players[game.next_bid].bid = bid;
 
 			/* handle the bid */
+			ggz_debug("Entering game_handle_bid(%d).", bid_index);
 			game_handle_bid(bid_index);
 
 			/* set up next move */
+			ggz_debug("Setting up next bid.");
 			game.bid_count++;
 			game_next_bid();
 			if (game.bid_count == game.bid_total)
