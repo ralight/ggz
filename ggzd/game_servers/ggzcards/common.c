@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3412 2002-02-18 09:02:33Z jdorje $
+ * $Id: common.c 3415 2002-02-18 15:27:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -628,7 +628,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		new_state = GGZDMOD_STATE_WAITING;
 		
 	/* Change the table (and hence game) state. */
-	if (ggzdmod_set_state(game.ggz, GGZDMOD_STATE_DONE) < 0)
+	if (ggzdmod_set_state(game.ggz, new_state) < 0)
 		assert(0);
 	
 	ggzdmod_log(game.ggz, "Player leave successful.");
