@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: client.c 5198 2002-11-04 01:47:47Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -45,7 +45,7 @@
 #include "chat.h"
 #include "game.h"
 #include "ggzclient.h"
-#include "playerinfo.h"
+#include "playerlist.h"
 #include "roominfo.h"
 #include "launch.h"
 #include "license.h"
@@ -54,22 +54,17 @@
 #include "props.h"
 #include "server.h"
 #include "support.h"
+#include "tablelist.h"
 #include "types.h"
 #include "xtext.h"
 
 
 GtkWidget *win_main;
 
-static gint table_selection_id = -1;
 static gint spectating = -1;
 
 /* Maximum cache size for last entries */
 #define CHAT_MAXIMUM_CACHE 5
-
-#define PLAYER_LIST_COL_LAG 0
-#define PLAYER_LIST_COL_TABLE 1
-#define PLAYER_LIST_COL_STATS 2
-#define PLAYER_LIST_COL_NAME 3
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -102,38 +97,20 @@ static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
 static void client_exit_button_clicked(GtkButton *button, gpointer data);
-static gboolean client_player_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
-static gboolean client_table_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 
-static void client_player_clist_select_row(GtkCList *clist, gint row, 
-					 gint column, GdkEvent *event, 
-					 gpointer data);
 static void client_room_clist_select_row(GtkCList *clist, gint row, 
 					 gint column, GdkEvent *event, 
 					 gpointer data);
-static void client_table_clist_select_row(GtkCList *clist, gint row, 
-					  gint column, GdkEvent *event,
-					  gpointer data);
-static void client_table_clist_click_column(GtkCList *clist, gint column,
-					    gpointer data);
 static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
 static GtkWidget* create_mnu_room(int room_num);
 static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data);
-static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
-static void client_start_table_join(void);
 static void client_start_table_watch(void);
-static GtkWidget* create_mnu_player(int player_num, gboolean is_friend,
-				    gboolean is_ignore);
-static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
-static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
-static char *client_get_players_index(guint row);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
 /* Extra helper functions. */
@@ -556,25 +533,6 @@ client_send_button_clicked		(GtkButton	*button,
 
 
 static void
-client_table_clist_select_row		(GtkCList	*clist,
-					 gint		 row,
-					 gint		 column,
-					 GdkEvent	*event,
-					 gpointer	 data)
-{
-	table_selection_id = client_get_table_index(row);
-}
-
-
-static void
-client_table_clist_click_column		(GtkCList	*clist,
-					 gint		 column,
-					 gpointer	 data)
-{
-}
-
-
-static void
 client_launch_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
@@ -680,18 +638,6 @@ client_exit_button_clicked		(GtkButton	*button,
 }
 
 
-
-static gboolean 
-client_table_event			(GtkWidget	*widget,
-					 GdkEvent	*event,
-					 gpointer	 data)
-{
-	/* Check to see if the event was a mouse button press */
-	if( event->type == GDK_2BUTTON_PRESS )
-		client_start_table_join();
-	return FALSE;
-}
-
 static void
 client_room_clist_select_row		(GtkCList       *clist,
                                          gint            row,
@@ -700,80 +646,6 @@ client_room_clist_select_row		(GtkCList       *clist,
                                          gpointer        data)
 {
 }
-
-static void client_player_clist_select_row(GtkCList *clist, gint row, 
-					 gint column, GdkEvent *event, 
-					 gpointer data)
-{
-
-}
-
-static gboolean 
-client_player_clist_event			(GtkWidget	*widget,
-					 GdkEvent	*event,
-					 gpointer	 data)
-{
-	gint row, column;
-	GdkEventButton* buttonevent = (GdkEventButton*)event;
-	GtkWidget *clist = lookup_widget(win_main, "player_clist");
-
-	gtk_clist_get_selection_info(GTK_CLIST(clist), 
-				     buttonevent->x, 
-				     buttonevent->y,
-				     &row, &column);
-	if (row < 0 || row > GTK_CLIST(clist)->rows)
-		return FALSE;
-
-	if (event->type == GDK_BUTTON_PRESS) {
-		/* Single click */
-		if (buttonevent->button == 3) {
-			/* Right mouse button */
-			/* Create and display the menu */
-			const char* player = client_get_players_index(row);
-			int is_friend = chat_is_friend(player);
-			int is_ignore = chat_is_ignore(player);
-			GtkWidget *menu;
-			gtk_clist_select_row(GTK_CLIST(clist), row, column);
-			menu = create_mnu_player(row, is_friend, is_ignore);
-
-			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
-					NULL, buttonevent->button, 0);
-		}
-	}
-
-	return FALSE;
-}
-
-
-static int client_get_table_index(guint row)
-{
-	GtkWidget *tmp;
-	char *text;
-	int index;
-
-	tmp = lookup_widget(win_main, "table_clist");
-	gtk_clist_get_text(GTK_CLIST(tmp), row, 0, &text);
-	index = atoi(text);
-	
-	return index;
-}
-
-
-static char *client_get_players_index(guint row)
-{
-	GtkWidget *tmp;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	guint8 space;
-	gchar *text = NULL;
-
-	tmp = lookup_widget(win_main, "player_clist");
-	gtk_clist_get_pixtext(GTK_CLIST(tmp), row, PLAYER_LIST_COL_NAME,
-			      &text, &space, &pixmap, &mask);
-	
-	return text;
-}
-
 
 static int client_get_table_open(guint row)
 {
@@ -850,20 +722,9 @@ static void client_join_room(guint room)
 	       MSGBOX_NORMAL);
 }
 
-static int client_find_table_by_id(int table_id)
+void client_start_table_join(void)
 {
-	int i;
-
-	for (i = 0; i <numtables; i++)
-		if (client_get_table_index(i) == table_selection_id)
-			return i;
-
-	return -1;
-}
-
-static void client_start_table_join(void)
-{
-	int tablerow = client_find_table_by_id(table_selection_id);
+	int tablerow = get_selected_table_row();
 
 	/* Make sure a table is selected */
 	if (tablerow == -1) {
@@ -874,14 +735,11 @@ static void client_start_table_join(void)
 	}
 
 	/* Make sure we select a proper table */
-	if(tablerow <= numtables)
-	{
-		/* Make sure table has open seats */
-		if (!client_get_table_open(tablerow)) {
-			msgbox("That table is full.", "Error Joining",
-				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
-			return;
-		}
+	/* Make sure table has open seats */
+	if (!client_get_table_open(tablerow)) {
+		msgbox("That table is full.", "Error Joining",
+		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
+		return;
 	}
 
 	/* Initialize a game module */
@@ -897,7 +755,7 @@ static void client_start_table_join(void)
 
 static void client_start_table_watch(void)
 {
-	int tablerow = client_find_table_by_id(table_selection_id);
+	int tablerow = get_selected_table_row();
 
 	/* Make sure a table is selected */
 	if (tablerow == -1) {
@@ -940,7 +798,8 @@ void client_join_table(void)
 
 	room = ggzcore_server_get_cur_room(server);
 	assert(spectating >= 0);
-	status = ggzcore_room_join_table(room, table_selection_id, spectating);
+	status = ggzcore_room_join_table(room, get_selected_table_id(),
+					 spectating);
 	
 	if (status < 0) {
 		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
@@ -1047,37 +906,6 @@ client_realize                    (GtkWidget       *widget,
 
 }
 
-static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data)
-{
-	/* Pop up an info dialog about the player */
-	int player_num = GPOINTER_TO_INT(data);
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GGZPlayer *player = ggzcore_room_get_nth_player(room, player_num);
-	player_info_create_or_raise(player);
-}
-
-static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
-{
-	int player_num = GPOINTER_TO_INT(data);
-	char *pname = client_get_players_index(player_num);
-
-	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_friend(pname, TRUE);
-	else
-		chat_remove_friend(pname);
-}
-
-static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
-{
-	int player_num = GPOINTER_TO_INT(data);
-	char *pname = client_get_players_index(player_num);
-
-	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		chat_add_ignore(pname, TRUE);
-	else
-		chat_remove_ignore(pname);
-}
-
 static void client_tables_size_request(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *tmp;
@@ -1094,225 +922,6 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 		gtk_object_set(GTK_OBJECT(tmp), "user_data",  GTK_PANED(tmp)->child1_size, NULL);
 	if(ggzcore_gametype_get_name(gt) == NULL && GTK_PANED(tmp)->child1_size != 0 )
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
-}
-
-
-void client_clear_tables(void)
-{
-	GtkWidget *tmp;
-	
-	tmp = lookup_widget(win_main, "table_clist");
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	gtk_clist_clear(GTK_CLIST(tmp));
-	gtk_clist_thaw(GTK_CLIST(tmp));
-
-	table_selection_id = -1;
-}
-
-
-void display_tables(void)
-{
-	GtkWidget *tmp;
-	gchar *table[4] = {NULL, NULL, NULL, NULL};
-	const char * desc;
-	gint i, num, avail, seats;
-	GGZRoom *room;
-	GGZTable *t = NULL;
-	int tablerow = -1;
-
-	/* Retrieve the list. */
-	tmp = lookup_widget(win_main, "table_clist");
-
-	/* "Freeze" the clist.  This prevents any graphical updating
-	 * until we "thaw" it later. */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	
-	/* Clear the table */
-	gtk_clist_clear(GTK_CLIST(tmp));
-	
-	room = ggzcore_server_get_cur_room(server);
-
-	/* Display current list of players
-	if (!(numbers = ggzcore_room_get_numbers()))
-		return GGZ_HOOK_OK;*/
-	
-	numtables = ggzcore_room_get_num_tables(room);
-	for (i = 0; i < numtables; i++) {
-	
-		t = ggzcore_room_get_nth_table(room, i);
-		num   = ggzcore_table_get_id(t);
-		avail = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
-			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
-		seats = ggzcore_table_get_num_seats(t);
-		desc = ggzcore_table_get_desc(t);
-		if(!desc) {
-			desc = _("No description available.");
-		}
-
-		if (num == table_selection_id)
-			tablerow = i;
-
-		/* FIXME: we have a significant problem here.  Do we
-		   display the number of open seats, the number of
-		   available-to-us seats, or the total number of
-		   unfilled seats?  Any way we do it we'll have
-		   problems.  Right now I just show the total
-		   number of unfilled seats. */
-			
-		table[0] = g_strdup_printf("%d", num);
-		table[1] = g_strdup_printf("%d/%d", avail, seats);
-		table[2] = g_strdup_printf("%s", desc);
-		gtk_clist_append(GTK_CLIST(tmp), table);
-		g_free(table[0]);
-		g_free(table[1]);
-		g_free(table[2]);
-	}
-
-	if (tablerow >= 0)
-		gtk_clist_select_row(GTK_CLIST(tmp), tablerow, 0);
-	else
-		table_selection_id = -1;
-	
-	/* "Thaw" the clist (it was "frozen" up above). */
-	gtk_clist_thaw(GTK_CLIST(tmp));
-}
-
-
-void display_players(void)
-{
-	GtkWidget *tmp;
-	gint i, num;
-	/* Some of the fields of the clist receive pixmaps
-	 * instead, and are therefore set to NULL. */
-	gchar *player[5] = {NULL, NULL, NULL, NULL, NULL};
-	gchar *path = NULL;
-	GGZPlayer *p;
-	GGZTable *table;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
-	GdkBitmap *mask1, *mask2;
-	int wins, losses, ties, forfeits, rating, ranking;
-	long highscore;
-	char stats[512];
-	
-	/* Retrieve the player list (CList) widget. */
-	tmp = lookup_widget(win_main, "player_clist");
-	
-	/* "Freeze" the clist.  This prevents any graphical updating
-	 * until we "thaw" it later. */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	
-	/* Clear current list of players */
-	gtk_clist_clear(GTK_CLIST(tmp));
-
-	/* Display current list of players */
-	num = ggzcore_room_get_num_players(room);
-
-	for (i = 0; i < num; i++) {
-		p = ggzcore_room_get_nth_player(room, i);
-
-		table = ggzcore_player_get_table(p);
-		
-		/* These values are freed down below. */
-		if(!table)
-			player[PLAYER_LIST_COL_TABLE] = g_strdup("--");
-		else
-			player[PLAYER_LIST_COL_TABLE]
-				= g_strdup_printf("%d",
-						  ggzcore_table_get_id(table));
-
-		if (ggzcore_player_get_ranking(p, &ranking)) {
-			snprintf(stats, sizeof(stats),
-				 _("#%d"), ranking);
-		} else if (ggzcore_player_get_highscore(p, &highscore)) {
-			snprintf(stats, sizeof(stats),
-				 "%ld", highscore);
-		} else if (ggzcore_player_get_rating(p, &rating)) {
-			snprintf(stats, sizeof(stats),
-				 "%d", rating);
-		} else if (ggzcore_player_get_record(p, &wins, &losses,
-					      &ties, &forfeits)) {
-			snprintf(stats, sizeof(stats),
-				 "%d-%d", wins, losses);
-			if (ties > 0) {
-				snprintf(stats + strlen(stats),
-					 sizeof(stats) - strlen(stats),
-					 "-%d", ties);
-			}
-			if (forfeits > 0) {
-				snprintf(stats + strlen(stats),
-					 sizeof(stats) - strlen(stats),
-					 " (%d)", forfeits);
-			}
-		} else
-			snprintf(stats, sizeof(stats), "%s", "");
-		player[PLAYER_LIST_COL_STATS] = stats;
-
-		player[PLAYER_LIST_COL_NAME]
-			= g_strdup(ggzcore_player_get_name(p));
-		
-		gtk_clist_append(GTK_CLIST(tmp), player);
-
-		if(ggzcore_player_get_lag(p) == -1 || ggzcore_player_get_lag(p) ==0)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag0.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 1)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag1.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 2)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag2.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 3)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag3.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 4)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag4.xpm", NULL);
-		else if(ggzcore_player_get_lag(p) == 5)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_lag5.xpm", NULL);
-		
-		if (path) {
-			pixmap1 = gdk_pixmap_create_from_xpm(tmp->window, &mask1,
-							    NULL, path);
-			if (pixmap1)
-				gtk_clist_set_pixmap(GTK_CLIST(tmp), i,
-						     PLAYER_LIST_COL_LAG,
-						     pixmap1, mask1);
-			g_free(path);
-		}
-
-
-		if(ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_guest.xpm", NULL);
-		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_NORMAL)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_registered.xpm", NULL);
-		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_ADMIN)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
-					 "ggz_gtk_admin.xpm", NULL);
-		
-		if (path) {
-			pixmap2 = gdk_pixmap_create_from_xpm(tmp->window, &mask2,
-							    NULL, path);
-			if (pixmap2)
-				gtk_clist_set_pixtext
-					(GTK_CLIST(tmp), i,
-					 PLAYER_LIST_COL_NAME,
-					 player[PLAYER_LIST_COL_NAME],
-					 5, pixmap2, mask2);
-			g_free(path);
-		}
-		
-		/* Note the name is used right above, so these calls
-		   have to come way down here. */
-		g_free(player[PLAYER_LIST_COL_TABLE]);
-		g_free(player[PLAYER_LIST_COL_NAME]);
-	}
-	
-	/* "Thaw" the clist (it was "frozen" up above). */
-	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 
@@ -1393,16 +1002,9 @@ create_win_main (void)
   GtkWidget *room_label;
   GtkWidget *player_scrolledwindow;
   GtkWidget *player_clist;
-  GtkWidget *player_lag_label;
-  GtkWidget *player_table_label;
-  GtkWidget *player_record_label;
-  GtkWidget *player_name_label;
   GtkWidget *table_vpaned;
   GtkWidget *scrolledwindow3;
   GtkWidget *table_clist;
-  GtkWidget *table_no_label;
-  GtkWidget *table_steats_label;
-  GtkWidget *tabel_desc_label;
   GtkWidget *chat_vbox;
   GtkWidget *chatdisplay_hbox;
   GtkWidget *chat_frame;
@@ -2078,49 +1680,8 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  player_clist = gtk_clist_new (4);
-  gtk_widget_ref (player_clist);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_clist", player_clist,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_clist);
-  gtk_container_add (GTK_CONTAINER (player_scrolledwindow), player_clist);
-  gtk_widget_set_sensitive (player_clist, FALSE);
-  GTK_WIDGET_UNSET_FLAGS (player_clist, GTK_CAN_FOCUS);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 0, 15);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 1, 15);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 2, 35);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 3, 65);
-  gtk_clist_column_titles_show (GTK_CLIST (player_clist));
-
-  player_lag_label = gtk_label_new (_("L"));
-  gtk_widget_ref (player_lag_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_lag_label", player_lag_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_lag_label);
-  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 0, player_lag_label);
-
-  player_table_label = gtk_label_new (_("T"));
-  gtk_widget_ref (player_table_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_table_label", player_table_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_table_label);
-  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 1, player_table_label);
-
-  player_record_label = gtk_label_new (_("R"));
-  gtk_widget_ref (player_record_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_record_label",
-			    player_record_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_record_label);
-  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 2,
-			       player_record_label);
-
-  player_name_label = gtk_label_new (_("Player"));
-  gtk_widget_ref (player_name_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_name_label", player_name_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_name_label);
-  gtk_clist_set_column_widget (GTK_CLIST (player_clist), 3, player_name_label);
+  player_clist = create_player_list(win_main);
+  gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_clist);
 
   table_vpaned = gtk_vpaned_new ();
   gtk_widget_ref (table_vpaned);
@@ -2142,39 +1703,8 @@ create_win_main (void)
   gtk_paned_pack1 (GTK_PANED (table_vpaned), scrolledwindow3, FALSE, TRUE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  table_clist = gtk_clist_new (3);
-  gtk_widget_ref (table_clist);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "table_clist", table_clist,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table_clist);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow3), table_clist);
-  gtk_widget_set_sensitive (table_clist, FALSE);
-  GTK_WIDGET_UNSET_FLAGS (table_clist, GTK_CAN_FOCUS);
-  gtk_clist_set_column_width (GTK_CLIST (table_clist), 0, 26);
-  gtk_clist_set_column_width (GTK_CLIST (table_clist), 1, 38);
-  gtk_clist_set_column_width (GTK_CLIST (table_clist), 2, 80);
-  gtk_clist_column_titles_show (GTK_CLIST (table_clist));
-
-  table_no_label = gtk_label_new (_("No."));
-  gtk_widget_ref (table_no_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "table_no_label", table_no_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table_no_label);
-  gtk_clist_set_column_widget (GTK_CLIST (table_clist), 0, table_no_label);
-
-  table_steats_label = gtk_label_new (_("Seats"));
-  gtk_widget_ref (table_steats_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "table_steats_label", table_steats_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (table_steats_label);
-  gtk_clist_set_column_widget (GTK_CLIST (table_clist), 1, table_steats_label);
-
-  tabel_desc_label = gtk_label_new (_("Description"));
-  gtk_widget_ref (tabel_desc_label);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "tabel_desc_label", tabel_desc_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tabel_desc_label);
-  gtk_clist_set_column_widget (GTK_CLIST (table_clist), 2, tabel_desc_label);
+  table_clist = create_table_list(win_main);
+  gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_clist);
 
   chat_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (chat_vbox);
@@ -2385,23 +1915,8 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (room_clist), "event",
                       GTK_SIGNAL_FUNC (client_room_clist_event),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (player_clist), "event",
-                      GTK_SIGNAL_FUNC (client_player_clist_event),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (player_clist), "select_row",
-                      GTK_SIGNAL_FUNC (client_player_clist_select_row),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",
                       GTK_SIGNAL_FUNC (client_tables_size_request),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (table_clist), "select_row",
-                      GTK_SIGNAL_FUNC (client_table_clist_select_row),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (table_clist), "click_column",
-                      GTK_SIGNAL_FUNC (client_table_clist_click_column),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (table_clist), "event",
-                      GTK_SIGNAL_FUNC (client_table_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (chat_entry), "activate",
                       GTK_SIGNAL_FUNC (client_chat_entry_activate),
@@ -2419,68 +1934,6 @@ create_win_main (void)
   return win_main;
 }
 
-
-GtkWidget*
-create_mnu_table (void)
-{
-  GtkWidget *mnu_table;
-#ifndef GTK2
-  GtkAccelGroup *mnu_table_accels;
-#endif
-  GtkWidget *join;
-  GtkWidget *leave;
-  GtkWidget *menuitem3;
-  GtkWidget *info;
-
-  mnu_table = gtk_menu_new ();
-  gtk_object_set_data (GTK_OBJECT (mnu_table), "mnu_table", mnu_table);
-#ifndef GTK2
-  mnu_table_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_table));
-#endif
-
-  join = gtk_menu_item_new_with_label (_("Join"));
-  gtk_widget_ref (join);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_table), "join", join,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (join);
-  gtk_container_add (GTK_CONTAINER (mnu_table), join);
-
-  leave = gtk_menu_item_new_with_label (_("Leave"));
-  gtk_widget_ref (leave);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_table), "leave", leave,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (leave);
-  gtk_container_add (GTK_CONTAINER (mnu_table), leave);
-
-  menuitem3 = gtk_menu_item_new ();
-  gtk_widget_ref (menuitem3);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_table), "menuitem3", menuitem3,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (menuitem3);
-  gtk_container_add (GTK_CONTAINER (mnu_table), menuitem3);
-  gtk_widget_set_sensitive (menuitem3, FALSE);
-
-  info = gtk_menu_item_new_with_label (_("Info"));
-  gtk_widget_ref (info);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_table), "info", info,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (info);
-  gtk_container_add (GTK_CONTAINER (mnu_table), info);
-
-#if 0 /* not implemented */
-  gtk_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_join_table_activate),
-                      GINT_TO_POINTER(table_num));
-  gtk_signal_connect (GTK_OBJECT (leave), "activate",
-                      GTK_SIGNAL_FUNC (client_leave_activate),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_table_info_activate),
-                      GINT_TO_POINTER(table_num));
-#endif
-
-  return mnu_table;
-}
 
 static GtkWidget* create_mnu_room(int room_num)
 {
@@ -2531,68 +1984,3 @@ static GtkWidget* create_mnu_room(int room_num)
 
   return mnu_room;
 }
-
-static GtkWidget* create_mnu_player(int player_num, gboolean is_friend,
-				    gboolean is_ignore)
-{
-  GtkWidget *mnu_player;
-#ifndef GTK2
-  GtkAccelGroup *mnu_player_accels;
-#endif
-  GtkWidget *info;
-  GtkWidget *separator9;
-  GtkWidget *friends;
-  GtkWidget *ignore;
-
-  mnu_player = gtk_menu_new ();
-  gtk_object_set_data (GTK_OBJECT (mnu_player), "mnu_player", mnu_player);
-#ifndef GTK2
-  mnu_player_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_player));
-#endif
-
-  info = gtk_menu_item_new_with_label(_("Info"));
-  gtk_widget_ref(info);
-  gtk_object_set_data_full(GTK_OBJECT(mnu_player), "info", info,
-			   (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show(info);
-  gtk_container_add(GTK_CONTAINER(mnu_player), info);
-
-  separator9 = gtk_menu_item_new ();
-  gtk_widget_ref (separator9);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "separator9", separator9,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (separator9);
-  gtk_container_add (GTK_CONTAINER (mnu_player), separator9);
-  gtk_widget_set_sensitive (separator9, FALSE);
-
-  friends = gtk_check_menu_item_new_with_label (_("Friends"));
-  gtk_widget_ref (friends);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends", friends,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (friends);
-  gtk_container_add (GTK_CONTAINER (mnu_player), friends);
-  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (friends), TRUE);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(friends), is_friend);
-
-  ignore = gtk_check_menu_item_new_with_label (_("Ignore"));
-  gtk_widget_ref (ignore);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore", ignore,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ignore);
-  gtk_container_add (GTK_CONTAINER (mnu_player), ignore);
-  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (ignore), TRUE);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore), is_ignore);
-
-  gtk_signal_connect(GTK_OBJECT(info), "activate",
-		     GTK_SIGNAL_FUNC(client_player_info_activate),
-		     GINT_TO_POINTER(player_num));
-  gtk_signal_connect (GTK_OBJECT (friends), "activate",
-                      GTK_SIGNAL_FUNC (client_player_friends_click),
-                      GINT_TO_POINTER(player_num));
-  gtk_signal_connect (GTK_OBJECT (ignore), "activate",
-                      GTK_SIGNAL_FUNC (client_player_ignore_click),
-                      GINT_TO_POINTER(player_num));
-
-  return mnu_player;
-}
-

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: ggzclient.c 5198 2002-11-04 01:47:47Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -38,14 +38,16 @@
 
 #include "chat.h"
 #include "client.h"
+#include "game.h"
 #include "ggzclient.h"
-#include "login.h"
 #include "launch.h"
+#include "login.h"
 #include "msgbox.h"
 #include "motd.h"
-#include "game.h"
+#include "playerlist.h"
 #include "server.h"
 #include "support.h"
+#include "tablelist.h"
 #include "xtext.h"
 
 
@@ -53,7 +55,6 @@ static gint server_handle = -1;
 static gint channel_handle = -1;
 
 gint numrooms;
-gint numtables;
 
 static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void* user_data);
@@ -291,7 +292,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Clear table list */
-	client_clear_tables();
+	clear_tables();
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
