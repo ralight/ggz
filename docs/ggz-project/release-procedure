@@ -1,0 +1,49 @@
+This is a summary of common tasks when rolling out a release.
+It should be understood as advice, which is backed by previous experience.
+
+Quite some time before release
+------------------------------
+* update documentation.
+  This includes both the docs/ module in all its glory, as well as manpages and
+  individual program documentation.
+* check TODO files
+* regression tests: anything gotten worse since last release?
+* update translations (i18n), see separate document 'Internationalization'
+* inform 3rd party game authors
+* hunt bugs, keep the number of new ones low
+* organize game blitzes
+
+Directly before release
+-----------------------
+* update build instruction.
+  Affected files are README.GGZ and QuickStart.GGZ.
+  Does 'make distcheck' work?
+* update NEWS and README
+* bump version numbers
+  Protocol version numbers should be controlled by
+  /docs/games/game-development/games.html
+* update toplevel ChangeLog files with CVS history
+* inform distributors
+* update permanent stable game servers
+  Currently, this is ggz.snafu.de.
+  Also, the metaserver should contain an entry for the previous version,
+  pointing to a convenience host.
+
+During release
+--------------
+* tag CVS with symbolic tag 'ggz-x-y-z'
+* create and upload source tarballs
+* web site synchronization
+  The release announcement as well as several common files should be updated.
+  This includes the QuickStart and README.GGZ files, and everything under
+  docs/.
+* announce on various game-related websites
+  Examples are happypenguin.org, linuxgames.com, SF games foundry, holarse.net,
+  freshmeat.
+* find some time to actually play one of our games once, celebrating the release
+
+After release
+-------------
+* Check each and every problem
+* Update roadmap, decide which playground stuff goes gold next time
+
