@@ -181,7 +181,6 @@ int game_start() {
 	
 	// Start game variables
 	rvr_game.state = RVR_STATE_PLAYING;
-	rvr_game.turn = BLACK;
 
 	// Sends out start message
 	for (i = 0; i < ggz_seats_num(); i++) {
@@ -208,6 +207,10 @@ int game_handle_player(int seat) {
 
 		case RVR_REQ_MOVE:
 			status = game_handle_move(seat, &move);
+			break;
+
+		case RVR_REQ_SYNC:
+			status = game_send_sync(seat);
 			break;
 
 		default:

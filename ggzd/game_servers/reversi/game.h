@@ -26,7 +26,7 @@
 #define WHITE +1
 #define EMPTY  0
 
-/* REVERSI PROTOCOL VERSION 0.0.3
+/* REVERSI PROTOCOL VERSION 0.0.4
  *
  * The server handles everything, from the AI to the validity of moves
  *
@@ -93,6 +93,9 @@
  *
  * And it will wait until someone returns
  *
+ * Any time, the server can receive a RVR_REQ_SYNC message from the client.
+ *  If this is the case, it sents a RVR_MSG_SYNC to this player.
+ *
  * The client (more information should be avaiable on the client's game.h file):
  * 
  * The client waits until a RVR_MSG_SEAT is sent to him, indicating what is his seat.
@@ -124,9 +127,9 @@
 #define RVR_MSG_SEAT 0
 #define RVR_MSG_PLAYERS 1
 #define RVR_MSG_SYNC 6
+#define RVR_REQ_SYNC 7
 #define RVR_MSG_START 5
 #define RVR_MSG_MOVE 2
-#define RVR_MSG_STOP 7
 #define RVR_MSG_GAMEOVER 3
 #define RVR_REQ_MOVE 4
 
