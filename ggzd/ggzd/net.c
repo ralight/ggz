@@ -32,25 +32,16 @@
 #include "net.h"
 #include "protocols.h"
 #include "seats.h"
-#include "stack.h"
-#include "xmlelement.h"
 
 #include <errno.h>
 #include <expat.h>
+#include <ggz.h>
 #include <string.h>
 #include <sys/poll.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-
-/* FIXME: just #include <ggz.h> when stack stuff is resolved */
-char *ggz_xml_escape(char *str);
-char *ggz_xml_unescape(char *str);
-int _ggz_free(const void *, char *, int);
-#define ggz_free(mem) _ggz_free(mem, __FUNCTION__ " in " __FILE__, __LINE__)
-/* END FIXME */
 
 
 /* For convenience */
@@ -93,7 +84,7 @@ struct _GGZNetIO {
 /* Table data structure */
 typedef struct _GGZTableData {
 	char *desc;
-	list_t *seats;
+	GGZList *seats;
 } GGZTableData;
 
 
@@ -183,7 +174,7 @@ GGZNetIO* net_new(int fd, GGZPlayer *player)
         XML_SetUserData(net->parser, net);
 
         /* Initialize stack for messages */
-        net->stack = stack_new();
+        net->stack = ggz_stack_new();
 	
 	return net;
 }
@@ -239,9 +230,9 @@ void net_free(GGZNetIO *net)
 
 		/* Clear elements off stack and free it */
 		if (net->stack) {
-			while ( (element = stack_pop(net->stack))) 
-				xmlelement_free(element);
-			stack_free(net->stack);
+			while ( (element = ggz_stack_pop(net->stack))) 
+				ggz_xmlelement_free(element);
+			ggz_stack_free(net->stack);
 		}
 		
 		if (net->parser)
@@ -821,7 +812,7 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 	element = _net_new_element((char*)el, (char**)attr);
 
 	/* Put element on stack so we can process its children */
-	stack_push(net->stack, element);
+	ggz_stack_push(net->stack, element);
 
 	/* Mark that we've seen a tag */
 	net->tag_seen = 1;
@@ -834,7 +825,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 	GGZXMLElement *element;
 	
 	/* Pop element off stack */
-	element = stack_pop(net->stack);
+	element = ggz_stack_pop(net->stack);
 
 	/* Process tag */
 	dbg_msg(GGZ_DBG_XML, "Handling %s element", element->tag);
@@ -842,7 +833,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 		element->process(net, element);
 
 	/* Free data structures */
-	xmlelement_free(element);
+	ggz_xmlelement_free(element);
 
 	/* Mark that we've seen a tag */
 	net->tag_seen = 1;
@@ -854,8 +845,8 @@ static void _net_parse_text(void *data, const char *text, int len)
 	GGZNetIO *net = (GGZNetIO*)data;
 	GGZXMLElement *top;
 
-	top = stack_top(net->stack);
-	xmlelement_add_text(top, text, len);
+	top = ggz_stack_top(net->stack);
+	ggz_xmlelement_add_text(top, text, len);
 }
 
 
@@ -904,7 +895,7 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 	else
 		process_func = NULL;
 	
-	return xmlelement_new(tag, attrs, process_func, NULL);
+	return ggz_xmlelement_new(tag, attrs, process_func, NULL);
 }
 
 
@@ -924,7 +915,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 	char **data;
 
 	if (login) {
-		type = xmlelement_get_attr(login, "TYPE");
+		type = ggz_xmlelement_get_attr(login, "TYPE");
 
 		/* If they didn't send TYPE, it's an error */
 		if (!type) {
@@ -943,7 +934,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 			return;
 		}
 		
-		data = xmlelement_get_data(login);
+		data = ggz_xmlelement_get_data(login);
 		
 		/* It's an error if they didn't send the right data */
 		if (!data 
@@ -969,12 +960,12 @@ static void _net_login_set_name(GGZXMLElement *login, char *name)
 {
 	char **data;
 	
-	data = xmlelement_get_data(login);
+	data = ggz_xmlelement_get_data(login);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = calloc(2, sizeof(char*));
-		xmlelement_set_data(login, data);
+		ggz_xmlelement_set_data(login, data);
 	}
 	
 	data[0] = name;
@@ -985,12 +976,12 @@ static void _net_login_set_password(GGZXMLElement *login, char *password)
 {
 	char **data;
 	
-	data = xmlelement_get_data(login);
+	data = ggz_xmlelement_get_data(login);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = calloc(2, sizeof(char*));
-		xmlelement_set_data(login, data);
+		ggz_xmlelement_set_data(login, data);
 	}
 	
 	data[1] = password;
@@ -1005,7 +996,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	/* If there are no elements above us, it's protocol error */
 	if (!parent) {
@@ -1014,8 +1005,8 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		name = safe_strdup(xmlelement_get_text(element));
-		parent_tag = xmlelement_get_tag(parent);
+		name = safe_strdup(ggz_xmlelement_get_text(element));
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
 			_net_login_set_name(parent, name);
@@ -1033,7 +1024,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	/* If there are no elements above us, it's protocol error */
 	if (!parent) {
@@ -1042,8 +1033,8 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		password = safe_strdup(xmlelement_get_text(element));
-		parent_tag = xmlelement_get_tag(parent);
+		password = safe_strdup(ggz_xmlelement_get_text(element));
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
 			_net_login_set_password(parent, password);
@@ -1060,14 +1051,14 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 	char verbose = 0;
 	
 	if (list) {
-		type = xmlelement_get_attr(list, "TYPE");
+		type = ggz_xmlelement_get_attr(list, "TYPE");
 		
 		if (!type) {
 			_net_send_result(net, "list", E_BAD_OPTIONS);
 			return;
 		}
 		
-		full = xmlelement_get_attr(list, "FULL");
+		full = ggz_xmlelement_get_attr(list, "FULL");
 		if (full && strcmp(full, "true") == 0)
 			verbose = 1;
 		
@@ -1093,7 +1084,7 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 	int room;
 
 	if (enter) {
-		room = safe_atoi(xmlelement_get_attr(enter, "ROOM"));
+		room = safe_atoi(ggz_xmlelement_get_attr(enter, "ROOM"));
 		room_handle_join(net->player, room);
 	}
 }
@@ -1108,9 +1099,9 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 	if (chat) {
 
 		/* Grab chat data from tag */
-		type = xmlelement_get_attr(chat, "TYPE");
-		to = xmlelement_get_attr(chat, "TO");
-		msg = xmlelement_get_text(chat);
+		type = ggz_xmlelement_get_attr(chat, "TYPE");
+		to = ggz_xmlelement_get_attr(chat, "TO");
+		msg = ggz_xmlelement_get_text(chat);
 
 		/* TYPE is required */
 		if (!type) {
@@ -1143,7 +1134,7 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 	int table;
 
 	if (element) {
-		table = safe_atoi(xmlelement_get_attr(element, "TABLE"));
+		table = safe_atoi(ggz_xmlelement_get_attr(element, "TABLE"));
 		player_table_join(net->player, table);
 	}
 }
@@ -1155,7 +1146,7 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 	char *force;
 	
 	if (element) {
-		force = xmlelement_get_attr(element, "FORCE");
+		force = ggz_xmlelement_get_attr(element, "FORCE");
 		player_table_leave(net->player);
 	}
 }
@@ -1167,7 +1158,7 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 	GGZTable *table;
 
 	if (element) {
-		table = xmlelement_get_data(element);
+		table = ggz_xmlelement_get_data(element);
 		if (!table) {
 			_net_send_result(net, "launch", E_BAD_OPTIONS);
 			return;
@@ -1186,12 +1177,12 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	GGZTableData *data;
 	GGZSeatData *seat;
 	char *desc = NULL;
-	list_t *seats = NULL;
-	list_entry_t *entry;
+	GGZList *seats = NULL;
+	GGZListEntry *entry;
 	char *parent_tag;
 	GGZXMLElement *parent;
 
-	parent = stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 	
 	if (!parent) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
@@ -1199,14 +1190,14 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	/* Get table data from tag */
-	type = safe_atoi(xmlelement_get_attr(element, "GAME"));
+	type = safe_atoi(ggz_xmlelement_get_attr(element, "GAME"));
 
 	if (!type) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 		
-	data = xmlelement_get_data(element);
+	data = ggz_xmlelement_get_data(element);
 	if (data) {
 		desc = data->desc;
 		seats = data->seats;
@@ -1220,9 +1211,9 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		strcpy(table->desc, desc);
 	
 	/* Add seats */
-	entry = list_head(seats);
+	entry = ggz_list_head(seats);
 	while (entry) {
-		seat = list_get_data(entry);
+		seat = ggz_list_get_data(entry);
 		if (strcmp(seat->type, "open") == 0) {
 			strcpy(table->seats[seat->index], "<open>");
 		}
@@ -1240,12 +1231,12 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		else {
 			strcpy(table->seats[seat->index], "<none>");
 		}
-		entry = list_next(entry);
+		entry = ggz_list_next(entry);
 	}
 
-	parent_tag = xmlelement_get_tag(parent);
+	parent_tag = ggz_xmlelement_get_tag(parent);
  	if (strcmp(parent_tag, "LAUNCH") == 0) {
-		xmlelement_set_data(parent, table);
+		ggz_xmlelement_set_data(parent, table);
 	}
 	else
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
@@ -1259,15 +1250,15 @@ static void _net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 {
 	struct _GGZTableData *data;
 	
-	data = xmlelement_get_data(table);
+	data = ggz_xmlelement_get_data(table);
 	
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _net_tabledata_new();
-		xmlelement_set_data(table, data);
+		ggz_xmlelement_set_data(table, data);
 	}
 
-	list_insert(data->seats, seat);
+	ggz_list_insert(data->seats, seat);
 }
 
 
@@ -1275,12 +1266,12 @@ static void _net_table_set_desc(GGZXMLElement *table, char *desc)
 {
 	struct _GGZTableData *data;
 	
-	data = xmlelement_get_data(table);
+	data = ggz_xmlelement_get_data(table);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _net_tabledata_new();
-		xmlelement_set_data(table, data);
+		ggz_xmlelement_set_data(table, data);
 	}
 	
 	data->desc = desc;
@@ -1295,10 +1286,10 @@ static GGZTableData* _net_tabledata_new(void)
 		err_sys_exit("malloc error in net_tabledata_new()");
 	
 	data->desc = NULL;
-	data->seats = list_create(NULL, 
+	data->seats = ggz_list_create(NULL, 
 				  _net_seat_copy, 
-				  (listEntryDestroy)_net_seat_free, 
-				  LIST_ALLOW_DUPS);
+				  (ggzEntryDestroy)_net_seat_free, 
+				  GGZ_LIST_ALLOW_DUPS);
 	
 	return data;
 }
@@ -1310,7 +1301,7 @@ static void _net_tabledata_free(GGZTableData *data)
 		if (data->desc)
 			free(data->desc);
 		if (data->seats)
-			list_destroy(data->seats);
+			ggz_list_free(data->seats);
 		free(data);
 	}
 }
@@ -1325,7 +1316,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 	if (!parent) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
@@ -1338,9 +1329,9 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 
 	if (element) {
 		/* Get seat information out of tag */
-		seat.index = safe_atoi(xmlelement_get_attr(element, "NUM"));
-		seat.type = xmlelement_get_attr(element, "TYPE");
-		seat.name = xmlelement_get_text(element);
+		seat.index = safe_atoi(ggz_xmlelement_get_attr(element, "NUM"));
+		seat.type = ggz_xmlelement_get_attr(element, "TYPE");
+		seat.name = ggz_xmlelement_get_text(element);
 		_net_table_add_seat(parent, &seat);
 	}
 }
@@ -1383,16 +1374,16 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 	if (!parent) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 
 	if (element) {
-		if (xmlelement_get_text(element))
-			desc = safe_strdup(xmlelement_get_text(element));
-		parent_tag = xmlelement_get_tag(parent);
+		if (ggz_xmlelement_get_text(element))
+			desc = safe_strdup(ggz_xmlelement_get_text(element));
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "TABLE") == 0)
 			_net_table_set_desc(parent, desc);
@@ -1420,8 +1411,8 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 	if (data) {
 
 		/* Grab data from tag */
-		size = safe_atoi(xmlelement_get_attr(data, "SIZE"));
-		msg = xmlelement_get_text(data);
+		size = safe_atoi(ggz_xmlelement_get_attr(data, "SIZE"));
+		msg = ggz_xmlelement_get_text(data);
 
 		if (!msg) {
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
