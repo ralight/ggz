@@ -11,7 +11,7 @@ class KCMGGZPane : public QWidget
 		~KCMGGZPane(){}
 		virtual void load() = 0;
 		virtual void save() = 0;
-		virtual const char *caption() = 0;
+		virtual QString caption() = 0;
 
 	signals:
 		void signalChanged();
