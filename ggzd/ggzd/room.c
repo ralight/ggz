@@ -70,15 +70,29 @@ int room_join(int room)
 }
 
 
+/* Queue up a chat emission for the room */
+int room_emit(int room, char *msg)
+{
+	return 0;
+}
+
+
+/* Queue up a chat emission to a specific player */
+int room_pemit(int room, char *stmt)
+{
+	return 0;
+}
+
+
 /* Zap all chats to this player in the current room */
-void room_zap_chat(int p)
+void room_dequeue_chat(int p)
 {
 
 }
 
 
 /* Zap all personal chat to this player */
-void room_zap_personal(int p)
+void room_dequeue_personal(int p)
 {
 
 }

@@ -82,6 +82,7 @@ static int   player_list_players(int p_index, int fd);
 static int   player_list_types(int p_index, int fd);
 static int   player_list_tables(int p_index, int fd);
 static int   player_send_error(int p_index, int fd);
+static int   player_handle_chat_enqueue(int p_index, int p_fd);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -378,7 +379,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 			status = player_chat(p_index, p_fd);
 		} else {
 			pthread_rwlock_unlock(&players.lock);
-			status = 0;
+			status = player_handle_chat_enqueue(p_index, p_fd);
 		}
 		break;
 
@@ -420,8 +421,8 @@ static void player_remove(int p_index)
 	if(players.info[p_index].room == -1)
 		chat_mark_all_read(p_index);
 	else {
-		room_zap_chat(p_index);
-		room_zap_personal(p_index);
+		room_dequeue_chat(p_index);
+		room_dequeue_personal(p_index);
 	}
 	pthread_rwlock_unlock(&players.lock);
 
@@ -1004,7 +1005,26 @@ static int player_chat(int p_index, int p_fd)
 	strncpy(msg, tmp, MAX_CHAT_LEN);
 	free(tmp);
 	msg[MAX_CHAT_LEN] = '\0';  /* Make sure strings are null-terminated */
-	status = chat_add(p_index, players.info[p_index].name, msg);
+
+	/* Garish hack for now to change rooms */
+	if(strncmp(msg, "/join", 5))
+		status = chat_add(p_index, players.info[p_index].name, msg);
+	else {
+		int room;
+
+		if(strlen(msg) > 6) {
+			room = atoi(msg+6);
+			if(room > -2 && room < opt.num_rooms) {
+				pthread_rwlock_wrlock(&players.lock);
+				players.info[p_index].room = room_join(room);
+				pthread_rwlock_unlock(&players.lock);
+			}
+		}
+
+		/* We always tell them it worked, because we are antisocial */
+		status = 0;
+	}
+		
 
 	if (es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)
@@ -1034,7 +1054,7 @@ static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 	free(tmp);
 
 	/* Make sure names are null-terminated */
-	name[MAX_USER_NAME_LEN + 1] = '\0';
+	name[MAX_USER_NAME_LEN] = '\0';
 	
 	return 0;    ;
 }
@@ -1067,3 +1087,47 @@ int type_match_table(int type, int num)
 }
 		
 
+/* This decides where to send a chat, then queues it */
+int player_handle_chat_enqueue(int p_index, int p_fd)
+{
+	char *msg;
+	int status;
+	int room;
+
+	dbg_msg(GGZ_DBG_CHAT, "Handling chat enqueue for player %d", p_index);
+
+	pthread_rwlock_rdlock(&players.lock);
+	room = players.info[p_index].room;
+	pthread_rwlock_unlock(&players.lock);
+
+	if (es_read_string_alloc(p_fd, &msg) < 0)
+		return(-1);
+	
+	/* Garish hack for now to change rooms */
+	if(!strncmp(msg, "/join", 5)) {
+		if(strlen(msg) > 6) {
+			room = atoi(msg+6);
+			if(room > -2 && room < opt.num_rooms) {
+				pthread_rwlock_wrlock(&players.lock);
+				players.info[p_index].room = room_join(room);
+				pthread_rwlock_unlock(&players.lock);
+			}
+		}
+
+		/* We always tell them it worked, because we are antisocial */
+		status = 0;
+	} else if(!strncmp(msg, "/msg", 4)) {
+		if(strlen(msg) > 5)
+			status = room_pemit(room, msg+5);
+		else
+			status = -1;
+	} else {
+		status = room_emit(room, msg);
+	}
+
+	if (es_write_int(p_fd, RSP_CHAT) < 0
+	    || es_write_char(p_fd, status) < 0)
+		return (-1);
+
+	return 0;
+}

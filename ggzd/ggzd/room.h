@@ -26,5 +26,7 @@ extern RoomStruct *chat_room;
 
 extern void room_initialize_lists(void);
 extern int room_join(int);
-extern void room_zap_chat(int);
-extern void room_zap_personal(int);
+extern void room_dequeue_chat(int);
+extern void room_dequeue_personal(int);
+extern int room_pemit(int, char *);
+extern int room_emit(int, char *);
