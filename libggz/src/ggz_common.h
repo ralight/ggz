@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 5104 2002-10-29 11:29:45Z jdorje $
+ * $Id: ggz_common.h 5274 2002-12-07 05:50:49Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -260,7 +260,8 @@ typedef enum {
 	E_NO_PERMISSION	    = -16,
 	E_BAD_XML	    = -17,
 	E_SEAT_ASSIGN_FAIL  = -18,
-	E_UNKNOWN           = -19
+	E_NO_CHANNEL        = -19,
+	E_UNKNOWN           = -20
 } GGZClientReqError;
 
 /** @brief Get a string identifier for the GGZClientReqError.

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5108 2002-10-30 01:02:02Z jdorje $
+ * $Id: ggz_common.c 5274 2002-12-07 05:50:49Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -216,6 +216,8 @@ const char *ggz_error_to_string(GGZClientReqError err)
 		return "bad xml";
 	case E_SEAT_ASSIGN_FAIL:
 		return "seat assign fail";
+	case E_NO_CHANNEL:
+		return "no channel";
 	case E_NO_STATUS:
 	case E_UNKNOWN:
 		break;
@@ -273,6 +275,8 @@ GGZClientReqError ggz_string_to_error(const char *str)
 		return E_BAD_XML;
 	if (!strcasecmp(str, "seat assign fail"))
 		return E_SEAT_ASSIGN_FAIL;
+	if (!strcasecmp(str, "no channel"))
+		return E_NO_CHANNEL;
 
 	return E_UNKNOWN;
 }
