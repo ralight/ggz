@@ -24,3 +24,8 @@ LDFLAGS = $(all_libraries)
 LDADD = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 CXXFLAGS = @COMPILEOPTIONS@
 
+KDE_ICON = shadowbridge
+
+appsdir = $(kde_appsdir)/.hidden
+apps_DATA = shadowbridge.desktop
+

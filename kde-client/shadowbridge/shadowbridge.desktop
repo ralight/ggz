@@ -1,0 +1,15 @@
+[Desktop Entry]
+Exec=shadowbridge
+Icon=shadowbridge
+MimeType=Application
+Name=ShadowBridge
+GenericName=Networking tool for game developers
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+NoDisplay=true
+
