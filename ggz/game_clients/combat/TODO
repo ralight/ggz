@@ -1,10 +1,10 @@
 What *must* be done before next version of GGZ:
 
-- Preview of map on the map editor
 - Make possible to return to/join a running game
 
 What should be done before next version of GGZ:
 
+- More information to preview: Number of units
 - Add some map options
 - Improve the interface of the counters
 - Make the client check if the current map options are valid before sending

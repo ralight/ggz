@@ -20,6 +20,7 @@
 #include "map.h"
 
 GdkPixmap *mini_buf;
+GdkPixmap *preview_buf;
 extern GdkColor lake_color;
 extern GdkColor open_color;
 extern GdkColor *player_colors;
@@ -489,6 +490,10 @@ create_dlg_options (void)
 									   GTK_SIGNAL_FUNC (save_button_clicked), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (delete), "clicked",
 									   GTK_SIGNAL_FUNC (delete_button_clicked), dlg_options);
+	gtk_signal_connect(GTK_OBJECT (preview_board), "expose_event",
+										 GTK_SIGNAL_FUNC (preview_expose), dlg_options);
+	gtk_signal_connect(GTK_OBJECT (preview_board), "configure_event",
+										 GTK_SIGNAL_FUNC (init_preview), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
 									   GTK_SIGNAL_FUNC (maps_list_selected), dlg_options);
 	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
@@ -518,7 +523,9 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   preview_game = map_load(filenames[row], &changed);
   if (changed == 0)
     dlg_options_list_maps(GTK_WIDGET(clist));
+  gtk_object_set_data(GTK_OBJECT(user_data), "preview", preview_game);
   /* TODO: Show preview */
+  draw_preview(user_data);
 
 }
 
@@ -926,6 +933,104 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 	return 1;
 }
 
+gboolean init_preview (GtkWidget *widget, GdkEventConfigure *event, 
+                       gpointer user_data) {
+  int width, height;
+  gdk_window_get_size(widget->window, &width, &height);
+
+	if (preview_buf)
+		gdk_pixmap_unref(preview_buf);
+	preview_buf = gdk_pixmap_new( widget->window, width, height, -1 );
+  gdk_pixmap_ref(mini_buf);
+  gtk_object_set_data(GTK_OBJECT(widget), "clean", GINT_TO_POINTER(FALSE));
+
+  draw_preview(GTK_WIDGET(user_data));
+
+  return TRUE;
+
+}
+
+gboolean preview_expose (GtkWidget *widget, GdkEventExpose *event, 
+                       gpointer user_data) {
+  if (GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "clean")))
+    gdk_draw_pixmap( widget->window, widget->style->fg_gc[GTK_WIDGET_STATE(widget)], preview_buf, event->area.x, event->area.y, event->area.x, event->area.y,
+        event->area.width, event->area.height);
+	return 1;
+}
+
+
+gboolean draw_preview (GtkWidget *dlg_options) {
+  GtkWidget *widget = lookup_widget(dlg_options, "preview_board");
+  combat_game *preview;
+  int width, height;
+  int t_width, t_height;
+  int x, y;
+  GdkGC *solid_gc = gdk_gc_new(widget->window);
+  preview = gtk_object_get_data(GTK_OBJECT(dlg_options), "preview");
+  if (!preview)
+    return FALSE;
+
+  if (!preview_buf)
+    return FALSE;
+
+  gdk_window_get_size(widget->window, &width, &height);
+
+  // Draw background
+  gdk_draw_rectangle(preview_buf, dlg_options->style->white_gc, TRUE,
+                     0, 0, width, height);
+
+  // Gets the size of each square
+  t_width = width / preview->width;
+  t_height = height / preview->height;
+
+  // Draw terrain
+  for (y = 0; y < preview->height; y++) {
+    for (x = 0; x < preview->width; x++) {
+      switch (preview->map[y*preview->width+x].type) {
+        case (OPEN):
+          gdk_gc_set_foreground(solid_gc, &open_color);
+          break;
+				case (LAKE):
+					gdk_gc_set_foreground(solid_gc, &lake_color);
+					break;
+				case (BLACK):
+					gdk_gc_set_foreground(solid_gc, &widget->style->black);
+					break;
+				case (PLAYER_1):
+					gdk_gc_set_foreground(solid_gc, &player_colors[0]);
+					break;
+				case (PLAYER_2):
+					gdk_gc_set_foreground(solid_gc, &player_colors[1]);
+					break;
+			}
+			gdk_draw_rectangle( preview_buf,
+					solid_gc,
+					TRUE,
+					x*t_width, y*t_height,
+					t_width, t_height);
+		}
+	}
+
+	// Draw lines
+	for (x = 0; x < preview->width; x++) {
+		gdk_draw_line(preview_buf, widget->style->black_gc,
+				x*t_width, 0, x*t_width, preview->height*t_height);
+	}
+
+	for (y = 0; y < preview->height; y++) {
+		gdk_draw_line(preview_buf, widget->style->black_gc,
+				0, y*t_height, preview->width*t_width, y*t_height);
+	}
+
+  gtk_object_set_data(GTK_OBJECT(widget), "clean", GINT_TO_POINTER(TRUE));
+
+  gtk_widget_draw(widget, NULL);
+
+  return TRUE;
+
+
+}
+
 void init_mini_board(GtkWidget *dlg_options) {
 	int width, height, a;
 	GtkWidget *widget = lookup_widget(dlg_options, "mini_board");
@@ -942,6 +1047,7 @@ void init_mini_board(GtkWidget *dlg_options) {
 	if (mini_buf)
 		gdk_pixmap_unref(mini_buf);
 	mini_buf = gdk_pixmap_new( widget->window, width, height, -1 );
+  gdk_pixmap_ref(mini_buf);
 
 	// Now init the data
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");

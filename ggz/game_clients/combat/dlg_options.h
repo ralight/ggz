@@ -8,6 +8,15 @@ void dlg_options_list_maps(GtkWidget *);
 void load_button_clicked(GtkButton *, gpointer dialog);
 void save_button_clicked(GtkButton *, gpointer dialog);
 void save_map(GtkButton *, GtkWidget *);
+gboolean preview_expose (GtkWidget *widget, GdkEventExpose *event, 
+                       gpointer);
+
+gboolean
+init_preview           (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data);
+
+gboolean draw_preview (GtkWidget *dlg_options);
 
 void delete_button_clicked(GtkButton *button, gpointer dialog);
 
