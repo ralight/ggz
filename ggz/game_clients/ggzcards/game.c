@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2951 2001-12-19 10:35:31Z jdorje $
+ * $Id: game.c 2959 2001-12-19 23:12:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -124,7 +124,7 @@ void game_send_newgame(void)
 void game_request_sync(void)
 {
 #ifdef ANIMATION
-	animation_zip();
+	animation_stop(TRUE);
 #endif
 	(void) client_send_sync_request();
 }
@@ -261,7 +261,7 @@ void game_get_play(int hand)
 void game_alert_badplay(char *err_msg)
 {
 #ifdef ANIMATION
-	animation_abort();
+	animation_stop(FALSE);
 #endif /* ANIMATION */
 
 	/* redraw cards */
@@ -299,7 +299,7 @@ void game_alert_trick(int player)
 	char *t_str;
 
 #ifdef ANIMATION
-	animation_zip();
+	animation_stop(TRUE);
 #endif /* ANIMATION */
 
 	t_str = g_strdup_printf(_("%s won the trick"),

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 2951 2001-12-19 10:35:31Z jdorje $
+ * $Id: animation.h 2959 2001-12-19 23:12:47Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -29,7 +29,7 @@
 
 /* if this is defined, the animation code will be used. I've disabled it
    because I broke it... */
-/* #define ANIMATION */
+#define ANIMATION
 
 
 #ifdef ANIMATION
@@ -39,7 +39,6 @@ extern int animating;
 
 void animation_start(int player, card_t card, int card_num);
 gint animation_callback(gpointer ignored);
-void animation_abort(void);
-void animation_zip(void);
+void animation_stop(int success);
 
 #endif /* ANIMATION */

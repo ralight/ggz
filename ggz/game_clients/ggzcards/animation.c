@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2951 2001-12-19 10:35:31Z jdorje $
+ * $Id: animation.c 2959 2001-12-19 23:12:47Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -49,6 +49,8 @@ static struct {
 } anim = {
 -1};
 
+static void animation_delete(void);
+
 /* Function to setup and trigger a card animation */
 void animation_start(int player, card_t card, int card_num)
 {
@@ -64,7 +66,7 @@ void animation_start(int player, card_t card, int card_num)
 		    && card.face == anim.card.face)
 			return;
 		else
-			animation_zip();
+			animation_stop(TRUE);
 	}
 
 	get_card_pos(player, card_num, &start_x, &start_y);
@@ -84,8 +86,8 @@ void animation_start(int player, card_t card, int card_num)
 	anim.dest_y = end_y;
 
 	/* This sets up 15 frames of animation */
-	anim.step_x = (start_x - end_x) / (float) FRAMES;
-	anim.step_y = (start_y - end_y) / (float) FRAMES;
+	anim.step_x = (end_x - start_x) / (float) FRAMES;
+	anim.step_y = (end_y - start_y) / (float) FRAMES;
 
 	/* This sets up our timeout callback */
 	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
@@ -94,36 +96,31 @@ void animation_start(int player, card_t card, int card_num)
 	animating = TRUE;
 }
 
+static void animation_delete(void)
+{
+	assert(animating);
+	/* Draw over the old image. */
+	table_show_table(anim.cur_x, anim.cur_y, CARDWIDTH, CARDHEIGHT);
+}
+
 
 /* Handle one frame of card animation, this is
    triggered by a GtkTimeout setup in animation_start(). */
 gint animation_callback(gpointer ignored)
 {
 	float new_x, new_y;
-	int ref_x, ref_y;
 
 	assert(animating);
 
 	/* Calculate our next move */
-	new_x = anim.cur_x - anim.step_x;
+	new_x = anim.cur_x + anim.step_x;
 	if (abs(new_x - anim.dest_x) < 2)
 		new_x = anim.dest_x;
-	new_y = anim.cur_y - anim.step_y;
+	new_y = anim.cur_y + anim.step_y;
 	if (abs(new_y - anim.dest_y) < 2)
 		new_y = anim.dest_y;
-
-	/* And refresh the on-screen image */
-	if (new_x < anim.cur_x)
-		ref_x = new_x;
-	else
-		ref_x = anim.cur_x;
-	if (new_y < anim.cur_y)
-		ref_y = new_y;
-	else
-		ref_y = anim.cur_y;
-	table_show_table(ref_x, ref_y,
-			 CARDWIDTH + abs(anim.step_x) + 2,
-			 CARDHEIGHT + abs(anim.step_y) + 2);
+		
+	animation_delete();
 
 	/* Draw our new card position */
 	gdk_draw_pixmap(table->window,
@@ -148,39 +145,29 @@ gint animation_callback(gpointer ignored)
 }
 
 
-/* Function to abort the animation process */
-void animation_abort(void)
+/* Function to stop the animation process. "success" is true if
+   the card movement should continue to completion, false if it
+   must be undone. */
+void animation_stop(int success)
 {
-	ggz_debug("animation", "Aborting animation.");
-
-	/* First, kill off the animation callback */
-	if (animating) {
-		gtk_timeout_remove(anim.cb_tag);
-		animating = 0;
-	}
-
-	/* The caller is assumed to have restored the card to the hand */
-	/* so we can redraw the full hand and should be done */
-	table_display_hand(anim.player);
-}
-
-
-/* Function to zip to the finish of an animation
-   sequence so that a new one may be started */
-void animation_zip(void)
-{
+	ggz_debug("animation", "Stopping animation (%d).", success);
+	
 	if (!animating)
 		return;
 
-	ggz_debug("animation", "Zipping animation.");
-
 	/* First, kill off the animation callback */
+	animation_delete();
 	gtk_timeout_remove(anim.cb_tag);
-
-	/* And move the card to it's final resting place */
-	table_show_card(anim.player, anim.card);
-
 	animating = 0;
+
+	if (success) {
+		/* And move the card to it's final resting place */
+		table_show_card(anim.player, anim.card);
+	} else {
+		/* The caller is assumed to have restored the card to the hand
+		   so we can redraw the full hand and should be done */
+		table_display_hand(anim.player);
+	}
 }
 
 #endif /* ANIMATION */
