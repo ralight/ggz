@@ -23,6 +23,7 @@
 
 // System includes
 #include <iostream>
+#include <cstdlib>
 
 // Main function: fire up the top-level window
 int main(int argc, char **argv)
