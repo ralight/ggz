@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6752 2005-01-20 01:39:03Z jdorje $
+ * $Id: ggzcore.h 6761 2005-01-20 06:05:40Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1200,43 +1200,49 @@ GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table,
 					       const unsigned int num);
 
 
+/** @brief Get the ID of this gametype.
+ *  @note This is not normally useful for a GGZ client to know. */
+unsigned int ggzcore_gametype_get_id(const GGZGameType *type);
+
 /** @brief Get the name of the game type. */
-const char * ggzcore_gametype_get_name(GGZGameType *type);
+const char * ggzcore_gametype_get_name(const GGZGameType *type);
 
 /** @brief Get the protocol "engine" used by the game type. */
-const char* ggzcore_gametype_get_prot_engine(GGZGameType *type);
+const char* ggzcore_gametype_get_prot_engine(const GGZGameType *type);
 
 /** @brief Get the version of the protocol the game uses. */
-const char* ggzcore_gametype_get_prot_version(GGZGameType *type);
+const char* ggzcore_gametype_get_prot_version(const GGZGameType *type);
 
 /** @brief Get the version of the game itself. */
-const char* ggzcore_gametype_get_version(GGZGameType *type);
+const char* ggzcore_gametype_get_version(const GGZGameType *type);
 
 /** @brief Get the author of the game. */
-const char* ggzcore_gametype_get_author(GGZGameType *type);
+const char* ggzcore_gametype_get_author(const GGZGameType *type);
 
 /** @brief Get a URL for more info about the game. */
-const char* ggzcore_gametype_get_url(GGZGameType *type);
+const char* ggzcore_gametype_get_url(const GGZGameType *type);
 
 /** @brief Get a description of the game. */
-const char* ggzcore_gametype_get_desc(GGZGameType *type);
+const char* ggzcore_gametype_get_desc(const GGZGameType *type);
 
 /** @brief Get the maximum number of players the game can support.
  *  @see ggzcore_gametype_num_players_is_valid */
-int ggzcore_gametype_get_max_players(GGZGameType *type);
+int ggzcore_gametype_get_max_players(const GGZGameType *type);
 
 /** @brief Get the maximum number of bots the game can support.
  *  @see ggzcore_gametype_bots_is_valid */
-int ggzcore_gametype_get_max_bots(GGZGameType *type);
+int ggzcore_gametype_get_max_bots(const GGZGameType *type);
 
 /** @brief Return TRUE iff spectators are allowed for this game type. */
-int ggzcore_gametype_get_spectators_allowed(GGZGameType *type);
+int ggzcore_gametype_get_spectators_allowed(const GGZGameType *type);
 
 /** @brief Return TRUE iff the given number of players is valid. */
-int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
+int ggzcore_gametype_num_players_is_valid(const GGZGameType *type,
+					  unsigned int num);
 
 /** @brief Return TRUE iff the given number of bots is valid. */
-int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num);
+int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
+				       unsigned int num);
 
 
 /* Group of configuration functions */

@@ -1,13 +1,13 @@
 /*
  * File: gametype.c
- * Author: Justin Zaun
+ * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 5174 2002-11-03 19:37:36Z jdorje $
+ * $Id: gametype.c 6761 2005-01-20 06:05:40Z jdorje $
  *
- * This file contains functions for hadiling games
+ * This file contains functions for hadiling game types.
  *
- * Copyright (C) 1998 Justin Zaun.
+ * Copyright (C) 1998-2005 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,130 +36,61 @@
 #include "gametype.h"
 #include "ggzcore.h"
 
-/* Publicly exported functions */
+/* Structure describing specific game type */
+struct _GGZGameType {
+	
+	/* Name of the game */
+	char *name;
 
-const char * ggzcore_gametype_get_name(GGZGameType *type)
+	/* Version */
+	char *version;
+
+	/* Protocol engine */
+	char *prot_engine;
+
+	/* Protocol version */
+	char *prot_version;
+
+	/* Game description */
+	char *desc;
+
+	/* Author */
+	char *author;
+
+	/* Homepage for game */
+	char *url;
+
+	/* Bitmask of alowable numbers of players */
+	GGZNumberList player_allow_list;
+
+	/* Bitmask of alowable numbers of bots */
+	GGZNumberList bot_allow_list;
+
+	/* Whether spectators are allowed or not */
+	unsigned int spectators_allowed;
+	
+	/* ID of this game on the server */
+	unsigned int id;
+};
+
+
+/*
+ * Internal library functions
+ * (either static or with prototypes in gametype.h)
+ */
+
+GGZGameType* _ggzcore_gametype_new(void)
 {
-	if (!type)
-		return NULL;
+	GGZGameType *gametype;
 
-	return _ggzcore_gametype_get_name(type);
-}
-
-
-const char * ggzcore_gametype_get_author(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_author(type);
-}
-
-const char * ggzcore_gametype_get_prot_engine(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_prot_engine(type);
-}
-
-
-const char * ggzcore_gametype_get_prot_version(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_prot_version(type);
-}
-
-
-const char * ggzcore_gametype_get_version(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_version(type);
-}
-
-
-const char * ggzcore_gametype_get_url(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_url(type);
-}
-
-
-const char * ggzcore_gametype_get_desc(GGZGameType *type)
-{
-	if (!type)
-		return NULL;
-
-	return _ggzcore_gametype_get_desc(type);
-}
-
-/* Return the maximum number of allowed players/bots */
-int ggzcore_gametype_get_max_players(GGZGameType *type)
-{
-	if (!type)
-		return -1;
-
-	return _ggzcore_gametype_get_max_players(type);
-}
-
-
-int ggzcore_gametype_get_max_bots(GGZGameType *type)
-{
-	if (!type)
-		return -1;
-
-	return _ggzcore_gametype_get_max_bots(type);
-}
-
-
-int ggzcore_gametype_get_spectators_allowed(GGZGameType *type)
-{
-	if (!type)
-		return 0;
-
-	return _ggzcore_gametype_get_spectators_allowed(type);
-}
-
-
-/* Verify that a paticular number of players/bots is valid */
-int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num)
-{
-	if (!type)
-		return 0;
-
-	return _ggzcore_gametype_num_players_is_valid(type, num);
-}
-
-
-int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num)
-{
-	if (!type)
-		return 0;
-
-	return _ggzcore_gametype_num_bots_is_valid(type, num);
-}
-
-
-/* Internal library functions (prototypes in gametype.h) */
-
-struct _GGZGameType* _ggzcore_gametype_new(void)
-{
-	struct _GGZGameType *gametype;
-
-	gametype = ggz_malloc(sizeof(struct _GGZGameType));
+	gametype = ggz_malloc(sizeof(*gametype));
 	
 	/* FIXME: any fields we should fill in defaults? */
 	return gametype;
 }
 
 
-void _ggzcore_gametype_init(struct _GGZGameType *gametype,
+void _ggzcore_gametype_init(GGZGameType *gametype,
 			    const unsigned int id,
 			    const char* name, 
 			    const char* version,
@@ -187,7 +118,7 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 }
 
 
-void _ggzcore_gametype_free(struct _GGZGameType *type)
+void _ggzcore_gametype_free(GGZGameType *type)
 {
 	if (type->name)
 		ggz_free(type->name);
@@ -208,80 +139,83 @@ void _ggzcore_gametype_free(struct _GGZGameType *type)
 }
 
 
-unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type)
+static unsigned int _ggzcore_gametype_get_id(const GGZGameType *type)
 {
 	return type->id;
 }
 
 
-const char *  _ggzcore_gametype_get_name(struct _GGZGameType *type)
+static const char *_ggzcore_gametype_get_name(const GGZGameType *type)
 {
 	return type->name;
 }
 
 
-const char * _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_prot_engine(const GGZGameType *type)
 {
 	return type->prot_engine;
 }
 
 
-const char * _ggzcore_gametype_get_prot_version(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_prot_version(const GGZGameType *type)
 {
 	return type->prot_version;
 }
 
 
-const char * _ggzcore_gametype_get_version(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_version(const GGZGameType *type)
 {
 	return type->version;
 }
 
 
-const char * _ggzcore_gametype_get_author(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_author(const GGZGameType *type)
 {
 	return type->author;
 }
 
 
-const char * _ggzcore_gametype_get_url(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_url(const GGZGameType *type)
 {
 	return type->url;
 }
 
 
-const char * _ggzcore_gametype_get_desc(struct _GGZGameType *type)
+static const char * _ggzcore_gametype_get_desc(const GGZGameType *type)
 {
 	return type->desc;
 }
 
 
 /* Return the maximum number of allowed players/bots */
-unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type)
+static unsigned int _ggzcore_gametype_get_max_players(const GGZGameType *type)
 {
 	return ggz_numberlist_get_max(&type->player_allow_list);
 }
 
 
-unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type)
+static unsigned int _ggzcore_gametype_get_max_bots(const GGZGameType *type)
 {
 	return ggz_numberlist_get_max(&type->bot_allow_list);
 }
 
 
-unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type)
+static unsigned int _ggzcore_gametype_get_spectators_allowed(const GGZGameType
+							     *type)
 {
 	return type->spectators_allowed;
 }
 
 /* Verify that a paticular number of players/bots is valid */
-unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num)
+static int _ggzcore_gametype_num_players_is_valid(const GGZGameType *type,
+						  unsigned int num)
 {
 	return ggz_numberlist_isset(&type->player_allow_list, num);
 }
 
 
-unsigned int _ggzcore_gametype_num_bots_is_valid(struct _GGZGameType *type, unsigned int num)
+static int _ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
+					       unsigned int num)
 {
 	return num == 0
 	  || ggz_numberlist_isset(&type->bot_allow_list, num);
@@ -291,20 +225,15 @@ unsigned int _ggzcore_gametype_num_bots_is_valid(struct _GGZGameType *type, unsi
 /* Return 0 if equal, -1 greaterthan, 1 lessthan */
 int _ggzcore_gametype_compare(void* p, void* q)
 {
-        if(((struct _GGZGameType*)p)->id == ((struct _GGZGameType*)q)->id)
-                return 0;
-        if(((struct _GGZGameType*)p)->id > ((struct _GGZGameType*)q)->id)
-                return 1;
-        if(((struct _GGZGameType*)p)->id < ((struct _GGZGameType*)q)->id)
-                return -1;
-         
-        return 0;
+	const GGZGameType *t1 = p, *t2 = q;
+
+	return t1->id - t2->id;
 }
 
 
 void* _ggzcore_gametype_create(void* p)
 {
-	struct _GGZGameType *new, *src = p;
+	GGZGameType *new, *src = p;
 
 	new = _ggzcore_gametype_new();
 
@@ -324,9 +253,124 @@ void  _ggzcore_gametype_destroy(void* p)
 }
 
 
-/* Private functions internal to this file */
+
+/*
+ * Publicly exported functions
+ */
+
+unsigned int ggzcore_gametype_get_id(const GGZGameType *type)
+{
+	if (!type)
+		return (unsigned int) -1;
+
+	return _ggzcore_gametype_get_id(type);
+}
+
+const char * ggzcore_gametype_get_name(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_name(type);
+}
 
 
+const char * ggzcore_gametype_get_author(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_author(type);
+}
+
+const char * ggzcore_gametype_get_prot_engine(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_prot_engine(type);
+}
 
 
+const char * ggzcore_gametype_get_prot_version(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
 
+	return _ggzcore_gametype_get_prot_version(type);
+}
+
+
+const char * ggzcore_gametype_get_version(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_version(type);
+}
+
+
+const char * ggzcore_gametype_get_url(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_url(type);
+}
+
+
+const char * ggzcore_gametype_get_desc(const GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_desc(type);
+}
+
+/* Return the maximum number of allowed players/bots */
+int ggzcore_gametype_get_max_players(const GGZGameType *type)
+{
+	if (!type)
+		return -1;
+
+	return _ggzcore_gametype_get_max_players(type);
+}
+
+
+int ggzcore_gametype_get_max_bots(const GGZGameType *type)
+{
+	if (!type)
+		return -1;
+
+	return _ggzcore_gametype_get_max_bots(type);
+}
+
+
+int ggzcore_gametype_get_spectators_allowed(const GGZGameType *type)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_get_spectators_allowed(type);
+}
+
+
+/* Verify that a paticular number of players/bots is valid */
+int ggzcore_gametype_num_players_is_valid(const GGZGameType *type,
+					  unsigned int num)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_num_players_is_valid(type, num);
+}
+
+
+int ggzcore_gametype_num_bots_is_valid(const GGZGameType *type,
+				       unsigned int num)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_num_bots_is_valid(type, num);
+}

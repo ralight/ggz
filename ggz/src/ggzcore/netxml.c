@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6737 2005-01-19 02:54:26Z jdorje $
+ * $Id: netxml.c 6761 2005-01-20 06:05:40Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -534,7 +534,7 @@ int _ggzcore_net_send_table_launch(GGZNet *net, GGZTable *table)
 	
 	ggz_debug(GGZCORE_DBG_NET, "Sending table launch request");
 		
-	type = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
+	type = ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
 	desc = _ggzcore_table_get_desc(table);
 	num_seats = _ggzcore_table_get_num_seats(table);
 

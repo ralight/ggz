@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6737 2005-01-19 02:54:26Z jdorje $
+ * $Id: server.c 6761 2005-01-20 06:05:40Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -698,7 +698,7 @@ GGZGameType* _ggzcore_server_get_type_by_id(GGZServer *server,
 	int i;
 
 	for (i = 0; i < server->num_gametypes; i++)
-		if (_ggzcore_gametype_get_id(server->gametypes[i]) == id)
+		if (ggzcore_gametype_get_id(server->gametypes[i]) == id)
 			return server->gametypes[i];
 
 	return NULL;
