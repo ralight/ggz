@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for board.c
- * $Id: board.h 6237 2004-11-03 06:54:59Z jdorje $
+ * $Id: board.h 6240 2004-11-03 19:24:53Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -36,9 +36,11 @@
 #define PAWN_W 9
 #define QUEEN_W 10
 #define ROOK_W 11
-#define PIXSIZE 64
+
+extern int PIXSIZE;
 
 /* Load the bitmaps */
+void board_resized(int width, int height);
 void board_init(void);
 
 /* translate between the cgc piece value and the game piece value */

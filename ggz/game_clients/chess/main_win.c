@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.c 6225 2004-10-28 05:48:01Z jdorje $
+ * $Id: main_win.c 6240 2004-11-03 19:24:53Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -88,8 +88,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	return gtk_item_factory_get_widget(menu, "<main>");
 }
 
-GtkWidget*
-create_main_win (void)
+GtkWidget *create_main_win(void)
 {
   GtkWidget *main_win;
   GtkWidget *vbox1;

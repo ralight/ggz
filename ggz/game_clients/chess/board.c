@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6239 2004-11-03 19:00:41Z jdorje $
+ * $Id: board.c 6240 2004-11-03 19:24:53Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -63,6 +63,8 @@ extern struct chess_info game_info;
 /* dnd stuff */
 GtkTargetEntry *target;
 
+int PIXSIZE = 64;
+
 static GdkPixbuf *load_pixmap(const char *name)
 {
   char *fullpath = g_strdup_printf("%s/chess/pixmaps/%s.svg",
@@ -78,10 +80,17 @@ static GdkPixbuf *load_pixmap(const char *name)
   return image;
 }
 
-void board_init(void)
+void board_resized(int width, int height)
 {
-  if (pieces[0]) {
-    return;
+  int i;
+
+  PIXSIZE = MIN(width / 8, height / 8);
+
+  /* Unload images. */
+  for (i = 0; i < 12; i++) {
+    if (pieces[i]) {
+      g_object_unref(pieces[i]);
+    }
   }
 
   /* Load images */
@@ -97,6 +106,21 @@ void board_init(void)
   pieces[QUEEN_W] = load_pixmap("queen_w");
   pieces[ROOK_B] = load_pixmap("rook_b");
   pieces[ROOK_W] = load_pixmap("rook_w");
+
+  /* No highlights */
+  game_info.src_x = -1;
+  game_info.src_y = -1;
+  game_info.dest_x = -1;
+  game_info.dest_y = -1;
+}
+
+void board_init(void)
+{
+  if (pieces[0]) {
+    return;
+  }
+
+  board_resized(PIXSIZE * 8, PIXSIZE * 8);
 
   /* Init the GC */
   piece_gc = gdk_gc_new(main_win->window);
@@ -124,12 +148,6 @@ void board_init(void)
 
   /* Setup the drag and drop */
   board_dnd_init();
-
-  /* No highlights */
-  game_info.src_x = -1;
-  game_info.src_y = -1;
-  game_info.dest_x = -1;
-  game_info.dest_y = -1;
 
 	/* Setup the player info */
 	//board_info_init();

@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Desc: GTK Callback functions
- * $Id: callbacks.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: callbacks.c 6240 2004-11-03 19:24:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -77,16 +77,16 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
 }
 
 
-gboolean
-on_board_configure_event               (GtkWidget       *widget,
-                                        GdkEventConfigure *event,
-                                        gpointer         user_data)
+gboolean on_board_configure_event(GtkWidget *widget,
+				  GdkEventConfigure *event,
+				  gpointer user_data)
 {
-  if (!board_buf)
-    board_buf = gdk_pixmap_new( widget->window,
-                  PIXSIZE*8,
-                  PIXSIZE*8,
-                  -1);
+  board_resized(event->width, event->height);
+
+  if (board_buf) {
+    g_object_unref(board_buf);
+  }
+  board_buf = gdk_pixmap_new(widget->window, PIXSIZE * 8, PIXSIZE * 8, -1);
 
   board_draw();
 
