@@ -1,12 +1,12 @@
 # RPM Spec file for Easysock library
 
 Summary: easysock socket library
-Name: libeasysock
-Version: 0.1.0
+Name: easysock
+Version: 0.2.0
 Release: 1
 Copyright: GPL
 Group: Development/Libraries
-Source: http://download.sourceforge.net/GGZ/libeasysock-0.1.0.tar.gz
+Source: http://download.sourceforge.net/GGZ/easysock-0.2.0.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -36,6 +36,7 @@ ldconfig
 
 %postun
 ldconfig
+rm -f /usr/lib/libeasysock.so.0
 
 %files
 %defattr(-,root,root)
@@ -43,9 +44,14 @@ ldconfig
 
 /usr/lib/libeasysock.a
 /usr/lib/libeasysock.la
-/usr/lib/libeasysock.so.0.1.0
+/usr/lib/libeasysock.so.0.2.0
 /usr/include/easysock.h
 
 %changelog
+* Tue Mar 27 2001 Rich Gade <rgade@users.sourceforge.net>
+- Modified for version bump to 0.2.0
+- Modified for name change (libeasysock -> easysock)
+- Modified to remove the stale libeasysock.so.0 link on uninstall
+
 * Sun Mar 25 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file
