@@ -7,20 +7,57 @@ The Grubby Admin Manual
 <BODY BGCOLOR=#DDDDDD TEXT=#000000 LINK=#0000FF ALINK=#0000FF VLINK=#000050>
 
 <FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
-<FONT SIZE=2>Josef Spillner, 2001-08-04</FONT>
+<FONT SIZE=2>Josef Spillner, 2001-10-12</FONT>
 <BR><BR>
 
 <HR>
 <B>Table Of Contents:</B><BR>
-<A HREF="#modnews">News module</A><BR>
-<A HREF="#moddict">Dictionary module</A><BR>
-<A HREF="#modmeeting">Meeting module</A><BR>
+<A HREF="#install">Installation</A><BR>
+<A HREF="#commands">Admin commands</A><BR>
+<A HREF="#modexec">Exec module</A><BR>
+<A HREF="#modnews">News module (modexec)</A><BR>
+<A HREF="#moddict">Dictionary module (modexec)</A><BR>
+<A HREF="#modmeeting">Meeting module (modexec)</A><BR>
 <HR>
 <BR><BR>
 
 <HR>
+<A NAME="install">
+<FONT SIZE=4>Installation</FONT>
+<BR><BR>
+Grubby consists of the binary "grubby", the perl script "grubby-config", lots of plugins (shared libraries), scripts for modexec and data and translation files.
+Everything should install fine. All you have to do then is to call grubby-config, which gives you a full default installation. You might want to cut the options down,
+just edit the configuration files under $HOME/.ggz. Then launch the bot while having a ggzd running somewhere. If it fails, make sure you didn't cut too much options.
+Read docs/Setup for a sample file.
+<BR><BR>
+
+<HR>
+<A NAME="commands">
+<FONT SIZE=4>Admin Commands</FONT>
+<BR><BR>
+The owner of grubby, as specified in the configuration, may issue some more commands than the other players. Here's a list of what the admin can do:<BR>
+<UL>
+<LI>grubby insmod (modulename) - Inserts a plugin, like self or badword
+<LI>grubby rmmod (modulename) - Unloads a plugin
+<LI>grubby reload (modulename) - A combination of the above, makes sure the latest version is in memory
+<LI>grubby modules - List all loaded plugins
+<LI>grubby goto (roomnumber) - Let grubby join the given room
+<LI>grubby log (on|off) - Control whether the bot should log messages or not
+</UL>
+<BR><BR>
+
+<HR>
+<A NAME="modexec">
+<FONT SIZE=4>Exec Module</FONT>
+<BR><BR>
+This plugin executes external scripts and programs, writes to their stdin and reads from their stdout. It should be noted that the more
+external processes are spawned in serial order, the more time it consumes, and grubby may not react fast enough. Whereever available, a native
+plugin (shared library) should be preferred.
+<BR><BR>
+
+<HR>
 <A NAME="modnews">
-<FONT SIZE=4>News Module</FONT>
+<FONT SIZE=4>News Module (modexec)</FONT>
 <BR><BR>
 Several news sites offer RDF files which contain all headlines and links to the articles in XML format. Now  when the user
 requests news from one of those sites, the module first fetches the latest RDF file from the target host (needs the perl module
@@ -29,7 +66,7 @@ Net::Telnet installed), and randomly seeks one of the headlines which is to be r
 
 <HR>
 <A NAME="moddict">
-<FONT SIZE=4>Dictionary Module</FONT>
+<FONT SIZE=4>Dictionary Module (modexec)</FONT>
 <BR><BR>
 This module is presentated by the perl script "dict.pl", which in turn needs several dictionaries installed, or at least one of them.
 Under Unix, those are mostly under /usr/share/trans/X-Y, where X and Y are lowercase language letters, like "en" for English. The
@@ -40,7 +77,7 @@ it found for the key word.
 
 <HR>
 <A NAME="modmeeting">
-<FONT SIZE=4>Meeting Module</FONT>
+<FONT SIZE=4>Meeting Module (modexec)</FONT>
 <BR><BR>
 This one needs Ruby installed, preferably version 1.6+. Its configurable database goes normally to /tmp/meetings, you might want to
 change that. It uses an interesting technique to store its data: Instead of writing key-value pairs, it dumps the whole object
