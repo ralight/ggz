@@ -12,6 +12,7 @@ import random
 import os, pwd
 import imp
 import re
+import gettext
 
 import rsvgsdl
 import sdlnewstuff
@@ -21,11 +22,20 @@ path = sys.argv[0]
 if path[0] == ".":
 	DATAPATH = "./"
 	MODULEPATH = "./"
+	I18NPATH = "./"
 else:
 	path = os.path.abspath(path)
-	DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/ggzboard/"
-	MODULEPATH = str("/").join(path.split("/")[:-2]) + "/lib/site-python/"
+	basepath = str("/").join(path.split("/")[:-2])
+	DATAPATH = basepath + "/share/ggz/ggzboard/"
+	MODULEPATH = basepath + "/lib/site-python/"
+	I18NPATH = basepath + "/share/locale"
 print ">>>>> ggzboard: starting with datapath", DATAPATH, "modulepath", MODULEPATH
+
+gettext.install("ggzpython", I18NPATH, 1)
+
+def asciify(str):
+		asciistr = str.encode("ascii", "replace")
+		return asciistr
 
 class Conf:
 	def __init__(self):
@@ -132,8 +142,10 @@ class GGZBoard:
 		for file in fnames:
 			m = ex.match(file)
 			if m:
-				self.modulefilelist.append(file)
-				self.modulelist.append(m.group(1))
+				self.modulefilelist.append(m.group(1))
+				self.loadgame(m.group(1))
+				self.modulelist.append(self.game.name())
+		self.game = None
 
 	def load(self, gamename):
 		os.path.walk(MODULEPATH, self.walker, None)
@@ -159,7 +171,7 @@ class GGZBoard:
 		self.ui = GGZBoardUI(self.conf.resolution)
 
 		pygame.init()
-		pygame.display.set_caption("GGZBoard")
+		pygame.display.set_caption(asciify(_("GGZBoard")))
 
 		icon = pygame.image.load(DATAPATH + "common/icon.png")
 		pygame.display.set_icon(icon)
@@ -181,9 +193,9 @@ class GGZBoard:
 		ui = self.ui
 		conf = self.conf
 
-		pygame.display.set_caption("GGZBoard: game selection")
+		pygame.display.set_caption(asciify(_("GGZBoard: game selection")))
 
-		title = ui.font.render("GGZBoard: game selection", 1, (255, 200, 0))
+		title = ui.font.render(_("GGZBoard: game selection"), 1, (255, 200, 0))
 
 		pygame.event.clear()
 
@@ -221,7 +233,7 @@ class GGZBoard:
 					if ((y - 100) % 50) < 40:
 						selected = (y - 100) / 50
 						updatescreen = 1
-						gamename = self.modulelist[selected]
+						gamename = self.modulefilelist[selected]
 
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
@@ -262,15 +274,14 @@ class GGZBoard:
 
 		self.ui.backgroundarea = self.ui.deepcopy(self.ui.surface)
 
-		asciiname = game.name().encode("ascii", "replace")
-		pygame.display.set_caption("GGZBoard: " + asciiname)
+		pygame.display.set_caption(asciify(_("GGZBoard: ") + game.name()))
 
 		ggzstr = ""
 		if self.ggzmode:
-			ggzstr = " (running on GGZ)"
+			ggzstr = _(" (running on GGZ)")
 			if not self.ggzsuccess:
-				ggzstr += " (unavailable)"
-		title = ui.font.render("GGZBoard: " + game.name() + ggzstr, 1, (255, 200, 0))
+				ggzstr += _(" (unavailable)")
+		title = ui.font.render(_("GGZBoard: ") + game.name() + ggzstr, 1, (255, 200, 0))
 
 		pygame.event.clear()
 
@@ -296,9 +307,9 @@ class GGZBoard:
 			if self.ggzsuccess:
 				net.handle_network()
 				if net.error():
-					ggzstr = " (running on GGZ)"
-					ggzstr += " (unavailable)"
-					title = ui.font.render("GGZBoard: " + game.name() + ggzstr, 1, (255, 200, 0))
+					ggzstr = _(" (running on GGZ)")
+					ggzstr += _(" (unavailable)")
+					title = ui.font.render(_("GGZBoard: ") + game.name() + ggzstr, 1, (255, 200, 0))
 					self.ggzsuccess = 0
 					updatescreen = 1
 				else:
@@ -472,20 +483,20 @@ class GGZBoard:
 					for dice in game.dice:
 						x = w - conf.marginwidth
 						y = h - conf.marginheight - i * 30
-						caption = ui.smallfont.render("Dice: " + str(dice), 1, (255, 200, 0))
+						caption = ui.smallfont.render(_("Dice: ") + str(dice), 1, (255, 200, 0))
 						ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
 						i += 1
 
 						# FIXME!
-						img = self.svgsurface("madn/dice-" + str(dice) + ".svg", 50, 50)
-						ui.backgroundarea.blit(img, (x - 100, y - 20))
+						img = self.svgsurface(DATAPATH + "madn/dice-" + str(dice) + ".svg", 50, 50)
+						ui.backgroundarea.blit(img, (x - caption.get_width() - 100, y - 20))
 
 				if thinking:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
 					x = w - conf.marginwidth
 					y = h - conf.marginheight - 60
-					caption = ui.smallfont.render("Thinking...", 1, (255, 200, 0))
+					caption = ui.smallfont.render(_("Thinking..."), 1, (255, 200, 0))
 					ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
 
 				ui.screen.blit(ui.backgroundarea, (0, 0))

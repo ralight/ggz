@@ -33,10 +33,10 @@ ifeq ($(ggzchess),yes)
 	instwrappers += ggzchess-install
 endif
 
-all: $(wrappers)
+all: $(wrappers) po-build
 	@echo "ready with building ggz-python"
 
-install: $(instwrappers) install-ggzboard install-rest
+install: $(instwrappers) po-install install-ggzboard install-rest
 	@echo "ready with installation of ggz-python"
 
 ggzmod-build:
@@ -79,6 +79,14 @@ rsvgsdl-install:
 ggzchess-install:
 	@echo Installing library PyGGZChess
 	cd pyggzchess && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+po-build:
+	@echo Building internationalization files
+	cd po && make prefix=$(DESTDIR)$(prefix)
+
+po-install:
+	@echo Installing internationalization files
+	cd po && make install prefix=$(DESTDIR)$(prefix)
 
 install-rest:
 	@echo Installing game Dresden
@@ -141,11 +149,13 @@ install-ggzboard:
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/madn
 	cp ggzboard/checkers/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
 	cp ggzboard/chess/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
 	cp ggzboard/go/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/go
 	cp ggzboard/hnefatafl/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/hnefatafl
 	cp ggzboard/reversi/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/reversi
+	cp ggzboard/madn/*.svg $(DESTDIR)$(prefix)/share/ggz/ggzboard/madn
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp ggzboard/ggzboard_net.py $(DESTDIR)$(prefix)/lib/site-python
 	cp ggzboard/module_*.py $(DESTDIR)$(prefix)/lib/site-python

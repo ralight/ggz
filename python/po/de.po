@@ -1,30 +1,81 @@
 # Deutsche Übersetzung des Paketes ggz-python.
-# Copyright (C) 2004 Josef Spillner
+# Copyright (C) 2004, 2005 Josef Spillner
 # This file is distributed under the same license as the ggz-python package.
 # Josef Spillner <josef@ggzgamingzone.org>, 2004.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-14 17:59+0100\n"
-"PO-Revision-Date: 2004-12-14 17:57+0100\n"
+"POT-Creation-Date: 2005-02-27 13:45+0100\n"
+"PO-Revision-Date: 2005-02-27 13:41+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lib/sdlnewstuff.py:188
+#: ../lib/sdlnewstuff.py:181
 msgid "not installed"
 msgstr "nicht installiert"
 
-#: ../lib/sdlnewstuff.py:189 ../lib/sdlnewstuff.py:238
-#: ../lib/sdlnewstuff.py:295 ../lib/sdlnewstuff.py:312
+#: ../lib/sdlnewstuff.py:182 ../lib/sdlnewstuff.py:231
+#: ../lib/sdlnewstuff.py:288 ../lib/sdlnewstuff.py:305
 msgid "installed"
 msgstr "installiert"
 
-#: ../lib/sdlnewstuff.py:314
+#: ../lib/sdlnewstuff.py:307
 msgid "error"
 msgstr "fehler"
+
+#: ../ggzboard/ggzboard:175
+msgid "GGZBoard"
+msgstr "GGZBoard"
+
+#: ../ggzboard/ggzboard:197 ../ggzboard/ggzboard:199
+msgid "GGZBoard: game selection"
+msgstr "GGZBoard: Spielauswahl"
+
+#: ../ggzboard/ggzboard:278 ../ggzboard/ggzboard:285 ../ggzboard/ggzboard:313
+msgid "GGZBoard: "
+msgstr "GGZBoard: "
+
+#: ../ggzboard/ggzboard:282 ../ggzboard/ggzboard:311
+msgid " (running on GGZ)"
+msgstr " (über GGZ spielend)"
+
+#: ../ggzboard/ggzboard:284 ../ggzboard/ggzboard:312
+msgid " (unavailable)"
+msgstr " (nicht verfügbar)"
+
+#: ../ggzboard/ggzboard:487
+msgid "Dice: "
+msgstr "Würfel: "
+
+#: ../ggzboard/ggzboard:500
+msgid "Thinking..."
+msgstr "Nachdenken..."
+
+#: ../ggzboard/module_checkers.py:60
+msgid "Checkers/Draughts"
+msgstr "Dame"
+
+#: ../ggzboard/module_chess.py:72
+msgid "Chess"
+msgstr "Schach"
+
+#: ../ggzboard/module_go.py:35
+msgid "Go"
+msgstr "Go"
+
+#: ../ggzboard/module_hnefatafl.py:71
+msgid "Hnefatafl"
+msgstr "Hnefatafl"
+
+#: ../ggzboard/module_madn.py:143
+msgid "Ludo"
+msgstr "Mensch ärgere dich nicht"
+
+#: ../ggzboard/module_reversi.py:40
+msgid "Reversi"
+msgstr "Reversi"

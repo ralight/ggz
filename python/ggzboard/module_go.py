@@ -26,11 +26,13 @@ class Game:
 
 		self.datapath = "./"
 
+		self.dice = None
+
 	def init(self, path):
 		self.datapath = path
 
 	def name(self):
-		return "Go"
+		return _("Go")
 
 	def figure(self, piece):
 		(gfx, color) = piece

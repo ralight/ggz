@@ -4,6 +4,8 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
+SOURCES = ../lib/sdlnewstuff.py ../ggzboard/ggzboard ../ggzboard/module_*.py
+
 all:
 	for j in `ls -1 *.po`; do \
 		country=`echo $$j | cut -d "." -f 1`; \
@@ -14,7 +16,7 @@ all:
 install: install-data-local
 
 messages:
-	$(XGETTEXT) -k_ -kN_ ../*/*.py -o ggzpython.pot; \
+	$(XGETTEXT) -k_ -kN_ -LPython $(SOURCES) -o ggzpython.pot; \
 	for j in `ls -1 *.po`; do \
 		echo "merge $$j"; \
 		$(MSGMERGE) $$j ggzpython.pot > .$$j 2>/dev/null; \

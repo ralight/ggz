@@ -15,14 +15,7 @@ import imp
 
 """ Internationalization """
 
-def nulltranslation(str):
-	return str
-
-try:
-	t = gettext.translation("ggzpython", "/usr/local/share/locale")
-	_ = t.ugettext
-except:
-	_ = nulltranslation
+gettext.install("ggzpython", "/usr/local/share/locale", 1)
 
 """ GHNS data entry class """
 

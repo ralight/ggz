@@ -31,11 +31,13 @@ class Game:
 
 		self.datapath = "./"
 
+		self.dice = None
+
 	def init(self, path):
 		self.datapath = path
 
 	def name(self):
-		return "Reversi"
+		return _("Reversi")
 
 	def figure(self, piece):
 		(gfx, color) = piece

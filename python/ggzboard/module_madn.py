@@ -140,7 +140,7 @@ class Game:
 		self.datapath = path
 
 	def name(self):
-		return unicode("M-Ä-D-N", "utf-8")
+		return _("Ludo")
 
 	def figure(self, piece):
 		(gfx, color) = piece
