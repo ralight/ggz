@@ -1,0 +1,33 @@
+This is now version 0.0.2pre of KGGZ.
+
+News:
+-get a desktop icon when installing (just click on it to play)
+-"real" players, rooms and tables in the lists and menus
+-some game description
+
+Requirements:
+-Qt 2.2.1
+-KDE 2.0 (kdelibs should be sufficient)
+
+
+You can do the following things:
+-connecting to the server
+-chat
+-browse the rooms list
+-use the chat with all commands
+-attempt to join or launch a game
+
+You can't do yet:
+-play games
+-store configuration values
+
+What else needs to be done?
+-documentation (html)
+-port some of the games to kde (although one can use gtk+ games, of course)
+
+Josef
+
+http://ggz.sourceforge.net - GNU Gaming Zone
+http://mindx.sourceforge.net - The MindX Open Source Project
+http://www.inf.tu-dresden.de - The university where I study
+dr_maux@users.sourceforge.net - email me
