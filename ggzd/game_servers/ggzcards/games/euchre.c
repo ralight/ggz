@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2702 2001-11-09 01:33:52Z jdorje $
+ * $Id: euchre.c 2703 2001-11-09 01:35:30Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -27,20 +27,20 @@
 
 #include "euchre.h"
 
-static int euchre_is_valid_game();
+static int euchre_is_valid_game(void);
 static card_t euchre_map_card(card_t c);
-static void euchre_init_game();
-static void euchre_start_bidding();
-static int euchre_get_bid();
+static void euchre_init_game(void);
+static void euchre_start_bidding(void);
+static int euchre_get_bid(void);
 static void euchre_handle_bid(bid_t bid);
-static void euchre_next_bid();
-static void euchre_start_playing();
-static int euchre_deal_hand();
+static void euchre_next_bid(void);
+static void euchre_start_playing(void);
+static int euchre_deal_hand(void);
 static int euchre_send_hand(player_t p, seat_t s);
 static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
-static void euchre_end_trick();
-static void euchre_end_hand();
+static void euchre_end_trick(void);
+static void euchre_end_hand(void);
 
 struct game_function_pointers euchre_funcs = {
 	euchre_is_valid_game,
@@ -71,7 +71,7 @@ struct game_function_pointers euchre_funcs = {
 };
 
 
-static int euchre_is_valid_game()
+static int euchre_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
@@ -89,7 +89,7 @@ static card_t euchre_map_card(card_t c)
 	return c;
 }
 
-static void euchre_init_game()
+static void euchre_init_game(void)
 {
 	seat_t s;
 
@@ -106,13 +106,13 @@ static void euchre_init_game()
 	EUCHRE.maker = -1;
 }
 
-static void euchre_start_bidding()
+static void euchre_start_bidding(void)
 {
 	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
 }
 
-static int euchre_get_bid()
+static int euchre_get_bid(void)
 {
 	if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
@@ -148,7 +148,7 @@ static void euchre_handle_bid(bid_t bid)
 	/* bidding is ended automatically by game_next_bid */
 }
 
-static void euchre_next_bid()
+static void euchre_next_bid(void)
 {
 	if (EUCHRE.maker >= 0)
 		game.bid_total = game.bid_count;
@@ -159,7 +159,7 @@ static void euchre_next_bid()
 		game_next_bid();
 }
 
-static void euchre_start_playing()
+static void euchre_start_playing(void)
 {
 	player_t p;
 	seat_t s;
@@ -180,7 +180,7 @@ static void euchre_start_playing()
 	}
 }
 
-static int euchre_deal_hand()
+static int euchre_deal_hand(void)
 {
 	seat_t s;
 
@@ -241,7 +241,7 @@ static void euchre_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static void euchre_end_trick()
+static void euchre_end_trick(void)
 {
 	game_end_trick();
 
@@ -249,7 +249,7 @@ static void euchre_end_trick()
 	set_player_message((game.winner + 2) % 4);
 }
 
-static void euchre_end_hand()
+static void euchre_end_hand(void)
 {
 	int tricks, winning_team;
 	tricks = game.players[EUCHRE.maker].tricks +
