@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 4295 2002-07-08 15:52:05Z jdorje $
+ * $Id: first.c 4657 2002-09-23 02:10:12Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -61,6 +61,15 @@ static char *pw_words[] = { N_("Wizard"),    N_("Deity"),   N_("Sentinel"),   N_
                             N_("Major"),     N_("Scout"),   N_("Lieutenant"), N_("Stalker"),
                             N_("Scientist"), N_("Scholar"), N_("Entity"),     N_("Creator")};
 
+static struct {
+	char *name;
+	char *host;
+	int port;
+	int type;
+} hosts[] = { /* {"Morat.net (Fast)", "ggz.morat.net", 5688, 1}, */
+	      {"GGZ Europe (Fast)", "ggz.snafu.de", 5688, 1},
+	      {"CVS Developer Server", "jzaun.com", 5689, 1} };
+
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog
  *
@@ -85,65 +94,47 @@ void first_create_or_raise(void)
 
 static void first_button_yes_activate(GtkButton *button, gpointer data)
 {
-	char *profiles, *curprofiles, name[17];
-	char *old;
+	char **profiles, name[17];
+	int i, num_profiles, num_hosts = sizeof(hosts) / sizeof(hosts[0]);
 
 	first_generate_password(name);
 
-	/* Morat.net */
-	old = ggzcore_conf_read_string("Morat.net (Fast)", "Host",
-					"ggz.morat.net");
-	ggzcore_conf_write_string("Morat.net (Fast)", "Host", old);
-	ggz_free(old);
-	old = ggzcore_conf_read_string("Morat.net (Fast)", "Login", name);
-	ggzcore_conf_write_string("Morat.net (Fast)", "Login", old);
-	ggz_free(old);
-	ggzcore_conf_write_int("Morat.net (Fast)", "Port",
-		ggzcore_conf_read_int("Morat.net (Fast)", "Port",
-					 5688));
-	ggzcore_conf_write_int("Morat.net (Fast)", "Type",
-		ggzcore_conf_read_int("Morat.net (Fast)", "Type",
-					 1));
-	/* Euro 1 */
-	old = ggzcore_conf_read_string("GGZ Europe (Fast)", "Host",
-					"ggz.snafu.de");
-	ggzcore_conf_write_string("GGZ Europe (Fast)", "Host", old);
-	ggz_free(old);
-	old = ggzcore_conf_read_string("GGZ Europe (Fast)", "Login", name);
-	ggzcore_conf_write_string("GGZ Europe (Fast)", "Login", old);
-	ggz_free(old);
-	ggzcore_conf_write_int("GGZ Europe (Fast)", "Port",
-		ggzcore_conf_read_int("GGZ Europe (Fast)", "Port",
-					 5688));
-	ggzcore_conf_write_int("GGZ Europe (Fast)", "Type",
-		ggzcore_conf_read_int("GGZ Europe (Fast)", "Type",
-					 1));
-	/* Justin's Server */
-	old = ggzcore_conf_read_string("CVS Developer Server (Slow)", "Host",
-					"jzaun.com");
-	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Host", old);
-	ggz_free(old);
-	old = ggzcore_conf_read_string("CVS Developer Server (Slow)", "Login",
-					name);
-	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Login", old);
-	ggz_free(old);
-	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Port",
-		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Port",
-					 5689));
-	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Type",
-		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Type",
-					 1));
+	ggzcore_conf_read_list("Servers", "ProfileList", &num_profiles,
+			       &profiles);
 
-	/* Write-out list of servers */
-	curprofiles = ggzcore_conf_read_string("Servers", "ProfileList", NULL);
-	if(curprofiles) {
-		profiles = g_strdup_printf("%s Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)", curprofiles);
-		ggz_free(curprofiles);
-	} else
-		profiles = g_strdup_printf("Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)");
-	ggzcore_conf_write_string("Servers", "ProfileList", profiles);
+	profiles = ggz_realloc(profiles,
+			       (num_hosts + num_profiles) * sizeof(*profiles));
 
-	g_free(profiles);
+	for (i = 0; i < num_hosts; i++) {
+		char *old;
+		int oldi;
+
+		old = ggzcore_conf_read_string(hosts[i].name, "Host",
+					       hosts[i].host);
+		ggzcore_conf_write_string(hosts[i].name, "Host", old);
+		ggz_free(old);
+
+		old = ggzcore_conf_read_string(hosts[i].name, "Login", name);
+		ggzcore_conf_write_string(hosts[i].name, "Login", old);
+		ggz_free(old);
+
+		oldi = ggzcore_conf_read_int(hosts[i].name, "Port",
+					     hosts[i].port);
+		ggzcore_conf_write_int(hosts[i].name, "Port", oldi);
+
+		oldi = ggzcore_conf_read_int(hosts[i].name, "Type",
+					     hosts[i].type);
+		ggzcore_conf_write_int(hosts[i].name, "Type", oldi);
+
+		profiles[num_profiles + i] = ggz_strdup(hosts[i].name);
+	}
+
+	num_profiles += num_hosts;
+	ggzcore_conf_write_list("Servers", "ProfileList",
+				num_profiles, profiles);
+	for (i = 0; i < num_profiles; i++)
+		ggz_free(profiles[i]);
+	ggz_free(profiles);
 
 	ggzcore_conf_commit();
 	gtk_widget_destroy(first_dialog);
