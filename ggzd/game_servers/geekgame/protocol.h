@@ -20,24 +20,24 @@
 
 enum NetworkOpcodes
 {
-	op_server_greeting   = 100,
-	op_server_newplayer  = 101,
-	op_server_gamestart  = 102,
-	op_server_gamestop   = 103,
-	op_server_gameend    = 104,
-	op_server_moveresult = 105,
-	op_server_moderesult = 106,
-	op_server_numplayers = 150,
+	op_server_greeting   = 10,
+	op_server_newplayer  = 11,
+	op_server_gamestart  = 12,
+	op_server_gamestop   = 13,
+	op_server_gameend    = 14,
+	op_server_moveresult = 15,
+	op_server_moderesult = 16,
+	op_server_numplayers = 20,
 
-	op_client_presentation = 200,
-	op_client_ruleset      = 201,
-	op_client_move         = 202,
+	op_client_presentation = 30,
+	op_client_ruleset      = 31,
+	op_client_move         = 32,
 
-	op_mode_reserved = 1000,
-	op_mode_easy     = 1001,
-	op_mode_matrix   = 1002,
-	op_mode_havoc    = 1003,
-	op_mode_haxor    = 1004
+	op_mode_reserved = 40,
+	op_mode_easy     = 41,
+	op_mode_matrix   = 42,
+	op_mode_havoc    = 43,
+	op_mode_haxor    = 44
 };
 
 #endif
