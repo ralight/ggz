@@ -65,6 +65,8 @@ create_dlg_options (int number)
   GtkWidget *table2;
   GtkWidget *preview_board;
   GtkWidget *preview_label;
+  GtkWidget *preview_options;
+  GtkWidget *preview_options_scrollbar;
   GtkWidget *label11;
   GtkWidget *hbuttonbox3;
   GtkWidget *load;
@@ -406,7 +408,7 @@ create_dlg_options (int number)
   gtk_table_attach (GTK_TABLE (options_table), eventbox7, 0, 1, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_tooltips_set_tip (tooltips, eventbox7, _("If set, the outcome of attacks will be solved randomly. Spies and bombs are treated the normal way. Units of equal rank have a 50% odd of winning. The difference in the ranks modifies this as follow: 1: 5%, 2: 10%, 3: 15%, 4: 20%, 5: 27%, 6: 33%, 7: 39%, 8: 45%"), NULL);
+  gtk_tooltips_set_tip (tooltips, eventbox7, _("If set, the outcome of attacks will be solved randomly. Spies and bombs are treated the normal way. The odds depend on the difference between the power of the two units. The first number is the odd of the highest-ranked unit winning, and the second number is the odd of both units dying. 0: 30/40, 1: 35/39, 2: 41/37, 3: 49/33, 4: 56/29, 5: 64/24, 6: 71/20, 7: 77/15, 8: 84/11"), NULL);
 
   opt_bin1[6] = gtk_check_button_new_with_label (_("Random outcome of attacks"));
   gtk_widget_set_name (opt_bin1[6], "opt_bin1[6]");
@@ -415,7 +417,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[6]);
   gtk_container_add (GTK_CONTAINER (eventbox7), opt_bin1[6]);
-  gtk_widget_set_sensitive (opt_bin1[6], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[6], TRUE);
 
   eventbox8 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox8, "eventbox8");
@@ -700,7 +702,23 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (preview_label);
   gtk_table_attach (GTK_TABLE (table2), preview_label, 0, 1, 1, 2,
-                    0, 0, 3, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  preview_options = gtk_text_new(NULL, NULL);
+  gtk_text_set_word_wrap(GTK_TEXT(preview_options), TRUE);
+  gtk_text_set_line_wrap(GTK_TEXT(preview_options), TRUE);
+  gtk_text_set_editable(GTK_TEXT(preview_options), FALSE);
+  gtk_widget_set_name(preview_options, "preview_options");
+  gtk_object_set_data_full(GTK_OBJECT(dlg_options), "preview_options", preview_options, (GtkDestroyNotify)gtk_widget_unref);
+  gtk_widget_show(preview_options);
+  gtk_table_attach(GTK_TABLE(table2), preview_options, 0, 2, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions)(GTK_SHRINK|GTK_FILL), 0, 0);
+  gtk_widget_set_usize (preview_options, -1, 30);
+
+  preview_options_scrollbar = gtk_vscrollbar_new(GTK_TEXT(preview_options)->vadj);
+  gtk_object_set_data_full(GTK_OBJECT(dlg_options), "preview_options_scrollbar", preview_options_scrollbar, (GtkDestroyNotify)gtk_widget_unref);
+  gtk_widget_show(preview_options_scrollbar);
+  gtk_table_attach(GTK_TABLE(table2), preview_options_scrollbar, 2, 3, 2, 3, 0, 0, 0, 0);
 
   label11 = gtk_label_new (_("Map Preview"));
   gtk_widget_set_name (label11, "label11");
@@ -910,10 +928,11 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data) {
   combat_game *preview_game;
   GtkWidget *preview_label = lookup_widget(user_data, "preview_label");
+  GtkWidget *preview_options = lookup_widget(user_data, "preview_options");
   char **filenames;
-  char preview_string[256];
+  char preview_string[1024];
   int changed = -1;
-  int tot = 0, other = 0, a;
+  int tot = 0, other = 0, a, pos = 0;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
   preview_game = (combat_game *)malloc(sizeof(combat_game));
@@ -951,6 +970,47 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
           other,
           tot);
   gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
+  gtk_editable_delete_text(GTK_EDITABLE(preview_options), 0, -1);
+  strcpy(preview_string, "");
+  if (preview_game->options) {
+    if (preview_game->options & OPT_OPEN_MAP)
+      strcat(preview_string, "Open map, ");
+    if (preview_game->options & OPT_ONE_TIME_BOMB)
+      strcat(preview_string, "One time bomb, ");
+    if (preview_game->options & OPT_TERRORIST_SPY)
+      strcat(preview_string, "Terrorist spy, ");
+    if (preview_game->options & OPT_MOVING_BOMB)
+      strcat(preview_string, "Moving bombs, ");
+    if (preview_game->options & OPT_SUPER_SCOUT)
+      strcat(preview_string, "Super scout, ");
+    if (preview_game->options & OPT_MOVING_FLAG)
+      strcat(preview_string, "Moving flags, ");
+    if (preview_game->options & OPT_RANDOM_OUTCOME)
+      strcat(preview_string, "Random outcome of attacks, ");
+    if (preview_game->options & OPT_ALLOW_DIAGONAL)
+      strcat(preview_string, "Allow diagonal moves, ");
+    if (preview_game->options & OPT_UNKNOWN_VICTOR)
+      strcat(preview_string, "Unknown victor, ");
+    if (preview_game->options & OPT_SILENT_DEFENSE)
+      strcat(preview_string, "Silent deffense, ");
+    if (preview_game->options & OPT_SILENT_OFFENSE)
+      strcat(preview_string, "Silent offense, ");
+    if (preview_game->options & OPT_RANDOM_SETUP)
+      strcat(preview_string, "Random setup, ");
+    if (preview_game->options & OPT_SF_SERGEANT)
+      strcat(preview_string, "Special forces sergeant, ");
+    if (preview_game->options & OPT_RUSH_ATTACK)
+      strcat(preview_string, "Rush attack, ");
+    if (preview_game->options & OPT_HIDE_UNIT_LIST)
+      strcat(preview_string, "Hide enemy unit list, ");
+    if (preview_game->options & OPT_SHOW_ENEMY_UNITS)
+      strcat(preview_string, "Remember enemy units, ");
+    preview_string[strlen(preview_string)-2] = 0;
+  } else {
+    sprintf(preview_string, "No options");
+  }
+  gtk_editable_insert_text(GTK_EDITABLE(preview_options), preview_string, strlen(preview_string), &pos);
+
 }
 
 void delete_button_clicked(GtkButton *button, gpointer dialog) {

@@ -35,9 +35,13 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
   // Should we add space for the name option?
   if (!for_hash && _game->name && (strcmp(_game->name, "") != 0))
     len += 1 + strlen(_game->name) + 1 + 1;
-  // Should we add space for the binary options?
-  if (_game->options != 0)
-    len += 1 + 2 + 1;
+  /* Binary options */
+  // O_BIN1
+  if (_game->options & 255)
+    len += 1 + 1 + 1;
+  // O_BIN2
+  if (_game->options & (255<<8))
+    len += 1 + 1 + 1;
 	optstr = (char *)malloc(sizeof(char) * (len+1));
   strcpy(optstr, "");
 	ptr = optstr;
@@ -59,11 +63,15 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
     *(++ptr) = 0; // Closing \0 for the name
     *(++ptr) = 0; // Closing \0 for the option packet
   }
-  if (_game->options != 0) {
+  if (_game->options & 255) {
     *(++ptr) = O_BIN1; // Binary pack 1
-    *(++ptr) = _game->options & 255; // first byte
-    *(++ptr) = (_game->options>>8) & 255; //  seoond byte
+    *(++ptr) = (_game->options & 255) ^ 255; // first byte
     *(++ptr) = 0; // Closing \0 for the option packet
+  }
+  if (_game->options & (255<<8)) {
+    *(++ptr) = O_BIN2; // Binary pack 2
+    *(++ptr) = ((_game->options>>8) & 255) ^ 255; //  seoond byte
+    *(++ptr) = 0; // Closing \0
   }
   /* Close */
   *(++ptr) = 0;
@@ -72,7 +80,6 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
 	// Adds one to all the string, to avoid having zeros between them
 	for (a = 0; a < len; a++)
 		optstr[a]++;
-	printf("Len: %d\n", strlen(optstr));
 	return optstr;
 }
 
@@ -125,8 +132,12 @@ int combat_options_string_read(unsigned char *_optstr, combat_game *_game) {
       case O_BIN1:
         optstr++;
         // optstr now points to the first byte of options
-        _game->options = *(optstr++); // First byte
-        _game->options += (*(optstr++)<<8); // Second byte
+        _game->options = *(optstr++) ^ 255; // First byte
+        break;
+      case O_BIN2:
+        optstr++;
+        // optstr now points to the first byte
+        _game->options += (*(optstr++) ^ 255)<<8; // Second byte
         break;
       default:
 		    printf("Unsuported option! (%d)\n", *optstr);

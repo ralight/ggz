@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 9
+#define PROTOCOL_VERSION 10
 
 /* Combat Protocol Version 0.1
  *
@@ -155,30 +155,71 @@
  *    closing \0) with the name of the map
  *
  *  02h -> Binary Options Pack 1
+ *  03h -> Binary Options Pack 2
  *
- *    It's a pack of 16 binary options. The OPTION_DATA are two bytes
- *    (16 bits). Each one of the 16 options have a id. The options that are on
- *    and whose id is <= 256 are ||ed in the first byte. Those options
- *    whose id is > 256 receive a 8 bits right shift and then are ||ed on the
- *    second byte. The options are (in order):
+ *    Each one is a pack of 8 binary options. The OPTION_DATA of each is one
+ *    byte (8 bits). Each one of options has an id. The options ids are ||ed in
+ *    the OPTION_DATA. The options are (in order):
  *
  *      - OPT_OPEN_MAP                \
  *      - OPT_ONE_TIME_BOMB           |
  *      - OPT_TERRORIST_SPY           |\
- *      - OPT_MOVING_BOMB             | > first byte
+ *      - OPT_MOVING_BOMB             | > Pack 1
  *      - OPT_SUPER_SCOUT             |/
  *      - OPT_MOVING_FLAG             |
  *      - OPT_RANDOM_OUTCOME          |
  *      - OPT_ALLOW_DIAGONAL          /
  *
- *      - OPT_UNKNOWN_VICTOR           \
+ *      - OPT_UNKNOWN_VICTOR          \
  *      - OPT_SILENT_DEFENSE          |
  *      - OPT_SILENT_OFFENSE          |\
- *      - OPT_RANDOM_SETUP            | > second byte
+ *      - OPT_RANDOM_SETUP            | > Pack 2
  *      - OPT_SF_SERGEANT             |/
  *      - OPT_RUSH_ATTACK             |
  *      - OPT_HIDE_UNIT_LIST          |
  *      - OPT_SHOW_ENEMY_UNITS        /
+ *
+ *   After having their ids ||ed, the options are negated, so that it can never
+ *   result in a value of 255 as option (that would result in a value of 0 to
+ *   the the final string, and it would cause an error when sending it)
+ *   
+ *   Example: 
+ *     If I have set OPT_SUPER_SCOUT (1<<4), OPT_RANDOM_SETUP (1<11), 
+ *     OPT_RUSH_ATTACK (1<<13) and OPT_ALLOW_DIAGONAL (1<<7)
+ *    
+ *     In the first pack we have OPT_SUPER_SCOUT and OPT_ALLOW_DIAGONAL
+ *
+ *     10010000
+ *     |  |
+ *     |  -> OPT_SUPER_SCOUT
+ *     -> OPT_ALLOW_DIAGONAL
+ *
+ *     Then we negate the byte, and the final result is
+ *
+ *     01101111
+ *
+ *     For the second pack we have
+ *
+ *     00101000
+ *       | |
+ *       | -> OPT_RANDOM_SETUP
+ *       -> OPT_RUSH_ATTACK
+ *
+ *     Negating the byte we have
+ *
+ *     11010111
+ *
+ *     Then we send: 2 111 0 3 215 0
+ *                   |  |  | |  |  |
+ *                   |  |  | |  |  -> closing \0 for the second pack
+ *                   |  |  | |  -> second pack data
+ *                   |  |  | -> O_BIN2
+ *                   |  |  -> closing \0 for the first pack
+ *                   |  -> first pack data
+ *                   -> O_BIN1
+ *
+ *     Just remember that, in fact, we send 3 112 1 4 216 1, as we are sending a
+ *     *string*, so it can't have any \0 value (so everything is added 1)
  * 	 
  * The server then check for the validity of this options. Things to
  * check:
@@ -344,6 +385,7 @@
 // Options codes
 #define O_NAME       0x01 // Name of the map
 #define O_BIN1       0x02 // Binary options pack 1
+#define O_BIN2       0x03 // Binary options pack 2
 
 // Binary options code
 #define OPT_OPEN_MAP         (1<<0)
@@ -461,7 +503,7 @@ typedef struct combat_game_struct {
 } combat_game;
 
 // Commom functions
-unsigned char *combat_options_string_write(combat_game *, int);
+unsigned char *combat_options_string_write(combat_game *, int for_hash);
 int combat_options_string_read(unsigned char *optstr, combat_game *);
 int combat_check_move(combat_game *, int, int);
 int combat_options_check(combat_game *);
