@@ -538,13 +538,12 @@ void ReadBid(GtkWidget * widget)
 static gint SpinInput(GtkSpinButton * spin, gfloat * new_val)
 {
 
-	if (strcmp("nil", gtk_entry_get_text(GTK_ENTRY(spin))) == 0) {
+	if (strcasecmp("nil", gtk_entry_get_text(GTK_ENTRY(spin))) == 0) {
 		*new_val = (gfloat) (-1);
+		return TRUE;
 	} else {
-		*new_val =
-		    (gfloat) atoi(gtk_entry_get_text(GTK_ENTRY(spin)));
+		return FALSE;
 	}
-	return TRUE;
 }
 
 
@@ -557,16 +556,11 @@ static gint SpinOutput(GtkSpinButton * spin)
 	gint val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
 
 	if (val == -1) {
-		if (strcmp(gtk_entry_get_text(GTK_ENTRY(spin)), "nil")) {
+		if (strcasecmp(gtk_entry_get_text(GTK_ENTRY(spin)), "nil")) {
 			gtk_entry_set_text(GTK_ENTRY(spin), "nil");
 		}
+		return TRUE;
 	} else {
-		if (strcmp
-		    (gtk_entry_get_text(GTK_ENTRY(spin)),
-		     g_strdup_printf("%d", val))) {
-			gtk_entry_set_text(GTK_ENTRY(spin),
-					   g_strdup_printf("%d", val));
-		}
+		return FALSE;
 	}
-	return TRUE;
 }
