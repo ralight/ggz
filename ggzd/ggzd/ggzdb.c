@@ -46,11 +46,13 @@ static int ggzdb_player_init(void);
 
 /* Back-end functions */
 extern int _ggzdb_init(char *datadir);
+extern void _ggzdb_close(void);
 extern void _ggzdb_enter(void);
 extern void _ggzdb_exit(void);
 extern int _ggzdb_init_player(char *datadir);
 extern int _ggzdb_player_add(ggzdbPlayerEntry *);
 extern int _ggzdb_player_get(ggzdbPlayerEntry *);
+extern int _ggzdb_player_update(ggzdbPlayerEntry *);
 
 
 /* Function to initialize the database system */
@@ -94,6 +96,13 @@ int ggzdb_init(void)
 }
 
 
+/* Function to TERMINATE database usage */
+void ggzdb_close(void)
+{
+	_ggzdb_close();
+}
+
+
 /* Function to add a player to the database */
 int ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
@@ -122,6 +131,23 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 	if(rc == 0)
 		rc = _ggzdb_player_get(pe);
+
+	_ggzdb_exit();
+	return rc;
+}
+
+
+/* Function to update a player's entry in the database */
+int ggzdb_player_update(ggzdbPlayerEntry *pe)
+{
+	int rc=0;
+
+	_ggzdb_enter();
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == 0)
+		rc = _ggzdb_player_update(pe);
 
 	_ggzdb_exit();
 	return rc;

@@ -34,7 +34,7 @@
 #include "err_func.h"
 
 /* Internal variables */
-static DB *db_p;
+static DB *db_p = NULL;
 static DB_ENV db_e;
 static DB_INFO db_i;
 
@@ -55,6 +55,18 @@ int _ggzdb_init(char *datadir)
 		err_sys("db_appinit() failed in _ggzdb_init()");
 
 	return rc;
+}
+
+
+/* Function to deinitialize the db2 database system */
+void _ggzdb_close(void)
+{
+	if(db_p) {
+		db_p->close(db_p, 0);
+		db_p = NULL;
+	}
+
+	db_appexit(&db_e);
 }
 
 
@@ -143,6 +155,32 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
 		free(data.data);
 	}
+
+	return rc;
+}
+
+
+/* Function to update a player record */
+int _ggzdb_player_update(ggzdbPlayerEntry *pe)
+{
+	int rc;
+	DBT key, data;
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(DBT));
+	memset(&data, 0, sizeof(DBT));
+	key.data = pe->handle;
+	key.size = strlen(pe->handle);
+	data.data = pe;
+	data.size = sizeof(ggzdbPlayerEntry);
+	data.flags = DB_DBT_USERMEM;
+
+	rc = db_p->put(db_p, NULL, &key, &data, 0);
+	if(rc != 0)
+		err_sys("put failed in _ggzdb_player_add()");
+
+	/* FIXME: We won't have to do this once ggzd can exit */
+	db_p->sync(db_p, 0);
 
 	return rc;
 }

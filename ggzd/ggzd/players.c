@@ -544,6 +544,12 @@ static int player_login_normal(int p, int fd)
 		return GGZ_REQ_FAIL;
 	}
 
+	/* Password is verified, update their last login */
+	db_pe.last_login = time(NULL);
+	rc = ggzdb_player_update(&db_pe);
+	if(rc != 0)
+		err_msg("Player database update failed (%s)", name);
+
 	/* Setup the player's information */
 	pthread_rwlock_wrlock(&players.info[p].lock);
 	players.info[p].uid = p;
