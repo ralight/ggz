@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6691 2005-01-16 01:35:32Z oojah $
+# $Id: Makefile.am 6694 2005-01-16 04:22:25Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -35,10 +35,13 @@ ggz_ggzcards_SOURCES = \
 	support.c support.h \
 	table.c table.h
 
-# NOTE: it is necessary to LDADD the libraries twice to get things to work...
+# Note: if library X depends on library Y, then library X must be listed
+# first here.  If there's a circular dependency you may have to list the
+# libs twice!
 ggz_ggzcards_LDADD =	$(top_builddir)/common/libgtk-games.a		\
 			@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
-			$(top_builddir)/ggzcards/common/libcommon.a	\
 			$(top_builddir)/ggzcards/client/libclient.a	\
+			$(top_builddir)/ggzcards/common/libcommon.a	\
 			$(LIB_GGZMOD) $(LIB_GGZ)
+
 ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
