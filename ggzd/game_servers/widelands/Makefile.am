@@ -11,7 +11,7 @@ widelands_server_LDADD = $(LDADD) \
 			lib/libggzgameserver.a \
 			$(top_builddir)/ggzdmod/libggzdmod.la
 
-noinst_HEADERS = widelands_server.h
+noinst_HEADERS = widelands_server.h protocol.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/game_servers/widelands/lib \
 	   -I$(top_srcdir)/ggzdmod \
