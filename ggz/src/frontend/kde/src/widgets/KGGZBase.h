@@ -77,6 +77,8 @@ class KGGZBase : public KMainWindow
 		void slotState(int state);
 		// Show room or outside of room message
 		void slotLocation(const char *location);
+		// Number of players on the server
+		void slotPlayers(int players);
 		// Activity
 		void slotActivity(int activity);
 
@@ -132,6 +134,16 @@ class KGGZBase : public KMainWindow
 			MENU_GAME,
 			MENU_PREFERENCES,
 			MENU_HELP
+		};
+
+		// Status bar entries
+		enum StatusColumns
+		{
+			STATUS_RESERVED,
+			STATUS_CONNECTION,
+			STATUS_STATE,
+			STATUS_ROOM,
+			STATUS_PLAYERS
 		};
 
 		// The KGGZ object

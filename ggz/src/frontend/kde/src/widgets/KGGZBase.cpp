@@ -65,9 +65,10 @@ KGGZBase::KGGZBase()
 	height = konfig.readNumEntry("height");
 	watcher = konfig.readNumEntry("watcher");
 
-	statusBar()->insertItem(i18n("  Not connected  "), 1);
-	statusBar()->insertItem(i18n("  Loading...  "), 2);
-	statusBar()->insertItem(i18n("  No room selected  "), 3);
+	statusBar()->insertItem(i18n("  Not connected  "), STATUS_CONNECTION);
+	statusBar()->insertItem(i18n("  Loading...  "), STATUS_STATE);
+	statusBar()->insertItem(i18n("  No room selected  "), STATUS_ROOM);
+	statusBar()->insertItem(i18n("  "), STATUS_PLAYERS);
 
 	kggz = new KGGZ(this, "kggz");
 
@@ -148,6 +149,7 @@ KGGZBase::KGGZBase()
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
+	connect(kggz, SIGNAL(signalPlayers(int)), SLOT(slotPlayers(int)));
 	connect(kggz, SIGNAL(signalActivity(int)), SLOT(slotActivity(int)));
 
 	setCentralWidget(kggz);
@@ -160,7 +162,7 @@ KGGZBase::KGGZBase()
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 
-	statusBar()->changeItem(i18n("  Ready for connection.  "), 2);
+	statusBar()->changeItem(i18n("  Ready for connection.  "), STATUS_STATE);
 }
 
 KGGZBase::~KGGZBase()
@@ -278,7 +280,8 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GGZ_DISCONNECT:
 			kggz->menuDisconnect();
-			statusBar()->changeItem(i18n("Not connected"), 1);
+			statusBar()->changeItem(i18n("Not connected"), STATUS_CONNECTION);
+			statusBar()->changeItem(i18n("  "), STATUS_PLAYERS);
 			break;
 		case MENU_GGZ_MOTD:
 			kggz->menuMotd();
@@ -461,17 +464,22 @@ void KGGZBase::slotRoomChanged(const char *roomname, const char *protocolname, i
 void KGGZBase::slotCaption(const char *caption)
 {
 	setCaption(caption);
-	statusBar()->changeItem(i18n("  Connected  "), 1);
+	statusBar()->changeItem(i18n("  Connected  "), STATUS_CONNECTION);
 }
 
 void KGGZBase::slotState(int state)
 {
-	statusBar()->changeItem(i18n("  State: ") + KGGZCommon::state((GGZStateID)state) + "  ", 2);
+	statusBar()->changeItem(i18n("  State: ") + KGGZCommon::state((GGZStateID)state) + "  ", STATUS_STATE);
 }
 
 void KGGZBase::slotLocation(const char *location)
 {
-	statusBar()->changeItem(QString("  ") + location + "  ", 3);
+	statusBar()->changeItem(QString("  ") + location + "  ", STATUS_ROOM);
+}
+
+void KGGZBase::slotPlayers(int players)
+{
+	statusBar()->changeItem(QString("  Players on server: %1").arg(players), STATUS_PLAYERS);
 }
 
 void KGGZBase::slotActivity(int activity)

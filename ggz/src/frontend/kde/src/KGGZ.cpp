@@ -1167,6 +1167,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				m_table = NULL;
 			}
 			break;
+		case GGZCoreServer::players:
+			emit signalPlayers(kggzserver->countPlayers());
+			break;
 		default:
 			KGGZDEBUG("unknown\n");
 			break;
@@ -1310,6 +1313,7 @@ void KGGZ::attachServerCallbacks()
 	kggzserver->addHook(GGZCoreServer::channelconnected, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::channelready, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::channelfail, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
+	kggzserver->addHook(GGZCoreServer::players, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 }
 
 void KGGZ::detachServerCallbacks()

@@ -324,3 +324,8 @@ int GGZCoreServer::createChannel()
 	return ggzcore_server_create_channel(m_server);
 }
 
+int GGZCoreServer::countPlayers()
+{
+	return ggzcore_server_get_num_players(m_server);
+}
+

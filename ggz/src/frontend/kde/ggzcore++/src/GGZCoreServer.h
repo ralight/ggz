@@ -40,6 +40,7 @@ class GGZCoreServer
 			motdloaded = GGZ_MOTD_LOADED,
 			roomlist = GGZ_ROOM_LIST,
 			typelist = GGZ_TYPE_LIST,
+			players = GGZ_SERVER_PLAYERS_CHANGED,
 			entered = GGZ_ENTERED,
 			enterfail = GGZ_ENTER_FAIL,
 			loggedout = GGZ_LOGOUT,
@@ -136,6 +137,9 @@ class GGZCoreServer
 		/**
 		 * The number of available game types. */
 		int countGames();
+		/**
+		 * The number of players logged in. */
+		int countPlayers();
 		/**
 		 * Return a specific game. */
 		GGZGameType* game(const unsigned int number);

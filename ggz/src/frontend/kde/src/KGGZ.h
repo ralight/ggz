@@ -141,6 +141,8 @@ class KGGZ : public QWidget
 		void signalLocation(const char *location);
 		// Emitted on activity changes
 		void signalActivity(int activity);
+		// Emitted on player count change
+		void signalPlayers(int players);
 
 	public slots:
 		// Connect to a game server
