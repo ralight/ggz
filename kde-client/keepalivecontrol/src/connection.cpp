@@ -97,7 +97,8 @@ void Connection::slotConnect()
 
 	bar->setProgress(1);
 
-	sock = new QSocket(this);
+	sock = new QSocket(this->parentWidget());
+	//sock = new QSocket(this);
 	sock->connectToHost(input_server->text(), 10001);
 	connect(sock, SIGNAL(connected()), SLOT(slotConnected()));
 	connect(sock, SIGNAL(error(int)), SLOT(slotError()));
@@ -120,8 +121,8 @@ void Connection::slotConnected()
 	s = new QDataStream(sock);
 	*s << (Q_INT8)type_admin;
 	*s << (Q_INT8)opcode;
-	*s << (Q_INT8)length;
-	*s << (Q_INT8)0;
+	*s << (Q_INT16)length;
+
 	*s << (Q_INT8)command_authorize;
 	s->writeRawBytes(input_username->text().latin1(), input_username->text().length());
 	*s << (Q_INT8)0;
@@ -169,14 +170,15 @@ void Connection::slotInput()
 				if(opcode == option_authorized)
 				{
 					KMessageBox::information(this, i18n("Authorization successful."), i18n("Authorization"));
-					sock->disconnect();
+					//sock->disconnect();
 					emit signalLogin(sock);
 					accept();
 				}
 				else if(opcode == option_unauthorized)
 				{
 					KMessageBox::sorry(this, i18n("Authorization could not be granted."), i18n("Authorization"));
-					delete sock;
+					//delete sock;
+					sock->disconnect();
 				}
 				else error = 1;
 			}

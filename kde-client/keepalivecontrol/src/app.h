@@ -40,7 +40,7 @@ class App : public QWidget
 		void slotInput();
 		void slotSelected(QListViewItem *item, const QPoint& point, int column);
 		void slotItem(int id);
-		void slotCreate(QString world);
+		void slotCreate(QString worldname);
 
 	private:
 		enum Items

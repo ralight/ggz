@@ -79,11 +79,13 @@ void App::slotLogin(QSocket *sock)
 
 	length = 6;
 
+	kdDebug() << "App::slotLogin()!" << endl;
+
 	s = new QDataStream(m_sock);
 	*s << (Q_INT8)type_admin;
 	*s << (Q_INT8)0;
-	*s << (Q_INT8)length;
-	*s << (Q_INT8)0;
+	*s << (Q_INT16)length;
+
 	*s << (Q_INT8)command_list;
 	*s << (Q_INT8)option_worlds;
 }
@@ -104,12 +106,14 @@ void App::slotInput()
 	unsigned char number;
 	char *worldbuf;
 	int error = 0;
-	QString world;
 	int count;
 	QListViewItem *parent, *tmp;
 	KStandardDirs d;
 
-	if(m_sock->bytesAvailable() < 7) return;
+	kdDebug() << "App::slotInput()!" << endl;
+
+kdDebug() << "byte length: " << m_sock->bytesAvailable() << endl;
+	if(m_sock->bytesAvailable() < /*7*/5) return;
 
 	*s >> type;
 	if(type != type_admin) error = 1;
@@ -117,8 +121,10 @@ void App::slotInput()
 	{
 		*s >> opcode;
 		*s >> length;
+kdDebug() << "length is: " << length << endl;
 		length = ((length & 0x00FF) << 8) + ((length & 0xFF00) >> 8);
-		if(length < 5) error = 1;
+kdDebug() << "length is now: " << length << endl;
+		if(length < /*5*/3) error = 1;
 		else
 		{
 			*s >> opcode;
@@ -129,6 +135,7 @@ void App::slotInput()
 				worldbuf = new char[m_sock->bytesAvailable()];
 				s->readRawBytes(worldbuf, m_sock->bytesAvailable());
 				world = worldbuf;
+kdDebug() << ":: worldname " << world << endl;
 				count = 0;
 				parent = m_list->firstChild();
 				while(parent)
@@ -144,6 +151,7 @@ void App::slotInput()
 					tmp->setPixmap(0, normalworld);
 					while(worldbuf[count++]);
 					world = worldbuf + count;
+kdDebug() << ":: worldname " << world << endl;
 				}
 				delete[] worldbuf;
 			}
@@ -157,6 +165,7 @@ void App::slotInput()
 					case menucreate:
 						if(commanditem)
 						{
+kdDebug() << ":: USE worldname " << world << endl;
 							tmp = new QListViewItem(commanditem, world);
 							tmp->setPixmap(0, normalworld);
 						}
@@ -246,8 +255,8 @@ void App::slotItem(int id)
 			length = 6;
 			*s << (Q_INT8)type_admin;
 			*s << (Q_INT8)0;
-			*s << (Q_INT8)length;
-			*s << (Q_INT8)0;
+			*s << (Q_INT16)length;
+
 			*s << (Q_INT8)command_destroyworld;
 			*s << (Q_INT8)0;
 			break;
@@ -255,8 +264,8 @@ void App::slotItem(int id)
 			length = 6;
 			*s << (Q_INT8)type_admin;
 			*s << (Q_INT8)0;
-			*s << (Q_INT8)length;
-			*s << (Q_INT8)0;
+			*s << (Q_INT16)length;
+
 			*s << (Q_INT8)command_freezeworld;
 			*s << (Q_INT8)0;
 			break;
@@ -264,8 +273,8 @@ void App::slotItem(int id)
 			length = 6;
 			*s << (Q_INT8)type_admin;
 			*s << (Q_INT8)0;
-			*s << (Q_INT8)length;
-			*s << (Q_INT8)0;
+			*s << (Q_INT16)length;
+
 			*s << (Q_INT8)command_unfreezeworld;
 			*s << (Q_INT8)0;
 			break;
@@ -274,7 +283,7 @@ void App::slotItem(int id)
 	}
 }
 
-void App::slotCreate(QString world)
+void App::slotCreate(QString worldname)
 {
 	const int type_admin = 16;
 	const int command_createworld = 6;
@@ -283,23 +292,25 @@ void App::slotCreate(QString world)
 
 	if(!s) return;
 
-	if(world.isNull())
+	if(worldname.isNull())
 	{
 		Create c(this);
 		ret = c.exec();
 		if(ret == QDialog::Accepted)
 		{
 			world = c.world();
+kdDebug() << "::worldname " << world << endl;
 		}
 		else return;
 	}
+	else world = worldname;
 	
 	length = 6;
 
 	*s << (Q_INT8)type_admin;
 	*s << (Q_INT8)0;
-	*s << (Q_INT8)length;
-	*s << (Q_INT8)0;
+	*s << (Q_INT16)length;
+
 	*s << (Q_INT8)command_createworld;
 	*s << (Q_INT8)0;
 }
