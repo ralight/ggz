@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6269 2004-11-05 09:21:08Z jdorje $
+ * $Id: dlg_players.c 6283 2004-11-06 04:36:45Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -505,14 +505,16 @@ static gboolean player_list_button_event(GtkWidget *tree,
 					 GdkEventButton *buttonevent,
 					 gpointer data)
 {
-	GtkTreeSelection *select
-	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	GtkTreeModel *model;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tree));
+	GtkTreePath *path = NULL;
 	GtkTreeIter iter;
 
-	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (!gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(tree),
+					   buttonevent->x, buttonevent->y,
+					   &path, NULL, NULL, NULL)) {
 		return FALSE;
 	}
+	gtk_tree_model_get_iter(model, &iter, path);
 
 	if (buttonevent->button == 3) {
 		/* Right mouse button; create drop-down menu */
@@ -532,8 +534,6 @@ static gboolean player_list_button_event(GtkWidget *tree,
 			GGZSeat seat = ggzmod_get_seat(ggz, seatnum);
 			popup_player_menu(&seat, NULL, buttonevent->button);
 		}
-
-		return TRUE;
 	}
 
 	return FALSE;
