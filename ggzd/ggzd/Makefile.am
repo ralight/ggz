@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6259 2004-11-04 23:23:22Z josef $
+# $Id: Makefile.am 6584 2005-01-02 13:25:20Z josef $
 
 SUBDIRS = database
 
@@ -55,13 +55,13 @@ ggzd_SOURCES =	chat.c\
 AM_CPPFLAGS = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES) $(HOWL_INCLUDES)
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
-ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a $(LIB_HOWL)
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_DATABASE) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a $(LIB_HOWL)
 
 ggzduedit_SOURCES = ggzduedit.c \
 		    perms.h
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)
-ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a
+ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_DATABASE) $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 
