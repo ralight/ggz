@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 5819 2004-02-07 09:55:32Z josef $
+ * $Id: ggzmod.h 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -123,26 +123,34 @@ typedef enum {
 	 *  This event occurs when the player's seat status changes;
 	 *  i.e. he changes seats or starts/stops spectating.  The
 	 *  event data is a int[2] pair consisting of the old
-	 *  {is_spectator, seat_num}.
-	 */
+	 *  {is_spectator, seat_num}. */
 	GGZMOD_EVENT_PLAYER,
 
 	/** @brief A seat change.
 	 *
 	 *  This event occurs when a seat change occurs.  The old seat
 	 *  (a GGZSeat*) is passed as the event's data.  The seat
-	 *  information will be updated before the event is invoked.
-	 */
+	 *  information will be updated before the event is invoked. */
 	GGZMOD_EVENT_SEAT,
 
-	/* @brief A spectator seat change.
+	/** @brief A spectator seat change.
 	 *
-	 * This event occurs when a spectator seat change occurs.  The
-	 * old spectator (a GGZSpectator*) is passed as teh event's data.
-	 * The spectator information will be updated before the event is
-	 * invoked.
-	 */
+	 *  This event occurs when a spectator seat change occurs.  The
+	 *  old spectator (a GGZSpectator*) is passed as the event's data.
+	 *  The spectator information will be updated before the event is
+	 *  invoked. */
 	GGZMOD_EVENT_SPECTATOR_SEAT,
+
+	/** @brief A chat message event.
+	 *
+	 *  This event occurs when we receive a chat.  The chat may have
+	 *  originated in another game client or from the GGZ client; in
+	 *  either case it will be routed to us.  The chat information
+	 *  (a GGZChat*) is passed as the event's data.  Note that the
+	 *  chat may originate with a player or a spectator, and they may
+	 *  have changed seats or left the table by the time it gets to
+	 *  us. */
+	GGZMOD_EVENT_CHAT,
 	
 	/** @brief An error has occurred
 	 *  This event occurs when a GGZMod error has occurred.  An
@@ -182,6 +190,11 @@ typedef struct {
 	unsigned int num;	/**< Spectator seat index */
 	const char * name;	/**< The spectator's name (NULL => empty) */
 } GGZSpectatorSeat;
+
+typedef struct {
+	const char *player;
+	const char *message;
+} GGZChat;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.
  *
@@ -391,6 +404,7 @@ void ggzmod_request_sit(GGZMod * ggzmod, int seat_num);
 void ggzmod_request_boot(GGZMod * ggzmod, const char *name);
 void ggzmod_request_bot(GGZMod * ggzmod, int seat_num);
 void ggzmod_request_open(GGZMod * ggzmod, int seat_num);
+void ggzmod_request_chat(GGZMod *ggzmod, const char *chat_msg);
 
 #ifdef __cplusplus
 }

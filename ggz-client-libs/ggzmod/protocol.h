@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: protocol.h 5949 2004-02-21 05:42:37Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -39,7 +39,8 @@ typedef enum {
 	REQ_SIT,
 	REQ_BOOT,
 	REQ_BOT,
-	REQ_OPEN
+	REQ_OPEN,
+	REQ_CHAT
 } TableToControl;
 
 /** Messages sent from the ggz server to the game server. */
@@ -53,7 +54,9 @@ typedef enum {
 	/* Sent from GGZ to game to tell of a seat change.  No
 	   response is necessary. */
 	MSG_GAME_SEAT,
-	MSG_GAME_SPECTATOR_SEAT
+	MSG_GAME_SPECTATOR_SEAT,
+
+	MSG_GAME_CHAT
 } ControlToTable;
 
 #endif /* __GGZ_SERVER_PROTOCOL_H */

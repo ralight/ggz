@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 5942 2004-02-16 17:07:31Z jdorje $
+ * $Id: game.c 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -124,7 +124,9 @@ static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
 static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 				      void *data);
 static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
-					     void *data);
+					    void *data);
+static void _ggzcore_game_handle_chat(GGZMod *mod, GGZModTransaction t,
+				      void *data);
 
 
 /* Publicly exported functions */
@@ -295,19 +297,22 @@ void _ggzcore_game_init(struct _GGZGame *game,
 			   &_ggzcore_game_handle_state);
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_SIT,
-				       &_ggzcore_game_handle_sit);
+				       _ggzcore_game_handle_sit);
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_STAND,
-				       &_ggzcore_game_handle_stand);
+				       _ggzcore_game_handle_stand);
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_BOOT,
-				       &_ggzcore_game_handle_boot);
+				       _ggzcore_game_handle_boot);
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_OPEN,
-				       &_ggzcore_game_handle_seatchange);
+				       _ggzcore_game_handle_seatchange);
 	ggzmod_set_transaction_handler(game->client,
 				       GGZMOD_TRANSACTION_BOT,
-				       &_ggzcore_game_handle_seatchange);
+				       _ggzcore_game_handle_seatchange);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_CHAT,
+				       _ggzcore_game_handle_chat);
 	ggzmod_set_module(game->client, NULL,
 			  _ggzcore_module_get_argv(game->module));
 	ggzmod_set_player(game->client,
@@ -426,6 +431,15 @@ static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
 	_ggzcore_net_send_table_seat_update(net, table, &seat);
 }
 
+static void _ggzcore_game_handle_chat(GGZMod *mod, GGZModTransaction t,
+				      void *data)
+{
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	const char *chat = data;
+	GGZRoom *room = _ggzcore_server_get_cur_room(game->server);
+
+	_ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, chat);
+}
 
 void _ggzcore_game_free(struct _GGZGame *game)
 {
@@ -506,6 +520,13 @@ void _ggzcore_game_set_player(GGZGame *game, int is_spectator, int seat_num)
 		assert(0);
 }
 
+void _ggzcore_game_inform_chat(GGZGame *game,
+			    const char *player, const char *msg)
+{
+	if (ggzmod_inform_chat(game->client, player, msg) < 0) {
+		/* Nothing. */
+	}
+}
 
 int _ggzcore_game_is_spectator(GGZGame *game)
 {

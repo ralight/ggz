@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5947 2004-02-21 05:07:03Z jdorje $
+ * $Id: ggzmod.c 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -578,6 +578,16 @@ void _ggzmod_handle_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat)
 	spectator_seat_free(old_seat);
 }
 
+void _ggzmod_handle_chat(GGZMod *ggzmod, char *player, char *chat_msg)
+{
+	GGZChat chat;
+
+	chat.player = player;
+	chat.message = chat_msg;
+
+	call_handler(ggzmod, GGZMOD_EVENT_CHAT, &chat);
+}
+
 int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 {
 	if (!seat) return -1;
@@ -598,6 +608,15 @@ int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat *seat)
 
 	return 0;
 }
+
+int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
+{
+	if (_io_send_msg_chat(ggzmod->fd, player, msg) < 0) {
+		return -1;
+	}
+	return 0;
+}
+
 
 /* 
  * GGZmod actions
@@ -908,6 +927,11 @@ void ggzmod_request_open(GGZMod * ggzmod, int seat_num)
 	_io_send_request_open(ggzmod->fd, seat_num);
 }
 
+void ggzmod_request_chat(GGZMod *ggzmod, const char *chat_msg)
+{
+	_io_send_request_chat(ggzmod->fd, chat_msg);
+}
+
 /**** Internal library functions ****/
 
 /* Invokes handlers for the specified event */
@@ -996,6 +1020,10 @@ void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num)
 	call_transaction(ggzmod, GGZMOD_TRANSACTION_OPEN, &seat_num);
 }
 
+void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_CHAT, chat_msg);
+}
 
 void _ggzmod_handle_launch(GGZMod * ggzmod)
 {

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: ggzmod-ggz.h 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -33,20 +33,29 @@
 #define __GGZMOD_GGZ_H__
 
 typedef enum {
-  /* Sit down (stop spectatin; join a seat) */
-  GGZMOD_TRANSACTION_SIT,
+	/* Sit down (stop spectatin; join a seat)
+	 * Data: seat number (int*) */
+	GGZMOD_TRANSACTION_SIT,
 
-  /* Stand up (leave your seat; become a spectator) */
-  GGZMOD_TRANSACTION_STAND,
+	/* Stand up (leave your seat; become a spectator)
+	 * Data: NULL */
+	GGZMOD_TRANSACTION_STAND,
 
-  /* Boot a player */
-  GGZMOD_TRANSACTION_BOOT,
+	/* Boot a player
+	 * Data: player name (const char*) */
+	GGZMOD_TRANSACTION_BOOT,
 
-  /* Replace a bot/reserved seat with an open one */
-  GGZMOD_TRANSACTION_OPEN,
+	/* Replace a bot/reserved seat with an open one.
+	 * Data: seat number (int*) */
+	GGZMOD_TRANSACTION_OPEN,
 
-  /* Put a bot into an open seat */
-  GGZMOD_TRANSACTION_BOT
+	/* Put a bot into an open seat
+	 * Data: seat number (int*)*/
+	GGZMOD_TRANSACTION_BOT,
+
+	/* A chat originating from the game client.
+	 * Data: message (const char*) */
+	GGZMOD_TRANSACTION_CHAT
 } GGZModTransaction;
 
 typedef void (*GGZModTransactionHandler) (GGZMod * mod, GGZModTransaction t,
@@ -102,5 +111,7 @@ int ggzmod_set_seat(GGZMod *ggzmod, GGZSeat * seat);
  *  @return 0 on success, negative on failure.
  */
 int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
+
+int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg);
 
 #endif /* __GGZMOD_GGZ_H__ */

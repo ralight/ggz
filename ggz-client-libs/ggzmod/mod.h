@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 5945 2004-02-16 22:19:52Z jdorje $
+ * $Id: mod.h 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -43,7 +43,7 @@
 
 /* The number of event handlers there are. */
 #define GGZMOD_NUM_HANDLERS (GGZMOD_EVENT_ERROR + 1)
-#define GGZMOD_NUM_TRANSACTIONS (GGZMOD_TRANSACTION_BOT + 1)
+#define GGZMOD_NUM_TRANSACTIONS (GGZMOD_TRANSACTION_CHAT + 1)
 
 /* This is the actual structure, but it's only visible internally. */
 struct GGZMod {
@@ -86,6 +86,7 @@ void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num);
 void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name);
 void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num);
 void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg);
 
 /* Game side functions for handling various messages */
 void _ggzmod_handle_launch(GGZMod * ggzmod);
@@ -94,6 +95,7 @@ void _ggzmod_handle_player(GGZMod *ggzmod,
 			   const char *name, int is_spectator, int seat_num);
 void _ggzmod_handle_seat(GGZMod *ggzmod, GGZSeat *seat);
 void _ggzmod_handle_spectator_seat(GGZMod *ggzmod, GGZSpectatorSeat *seat);
+void _ggzmod_handle_chat(GGZMod *ggzmod, char *player, char *chat_msg);
 
 
 #endif /* __GGZ_MOD_H__ */

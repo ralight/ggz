@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5173 2002-11-03 19:30:53Z jdorje $
+ * $Id: io.c 5949 2004-02-21 05:42:37Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -48,6 +48,7 @@ static int _io_read_msg_server(GGZMod *ggzmod);
 static int _io_read_msg_player(GGZMod *ggzmod);
 static int _io_read_msg_seat(GGZMod *ggzmod);
 static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
+static int _io_read_msg_chat(GGZMod *ggzmod);
 
 static int _io_read_msg_state(GGZMod *ggzmod);
 static int _io_read_req_stand(GGZMod *ggzmod);
@@ -55,6 +56,7 @@ static int _io_read_req_sit(GGZMod *ggzmod);
 static int _io_read_req_boot(GGZMod *ggzmod);
 static int _io_read_req_bot(GGZMod *ggzmod);
 static int _io_read_req_open(GGZMod *ggzmod);
+static int _io_read_req_chat(GGZMod *ggzmod);
 
 
 /* Functions for sending IO messages */
@@ -120,6 +122,14 @@ int _io_send_spectator_seat(int fd, GGZSpectatorSeat *seat)
 	return 0;
 }
 
+int _io_send_msg_chat(int fd, const char *player, const char *chat_msg)
+{
+	if (ggz_write_int(fd, MSG_GAME_CHAT) < 0
+	    || ggz_write_string(fd, player) < 0
+	    || ggz_write_string(fd, chat_msg) < 0)
+		return -1;
+	return 0;
+}
 
 int _io_send_req_stand(int fd)
 {
@@ -160,6 +170,14 @@ int _io_send_request_open(int fd, int seat_num)
 	return 0;
 }
 
+int _io_send_request_chat(int fd, const char *chat_msg)
+{
+	if (ggz_write_int(fd, REQ_CHAT) < 0
+	    || ggz_write_string(fd, chat_msg) < 0)
+		return -1;
+	return 0;
+}
+
 
 /* Functions for reading messages */
 int _io_read_data(GGZMod *ggzmod)
@@ -181,6 +199,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_msg_seat(ggzmod);
 		case MSG_GAME_SPECTATOR_SEAT:
 			return _io_read_msg_spectator_seat(ggzmod);
+		case MSG_GAME_CHAT:
+			return _io_read_msg_chat(ggzmod);
 		}
 	} else {
 		switch ((TableToControl)op) {
@@ -196,6 +216,8 @@ int _io_read_data(GGZMod *ggzmod)
 			return _io_read_req_bot(ggzmod);
 		case REQ_OPEN:
 			return _io_read_req_open(ggzmod);
+		case REQ_CHAT:
+			return _io_read_req_chat(ggzmod);
 		}
 	}
 
@@ -258,6 +280,18 @@ static int _io_read_req_open(GGZMod *ggzmod)
 	if (ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
 	_ggzmod_handle_open_request(ggzmod, seat_num);
+	return 0;
+}
+
+
+static int _io_read_req_chat(GGZMod *ggzmod)
+{
+	char *chat_msg;
+
+	if (ggz_read_string_alloc(ggzmod->fd, &chat_msg) < 0)
+		return -1;
+	_ggzmod_handle_chat_request(ggzmod, chat_msg);
+	ggz_free(chat_msg);
 	return 0;
 }
 
@@ -350,5 +384,20 @@ static int _io_read_msg_spectator_seat(GGZMod *ggzmod)
 		ggz_free(seat.name);
 
 
+	return 0;
+}
+
+static int _io_read_msg_chat(GGZMod *ggzmod)
+{
+	char *player, *chat;
+
+	if (ggz_read_string_alloc(ggzmod->fd, &player) < 0
+	    || ggz_read_string_alloc(ggzmod->fd, &chat) < 0)
+		return -1;
+
+	_ggzmod_handle_chat(ggzmod, player, chat);
+
+	ggz_free(player);
+	ggz_free(chat);
 	return 0;
 }
