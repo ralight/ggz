@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -372,7 +372,7 @@ void game_send_options(int seat) {
   return;
 }
 
-void game_send_players() {
+void game_send_players(void) {
   int i, j, fd;
 
   ggzdmod_log(cbt_game.ggz, "Sending player list");
@@ -478,7 +478,7 @@ int game_get_setup(int seat) {
   return 1;
 }
 
-void game_start() {
+void game_start(void) {
   int a, fd;
 
   if (SET(OPT_RANDOM_SETUP) && cbt_game.state != CBT_STATE_PLAYING) {
@@ -742,7 +742,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
   return 1;
 }
 
-int game_check_over() {
+int game_check_over(void) {
   int *alive, a, b, no_alives = 0;
 
   // TODO: Check if the player has no way to move his units

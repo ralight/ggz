@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Header file for game functions
- * $Id: game.h 2810 2001-12-09 00:39:33Z jdorje $
+ * $Id: game.h 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -41,10 +41,10 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *seat_data);
 void game_send_seat(int seat);
 
 /* Send MSG_PLAYERS to all the players */
-void game_send_players();
+void game_send_players(void);
 
 /* Update the cronometer timeval with the current time */
-void game_stop_cronometer();
+void game_stop_cronometer(void);
 
 /* Send REQ_TIME */
 void game_request_time(int seat);
@@ -53,10 +53,10 @@ void game_request_time(int seat);
 void game_send_time(int seat);
 
 /* Send MSG_START to everyone */
-void game_send_start();
+void game_send_start(void);
 
 /* Send RSP_TIME to players */
-void game_send_update();
+void game_send_update(void);
 
 /* Send MSG_MOVE to everyone */
 void game_send_move(char *move, int time);

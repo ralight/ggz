@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -126,7 +126,7 @@ int game_send_seat(int seat) {
 	return 0;
 }
 
-int game_send_players() {
+int game_send_players(void) {
 	int i, j, fd;
 
 	for (j = 0; j < ggzdmod_get_num_seats(rvr_game.ggz); j++) {
@@ -178,7 +178,7 @@ int game_send_sync(int seat) {
 
 }
 
-int game_start() {
+int game_start(void) {
 
 	int i, fd;
 	
@@ -254,7 +254,7 @@ int game_handle_move(int seat, int *move) {
 
 }
 
-void game_play() {
+void game_play(void) {
 	int move;
 	int seat = PLAYER2SEAT(rvr_game.turn);
 
@@ -386,7 +386,7 @@ int game_make_move(int player, int move) {
 
 }
 
-int game_check_over() {
+int game_check_over(void) {
 	int i, status = 0;
 
 	// Check if the current player can play
@@ -438,7 +438,7 @@ int game_mark_board(int player, int vx, int vy, int x, int y) {
 	return 1;
 }
 
-void game_skip_move() {
+void game_skip_move(void) {
 	int seat;
 
 	for (seat = 0; seat < ggzdmod_get_num_seats(rvr_game.ggz); seat++) {
@@ -456,7 +456,7 @@ void game_skip_move() {
 
 }
 
-void game_gameover() {
+void game_gameover(void) {
 	int seat, fd, winner;
 	
 	// Ends everything
@@ -517,7 +517,7 @@ int game_play_again(int seat) {
 
 }
 
-void game_update_scores() {
+void game_update_scores(void) {
 	int i;
 	rvr_game.white = 0;
 	rvr_game.black = 0;

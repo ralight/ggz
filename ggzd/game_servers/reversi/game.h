@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 2804 2001-12-07 23:11:21Z jdorje $
+ * $Id: game.h 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -202,14 +202,14 @@ int game_handle_move(int, int *);
 // Send to the player what is his seat
 int game_send_seat(int);
 // Send to everyone who is playing
-int game_send_players();
+int game_send_players(void);
 // Send game state to player
 int game_send_sync(int);
 // Sends the start message and start the game
-int game_start();
+int game_start(void);
 
 // Play the game (if it is the AI)
-void game_play();
+void game_play(void);
 // AI move
 int game_bot_move(int); 
 // Check if move is valid (return a error code or the move)
@@ -221,13 +221,13 @@ int game_make_move(int, int);
 // Mark the board at this direction (and increases the score)
 int game_mark_board(int, int, int, int, int);
 // Check if game is over
-int game_check_over();
+int game_check_over(void);
 // Skip current player move
-void game_skip_move();
+void game_skip_move(void);
 // Game is over! Send gameover message and stop everything
-void game_gameover();
+void game_gameover(void);
 // Play again?
 int game_play_again(int);
 // Update scores
-void game_update_scores();
+void game_update_scores(void);
 	

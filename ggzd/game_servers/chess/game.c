@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -480,7 +480,7 @@ void game_send_seat(int seat) {
     return;
 }
 
-void game_send_players() {
+void game_send_players(void) {
 	int i, j, fd;
 	
 	for (j = 0; j < 2; j++) {
@@ -504,7 +504,7 @@ void game_send_players() {
 	}
 }
 
-void game_stop_cronometer() {
+void game_stop_cronometer(void) {
   gettimeofday(&cronometer, NULL);
 }
 
@@ -529,7 +529,7 @@ void game_send_time(int seat) {
 
 }
 
-void game_send_start() {
+void game_send_start(void) {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
@@ -576,7 +576,7 @@ void game_send_move(char *move, int time) {
 
 }
 
-void game_send_update() {
+void game_send_update(void) {
   int fd, a;
   for (a = 0; a < 2; a++) {
     fd = ggzdmod_get_seat(game_info.ggz, a).fd;

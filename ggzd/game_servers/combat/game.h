@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: server specific header file
- * $Id: game.h 2811 2001-12-09 01:19:38Z jdorje $
+ * $Id: game.h 4482 2002-09-09 04:03:31Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -45,13 +45,13 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data);
 // Game logic
 int game_handle_move(int, int, int);
 int game_handle_attack(int, int, int, int);
-int game_check_over();
+int game_check_over(void);
 
 // Sends info to the player
 void game_send_seat(int);
 void game_send_options(int);
 void game_send_sync(int, int);
-void game_send_players();
+void game_send_players(void);
 void game_send_move_error(int, int);
 
 // Gets info from the player
@@ -62,5 +62,5 @@ int game_get_move(int);
 // Tells the player to do stuff
 void game_request_options(int);
 void game_request_setup(int);
-void game_start();
+void game_start(void);
 void game_send_gameover(int);
