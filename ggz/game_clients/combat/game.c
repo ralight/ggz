@@ -246,6 +246,8 @@ int game_get_options() {
     free(title);
   }
 
+  printf("Options: %ld\n", cbt_game.options);
+
   return 0;
 }
 
@@ -257,6 +259,7 @@ void game_init() {
   cbt_game.name = NULL;
   cbt_game.state = CBT_STATE_INIT;
   cbt_game.turn = 0;
+  cbt_game.options = 0;
   cbt_info.current = U_EMPTY;
   cbt_info.show_enemy = FALSE;
   cbt_info.last_unit = U_UNKNOWN;
@@ -1034,7 +1037,6 @@ int game_send_options(GtkWidget *options_dialog) {
     return -1;
   }
 
-  // Sanity check!
   game_str = combat_options_string_write(_game, 0);
 
   if ((a = combat_options_check(_game)) != 0) {
@@ -1054,6 +1056,9 @@ int game_send_options(GtkWidget *options_dialog) {
 
   if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
     return -1;
+
+
+  printf("Options: %ld\n", _game->options);
 
   gtk_widget_destroy(options_dialog);
 

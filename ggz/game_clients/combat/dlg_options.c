@@ -56,7 +56,6 @@ create_dlg_options (int number)
   GtkWidget *label3;
   GtkWidget *army_hbox;
   GtkWidget *label4;
-  GtkWidget *sorry;
   GtkWidget *label5;
   GtkWidget *hbox5;
   GtkWidget *scrolledwindow1;
@@ -85,7 +84,29 @@ create_dlg_options (int number)
   GtkWidget *army_total;
   GtkWidget *army_player_1;
   GtkWidget *army_player_2;
+  // Options
+  GtkWidget *options_table;
+  GtkWidget *eventbox2;
+  GtkWidget *eventbox3;
+  GtkWidget *eventbox4;
+  GtkWidget *eventbox5;
+  GtkWidget *eventbox6;
+  GtkWidget *eventbox7;
+  GtkWidget *eventbox8;
+  GtkWidget *eventbox9;
+  GtkWidget *eventbox10;
+  GtkWidget *eventbox11;
+  GtkWidget *eventbox12;
+  GtkWidget *eventbox13;
+  GtkWidget *eventbox14;
+  GtkWidget *eventbox15;
+  GtkWidget *eventbox16;
+  GtkWidget *opt_bin1[16];
+  GtkWidget *opt_box_open_map;
+  GtkTooltips *tooltips;
 	int i;
+
+  tooltips = gtk_tooltips_new ();
 
   dlg_options = gtk_dialog_new ();
   gtk_widget_set_name (dlg_options, "dlg_options");
@@ -266,13 +287,338 @@ create_dlg_options (int number)
   gtk_widget_show (label4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label4);
 
-  sorry = gtk_label_new (_("No options yet! Sorry..."));
-  gtk_widget_set_name (sorry, "sorry");
-  gtk_widget_ref (sorry);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "sorry", sorry,
+  /* Options ! */
+
+  options_table = gtk_table_new (8, 2, FALSE);
+  gtk_widget_set_name (options_table, "options_table");
+  gtk_widget_ref (options_table);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "options_table", options_table,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (sorry);
-  gtk_container_add (GTK_CONTAINER (notebook1), sorry);
+  gtk_widget_show (options_table);
+  gtk_container_add (GTK_CONTAINER (notebook1), options_table);
+
+  eventbox2 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox2, "eventbox2");
+  gtk_widget_ref (eventbox2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox2", eventbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox2);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox2, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox2, _("If set, the bombs who explode will be removed from the game."), NULL);
+
+  opt_bin1[1] = gtk_check_button_new_with_label (_("One Time Bomb"));
+  gtk_widget_set_name (opt_bin1[1], "opt_bin1[1]");
+  gtk_widget_ref (opt_bin1[1]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[1]", opt_bin1[1],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[1]);
+  gtk_container_add (GTK_CONTAINER (eventbox2), opt_bin1[1]);
+  gtk_widget_set_sensitive (opt_bin1[1], FALSE);
+
+  eventbox3 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox3, "eventbox3");
+  gtk_widget_ref (eventbox3);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox3", eventbox3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox3);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox3, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox3, _("If set, the spy will be able to kill any unit he attacks (except bombs), but he will die with the unit (think of it like a terrorist, with a body full of bombs)"), NULL);
+
+  opt_bin1[2] = gtk_check_button_new_with_label (_("Terrorist Spy"));
+  gtk_widget_set_name (opt_bin1[2], "opt_bin1[2]");
+  gtk_widget_ref (opt_bin1[2]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[2]", opt_bin1[2],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[2]);
+  gtk_container_add (GTK_CONTAINER (eventbox3), opt_bin1[2]);
+  gtk_widget_set_sensitive (opt_bin1[2], FALSE);
+
+  eventbox4 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox4, "eventbox4");
+  gtk_widget_ref (eventbox4);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox4", eventbox4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox4);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox4, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox4, _("If set, the bombs can walk, just like regular officers. But they aren't able to attack! (think of it like a officer carrying a bomb)"), NULL);
+
+  opt_bin1[3] = gtk_check_button_new_with_label (_("Moving Bombs"));
+  gtk_widget_set_name (opt_bin1[3], "opt_bin1[3]");
+  gtk_widget_ref (opt_bin1[3]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[3]", opt_bin1[3],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[3]);
+  gtk_container_add (GTK_CONTAINER (eventbox4), opt_bin1[3]);
+  gtk_widget_set_sensitive (opt_bin1[3], FALSE);
+
+  eventbox5 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox5, "eventbox5");
+  gtk_widget_ref (eventbox5);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox5", eventbox5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox5);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox5, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox5, _("If set, scouts are able to walk more then one square at a time and attack at the same turn."), NULL);
+
+  opt_bin1[4] = gtk_check_button_new_with_label (_("Super Scout"));
+  gtk_widget_set_name (opt_bin1[4], "opt_bin1[4]");
+  gtk_widget_ref (opt_bin1[4]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[4]", opt_bin1[4],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[4]);
+  gtk_container_add (GTK_CONTAINER (eventbox5), opt_bin1[4]);
+  gtk_widget_set_sensitive (opt_bin1[4], FALSE);
+
+  eventbox6 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox6, "eventbox6");
+  gtk_widget_ref (eventbox6);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox6", eventbox6,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox6);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox6, 0, 1, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox6, _("If set, the units can only walk forward, like a pawn in chess"), NULL);
+
+  opt_bin1[5] = gtk_check_button_new_with_label (_("Units can only advance"));
+  gtk_widget_set_name (opt_bin1[5], "opt_bin1[5]");
+  gtk_widget_ref (opt_bin1[5]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[5]", opt_bin1[5],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[5]);
+  gtk_container_add (GTK_CONTAINER (eventbox6), opt_bin1[5]);
+  gtk_widget_set_sensitive (opt_bin1[5], FALSE);
+
+  eventbox7 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox7, "eventbox7");
+  gtk_widget_ref (eventbox7);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox7", eventbox7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox7);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox7, 0, 1, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox7, _("If set, the outcome of attacks will be solved randomly. Spies and bombs are treated the normal way. Units of equal rank have a 50% odd of winning. The difference in the ranks modifies this as follow: 1: 5%, 2: 10%, 3: 15%, 4: 20%, 5: 27%, 6: 33%, 7: 39%, 8: 45%"), NULL);
+
+  opt_bin1[6] = gtk_check_button_new_with_label (_("Random outcome of attacks"));
+  gtk_widget_set_name (opt_bin1[6], "opt_bin1[6]");
+  gtk_widget_ref (opt_bin1[6]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[6]", opt_bin1[6],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[6]);
+  gtk_container_add (GTK_CONTAINER (eventbox7), opt_bin1[6]);
+  gtk_widget_set_sensitive (opt_bin1[6], FALSE);
+
+  eventbox8 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox8, "eventbox8");
+  gtk_widget_ref (eventbox8);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox8", eventbox8,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox8);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox8, 0, 1, 7, 8,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox8, _("If set, units will be able to move (and attack) diagonally. (Scouts will be able of walking how many squares as they want diagonally)"), NULL);
+
+  opt_bin1[7] = gtk_check_button_new_with_label (_("Allow diagonal moves"));
+  gtk_widget_set_name (opt_bin1[7], "opt_bin1[7]");
+  gtk_widget_ref (opt_bin1[7]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[7]", opt_bin1[7],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[7]);
+  gtk_container_add (GTK_CONTAINER (eventbox8), opt_bin1[7]);
+  gtk_widget_set_sensitive (opt_bin1[7], FALSE);
+
+  eventbox9 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox9, "eventbox9");
+  gtk_widget_ref (eventbox9);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox9", eventbox9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox9);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox9, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox9, _("If set, the type of the winning unit in a attack will not be shown."), NULL);
+
+  opt_bin1[8] = gtk_check_button_new_with_label (_("Unknow Victor"));
+  gtk_widget_set_name (opt_bin1[8], "opt_bin1[8]");
+  gtk_widget_ref (opt_bin1[8]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[8]", opt_bin1[8],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[8]);
+  gtk_container_add (GTK_CONTAINER (eventbox9), opt_bin1[8]);
+  gtk_widget_set_sensitive (opt_bin1[8], FALSE);
+
+  eventbox10 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox10, "eventbox10");
+  gtk_widget_ref (eventbox10);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox10", eventbox10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox10);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox10, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox10, _("If set, the deffense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit."), NULL);
+
+  opt_bin1[9] = gtk_check_button_new_with_label (_("Silent Defense"));
+  gtk_widget_set_name (opt_bin1[9], "opt_bin1[9]");
+  gtk_widget_ref (opt_bin1[9]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[9]", opt_bin1[9],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[9]);
+  gtk_container_add (GTK_CONTAINER (eventbox10), opt_bin1[9]);
+  gtk_widget_set_sensitive (opt_bin1[9], FALSE);
+
+  eventbox11 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox11, "eventbox11");
+  gtk_widget_ref (eventbox11);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox11", eventbox11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox11);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox11, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox11, _("If set, the attacking won't have to reveal it's type, only wheter it wins or loses to the defending unit."), NULL);
+
+  opt_bin1[10] = gtk_check_button_new_with_label (_("Silent Offense"));
+  gtk_widget_set_name (opt_bin1[10], "opt_bin1[10]");
+  gtk_widget_ref (opt_bin1[10]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[10]", opt_bin1[10],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[10]);
+  gtk_container_add (GTK_CONTAINER (eventbox11), opt_bin1[10]);
+  gtk_widget_set_sensitive (opt_bin1[10], FALSE);
+
+  eventbox12 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox12, "eventbox12");
+  gtk_widget_ref (eventbox12);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox12", eventbox12,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox12);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox12, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox12, _("If set, the players won't be able to setup their units. It will be randomly set up by the server."), NULL);
+
+  opt_bin1[11] = gtk_check_button_new_with_label (_("Random Setup"));
+  gtk_widget_set_name (opt_bin1[11], "opt_bin1[11]");
+  gtk_widget_ref (opt_bin1[11]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[11]", opt_bin1[11],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[11]);
+  gtk_container_add (GTK_CONTAINER (eventbox12), opt_bin1[11]);
+  gtk_widget_set_sensitive (opt_bin1[11], FALSE);
+
+  eventbox13 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox13, "eventbox13");
+  gtk_widget_ref (eventbox13);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox13", eventbox13,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox13);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox13, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox13, _("If set, the sergeant of all the teams will have been through a higly rigorous training, and will be able to walk through lakes. It won't be able to stay in a lake, instead, it will be able to appear at the opposite margin of a lake (it must go through a straight line, and it must be only lake tiles between the source and the destination)"), NULL);
+
+  opt_bin1[12] = gtk_check_button_new_with_label (_("Special Forces Sergeant"));
+  gtk_widget_set_name (opt_bin1[12], "opt_bin1[12]");
+  gtk_widget_ref (opt_bin1[12]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[12]", opt_bin1[12],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[12]);
+  gtk_container_add (GTK_CONTAINER (eventbox13), opt_bin1[12]);
+  gtk_widget_set_sensitive (opt_bin1[12], FALSE);
+
+  eventbox14 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox14, "eventbox14");
+  gtk_widget_ref (eventbox14);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox14", eventbox14,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox14);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox14, 1, 2, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox14, _("If set, the units will be able to do a rush attack, when they walk how many tiles as they want (in a straight line, just like a scout) and then attack the enemy, in the same turn. However, your units die after this attack, even if they succeed doing it."), NULL);
+
+  opt_bin1[13] = gtk_check_button_new_with_label (_("Rush Attack"));
+  gtk_widget_set_name (opt_bin1[13], "opt_bin1[13]");
+  gtk_widget_ref (opt_bin1[13]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[13]", opt_bin1[13],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[13]);
+  gtk_container_add (GTK_CONTAINER (eventbox14), opt_bin1[13]);
+  gtk_widget_set_sensitive (opt_bin1[13], FALSE);
+
+  eventbox15 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox15, "eventbox15");
+  gtk_widget_ref (eventbox15);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox15", eventbox15,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox15);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox15, 1, 2, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox15, _("If set, the players won't be able to see the remaining units for the opponent, ie, they won't know how many units of each type their opponent has left. Please note that this option can't be enforceable by the server, so just use it against trusted opponents."), NULL);
+
+  opt_bin1[14] = gtk_check_button_new_with_label (_("Hide enemy's unit list"));
+  gtk_widget_set_name (opt_bin1[14], "opt_bin1[14]");
+  gtk_widget_ref (opt_bin1[14]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[14]", opt_bin1[14],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[14]);
+  gtk_container_add (GTK_CONTAINER (eventbox15), opt_bin1[14]);
+  gtk_widget_set_sensitive (opt_bin1[14], FALSE);
+
+  eventbox16 = gtk_event_box_new ();
+  gtk_widget_set_name (eventbox16, "eventbox16");
+  gtk_widget_ref (eventbox16);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox16", eventbox16,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (eventbox16);
+  gtk_table_attach (GTK_TABLE (options_table), eventbox16, 1, 2, 7, 8,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, eventbox16, _("If set, the server will ask the clients to show the enemy units for just one turn (right after a attack, for instance). However, it can't be enforceable, and a bad client could cheat, showing all the enemy units it knows about (just the ones that the server tells them, like after an attack)"), NULL);
+
+  opt_bin1[15] = gtk_check_button_new_with_label (_("Forget enemy units"));
+  gtk_widget_set_name (opt_bin1[15], "opt_bin1[15]");
+  gtk_widget_ref (opt_bin1[15]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[15]", opt_bin1[15],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[15]);
+  gtk_container_add (GTK_CONTAINER (eventbox16), opt_bin1[15]);
+  gtk_widget_set_sensitive (opt_bin1[15], FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (opt_bin1[15]), TRUE);
+
+  opt_box_open_map = gtk_event_box_new ();
+  gtk_widget_set_name (opt_box_open_map, "opt_box_open_map");
+  gtk_widget_ref (opt_box_open_map);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_box_open_map", opt_box_open_map,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_box_open_map);
+  gtk_table_attach (GTK_TABLE (options_table), opt_box_open_map, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_tooltips_set_tip (tooltips, opt_box_open_map, _("If set, all the units will be shown to both players"), NULL);
+
+  opt_bin1[0] = gtk_check_button_new_with_label (_("Open Map"));
+  gtk_widget_set_name (opt_bin1[0], "opt_bin1[0]");
+  gtk_widget_ref (opt_bin1[0]);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[0]", opt_bin1[0],
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (opt_bin1[0]);
+  gtk_container_add (GTK_CONTAINER (opt_box_open_map), opt_bin1[0]);
+  gtk_widget_set_sensitive (opt_bin1[0], FALSE);
+
+  /* end of options! */
 
   label5 = gtk_label_new (_("Options"));
   gtk_widget_set_name (label5, "label5");
@@ -516,6 +862,11 @@ create_dlg_options (int number)
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object_after(GTK_OBJECT (height), "changed",
 										 GTK_SIGNAL_FUNC (init_map_data), GTK_OBJECT (dlg_options));
+  for (i = 0; i < 16; i++) {
+    gtk_signal_connect_object (GTK_OBJECT (opt_bin1[i]), "toggled",
+                               GTK_SIGNAL_FUNC (dlg_options_update),
+                               GTK_OBJECT (dlg_options));
+  }
 
   mini_buf = NULL;
 
@@ -791,6 +1142,8 @@ create_dlg_save (void)
 void dlg_options_update(GtkWidget *dlg_options) {
 	GtkWidget *width, *height;
 	GtkWidget *unit_spin;
+  GtkWidget *option_button;
+  char option_name[14];
 	int a;
   combat_game *options;
 
@@ -805,6 +1158,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
     options->army[options->number] = (char *)calloc(12, sizeof(char));
     options->map = NULL;
     options->name = NULL;
+    options->options = 0;
   }
   gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
@@ -819,6 +1173,19 @@ void dlg_options_update(GtkWidget *dlg_options) {
 		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
 		ARMY(options, a) = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
+
+  // Gets options
+  options->options = 0;
+  for (a = 0; a < 15; a++) {
+    sprintf(option_name, "opt_bin1[%d]", a);
+    option_button = lookup_widget(dlg_options, option_name);
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(option_button)))
+        options->options |= (1<<a);
+  }
+  // OPT_SHOW_ENEMY_UNITS
+  option_button = lookup_widget(dlg_options, "opt_bin1[15]");
+  if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(option_button)))
+    options->options |= OPT_SHOW_ENEMY_UNITS;
 
   // Map was changed! It doesn't have a name now!
   if (options->name) {

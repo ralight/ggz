@@ -27,14 +27,17 @@
 #include "stdio.h"
 #include "string.h"
 
-char *combat_options_string_write(combat_game *_game, int for_hash) {
-	char *ptr;
-  char *optstr;
+unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
+	unsigned char *ptr;
+  unsigned char *optstr;
 	int a;
 	int len = (2 + _game->width*_game->height + 12);
   // Should we add space for the name option?
   if (!for_hash && _game->name && (strcmp(_game->name, "") != 0))
     len += 1 + strlen(_game->name) + 1 + 1;
+  // Should we add space for the binary options?
+  if (_game->options != 0)
+    len += 1 + 2 + 1;
 	optstr = (char *)malloc(sizeof(char) * (len+1));
   strcpy(optstr, "");
 	ptr = optstr;
@@ -46,7 +49,7 @@ char *combat_options_string_write(combat_game *_game, int for_hash) {
 		*(++ptr) = _game->map[a].type;
   /* Army data */
 	for (a = 0; a < 12; a++)
-		*(++ptr) = _game->army[_game->number][a];
+		*(++ptr) = ARMY(_game, a);
   /* Options */
   // Map name
   if (!for_hash && _game->name && (strcmp(_game->name, "") != 0)) {
@@ -56,8 +59,16 @@ char *combat_options_string_write(combat_game *_game, int for_hash) {
     *(++ptr) = 0; // Closing \0 for the name
     *(++ptr) = 0; // Closing \0 for the option packet
   }
+  if (_game->options != 0) {
+    *(++ptr) = O_BIN1; // Binary pack 1
+    *(++ptr) = _game->options & 255; // first byte
+    *(++ptr) = (_game->options>>8) & 255; //  seoond byte
+    *(++ptr) = 0; // Closing \0 for the option packet
+  }
   /* Close */
   *(++ptr) = 0;
+  if (*ptr != optstr[len])
+    printf("Error in write option string function!");
 	// Adds one to all the string, to avoid having zeros between them
 	for (a = 0; a < len; a++)
 		optstr[a]++;
@@ -65,15 +76,14 @@ char *combat_options_string_write(combat_game *_game, int for_hash) {
 	return optstr;
 }
 
-int combat_options_string_read(char *_optstr, combat_game *_game) {
+int combat_options_string_read(unsigned char *_optstr, combat_game *_game) {
 	int a, b;
 	int len = strlen(_optstr);
   int retval = 0;
-  char *optstr;
+  unsigned char *optstr;
   // Copy the string from the parameter
   optstr = (char *)malloc((len+1) * sizeof(char));
-  strncpy(optstr, _optstr, len);
-  optstr[len] = 0;
+  strncpy(optstr, _optstr, len+1);
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
 		optstr[a]--;
@@ -110,7 +120,13 @@ int combat_options_string_read(char *_optstr, combat_game *_game) {
         // Go until the last character in the string
         while (*optstr != 0)
           optstr++;
+        optstr++; // optstr now points to the closing /0 for the packet
+        break;
+      case O_BIN1:
         optstr++;
+        // optstr now points to the first byte of options
+        _game->options = *(optstr++); // First byte
+        _game->options += (*(optstr++)<<8); // Second byte
         break;
       default:
 		    printf("Unsuported option! (%d)\n", *optstr);

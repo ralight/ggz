@@ -443,8 +443,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_one_time</name>
+	    <name>opt_bin1[1]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:04:00 GMT</last_modification_time>
+	    </signal>
 	    <label>One Time Bomb</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -472,8 +479,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_bomberman_spy</name>
+	    <name>opt_bin1[2]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:05:47 GMT</last_modification_time>
+	    </signal>
 	    <label>Terrorist Spy</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -501,8 +515,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_moving_bomb</name>
+	    <name>opt_bin1[3]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:06:45 GMT</last_modification_time>
+	    </signal>
 	    <label>Moving Bombs</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -530,8 +551,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_super_scout</name>
+	    <name>opt_bin1[4]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:06:49 GMT</last_modification_time>
+	    </signal>
 	    <label>Super Scout</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -559,8 +587,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_advance_only</name>
+	    <name>opt_bin1[5]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:06:54 GMT</last_modification_time>
+	    </signal>
 	    <label>Units can only advance</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -588,8 +623,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_random_combat</name>
+	    <name>opt_bin1[6]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:07:00 GMT</last_modification_time>
+	    </signal>
 	    <label>Random outcome of attacks</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -617,8 +659,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_diagonal_move</name>
+	    <name>opt_bin1[7]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:07:08 GMT</last_modification_time>
+	    </signal>
 	    <label>Allow diagonal moves</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -646,8 +695,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_unknown_victor</name>
+	    <name>opt_bin1[8]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:07:19 GMT</last_modification_time>
+	    </signal>
 	    <label>Unknow Victor</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
@@ -675,7 +731,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_silent_defense</name>
+	    <name>opt_bin1[9]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Silent Defense</label>
 	    <active>False</active>
@@ -704,7 +761,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_silent_offense</name>
+	    <name>opt_bin1[10]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Silent Offense</label>
 	    <active>False</active>
@@ -733,7 +791,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_random_setup</name>
+	    <name>opt_bin1[11]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Random Setup</label>
 	    <active>False</active>
@@ -762,7 +821,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_sf_sergeant</name>
+	    <name>opt_bin1[12]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Special Forces Sergeant</label>
 	    <active>False</active>
@@ -791,7 +851,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_rush</name>
+	    <name>opt_bin1[13]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Rush Attack</label>
 	    <active>False</active>
@@ -820,7 +881,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_wall_bomb</name>
+	    <name>opt_bin1[14]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Hide enemy's unit list</label>
 	    <active>False</active>
@@ -849,7 +911,8 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_forget_enemy_units</name>
+	    <name>opt_bin1[15]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
 	    <label>Forget enemy units</label>
 	    <active>True</active>
@@ -878,8 +941,15 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>opt_open_map</name>
+	    <name>opt_bin1[0]</name>
+	    <sensitive>False</sensitive>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>dlg_options_update</handler>
+	      <object>dlg_options</object>
+	      <last_modification_time>Fri, 29 Dec 2000 18:04:00 GMT</last_modification_time>
+	    </signal>
 	    <label>Open Map</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
