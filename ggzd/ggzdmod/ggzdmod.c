@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2791 2001-12-06 21:55:22Z jdorje $
+ * $Id: ggzdmod.c 2792 2001-12-06 22:04:17Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -78,7 +78,6 @@ static void seat_free(GGZSeat *seat);
 #if 0 /* Not currently used */
 static void dump_seats(_GGZdMod *mod);
 #endif
-static int seats_open(_GGZdMod* mod);
 static void seat_print(_GGZdMod* mod, GGZSeat *seat);
 
 /* Invokes handlers for the specefied event */
@@ -454,11 +453,34 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
    game we have uses it, so it's here for now... */
 int ggzdmod_count_seats(GGZdMod *mod, GGZdModSeat seat_type)
 {
-	int i, count = 0;
+	int count = 0;
+#if 0 /* This form could be used as part of a wrapper library. */
+	int i;
 	for (i=0; i<ggzdmod_get_num_seats(mod); i++)
 		if (ggzdmod_get_seat(mod, i).type == seat_type)
 			count++;
 	return count;
+#else /* This form is better and must be ggzdmod-internal. */
+	GGZListEntry *entry;
+	GGZSeat *seat;
+	_GGZdMod *ggzdmod = mod;
+	
+	if (!CHECK_GGZDMOD(ggzdmod))
+		return -1;
+
+	for (entry = ggz_list_head(ggzdmod->seats);
+	     entry != NULL;
+	     entry = ggz_list_next(entry)) {
+		
+		seat = ggz_list_get_data(entry);
+		if (seat->type == seat_type)
+			count++;
+	}
+	
+	return count;
+#endif
+	/* Note we could do even better if we tracked these
+	   values on player join/leave. */
 }
 
 
@@ -1057,24 +1079,6 @@ static void dump_seats(_GGZdMod *mod)
 	ggzdmod_log(mod, "GGZDMOD: End Seat dump");
 }
 #endif
-
-
-static int seats_open(_GGZdMod* mod)
-{
-	GGZListEntry *entry;
-	GGZSeat *seat;
-
-	for (entry = ggz_list_head(mod->seats);
-	     entry != NULL;
-	     entry = ggz_list_next(entry)) {
-		
-		seat = ggz_list_get_data(entry);
-		if (seat->type == GGZ_SEAT_OPEN)
-			return 1;
-	}
-	
-	return 0;
-}
 
 
 static void seat_print(_GGZdMod* mod, GGZSeat *seat)
