@@ -460,7 +460,7 @@ int game_handle_move(int num, unsigned char *direction)
 					escape_game.repeatmove=1;
 //				}else{
 					// pass move on
-//				}
+				}
 			}		
 			if(!escape_game.repeatmove){ // move on to next player
 				ggz_debug("\tmove on to next player");
@@ -555,6 +555,7 @@ int game_update(int event, void *d1)
 				return -1;
 			escape_game.state = ESCAPE_STATE_OPTIONS;
 			ggz_debug("\tescape_game.state = ESCAPE_STATE_OPTIONS\n");
+			escape_game.repeatmove = 0;
 			break;
 		case ESCAPE_EVENT_OPTIONS:
 			ggz_debug("\tESCAPE_EVENT_OPTIONS\n");
@@ -681,6 +682,7 @@ static int game_handle_newgame(int seat)
 	   && escape_game.play_again == 2) {
 		escape_game.turn = 0;
 		escape_game.state = ESCAPE_STATE_PLAYING;
+		escape_game.repeatmove = 0;
 		game_move();
 	}
 
