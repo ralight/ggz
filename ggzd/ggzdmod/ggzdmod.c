@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4949 2002-10-19 00:34:05Z jdorje $
+ * $Id: ggzdmod.c 4951 2002-10-19 06:34:38Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -373,7 +373,6 @@ void* ggzdmod_get_gamedata(GGZdMod * ggzdmod)
 
 static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 {
-	GGZSeat seat;
 	int i, old_num;
 
 	old_num = ggzdmod->num_seats;
@@ -382,16 +381,23 @@ static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 	if (num_seats > old_num) {
 		/* Initialize new seats */
 		for (i = old_num; i < num_seats; i++) {
-			seat.num = i;
-			seat.type = GGZ_SEAT_OPEN;
-			seat.name = NULL;
-			seat.fd = -1;
+			GGZSeat seat = {num: i,
+					type: GGZ_SEAT_OPEN,
+					name: NULL,
+					fd: -1};
 			ggz_list_insert(ggzdmod->seats, &seat);
 		}
-	}
-	/* If the table size is increasing, add more seats */
-	else if (num_seats < old_num) {
-		/* FIXME: delete extra seats */
+	} else if (num_seats < old_num) {
+		GGZListEntry *entry;
+		GGZSeat seat = {num: num_seats};
+
+		/* Delete extra seats (FIXME: UNTESTED) */
+		entry = ggz_list_search(ggzdmod->seats, &seat);
+		while (entry) {
+			GGZListEntry *next = ggz_list_next(entry);
+			ggz_list_delete_entry(ggzdmod->seats, entry);
+			entry = next;
+		}
 	}
 	
 	ggzdmod->num_seats = num_seats;
