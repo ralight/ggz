@@ -6,6 +6,8 @@ guru_ttt_SOURCES = main.c
 guru_ttt_LDFLAGS = $(GGZMOD_LDFLAGS)
 guru_ttt_LDADD = $(LIB_GGZMOD)
 
+EXTRA_DIST = module.dsc.in
+
 INCLUDES = $(GGZMOD_INCLUDES) $(SDL_CFLAGS)
 
 install-data-local:

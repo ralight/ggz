@@ -178,6 +178,7 @@ AC_CONFIG_FILES([Makefile
 		grubby/po/Makefile
 		games/Makefile
 		games/guru-ttt/Makefile
+		games/guru-ttt/module.dsc
 		man/Makefile
 		man/de/Makefile])
 AC_OUTPUT
