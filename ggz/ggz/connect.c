@@ -581,6 +581,10 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case 0:
 			connection.cur_room = connection.new_room;
+			tmpstr = g_strdup_printf("Joined room: %s",
+				      room_info.info[connection.cur_room].name);
+			chat_print(CHAT_COLOR_SERVER, "---", tmpstr);
+			g_free(tmpstr);
 			ggz_get_players(NULL, NULL);
 			ggz_get_tables(NULL, NULL);
 			break;
