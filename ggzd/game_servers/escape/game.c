@@ -1,4 +1,4 @@
-*
+/*
  * File: game.c
  * Author: Rich Gade (Modified for Escape by Roger Light)
  * Project: GGZ Escape game module
