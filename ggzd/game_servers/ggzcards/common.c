@@ -954,11 +954,7 @@ int update(int event, void *data)
 			/* determine number of players. */
 			game.num_players = ggz_seats_num(); /* ggz seats == players */
 			game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
-
-			/* TODO: for now we assume 4 seats, which is all that is supported by the client.
-			 * However, this is a big issue with the multi-game capability.  We may not
-			 * know what game we're playing until later. */
-			set_num_seats(4);
+			/* we don't yet know the number of seats */
 
 			/* as soon as we know which game we're playing, we should init the game */
 			if (game.which_game != GGZ_GAME_UNKNOWN)
