@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
@@ -72,6 +74,53 @@ int main(int argc, char *argv[])
 {
 	Gurucore *core;
 	Guru *guru;
+	char *opthost = NULL, *optname = NULL;
+
+	/* Recognize command line arguments */
+	struct option options[] =
+	{
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
+		{"name", required_argument, 0, 'n'},
+		{"host", required_argument, 0, 'H'},
+		{0, 0, 0, 0}
+	};
+	int optindex;
+	char opt;
+
+	while(1)
+	{
+		opt = getopt_long(argc, argv, "hvH:n:", options, &optindex);
+		if(opt == -1) break;
+		switch(opt)
+		{
+			case 'h':
+				printf("Grubby - the GGZ Gaming Zone Chat Bot\n");
+				printf("Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net\n");
+				printf("Published under GNU GPL conditions\n\n");
+				printf("Recognized options:\n");
+				printf("[-h | --help]:    Show this help screen\n");
+				printf("[-H | --host]:    Connect to this host\n");
+				printf("{-n | --name]:    Use this name\n");
+				printf("[-v | --version]: Display version number\n");
+				exit(0);
+				break;
+			case 'H':
+				opthost = optarg;
+				break;
+			case 'n':
+				optname = optarg;
+				break;
+			case 'v':
+				printf("Grubby version 0.1\n");
+				exit(0);
+				break;
+			default:
+				printf("Unknown command line option, try --help.\n");
+				exit(-1);
+				break;
+		}
+	}
 
 	/* Bring grubby to life */
 	printf("Grubby: initializing...\n");
@@ -81,9 +130,13 @@ int main(int argc, char *argv[])
 		printf("Grubby initialization failed!\n");
 		exit(-1);
 	}
-	printf("Grubby: connect...\n");
+
+	/* Apply command line options */
+	if(opthost) core->host = opthost;
+	if(optname) core->name = optname;
 
 	/* Start connection procedure */
+	printf("Grubby: connect to %s...\n", core->host);
 	(core->net_log)(core->logfile);
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
 	if(core->i18n_init) (core->i18n_init)();
