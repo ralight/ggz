@@ -13,6 +13,8 @@
 ///// GGZ GameType ///////////////////////////////////////////////
 
 #include "GGZCoreGametype.h"
+#include "GGZCoreCommon.h"
+
 #include "config.h"
 
 GGZCoreGametype::GGZCoreGametype(GGZGameType *gametype)
