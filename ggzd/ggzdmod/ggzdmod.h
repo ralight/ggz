@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2574 2001-10-16 17:02:53Z jdorje $
+ * $Id: ggzdmod.h 2597 2001-10-23 21:53:31Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -33,6 +33,10 @@
 /* Callback events: */
 typedef enum {
 	GGZ_GAME_STATUS,	/* Module status changed (status) */
+	GGZ_GAME_LAUNCH,	/* FIXME: is this the same as
+				   GGZ_GAME_STATUS??? */
+	GGZ_GAME_OVER,		/* FIXME: is this the same as
+				   GGZ_GAME_STATUS??? */
 	GGZ_GAME_JOIN,		/* Player joined (status) */
 	GGZ_GAME_LEAVE,		/* Player left (status) */
 	GGZ_GAME_LOG,		/* Module log request (level, msg) */

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2574 2001-10-16 17:02:53Z jdorje $
+ * $Id: ggzdmod.c 2597 2001-10-23 21:53:31Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -51,10 +51,12 @@
 #define GGZ_DBG_TABLE	(unsigned) 0x00000010
 
 #define CHECK_GGZDMOD(ggzdmod)                             \
-	(assert(ggzdmod && ggzdmod->magic == MAGIC_VALUE), \
-	 ggzdmod)
+	(ggzdmod && ggzdmod->magic == MAGIC_VALUE && (ggzdmod->type == GGZDMOD_GGZ || ggzdmod->type==GGZDMOD_GAME))
 
 #define GGZDMOD_NUM_HANDLERS 6
+
+/* The maximum length of a player name.  Does not include trailing \0. */
+#define MAX_USER_NAME_LEN 16
 
 /* This is the actual structure, but it's only visible internally. */
 typedef struct _GGZdMod {
@@ -98,17 +100,26 @@ static int ggzdmod_fd_max(_GGZdMod * ggzdmod)
 GGZdMod *ggzdmod_new(GGZdModType type)
 {
 	int i;
-	_GGZdMod *ggzdmod = malloc(sizeof(*ggzdmod));
+	_GGZdMod *ggzdmod;
+
+	/* verify parameter */
+	if (type != GGZDMOD_GGZ && type != GGZDMOD_GAME)
+		return NULL;
+
+	/* allocate */
+	ggzdmod = malloc(sizeof(*ggzdmod));
 	if (!ggzdmod)
 		return NULL;
 
+	/* initialize */
 	memset(ggzdmod, sizeof(*ggzdmod), 0);
 	ggzdmod->type = type;
 	ggzdmod->fd = -1;
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
-	/* TODO: other initialization */
+	/* Put any other necessary initialization here.  All fields should be 
+	   initialized. */
 #ifdef DEBUG
 	ggzdmod->magic = MAGIC_VALUE;
 #endif
@@ -122,13 +133,21 @@ void ggzdmod_free(GGZdMod * mod)
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod))
 		return;
+
+	/* Free any fields the object contains */
+	if (ggzdmod->seats)
+		free(ggzdmod->seats);
+
+	/* Free the object */
 	free(ggzdmod);
 }
+
 
 /* 
  * Accesor functions for GGZdMod
  */
 
+/* The ggzdmod FD is the main ggzd<->game server communications socket. */
 int ggzdmod_get_fd(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
@@ -151,7 +170,7 @@ int ggzdmod_get_num_seats(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod))
-		return 0;
+		return -1;
 	return ggzdmod->num_seats;
 }
 
@@ -211,8 +230,198 @@ void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
  * Event/Data handling
  */
 
+/* If anyone is left out or would prefer a different name, go right ahead and 
+   change it.  No longer than 13 characters.  --JDS */
+static char *bot_names[] = {
+	"bcox", "Crouton", "Boffo", "Bugg", "DJH", "Dobey",
+	"Dr. Maux", "jDorje", "Jzaun", "Oojah", "Perdig", "RGade",
+	"riq", "rpd"
+};
+
+/* This function randomizes the order of the names assigned to bots. It is
+   ENTIRELY UNNECESSARY but entertaining.  --JDS */
+static void randomize_names(char **names, char **randnames, int num)
+{
+	char *rnames2[num];
+	int i, choice;
+
+	/* copy names array to rnames2 array */
+	for (i = 0; i < num; i++)
+		rnames2[i] = names[i];
+
+	/* now pick names from rnames2 */
+	for (i = 0; i < num; i++) {
+		choice = random() % (num - i);
+		randnames[i] = rnames2[choice];
+		rnames2[choice] = rnames2[num - i - 1];
+	}
+}
+
+/* Game-side event: launch event received from ggzd */
+static void game_launch(_GGZdMod * ggzdmod)
+{
+	int i, status = 0, bots = 0;
+#define NUM_BOT_NAMES (sizeof(bot_names)/sizeof(bot_names[0]))
+	char *rand_bot_names[NUM_BOT_NAMES];
+
+	randomize_names(bot_names, rand_bot_names, NUM_BOT_NAMES);
+
+	if (es_read_int(ggzdmod->fd, &ggzdmod->num_seats) < 0)
+		return;
+	if (ggzdmod->num_seats <= 0) {
+		ggzdmod_log(ggzdmod,
+			    "GGZDMOD: ERROR: %d seats sent upon launch.",
+			    ggzdmod->num_seats);
+		return;
+	}
+
+	ggzdmod->seats = calloc(ggzdmod->num_seats, sizeof(*ggzdmod->seats));
+	if (ggzdmod->seats == NULL)
+		return;
+
+	for (i = 0; i < ggzdmod->num_seats; i++) {
+		if (es_read_int(ggzdmod->fd, &ggzdmod->seats[i].type) < 0)
+			return;
+		ggzdmod->seats[i].fd = -1;
+		if (ggzdmod->seats[i].type == GGZ_SEAT_RESV
+		    && es_read_string(ggzdmod->fd, ggzdmod->seats[i].name,
+				      (MAX_USER_NAME_LEN + 1)))
+			return;
+	}
+
+	for (i = 0; i < ggzdmod->num_seats; i++)
+		switch (ggzdmod->seats[i].type) {
+		case GGZ_SEAT_OPEN:
+			ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is open", i);
+			break;
+		case GGZ_SEAT_BOT:
+			/* FIXME: we should truncate the name not the AI */
+			snprintf(ggzdmod->seats[i].name,
+				 MAX_USER_NAME_LEN + 1, "%s-AI",
+				 rand_bot_names[bots]);
+			ggzdmod_log(ggzdmod,
+				    "GGZDMOD: Seat %d is a bot named %s", i,
+				    rand_bot_names[bots]);
+			bots++;
+			break;
+		case GGZ_SEAT_RESV:
+			ggzdmod_log(ggzdmod,
+				    "GGZDMOD: Seat %d reserved for %s", i,
+				    ggzdmod->seats[i].name);
+			break;
+		default:	/* prevent compiler warning */
+			/* We ignore other values (?) --JDS */
+		}
+
+	if (es_write_int(ggzdmod->fd, RSP_GAME_LAUNCH) < 0
+	    || es_write_char(ggzdmod->fd, status) < 0)
+		return;
+
+	if (ggzdmod->handlers[GGZ_GAME_LAUNCH])
+		(*ggzdmod->handlers[GGZ_GAME_LAUNCH]) (ggzdmod,
+						       GGZ_GAME_LAUNCH, NULL);
+}
+
+/* game-side event: player join event received from ggzd */
+static void game_join(_GGZdMod * ggzdmod)
+{
+	int seat;
+
+	if (es_read_int(ggzdmod->fd, &seat) < 0 ||
+	    es_read_string(ggzdmod->fd, ggzdmod->seats[seat].name,
+			   MAX_USER_NAME_LEN + 1) < 0
+	    || es_read_fd(ggzdmod->fd, &ggzdmod->seats[seat].fd) < 0
+	    || es_write_int(ggzdmod->fd, RSP_GAME_JOIN) < 0)
+		return;
+
+	ggzdmod->seats[seat].type = GGZ_SEAT_PLAYER;
+	ggzdmod_log(ggzdmod, "%s on %d in seat %d", ggzdmod->seats[seat].name,
+		    ggzdmod->seats[seat].fd, seat);
+
+	FD_SET(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
+
+	if (ggzdmod->handlers[GGZ_GAME_JOIN] != NULL)
+		(*ggzdmod->handlers[GGZ_GAME_JOIN]) (ggzdmod, GGZ_GAME_JOIN,
+						     &seat);
+}
+
+/* game-side event: player leave received from ggzd */
+static void game_leave(_GGZdMod * ggzdmod)
+{
+	int seat;
+	char status = 0;
+	char name[MAX_USER_NAME_LEN + 1];
+
+	if (es_read_string(ggzdmod->fd, name, (MAX_USER_NAME_LEN + 1)) < 0)
+		return;
+
+	for (seat = 0; seat < ggzdmod->num_seats; seat++)
+		if (!strcmp(name, ggzdmod->seats[seat].name))
+			break;
+
+	if (seat == ggzdmod->num_seats)	/* player not found */
+		status = -1;
+	else {
+		FD_CLR(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
+		ggzdmod->seats[seat].fd = -1;
+		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
+		status = 0;
+		ggzdmod_log(ggzdmod, "Removed %s from seat %d",
+			    ggzdmod->seats[seat].name, seat);
+	}
+
+	if (es_write_int(ggzdmod->fd, RSP_GAME_LEAVE) < 0 ||
+	    es_write_char(ggzdmod->fd, status) < 0 || status != 0)
+		return;
+
+	if (ggzdmod->handlers[GGZ_GAME_LEAVE] != NULL)
+		(*ggzdmod->handlers[GGZ_GAME_LEAVE]) (ggzdmod, GGZ_GAME_LEAVE,
+						      &seat);
+}
+
+/* game-side event: game over received from ggzd */
+static void game_over(_GGZdMod * ggzdmod)
+{
+	ggzdmod_halt_game(ggzdmod);
+	if (ggzdmod->handlers[GGZ_GAME_OVER] != NULL)
+		(*ggzdmod->handlers[GGZ_GAME_OVER]) (ggzdmod, GGZ_GAME_OVER,
+						     NULL);
+}
+
+/* Returns -1 on error (?). */
 int ggzdmod_dispatch(GGZdMod * mod)
 {
+	_GGZdMod *ggzdmod = mod;
+	int op;
+
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return -1;
+	}
+
+	if (es_read_int(ggzdmod->fd, &op) < 0) {
+		ggzdmod_halt_game(ggzdmod);
+		return -1;
+	}
+
+	if (ggzdmod->type == GGZDMOD_GAME) {
+		switch (op) {
+		case REQ_GAME_LAUNCH:
+			game_launch(ggzdmod);
+			break;
+		case REQ_GAME_JOIN:
+			game_join(ggzdmod);
+			break;
+		case REQ_GAME_LEAVE:
+			game_leave(ggzdmod);
+			break;
+		case RSP_GAME_OVER:
+			game_over(ggzdmod);
+			break;
+		}
+	} else {
+
+	}
+
 	assert(0);
 	return -1;
 }
@@ -246,7 +455,6 @@ int ggzdmod_io_pending(GGZdMod * mod)
 	return (status > 0);
 }
 
-/* FIXME: This function should be exported by the library! */
 void ggzdmod_io_read(GGZdMod * mod)
 {
 	fd_set read_fd_set;
@@ -393,7 +601,8 @@ int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 	char buf[4096];
 	va_list ap;
 
-	if (!CHECK_GGZDMOD(ggzdmod) || !fmt || ggzdmod->fd < 0) {
+	if (!CHECK_GGZDMOD(ggzdmod) || !fmt || ggzdmod->fd < 0
+	    || ggzdmod->type != GGZDMOD_GAME) {
 		/* This will happen when ggzdmod_log is called before
 		   connection.  We could store the buffer for later, but... */
 		return -1;
