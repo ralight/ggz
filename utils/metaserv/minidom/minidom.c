@@ -401,6 +401,7 @@ ELE **MD_querylist(ELE *parent, const char *name)
 		free(elelist);
 		elelist = NULL;
 	}*/						/* MEMORY HOLE !*/
+	elelist = NULL;
 
 	i = 0;
 	j = 1;
