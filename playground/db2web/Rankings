@@ -1,0 +1,55 @@
+!!! TODO !!!
+!!! Use other theme, since this one is non-free !!!
+
+Team Membership
+===============
+
+The membership level in a team is determined by 3 factors:
+* Success: indicated by number of crowns
+  - one crown: just a starter
+  - two crowns: already won a game or two
+  - three crowns: won many games (> 10?)
+* Hierarchy: indicated by the crown color
+  - silver crown: regular member
+  - gold crown: leadership team (leaders & vice-leaders)
+* Importance: indicated by the symbol on the crown
+  - no symbol: no special importance
+  - diamonds: current leader
+  - stars: team founder
+
+Only the leader can upgrade and downgrade all persons,
+including himself. There can only be one leader, so appointing
+someone else as leader makes him a vice-leader!
+Vice-leaders can upgrade members to vice-leaders.
+They can select a leader from their ranks should the previous
+leader disband from the team.
+The founder of a team may disappear or become a regular member.
+
+In order to become a team member, the leadership team has to
+approve you.
+
+Team Rankings
+=============
+
+The team ladder is indicated with cups. The more cups a team
+has won, the higher it rises.
+There are gold cups (who count threefold), silver cups and
+bronze cups.
+
+There are game-based rankings (in which only the relevant cups
+count) and global rankings for all games on a server.
+Rankings also exist tournament-based and tournament-class based.
+
+Player rankings
+===============
+
+Similar to the teams, the player ladder is indicated with
+cups, although different ones.
+
+As well as with the games, tournament winners in addition
+receive the diamond symbol. The overall tournament class
+winner receives the star symbol in addition.
+
+Also, the top 3 of both game-based and global rankings
+have golden cups.
+

@@ -1,6 +1,14 @@
 --- SQL database format for the GGZ Gaming Zone
 --- Optional tables: rankings pages
 
+CREATE TABLE userinfo (
+    id serial NOT NULL,
+    handle character varying(256),
+    photo character varying(256),
+    gender character varying(256),
+    country character varying(256)
+);
+
 CREATE TABLE "teams" (
 	"teamname" character varying(256),
 	"fullname" character varying(256),
@@ -11,7 +19,8 @@ CREATE TABLE "teams" (
 
 CREATE TABLE "teammembers" (
 	"teamname" character varying(256),
-	"handle" character varying(256)
+	"handle" character varying(256),
+    role character varying(256)
 );
 
 CREATE TABLE "placements" (
