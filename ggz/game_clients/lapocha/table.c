@@ -43,7 +43,11 @@
 #define CARDHEIGHT	96
 
 static GdkPixmap *table_buf, *table_buf_backup;
+#ifdef GTK2
+static GdkPixbuf *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
+#else
 static GdkPixmap *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
+#endif
 static GtkStyle *f1_style;
 static GtkWidget *f1;
 static GtkWidget *l_name[4], *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
@@ -65,20 +69,42 @@ static gint table_animation_callback(gpointer);
 static void table_animation_trigger(int, int, int, int, int);
 static void table_handle_table_click(int, int);
 
-static GdkPixmap *load_pixmap(GdkWindow *window, GdkBitmap **mask,
-			      GdkColor *trans, const char *name)
+#ifndef GTK2
+static GdkPixmap *
+#else
+static GdkPixbuf *
+#endif /* GTK2 */
+load_pixmap(GdkWindow *window, GdkBitmap **mask,
+	    GdkColor *trans, const char *name)
 {
 	char *fullpath;
-	GdkPixmap *pixmap;
+#ifndef GTK2
+	GdkPixmap *image;
+#else
+	GdkPixbuf *image;
+	GError *error = NULL;
+#endif /* GTK2 */
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
-	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
-	if(pixmap == NULL)
+#ifndef GTK2
+	image = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+#else
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+#endif /* GTK2 */
+	if(image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
 
-	return pixmap;
+	return image;
 }
+
+#ifdef GTK2
+#define render(target, gc, image, x1, y1, x2, y2, w, h) \
+  gdk_pixbuf_render_to_drawable(image, target, gc, x1, y1, x2, y2, w, h, \
+                                GDK_RGB_DITHER_NONE, 0, 0)
+#else
+#define render gdk_draw_pixmap
+#endif
 
 /* table_initialize()
  *   Setup and draw the table areas on the fixed1 dialog item
@@ -478,12 +504,12 @@ static void table_card_select(int card)
 		y2 = 363;
 		if(i == card)
 			y2 -= 10;
-		gdk_draw_pixmap(table_buf,
-		        	f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards,
-				x1, y1,
-				x2, y2,
-				CARDWIDTH, CARDHEIGHT);
+		render(table_buf,
+		       f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+		       cards,
+		       x1, y1,
+		       x2, y2,
+		       CARDWIDTH, CARDHEIGHT);
 	}
 
 	/* Refresh the on-screen image */
@@ -528,12 +554,12 @@ static void table_card_play(int card)
 		y2 = 363;
 		if(i == card)
 			continue;
-		gdk_draw_pixmap(table_buf,
-		        	f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards,
-				x1, y1,
-				x2, y2,
-				CARDWIDTH, CARDHEIGHT);
+		render(table_buf,
+		       f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+		       cards,
+		       x1, y1,
+		       x2, y2,
+		       CARDWIDTH, CARDHEIGHT);
 	}
 
 	/* Backup entire table image */
@@ -549,12 +575,12 @@ static void table_card_play(int card)
 	y1 = (hand.card[card] % 13) * CARDHEIGHT;
 	x2 = 116.5 + (card * CARDWIDTH/4.0);
 	y2 = 363;
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			x1, y1,
-			x2, y2,
-			CARDWIDTH, CARDHEIGHT);
+	render(table_buf,
+	       f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+	       cards,
+	       x1, y1,
+	       x2, y2,
+	       CARDWIDTH, CARDHEIGHT);
 
 	/* And refresh the on-screen image */
 	gdk_draw_pixmap(f1->window,
@@ -626,12 +652,12 @@ gint table_animation_callback(gpointer ignored)
 			CARDWIDTH, CARDHEIGHT);
 
 	/* Draw our new card position */
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			anim.card_x, anim.card_y,
-			new_x, new_y,
-			CARDWIDTH, CARDHEIGHT);
+	render(table_buf,
+	       f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+	       cards,
+	       anim.card_x, anim.card_y,
+	       new_x, new_y,
+	       CARDWIDTH, CARDHEIGHT);
 
 	/* And refresh the on-screen image */
 	if(new_x < anim.cur_x)
@@ -701,7 +727,7 @@ void table_animation_abort(void)
 		y1 = (hand.card[i] % 13) * CARDHEIGHT;
 		x2 = 116.5 + (i * CARDWIDTH/4.0);
 		y2 = 363;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 		        	f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				x1, y1,
@@ -746,7 +772,7 @@ void table_animation_zip(gboolean restore)
 	}
 
 	/* And move the card to it's final resting place */
-	gdk_draw_pixmap(table_buf,
+	render(table_buf,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			cards,
 			anim.card_x, anim.card_y,
@@ -956,7 +982,7 @@ void table_display_hand(void)
 		y1 = (hand.card[i] % 13) * CARDHEIGHT;
 		x2 = 116.5 + (i * CARDWIDTH/4.0);
 		y2 = 363;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 		        	f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				x1, y1,
@@ -968,7 +994,7 @@ void table_display_hand(void)
 	for(i=0; i<game.num_cards[POS_SEAT(1)]; i++) {
 		x1 = 10;
 		y1 = 116.5 + (i * CARDWIDTH/4.0);
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b2,
 				0, 142,
@@ -979,7 +1005,7 @@ void table_display_hand(void)
 	for(i=9; i>(9-game.num_cards[POS_SEAT(2)]); i--) {
 		x1 = 121.5 + (i * CARDWIDTH/4.0);
 		y1 = 10;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b3,
 				71, 0,
@@ -990,7 +1016,7 @@ void table_display_hand(void)
 	for(i=9; i>(9-game.num_cards[POS_SEAT(3)]); i--) {
 		x1 = 363;
 		y1 = 121.5 + (i * CARDWIDTH/4.0);
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b4,
 				0, 71,
@@ -1046,7 +1072,7 @@ void table_animation_opponent(char p_num, char card)
 			for(i=0; i<game.num_cards[POS_SEAT(1)]; i++) {
 				x1 = 10;
 				y1 = 116.5 + (i * CARDWIDTH/4.0);
-				gdk_draw_pixmap(table_buf,
+				render(table_buf,
 		        		f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 					cards_b2,
 					0, 142,
@@ -1075,7 +1101,7 @@ void table_animation_opponent(char p_num, char card)
 			for(i=9; i>(9-game.num_cards[POS_SEAT(2)]); i--) {
 				x1 = 121.5 + (i * CARDWIDTH/4.0);
 				y1 = 10;
-				gdk_draw_pixmap(table_buf,
+				render(table_buf,
 				        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 					cards_b3,
 					71, 0,
@@ -1105,7 +1131,7 @@ void table_animation_opponent(char p_num, char card)
 			for(i=9; i>(9-game.num_cards[POS_SEAT(3)]); i--) {
 				x1 = 363;
 				y1 = 121.5 + (i * CARDWIDTH/4.0);
-				gdk_draw_pixmap(table_buf,
+				render(table_buf,
 				        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 					cards_b4,
 					0, 71,
@@ -1136,7 +1162,7 @@ void table_animation_opponent(char p_num, char card)
 	/* Draw the card on the table */
 	xc = (hand.card[(int)card] / 13) * CARDWIDTH;
 	yc = (hand.card[(int)card] % 13) * CARDHEIGHT;
-	gdk_draw_pixmap(table_buf,
+	render(table_buf,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			cards,
 			xc, yc,
@@ -1209,7 +1235,7 @@ void table_show_cards(char c1, char c2, char c3, char c4)
 		yc = (c1 % 13) * CARDHEIGHT;
 		x = 199;
 		y = 242;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				xc, yc,
@@ -1229,7 +1255,7 @@ void table_show_cards(char c1, char c2, char c3, char c4)
 		yc = (c2 % 13) * CARDHEIGHT;
 		x = 120;
 		y = 186;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				xc, yc,
@@ -1249,7 +1275,7 @@ void table_show_cards(char c1, char c2, char c3, char c4)
 		yc = (c3 % 13) * CARDHEIGHT;
 		x = 199;
 		y = 130;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				xc, yc,
@@ -1269,7 +1295,7 @@ void table_show_cards(char c1, char c2, char c3, char c4)
 		yc = (c4 % 13) * CARDHEIGHT;
 		x = 280;
 		y = 186;
-		gdk_draw_pixmap(table_buf,
+		render(table_buf,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
 				xc, yc,
