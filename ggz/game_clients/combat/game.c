@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6225 2004-10-28 05:48:01Z jdorje $
+ * $Id: game.c 6244 2004-11-03 21:09:24Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -59,8 +59,10 @@ GtkWidget **player_list = NULL;
 struct game_info_t cbt_info;
 combat_game cbt_game;
 
+#define PIXMAPS 12 // (May have more: Lakes, Unknown units, etc)
+
 // Images
-GtkPixmap *tiles[12];
+GdkPixbuf *tiles[PIXMAPS];
 GdkColor *player_colors;
 GdkColor last_color;
 GdkColor current_color;
@@ -75,14 +77,17 @@ GdkGC *tile_gc;
 #define LAST_COLORNAME "RGB:55/77/55"
 #define CURRENT_COLORNAME "RGB:00/00/00"
 
-#define PIXMAPS 12 // (May have more: Lakes, Unknown units, etc)
-
 // Name of units
-char unitname[13][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall", "Unknown"};
+char unitname[PIXMAPS + 1][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner",
+				  "Sergeant", "Lieutenant", "Captain",
+				  "Major", "Colonel", "General", "Marshall",
+				  "Unknown"};
 // Number of units
-int unitdefault[12] = {1, 6, 1, 8, 5, 4, 4, 4, 3, 2, 1, 1};
-// File names
-char filename[12][36] = {"flag.xpm", "bomb.xpm", "spy.xpm", "scout.xpm", "miner.xpm", "sergeant.xpm", "lieutenant.xpm", "captain.xpm", "major.xpm", "colonel.xpm", "general.xpm", "marshall.xpm"};
+int unitdefault[PIXMAPS] = {1, 6, 1, 8, 5, 4, 4, 4, 3, 2, 1, 1};
+// File names (.png is automatically appended)
+char filename[PIXMAPS][36] = {"flag", "bomb", "spy", "scout", "miner",
+			      "sergeant", "lieutenant", "captain", "major",
+			      "colonel", "general", "marshall"};
 // Color names
 char colorname[2][36] = {"red", "blue"};
 char lakename[] = "dark green";
@@ -315,9 +320,7 @@ void game_init_board(void) {
   
   // Loads pixmaps
   for (a = 0; a < PIXMAPS; a++) {
-    //tiles[a] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
-              //&player_colors[cbt_info.seat], filename[a]);
-    tiles[a] = (GtkPixmap *)create_pixmap(main_win, filename[a]);
+    tiles[a] = load_pixmap(filename[a]);
   }
   // Loads GC
   solid_gc = gdk_gc_new(main_win->window);
@@ -376,10 +379,8 @@ void game_draw_terrain(int x, int y, int type) {
       PIXSIZE, PIXSIZE);
 }
 
-void game_draw_unit(int x, int y, int tile, int player) {
-    GdkBitmap *mask = NULL;
-    GdkPixmap *pix = NULL;
-
+void game_draw_unit(int x, int y, int tile, int player)
+{
     x = x*(PIXSIZE+1)+1;
     y = y*(PIXSIZE+1)+1;
 
@@ -395,15 +396,10 @@ void game_draw_unit(int x, int y, int tile, int player) {
     }
 
     // Draws the image, if it is known
-    if (tile >= 0 && tile < 12) {
-      // Gets the image
-      gtk_pixmap_get(tiles[tile], &pix, &mask);
-
-      gdk_gc_set_tile(tile_gc, pix);
-      gdk_gc_set_ts_origin(tile_gc, x, y);
-      gdk_gc_set_clip_origin(tile_gc, x, y);
-      gdk_gc_set_clip_mask(tile_gc, mask);
-      gdk_draw_rectangle(cbt_buf, tile_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
+    if (tile >= 0 && tile < PIXMAPS) {
+      gdk_pixbuf_render_to_drawable(tiles[tile], cbt_buf, tile_gc,
+				    0, 0, x, y, PIXSIZE, PIXSIZE,
+				    GDK_RGB_DITHER_NONE, 0, 0);
     }
 
 

@@ -1,20 +1,20 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5317 2003-01-12 11:44:33Z dr_maux $
+#  $Id: Makefile.am 6244 2004-11-03 21:09:24Z jdorje $
 
 SUBDIRS = .
 
-default_DATA = bomb.xpm	\
-		captain.xpm	\
-		colonel.xpm	\
-		flag.xpm	\
-		general.xpm	\
-		lieutenant.xpm	\
-		major.xpm	\
-		marshall.xpm	\
-		miner.xpm	\
-		scout.xpm	\
-		sergeant.xpm	\
-		spy.xpm
+default_DATA = bomb.png	\
+		captain.png	\
+		colonel.png	\
+		flag.png	\
+		general.png	\
+		lieutenant.png	\
+		major.png	\
+		marshall.png	\
+		miner.png	\
+		scout.png	\
+		sergeant.png	\
+		spy.png
 
 # $(DESTDIR) prepended automatically
 defaultdir = $(ggzdatadir)/combat/pixmaps/default

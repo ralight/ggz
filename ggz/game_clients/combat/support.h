@@ -35,6 +35,4 @@ void        add_pixmap_directory       (const gchar     *directory);
  */
 
 /* This is used to create the pixmaps in the interface. */
-GtkWidget*  create_pixmap              (GtkWidget       *widget,
-                                        const gchar     *filename);
-
+GdkPixbuf *load_pixmap(const char *name);

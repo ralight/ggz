@@ -19,9 +19,6 @@
 static gchar* check_file_exists        (const gchar     *directory,
                                         const gchar     *filename);
 
-/* This is an internally used function to create pixmaps. */
-static GtkWidget* create_dummy_pixmap  (GtkWidget       *widget);
-
 GtkWidget*
 lookup_widget                          (GtkWidget       *widget,
                                         const gchar     *widget_name)
@@ -46,35 +43,6 @@ lookup_widget                          (GtkWidget       *widget,
   return found_widget;
 }
 
-/* This is a dummy pixmap we use when a pixmap can't be found. */
-static char *dummy_pixmap_xpm[] = {
-/* columns rows colors chars-per-pixel */
-"1 1 1 1",
-"  c None",
-/* pixels */
-" "
-};
-
-/* This is an internally used function to create pixmaps. */
-static GtkWidget*
-create_dummy_pixmap                    (GtkWidget       *widget)
-{
-  GdkColormap *colormap;
-  GdkPixmap *gdkpixmap;
-  GdkBitmap *mask;
-  GtkWidget *pixmap;
-
-  colormap = gtk_widget_get_colormap (widget);
-  gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask,
-                                                     NULL, dummy_pixmap_xpm);
-  if (gdkpixmap == NULL)
-    g_error ("Couldn't create replacement pixmap.");
-  pixmap = gtk_pixmap_new (gdkpixmap, mask);
-  gdk_pixmap_unref (gdkpixmap);
-  gdk_bitmap_unref (mask);
-  return pixmap;
-}
-
 static GList *pixmaps_directories = NULL;
 
 /* Use this function to set the directory containing installed pixmaps. */
@@ -86,56 +54,49 @@ add_pixmap_directory                   (const gchar     *directory)
 }
 
 /* This is an internally used function to create pixmaps. */
-GtkWidget*
-create_pixmap                          (GtkWidget       *widget,
-                                        const gchar     *filename)
+GdkPixbuf *load_pixmap(const gchar *name)
 {
-  gchar *found_filename = NULL;
-  GdkColormap *colormap;
-  GdkPixmap *gdkpixmap;
-  GdkBitmap *mask;
-  GtkWidget *pixmap;
+  gchar *filename, *found_filename = NULL;
+  GdkPixbuf *image;
   GList *elem;
+  GError *error = NULL;
 
-  if (!filename || !filename[0])
-      return create_dummy_pixmap (widget);
+  if (!name || !name[0])
+    return NULL;
+
+  filename = g_strdup_printf("%s.png", name);
 
   /* We first try any pixmaps directories set by the application. */
   elem = pixmaps_directories;
-  while (elem)
-    {
-      found_filename = check_file_exists ((gchar*)elem->data, filename);
-      if (found_filename)
-        break;
-      elem = elem->next;
-    }
+  while (elem) {
+    found_filename = check_file_exists ((gchar*)elem->data, filename);
+    if (found_filename)
+      break;
+    elem = elem->next;
+  }
 
   /* If we haven't found the pixmap, try the source directory. */
-  if (!found_filename)
-    {
-      found_filename = check_file_exists ("", filename);
-    }
+  if (!found_filename) {
+    found_filename = check_file_exists ("", filename);
+  }
 
-  if (!found_filename)
-    {
-      g_warning (_("Couldn't find pixmap file: %s"), filename);
-      return create_dummy_pixmap (widget);
-    }
+  g_free(filename);
+  filename = NULL;
 
-  colormap = gtk_widget_get_colormap (widget);
-  gdkpixmap = gdk_pixmap_colormap_create_from_xpm (NULL, colormap, &mask,
-                                                   NULL, found_filename);
-  if (gdkpixmap == NULL)
-    {
-      g_warning (_("Error loading pixmap file: %s"), found_filename);
-      g_free (found_filename);
-      return create_dummy_pixmap (widget);
-    }
-  g_free (found_filename);
-  pixmap = gtk_pixmap_new (gdkpixmap, mask);
-  gdk_pixmap_unref (gdkpixmap);
-  gdk_bitmap_unref (mask);
-  return pixmap;
+  if (!found_filename) {
+    g_warning(_("Couldn't find pixmap file: %s"), name);
+    return NULL;
+  }
+
+  image = gdk_pixbuf_new_from_file(found_filename, &error);
+  if (image == NULL) {
+    g_warning (_("Error loading pixmap file: %s"), found_filename);
+    g_free(found_filename);
+    return NULL;
+  }
+  g_free(found_filename);
+
+  return image;
 }
 
 /* This is an internally used function to check if a pixmap file exists. */
