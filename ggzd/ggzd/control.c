@@ -47,6 +47,8 @@
 #include <room.h>
 #include <ggzdb.h>
 #include <table.h>
+#include <daemon.h>
+
 
 /* Server options */
 Options opt;
@@ -55,6 +57,15 @@ Options opt;
 struct GameTypes game_types;
 struct GameTables tables;
 struct Users players;
+
+/* Termination signal */
+sig_atomic_t term_signal;
+
+/* Termination handler */
+void term_handle(int signum)
+{
+	term_signal = 1;
+}
 
 
 /* Perhaps these should be put into their respective files? */
@@ -84,27 +95,6 @@ void init_data(void)
 }
 
 
-void daemon_init(const char *pname, int facility)
-{
-	int pid;
-	
-	/* Daemonize */
-	if ((pid = fork()) < 0)
-		err_sys_exit("fork failed");
-	else if (pid != 0)
-		exit(0);
-
-	setsid();
-	/* Should chdir() to gamedir?*/
-        /*chdir("/");*/
-	umask(0);
-        close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
-
-}
-
-
 int main(int argc, const char *argv[])
 {
 	int main_sock, new_sock;
@@ -129,13 +119,16 @@ int main(int argc, const char *argv[])
 	logfile_initialize();
 
 #ifndef DEBUG
-	daemon_init(argv[0], 0);
+	daemon_init();
 #endif
 
-	/* FIXME: Need to set more signal handlers */	
 #ifndef DEBUG
 	signal(SIGPIPE, SIG_IGN);
 #endif
+
+	/* FIXME: use sigaction() */
+	signal(SIGTERM, term_handle);
+	signal(SIGINT, term_handle);
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
@@ -148,7 +141,7 @@ int main(int argc, const char *argv[])
 		"GGZ server initialized and ready for player connections");
 
 	/* Main loop */
-	for (;;) {
+	while (!term_signal) {
 		addrlen = sizeof(addr);
 		if ( (new_sock = accept(main_sock, &addr, &addrlen)) < 0) {
 			if (errno == EINTR)
@@ -161,6 +154,14 @@ int main(int argc, const char *argv[])
 		}
 	}
 
-	/* FIXME: Do we need some sort of cleanup? */
+	log_msg(GGZ_LOG_NOTICE, "GGZ server received termination signal");
+
+	/* FIXME: do we need to stop all of threads? */
+	ggzdb_close();
+
+#ifndef DEBUG
+	daemon_cleanup();
+#endif
+
 	return 0;
 }

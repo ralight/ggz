@@ -14,6 +14,8 @@ bin_PROGRAMS = ggzd
 ggzd_SOURCES =	chat.c\
 		chat.h\
 		control.c \
+		daemon.c \
+		daemon.h \
 		datatypes.h \
 		err_func.c \
 		err_func.h \

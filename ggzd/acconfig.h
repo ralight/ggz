@@ -16,7 +16,6 @@
 
 /* defined by automake */
 
-#undef HAVE_LIBHISTORY
 #undef WAIT_ANY
 #undef DEBUG
 #undef DEBUG_SOCKET
