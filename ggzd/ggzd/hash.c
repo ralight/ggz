@@ -214,7 +214,7 @@ static unsigned hash_pjw(char *name)
 
 	for(; *name; ++name) {
 		h = (h << TWELVE_PERCENT) + *name;
-		if(g = h & HIGH_BITS)
+		if((g = (h & HIGH_BITS)))
 			h = (h ^ (g >> SEVENTY_FIVE_PERCENT)) & ~HIGH_BITS;
 	}
 
