@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4981 2002-10-22 04:24:17Z jdorje $
+ * $Id: netxml.c 4992 2002-10-22 16:40:17Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -172,7 +172,8 @@ static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 /* Utility functions */
 static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
-static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
+static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
+	ggz__attribute((format(printf, 2, 3)));
 static int safe_atoi(char *string);
 
 
