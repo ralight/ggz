@@ -1,4 +1,4 @@
-SUBDIRS = .
+SUBDIRS = architecture
 
 docdir = $(GGZDOCDIR)/overview
 doc_DATA = index.html \

@@ -1,2 +1,2 @@
-SUBDIRS = hosting
+SUBDIRS = hosting database metaserver
 
