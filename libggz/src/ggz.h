@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 6829 2005-01-23 10:29:31Z josef $
+ * $Id: ggz.h 6964 2005-03-09 18:17:58Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -65,14 +65,14 @@ extern "C" {
 /**
  * @defgroup memory Memory Handling
  *
- * These macros proivide an alternative to the normal C library
+ * These macros provide an alternative to the normal C library
  * functions for dynamically allocating memory.  They keep track of
  * memory allocated by storing the name of the function and file in
- * which they were called 
+ * which they were called.
  *
  * You can then call ggz_memory_check() to make sure all allocated
- * memory has been freed  Note that you will need to enable MEMORY
- * debugging to see this
+ * memory has been freed.  Note that you will need to enable MEMORY
+ * debugging to see this.
  * 
  * @{
  */
@@ -85,7 +85,7 @@ extern "C" {
 /** 
  * Macro for memory allocation
  * 
- * @param size the size of memory to allocate
+ * @param size the size of memory to allocate, in bytes
  * 
  * @return a pointer to the newly allocated and zeroed memory
  */
@@ -96,7 +96,7 @@ extern "C" {
  * Macro for resizing previously allocated memory
  * 
  * @param mem pointer to memory to reallocate
- * @param size new size requested
+ * @param size new size requested, in bytes
  * 
  * @return pointer to allocated memory
  */
@@ -128,9 +128,9 @@ extern "C" {
 
 /** 
  * Function to actually perform memory allocation.  Don't call this
- * directly.  Instead, call ggz_malloc()
+ * directly.  Instead, call ggz_malloc().
  * 
- * @param size size of memory to allocate
+ * @param size size of memory to allocate, in bytes
  * @param tag string describing the calling function
  * @param line linenumber
  * 
@@ -140,10 +140,10 @@ void * _ggz_malloc(const size_t size, const char * tag, int line);
 
 /** 
  * Function to perform memory reallocation.  Don't call this
- * directly.  Instead, call ggz_realloc()
+ * directly.  Instead, call ggz_realloc().
  * 
  * @param ptr pointer to memory to reallocate
- * @param size new size
+ * @param size new size, in bytes
  * @param tag string describing the calling function
  * @param line linenumber
  * 
@@ -154,7 +154,7 @@ void * _ggz_realloc(const void * ptr, const size_t size,
 
 /** 
  * Function to free allocated memory.  Don't call this
- * directly.  Instead, call ggz_free()
+ * directly.  Instead, call ggz_free().
  * 
  * @param ptr pointer to memory
  * @param tag string describing the calling function
@@ -166,7 +166,7 @@ int _ggz_free(const void * ptr, const char * tag, int line);
 
 /** 
  * Function to copy a string.  Don't call this
- * directly.  Instead, call ggz_strdup()
+ * directly.  Instead, call ggz_strdup().
  * 
  * @param ptr string to duplicate
  * @param tag string describing the calling function
@@ -180,7 +180,7 @@ char * _ggz_strdup(const char * ptr, const char * tag, int line);
 
 
 /** 
- * Check memory allocated against memory freed and display any discrepencies
+ * Check memory allocated against memory freed and display any discrepancies.
  * 
  * 
  * @return 0 if no allocated memory remains, -1 otherwise
@@ -224,7 +224,7 @@ int ggz_memory_check(void);
  * written to the flat-file format of the configuration file.
  *
  * The string and list reading functions return dynamically allocated
- * memory to the caller.  The user is responsible for calling free() on
+ * memory to the caller.  The user is responsible for calling ggz_free() on
  * this memory when they no longer need the returned values.
  *
  * All memory used internally by the configuration functions will be
@@ -247,13 +247,13 @@ int ggz_memory_check(void);
 #define GGZ_CONF_DEBUG "ggz_conf"
 
 /** 
- * Specifies the mode for opening a configuration file
+ * Specifies the mode for opening a configuration file.
  * @see ggz_conf_parse()
  */
 typedef enum {
-	GGZ_CONF_RDONLY = ((unsigned char) 0x01),
-	GGZ_CONF_RDWR = ((unsigned char) 0x02),
-	GGZ_CONF_CREATE = ((unsigned char) 0x04)
+	GGZ_CONF_RDONLY = ((unsigned char) 0x01), /**< Read only */
+	GGZ_CONF_RDWR = ((unsigned char) 0x02),   /**< Read and write */
+	GGZ_CONF_CREATE = ((unsigned char) 0x04)  /**< Create file */
 } GGZConfType;
 
 
@@ -266,7 +266,7 @@ void ggz_conf_cleanup (void);
 
 /**
  * Closes one configuration file.
- * @note The same warning as for ggz_conf_cleanup applies here.
+ * @note The same warning as for ggz_conf_cleanup() applies here.
  */
 void ggz_conf_close (int handle);
 
@@ -274,7 +274,7 @@ void ggz_conf_close (int handle);
  * Opens a configuration file and parses the variables so they can
  * be retrieved with the access functions.
  * @param path A string specifying the filename to be parsed
- * @param options An or'ed set of GGZ_CONF_* option bits
+ * @param options An or'ed set of GGZConfType option bits
  * @return An integer configuration file handle or -1 on error
  * @see GGZConfType
  */
