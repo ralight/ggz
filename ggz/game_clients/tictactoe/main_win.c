@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6242 2004-11-03 20:27:08Z jdorje $
+ * $Id: main_win.c 6247 2004-11-03 23:30:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,24 +28,27 @@
 #endif
 
 #include <assert.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <gdk/gdkkeysyms.h>
+#include <librsvg/rsvg.h>
+#include <gtk/gtk.h>
+
 #include "dlg_about.h"
 #include "dlg_players.h"
 #include "menus.h"
-
 #include "main_win.h"
 #include "game.h"
 #include "support.h"
 
 
 /* Pixmaps */
+#define PIXSIZE 20
+
 GdkPixbuf *x_pix, *o_pix;
 GdkPixmap* ttt_buf;
 
@@ -110,7 +113,7 @@ void display_board(void)
 
 		gdk_pixbuf_render_to_drawable(piece, ttt_buf,
 					style->fg_gc[GTK_WIDGET_STATE(tmp)],
-					      0, 0, x, y, 18, 20,
+					      0, 0, x, y, PIXSIZE, PIXSIZE,
 					      GDK_RGB_DITHER_NONE, 0, 0);
 	}
 	
@@ -120,12 +123,12 @@ void display_board(void)
 
 static GdkPixbuf *load_pixmap(const char *name)
 {
-  char *fullpath = g_strdup_printf("%s/tictactoe/pixmaps/%s.png",
+  char *fullpath = g_strdup_printf("%s/tictactoe/pixmaps/%s.svg",
 				   GGZDATADIR, name);
   GdkPixbuf *image;
   GError *error = NULL;
 
-  image = gdk_pixbuf_new_from_file(fullpath, &error);
+  image = rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE, &error);
   if (image == NULL)
     ggz_error_msg_exit("Can't load pixmap %s", fullpath);
   g_free(fullpath);

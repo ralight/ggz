@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6242 2004-11-03 20:27:08Z jdorje $
+#  $Id: Makefile.am 6247 2004-11-03 23:30:47Z jdorje $
 
 SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
-		@GTK_CFLAGS@
+		@GTK_CFLAGS@ @RSVG_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
 
@@ -22,10 +22,10 @@ ggz_ttt_SOURCES =			\
 	main_win.c	main_win.h	\
 	support.c	support.h
 
-ggz_ttt_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)				\
+ggz_ttt_LDADD =	@GTK_LIBS@ @RSVG_LIBS@ @INTLLIBS@ $(LDADD)		\
 		$(top_builddir)/common/libgtk-games.a			\
 		$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 pixmapdir = $(ggzdatadir)/tictactoe/pixmaps
-dist_pixmap_DATA = o.png x.png
+dist_pixmap_DATA = o.svg x.svg
