@@ -28,6 +28,7 @@ if (($res) && (pg_numrows($res) == 1)) :
 	$photo = pg_result($res, 0, "photo");
 	$gender = pg_result($res, 0, "gender");
 	$country = pg_result($res, 0, "country");
+	$pubkey = pg_result($res, 0, "pubkey");
 endif;
 
 ?>
@@ -72,6 +73,21 @@ $c->listall();
 <form action='settings.php?password=1' method='POST'>
 <table>
 <tr><td>Password:</td><td><input type='password' name='user_password' value=''></td></tr>
+<tr><td></td><td><input type='submit' value='Change'></td></tr>
+</table>
+</form>
+
+	</div>
+	<div class="text">
+	For enhanced security, email communication can be encrypted using
+	an OpenPGP key.
+	Paste the output of 'gpg --export --armor 0xKEYIDNUM'.
+	</div>
+	<div class="text">
+
+<form action='settings.php?pubkey=1' method='POST'>
+<table>
+<tr><td>Public key:</td><td><textarea name='user_pubkey' cols='40'><?php echo $pubkey; ?></textarea></td></tr>
 <tr><td></td><td><input type='submit' value='Change'></td></tr>
 </table>
 </form>

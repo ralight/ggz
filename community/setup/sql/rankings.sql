@@ -6,7 +6,8 @@ CREATE TABLE userinfo (
     handle character varying(256),
     photo character varying(256),
     gender character varying(256),
-    country character varying(256)
+    country character varying(256),
+    pubkey character varying(8192)
 );
 
 CREATE TABLE "teams" (

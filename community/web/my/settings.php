@@ -15,6 +15,7 @@ $user_email = $_POST["user_email"];
 $user_gender = $_POST["user_gender"];
 $user_country = $_POST["user_country"];
 $user_password = $_POST["user_password"];
+$user_pubkey = $_POST["user_pubkey"];
 
 $res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
 if (($res) && (pg_numrows($res) == 0)) :
@@ -36,6 +37,11 @@ if ($settings) :
 		"WHERE handle = '$ggzuser'");
 	$res = pg_exec($id, "UPDATE users SET ".
 		"name = '$user_realname', email = '$user_email' " .
+		"WHERE handle = '$ggzuser'");
+endif;
+if ($pubkey) :
+	$res = pg_exec($id, "UPDATE userinfo SET ".
+		"pubkey = '$user_pubkey' " .
 		"WHERE handle = '$ggzuser'");
 endif;
 
