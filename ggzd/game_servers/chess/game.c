@@ -148,7 +148,7 @@ void game_update(int event_id, void *data) {
           game_send_move((char *)data, 0);
       else {
         /* Worry about time */
-        time = *((int *)data + (5/sizeof(int)) + 1);
+        time = *((int *)data + (6/sizeof(int)) + 1);
         /* Update the structures */
         if (!OUT_OF_TIME(game_info.turn %2))
           game_info.seconds[game_info.turn % 2] -= time;
@@ -295,7 +295,6 @@ void game_update(int event_id, void *data) {
 void game_handle_player(int id, int *seat) {
   int fd, time;
   char op;
-  char move[2];
   void *data;
   struct timeval now;
 
@@ -338,7 +337,9 @@ void game_handle_player(int id, int *seat) {
       ggz_debug("Player sent a REQ_MOVE");
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK) {
         /* We don't use clocks! */
-        data = malloc(sizeof(char) * 5);
+        data = malloc(sizeof(char) * 6);
+        es_read_string(fd, data, 6);
+        /*
         es_read_char(fd, &move[0]);
         es_read_char(fd, &move[1]);
         *(char *)data = (move[0]%8) + 65;
@@ -346,8 +347,11 @@ void game_handle_player(int id, int *seat) {
         *(char *)(data+2) = (move[1]%8) + 65;
         *(char *)(data+3) = 49 + (move[1]/8);
         *(char *)(data+4) = 0;
+        */
       } else {
-        data = malloc(sizeof(int) * (2 + (5/sizeof(int))));
+        data = malloc(sizeof(int) * (2 + (6/sizeof(int))));
+        es_read_string(fd, data, 6);
+        /*
         es_read_char(fd, &move[0]);
         es_read_char(fd, &move[1]);
         *(char *)data = (move[0]%8) + 65;
@@ -355,6 +359,7 @@ void game_handle_player(int id, int *seat) {
         *(char *)(data+2) = (move[1]%8) + 65;
         *(char *)(data+3) = 49 + (move[1]/8);
         *(char *)(data+4) = 0;
+        */
         if (game_info.clock_type == CHESS_CLOCK_CLIENT) {
           /* Get the time */
           es_read_int(fd, &time);
@@ -368,7 +373,7 @@ void game_handle_player(int id, int *seat) {
         if (!game_info.turn)
           time = 0;
         ggz_debug("Move: %s\tTime: %d", data, time);
-        *((int *)data + (5/sizeof(int)) + 1) = time;
+        *((int *)data + (6/sizeof(int)) + 1) = time;
       }
       /* Check if correct turn */
       if (*seat == game_info.turn % 2)
@@ -501,12 +506,18 @@ void game_send_move(char *move, int time) {
     es_write_char(fd, CHESS_MSG_MOVE);
 
     /* Send MOVE */
+    if (move)
+      es_write_string(fd, move);
+    else
+      es_write_int(fd, 0);
+    /*
     if (move) {
       es_write_char(fd, move[0]-65+(8*(move[1]-49)));
       es_write_char(fd, move[2]-65+(8*(move[3]-49)));
     }
     else
       es_write_char(fd, -1);
+      */
     
     /* Send time, if not error */
     if (game_info.clock_type && move)
