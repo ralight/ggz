@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6739 2005-01-19 06:59:15Z jdorje $
+ * $Id: launch.c 6755 2005-01-20 02:46:06Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -63,6 +63,19 @@ static GtkWidget *create_dlg_launch(void);
 
 static GtkWidget *launch_dialog;
 static char _launching = 0;
+
+/* Close the launch dialog.  This is done when switching rooms. */
+void launch_dialog_close(void)
+{
+	if (!launch_dialog) return;
+
+	/* Free up game we allocated but never launched */
+	cancel_module_picking();
+	game_destroy();
+
+	gtk_widget_destroy(launch_dialog);
+	launch_dialog = NULL;
+}
 
 void launch_create_or_raise(void)
 {
@@ -320,12 +333,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 
 static void launch_cancel_button_clicked(GtkWidget * widget, gpointer data)
 {
-	/* Free up game we allocated but never launched */
-	cancel_module_picking();
-	game_destroy();
-
-	gtk_widget_destroy(launch_dialog);
-	launch_dialog = NULL;
+	launch_dialog_close();
 }
 
 

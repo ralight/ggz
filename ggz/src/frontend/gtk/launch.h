@@ -26,3 +26,4 @@
 void launch_create_or_raise(void);
 void launch_table(void);
 char launch_in_process(void);
+void launch_dialog_close(void);

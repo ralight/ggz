@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6447 2004-12-11 20:47:08Z jdorje $
+ * $Id: ggzclient.c 6755 2005-01-20 02:46:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -329,6 +329,9 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	gchar *message;
 	GGZRoom *room;
 	GGZGameType *gt;
+
+	/* Close any launch dialog that's currently open. */
+	launch_dialog_close();
 
 	/* Clear the player list */
 	/* We do this here so that on slower links people
