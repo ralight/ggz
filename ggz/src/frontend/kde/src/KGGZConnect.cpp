@@ -278,9 +278,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 
 	// read values for selected server
 	KGGZDEBUG("slotLoadProfile: read values in %s...\n", listentry);
-	host = config->read(listentry, "Host", "ggz.snafu.de");
+	host = config->read(listentry, "Host", "jzaun.com");
 	port = config->read(listentry, "Port", "5688");
-	username = config->read(listentry, "Login", "zocker");
+	username = config->read(listentry, "Login", "kde-cvs-player");
 	password = config->read(listentry, "Password", "");
 	type = config->read(listentry, "Type", 1);
 

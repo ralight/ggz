@@ -91,6 +91,8 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_table = NULL;
 	m_gameinfo = NULL;
 	m_connect = NULL;
+	m_killserver = 0;
+	m_dns = NULL;
 
 	setBackgroundColor(QColor(0, 0, 0));
 
@@ -173,8 +175,6 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 
 void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
-	int result;
-
 	KGGZDEBUGF("KGGZ::slotConnected()\n");
 	/*delete m_connect;
 	m_connect = NULL;*/
@@ -193,18 +193,48 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
 
+	if(m_dns) delete m_dns;
+	m_dns = new QDns(host);
+	connect(m_dns, SIGNAL(resultsReady()), SLOT(slotConnectedStart()));
+	// FIXME: and now?
+
 	m_save_loginmode = mode;
 	m_save_username = strdup(username);
 	m_save_password = strdup(password);
 	m_save_host = strdup(host);
 	m_save_port = port;
 	KGGZDEBUG("Values are: username=%s password=%s mode=%i\n", m_save_username, m_save_password, m_save_loginmode);
+}
+
+void KGGZ::slotConnectedStart()
+{
+	int result;
+	QValueList<QHostAddress> list;
+	QHostAddress addr;
+
+	KGGZDEBUGF("KGGZ::slotConnectedStart()\n");
+	if(m_dns->addresses().at(0) == m_dns->addresses().end()) return;
+	list = m_dns->addresses();
+	KGGZDEBUG("Pre-Resolve: %s\n", (*list.at(0)).toString().latin1());
+	addr = (*list.at(0));
+	if(m_save_host) free(m_save_host);
+	m_save_host = strdup(addr.toString().latin1());
+	KGGZDEBUG("Host resolved to: %s\n", m_save_host);
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
 
-	kggzserver->setHost(host, port);
+	kggzserver->setHost(m_save_host, m_save_port);
+	KGGZDEBUG("connect now!\n");
 	result = kggzserver->connect();
+	if(m_killserver)
+	{
+		KGGZDEBUG("Delayed server kill now!\n");
+		detachServerCallbacks();
+		delete kggzserver;
+		kggzserver = NULL;
+		m_killserver = 0;
+	}
 	if(result == -1)
 	{
 		if(kggzserver)
@@ -356,6 +386,7 @@ void KGGZ::dispatcher()
 
 void KGGZ::timerEvent(QTimerEvent *e)
 {
+	if(m_killserver) return;
 	if(m_lock) return;
 	if(!kggzserver) return;
 
@@ -366,12 +397,7 @@ void KGGZ::timerEvent(QTimerEvent *e)
 
 	if((!m_lock) && (kggzserver))
 	{
-		while(kggzserver->dataPending())
-		{
-			if(!kggzserver) return;
-			kggzserver->dataRead();
-			if(!kggzserver) return;
-		}
+		if(kggzserver->dataPending()) kggzserver->dataRead();
 	}
 }
 
@@ -696,46 +722,38 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			// possibly ggzcore bug:
 			// state has not been updated yet here
 			while(!kggzserver->isOnline()) kggzserver->dataRead();
-KGGZDEBUG("releasecritical: a1\n");
 			kggzserver->setLogin(m_save_loginmode, m_save_username, m_save_password);
-KGGZDEBUG("releasecritical: a2\n");
 			result = kggzserver->login();
-KGGZDEBUG("releasecritical: a3\n");
 			if(result == -1)
 			{
-KGGZDEBUG("releasecritical: a4\n");
 				detachServerCallbacks();
-KGGZDEBUG("releasecritical: a5\n");
 				delete kggzserver;
-KGGZDEBUG("releasecritical: a6\n");
 				kggzserver = NULL;
-KGGZDEBUG("releasecritical: a7\n");
 				KMessageBox::error(this, i18n("Attempt to login refused!"), "Error!");
-KGGZDEBUG("releasecritical: a8\n");
 				menuConnect();
-KGGZDEBUG("releasecritical: a9\n");
 				return;
 			}
 			break;
 		case GGZCoreServer::connectfail:
 			KGGZDEBUG("connectfail\n");
-KGGZDEBUG("releasecritical: b1\n");
 			detachServerCallbacks();
-KGGZDEBUG("releasecritical: b2\n");
 			delete kggzserver;
-KGGZDEBUG("releasecritical: b3\n");
 			kggzserver = NULL;
-KGGZDEBUG("releasecritical: b4\n");
 			KMessageBox::error(this, i18n("Couldn't connect to server!"), "Error!");
-KGGZDEBUG("releasecritical: b5\n");
 			menuConnect();
-KGGZDEBUG("releasecritical: b6\n");
 			break;
 		case GGZCoreServer::negotiated:
 			KGGZDEBUG("negotiated\n");
 			break;
 		case GGZCoreServer::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
+			m_killserver = 1;
+			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), "Error!");
+			menuConnect();
+			// quick hack!
+			KGGZDEBUG("Free ggzcore server object\n");
+			kggzserver->rescue();
+			KGGZDEBUG("freed\n");
 			break;
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
@@ -751,17 +769,15 @@ KGGZDEBUG("releasecritical: b6\n");
 				KMessageBox::information(this, buffer, "Information");
 				//if(m_motd) m_motd->show();
 			}
-KGGZDEBUG("releasecritical: c0\n");
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
-KGGZDEBUG("releasecritical: c1: %s\n", buffer.latin1());
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
-KGGZDEBUG("releasecritical: c2\n");
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
 			KMessageBox::error(this, i18n("Login refused!"), "Error!");
+			// TODO: do something here !? 2001-07-17 josef
 			menuConnect();
 			break;
 		case GGZCoreServer::motdloaded:
@@ -898,6 +914,7 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* u
 			KGGZDEBUG("atom event: unknown\n");
 			break;
 	}
+	KGGZDEBUG("Return: GGZ_HOOK_OK\n");
 	return GGZ_HOOK_OK;
 }
 

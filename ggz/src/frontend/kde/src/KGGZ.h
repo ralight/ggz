@@ -48,6 +48,7 @@
 // Qt includes
 #include <qevent.h>
 #include <qwidget.h>
+#include <qdns.h>
 
 // GGZCore++ includes
 #include "GGZCore.h"
@@ -150,6 +151,8 @@ class KGGZ : public QWidget
 
 		// Receive connection parameters
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode);
+		// Actually start the connection with the pre-resolved host
+		void slotConnectedStart();
 		// Receive chat message
 		void slotChat(const char *text, char *player, int mode);
 		// Launch a table
@@ -240,6 +243,8 @@ class KGGZ : public QWidget
 		int m_save_loginmode, m_save_port;
 		// Lock for time-critical operations
 		int m_lock;
+		// Special flag for failed negotiations
+		int m_killserver;
 
 		// Launch dialog
 		KGGZLaunch *m_launch;
@@ -260,6 +265,9 @@ class KGGZ : public QWidget
 		KGGZPrefEnv *m_prefenv;
 		// Frontend selection
 		KGGZSelector *m_selector;
+
+		// Non-blocking DNS for easysock's gethostbyname
+		QDns *m_dns;
 };
 
 #endif

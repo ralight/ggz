@@ -206,8 +206,8 @@ void GGZapHandler::getModule()
 
 	m_module = new GGZCoreModule();
 	gametype = m_room->gametype();
-cout << "##### init with: " << gametype->name() << ", " << gametype->protocol() << endl;
-	m_module->init(gametype->name(), gametype->protocol());
+cout << "##### init with: " << gametype->name() << ", " << gametype->protocolVersion() << endl;
+	m_module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	count = m_module->count();
 	if(!count)
 	{

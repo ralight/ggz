@@ -142,6 +142,8 @@ class GGZCoreServer
 
 		void resetRoom();
 
+		void rescue();
+
 	private:
 		GGZServer *m_server;
 		GGZCoreRoom *m_coreroom;

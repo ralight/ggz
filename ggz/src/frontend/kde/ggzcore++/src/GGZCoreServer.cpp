@@ -226,7 +226,11 @@ int GGZCoreServer::isAtTable()
 
 int GGZCoreServer::connect()
 {
-	return ggzcore_server_connect(m_server);
+	int ret;
+	GGZCOREDEBUG("connect start.\n");
+	ret = ggzcore_server_connect(m_server);
+	GGZCOREDEBUG("connect done.\n");
+	return ret;
 }
 
 int GGZCoreServer::login()
@@ -287,3 +291,11 @@ void GGZCoreServer::resetRoom()
 {
 	m_coreroom = NULL;
 }
+
+void GGZCoreServer::rescue()
+{
+	if(!m_server) return;
+	ggzcore_server_free(m_server);
+	m_server = NULL;
+}
+
