@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2435 2001-09-10 06:03:08Z jdorje $
+ * $Id: spades.c 2436 2001-09-10 06:19:07Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -627,23 +627,21 @@ static card_t get_play(player_t p, seat_t s)
 	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks && this trick
 	   hopeless */
 
-	if (myNeed == 0 && oppNeed == 0)
-		/* can't set'em; bag'em instead */
+	if ((myNeed == 0 || totTricks < myNeed)
+	    && (oppNeed == 0 || totTricks < oppNeed))
+		/* everythings already been determined, so just throw bags. */
 		agg = 0;
-	else if (totTricks < myNeed || totTricks < oppNeed)
-		/* not enough left */
-		agg = 0;
-	else if (totTricks - myNeed - oppNeed >= 3)
+	else if (totTricks - myNeed - oppNeed >= 4)
 		/* lotsa bags */
 		agg = (myNeed > 0) ? 25 : 0;
+	else if (totTricks - myNeed - oppNeed >= 3)
+		/* some bags */
+		agg = (myNeed > 0) ? 50 : 0;
 	else if (totTricks - myNeed - oppNeed >= 2)
 		/* just be cautious */
-		agg = 50;
+		agg = 75;
 	else if (totTricks - myNeed - oppNeed >= 1)
 		/* need tricks */
-		agg = 75;
-	else
-		/* really need tricks */
 		agg = 100;
 
 	ai_debug("Aggression set to %d", agg);
