@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4398 2002-09-03 04:55:19Z jdorje $
+ * $Id: common.c 4469 2002-09-08 20:26:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -519,7 +519,6 @@ void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	ggz_debug(DBG_MISC, "Seat change successful.");
 }
 
-#ifdef SUPPORT_SPECTATORS
 void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	GGZSpectator old = *(GGZSpectator*)data;
@@ -545,7 +544,6 @@ void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 	ggz_debug(DBG_MISC, "Spectator change successful.");
 }
-#endif
 
 /* This handles the event of a player responding to a newgame request */
 void handle_newgame_event(player_t player)
@@ -818,10 +816,8 @@ GGZSeatType get_seat_status(seat_t s)
 const char* get_player_name(player_t p)
 {
 	if (IS_SPECTATOR(p)) {
-#ifdef SUPPORT_SPECTATORS
 		int sp = PLAYER_TO_SPECTATOR(p);
 		return ggzdmod_get_spectator(game.ggz, sp).name;
-#endif
 	} else {
 		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
 	
@@ -842,10 +838,8 @@ GGZSeatType get_player_status(player_t p)
 int get_player_socket(int p)
 {
 	if (IS_SPECTATOR(p)) {
-#ifdef SUPPORT_SPECTATORS
 		int sp = PLAYER_TO_SPECTATOR(p);
 		return ggzdmod_get_spectator(game.ggz, sp).fd;
-#endif
 	} else {
 		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
 

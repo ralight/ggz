@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4454 2002-09-08 01:30:17Z jdorje $
+ * $Id: net.c 4469 2002-09-08 20:26:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -50,11 +50,9 @@
 
 seat_t convert_seat(seat_t s_abs, player_t p)
 {
-#ifdef SUPPORT_SPECTATORS
 	/* Treat spectators as if they're sitting at seat 0. */
 	if (p < 0)
 		p = 0;
-#endif
 
 	assert(game.players[p].seat >= 0);
 	return (s_abs - game.players[p].seat + game.num_seats)
@@ -63,17 +61,14 @@ seat_t convert_seat(seat_t s_abs, player_t p)
 
 seat_t unconvert_seat(seat_t s_rel, player_t p)
 {
-#ifdef SUPPORT_SPECTATORS
 	/* Treat spectators as if they're sitting at seat 0. */
 	if (p < 0)
 		p = 0;
-#endif
 
 	assert(game.players[p].seat >= 0);
 	return (game.players[p].seat + s_rel) % game.num_seats;
 }
 
-#ifdef SUPPORT_SPECTATORS
 #define broadcast_iterate(p)                                \
 {                                                           \
 	player_t p;                                         \
@@ -81,13 +76,6 @@ seat_t unconvert_seat(seat_t s_rel, player_t p)
 	     p < game.num_players;                          \
 	     p++)                                           \
 		if (is_broadcast_seat(p)) {
-#else
-#define broadcast_iterate(p)                                \
-{                                                           \
-	player_t p;                                         \
-	for (p = 0; p < game.num_players; p++)              \
-		if (is_broadcast_seat(p)) {
-#endif
 
 #define broadcast_iterate_end } }
 
