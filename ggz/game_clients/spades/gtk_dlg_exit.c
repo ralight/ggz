@@ -3,11 +3,12 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/29/99
+ * $Id: gtk_dlg_exit.c 3627 2002-03-23 18:04:45Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +26,11 @@
  */
 
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <gtk/gtk.h>
-
-#include <gtk_dlg_exit.h>
-#include <gtk_io.h>
-#include <callbacks.h>
 
 void ExitDialog(GtkWidget * widget, gpointer data)
 {
@@ -106,17 +105,4 @@ void ExitDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_show(dialog_action_area1);
 
 	gtk_widget_show(window);
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
