@@ -27,4 +27,4 @@
 #include<gtk/gtk.h>
 
 int connect_to_server(void);
-void Disconnect(GtkWidget *, gpointer);
+void disconnect(GtkWidget *, gpointer);

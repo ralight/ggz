@@ -104,9 +104,9 @@ int connect_to_server(void)
 
 
 /*
- * Disconnect from server, close sockets, etc.
+ * disconnect from server, close sockets, etc.
  */
-void Disconnect(GtkWidget * widget, gpointer data)
+void disconnect(GtkWidget * widget, gpointer data)
 {
 	if (sock_handle)
 		gdk_input_remove(sock_handle);
@@ -151,7 +151,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
-			Disconnect(NULL, NULL);
+			disconnect(NULL, NULL);
 			return;
 		}
 		es_read_int(source, &checksum);
@@ -164,7 +164,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
 			/* FIXME: Don't really need to disconnect */
-			Disconnect(NULL, NULL);
+			disconnect(NULL, NULL);
 			return;
 		}
 		connection.playing = TRUE;
@@ -175,7 +175,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
 			/* FIXME: Don't really need to disconnect */
-			Disconnect(NULL, NULL);
+			disconnect(NULL, NULL);
 			return;
 		}
 		connection.playing = TRUE;
@@ -184,7 +184,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGOUT:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		Disconnect(NULL, NULL);
+		disconnect(NULL, NULL);
 		break;
 
 	case RSP_GAME_TYPES:

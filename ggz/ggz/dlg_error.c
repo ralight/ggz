@@ -71,7 +71,7 @@ void msg_dlg(char *str, gboolean quit)
 
 	if (quit)
 		gtk_signal_connect(GTK_OBJECT(okButton), "clicked",
-				   GTK_SIGNAL_FUNC(Disconnect), NULL);
+				   GTK_SIGNAL_FUNC(disconnect), NULL);
 
 	gtk_signal_connect_object(GTK_OBJECT(okButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),

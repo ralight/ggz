@@ -888,7 +888,7 @@ create_main_win (void)
   gtk_container_set_border_width (GTK_CONTAINER (statusbar), 5);
 
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
-                      GTK_SIGNAL_FUNC (ExitDialog),
+                      GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "destroy",
                       GTK_SIGNAL_FUNC (gtk_main_quit),
@@ -903,7 +903,7 @@ create_main_win (void)
                       GTK_SIGNAL_FUNC (logout),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit1), "activate",
-                      GTK_SIGNAL_FUNC (ExitDialog),
+                      GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (game_types1), "activate",
                       GTK_SIGNAL_FUNC (get_types),
@@ -924,7 +924,7 @@ create_main_win (void)
                       GTK_SIGNAL_FUNC (logout),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit_button), "clicked",
-                      GTK_SIGNAL_FUNC (ExitDialog),
+                      GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (msg_entry), "activate",
                       GTK_SIGNAL_FUNC (input_chat_msg),

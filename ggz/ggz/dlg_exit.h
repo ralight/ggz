@@ -28,4 +28,4 @@
 
 #include <gtk/gtk.h>
 
-void ExitDialog(GtkWidget *, gpointer);
+void exit_dlg(GtkWidget *, gpointer);

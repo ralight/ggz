@@ -33,7 +33,7 @@
 #include <callbacks.h>
 
 
-void ExitDialog(GtkWidget * widget, gpointer data)
+void exit_dlg(GtkWidget * widget, gpointer data)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
