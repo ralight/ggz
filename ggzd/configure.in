@@ -85,7 +85,8 @@ dnl ====================
 AC_CHECK_HEADER(pthread.h, 
     AC_CHECK_LIB(pthread, pthread_create, 
         ggzd_LIBS="$ggzd_LIBS -lpthread" 
-	CFLAGS="$CFLAGS -D_REENTRANT",
+	CFLAGS="$CFLAGS -D_REENTRANT"
+	AC_DEFINE(_XOPEN_SOURCE, 500),
 	AC_CHECK_LIB(c_r, pthread_create, 
 	    ggzd_LIBS="$ggzd_LIBS -pthread"
 	    CFLAGS="$CFLAGS -D_THREAD_SAFE",
@@ -256,7 +257,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man ggzdmod tests"
+SUBDIRS="man ggzdmod"
 
 if test "$enable_server" = yes; then
     SUBDIRS="$SUBDIRS ggzd"
@@ -266,6 +267,7 @@ if test "$enable_games" = yes; then
     SUBDIRS="$SUBDIRS game_servers"
 fi
 
+SUBDIRS="$SUBDIRS tests"
 
 LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 
