@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2449 2001-09-11 02:18:15Z bmh $
+ * $Id: net.c 2472 2001-09-14 00:04:35Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -73,7 +73,9 @@ static int _net_send_error(GGZNetIO *net);
 static int _net_send_login_normal_status(GGZNetIO *net, char status);
 static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
+static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_line(GGZNetIO *net, char *line, ...);
 static int _net_send_string(GGZNetIO *net, char *fmt, ...);
 static int _net_read_name(int sock, char name[MAX_USER_NAME_LEN + 1]);
@@ -406,7 +408,7 @@ int net_send_table_list_count(GGZNetIO *net, int count)
 }
 
 
-int net_send_table(GGZNetIO *net, GGZTable *table, int seat)
+int net_send_table(GGZNetIO *net, GGZTable *table)
 {
 	int i;
 
@@ -415,50 +417,11 @@ int net_send_table(GGZNetIO *net, GGZTable *table, int seat)
 		       seats_num(table));
 
 	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
-
-	/* If no seat specified, send them all */
-	if (seat < 0) {
-		for (i = 0; i < seats_num(table); i++)
-			_net_send_table_seat(net, table, i);
-	}
-	else 
-		_net_send_table_seat(net, table, seat);
+	
+	for (i = 0; i < seats_num(table); i++)
+		_net_send_seat(net, table, i);
 	
 	_net_send_line(net, "</TABLE>");
-
-	return 0;
-}
-
-int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num)
-{
-	int seat;
-	char *type = NULL;
-	char *name = NULL;
-
-	seat = seats_type(table, num);
-	switch (seat) {
-	case GGZ_SEAT_OPEN:
-		type = "open";
-		break;
-	case GGZ_SEAT_BOT:
-		type = "bot";
-		break;
-	case GGZ_SEAT_RESV:
-		type = "reserved";
-		name = table->reserve[num];
-		break;
-	case GGZ_SEAT_PLAYER:
-		type = "player";
-		name = table->seats[num];
-		break;
-	}
-	
-	if (name)
-		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
-			       num, type, name);
-	else
-		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-			       num, type);
 
 	return 0;
 }
@@ -579,9 +542,25 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 	/* Always send opcode */
 	_net_send_line(net, "<UPDATE TYPE='table' ACTION='%s' ROOM=''>",
 		       action);
-	
-	net_send_table(net, table, seat);
 
+	switch (opcode) {
+	case GGZ_UPDATE_DELETE:
+		net_send_table(net, table);
+		break;
+	case GGZ_UPDATE_ADD:
+		net_send_table(net, table);
+		break;
+	case GGZ_UPDATE_LEAVE:
+		_net_send_table_seat(net, table, seat);
+		break;
+	case GGZ_UPDATE_JOIN:
+		_net_send_table_seat(net, table, seat);
+		break;
+	case GGZ_UPDATE_STATE:
+		_net_send_table_status(net, table);
+		break;
+	}
+	
 	_net_send_line(net, "</UPDATE>");
 
 	return 0;
@@ -790,6 +769,59 @@ static int _net_handle_motd(GGZNetIO *net)
 
 
 /************ Utility/Convenience functions *******************/
+
+int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
+{
+	_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>", table->index, 
+		       seats_num(table));
+	_net_send_seat(net, table, seat);
+	_net_send_line(net, "</TABLE>");
+	
+	return 0;
+}
+
+
+int _net_send_table_status(GGZNetIO *net, GGZTable *table)
+{
+	return _net_send_line(net, "<TABLE ID='%d' STATUS='%d' SEATS='%d'/>", 
+			      table->index, table->state, seats_num(table));
+}
+
+
+int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
+{
+	int seat;
+	char *type = NULL;
+	char *name = NULL;
+
+	seat = seats_type(table, num);
+	switch (seat) {
+	case GGZ_SEAT_OPEN:
+		type = "open";
+		break;
+	case GGZ_SEAT_BOT:
+		type = "bot";
+		break;
+	case GGZ_SEAT_RESV:
+		type = "reserved";
+		name = table->reserve[num];
+		break;
+	case GGZ_SEAT_PLAYER:
+		type = "player";
+		name = table->seats[num];
+		break;
+	}
+	
+	if (name)
+		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
+			       num, type, name);
+	else
+		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
+			       num, type);
+
+	return 0;
+}
+
 
 static int _net_send_result(GGZNetIO *net, char *action, char code)
 {

@@ -727,7 +727,7 @@ int player_list_tables(GGZPlayer* player, int type, char global)
 		return GGZ_REQ_FAIL;
 	
 	for (i = 0; i < count; i++)
-		if (net_send_table(player->net, &my_tables[i], -1) < 0)
+		if (net_send_table(player->net, &my_tables[i]) < 0)
 			return GGZ_REQ_DISCONNECT;
 
 

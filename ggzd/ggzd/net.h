@@ -72,7 +72,7 @@ int net_send_player_list_end(GGZNetIO *net);
 
 int net_send_table_list_error(GGZNetIO *net, char status);
 int net_send_table_list_count(GGZNetIO *net, int count);
-int net_send_table(GGZNetIO *net, GGZTable *table, int seat);
+int net_send_table(GGZNetIO *net, GGZTable *table);
 int net_send_table_list_end(GGZNetIO *net);
 
 int net_send_room_join(GGZNetIO *net, char status);
