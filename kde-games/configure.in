@@ -50,6 +50,9 @@ AC_OUTPUT(Makefile
 	muehle/Makefile
 	muehle/src/Makefile
 	muehle/pics/Makefile
+	muehle/pics/standard/Makefile
+	muehle/pics/alt/Makefile
+	muehle/variants/Makefile
 	muehle/doc/Makefile)
 
 dnl Report success
