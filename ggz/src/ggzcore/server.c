@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6721 2005-01-17 23:35:49Z jdorje $
+ * $Id: server.c 6736 2005-01-19 02:42:57Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -107,6 +107,9 @@ struct _GGZServer {
 	
 	/* Current room on game server */
 	GGZRoom *room;
+
+	/* New (targeted) room - the room we're trying to move into. */
+	GGZRoom *new_room;
 
 	/* Current game on game server */
 	GGZGame *game;
@@ -824,6 +827,7 @@ void _ggzcore_server_set_room_join_status(GGZServer *server,
 					  GGZClientReqError status)
 {
 	if (status == E_OK) {
+		_ggzcore_server_set_room(server, server->new_room);
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
 	} else {
@@ -1060,6 +1064,7 @@ int _ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
 	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
 	
 	status = _ggzcore_net_send_join_room(server->net, room_id);
+	server->new_room = room;
 
 	if (status == 0)
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6721 2005-01-17 23:35:49Z jdorje $
+ * $Id: netxml.c 6736 2005-01-19 02:42:57Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -78,9 +78,6 @@ struct _GGZNet {
 
 	/* Maximum chat size allowed */
 	unsigned int chat_size;
-
-	/* Room to which we are transitioning */
-	GGZRoom *new_room;
 
 	/* Room verbosity (need to save) */
 	char room_verbose;
@@ -434,19 +431,10 @@ int _ggzcore_net_send_list_rooms(GGZNet *net, const int type, const char verbose
 }
 
 
-int _ggzcore_net_send_join_room(GGZNet *net, const unsigned int id)
+int _ggzcore_net_send_join_room(GGZNet *net, const unsigned int room_id)
 {
-	int status = 0;
-	GGZRoom *room;
-
-	room = _ggzcore_server_get_room_by_id(net->server, id);
-	net->new_room = room;
-	
-	ggz_debug(GGZCORE_DBG_NET, "Sending room join request");	
-
-	_ggzcore_net_send_line(net, "<ENTER ROOM='%d'/>", id);
-	
-	return status;
+	ggz_debug(GGZCORE_DBG_NET, "Sending room %d join request", room_id);
+	return _ggzcore_net_send_line(net, "<ENTER ROOM='%d'/>", room_id);
 }
 
 
@@ -1023,8 +1011,6 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *element)
 		/* Password may have already been updated. */
 		_ggzcore_server_set_login_status(net->server, code);
 	} else if (strcasecmp(action, "enter") == 0) {
-		if (code == E_OK)
-			_ggzcore_server_set_room(net->server, net->new_room);
 		_ggzcore_server_set_room_join_status(net->server, code);
 	} else if  (strcasecmp(action, "launch") == 0)
 		_ggzcore_room_set_table_launch_status(room, code);
