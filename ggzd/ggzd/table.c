@@ -235,45 +235,53 @@ static int table_send_opt(int t_index)
 	int i, fd, size, type, uid;
 	char status = 0;
 	char name[MAX_USER_NAME_LEN];
+	TableInfo table;
 
-	fd = tables.info[t_index].fd_to_game;
-	type = tables.info[t_index].type_index;
+	pthread_rwlock_rdlock(&tables.lock);
+	table = tables.info[t_index];
+	pthread_rwlock_unlock(&tables.lock);
 
+	fd = table.fd_to_game;
+	type = table.type_index;
+	
 	pthread_rwlock_rdlock(&game_types.lock);
 	size = game_types.info[type].options_size;
 	pthread_rwlock_unlock(&game_types.lock);
 
-	/* Pass options struct and other seat info */
+	/* Pass size of options data */
 	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0
-	    || es_writen(fd, tables.info[t_index].options, size) < 0
-	    || es_write_int(fd, seats_num(tables.info[t_index])) < 0)
-		return (-1);
+	    || es_write_int(fd, size) < 0)
+		return -1;
+
+	/* Pass option data (if any) */
+	if (size && es_writen(fd, table.options, size) < 0)
+		return -1;
+
+	/* Send number of seats */
+	if (es_write_int(fd, seats_num(table)) < 0)
+		return -1;
 
 	/* Send seat assignments, names, and fd's */
-	for (i = 0; i < seats_num(tables.info[t_index]); i++) {
+	for (i = 0; i < seats_num(table); i++) {
 
-		if (es_write_int(fd, tables.info[t_index].seats[i]) < 0)
+		if (es_write_int(fd, table.seats[i]) < 0)
 			return -1;
 
 		switch(tables.info[t_index].seats[i]) {
-
 		case GGZ_SEAT_OPEN:
 		case GGZ_SEAT_BOT:
 			break;  /* no name for these */
 		case GGZ_SEAT_RESV:
-			uid = tables.info[t_index].reserve[i];
-				/* Look up player name by uid */
+			uid = table.reserve[i];
+			/* FIXME: Look up player name by uid */
 			strcpy(name,"reserved");
 			if (es_write_string(fd, name) < 0)
-				return (-1);
-			break;
-		default: 
+				return -1;
 			break;
 		}
 	}
 
 	return status;
-
 }
 
 

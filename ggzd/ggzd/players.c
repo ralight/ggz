@@ -894,44 +894,45 @@ static int player_table_leave(int p_index, int p_fd)
 
 static int player_list_players(int p_index, int fd)
 {
-	int i, p_2, room;
+	int i, count, room;
 	UserInfo info[MAX_USERS];
+	int *p_list;
 
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling player list request for player %d", p_index);
 
- 	/* Don't send list if they're not logged in */
- 	if (players.info[p_index].uid == GGZ_UID_NONE) {
+ 	/* Don't send list if they're not in a room */
+ 	if (players.info[p_index].room == -1) {
  		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
- 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+ 		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
 
 	pthread_rwlock_rdlock(&players.lock);
 	memcpy(info, players.info, sizeof(info));
+	room = players.info[p_index].room;
 	pthread_rwlock_unlock(&players.lock);
 	
-	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0)
+	pthread_rwlock_rdlock(&chat_room[room].lock);
+	count = chat_room[room].player_count;
+	if ( (p_list = calloc(count, sizeof(int))) == NULL) {
+		pthread_rwlock_unlock(&chat_room[room].lock);
+		err_sys_exit("calloc error in player_list_players()");
+	}
+	memcpy(p_list, chat_room[room].player_index, count*sizeof(int));
+	pthread_rwlock_unlock(&chat_room[room].lock);
+
+	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+	    || es_write_int(fd, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	/* Write lock the room so no one can duck out on us in mid send */
-	room = players.info[p_index].room;
-	pthread_rwlock_wrlock(&chat_room[room].lock);
-
-	if (es_write_int(fd, chat_room[room].player_count) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	for (i = 0; i < chat_room[room].player_count; i++) {
-		p_2 = chat_room[room].player_index[i];
-		if (es_write_string(fd, info[p_2].name) < 0
-		    || es_write_int(fd, info[p_2].table_index) < 0) {
-			pthread_rwlock_unlock(&chat_room[room].lock);
+	for (i = 0; i < count; i++) {
+		if (es_write_string(fd, info[p_list[i]].name) < 0
+		    || es_write_int(fd, info[p_list[i]].table_index) < 0)
 			return GGZ_REQ_DISCONNECT;
-		}
 	}
 
-	pthread_rwlock_unlock(&chat_room[room].lock);
 	return GGZ_REQ_OK;
 }
 
