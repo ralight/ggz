@@ -3,13 +3,17 @@ todo for 0.0.5:
 - DONE: more user commands
 - DONE: fix gurumod_people.so (memory issue)
 - DONE: finish grubby-config
-- get make distcheck to work (brent, you?) - xxx_SCRIPTS issue
-- create debian directory and rpm spec file
+- DONE (in 0.0.6): get make distcheck to work (brent, you?) - xxx_SCRIPTS issue
+- DONE: create debian directory and rpm spec file
 - DONE: enhance man pages
-- don't forget to add SF commit history
+- DROPPED: don't forget to add SF commit history
 - DONE: fix i18n bug
 
 todo for 0.0.6:
-- IRC net module
+- DONE (in 0.0.7): IRC net module
+
+todo for 0.0.7:
 - let each module tell itself some lines for the 'grubby help' command
+- some real-world tests with the module priority scheduling
+- statistics gateway module?
 
