@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: dlg_about.c 6982 2005-03-11 07:35:30Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -101,9 +101,9 @@ void init_dlg_about(const char *title, const char *header,
 		    const char *about)
 {
 	/* The memory allocated here is leaked and lost.  But that's OK. */
-	dlg_title = strdup(title);
-	dlg_header = strdup(header);
-	dlg_content = strdup(about);
+	dlg_title = ggz_strdup(title);
+	dlg_header = ggz_strdup(header);
+	dlg_content = ggz_strdup(about);
 }
 
 void create_or_raise_dlg_about(void)
