@@ -1,8 +1,0 @@
-ggz-kde-client for Debian
-------------------------------
-
-This package (from the kde-client CVS module) provides the applications kggz,
-ggzmodsniff and ggzap. The server utily ggzmetaserv is not yet included, but
-will be debianized as soon as it's stable enough.
-
- -- Josef Spillner <dr_maux@users.sourceforge.net>, Mon, 28 May 2001 20:59:37 +0200
