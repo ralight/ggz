@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2960 2001-12-19 23:35:52Z jdorje $
+ * $Id: animation.c 2961 2001-12-19 23:54:36Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -29,11 +29,10 @@
 #include <ggz.h>
 
 #include "animation.h"
+#include "game.h"
 #include "layout.h"
 #include "table.h"
 
-
-#ifdef ANIMATION
 
 int animating = 0;
 
@@ -68,6 +67,11 @@ void animation_start(int player, card_t card, int card_num)
 		else
 			animation_stop(TRUE);
 	}
+
+	/* If we don't have animation enabled, then we simply never
+	   start an animation. */
+	if (!pref_animation)
+		return;
 
 	get_card_pos(player, card_num, &start_x, &start_y);
 	get_tablecard_pos(player, &end_x, &end_y);
@@ -169,5 +173,3 @@ void animation_stop(int success)
 		table_display_hand(anim.player);
 	}
 }
-
-#endif /* ANIMATION */

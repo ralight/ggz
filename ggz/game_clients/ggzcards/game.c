@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2960 2001-12-19 23:35:52Z jdorje $
+ * $Id: game.c 2961 2001-12-19 23:54:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,6 +45,8 @@
 
 int table_max_hand_size = 0;
 
+static void text_cardlist_message(const char *mark, int *lengths,
+				  card_t ** cardlist);
 
 void game_init(void)
 {
@@ -108,10 +110,8 @@ void game_play_card(int card_num)
 
 	statusbar_message(_("Sending play to server"));
 
-#ifdef ANIMATION
 	/* Setup and trigger the card animation */
 	animation_start(player, card, card_num);
-#endif /* ANIMATION */
 
 	assert(status == 0);
 }
@@ -137,9 +137,9 @@ void game_send_newgame(void)
 void game_request_sync(void)
 {
 	ggz_debug("main", "Requesting sync from server.");
-#ifdef ANIMATION
+
 	animation_stop(TRUE);
-#endif
+
 	(void) client_send_sync_request();
 }
 
@@ -240,18 +240,21 @@ void game_alert_hand_size(int max_hand_size)
 {
 	ggz_debug("main", "Table max hand size upped to %d.", max_hand_size);
 
+	table_max_hand_size = max_hand_size;
+
 	do {
 		/* the inner table must be at least large enough. So, if it's
 		   not we make the hand sizes larger. */
+		/* NOTE: get_table_dim/get_fulltable_size depends on
+		   table_max_hand_size, so we must increment it directly in
+		   this loop. */
 		int x, y, w, h, w1, h1;
 		get_table_dim(&x, &y, &w, &h);
 		get_fulltable_size(&w1, &h1);
 		if (w1 > w && h1 > h)
 			break;
-		max_hand_size++;
+		table_max_hand_size++;
 	} while (1);
-
-	table_max_hand_size = MAX(table_max_hand_size, max_hand_size);
 }
 
 void game_display_hand(int player)
@@ -293,9 +296,7 @@ void game_alert_badplay(char *err_msg)
 {
 	ggz_debug("main", "Handling badplay alert.");
 
-#ifdef ANIMATION
 	animation_stop(FALSE);
-#endif /* ANIMATION */
 
 	/* redraw cards */
 	table_display_hand(ggzcards.play_hand);
@@ -308,14 +309,17 @@ void game_alert_play(int player, card_t card, int pos)
 {
 	ggz_debug("main", "Handling play alert for player %d.", player);
 
-#ifdef ANIMATION
-	/* If this is a card _we_ played, then we'll already be animating,
-	   and we really don't want to stop just to start over.  But we
-	   leave that up to animation_start. */
-	animation_start(player, card, pos);
-#else /* ANIMATION */
-	table_show_card(player, card);
-#endif /* ANIMATION */
+	if (pref_animation) {
+		/* If this is a card _we_ played, then we'll already be animating,
+		   and we really don't want to stop just to start over.  But we
+		   leave that up to animation_start. */
+		animation_start(player, card, pos);
+	} else {		/* not if (pref_animation) */
+		/* We only show the card on the table if we're not
+		   animating - if we're animating then we wait for it
+		   to get there naturally. */
+		table_show_card(player, card);
+	}			/* if (pref_animation) */
 
 	/* Note, even for cards we played we don't actually remove the
 	   card from our hand until we hear confirmation.  So we need to
@@ -335,9 +339,7 @@ void game_alert_trick(int player)
 
 	ggz_debug("main", "Handling trick alert; player %d won.", player);
 
-#ifdef ANIMATION
 	animation_stop(TRUE);
-#endif /* ANIMATION */
 
 	t_str = g_strdup_printf(_("%s won the trick"),
 				ggzcards.players[player].name);
@@ -387,11 +389,9 @@ void game_set_text_message(const char *mark, const char *message)
 	}
 }
 
-void game_set_cardlist_message(const char *mark, int *lengths,
-			       card_t ** cardlist)
+static void text_cardlist_message(const char *mark, int *lengths,
+				  card_t ** cardlist)
 {
-	ggz_debug("main", "Received cardlist message for '%s'.", mark);
-#if 0
 	int p, i;
 	char buf[4096] = "";
 	int maxlen = 0, namewidth = 0;
@@ -444,9 +444,21 @@ void game_set_cardlist_message(const char *mark, int *lengths,
 	}
 
 	game_set_text_message(mark, buf);
-#else
-	menubar_cardlist_message(mark, lengths, cardlist);
-#endif
+}
+
+void game_set_cardlist_message(const char *mark, int *lengths,
+			       card_t ** cardlist)
+{
+	ggz_debug("main", "Received cardlist message for '%s'.", mark);
+	if (pref_cardlists) {
+		/* if pref_cardlists is set, then we make a graphical
+		   cardlist popup dialog. */
+		menubar_cardlist_message(mark, lengths, cardlist);
+	} else {
+		/* if pref_cardlists is _not_ set, then we translate
+		   the cardlist message into a text list. */
+		text_cardlist_message(mark, lengths, cardlist);
+	}
 }
 
 /* Displays a player's message on the table. */

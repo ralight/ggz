@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2951 2001-12-19 10:35:31Z jdorje $
+ * $Id: game.h 2961 2001-12-19 23:54:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,6 +29,10 @@
 
 #ifndef __GAME_H__
 #define __GAME_H__
+
+/* Current list of preferences.  They can't be changed at runtime yet. */
+#define pref_animation 1
+#define pref_cardlists 1
 
 extern int table_max_hand_size;
 
