@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
-//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
+//    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
 //    The MindX Open Source Project - http://mindx.sourceforge.net                 //
 //    Published under GNU GPL conditions - view COPYING for details                //
 //                                                                                 //
@@ -105,8 +105,7 @@ void KGGZPrefEnv::slotAccept()
 {
 	GGZCoreConfio *config;
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-	KGGZCommon::clear();
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	config->write("Environment", "Server", m_server->text().latin1());
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
@@ -125,8 +124,7 @@ void KGGZPrefEnv::loadSettings()
 	char *server;
 	int startup, chatlog, speech;
 
-	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-	KGGZCommon::clear();
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	server = config->read("Environment", "Server", "/usr/bin/ggzd");
 	startup = config->read("Preferences", "Showdialog", 0);

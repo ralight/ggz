@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
-//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
+//    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
 //    The MindX Open Source Project - http://mindx.sourceforge.net                 //
 //    Published under GNU GPL conditions - view COPYING for details                //
 //                                                                                 //
@@ -51,9 +51,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// static members
-//QListViewItem *KGGZUsers::itemmain;
-
 // Constructor
 KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 : QListView(parent, name)
@@ -63,6 +60,7 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 
 	addColumn(i18n("Players"));
 	addColumn(i18n("Table"));
+	addColumn(i18n("Lag"));
 	insertItem(itemmain);
 
 	setRootIsDecorated(TRUE);
@@ -96,6 +94,13 @@ void KGGZUsers::add(char *name)
 	itemmain->insertItem(tmp);
 	KGGZDEBUG("Added token %s\n", name);
 	assign(tmp, -1);
+	lag(tmp, 1);
+}
+
+// set player's lag
+void KGGZUsers::lag(QListViewItem *item, int lag)
+{
+	item->setPixmap(2, QPixmap(QString(KGGZ_DIRECTORY "/images/icons/players/lag%1.png").arg(lag)));
 }
 
 // remove a player from the list
@@ -310,8 +315,7 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 	if(role == -1)
 	{
 		save = 0;
-		config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readonly);
-		KGGZCommon::clear();
+		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readonly);
 		role = config->read("Assignments", item->text(0).latin1(), assignplayer);
 		delete config;
 	}
@@ -338,8 +342,7 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 
 	if(save)
 	{
-		config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-		KGGZCommon::clear();
+		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 		config->write("Assignments", item->text(0).latin1(), role);
 		config->commit();
 		delete config;

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
-//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
+//    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
 //    The MindX Open Source Project - http://mindx.sourceforge.net                 //
 //    Published under GNU GPL conditions - view COPYING for details                //
 //                                                                                 //
@@ -82,6 +82,8 @@ class KGGZUsers : public QListView
 		QListViewItem *player(const char *player);
 		// Assign a role
 		void assign(QListViewItem *item, int role);
+		// Set lag
+		void lag(QListViewItem *item, int lag);
 		
 		// The list displaying the users
 		QListViewItem *itemmain;
