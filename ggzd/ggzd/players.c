@@ -85,18 +85,22 @@ static int type_match_table(int type, int num);
  * launch_handler accepts the socket of a new player and launches
  * a new dedicated handler process/thread.
  */
-void player_handler_launch(int sock)
+void player_handler_launch(int sock, char *ip_addr)
 {
 
 	pthread_t thread;
-	int *sock_ptr;
+	char *arg_ptr;
 	int status;
 
-	/* Temporary storage to pass fd */
-	if (FAIL(sock_ptr = malloc(sizeof(int))))
-		err_sys_exit("malloc error");
-	*sock_ptr = sock;
-	status = pthread_create(&thread, NULL, player_new, sock_ptr);
+	/* Temporary storage to pass fd and ip_addr */
+	/* This stuff an int then a string into a single char buffer */
+	if (FAIL(arg_ptr = malloc(sizeof(int)+strlen(ip_addr)+1)))
+		err_sys_exit("malloc error in player_handler_launch()");
+	*((int *) arg_ptr) = sock;
+	strcpy(arg_ptr+sizeof(int), ip_addr);
+	free(ip_addr);
+
+	status = pthread_create(&thread, NULL, player_new, arg_ptr);
 	if (status != 0) {
 		errno = status;
 		err_sys_exit("pthread_create error");
@@ -109,12 +113,20 @@ void player_handler_launch(int sock)
  * If there is an open spot take it, otherwise send a "server full"
  * message.
  */
-static void* player_new(void *sock_ptr)
+static void* player_new(void *arg_ptr)
 {
 	int sock, status, i;
+	char *ip_addr;
 
-	sock = *((int *) sock_ptr);
-	free(sock_ptr);
+	/* Get our arguments out of the arg buffer */
+	sock = *((int *) arg_ptr);
+	if((ip_addr = malloc(strlen((char *)arg_ptr+sizeof(int)) + 1)) == NULL)
+		err_sys_exit("malloc error in player_new()");
+	strcpy(ip_addr, (char *)arg_ptr+sizeof(int));
+	free(arg_ptr);
+
+	/* Just to make sure things got packed/unpacked right from arg_ptr */
+	dbg_msg("fd %d attached to ip address %s", sock, ip_addr);
 
 	/* Detach thread since no one needs to join us */
 	status = pthread_detach(pthread_self());
@@ -147,6 +159,7 @@ static void* player_new(void *sock_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
+	players.info[i].ip_addr = ip_addr;
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 	

@@ -107,6 +107,7 @@ typedef struct {
 	char playing;
 	pthread_t pid;
 	int table_index;
+	char *ip_addr;
 } UserInfo;
 
 
