@@ -992,15 +992,20 @@ static int player_list_players(int p_index, int fd)
 	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
-	    || es_write_int(fd, count) < 0)
+	    || es_write_int(fd, count) < 0) {
+		free(p_list);
 		return GGZ_REQ_DISCONNECT;
+	}
 
 	for (i = 0; i < count; i++) {
 		if (es_write_string(fd, info[p_list[i]].name) < 0
-		    || es_write_int(fd, info[p_list[i]].table_index) < 0)
+		    || es_write_int(fd, info[p_list[i]].table_index) < 0) {
+			free(p_list);
 			return GGZ_REQ_DISCONNECT;
+		}
 	}
 
+	free(p_list);
 	return GGZ_REQ_OK;
 }
 
@@ -1121,7 +1126,7 @@ static int player_list_tables(int p_index, int fd)
 		return GGZ_REQ_DISCONNECT;
 
 	for (k = 0; k < count; k++) {
-		/* Hack hack hack */
+		/* FIXME:  Hack hack hack */
 		if (global)
 			i = k;
 		else
@@ -1168,6 +1173,9 @@ static int player_list_tables(int p_index, int fd)
 		}
 	}
 
+	/* Quick hack for now to fix the leak unless a disconnect */
+	if(t_list)
+		free(t_list);
 	return GGZ_REQ_OK;
 }
 
