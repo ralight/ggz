@@ -17,7 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define HAVE_SOUND /* automate later on */
+/* Configuration */
+#include "config.h"
 
 /* SDL include files */
 #include <SDL/SDL.h>
@@ -25,6 +26,11 @@
 #include <SDL/SDL_ttf.h>
 #ifdef HAVE_SOUND
 #include <SDL/SDL_mixer.h>
+#endif
+#ifdef HAVE_XCURSOR
+#include <X11/Xlib.h>
+#include <X11/Xcursor/Xcursor.h>
+#include <SDL/SDL_syswm.h>
 #endif
 
 /* GGZ include files */
@@ -81,6 +87,7 @@ static int winner = -1;
 static int usesound = 1;
 static int usefullscreen = 0;
 static int gamerunning = 0;
+static int modemenu = 0;
 #ifdef HAVE_SOUND
 Mix_Music *music = NULL;
 Mix_Chunk *chunk = NULL;
@@ -694,13 +701,39 @@ void screen_scanning(int display)
 	}
 }
 
+void showcursor(int mode)
+{
+#ifdef HAVE_XCURSOR
+	Cursor cursor;
+	SDL_SysWMinfo info;
+	int ret;
+#endif
+
+	SDL_ShowCursor(mode);
+
+#ifdef HAVE_XCURSOR
+	if(mode == SDL_ENABLE)
+	{
+		info.version.major = SDL_MAJOR_VERSION;
+		ret = SDL_GetWMInfo(&info);
+		if(ret == 1)
+		{
+			info.info.x11.lock_func();
+			cursor = XcursorLibraryLoadCursor(info.info.x11.display, "redglass");
+			XDefineCursor(info.info.x11.display, info.info.x11.window, cursor);
+			info.info.x11.unlock_func();
+		}
+	}
+#endif
+}
+
 /* Intro menu with game mode selection and player gallery */
 void screen_intro(int firsttime)
 {
 	int escape;
 	SDL_Event event;
 	Uint8 *keystate;
-	int x, y, i, oldy;
+	int x, y, i, oldy, oldmodemenu;
 	int dimmer, dimminc;
 	SDL_Rect rect;
 	char *desc1, *desc2, *desc3, *desc4;
@@ -708,8 +741,9 @@ void screen_intro(int firsttime)
 	char *rule[] = {"easy", "matrix", "havoc", "hax0r"};
 
 	x = 20;
-	y = 20;
+	y = modemenu * 30 + 20;
 	oldy = y;
+	oldmodemenu = modemenu;
 
 	escape = 0;
 	playmode = -1;
@@ -722,6 +756,8 @@ void screen_intro(int firsttime)
 	rect.h = SCREEN_HEIGHT;
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+
+	showcursor(SDL_ENABLE);
 
 	rendermode(22, 24, rule[0]);
 	rendermode(22, 54, rule[1]);
@@ -776,20 +812,24 @@ void screen_intro(int firsttime)
 					if(keystate[SDLK_ESCAPE]) escape = 1;
 					if(keystate[SDLK_DOWN])
 					{
-						if(y <= 15 + 3 * 30)
+						if(modemenu < 3)
 						{
 							drawbox(x, y, 150, 20, screen, 0, 1);
 							oldy = y;
 							y += 30;
+							oldmodemenu = modemenu;
+							modemenu++;
 						}
 					}
 					if(keystate[SDLK_UP])
 					{
-						if(y >= 15 + 1 * 30)
+						if(modemenu > 0)
 						{
 							drawbox(x, y, 150, 20, screen, 0, 1);
 							oldy = y;
 							y -= 30;
+							oldmodemenu = modemenu;
+							modemenu--;
 						}
 					}
 					if(keystate[SDLK_RETURN])
@@ -797,7 +837,7 @@ void screen_intro(int firsttime)
 						if((!ggzmode) || (gamerunning))
 						{
 							escape = 1;
-							playmode = (y - 20) / 30 + MODE_RESERVED + 1;
+							playmode = modemenu + MODE_RESERVED + 1;
 							if(ggzmode)
 							{
 								ggz_write_char(modfd, OP_RULESET);
@@ -809,7 +849,7 @@ void screen_intro(int firsttime)
 					if(keystate[SDLK_f])
 					{
 						SDL_WM_ToggleFullScreen(screen);
-						SDL_ShowCursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
+						showcursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
 					}
 					break;
 			}
@@ -822,36 +862,36 @@ void screen_intro(int firsttime)
 			desc3 = "Numbers encompassed by cursor\nmust divide by 4\nin binary coded format.";
 			desc4 = "Both cursor bars\nmust contain the same number\nof ones and zeroes";
 
-			if(oldy == 20)
+			if(oldmodemenu == 0)
 			{
 				renderdesc(150, 200, desc1, 0);
 			}
-			else if(oldy == 50)
+			else if(oldmodemenu == 1)
 			{
 				renderdesc(150, 200, desc2, 0);
 			}
-			else if(oldy == 80)
+			else if(oldmodemenu == 2)
 			{
 				renderdesc(150, 200, desc3, 0);
 			}
-			else if(oldy == 110)
+			else if(oldmodemenu == 3)
 			{
 				renderdesc(150, 200, desc4, 0);
 			}
 
-			if(y == 20)
+			if(modemenu == 0)
 			{
 				renderdesc(150, 200, desc1, 1);
 			}
-			else if(y == 50)
+			else if(modemenu == 1)
 			{
 				renderdesc(150, 200, desc2, 1);
 			}
-			else if(y == 80)
+			else if(modemenu == 2)
 			{
 				renderdesc(150, 200, desc3, 1);
 			}
-			else if(y == 110)
+			else if(modemenu == 3)
 			{
 				renderdesc(150, 200, desc4, 1);
 			}
@@ -870,23 +910,137 @@ void screen_intro(int firsttime)
 	}
 }
 
+/* Handle input */
+int gameinput(int *ox, int *oy, int userinput)
+{
+	SDL_Event event;
+	Uint8 *keystate;
+	int x, y, wantx, wanty, found;
+	int dimmer;
+	int dimminc;
+	enum Directions {right, left, up, down, none, done};
+	int march;
+
+	x = *ox;
+	y = *oy;
+
+	dimmer = 250;
+	dimminc = -1;
+	found = 0;
+	wantx = 0;
+	wanty = 0;
+
+	while(1)
+	{
+		march = none;
+
+		while(SDL_PollEvent(&event))
+		{
+			switch(event.type)
+			{
+				case SDL_KEYDOWN:
+					keystate = SDL_GetKeyState(NULL);
+					if(keystate[SDLK_ESCAPE]) return 0;
+					if(userinput)
+					{
+						if((keystate[SDLK_RIGHT]) && (x < (ARRAY_WIDTH - 1) * 32))
+							march = right;
+						if((keystate[SDLK_LEFT]) && (x >= 1 * 32))
+							march = left;
+						if((keystate[SDLK_DOWN]) && (y <= (ARRAY_HEIGHT - 1) * 32))
+							march = down;
+						if((keystate[SDLK_UP]) && (y >= 1 * 32))
+							march = up;
+						if(keystate[SDLK_RETURN])
+							march = done;
+					}
+					if(keystate[SDLK_f])
+					{
+						SDL_WM_ToggleFullScreen(screen);
+						showcursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
+					}
+					break;
+			}
+		}
+
+		if(!userinput)
+		{
+			if(!found)
+			{
+				wantx = (rand() % ARRAY_WIDTH) * 32 + 18;
+				wanty = (rand() % ARRAY_HEIGHT) * 32 + 18;
+				found = 1;
+			}
+
+			if(wantx < x) march = left;
+			else if(wantx > x) march = right;
+			else if(wanty < y) march = up;
+			else if(wanty > y) march = down;
+			else march = done;
+
+			SDL_Delay(100);
+		}
+
+		if(march == right)
+		{
+			drawbox(x, y, 32, 32, screen, 0, 1);
+			drawbox(x - 96, y, 224, 32, screen, 0, 1);
+			drawbox(x, y - 96, 32, 224, screen, 0, 1);
+			x += 32;
+		}
+		if(march == left)
+		{
+			drawbox(x, y, 32, 32, screen, 0, 1);
+			drawbox(x - 96, y, 224, 32, screen, 0, 1);
+			drawbox(x, y - 96, 32, 224, screen, 0, 1);
+			x -= 32;
+		}
+		if(march == down)
+		{
+			drawbox(x, y, 32, 32, screen, 0, 1);
+			drawbox(x - 96, y, 224, 32, screen, 0, 1);
+			drawbox(x, y - 96, 32, 224, screen, 0, 1);
+			y += 32;
+		}
+		if(march == up)
+		{
+			drawbox(x, y, 32, 32, screen, 0, 1);
+			drawbox(x - 96, y, 224, 32, screen, 0, 1);
+			drawbox(x, y - 96, 32, 224, screen, 0, 1);
+			y -= 32;
+		}
+		if(march == done)
+		{
+			*ox = x;
+			*oy = y;
+			return 1;
+		}
+
+		drawbox(x - 96, y, 224, 32, screen, dimmer / 2, 1);
+		drawbox(x, y - 96, 32, 224, screen, dimmer / 2, 1);
+		drawbox(x, y, 32, 32, screen, dimmer, 1);
+
+		dimmer = dimmer + dimminc * 3;
+		if((dimmer <= 150) || (dimmer >= 250)) dimminc = -dimminc;
+
+		SDL_Delay(50);
+
+		if(ggzmode) ggz_network();
+	}
+	return 0;
+}
+
 /* Game screen with player gallery and game board */
 void screen_game()
 {
-	int dimmer;
-	int dimminc;
-	Uint8 *keystate;
 	int escape;
-	SDL_Event event;
 	int i, j;
 	int x, y;
 	int turn;
 	int sum, sum2;
 	int calc;
 	int makescore;
-
-	dimmer = 250;
-	dimminc = -1;
+	int ret;
 
 	calc = 0;
 	winner = -1;
@@ -896,85 +1050,33 @@ void screen_game()
 
 	x = 50;
 	y = 50;
-	drawbox(x, y, 32, 32, screen, dimmer, 0);
+	drawbox(x, y, 32, 32, screen, 250, 0);
 
 	while(1)
 	{
-		while(SDL_PollEvent(&event))
+		if(turn == 0)
 		{
-			switch(event.type)
-			{
-				case SDL_KEYDOWN:
-					keystate = SDL_GetKeyState(NULL);
-					if(keystate[SDLK_ESCAPE]) escape = 1;
-					if(keystate[SDLK_RIGHT])
-					{
-						if(x < (ARRAY_WIDTH - 1) * 32)
-						{
-							drawbox(x, y, 32, 32, screen, 0, 1);
-							drawbox(x - 96, y, 224, 32, screen, 0, 1);
-							drawbox(x, y - 96, 32, 224, screen, 0, 1);
-							x += 32;
-						}
-					}
-					if(keystate[SDLK_LEFT])
-					{
-						if(x >= 1 * 32)
-						{
-							drawbox(x, y, 32, 32, screen, 0, 1);
-							drawbox(x - 96, y, 224, 32, screen, 0, 1);
-							drawbox(x, y - 96, 32, 224, screen, 0, 1);
-							x -= 32;
-						}
-					}
-					if(keystate[SDLK_DOWN])
-					{
-						if(y <= (ARRAY_HEIGHT - 1) * 32)
-						{
-							drawbox(x, y, 32, 32, screen, 0, 1);
-							drawbox(x - 96, y, 224, 32, screen, 0, 1);
-							drawbox(x, y - 96, 32, 224, screen, 0, 1);
-							y += 32;
-						}
-					}
-					if(keystate[SDLK_UP])
-					{
-						if(y >= 1 * 32)
-						{
-							drawbox(x, y, 32, 32, screen, 0, 1);
-							drawbox(x - 96, y, 224, 32, screen, 0, 1);
-							drawbox(x, y - 96, 32, 224, screen, 0, 1);
-							y -= 32;
-						}
-					}
-					if(keystate[SDLK_RETURN])
-					{
-						array[x / 32][y / 32] = !array[x / 32][y / 32];
-						drawnumber(screen, x / 32, y / 32, array[x / 32][y / 32]);
-						calc = 1;
-						playnoise();
-						if(ggzmode)
-						{
-							ggz_write_char(modfd, OP_MOVE);
-							ggz_write_int(modfd, x / 32);
-							ggz_write_int(modfd, y / 32);
-						}
-					}
-					if(keystate[SDLK_f])
-					{
-						SDL_WM_ToggleFullScreen(screen);
-						SDL_ShowCursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
-					}
-					break;
-			}
+			ret = gameinput(&x, &y, 1);
+		}
+		else
+		{
+			ret = gameinput(&x, &y, 0);
 		}
 
-		drawbox(x - 96, y, 224, 32, screen, dimmer / 2, 1);
-		drawbox(x, y - 96, 32, 224, screen, dimmer / 2, 1);
-		drawbox(x, y, 32, 32, screen, dimmer, 1);
-
-		dimmer = dimmer + dimminc * 3;
-		if((dimmer <= 150) || (dimmer >= 250)) dimminc = -dimminc;
+		if(ret)
+		{
+			array[x / 32][y / 32] = !array[x / 32][y / 32];
+			drawnumber(screen, x / 32, y / 32, array[x / 32][y / 32]);
+			calc = 1;
+			playnoise();
+			if(ggzmode)
+			{
+				ggz_write_char(modfd, OP_MOVE);
+				ggz_write_int(modfd, x / 32);
+				ggz_write_int(modfd, y / 32);
+			}
+		}
+		else escape = 1;
 
 		if(escape) break;
 
@@ -1059,10 +1161,6 @@ void screen_game()
 			turn = (turn + 1) % players;
 			drawturn(screen, players, turn);
 		}
-
-		SDL_Delay(50);
-
-		if(ggzmode) ggz_network();
 	}
 }
 
@@ -1080,6 +1178,14 @@ void screen_outtro()
 	rect.h = SCREEN_HEIGHT;
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 	rendermode(22, 24, "The game is over.");
+	if(!ggzmode)
+	{
+		if(!winner)
+			rendermode(22, 54, "You defeated the bots.");
+		else
+			rendermode(22, 54, "You lost against the bots.");
+	}
+	renderdesc(22, 84, "Press escape to return to the main menu.", 1);
 	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 
 	escape = 0;
@@ -1162,8 +1268,6 @@ int startgame(void)
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, (usefullscreen ? SDL_FULLSCREEN : 0));
 
 	players = MAX_PLAYERS;
-	for(i = 0; i < players; i++)
-		scores[i] = 0;
 
 	drawturn(screen, players, -1);
 
@@ -1194,6 +1298,9 @@ int startgame(void)
 				array[i][j] = x;
 			}
 		}
+
+		for(i = 0; i < players; i++)
+			scores[i] = 0;
 
 		screen_game();
 

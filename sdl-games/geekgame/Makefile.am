@@ -1,8 +1,8 @@
 ggzexecmod_PROGRAMS = geekgame
 
 geekgame_SOURCES = wwwget.c main.c
-geekgame_LDADD = $(SDL_LIBS) -lSDL_image -lSDL_ttf -lSDL_mixer $(LIB_GGZ) $(LIB_GGZMOD)
-geekgame_LDFLAGS = $(LIBGGZ_LDFLAGS) $(GGZMOD_LDFLAGS)
+geekgame_LDADD = $(SDL_LIBS) -lSDL_image -lSDL_ttf $(LIB_SOUND) $(LIB_GGZ) $(LIB_GGZMOD) $(LIB_XCURSOR)
+geekgame_LDFLAGS = $(LIBGGZ_LDFLAGS) $(GGZMOD_LDFLAGS) $(XCURSOR_LDFLAGS)
 
 noinst_HEADERS = wwwget.h proto.h
 

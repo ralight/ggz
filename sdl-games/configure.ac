@@ -40,15 +40,36 @@ AC_CHECK_LIB(SDL_ttf, TTF_Init,
         AC_MSG_ERROR(*** Cannot find SDL/SDL_ttf.h header); exit)],
     AC_MSG_ERROR(*** Cannot find SDL_ttf library ); exit)
 
+sdlmixer=no
 AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio,
-    [AC_CHECK_HEADER(SDL/SDL_mixer.h, ,
-        AC_MSG_ERROR(*** Cannot find SDL/SDL_mixer.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find SDL_mixer library ); exit)
+    [AC_CHECK_HEADER(SDL/SDL_mixer.h, [sdlmixer=yes],
+        [AC_MSG_WARN(*** Cannot find SDL/SDL_mixer.h header)])],
+    [AC_MSG_WARN(*** Cannot find SDL_mixer library )])
+if test "x$sdlmixer" = "xyes"; then
+    LIB_SOUND="-lSDL_mixer"
+    AC_SUBST(LIB_SOUND)
+    AC_DEFINE_UNQUOTED(HAVE_SOUND, 1, [Sound support])
+fi
 
 AC_CHECK_LIB(GL, glRotatef,
     [AC_CHECK_HEADER(GL/gl.h, ,
         AC_MSG_ERROR(*** Cannot find GL/gl.h header); exit)],
     AC_MSG_ERROR(*** Cannot find GL library ); exit)
+
+xcursor=no
+AC_CHECK_LIB(Xcursor, XcursorLibraryLoadCursor,
+    [AC_CHECK_HEADER(X11/Xcursor/Xcursor.h, [xcursor=yes],
+        [AC_MSG_WARN(*** Cannot find X11/Xcursor/Xcursor.h header)],
+        [#include <X11/Xlib.h>])],
+    [AC_MSG_WARN(*** Cannot find Xcursor library )],
+    [-L /usr/X11R6/lib])
+if test "x$xcursor" = "xyes"; then
+    XCURSOR_LDFLAGS="-L /usr/X11R6/lib"
+    LIB_XCURSOR="-lXcursor"
+    AC_SUBST(XCURSOR_LDFLAGS)
+    AC_SUBST(LIB_XCURSOR)
+    AC_DEFINE_UNQUOTED(HAVE_XCURSOR, 1, [Xcursor support])
+fi
 
 dnl Check for GGZ requirements
 dnl ==========================
@@ -78,5 +99,9 @@ echo ""
 echo "Generic installation prefix: $prefix (for libraries etc.)"
 echo "Game executable directory: $ggzexecmoddir"
 echo "Game data directory: $ggzdatadir"
+echo ""
+echo "Compilation support:"
+echo "Sound (via SDL_mixer)..................$sdlmixer"
+echo "Coloured mouse cursors (via XCursor)...$xcursor"
 echo ""
 
