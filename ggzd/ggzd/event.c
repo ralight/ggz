@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4972 2002-10-22 00:11:03Z jdorje $
+ * $Id: event.c 5020 2002-10-24 05:30:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -136,19 +136,14 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 	/* Put this event as first for anyone who doesn't have a list now */
 	for (i = 0; i < rooms[room].player_count; i++) {
 		GGZPlayer *player = rooms[room].players[i];
-		if (player->room_events == NULL) {
+		if (player->room_events == NULL)
 			player->room_events = event;
-			dbg_msg(GGZ_DBG_ROOM, "Adding event to player %s.",
-				player->name);
-		}
 	}
 
 	/* Finally, add this event to the room list */
 	if (rooms[room].event_tail)
 		rooms[room].event_tail->next = event;
 	rooms[room].event_tail = event;
-
-	dbg_msg(GGZ_DBG_ROOM, "Room event enqueued.  Sending notifications.");
 
 #ifdef DEBUG
 	if (rooms[room].event_head == NULL)
