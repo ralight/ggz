@@ -1490,6 +1490,11 @@ int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 	case GGZ_SEAT_PLAYER:
 		name = table->seats[num];
 		break;
+	case GGZ_SEAT_OPEN:
+	case GGZ_SEAT_BOT:
+	case GGZ_SEAT_NONE:
+		name = NULL;
+		break;
 	}
 #endif /* #if 0 */
 	
