@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2452 2001-09-11 18:07:54Z jdorje $
+ * $Id: ai.c 2561 2001-10-14 06:56:17Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -40,9 +40,11 @@
 
 extern struct ai_function_pointers random_ai_funcs;
 extern struct ai_function_pointers spades_ai_funcs;
+extern struct ai_function_pointers suaro_ai_funcs;
 
 struct ai_function_pointers *ai_funcs[] = { &random_ai_funcs,
-	&spades_ai_funcs
+	&spades_ai_funcs,
+	&suaro_ai_funcs
 };
 
 const char *ai_get_name(player_t p)

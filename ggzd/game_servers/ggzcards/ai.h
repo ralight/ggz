@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: ai.h 2561 2001-10-14 06:56:17Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -50,8 +50,9 @@ struct ai_function_pointers {
 typedef enum {
 	GGZ_AI_NONE = -1,
 	GGZ_AI_RANDOM = 0,
-	GGZ_AI_SPADES = 1
-		/* others can be defined */
+	GGZ_AI_SPADES = 1,
+	GGZ_AI_SUARO = 2,
+	/* others can be defined */
 } ai_type_t;
 
 /* get a name for an ai player sitting at the given spot */
