@@ -26,6 +26,7 @@
 #define _CHAT_
 
 #include "xtext.h"
+#include "ggzcore.h"
 
 typedef enum {
 	CHAT_MSG		= 0x0001,
@@ -37,9 +38,9 @@ typedef enum {
 
 void chat_allocate_colors(void);
 void chat_display_message(CHATTypes id, char *player, char *message);
-void chat_send_msg(void);
-void chat_send_prvmsg(void);
-void chat_send_beep(void);
+void chat_send_msg(GGZServer *server);
+void chat_send_prvmsg(GGZServer *server);
+void chat_send_beep(GGZServer *server);
 void chat_enter(gchar *player);
 void chat_part(gchar *player);
 void chat_help(void);

@@ -348,13 +348,13 @@ client_chat_entry_activate		(GtkEditable	*editable,
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
 		if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/msg"), 3))
-			chat_send_prvmsg();
+			chat_send_prvmsg(server);
 		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/beep"), 4))
-			chat_send_beep();
+			chat_send_beep(server);
 		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/help"), 4))
 			chat_help();
 		else
-			chat_send_msg();
+			chat_send_msg(server);
 	}
 
 	/* Clear the entry box */
@@ -375,7 +375,7 @@ static void
 client_send_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	chat_send_msg();
+	chat_send_msg(server);
 }
 
 

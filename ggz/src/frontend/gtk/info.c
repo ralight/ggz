@@ -64,7 +64,7 @@ void info_create_or_raise(gint room)
 	if (!info_dialog) {
 		info_dialog = create_dlg_info();
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
-		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_server_get_room_desc(server, room));
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_name(room));
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
@@ -75,7 +75,7 @@ void info_create_or_raise(gint room)
 	}
 	else {
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
-		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_server_get_room_desc(server, room));
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_name(room));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");

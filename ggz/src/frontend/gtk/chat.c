@@ -156,15 +156,16 @@ void chat_display_message(CHATTypes id, char *player, char *message)
  * Returns:
  */
 
-void chat_send_msg(void)
+void chat_send_msg(GGZServer *server)
 {
         GtkEntry *tmp = NULL;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
         if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
         {
                 /* Send the current text */
-                ggzcore_event_enqueue(GGZ_USER_CHAT, gtk_entry_get_text(GTK_ENTRY(tmp)), NULL);
+		ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, gtk_entry_get_text(GTK_ENTRY(tmp)));
         
                 /* Clear the entry box */
                 gtk_entry_set_text(GTK_ENTRY(tmp), "");
@@ -179,8 +180,9 @@ void chat_send_msg(void)
  * Returns:
  */
 
-void chat_send_prvmsg(void)
+void chat_send_prvmsg(GGZServer *server)
 {
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
         GtkEntry *tmp = NULL;
 	gchar *name = NULL;
 	gint i;
@@ -198,9 +200,7 @@ void chat_send_prvmsg(void)
 				if(!(data = calloc(2, sizeof(char*))))
 					ggzcore_error_sys_exit("calloc() failed in chat_send_prvmsg");
 
-				data[0] = g_strdup(name);
-				data[1] = g_strdup(name+1+i);
-				ggzcore_event_enqueue(GGZ_USER_CHAT_PRVMSG, data, g_free);
+				ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, name+1+i);
 				chat_display_message(CHAT_SEND_PRVMSG, data[0], data[1]);
 				i = strlen(name)+1;
 			}
@@ -219,13 +219,15 @@ void chat_send_prvmsg(void)
  * Returns:
  */
 
-void chat_send_beep(void)
+void chat_send_beep(GGZServer *server)
 {
         GtkEntry *tmp = NULL;
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	char *player;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-	ggzcore_event_enqueue(GGZ_USER_CHAT_BEEP,
-		gtk_entry_get_text(GTK_ENTRY(tmp))+6, NULL);
+	player = strdup(gtk_entry_get_text(GTK_ENTRY(tmp))+6);
+	ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 
         /* Clear the entry box */
         gtk_entry_set_text(GTK_ENTRY(tmp), "");

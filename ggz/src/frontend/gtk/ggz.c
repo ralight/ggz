@@ -46,12 +46,12 @@ static GGZHookReturn ggz_login_fail(GGZEventID id, void* event_data, void* user_
 static GGZHookReturn ggz_room_list(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logout(GGZEventID id, void* event_data, void* user_data);
-
-static GGZHookReturn ggz_motd(GGZEventID id, void* event_data, void* user_data);
-static GGZHookReturn ggz_list_players(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_msg(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_beep(GGZEventID id, void* event_data, void* user_data);
+
+static GGZHookReturn ggz_motd(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_list_players(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_enter(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_part(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_table_update(GGZEventID id, void* event_data, void* user_data);
@@ -74,8 +74,6 @@ void ggz_event_init(GGZServer *Server)
 //	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL,		ggz_entered_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT,		ggz_logout);
 
-//	ggzcore_server_add_event_hook(server, GGZ_SERVER_CHAT_PRVMSG,	 ggz_chat_prvmsg);
-//	ggzcore_server_add_event_hook(server, GGZ_SERVER_CHAT_BEEP,	 ggz_chat_beep);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_LOGOUT,	 ggz_logout);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_ERROR,		 NULL);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOM_ENTER,	 ggz_room_enter);
@@ -220,17 +218,23 @@ static GGZHookReturn ggz_entered(GGZEventID id, void* event_data, void* user_dat
 	/* FIXME: Player list should use the ggz update system*/
 	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
+
+	/* Hookup the chat functions to the new room */
+	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_CHAT,	ggz_chat_msg);
+	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_PRVMSG,	ggz_chat_prvmsg);
+	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_BEEP,	ggz_chat_beep);
+
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
-	name = g_strdup_printf(_("Current Room: %s"), ggzcore_server_get_room_name(server, ggzcore_server_get_cur_room(server)));
+	name = g_strdup_printf(_("Current Room: %s"), ggzcore_room_get_name(ggzcore_server_get_cur_room(server)));
 	gtk_label_set_text(GTK_LABEL(tmp), name);
 	g_free(name);
 
 	/* Display message in chat area */
-	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_server_get_room_name(server, ggzcore_server_get_cur_room(server)));
+	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_server_get_cur_room(server)));
 	chat_display_message(CHAT_BEEP, "---", message);
 	g_free(message);
-	chat_display_message(CHAT_BEEP, "---",  ggzcore_server_get_room_desc(server, ggzcore_server_get_cur_room(server)));
+	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
 
 	/* set senditivity */
 	/* Menu bar */
@@ -305,6 +309,8 @@ static GGZHookReturn ggz_chat_msg(GGZEventID id, void* event_data, void* user_da
 	gchar *player;
 	gchar *message;
 
+	g_print("ggz_chat_msg\n");
+
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 
@@ -318,6 +324,8 @@ static GGZHookReturn ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user
 	gchar *message;
 	gchar *player;
 
+	g_print("ggz_chat_prgmsg\n");
+
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	chat_display_message(CHAT_PRVMSG, player, message);
@@ -329,6 +337,8 @@ static GGZHookReturn ggz_chat_beep(GGZEventID id, void* event_data, void* user_d
 {
 	gchar *message;
 	gchar *player;
+
+	g_print("ggz_chat_beep\n");
 
 	player = ((char**)(event_data))[0];
 	message = g_strdup_printf(_("You've been beeped by %s."), player);
