@@ -1,4 +1,4 @@
-/* $Id: common.h 2078 2001-07-23 08:27:12Z jdorje $ */
+/* $Id: common.h 2081 2001-07-23 13:07:48Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -258,6 +258,11 @@ int client_send_options(int option_cnt, int *options);
  *  @return 0 on success, -1 on failure
  *  @see table_get_play, table_alert_badplay */
 int client_send_play(card_t card);
+
+/** Sends a request for a sync.
+ *  @return 0 on success, -1 on failure. */
+int client_send_sync_request();
+
 /** @} end of Responses */
 
 #endif /* __COMMON_H__ */

@@ -1,4 +1,4 @@
-/* $Id: common.c 2080 2001-07-23 13:01:31Z jdorje $ */
+/* $Id: common.c 2081 2001-07-23 13:07:48Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -24,10 +24,13 @@
  */
 
 #include <assert.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>		/* for close() */
 
+#include <config.h>
 #include <easysock.h>
 #include <ggz_client.h>
 
@@ -376,6 +379,45 @@ static int handle_msg_badplay(void)
 }
 
 
+/* returns an index into the hand's card for a match to the given card */
+static int match_card(card_t card, struct hand_t *hand)
+{
+	int tc, matches = -1, match = -1;
+	/* Anything "unknown" will match, as will the card itself. */
+	/* Consider the following case:
+	 * hand contains: (1, 2, 3) and (-1, -1, -1)
+	 * card to match: (1, 2, 3)
+	 * it matches (-1, -1, -1) so we go with that match.
+	 * later, card (2, 3, 4) becomes unmatchable
+	 * (1, 2, 3) was obviously the better match. */
+	for (tc = hand->hand_size - 1; tc >= 0; tc--) {
+		/* TODO: look for a stronger match */
+		card_t hcard = hand->card[tc];
+		int tc_matches = 0;
+		if (hcard.deck != -1 && hcard.deck != card.deck)
+			continue;
+		if (hcard.suit != -1 && hcard.suit != card.suit)
+			continue;
+		if (hcard.face != -1 && hcard.face != card.face)
+			continue;
+
+		/* we count the number of matches to make the
+		 * best pick for the match */
+		if (hcard.deck != -1)
+			tc_matches++;
+		if (hcard.suit != -1)
+			tc_matches++;
+		if (hcard.face != -1)
+			tc_matches++;
+		if (tc_matches > matches) {
+			matches = tc_matches;
+			match = tc;
+		}
+	}
+	return match;
+}
+
+
 static int handle_msg_play(void)
 {
 	int p, c, tc;
@@ -395,22 +437,16 @@ static int handle_msg_play(void)
 	hand = &game.players[p].hand;
 	assert(game.players[p].hand.card);
 
-	/* first, find a matching card to remove.
-	 * Anything "unknown" will match, as will the card itself*/
-	for (tc = hand->hand_size - 1; tc >= 0; tc--) {
-		/* TODO: this won't work in mixed known-unknown hands */
-		card_t hcard = hand->card[tc];
-		if (hcard.deck != -1 && hcard.deck != card.deck)
-			continue;
-		if (hcard.suit != -1 && hcard.suit != card.suit)
-			continue;
-		if (hcard.face != -1 && hcard.face != card.face)
-			continue;
-		break;
-	}
-	if (tc == -1) {
-		client_debug("SERVER/CLIENT BUG: unknown card played.");
-		return -1;
+	/* first, find a matching card to remove. */
+	tc = match_card(card, hand);
+
+	if (tc < 0) {
+		/* This is theoretically possible even without errors;
+		 * in fact, a clever server could _force_ us to pick wrong.
+		 * Figure out how and you'll be ready for a "squeeze" play!
+		 * Fortunately, it's easily solved. */
+		client_send_sync_request();
+		return 0;
 	}
 
 	/* now, remove the card */
@@ -562,6 +598,15 @@ int client_send_play(card_t card)
 	set_game_state(WH_STATE_WAIT);
 
 	return status;
+}
+
+
+int client_send_sync_request()
+{
+	client_debug("Requesting a sync.");
+	if (es_write_int(ggzfd, WH_REQ_SYNC) < 0)
+		return -1;
+	return 0;
 }
 
 
