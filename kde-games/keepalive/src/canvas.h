@@ -34,12 +34,14 @@ class Canvas : public QCanvas
 	public:
 		Canvas(QWidget *parent = NULL, const char *name = NULL);
 		~Canvas();
+		void load();
 		void move(int x, int y);
 		void login(QString username, QString password);
 		void chat(QString message);
 
 	signals:
 		void signalLoggedin(QString name);
+		void signalUnit(QCanvasPixmapArray *a);
 
 	public slots:
 		void slotInput();

@@ -31,6 +31,7 @@ class Network : public QObject
 	public:
 		Network();
 		~Network();
+		void doconnect();
 		int fd();
 
 	signals:

@@ -19,6 +19,7 @@
 #include <kapplication.h>
 #include <klocale.h>
 #include <kcmdlineargs.h>
+#include <kaboutdata.h>
 
 // Keepalive includes
 #include "win.h"
@@ -39,9 +40,20 @@ int main(int argc, char **argv)
 {
 	Win *win;
 	KCmdLineArgs *args;
+	KAboutData *about;
 	int ggz = 0;
 
-	KCmdLineArgs::init(argc, argv, "", "", "");
+	about = new KAboutData("keepalive",
+		"Keepalive",
+		"0.1",
+		I18N_NOOP("An experimental game for GGZ"),
+		KAboutData::License_GPL,
+		"Copyright (C) 2002 Josef Spillner",
+		I18N_NOOP(""),
+		"http://ggz.sourceforge.net/games/keepalive/",
+		"dr_maux@users.sourceforge.net");
+
+	KCmdLineArgs::init(argc, argv, about);
 	KCmdLineArgs::addCmdLineOptions(op);
 	args = KCmdLineArgs::parsedArgs();
 
@@ -54,7 +66,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-	KApplication a(argc, argv);
+	KApplication a;
 	win = new Win();
 	a.setMainWidget(win);
 	return a.exec();

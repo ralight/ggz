@@ -26,6 +26,8 @@ class Login;
 class World;
 class Canvas;
 class Chatbox;
+class QCanvasPixmapArray;
+class AnimDialog;
 
 // The top level window
 class Win : public QWidget
@@ -39,6 +41,7 @@ class Win : public QWidget
 		void slotLogin(QString username, QString password);
 		void slotLoggedin(QString name);
 		void slotChat(QString message);
+		void slotUnit(QCanvasPixmapArray *a);
 
 	protected:
 		void keyPressEvent(QKeyEvent *e);
@@ -48,6 +51,7 @@ class Win : public QWidget
 		World *m_world;
 		Canvas *m_canvas;
 		Chatbox *chatbox;
+		AnimDialog *m_anim;
 };
 
 #endif

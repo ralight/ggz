@@ -23,9 +23,12 @@
 #include "world.h"
 #include "canvas.h"
 #include "chatbox.h"
+#include "animdialog.h"
 
 // KDE includes
 #include <klocale.h>
+#include <kconfig.h>
+#include <kapplication.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -47,6 +50,7 @@ Win::Win(QWidget *parent, const char *name)
 	m_login = new Login(this);
 	m_login->setFocus();
 	chatbox = NULL;
+	m_anim = NULL;
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(m_world);
@@ -56,9 +60,13 @@ Win::Win(QWidget *parent, const char *name)
 		SLOT(slotLogin(QString, QString)));
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
+	connect(m_canvas, SIGNAL(signalUnit(QCanvasPixmapArray*)),
+		SLOT(slotUnit(QCanvasPixmapArray*)));
 
 	setEraseColor(QColor(0, 0, 0));
 	//setFocusPolicy(StrongFocus);
+
+	m_canvas->load();
 
 	//setFixedSize(400, 300);
 	resize(500, 400);
@@ -124,5 +132,24 @@ void Win::keyPressEvent(QKeyEvent *e)
 	}
 
 	std::cout << "KEYCODE: " << e->key() << std::endl;
+}
+
+void Win::slotUnit(QCanvasPixmapArray *a)
+{
+	KConfig *conf = kapp->config();
+	QString s;
+
+	if(!a) return;
+
+	conf->setGroup("Media");
+	s = conf->readEntry("graphics");
+	if(s == "freecraft") return;
+	conf->writeEntry("graphics", "freecraft");
+
+	if(!m_anim) m_anim = new AnimDialog();
+	m_anim->setAnimation(a);
+	m_anim->setText(i18n("Found a graphics set from the Freecraft Media Project (FcMP).\n"
+		"Using this instead of the original graphics.\n"));
+	m_anim->show();
 }
 

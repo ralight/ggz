@@ -22,6 +22,7 @@
 #include "protocol.h"
 #include "network.h"
 #include "config.h"
+#include "unitfactory.h"
 
 // KDE includes
 #include <klocale.h>
@@ -60,11 +61,33 @@ Canvas::~Canvas()
 	if(m_network) delete m_network;
 }
 
+// Load graphics
+void Canvas::load()
+{
+	QCanvasPixmapArray *a, *b;
+	UnitFactory *f;
+
+	f = new UnitFactory();
+	a = f->load("footman");
+	b = f->load("gryphon_rider");
+	delete f;
+
+	if(a)
+	{
+		//s = new QCanvasSprite(a, this);
+		//s->move(100, 100);
+		//s->show();
+
+		if(b) emit signalUnit(b);
+	}
+}
+
 // Initialize the network
 void Canvas::init()
 {
 	m_network = new Network();
 	connect(m_network, SIGNAL(signalData()), SLOT(slotInput()));
+	m_network->doconnect();
 }
 
 // Receive game data from server
@@ -213,4 +236,73 @@ void Canvas::chat(QString message)
 
 	*m_net << (Q_INT8)op_chat << message.latin1();
 }
+
+// For FcMP graphics
+// 
+/*
+void Canvas::load()
+{
+	QCanvasPixmapArray *a, *b;
+	UnitFactory *f;
+
+	f = new UnitFactory();
+	a = f->load("footman");
+	b = f->load("gryphon_rider");
+	delete f;
+
+	if(a)
+	{
+		s = new QCanvasSprite(a, this);
+		s->move(100, 100);
+		s->show();
+
+		if(b) emit signalUnit(b);
+	}
+}
+
+void Canvas::timerEvent(QTimerEvent *e)
+{
+	if(!s) return;
+	int counter = s->frame();
+
+	counter += 8;
+	s->setFrame(counter % 40);
+
+	update();
+}
+
+void Canvas::slotMove(int x, int y)
+{
+	float diffx = x - s->x();
+	float diffy = y - s->y();
+	float a;
+	int offset;
+	const int tol = 20;
+
+	a = sqrt(diffx * diffx + diffy * diffy);
+	if(!a) return;
+
+	s->setVelocity(diffx / a, diffy / a);
+
+	//      0
+	//    1   7
+	//  2       6
+	//    3   5
+	//      4
+	//
+	// FIXME: formula :)
+	
+	if((diffx < -tol) && (diffy < -tol)) offset = 7; // 1
+	if((diffx < -tol) && (diffy > tol)) offset = 5; // 3
+	if((diffx > tol) && (diffy > tol)) offset = 3; // 5
+	if((diffx > tol) && (diffy < -tol)) offset = 1; // 7
+
+	if((absf(diffx) <= tol) && (diffy < -tol)) offset = 0; //
+	if((diffx < -tol) && (absf(diffy) <= tol)) offset = 6; //
+	if((absf(diffx) <= tol) && (diffy > tol)) offset = 4; //
+	if((diffx > tol) && (absf(diffy) <= tol)) offset = 2; //
+
+	s->setFrame((s->frame() & 0xF8) + offset);
+}
+*/
 

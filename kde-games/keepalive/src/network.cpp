@@ -27,19 +27,10 @@ Network *Network::self = NULL;
 Network::Network()
 : QObject()
 {
-	QSocketNotifier *sn;
-
 	self = this;
 	m_fd = -1;
 	m_controlfd = -1;
-
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &callbackwrap);
-	ggzmod_connect(mod);
-	m_controlfd = ggzmod_get_fd(mod);
-
-	sn = new QSocketNotifier(m_controlfd, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotControl()));
+	mod = NULL;
 }
 
 Network::~Network()
@@ -49,6 +40,19 @@ Network::~Network()
 		ggzmod_disconnect(mod);
 		ggzmod_free(mod);
 	}
+}
+
+void Network::doconnect()
+{
+	QSocketNotifier *sn;
+
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &callbackwrap);
+	ggzmod_connect(mod);
+	m_controlfd = ggzmod_get_fd(mod);
+
+	sn = new QSocketNotifier(m_controlfd, QSocketNotifier::Read, this);
+	connect(sn, SIGNAL(activated(int)), SLOT(slotControl()));
 }
 
 int Network::fd()
