@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2175 2001-08-19 21:25:51Z jdorje $	*/
+/*	$Id: ggz_server.h 2178 2001-08-20 01:38:01Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -36,22 +36,6 @@ enum {
 	GGZ_SEAT_RESV	= -3,
 	GGZ_SEAT_NONE	= -4,
 	GGZ_SEAT_PLAYER	= -5
-};
-
-/* Debug levels for ggz_debug*/
-enum {
-	GGZ_DBG_CONFIGURATION	= (unsigned) 0x00000001,
-	GGZ_DBG_PROCESS		= (unsigned) 0x00000002,
-	GGZ_DBG_CONNECTION	= (unsigned) 0x00000004,
-	GGZ_DBG_CHAT		= (unsigned) 0x00000008,
-	GGZ_DBG_TABLE		= (unsigned) 0x00000010,
-	GGZ_DBG_PROTOCOL	= (unsigned) 0x00000020,
-	GGZ_DBG_UPDATE		= (unsigned) 0x00000040,
-	GGZ_DBG_MISC		= (unsigned) 0x00000080,
-	GGZ_DBG_ROOM		= (unsigned) 0x00000100,
-	GGZ_DBG_LISTS		= (unsigned) 0x00000200,
-	GGZ_DBG_GAME_MSG	= (unsigned) 0x00000400,
-	GGZ_DBG_ALL		= (unsigned) 0xFFFFFFFF
 };
 
 struct ggz_seat_t {

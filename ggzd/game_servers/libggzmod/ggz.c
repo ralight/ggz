@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2167 2001-08-19 08:13:16Z jdorje $	*/
+/*	$Id: ggz.c 2178 2001-08-20 01:38:01Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -38,6 +38,15 @@
 #include "easysock.h"
 #include "ggz_server.h"
 #include "ggz_protocols.h"
+
+
+/* debug level for ggz_debug() */
+/* Moved out of ggz_server.h since it's not used outside the library.
+ * Imported from ggzd; make sure it stays consistent!
+ * A better alternative would be to #include ../../ggzd/err_func.h
+ * --JDS */
+#define GGZ_DBG_TABLE	(unsigned) 0x00000010
+
 
 /* Our storage of the player list */
 struct ggz_seat_t* ggz_seats=NULL;
