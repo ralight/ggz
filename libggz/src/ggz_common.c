@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 4855 2002-10-10 20:54:03Z jdorje $
+ * $Id: ggz_common.c 4955 2002-10-19 22:19:29Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -67,8 +67,8 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 		return GGZ_SEAT_RESERVED;
 	else if (!strcasecmp(type_str, "player"))
 		return GGZ_SEAT_PLAYER;
-	else
-		return GGZ_SEAT_NONE;
+
+	return GGZ_SEAT_NONE;
 }
 
 const char *ggz_chattype_to_string(GGZChatType type)
@@ -84,7 +84,7 @@ const char *ggz_chattype_to_string(GGZChatType type)
 		return "private";
 	case GGZ_CHAT_TABLE:
 		return "table";
-	case GGZ_CHAT_NONE:
+	case GGZ_CHAT_UNKNOWN:
 		break;
 	}
 
@@ -99,7 +99,7 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 	   is bad for, say, user input, but perfectly acceptable as an
 	   inverse to ggz_chattype_to_string(). */
 	if (!type_str)
-		return GGZ_CHAT_NONE;
+		return GGZ_CHAT_UNKNOWN;
 
 	if (!strcasecmp(type_str, "normal"))
 		return GGZ_CHAT_NORMAL;
@@ -111,9 +111,8 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 		return GGZ_CHAT_PERSONAL;
 	else if (!strcasecmp(type_str, "table"))
 		return GGZ_CHAT_TABLE;
-	else
-		return GGZ_CHAT_NONE;
 
+	return GGZ_CHAT_UNKNOWN;
 }
 
 char *bool_to_str(int bool_val)

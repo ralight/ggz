@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4855 2002-10-10 20:54:03Z jdorje $
+ * $Id: ggz_common.h 4955 2002-10-19 22:19:29Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -70,8 +70,10 @@ typedef enum {
  *  @see ggzcore_room_chat
  */
 typedef enum {
-	/** No chat type.  Used for invalid chat messages. */
-	GGZ_CHAT_NONE,
+	/** An unknown/unrecognized chat type - likely either a future chat
+	 *  op or a communications error.  It can either be ignored or
+	 *  handled generically. */
+	GGZ_CHAT_UNKNOWN,
 
 	/** A normal chat, just a message sent to the current room. */
 	GGZ_CHAT_NORMAL,
