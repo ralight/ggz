@@ -41,18 +41,18 @@
  */
 int hand_read_hand(void)
 {
-	int i, p;
+	int i, player;
 	struct hand_t *hand;
 
 	assert(game.players);
 
 	/* first read the player whose hand it is */
-	if (es_read_int(game.fd, &p) < 0)
+	if (es_read_int(game.fd, &player) < 0)
 		return -1;
-	assert(p >= 0 && p < game.num_players);
-	hand = &game.players[p].hand;
+	assert(player >= 0 && player < game.num_players);
+	hand = &game.players[player].hand;
 
-	ggz_debug("     Reading the hand of player %d.", p);
+	ggz_debug("     Reading the hand of player %d.", player);
 
 	/* Zap our hand */
 	/* TODO: fixme */
@@ -93,14 +93,14 @@ int hand_read_hand(void)
 		table_setup();
 	}
 
-	ggz_debug("     Read hand_size as %d.", game.players[p].hand.hand_size);
+	ggz_debug("     Read hand_size as %d.", game.players[player].hand.hand_size);
 
 	/* Read in all the card values */
 	for(i=0; i<hand->hand_size; i++)
 		if(es_read_card(game.fd, &hand->card[i]) < 0)
 			return -1;
 
-	table_display_hand(p);
+	table_display_hand(player);
 
 	return 0;
 }
