@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 5408 2003-02-15 03:34:42Z jdorje $
+ * $Id: game.c 6061 2004-06-27 19:34:15Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -33,8 +33,11 @@
 #include <unistd.h>
 #include <ggz.h>
 
+#include <stdio.h> // test
+
 #include "chess.h"
 #include "game.h"
+#include "ai.h"
 
 /* Game from cgc */
 game_t *game;
@@ -95,7 +98,10 @@ static int seats_full(void)
  *  CHESS_EVENT_START: NULL */
 int game_update(int event_id, void *data) {
   int time, st;
+  int from, to;
+  char botmove[6];
   struct timeval now;
+
   switch (event_id) {
     case CHESS_EVENT_LAUNCH:
       /* Check for current state */
@@ -105,6 +111,12 @@ int game_update(int event_id, void *data) {
       game = cgc_create_game();
       /* Go to wait state */
       game_info.state = CHESS_STATE_WAIT;
+
+      if (ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1) {
+        if (cgc_join_game(game, BLACK) < 0) /* FIXME: what if ai is host? allowed at all (clock)? */
+          return -1;
+        chess_ai_init(C_BLACK, 3);
+	  }
       break;
     case CHESS_EVENT_JOIN:
       /* Check for current state */
@@ -171,16 +183,26 @@ int game_update(int event_id, void *data) {
       game_info.state = CHESS_STATE_PLAYING;
       break;
     case CHESS_EVENT_MOVE:
+      printf("** got move!\n");
       /* Check for state */
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
+      printf("** handle move!\n");
       ggzdmod_log(game_info.ggz, "Move: %s", (char *)data);
       /* Try to make the move via cgc */
       if ( !data || (st = cgc_make_move(game, (char *)data)) < 0) {
+        printf("** cgc: not valid (%p): %d!\n", data, st);
         ggzdmod_log(game_info.ggz, "CGC status: %d", st);
         game_send_move(NULL, 0);
         break;
       }
+      printf("** move is valid!\n");
+      from = ((char*)data)[0] - 65 + (((char*)data)[1] - 49) * 8;
+      to = ((char*)data)[2] - 65 + (((char*)data)[3] - 49) * 8;
+      printf("** ai: execute %i->%i\n", from, to);
+      chess_ai_move(from, to);
+      chess_ai_output();
+
       /* Move was valid */
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
           game_send_move((char *)data, 0);
@@ -235,6 +257,28 @@ int game_update(int event_id, void *data) {
         game_update(CHESS_EVENT_DRAW, &st);
       }
       game_info.turn++;
+      printf("** move was: %i/%i %i/%i\n",
+        ((char*)data)[0] - 65, ((char*)data)[1] - 49,
+        ((char*)data)[2] - 65, ((char*)data)[3] - 49);
+      printf("** next turn!\n");
+
+      if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
+      && (game_info.turn % 2)) {
+        printf("** now move chess bot!\n");
+        chess_ai_find(C_BLACK, &from, &to);
+        printf("** would move from %i to %i!\n", from, to);
+        botmove[0] = from % 8 + 'A';
+        botmove[1] = from / 8 + '1';
+        botmove[2] = to % 8 + 'A';
+        botmove[3] = to / 8 + '1';
+        botmove[4] = 0;
+        botmove[5] = 0;
+        data = &botmove;
+        printf("** that would be: %i/%i %i/%i\n",
+          ((char*)data)[0] - 65, ((char*)data)[1] - 49,
+          ((char*)data)[2] - 65, ((char*)data)[3] - 49);
+        game_update(CHESS_EVENT_MOVE, data);
+      }
       break;
     case CHESS_EVENT_UPDATE_TIME:
       if (game_info.state != CHESS_STATE_PLAYING)

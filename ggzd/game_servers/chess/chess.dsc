@@ -1,11 +1,11 @@
-# $Id: chess.dsc 5544 2003-05-10 23:15:02Z dr_maux $
+# $Id: chess.dsc 6061 2004-06-27 19:34:15Z josef $
 
 [GameInfo]
 Author = Ismael Orenstein
 Description = GGZ game module for playing Chess
 Homepage = http://ggz.sourceforge.net/games/chess/
 Name = Chess
-Version = 0.0.8
+Version = 0.0.9
 
 [LaunchInfo]
 ExecutablePath = ggzd.chess
@@ -16,7 +16,7 @@ Version = 3
 
 [TableOptions]
 AllowLeave = 0
-#BotsAllowed = 
+BotsAllowed = 1
 PlayersAllowed = 2
 
 [Statistics]
