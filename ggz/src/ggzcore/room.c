@@ -31,6 +31,7 @@
 #include "player.h"
 #include "lists.h"
 #include "hook.h"
+#include "net.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -226,28 +227,32 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room, const GGZRoomEvent event, c
 }
 
 
-void ggzcore_room_list_players(GGZRoom *room)
+int ggzcore_room_list_players(GGZRoom *room)
 {
-	if (room && room->server) {
-		_ggzcore_room_load_playerlist(room);
-	}
+	if (room && room->server)
+		return _ggzcore_room_load_playerlist(room);
+	else
+		return -1;
 }
 
 
-void ggzcore_room_list_tables(GGZRoom *room, const int type, const char global)
+int ggzcore_room_list_tables(GGZRoom *room, const int type, const char global)
 {
-	if (room && room->server) {
-		_ggzcore_room_load_tablelist(room, type, global);
-	}
+	if (room && room->server)
+		return _ggzcore_room_load_tablelist(room, type, global);
+	else
+		return -1;
 }
 
 
-void ggzcore_room_chat(struct _GGZRoom *room, const GGZChatOp opcode, const char *player, const char *msg)
+int ggzcore_room_chat(struct _GGZRoom *room, const GGZChatOp opcode, const char *player, const char *msg)
 {
 	if (room && room->server) {
 		/* FIXME: check validty of args */
-		_ggzcore_room_chat(room, opcode, player, msg);
+		return _ggzcore_room_chat(room, opcode, player, msg);
 	}
+	else
+		return -1;
 }
 
 
@@ -647,15 +652,33 @@ void _ggzcore_room_new_table_state(struct _GGZRoom *room, const unsigned int id,
 }
 
 
-void _ggzcore_room_load_playerlist(struct _GGZRoom *room)
+int _ggzcore_room_load_playerlist(struct _GGZRoom *room)
 {
-	_ggzcore_server_list_players(room->server);
+	struct _GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_list_players(net);
 }
 
 
-void _ggzcore_room_load_tablelist(struct _GGZRoom *room, const int type, const char global)
+int _ggzcore_room_load_tablelist(struct _GGZRoom *room, const int type, const char global)
 {
-	_ggzcore_server_list_tables(room->server, type, global);
+	struct _GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_list_tables(net, type, global);
+}
+
+
+int _ggzcore_room_chat(struct _GGZRoom *room,
+		       const GGZChatOp opcode,
+		       const char *player,
+		       const char *msg)
+{
+	struct _GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_chat(net, opcode, player, msg);
 }
 
 
@@ -686,9 +709,63 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 }
 
 
+int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
+{
+	struct _GGZNet *net;
+	int i, type_id, num_seats, status;
+	char *desc, *name;
+	GGZSeatType seat;
+
+	net = _ggzcore_server_get_net(room->server);
+
+	type_id = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
+	desc = _ggzcore_table_get_desc(table);
+	num_seats = _ggzcore_table_get_num_seats(table);
+	status = _ggzcore_net_send_table_launch(net, type_id, desc, num_seats);
+	
+	if (status == 0)
+		for (i = 0; i < num_seats; i++) {
+			seat = _ggzcore_table_get_nth_player_type(table, i);
+			name = _ggzcore_table_get_nth_player_name(table, i);
+			status = _ggzcore_net_send_seat(net, seat, name);
+			if (status < 0)
+				break;
+		}
+	
+	return status;
+}
+
+
+int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
+{
+	struct _GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_table_join(net, num);
+}
+
+
+int _ggzcore_room_leave_table(struct _GGZRoom *room)
+{
+	struct _GGZNet *net;
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_table_leave(net);
+}
+
+
 int _ggzcore_room_send_game_data(struct _GGZRoom *room, char *buffer)
 {
-	return _ggzcore_server_send_game_data(room->server, buffer);
+	int size;
+	char *buf_offset;
+	struct _GGZNet *net;
+
+	/* Extract size from first bytes of buffer */
+	size = *(int*)buffer;
+	buf_offset = buffer + sizeof(size);
+
+	net = _ggzcore_server_get_net(room->server);
+	return _ggzcore_net_send_game_data(net, size, buf_offset);
 }
 
 
@@ -698,35 +775,6 @@ void _ggzcore_room_recv_game_data(struct _GGZRoom *room, char *buffer)
 }
 
 
-void _ggzcore_room_chat(struct _GGZRoom *room,
-			const GGZChatOp opcode,
-			const char *player,
-			const char *msg)
-{
-	_ggzcore_server_chat(room->server, opcode, player, msg);
-}
-
-
-int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
-{
-	int status;
-
-	status = _ggzcore_server_launch_table(room->server, table);
-
-	return status;
-}
-
-
-int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
-{
-	return _ggzcore_server_join_table(room->server, num);
-}
-
-
-int _ggzcore_room_leave_table(struct _GGZRoom *room)
-{
-	return _ggzcore_server_leave_table(room->server);
-}
 
 
 /* Functions for attaching hooks to GGZRoom events */

@@ -58,12 +58,11 @@ int _ggzcore_net_send_list_rooms(struct _GGZNet *net,
 int _ggzcore_net_send_join_room(struct _GGZNet *net, 
 				const unsigned int room_num);
 
-int _ggzcore_net_send_logout(struct _GGZNet *net);
-
 int _ggzcore_net_send_list_players(struct _GGZNet *net);
 int _ggzcore_net_send_list_tables(struct _GGZNet *net, 
 				  const int type, 
 				  const char global);
+
 int _ggzcore_net_send_chat(struct _GGZNet *net, 
 			   const GGZChatOp op,
 			   const char* player, 
@@ -73,13 +72,16 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net,
 				   const int type,
 				   char *desc,
 				   const int num_seats);
-int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num);
-int _ggzcore_net_send_table_leave(struct _GGZNet *net);
-
 int _ggzcore_net_send_seat(struct _GGZNet *net, 
 			   GGZSeatType seat, 
 			   char *name);
+int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num);
+int _ggzcore_net_send_table_leave(struct _GGZNet *net);
+
 int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer);
+
+int _ggzcore_net_send_logout(struct _GGZNet *net);
+
 
 /* Functions for reading data from server */
 int _ggzcore_net_data_is_pending(struct _GGZNet *net);

@@ -359,15 +359,15 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 
 
 /* Functions for performing actions on a room */
-void ggzcore_room_list_players(GGZRoom *room);
-void ggzcore_room_list_tables(GGZRoom *room, 
-			      const int type,
-			      const char global);
+int ggzcore_room_list_players(GGZRoom *room);
+int ggzcore_room_list_tables(GGZRoom *room, 
+			     const int type,
+			     const char global);
 
-void ggzcore_room_chat(GGZRoom *room,
-		       const GGZChatOp opcode,
-		       const char *player,
-		       const char *msg);
+int ggzcore_room_chat(GGZRoom *room,
+		      const GGZChatOp opcode,
+		      const char *player,
+		      const char *msg);
 
 int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
 int ggzcore_room_join_table(GGZRoom *room, const unsigned int num);

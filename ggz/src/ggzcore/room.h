@@ -119,15 +119,15 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 
 /* Functions for invoking GGZRoom "actions" */
 
-void _ggzcore_room_load_playerlist(struct _GGZRoom *room);
-void _ggzcore_room_load_tablelist(struct _GGZRoom *room, 
-				  const int type, 
-				  const char global);
+int _ggzcore_room_load_playerlist(struct _GGZRoom *room);
+int _ggzcore_room_load_tablelist(struct _GGZRoom *room, 
+				 const int type, 
+				 const char global);
 
-void _ggzcore_room_chat(struct _GGZRoom *room,
-			const GGZChatOp opcode,
-			const char *player,
-			const char *msg);
+int _ggzcore_room_chat(struct _GGZRoom *room,
+		       const GGZChatOp opcode,
+		       const char *player,
+		       const char *msg);
 
 int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table);
 int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);

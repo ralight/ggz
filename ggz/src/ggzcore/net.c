@@ -374,112 +374,160 @@ int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int id)
 
 int _ggzcore_net_send_list_players(struct _GGZNet *net)
 {	
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
-	return es_write_int(net->fd, REQ_LIST_PLAYERS);
+	status = es_write_int(net->fd, REQ_LIST_PLAYERS);
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending playerlist request");
+
+	return status;
 }
 
 
 int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const char global)
 {	
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TABLES");	
 	if (es_write_int(net->fd, REQ_LIST_TABLES) < 0
 	    || es_write_int(net->fd, type) < 0
 	    || es_write_char(net->fd, global) < 0)
-		return -1;
+		status = -1;
 
-	return 0;
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending tablelist request");
+
+	return status;
 }
 
 
-int _ggzcore_net_send_chat(struct _GGZNet *net, 
-			   const GGZChatOp op, 
-			   const char* player, 
-			   const char* msg)
+int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* player, const char* msg)
 {
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
 	if (es_write_int(net->fd, REQ_CHAT) < 0
 	    || es_write_char(net->fd, op) < 0)
-		return -1;
+		status = -1;
 	
-	if (op & GGZ_CHAT_M_PLAYER)
-		if (es_write_string(net->fd, player) < 0)
-			return -1;
+	if (status == 0 && (op & GGZ_CHAT_M_PLAYER))
+		status = es_write_string(net->fd, player);
 	
-	if (op & GGZ_CHAT_M_MESSAGE)
-		if (es_write_string(net->fd, msg) < 0)
-			return -1;
+	if (status == 0 && (op & GGZ_CHAT_M_MESSAGE))
+		status = es_write_string(net->fd, msg);
+	
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending chat");
 
-	return 0;
+	return status;
 }
 
 
-int _ggzcore_net_send_table_launch(struct _GGZNet *net,
-				   const int type,
-				   char *desc,
-				   const int num_seats)
+int _ggzcore_net_send_table_launch(struct _GGZNet *net, const int type, char *desc, const int num_seats)
 {
+	int status = 0;
+	
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LAUNCH");
 	if (es_write_int(net->fd, REQ_TABLE_LAUNCH) < 0
 	    || es_write_int(net->fd, type) < 0
 	    || es_write_string(net->fd, desc) < 0
 	    || es_write_int(net->fd, num_seats) < 0)
-		return -1;
+		status = -1;
 
-	return 0;
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending table launch");
+
+	return status;
+}
+
+
+int _ggzcore_net_send_seat(struct _GGZNet *net, GGZSeatType seat, char *name)
+{
+	int status = 0;
+
+	ggzcore_debug(GGZ_DBG_NET, "Sending seat info");
+	status = es_write_int(net->fd, seat);
+	
+	if (status > 0) {
+		switch (seat) {
+		case GGZ_SEAT_PLAYER:
+		case GGZ_SEAT_RESERVED:
+			status = es_write_string(net->fd, name);
+			break;
+		case GGZ_SEAT_BOT:
+			break;
+		default:
+			break;
+		}
+	}
+	
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending seat info");
+
+	return status;
 }
 
 
 int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 {
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_JOIN");
 	if (es_write_int(net->fd, REQ_TABLE_JOIN) < 0
 	    || es_write_int(net->fd, num) < 0)
-		return -1;
+		status = -1;
 
-	return 0;
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending table join");
+
+	return status;
 }
 
 
 int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 {
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LEAVE");
-	return es_write_int(net->fd, REQ_TABLE_LEAVE);
-}
+	status = es_write_int(net->fd, REQ_TABLE_LEAVE);
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending table leave");
 
-
-int _ggzcore_net_send_seat(struct _GGZNet *net, 
-			   GGZSeatType seat, 
-			   char *name)
-{
-	ggzcore_debug(GGZ_DBG_NET, "Sending seat");
-	if (es_write_int(net->fd, seat) < 0)
-		return -1;
-
-	switch (seat) {
-	case GGZ_SEAT_PLAYER:
-	case GGZ_SEAT_RESERVED:
-		es_write_string(net->fd, name);
-		break;
-	case GGZ_SEAT_BOT:
-		break;
-	default:
-		break;
-	}
-	
-	return 0;
+	return status;
 }
 
 
 int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer)
 {
+	int status = 0;
+
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_GAME: %d bytes from game", size);
 	if (es_write_int(net->fd, REQ_GAME) < 0
 	    || es_write_int(net->fd, size) < 0
 	    || es_writen(net->fd, buffer, size) < 0)
-		return -1;
+		status = -1;
 
-	return 0;
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending game data");
+
+	return status;
 }
+
+
+int _ggzcore_net_send_logout(struct _GGZNet *net)
+{
+	int status = 0;
+
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
+	status = es_write_int(net->fd, REQ_LOGOUT);
+
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending logout request");
+	
+	return status;
+}
+
 
 
 int _ggzcore_net_data_is_pending(struct _GGZNet *net)
@@ -502,13 +550,6 @@ int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 	}
 
 	return pending;
-}
-
-
-int _ggzcore_net_send_logout(struct _GGZNet *net)
-{
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
-	return es_write_int(net->fd, REQ_LOGOUT);
 }
 
 

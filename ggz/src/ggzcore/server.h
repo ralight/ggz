@@ -77,24 +77,7 @@ int _ggzcore_server_load_roomlist(struct _GGZServer *server,
 int _ggzcore_server_join_room(struct _GGZServer *server, 
 			      const unsigned int room);
 
-int _ggzcore_server_list_players(struct _GGZServer *server);
-int _ggzcore_server_list_tables(struct _GGZServer *server, 
-				const int type, 
-				const char global);
-
-int _ggzcore_server_chat(struct _GGZServer *server, 
-			 const GGZChatOp opcode,
-			 const char *player,
-			 const char *msg);
-
-int _ggzcore_server_send_game_data(struct _GGZServer *server, char *buffer);
-
-int _ggzcore_server_launch_table(struct _GGZServer *server, 
-				 struct _GGZTable *table);
-
-int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num);
-
-int _ggzcore_server_leave_table(struct _GGZServer *server);
+int _ggzcore_server_logout(struct _GGZServer *server);
 
 void _ggzcore_server_net_error(struct _GGZServer *server, char *message);
 void _ggzcore_server_protocol_error(struct _GGZServer *server, char *message);
