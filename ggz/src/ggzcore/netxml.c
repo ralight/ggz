@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: netxml.c 5341 2003-01-22 14:40:48Z dr_maux $
  *
  * Code for parsing XML streamed from the server
  *
@@ -328,7 +328,7 @@ void _ggzcore_net_disconnect(GGZNet *net)
 int _ggzcore_net_send_login(GGZNet *net)
 {
 	GGZLoginType login_type;
-	char *type, *handle, *password;
+	char *type, *handle, *password, *language;
 	int status = 0;
 
 	login_type = _ggzcore_server_get_type(net->server);
@@ -346,6 +346,9 @@ int _ggzcore_net_send_login(GGZNet *net)
 	default:
 		type = "guest";
 	}
+
+	language = getenv("LANG");
+	_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>", language);
 	
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
