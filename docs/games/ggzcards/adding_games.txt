@@ -1,5 +1,5 @@
-This document is intended to describe the process of adding new games to
-the GGZCards module.
+This document is intended to describe the process of adding new game and AI
+modules to the GGZCards module.
 
 Contents
 	1.  An overview of ggzcards
@@ -19,39 +19,48 @@ designed to play any sort of trick-taking card game.  The server handles
 absolutely everything that is game-specific; the client is basically a dumb
 terminal on which the server writes its output.  Thus, adding a new game is as
 simple as adding code to the ggzcards server module and installing the new code
-on your favorite server.  For the user everything should "just work"!
+on your favorite server.  For the user everything should "just work".
 
-At the server end, the game-specific code is separated into its own file.  
-Here there are a collection of switch() statements, each in a function that is
-called by the common code at well-defined points.  The common code does pretty
-much what you'd expect it do do: every trick-taking game follows the same
-basic structure, and this structure is all handled by the common code.  The
-game-specific code just deals with specific turning points in the game, 
-basically guiding the common code in the proper direction.
+At the server end, the game-specific code is separated into its own files.  
+Each game has its own file and a collection of functions, and runtime binding
+(object-oriented style, using c) is used to select the proper functions for
+each game.  The common code does pretty much what you'd expect it do do: 
+every trick-taking game follows the same basic structure, and this structure 
+is all handled by the common code.  The game-specific code just deals with 
+specific turning points in the game, basically guiding the common code in the 
+proper direction.
+
+Similarly, the ai code is separated into its own files.  Each ai has its own
+file and a collection of functions, and again runtime binding is used to select
+the proper functions for each AI type.  The common code calls these AI
+functions as the proper times.
 
 At the client end, there is no game-specific code.  However, the client is
 designed to be able to handle a large variety of different options for games.
 
 All of the code needed for a new game should go into six files in the server
-code: card.[ch], game.[ch], and games.[ch].
+code: cards.[ch], games.[ch], and games/<game>.[ch].
+
+All of the code needed for a new AI module should go into four files in
+the server code: ai.[ch] and ai/<ai>.[ch].
 
 
 2.  The basic protocol.
 
 At the heart of ggzcards is the game-independent nature of its communication
 protocol.  This nature has its drawbacks, but at this time it seems like by
-far the best thing to do (more on this later).
+far the best thing to do.
 
 - Bidding: the client knows nothing about different types of bids, all it
 knows how to do is receive a list of possible bids and let the player pick
-between one of them.  The server sends the client a fixed list of text
-messages, each of which is a possible bid (for instance, in Spades this could
-be "nil" "0" "1" ... "13").  The client pops up a dialog window, from which
-the user picks one of these bids.  The client then returns the index of the
-bid, which the server then uses to figure out which bid the client has made.
-Most of this is done automatically by the common code; all that the game code
-has to do is assemble the list of bids, and interpret the bid that is returned
-by the player.
+one of them.  The server sends the client a fixed list of text messages, each 
+of which is a possible bid (for instance, in Spades this could be "nil" "0" 
+"1" ... "13").  The client pops up a dialog window, from which the user picks 
+one of these bids.  The client then returns the index of the bid, which the 
+server uses to figure out which bid the client has made.  Most of this is 
+done automatically by the common code; all that the game code has to do is 
+assemble the list of bids, and interpret the bid that is returned by the 
+player.
 
 - Playing: the server sends the client a play request, requesting a play.  This
 is made more complicated because in some cases a player may not play from their
@@ -69,28 +78,29 @@ telling the client that player X made a bid of Y.  In ggzcards, this data is
 completely unencoded.  Each player gets a "message" that the server sends to
 the client and the client displays prominently.  For instance, a player's
 message in Spades might be "Score: 132\nBags: 2\nBid: 3\nTricks: 2".  The
-client does not have to (or get to, depending on how you look at it) play how
+client does not have to (or get to, depending on how you look at it) decide how
 to come up with and display this information, it is all done by the server's
 game-dependent code.
 
 - Global messages: In addition to the player messages, there are global 
-messages.  A message is sent to the client, and marked with another string (at
-least, for now it's a string).  This other string is like the index of the
-message.  Some index strings have special significance: for instance, the ""
-string marks the _global_ global message, which is displayed prominently; the
-"game" string marks the name of the game.  In Bridge, common examples here 
-would be "" => "Contract: 6 clubs" and "game" => "Bridge".  Although these
-two messages are handled in specialized ways by the client, other messages are
+messages.  A message is sent to the client, and marked with another string.  
+This other string is like the index of the message (hash-style).  Some index 
+strings have special significance: for instance, the "" string marks the 
+_global_ global message, which is displayed prominently; the "game" string 
+marks the name of the game.  In Bridge, common examples here would be 
+"" => "Contract: 6 clubs" and "game" => "Bridge".  Although these two messages 
+are handled in specialized ways by the client, other messages are
 intended for general display.  The idea is that there is a "message" menu, 
 with one entry per marker string.  Each menu item will pop up a dialog window
-which displays that message.  (At the time of this this writing, this menu has
-not yet been implemented.)
+which displays that message.  (This is just how the GTK client handles it;
+other clients could do something different.)
 
 - Options: options are handled very similarly to bids, but the structure is
 slightly more complex.  The server sends the client a list of options, each as
 multiple-choice or boolean in the form of a list.  The client pops up a dialog
 window for the user to choose the options they desire, and returns a list of
-indices representing their choices.
+indices representing their choices.  Server-side, the common code handles most
+of the work.
 
 - Etc: there's a bit more, but these are the complicated bits.
 
@@ -154,10 +164,10 @@ Each player also has an assigned seat.  There is one player per client (and
 vice versa).
 
 Each seat is a spot at the table.  Most seats may be occupied by players, but
-in some games some seats will not!  For instance, in Euchre there are 4 players
-and some extra cards.  These extra cards occupy an extra seat at the table.
+in some games some seats will not!  For instance, in Spades there are 2 players
+and 2 extra hands.  These extra hands occupy two extra seats at the table.
 Thus, there is one hand of cards per seat (and vice versa).  Now (and here's
-the tricky part) the client doesn't know anything about players.  The client
+the cool part) the client doesn't know anything about players.  The client
 only knows about seats.  For instance, if you have a 4-player game with 6 
 seats, as far as the client knows it's just a 6-player/seat game.
 
@@ -172,23 +182,28 @@ for seats (or something similar if necessary).  By following these conventions,
 it should be easy enough to avoid mixing them up.
 
 
-6.  The extra game code
+6.  The meta-game code
 
-Although it's "extra", you probably want to add at least some of it first. 
-This code goes in games.[ch].
+This code is used to track the different games, and link up each game with its
+data.  This code goes in games.[ch].
 
 In games.h there is an enumeration of different game types.  Add your game to
 this enumeration.
 
-In games.c there are several functions used to determine what game is going
-to be played.  Take a look at game_get_gametype and games_valid_game, and add
-your game to them (actually, you may want to wait to do this).
-
+At the top of games.c, you'll need to add an declatation for the function set
+your game will use, as well as an entry into the data structure for the "data"
+of your game.
 
 7.  The game-specific code
 
 Next, you need to add game-specific code to control the flow of the program.
-All of the game-specific code is in game.h and game.c.
+All of the game-specific code is in game.[ch] and games/<game>.[ch].
+
+Note: game.[ch] includes the *default* functions and data for all 
+game-specific code.  You'll write your own functions and data and probably 
+end up using a lot of the default functions; all of this will go into
+games/<game>.[ch].  You'll assemble a struct of function pointers, each 
+pointing to the appropriate function for your game.
 
 First, though, you should take a look at the game structure defined in 
 common.h.  Everything about the game is contained within this structure.  Near
@@ -196,81 +211,39 @@ the top of the structure, there are several flags that represent the game's
 options.  By setting these appropriately, you can have the common code or
 default code deal with these aspects.  At the bottom, you'll see an arbitrary
 pointer.  This is intended to point to the game-specific data, which resides
-in a structure declared within game.h.  Take a look at the existing structures
-here, and think about what your game will need.
+in a structure declared within games/<game>.h.  Take a look at game functions
+and structures for other games (in games/<game>.[ch]), and consider how your
+game will be similar or different (Suaro is a good game to look at here, since
+it's the most complete).
 
-Note the difference between game.[ch] and games.[ch].  For now, we're only
-dealing with game.[ch].
+Now, you're probably ready to create your game files.  These files are 
+games/<game>.c and games/<game>.h, and will contain by far the bulk of the 
+code you will write.  In game.c, there are a large
+number of functions.  You will write replacements for each function that needs
+replacing, and place these new functions into games/<game>.c.  Each function
+has a fairly self-descriptive name, and a comment describing what it does.
 
-Now, you're probably ready to move on to game.c.  This file will contain by
-far the bulk of the code you will write.  In this file, there are a large
-number of functions.  Each has a fairly self-descriptive name, and a comment
-describing what it does.  Rather than writing about each function here, I will
-go through once I'm done here and add to the comments that are already with
-the functions.  However, here is a list of the functions themselves:
+First, copy over the game function pointers (game_funcs) from game.c into your
+file.  Rename them to <game>_funcs, which you should already have 
+referenced in games.c.  At this point, the program should compile and run a 
+little bit just by using the default functions.
 
-- game_init_game.  Probably the first step, and one of the trickiest, is
-to initialize the game.  All of this is done in game_init_game(), which (right
-now) is a rather long and bloated function.
-
-- game_get_options/game_handle_options.  These two handle asking for options,
-and dealing with the client's response.  To begin with, you can leave them
-as-is to have no user-definable options.
-
-- game_start_game.  This is called at the beginning of every game, and should
-initialize the data for that game.  A lot of data is automatically initialized
-by the common code, so very little actually has to be initialized here.
-
-- game_test_for_gameover/game_handle_gameover.  These test for a gameover
-situation (returning true if the game is over), and handle a gameover 
-(determining the winners, etc.), respectively.  They should be straightforward.
-
-- game_compare_cards.  This is used by the card-handling functions to sort the
-hands automatically.  Unless your game needs a special card ordering, you
-shouldn't have to change it.
-
-- game_get_bid_text.  Before you deal with the bidding functions, you should
-add to this function to understand how bids work.  Basically it takes a bid (of
-a bid_t type defined in common.h) and returns a string that is that bid.  This
-function is used all over the place, in both the common and game-specific code.
-
-- game_start_bidding/game_get_bid/game_handle_bid/game_next_bid.  These are all
-called at various points in the bidding.  They all have to work together to
-get the bidding to work smoothly.  The only real advice I can give is to look
-at the existing code for other games, and try to model it.
-
-- game_start_playing/game_get_play/game_verify_play/game_handle_play/
-game_next_play.  These are similar to the bidding functions; they all have to
-work together so that playing the hand goes smoothly.
-
-- game_deal_hand.  This function deals a hand.  This may be straightforward or
-tricky depending on your game.
-
-- game_end_trick/game_end_hand.  These are called at the end of a trick/hand,
-respectively, and should update any game structures that are necessary.
-
-- game_set_player_message.  This is called from a lot of places, as well, and
-it should set the player message (as described above), depending on the game
-state.
-
-- game_send_hand.  This determines how a hand is sent to a player (i.e. whether
-it will be revealed or not).  Most of the time, a player only gets to see
-their own hand; however, in certain games players get to see other hands as
-well.  It would be possible to show _part_ of a hand, but would take
-additional coding.  Unless your game has special needs, you should be able to
-leave it as-is.
-
-To begin with, I recommend you keep things simple.  You should be able to get
-a semi-working version of the game without changing very much at all.  To get
-any "special" features will require a greater understanding of the code,
-especially if the feature isn't present in an existing game.  It can be added
-later.
+Now, for each function, take a look at the default function 
+game_<function_name> in game.c.  If that function is okay for your game, you 
+don't have to do anything.  If not, then make your own function 
+<game>_<function_name> in games/<game>.c and replace the function function in
+the function pointer set at the top of the file.  (You'll notice that this
+is entirely object-oriented, and we're basically duplicating the work of
+creating different classes using just C.)
 
 
 8.  Other advice.
 
-Okay, I have no other advice.  However, if and when you get stuck drop me a
-line.
+Okay, I have no other advice.  However, if and when you get stuck please let
+me know, and hopefully I can help.
+
+Also, if any of this document seems inaccurate or unclear, tell me how I can
+improve it.
 
 
 --jason short
