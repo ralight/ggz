@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: net.c 3702 2002-03-28 04:43:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -258,6 +258,7 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 {
 	int i, status = 0;
 	int fd = get_player_socket(p);
+	GGZSeatType seat_type = get_player_status(p);
 
 	ggzdmod_log(game.ggz, "Sending bid request to player %d/%s.", p,
 		    get_player_name(p));
@@ -267,10 +268,14 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 	    write_opcode(fd, REQ_BID) < 0 || ggz_write_int(fd, bid_count) < 0)
 		status = -1;
 	for (i = 0; i < bid_count; i++) {
-		char bid_text[128];
-		char bid_desc[1024];
-		game.funcs->get_bid_text(bid_text, sizeof(bid_text), bids[i]);
-		game.funcs->get_bid_desc(bid_desc, sizeof(bid_desc), bids[i]);
+		char bid_text[128] = "";
+		char bid_desc[1024] = "";
+		if (seat_type != GGZ_SEAT_BOT) {
+			game.funcs->get_bid_text(bid_text, sizeof(bid_text),
+			                         bids[i]);
+			game.funcs->get_bid_desc(bid_desc, sizeof(bid_desc),
+			                         bids[i]);
+		}
 		if (write_bid(fd, bids[i]) < 0 ||
 		    ggz_write_string(fd, bid_text) < 0 ||
 		    ggz_write_string(fd, bid_desc) < 0)
