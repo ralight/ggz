@@ -12,6 +12,8 @@
 	<?php
 		if ($lookup) :
 			include("information.inc");
+		else :
+			include("intro.inc");
 		endif;
 	?>
 </div>
