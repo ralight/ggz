@@ -101,7 +101,7 @@ static int transit_join(int index, int t_fd)
 	/* Create socket for communication with player thread */
 	if (socketpair(PF_UNIX, SOCK_STREAM, 0, fd) < 0)
 		err_sys_exit("socketpair failed");
-
+	
 	tables.info[index].transit_seat = i;
 	tables.info[index].transit_fd = fd[1];
 	p = tables.info[index].transit;

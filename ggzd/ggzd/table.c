@@ -62,9 +62,11 @@ static void  table_remove(int t_index);
 static void  table_run_game(int t_index, char *path);
 static int   table_send_opt(int t_index);
 static int   table_game_over(int index, int fd);
+static int   table_log(int index, int fd, char debug);
 static int   table_game_launch(int index, int fd);
 static int   table_game_join(int index, int fd);
 static int   table_game_leave(int index, int fd);
+
 
 /* FIXME: This should actually do checking */
 static int table_check(int p_index, TableInfo table)
@@ -316,8 +318,6 @@ static void table_loop(int t_index)
 static int table_handle(int request, int index, int fd)
 {
 	int status;
-	unsigned int level;
-	char* msg;
 	TableToControl op = (TableToControl)request;
 
 	switch (op) {
@@ -339,21 +339,11 @@ static int table_handle(int request, int index, int fd)
 		break;
 
 	case MSG_LOG:
-		if (es_read_int(fd, &level) < 0
-		    || es_read_string_alloc(fd, &msg) < 0)
-			return -1;
-		log_msg(level, msg);
-		free(msg);
-		status = 0;
+		status = table_log(index, fd, 0);
 		break;
 
 	case MSG_DBG:
-		if (es_read_int(fd, &level) < 0
-		    || es_read_string_alloc(fd, &msg) < 0)
-			return -1;
-		dbg_msg(level, msg);
-		free(msg);
-		status = 0;
+		status = table_log(index, fd, 1);
 		break;
 
 	default:
@@ -501,6 +491,56 @@ static int table_game_over(int index, int fd)
 
 	return 0;
 
+}
+
+
+static int table_log(int index, int fd, char debug) 
+{
+	int level, type, len, pid;
+	char name[MAX_GAME_NAME_LEN];
+	char* msg;
+	char* buf;
+
+	if (es_read_int(fd, &level) < 0
+	    || es_read_string_alloc(fd, &msg) < 0)
+		return -1;
+	
+	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
+		pthread_rwlock_rdlock(&tables.lock);
+		type = tables.info[index].type_index;
+		pid = tables.info[index].pid;
+		pthread_rwlock_unlock(&tables.lock);
+		
+		pthread_rwlock_rdlock(&game_types.lock);
+		strcpy(name, game_types.info[type].name);
+		pthread_rwlock_unlock(&game_types.lock);
+		
+		len = strlen(msg) + strlen(name) + 4;
+		
+		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
+			len += 6;
+		
+		if ( (buf = malloc(len)) == NULL)
+			err_sys_exit("malloc failed");
+		     
+		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
+			snprintf(buf, (len - 1), "(%s:%d) ", name, pid);
+		else
+			snprintf(buf, (len - 1), "(%s) ", name);
+		
+		snprintf((buf + strlen(buf)), (len - strlen(buf) - 1), msg);
+		free(msg);
+		msg = buf;
+	}
+	
+	if (debug) 
+		dbg_msg(level, msg);
+	else
+		log_msg(level, msg);
+
+	free(msg);
+	
+	return 0;
 }
 
 
