@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4954 2002-10-19 22:02:49Z jzaun $
+ * $Id: ggzclient.c 4967 2002-10-21 01:44:52Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -381,7 +381,7 @@ static GGZHookReturn ggz_chat_event(GGZRoomEvent id, void* event_data, void* use
 		case GGZ_CHAT_ANNOUNCE:
 			chat_display_message(CHAT_ANNOUNCE, (char*)msg->sender, (char*)msg->message);
 			break;
-		case GGZ_CHAT_NONE:
+		case GGZ_CHAT_UNKNOWN:
 			break;
 	}
 
