@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2647 2001-11-04 03:50:54Z jdorje $
+ * $Id: net.c 2697 2001-11-08 10:19:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -526,7 +526,7 @@ void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 		error++;
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
-		seat_t s = CONVERT_SEAT(p, s_rel);
+		seat_t s = UNCONVERT_SEAT(p, s_rel);
 		if (es_write_int(fd, lengths[s]) < 0)
 			error++;
 		for (i = 0; i < lengths[s]; i++)
