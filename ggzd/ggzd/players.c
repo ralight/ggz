@@ -52,8 +52,8 @@
 
 
 /* Timeout for server resync */
-#define NG_RESYNC_SEC  0
-#define NG_RESYNC_USEC 500000
+#define GGZ_RESYNC_SEC  0
+#define GGZ_RESYNC_USEC 500000
 
 
 /* Server wide data structures*/
@@ -172,8 +172,8 @@ static void* player_new(void *arg_ptr)
 	/* Initialize player data */
 	players.info[i].fd = sock;
 	players.info[i].table_index = -1;
-	players.info[i].uid = NG_UID_NONE;
-	players.info[i].playing = 0;
+	players.info[i].uid = GGZ_UID_NONE;
+	players.info[i].state = GGZ_USER_CONNECTED;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
 	inet_ntop(AF_INET, &addr.sin_addr, players.info[i].ip_addr,
@@ -228,8 +228,8 @@ static void player_loop(int p_index, int p_fd)
 		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
 		
 		/* Setup timeout for select*/
-		timer.tv_sec = NG_RESYNC_SEC;
-		timer.tv_usec = NG_RESYNC_USEC;
+		timer.tv_sec = GGZ_RESYNC_SEC;
+		timer.tv_usec = GGZ_RESYNC_USEC;
 		
 		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
 		
@@ -257,7 +257,7 @@ static void player_loop(int p_index, int p_fd)
 				dbg_msg(GGZ_DBG_TABLE, "Player %d now in game",
 					p_index);
 				pthread_rwlock_wrlock(&players.lock);
-				players.info[p_index].playing = 1;
+				players.info[p_index].state = GGZ_USER_PLAYING;
 				pthread_rwlock_unlock(&players.lock);
 				FD_SET(t_fd, &active_fd_set);
 				break;
@@ -294,7 +294,7 @@ static void player_loop(int p_index, int p_fd)
 			FD_CLR(t_fd, &active_fd_set);
 			t_fd = -1;
 			pthread_rwlock_wrlock(&players.lock);
-			players.info[p_index].playing = 0;
+			players.info[p_index].state = GGZ_USER_IN_ROOM;
 			players.info[p_index].table_index = -1;
 			players.timestamp = time(NULL);
 			pthread_rwlock_unlock(&players.lock);
@@ -335,8 +335,16 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	UserToControl op = (UserToControl)request;
 
 	switch (op) {
+
+	case REQ_LOGIN_NEW:
+	case REQ_LOGIN:
 	case REQ_LOGIN_ANON:
 		status = player_login_anon(p_index, p_fd);
+		if (status == GGZ_REQ_OK) {
+			pthread_rwlock_wrlock(&players.lock);
+			players.info[p_index].state = GGZ_USER_LOGGED_IN;
+			pthread_rwlock_unlock(&players.lock);
+		}
 		break;
 
 	case REQ_LOGOUT:
@@ -396,8 +404,6 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		status = player_motd(p_index, p_fd);
 		break;
 	  
-	case REQ_LOGIN_NEW:
-	case REQ_LOGIN:
 	case REQ_PREF_CHANGE:
 	case REQ_REMOVE_USER:
 	case REQ_TABLE_OPTIONS:
@@ -585,7 +591,7 @@ static int player_login_anon(int p, int fd)
 	}
 
 	pthread_rwlock_wrlock(&players.lock);
-	players.info[p].uid = NG_UID_ANON;
+	players.info[p].uid = GGZ_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
 	players.timestamp = time(NULL);
 	ip_addr = players.info[p].ip_addr;
@@ -917,7 +923,7 @@ static int player_list_types(int p_index, int fd)
 		if (es_write_int(fd, i) < 0
 		    || es_write_string(fd, info[i].name) < 0
 		    || es_write_string(fd, info[i].version) < 0
-		    || es_write_char(fd, info[i].num_play_allow) < 0)
+		    || es_write_char(fd, info[i].player_allow_mask) < 0)
 			return (-1);
 		if (!verbose)
 			continue;
@@ -1110,10 +1116,10 @@ int num_comp_play(unsigned char mask)
 int type_match_table(int type, int num)
 {
 	/* FIXME: Do reservation checking properly */
-	return ( type == NG_TYPE_ALL
+	return ( type == GGZ_TYPE_ALL
 		 || (type >= 0 && type == tables.info[num].type_index)
-		 || (type == NG_TYPE_OPEN && seats_open(tables.info[num]))
-		 || type == NG_TYPE_RES);
+		 || (type == GGZ_TYPE_OPEN && seats_open(tables.info[num]))
+		 || type == GGZ_TYPE_RES);
 }
 		
 

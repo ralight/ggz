@@ -101,7 +101,6 @@ typedef enum {
 	REQ_GAME_LEAVE
 } ControlToTable;
 
-
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
 #define E_ROOM_FULL    -3
@@ -112,3 +111,5 @@ typedef enum {
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
 #define E_LEAVE_FORBIDDEN -10
+
+

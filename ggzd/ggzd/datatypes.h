@@ -59,8 +59,8 @@ typedef struct {
 	char desc[MAX_GAME_DESC_LEN];
 	char author[MAX_GAME_AUTH_LEN];
 	char homepage[MAX_GAME_WEB_LEN];
-	unsigned char num_play_allow;
-	unsigned char comp_allow;
+	unsigned char player_allow_mask;
+	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
 	int options_size;
 	unsigned char enabled;
@@ -139,7 +139,7 @@ typedef struct {
 	int uid;
 	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
 	int fd;
-	char playing;
+	char state;
 	pthread_t pid;
 	int table_index;
 	char ip_addr[16];

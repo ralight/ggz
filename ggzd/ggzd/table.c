@@ -44,8 +44,8 @@
 #include <seats.h>
 #include <transit.h>
 
-#define NG_RESYNC_SEC  0
-#define NG_RESYNC_USEC 500000
+#define GGZ_RESYNC_SEC  0
+#define GGZ_RESYNC_USEC 500000
 
 /* Server wide data structures*/
 extern struct GameTypes game_types;
@@ -295,8 +295,8 @@ static void table_loop(int t_index)
 		read_fd_set = active_fd_set;
 		
 		/* Setup timeout for select*/
-		timer.tv_sec = NG_RESYNC_SEC;
-		timer.tv_usec = NG_RESYNC_USEC;
+		timer.tv_sec = GGZ_RESYNC_SEC;
+		timer.tv_usec = GGZ_RESYNC_USEC;
 		
 		status = select((fd + 1), &read_fd_set, NULL, NULL, &timer);
 		

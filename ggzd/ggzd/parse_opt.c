@@ -618,9 +618,9 @@ static void parse_game(char *name)
 	char line[256];
 	int linenum = 0;
 	int intval;
-	char players_bits[] = { PLAY_ALLOW_ZERO, PLAY_ALLOW_ONE, PLAY_ALLOW_TWO,
-		PLAY_ALLOW_THREE, PLAY_ALLOW_FOUR, PLAY_ALLOW_FIVE,
-		PLAY_ALLOW_SIX, PLAY_ALLOW_SEVEN, PLAY_ALLOW_EIGHT };
+	char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
+		GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
+		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
 
 	/* Allocate space and setup a full pathname to description file */
 	if((fname = malloc(strlen(name)+strlen(opt.game_dir)+6)) == NULL)
@@ -706,7 +706,7 @@ static void parse_game(char *name)
 				PARSE_ERR("PlayersAllowed value invalid");
 				continue;
 			}
-			game_info->num_play_allow |= players_bits[intval];
+			game_info->player_allow_mask |= allow_bits[intval];
 		}
 
 		/*** BotsAllowed = # ***/
@@ -720,7 +720,7 @@ static void parse_game(char *name)
 				PARSE_ERR("BotAllowed value invalid");
 				continue;
 			}
-			game_info->comp_allow |= players_bits[intval];
+			game_info->bot_allow_mask |= allow_bits[intval];
 		}
 
 		/*** OptionsSize = # ***/

@@ -45,35 +45,24 @@
 #define DEFAULT_MAX_ROOM_TABLES 50
 
 /* Bitmasks for allowable player numbers */
-#define PLAY_ALLOW_ZERO    0
-#define PLAY_ALLOW_ONE     1
-#define PLAY_ALLOW_TWO     (1 << 1)
-#define PLAY_ALLOW_THREE   (1 << 2)
-#define PLAY_ALLOW_FOUR    (1 << 3)
-#define PLAY_ALLOW_FIVE    (1 << 4)
-#define PLAY_ALLOW_SIX     (1 << 5)
-#define PLAY_ALLOW_SEVEN   (1 << 6)
-#define PLAY_ALLOW_EIGHT   (1 << 7)
-
-/* Bitmasks for allowable computer player numbers */
-#define COMP_ALLOW_ZERO    0
-#define COMP_ALLOW_ONE     1
-#define COMP_ALLOW_TWO     (1 << 1)
-#define COMP_ALLOW_THREE   (1 << 2)
-#define COMP_ALLOW_FOUR    (1 << 3)
-#define COMP_ALLOW_FIVE    (1 << 4)
-#define COMP_ALLOW_SIX     (1 << 5)
-#define COMP_ALLOW_SEVEN   (1 << 6)
-#define COMP_ALLOW_EIGHT   (1 << 7)
+#define GGZ_ALLOW_ZERO    0
+#define GGZ_ALLOW_ONE     1
+#define GGZ_ALLOW_TWO     (1 << 1)
+#define GGZ_ALLOW_THREE   (1 << 2)
+#define GGZ_ALLOW_FOUR    (1 << 3)
+#define GGZ_ALLOW_FIVE    (1 << 4)
+#define GGZ_ALLOW_SIX     (1 << 5)
+#define GGZ_ALLOW_SEVEN   (1 << 6)
+#define GGZ_ALLOW_EIGHT   (1 << 7)
 
 /* Special UID values */
-#define NG_UID_NONE -1
-#define NG_UID_ANON -2
+#define GGZ_UID_NONE -1
+#define GGZ_UID_ANON -2
 
 /* Specical game type values */
-#define NG_TYPE_ALL  -1
-#define NG_TYPE_RES  -2
-#define NG_TYPE_OPEN -3
+#define GGZ_TYPE_ALL  -1
+#define GGZ_TYPE_RES  -2
+#define GGZ_TYPE_OPEN -3
 
 /* Player Handler return values */
 #define GGZ_REQ_OK           0
@@ -89,6 +78,12 @@
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
 
+/* Player state values */
+#define GGZ_USER_CONNECTED -1
+#define GGZ_USER_LOGGED_IN  0
+#define GGZ_USER_IN_ROOM    1
+#define GGZ_USER_PLAYING    2
+
 /* Table joining values */
 #define GGZ_TRANSIT_DIR    0x80
 #define GGZ_TRANSIT_JOIN   0x80
@@ -100,8 +95,7 @@
 
 #define GGZ_TRANSIT_STATUS 0x0f
 #define GGZ_TRANSIT_OK     0x00
-#define GGZ_TRANSIT_ERR  0x01
-
+#define GGZ_TRANSIT_ERR    0x01
 
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1
