@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = muehle
 POTFILE = muehle.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/muehle/src/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)

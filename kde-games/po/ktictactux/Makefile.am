@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = ktictactux
 POTFILE = ktictactux.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/ktictactux/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)

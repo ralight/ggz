@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = krosswater
 POTFILE = krosswater.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/krosswater/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
