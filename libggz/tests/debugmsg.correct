@@ -1,0 +1,31 @@
+-- Testing before init --
+Success: ggz_error_msg
+Success: ggz_error_sys (no errno): Success
+Success: Testing ggz_error_sys (errno EIO): Input/output error
+
+-- Testing with file (null) and no initial types specified
+(foo) Success: Debugging with type foo after enabling
+-- Testing post cleanup --
+Success: ggz_error_msg
+Success: ggz_error_sys (no errno): Input/output error
+Success: Testing ggz_error_sys (errno EIO): Input/output error
+
+-- Testing with file (null) and foo,bar initial types
+(foo) Success: Debugging with type foo
+(bar) Success: Debugging with type bar
+(qux) Success: Debugging with type qux after enabling
+(LIBGGZ) *** Memory Leak Check ***
+(LIBGGZ) All clean!
+(LIBGGZ) *** End Memory Leak Check ***
+-- Testing before init --
+Success: ggz_error_msg
+Success: ggz_error_sys (no errno): Input/output error
+Success: Testing ggz_error_sys (errno EIO): Input/output error
+
+-- Testing with file debug.log and no initial types specified
+-- Testing post cleanup --
+Success: ggz_error_msg
+Success: ggz_error_sys (no errno): Input/output error
+Success: Testing ggz_error_sys (errno EIO): Input/output error
+
+-- Testing with file debug.log and foo,bar initial types

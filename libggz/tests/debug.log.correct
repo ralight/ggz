@@ -1,0 +1,7 @@
+(foo) Success: Debugging with type foo after enabling
+(foo) Success: Debugging with type foo
+(bar) Success: Debugging with type bar
+(qux) Success: Debugging with type qux after enabling
+(LIBGGZ) *** Memory Leak Check ***
+(LIBGGZ) All clean!
+(LIBGGZ) *** End Memory Leak Check ***
