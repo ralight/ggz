@@ -13,8 +13,15 @@
 #include <klocale.h>
 #include <kstatusbar.h>
 #include <kconfig.h>
+#include <ksimpleconfig.h>
 #include <kapplication.h>
 #include <kmessagebox.h>
+#include <kstandarddirs.h>
+#include <kdebug.h>
+
+// Qt includes
+#include <qdir.h>
+#include <qstringlist.h>
 
 // Constructor
 KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
@@ -32,9 +39,9 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	mgame->insertItem(i18n("Quit"), menuquit);
 
 	mtheme = new KPopupMenu(this);
-	mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
-	mtheme->insertItem(i18n("Tux/Kandalf (classic)"), menuthemeclassic);
-	mtheme->insertItem(i18n("Symbols"), menuthemesymbols);
+	//mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
+	//mtheme->insertItem(i18n("Tux/Kandalf (classic)"), menuthemeclassic);
+	//mtheme->insertItem(i18n("Symbols"), menuthemesymbols);
 
 	menuBar()->insertItem(i18n("Game"), mgame);
 	menuBar()->insertItem(i18n("Theme"), mtheme);
@@ -52,11 +59,13 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 
 	enableNetwork(false);
 
+	loadThemes();
+
 	KConfig *conf = kapp->config();
 	conf->setGroup("Settings");
-	int theme = conf->readNumEntry("theme");
+	QString theme = conf->readEntry("theme");
 	if(theme) changeTheme(theme);
-	else changeTheme(menuthemenew);
+	else changeTheme(QString::null);
 
 	setCaption("KTicTacTux");
 	resize(250, 250);
@@ -87,29 +96,28 @@ KTicTacTux *KTicTacTuxWin::tux()
 }
 
 // Change the theme
-void KTicTacTuxWin::changeTheme(int theme)
+void KTicTacTuxWin::changeTheme(QString theme)
 {
-	switch(theme)
+	KStandardDirs d;
+	int id;
+
+	// fall back to default if no theme is set or theme is no more installed
+	if((theme == QString::null) || m_player1[theme] == QString::null)
 	{
-		case menuthemenew:
-			mtheme->setItemChecked(menuthemenew, true);
-			mtheme->setItemChecked(menuthemeclassic, false);
-			mtheme->setItemChecked(menuthemesymbols, false);
-			m_tux->setTheme("kde.png", "gnome.png");
-			break;
-		case menuthemeclassic:
-			mtheme->setItemChecked(menuthemenew, false);
-			mtheme->setItemChecked(menuthemeclassic, true);
-			mtheme->setItemChecked(menuthemesymbols, false);
-			m_tux->setTheme("tux.png", "merlin.png");
-			break;
-		case menuthemesymbols:
-			mtheme->setItemChecked(menuthemenew, false);
-			mtheme->setItemChecked(menuthemeclassic, false);
-			mtheme->setItemChecked(menuthemesymbols, true);
-			m_tux->setTheme("cross.png", "circle.png");
-			break;
+		theme = d.findResource("data", "ktictactux/classic");
 	}
+
+	// try to enable the corresponding menu item
+	for(int i = 0; i < mtheme->count(); i++)
+	{
+		id = mtheme->idAt(i);
+		if(m_themes[mtheme->text(id)] == theme) mtheme->setItemChecked(id, true);
+		else mtheme->setItemChecked(id, false);
+	}
+
+	// Update pixmaps
+	kdDebug() << "Player 1 has " << m_player1[theme] << ", theme " << theme << endl;
+	m_tux->setTheme(m_player1[theme], m_player2[theme]);
 }
 
 // Handle menu stuff
@@ -117,16 +125,9 @@ void KTicTacTuxWin::slotMenu(int id)
 {
 	KConfig *conf;
 
+	// Standard menu entries
 	switch(id)
 	{
-		case menuthemenew:
-		case menuthemeclassic:
-		case menuthemesymbols:
-			changeTheme(id);
-			conf = kapp->config();
-			conf->setGroup("Settings");
-			conf->writeEntry("theme", id);
-			break;
 		case menusync:
 			m_tux->sync();
 			break;
@@ -136,6 +137,15 @@ void KTicTacTuxWin::slotMenu(int id)
 		case menuquit:
 			close();
 			break;
+	}
+
+	// Dynamic theme menu entries
+	if(id >= menuthemes)
+	{
+		changeTheme(m_themes[mtheme->text(id)]);
+		conf = kapp->config();
+		conf->setGroup("Settings");
+		conf->writeEntry("theme", m_themes[mtheme->text(id)]);
 	}
 }
 
@@ -196,5 +206,50 @@ void KTicTacTuxWin::slotGameOver()
 {
 	mgame->setItemEnabled(menusync, false);
 	if(m_networked) mgame->setItemEnabled(menuscore, false);
+}
+
+// Read in all themes
+void KTicTacTuxWin::loadThemes()
+{
+	KStandardDirs d;
+	QString name, player1, player2;
+	QString file;
+	int index = menuthemes;
+
+	// Recursively scan all data directories
+	kdDebug() << "loadThemes" << endl;
+	QStringList list(d.findDirs("data", "ktictactux"));
+	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
+	{
+		QDir dir((*it));
+		kdDebug() << "Scan dir: " << (*it) << endl;
+		QStringList entries = dir.entryList(QDir::Files);
+		for(QStringList::iterator it2 = entries.begin(); it2 != entries.end(); it2++)
+		{
+			file = (*it) + (*it2);
+			kdDebug() << "Check file: " << file << endl;
+			KSimpleConfig conf(file);
+			if(conf.hasGroup("Description"))
+			{
+				conf.setGroup("Description");
+				name = conf.readEntry("name");
+				conf.setGroup("Pixmaps");
+				player1 = conf.readEntry("player1");
+				player2 = conf.readEntry("player2");
+
+				m_themes[name] = file;
+				m_player1[file] = (*it) + player1;
+				m_player2[file] = (*it) + player2;
+				mtheme->insertItem(name, index++);
+			}
+		}
+	}
+
+	if(index == menuthemes)
+	{
+		KMessageBox::error(this,
+			i18n("No pixmap themes could be found"),
+			i18n("Themes error"));
+	}
 }
 

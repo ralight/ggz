@@ -1,4 +1,4 @@
-SUBDIRS = .
+SUBDIRS = themes
 
 ggzexecmod_PROGRAMS = ktictactux_client
 
@@ -25,7 +25,7 @@ METASOURCES = AUTO
 EXTRA_DIST = module.dsc.in
 
 pixmapdir = @ggzdatadir@/ktictactux
-pixmap_DATA = tux.png merlin.png kde.png gnome.png cross.png circle.png bg.png
+pixmap_DATA = bg.png
 
 KDE_ICON = ktictactux
 

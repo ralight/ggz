@@ -13,6 +13,9 @@
 // KDE includes
 #include <kmainwindow.h>
 
+// Qt includes
+#include <qmap.h>
+
 // Forward declarations
 class KPopupMenu;
 
@@ -30,19 +33,19 @@ class KTicTacTuxWin : public KMainWindow
 		// Menu ids
 		enum MenuEntries
 		{
-			menusync,
-			menuscore,
-			menuquit,
-			menuthemenew,
-			menuthemeclassic,
-			menuthemesymbols
+			menusync = 1,
+			menuscore = 2,
+			menuquit = 3,
+			menuthemes = 10
 		};
 		// Enable network functionality
 		void enableNetwork(bool enabled);
 		// Display score
 		void score();
 		// Change the theme
-		void changeTheme(int theme);
+		void changeTheme(QString theme);
+		// Read in all available themes
+		void loadThemes();
 
 	public slots:
 		// Receive a status message from the game
@@ -63,6 +66,8 @@ class KTicTacTuxWin : public KMainWindow
 		KPopupMenu *mgame, *mtheme;
 		// Game network status
 		bool m_networked;
+		// List of themes
+		QMap<QString, QString> m_themes, m_player1, m_player2;
 };
 
 #endif
