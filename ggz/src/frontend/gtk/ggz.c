@@ -76,8 +76,6 @@ GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
 void ggz_event_init(GGZServer *Server)
 {
-	g_print("ggz_event_init\n");
-
 	ggzcore_server_add_event_hook(Server, GGZ_CONNECTED, ggz_connected);
 	ggzcore_server_add_event_hook(Server, GGZ_CONNECT_FAIL,	ggz_connect_fail);
 	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATED, ggz_negotiated);
@@ -100,8 +98,6 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 	GtkWidget *tmp;
 	int fd;
 
-	g_print("ggz_connected\n");
-
 	/* Desensitize the connect button */
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
@@ -120,8 +116,6 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 {
 	GtkWidget *tmp;
 
-	g_print("ggz_connect_fail: %s\n", (char*)event_data);
-
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
 
@@ -130,8 +124,6 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_negotiated\n");
-
 	ggzcore_server_login(server);
 
 	return GGZ_HOOK_OK;
@@ -143,8 +135,6 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 	gchar *message;
 	GtkWidget *tmp;
 
-
-	g_print("ggz_logged_in\n");
 
 	login_destroy();
 	ggzcore_server_list_rooms(server, -1, 1);
@@ -204,8 +194,6 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_login_fail\n");
-
 	login_failed();
 
 	return GGZ_HOOK_OK;
@@ -217,8 +205,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 	GGZRoom *room;
 	gint i, numrooms;
 	gchar *name;
-
-	g_print("ggz_room_list\n");
 
 	/* Clear current list of rooms */
 	tmp = lookup_widget(win_main, "room_clist");
@@ -254,8 +240,6 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	GtkWidget *tmp;
 	gchar *name;
 	gchar *message;
-
-	g_print("ggz_entered\n");
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
@@ -320,8 +304,6 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_logout\n");
-
 	gdk_input_remove(server_handle);
 	server_handle = -1;
 	/*ggzcore_server_free(server);*/
@@ -334,8 +316,6 @@ static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_
 {
 	gchar *player;
 	gchar *message;
-
-	g_print("ggz_chat_msg\n");
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
@@ -350,8 +330,6 @@ static GGZHookReturn ggz_chat_prvmsg(GGZRoomEvent id, void* event_data, void* us
 	gchar *message;
 	gchar *player;
 
-	g_print("ggz_chat_prgmsg\n");
-
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	chat_display_message(CHAT_PRVMSG, player, message);
@@ -363,8 +341,6 @@ static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user
 {
 	gchar *message;
 	gchar *player;
-
-	g_print("ggz_chat_beep\n");
 
 	player = ((char**)(event_data))[0];
 	message = g_strdup_printf(_("You've been beeped by %s."), player);
@@ -379,7 +355,6 @@ static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user
 
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_list_players\n");
 	display_players();
 	return GGZ_HOOK_OK;
 }
@@ -388,7 +363,6 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* use
 {
 	gchar *player;
 
-	g_print("ggz_room_enter\n");
 	display_players();
 	player = g_strdup(event_data);
 	chat_enter(event_data);
@@ -402,7 +376,6 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* use
 {
 	gchar *player;
 
-	g_print("ggz_room_leave\n");
 	display_players();
 	player = g_strdup(event_data);
 	chat_part(event_data);
@@ -415,8 +388,6 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* use
 void ggz_sensitivity_init(void)
 {
 	GtkWidget *tmp;
-
-	g_print("ggz_sensitivity_init\n");
 
 	/* set senditivity */
 	/* Menu bar */
@@ -468,8 +439,6 @@ static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* 
 {
 	gint i;
 	gchar **motd;
-
-	g_print("ggz_motd_loaded\n");
 
 	motd = event_data;
 
@@ -541,22 +510,17 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data)
 {
-	g_print("Server error: %s\n", (char*)event_data);
-	
 	return GGZ_HOOK_OK;
 }
 
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data)
 {
-	g_print("Network error: %s\n", (char*)event_data);
-
 	return GGZ_HOOK_OK;
 }
 
 
 static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_list_tables\n");
 	display_tables();
 	return GGZ_HOOK_OK;
 }
@@ -564,7 +528,6 @@ static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* us
 
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	g_print("ggz_table_update\n");
 	display_tables();
 	display_players();
 	return GGZ_HOOK_OK;
@@ -581,7 +544,6 @@ static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* u
 
 GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
 {
-	g_print("ggz_check_fd\n");
 	ggzcore_server_read_data(server);
 	return 0;
 }
