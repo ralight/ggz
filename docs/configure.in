@@ -21,6 +21,7 @@ AC_OUTPUT(Makefile
 	games/external-games/Makefile
 	ggz-project/Makefile
 	coreclients/Makefile
+	grubby/Makefile
 	spec/Makefile)
 
 dnl Report success
