@@ -38,7 +38,7 @@
 #include "server.h"
 
 extern GtkWidget *win_main;
-GGZServer *server;
+GGZServer *server = NULL;
 
 int main (int argc, char *argv[])
 {

@@ -49,26 +49,26 @@ extern GGZServer *server;
 /* Aray of GdkColors currently used for chat and MOTD */
 GdkColor colors[] =
 {
-        {0, 0, 0, 0},                   /* 0   black    */
-        {0, 0, 0, 0xcccc},              /* 1   bule                     */
-        {0, 0xcccc, 0, 0},              /* 2   red                      */
-        {0, 0xbbbb, 0xbbbb, 0},         /* 3   yellow/brown             */
-        {0, 0xbbbb, 0, 0xbbbb},         /* 4   purple                   */
-        {0, 0xffff, 0xaaaa, 0},         /* 5   orange                   */
-        {0, 0x7777, 0x7777, 0x7777},    /* 6   grey                     */
-        {0, 0, 0xcccc, 0xcccc},         /* 7   aqua                     */
-        {0, 0, 0, 0xcccc},              /* 8   blue markBack            */
-        {0, 0, 0, 0},                   /* 9   black                    */
-        {0, 0xcccc, 0xffff, 0xcccc},    /* 10  ?????                    */
-        {0, 0xffff, 0xffff, 0},         /* 11  yellow                   */
-        {0, 0, 0xffff, 0},              /* 12  green                    */
-        {0, 0, 0xffff, 0xffff},         /* 13  light aqua               */
-        {0, 0, 0, 0xffff},              /* 14  blue                     */
-        {0, 0xffff, 0, 0xffff},         /* 15  pink                     */
-        {0, 0x9999, 0x9999, 0x9999},    /* 16  light grey               */
-        {0, 0xeeee, 0xeeee, 0xeeee},    /* 17  white markFore           */
-        {0, 0, 0, 0},                   /* 18  foreground (black)       */
-        {0, 0xffff, 0xffff, 0xffff}     /* 19  background (white)       */
+        {0, 0x00, 0x00, 0x00},          /* 0   black			*/
+        {0, 0xFF, 0xFF, 0x33},          /* 1   yellow			*/
+        {0, 0xCC, 0x00, 0x00},          /* 2   red			*/
+        {0, 0x66, 0x99, 0x00},          /* 3   green			*/
+        {0, 0xCC, 0x33, 0xCC},          /* 4   purple			*/
+        {0, 0x99, 0x33, 0x33},          /* 5   brown			*/
+        {0, 0x00, 0x66, 0xFF},          /* 6   blue			*/
+        {0, 0xFF, 0x99, 0x33},          /* 7   orange			*/
+        {0, 0x66, 0xCC, 0xCC},          /* 8   grey			*/
+        {0, 0x66, 0xCC, 0xFF},          /* 9   ?????			*/
+        {0, 0x99, 0x33, 0xFF},          /* 10  ?????			*/
+        {0, 0x99, 0x00, 0x66},          /* 11  ?????			*/
+        {0, 0x33, 0x00, 0x66},          /* 12  ?????			*/
+        {0, 0x99, 0x33, 0x33},          /* 13  ?????			*/
+        {0, 0x33, 0x66, 0xFF},          /* 14  ?????			*/
+        {0, 0xFF, 0x66, 0x99},          /* 15  ?????			*/
+        {0, 0xCC, 0xCC, 0x33},          /* 16  ?????			*/
+        {0, 0x66, 0xFF, 0xCC},          /* 17  ?????			*/
+        {0, 0x00, 0x00, 0x00},          /* 18  foreground (black)       */
+        {0, 0xFF, 0xFF, 0xFF}           /* 19  background (white)       */
 };
 
 
