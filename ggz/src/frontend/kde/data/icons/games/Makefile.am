@@ -21,6 +21,9 @@ pix_DATA = \
 	TEG.png \
 	CChess.png \
 	Escape.png \
+	Hnefatafl.png \
+	Checkers.png \
+	Widelands.png \
 	notinstalled.png \
 	lounge.png
 
