@@ -26,12 +26,15 @@ ps-docs: psdir $(PS_FILES) eps-files
 
 # Directories to hold the docs
 htmldir:
+	-rm -rf html
 	(cd $(srcdir); mkdir -p html;)
 
 txtdir:
+	-rm -rf txt
 	(cd $(srcdir); mkdir -p txt;)
 
 psdir:
+	-rm -rf ps
 	(cd $(srcdir); mkdir -p ps;)
 
 
