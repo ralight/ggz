@@ -26,7 +26,6 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#include "xmlelement.h"
 
 #define GGZ_CS_PROTO_VERSION  5
 
@@ -76,8 +75,5 @@ typedef enum {
 #define E_NOT_IN_ROOM   -13
 #define E_AT_TABLE     -14
 #define E_IN_TRANSIT   -15
-
-GGZXMLElement* _ggzcore_protocol_new_element(char *tag, char **attrs);
-void _ggzcore_protocol_process_element(GGZXMLElement *element, struct _GGZNet *net);
 
 #endif /*__PROTOCOL_H__*/

@@ -38,10 +38,10 @@ void _ggzcore_net_init(struct _GGZNet *net,
 		       unsigned int port);
 
 int _ggzcore_net_set_dump_file(struct _GGZNet *net, const char* filename);
+void _ggzcore_net_set_fd(struct _GGZNet *net, int fd);
 
 void _ggzcore_net_free(struct _GGZNet *net);
 
-GGZServer *  _ggzcore_net_get_server(struct _GGZNet *net);
 char*        _ggzcore_net_get_host(struct _GGZNet *net);
 unsigned int _ggzcore_net_get_port(struct _GGZNet *net);
 int          _ggzcore_net_get_fd(struct _GGZNet *net);
@@ -89,16 +89,6 @@ int _ggzcore_net_send_logout(struct _GGZNet *net);
 /* Functions for reading data from server */
 int _ggzcore_net_data_is_pending(struct _GGZNet *net);
 int _ggzcore_net_read_data(struct _GGZNet *net);
-
-
-/* FIXME: should we do this here or as part of a protocol object? */
-int _ggzcore_net_get_fd(struct _GGZNet *net);
-GGZRoom* _ggzcore_net_get_new_room(struct _GGZNet *net);
-void _ggzcore_net_set_fd(struct _GGZNet *net, int fd);
-void _ggzcore_net_set_chat_size(struct _GGZNet *net, int size);
-
-GGZXMLElement* _net_get_head(struct _GGZNet *net);
-
 
 #endif /* __NET_H__ */
 

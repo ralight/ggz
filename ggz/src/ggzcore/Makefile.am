@@ -41,7 +41,6 @@ libggzcore_la_SOURCES =	conf.c \
 			netxml.c \
 			player.c \
 			player.h \
-			protocol.c \
 			protocol.h \
 			room.c \
 			room.h \
