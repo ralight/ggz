@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 5164 2002-11-03 07:31:49Z jdorje $
+ * $Id: dlg_exit.c 5166 2002-11-03 08:59:28Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -66,8 +66,13 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	gtk_widget_show(label);
 
 	/* Button widgets */
+#ifndef GTK2
 	exitButton = gtk_button_new_with_label(_("Exit"));
 	cancelButton = gtk_button_new_with_label(_("Cancel"));
+#else
+	exitButton = gtk_button_new_from_stock(GTK_STOCK_QUIT);
+	cancelButton = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+#endif /* GTK2 */
 
 	gtk_signal_connect(GTK_OBJECT(exitButton), "clicked",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
