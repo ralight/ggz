@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3304 2002-02-10 12:27:09Z jdorje $
+ * $Id: table.c 3306 2002-02-10 13:00:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -236,8 +236,6 @@ void table_setup(void)
 	/* Revert to having no selected card. */
 	selected_card = -1;
 
-	table_clear_table();
-
 	/* Add text labels to display */
 	for (p = 0; p < ggzcards.num_players; p++) {
 		get_text_box_pos(p, &x, &y);
@@ -262,17 +260,10 @@ void table_setup(void)
 		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_label_set_justify(GTK_LABEL(label[p]), GTK_JUSTIFY_LEFT);
 		gtk_widget_show(label[p]);
-
-		if (ggzcards.players[p].hand.hand_size > 0)
-			table_display_hand(p);
 	}
-	
-	/* Draw the boxes around the card areas */
-	draw_card_areas();
 
-	/* Display the buffer */
-	if (ggzcards.num_players > 0 && table_max_hand_size > 0)
-		table_show_table(0, 0, get_table_width(), get_table_height());
+	/* Redraw and display the table. */
+	table_redraw();
 }
 
 /* Display's a player's name on the table. */

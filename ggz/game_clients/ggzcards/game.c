@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3303 2002-02-10 12:00:00Z jdorje $
+ * $Id: game.c 3306 2002-02-10 13:00:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -292,9 +292,11 @@ void game_get_bid(int possible_bids, char **bid_choices)
 
 	dlg_bid_display(possible_bids, bid_choices);
 
+#if 0
 	/* This is a hack since sometimes the table would get overdrawn at
 	   this point. */
 	table_redraw();
+#endif
 
 	statusbar_message(_("Your turn to bid"));
 }
