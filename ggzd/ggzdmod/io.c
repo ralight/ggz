@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 3108 2002-01-14 00:06:53Z jdorje $
+ * $Id: io.c 3141 2002-01-19 08:11:05Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -29,7 +29,6 @@
  */
 
 #include <config.h>		/* site-specific config */
-#include <easysock.h>
 #include <ggz.h>
 #include <stdlib.h>
 
@@ -52,8 +51,8 @@ static int _io_read_msg_log(GGZdMod *ggzdmod);
 /* Functions for sending IO messages */
 int _io_send_launch(int fd, int seats)
 {
-	if (es_write_int(fd, MSG_GAME_LAUNCH) < 0 
-	    || es_write_int(fd, seats) < 0)
+	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0 
+	    || ggz_write_int(fd, seats) < 0)
 		return -1;
 	else
 		return 0;
@@ -63,10 +62,10 @@ int _io_send_launch(int fd, int seats)
 int _io_send_join(int fd, GGZSeat *seat)
 {
 	ggz_debug("GGZDMOD", "Sending seat data");
-	if (es_write_int(fd, REQ_GAME_JOIN) < 0
-	    || es_write_int(fd, seat->num) < 0
-	    || es_write_string(fd, seat->name) < 0
-	    || es_write_fd(fd, seat->fd) < 0)
+	if (ggz_write_int(fd, REQ_GAME_JOIN) < 0
+	    || ggz_write_int(fd, seat->num) < 0
+	    || ggz_write_string(fd, seat->name) < 0
+	    || ggz_write_fd(fd, seat->fd) < 0)
 		return -1;
 	else
 		return 0;
@@ -75,8 +74,8 @@ int _io_send_join(int fd, GGZSeat *seat)
 
 int _io_send_leave(int fd, GGZSeat *seat)
 {
-	if (es_write_int(fd, REQ_GAME_LEAVE) < 0
-	    || es_write_string(fd, seat->name) < 0)
+	if (ggz_write_int(fd, REQ_GAME_LEAVE) < 0
+	    || ggz_write_string(fd, seat->name) < 0)
 		return -1;
 	else
 		return 0;
@@ -85,8 +84,8 @@ int _io_send_leave(int fd, GGZSeat *seat)
 
 int _io_send_state(int fd, GGZdModState state)
 {
-	if (es_write_int(fd, REQ_GAME_STATE) < 0
-	    || es_write_char(fd, state) < 0)
+	if (ggz_write_int(fd, REQ_GAME_STATE) < 0
+	    || ggz_write_char(fd, state) < 0)
 		return -1;
 	else
 		return 0;
@@ -95,11 +94,11 @@ int _io_send_state(int fd, GGZdModState state)
 
 int _io_send_seat(int fd, GGZSeat *seat)
 {
-	if (es_write_int(fd, seat->type) < 0)
+	if (ggz_write_int(fd, seat->type) < 0)
 		return -1;
 	
 	if (seat->type == GGZ_SEAT_RESERVED) {
-		if (es_write_string(fd, seat->name) < 0)
+		if (ggz_write_string(fd, seat->name) < 0)
 			return -1;
 	}
 
@@ -109,8 +108,8 @@ int _io_send_seat(int fd, GGZSeat *seat)
 
 int _io_send_log(int fd, char *msg)
 {
-	if (es_write_int(fd, MSG_LOG) < 0 
-	    || es_write_string(fd, msg) < 0)
+	if (ggz_write_int(fd, MSG_LOG) < 0 
+	    || ggz_write_string(fd, msg) < 0)
 		return -1;
 	else
 		return 0;
@@ -120,8 +119,8 @@ int _io_send_log(int fd, char *msg)
 /* Functions for sending repsonses */
 int _io_respond_join(int fd)
 {
-	if (es_write_int(fd, RSP_GAME_JOIN) < 0
-	    || es_write_char(fd, 0) < 0)
+	if (ggz_write_int(fd, RSP_GAME_JOIN) < 0
+	    || ggz_write_char(fd, 0) < 0)
 		return -1;
 	else
 		return 0;
@@ -130,8 +129,8 @@ int _io_respond_join(int fd)
 
 int _io_respond_leave(int fd, int status)
 {
-	if (es_write_int(fd, RSP_GAME_LEAVE) < 0 ||
-	    es_write_char(fd, status) < 0)
+	if (ggz_write_int(fd, RSP_GAME_LEAVE) < 0 ||
+	    ggz_write_char(fd, status) < 0)
 		return -1;
 	else
 		return 0;
@@ -140,7 +139,7 @@ int _io_respond_leave(int fd, int status)
 
 int _io_respond_state(int fd)
 {
-	return es_write_int(fd, RSP_GAME_STATE);
+	return ggz_write_int(fd, RSP_GAME_STATE);
 }
 
 
@@ -149,7 +148,7 @@ int _io_read_data(GGZdMod * ggzdmod)
 {
 	int op, status = 0;
 
-	if (es_read_int(ggzdmod->fd, &op) < 0)
+	if (ggz_read_int(ggzdmod->fd, &op) < 0)
 		return -1;
 
 	if (ggzdmod->type == GGZDMOD_GAME) {
@@ -196,7 +195,7 @@ static int _io_read_rsp_join(GGZdMod *ggzdmod)
 {
 	char status;
 
-	if (es_read_char(ggzdmod->fd, &status) < 0)
+	if (ggz_read_char(ggzdmod->fd, &status) < 0)
 		return -1;
 	else
 		_ggzdmod_handle_join_response(ggzdmod, status);
@@ -209,7 +208,7 @@ static int _io_read_rsp_leave(GGZdMod * ggzdmod)
 {
 	char status;
 
-	if (es_read_char(ggzdmod->fd, &status) < 0)
+	if (ggz_read_char(ggzdmod->fd, &status) < 0)
 		return -1;
 	else
 		_ggzdmod_handle_leave_response(ggzdmod, status);
@@ -222,7 +221,7 @@ static int _io_read_req_state(GGZdMod * ggzdmod)
 {
 	char state;
 
-	if (es_read_char(ggzdmod->fd, &state) < 0)
+	if (ggz_read_char(ggzdmod->fd, &state) < 0)
 		return -1;
 	else
 		_ggzdmod_handle_state(ggzdmod, state);
@@ -236,7 +235,7 @@ static int _io_read_msg_log(GGZdMod * ggzdmod)
 {
 	char *msg;
 
-	if (es_read_string_alloc(ggzdmod->fd, &msg) < 0)
+	if (ggz_read_string_alloc(ggzdmod->fd, &msg) < 0)
 		return -1;
 	else {
 		_ggzdmod_handle_log(ggzdmod, msg);
@@ -252,7 +251,7 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 	int seats, i;
 	GGZSeat seat;
 	
-	if (es_read_int(ggzdmod->fd, &seats) < 0)
+	if (ggz_read_int(ggzdmod->fd, &seats) < 0)
 		return -1;
 
 	_ggzdmod_handle_launch_begin(ggzdmod, seats);
@@ -263,11 +262,11 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 		seat.name = NULL;
 		seat.fd = -1;
 		
-		if (es_read_int(ggzdmod->fd, &seat.type) < 0)
+		if (ggz_read_int(ggzdmod->fd, &seat.type) < 0)
 			return -1;
 
 		if (seat.type == GGZ_SEAT_RESERVED)
-			if (es_read_string_alloc(ggzdmod->fd, &seat.name) < 0)
+			if (ggz_read_string_alloc(ggzdmod->fd, &seat.name) < 0)
 				return -1;
 		
 		_ggzdmod_handle_launch_seat(ggzdmod, seat);
@@ -290,9 +289,9 @@ static int _io_read_req_join(GGZdMod * ggzdmod)
 	/* Is it true that only human players join this way? */
 	seat.type = GGZ_SEAT_PLAYER;
 	
-	if (es_read_int(ggzdmod->fd, &seat.num) < 0
-	    || es_read_string_alloc(ggzdmod->fd, &seat.name) < 0
-	    || es_read_fd(ggzdmod->fd, &seat.fd) < 0)
+	if (ggz_read_int(ggzdmod->fd, &seat.num) < 0
+	    || ggz_read_string_alloc(ggzdmod->fd, &seat.name) < 0
+	    || ggz_read_fd(ggzdmod->fd, &seat.fd) < 0)
 		return -1;
 	else {
 		_ggzdmod_handle_join(ggzdmod, seat);
@@ -306,7 +305,7 @@ static int _io_read_req_leave(GGZdMod * ggzdmod)
 {
 	char *name;
 
-	if (es_read_string_alloc(ggzdmod->fd, &name) < 0)
+	if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 		return -1;
 
 	_ggzdmod_handle_leave(ggzdmod, name);
