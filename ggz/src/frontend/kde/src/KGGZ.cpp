@@ -528,7 +528,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 		case GGZCoreGame::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
 			break;
-		case GGZCoreGame::data:
+		/*case GGZCoreGame::data:
 			KGGZDEBUG("data\n");
 			if(!kggzroom)
 			{
@@ -536,7 +536,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 				return;
 			}
 			kggzroom->sendData((char*)data);
-			break;
+			break;*/
 		case GGZCoreGame::over:
 			KGGZDEBUG("over\n");
 			eventLeaveGame(1);
@@ -841,6 +841,15 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			//}
 			emit signalState(kggzserver->state());
 			break;
+		case GGZCoreServer::channelconnected:
+			KGGZDEBUG("##### CHANNEL: connected!\n");
+			break;
+		case GGZCoreServer::channelready:
+			KGGZDEBUG("##### CHANNEL: ready!\n");
+			break;
+		case GGZCoreServer::channelfail:
+			KGGZDEBUG("##### CHANNEL: fail!\n");
+			break;
 		default:
 			KGGZDEBUG("unknown\n");
 			break;
@@ -979,6 +988,9 @@ void KGGZ::attachServerCallbacks()
 	kggzserver->addHook(GGZCoreServer::protoerror, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::chatfail, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 	kggzserver->addHook(GGZCoreServer::statechange, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
+	kggzserver->addHook(GGZCoreServer::channelconnected, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
+	kggzserver->addHook(GGZCoreServer::channelready, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
+	kggzserver->addHook(GGZCoreServer::channelfail, &KGGZ::hookOpenCollector, (void*)kggzservercallback);
 }
 
 void KGGZ::detachServerCallbacks()
@@ -1000,6 +1012,9 @@ void KGGZ::detachServerCallbacks()
 	kggzserver->removeHook(GGZCoreServer::protoerror, &KGGZ::hookOpenCollector);
 	kggzserver->removeHook(GGZCoreServer::chatfail, &KGGZ::hookOpenCollector);
 	kggzserver->removeHook(GGZCoreServer::statechange, &KGGZ::hookOpenCollector);
+	kggzserver->removeHook(GGZCoreServer::channelconnected, &KGGZ::hookOpenCollector);
+	kggzserver->removeHook(GGZCoreServer::channelready, &KGGZ::hookOpenCollector);
+	kggzserver->removeHook(GGZCoreServer::channelfail, &KGGZ::hookOpenCollector);
 }
 
 void KGGZ::attachGameCallbacks()
@@ -1009,7 +1024,7 @@ void KGGZ::attachGameCallbacks()
 	kggzgame->addHook(GGZCoreGame::launchfail, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::negotiated, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::negotiatefail, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
-	kggzgame->addHook(GGZCoreGame::data, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
+	/*kggzgame->addHook(GGZCoreGame::data, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);*/
 	kggzgame->addHook(GGZCoreGame::over, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::ioerror, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::protoerror, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
@@ -1022,7 +1037,7 @@ void KGGZ::detachGameCallbacks()
 	kggzgame->removeHook(GGZCoreGame::launchfail, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::negotiated, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::negotiatefail, &KGGZ::hookOpenCollector);
-	kggzgame->removeHook(GGZCoreGame::data, &KGGZ::hookOpenCollector);
+	/*kggzgame->removeHook(GGZCoreGame::data, &KGGZ::hookOpenCollector);*/
 	kggzgame->removeHook(GGZCoreGame::over, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::ioerror, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::protoerror, &KGGZ::hookOpenCollector);
@@ -1167,6 +1182,35 @@ void KGGZ::menuGameJoin()
 	slotGameFrontend();
 }
 
+void KGGZ::menuGameSpectator()
+{
+	int number;
+
+	// FIXME: merge with menuGameJoin
+	if(!kggzroom)
+	{
+		KMessageBox::sorry(this, i18n("You must be in a room to join a table!"), i18n("Table join failure"));
+		return;
+	}
+	number = m_workspace->widgetTables()->tablenum();
+	if(number == -1)
+	{
+		if(kggzroom->countTables() == 1) number = 0;
+		else
+		{
+			KMessageBox::sorry(this, i18n("Please select a table to join!"), i18n("Table join failure"));
+			return;
+		}
+	}
+
+	if(m_gameinfo) delete m_gameinfo;
+	m_gameinfo = new KGGZGameInfo();
+	m_gameinfo->setType(KGGZGameInfo::typespectator);
+	m_gameinfo->setTable(number);
+
+	slotGameFrontend();
+}
+
 void KGGZ::slotGameFrontend()
 {
 	GGZCoreGametype *gametype;
@@ -1227,6 +1271,7 @@ void KGGZ::slotGamePrepare(int frontend)
 
 	m_gameinfo->setFrontend(frontend);
 	if(m_gameinfo->type() == KGGZGameInfo::typejoin) slotGameStart();
+	else if(m_gameinfo->type() == KGGZGameInfo::typespectator) slotGameStart();
 	else
 	{
 		if(m_launch)
@@ -1236,7 +1281,8 @@ void KGGZ::slotGamePrepare(int frontend)
 		}
 		if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
 #ifdef KGGZ_PATCH_SPECTATORS
-		spec = gametype->maxSpectators();
+		/*spec = gametype->maxSpectators();*/
+		spec = 0;
 #else
 		spec = 0;
 #endif
@@ -1323,7 +1369,10 @@ void KGGZ::slotGameStart()
 	}
 	else
 	{
-		ret = kggzroom->joinTable(m_gameinfo->table());
+		if(m_gameinfo->type() == KGGZGameInfo::typejoin)
+			ret = kggzroom->joinTable(m_gameinfo->table());
+		else
+			ret = kggzroom->joinTableSpectator(m_gameinfo->table());
 		if(ret < 0)
 		{
 			delete m_module;

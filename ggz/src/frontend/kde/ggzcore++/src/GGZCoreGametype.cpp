@@ -77,7 +77,8 @@ int GGZCoreGametype::maxBots()
 int GGZCoreGametype::maxSpectators()
 {
 #ifdef KGGZ_PATCH_SPECTATORS
-	return ggzcore_gametype_get_max_spectators(m_gametype);
+	/*return ggzcore_gametype_get_max_spectators(m_gametype);*/
+	return 1;
 #else
 	return 0;
 #endif
@@ -96,7 +97,8 @@ int GGZCoreGametype::isBotsValid(unsigned int number)
 int GGZCoreGametype::isSpectatorsValid(unsigned int number)
 {
 #ifdef KGGZ_PATCH_SPECTATORS
-	return ggzcore_gametype_num_spectators_is_valid(m_gametype, number);
+	/*return ggzcore_gametype_num_spectators_is_valid(m_gametype, number);*/
+	return 1;
 #else
 	return 1;
 #endif

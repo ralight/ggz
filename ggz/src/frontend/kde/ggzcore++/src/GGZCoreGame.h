@@ -34,7 +34,6 @@ class GGZCoreGame
 			launchfail,
 			negotiated,
 			negotiatefail,
-			data,
 			over,
 			ioerror,
 			protoerror
@@ -78,6 +77,9 @@ class GGZCoreGame
 		/**
 		 * Join this game. */
 		int join();
+		/**
+		 * Join as spectator. */
+		int joinSpectator();
 
 		/**
 		 * Send other data. */

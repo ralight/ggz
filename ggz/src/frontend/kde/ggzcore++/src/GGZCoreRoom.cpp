@@ -180,6 +180,15 @@ int GGZCoreRoom::joinTable(const unsigned int number)
 	return ggzcore_room_join_table(m_room, number);
 }
 
+int GGZCoreRoom::joinTableSpectator(const unsigned int number)
+{
+#ifdef KGGZ_PATCH_SPECTATORS
+	return ggzcore_room_join_table_spectator(m_room, number);
+#else
+	return 0;
+#endif
+}
+
 int GGZCoreRoom::leaveTable(int force)
 {
 	return ggzcore_room_leave_table(m_room, force);

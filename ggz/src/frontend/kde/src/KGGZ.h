@@ -139,6 +139,8 @@ class KGGZ : public QWidget
 		void menuGameLaunch();
 		// Join a running game
 		void menuGameJoin();
+		// Join a game as spectator
+		void menuGameSpectator();
 		// Display game type information
 		void menuGameInfo();
 		// Change into the given room

@@ -314,4 +314,13 @@ int GGZCoreServer::encryption()
 #endif
 }
 
+int GGZCoreServer::channel()
+{
+	return ggzcore_server_get_channel(m_server);
+}
+
+int GGZCoreServer::createChannel()
+{
+	return ggzcore_server_create_channel(m_server);
+}
 

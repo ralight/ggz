@@ -125,7 +125,7 @@ void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int 
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
 #ifdef KGGZ_PATCH_SPECTATORS
-	m_popup->insertItem(typeName(seatspectator), -seatspectator);
+	/*m_popup->insertItem(typeName(seatspectator), -seatspectator);*/
 #endif
 	m_popup->popup(point);
 

@@ -69,6 +69,13 @@ int GGZCoreGame::join()
 	return ggzcore_game_join(m_game);
 }
 
+int GGZCoreGame::joinSpectator()
+{
+#ifdef KGGZ_PATCH_SPECTATORS
+	return ggzcore_game_join_spectator(m_game);
+#endif
+}
+
 int GGZCoreGame::dataSend(char* buffer)
 {
 	//return ggzcore_game_send_data(m_game, buffer);

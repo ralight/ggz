@@ -98,6 +98,9 @@ KGGZBase::KGGZBase()
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_LAUNCH), i18n("&Launch new game"), MENU_GAME_LAUNCH);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("&Join game"), MENU_GAME_JOIN);
+#ifdef KGGZ_PATCH_SPECTATORS
+	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("Join as spectator"), MENU_GAME_SPECTATOR);
+#endif
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_CANCEL), i18n("&Cancel game"), MENU_GAME_CANCEL);
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
@@ -279,6 +282,9 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GAME_JOIN:
 			kggz->menuGameJoin();
+			break;
+		case MENU_GAME_SPECTATOR:
+			kggz->menuGameSpectator();
 			break;
 		case MENU_GAME_CANCEL:
 			kggz->menuGameCancel();

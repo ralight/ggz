@@ -111,6 +111,9 @@ class GGZCoreRoom
 		 * Join an already launched table. */
 		int joinTable(const unsigned int number);
 		/**
+		 * Join a table as spectator. */
+		int joinTableSpectator(const unsigned int number);
+		/**
 		 * Leave a table again. */
 		int leaveTable(int force);
 

@@ -48,7 +48,8 @@ class KGGZGameInfo
 		{
 			typenone,
 			typelaunch,
-			typejoin
+			typejoin,
+			typespectator
 		};
 
 		// Set the type

@@ -46,7 +46,10 @@ class GGZCoreServer
 			neterror,
 			protoerror,
 			chatfail,
-			statechange
+			statechange,
+			channelconnected,
+			channelready,
+			channelfail
 		};
 
 		/**
@@ -104,6 +107,9 @@ class GGZCoreServer
 		/**
 		 * Return the server's specific file descriptor. */
 		int fd();
+		/**
+		 * Return the game channel fd. */
+		int channel();
 		/**
 		 * Return the current server state. */
 		GGZStateID state();
@@ -199,6 +205,10 @@ class GGZCoreServer
 		/**
 		 * Safe shutdown during disconnection. */
 		void rescue();
+
+		/**
+		 * Create a game channel. */
+		int createChannel();
 
 	private:
 		GGZServer *m_server;
