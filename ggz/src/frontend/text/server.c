@@ -70,7 +70,9 @@ static int fd;
 
 void server_init(char *host, int port, GGZLoginType type, char* login, char* password)
 {
-	server = ggzcore_server_new(host, port, type, login, password);
+	server = ggzcore_server_new();
+	ggzcore_server_set_hostinfo(server, host, port);
+	ggzcore_server_set_logininfo(server, type, login, password);
 	server_register(server);
 	ggzcore_server_connect(server);
 }
