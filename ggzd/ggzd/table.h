@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3368 2002-02-16 03:06:13Z bmh $
+ * $Id: table.h 3445 2002-02-23 04:59:49Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -35,6 +35,11 @@
 /*
  * The GGZTable structure contains information about a single game
  * table 
+ *
+ * Note: Most of its members are arrays rather than pointers.  This is
+ * so that when we copy the struct it copies the arrays too.  Then we
+ * can use the copy in another thread without worrying about the
+ * original thread freeing the memory
  */
 typedef struct GGZTable {
 
@@ -76,7 +81,7 @@ typedef struct GGZTable {
 	char seat_names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
 	/* Client-provided description of this table */
-	char *desc;
+	char desc[MAX_GAME_DESC_LEN + 1];
 
 	/* Name of player who launched (owns?) the table */
 	char owner[MAX_USER_NAME_LEN + 1];

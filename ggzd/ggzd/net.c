@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3433 2002-02-21 04:01:18Z bmh $
+ * $Id: net.c 3445 2002-02-23 04:59:49Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -488,13 +488,12 @@ int net_send_table_list_count(GGZNetIO *net, int count)
 int net_send_table(GGZNetIO *net, GGZTable *table)
 {
 	int i;
-	char* desc = table->desc ? table->desc : "";
 
 	_net_send_line(net, "<TABLE ID='%d' GAME='%d' STATUS='%d' SEATS='%d'>",
 		       table->index, table->type, table->state, 
 		       seats_num(table));
 
-	_net_send_line(net, "<DESC>%s</DESC>", desc);
+	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
 	
 	for (i = 0; i < seats_num(table); i++)
 		_net_send_seat(net, table, i);
@@ -1262,13 +1261,8 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	/* If room was specified, use it, otherwise use players current room */
 	table->room = player_get_room(net->player);
 	
-	if (desc) {
-		/* FIXME: this does not limit the length of the table's
-		   description, and may be possible to abuse. */
-		table->desc = strdup(desc);
-		if (!table->desc)
-			err_sys_exit("strdup failed in _net_handle_table");
-	}
+	if (desc)
+		snprintf(table->desc, sizeof(table->desc), "%s", desc);
 	
 	/* Add seats */
 	entry = ggz_list_head(seats);

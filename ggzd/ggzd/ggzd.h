@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: ggzd.h 3445 2002-02-23 04:59:49Z bmh $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #define MAX_TABLES  50
 #define MAX_USERS 500
 #define MAX_CHAT_LEN 512
+#define MAX_GAME_DESC_LEN 512
 #define MAX_CHAT_BUFFER 32
 #define MAX_TABLE_SIZE 8
 #define DEFAULT_MAX_ROOM_USERS 100
