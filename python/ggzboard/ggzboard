@@ -130,7 +130,8 @@ class GGZBoard:
 			surface.fill(color, ((x1 + w, y1), (1, h)))
 
 	def svgsurface(self, filename, width, height):
-		rawdata = rsvgsdl.render(filename, width, height)
+		svg = rsvgsdl.render(filename, width, height)
+		rawdata = svg.data()
 		if rawdata:
 			surface = pygame.image.fromstring(rawdata, (width, height), "RGBA")
 		else:
