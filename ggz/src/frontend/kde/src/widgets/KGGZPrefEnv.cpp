@@ -67,6 +67,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	server = new QLabel(i18n("Path to ggzd"), this);
 	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), this);
 	m_chatlog = new QCheckBox(i18n("Log chat conversation"), this);
+	m_speech = new QCheckBox(i18n("Enable text-to-speech (rsynth)"), this);
 
 	m_server = new QLineEdit(this);
 
@@ -79,6 +80,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	vbox->add(m_server);
 	vbox->add(m_startup);
 	vbox->add(m_chatlog);
+	vbox->add(m_speech);
 
 	hbox = new QHBoxLayout(vbox, 5);
 	hbox->add(ok);
@@ -87,7 +89,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
-	setFixedSize(300, 180);
+	setFixedSize(300, 210);
 	setCaption(i18n("Global Settings"));
 	show();
 
@@ -109,6 +111,7 @@ void KGGZPrefEnv::slotAccept()
 	config->write("Environment", "Server", m_server->text().latin1());
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
 	config->write("Preferences", "Chatlog", m_startup->isChecked());
+	config->write("Preferences", "Speech", m_startup->isChecked());
 	config->commit();
 
 	delete config;
@@ -120,7 +123,7 @@ void KGGZPrefEnv::loadSettings()
 {
 	GGZCoreConfio *config;
 	char *server;
-	int startup, chatlog;
+	int startup, chatlog, speech;
 
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	KGGZCommon::clear();
@@ -128,10 +131,12 @@ void KGGZPrefEnv::loadSettings()
 	server = config->read("Environment", "Server", "/usr/bin/ggzd");
 	startup = config->read("Preferences", "Showdialog", 0);
 	chatlog = config->read("Preferences", "Chatlog", 0);
+	speech = config->read("Preferences", "Speech", 0);
 
 	m_server->setText(server);
 	m_startup->setChecked(startup);
 	m_chatlog->setChecked(chatlog);
+	m_speech->setChecked(speech);
 
 	delete config;
 }

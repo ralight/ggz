@@ -13,6 +13,7 @@
 ///// GGZ GameType ///////////////////////////////////////////////
 
 #include "GGZCoreGametype.h"
+#include "config.h"
 
 GGZCoreGametype::GGZCoreGametype(GGZGameType *gametype)
 {
@@ -87,3 +88,22 @@ GGZGameType *GGZCoreGametype::gametype()
 {
 	return m_gametype;
 }
+
+char* GGZCoreGametype::category()
+{
+#ifdef KGGZ_PATCH_C_AND_R
+	return ggzcore_gametype_get_category(m_gametype);
+#else
+	return "";
+#endif
+}
+
+char* GGZCoreGametype::rating()
+{
+#ifdef KGGZ_PATCH_C_AND_R
+	return ggzcore_gametype_get_rating(m_gametype);
+#else
+	return "";
+#endif
+}
+

@@ -40,6 +40,7 @@
 // KDE includes
 #include <kapp.h>
 #include <klocale.h>
+#include <kprocess.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -87,6 +88,7 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 
 	m_listusers = 0;
 	m_log = 0;
+	m_speech = 0;
 
 	input->setFocus();
 }
@@ -118,6 +120,11 @@ long KGGZChat::setLag(long lagid)
 void KGGZChat::setLogging(int log)
 {
 	m_log = log;
+}
+
+void KGGZChat::setSpeech(int speech)
+{
+	m_speech = speech;
 }
 
 // Call takes lagid and returns time difference, or -1 on error
@@ -573,8 +580,16 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			break;
 	}
 
-	if(lastplayer == player) color = "ffffff";
+	if((lastplayer == player) && (mode == RECEIVE_CHAT)) color = "ffffff";
 	else lastplayer = player;
+
+	if(m_speech)
+	{
+		KProcess *proc = new KProcess();
+		*proc << "say" << message;
+		proc->start();
+		KGGZDEBUG("TTS: said '%s'\n", message);
+	}
 
 	KGGZDEBUG("Receiving: %s (%i)\n", message, mode);
 	switch(mode)

@@ -66,12 +66,14 @@ class GGZCoreRoom
 		int removeHook(const GGZCoreRoomEvent event, const unsigned int id);
 
 		/** Initialize a room with the required information. */
-		int init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description);
+		int init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category);
 
 		/** Return the name of the room. */
 		char* name();
 		/** Return its description. */
 		char* description();
+		/** Return its category */
+		char* category();
 		/** Return the associated game type. */
 		GGZCoreGametype* gametype();
 

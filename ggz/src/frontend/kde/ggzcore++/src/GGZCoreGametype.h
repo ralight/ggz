@@ -45,6 +45,10 @@ class GGZCoreGametype
 		char* url();
 		/** Short description on the game. */
 		char* description();
+		/** Game category */
+		char* category();
+		/** Game rating */
+		char* rating();
 
 		/** Return the maximum number of players. */
 		int maxPlayers();

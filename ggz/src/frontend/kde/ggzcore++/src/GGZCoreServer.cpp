@@ -112,7 +112,7 @@ int GGZCoreServer::countRoomsForce()
 
 	if(!result)
 	{
-		listRooms(-1, 1);
+		listRooms(-1, 0);
 		while(!countRooms()) dataRead();
 		result = countRooms();
 	}

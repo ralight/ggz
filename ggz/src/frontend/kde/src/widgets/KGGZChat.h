@@ -83,6 +83,7 @@ class KGGZChat : public QWidget
 		KGGZChatLine *chatline();
 
 		void setLogging(int log);
+		void setSpeech(int speech);
 
 	signals:
 		void signalChat(const char *text, char *player, int mode);
@@ -106,6 +107,7 @@ class KGGZChat : public QWidget
 		Lag lag[10];
 		int xlag;
 		int m_log;
+		int m_speech;
 };
 
 #endif

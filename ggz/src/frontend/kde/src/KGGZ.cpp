@@ -137,6 +137,10 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 			KGGZDEBUG("- enable chat logging\n");
 			m_workspace->widgetChat()->setLogging(1);
 		}
+		if(m_config->read("Preferences", "Speech", 0))
+		{
+			m_workspace->widgetChat()->setSpeech(1);
+		}
 	}
 
 	kggzroomcallback = new KGGZCallback(this, COLLECTOR_ROOM);
@@ -778,7 +782,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
-			kggzserver->listRooms(-1, 0);
+			kggzserver->listRooms(-1, 1);
 			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
 			{
 				KGGZDEBUG("HUH? Don't give me game type list?!\n");
@@ -802,8 +806,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			emit signalMenu(MENUSIG_ROOMLIST);
 			for(int i = 0; i < kggzserver->countRooms(); i++)
 			{
-				KGGZDEBUG("Found: %s\n", kggzserver->room(i)->name());
-				emit signalRoom(kggzserver->room(i)->name());
+				KGGZDEBUG("Found: %s (%s :: %s)\n", kggzserver->room(i)->name(), kggzserver->room(i)->category(), kggzserver->room(i)->description());
+				emit signalRoom(kggzserver->room(i)->name(), kggzserver->room(i)->category());
 			}
 			break;
 		case GGZCoreServer::typelist:
@@ -1422,6 +1426,8 @@ void KGGZ::menuGameInfo()
 	KGGZDEBUG("Description: %s\n", gametype->description());
 	KGGZDEBUG("ProtocolVersion: %s\n", gametype->protocolVersion());
 	KGGZDEBUG("ProtocolEngine: %s\n", gametype->protocolEngine());
+	KGGZDEBUG("Category: %s\n", gametype->category());
+	KGGZDEBUG("Rating: %s\n", gametype->rating());
 	buffer.append(i18n("Name: "));
 	buffer.append(gametype->name());
 	buffer.append("\n");
@@ -1442,6 +1448,12 @@ void KGGZ::menuGameInfo()
 	buffer.append("\n");
 	buffer.append(i18n("URL: "));
 	buffer.append(gametype->url());
+	buffer.append("\n");
+	buffer.append(i18n("Game Category: "));
+	buffer.append(gametype->category());
+	buffer.append("\n");
+	buffer.append(i18n("Rating: "));
+	buffer.append(gametype->rating());
 	//sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
 	//	gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
 	KMessageBox::information(this, buffer, i18n("Game Type Information"));

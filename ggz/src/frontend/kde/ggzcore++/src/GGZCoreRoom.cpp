@@ -13,6 +13,7 @@
 ///// GGZ Room ///////////////////////////////////////////////////
 
 #include "GGZCoreRoom.h"
+#include "config.h"
 
 GGZCoreRoom::GGZCoreRoom()
 {
@@ -72,9 +73,13 @@ int GGZCoreRoom::removeHook(const GGZCoreRoomEvent event, const unsigned int id)
 	return ggzcore_room_remove_event_hook_id(m_room, (GGZRoomEvent)event, id);
 }
 
-int GGZCoreRoom::init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description)
+int GGZCoreRoom::init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category)
 {
+#ifdef KGGZ_PATCH_C_AND_R
+	return ggzcore_room_init(m_room, server, id, name, game, description, category);
+#else
 	return ggzcore_room_init(m_room, server, id, name, game, description);
+#endif
 }
 
 char* GGZCoreRoom::name()
@@ -85,6 +90,15 @@ char* GGZCoreRoom::name()
 char* GGZCoreRoom::description()
 {
 	return ggzcore_room_get_desc(m_room);
+}
+
+char* GGZCoreRoom::category()
+{
+#ifdef KGGZ_PATCH_C_AND_R
+	return ggzcore_room_get_category(m_room);
+#else
+	return "";
+#endif
 }
 
 GGZCoreGametype* GGZCoreRoom::gametype()

@@ -137,7 +137,7 @@ KGGZBase::KGGZBase(char *name)
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(char*)), SLOT(slotRoom(char*)));
+	connect(kggz, SIGNAL(signalRoom(char*, char*)), SLOT(slotRoom(char*, char*)));
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
@@ -397,9 +397,12 @@ void KGGZBase::slotMenuSignal(int signal)
 	}
 }
 
-void KGGZBase::slotRoom(char *roomname)
+void KGGZBase::slotRoom(char *roomname, char *category)
 {
-	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), roomname, MENU_ROOMS_SLOTS + m_rooms);
+	QString caption;
+
+	caption = QString("%1 (%2)").arg(roomname).arg(category);
+	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
 	m_rooms++;
 }
 

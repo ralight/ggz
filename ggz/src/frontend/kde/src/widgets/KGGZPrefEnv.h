@@ -63,6 +63,8 @@ class KGGZPrefEnv : public QWidget
 			QCheckBox *m_startup;
 			// Enable chat logging
 			QCheckBox *m_chatlog;
+			// Enable text-to-speech synth of chat
+			QCheckBox *m_speech;
 };
 
 #endif
