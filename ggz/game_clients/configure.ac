@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6376 2004-11-15 19:37:11Z jdorje $
+dnl $Id: configure.ac 6428 2004-11-28 00:55:14Z josef $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -62,7 +62,7 @@ AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
-AC_GGZ_INTL(ignore)
+AC_GGZ_INTL
 
 dnl Check for header files
 dnl ======================
