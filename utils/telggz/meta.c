@@ -107,7 +107,7 @@ ServerGGZ **meta_query(const char *version)
 			if(s)
 			{
 				dom = minidom_parse(s);
-				if((dom) && (dom->processed) && (dom->valid))
+				if((dom) && (dom->processed) && (dom->valid) && (dom->el))
 				{
 					el = dom->el->el;
 					i = 0;
