@@ -27,6 +27,7 @@
 			<data name="status" type="byte"/>
 		</event>
 		<event name="msgmove">
+			<data name="player" type="int"/>
 			<data name="move" type="int"/>
 		</event>
 		<event name="sndsync">
