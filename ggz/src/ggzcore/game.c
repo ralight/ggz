@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 4945 2002-10-18 06:23:14Z jdorje $
+ * $Id: game.c 4970 2002-10-21 04:35:41Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -41,7 +41,9 @@
 #include <unistd.h>
 
 #include <ggz.h>
-#include <ggzmod.h>
+
+#include "ggzmod.h"
+#include "ggzmod-ggz.h"
 
 #include "game.h"
 #include "ggzcore.h"
