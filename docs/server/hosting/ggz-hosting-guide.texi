@@ -217,6 +217,10 @@ this is highly recommended. For development and analysis of games they provide
 very good examples, ranging from a simple tic-tac-toe game to more complex ones
 with different protocols.
 
+Each game has its homepage on:
+
+@url{http://ggz.sourceforge.net/games/<gamename>}
+
 @section Overview on the games
 
 @subsection KaBoom
@@ -231,6 +235,12 @@ with different protocols.
 This is a special game, it provides different game servers for one game client.
 
 @subsection Hastings1066
+@subsection Keepalive
+
+This game is currently in experimental stage. It has been invented as a
+proof-of-concept to lower the barriers of enhanced game development, including
+game spectators, eternal runtime and a more complex server-side design.
+
 @subsection Krosswater
 
 Krosswater is written in C++ and uses its own library libzoneserver, which
@@ -242,6 +252,9 @@ done properly, lots of ghost tables will show up after some time.
 @subsection NetSpades
 @subsection Reversi
 @subsection TicTacToe
+
+The easiest game, which does therefore serve as an example for beginners in GGZ
+game development. 
 
 @node External Games, Other GGZ Servers, Internal Games, Top
 @chapter External Games
@@ -377,7 +390,7 @@ make install
 cd ..
 @end verbatim
 
-@appendix Known GGZ servers
+@appendix Known GGZ servers and Contact
 
 The following servers are known to run permanently. For an up-to-date list,
 please consult the GGZ meta server, using one of the available client-side
@@ -394,6 +407,11 @@ There are so far no known web pages or similar efforts. For more information,
 don't forget to check the GGZ home page regularly:
 
 @url{http://ggz.sourceforge.net}
+
+Server hosters are encouraged to subscribe to the ggz-servers mailing list.
+New servers are announced there, as are updates and hosting problems.
+
+@url{http://lists.sourceforge.net/lists/listinfo/ggz-servers}
 
 @c @printindex cp
 
