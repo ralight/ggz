@@ -27,7 +27,7 @@
 #include "config.h"
 
 /* Version number */
-#define METASERV_VERSION "0.3"
+#define METASERV_VERSION "0.4"
 
 /* The directory where metaservconf.xml resides */
 #define METASERV_DIR PREFIX "/share/metaserv"
