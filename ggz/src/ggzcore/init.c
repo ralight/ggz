@@ -51,7 +51,6 @@ int ggzcore_init(GGZOptions options)
 	/* Initialize various systems */
 	_ggzcore_debug_init(options.debug_levels, options.debug_file);
 	_ggzcore_event_init();
-	_ggzcore_state_init();
 	_ggzcore_net_init();
 /*     	_ggzcore_module_init();*/
 
@@ -65,7 +64,6 @@ void ggzcore_destroy(void)
 {
 /*	_ggzcore_module_cleanup();*/
 	_ggzcore_confio_cleanup();
-	_ggzcore_state_destroy();
 	_ggzcore_event_destroy();
 	_ggzcore_debug_cleanup();
 }

@@ -133,7 +133,8 @@ typedef enum {
 	GGZ_ENTERED,
 	GGZ_ENTER_FAIL,
 	GGZ_LOGOUT,
-	GGZ_NET_ERROR
+	GGZ_NET_ERROR,
+	GGZ_STATE_CHANGE
 } GGZServerEvent;
 
 
@@ -362,17 +363,6 @@ int ggzcore_event_process_all(void);
  */
 int ggzcore_event_enqueue(const GGZEventID id, void *data, 
 			  const GGZDestroyFunc func);
-
-
-int ggzcore_state_add_hook(const GGZStateID id, const GGZHookFunc func);
-int ggzcore_state_add_hook_full(const GGZStateID id, 
-				const GGZHookFunc func, 
-				void* user_data);
-
-
-int ggzcore_state_remove_hook(const GGZStateID id, const GGZHookFunc func);
-int ggzcore_state_remove_hook_id(const GGZStateID id, 
-				 const unsigned int hook_id);
 
 
 unsigned int ggzcore_player_get_num(void);

@@ -53,11 +53,8 @@ struct _GGZState {
 
 	/* Array of valid state transitions */
 	struct _GGZTransition *transitions;
-
-	/* List of hook functions */
-	GGZHookList *hooks;
-
 };
+
 
 /* Giant list of transitions for each state */
 static struct _GGZTransition _offline_transitions[] = {
@@ -144,89 +141,10 @@ static struct _GGZState _ggz_states[] = {
 	{GGZ_STATE_LOGGING_OUT,   "logging_out",   _logging_out_transitions},
 };
 
-static void _ggzcore_state_dump_hooks(GGZStateID id);
-
 
 /* Publicly Exported functions (prototypes in ggzcore.h) */
 
-int ggzcore_state_add_hook(const GGZStateID id, const GGZHookFunc func)
-{
-	return ggzcore_state_add_hook_full(id, func, NULL);
-}
-
-
-int ggzcore_state_add_hook_full(const GGZStateID id, 
-				const GGZHookFunc func,
-				void* data)
-{
-	int status = _ggzcore_hook_add_full(_ggz_states[id].hooks, func, data);
-					    
-	_ggzcore_state_dump_hooks(id);
-	
-	return status;
-}
-
-
-int ggzcore_state_remove_hook(const GGZStateID id, const GGZHookFunc func)
-{
-	int status;
-
-	status = _ggzcore_hook_remove(_ggz_states[id].hooks, func);
-	
-	if (status == 0)
-		ggzcore_debug(GGZ_DBG_STATE, 
-			      "Removing hook from state %s", 
-			      _ggz_states[id].name);
-	else
-		ggzcore_debug(GGZ_DBG_STATE, 
-			      "Can't find hook to remove from state %s",
-			      _ggz_states[id].name);
-	
-	return status; 
-}
-
-
-int ggzcore_state_remove_hook_id(const GGZStateID id, 
-				     const unsigned int hook_id)
-{
-	int status;
-
-	status = _ggzcore_hook_remove_id(_ggz_states[id].hooks, hook_id);
-	
-	if (status == 0)
-		ggzcore_debug(GGZ_DBG_STATE, 
-			      "Removing hook %d from state %s", 
-			      hook_id, _ggz_states[id].name);
-	else
-		ggzcore_debug(GGZ_DBG_STATE, 
-			      "Can't find hook %d to remove from state %s",
-			      hook_id, _ggz_states[id].name);
-	
-	return status; 
-}
-
-
 /* Internal library functions (prototypes in state.h) */
-
-void _ggzcore_state_init(void)
-{	
-	int i, num_states;
-
-	/* Setup states */
-	num_states = sizeof(_ggz_states)/sizeof(struct _GGZState);
-	for (i = 0; i < num_states; i++) {
-		if (_ggz_states[i].id != i)
-			ggzcore_debug(GGZ_DBG_STATE, "ID mismatch: %d != %d",
-				      _ggz_states[i].id, i);
-		else {
-			_ggz_states[i].hooks = _ggzcore_hook_list_init(i);
-			ggzcore_debug(GGZ_DBG_INIT, 
-				      "Setting up state %s with id %d", 
-				      _ggz_states[i].name, _ggz_states[i].id);
-		}
-	}
-}
-
 
 void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 {
@@ -250,31 +168,10 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 			      _ggz_states[*cur].name, 
 			      _ggz_states[next].name);
 		*cur = next;
-		_ggzcore_hook_list_invoke(_ggz_states[*cur].hooks, NULL);
-	}
-}
-
-
-void _ggzcore_state_destroy(void)
-{
-	int i, num_states;
-	
-	num_states = sizeof(_ggz_states)/sizeof(struct _GGZState);
-	for (i = 0; i < num_states; i++) {
-		ggzcore_debug(GGZ_DBG_STATE, "Cleaning up %s state", 
-			      _ggz_states[i].name);
-		_ggzcore_hook_list_destroy(_ggz_states[i].hooks);
-		_ggz_states[i].hooks = NULL;
 	}
 }
 
 
 /* Static functions internal to this file */
 
-/* Debugging function to examine state of hook list */
-static void _ggzcore_state_dump_hooks(GGZStateID id)
-{
-	ggzcore_debug(GGZ_DBG_HOOK, "-- State: %s", _ggz_states[id].name);
-	_ggzcore_hook_list_dump(_ggz_states[id].hooks);
-	ggzcore_debug(GGZ_DBG_HOOK, "-- End of state");
-}
+

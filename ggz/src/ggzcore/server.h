@@ -32,7 +32,7 @@
 #include "state.h"
 #include "roomlist.h"
 
-#define GGZ_NUM_SERVER_EVENTS 12
+#define GGZ_NUM_SERVER_EVENTS 13
 
 /* The GGZServer structure manages information about a particular
    GGZ server connection */

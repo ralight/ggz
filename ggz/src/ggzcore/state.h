@@ -26,17 +26,7 @@
 #ifndef __STATE_H__
 #define __STATE_H__
 
-#include <ggzcore.h>
-
-struct _GGZClientState {
-
-	/* Current table we're at */
-	int table;
-
-	/* Table to which we are transitioning */
-	int trans_table;
-};
-
+#include "ggzcore.h"
 
 /* Transition IDs for all of the transitions the GGZ state machine
    makes.  These server as inputs for the state machine */
@@ -54,11 +44,7 @@ typedef enum {
 	GGZ_TRANS_LOGOUT_OK
 } GGZTransID;
 
-void _ggzcore_state_init(void);
-
 void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur);
-
-void _ggzcore_state_destroy(void);
 
 #endif /* __STATE_H__ */
 

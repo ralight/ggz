@@ -40,8 +40,9 @@
 /* Pricate functions */
 static void _ggzcore_server_init(void);
 static int _ggzcore_server_event_is_valid(GGZServerEvent event);
+static void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans);
 static GGZHookReturn _ggzcore_server_event(GGZServer*, GGZServerEvent, void*);
-					   
+
 /* Handlers for various server commands */
 static void _ggzcore_server_handle_server_id(GGZServer *server);
 static void _ggzcore_server_handle_login(GGZServer *server);
@@ -405,11 +406,12 @@ void ggzcore_server_connect(GGZServer *server)
 {
 	/* FIXME: check validity of this action */
 
-	_ggzcore_state_transition(GGZ_TRANS_CONN_TRY, &server->state);
+	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
+
 	server->fd = _ggzcore_net_connect(server->host, server->port);
 	
 	if (server->fd < 0) {
-		_ggzcore_state_transition(GGZ_TRANS_CONN_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, 
 				      strerror(errno));
 	}
@@ -431,7 +433,7 @@ void ggzcore_server_login(GGZServer *server)
 					 server->handle,  server->password);
 	/* FIXME: handle errors */
 
-	_ggzcore_state_transition(GGZ_TRANS_LOGIN_TRY, &server->state);
+	_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_TRY);
 }
 
 
@@ -464,7 +466,7 @@ void ggzcore_server_join_room(GGZServer *server, const int room)
 	/* FIXME: handle errors */
 
 	server->new_room = room;
-	_ggzcore_state_transition(GGZ_TRANS_ENTER_TRY, &server->state);
+	_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
 }
 
 
@@ -482,7 +484,7 @@ void ggzcore_server_logout(GGZServer *server)
 	status = _ggzcore_net_send_logout(server->fd);
 	/* FIXME: handle errors */
 
-	_ggzcore_state_transition(GGZ_TRANS_LOGOUT_TRY, &server->state);
+	_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
 }
 
 
@@ -561,6 +563,13 @@ static void _ggzcore_server_init(void)
 }
 
 
+static void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans)
+{
+	_ggzcore_state_transition(trans, &server->state);
+	_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
+}
+
+
 static int _ggzcore_server_event_is_valid(GGZServerEvent event)
 {
 	return (event >= 0 && event < GGZ_NUM_SERVER_EVENTS);
@@ -583,11 +592,11 @@ static void _ggzcore_server_handle_server_id(GGZServer *server)
 	/* FIXME: handle errors */
 
 	if (protocol == GGZ_CS_PROTO_VERSION) {
-		_ggzcore_state_transition(GGZ_TRANS_CONN_OK, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_OK);
 		_ggzcore_server_event(server, GGZ_NEGOTIATED, NULL);
 	}
 	else {
-		_ggzcore_state_transition(GGZ_TRANS_CONN_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		_ggzcore_server_event(server, GGZ_NEGOTIATE_FAIL, "Protocol mismatch");
 	}
 }
@@ -630,15 +639,15 @@ static void _ggzcore_server_handle_login_anon(GGZServer *server)
 
 	switch (ok) {
 	case 0:
-		_ggzcore_state_transition(GGZ_TRANS_LOGIN_OK, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_OK);
 		_ggzcore_server_event(server, GGZ_LOGGED_IN, NULL);
 		break;
 	case E_ALREADY_LOGGED_IN:
-		_ggzcore_state_transition(GGZ_TRANS_LOGIN_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
 		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Already logged in");
 		break;
 	case E_USR_LOOKUP:
-		_ggzcore_state_transition(GGZ_TRANS_LOGIN_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
 		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Name taken");
 		break;
 	}
@@ -663,7 +672,7 @@ static void _ggzcore_server_handle_logout(GGZServer *server)
 	_ggzcore_net_disconnect(server->fd);
 	server->fd = -1;
 
-	_ggzcore_state_transition(GGZ_TRANS_LOGOUT_OK, &server->state);
+	_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
 	_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
 }
 
@@ -726,27 +735,27 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 
 	switch (status) {
 	case 0:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_OK, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		server->room = server->new_room;
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
 		/* FIXME: create new GGZRoom object */
 		break;
 	case E_AT_TABLE:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
 				      "Can't change rooms while at a table");
 		break;
 		
 	case E_IN_TRANSIT:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
 				      "Can't change rooms while joining/leaving a table");
 		break;
 		
 	case E_BAD_OPTIONS:
-		_ggzcore_state_transition(GGZ_TRANS_ENTER_FAIL, &server->state);
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		server->new_room = server->room;
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
 				      "Bad room number");
@@ -788,3 +797,4 @@ static void _ggzcore_server_handle_update_tables(GGZServer *server)
 	_ggzcore_net_read_update_tables(server->fd);
 	ggzcore_event_process_all();
 }
+
