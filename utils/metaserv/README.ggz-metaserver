@@ -10,7 +10,8 @@ integrated into ggzd (and be available as a separate package in parallel).
 The GUI's will have to be compiled separately, they're not part of the autoconf
 process yet and will probably never be.
 
-The server itself should be installed on port 15689.
+The server itself should be installed on port 15689 and be located in
+/usr/local/bin (or change the path in metaserv.c).
 
 /etc/services:
 ggzm       15689/tcp            # GGZ Gaming Zone meta server

@@ -1,3 +1,9 @@
+/*
+ * The GGZ Gaming Zone Metaserver Project
+ * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Published under GNU GPL conditions.
+ */
+
 #include "qmetagui.h"
 #include <qpushbutton.h>
 #include <qlayout.h>

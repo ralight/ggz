@@ -1,3 +1,9 @@
+/*
+ * The GGZ Gaming Zone Metaserver Project
+ * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Published under GNU GPL conditions.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,15 +12,17 @@
 
 #define METASERVDIR "/usr/local/share/metaserv"
 
-// URI:
-// query://ggz/connection/0.0.5pre
-// Answer:
-// ggz://jzaun.com:5688
-//
-// XML:
-// <?xml version="1.0"><query class="ggz" type="connection">0.0.5pre</query>
-// Answer:
-// <?xml version="1.0"><resultset><result preference="100"><uri>ggz://jzaun.com:5688</uri>..</result></resultset>
+/*
+ URI:
+ query://ggz/connection/0.0.5pre
+ Answer:
+ ggz://jzaun.com:5688
+
+ XML:
+ <?xml version="1.0"><query class="ggz" type="connection">0.0.5pre</query>
+ Answer:
+ <?xml version="1.0"><resultset><result preference="100"><uri>ggz://jzaun.com:5688</uri>..</result></resultset>
+*/
 
 DOM *configuration = NULL;
 
@@ -170,22 +178,22 @@ char *metamagic(char *uri)
 	if(uri[strlen(uri) - 1] == '\r') uri[strlen(uri) - 1] = 0;
 	ret = NULL;
 
-	// query://ggz/connection/0.0.5pre
+	/* query://ggz/connection/0.0.5pre */
 	token = strtok(uri, ":/");
-	// query ggz connection 0.0.5pre
+	/* query ggz connection 0.0.5pre */
 	if(!token) return NULL;
 	if(!strcmp(token, "query"))
 	{
 		token = strtok(NULL, ":/");
-		// ggz connection 0.0.5pre
+		/* ggz connection 0.0.5pre */
 		if(!token) return NULL;
 		class = strdup(token);
 		token = strtok(NULL, ":/");
-		// connection 0.0.5pre
+		/* connection 0.0.5pre */
 		if(!token) return NULL;
 		category = strdup(token);
 		token = strtok(NULL, ":/");
-		// 0.0.5pre
+		/* 0.0.5pre */
 		if(token) ret = metaserv_lookup(class, category, token, 0);
 		free(category);
 		free(class);
