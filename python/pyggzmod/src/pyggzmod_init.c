@@ -432,6 +432,12 @@ void initggzmod(void)
 	PyModule_AddIntConstant(mod, "GGZ", GGZMOD_GGZ);
 	PyModule_AddIntConstant(mod, "GAME", GGZMOD_GAME);
 
+	PyModule_AddIntConstant(mod, "SEAT_OPEN", GGZ_SEAT_OPEN);
+	PyModule_AddIntConstant(mod, "SEAT_BOT", GGZ_SEAT_BOT);
+	PyModule_AddIntConstant(mod, "SEAT_RESERVED", GGZ_SEAT_RESERVED);
+	PyModule_AddIntConstant(mod, "SEAT_NONE", GGZ_SEAT_NONE);
+	PyModule_AddIntConstant(mod, "SEAT_PLAYER", GGZ_SEAT_PLAYER);
+
 	PyModule_AddIntConstant(mod, "STATE_CREATED", GGZMOD_STATE_CREATED);
 	PyModule_AddIntConstant(mod, "STATE_WAITING", GGZMOD_STATE_WAITING);
 	PyModule_AddIntConstant(mod, "STATE_PLAYING", GGZMOD_STATE_PLAYING);
