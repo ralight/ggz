@@ -397,9 +397,9 @@ static void player_remove(int p_index)
 	players.info[p_index].fd = -1;
 	players.count--;
 	players.timestamp = time(NULL);
+	chat_mark_all_read(p_index);
 	pthread_rwlock_unlock(&players.lock);
 
-	/* FIXME: mark all my chats as read */
 	close(fd);
 }
 

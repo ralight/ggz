@@ -129,7 +129,18 @@ void chat_mark_read(int p_index, int c_index)
 
 void chat_mark_all_read(int p_index)
 {	
+	int c_index;
+
+	pthread_rwlock_wrlock(&chats.lock);
 	
+	if(chats.player_unread_count[p_index]) {
+		/* Mark all the chats as read */
+		for(c_index = 0; c_index < MAX_CHAT_BUFFER; c_index++)
+			chats.info[c_index].unread[p_index] = 0;
+		chats.player_unread_count[p_index] = 0;
+	}
+
+	pthread_rwlock_unlock(&chats.lock);
 }
 
 
