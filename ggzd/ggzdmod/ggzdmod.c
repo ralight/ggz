@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2564 2001-10-14 10:01:42Z jdorje $
+ * $Id: ggzdmod.c 2571 2001-10-15 08:20:00Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -31,6 +31,7 @@
 #include <config.h>		/* site-specific config */
 
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -46,6 +47,7 @@
 typedef struct _GGZdMod {
 	GGZdModType type;	/* ggz-end or game-end */
 	int fd;			/* file descriptor */
+	fd_set active_fd_set;	/* set of active file descriptors */
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
@@ -57,11 +59,28 @@ typedef struct _GGZdMod {
 } _GGZdMod;
 
 
+/* 
+ * internal functions
+ */
+
+/* Returns the highest-numbered FD used by ggzdmod. */
+static int ggzdmod_fd_max(_GGZdMod * ggzdmod)
+{
+	int max = ggzdmod->fd, seat;
+
+	for (seat = 0; seat < ggzdmod->num_seats; seat++)
+		if (ggzdmod->seats[seat].fd > max)
+			max = ggzdmod->seats[seat].fd;
+
+	return max;
+}
+
 
 /* 
  * Creating/destroying a ggzdmod object
  */
 
+/* Creates a new ggzdmod object. */
 GGZdMod *ggzdmod_new(GGZdModType type)
 {
 	int i;
@@ -83,6 +102,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	return ggzdmod;
 }
 
+/* Frees (deletes) a ggzdmod object */
 void ggzdmod_free(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
@@ -183,10 +203,72 @@ int ggzdmod_dispatch(GGZdMod * mod)
 	return -1;
 }
 
+/* Checks the ggzdmod FD and all player FD's for pending data; returns TRUE
+   iff there is such data */
 int ggzdmod_io_pending(GGZdMod * mod)
 {
-	assert(0);
-	return -1;
+	fd_set read_fd_set;
+	_GGZdMod *ggzdmod = mod;
+	int status;
+	struct timeval timeout;
+
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return -1;
+	}
+
+	read_fd_set = ggzdmod->active_fd_set;
+
+	/* is this really portable? */
+	timeout.tv_sec = timeout.tv_usec = 0;
+
+	status = select(ggzdmod_fd_max(ggzdmod) + 1,
+			&read_fd_set, NULL, NULL, &timeout);
+	if (status <= 0) {
+		/* FIXME: handle error */
+	}
+
+	/* the return value of select indicates the # of FD's with pending
+	   data */
+	return (status > 0);
+}
+
+/* FIXME: This function should be exported by the library! */
+void ggzdmod_io_read(GGZdMod * mod)
+{
+	fd_set read_fd_set;
+	int seat, status;
+	_GGZdMod *ggzdmod = mod;
+
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return;
+	}
+
+	read_fd_set = ggzdmod->active_fd_set;
+
+	/* we have to select so that we can determine what file descriptors
+	   are waiting to be read. */
+	status = select(ggzdmod_fd_max(ggzdmod) + 1,
+			&read_fd_set, NULL, NULL, NULL);
+	if (status <= 0) {
+		if (errno != EINTR) {
+			/* FIXME: handle error */
+		}
+		return;
+	}
+
+	status = 0;
+
+	if (FD_ISSET(ggzdmod->fd, &read_fd_set))
+		ggzdmod_dispatch(ggzdmod);
+
+	for (seat = 0; seat < ggzdmod->num_seats; seat++) {
+		int fd = ggzdmod->seats[seat].fd;
+		if (fd != -1 && FD_ISSET(fd, &read_fd_set)
+		    && ggzdmod->handlers[GGZ_GAME_PLAYER_DATA] != NULL)
+			(*ggzdmod->handlers[GGZ_GAME_PLAYER_DATA]) (ggzdmod,
+								    GGZ_GAME_PLAYER_DATA,
+								    &seat);
+	}
 }
 
 int ggzdmod_loop(GGZdMod * mod)
