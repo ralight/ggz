@@ -1,4 +1,4 @@
-# $Id: ccheckers.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: ccheckers.dsc 5409 2003-02-15 03:39:34Z jdorje $
 
 [GameInfo]
 Author = Rich Gade
@@ -18,3 +18,7 @@ Version = 3
 AllowLeave = 1
 BotsAllowed = 1..5
 PlayersAllowed = 2..4 6
+
+[Statistics]
+Records = 1
+Ratings = 1

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 5034 2002-10-25 23:56:41Z jdorje $
+ * $Id: game.c 5409 2003-02-15 03:39:34Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -250,6 +250,19 @@ int game_send_sync(int num)
 int game_send_gameover(char winner)
 {
 	int i, fd;
+	GGZGameResult results[6];
+
+	/* Report results to GGZ. */
+	assert(ggzdmod_get_num_seats(game.ggz) <= 6);
+	assert(winner > 0 && winner < ggzdmod_get_num_seats(game.ggz));
+	for (i = 0; i < ggzdmod_get_num_seats(game.ggz); i++) {
+		if (i == winner) {
+			results[i] = GGZ_GAME_WIN;
+		} else {
+			results[i] = GGZ_GAME_LOSS;
+		}
+	}
+	ggzdmod_report_game(game.ggz, NULL, results);
 	
 	for(i=0; i<ggzdmod_get_num_seats(game.ggz); i++) {
 		if((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1)
