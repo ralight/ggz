@@ -289,7 +289,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		es_write_int(connection.sock, REQ_LIST_PLAYERS);
 		break;
 
 	case MSG_UPDATE_PLAYERS:
