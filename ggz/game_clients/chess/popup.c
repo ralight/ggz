@@ -3,9 +3,9 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Date: 09/17/2000
- * Desc: Popup windows (draw game and time option)
+ * Desc: Chess client popup dialogs
  *
- * Copyright (C) 2000 Ismael Orenstein.
+ * Copyright (C) 2001 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -31,13 +30,15 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+
 #include "popup.h"
-#include "board.h"
 #include "support.h"
+#include "board.h"
 
 GtkWidget*
-create_draw_dialog (const char *message)
+create_draw_dialog (void)
 {
   GtkWidget *draw_dialog;
   GtkWidget *dialog_vbox1;
@@ -56,12 +57,13 @@ create_draw_dialog (const char *message)
   gtk_object_set_data (GTK_OBJECT (draw_dialog), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
-  draw_message = gtk_label_new (_(message));
+  draw_message = gtk_label_new (_("The server wants to draw the game. That means that either one of the drawing condition has happened (like repetition of the same position, or 50 moves without a capture), which means that the game will end as a tie if either you or your opponent agrees with a draw, or your oponent has asked for a draw, which will only happen if you agree about it.\n\nSo, do you want do draw the game ?"));
   gtk_widget_ref (draw_message);
   gtk_object_set_data_full (GTK_OBJECT (draw_dialog), "draw_message", draw_message,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (draw_message);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), draw_message, FALSE, FALSE, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (draw_message), TRUE);
 
   dialog_action_area1 = GTK_DIALOG (draw_dialog)->action_area;
   gtk_object_set_data (GTK_OBJECT (draw_dialog), "dialog_action_area1", dialog_action_area1);
@@ -91,18 +93,203 @@ create_draw_dialog (const char *message)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), cancel);
   GTK_WIDGET_SET_FLAGS (cancel, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      GTK_OBJECT(draw_dialog));
-
   gtk_signal_connect_object_after (GTK_OBJECT (draw), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      GTK_OBJECT(draw_dialog));
-
+                                   GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                                   GTK_OBJECT (draw_dialog));
   gtk_signal_connect (GTK_OBJECT (draw), "clicked",
                       GTK_SIGNAL_FUNC (board_request_draw),
                       NULL);
-  
+  gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (draw_dialog));
 
   return draw_dialog;
+}
+
+GtkWidget*
+create_clock_dialog (void)
+{
+  GtkWidget *clock_dialog;
+  GtkWidget *dialog_vbox2;
+  GtkWidget *vbox1;
+  GSList *time_option_group = NULL;
+  GtkWidget *no_clock;
+  GtkWidget *server_clock;
+  GtkWidget *server_lag_clock;
+  GtkWidget *client_clock;
+  GtkWidget *hbox1;
+  GtkWidget *label2;
+  GtkWidget *hbox2;
+  GtkObject *minutes_adj;
+  GtkWidget *minutes;
+  GtkWidget *label3;
+  GtkObject *seconds_adj;
+  GtkWidget *seconds;
+  GtkWidget *label4;
+  GtkWidget *dialog_action_area2;
+  GtkWidget *hbuttonbox2;
+  GtkWidget *send_option;
+  GtkWidget *cancel;
+
+  clock_dialog = gtk_dialog_new ();
+  gtk_object_set_data (GTK_OBJECT (clock_dialog), "clock_dialog", clock_dialog);
+  gtk_window_set_title (GTK_WINDOW (clock_dialog), _("Select your clock option"));
+  gtk_window_set_policy (GTK_WINDOW (clock_dialog), TRUE, TRUE, FALSE);
+
+  dialog_vbox2 = GTK_DIALOG (clock_dialog)->vbox;
+  gtk_object_set_data (GTK_OBJECT (clock_dialog), "dialog_vbox2", dialog_vbox2);
+  gtk_widget_show (dialog_vbox2);
+
+  vbox1 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox1);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "vbox1", vbox1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox1);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox2), vbox1, TRUE, TRUE, 0);
+
+  no_clock = gtk_radio_button_new_with_label (time_option_group, _("No clock"));
+  time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (no_clock));
+  gtk_widget_ref (no_clock);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "no_clock", no_clock,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (no_clock);
+  gtk_box_pack_start (GTK_BOX (vbox1), no_clock, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (no_clock), TRUE);
+
+  server_clock = gtk_radio_button_new_with_label (time_option_group, _("Server clock"));
+  time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (server_clock));
+  gtk_widget_ref (server_clock);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "server_clock", server_clock,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (server_clock);
+  gtk_box_pack_start (GTK_BOX (vbox1), server_clock, FALSE, FALSE, 0);
+
+  server_lag_clock = gtk_radio_button_new_with_label (time_option_group, _("Server clock with lag meter"));
+  time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (server_lag_clock));
+  gtk_widget_ref (server_lag_clock);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "server_lag_clock", server_lag_clock,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (server_lag_clock);
+  gtk_box_pack_start (GTK_BOX (vbox1), server_lag_clock, FALSE, FALSE, 0);
+
+  client_clock = gtk_radio_button_new_with_label (time_option_group, _("Client clock"));
+  time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (client_clock));
+  gtk_widget_ref (client_clock);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "client_clock", client_clock,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (client_clock);
+  gtk_box_pack_start (GTK_BOX (vbox1), client_clock, FALSE, FALSE, 0);
+
+  hbox1 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox1);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "hbox1", hbox1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox1);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+
+  label2 = gtk_label_new (_("Game time :"));
+  gtk_widget_ref (label2);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "label2", label2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label2);
+  gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, FALSE, 25);
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox2);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "hbox2", hbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox2);
+  gtk_box_pack_start (GTK_BOX (hbox1), hbox2, TRUE, TRUE, 0);
+
+  minutes_adj = gtk_adjustment_new (15, 0, 60, 1, 10, 10);
+  minutes = gtk_spin_button_new (GTK_ADJUSTMENT (minutes_adj), 1, 0);
+  gtk_widget_ref (minutes);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "minutes", minutes,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (minutes);
+  gtk_box_pack_start (GTK_BOX (hbox2), minutes, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (minutes), TRUE);
+
+  label3 = gtk_label_new (_("min : "));
+  gtk_widget_ref (label3);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "label3", label3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label3);
+  gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 5);
+
+  seconds_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  seconds = gtk_spin_button_new (GTK_ADJUSTMENT (seconds_adj), 1, 0);
+  gtk_widget_ref (seconds);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "seconds", seconds,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (seconds);
+  gtk_box_pack_start (GTK_BOX (hbox2), seconds, TRUE, TRUE, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (seconds), TRUE);
+
+  label4 = gtk_label_new (_("sec"));
+  gtk_widget_ref (label4);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "label4", label4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label4);
+  gtk_box_pack_start (GTK_BOX (hbox2), label4, FALSE, FALSE, 5);
+
+  dialog_action_area2 = GTK_DIALOG (clock_dialog)->action_area;
+  gtk_object_set_data (GTK_OBJECT (clock_dialog), "dialog_action_area2", dialog_action_area2);
+  gtk_widget_show (dialog_action_area2);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area2), 10);
+
+  hbuttonbox2 = gtk_hbutton_box_new ();
+  gtk_widget_ref (hbuttonbox2);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "hbuttonbox2", hbuttonbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbuttonbox2);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area2), hbuttonbox2, TRUE, TRUE, 0);
+
+  send_option = gtk_button_new_with_label (_("Send option"));
+  gtk_widget_ref (send_option);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "send_option", send_option,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (send_option);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox2), send_option);
+  GTK_WIDGET_SET_FLAGS (send_option, GTK_CAN_DEFAULT);
+
+  cancel = gtk_button_new_with_label (_("Cancel"));
+  gtk_widget_ref (cancel);
+  gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "cancel", cancel,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (cancel);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox2), cancel);
+  GTK_WIDGET_SET_FLAGS (cancel, GTK_CAN_DEFAULT);
+
+  gtk_signal_connect (GTK_OBJECT (send_option), "clicked",
+                      GTK_SIGNAL_FUNC (clock_option_select),
+                      clock_dialog);
+  gtk_signal_connect_object_after (GTK_OBJECT (send_option), "clicked",
+                                   GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                                   GTK_OBJECT (clock_dialog));
+  gtk_signal_connect (GTK_OBJECT (cancel), "clicked",
+                      GTK_SIGNAL_FUNC (clock_option_cancel),
+                      NULL);
+  gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (clock_dialog));
+
+  return clock_dialog;
+}
+
+/* Callbacks */
+
+void
+clock_option_select                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+}
+
+
+void
+clock_option_cancel                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
 }

@@ -3,9 +3,9 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Date: 09/17/2000
- * Desc: Popup windows (draw game and time option)
+ * Desc: Chess client popup dialogs
  *
- * Copyright (C) 2000 Ismael Orenstein.
+ * Copyright (C) 2001 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,5 +22,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_draw_dialog (const char *message);
+GtkWidget* create_draw_dialog (void);
+GtkWidget* create_clock_dialog (void);
 
+/* Callbacks */
+
+void
+clock_option_select                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+clock_option_cancel                    (GtkButton       *button,
+                                        gpointer         user_data);

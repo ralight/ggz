@@ -232,7 +232,7 @@ void game_update(int event, void *arg) {
       game_info.state = CHESS_STATE_DONE;
       break;
     case CHESS_EVENT_DRAW:
-      gtk_widget_show(create_draw_dialog("The server wants to know if you want to draw the game"));
+      gtk_widget_show(create_draw_dialog());
       break;
     default:
       game_message("Unknown event! %d", event);

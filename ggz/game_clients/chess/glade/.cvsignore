@@ -7,3 +7,5 @@ callbacks.c
 interface.h
 popup.c
 popup_cb.c
+popup.h
+popup_cb.h

@@ -8,13 +8,15 @@
   <source_directory>.</source_directory>
   <pixmaps_directory>.</pixmaps_directory>
   <language>C</language>
-  <gnome_support>True</gnome_support>
+  <gnome_support>False</gnome_support>
   <gettext_support>True</gettext_support>
   <output_main_file>False</output_main_file>
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
   <main_source_file>popup.c</main_source_file>
+  <main_header_file>popup.h</main_header_file>
   <handler_source_file>popup_cb.c</handler_source_file>
+  <handler_header_file>popup_cb.h</handler_header_file>
 </project>
 
 <widget>
@@ -69,6 +71,18 @@
 	  <name>draw</name>
 	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>draw_dialog</object>
+	    <after>True</after>
+	    <last_modification_time>Sun, 18 Feb 2001 15:17:14 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>board_request_draw</handler>
+	    <last_modification_time>Sun, 18 Feb 2001 15:07:23 GMT</last_modification_time>
+	  </signal>
 	  <label>Draw</label>
 	</widget>
 
@@ -77,6 +91,12 @@
 	  <name>cancel</name>
 	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>draw_dialog</object>
+	    <last_modification_time>Sun, 18 Feb 2001 15:17:25 GMT</last_modification_time>
+	  </signal>
 	  <label>Don't Draw</label>
 	</widget>
       </widget>
@@ -85,9 +105,11 @@
     <widget>
       <class>GtkLabel</class>
       <name>draw_message</name>
-      <label>DRAW MESSAGE</label>
+      <label>The server wants to draw the game. That means that either one of the drawing condition has happened (like repetition of the same position, or 50 moves without a capture), which means that the game will end as a tie if either you or your opponent agrees with a draw, or your oponent has asked for a draw, which will only happen if you agree about it.
+
+So, do you want do draw the game ?</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
+      <wrap>True</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -97,6 +119,290 @@
 	<expand>False</expand>
 	<fill>False</fill>
       </child>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkDialog</class>
+  <name>clock_dialog</name>
+  <title>Select your clock option</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>True</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <child_name>Dialog:vbox</child_name>
+    <name>dialog-vbox2</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>dialog-action_area2</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox2</name>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>send_option</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>clock_option_select</handler>
+	    <data>clock_dialog</data>
+	    <last_modification_time>Sun, 18 Feb 2001 14:51:25 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>clock_dialog</object>
+	    <after>True</after>
+	    <last_modification_time>Sun, 18 Feb 2001 15:17:31 GMT</last_modification_time>
+	  </signal>
+	  <label>Send option</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>cancel</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>clock_option_cancel</handler>
+	    <last_modification_time>Sun, 18 Feb 2001 14:55:45 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>clock_dialog</object>
+	    <last_modification_time>Sun, 18 Feb 2001 15:17:39 GMT</last_modification_time>
+	  </signal>
+	  <label>Cancel</label>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox1</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>no_clock</name>
+	<can_focus>True</can_focus>
+	<label>No clock</label>
+	<active>True</active>
+	<draw_indicator>True</draw_indicator>
+	<group>time_option</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>server_clock</name>
+	<can_focus>True</can_focus>
+	<label>Server clock</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>time_option</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>server_lag_clock</name>
+	<can_focus>True</can_focus>
+	<label>Server clock with lag meter</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>time_option</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>client_clock</name>
+	<can_focus>True</can_focus>
+	<label>Client clock</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>time_option</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkHBox</class>
+	<name>hbox1</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label2</name>
+	  <label>Game time :</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <child>
+	    <padding>25</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox2</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>minutes</name>
+	    <can_focus>True</can_focus>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>True</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>15</value>
+	    <lower>0</lower>
+	    <upper>60</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label3</name>
+	    <label>min : </label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>5</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkSpinButton</class>
+	    <name>seconds</name>
+	    <can_focus>True</can_focus>
+	    <climb_rate>1</climb_rate>
+	    <digits>0</digits>
+	    <numeric>True</numeric>
+	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	    <snap>False</snap>
+	    <wrap>False</wrap>
+	    <value>0</value>
+	    <lower>0</lower>
+	    <upper>100</upper>
+	    <step>1</step>
+	    <page>10</page>
+	    <page_size>10</page_size>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label4</name>
+	    <label>sec</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>5</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>
