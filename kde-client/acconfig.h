@@ -1,3 +1,4 @@
 
+#undef KGGZ_BROWSER
 #undef KGGZ_DIRECTORY
 
