@@ -346,7 +346,7 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
-		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
 		gtk_widget_show(GTK_WIDGET(tmp));
 		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 		gtk_widget_hide(GTK_WIDGET(tmp));
@@ -354,7 +354,7 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 		if (gtk_clist_get_selection_info(GTK_CLIST(tmp), event->button.x, event->button.y, &row, &col) > 0)
 		{
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
 			gtk_widget_hide(GTK_WIDGET(tmp));
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 			gtk_widget_show(GTK_WIDGET(tmp));

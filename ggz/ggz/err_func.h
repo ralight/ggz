@@ -47,7 +47,7 @@ void err_sys(const gchar *fmt, ...);
 void err_msg_exit(const gchar *fmt, ...);
 void err_sys_exit(const gchar *fmt, ...);
 void dbg_msg(const gchar *fmt, ...);
-
+void eprintf(const gchar *fmt, ...);
 
 /*
  * Error printing function for easysock lib

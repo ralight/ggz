@@ -155,3 +155,17 @@ void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 		break;
 	}
 }
+
+
+void eprintf(const gchar *fmt, ...)
+{
+#ifdef DEBUG
+	va_list ap;
+	gchar buf[4096];
+
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	printf("%s\n",buf);
+	va_end(ap);
+#endif
+}

@@ -178,7 +178,7 @@ int game_over(void)
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);

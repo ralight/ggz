@@ -305,7 +305,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = lookup_widget(main_win, "join_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = lookup_widget(mnu_tables, "launch1");
+			tmp = lookup_widget(mnu_tables, "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = lookup_widget(mnu_tables, "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
@@ -333,7 +333,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
@@ -388,7 +388,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);

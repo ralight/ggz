@@ -254,7 +254,11 @@ void login_bad_name()
         tmp = lookup_widget((dlg_login), "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = lookup_widget((dlg_login), "server_frame");
+        tmp = lookup_widget((dlg_login), "profile_box");
+	gtk_widget_hide(tmp);
+        tmp = lookup_widget((dlg_login), "server_box");
+	gtk_widget_hide(tmp);
+        tmp = lookup_widget((dlg_login), "hseparator");
 	gtk_widget_hide(tmp);
 }
 
