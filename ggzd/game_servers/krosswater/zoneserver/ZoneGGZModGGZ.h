@@ -1,5 +1,3 @@
-#define TMPDIR "/tmp/ggzd"
-
 #define MAX_USER_NAME_LEN 16
 #define GGZ_SEAT_OPEN   -1
 #define GGZ_SEAT_BOT    -2

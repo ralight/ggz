@@ -37,39 +37,11 @@ int ZoneGGZModGGZ::ggz_init(char* game_name)
 /* Connect to Unix domain socket */
 int ZoneGGZModGGZ::ggz_connect(void)
 {
-	int sock, len;
-	char* fd_name;
-	struct sockaddr_un addr;
+	/* FIXME: this code simulates the effect of the current
+	 * GGZDMOD, but we should really link to ggzdmod itself. */
 
-	if((sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-	{
-		return -1;
-	}
-
-	len = strlen(name) + strlen(TMPDIR) + 16;
-	if((fd_name = (char*)malloc(len)) == NULL)
-	{
-		return -1;
-	}
-	snprintf(fd_name, len, "%s/%s.%d", TMPDIR, name, getpid());
-
-printf("Creating game: %s (%s)\n", name, fd_name);
-	memset(&addr, 0, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-	free(fd_name);
-
-	if(::connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-	{
-printf("Error! Could not bind!\n");
-printf("Reason: (%s)\n", strerror(errno));
-		return -1;
-	}
-
-	fd = sock;
 	ggz_debug("%s game started", name);
-
-	return sock;
+	return 3;
 }
 
 
