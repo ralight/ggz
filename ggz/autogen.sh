@@ -2,7 +2,7 @@
 # Run this to generate all the initial makefiles, etc.
 
 srcdir=`dirname $0`
-PKG_NAME="NetGames"
+PKG_NAME="Gnu Gaming Zone client"
 
 DIE=0
 
