@@ -1,10 +1,10 @@
-/*
+/* 
  * File: protocol.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: protocol.h 2370 2001-09-05 16:20:00Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -30,10 +30,10 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-/* GGZCards protocol */
+#define PROTOCOL_VERSION 1
+
 /* Messages from server */
-typedef enum
-{
+typedef enum {
 	WH_REQ_NEWGAME,
 	WH_MSG_NEWGAME,
 	WH_MSG_GAMEOVER,
@@ -48,18 +48,15 @@ typedef enum
 	WH_MESSAGE_PLAYER,
 	WH_REQ_OPTIONS,
 	WH_MSG_TABLE
-}
-server_msg_t;
+} server_msg_t;
 
 /* Messages from client */
-typedef enum
-{
+typedef enum {
 	WH_RSP_NEWGAME,
 	WH_RSP_OPTIONS,
 	WH_RSP_PLAY,
 	WH_RSP_BID,
 	WH_REQ_SYNC
-}
-client_msg_t;
+} client_msg_t;
 
 #endif /* __PROTOCOL_H__ */
