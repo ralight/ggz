@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: datatypes.h 6008 2004-05-27 02:08:56Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -41,7 +41,7 @@ typedef struct {
 #if 0
 	bool remove_users;
 #endif
-	bool foreground;
+	int foreground;
 	int user_inact_time;
 	char clear_stats;
 	int stat_clr_time;
