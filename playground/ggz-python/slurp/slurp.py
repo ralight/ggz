@@ -254,7 +254,7 @@ def main():
     pygame.init()
     pygame.display.set_caption("Slurp")
 
-    screen = pygame.display.set_mode((1024, 768), OPENGL | DOUBLEBUF | FULLSCREEN, 24)
+    screen = pygame.display.set_mode((1024, 768), OPENGL | DOUBLEBUF | FULLSCREEN, 0)
 
     pygame.mouse.set_visible(0)
 
