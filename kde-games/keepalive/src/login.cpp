@@ -17,12 +17,16 @@
 
 // Header file
 #include "login.h"
+#include "config.h"
 
 // Qt includes
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include <qbitmap.h>
+
+#define KEEPALIVE_DIR GGZDATADIR "/keepalive"
 
 // Constructor: show mask to query username/password
 Login::Login(QWidget *parent, const char *name)
@@ -33,10 +37,26 @@ Login::Login(QWidget *parent, const char *name)
 	QLabel *lusername, *lpassword;
 	QPushButton *ok;
 	QFrame *frame;
+	QLabel *explanation;
+	QWidget *logo;
+	QPixmap logopix;
+	QBitmap logomap;
 
 	frame = new QFrame(this);
 	frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	frame->setFixedHeight(200);
+
+	explanation = new QLabel("Enter the game Keepalive!\n"
+		"If you are new to this game, please select a login name and a password for it.\n"
+		"Otherwise log in with your data to restore your avatar.\n",
+		frame);
+
+	logo = new QWidget(this);
+	logopix = QPixmap(KEEPALIVE_DIR "/keepalive.png");
+	logo->setBackgroundPixmap(logopix);
+	logomap = logopix.createHeuristicMask();
+	logo->setMask(logomap);
+	logo->setFixedSize(logopix.width(), logopix.height());
 
 	lusername = new QLabel("Username", frame);
 	lpassword = new QLabel("Password", frame);
@@ -46,6 +66,8 @@ Login::Login(QWidget *parent, const char *name)
 	ok->setFixedWidth(100);
 
 	vbox = new QVBoxLayout(frame, 5);
+	vbox->add(explanation);
+	vbox->addSpacing(0);
 	vbox->add(lusername);
 	vbox->add(m_username);
 	vbox->add(lpassword);
@@ -55,8 +77,18 @@ Login::Login(QWidget *parent, const char *name)
 	hbox->add(ok);
 
 	vboxroot = new QVBoxLayout(this, 5);
+	vboxroot->add(logo);
 	vboxroot->addStretch();
 	vboxroot->add(frame);
+
+	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	frame->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	explanation->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	lusername->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	lpassword->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+
+	setFocusPolicy(StrongFocus);
+	lusername->setFocus();
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotLogin()));
 

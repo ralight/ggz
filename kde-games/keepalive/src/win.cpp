@@ -42,6 +42,7 @@ Win::Win(QWidget *parent, const char *name)
 	m_world = new World(m_canvas, this);
 	m_world->hide();
 	m_login = new Login(this);
+	m_login->setFocus();
 	chatbox = NULL;
 
 	vbox = new QVBoxLayout(this, 5);
@@ -53,7 +54,8 @@ Win::Win(QWidget *parent, const char *name)
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
 
-	setFocusPolicy(StrongFocus);
+	setBackgroundColor(QColor(0, 0, 0));
+	//setFocusPolicy(StrongFocus);
 
 	//setFixedSize(400, 300);
 	resize(500, 400);
@@ -90,22 +92,30 @@ void Win::keyPressEvent(QKeyEvent *e)
 {
 	int x, y;
 
-	x = 0;
-	y = 0;
-	if(e->key() == Key_Left) x = -1;
-	if(e->key() == Key_Right) x = 1;
-	if(e->key() == Key_Up) y = -1;
-	if(e->key() == Key_Down) y = 1;
-	m_canvas->move(x, y);
-
-	if((e->key() == Key_Return) || (e->key() == Key_Enter))
+	if(m_world->isVisible())
 	{
-		if(!chatbox)
+		x = 0;
+		y = 0;
+		if(e->key() == Key_Left) x = -1;
+		if(e->key() == Key_Right) x = 1;
+		if(e->key() == Key_Up) y = -1;
+		if(e->key() == Key_Down) y = 1;
+		m_canvas->move(x, y);
+
+		if((e->key() == Key_Return) || (e->key() == Key_Enter))
 		{
-			chatbox = new Chatbox(this);
-			connect(chatbox, SIGNAL(signalChat(QString)), SLOT(slotChat(QString)));
+			if(!chatbox)
+			{
+				chatbox = new Chatbox(this);
+				connect(chatbox, SIGNAL(signalChat(QString)), SLOT(slotChat(QString)));
+			}
+			chatbox->show();
 		}
-		chatbox->show();
+	}
+
+	if(e->key() == Key_Escape)
+	{
+		close();
 	}
 
 	std::cout << "KEYCODE: " << e->key() << std::endl;

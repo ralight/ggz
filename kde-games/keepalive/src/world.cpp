@@ -25,7 +25,7 @@
 World::World(QCanvas *canvas, QWidget *parent, const char *name)
 : QCanvasView(canvas, parent, name)
 {
-	setFocusPolicy(StrongFocus);
+	//setFocusPolicy(StrongFocus);
 
 	show();
 }
