@@ -15,30 +15,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef MUEHLE_SERVER_H
-#define MUEHLE_SERVER_H
+#ifndef MUEHLE_NET_H
+#define MUEHLE_NET_H
 
-// GGZ includes
-#include "ggzgameserver.h"
-
-// Forward declarations
-class QWeb;
-class MuehleNet;
-
-// Muehle server object
-class MuehleServer : public GGZGameServer {
+// Flexible net interface
+class MuehleNet {
 	public:
-		MuehleServer ();
-		~MuehleServer ();
-		void stateEvent ();
-		void joinEvent ( int player );
-		void leaveEvent ( int player );
-		void dataEvent ( int player, void* data );
-		void errorEvent ();
-	private:
-		QWeb* m_web;
-		MuehleNet* m_net;
-		int m_players;
+		MuehleNet ();
+		~MuehleNet ();
+		void write ( int fd, const char* s );
 };
 
 #endif

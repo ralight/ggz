@@ -15,31 +15,20 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef MUEHLE_SERVER_H
-#define MUEHLE_SERVER_H
+// Muehle includes
+#include "net.h"
 
-// GGZ includes
-#include "ggzgameserver.h"
+// System includes
+#include <unistd.h>
+#include <cstring>
 
-// Forward declarations
-class QWeb;
-class MuehleNet;
+MuehleNet::MuehleNet () {
+}
 
-// Muehle server object
-class MuehleServer : public GGZGameServer {
-	public:
-		MuehleServer ();
-		~MuehleServer ();
-		void stateEvent ();
-		void joinEvent ( int player );
-		void leaveEvent ( int player );
-		void dataEvent ( int player, void* data );
-		void errorEvent ();
-	private:
-		QWeb* m_web;
-		MuehleNet* m_net;
-		int m_players;
-};
+MuehleNet::~MuehleNet () {
+}
 
-#endif
+void MuehleNet::write ( int fd, const char* s ) {
+	::write(fd, s, strlen(s));
+}
 

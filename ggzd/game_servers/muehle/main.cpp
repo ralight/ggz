@@ -70,6 +70,7 @@ main ( int argc, char** argv) {
 		delete serv;
 	} else {
 		std::cout << "Currently only GGZ mode is supported." << std::endl;
+		exit ( EXIT_FAILURE );
 	}
 
 	return 0;

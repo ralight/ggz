@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3157 2002-01-20 06:33:30Z jdorje $
+# $Id: Makefile.am 3531 2002-03-05 22:31:41Z dr_maux $
 
 SUBDIRS = qtserv ggz variants
 
@@ -7,9 +7,9 @@ ggzdgame_DATA = muehle.dsc
 ggzdroom_DATA = muehle.room
 
 ggzdexecmod_PROGRAMS = muehleserv
-muehleserv_SOURCES = muehleserver.cpp loader.cpp main.cpp
+muehleserv_SOURCES = muehleserver.cpp loader.cpp main.cpp net.cpp
 muehleserv_LDADD = ggz/libggzgameserver.a qtserv/libqtserv.a $(top_srcdir)/ggzdmod/libggzdmod.la
-noinst_HEADERS = muehleserver.h
+noinst_HEADERS = muehleserver.h loader.h net.h
 INCLUDES = -I ggz -I qtserv -I $(top_srcdir)/ggzdmod
 
 test: test-recursive

@@ -20,6 +20,7 @@
 
 // Muehle includes
 #include "loader.h"
+#include "net.h"
 
 // System includes
 #include <iostream>
@@ -27,11 +28,17 @@
 // Constructor: inherit from ggzgameserver
 MuehleServer::MuehleServer ()
 : GGZGameServer () {
-	( void ) MuehleLoader::loadVariant ( "twelvemensmorris" );
+	m_net = new MuehleNet ();
+	m_web = MuehleLoader::loadVariant ( "twelvemensmorris" );
+	m_players = 0;
 }
 
 // Destructor
 MuehleServer::~MuehleServer () {
+	if ( m_web )
+		delete m_web;
+	if ( m_net )
+		delete m_net;
 }
 
 // State change hook
@@ -40,18 +47,27 @@ void MuehleServer::stateEvent () {
 }
 
 // Player join hook
-void MuehleServer::joinEvent () {
+void MuehleServer::joinEvent ( int player ) {
 	std::cout << "Muehle: joinEvent" << std::endl;
+
+	m_players++;
+
+	if ( m_players == 2) {
+		m_net->write ( fd ( 0 ), "white.\n");
+		m_net->write ( fd ( 1 ), "black.\n");
+	}
 }
 
 // Player leave event
-void MuehleServer::leaveEvent () {
+void MuehleServer::leaveEvent ( int player ) {
 	std::cout << "Muehle: leaveEvent" << std::endl;
 }
 
 // Game data event
-void MuehleServer::dataEvent () {
+void MuehleServer::dataEvent ( int player, void* data ) {
 	std::cout << "Muehle: dataEvent" << std::endl;
+
+	m_net->write ( fd ( !player ), ( const char* ) data);
 }
 
 // Error handling event
