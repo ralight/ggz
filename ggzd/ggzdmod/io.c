@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5400 2003-02-12 04:37:56Z jdorje $
+ * $Id: io.c 6113 2004-07-16 17:44:10Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -156,7 +156,7 @@ int _io_send_log(int fd, char *msg)
 
 int _io_send_game_report(int fd, int num_players,
 			 char **names, GGZSeatType *types,
-			 int *teams, GGZGameResult *results)
+			 int *teams, GGZGameResult *results, int *scores)
 {
 	int p;
 
@@ -172,11 +172,13 @@ int _io_send_game_report(int fd, int num_players,
 	for (p = 0; p < num_players; p++) {
 		int team = teams ? teams[p] : p;
 		int result = results[p];
+		int score = scores ? scores[p] : 0;
 		char *name = names[p] ? names[p] : "";
 		if (ggz_write_string(fd, name) < 0
 		    || ggz_write_int(fd, types[p]) < 0
 		    || ggz_write_int(fd, team) < 0
-		    || ggz_write_int(fd, result) < 0)
+		    || ggz_write_int(fd, result) < 0
+		    || ggz_write_int(fd, score) < 0)
 			return -1;
 	}
 
@@ -304,6 +306,7 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 	else {
 		char *names[num_players];
 		int teams[num_players];
+		int scores[num_players];
 		GGZGameResult results[num_players];
 		GGZSeatType types[num_players];
 		int p;
@@ -316,7 +319,8 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0
 			    || ggz_read_int(ggzdmod->fd, &type) < 0
 			    || ggz_read_int(ggzdmod->fd, &teams[p]) < 0
-			    || ggz_read_int(ggzdmod->fd, &result) < 0)
+			    || ggz_read_int(ggzdmod->fd, &result) < 0
+			    || ggz_read_int(ggzdmod->fd, &scores[p]) < 0)
 				return -1; /* FIXME - mem leak */
 
 			if (name)
@@ -330,7 +334,7 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 		}
 
 		_ggzdmod_handle_report(ggzdmod, num_players,
-				       names, types, teams, results);
+				       names, types, teams, results, scores);
 
 		for (p = 0; p < num_players; p++)
 			if (names[p])

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/27/02
  * Desc: GGZ game module functions, GGZ-side only
- * $Id: ggzdmod-ggz.h 5086 2002-10-28 07:29:41Z jdorje $
+ * $Id: ggzdmod-ggz.h 6113 2004-07-16 17:44:10Z jdorje $
  *
  * This file contains the GGZ-only interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -99,6 +99,7 @@ typedef struct {
 	GGZSeatType *types;
 	int *teams;
 	GGZGameResult *results;
+	int *scores;
 } GGZdModGameReportData;
 
 #endif /* __GGZDMOD_GGZ_H__ */
