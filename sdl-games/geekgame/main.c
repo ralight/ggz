@@ -1,6 +1,11 @@
+#define HAVE_SOUND /* automate later on */
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#ifdef HAVE_SOUND
+#include <SDL/SDL_mixer.h>
+#endif
 
 #include <ggz.h>
 #include <ggzmod.h>
@@ -41,11 +46,16 @@ static int players = 0;
 static char scores[MAX_PLAYERS];
 static char array[ARRAY_WIDTH][ARRAY_HEIGHT];
 static int winner = -1;
+static int usesound = 1;
+#ifdef HAVE_SOUND
+Mix_Music *music = NULL;
+#endif
 
 /* Prototypes */
 int startgame(void);
 void loadsettings(void);
 void addplayer(const char *picture);
+void musicdone(void);
 
 static void game_handle_io(void)
 {
@@ -249,6 +259,7 @@ int main(int argc, char *argv[])
 	{
 		{"ggz", 0, 0, 'g'},
 		{"help", 0, 0, 'h'},
+		{"nosound", 0, 0, 'n'},
 		{0, 0, 0, 0}
 	};
 	int index = 0, c;
@@ -267,7 +278,11 @@ int main(int argc, char *argv[])
 				printf("Recognized options:\n");
 				printf("[-g | --ggz ] Run game in GGZ mode\n");
 				printf("[-h | --help] This help\n");
+				printf("[-n | --nosound] Don't use sound\n");
 				return 0;
+				break;
+			case 'n':
+				usesound = 0;
 				break;
 			default:
 				fprintf(stderr, "Type '%s --help' to get a list of options.\n", argv[0]);
@@ -652,10 +667,34 @@ int startgame(void)
 {
 	int i, j, x;
 	SDL_Rect rect;
+	Uint32 init;
+	int ret;
 
-	SDL_Init(SDL_INIT_VIDEO);
+	init = SDL_INIT_VIDEO;
+#ifdef HAVE_SOUND
+	if(usesound) init |= SDL_INIT_AUDIO;
+#endif
+	SDL_Init(init);
 
 	TTF_Init();
+
+#ifdef HAVE_SOUND
+	if(usesound)
+	{
+		ret = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
+		if(ret < 0)
+		{
+			fprintf(stderr, "Could not open sound device.\n");
+			/*return -1;*/
+		}
+		else
+		{
+			music = Mix_LoadMUS("/storage/music/ogg/free-software/song32.ogg");
+			Mix_PlayMusic(music, -1);
+			Mix_HookMusicFinished(musicdone);
+		}
+	}
+#endif
 
 	font = TTF_OpenFont(DATA_GLOBAL "1979rg__.ttf", 12);
 	/*font = TTF_OpenFont("dark2.ttf", 18);*/
@@ -703,8 +742,18 @@ int startgame(void)
 		if(winner >= 0) screen_outtro();
 	}
 
+#ifdef HAVE_SOUND
+	Mix_CloseAudio();
+#endif
 	SDL_Quit();
 
 	return 0;
+}
+
+void musicdone(void)
+{
+	Mix_HaltMusic();
+	Mix_FreeMusic(music);
+	music = NULL;
 }
 
