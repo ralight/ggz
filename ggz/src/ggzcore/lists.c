@@ -382,6 +382,8 @@ void _ggzcore_list_delete_entry(_ggzcore_list *list, _ggzcore_list_entry *entry)
 
 	if(list->destroy_func)
 		(*list->destroy_func) (entry->data);
+
+	ggzcore_free(entry);
 }
 
 
