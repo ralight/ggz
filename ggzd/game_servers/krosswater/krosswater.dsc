@@ -11,7 +11,7 @@ ExecutablePath = krosswater_server
 
 [Protocol]
 Engine = Krosswater
-Version = 1
+Version = 0.0.4
 
 [TableOptions]
 AllowLeave = 1
