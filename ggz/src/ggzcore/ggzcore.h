@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4638 2002-09-20 07:15:16Z dr_maux $
+ * $Id: ggzcore.h 4793 2002-10-04 03:32:00Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -317,22 +317,22 @@ typedef enum {
  *  Each time we send a chat to the server, it will have one of these
  *  types associated with it.
  *  @see ggzcore_room_chat
- */					/* PMCCCCCC */
+ */
 typedef enum {
 	/** A normal chat, just a message sent to the current room. */
-	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
+	GGZ_CHAT_NORMAL,
 	
 	/** An announcement, usually triggered with /wall.  Only
 	 *  admins can do this, and it is announced in all rooms. */
-	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
+	GGZ_CHAT_ANNOUNCE,
 	
 	/** A beep.  We beep a player, and their client will run
 	 *  the beep. */
-	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
+	GGZ_CHAT_BEEP,
 	
 	/** A personal message to another player.  It consists of both
 	 *  a message and a target player. */
-	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
+	GGZ_CHAT_PERSONAL
 } GGZChatOp;
 
 
