@@ -71,6 +71,10 @@ xlc )
   am_opt=--include-deps;;
 esac
 
+echo "Creating autoconf KDE and GGZ macros..."
+cp acinclude.kde acinclude.m4
+cat acinclude.ggz >> acinclude.m4
+
 for coin in `find $srcdir -name configure.in -print`
 do 
   dr=`dirname $coin`
@@ -110,8 +114,6 @@ do
       fi
       echo "Running automake --gnu $am_opt ..."
       automake --add-missing --gnu $am_opt
-      echo "Concatenating GGZ macros ..."
-      cat acinclude.ggz >> aclocal.m4
       echo "Running autoconf ..."
       autoconf
       echo "Expanding Qt meta objects information"

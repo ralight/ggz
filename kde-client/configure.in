@@ -10,7 +10,8 @@ AM_CONFIG_HEADER(config.h)
 dnl Options for building KGGZ
 dnl =========================
 
-AC_ARG_ENABLE(ggzcorepp, [  --disable-ggzcorepp  don't build GGZCore++ ], disable_ggzcorepp=no, disable_ggzcorepp=yes)
+AC_ARG_ENABLE(ggzcorepp,   [  --disable-ggzcorepp  don't build GGZCore++             ],enable_ggzcorepp=no, enable_ggzcorepp=yes)
+AC_ARG_ENABLE(kggzbrowser, [  --enable-browser     include KHTML browser [default=no]],enable_kggzbrowser=yes, enable_kggzbrowser=no)
 
 dnl Check for Qt and KDE
 dnl ====================
@@ -30,7 +31,7 @@ SUBDIRS="src data"
 dnl Check for easysock and ggzcore
 dnl ==============================
 
-if test "$disable_ggzcorepp" = yes; then
+if test "$enable_ggzcorepp" = yes; then
 	AC_GGZ_EASYSOCK
 	AC_GGZ_GGZCORE
 	SUBDIRS="ggzcore++ $SUBDIRS"
@@ -39,9 +40,29 @@ fi
 dnl Set up variables for KGGZ
 dnl =========================
 
+if test "$enable_kggzbrowser" = yes; then
+	kggzbrowservar=1;
+	BROWSERSOURCE="KGGZBrowser.cpp";
+	BROWSERHEADER="KGGZBrowser.h";
+	BROWSERSUBDIR="more";
+	BROWSERLIB="-L widgets/more -lkggzuimore -lkhtml";
+	AC_DEFINE_UNQUOTED(KGGZ_BROWSER, ${kggzbrowservar})
+else
+	kggzbrowservar=;
+	BROWSERSOURCE="";
+	BROWSERHEADER="";
+	BROWSERSUBDIR="";
+	BROWSERLIB="";
+fi
+
 AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir_c}/kggz")
+dnl AC_DEFINE_UNQUOTED(KGGZ_BROWSER, ${kggzbrowservar})
 
 AC_SUBST(SUBDIRS)
+AC_SUBST(BROWSERSOURCE)
+AC_SUBST(BROWSERHEADER)
+AC_SUBST(BROWSERSUBDIR)
+AC_SUBST(BROWSERLIB)
 
 dnl Create Makefiles
 dnl ================
@@ -54,6 +75,7 @@ AC_OUTPUT(Makefile
 	ggz-kde/ggzcore++/doc/html/Makefile
 	ggz-kde/src/Makefile
 	ggz-kde/src/widgets/Makefile
+	ggz-kde/src/widgets/more/Makefile
 	ggz-kde/src/abstract/Makefile
 	ggz-kde/data/Makefile
 	ggz-kde/data/icons/Makefile
@@ -68,6 +90,7 @@ echo "The following installation layout is used:"
 echo ""
 echo "Installation prefix: $prefix"
 echo "Data: $prefix/share/apps/kggz/"
-echo "Build included GGZCore++: $disable_ggzcorepp"
+echo "Build included GGZCore++: $enable_ggzcorepp"
+echo "Build optional KGGZBrowser: $enable_kggzbrowser"
 echo ""
 
