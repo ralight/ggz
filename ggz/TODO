@@ -1,10 +1,16 @@
 For 0.0.2
 =========
-- Add new dialog for specifying number of seats at table, computer players,
+
+- Neads Done
+* Done
+
+* Add new dialog for specifying number of seats at table, computer players,
 and reservations.  Something with rows where each row represents a seat, and
 then have radio buttons for: open, reserved, or computer.  This should be
 part of the ggz client, not the game_client.  The game_client should only
 worry about options for itself.
+- IRC stile actions in the chat  ex.  /me says hello
+
 
 medium run
 ==========

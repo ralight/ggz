@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
+#include <ctype.h>
 
 #include "connect.h"
 #include "datatypes.h"
@@ -430,15 +432,24 @@ static void server_sync()
 
 static void display_chat(char *name, char *msg)
 {
-	char *buf;
-	gpointer tmp;
-	GdkColormap *cmap;
-	int color_index;
+	char *buf;			/* incomeing text */
+	gpointer tmp;			/* chat widget */
+	GdkColormap *cmap;		/* system colormap */
+	GdkFont *fixed_font;		/* font for chat */
+	int color_index;		/* color for chat */
+	char cmd[10]="          ";
+	char out[1024];	/* command and text for chat */
+	char *line;			/* line to parse */
+	int cmd_index=0, out_index=0;	/* indexes */
+
+	line=msg;
 
 	/* Get color for user */
 	color_index=1;
 	if (!strcmp(connection.username, name))
 		color_index=0;
+
+	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
 		
 	/* Get the system color map and allocate the color. */
 	cmap = gdk_colormap_get_system();
@@ -446,13 +457,74 @@ static void display_chat(char *name, char *msg)
 		g_error("couldn't allocate color");
 	}
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-	buf = g_strdup_printf(" < %s >  ", name);
-	gtk_text_insert(GTK_TEXT(tmp), NULL, &colors[color_index], NULL, buf, -1);
-	g_free(buf);
-	buf = g_strdup_printf("%s\n", msg);
-	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1);
-	g_free(buf);
+        
+        /* Skip until we find the end of the command, converting */
+        /* everything (for convenience) to lowercase as we go */
+        while(*line != ' ' && *line != '\n' && *line != '\0'){
+                *line = tolower(*line);
+		cmd[cmd_index]=*line;
+                line++;
+		cmd_index++;
+        }
+	cmd[cmd_index]='\0';
+        line++;
+
+	/* get all remaining text */
+        while(*line != '\0'){
+		out[out_index]=*line;
+                line++;
+		out_index++;
+        }
+	out[out_index]='\0';
+
+	if (!strcmp(cmd,"/me")){
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
+		g_free(buf);
+		buf = g_strdup_printf(" %s\n", out);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		g_free(buf);
+	}else if (!strcmp(cmd,"/yell")){
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
+		g_free(buf);
+		buf = g_strdup_printf(" yells from across the room \"%s\".\n", out);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		g_free(buf);
+	}else if (!strcmp(cmd,"/beep")){
+		if (!strcmp(out,connection.username)){
+
+			/* Big old hack, got to be a better way */
+			printf("\a\n");
+			/* End big old hack */
+
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+			buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
+			gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
+			g_free(buf);
+			buf = g_strdup_printf(" is beeping you!\n");
+			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+			g_free(buf);
+		}else{
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+			buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
+			gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
+			g_free(buf);
+			buf = g_strdup_printf(" beeped %s.\n", out);
+			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+			g_free(buf);
+		}
+	}else{
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		buf = g_strdup_printf("< %s >%*s", name, MAX_USER_NAME_LEN+1-strlen(name), " ");
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
+		g_free(buf);
+		buf = g_strdup_printf("%s\n", msg);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		g_free(buf);
+	}
 }
 
 

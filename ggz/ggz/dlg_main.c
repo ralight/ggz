@@ -414,7 +414,7 @@ create_main_win (void)
   gtk_container_add (GTK_CONTAINER (v_pane), h_pane);
   gtk_container_set_border_width (GTK_CONTAINER (h_pane), 5);
   gtk_paned_set_gutter_size (GTK_PANED (h_pane), 10);
-  gtk_paned_set_position (GTK_PANED (h_pane), 200);
+  gtk_paned_set_position (GTK_PANED (h_pane), 160);
 
   player_box = gtk_vbox_new (FALSE, 5);
   gtk_widget_ref (player_box);
@@ -445,7 +445,7 @@ create_main_win (void)
   gtk_widget_show (player_list);
   gtk_container_add (GTK_CONTAINER (player_scroll), player_list);
   gtk_clist_set_column_width (GTK_CLIST (player_list), 0, 80);
-  gtk_clist_set_column_width (GTK_CLIST (player_list), 1, 80);
+  gtk_clist_set_column_width (GTK_CLIST (player_list), 1, 50);
   gtk_clist_column_titles_show (GTK_CLIST (player_list));
 
   label6 = gtk_label_new ("Name");
