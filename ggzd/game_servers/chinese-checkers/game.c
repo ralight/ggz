@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -65,14 +65,16 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 /* Handle message from GGZ server */
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(CC_EVENT_JOIN, (int*)data, NULL, NULL, NULL);
+	int player = ((GGZSeat*)data)->num;
+	game_update(CC_EVENT_JOIN, &player, NULL, NULL, NULL);
 }
 
 
 /* Handle message from GGZ server */
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(CC_EVENT_LEAVE, (int*)data, NULL, NULL, NULL);
+	int player = ((GGZSeat*)data)->num;
+	game_update(CC_EVENT_LEAVE, &player, NULL, NULL, NULL);
 }
 
 

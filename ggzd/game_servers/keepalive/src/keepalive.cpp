@@ -114,16 +114,19 @@ void Keepalive::hookLog(void *data)
 // Callback for events
 void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
+	int player;
 	switch(event)
 	{
 		case GGZDMOD_EVENT_STATE:
 			me->hookState(data);
 			break;
 		case GGZDMOD_EVENT_JOIN:
-			me->hookJoin(data);
+			player = ((GGZSeat*)data)->num;
+			me->hookJoin(&player);
 			break;
 		case GGZDMOD_EVENT_LEAVE:
-			me->hookLeave(data);
+			player = ((GGZSeat*)data)->num;
+			me->hookLeave(&player);
 			break;
 		case GGZDMOD_EVENT_LOG:
 			me->hookLog(data);

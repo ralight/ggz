@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -80,7 +80,7 @@ static int seats_full(void)
 }
 
 void game_handle_ggz_join(GGZdMod* ggz, GGZdModEvent event, void *data) {
-	int seat = *(int*)data;
+	int seat = ((GGZSeat*)data)->num;
 	
 	// Check if it's the right time to join the game and if ggz could do that
 	assert(rvr_game.state == RVR_STATE_WAIT);

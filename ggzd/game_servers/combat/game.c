@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -99,7 +99,7 @@ static int seats_full(void)
 
 /* This handles a player "join" event from GGZ. */
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int seat = *(int*)data;
+  int seat = ((GGZSeat*)data)->num;
 
   game_send_seat(seat);
   game_send_players();
@@ -139,7 +139,7 @@ void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
 /* This handles a player "leave" event from GGZ. */
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
   /* User left */
-  int seat = *(int*)data, a, done = 0;
+  int seat = ((GGZSeat*)data)->num, a, done = 0;
 
   ggzdmod_log(cbt_game.ggz, "Leaving player %d at state %d", seat, cbt_game.state);
   game_send_players();

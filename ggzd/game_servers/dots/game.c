@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -76,12 +76,14 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(DOTS_EVENT_JOIN, (int*)data, NULL);
+	int player = ((GGZSeat*)data)->num;
+	game_update(DOTS_EVENT_JOIN, &player, NULL);
 }
 
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(DOTS_EVENT_LEAVE, (int*)data, NULL);
+	int player = ((GGZSeat*)data)->num;
+	game_update(DOTS_EVENT_LEAVE, &player, NULL);
 }
 
 

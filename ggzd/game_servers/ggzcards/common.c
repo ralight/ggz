@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: common.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -449,7 +449,7 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 /* This handles the event of a player joining. */
 void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
-	player_t player = *(int *) data;
+	player_t player = ((GGZSeat*)data)->num;
 	seat_t seat = game.players[player].seat;
 
 	/* There's a big problem here since if the players join/leave before
@@ -543,7 +543,7 @@ static void set_player_name(player_t p, const char *name)
 /* This handles the event of a player leaving */
 void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
-	player_t player = *(int *) data;
+	player_t player = ((GGZSeat*)data)->num;
 	seat_t seat = game.players[player].seat;
 	GGZdModState new_state;
 

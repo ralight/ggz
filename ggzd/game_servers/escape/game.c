@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -520,12 +520,14 @@ void ggz_update_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 void ggz_update_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(ESCAPE_EVENT_JOIN, data);
+	int player = ((GGZSeat*)data)->num;
+	game_update(ESCAPE_EVENT_JOIN, &player);
 }
 
 void ggz_update_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	game_update(ESCAPE_EVENT_LEAVE, data);
+	int player = ((GGZSeat*)data)->num;
+	game_update(ESCAPE_EVENT_LEAVE, &player);
 }
 
 static int seats_full(void)

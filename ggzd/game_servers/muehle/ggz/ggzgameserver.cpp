@@ -86,14 +86,16 @@ void GGZGameServer::handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* d
 
 // Callback for the player join hook
 void GGZGameServer::handle_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+	int player = ((GGZSeat*)data)->num;
 	std::cout << "GGZGameServer: joinEvent" << std::endl;
-	self->joinEvent ( *( int* ) data );
+	self->joinEvent ( player );
 }
 
 // Callback for the player leave hook
 void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+	int player = ((GGZSeat*)data)->num;
 	std::cout << "GGZGameServer: leaveEvent" << std::endl;
-	self->leaveEvent ( *(int* ) data );
+	self->leaveEvent ( player );
 }
 
 // Callback for the game data hook

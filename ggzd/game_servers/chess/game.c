@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -61,14 +61,14 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data) {
 
 /* Translates a GGZ join event into a chess game event. */
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int* player = (int*)data;
-  game_update(CHESS_EVENT_JOIN, player);
+  int player = ((GGZSeat*)data)->num;
+  game_update(CHESS_EVENT_JOIN, &player);
 }
 
 /* Translates a GGZ leave event into a chess game event. */
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int* player = (int*)data;
-  game_update(CHESS_EVENT_LEAVE, player);
+  int player = ((GGZSeat*)data)->num;
+  game_update(CHESS_EVENT_LEAVE, &player);
 }
 
 static int seats_full(void)

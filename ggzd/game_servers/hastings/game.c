@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -90,6 +90,7 @@ void game_init(GGZdMod *ggz)
 /* Handle event from GGZ server */
 void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
+	int player;
 	switch(event)
 	{
 		case GGZDMOD_EVENT_STATE:
@@ -97,10 +98,12 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 				game_update(HASTINGS_EVENT_LAUNCH, NULL);
 			break;
 		case GGZDMOD_EVENT_JOIN:
-			game_update(HASTINGS_EVENT_JOIN, data);
+			player = ((GGZSeat*)data)->num;
+			game_update(HASTINGS_EVENT_JOIN, &player);
 			break;
 		case GGZDMOD_EVENT_LEAVE:
-			game_update(HASTINGS_EVENT_LEAVE, data);
+			player = ((GGZSeat*)data)->num;
+			game_update(HASTINGS_EVENT_LEAVE, &player);
 			break;
 		default:
 			ggzdmod_log(hastings_game.ggz, "game_handle_ggz: bad event.");

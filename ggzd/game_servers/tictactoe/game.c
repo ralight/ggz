@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -67,10 +67,14 @@ struct ttt_game_t {
 static struct ttt_game_t ttt_game;
 
 /* GGZdMod callbacks */
-static void _handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
-static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
-static void _handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
-static void _handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data);
+static void game_handle_ggz_state(GGZdMod *ggz,
+                                  GGZdModEvent event, void *data);
+static void game_handle_ggz_join(GGZdMod *ggz,
+                                 GGZdModEvent event, void *data);
+static void game_handle_ggz_leave(GGZdMod *ggz,
+                                  GGZdModEvent event, void *data);
+static void game_handle_ggz_player(GGZdMod *ggz,
+                                   GGZdModEvent event, void *data);
 
 /* Network IO functions */
 static int game_send_seat(int seat);
@@ -104,16 +108,20 @@ void game_init(GGZdMod *ggzdmod)
 		
 	/* Setup GGZ game module */
 	ttt_game.ggz = ggzdmod;
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &_handle_ggz_state);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &_handle_ggz_join);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &_handle_ggz_leave);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &_handle_ggz_player);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE,
+	                    &game_handle_ggz_state);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN,
+	                    &game_handle_ggz_join);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE,
+	                    &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
+	                    &game_handle_ggz_player);
 	
 }
 
 
 /* Callback for GGZDMOD_EVENT_STATE */
-static void _handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 
 	switch(ggzdmod_get_state(ggz)) {
@@ -137,9 +145,9 @@ static int seats_full(void)
 
 
 /* Callback for GGZDMOD_EVENT_JOIN */
-static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int seat = *(int*)data;
+	int seat = ((GGZSeat*)data)->num;
 
 	/* Send the info to our players */
 	game_send_seat(seat);
@@ -158,7 +166,7 @@ static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Callback for GGZDMOD_EVENT_LEAVE */
-static void _handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	if (ggzdmod_get_state(ggz) == GGZDMOD_STATE_PLAYING) {
 		ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
@@ -174,7 +182,7 @@ static void _handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Handle message from player */
-static void _handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	int num = *(int*)data;
 	int fd, op, move;
