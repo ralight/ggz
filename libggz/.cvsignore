@@ -19,3 +19,4 @@ ltconfig
 ltmain.sh
 build-stamp
 doxygen
+doc
