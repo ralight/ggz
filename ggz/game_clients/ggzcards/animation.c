@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3316 2002-02-11 05:55:42Z jdorje $
+ * $Id: animation.c 3325 2002-02-11 09:12:57Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -60,6 +60,8 @@ void animation_start(int player, card_t card, int card_num)
 	int end_x, end_y;
 
 	ggz_debug("animation", "Setting up animation for player %d", player);
+	
+	assert(player >= 0 && player < ggzcards.num_players);
 
 	/* We don't currently support animation for more than one player at a 
 	   time. */
@@ -70,6 +72,14 @@ void animation_start(int player, card_t card, int card_num)
 		else
 			animation_stop(TRUE);
 	}
+	
+	/* If the card was _already_ placed out on the table, we don't want
+	   to do it again.  This is ugly, because the caller has to be careful
+	   not to update table_cards until _after_ calling animation_start(). */
+	if (card.suit == table_cards[player].suit &&
+	    card.face == table_cards[player].face &&
+	    card.deck == table_cards[player].deck)
+		return;
 
 	/* If we don't have animation enabled, then we simply never start an
 	   animation. */

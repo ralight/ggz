@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3321 2002-02-11 07:24:37Z jdorje $
+ * $Id: common.c 3325 2002-02-11 09:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -305,7 +305,7 @@ static int handle_msg_gameover(void)
    table. */
 static int handle_msg_players(void)
 {
-	int i, p, numplayers, different;
+	int i, numplayers, different;
 	char *t_name;
 	int old_numplayers = ggzcards.num_players;
 
@@ -321,6 +321,7 @@ static int handle_msg_players(void)
 
 	/* reallocate the players, if necessary */
 	if (different) {
+		int p;
 		if (ggzcards.players) {
 			for (p = 0; p < ggzcards.num_players; p++)
 				if (ggzcards.players[p].hand.card)
@@ -332,9 +333,17 @@ static int handle_msg_players(void)
 			  "get_players: (re)allocating ggzcards.players.");
 		ggzcards.players =
 			ggz_malloc(numplayers * sizeof(*ggzcards.players));
-		game_internal.max_hand_size = 0;	/* this forces
-							   reallocating later 
-							 */
+		for (p = 0; p < numplayers; p++) {
+			/* At least for table_card, this initialization is
+			   very important. */
+			ggzcards.players[p].table_card = UNKNOWN_CARD;
+			ggzcards.players[p].name = NULL;
+			ggzcards.players[p].hand.hand_size = 0;
+			ggzcards.players[p].hand.card = NULL;
+		}
+		
+		/* this forces reallocating later */
+		game_internal.max_hand_size = 0;	
 	}
 
 	/* TODO: support for changing the number of players */
@@ -651,10 +660,12 @@ static int handle_msg_table(void)
 	ggz_debug("core", "Handling table message.");
 
 	assert(ggzcards.players);
-	for (p = 0; p < ggzcards.num_players; p++)
-		if (read_card
-		    (game_internal.fd, &ggzcards.players[p].table_card) < 0)
+	for (p = 0; p < ggzcards.num_players; p++) {
+		card_t card;
+		if (read_card(game_internal.fd, &card) < 0)
 			return -1;
+		ggzcards.players[p].table_card = card;
+	}
 
 	/* TODO: verify that the table cards have been removed from the hands */
 

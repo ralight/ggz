@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3321 2002-02-11 07:24:37Z jdorje $
+ * $Id: game.c 3325 2002-02-11 09:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -104,12 +104,17 @@ void game_play_card(int card_num)
 	assert(player >= 0 && player < ggzcards.num_players);
 
 	ggz_debug("main", "Sending play of card %d to server.", card_num);
+	statusbar_message(_("Sending play to server"));
 
 	status = client_send_play(card);
 
-	/* We probably shouldn't put this up here yet, but should wait
-	   until we finish animating.  But the logic of it still needs
-	   to be worked out. */
+	/* Setup and trigger the card animation.  Because of the ugly way
+	   this is handled, this function has to be called _before_ we
+	   update table_cards[player] (below). */
+	animation_start(player, card, card_num);
+
+	/* We go ahead and move the card out onto the table, even though
+	   we don't yet have validation that it's been played. */
 	table_cards[player] = card;
 
 	/* Draw the cards, eliminating the card in play */
@@ -118,11 +123,6 @@ void game_play_card(int card_num)
 	/* We don't remove the card from our hand until we have validation
 	   that it's been played. Graphically, the table_card is skipped over 
 	   when drawing the hand. */
-
-	statusbar_message(_("Sending play to server"));
-
-	/* Setup and trigger the card animation */
-	animation_start(player, card, card_num);
 
 	assert(status == 0);
 }
@@ -348,13 +348,21 @@ void game_alert_badplay(char *err_msg)
 void game_alert_play(int player, card_t card, int pos)
 {
 	ggz_debug("main", "Handling play alert for player %d.", player);
+	
+	assert(player >= 0 && player < ggzcards.num_players);
 
 	if (preferences.animation) {
 		/* If this is a card _we_ played, then we'll already be
 		   animating, and we really don't want to stop just to start
 		   over.  But we leave that up to animation_start. */
 		animation_start(player, card, pos);
-	} else {		/* not if (pref_animation) */
+	}
+	
+	/* This probably isn't necessary at this point, but it's consistent
+	   to keep it current. */
+	table_cards[player] = card;
+	
+	if (!preferences.animation) {
 		/* We only show the card on the table if we're not animating
 		   - if we're animating then we wait for it to get there
 		   naturally. */

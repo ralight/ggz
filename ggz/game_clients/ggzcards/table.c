@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3321 2002-02-11 07:24:37Z jdorje $
+ * $Id: table.c 3325 2002-02-11 09:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -428,6 +428,12 @@ void get_card_coordinates(card_t card, int orientation, int *x, int *y)
 	int xp, yp;
 	int height = (orientation % 2 == 0) ? CARDHEIGHT : CARDWIDTH;
 	int width = (orientation % 2 == 0) ? CARDWIDTH : CARDHEIGHT;
+	
+	/* We don't care about the deck, but the rest had better
+	   be accurate. */
+	assert(card.face >= ACE_LOW && card.face <= ACE_HIGH
+	       && card.suit >= CLUBS && card.suit <= SPADES
+	       && orientation >= 0 && orientation < 4);
 
 	/* This hack converts the "face" value of the card into the 0-12
 	   range. */

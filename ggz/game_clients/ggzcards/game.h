@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3315 2002-02-11 05:06:59Z jdorje $
+ * $Id: game.h 3325 2002-02-11 09:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,6 +50,13 @@ extern int table_max_hand_size;
    splash screen. */
 extern int game_started;
 
+/** @brief Cards being drawn on the table.
+ *
+ *  This is the list of the cards that we currently have
+ *  drawn on the table.  It differs from the core list in
+ *  the ggzcards struct, since not all cards that are "on"
+ *  the table are being drawn.
+ */
 extern card_t table_cards[MAX_NUM_PLAYERS];
 
 /* 
