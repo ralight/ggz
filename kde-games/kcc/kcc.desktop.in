@@ -1,15 +1,12 @@
 [Desktop Entry]
-Comment=GGZ Chinese Checkers for KDE
-GenericName=GGZ Chinese Checkers game for KDE
+Name=KCC
+GenericName=Chinese Checkers game for KDE
+GenericName[de]=Halmaspiel für KDE
+Comment=GGZ Chinese Checkers game
+Comment[de]=GGZ Halmaspiel
+
+Type=Application
 Exec=@ggzexecmoddir@/kcc
 Icon=kcc
-MimeType=Application
-Name=Chinese Checkers
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
 Terminal=false
-TerminalOptions=
-Type=Application
-
+Categories=X-GGZ-Games;BoardGame;KDE;Qt;

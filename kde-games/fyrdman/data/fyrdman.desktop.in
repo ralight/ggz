@@ -1,19 +1,14 @@
 [Desktop Entry]
-Comment=Join the battle of 1066
-Comment[de]=Nimm an der Schlacht von 1066 teil
-Comment[fr]=Participate dans bataille de 1066
+Name=Fyrdman
 GenericName=Hastings1066 Strategy Game
 GenericName[de]=Hastings1066 Strategiespiel
 GenericName[fr]=Hastings1066 jeu de stratégie
+Comment=Join the battle of 1066
+Comment[de]=Nimm an der Schlacht von 1066 teil
+Comment[fr]=Participe dans la bataille de 1066
+
+Type=Application
 Exec=@ggzexecmoddir@/fyrdman
 Icon=fyrdman
-MimeType=Application
-Name=Fyrdman
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
 Terminal=false
-TerminalOptions=
-Type=Application
-
+Categories=X-GGZ-Games;StrategyGame;KDE;Qt;
