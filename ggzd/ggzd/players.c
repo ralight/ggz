@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4972 2002-10-22 00:11:03Z jdorje $
+ * $Id: players.c 4984 2002-10-22 04:34:51Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -387,7 +387,7 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 
 GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 {
-	int i, num_seats;
+	int i;
 	char owner[MAX_USER_NAME_LEN + 1];
 	GGZClientReqError status = E_OK;
 	GGZTable *real_table;
@@ -415,13 +415,21 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 		table_set_desc(real_table, table->desc);
 	
 	/* Find the seat that was updated: it's the one that isn't NONE */
-	num_seats = seats_num(table);
-	for (i = 0; i < num_seats; i++) {
-		if (seats_type(table, i) != GGZ_SEAT_NONE) {
+	/* NOTE: don't use seats_num or seats_type since the table's seats
+	   may not all be valid. */
+	for (i = 0; i < table->num_seats; i++) {
+		if (table->seat_types[i] != GGZ_SEAT_NONE) {
 			seat.index = i;
-			seat.type = seats_type(table, i);
+			seat.type = table->seat_types[i];
 			strcpy(seat.name, table->seat_names[i]);
 			seat.fd = -1;
+
+			dbg_msg(GGZ_DBG_TABLE,
+				"%s requested seat %d on table %d/%d "
+				"become %s",
+				player->name, i, table->room, table->index,
+				ggz_seattype_to_string(seat.type));
+    
 			
 			if (transit_seat_event(table->room, table->index,
 					       seat, player->name) != GGZ_OK) {

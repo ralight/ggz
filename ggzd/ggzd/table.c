@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4972 2002-10-22 00:11:03Z jdorje $
+ * $Id: table.c 4984 2002-10-22 04:34:51Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -622,6 +622,21 @@ void table_game_leave(GGZTable *table, char *name, int num)
 	   to halt itself. */
 	if (empty && game_types[table->type].kill_when_empty)
 		(void)ggzdmod_disconnect(table->ggzdmod);
+}
+
+
+void table_game_seatchange(GGZTable *table, GGZSeatType type, int num)
+{
+	dbg_msg(GGZ_DBG_TABLE,
+		"Seat %d changes to %s at table %d of room %d",
+		num, ggz_seattype_to_string(type),
+		table->index, table->room);
+
+	pthread_rwlock_wrlock(&table->lock);
+	table->seat_types[num] = type;
+	pthread_rwlock_unlock(&table->lock);
+
+	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SEAT, "", num);
 }
 
 

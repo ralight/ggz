@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: transit.c 4984 2002-10-22 04:34:51Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -83,6 +83,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 							   void* data);
 
 static GGZReturn transit_send_seat_to_game(GGZTable* table,
+					   GGZTransitType action,
 					   GGZSeatEventData *event);
 static int transit_find_seat(GGZTable *table, char *name);
 
@@ -147,6 +148,8 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	GGZTable *table = target;
 	GGZSeatEventData *event = data;
 	struct GGZTableSeat *seat = &(event->seat);
+	GGZSeatType old_type = seat->index < 0 ? GGZ_SEAT_NONE :
+		table->seat_types[seat->index];
 
 	dbg_msg(GGZ_DBG_TABLE, 
 		"%s requested seat change on table %d: Seat %d to %s (%s) with fd %d", 
@@ -155,12 +158,38 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		seat->fd);
 
 	/* Figure out what kind of event this is */
-	if (seat->type == GGZ_SEAT_PLAYER)
+	if (seat->type == GGZ_SEAT_PLAYER
+	    && (old_type == GGZ_SEAT_OPEN
+		|| old_type == GGZ_SEAT_RESERVED
+		|| old_type == GGZ_SEAT_NONE))
 		action = GGZ_TRANSIT_JOIN;
-	else if (table->seat_types[seat->index] == GGZ_SEAT_PLAYER)
+	else if (old_type == GGZ_SEAT_PLAYER
+		 && seat->type == GGZ_SEAT_OPEN)
 		action = GGZ_TRANSIT_LEAVE;
-	else
+	else {
+		int valid = 0;
+
 		action = GGZ_TRANSIT_SEAT;
+		if (seat->type == GGZ_SEAT_OPEN
+		    && (old_type == GGZ_SEAT_RESERVED
+			|| old_type == GGZ_SEAT_BOT))
+			valid = 1;
+		else if (seat->type == GGZ_SEAT_BOT
+			 && (old_type == GGZ_SEAT_OPEN
+			     || old_type == GGZ_SEAT_RESERVED))
+			valid = 1;
+
+		if (!valid) {
+			dbg_msg(GGZ_DBG_TABLE,
+				"Invalid seat change, seat %d: from %s to %s",
+				seat->index,
+				ggz_seattype_to_string(old_type),
+				ggz_seattype_to_string(seat->type));
+			transit_player_event(event->caller, action,
+					     E_BAD_OPTIONS, 0);
+			return GGZ_EVENT_OK;
+		}
+	}
 
 	/* Make sure table is in an acceptable state */
 	if (table->state == GGZ_TABLE_ERROR
@@ -181,7 +210,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		}
 	}
 
-	if (transit_send_seat_to_game(table, event) != GGZ_OK) {
+	if (transit_send_seat_to_game(table, action, event) != GGZ_OK) {
 		/* Otherwise send an error message back to the player */
 		transit_player_event(event->caller, action,
 				     E_SEAT_ASSIGN_FAIL, 0);
@@ -301,6 +330,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
  * player should be sent an failure notice).
  */
 static GGZReturn transit_send_seat_to_game(GGZTable* table,
+					   GGZTransitType action,
 					   GGZSeatEventData *event)
 {
 	GGZSeat seat = {num: event->seat.index,
@@ -328,12 +358,12 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 		return GGZ_ERROR;
 	}
 
-	if (seat.type == GGZ_SEAT_PLAYER) {
+	if (action == GGZ_TRANSIT_JOIN) {
 		table_game_join(table, event->caller, seat.num);
-	} else if (seat.type == GGZ_SEAT_OPEN) {
+	} else if (action == GGZ_TRANSIT_LEAVE) {
 		table_game_leave(table, event->caller, seat.num);
 	} else {
-		err_msg("transit_send_seat_to_game: invalid seat change.");
+		table_game_seatchange(table, seat.type, seat.num);
 	}
 	
 	return GGZ_OK;
