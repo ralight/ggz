@@ -64,6 +64,7 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 	output("  <status>$status</status>");
 	output("  <title>$title</title>");
 	output("  <policy>$policy</policy>");
+	output("  <game>$game</game>"); // this is new!
 	output("</eventgroup>");
 
 	$players = array();
@@ -108,8 +109,8 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 				$description = "$name: depends on outcome of $prename ($player1 vs. $player2)";
 			endif;
 			$status = "";
-			$image = "http://rankings.ggzgamingzone.org/ggzicons/games/$game.png";
-			$location = "live.ggzgamingzone.org";
+			$image = ""; //"http://rankings.ggzgamingzone.org/ggzicons/games/$game.png";
+			$location = "ggz://live.ggzgamingzone.org";
 
 			$date += 1;
 
