@@ -365,7 +365,7 @@ int ggz_conf_write_list(int handle, const char *section,
  *	  - 1 if [Section] did not exist (soft error)
  *	  - -1 on failure
  */
-int conf_remove_section(int handle, const char *section)
+int ggz_conf_remove_section(int handle, const char *section)
 {
 	conf_file_t	*f_data;
 	GGZListEntry	*s_entry;

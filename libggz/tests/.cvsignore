@@ -6,4 +6,5 @@ Makefile
 Makefile.in
 debugmsg
 testfile
-
+cfgtest
+cfg_testfile
