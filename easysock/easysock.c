@@ -50,7 +50,7 @@ static es_exit_func _exit_func = exit;
 static void _debug(const char *fmt, ...)
 {
 #ifdef DEBUG_SOCKET
-	char bug[4096];
+	char buf[4096];
 	va_list ap;
 
 	va_start(ap, fmt);
