@@ -22,7 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../../ggzdmod/ggz_server.h"
+
+#include "ggzdmod.h"
 
 
 /* Tic-Tac-Toe protocol */
@@ -60,6 +61,7 @@
 
 /* Data structure for Tac-Toe-Game */
 struct ttt_game_t {
+	GGZdMod *ggz;
 	char board[9];
 	char state;
 	char turn;
@@ -67,8 +69,8 @@ struct ttt_game_t {
 };
 
 void game_init(void);
-void game_handle_ggz(ggzd_event_t event, void *data);
-void game_handle_player(ggzd_event_t event, void *data);
+void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 int game_send_seat(int seat);
 int game_send_players(void);
@@ -85,4 +87,5 @@ char game_check_move(int num, int move);
 char game_check_win(void);
 
 int game_update(int event, void* data);
+
 

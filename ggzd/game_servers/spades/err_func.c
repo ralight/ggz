@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 2599 2001-10-24 00:36:12Z jdorje $
+ * $Id: err_func.c 2769 2001-12-01 06:53:01Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -115,7 +115,6 @@ void dbg_msg(const char *fmt, ...)
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(gameInfo.ggz_sock, MSG_LOG);
-	es_write_int(gameInfo.ggz_sock, GGZ_DBG_TABLE);
 	es_write_string(gameInfo.ggz_sock, buf);
 	va_end(ap);
 }
@@ -129,7 +128,6 @@ void log_msg(const char *fmt, ...)
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(gameInfo.ggz_sock, MSG_LOG);
-	es_write_int(gameInfo.ggz_sock, GGZ_LOG_NOTICE);
 	es_write_string(gameInfo.ggz_sock, buf);
 	va_end(ap);
 }

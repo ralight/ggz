@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: engine_func.c 2769 2001-12-01 06:53:01Z bmh $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -45,10 +45,6 @@
 #include <err_func.h>
 #include <easysock.h>
 
-#define GGZ_SEAT_OPEN   -1
-#define GGZ_SEAT_COMP   -2
-#define GGZ_SEAT_RESV   -3
-#define GGZ_SEAT_NONE   -4
 
 static int open_seats;
 
@@ -195,7 +191,7 @@ void GetGameInfo( void ) {
 	
 	int i, j, op, status = 0;
 	int seat;
-	char ret;
+	GGZdModState state;
 	char* name;
 	
 	/* FIXME: manual connection to GGZ */
@@ -203,18 +199,18 @@ void GetGameInfo( void ) {
 
 	ReadIntOrDie(gameInfo.ggz_sock, &op);
 	if (op != REQ_GAME_LAUNCH) {
-		ret = -1;
-		WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LAUNCH);
-		write(gameInfo.ggz_sock, &ret, 1);
+		state = GGZDMOD_STATE_DONE;
+		WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_STATE);
+		write(gameInfo.ggz_sock, &state, 1);
 		exit(-1);
 	}
   
 	ggz_init();
 
 	/* Should check for validity here , but who cares? */
-	WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LAUNCH);
-	status = 0;
-	write(gameInfo.ggz_sock, &status, 1);
+	WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_STATE);
+	state = GGZDMOD_STATE_WAITING;
+	write(gameInfo.ggz_sock, &state, 1);
   
 	gameInfo.gameNum = 0;
 	gameInfo.gamePid = getpid();
@@ -254,6 +250,11 @@ void GetGameInfo( void ) {
 			break;
 		}
 	}
+
+	/* Tell GGZ that we're playign now */
+	WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_STATE);
+	state = GGZDMOD_STATE_PLAYING;
+	write(gameInfo.ggz_sock, &state, 1);
 	
 	/* Send everyone thir game IDs (aka player numbers) */
 	for (i=0; i<4; i++) {
@@ -343,7 +344,7 @@ int ggz_init(void)
 	for(i=0; i<4; i++) {
 		readint( gameInfo.ggz_sock, &assign);
 		switch (assign) {
-		case GGZ_SEAT_COMP: 
+		case GGZ_SEAT_BOT: 
 			open_seats--;
 			gameInfo.playerSock[i] = SOCK_COMP;
 			gameInfo.players[i] = "AI";
@@ -851,9 +852,12 @@ int QueryNewGame( void ) {
 void SendGameOver(void) 
 {
 	int op;
-	WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_OVER);
-	WriteIntOrDie(gameInfo.ggz_sock, 0);
-	/* FIXME: Send player stats */
+	GGZdModState state;
+
+	WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_STATE);
+	state = GGZDMOD_STATE_DONE;
+	write(gameInfo.ggz_sock, &state, 1);
+
 	ReadIntOrDie(gameInfo.ggz_sock, &op);
 }
 

@@ -28,6 +28,7 @@
 #include <errno.h>
 
 #include "game.h"
+#include "ggzdmod.h"
 
 /* Global game variables */
 extern struct ttt_game_t ttt_game;
@@ -37,13 +38,25 @@ int main(void)
 {
 	game_init();
 
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz);
+	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
+	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 
-	(void)ggzd_main_loop();
+	
+	if (ggzdmod_connect(ttt_game.ggz) < 0) {
+		/* Error starting up game 
+		game_cleanup(); */
+		exit(-1);
+	}
+	
+	ggzdmod_log(ttt_game.ggz, "Starting game of Tic-Tac-Toe");
+	ggzdmod_loop(ttt_game.ggz);
+	
+	ggzdmod_disconnect(ttt_game.ggz);
 
+	ggzdmod_free(ttt_game.ggz);
+	
 	return 0;
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.c 2769 2001-12-01 06:53:01Z bmh $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -51,22 +51,22 @@ struct timeval cronometer;
  * either!  --JDS */
 void ggz_update(ggzd_event_t event, void *data) {
   switch(event) {
-    case GGZ_EVENT_STATE:
+    case GGZDMOD_EVENT_STATE:
       switch (ggzd_get_state()) {
-	case GGZ_STATE_WAITING:
+	case GGZDMOD_STATE_WAITING:
           game_update(CHESS_EVENT_LAUNCH, NULL);
           break;
-        case GGZ_STATE_DONE:
+        case GGZDMOD_STATE_DONE:
           game_update(CHESS_EVENT_QUIT, NULL);
           break;
         default: /* CREATED and PLAYING not handled */
           break;
       }
       break;
-    case GGZ_EVENT_JOIN:
+    case GGZDMOD_EVENT_JOIN:
       game_update(CHESS_EVENT_JOIN, data);
       break;
-    case GGZ_EVENT_LEAVE:
+    case GGZDMOD_EVENT_LEAVE:
       game_update(CHESS_EVENT_LEAVE, data);
       break;
     default: /* EVENT_PLAYER and EVENT_TICK not handled */
