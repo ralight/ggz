@@ -32,6 +32,8 @@ ggz_SOURCES = 	main.c \
 		err_func.h \
 		game.c \
 		game.h \
+		ggzrc.c \
+		ggzrc.h \
 		mnu_players.c\
 		mnu_players.h\
 		mnu_tables.c\

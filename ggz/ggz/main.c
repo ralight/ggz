@@ -33,6 +33,7 @@
 #include "parse_opt.h"
 #include "easysock.h"
 #include "err_func.h"
+#include "ggzrc.h"
 
 #include "dlg_main.h"
 #include "dlg_login.h"
@@ -76,6 +77,9 @@ gint main(gint argc, gchar *argv[])
 	parse_args(argc, argv);
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
+
+	/* Load up the ggz.rc file */
+	ggzrc_initialize();
 
 	/* Signal handlers */
 	signal(SIGCHLD, game_dead);
