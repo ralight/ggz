@@ -30,6 +30,7 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 		void jobOperator(const KURL& url);
 		void init(const KURL& url);
 		void debug(QString s);
+		void about();
 
 		KIO::UDSEntry entry;
 		QString m_class, m_query, m_temp;

@@ -53,14 +53,23 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 	else
 	{
 		// ...else just output some information FIXME! Use HTML
-		debug("General information about ggzmeta://");
-		QCString output;
-		mimeType("text/html");
-		output.sprintf("<b>This is the GGZ Gaming Zone Meta Server IO Slave.\n"
-			"See http://ggz.sourceforge.net/metaserver/ for more details.\n</b>");
-		data(output);
+		about();
 		finished();
 	}
+}
+
+// Output information about self
+void GGZMetaProtocol::about()
+{
+	QCString output;
+
+	debug("General information about ggzmeta://");
+
+	mimeType("text/html");
+	output.sprintf("<b>This is the GGZ Gaming Zone Meta Server IO Slave.\n"
+		"See <a href='http://www.ggzgamingzone.org/metaserver/'>\n"
+		"http://www.ggzgamingzone.org/metaserver/</a> for more details.</b>\n");
+	data(output);
 }
 
 // Result slot for async copy operations
@@ -82,6 +91,7 @@ void GGZMetaProtocol::slotWrite()
 	debug("ggz -> slotWrite()");
 
 	l = l.split('/', m_query);
+	debug(QString("%1 slashes in %2").arg(l.count()).arg(m_query));
 	if(l.count() == 2)
 	{
 		// Recognized valid GGZ meta server URI-style query
@@ -91,7 +101,7 @@ void GGZMetaProtocol::slotWrite()
 		m_sock->writeBlock(s.latin1(), s.length());
 		m_sock->flush();
 	}
-	else error(0, "Wrong format!");
+	else warning("Wrong format; expected: ggzmeta://ggz/connection/version!");
 }
 
 // Result slot for meta server answers
@@ -162,10 +172,11 @@ void GGZMetaProtocol::slotRead()
 			}
 			node = node.nextSibling();
 		}
+		debug("ready");
 		listEntry(entry, true);
 		finished();
 	}
-	else error(0, "No such class!");
+	else warning(QString("Server class %1 is not supported!").arg(m_class));
 
 	delete m_sock;
 }
@@ -254,17 +265,18 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 	{
 		debug("** start atlantik download **");
 
-		m_temp = "/tmp/atlantik.metaserver";
+		/*m_temp = "/tmp/atlantik.metaserver";
 		KIO::Job *job = KIO::copy("http://gator.monopd.net", m_temp);
-		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
+		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));*/
 
-		/*QString tmp;
+		QString tmp;
 		if(KIO::NetAccess::download("http://gator.monopd.net", tmp))
 		{
+			debug(QString("** download finished, goto delegate %1 **").arg(tmp));
 			delegate(queryclass, tmp);
 			KIO::NetAccess::removeTempFile(tmp);
 		}
-		else error(0, QString("Couldn't process atlantik query: %1").arg(query));*/
+		else error(0, QString("Couldn't process atlantik query: %1").arg(query));
 	}
 	else if(queryclass == "dopewars")
 	{
@@ -411,9 +423,40 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 		QDomDocument dom;
 		QDomNode node;
 		QDomElement element;
+		QString host, version;
+		QString port, users;
 
 		debug("*** delegation: atlantik ***");
 		// ... (there is nothing yet except <monopigator></monopigator>)
+		//<server host="monopd.zyprexia.com" port="1234" version="0.8.2" users="2"/>
+		QFile file(url);
+		if(!file.open(IO_ReadOnly))
+		{
+			error(0, "Couldn't open temp file.");
+			return;
+		}
+
+		dom.setContent(&file);
+		node = dom.documentElement().firstChild();
+		while(!node.isNull())
+		{
+			element = node.toElement();
+			if(!element.isNull())
+			{
+				host = element.attribute("host", "");
+				port = element.attribute("port", "");
+				version = element.attribute("version", "");
+				users = element.attribute("users", "");
+				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(version), 1, "application/x-desktop");
+				listEntry(entry, false);
+				debug(QString("-> entry: %1_%2").arg(host).arg(version));
+			}
+			node = node.nextSibling();
+		}
+		listEntry(entry, true);
+
+		debug("ready");
+
 		finished();
 	}
 	else error(0, QString("Unknown query class: %1").arg(queryclass));
@@ -423,6 +466,11 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 void GGZMetaProtocol::listDir(const KURL& url)
 {
 	jobOperator(url);
+	/*if(!url.host())
+	{
+		about();
+		finished();
+	}*/
 }
 
 // Request any URI
