@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4650 2002-09-22 14:50:45Z dr_maux $
+ * $Id: ggz.h 4701 2002-09-25 19:17:21Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -358,10 +358,10 @@ int ggz_conf_read_int	(int	handle,
  * caller is expected to be responsible for calling ggz_free() on the string
  * values and the associated array structure when they no longer need the
  * list.  If the section/key combination is not found -1 will be returned,
- * argcp is set to a value of zero, no memory will be allocated, and
- * argvp will retain it's (possibly undefined) value.
+ * *argcp is set to a value of zero, no memory will be allocated, and
+ * *argvp will be set to NULL.
  */
-int ggz_conf_read_list	(int	handle,
+int ggz_conf_read_list(int	handle,
 			 const char	*section,
 			 const char	*key,
 			 int	*argcp,

@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 4186 2002-05-11 06:02:27Z rgade $
+ * $Id: conf.c 4701 2002-09-25 19:17:21Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -236,7 +236,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 	} else {
 		rc = -1;
 		*argcp = 0;
-		*argvp = ggz_malloc(sizeof(char *));
+		*argvp = NULL;
 	}
 
 	return rc;
