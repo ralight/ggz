@@ -9,6 +9,7 @@
 #include "KGGZChat.h"
 #include "KGGZTables.h"
 #include "KGGZUsers.h"
+#include "KGGZLogo.h"
 
 class KGGZWorkspace : public QWidget
 {
@@ -19,7 +20,7 @@ class KGGZWorkspace : public QWidget
 		KGGZChat *widgetChat();
 		KGGZTables *widgetTables();
 		KGGZUsers *widgetUsers();
-		QFrame *widgetLogo();
+		KGGZLogo *widgetLogo();
 
 	protected:
 		void resizeEvent(QResizeEvent *e);
@@ -29,7 +30,7 @@ class KGGZWorkspace : public QWidget
 		KGGZTables *m_tables;
 		KGGZUsers *m_userlist;
 		QSplitter *m_vsbox;
-		QFrame *m_logo;
+		KGGZLogo *m_logo;
 		int m_firstresize;
 		QSplitter *m_hsbox;
 		QWidget *m_widget;

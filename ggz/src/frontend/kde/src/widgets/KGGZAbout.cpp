@@ -56,7 +56,7 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	p.drawLine(10, 30, 330, 30);
 	p.drawLine(10, 32, 330, 32);
 	font.setPointSize(10);
-	//p.setFont(font);
+	p.setFont(font);
 	p.drawText(10, 45, "Free Software shall dominate all Online Games!");
 	p.drawText(10, 65, "The GGZ Gaming Zone is a collaboration between several people who");
 	p.drawText(10, 77, "try to make public online game services available for free -");
@@ -65,12 +65,12 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	p.drawText(10, 185, "Homepage: http://ggz.sourceforge.net");
 	font.setPointSize(50);
 	font.setWeight(QFont::Black);
-	//p.setFont(font);
+	p.setFont(font);
 	p.setPen(QColor(130.0, 0.0, 0.0));
 	p.drawText(x, 160, "GGZ Gaming Zone 0.0.4");
 	font.setPointSize(10);
 	font.setWeight(QFont::Normal);
-	//p.setFont(font);
+	p.setFont(font);
 	p.setPen(QColor(210.0, 50.0, 50.0));
 	p.drawText(x2, 160, "Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - Ismael Orenstein - Dan Papasian - "
 		"Ricardo Quesada - Josef Spillner - Justin Zaun - and many supporters...");
@@ -80,3 +80,4 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	if(x < -530) x = 350;
 	if(x2 < -770) x2 = 350;
 }
+

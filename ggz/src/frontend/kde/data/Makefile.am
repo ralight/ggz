@@ -1,1 +1,1 @@
-SUBDIRS = icons kde
+SUBDIRS = icons kde browser

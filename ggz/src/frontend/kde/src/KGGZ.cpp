@@ -57,7 +57,9 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 #endif
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
+
 	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *)), SLOT(slotChat(char *)));
+	connect(m_workspace->widgetLogo(), SIGNAL(signalInfo()), SLOT(menuGameInfo()));
 
 	KGGZDEBUG("Initializing GGZCore...\n");
 	m_core = new GGZCore();
@@ -462,6 +464,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
 	char *chatsender = NULL, *chatmessage = NULL;
+	char buffer[1024];
 
 	switch(id)
 	{
@@ -514,10 +517,16 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
+			strcpy(buffer, (char*)data);
+			strcat(buffer, i18n(" enters the room."));
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add((char*)data);
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
+			strcpy(buffer, (char*)data);
+			strcat(buffer, i18n(" has left the room."));
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove((char*)data);
 			break;
 		case GGZCoreRoom::tableupdate:
@@ -529,6 +538,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::tablelaunched:
 			KGGZDEBUG("tablelaunched\n");
 			//m_workspace->widgetUsers()->removeall();
+			m_workspace->widgetChat()->receive(NULL, i18n("Launched table"), KGGZChat::RECEIVE_ADMIN);
 			listPlayers();
 			listTables();
 			break;
@@ -541,6 +551,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::tablejoined:
 			KGGZDEBUG("tablejoined\n");
 			//m_workspace->widgetUsers()->removeall();
+			m_workspace->widgetChat()->receive(NULL, i18n("Joined table"), KGGZChat::RECEIVE_ADMIN);
 			listPlayers();
 			listTables();
 			slotLaunchGame(kggzroom->gametype());
@@ -621,13 +632,13 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			sprintf(buffer, "KGGZ - [logged in as %s@%s:%i]", m_save_username, m_save_host, m_save_port);
-			setCaption(buffer);
+			sprintf(buffer, i18n("KGGZ - [logged in as %s@%s:%i]"), m_save_username, m_save_host, m_save_port);
+			emit signalCaption(buffer);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
 			{
 				KGGZDEBUG("First time login!\n");
-				sprintf(buffer, "You are welcome as a new GGZ Gaming Zone player.\n"
-					"Your personal password is: %s", kggzserver->password());
+				sprintf(buffer, i18n("You are welcome as a new GGZ Gaming Zone player.\n"
+					"Your personal password is: %s"), kggzserver->password());
 				KMessageBox::information(this, buffer, "Information");
 			}
 			break;
@@ -677,6 +688,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_lock = 0;
 			kggzroom->listPlayers();
 			kggzroom->listTables(-1, 0);
+			slotLoadLogo();
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
@@ -703,6 +715,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::neterror:
 			KGGZDEBUG("neterror\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("Network error detected!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
@@ -715,8 +728,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("State is now: %s\n", KGGZCommon::state(kggzserver->state()));
 			if(kggzserver->state() == GGZ_STATE_IN_ROOM)
 			{
-				m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(NULL));
+				//m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(NULL));
 			}
+			emit signalState(kggzserver->state());
 			break;
 		default:
 			KGGZDEBUG("unknown\n");
@@ -897,7 +911,6 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 	GGZCoreModule *module;
 	int i;
 	int ret;
-	char *icon;
 
 	KGGZDEBUG("Create module...\n");
 	module = new GGZCoreModule();
@@ -906,7 +919,7 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 	KGGZDEBUG("Found: %i modules for this game\n", i);
 	if(i == 0)
 	{
-		KMessageBox::information(this, "Sorry, no modules found for this game.", "Error!");
+		KMessageBox::information(this, i18n("Sorry, no modules found for this game."), "Error!");
 		delete module;
 		return;
 	}
@@ -926,14 +939,11 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 	ret = kggzgame->launch();
 	if(ret < 0)
 	{
-		KMessageBox::information(this, "Couldn't launch game!", "Error!");
+		KMessageBox::information(this, i18n("Couldn't launch game!"), "Error!");
 		return;
 	}
 
-	icon = module->pathIcon();
-	KGGZDEBUG("Found module icon: %s\n", icon);
-	if(!icon) icon = KGGZ_DIRECTORY "/images/icons/module.png";
-	m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(icon));
+	slotLoadLogo();
 
 	delete module;
 }
@@ -1007,7 +1017,7 @@ void KGGZ::slotLaunch()
 
 	if(ret < 0)
 	{
-		KMessageBox::information(this, "Failed launching the requested table!", "Error!");
+		KMessageBox::information(this, i18n("Failed launching the requested table!"), "Error!");
 		return;
 	}
 }
@@ -1058,7 +1068,7 @@ void KGGZ::menuGameLaunch()
 {
 	if(!kggzroom)
 	{
-		KMessageBox::information(this, "You cannot launch a game outside a room!", "Error!");
+		KMessageBox::information(this, i18n("You cannot launch a game outside a room!"), "Error!");
 		return;
 	}
 	if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
@@ -1091,7 +1101,7 @@ void KGGZ::menuGameJoin()
 		}
 		else
 		{
-			KMessageBox::information(this, "Please select a table to join!", "Error!");
+			KMessageBox::information(this, i18n("Please select a table to join!"), "Error!");
 			return;
 		}
 	}
@@ -1111,7 +1121,7 @@ void KGGZ::menuGameInfo()
 	if(!kggzroom)
 	{
 		//KGGZDEBUG("Critical! No room found.\n");
-		KMessageBox::information(this, "Please join a room first.", "Info:");
+		KMessageBox::information(this, i18n("Please join a room first."), "Info:");
 		return;
 	}
 	gametype = kggzroom->gametype();
@@ -1126,9 +1136,26 @@ void KGGZ::menuGameInfo()
 	KGGZDEBUG("URL: %s\n", gametype->url());
 	KGGZDEBUG("Description: %s\n", gametype->description());
 	KGGZDEBUG("Protocol: %s\n", gametype->protocol());
-	sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
-		gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
-	KMessageBox::information(this, buffer, "Game Type Information");
+	strcpy(buffer, i18n("Name:"));
+	strcat(buffer, gametype->name());
+	strcat(buffer, "\n");
+	strcat(buffer, i18n("Description:\n"));
+	strcat(buffer, gametype->description());
+	strcat(buffer, "\n");
+	strcat(buffer, i18n("Author:\n"));
+	strcat(buffer, gametype->author());
+	strcat(buffer, "\n");
+	strcat(buffer, i18n("Version:\n"));
+	strcat(buffer, gametype->version());
+	strcat(buffer, "\n");
+	strcat(buffer, i18n("Protocol:\n"));
+	strcat(buffer, gametype->protocol());
+	strcat(buffer, "\n");
+	strcat(buffer, i18n("URL:\n"));
+	strcat(buffer, gametype->url());
+	//sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
+	//	gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
+	KMessageBox::information(this, buffer, i18n("Game Type Information"));
 }
 
 void KGGZ::menuRoom(int room)
@@ -1147,4 +1174,32 @@ void KGGZ::menuRoom(int room)
 		}
 		else KGGZDEBUG("Critical: No server found.\n");
 	}
+}
+
+void KGGZ::slotLoadLogo()
+{
+	GGZCoreModule *module;
+	GGZCoreGametype *gametype;
+	char *icon;
+
+	KGGZDEBUG("__ loading logo __\n");
+	if((!kggzroom) || (!(gametype = kggzroom->gametype())))
+	{
+		KGGZDEBUG("Critical! slotLoadLogo is broken!\n");
+		return;
+	}
+
+	module = new GGZCoreModule();
+	module->init(gametype->name(), gametype->protocol());
+	if(module->count() == 0)
+	{
+		KGGZDEBUG("Critical! No modules found!\n");
+		return;
+	}
+	module->setActive(0);
+
+	icon = module->pathIcon();
+	m_workspace->widgetLogo()->setLogo(icon, gametype->name());
+
+	delete module;
 }

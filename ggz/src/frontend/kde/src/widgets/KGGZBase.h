@@ -25,6 +25,8 @@ class KGGZBase : public KTMainWindow
 		void slotAboutGGZ();
 		void slotMenuSignal(int signal);
 		void slotRoom(char *roomname);
+		void slotCaption(char *caption);
+		void slotState(int state);
 
 	private:
 		QIconSet kggzGetIcon(int menuid);

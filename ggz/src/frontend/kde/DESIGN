@@ -29,6 +29,12 @@ In order to preserve the advantages of object-orientated design and programming
 	The most important user interface. The workspace consists of the chat, the
 	players list and the tables list. It can rearrange the childs if needed.
 
+5. KGGZBrowser object
+	Side by side with the workspace, the internal browser is intended for
+	web-based online games as well as community sites.
+	It does also replace the download dialog, as it allows downloading of
+	FTP files via drag'n'drop.
+
 All UI classes are placed in the widgets/ directory. This makes programming
 much easier.
 

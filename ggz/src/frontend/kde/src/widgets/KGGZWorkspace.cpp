@@ -21,7 +21,7 @@ KGGZWorkspace::KGGZWorkspace(QWidget *parent, char *name)
 	m_widget = new QWidget(m_vsbox);
 	m_widget->setMinimumHeight(74);
 
-	m_logo = new QFrame(m_widget);
+	m_logo = new KGGZLogo(m_widget);
 	m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	m_logo->setBackgroundColor(QColor(255.0, 0.0, 0.0));
 	m_logo->setMinimumSize(64, 64);
@@ -89,7 +89,7 @@ void KGGZWorkspace::resizeEvent(QResizeEvent *e)
 	updateGeometry();
 }
 
-QFrame *KGGZWorkspace::widgetLogo()
+KGGZLogo *KGGZWorkspace::widgetLogo()
 {
 	return m_logo;
 }

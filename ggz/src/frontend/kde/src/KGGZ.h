@@ -65,6 +65,8 @@ class KGGZ : public QWidget
 	signals:
 		void signalMenu(int signal);
 		void signalRoom(char *roomname);
+		void signalCaption(char *caption);
+		void signalState(int state);
 
 	public slots:
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
@@ -106,6 +108,7 @@ class KGGZ : public QWidget
 		void listTables();
 
 		void slotLaunchGame(GGZCoreGametype *gametype);
+		void slotLoadLogo();
 
 		KGGZWorkspace *m_workspace;
 		GGZCoreServer *kggzserver;

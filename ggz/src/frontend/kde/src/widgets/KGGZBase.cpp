@@ -28,6 +28,9 @@ KGGZBase::KGGZBase(char *name)
 	height = konfig->readNumEntry("height");
 
 	m_menu = new KMenuBar(this);
+	enableStatusBar();
+	statusBar()->insertItem(i18n("Not connected"), 1);
+	statusBar()->insertItem(i18n("Loading..."), 2);
 
         kggz = new KGGZ(this, "kggz");
 
@@ -92,10 +95,12 @@ KGGZBase::KGGZBase(char *name)
 
 	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_client, SIGNAL(activated(int)), SLOT(slotMenu(int)));
-        connect(m_menu_rooms, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(m_menu_rooms, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
 	connect(kggz, SIGNAL(signalRoom(char*)), SLOT(slotRoom(char*)));
+	connect(kggz, SIGNAL(signalCaption(char*)), SLOT(slotCaption(char*)));
+	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 
 	setView(kggz);
 	setCaption("KGGZ - [offline]");
@@ -104,6 +109,8 @@ KGGZBase::KGGZBase(char *name)
 	show();
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
+
+	statusBar()->changeItem(i18n("Ready for connection."), 2);
 
 	KGGZDEBUGF("KGGZBase::KGGZBase() done\n");
 }
@@ -213,6 +220,7 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GGZ_DISCONNECT:
 			kggz->menuDisconnect();
+			statusBar()->changeItem(i18n("Not connected"), 1);
 			break;
 		case MENU_GGZ_STARTSERVER:
 			kggz->menuServerLaunch();
@@ -303,4 +311,15 @@ void KGGZBase::slotRoom(char *roomname)
 {
 	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), roomname, MENU_ROOMS_SLOTS + m_rooms);
 	m_rooms++;
+}
+
+void KGGZBase::slotCaption(char *caption)
+{
+	setCaption(caption);
+	statusBar()->changeItem(i18n("Connected"), 1);
+}
+
+void KGGZBase::slotState(int state)
+{
+	statusBar()->changeItem(i18n("State: ") + KGGZCommon::state((GGZStateID)state), 2);
 }
