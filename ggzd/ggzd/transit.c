@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4537 2002-09-13 04:34:38Z jdorje $
+ * $Id: transit.c 4554 2002-09-13 17:50:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -85,20 +85,20 @@ static int transit_find_spectator(GGZTable *table, char *name);
 
 int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller)
 {
-	int status;
 	GGZSeatEventData *data = ggz_malloc(sizeof(*data));
 
 	data->seat = seat;
 	strcpy(data->caller, caller);
 	
-	status = event_table_enqueue(room, index, transit_seat_event_callback,
-				     sizeof(*data), data, NULL);
-	return status;
+	if (event_table_enqueue(room, index, transit_seat_event_callback,
+				sizeof(*data), data, NULL) != GGZ_OK)
+		return E_NO_TABLE;
+
+	return E_OK;
 }
 
 int transit_spectator_event(int room, int index, struct GGZTableSpectator spectator, char *caller)
 {
-	int status;
 	struct GGZSpectatorEvent *data;
 
 	data = ggz_malloc(sizeof(struct GGZSpectatorEvent));
@@ -106,10 +106,12 @@ int transit_spectator_event(int room, int index, struct GGZTableSpectator specta
 	data->spectator = spectator;
 	strcpy(data->caller, caller);
 	
-	status = event_table_enqueue(room, index,
-				     transit_spectator_event_callback,
-				     sizeof(*data), data, NULL);
-	return status;
+	if (event_table_enqueue(room, index,
+				transit_spectator_event_callback,
+				sizeof(*data), data, NULL) != GGZ_OK)
+		return E_NO_TABLE;
+
+	return E_OK;
 }
 
 int transit_player_event(char* name, GGZTransitType opcode,
