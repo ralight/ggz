@@ -9,9 +9,9 @@ libkcm_ggz_default_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 libkcm_ggz_default_la_METASOURCES = kcm_ggz_default.moc
 #kcm_ggz_pane.moc
 
-libkcm_ggz_metaserver_la_SOURCES = kcm_ggz_metaserver.cpp
+libkcm_ggz_metaserver_la_SOURCES = kcm_ggz_metaserver.cpp metaserver_add.cpp metaserver_add_server.cpp
 libkcm_ggz_metaserver_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
-libkcm_ggz_metaserver_la_METASOURCES = kcm_ggz_metaserver.moc
+libkcm_ggz_metaserver_la_METASOURCES = kcm_ggz_metaserver.moc metaserver_add.moc metaserver_add_server.moc
 #kcm_ggz_pane.moc
 
 libkcm_ggz_drs_la_SOURCES = kcm_ggz_drs.cpp

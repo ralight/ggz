@@ -3,6 +3,11 @@
 
 #include "kcm_ggz_pane.h"
 
+class KListView;
+class MetaserverAdd;
+class MetaserverAddServer;
+class QSocket;
+
 class KCMGGZMetaserver : public KCMGGZPane
 {
 	Q_OBJECT
@@ -13,8 +18,33 @@ class KCMGGZMetaserver : public KCMGGZPane
 		void save();
 		const char *caption();
 
+	public slots:
+		void slotDelete();
+		void slotDeleteServer();
+		void slotAdd();
+		void slotAddServer();
+		void slotAuto();
+		void slotAutoServer();
+		void slotAutoConnected();
+		void slotAutoRead();
+		void slotAdded(QString uri, QString proto);
+		void slotAddedServer(QString uri, QString type, QString comment);
+
 	signals:
 		void signalChanged();
+
+	private:
+		KListView *view, *view_servers;
+		MetaserverAdd *dialog;
+		MetaserverAddServer *dialog_servers;
+		QSocket *sock;
+		enum QueryTypes
+		{
+			query_invalid,
+			query,
+			query_server
+		};
+		int m_query;
 };
 
 #endif
