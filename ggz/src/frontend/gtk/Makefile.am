@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5661 2003-10-02 05:50:31Z jdorje $
+#  $Id: Makefile.am 5756 2004-01-27 18:24:56Z josef $
 
 SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/intl \
-	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
+	$(GGZCORE_INCLUDES) $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
 
@@ -64,7 +64,7 @@ ggz_gtk_SOURCES =	main.c \
 
 ggz_gtk_CFLAGS = @GTK_CFLAGS@
 ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
-		$(LIB_GGZCORE) $(LIB_GGZ)
-ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
+		$(LIB_GGZCORE) $(LIB_GGZMOD) $(LIB_GGZ)
+ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 EXTRA_DIST = $(ggzdata_DATA)

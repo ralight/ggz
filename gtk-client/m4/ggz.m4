@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+dnl Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -59,7 +59,7 @@ dnl Find a directory containing a single file
 dnl Synopsis: AC_GGZ_FIND_FILE(file, directorylist, <returnvar>)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_FIND_FILE,
+AC_DEFUN([AC_GGZ_FIND_FILE],
 [
 $3=NO
 for i in $2;
@@ -81,7 +81,7 @@ dnl Remove duplicate entries in a list, and remove all NO's
 dnl Synopsis: AC_GGZ_REMOVEDUPS(list, <returnlist>)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_REMOVEDUPS,
+AC_DEFUN([AC_GGZ_REMOVEDUPS],
 [
 ret=""
 for i in $1; do
@@ -106,7 +106,7 @@ dnl User-friendly error messages
 dnl Synopsis: AC_GGZ_ERROR(libraryname, headerdirlist, libdirlist)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_ERROR,
+AC_DEFUN([AC_GGZ_ERROR],
 [
   AC_MSG_WARN([no
   The library '$1' does not seem to be installed correctly.
@@ -122,7 +122,7 @@ dnl Initialization, common values and such
 dnl Synopsis: AC_GGZ_INIT([export], [defaults])
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_INIT,
+AC_DEFUN([AC_GGZ_INIT],
 [
 if test "x${prefix}" = "xNONE"; then
    ac_ggz_prefix_incdir="${ac_default_prefix}/include"
@@ -168,7 +168,7 @@ dnl $(LIBGGZ_LDFLAGS) will be -L ... (if needed)
 dnl and $(LIBGGZ_INCLUDES) will be -I ... (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_LIBGGZ,
+AC_DEFUN([AC_GGZ_LIBGGZ],
 [
 AC_MSG_CHECKING([for GGZ library: libggz])
 
@@ -266,7 +266,7 @@ dnl $(GGZCORE_LDFLAGS) will be -L ... (if needed)
 dnl and $(GGZCORE_INCLUDES) will be -I ... (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_GGZCORE,
+AC_DEFUN([AC_GGZ_GGZCORE],
 [
 AC_MSG_CHECKING([for GGZ library: ggzcore])
 
@@ -363,7 +363,7 @@ dnl Sets GGZ_CONFIG to the path/name of the program.
 dnl Sets also: ggz_gamedir, ggz_datadir etc.
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_CONFIG,
+AC_DEFUN([AC_GGZ_CONFIG],
 [
 AC_MSG_CHECKING([for GGZ configuration tool: ggz-config])
 
@@ -443,7 +443,7 @@ dnl $(GGZMOD_LDFLAGS) will be -L ... (if needed)
 dnl and $(GGZMOD_INCLUDES) will be -I ... (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_GGZMOD,
+AC_DEFUN([AC_GGZ_GGZMOD],
 [
 AC_MSG_CHECKING([for GGZ library: ggzmod])
 
@@ -540,7 +540,7 @@ dnl $(GGZDMOD_LDFLAGS) will be -L ... (if needed)
 dnl and $(GGZDMOD_INCLUDES) will be -I ... (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_GGZDMOD,
+AC_DEFUN([AC_GGZ_GGZDMOD],
 [
 AC_MSG_CHECKING([for GGZ library: ggzdmod])
 
@@ -637,7 +637,7 @@ dnl Sets ggzdconfdir (ggzd configuration).
 dnl Sets ggzddatadir (for game server data).
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_SERVER,
+AC_DEFUN([AC_GGZ_SERVER],
 [
 AC_MSG_CHECKING([for GGZ server: ggzd])
 AC_ARG_WITH(ggzd-confdir,
@@ -748,7 +748,7 @@ dnl ------------------------------------------------------------------------
 dnl Find internationalization tools
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_INTL,
+AC_DEFUN([AC_GGZ_INTL],
 [
 AC_PATH_PROG(GETTEXT, xgettext)
 AC_PATH_PROG(MSGFMT, msgfmt)
