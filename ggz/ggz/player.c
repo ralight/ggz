@@ -28,6 +28,7 @@
 
 #include <err_func.h>
 #include <player.h>
+#include <chat.h>
 
 
 /* List  of players in current room */
@@ -52,6 +53,8 @@ void player_list_add(gchar* name, gint table, gint color)
 {
 	Player* player;
 
+	chat_print(CHAT_COLOR_SERVER, "-->", name);
+
 	dbg_msg("Adding %s to player list", name);
 	
 	player = g_malloc(sizeof(Player));
@@ -67,6 +70,8 @@ void player_list_add(gchar* name, gint table, gint color)
 void player_list_remove(gchar* name)
 {
 	GList* node;
+
+	chat_print(CHAT_COLOR_SERVER, "<--", name);
 
 	dbg_msg("Removing %s from player list", name);
 	

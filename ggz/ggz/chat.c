@@ -59,11 +59,7 @@ void display_chat(guchar op, gchar *name, gchar *msg)
 				buf = g_strdup_printf("%s %s", name, msg+4);
 				chat_print(color_index, "*", buf);
 				g_free(buf);
-			}else if(!strncasecmp(msg, "/SjoinS", 4))
-				chat_print(CHAT_COLOR_SERVER, "-->", name);
-			else if(!strncasecmp(msg, "/SpartS", 4))
-				chat_print(CHAT_COLOR_SERVER, "<--", name);
-			else{
+			}else{
 				buf = g_strdup_printf("<%s>", name);
 				chat_print(color_index, buf, msg);
 				g_free(buf);
