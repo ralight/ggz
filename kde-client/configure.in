@@ -62,7 +62,7 @@ else
 fi
 echo "checking for GGZ patch 'Encryption' (Encryption): $patch_encryption"
 
-func=ggzcore_table_add_spectator
+func=ggzcore_game_join_spectator
 tmp=`grep $func $ggzcore_includes/ggzcore.h`
 if test "$tmp" = ""; then
 	patch_spectators=0;
