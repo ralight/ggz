@@ -8,8 +8,8 @@ Specific contributions
 
 * Connect the Dots themes
   Jonas Ström <noceur_metal@hotmail.com>
-  - gtk-games/chinese-checkers/pixmaps/Dragon/*.xpm
-  - gtk-games/chinese-checkers/pixmaps/Electric/*.xpm
+  - gtk-games/chinese-checkers/pixmaps/Dragon/*.png
+  - gtk-games/chinese-checkers/pixmaps/Electric/*.png
 
 * KDots background images
   Taken from drachenburg.de (only slightly confirmed)
@@ -17,12 +17,12 @@ Specific contributions
 
 * Chess figures
   Taken from xboard
-  - gtk-games/chess/bitmaps/*.xpm
+  - gtk-games/chess/bitmaps/*.svg (autoscanned)
   - kde-games/koenig/pixs/*.xpm
 
 * Combat figures
   Grabbed from a clipart cd (perdig)
-  - gtk-games/combat/pixmaps/default/*.xpm
+  - gtk-games/combat/pixmaps/default/*.png
 
 * GGZCards?
 * LaPocha, NetSpades, ...?
