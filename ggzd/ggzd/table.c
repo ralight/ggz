@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3198 2002-01-30 09:24:30Z jdorje $
+ * $Id: table.c 3219 2002-02-03 05:04:54Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -175,8 +175,11 @@ static int table_check(GGZTable* table)
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
 	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", (unsigned int)table->ggzdmod);
-	if (table->ggzdmod)
-		dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", ggzdmod_get_fd(table->ggzdmod));
+	
+	/* FIXME: this correctly logs everything about the GGZdMod object, but it
+	   will incorrectly be labeled as coming from the table itself instead of
+	   being a GGZ internal log.  Oh well. */
+	ggzdmod_check(table->ggzdmod);
 			
 	for (i = 0; i < seat_total; i++) {
 		switch (seats_type(table, i)) {
