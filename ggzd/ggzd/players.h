@@ -79,6 +79,9 @@ struct _GGZPlayer {
 	
 	/* Connection info */
 	long login_time;
+
+	/* Type of player: normal, guest, admin, etc. */
+	int type;
 };
 
 typedef struct _GGZPlayer GGZPlayer; 
@@ -98,5 +101,6 @@ int   player_list_tables(GGZPlayer* player, int type, char global);
 int   player_motd(GGZPlayer* player);
 
 int player_get_room(GGZPlayer *player);
+int player_get_type(GGZPlayer *player);
 
 #endif

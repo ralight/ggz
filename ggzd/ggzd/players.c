@@ -143,6 +143,7 @@ static void* player_new(void *arg_ptr)
 	/* Initialize player data */
 	pthread_rwlock_init(&player->lock, NULL);
 	player->net = net_new(sock, player);
+	player->type = -1;
 	player->thread = pthread_self();
 	player->table = -1;
 	player->game_fd = -1;
@@ -375,6 +376,18 @@ int player_get_room(GGZPlayer *player)
 	pthread_rwlock_unlock(&player->lock);
 
 	return room;
+}
+
+
+int player_get_type(GGZPlayer *player)
+{
+	int type;
+
+	pthread_rwlock_rdlock(&player->lock);
+	type = player->type;
+	pthread_rwlock_unlock(&player->lock);
+
+	return type;
 }
 
 

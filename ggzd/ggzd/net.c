@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2479 2001-09-14 21:10:19Z bmh $
+ * $Id: net.c 2482 2001-09-14 21:52:46Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -384,9 +384,29 @@ int net_send_player_list_count(GGZNetIO *net, int count)
 
 int net_send_player(GGZNetIO *net, GGZPlayer *p2)
 {
+	int type;
+	char *type_desc;
+	
+	type = player_get_type(p2);
+
+	switch (type) {
+	case GGZ_LOGIN:
+		type_desc = "normal";
+		break;
+	case GGZ_LOGIN_GUEST:
+		type_desc = "guest";
+		break;
+	case GGZ_LOGIN_NEW:
+		type_desc = "normal";
+		break;
+	default:
+		type_desc = "**none**";
+		break;
+	}
+
 	return _net_send_line(net, 
-			      "<PLAYER ID='%s' TYPE='guest' TABLE='%d' />",
-			      p2->name, p2->table);
+			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' />",
+			      p2->name, type_desc, p2->table);
 }
 
 
