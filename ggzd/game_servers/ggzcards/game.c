@@ -1107,11 +1107,13 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 		case GGZ_GAME_SUARO:
 			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
-			return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, suaro_suit_names[(int)bid.sbid.suit]);
+			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, suaro_suit_names[(int)bid.sbid.suit]);
+			break;
 		case GGZ_GAME_BRIDGE:
 			if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
-			return snprintf(buf, buf_len, "%d %s", bid.sbid.val, bridge_suit_names[(int)bid.sbid.suit]);
+			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, bridge_suit_names[(int)bid.sbid.suit]);
+			break;
 		case GGZ_GAME_SPADES:
 			if (bid.sbid.spec == SPADES_NIL) return snprintf(buf, buf_len, "Nil");
 			return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
@@ -1119,8 +1121,9 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			return snprintf(buf, buf_len, "%d", (int)bid.bid);
 		case GGZ_GAME_HEARTS:
 		default:
-			return snprintf(buf, buf_len, "%s", "");
+			/* nothing... */
 	}
+	return snprintf(buf, buf_len, "%s", "");
 }
 
 /* game_set_player_message
@@ -1160,7 +1163,7 @@ void game_set_player_message(player_t p)
 				/* TODO: declarer really shouldn't be at the top */
 				if (p == SUARO.declarer)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-				else
+				if (p == 1-SUARO.declarer)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "defender\n");
 			}
 			goto normal_message;

@@ -789,9 +789,12 @@ int newgame()
 	}
 
 	/* should be entered only when we're ready for a new game */
-	for (p=0; p<game.num_players; p++) game.players[p].ready = 0;
+	for (p=0; p<game.num_players; p++)
+		game.players[p].ready = 0;
 	if (!game.initted) game_init_game();
 	game_start_game();
+	for (p=0; p<game.num_players; p++)
+		game_set_player_message(p);
 	send_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state( WH_STATE_NEXT_HAND );
