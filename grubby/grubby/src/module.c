@@ -86,7 +86,7 @@ Gurucore *guru_module_init(const char *datadir)
 	{
 		printf(_("Loading core module PLAYER: %s... "), module);
 		fflush(NULL);
-		if((core->playerhandle = dlopen(module, RTLD_NOW | RTLD_GLOBAL)) != NULL) printf("OK\n");
+		if((core->playerhandle = dlopen(module, RTLD_NOW | RTLD_GLOBAL)) != NULL) printf(_("OK\n"));
 		else
 		{
 			printf(_("ERROR: Not a shared library\n"));
@@ -118,7 +118,7 @@ Gurucore *guru_module_init(const char *datadir)
 		printf(_("ERROR: Couldn't find net functions\n"));
 		exit(-1);
 	}
-	printf("OK\n");
+	printf(_("OK\n"));
 
 	/* Load i18n plugin */
 	core->i18n_init = NULL;
@@ -223,7 +223,7 @@ int guru_module_add(const char *modulealias)
 	strcpy(modulenamelist[modulecount - 1], modulealias);
 	modulenamelist[modulecount] = NULL;
 
-	printf("OK\n");
+	printf(_("OK\n"));
 	return 1;
 }
 
