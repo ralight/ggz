@@ -5,6 +5,9 @@
 #include <gtk/gtk.h>
 
 #include <stdio.h>
+
+#include "dlg_exit.h"
+
 #include "callbacks.h"
 #include "chess.h"
 #include "board.h"
