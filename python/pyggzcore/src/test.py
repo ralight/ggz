@@ -42,11 +42,16 @@ def server_event(id, data):
 	else:
 		print "!! unknown event", id
 
-def room_event():
+def room_event(id, data):
 	print "room event!"
+	if id == ggzcore.ROOM_CHAT_EVENT:
+		print "chat!"
+		print "data:", data
+	else:
+		print "!! unknown event", id
 
 print ">> this is ggzcore reloaded"
-ggzcore.reload()
+#ggzcore.reload()
 ggzcore.setHandler(ggzcore.EVENT_SERVER, server_event)
 ggzcore.setHandler(ggzcore.EVENT_ROOM, room_event)
 
@@ -64,13 +69,28 @@ state = s.get_state()
 print state
 
 minisleep(s)
+minisleep(s)
 
-s.join_room('TicTacToe')
+print ">> go to room TTT"
+
+s.join_room("Whatever")
+
+minisleep(s)
+minisleep(s)
+
+print ">> go chat"
+
+r = ggzcore.room
+r.chat(ggzcore.CHAT_NORMAL, "", "fuuubaaar")
 
 minisleep(s)
 
-print ">> done."
+print ">> go logout"
 
+minisleep(s)
 s.logout()
+
+print ">> logout done. go disconnect"
+
 s.disconnect()
 
