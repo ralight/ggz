@@ -9,6 +9,8 @@ Homepage = http://ggz.sourceforge.net
 PlayersAllowed = 2
 PlayersAllowed = 3
 PlayersAllowed = 4
+PlayersAllowed = 5
+PlayersAllowed = 6
 BotsAllowed = 0
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 1
