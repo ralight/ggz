@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5334 2003-01-16 22:11:58Z dr_maux $
+ * $Id: ggzdb.c 5920 2004-02-13 17:21:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,8 +80,13 @@ int ggzdb_init(void)
 	}
 	fclose(vfile);
 
-	if(!version_ok)
-		err_msg_exit("Bad db version id, remove or convert db files");
+	if (!version_ok) {
+		printf("Bad db version id, remove or convert db files.\n"
+		       "Most likely this means you must upgrade your\n"
+		       "database.  It may be possible to automate this;\n"
+		       "see http://ggzgamingzone.org.\n");
+		exit(-1);
+	}
 
 	/* Call backend's initialization */
 	connection.datadir = opt.data_dir;
