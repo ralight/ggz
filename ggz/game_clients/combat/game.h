@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
+ * $Id: game.h 4489 2002-09-09 04:41:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -58,34 +59,34 @@ void game_setup_add(int, int);
 void game_setup_remove(int);
 
 // Get info from the server
-int game_get_seat();
-int game_get_options();
-int game_get_players();
-void game_get_move();
-void game_get_attack();
-void game_get_gameover();
-void game_get_sync();
+int game_get_seat(void);
+int game_get_options(void);
+int game_get_players(void);
+void game_get_move(void);
+void game_get_attack(void);
+void game_get_gameover(void);
+void game_get_sync(void);
 
 // Get info from the player
-void game_ask_options();
+void game_ask_options(void);
 void game_handle_setup(int);
 void game_handle_move(int);
-void game_send_setup();
+void game_send_setup(void);
 int game_send_options(GtkWidget *);
-void game_request_sync();
+void game_request_sync(void);
 gboolean game_refuse_options (GtkWidget       *widget,
                               GdkEvent        *event,
                               gpointer         user_data);
 
 // Init variables
-void game_init();
-void game_init_board();
-void game_start();
+void game_init(void);
+void game_init_board(void);
+void game_start(void);
 
 // Draw stuff
-void game_draw_bg();
-void game_draw_board();
-void game_draw_extra();
+void game_draw_bg(void);
+void game_draw_board(void);
+void game_draw_extra(void);
 void game_draw_unit(int, int, int, int);
 void game_draw_terrain(int, int, int);
 void game_add_player_info(int);
@@ -93,11 +94,11 @@ void game_update_unit_list(int);
 void game_update_player_name(int);
 void game_status(const char *format, ... );
 void game_message(const char *format, ... );
-void game_change_turn();
+void game_change_turn(void);
 
 // Player info widget
 GtkWidget *gtk_player_info_new(GtkWidget *, char *, int);
 
 // Saves maps
-void game_ask_save_map();
+void game_ask_save_map(void);
 void game_confirm_save_map(GtkButton *, gpointer );

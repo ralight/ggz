@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
+ * $Id: map.c 4489 2002-09-09 04:41:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -234,7 +235,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   };
 }
 
-char **map_list() {
+char **map_list(void) {
   char dir[2][50];
   struct dirent **namelist[2];
   char **names;

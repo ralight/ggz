@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: game.c 4489 2002-09-09 04:41:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -151,7 +151,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
   }
 }
 
-void game_start() {
+void game_start(void) {
   int a;
 
   // Updates the unit list
@@ -172,7 +172,7 @@ void game_start() {
 }
 
 
-int game_get_seat() {
+int game_get_seat(void) {
 
   if (ggz_read_int(cbt_info.fd, &cbt_info.seat) < 0)
     return -1;
@@ -200,7 +200,7 @@ int game_get_seat() {
   return 0;
 }
 
-void game_ask_options() {
+void game_ask_options(void) {
   GtkWidget *options_dialog;
   GtkWidget *ok_button;
   options_dialog = create_dlg_options(cbt_game.number); 
@@ -211,7 +211,7 @@ void game_ask_options() {
   gtk_widget_show_all(options_dialog);
 }
 
-int game_get_options() {
+int game_get_options(void) {
   char *optstr = NULL;
   int a;
   int old_width = cbt_game.width;
@@ -266,7 +266,7 @@ int game_get_options() {
   return 0;
 }
 
-void game_init() {
+void game_init(void) {
   cbt_game.map = NULL;
   cbt_game.width = 10;
   cbt_game.height = 10;
@@ -282,7 +282,7 @@ void game_init() {
   cbt_info.last_to = -1;
 }
 
-void game_init_board() {
+void game_init_board(void) {
   int a;
   GdkColormap *sys_colormap;
 
@@ -327,7 +327,7 @@ void game_init_board() {
 
 }
 
-void game_draw_bg() {
+void game_draw_bg(void) {
   int i;
 
   gdk_draw_rectangle( cbt_buf,
@@ -405,7 +405,7 @@ void game_draw_unit(int x, int y, int tile, int player) {
 }
   
 
-void game_draw_board() {
+void game_draw_board(void) {
   GtkWidget *tmp;
   int a;
 
@@ -440,7 +440,7 @@ void game_draw_board() {
 
 }
 
-void game_draw_extra() {
+void game_draw_extra(void) {
 
   // Draw lasts
   if (cbt_info.last_unit >= 0)
@@ -581,7 +581,7 @@ void game_update_player_name(int seat) {
 
 }
 
-int game_get_players() {
+int game_get_players(void) {
     int i;
     
     game_status("Getting player list\n");
@@ -635,7 +635,7 @@ void game_status( const char* format, ... )
   
 }
 
-void game_change_turn() {
+void game_change_turn(void) {
   gpointer tmp;
   int id;
   char msg[32];
@@ -793,7 +793,7 @@ void game_setup_remove(int p) {
 }
 
 
-void game_send_setup() {
+void game_send_setup(void) {
   char *setup;
   int len = 0;
   int a, b = 0;
@@ -837,7 +837,7 @@ void game_send_setup() {
 
 }
 
-void game_get_move() {
+void game_get_move(void) {
   int from, to;
 
   if (ggz_read_int(cbt_info.fd, &from) < 0 ||
@@ -864,7 +864,7 @@ void game_get_move() {
   game_change_turn();
 }
 
-void game_get_attack() {
+void game_get_attack(void) {
   int from, to, f_u, t_u, seat2;
 
   if (ggz_read_int(cbt_info.fd, &from) < 0 ||
@@ -936,7 +936,7 @@ void game_get_attack() {
 
 }
 
-void game_get_gameover() {
+void game_get_gameover(void) {
   int winner;
 
   if (ggz_read_int(cbt_info.fd, &winner) < 0) {
@@ -952,7 +952,7 @@ void game_get_gameover() {
     game_ask_save_map();
 }
 
-void game_ask_save_map() {
+void game_ask_save_map(void) {
   GtkWidget *save_dlg = create_dlg_save();
   GtkWidget *yes = lookup_widget(save_dlg, "yes");
   GtkWidget *map_name = lookup_widget(save_dlg, "map_name");
@@ -1013,7 +1013,7 @@ void game_message( const char *format, ... ) {
 
 }
 
-void game_get_sync() {
+void game_get_sync(void) {
   char *syncstr;
   int a, len;
 
@@ -1047,7 +1047,7 @@ void game_get_sync() {
 
 }
   
-void game_request_sync() {
+void game_request_sync(void) {
   if (ggz_write_int(cbt_info.fd, CBT_REQ_SYNC) < 0)
     return;
 
