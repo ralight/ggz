@@ -9,6 +9,7 @@ class Options;
 class Game;
 class QMultiLineEdit;
 class KListBox;
+class KExtTabCtl;
 
 class TopLevel : public KMainWindow
 {
@@ -36,6 +37,7 @@ private:
 	Game *game;
 	QMultiLineEdit *tab1;
 	KListBox *tab2;
+	KExtTabCtl *ctl;
 };
 
 #endif

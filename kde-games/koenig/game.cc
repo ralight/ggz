@@ -166,10 +166,10 @@ void Game::handleNetInput(void)
 			//s = ggz->getString(6);
 			kdDebug(12101) << "Args: ";
 			ggz->getChar();ggz->getChar();ggz->getChar();ggz->getChar(); // FIXME: read string length
-			x = ggz->getChar(); kdDebug(12101) << cval;
-			y = ggz->getChar(); kdDebug(12101) << cval;
-			x2 = ggz->getChar(); kdDebug(12101) << cval;
-			y2 = ggz->getChar(); kdDebug(12101) << cval;
+			x = ggz->getChar(); kdDebug(12101) << x;
+			y = ggz->getChar(); kdDebug(12101) << y;
+			x2 = ggz->getChar(); kdDebug(12101) << x2;
+			y2 = ggz->getChar(); kdDebug(12101) << y2;
 			cval = ggz->getChar(); kdDebug(12101) << cval; // should be 0 no?
 			//cval = ggz->getChar(); kdDebug(12101) << cval;
 			kdDebug(12101) << endl;
@@ -179,7 +179,10 @@ void Game::handleNetInput(void)
 				//es_read_int(chess.fd, (gint*)args+2);
 				ggz->getInt();
 //			game_update(CHESS_EVENT_MOVE, args.latin1());
-			emit signalMove(QString("Net: from %1/%2 to %3/%4").arg(QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
+			if((x >= 0) && (y >= 0) && (x2 >= 0) && (y2 >= 0))
+				emit signalMove(QString("Net: from %1/%2 to %3/%4").arg(QChar(x)).arg(QChar(y)).arg(QChar(x2)).arg(QChar(y2)));
+			else
+				emit signalMessage("Invalid move - try again!");
 			break;
 
 		case CHESS_MSG_GAMEOVER:
@@ -215,7 +218,8 @@ void Game::handleNetInput(void)
 
 void Game::setTime(int time)
 {
-	chessInfo.clock_type = CHESS_CLOCK_NOCLOCK;
+	kdDebug(12101) << "Game::setTime(); time = " << time << endl;
+	chessInfo.clock_type = (time >> 24) & 0xFF;
 	ggz->putChar(CHESS_RSP_TIME);
 	ggz->putInt(time);
 }

@@ -10,14 +10,16 @@ koenig_SOURCES = \
 	board.cc \
 	ggz.cc \
 	toplevel.cc \
-	options.cc
+	options.cc \
+	kexttabctl.cc
 
 noinst_HEADERS = \
 	game.h \
 	board.h \
 	ggz.h \
 	toplevel.h \
-	options.h
+	options.h \
+	kexttabctl.h
 
 INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I libcgc
 

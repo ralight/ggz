@@ -3,6 +3,9 @@
 
 #include <qwidget.h>
 
+class QRadioButton;
+class QSpinBox;
+
 class Options : public QWidget
 {
 	Q_OBJECT
@@ -13,6 +16,9 @@ class Options : public QWidget
 		void slotTime();
 	signals:
 		void signalTime(int time);
+	private:
+		QRadioButton *noclock, *serverclock, *clientclock;
+		QSpinBox *minutes, *seconds;
 };
 
 #endif

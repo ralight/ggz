@@ -12,10 +12,8 @@ Options::Options(QWidget *parent, const char *name)
 {
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox;
-	QRadioButton *noclock, *serverclock, *clientclock;
 	QLabel *heading, *text, *timetext, *labelminutes, *labelseconds;
 	QPushButton *ok;
-	QSpinBox *minutes, *seconds;
 	QButtonGroup *group;
 
 	group = new QButtonGroup("Selection", this);
@@ -70,6 +68,16 @@ Options::~Options()
 
 void Options::slotTime()
 {
-	emit signalTime(0); // FIXME!!!!
+	int time;
+
+	time = minutes->cleanText().toInt() + seconds->cleanText().toInt();
+
+	// FIXME ??
+	if(noclock->isChecked())
+		emit signalTime(0);
+	else if(serverclock->isChecked()) // add lag option (gtk+ client too)!!!
+		emit signalTime((3 << 24) + time);
+	else
+		emit signalTime((1 << 24) + time);
 }
 

@@ -1,6 +1,5 @@
 #include <kaction.h>
 #include <kstdaction.h>
-#include <ktabctl.h>
 #include <klistbox.h>
 #include <kmessagebox.h>
 
@@ -13,6 +12,7 @@
 #include "board.h"
 #include "options.h"
 #include "game.h"
+#include "kexttabctl.h"
 
 TopLevel::TopLevel(const char *name)
 	: KMainWindow(0, name)
@@ -21,7 +21,6 @@ TopLevel::TopLevel(const char *name)
 	game = NULL;
 
 	KAction *a;
-	KTabCtl *ctl;
 
 	//KStdAction::openNew(this, SLOT(newGame()), actionCollection()); // don't handle standalone games yet
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
@@ -35,7 +34,7 @@ TopLevel::TopLevel(const char *name)
 	//newGame(); // don't start yet
 	//initGameSocket(); // done by --ggz
 
-	ctl = new KTabCtl(this);
+	ctl = new KExtTabCtl(this);
 	tab1 = new QMultiLineEdit(ctl);
 	tab2 = new KListBox(ctl);
 	tab2->insertItem("(Koenig launched)");
@@ -71,7 +70,7 @@ void TopLevel::initGameData(void)
 {
 	//chessBoard = new ChessBoard(NULL, "ChessBoard"); // can't be here, else only player 0 would see it
 	//chessBoard->show();
-	if(game) connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
+	//if(game) connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 	options = new Options(NULL, "Options");
 	options->show();
 	connect(options, SIGNAL(signalTime(int)), SLOT(slotTime(int)));
@@ -84,6 +83,8 @@ void TopLevel::initGameSocket(void)
 	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
 	connect(game, SIGNAL(signalMove(QString)), SLOT(slotMove(QString)));
 	connect(game, SIGNAL(signalStart(int)), SLOT(slotStart(int)));
+
+	connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 }
 
 void TopLevel::closeGame(void)
@@ -107,11 +108,14 @@ void TopLevel::slotMessage(QString msg)
 {
 	tab2->insertItem(msg);
 	//KMessageBox::information(this, QString("The server said:\n") + msg, "Message from chess server"); // FIXME: OPTIONAL!
+	ctl->showTab(0);
+	tab2->ensureCurrentVisible();
 }
 
 void TopLevel::slotMove(QString msg)
 {
 	tab1->append(msg);
+	tab1->setCursorPosition(32000, 0); // FIXME!
 }
 
 void TopLevel::slotStart(int seat)

@@ -170,6 +170,7 @@ void ChessBoard::dropEvent(QDropEvent *event)
 		repaint(dragStart.x()*cellSize, dragStart.y()*cellSize, cellSize, cellSize, false);
 		repaint(point.x()*cellSize, point.y()*cellSize, cellSize, cellSize, false);
 
+		kdDebug(12101) << "ChessBoard::dropEvent(); got move!" << endl;
 		emit figureMoved(dragStart.x(), dragStart.y(), point.x(), point.y());
 	}
 	mouseDrag = true;
@@ -194,3 +195,4 @@ QPixmap ChessBoard::scalePixmap(const QPixmap& pixmap)
 	matrix.scale(1.0/(64.0/cellSize), 1.0/(64.0/cellSize)); 
 	return tmp.xForm(matrix);
 }
+
