@@ -327,11 +327,12 @@ static void room_notify_change(const int p, const int old, const int new)
 }
 
 
-/* Event callback for delivering room-update to player */
+/* Event callback for delivering player list update to player */
 static int room_event_callback(int p_index, int size, void* data)
 {
 	unsigned char opcode;
-	int status, player, fd, room;
+	char name[MAX_USER_NAME_LEN + 1];
+	int player, fd, room;
 
 	room = players.info[p_index].room;
 	fd = players.info[p_index].fd;
@@ -339,13 +340,15 @@ static int room_event_callback(int p_index, int size, void* data)
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
 	player = *(int*)(data + sizeof(char));
-
-	if (opcode == GGZ_UPDATE_ADD)
-		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SjoinS");
-	else
-		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SpartS");
 	
-	status = es_write_int(fd, MSG_UPDATE_PLAYERS);
+	pthread_rwlock_rdlock(&players.lock);
+	strcpy(name, players.info[player].name);
+	pthread_rwlock_unlock(&players.lock);
 
-	return status;
+	if (es_write_int(fd, MSG_UPDATE_PLAYERS) < 0
+	    || es_write_char(fd, opcode) < 0
+	    || es_write_string(fd, name) < 0)
+		return -1;
+	
+	return 0;
 }

@@ -351,7 +351,7 @@ static void table_loop(int t_index)
 	
 	/* Table is done.  Release transit lock if we still have it */
 	if (in_transit == 1)
-		pthread_mutex_unlock(&tables.info[t_index].state_lock);
+		pthread_mutex_unlock(&tables.info[t_index].transit_lock);
 	
 }
 
@@ -407,12 +407,12 @@ static int table_game_launch(int index, int fd)
 	    || status < 0)
 		return -1;
 	
-	table_event_enqueue(index, GGZ_UPDATE_ADD);
-
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[index].state = GGZ_TABLE_LAUNCHED;
 	pthread_rwlock_unlock(&tables.lock);
-		
+	
+	table_event_enqueue(index, GGZ_UPDATE_ADD);
+
 	pthread_mutex_lock(&tables.info[index].state_lock);
 	pthread_cond_signal(&tables.info[index].state_cond);
 	pthread_mutex_unlock(&tables.info[index].state_lock);
@@ -536,7 +536,7 @@ static int table_game_over(int index, int fd)
 
 	dbg_msg(GGZ_DBG_TABLE,
 		"Handling game-over request from table %d", index);
-
+	
 	/* Read number of statistics */
 	if (es_read_int(fd, &num) < 0)
 		return (-1);
@@ -642,7 +642,8 @@ static void table_remove(int t_index)
 	pthread_rwlock_unlock(&tables.lock);
 	table_event_enqueue(t_index, GGZ_UPDATE_DELETE);
 
-	/* Signal anyone waiting for this table, do we need to do this? */
+	/* Signal anyone waiting for this table */
+	/* FIXME: do we need to do this? */
 	pthread_mutex_lock(&tables.info[t_index].state_lock);
 	pthread_cond_signal(&tables.info[t_index].state_cond);
 	pthread_mutex_unlock(&tables.info[t_index].state_lock);
@@ -874,11 +875,13 @@ static int table_pack(void** data, unsigned char opcode, unsigned int table)
 }
 
 
-/* Event callback for delivering table-update to a player */
+/* Event callback for delivering table list update to a player */
 static int table_event_callback(int p_index, int size, void* data)
 {
 	unsigned char opcode;
-	int status, table, fd;
+	char player[MAX_USER_NAME_LEN + 1];
+	int table, fd, seat, p, i;
+	TableInfo info;
 
 	fd = players.info[p_index].fd;
 
@@ -886,28 +889,76 @@ static int table_event_callback(int p_index, int size, void* data)
 	opcode = *(unsigned char*)data;
 	table = *(int*)(data + sizeof(char));
 
+	/* Always send opcode and table index */
+	if (es_write_int(fd, MSG_UPDATE_TABLES) < 0 
+	    || es_write_char(fd, opcode) < 0
+	    || es_write_int(fd, table) < 0)
+		return -1;
+	
+	pthread_rwlock_rdlock(&tables.lock);
+	info = tables.info[table];
+	pthread_rwlock_unlock(&tables.lock);	
+
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
 		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees table %d deleted",
 			p_index, table);
 		break;
+
 	case GGZ_UPDATE_ADD:
 		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees table %d added",
 			p_index, table);
+		if (es_write_int(fd, info.room) < 0
+		    || es_write_int(fd, info.type_index) < 0
+		    || es_write_string(fd, info.desc) < 0
+		    || es_write_char(fd, info.state) < 0
+		    || es_write_int(fd, seats_num(info)) < 0)
+			return -1;
+		
+		/* Now send seat assignments */
+		for (i = 0; i < seats_num(info); i++) {
+			if (es_write_int(fd, info.seats[i]) < 0)
+				return -1;
+
+			switch(info.seats[i]) {
+			case GGZ_SEAT_OPEN:
+			case GGZ_SEAT_BOT:
+				continue;  /* no name for these */
+			case GGZ_SEAT_RESV:
+				/* Look up player name by uid */
+				strcpy(player, "reserved");
+				break;
+			default: /* must be a player index */
+				p = info.seats[i];
+				/* FIXME: Race condition */
+				pthread_rwlock_rdlock(&players.lock);
+				strcpy(player, players.info[p].name);
+				pthread_rwlock_unlock(&players.lock);
+			}
+
+			if (es_write_string(fd, player) < 0)
+				return -1;
+		}
 		break;
+		
 	case GGZ_UPDATE_LEAVE:
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees someone left table %d",
-			p_index, table);
-		break;
 	case GGZ_UPDATE_JOIN:
+		p = tables.info[table].transit;
+		seat = tables.info[table].transit_seat;
+		pthread_rwlock_rdlock(&players.lock);
+		strcpy(player, players.info[p].name);
+		pthread_rwlock_unlock(&players.lock);
 		dbg_msg(GGZ_DBG_UPDATE, 
-			"Player %d sees someone joined table %d",
-			p_index, table);
+			"Player %d sees player %d %s seat %d at table %d", 
+			p_index, p, 
+			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
+			seat, table);
+		if (es_write_int(fd, seat) < 0
+		    || es_write_string(fd, player) < 0)
+			return -1;
 		break;
 	}
 	
-	status = es_write_int(fd, MSG_UPDATE_TABLES);
-
-	return status;
+	return 0;
 }
 
