@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: output.c 4960 2002-10-19 23:13:09Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -182,7 +182,7 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	case GGZ_CHAT_TABLE:
 		output_text("|%s| %s", player, message);
 		break;
-	case GGZ_CHAT_NONE:
+	case GGZ_CHAT_UNKNOWN:
 	case GGZ_CHAT_NORMAL:
 		output_text("<%s> %s", player, message);
 		break;
