@@ -6,7 +6,7 @@ gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb embedtest.rb
 guruconfigdir = $(prefix)/bin
 guruconfig_SCRIPTS = grubby-config
 
-EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in
+EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
