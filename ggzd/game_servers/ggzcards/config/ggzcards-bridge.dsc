@@ -1,4 +1,4 @@
-# $Id: ggzcards-bridge.dsc 2296 2001-08-28 04:33:14Z rgade $
+# $Id: ggzcards-bridge.dsc 2352 2001-09-04 03:20:07Z rgade $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Bridge
@@ -7,7 +7,8 @@ Name = GGZCards-Bridge
 Version = 0.0.4
 
 [LaunchOptions]
-ExecutablePath = ggzd.ggzcards --game=bridge --option=open_hands:0
+ExecutablePath = ggzd.ggzcards
+ArgList = --game=bridge --option=open_hands:0
 # GameDisabled = 1
 
 [Protocol]
