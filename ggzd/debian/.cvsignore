@@ -1,6 +1,10 @@
-prerm.debhelper
-postinst.debhelper
+*.debhelper
+*.substvars
 files
 dirs
 tmp
-substvars
+ggzd
+ggz-game-servers
+libggzdmod0
+libggzdmod-dev
+

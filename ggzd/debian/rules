@@ -6,7 +6,7 @@
 #export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
-export DH_COMPAT=1
+export DH_COMPAT=3
 
 build: build-stamp
 build-stamp:
@@ -16,11 +16,11 @@ build-stamp:
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --sysconfdir=/etc --disable-debug
 
 	# RPath workaround
-	sed < libtool > libtool-2 \
-		-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-		#-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
-	mv libtool-2 libtool
-	chmod 755 libtool
+	#sed < libtool > libtool-2 \
+	#	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
+	#	#-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
+	#mv libtool-2 libtool
+	#chmod 755 libtool
 
 	# Don't build yet - make install does already do this
 	#$(MAKE)
@@ -48,18 +48,19 @@ install: build
 		ggzdconfdir=`pwd`/debian/tmp/etc/ggzd \
 		ggzdexecmoddir=`pwd`/debian/tmp/usr/lib/ggzd \
 		ggzdgamedir=`pwd`/debian/tmp/etc/ggzd/games \
-		ggzdroomdir=`pwd`/debian/tmp/etc/ggzd/rooms
+		ggzdroomdir=`pwd`/debian/tmp/etc/ggzd/rooms \
+		ggzddatadir=`pwd`/debian/tmp/usr/share/ggzd
 
 	# No development library, only runtime
 	rm -f `pwd`/debian/tmp/usr/lib/libzoneserver.so
 
 	# Init skript
-	install -m 755 -d `pwd`/debian/tmp/etc/init.d
-	install -m 755 debian/ggzd.init.d `pwd`/debian/tmp/etc/init.d/ggzd
+	install -m 755 -d `pwd`/debian/ggzd/etc/init.d
+	install -m 755 debian/ggzd.init.d `pwd`/debian/ggzd/etc/init.d/ggzd
 
 	# Shlibdeps
-	install -m 755 -d `pwd`/debian/tmp/DEBIAN
-	install -m 644 debian/shlibs debian/tmp/DEBIAN
+	#install -m 755 -d `pwd`/debian/tmp/DEBIAN
+	#install -m 644 debian/shlibs debian/tmp/DEBIAN
 
 
 # Build architecture-independent files here.
@@ -71,24 +72,25 @@ binary-arch: build install
 #	dh_testversion
 	dh_testdir
 	dh_testroot
+	dh_movefiles
+
 #	dh_installdebconf	
 	dh_installdocs
-	dh_installexamples
-	dh_installmenu
+#	dh_installexamples
+#	dh_installmenu
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installinit
-	dh_installcron
+#	dh_installcron
 	dh_installmanpages
-	dh_installinfo
+#	dh_installinfo
 #	dh_undocumented
-	dh_installchangelogs ChangeLog
+	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-	# You may want to make some executables suid here.
-	dh_suidregister
+#	dh_suidregister
 #	dh_makeshlibs
 	dh_installdeb
 #	dh_perl
