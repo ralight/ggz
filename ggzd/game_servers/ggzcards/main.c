@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: main.c 3566 2002-03-16 05:23:37Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -205,7 +205,14 @@ static void main_loop(GGZdMod *ggz)
 				continue;
 			if (fd > max_fd)
 				max_fd = fd;
-			FD_SET(fd, &fd_set);			
+			FD_SET(fd, &fd_set);	
+			
+			if (get_player_status(p) == GGZ_SEAT_BOT) {
+				fd = game.players[p].err_fd;
+				if (fd > max_fd)
+					max_fd = fd;
+				FD_SET(fd, &fd_set);
+			}		
 		}
 		
 		status = select(max_fd + 1, &fd_set, NULL, NULL, NULL);
@@ -223,7 +230,15 @@ static void main_loop(GGZdMod *ggz)
 			int fd = get_player_socket(p);
 			
 			if (fd >= 0 && FD_ISSET(fd, &fd_set))
-				handle_player_event(ggz, GGZDMOD_EVENT_PLAYER_DATA, &p);		
+				handle_player_event(ggz,
+				                    GGZDMOD_EVENT_PLAYER_DATA,
+				                    &p);	
+				
+			if (get_player_status(p) == GGZ_SEAT_BOT) {
+				fd = game.players[p].err_fd;
+				if (FD_ISSET(fd, &fd_set))
+					handle_ai_stderr(p);
+			}	
 		}	
 	} while (ggzdmod_get_state(ggz) < GGZDMOD_STATE_DONE);
 }

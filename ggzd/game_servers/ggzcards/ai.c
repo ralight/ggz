@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3494 2002-02-27 10:21:23Z jdorje $
+ * $Id: ai.c 3566 2002-03-16 05:23:37Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -60,6 +60,7 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	/* It would be really cool if we could use the ggzmod library
 	   to do this part... */
 	int fd_pair[2];
+	int err_fd_pair[2];
 	int pid;
 	char cmd[1024];
 	char *argv[] = {cmd, NULL};
@@ -72,14 +73,16 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	snprintf(cmd, sizeof(cmd),
 	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
 	
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
-		ggz_error_sys_exit("socketpair failed");
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0
+	    || pipe(err_fd_pair) < 0)
+		ggz_error_sys_exit("socketpair/pipe failed");
 		
 	if ( (pid = fork()) < 0)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
 		close(fd_pair[0]);
+		close(err_fd_pair[0]);
 		
 		if (fd_pair[1] != 3) {
 			if (dup2(fd_pair[1], 3) != 3
@@ -87,16 +90,59 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 				ggz_error_sys_exit("dup/close failed");
 		}
 		
+		/* Close stdin, stdout, and stderr. */
+		close(0);
+		close(1);
+		close(2);
+		
+		/* Move our pipe to stderr. */
+		assert(err_fd_pair[1] != 2);
+		if (dup2(err_fd_pair[1], 2) != 2
+		    || close(err_fd_pair[1]) < 0)
+			ggz_error_sys_exit("dup/close failed");
+		
 		execv(argv[0], argv);
 		
 		ggz_error_sys_exit("exec of %s failed", argv[0]);
 	} else {
 		/* parent */
 		close(fd_pair[1]);
+		close(err_fd_pair[1]);
 		
 		g->players[p].fd = fd_pair[0];
+		g->players[p].err_fd = err_fd_pair[0];
 		g->players[p].pid = pid;
 	}	
+}
+
+/* We handle debugging messages from the AI in a very cool / hackish way.
+   When we fork off the AI process, we open up a pipe FD from stderr to
+   us.  We monitor that FD along with all of our thousands of other FD's.
+   When the AI process writes to stderr, the data comes to us and we read
+   it in this function. */
+void handle_ai_stderr(player_t ai)
+{
+	char buf[4096], *this, *next;
+	int res = read(game.players[ai].err_fd, buf, sizeof(buf) - 1);
+	
+	if (res < 0) {
+		/* FIXME: something's wrong with the AI */
+	}
+	buf[res] = '\0'; /* yes, this is necessary */
+		
+	this = buf;
+	while ( (next = strchr(this, '\n')) ) {
+		*next = '\0';
+		
+		ggzdmod_log(game.ggz, "AI %d: %s", ai, this);
+		
+		this = next + 1;
+	}
+	
+	/* Yes, this can fail if we get more than sizeof(buf) bytes at
+	   once.  Not likely! */
+	if (*this != '\0')
+		ggzdmod_log(game.ggz, "AI %d: %s", ai, this);
 }
 			
 void init_path(const char *exec_cmd)
