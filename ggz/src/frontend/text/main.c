@@ -55,21 +55,37 @@ char* string_cat(char *s1, char *s2)
 {
 	char *new;
 
-	new = malloc(strlen(s1) + strlen(s2) + 1); /* Leave space for NULL */
-	
-	if (!new)  /* malloc() failed */
-		exit(-1);
-		
+	new = ggz_malloc(strlen(s1) + strlen(s2) + 1); /* Leave space for NULL */
 	strcpy(new, s1);
 	strcat(new, s2);
-
+	
 	return new;
 }
 	
+void init_debug(void)
+{
+	char *default_file, *debug_file;
+	const char **debug_types;
+	int num_types, i;
+
+	/* Inititialze debugging */
+	default_file = string_cat(getenv("HOME"),"/.ggz/ggz-text.debug");
+	debug_file = ggzcore_conf_read_string("Debug", "File", default_file);
+	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
+	ggz_debug_init(debug_types, debug_file);
+
+	/* Free up memory */
+	for (i = 0; i < num_types; i++)
+		ggz_free(debug_types[i]);
+	ggz_free(debug_types);
+	ggz_free(debug_file);
+	ggz_free(default_file);
+}
+
 
 int main(void)
 {
-	char *u_path, *debugfile;
+	char *u_path;
 	GGZOptions opt;
 
 	output_init();
@@ -77,20 +93,20 @@ int main(void)
 	signal(SIGINT, term_handle);
 	output_banner();
 
-	/* Setup options and initialize ggzcore lib */
-	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	/* Use local config file */
 	/*g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");*/
         u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
 	ggzcore_conf_initialize(NULL, u_path);
-	free(u_path);
+	ggz_free(u_path);
 
-	debugfile = string_cat(getenv("HOME"),"/.ggz/ggz-text.debug");
-	opt.debug_file = ggzcore_conf_read_string("Debug", "File", debugfile);
-	free(debugfile);
-	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_HOOK & ~GGZ_DBG_MEMDETAIL); 
+#ifdef DEBUG
+	init_debug();
+#endif
+
+	/* Setup options and initialize ggzcore lib */
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
 	ggzcore_init(opt);
-	ggz_free(opt.debug_file);
-
+	
 	output_status();
 	output_prompt();
 
@@ -100,9 +116,11 @@ int main(void)
 	loop();
 
 	ggzcore_destroy();
-
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#endif
 	output_shutdown();
-
+	
 	return 0;
 }
 

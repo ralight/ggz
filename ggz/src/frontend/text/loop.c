@@ -28,6 +28,7 @@
 #include "output.h"
 #include "server.h"
 
+#include <ggz.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -59,7 +60,7 @@ void loop_init(int seconds)
 {
 	FD_ZERO(&active_fd_set);
 	if (fds) {
-		free(fds);
+		ggz_free(fds);
 		fds = NULL;
 	}
 	num_fds = 0;
@@ -71,8 +72,7 @@ void loop_init(int seconds)
 
 void loop_add_fd(unsigned int fd, callback read, callback destroy)
 {
-	if (!(fds = realloc(fds, (num_fds + 1) * sizeof(struct _fd_info))))
-		ggzcore_error_sys_exit("realloc failed in loop_init");
+	fds = ggz_realloc(fds, (num_fds + 1) * sizeof(struct _fd_info));
 	
 	fds[num_fds].fd = fd;
 	fds[num_fds].removed = 0;
@@ -166,7 +166,7 @@ static void _loop_remove_fd(int num)
 
 	/* simplest case: only one fd */
 	if (num_fds == 1) {
-		free(fds);
+		ggz_free(fds);
 		fds = NULL;
 		num_fds = 0;
 		fd_max = 0;
@@ -174,9 +174,7 @@ static void _loop_remove_fd(int num)
 
 	/* simple case: fd to remove is last one */	
 	else if (num == (num_fds - 1)) {
-		if (!(fds = realloc(fds, (num_fds - 1) * sizeof(struct _fd_info)))) 
-			ggzcore_error_sys_exit("realloc failed in loop_init");
-		
+		fds = ggz_realloc(fds, (num_fds - 1) * sizeof(struct _fd_info));		
 		num_fds--;
 	}
 
@@ -184,9 +182,7 @@ static void _loop_remove_fd(int num)
 	else {
 		
 		fds[num] = fds[(num_fds -1)];
-		if (!(fds = realloc(fds, (num_fds - 1) * sizeof(struct _fd_info)))) 
-			ggzcore_error_sys_exit("realloc failed in loop_init");
-		
+		fds = ggz_realloc(fds, (num_fds - 1) * sizeof(struct _fd_info));
 		num_fds--;
 	}
 }

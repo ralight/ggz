@@ -25,13 +25,14 @@
 
 
 #include <config.h>
-#include <ggzcore.h>
 #include "server.h"
 #include "output.h"
 #include "loop.h"
 #include "motd.h"
 #include "game.h"
 
+#include <ggz.h>
+#include <ggzcore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -89,6 +90,7 @@ void server_init(char *host, int port, GGZLoginType type, char* login, char* pas
 	server_register(server);
 	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
 	ggzcore_server_log_session(server, sessiondump);
+	ggz_free(sessiondump);
 
 	ggzcore_server_connect(server);
 }
