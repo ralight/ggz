@@ -840,6 +840,9 @@ gint launch_seat_type(gint i)
 	gint count = 0;
         gint ret = -1;
 
+	if (i == 0)
+		return 2;
+	
         dbg_msg("Getting player type for seat %d", i);
 
         /* Show seat's hbox */

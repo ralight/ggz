@@ -129,11 +129,11 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	/* Get game type to play */
 	dbg_msg("handle_options: Get Game Type");
 	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo11");
-	for(i=0;i<game_types.count;i++)
+	for (i = 0; i < game_types.count; i++)
 	{
 		if(!strcmp(game_types.info[i].name,
-		   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
-			launch_game_type= i;
+			   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+			launch_game_type = i;
 	}
 
 	/* Get number of seats */
@@ -148,8 +148,8 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	dbg_msg("Getting options from game client");
 
 	es_read_int(source, &size);
-	options = malloc(size);
-	/*FIXME: check for failed malloc */
+	if ( (options = malloc(size)) == NULL)
+		err_sys_exit("malloc falied");
 	es_readn(source, options, size);
 	es_read_char(source, &ai);
 
@@ -167,26 +167,26 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	es_write_int(connection.sock, launch_num_seats);
 	dbg_msg("Sending Num Seats %d",launch_num_seats);
 	/* Number Players */
-	for(count=1;count<launch_num_seats;count++)
+	for (count = 0; count < launch_num_seats; count++)
 	{
 		switch(launch_seat_type(count))
 		{
-			case 1:		/* Computer */
-				dbg_msg("Sending Seat GGZ_SEAT_COMP");
-				es_write_int(connection.sock, GGZ_SEAT_COMP);
-				break;
-			case 2:		/* Human */
-				dbg_msg("Sending Seat GGZ_SEAT_OPEN");
-				es_write_int(connection.sock, GGZ_SEAT_OPEN);
-				break;
-			case 3:		/* Reservation */
-				dbg_msg("Sending Seat GGZ_SEAT_RESV");
-				es_write_int(connection.sock, GGZ_SEAT_RESV);
-				launch_get_reserve_name(count,name);
-				es_write_string(connection.sock, name);
-				break;
-			default:
-
+		case 1:		/* Computer */
+			dbg_msg("Sending Seat GGZ_SEAT_COMP");
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+			break;
+		case 2:		/* Human */
+			dbg_msg("Sending Seat GGZ_SEAT_OPEN");
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+			break;
+		case 3:		/* Reservation */
+			dbg_msg("Sending Seat GGZ_SEAT_RESV");
+			es_write_int(connection.sock, GGZ_SEAT_RESV);
+			launch_get_reserve_name(count,name);
+			es_write_string(connection.sock, name);
+			break;
+		default:
+			
 		}
 	}
 
