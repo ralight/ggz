@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6424 2004-11-24 08:41:00Z jdorje $
+ * $Id: ggzmod.h 6724 2005-01-18 02:51:57Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -78,8 +78,9 @@ extern "C" {
  *  program will exit.
  *
  *  More specifically, the game is in the CREATED state when it is first
- *  executed.  It moves to the WAITING state after GGZ first communicates
- *  with it.  After this, the game server may use ggzmod_set_state to
+ *  executed.  It moves to the CONNECTED state after GGZ first communicates
+ *  with it, and to WAITING after the connection is established with the
+ *  game server.  After this, the game server may use ggzmod_set_state to
  *  change between WAITING, PLAYING, and DONE states.  A WAITING game is
  *  considered waiting for players (or whatever), while a PLAYING game is
  *  actively being played (this information may be, but currently is not,
@@ -92,10 +93,38 @@ extern "C" {
  *  propogated to the game server.
  */
 typedef enum {
-	GGZMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzmod */
-	GGZMOD_STATE_WAITING,	/**< Ready and waiting to play. */
-	GGZMOD_STATE_PLAYING,	/**< Currently playing a game. */
-	GGZMOD_STATE_DONE	/**< Table halted, prepping to exit. */
+	/** @brief Initial state.
+	 *  The game starts out in this state.  Once the
+	 *  state is changed it should never be changed back. */
+	GGZMOD_STATE_CREATED,
+
+	/** @brief Connected state.
+	 *  After the GGZ client and game client get connected, the game
+	 *  changes into this state automatically.  Once this happens
+	 *  messages may be sent between these two.  Once the game leaves
+	 *  this state it should never be changed back. */
+	GGZMOD_STATE_CONNECTED,
+
+	/** @brief Waiting state.
+	 *  After the game client and game server are connected, the client
+	 *  enters the waiting state.  The game client may now call
+	 *  ggzmod_set_state to change between WAITING, PLAYING, and DONE
+	 *  states. */
+	GGZMOD_STATE_WAITING,
+
+	/** @brief Playing state.
+	 *  This state is only entered after the game client changes state
+	 *  to it via ggzmod_set_state.  State may be changed back and forth
+	 *  between WAITING and PLAYING as many times as are wanted. */
+	GGZMOD_STATE_PLAYING,
+
+	/** @brief Done state.
+	 *  Once the game client is done running, ggzmod_set_state should be
+	 *  called to set the state to done.  At this point nothing "new" can
+	 *  happen.  The state cannot be changed again after this.  However
+	 *  the game client will not be terminated by the GGZ client; GGZ
+	 *  just waits for it to exit of its own volition. */
+	GGZMOD_STATE_DONE
 } GGZModState;
 
 /** @brief Callback events.

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6723 2005-01-18 00:51:15Z jdorje $
+ * $Id: ggzmod.c 6724 2005-01-18 02:51:57Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -91,6 +91,42 @@ static void spectator_seat_free(GGZSpectatorSeat *seat);
 static int stats_compare(void *p, void *q) {
 	return (((GGZStat*)p)->number == *(int*)q);
 }
+
+/*
+ * How a game is launched (incomplete):
+ *
+ * 1.  ggz client invokes ggzcore to execute the game.  The game executable is
+ *     started.  If socketpair() is available then it is used to create a
+ *     ggz<->game socket connection.
+ *
+ * 2.  A game launch packet is sent from the GGZ client to the game client.
+ *
+ * 3.  The game client sets its state to connected (from created)..
+ *
+ * 4.  GGZ-client is informed of the game state change.
+ *
+ * 5.  GGZ_GAME_NEGOTIATED ggzcore event is triggered.
+ *
+ * 6.  ...the GGZ core client (not ggzcore) creates a socket and connects
+ *     to GGZ...
+ *
+ * 7.  ggzcore_set_server_fd is called by the GGZ core client...
+ *     ...it calls ggzmod_set_server_fd
+ *
+ * 8.  "server" packet is sent GGZ -> game (originally via ggz_write_fd).
+ *
+ * 9.  the game client sets its state to WAITING
+ *
+ * 10.  GGZ-client is informed of the game state change
+ *
+ * 11.  GGZ_GAME_PLAYING ggzcore event is triggered
+ *
+ * 12.  table-join or table-launch packet is sent from ggz CLIENT->SERVER
+ *
+ * 13.  ggz SERVER handles join/launch packets, sends response
+ *
+ * 14.  ... and then what? ...
+ */
 
 /* Creates a new ggzmod object. */
 GGZMod *ggzmod_new(GGZModType type)
@@ -270,7 +306,7 @@ void ggzmod_set_server_fd(GGZMod * ggzmod, int fd)
 		ggzmod->server_fd = fd;
 
 		/* If we're already connected, send the fd */
-		if (ggzmod->state == GGZMOD_STATE_WAITING)
+		if (ggzmod->state == GGZMOD_STATE_CONNECTED)
 			_io_send_server(ggzmod->fd, fd);
 	}
 }
@@ -1172,6 +1208,7 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	   WAITING or PLAYING. */
 	switch (state) {
 	case GGZMOD_STATE_CREATED:
+	case GGZMOD_STATE_CONNECTED:
 	case GGZMOD_STATE_WAITING:
 	case GGZMOD_STATE_PLAYING:
 	case GGZMOD_STATE_DONE:
@@ -1229,14 +1266,18 @@ void _ggzmod_handle_chat_request(GGZMod *ggzmod, char *chat_msg)
 void _ggzmod_handle_launch(GGZMod * ggzmod)
 {
 	/* Normally we let the game control its own state, but
-	   we control the transition from CREATED to WAITING. */
-	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
+	   we control the transition from CREATED to CONNECTED. */
+	_ggzmod_set_state(ggzmod, GGZMOD_STATE_CONNECTED);
 }
 
 
 void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
 {
 	ggzmod->server_fd = fd;
+
+	/* Everything's done now, so we move into the waiting state. */
+	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
+
 	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
 }
   

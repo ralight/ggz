@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6722 2005-01-18 00:50:36Z jdorje $
+ * $Id: game.c 6724 2005-01-18 02:51:57Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -338,31 +338,45 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
 	const GGZModState new = ggzmod_get_state(mod);
 	const GGZModState * const prev = data;
 
-	ggz_debug(GGZCORE_DBG_GAME, "Game now in state %d", new);
+	ggz_debug(GGZCORE_DBG_GAME, "Game changing from state %d to %d",
+		  *prev, new);
 
-	switch (new) {
-	case GGZMOD_STATE_WAITING:
-		ggz_debug(GGZCORE_DBG_GAME, "Game now waiting");
-		if (*prev == GGZMOD_STATE_CREATED) {
-			/* The game has changed from CREATED to WAITING.
-			 * Pass this on as a GGZ_GAME_NEGOTIATED event. */
-			_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+	switch (*prev) {
+	case GGZMOD_STATE_CREATED:
+		ggz_debug(GGZCORE_DBG_GAME, "game negotiated");
+		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+		if (new != GGZMOD_STATE_CONNECTED) {
+			ggz_error_msg("Game changed state from created"
+				      "to %d.", new);
 		}
 		break;
-
-	case GGZMOD_STATE_PLAYING:
-		ggz_debug(GGZCORE_DBG_GAME, "Game now playing");
+	case GGZMOD_STATE_CONNECTED:
+		ggz_debug(GGZCORE_DBG_GAME, "game playing");
 		_ggzcore_game_event(game, GGZ_GAME_PLAYING, NULL);
+		if (new != GGZMOD_STATE_WAITING
+		    && new != GGZMOD_STATE_PLAYING) {
+			ggz_error_msg("Game changed state from connected "
+				      "to %d.", new);
+		}
 		break;
-
+	case GGZMOD_STATE_WAITING:
+	case GGZMOD_STATE_PLAYING:
 	case GGZMOD_STATE_DONE:
-		ggz_debug(GGZCORE_DBG_GAME, "Game now done");
-		/* Leave the game running. */
+		break;
+	}
+
+	switch (new) {
+	case GGZMOD_STATE_CONNECTED:
+	case GGZMOD_STATE_WAITING:
+	case GGZMOD_STATE_PLAYING:
+	case GGZMOD_STATE_DONE:
 		break;
 
 	case GGZMOD_STATE_CREATED:
-		ggz_debug(GGZCORE_DBG_GAME, "Game created");
-		/* Leave the game running. */
+		/* Leave the game running. This should never happen since
+		 * this is the initial state and we never return to it after
+		 * leaving it. */
+		ggz_error_msg("Game state changed to created!");
 		break;
 
 	}
