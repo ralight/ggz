@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4237 2002-06-09 06:20:58Z jdorje $
+ * $Id: ggz_stats.c 4334 2002-08-02 04:57:39Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -231,7 +231,8 @@ void ggzstats_free(GGZStats * stats)
 
 	ggz_free(stats->winners);
 
-	ggz_realloc(stats->team_list, 0);
+	if (stats->team_list)
+		ggz_free(stats->team_list);
 	ggz_free(stats);
 }
 
