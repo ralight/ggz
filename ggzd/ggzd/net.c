@@ -249,16 +249,14 @@ int net_send_serverid(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
 
-	if((xml_srv_name = ggz_xml_escape(srv_name)) == NULL)
-		xml_srv_name = srv_name;
+	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
 	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
 	_net_send_line(net, "\t</SERVER>");
 
-	if(xml_srv_name != srv_name)
-		ggz_free(xml_srv_name);
+	ggz_free(xml_srv_name);
 
 	return 0;
 }
@@ -268,14 +266,12 @@ int net_send_server_full(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
 
-	if((xml_srv_name = ggz_xml_escape(srv_name)) == NULL)
-		xml_srv_name = srv_name;
+	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
 
-	if(xml_srv_name != srv_name)
-		ggz_free(xml_srv_name);
+	ggz_free(xml_srv_name);
 
 	return 0;
 }
