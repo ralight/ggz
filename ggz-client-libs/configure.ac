@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
+dnl $Id: configure.ac 5371 2003-02-04 09:18:09Z jdorje $
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
@@ -39,9 +40,12 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 AC_HEADER_TIME
-AC_EGREP_CPP(WAIT_ANY, [ #include <sys/wait.h>
-		 WAIT_ANY ], AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
-	         AC_DEFINE(WAIT_ANY, (pid_t)-1))
+AC_EGREP_CPP(WAIT_ANY,
+	     [ #include <sys/wait.h>
+	       WAIT_ANY ],
+	     [AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
+	      AC_DEFINE([WAIT_ANY], (pid_t)-1,
+		        [Define if it is not provided by sys/wait.h])])
 
 dnl Check for PF_LOCAL/PF_UNIX
 dnl ==========================
@@ -53,8 +57,11 @@ AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
 				          PF_UNIX ], AC_MSG_RESULT(no)
 				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
                                           AC_MSG_RESULT(yes)
-					  AC_DEFINE(PF_LOCAL, PF_UNIX)
-			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+					  AC_DEFINE([PF_LOCAL], PF_UNIX,
+						    [PF_UNIX is available])
+			                  
+			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
+						    [AF_UNIX is available])), 
              AC_MSG_RESULT(yes))
 
 
@@ -96,10 +103,10 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
@@ -119,7 +126,8 @@ if test "x${sysconfdir}" = 'x${prefix}/etc'; then
 else
   ggzconfdir="${sysconfdir}"
 fi
-AC_DEFINE_UNQUOTED(GGZCONFDIR, "${ggzconfdir}")
+AC_DEFINE_UNQUOTED([GGZCONFDIR], "${ggzconfdir}",
+		   [Directory containing GGZ configuration files])
 
 
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
@@ -135,7 +143,8 @@ if test "x${libdir}" = 'x${exec_prefix}/lib'; then
 else
   ggzexecmoddir="${libdir}/ggz"
 fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
+AC_DEFINE_UNQUOTED([GAMEDIR], "${ggzexecmoddir}",
+		   [Directory containing GGZ client module executables])
 
 
 if test "x${datadir}" = 'x${prefix}/share'; then
@@ -147,10 +156,12 @@ if test "x${datadir}" = 'x${prefix}/share'; then
 else
   ggzdatadir="${datadir}/ggz"
 fi
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
+AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
+		   [Directory containing GGZ shared data])
 
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}",
+		   [The top-level source directory])
 
 AC_SUBST(LDADD)
 AC_SUBST(ggzconfdir)
@@ -158,7 +169,7 @@ AC_SUBST(ggzexecmoddir)
 AC_SUBST(ggzdatadir)
 AC_SUBST(packagesrcdir)
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   ggzcore/Makefile
 	   ggzmod/Makefile
 	   man/Makefile
@@ -167,6 +178,7 @@ AC_OUTPUT([Makefile
 	   man/ggzmod_h.3
 	   man/ggzcore_h.3
 	   ])
+AC_OUTPUT
 
 
 dnl Status Output
