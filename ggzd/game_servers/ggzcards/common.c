@@ -248,7 +248,7 @@ int send_player_list(player_t p)
 	int status = 0;
 
 	fd = ggz_seats[p].fd;
-	if (fd == -1) status = -1;
+	if (fd == -1) return 0;
 
 	s = game.players[p].seat;
 
