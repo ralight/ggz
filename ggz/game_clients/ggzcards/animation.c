@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 4028 2002-04-21 01:41:23Z jdorje $
+ * $Id: animation.c 4039 2002-04-21 08:57:54Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -331,7 +331,7 @@ static gint animation_callback(gpointer ignored)
 		/* Make sure we draw over the old position. */
 		min_x = MIN(min_x, anim[player].cur_x);
 		min_y = MIN(min_y, anim[player].cur_y);
-		max_x = MAX(max_x, anim[player].cur_x + CARDHEIGHT);
+		max_x = MAX(max_x, anim[player].cur_x + CARDWIDTH);
 		max_y = MAX(max_y, anim[player].cur_y + CARDHEIGHT);
 	
 		/* Calculate our new position */
