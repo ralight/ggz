@@ -63,6 +63,8 @@ class KTicTacTux : public QWidget
 		void signalScore(const QString &score);
 		// Emit statistics
 		void signalNetworkScore(int wins, int losses);
+		// Emit game over status
+		void signalGameOver();
 
 	private:
 		// Wait for bot or network input

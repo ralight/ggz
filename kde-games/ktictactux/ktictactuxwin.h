@@ -53,6 +53,8 @@ class KTicTacTuxWin : public KMainWindow
 		void slotNetworkScore(int wins, int losses);
 		// Menu slot
 		void slotMenu(int id);
+		// Game is over
+		void slotGameOver();
 
 	private:
 		// The game itself

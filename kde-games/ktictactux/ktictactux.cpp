@@ -199,6 +199,7 @@ int KTicTacTux::gameOver()
 				else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
 				announce(i18n("You are the winner!"));
 			}
+			emit signalGameOver();
 			return 1;
 		}
 		else return 0;
@@ -207,6 +208,7 @@ int KTicTacTux::gameOver()
 	{
 		emit signalStatus(i18n("Game Over!"));
 		announce(i18n("The game is over. There is no winner."));
+		emit signalGameOver();
 		return 1;
 	}
 

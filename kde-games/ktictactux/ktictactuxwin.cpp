@@ -46,6 +46,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	connect(m_tux, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
 	connect(m_tux, SIGNAL(signalNetworkScore(int, int)), SLOT(slotNetworkScore(int, int)));
+	connect(m_tux, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
@@ -188,5 +189,12 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses)
 		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
 			"%3").arg(wins).arg(losses).arg(comment),
 		i18n("KTicTacTux network score"));
+}
+
+// Game is over
+void KTicTacTuxWin::slotGameOver()
+{
+	mgame->setItemEnabled(menusync, false);
+	if(m_networked) mgame->setItemEnabled(menuscore, false);
 }
 
