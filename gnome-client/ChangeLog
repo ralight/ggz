@@ -1,3 +1,71 @@
+2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-20 18:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/.cvsignore: - bleh, typo
+
+2005-01-20 18:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/.cvsignore: - shut it up
+
+2005-01-15 00:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/ggzclient.c: - gcc 3.4 related: remove duplicate function
+	  prototype
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/Makefile.am: Replace deprated INCLUDES directive with
+	  AM_CPPFLAGS.
+
+2004-12-23 21:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/i18n.mk: - new i18n infrastructure for the gnome client
+
+2004-12-23 21:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/Makefile.am: - use new i18n infrastructure
+
+2004-07-18 02:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-16 21:05   Josef Spillner <josef@ggzgamingzone.org>
 
 	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:

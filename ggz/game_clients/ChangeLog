@@ -1,3 +1,816 @@
+2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-23 12:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - argh! package-specific version numbers
+
+2005-01-23 12:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/dots/Makefile.am: - forgot to s/ggz-txt/dots/ during the i18n
+	  migration
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-19 23:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/game.c: Don't track client clock on the first turn.
+
+2005-01-19 20:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chess/Makefile.am, chess/board.c,
+	  chinese-checkers/Makefile.am, chinese-checkers/display.c,
+	  reversi/Makefile.am, reversi/main_win.c, tictactoe/Makefile.am,
+	  tictactoe/main_win.c: Remove the RSVG code.  Simply use gdkpixbuf
+	  to load SVG files (which ggzcards and gtk-client already do).
+
+2005-01-19 03:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chess/module.dsc.in,
+	  chinese-checkers/module.dsc.in, combat/module.dsc.in,
+	  dots/module.dsc.in, ggzcards/module.dsc.in,
+	  hastings/module.dsc.in, reversi/module.dsc.in,
+	  spades/module.dsc.in, tictactoe/module.dsc.in: Allow a wrapper
+	  for all game executables to be specified on the configure line.
+
+2005-01-19 02:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: main.c, table.c: Fix some memory leaks in ggzcards.
+
+2005-01-16 05:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/Makefile.am: Fix ldadd problem in ggzcards.
+
+2005-01-16 05:10   Jason Short <jdorje@ggzgamingzone.org>
+
+	* dots/main.c: Fix compile problems in dots.
+
+2005-01-16 02:35   Roger Light <oojah@ggzgamingzone.org>
+
+	* chess/Makefile.am, chinese-checkers/Makefile.am,
+	  combat/Makefile.am, dots/Makefile.am, dots/main.c,
+	  ggzcards/Makefile.am, hastings/Makefile.am, reversi/Makefile.am,
+	  spades/Makefile.am, tictactoe/Makefile.am: Modified <game>_LDADD
+	  so that libgtk_games.a is before @GTK_LIBS@ otherwise GTK will
+	  not link properly on win32.
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Add support for libintl and libiconv to AC_GGZ_INTL.
+	  This is needed to compile at all on non-glibc systems.
+
+2005-01-14 07:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac, combat/map.c, m4/mkdir.m4: Portability
+	  fixes for combat.
+
+2005-01-14 05:02   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chinese-checkers/game.c: Improve error handling for
+	  opendir().
+
+2005-01-14 04:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spades/: client_func.c, client_main.c, gtk_connect.c,
+	  socketfunc.c: Portability improvements to spades.
+
+2005-01-14 04:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/game.c: Portability improvements to ccheckers:
+	  use opendir+readdir+closedir instead of scandir.
+
+2005-01-14 04:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* dots/main.c: Portability fixes for dots.
+
+2005-01-14 04:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* hastings/main.c: Portability fixes for hastings.
+
+2005-01-14 04:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* reversi/main.c: Portability fixes for reversi.
+
+2005-01-14 04:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main.c: Portability fixes for tictactoe.
+
+2005-01-14 04:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: ai.c, animation.c, game.c, main.c, client/client.c:
+	  Portability fixes to ggzcards.
+
+2005-01-14 04:18   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: combat.h, main.c: Portability fixes to combat.
+
+2005-01-14 04:17   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Check for rand functions.
+
+2005-01-14 03:55   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Portability improvements.
+
+2005-01-14 03:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Compile po/ last.
+
+2005-01-14 02:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chess/libcgc/board.h: Portability fixes for chess.
+
+2005-01-14 00:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/main.c, dots/main.c, ggzcards/main.c, hastings/main.c,
+	  reversi/main.c, tictactoe/main.c: Don't include sys/socket.h
+	  unnecessarily.
+
+2005-01-14 00:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/net.c: Use memset instead of bzero.
+
+2005-01-13 20:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* po/: chess/.cvsignore, chinese-checkers/.cvsignore,
+	  combat/.cvsignore, common/.cvsignore, dots/.cvsignore,
+	  ggzcards/.cvsignore, hastings/.cvsignore, reversi/.cvsignore,
+	  spades/.cvsignore, tictactoe/.cvsignore: Finish .cvsignore files.
+
+2005-01-13 20:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Allow gtk-games to compile again.
+
+2005-01-13 19:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* po/: chess/.cvsignore, chinese-checkers/.cvsignore,
+	  combat/.cvsignore, common/.cvsignore, dots/.cvsignore,
+	  ggzcards/.cvsignore, hastings/.cvsignore, reversi/.cvsignore,
+	  spades/.cvsignore, tictactoe/.cvsignore: Add .cvsignore files.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2004-12-21 18:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/i18n.mk, po/Makefile.am, po/chess/Makefile.am,
+	  po/chinese-checkers/Makefile.am, po/chinese-checkers/de.po,
+	  po/combat/Makefile.am, po/common/Makefile.am,
+	  po/common/common.pot, po/common/de.po, po/dots/Makefile.am,
+	  po/ggzcards/Makefile.am, po/hastings/Makefile.am,
+	  po/reversi/Makefile.am, po/spades/Makefile.am, po/spades/de.po,
+	  po/tictactoe/Makefile.am, po/tictactoe/de.po,
+	  po/tictactoe/tictactoe.pot: - use new i18n infrastructure -
+	  'common' messages are now excluded from game translations and
+	  being accessed   via chainloader
+
+2004-12-21 18:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* common/: ggzintl.c, ggzintl.h: - chainloader implementation for
+	  *.mo files   - uses <gamename>.mo first   - uses <fallback>.mo
+	  (common.mo) if not found in first catalog
+
+2004-12-15 01:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: chess/chess.pot, chess/de.po,
+	  chinese-checkers/chinese-checkers.pot, chinese-checkers/de.po,
+	  combat/combat.pot, combat/de.po, common/common.pot, common/de.po,
+	  dots/de.po, dots/dots.pot, ggzcards/de.po, ggzcards/es_AR.po,
+	  ggzcards/ggzcards.pot, hastings/de.po, hastings/es_AR.po,
+	  hastings/hastings.pot, hastings/pt_BR.po, reversi/de.po,
+	  reversi/reversi.pot, spades/de.po, spades/spades.pot,
+	  tictactoe/de.po, tictactoe/es_AR.po, tictactoe/pt_BR.po,
+	  tictactoe/tictactoe.pot: - translation catalog updates for all
+	  Gtk+ games - consistency checking - German translation up to date
+	  - removal of "empty" pt_BR and es_AR translations
+
+	  The latter ones were accidently emptied back in July (when
+	  introducing the message catalog) and break the builds.  I'll
+	  restore them soon.
+
+2004-12-15 01:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/Makefile.am: - lapocha is no more
+
+2004-12-11 22:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: dlg_main.c, main.c: Fix the statusbars.
+
+2004-11-28 01:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/ggz-debug.m4, m4/gtk-2.0.m4: - fix smaller build
+	  glitches
+
+2004-11-16 07:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* reversi/: Makefile.am, enemydot.svg, main_win.c: Add distinct
+	  graphics for enemy move positions.
+
+2004-11-16 06:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/menus.h: Use one more stock item.
+
+2004-11-16 06:47   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: dlg_bid.c, dlg_options.c, dlg_prefs.c, main.c: Improve
+	  ggzcards dialogs.
+
+2004-11-16 06:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/callbacks.c, chess/main.c, chinese-checkers/game.c,
+	  chinese-checkers/main_cb.c, combat/callbacks.c, combat/main.c,
+	  common/dlg_about.c, common/dlg_about.h, common/dlg_chat.c,
+	  common/dlg_exit.c, common/dlg_exit.h, common/dlg_players.c,
+	  common/ggz_gtk.c, common/ggz_gtk.h, dots/cb_main.c, dots/main.c,
+	  ggzcards/cb_main.c, ggzcards/main.c, hastings/main.c,
+	  hastings/main_win.c, reversi/main.c, reversi/main_win.c,
+	  spades/callbacks.c, spades/gtk_io.c, tictactoe/main.c: Improve
+	  the common dialogs.
+
+2004-11-16 05:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* lapocha/.cvsignore: Remove .cvsignore.
+
+2004-11-15 20:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Disable deprecated when compiling with DEBUG.
+
+2004-11-13 19:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/main_dlg.c, chinese-checkers/prefs_dlg.c,
+	  combat/dlg_options.c, dots/dlg_main.c, dots/dlg_new.c,
+	  dots/dlg_pref.c, ggzcards/main.c, hastings/dlg_yesno.c,
+	  hastings/main_win.c, reversi/options_dlg.c, spades/gtk_connect.c,
+	  spades/gtk_dlg_disconnect.c, spades/gtk_dlg_error.c,
+	  spades/gtk_dlg_options.c, spades/gtk_dlg_stat.c: - Replace
+	  gtk_timeout_add with g_timeout_add.  - Replace
+	  gtk_window_set_policy with gtk_window_set_resizable.
+
+2004-11-13 19:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/: support.c, support.h: Remove some deprecated code.
+
+2004-11-13 19:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spades/gtk_dlg_options.c: Replace gtk_container_border_width with
+	  gtk_container_set_border_width.
+
+2004-11-13 19:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/support.c, combat/game.c, combat/support.c,
+	  dots/support.c, hastings/support.c, reversi/main_win.c,
+	  reversi/support.c, tictactoe/support.c: Replace
+	  gtk_object_get_data with g_object_get_data.
+
+2004-11-13 18:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/ggzintl.c: Really fix gettext to return UTF-8.
+
+2004-11-13 18:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/ggzintl.c: Tell gettext to return strings in UTF-8.
+
+2004-11-13 09:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: dlg_options.c, game.c: Fix errors in last commit.
+
+2004-11-13 09:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: dlg_options.c, game.c, game.h, gtk_player_info.c:
+	  Replace another clist with a treeview.
+
+2004-11-13 09:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Add --g-fatal-warnings too.
+
+2004-11-13 04:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chess/module.dsc.in,
+	  chinese-checkers/module.dsc.in, combat/module.dsc.in,
+	  dots/module.dsc.in, ggzcards/module.dsc.in,
+	  hastings/module.dsc.in, reversi/module.dsc.in,
+	  spades/module.dsc.in, tictactoe/module.dsc.in: Add
+	  --g-fatal-errors to the game executable command lines if the
+	  package is compiled with debugging enabled.
+
+2004-11-13 02:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: callbacks.c, combat.h, dlg_options.c, dlg_options.h,
+	  map.c: - Replace a clist with a treeview.  - Fix a bug with the
+	  options text buffer.
+
+2004-11-12 18:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: dlg_options.c, game.c, gtk_player_info.c, interface.c:
+	  Remove or replace all gtk_widget_set_usize calls.
+
+2004-11-12 18:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main_win.c: Remove or replace all gtk_widget_set_usize
+	  calls.
+
+2004-11-12 18:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spades/: gtk_dlg_options.c, gtk_play.c: Remove all
+	  gtk_widget_set_usize calls.
+
+2004-11-12 18:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* hastings/: dlg_yesno.c, main_win.c: Remove or replace all
+	  gtk_widget_set_usize calls.
+
+2004-11-12 18:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: dlg_main.c, dlg_options.c, dlg_prefs.c, main.c: -
+	  Remove or replace all gtk_widget_set_usize calls.  - Set
+	  transient for several dialogs.
+
+2004-11-12 18:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* dots/: cb_main.c, dlg_main.c, dlg_main.h, dlg_pref.c, dlg_pref.h:
+	  - Remove or replace all gtk_widget_set_usize calls.  - Set
+	  transient for the prefs dialog.
+
+2004-11-12 18:10   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/prefs_dlg.c: Remove gtk_widget_set_usize.
+
+2004-11-12 05:56   Jason Short <jdorje@ggzgamingzone.org>
+
+	* reversi/: main_win.c, options_dlg.c: Replace
+	  gtk_widget_set_usize.
+
+2004-11-12 05:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/display.c, combat/dlg_options.c, combat/game.c,
+	  dots/game.c, hastings/main_win.c, reversi/main_win.c,
+	  spades/gtk_io.c, tictactoe/main_win.c: Replace gtk_widget_draw
+	  with gtk_widget_queue_draw or gtk_widget_queue_draw_area.
+
+2004-11-12 03:49   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/dlg_options.c, combat/game.c, combat/gtk_player_info.c,
+	  dots/cb_pref.c, ggzcards/main.c, reversi/main_win.c,
+	  spades/gtk_play.c, spades/gtk_taunt.c: Upgrade some code.
+
+2004-11-12 03:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/game.c, chinese-checkers/main.c,
+	  chinese-checkers/main.h, combat/game.c, combat/game.h,
+	  combat/main.c, common/Makefile.am, common/dlg_about.h,
+	  common/ggz_gtk.c, common/ggz_gtk.h, dots/main.c, ggzcards/game.c,
+	  ggzcards/game.h, ggzcards/main.c, hastings/game.h,
+	  hastings/main.c, reversi/game.h, reversi/main.c,
+	  spades/client_func.c, spades/gtk_connect.c, spades/gtk_connect.h,
+	  tictactoe/game.h, tictactoe/main.c: Get rid of gdk_input_*
+	  functions, and merge some more common ggz/gtk code into a new
+	  common file.
+
+2004-11-11 18:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/display.c: Fix player name label colors.
+
+2004-11-11 17:30   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/display.c, chinese-checkers/support.c,
+	  combat/callbacks.c, combat/combat.c, combat/dlg_options.c,
+	  combat/game.c, combat/map.c, dots/game.c, dots/support.c,
+	  ggzcards/main.c, ggzcards/preferences.c, hastings/main_win.c,
+	  hastings/support.c, reversi/main_win.c, reversi/options_dlg.c,
+	  reversi/support.c, spades/gtk_io.c, spades/gtk_play.c,
+	  spades/gtk_taunt.c, tictactoe/main_win.c, tictactoe/support.c:
+	  Upgrade some code.
+
+2004-11-07 06:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* indent.pro, chess/board.c, chess/board.h, chess/callbacks.c,
+	  chess/callbacks.h, chess/chess.h, chess/game.c, chess/main.c,
+	  chess/main_win.c, chess/main_win.h, chess/net.c, chess/net.h,
+	  chess/popup.c, chess/popup.h, chess/support.c, chess/support.h,
+	  chess/libcgc/board.c, chess/libcgc/board.h, chess/libcgc/cgc.c,
+	  chess/libcgc/cgc.h, chess/libcgc/games.c, chess/libcgc/games.h,
+	  chess/libcgc/movecheck.c, chess/libcgc/movecheck.h,
+	  chinese-checkers/display.c, chinese-checkers/display.h,
+	  chinese-checkers/game.c, chinese-checkers/game.h,
+	  chinese-checkers/main.c, chinese-checkers/main_cb.c,
+	  chinese-checkers/main_cb.h, chinese-checkers/main_dlg.c,
+	  chinese-checkers/main_dlg.h, chinese-checkers/prefs_cb.c,
+	  chinese-checkers/prefs_cb.h, chinese-checkers/prefs_dlg.c,
+	  chinese-checkers/prefs_dlg.h, chinese-checkers/support.c,
+	  chinese-checkers/support.h, combat/callbacks.c,
+	  combat/callbacks.h, combat/combat.c, combat/combat.h,
+	  combat/dlg_options.c, combat/dlg_options.h, combat/game.c,
+	  combat/game.h, combat/gtk_player_info.c, combat/interface.c,
+	  combat/interface.h, combat/main.c, combat/map.c, combat/map.h,
+	  combat/support.c, combat/support.h, common/dlg_about.c,
+	  common/dlg_about.h, common/dlg_chat.c, common/dlg_chat.h,
+	  common/dlg_exit.c, common/dlg_exit.h, common/dlg_players.c,
+	  common/dlg_players.h, common/ggzintl.c, common/ggzintl.h,
+	  common/menus.c, common/menus.h, dots/cb_main.c, dots/cb_main.h,
+	  dots/cb_new.c, dots/cb_new.h, dots/cb_opt.c, dots/cb_opt.h,
+	  dots/cb_pref.c, dots/cb_pref.h, dots/dlg_main.c, dots/dlg_main.h,
+	  dots/dlg_new.c, dots/dlg_new.h, dots/dlg_opt.c, dots/dlg_opt.h,
+	  dots/dlg_pref.c, dots/dlg_pref.h, dots/game.c, dots/game.h,
+	  dots/main.c, dots/support.c, dots/support.h, ggzcards/ai.c,
+	  ggzcards/ai.h, ggzcards/animation.c, ggzcards/animation.h,
+	  ggzcards/cb_main.c, ggzcards/cb_main.h, ggzcards/dlg_bid.c,
+	  ggzcards/dlg_main.c, ggzcards/dlg_options.c,
+	  ggzcards/dlg_prefs.c, ggzcards/drawcard.c, ggzcards/game.c,
+	  ggzcards/game.h, ggzcards/layout.c, ggzcards/layout.h,
+	  ggzcards/main.c, ggzcards/preferences.c, ggzcards/support.c,
+	  ggzcards/table.c, ggzcards/table.h, ggzcards/client/client.c,
+	  ggzcards/client/client.h, ggzcards/common/cards.c,
+	  ggzcards/common/cards.h, ggzcards/common/net_common.c,
+	  ggzcards/common/protocol.c, ggzcards/common/protocol.h,
+	  hastings/dlg_yesno.c, hastings/dlg_yesno.h, hastings/game.h,
+	  hastings/main.c, hastings/main_win.c, hastings/main_win.h,
+	  hastings/selector.c, hastings/support.c, hastings/support.h,
+	  reversi/game.h, reversi/main.c, reversi/main_win.c,
+	  reversi/options_dlg.c, reversi/options_dlg.h, reversi/support.c,
+	  reversi/support.h, spades/callbacks.c, spades/callbacks.h,
+	  spades/card.c, spades/client_func.c, spades/client_main.c,
+	  spades/gtk_connect.c, spades/gtk_dlg_disconnect.c,
+	  spades/gtk_dlg_error.c, spades/gtk_dlg_options.c,
+	  spades/gtk_dlg_stat.c, spades/gtk_io.c, spades/gtk_menu.c,
+	  spades/gtk_play.c, spades/gtk_play.h, spades/gtk_taunt.c,
+	  spades/options.h, spades/socketfunc.c, tictactoe/game.h,
+	  tictactoe/main.c, tictactoe/main_win.c, tictactoe/main_win.h,
+	  tictactoe/support.c, tictactoe/support.h: Indent!
+
+2004-11-07 06:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spades/client_func.c: Remove extra parenthesis.
+
+2004-11-06 20:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/: main_cb.c, prefs_cb.c, prefs_cb.h,
+	  prefs_dlg.c, prefs_dlg.h: Change a clist to a treeview.
+
+2004-11-06 08:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/display.c, chinese-checkers/main_cb.c,
+	  chinese-checkers/prefs_cb.c, combat/callbacks.c,
+	  combat/dlg_options.c, combat/game.c, dots/cb_opt.c,
+	  dots/cb_pref.c, dots/game.c, dots/main.c, ggzcards/main.c,
+	  hastings/main_win.c, reversi/main.c, reversi/main_win.c,
+	  reversi/options_dlg.c, tictactoe/main_win.c: Update some
+	  deprecated code.
+
+2004-11-06 07:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/main_cb.c, chinese-checkers/main_dlg.c,
+	  chinese-checkers/main_dlg.h, chinese-checkers/prefs_dlg.c,
+	  chinese-checkers/prefs_dlg.h, chinese-checkers/support.c,
+	  chinese-checkers/support.h, combat/callbacks.c,
+	  combat/dlg_options.c, combat/dlg_options.h, combat/game.c,
+	  combat/gtk_player_info.c, combat/interface.c, combat/interface.h,
+	  common/menus.c, dots/cb_main.c, dots/cb_pref.c, dots/dlg_main.c,
+	  dots/dlg_new.c, dots/dlg_opt.c, dots/dlg_pref.c,
+	  ggzcards/dlg_main.c, ggzcards/main.c, hastings/dlg_yesno.c,
+	  hastings/main_win.c, hastings/selector.c, reversi/main_win.c,
+	  reversi/options_dlg.c, reversi/options_dlg.h,
+	  spades/gtk_dlg_disconnect.c, spades/gtk_dlg_error.c,
+	  spades/gtk_dlg_options.c, spades/gtk_dlg_stat.c, spades/gtk_io.c,
+	  spades/gtk_play.c, spades/gtk_taunt.c, tictactoe/main_win.c:
+	  Update some deprecated code.
+
+2004-11-06 05:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/dlg_players.c: Fix popup menu for treeview.
+
+2004-11-05 21:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: animation.c, cb_main.c, dlg_bid.c, dlg_options.c,
+	  dlg_prefs.c, drawcard.c, support.c, support.h, table.c: Update
+	  some deprecated code.
+
+2004-11-05 20:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/: board.c, callbacks.c, game.c, main.c, main_win.c, net.c,
+	  net.h, popup.c, support.c, support.h: Update some deprecated
+	  code.
+
+2004-11-05 10:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/dlg_players.c: Update the playerlist to a GtkTreeView.
+
+2004-11-05 09:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/: dlg_about.c, dlg_chat.c, dlg_exit.c: Don't use
+	  deprecated functions.
+
+2004-11-05 08:30   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main_win.c, reversi/main_win.c: Clear the backing store
+	  when resizing.
+
+2004-11-05 08:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/: display.c, display.h, game.c, main_cb.c,
+	  main_cb.h, main_dlg.c: Allow resizable themes when using SVG.
+	  PNG themes will not resize - they will continue to work but will
+	  leave empty portions of the window.
+
+2004-11-05 07:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/game.c: Remove unnecessary initialization.
+
+2004-11-05 07:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/: display.c, game.c, game.h: Generalize and
+	  simplify the drawing code.
+
+2004-11-05 03:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/: Makefile.am, display.c, pixmaps/Makefile.am,
+	  pixmaps/templates/blue.png, pixmaps/templates/blue.svg,
+	  pixmaps/templates/board.png, pixmaps/templates/board.svg,
+	  pixmaps/templates/cyan.png, pixmaps/templates/cyan.svg,
+	  pixmaps/templates/green.png, pixmaps/templates/green.svg,
+	  pixmaps/templates/hole.png, pixmaps/templates/hole.svg,
+	  pixmaps/templates/purple.png, pixmaps/templates/purple.svg,
+	  pixmaps/templates/red.png, pixmaps/templates/red.svg,
+	  pixmaps/templates/yellow.png, pixmaps/templates/yellow.svg: Allow
+	  SVG or PNG themes.
+
+2004-11-04 23:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/Makefile.am, chinese-checkers/Makefile.am,
+	  combat/Makefile.am, common/Makefile.am, dots/Makefile.am,
+	  ggzcards/Makefile.am, ggzcards/client/Makefile.am,
+	  hastings/Makefile.am, reversi/Makefile.am, spades/Makefile.am,
+	  tictactoe/Makefile.am: Change INCLUDES to AM_CPPFLAGS.
+
+2004-11-04 18:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - abort if librsvg is not found
+
+2004-11-04 09:04   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/bitmaps/: bishop_b.svg, bishop_w.svg, king_b.svg,
+	  king_w.svg, knight_b.svg, knight_w.svg, queen_b.svg, queen_w.svg,
+	  rook_b.svg, rook_w.svg: Somewhat better chess pieces.  These are
+	  autotraced from high-resolution copies of the original xboard
+	  pieces.
+
+2004-11-04 02:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* reversi/: Makefile.am, black.png, black.svg, dot.png, dot.svg,
+	  main_win.c, white.png, white.svg: Switch from PNG to SVG.  Allow
+	  the board to be resized.
+
+2004-11-04 01:17   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main_win.c: Allow the TTT window to be resized.
+
+2004-11-04 00:55   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main_win.c: Add some #defines; make the move graphics
+	  larger.
+
+2004-11-04 00:30   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/: Makefile.am, main_win.c, o.png, o.svg, x.png, x.svg:
+	  Switch from PNG to SVG.
+
+2004-11-03 23:55   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chinese-checkers/: display.c, pixmaps/Makefile.am,
+	  pixmaps/Dragon/blue.png, pixmaps/Dragon/blue.xpm,
+	  pixmaps/Dragon/board.png, pixmaps/Dragon/board.xpm,
+	  pixmaps/Dragon/cyan.png, pixmaps/Dragon/cyan.xpm,
+	  pixmaps/Dragon/green.png, pixmaps/Dragon/green.xpm,
+	  pixmaps/Dragon/hole.png, pixmaps/Dragon/hole.xpm,
+	  pixmaps/Dragon/purple.png, pixmaps/Dragon/purple.xpm,
+	  pixmaps/Dragon/red.png, pixmaps/Dragon/red.xpm,
+	  pixmaps/Dragon/yellow.png, pixmaps/Dragon/yellow.xpm,
+	  pixmaps/Electric/blue.png, pixmaps/Electric/blue.xpm,
+	  pixmaps/Electric/board.png, pixmaps/Electric/board.xpm,
+	  pixmaps/Electric/cyan.png, pixmaps/Electric/cyan.xpm,
+	  pixmaps/Electric/green.png, pixmaps/Electric/green.xpm,
+	  pixmaps/Electric/hole.png, pixmaps/Electric/hole.xpm,
+	  pixmaps/Electric/purple.png, pixmaps/Electric/purple.xpm,
+	  pixmaps/Electric/red.png, pixmaps/Electric/red.xpm,
+	  pixmaps/Electric/yellow.png, pixmaps/Electric/yellow.xpm,
+	  pixmaps/default/blue.png, pixmaps/default/blue.xpm,
+	  pixmaps/default/board.png, pixmaps/default/board.xpm,
+	  pixmaps/default/cyan.png, pixmaps/default/cyan.xpm,
+	  pixmaps/default/green.png, pixmaps/default/green.xpm,
+	  pixmaps/default/hole.png, pixmaps/default/hole.xpm,
+	  pixmaps/default/purple.png, pixmaps/default/purple.xpm,
+	  pixmaps/default/red.png, pixmaps/default/red.xpm,
+	  pixmaps/default/yellow.png, pixmaps/default/yellow.xpm,
+	  pixmaps/templates/blue.png, pixmaps/templates/blue.xpm,
+	  pixmaps/templates/board.png, pixmaps/templates/board.xpm,
+	  pixmaps/templates/cyan.png, pixmaps/templates/cyan.xpm,
+	  pixmaps/templates/green.png, pixmaps/templates/green.xpm,
+	  pixmaps/templates/hole.png, pixmaps/templates/hole.xpm,
+	  pixmaps/templates/purple.png, pixmaps/templates/purple.xpm,
+	  pixmaps/templates/red.png, pixmaps/templates/red.xpm,
+	  pixmaps/templates/yellow.png, pixmaps/templates/yellow.xpm:
+	  Switch from XPM to PNG.
+
+2004-11-03 23:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, hastings/Makefile.am, hastings/bayeux.xpm,
+	  hastings/frame_black.xpm, hastings/frame_ll.xpm,
+	  hastings/frame_lr.xpm, hastings/frame_ul.xpm,
+	  hastings/frame_ur.xpm, hastings/haroldsreturn.xpm,
+	  hastings/main_win.c, hastings/map.xpm, hastings/newmanblue.xpm,
+	  hastings/newmangreen.xpm, hastings/newmanred.xpm,
+	  hastings/newmanyellow.xpm, hastings/shadow.xpm,
+	  hastings/pixmaps/.cvsignore, hastings/pixmaps/Makefile.am,
+	  hastings/pixmaps/bayeux.png, hastings/pixmaps/frame_black.png,
+	  hastings/pixmaps/frame_ll.png, hastings/pixmaps/frame_lr.png,
+	  hastings/pixmaps/frame_ul.png, hastings/pixmaps/frame_ur.png,
+	  hastings/pixmaps/haroldsreturn.png, hastings/pixmaps/map.png,
+	  hastings/pixmaps/newmanblue.png,
+	  hastings/pixmaps/newmangreen.png, hastings/pixmaps/newmanred.png,
+	  hastings/pixmaps/newmanyellow.png, hastings/pixmaps/shadow.png:
+	  Switch from XPM to PNG.
+
+2004-11-03 22:09   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: game.c, support.c, support.h,
+	  pixmaps/default/Makefile.am, pixmaps/default/bomb.png,
+	  pixmaps/default/bomb.xpm, pixmaps/default/captain.png,
+	  pixmaps/default/captain.xpm, pixmaps/default/colonel.png,
+	  pixmaps/default/colonel.xpm, pixmaps/default/flag.png,
+	  pixmaps/default/flag.xpm, pixmaps/default/general.png,
+	  pixmaps/default/general.xpm, pixmaps/default/lieutenant.png,
+	  pixmaps/default/lieutenant.xpm, pixmaps/default/major.png,
+	  pixmaps/default/major.xpm, pixmaps/default/marshall.png,
+	  pixmaps/default/marshall.xpm, pixmaps/default/miner.png,
+	  pixmaps/default/miner.xpm, pixmaps/default/scout.png,
+	  pixmaps/default/scout.xpm, pixmaps/default/sergeant.png,
+	  pixmaps/default/sergeant.xpm, pixmaps/default/spy.png,
+	  pixmaps/default/spy.xpm: Switch from XPM to PNG.
+
+2004-11-03 21:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* reversi/: Makefile.am, black.png, black.xpm, dot.png, dot.xpm,
+	  main_win.c, white.png, white.xpm: Use PNG instead of XPM.
+
+2004-11-03 21:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/: Makefile.am, main_win.c, o.png, o.xpm, x.png, x.xpm:
+	  Use PNG instead of XPM.
+
+2004-11-03 20:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/main_win.c: Set the default size of the window to be
+	  640x480.  When the window is resized by default the right panel
+	  stays the same while the board is resized.
+
+2004-11-03 20:24   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/: board.c, board.h, callbacks.c, main_win.c: Allow a
+	  resizable chess board!
+
+2004-11-03 20:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, chess/Makefile.am, chess/board.c,
+	  chess/bitmaps/Makefile.am, chess/bitmaps/bishop_b.png,
+	  chess/bitmaps/bishop_b.svg, chess/bitmaps/bishop_w.png,
+	  chess/bitmaps/bishop_w.svg, chess/bitmaps/king_b.png,
+	  chess/bitmaps/king_b.svg, chess/bitmaps/king_w.png,
+	  chess/bitmaps/king_w.svg, chess/bitmaps/knight_b.png,
+	  chess/bitmaps/knight_b.svg, chess/bitmaps/knight_w.png,
+	  chess/bitmaps/knight_w.svg, chess/bitmaps/pawn_b.png,
+	  chess/bitmaps/pawn_b.svg, chess/bitmaps/pawn_w.png,
+	  chess/bitmaps/pawn_w.svg, chess/bitmaps/queen_b.png,
+	  chess/bitmaps/queen_b.svg, chess/bitmaps/queen_w.png,
+	  chess/bitmaps/queen_w.svg, chess/bitmaps/rook_b.png,
+	  chess/bitmaps/rook_b.svg, chess/bitmaps/rook_w.png,
+	  chess/bitmaps/rook_w.svg: Put Chess pieces into SVG using
+	  autotrace.  This gives some mediocre graphics which will have to
+	  be fixed before the next release.  Images are now rendered at
+	  runtime.
+
+2004-11-03 08:04   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/: board.c, bitmaps/Makefile.am: Install chess images in
+	  chess/pixmaps/, not in pixmaps/.
+
+2004-11-03 07:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* chess/: board.c, board.h, main.c, bitmaps/Makefile.am,
+	  bitmaps/bishop_b.png, bitmaps/bishop_b.xpm, bitmaps/bishop_w.png,
+	  bitmaps/bishop_w.xpm, bitmaps/king_b.png, bitmaps/king_b.xpm,
+	  bitmaps/king_w.png, bitmaps/king_w.xpm, bitmaps/knight_b.png,
+	  bitmaps/knight_b.xpm, bitmaps/knight_w.png, bitmaps/knight_w.xpm,
+	  bitmaps/pawn_b.png, bitmaps/pawn_b.xpm, bitmaps/pawn_w.png,
+	  bitmaps/pawn_w.xpm, bitmaps/queen_b.png, bitmaps/queen_b.xpm,
+	  bitmaps/queen_w.png, bitmaps/queen_w.xpm, bitmaps/rook_b.png,
+	  bitmaps/rook_b.xpm, bitmaps/rook_w.png, bitmaps/rook_w.xpm:
+	  Change XPM files to PNG.
+
+2004-11-03 07:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/drawcard.c: Remove some unneeded function parameters.
+
+2004-10-29 05:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, lapocha/Makefile.am, lapocha/cb_bid.c,
+	  lapocha/cb_bid.h, lapocha/cb_main.c, lapocha/cb_main.h,
+	  lapocha/dlg_bid.c, lapocha/dlg_bid.h, lapocha/dlg_main.c,
+	  lapocha/dlg_main.h, lapocha/docs.html, lapocha/game.c,
+	  lapocha/game.h, lapocha/hand.c, lapocha/hand.h, lapocha/main.c,
+	  lapocha/main.h, lapocha/module.dsc.in, lapocha/support.c,
+	  lapocha/support.h, lapocha/table.c, lapocha/table.h: Remove the
+	  la pocha client.
+
+2004-10-28 08:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/cardsets/Makefile.am, common/cardsets/cards-1.png,
+	  common/cardsets/cards-1.xpm, common/cardsets/cards-2.png,
+	  common/cardsets/cards-2.xpm, common/cardsets/cards-3.png,
+	  common/cardsets/cards-3.xpm, common/cardsets/cards-4.png,
+	  common/cardsets/cards-4.xpm, common/cardsets/cards-b1.png,
+	  common/cardsets/cards-b1.xpm, common/cardsets/cards-b2.png,
+	  common/cardsets/cards-b2.xpm, common/cardsets/cards-b3.png,
+	  common/cardsets/cards-b3.xpm, common/cardsets/cards-b4.png,
+	  common/cardsets/cards-b4.xpm, ggzcards/drawcard.c,
+	  lapocha/table.c, spades/gtk_io.c: Change XPM files to PNG.
+
+2004-10-28 08:25   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Remove GTK+-1.X support.
+
+2004-10-28 08:18   Jason Short <jdorje@ggzgamingzone.org>
+
+	* lapocha/: dlg_main.c, table.c: Remove GTK+-1.X support.
+
+2004-10-28 08:10   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spades/Makefile.am, spades/gtk_io.c, spades/gtk_play.c,
+	  spades/gtk_play.h, spades/gtk_taunt.c, spades/gtkspinbutton.c,
+	  spades/gtkspinbutton.h, tictactoe/main_win.c: Remove GTK+-1.X
+	  support.
+
+2004-10-28 07:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/dlg_main.c, ggzcards/drawcard.c, ggzcards/game.h,
+	  ggzcards/main.c, ggzcards/preferences.c, ggzcards/table.c,
+	  ggzcards/table.h, hastings/selector.c: Remove GTK+-1.X support.
+
+2004-10-28 07:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/: dlg_options.c, game.c, gtk_player_info.c: Remove
+	  GTK+-1.X support.
+
+2004-10-28 07:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/dlg_about.c, common/dlg_chat.c, common/dlg_exit.c,
+	  common/dlg_players.c, chess/board.c, chess/main_win.c,
+	  chinese-checkers/display.c: Remove GTK+-1.X support.
+
+2004-10-28 07:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, QuickStart.GGZ, README, TODO, configure.ac,
+	  m4/gtk.m4: Drop GTK 1.X support from ggz-gtk-games.  GTK+2.X is
+	  now required.
+
+2004-10-28 07:24   Jason Short <jdorje@ggzgamingzone.org>
+
+	* combat/callbacks.c: Fix a typo, and translate a string.
+
+2004-10-16 18:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* hastings/: game.h, selector.c: - support new map format over the
+	  wire
+
+	  But this doesn't mean yet it uses the specified graphics, nor can
+	  it handle game data downloads :(
+
+2004-07-18 02:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 04:30   Josef Spillner <josef@ggzgamingzone.org>
 
 	* tictactoe/module.dsc.in: - TTT protocol version bump
@@ -3883,7 +4696,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 6153 2004-07-18 00:37:08Z josef $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 6856 2005-01-23 21:23:07Z josef $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -3892,7 +4705,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 6153 2004-07-18 00:37:08Z josef $.
+	substitution for $Id: ChangeLog 6856 2005-01-23 21:23:07Z josef $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

@@ -1,3 +1,116 @@
+2005-01-23 19:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/database/: ggzdb-modular.xmi, ggzdb.xmi: - backup of
+	  database schema files
+
+2005-01-23 19:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/hosting/ggz-hosting-guide.texi: - slight update for 0.0.10
+
+2005-01-23 19:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: Makefile.am,
+	  ggz-game-development-guide.sxw: - OOo version of gamedev guide
+	  (for PDF generation)
+
+2005-01-23 19:47   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: features.html,
+	  ggz-game-development-guide.texi: - krosswater supports statistics
+	  - synchronize guide updates from PDF document
+
+2005-01-23 19:33   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/Versioning: - libggz bump was not yet included
+
+2005-01-23 14:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README.GGZ: - updated common files
+
+2005-01-22 17:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/Internationalization: - i18n docs updated
+
+2005-01-22 17:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/Versioning: - version number updates everywhere
+
+2005-01-22 16:23   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac,
+	  games/game-development/ggz-game-development-guide.texi,
+	  ggz-project/GGZ-contributions: - version number bump
+
+2005-01-21 22:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/features.html: - Checkers and Hnefatafl
+	  have statistics
+
+2005-01-16 20:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* spec/.cvsignore: - some more files that are generated
+
+2005-01-16 20:04   Josef Spillner <josef@ggzgamingzone.org>
+
+	* spec/: Makefile.am, design.sgml, overview.sgml, server_arch.fig:
+	  - include the server overview graphics again (but it needs an
+	  update) - build PDF version too - copyright update, so nobody
+	  thinks the doc is 5 years old
+
+2005-01-16 13:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: features.html, games.html: - add go
+	  client and server
+
+2005-01-15 00:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* spec/Makefile.am: - blur the difference between docbook2html and
+	  docbook-2-html
+
+2005-01-15 00:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - fix looking for tools - recognize both
+	  docbook-2-html and docbook2html
+
+2004-12-19 23:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: features.html, games.html: - inclusion
+	  of new ggzboard games into the games and features comparison
+	  table
+
+	  At one point in the future the whole documentation should be
+	  overhauled.  Among others, these tables should take game
+	  collections like GGZCards and GGZBoard better into account.
+
+2004-12-12 15:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/database/: ggzdb-modular.png, ggzdb.png, index.html: -
+	  documentation for the server database - includes schema graphics
+	  - include source code structure graphics (backend modules) - ...
+	  and a description of the tables and fields
+
+2004-12-05 21:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/GGZ-contributions: - list the background image and
+	  chess SVG pieces in python module
+
+2004-11-10 23:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-project/GGZ-contributions: Update file names.
+
+2004-10-22 11:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/GGZ-contributions: - first attempt to classify all
+	  external contributions to GGZ
+
+2004-07-18 02:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 04:28   Josef Spillner <josef@ggzgamingzone.org>
 
 	* games/game-development/games.html: - game version matrix update

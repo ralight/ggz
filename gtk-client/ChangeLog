@@ -1,3 +1,448 @@
+2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-23 12:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - goodbye gtk.m4, welcome gaim.m4
+
+	  Why do we need glibc21.m4 and all that stuff? This seems
+	  unnecessary.
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-gtk.6: - updated version numbers
+
+2005-01-22 16:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-20 03:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: ggzclient.c, launch.c, launch.h: Close & reset the
+	  launch dialog when changing rooms.  See bug #10.
+
+2005-01-19 08:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, ggz_gtk_admin.png, ggz_gtk_admin.svg,
+	  ggz_gtk_bot.png, ggz_gtk_bot.svg, ggz_gtk_guest.png,
+	  ggz_gtk_guest.svg, ggz_gtk_registered.png,
+	  ggz_gtk_registered.svg, playerlist.c: Change from PNG icons to
+	  SVG.
+
+2005-01-19 07:59   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/launch.c: Add an error log to help detect a specific
+	  error.
+
+2005-01-19 07:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/tablelist.c: Fix a bug in the display of the table ID in
+	  the table list.
+
+2005-01-18 17:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, ggz_gtk_bot.png, playerlist.c: - display a
+	  special icon for (registered) bot players
+
+2005-01-18 16:12   Roger Light <oojah@ggzgamingzone.org>
+
+	* ggz-gtk/main.c: Added windows specific code for exception
+	  handling so gtk-client produces a text file back trace on a crash
+	  if mingw-utils is installed.
+
+2005-01-15 23:34   Roger Light <oojah@ggzgamingzone.org>
+
+	* ggz-gtk/xtext-ggz.h: Only define USE_XLIB if we are not compiling
+	  on WIN32.
+
+2005-01-15 23:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, xtext-ggz.h, xtext.c, xtext.h: Upgrade
+	  xtext from xchat 2.4.1.
+
+2005-01-14 08:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: login.c, main.c: Avoid freeing NULL values.
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Add support for libintl and libiconv to AC_GGZ_INTL.
+	  This is needed to compile at all on non-glibc systems.
+
+2005-01-14 04:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* po/.cvsignore: Update .cvsignore.
+
+2005-01-13 07:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggz-gtk/chat.c, ggz-gtk/first.c, ggz-gtk/support.c:
+	  Miscellaneous bootstrap improvements for compiling on windows.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-11 04:24   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/msgbox.c: Fix a variable-not-initialized error.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* gaim-plugin/Makefile.am: Replace deprated INCLUDES directive with
+	  AM_CPPFLAGS.
+
+2005-01-01 23:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/playerlist.c: - use the correct PNG files
+
+2004-12-21 15:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/i18n.mk: - shared i18n rules
+
+2004-12-21 15:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: Makefile.am, de.po, es_AR.po, ggz-gtk.pot, pt_BR.po, sv.po:
+	  - drastically simplification of makefile due to new i18n include
+
+2004-12-21 12:31   Roger Light <oojah@ggzgamingzone.org>
+
+	* po/Makefile.am: Prepended installation paths with ${DESTDIR} to
+	  fix sandbox installation problems on gentoo.
+
+2004-12-16 01:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* gaim-plugin/Makefile.am: - link in libggz (since we use it to get
+	  the list of game modules)
+
+2004-12-15 23:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac, m4/gaim.m4, gaim-plugin/.cvsignore,
+	  gaim-plugin/Makefile.am, gaim-plugin/ggz.xpm,
+	  gaim-plugin/simple.c: - gaim plugin for GGZ!
+
+2004-12-15 00:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: de.po, ggz-gtk.pot, pt_BR.po: - translation update - now
+	  checked with POFileChecker to find small mistakes - taking over
+	  the pt_BR translations (the Spanish one however needs somebody)
+
+2004-12-11 21:47   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, ggzclient.c: Show the number of players in
+	  the server one one of the empty statusbars.
+
+2004-12-11 20:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/ggz.c: Remove unused file.
+
+2004-12-11 14:52   Roger Light <oojah@ggzgamingzone.org>
+
+	* ggz-gtk/client.c: Two of the three status bars (messagebar and
+	  statusbar) along the bottom of the main window were incorrectly
+	  showing resizer grips. They now no longer show the grip.
+
+	  In addition, messagebar and statebar have been given a requested
+	  minimum width of 150 pixels. Before this commit, they were
+	  squashed into a few pixels by statusbar which is set to expand to
+	  fill the available space. This was making the information in
+	  statebar unreadable.
+
+	  It should be noted that it does not appear as though statusbas
+	  (far left) and messagebar (middle) get used at all.
+
+2004-12-08 22:00   Roger Light <oojah@ggzgamingzone.org>
+
+	* ggz-gtk/about.c: Updated URL in about dialog to point to
+	  http://www.ggzgamingzone.org instead of the old sourceforge
+	  address.
+
+2004-11-28 01:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/ggz-debug.m4, m4/gtk-2.0.m4, m4/gtk.m4: - fix
+	  smaller build system glitches - remove Gtk+ 1.2 checks
+
+2004-11-26 00:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: ggzclient.c, login.c, props.c: Improve grammar and
+	  spacing of some messages.
+
+2004-11-18 06:07   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/support.h: Fix N_()
+
+2004-11-18 05:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/client.c: Fix toolbar tooltips.
+
+2004-11-16 08:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, ggz_gtk_lag0.png, ggz_gtk_lag1.png,
+	  ggz_gtk_lag2.png, ggz_gtk_lag3.png, ggz_gtk_lag4.png,
+	  ggz_gtk_lag5.png, playerlist.c, support.c, support.h: Use SVG lag
+	  icons.
+
+2004-11-16 07:59   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: ggz_gtk_lag0.svg, ggz_gtk_lag1.svg, ggz_gtk_lag2.svg,
+	  ggz_gtk_lag3.svg, ggz_gtk_lag4.svg, ggz_gtk_lag5.svg: Add lag SVG
+	  files.
+
+2004-11-16 07:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, msg_help.png, msg_info.png, msg_stop.png,
+	  msgbox.c: Use stock GTK graphics in dialogs.
+
+2004-11-16 04:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/motd.c: Simplify MOTD dialog.
+
+2004-11-16 04:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, client.c, client.h, playerinfo.c,
+	  roominfo.c, unknown.png: Use stock items.
+
+2004-11-16 01:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, xtext.README: Add explanatory README.
+
+2004-11-16 01:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: playerinfo.c, roominfo.c: Improve roominfo and
+	  playerinfo dialogs.
+
+2004-11-16 01:13   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/about.c: Improve about dialog.
+
+2004-11-15 23:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/roominfo.c: Change the roominfo window to use a table.
+
+2004-11-15 22:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/playerinfo.c: Change the playerinfo window to use a
+	  table.
+
+2004-11-15 20:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Disable deprecated when compiling with DEBUG.
+
+2004-11-15 04:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* po/Makefile.am: Add sv.po to the distribution.
+
+2004-11-14 23:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/sv.po: - Swedish translation done by kettil
+
+2004-11-14 14:59   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, playerinfo.c, roominfo.c, support.c,
+	  unknown.png: Remove old-style GtkPixmap code.
+
+2004-11-14 00:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/de.po: - fix fuzzy translations
+
+2004-11-13 18:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/main.c: Really fix gettext to return UTF-8.
+
+2004-11-13 18:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/main.c: Tell gettext to return strings in UTF-8.
+
+2004-11-11 17:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: game.c, ggzclient.c: Use glib input polling.
+
+2004-11-11 07:08   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/client.c: Remove menu mnemonics, since they don't work.
+
+2004-11-11 06:24   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, launch.c, login.c, pick_module.c,
+	  playerlist.c, props.c: Upgrade more deprecated code.
+
+2004-11-11 05:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* indent.pro: Add indentation file.
+
+2004-11-11 05:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/types.c: Fixes to types.c
+
+2004-11-11 05:02   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, ggzclient.c, msgbox.c, playerinfo.c,
+	  support.c, support.h: Upgrade some more code.
+
+2004-11-11 04:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, first.c, launch.c, login.c, motd.c,
+	  pick_module.c, props.c: Get rid of gtk_window_set_policy.
+
+2004-11-11 04:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, client.h: Fix the toolbar.
+
+2004-11-11 03:11   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/client.c: Update some deprecated code.
+
+2004-11-09 01:11   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: login.c, msgbox.c, msgbox.h: Fix a widget bug when
+	  changing the label of a stock button.
+
+2004-11-06 19:10   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, types.c: Change the last clist to a treeview.
+
+2004-11-06 18:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, first.c, launch.c, pick_module.c,
+	  playerinfo.c, props.c, roominfo.c: Use stock buttons in some more
+	  places.
+
+2004-11-06 18:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/types.c: Allow the types dialog to close.
+
+2004-11-06 09:47   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, first.c, launch.c, license.c, motd.c,
+	  msgbox.c, playerinfo.c, props.c, roominfo.c, types.c: Keep
+	  dialogs on top.
+
+2004-11-06 09:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, chat.c, motd.c, msgbox.c, support.c: Update
+	  some deprecated code.
+
+2004-11-06 05:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: playerlist.c, roomlist.c: Fix popup menus on treeviews.
+
+2004-11-06 04:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: playerlist.c, tablelist.c: Change the table list to use
+	  a treeview.
+
+2004-11-06 04:16   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/roomlist.c: Remove a spurious #define.
+
+2004-11-06 04:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, playerlist.c, roomlist.c: - Change the room
+	  list to a treeview.  - Make the left pane bigger by default.	-
+	  Add some text to the player list columns, and translate it.
+
+2004-11-06 01:16   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, ggzclient.c, login.c, tablelist.c,
+	  tablelist.h: Move more tablelist code into the tablelist file.
+	  Rename some functions so they match with those in the playerlist
+	  and roomlist code.
+
+2004-11-06 00:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: Makefile.am, client.c, ggzclient.c, login.c,
+	  roomlist.c, roomlist.h: Move all roomlist code into a separate
+	  file.
+
+2004-11-05 23:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: playerlist.c, playerlist.h: Move an enumeration out of
+	  the header file, and do some other minor cleanups.
+
+2004-11-05 23:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/props.c: Switch to a TreeView.
+
+2004-11-05 22:49   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, client.c, launch.c, license.c, login.c,
+	  motd.c, msgbox.c, playerinfo.c, props.c, roominfo.c, types.c: Get
+	  rid of gtk_widget_set_usize.
+
+2004-11-05 22:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: about.c, chat.c, client.c, first.c, ggzclient.c,
+	  launch.c, license.c, login.c, motd.c, msgbox.c, pick_module.c,
+	  playerinfo.c, playerlist.c, props.c, roominfo.c, support.c,
+	  support.h, tablelist.c, types.c: Update some deprecated code.
+
+2004-11-05 02:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, ggzclient.c, login.c, playerlist.c,
+	  playerlist.h: Miscellaneous cleanups.
+
+2004-11-05 02:08   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, ggzclient.c, login.c, playerlist.c,
+	  playerlist.h: Switch the player list to a treeview.
+
+2004-11-05 00:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/Makefile.am: Fix cflags.
+
+2004-11-04 23:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/Makefile.am: Change INCLUDES to AM_CPPFLAGS.
+
+2004-11-04 23:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggz-gtk/Makefile.am, ggz-gtk/about.c,
+	  ggz-gtk/about_bg.png, ggz-gtk/about_bg.xpm,
+	  ggz-gtk/ggz_gtk_admin.png, ggz-gtk/ggz_gtk_admin.xpm,
+	  ggz-gtk/ggz_gtk_guest.png, ggz-gtk/ggz_gtk_guest.xpm,
+	  ggz-gtk/ggz_gtk_lag0.png, ggz-gtk/ggz_gtk_lag0.xpm,
+	  ggz-gtk/ggz_gtk_lag1.png, ggz-gtk/ggz_gtk_lag1.xpm,
+	  ggz-gtk/ggz_gtk_lag2.png, ggz-gtk/ggz_gtk_lag2.xpm,
+	  ggz-gtk/ggz_gtk_lag3.png, ggz-gtk/ggz_gtk_lag3.xpm,
+	  ggz-gtk/ggz_gtk_lag4.png, ggz-gtk/ggz_gtk_lag4.xpm,
+	  ggz-gtk/ggz_gtk_lag5.png, ggz-gtk/ggz_gtk_lag5.xpm,
+	  ggz-gtk/ggz_gtk_registered.png, ggz-gtk/ggz_gtk_registered.xpm,
+	  ggz-gtk/msg_help.png, ggz-gtk/msg_help.xpm, ggz-gtk/msg_info.png,
+	  ggz-gtk/msg_info.xpm, ggz-gtk/msg_stop.png, ggz-gtk/msg_stop.xpm,
+	  ggz-gtk/msgbox.c, ggz-gtk/playerlist.c, ggz-gtk/support.c,
+	  ggz-gtk/support.h: Switch from XPM to PNG.
+
+2004-10-15 10:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/ggzclient.c: - remove deprecated ggz_table_left hook for
+	  the server, as we have one for the room now
+
+	  This was graciously detected by gcc 3.4 :)
+
+2004-07-18 02:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 06:03   Josef Spillner <josef@ggzgamingzone.org>
 
 	* po/Makefile.am: - look for *.mo files in builddir, not in srcdir

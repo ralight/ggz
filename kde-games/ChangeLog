@@ -1,3 +1,256 @@
+2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzwrap.1, muehle-ai.pl.6: - updated version numbers
+
+2005-01-22 16:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-20 22:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: Makefile.am, board.cc: - only convert SVG results from
+	  (rgba) to (argb) on big endian
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* KReversi/Makefile.am, fyrdman/Makefile.am, kcc/Makefile.am,
+	  kdots/Makefile.am, kdots/Dot/Makefile.am,
+	  keepalive/src/Makefile.am, koenig/Makefile.am,
+	  krosswater/Makefile.am, krosswater/zoneclient/Makefile.am,
+	  ktictactux/Makefile.am, lib/Makefile.am, muehle/src/Makefile.am,
+	  muehle/src/ggzwrap/Makefile.am: Replace deprated INCLUDES
+	  directive with AM_CPPFLAGS.
+
+2004-12-15 02:15   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: KReversi/de.po, KReversi/kreversi.pot, fyrdman/de.po,
+	  fyrdman/fyrdman.pot, kdots/de.po, kdots/kdots.pot, koenig/de.po,
+	  koenig/koenig.pot, krosswater/de.po, krosswater/krosswater.pot,
+	  ktictactux/de.po, ktictactux/ktictactux.pot, muehle/de.po,
+	  muehle/muehle.pot: - updates to message catalogs - consistency
+	  checks
+
+2004-11-17 22:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, po/Makefile.am: - create fyrdman translations
+
+2004-11-17 22:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/fyrdman/: .cvsignore, Makefile.am, de.po, fyrdman.pot: -
+	  translation for fyrdman
+
+2004-11-17 22:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/: mainwindow.cpp, mainwindow.h, map.cpp: - game
+	  information menu with territory and soldiers statistics
+
+2004-11-17 21:43   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/map.cpp: - do not set background pixmap recursively
+
+2004-11-17 21:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* krosswater/main.cpp: - swap about data arguments so that
+	  translations actually work
+
+2004-11-17 20:47   Josef Spillner <josef@ggzgamingzone.org>
+
+	* krosswater/: Makefile.am, zoneclient/Makefile.am: - do not link
+	  against $(LIB_QT) explicitely
+
+	  I don't know why but this caused a crash in libXft2.
+
+2004-11-17 20:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/: mainwindow.cpp, mainwindow.h, map.cpp: - fix end of
+	  game - fix colors for bright background pixmaps - improve AI
+
+2004-11-16 21:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: themes.cc, themes.h: - theme selector
+
+2004-11-16 21:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: Makefile.am, board.cc, board.h, koenigui.rc,
+	  toplevel.cc, toplevel.h: - finalize theme support and GHNS
+	  integration
+
+2004-11-16 16:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: Makefile.am, koenigrc, koenigui.rc, toplevel.cc,
+	  toplevel.h: - skeleton support for GHNS (not yet complete) - will
+	  be used to dynamically add chess pieces, and maybe also board
+	  graphics
+
+2004-11-16 16:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/rsvg.m4: - check for librsvg
+
+2004-11-16 15:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: Makefile.am, board.cc, board.h: - implement SVG loading
+	  (svgPixmap) - transparent fallback to foo.png or foo.svg.png if:
+	  * RSVG support disabled   * foo.svg not found
+
+2004-11-16 15:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/pieces/.cvsignore: - as always: forgot to add cvsignore
+
+2004-11-16 15:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/pieces/: Makefile.am, bishop_b.svg, bishop_w.svg,
+	  king_b.svg, king_w.svg, knight_b.svg, knight_w.svg, pawn_b.svg,
+	  pawn_w.svg, queen_b.svg, queen_w.svg, rook_b.svg, rook_w.svg: -
+	  SVG pieces for KDE chess client
+
+2004-11-16 13:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: board.cc, main.cc, toplevel.cc, toplevel.h,
+	  pics/Makefile.am, pics/bishop_b.svg.png, pics/bishop_b.xpm,
+	  pics/bishop_w.svg.png, pics/bishop_w.xpm, pics/king_b.svg.png,
+	  pics/king_b.xpm, pics/king_w.svg.png, pics/king_w.xpm,
+	  pics/knight_b.svg.png, pics/knight_b.xpm, pics/knight_w.svg.png,
+	  pics/knight_w.xpm, pics/pawn_b.svg.png, pics/pawn_b.xpm,
+	  pics/pawn_w.svg.png, pics/pawn_w.xpm, pics/queen_b.svg.png,
+	  pics/queen_b.xpm, pics/queen_w.svg.png, pics/queen_w.xpm,
+	  pics/rook_b.svg.png, pics/rook_b.xpm, pics/rook_w.svg.png,
+	  pics/rook_w.xpm: - instead of XPM files, use PNG-converted (and
+	  retouched) SVG files - do not hardcode data path anymore, use KDE
+	  datadir
+
+2004-10-23 11:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/themes/default/main.png: - background image to be used if
+	  game board is shaped	 (and thus not part of the mainwindow)
+
+2004-10-23 11:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: kcc.cpp, kcc.h, kccwin.cpp, kccwin.h,
+	  themes/default/Makefile.am: - complete GHNS integration - allow
+	  toggling between shaped and non-shaped windows
+
+2004-10-22 13:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - create kcc theme dirs
+
+2004-10-22 13:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/themes/Makefile.am: - forgot this makefile
+
+2004-10-22 13:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: Makefile.am, bg.png, kcc.cpp, kcc.h, mask.png, point0.png,
+	  point1.png, point2.png, point3.png, point4.png, point5.png,
+	  point6.png, themes/.cvsignore, themes/default/.cvsignore,
+	  themes/default/Makefile.am, themes/default/blue.png,
+	  themes/default/board.png, themes/default/cyan.png,
+	  themes/default/green.png, themes/default/hole.png,
+	  themes/default/mask.png, themes/default/purple.png,
+	  themes/default/red.png, themes/default/yellow.png: - move kcc
+	  graphics into a theme directory - ability to use shaped game
+	  board (experimental!)
+
+2004-10-22 11:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/ktictactuxwin.cpp: - remove old iconloader code
+
+2004-10-22 11:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: Makefile.am, kcc.cpp, kccrc, kccwin.cpp, kccwin.h: - add
+	  basic GHNS integration - remove old iconloader code - force
+	  widget to be of 400x400 size so we can use the Gtk+ cchecker
+	  themes
+
+2004-10-17 16:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* muehle/src/: Makefile.am, muehlerc, toplevel.cpp, toplevel.h: -
+	  basic knewstuff integration (can be used for levels and themes
+	  alike)
+
+2004-10-17 14:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/: Makefile.am, ktictactuxrc, ktictactuxwin.cpp,
+	  ktictactuxwin.h: - rough knewstuff integration
+
+2004-10-16 18:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/level.cpp: - make it an error if map isn't of format
+	  0.0.9
+
+2004-10-15 18:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/.cvsignore: - include generated dcop files
+
+2004-10-15 18:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/: Makefile.am, fyrdman.h, fyrdmanrc, level.cpp, level.h,
+	  mainwindow.cpp, mainwindow.h, map.cpp, data/battle_of_hastings: -
+	  finished KNewStuff integration: new levels can now be selected
+	  and used - new map format (0.0.9): includes background pixmaps -
+	  DCOP receiver to add new levels (but this is currently unused)
+
+2004-10-12 17:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: kcc.cpp, kccproto.cpp, kccwin.cpp: - gcc 3.4 compatibility
+
+2004-10-12 16:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kdots/kdots.cpp: - gcc 3.4 compatibility
+
+2004-10-12 16:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/ktictactux.cpp, KReversi/network.cpp: - gcc 3.4
+	  compatibility
+
+2004-10-10 11:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* fyrdman/fyrdmanrc: - configuration file pointing to
+	  ftp.ggzgamingzone.org
+
+2004-10-10 11:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, fyrdman/Makefile.am, fyrdman/mainwindow.cpp,
+	  fyrdman/mainwindow.h, m4/knewstuff.m4: - implement GHNS for
+	  fyrdman (except for local installation)
+
+2004-07-18 02:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-18 02:21   Josef Spillner <josef@ggzgamingzone.org>
 
 	* ktictactux/ktictactuxproto.cpp: - forgot to commit additional

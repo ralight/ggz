@@ -1,3 +1,183 @@
+2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-23 13:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/ggzcore++/src/: GGZCoreGametype.cpp, GGZCoreGametype.h,
+	  GGZCoreTable.cpp, GGZCoreTable.h: - const-conversions
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzap.6, ggzmodsniff.6, kggz.6, shadowbridge.6: - updated
+	  version numbers
+
+2005-01-22 16:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-21 10:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/KGGZConnect.cpp: - include TLS check status into
+	  connection profile
+
+2005-01-21 10:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/po/de.po: - small translation fix
+
+2005-01-14 23:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* shadowbridge/Makefile.am: - reference libggz's header position
+	  since the libggz values are wrapped	in ggzcore++ headers
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* compcal/src/Makefile.am, compcal/src/lib/Makefile.am,
+	  ggz-kde/ggzcore++/src/Makefile.am, ggz-kde/src/Makefile.am,
+	  ggz-kde/src/abstract/Makefile.am,
+	  ggz-kde/src/widgets/Makefile.am,
+	  ggz-kde/src/widgets/more/Makefile.am, ggzap/Makefile.am,
+	  kcm_ggz/Makefile.am, kcm_ggz/modules/Makefile.am,
+	  keepalivecontrol/src/Makefile.am, kio_ggz/Makefile.am,
+	  kio_ggzmeta/Makefile.am, modsniff/Makefile.am,
+	  shadowbridge/Makefile.am: Replace deprated INCLUDES directive
+	  with AM_CPPFLAGS.
+
+2005-01-05 19:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/data/icons/games/: Checkers.png, Hnefatafl.png,
+	  Makefile.am, Widelands.png: - icons for the new games
+
+2005-01-02 16:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreServer.cpp,
+	  ggzcore++/src/GGZCoreServer.h, src/KGGZ.cpp, src/KGGZ.h,
+	  src/KGGZCommon.h, src/widgets/KGGZBase.cpp,
+	  src/widgets/KGGZBase.h: - display the number of players on the
+	  server
+
+2004-12-19 23:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* compcal/src/app.cpp: - remove ancient KDE icon loader hack, so
+	  icon effects will be applied
+
+2004-12-18 23:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* compcal/: data/Makefile.am, data/compcal.desktop, data/event.png,
+	  src/app.cpp, src/display.cpp, src/display.h, src/parser.cpp,
+	  src/lib/eventgroup.cpp, src/lib/eventgroup.h: - load logo
+	  graphics locally if none is specified - similar for the event
+	  graphics: dummy image is used in such cases
+
+2004-12-18 20:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* compcal/src/main.cpp: - add translator to about dialog
+
+2004-12-18 20:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/ggzap/: de.po, ggzap.pot: - insert myself as translator
+	  instead of Thomas Diehl (the default) :)
+
+2004-12-18 20:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzap/main.cpp: - add translators to about dialog
+
+2004-12-18 17:15   Pierre Hugues Husson <phh@ggzgamingzone.org>
+
+	* po/ggzap/: Makefile.am, fr.po: Add fr translation
+
+2004-12-18 16:55   Pierre Hugues Husson <phh@ggzgamingzone.org>
+
+	* po/compcal/fr.po: Add french translation
+
+2004-12-15 03:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/po/: Makefile.am, de.po, es.po, fr.po, kggz.pot,
+	  pt_BR.po: - one more translation update - remove nearly empty
+	  french translation (but phh I'd like to see KGGZ in french ;)
+
+2004-12-15 02:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: compcal/compcal.pot, compcal/de.po, ggzap/de.po,
+	  ggzap/ggzap.pot, kcm_ggz/de.po, kcm_ggz/kcm_ggz.pot,
+	  modsniff/de.po, modsniff/modsniff.pot: - translation updates for
+	  all KDE tools
+
+2004-12-14 10:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZ.cpp, widgets/KGGZSelector.cpp,
+	  widgets/KGGZSelector.h: - include game name and frontend icon
+	  into module selection   (using code from kcm_ggz... should go
+	  into a library)
+
+2004-12-05 22:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcm_ggz/modules/: kcm_ggz_games.cpp, kcm_ggz_games.h: - better
+	  separation between game name and engine in games list   (which by
+	  the way is quite impressive now ;)
+
+2004-11-07 16:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/po/: de.po, kggz.pot: - update of German translation (and
+	  catalog)
+
+2004-11-07 16:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/data/icons/langame.png: - icon to be used for zeroconf
+
+2004-11-07 16:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, ggz-kde/data/icons/Makefile.am: - zeroconf support
+	  for KGGZ
+
+2004-11-07 16:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZConnect.cpp, KGGZConnect.h, Makefile.am: -
+	  zeroconf support for KGGZ (dubbed "LAN game")
+
+2004-10-12 17:32   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcm_ggz/kcm_ggz.cpp: - gcc 3.4 compatibility
+
+2004-10-12 17:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* shadowbridge/shadownet.cpp: - gcc 3.4 compatibility (patch from
+	  Andreas Jochens via Debian BTS)
+
+2004-07-18 02:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 19:35   Josef Spillner <josef@ggzgamingzone.org>
 
 	* ggz-kde/ggzcore++/src/: GGZCorePlayer.cpp, GGZCorePlayer.h: -

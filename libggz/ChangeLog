@@ -1,3 +1,192 @@
+2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README.GGZ: - updated common files
+
+2005-01-23 11:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Doxyfile, man/ggz.h.3: - doxy updates
+
+2005-01-23 11:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/: Makefile.am, ggz.h: - bump interface version since
+	  ggz_init_network was introduced
+
+2005-01-23 10:04   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/easysock.c: Zero out the message in ggz_write_fd before using
+	  it.  This silences (but may not fix) some valgrind warnings.
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-21 19:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/: conf.c, ggz.h, msg.c: Make ggz_list comparison functions
+	  take const values.  Comment the hack in ggz_conf's section list
+	  usage.
+
+2005-01-21 11:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/security/ggz_tls_gnutls.c: - sleep() one second in client
+	  before doing the handshake
+
+	  I think there's a bug in ggzd in that it tries to read TLS data
+	  even when it shouldn't (while doing handshake). Using sleep() is
+	  a quick hack but seems to work.
+
+2005-01-21 10:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/security/hashfunc.c: - fix error handling
+
+2005-01-20 06:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/: ggz_common.h, numberlist.c: Add const to several
+	  GGZNumberList parameters.
+
+2005-01-19 01:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/msg.c: Don't append the strerror string on
+	  ggz_error_msg_exit.
+
+2005-01-19 00:58   Roger Light <oojah@ggzgamingzone.org>
+
+	* src/: easysock.c, ggz.h: Added Jason's ggz_init_network() and
+	  ggz_shutdown_network() code with the appropriate winsock code.
+
+	  ggz_init_network() is called from ggz_make_socket(),
+	  ggz_shutdown_network() is called upon exit.
+
+2005-01-17 22:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Get a better libtool.m4
+
+2005-01-17 04:52   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 (needed for
+	  AC_LIBTOOL_WIN32_DLL).
+
+2005-01-17 01:16   Roger Light <oojah@ggzgamingzone.org>
+
+	* Makefile.msys.in, configure.ac, src/Makefile.msys.in: Removed
+	  misguided Makefiles for building dlls on win32.
+
+	  configure.ac now natively builds dlls with libtool. If you get
+	  errors about wsock32 and pthread not being available as shared
+	  libraries, you need to update libtool.
+
+2005-01-16 18:13   Roger Light <oojah@ggzgamingzone.org>
+
+	* Makefile.msys.in, configure.ac, src/Makefile.msys.in: Added new
+	  Makefiles for compiling/linking on win32.
+
+	  Use
+
+	  make -f Makefile.msys make -f Makefile.msys install
+
+	  etc.
+
+	  This will produce a .dll file and a .a file for linking against.
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-14 03:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/: easysock.c, security/ggz_tls_gnutls.c,
+	  security/ggz_tls_none.c, security/ggz_tls_openssl.c: In winsock,
+	  use send and recv instead of write and read.
+
+2005-01-13 05:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Link against libwsock32 when building for windows.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-13 01:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, m4/c99.m4, src/conf.c, src/support.h: Rewrite
+	  make_path.  The new make_path does not use strsep.  It also
+	  doesn't use allocated strings (which were buggy) but instead uses
+	  variable-sized stack arrays.	A configure check is added for
+	  variable-sized stack arrays.	The configure check for strsep is
+	  removed and a check for strchr is added.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2004-12-22 17:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - typo!
+
+2004-12-15 18:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/ggz_common.h: - remove comma from end of enum list
+
+2004-12-15 00:28   Roger Light <oojah@ggzgamingzone.org>
+
+	* src/security/: ggz_tls_gnutls.c, ggz_tls_none.c,
+	  ggz_tls_openssl.c, hashfunc.c: Changed all
+
+	  #include <config.h>
+
+	  lines to
+
+	  #ifdef HAVE_CONFIG_H #  include <config.h> #endif
+
+	  where they are missing.
+
+2004-11-14 15:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/conf.c: - fix libggz SEGFAULT: do not allow ggz_conf_parse on
+	  anything but	 regular files (specifically, directories)
+
+2004-11-04 23:52   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/security/Makefile.am, tests/Makefile.am: Change INCLUDES to
+	  AM_CPPFLAGS.
+
+2004-09-04 09:09   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tests/Makefile.am: Rename noinst_PROGRAMS as check_PROGRAMS.
+
+2004-08-17 16:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - use $enableval instead of yes
+
+2004-08-17 15:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* src/security/: ggz_tls_gnutls.c, hashfunc.c: - API updates to
+	  gnutls and gcrypt
+
+	  This does NOT yet work for some reason.
+
+2004-07-18 02:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 16:09   Josef Spillner <josef@ggzgamingzone.org>
 
 	* Makefile.am: - re-prepend accidentally removed m4 directory

@@ -1,3 +1,377 @@
+2005-01-23 14:32   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-wrapper/ggz-wrapper.c: - random name: without 'gaim' (since
+	  ggz-wrapper could be used by others too)
+
+2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-23 12:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, tests/Makefile.am: - do not use @LDADD@ for
+	  mingw32, use $(LIBS) instead
+
+	  Makefile.am's never contain platform specific stuff! This should
+	  always be managed by configure.ac.  LIBS is added automatically
+	  so each additional library (like -lm, -lgettext, -lreadline)
+	  should be added here.
+
+	  For 0.0.11 the windows tests should move out of configure.ac and
+	  to m4/*.m4.
+
+2005-01-23 12:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/Makefile.am: - include new manpage into EXTRA_DIST list
+
+2005-01-23 09:55   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/game.c: Don't ggzmod_disconnect after the game has been
+	  freed.
+
+2005-01-23 09:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Improve return value of ggzmod_disconnect.
+
+2005-01-22 17:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/Doxyfile, ggzmod/Doxyfile, man/ggzcore_h.3.in,
+	  man/ggzmod_h.3.in: - doxy updates (& manpages)
+
+2005-01-22 17:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/: Makefile.am, ggzmod.h: - new major library version
+	  number (binary incompatible)
+
+2005-01-22 17:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/: Makefile.am, ggzcore.h: - new major library version
+	  (not binary compatible)
+
+2005-01-22 16:39   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggz-config.6.in, ggz.modules.5.in: - version number updated
+
+2005-01-22 16:24   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-22 11:08   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Don't crash in ggzmod_get_player.
+
+2005-01-22 02:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/module.c: Avoid some potential crashes when there's an
+	  invalid ggz.modules.	This is incomplete; however, since we still
+	  don't do full validation of the read module data.
+
+2005-01-22 02:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Remove spurious/accidental printf.
+
+2005-01-21 23:11   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Fix some bugs with stats lists, and change
+	  stats_compare to take const values.
+
+2005-01-21 19:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: module.c, player.c, player.h, table.c, table.h: Make
+	  ggz_list comparison functions const.
+
+2005-01-20 19:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/ggzcore.h: Improve docs for room and game events.
+
+2005-01-20 18:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/ggzcore.h: - document GGZ_STATE_CHANGE event
+
+2005-01-20 08:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: game.c, game.h, ggzcore.h, net.h, netxml.c, player.c,
+	  room.c, room.h, server.c, table.c, table.h: Cleanups to ggzcore
+	  table (and some room) code.
+
+2005-01-20 07:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: gametype.c, gametype.h, ggzcore.h, netxml.c, server.c:
+	  Cleanups to gametype code.
+
+2005-01-20 02:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/ggzcore.h: Improve documentation for server events.
+
+2005-01-20 02:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* man/ggz-config.6.in: Fix manpage.  See bug #27.
+
+2005-01-20 02:04   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-config/ggz-config.c: Add reminder to update manpage when
+	  options change.
+
+2005-01-19 03:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: net.h, netxml.c, server.c: Pass parameters in to
+	  ggzcore_net_send_login instead of querying the server for them.
+
+2005-01-19 03:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: netxml.c, server.c: Move the new_room value out of the
+	  net struct and into the server struct.
+
+2005-01-18 18:06   Roger Light <oojah@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Call to CreateProcess() was missing a parameter.
+
+	  With the channels.diff patch, this allows game launching on
+	  win32.
+
+2005-01-18 03:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/game.c, ggzmod/ggzmod.c, ggzmod/ggzmod.h: Add a new
+	  ggzmod state, CONNECTED.  Go into this state once the ggz client
+	  to game client connection is made, and stay in it until the game
+	  server connection is made (when the state is changed to waiting).
+
+2005-01-18 01:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Make _ggzmod_handle_state more robust.
+
+2005-01-18 01:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/game.c: Rewrite _ggzcore_game_handle_state.  It is now
+	  more robust, and one bug is fixed.
+
+2005-01-18 00:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: net.h, netxml.c, server.c: Pass the handle (id) to
+	  ggzcore_net_send_channel, rather than have the function call
+	  ggzcore_server_get_handle to retrieve it.
+
+2005-01-17 22:41   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Get a better libtool.m4
+
+2005-01-17 04:52   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 (needed for
+	  AC_LIBTOOL_WIN32_DLL).
+
+2005-01-17 04:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, server.c: Fix a ggzcore crash on a
+	  GGZ_CHANNEL_FAIL event.  Avoid such problems in the future.
+
+2005-01-17 02:02   Roger Light <oojah@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/Makefile.msys.in, m4/ggz.m4,
+	  ggzmod/Makefile.msys.in: Removed misguided Makefiles for building
+	  dlls on win32.
+
+	  configure.ac now natively builds dlls with libtool. If you get
+	  errors about wsock32 and pthread not being available as shared
+	  libraries, you need to update libtool.
+
+2005-01-16 20:10   Roger Light <oojah@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/Makefile.msys.in, ggzmod/Makefile.msys.in:
+	  Added new Makefiles for compiling/linking on win32.
+
+	  Use
+
+	  make -f Makefile.msys make -f Makefile.msys install
+
+	  etc.
+
+	  This will produce a .dll file and a .a file for linking against.
+
+2005-01-16 18:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-config/readme.ggzconfig: - move available again the
+	  ggz-config usage documentation
+
+2005-01-16 04:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Check for gettext in ggz-client-libs.  This can fix
+	  some linkage problems with popt when compiling with GNU gettext
+	  (libintl).
+
+2005-01-15 05:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzmod/ggzmod.c: Allow game_fork and game_embedded
+	  to be compiled on unix systems without socketpair.
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-wrapper/Makefile.am: Replace deprated INCLUDES directive with
+	  AM_CPPFLAGS.
+
+2005-01-11 03:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-wrapper/: game.c, ggz-wrapper.c, loop.c, server.c: Various
+	  compiling fixes for windows and other platforms.
+
+2005-01-11 03:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Check for the alarm function.
+
+2005-01-11 03:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Fix a typo in HAVE_SOCKETPAIR.
+
+2005-01-11 02:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Fix problems with embedded ggzmod on windows.
+
+2005-01-08 20:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c, ggzcore/game.c, ggzcore/ggzcore.h,
+	  ggzcore/init.c, ggzcore/module.c, ggzcore/module.h: - support for
+	  ggzcore embedded mode
+
+2005-01-08 19:18   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: ggzmod_dispatch should return 0 if select
+	  returns 0.
+
+2004-12-22 22:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-config.6.in: - document --modfile instead of --fromfile
+
+	  About the -D option, I don't know yet - ideally it wouldn't be
+	  needed but we need to check the 'make distcheck' command without
+	  it.
+
+2004-12-22 17:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, ggz-config/Makefile.am, ggzcore/Makefile.am,
+	  ggzmod/Makefile.am: - get rid of @LDADD@ usage altogether, and
+	  use proper $(...) variables	for FOO_LDADD, FOO_LDFLAGS and
+	  LIB_FOO
+
+2004-12-16 01:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/Makefile.am: - install manpage (grmpf)
+
+2004-12-16 01:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-wrapper.6: - manpage for ggz-wrapper
+
+2004-12-16 01:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-wrapper/: game.c, game.h, server.c: - pass empty destplayer
+	  string for bot opponents
+
+	  e.g. ggz-wrapper -g TicTacToe -d ""
+
+2004-12-15 22:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac: - compile ggz-wrapper
+
+2004-12-15 22:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-wrapper/: .cvsignore, Makefile.am, game.c, game.h,
+	  ggz-wrapper.c, loop.c, loop.h, server.c, server.h: - move
+	  ggz-wrapper, the generic command-line GGZ core client
+
+2004-12-15 18:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/ggzcore.h: - remove commas from end of enum lists
+
+2004-12-12 06:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/room.c: Queue a players-changed event when a player
+	  leaves a room.
+
+2004-12-11 21:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, room.c, server.c, server.h: Add ggzcore
+	  support for finding the number of players on the server.    -
+	  ggzcore_server_get_num_players returns the (estimated) number of
+	  players.	  - The GGZ_SERVER_PLAYERS_CHANGED server event is
+	  triggered when this	   number changes.
+
+2004-12-11 20:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, room.c: Add a new function
+	  ggzcore_room_get_server (just for completeness).
+
+2004-11-24 09:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/ggzcore.h, ggzmod/ggzmod.h: Improve the documentation.
+
+2004-11-12 01:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Add ggzmod_get_server_fd().	This function was
+	  included in the header but forgotten from the backend.
+
+2004-11-09 00:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, netxml.c, server.c: Improve error-condition
+	  return values and their documentation.
+
+2004-11-06 00:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, room.c: - Add a new accessor
+	  ggzcore_room_get_id().  - Add a few more lines to the interface
+	  documentation.
+
+2004-11-04 23:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-config/Makefile.am, ggzcore/Makefile.am, ggzmod/Makefile.am:
+	  Change INCLUDES to AM_CPPFLAGS.
+
+2004-09-04 09:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c, tests/Makefile.am: Small compilation
+	  improvements for windows.
+
+2004-09-04 09:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac, tests/.cvsignore, tests/Makefile.am,
+	  tests/ggzmodgametest.c, tests/ggzmodtest.c: Add a simple ggzmod
+	  test.
+
+2004-09-04 08:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzmod/ggzmod.c: Add an experimental (untested)
+	  method of creating a GGZMod in windows.
+
+2004-09-04 07:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Don't use AC_FUNC_MALLOC.
+
+2004-09-04 07:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-config/ggz-config.c: Use ggz_malloc, not malloc.
+
+2004-07-18 02:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-18 00:45   Josef Spillner <josef@ggzgamingzone.org>
 
 	* ggzmod/: ggzmod-ggz.h, ggzmod.c, ggzmod.h, mod.h: - don't let

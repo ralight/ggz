@@ -1,3 +1,327 @@
+2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* README.GGZ: - updated common files
+
+2005-01-23 13:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/widelands/Makefile.am: - include protocol.h into
+	  header list
+
+	  This is was funny bug hunt: during make distcheck, the header
+	  file from ggzmod was included, so it didn't really complain...
+
+2005-01-23 11:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* man/ggzdmod.h.3: Rerun doxygen.
+
+2005-01-23 11:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzdmod/ggzdmod.h: Improve documentation for join/leave/seat
+	  events.  Label join and leave events as deprecated.
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 17:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggzdmod.h.3: - updated doxygen-generated manpage
+
+2005-01-22 17:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/ggzdmod.h: - version update (but nothing else changed)
+
+2005-01-22 17:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/Doxyfile: - doxy updates
+
+2005-01-22 16:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzd.6, ggzduedit.6: - updated version numbers
+
+2005-01-22 16:24   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-22 11:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/widelands/: widelands.dsc, widelands_server.cpp: -
+	  allow up to 8 players
+
+2005-01-21 22:47   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/ai.c: Fix a compiler warning.
+
+2005-01-21 00:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/ai.c: - disable rule exception: force pawns to
+	  capture if possible
+
+2005-01-21 00:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/game.c: - support for AI player in seat 0 (=
+	  white) (= starting player)
+
+2005-01-20 20:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/krosswater/: krosswater.dsc, krosswater_server.cpp:
+	  - support win-loss statistics
+
+2005-01-20 03:09   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/tictactoe/tictactoe.room: Correctly rename TicTacToe
+	  as Tic-Tac-Toe.
+
+2005-01-20 03:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/ggzcards/config/: ggzcards-bridge.room,
+	  ggzcards-fortytwo.room, ggzcards-hearts.room,
+	  ggzcards-lapocha.room, ggzcards-spades.room, ggzcards-suaro.room,
+	  ggzcards-sueca.room, ggzcards-whist.room: Rename the rooms to
+	  match the game, not the implementation.  See bug #26.
+
+2005-01-20 01:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/: ai.c, game.c, game.h: Replace printf with
+	  ggz_debug.
+
+2005-01-20 01:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/: chess.h, game.c, main.c: Fix another
+	  type-conversion bug with the clock_type enumeration.
+
+2005-01-20 00:53   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/game.c: Fix a type-conversion bug with the
+	  clock_type enumeration.
+
+2005-01-20 00:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/game.c: Rename game_stop_chronometer as
+	  game_restart_chronometer.  Add a new function
+	  game_read_chronometer.
+
+2005-01-20 00:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/chess.h: Change the clock type to an
+	  enumeration.
+
+2005-01-19 23:07   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/game.c: Rename cronometer as chronometer.
+
+2005-01-19 23:02   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/: game.c, game.h: Make some functions static.
+
+2005-01-18 19:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: net.c, net.h, players.c, room.c, table.c: Add room_id
+	  parameters to some net functions.
+
+2005-01-16 08:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzd/Makefile.am, ggzd/strsep.c: strsep portability
+	  fixes.
+
+2005-01-15 19:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/database.m4: - always prepend -L/usr/lib/mysql when using
+	  MySQL, because fedora needs it
+
+2005-01-14 22:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/database/ggzdb_mysql.c: - dummy implementation of stats
+	  functions   (stats not yet implemented for MySQL backend)
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-14 04:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/ggzcards/client/client.c: Update client.c from
+	  gtk-games code.
+
+2005-01-14 03:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, game_servers/chess/libcgc/board.h: Portability
+	  fixes for chess.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-05 22:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/widelands/widelands_server.cpp: - broadcast peer
+	  address instead of the one supplied by the game host	 (we don't
+	  trust noone)
+
+2005-01-05 18:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/Makefile.am, configure.ac: - addition of widelands
+	  server
+
+2005-01-05 18:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/widelands/: .cvsignore, Makefile.am, main.cpp,
+	  protocol.h, widelands.dsc, widelands.room, widelands_server.cpp,
+	  widelands_server.h, lib/.cvsignore, lib/Makefile.am,
+	  lib/ggzgameserver.cpp, lib/ggzgameserver.h, lib/net.cpp,
+	  lib/net.h: - move widelands server to GGZ CVS - use copy of
+	  GGZGameServer class (we need to create a 'lib' directory)
+
+2005-01-02 14:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, ggzd/Makefile.am, m4/database.m4: - move database
+	  M4 macros into own file - support for DB 4.3 - introduce
+	  $(LIB_DATABASE) in order to deprecate ggzd_LIBS
+
+2005-01-02 12:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/database/ggzdb_pgsql.c: - remove all entries from statistics
+	  db upon player registration
+
+	  Ideally a player_remove() function would exist but then there
+	  isn't really a concept for player removal (registered or
+	  otherwise).
+
+2005-01-02 12:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/stats.c: - improved implementation of statistics policies -
+	  the values for bot_stats and guest_stats are hardcoded but might
+	  be   read from .dsc/.room files later on
+
+2004-12-22 10:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/ai.c: - synchronization of pawn fix
+
+2004-12-17 18:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/stats.c: - set initial ranking to zero
+
+2004-12-11 22:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/room.c: Remove the server message telling the number of
+	  players on the server.  Clients should use the ggzcore interface
+	  to find this information now.
+
+2004-11-17 23:02   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: client.c, datatypes.h, login.c, parse_opt.c, players.c,
+	  players.h, room.c, util.c, util.h: - Store all time values as
+	  ggztime_t (double) values.  - When callling select(), if a ping
+	  is in progress check how long we   have to wait before bumping
+	  the lag class.
+
+2004-11-17 21:56   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: client.c, util.h: Fix a bug where MAX was used instead of
+	  MIN to find the amount of time to wait in the select loop.
+
+2004-11-17 15:22   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/client.c: - do not select() for a negative number of seconds
+
+	  This is related to the laptop sleep problem.	Maybe it should be
+	  fixed elsewhere but it works here too.  After setting the value
+	  (which is negative) to zero, all following operations work again,
+	  so it recalibrates itself.
+
+2004-11-17 13:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/: stats.c, database/ggzdb.h, database/ggzdb_pgsql.c: - track
+	  all games - append player type to 'matchplayers' table
+
+2004-11-09 15:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/: ai.c, ai.h, game.c: - synchronize chess AI
+	  with grubby
+
+2004-11-05 00:23   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, ggzd/Makefile.am, ggzd/control.c, ggzd/datatypes.h,
+	  ggzd/ggzd.conf.in, ggzd/parse_opt.c, ggzd/database/ggzdb_db4.c: -
+	  zeroconf implementation for the server side (publishing a
+	  _ggz._tcp entry)
+
+2004-11-04 23:59   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/Makefile.am,
+	  game_servers/chinese-checkers/Makefile.am,
+	  game_servers/combat/Makefile.am,
+	  game_servers/connectx/Makefile.am, game_servers/dots/Makefile.am,
+	  game_servers/escape/Makefile.am,
+	  game_servers/geekgame/Makefile.am,
+	  game_servers/ggzcards/Makefile.am,
+	  game_servers/ggzcards/ai/Makefile.am,
+	  game_servers/ggzcards/client/Makefile.am,
+	  game_servers/ggzcards/common/Makefile.am,
+	  game_servers/ggzcards/games/Makefile.am,
+	  game_servers/hastings/Makefile.am,
+	  game_servers/keepalive/ggzsh/Makefile.am,
+	  game_servers/keepalive/src/Makefile.am,
+	  game_servers/krosswater/Makefile.am,
+	  game_servers/krosswater/zoneserver/Makefile.am,
+	  game_servers/muehle/Makefile.am,
+	  game_servers/muehle/ggz/Makefile.am,
+	  game_servers/reversi/Makefile.am,
+	  game_servers/spades/Makefile.am,
+	  game_servers/tictactoe/Makefile.am,
+	  game_servers/tuxman/Makefile.am,
+	  game_servers/tuxman/lib/Makefile.am, ggzd/Makefile.am,
+	  ggzd/database/Makefile.am, ggzdmod/Makefile.am,
+	  tests/Makefile.am: Change INCLUDES to AM_CPPFLAGS.
+
+2004-10-29 06:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, game_servers/Makefile.am,
+	  game_servers/lapocha/Makefile.am, game_servers/lapocha/cards.c,
+	  game_servers/lapocha/cards.h, game_servers/lapocha/game.c,
+	  game_servers/lapocha/game.h, game_servers/lapocha/lapocha.dsc,
+	  game_servers/lapocha/lapocha.room, game_servers/lapocha/main.c:
+	  Remove the La Pocha server.  It is obsoleted by GGZCards-LaPocha.
+
+2004-10-16 17:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/hastings/: game.c, game.h: - support map format
+	  0.0.9
+
+2004-10-16 17:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/hastings/maps/: Makefile.am, battle_of_hastings,
+	  coast, yorkshire: - update maps to format 0.0.9 - add new map:
+	  Harold's return
+
+2004-08-23 21:49   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/err_func.c: Remove the locking in log_update_set_interval.
+
+	  Bug reported by Michael Rohrer <mrohrer@gbronline.com>.
+
+2004-07-18 02:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 18:20   Josef Spillner <josef@ggzgamingzone.org>
 
 	* ggzd/protocols.h: - bump ggz protocol number

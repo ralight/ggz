@@ -1,3 +1,68 @@
+2005-01-23 14:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* README, README.GGZ: - updated common files
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 16:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggz-cmd.1, metaserv.1, telggz.1: - updated version numbers
+
+2005-01-22 16:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 19:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Greatly improve configure checks.
+
+2005-01-13 19:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaserv.c: Check if headers are present before
+	  including them.
+
+2005-01-13 19:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* cmd-client/main.c: Include winsock if needed.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2004-11-05 00:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* cmd-client/Makefile.am, ggzcomm/Makefile.am,
+	  metaserv/metaserv/Makefile.am, telggz/Makefile.am: Change
+	  INCLUDES to AM_CPPFLAGS.
+
+2004-07-18 02:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 05:59   Josef Spillner <josef@ggzgamingzone.org>
 
 	* Makefile.am: - fix libtool.m4 inclusion

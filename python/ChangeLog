@@ -1,3 +1,474 @@
+2005-01-23 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* QuickStart.GGZ, README, README.GGZ: - updated common files
+
+2005-01-23 11:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - package version bump (this one was forgotten)
+
+2005-01-22 15:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* lib/sdlnewstuff.py: - use real server instead of localhost test
+	  server
+
+2005-01-22 15:27   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/xadrez-chines: - 'f' toggles fullscreen
+
+2005-01-21 22:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: module_hnefatafl.py, server_hnefatafl.dsc,
+	  server_hnefatafl.py: - now hnefatafl has records too (but this
+	  only works by disabling the move   validation)
+
+2005-01-21 22:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzdmod/src/pyggzdmod_init.c: - implement game reporting
+
+2005-01-21 22:15   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: server_checkers.dsc, server_checkers.py: - statistics
+	  for GGZBoard-Checkers
+
+2005-01-21 21:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: server_checkers.dsc, server_hnefatafl.dsc: - only 2
+	  player games are allowed (not 1-2)
+
+2005-01-21 21:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard_net.py, net_checkers.py: - convert integers
+	  back to host order after reading them from the network
+
+2005-01-21 21:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.in: - fix server installation for GGZBoard servers
+
+2005-01-21 21:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.in, configure.ac, ggzboard/.cvsignore,
+	  ggzboard/DESIGN.ggzboard, ggzboard/ggzboard,
+	  ggzboard/ggzboard.py, ggzboard/module_checkers.dsc,
+	  ggzboard/module_checkers.dsc.in, ggzboard/module_chess.dsc,
+	  ggzboard/module_chess.dsc.in, ggzboard/module_go.dsc,
+	  ggzboard/module_go.dsc.in, ggzboard/module_hnefatafl.dsc,
+	  ggzboard/module_hnefatafl.dsc.in, ggzboard/module_reversi.dsc,
+	  ggzboard/module_reversi.dsc.in: - install module.dsc files with
+	  absolute paths - rename ggzboard.py to ggzboard (the .py
+	  shouldn't be visible) - install server files for all games
+
+2005-01-21 09:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - convenience wrapper script
+
+2005-01-21 09:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - check for RSVG - check for Pygame (but do not
+	  abort since this is runtime-only)
+
+2005-01-21 00:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/ai.c: - disable rule exception: force pawns to capture if
+	  possible
+
+2005-01-20 19:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/pyggzcoresimple_init.c: - implement game launch
+	  code
+
+2005-01-20 19:47   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - support for launching games
+
+2005-01-20 19:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - more i18n()ification preparation - display
+	  server state correctly ("offline" was hardcoded)
+
+2005-01-20 18:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzdmod/.cvsignore, pyggzmod/.cvsignore: - shut them up!
+
+2005-01-18 19:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/ggzboard.py: - pressing 's' produces a screenshot
+	  (useful for fullscreen mode)
+
+2005-01-16 17:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* README: - mucho new stuff in here
+
+2005-01-16 17:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.in, chess/Makefile, chess/ai.c, chess/ai.h,
+	  pyggzchess/setup.py: - fix ggzchess wrapper: include local copy
+	  of static library
+
+2005-01-16 16:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_go.py, module_hnefatafl.py, module_reversi.py: - fix
+	  module and data paths in ggzboard
+
+2005-01-16 16:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* INSTALL, Makefile.in: - do not forget to install playertable
+	  class - fix remarks on PYTHONPATH
+
+2005-01-16 15:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* .cvsignore: - ignore generated makefile
+
+2005-01-16 15:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.in: - install ggzboard (still without the ability to
+	  find itself)
+
+2005-01-16 15:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzchess/.cvsignore, pyrsvgsdl/.cvsignore: - ignore
+	  python-generated build directories
+
+2005-01-16 15:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, Makefile.in, configure.ac: - improved usage of autoconf
+	  in building process
+
+2005-01-16 13:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, ggzboard_net.py, module_go.py, net_go.py:
+	  - implement capturing algorithm for go - ability for all ggzboard
+	  network modules to indicate they're "thinking"
+
+	  The problem with GMP is that it is basically a client-to-client
+	  protocol, thus all clients must know the game rules.	I think
+	  with GTP there would be some advantages (querying board, last
+	  moves, scores) but it is a lot more complex by design.
+
+2005-01-16 02:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/net_go.py: - make go game work for simple moves (we're
+	  white, AI is black)
+
+2005-01-16 00:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/net_go.py: - fix notion of sequence bits - common reply
+	  method for moves, answers, acknowledgements - deal with 3
+	  queries: board size, colour and handicap
+
+2005-01-15 21:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/net_go.py: - basic go protocol handling (GMP), taken
+	  from goserver - ability to send moves, create checksum,
+	  re-shuffle bits etc.
+
+2005-01-15 19:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_go.py, module_hnefatafl.py, module_madn.py,
+	  module_reversi.py, net_go.py, madn/poeppel-black.svg,
+	  madn/poeppel-blue.svg, madn/poeppel-green.svg,
+	  madn/poeppel-red.svg, madn/poeppel-yellow.svg: - new ggzboard
+	  game stuf: M-A-D-N (ludo) - this will not be installed for the
+	  next release, but introduces:   * coloured tokens   * leaving out
+	  the drawing of fields that can never be entered   * dice
+
+2004-12-29 21:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: module_chess.py, module_go.py, net_go.py: - some chess
+	  and go stuff fixes hacked on during 21C3
+
+2004-12-23 00:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: net_checkers.py, net_hnefatafl.py, server_checkers.py,
+	  server_hnefatafl.py: - basic implementation for checkers
+	  networking (includes new protocol,   similar to hnefatafl, both
+	  based on reversi) - end-of-game fixes
+
+2004-12-22 11:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: net_hnefatafl.py, server_hnefatafl.py: - nearly
+	  complete implementation of Hnefatafl game
+
+2004-12-22 02:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/ggzboard_net.py: - networking fix: send int as one value
+	  of 4 bytes instead of 4 values of 1
+
+2004-12-21 21:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard_net.py, net_hnefatafl.py,
+	  server_hnefatafl.py: - implementation of hnefatafl network
+	  handshake (no real gameplay yet)
+
+	  There seems to be a nasty network bug, giving us
+	  non-deterministic network failures and wrong opcodes :(
+
+2004-12-21 21:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzdmod/src/pyggzdmod_init.c: - new python methods to access
+	  seat information
+
+2004-12-20 20:39   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/module_hnefatafl.py: - complete implementation of
+	  hnefatafl rules - it's only the AI which doesn't know about it
+	  yet :)
+
+2004-12-20 02:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_go.py, module_hnefatafl.py, module_reversi.py: - support
+	  for board tile style (a RGB triplet containing the difference)
+	  * is used for hnefatafl's throne (where king starts) and corners
+	  (exit)   * will be used for go's markers (and could be used for
+	  chinese chess) - further implementation of hnefatafl move
+	  verification and endgame check   * only missing parts: crossing
+	  the throne, and playing on the edge
+
+2004-12-19 22:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, net_checkers.py, net_chess.py,
+	  net_hnefatafl.py, net_reversi.py: - implementation of network
+	  chess games (save gameover and clock options) - display of player
+	  names next to the board (if they exist)
+
+2004-12-19 00:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, net_checkers.py, net_chess.py,
+	  net_hnefatafl.py, net_reversi.py: - make player menu available
+	  via 'p' key - use ggz_common constants in the games
+
+2004-12-19 00:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* lib/playertable.py: - new common python class: implementation of
+	  player table view
+
+2004-12-19 00:13   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzmod/src/pyggzmod_init.c: - include ggz_common constants
+	  (such as GGZ_SEAT_OPEN) like ggzdmod does
+
+2004-12-18 23:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/net_chess.py: - skeleton file for chess network support
+
+2004-12-16 02:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard_net.py, net_checkers.py, net_hnefatafl.py,
+	  net_reversi.py, server_checkers.dsc, server_checkers.py,
+	  server_checkers.room, server_hnefatafl.dsc, server_hnefatafl.py,
+	  server_hnefatafl.room: - use shared network base class
+	  ggzboard_net - start of implementation of Checkers and Hnefatafl
+	  game servers	 (the other games (chess, reversi, go) use existing
+	  servers)
+
+2004-12-14 18:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: .cvsignore, Makefile, de.po, ggzpython.pot: - translation
+	  infrastructure for ggz-python
+
+2004-12-14 18:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* lib/: sdlnewstuff.py, test.py: - test program for sdlnewstuff -
+	  use new 'ggzpython' message catalog
+
+2004-12-14 12:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - fix first-login issue - prepare translations
+
+2004-12-14 11:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: DESIGN.ggzboard, ggzboard.py, module_checkers.py,
+	  module_chess.py, module_go.py, module_hnefatafl.py: - docs update
+	  - unbreak other games - SDLNewStuff support for all ggzboard
+	  games (press 'u')
+
+2004-12-14 11:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_reversi.py, net_reversi.py: - full
+	  implementation of reversi game
+
+	  Now only the ggzboard client must use the provided information.
+	  Also, it breaks the other modules.
+
+2004-12-14 10:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, net_reversi.py: - handle GGZ
+	  initialization and network errors (darkening the screen) -
+	  implement first part of reversi networking
+
+	  Unfortunately, after sending the move no response appears.
+
+2004-12-05 23:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/net_reversi.py: - pseudo network handling for Reversi
+
+	  This is the code as used in Escape-SDL, Xadrez-Chines etc...	but
+	  in a more object oriented manner, moving the common network
+	  handling to two base classes (NetworkBase, NetworkInfo) and only
+	  leaving the game-specific details to each game.  These details
+	  must then be abstracted for GGZBoard to the lowest common
+	  denominator: player names, state, sending and receiving moves...
+
+2004-12-05 22:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: module_checkers.dsc, module_chess.dsc, module_go.dsc,
+	  module_hnefatafl.dsc, module_reversi.dsc: - module description
+	  files for GGZ mode
+
+	  To test them, the core client must be launched from this
+	  directory until installations rules are implemented.	Of course,
+	  networking doesn't work yet, but the game will start.
+
+2004-12-05 22:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/DESIGN.ggzboard: - some documentation on how ggzboard is
+	  supposed to work - the obviously missing part is networking
+
+2004-12-05 21:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_go.py, module_hnefatafl.py, module_reversi.py,
+	  go/piece-black.svg, go/piece-white.svg: - support for moving
+	  pieces on intersections - add go game (which needs
+	  intersections), without AI
+
+2004-12-05 21:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/.cvsignore: - ignore compiled python modules
+
+2004-12-05 21:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_hnefatafl.py, module_reversi.py, sunset.jpg: - implement
+	  chess game (the existing file was only a checkers copy) - replace
+	  sunset background with a free one - ability to determine game
+	  board size automatically (needed for reversi) - fullscreen/window
+	  mode switch with 'f' key, including scaled background image -
+	  game over indicated by darkening the screen - help output
+	  (--help)
+
+2004-11-30 23:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_hnefatafl.py, module_reversi.py: - dynamic loading of
+	  games based on command line switch - turn main engine into an
+	  object too - graphical game selection screen if none has been
+	  selected previously
+
+2004-11-30 21:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/chess.py: - remove chess client because it's now moved to
+	  ggzboard
+
+2004-11-22 23:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_hnefatafl.py,
+	  hnefatafl/king-white.svg, hnefatafl/piece-black.svg,
+	  hnefatafl/piece-white.svg: - new game component: Hnefatafl
+	  ("first on the table"), an asymmetric board game
+
+2004-11-22 15:26   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/module_reversi.py: - Reversi is now implemented for
+	  single-player mode
+
+2004-11-22 14:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, module_checkers.py, module_chess.py,
+	  module_reversi.py, reversi/piece-black.svg,
+	  reversi/piece-white.svg: - split out game module - preparation
+	  for Reversi module
+
+2004-11-22 00:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzboard/: ggzboard.py, sunset.jpg, checkers/king-black.svg,
+	  checkers/king-white.svg, checkers/piece-black.svg,
+	  checkers/piece-white.svg, chess/bishop_b.svg, chess/bishop_w.svg,
+	  chess/king_b.svg, chess/king_w.svg, chess/knight_b.svg,
+	  chess/knight_w.svg, chess/pawn_b.svg, chess/pawn_w.svg,
+	  chess/queen_b.svg, chess/queen_w.svg, chess/rook_b.svg,
+	  chess/rook_w.svg: - GGZBoard, the new game container for all
+	  sorts of board games - right now, comes with checkers hardcoded,
+	  but will support chess and reversi too
+
+2004-11-20 00:23   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyrsvgsdl/: setup.py, src/pyrsvgsdl.c: - python wrapper for
+	  librsvg
+
+2004-11-09 14:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/chess.py: - initialize with 2 half moves instead of 1 (to
+	  make AI less aggressive) - if checkmate, disable further gameplay
+
+2004-11-09 14:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzchess/src/pyggzchess.c: - wrap the checkmate() function
+
+2004-11-09 14:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/chess.py: - left side rochade support (press shift+R)
+
+2004-11-09 14:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzchess/src/pyggzchess.c: - left side rochade support
+
+2004-11-04 17:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: bishop.png, bodyguard.png, cannon.png, king.png,
+	  knight.png, pawn.png, rock.png, xadrez-chines,
+	  themes/dark/bishop.png, themes/dark/bodyguard.png,
+	  themes/dark/cannon.png, themes/dark/king.png,
+	  themes/dark/knight.png, themes/dark/pawn.png,
+	  themes/dark/rock.png, themes/orig/bishop.png,
+	  themes/orig/bodyguard.png, themes/orig/cannon.png,
+	  themes/orig/king.png, themes/orig/knight.png,
+	  themes/orig/pawn.png, themes/orig/rock.png: - theme support
+
+2004-11-01 15:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/chess.py: - python chess game (only single player for now)
+
+2004-11-01 15:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzchess/: setup.py, src/pyggzchess.c, src/test.py: - python
+	  wrapper for the chess library
+
+2004-10-17 14:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/xadrez-chines: - rough integration of sdlnewstuff
+	  (well, 3 lines... press 'n')
+
+2004-10-17 14:24   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile: - install sdlnewstuff - version argument for 'make
+	  dist' is now a variable
+
+2004-10-17 14:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* lib/sdlnewstuff.py: - move sdl newstuff class into the python
+	  module - support for mouse handling - support for game-based
+	  configuration files (colors, urls, behaviour) - use
+	  .sdlnewstuff/* instead of .ggz/* for install status and configs -
+	  improved fault tolerance
+
+2004-07-31 00:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile: - create a zipped tar archive instead of an unzipped
+	  one carrying the name .tar.gz
+
+	  Detected by oojah.
+
+2004-07-18 02:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 16:17   Josef Spillner <josef@ggzgamingzone.org>
 
 	* Makefile: - a crude 'make dist' target

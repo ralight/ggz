@@ -1,3 +1,167 @@
+2005-01-23 14:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS: - news update
+
+2005-01-23 14:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* README, README.GGZ: - updated common files
+
+2005-01-22 20:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Search for .la files instead of .so.
+
+2005-01-22 17:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/main.c: - version bump: 0.7
+
+2005-01-22 16:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: grubby-config.1, grubby.6: - updated version numbers
+
+2005-01-22 16:25   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - version number bump
+
+2005-01-21 00:43   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/ai.c: - disable rule exception: force pawns to
+	  capture if possible
+
+2005-01-20 18:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/po/.cvsignore: - shut it up!
+
+2005-01-18 17:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/: main.c, module.c, module.h, net.c, net.h,
+	  netconsole.c, netirc.c: - eliminate old (G) guest handling code -
+	  conveniently replace parameter with new one: password, for
+	  registered grubbies
+
+2005-01-15 00:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - fix for python checks
+
+2005-01-14 08:01   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/ggz.m4, m4/iconv.m4: Add support for libintl and
+	  libiconv to AC_GGZ_INTL.  This is needed to compile at all on
+	  non-glibc systems.
+
+2005-01-13 03:23   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Fix a typo in checking for libintl.h and locale.h.
+
+2005-01-13 02:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Define ENABLE_NLS if NLS is present.  This is
+	  standard, even though it's not helpful for most packages since
+	  NLS is manditory.
+
+2005-01-11 18:36   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: Make AC_GGZ_INTL fail if the gettext functions are not
+	  available.  It also checks for the header files but doesn't fail
+	  if they're not present.
+
+2005-01-11 04:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* games/guru-chess/Makefile.am, games/guru-ttt/Makefile.am,
+	  games/lib/Makefile.am, grubby/modules/Makefile.am,
+	  grubby/src/Makefile.am: Replace deprated INCLUDES directive with
+	  AM_CPPFLAGS.
+
+2004-12-22 10:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/ai.c: - pawn fix: if pawn can beat opponent,
+	  he's forced to do so
+
+2004-12-21 18:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/i18n.mk: - new i18n infrastructure
+
+2004-12-21 18:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/po/Makefile.am: - use new i18n infrastructure
+
+2004-12-15 23:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/modules/Makefile.am: - install guru modules as actual
+	  plugins
+
+2004-12-15 23:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - include python 2.4 in checks
+
+2004-12-15 01:13   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/module.c: - mark more strings for translation
+
+2004-12-15 01:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/po/: Makefile.am, pt_BR.po: - pt_BR translation for grubby
+	  (source part, the data part had this already) - consistency
+	  checks
+
+2004-11-14 18:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/po/: de.po, grubby.pot: - update message catalog and
+	  German translation of grubby (program part)
+
+2004-11-14 14:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/: net.c, netconsole.c, netirc.c: - exclude hyphen (-)
+	  from list of separator chars
+
+	  This character is often used in names.
+
+2004-11-14 00:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/data/: de.po, pt_BR.po: - update the German and Portuguese
+	  grubby (module) translations
+
+2004-11-14 00:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/modules/learning.c: - fix memory corruption when learning
+	  - discard all messages generated from server
+
+2004-11-13 23:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/modules/learning.c: - make modlearning more efficient:
+	  load everything into hash structure - this causes less disk
+	  usage, but increases memory requirements (neglectable)
+
+2004-11-10 23:49   Jason Short <jdorje@ggzgamingzone.org>
+
+	* grubby/src/i18n.h: Add a missing #include.
+
+2004-11-09 14:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: ai.c, ai.h: - give king 5000 points so it will
+	  always surpass all other combinations - checkmate() function
+	  (works, although not following the chess rules)
+
+2004-11-04 17:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: ai.c, ai.h: - let king go diagonally (oops) -
+	  handle left-side rochade (another oops... never did that)
+
+2004-11-01 15:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: TROUBLE.ai, ai.c, ai.h: - handle rochade -
+	  handle pawn exchange
+
+2004-10-21 18:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: TROUBLE.ai, ai.c: - merge move exception
+	  handling into one (static) function	(which is used by move
+	  checking and move finding) - prevent kings from standing next to
+	  each other - allow pawns to move twice at the beginning
+
+2004-07-18 02:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - changelog update
+
 2004-07-17 19:53   Josef Spillner <josef@ggzgamingzone.org>
 
 	* grubby/src/net.c: - prevent grubby from crashing: use chat event
