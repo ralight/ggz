@@ -35,7 +35,6 @@
  * And we should have the following events
  * CHESS_EVENT_SEAT
  * CHESS_EVENT_PLAYERS
- * CHESS_EVENT_INIT
  * CHESS_EVENT_QUIT
  * CHESS_EVENT_MOVE_START
  * CHESS_EVENT_MOVE_END
@@ -78,7 +77,6 @@
  * CHESS_EVENT_SEAT           -> When we receive a MSG_SEAT
  * CHESS_EVENT_PLAYERS        -> When we receive a MSG_PLAYERS
  * CHESS_EVENT_QUIT           -> When the user exits the game
- * CHESS_EVENT_INIT           -> When we should init the game structures
  * CHESS_EVENT_MOVE_START     -> When the user starts dragging a piece
  * CHESS_EVENT_MOVE_END       -> When the user finishes dragging a piece
  * CHESS_EVENT_MOVE           -> When the server sends us a move

@@ -22,5 +22,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* Load the bitmaps and issue a EVENT_INIT */
+/* definitions used here */
+#define BISHOP_B 0
+#define BISHOP_W 1
+#define KING_B 2
+#define KING_W 3
+#define KNIGHT_B 4
+#define KNIGHT_W 5
+#define PAWN_B 6
+#define PAWN_W 7
+#define QUEEN_B 8
+#define QUEEN_W 9
+#define ROOK_B 10
+#define ROOK_W 11
+#define PIXSIZE 64
+
+#define LOAD_BITMAP(bitmap, data) ( pieces[bitmap] = gdk_bitmap_create_from_data(main_win->window, data, PIXSIZE, PIXSIZE) )
+
+/* Load the bitmaps */
 void board_init();
+void board_draw_bg();

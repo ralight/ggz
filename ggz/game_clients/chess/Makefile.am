@@ -26,4 +26,4 @@ ggz_chess_SOURCES = main_win.c \
                     main.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
+ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ libcgc/libcgc.a

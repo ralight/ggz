@@ -100,7 +100,7 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (board);
   gtk_paned_pack1 (GTK_PANED (hpaned1), board, FALSE, FALSE);
-  gtk_widget_set_usize (board, 500, 500);
+  gtk_widget_set_usize (board, 512, 512);
   gtk_widget_set_events (board, GDK_BUTTON_PRESS_MASK);
 
   vpaned1 = gtk_vpaned_new ();

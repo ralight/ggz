@@ -21,3 +21,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <libcgc/cgc.h>
+#include "game.h"
+
+game_t *game;
+
+void game_init() {
+  /* Init the libcgc structures */
+  game = cgc_create_game();
+  cgc_join_game(game, WHITE);
+  cgc_join_game(game, BLACK);
+}

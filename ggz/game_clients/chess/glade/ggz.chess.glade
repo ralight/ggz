@@ -94,8 +94,8 @@
 	<widget>
 	  <class>GtkDrawingArea</class>
 	  <name>board</name>
-	  <width>500</width>
-	  <height>500</height>
+	  <width>512</width>
+	  <height>512</height>
 	  <events>GDK_BUTTON_PRESS_MASK</events>
 	  <signal>
 	    <name>configure_event</name>

@@ -7,6 +7,9 @@
 #include "callbacks.h"
 #include "main_win.h"
 #include "support.h"
+#include "board.h"
+
+extern GdkPixmap *board_buf;
 
 
 void
@@ -22,8 +25,12 @@ on_board_configure_event               (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
+  if (!board_buf)
+    board_buf = gdk_pixmap_new( widget->window, PIXSIZE*8, PIXSIZE*8, -1);
 
-  return FALSE;
+  board_draw_bg();
+
+  return TRUE;
 }
 
 
@@ -32,6 +39,12 @@ on_board_expose_event                  (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
+  gdk_draw_pixmap( widget->window,
+      widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+      board_buf,
+      event->area.x, event->area.y,
+      event->area.x, event->area.y,
+      event->area.width, event->area.height);
 
   return FALSE;
 }

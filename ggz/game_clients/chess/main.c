@@ -30,6 +30,7 @@
 #include "chess.h"
 #include "ggz.h"
 #include "board.h"
+#include "game.h"
 #include "net.h"
 
 /* main window widget */
@@ -46,11 +47,13 @@ int main(int argc, char *argv[]) {
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
+  board_init();
+  game_init();
+
 	game_info.fd = ggz_connect("Chess");
 
-  board_init();
-
 	gdk_input_add(game_info.fd, GDK_INPUT_READ, net_handle_input, NULL);
+
 
 	gtk_main();
 	
