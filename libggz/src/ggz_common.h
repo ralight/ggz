@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4607 2002-09-17 18:11:43Z jdorje $
+ * $Id: ggz_common.h 4819 2002-10-08 23:32:22Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -61,6 +61,33 @@ typedef enum {
 	GGZ_TABLE_PLAYING = 2,   /**< Playing a game */
 	GGZ_TABLE_DONE    = 3    /**< The game session is finished and the table will soon exit */
 } GGZTableState;
+
+
+/** @brief Chat types.
+ *
+ *  Each time we send a chat to the server, it will have one of these
+ *  types associated with it.
+ *  @see ggzcore_room_chat
+ */
+typedef enum {
+	/** No chat type.  Used for invalid chat messages. */
+	GGZ_CHAT_NONE,
+
+	/** A normal chat, just a message sent to the current room. */
+	GGZ_CHAT_NORMAL,
+	
+	/** An announcement, usually triggered with /wall.  Only
+	 *  admins can do this, and it is announced in all rooms. */
+	GGZ_CHAT_ANNOUNCE,
+	
+	/** A beep.  We beep a player, and their client will run
+	 *  the beep. */
+	GGZ_CHAT_BEEP,
+	
+	/** A personal message to another player.  It consists of both
+	 *  a message and a target player. */
+	GGZ_CHAT_PERSONAL
+} GGZChatType;
 	
 
 /** @brief Get a string identifier for the GGZSeatType.
@@ -71,7 +98,7 @@ typedef enum {
  *  @param type The GGZSeatType, which determines the string returned.
  *  @note This is the inverse of ggz_string_to_seattype.
  */
-char *ggz_seattype_to_string(GGZSeatType type);
+const char *ggz_seattype_to_string(GGZSeatType type);
 
 /** @brief Get a GGZSeatType for the given string identifier.
  *
@@ -82,6 +109,27 @@ char *ggz_seattype_to_string(GGZSeatType type);
  *  @note This is the inverse of ggz_seattype_to_string.
  */
 GGZSeatType ggz_string_to_seattype(const char *type_str);
+
+
+/** @brief Get a string identifier for the GGZChatType.
+ *
+ *  This returns a pointer to a static string describing the given chat
+ *  opcode.  It is useful for text-based communications protocols and
+ *  debugging output.
+ *  @param op The GGZChatType, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_chattype.
+ */
+const char *ggz_chattype_to_string(GGZChatType type);
+
+/** @brief Get a GGZChatType for the given string identifier.
+ *
+ *  This returns a GGZChatType that is associated with the given string
+ *  description.
+ *  @param type_str A string describing a GGZChatType.
+ *  @note If the op_str cannot be parsed GGZ_CHAT_NORMAL will be returned.
+ *  @note This is the inverse of ggz_chattype_to_string.
+ */
+GGZChatType ggz_string_to_chattype(const char *type_str);
 
 
 /** @brief Convert a string to a boolean.

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 4439 2002-09-07 17:16:45Z jdorje $
+ * $Id: net.h 4819 2002-10-08 23:32:22Z jdorje $
  *
  * Code for performing network I/O
  *
@@ -70,7 +70,7 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net,
 				  const char global);
 
 int _ggzcore_net_send_chat(struct _GGZNet *net, 
-			   const GGZChatOp op,
+			   const GGZChatType op,
 			   const char* player, 
 			   const char* msg); 
 

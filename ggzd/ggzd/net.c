@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4606 2002-09-17 15:24:42Z jdorje $
+ * $Id: net.c 4819 2002-10-08 23:32:22Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -552,34 +552,32 @@ GGZReturn net_send_room_join(GGZNetIO *net, GGZClientReqError status)
 }
 
 
-GGZReturn net_send_chat(GGZNetIO *net, unsigned char opcode,
-			char *name, char *msg)
+GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
+			char *sender, char *msg)
 {
-	char *type = NULL;
+	const char *type_str = ggz_chattype_to_string(type);
 
-	switch (opcode) {
-	case GGZ_CHAT_NORMAL:
-		type = "normal";
-		break;
-	case GGZ_CHAT_ANNOUNCE:
-		type = "announce";
-		break;
-	case GGZ_CHAT_BEEP:
-		type = "beep";
-		msg = NULL;
-		break;
-	case GGZ_CHAT_PERSONAL:
-		type = "private";
-		break;
+	if (type == GGZ_CHAT_BEEP) {
+		/* A beep chat can't have a message. */
+		if (msg) {
+			err_msg("net_send_chat: invalid message.");
+			msg = NULL;
+		}
+	} else {
+		/* All other chats must have messages. */
+		if (!msg) {
+			err_msg("net_send_chat: missing message.");
+			msg = "";
+		}
 	}
 
 	if (msg) {
 		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
 				      "<![CDATA[%s]]></CHAT>", 
-				      type, name, msg);
+				      type_str, sender, msg);
 	} else 
 		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>",
-				      type, name);
+				      type_str, sender);
 }
 
 
@@ -1260,17 +1258,11 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 		if (!check_playerconn(net, "chat")) return;
 
 		/* FIXME: error checking on these? */
-		
-		if (strcasecmp(type, "normal") == 0)
-			op = GGZ_CHAT_NORMAL;
-		else if (strcasecmp(type, "private") == 0)
-			op = GGZ_CHAT_PERSONAL;
-		else if (strcasecmp(type, "announce") == 0)
-			op = GGZ_CHAT_ANNOUNCE;
-		else if (strcasecmp(type, "beep") == 0)
-			op = GGZ_CHAT_BEEP;
-		else {
+		op = ggz_string_to_chattype(type);
+
+		if (op == GGZ_CHAT_NONE) {
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
+			return;
 		}
 
 		player_chat(net->client->data, op, to, msg);
@@ -1694,7 +1686,7 @@ static GGZReturn _net_send_table_status(GGZNetIO *net, GGZTable *table)
 
 static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 {
-	char *type_str = ggz_seattype_to_string(seat->type);
+	const char *type_str = ggz_seattype_to_string(seat->type);
 	char *name = NULL;
 
 	switch (seat->type) {

@@ -129,7 +129,7 @@ class GGZCoreRoom
 
 		/**
 		 * Send a chat message to the other players. */
-		int chat(const GGZChatOp opcode, const char* player, const char* message);
+		int chat(const GGZChatType opcode, const char* player, const char* message);
 		/**
 		 * Send other data. */
 		int sendData(char* buffer);

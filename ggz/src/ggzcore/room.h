@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 4437 2002-09-07 13:28:04Z jdorje $
+ * $Id: room.h 4819 2002-10-08 23:32:22Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -108,7 +108,7 @@ void _ggzcore_room_table_event(struct _GGZRoom *, GGZRoomEvent, void *data);
 
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, 
-			    GGZChatOp op, 
+			    GGZChatType type, 
 			    char *name,
 			    char *msg);
 
@@ -129,7 +129,7 @@ int _ggzcore_room_load_tablelist(struct _GGZRoom *room,
 				 const char global);
 
 int _ggzcore_room_chat(struct _GGZRoom *room,
-		       const GGZChatOp opcode,
+		       const GGZChatType type,
 		       const char *player,
 		       const char *msg);
 

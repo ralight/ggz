@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4519 2002-09-11 23:02:30Z jdorje $
+ * $Id: ggzdmod.c 4819 2002-10-08 23:32:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1589,7 +1589,7 @@ static void seat_free(GGZSeat *seat)
 
 static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 {
-	char *type = ggz_seattype_to_string(seat->type);
+	const char *type = ggz_seattype_to_string(seat->type);
 	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
 		    seat->num, type, seat->name, seat->fd);
 }

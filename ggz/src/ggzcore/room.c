@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4526 2002-09-12 17:23:43Z jdorje $
+ * $Id: room.c 4819 2002-10-08 23:32:22Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -261,11 +261,12 @@ int ggzcore_room_list_tables(GGZRoom *room, const int type, const char global)
 }
 
 
-int ggzcore_room_chat(struct _GGZRoom *room, const GGZChatOp opcode, const char *player, const char *msg)
+int ggzcore_room_chat(struct _GGZRoom *room, const GGZChatType type,
+		      const char *player, const char *msg)
 {
 	if (room && room->server) {
 		/* FIXME: check validty of args */
-		return _ggzcore_room_chat(room, opcode, player, msg);
+		return _ggzcore_room_chat(room, type, player, msg);
 	}
 	else
 		return -1;
@@ -660,28 +661,28 @@ int _ggzcore_room_load_tablelist(struct _GGZRoom *room, const int type, const ch
 
 
 int _ggzcore_room_chat(struct _GGZRoom *room,
-		       const GGZChatOp opcode,
+		       const GGZChatType type,
 		       const char *player,
 		       const char *msg)
 {
 	struct _GGZNet *net;
 
 	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_chat(net, opcode, player, msg);
+	return _ggzcore_net_send_chat(net, type, player, msg);
 }
 
 
-void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
-			    char *msg)
+void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatType type,
+			    char *name, char *msg)
 {
 	char *data[2];
 
 	data[0] = name;
 	data[1] = msg;
 
-	ggz_debug(GGZCORE_DBG_ROOM, "op = %d", op);
+	ggz_debug(GGZCORE_DBG_ROOM, "op = %d", type);
 
-	switch(op) {
+	switch (type) {
 	case GGZ_CHAT_NORMAL:
 		_ggzcore_room_event(room, GGZ_CHAT, data);
 		break;
@@ -693,6 +694,9 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 		break;
 	case GGZ_CHAT_BEEP:
 		_ggzcore_room_event(room, GGZ_BEEP, data);
+		break;
+	case GGZ_CHAT_NONE:
+		ggz_error_msg("_ggzcore_room_add_chat: invalid chat type.");
 		break;
 	}
 }

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 4506 2002-09-11 03:25:20Z jdorje $
+ * $Id: ggz_common.c 4819 2002-10-08 23:32:22Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -31,7 +31,7 @@
 #include "ggz.h"
 #include "ggz_common.h"
 
-char *ggz_seattype_to_string(GGZSeatType type)
+const char *ggz_seattype_to_string(GGZSeatType type)
 {
 	switch (type) {
 	case GGZ_SEAT_OPEN:
@@ -42,9 +42,13 @@ char *ggz_seattype_to_string(GGZSeatType type)
 		return "reserved";
 	case GGZ_SEAT_PLAYER:
 		return "player";
-	default:
+	case GGZ_SEAT_NONE:
 		return "none";
 	}
+
+	ggz_error_msg("ggz_seattype_to_string: "
+		      "invalid seattype %d given.", type);
+	return "none";
 }
 
 GGZSeatType ggz_string_to_seattype(const char *type_str)
@@ -52,16 +56,60 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 	/* If it doesn't match _exactly_ we return GGZ_SEAT_NONE.  This
 	   is bad for, say, user input, but perfectly acceptable as an
 	   inverse to ggz_seattype_to_string(). */
-	if (!ggz_strcmp(type_str, "open"))
+	if (!type_str)
+		return GGZ_SEAT_NONE;
+
+	if (!strcasecmp(type_str, "open"))
 		return GGZ_SEAT_OPEN;
-	else if (!ggz_strcmp(type_str, "bot"))
+	else if (!strcasecmp(type_str, "bot"))
 		return GGZ_SEAT_BOT;
-	else if (!ggz_strcmp(type_str, "reserved"))
+	else if (!strcasecmp(type_str, "reserved"))
 		return GGZ_SEAT_RESERVED;
-	else if (!ggz_strcmp(type_str, "player"))
+	else if (!strcasecmp(type_str, "player"))
 		return GGZ_SEAT_PLAYER;
 	else
 		return GGZ_SEAT_NONE;
+}
+
+const char *ggz_chattype_to_string(GGZChatType type)
+{
+	switch (type) {
+	case GGZ_CHAT_NORMAL:
+		return "normal";
+	case GGZ_CHAT_ANNOUNCE:
+		return "announce";
+	case GGZ_CHAT_BEEP:
+		return "beep";
+	case GGZ_CHAT_PERSONAL:
+		return "private";
+	case GGZ_CHAT_NONE:
+		break;
+	}
+
+	ggz_error_msg("ggz_chattype_to_string: "
+		      "invalid chattype %d given.", type);
+	return ""; /* ? */
+}
+
+GGZChatType ggz_string_to_chattype(const char *type_str)
+{
+	/* If it doesn't match _exactly_ we return GGZ_CHAT_NONE.  This
+	   is bad for, say, user input, but perfectly acceptable as an
+	   inverse to ggz_chattype_to_string(). */
+	if (!type_str)
+		return GGZ_CHAT_NONE;
+
+	if (!strcasecmp(type_str, "normal"))
+		return GGZ_CHAT_NORMAL;
+	else if (!strcasecmp(type_str, "announce"))
+		return GGZ_CHAT_ANNOUNCE;
+	else if (!strcasecmp(type_str, "beep"))
+		return GGZ_CHAT_BEEP;
+	else if (!strcasecmp(type_str, "private"))
+		return GGZ_CHAT_PERSONAL;
+	else
+		return GGZ_CHAT_NONE;
+
 }
 
 char *bool_to_str(int bool_val)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 4604 2002-09-17 15:01:54Z jdorje $
+ * $Id: net.h 4819 2002-10-08 23:32:22Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -85,8 +85,8 @@ GGZReturn net_send_table(GGZNetIO *net, GGZTable *table);
 GGZReturn net_send_table_list_end(GGZNetIO *net);
 
 GGZReturn net_send_room_join(GGZNetIO *net, GGZClientReqError status);
-GGZReturn net_send_chat(GGZNetIO *net, unsigned char opcode,
-			char *name, char *msg);
+GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
+			char *sender, char *msg);
 GGZReturn net_send_chat_result(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_join(GGZNetIO *net, GGZClientReqError status);

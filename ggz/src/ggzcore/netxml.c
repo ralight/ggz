@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: netxml.c 4819 2002-10-08 23:32:22Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -429,9 +429,11 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 }
 
 
-int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* player, const char* msg)
+int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatType type,
+			   const char* player, const char* msg)
 {
-	int status = 0;
+	int status = -1;
+	const char *type_str;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending chat");	
 
@@ -439,18 +441,26 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* 
 	/* FIXME: We need to handle the case where the chat is longer than
 	   the server's allowed chat size */
 
-	switch (op) {
+	type_str = ggz_chattype_to_string(type);
+
+	switch (type) {
 	case GGZ_CHAT_NORMAL:
-		_ggzcore_net_send_line(net, "<CHAT TYPE='normal'><![CDATA[%s]]></CHAT>", msg);
-		break;
 	case GGZ_CHAT_ANNOUNCE:
-		_ggzcore_net_send_line(net, "<CHAT TYPE='announce'><![CDATA[%s]]></CHAT>", msg);
+		status = _ggzcore_net_send_line(net,
+			"<CHAT TYPE='%s'><![CDATA[%s]]></CHAT>",
+			type_str, msg);
 		break;
 	case GGZ_CHAT_BEEP:
-		_ggzcore_net_send_line(net, "<CHAT TYPE='beep' TO='%s'/>", player);
+		status = _ggzcore_net_send_line(net,
+			"<CHAT TYPE='%s' TO='%s'/>",
+			type_str, player);
 		break;
 	case GGZ_CHAT_PERSONAL:
-		_ggzcore_net_send_line(net, "<CHAT TYPE='private' TO='%s'><![CDATA[%s]]></CHAT>", player, msg);
+		status = _ggzcore_net_send_line(net,
+			"<CHAT TYPE='%s' TO='%s'><![CDATA[%s]]></CHAT>",
+			type_str, player, msg);
+		break;
+	case GGZ_CHAT_NONE:
 		break;
 	}
 
@@ -487,7 +497,7 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat)
 {
 	int status = 0;
-	char *type;
+	const char *type;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending seat info");
 	
@@ -1662,32 +1672,40 @@ static void _ggzcore_net_seat_free(struct _GGZSeat *seat)
 /* Functions for <CHAT> tag */
 static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 {
-	char *msg, *type, *from;
-	GGZRoom *room;
-	GGZChatOp op = 0;
-
 	if (chat) {
-		
+		char *msg, *type_str, *from;
+		GGZRoom *room;
+		GGZChatType type;
+
 		/* Grab chat data from tag */
-		type = ggz_xmlelement_get_attr(chat, "TYPE");
+		type_str = ggz_xmlelement_get_attr(chat, "TYPE");
 		from = ggz_xmlelement_get_attr(chat, "FROM");
 		msg = ggz_xmlelement_get_text(chat);
 
-		ggz_debug(GGZCORE_DBG_NET, "%s message from %s: '%s'", type, 
-			  from, msg);	
-			  
+		ggz_debug(GGZCORE_DBG_NET, "%s message from %s: '%s'",
+			  type_str, from, msg);	
 
-		if (strcmp(type, "normal") == 0)
-			op = GGZ_CHAT_NORMAL;
-		else if (strcmp(type, "private") == 0)
-			op = GGZ_CHAT_PERSONAL;
-		else if (strcmp(type, "announce") == 0)
-			op = GGZ_CHAT_ANNOUNCE;
-		else if (strcmp(type, "beep") == 0)
-			op = GGZ_CHAT_BEEP;
-		
+		type = ggz_string_to_chattype(type_str);
+
+		if (type == GGZ_CHAT_NONE) {
+			/* Hopefully this will handle future chat ops
+			   gracefully. */
+			type = GGZ_CHAT_NORMAL;
+		}
+
+		if (!from) {
+			/* Ignore any message that has no sender. */
+			return;
+		}
+
+		if (!msg && type != GGZ_CHAT_BEEP) {
+			/* Ignore an empty message, except for the
+			   appropriate chat types. */
+			return;
+		}
+
 		room = ggzcore_server_get_cur_room(net->server);
-		_ggzcore_room_add_chat(room, op, from, msg);
+		_ggzcore_room_add_chat(room, type, from, msg);
 	}
 }
 
