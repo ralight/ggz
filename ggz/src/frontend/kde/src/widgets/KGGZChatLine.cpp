@@ -71,8 +71,7 @@ void KGGZChatLine::keyPressEvent(QKeyEvent *e)
 	int pos;
 
 	// This is heavy: reimplement all special key just to get autocompletion...
-	//cout << e->ascii() << " - " << e->key() << endl;
-	KGGZDEBUG("Key: %i, Ascii: %i\n", e->key(), e->ascii());
+	//KGGZDEBUG("Key: %i, Ascii: %i\n", e->key(), e->ascii());
 
 	mark = FALSE;
 	if(e->state() & Qt::ShiftButton) mark = TRUE;
@@ -161,10 +160,8 @@ void KGGZChatLine::autocomplete(QString pattern)
 
 	pattern = pattern.right(cursorPosition() - pos);
 
-	//cout << "Position: " << pos << endl;
-	//cout << "Pattern: " << pattern.latin1() << endl;
-	KGGZDEBUG("Position: %i\n", pos);
-	KGGZDEBUG("Pattern: %s\n", pattern.latin1());
+	//KGGZDEBUG("Position: %i\n", pos);
+	//KGGZDEBUG("Pattern: %s\n", pattern.latin1());
 
 	if((pattern.isNull()) || (pattern.isEmpty())) return;
 
@@ -172,7 +169,6 @@ void KGGZChatLine::autocomplete(QString pattern)
 	{
 		if((*it).findRev(pattern, 0, FALSE) != -1)
 		{
-			//cout << "Found: " << (*it).latin1() << endl;
 			KGGZDEBUG("Found: %s\n", (*it).latin1());
 			tmp = (*it).latin1();
 			count++;
@@ -181,7 +177,6 @@ void KGGZChatLine::autocomplete(QString pattern)
 
 	if(count == 1)
 	{
-		//cout << " => replace!" << endl;
 		if(pos == 0) tmp.append(":");
 		tmp.append(" ");
 		setText(text().replace(pos, pattern.length(), tmp));

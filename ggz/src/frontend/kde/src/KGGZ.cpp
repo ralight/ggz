@@ -394,9 +394,18 @@ void KGGZ::dispatcher()
 
 void KGGZ::timerEvent(QTimerEvent *e)
 {
+	static int lag = 0;
+
 	if(m_killserver) return;
 	if(m_lock) return;
 	if(!kggzserver) return;
+
+	lag++;
+	if(lag == 20)
+	{
+		lag = 0;
+		lagPlayers();
+	}
 
 	if(kggzgame)
 	{
@@ -515,6 +524,23 @@ void KGGZ::listPlayers()
 		if(m_grubby) m_grubby->addPlayer(playername);
 	}
 	m_workspace->widgetUsers()->assignSelf(m_save_username);
+}
+
+void KGGZ::lagPlayers()
+{
+	int number, lag;
+	GGZPlayer *player;
+	char *playername;
+
+	if(!kggzroom) return;
+	number = kggzroom->countPlayers();
+	for(int i = 0; i < number; i++)
+	{
+		player = kggzroom->player(i);
+		playername = ggzcore_player_get_name(player);
+		lag = ggzcore_player_get_lag(player);
+		m_workspace->widgetUsers()->setLag(playername, lag);
+	}
 }
 
 void KGGZ::gameCollector(unsigned int id, void* data)

@@ -59,6 +59,8 @@ class KGGZUsers : public QListView
 		void addTablePlayer(int i, char *name);
 		// Specify the player's name
 		void assignSelf(QString self);
+		// Set a player's lag
+		void setLag(const char *playername, int lagvalue);
 
 		enum Assignments
 		{

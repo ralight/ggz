@@ -75,6 +75,8 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 
 	connect(this, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotClicked(QListViewItem*, const QPoint&, int)));
 	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
+
+	startTimer(1000);
 }
 
 // Destructor
@@ -263,10 +265,8 @@ QListViewItem *KGGZUsers::player(const char *player)
 	tmp = firstChild();
 	while(tmp)
 	{
-		if(strcmp(tmp->text(0).latin1(), player) == 0) return tmp;
-		KGGZDEBUG("Assignments? Not for %s\n", tmp->text(0).latin1());
+		if(tmp->text(0) == player) return tmp;
 		tmp = tmp->itemBelow();
-		//KGGZDEBUG("ASSIGN: This one is new: %s\n", tmp->text(0).latin1());
 	}
 	return NULL;
 }
@@ -347,5 +347,13 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 		config->commit();
 		delete config;
 	}
+}
+
+// Set a player's lag
+void KGGZUsers::setLag(const char *playername, int lagvalue)
+{
+	if(lagvalue < 0) lagvalue = 0;
+	if(lagvalue > 5) lagvalue = 5;
+	lag(player(playername), lagvalue);
 }
 

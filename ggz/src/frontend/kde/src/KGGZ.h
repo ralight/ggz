@@ -207,6 +207,8 @@ class KGGZ : public QWidget
 
 		// attempt to list all players
 		void listPlayers();
+		// display lag of all players
+		void lagPlayers();
 		// attempt to list active tables
 		void listTables();
 
