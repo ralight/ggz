@@ -60,7 +60,6 @@ int ZoneGGZModUI::zoneCreateFd(char *modulename)
 // public: register game module
 void ZoneGGZModUI::ZoneRegister(char *modulename)
 {
-
 	if(zoneCreateFd(modulename) == -1)
 	{
 		ZONEERROR("couldn't create socket\n");
@@ -184,7 +183,11 @@ void ZoneGGZModUI::zoneGetRules()
 	}
 	ZONEDEBUG("** received rules: %i\n", ZoneRules);
 	ZONEDEBUG("** received maxplayers: %i\n", ZoneMaxplayers);
-	if(m_ready) emit signalZoneReady();
+	if(m_ready)
+	{
+		ZONEDEBUG("...signalZoneReady\n");
+		emit signalZoneReady();
+	}
 	if(ZoneRules == ZoneGGZ::realtime) m_turn = 1;
 }
 

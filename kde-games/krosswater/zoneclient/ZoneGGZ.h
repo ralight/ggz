@@ -27,8 +27,10 @@
 #define ZONE_SEAT_OPEN GGZ_SEAT_OPEN
 #define ZONE_SEAT_BOT GGZ_SEAT_BOT
 
-#define ZONEDEBUG(fmt, args...) printf("ZONE: " fmt, ##args);
-#define ZONEERROR(fmt, args...) printf("# ZONE ERROR: " fmt, ##args);
+//#define ZONEDEBUG(fmt, args...) printf("ZONE: " fmt, ##args);
+//#define ZONEERROR(fmt, args...) printf("# ZONE ERROR: " fmt, ##args);
+#define ZONEDEBUG
+#define ZONEERROR
 
 class ZoneGGZ
 {
