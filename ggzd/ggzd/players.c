@@ -54,6 +54,7 @@ static void* player_new(void *);
 static void  player_loop(int);
 static int   player_handle(int, int, int *);
 static void  player_remove(int p_index);
+static int   player_updates(int p_index);
 
 static int new_login(int p_index);
 static int anon_login(int p_index);
@@ -163,6 +164,9 @@ static void player_loop(int p_index)
 	FD_SET(p_fd, &active_fd_set);
 
 	for (;;) {
+
+		/* Send updated info if need be */
+		player_updates(p_index);
 		
 		read_fd_set = active_fd_set;
 		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
@@ -324,13 +328,28 @@ static void player_remove(int p_index)
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p_index].uid = NG_UID_NONE;
 	players.info[p_index].name[0] = '\0';
-	players.info[p_index].table_index = 0;
+	players.info[p_index].table_index = -1;
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
 	pthread_rwlock_unlock(&players.lock);
 
 	close(fd);
+}
+
+
+/*
+ * player_updates checks any updates (player/table/type) lists
+ * or chats which need to be sent to the player, and sends them
+ */
+static int player_updates(int p) {
+
+	/*FIXME: Add user_list updates */
+	/*FIXME: Add game_type updates */
+	/*FIXME: Add game_table updates */
+
+	
+	return 0;
 }
 
 
@@ -649,9 +668,10 @@ static int user_list(int p_index)
 {
 
 	int i, fd, count;
-
 	UserInfo info[MAX_USERS];
 
+
+	dbg_msg("Handling user list request for player %d", p_index);
 	fd = players.info[p_index].fd;
 
 	pthread_rwlock_rdlock(&players.lock);
