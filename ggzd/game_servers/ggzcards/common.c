@@ -142,6 +142,7 @@ void send_all_global_messages(player_t p)
 	/* TODO: this isn't game-independent */
 	send_global_message("", p);
 	send_global_message("game", p);
+	send_global_message("Options", p);
 }
 
 /* set_global_message

@@ -445,6 +445,12 @@ void game_handle_options(int *options)
 				case 5: game.target_score = 1000; break;
 				default: break;
 			}
+			set_global_message("Options",
+				"%s%s%sFirst player to %d points wins.",
+				SUARO.shotgun ? "Shotgun rules are in effect.\n" : "",
+				SUARO.unlimited_redoubling ? "Unlimited redoubling is allowed.\n" : "",
+				SUARO.persistent_doubles ? "Doubles are persistent.\n" : "",
+				game.target_score);
 			game.options_initted = 1; /* we could do another round of option requests, if we wanted */
 			break;
 		case GGZ_GAME_SPADES:
@@ -461,6 +467,9 @@ void game_handle_options(int *options)
 				default: break;
 			}
 			if (options[2] >= 0) GSPADES.minimum_team_bid = options[2];
+			set_global_message("Options",
+				"Nil is worth %d points.\nThe first team to %d points wins.",
+				GSPADES.nil_value, game.target_score);
 			game.options_initted = 1;
 			break;
 		default:
