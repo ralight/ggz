@@ -16,10 +16,12 @@ ggz_hastings_SOURCES = game.h \
 	      support.h \
 	      dlg_about.c \
 	      dlg_about.h \
+	      frame_black.xpm \
 	      frame_ll.xpm \
 	      frame_lr.xpm \
 	      frame_ul.xpm \
 	      frame_ur.xpm \
+	      map.xpm \
 	      newmanblue.xpm \
 	      newmanyellow.xpm \
 	      newmangreen.xpm \

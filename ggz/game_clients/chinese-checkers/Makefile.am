@@ -21,7 +21,7 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 			ggz.c		ggz.h		\
 			main.c		main.h		\
 			support.c	support.h	\
-							\
+			protocol.h			\
 			main_dlg.c	main_dlg.h	\
 			main_cb.c	main_cb.h	\
 			about_dlg.c	about_dlg.h	\

@@ -4,7 +4,7 @@ SUBDIRS = .
 
 noinst_LIBRARIES = libcgc.a
 
-libcgc_a_SOURCES = board.c \
-                   games.c \
-                   movecheck.c \
-                   cgc.c
+libcgc_a_SOURCES = board.c	board.h \
+                   games.c	games.h \
+                   movecheck.c	movecheck.h \
+                   cgc.c	cgc.h
