@@ -48,7 +48,12 @@ class NetworkBase:
 		return self.inputallowed
 
 	def getbyte(self):
+		#k = 0
+		#for i in range(99999):
+		#	for j in range(9):
+		#		k += j - i
 		opstr = self.sock.recv(4)
+		#print ">> LEN >>", len(opstr)
 		if len(opstr) < 4:
 			self.errorcode = 1
 			return 0
@@ -88,10 +93,12 @@ class NetworkBase:
 		c2 = (nbyte >> 16) & 0xFF
 		c3 = (nbyte >> 8) & 0xFF
 		c4 = (nbyte >> 0) & 0xFF
-		self.sock.send(chr(c1))
-		self.sock.send(chr(c2))
-		self.sock.send(chr(c3))
-		self.sock.send(chr(c4))
+		#self.sock.send(chr(c1))
+		#self.sock.send(chr(c2))
+		#self.sock.send(chr(c3))
+		#self.sock.send(chr(c4))
+		s = chr(c1) + chr(c2) + chr(c3) + chr(c4)
+		self.sock.send(s)
 
 	def sendchar(self, char):
 		self.sock.send(chr(char))
