@@ -148,8 +148,7 @@ static struct _GGZTransition _at_table_transitions[] = {
 
 static struct _GGZTransition _leaving_table_transitions[] = {
 	{GGZ_TRANS_LEAVE_OK,     GGZ_STATE_IN_ROOM},
-	/* FIXME: what to do if leave fails? */
-	{GGZ_TRANS_LEAVE_FAIL,   GGZ_STATE_IN_ROOM},
+	{GGZ_TRANS_LEAVE_FAIL,   GGZ_STATE_AT_TABLE},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
