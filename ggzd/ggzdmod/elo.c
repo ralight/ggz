@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.c 4182 2002-05-07 16:51:35Z jdorje $
+ * $Id: elo.c 4237 2002-06-09 06:20:58Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include "elo.h"
 #include "ggz_stats.h"

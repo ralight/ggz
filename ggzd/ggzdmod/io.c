@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 3498 2002-03-02 01:06:32Z bmh $
+ * $Id: io.c 4237 2002-06-09 06:20:58Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -28,9 +28,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>		/* site-specific config */
-#include <ggz.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 #include <stdlib.h>
+
+#include <ggz.h>
 
 #include "ggzdmod.h"
 #include "mod.h"

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4204 2002-05-15 21:32:16Z jdorje $
+ * $Id: ggz_stats.c 4237 2002-06-09 06:20:58Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <assert.h>
 #include <ctype.h>
