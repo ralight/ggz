@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 3603 2002-03-20 05:14:13Z jdorje $
+ * $Id: ai.h 3749 2002-04-05 07:49:23Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -38,6 +38,14 @@ const char *ai_get_name(player_t p);
 
 /* Launches an external AI program. */
 void start_ai(game_t *g, player_t p, char* ai_type);
+
+/* Kills and collects a spawned AI player; should be called
+   when the server is ready to exit. */
+void stop_ai(player_t p);
+
+/* Kill the current AI and restart a "random" AI in its place.
+   This should be called when there's a fatal error with the AI. */
+void restart_ai(player_t p);
 
 #ifdef DEBUG
 /* Handle incoming data from the AI's stderr. */

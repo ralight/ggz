@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3603 2002-03-20 05:14:13Z jdorje $
+ * $Id: ai.c 3749 2002-04-05 07:49:23Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -31,6 +31,7 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,9 +39,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <wait.h>
 
 #include "ai.h"
 #include "common.h"
+#include "net.h"
 
 static char* path = NULL;
 
@@ -71,6 +74,11 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 		ai_type = "random";
 		
 	assert(get_player_status(p) == GGZ_SEAT_BOT);
+	assert(game.players[p].fd == -1);
+	assert(game.players[p].pid == -1);
+#ifdef DEBUG
+	assert(game.players[p].err_fd == -1);
+#endif
 	
 	snprintf(cmd, sizeof(cmd),
 	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
@@ -125,6 +133,43 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 		g->players[p].pid = pid;
 	}	
 }
+
+
+void stop_ai(player_t p)
+{
+	pid_t pid;
+
+	/* Clean up process. */
+	assert(game.players[p].pid > 0);
+	kill(game.players[p].pid, SIGINT);
+	pid = waitpid(game.players[p].pid, NULL, 0);
+	if (pid != game.players[p].pid)
+		ggz_error_msg_exit("Killing pid %d failed.", game.players[p].pid);
+	game.players[p].pid = -1;
+	
+	/* Clean up FD's. */
+	if (close(game.players[p].fd) < 0
+#ifdef DEBUG
+	    || close(game.players[p].err_fd) < 0
+#endif
+	   )
+		ggz_error_sys("Close of AI fd's failed (player %d)", p);
+		
+	game.players[p].fd = -1;
+#ifdef DEBUG
+	game.players[p].err_fd = -1;
+#endif
+}
+
+
+/* Currently unused and untested. */
+void restart_ai(player_t p)
+{
+	stop_ai(p);
+	start_ai(&game, p, "random");
+	send_sync(p);
+}
+
 
 #ifdef DEBUG
 /* We handle debugging messages from the AI in a very cool / hackish way.

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3745 2002-04-05 06:20:48Z jdorje $
+ * $Id: common.c 3749 2002-04-05 07:49:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -471,6 +471,19 @@ static void handle_launch_event(void)
 	set_game_state(STATE_NOTPLAYING);
 }
 
+/* This handles a "done event", when our state is changed to DONE. */
+static void handle_done_event(void)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++) {
+		if (get_player_status(p) == GGZ_SEAT_BOT)
+			stop_ai(p);
+	}
+
+	/* Anything else to shut down? */
+}
+
 /* This handles a state change event, when the table changes state. */
 void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
@@ -484,7 +497,10 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	
 	switch (new_state) {
 	case GGZDMOD_STATE_CREATED:
+		break;
 	case GGZDMOD_STATE_DONE:
+		/* Close down. */
+		handle_done_event();
 		break;
 	case GGZDMOD_STATE_WAITING:
 		/* Enter waiting phase. */
