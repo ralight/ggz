@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1133 2001-02-19 23:22:16Z bugg $
+ *  $Id: movecheck.c 1161 2001-02-22 21:38:39Z bugg $
  */
 
 #include <stdlib.h>
@@ -124,19 +124,21 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote
 
 	/* We can't end the move in check. */
 
-	if(cgc_piece_type(curgame->board[fs][rs]) != KING) {
-		tmp = curgame->board[fd][rd];
-		curgame->board[fd][rd] = curgame->board[fs][rs];
-		curgame->board[fs][rs] = EMPTY;
+	tmp = curgame->board[fd][rd];
+	curgame->board[fd][rd] = curgame->board[fs][rs];
+	curgame->board[fs][rs] = EMPTY;
 
+	if(cgc_piece_type(curgame->board[fd][rd]) != KING) {
 		retval = safe_square(curgame, kf, kr);
-
-		curgame->board[fs][rs] = curgame->board[fd][rd];
-		curgame->board[fd][rd] = tmp;
-
-		if(!retval)
-			return E_BADMOVE;
+	} else {
+		retval = safe_square(curgame, fd, rd);
 	}
+
+	curgame->board[fs][rs] = curgame->board[fd][rd];
+	curgame->board[fd][rd] = tmp;
+
+	if(!retval)
+		return E_BADMOVE;
 
 	return OK;
 }
@@ -361,9 +363,6 @@ valid_king(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 	int enemy;
 
 	enemy = curgame->onmove ? BLACK : WHITE;
-
-	if(!safe_from_color(curgame, fd, rd, enemy))
-		return INVALID;
 
 	if(abs(rs-rd) <= 1 && abs(fs-fd) <= 1)
 		return VALID;
