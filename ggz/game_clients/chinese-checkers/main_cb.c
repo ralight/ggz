@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: main_cb.c 6266 2004-11-05 07:29:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -126,6 +126,14 @@ on_draw_area_expose_event              (GtkWidget       *widget,
 {
 	display_handle_expose_event(event);
 	return FALSE;
+}
+
+gboolean on_draw_area_configure_event(GtkWidget *widget,
+				      GdkEventExpose *event,
+				      gpointer user_data)
+{
+	display_resized();
+	return TRUE;
 }
 
 

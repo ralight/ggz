@@ -36,6 +36,9 @@ gboolean
 on_draw_area_expose_event              (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
+gboolean on_draw_area_configure_event(GtkWidget *widget,
+				      GdkEventExpose *event,
+				      gpointer user_data);
 
 gboolean
 on_draw_area_button_press_event        (GtkWidget       *widget,

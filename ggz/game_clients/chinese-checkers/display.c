@@ -61,7 +61,10 @@ static char *label_color[6] = {
 	"RGB:FF/00/FF"
 };
 
-#define BOARD_SIZE 400
+static gchar *colors[6] = {"red", "blue", "green",
+			   "yellow", "cyan", "purple"};
+
+static int BOARD_SIZE = 400;
 
 /* Integer value. */
 #define HOLE_SIZE ((int)(BOARD_SIZE * 12.5 / 400))
@@ -112,8 +115,6 @@ int display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
-	gchar *colors[6] = {"red", "blue", "green",
-			    "yellow", "cyan", "purple"};
 	int i;
 
 	/* Create and display the main dialog */
@@ -138,7 +139,10 @@ int display_init(void)
 				   draw_area->allocation.width,
 				   draw_area->allocation.height,
 				   -1);
-	draw(board_img, 0, 0, BOARD_SIZE, BOARD_SIZE);
+	gdk_draw_rectangle(board_buf,
+			   draw_area->style->black_gc, TRUE, 0, 0,
+			   draw_area->allocation.width,
+			   draw_area->allocation.height);
 
 	/* Convert the rest of our xpms to masked pixmaps */
 	hole_img = display_load_pixmap("hole", HOLE_SIZE);
@@ -161,9 +165,52 @@ int display_init(void)
 	gdk_gc_set_line_attributes(gc_line, 2, GDK_LINE_SOLID,
 				   GDK_CAP_BUTT, GDK_JOIN_ROUND);
 
-	game_zap_board();
+	display_resized();
 
 	return 0;
+}
+
+
+void display_resized(void)
+{
+	int w, h, i;
+
+	/* HACK: must be realized before used. */
+	if (!draw_area) {
+		return;
+	}
+
+	if (board_buf) {
+		gdk_pixmap_unref(board_buf);
+	}
+
+	if (board_img) {
+		g_object_unref(board_img);
+		g_object_unref(hole_img);
+		for (i = 0; i < 6; i++) {
+			g_object_unref(marble_img[i]);
+		}
+	}
+
+	w = draw_area->allocation.width;
+	h = draw_area->allocation.height;
+
+	board_buf = gdk_pixmap_new(draw_area->window, w, h, -1);
+
+	board_img = display_load_pixmap("board", MIN(w, h));
+
+	/* If the above load resulted in a smaller board, adapt to the
+	 * change. */
+	BOARD_SIZE = gdk_pixbuf_get_width(board_img);
+
+	hole_img = display_load_pixmap("hole", HOLE_SIZE);
+	assert(hole_img != NULL);
+	for (i = 0; i < 6; i++) {
+		marble_img[i] = display_load_pixmap(colors[i], HOLE_SIZE);
+		assert(marble_img[i] != NULL);
+	}
+
+	display_refresh_board();
 }
 
 
@@ -184,9 +231,15 @@ void display_handle_expose_event(GdkEventExpose *event)
 void display_refresh_board(void)
 {
 	int i, j;
+	int w = draw_area->allocation.width;
+	int h = draw_area->allocation.height;
 
 	/* Clear a path if one is showing */
 	display_show_path(NULL);
+
+	gdk_draw_rectangle(board_buf,
+			   draw_area->style->black_gc, TRUE, 0, 0, w, h);
+	draw(board_img, 0, 0, BOARD_SIZE, BOARD_SIZE);
 
 	/* Refresh the marbles */
 	assert(game.board[0][0] == BOARD_NONE);
@@ -211,9 +264,7 @@ void display_refresh_board(void)
 	gdk_draw_pixmap(draw_area->window,
 			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
 			board_buf,
-			0, 0,
-			0, 0,
-			BOARD_SIZE, BOARD_SIZE);
+			0, 0, 0, 0, w, h);
 }
 
 
