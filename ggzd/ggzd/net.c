@@ -72,6 +72,12 @@ struct _GGZNetIO {
 	/* File to dump protocol session */
 	int dump_file;
 
+	/* Count the number of bytes we've parsed since the last tag*/
+	int byte_count;
+
+	/* Flag whether we've a tag on this round of parsing */
+	/* This element, coupled with the byte counter helps us prevent DoS */
+	char tag_seen;
 };
 
 
@@ -701,6 +707,21 @@ int net_read_data(GGZNetIO *net)
 		done = 1;
 	}
 	
+	/* If we saw any tags clear the byte counter, otherwise increment it*/
+	if (net->tag_seen) {
+		net->byte_count = 0;
+		net->tag_seen = 0;
+	}
+	else {
+		net->byte_count += len;
+		/* If we haven't seen a tag in a while, it's an error */
+		if (net->byte_count > MAX_CHAT_LEN)
+			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
+			/* FIXME: should send an error */
+			done = 1;
+	}
+	   
+
 	/* Clear the flag now that we've completed this round of parsing */
 	net->parsing = 0;
 
@@ -725,6 +746,9 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 
 	/* Put element on stack so we can process its children */
 	stack_push(net->stack, element);
+
+	/* Mark that we've seen a tag */
+	net->tag_seen = 1;
 }
 
 
@@ -743,6 +767,9 @@ static void _net_parse_end_tag(void *data, const char *el)
 
 	/* Free data structures */
 	xmlelement_free(element);
+
+	/* Mark that we've seen a tag */
+	net->tag_seen = 1;
 }
 
 
