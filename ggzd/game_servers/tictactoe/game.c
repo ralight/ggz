@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2788 2001-12-06 09:44:43Z jdorje $
+ * $Id: game.c 2794 2001-12-06 22:58:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,7 +35,6 @@ struct ttt_game_t ttt_game;
 
 /* Local utility functions */
 static void game_rotate_board(char b[9]);
-static int game_seats_open(void);
 
 /* Setup game state and board */
 void game_init(GGZdMod *ggzdmod)
@@ -543,7 +542,8 @@ int game_update(int event, void* data)
 		game_send_seat(seat);
 		game_send_players();
 
-		if (!game_seats_open()) {
+		/* We start playing only when there are no open seats. */
+		if (!ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN)) {
 			if (ttt_game.turn == -1)
 				ttt_game.turn = 0;
 			else
@@ -599,18 +599,5 @@ static void game_rotate_board(char b[9])
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
 			b[3*i+j] = tmp[3*(2-j)+i];
-}
-
-static int game_seats_open(void)
-{
-	int i, count = 0;
-	GGZSeat seat;
-	
-	for (i = 0; i < ggzdmod_get_num_seats(ttt_game.ggz); i++) {
-		seat = ggzdmod_get_seat(ttt_game.ggz, i);
-		if (seat.type == GGZ_SEAT_OPEN)
-			count++;
-	}
-	return count;
 }
 
