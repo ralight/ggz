@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2225 2001-08-25 13:48:17Z jdorje $
+ * $Id: ggz_server.h 2228 2001-08-25 14:09:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -73,12 +73,6 @@ int ggzdmod_fd_max(void);
  *    automatically by the GGZ loop.
  */
 
-/* Setup functions */
-int ggzdmod_connect(void);
-int ggzdmod_disconnect(void);
-/* No extra functions are needed at this time.
- * Later a stat-reporting function will be added. */
-
 enum {
 	GGZ_EVENT_LAUNCH	= 0,  /**< a game launch event from ggzd */
 	GGZ_EVENT_JOIN		= 1,  /**< a player join event from ggzd */
@@ -96,10 +90,21 @@ enum {
 typedef int (*GGZHandler)(int event_id, void *handler_data);
 void ggzdmod_set_handler(int event_id, const GGZHandler handler);
 
+/* Setup functions */
+int ggzdmod_connect(void);
+int ggzdmod_disconnect(void);
+
+/* this function should be called when there's GGZ data ready
+ * to be read */
+int ggzdmod_dispatch(void);
+
+/* this function may not be a part of the final API */
+int ggzdmod_read_data(void);
+
 /* Open the ggz socket and wait for events,
  * calling handlers when necessary
  * Handles connect and disconnect also. */
-int ggzdmod_main();
+int ggzdmod_main(void);
 
 
 #endif /* __GGZ_SERVER_GGZ_H */

@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2225 2001-08-25 13:48:17Z jdorje $
+ * $Id: ggz.c 2228 2001-08-25 14:09:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -327,39 +327,18 @@ void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 }
 
 /* return value:
- * 0 => normal; game goes on
- * 1 => gameover
- * -1 => error
+ *  0 => normal
+ *  1 => game over
+ *  -1 => error
  */
-static int ggzdmod_loop(void)
+int ggzdmod_dispatch(void)
 {
-	fd_set read_fd_set;
-	int i, fd,  op, seat, status;
-	int gameover = 0;
+        int op, seat, fd, gameover = 0;
 
-	read_fd_set = active_fd_set;
+	if (es_read_int(ggzfd, &op) < 0)
+		return -1;
 
-	/* TODO: We may want to just poll and return.  Polling is
-	 * useful for real-time games (easier than using
-	 * threads).  --JDS */
-	/* note - we have to select so that we can determine what file
-	 * descriptors are waiting to be read. */
-	status = select(ggzdmod_fd_max() + 1,
-			&read_fd_set,
-			NULL, NULL, NULL);
-	if (status <= 0) {
-		if (errno == EINTR)
-			return 0;
-		else
-			return -1;
-	}
-
-	/* Check for message from GGZ server */
-	if (FD_ISSET(ggzfd, &read_fd_set)) {
-		if (es_read_int(ggzfd, &op) < 0)
-			return -1;
-		switch (op) {
-
+	switch (op) {
 		case REQ_GAME_LAUNCH:
 			if (ggzdmod_game_launch() == 0
 			    && handlers[GGZ_EVENT_LAUNCH] != NULL)
@@ -388,8 +367,46 @@ static int ggzdmod_loop(void)
 				(*handlers[GGZ_EVENT_QUIT])
 					(GGZ_EVENT_QUIT, NULL);
 			break;
-		}
 	}
+
+	return gameover;
+}
+
+/* return value:
+ * 0 => normal; game goes on
+ * 1 => gameover
+ * -1 => error
+ */
+int ggzdmod_read_data(void)
+{
+	fd_set read_fd_set;
+	int i, fd, status;
+	int gameover = 0;
+
+	read_fd_set = active_fd_set;
+
+	/* TODO: We may want to just poll and return.  Polling is
+	 * useful for real-time games (easier than using
+	 * threads).  --JDS */
+	/* note - we have to select so that we can determine what file
+	 * descriptors are waiting to be read. */
+	status = select(ggzdmod_fd_max() + 1,
+			&read_fd_set,
+			NULL, NULL, NULL);
+	if (status <= 0) {
+		if (errno == EINTR)
+			return 0;
+		else
+			return -1;
+	}
+
+	/* Check for message from GGZ server */
+	if (FD_ISSET(ggzfd, &read_fd_set))
+		status = ggzdmod_dispatch();
+	if (status < 0)
+		return -1;
+	else if (status > 0)
+		gameover = 1;
 
 	/* Check for message from player */
 	for (i = 0; i < ggzdmod_seats_num(); i++) {
@@ -422,7 +439,7 @@ int ggzdmod_main(void)
 		return -1;
 
 	while (status == 0)
-		status = ggzdmod_loop();
+		status = ggzdmod_read_data();
 
 	if (status < 0)
 		return -2;
