@@ -95,7 +95,7 @@ void chat_print(int color, char* left, char* right)
 	{
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
-		gtk_xtext_refresh(tmp);
+		gtk_xtext_refresh(tmp, 0);
 	} else if(color == CHAT_COLOR_SOME) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		buf = g_strdup_printf("<%s>",client.server.login); 
@@ -111,14 +111,14 @@ void chat_print(int color, char* left, char* right)
 			gtk_xtext_append_indent(GTK_XTEXT(tmp), buf, strlen(buf), right, strlen(right));
 			g_free(buf);
 		}
-		gtk_xtext_refresh(tmp);
+		gtk_xtext_refresh(tmp,0);
 	} else if(color == CHAT_COLOR_FULL) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
-		gtk_xtext_refresh(tmp);
+		gtk_xtext_refresh(tmp,0);
 	} else if(color == CHAT_COLOR_SERVER) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), left, strlen(left), right, strlen(right));
-		gtk_xtext_refresh(tmp);
+		gtk_xtext_refresh(tmp,0);
 	}
 }

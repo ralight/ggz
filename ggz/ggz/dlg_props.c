@@ -106,7 +106,7 @@ void props_update()
 	font = gdk_font_load(ggzrc_read_string("CHAT","Font",
 		"-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8"));
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
-	gtk_xtext_refresh(GTK_XTEXT(tmp));
+	gtk_xtext_refresh(GTK_XTEXT(tmp),0);
 
 	/*User Info Tab*/
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");

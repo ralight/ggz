@@ -457,7 +457,7 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	tmp->wordwrap = ggzrc_read_int("CHAT","WordWrap",TRUE);
 	tmp->max_auto_indent = 200;
 	tmp->time_stamp = ggzrc_read_int("CHAT","Timestamp",FALSE);
-	gtk_xtext_refresh(tmp);
+	gtk_xtext_refresh(tmp,0);
 
 	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
