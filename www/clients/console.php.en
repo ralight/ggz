@@ -1,0 +1,37 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Console client: GGZ-Txt</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Features</i><br>
+<ul>
+<li>doesn't need X11 to run
+<li>support for terminal colours and readline functionality
+<li>can be used to play games, e.g. when running in xterm
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/ggz-txt.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

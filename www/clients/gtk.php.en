@@ -1,0 +1,38 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Gtk+ client: GGZ-Gtk</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Features</i><br>
+<ul>
+<li>small and fast graphical core client
+<li>chat supports auto completion and history
+<li>login profiles
+<li>displays lag values
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/ggz-gtk.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
