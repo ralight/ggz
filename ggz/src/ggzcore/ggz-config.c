@@ -96,36 +96,34 @@ void load_fromfile(void)
 {
 	int from;
 
-	if(modname == NULL) {
-		fprintf(stderr, "To use --fromfile, at least --modname must be specified.\n");
-		return;
-	}
-
 	from = ggzcore_confio_parse(fromfile, GGZ_CONFIO_RDONLY);
 
+	if(modname == NULL) 
+		modname = ggzcore_confio_read_string(from, "ModuleInfo",
+						     "Name", NULL);
 	if(modversion == NULL)
-		modversion = ggzcore_confio_read_string(from, modname,
+		modversion = ggzcore_confio_read_string(from, "ModuleInfo",
 							"Version", NULL);
 	if(modexec == NULL)
-		modexec = ggzcore_confio_read_string(from, modname,
+		modexec = ggzcore_confio_read_string(from, "ModuleInfo",
 						     "ExecPath", NULL);
 	if(modui == NULL)
-		modui = ggzcore_confio_read_string(from, modname,
+		modui = ggzcore_confio_read_string(from, "ModuleInfo",
 						   "Frontend", NULL);
 	if(modproto == NULL)
-		modproto = ggzcore_confio_read_string(from, modname,
+		modproto = ggzcore_confio_read_string(from, "ModuleInfo",
 						      "Protocol", NULL);
 	if(modauthor == NULL)
-		modauthor = ggzcore_confio_read_string(from, modname,
+		modauthor = ggzcore_confio_read_string(from, "ModuleInfo",
 						       "Author", NULL);
 	if(modurl == NULL)
-		modurl = ggzcore_confio_read_string(from, modname,
+		modurl = ggzcore_confio_read_string(from, "ModuleInfo",
 						    "Homepage", NULL);
 	if(modicon == NULL)
-		modicon = ggzcore_confio_read_string(from, modname,
+		modicon = ggzcore_confio_read_string(from, "ModuleInfo",
 						     "IconPath", NULL);
 	if(modhelp == NULL)
-		modhelp = ggzcore_confio_read_string(from, modname,
+		modhelp = ggzcore_confio_read_string(from, "ModuleInfo",
 						     "HelpPath", NULL);
 }
 
