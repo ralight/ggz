@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2456 2001-09-12 02:59:16Z jdorje $
+ * $Id: spades.c 2459 2001-09-12 07:42:46Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -87,8 +87,11 @@ static char *get_name(player_t p)
 	return strdup(name);
 }
 
-
-
+static int count_cards[4];	/* the number of "count" cards each player
+				   has played.  Count cards are A/K of a
+				   suit, A/K/Q of spades, or a fourth or more 
+				   spade.  Tracking these can help us to
+				   determine what the player has left. */
 
 static struct play {
 	card_t card;		/* card's value */
@@ -107,7 +110,8 @@ static int card_comp(card_t c1, card_t c2);
 
 static void start_hand()
 {
-	/* nothing... */
+	/* Reset each player's # of CCs played to 0 */
+	memset(count_cards, 0, 4 * sizeof(int));
 }
 
 static void alert_bid(player_t p, bid_t bid)
@@ -117,6 +121,17 @@ static void alert_bid(player_t p, bid_t bid)
 
 static void alert_play(player_t p, card_t play)
 {
+
+	/* Track count cards */
+	if (play.face == ACE_HIGH || play.face == KING ||
+	    (play.face == QUEEN && play.suit == SPADES) ||
+	    (play.suit == SPADES
+	     && libai_cards_played_in_suit(p, SPADES) >= 4)) {
+		ai_debug("Counting %s of %s as a count card for player %d.",
+			 face_names[(int) play.face],
+			 suit_names[(int) play.suit], p);
+		count_cards[p]++;
+	}
 #ifdef USE_AI_TRICKS
 	card_t lead = game.seats[game.players[game.leader].seat].table;
 #endif
@@ -156,10 +171,9 @@ static void alert_play(player_t p, card_t play)
 			for (card.face++; card.face < -1	/* THE
 								   HIGHEST
 								   CARD
-								   PLAYED SO 
+								   PLAYED SO
 								   FAR IN
-								   THIS SUIT 
-								 */ ; card.face++)
+								   THIS SUIT */ ; card.face++)
 				libai_player_doesnt_have_card(p, card);
 		}
 	}
