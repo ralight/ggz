@@ -4,7 +4,7 @@
 // GGZ includes
 #include "ggzgameserver.h"
 
-// Muehle server object
+// Geekgame server object
 class Geekgame : public GGZGameServer
 {
 	public:
@@ -18,7 +18,12 @@ class Geekgame : public GGZGameServer
 		void spectatorDataEvent(int spectator);
 		void dataEvent(int player);
 		void errorEvent();
+
 	private:
+		void game_start();
+		void game_stop();
+		void game_end();
+
 		int m_players;
 		int m_valid[2];
 };
