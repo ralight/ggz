@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: common.c 3423 2002-02-19 13:06:43Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -473,7 +473,8 @@ static int handle_req_bid(void)
 {
 	int i;
 	int possible_bids;
-	char **bid_choices;
+	char **bid_descriptions;
+	bid_t *bid_choices;
 
 	if (ggzcards.state == STATE_BID) {
 		/* The new bid request overrides the old one.  But this means
@@ -486,21 +487,24 @@ static int handle_req_bid(void)
 	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
 		return -1;
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
+	bid_descriptions = ggz_malloc(possible_bids * sizeof(*bid_descriptions));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
-		if (ggz_read_string_alloc(game_internal.fd, &bid_choices[i]) <
-		    0)
+		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
+		    ggz_read_string_alloc(game_internal.fd,
+		                          &bid_descriptions[i]) < 0)
 			return -1;
 	}
 
 	/* Get the bid */
 	set_game_state(STATE_BID);
-	game_get_bid(possible_bids, bid_choices);
+	game_get_bid(possible_bids, bid_choices, bid_descriptions);
 
 	/* Clean up */
 	for (i = 0; i < possible_bids; i++)
-		ggz_free(bid_choices[i]);	/* allocated by easysock */
+		ggz_free(bid_descriptions[i]);	/* allocated by easysock */
+	ggz_free(bid_descriptions);
 	ggz_free(bid_choices);
 
 	return 0;

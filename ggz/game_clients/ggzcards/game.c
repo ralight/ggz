@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: game.c 3423 2002-02-19 13:06:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -313,11 +313,11 @@ void game_display_hand(int player)
 	table_display_hand(player, TRUE);
 }
 
-void game_get_bid(int possible_bids, char **bid_choices)
+void game_get_bid(int possible_bids, bid_t *bid_choices, char **bid_descriptions)
 {
 	ggz_debug("main", "Handling bid request; %d choices.", possible_bids);
 
-	dlg_bid_display(possible_bids, bid_choices);
+	dlg_bid_display(possible_bids, bid_descriptions);
 
 #if 0
 	/* This is a hack since sometimes the table would get overdrawn at

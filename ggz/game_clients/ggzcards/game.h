@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: game.h 3423 2002-02-19 13:06:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -122,7 +122,8 @@ void game_alert_player(int player, GGZSeatType status, const char *name);
 void game_setup_table(void);
 void game_alert_hand_size(int max_hand_size);
 void game_display_hand(int player);
-void game_get_bid(int possible_bids, char **bid_choices);
+void game_get_bid(int possible_bids, bid_t *bid_choices,
+                  char **bid_descriptions);
 void game_get_play(int hand);
 void game_alert_bid(int bidder, bid_t bid);
 void game_alert_badplay(char *err_msg);

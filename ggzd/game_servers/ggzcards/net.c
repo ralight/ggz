@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: net.c 3423 2002-02-19 13:06:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -273,7 +273,8 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 	for (i = 0; i < bid_count; i++) {
 		char bid_text[4096];
 		game.funcs->get_bid_text(bid_text, sizeof(bid_text), bids[i]);
-		if (ggz_write_string(fd, bid_text) < 0)
+		if (write_bid(fd, bids[i]) < 0 ||
+		    ggz_write_string(fd, bid_text) < 0)
 			status = -1;
 	}
 	return status;

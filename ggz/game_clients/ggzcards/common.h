@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: common.h 3423 2002-02-19 13:06:43Z jdorje $
  *
  * Copyright (C) 2001--2002 Brent Hendricks.
  *
@@ -181,7 +181,8 @@ extern void game_display_hand(int player);
   * any point afterwards to send the response.
   * @param possible_bids The number of possible bid choices.
   * @param bid_choices An array of strings, one corresponding to each bid choice. */
-extern void game_get_bid(int possible_bids, char **bid_choices);
+extern void game_get_bid(int possible_bids, bid_t *bid_choices,
+                         char **bid_descriptions);
 
 /** Called to request a play.  The frontend should call client_send_play
  *  at any point afterwards to send the response.
