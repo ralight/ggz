@@ -246,6 +246,10 @@ DOM *minidom_parse(const char *stream)
 						/*cp = cp->parent;*/
 						endtag = 1;
 					}
+					if((cp) && (!strncmp(token, "!--", 3)) && (!strncmp(token + strlen(token) - 2, "--", 2)))
+					{
+						endtag = 1;
+					}
 					/*printf("INSERT AT: %i\n", cp);*/
 					cp = minidom_makechild(cp, token);
 					if((cp) && (!ele)) ele = cp;
@@ -369,7 +373,7 @@ void minidom_internal_dump(ELE *ele, FILE *file)
 		i++;
 	}
 
-	if((!ele->value) && (!ele->el)) fprintf(file, "/");
+	if((!ele->value) && (!ele->el) && (strcmp(ele->name, "!--"))) fprintf(file, "/");
 	fprintf(file, ">\n");
 	if(ele->value)
 	{
