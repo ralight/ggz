@@ -535,6 +535,7 @@ int game_update(int event, void *d1)
 	char direction;
 	char victor;
 	static int first_join=1;
+	char turn;
 	
 	ggz_debug("game_update(%d, ) entered\n",event);
 
@@ -617,12 +618,18 @@ int game_update(int event, void *d1)
 			break;
 		case ESCAPE_EVENT_MOVE:
 			ggz_debug("\tESCAPE_EVENT_MOVE\n");
+			turn = escape_game.turn; // current player
 			if(escape_game.state != ESCAPE_STATE_PLAYING)
 				return -1;
 		
 			direction = *(char*)d1;
-			ggz_debug("\tgame_send_move(%d, %d, %d)\n",escape_game.turn, event, direction);
-			game_send_move(escape_game.turn, event, direction);
+			if (turn == escape_game.turn){ // player making move has another turn
+				ggz_debug("\tgame_send_move(%d, %d, %d)\n",(escape_game.turn+1)%2, event, direction);
+				game_send_move((escape_game.turn+1)%2, event, direction);
+			}else{
+				ggz_debug("\tgame_send_move(%d, %d, %d)\n",escape_game.turn, event, direction);
+				game_send_move(escape_game.turn, event, direction);
+			}
 		
 			if((victor = game_check_win()) < 0) {
 				/* Request next move */
