@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2655 2001-11-04 22:18:06Z jdorje $
+ * $Id: ggzdmod.c 2659 2001-11-04 22:45:53Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -63,6 +63,7 @@ typedef struct _GGZdMod {
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
+	void *gamedata;         /* game-specific data */
 
 	/* ggz-only data */
 	pid_t pid;		/* process ID of table */
@@ -232,6 +233,16 @@ GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat)
 }
 
 
+void* ggzdmod_get_gamedata(GGZdMod * mod)
+{
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return NULL;
+	}
+	return ggzdmod->gamedata;
+}
+
+
 void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 {
 	_GGZdMod *ggzdmod = mod;
@@ -276,6 +287,19 @@ void ggzdmod_set_module(GGZdMod * mod, char **argv)
 	
 	for (i = 0; argv[i]; i++) 
 		ggzdmod->argv[i] = argv[i];
+}
+
+
+void ggzdmod_set_gamedata(GGZdMod * mod, void * data)
+{
+	_GGZdMod *ggzdmod = mod;
+
+	/* Check parameters */
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return;		/* not very useful */
+	}
+
+	ggzdmod->gamedata = data;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2655 2001-11-04 22:18:06Z jdorje $
+ * $Id: ggzdmod.h 2659 2001-11-04 22:45:53Z bmh $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -212,10 +212,16 @@ int ggzdmod_get_num_seats(GGZdMod * mod);
  *  @note This has not been finalized. */
 GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat);
 
+/** @brief Return gamedata pointer*/
+void * ggzdmod_get_gamedata(GGZdMod * mod);
+
 /** @brief Set the number of seats for the table.
  *  @note This will only work for ggzd.
  *  @todo How does this work for the table? */
 void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
+
+/** @brief Set gamedata pointer*/
+void ggzdmod_set_gamedata(GGZdMod * mod, void * data);
 
 /** @brief Set a handler for the given event. */
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
