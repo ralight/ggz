@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 3420 2002-02-19 08:04:27Z jdorje $
+ * $Id: login.c 3740 2002-04-05 05:05:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -68,7 +68,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 
 	new_pw[0] = '\0';
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login", player);
+	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
+	        player, type);
 
 	/* Can't login twice */
 	if (player->uid != GGZ_UID_NONE) {
