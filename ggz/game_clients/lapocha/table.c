@@ -23,6 +23,7 @@ static GdkPixmap *table_buf, *table_buf_backup;
 static GdkPixmap *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
 static GtkStyle *f1_style;
 static GtkWidget *f1;
+static GtkWidget *l_name[4], *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
 static struct {
 	int	card;
 	int	dest_x, dest_y;
@@ -46,6 +47,7 @@ void table_initialize(void)
 {
 	GdkBitmap *mask;
 	int i, x1, y1, x2, y2;
+	GtkWidget *label;
 
 	/* This starts our drawing code */
 	f1 = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
@@ -183,6 +185,109 @@ void table_initialize(void)
 			0, 0,
 			0, 0,
 			f1->allocation.width, f1->allocation.height);
+
+	/* Add text labels to display */
+	/* Name entries */
+	l_name[0] = gtk_label_new("Player One");
+	gtk_fixed_put(GTK_FIXED(f1), l_name[0], 8, 358);
+	gtk_widget_set_usize(l_name[0], 98, -1);
+	gtk_widget_show(l_name[0]);
+	l_name[1] = gtk_label_new("Player Two");
+	gtk_fixed_put(GTK_FIXED(f1), l_name[1], 8, 6);
+	gtk_widget_set_usize(l_name[1], 98, -1);
+	gtk_widget_show(l_name[1]);
+	l_name[2] = gtk_label_new("Player Three");
+	gtk_fixed_put(GTK_FIXED(f1), l_name[2], 360, 6);
+	gtk_widget_set_usize(l_name[2], 98, -1);
+	gtk_widget_show(l_name[2]);
+	l_name[3] = gtk_label_new("Player Four");
+	gtk_fixed_put(GTK_FIXED(f1), l_name[3], 360, 358);
+	gtk_widget_set_usize(l_name[3], 98, -1);
+	gtk_widget_show(l_name[3]);
+
+	/* Score entries */
+	label = gtk_label_new("Score:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 379);
+	gtk_widget_show(label);
+	label = gtk_label_new("Score:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 30);
+	gtk_widget_show(label);
+	label = gtk_label_new("Score:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 30);
+	gtk_widget_show(label);
+	label = gtk_label_new("Score:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 382);
+	gtk_widget_show(label);
+	l_score[0] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_score[0], 57, 379);
+	gtk_widget_show(l_score[0]);
+	l_score[1] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_score[1], 57, 30);
+	gtk_widget_show(l_score[1]);
+	l_score[2] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_score[2], 408, 30);
+	gtk_widget_show(l_score[2]);
+	l_score[3] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_score[3], 408, 382);
+	gtk_widget_show(l_score[3]);
+
+	/* Bid entries */
+	label = gtk_label_new("Bid:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 404);
+	gtk_widget_show(label);
+	label = gtk_label_new("Bid:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 54);
+	gtk_widget_show(label);
+	label = gtk_label_new("Bid:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 54);
+	gtk_widget_show(label);
+	label = gtk_label_new("Bid:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 406);
+	gtk_widget_show(label);
+	l_bid[0] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_bid[0], 57, 404);
+	gtk_widget_show(l_bid[0]);
+	l_bid[1] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_bid[1], 57, 54);
+	gtk_widget_show(l_bid[1]);
+	l_bid[2] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_bid[2], 408, 54);
+	gtk_widget_show(l_bid[2]);
+	l_bid[3] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_bid[3], 408, 406);
+	gtk_widget_show(l_bid[3]);
+
+	/* Trick entries */
+	label = gtk_label_new("Tricks:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 429);
+	gtk_widget_show(label);
+	label = gtk_label_new("Tricks:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 8, 78);
+	gtk_widget_show(label);
+	label = gtk_label_new("Tricks:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 78);
+	gtk_widget_show(label);
+	label = gtk_label_new("Tricks:");
+	gtk_fixed_put(GTK_FIXED(f1), label, 360, 430);
+	gtk_widget_show(label);
+	l_tricks[0] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_tricks[0], 57, 429);
+	gtk_widget_show(l_tricks[0]);
+	l_tricks[1] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_tricks[1], 57, 78);
+	gtk_widget_show(l_tricks[1]);
+	l_tricks[2] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_tricks[2], 408, 78);
+	gtk_widget_show(l_tricks[2]);
+	l_tricks[3] = gtk_label_new("0");
+	gtk_fixed_put(GTK_FIXED(f1), l_tricks[3], 408, 430);
+	gtk_widget_show(l_tricks[3]);
+
+	/* Current trump entry */
+	l_trump = gtk_label_new("Trump is not set");
+	gtk_fixed_put(GTK_FIXED(f1), l_trump, 8, 448);
+	gtk_widget_set_usize(l_trump, 98, -1);
+	gtk_widget_show(l_trump);
 }
 
 
@@ -221,12 +326,14 @@ void table_handle_click_event(GdkEventButton *event)
 		if(event->x <= x)
 			break;
 	}
-	/* This seemed more efficient than a loop */
-	if(hand.card[target] == -1)
-		if(hand.card[--target] == -1)
-			if(hand.card[--target] == -1)
-				if(hand.card[--target] == -1)
-					return;
+	/* This checks cards to the left if the clicked card isn't there */
+	while(hand.card[target] == -1) {
+		if(--target < 0)
+			return;
+		x = 167.5 + ((target+1) * CARDWIDTH/4.0);
+		if(event->x > x)
+			return;
+	}
 
 	table_card_clicked(target);
 }
