@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3724 2002-04-03 18:01:36Z jdorje $
+ * $Id: ggzdmod.c 3807 2002-04-07 08:08:31Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -396,7 +396,13 @@ static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
 	GGZSeat oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
 	
-	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)", seat->num, seat->type, seat->name);
+	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)",
+		  seat->num, seat->type, seat->name);
+
+	/* Note, some other parts of the code assume that if
+	   ggzdmod-game changes seat information, the data is not sent back
+	   to ggzdmod-ggz.  Specifically, the game server is allowed to change
+	   the player FD (if it is -1) and also the name of bot players. */
 
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
@@ -455,12 +461,19 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	} 
 	
 	if (ggzdmod->type == GGZDMOD_GAME) {
-		if (seat->fd != oldseat.fd || seat->type != oldseat.type)
+		/* we allow changing the fd if the old one was -1.  Note
+		   this will cause the FD to be monitored by ggzdmod-game,
+		   and a GGZDMOD_EVENT_PLAYER_DATA may then be generated
+		   for it. */
+		if ( (oldseat.fd != -1 && seat->fd != oldseat.fd)
+		     || seat->type != oldseat.type)
 			return -1;
+
 		/* For now, we allow games to change the names of Bot players,
 		   but that's it.  This information is _not_ transmitted back
 		   to ggzd (yet). */
-		if (oldseat.type != GGZ_SEAT_BOT && strings_differ(seat->name, oldseat.name))
+		if (oldseat.type != GGZ_SEAT_BOT
+		    && strings_differ(seat->name, oldseat.name))
 			return -1;
 	}
 
@@ -1203,7 +1216,6 @@ static void seat_free(GGZSeat *seat)
 
 	ggz_free(seat);
 }
-
 
 static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 {
