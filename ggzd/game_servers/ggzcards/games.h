@@ -85,7 +85,8 @@ typedef enum game_type_t {
 	GGZ_GAME_LAPOCHA = 4,
 	GGZ_GAME_EUCHRE = 5,
 	GGZ_GAME_ROOK = 6,
-	GGZ_GAME_SKAT = 7
+	GGZ_GAME_SKAT = 7,
+	GGZ_GAME_SUECA = 8
 } game_type_t;
 
 extern struct game_info game_data[];

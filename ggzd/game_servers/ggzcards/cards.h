@@ -68,6 +68,7 @@ typedef enum deck_type_t {
 	GGZ_DECK_SUARO,		/* A-8 in each suit */
 	GGZ_DECK_EUCHRE,	/* A-9 in each suit */
 	GGZ_DECK_SKAT,		/* A-7 in each suit */
+	GGZ_DECK_SUECA,   /* A,7,K,J,Q,6,5,4,3,2 */
 } deck_type_t;
 
 /* Exported functions */

@@ -60,6 +60,7 @@ void cards_create_deck(deck_type_t which_deck)
 	char suaro_deck_faces[] = {8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char euchre_deck_faces[] = {9, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char skat_deck_faces[] = {7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
+	char sueca_deck_faces[] = {2, 3, 4, 5, 6, QUEEN, JACK, KING, 7, ACE_HIGH};
 
 	deck_faces = std_deck_faces;
 	deck_suits = std_deck_suits;
@@ -83,6 +84,10 @@ void cards_create_deck(deck_type_t which_deck)
 		case GGZ_DECK_EUCHRE:
 			deck_faces = euchre_deck_faces;
 			deck_face_cnt = 6;
+			break;
+		case GGZ_DECK_SUECA:
+			deck_faces = sueca_deck_faces;
+			deck_face_cnt = 10;
 			break;
 		case GGZ_DECK_FULL:
 			/* use a full 52-card deck */
