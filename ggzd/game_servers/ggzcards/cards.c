@@ -175,7 +175,11 @@ void cards_deal_hand(int handsize, hand_t *hand)
 		deck_ptr++;
 	}
 
+	cards_sort_hand(hand);
+}
 
+void cards_sort_hand(hand_t *hand)
+{
 	/* sort cards -- this should be in another function
 	 * so it can be done later as well */
 	qsort(hand->cards, hand->hand_size, sizeof(card_t), game_compare_cards);

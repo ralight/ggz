@@ -69,6 +69,7 @@ extern void cards_create_deck(int which_deck);
 extern void cards_destroy_deck();
 extern void cards_shuffle_deck(void);
 extern void cards_deal_hand(int handsize, hand_t *hand);
+extern void cards_sort_hand(hand_t *hand);
 extern card_t cards_deal_card(); /* deals one card */
 extern char cards_cut_for_trump(void);
 extern int cards_suit_in_hand(hand_t *, char);

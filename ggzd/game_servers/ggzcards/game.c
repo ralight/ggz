@@ -107,6 +107,14 @@ int game_compare_cards(const void *c1, const void *c2)
 	register card_t card1 = *(card_t *)c1;
 	register card_t card2 = *(card_t *)c2;
 	switch (game.which_game) {
+		case GGZ_GAME_BRIDGE:
+			/* in Bridge, the trump suit is always supposed to be shown on the left */
+			ggz_debug("Cards_compare_hand: suit 1 is %d, suit 2 %d, trump %d.", card1.suit, card2.suit, game.trump);
+			if (card1.suit == game.trump && card2.suit != game.trump)
+				return -1;
+			if (card2.suit == game.trump && card1.suit != game.trump)
+				return 1;
+			/* fall through */
 		default:
 			if (card1.suit < card2.suit) return -1;
 			if (card1.suit > card2.suit) return 1;
@@ -1123,9 +1131,10 @@ void game_handle_play(card_t c)
 				 * the dummy's hand to everyone */
 				player_t p;
 				seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
+				cards_sort_hand(&game.seats[dummy_seat].hand);
 				BRIDGE.dummy_revealed = 1;
 				for (p=0; p<game.num_players; p++) {
-					if (p == BRIDGE.dummy) continue;
+					/* if (p == BRIDGE.dummy) continue; */
 					game_send_hand(p, dummy_seat);
 				}
 			}
