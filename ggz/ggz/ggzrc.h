@@ -24,4 +24,5 @@
  */
 
 extern int ggzrc_initialize(void);
+extern int ggzrc_commit_changes(void);
 extern void ggzrc_cleanup(void);

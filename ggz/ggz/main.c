@@ -102,6 +102,7 @@ gint main(gint argc, gchar *argv[])
 
 	gtk_main();
 
+	ggzrc_commit_changes();
 	ggzrc_cleanup();
 
 	return 0;

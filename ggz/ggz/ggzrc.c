@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "config.h"
 #include "ggzrc.h"
@@ -42,6 +43,7 @@ static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
 static char *varname;
 static char *varvalue;
 static GHashTable *rc_hash;
+static GSList *rc_list=NULL;
 
 
 /* Initialize and read in the configuration file */
@@ -120,19 +122,77 @@ static void ggzrc_load_rc(FILE *rc_file)
 		dbg_msg("ggzrc: found '%s %s = %s'", section,varname,varvalue);
 		hashname = g_strconcat(section, varname, NULL);
 		g_hash_table_insert(rc_hash, hashname, g_strdup(varvalue));
+		rc_list = g_slist_prepend(rc_list, hashname);
 	}
 
+	/* Do time intensive stuff now that we are out of the loop */
+	rc_list = g_slist_sort(rc_list, strcmp);
 	g_hash_table_thaw(rc_hash);
+
 	g_free(section);
 	fclose(rc_file);
 }
 
 
-/* Cleanup by freeing up the hash table */
+/* Commit the hash table into an rc file */
+int ggzrc_commit_changes(void)
+{
+	FILE *rc_file;
+	char *filename;
+	char *home;
+	char *data;
+	char *cur_section;
+	int first_section;
+	char *tmp, *section, *key, *value;
+	GSList *iter_list=rc_list;
+	
+	if((home=getenv("HOME")) == NULL) {
+		err_msg("ggzrc: Can't write ~/.ggzrc, can't find $HOME");
+		return -1;
+	}
+	filename = g_strconcat(home, "/.ggzrc", NULL);
+	if((rc_file=fopen(filename, "w")) == NULL) {
+		err_msg("ggzrc: Can't open %s for write", filename);
+		return -1;
+	}
+
+	cur_section = g_strdup("none");
+	first_section = 1;
+	while(iter_list) {
+		data = g_strdup(iter_list->data);
+		value = g_hash_table_lookup(rc_hash, data);
+		tmp = section = data+1;
+		while(*tmp != ']')
+			tmp++;
+		*tmp = '\0';
+		key = tmp+1;
+		if(strcmp(cur_section, section)) {
+			g_free(cur_section);
+			cur_section = g_strdup(section);
+			if(first_section) {
+				fprintf(rc_file, "[%s]\n", cur_section);
+				first_section = 0;
+			} else
+				fprintf(rc_file, "\n[%s]\n", cur_section);
+		}
+		fprintf(rc_file, "%s = %s\n", key, value);
+		g_free(data);
+		iter_list = g_slist_next(iter_list);
+	}
+
+	fclose(rc_file);
+	return 0;
+}
+
+
+/* Cleanup by freeing up the hash table and list */
 void ggzrc_cleanup(void)
 {
 	g_hash_table_foreach_remove(rc_hash, ggzrc_free_keyval, NULL);
 	g_hash_table_destroy(rc_hash);
+	rc_hash = NULL;
+	g_slist_free(rc_list);
+	rc_list = NULL;
 }
 
 
