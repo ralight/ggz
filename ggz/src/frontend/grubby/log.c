@@ -58,7 +58,7 @@ void start_log( char *file, char *type )
 	/* Initilize the log file */
 	if( !strcasecmp( grubby.logtype, "HTML" ) )
 	{
-		fprintf( grubby.logfile, "<html>\n<title>GNU Gaming Zone Log File</title>\n<body bgcolor=\"white\">\n" );
+		fprintf( grubby.logfile, "<html>\n<title>GGZ Gaming Zone Log File</title>\n<body bgcolor=\"white\">\n" );
 		fprintf( grubby.logfile, "<center>\n<table width=750>\n" );
 		fprintf( grubby.logfile, "<tr><td colspan=2>Server:</td><td>%s</td></tr>\n", grubby.host );
 		fprintf( grubby.logfile, "<tr><td colspan=2>Port:</td><td>%d</td></tr>\n", grubby.port );

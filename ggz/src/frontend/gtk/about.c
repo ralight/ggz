@@ -96,7 +96,7 @@ create_dlg_about (void)
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 10);
 
-  title_label = gtk_label_new (_("GNU Gaming Zone\nGTK+ Client"));
+  title_label = gtk_label_new (_("GGZ Gaming Zone\nGTK+ Client"));
   gtk_widget_ref (title_label);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "title_label", title_label,
                             (GtkDestroyNotify) gtk_widget_unref);

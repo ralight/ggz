@@ -83,7 +83,6 @@
 	    <last_modification_time>Sun, 05 Nov 2000 06:15:30 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
@@ -103,7 +102,7 @@
       <widget>
 	<class>GtkLabel</class>
 	<name>title_label</name>
-	<label>GNU Gaming Zone
+	<label>GGZ Gaming Zone
 GTK+ Client</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>

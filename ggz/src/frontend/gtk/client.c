@@ -635,7 +635,7 @@ create_win_main (void)
   win_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (win_main), "win_main", win_main);
   gtk_widget_set_usize (win_main, 620, 400);
-  gtk_window_set_title (GTK_WINDOW (win_main), _("GNU Gaming Zone"));
+  gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
   gtk_window_set_policy (GTK_WINDOW (win_main), FALSE, TRUE, TRUE);
 
   main_vbox = gtk_vbox_new (FALSE, 0);

@@ -33,7 +33,7 @@
     <handler>gtk_main_quit</handler>
     <last_modification_time>Fri, 10 Nov 2000 00:27:40 GMT</last_modification_time>
   </signal>
-  <title>GNU Gaming Zone</title>
+  <title>GGZ Gaming Zone</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
@@ -934,7 +934,6 @@
 		    <last_modification_time>Sun, 15 Oct 2000 00:08:57 GMT</last_modification_time>
 		  </signal>
 		  <label>Send</label>
-		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>
