@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2209 2001-08-23 22:01:30Z jdorje $
+ * $Id: ggz_client.h 2210 2001-08-23 22:08:51Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -41,7 +41,7 @@
  *
  * @return The file descriptor for the communications socket (or -1 on failure).
  */
-int ggz_client_connect( );
+int ggz_client_connect(void);
 
 /**
  * This destroys all of ggzmod's internal data.  It does not yet disconnect 
@@ -49,7 +49,7 @@ int ggz_client_connect( );
  *
  * @return 0 on success; -1 on failure.
  */
-int ggz_client_quit( );
+int ggz_client_quit(void);
 
 /**
  * This prepares for connection to the GGZ client.  It should be
@@ -66,6 +66,6 @@ int ggz_client_init(char *game_name);
  *
  * @return The FD integer, or -1 on no connection.
  */
-int ggz_client_get_sock( );
+int ggz_client_get_sock(void);
 
 #endif /* __GGZ_CLIENT_GGZ_H */

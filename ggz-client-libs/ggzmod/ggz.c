@@ -1,5 +1,10 @@
-/*	$Id: ggz.c 2174 2001-08-19 20:01:14Z jdorje $	*/
 /*
+ * File: ggz.c
+ * Author: GGZ Development Team
+ * Project: GGZMod library
+ * Desc: GGZ game module functions
+ * $Id: ggz.c 2210 2001-08-23 22:08:51Z jdorje $
+ *
  * Copyright (C) 2000 GGZ devel team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,11 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- *
- */
-/*
- * @file ggz.c
- * Funciones de ggz para el cliente
  */
 
 #ifdef HAVE_CONFIG_H
@@ -27,6 +27,8 @@
 #endif /* HAVE_CONFIG */
 
 #include <sys/socket.h>
+
+#include "ggz_client.h"
 
 /* The socket will always be FD 3. */
 #define GGZ_SOCK_FD 3
@@ -42,12 +44,12 @@ int ggz_client_init(char *game_name)
 	return 0;
 }
 
-int ggz_client_quit()
+int ggz_client_quit(void)
 {
 	return 0;
 }
 
-int ggz_client_get_sock()
+int ggz_client_get_sock(void)
 {
 	return GGZ_SOCK_FD;
 }
