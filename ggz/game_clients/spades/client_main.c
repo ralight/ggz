@@ -35,6 +35,8 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
+#include <ggz.h>	/* libggz */
+
 #include <card.h>
 #include <client.h>
 #include <display.h>
@@ -48,10 +50,14 @@
 /* Global state of game variable */
 gameState_t gameState;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
 
 int main(int argc, char *argv[])
 {
 	int i;
+	
+	initialize_debugging();
 
 	/* Arrange interrupts to terminate */
 	signal(SIGINT, die);
@@ -96,9 +102,45 @@ int main(int argc, char *argv[])
 			gameState.players[i] = NULL;
 		}
 	}
+	
+	cleanup_debugging();
 
 	return (0);
 
+}
+
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", "socket", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/netspades-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/netspades-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting NetSpades client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down NetSpades client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }
 
 

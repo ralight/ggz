@@ -30,13 +30,14 @@
 # include <dmalloc.h>
 #endif
 
+#include <ggz.h>	/* libggz */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
 
 #include <socketfunc.h>
 
@@ -98,30 +99,21 @@ int writestring(int msgsock, const char *message)
 
 	if (status <= 0) {
 		status = -1;
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Error sending string size\n");
-#endif
+		ggz_debug("socket", "[%d]: Error sending string size", getpid());
 	} else {
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Sending \"%d\" : %d bytes \n",
+		ggz_debug("socket", "[%d]: Sending \"%d\" : %d bytes",
 			getpid(), size, status);
-#endif
 
 		status = write(msgsock, message, size);
 
 		if (status <= 0) {
 			status = -1;
-#ifdef DEBUG_SOCKET
-			fprintf(stderr, "[%d]: Error sending string\n");
-#endif
+			ggz_debug("socket", "[%d]: Error sending string", getpid());
+		} else {
+			ggz_debug("socket",
+				  "[%d]: Sending \"%s\" : %d bytes",
+				  getpid(), message, status);
 		}
-#ifdef DEBUG_SOCKET
-		else {
-			fprintf(stderr,
-				"[%d]: Sending \"%s\" : %d bytes \n",
-				getpid(), message, status);
-		}
-#endif
 	}
 
 	return status;
@@ -143,45 +135,37 @@ int readstring(int msgsock, char **message)
 
 
 	if (status < 0) {
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Error receiving string size\n",
-			getpid());
-#endif
+		ggz_debug("socket", "[%d]: Error receiving string size",
+			  getpid());
 	} else if (status == 0) {
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Warning: fd is closed\n", getpid());
-#endif
+		ggz_debug("socket", "[%d]: Warning: fd is closed", getpid());
 	} else {
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Received \"%d\" : %d bytes \n",
+		ggz_debug("socket", "[%d]: Received \"%d\" : %d bytes",
 			getpid(), size, status);
-#endif
 
 		*message = (char *) malloc(size * sizeof(char));
 
 		if (*message == NULL) {
-			fprintf(stderr, "[%d]: Error: Not enough memory\n",
-				getpid());
+			ggz_error_msg("[%d]: Error: Not enough memory",
+			              getpid());
 			status = -1;
 		} else {
 			memset(*message, 0, size);
 			status = read(msgsock, *message, size);
 
-#ifdef DEBUG_SOCKET
 			if (status < 0) {
-				fprintf(stderr,
-					"[%d]: Error receiving string\n",
-					getpid());
+				ggz_debug("socket",
+					  "[%d]: Error receiving string\n",
+					  getpid());
 			} else if (status == 0) {
-				fprintf(stderr,
-					"[%d]: Warning: fd is closed\n",
-					getpid());
+				ggz_debug("socket",
+					  "[%d]: Warning: fd is closed\n",
+					  getpid());
 			} else {
-				fprintf(stderr,
-					"[%d]: Received \"%s\" : %d bytes \n",
-					getpid(), *message, status);
+				ggz_debug("socket",
+					  "[%d]: Received \"%s\" : %d bytes \n",
+					  getpid(), *message, status);
 			}
-#endif
 
 		}		/* else not out of memory */
 	}			/* else status >0  */
@@ -203,16 +187,11 @@ int writeint(int msgsock, const int message)
 
 	if (status <= 0) {
 		status = -1;
-#ifdef DEBUG_SOCKET
-		fprintf(stderr, "[%d]: Error sending int\n", getpid());
-#endif
-	}
-#ifdef DEBUG_SOCKET
-	else {
-		fprintf(stderr, "[%d]: Sending \"%d\" : %d bytes \n",
+		ggz_debug("socket", "[%d]: Error sending int", getpid());
+	} else {
+		ggz_debug("socket", "[%d]: Sending \"%d\" : %d bytes",
 			getpid(), message, status);
 	}
-#endif
 
 	return status;
 }
@@ -231,16 +210,14 @@ int readint(int msgsock, int *message)
 
 	*message = ntohl(data);
 
-#ifdef DEBUG_SOCKET
 	if (status < 0) {
-		fprintf(stderr, "[%d]: Error receiving int\n", getpid());
+		ggz_debug("socket", "[%d]: Error receiving int", getpid());
 	} else if (status == 0) {
-		fprintf(stderr, "[%d]: Warning: fd is closed\n", getpid());
+		ggz_debug("socket", "[%d]: Warning: fd is closed", getpid());
 	} else {
-		fprintf(stderr, "[%d]: Received \"%d\" : %d bytes \n",
+		ggz_debug("socket", "[%d]: Received \"%d\" : %d bytes",
 			getpid(), *message, status);
 	}
-#endif
 
 	return status;
 }

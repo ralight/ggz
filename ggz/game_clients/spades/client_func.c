@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: client_func.c 3388 2002-02-17 08:54:07Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -36,7 +36,6 @@
 #include <sys/un.h>
 #include <gtk/gtk.h>
 #include <unistd.h>		/* For getopt et. al */
-#include <stdio.h>		/* For fprintf */
 #include <stdlib.h>		/* For exit, atoi */
 #include <signal.h>		/* For signal */
 #include <sys/wait.h>
@@ -359,7 +358,7 @@ int GetGame(void)
 
 	int status = NET_FAIL;
 
-	fprintf(stderr, "Getting data\n");
+	ggz_debug("main", "Getting data");
 	if (CheckReadInt(gameState.spadesSock, &(gameState.gameNum)) ==
 	    NET_OK
 	    && CheckReadInt(gameState.spadesSock,
@@ -367,7 +366,7 @@ int GetGame(void)
 		    CheckReadInt(gameState.spadesSock,
 				 &(gameState.gamePid));
 
-	fprintf(stderr, "%d is my ID\n", gameState.playerId);
+	ggz_debug("main", "%d is my ID", gameState.playerId);
 	return status;
 
 }
@@ -387,7 +386,7 @@ int GetPlayers(void)
 		     CheckReadString(gameState.spadesSock,
 				     &gameState.players[i])) == NET_FAIL)
 			break;
-		fprintf(stderr, "Player %d is named %s\n", i,
+		ggz_debug("main", "Player %d is named %s", i,
 			gameState.players[i]);
 	}
 
