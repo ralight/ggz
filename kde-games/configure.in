@@ -24,6 +24,7 @@ dnl Check for GGZ requirements
 dnl ==========================
 
 AC_GGZ_EASYSOCK(0.3)
+AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
 
