@@ -1,0 +1,39 @@
+[BookmarkGlobal]
+Data=<!DOCTYPE Bookmarks ><Bookmarks type="root" />\n
+[Editor Options]
+ConfigFlags=1032
+TabWidth=2
+UndoSteps=50
+[Main]
+Name=kde-games
+[kde-games]
+ConfigureArguments=
+DefRunPrj=KReversi
+File=configure.in.in
+Group=KReversi
+Memo=KDE Games for use in the GGZ Gaming Zone
+TargetName=kde-games
+Type=7
+Version=0.0.1
+[kde-games/KReversi]
+AddCompileOptions=
+AddLinkOptions=
+AddToIncludePath=
+DebugInfo=true
+DefaultUsesLibrary=LIB_X11,LIBPNG,LIBJPEG,LIB_QT,LIB_KDECORE,LIB_KDEUI
+File=main.cpp,tiles.xpm,reversiprotocol.cpp,reversiprotocol.h,reversiview.cpp,reversiview.h,kreversi.cpp,kreversi.h,ggz.kreversiui.rc
+Group=
+InstallBinPath=ggz-config -g
+InstallHeaderPath=
+Memo=KDE version of the GGZ Reversi module
+NotInIncludePath=
+NotUsesSelfLibrary=
+Optimize=true
+RemoveSymbolTable=false
+ShowWarnings=true
+TargetName=ggz.kreversi
+Type=1
+UserLibrary=
+Version=0.0.1
+isBinInstallProcess=true
+isHeaderInstallProcess=false
