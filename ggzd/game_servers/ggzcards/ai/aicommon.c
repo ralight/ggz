@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: aicommon.c 4097 2002-04-28 00:14:09Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -71,39 +71,39 @@ void ailib_start_hand(void)
 		}
 }
 
-void ailib_alert_trick(int p)
+void ailib_alert_trick(int player)
 {
 	leader = -1;
-	tricks[p]++;
+	tricks[player]++;
 }
 
-void ailib_alert_bid(int p, bid_t bid)
+void ailib_alert_bid(int player, bid_t bid)
 {
 
 }
 
-void ailib_alert_play(int p, card_t play)
+void ailib_alert_play(int player, card_t play)
 {
 	/* there's a lot of information we can track from players' plays */
 	card_t lead;
-	int p2;
+	int p;
 
 	if (leader < 0)
-		leader = p;
+		leader = player;
 
 	lead = ggzcards.players[leader].table_card;
 
 	/* remember which cards have been played. */
 	played[(int) play.suit] |= 1 << play.face;
-	playcount[p][(int) play.suit]++;
+	playcount[player][(int) play.suit]++;
 
 	/* if the player is void, remember it */
 	if (play.suit != lead.suit)
-		suits[p][(int) lead.suit] = 0;
+		suits[player][(int) lead.suit] = 0;
 
 	/* we now know that nobody has this card _anymore_ */
-	for (p2 = 0; p2 < 4; p2++)
-		suits[p2][(int) play.suit] &= ~(1 << play.face);
+	for (p = 0; p < 4; p++)
+		suits[p][(int) play.suit] &= ~(1 << play.face);
 
 }
 
@@ -130,19 +130,19 @@ int libai_is_card_played(char suit, char face)
 	return played[(int) suit] & (1 << face);
 }
 
-void libai_player_doesnt_have_card(int p, card_t card)
+void libai_player_doesnt_have_card(int player, card_t card)
 {
-	suits[p][(int) card.suit] &= ~(1 << card.face);
+	suits[player][(int) card.suit] &= ~(1 << card.face);
 }
 
-int libai_get_suit_map(int p, char suit)
+int libai_get_suit_map(int player, char suit)
 {
-	return suits[p][(int) suit];
+	return suits[player][(int) suit];
 }
 
-int libai_might_player_have_card(int p, card_t card)
+int libai_might_player_have_card(int player, card_t card)
 {
-	return suits[p][(int) card.suit] & (1 << card.face);
+	return suits[player][(int) card.suit] & (1 << card.face);
 }
 
 int libai_is_card_in_hand(int seat, card_t card)
@@ -210,7 +210,7 @@ int libai_count_suit(int seat, char suit)
 	return total;
 }
 
-void libai_forget_players_hand(int p, char suit)
+void libai_forget_players_hand(int player, char suit)
 {
-	suits[p][(int) suit] = (~played[(int) suit]) & 0x7ffff;
+	suits[player][(int) suit] = (~played[(int) suit]) & 0x7ffff;
 }
