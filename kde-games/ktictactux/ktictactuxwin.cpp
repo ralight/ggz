@@ -18,6 +18,11 @@
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
+#include <kiconloader.h>
+
+#ifdef HAVE_KNEWSTUFF
+#include <knewstuff/downloaddialog.h>
+#endif
 
 // Qt includes
 #include <qdir.h>
@@ -41,20 +46,17 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	icontheme = "hicolor";
 #endif
 
-	QString pixexit = d.findResource("icon", icontheme + "/16x16/actions/exit.png");
-	QString pixsync = d.findResource("icon", icontheme + "/16x16/actions/reload.png");
-	QString pixscore = d.findResource("icon", icontheme + "/16x16/actions/history.png");
-
 	mgame = new KPopupMenu(this);
-	mgame->insertItem(QIconSet(QPixmap(pixsync)), i18n("Synchronize"), menusync);
-	mgame->insertItem(QIconSet(QPixmap(pixscore)), i18n("View score"), menuscore);
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small), i18n("View score"), menuscore);
 	mgame->insertSeparator();
-	mgame->insertItem(QIconSet(QPixmap(pixexit)), i18n("Quit"), menuquit);
+#ifdef HAVE_KNEWSTUFF
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get themes"), menutheme);
+	mgame->insertSeparator();
+#endif
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
 
 	mtheme = new KPopupMenu(this);
-	//mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
-	//mtheme->insertItem(i18n("Tux/Kandalf (classic)"), menuthemeclassic);
-	//mtheme->insertItem(i18n("Symbols"), menuthemesymbols);
 
 	menuBar()->insertItem(i18n("Game"), mgame);
 	menuBar()->insertItem(i18n("Theme"), mtheme);
@@ -137,6 +139,7 @@ void KTicTacTuxWin::changeTheme(QString theme)
 void KTicTacTuxWin::slotMenu(int id)
 {
 	KConfig *conf;
+	QDir d;
 
 	// Standard menu entries
 	switch(id)
@@ -147,6 +150,14 @@ void KTicTacTuxWin::slotMenu(int id)
 		case menuscore:
 			score();
 			break;
+#ifdef HAVE_KNEWSTUFF
+		case menutheme:
+			d.mkdir(QDir::home().path() + "/.ggz");
+			d.mkdir(QDir::home().path() + "/.ggz/games");
+			d.mkdir(QDir::home().path() + "/.ggz/games/ktictactux");
+			KNS::DownloadDialog::open("ktictactux/theme");
+			break;
+#endif
 		case menuquit:
 			close();
 			break;
@@ -264,8 +275,7 @@ void KTicTacTuxWin::loadThemes()
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
 
-				QString pixtheme = d.findResource("icon", icontheme + "/16x16/actions/imagegallery.png");
-				mtheme->insertItem(QIconSet(QPixmap(pixtheme)), name, index++);
+				mtheme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIcon::Small), name, index++);
 			}
 		}
 	}
