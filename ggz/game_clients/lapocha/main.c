@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2905 2001-12-17 01:44:59Z dr_maux $
+ * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,7 +37,7 @@
 #include <stdlib.h>
 
 #include <easysock.h>
-#include <ggz_client.h>
+#include <ggzmod.h>
 
 #include "support.h"
 #include "main.h"
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
 
-	game.fd = ggz_connect();
+	game.fd = ggzmod_connect();
 	if (game.fd < 0) return -1;
 
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	if (ggz_disconnect() < 0)
+	if (ggzmod_disconnect() < 0)
 		return -2;
 
 	return 0;

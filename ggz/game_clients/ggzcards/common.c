@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2873 2001-12-11 06:23:29Z jdorje $
+ * $Id: common.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,7 +66,7 @@ int client_initialize(void)
 	ggz_debug_enable("core");
 #endif
 	ggz_debug_enable("core-error");
-	ggzfd = ggz_connect();
+	ggzfd = ggzmod_connect();
 	if (ggzfd < 0) {
 		ggz_error_msg_exit("Couldn't connect to ggz.");
 	}
@@ -79,7 +79,7 @@ int client_initialize(void)
 void client_quit(void)
 {
 	/* FIXME: is this the desired behavior? */
-	if (ggz_disconnect() < 0)
+	if (ggzmod_disconnect() < 0)
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
 	if (ggzcards.players)
 		ggz_free(ggzcards.players);

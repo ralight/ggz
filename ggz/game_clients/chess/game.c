@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2907 2001-12-17 01:50:25Z dr_maux $
+ * $Id: game.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <libcgc/cgc.h>
 
-#include <ggz_client.h>
+#include <ggzmod.h>
 
 #include "support.h"
 #include "game.h"

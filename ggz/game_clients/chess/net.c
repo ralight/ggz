@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: net.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -30,7 +30,7 @@
 #include <gtk/gtk.h>
 
 #include <easysock.h>
-#include <ggz_client.h>
+#include <ggzmod.h>
 
 #include "game.h"
 #include "chess.h"

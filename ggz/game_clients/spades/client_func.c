@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 2248 2001-08-25 20:13:38Z jdorje $
+ * $Id: client_func.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -47,7 +47,7 @@
 
 #include <string.h>		/* For strcpy */
 
-#include <ggz_client.h>
+#include <ggzmod.h>
 
 #include <card.h>
 #include <display.h>
@@ -172,7 +172,7 @@ void AppInit(void)
 		gameState.players[i] = NULL;
 
 	/* use libggzmod to connect to GGZ.  --JDS */
-	gameState.spadesSock = ggz_connect();
+	gameState.spadesSock = ggzmod_connect();
 	if (gameState.spadesSock < 0) exit(-1);
 
 	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ,
@@ -722,7 +722,7 @@ void UpdateGame(void)
 void NetClose(void)
 {
 	g_printerr("I'm dying\n");
-	if (ggz_disconnect() < 0)
+	if (ggzmod_disconnect() < 0)
 		exit(-2); /* is this the desired behavior? */
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <ggz_client.h>
+#include <ggzmod.h>
 
 #include "main.h"
 #include "game.h"
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	if (ggz_disconnect() < 0)
+	if (ggzmod_disconnect() < 0)
 		return -2;
 
 	return 0;

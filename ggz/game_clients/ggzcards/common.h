@@ -1,4 +1,4 @@
-/* $Id: common.h 2873 2001-12-11 06:23:29Z jdorje $ */
+/* $Id: common.h 2918 2001-12-17 10:11:39Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <ggz_client.h>
+#include <ggzmod.h>
 #include "protocol.h"
 
 #ifndef __COMMON_H__

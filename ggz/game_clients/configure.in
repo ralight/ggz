@@ -1,7 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
-dln $Id: configure.in 2303 2001-08-28 06:34:52Z jdorje $
+dnl $Id: configure.in 2918 2001-12-17 10:11:39Z jdorje $
 
-AC_INIT(configure.in)
+dnl AC_INIT(configure.in)
+AC_INIT(acinclude.m4)
 
 if test -r $srcdir/package; then
    . $srcdir/package
@@ -98,39 +99,15 @@ dnl ==============
 AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
 
 
-AC_ARG_WITH(ggz-config,[  --with-ggz-config=PATH  Path to ggz-config (optional)],
-            ggz_config="$withval", ggz_config="no")
+dnl Check for GGZ requirements
+dnl ==========================
 
+AC_GGZ_EASYSOCK(0.3)
+AC_GGZ_GGZMOD
+AC_GGZ_CONFIG
+AC_GGZ_GGZCORE
 
-if test "$ggz_config" != "no"; then
-   AC_CHECK_FILE($ggz_config, GGZ_CONFIG=$ggz_config, 
-			      AC_MSG_WARN(*** Specifed ggz-config not found -- searching path) 
-			      ggz_config=no)
-fi
-
-if test "$ggz_config" = "no"; then
-   AC_PATH_PROGS(GGZ_CONFIG, ggz-config, no)
-fi
-
-if test "$GGZ_CONFIG" = "no"; then
-   AC_MSG_ERROR(*** Couldn't find ggz-config)
-fi
-
-AC_CHECK_LIB(easysock, es_make_socket,
-    AC_CHECK_HEADER(easysock.h, LDADD="$LDADD -leasysock",
-        AC_MSG_ERROR(*** Cannot find easysock.h header)),
-AC_MSG_ERROR(*** Cannot find easysock library ))
-
-AC_CHECK_LIB(ggzcore, ggzcore_server_new,
-    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore",
-        AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
-AC_MSG_ERROR(*** Cannot find ggzcore library ), -leasysock)
-
-AC_CHECK_LIB(ggzmod, ggz_connect,
-    AC_CHECK_HEADER(ggz_client.h, LDADD="$LDADD -lggzmod",
-	AC_MSG_ERROR(*** Cannot find ggz_client.h header)),
-AC_MSG_ERROR(*** Cannot find ggzmod library ))
-
+LDADD="$LDADD $LIB_GGZMOD $LIB_GGZCORE"
 
 dnl Use -Wall if we have gcc.
 dnl =========================
