@@ -52,3 +52,6 @@
 	XMLGettext:
 		An xgettext variant to extract textual information from xml files.
 
+	Gaim-Plugin:
+		Being able to play GGZ games on IRC, from Gaim.
+
