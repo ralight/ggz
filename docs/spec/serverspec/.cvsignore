@@ -1,0 +1,10 @@
+serverspec-html
+serverspec.txt
+serverspec.pdf
+serverspec.out
+serverspec.log
+serverspec.jtex
+serverspec.aux
+Makefile
+Makefile.in
+jadetex.cfg

@@ -1,0 +1,1175 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
+
+<!ENTITY ggz "GGZ Gaming Zone">
+<!ENTITY protonum "7">
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>&ggz; Server/Game Server Protocol Specification</title>
+    <authorgroup>
+      <author>
+        <firstname>The GGZ Gaming Zone developers</firstname>
+        <affiliation>
+          <address>
+            <email>ggz-dev@mail.ggzgamingzone.org</email>
+          </address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>2005</year>
+      <holder>The GGZ Gaming Zone developers</holder>
+    </copyright>
+    <revhistory>
+      <revision>
+	<revnumber>$Revision: 7039 $</revnumber>
+	<date>$Date: 2005-03-25 08:44:34 -0800 (Fri, 25 Mar 2005) $</date>
+      </revision>
+    </revhistory>
+    <abstract>
+      <para>
+        Module protocol specification for &ggz; game servers.
+        This document covers the communication between the GGZ server
+        and the game server modules.
+      </para>
+    </abstract>
+  </bookinfo>
+
+  <preface id="objectives">
+    <title>Objectives</title>
+    <para>
+      Game servers are started by the &ggz; server <application>ggzd</application>
+      whenever a player launches a table. The game setup is passed to the
+      game over a special connection, as are the scores and game results
+      from the game server to ggzd.
+      This protocol is called the Server/Game Server Protocol, and is available
+      in a reference implementation named <application>libggzdmod</application>,
+      written in the C programming language, and its wrappers for C++ and Python.
+    </para>
+  </preface>
+
+  <chapter id="protocol">
+    <title>The Protocol</title>
+
+<para>
+  foo bar
+</para>
+
+<para>
+  Interactions are presented here categorically. For a complete
+  reference of game server/server interactions, please see the
+  <link linkend="appendix">appendix</link>.
+</para>
+
+<section id="startup">
+  <title>Startup</title>
+
+  <para>
+    The GGZ server ggzd and the game server communicate via a connection which
+    gets established using socketpair(). The game server can then access the
+    communication channel on file descriptor 3. The first message which will
+    arrive is the <link linkend="msg.gamelaunch">GAME_LAUNCH</link> message,
+    used to configure the game based on the table information: how many players
+    are going to participate, are there any reserved seats, and so on.
+    The game server will then notify ggzd about it having the data received,
+    and set its internal status from CREATED to WAITING.
+    <note>
+      <para>
+        blah! blah!
+      </para>
+    </note>
+  </para>
+
+</section>
+
+<section id="pregame">
+  <title>Pregame phase</title>
+
+  <para>
+    Now that the table is created, all the bots are going to join it automatically,
+    but humans will join one after the other. Each of them triggers a
+    <link linkend="msg.gameseat">GAME_SEAT</link> message, consisting of
+    the name, player type and, most important, the file descriptor to access
+    the player's game client.
+  </para>
+
+  <para>
+    If the game server allows spectators to watch a game, they will be handled
+    similarly, by triggering a <link linkend="msg.gamespectatorseat">
+    GAME_SPECTATOR_SEAT</link> message. Since a game might allow a spectator to
+    become a player and vice-versa, a special <link linkend="msg.gamereseat">
+    GAME_RESEAT</link> message might appear at any time.
+  </para>
+
+  <para>
+    The abovementioned state change is done via the <link linkend="req.gamestate">
+    GAME_STATE</link> request, sent by the game server to indicate that its internal
+    state has changed.
+    In response to a game server's GAME_STATE request, ggzd will always send
+    a <link linkend="rsp.gamestate">GAME_STATE</link> response, with no further
+    data attached.
+    After the PREGAME phase, the state will most likely be changed to PLAYING.
+  </para>
+
+</section>
+
+<section id="playing">
+  <title>Playing phase</title>
+
+  <para>
+    It is a good idea to report the important game events to the outside. This can
+    be done by letting the game server send a <link linkend="msg.log">LOG</link>
+    message to ggzd, so that it gets recorded according to the server configuration.
+    It might end up in a log file, in a debug console or nowhere at all.
+  </para>
+
+  <para>
+    Other than that, there's not too much happening between game server and ggzd
+    in this phase of the game, for most communication will happen between game
+    server and game client. However, if a player leaves or another one wants
+    to join and can't because a bot occupies the seat, the game server can request
+    to change the seats on the table.
+    To change the seat number, a <link linkend="req.numseats">NUM_SEATS</link>
+    request is sent. To boot a player, the <link linkend="req.boot">BOOT</link>
+    request can be used. Finally, bots can be inserted and removed using the
+    <link linkend="req.bot">BOT</link> and <link linkend="req.open">OPEN</link>
+    requests.
+  </para>
+
+</section>
+
+<section id="done">
+  <title>Done phase</title>
+
+  <para>
+    A game is expected to change its state to DONE when the game is over. In
+    most cases, a winner (or tie game) will be determined. The game results,
+    including winner, score and the like, can be reported back to ggzd via the
+    <link linkend="msg.gamereport">GAME_REPORT</link> message.
+    If a game log or savegame has been kept, the filename of it can be reported
+    as well for further reference, using a <link linkend="msg.savegamereport">
+    SAVEGAME_REPORT</link> message.
+  </para>
+
+</section>
+
+  </chapter>
+
+  <appendix id="appendix">
+    <title>Protocol Reference</title>
+
+<section id="ggzd-gameserver"><title>Messages from ggzd to game server</title>
+
+  <refentry id="msg.gamelaunch">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_LAUNCH</primary>
+      </indexterm>
+      <refentrytitle>GAME_LAUNCH</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_LAUNCH</refname>
+      <refpurpose>Initializes the game with its seat data</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_LAUNCH ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Opcode</entry>
+              <entry><link linkend="controltotable">ControlToTable</link></entry>
+              <entry>GAME_LAUNCH</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of seats at the table</entry>
+              <entry>integer</entry>
+              <entry>2</entry>
+            </row>
+
+            <row rowsep="1">
+              <entry>Number of spectators</entry>
+              <entry>integer</entry>
+              <entry>0</entry>
+            </row>
+
+            <row rowsep="1">
+              <entrytbl namest="C1" nameend="C3" cols="3">
+                <colspec colnum="1" colname="C1" align="left">
+                <colspec colnum="2" colname="C2">
+                <colspec colnum="3" colname="C3">
+                <tbody>
+                  <row rowsep="0">
+                    <entry namest="C1" nameend="C3">
+                      Loop (depending on number of seats)
+                    </entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry><emphasis role="bold">Data</emphasis></entry>
+                    <entry><emphasis role="bold">Type</emphasis></entry>
+                    <entry><emphasis role="bold">Example</emphasis></entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Seat type</entry>
+                    <entry><link linkend="ggzseattype">GGZSeatType</link></entry>
+                    <entry>GGZ_SEAT_PLAYER</entry>
+                  </row>
+
+                  <row rowsep="1">
+                    <entry>Name of seat assignee</entry>
+                    <entry>string</entry>
+                    <entry>1-AI</entry>
+                  </row>
+                </tbody>
+              </entrytbl>
+            </row>
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.gameseat">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_SEAT</primary>
+      </indexterm>
+      <refentrytitle>GAME_SEAT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_SEAT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_SEAT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.gamespectatorseat">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_SPECTATOR_SEAT</primary>
+      </indexterm>
+      <refentrytitle>GAME_SPECTATOR_SEAT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_SPECTATOR_SEAT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_SPECTATOR_SEAT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.gamereseat">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_RESEAT</primary>
+      </indexterm>
+      <refentrytitle>GAME_RESEAT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_RESEAT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_RESEAT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="rsp.gamestate">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_STATE</primary>
+      </indexterm>
+      <refentrytitle>GAME_STATE</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_STATE</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_STATE ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+</section>
+
+<section id="gameserver-ggzd"><title>Messages from game server to ggzd</title>
+
+  <refentry id="msg.log">
+    <refmeta>
+      <indexterm>
+        <primary>LOG</primary>
+      </indexterm>
+      <refentrytitle>LOG</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>LOG</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                LOG ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.gamestate">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_STATE</primary>
+      </indexterm>
+      <refentrytitle>GAME_STATE</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_STATE</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_STATE ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.numseats">
+    <refmeta>
+      <indexterm>
+        <primary>NUM_SEATS</primary>
+      </indexterm>
+      <refentrytitle>NUM_SEATS</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>NUM_SEATS</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                NUM_SEATS ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.boot">
+    <refmeta>
+      <indexterm>
+        <primary>BOOT</primary>
+      </indexterm>
+      <refentrytitle>BOOT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>BOOT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                BOOT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.bot">
+    <refmeta>
+      <indexterm>
+        <primary>BOT</primary>
+      </indexterm>
+      <refentrytitle>BOT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>BOT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                BOT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="req.open">
+    <refmeta>
+      <indexterm>
+        <primary>OPEN</primary>
+      </indexterm>
+      <refentrytitle>OPEN</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>OPEN</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                OPEN ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.gamereport">
+    <refmeta>
+      <indexterm>
+        <primary>GAME_REPORT</primary>
+      </indexterm>
+      <refentrytitle>GAME_REPORT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>GAME_REPORT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                GAME_REPORT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="msg.savegamereport">
+    <refmeta>
+      <indexterm>
+        <primary>SAVEGAME_REPORT</primary>
+      </indexterm>
+      <refentrytitle>SAVEGAME_REPORT</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>SAVEGAME_REPORT</refname>
+      <refpurpose>XXX</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+          <colspec colnum="2" colname="C2">
+          <colspec colnum="3" colname="C3">
+          <tbody>
+            <row rowsep="0">
+              <entry namest="C1" nameend="C3">
+                SAVEGAME_REPORT ...
+              </entry>
+            </row>
+
+            <row rowsep="1">
+              <entry><emphasis role="bold">Data</emphasis></entry>
+              <entry><emphasis role="bold">Type</emphasis></entry>
+              <entry><emphasis role="bold">Example</emphasis></entry>
+            </row>
+
+          </tbody>
+	    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>blubb...</para>
+      <refsect2>
+        <title>Message Data</title>
+        <para>
+          None
+        </para>
+      </refsect2>
+      <refsect2>
+        <title>Usage</title>
+        <para>
+          blah...
+        </para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+</section>
+
+<section id="protocol-enums"><title>Symbolic identifiers and their values</title>
+
+  <refentry id="controltotable">
+    <refnamediv>
+      <refname>ControlToTable</refname>
+      <refpurpose>Opcodes from GGZ server to the game server module</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+    <tgroup cols="3">
+      <colspec colnum="1" colname="C1" align="left">
+      <colspec colnum="2" colname="C2">
+      <colspec colnum="3" colname="C3">
+      <tbody>
+        <row rowsep="1">
+          <entry><emphasis role="bold">Identifier</emphasis></entry>
+          <entry><emphasis role="bold">Value</emphasis></entry>
+          <entry><emphasis role="bold">Description</emphasis></entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_LAUNCH</entry>
+          <entry>0</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_SEAT</entry>
+          <entry>1</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_SPECTATOR_SEAT</entry>
+          <entry>2</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_RESEAT</entry>
+          <entry>3</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_STATE</entry>
+          <entry>4</entry>
+          <entry>response</entry>
+        </row>
+      </tbody>
+    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title>
+      <para>XXX</para>
+    </refsect1>
+  </refentry>
+
+  <refentry id="tabletocontrol">
+    <refnamediv>
+      <refname>TableToControl</refname>
+      <refpurpose>Opcodes from game server modules to the GGZ server</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+    <tgroup cols="3">
+      <colspec colnum="1" colname="C1" align="left">
+      <colspec colnum="2" colname="C2">
+      <colspec colnum="3" colname="C3">
+      <tbody>
+        <row rowsep="1">
+          <entry><emphasis role="bold">Identifier</emphasis></entry>
+          <entry><emphasis role="bold">Value</emphasis></entry>
+          <entry><emphasis role="bold">Description</emphasis></entry>
+        </row>
+        <row rowsep="1">
+          <entry>LOG</entry>
+          <entry>0</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_STATE</entry>
+          <entry>1</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>NUM_SEATS</entry>
+          <entry>2</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>BOOT</entry>
+          <entry>3</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>BOT</entry>
+          <entry>4</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>OPEN</entry>
+          <entry>5</entry>
+          <entry>request</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GAME_REPORT</entry>
+          <entry>6</entry>
+          <entry>message</entry>
+        </row>
+        <row rowsep="1">
+          <entry>SAVEGAME_REPORT</entry>
+          <entry>7</entry>
+          <entry>message</entry>
+        </row>
+      </tbody>
+    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title>
+      <para>XXX</para>
+    </refsect1>
+  </refentry>
+
+  <refentry id="ggzseattype">
+    <refnamediv>
+      <refname>GGZSeatType</refname>
+      <refpurpose>Possible seat assignments for a table</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+    <tgroup cols="3">
+      <colspec colnum="1" colname="C1" align="left">
+      <colspec colnum="2" colname="C2">
+      <colspec colnum="3" colname="C3">
+      <tbody>
+        <row rowsep="1">
+          <entry><emphasis role="bold">Identifier</emphasis></entry>
+          <entry><emphasis role="bold">Value</emphasis></entry>
+          <entry><emphasis role="bold">Description</emphasis></entry>
+        </row>
+        <row rowsep="1">
+          <entry>GGZ_SEAT_NONE</entry>
+          <entry>0</entry>
+          <entry>Not initialized yet (invalid)</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GGZ_SEAT_OPEN</entry>
+          <entry>1</entry>
+          <entry>Initialized to open, will be filled later</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GGZ_SEAT_BOT</entry>
+          <entry>2</entry>
+          <entry>Internal or external AI player</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GGZ_SEAT_PLAYER</entry>
+          <entry>3</entry>
+          <entry>Human player</entry>
+        </row>
+        <row rowsep="1">
+          <entry>GGZ_SEAT_RESERVED</entry>
+          <entry>4</entry>
+          <entry>Reserved for AI or human player of a certain name</entry>
+        </row>
+      </tbody>
+    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title>
+      <para>XXX</para>
+    </refsect1>
+  </refentry>
+
+  <refentry id="ggztablestate">
+    <refnamediv>
+      <refname>GGZTableState (GGZdModState)</refname>
+      <refpurpose>Possible game states for a table</refpurpose>
+    </refnamediv>
+    <refsynopsisdiv>
+      <title>Synopsis</title>
+      <informaltable>
+    <tgroup cols="3">
+      <colspec colnum="1" colname="C1" align="left">
+      <colspec colnum="2" colname="C2">
+      <colspec colnum="3" colname="C3">
+      <tbody>
+        <row rowsep="1">
+          <entry><emphasis role="bold">Identifier</emphasis></entry>
+          <entry><emphasis role="bold">Value</emphasis></entry>
+          <entry><emphasis role="bold">Description</emphasis></entry>
+        </row>
+        <row rowsep="1">
+          <entry>STATE_CREATED</entry>
+          <entry>0</entry>
+          <entry>...</entry>
+        </row>
+        <row rowsep="1">
+          <entry>STATE_WAITING</entry>
+          <entry>1</entry>
+          <entry>...</entry>
+        </row>
+        <row rowsep="1">
+          <entry>STATE_PLAYING</entry>
+          <entry>2</entry>
+          <entry>...</entry>
+        </row>
+        <row rowsep="1">
+          <entry>STATE_DONE</entry>
+          <entry>3</entry>
+          <entry>...</entry>
+        </row>
+      </tbody>
+    </tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+    <refsect1>
+      <title>Description</title>
+      <para>XXX</para>
+    </refsect1>
+  </refentry>
+
+</section>
+
+  </appendix>
+</book>
