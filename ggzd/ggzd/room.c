@@ -47,6 +47,78 @@ RoomStruct *chat_room;
 static void room_spew_chat_room(const int);
 static void room_notify_change(const int, const int, const int);
 static void room_dequeue_chat(const int p);
+static int room_list_send(const int p_fd);
+
+
+/* Handle opcodes from player_handle() */
+int room_handle_request(const int request, const int p, const int p_fd)
+{
+	int status = GGZ_REQ_OK;
+
+	switch(request) {
+		case REQ_LIST_ROOMS:
+			status = room_list_send(p_fd);
+			break;
+		default:
+			/* player_handle() sent us an invalid opcode	*/
+			/* this is utterly impossible and so we mark it */
+			/* with something utterly inexplicable, and	*/
+			/* do the only honorable thing....		*/
+
+			err_msg("Truth is false and logic lost");
+			err_msg("Now the fourth dimension is crossed");
+			err_msg_exit("--in room_handle_request()");
+
+			/* Suicide is painless -- Not Reached */
+			break;
+	}
+
+	return status;
+}
+
+
+/* Handle a REQ_LIST_ROOMS opcode */
+static int room_list_send(const int p_fd)
+{
+	int req_game;
+	char verbose;
+	int i, count=0;
+
+	/* We don't need to lock anything because CURRENTLY the room count  */
+	/* and options can change ONLY before threads are in existence	    */
+
+	/* Get the options from teh client */
+	if(es_read_int(p_fd, &req_game) < 0
+	   || es_read_char(p_fd, &verbose) < 0)
+		return -1;
+
+	/* First we have to figure out how many rooms to announce  */
+	/* This is easy if a req_game filter hasn't been specified */
+	if(req_game == -1) {
+		for(i=0; i<opt.num_rooms; i++)
+			if(req_game == chat_room[i].game_type)
+				count++;
+	} else
+		count = opt.num_rooms;
+
+	/* Do da opcode, and announce our count */
+	if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
+	   || es_write_int(p_fd, count) < 0)
+		return -1;
+
+	/* Send off all the room announcements */
+	for(i=0; i<opt.num_rooms; i++)
+		if(req_game == -1 || req_game == chat_room[i].game_type) {
+			if(es_write_string(p_fd, chat_room[i].name) < 0
+			   || es_write_int(p_fd, chat_room[i].game_type) < 0)
+				return -1;
+			if(verbose
+			   && es_write_string(p_fd, chat_room[i].description)<0)
+				return -1;
+		}
+
+	return 0;
+}
 
 
 /* Initialize the first room */

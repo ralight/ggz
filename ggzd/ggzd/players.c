@@ -376,6 +376,10 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		status = player_list_tables(p_index, p_fd);
 		break;
 
+	case REQ_LIST_ROOMS:
+		status = room_handle_request(request, p_index, p_fd);
+		break;
+
 	case REQ_GAME:
 		status = player_msg_from_sized(p_fd, *t_fd); 
 		if (status <= 0)

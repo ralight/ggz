@@ -31,3 +31,4 @@ extern void room_dequeue_personal(const int);
 extern int room_pemit(const int, const int, char *);
 extern int room_emit(const int, const int, char *);
 extern int room_send_chat(const int);
+extern int room_handle_request(const int, const int, const int);
