@@ -42,6 +42,7 @@
 #define HASTINGS_ERR_FULL    -5
 #define HASTINGS_ERR_DIST    -6
 #define HASTINGS_ERR_MAP     -7
+#define HASTINGS_ERR_ENEMY   -8
 
 /* Messages from client */
 #define HASTINGS_SND_MOVE   0
@@ -92,7 +93,7 @@ int game_req_move(int num);
 int game_handle_move(int num);
 void game_bot_move(int num);
 
-char game_check_move(int num);
+char game_check_move(int num, int enemyallowed);
 char game_check_win(void);
 
 int game_update(int event, void* data);

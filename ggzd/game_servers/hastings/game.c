@@ -26,6 +26,8 @@
 /* System includes */
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 
 /* GGZ includes */
 #include <ggz.h>
@@ -181,7 +183,7 @@ int game_send_players(void)
 	/* Determine number of players, 8 at a maximum */
 	for(i = 0; i < 8; i++)
 	{
-		if((!ggz_seats[i].fd) && (!hastings_game.playernum)) hastings_game.playernum = i;
+		if(ggz_seats[i].fd) hastings_game.playernum++;
 		else printf("Evil seat number: %i (step %i) => %i\n", ggz_seats[i].fd, i, hastings_game.playernum);
 	}
 	printf("%i players found; sending number to clients...\n", hastings_game.playernum);
@@ -330,7 +332,7 @@ int game_handle_move(int num)
 		return -1;
 
 	/* Check validity of move */
-	status = game_check_move(num);
+	status = game_check_move(num, 0);
 
 	/* Send back move status */
 	if ((es_write_int(fd, HASTINGS_RSP_MOVE) < 0)  || (es_write_char(fd, status))) return -1;
@@ -344,7 +346,7 @@ int game_handle_move(int num)
 }
 
 /* Check for valid move */
-char game_check_move(int num)
+char game_check_move(int num, int enemyallowed)
 {
 	/* Check for correct state */
 	if (hastings_game.state != HASTINGS_STATE_PLAYING)
@@ -381,6 +383,10 @@ char game_check_move(int num)
 	if((abs(hastings_game.move_dst_y - hastings_game.move_src_y) == 2)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
 		return -6;
+	if((hastings_game.move_dst_y - hastings_game.move_src_y == -1)
+	&& (hastings_game.move_dst_x - hastings_game.move_src_x == -1)
+	&& (!(hastings_game.move_src_y % 2)))
+		return -6;
 
 	/* Check for moving from empty field (should not be possible ?!) */
 	if (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
@@ -395,13 +401,20 @@ char game_check_move(int num)
 	/* Check for move onto water */
 	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
 		return -7;
+	/* Check for enemies */
+	if(enemyallowed)
+	{
+		if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
+			!(hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
+			return -8;
+	}
 
 	return 0;
 }
 
 
 /* My personal AI (tm) :) */
-int game_bot_set(int me, int i, int j)
+int game_bot_set(int me, int i, int j, int wanted)
 {
 	int x, y, k, l;
 
@@ -410,17 +423,34 @@ int game_bot_set(int me, int i, int j)
 	hastings_game.move_src_x = i;
 	hastings_game.move_src_y = j;
 
-	for(k = -1; k < 2; k++)
-		for(l = -1; l < 2; l++)
+	for(k = -2; k < 3; k++)
+		for(l = -2; l < 3; l++)
 		{
 			hastings_game.move_dst_x = k + i;
 			hastings_game.move_dst_y = l + j;
-			if((game_check_move(me) == 0) && (x == i) && (y == j))
+			if((game_check_move(me, 1) == wanted) && (x == i) && (y == j))
 			{
 				x = hastings_game.move_dst_x;
 				y = hastings_game.move_dst_y;
 			}
 		}
+
+	/* in case of a normal move: north troops must go southwards */
+	if((wanted == 0) && (j < 10))
+	{
+		for(k = 2; k > -3; k--)
+			for(l = 2; l > -3; l--)
+			{
+				hastings_game.move_dst_x = k + i;
+				hastings_game.move_dst_y = l + j;
+				if((game_check_move(me, 1) == wanted) && (x == i) && (y == j))
+				{
+					x = hastings_game.move_dst_x;
+					y = hastings_game.move_dst_y;
+				}
+			}
+	}
+	
 	hastings_game.move_dst_x = x;
 	hastings_game.move_dst_y = y;
 
@@ -440,14 +470,30 @@ void game_bot_move(int me)
 	int moved;
 
 	moved = 0;
-	for (i = 0; i < 6; i++)
+	
+	/* Try to find an enemy first */
+	for(i = 0; i < 6; i++)
 	{
-		for (j = 0; j < 19; j++)
+		for(j = 0; j < 19; j++)
 		{
-			if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j);
+			if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j, -8);
 			if(moved) break;
 		}
 		if(moved) break;
+	}
+	
+	/* If no enemy found, lurk around over the map */
+	if(!moved)
+	{
+		for (i = 0; i < 6; i++)
+		{
+			for (j = 0; j < 19; j++)
+			{
+				if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j, 0);
+				if(moved) break;
+			}
+			if(moved) break;
+		}
 	}
 
 	sleep(1);
@@ -552,3 +598,4 @@ printf("## post-join\n");
 
 	return 0;
 }
+
