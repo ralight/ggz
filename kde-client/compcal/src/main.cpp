@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
+//    Copyright (C) 2002 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -30,14 +30,15 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("compcal",
 		I18N_NOOP("Competition Calendar"),
-		"0.2",
+		"0.3",
 		I18N_NOOP("Online game scheduling system"),
 		KAboutData::License_GPL,
-		"Copyright (C) 2002, 2003 Josef Spillner",
+		"Copyright (C) 2002 - 2004 Josef Spillner",
 		I18N_NOOP("Manages GGZ Gaming Zone tournaments and challenges"),
-		"http://ggz.sourceforge.net/",
+		"http://www.ggzgamingzone.org/clients/compcal/",
 		"josef@ggzgamingzone.org");
 	about->addAuthor("Josef Spillner", I18N_NOOP("Developer"), "josef@ggzgamingzone.org");
+	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, about);
 
