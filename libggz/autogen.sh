@@ -76,11 +76,11 @@ fi
 echo -n "[aclocal]"
 (cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
 echo -n "[autoheader]"
-autoheader -l $srcdir || { echo "autoheader failed."; exit; }
+autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
-(cd $srcdir && automake --add-missing --gnu 2>/dev/null) || { echo "automake failed."; exit; }
+(cd $srcdir && automake --add-missing --gnu) || { echo "automake failed."; exit; }
 echo -n "[autoconf]"
-autoconf -l $srcdir $srcdir/configure.in > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
+autoconf -I $srcdir $srcdir/configure.in > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
 echo ""
 
 #conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c

@@ -26,6 +26,7 @@
 #undef NDEBUG
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
+#undef USE_GCRYPT
     
 
 /* Leave that blank line there!!  Autoheader needs it.

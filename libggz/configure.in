@@ -21,6 +21,7 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,        [  --enable-debug          Enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      Enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_WITH(gcrypt,       [  --with-gcrypt           Add encryption support], enable_gcrypt=yes, enable_gcrypt=no)
 
 
 dnl Check for header files
@@ -120,6 +121,22 @@ AC_CHECK_HEADER(pthread.h,
             AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
 
+dnl Encryption library: libgcrypt
+dnl =============================
+SRCSUBDIRS="."
+if test "$enable_gcrypt" = yes; then
+	AC_CHECK_LIB(gcrypt, gcry_check_version,
+		[
+			AC_CHECK_HEADER(gcrypt.h,
+				[
+					AC_DEFINE_UNQUOTED(USE_GCRYPT, 1)
+					LDADD="$LDADD -lgcrypt"
+				],
+				[AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])])
+		],
+		[AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])])
+fi
+
 dnl Use -Wall if we have gcc.
 dnl =========================
 changequote(,)dnl
@@ -148,14 +165,11 @@ if test "$enable_debug_gdb" = yes; then
     CFLAGS="$CFLAGS -ggdb"
 fi
 
-#LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 AC_SUBST(LDADD)
-#AC_SUBST(LIBOBJS)
-#AC_SUBST(LTLIBOBJS)
-
 
 AC_OUTPUT([Makefile 
 	   src/Makefile
+	   src/security/Makefile
 	   tests/Makefile
 	   man/Makefile])
 
@@ -166,6 +180,7 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
+echo "    Encryption support.$enable_gcrypt"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to"
