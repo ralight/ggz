@@ -1,0 +1,6 @@
+[RoomInfo]
+Name = Keepalive
+Description = Keep alive now!
+GameType = Keepalive
+MaxPlayers = 100
+MaxTables = 1
