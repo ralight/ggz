@@ -4,60 +4,21 @@
 <tr>
 <td colspan="2">
 <font size="3">
-
-<b>GGZ 0.0.8 Screenshots</b><br>
-
-These screenshots have been made for release 0.0.8.
-The previous ones of version 0.0.7 are still available
-<a href="shots-0.0.7.php">here</a>.
-To view some even older ones, please visit
-<a href="http://ggz.sourceforge.net/screenshots.php">this page</a>.
+<b>GGZ Gaming Zone Screenshots</b><br>
+<br>
+Screenshots are made available here to give a first impression of what
+GGZ is all about.
 <br><br>
+<a href="/screenshots/0.0.9/">Version 0.0.9</a><br>
+<a href="/screenshots/0.0.8/">Version 0.0.8</a><br>
+<a href="/screenshots/0.0.7/">Version 0.0.7</a><br>
+<br>
+To view some even older screenshots, please visit
+<a href="http://ggz.sourceforge.net/OLD/screenshots.php">this page</a>.
+If you want to add your images (independent of the version) here,
+please write a mail to the <a href="mailto:webmaster@ggzgamingzone.org">webmaster</a>.
 </td></tr>
 
-<tr><td bgcolor="#ffd000"><center>
-<a href="0.0.8/pykamikaze.png"><img src="0.0.8/pykamikaze.small.png" alt="PyKamikaze" border=0></a>
-</center></td><td bgcolor="#ffd000"><center>
-<a href="0.0.8/gtk-cygwin.png"><img src="0.0.8/gtk-cygwin.small.png" alt="Gtk+ client under Cygwin" border=0></a>
-</center></td></tr>
-<tr><td bgcolor="#ffffa0">
-The Python version of the game Kamikaze
-</td><td bgcolor="#ffffa0">
-The Gtk+ client running on Windows (using Cygwin)
-</td></tr>
-
-<tr><td bgcolor="#ffd000"><center>
-<a href="0.0.8/keepalive.png"><img src="0.0.8/keepalive.small.png" alt="Keepalive" border=0></a>
-</center></td><td bgcolor="#ffd000"><center>
-<a href="0.0.8/db2web.png"><img src="0.0.8/db2web.small.png" alt="Rankings" border=0></a>
-</center></td></tr>
-<tr><td bgcolor="#ffffa0">
-Intro scene of the KDE game Keepalive
-</td><td bgcolor="#ffffa0">
-Improved rankings page
-</td></tr>
-
-<tr><td bgcolor="#ffd000"><center>
-<a href="0.0.8/escape-sdl.png"><img src="0.0.8/escape-sdl.small.png" alt="Escape/SDL" border=0></a>
-</center></td><td bgcolor="#ffd000"><center>
-<a href="0.0.8/motd-editor.png"><img src="0.0.8/motd-editor.small.png" alt="MOTD Editor" border=0></a>
-</center></td></tr>
-<tr><td bgcolor="#ffffa0">
-Escape/SDL, the Pygame port of Escape
-</td><td bgcolor="#ffffa0">
-The MOTD editor
-</td></tr>
-
-<tr><td bgcolor="#ffd000"><center>
-<a href="0.0.8/compcal.png"><img src="0.0.8/compcal.small.png" alt="Competition Calendar" border=0></a>
-</center></td><td bgcolor="#ffd000"><center>
-<a href="0.0.8/geekgame.png"><img src="0.0.8/geekgame.small.png" alt="Geekgame" border=0></a>
-</center></td></tr>
-<tr><td bgcolor="#ffffa0">
-Competition Calendar keeps GGZ players informed
-</td><td bgcolor="#ffffa0">
-The ultimate Geek Game
-</td></tr>
 </table>
 
 <? include_once("../site/footer.php"); ?>

@@ -1,0 +1,61 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.9 Screenshots</b><br>
+
+These screenshots have been made for release 0.0.9.
+The previous ones of version 0.0.7 and 0.0.8 are still available
+<a href="/screenshots/0.0.7/">here</a> and <a href="/screenshots/0.0.8/">here</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="vibora.png"><img src="vibora.small.png" alt="Vibora" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kggz-grubby-games.png"><img src="kggz-grubby-games.small.png" alt="KGGZ and Grubby" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Vibora, a new core client written in Python
+</td><td bgcolor="#ffffa0">
+Grubby plays chess and speaks your language
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ggz-gtk-roomdetails.png"><img src="ggz-gtk-roomdetails.small.png" alt="Gtk+ client room infos" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="xadrez-chines.png"><img src="xadrez-chines.small.png" alt="Xadrez Chines" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Detailed room and player movement information
+</td><td bgcolor="#ffffa0">
+Xadrez Chines, a Chinese Chess game implemented with Pygame
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="kdots-replays.png"><img src="kdots-replays.small.png" alt="KDots game replays" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="tttxt.png"><img src="tttxt.small.png" alt="TicTacToe console client" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Game replays with KDots
+</td><td bgcolor="#ffffa0">
+Game environment support: Console client for TicTacToe
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="tournaments.png"><img src="tournaments.small.png" alt="Tournament pages" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kcmggz.png"><img src="kcmggz.small.png" alt="GGZ KControl module" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Organizing and tracking tournaments from the qualification to the winner
+</td><td bgcolor="#ffffa0">
+Players do have a choice. And TicTacToe leads the pack.
+</td></tr>
+</table>
+
+<? include_once("../../site/footer.php"); ?>
