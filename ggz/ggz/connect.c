@@ -63,7 +63,6 @@ static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 
-#ifdef DEBUG
 char *opcode_str[23] = { "MSG_SERVER_ID",
 			 "MSG_SERVER_FULL",
 			 "MSG_CHAT",
@@ -88,7 +87,6 @@ char *opcode_str[23] = { "MSG_SERVER_ID",
 			 "RSP_CHAT",
 			 "RSP_ERROR"
 };
-#endif
 
 
 /**
