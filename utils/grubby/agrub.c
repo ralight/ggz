@@ -19,7 +19,7 @@
 #include <protocols.h>
 
 /* ~/.agrub version */
-#define FILE_VERSION "0.0.1"
+#define FILE_VERSION "0.0.2"
 
 #define DEFAULT_PORT 5687
 #define DEFAULT_HOSTNAME "localhost"
@@ -39,6 +39,7 @@ void store_aka(char *, char *);
 void store_email(char *, char *);
 void store_url(char *, char *);
 void store_info(char *, char *);
+void store_bday(char *, char *);
 void check_seen(char *, char *);
 void whois(char *sender, char *name);
 void queue_message(char *, char *);
@@ -58,6 +59,7 @@ struct {
 	char *email;
 	char *url;
 	char *info;
+	char *bday;
 	time_t last_seen;
 	char *last_room;
 	char *msg_from;
@@ -113,6 +115,7 @@ int main(const int argc, const char *argv[])
 	int rc;
 	char tmp[1024], *home;
 	char file[1024];
+	char ver[1024];
 	FILE *grub_file;
 
 	for(i=0; i<MAX_KNOWN; i++)
@@ -170,8 +173,8 @@ int main(const int argc, const char *argv[])
 	} else {
 		printf("Loading known information\n");
 		/* Load up known information */
-		fgets(tmp, 1024, grub_file);
-		printf(">>> Version: %s\n",tmp);
+		fgets(ver, 1024, grub_file);
+		printf(">>> Version: %s\n",ver);
 		fgets(tmp, 1024, grub_file);
 		num_known = atoi(tmp);
 		printf(">>> Entries: %d\n",num_known);
@@ -216,6 +219,17 @@ int main(const int argc, const char *argv[])
 			if(!strcmp(known[j].info,"NULL"))
 				known[j].info = NULL;
 			printf("- %s",known[j].info);
+
+			if(!strcmp(ver,"0.0.2\n"))
+			{
+				fgets(tmp, 1024, grub_file);
+				tmp[strlen(tmp)-1] = '\0';
+				known[j].bday = malloc(strlen(tmp));
+				strcpy(known[j].bday, tmp);
+				if(!strcmp(known[j].bday,"NULL"))
+					known[j].bday = NULL;
+				printf("- %s",known[j].bday);
+			}
 
 			fgets(tmp, 1024, grub_file);
 			known[j].last_seen = atoi (tmp);
@@ -500,6 +514,8 @@ void handle_command(char *sender, char *command)
 		store_url(sender, command+10);
 	} else if(!strncasecmp(command, "my info is ", 11)) {
 		store_info(sender, command+11);
+	} else if(!strncasecmp(command, "my birthday is ", 15)) {
+		store_bday(sender, command+15);
 	} else if(!strncasecmp(command, "have you seen ", 14)) {
 		check_seen(sender, command+14);
 	} else if(!strncasecmp(command, "tell ", 5)) {
@@ -603,6 +619,10 @@ void do_logout(int on_sig)
 			fprintf(grub_file, "%s\n", known[i].info);
 		else
 			fprintf(grub_file, "NULL\n");
+		if(known[i].bday != NULL)
+			fprintf(grub_file, "%s\n", known[i].bday);
+		else
+			fprintf(grub_file, "NULL\n");
 
 		fprintf(grub_file, "%d\n", known[i].last_seen);
 
@@ -643,8 +663,11 @@ void do_greet(char *name)
 	if(i == num_known || i >= MAX_KNOWN) {
 		sprintf(out_msg, "Hi %s, I'm %s.", name, bot_name);
 		send_chat(out_msg);
-		sprintf(out_msg, "Type '%s: help' to see what I can do!",
-			bot_name);
+		sprintf(out_msg, "I haven't seen you before, please take a second to introduce yourself to me.");
+		send_chat(out_msg);
+		sprintf(out_msg, "I'll remember your name if you say '%s: my name is <your name>'.", bot_name);
+		send_chat(out_msg);
+		sprintf(out_msg, "You can always type '%s: help' to see what I can do!", bot_name);
 		send_chat(out_msg);
 		if(i < MAX_KNOWN) {
 			known[num_known].name = name;
@@ -811,6 +834,37 @@ void store_info(char *sender, char *info)
 	newstr = malloc(strlen(info)+1);
 	strcpy(newstr, info);
 	known[i].info = newstr;
+}
+
+void store_bday(char *sender, char *bday)
+{
+	int i;
+	char *newstr;
+
+	for(i=0; i<num_known; i++)
+		if(!strcmp(sender, known[i].name))
+			break;
+	if(i >= num_known) {
+		sprintf(out_msg, "Sorry %s, I'd like to remember your brithday as %s, ",
+			sender, bday);
+		sprintf(out_msg+strlen(out_msg),
+			"but I already know %d people.", MAX_KNOWN);
+		send_chat(out_msg);
+		return;
+	}
+
+	if(known[i].aka) {
+		sprintf(out_msg, "OK %s, changing your birthday to %s.",
+			known[i].aka, bday);
+		free(known[i].bday);
+	} else
+		sprintf(out_msg, "OK %s, I'll remember that your birthday as %s.",
+			sender, bday);
+	send_chat(out_msg);
+
+	newstr = malloc(strlen(bday)+1);
+	strcpy(newstr, bday);
+	known[i].bday = newstr;
 }
 
 
