@@ -614,6 +614,30 @@ out again by the server, using their standard protocols</li>
 </ul>
 
 <h4>
+WH_MSG_TABLE</h4>
+
+<ul>
+<li>
+sent server->client</li>
+
+<li>
+sends information about cards on the table.</li>
+
+<li>
+followed by a list of cards on the table.&nbsp; There will be exactly one
+card given per player, in the relative ordering.&nbsp; An "unknown card"
+value (-1 -1 -1) will indicate that that player has no card on the table.</li>
+
+<li>
+Since there will never be any duplicate cards, the client can verify that
+each table card is out of that player's hand.</li>
+
+<li>
+This message is sent out pretty rarely; generally only as part of a sync.&nbsp;
+Normally a WH_MSG_PLAY fills the same role.</li>
+</ul>
+
+<h4>
 WH_REQ_GAMEOVER</h4>
 
 <ul>
