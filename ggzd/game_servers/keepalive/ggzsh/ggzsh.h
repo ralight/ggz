@@ -13,6 +13,16 @@ class GGZScriptingHost
 		void addScript(const char *scriptname);
 		// Call a method from the available scripts
 		void executeMethod(const char *methodstring);
+		// Output information
+		void information();
+
+	private:
+		// Available modes for each script or method
+		enum ScriptModes
+		{
+			ModePython,
+			ModeRuby
+		};
 };
 
 #endif
