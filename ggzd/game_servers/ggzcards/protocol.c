@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 2409 2001-09-08 23:58:40Z jdorje $
+ * $Id: protocol.c 2414 2001-09-09 02:47:49Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -30,6 +30,8 @@
 
 /* NOTE: This file should only be changed in the server. */
 
+#include <assert.h>
+
 #include <easysock.h>
 
 #include "protocol.h"
@@ -54,20 +56,32 @@ int write_card(int fd, card_t card)
 
 int read_opcode(int fd, int *opcode)
 {
-	return es_read_int(fd, opcode);
+	char op;
+	if (es_read_char(fd, &op) < 0)
+		return -1;
+	*opcode = op;
+	return 0;
 }
 
 int write_opcode(int fd, int opcode)
 {
-	return es_write_int(fd, opcode);
+	char op = opcode;
+	assert (opcode >= 0 && opcode < 128);
+	return es_write_char(fd, op);
 }
 
 int read_seat(int fd, int *seat)
 {
-	return es_read_int(fd, seat);
+	char s;
+	if (es_read_char(fd, &s) < 0)
+		return -1;
+	*seat = s;
+	return 0;
 }
 
 int write_seat(int fd, int seat)
 {
-	return es_write_int(fd, seat);
+	char s = seat;
+	assert (seat >= 0 && seat < 127);
+	return es_write_char(fd, s);
 }
