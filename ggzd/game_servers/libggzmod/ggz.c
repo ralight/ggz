@@ -1,10 +1,10 @@
-/*	$Id: ggz.c 2216 2001-08-24 04:31:57Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
+ * $Id: ggz.c 2217 2001-08-24 05:16:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -57,6 +57,9 @@ int ggzfd = -1;
 /* Local copies of necessary data */
 static int seats;
 
+/* the set of active GGZ file descriptors */
+static fd_set active_fd_set;
+
 
 /* Connect to GGZ server (ggzd) */
 /* It should be safe to keep just this one connect function.
@@ -70,8 +73,14 @@ int ggzdmod_connect(void)
 
 	/* we test if the socket works by sending this message. */
 	/* FIXME: is this legit?  Will it work w/o debugging? */
-	if (ggzdmod_debug("GGZDMOD: Connected to GGZ server.") < 0)
+	if (ggzdmod_debug("GGZDMOD: Connected to GGZ server.") < 0) {
 		ggzfd = -1;
+		return -1;
+	}
+
+	/* add the main GGZ FD to our FD set */
+	FD_ZERO(&active_fd_set);
+	FD_SET(ggzfd, &active_fd_set);
 
 	return ggzfd;
 }
@@ -79,7 +88,7 @@ int ggzdmod_connect(void)
 
 int ggzdmod_disconnect(void)
 {
-	int response;
+	int response, p;
 
 	/* first send a gameover message (request) */
 	if (es_write_int(ggzfd, REQ_GAME_OVER) < 0)
@@ -102,11 +111,15 @@ int ggzdmod_disconnect(void)
 
 	ggzdmod_debug("GGZDMOD: Disconnected from GGZ server.");
 
-	/* close the socket */
+	/* close all file descriptors */
+	for (p = 0; p < ggzdmod_seats_num(); p++)
+		if (ggz_seats[p].fd != -1)
+			close(ggz_seats[p].fd);
 	close(ggzfd);
 	ggzfd = -1;
+	FD_ZERO(&active_fd_set);
 
-	if(ggz_seats) free(ggz_seats);
+	free(ggz_seats);
 	
 	return 0;
 }
@@ -172,7 +185,9 @@ int ggzdmod_player_join(int* p_seat, int* p_fd)
 
 	ggz_seats[seat].assign = GGZ_SEAT_PLAYER;	
 	ggzdmod_debug("%s on %d in seat %d", ggz_seats[seat].name ,ggz_seats[seat].fd, seat);
-	
+
+	FD_SET(ggz_seats[seat].fd, &active_fd_set);
+
 	*p_seat = seat;
 	*p_fd = ggz_seats[seat].fd;
 
@@ -197,6 +212,7 @@ int ggzdmod_player_leave(int* p_seat, int* p_fd)
 	else {
 		*p_seat = i;
 		*p_fd = ggz_seats[i].fd;
+		FD_CLR(*p_fd, &active_fd_set);
 		ggz_seats[i].fd = -1;
 		ggz_seats[i].assign = GGZ_SEAT_OPEN;
 		status = 0;
@@ -310,94 +326,106 @@ void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 	handlers[event_id] = handler;
 }
 
+/* return value:
+ * 0 => normal; game goes on
+ * 1 => gameover
+ * -1 => error
+ */
+static int ggzdmod_loop(void)
+{
+	fd_set read_fd_set;
+	int i, fd,  op, seat, status;
+	int gameover = 0;
+
+	read_fd_set = active_fd_set;
+
+	/* TODO: We may want to just poll and return.  Polling is
+	 * useful for real-time games (easier than using
+	 * threads).  --JDS */
+	/* note - we have to select so that we can determine what file
+	 * descriptors are waiting to be read. */
+	status = select(ggzdmod_fd_max() + 1,
+			&read_fd_set,
+			NULL, NULL, NULL);
+	if (status <= 0) {
+		if (errno == EINTR)
+			return 0;
+		else
+			return -1;
+	}
+
+	/* Check for message from GGZ server */
+	if (FD_ISSET(ggzfd, &read_fd_set)) {
+		if (es_read_int(ggzfd, &op) < 0)
+			return -1;
+		switch (op) {
+
+		case REQ_GAME_LAUNCH:
+			if (ggzdmod_game_launch() == 0
+			    && handlers[GGZ_EVENT_LAUNCH] != NULL)
+				(*handlers[GGZ_EVENT_LAUNCH])
+					(GGZ_EVENT_LAUNCH, NULL);
+			break;
+		case REQ_GAME_JOIN:
+			if (ggzdmod_player_join(&seat, &fd) == 0) {
+				if (handlers[GGZ_EVENT_JOIN] != NULL)
+					(*handlers[GGZ_EVENT_JOIN])
+						(GGZ_EVENT_JOIN,
+						 &seat);
+			}
+			break;
+		case REQ_GAME_LEAVE:
+			if (ggzdmod_player_leave(&seat, &fd) == 0) {
+				if (handlers[GGZ_EVENT_LEAVE] != NULL)
+					(*handlers[GGZ_EVENT_LEAVE])
+						(GGZ_EVENT_LEAVE,
+						 &seat);
+			}
+			break;
+		case RSP_GAME_OVER:
+			gameover = 1;
+			if (handlers[GGZ_EVENT_QUIT] != NULL)
+				(*handlers[GGZ_EVENT_QUIT])
+					(GGZ_EVENT_QUIT, NULL);
+			break;
+		}
+	}
+
+	/* Check for message from player */
+	for (i = 0; i < ggzdmod_seats_num(); i++) {
+		fd = ggz_seats[i].fd;
+		if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
+			if (handlers[GGZ_EVENT_PLAYER] != NULL)
+				(*handlers[GGZ_EVENT_PLAYER])
+					(GGZ_EVENT_PLAYER, &i);
+		}
+	}
+
+	/* A "tick" event is sent once each time through the loop */
+	if (handlers[GGZ_EVENT_TICK] != NULL)
+		(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
+
+	return gameover;
+}
+
 /* return values as of now (not finalized):
  * 0 => success
  * -1 => can't connect
- * -2 => error during game
+ * -2 => error during game loop
  * -3 => error during disconnect
  */
 int ggzdmod_main(void)
 {
-	char game_over = 0;
-	int i, fd, status, ggz_sock, fd_max, op, seat;
-	fd_set active_fd_set, read_fd_set;
+	int status = 0;
 
-	if ((ggz_sock = ggzdmod_connect()) < 0)
+	if (ggzdmod_connect() < 0)
 		return -1;
 
-	FD_ZERO(&active_fd_set);
-	FD_SET(ggz_sock, &active_fd_set);
+	while (status == 0)
+		status = ggzdmod_loop();
 
-	while (!game_over) {
-
-		read_fd_set = active_fd_set;
-		fd_max = ggzdmod_fd_max();
-
-		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
-
-		if (status <= 0) {
-			if (errno == EINTR)
-				continue;
-			else
-				return -2;
-		}
-
-		/* TODO: errors should be handled within this loop; we should
-		 * do a graceful exit on an error. --JDS */
-
-		/* Check for message from GGZ server */
-		if (FD_ISSET(ggz_sock, &read_fd_set)) {
-			if (es_read_int(ggz_sock, &op) < 0)
-				return -2;
-			switch (op) {
-
-			case REQ_GAME_LAUNCH:
-				if (ggzdmod_game_launch() == 0
-				    && handlers[GGZ_EVENT_LAUNCH] != NULL)
-					(*handlers[GGZ_EVENT_LAUNCH])
-						(GGZ_EVENT_LAUNCH, NULL);
-				break;
-			case REQ_GAME_JOIN:
-				if (ggzdmod_player_join(&seat, &fd) == 0) {
-					FD_SET(fd, &active_fd_set);
-					if (handlers[GGZ_EVENT_JOIN] != NULL)
-						(*handlers[GGZ_EVENT_JOIN])
-							(GGZ_EVENT_JOIN,
-							 &seat);
-				}
-				break;
-			case REQ_GAME_LEAVE:
-				if (ggzdmod_player_leave(&seat, &fd) == 0) {
-					FD_CLR(fd, &active_fd_set);
-					if (handlers[GGZ_EVENT_LEAVE] != NULL)
-						(*handlers[GGZ_EVENT_LEAVE])
-							(GGZ_EVENT_LEAVE,
-							 &seat);
-				}
-				break;
-			case RSP_GAME_OVER:
-				game_over = 1;
-				if (handlers[GGZ_EVENT_QUIT] != NULL)
-					(*handlers[GGZ_EVENT_QUIT])
-						(GGZ_EVENT_QUIT, NULL);
-				break;
-			}
-		}
-
-		/* Check for message from player */
-		for (i = 0; i < ggzdmod_seats_num(); i++) {
-			fd = ggz_seats[i].fd;
-			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
-				if (handlers[GGZ_EVENT_PLAYER] != NULL)
-					(*handlers[GGZ_EVENT_PLAYER])
-						(GGZ_EVENT_PLAYER, &i);
-			}
-		}
-
-		/* A "tick" event is sent once each time through the loop */
-		if (handlers[GGZ_EVENT_TICK] != NULL)
-			(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
-	}
+	if (status < 0)
+		return -2;
 
 	if (ggzdmod_disconnect() < 0)
 		return -3;
