@@ -1,0 +1,12 @@
+<div id="rightbar">
+	<h1>Database: Matches</h1>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Matches</h1>
+		<div class="menu">
+		<?php $stat->listMatches(); ?>
+		</div>
+	</div>
+</div>

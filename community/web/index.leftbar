@@ -1,0 +1,11 @@
+<?php
+
+include("auth.php");
+
+if(Auth::username()) :
+	Locale::includefile("my/leftbar.inc");
+else :
+	Locale::includefile("default.leftbar");
+endif;
+
+?>

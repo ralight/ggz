@@ -1,0 +1,37 @@
+<?php include("top.inc"); ?>
+
+<div id="main">
+	<h1>
+		<span class="itemleader">:: </span>
+		Jubiläum: 5 Jahre GGZ Gaming Zone!
+		<span class="itemleader"> :: </span>
+		<a name="5years"></a>
+	</h1>
+	<div class="text">
+		<div style="float:right">
+		<img src="images/grubbyparty.png" alt="Grubby lädt dich ein!">
+		</div>
+		Es ist unglaublich - das Projekt wurde heute 5 Jahre alt!
+		Schaue dazu auf die extra dafür gebastelte
+		<a href="/5years/" title="GGZs 5. Geburtstag">GGZ-Geburtstagspartyseite</a>.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
+		Neues GGZ-Community-Portal
+		<span class="itemleader"> ::</span>
+		<a name="newportal"></a>
+	</h1>
+	<div class="text">
+		Sie ersetzt die alten <a href="http://www.ggzgamingzone.org/backend/web/" title="">Rankings</a>-
+		Seiten und möchte noch viel mehr: Die GGZ Community.
+		Statistiken über jeden Spiele-Partikel in GGZ, von Spielern beigetragene Levels und Themes,
+		Kommunikation über Foren und Blogs, Spiele-Reviews, die Organisation von Tournaments sowie
+		kleinere lustige Webspiele.
+		Diejenigen, welche selbst einen GGZ-Server betreiben möchten, können das Paket
+		ggz-community verwenden, um dafür eine Webschnittstelle bereitzuhalten.
+	</div>
+
+</div>
+
+<?php include("bottom.inc"); ?>

@@ -1,0 +1,23 @@
+Install External software
+-------------------------
+
+www/forums/phpBB2: phpBB2 (Forum software)
+
+www/hotstuff/directory/: Hotstuff (GHNS backend software)
+ from setup/hotstuff
+
+www/blogs/config/: Planet configuration (RSS feed aggregator)
+ from setup/blogs
+
+Create GGZ database
+-------------------
+
+SQL setup
+ from setup/sql
+
+Scripts
+-------
+* calcrankings
+* ggz2phpbb.pl
+* tracker.pl
+

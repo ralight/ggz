@@ -1,0 +1,799 @@
+body
+	{
+		background-color:#7CAF68;
+		margin:0px;
+		padding:6px;
+		width: 90%;
+		/*background-image:url('images/steel-brushed-outset.png');*/
+		background-repeat : no-repeat;
+	}
+
+#pagehead
+	{
+		position:absolute;
+		top:6px;
+		left:6px;
+		width: 90%;
+		padding:2px;
+		background-color:#8AC990;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #5E7683 solid;
+		border-bottom: 1px #5E7683 solid;
+		/*background-image:url('images/steel-brushed-outset-light.png');*/
+		background-image:url('/images/pagehead.png');
+		background-repeat : no-repeat;
+		background-position: right;
+	}
+
+body.banner #pagehead .adblock
+	{
+		position:absolute;
+		top:2px;
+		left:300px;
+		display:block;
+		width:438px;
+		padding:3px;
+		height: 62px;
+		background-color:#7E95A0;
+		border-top: 1px #2E3940 solid;
+		border-left: 1px #2E3940 solid;
+		border-right: 1px #6CAF88 solid;
+		border-bottom: 1px #6CAF88 solid;
+		/*background-image:url('images/steel-brushed-inset-dark.png');*/
+		background-repeat : no-repeat;
+	}
+
+#pagehead .menubar
+	{
+		width:390px;
+		background-color:#71DC81;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #7EA095 solid;
+		border-bottom: 1px #7EA095 solid;
+		font-family:sans-serif;
+		font-size:9pt;
+		font-weight:normal;
+		font-style:normal;
+		padding:2px;
+		text-align:right;
+		/*background-image:url('images/steel-brushed-outset-ultralight.png');*/
+		background-repeat : no-repeat;
+	}
+
+#leftbar
+	{
+		width: 18%;
+		background-color:#7AC980;
+		border-top: 1px #9EFAAF solid;
+		border-left: 1px #9EFAAF solid;
+		border-right: 1px #2E7653 solid;
+		border-bottom: 1px #2E7653 solid;
+		line-height:12pt;
+		z-index:50;
+		font-size:9pt;
+		font-family:sans-serif;
+		/*background-image:url('images/steel-brushed-outset-light.png');*/
+		background-repeat : no-repeat;
+	}
+
+#rightbar
+	{
+		width: 18%;
+		background-color:#7AC980;
+		border-top: 1px #9EFAAF solid;
+		border-left: 1px #9EFAAF solid;
+		border-right: 1px #2E7653 solid;
+		border-bottom: 1px #2E7653 solid;
+		line-height:12pt;
+		z-index:50;
+		font-size:9pt;
+		font-family:sans-serif;
+		/*background-image:url('images/steel-brushed-outset-light.png');*/
+		background-repeat : no-repeat;
+	}
+
+#mainandacknowledgements
+	{
+		width: 60%;
+	}
+
+#main, #acknowledgements
+	{
+		background-color:#7AC980;
+		border-top: 1px #9EFAAF solid;
+		border-left: 1px #9EFAAF solid;
+		border-right: 1px #2E7653 solid;
+		border-bottom: 1px #2E7653 solid;
+		/*width: 60%;*/
+		font-size:12pt;
+		font-weight:normal;
+		font-style:normal;
+		z-index:50;
+		/*background-image:url('images/steel-brushed-outset-light.png');*/
+		background-repeat : no-repeat;
+	}
+
+#main .note, #acknowledgements .note
+	{
+		padding:2px;
+		color:#5E7683;
+		font-family:sans-serif;
+		font-size:8pt;
+		text-align:right;
+	}
+
+#main .note a, #acknowledgements .note a
+	{
+		color:#5E7683;
+	}
+
+#leftbar h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:bold;
+		font-style:normal;
+	}
+
+#leftbar h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:normal;
+	}
+
+#main .text, #acknowledgements .text
+	{
+		background-color:#CEFADF;
+		border-top: 1px #7E95A0 solid;
+		border-left: 1px #7E95A0 solid;
+		border-right: 1px #FFFFFF solid;
+		border-bottom: 1px #FFFFFF solid;
+		padding:2px;
+		margin:4px;
+		font-family:serif;
+		font-size:11pt;
+		font-weight:normal;
+		font-style:normal;
+		color:black;
+		/*background-image:url('images/steel-flat-inset-ultraultralight.png');*/
+		background-repeat : no-repeat;
+	}
+
+#main .text a, #acknowledgements .text a
+	{
+		font-family:sans-serif;
+		font-size:smaller;
+		text-decoration:none;
+		color:#2E3940;
+		font-weight:bold;
+	}
+
+#leftbar .menu a
+	{
+		font-weight:normal;
+	}
+
+#leftbar a
+	{
+		font-family:sans-serif;
+		text-decoration:none;
+		color:black;
+		font-weight:bold;
+	}
+
+#leftbar a:hover
+	{
+		color:#42936A;
+	}
+
+#rightbar a
+	{
+		font-family:sans-serif;
+		text-decoration:none;
+		color:black;
+		/*font-weight:bold;*/
+	}
+
+#main .text h1, #acknowledgements .text h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:12pt;
+		font-weight:bold;
+		font-style:normal;
+		background-color:transparent;
+		background-image:none;
+		color:black;
+		border:none;
+	}
+
+#main .text h2, #acknowledgements .text h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:12pt;
+		font-weight:normal;
+		font-style:italic;
+		background-image:none;
+	}
+
+#main h1, #acknowledgements h1
+	{
+		margin:4px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+		background-color:#1B5432;
+		border-top: 1px #5E7683 solid;
+		border-left: 1px #5E7683 solid;
+		border-right: 1px #D1DCE1 solid;
+		border-bottom: 1px #D1DCE1 solid;
+		color:#D1DCE1;
+		/*background-image:url('images/leather-flat-inset-ultradark.png');*/
+		background-repeat : no-repeat;
+	}
+
+#main h2, #acknowledgements h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+		background-image:none;
+	}
+
+#pagehead h1
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:14pt;
+		font-weight:bold;
+		font-style:normal;
+	}
+
+#pagehead h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:italic;
+	}
+
+#rightbar h1
+	{
+		margin:0px 0px 0px 0px;padding:2px 2px 0px 2px;font-family:sans-serif;font-size:10pt;font-weight:bold;font-style:normal;
+	}
+
+#rightbar h2
+	{
+		margin:0px 0px 0px 0px;
+		padding:2px 2px 0px 2px;
+		font-family:sans-serif;
+		font-size:10pt;
+		font-weight:normal;
+		font-style:normal;
+	}
+
+body #leftbar
+	{
+		position:absolute;
+		top:96px;
+		left: 1%;
+	}
+
+body #mainandacknowledgements
+	{
+		position:absolute;
+		top:96px;
+		left: 20%;
+	}
+
+/*
+body #main
+	{
+		position:absolute;
+		top:96px;
+		left: 20%;
+	}
+
+body #acknowledgements
+	{
+		position:absolute;
+		bottom:0px;
+		left: 20%;
+	}
+*/
+
+body #pagehead .adblock
+	{
+		display:none;
+	}
+
+body #pagehead .adblock
+	{
+		font-family:sans-serif;
+		text-transform:uppercase;
+		font-size:8pt;
+		font-weight:bold;
+		color:#FFEBCC;
+		text-align:center;
+	}
+
+body #pagehead .menubar
+	{
+		position:absolute;
+		top:60px;
+		right: 8%;
+	}
+
+body #pagehead
+	{
+		height:68px;
+	}
+
+body #rightbar
+	{
+		position:absolute;
+		top: 96px;
+		left: 81%;
+	}
+
+body.banner #leftbar
+	{
+		position:absolute;
+		top:108px;
+		left:6px;
+	}
+
+body.banner #main, body.banner #acknowledgements
+	{
+		position:absolute;
+		top:108px;
+		left:150px;
+	}
+
+body.banner #pagehead .adblock embed
+	{
+		width:438px;
+		height:48px;
+		padding:0px;
+		margin:0px;
+	}
+
+body.banner #pagehead .adblock img
+	{
+		width:438px;
+		height:48px;
+		padding:0px;
+		margin:0px;
+	}
+
+body.banner #pagehead .adblock object
+	{
+		width:438px;
+		height:48px;
+		padding:0px;
+		margin:0px;
+	}
+
+body.banner #pagehead .menubar
+	{
+		position:absolute;
+		top:76px;
+		left:288px;
+	}
+
+body.banner #pagehead
+	{
+		height:84px;
+	}
+
+body.banner #rightbar
+	{
+		position:absolute;
+		top:108px;
+		left:624px;
+	}
+
+h1 span.itemleader
+	{
+		font-family:sans-serif;
+		color:#89B259;
+		letter-spacing:0.125em;
+		font-style:normal;
+		font-weight:bold;
+	}
+
+hr.leather
+	{
+		background-color:#42936A;
+		border-top:1px #2B744B solid;
+		border-left:1px #2B744B solid;
+		border-right:1px #75CBA9 solid;
+		border-bottom:1px #75CBA9 solid;
+		height:6px;
+		margin-left:6px;
+		margin-right:6px;
+		/*background-image:url('images/leather-flat-inset.png');*/
+		background-repeat : no-repeat;
+	}
+
+hr.steel
+	{
+		background-color:#9CAFB8;
+		border-top:1px #7E95A0 solid;
+		border-left:1px #7E95A0 solid;
+		border-right:1px #D1DCE1 solid;
+		border-bottom:1px #D1DCE1 solid;
+		height:6px;
+		margin-left:6px;
+		margin-right:6px;
+		/*background-image:url('images/steel-flat-inset.png');*/
+		background-repeat : no-repeat;
+	}
+
+#pagehead div.menu
+	{
+		top:24px;
+		display:block;
+		width:64px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		background-color:transparent;
+		color: #2E3940;
+	}
+
+#pagehead a.menuitem
+	{
+		display:block;
+		text-align:center;
+		margin: 1px;
+		color: #2E3940;
+		text-decoration:none;
+	}
+
+#pagehead div.menu div.menu a.menuitem
+	{
+		text-align:left;
+	}
+
+#pagehead a.menuitem:hover
+	{
+		color: #EEFAFF;
+		background-color: #2E7940;
+	}
+
+#pagehead a.menuitem:hover > div.menu
+	{
+		display:block;
+	}
+
+#pagehead div.menu div.menu
+	{
+		display:none;
+		width:120px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		z-index:100;
+		position:absolute;
+		top:18px;
+		background-color:#71DC81;
+		border-top: 1px #8EFA9F solid;
+		border-left: 1px #8EFA9F solid;
+		border-right: 1px #4E9570 solid;
+		border-bottom: 1px #4E9570 solid;
+		/*background-image:url('images/steel-flat-outset-ultralight.png');*/
+		background-repeat : no-repeat;
+	}
+
+#pagehead div.menu:hover > div.menu
+	{
+		display:block;
+	}
+
+#rightbar div.menubar h1, #leftbar div.menubar h1
+	{
+		color:#CCFFEB;
+	}
+
+#rightbar div.menubar, #leftbar div.menubar
+	{
+		background-color:#2B744B;
+		border-top: 1px #835E76 solid;
+		border-left: 1px #835E76 solid;
+		border-right: 1px #E1D1DC solid;
+		border-bottom: 1px #E1D1DC solid;
+		color:#D1DCE1;
+	}
+
+#leftbar div.menu, #rightbar div.menu
+	{
+		display:block;
+		font-size:8pt;
+		font-family:sans-serif;
+		text-align:center;
+		background-color:#2B744B;
+		color: #FFEBCC;
+	}
+
+#leftbar a.menuitem, #rightbar a.menuitem
+	{
+		display:block;
+		text-align:left;
+		margin: 1px;
+		color: #FFEBCC;
+		text-decoration:none;
+	}
+
+#leftbar div.menu div.menu a.menuitem, #rightbar div.menu div.menu a.menuitem
+	{
+		text-align:left;
+	}
+
+#leftbar a.menuitem:hover, #rightbar a.menuitem:hover
+	{
+		color: #CBA975;
+		background-color: #28782D;
+	}
+
+#leftbar a.menuitem:hover > div.menu, #rightbar a.menuitem:hover > div.menu
+	{
+		display:block;
+	}
+
+#leftbar div.menu div.menu, #rightbar div.menu div.menu
+	{
+		display:none;
+		width:120px;
+		float:left;
+		font-size:8pt;
+		text-align:center;
+		z-index:100;
+		position:absolute;
+		left:45px;
+		background-color:#744B2B;
+		border-top: 1px #CBA975 solid;
+		border-left: 1px #CBA975 solid;
+		border-right: 1px #28180D solid;
+		border-bottom: 1px #28180D solid;
+		/*background-image:url('images/leather-flat-outset-dark.png');*/
+		background-repeat : no-repeat;
+		color:#0D2818;
+	}
+
+#leftbar div.menu:hover > div.menu, #rightbarbar div.menu:hover > div.menu
+	{
+		display:block;
+	}
+
+form.leather
+	{
+		margin:2px;
+		padding:2px;
+		display:block;
+		background-color:#2B744B;
+		border-top: 1px #75CBA9 solid;
+		border-left: 1px #75CBA9 solid;
+		border-right: 1px #0D2818 solid;
+		border-bottom: 1px #0D2818 solid;
+		/*background-image:url('images/leather-brushed-outset-dark.png');*/
+		background-repeat : no-repeat;
+		color:black;
+	}
+
+form.leather h1
+	{
+		font-size:larger;
+	}
+
+form.leather h2
+	{
+		font-weight:normal;
+	}
+
+form.leather input.button
+	{
+		margin-top:4px;
+		background-color:#59B289;
+		border-top: 1px #CCFFEB solid;
+		border-left: 1px #CCFFEB solid;
+		border-right: 1px #1B5432 solid;
+		border-bottom: 1px #1B5432 solid;
+	}
+
+form.leather input
+	{
+		background-color:#59B289;
+		border-top: 1px #1B5432 solid;
+		border-left: 1px #1B5432 solid;
+		border-right: 1px #CCFFEB solid;
+		border-bottom: 1px #CCFFEB solid;
+	}
+
+form.leather select
+	{
+		background-color:#59B289;
+		border-top: 1px #CCFFEB solid;
+		border-left: 1px #CCFFEB solid;
+		border-right: 1px #1B5432 solid;
+		border-bottom: 1px #1B5432 solid;
+	}
+
+form.leather textarea
+	{
+		background-color:#59B289;
+		border-top: 1px #1B5432 solid;
+		border-left: 1px #1B5432 solid;
+		border-right: 1px #CCFFEB solid;
+		border-bottom: 1px #CCFFEB solid;
+	}
+
+form.leather input.button:focus
+	{
+		background-color:#59B289;
+	}
+
+form.leather input:focus
+	{
+		background-color:#CCFFEB;
+	}
+
+form.leather select:focus
+	{
+		background-color:#CCFFEB;
+	}
+
+form.leather textarea:focus
+	{
+		background-color:#CCFFEB;
+	}
+
+form.steel
+	{
+		margin:2px;
+		padding:2px;
+		display:block;
+		background-color:#7E95A0;
+		border-top: 1px #D1DCE1 solid;
+		border-left: 1px #D1DCE1 solid;
+		border-right: 1px #28180D solid;
+		border-bottom: 1px #28180D solid;
+		color:#28180D;
+		/*background-image:url('images/steel-brushed-outset-dark.png');*/
+		background-repeat : no-repeat;
+	}
+
+form.steel h1
+	{
+		font-size:larger;
+	}
+
+form.steel h2
+	{
+		font-weight:normal;
+	}
+
+form.steel input.button
+	{
+		margin-top:4px;
+		background-color:#BAC9D0;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #5E7683 solid;
+		border-bottom: 1px #5E7683 solid;
+	}
+
+form.steel input
+	{
+		background-color:#BAC9D0;
+		border-top: 1px #5E7683 solid;
+		border-left: 1px #5E7683 solid;
+		border-right: 1px #EEFAFF solid;
+		border-bottom: 1px #EEFAFF solid;
+	}
+
+form.steel select
+	{
+		background-color:#BAC9D0;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #5E7683 solid;
+		border-bottom: 1px #5E7683 solid;
+	}
+
+form.steel textarea
+	{
+		background-color:#BAC9D0;
+		border-top: 1px #5E7683 solid;
+		border-left: 1px #5E7683 solid;
+		border-right: 1px #EEFAFF solid;
+		border-bottom: 1px #EEFAFF solid;
+	}
+
+form.steel input.button:focus
+	{
+		background-color:#BAC9D0;
+	}
+
+form.steel input:focus
+	{
+		background-color:#EEFAFF;
+	}
+
+form.steel select:focus
+	{
+		background-color:#EEFAFF;
+	}
+
+form.steel textarea:focus
+	{
+		background-color:#EEFAFF;
+	}
+
+img.steel
+	{
+		padding:4px;
+		background-color:#7E95A0;
+		border-top: 1px #D1DCE1 solid;
+		border-left: 1px #D1DCE1 solid;
+		border-right: 1px #2E3940 solid;
+		border-bottom: 1px #2E3940 solid;
+		/*background-image:url('images/steel-brushed-outset-dark.png');*/
+		background-repeat : no-repeat;
+	}
+
+img.leather
+	{
+		padding:4px;
+		background-color:#2B744B;
+		border-top: 1px #75CBA9 solid;
+		border-left: 1px #75CBA9 solid;
+		border-right: 1px #0D2818 solid;
+		border-bottom: 1px #0D2818 solid;
+		/*background-image:url('images/leather-brushed-outset-light.png');*/
+		background-repeat : no-repeat;
+	}
+
+table.steel
+	{
+		padding:4px;
+		background-color:#BAC9D0;
+		border-top: 1px #EEFAFF solid;
+		border-left: 1px #EEFAFF solid;
+		border-right: 1px #7E95A0 solid;
+		border-bottom: 1px #7E95A0 solid;
+		/*background-image:url('images/steel-brushed-outset-light.png');*/
+		background-repeat : no-repeat;
+	}
+
+table.leather
+	{
+		padding:4px;
+		background-color:#59B289;
+		border-top: 1px #CCFFEB solid;
+		border-left: 1px #CCFFEB solid;
+		border-right: 1px #2B744B solid;
+		border-bottom: 1px #2B744B solid;
+		/*background-image:url('images/leather-brushed-outset-dark.png');*/
+		background-repeat : no-repeat;
+	}
+

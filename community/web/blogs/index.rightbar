@@ -1,0 +1,38 @@
+<div id="rightbar">
+	<h1>Blog information</h1>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Subscriptions</h1>
+		<div class="menu">
+
+<a class="menuitem" href="http://www.ggzgamingzone.org/~josef/" title="Josef Spillner">
+josef</a>
+<a class="menuitem" href="http://www.ggzgamingzone.org/~josef/ggzlog.rss">(feed)</a>
+
+		</div>
+		<div class="menu">
+
+<a class="menuitem" href="http://linuxfr.org/~phhusson/" title="Journal de Ph Husson">
+phhusson</a>
+<a class="menuitem" href="http://linuxfr.org/~phhusson/journal.rss">(feed)</a>
+
+		</div>
+	</div>
+
+	<hr class="leather">
+
+Last updated:<br>
+December 06, 2004 11:33 PM<br>
+All times are UTC.<br>
+
+	<hr class="leather">
+
+Powered by:<br>
+<a href="http://www.planetplanet.org/">
+<img src="planet.png" width="80" height="15" alt="Planet" border="0">
+</a>
+
+</div>
+

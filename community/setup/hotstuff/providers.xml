@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE knewstuffproviders SYSTEM "knewstuffproviders.dtd">
+<knewstuffproviders>
+  <provider downloadurl="http://localhost:10000/hotstuff/directory/stuff.xml"
+            uploadurl="ftp://localhost"
+            icon="http://localhost:10000/hotstuff/directory/hotstufflocal.png">
+    <title>Hotstuff local</title>
+  </provider>
+</knewstuffproviders>

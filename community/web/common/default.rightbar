@@ -1,0 +1,39 @@
+<div id="rightbar">
+	<h1>Latest changes</h1>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Matches/Tournaments</h1>
+		<div class="menu">
+			<a href="/db/matches/" class="menuitem" title="Chess">Chess #23</a>
+		</div>
+		<div class="menu">
+			<a href="/db/matches/" class="menuitem" title="TicTacToe">TicTacToe #12 (Tournament)</a>
+		</div>
+	</div>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Individual blogs</h1>
+		<div class="menu">
+			<a href="/blogs/user-a/" class="menuitem" title="Player A's blog">What a won..</a>
+		</div>
+		<div class="menu">
+			<a href="/blogs/user-b/" class="menuitem" title="Player B's blog">Yuck! Blah</a>
+		</div>
+	</div>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Forum posts</h1>
+		<div class="menu">
+			<a href="/forum/x-2/" class="menuitem" title="Forum: General">Take this</a>
+		</div>
+		<div class="menu">
+			<a href="/forum/x-1/" class="menuitem" title="Forum: Foo">Haha</a>
+		</div>
+	</div>
+</div>

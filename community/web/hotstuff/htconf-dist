@@ -1,0 +1,6 @@
+<?php
+$conf_host = "localhost";
+$conf_name = "hotstuff";
+$conf_user = "xxx";
+$conf_pass = "xxx";
+?>

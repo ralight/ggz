@@ -1,0 +1,12 @@
+<div id="rightbar">
+	<h1>Database: Players</h1>
+
+	<hr class="leather">
+
+	<div class="menubar">
+		<h1>Players</h1>
+		<div class="menu">
+		<?php $stat->listPlayers(); ?>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,16 @@
+<?php
+
+// Fill out the values, and
+// rename this file to .htconf!
+
+$dbhost = "localhost";
+$dbname = "xxx";
+$dbuser = "xxx";
+$dbpass = "xxx";
+$dbtype = "pgsql";
+
+$ggzhost = "localhost";
+$ggzname = "Local Zone";
+$ggzversion = "0.0.10pre";
+
+?>

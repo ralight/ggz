@@ -1,0 +1,19 @@
+GGZ Community - a web-based GGZ community platform
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Copy the 'web' directory into the document root of your web server,
+and point your browser to the pages.
+
+Read setup/setup.txt in order to install the SQL schmema files
+and so on.
+
+All the icons are from kggz, they need improvement.
+
+What has improved compared to the old rankings pages?
+-----------------------------------------------------
+* flexible shared OOP-style PHP engine
+* internationalization
+* clean HTML and CSS design
+* security: HTTPS and login procedures
+* logical partitioning of the modules
+
