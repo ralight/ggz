@@ -332,7 +332,7 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 	room->id = id;
 	room->game = game;
 	room->name = ggzcore_strdup(name);
-	if(room->desc)
+	if(desc)
 		room->desc = ggzcore_strdup(desc);
 	
 	/* FIXME: create player list? */
