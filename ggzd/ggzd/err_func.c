@@ -52,7 +52,8 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 	char buf[4096];
 	int bsize;
 	time_t now;
-	struct tm *localtm;
+	struct tm localtm;
+	int kill_me = 0;
 
 	/* I subtract one from the buffer size since we */
 	/* always want room for a '\n' at the end       */
@@ -67,9 +68,12 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 	/* Include the timestamp if TimeInLogs is on */
 	if(log_info.include_timestamp) {
 		time(&now);
-		localtm = localtime(&now);
-		strftime(buf + strlen(buf), bsize - strlen(buf),
-			"%b %d %T ", localtm);
+		if(localtime_r(&now, &localtm) == NULL)
+			/* Can't err_sys_exit, might cause a loop */
+			kill_me = 1;
+		else
+			strftime(buf + strlen(buf), bsize - strlen(buf),
+				"%b %d %T ", &localtm);
 	}
 
 	/* Put the actual message into the buffer */
@@ -78,6 +82,10 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		snprintf(buf + strlen(buf), bsize - strlen(buf),
 			 ": %s", strerror(errno));
 	strcat(buf, "\n");
+
+	if(kill_me)
+		snprintf(buf + strlen(buf), bsize - strlen(buf),
+			"\nlocaltime_r failed in err_func.c, aborting\n");
 
 	/* If logs not yet initialized, send to stderr */
 	if(!log_info.log_initialized) {
@@ -102,6 +110,11 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		}
 	}
 #endif
+
+	if(kill_me) {
+		/* cleanup() */
+		exit(-1);
+	}
 }
 
 

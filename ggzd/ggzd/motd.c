@@ -263,11 +263,12 @@ char *motd_get_uptime(char *uptime_str, int sz_uptime_str)
 static char *motd_get_date(char *date_str, int sz_date_str)
 {
  	time_t now;
-	struct tm *localtm;
+	struct tm localtm;
 
 	time(&now);
-	localtm = localtime(&now);
-	strftime(date_str, sz_date_str, "%B %e, %Y", localtm);
+	if(localtime_r(&now, &localtm) == NULL)
+		err_sys_exit("localtime_r returned error in motd_get_date()");
+	strftime(date_str, sz_date_str, "%B %e, %Y", &localtm);
 
 	return date_str;
 }
@@ -277,11 +278,12 @@ static char *motd_get_date(char *date_str, int sz_date_str)
 static char *motd_get_time(char *time_str, int sz_time_str)
 {
  	time_t now;
-	struct tm *localtm;
+	struct tm localtm;
 
 	time(&now);
-	localtm = localtime(&now);
-	strftime(time_str, sz_time_str, "%H:%M %Z", localtm);
+	if(localtime_r(&now, &localtm) == NULL)
+		err_sys_exit("localtime_r returned error in motd_get_date()");
+	strftime(time_str, sz_time_str, "%H:%M %Z", &localtm);
 
 	return time_str;
 }
