@@ -33,6 +33,13 @@ AC_SUBST(ggzhostingguide)
 if test "$enable_spec" = yes; then
   AC_PATH_PROG([SGML2HTML], ["sgml2html tool"], [docbook-2-html])
   AC_SUBST(SGML2HTML)
+
+  AC_PATH_PROG([JADE], ["jade tool"], [jade])
+  AC_SUBST(JADE)
+
+  AC_PATH_PROG([LYNX], ["lynx web browser"], [lynx])
+  AC_SUBST(LYNX)
+
   EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
 fi
 
