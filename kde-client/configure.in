@@ -62,15 +62,18 @@ else
 fi
 echo "checking for GGZ patch 'Encryption' (Encryption): $patch_encryption"
 
-func=ggzcore_room_join_table_spectator
-tmp=`grep $func $ggzcore_includes/ggzcore.h`
-if test "$tmp" = ""; then
-	patch_spectators=0;
-else
-	patch_spectators=1;
-	AC_DEFINE_UNQUOTED(KGGZ_PATCH_SPECTATORS, $patch_spectators)
-fi
-echo "checking for GGZ patch 'Spectators' (Spectators): $patch_spectators"
+#func=ggzcore_room_join_table_spectator
+#tmp=`grep $func $ggzcore_includes/ggzcore.h`
+#if test "$tmp" = ""; then
+#	patch_spectators=0;
+#else
+#	patch_spectators=1;
+#	AC_DEFINE_UNQUOTED(KGGZ_PATCH_SPECTATORS, $patch_spectators)
+#fi
+#echo "checking for GGZ patch 'Spectators' (Spectators): $patch_spectators"
+
+echo "checking for GGZ patch 'Spectators' (Spectators): permanent"
+AC_DEFINE_UNQUOTED(KGGZ_PATCH_SPECTATORS, 1)
 
 dnl Set up variables for KGGZ
 dnl =========================
