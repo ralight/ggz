@@ -25,12 +25,14 @@
 
 #include "seats.h"
 
-/* Table transit flag values */
-#define GGZ_TRANSIT_JOIN   0x01  /* %0000 0001 */
-#define GGZ_TRANSIT_LEAVE  0x02  /* %0000 0010 */
-#define GGZ_TRANSIT_SEAT   0x04
-#define GGZ_TRANSIT_JOIN_SPECTATOR 0x08
-#define GGZ_TRANSIT_LEAVE_SPECTATOR 0x10
+/* Table transit values */
+typedef enum {
+	GGZ_TRANSIT_JOIN,
+	GGZ_TRANSIT_LEAVE,
+	GGZ_TRANSIT_SEAT,
+	GGZ_TRANSIT_JOIN_SPECTATOR,
+	GGZ_TRANSIT_LEAVE_SPECTATOR
+} GGZTransitType;
 
 int transit_table_event(int room, int index, char opcode, char* name);
 
