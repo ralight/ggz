@@ -16,4 +16,5 @@ What has improved compared to the old rankings pages?
 * clean HTML and CSS design
 * security: HTTPS and login procedures
 * logical partitioning of the modules
+* independency of SQL database system
 
