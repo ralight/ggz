@@ -197,68 +197,73 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_TABLE_LAUNCH:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		if (status < 0) {
-			/* FIXME: Don't really need to disconnect */
-			disconnect(NULL, NULL);
-			return;
+		switch (status) {
+		case E_NOT_IN_ROOM:
+			warn_dlg("Must be in room to launch table");
+			break;
+		case 0:
+			connection.playing = TRUE;
+			break;
 		}
-		connection.playing = TRUE;
 		break;
 
 	case RSP_TABLE_JOIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		if (status >= 0) {
+		switch (status) {
+		case 0:
 			connection.playing = TRUE;
 			launch_game(selected_type,0);
-		} else {
-			switch (status){
-			case -5: 
-				warn_dlg("No table selected to join.");
-				break;
-			case -4:
-				warn_dlg("Sorry, The table is full.");
-				break;
-			}
+			break;
+		case E_NOT_IN_ROOM:
+			warn_dlg("Must be in room to join table");
+			break;
+		case E_TABLE_EMPTY: 
+			warn_dlg("No table selected to join.");
+			break;
+		case E_TABLE_FULL:
+			warn_dlg("Sorry, The table is full.");
+			break;
 		}
-
-	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
-        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-
+		
+		/* Should put in function call which checks state */
+		if (status < 0) {
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		}
+		
 		break;
 		
 	case RSP_TABLE_LEAVE:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		if (status == 0) {
+		switch (status) {
+		case 0:
 			game_over();
-		}
-		else {
-			switch (status) {
-			case E_NO_TABLE:
-				warn_dlg("You are not at a table");
-				break;
-				
-			case E_LEAVE_FAIL:
-				warn_dlg("Can't leave table");
-				break;
-				
-			case E_LEAVE_FORBIDDEN:
-				warn_dlg("Can't leave table during game");
-				break;
-			}
+			break;
+		case E_NO_TABLE:
+			warn_dlg("You are not at a table");
+			break;
+			
+		case E_LEAVE_FAIL:
+			warn_dlg("Can't leave table");
+			break;
+			
+		case E_LEAVE_FORBIDDEN:
+			warn_dlg("Can't leave table during game");
+			break;
 		}
 		break;
 
