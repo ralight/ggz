@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: main.c 6339 2004-11-12 17:26:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -308,6 +308,8 @@ static GtkWidget *new_message_dialog(const char *mark)
 	 * Make the dialog window
 	 */
 	dialog = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),
+				     GTK_WINDOW(dlg_main));
 	gtk_widget_ref(dialog);
 	g_object_set_data(G_OBJECT(msg_menu), mark, dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
@@ -331,7 +333,6 @@ static GtkWidget *new_message_dialog(const char *mark)
 			       close_button,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
-	gtk_widget_set_usize(close_button, 64, -2);
 	(void)g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
 				       GTK_SIGNAL_FUNC(gtk_widget_hide),
 				       GTK_OBJECT(dialog));

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_prefs.c 6339 2004-11-12 17:26:54Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -31,8 +31,9 @@
 
 #include "ggzintl.h"
 
-#include "game.h"
 #include "dlg_prefs.h"
+#include "game.h"
+#include "main.h"
 #include "preferences.h"
 
 static void on_pref_toggled(GtkToggleButton * togglebutton, gpointer value)
@@ -62,6 +63,8 @@ GtkWidget *create_dlg_prefs(void)
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),
+				     GTK_WINDOW(dlg_main));
 	g_object_set_data(G_OBJECT(dialog), "dlg_prefs", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
 

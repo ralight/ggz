@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_main.c 6339 2004-11-12 17:26:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -120,8 +120,8 @@ GtkWidget *create_dlg_main(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(fixed1);
 	gtk_box_pack_start(GTK_BOX(vbox1), fixed1, TRUE, TRUE, 0);
-	gtk_widget_set_usize(fixed1, get_table_width(),
-			     get_table_height());
+	gtk_widget_set_size_request(fixed1,
+				    get_table_width(), get_table_height());
 
 	messagebar = gtk_statusbar_new();
 	gtk_widget_set_name(messagebar, "messagebar");
