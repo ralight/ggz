@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = spades.dsc
+EXTRA_DIST = module.dsc
 
 SUBDIRS = .
 
@@ -51,9 +51,9 @@ ggz_spades_LDADD = @GTK_LIBS@ $(LDADD)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(GGZ_CONFIG) -D --install --fromfile=spades.dsc --force
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --fromfile=spades.dsc
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
