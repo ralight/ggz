@@ -187,6 +187,8 @@ struct game_state_t {
 	// Score
 	int black;
 	int white;
+	// Last move
+	int last_move;
 	// State
 	char state;
 	// Turn

@@ -115,6 +115,9 @@ void display_board(void)
 		gdk_gc_set_ts_origin(pix_gc, x, y);
 		gdk_gc_set_clip_origin(pix_gc, x, y);
 		gdk_gc_set_clip_mask(pix_gc, pix_mask[piece]);
+		// if last move, mark it (draw using a different function)
+		if (i == game.last_move)
+			gdk_draw_rectangle(rvr_buf, style->light_gc[3], TRUE, x+1, y+1, PIXSIZE-2, PIXSIZE-2);
 		gdk_draw_rectangle(rvr_buf, pix_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
 	}
 

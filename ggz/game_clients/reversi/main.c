@@ -136,6 +136,7 @@ void game_init() {
 	game.white = 2;
 	game.turn = BLACK;
 	game.state = RVR_STATE_INIT;
+	game.last_move = -1;
 
 	strcpy(game.names[0], "empty");
 	strcpy(game.names[1], "empty");
@@ -237,6 +238,9 @@ void game_make_move(int player, int move) {
 
 	// Update scores
 	game_update_scores();
+	
+	// Update last move
+	game.last_move = move;
 
 	return;
 
