@@ -131,6 +131,10 @@ void game_start() {
 	game_draw_board();
 
 	game_status("Game has started!");
+
+	// Little hack to display the right turn
+	cbt_game.turn--;
+	game_change_turn();
 }
 
 
@@ -234,6 +238,8 @@ int game_get_options() {
 			// Initial place
 			cbt_game.map[a].unit = OWNER(GET_OWNER(cbt_game.map[a].type)) + U_UNKNOWN;
 	}
+
+	// TODO: Resize the mainarea widget to fit the map size
 
 
 	return 0;
@@ -399,12 +405,19 @@ void game_draw_board() {
 }
 
 void game_add_player_info(int number) {
-	int a;
+	int a, b;
 	GtkWidget *box;
+	GtkWidget **unit_info = NULL;
 	char name_str[32];
+	char **info;
+
+	info = (char **)calloc(3, sizeof(char *));
+	info[1] = (char *)malloc(1 * sizeof(char));
+	info[2] = (char *)malloc(5 * sizeof(char));
 
 	// Allocs memory
 	player_list = (GtkWidget **)calloc(number, sizeof(GtkWidget *));
+	unit_info = (GtkWidget **)calloc(number, sizeof(GtkWidget *));
 
 	// Finds box
 	box = gtk_object_get_data(GTK_OBJECT(main_win), "player_box");
@@ -413,9 +426,22 @@ void game_add_player_info(int number) {
 	for (a = 0; a < number; a++) {
 		sprintf(name_str, "player_list[%d]", a);
 		player_list[a] = (GtkWidget *)gtk_player_info_new(main_win, name_str);
+		unit_info[a] = gtk_object_get_data(GTK_OBJECT(player_list[a]), "unit_list");
 		gtk_box_pack_start (GTK_BOX(box), player_list[a], TRUE, TRUE, 0);
 		gtk_widget_show(player_list[a]);
 		gtk_widget_ref(player_list[a]);
+	}
+
+	// Now adds the unit names and power
+	for (b = 0; b < 12; b++) {
+		info[0] = unitname[b];
+		strcpy(info[1], "");
+		if (b <= U_BOMB)
+			strcpy(info[2], "-");
+		else
+			sprintf(info[2], "%d", b);
+		for (a = 0; a < number; a++)
+			gtk_clist_insert(GTK_CLIST(unit_info[a]), b, info);
 	}
 }
 
@@ -423,30 +449,17 @@ void game_update_unit_list(int seat) {
 	GtkWidget *unit_list;
 	GtkWidget *player_info;
 	char widget_name[32];
-	char **info;
+	char info[6];
 	int a;
 
 	sprintf(widget_name, "player_list[%d]", seat);
 	player_info = gtk_object_get_data(GTK_OBJECT(main_win), widget_name);
 	unit_list = gtk_object_get_data(GTK_OBJECT(player_info), "unit_list");
 
-	// Clear it
-	gtk_clist_clear(GTK_CLIST(unit_list));
-
-	info = (char **)calloc(3,sizeof(char *));
-	info[0] = (char*)malloc(32*sizeof(char)); 
-	info[1] = (char*)malloc(32*sizeof(char)); 
-	info[2] = (char*)malloc(32*sizeof(char)); 
-
 	for (a = 0; a < 12; a++) {
-		strcpy(info[0], unitname[a]);
-		sprintf(info[1], "%d/%d", cbt_game.army[seat][a],
+		sprintf(info, "%d/%d", cbt_game.army[seat][a],
 				cbt_game.army[cbt_info.number][a]);
-		if (a <= 1)
-			sprintf(info[2], "-");
-		else
-			sprintf(info[2], "%d", a-1);
-		gtk_clist_insert(GTK_CLIST(unit_list), a, info);
+		gtk_clist_set_text(GTK_CLIST(unit_list), a, 1, info);
 	}
 }
 
@@ -490,7 +503,6 @@ int game_get_players() {
 
 		}
 
-
 		return 0;
 
 }
@@ -521,6 +533,22 @@ void game_status( const char* format, ... )
 	
 }
 
+void game_change_turn() {
+	gpointer tmp;
+	int id;
+	char msg[32];
+
+	cbt_game.turn = NEXT(cbt_game.turn, cbt_info.number);
+
+	tmp = gtk_object_get_data( GTK_OBJECT(main_win), "current_turn");
+	id = gtk_statusbar_get_context_id( GTK_STATUSBAR(tmp), "Main" );
+	sprintf(msg, "%s's turn", cbt_info.names[cbt_game.turn]);
+
+	gtk_statusbar_pop( GTK_STATUSBAR(tmp), id );
+	gtk_statusbar_push( GTK_STATUSBAR(tmp), id, msg );
+
+}
+
 void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 	 													GdkEventButton *event, gpointer user_data) {
 	// If its not prep time, there is no need to do that!
@@ -531,6 +559,10 @@ void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 	if (GPOINTER_TO_INT(user_data) == 1)
 		cbt_info.current = row;
 	else
+		cbt_info.current = U_EMPTY;
+
+	// If it hasn't enough units of that kind, then just mark it as empty
+	if (cbt_game.army[cbt_info.seat][(int)cbt_info.current] <= 0)
 		cbt_info.current = U_EMPTY;
 }
 
@@ -581,8 +613,6 @@ void game_handle_setup(int p) {
 	char unit;
 	int seat = cbt_info.seat;
 
-	game_status("Pos: %d", p);
-
 	// Check if you own this square
 	if (GET_OWNER(cbt_game.map[p].type) != cbt_info.seat) {
 		game_status("This is not yours!");
@@ -593,44 +623,72 @@ void game_handle_setup(int p) {
 	if (cbt_info.current < 0 || cbt_info.current > U_MARSHALL)
 		cbt_info.current = U_EMPTY;
 
-	// Check if you have enough of this type
-	if (cbt_info.current != U_EMPTY) {
-		if (cbt_game.army[seat][(int)cbt_info.current] <= 0) {
-			game_status("You are out of %s", unitname[(int)cbt_info.current]);
-			return;
-		}
-	}
-
-	// Gets the current one
+	// Gets the cliked unit
 	unit = LAST(cbt_game.map[p].unit);
-	// Increases it
-	if (unit != U_EMPTY) {
-		cbt_game.army[seat][(int)unit]++;
-		// Sanity check
-		if (cbt_game.army[seat][(int)unit] > cbt_game.army[cbt_info.number][(int)unit]) {
-			game_status("CHEATER! CHEATER! CHEATER!!");
-			cbt_game.army[seat][(int)unit]--;
-		}
-	}
-	// Erases it
-	cbt_game.map[p].unit = U_EMPTY;
 
-	// If are going to add, then add it!
-	if (cbt_info.current != U_EMPTY && cbt_info.current != unit) {
-		// Updates the value
-		cbt_game.map[p].unit = OWNER(seat) + cbt_info.current;
-		// Decreases the current one
-		cbt_game.army[seat][(int)cbt_info.current]--;
+	// Checks if it is the same of the current
+	if (unit == cbt_info.current) {
+		// It is! Just remove it then
+		game_setup_remove(p);
+	} else if (cbt_info.current == U_EMPTY) {
+		// None selected! Just remove it
+		game_setup_remove(p);
+	} else {
+		// Adding from scratch or replacing... this suits both
+		game_setup_remove(p);
+		game_setup_add(p, cbt_info.current);
 	}
-
+	
 	// Draws the board
 	game_draw_board();
 	// Update the player info
 	game_update_unit_list(seat);
-	// FIXME: Must select the right row after that
 
 
 }
+
+void game_setup_add(int p, int unit) {
+
+	// If it's adding a empty unit, forget about it
+	if (unit == U_EMPTY) {
+		game_status("Adding a empty unit?");
+		return;
+	}
+
+	// Sanity check
+	if (cbt_game.army[cbt_info.seat][unit] <= 0) {
+		game_status("You are out of %s", unitname[unit]);
+		return;
+	}
+
+	// Updates the value
+	cbt_game.map[p].unit = OWNER(cbt_info.seat) + unit;
+	// Decreases the current one
+	cbt_game.army[cbt_info.seat][unit]--;
+
+}
+
+void game_setup_remove(int p) {
+	int unit = LAST(cbt_game.map[p].unit);
+
+	if (unit == U_EMPTY) {
+		return;
+	}
+
+	// Increases it 
+	cbt_game.army[cbt_info.seat][unit]++;
+	// Sanity check
+	if (cbt_game.army[cbt_info.seat][unit] > cbt_game.army[cbt_info.number][unit]) {
+		game_status("CHEATER! CHEATER! CHEATER!!");
+		cbt_game.army[cbt_info.seat][unit]--;
+		return;
+	}
+
+	// Erases it
+	cbt_game.map[p].unit = U_EMPTY;
+
+}
+
 
 void game_send_setup() {
 	char *setup;
@@ -699,7 +757,7 @@ void game_get_move() {
 	cbt_game.map[from].unit = U_EMPTY;
 
 	// Change turn
-	cbt_game.turn = NEXT(cbt_game.turn, cbt_info.number);
+	game_change_turn();
 }
 
 void game_get_attack() {
@@ -732,7 +790,7 @@ void game_get_attack() {
 		// Both won (or lost, whatever!)
 		cbt_game.map[from].unit = U_EMPTY;
 		cbt_game.map[to].unit = U_EMPTY;
-		cbt_game.army[cbt_info.seat][-f_u]--;
+		cbt_game.army[cbt_game.turn][-f_u]--;
 		cbt_game.army[seat2][-t_u]--;
 		game_update_unit_list(cbt_game.turn);
 		game_update_unit_list(seat2);
@@ -741,7 +799,7 @@ void game_get_attack() {
 	}
 
 	// Change turn
-	cbt_game.turn = NEXT(cbt_game.turn, cbt_info.number);
+	game_change_turn();
 
 }
 

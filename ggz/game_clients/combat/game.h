@@ -49,6 +49,11 @@ void game_handle_io(gpointer, gint, GdkInputCondition);
 void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 	 													GdkEventButton *event, gpointer user_data);
 
+// Handle setup
+void game_handle_setup(int);
+void game_setup_add(int, int);
+void game_setup_remove(int);
+
 // Get info from the server
 int game_get_seat();
 int game_get_options();
@@ -77,6 +82,7 @@ void game_add_player_info(int);
 void game_update_unit_list(int);
 void game_update_player_name(int);
 void game_status(const char *format, ... );
+void game_change_turn();
 
 // Player info widget
 GtkWidget *gtk_player_info_new(GtkWidget *, char *);

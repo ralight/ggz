@@ -35,7 +35,9 @@ create_main_window (void)
   GtkWidget *player_box;
   guint send_setup_key;
   GtkWidget *send_setup;
+  GtkWidget *hbox2;
   GtkWidget *statusbar;
+  GtkWidget *current_turn;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -108,7 +110,7 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mainarea);
   gtk_box_pack_start (GTK_BOX (hbox), mainarea, FALSE, FALSE, 0);
-  gtk_widget_set_usize (mainarea, 491, 491);
+  gtk_widget_set_usize (mainarea, 491, 500);
   gtk_widget_set_events (mainarea, GDK_BUTTON_PRESS_MASK);
 
   vseparator1 = gtk_vseparator_new ();
@@ -141,13 +143,30 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (player_box), send_setup, FALSE, FALSE, 3);
   gtk_widget_set_sensitive (send_setup, FALSE);
 
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (hbox2, "hbox2");
+  gtk_widget_ref (hbox2);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "hbox2", hbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox2);
+  gtk_box_pack_start (GTK_BOX (vbox), hbox2, FALSE, FALSE, 0);
+
   statusbar = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar, "statusbar");
   gtk_widget_ref (statusbar);
   gtk_object_set_data_full (GTK_OBJECT (main_window), "statusbar", statusbar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statusbar);
-  gtk_box_pack_start (GTK_BOX (vbox), statusbar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox2), statusbar, TRUE, TRUE, 0);
+
+  current_turn = gtk_statusbar_new ();
+  gtk_widget_set_name (current_turn, "current_turn");
+  gtk_widget_ref (current_turn);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "current_turn", current_turn,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (current_turn);
+  gtk_box_pack_start (GTK_BOX (hbox2), current_turn, FALSE, FALSE, 0);
+  gtk_widget_set_usize (current_turn, 120, -2);
 
   gtk_signal_connect (GTK_OBJECT (main_window), "delete_event",
                       GTK_SIGNAL_FUNC (main_window_exit),

@@ -93,7 +93,6 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
 	int x = event->x/(PIXSIZE+1) + 1;
 	int y = event->y/(PIXSIZE+1) + 1;
 
-	printf("X: %d\tY: %d\n", x, y);
 
 	switch (cbt_game.state) {
 		case CBT_STATE_WAIT:

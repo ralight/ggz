@@ -34,7 +34,7 @@ GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (unit_view);
   gtk_box_pack_start (GTK_BOX (player_info), unit_view, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (unit_view), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (unit_view), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   unit_list = gtk_clist_new (3);
   gtk_widget_ref (unit_list);
@@ -47,6 +47,13 @@ GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
   gtk_clist_set_column_width (GTK_CLIST (unit_list), 1, 55);
   gtk_clist_set_column_width (GTK_CLIST (unit_list), 2, 45);
   gtk_clist_column_titles_show (GTK_CLIST (unit_list));
+
+	// Ugly hack
+	/*
+	gtk_widget_set_usize(unit_list, 150, 300);
+	gtk_widget_set_usize(unit_list, 150, 240);
+	gtk_widget_set_usize(unit_list, 150, -2);
+	*/
 
 	// Collums
   name_lbl = gtk_label_new ("Name");

@@ -92,7 +92,7 @@
 	<class>GtkDrawingArea</class>
 	<name>mainarea</name>
 	<width>491</width>
-	<height>491</height>
+	<height>500</height>
 	<events>GDK_BUTTON_PRESS_MASK</events>
 	<signal>
 	  <name>expose_event</name>
@@ -161,13 +161,36 @@
     </widget>
 
     <widget>
-      <class>GtkStatusbar</class>
-      <name>statusbar</name>
+      <class>GtkHBox</class>
+      <name>hbox2</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
 	<fill>False</fill>
       </child>
+
+      <widget>
+	<class>GtkStatusbar</class>
+	<name>statusbar</name>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkStatusbar</class>
+	<name>current_turn</name>
+	<width>120</width>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
     </widget>
   </widget>
 </widget>
