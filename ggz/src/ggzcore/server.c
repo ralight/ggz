@@ -241,13 +241,11 @@ void ggzcore_server_free(GGZServer *server)
 	if (server->password)
 		free(server->password);
 
-	/* Free room list 
-	_ggzcore_list_destroy(server->room_list);*/
+	if (server->num_rooms > 0)
+		_ggzcore_server_free_roomlist(server);
 
-	/* Free type list */
-
-	if (server->room)
-		_ggzcore_room_free(server->room);
+	if (server->num_gametypes > 0)
+		_ggzcore_server_free_typelist(server);
 
 	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
 		_ggzcore_hook_list_destroy(server->event_hooks[i]);
@@ -672,23 +670,25 @@ static void _ggzcore_server_init(void)
 static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 					  const int num)
 {
-	
-
+	server->room_list = _ggzcore_list_create(_ggzcore_room_compare,
+						 _ggzcore_room_copy,
+						 _ggzcore_room_destroy,
+						 0);
+	server->num_rooms = num;
 }
 
 
 static void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 {
-
-
+	_ggzcore_list_destroy(server->room_list);
+	server->num_rooms = 0;
 }
 
 
 static void _ggzcore_server_add_room(struct _GGZServer *server, 
 				     struct _GGZRoom *room)
 {
-
-
+	_ggzcore_list_insert(server->room_list, room);
 }
 
 
@@ -865,32 +865,25 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 	struct _GGZRoom *room;
 
 	/* Clear existing list (if any) */
-	if (server->room_list) {
-		_ggzcore_list_destroy(server->room_list);
-		server->num_rooms = 0;
-	}
-	
-	server->room_list = _ggzcore_list_create(_ggzcore_room_compare,
-						 _ggzcore_room_copy,
-						 _ggzcore_room_destroy,
-						 0);
-	
+	if (server->num_rooms > 0)
+		_ggzcore_server_free_roomlist(server);
+
 	status = _ggzcore_net_read_num_rooms(server->fd, &num);
 	/* FIXME: handle errors */
 
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d rooms", num);
+	_ggzcore_server_init_roomlist(server, num);
 
 	for (i = 0; i < num; i++) {
 		status = _ggzcore_net_read_room(server->fd, 
 						server->room_verbose,
 						&id, &name, &game, &desc);
+		/* FIXME: handle errors */
 		
 		ggzcore_debug(GGZ_DBG_ROOM, "Adding room %d to room list", id);
 		
 		room = _ggzcore_room_new(server, id, name, game, desc);
-		/* FIXME: handle errors */
-		if ( (_ggzcore_list_insert(server->room_list, room) == 0))
-			server->num_rooms++;
+		_ggzcore_server_add_room(server, room);
 		
 		/* Free allocated memory */
 		if (desc)
