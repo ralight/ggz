@@ -15,6 +15,9 @@
 
 #include "config.h"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 #define ARRAY_WIDTH 20
 #define ARRAY_HEIGHT 10
 
@@ -30,6 +33,7 @@ static char *playerimage = NULL;
 static int modfd;
 static int ggzmode = 0;
 static SDL_Surface *screen, *image;
+static TTF_Font *font = NULL;
 
 /* Prototypes */
 int startgame(void);
@@ -152,9 +156,22 @@ static void ggz_network()
 	}
 }
 
-void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green)
+void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int autocrop)
 {
 	SDL_Rect rect;
+
+	if(autocrop)
+	{
+		if(x < 20) x = 20;
+		if(x + w > ARRAY_WIDTH * 32 + 20) w = ARRAY_WIDTH * 32 + 20 - x;
+		if(y < 20) y = 20;
+		if(y + h > ARRAY_HEIGHT * 32 + 20) h = ARRAY_HEIGHT * 32 + 20 - y;
+	}
+	else
+	{
+		if((x < 0) || (x + w > SCREEN_WIDTH - 5)) return;
+		if((y < 0) || (y + h > SCREEN_HEIGHT - 5)) return;
+	}
 
 	rect.x = x;
 	rect.y = y;
@@ -206,7 +223,16 @@ void drawturn(SDL_Surface *screen, int players, int turn)
 		rect.w = 128;
 		rect.h = 128;
 
-		drawbox(rect.x, rect.y, rect.w, rect.h, screen, (i == turn ? 255 : 120));
+		drawbox(rect.x, rect.y, rect.w, rect.h, screen, (i == turn ? 255 : 120), 0);
+	}
+}
+
+void drawlevel(int player, int level)
+{
+	int i;
+	for(i = 0; i < 10; i++)
+	{
+		drawbox(20 + player * 150 + i * 10, 420, 5, 20, screen, (i <= level ? 220 : 100), 0);
 	}
 }
 
@@ -284,10 +310,35 @@ void addplayer(const char *picture)
 		SDL_BlitSurface(image, NULL, screen, &rect);
 		SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
 
-		drawbox(rect.x, rect.y, image->w, image->h, screen, 255);
+		drawbox(rect.x, rect.y, image->w, image->h, screen, 255, 0);
 	}
 
 	counter++;
+}
+
+void renderscore(int x, int y, int sum)
+{
+	char score[8];
+	SDL_Surface *text;
+	SDL_Rect rect;
+
+	SDL_Color black = {0xFF, 0xFF, 0xFF, 0};
+
+	snprintf(score, sizeof(score), "%i", sum);
+	text = TTF_RenderText_Solid(font, score, black);
+	if(text)
+	{
+		rect.x = x;
+		rect.y = y;
+		rect.w = 32;
+		rect.h = text->h;
+		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+		rect.w = text->w;
+		SDL_BlitSurface(text, NULL, screen, &rect);
+		rect.w = 32;
+		SDL_FreeSurface(text);
+		SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+	}
 }
 
 int startgame(void)
@@ -302,13 +353,9 @@ int startgame(void)
 	int dimmer;
 	int dimminc;
 	int calc;
-	char score[8];
 	int sum;
 	int players;
 	int turn;
-
-	TTF_Font *font;
-	SDL_Surface *text;
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -325,7 +372,7 @@ int startgame(void)
 
 	SDL_WM_SetCaption("GGZ Geek Game", "GGZ Geek Game");
 
-	screen = SDL_SetVideoMode(800, 600, 24, 0);
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
 
 	players = 4;
 
@@ -349,7 +396,7 @@ int startgame(void)
 			SDL_BlitSurface(image, NULL, screen, &rect);
 			SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
 
-			drawbox(rect.x, rect.y, image->w, image->h, screen, 255);
+			drawbox(rect.x, rect.y, image->w, image->h, screen, 255, 0);
 		}
 	}
 
@@ -373,7 +420,7 @@ int startgame(void)
 
 	x = 50;
 	y = 50;
-	drawbox(x, y, 32, 32, screen, dimmer);
+	drawbox(x, y, 32, 32, screen, dimmer, 0);
 
 	escape = 0;
 	while(1)
@@ -389,7 +436,9 @@ int startgame(void)
 					{
 						if(x < (ARRAY_WIDTH - 1) * 32)
 						{
-							drawbox(x, y, 32, 32, screen, 0);
+							drawbox(x, y, 32, 32, screen, 0, 1);
+							drawbox(x - 96, y, 224, 32, screen, 0, 1);
+							drawbox(x, y - 96, 32, 224, screen, 0, 1);
 							x += 32;
 						}
 					}
@@ -397,7 +446,9 @@ int startgame(void)
 					{
 						if(x >= 1 * 32)
 						{
-							drawbox(x, y, 32, 32, screen, 0);
+							drawbox(x, y, 32, 32, screen, 0, 1);
+							drawbox(x - 96, y, 224, 32, screen, 0, 1);
+							drawbox(x, y - 96, 32, 224, screen, 0, 1);
 							x -= 32;
 						}
 					}
@@ -405,7 +456,9 @@ int startgame(void)
 					{
 						if(y <= (ARRAY_HEIGHT - 1) * 32)
 						{
-							drawbox(x, y, 32, 32, screen, 0);
+							drawbox(x, y, 32, 32, screen, 0, 1);
+							drawbox(x - 96, y, 224, 32, screen, 0, 1);
+							drawbox(x, y - 96, 32, 224, screen, 0, 1);
 							y += 32;
 						}
 					}
@@ -413,7 +466,9 @@ int startgame(void)
 					{
 						if(y >= 1 * 32)
 						{
-							drawbox(x, y, 32, 32, screen, 0);
+							drawbox(x, y, 32, 32, screen, 0, 1);
+							drawbox(x - 96, y, 224, 32, screen, 0, 1);
+							drawbox(x, y - 96, 32, 224, screen, 0, 1);
 							y -= 32;
 						}
 					}
@@ -427,10 +482,12 @@ int startgame(void)
 			}
 		}
 
-		drawbox(x, y, 32, 32, screen, dimmer);
+		drawbox(x - 96, y, 224, 32, screen, dimmer / 2, 1);
+		drawbox(x, y - 96, 32, 224, screen, dimmer / 2, 1);
+		drawbox(x, y, 32, 32, screen, dimmer, 1);
 
 		dimmer = dimmer + dimminc * 3;
-		if((dimmer <= 100) || (dimmer >= 250)) dimminc = -dimminc;
+		if((dimmer <= 150) || (dimmer >= 250)) dimminc = -dimminc;
 
 		if(escape) break;
 
@@ -438,26 +495,19 @@ int startgame(void)
 		{
 			calc = 0;
 
-			SDL_Color black = {0xFF, 0xFF, 0xFF, 0};
-
 			sum = 0;
-			i = 0;
+			i = x / 32;
 			for(j = 0; j < ARRAY_HEIGHT; j++)
 				sum += array[i][j];
+			renderscore(x + 10, 360, sum);
 
-			snprintf(score, sizeof(score), "%i", sum);
-			text = TTF_RenderText_Solid(font, score, black);
-			if(text)
-			{
-				rect.x = 25;
-				rect.y = 360;
-				rect.w = text->w;
-				rect.h = text->h;
-				SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
-				SDL_BlitSurface(text, NULL, screen, &rect);
-				SDL_FreeSurface(text);
-				SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
-			}
+			sum = 0;
+			j = y / 32;
+			for(i = 0; i < ARRAY_WIDTH; i++)
+				sum += array[i][j];
+			renderscore(680, y + 10, sum);
+
+			drawlevel(turn, 5);
 
 			turn = (turn + 1) % players;
 			drawturn(screen, players, turn);
