@@ -74,8 +74,10 @@ void MuehleServer::leaveEvent ( int player ) {
 // Game data event
 void MuehleServer::dataEvent ( int player, void* data ) {
 	std::cout << "Muehle: dataEvent" << std::endl;
+	std::cout << "DEBUG: " << ( const char* ) data << std::endl;
 
-	m_net->write ( fd ( !player ), ( const char* ) data);
+	if ( m_players == 2 )
+		m_net->write ( fd ( !player ), ( const char* ) data);
 }
 
 // Error handling event

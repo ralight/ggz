@@ -6,7 +6,7 @@ Name = Muehle
 Version = 0.1
 
 [LaunchInfo]
-ExecutablePath = muehleserv
+ExecutablePath = muehleserv --ggz
 
 [Protocol]
 Engine = Muehle
