@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3257 2002-02-05 22:35:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -153,8 +153,7 @@ int get_players() {
 	for (i = 0; i < 2; i++) {
 		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
-
-#define GGZ_SEAT_OPEN -1 /* FIXME */	
+	
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
 			if (ggz_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;
