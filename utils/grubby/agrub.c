@@ -33,6 +33,7 @@ void handle_command(char *, char *);
 void send_chat(char *);
 void send_chat_insert_name(char *);
 void do_logout(int);
+void save_known();
 void do_greet(char *);
 void store_aka(char *, char *);
 void store_email(char *, char *);
@@ -552,6 +553,13 @@ void handle_command(char *sender, char *command)
 		} else {
 			send_chat("Sorry, only my owner can tell me to do that.");
 		}
+	} else if(!strncasecmp(command, "save memmory", 14)) {
+		if(!strcmp(sender, owner)) {
+			save_known();
+			send_chat("My memmory is saved!");
+		} else {
+			send_chat("Sorry, only my owner can tell me to do that.");
+		}
 	} else {
 		send_chat("Huh?");
 		sprintf(out_msg, "Type '%s: Help' to see what commands I know!",
@@ -594,15 +602,24 @@ void graceless_exit(int sig)
 
 void do_logout(int on_sig)
 {
+	/* Logout of GGZ server */
+	if(!on_sig)
+		es_write_int(my_socket, REQ_LOGOUT);
+	
+	save_known();
+
+	if(on_sig)
+		exit(0);
+}
+
+	
+void save_known()
+{
 	FILE *grub_file;
 	char *home;
 	char file[1024];
 	int i, j;
 
-	/* Logout of GGZ server */
-	if(!on_sig)
-		es_write_int(my_socket, REQ_LOGOUT);
-	
 	/* Save current information */
 	home = getenv("HOME");
 	if (home == NULL)
@@ -668,9 +685,6 @@ void do_logout(int on_sig)
 	}
 
 	fclose(grub_file);
-
-	if(on_sig)
-		exit(0);
 }
 
 
