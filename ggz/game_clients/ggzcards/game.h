@@ -27,12 +27,25 @@
 #include "hand.h"
 #include "protocol.h"
 
-#ifndef __GAME_H
-#define __GAME_H
+#ifndef __GAME_H__
+#define __GAME_H__
 
 /* if this is defined, the animation code will be used.
  * I've disable it because I broke it... */
 /* #define ANIMATION */
+
+/* GGZCards client game states */
+typedef enum {
+	WH_STATE_INIT,	  	/* game hasn't started yet */
+	WH_STATE_WAIT,	  	/* waiting for others */
+	WH_STATE_PLAY,		/* our turn to play */
+	WH_STATE_BID,		/* our turn to bid */
+#ifdef ANIMATION
+	WH_STATE_ANIM,		/* we're animating stuff */
+#endif /* ANIMATION */
+	WH_STATE_DONE,		/* game's over */
+	WH_STATE_OPTIONS	/* determining options */
+} client_state_t;
 
 struct seat_t {
  	int seat;		/* ggz seating info */
@@ -44,7 +57,7 @@ struct seat_t {
 
 struct game_t {
 	int fd;			/* the socket for the server connection */
-	char state;		/* the state the game is, i.e. LA_STATE_<something> */
+	client_state_t state;	/* the state the game is, i.e. LA_STATE_<something> */
 	int play_hand;		/* the hand we're playing from */
 	int num_players;	/* starts at 0 so we know once we've received them */
 	int max_hand_size;	/* the maximum number of cards in a hand */
@@ -56,18 +69,7 @@ extern void game_send_bid(int);
 extern void game_send_options(int option_cnt, int* options);
 extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
-extern void set_game_state(char);
-
-/* GGZCards client game states */
-#define WH_STATE_INIT	  	0 /* game hasn't started yet */
-#define WH_STATE_WAIT	  	1 /* waiting for others */
-#define WH_STATE_PLAY		2 /* our turn to play */
-#define WH_STATE_BID		3 /* our turn to bid */
-#ifdef ANIMATION
-#define WH_STATE_ANIM		4 /* we're animating stuff */
-#endif /* ANIMATION */
-#define WH_STATE_DONE		5 /* game's over */
-#define WH_STATE_OPTIONS	6 /* determining options */
+extern void set_game_state(client_state_t);
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1
@@ -83,6 +85,6 @@ void ggz_debug(const char *fmt, ...);
 #define textdomain(Domain)
 #define bindtextdomain(Package, Directory)
 
-#endif /* __GAME_H */
+#endif /* __GAME_H__ */
 
 

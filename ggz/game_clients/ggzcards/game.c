@@ -85,9 +85,13 @@ void game_play_card(card_t card)
 	assert(status == 0);
 }
 
-static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID", "ANIM", "DONE", "OPTIONS"};
+static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID",
+#ifdef ANIMATION
+				"ANIM",
+#endif /* ANIMATION */
+				"DONE", "OPTIONS"};
 
-void set_game_state(char state)
+void set_game_state(client_state_t state)
 {
 	if (state == game.state)
 		ggz_debug("Staying in state %d.", game.state);
