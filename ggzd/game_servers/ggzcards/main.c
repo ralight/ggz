@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2194 2001-08-23 09:02:04Z jdorje $
+ * $Id: main.c 2222 2001-08-25 03:30:43Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -120,9 +120,9 @@ int main(int argc, char **argv)
 	/* read options */
 	for (i = 1; i < argc; i++) {
 		char *option;
-		printf("TEST: Reading argv '%s'.", argv[i]);
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
+			ggzdmod_debug("which_game set to %d.", which_game);
 		} else if ((option =
 			    get_option("--option", argv, &i, argc)) != NULL) {
 			/* argument is of the form --option=<option>:<value> */
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 			if (!*colon)
 				continue;
 			val = atoi(colon);
-			printf("TEST: Set option '%s' to %d.", option, val);
+			ggzdmod_debug("Set option '%s' to %d.", option, val);
 			set_option(option, val);
 		} else {
 			/* bad option */
