@@ -9,6 +9,7 @@ GGZServer *server = NULL;
 GGZRoom *room = NULL;
 Guru **queue = NULL;
 int queuelen = 1;
+char *guruname = NULL;
 
 /* Prototypes */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
@@ -50,9 +51,11 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	queue[queuelen - 1] = NULL;
 }
 
-void net_connect(const char *host, int port)
+void net_connect(const char *host, int port, const char *name)
 {
 	net_internal_init();
+
+	guruname = (char*)name;
 
 	server = ggzcore_server_new();
 
@@ -117,7 +120,7 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 
 	if(status == NET_NOOP)
 	{
-		ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, "grubby", "");
+		ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, "");
 		ggzcore_server_login(server);
 	}
 	return GGZ_HOOK_OK;
@@ -171,7 +174,7 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 
-	if(strcmp(player, "grubby"))
+	if(strcmp(player, guruname))
 	{
 		net_internal_queueadd(player, message, GURU_CHAT);
 		status = NET_INPUT;

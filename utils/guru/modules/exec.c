@@ -15,7 +15,10 @@
 #include <unistd.h>
 #include <ggzcore.h>
 #include <fcntl.h>
+#include <time.h>
 #include "exec.h"
+
+#define MAXDELAY 8
 
 char **aliaslist = NULL;
 char **programlist = NULL;
@@ -70,7 +73,7 @@ char *process(const char *program, Guru *message)
 	int result1, result2;
 	int pid, i;
 	static char *buffer = NULL;
-	int race;
+	time_t start;
 
 	result1 = socketpair(AF_UNIX, SOCK_STREAM, 0, readfd);
 	result2 = socketpair(AF_UNIX, SOCK_STREAM, 0, writefd);
@@ -88,11 +91,9 @@ char *process(const char *program, Guru *message)
 			dup2(readfd[0], 0);
 			dup2(writefd[0], 1);
 			simpleexec(program, strdup(message->message));
-			//guru_admin("Exec failed!");
 			exit(-1);
 			break;
 		default:
-			//printf("parent...\n");
 			fcntl(writefd[1], F_SETFL, O_NONBLOCK);
 			if(!buffer) buffer = (char*)malloc(1024);
 			sprintf(buffer, "%s\n", message->message);
@@ -100,18 +101,16 @@ char *process(const char *program, Guru *message)
 			for(i = 0; i < 1024; i++)
 				buffer[i] = 0;
 			printf("==> (%s)\n", message->message);
-			race = 0;
+			start = time(NULL);
 			i = 0;
-			while((race < 4) && (i < 1))
+			i = read(writefd[1], buffer, 1024);
+if(i != -1) printf("FIRST: %i\n", i);
+			while((waitpid(pid, NULL, WNOHANG) == 0) && (time(NULL) - start < MAXDELAY) && (i <= 1))
 			{
 				i = read(writefd[1], buffer, 1024);
-				printf("*%s*\n", buffer);
-				sleep(1);
-				race++;
+if(i != -1) printf("NOW: %i\n", i);
 			}
-			waitpid(pid, NULL, 0);
-			printf("<==\n");
-			//printf("got answer...\n");
+			printf("<== (%i)\n", i);
 			if(i > 1)
 			{
 				buffer[strlen(buffer) - 1] = 0;
@@ -137,14 +136,12 @@ Guru *gurumod_exec(Guru *message)
 		{
 			free(message->message);
 			message->message = strdup(answer);
-			printf(" --> GOT ANSWER: %s\n", answer);
+			printf(" --> GOT ANSWER: '%s'\n", answer);
 			return message;
 		}
-		else printf("(NULL ANSWER)\n");
 		i++;
 	}
 	message->message = NULL;
-	printf("-> mainreturn: null\n");
 	return message;
 }
 

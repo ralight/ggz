@@ -20,6 +20,7 @@ typedef Guru* (*modulefunc)(Guru *message);
 void **modulelist = NULL;
 modulefunc *functionlist = NULL;
 int modulecount = 0;
+Gurucore *core;
 
 Gurucore *guru_module_init()
 {
@@ -28,13 +29,14 @@ Gurucore *guru_module_init()
 	char **list;
 	int count, i;
 	char *module;
-	Gurucore *core;
 
 	sprintf(path, "%s/.ggz/guru.rc", getenv("HOME"));
 	handler = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
 	if(handler < 0) return NULL;
 
 	core = (Gurucore*)malloc(sizeof(Gurucore));
+
+	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "guru/unnamed");
 
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
@@ -115,6 +117,40 @@ int guru_module_remove(const char *modulename)
 	return 1;
 }
 
+char *guru_modules_list()
+{
+	/*static char *list = NULL;*/
+
+	/*if(list) free(list);*/
+	/*TODO: list module names*/
+	return "Module listing not implemented yet\n";
+}
+
+Guru *guru_module_internal(Guru *message)
+{
+	char *token;
+	int i, a;
+
+	token = strtok(strdup(message->message), "(),-./: ");
+	i = 0;
+	a = 0;
+	while(token)
+	{
+		if((i == 0) && (!strcasecmp(token, core->name))) a++;
+		if((i == 1) && (!strcmp(token, "modules"))) a++;
+		token = strtok(NULL, "(),-./: ");
+		i++;
+	}
+
+	if(a == 2)
+	{
+		message->message = guru_modules_list();
+		return message;
+	}
+
+	return NULL;
+}
+
 Guru *guru_module_work(Guru *message, int priority)
 {
 	int i, j;
@@ -122,6 +158,9 @@ Guru *guru_module_work(Guru *message, int priority)
 	Guru *ret;
 	char *savemsg;
 	Guru extrasave;
+
+	ret = guru_module_internal(message);
+	if(ret) return ret;
 
 	if(!modulelist) return NULL;
 	savemsg = message->message;

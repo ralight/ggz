@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	}
 	printf("Guru: connect...\n");
 
-	(core->net_connect)("localhost", 5688);
+	(core->net_connect)("localhost", 5688, core->name);
 	while(1)
 	{
 		switch((core->net_status)())
