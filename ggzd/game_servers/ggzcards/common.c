@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: common.c 2833 2001-12-09 21:55:26Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -74,6 +74,7 @@ static const char *get_state_name(server_state_t state)
 static int try_to_start_game(void);
 static void newgame(void);
 static int determine_host(void);
+static void set_player_name(player_t p, const char *name);
 
 /* Changes the state of the game, printing a debugging message. */
 void set_game_state(server_state_t state)
@@ -527,12 +528,30 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	return;
 }
 
+/* This sets not only the player name, but the name for the player's seat if
+   applicable. */
+static void set_player_name(player_t p, const char *name)
+{
+	int s = game.players[p].seat;
+	GGZSeat player_seat = ggzdmod_get_seat(game.ggz, p);
+	player_seat.name = (char *) name;	/* discard const */
+	ggzdmod_log(game.ggz, "Changing player %d (type %d)'s name to %s.", p,
+		    player_seat.type, name);
+	if (ggzdmod_set_seat(game.ggz, &player_seat) >= 0) {
+		/* s might be -1 if seats aren't assigned yet. */
+		if (s >= 0)
+			game.seats[s].name = name;
+	} else
+		ggzdmod_log(game.ggz,
+			    "ERROR: SERVER BUG: "
+			    "Failed player name change!");
+}
+
 /* This handles the event of a player leaving */
 void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
 	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;
-	char *name = "Empty Seat";
 
 	ggzdmod_log(game.ggz,
 		    "Handling a leave event for player %d (seat %d).", player,
@@ -543,9 +562,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   - it'll be -1.  We thus have to special-case that entirely. */
 
 	/* seat name */
-	ggzd_set_player_name(player, name);
-	if (seat >= 0)		/* see above comment about seat==-1 */
-		game.seats[seat].name = "Empty Seat";
+	set_player_name(player, "Empty Seat");
 
 	/* send new seat data */
 	(void) broadcast_player_list();
@@ -803,13 +820,8 @@ void init_game()
 
 	/* set AI names */
 	for (p = 0; p < game.num_players; p++)
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
-			int s = game.players[p].seat;
-			char *name = (char *) ai_get_name(p);
-			game.seats[s].name = name;
-			ggzd_set_player_name(game.seats[s].player, name);
-			ggzdmod_log(game.ggz, "Setting AI name to %s.", name);
-		}
+		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+			set_player_name(p, ai_get_name(p));
 
 	game.initted = 1;
 }
