@@ -335,20 +335,20 @@
 
 		  <row rowsep="1">
 		    <entry>PLAYERS</entry>
-		    <entry>int</entry>
+		    <entry>string</entry>
 			<entry>4</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>BOTS</entry>
-		    <entry>int</entry>
-			<entry>0</entry>
+		    <entry>string</entry>
+			<entry>1..3</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>SPECTATORS</entry>
-		    <entry>int</entry>
-			<entry>8</entry>
+		    <entry>string</entry>
+			<entry>true</entry>
 		  </row>
 
 		  <row rowsep="1">
@@ -421,7 +421,10 @@
 	    <term><emphasis role="bold">PLAYERS</emphasis></term>
 	    <listitem>
 	      <para>
-		Player configuration
+		The number of players allowed in this game, in the form of a
+                list of individual numbers and/or a single range of numbers,
+                separated by spaces.  For instance '1 2 3 5..10' includes
+                both a list and a range.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -429,7 +432,9 @@
 	    <term><emphasis role="bold">BOTS</emphasis></term>
 	    <listitem>
 	      <para>
-		Bots (AI players) configuration
+		The number of AI bots allowed at a table of this game.  The
+                form is that of a number list (the same as for the PLAYERS
+                element).  Zero bots is always allowed and will not be listed.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -437,7 +442,8 @@
 	    <term><emphasis role="bold">SPECTATORS</emphasis></term>
 	    <listitem>
 	      <para>
-		Number of allowed spectators
+		Whether spectators are allowed or not, either 'true' or
+                'false'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1143,9 +1149,7 @@
 
 			  <row rowsep="0">
 			    <entry namest="C1" nameend="C3">
-				  &lt;RESULT ACTION="action" CODE="code"&gt;
-				    ...
-				  &lt;/RESULT&gt;
+				  &lt;RESULT ACTION="action" CODE="code"/&gt;
 				</entry>
 			  </row>
 
@@ -1190,7 +1194,7 @@
 	    <term><emphasis role="bold">CODE</emphasis></term>
 	    <listitem>
 	      <para>
-		Result indicator: successful if positive, not successful if negative
+		Result indicator: successful if positive or zero, not successful if negative.  Each error code has a specific meaning, which should be listed here.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1527,7 +1531,7 @@
 	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Type of login, which can be one of: normal, guest or firsttime
+		Type of login, which can be one of "normal", "guest" or "first"
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1543,7 +1547,8 @@
 	    <term><emphasis role="bold">PASSWORD</emphasis></term>
 	    <listitem>
 	      <para>
-		Player password, which is only used for registered players
+		Player password, which is only used for registered ("normal")
+		players
 	      </para>
 	    </listitem>
 	  </varlistentry>
