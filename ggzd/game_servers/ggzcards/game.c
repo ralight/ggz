@@ -484,12 +484,13 @@ void game_set_player_message(player_t p)
  */
 void game_end_trick(void)
 {
-	player_t hi_player = game.leader, p;
+	player_t hi_player = game.leader, p_r;
 	card_t hi_card = game.funcs->map_card(game.lead_card);
 
 	/* default method of winning tricks: the winning card is the highest
 	 * card of the suit lead, or the highest trump if there is trump */
-	for (p = 0; p < game.num_players; p++) {
+	for (p_r = 1; p_r < game.num_players; p_r++) {
+		player_t p = (game.leader + p_r) % game.num_players;
 		card_t card = game.seats[game.players[p].seat].table;
 		card = game.funcs->map_card(card);
 		if ((card.suit == game.trump
