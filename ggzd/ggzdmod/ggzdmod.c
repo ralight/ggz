@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2632 2001-11-03 05:54:37Z jdorje $
+ * $Id: ggzdmod.c 2634 2001-11-03 09:11:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -343,7 +343,7 @@ static void game_launch(_GGZdMod * ggzdmod)
 	    || es_write_char(ggzdmod->fd, status) < 0)
 		return;
 
-	set_state(ggzdmod, GGZ_STATE_LAUNCHED);
+	set_state(ggzdmod, GGZ_STATE_WAITING);
 }
 
 /* game-side event: player join event received from ggzd */
@@ -418,7 +418,7 @@ static void ggz_rsp_launch(_GGZdMod * ggzdmod)
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
 		return;
-	set_state(ggzdmod, GGZ_STATE_LAUNCHED);
+	set_state(ggzdmod, GGZ_STATE_WAITING);
 }
 
 static void ggz_rsp_join(_GGZdMod * ggzdmod)

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2632 2001-11-03 05:54:37Z jdorje $
+ * $Id: ggzdmod.h 2634 2001-11-03 09:11:41Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -30,12 +30,12 @@
 
 /* Common objects/functions */
 
-/* Game states */
+/* Table states */
 typedef enum {
-	GGZ_STATE_INIT,		/* pre-launch */
-	GGZ_STATE_LAUNCHED,
-	GGZ_STATE_PLAYING,
-	GGZ_STATE_GAMEOVER	/* after gameover */
+	GGZ_STATE_INIT,		/**< Pre-launch; waiting for ggzdmod */
+	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
+	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
+	GGZ_STATE_GAMEOVER	/**< Table halted, prepping to exit. */
 } GGZdModState;
 
 /* Callback events: */

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2632 2001-11-03 05:54:37Z jdorje $
+ * $Id: ggz_server.c 2634 2001-11-03 09:11:41Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -119,7 +119,7 @@ static void ggzd_ggzdmod_event_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 				       void *data)
 {
 	if (e == GGZ_EVENT_STATE
-	    && ggzdmod_get_state(ggzdmod) != GGZ_STATE_LAUNCHED)
+	    && ggzdmod_get_state(ggzdmod) != GGZ_STATE_WAITING)
 		return;
 	if (handlers[e])
 		(*handlers[e]) (e, data);
