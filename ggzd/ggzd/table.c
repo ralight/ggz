@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: table.c 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -993,7 +993,7 @@ int table_kill(int room, int index, char *name)
 	data = ggz_strdup(name);
 
 	status = event_table_enqueue(room, index, table_kill_callback, 
-				     strlen(data)+1, data);
+				     strlen(data)+1, data, NULL);
 	return status;
 }
 
@@ -1143,7 +1143,8 @@ static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 	size = table_pack(&data, opcode, table);
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(room, table_event_callback, size, data);
+	status = event_room_enqueue(room, table_event_callback,
+				    size, data, NULL);
 	
 	return status;
 }
@@ -1161,7 +1162,8 @@ static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 	size = table_transit_pack(&data, opcode, table, name, seat);
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(room, table_event_callback, size, data);
+	status = event_room_enqueue(room, table_event_callback,
+				    size, data, NULL);
 	
 	return status;
 }
@@ -1184,7 +1186,7 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 
 	/* Queue table event for whole room */
 	status = event_room_enqueue(table->room, table_seat_event_callback,
-				    sizeof(*data), data);
+				    sizeof(*data), data, NULL);
 	
 	return status;
 }
@@ -1430,7 +1432,8 @@ static int table_launch_event(char* name, int status, int index)
 		current += sizeof(int);
 	}
 
-	return event_player_enqueue(name, player_launch_callback, size, data);
+	return event_player_enqueue(name, player_launch_callback,
+				    size, data, NULL);
 }
 
 

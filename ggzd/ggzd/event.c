@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4533 2002-09-13 01:40:27Z jdorje $
+ * $Id: event.c 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,14 +56,16 @@ static void event_table_spew(GGZTable* table);
 
 static void event_free(GGZEvent *event)
 {
-	if (event->data)
+	if (event->free)
+		(*event->free)(event->data);
+	else if (event->data)
 		ggz_free(event->data);
 	ggz_free(event);
 }
 
 /* Place an event into the room-specific event queue */
-int event_room_enqueue(int room, GGZEventFunc func, size_t size, 
-		       void* data)
+int event_room_enqueue(int room, GGZEventFunc func,
+		       size_t size, void* data, GGZEventDataFree free)
 		       
 {
 	GGZEvent *event;
@@ -84,6 +86,7 @@ int event_room_enqueue(int room, GGZEventFunc func, size_t size,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
+	event->free = free;
 	event->handle = func;
 
 	pthread_rwlock_wrlock(&rooms[room].lock);
@@ -222,8 +225,8 @@ int event_room_flush(GGZPlayer* player)
 
 
 /* Place an event into the player-specific event queue */
-int event_player_enqueue(char* name, GGZEventFunc func, size_t size, 
-			 void* data)
+int event_player_enqueue(char* name, GGZEventFunc func,
+			 size_t size, void* data, GGZEventDataFree free)
 			 
 {
 	GGZEvent *event;
@@ -238,6 +241,7 @@ int event_player_enqueue(char* name, GGZEventFunc func, size_t size,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
+	event->free = free;
 	event->handle = func;
 
 	/* Find target player.  Returns with player write-locked */
@@ -376,7 +380,7 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 
 /* Place an event into the table-specific event queue */
 int event_table_enqueue(int room, int index, GGZEventFunc func, 
-			size_t size, void* data)
+			size_t size, void* data, GGZEventDataFree free)
 {
 	GGZEvent *event;
 	GGZTable *table;
@@ -390,6 +394,7 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
+	event->free = free;
 	event->handle = func;
 
 	/* Find target table.  Returns with table write-locked */

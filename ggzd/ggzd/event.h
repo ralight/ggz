@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: event.h 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,6 +47,16 @@ typedef GGZEventFuncReturn (*GGZEventFunc)(void* target,
 					   size_t size, void* data);
 
 
+/*
+ * Event data freeing function
+ * Pass a parameter of this type to the event functions, along with the
+ * event data.  When the event has been completely handled, this function
+ * will be called to free the event data (even if that data is NULL).  If
+ * NULL is specified as the function, ggz_free will be used instead.
+ */
+typedef void (*GGZEventDataFree)(void* data);
+
+
 /* 
  * The GGZEvent structure is meant to be a node in a linked list
  * of events.
@@ -68,9 +78,12 @@ typedef struct GGZEvent {
 	/* Pointer to data for event */
 	void *data;
 
+	/* Function to free the event data. */
+	GGZEventDataFree free;
+	
 	/* Callback for processing event */
 	GGZEventFunc handle;
-	
+
 } GGZEvent;
 
 
@@ -86,7 +99,7 @@ typedef struct GGZEvent {
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 int event_room_enqueue(int room, GGZEventFunc func,
-		       size_t size, void* data);
+		       size_t size, void* data, GGZEventDataFree free);
 		       
 /* Process queued-up room-specific events for player */
 int event_room_handle(GGZPlayer* player);
@@ -107,7 +120,7 @@ int event_room_flush(GGZPlayer* player);
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 int event_player_enqueue(char* name, GGZEventFunc func,
-			 size_t size, void* data);
+			 size_t size, void* data, GGZEventDataFree free);
 			 
 /*
  * event_player_handle() processes all events currently in the private
@@ -141,7 +154,7 @@ int event_player_flush(GGZPlayer* player);
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 int event_table_enqueue(int room, int index, GGZEventFunc func, 
-			size_t, void* data);
+			size_t, void* data, GGZEventDataFree free);
 
 /*
  * event_table_handle() processes all events currently in the private

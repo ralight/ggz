@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: transit.c 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,7 +89,7 @@ int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *call
 	strcpy(data->caller, caller);
 	
 	status = event_table_enqueue(room, index, transit_seat_event_callback,
-				     sizeof(data), data);
+				     sizeof(data), data, NULL);
 	return status;
 }
 
@@ -103,8 +103,9 @@ int transit_spectator_event(int room, int index, struct GGZTableSpectator specta
 	data->spectator = spectator;
 	strcpy(data->caller, caller);
 	
-	status = event_table_enqueue(room, index, transit_spectator_event_callback,
-				     sizeof(data), data);
+	status = event_table_enqueue(room, index,
+				     transit_spectator_event_callback,
+				     sizeof(data), data, NULL);
 	return status;
 }
 
@@ -138,7 +139,7 @@ int transit_player_event(char* name, GGZTransitType opcode,
 	}
 
 	return event_player_enqueue(name, transit_player_event_callback, 
-				    size, data);
+				    size, data, NULL);
 }
 
 

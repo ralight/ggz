@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: chat.c 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -76,7 +76,8 @@ int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender,
 	/* Pack up chat message */
 	size = chat_pack(&data, opcode, sender->name, msg);
 
-	status = event_room_enqueue(room, chat_event_callback, size, data);
+	status = event_room_enqueue(room, chat_event_callback,
+				    size, data, NULL);
 	
 	return status;
 }
@@ -117,8 +118,8 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 	size = chat_pack(&data, opcode, sender->name, msg);
 	
 	/* Queue chat event for individual player */
-	status = event_player_enqueue(receiver, chat_event_callback, size, 
-				      data);
+	status = event_player_enqueue(receiver, chat_event_callback,
+				      size, data, NULL);
 
 	return status;
 }
@@ -199,7 +200,8 @@ int chat_server_2_player(char *name, char *msg)
 	size = chat_pack(&data, GGZ_CHAT_PERSONAL, "[Server]", msg);
 	
 	/* Queue chat event for individual player */
-	status = event_player_enqueue(name, chat_event_callback, size, data);
+	status = event_player_enqueue(name, chat_event_callback,
+				      size, data, NULL);
 
 	return status;
 }

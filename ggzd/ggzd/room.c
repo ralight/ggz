@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: room.c 4534 2002-09-13 02:20:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -323,7 +323,7 @@ static void room_notify_change(char* name, const int old, const int new)
 		current += (strlen(name) + 1);
 		
 		event_room_enqueue(old, room_event_callback, 
-				   size, data);
+				   size, data, NULL);
 	}
 
 	/* Send ADD update to new room */
@@ -339,7 +339,7 @@ static void room_notify_change(char* name, const int old, const int new)
 		current += (strlen(name) + 1);
 		
 		event_room_enqueue(new, room_event_callback, 
-				   size, data);
+				   size, data, NULL);
 	}
 }
 
@@ -354,7 +354,7 @@ void room_notify_lag(char *name, int room)
 	data[0] = GGZ_UPDATE_LAG;
 	strcpy(data+1, name);
 	event_room_enqueue(room, room_event_callback,
-			   datalen, data);
+			   datalen, data, NULL);
 }
 
 
