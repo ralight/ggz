@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6279 2004-11-06 03:15:23Z jdorje $
+ * $Id: playerlist.c 6281 2004-11-06 03:58:52Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -347,7 +347,7 @@ GtkWidget *create_player_list(GtkWidget *window)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes(_("T"), renderer,
+	column = gtk_tree_view_column_new_with_attributes(_("T#"), renderer,
 				"text", PLAYER_COLUMN_TABLE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
