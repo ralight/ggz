@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5236 2002-11-07 06:23:39Z jdorje $
+ * $Id: game.c 5246 2002-11-16 21:08:44Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -70,6 +70,8 @@ static void game_loadmap(const char *file)
 	y = 0;
 	mapx = 0;
 	mapy = 0;
+
+	map.players = 0;
 
 	while(fgets(buf, sizeof(buf), f))
 	{
@@ -377,6 +379,7 @@ int game_setupmap(int seat)
 	ggz_read_string_alloc(fd, &map);
 
 	/* FIXME: read map selection from client, setup map accordingly */
+	if(verbose) printf("Player selected map %s\n", map);
 
 	for(i = 0; i < mapcount; i++)
 	{
@@ -403,6 +406,7 @@ int game_setupmap(int seat)
 
 			ggz_free(map);
 			game_update(HASTINGS_EVENT_JOIN, &seat);
+			if(verbose) printf("Send seat and players to %i\n", seat);
 			return 0;
 		}
 	}
