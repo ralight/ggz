@@ -671,6 +671,7 @@ and be it because they're frustrated by having lost a game.
 15689 open.
 @item Use server-side encryption (hashing) of user passwords if possible.
 @item Configure the server so that it support TLS.
+@item Use the Interface configuration option to restrict ggzd to a local port
 @end itemize
 
 @subsection Configuration of Transport Layer Security
@@ -789,8 +790,7 @@ mkdir localsys/usr
 mkdir localsys/etc
 mkdir ggz-0.0.8
 cd ggz-0.0.8
-export CVSROOT=:pserver:anonymous \
-	@cvs.ggz.sourceforge.net:/cvsroot/ggz
+export CVSROOT=:pserver:anonymous@cvs.ggzgamingzone.org:/ggz
 cvs login
 cvs -z3 co -rggz-0-0-8-branch libggz ggzd
 cd libggz
@@ -802,7 +802,7 @@ cd ggzd
 export LD_RUN_PATH=$HOME/localsys/usr/lib
 export LD_LIBRARY_PATH=$LD_RUN_PATH
 ./autogen.sh --prefix=$HOME/localsys/usr \
-	--with-database=db3 --with-libggz-dir=$HOME/localsys/usr
+	--with-database=db4 --with-libggz-dir=$HOME/localsys/usr
 make
 make install
 cd ..
@@ -818,23 +818,21 @@ tools.
 
 @itemize @bullet
 @item @url{ggz://live.ggzgamingzone.org} (Germany, very fast connection)
-@item @url{ggz://jzaun.com} (USA, developers, medium connection, inactive)
+@item @url{ggz://jzaun.com} (UK, developers, very fast connection)
 @item @url{ggz://ggz.snafu.de} (Germany, fast connection, inactive)
-@item @url{ggz://ggz.morat.net} (USA, fast connection) (Currently not available, inactive)
-@item @url{ggz://ggz.homeip.net} (Argentina, medium connection, inactive)
-@item @url{ggz://mindx.dyndns.org} (Germany, medium connection)
+@item @url{ggz://mindx.dyndns.org} (Germany, medium connection, inactive)
 @end itemize
 
 There are so far no known web pages or similar efforts. For more information,
 don't forget to check the GGZ home page regularly:
 
-@url{http://www.ggzgamingzone.org}
+@url{http://www.ggzgamingzone.org/}
 
 Server hosters are encouraged to subscribe to the ggz-servers mailing list.
 New servers are announced there, as are updates and hosting problems.
 This is a low traffic mailing list.
 
-@url{http://lists.sourceforge.net/lists/listinfo/ggz-servers}
+@url{http://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo/ggz-servers}
 
 @c @printindex cp
 
