@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4936 2002-10-17 06:26:53Z jdorje $
+ * $Id: game.c 4977 2002-10-22 01:19:00Z jdorje $
  *
  * Functions for handling game events
  *
@@ -46,13 +46,18 @@ static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 
 
-GGZGame *game;
-GGZGameType *gametype;
-int gameindex;
+static GGZGame *game = NULL;
+static GGZGameType *gametype = NULL;
+static int gameindex = -1;
 static int fd = -1;
 
 void game_init(GGZModule *module, GGZGameType *type, int index)
 {
+	if (game) {
+		output_text("You're already playing a game!");
+		return;
+	}
+
 	gametype = type;
 	gameindex = index;
 
