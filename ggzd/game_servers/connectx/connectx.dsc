@@ -1,4 +1,4 @@
-# $Id: connectx.dsc 5299 2002-12-18 11:49:40Z oojah $
+# $Id: connectx.dsc 5306 2002-12-20 10:10:29Z oojah $
 
 [GameInfo]
 Author = Roger Light

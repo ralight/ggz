@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 5299 2002-12-18 11:49:40Z oojah $
+ * $Id: game.c 5306 2002-12-20 10:10:29Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -120,6 +120,7 @@ static int game_read_options(int seat);
 
 
 static char game_check_win(void);
+int game_check_tile(int x, int y, int d, int count);
 
 
 /* Setup game state and board */
@@ -240,7 +241,7 @@ void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 		return;
 
 	switch(op){
-	
+
 	case CONNECTX_SND_MOVE:
 		if (game_read_move(num, &move) == 0)
 			game_do_move(move);
@@ -296,7 +297,7 @@ void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *data)
 static int game_send_seat(int num)
 {
 	GGZSeat seat;
-	
+
 	seat = ggzdmod_get_seat(connectx_game.ggz, num);
 	ggzdmod_log(connectx_game.ggz, "Sending player %d's seat num", num);
 
@@ -316,7 +317,7 @@ static int game_send_players(void)
 	for(j = 0; j < 2; j++){
 		seat = ggzdmod_get_seat(connectx_game.ggz, j);
 		fd = seat.fd;
-		
+
 		if (fd != -1) {
 			ggzdmod_log(connectx_game.ggz, "Sending playerlist to player %d", j);
 
@@ -345,7 +346,7 @@ static int game_send_move(int num, int column)
 	/* If player is a computer we don't need to send */
 	if (seat.fd != -1){
 		ggzdmod_log(connectx_game.ggz, "Sending player %d's move to player %d", num, opponent);
-		
+
 		if(ggz_write_int(seat.fd, CONNECTX_MSG_MOVE) < 0
 		   || ggz_write_int(seat.fd, column) < 0)
 			return -1;
@@ -397,7 +398,7 @@ static int game_send_sync(int fd)
 			if(ggz_write_char(fd, connectx_game.board[p][q]) < 0)
 				return -1;
 
-	return 0;		
+	return 0;
 }
 
 /* Send out game over message */
@@ -550,9 +551,10 @@ static int game_do_move(int move)
 
 	if((victor = game_check_win()) < 0){
 		connectx_game.turn = (connectx_game.turn + 1) % 2;
-		
+
 		game_next_move();
 	}else{
+		ggzdmod_log(connectx_game.ggz, "Winner = %d", victor);
 		game_send_gameover(victor);
 		/* Notify GGZ server of game over */
 		ggzdmod_set_state(connectx_game.ggz, GGZDMOD_STATE_DONE);
@@ -601,37 +603,69 @@ static char game_check_win(void)
 {
 	//int i;
 	//int count=0;
+	int x, y, d;
+	int emptycount=0;
 
-/* FIXME - write this function
-	if((connectx_game.x>=connectx_game.wallwidth) && (connectx_game.x<=connectx_game.wallwidth+connectx_game.goalwidth))
-	{
-		if(!connectx_game.y)
-			return 0;
-		else if(connectx_game.y==connectx_game.boardheight)
-			return 1;
-	}
-
-	for(i=1; i<10; i++)
-		if((connectx_game.board[connectx_game.x][connectx_game.y][i]!=dtEmpty) && (i!=5))
-			count++;
-
-	if(count==8){
-		ggzdmod_log(connectx_game.ggz, "game_checkwin() count = 8");
-		ggzdmod_log(connectx_game.ggz, "\tconnectx_game.boardheight = %d",connectx_game.boardheight);
-		ggzdmod_log(connectx_game.ggz, "\connectx_game.wallwidth+connectx_game.goalwidth = %d",connectx_game.wallwidth+connectx_game.goalwidth);
-		ggzdmod_log(connectx_game.ggz, "\tconnectx_game.x = %d",connectx_game.x);
-		ggzdmod_log(connectx_game.ggz, "\tconnectx_game.y = %d",connectx_game.y);
-		for(i=1; i<10; i++){
-			if(i!=5){
-				ggzdmod_log(connectx_game.ggz, "\tconnectx_game.board[][][%d] = %d",i, connectx_game.board[connectx_game.x][connectx_game.y][i]);
+	for(x=0; x<connectx_game.boardwidth; x++){
+		if(connectx_game.board[x][connectx_game.boardheight-1]==dtEmpty){
+			emptycount++;
+		}
+		for(y=0; y<connectx_game.boardheight; y++){
+			for(d=0; d<4; d++){
+				if(connectx_game.board[x][y]!=dtEmpty){
+					if(game_check_tile(x, y, d, 1)>=connectx_game.connectlength){
+						if(connectx_game.board[x][y]==dtPlayer1){
+							return 1;
+							}else{
+							return 0;
+						}
+					}
+				}
 			}
-		}	
-		return 2;
+		}
 	}
-*/
-	/* Game not over yet */
+	if(!emptycount) /* No more spaces available - a draw */
+		return 2;
+
 	return -1;
 }
+
+
+int game_check_tile(int x, int y, int d, int count)
+{
+	switch(d){ /* Direction */
+		case 0: /* Left */
+			if(x){ /* Don't look left for the left most tiles */
+				if(connectx_game.board[x][y]==connectx_game.board[x-1][y]){
+					return game_check_tile(x-1, y, d, count+1);
+				}
+			}
+			break;
+		case 1: /* Up Left */
+			if(x && y<connectx_game.boardheight-1){ /* Don't look out of bounds */
+				if(connectx_game.board[x][y]==connectx_game.board[x-1][y+1]){
+					return game_check_tile(x-1, y+1, d, count+1);
+				}
+			}
+			break;
+		case 2: /* Up */
+			if(y<connectx_game.boardheight-1){ /* Don't look out of array bound */
+				if(connectx_game.board[x][y]==connectx_game.board[x][y+1]){
+					return game_check_tile(x, y+1, d, count+1);
+				}
+			}
+			break;
+		case 3: /* Up Right */
+			if(x<connectx_game.boardwidth-1 && y<connectx_game.boardheight-1){ /* Don't look out of array bound */
+				if(connectx_game.board[x][y]==connectx_game.board[x+1][y+1]){
+					return game_check_tile(x+1, y+1, d, count+1);
+				}
+			}
+			break;
+	}
+	return count;
+}
+
 
 /* Send a request for client to set options */
 static int game_send_options_request(int fd)
@@ -658,7 +692,7 @@ static int game_send_options(int fd)
 
 	if(fd < 0)
 		return -1;
-	
+
 	if(ggz_write_int(fd, CONNECTX_MSG_OPTIONS) < 0
 	   || ggz_write_char(fd, connectx_game.boardheight) < 0
 	   || ggz_write_char(fd, connectx_game.boardwidth) < 0
@@ -702,7 +736,7 @@ static int game_read_options(int seat)
 
 	//game_send_options(0);
 	game_send_options(ggzdmod_get_seat(connectx_game.ggz, 1-seat).fd);
-	
+
 	if(seats_full()){
 		connectx_game.state = CONNECTX_STATE_PLAYING;
 		ggzdmod_set_state(connectx_game.ggz, GGZDMOD_STATE_PLAYING);

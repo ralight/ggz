@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 5299 2002-12-18 11:49:40Z oojah $
+ * $Id: main.c 5306 2002-12-20 10:10:29Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 5299 2002-12-18 11:49:40Z oojah $
+ * $Id: game.h 5306 2002-12-20 10:10:29Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
