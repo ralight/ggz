@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 6279 2004-11-06 03:15:23Z jdorje $
+ * $Id: roomlist.c 6280 2004-11-06 03:16:24Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -27,8 +27,6 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-
-#define GTK_DISABLE_DEPRECATED
 
 #include <assert.h>
 
