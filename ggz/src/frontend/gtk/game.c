@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5863 2004-02-09 08:28:20Z jdorje $
+ * $Id: game.c 5974 2004-03-22 17:08:23Z josef $
  *
  * Functions for handling game events
  *
@@ -64,11 +64,12 @@ static GGZModule * pick_module(GGZGameType *gt)
 	const char * name = ggzcore_gametype_get_name(gt);
 	const char * engine = ggzcore_gametype_get_prot_engine(gt);
 	const char * version = ggzcore_gametype_get_prot_version(gt);
-	int i, preserve;
+	int i, j, preserve;
 	GGZModule * module;
 	GGZModule **frontends;
 	char *preferred;
 	int num;
+	GGZModuleEnvironment env;
 
 	/* Check how many modules are registered for this game type */
 	ggzcore_reload();
@@ -113,11 +114,17 @@ static GGZModule * pick_module(GGZGameType *gt)
 	   choose. */
 	frontends = ggz_malloc((num + 1) * sizeof(*frontends));
 
+	j = 0;
 	for (i = 0; i < num; i++) {
-		frontends[i] = ggzcore_module_get_nth_by_type(name, engine,
+		module = ggzcore_module_get_nth_by_type(name, engine,
 							      version, i);
+		env = ggzcore_module_get_environment(module);
+		if ((env == GGZ_ENVIRONMENT_XWINDOW) || (env == GGZ_ENVIRONMENT_XFULLSCREEN)) {
+			frontends[j] = module;
+			j++;
+		}
 	}
-	frontends[num] = NULL;
+	frontends[j] = NULL;
 
 	i = ask_user_to_pick_module(frontends, &preserve);
 	if (i < 0)
