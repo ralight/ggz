@@ -1,0 +1,35 @@
+GGZCore++
+A C++ Class Library providing ggzcore wrapper functions
+Current version: 0.1
+=======================================================
+
+Welcome humble GGZ Core Client programmers.
+(In case you feel you don't belong into that group you are probably reading
+the wrong README file, but I would please you to read on anyway.)
+
+This is the first release of GGZCore++. As of today I know only 2 applications
+which make use of it, these are KGGZ and GGZap, both from my own - ha!
+However, I'd like to see a C++ Gtk frontend one day, or one created with yet another
+toolkit than the Qt/KDE libraries.
+
+What is already included? I tried to document each of the functions as accurate as possible.
+If in doubt you should consult the file ggzcore.h which is also well documented, mostly
+the ggzcore_conf functions.
+And feel free to send me mails if there are still any questions.
+
+The next release will most certainly contain a little example written for the console
+(nope, no ggz-txt copy, rather less functional), but this depends on how much time
+I'll have the next days and weeks.
+
+How to build the library? Just fetch a recent GGZ copy from CVS:
+	cvs -d:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/GGZ co ggz
+
+...and copy the GGZCore++ src/ directory into it. Don't forget to add it to SUBDIRS
+(named ggzcorepp or whatever) and that's all.
+
+Now: go on coding!
+
+Josef Spillner
+dr_maux@users.sourceforge.net
+The MindX Open Source Project
+http://mindx.sourceforge.net/development/ggzcorepp/

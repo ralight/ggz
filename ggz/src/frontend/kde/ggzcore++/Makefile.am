@@ -1,0 +1,5 @@
+SUBDIRS = src doc
+
+EXTRA_DIST = COPYING README
+
+

@@ -1,0 +1,85 @@
+GGZCore++
+A C++ Class Library providing ggzcore wrapper functions
+Current version: 0.1
+=======================================================
+
+1. Why GGZCore++ ?
+2. Using the library
+3. Concepts
+4. About
+
+1. Why GGZCore++ ?
+------------------
+You cannot use GGZCore++ in a program written in plain C. You can, however, use the C library ggzcore in a
+program written in C++. So why did I invent a library whose purpose is mostly only wrapping the calls to
+ggzcore?
+There are several advantages. Most important is the instantiation concept of C++. That means, instead of
+writing
+
+	ggzcore_server_event_add_hook(server, foo, bar);
+
+it is sufficient to say
+
+	server->addHook(foo, bar);
+
+because the server object keeps track of its ggzcore server structure on its own.
+Another useful C++ concept I've integrated is function overloading.
+Instead of having 3 different functions for writing or reading data in the ggzcore conf and confio sections,
+there is only one read() and write() which takes different sets of arguments. This implies two more changes:
+The first is that GGZCoreConf's and GGZCoreConfio's APIs behave mostly identically, and that function names
+like addHook exist across class borders so that they are more intuitive to programmers.
+Finally, GGZCore++ has some minor extra functionality which could also be implemented in ggzcore.
+
+
+2. Using the library
+--------------------
+
+Thinking object-orientated means programming with real objects, not just "C in classes".
+That sais there must exist several objects during the lifetime of a program - some permanently,
+some only for a short period of time.
+
+The main class is GGZCore. This one must be initialized and must not be destroyed before all of the other
+GGZCore objects have gone again. Technically this restriction does not apply, but for a cleaner design
+it is strictly recommended.
+Another base class is GGZCoreConf which should be used for the global configuration in e.g. the main program.
+The reason is that even if there are two objects of this kind, the internal ggzcore functions will only
+initialize the configuration section once.
+The third unique class is GGZCoreServer. It is of course possible to use multiple server objects (in fact, the
+existance of a server structure as function parameter suggests that), but this is a very complex task and
+may not always be useful. The KGGZServer class, which is inherited from GGZCoreServer, is an example of a class
+which is not able to deal with multiple server objects because there is only one global instance() method. This
+will probably change in future version.
+
+All other classes (GGZCoreConfio, GGZCoreGame, GGZCoreGametype, GGZCoreRoom, GGZCoreModule, GGZCorePlayer, GGZCoreTable)
+represent logical structures which are present in various forms on a server, and thus shall be treated as objects which
+can exist multiple times.
+
+
+3. Concepts
+-----------
+
+The reason why I needed such an API has been KGGZ 0.0.4, so many examples of the functionality can be found there.
+The most difficult part is hiding all C API from the programmer, and currently this is not even possible. You need,
+for example, a GGZRoom (C structure) if you want to add hooks to a GGZCoreRoom. This is not a problem when working with
+GGZCoreRoom directly (because the GGZCoreServer object has a method called room() which returns a dynamically allocated
+and freshly initialized GGZCoreRoom), but when subclassing from GGZCoreRoom this functionality has to be emulated.
+
+Another compromise is the duplication of all enums and constants in the GGZCore++ header files.
+
+When starting with this library I thought it would be the best to create a headerfile-only lib, as the STL does.
+But after all I have found this concept not too useful, so it is now a little shared library which depends on
+ggzcore and easysock.
+
+4. About
+--------
+
+The GGZCore++ library is Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net.
+Its base library ggzcore is Copyright (C) 2000,2001 Brent Hendricks, bmh@users.sourceforge.net.
+
+Please note that although ggzcore is LGPL, I decided to release GGZCore++ using the GPL license because it shall not
+be used in proprietary programs or games, instead it is intended to empower free software games.
+
+Josef Spillner
+dr_maux@users.sourceforge.net
+The MindX Open Source Project
+http://mindx.sourceforge.net/development/ggzcorepp/
