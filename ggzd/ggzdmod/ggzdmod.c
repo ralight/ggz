@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2776 2001-12-05 22:33:25Z jdorje $
+ * $Id: ggzdmod.c 2778 2001-12-05 23:00:07Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1062,7 +1062,8 @@ static GGZSeat* seat_copy(GGZSeat *orig)
 
 	seat->num = orig->num;
 	seat->type = orig->type;
-	seat->name = ggz_strdup(orig->name);
+	if (orig->name) /* The name may be NULL if unknown. */
+		seat->name = ggz_strdup(orig->name);
 	seat->fd = orig->fd;
 	
 	return seat;
