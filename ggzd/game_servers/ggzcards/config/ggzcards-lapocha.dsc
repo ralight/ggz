@@ -4,6 +4,7 @@ ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ Cards game module for La Pocha
 Author = Rich Gade
+Version = 0.0.4
 Homepage = http://ggz.sourceforge.net
 
 # PlayersAllowed and BotsAllowed should be repeated as many times as

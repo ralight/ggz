@@ -4,6 +4,7 @@ ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ game module for trick-taking card games
 Author = Jason Short, Brent Hendricks
+Version = 0.0.4
 Homepage = http://ggz.sourceforge.net
 
 # PlayersAllowed and BotsAllowed should be repeated as many times as
