@@ -3,7 +3,7 @@
  * Author GGZ Development Team
  * Project: Libggz
  * Date: 02/03/03
- * $Id: support.h 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: support.h 5838 2004-02-08 04:34:49Z jdorje $
  * 
  * Replacements for non-supported functions.
  *
@@ -41,5 +41,10 @@
 #endif
 
 #ifndef HAVE_STRSEP
+#ifdef HAVE_STRTOK_R
 #define strsep(stringp, delim) (strtok_r(*stringp, delim, stringp))
+#else
+/* Non-reentrant, non-threadsafe version. */
+#define strsep(stringp, delim) (strtok(*stringp, delim))
+#endif
 #endif
