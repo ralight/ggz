@@ -9,6 +9,7 @@
  */
 
 #include <easysock.h>
+#include <signal.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -21,10 +22,16 @@ struct Memory memory;
 int sig;
 
 void init_chatter( void );
+void shutdown( int sig );
 
 void grubby_init( void )
 {
 	int	i;
+
+	/* Trap ^C and family */
+	signal( SIGINT, shutdown );
+	signal( SIGQUIT, shutdown );
+	signal( SIGTERM, shutdown );
 
 	/* Display nice little message		*/
 	printf ("AGRUB Version 0.1.0\n-----\n");
@@ -84,4 +91,11 @@ void init_chatter( void )
 	memory.chatter[3].type = GGZ_CHAT_NORMAL;
 	memory.chatter[4].text = "is having one heck of a time looking at all theis games at once!";
 	memory.chatter[4].type = GGZ_CHAT_PERSONAL;
+}
+
+void shutdown( int sig )
+{
+	/* Shitty and fast exit */
+	save_memory();
+	exit(1);
 }

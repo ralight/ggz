@@ -229,6 +229,7 @@ void show_owner_help( void )
 	send_msg( grubby.owner, "log to <file> as [html|text]  Starts loggint the room to" );
 	send_msg( grubby.owner, "                              a file in the given format." );
 	send_msg( grubby.owner, "log off ..................... Turn logging to file off." );
+	send_msg( grubby.owner, "save memory ................. Force save of memory to file." );
 	send_msg( grubby.owner, " " );
 	send_msg( grubby.owner, " " );
 }
