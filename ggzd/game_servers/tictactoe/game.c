@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4444 2002-09-07 20:17:52Z jdorje $
+ * $Id: game.c 4449 2002-09-07 22:06:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -455,6 +455,7 @@ static int game_send_gameover(char winner)
 	for (i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
 	{
 		spectator = ggzdmod_get_spectator(ttt_game.ggz, i);
+		if (spectator.fd < 0) continue;
 		ggz_write_int(spectator.fd, TTT_MSG_GAMEOVER);
 		ggz_write_char(spectator.fd, winner);
 	}
@@ -533,6 +534,10 @@ static int game_do_move(int move)
 #ifdef GGZSPECTATORS
 	int i, fd;
 #endif
+
+	/* FIXME: we should not return on a network error within this
+	   function - that will fubar the whole game since the turn won't
+	   be incremented.  --JDS */
 	
 	if (ggzdmod_get_state(ttt_game.ggz) != GGZDMOD_STATE_PLAYING)
 		return -1;
@@ -546,9 +551,10 @@ static int game_do_move(int move)
 	for(i = 0; i < ggzdmod_get_max_num_spectators(ttt_game.ggz); i++)
 	{
 		fd = (ggzdmod_get_spectator(ttt_game.ggz, i)).fd;
+		if (fd < 0) continue;
 		if (ggz_write_int(fd, TTT_MSG_MOVE) < 0
-		|| ggz_write_int(fd, ttt_game.turn) < 0
-		|| ggz_write_int(fd, move) < 0)
+		    || ggz_write_int(fd, ttt_game.turn) < 0
+		    || ggz_write_int(fd, move) < 0)
 			return -1;
 	}
 #endif
