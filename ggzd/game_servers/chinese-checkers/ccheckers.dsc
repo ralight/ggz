@@ -1,3 +1,5 @@
+# $Id: ccheckers.dsc 4509 2002-09-11 04:10:37Z jdorje $
+
 [GameInfo]
 Author = Rich Gade
 Description = GGZ game module for playing Chinese Checkers
@@ -14,5 +16,5 @@ Version = 2
 
 [TableOptions]
 AllowLeave = 1
-BotsAllowed = 0 1 2 3 4 5
-PlayersAllowed = 2 3 4 6
+BotsAllowed = 1..5
+PlayersAllowed = 2..4 6

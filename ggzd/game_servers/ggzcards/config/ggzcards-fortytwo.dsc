@@ -1,4 +1,4 @@
-# $Id: ggzcards-fortytwo.dsc 4468 2002-09-08 19:50:17Z jdorje $
+# $Id: ggzcards-fortytwo.dsc 4509 2002-09-11 04:10:37Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Forty-Two
@@ -15,7 +15,7 @@ Version = 2-pre4
 
 [TableOptions]
 AllowLeave = 1
-BotsAllowed = 0 1 2 3
+BotsAllowed = 1..3
 PlayersAllowed = 4
 KillWhenEmpty = 0
 AllowSpectators = 1

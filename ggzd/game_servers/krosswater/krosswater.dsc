@@ -1,3 +1,5 @@
+# $Id: krosswater.dsc 4509 2002-09-11 04:10:37Z jdorje $
+
 [GameInfo]
 Author = Josef Spillner
 Description = Try to cross the water first.
@@ -14,6 +16,5 @@ Version = 2
 
 [TableOptions]
 AllowLeave = 1
-BotsAllowed = 0 1 2 3
-PlayersAllowed = 2 3 4
-
+BotsAllowed = 1..3
+PlayersAllowed = 2..4

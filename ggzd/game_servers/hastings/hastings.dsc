@@ -1,3 +1,5 @@
+# $Id: hastings.dsc 4509 2002-09-11 04:10:37Z jdorje $
+
 [GameInfo]
 Author = Josef Spillner
 Description = Conquer ancient reigns
@@ -14,5 +16,5 @@ Version = 2
 
 [TableOptions]
 AllowLeave = 1
-BotsAllowed = 0 1 2 3 4 5 6 7
-PlayersAllowed = 2 3 4 5 6 7 8
+BotsAllowed = 1..7
+PlayersAllowed = 2..8
