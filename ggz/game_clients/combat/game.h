@@ -28,10 +28,6 @@
 // Max number of players
 #define MAX_PLAYERS 2
 
-// GGZ define
-#define GGZ_SEAT_OPEN -1
-#define GGZ_SEAT_BOT -2
-
 // Where to save the global maps
 
 #define GLOBAL_MAPS GAMEDIR "/combat/maps"

@@ -23,6 +23,7 @@
  */
 
 #include <easysock.h>
+#include <ggzcore.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
