@@ -35,6 +35,16 @@ dnl ============================================================
 AC_C_CONST
 AC_TYPE_MODE_T
 
+dnl Signedness overrides
+dnl ====================
+save_cflags=$CFLAGS
+CFLAGS="-Wall -Werror"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[void signedness(void){char c;if(c==-1)c=0;}]])],
+	[],
+	[save_cflags="$save_cflags -fsigned-char"])
+CFLAGS=$save_cflags
+
 dnl Check for PF_LOCAL/PF_UNIX
 dnl ==========================
 AC_MSG_CHECKING([for PF_LOCAL])
