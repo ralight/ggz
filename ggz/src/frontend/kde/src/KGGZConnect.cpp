@@ -37,7 +37,8 @@ KGGZConnect::KGGZConnect(QWidget *parent, char *name)
 	KGGZDEBUGF("KGGZConnect::KGGZConnect()\n");
 
 	profile_select = new QComboBox(this);
-	profile_edit = new QPushButton(i18n("Edit Profiles"), this);
+	profile_new = new QPushButton(i18n("New Profiles"), this);
+	profile_delete = new QPushButton(i18n("Delete"), this);
 
 	label_host = new QLabel(i18n("Server host:"), this);
 	label_port = new QLabel(i18n("Port:"), this);
@@ -75,7 +76,8 @@ KGGZConnect::KGGZConnect(QWidget *parent, char *name)
 
 	hbox2 = new QHBoxLayout(vbox1, 5);
 	hbox2->add(profile_select);
-	hbox2->add(profile_edit);
+	hbox2->add(profile_new);
+	hbox2->add(profile_delete);
 
 	vbox1->add(label_host);
 	vbox1->add(input_host);
@@ -166,7 +168,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readonly);
 	KGGZCommon::clear();
 
-	profile_edit->setEnabled(TRUE);
+	/*profile_edit->setEnabled(TRUE);*/
 
 	// setup entries; try to find suitable first entry
 	if(profile == -1)
@@ -191,7 +193,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 		if(i == 0)
 		{
 			KGGZDEBUG("None found, using default server.\n");
-			profile_select->insertItem(i18n("Default server"));
+			/*profile_select->insertItem(i18n("Default server"));*/
 		}
 	}
 	else

@@ -418,12 +418,12 @@ sub processMakefile ($)
     $lookup = '(\n[^#].*\$\(LIBTOOL\) --mode=link) (\$\(CXXLD\).*\$\(KCXXFLAGS\))';
     
     if ($MakefileData =~ m/$lookup/ ) {
-        $MakefileData =~ s/$lookup/$1 $2/;
+        $MakefileData =~ s/$lookup/$1 --tag=CXX $2/;
     }
 
     $lookup = '(\n[^#].*\$\(LIBTOOL\) --mode=compile) (\$\(CXX\).*\$\(KCXXFLAGS\))';
     if ($MakefileData =~ m/$lookup/ ) {
-        $MakefileData =~ s/$lookup/$1 $2/;
+        $MakefileData =~ s/$lookup/$1 --tag=CXX $2/;
     }
 
     $MakefileData =~ s/\$\(KCXXFLAGS\)/\$\(CXXFLAGS\)/g;

@@ -41,27 +41,36 @@ void KGGZAbout::timerEvent(QTimerEvent *e)
 void KGGZAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
+	QFont font;
 	static int x = 50;
 	static int x2 = 100;
 
+	font = QFont("helvetica", 18);
+	font.setStyleHint(QFont::Serif);
+
 	p.begin(m_frame);
 	p.fillRect(0, 110, 350, 70, QBrush(QColor(100.0, 0.0, 0.0)));
-	p.setFont(QFont("arial", 18));
+	p.setFont(font);
 	p.setPen(QColor(255.0, 255.0, 255.0));
 	p.drawText(10, 25, "The GGZ Gaming Zone");
 	p.drawLine(10, 30, 330, 30);
 	p.drawLine(10, 32, 330, 32);
-	p.setFont(QFont("arial", 10));
+	font.setPointSize(10);
+	//p.setFont(font);
 	p.drawText(10, 45, "Free Software shall dominate all Online Games!");
 	p.drawText(10, 65, "The GGZ Gaming Zone is a collaboration between several people who");
 	p.drawText(10, 77, "try to make public online game services available for free -");
 	p.drawText(10, 89, "including source code and professional help for both gamers and");
 	p.drawText(10, 101, "game developers. GGZ is available for many platforms and toolkits.");
 	p.drawText(10, 185, "Homepage: http://ggz.sourceforge.net");
-	p.setFont(QFont("arial", 50, QFont::Black));
+	font.setPointSize(50);
+	font.setWeight(QFont::Black);
+	//p.setFont(font);
 	p.setPen(QColor(130.0, 0.0, 0.0));
 	p.drawText(x, 160, "GGZ Gaming Zone 0.0.4");
-	p.setFont(QFont("arial", 10));
+	font.setPointSize(10);
+	font.setWeight(QFont::Normal);
+	//p.setFont(font);
 	p.setPen(QColor(210.0, 50.0, 50.0));
 	p.drawText(x2, 160, "Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - Ismael Orenstein - Dan Papasian - "
 		"Ricardo Quesada - Josef Spillner - Justin Zaun - and many supporters...");

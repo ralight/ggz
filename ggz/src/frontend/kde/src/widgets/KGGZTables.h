@@ -10,7 +10,8 @@ public:
 	KGGZTables(QWidget *parent, char *name);
 	~KGGZTables();
 	void reset();
-	void add(char *name, int used, int total);
+	void add(char *gametype, char *name, int used, int total);
+	int tablenum();
 };
 
 #endif

@@ -17,8 +17,7 @@ noinst_HEADERS = \
 	KGGZWidgetCommon.h \
 	KGGZAbout.h
 
-INCLUDES = $(all_includes) -I ..
-#libkggzui_a_LDFLAGS = $(KDE_RPATH)
+INCLUDES = $(all_includes) -I $(top_srcdir)/src
 
 libkggzui_a_METASOURCES = AUTO
 

@@ -577,3 +577,9 @@ void KGGZChat::beep()
 {
 	XBell(kapp->getDisplay(), 100);
 }
+
+void KGGZChat::shutdown()
+{
+	input->setEnabled(FALSE);
+}
+

@@ -29,4 +29,7 @@ AC_OUTPUT(Makefile
 	ggzcore++/doc/html/Makefile
 	src/Makefile
 	src/widgets/Makefile
-	src/abstract/Makefile)
+	src/abstract/Makefile
+	data/Makefile
+	data/icons/Makefile
+	data/kde/Makefile)

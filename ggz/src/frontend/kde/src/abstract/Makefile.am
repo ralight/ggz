@@ -1,5 +1,5 @@
-ggzcorepp_includes = -I ../../ggzcore++/src
-ggz_libraries = -L ../../ggzcore++/src/.libs -leasysock -lggzcore -lggzcorepp
+ggzcorepp_includes = -I $(top_srcdir)/ggzcore++/src
+ggz_libraries = $(top_srcdir)/ggzcore++/src/libggzcorepp.la
 
 noinst_LIBRARIES = libkggzabstract.a
 
@@ -13,4 +13,4 @@ noinst_HEADERS = \
 	KGGZServer.h \
 	KGGZCallback.h
 
-INCLUDES = $(ggzcorepp_includes) -I ..
+INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/src

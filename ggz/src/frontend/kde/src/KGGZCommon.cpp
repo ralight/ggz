@@ -57,46 +57,52 @@ char* KGGZCommon::state(GGZStateID stateid)
 	return statestr;
 }
 
-
 // findprocess:
 // find a unix system process by the given name
 // returns pid if process already runs, 0 otherwise; and -1 on error
-int KGGZCommon::findProcess(char* process)
+// new - taken over from Paralog project (old function is now obsolete)
+int KGGZCommon::findProcess(char *process)
 {
-	DIR *d;
-	struct dirent *e;
-	FILE *f;
-	char dir[512];
-	int ret;
-	char cmd[256];
+    DIR *d;
+    struct dirent *e;
+    FILE *f;
+    char dir[512];
+    int ret;
+    char stat[128];
+    char bprocess[256];
+    char pids[16];
+    int pid;
 
-	d = opendir("/proc/");
-	if(d == NULL) return -1;
-	ret = 0;
-	while((!ret) && (e = readdir(d)))
-	{
-		strcpy(dir, "/proc/");
-		strcat(dir, e->d_name);
-		strcat(dir, "/cmdline");
-		f = fopen(dir, "r");
-		if(f != NULL)
-		{
-			fscanf(f, "%s", &cmd);
-			if(strcmp(cmd, process) == 0) ret = atoi(e->d_name);
-			fclose(f);
-		}
-	}
-	closedir(d);
-	return ret;
+	KGGZDEBUG("findProcess: %s\n", process); 
+    d = opendir("/proc/");
+    if(d == NULL) return -1;
+    ret = 0;
+    sprintf(bprocess, "(%s)", process);
+    while((!ret) && (e = readdir(d)))
+    {
+        strcpy(dir, "/proc/");
+        strcat(dir, e->d_name);
+        strcat(dir, "/stat");
+        f = fopen(dir, "r");
+        if(f != NULL)
+        {
+            fscanf(f, "%s %s", &pids, &stat);
+            pid = atoi(pids);
+            if((strcmp(stat, bprocess) == 0) && (pid != getpid())) ret = atoi(e->d_name);
+            fclose(f);
+        }
+    }
+    closedir(d);
+    return ret;
 }
 
 // launches the ggzd server
 // returns -1 on error, -2 if already running, child pid else
-int KGGZCommon::launchProcess(char* process)
+int KGGZCommon::launchProcess(char* process, char* processpath)
 {
 	int result;
-	const char *ggzd = process;
 	char *const ggzdarg[] = {process, NULL};
+	int counter;
 
 	KGGZDEBUG("Starting process %s...\n", process);
 	if(findProcess(process) > 0)
@@ -104,22 +110,36 @@ int KGGZCommon::launchProcess(char* process)
 		KGGZDEBUG("Process %s already running!\n", process);
 		return -2;
 	}
+	KGGZDEBUG("Forking...\n");
 	result = fork();
-	if(result == -1) /* external validation */
+	if(result < 0) /* external validation */
 	{
 		KGGZDEBUG("Undefined error!\n");
 	}
 	else if(result == 0)
 	{
-		result = execvp(ggzd, ggzdarg);
-		KGGZDEBUG("execvp-Result: %s\n", result);
+		result = execv(processpath, ggzdarg);
+		KGGZDEBUG("execv result: %s\n", result);
 	}
 	else
 	{
 		// parent process; sleep a while to allow server to startup
+		KGGZDEBUG("We did it! %s (%s) has been launched!!\n", process, processpath);
+		counter = 0;
 		while(findProcess(process) == 0)
+		{
+			if(counter == 2)
+			{
+				KGGZDEBUG("Unable to start server!\n");
+				return -1;
+			}
+			counter++;
+			KGGZDEBUG("Server not running yet - must sleep...\n");
 			sleep(1);
+		}
+		KGGZDEBUG("Ok.\n");
 	}
+	KGGZDEBUG("Return: %i\n", result);
 	return result;
 }
 

@@ -128,8 +128,7 @@ dnl
 AC_DEFUN(AC_PATH_QT_MOC,
 [
    KDE_FIND_PATH(moc, MOC, [$ac_qt_bindir $QTDIR/bin $QTDIR/src/moc \
-	    /usr/bin /usr/X11R6/bin /usr/lib/qt/bin /usr/lib/qt2/bin \
-	    /usr/local/qt/bin], [KDE_MOC_ERROR_MESSAGE])
+	    /usr/local/qt/bin /usr/bin /usr/X11R6/bin /usr/lib/qt/bin /usr/lib/qt2/bin], [KDE_MOC_ERROR_MESSAGE])
 
    if test -z "$MOC"; then
      if test -n "$ac_cv_path_moc"; then
@@ -762,7 +761,8 @@ fi
 AC_FIND_FILE($kde_qt_header, $qt_incdirs, qt_incdir)
 ac_qt_includes="$qt_incdir"
 
-qt_libdirs="$QTLIB /usr/lib/qt/lib /usr/X11R6/lib /usr/lib /usr/local/qt/lib /usr/lib/qt /usr/lib/qt2/lib $x_libraries"
+# Modified: always use /usr/local libs first, they tend to be newer --josef
+qt_libdirs="$QTLIB /usr/lib/qt/lib /usr/X11R6/lib /usr/local/qt/lib /usr/lib /usr/lib/qt /usr/lib/qt2/lib $x_libraries"
 test -n "$QTDIR" && qt_libdirs="$QTDIR/lib $QTDIR $qt_libdirs"
 if test ! "$ac_qt_libraries" = "NO"; then
   qt_libdirs="$ac_qt_libraries $qt_libdirs"

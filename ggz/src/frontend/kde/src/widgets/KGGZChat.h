@@ -43,6 +43,7 @@ class KGGZChat : public QWidget
 		KGGZChat(QWidget *parent, char *name);
 		~KGGZChat();
 		void init();
+		void shutdown();
 		void receive(const char *player, const char *message, ReceiveMode mode);
 		void beep();
 

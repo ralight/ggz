@@ -27,7 +27,7 @@ class KGGZConnect : public QWidget
 		int m_loginmode;
 		QCheckBox *option_server;
 		QComboBox *profile_select;
-		QPushButton *profile_edit;
+		QPushButton *profile_new, *profile_delete;
 		QLineEdit *input_host, *input_port, *input_name, *input_password;
 		int m_connected;
 		QButtonGroup *group_mode;

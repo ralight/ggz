@@ -1,7 +1,7 @@
 dist-hook:
 	-perl am_edit
 
-SUBDIRS = ggzcore++ src
+SUBDIRS = ggzcore++ src data
 
 EXTRA_DIST = README COPYING Current.Status TODO ChangeLog
 

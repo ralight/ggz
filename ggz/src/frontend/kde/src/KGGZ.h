@@ -20,6 +20,7 @@
 #include "GGZCoreServer.h"
 #include "GGZCoreRoom.h"
 #include "GGZCoreGame.h"
+#include "GGZCoreGametype.h"
 
 // Forward declaration
 class KGGZWorkspace;
@@ -73,6 +74,8 @@ class KGGZ : public KGGZBase
 
 		void listPlayers();
 		void listTables();
+
+		void slotLaunchGame(GGZCoreGametype *gametype);
 
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
 		KGGZWorkspace *m_workspace;

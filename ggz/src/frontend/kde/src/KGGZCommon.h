@@ -47,7 +47,7 @@ class KGGZCommon
 {
 	public:
 		static char* state(GGZStateID stateid);
-		static int launchProcess(char* process);
+		static int launchProcess(char* process, char* processpath);
 		static int killProcess(char* process);
 		static int findProcess(char* cmdline);
 		static char* append(char* string1, char* string2);

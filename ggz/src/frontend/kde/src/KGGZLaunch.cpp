@@ -1,12 +1,11 @@
 #include "KGGZLaunch.h"
 
 #include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+#include <qstring.h>
+#include <stdlib.h>
 
-#define SEAT_OPEN 1
-#define SEAT_BOT 2
-#define SEAT_RESERVED 3
+//#include <klocale.h>
+#define i18n(x) x
 
 #include "KGGZCommon.h"
 
@@ -15,41 +14,36 @@ KGGZLaunch::KGGZLaunch(QWidget *parent = NULL, char *name = NULL)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
-	QLabel *label1, *label2, *label3;
-	QPushButton *ok, *cancel;
+	QLabel *label2, *label3;
+	QPushButton *cancel;
 
 	KGGZDEBUGF("KGGZLaunch::KGGZLaunch()\n");
 	m_popup = NULL;
+	m_array = NULL;
+	m_playername = NULL;
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
 	m_slider->setMinValue(2);
-	m_slider->setValue(2);
-	m_slider->setMaxValue(8);
 	m_slider->setTickInterval(1);
 	m_slider->setTickmarks(QSlider::Below);
 
-	m_listbox = new QListBox(this);
-	m_listbox->insertItem("Seat 1: Bot");
-	m_listbox->insertItem("Seat 2: Josef");
-	m_listbox->insertItem("Seat 3: (unused)");
-	m_listbox->insertItem("Seat 4: (unused)");
-	m_listbox->insertItem("Seat 5: (unused)");
-	m_listbox->insertItem("Seat 6: (unused)");
-	m_listbox->insertItem("Seat 7: (unused)");
-	m_listbox->insertItem("Seat 8: (unused)");
+	m_listbox = new QListView(this);
+	m_listbox->addColumn(i18n("Seat"));
+	m_listbox->addColumn(i18n("Player"));
 
 	m_edit = new QLineEdit(this);
 
-	label1 = new QLabel("Number of players:", this);
-	label2 = new QLabel("Seat assignments:", this);
-	label3 = new QLabel("Game description:", this);
+	m_label = new QLabel("", this);
+	label2 = new QLabel(i18n("Seat assignments:"), this);
+	label3 = new QLabel(i18n("Game description:"), this);
 
-	ok = new QPushButton("OK", this);
+	m_ok = new QPushButton("OK", this);
+	m_ok->setEnabled(FALSE);
 	cancel = new QPushButton("Cancel", this);
 
 	vbox = new QVBoxLayout(this, 5);
-	vbox->add(label1);
+	vbox->add(m_label);
 	vbox->add(m_slider);
 	vbox->add(label2);
 	vbox->add(m_listbox);
@@ -57,34 +51,36 @@ KGGZLaunch::KGGZLaunch(QWidget *parent = NULL, char *name = NULL)
 	vbox->add(m_edit);
 
 	hbox = new QHBoxLayout(vbox, 5);
-	hbox->add(ok);
+	hbox->add(m_ok);
 	hbox->add(cancel);
 
-	connect(m_listbox, SIGNAL(rightButtonPressed(QListBoxItem*, const QPoint&)), SLOT(slotSelected(QListBoxItem*, const QPoint&)));
+	connect(m_listbox, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotSelected(QListViewItem*, const QPoint&, int)));
 	connect(m_slider, SIGNAL(valueChanged(int)), SLOT(slotChanged(int)));
-	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
+	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
 	setFixedSize(250, 300);
-	setCaption("Launch a game");
+	setCaption(i18n("Launch a game"));
 	show();
 }
 
 KGGZLaunch::~KGGZLaunch()
 {
+	if(m_playername) free(m_playername);
 }
 
-void KGGZLaunch::slotSelected(QListBoxItem *selected, const QPoint& point)
+void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int column)
 {
 	if(!selected) return;
 	if(!selected->isSelectable()) return;
+	if(selected == m_listbox->firstChild()) return;
 
 	if(m_popup) delete m_popup;
 
 	m_popup = new QPopupMenu(this);
-	m_popup->insertItem("Bot", SEAT_BOT);
-	m_popup->insertItem("Reserved", SEAT_RESERVED);
-	m_popup->insertItem("Open", SEAT_OPEN);
+	m_popup->insertItem(typeName(seatbot), -seatbot);
+	m_popup->insertItem(typeName(seatopen), -seatopen);
+	m_popup->insertItem(typeName(seatreserved), -seatreserved);
 	m_popup->popup(point);
 
 	connect(m_popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
@@ -92,25 +88,17 @@ void KGGZLaunch::slotSelected(QListBoxItem *selected, const QPoint& point)
 
 void KGGZLaunch::slotActivated(int id)
 {
-	int i;
-	char buffer[128];
+	int seat;
+	QListViewItem *tmp;
 
-	i = m_listbox->currentItem();
-	if(i == -1) return;
+	tmp = m_listbox->selectedItem();
+	if(!tmp) return;
 
-	switch(id)
-	{
-		case SEAT_BOT:
-			sprintf(buffer, "Seat %i: Bot", i + 1);
-			break;
-		case SEAT_RESERVED:
-			sprintf(buffer, "Seat %i: Reserved", i + 1);
-			break;
-		case SEAT_OPEN:
-			sprintf(buffer, "Seat %i: Open", i + 1);
-			break;
-	}
-	m_listbox->changeItem(buffer, i);
+	id = -id;
+
+	seat = tmp->text(0).toInt();
+	KGGZDEBUG("Got id: %i on seat: %i\n", id, seat);
+	setSeatType(seat, id);
 }
 
 void KGGZLaunch::slotAccepted()
@@ -120,15 +108,11 @@ void KGGZLaunch::slotAccepted()
 
 void KGGZLaunch::slotChanged(int value)
 {
-	QListBoxItem *tmp;
+	QListViewItem *tmp;
+	QString str;
 
-	for(int i = 0; i < 8; i++)
-	{
-		tmp = m_listbox->item(i);
-		if(i < value) tmp->setSelectable(TRUE);
-		else tmp->setSelectable(FALSE);
-		//m_listbox->changeItem(tmp, i);
-	}
+	str.setNum(value);
+	m_label->setText(i18n("Number of player: ") + str);
 }
 
 const char *KGGZLaunch::description()
@@ -140,3 +124,119 @@ int KGGZLaunch::seats()
 {
 	return m_slider->value();
 }
+
+void KGGZLaunch::initLauncher(char *playername, int maxplayers)
+{
+	QString str;
+
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i)\n", playername, maxplayers);
+	if(m_array)
+	{
+		KGGZDEBUG("Critical: array initialized twice!\n");
+		return;
+	}
+
+	m_slider->setMaxValue(maxplayers);
+	m_slider->setValue(maxplayers);
+	m_playername = strdup(playername);
+	KGGZDEBUG("array: create with %i elements...\n", maxplayers);
+	m_array = new QByteArray(maxplayers);
+	KGGZDEBUG("array: done: size = %i\n", m_array->size());
+
+	for(int i = 0; i < maxplayers; i++)
+	{
+		str.setNum(i);
+		(void)new QListViewItem(m_listbox, str);
+	}
+
+	if(maxplayers >= 2)
+	{
+		setSeatType(0, seatplayer);
+		for(int i = 1; i < maxplayers; i++)
+		{
+			setSeatType(i, seatbot);
+		}
+	}
+
+	m_ok->setEnabled(TRUE);
+
+	KGGZDEBUGF("KGGZLaunch::initLauncher() done\n");
+}
+
+int KGGZLaunch::seatType(int seat)
+{
+	int ret;
+
+	if((!m_array) || (m_array->size() <= seat)) return seatunknown;
+	ret = m_array->at(seat);
+	return ret;
+}
+
+void KGGZLaunch::setSeatType(int seat, int seattype)
+{
+	QListViewItem *tmp;
+
+	if(!m_array)
+	{
+		KGGZDEBUG("Critical! No array present.\n");
+		return;
+	}
+	if(seat >= m_array->size())
+	{
+		KGGZDEBUG("Critical: not so many seats here (%i/%i)!\n", seat, seattype);
+		return;
+	}
+
+	tmp = m_listbox->firstChild();
+	if(!tmp)
+	{
+		KGGZDEBUG("error!\n");
+		return;
+	}
+
+	for(int i = 0; i < seat; i++)
+	{
+		tmp = tmp->itemBelow();
+		if(!tmp)
+		{
+			KGGZDEBUG("error!\n");
+			return;
+		}
+	}
+
+	tmp->setText(1, typeName(seattype));
+
+	KGGZDEBUG("within setSeatType: arry size is: %i (set at %i)\n", m_array->size(), seat);
+	m_array->at(seat) = seattype;
+	KGGZDEBUG("after setSeatType: arry size is: %i\n", m_array->size());
+}
+
+const char *KGGZLaunch::typeName(int seattype)
+{
+	const char *ret;
+
+	switch(seattype)
+	{
+		case seatplayer:
+			ret = m_playername;
+			break;
+		case seatopen:
+			ret = i18n("Open");
+			break;
+		case seatreserved:
+			ret = i18n("Reserved");
+			break;
+		case seatbot:
+			ret = i18n("Bot");
+			break;
+		case seatunused:
+			ret = i18n("(unused)");
+			break;
+		default:
+			ret = i18n("unknown");
+	}
+
+	KGGZDEBUG("return: %s for %i\n", ret, seattype);
+	return ret;
+}
+

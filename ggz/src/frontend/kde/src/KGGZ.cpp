@@ -20,6 +20,7 @@
 // GGZCore++ functions
 #include "GGZCore.h"
 #include "GGZCoreConf.h"
+#include "GGZCoreConfio.h"
 #include "GGZCoreTable.h"
 #include "GGZCoreModule.h"
 
@@ -169,6 +170,7 @@ void KGGZ::slotHandleMenu(int id)
 	int result;
 	GGZCoreGametype *gametype;
 	char buffer[2048];
+	int number;
 
 	KGGZDEBUGF("KGGZ::slotHandleMenu()\n");
 	KGGZDEBUG("got id: %i\n", id);
@@ -209,9 +211,42 @@ void KGGZ::slotHandleMenu(int id)
 			m_workspace->show();
 			break;
 		case MENU_GAME_LAUNCH:
+			if(!kggzroom)
+			{
+				KMessageBox::information(this, "You cannot launch a game outside a room!", "Error!");
+				return;
+			}
 			if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
+			m_launch->initLauncher(m_save_username, kggzroom->gametype()->maxPlayers());
 			m_launch->show();
 			connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotLaunch()));
+			break;
+		case MENU_GAME_JOIN:
+			if((!m_workspace) || (!m_workspace->widgetTables()))
+			{
+				KGGZDEBUG("Critical! Workspace is broken!\n");
+				return;
+			}
+			if(!kggzroom)
+			{
+				KMessageBox::information(this, "You must be in a room to join a table!", "Error!");
+				return;
+			}
+			number = m_workspace->widgetTables()->tablenum();
+			if(number == -1)
+			{
+				if(kggzroom->countTables() == 1)
+				{
+					KGGZDEBUG("Phew... what a luck this is the only table here. Gonna take this!\n");
+					number = 0;
+				}
+				else
+				{
+					KMessageBox::information(this, "Please select a table to join!", "Error!");
+					return;
+				}
+			}
+			kggzroom->joinTable(number);
 			break;
 		case MENU_GAME_GRUBBY:
 			KGGZDEBUG("Aaaaargh.... ;)\n");
@@ -335,8 +370,24 @@ void KGGZ::slotDisconnect()
 void KGGZ::serverLaunch()
 {
 	int result;
+	GGZCoreConfio *config;
+	char *process;
 
-	result = KGGZCommon::launchProcess("ggzd");
+	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+    KGGZCommon::clear();
+    process = config->read("Environment", "Server", (char*)NULL);
+	delete config;
+
+	if(!process)
+	{
+		KMessageBox::information(this, i18n("GGZ Gaming Zone server not found.\n"
+			"Please get it from http://ggz.sourceforge.net.\n"
+			"Make sure to add its path to kggz.rc!\n"
+			"See help for details.\n"), "Information");
+		return;
+	}
+
+	result = KGGZCommon::launchProcess("ggzd", process);
 
 	switch(result)
 	{
@@ -445,12 +496,26 @@ void KGGZ::listTables()
 {
 	int number;
 	GGZCoreTable *table;
+	GGZCoreGametype *gametype;
 	int tableseats, tableseatsopen;
 	char *tabledescription;
+	char *playername;
 
+	KGGZDEBUGF("KGGZ::listTables()\n");
+	if(!kggzroom)
+	{
+		KGGZDEBUG("Critical! We are not in a room, are we?\n");
+		return;
+	}
 	if(!m_workspace)
 	{
 		KGGZDEBUG("Feurio! No workspace here!\n");
+		return;
+	}
+	gametype = kggzroom->gametype();
+	if(!gametype)
+	{
+		KGGZDEBUG("Critical: Error when fetching game type!\n");
 		return;
 	}
 	m_workspace->widgetTables()->reset();
@@ -468,11 +533,21 @@ void KGGZ::listTables()
 			else
 			{
 				if(table->playerType(j) == GGZ_SEAT_PLAYER)
-					m_workspace->widgetUsers()->addTablePlayer(i, table->playerName(j));
+				{
+					playername = table->playerName(j);
+					if(!playername) playername = "Bot";
+					if(strlen(playername) == 0)
+					{
+						playername = "(open)";
+						tableseatsopen++;
+					}
+					KGGZDEBUG("Going to add: %s\n", playername);
+					m_workspace->widgetUsers()->addTablePlayer(i, playername);
+				}
 			}
 		}
 		KGGZDEBUG(" // table: %s (%i/%i)\n", tabledescription, tableseats - tableseatsopen, tableseats);
-		m_workspace->widgetTables()->add(tabledescription, tableseats - tableseatsopen, tableseats);
+		m_workspace->widgetTables()->add(gametype->name(), tabledescription, tableseats - tableseatsopen, tableseats);
 	}
 }
 
@@ -482,6 +557,9 @@ void KGGZ::listPlayers()
 	GGZPlayer *player;
 	char *playername;
 
+	KGGZDEBUGF("KGGZ::listPlayers()\n");
+	m_workspace->widgetUsers()->removeall();
+	KGGZDEBUG("* Removed all, now adding anew...\n");
 	number = kggzroom->countPlayers();
 	for(int i = 0; i < number; i++)
 	{
@@ -533,6 +611,8 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			detachGameCallbacks();
 			delete kggzgame;
 			kggzgame = NULL;
+			listPlayers();
+			listTables();
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");
@@ -615,15 +695,22 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tablelaunchfail:
 			KGGZDEBUG("tablelaunchfail\n");
+			KMessageBox::information(this, "Couldn't launch table!", "Error!");
+			listPlayers();
+			listTables();
 			break;
 		case GGZCoreRoom::tablejoined:
 			KGGZDEBUG("tablejoined\n");
 			m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
+			slotLaunchGame(kggzroom->gametype());
 			break;
 		case GGZCoreRoom::tablejoinfail:
 			KGGZDEBUG("tablejoinfail\n");
+			KMessageBox::information(this, "Couldn't join table!", "Error");
+			listPlayers();
+			listTables();
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
@@ -639,9 +726,14 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			if(!kggzgame)
 			{
 				KGGZDEBUG("Don't wanna bother, but... we don't have any game running!!\n");
-				return;
+				//return;
+				kggzroom->sendData((char*)data);
 			}
-			kggzgame->dataSend((char*)data);
+			else
+			{
+				KGGZDEBUG("What a luck a game is running ;)\n");
+				kggzgame->dataSend((char*)data);
+			}
 			break;
 		default:
 			KGGZDEBUG("unknown\n");
@@ -697,6 +789,13 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, TRUE);
 			sprintf(buffer, "KGGZ - [logged in as %s@%s:%i]", m_save_username, m_save_host, m_save_port);
 			setCaption(buffer);
+			if(m_save_loginmode == GGZCoreServer::firsttime)
+			{
+				KGGZDEBUG("First time login!\n");
+				sprintf(buffer, "You are welcome as a new GGZ Gaming Zone player.\n"
+					"Your personal password is: %s", kggzserver->password());
+				KMessageBox::information(this, buffer, "Information");
+			}
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
@@ -757,6 +856,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				delete kggzroom;
 				kggzroom = NULL;
 				m_workspace->widgetUsers()->removeall();
+				m_workspace->widgetTables()->reset();
+				m_workspace->widgetChat()->shutdown();
 			}
 			detachServerCallbacks();
 			delete kggzserver;
@@ -964,6 +1065,52 @@ void KGGZ::detachGameCallbacks()
 	KGGZDEBUG("=== done\n");
 }
 
+void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
+{
+	GGZCoreModule *module;
+	int i;
+	int ret;
+	char *icon;
+
+    KGGZDEBUG("Create module...\n");
+    module = new GGZCoreModule();
+    module->init(gametype->name(), gametype->protocol());
+    i = module->count();
+    KGGZDEBUG("Found: %i modules for this game\n", i);
+    if(i == 0)
+    {
+        KMessageBox::information(this, "Sorry, no modules found for this game.", "Error!");
+        delete module;
+        return;
+    }
+    module->setActive(0);
+    //module->launch();
+
+	if(kggzgame)
+    {
+        KGGZDEBUG("Found game object alive; killing it now :-)\n");
+        delete kggzgame;
+    }
+    kggzgame = new GGZCoreGame();
+    kggzgame->init(module->module());
+ 
+    attachGameCallbacks(); // don't forget detaching!
+
+    ret = kggzgame->launch();
+    if(ret < 0)
+    {
+        KMessageBox::information(this, "Couldn't launch game!", "Error!");
+        return;
+    }
+ 
+    icon = module->pathIcon();
+    KGGZDEBUG("Found module icon: %s\n", icon);
+    if(!icon) icon = KGGZ_DIRECTORY "/images/icons/module.png";
+    m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(icon));
+
+	delete module;
+}
+
 void KGGZ::slotLaunch()
 {
 	GGZCoreTable *table;
@@ -973,7 +1120,6 @@ void KGGZ::slotLaunch()
 	char *description;
 	int i;
 	int ret;
-	char *icon;
 
 	if(!kggzroom)
 	{
@@ -993,54 +1139,46 @@ void KGGZ::slotLaunch()
 		return;
 	}
 
-	KGGZDEBUG("Create module...\n");
-	module = new GGZCoreModule();
-	module->init(gametype->name(), gametype->protocol());
-	i = module->count();
-	KGGZDEBUG("Found: %i modules for this game\n", i);
-	if(i == 0)
-	{
-		KMessageBox::information(this, "Sorry, no modules found for this game.", "Error!");
-		delete module;
-		return;
-	}
-	module->setActive(0);
-	//module->launch();
-
-	if(kggzgame)
-	{
-		KGGZDEBUG("Found game object alive; killing it now :-)\n");
-		delete kggzgame;
-	}
-	kggzgame = new GGZCoreGame();
-	kggzgame->init(module->module());
-
-	attachGameCallbacks(); // don't forget detaching!
-
-	ret = kggzgame->launch();
-	if(ret < 0)
-	{
-		KMessageBox::information(this, "Couldn't launch game!", "Error!");
-		return;
-	}
-
-	icon = module->pathIcon();
-	KGGZDEBUG("Found module icon: %s\n", icon);
-	if(!icon) icon = "/home/comtec/test.xpm";
-	m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(icon));
-
-	//delete module;
+	//slotLaunchGame(gametype);
 
 	description = (char*)m_launch->description();
 	seats = m_launch->seats();
 
 	table = new GGZCoreTable();
 	table->init(gametype->gametype(), description, seats);
-	/*table->addPlayer("Josef", 0);*/
-	table->addBot(NULL, 1);
+	for(int i = 0; i < seats; i++)
+	{
+		switch(m_launch->seatType(i))
+		{
+			case KGGZLaunch::seatplayer:
+				KGGZDEBUG("* %i: player\n", i);
+				table->addPlayer(m_save_username, i);
+				break;
+			case KGGZLaunch::seatopen:
+				KGGZDEBUG("* %i: open\n", i);
+				break;
+			case KGGZLaunch::seatbot:
+				KGGZDEBUG("* %i: bot\n");
+				table->addBot(NULL, i);
+				break;
+			case KGGZLaunch::seatreserved:
+				KGGZDEBUG("* %i: reserved\n", i);
+				table->addReserved("RESERVED", i);
+				break;
+			case KGGZLaunch::seatunused:
+				KGGZDEBUG("* %i: unused.\n", i);
+				break;
+			case KGGZLaunch::seatunknown:
+			default:
+				KGGZDEBUG("* %i: unknown!\n", i);
+		}
+	}
 
 	ret = kggzroom->launchTable(table->table());
 	delete table;
+
+	delete m_launch;
+	m_launch = NULL;
 
 	if(ret < 0)
 	{
