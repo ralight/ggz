@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 6407 2004-11-17 14:22:41Z josef $
+ * $Id: client.c 6412 2004-11-17 20:56:57Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -235,10 +235,17 @@ static void client_loop(GGZClient* client)
 		if (client->type == GGZ_CLIENT_PLAYER
 		    && (player->next_room_update != 0
 			|| player->next_ping != 0)) {
-			time_t wait_time = MAX(player->next_ping,
-					       player->next_room_update);
+			time_t now = time(NULL);
+			time_t wait_time = 10000;
 
-			timer.tv_sec = wait_time - time(NULL);
+			if (player->next_ping != 0) {
+				wait_time = MIN(wait_time, player->next_ping - now);
+			}
+			if (player->next_room_update != 0) {
+				wait_time = MIN(wait_time, player->next_room_update - now);
+			}
+
+			timer.tv_sec = wait_time;
 			timer.tv_usec = 0;
 			select_tv = &timer;
 
