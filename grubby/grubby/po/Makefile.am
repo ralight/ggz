@@ -12,9 +12,10 @@ messages:
 
 install-data-local:
 	for j in $(top_srcdir)/grubby/po/*.po; do \
-		country=`echo $$j | cut -d "." -f 1`; \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
 		dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		echo "installing $$dir/grubby.mo ($$j)"; \
+		echo "installing $$dir/grubby.mo ($$k)"; \
 		install -d $$dir; \
 		$(MSGFMT) -o $$dir/grubby.mo $$j; \
 	done;
