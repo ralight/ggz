@@ -11,6 +11,8 @@
 
 #include "kdots_options.h"
 
+#include <klocale.h>
+
 #include <qpushbutton.h>
 #include <qlayout.h>
 
@@ -21,14 +23,18 @@ KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
 	QVBoxLayout *vbox, *vbox1, *vbox2, *vbox3;
 	QHBoxLayout *hbox;
 	QLabel *labelh, *labelv;
-	QLabel *title;
+	QLabel *title, *desc;
 
-	title = new QLabel("<b>Options</b><br>"
-		"Please specify the board size here.",
-		this);
+	title = new QLabel(i18n("Options"), this);
+	//QFont font("helvetica", 11);
+	QFont font = title->font();
+	font.setBold(TRUE);
+	title->setFont(font, QFont::Black);
 
-	labelh = new QLabel("Horizontal", this);
-	labelv = new QLabel("Vertical", this);
+	desc = new QLabel(i18n("Please specify the board size here."), this);
+
+	labelh = new QLabel(i18n("Horizontal"), this);
+	labelv = new QLabel(i18n("Vertical"), this);
 
 	sliderh = new QSlider(QSlider::Horizontal, this);
 	sliderh->setRange(2, 24);
@@ -51,6 +57,7 @@ KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(title);
+	vbox->add(desc);
 	hbox = new QHBoxLayout(vbox, 5);
 	vbox1 = new QVBoxLayout(hbox, 5);
 	vbox2 = new QVBoxLayout(hbox, 5);
@@ -67,8 +74,8 @@ KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
 	connect(sliderh, SIGNAL(valueChanged(int)), SLOT(slotValueHorizontal(int)));
 	connect(sliderv, SIGNAL(valueChanged(int)), SLOT(slotValueVertical(int)));
 
-	setCaption("KDots Options");
-	resize(300, 150);
+	setCaption(i18n("KDots Options"));
+	//resize(300, 150);
 	show();
 }
 

@@ -1,8 +1,6 @@
 SUBDIRS = Dot .
 
-bindir = $(ggzexecmoddir)
-
-bin_PROGRAMS = kdots_client
+ggzexecmod_PROGRAMS = kdots_client
 
 kdots_client_SOURCES = \
 	main.cpp \
@@ -21,7 +19,7 @@ noinst_HEADERS = \
 	kdots_proto.h \
 	kdots_win.h
 
-INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I Dot
+INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES) -I Dot
 
 # A note on LDADD: on my machine, the -l is prepended automatically to
 # everything listed in the LDADD section.  This means putting
@@ -29,14 +27,14 @@ INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I Dot
 # "Dot/libdot.a", which works fine for me (and should for everyone else
 # too).  --JDS
 
-UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-kdots_client_LDFLAGS = -rpath $(easysock_libraries)
-kdots_client_LDADD = $(all_libraries) $(UI) Dot/libdot.a $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
+#UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
+#kdots_client_LDFLAGS = -rpath $(easysock_libraries)
+kdots_client_LDFLAGS = $(all_libraries) $(EASYSOCK_LDFLAGS)
+kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_EASYSOCK) Dot/libdot.a
 
 METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
-
 
 install-data-local:
 	@$(NORMAL_INSTALL)

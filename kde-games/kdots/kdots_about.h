@@ -15,6 +15,8 @@
 #include <qwidget.h>
 #include <qevent.h>
 
+class QPixmap;
+
 class KDotsAbout : public QWidget
 {
 	Q_OBJECT
@@ -25,6 +27,15 @@ class KDotsAbout : public QWidget
 		void slotAccepted();
 	protected:
 		void paintEvent(QPaintEvent *e);
+		void mouseMoveEvent(QMouseEvent *e);
+		void mousePressEvent(QMouseEvent *e);
+	private:
+		QString measure(QString s);
+		int m_repaint;
+		int m_highlight;
+		QFont m_font;
+		QPixmap *m_bg;
 };
 
 #endif
+

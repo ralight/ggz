@@ -26,7 +26,10 @@ class KDotsHelp : public QWidget
 	protected:
 		void paintEvent(QPaintEvent *e);
 	private:
-		QWidget *m_pane;
+		QString measure(QString s);
+		int m_repaint;
+		QFont m_font;
 };
 
 #endif
+

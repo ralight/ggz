@@ -13,7 +13,6 @@
 
 #include <klocale.h>
 
-#include <qlayout.h>
 #include <qpushbutton.h>
 #include <qpixmap.h>
 #include <qpainter.h>
@@ -24,23 +23,19 @@ KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QPushButton *ok;
-	QVBoxLayout *vbox;
+
+	m_font = QFont("courier", 16);
+	m_repaint = 0;
 
 	ok = new QPushButton("OK", this);
+	ok->move(200, 340);
 
-	m_pane = new QWidget(this);
-	m_pane->setBackgroundColor(QColor(150, 0, 0));
-	m_pane->setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
-
-	vbox = new QVBoxLayout(this, 5);
-	vbox->add(m_pane);
-	vbox->add(ok);
+	setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 
 	setCaption("KDots Help");
-	setFixedSize(400, 300);
-	show();
+	setFixedSize(500, 398);
 }
 
 KDotsHelp::~KDotsHelp()
@@ -52,23 +47,45 @@ void KDotsHelp::slotAccepted()
 	close();
 }
 
+QString KDotsHelp::measure(QString s)
+{
+	QFontMetrics m(m_font);
+	while(m.width(s) > 460)
+	{
+		m_font.setPointSize(m_font.pointSize() - 1);
+		m = QFontMetrics(m_font);
+		m_repaint = 1;
+	}
+
+	return s;
+}
+
 void KDotsHelp::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 
-	p.begin(m_pane);
+	p.begin(this);
 	p.setPen(QColor(255, 255, 255));
-	p.setFont(QFont("courier", 16, QFont::Normal));
-	p.drawText(10, 40, i18n("Game help for KDots"));
-	p.setFont(QFont("courier", 12, QFont::Normal));
-	p.drawText(10, 80, i18n("This game consists of a game board with"));
-	p.drawText(10, 100, i18n("dots which are to be connected. Whenever"));
-	p.drawText(10, 120, i18n("you achieve it to fill one square by surrounding"));
-	p.drawText(10, 140, i18n("it, it is marked as yours. If all dots are"));
-	p.drawText(10, 160, i18n("connected, the player with the highest number"));
-	p.drawText(10, 180, i18n("of fields has won. Tip: Prefer always an odd"));
-	p.drawText(10, 200, i18n("number of dots to prevent a tie game!"));
-	p.drawText(10, 230, i18n("Have fun!"));
+	m_font.setBold(true);
+	p.setFont(m_font);
+	p.drawText(150, 60, measure(i18n("Game help for KDots")));
+	m_font.setBold(false);
+	p.setFont(m_font);
+	p.drawText(20, 120, measure(i18n("This game consists of a game board with")));
+	p.drawText(20, 140, measure(i18n("dots which are to be connected. Whenever")));
+	p.drawText(20, 160, measure(i18n("you achieve it to fill one square by surrounding")));
+	p.drawText(20, 180, measure(i18n("it, it is marked as yours. If all dots are")));
+	p.drawText(20, 200, measure(i18n("connected, the player with the highest number")));
+	p.drawText(20, 220, measure(i18n("of fields has won. Tip: Prefer always an odd")));
+	p.drawText(20, 240, measure(i18n("number of dots to prevent a tie game!")));
+	p.drawText(20, 290, measure(i18n("Have fun!")));
 	p.end();
+
+	if(m_repaint)
+	{
+		m_repaint = 0;
+		repaint();
+	}
+	else show();
 }
 
