@@ -75,6 +75,9 @@ Guru *gurumod_exec(Guru *message)
 	int i, mode;
 	char *ret;
 
+	if(!message->message) return NULL;
+	if(message->priority == 10) return NULL;
+	
 	i = 0;
 	mode = mode_none;
 	printf("DEBUG: learning\n");

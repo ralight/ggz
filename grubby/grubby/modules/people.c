@@ -67,7 +67,7 @@ Guru *gurumod_exec(Guru *message)
 						break;
 					case 1:
 						strcpy(info, message->player);
-						strcpy(info, ": Great you come here!");
+						strcat(info, ": Great you come here!");
 						break;
 					default:
 						return NULL;

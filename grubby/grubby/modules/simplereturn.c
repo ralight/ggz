@@ -14,6 +14,7 @@
 /* Just return any message without modification */
 Guru *gurumod_exec(Guru *message)
 {
+	if(message->priority == 10) return NULL;
 	return message;
 }
 

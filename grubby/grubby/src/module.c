@@ -329,8 +329,9 @@ Guru *guru_module_work(Guru *message, int priority)
 
 	/* Now try plugins, with decreasing priority */
 	if(!modulelist) return NULL;
-	for(j = 10; j >= 0; j-=11)
+	for(j = 10; j >= 0; j -= 6)
 	{
+		message->priority = j;
 		for(i = 0; i < modulecount; i++)
 		{
 			if(!functionlist[i]) continue;
