@@ -4,6 +4,10 @@
 // KGGZ classes
 #include "KGGZWorkspace.h"
 #include "KGGZSplash.h"
+#ifdef KGGZ_BROWSER
+#warning You are building the internal browser which sloooows things down :)
+#include "KGGZBrowser.h"
+#endif
 
 // KDE includes
 #include <kmessagebox.h>
@@ -40,10 +44,17 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 	m_lock = 0;
 	m_launch = NULL;
 	kggzgame = NULL;
+#ifdef KGGZ_BROWSER
+	m_browser = NULL;
+#endif
 
 	setBackgroundColor(QColor(0.0, 0.0, 0.0));
 
 	m_splash = new KGGZSplash(this, "splash");
+
+#ifdef KGGZ_BROWSER
+	m_browser = new KGGZBrowser(this, "browser");
+#endif
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
 	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *)), SLOT(slotChat(char *)));
@@ -81,6 +92,9 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 
 	vbox = new QVBoxLayout(this);
 	vbox->add(m_splash);
+#ifdef KGGZ_BROWSER
+	vbox->add(m_browser);
+#endif
 	vbox->add(m_workspace);
 
         // VERY DANGEROUS !!!
@@ -1002,6 +1016,9 @@ void KGGZ::menuView(int viewtype)
 {
 	m_workspace->show();
 	m_splash->hide();
+#ifdef KGGZ_BROWSER
+	m_browser->hide();
+#endif
 	switch(viewtype)
 	{
 		case VIEW_CHAT:
@@ -1021,6 +1038,12 @@ void KGGZ::menuView(int viewtype)
 			break;
 		case VIEW_SPLASH:
 			m_splash->show();
+			m_workspace->hide();
+			break;
+		case VIEW_BROWSER:
+#ifdef KGGZ_BROWSER
+			m_browser->show();
+#endif
 			m_workspace->hide();
 			break;
 		default:

@@ -48,7 +48,9 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_CHAT), i18n("&Chat"), MENU_CLIENT_CHAT);
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_TABLES), i18n("&Available tables"), MENU_CLIENT_TABLES);
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_PLAYERS), i18n("&List of players"), MENU_CLIENT_PLAYERS);
+#ifdef KGGZ_BROWSER
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_HELP), i18n("&Web Browser"), MENU_CLIENT_HELP);
+#endif
 	m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
 	m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 	m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
@@ -233,6 +235,9 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_CLIENT_PLAYERS:
 			kggz->menuView(KGGZ::VIEW_USERS);
+			break;
+		case MENU_CLIENT_HELP:
+			kggz->menuView(KGGZ::VIEW_BROWSER);
 			break;
 		case MENU_GAME_LAUNCH:
 			kggz->menuGameLaunch();

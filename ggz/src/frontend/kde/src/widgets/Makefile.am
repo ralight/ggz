@@ -1,4 +1,7 @@
-SUBDIRS = .
+SUBDIRS = @BROWSERSUBDIR@ .
+
+ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
+#ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la
 
 noinst_LIBRARIES = libkggzui.a
 
@@ -21,7 +24,9 @@ noinst_HEADERS = \
 	KGGZAbout.h \
 	KGGZSplash.h
 
-INCLUDES = $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
+EXTRA_HEADERS = 
+
+INCLUDES = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
 
 libkggzui_a_METASOURCES = AUTO
 

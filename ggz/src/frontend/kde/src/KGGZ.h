@@ -26,6 +26,9 @@
 // Forward declarations
 class KGGZWorkspace;
 class KGGZSplash;
+#ifdef KGGZ_BROWSER
+class KGGZBrowser;
+#endif
 
 class KGGZ : public QWidget
 {
@@ -46,7 +49,8 @@ class KGGZ : public QWidget
 			VIEW_CHAT,
 			VIEW_USERS,
 			VIEW_TABLES,
-                        VIEW_SPLASH
+                        VIEW_SPLASH,
+			VIEW_BROWSER
 		};
 
 		enum Menusignals
@@ -117,6 +121,9 @@ class KGGZ : public QWidget
 		GGZCoreConf *m_config;
 		KGGZSplash *m_splash;
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
+#ifdef KGGZ_BROWSER
+		KGGZBrowser *m_browser;
+#endif
 };
 
 #endif

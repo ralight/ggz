@@ -10,6 +10,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #else
+#warning No configuration file included! Using defaults!
 #define KGGZ_DIRECTORY "/usr/local/share/kggz"
 #endif
 
