@@ -1,18 +1,14 @@
 [Desktop Entry]
-Comment=Searches GGZ games for menu inclusion
-Comment[de]=Sucht GGZ-Spiele zur Einbindung ins Menü
+Name=ModSniffer
 GenericName=Utility to find GGZ games
 GenericName[de]=Werkzeug zum Suchen von GGZ-Spielen
+GenericName[pt]=Ferramento para buscar jogos do GGZ
+Comment=Searches GGZ games for menu inclusion
+Comment[de]=Sucht GGZ-Spiele zur Einbindung ins Menü
+Comment[pt]=Inclusão de jogos GGZ no menu do KDE
+
+Type=Application
 Exec=ggzmodsniff
 Icon=ggzmodsniff
-MimeType=application/zone;Application
-Name=ModSniffer
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
 Terminal=false
-TerminalOptions=
-Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=
+Categories=X-GGZ;Utility;KDE;Qt;
