@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4476 2002-09-09 00:55:17Z jdorje $
+ * $Id: ggzdmod.h 4519 2002-09-11 23:02:30Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -464,10 +464,11 @@ GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
  *  @param mod The GGZdmod object.
  *  @param e The GGZdmod event.
  *  @param func The handler function being registered.
+ *  @return 0 on success, negative on failure (bad parameters)
  *  @see ggzdmod_get_gamedata
  */
-void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
-			 GGZdModHandler func);
+int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
+			GGZdModHandler func);
 
 /** @brief Set the module executable, pwd, and arguments
  *

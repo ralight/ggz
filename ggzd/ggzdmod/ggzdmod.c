@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4477 2002-09-09 01:44:56Z jdorje $
+ * $Id: ggzdmod.c 4519 2002-09-11 23:02:30Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -92,6 +92,16 @@ static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
 /* Invokes handlers for the specefied event */
 static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 {
+	if (event < 0 || event >= GGZDMOD_NUM_EVENTS) {
+		fprintf(stderr,
+			"GGZDMOD: call_handler called for unknown event %d.\n"
+			"This is a bug in libggzdmod.  Please e-mail the GGZ\n"
+			"development team at ggz-dev@lists.sourceforge.net\n"
+			"to report it.\n", event);
+		return;
+	}
+		  
+
 	if (ggzdmod->handlers[event])
 		(*ggzdmod->handlers[event]) (ggzdmod, event, data);
 	else {
@@ -221,7 +231,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->num_seats = 0;
 	ggzdmod->max_num_spectators = 0;
 
-	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
+	for (i = 0; i < GGZDMOD_NUM_EVENTS; i++)
 		ggzdmod->handlers[i] = NULL;
 	ggzdmod->gamedata = NULL;
 
@@ -470,14 +480,15 @@ void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data)
 }
 
 
-void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
-			 GGZdModHandler func)
+int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
+			GGZdModHandler func)
 {
-	if (!CHECK_GGZDMOD(ggzdmod) || e < 0 || e >= GGZDMOD_NUM_HANDLERS) {
-		return;		/* not very useful */
-	}
+	if (!CHECK_GGZDMOD(ggzdmod)) return -1;
+	if (e < 0) return -2;
+	if (e >= GGZDMOD_NUM_EVENTS) return -3;
 
 	ggzdmod->handlers[e] = func;
+	return 0;
 }
 
 /* returns 0 if s1 and s2 are the same, 1 otherwise.  NULL-safe. */
