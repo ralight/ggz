@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4971 2002-10-21 21:27:03Z jdorje $
+ * $Id: client.c 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -215,45 +215,44 @@ GGZClient* client_new(int fd)
  */
 static void client_loop(GGZClient* client)
 {
-	int status = 0, fd_max, fd;
-	fd_set active_fd_set, read_fd_set;
-	struct timeval timer;
+	int status = 0, fd;
+	fd_set active_fd_set;
+	struct timeval timer = {tv_sec: opt.ping_freq, tv_usec: 0};
+	sigset_t set;
 
 	/* Get socket from netIO object */
 	fd = net_get_fd(client->net);
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
+
+	sigemptyset(&set);
+	sigaddset(&set, PLAYER_EVENT_SIGNAL);
 	
 	while (!client->session_over) {
+		fd_set read_fd_set = active_fd_set;
 
-		/* Process player events */
-		if (client->type == GGZ_CLIENT_PLAYER) {
-			if (player_updates(client->data) != GGZ_OK)
-				break;
-		}
-
-		read_fd_set = active_fd_set;
-		fd_max = fd + 1;
-		
-		/* Setup timeout for select*/
-		timer.tv_sec = GGZ_RESYNC_SEC;
-		timer.tv_usec = GGZ_RESYNC_USEC;
-		
-		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
+		status = select(fd + 1, &read_fd_set, NULL, NULL, &timer);
 		if (status <= 0) {
-			if (status == 0 || errno == EINTR)
-				continue;
-			else
+			if (status != 0 && errno != EINTR)
 				err_sys_exit("select error in client_loop()");
 		}
 
 		/* Check for message from client */
-		if (FD_ISSET(fd, &read_fd_set)) {
+		if (status > 0 && FD_ISSET(fd, &read_fd_set)) {
+			pthread_sigmask(SIG_BLOCK, &set, NULL);
 			if (net_read_data(client->net) == GGZ_REQ_DISCONNECT)
 				break;
+			pthread_sigmask(SIG_UNBLOCK, &set, NULL);
 		}
-		
+
+		/* Process player events */
+		if (client->type == GGZ_CLIENT_PLAYER) {
+			pthread_kill(pthread_self(), PLAYER_EVENT_SIGNAL);
+		}
 	} /* while (!client->session_over) */
+
+	/* Don't want signals interrupting after this point */
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Client loop finished");
 
@@ -294,6 +293,7 @@ void client_set_type(GGZClient *client, GGZClientType type)
 	switch (type) {
 	case GGZ_CLIENT_PLAYER:
 		client->data = player_new(client);
+		pthread_setspecific(player_key, client->data);
 		break;
 	case GGZ_CLIENT_CHANNEL:
 		/* FIXME: do something here */

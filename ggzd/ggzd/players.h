@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: players.h 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -28,6 +28,7 @@
 #define _GGZ_PLAYER_H
 
 #include <pthread.h>
+#include <signal.h>
 #include <sys/time.h>
 
 #include <ggz_common.h>
@@ -115,6 +116,10 @@ int player_get_room(GGZPlayer *player);
 GGZPlayerType player_get_type(GGZPlayer *player);
 
 void player_handle_pong(GGZPlayer *player);
+
+#define PLAYER_EVENT_SIGNAL SIGUSR1
+extern pthread_key_t player_key;
+RETSIGTYPE player_handle_event_signal(int signal);
 
 
 #endif

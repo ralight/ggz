@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: table.h 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #define _GGZ_TABLE_H
 
 #include <pthread.h>
+#include <signal.h>
 
 #include "ggzdmod.h"
 
@@ -42,6 +43,9 @@
  * original thread freeing the memory
  */
 struct GGZTable {
+
+	/* The thread # of the handling thread */
+	pthread_t thread;
 
 	/* Individual mutex lock */
 	pthread_rwlock_t lock;
@@ -159,5 +163,10 @@ typedef struct {
 	GGZClientReqError status;
 	int table_index;
 } GGZLaunchEventData;
+
+
+#define TABLE_EVENT_SIGNAL SIGUSR2
+extern pthread_key_t table_key;
+RETSIGTYPE table_handle_event_signal(int signal);
 
 #endif

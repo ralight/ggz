@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4971 2002-10-21 21:27:03Z jdorje $
+ * $Id: players.c 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -69,6 +69,8 @@
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 extern struct GGZState state;
 extern Options opt;
+
+pthread_key_t player_key;
 
 
 /* Local functions for handling players */
@@ -1070,4 +1072,13 @@ void player_handle_pong(GGZPlayer *player)
 
 	/* Queue our next ping */
 	player->next_ping = time(NULL) + opt.ping_freq;
+}
+
+
+RETSIGTYPE player_handle_event_signal(int signal)
+{
+	GGZPlayer *player = pthread_getspecific(player_key);
+
+	if (player_updates(player) != GGZ_OK)
+		player->client->session_over = 1;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: control.c 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -210,6 +210,11 @@ int main(int argc, const char *argv[])
 	signal(SIGINT, term_handle);
 	signal(SIGHUP, hup_handle);
 	signal(SIGPIPE, SIG_IGN);
+
+	signal(PLAYER_EVENT_SIGNAL, player_handle_event_signal);
+	pthread_key_create(&player_key, NULL);
+	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
+	pthread_key_create(&table_key, NULL);
 
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, NULL);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: event.c 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -101,7 +101,6 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 		       
 {
 	GGZEvent *event;
-	GGZPlayer* player;
 	int i;
 
 	/* Check for illegal room # */	
@@ -136,15 +135,20 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 
 	/* Put this event as first for anyone who doesn't have a list now */
 	for (i = 0; i < rooms[room].player_count; i++) {
-		player = rooms[room].players[i];
-		if (player->room_events == NULL)
+		GGZPlayer *player = rooms[room].players[i];
+		if (player->room_events == NULL) {
 			player->room_events = event;
+			dbg_msg(GGZ_DBG_ROOM, "Adding event to player %s.",
+				player->name);
+		}
 	}
 
 	/* Finally, add this event to the room list */
 	if (rooms[room].event_tail)
 		rooms[room].event_tail->next = event;
 	rooms[room].event_tail = event;
+
+	dbg_msg(GGZ_DBG_ROOM, "Room event enqueued.  Sending notifications.");
 
 #ifdef DEBUG
 	if (rooms[room].event_head == NULL)
@@ -153,6 +157,15 @@ GGZReturn event_room_enqueue(int room, GGZEventFunc func,
 #endif
 
 	pthread_rwlock_unlock(&rooms[room].lock);
+
+	/* Notify everyone of the event. */
+	pthread_rwlock_rdlock(&rooms[room].lock);
+	for (i = 0; i < rooms[room].player_count; i++) {
+		GGZPlayer *player = rooms[room].players[i];
+		pthread_kill(player->client->thread, PLAYER_EVENT_SIGNAL);
+	}
+	pthread_rwlock_unlock(&rooms[room].lock);
+
 	return GGZ_OK;
 }
 
@@ -403,6 +416,8 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 
 	if (player->my_events_head == NULL)
 		player->my_events_head = event;
+
+	pthread_kill(player->client->thread, PLAYER_EVENT_SIGNAL);
 	
 #ifdef DEBUG
 	event_player_spew(player);
@@ -548,7 +563,9 @@ static void event_table_do_enqueue(GGZTable* table, GGZEvent* event) {
 
 	if (table->events_head == NULL)
 		table->events_head = event;
-	
+
+	pthread_kill(table->thread, TABLE_EVENT_SIGNAL);
+
 #ifdef DEBUG
 	event_table_spew(table);
 #endif

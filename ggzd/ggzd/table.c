@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4971 2002-10-21 21:27:03Z jdorje $
+ * $Id: table.c 4972 2002-10-22 00:11:03Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -54,6 +54,8 @@
 #include "table.h"
 #include "transit.h"
 
+
+pthread_key_t table_key;
 
 /* Packaging for seat events */
 typedef struct {
@@ -333,6 +335,9 @@ static void* table_new_thread(void *index_ptr)
 	table = *((GGZTable**)index_ptr);
 	ggz_free(index_ptr);
 
+	table->thread = pthread_self();
+	pthread_setspecific(table_key, table);
+
 	/* Detach thread since no one needs to join us */
 	if ((status = pthread_detach(pthread_self())) != 0) {
 		errno = status;
@@ -479,29 +484,18 @@ static void table_loop(GGZTable* table)
 {
 	int fd, status;
 	fd_set active_fd_set, read_fd_set;
-	struct timeval timer;
+	sigset_t set;
 	
 	fd = ggzdmod_get_fd(table->ggzdmod);
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
 
-	for (;;) {
-		/* Process queued up events */
-		if (table->events_head && event_table_handle(table) < 0)
-			break;
+	sigemptyset(&set);
+	sigaddset(&set, TABLE_EVENT_SIGNAL);
 
-		/* An event might cause the table to be done */
-		if (table->state == GGZ_TABLE_DONE)
-			break;
-		
+	while (table->state != GGZ_TABLE_DONE) {
 		read_fd_set = active_fd_set;
-		
-		/* Setup timeout for select*/
-		timer.tv_sec = GGZ_RESYNC_SEC;
-		timer.tv_usec = GGZ_RESYNC_USEC;
-		
-		status = select((fd + 1), &read_fd_set, NULL, NULL, &timer);
-		
+		status = select((fd + 1), &read_fd_set, NULL, NULL, NULL);
 		if (status <= 0) {
 			if (status == 0 || errno == EINTR)
 				continue;
@@ -509,13 +503,16 @@ static void table_loop(GGZTable* table)
 				err_sys_exit("select error in table_loop()");
 		}
 
+		pthread_sigmask(SIG_BLOCK, &set, NULL);
 		if (ggzdmod_dispatch(table->ggzdmod) < 0)
 			break;
+		pthread_sigmask(SIG_UNBLOCK, &set, NULL);
 
-		/* ggzdmod might cause the table to be done */
-		if (table->state == GGZ_TABLE_DONE)
-			break;
+		pthread_kill(pthread_self(), TABLE_EVENT_SIGNAL);
 	}
+
+	/* Don't want signals interrupting after this point */
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d loop completed", 
 		table->index, table->room);
@@ -1249,4 +1246,14 @@ GGZTable* table_lookup(int room, int index)
 	}
 	
 	return table;
+}
+
+
+RETSIGTYPE table_handle_event_signal(int signal)
+{
+	GGZTable *table = pthread_getspecific(table_key);
+
+	/* Process queued up events */
+	if (table->events_head && event_table_handle(table) < 0)
+		table->state = GGZ_TABLE_DONE;
 }
