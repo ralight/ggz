@@ -1,5 +1,5 @@
 Source: libggz
-Section: devel
+Section: libs
 Priority: optional
 Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
 Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libc6-dev (>= 2.2.1-1)
