@@ -27,7 +27,7 @@ AM_PROG_LIBTOOL
 AM_KDE_WITH_NLS
 AC_PATH_KDE
 
-SUBDIRS="src data po"
+SUBDIRS="src data po doc"
 COMPILEOPTIONS=""
 
 dnl Check for easysock and ggzcore
@@ -155,6 +155,7 @@ AC_OUTPUT(Makefile
 	ggz-kde/data/kde/Makefile
 	ggz-kde/data/splash/Makefile
 	ggz-kde/po/Makefile
+	ggz-kde/doc/Makefile
 	po/Makefile
 	po/ggzap/Makefile
 	po/shadowbridge/Makefile
