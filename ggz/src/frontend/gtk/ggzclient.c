@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4422 2002-09-06 20:49:06Z jdorje $
+ * $Id: ggzclient.c 4423 2002-09-06 21:06:15Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1145,7 +1145,8 @@ int ggz_connection_query(void)
 /* Handle the ggz-gtk end of disconnecting. */
 void server_disconnect(void)
 {
-	assert(server_handle != -1);
+	if (server_handle == -1)
+		return;
 
 	gdk_input_remove(server_handle);
 	server_handle = -1;
