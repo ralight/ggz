@@ -1,0 +1,38 @@
+=================================
+The GGZ Gaming Zone - GTK+ Client
+=================================
+
+The GGZ Gaming Zone GTK+ Client provides a GTK+ 1.2 user interface for
+logging into a GGZ server, chatting with other players, and locating
+and launching game tables.
+
+This version of the GTK+ Client (0.0.4) requires at least version
+0.0.4 of the ggz-client-libs.
+
+The GTK+ Client module is only one part of the GGZ Gaming Zone client
+setup.  The following additional modules are required:
+  - easysock - provides low-level communications between client
+    modules and the GGZ servers
+  - ggz-client-libs -  provides common procedures and utilites required
+    to run the GGZ client and games
+  - gtk-games/kde-games - one or more games or game packs are required
+    in order to launch and play games
+
+In addition, the following module is available:
+  - kde-client - a KDE version of the GGZ client is also available
+    in order to login to a server, chat and launch games
+
+The order in which these components are compiled and installed is very
+important.  See the README.GGZ file for complete information on compiling
+the GGZ client system.
+
+If you encounter any bugs or have difficulty compiling, please report bugs
+via the bug tracker on our SourceForge project page, or send an email to the
+developer's mailing list.
+
+  SF Project Page:	http://sourceforge.net/projects/ggz
+  Dev Mailing List:	ggz-dev@lists.sourceforge.net
+
+If you wish to help out the project with your coding and/or ideas, join
+the developer's mailing list and start talking!  If you just want to play
+games, then enjoy the programs and we hope they work well for you!
