@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 2746 2001-11-17 07:21:02Z bmh $
+ * $Id: protocols.h 3273 2002-02-08 21:23:28Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -36,27 +36,33 @@
 #define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
 
 /* Update opcodes */
-#define GGZ_UPDATE_DELETE 0
-#define GGZ_UPDATE_ADD    1
-#define GGZ_UPDATE_LEAVE  2
-#define GGZ_UPDATE_JOIN   3
-#define GGZ_UPDATE_STATE  4
-#define GGZ_UPDATE_LAG    5
+typedef enum {
+	GGZ_UPDATE_DELETE = 0,
+	GGZ_UPDATE_ADD	  = 1,
+	GGZ_UPDATE_LEAVE  = 2,
+	GGZ_UPDATE_JOIN	  = 3,
+	GGZ_UPDATE_STATE  = 4,
+	GGZ_UPDATE_LAG	  = 5,
+} GGZUpdateOpcode;
 
-#define E_USR_LOOKUP   -1
-#define E_BAD_OPTIONS  -2
-#define E_ROOM_FULL    -3
-#define E_TABLE_FULL   -4
-#define E_TABLE_EMPTY  -5
-#define E_LAUNCH_FAIL  -6
-#define E_JOIN_FAIL    -7
-#define E_NO_TABLE     -8
-#define E_LEAVE_FAIL   -9
-#define E_LEAVE_FORBIDDEN -10
-#define E_ALREADY_LOGGED_IN -11
-#define E_NOT_LOGGED_IN -12
-#define E_NOT_IN_ROOM   -13
-#define E_AT_TABLE     -14
-#define E_IN_TRANSIT   -15
-#define E_NO_PERMISSION -16
-#define E_BAD_XML       -17
+/* These opcodes must be in sync with the client,
+   so they should not be changed. */
+typedef enum {
+	E_USR_LOOKUP	    = -1,
+	E_BAD_OPTIONS	    = -2,
+	E_ROOM_FULL	    = -3,
+	E_TABLE_FULL	    = -4,
+	E_TABLE_EMPTY	    = -5,
+	E_LAUNCH_FAIL	    = -6,
+	E_JOIN_FAIL	    = -7,
+	E_NO_TABLE	    = -8,
+	E_LEAVE_FAIL	    = -9,
+	E_LEAVE_FORBIDDEN   = -10,
+	E_ALREADY_LOGGED_IN = -11,
+	E_NOT_LOGGED_IN	    = -12,
+	E_NOT_IN_ROOM	    = -13,
+	E_AT_TABLE	    = -14,
+	E_IN_TRANSIT	    = -15,
+	E_NO_PERMISSION	    = -16,
+	E_BAD_XML	    = -17,
+} GGZClientReqError;
