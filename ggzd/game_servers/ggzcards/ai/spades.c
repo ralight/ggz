@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2434 2001-09-09 22:05:57Z jdorje $
+ * $Id: spades.c 2435 2001-09-10 06:03:08Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -14,7 +14,7 @@
  * GGZCards for use with the spades game here.  Thanks Brent!
  *
  * Unfortunately, many of the routines follow pretty bad spades
- * strategies.  One day I'll implement some good strategies.
+ * strategies.  I'm in the process of implementing better ones.
  *
  * There's a big bug in here that causes the AI to be really stupid.
  * Oddly, it works pretty well for Hearts.
@@ -160,9 +160,10 @@ static void alert_play(player_t p, card_t play)
 }
 
 
-/* This counts the possible winners you'll get from trumping in.  It should only be
-   accurate when you have less than 3 trumps. */
-static int count_spade_ruff_winners(player_t num, int suitCount[4], int suitAvg[4])
+/* This counts the possible winners you'll get from trumping in.  It should
+   only be accurate when you have less than 3 trumps. */
+static int count_spade_ruff_winners(player_t num, int suitCount[4],
+				    int suitAvg[4])
 {
 	int p1 = 0, p2 = 0, gap, count;
 	int voids = 0, singletons = 0, doubletons = 0;
@@ -279,20 +280,21 @@ static int count_spade_ruff_winners(player_t num, int suitCount[4], int suitAvg[
 	return (p1 > p2) ? p1 : p2;
 }
 
-/* This method of calculating trump winners ONLY counts length and strength in spades.  It
-   is most accurate when you have 4 or more trumps */
+/* This method of calculating trump winners ONLY counts length and strength
+   in spades.  It is most accurate when you have 4 or more trumps */
 int count_spade_strength_winners(player_t p)
 {
 	int count = libai_count_suit(p, SPADES);
 	int points = 0;
-	card_t ace = {ACE_HIGH, SPADES, 0};
-	card_t king = {KING, SPADES, 0};
-	card_t queen = {QUEEN, SPADES, 0};
+	card_t ace = { ACE_HIGH, SPADES, 0 };
+	card_t king = { KING, SPADES, 0 };
+	card_t queen = { QUEEN, SPADES, 0 };
 
 	ai_debug("Counted %d spades for player %d.", count, p);
 
 	/* The ace/king/queen each get counted as one trick. */
-	/* Note that if we have fewer than 3 trumps some points will be subtracted later. */
+	/* Note that if we have fewer than 3 trumps some points will be
+	   subtracted later. */
 	if (libai_is_card_in_hand(p, ace)) {
 		ai_debug("Counted ACE as 1 trick.");
 		points += 100;
@@ -314,11 +316,13 @@ int count_spade_strength_winners(player_t p)
 
 	/* The 5th and every spade thereafter gets counted 1 trick. */
 	if (count >= 5) {
-		ai_debug("Counted extra %d spades as %d tricks.", count-4, count-4);
-		points += 100 * (count-4);
+		ai_debug("Counted extra %d spades as %d tricks.", count - 4,
+			 count - 4);
+		points += 100 * (count - 4);
 	}
 
-	/* If we have more than 6 spades, you've got to figure some of our earlier ones will be winners. */
+	/* If we have more than 6 spades, you've got to figure some of our
+	   earlier ones will be winners. */
 	if (count >= 6) {
 		ai_debug("Counted 6th spade as 1/2 bonus trick.");
 		points += 50;
@@ -334,16 +338,24 @@ static int count_spade_tricks(player_t num, int suitCount[4], int suitAvg[4])
 	int p2 = count_spade_strength_winners(num);
 	int points = (p1 > p2) ? p1 : p2;
 
-	ai_debug("Counted ruff winners as %d and strength winners as %d.", p1, p2);
+	ai_debug("Counted ruff winners as %d and strength winners as %d.", p1,
+		 p2);
 
-	/* A special case: take off tricks for weak spades.
-	   Although it might not make sense to have negative tricks in spades, having this weakness
-	   will cause your partner to lose tricks. */
+	/* A special case: take off tricks for weak spades. Although it might 
+	   not make sense to have negative tricks in spades, having this
+	   weakness will cause your partner to lose tricks. */
 	switch (libai_count_suit(num, SPADES)) {
-		case 0: points -= 100; break;
-		case 1: points -= 50; break;
-		case 2: points -= 20; break;
-		default: break;
+	case 0:
+		points -= 100;
+		break;
+	case 1:
+		points -= 50;
+		break;
+	case 2:
+		points -= 20;
+		break;
+	default:
+		break;
 	}
 
 	ai_debug("Spade points: %d", points);
@@ -589,15 +601,12 @@ static card_t get_play(player_t p, seat_t s)
 	   trying to take tricks or set our opponents.  We're less aggressive
 	   if we're trying to bag'em.  Agressiveness is on a scale from 0
 	   (least aggressive) to 100 (most aggressive). */
-	totTricks =
-		game.hand_size - game.players[0].tricks -
-		game.players[1].tricks - game.players[2].tricks -
-		game.players[3].tricks;
+	totTricks = game.seats[s].hand.hand_size;
 	myNeed = game.players[num].bid.sbid.val +
 		game.players[pard].bid.sbid.val;
-	if (game.players[num].bid.sbid.val > 0)
+	if (GSPADES.nil_tricks_count || game.players[num].bid.sbid.val > 0)
 		myNeed -= game.players[num].tricks;
-	if (game.players[pard].bid.sbid.val > 0)
+	if (GSPADES.nil_tricks_count || game.players[pard].bid.sbid.val > 0)
 		myNeed -= game.players[pard].tricks;
 
 	if (myNeed < 0)
@@ -696,7 +705,8 @@ static card_t get_play(player_t p, seat_t s)
 }
 
 
-/* This function has a bug: it does not count the chance that our partner will win a trick if we don't. */
+/* This function has a bug: it does not count the chance that our partner
+   will win a trick if we don't. */
 static void Calculate(int num, struct play *play)
 {
 
