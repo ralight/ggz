@@ -37,12 +37,15 @@ if any conflicts are discovered.
 If many elements of one type are to be read or written, a 'sequence' may be
 used within an event.
 A NULL-terminated list (array) of this type is then returned.
+If a variable is used as count option, the maxcount parameter must be specified
+as a constant number, otherwise it can be omitted.
 
-	<sequence count="number">
+	<sequence count="number" maxcount="5">
 		<data name="option" type="int"/>
 	</sequence>
 
 A constant can be defined in order to allow evaluations.
+The type is assumed to be integer, unless the type parameter is given.
 
 	<definitions>
 		<def name="game_message_text" value="5"/>

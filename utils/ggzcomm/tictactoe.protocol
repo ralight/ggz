@@ -11,8 +11,8 @@
 		<def name="rspmove" value="5"/>
 		<def name="sndsync" value="6"/>
 		<def name="sndmove" value="0"/>
+		<def name="reqsync" value="1"/>
 	</definitions>
-<!--	<def name="reqsync" value="1"/> -->
 	<client>
 		<event name="sndmove">
 			<data name="move" type="int"/>
@@ -52,7 +52,7 @@
 		</event>
 	</server>
 	<protocol>
-		<link server="msgseat" followup="msgplayers"/>
+<!--		<link server="msgseat" followup="msgplayers"/> -->
 		<link client="reqsync" server="sndsync"/>
 		<link server="reqmove" client="sndmove"/>
 		<link client="sndmove" server="rspmove"/>
