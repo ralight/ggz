@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5484 2003-03-29 20:38:07Z dr_maux $
+ * $Id: server.c 5694 2003-12-04 07:51:55Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -671,7 +671,8 @@ GGZGame* _ggzcore_server_get_cur_game(GGZServer *server)
 void _ggzcore_server_set_cur_game(GGZServer *server,
 				  GGZGame *game)
 {
-	assert(server->game == NULL ^^ game == NULL);
+#define XOR(a, b) (((a) || (b)) && !((a) && (b)))
+	assert(XOR(server->game == NULL, game == NULL));
 	server->game = game;
 }
 
