@@ -27,10 +27,9 @@ ggz_hastings_SOURCES = \
 	newmanred.xpm \
 	shadow.xpm
 
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common/
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD)
-
-INCLUDES = @GTK_CFLAGS@
+ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
 
 EXTRA_DIST = module.dsc.in
 

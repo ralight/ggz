@@ -39,6 +39,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+/* Gtk-games files */
+#include "dlg_exit.h"
+
 /* Hastings files */
 #include "main_win.h"
 #include "game.h"
@@ -294,9 +297,8 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 /* Quit the game */
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-	gtk_main_quit();
-
-	return FALSE;
+	ggz_show_exit_dialog(1);
+	return TRUE;
 }
 
 /* Resyncing... */
@@ -308,20 +310,7 @@ void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 /* Leave the game */
 void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
-	static GtkWidget *dlg_yesno = NULL;
-
-	if(dlg_yesno != NULL)
-	{
-		gdk_window_show(dlg_yesno->window);
-		gdk_window_raise(dlg_yesno->window);
-	}
-	else
-	{
-		dlg_yesno = create_dlg_yesno(_("Do you really want to quit Hastings1066?"));
-		gtk_signal_connect(GTK_OBJECT(dlg_yesno),
-		   "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dlg_yesno);
-		gtk_widget_show(dlg_yesno);
-	}
+	ggz_show_exit_dialog(1);
 }
 
 /* Display the about dialog, crediting me all over... */
