@@ -36,6 +36,8 @@ void _ggzcore_net_init(struct _GGZNet *net,
 		       const char *host,
 		       unsigned int port);
 
+int _ggzcore_net_set_dump_file(struct _GGZNet *net, const char* filename);
+
 void _ggzcore_net_free(struct _GGZNet *net);
 
 GGZServer *  _ggzcore_net_get_server(struct _GGZNet *net);

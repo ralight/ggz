@@ -267,6 +267,7 @@ int ggzcore_server_set_logininfo(GGZServer *server,
 				 const GGZLoginType type, 
 				 const char *handle, 
 				 const char *password);
+int ggzcore_server_log_session(GGZServer *server, const char *filename);
 
 
 /* Functions for querying a GGZServer object for information */

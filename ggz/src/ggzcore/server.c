@@ -215,6 +215,15 @@ int ggzcore_server_set_logininfo(GGZServer *server, const GGZLoginType type, con
 }
 
 
+int ggzcore_server_log_session(GGZServer *server, const char *filename)
+{
+	if (!server)
+		return -1;
+
+	return _ggzcore_server_log_session(server, filename);
+}
+
+
 char* ggzcore_server_get_host(GGZServer *server)
 {
 	if (server && server->net)
@@ -747,7 +756,14 @@ void _ggzcore_server_set_logout_status(struct _GGZServer *server, int status)
 	_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
 }
 
-					    
+
+int _ggzcore_server_log_session(struct _GGZServer *server, 
+				  const char *filename)
+{
+	return _ggzcore_net_set_dump_file(server->net, filename);
+}
+	
+				    
 void _ggzcore_server_reset(struct _GGZServer *server)
 {
 	int i;

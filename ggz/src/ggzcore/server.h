@@ -83,7 +83,8 @@ void _ggzcore_server_set_logout_status(struct _GGZServer *server,
 				       int status);
 
 /* functions to perform an action */
-
+int _ggzcore_server_log_session(struct _GGZServer *server, 
+				const char *filename);
 void _ggzcore_server_reset(struct _GGZServer *server);
 int _ggzcore_server_connect(struct _GGZServer *server);
 int _ggzcore_server_login(struct _GGZServer *server);
@@ -104,6 +105,8 @@ void _ggzcore_server_protocol_error(struct _GGZServer *server, char *message);
 void _ggzcore_server_clear(struct _GGZServer *server);
 
 void _ggzcore_server_free(struct _GGZServer *server);
+
+
 
 
 /* Functions for manipulating list of rooms */

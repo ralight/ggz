@@ -87,8 +87,8 @@ struct _GGZNet {
 	/* Message parsing stack */
 	GGZStack *stack;
 
-	/* FIXME: where to put this? */
-	int debug_file;
+	/* File to dump protocol session */
+	int dump_file;
 
 };
 
@@ -101,6 +101,9 @@ static void _net_parse_text(void *data, const char *text, int len);
 /* Trigger network error event */
 static void _ggzcore_net_error(struct _GGZNet *net, char* message);
 
+/* Dump network data to debugging file */
+static void _net_dump_data(struct _GGZNet *net, char *data, int size);
+
 
 /* Internal library functions (prototypes in net.h) */
 
@@ -112,6 +115,7 @@ struct _GGZNet* _ggzcore_net_new(void)
 	
 	/* Set fd to invalid value */
 	net->fd = -1;
+	net->dump_file = -1;
 	
 	return net;
 }
@@ -136,9 +140,23 @@ void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const cha
 
 	/* Initialize stack for messages */
 	net->stack = _ggzcore_stack_new();
+}
 
-	/* FIXME: this should go elsewhere perhaps? */
-	net->debug_file = open("protocol.debug", O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU);
+
+int _ggzcore_net_set_dump_file(struct _GGZNet *net, const char* filename)
+{
+	if (!filename)
+		return 0;
+	
+	if (strcmp(filename, "stderr") == 0)
+		net->dump_file = STDERR_FILENO;
+	else
+		net->dump_file = open(filename, O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU);
+	
+	if (net->dump_file < 0)
+		return -1;
+	else
+		return 0;
 }
 
 
@@ -537,8 +555,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		_ggzcore_net_error(net, "Reading data from server");
 	}
 
-	/* FIXME: do elsewhere? */
-	write(net->debug_file, buf, len);
+	_net_dump_data(net, buf, len);
 	
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
@@ -613,3 +630,9 @@ static void _ggzcore_net_error(struct _GGZNet *net, char* message)
 	_ggzcore_server_net_error(net->server, message);
 }
 
+
+static void _net_dump_data(struct _GGZNet *net, char *data, int size)
+{
+	if (net->dump_file > 0)
+		write(net->dump_file, data, size);
+}
