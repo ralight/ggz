@@ -86,6 +86,7 @@ static struct _GGZEvent ggz_events[] = {
 	{GGZ_SERVER_LIST_ROOMS,     "server_list_rooms",     1},
 	{GGZ_SERVER_ROOM_JOIN,      "server_room_join",      1},
 	{GGZ_SERVER_ROOM_JOIN_FAIL, "server_room_join_fail", 1},
+	{GGZ_SERVER_LIST_PLAYERS,   "server_list_players",   1},
 	{GGZ_SERVER_CHAT,           "server_chat",           1},
 	{GGZ_SERVER_CHAT_FAIL,      "server_chat_fail",      1},
 	{GGZ_SERVER_CHAT_MSG,       "server_chat_msg",       1},

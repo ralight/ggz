@@ -30,6 +30,7 @@
 #include <protocol.h>
 #include <state.h>
 #include <easysock.h>
+#include <player.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -45,6 +46,7 @@ static void _ggzcore_net_handle_motd(void);
 static void _ggzcore_net_handle_logout(void);
 static void _ggzcore_net_handle_list_rooms(void);
 static void _ggzcore_net_handle_room_join(void);
+static void _ggzcore_net_handle_list_players(void);
 static void _ggzcore_net_handle_rsp_chat(void);
 static void _ggzcore_net_handle_chat(void);
 static void _ggzcore_net_handle_update_players(void);
@@ -89,7 +91,7 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{RSP_LOGOUT,         "rsp_logout", _ggzcore_net_handle_logout},
 	{RSP_PREF_CHANGE,    "rsp_pref_change", NULL},
 	{RSP_REMOVE_USER,    "rsp_remove_user", NULL},
-	{RSP_LIST_PLAYERS,   "rsp_list_players", NULL},
+	{RSP_LIST_PLAYERS,   "rsp_list_players", _ggzcore_net_handle_list_players},
 	{RSP_LIST_TYPES,     "rsp_list_types", NULL},
 	{RSP_LIST_TABLES,    "rsp_list_tables", NULL},
 	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_net_handle_list_rooms},
@@ -239,6 +241,13 @@ void _ggzcore_net_send_join_room(const int room)
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
 	if (es_write_int(ggz_server_sock, REQ_ROOM_JOIN) == 0)
 		es_write_int(ggz_server_sock, room);
+}
+
+
+void _ggzcore_net_send_list_players(void)
+{	
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
+	es_write_int(ggz_server_sock, REQ_LIST_PLAYERS);
 }
 
 
@@ -435,6 +444,30 @@ static void _ggzcore_net_handle_room_join(void)
 }
 		
 
+static void _ggzcore_net_handle_list_players(void)
+{
+	int i, num, table;
+	char name[256];
+	
+	if (es_read_int(ggz_server_sock, &num) < 0)
+		return;
+
+	_ggzcore_player_list_clear();
+
+	for (i = 0; i < num; i++) {
+		if (es_read_string(ggz_server_sock, name, sizeof(name)) < 0
+		    || es_read_int(ggz_server_sock, &table) < 0)
+			return;
+		
+		_ggzcore_player_list_add(name, table);
+		ggzcore_debug(GGZ_DBG_NET, "%s at table %d", name, table);
+	}
+	
+	/* FIXME: read in information and actually pass back to client */
+	ggzcore_event_trigger(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
+}
+
+
 static void _ggzcore_net_handle_rsp_chat(void)
 {
 	char status;
@@ -501,21 +534,23 @@ static void _ggzcore_net_handle_chat(void)
 static void _ggzcore_net_handle_update_players(void)
 {
 	char subop;
-	char* player;
+	char name[256];
 	
 	if (es_read_char(ggz_server_sock, &subop) < 0
-	    || es_read_string_alloc(ggz_server_sock, &player) < 0)
+	    || es_read_string(ggz_server_sock, name, sizeof(name)) < 0)
 		return;
 
 	/* FIXME: Do something with data */
 	
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", player);
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
+		_ggzcore_player_list_remove(name);
 		break;
 
 	case GGZ_UPDATE_ADD:
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", player);
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", name);
+		_ggzcore_player_list_add(name, -1);
 		break;
 	default:
 		/* FIXME: handle invalid opcode? */
@@ -555,6 +590,7 @@ static void _ggzcore_net_handle_update_tables(void)
 		ggzcore_debug(GGZ_DBG_NET, 
 			      "UPDATE_TABLE: %s joined seat %d at table %d", 
 			      player, num, table);
+		_ggzcore_player_list_replace(player, table);
 		break;
 
 	case GGZ_UPDATE_LEAVE:
@@ -564,6 +600,7 @@ static void _ggzcore_net_handle_update_tables(void)
 		ggzcore_debug(GGZ_DBG_NET, 
 			      "UPDATE_TABLE: %s left seat %d at table %d", 
 			      player, seat, table);
+		_ggzcore_player_list_replace(player, -1);
 		break;
 		
 	case GGZ_UPDATE_ADD:

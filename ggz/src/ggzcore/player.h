@@ -1,12 +1,12 @@
 /*
- * File: state.h
+ * File: player.h
  * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
- * Date: 9/22/00
+ * Project: GGZ Client
+ * Date: 6/5/00
  *
- * Code for handling state manipulations
+ * This fils contains functions for handling players
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 1998 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,42 +23,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef __STATE_H__
-#define __STATE_H__
-
-#include <ggzcore.h>
-
-struct _GGZState {
-
-	/* State ID */
-	GGZStateID id;
-
-	/* Current room on game server */
-	int room;
-
-	/* Room to which we are transitioning */
-	int trans_room;
-
-	/* Current table we're at */
-	int table;
-
-	/* Table to which we are transitioning */
-	int trans_table;
-
-	/* Server/user profile */
-	GGZProfile profile;
-};
 
 
-/* Global state variable */
-extern struct _GGZState _ggzcore_state;
+void _ggzcore_player_list_clear(void);
 
-void _ggzcore_state_init(void);
+int _ggzcore_player_list_add(const char* name, const int table);
 
-unsigned char _ggzcore_state_event_isvalid(GGZEventID id);
+int _ggzcore_player_list_remove(const char* name);
 
-void _ggzcore_state_set(GGZStateID id);
+int _ggzcore_player_list_replace(const char* name, const int table);
 
 
-#endif /* __STATE_H__ */
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -38,6 +38,7 @@
 static void _ggzcore_user_login(GGZEventID, void*, void*);
 static void _ggzcore_user_list_rooms(GGZEventID, void*, void*);
 static void _ggzcore_user_join_room(GGZEventID, void*, void*);
+static void _ggzcore_user_list_players(GGZEventID, void*, void*);
 static void _ggzcore_user_chat(GGZEventID, void*, void*);
 static void _ggzcore_user_logout(GGZEventID, void*, void*);
 
@@ -53,6 +54,7 @@ void _ggzcore_user_register(void)
 	ggzcore_event_connect(GGZ_USER_LOGIN, _ggzcore_user_login);
 	ggzcore_event_connect(GGZ_USER_LIST_ROOMS, _ggzcore_user_list_rooms);
 	ggzcore_event_connect(GGZ_USER_JOIN_ROOM, _ggzcore_user_join_room);
+	ggzcore_event_connect(GGZ_USER_LIST_PLAYERS, _ggzcore_user_list_players);
 
 	ggzcore_event_connect_full(GGZ_USER_CHAT, _ggzcore_user_chat, 
 				   (void*)GGZ_CHAT_NORMAL, NULL);
@@ -106,7 +108,7 @@ static void _ggzcore_user_login(GGZEventID id, void* event_data, void* user_data
 }
 
 
-/* _ggzcore_user_list_rooms() - Callback for user login events
+/* _ggzcore_user_list_rooms() - Callback for user room-list request
  *
  * Receives:
  * GGZEventID id    : ID code of triggered event
@@ -146,6 +148,22 @@ static void _ggzcore_user_join_room(GGZEventID id, void* event_data, void* user_
 	
 	_ggzcore_state_set(GGZ_STATE_ENTERING_ROOM);
 	_ggzcore_state.trans_room = room;
+}
+
+
+/* _ggzcore_user_list_players() - Callback for user player-list request
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_user_list_players(GGZEventID id, void* event_data, void* user_data)
+{
+	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_players");
+	_ggzcore_net_send_list_players();
 }
 
 

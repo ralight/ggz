@@ -68,6 +68,12 @@ int ggzcore_state_is_at_table(void)
 }
 
 
+GGZStateID ggzcore_state_get_id(void)
+{
+	return _ggzcore_state.id;
+}
+
+
 char* ggzcore_state_get_profile_login(void)
 {
 	return _ggzcore_state.profile.login;

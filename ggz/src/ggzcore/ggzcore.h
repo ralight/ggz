@@ -90,6 +90,7 @@ typedef enum {
 	GGZ_SERVER_LIST_ROOMS,
 	GGZ_SERVER_ROOM_JOIN,
 	GGZ_SERVER_ROOM_JOIN_FAIL,
+	GGZ_SERVER_LIST_PLAYERS,
 	GGZ_SERVER_CHAT,
 	GGZ_SERVER_CHAT_FAIL,
 	GGZ_SERVER_CHAT_MSG,
@@ -247,6 +248,22 @@ int ggzcore_event_trigger(const GGZEventID id,
 			  GGZDestroyFunc func);
 
 
+
+typedef enum {
+	GGZ_STATE_OFFLINE,
+	GGZ_STATE_CONNECTING,
+	GGZ_STATE_ONLINE,
+	GGZ_STATE_LOGGING_IN,
+	GGZ_STATE_LOGGED_IN,
+	GGZ_STATE_ENTERING_ROOM,
+	GGZ_STATE_IN_ROOM,
+	GGZ_STATE_JOINING_TABLE,
+	GGZ_STATE_AT_TABLE,
+	GGZ_STATE_LEAVING_TABLE,
+	GGZ_STATE_LOGGING_OUT
+} GGZStateID;
+
+
 /* ggzcore_state_is_XXXX()
  * 
  * These functions return 1 if ggzcore is in the specified state, and 
@@ -258,6 +275,7 @@ int ggzcore_state_is_in_room(void);
 int ggzcore_state_is_at_table(void);
 
 
+GGZStateID ggzcore_state_get_id(void);
 char* ggzcore_state_get_profile_login(void);
 char* ggzcore_state_get_profile_name(void);
 char* ggzcore_state_get_profile_host(void);
@@ -273,6 +291,7 @@ typedef enum {
 	GGZ_DBG_CONF   = 0x00000010,
 	GGZ_DBG_POLL   = 0x00000020,
 	GGZ_DBG_STATE  = 0x00000040,
+	GGZ_DBG_PLAYER = 0x00000080,
 	GGZ_DBG_ALL    = 0xFFFFFFFF
 } GGZDebugLevel;
 
