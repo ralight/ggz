@@ -422,7 +422,7 @@ static void input_handle_join_table(char *line)
 	game_init(module);
 
 	table_index = atoi(line);
-	ggzcore_room_join_table(room, table_index);
+	ggzcore_room_join_table(room, table_index, 0);
 }
 	
 
