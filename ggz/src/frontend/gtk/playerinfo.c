@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6367 2004-11-14 13:59:03Z jdorje $
+ * $Id: playerinfo.c 6377 2004-11-15 21:40:23Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -78,8 +78,10 @@ void player_info_create_or_raise(GGZPlayer * player)
 	}
 
 	tmp = g_object_get_data(G_OBJECT(dialog), "handle");
-	gtk_label_set_text(GTK_LABEL(tmp), ggzcore_player_get_name(player));
-	if (player_name) g_free(player_name);
+	gtk_label_set_text(GTK_LABEL(tmp),
+			   ggzcore_player_get_name(player));
+	if (player_name)
+		g_free(player_name);
 	player_name = g_strdup(ggzcore_player_get_name(player));
 
 	tmp = g_object_get_data(G_OBJECT(dialog), "table");
@@ -117,8 +119,6 @@ void player_info_create_or_raise(GGZPlayer * player)
 				      &losses, &ties, &forfeits)) {
 		tmp = g_object_get_data(G_OBJECT(dialog), "record_label");
 		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "record_hbox");
-		gtk_widget_show(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "record");
 		gtk_widget_show(tmp);
 
@@ -139,14 +139,10 @@ void player_info_create_or_raise(GGZPlayer * player)
 		gtk_widget_hide(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "record");
 		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "record_hbox");
-		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_rating(player, &rating)) {
 		tmp = g_object_get_data(G_OBJECT(dialog), "rating_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating_hbox");
 		gtk_widget_show(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
 		gtk_widget_show(tmp);
@@ -159,15 +155,10 @@ void player_info_create_or_raise(GGZPlayer * player)
 		gtk_widget_hide(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "rating");
 		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "rating_hbox");
-		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_ranking(player, &ranking)) {
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "ranking_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_hbox");
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
 		gtk_widget_show(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
 		gtk_widget_show(tmp);
@@ -176,21 +167,15 @@ void player_info_create_or_raise(GGZPlayer * player)
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "ranking_label");
+		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_label");
 		gtk_widget_hide(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "ranking");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog), "ranking_hbox");
 		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_highscore(player, &highscore)) {
 		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "highscore_label");
-		gtk_widget_show(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "highscore_hbox");
+					"highscore_label");
 		gtk_widget_show(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
 		gtk_widget_show(tmp);
@@ -200,18 +185,15 @@ void player_info_create_or_raise(GGZPlayer * player)
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
 		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "highscore_label");
+					"highscore_label");
 		gtk_widget_hide(tmp);
 		tmp = g_object_get_data(G_OBJECT(dialog), "highscore");
-		gtk_widget_hide(tmp);
-		tmp = g_object_get_data(G_OBJECT(dialog),
-					  "highscore_hbox");
 		gtk_widget_hide(tmp);
 	}
 }
 
 
-static void chat_activate(GtkEditable *editable, gpointer data)
+static void chat_activate(GtkEditable * editable, gpointer data)
 {
 	GtkEntry *entry;
 	GtkLabel *handle;
@@ -242,32 +224,23 @@ GtkWidget *create_dlg_info(void)
 {
 	GtkWidget *dlg_info;
 	GtkWidget *dialog_vbox;
-	GtkWidget *display_hbox;
+	GtkWidget *display_table;
 	GdkPixbuf *pixbuf;
 	GtkWidget *game_pixmap;
-	GtkWidget *info_vbox;
-	GtkWidget *handle_hbox;
 	GtkWidget *handle_label;
 	GtkWidget *handle;
-	GtkWidget *table_hbox;
 	GtkWidget *table_label;
 	GtkWidget *table;
-	GtkWidget *type_hbox;
 	GtkWidget *type_label;
 	GtkWidget *type;
-	GtkWidget *record_hbox;
 	GtkWidget *record_label;
 	GtkWidget *record;
-	GtkWidget *rating_hbox;
 	GtkWidget *rating_label;
 	GtkWidget *rating;
-	GtkWidget *ranking_hbox;
 	GtkWidget *ranking_label;
 	GtkWidget *ranking;
-	GtkWidget *highscore_hbox;
 	GtkWidget *highscore_label;
 	GtkWidget *highscore;
-	GtkWidget *chat_hbox;
 	GtkWidget *chat_label;
 	GtkWidget *chat;
 	GtkWidget *dialog_action_area1;
@@ -278,273 +251,178 @@ GtkWidget *create_dlg_info(void)
 	gtk_window_set_transient_for(GTK_WINDOW(dlg_info),
 				     GTK_WINDOW(win_main));
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
-	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Player Information"));
+	gtk_window_set_title(GTK_WINDOW(dlg_info),
+			     _("Player Information"));
 
 	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
 	g_object_set_data(G_OBJECT(dlg_info), "dialog_vbox", dialog_vbox);
 	gtk_widget_show(dialog_vbox);
 
-	display_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(display_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "display_hbox",
-				 display_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(display_hbox);
-	gtk_box_pack_start(GTK_BOX(dialog_vbox), display_hbox, FALSE, TRUE,
-			   0);
-	gtk_container_set_border_width(GTK_CONTAINER(display_hbox), 5);
+	display_table = gtk_table_new(8, 3, FALSE);
+	gtk_widget_ref(display_table);
+	g_object_set_data_full(G_OBJECT(dlg_info), "display_table",
+			       display_table,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(display_table);
+	gtk_box_pack_start(GTK_BOX(dialog_vbox), display_table,
+			   FALSE, TRUE, 0);
 
 	pixbuf = load_pixbuf("unknown");
 	game_pixmap = gtk_image_new_from_pixbuf(pixbuf);
 	gtk_widget_ref(game_pixmap);
 	g_object_set_data_full(G_OBJECT(dlg_info), "game_pixmap",
-				 game_pixmap,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       game_pixmap,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data_full(G_OBJECT(game_pixmap), "game_pixbuf",
 			       pixbuf, g_object_unref);
 	gtk_widget_show(game_pixmap);
-	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(game_pixmap), 0.5, 0);
-
-	info_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_widget_ref(info_vbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "info_vbox", info_vbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(info_vbox);
-	gtk_box_pack_start(GTK_BOX(display_hbox), info_vbox, TRUE, TRUE, 0);
-
+	gtk_table_attach(GTK_TABLE(display_table), game_pixmap,
+			 0, 1, 0, 8, 0, 0, 0, 0);
 
 	/* Add 'handle' label */
-	handle_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(handle_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "handle_hbox",
-				 handle_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(handle_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), handle_hbox, TRUE, TRUE, 0);
-
 	handle_label = gtk_label_new(_("Player Handle:"));
 	gtk_widget_ref(handle_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "handle_label",
-				 handle_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       handle_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(handle_label);
-	gtk_box_pack_start(GTK_BOX(handle_hbox), handle_label, FALSE, FALSE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(handle_label), 0.02, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), handle_label,
+			 1, 2, 0, 1, 0, 0, 0, 0);
 
 	handle = gtk_label_new("");
 	gtk_widget_ref(handle);
 	g_object_set_data_full(G_OBJECT(dlg_info), "handle", handle,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(handle);
-	gtk_box_pack_start(GTK_BOX(handle_hbox), handle, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(handle), 0, 0.5);
-
+	gtk_table_attach(GTK_TABLE(display_table), handle,
+			 2, 3, 0, 1, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "table" label */
-	table_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(table_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "table_hbox",
-				 table_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(table_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), table_hbox, TRUE, TRUE, 0);
-
 	table_label = gtk_label_new(_("Table:"));
 	gtk_widget_ref(table_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "table_label",
-				 table_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       table_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table_label);
-	gtk_box_pack_start(GTK_BOX(table_hbox), table_label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(table_label), 0.02, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), table_label,
+			 1, 2, 1, 2, 0, 0, 0, 0);
 
 	table = gtk_label_new("-");
 	gtk_widget_ref(table);
 	g_object_set_data_full(G_OBJECT(dlg_info), "table", table,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table);
-	gtk_box_pack_start(GTK_BOX(table_hbox), table, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(table), 0, 0.5);
-
+	gtk_table_attach(GTK_TABLE(display_table), table,
+			 2, 3, 1, 2, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "type" label */
-	type_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(type_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "type_hbox", type_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(type_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), type_hbox, TRUE, TRUE, 0);
-
 	type_label = gtk_label_new(_("Account:"));
 	gtk_widget_ref(type_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "type_label",
-				 type_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       type_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_label);
-	gtk_box_pack_start(GTK_BOX(type_hbox), type_label, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(type_label), 0.02, 0);
+	gtk_table_attach(GTK_TABLE(display_table), type_label,
+			 1, 2, 2, 3, 0, 0, 0, 0);
 
 	type = gtk_label_new("");
 	gtk_widget_ref(type);
 	g_object_set_data_full(G_OBJECT(dlg_info), "type", type,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type);
-	gtk_box_pack_start(GTK_BOX(type_hbox), type, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(display_table), type,
+			 2, 3, 2, 3, GTK_EXPAND, 0, 0, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(type), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(type), 0, 0.5);
-
-	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
-	g_object_set_data(G_OBJECT(dlg_info), "dialog_action_area1",
-			  dialog_action_area1);
-	gtk_widget_show(dialog_action_area1);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
-				       10);
-
 
 	/* Add "Record" label */
-	record_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(record_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "record_hbox",
-				 record_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(info_vbox), record_hbox, TRUE, TRUE, 0);
-
 	record_label = gtk_label_new(_("Record:"));
 	gtk_widget_ref(record_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "record_label",
-				 record_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(record_hbox), record_label, FALSE, FALSE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(record_label), 0.02, 0);
+			       record_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), record_label,
+			 1, 2, 3, 4, 0, 0, 0, 0);
 
 	record = gtk_label_new("");
 	gtk_widget_ref(record);
 	g_object_set_data_full(G_OBJECT(dlg_info), "record", record,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(record_hbox), record, TRUE, TRUE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(record), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(record), 0, 0.5);
-
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), record,
+			 2, 3, 3, 4, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Rating" label */
-	rating_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(rating_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "rating_hbox",
-				 rating_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(info_vbox), rating_hbox, TRUE, TRUE, 0);
-
 	rating_label = gtk_label_new(_("Rating:"));
 	gtk_widget_ref(rating_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "rating_label",
-				 rating_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(rating_hbox), rating_label, FALSE, FALSE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(rating_label), 0.02, 0);
+			       rating_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), rating_label,
+			 1, 2, 4, 5, 0, 0, 0, 0);
 
 	rating = gtk_label_new("");
 	gtk_widget_ref(rating);
 	g_object_set_data_full(G_OBJECT(dlg_info), "rating", rating,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(rating_hbox), rating, TRUE, TRUE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(rating), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(rating), 0, 0.5);
-
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), rating,
+			 2, 3, 4, 5, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Ranking" label */
-	ranking_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(ranking_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "ranking_hbox",
-				 ranking_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(info_vbox), ranking_hbox, TRUE, TRUE, 0);
-
 	ranking_label = gtk_label_new(_("Rank:"));
 	gtk_widget_ref(ranking_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "ranking_label",
-				 ranking_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking_label, FALSE, FALSE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(ranking_label), 0.02, 0);
+			       ranking_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), ranking_label,
+			 1, 2, 5, 6, 0, 0, 0, 0);
 
 	ranking = gtk_label_new("");
 	gtk_widget_ref(ranking);
 	g_object_set_data_full(G_OBJECT(dlg_info), "ranking", ranking,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking, TRUE, TRUE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(ranking), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(ranking), 0, 0.5);
-
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), ranking,
+			 2, 3, 5, 6, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Highscore" label */
-	highscore_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(highscore_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "highscore_hbox",
-				 highscore_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(info_vbox), highscore_hbox, TRUE, TRUE, 0);
-
 	highscore_label = gtk_label_new(_("Score:"));
 	gtk_widget_ref(highscore_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "highscore_label",
-				 highscore_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore_label, FALSE,
-			   FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(highscore_label), 0.02, 0);
+			       highscore_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), highscore_label,
+			 1, 2, 6, 7, 0, 0, 0, 0);
 
 	highscore = gtk_label_new("");
 	gtk_widget_ref(highscore);
 	g_object_set_data_full(G_OBJECT(dlg_info), "highscore", highscore,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	/* Widget shown later */
-	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore, TRUE, TRUE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(highscore), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(highscore), 0, 0.5);
+			       (GtkDestroyNotify) gtk_widget_unref);
+	/* gtk_widget_show is called later. */
+	gtk_table_attach(GTK_TABLE(display_table), highscore,
+			 2, 3, 6, 7, GTK_EXPAND, 0, 0, 0);
 
 	/* Add "Private chat" label */
-	chat_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(chat_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "chat_hbox",
-				 chat_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(chat_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), chat_hbox, TRUE, TRUE, 0);
-
 	chat_label = gtk_label_new(_("Message:"));
 	gtk_widget_ref(chat_label);
 	g_object_set_data_full(G_OBJECT(dlg_info), "chat_label",
-				 chat_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       chat_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(chat_label);
-	gtk_box_pack_start(GTK_BOX(chat_hbox), chat_label, FALSE,
-			   FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(chat_label), 0.02, 0);
+	gtk_table_attach(GTK_TABLE(display_table), chat_label,
+			 1, 2, 7, 8, 0, 0, 0, 0);
 
 	chat = gtk_entry_new();
 	gtk_widget_ref(chat);
 	g_object_set_data_full(G_OBJECT(dlg_info), "chat", chat,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(chat);
-	gtk_box_pack_start(GTK_BOX(chat_hbox), chat, TRUE, TRUE, 0);
-	/* gtk_misc_set_alignment(GTK_MISC(chat), 0, 0.5); */
+	gtk_table_attach(GTK_TABLE(display_table), chat,
+			 2, 3, 7, 8, GTK_EXPAND, 0, 0, 0);
 	g_signal_connect(chat, "activate",
 			 GTK_SIGNAL_FUNC(chat_activate), NULL);
 
@@ -556,12 +434,11 @@ GtkWidget *create_dlg_info(void)
 	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
 				       10);
 
-
 	button_box = gtk_hbutton_box_new();
 	gtk_widget_ref(button_box);
 	g_object_set_data_full(G_OBJECT(dlg_info), "button_box",
-				 button_box,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       button_box,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(button_box);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
 			   TRUE, 0);
@@ -569,16 +446,16 @@ GtkWidget *create_dlg_info(void)
 	ok_button = gtk_button_new_from_stock(GTK_STOCK_OK);
 	gtk_widget_ref(ok_button);
 	g_object_set_data_full(G_OBJECT(dlg_info), "ok_button", ok_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(ok_button);
 	gtk_container_add(GTK_CONTAINER(button_box), ok_button);
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
 	g_signal_connect(GTK_OBJECT(dlg_info), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
+			 GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
 	g_signal_connect_swapped(GTK_OBJECT(ok_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dlg_info));
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 GTK_OBJECT(dlg_info));
 
 	return dlg_info;
 }
