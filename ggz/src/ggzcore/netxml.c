@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5484 2003-03-29 20:38:07Z dr_maux $
+ * $Id: netxml.c 5521 2003-05-10 06:52:48Z dr_maux $
  *
  * Code for parsing XML streamed from the server
  *
@@ -517,8 +517,8 @@ int _ggzcore_net_send_chat(GGZNet *net, const GGZChatType type,
 		break;
 	}
 
-	ggz_error_msg("ggzcore_net_send_chat: "
-		      "unknown chat type given.");
+	/*ggz_error_msg("ggzcore_net_send_chat: "
+		      "unknown chat type given.");*/
 
 	if (my_text) {
 		ggz_free(my_text);
