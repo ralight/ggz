@@ -42,15 +42,14 @@
  * 
  * dbg_msg : print a debugging message if DEBUG is defined
  */
-void err_msg (const char* fmt, ...);
-void err_sys (const char* fmt, ...);
-void err_msg_exit (const char* fmt, ...);
-void err_sys_exit (const char* fmt, ...);
-void dbg_msg (const char* fmt, ...);
+void err_msg(const char *fmt, ...);
+void err_sys(const char *fmt, ...);
+void err_msg_exit(const char *fmt, ...);
+void err_sys_exit(const char *fmt, ...);
+void dbg_msg(const char *fmt, ...);
 
 
 /*
  * Error fprinting function for easysock lib
  */
-void err_sock (const char*, const EsOpType, const EsDataType);
-
+void err_sock(const char *, const EsOpType, const EsDataType);

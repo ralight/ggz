@@ -24,6 +24,6 @@
 
 #include <config.h>
 
-int check_table(int p_index, TableInfo table );
+int check_table(int p_index, TableInfo table);
 int handle_table(int, int, int);
 int launch_table(int);

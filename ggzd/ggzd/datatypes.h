@@ -67,14 +67,14 @@
 
 /* Datatypes for server options*/
 typedef struct {
-  char* local_conf;
-  int log_level;
-  char* log_file;
-  char remove_users;
-  int user_inact_time;
-  char clear_stats;
-  int stat_clr_time;
-  int main_port;
+	char *local_conf;
+	int log_level;
+	char *log_file;
+	char remove_users;
+	int user_inact_time;
+	char clear_stats;
+	int stat_clr_time;
+	int main_port;
 } Options;
 
 
@@ -84,83 +84,83 @@ typedef void (*GameLaunchFunc) (void);
 
 /* Info about a particular type of game*/
 typedef struct {
-  char name[MAX_GAME_NAME_LEN];
-  char version[MAX_GAME_VER_LEN];
-  char desc[MAX_GAME_DESC_LEN];
-  char author[MAX_GAME_AUTH_LEN];
-  char homepage[MAX_GAME_WEB_LEN];
-  unsigned char num_play_allow;
-  unsigned char comp_allow;
-  int options_size;
-  unsigned char enabled;
-  GameLaunchFunc* launch;
-  char path[MAX_PATH_LEN];
+	char name[MAX_GAME_NAME_LEN];
+	char version[MAX_GAME_VER_LEN];
+	char desc[MAX_GAME_DESC_LEN];
+	char author[MAX_GAME_AUTH_LEN];
+	char homepage[MAX_GAME_WEB_LEN];
+	unsigned char num_play_allow;
+	unsigned char comp_allow;
+	int options_size;
+	unsigned char enabled;
+	GameLaunchFunc *launch;
+	char path[MAX_PATH_LEN];
 } GameInfo;
 
 
 /* Array of game-types and their mutex */
 struct GameTypes {
-  GameInfo info[MAX_GAME_TYPES];
-  int count;
-  pthread_rwlock_t lock;
+	GameInfo info[MAX_GAME_TYPES];
+	int count;
+	pthread_rwlock_t lock;
 };
 
 
 /* Info about a particular game-table */
 typedef struct {
-  int type_index;
-  int num_seats;
-  int num_humans;
-  pthread_cond_t seats_cond;
-  int open_seats;
-  pthread_mutex_t seats_lock;
-  int num_reserves;
-  unsigned char comp_players;
-  unsigned char playing;
-  int fd_to_game;
-  int pid;
-  int players[8];
-  int reserve[8];
-  int player_fd[8];
-  void* options;
+	int type_index;
+	int num_seats;
+	int num_humans;
+	pthread_cond_t seats_cond;
+	int open_seats;
+	pthread_mutex_t seats_lock;
+	int num_reserves;
+	unsigned char comp_players;
+	unsigned char playing;
+	int fd_to_game;
+	int pid;
+	int players[8];
+	int reserve[8];
+	int player_fd[8];
+	void *options;
 } TableInfo;
- 
+
 
 /* Array of game-tables, their mutex, and a counter */
 struct GameTables {
-  TableInfo info[MAX_TABLES];
-  int count;
-  pthread_rwlock_t lock;
+	TableInfo info[MAX_TABLES];
+	int count;
+	pthread_rwlock_t lock;
 };
-  
+
 
 /* Info about a logged-in user */
 typedef struct {
-  int uid;
-  char name[MAX_USER_NAME_LEN+1]; /* Room for \0 */
-  int fd;
-  pthread_t pid;
-  int table_index;
+	int uid;
+	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
+	int fd;
+	pthread_t pid;
+	int table_index;
 } UserInfo;
 
 
 /* Array of logged-in users, their mutex, and a counter */
 struct Users {
-  UserInfo info[MAX_USERS];
-  int count;
-  pthread_rwlock_t lock;
+	UserInfo info[MAX_USERS];
+	int count;
+	pthread_rwlock_t lock;
 };
 
 
 /* Reservation info */
 typedef struct {
-  int game_index;
-  int uid;
+	int game_index;
+	int uid;
 } ReserveInfo;
 
 
-#define NG_UID_NONE -1       /* Fixed invalid UID value */
-#define NG_UID_ANON -2       /* UID for all anonymous players */
+#define NG_UID_NONE -1		/* Fixed invalid UID value */
+#define NG_UID_ANON -2		/* UID for all anonymous players */
 
 #define NG_TYPE_ALL  -1
 #define NG_TYPE_RES  -2

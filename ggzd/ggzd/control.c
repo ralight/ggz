@@ -23,12 +23,12 @@
  */
 
 
-#include <config.h>     /* Site specific config */
+#include <config.h>		/* Site specific config */
 
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <stdlib.h>
-#include <unistd.h>   
+#include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
@@ -50,120 +50,124 @@ struct GameTables game_tables;
 struct Users players;
 
 
-void init_data(void) {
+void init_data(void)
+{
 
-  int i;
-  GameInfo spades;
+	int i;
+	GameInfo spades;
 
-  pthread_rwlock_init(&game_types.lock, NULL);
-  pthread_rwlock_init(&game_tables.lock, NULL);
-  pthread_rwlock_init(&players.lock, NULL);
+	pthread_rwlock_init(&game_types.lock, NULL);
+	pthread_rwlock_init(&game_tables.lock, NULL);
+	pthread_rwlock_init(&players.lock, NULL);
 
-  for (i = 0; i < MAX_USERS; i++) {
-    players.info[i].fd = -1;
-    players.info[i].table_index = -1;
-    players.info[i].uid = NG_UID_NONE;
-  }
+	for (i = 0; i < MAX_USERS; i++) {
+		players.info[i].fd = -1;
+		players.info[i].table_index = -1;
+		players.info[i].uid = NG_UID_NONE;
+	}
 
-  for (i = 0; i <MAX_TABLES; i++) {
-    game_tables.info[i].type_index = -1;
-  }
+	for (i = 0; i < MAX_TABLES; i++) {
+		game_tables.info[i].type_index = -1;
+	}
 
-  /* FIXME: Temporary hack.  This info should be loaded from a file
-   * or something
-   */
-  strncpy(spades.name, "NetSpades", MAX_GAME_NAME_LEN);
-  strncpy(spades.desc, "NetSpades is a multiuser networked spades game written by Brent Hendricks.", MAX_GAME_DESC_LEN);
-  spades.num_play_allow = (char)(PLAY_ALLOW_FOUR);
-  spades.comp_allow = (char)(COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO
-			     | COMP_ALLOW_THREE);
-  spades.options_size = 12;
-  spades.enabled = 1;
-  spades.launch = NULL;
-  strncpy(spades.path, "../game_servers/spades/spades",
-	  MAX_PATH_LEN);
-  
-  pthread_rwlock_wrlock(&game_types.lock);
-  game_types.info[0] = spades;
-  game_types.count++;
-  pthread_rwlock_unlock(&game_types.lock);
+	/* FIXME: Temporary hack.  This info should be loaded from a file
+	 * or something
+	 */
+	strncpy(spades.name, "NetSpades", MAX_GAME_NAME_LEN);
+	strncpy(spades.desc,
+		"NetSpades is a multiuser networked spades game written by Brent Hendricks.",
+		MAX_GAME_DESC_LEN);
+	spades.num_play_allow = (char) (PLAY_ALLOW_FOUR);
+	spades.comp_allow =
+	    (char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
+		    COMP_ALLOW_THREE);
+	spades.options_size = 12;
+	spades.enabled = 1;
+	spades.launch = NULL;
+	strncpy(spades.path, "../game_servers/spades/spades",
+		MAX_PATH_LEN);
 
-}
-
-
-void daemon_init(const char *pname, int facility) {
-
-  int pid;
-
-  /* Daemonize */
-  if ( (pid = fork()) < 0)
-    err_sys_exit("fork failed");
-  else if (pid != 0)
-    exit(0);
-  
-  setsid ();
-  chdir ("/");
-  umask(0);
-  close(STDIN_FILENO);
-  close(STDOUT_FILENO);
-  close(STDERR_FILENO);
+	pthread_rwlock_wrlock(&game_types.lock);
+	game_types.info[0] = spades;
+	game_types.count++;
+	pthread_rwlock_unlock(&game_types.lock);
 
 }
 
 
-int main(int argc, char *argv[]) {
-  
-  int main_sock, new_sock;
+void daemon_init(const char *pname, int facility)
+{
 
-  /* Parse options */
-  parse_args(argc, argv);
-  parse_conf_file();                  
+	int pid;
 
-  dbg_msg("Conf file: %s", opt.local_conf);
-  dbg_msg("Log level: %d", opt.log_level);
-  dbg_msg("Main Port: %d", opt.main_port);
-  
+	/* Daemonize */
+	if ((pid = fork()) < 0)
+		err_sys_exit("fork failed");
+	else if (pid != 0)
+		exit(0);
+
+	setsid();
+	chdir("/");
+	umask(0);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+
+}
+
+
+int main(int argc, char *argv[])
+{
+
+	int main_sock, new_sock;
+
+	/* Parse options */
+	parse_args(argc, argv);
+	parse_conf_file();
+
+	dbg_msg("Conf file: %s", opt.local_conf);
+	dbg_msg("Log level: %d", opt.log_level);
+	dbg_msg("Main Port: %d", opt.main_port);
+
 #ifndef DEBUG
-  daemon_init(argv[0], 0);
+	daemon_init(argv[0], 0);
 #endif
 
-  init_data();
+	init_data();
 
-#if 0 /* FIXME: need to write these */
-  setup_sighandlers();
-  load_game_mods();
-  setup_config_socket();
+#if 0				/* FIXME: need to write these */
+	setup_sighandlers();
+	load_game_mods();
+	setup_config_socket();
 #endif
-  
 
-  
-  /* Create SERVER socket on main_port */
-  main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
-  
-  /* Start accepting connections */
-  if (FAIL(listen(main_sock, MAX_USERS)))
-      err_sys_exit("Error listening to socket");
-  
-  /* Main loop */
-  for( ; ; ) {
-    
-    if (FAIL(new_sock = accept(main_sock, NULL, NULL))) {
-      if( errno == EINTR ) 
-	  continue;
-      else
-	  err_sys_exit("Error accepting connection");
-    }
-    else 
-	launch_handler(new_sock);
-      
-  }  /* main loop*/
-  
 
-#if 0 /* FIXME: Not implemented yet */
-  cleanup();
+
+	/* Create SERVER socket on main_port */
+	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
+
+	/* Start accepting connections */
+	if (FAIL(listen(main_sock, MAX_USERS)))
+		err_sys_exit("Error listening to socket");
+
+	/* Main loop */
+	for (;;) {
+
+		if (FAIL(new_sock = accept(main_sock, NULL, NULL))) {
+			if (errno == EINTR)
+				continue;
+			else
+				err_sys_exit("Error accepting connection");
+		} else
+			launch_handler(new_sock);
+
+	}			/* main loop */
+
+
+#if 0				/* FIXME: Not implemented yet */
+	cleanup();
 #endif
-  
-  return 0;
-  
+
+	return 0;
+
 }
-
