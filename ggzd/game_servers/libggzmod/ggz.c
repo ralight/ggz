@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2394 2001-09-08 02:32:43Z jdorje $
+ * $Id: ggz.c 2534 2001-10-04 07:50:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -396,18 +396,7 @@ int ggzd_debug(const char *fmt, ...)
 }
 
 
-
-int ggzd_seats_open(void)
-{
-	int i, count = 0;
-	for (i = 0; i < num_seats; i++)
-		if (seat_data[i].assign == GGZ_SEAT_OPEN)
-			count++;
-	return count;
-}
-
-
-int ggzd_seats_num(void)
+int ggzd_get_seats_num(void)
 {
 	int i;
 	for (i = 0; i < num_seats; i++)
@@ -417,33 +406,12 @@ int ggzd_seats_num(void)
 }
 
 
-int ggzd_seats_bot(void)
+int ggzd_get_seat_count(ggzd_assign_t status)
 {
 	int i, count = 0;
 	for (i = 0; i < num_seats; i++)
-		if (seat_data[i].assign == GGZ_SEAT_BOT)
+		if (seat_data[i].assign == status)
 			count++;
-	return count;
-}
-
-
-int ggzd_seats_reserved(void)
-{
-	int i, count = 0;
-	for (i = 0; i < num_seats; i++)
-		if (seat_data[i].assign == GGZ_SEAT_RESV)
-			count++;
-	return count;
-}
-
-
-int ggzd_seats_human(void)
-{
-	int i, count = 0;
-	for (i = 0; i < num_seats; i++)
-		if (seat_data[i].assign >= 0 )
-			count++;
-	
 	return count;
 }
 

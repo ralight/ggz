@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2357 2001-09-04 20:22:55Z jdorje $
+ * $Id: ggz_server.h 2534 2001-10-04 07:50:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -127,32 +127,30 @@ int ggzd_get_player_udp_socket(int seat);
  *  @return 0 on success, -1 on failure */
 int ggzd_debug(const char *fmt, ...);
 
+
+/** @note Depricated; use ggzd_get_seats_num */
+#define ggzd_seats_num() ggzd_get_seats_num()
+
+/** @note Depricated; use ggzd_get_seat_count */
+#define ggzd_seats_open() ggzd_get_seat_count(GGZ_SEAT_OPEN)
+
+/** @note Depricated; use ggzd_get_seat_count */
+#define ggzd_seats_bot() ggzd_get_seat_count(GGZ_SEAT_BOT)
+
+/** @note Depricated; use ggzd_get_seat_count */
+#define ggzd_seats_reserved() ggzd_get_seat_count(GGZ_SEAT_RESV)
+
+/** @note Depricated; use ggzd_get_seat_count */
+#define ggzd_seats_human() ggzd_get_seat_count(GGZ_SEAT_PLAYER)
+
 /** @brief Count the total number of seats.
  *  @return The total number of seats at the table. */
-int ggzd_seats_num(void);
+int ggzd_get_seats_num(void);
 
-/** @brief Count the number of open seats.
- *  @return The number of open (unoccupied) seats at the table.
- *  @note This is the number of seats whose status is GGZ_SEAT_OPEN. */
-int ggzd_seats_open(void);
-
-/** @brief Count the number of bot/AI seats.
- *  @return The number of bot-occupied seats at the table.
- *  @note This is the number of seats whose status is GGZ_SEAT_BOT.
- *  @todo Is this function necessary? */
-int ggzd_seats_bot(void);
-
-/** @brief Count the number of reserved seats.
- *  @return The number of reserved seats at the table.
- *  @note This is the number of seats whose status is GGZ_SEAT_RESV
- *  @todo Is this function necessary? */
-int ggzd_seats_reserved(void);
-
-/** @brief Count the number of human-occupied seats.
- *  @return The number of occupied player seats at the table.
- *  @note This is the number of seats whose status is GGZ_SEAT_PLAYER
- *  @todo Is this function necessary? */
-int ggzd_seats_human(void);
+/** @brief Count the number of seats with the given status.
+ *  @param status The assignment status for which to check.
+ *  @return The number of matching seats at the table. */
+int ggzd_get_seat_count(ggzd_assign_t status);
 
 
 /** @brief Tell ggzdmod the game is over.
