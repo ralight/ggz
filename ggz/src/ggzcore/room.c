@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4439 2002-09-07 17:16:45Z jdorje $
+ * $Id: room.c 4526 2002-09-12 17:23:43Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -107,6 +107,7 @@ struct _GGZRoom {
 	/* Are we playing or watching at our table? */
 	/* FIXME: this should be tracked in the game struct, but the room
 	   doesn't have access to that!  --JDS */
+	/* FIXME: this is tracked very poorly. */
 	int spectating;
 	
 	/* Room events */
@@ -867,8 +868,10 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_launch(net, table);
 	
-	if (status == 0)
+	if (status == 0) {
 		_ggzcore_server_set_table_launching(room->server);
+		room->spectating = 0;
+	}
 	
 	return status;
 }
