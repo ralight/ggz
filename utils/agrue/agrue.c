@@ -8,8 +8,9 @@
 #include <easysock.h>
 #include <protocols.h>
 
-#define PORT 5687
+#define PORT 5688
 #define HOSTNAME "localhost"
+#define PROTOCOL_VERSION 3
 
 char *opstring[] = {
 	"MSG_SERVER_ID",	"MSG_SERVER_FULL",	"MSG_MOTD",
@@ -26,38 +27,43 @@ char *opstring[] = {
 
 void handle_read(void);
 void req_login(void);
+void req_room_list(void);
 void change_room(void);
 void yack_away(void);
 
-int my_socket, rooms=0, cur_room=-1, logged_in=0;
+int my_socket, rooms=0, cur_room=-1, logged_in=0, max_chatlen;
 
 int main()
 {
-	int opcode;
 	fd_set select_mux;
 	struct timeval timeout;
 
 	srandom((unsigned)time(NULL));
 	my_socket = es_make_socket(ES_CLIENT, PORT, HOSTNAME);
 
+	timeout.tv_sec = 5;
+	timeout.tv_usec = 0;
+
 	while(1)
 	{
 		FD_ZERO(&select_mux);
 		FD_SET(my_socket, &select_mux);
-		timeout.tv_sec = 1;
-		timeout.tv_usec = 0;
 		if(select(my_socket+1, &select_mux, NULL, NULL, &timeout)) {
 			if(FD_ISSET(my_socket, &select_mux))
 				handle_read();
 		} else {
 			if(!logged_in)
 				req_login();
-			else if(rooms != 0 && cur_room == -1)
+			else if(rooms != 0
+			   && (cur_room == -1 || (random()%12) == 0))
 				change_room();
-			else if(rooms != 0 && (random()%15) == 0)
-				change_room();
-			else if(cur_room != -1 && (random()%3) == 0)
+			else if(cur_room != -1)
 				yack_away();
+		}
+
+		if(timeout.tv_sec <= 0 && timeout.tv_usec <= 0) {
+			timeout.tv_sec = 5;
+			timeout.tv_usec = 0;
 		}
 	}
 }
@@ -70,10 +76,19 @@ void handle_read(void)
 	char chr;
 
 	es_read_int(my_socket, &opcode);
+	/*printf("OP: %s\n", opstring[opcode]);*/
 	switch(opcode) {
 		case MSG_SERVER_ID:
 			es_read_string_alloc(my_socket, &string);
 			free(string);
+			es_read_int(my_socket, &num);
+			es_read_int(my_socket, &max_chatlen);
+			if(num != PROTOCOL_VERSION) {
+				printf("Server is protocol version %d\n", num);
+				printf("We are version %d\n", PROTOCOL_VERSION);
+				printf("Exiting...\n");
+				exit(1);
+			}
 			break;
 		case RSP_LOGIN_ANON:
 			es_read_char(my_socket, &chr);
@@ -82,6 +97,7 @@ void handle_read(void)
 				logged_in = 0;
 			else
 				logged_in = 1;
+			req_room_list();
 			break;
 		case MSG_MOTD:
 			es_read_int(my_socket, &num);
@@ -89,11 +105,6 @@ void handle_read(void)
 				es_read_string_alloc(my_socket, &string);
 				free(string);
 			}
-			break;
-		case MSG_UPDATE_ROOMS:
-			es_write_int(my_socket, REQ_LIST_ROOMS);
-			es_write_int(my_socket, -1);
-			es_write_char(my_socket, (char)0);
 			break;
 		case RSP_LIST_ROOMS:
 			es_read_int(my_socket, &num);
@@ -109,16 +120,21 @@ void handle_read(void)
 			es_read_char(my_socket, &chr);
 			break;
 		case MSG_CHAT:
+			es_read_char(my_socket, &chr);
 			es_read_string_alloc(my_socket, &string);
 			free(string);
-			es_read_string_alloc(my_socket, &string);
-			free(string);
+			if(chr & GGZ_CHAT_M_MESSAGE) {
+				es_read_string_alloc(my_socket, &string);
+				free(string);
+			}
 			break;
 		case RSP_CHAT:
 			es_read_char(my_socket, &chr);
 			break;
 		case MSG_UPDATE_PLAYERS:
-			es_write_int(my_socket, REQ_LIST_PLAYERS);
+			es_read_char(my_socket, &chr);
+			es_read_string_alloc(my_socket, &string);
+			free(string);
 			break;
 		case MSG_UPDATE_TYPES:
 			es_write_int(my_socket, REQ_LIST_TYPES);
@@ -171,6 +187,9 @@ void handle_read(void)
 				}
 			}
 			break;
+		default:
+			printf("Unimplemented opcode received\n");
+			exit(1);
 	}
 }
 
@@ -194,10 +213,20 @@ void req_login(void)
 }
 
 
-/* This function will really give your CPU a tummy ache if there's only 1 room*/
+void req_room_list(void)
+{
+	es_write_int(my_socket, REQ_LIST_ROOMS);
+	es_write_int(my_socket, -1);
+	es_write_char(my_socket, (char)0);
+}
+
+
 void change_room(void)
 {
 	int new_room=cur_room;
+
+	if(rooms == 1)
+		return;
 	while(new_room == cur_room)
 		new_room = random() % rooms;
 	es_write_int(my_socket, REQ_ROOM_JOIN);
@@ -224,5 +253,6 @@ void yack_away(void)
 	msg[i] = '\0';
 
 	es_write_int(my_socket, REQ_CHAT);
+	es_write_char(my_socket, GGZ_CHAT_NORMAL);
 	es_write_string(my_socket, msg);
 }
