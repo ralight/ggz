@@ -186,12 +186,6 @@ void KReversi::doMove(int move) {
   char mboard[8][8];
   if (move == RVR_ERROR_INVALIDMOVE || move == RVR_ERROR_WRONGTURN)
     return;
-  if (move == RVR_ERROR_CANTMOVE) {
-    turn=-turn;
-    return;
-  }
-  mx = move % 8;
-  my = move / 8;
   /* Translate board */
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
@@ -208,6 +202,14 @@ void KReversi::doMove(int move) {
       }
     }
   }
+  if (move == RVR_ERROR_CANTMOVE) {
+    turn=-turn;
+		maskBoard(turn, mboard);
+		view->updateBoard(mboard);
+    return;
+  }
+  mx = move % 8;
+  my = move / 8;
   board[mx][my] = turn;
   mboard[mx][my] = 3*turn;
   // Mark up
