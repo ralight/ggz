@@ -470,20 +470,19 @@ static void _ggzcore_net_handle_chat(void)
 		if (es_read_string_alloc(ggz_server_sock, &(data[1])) < 0)
 			return;
 
-	switch(subop)
-	{
-		case GGZ_CHAT_NORMAL:
-			ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
-			break;
-		case GGZ_CHAT_ANNOUNCE:
-			ggzcore_event_trigger(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
-			break;
-		case GGZ_CHAT_PERSONAL:
-			ggzcore_event_trigger(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
-			break;
-		case GGZ_CHAT_BEEP:
-			ggzcore_event_trigger(GGZ_SERVER_CHAT_BEEP, data, NULL);
-			break;
+	switch((GGZChatOp)subop) {
+	case GGZ_CHAT_NORMAL:
+		ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
+		break;
+	case GGZ_CHAT_ANNOUNCE:
+		ggzcore_event_trigger(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
+		break;
+	case GGZ_CHAT_PERSONAL:
+		ggzcore_event_trigger(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
+		break;
+	case GGZ_CHAT_BEEP:
+		ggzcore_event_trigger(GGZ_SERVER_CHAT_BEEP, data, NULL);
+		break;
 	}
 
 	/* FIXME: come up with a function to free data */

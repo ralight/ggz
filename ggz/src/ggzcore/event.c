@@ -78,30 +78,32 @@ struct _GGZEvent {
 
 /* Array of all GGZ events */
 static struct _GGZEvent ggz_events[] = {
-	{GGZ_SERVER_CONNECT,     "server_connect",     1, NULL, NULL},
-	{GGZ_SERVER_CONNECT_FAIL,"server_connect_fail",1, NULL, NULL},
-	{GGZ_SERVER_LOGIN,       "server_login_ok",    1, NULL, NULL},
-	{GGZ_SERVER_LOGIN_FAIL,  "server_login_fail",  1, NULL, NULL},
-	{GGZ_SERVER_LIST_ROOMS,  "server_list_rooms",  1, NULL, NULL},
-	{GGZ_SERVER_ROOM_JOIN,   "server_room_join",   1, NULL, NULL},
-	{GGZ_SERVER_ROOM_JOIN_FAIL,"server_room_join_fail",   1, NULL, NULL},
-	{GGZ_SERVER_CHAT,        "server_chat", 1, NULL, NULL},
-	{GGZ_SERVER_CHAT_FAIL,   "server_chat_fail",   1, NULL, NULL},
-	{GGZ_SERVER_CHAT_MSG,    "server_chat_msg",    1, NULL, NULL},
-	{GGZ_SERVER_CHAT_MSG,    "server_chat_announce",    1, NULL, NULL},
-	{GGZ_SERVER_CHAT_MSG,    "server_chat_prvmsg",    1, NULL, NULL},
-	{GGZ_SERVER_CHAT_MSG,    "server_chat_beep",    1, NULL, NULL},
-	{GGZ_SERVER_LOGOUT,      "server_logout",      1, NULL, NULL},
-	{GGZ_SERVER_ERROR,       "server_error",       1, NULL, NULL},
-	{GGZ_NET_ERROR,          "net_error",          1, NULL, NULL},
-	{GGZ_USER_LOGIN,         "user_login",         1, NULL, NULL},
-	{GGZ_USER_LIST_ROOMS,    "user_list_rooms",    1, NULL, NULL},
-	{GGZ_USER_LIST_TYPES,    "user_list_types",    1, NULL, NULL},
-	{GGZ_USER_JOIN_ROOM,     "user_join_room",     1, NULL, NULL},
-	{GGZ_USER_LIST_TABLES,   "user_list_tables",   1, NULL, NULL},
-	{GGZ_USER_LIST_PLAYERS,  "user_list_players",  1, NULL, NULL},
-	{GGZ_USER_CHAT,          "user_chat",          1, NULL, NULL},
-	{GGZ_USER_LOGOUT,        "user_logout",        1, NULL, NULL}
+	{GGZ_SERVER_CONNECT,        "server_connect",        1},
+	{GGZ_SERVER_CONNECT_FAIL,   "server_connect_fail",   1},
+	{GGZ_SERVER_LOGIN,          "server_login_ok",       1},
+	{GGZ_SERVER_LOGIN_FAIL,     "server_login_fail",     1},
+	{GGZ_SERVER_LIST_ROOMS,     "server_list_rooms",     1},
+	{GGZ_SERVER_ROOM_JOIN,      "server_room_join",      1},
+	{GGZ_SERVER_ROOM_JOIN_FAIL, "server_room_join_fail", 1},
+	{GGZ_SERVER_CHAT,           "server_chat",           1},
+	{GGZ_SERVER_CHAT_FAIL,      "server_chat_fail",      1},
+	{GGZ_SERVER_CHAT_MSG,       "server_chat_msg",       1},
+	{GGZ_SERVER_CHAT_ANNOUNCE,  "server_chat_announce",  1},
+	{GGZ_SERVER_CHAT_PRVMSG,    "server_chat_prvmsg",    1},
+	{GGZ_SERVER_CHAT_BEEP,      "server_chat_beep",      1},
+	{GGZ_SERVER_LOGOUT,         "server_logout",         1},
+	{GGZ_SERVER_ERROR,          "server_error",          1},
+	{GGZ_NET_ERROR,             "net_error",             1},
+	{GGZ_USER_LOGIN,            "user_login",            1},
+	{GGZ_USER_LIST_ROOMS,       "user_list_rooms",       1},
+	{GGZ_USER_LIST_TYPES,       "user_list_types",       1},
+	{GGZ_USER_JOIN_ROOM,        "user_join_room",        1},
+	{GGZ_USER_LIST_TABLES,      "user_list_tables",      1},
+	{GGZ_USER_LIST_PLAYERS,     "user_list_players",     1},
+	{GGZ_USER_CHAT,             "user_chat",             1},
+	{GGZ_USER_CHAT_PRVMSG,      "user_chat_prvmsg",      1},
+	{GGZ_USER_CHAT_BEEP,        "user_chat_beep",        1},
+	{GGZ_USER_LOGOUT,           "user_logout",           1}
 };
 
 /* Number of events */
@@ -127,9 +129,14 @@ void _ggzcore_event_init(void)
 
 	/* Setup events */
 	num_events = sizeof(ggz_events)/sizeof(struct _GGZEvent);
-	for (i = 0; i < num_events; i++) 
+	for (i = 0; i < num_events; i++) {
 		ggzcore_debug(GGZ_DBG_EVENT, "Setting up %s event with id %d", 
 			      ggz_events[i].name, ggz_events[i].id);
+		if (ggz_events[i].id != i)
+			ggzcore_debug(GGZ_DBG_EVENT, "ID mismatch: %d != %d",
+				      ggz_events[i].id, i);
+	}
+  
 
 	/* Create fd */
 	/* FIXME: should we make it non-blocking? */

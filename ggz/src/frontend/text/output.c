@@ -48,6 +48,8 @@ void output_display_help(void)
 	output_chat(2, "---", "/connect <server>    Connect to a GGZ server");
 	output_chat(2, "---", "/disconnect          Disconnect from server");
 	output_chat(2, "---", "/join <room>         Join room number <room>");
+	output_chat(2, "---", "/beep <player>       Beep player <player>");
+	output_chat(2, "---", "/msg <player> <msg>  Send a msg to a player");
 }
 
 void output_banner(void)

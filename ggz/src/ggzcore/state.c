@@ -88,7 +88,8 @@ unsigned char _ggzcore_state_event_isvalid(GGZEventID id)
 
 	case GGZ_STATE_IN_ROOM:
 		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM
-			|| id == GGZ_USER_CHAT);
+			 || id == GGZ_USER_CHAT || id == GGZ_USER_CHAT_PRVMSG
+			 || id == GGZ_USER_CHAT_BEEP);
 		break;
 		
 	default:

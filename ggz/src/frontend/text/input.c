@@ -41,6 +41,8 @@ static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
 static void input_handle_join(char* line);
 static void input_handle_chat(char* line);
+static void input_handle_msg(char* line);
+static void input_handle_beep(char* line);
 
 static char delim[] = " \n";
 static char command_prefix = '/';
@@ -78,6 +80,12 @@ int input_command(short events)
 			}
 			else if (strcmp(command, "help") == 0) {
 				output_display_help();;
+			}
+			else if (strcmp(command, "beep") == 0) {
+				input_handle_beep((char*)line);
+			}
+			else if (strcmp(command, "msg") == 0) {
+				input_handle_msg((char*)line);
 			}
 		} else {
 			/* Its a chat */
@@ -167,4 +175,40 @@ static void input_handle_chat(char *line)
 		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
 	}
 }
+
+
+static void input_handle_beep(char* line)
+{
+	char* arg;
+	char* player;
+
+	arg = strtok(NULL, delim);
+	if (arg) {
+		player = strdup(arg);
+		ggzcore_event_trigger(GGZ_USER_CHAT_BEEP, player, free);
+	}
+}
+
+
+static void input_handle_msg(char* line)
+{
+	char **data;
+	char *arg;
+
+
+	if (!(data = calloc(2, sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in input_handle_msg");
+
+	if (!(arg = strtok(NULL, delim)))
+		return;
+	
+	data[0] = strdup(arg);
+	
+	arg = strtok(NULL, delim);
+	if (arg) {
+		data[1] = strdup(arg);
+		ggzcore_event_trigger(GGZ_USER_CHAT_PRVMSG, data, free);
+	}
+}
+
 

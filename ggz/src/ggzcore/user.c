@@ -39,6 +39,8 @@ static void _ggzcore_user_login(GGZEventID, void*, void*);
 static void _ggzcore_user_list_rooms(GGZEventID, void*, void*);
 static void _ggzcore_user_join_room(GGZEventID, void*, void*);
 static void _ggzcore_user_chat(GGZEventID, void*, void*);
+static void _ggzcore_user_chat_private(GGZEventID, void*, void*);
+static void _ggzcore_user_chat_beep(GGZEventID, void*, void*);
 static void _ggzcore_user_logout(GGZEventID, void*, void*);
 
 
@@ -55,6 +57,8 @@ void _ggzcore_user_register(void)
 	/*ggzcore_event_connect(GGZ_USER_LIST_ROOMS, _ggzcore_user_list_rooms);*/
 	ggzcore_event_connect(GGZ_USER_JOIN_ROOM, _ggzcore_user_join_room);
 	ggzcore_event_connect(GGZ_USER_CHAT, _ggzcore_user_chat);
+	ggzcore_event_connect(GGZ_USER_CHAT_PRVMSG, _ggzcore_user_chat_private);
+	ggzcore_event_connect(GGZ_USER_CHAT_BEEP, _ggzcore_user_chat_beep);
 	ggzcore_event_connect(GGZ_USER_LOGOUT, _ggzcore_user_logout);
 }
 
@@ -162,6 +166,55 @@ static void _ggzcore_user_chat(GGZEventID id, void* event_data, void* user_data)
 	if (event_data) {
 		ggzcore_debug(GGZ_DBG_USER, " --msg is %s", (char*)event_data);
 		_ggzcore_net_send_chat(GGZ_CHAT_NORMAL, NULL, (char*)event_data);
+	}
+}
+
+
+/* _ggzcore_user_chat_private() - Callback for user private message events
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_user_chat_private(GGZEventID id, void* event_data, void* user_data)
+{
+	char *player = ((char**)(event_data))[0];
+	char *msg    = ((char**)(event_data))[1];
+
+	if (!(_ggzcore_state_event_isvalid(id)))
+		return;
+	
+	ggzcore_debug(GGZ_DBG_USER, "Executing user_chat_private");
+	if (event_data) {
+		ggzcore_debug(GGZ_DBG_USER, " --msg is %s to %s", msg, player);
+		_ggzcore_net_send_chat(GGZ_CHAT_PERSONAL, player, msg);
+	}
+}
+
+
+/* _ggzcore_user_chat_beep() - Callback for user chat_beep events
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_user_chat_beep(GGZEventID id, void* event_data, void* user_data)
+{
+	char *player = (char*)event_data;
+
+	if (!(_ggzcore_state_event_isvalid(id)))
+		return;
+	
+	ggzcore_debug(GGZ_DBG_USER, "Executing user_chat_beep");
+	if (event_data) {
+		ggzcore_debug(GGZ_DBG_USER, " --player is %s", player);
+		_ggzcore_net_send_chat(GGZ_CHAT_BEEP, player, NULL);
 	}
 }
 
