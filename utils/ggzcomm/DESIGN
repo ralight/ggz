@@ -1,0 +1,112 @@
+This is the original announcement...
+
+From: Josef Spillner <dr_maux@users.sourceforge.net>
+To: ggz-dev@lists.sourceforge.net
+Date: Sun, 21 Apr 2002 14:28:08 +0200
+
+The attached draft is the result of what I thought about for many months
+now. It is intended to aid game developers when jumping in for creating a
+new game or extend an existing client/server pair.
+
+Comments? :)
+So far it looks like it could be implemented, but then again there might
+be problems which only show up when 95% of this tool is done.
+
+Josef
+
+Content-Disposition: attachment; filename="ggzcomm-generator-draft.txt"
+
+GGZComm - The GGZ Communication Library
+=======================================
+
+1. Purpose
+Each one of our games implements a custom protocol. All developers have to
+ensure that the logical layer of this protocol is kept in sync between all
+servers and clients involved.
+Furthermore, there are common parts in each implementation.
+Adding a new client or server is not very easy.
+
+2. Concept
+The protocol for each game engine is stored in an protocol description file.
+This file is used to generate the source code which implements parts of the
+protocol.
+The maintainer dependencies would therefore include the tool which does the
+conversion, while the normal build dependencies don't need this because as
+protocol don't change too often, the generated files should be treat as normal
+source files and be checked into CVS.
+
+3. Layout
+The preferred way to do this would be to use an XML file.
+This could look like:
+<?xml version="1.0">
+<ggzcomm engine="tictactoe" version="2">
+	<server>
+		<event name="nextturn">
+			<data name="turn" type="int"/>
+		</event>
+	</server>
+	<client>
+		<event name="sendmove">
+			<data name="move" type="int">
+		</event>
+	</client>
+	<protocol>
+		<link server="nextturn" client="sendmove">
+	</protocol>
+</ggzcomm>
+
+4. Implementation
+A tool, let's call it ggzcommgen, is run to produce the source file.
+Example call:
+	ggzcommgen --protocol=tictactoe.protocol --format=c --task=client
+This will then create a C source file, tictactoe_generated.c and .h, for the
+game client in this case.
+In C, a callback handler will be provided so whenever a event is received, a
+user-defined function is called.
+This can then look like:
+	void myfunc(...)
+	{
+		int move;
+		switch(opcode)
+		{
+			case tictactoe_nextturn:
+				move = get_move_from_player();
+				ggzcomm_sendmove(move);
+				break;
+		}
+	}
+All ggzcomm_* functions are generated as indicated by the protocol
+specification.
+For C++ it's even easier since it would be possible to simply inherit from the
+generated class.
+A regeneration does not affect the game source code, and an external library is
+not required since all needed code will be in the generated files.
+Hence, the name GGZComm library is meant to refer to a static lib.
+Special make file rules could be used so only 1 XML file is needed for both
+client and server, avoiding the need to sync that every time.
+
+An advanced task which can be implemented using GGZComm would be to hijack the
+file descriptor, redirecting all messages to another one, and checking for
+errors first.
+This would make communication slower but would take the need to check for
+physical errors entirely, since GGZComm does that and the game is guaranteed to
+read all info from a local file descriptor.
+
+5. Advantages
+- Reuse of protocols
+- Easy creation of new clients and servers
+- Multiple backend languages allow more variety
+- No error-prone communication
+
+6. Disadvantages
+- May not work for more difficult games, or become too complex
+
+
+--------------Boundary-00=_WY3XX4PTXVZ3X13S6JVB--
+
+
+_______________________________________________
+ggz-dev mailing list
+ggz-dev@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ggz-dev
+

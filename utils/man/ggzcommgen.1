@@ -1,0 +1,41 @@
+.TH "ggzcommgen" "1" "0.1" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+ggzcommgen \- GGZ Communication Protocol Generator
+.SH "SYNOPSIS"
+.LP
+ggzcommgen FORMAT TASK PROTOCOL [OPTIONS...]
+.SH "DESCRIPTION"
+.LP
+The ggzcommgen tool allows game developers to create protocol implementations
+using XML source files.
+.SH "OPTIONS"
+.LP
+\fI --format = (c | c++) \fP
+.LP
+The format of the files which are generated.
+.LP
+\fI --mode = (simple | logic | full) \fP
+.LP
+In simple mode (default), only convenience functions are provided. The next
+step is logic, which also checks whether the order of read and write operations
+using the appropriate opcodes is correct.
+In full mode, even physical errors are detected.
+.LP
+\fI --task = (client | server) \fP
+.LP
+Whether the generated source file should be used in the server or in the
+client.
+.LP
+\fI --protocol = FILE \fP
+.LP
+Use FILE as the protocol description file. This file should be in XML format.
+.LP
+\fI --library = (libggz | qt) \fP
+.LP
+The library to use for networking operations. The default is libggz, although
+for C++ also qt can be used.
+.SH "AUTHORS"
+.LP 
+The GGZ Development Team
+<ggz\-dev@lists.sourceforge.net>

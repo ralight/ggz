@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ggzcomm engine="tictactoe" version="2">
+	<client>
+		<event name="sndmove">
+			<data name="move" type="int"/>
+		</event>
+		<event name="reqsync"/>
+	</client>
+	<server>
+		<event name="msgseat">
+			<data name="num" type="int"/>
+		</event>
+		<event name="msgplayers">
+			<data name="seats[i]" type="int"/>
+			<data name="names[i]" type="string"/>
+			<data name="seats[i]" type="int"/>
+			<data name="names[i]" type="string"/>
+		</event>
+		<event name="reqmove"/>
+		<event name="rspmove">
+			<data name="status" type="byte"/>
+		</event>
+		<event name="msgmove">
+			<data name="move" type="int"/>
+		</event>
+		<event name="sndsync">
+			<data name="turn" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+			<data name="space" type="byte"/>
+		</event>
+		<event name="msggameover">
+			<data name="winner" type="byte"/>
+		</event>
+	</server>
+	<protocol>
+		<link server="msgseat" server="msgplayers"/>
+		<link client="reqsync" server="sndsync"/>
+		<link server="reqmove" client="sndmove"/>
+		<link client="sndmove" server="rspmove"/>
+	</protocol>
+</ggzcomm>
+
