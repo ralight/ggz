@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4358 2002-08-10 19:13:01Z dr_maux $
+ * $Id: main.c 4433 2002-09-07 09:39:43Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,6 +69,8 @@ int main(int argc, char* argv[])
 	
 	ggzmod_connect(game.ggzmod);
 	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
+
+	game_status(_("Watching the game"));
 
 	gtk_main();
 
@@ -181,7 +183,10 @@ int get_opponent_move(void)
 {
 	int move, nummove;
 
-	game_status(_("Getting opponent's move"));
+	if(game.num < 0)
+		game_status(_("Receive a move"));
+	else
+		game_status(_("Getting opponent's move"));
 
 	if (ggz_read_int(game.fd, &nummove) < 0)
 		return -1;
@@ -255,11 +260,13 @@ void game_init(void)
 	ggzmod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
 	game.ggzmod = ggzmod;
+	game.num = -1;
 }
 
 
 int send_my_move(void)
 {
+	if(game.num < 0) return -1;
 	game_status(_("Sending my move: %d"), game.move);
 	if (ggz_write_int(game.fd, TTT_SND_MOVE) < 0
 	    || ggz_write_int(game.fd, game.move) < 0)
