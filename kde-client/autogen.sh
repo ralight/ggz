@@ -23,7 +23,7 @@ log="$log\t++ Checking for $1,"
 vline=`$1 --version | head -1`
 needed="$2"
 
-version=`echo $vline | sed 's/^[a-zA-z\-\.\ ()]*//;s/ .*$//'`
+version=`echo $vline | sed 's/^[a-zA-z\-\.\ ()]*//;s/\([0-9]*\)[a-z]/\1/;s/ .*$//'`
 vmajor="0`echo $version | cut -d . -f 1`"
 vminor="0`echo $version | cut -s -d . -f 2`"
 vmicro="0`echo $version | cut -s -d . -f 3`"
@@ -51,10 +51,15 @@ fi
 
 log=""
 bailout=0
+need_libtool=0
+
+(grep "\bAM_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
 version_check "autoconf" "2.5"
 version_check "automake" "1.5"
-version_check "libtool" "1.4.3"
+if test "x$need_libtool" = "x1"; then
+	version_check "libtool" "1.4.3"
+fi
 version_check "gettext" "0.11"
 
 if test "x$bailout" = "x1"; then
@@ -72,7 +77,7 @@ if test -d $srcdir/m4; then
 fi
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
-	(cd $srcdir && libtoolize --force --copy) || { echo "libtoolize failed."; exit; }
+	(cd $srcdir && libtoolize --force --copy >/dev/null) || { echo "libtoolize failed."; exit; }
 fi
 echo -n "[aclocal]"
 (cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
