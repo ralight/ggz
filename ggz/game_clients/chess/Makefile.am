@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
+#  $Id: Makefile.am 5319 2003-01-12 11:53:13Z dr_maux $
 
 SUBDIRS = libcgc .
 
@@ -24,20 +24,7 @@ ggz_chess_SOURCES =				\
 		main_win.c	main_win.h	\
 		net.c		net.h		\
 		popup.c		popup.h		\
-		support.c	support.h	\
-						\
-		bitmaps/bishop_b.xpm		\
-		bitmaps/bishop_w.xpm		\
-		bitmaps/king_b.xpm		\
-		bitmaps/king_w.xpm		\
-		bitmaps/knight_b.xpm		\
-		bitmaps/knight_w.xpm		\
-		bitmaps/pawn_b.xpm		\
-		bitmaps/pawn_w.xpm		\
-		bitmaps/queen_b.xpm		\
-		bitmaps/queen_w.xpm		\
-		bitmaps/rook_b.xpm		\
-		bitmaps/rook_w.xpm
+		support.c	support.h
 
 ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) libcgc/libcgc.a \
 			$(top_builddir)/common/libgtk-games.a \
