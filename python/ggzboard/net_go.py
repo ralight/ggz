@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# GGZBoard Hnefatafl: Hnefatafl game module for the GGZBoard container
+# GGZBoard Go: Go game module for the GGZBoard container
 # Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 

@@ -247,7 +247,8 @@ class GGZBoard:
 
 		self.ui.backgroundarea = self.ui.deepcopy(self.ui.surface)
 
-		pygame.display.set_caption("GGZBoard: " + game.name())
+		asciiname = game.name().encode("ascii", "replace")
+		pygame.display.set_caption("GGZBoard: " + asciiname)
 
 		ggzstr = ""
 		if self.ggzmode:
@@ -406,6 +407,8 @@ class GGZBoard:
 								(r, g, b) = color
 								(rd, gd, bd) = style
 								color = (min(r + rd, 255), min(g + gd, 255), min(b + bd, 255))
+							elif game.noemptytiles:
+								continue
 						if j == oldy and i == oldx:
 							(r, g, b) = color
 							color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))

@@ -14,6 +14,7 @@ class Game:
 		self.autoscaletiles = 0
 		self.setonly = 0
 		self.intersections = 0
+		self.noemptytiles = 0
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))

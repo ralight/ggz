@@ -16,6 +16,7 @@ class Game:
 		self.autoscaletiles = 1
 		self.setonly = 0
 		self.intersections = 0
+		self.noemptytiles = 0
 
 		self.boardstyle = None
 

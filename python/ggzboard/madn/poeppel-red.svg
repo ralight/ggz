@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   id="svg602"
+   sodipodi:version="0.34"
+   width="210mm"
+   height="297mm"
+   xml:space="preserve"
+   sodipodi:docname="/home/ggz/cvs-version/python/ggzboard/madn/poeppel-red.svg"
+   sodipodi:docbase="/home/ggz/cvs-version/python/ggzboard/madn"><defs
+   id="defs604" /><sodipodi:namedview
+   id="base" /><path
+   sodipodi:type="arc"
+   style="font-size:12;fill-rule:evenodd;stroke-width:1;fill:#f20000;fill-opacity:1;"
+   id="path613"
+   d="M 444.7079 325.8928 A 142.5781 125.6045 0 1 0 159.5517 325.8928 A 142.5781 125.6045 0 1 0  444.7079 325.8928 z"
+   sodipodi:cx="302.129791"
+   sodipodi:cy="325.892792"
+   sodipodi:rx="142.578125"
+   sodipodi:ry="125.604515" /><path
+   style="font-size:12;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;fill:#f20000;fill-opacity:1;"
+   d="M 261.3932 420.9448 C 244.2315 464.8584 379.9965 318.2344 403.9753 546.45 C 378.0256 608.6385 357.4303 721.7297 218.8105 757.3519 C 212.8581 787.6161 142.8074 840.4676 125.6237 866.0089 C 123.5912 869.0299 127.62 866.9414 123.5464 869.32 "
+   id="path614"
+   sodipodi:nodetypes="ccccc" /><path
+   style="font-size:12;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;"
+   d="M 122.2098 869.0475 C 199.8082 830.2482 363.9241 879.1559 450.6474 881.7044 C 467.0818 882.1873 565.4381 881.2228 563.5241 903.0001 C 563.4382 903.9775 551.4559 902.9606 549.5974 902.9993 "
+   id="path615" /><path
+   style="font-size:12;fill-rule:evenodd;stroke:#000000;stroke-width:1.214708;fill:#f20000;fill-opacity:1;"
+   d="M 566.9175 896.2049 C 527.4883 896.2049 147.3656 884.4561 135.1603 857.4093 C 101.7427 783.356 418.7679 615.3434 399.88 537.2056 C 391.4194 502.2042 386.1414 458.2049 364.4968 429.3678 C 363.7395 428.359 363.6169 426.9542 363.1771 425.7475 "
+   id="path616"
+   sodipodi:nodetypes="ccccc" /><path
+   style="font-size:12;fill-rule:evenodd;stroke:#000000;stroke-width:1.25;"
+   d="M 346.2611 420.9449 C 341.1919 431.0833 318.1349 428.1945 304.892 430.0752 C 285.6297 432.8108 266.5217 437.9056 247.1572 437.9006 C 247.1169 437.9006 247.2377 437.9042 247.278 437.906 "
+   id="path617" /></svg>
