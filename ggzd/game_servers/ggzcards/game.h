@@ -28,32 +28,6 @@
 #include "common.h"
 #include "games.h"
 
-/* ---------- EUCHRE ---------- */
-
-/* special bids */
-#define EUCHRE_PASS 1
-#define EUCHRE_TAKE 2
-#define EUCHRE_TAKE_SUIT 3
-
-#define EUCHRE ( *(euchre_game_t *)(game.specific) )
-typedef struct euchre_game_t {
-	player_t maker;		/* just like the declarer */
-	int dealer_gets_card;	/* does the dealer get the up-card? */
-	card_t up_card;		/* the "up-card" */
-	int alone;		/* is the dealer going alone? */
-	int suit;		/* the suit of trump (TODO: is this necessary?) */
-} euchre_game_t;
-
-/* ---------- EUCHRE ---------- */
-
-typedef struct skat_game_t {
-	
-} skat_game_t;
-
-/* TODO: make a more generalized macro instead of LAPOCHA, etc. */
-
-
-
 /* Game-specific functions */
 
 extern struct game_function_pointers game_funcs;

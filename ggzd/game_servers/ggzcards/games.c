@@ -40,6 +40,7 @@ extern struct game_function_pointers spades_funcs;
 extern struct game_function_pointers hearts_funcs;
 extern struct game_function_pointers bridge_funcs;
 extern struct game_function_pointers lapocha_funcs;
+extern struct game_function_pointers euchre_funcs;
 
 /* These names are sent to the client when options are requested.  They're different
  * from what's sent to the client as the game name later.  They MUST
@@ -51,7 +52,7 @@ struct game_info game_data[] = {
 		{"hearts", &hearts_funcs},
 		{"bridge", &bridge_funcs},
 		{"lapocha", &lapocha_funcs},
-		{"euchre", &game_funcs},
+		{"euchre", &euchre_funcs},
 		{"rook", &game_funcs} };
 
 

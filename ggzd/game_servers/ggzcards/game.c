@@ -67,18 +67,6 @@ struct game_function_pointers game_funcs = {
  *   as another in just about all situations */
 card_t game_map_card(card_t c)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			if (c.face == JACK && c.suit == 3-game.trump) {
-				c.suit = game.trump;
-				c.face = ACE_HIGH+1;
-			} else if (c.face == JACK && c.suit == game.trump)
-				c.face = ACE_HIGH+2;
-		case GGZ_GAME_SKAT:
-			/* TODO */
-		default:
-			break;
-	}
 	return c;
 }
 
@@ -92,14 +80,11 @@ int game_compare_cards(const void *c1, const void *c2)
 {
 	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
 	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
-	switch (game.which_game) {
-		default:
-			if (card1.suit < card2.suit) return -1;
-			if (card1.suit > card2.suit) return 1;
-			if (card1.face < card2.face) return -1;
-			if (card1.face > card2.face) return 1;
-			return 0; /* ignore decks for now */
-	}
+	if (card1.suit < card2.suit) return -1;
+	if (card1.suit > card2.suit) return 1;
+	if (card1.face < card2.face) return -1;
+	if (card1.face > card2.face) return 1;
+	return 0; /* ignore decks for now */
 }
 
 /* game_init_game
@@ -111,46 +96,8 @@ int game_compare_cards(const void *c1, const void *c2)
  */
 void game_init_game()
 {
-	player_t p;
-	seat_t s;
-
-	/* second round of game-specific initialization */
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			game.specific = alloc(sizeof(euchre_game_t));
-			set_num_seats(4);
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			game.deck_type = GGZ_DECK_EUCHRE;
-			game.max_bid_choices = 5;
-			game.max_bid_length = 20; /* TODO */
-			game.max_hand_length = 5;
-			game.target_score = 10;
-			game.name = "Euchre";
-			EUCHRE.maker = -1;
-			game.trump = -1;
-			break;
-		case GGZ_GAME_SKAT:
-			game.specific = alloc(sizeof(skat_game_t));
-			set_num_seats(game.num_players);
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			/* TODO */
-			game.max_bid_choices = 10;
-			game.max_bid_length = 10;
-			game.target_score = 100;
-			game.name = "Skat";
-			break;
-		default:  	
-			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
-			game.name = "(Unknown)";
-	}
+	ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
+	game.name = "(Unknown)";
 }
 
 /* game_get_options
@@ -172,11 +119,7 @@ int game_get_options(int fd)
  */
 void game_handle_options(int *options)
 {
-	switch (game.which_game) {
-		default:
-			ggz_debug("SERVER/CLIENT bug: game_handle_options called incorrectly.");
-			break;
-	}
+	ggz_debug("SERVER/CLIENT bug: game_handle_options called incorrectly.");
 }
 
 /* game_start_game
@@ -190,14 +133,8 @@ void game_start_game(void)
 
 	/* TODO: initialize the game; right now we just assume everything's
 	 * zero which won't be true the second time around. */
-	for (p=0; p<game.num_players; p++) {
+	for (p=0; p<game.num_players; p++)
 		game.players[p].score = 0;
-	}
-
-	switch (game.which_game) {
-		default:
-			/* nothing else to do... */
-	}
 }
 
 /* game_handle_gameover
@@ -211,22 +148,19 @@ int game_handle_gameover(void)
 	player_t winners[game.num_players];
 	int winner_cnt = 0;
 
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-		default:
-			/* in the default case, just take the highest score(s)
-			 * this should automatically handle the case of teams! */
-			for (p=0; p<game.num_players; p++) {
-				if (game.players[p].score > hi_score) {
-					winner_cnt = 1;
-					winners[0] = p;
-					hi_score = game.players[p].score;
-				} else if (game.players[p].score == hi_score) {
-					winners[winner_cnt] = p;
-					winner_cnt++;
-				}
-			}
+	/* in the default case, just take the highest score(s)
+	 * this should automatically handle the case of teams! */
+	for (p=0; p<game.num_players; p++) {
+		if (game.players[p].score > hi_score) {
+			winner_cnt = 1;
+			winners[0] = p;
+			hi_score = game.players[p].score;
+		} else if (game.players[p].score == hi_score) {
+			winners[winner_cnt] = p;
+			winner_cnt++;
+		}
 	}
+
 	return send_gameover(winner_cnt, winners);
 }
 
@@ -253,16 +187,9 @@ int game_handle_gameover(void)
  */
 void game_start_bidding()
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			game.bid_total = 8; /* twice around, at most */
-			game.next_bid = (game.dealer + 1) % game.num_players;
-			break;
-		default:
-			/* all players bid once */
-			game.bid_total = game.num_players;
-			game.next_bid = (game.dealer + 1) % game.num_players;
-	}
+	/* by default, all players bid once */
+	game.bid_total = game.num_players;
+	game.next_bid = (game.dealer + 1) % game.num_players;
 }
 
 /* game_get_bid()
@@ -274,39 +201,8 @@ void game_start_bidding()
 /* TODO: verify that it will work with and without bots */
 int game_get_bid()
 {
-	int status = 0;
-	bid_t bid;
-	bid.bid = 0;
-
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			if (game.bid_count < 4) {
-				/* first four bids: either "pass" or "take" */
-				bid.sbid.spec = EUCHRE_TAKE;
-				game.bid_choices[0] = bid;
-				bid.sbid.spec = EUCHRE_PASS;
-				game.bid_choices[1] = bid;
-				status = req_bid(game.next_bid, 2, NULL);
-			} else {
-				char suit;
-				bid.sbid.spec = EUCHRE_TAKE_SUIT;
-				for (suit=0; suit<4; suit++) {
-					bid.sbid.suit = suit;
-					game.bid_choices[(int)suit] = bid;
-				}
-				bid.bid = 0;
-				bid.sbid.spec = EUCHRE_PASS;
-				game.bid_choices[4] = bid;
-				status = req_bid(game.next_bid, 5, NULL);
-			}
-			/* TODO: dealer's last bid */
-			break;
-		default:
-			ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
-			status = -1;
-	}
-
-	return status;
+	ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
+	return -1;
 }
 
 /* game_handle_bid
@@ -316,24 +212,9 @@ int game_get_bid()
  */
 int game_handle_bid(bid_t bid)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			if ( bid.sbid.spec == EUCHRE_TAKE ) {
-				EUCHRE.maker = game.next_bid;
-				game.trump = EUCHRE.up_card.suit;
-			} else if ( bid.sbid.spec == EUCHRE_TAKE_SUIT ) {
-				EUCHRE.maker = game.next_bid;
-				game.trump = bid.sbid.suit;
-			}
-			/* bidding is ended automatically by game_next_bid */
-			break;
-		default:
- 			break; /* no special handling necessary */
-	}
-
+	/* no special handling necessary */
 	/* the bid message is set automatically */
-	
-	return 0;	
+	return 0; /* TODO */	
 }
 
 /* game_next_bid
@@ -345,24 +226,10 @@ int game_handle_bid(bid_t bid)
  */
 void game_next_bid()
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			if (EUCHRE.maker >= 0)
-				game.bid_total = game.bid_count;
-			else if (game.bid_count == 8) {
-				set_global_message("", "s", "Everyone passed; redealing.");
-				set_game_state( WH_STATE_NEXT_HAND );
-			} else
-				goto normal_order;
-			break;
-		default:
-normal_order:
-			if (game.bid_count == 0)
-				game.next_bid = (game.dealer + 1) % game.num_players;
-			else
-				game.next_bid = (game.next_bid + 1) % game.num_players;
-	}
-	
+	if (game.bid_count == 0)
+		game.next_bid = (game.dealer + 1) % game.num_players;
+	else
+		game.next_bid = (game.next_bid + 1) % game.num_players;
 }
 
 /* game_start_playing
@@ -372,28 +239,10 @@ normal_order:
  */
 void game_start_playing(void)
 {
-	player_t p;
-	seat_t s;
-
 	game.trick_total = game.hand_size;
 	game.play_total = game.num_players;
 
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			/* maker is set in game_handle_bid */
-			set_global_message("", "%s is the maker in %s.", ggz_seats[EUCHRE.maker].name, suit_names[(int)game.trump]);
-			game.leader = (game.dealer + 1) % game.num_players;
-			/* resort/resend hand - this should probably be a function in itself... */
-			for(s=0; s<game.num_seats; s++) {
-				cards_sort_hand( &game.seats[ s ].hand );
-				for (p=0; p<game.num_players; p++)
-					game.funcs->send_hand(p, s);
-			}
-			break;
-		default:
-			game.leader = (game.dealer + 1) % game.num_players;
-			break;
-	}
+	game.leader = (game.dealer + 1) % game.num_players;
 }
 
 /* game_verify_play
@@ -508,16 +357,11 @@ void game_handle_play(card_t c)
 int game_test_for_gameover()
 {
 	player_t p;
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-		default:
-			/* in the default case, it's just a race toward a target score */
-			for (p = 0; p < game.num_players; p++)
-				if (game.players[p].score >= game.target_score)
-					return 1;
-			return 0;
-	}
 
+	/* in the default case, it's just a race toward a target score */
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].score >= game.target_score)
+			return 1;
 	return 0;
 }
 
@@ -529,25 +373,10 @@ int game_deal_hand(void)
 {
 	seat_t s;
 
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
-			 * the up-card (seat 5) gets one card, and the kitty (seat 2)
-			 * gets the other 3. */
-			cards_deal_hand(1, &game.seats[0].hand);
-			EUCHRE.up_card = game.seats[0].hand.cards[0];
-			set_global_message("", "The up-card is the %s of %s.",
-				face_names[(int)EUCHRE.up_card.face], suit_names[(int)EUCHRE.up_card.suit]);
-			game.hand_size = 5;
-			goto regular_deal;
-		default:
-			game.hand_size = 52 / game.num_players;
-regular_deal:
-			/* in a regular deal, we just deal out hand_size cards to everyone */
-			for (s = 0; s < game.num_seats; s++)
-				cards_deal_hand(game.hand_size, &game.seats[s].hand);
-	}
-
+	game.hand_size = 52 / game.num_players; /* TODO */
+	/* in a regular deal, we just deal out hand_size cards to everyone */
+	for (s = 0; s < game.num_seats; s++)
+		cards_deal_hand(game.hand_size, &game.seats[s].hand);
 	return 0;
 }
 
@@ -559,16 +388,9 @@ regular_deal:
  */
 int game_send_hand(player_t p, seat_t s)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			/* reveal the up-card */
-			return send_hand(p, s, game.players[p].seat == s || s == 5);
-		default:
-			/* in most cases, we want to reveal the hand only to the player
-			 * who owns it. */
-			return send_hand(p, s, game.players[p].seat == s);
-	}
-	return -1;
+	/* in most cases, we want to reveal the hand only to the player
+	 * who owns it. */
+	return send_hand(p, s, game.players[p].seat == s);
 }
 
 /* game_get_bid_text
@@ -576,16 +398,6 @@ int game_send_hand(player_t p, seat_t s)
  */
 int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
-	/* TODO: in case of an overflow, the result from snprintf probably isn't what we want to return. */
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			if (bid.sbid.spec == EUCHRE_PASS) return snprintf(buf, buf_len, "Pass");
-			if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
-			if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
-			break;
-		default:
-			/* nothing... */
-	}
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -597,8 +409,6 @@ void game_set_player_message(player_t p)
 	seat_t s = game.players[p].seat;
 	char* message = game.seats[s].message;
 	int len = 0;
-
-	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
 
 	/* This function is tricky.  The problem is that we're trying to assemble a single player string out of
 	 * multiple units of data - score, bid, tricks, etc.  The solution here is to integrate these all into one
@@ -612,56 +422,19 @@ void game_set_player_message(player_t p)
 	 * of this is handled by the game-independent code */
 
 	/* did I mention this was really ugly?  It could be much worse... */
-#define REGULAR_SCORE_MESSAGE	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score)
-#define REGULAR_TRICKS_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) \
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks)
-#define REGULAR_BID_MESSAGE	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) { \
-					char bid_text[game.max_bid_length]; \
-					game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid); \
-					if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text); \
-				}
-#define REGULAR_BIDDING_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid) \
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...") /* "Waiting for bid" won't fit */	
-#define REGULAR_PLAYING_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play) \
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...") /* "Waiting for play" won't fit */
-#define REGULAR_ACTION_MESSAGES REGULAR_BIDDING_MESSAGE; REGULAR_PLAYING_MESSAGE
 
-	/* anyway, it's really ugly, but I don't see a better way... */
-
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			REGULAR_SCORE_MESSAGE;
-			if (game.state == WH_STATE_FIRST_BID || game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-				if (p == game.dealer)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
-			} else
-				if (p == EUCHRE.maker)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
-			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
-			REGULAR_ACTION_MESSAGES;
-			break;
-		default:
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
-			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
-			if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-					char bid_text[game.max_bid_length];
-					game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-					if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
-				}
-			if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");
-			if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play) \
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
-			break;
+	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
+	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
+			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
+	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
+		char bid_text[game.max_bid_length];
+		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+		if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
 	}
-
-#undef REGULAR_SCORE_MESSAGE
-#undef REGULAR_TRICKS_MESSAGE
-#undef REGULAR_BID_MESSAGE
-#undef REGULAR_BIDDING_MESSAGE
-#undef REGULAR_PLAYING_MESSAGE
+	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
+		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");
+	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
+		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
 }
 
 /* game_end_trick
@@ -695,30 +468,10 @@ void game_end_trick(void)
 		}
 	}
 
-
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:	
-			/* TODO: handle out-of-order cards */
-			break;
-		default:
-			/* no additional scoring is necessary */
-			break;
-	}
-
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
 	set_player_message(hi_player);
-
-	/* update teammate's info, if necessary */
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			/* update teammate's info as well */
-			set_player_message((game.winner+2)%4);
-			break;
-		default:
-			break;
-	}
 }
 
 
@@ -727,26 +480,7 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_EUCHRE:
-			{
-			int tricks, winning_team;
-			tricks = game.players[EUCHRE.maker].tricks + game.players[(EUCHRE.maker+2)%4].tricks;
-			if (tricks >= 3)
-				winning_team = EUCHRE.maker % 2;
-			else
-				winning_team = (EUCHRE.maker + 1) % 2;
-			/* TODO: point values other than 1 */
-			game.players[winning_team].score += 1;
-			game.players[winning_team+2].score += 1;
-			EUCHRE.maker = -1;
-			game.trump = -1;
-			}
-			break;
-		default:
-			ggz_debug("SERVER not implemented: game_end_hand for game %d.", game.which_game);
-			break;
-	}                                                         	
+	ggz_debug("SERVER not implemented: game_end_hand for game %d.", game.which_game);                                         	
 }
 
 

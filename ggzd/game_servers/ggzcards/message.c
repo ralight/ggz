@@ -78,6 +78,7 @@ void send_player_message_toall(seat_t s)
 
 void set_player_message(player_t p)
 {
+	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
 	game.funcs->set_player_message(p);
 	send_player_message_toall( game.players[p].seat );
 }

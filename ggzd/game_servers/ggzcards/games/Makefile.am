@@ -14,4 +14,5 @@ libgames_a_SOURCES = suaro.c suaro.h \
 			spades.c spades.h \
 			hearts.c hearts.h \
 			bridge.c bridge.h \
-			lapocha.c lapocha.h
+			lapocha.c lapocha.h \
+			euchre.c euchre.h
