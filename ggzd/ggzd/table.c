@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5071 2002-10-27 23:04:44Z jdorje $
+ * $Id: table.c 5140 2002-11-02 06:41:35Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -102,6 +102,12 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_game_report(GGZdMod *ggzdmod, GGZdModEvent event,
 			      void *data);
+static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
+				void *data);
+static void table_game_req_bot(GGZdMod *ggzdmod, GGZdModEvent event,
+			       void *data);
+static void table_game_req_open(GGZdMod *ggzdmod, GGZdModEvent event,
+				void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
 static GGZReturn table_event_enqueue(GGZTable* table,
@@ -461,6 +467,12 @@ static GGZReturn table_start_game(GGZTable *table)
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAMEREPORT,
 			    &table_game_report);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
+			    &table_game_req_boot);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOT,
+			    &table_game_req_bot);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_OPEN,
+			    &table_game_req_open);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
 	
         /* Setup seats for game table */
@@ -912,6 +924,164 @@ static void table_game_report(GGZdMod *ggzdmod,
 	GGZdModGameReportData *report = data;
 
 	report_statistics(table->room, table->type, report);
+}
+
+
+static void table_game_req_boot(GGZdMod *ggzdmod,
+				GGZdModEvent event, void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+	char *name = data;
+	int seat_num, is_spectator = 0, found = 1;
+	int len = strlen(name);
+	GGZTransitType transit;
+	GGZTableUpdateType update;
+
+	if (len == 0 || len > MAX_USER_NAME_LEN) {
+		err_msg("table_game_req_boot: invalid name %s in room %d.",
+			name, table->room);
+		return;
+	}
+
+	/* FIXME: this code overlaps with the leaving code in transit.c */
+
+	/* Find the player. */
+	for (seat_num = 0; seat_num < table->num_seats; seat_num++) {
+		if (table->seat_types[seat_num] == GGZ_SEAT_PLAYER
+		    && strcasecmp(name, table->seat_names[seat_num]) == 0)
+			break;
+	}
+	if (seat_num == table->num_seats) {
+		is_spectator = 1;
+		for (seat_num = 0; seat_num < table->max_num_spectators;
+		     seat_num++) {
+			if (strcmp(table->spectators[seat_num], name) == 0)
+				break;
+		}
+		if (seat_num == table->max_num_spectators)
+			found = 0;
+	}
+
+	/* Update the seat. */
+	if (!found) {
+		/* FIXME: send error to game... */
+		return;
+	} else if (is_spectator) {
+		GGZSpectator seat = {num: seat_num,
+				     name: NULL,
+				     fd: -1};
+		dbg_msg(GGZ_DBG_TABLE,
+			"Table %d/%d: server is booting spectator %s.",
+			table->index, table->room, name);
+		ggzdmod_set_spectator(ggzdmod, &seat);
+		transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
+		update = GGZ_TABLE_UPDATE_SPECTATOR_LEAVE;
+	} else {
+		GGZSeat seat = {num: seat_num,
+				name: NULL,
+				type: GGZ_SEAT_OPEN,
+				fd: -1};
+		dbg_msg(GGZ_DBG_TABLE,
+			"Table %d/%d: server is booting seat %s.",
+			table->index, table->room, name);
+		ggzdmod_set_seat(ggzdmod, &seat);
+		transit = GGZ_TRANSIT_LEAVE;
+		update = GGZ_TABLE_UPDATE_LEAVE;
+	}
+
+	pthread_rwlock_wrlock(&table->lock);
+	if (is_spectator) {
+		table->spectators[seat_num][0] = '\0';
+	} else {
+		table->seat_types[seat_num] = GGZ_SEAT_OPEN;
+	}
+	pthread_rwlock_unlock(&table->lock);
+
+	/* Notify player.  We don't care if this fails. */
+	/* FIXME: better notification (don't just say "[server]") */
+	transit_player_event(name, transit, E_NO_STATUS,
+			     "[server]", GGZ_LEAVE_BOOT, 0);
+
+	/* FIXME: there's a bug whereby if a table requests a boot
+	   immediately after launch (i.e. tries to boot the launching
+	   player), the boot will be reported to the clients before the
+	   launch is.  This is quite bad. */
+	table_update_event_enqueue(table, update, name, seat_num);
+}
+
+
+static void table_game_req_bot(GGZdMod *ggzdmod,
+			       GGZdModEvent event, void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+	int seat_num = *(int*)data;
+	GGZSeat seat;
+
+	/* FIXME: this code overlaps with the leaving code in transit.c */
+
+	if (seat_num < 0 || seat_num >= table->num_seats
+	    || table->seat_types[seat_num] != GGZ_SEAT_OPEN) {
+		/* Actually, this might not be an error - the seat might
+		   have just changed while the request was in transit */
+		err_msg("table_game_req_bot: seat %d requested bot in"
+			"table %d, room %d", seat_num, table->index,
+			table->room);
+		return;
+	}
+
+	seat.num = seat_num;
+	seat.type = GGZ_SEAT_BOT;
+	seat.name = NULL;
+	seat.fd = -1;
+	ggzdmod_set_seat(ggzdmod, &seat);
+
+	pthread_rwlock_wrlock(&table->lock);
+	table->seat_types[seat_num] = GGZ_SEAT_BOT;
+	pthread_rwlock_unlock(&table->lock);
+
+	/* FIXME: there's a bug whereby if a table requests a bot
+	   immediately after launch, the update will be reported to the
+	   clients before the launch is.  This is quite bad. */
+	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SEAT,
+				   "", seat_num);
+}
+
+
+static void table_game_req_open(GGZdMod *ggzdmod,
+				GGZdModEvent event, void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+	int seat_num = *(int*)data;
+	GGZSeat seat;
+
+	/* FIXME: this code overlaps with the leaving code in transit.c */
+
+	if (seat_num < 0 || seat_num >= table->num_seats
+	    || (table->seat_types[seat_num] != GGZ_SEAT_BOT
+		&& table->seat_types[seat_num] != GGZ_SEAT_RESERVED)) {
+		/* Actually, this might not be an error - the seat might
+		   have just changed while the request was in transit */
+		err_msg("table_game_req_bot: seat %d requested open in"
+			"table %d, room %d", seat_num, table->index,
+			table->room);
+		return;
+	}
+
+	seat.num = seat_num;
+	seat.type = GGZ_SEAT_OPEN;
+	seat.name = NULL;
+	seat.fd = -1;
+	ggzdmod_set_seat(ggzdmod, &seat);
+
+	pthread_rwlock_wrlock(&table->lock);
+	table->seat_types[seat_num] = GGZ_SEAT_OPEN;
+	pthread_rwlock_unlock(&table->lock);
+
+	/* FIXME: there's a bug whereby if a table requests an opening
+	   immediately after launch, the update will be reported to the
+	   clients before the launch is.  This is quite bad. */
+	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SEAT,
+				   "", seat_num);
 }
 
 
