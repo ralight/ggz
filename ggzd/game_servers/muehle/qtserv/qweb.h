@@ -15,33 +15,50 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef GGZ_GAMESERVER_H
-#define GGZ_GAMESERVER_H
+#ifndef QWEB_H
+#define QWEB_H
 
-// GGZdMod includes
-#include <ggzdmod.h>
+// Qt includes
+#include <qlist.h>
+#include <qpoint.h>
 
-// General virtual game server class (similar to Zone)
-class GGZGameServer {
+// Class representing one single point in a QWeb
+class QWebPoint
+{
 	public:
-		GGZGameServer ();
-		virtual ~GGZGameServer ();
-		void connect ();
-
-	protected:
-		virtual void stateEvent ();
-		virtual void joinEvent ();
-		virtual void leaveEvent ();
-		virtual void dataEvent ();
-		virtual void errorEvent ();
+		QWebPoint(QPoint p);
+		~QWebPoint();
+		void addPeer(QPoint p);
+		QList<QPoint> peerlist();
+		QPoint point();
+		void setData(int data);
+		int data();
 
 	private:
-		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		int m_connected;
+		QPoint m_point;
+		QList<QPoint> m_peerlist;
+		int m_data;
+};
+
+// Class holding many QWebPoints
+class QWeb
+{
+	public:
+		QWeb();
+		~QWeb();
+		void addPoint(QPoint p);
+		void addPeer(QPoint p, QPoint p2);
+		QPoint getPoint(QPoint p);
+		QList<QWebPoint> pointlist();
+		void setScale(float factor);
+		float scale();
+		void setData(QPoint p, int data);
+		int data(QPoint p);
+
+	private:
+		QList<QWebPoint> m_pointlist;
+		QWebPoint *tmp;
+		float m_scale;
 };
 
 #endif

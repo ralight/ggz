@@ -1,13 +1,36 @@
+// Muehle - KDE Muehle (Nine Men's Morris) game for GGZ
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Muehle includes
+#include "muehleserver.h"
+
+// System includes
 #include <iostream>
 #include <getopt.h>
 #include <cstdlib>
-#include "muehleserver.h"
 
+// Version information
 #define MUEHLE_VERSION "0.1"
 
+// Possible server startup modes
 #define MODE_NORMAL 1
 #define MODE_GGZ 2
 
+// Main function: parse arguments and start server
 int
 main ( int argc, char** argv) {
 	char option;
@@ -26,7 +49,7 @@ main ( int argc, char** argv) {
 		switch ( option ) {
 			case 'h':
 				std::cout << "The GGZ Gaming Zone Muehle Server" << std::endl
-					<< "Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net" << std::endl
+					<< "Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net" << std::endl
 					<< "Published under GNU GPL conditions " << std::endl << std::endl
 					<< "Options: " << std::endl
 					<< "[-h | --help]    This help screen" << std::endl
@@ -45,6 +68,8 @@ main ( int argc, char** argv) {
 		MuehleServer *serv = new MuehleServer ();
 		serv->connect ();
 		delete serv;
+	} else {
+		std::cout << "Currently only GGZ mode is supported." << std::endl;
 	}
 
 	return 0;

@@ -15,33 +15,32 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef GGZ_GAMESERVER_H
-#define GGZ_GAMESERVER_H
+#ifndef QWEBPATH_H
+#define QWEBPATH_H
 
-// GGZdMod includes
-#include <ggzdmod.h>
+// Qt includes
+#include <qlist.h>
+#include <qpoint.h>
 
-// General virtual game server class (similar to Zone)
-class GGZGameServer {
+// Class declaration
+class QWeb;
+class QWebPoint;
+
+// Pathfinding in a QWeb
+class QWebPath
+{
 	public:
-		GGZGameServer ();
-		virtual ~GGZGameServer ();
-		void connect ();
-
-	protected:
-		virtual void stateEvent ();
-		virtual void joinEvent ();
-		virtual void leaveEvent ();
-		virtual void dataEvent ();
-		virtual void errorEvent ();
+		QWebPath(QWeb *web, QWebPoint *point);
+		~QWebPath();
+		void create(int length);
+		QList<QWebPoint> pathlist();
 
 	private:
-		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		int m_connected;
+		void findRecursive(QWebPoint *old, QWebPoint *origin, int length);
+
+		QList<QWebPoint> m_pathlist;
+		QWeb *m_web;
+		QWebPoint *m_wp;
 };
 
 #endif

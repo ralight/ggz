@@ -16,46 +16,39 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // Header file
-#include "muehleserver.h"
-
-// Muehle includes
 #include "loader.h"
 
+// Configuration includes
+#include "config.h"
+
 // System includes
-#include <iostream>
+#include <fstream>
+#include <string>
 
-// Constructor: inherit from ggzgameserver
-MuehleServer::MuehleServer ()
-: GGZGameServer () {
-	( void ) MuehleLoader::loadVariant ( "twelvemensmorris" );
-}
+// Static function to load a qweb
+QWeb *MuehleLoader::loadVariant ( const char *file ) {
+	fstream f;
+	string s;
+	QWeb *web;
 
-// Destructor
-MuehleServer::~MuehleServer () {
-}
+	s = GGZDDATADIR;
+	s.append ( "/muehle/" );
+	s.append ( file );
 
-// State change hook
-void MuehleServer::stateEvent () {
-	std::cout << "Muehle: stateEvent" << std::endl;
-}
+	f.open( s.data(), ios::in );
+	if ( !f.is_open () ) {
+		return NULL;
+	}
 
-// Player join hook
-void MuehleServer::joinEvent () {
-	std::cout << "Muehle: joinEvent" << std::endl;
-}
+	web = new QWeb();
 
-// Player leave event
-void MuehleServer::leaveEvent () {
-	std::cout << "Muehle: leaveEvent" << std::endl;
-}
+	// Format: "(x1, y1), (x2, y2)\n"
+	while ( !f.eof() ) {
+		f >> s;
+		std::cout << "Load: " << s << std::endl;
+	}
+	f.close();
 
-// Game data event
-void MuehleServer::dataEvent () {
-	std::cout << "Muehle: dataEvent" << std::endl;
-}
-
-// Error handling event
-void MuehleServer::errorEvent () {
-	std::cout << "Muehle: errorEvent" << std::endl;
+	return web;
 }
 

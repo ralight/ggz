@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
 Description = Muehle game for GGZ
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/muehle/
 Name = Muehle
 Version = 0.1
 
