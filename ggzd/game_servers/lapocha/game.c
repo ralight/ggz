@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
+ * $Id: game.c 2202 2001-08-23 20:42:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +28,6 @@
 
 #include <easysock.h>
 #include "../libggzmod/ggz_server.h"
-#include "../libggzmod/ggz_protocols.h"
 
 #include "cards.h"
 #include "game.h"
