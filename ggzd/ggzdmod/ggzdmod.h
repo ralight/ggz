@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2634 2001-11-03 09:11:41Z jdorje $
+ * $Id: ggzdmod.h 2635 2001-11-03 10:02:39Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -28,27 +28,50 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* Common objects/functions */
+/** @file ggzdmod/ggzdmod.h
+ *  @brief Common functions for ggzdmod ggz<->table connection.
+ *
+ * This file contains all libggzdmod functions used by game servers to
+ * interface with GGZD (and vice versa).  Just include ggzdmod.h and make sure
+ * your program is linked with libggzdmod.  Then use the functions below as
+ * appropriate.
+ *
+ * GGZDmod currently provides an event-driven interface.  Data from communication
+ * sockets is read in by the library, and a handler function (registered as a
+ * callback) is invoked to handle the event.  The calling program should not
+ * read data from the GGZD socket unless it really knows what it is doing.
+ *
+ * Note that this does not apply to the client sockets: ggzdmod provides
+ * one file desriptor for communicating (TCP) to each client.  If data
+ * is ready to be read by one of these file descriptors ggzdmod may
+ * invoke the appropriate handler (see below), but will never actually
+ * read any data.
+ *
+ * Here's the simplest possible example:
+ * @code
+ *     void ggz_update(GGZdModEvent event, GGZdMod* mod, void* data); // See GGZDHandler
+ *
+ *     int main() {
+ *         GGZdMod *mod = ggzdmod_new(GGZ_GAME);
+ *         // First we register functions to handle some events.
+ *         ggzdmod_set_handler(GGZ_EVENT_STATE, &ggz_update);
+ *         ggzdmod_set_handler(GGZ_EVENT_JOIN, &ggz_update);
+ *         ggzdmod_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
+ *         ggzdmod_set_handler(GGZ_EVENT_PLAYER_DATA, &ggz_update);
+ *
+ *         // Then ggzd_main_loop does all the rest.
+ *         ggzdmod_loop();
+ *     }
+ * @endcode
+ *
+ * For more information, see the documentation at http://ggz.sf.net/.
+ */
 
-/* Table states */
-typedef enum {
-	GGZ_STATE_INIT,		/**< Pre-launch; waiting for ggzdmod */
-	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
-	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
-	GGZ_STATE_GAMEOVER	/**< Table halted, prepping to exit. */
-} GGZdModState;
 
-/* Callback events: */
-typedef enum {
-	GGZ_EVENT_STATE,	/* Module status changed (status) */
-	GGZ_EVENT_JOIN,		/* Player joined (status) */
-	GGZ_EVENT_LEAVE,	/* Player left (status) */
-	GGZ_EVENT_LOG,		/* Module log request (level, msg) */
-	GGZ_EVENT_PLAYER_DATA,	/* Data avilable from player */
-	GGZ_EVENT_ERROR		/* Error (code) */
-} GGZdModEvent;
-
-
+/** @brief Seat status values.
+ *
+ * Each "seat" at a table of a GGZ game can have one of these values.
+ * They are tracked by ggzdmod. */
 typedef enum {
 	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
 	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
@@ -57,55 +80,183 @@ typedef enum {
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZdModSeat;
 
-
-/* The "flavor" of GGZdmod object this is.  Affects what operations are
-   allowed */
+/** @brief Table states
+ *
+ *  Each table has a current "state" that is tracked by ggzdmod.  First
+ *  the table is exececuted and begins running.  Then it receives a launch
+ *  event from GGZD and begins waiting for players.  At some point a game
+ *  will be started and played at the table, after which it may return
+ *  to waiting.  Eventually the table will probably halt and then the
+ *  program will exit. */
 typedef enum {
-	GGZDMOD_GGZ,
-	GGZDMOD_GAME
+	GGZ_STATE_INIT,		/**< Pre-launch; waiting for ggzdmod */
+	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
+	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
+	GGZ_STATE_GAMEOVER	/**< Table halted, prepping to exit. */
+} GGZdModState;
+
+/* @brief Callback events. Each of these is a possible ggzdmod event.  For
+   each event, the table may register a handler with ggzdmod to handle that
+   event. @see GGZdModHandler @see ggzdmod_set_handler */
+typedef enum {
+	GGZ_EVENT_STATE,	/**< Module status changed */
+	GGZ_EVENT_JOIN,		/**< Player joined */
+	GGZ_EVENT_LEAVE,	/**< Player left */
+	GGZ_EVENT_LOG,		/**< Module log request */
+	GGZ_EVENT_PLAYER_DATA,	/**< Data avilable from player */
+	GGZ_EVENT_ERROR		/**< Error (not used yet) */
+} GGZdModEvent;
+
+/** @brief The "type" of ggzdmod.
+ *
+ * The "flavor" of GGZdmod object this is.  Affects what operations are
+ * allowed. */
+typedef enum {
+	GGZDMOD_GGZ, /**< Used by ggzd, the ggz end. */
+	GGZDMOD_GAME /**< Used by the table/game end. */
 } GGZdModType;
 
-/* We'll just pass this around as a void* */
+/**< @brief A ggzdmod object, used for tracking a ggz<->table connection.
+ *
+ * A game should track a pointer to a GGZdMod object; it contains all the
+ * state information for a ggz<->table connection. */
 typedef void GGZdMod;
 
-/* GGZdMod event handler prototype */
-typedef void (*GGZdModHandler) (GGZdMod *, GGZdModEvent e, void *data);
+/** @brief Event handler prototype
+ *
+ *  A function of this type will be called to handle a ggzdmod event.
+ *  @param mod The ggzdmod state object.
+ *  @param e The event that has occured.
+ *  @param data Pointer to additional data for the event.
+ *  The additional data will be of the following form:
+ *    - GGZ_EVENT_STATE: NULL
+ *    - GGZ_EVENT_JOIN: The player number (int*)
+ *    - GGZ_EVENT_LEAVE: The player number (int*)
+ *    - GGZ_EVENT_LOG: The message string (char*)
+ *    - GGZ_EVENT_PLAYER_DATA: The player number (int*)
+ *    - GGZ_EVENT_ERROR: NULL (for now) */
+typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
 
-
+/** @brief A seat at a GGZ table.
+ *
+ *  Each seat at the table is tracked like this. */
 typedef struct _GGZSeat {
-	int num;		/* Seat index; 0..(num_seats-1) */
-	GGZdModSeat type;	/* Type of seat */
-	char *name;		/* Name of player occupying seat */
-	int fd;			/* fd to communicate with seat occupant */
+	int num;		/**< Seat index; 0..(num_seats-1). */
+	GGZdModSeat type;	/**< Type of seat. */
+	char *name;		/**< Name of player occupying seat. */
+	int fd;			/**< fd to communicate with seat occupant. */
 } GGZSeat;
 
+/* 
+ * Creation functions
+ */
 
-/* Creating/destroying a ggzdmod object */
+/** @brief Create a new ggzdmod object.
+ *
+ *  Before connecting through ggzdmod, a new ggzdmod object is needed. */
 GGZdMod *ggzdmod_new(GGZdModType type);
+
+/** @brief Destroy a finished ggzdmod object.
+ *
+ *  After the connection is through, the object may be freed. */
 void ggzdmod_free(GGZdMod * mod);
 
-/* Accesor functions for GGZdMod */
+/* 
+ * Accessor functions
+ */
+
+/** @brief Return the file descriptor for the ggzdmod socket. */
 int ggzdmod_get_fd(GGZdMod * mod);
+
+/** @brief Return the type of the ggzdmod object. */
 GGZdModType ggzdmod_get_type(GGZdMod * mod);
+
+/** @brief Return the current state of the table. */
 GGZdModState ggzdmod_get_state(GGZdMod * mod);
+
+/** @brief Return the total number of seats at the table. */
 int ggzdmod_get_num_seats(GGZdMod * mod);
+
+/** @brief Return a pointer to the data for the specified seat.
+ *  @note This points directly to the real data, do not modify!
+ *  @todo It is very unsafe to allow direct access like this! */
 GGZSeat *ggzdmod_get_seat(GGZdMod * mod, int seat);
 
+/** @brief Set the number of seats for the table.
+ *  @note This will only work for ggzd.
+ *  @todo How does this work for the table? */
 void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
+
+/** @brief Set a handler for the given event. */
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
+
+/** @brief Set seat data.
+ *  @note The seat parameter contains the seat number.
+ *  @todo This interface is unwieldy.
+ *  @todo The table would like to change data; a return value can tell of success.
+ */
 void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
 
-/* Event/Data handling */
+/* 
+ * Event/Data handling
+ */
+
+/** @brief Check for and handle input.
+ *
+ *  This function handles input from the communications sockets:
+ *    - It will check for input, but will not block.
+ *    - It will monitor input from all sockets, ggzdmod and player FD's.
+ *    - It will call an event handler as necessary. */
 int ggzdmod_dispatch(GGZdMod * mod);
+
+/** @brief Loop while handling input.
+ *
+ *  This function repeatedly handles input from all sockets.
+ *  @see ggzdmod_dispatch
+ *  @see ggzdmod_halt_table */
 int ggzdmod_loop(GGZdMod * mod);
 
-/* Control functions */
-int ggzdmod_halt_game(GGZdMod * mod);
+/* 
+ * Control functions
+ */
 
-/* ggzd specific actions */
+/** @brief Halt the table.
+ *
+ *  This function should be called when the table is finished.  When
+ *  called by the game, it will stop looping and change the game state.
+ *  @note It should inform ggzd of this change.
+ *  @note ggzd should be able to request this as well. */
+int ggzdmod_halt_table(GGZdMod * mod);
+
+/* 
+ * ggzd specific actions
+ */
+
+/** @brief Launch the game.
+ *
+ *  This function does the work of connecting ggz<->table and
+ *  synchronizing ggzdmod information between them.
+ *  @note It should not be called by the table, only ggzd. */
 int ggzdmod_launch_game(GGZdMod * mod, char **args);
 
-/* module specific actions */
+/* 
+ * module specific actions
+ */
+
+/** @brief Connect to ggz
+ *
+ *  This function makes the physical connection to ggz.
+ *  @note It should not be called by ggzd, only the table. */
 int ggzdmod_connect(GGZdMod * mod);
+
+/** @brief Disconnect from ggz
+ *
+ *  This function stops the connection to ggz.
+ *  @note It should not be called by ggzd, only the table. */
 int ggzdmod_disconnect(GGZdMod * mod);
+
+/** @brief Log data
+ *
+ *  This function sends the specified string (printf-style) to
+ *  ggzd to be logged. */
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...);

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2634 2001-11-03 09:11:41Z jdorje $
+ * $Id: ggzdmod.c 2635 2001-11-03 10:02:39Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -194,7 +194,8 @@ void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 	int seat;
 
 	/* Check parameters */
-	if (!CHECK_GGZDMOD(ggzdmod) || num_seats < 0) {
+	if (!CHECK_GGZDMOD(ggzdmod) || num_seats < 0
+	    || ggzdmod->type != GGZDMOD_GGZ) {
 		return;		/* not very useful */
 	}
 
@@ -227,7 +228,8 @@ void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod) || !seat || seat->num < 0
-	    || seat->num >= ggzdmod->num_seats) {
+	    || seat->num >= ggzdmod->num_seats
+	    || ggzdmod->type != GGZDMOD_GGZ) {
 		return;		/* not very useful */
 	}
 	memcpy(&ggzdmod->seats[seat->num], seat, sizeof(ggzdmod->seats[0]));
@@ -409,7 +411,7 @@ static void game_leave(_GGZdMod * ggzdmod)
 /* game-side event: game over received from ggzd */
 static void game_over(_GGZdMod * ggzdmod)
 {
-	ggzdmod_halt_game(ggzdmod);
+	ggzdmod_halt_table(ggzdmod);
 	set_state(ggzdmod, GGZ_STATE_GAMEOVER);
 }
 
@@ -476,7 +478,7 @@ static int handle_ggzdmod_data(GGZdMod * mod)
 	}
 
 	if (es_read_int(ggzdmod->fd, &op) < 0) {
-		ggzdmod_halt_game(ggzdmod);
+		ggzdmod_halt_table(ggzdmod);
 		return -1;
 	}
 
@@ -604,10 +606,10 @@ int ggzdmod_loop(GGZdMod * mod)
 	return 0;		/* should handle errors */
 }
 
-int ggzdmod_halt_game(GGZdMod * mod)
+int ggzdmod_halt_table(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod)) {
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
 		return -1;
 	}
 	if (ggzdmod->type == GGZDMOD_GAME) {
@@ -706,7 +708,8 @@ static int game_fork(_GGZdMod * ggzdmod, char **argv)
 int ggzdmod_launch_game(GGZdMod * mod, char **args)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod) || args == NULL)
+	if (!CHECK_GGZDMOD(ggzdmod) || args == NULL
+	    || ggzdmod->type != GGZDMOD_GGZ)
 		return -1;
 
 	/* TODO: not implemented */
