@@ -1,8 +1,8 @@
-# $Id: ggzcards-whist.room 4113 2002-04-29 18:20:36Z jdorje $
+# $Id: ggzcards-whist.room 6753 2005-01-20 02:05:29Z jdorje $
 [RoomInfo]
 
 # This is the short name for the room
-Name = GGZ Cards - Whist
+Name = Whist
 
 # This is the long descriptive name for the room
 Description = GGZ Cards - Whist room

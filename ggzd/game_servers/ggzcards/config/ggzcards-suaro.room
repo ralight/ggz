@@ -1,8 +1,8 @@
-# $Id: ggzcards-suaro.room 2349 2001-09-04 02:08:26Z rgade $
+# $Id: ggzcards-suaro.room 6753 2005-01-20 02:05:29Z jdorje $
 [RoomInfo]
 
 # This is the short name for the room
-Name = GGZ Cards - Suaro
+Name = Suaro
 
 # This is the long descriptive name for the room
 Description = GGZ Cards - Suaro room
