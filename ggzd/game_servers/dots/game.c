@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 2812 2001-12-09 01:52:00Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,8 +24,7 @@
  */
 
 #include <stdlib.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 #include "ai.h"
@@ -91,7 +90,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 	fd = ggzdmod_get_seat(dots_game.ggz, num).fd;
 	
-	if(es_read_int(fd, &op) < 0)
+	if(ggz_read_int(fd, &op) < 0)
 		return; /* FIXME: error --JDS */
 
 	switch(op) {
@@ -126,8 +125,8 @@ static int game_get_options(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
-	if(es_read_char(fd, &dots_game.board_width) < 0
-	   || es_read_char(fd, &dots_game.board_height) < 0)
+	if(ggz_read_char(fd, &dots_game.board_width) < 0
+	   || ggz_read_char(fd, &dots_game.board_height) < 0)
 		return -1;
 
 	return game_update(DOTS_EVENT_OPTIONS, NULL, NULL);
@@ -139,9 +138,9 @@ int game_send_options(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
-	if(es_write_int(fd, DOTS_MSG_OPTIONS) < 0
-	   || es_write_char(fd, dots_game.board_width) < 0
-	   || es_write_char(fd, dots_game.board_height) < 0)
+	if(ggz_write_int(fd, DOTS_MSG_OPTIONS) < 0
+	   || ggz_write_char(fd, dots_game.board_width) < 0
+	   || ggz_write_char(fd, dots_game.board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -152,7 +151,7 @@ int game_send_options_request(int seat)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
 
-	if(es_write_int(fd, DOTS_REQ_OPTIONS) < 0)
+	if(ggz_write_int(fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
 	return 0;
 }
@@ -165,8 +164,8 @@ int game_send_seat(int seat)
 
 	ggzdmod_log(dots_game.ggz, "Sending player %d's seat num", seat);
 
-	if(es_write_int(fd, DOTS_MSG_SEAT) < 0
-	   || es_write_int(fd, seat) < 0)
+	if(ggz_write_int(fd, DOTS_MSG_SEAT) < 0
+	   || ggz_write_int(fd, seat) < 0)
 		return -1;
 
 	return 0;
@@ -184,16 +183,16 @@ int game_send_players(void)
 
 		ggzdmod_log(dots_game.ggz, "Sending player list to player %d", j);
 
-		if(es_write_int(fd, DOTS_MSG_PLAYERS) < 0)
+		if(ggz_write_int(fd, DOTS_MSG_PLAYERS) < 0)
 			return -1;
 	
 		for(i=0; i<2; i++) {
 			GGZSeat seat = ggzdmod_get_seat(dots_game.ggz, i);
-			if(es_write_int(fd, seat.type) < 0)
+			if(ggz_write_int(fd, seat.type) < 0)
 				return -1;
 			if(seat.type != GGZ_SEAT_OPEN
 			    /* FIXME: seat.name can be NULL! */
-			    && es_write_string(fd, seat.name) < 0)
+			    && ggz_write_string(fd, seat.name) < 0)
 				return -1;
 		}
 	}
@@ -220,14 +219,14 @@ int game_send_move(int num, int event, char x, char y)
 	else
 		msg = DOTS_MSG_MOVE_V;
 
-	if(es_write_int(fd, msg) < 0
-	   || es_write_char(fd, x) < 0
-	   || es_write_char(fd, y) < 0
-	   || es_write_char(fd, score) < 0)
+	if(ggz_write_int(fd, msg) < 0
+	   || ggz_write_char(fd, x) < 0
+	   || ggz_write_char(fd, y) < 0
+	   || ggz_write_char(fd, score) < 0)
 		return -1;
 	for(i=0; i<score; i++) {
-		if(es_write_char(fd, s_x[i]) < 0
-		   || es_write_char(fd, s_y[i]) < 0)
+		if(ggz_write_char(fd, s_x[i]) < 0
+		   || ggz_write_char(fd, s_y[i]) < 0)
 			return -1;
 	}
 	
@@ -242,23 +241,23 @@ int game_send_sync(int num)
 
 	ggzdmod_log(dots_game.ggz, "Handling sync for player %d", num);
 
-	if(es_write_int(fd, DOTS_SND_SYNC) < 0
-	   || es_write_char(fd, dots_game.turn) < 0
-	   || es_write_int(fd, dots_game.score[0]) < 0
-	   || es_write_int(fd, dots_game.score[1]) < 0)
+	if(ggz_write_int(fd, DOTS_SND_SYNC) < 0
+	   || ggz_write_char(fd, dots_game.turn) < 0
+	   || ggz_write_int(fd, dots_game.score[0]) < 0
+	   || ggz_write_int(fd, dots_game.score[1]) < 0)
 		return -1;
 
 	for(i=0; i<dots_game.board_width; i++)
 		for(j=0; j<dots_game.board_height-1; j++)
-			if(es_write_char(fd, dots_game.vert_board[i][j]) < 0)
+			if(ggz_write_char(fd, dots_game.vert_board[i][j]) < 0)
 				return -1;
 	for(i=0; i<dots_game.board_width-1; i++)
 		for(j=0; j<dots_game.board_height; j++)
-			if(es_write_char(fd, dots_game.horz_board[i][j]) < 0)
+			if(ggz_write_char(fd, dots_game.horz_board[i][j]) < 0)
 				return -1;
 	for(i=0; i<dots_game.board_width-1; i++)
 		for(j=0; j<dots_game.board_height-1; j++)
-			if(es_write_char(fd, dots_game.owners_board[i][j]) < 0)
+			if(ggz_write_char(fd, dots_game.owners_board[i][j]) < 0)
 				return -1;
 
 	return 0;
@@ -276,8 +275,8 @@ int game_send_gameover(char winner)
 
 		ggzdmod_log(dots_game.ggz, "Sending game-over to player %d", i);
 
-		if(es_write_int(fd, DOTS_MSG_GAMEOVER) < 0
-		    || es_write_char(fd, winner) < 0)
+		if(ggz_write_int(fd, DOTS_MSG_GAMEOVER) < 0
+		    || ggz_write_char(fd, winner) < 0)
 			return -1;
 	}
 	return 0;
@@ -309,7 +308,7 @@ int game_req_move(int num)
 {
 	int fd = ggzdmod_get_seat(dots_game.ggz, num).fd;
 
-	if(es_write_int(fd, DOTS_REQ_MOVE) < 0)
+	if(ggz_write_int(fd, DOTS_REQ_MOVE) < 0)
 		return -1;
 
 	return 0;
@@ -324,9 +323,9 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	char status;
 	
 	ggzdmod_log(dots_game.ggz, "Handling move for player %d", num);
-	if(es_read_char(fd, x) < 0)
+	if(ggz_read_char(fd, x) < 0)
 		return -1;
-	if(es_read_char(fd, y) < 0)
+	if(ggz_read_char(fd, y) < 0)
 		return -1;
 
 	score = 0;
@@ -388,13 +387,13 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	}
 
 	/* Send back move status */
-	if(es_write_int(fd, DOTS_RSP_MOVE) < 0
-	    || es_write_char(fd, status) < 0
-	    || es_write_char(fd, score) < 0)
+	if(ggz_write_int(fd, DOTS_RSP_MOVE) < 0
+	    || ggz_write_char(fd, status) < 0
+	    || ggz_write_char(fd, score) < 0)
 		return -1;
 	for(i=0; i<score; i++) {
-		if(es_write_char(fd, s_x[i]) < 0
-		   || es_write_char(fd, s_y[i]) < 0)
+		if(ggz_write_char(fd, s_x[i]) < 0
+		   || ggz_write_char(fd, s_y[i]) < 0)
 			return -1;
 	}
 

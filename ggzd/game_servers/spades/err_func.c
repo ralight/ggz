@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 2769 2001-12-01 06:53:01Z bmh $
+ * $Id: err_func.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -31,9 +31,9 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <ggz.h>
 
 #include <err_func.h>
-#include <easysock.h>
 #include <engine.h>
 #include <protocols.h>
 
@@ -114,8 +114,8 @@ void dbg_msg(const char *fmt, ...)
 
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
-	es_write_int(gameInfo.ggz_sock, MSG_LOG);
-	es_write_string(gameInfo.ggz_sock, buf);
+	ggz_write_int(gameInfo.ggz_sock, MSG_LOG);
+	ggz_write_string(gameInfo.ggz_sock, buf);
 	va_end(ap);
 }
 
@@ -127,7 +127,7 @@ void log_msg(const char *fmt, ...)
 
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
-	es_write_int(gameInfo.ggz_sock, MSG_LOG);
-	es_write_string(gameInfo.ggz_sock, buf);
+	ggz_write_int(gameInfo.ggz_sock, MSG_LOG);
+	ggz_write_string(gameInfo.ggz_sock, buf);
 	va_end(ap);
 }

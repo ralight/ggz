@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: games.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -32,8 +32,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "common.h"
 
@@ -153,14 +152,14 @@ int games_req_gametype()
 		return 0;
 	}
 
-	if (write_opcode(fd, REQ_OPTIONS) < 0 || es_write_int(fd, 1) < 0 ||	/* 1
+	if (write_opcode(fd, REQ_OPTIONS) < 0 || ggz_write_int(fd, 1) < 0 ||	/* 1
 										   option 
 										 */
-	    es_write_int(fd, cnt) < 0 ||	/* cnt choices */
-	    es_write_int(fd, 0) < 0)	/* default is 0 */
+	    ggz_write_int(fd, cnt) < 0 ||	/* cnt choices */
+	    ggz_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
 	for (i = 0; i < cnt; i++)
-		if (es_write_string(fd, game_data[game_types[i]].full_name) <
+		if (ggz_write_string(fd, game_data[game_types[i]].full_name) <
 		    0)
 			status = -1;
 

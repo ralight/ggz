@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 2837 2001-12-09 22:45:36Z jdorje $
+ * $Id: engine_func.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -37,13 +37,13 @@
 #include <netdb.h>
 #include <string.h>
 #include <signal.h>
+#include <ggz.h>
 
 #include <card.h>
 #include <engine.h>
 #include <socketfunc.h>
 #include <protocols.h>
 #include <err_func.h>
-#include <easysock.h>
 
 
 static int open_seats;
@@ -223,7 +223,7 @@ void GetGameInfo( void ) {
 		case REQ_GAME_JOIN:
 			ReadIntOrDie(gameInfo.ggz_sock, &seat);
 			readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
-			es_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
+			ggz_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
 			WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_JOIN);
 			status = 0;
 			write(gameInfo.ggz_sock, &status, 1);
@@ -303,10 +303,10 @@ void ReadOptions(void)
 {
 	int size;
 
-	if (es_read_int(gameInfo.playerSock[0], &size) < 0)
+	if (ggz_read_int(gameInfo.playerSock[0], &size) < 0)
 		err_msg_exit("Error reading option size");
 
-	if (es_readn(gameInfo.playerSock[0], &gameInfo.opt, size) < size)
+	if (ggz_readn(gameInfo.playerSock[0], &gameInfo.opt, size) < size)
 		err_msg_exit("Error reading options");
 
 #ifdef DEBUG
@@ -338,7 +338,7 @@ int ggz_init(void)
   
 	dbg_msg("Reading seats from server");
 
-	if (es_read_int(gameInfo.ggz_sock, &seats) < 0) 
+	if (ggz_read_int(gameInfo.ggz_sock, &seats) < 0) 
 		err_msg_exit( "Error reading number of slots" );
 
 	for(i=0; i<4; i++) {
@@ -441,7 +441,7 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
     while( bidStatus != 0) {
       bidStatus = 0;
       
-      es_read_int_or_die(gameInfo.playerSock[curPlayer], &bid);
+      ggz_read_int_or_die(gameInfo.playerSock[curPlayer], &bid);
 
       if( bid < -1 || bid > 13 ) {
 	if( log )

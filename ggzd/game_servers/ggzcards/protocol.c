@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: protocol.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * This just contains the communications protocol information.
  *
@@ -35,25 +35,24 @@
 #endif
 
 #include <assert.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "protocol.h"
 
 int read_card(int fd, card_t * card)
 {
-	if (es_read_char(fd, &card->face) < 0 ||
-	    es_read_char(fd, &card->suit) < 0 ||
-	    es_read_char(fd, &card->deck) < 0)
+	if (ggz_read_char(fd, &card->face) < 0 ||
+	    ggz_read_char(fd, &card->suit) < 0 ||
+	    ggz_read_char(fd, &card->deck) < 0)
 		return -1;
 	return 0;
 }
 
 int write_card(int fd, card_t card)
 {
-	if (es_write_char(fd, card.face) < 0 ||
-	    es_write_char(fd, card.suit) < 0 ||
-	    es_write_char(fd, card.deck) < 0)
+	if (ggz_write_char(fd, card.face) < 0 ||
+	    ggz_write_char(fd, card.suit) < 0 ||
+	    ggz_write_char(fd, card.deck) < 0)
 		return -1;
 	return 0;
 }
@@ -61,7 +60,7 @@ int write_card(int fd, card_t card)
 int read_opcode(int fd, int *opcode)
 {
 	char op;
-	if (es_read_char(fd, &op) < 0)
+	if (ggz_read_char(fd, &op) < 0)
 		return -1;
 	*opcode = op;
 	return 0;
@@ -71,13 +70,13 @@ int write_opcode(int fd, int opcode)
 {
 	char op = opcode;
 	assert(opcode >= 0 && opcode < 128);
-	return es_write_char(fd, op);
+	return ggz_write_char(fd, op);
 }
 
 int read_seat(int fd, int *seat)
 {
 	char s;
-	if (es_read_char(fd, &s) < 0)
+	if (ggz_read_char(fd, &s) < 0)
 		return -1;
 	*seat = s;
 	return 0;
@@ -87,5 +86,5 @@ int write_seat(int fd, int seat)
 {
 	char s = seat;
 	assert(seat >= 0 && seat < 127);
-	return es_write_char(fd, s);
+	return ggz_write_char(fd, s);
 }

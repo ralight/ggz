@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2804 2001-12-07 23:11:21Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -27,8 +27,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 
@@ -108,7 +107,7 @@ int game_send_seat(int seat) {
 
 	ggzdmod_log(rvr_game.ggz, "Sending player %d's his seat number\n", seat);
 
-	if (es_write_int(fd, RVR_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0) {
+	if (ggz_write_int(fd, RVR_MSG_SEAT) < 0 || ggz_write_int(fd, seat) < 0) {
 		ggzdmod_log(rvr_game.ggz, "Couldn't send seat!\n");
 		return -1;
 	}
@@ -126,16 +125,16 @@ int game_send_players() {
 		}
 		ggzdmod_log(rvr_game.ggz, "Sending player list to player %d", j);
 
-		if (es_write_int(fd, RVR_MSG_PLAYERS) < 0) {
+		if (ggz_write_int(fd, RVR_MSG_PLAYERS) < 0) {
 			ggzdmod_log(rvr_game.ggz, "Can't send player list!\n");
 			return -1;
 		}
 	
 		for (i = 0; i < ggzdmod_get_num_seats(rvr_game.ggz); i++) {
-			if (es_write_int(fd, ggzdmod_get_seat(rvr_game.ggz, i).type) < 0)
+			if (ggz_write_int(fd, ggzdmod_get_seat(rvr_game.ggz, i).type) < 0)
 				return -1;
 			if (ggzdmod_get_seat(rvr_game.ggz, i).type != GGZ_SEAT_OPEN &&
-			    es_write_string(fd, ggzdmod_get_seat(rvr_game.ggz, i).name) < 0) {
+			    ggz_write_string(fd, ggzdmod_get_seat(rvr_game.ggz, i).name) < 0) {
 				ggzdmod_log(rvr_game.ggz, "Can't send player name!\n");
 				return -1;
 			}
@@ -152,13 +151,13 @@ int game_send_sync(int seat) {
 
 	// Send SYNC message and current turn
 	
-	if (es_write_int(fd, RVR_MSG_SYNC) < 0 || es_write_char(fd, rvr_game.turn) < 0)
+	if (ggz_write_int(fd, RVR_MSG_SYNC) < 0 || ggz_write_char(fd, rvr_game.turn) < 0)
 		return -1;
 
 	// Send current board state
 	
 	for (i = 0; i < 64; i++) {
-		if (es_write_char(fd, rvr_game.board[i]) < 0)
+		if (ggz_write_char(fd, rvr_game.board[i]) < 0)
 			return -1;
 	}
 
@@ -181,7 +180,7 @@ int game_start() {
 		// Don't send anything if the player is a computer!
 		if (fd == -1)
 			continue;
-		if (es_write_int(fd, RVR_MSG_START) < 0)
+		if (ggz_write_int(fd, RVR_MSG_START) < 0)
 			return -1;
 	}
 
@@ -196,7 +195,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void* data) {
 	int op, move;
 	int fd = ggzdmod_get_seat(ggz, seat).fd;
 
-	if (es_read_int(fd, &op) < 0)
+	if (ggz_read_int(fd, &op) < 0)
 		return;
 
 	switch (op) {
@@ -225,7 +224,7 @@ int game_handle_move(int seat, int *move) {
 	ggzdmod_log(rvr_game.ggz, "Handling move %d,%dfor player %d\n", X(*move), Y(*move), seat);
 	
 	// Get the move from the message
-	if (es_read_int(fd, move) < 0)
+	if (ggz_read_int(fd, move) < 0)
 		return -1;
 
 
@@ -350,10 +349,10 @@ int game_make_move(int player, int move) {
 		if (fd == -1)
 			continue;
 		if (status > 0) {
-			if (es_write_int(fd, RVR_MSG_MOVE) < 0 || es_write_int(fd, move) < 0)
+			if (ggz_write_int(fd, RVR_MSG_MOVE) < 0 || ggz_write_int(fd, move) < 0)
 				ggzdmod_log(rvr_game.ggz, "Couldn't send message to player\n");
 		} else {
-			if (es_write_int(fd, RVR_MSG_MOVE) < 0 || es_write_int(fd, RVR_ERROR_INVALIDMOVE)< 0)
+			if (ggz_write_int(fd, RVR_MSG_MOVE) < 0 || ggz_write_int(fd, RVR_ERROR_INVALIDMOVE)< 0)
 				ggzdmod_log(rvr_game.ggz, "Couldn't send error message to player\n");
 		}
 		player*=-1;
@@ -434,8 +433,8 @@ void game_skip_move() {
 	for (seat = 0; seat < ggzdmod_get_num_seats(rvr_game.ggz); seat++) {
 		int fd = ggzdmod_get_seat(rvr_game.ggz, seat).fd;
 		if (fd != -1) {
-			if (es_write_int(fd, RVR_MSG_MOVE) < 0 ||
-			    es_write_int(fd, RVR_ERROR_CANTMOVE) < 0)
+			if (ggz_write_int(fd, RVR_MSG_MOVE) < 0 ||
+			    ggz_write_int(fd, RVR_ERROR_CANTMOVE) < 0)
 				ggzdmod_log(rvr_game.ggz, "Can't skip move");
 		}
 	}
@@ -465,7 +464,7 @@ void game_gameover() {
 		fd = ggzdmod_get_seat(rvr_game.ggz, seat).fd;
 		if (fd == -1)
 			continue;
-		if (es_write_int(fd, RVR_MSG_GAMEOVER) < 0 || es_write_int(fd, winner) < 0)
+		if (ggz_write_int(fd, RVR_MSG_GAMEOVER) < 0 || ggz_write_int(fd, winner) < 0)
 			ggzdmod_log(rvr_game.ggz, "Can't send gameover message");
 	}
 	

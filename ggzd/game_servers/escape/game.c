@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,8 +24,7 @@
  */
 
 #include <stdlib.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 
@@ -59,10 +58,10 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 	fd = ggzdmod_get_seat(escape_game.ggz, num).fd;
 	
-	if(es_read_int(fd, &op) < 0)
+	if(ggz_read_int(fd, &op) < 0)
 	{
 		/* FIXME: an ES error handler function should be registered instead */
-		ggzdmod_log(escape_game.ggz, "\tPremature exit due to es_read_int(fd, &op) failure");
+		ggzdmod_log(escape_game.ggz, "\tPremature exit due to ggz_read_int(fd, &op) failure");
 		return;
 	}
 
@@ -99,9 +98,9 @@ static int game_get_options(int seat)
 
 	ggzdmod_log(escape_game.ggz, "game_get_options(%d)", seat);
 
-	if(es_read_char(fd, &escape_game.boardheight) < 0
-	   || es_read_char(fd, &escape_game.wallwidth) < 0
-	   || es_read_char(fd, &escape_game.goalwidth) < 0)
+	if(ggz_read_char(fd, &escape_game.boardheight) < 0
+	   || ggz_read_char(fd, &escape_game.wallwidth) < 0
+	   || ggz_read_char(fd, &escape_game.goalwidth) < 0)
 		return -1;
 
 	// FIXME - add bounds checking to ensure eg. escape_game.boardheight isn't larger than MAXBOARDHEIGHT
@@ -157,10 +156,10 @@ int game_send_options(int seat)
 
 	ggzdmod_log(escape_game.ggz, "game_send_options(%d)",seat);
 
-	if(es_write_int(fd, ESCAPE_MSG_OPTIONS) < 0
-	   || es_write_char(fd, escape_game.boardheight) < 0
-	   || es_write_char(fd, escape_game.goalwidth) < 0
-	   || es_write_char(fd, escape_game.wallwidth) < 0)
+	if(ggz_write_int(fd, ESCAPE_MSG_OPTIONS) < 0
+	   || ggz_write_char(fd, escape_game.boardheight) < 0
+	   || ggz_write_char(fd, escape_game.goalwidth) < 0
+	   || ggz_write_char(fd, escape_game.wallwidth) < 0)
 		return -1;
 
 	ggzdmod_log(escape_game.ggz, "\tOptions sent ok with\n\tboardheight=%d\n\tgoalwidth=%d\n\twallwidth=%d\n",escape_game.boardheight, escape_game.goalwidth, escape_game.wallwidth);
@@ -176,7 +175,7 @@ int game_send_options_request(int seat)
 	
 	ggzdmod_log(escape_game.ggz, "game_send_options_request(%d)",seat);
 
-	if(es_write_int(fd, ESCAPE_REQ_OPTIONS) < 0)
+	if(ggz_write_int(fd, ESCAPE_REQ_OPTIONS) < 0)
 		return -1;
 
 	ggzdmod_log(escape_game.ggz, "\tESCAPE_REQ_OPTIONS sent ok");
@@ -191,8 +190,8 @@ int game_send_seat(int seat)
 
 	ggzdmod_log(escape_game.ggz, "Sending player %d`s seat num", seat);
 
-	if(es_write_int(fd, ESCAPE_MSG_SEAT) < 0
-	   || es_write_int(fd, seat) < 0)
+	if(ggz_write_int(fd, ESCAPE_MSG_SEAT) < 0
+	   || ggz_write_int(fd, seat) < 0)
 		return -1;
 
 	ggzdmod_log(escape_game.ggz, "\tESCAPE_ESCAPE_MSG_SEAT sent ok with seat=%d", seat);
@@ -214,16 +213,16 @@ int game_send_players(void)
 
 		ggzdmod_log(escape_game.ggz, "\tSending player list to player %d", j);
 
-		if(es_write_int(fd, ESCAPE_MSG_PLAYERS) < 0)
+		if(ggz_write_int(fd, ESCAPE_MSG_PLAYERS) < 0)
 			return -1;
 	
 		for(i=0; i<2; i++) {
 			GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, i);
-			if(es_write_int(fd, seat.type) < 0)
+			if(ggz_write_int(fd, seat.type) < 0)
 				return -1;
 			if(seat.type != GGZ_SEAT_OPEN
 			    /* FIXME: seat.name can be NULL! */
-			    && es_write_string(fd, seat.name) < 0)
+			    && ggz_write_string(fd, seat.name) < 0)
 				return -1;
 		}
 	}
@@ -247,8 +246,8 @@ int game_send_move(int num, int event, char direction)
 	ggzdmod_log(escape_game.ggz, "\tSending player %d`s move to player %d",
 		   num, escape_game.opponent);
 
-	if(es_write_int(fd, ESCAPE_MSG_MOVE) < 0
-	   || es_write_char(fd, direction) < 0){
+	if(ggz_write_int(fd, ESCAPE_MSG_MOVE) < 0
+	   || ggz_write_char(fd, direction) < 0){
 		ggzdmod_log(escape_game.ggz, "\tgame_send_move() returning -1");
 		return -1;
 	}
@@ -266,17 +265,17 @@ int game_send_sync(int num)
 
 	ggzdmod_log(escape_game.ggz, "Handling sync for player %d", num);
 
-	if(es_write_int(fd, ESCAPE_SND_SYNC) < 0
-	   || es_write_char(fd, escape_game.boardheight) < 0
-	   || es_write_char(fd, escape_game.goalwidth) < 0
-	   || es_write_char(fd, escape_game.wallwidth) < 0
-	   || es_write_char(fd, escape_game.turn) < 0)
+	if(ggz_write_int(fd, ESCAPE_SND_SYNC) < 0
+	   || ggz_write_char(fd, escape_game.boardheight) < 0
+	   || ggz_write_char(fd, escape_game.goalwidth) < 0
+	   || ggz_write_char(fd, escape_game.wallwidth) < 0
+	   || ggz_write_char(fd, escape_game.turn) < 0)
 		return -1;
 
 	for(p=0; p<escape_game.goalwidth+escape_game.wallwidth*2; p++)
 		for(q=0; q<escape_game.boardheight; p++)
 			for(d=1; d<10; d++)
-				if(es_write_char(fd, escape_game.board[p][q][d]) < 0)
+				if(ggz_write_char(fd, escape_game.board[p][q][d]) < 0)
 					return -1;
 	return 0;
 }
@@ -293,8 +292,8 @@ int game_send_gameover(char winner)
 
 		ggzdmod_log(escape_game.ggz, "Sending game-over to player %d", i);
 
-		if(es_write_int(fd, ESCAPE_MSG_GAMEOVER) < 0
-		    || es_write_char(fd, winner) < 0)
+		if(ggz_write_int(fd, ESCAPE_MSG_GAMEOVER) < 0
+		    || ggz_write_char(fd, winner) < 0)
 			return -1;
 	}
 	return 0;
@@ -328,7 +327,7 @@ int game_req_move(int num)
 
 	ggzdmod_log(escape_game.ggz, "game_req_move(num = %d)", num);
 
-	if(es_write_int(fd, ESCAPE_REQ_MOVE) < 0){
+	if(ggz_write_int(fd, ESCAPE_REQ_MOVE) < 0){
 		ggzdmod_log(escape_game.ggz, "\tgame_req_move() returning -1");
 		return -1;
 	}
@@ -349,7 +348,7 @@ int game_handle_move(int num, unsigned char *direction)
 	/* int count=0; */
 	
 	ggzdmod_log(escape_game.ggz, "Handling move for player %d", num);
-	if(es_read_char(fd, direction) < 0)
+	if(ggz_read_char(fd, direction) < 0)
 		return -1;
 
 
@@ -429,9 +428,9 @@ int game_handle_move(int num, unsigned char *direction)
 
 
 	/* Send back move status */
-	if(es_write_int(fd, ESCAPE_RSP_MOVE) < 0
-	    || es_write_char(fd, status) < 0
-	    || es_write_char(fd, *direction) < 0)
+	if(ggz_write_int(fd, ESCAPE_RSP_MOVE) < 0
+	    || ggz_write_char(fd, status) < 0
+	    || ggz_write_char(fd, *direction) < 0)
 		return -1;
 
 	/* If move simply invalid, ask for resubmit */

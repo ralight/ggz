@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: bid.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -26,8 +26,7 @@
 #include <config.h>		/* Site-specific config */
 
 #include <stdlib.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "common.h"
 
@@ -163,7 +162,7 @@ int rec_bid(player_t p, bid_t * bid)
 	int fd = get_player_socket(p), index;
 
 	/* Receive the bid index */
-	if (es_read_int(fd, &index) < 0)
+	if (ggz_read_int(fd, &index) < 0)
 		return -1;
 
 	/* Is this a valid bid? */

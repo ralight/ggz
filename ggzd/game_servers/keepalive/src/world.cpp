@@ -23,7 +23,7 @@
 #include "protocol.h"
 
 // Easysock includes
-#include <easysock.h>
+#include <ggz.h>
 
 // System includes
 #include <iostream>
@@ -49,23 +49,23 @@ void World::addPlayer(const char *name, int fd)
 	std::cout << "Transmit data to player " << name << std::endl;
 
 	// Transmit map data
-	es_write_char(p->fd(), op_map);
-	es_write_int(p->fd(), width());
-	es_write_int(p->fd(), height());
+	ggz_write_char(p->fd(), op_map);
+	ggz_write_int(p->fd(), width());
+	ggz_write_int(p->fd(), height());
 
 	// Transmit initialization data
-	es_write_char(p->fd(), op_init);
-	es_write_int(p->fd(), p->x());
-	es_write_int(p->fd(), p->y());
+	ggz_write_char(p->fd(), op_init);
+	ggz_write_int(p->fd(), p->x());
+	ggz_write_int(p->fd(), p->y());
 
 	// Transmit player list
-	es_write_char(p->fd(), op_player);
-	es_write_int(p->fd(), m_playerlist.size());
+	ggz_write_char(p->fd(), op_player);
+	ggz_write_int(p->fd(), m_playerlist.size());
 	for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 	{
-		es_write_string((*it).fd(), (*it).name());
-		es_write_int((*it).fd(), (*it).x());
-		es_write_int((*it).fd(), (*it).y());
+		ggz_write_string((*it).fd(), (*it).name());
+		ggz_write_int((*it).fd(), (*it).x());
+		ggz_write_int((*it).fd(), (*it).y());
 	}
 
 	m_playerlist.push_back(*p);
@@ -125,7 +125,7 @@ void World::receive(const char *name, void *data)
 
 	p = getPlayer(name);
 	if(!p) return;
-	es_read_char(p->fd(), &c);
+	ggz_read_char(p->fd(), &c);
 
 	std::cout << "Got data from client: " << (int)c << std::endl;
 
@@ -133,31 +133,31 @@ void World::receive(const char *name, void *data)
 	{
 		case op_login:
 			std::cout << "op_login" << std::endl;
-			es_read_string(p->fd(), username, 32);
-			es_read_string(p->fd(), password, 32);
+			ggz_read_string(p->fd(), username, 32);
+			ggz_read_string(p->fd(), password, 32);
 			pname = p->morph(username, password);
 			if(pname)
 			{
-				es_write_char(p->fd(), op_name);
-				es_write_string(p->fd(), pname);
+				ggz_write_char(p->fd(), op_name);
+				ggz_write_string(p->fd(), pname);
 			}
 			else
 			{
-				es_write_char(p->fd(), op_loginfailed);
+				ggz_write_char(p->fd(), op_loginfailed);
 			}
 			break;
 		case op_move:
 			std::cout << "op_move" << std::endl;
-			es_read_int(p->fd(), &x);
-			es_read_int(p->fd(), &y);
+			ggz_read_int(p->fd(), &x);
+			ggz_read_int(p->fd(), &y);
 			p->move(x, y);
 			for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
-				es_write_char((*it).fd(), op_moved);
-				es_write_string((*it).fd(), name);
-				es_write_int((*it).fd(), x);
-				es_write_int((*it).fd(), y);
+				ggz_write_char((*it).fd(), op_moved);
+				ggz_write_string((*it).fd(), name);
+				ggz_write_int((*it).fd(), x);
+				ggz_write_int((*it).fd(), y);
 			}
 			break;
 	}

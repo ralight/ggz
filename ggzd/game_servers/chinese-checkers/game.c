@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 2807 2001-12-08 21:14:29Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -25,8 +25,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 #include "ai.h"
@@ -82,7 +81,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 	fd = ggzdmod_get_seat(game.ggz, num).fd;
 	
-	if(es_read_int(fd, &op) < 0)
+	if(ggz_read_int(fd, &op) < 0)
 		return; /* FIXME: handle error --JDS */
 
 	switch(op) {
@@ -113,9 +112,9 @@ int game_send_seat(int seat)
 
 	ggzdmod_log(game.ggz, "Sending player %d's seat num", seat);
 
-	if(es_write_int(fd, CC_MSG_SEAT) < 0
-	   || es_write_int(fd, ggzdmod_get_num_seats(game.ggz)) < 0
-	   || es_write_int(fd, seat) < 0)
+	if(ggz_write_int(fd, CC_MSG_SEAT) < 0
+	   || ggz_write_int(fd, ggzdmod_get_num_seats(game.ggz)) < 0
+	   || ggz_write_int(fd, seat) < 0)
 		return -1;
 
 	return 0;
@@ -133,19 +132,19 @@ int game_send_players(void)
 
 		ggzdmod_log(game.ggz, "Sending player list to player %d", j);
 
-		if(es_write_int(fd, CC_MSG_PLAYERS) < 0)
+		if(ggz_write_int(fd, CC_MSG_PLAYERS) < 0)
 			return -1;
 	
-		if(es_write_int(fd, ggzdmod_get_num_seats(game.ggz)) < 0)
+		if(ggz_write_int(fd, ggzdmod_get_num_seats(game.ggz)) < 0)
 			return -1;
 		for(i=0; i<ggzdmod_get_num_seats(game.ggz); i++) {
 			GGZSeat seat = ggzdmod_get_seat(game.ggz, i);
-			if(es_write_int(fd, seat.type) < 0)
+			if(ggz_write_int(fd, seat.type) < 0)
 				return -1;
 			if(seat.type != GGZ_SEAT_OPEN
 				/* FIXME: This is a problem since seat.name
 				   can in theory be NULL. --JDS */
-			    && es_write_string(fd, seat.name) < 0)
+			    && ggz_write_string(fd, seat.name) < 0)
 				return -1;
 		}
 	}
@@ -165,12 +164,12 @@ int game_send_move(int num, char ro, char co, char rd, char cd)
 
 		ggzdmod_log(game.ggz, "Sending player %d's move to player %d", num, i);
 
-		if(es_write_int(fd, CC_MSG_MOVE) < 0
-		   || es_write_int(fd, num) < 0
-		   || es_write_char(fd, ro) < 0
-		   || es_write_char(fd, co) < 0
-		   || es_write_char(fd, rd) < 0
-		   || es_write_char(fd, cd) < 0)
+		if(ggz_write_int(fd, CC_MSG_MOVE) < 0
+		   || ggz_write_int(fd, num) < 0
+		   || ggz_write_char(fd, ro) < 0
+		   || ggz_write_char(fd, co) < 0
+		   || ggz_write_char(fd, rd) < 0
+		   || ggz_write_char(fd, cd) < 0)
 			return -1;
 	}
 
@@ -188,12 +187,12 @@ int game_send_sync(int num)
 
 	ggzdmod_log(game.ggz, "Handling sync for player %d", num);
 
-	if(es_write_int(fd, CC_MSG_SYNC) < 0)
+	if(ggz_write_int(fd, CC_MSG_SYNC) < 0)
 		return -1;
 
 	for(i=0; i<17; i++)
 		for(j=0; j<25; j++)
-			if(es_write_char(fd, game.board[i][j]) < 0)
+			if(ggz_write_char(fd, game.board[i][j]) < 0)
 				return -1;
 
 	return 0;
@@ -211,8 +210,8 @@ int game_send_gameover(char winner)
 
 		ggzdmod_log(game.ggz, "Sending game-over to player %d", i);
 
-		if(es_write_int(fd, CC_MSG_GAMEOVER) < 0
-		    || es_write_char(fd, winner) < 0)
+		if(ggz_write_int(fd, CC_MSG_GAMEOVER) < 0
+		    || ggz_write_char(fd, winner) < 0)
 			return -1;
 	}
 	return 0;
@@ -243,7 +242,7 @@ int game_req_move(int num)
 {
 	int fd = ggzdmod_get_seat(game.ggz, num).fd;
 
-	if(es_write_int(fd, CC_REQ_MOVE) < 0)
+	if(ggz_write_int(fd, CC_REQ_MOVE) < 0)
 		return -1;
 
 	return 0;
@@ -258,25 +257,25 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 	char status;
 
 	ggzdmod_log(game.ggz, "Handling move for player %d", num);
-	if(es_read_char(fd, ro) < 0)
+	if(ggz_read_char(fd, ro) < 0)
 		return -1;
-	if(es_read_char(fd, co) < 0)
+	if(ggz_read_char(fd, co) < 0)
 		return -1;
-	if(es_read_char(fd, rd) < 0)
+	if(ggz_read_char(fd, rd) < 0)
 		return -1;
-	if(es_read_char(fd, cd) < 0)
+	if(ggz_read_char(fd, cd) < 0)
 		return -1;
 
 	if(game.state != CC_STATE_PLAYING) {
-		if(es_write_int(fd, CC_RSP_MOVE) < 0
-		   || es_write_char(fd, CC_ERR_STATE) < 0)
+		if(ggz_write_int(fd, CC_RSP_MOVE) < 0
+		   || ggz_write_char(fd, CC_ERR_STATE) < 0)
 			return -1;
 		return 1;
 	}
 
 	if(num != game.turn) {
-		if(es_write_int(fd, CC_RSP_MOVE) < 0
-		    || es_write_char(fd, CC_ERR_TURN) < 0)
+		if(ggz_write_int(fd, CC_RSP_MOVE) < 0
+		    || ggz_write_char(fd, CC_ERR_TURN) < 0)
 			return -1;
 		return 1;
 	}
@@ -297,8 +296,8 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 	}
 
 	/* Send back move status */
-	if(es_write_int(fd, CC_RSP_MOVE) < 0
-	    || es_write_char(fd, status) < 0)
+	if(ggz_write_int(fd, CC_RSP_MOVE) < 0
+	    || ggz_write_char(fd, status) < 0)
 		return -1;
 
 	/* If move simply invalid, ask for resubmit */

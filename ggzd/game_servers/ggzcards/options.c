@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: options.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -39,8 +39,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "common.h"
 
@@ -131,12 +130,12 @@ void get_options()
 	} else {
 		struct pending_option_t *po = pending_options;
 		write_opcode(fd, REQ_OPTIONS);
-		es_write_int(fd, pending_option_count);
+		ggz_write_int(fd, pending_option_count);
 		for (op = 0; op < pending_option_count; op++) {
-			es_write_int(fd, po->num);
-			es_write_int(fd, po->dflt);
+			ggz_write_int(fd, po->num);
+			ggz_write_int(fd, po->dflt);
 			for (choice = 0; choice < po->num; choice++)
-				es_write_string(fd, po->choices[choice]);
+				ggz_write_string(fd, po->choices[choice]);
 			po = po->next;
 		}
 	}
@@ -150,7 +149,7 @@ int rec_options(int num_options, int *options)
 		fatal_error("BUG: unknown host in rec_options.");
 
 	for (i = 0; i < num_options; i++)
-		if (es_read_int(fd, &options[i]) < 0)
+		if (ggz_read_int(fd, &options[i]) < 0)
 			status = options[i] = -1;
 
 	if (status != 0)

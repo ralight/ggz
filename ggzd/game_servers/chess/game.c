@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -27,8 +27,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "chess.h"
 #include "game.h"
@@ -342,7 +341,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
   ggzdmod_log(game_info.ggz, "Handling player");
 
   /* Get the opcode */
-  if (es_read_char(fd, &op) < 0)
+  if (ggz_read_char(fd, &op) < 0)
     return;
 
   ggzdmod_log(game_info.ggz, "Received opcode %d", op);
@@ -351,7 +350,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
   switch (op) {
     case CHESS_RSP_TIME:
       ggzdmod_log(game_info.ggz, "Player sent a RSP_TIME");
-      if (es_read_int(fd, &time) < 0)
+      if (ggz_read_int(fd, &time) < 0)
         return;
       /* Check if this player is the host */
       if (*seat != game_info.host)
@@ -374,10 +373,10 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK) {
         /* We don't use clocks! */
         data = malloc(sizeof(char) * 6);
-        es_read_string(fd, data, 6);
+        ggz_read_string(fd, data, 6);
         /*
-        es_read_char(fd, &move[0]);
-        es_read_char(fd, &move[1]);
+        ggz_read_char(fd, &move[0]);
+        ggz_read_char(fd, &move[1]);
         *(char *)data = (move[0]%8) + 65;
         *(char *)(data+1) = 49 + (move[0]/8);
         *(char *)(data+2) = (move[1]%8) + 65;
@@ -386,10 +385,10 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
         */
       } else {
         data = malloc(sizeof(int) * (2 + (6/sizeof(int))));
-        es_read_string(fd, data, 6);
+        ggz_read_string(fd, data, 6);
         /*
-        es_read_char(fd, &move[0]);
-        es_read_char(fd, &move[1]);
+        ggz_read_char(fd, &move[0]);
+        ggz_read_char(fd, &move[1]);
         *(char *)data = (move[0]%8) + 65;
         *(char *)(data+1) = 49 + (move[0]/8);
         *(char *)(data+2) = (move[1]%8) + 65;
@@ -398,7 +397,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
         */
         if (game_info.clock_type == CHESS_CLOCK_CLIENT) {
           /* Get the time */
-          es_read_int(fd, &time);
+          ggz_read_int(fd, &time);
           /* Now put it on the data buffer */
         } else {
           /* How much type did that player take ? */
@@ -423,7 +422,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
     case CHESS_MSG_UPDATE:
       data = (int *)malloc(sizeof(int) * 2);
       *(int*)data = *seat;
-      es_read_int(fd, (int*)data+1);
+      ggz_read_int(fd, (int*)data+1);
       /* Check if right clock type */
       if (game_info.clock_type != CHESS_CLOCK_CLIENT)
         break;
@@ -465,9 +464,9 @@ void game_send_seat(int seat) {
   int fd = ggzdmod_get_seat(game_info.ggz, seat).fd;
   if (fd < 0)
     return;
-  if (es_write_char(fd, CHESS_MSG_SEAT) < 0 ||
-      es_write_char(fd, (char)seat) < 0 ||
-      es_write_char(fd, PROTOCOL_VERSION) < 0)
+  if (ggz_write_char(fd, CHESS_MSG_SEAT) < 0 ||
+      ggz_write_char(fd, (char)seat) < 0 ||
+      ggz_write_char(fd, PROTOCOL_VERSION) < 0)
     return;
 }
 
@@ -480,16 +479,16 @@ void game_send_players() {
 
 		ggzdmod_log(game_info.ggz, "Sending player list to player %d", j);
 
-		if (es_write_char(fd, CHESS_MSG_PLAYERS) < 0)
+		if (ggz_write_char(fd, CHESS_MSG_PLAYERS) < 0)
 			return;
 	
 		for (i = 0; i < 2; i++) {
 			GGZSeat seat = ggzdmod_get_seat(game_info.ggz, i);
-			if (es_write_char(fd, seat.type) < 0)
+			if (ggz_write_char(fd, seat.type) < 0)
 				return;
 			if (seat.type != GGZ_SEAT_OPEN
 			    /* FIXME: seat.name can be NULL! */
-			    && es_write_string(fd, seat.name) < 0)
+			    && ggz_write_string(fd, seat.name) < 0)
 				return;
 		}
 	}
@@ -505,7 +504,7 @@ void game_request_time(int seat) {
   if (fd < 0)
     return;
 
-  es_write_char(fd, CHESS_REQ_TIME);
+  ggz_write_char(fd, CHESS_REQ_TIME);
 }
 
 void game_send_time(int seat) {
@@ -514,8 +513,8 @@ void game_send_time(int seat) {
   if (fd < 0)
     return;
 
-  if (es_write_char(fd, CHESS_RSP_TIME) < 0 ||
-      es_write_int(fd, (game_info.clock_type<<24)+(game_info.seconds[0]&0xFFFFFF)))
+  if (ggz_write_char(fd, CHESS_RSP_TIME) < 0 ||
+      ggz_write_int(fd, (game_info.clock_type<<24)+(game_info.seconds[0]&0xFFFFFF)))
     return;
 
 }
@@ -529,7 +528,7 @@ void game_send_start() {
     if (fd < 0)
       continue;
 
-    es_write_char(fd, CHESS_MSG_START);
+    ggz_write_char(fd, CHESS_MSG_START);
   }
 }
 
@@ -542,25 +541,25 @@ void game_send_move(char *move, int time) {
       continue;
 
     /* Send MSG_MOVE */
-    es_write_char(fd, CHESS_MSG_MOVE);
+    ggz_write_char(fd, CHESS_MSG_MOVE);
 
     /* Send MOVE */
     if (move)
-      es_write_string(fd, move);
+      ggz_write_string(fd, move);
     else
-      es_write_int(fd, 0);
+      ggz_write_int(fd, 0);
     /*
     if (move) {
-      es_write_char(fd, move[0]-65+(8*(move[1]-49)));
-      es_write_char(fd, move[2]-65+(8*(move[3]-49)));
+      ggz_write_char(fd, move[0]-65+(8*(move[1]-49)));
+      ggz_write_char(fd, move[2]-65+(8*(move[3]-49)));
     }
     else
-      es_write_char(fd, -1);
+      ggz_write_char(fd, -1);
       */
 
     /* Send time, if not error */
     if (game_info.clock_type && move)
-      es_write_int(fd, time);
+      ggz_write_int(fd, time);
 
   }
 
@@ -574,9 +573,9 @@ void game_send_update() {
     if (fd < 0)
       return;
     ggzdmod_log(game_info.ggz, "To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
-    if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
-        es_write_int(fd, game_info.seconds[0]) < 0 ||
-        es_write_int(fd, game_info.seconds[1]) < 0)
+    if (ggz_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
+        ggz_write_int(fd, game_info.seconds[0]) < 0 ||
+        ggz_write_int(fd, game_info.seconds[1]) < 0)
       return;
   }
 }
@@ -590,8 +589,8 @@ void game_send_gameover(char code) {
     if (fd < 0)
       continue;
 
-    es_write_char(fd, CHESS_MSG_GAMEOVER);
-    es_write_char(fd, code);
+    ggz_write_char(fd, CHESS_MSG_GAMEOVER);
+    ggz_write_char(fd, code);
   }
 }
 
@@ -601,5 +600,5 @@ void game_send_draw(int seat) {
   if (fd < 0)
     return;
 
-  es_write_char(fd, CHESS_REQ_DRAW);
+  ggz_write_char(fd, CHESS_REQ_DRAW);
 }

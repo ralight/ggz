@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2927 2001-12-18 00:33:36Z jdorje $
+ * $Id: net.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -31,8 +31,7 @@
 #include <config.h>		/* Site-specific config */
 
 #include <assert.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "common.h"
 #ifdef USE_GGZ_STATS		/* defined in common.h */
@@ -63,7 +62,7 @@ int send_player_list(player_t p)
 		    p, get_player_name(p), game.num_seats);
 
 	if (write_opcode(fd, MSG_PLAYERS) < 0 ||
-	    es_write_int(fd, game.num_seats) < 0)
+	    ggz_write_int(fd, game.num_seats) < 0)
 		status = -1;
 
 	/* Note that this function can be called before we know what game
@@ -74,8 +73,8 @@ int send_player_list(player_t p)
 	   desirable to finesse data by sending the player list instead. */
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
-		if (es_write_int(fd, get_seat_status(s_abs)) < 0 ||
-		    es_write_string(fd, get_seat_name(s_abs)) < 0)
+		if (ggz_write_int(fd, get_seat_status(s_abs)) < 0 ||
+		    ggz_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
 	}
 
@@ -161,7 +160,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 			continue;
 
 		if (write_opcode(fd, MSG_GAMEOVER) < 0 ||
-		    es_write_int(fd, winner_cnt) < 0)
+		    ggz_write_int(fd, winner_cnt) < 0)
 			status = -1;
 		for (i = 0; i < winner_cnt; i++) {
 			seat_t ws = game.players[winners[i]].seat;
@@ -278,12 +277,12 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 
 	/* request a bid from the client */
 	if (fd == -1 ||
-	    write_opcode(fd, REQ_BID) < 0 || es_write_int(fd, bid_count) < 0)
+	    write_opcode(fd, REQ_BID) < 0 || ggz_write_int(fd, bid_count) < 0)
 		status = -1;
 	for (i = 0; i < bid_count; i++) {
 		char bid_text[4096];
 		game.funcs->get_bid_text(bid_text, sizeof(bid_text), bids[i]);
-		if (es_write_string(fd, bid_text) < 0)
+		if (ggz_write_string(fd, bid_text) < 0)
 			status = -1;
 	}
 	return status;
@@ -328,7 +327,7 @@ int send_badplay(player_t p, char *msg)
 	if (fd == -1)		/* don't send to bots */
 		return 0;
 	set_game_state(STATE_WAIT_FOR_PLAY);
-	if (write_opcode(fd, MSG_BADPLAY) < 0 || es_write_string(fd, msg) < 0)
+	if (write_opcode(fd, MSG_BADPLAY) < 0 || ggz_write_string(fd, msg) < 0)
 		return -1;
 	return 0;
 }
@@ -359,7 +358,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 
 	if (write_opcode(fd, MSG_HAND) < 0
 	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
-	    || es_write_int(fd, game.seats[s].hand.hand_size) < 0)
+	    || ggz_write_int(fd, game.seats[s].hand.hand_size) < 0)
 		status = -1;
 
 	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
@@ -534,8 +533,8 @@ void send_global_text_message(player_t p, const char *mark,
 	if (fd < 0
 	    || write_opcode(fd, MESSAGE_GAME) < 0
 	    || write_opcode(fd, GAME_MESSAGE_TEXT) < 0
-	    || es_write_string(fd, mark) < 0
-	    || es_write_string(fd, message) < 0)
+	    || ggz_write_string(fd, mark) < 0
+	    || ggz_write_string(fd, message) < 0)
 		ggzdmod_log(game.ggz,
 			    "ERROR: " "send_global_text_message: es error.");
 
@@ -556,12 +555,12 @@ void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 		    p);
 	if (fd < 0 || write_opcode(fd, MESSAGE_GAME) < 0
 	    || write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0
-	    || es_write_string(fd, mark) < 0)
+	    || ggz_write_string(fd, mark) < 0)
 		error++;
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s = UNCONVERT_SEAT(s_rel, p);
-		if (es_write_int(fd, lengths[s]) < 0)
+		if (ggz_write_int(fd, lengths[s]) < 0)
 			error++;
 		for (i = 0; i < lengths[s]; i++)
 			if (write_card(fd, cardlist[s][i]) < 0)

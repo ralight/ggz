@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3064 2002-01-11 17:42:38Z dr_maux $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -34,7 +34,7 @@
 #include <string.h>
 
 /* Easysock includes */
-#include <easysock.h>
+#include <ggz.h>
 
 /* Global game variables */
 struct hastings_game_t hastings_game;
@@ -112,7 +112,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 	num = *(int*)seat_data;
 	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
-	if (fd < 0 || es_read_int(fd, &op) < 0) return;
+	if (fd < 0 || ggz_read_int(fd, &op) < 0) return;
 
 	ggzdmod_log(hastings_game.ggz, "## handle player: %i\n", num);
 
@@ -149,7 +149,7 @@ int game_send_seat(int seat)
 
 	ggzdmod_log(hastings_game.ggz, "Sending player %d's seat num\n", seat);
 
-	if (es_write_int(fd, HASTINGS_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0) return -1;
+	if (ggz_write_int(fd, HASTINGS_MSG_SEAT) < 0 || ggz_write_int(fd, seat) < 0) return -1;
 
 	return 0;
 }
@@ -179,15 +179,15 @@ int game_send_players(void)
 
 		ggzdmod_log(hastings_game.ggz, "Sending player list to player %d\n", j);
 
-		if(es_write_int(seat.fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
-		if(es_write_int(seat.fd, hastings_game.playernum) < 0) return -1;
+		if(ggz_write_int(seat.fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
+		if(ggz_write_int(seat.fd, hastings_game.playernum) < 0) return -1;
 
 		for(i = 0; i < hastings_game.playernum; i++)
 		{
 			seat2 = ggzdmod_get_seat(hastings_game.ggz, i);
-			if(es_write_int(seat.fd, seat2.type) < 0) return -1;
+			if(ggz_write_int(seat.fd, seat2.type) < 0) return -1;
 			if((seat.type != GGZ_SEAT_OPEN) && (seat2.name))
-				if(es_write_string(seat.fd, seat2.name) < 0)
+				if(ggz_write_string(seat.fd, seat2.name) < 0)
 					return -1;
 		}
 	}
@@ -211,12 +211,12 @@ int game_send_move(int num)
 
 			ggzdmod_log(hastings_game.ggz, "Sending player %d's move to player %d\n", num, i);
 
-			if (es_write_int(fd, HASTINGS_MSG_MOVE) < 0
-			    || es_write_int(fd, num) < 0
-			    || es_write_int(fd, hastings_game.move_src_x) < 0
-			    || es_write_int(fd, hastings_game.move_src_y) < 0
-			    || es_write_int(fd, hastings_game.move_dst_x) < 0
-			    || es_write_int(fd, hastings_game.move_dst_y) < 0)
+			if (ggz_write_int(fd, HASTINGS_MSG_MOVE) < 0
+			    || ggz_write_int(fd, num) < 0
+			    || ggz_write_int(fd, hastings_game.move_src_x) < 0
+			    || ggz_write_int(fd, hastings_game.move_src_y) < 0
+			    || ggz_write_int(fd, hastings_game.move_dst_x) < 0
+			    || ggz_write_int(fd, hastings_game.move_dst_y) < 0)
 				return -1;
 		}
 	}
@@ -237,17 +237,17 @@ int game_send_sync(int num)
 	/* First player? */
 	if (hastings_game.turn == -1) hastings_game.turn = 0;
 
-	if((es_write_int(fd, HASTINGS_SND_SYNC) < 0) || (es_write_int(fd, hastings_game.turn) < 0)) return -1;
+	if((ggz_write_int(fd, HASTINGS_SND_SYNC) < 0) || (ggz_write_int(fd, hastings_game.turn) < 0)) return -1;
 
 	/* Syncing knights */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (es_write_char(fd, hastings_game.board[i][j]) < 0) return -1;
+			if (ggz_write_char(fd, hastings_game.board[i][j]) < 0) return -1;
 
 	/* Syncing map */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (es_write_char(fd, hastings_game.boardmap[i][j]) < 0) return -1;
+			if (ggz_write_char(fd, hastings_game.boardmap[i][j]) < 0) return -1;
 
 	return 0;
 }
@@ -264,8 +264,8 @@ int game_send_gameover(char winner)
 
 		ggzdmod_log(hastings_game.ggz, "Sending game-over to player %d\n", i);
 
-		if (es_write_int(fd, HASTINGS_MSG_GAMEOVER) < 0
-		    || es_write_char(fd, winner) < 0)
+		if (ggz_write_int(fd, HASTINGS_MSG_GAMEOVER) < 0
+		    || ggz_write_char(fd, winner) < 0)
 			return -1;
 	}
 
@@ -301,7 +301,7 @@ int game_req_move(int num)
 	
 	ggzdmod_log(hastings_game.ggz, "Requesting move from player %d.", num);
 
-	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0)
+	if (ggz_write_int(fd, HASTINGS_REQ_MOVE) < 0)
 		return -1;
 
 	return 0;
@@ -318,17 +318,17 @@ int game_handle_move(int num)
 
 	ggzdmod_log(hastings_game.ggz, "Handling move for player %d\n", num);
 
-	if ((es_read_int(fd, &hastings_game.move_src_x) < 0)
-	|| (es_read_int(fd, &hastings_game.move_src_y) < 0)
- 	|| (es_read_int(fd, &hastings_game.move_dst_x) < 0)
-  	|| (es_read_int(fd, &hastings_game.move_dst_y) < 0))
+	if ((ggz_read_int(fd, &hastings_game.move_src_x) < 0)
+	|| (ggz_read_int(fd, &hastings_game.move_src_y) < 0)
+ 	|| (ggz_read_int(fd, &hastings_game.move_dst_x) < 0)
+  	|| (ggz_read_int(fd, &hastings_game.move_dst_y) < 0))
 		return -1;
 
 	/* Check validity of move */
 	status = game_check_move(num, 0);
 
 	/* Send back move status */
-	if ((es_write_int(fd, HASTINGS_RSP_MOVE) < 0) || (es_write_char(fd, status))) return -1;
+	if ((ggz_write_int(fd, HASTINGS_RSP_MOVE) < 0) || (ggz_write_char(fd, status))) return -1;
 
 	/* If move simply invalid, ask for resubmit */
 	if(((status == HASTINGS_ERR_BOUND || status == HASTINGS_ERR_EMPTY)) && game_req_move(num) < 0) return -1;

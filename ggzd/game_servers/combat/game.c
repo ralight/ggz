@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -27,8 +27,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 #include "combat.h"
@@ -165,7 +164,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data) {
 
   fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
 
-  if (es_read_int(fd, &op) < 0)
+  if (ggz_read_int(fd, &op) < 0)
     return; /* FIXME: handle error --JDS */
 
   ggzdmod_log(cbt_game.ggz, "Got message %d from player %d\n", op, seat);
@@ -284,7 +283,7 @@ void game_send_sync(int seat, int cheated) {
     syncstr[a]++;
 
   // Send the string
-  if (es_write_int(fd, CBT_MSG_SYNC) || es_write_string(fd, syncstr) < 0) {
+  if (ggz_write_int(fd, CBT_MSG_SYNC) || ggz_write_string(fd, syncstr) < 0) {
     ggzdmod_log(cbt_game.ggz, "Can't send sync string");
     return;
   }
@@ -295,7 +294,7 @@ void game_send_sync(int seat, int cheated) {
 void game_send_seat(int seat) {
   int fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
 
-  if (es_write_int(fd, CBT_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0 || es_write_int(fd, cbt_game.number) < 0 || es_write_int(fd, PROTOCOL_VERSION) < 0) {
+  if (ggz_write_int(fd, CBT_MSG_SEAT) < 0 || ggz_write_int(fd, seat) < 0 || ggz_write_int(fd, cbt_game.number) < 0 || ggz_write_int(fd, PROTOCOL_VERSION) < 0) {
     ggzdmod_log(cbt_game.ggz, "Couldn't send seat!\n");
     return;
   }
@@ -307,7 +306,7 @@ void game_request_options(int seat) {
   int fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
 
   ggzdmod_log(cbt_game.ggz, "Asking player %d for the options", seat);
-  if (es_write_int(fd, CBT_REQ_OPTIONS) < 0)
+  if (ggz_write_int(fd, CBT_REQ_OPTIONS) < 0)
     return;
 
   return;
@@ -321,7 +320,7 @@ int game_get_options(int seat) {
 
   ggzdmod_log(cbt_game.ggz, "Getting options");
 
-  if (es_read_string_alloc(fd, &optstr) < 0)
+  if (ggz_read_string_alloc(fd, &optstr) < 0)
     return -1;
 
   // Check if this player should send the options
@@ -357,7 +356,7 @@ void game_send_options(int seat) {
     return;
   }
 
-  if (es_write_int(fd, CBT_MSG_OPTIONS) < 0 || es_write_string(fd, combat_options_string_write(&cbt_game, 0)) < 0)
+  if (ggz_write_int(fd, CBT_MSG_OPTIONS) < 0 || ggz_write_string(fd, combat_options_string_write(&cbt_game, 0)) < 0)
       return;
 
   return;
@@ -373,18 +372,18 @@ void game_send_players() {
       continue;
     }
 
-    if (es_write_int(fd, CBT_MSG_PLAYERS) < 0) {
+    if (ggz_write_int(fd, CBT_MSG_PLAYERS) < 0) {
       ggzdmod_log(cbt_game.ggz, "Can't send player list!\n");
       return;
     }
 
     for (i = 0; i < cbt_game.number; i++) {
       GGZSeat seat = ggzdmod_get_seat(cbt_game.ggz, i);
-      if (es_write_int(fd, seat.type) < 0)
+      if (ggz_write_int(fd, seat.type) < 0)
         return;
       if (seat.type != GGZ_SEAT_OPEN &&
           /* FIXME: seat.name can be NULL! */
-          es_write_string(fd, seat.name) < 0) {
+          ggz_write_string(fd, seat.name) < 0) {
         ggzdmod_log(cbt_game.ggz, "Can't send player name!\n");
         return;
       }
@@ -403,13 +402,13 @@ void game_request_setup(int seat) {
       fd = ggzdmod_get_seat(cbt_game.ggz, a).fd;
       if (fd < 0)
         continue;
-      if (es_write_int(fd, CBT_REQ_SETUP) < 0)
+      if (ggz_write_int(fd, CBT_REQ_SETUP) < 0)
         ggzdmod_log(cbt_game.ggz, "Can't send request for setup to player %d", a);
     }
   } else {
     fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
     if (fd >= 0) {
-      if (es_write_int(fd, CBT_REQ_SETUP) < 0)
+      if (ggz_write_int(fd, CBT_REQ_SETUP) < 0)
         ggzdmod_log(cbt_game.ggz, "Can't send request for setup to player %d", seat);
     }
   }
@@ -423,7 +422,7 @@ int game_get_setup(int seat) {
   int fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
   char *setup;
 
-  if (es_read_string_alloc(fd, &setup) < 0)
+  if (ggz_read_string_alloc(fd, &setup) < 0)
     return 0;
 
   // Reduce one from the string
@@ -489,7 +488,7 @@ void game_start() {
       continue;
     if (SET(OPT_OPEN_MAP))
       game_send_sync(a, 1);
-    if (es_write_int(fd, CBT_MSG_START) < 0)
+    if (ggz_write_int(fd, CBT_MSG_START) < 0)
       ggzdmod_log(cbt_game.ggz, "Can't send start message to player %d", a);
   }
 
@@ -504,9 +503,9 @@ void game_send_move_error(int seat, int error) {
     fd = ggzdmod_get_seat(cbt_game.ggz, a).fd;
     if (fd < 0)
       continue;
-    if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
-        es_write_int(fd, error) < 0 ||
-        es_write_int(fd, seat) < 0)
+    if (ggz_write_int(fd, CBT_MSG_MOVE) < 0 ||
+        ggz_write_int(fd, error) < 0 ||
+        ggz_write_int(fd, seat) < 0)
       ggzdmod_log(cbt_game.ggz, "Can`t send error message to player %d", a);
   }
 }
@@ -516,7 +515,7 @@ int game_get_move(int seat) {
   int fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;
   int a;
 
-  if (es_read_int(fd, &from) < 0 || es_read_int(fd, &to) )
+  if (ggz_read_int(fd, &from) < 0 || ggz_read_int(fd, &to) )
     return CBT_ERROR_SOCKET;
 
   a = combat_check_move(&cbt_game, from, to);
@@ -547,9 +546,9 @@ int game_handle_move(int seat, int from, int to) {
     fd = ggzdmod_get_seat(cbt_game.ggz, a).fd;
     if (fd < 0)
       continue;
-    if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
-        es_write_int(fd, from) < 0 ||
-        es_write_int(fd, to) < 0)
+    if (ggz_write_int(fd, CBT_MSG_MOVE) < 0 ||
+        ggz_write_int(fd, from) < 0 ||
+        ggz_write_int(fd, to) < 0)
       return CBT_ERROR_SOCKET;
   }
 
@@ -706,28 +705,28 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
     if (fd < 0)
       continue;
     // Write part that everyone knows
-    es_write_int(fd, CBT_MSG_ATTACK);
-    es_write_int(fd, from);
+    ggz_write_int(fd, CBT_MSG_ATTACK);
+    ggz_write_int(fd, from);
     // f_u
     // Send UNKNOWN only if
     // f_s is != a (ie, i'm not the owner of this unit)
     // Unknown victor is set and f_u is a victor
     // Silent offense is set
     if (f_s != a && (SET(OPT_SILENT_OFFENSE) || (SET(OPT_UNKNOWN_VICTOR) && f_u < 0)))
-      es_write_int(fd, U_UNKNOWN * (SIG(f_u)));
+      ggz_write_int(fd, U_UNKNOWN * (SIG(f_u)));
     else
-      es_write_int(fd, f_u);
+      ggz_write_int(fd, f_u);
     // Write public part
-    es_write_int(fd, to);
+    ggz_write_int(fd, to);
     // t_u
     // Send Unknown only if
     // t_s is != a (ie, i'm not the owner of this unit)
     // Unknown victor is set and t_u < 0
     // Silent defense is set
     if (t_s != a && (SET(OPT_SILENT_DEFENSE) || (SET(OPT_UNKNOWN_VICTOR) && t_u < 0)))
-      es_write_int(fd, U_UNKNOWN * (SIG(t_u)));
+      ggz_write_int(fd, U_UNKNOWN * (SIG(t_u)));
     else
-      es_write_int(fd, t_u);
+      ggz_write_int(fd, t_u);
   }
 
   return 1;
@@ -774,8 +773,8 @@ void game_send_gameover(int winner) {
     fd = ggzdmod_get_seat(cbt_game.ggz, a).fd;
     if (fd < 0)
       continue;
-    if (es_write_int(fd, CBT_MSG_GAMEOVER) < 0 ||
-        es_write_int(fd, winner) < 0)
+    if (ggz_write_int(fd, CBT_MSG_GAMEOVER) < 0 ||
+        ggz_write_int(fd, winner) < 0)
       ggzdmod_log(cbt_game.ggz, "Can't send ending message to player %d", a);
     // Send all the map data
     game_send_sync(a, 1);
