@@ -21,14 +21,14 @@
 // Opcodes for the Keepalive protocol
 enum KeepaliveOpcodes
 {
-	op_map,
-	op_init,
-	op_player,
-	op_name,
-	op_loginfailed,
-	op_moved,
-	op_login,
-	op_move
+	op_map = 100,
+	op_init = 101,
+	op_player = 102,
+	op_name = 103,
+	op_loginfailed = 104,
+	op_moved = 105,
+	op_login = 106,
+	op_move = 107
 };
 
 // op_map: map size and contents
