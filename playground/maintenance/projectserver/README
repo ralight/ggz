@@ -48,20 +48,30 @@ live: permanent ggz server and database
 bugs: bug database
 cvs:  cvs server
 
+Service location:
+www, ftp, mail, bugs, cvs are on ggzgamingzone.org
+live, ggzcommunity.org are on fr.ggzgamingzone.org
+wwwmirror is provided by ftp2.kgt.org
+
 Redundancy:
+
+Mirroring via rsync -avz ggzgamingzone.org::
 
 http: redundancy through mirrors, via anonymous rsync:
       * de.ggzgamingzone.org (www, ftp)
       * fr.ggzgamingzone.org (www, ftp)
+	  * wwwmirror.ggzgamingzone.org (www)
       goal: trusted (dynamic) or untrusted (static) mirror
       possible for mantis and rankings, not for webcvs and mailman interface
 ftp:  redundancy through download mirrors, via anonymous rsync:
       * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium)
 	    http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
-	  * ftp://ftp.sunsite.dk/mirrors/ggzgamingzone (Denmark)
-	    http://mirrors.sunsite.dk/ggzgamingzone/
+	  * ftp://ftp.dotsrc.org/mirrors/ggzgamingzone (Denmark)
+	    http://mirrors.dotsrc.org/ggzgamingzone/
 	  * ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone (USA)
 	    http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/
+	  * ftp://ftp2.kgt.org/pub/ggzgamingzone.org (Germany)
+	    http://ftp2.kgt.org/pub/ggzgamingzone.org/
 mail: is supported by fail-over mx (mail.hostsharing.net)
       mailing lists are write-only!
 live: provides no redundancy
