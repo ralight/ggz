@@ -736,13 +736,27 @@ static gint about_update(gpointer data)
 	status = about_draw_text(background, "Brian Cox",	font3, Yloc, FALSE);
 	status = about_draw_text(background, "Rich Gade",	font3, Yloc, FALSE);
 	status = about_draw_text(background, "Brent Hendricks",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Ismael Orenstein",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Dan Papasian",	font3, Yloc, FALSE);
 	status = about_draw_text(background, "Justin Zaun",	font3, Yloc, FALSE);
 	status = about_draw_text(background, " ",		font2, Yloc, FALSE);
 	status = about_draw_text(background, "KDE2 Client",	font2, Yloc, FALSE);
-	status = about_draw_text(background, "Josed Spillner",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Josef Spillner",	font3, Yloc, FALSE);
 	status = about_draw_text(background, " ",		font2, Yloc, FALSE);
 	status = about_draw_text(background, "Windows Client",	font2, Yloc, FALSE);
 	status = about_draw_text(background, "Doug Hudson",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Roger Light",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Justin Zaun",	font3, Yloc, FALSE);
+	status = about_draw_text(background, " ",		font2, Yloc, FALSE);
+	status = about_draw_text(background, "Text Client",	font2, Yloc, FALSE);
+	status = about_draw_text(background, "Brent Hendricks",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Justin Zaun",	font3, Yloc, FALSE);
+	status = about_draw_text(background, " ",		font2, Yloc, FALSE);
+	status = about_draw_text(background, "Libraries",	font2, Yloc, FALSE);
+	status = about_draw_text(background, "Rich Gade",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Brent Hendricks",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Ismael Orenstein",	font3, Yloc, FALSE);
+	status = about_draw_text(background, "Justin Zaun",	font3, Yloc, FALSE);
 	gdk_draw_pixmap (GTK_WIDGET(background)->window, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], pixmap, 0, 0, 0, 0,
 			250, 300);
 
