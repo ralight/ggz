@@ -41,8 +41,8 @@ typedef struct {
 	int stat_clr_time;
 	int main_port;
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
-	char *admin_name;
-	char *admin_email;
+	char *admin_name;	/* cleanup() */
+	char *admin_email;	/* cleanup() */
 } Options;
 
 
@@ -107,7 +107,7 @@ typedef struct {
 	char playing;
 	pthread_t pid;
 	int table_index;
-	char *ip_addr;
+	char *ip_addr;				/* cleanup() */
 } UserInfo;
 
 
@@ -148,27 +148,27 @@ typedef struct {
 
 /* MOTD info */
 typedef struct {
-	char *motd_file;
+	char *motd_file;			/* cleanup() */
 	char use_motd;
 	unsigned long startup_time;
 	int motd_lines;
-	char *motd_text[MAX_MOTD_LINES];
-	char *hostname;
-	char *sysname;
-	char *cputype;
-	char *port;
+	char *motd_text[MAX_MOTD_LINES];	/* cleanup() */
+	char *hostname;				/* cleanup() */
+	char *sysname;				/* cleanup() */
+	char *cputype;				/* cleanup() */
+	char *port;				/* cleanup() */
 } MOTDInfo;
 
 /* Logfile info */
 typedef struct {
 	int log_initialized;
 	int syslog_facility;
-	char *log_fname;
+	char *log_fname;			/* cleanup() */
 	FILE *logfile;
 	int log_level;
 	int log_use_syslog;
 #ifdef DEBUG
-	char *dbg_fname;
+	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
 	int dbg_level;
 	int dbg_use_syslog;
