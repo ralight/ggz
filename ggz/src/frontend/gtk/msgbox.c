@@ -931,9 +931,6 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);
-		gdk_pixmap_unref (pixmap);
-		gdk_bitmap_unref (mask);
-		dialogwidget = AddWidget (icon, packingbox3);
 	}
 	if (itype == MSGBOX_INFO)
 	{
@@ -942,9 +939,6 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);
-		gdk_pixmap_unref (pixmap);
-		gdk_bitmap_unref (mask);
-		dialogwidget = AddWidget (icon, packingbox3);
 	}
 	if (itype == MSGBOX_QUESTION)
 	{
@@ -953,11 +947,14 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);
+	}
+
+	if(icon) {
 		gdk_pixmap_unref (pixmap);
 		gdk_bitmap_unref (mask);
 		dialogwidget = AddWidget (icon, packingbox3);
+		gtk_widget_set_usize(GTK_WIDGET(icon), 40, 40);
 	}
-	gtk_widget_set_usize(GTK_WIDGET(icon), 40, 40);
 
 	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox3);
 	dialogwidget = AddWidget (gtk_hseparator_new(), packingbox);
