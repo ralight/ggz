@@ -106,6 +106,13 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       printf("Got a REQ_DRAW\n");
       game_update(CHESS_EVENT_DRAW, NULL);
       break;
+		case CHESS_RSP_UPDATE:
+			/* We want to update the seconds */
+			printf("Got an RSP_UPDATE\n");
+			es_read_int(fd, (int*)args);
+			es_read_int(fd, (int*)args+1);
+			game_update(CHESS_EVENT_UPDATE_TIME, args);
+			break;
     default:
       game_message("Unknown opcode: %d\n", op);
       break;
@@ -118,9 +125,11 @@ void net_send_time(int time_option) {
   es_write_int(game_info.fd, time_option);
 }
 
-void net_send_move(char *move) {
+void net_send_move(char *move, int time) {
   es_write_char(game_info.fd, CHESS_REQ_MOVE);
   es_write_string(game_info.fd, move);
+	if (time >= 0)
+		es_write_int(game_info.fd, time);
   /*
   es_write_char(game_info.fd, from);
   es_write_char(game_info.fd, to);
@@ -133,4 +142,13 @@ void net_send_draw() {
 
 void net_call_flag() {
   es_write_char(game_info.fd, CHESS_REQ_FLAG);
+}
+
+void net_request_update() {
+	es_write_char(game_info.fd, CHESS_REQ_UPDATE);
+}
+
+void net_update_server(int time) {
+	es_write_char(game_info.fd, CHESS_MSG_UPDATE);
+	es_write_int(game_info.fd, time);
 }

@@ -120,7 +120,7 @@ void board_init() {
   game_info.dest_y = -1;
 
 	/* Setup the player info */
-	board_info_init();
+	//board_info_init();
 }
 
 void board_info_init() {
@@ -407,3 +407,6 @@ promote_piece                          (GtkButton       *button,
 
 }
 
+void board_request_update() {
+	net_request_update();
+}

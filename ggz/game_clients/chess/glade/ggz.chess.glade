@@ -112,6 +112,19 @@
 	    <label>Call flag</label>
 	    <right_justify>False</right_justify>
 	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>request_update</name>
+	    <tooltip>Ask the server to update his time structures</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>board_request_update</handler>
+	      <last_modification_time>Tue, 20 Feb 2001 15:24:59 GMT</last_modification_time>
+	    </signal>
+	    <label>Request update</label>
+	    <right_justify>False</right_justify>
+	  </widget>
 	</widget>
       </widget>
     </widget>

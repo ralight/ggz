@@ -26,13 +26,19 @@
 void net_send_time(int time_option);
 
 /* Send move to server */
-void net_send_move(char *move);
+void net_send_move(char *move, int time);
 
 /* Request draw */
 void net_send_draw();
 
 /* Call flag */
 void net_call_flag();
+
+/* Request update */
+void net_request_update();
+
+/* Update server */
+void net_update_server(int time);
 
 /* All server input will pass through here
  * Then we will filter it and send to game_update */

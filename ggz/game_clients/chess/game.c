@@ -40,6 +40,9 @@ extern struct chess_info game_info;
 /* Main window */
 extern GtkWidget *main_win;
 
+/* Timeout id */
+gint timeout_id;
+
 game_t *game = NULL;
 
 void game_init() {
@@ -57,6 +60,7 @@ void game_init() {
   game_info.check = FALSE;
 	strcpy(game_info.name[0], "White");
 	strcpy(game_info.name[1], "Black");
+	game_info.timer = g_timer_new();
 }
 
 /* FIXME: Create a game_popup
@@ -99,10 +103,13 @@ void game_message(const char *format, ...) {
  * CHESS_EVENT_MOVE_END -> arg = (str)MOVE
  * CHESS_EVENT_MOVE -> arg = (str)MOVE
  * CHESS_EVENT_GAMEOVER -> arg[0] = (char)OVER_CODE
+ * CHESS_EVENT_UPDATE_TIME -> arg[0] = (int)TIME_1
+ *                            arg[1] = (int)TIME_2
  *
  */
 void game_update(int event, void *arg) {
   char move[6];
+	int diff[2];
   int retval = 0;
   switch (event) {
     case CHESS_EVENT_INIT:
@@ -161,8 +168,17 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_MOVE_END:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      net_send_move(arg);
-      //net_send_move( *(int*)arg+(8**((int*)arg+1)), *((int*)arg+2)+(8**((int*)arg+3)));
+			if (game_info.clock_type != CHESS_CLOCK_CLIENT)
+				net_send_move(arg, -1);
+			else {
+				gtk_timeout_remove(timeout_id);
+				if (game_info.turn == 0)
+					net_send_move(arg, 0);
+				else
+					net_send_move(arg, g_timer_elapsed(game_info.timer, NULL));
+				g_timer_stop(game_info.timer);
+				g_timer_reset(game_info.timer);
+			}
       game_message("Sending move to server...");
       break;
     case CHESS_EVENT_MOVE:
@@ -192,10 +208,24 @@ void game_update(int event, void *arg) {
         game_info.t_seconds[1] = game_info.seconds[1];
       }
       game_info.turn++;
+			/* Check if it's my turn now and we have CLIENT_CLOCK */
+			if (game_info.clock_type == CHESS_CLOCK_CLIENT && game_info.turn % 2 == game_info.seat) {
+				/* Starts the timer ! */
+				g_timer_start(game_info.timer);
+				/* Starts the timeout for MSG_UPDATE */
+				timeout_id = gtk_timeout_add(15000, game_update_server, NULL);
+			}
 			board_info_update();
       board_info_add_move(move);
       board_draw();
       break;
+		case CHESS_EVENT_UPDATE_TIME:
+			game_info.seconds[0] = *((int*)arg);
+			game_info.seconds[1] = *((int*)arg+1);
+			game_info.t_seconds[0] = game_info.seconds[0];
+			game_info.t_seconds[1] = game_info.seconds[1];
+			board_info_update();
+			break;
     case CHESS_EVENT_GAMEOVER:
       switch ( *(char*)arg ) {
         case CHESS_GAMEOVER_DRAW_AGREEMENT:
@@ -259,4 +289,12 @@ int game_timer(gpointer user_data) {
   game_info.t_seconds[game_info.turn % 2]--;
   board_info_update();
   return TRUE;
+}
+
+int game_update_server(gpointer user_data) {
+	int time;
+	time = g_timer_elapsed(game_info.timer, NULL);
+	g_timer_reset(game_info.timer);
+	net_update_server(time);
+	return TRUE;
 }

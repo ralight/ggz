@@ -143,6 +143,8 @@
 #define CHESS_GAMEOVER_WIN_2_RESIGN 11
 #define CHESS_GAMEOVER_WIN_2_FLAG 12
 
+#include <glib.h>
+
 /* Game info structure */
 struct chess_info {
   /* Clock type 
@@ -172,4 +174,6 @@ struct chess_info {
   char src_x, src_y;
   /* Am I in check? */
   char check;
+	/* Timer for client clock */
+	GTimer *timer;
 };

@@ -31,3 +31,4 @@ void game_message(const char *, ...);
 void game_popup(const char *, ...);
 void game_update(int event, void *arg);
 int game_timer(gpointer user_data);
+int game_update_server(gpointer user_data);
