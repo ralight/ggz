@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5095 2002-10-29 00:18:32Z jdorje $
+ * $Id: client.c 5172 2002-11-03 19:18:33Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -409,32 +409,38 @@ client_disconnect_button_clicked	(GtkButton	*button,
 }
 
 
-static void
-client_chat_entry_activate		(GtkEditable	*editable,
-					 gpointer	 data)
+static void chat_line_entered(void)
 {
 	GtkEntry *tmp;
-  GGZList *last_list; /* List for last entries */
+	GGZList *last_list; /* List for last entries */
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-  last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
+	last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
 
-  while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
-    ggz_list_delete_entry(last_list, ggz_list_head(last_list));
+	while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
+		ggz_list_delete_entry(last_list, ggz_list_head(last_list));
 
-	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
-	{
-		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
-    ggz_list_insert(last_list, gtk_entry_get_text(GTK_ENTRY(tmp)));
-    /* Clear the current entry */
-    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", NULL);
+	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),"")) {
+		const char *text = gtk_entry_get_text(GTK_ENTRY(tmp));
+		chat_send(text);
+		ggz_list_insert(last_list, (char*)text);
+		/* Clear the current entry */
+		gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", NULL);
 	}
 
 	/* Clear the entry box */
 	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 }
- 
- 
+
+
+static void
+client_chat_entry_activate		(GtkEditable	*editable,
+					 gpointer	 data)
+{
+	chat_line_entered();
+}
+
+
 gboolean
 client_chat_entry_key_press_event	(GtkWidget	*widget,
 					 GdkEventKey	*event,
@@ -542,25 +548,7 @@ static void
 client_send_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	GtkEntry *tmp;
-  GGZList *last_list;
-
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-  last_list = gtk_object_get_data(GTK_OBJECT(tmp), "last_list");
-
-  while (ggz_list_count(last_list) > CHAT_MAXIMUM_CACHE)
-    ggz_list_delete_entry(last_list, ggz_list_head(last_list));
-
-	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
-	{
-		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
-    ggz_list_insert(last_list, gtk_entry_get_text(GTK_ENTRY(tmp)));
-    /* Clear the current entry */
-    gtk_object_set_data(GTK_OBJECT(tmp), "current_entry", NULL);
-	}
-
-	/* Clear the entry box */
-	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	chat_line_entered();
 }
 
 
