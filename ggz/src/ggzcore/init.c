@@ -29,7 +29,6 @@
 #include <ggzcore.h>
 #include <event.h>
 #include <user.h>
-#include <module.h>
 #include <msg.h>
 #include <net.h>
 #include <state.h>
