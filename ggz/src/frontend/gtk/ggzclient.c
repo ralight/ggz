@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6184 2004-10-15 08:35:42Z josef $
+ * $Id: ggzclient.c 6261 2004-11-05 01:08:45Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -342,8 +342,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	/* We do this here so that on slower links people
 	 * don't think all the old people are in the old room */
 	/* FIXME: this should be move to client_clear_players() */
-	tmp = lookup_widget(win_main, "player_clist");
-	gtk_clist_clear(GTK_CLIST(tmp));
+	tmp = lookup_widget(win_main, "player_list_store");
+	gtk_list_store_clear(GTK_LIST_STORE(tmp));
 
 	/* Clear table list */
 	clear_tables();
@@ -663,7 +663,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "room_clist");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = lookup_widget(win_main, "player_clist");
+		tmp = lookup_widget(win_main, "player_list");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		tmp = lookup_widget(win_main, "table_clist");
@@ -759,7 +759,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "room_clist");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		
-		tmp = lookup_widget(win_main, "player_clist");
+		tmp = lookup_widget(win_main, "player_list");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		
 		tmp = lookup_widget(win_main, "table_clist");
@@ -864,7 +864,7 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "room_clist");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
-		tmp = lookup_widget(win_main, "player_clist");
+		tmp = lookup_widget(win_main, "player_list");
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 		tmp = lookup_widget(win_main, "table_clist");
@@ -915,8 +915,8 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
         gtk_clist_clear(GTK_CLIST(tmp));
  
         /* Clear current list of players */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_list_store");
+        gtk_list_store_clear(GTK_LIST_STORE(tmp));
 
         /* Clear current list of tables */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6255 2004-11-04 22:38:30Z jdorje $
+ * $Id: playerlist.c 6261 2004-11-05 01:08:45Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -47,50 +47,29 @@
 #define PLAYER_LIST_COL_STATS 2
 #define PLAYER_LIST_COL_NAME 3
 
-static char *client_get_players_index(guint row);
-static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
-				    gboolean is_ignore);
-
-static gboolean client_player_clist_event(GtkWidget * widget,
-					  GdkEvent * event, gpointer data);
-static void client_player_info_activate(GtkMenuItem * menuitem,
-					gpointer data);
-static void client_player_friends_click(GtkMenuItem * menuitem,
-					gpointer data);
-static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data);
-static void client_player_clist_select_row(GtkCList * clist, gint row,
-					   gint column, GdkEvent * event,
-					   gpointer data);
-
-static char *client_get_players_index(guint row)
-{
-	GtkWidget *tmp;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	guint8 space;
-	gchar *text = NULL;
-
-	tmp = lookup_widget(win_main, "player_clist");
-	gtk_clist_get_pixtext(GTK_CLIST(tmp), row, PLAYER_LIST_COL_NAME,
-			      &text, &space, &pixmap, &mask);
-
-	return text;
-}
-
-
 static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
 	/* Pop up an info dialog about the player */
-	int player_num = GPOINTER_TO_INT(data);
+	char *name = data;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GGZPlayer *player = ggzcore_room_get_nth_player(room, player_num);
-	player_info_create_or_raise(player);
+	int count, i;
+
+	count = ggzcore_room_get_num_players(room);
+	for (i = 0; i < count; i++) {
+		GGZPlayer *player = ggzcore_room_get_nth_player(room, i);
+
+		if (strcasecmp(ggzcore_player_get_name(player), name) == 0) {
+			player_info_create_or_raise(player);
+			break;
+		}
+	}
+
+	/* We can reach here in some cases. */
 }
 
 static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
 {
-	int player_num = GPOINTER_TO_INT(data);
-	char *pname = client_get_players_index(player_num);
+	char *pname = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
 		chat_add_friend(pname, TRUE);
@@ -100,8 +79,7 @@ static void client_player_friends_click(GtkMenuItem * menuitem, gpointer data)
 
 static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
 {
-	int player_num = GPOINTER_TO_INT(data);
-	char *pname = client_get_players_index(player_num);
+	char *pname = data;
 
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
 		chat_add_ignore(pname, TRUE);
@@ -109,49 +87,7 @@ static void client_player_ignore_click(GtkMenuItem * menuitem, gpointer data)
 		chat_remove_ignore(pname);
 }
 
-static gboolean
-client_player_clist_event(GtkWidget * widget, GdkEvent * event, gpointer data)
-{
-	gint row, column;
-	GdkEventButton *buttonevent = (GdkEventButton *) event;
-	GtkWidget *clist = lookup_widget(win_main, "player_clist");
-
-	if (!gtk_clist_get_selection_info(GTK_CLIST(clist),
-					  buttonevent->x,
-					  buttonevent->y, &row, &column)) {
-		return FALSE;
-	}
-
-	if (event->type == GDK_BUTTON_PRESS) {
-		/* Single click */
-		if (buttonevent->button == 3) {
-			/* Right mouse button */
-			/* Create and display the menu */
-			const char *player = client_get_players_index(row);
-			int is_friend = chat_is_friend(player);
-			int is_ignore = chat_is_ignore(player);
-			GtkWidget *menu;
-			gtk_clist_select_row(GTK_CLIST(clist), row, column);
-			menu = create_mnu_player(row, is_friend, is_ignore);
-
-			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
-				       NULL, buttonevent->button, 0);
-		}
-	}
-
-	return FALSE;
-}
-
-
-static void client_player_clist_select_row(GtkCList * clist, gint row,
-					   gint column, GdkEvent * event,
-					   gpointer data)
-{
-
-}
-
-
-static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
+static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 				    gboolean is_ignore)
 {
 	GtkWidget *mnu_player;
@@ -203,32 +139,59 @@ static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
 
 	gtk_signal_connect(GTK_OBJECT(info), "activate",
 			   GTK_SIGNAL_FUNC(client_player_info_activate),
-			   GINT_TO_POINTER(player_num));
+			   name);
 	gtk_signal_connect(GTK_OBJECT(friends), "activate",
 			   GTK_SIGNAL_FUNC(client_player_friends_click),
-			   GINT_TO_POINTER(player_num));
+			   name);
 	gtk_signal_connect(GTK_OBJECT(ignore), "activate",
 			   GTK_SIGNAL_FUNC(client_player_ignore_click),
-			   GINT_TO_POINTER(player_num));
+			   name);
 
 	return mnu_player;
 }
 
+static gboolean client_player_list_event(GtkWidget * widget,
+					 GdkEvent * event, gpointer data)
+{
+	GdkEventButton *buttonevent = (GdkEventButton *) event;
+	GtkWidget *tree = lookup_widget(win_main, "player_list");
+	GtkTreeSelection *select
+	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	static gchar *player = NULL;
+
+	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+		return FALSE;
+	}
+
+	if (player) g_free(player); /* Free the last invocation. */
+	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &player, -1);
+
+	if (event->type == GDK_BUTTON_PRESS
+	    && buttonevent->button == 3) {
+		/* Right mouse button:
+		 * Create and display the menu */
+		int is_friend = chat_is_friend(player);
+		int is_ignore = chat_is_ignore(player);
+		GtkWidget *menu;
+
+		menu = create_mnu_player(player, is_friend, is_ignore);
+		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
+			       NULL, buttonevent->button, 0);
+	}
+
+	return FALSE;
+}
+
 #define LAG_CATEGORIES 6
 gboolean pixmaps_initted = FALSE;
-struct {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-} lag[LAG_CATEGORIES], guest, registered, admin;
+GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin;
 
 void display_players(void)
 {
-	GtkWidget *tmp;
+	GtkListStore *store;
 	gint i, num, l;
-	/* Some of the fields of the clist receive pixmaps
-	 * instead, and are therefore set to NULL. */
-	gchar *player[5] = { NULL, NULL, NULL, NULL, NULL };
-	gchar *path = NULL;
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
@@ -237,15 +200,11 @@ void display_players(void)
 	int wins, losses, ties, forfeits, rating, ranking, highscore;
 	char stats[512];
 
-	/* Retrieve the player list (CList) widget. */
-	tmp = lookup_widget(win_main, "player_clist");
-
-	/* "Freeze" the clist.  This prevents any graphical updating
-	 * until we "thaw" it later. */
-	gtk_clist_freeze(GTK_CLIST(tmp));
+	/* Retrieve the player list widget. */
+	store = GTK_LIST_STORE(lookup_widget(win_main, "player_list_store"));
 
 	/* Clear current list of players */
-	gtk_clist_clear(GTK_CLIST(tmp));
+	gtk_list_store_clear(GTK_LIST_STORE(store));
 
 	/* Display current list of players */
 	num = ggzcore_room_get_num_players(room);
@@ -253,32 +212,41 @@ void display_players(void)
 	/* Ensure the lag graphics are loaded. */
 	if (!pixmaps_initted) {
 		for (i = 0; i < LAG_CATEGORIES; i++) {
-			gchar *name = g_strdup_printf("ggz_gtk_lag%d", i);
+			gchar name[512];
 
-			lag[i].pixmap = load_pixmap(name, &lag[i].mask);
-			g_free(name);
+			snprintf(name, sizeof(name), "ggz_gtk_lag%d", i);
+			lag[i] = load_pixbuf(name);
 		}
-		guest.pixmap = load_pixmap("ggz_gtk_guest", &guest.mask);
-		registered.pixmap = load_pixmap("ggz_gtk_guest",
-						&registered.mask);
-		admin.pixmap = load_pixmap("ggz_gtk_guest", &admin.mask);
+		guest = load_pixbuf("ggz_gtk_guest");
+		registered = load_pixbuf("ggz_gtk_guest");
+		admin = load_pixbuf("ggz_gtk_guest");
 		pixmaps_initted = TRUE;
 	}
 
 	for (i = 0; i < num; i++) {
-		p = ggzcore_room_get_nth_player(room, i);
+		GtkTreeIter iter;
+		gchar tabletext[32];
 
+		p = ggzcore_room_get_nth_player(room, i);
 		table = ggzcore_player_get_table(p);
 
-		/* These values are freed down below. */
-		if (!table)
-			player[PLAYER_LIST_COL_TABLE] = g_strdup("--");
-		else
-			player[PLAYER_LIST_COL_TABLE]
-				= g_strdup_printf("%d",
-						  ggzcore_table_get_id
-						  (table));
+		gtk_list_store_append(store, &iter);
 
+		/* Name */
+		gtk_list_store_set(store, &iter, PLAYER_COLUMN_NAME,
+				   ggzcore_player_get_name(p), -1);
+
+		/* Table # */
+		if (table <= 0) {
+			snprintf(tabletext, sizeof(tabletext), "--");
+		} else {
+			snprintf(tabletext, sizeof(tabletext), "%d",
+				 ggzcore_table_get_id(table));
+		}
+		gtk_list_store_set(store, &iter,
+				   PLAYER_COLUMN_TABLE, tabletext, -1);
+
+		/* Stats (ranking, etc.) */
 		if (ggzcore_player_get_ranking(p, &ranking)) {
 			snprintf(stats, sizeof(stats), _("#%d"), ranking);
 		} else if (ggzcore_player_get_highscore(p, &highscore)) {
@@ -298,41 +266,32 @@ void display_players(void)
 					 sizeof(stats) - strlen(stats),
 					 " (%d)", forfeits);
 			}
-		} else
-			snprintf(stats, sizeof(stats), "%s", "");
-		player[PLAYER_LIST_COL_STATS] = stats;
-
-		player[PLAYER_LIST_COL_NAME]
-			= g_strdup(ggzcore_player_get_name(p));
-
-		gtk_clist_append(GTK_CLIST(tmp), player);
-
-		l = ggzcore_player_get_lag(p);
-
-		printf("Looking at player %d, lag %d.\n", i, l);
-		if (l >= 0 && l < LAG_CATEGORIES
-		    && lag[l].pixmap) {
-			gtk_clist_set_pixmap(GTK_CLIST(tmp), i,
-					     PLAYER_LIST_COL_LAG,
-					     lag[l].pixmap,
-					     lag[l].mask);
 		} else {
-		  printf("No lag value.\n");
+			snprintf(stats, sizeof(stats), "%s", "");
+		}
+		gtk_list_store_set(store, &iter,
+				   PLAYER_COLUMN_STATS, stats, -1);
+
+		/* Lag icon */
+		l = ggzcore_player_get_lag(p);
+		if (l >= 0 && l < LAG_CATEGORIES && lag[l]) {
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_LAG, lag[l], -1);
 		}
 
-		path = NULL;
+		/* "Type" icon */
 		switch (ggzcore_player_get_type(p)) {
 		case GGZ_PLAYER_GUEST:
-			pixmap = guest.pixmap;
-			mask = guest.mask;
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_TYPE, guest, -1);
 			break;
 		case GGZ_PLAYER_NORMAL:
-			pixmap = registered.pixmap;
-			mask = registered.mask;
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_TYPE, registered, -1);
 			break;
 		case GGZ_PLAYER_ADMIN:
-			pixmap = admin.pixmap;
-			mask = admin.mask;
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_TYPE, admin, -1);
 			break;
 		case GGZ_PLAYER_BOT:
 		case GGZ_PLAYER_UNKNOWN:
@@ -340,86 +299,65 @@ void display_players(void)
 			break;
 		}
 
-		if (pixmap) {
-			gtk_clist_set_pixtext(GTK_CLIST(tmp), i,
-					      PLAYER_LIST_COL_NAME,
-					      player[PLAYER_LIST_COL_NAME],
-					      5, pixmap, mask);
-		}
-
-		/* Note the name is used right above, so these calls
-		   have to come way down here. */
-		g_free(player[PLAYER_LIST_COL_TABLE]);
-		g_free(player[PLAYER_LIST_COL_NAME]);
 	}
-
-	/* "Thaw" the clist (it was "frozen" up above). */
-	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
-GtkWidget *create_player_list(GtkWidget * window)
+GtkWidget *create_player_list(GtkWidget *window)
 {
-	GtkWidget *player_clist;
-	GtkWidget *player_lag_label;
-	GtkWidget *player_table_label;
-	GtkWidget *player_record_label;
-	GtkWidget *player_name_label;
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
-	player_clist = gtk_clist_new(4);
-	gtk_widget_ref(player_clist);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_clist",
-				 player_clist,
+	store = gtk_list_store_new(PLAYER_COLUMNS,
+				   GDK_TYPE_PIXBUF,
+				   GDK_TYPE_PIXBUF,
+				   G_TYPE_STRING, /* For now */
+				   G_TYPE_STRING,
+				   G_TYPE_STRING);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_pixbuf_new();
+	column = gtk_tree_view_column_new_with_attributes("", renderer,
+				"pixbuf", PLAYER_COLUMN_TYPE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_pixbuf_new();
+	column = gtk_tree_view_column_new_with_attributes("L", renderer,
+				"pixbuf", PLAYER_COLUMN_LAG, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("T", renderer,
+				"text", PLAYER_COLUMN_TABLE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("S", renderer,
+				"text", PLAYER_COLUMN_STATS, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("Name", renderer,
+				"text", PLAYER_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	gtk_object_set_data_full(GTK_OBJECT(window), "player_list",
+				 tree,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(player_clist);
-	gtk_widget_set_sensitive(player_clist, FALSE);
-	GTK_WIDGET_UNSET_FLAGS(player_clist, GTK_CAN_FOCUS);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 0, 15);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 1, 15);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 2, 35);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 3, 65);
-	gtk_clist_column_titles_show(GTK_CLIST(player_clist));
+	gtk_object_set_data(GTK_OBJECT(window), "player_list_store", store);
+	gtk_widget_show(tree);
+	gtk_widget_set_sensitive(tree, FALSE);
+	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	player_lag_label = gtk_label_new(_("L"));
-	gtk_widget_ref(player_lag_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_lag_label",
-				 player_lag_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(player_lag_label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 0,
-				    player_lag_label);
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
-	player_table_label = gtk_label_new(_("T"));
-	gtk_widget_ref(player_table_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_table_label",
-				 player_table_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(player_table_label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 1,
-				    player_table_label);
+	gtk_signal_connect(GTK_OBJECT(tree), "button-press-event",
+			   GTK_SIGNAL_FUNC(client_player_list_event), NULL);
 
-	player_record_label = gtk_label_new(_("R"));
-	gtk_widget_ref(player_record_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_record_label",
-				 player_record_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(player_record_label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 2,
-				    player_record_label);
-
-	player_name_label = gtk_label_new(_("Player"));
-	gtk_widget_ref(player_name_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_name_label",
-				 player_name_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(player_name_label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 3,
-				    player_name_label);
-
-	gtk_signal_connect(GTK_OBJECT(player_clist), "button-press-event",
-			   GTK_SIGNAL_FUNC(client_player_clist_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(player_clist), "select_row",
-			   GTK_SIGNAL_FUNC(client_player_clist_select_row),
-			   NULL);
-
-	return player_clist;
+	return tree;
 }

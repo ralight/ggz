@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.h 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: playerlist.h 6261 2004-11-05 01:08:45Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -23,6 +23,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+typedef enum {
+  PLAYER_COLUMN_TYPE,
+  PLAYER_COLUMN_LAG,
+  PLAYER_COLUMN_TABLE,
+  PLAYER_COLUMN_STATS,
+  PLAYER_COLUMN_NAME,
+  PLAYER_COLUMNS
+} PlayerListFields;
 
 void display_players(void);
 

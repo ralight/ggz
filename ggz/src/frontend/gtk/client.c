@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: client.c 6261 2004-11-05 01:08:45Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -140,8 +140,8 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
         gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Clear current list of players */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_list_store");
+        gtk_list_store_clear(GTK_LIST_STORE(tmp));
 
 	/* Clear current list of tables */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
@@ -374,8 +374,8 @@ client_disconnect_button_clicked	(GtkButton	*button,
         gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Clear current list of players */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_list_store");
+        gtk_list_store_clear(GTK_LIST_STORE(tmp));
 
 	/* Clear current list of tables */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
@@ -883,10 +883,6 @@ client_realize                    (GtkWidget       *widget,
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
 
-	/* Make the player list rows a bit taller */
-	tmp3 = lookup_widget(win_main, "player_clist");
-	gtk_clist_set_row_height(GTK_CLIST(tmp3), 25);
-
 #ifdef DEBUG
 	chat_display_local(CHAT_LOCAL_HIGH, NULL,
 			   _("Compiled with debugging."));
@@ -974,7 +970,7 @@ create_win_main (void)
   GtkWidget *room_clist;
   GtkWidget *room_label;
   GtkWidget *player_scrolledwindow;
-  GtkWidget *player_clist;
+  GtkWidget *player_tree;
   GtkWidget *table_vpaned;
   GtkWidget *scrolledwindow3;
   GtkWidget *table_clist;
@@ -1563,8 +1559,8 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), player_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (player_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  player_clist = create_player_list(win_main);
-  gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_clist);
+  player_tree = create_player_list(win_main);
+  gtk_container_add(GTK_CONTAINER(player_scrolledwindow), player_tree);
 
   table_vpaned = gtk_vpaned_new ();
   gtk_widget_ref (table_vpaned);
