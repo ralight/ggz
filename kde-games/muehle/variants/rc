@@ -1,0 +1,21 @@
+[Muehle]
+Variants=classic,twelvemensmorris,roman
+
+[classic]
+file=classic
+width=600
+height=600
+description=Classic Muehle Game (Nine men's morris)
+
+[twelvemensmorris]
+file=twelvemensmorris
+width=600
+height=600
+description=Extended Muehle Game (Twelve men's morris)
+
+[roman]
+file=roman
+width=400
+height=400
+description=Old Roman Muehle Game
+
