@@ -12,10 +12,13 @@ config.log
 config.status
 config.sub
 configure
+configure-stamp
+depcomp
 install-sh
 missing
 mkinstalldirs
 stamp-h
+stamp-h1
 stamp-h.in
 libtool
 ltconfig
