@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 2771 2001-12-01 16:56:21Z bmh $
+ * $Id: io.c 2802 2001-12-07 21:15:25Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -286,6 +286,9 @@ static int _io_read_req_launch(_GGZdMod *mod)
 static int _io_read_req_join(_GGZdMod *mod)
 {
 	GGZSeat seat;
+	
+	/* Is it true that only human players join this way? */
+	seat.type = GGZ_SEAT_PLAYER;
 	
 	if (es_read_int(mod->fd, &seat.num) < 0 
 	    || es_read_string_alloc(mod->fd, &seat.name) < 0
