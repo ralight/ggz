@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4036 2002-04-21 07:53:34Z jdorje $
+ * $Id: drawcard.c 4038 2002-04-21 08:54:06Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -181,7 +181,8 @@ static void draw_french_card(card_t card, int orientation,
 static void draw_domino_card(card_t card, int orientation,
                              int x, int y, GdkPixmap *image)
 {
-	const int h = get_card_height0();
+	const int h = get_card_height0() - 1;
+	const int w = get_card_width0() - 1;
 	const int spot_radius = (h) / 8;
 	const int spots[7][7][2] = { {},
 	                             { {h / 2,       h / 2} },
@@ -199,39 +200,51 @@ static void draw_domino_card(card_t card, int orientation,
 	                               {(4 * h) / 5, h / 5},
 	                               {h / 5,       (4 * h) / 5},
 	                               {(4 * h) / 5, (4 * h) / 5} },
-	                             { {h / 3,       h / 5},
-	                               {h / 3,       h / 2},
-	                               {h / 3,       (4 * h) / 5},
-	                               {(2 * h) / 3, h / 5},
-	                               {(2 * h) / 3, h / 2},
-	                               {(2 * h) / 3, (4 * h) / 5} } };
+	                             { {h / 4,       h / 5},
+	                               {h / 4,       h / 2},
+	                               {h / 4,       (4 * h) / 5},
+	                               {(3 * h) / 4, h / 5},
+	                               {(3 * h) / 4, h / 2},
+	                               {(3 * h) / 4, (4 * h) / 5} } };
 	int i, j;
 	int show = (card.suit != -1 && card.face != -1);
+	const int xo = (orientation % 2 == 0) ? h : 0;
+	const int yo = (orientation % 2 == 0) ? 0 : h;
 	
-	assert(get_card_width0() == 2 * get_card_height0());
+	assert(w == 2 * h);
 	
 	gdk_draw_rectangle(image,
-	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   !show,
+	                   show ? table_style->bg_gc[GTK_WIDGET_STATE(table)]
+	                        : table_style->fg_gc[GTK_WIDGET_STATE(table)],
+	                   TRUE,
 	                   x, y,
-	                   h, h);
-	gdk_draw_rectangle(image,
-	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   !show,
-	                   x + h + 1, y,
-	                   h, h);
+	                   get_card_width(orientation),
+	                   get_card_height(orientation));
 	
 	if (!show)
 		return;
 	
+	gdk_draw_rectangle(image,
+	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
+	                   FALSE,
+	                   x, y,
+	                   h, h);
+	gdk_draw_rectangle(image,
+	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
+	                   FALSE,
+	                   x + xo, y + yo,
+	                   h, h);
+	
 	for (i = 0; i < 2; i++) {
-		char num_spots = i ? card.face : card.suit;
-		int x0 = x + i * h;
-		int y0 = y;
+		int num_spots = i ? card.face : card.suit;
+		int x0 = x + i * xo;
+		int y0 = y + i * yo;
 		
 		for (j = 0; j < num_spots; j++) {
-			int spot_x = x0 + spots[num_spots - 1][j][0];
-			int spot_y = y0 + spots[num_spots - 1][j][1];
+			/* FIXME: the spots should technically be rotated on
+			   the domino to be in the correct position. */
+			int spot_x = x0 + spots[num_spots][j][0];
+			int spot_y = y0 + spots[num_spots][j][1];
 			
 			gdk_draw_arc(image,
 			             table_style->fg_gc[GTK_WIDGET_STATE(table)],
@@ -272,7 +285,7 @@ static int get_card_width0(void)
 	case CARDSET_FRENCH:
 		return MY_CARDWIDTH;
 	case CARDSET_DOMINOES:
-		return 96;
+		return 97;
 	default:
 		return 0;	
 	}
@@ -284,7 +297,7 @@ static int get_card_height0(void)
 	case CARDSET_FRENCH:
 		return MY_CARDHEIGHT;
 	case CARDSET_DOMINOES:
-		return 48;
+		return 49;
 	default:
 		return 0;	
 	}
