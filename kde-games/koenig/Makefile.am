@@ -26,7 +26,7 @@ INCLUDES = -I$(top_srcdir)/koenig/libcgc \
 
 koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries) $(RSVG_LDFLAGS)
 koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a \
-	$(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
+	$(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF)
 
 METASOURCES = AUTO
 
@@ -35,6 +35,7 @@ EXTRA_DIST = module.dsc.in koenigui.rc
 rcdir = $(kde_datadir)/koenig
 rc_DATA = koenigui.rc
 
+kde_conf_DATA = fyrdmanrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

@@ -48,6 +48,7 @@ public slots:
 	void slotMove(QString msg);
 	void slotDoMove(int x, int y, int x2, int y2);
 	void slotStart(int seat);
+	void slotNewstuff();
 	bool queryClose();
 
 	void slotSync();

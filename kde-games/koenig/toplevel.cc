@@ -16,6 +16,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+#include "config.h"
+
 #include <kaction.h>
 #include <kstdaction.h>
 #include <klistbox.h>
@@ -34,6 +36,10 @@
 #include "options.h"
 #include "game.h"
 #include "kexttabctl.h"
+
+#ifdef HAVE_KNEWSTUFF
+#include <knewstuff/downloaddialog.h>
+#endif
 
 TopLevel::TopLevel(const char *name)
 : KMainWindow(NULL, name)
@@ -62,6 +68,10 @@ TopLevel::TopLevel(const char *name)
 
 	a = new KAction(i18n("Show move table"), "warnmessage", 0, this, SLOT(slotMoveTable()), actionCollection(), "showmovetable");
 	a = new KAction(i18n("Show chess board"), "warnmessage", 0, this, SLOT(slotChessBoard()), actionCollection(), "showchessboard");
+
+#ifdef HAVE_KNEWSTUFF
+	a = new KAction(i18n("Get themes"), "knewstuff", 0, this, SLOT(slotNewstuff()), actionCollection(), "gamenewstuff");
+#endif
 
 	createGUI();
 
@@ -216,6 +226,13 @@ void TopLevel::slotChessBoard()
 {
 	if(chessBoard->isVisible()) chessBoard->hide();
 	else chessBoard->show();
+}
+
+void TopLevel::slotNewstuff()
+{
+#ifdef HAVE_KNEWSTUFF
+	KNS::DownloadDialog::open("chess/theme");
+#endif
 }
 
 bool TopLevel::queryClose()

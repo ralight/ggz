@@ -1,0 +1,13 @@
+[KNewStuff]
+MasterServer=http://ftp.ggzgamingzone.org/hotstuff/content/
+TargetDir=koenig
+
+#InstallationCommand=tar -C $HOME/.ggz/games/fyrdman -xvzf %f
+# does not substitute $HOME!
+
+#InstallationCommand=dcop fyrdman default newlevel '%f'
+# only works for unique apps!
+
+#InstallationCommand=fyrdmandcop.sh '%f'
+# blocks indefinitely!
+
