@@ -109,6 +109,11 @@ int ZoneGGZModServer::game_update(int event, void* data)
 				ZONEERROR("launching game when state not init/preinit\n");
 				return -1;
 			}
+			if(m_maxplayers > ggzdmod_get_num_seats(ggzdmod))
+			{
+				m_maxplayers = ggzdmod_get_num_seats(ggzdmod);
+				ZONEDEBUG("restricting player count to %i\n", m_maxplayers);
+			}
 			m_state = ZoneGGZ::wait;
 			break;
 		case ZoneGGZ::join:
