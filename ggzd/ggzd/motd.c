@@ -30,6 +30,7 @@
 #include <time.h>
 #include <string.h>
 #include <sys/utsname.h>
+#include <pthread.h>
 
 #include <datatypes.h>
 #include <err_func.h>
@@ -39,8 +40,10 @@
 /* MOTD info */
 MOTDInfo motd_info;
 
-/* We need to get the game_dir */
+/* Server wide data structures */
 extern Options opt;
+extern struct Users players;
+extern struct GameTables tables;
 
 #define MOTD_MAX 1024		/* Warning: changing this may break clients! */
 
@@ -49,6 +52,8 @@ static char *motd_parse_motd_line(char *);
 static char *motd_get_uptime(void);
 static char *motd_get_date(void);
 static char *motd_get_time(void);
+static char *motd_get_users(void);
+static char *motd_get_tables(int);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -143,20 +148,29 @@ static char *motd_parse_motd_line(char *line)
 			in++;
 			/* Set a pointer to a string to replace the %? with */
 			switch(*in) {
+				case 'd':
+					p = motd_get_date();
+					break;
+				case 'g':
+					p = motd_get_tables(0);
+					break;
+				case 'G':
+					p = motd_get_tables(1);
+					break;
 				case 'h':
 					p = hostname;
 					break;
-				case 'u':
-					p = motd_get_uptime();
-					break;
-				case 'd':
-					p = motd_get_date();
+				case 'o':
+					p = sysname;
 					break;
 				case 't':
 					p = motd_get_time();
 					break;
-				case 'o':
-					p = sysname;
+				case 'u':
+					p = motd_get_uptime();
+					break;
+				case 'U':
+					p = motd_get_users();
 					break;
 				case 'v':
 					p = VERSION;
@@ -252,4 +266,40 @@ static char *motd_get_time(void)
 	strftime(time_str, 16, "%H:%M %Z", localtm);
 
 	return time_str;
+}
+
+
+/* Setup a string showing the number of users online */
+static char *motd_get_users(void)
+{
+	static char users_str[6];
+
+	pthread_rwlock_rdlock(&players.lock);
+	snprintf(users_str, 6, "%d", players.count);
+	pthread_rwlock_unlock(&players.lock);
+
+	return users_str;
+}
+
+
+/* Get the number of tables based on option */
+static char *motd_get_tables(int option)
+{
+	char tables_str[6];
+	int i, num_tables=0;
+
+	pthread_rwlock_rdlock(&tables.lock);
+	if(option == 0)
+		/* Get total number of tables */
+		num_tables = tables.count;
+	else
+		/* Determine number of tables open */
+		for(i=0; i<MAX_TABLES; i++)
+			if(tables.info[i].type_index != -1 &&
+			   tables.info[i].playing == 0)
+				num_tables++;
+	pthread_rwlock_unlock(&tables.lock);
+
+	snprintf(tables_str, 6, "%d", num_tables);
+	return tables_str;
 }
