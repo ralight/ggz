@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 5174 2002-11-03 19:37:36Z jdorje $
+ * $Id: room.h 5872 2004-02-09 22:10:30Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -90,8 +90,10 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   GGZList *list);
-void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata);
-void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
+void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
+			      int from_room);
+void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
+				 int to_room);
 void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag);
 void _ggzcore_room_set_player_stats(GGZRoom *room, GGZPlayer *pdata);
 

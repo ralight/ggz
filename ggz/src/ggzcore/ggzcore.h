@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5863 2004-02-09 08:28:20Z jdorje $
+ * $Id: ggzcore.h 5872 2004-02-09 22:10:30Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -348,6 +348,24 @@ typedef struct {
 	const char *player;
 } GGZTableLeaveEventData;
 
+/** @brief The data associated with GGZ_ROOM_ENTER/GGZ_ROOM_LEAVE events. */
+typedef struct {
+	/** @brief The name of the player entering/leaving. */
+	char *player_name;
+
+	/** @brief The room we are entering.
+	 *
+	 *  This may be -1 if the player is leaving the server, or -2 if the
+	 * info is unknown. */
+	int to_room;
+
+	/** @brief The room the player is leaving.
+	 *
+	 *  This may be -1 if the player is just entering the server, or -2
+	 *  if the info is unknown. */
+	int from_room;
+} GGZRoomChangeEventData;
+
 /** A GGZRoomEvent is an event associated with the room, that is triggered
  *  by a communication from the server.  When a room event occurs, the
  *  associated event handler will be called, and will be passed the event
@@ -372,11 +390,11 @@ typedef enum {
 	GGZ_CHAT_EVENT,
 
 	/** A player has entered the room with you.
-	 *  @param data The name of the player (a char*). */
+	 *  @param data A GGZRoomChangeEventData structure. */
 	GGZ_ROOM_ENTER,
 
 	/** A player has left your room.
-	 *  @param data The name of the player (a char*). */
+	 *  @param data A GGZRoomChangeEventData structure. */
 	GGZ_ROOM_LEAVE,
 
 	/** One of the tables in the current room has changed.

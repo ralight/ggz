@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5521 2003-05-10 06:52:48Z dr_maux $
+ * $Id: netxml.c 5872 2004-02-09 22:10:30Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1228,11 +1228,15 @@ static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update,
 	player = ggz_xmlelement_get_data(update);
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
 	
-	if (strcasecmp(action, "add") == 0)
-		_ggzcore_room_add_player(room, player);
-	else if (strcasecmp(action, "delete") == 0)
-		_ggzcore_room_remove_player(room, player->name);
-	else if (strcasecmp(action, "lag") == 0) {
+	if (strcasecmp(action, "add") == 0) {
+		int from_room = str_to_int(ATTR(update, "FROMROOM"), -2);
+
+		_ggzcore_room_add_player(room, player, from_room);
+	} else if (strcasecmp(action, "delete") == 0) {
+		int to_room = str_to_int(ATTR(update, "TOROOM"), -2);
+
+		_ggzcore_room_remove_player(room, player->name, to_room);
+	} else if (strcasecmp(action, "lag") == 0) {
 		/* FIXME: Should be a player "class-based" event */
 		_ggzcore_room_set_player_lag(room, player->name, player->lag);
 	} else if (strcasecmp(action, "stats") == 0) {

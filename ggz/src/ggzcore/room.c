@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5863 2004-02-09 08:28:20Z jdorje $
+ * $Id: room.c 5872 2004-02-09 22:10:30Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -536,9 +536,11 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata)
+void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
+			      int from_room)
 {
 	struct _GGZPlayer *player;
+	GGZRoomChangeEventData data;
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", pdata->name);
 
@@ -563,14 +565,20 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata)
 
 	ggz_list_insert(room->players, player);
 	room->num_players++;
-	_ggzcore_room_event(room, GGZ_ROOM_ENTER, pdata->name);
+
+	data.player_name = pdata->name;
+	data.from_room = from_room;
+	data.to_room = room->id;
+	_ggzcore_room_event(room, GGZ_ROOM_ENTER, &data);
 }
 			      
 
-void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
+void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
+				 int to_room)
 {
 	struct _GGZPlayer player;
 	GGZListEntry *entry;
+	GGZRoomChangeEventData data;
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Removing player %s", name);
 
@@ -581,7 +589,12 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 		if (entry) {
 			ggz_list_delete_entry(room->players, entry);
 			room->num_players--;
-			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, name);
+
+			data.player_name = name;
+			data.from_room = room->id;
+			data.to_room = to_room;
+			
+			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, &data);
 		}
 	}
 }
