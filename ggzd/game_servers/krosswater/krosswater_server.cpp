@@ -65,14 +65,29 @@ KrosswaterServer::KrosswaterServer()
 // Destructor: free allocated memory
 KrosswaterServer::~KrosswaterServer()
 {
+	eraseMap();
+}
+
+// Erase the map
+void KrosswaterServer::eraseMap()
+{
 	if(map)
 	{
 		for(int i = 0; i < map_x; i++)
 			free(map[i]);
 		free(map);
+		map = NULL;
 	}
-	if(path) delete path;
-	if(players) free(players);
+	if(players)
+	{
+		free(players);
+		players = NULL;
+	}
+	if(path)
+	{
+		delete path;
+		path = NULL;
+	}
 }
 
 // Handle input from game client
@@ -85,6 +100,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	if(ggz_read_int(fd, &op) < 0)
 	{
 		ZONEERROR("error in protocol (3)\n");
+exit(-1);
 		return -1;
 	}
 
@@ -110,6 +126,13 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	{
 		ZONEDEBUG("MAP!!\n");
 		sendMap();
+		status = 0;
+	}
+
+	if(op == proto_restart)
+	{
+		ZONEDEBUG("RESTART!!\n");
+		sendRestart();
 		status = 0;
 	}
 
@@ -166,6 +189,22 @@ void KrosswaterServer::getMove()
 			return;
 		}
 	}
+}
+
+// Send a restart to all players
+void KrosswaterServer::sendRestart()
+{
+	eraseMap();
+	for(int i = 0; i < m_numplayers; i++)
+	{
+		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
+		if(seat.type == GGZ_SEAT_PLAYER)
+		{
+			m_fd = seat.fd;
+			sendMap();
+		}
+	}
+
 }
 
 // Broadcast map to joining players

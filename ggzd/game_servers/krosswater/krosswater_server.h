@@ -40,13 +40,16 @@ class KrosswaterServer : public ZoneGGZModServer
 			proto_map = 103,
 			proto_map_respond = 104,
 			proto_map_backtrace = 105,
-			proto_move_broadcast = 106
+			proto_move_broadcast = 106,
+			proto_restart = 107
 		};
 
 	private:
 		void getMove();
 		void sendMap();
+		void sendRestart();
 		int doMove(int fromx, int fromy, int tox, int toy);
+		void eraseMap();
 
 		int m_fd;
 		int map_x, map_y;
