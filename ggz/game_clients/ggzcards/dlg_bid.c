@@ -4,9 +4,9 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3328 2002-02-11 10:52:11Z jdorje $
+ * $Id: dlg_bid.c 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

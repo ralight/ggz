@@ -1,12 +1,12 @@
 /* 
  * File: game.h
- * Author: Rich Gade
+ * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3325 2002-02-11 09:12:57Z jdorje $
+ * $Id: game.h 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

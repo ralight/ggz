@@ -1,12 +1,12 @@
 /* 
  * File: cb_main.h
- * Author: Rich Gade
+ * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 3307 2002-02-11 00:44:48Z jdorje $
+ * $Id: cb_main.h 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

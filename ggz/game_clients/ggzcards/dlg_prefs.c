@@ -4,9 +4,9 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3342 2002-02-12 23:30:46Z jdorje $
+ * $Id: dlg_prefs.c 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2001 GGZ Development Team
+ * Copyright (C) 2000-2002 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

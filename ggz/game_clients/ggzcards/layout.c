@@ -1,12 +1,12 @@
 /* 
  * File: layout.c
- * Author: Jason Short, Rich Gade
+ * Author: Jason Short
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3329 2002-02-11 12:46:54Z jdorje $
+ * $Id: layout.c 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

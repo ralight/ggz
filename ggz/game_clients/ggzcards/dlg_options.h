@@ -4,9 +4,9 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.h 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: dlg_options.h 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Dev Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,12 +1,12 @@
 /* 
  * File: dlg_about.h
- * Author: Rich Gade
+ * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: dlg_about.h 3346 2002-02-13 02:48:06Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
