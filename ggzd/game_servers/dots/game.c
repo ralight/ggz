@@ -35,6 +35,7 @@ struct dots_game_t dots_game;
 
 /* Private functions */
 static int game_get_options(int);
+static int game_handle_newgame(int);
 
 
 /* Setup game state and board */
@@ -121,6 +122,9 @@ int game_handle_player(int num)
 			break;
 		case DOTS_SND_OPTIONS:
 			status = game_get_options(num);
+			break;
+		case DOTS_REQ_NEWGAME:
+			status = game_handle_newgame(num);
 			break;
 		default:
 			/* Unrecognized opcode */
@@ -500,10 +504,9 @@ int game_update(int event, void *d1, void *d2)
 			}
 			break;
 		case DOTS_EVENT_LEAVE:
-			if(dots_game.state == DOTS_STATE_PLAYING) {
+			game_send_players();
+			if(dots_game.state == DOTS_STATE_PLAYING)
 				dots_game.state = DOTS_STATE_WAIT;
-				game_send_players();
-			}
 			break;
 		case DOTS_EVENT_MOVE_H:
 		case DOTS_EVENT_MOVE_V:
@@ -522,11 +525,27 @@ int game_update(int event, void *d1, void *d2)
 				/* We have a winner */
 				dots_game.state = DOTS_STATE_DONE;
 				game_send_gameover(victor);
-				/* Notify GGZ server of game over */
-				ggz_done();
+				game_init();
+				dots_game.play_again = 0;
 			}
 			break;
 	}
 	
 	return 0;
+}
+
+
+static int game_handle_newgame(int seat)
+{
+	int status = 0;
+
+	/* The first person to say Yes gets to choose the options */
+	if(dots_game.play_again == 0) {
+		dots_game.state = DOTS_STATE_OPTIONS;
+		status = game_send_options_request(seat);
+	}
+
+	dots_game.play_again++;
+
+	return status;
 }

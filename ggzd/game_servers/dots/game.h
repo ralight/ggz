@@ -47,6 +47,7 @@
 #define DOTS_SND_MOVE_V   1
 #define DOTS_REQ_SYNC     2
 #define DOTS_SND_OPTIONS  3
+#define DOTS_REQ_NEWGAME  4
 
 /* Connect the Dots game states */
 #define DOTS_STATE_INIT        0
@@ -79,6 +80,7 @@ struct dots_game_t {
 	int score[2];
 	int opponent;
 	unsigned char options[2];
+	unsigned char play_again;
 };
 
 extern struct dots_game_t dots_game;
