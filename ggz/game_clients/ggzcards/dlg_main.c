@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: dlg_main.c 3610 2002-03-21 13:08:52Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -40,6 +40,47 @@
 #include "game.h"
 #include "layout.h"
 #include "table.h"
+
+
+#if 0 /* GTK Item factory -- incomplete */
+
+/* FIXME: i18n with the GtkItemFactory system */
+
+static GtkItemFactoryEntry menu_items[] = {
+	/* Game menu */
+	{"/_Game", NULL, NULL, 0, "<Branch>"},
+	{"/Game/_Start Game", NULL, NULL, 0, NULL},
+	{"/Game/S_ync", NULL, NULL, 0, NULL},
+	{"/Game/_Preferences", NULL, NULL, 0, NULL},
+	{"/Game/Player _List", NULL, NULL, 0, NULL},
+	{"/Game/_Force Redraw", NULL, NULL, 0, NULL},
+	{"/Game/_Exit", "<alt>F4", NULL, 0, NULL},
+	
+	/* Messages menu */
+	{"/_Messages", NULL, NULL, 0, "<Branch>"},
+	
+	/* Help menu */
+	{"/_Help", NULL, NULL, 0, "<Branch>"},
+	{"/_About", NULL, NULL, 0, NULL}
+};
+
+static GtkWidget *create_menus(GtkWidget *window)
+{
+	GtkAccelGroup *accel_group;
+	GtkWidget *menu_bar;
+        GtkItemFactory *mbar;
+		
+	int num_items = sizeof(menu_items) / sizeof(menu_items[0]);
+	
+	accel_group = gtk_accel_group_new();
+        mbar = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+        gtk_item_factory_create_items(mbar, num_items, menu_items, NULL);
+	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
+	
+	return gtk_item_factory_get_widget(mbar, "<main>");
+}
+
+#endif
 
 GtkWidget *create_dlg_main(void)
 {
