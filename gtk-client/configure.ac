@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5693 2003-12-04 07:15:41Z jdorje $
+dnl $Id: configure.ac 5697 2003-12-04 08:12:45Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -19,8 +19,6 @@ AC_PROG_MAKE_SET
 
 dnl Compiling Options
 dnl =================
-AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
-AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(gtk, AC_HELP_STRING([--enable-gtk=[gtk1.2/gtk2]],
                                   [Specify GTK+-1.2 or GTK+-2.0 linkage]))
 
@@ -105,19 +103,7 @@ changequote([,])dnl
 
 dnl Debug modes
 dnl ===========
-dnl This defines either DEBUG or NDEBUG.  We could provide a third option
-dnl where neither are defined.
-if test "$enable_debug" = yes; then
-    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
-    DFLAGS="DEBUG"
-else
-    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
-    DFLAGS="NDEBUG"
-fi
-
-if test "$enable_debug_gdb" = yes; then
-    CFLAGS="$CFLAGS -ggdb"
-fi
+AC_GGZ_DEBUG
 
 dnl Various dirs
 dnl ============
@@ -152,6 +138,7 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
+echo "    Dmalloc Debugging..$enable_debug_mem"
 echo "    Gettext support....$enable_gettext"
 echo "    GTK library........$enable_gtk"
 echo ""
