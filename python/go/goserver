@@ -1,0 +1,137 @@
+#!/usr/bin/env python
+# GNU Go server wrapper (gnugo)
+# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+from Numeric import *
+import sys
+import time
+import random
+import os, pwd
+import select
+import socket
+
+import ggzdmod
+
+class Child:
+	def __init__(self):
+		self.pr = -1
+		self.pw = -1
+		self.cr = -1
+		self.cw = -1
+
+	def getchars(self, length):
+		chars = os.read(self.pr, 256)
+		print "child::read", len(chars)
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		print "child::write", length
+		os.write(self.pw, chars)
+
+class Network:
+	def __init__(self):
+		self.sock = None
+		self.gamefd = -1
+
+	def init(self, fd):
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+	def getchars(self, length):
+		chars = self.sock.recv(length)
+		print "net::read", len(chars)
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		print "net::write", length
+		self.sock.send(chars)
+
+def hook_state (state):
+	print "* state:", str(state)
+
+def hook_join (num, type, name, fd):
+	print "* join:", num, type, name, fd
+	print "fd =", fd
+	net.init(fd)
+
+def hook_leave (num, type, name, fd):
+	print "* leave:", num, type, name, fd
+
+def hook_log (line):
+	print "* log:", line
+
+def hook_data (num, type, name, fd):
+	global net
+	global child
+
+	print "* data:", num, type, name, fd
+	print "fd =", fd
+	net.init(fd)
+
+	(length, line) = net.getchars(256)
+	child.sendchars(line, length)
+
+def hook_error (arg):
+	print "* error:", arg
+
+def initggz():
+	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
+	ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
+	ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
+	ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
+	ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
+	ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
+
+def main(gomode):
+	global net
+	global child
+
+	print "<< goserver >>"
+
+	initggz()
+	net = Network()
+	child = Child()
+
+	(child.pr, child.cw) = os.pipe()
+	(child.cr, child.pw) = os.pipe()
+
+	ret = ggzdmod.connect()
+
+	if ret == 0:
+		ret = os.fork()
+		if ret == 0:
+			os.dup2(child.cr, 0)
+			os.dup2(child.cw, 1)
+			os.execv("/usr/games/gnugo", ["/usr/games/gnugo", "--mode", gomode])
+		elif ret > 0:
+			s = ""
+			while 1:
+				ggzdmod.dispatch()
+
+				(r, w, e) = select.select([child.pr], [], [], 0)
+				if len(r) == 1:
+					(length, line) = child.getchars(256)
+					net.sendchars(line, length)
+		else:
+			print "<< problem: fork >>"
+	else:
+		print "<< problem: ggzdmod >>"
+
+	print "<< done >>"
+
+if __name__ == "__main__":
+	ggzmode = 0
+	gomode = "gmp"
+
+	for arg in sys.argv:
+		if arg == "--gmp":
+			gomode = "gmp"
+		elif arg == "--gtp":
+			gomode = "gtp"
+		elif arg == "--ggz":
+			ggzmode = 1
+	if ggzmode == 1:
+		main(gomode)
+	else:
+		print "This program needs to be run in GGZ mode."
+

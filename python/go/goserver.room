@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = GNU Go (CGoBan Client)
+Description = The Japanese Go game
+GameType = GNU Go
+MaxPlayers = 500
+MaxTables = 100
+

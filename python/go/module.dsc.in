@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @prefix@/bin/goclient --ggz
+Frontend = x11
+Homepage = http://www.ggzgamingzone.org/games/gnugo/
+Name = CGoBan
+ProtocolEngine = GMP
+ProtocolVersion = 1
+Version = 0.1
+

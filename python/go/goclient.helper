@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+# GNU Go client wrapper (CGoBan) helper application
+# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+from Numeric import *
+import sys
+import time
+import random
+import os, pwd
+import socket
+import select
+
+class Debug:
+	def __init__(self, verbose):
+		self.verbose = verbose
+
+	def debug(self, s):
+		if self.verbose == 0:
+			return
+		f = file("/tmp/goclient.debug", "a")
+		f.write(s + "\n")
+		f.close()
+
+class Parent:
+	def __init__(self):
+		self.cw = -1
+		self.cr = -1
+
+	def getchars(self, length):
+		global debug
+		chars = os.read(self.cr, 256)
+		debug.debug("parent::read " + str(len(chars)))
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		global debug
+		debug.debug("parent::write " + str(length))
+		os.write(self.cw, chars)
+
+class Go:
+	def __init__(self):
+		self.gw = -1
+		self.gr = -1
+
+	def getchars(self, length):
+		global debug
+		chars = os.read(self.gr, 256)
+		debug.debug("go::read " + str(len(chars)))
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		global debug
+		debug.debug("go::write " + str(length))
+		os.write(self.gw, chars)
+
+def main(ggzmode, verbose):
+	global net
+	global parent
+	global debug
+	global go
+
+	if verbose:
+		debug = Debug(1)
+	else:
+		debug = Debug(0)
+
+	debug.debug("<< goclient-helper >>")
+
+	fifopc = "/tmp/goclient.fifo.pc"
+	fifocp = "/tmp/goclient.fifo.cp"
+
+	parent = Parent()
+	parent.cr = os.open(fifopc, os.O_RDONLY)
+	parent.cw = os.open(fifocp, os.O_WRONLY)
+
+	go = Go()
+	go.gr = 0
+	go.gw = 1
+
+	debug.debug("<< loop >>")
+
+	while 1:
+		(r, w, e) = select.select([parent.cr], [], [], 0)
+		if len(r) == 1:
+			(length, line) = parent.getchars(256)
+			if length > 0:
+				go.sendchars(line, length)
+			else:
+				break
+		(r, w, e) = select.select([go.gr], [], [], 0)
+		if len(r) == 1:
+			(length, line) = go.getchars(256)
+			if length > 0:
+				parent.sendchars(line, length)
+			else:
+				break
+
+	os.close(go.gr)
+	os.close(go.gw)
+
+	os.close(parent.cr)
+	os.close(parent.cw)
+
+	os.unlink(fifopc)
+	os.unlink(fifocp)
+
+	debug.debug("<< done >>")
+
+if __name__ == "__main__":
+	if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
+		main(1, 0)
+	else:
+		print "This program needs to be run in GGZ mode."
+

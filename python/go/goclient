@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+# GNU Go client wrapper (CGoBan)
+# Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
+
+from Numeric import *
+import sys
+import time
+import random
+import os, pwd
+import socket
+import select
+
+import ggzmod
+
+class Child:
+	def __init__(self):
+		self.pr = -1
+		self.pw = -1
+
+	def getchars(self, length):
+		chars = os.read(self.pr, 256)
+		print "child::read", len(chars)
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		print "child::write", length
+		os.write(self.pw, chars)
+
+class Network:
+	def __init__(self):
+		self.sock = None
+		self.gamefd = -1
+
+	def init(self, fd):
+		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
+
+	def getchars(self, length):
+		chars = self.sock.recv(length)
+		print "net::read", len(chars)
+		return (len(chars), chars)
+
+	def sendchars(self, chars, length):
+		print "net::write", length
+		self.sock.send(chars)
+
+def network():
+	global net
+	global child
+
+	(length, line) = net.getchars(256)
+	child.sendchars(line, length)
+
+def handle_server(fd):
+	global net
+
+	ggzmod.setState(ggzmod.STATE_PLAYING)
+
+	net.gamefd = fd
+	net.init(net.gamefd)
+
+def handle_network():
+	global net
+
+	networked = 0
+	if net.gamefd != -1:
+		networked = 1
+
+	ret = ggzmod.autonetwork(networked, net.gamefd)
+	if ret == 1 or ret == 3:
+		network()
+	if ret == 2 or ret == 3:
+		ggzmod.dispatch()
+
+def main(ggzmode):
+	global net
+	global child
+
+	print "<< goclient >>"
+
+	fifopc = "/tmp/goclient.fifo.pc"
+	fifocp = "/tmp/goclient.fifo.cp"
+	try:
+		os.mkfifo(fifopc)
+	except:
+		os.unlink(fifopc)
+		os.mkfifo(fifopc)
+	try:
+		os.mkfifo(fifocp)
+	except:
+		os.unlink(fifocp)
+		os.mkfifo(fifocp)
+
+	ret = os.fork()
+	if ret == 0:
+		os.execv("/usr/games/cgoban", ["/usr/games/cgoban"])
+	elif ret > 0:
+		pass
+	else:
+		print "<< problem: fork >>"
+		os.unlink(fifopc)
+		os.unlink(fifocp)
+		return
+
+	ggzsuccess = 0
+	if ggzmode:
+		ggzmod.setHandler(ggzmod.EVENT_SERVER, handle_server)
+
+		ret = ggzmod.connect()
+		if ret < 0:
+			ggzsuccess = 0
+		else:
+			ggzsuccess = 1
+			net = Network()
+
+	child = Child()
+	child.pw = os.open(fifopc, os.O_WRONLY)
+	child.pr = os.open(fifocp, os.O_RDONLY)
+
+	if ggzsuccess:
+		while net.gamefd != -1:
+			handle_network()
+
+	print "<< loop >>"
+
+	while 1:
+		if ggzsuccess:
+			handle_network()
+
+		(r, w, e) = select.select([child.pr], [], [], 0)
+		if len(r) == 1:
+			(length, line) = child.getchars(256)
+			if length > 0:
+				net.sendchars(line, length)
+			else:
+				break
+
+	os.close(child.pr)
+	os.close(child.pw)
+
+	os.unlink(fifopc)
+	os.unlink(fifocp)
+
+	print "<< done >>"
+
+if __name__ == "__main__":
+	if len(sys.argv) == 2 and sys.argv[1] == "--ggz":
+		main(1)
+	else:
+		print "This program needs to be run in GGZ mode."
+
