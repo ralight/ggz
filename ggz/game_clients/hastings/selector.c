@@ -135,6 +135,7 @@ GtkWidget *selector()
 		ggz_read_string_alloc(game.fd, &maplist[i].title);
 		ggz_read_string_alloc(game.fd, &maplist[i].author);
 		ggz_read_string_alloc(game.fd, &maplist[i].version);
+		ggz_read_string_alloc(game.fd, &maplist[i].graphics);
 		ggz_read_int(game.fd, &maplist[i].width);
 		ggz_read_int(game.fd, &maplist[i].height);
 		for(j = 0; j < maplist[i].height; j++)

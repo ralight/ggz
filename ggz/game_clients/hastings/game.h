@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 5269 2002-12-02 00:29:39Z jdorje $
+ * $Id: game.h 6195 2004-10-16 16:07:39Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -90,6 +90,7 @@ struct hastings_map_t {
 	char *author;
 	char *version;
 	char *title;
+	char *graphics;
 	int height, width;
 };
 
