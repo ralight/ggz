@@ -57,6 +57,8 @@ extern GGZServer *server;
 
 static struct winsize window;
 static int tty_des;
+static char **chat;
+static int chat_offset = 0;
 
 void output_label(char *label);		/* Display the color label in the	*/
 					/* Status line.				*/
@@ -86,12 +88,8 @@ void output_display_help(void)
 
 void output_banner(void)
 {
-	fflush(NULL);
-	printf("\e[f\n");
-	printf("Welcome to the text-only GGZ client!\n");
-	printf("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n");
-	printf("\n");
-	fflush(NULL);
+	output_text("Welcome to the text-only GGZ client!\n");
+	output_text("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n");
 }
 
 void output_prompt(void)
@@ -109,18 +107,45 @@ void output_prompt(void)
 void output_text(char* fmt, ...)
 {
 	char message [1024];	/* FIXME: Make me dynamic */
+	int x;
 
 	va_list ap;
 	va_start(ap, fmt);
 	vsprintf(message, fmt, ap);
 	va_end(ap);
 
+
+	for (x = 100; x >= 1; x--)
+	{
+		free(chat[x]);
+		chat[x] = strdup(chat[x-1]);
+	}
+
+	free(chat[0]);
+
+	chat[0] = strdup(message);
+
+	fflush(NULL);
+	printf("\e7");
+	printf("\e[2J");
+	output_goto(0, 0);
+	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
+		printf("%s\n", chat[x]);
+
+	printf("\e8");
+	
+
+#if 0
 	fflush(NULL);
 	printf("\e7");
 	output_goto(window.ws_row - 4, 0);
 	printf("\eD%s%s", message, COLOR_BLUE);
 	printf("\e8");
 	fflush(NULL);
+#endif
+
+
+
 }
 
 void output_chat(ChatTypes type, char *player, char *message)
@@ -307,11 +332,18 @@ void output_label(char *label)
 
 void output_init(void)
 {
+	int x;
+
 	fflush(NULL);
 	printf("\e[2J");
 	ioctl(tty_des, TIOCGWINSZ, &window);
 	printf("\e[0;%dr", window.ws_row-4);
 	fflush(NULL);
+
+	/* Initilize chat memmory */
+	chat  = calloc((101), sizeof(char*));
+	for (x = 100; x >= 0; x--)
+		chat[x] = malloc(sizeof(char));
 }
 
 void output_shutdown(void)
