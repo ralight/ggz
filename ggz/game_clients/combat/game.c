@@ -646,6 +646,10 @@ void game_unit_list_handle (GtkCList *clist, gint row, gint column,
   if (cbt_game.state != CBT_STATE_WAIT && cbt_game.state != CBT_STATE_SETUP)
     return;
 
+	// Check if at least we have a map
+	if (!cbt_game.map)
+		return;
+
   // Marks or unmarks the current row
   if (GPOINTER_TO_INT(user_data) == 1)
     cbt_info.current = row;
@@ -990,6 +994,7 @@ void game_message( const char *format, ... ) {
   /* Add the label, and show everything
    * we've added to the dialog. */
 
+	 gtk_container_set_border_width(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 5);
    gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox),
                       label);
    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);

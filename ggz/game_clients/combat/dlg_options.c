@@ -1023,6 +1023,7 @@ GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function, gpointer user_d
                       GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
   gtk_signal_connect(GTK_OBJECT(yes), "clicked",
                      GTK_SIGNAL_FUNC (function), user_data); 
+	gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), 5);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), yes);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), no);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);

@@ -31,11 +31,12 @@ create_about_dlg (void)
   about_dlg = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (about_dlg), "about_dlg", about_dlg);
   gtk_window_set_title (GTK_WINDOW (about_dlg), _("About Combat"));
-  gtk_window_set_policy (GTK_WINDOW (about_dlg), TRUE, TRUE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (about_dlg), FALSE, FALSE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (about_dlg)->vbox;
   gtk_object_set_data (GTK_OBJECT (about_dlg), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_vbox1), 3);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -50,6 +51,7 @@ create_about_dlg (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (combat_name);
   gtk_box_pack_start (GTK_BOX (vbox1), combat_name, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (combat_name), 3, 0);
 
   about = gtk_label_new (_("Author:\nIsmael Orenstein\n<perdig@linuxbr.com.br>\n\nSpecial thanks to:\nJustin G. Zaun\nRich Gade\nAnd all the GGZ team\n\nFor more information on Stratego, visit:\nhttp://www.inficad.com/~ecollins/stratego/"));
   gtk_widget_ref (about);
@@ -59,6 +61,7 @@ create_about_dlg (void)
   gtk_box_pack_start (GTK_BOX (vbox1), about, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (about), GTK_JUSTIFY_FILL);
   gtk_label_set_line_wrap (GTK_LABEL (about), TRUE);
+  gtk_misc_set_padding (GTK_MISC (about), 5, 0);
 
   dialog_action_area1 = GTK_DIALOG (about_dlg)->action_area;
   gtk_object_set_data (GTK_OBJECT (about_dlg), "dialog_action_area1", dialog_action_area1);
@@ -73,8 +76,8 @@ create_about_dlg (void)
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), ok_button, FALSE, FALSE, 0);
 
   gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      GTK_OBJECT(about_dlg));
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (about_dlg));
 
   return about_dlg;
 }

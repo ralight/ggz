@@ -26,14 +26,15 @@
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
-  <allow_shrink>True</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>True</auto_shrink>
 
   <widget>
     <class>GtkVBox</class>
     <child_name>Dialog:vbox</child_name>
     <name>dialog-vbox1</name>
+    <border_width>3</border_width>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
 
@@ -58,9 +59,11 @@
 	<signal>
 	  <name>clicked</name>
 	  <handler>gtk_widget_destroy</handler>
+	  <object>about_dlg</object>
 	  <last_modification_time>Sun, 07 Jan 2001 18:15:06 GMT</last_modification_time>
 	</signal>
 	<label>OK</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>False</expand>
@@ -89,7 +92,7 @@
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
 	<yalign>0.5</yalign>
-	<xpad>0</xpad>
+	<xpad>3</xpad>
 	<ypad>0</ypad>
 	<child>
 	  <padding>0</padding>
@@ -106,7 +109,7 @@ Ismael Orenstein
 &lt;perdig@linuxbr.com.br&gt;
 
 Special thanks to:
-Justin G. Jzaun
+Justin G. Zaun
 Rich Gade
 And all the GGZ team
 
@@ -116,7 +119,7 @@ http://www.inficad.com/~ecollins/stratego/</label>
 	<wrap>True</wrap>
 	<xalign>0.5</xalign>
 	<yalign>0.5</yalign>
-	<xpad>0</xpad>
+	<xpad>5</xpad>
 	<ypad>0</ypad>
 	<child>
 	  <padding>0</padding>
