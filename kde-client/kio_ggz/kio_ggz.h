@@ -2,6 +2,10 @@
 #define KIO_GGZ_H
 
 #include <kio/slavebase.h>
+#include <GGZCoreServer.h>
+
+class GGZCore;
+class GGZCoreServer;
 
 class GGZProtocol : public KIO::SlaveBase
 {
@@ -11,11 +15,31 @@ class GGZProtocol : public KIO::SlaveBase
 		void get(const KURL& url);
 		void listDir(const KURL& url);
 
+		GGZCoreServer *server() {return m_server;}
+
+	protected:
+		static GGZHookReturn hook_server_connect(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_negotiated(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_login(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_roomlist(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_motd(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_error(unsigned int id, void *event, void *data);
+
 	private:
 		void jobOperator(const KURL& url);
-		void do_get(const KURL& url);
+		/*void do_get(const KURL& url);
 		void do_listServers(const KURL& url);
-		void do_listRooms(const KURL& url);
+		void do_listRooms(const KURL& url);*/
+		void init(const KURL& url);
+		void debug(QString s);
+		void error(QString s);
+
+		void showMotd();
+
+		GGZCore *m_core;
+		GGZCoreServer *m_server;
+		KIO::UDSEntry entry;
+		char *savemotd;
 };
 
 #endif
