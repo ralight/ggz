@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5287 2002-12-15 11:34:18Z jdorje $
+dnl $Id: configure.in 5302 2002-12-18 17:42:11Z dr_maux $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.7pre)
@@ -440,6 +440,7 @@ AC_OUTPUT([Makefile
 	game_servers/keepalive/Makefile
 	game_servers/keepalive/src/Makefile
 	game_servers/geekgame/Makefile
+	game_servers/connectx/Makefile
 	man/Makefile
 	tests/Makefile
 ])
