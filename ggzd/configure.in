@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5232 2002-11-06 09:07:54Z dr_maux $
+dnl $Id: configure.in 5267 2002-11-25 19:16:38Z dr_maux $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.7pre)
@@ -26,7 +26,7 @@ AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by defau
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
-AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, pgsql, mysql], database=$withval, database=db3)
+AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, db4, pgsql, mysql], database=$withval, database=db3)
 
 
 dnl Check for GGZ Requirements
@@ -102,9 +102,8 @@ if test "$database" = db2; then
    database=db2
 elif test "$database" = db3; then
    database=db3
-# Enable for 0.0.7
-#elif test "$database" = db4; then
-#	database=db4
+elif test "$database" = db4; then
+	database=db4
 elif test "$database" = pgsql; then
 	database=pgsql
 elif test "$database" = mysql; then
@@ -133,7 +132,7 @@ if test "$database" = db4; then
 		ggzd_LIBS="$ggzd_LIBS -ldb"
 	elif test "$db4_style" = 1; then
 		ggzd_LIBS="$ggzd_LIBS -ldb-4.0"
-		AC_DEFINE(DB3_IN_DIR)
+		AC_DEFINE(DB4_IN_DIR)
 	fi
 fi
 
@@ -336,6 +335,7 @@ AC_DEFINE(_GNU_SOURCE)
 AC_OUTPUT([Makefile
 	ggzdmod/Makefile
 	ggzd/Makefile 
+	ggzd/database/Makefile
 	ggzd/ggzd.conf
 	ggzd/ggzd.test
 	game_servers/Makefile

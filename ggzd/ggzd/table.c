@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5140 2002-11-02 06:41:35Z jdorje $
+ * $Id: table.c 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1482,6 +1482,9 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 			event->opcode == GGZ_TABLE_UPDATE_SPECTATOR_JOIN
 						? "join" : "leave",
 			spectator.index, event->table->index);
+		break;
+	case GGZ_TABLE_UPDATE_RESIZE:
+		/* TODO? */
 		break;
 	}
 

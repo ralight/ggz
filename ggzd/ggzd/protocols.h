@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: protocols.h 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -49,7 +49,8 @@ typedef enum {
 	GGZ_TABLE_UPDATE_SPECTATOR_LEAVE, /* spectator leaves table */
 	GGZ_TABLE_UPDATE_SPECTATOR_JOIN, /* spectator joins table */
 	GGZ_TABLE_UPDATE_STATE, /* table state changes */
-	GGZ_TABLE_UPDATE_DESC /* table desc changes */
+	GGZ_TABLE_UPDATE_DESC, /* table desc changes */
+	GGZ_TABLE_UPDATE_RESIZE /* change size of table */
 } GGZTableUpdateType;
 
 typedef enum {

@@ -12,7 +12,6 @@
    a given entry is in the file.
 
    Leave the following blank line there!!  Autoheader needs it.  */
-
 
 /* defined by automake */
 
@@ -33,8 +32,9 @@
 #undef _XOPEN_SOURCE
 #undef DB2_IN_DIR
 #undef DB3_IN_DIR
-    
-
+#undef DB4_IN_DIR
+
+
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:
    The entries are in sort -df order: alphabetical, case insensitive,

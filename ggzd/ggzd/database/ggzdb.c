@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5073 2002-10-28 00:09:53Z jdorje $
+ * $Id: ggzdb.c 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

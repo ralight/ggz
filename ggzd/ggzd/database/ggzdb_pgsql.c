@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: ggzdb_pgsql.c 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db3.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: ggzdb_db3.c 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

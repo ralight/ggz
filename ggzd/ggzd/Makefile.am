@@ -1,12 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5080 2002-10-28 04:56:55Z jdorje $
+# $Id: Makefile.am 5267 2002-11-25 19:16:38Z dr_maux $
 
-SUBDIRS = .
+SUBDIRS = database
 
-DBALL = ggzdb_db2.c ggzdb_db3.c ggzdb_pgsql.c ggzdb_mysql.c
-DBSOURCES = ggzdb_@database@.c
-
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DBALL)
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room
 
 bin_PROGRAMS = ggzd ggzduedit
 
@@ -48,10 +45,6 @@ ggzd_SOURCES =	chat.c\
 		transit.h \
 		hash.c \
 		hash.h \
-		ggzdb.c \
-		ggzdb.h \
-		ggzdb_proto.h \
-		$(DBSOURCES) \
 		login.c \
 		login.h \
 		perms.h \
@@ -59,17 +52,17 @@ ggzd_SOURCES =	chat.c\
 		util.c util.h
 
 
-INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+INCLUDES = -I$(top_srcdir)/ggzd/database -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
-ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ)
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a
 
 ggzduedit_SOURCES = ggzduedit.c \
 		    $(DBSOURCES) \
 		    perms.h
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)
-ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_GGZ)
+ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: ggzdb_proto.h 5267 2002-11-25 19:16:38Z dr_maux $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
