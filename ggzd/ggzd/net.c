@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5136 2002-11-01 21:30:17Z jdorje $
+ * $Id: net.c 5226 2002-11-06 07:06:39Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -132,6 +132,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int str_to_int(const char *str, int dflt);
@@ -155,6 +156,7 @@ static GGZReturn _net_send_table_desc(GGZNetIO *net, GGZTable *table);
 static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat);
 static GGZReturn _net_send_spectator(GGZNetIO *net,
 				     GGZTableSpectator *spectator);
+static GGZReturn _net_send_pong(GGZNetIO *net, const char *id);
 static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 				ggz__attribute((format(printf, 2, 3)));
 
@@ -771,6 +773,9 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 	case GGZ_TABLE_UPDATE_SEAT:
 		action = "seat";
 		break;
+	case GGZ_TABLE_UPDATE_RESIZE:
+		action = "resize";
+		break;
 	}
 
 	/* Always send opcode */
@@ -798,6 +803,11 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 		break;
 	case GGZ_TABLE_UPDATE_DESC:
 		_net_send_table_desc(net, table);
+		break;
+	case GGZ_TABLE_UPDATE_RESIZE:
+		/* This sends unnecessary information, like the description
+		   and spectator seats. */
+		net_send_table(net, table);
 		break;
 	}
 	
@@ -1022,6 +1032,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_motd;
 	else if (strcasecmp(tag, "PONG") == 0)
 		process_func = _net_handle_pong;
+	else if (strcasecmp(tag, "PING") == 0)
+		process_func = _net_handle_ping;
 	else
 		process_func = NULL;
 	
@@ -1772,6 +1784,14 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
 }
 
 
+/* Function for <PING> tag */
+static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element)
+{
+	const char *id = ggz_xmlelement_get_attr(element, "ID");
+	_net_send_pong(net, id);
+}
+
+
 /************ Utility/Convenience functions *******************/
 
 static int str_to_int(const char *str, int dflt)
@@ -1905,6 +1925,16 @@ static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
 	
 	return _net_send_line(net, "</RESULT>");
+}
+
+
+/* Send <PONG> tag. */
+static GGZReturn _net_send_pong(GGZNetIO *net, const char *id)
+{
+	if (id)
+		return _net_send_line(net, "<PONG ID='%s'/>", id);
+	else
+		return _net_send_line(net, "<PONG/>");
 }
 
 
