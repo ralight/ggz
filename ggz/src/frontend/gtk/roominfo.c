@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 6367 2004-11-14 13:59:03Z jdorje $
+ * $Id: roominfo.c 6378 2004-11-15 22:06:24Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -59,7 +59,7 @@ void room_info_create_or_raise(GGZRoom * room)
 {
 	GtkWidget *tmp;
 	GGZGameType *gt = ggzcore_room_get_gametype(room);
-	const char * text;
+	const char *text;
 
 	if (!dialog) {
 		dialog = create_dlg_info();
@@ -103,21 +103,16 @@ GtkWidget *create_dlg_info(void)
 {
 	GtkWidget *dlg_info;
 	GtkWidget *dialog_vbox;
-	GtkWidget *display_hbox;
+	GtkWidget *display_table;
 	GdkPixbuf *pixbuf;
 	GtkWidget *game_pixmap;
-	GtkWidget *info_vbox;
-	GtkWidget *name_hbox;
-	GtkWidget *label1;
+	GtkWidget *name_label;
 	GtkWidget *name;
-	GtkWidget *author_hbox;
-	GtkWidget *label2;
+	GtkWidget *author_label;
 	GtkWidget *author;
-	GtkWidget *www_hbox;
-	GtkWidget *label3;
+	GtkWidget *www_label;
 	GtkWidget *www;
-	GtkWidget *desc_hbox;
-	GtkWidget *label4;
+	GtkWidget *desc_label;
 	GtkWidget *desc;
 	GtkWidget *dialog_action_area1;
 	GtkWidget *button_box;
@@ -133,129 +128,97 @@ GtkWidget *create_dlg_info(void)
 	g_object_set_data(G_OBJECT(dlg_info), "dialog_vbox", dialog_vbox);
 	gtk_widget_show(dialog_vbox);
 
-	display_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(display_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "display_hbox",
-				 display_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(display_hbox);
-	gtk_box_pack_start(GTK_BOX(dialog_vbox), display_hbox, FALSE, TRUE,
-			   0);
-	gtk_container_set_border_width(GTK_CONTAINER(display_hbox), 5);
+	display_table = gtk_table_new(4, 3, FALSE);
+	gtk_widget_ref(display_table);
+	g_object_set_data_full(G_OBJECT(dlg_info), "display_table",
+			       display_table,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(display_table);
+	gtk_box_pack_start(GTK_BOX(dialog_vbox), display_table,
+			   FALSE, TRUE, 0);
 
 	pixbuf = load_pixbuf("unknown");
 	game_pixmap = gtk_image_new_from_pixbuf(pixbuf);
 	gtk_widget_ref(game_pixmap);
 	g_object_set_data_full(G_OBJECT(dlg_info), "game_pixmap",
-				 game_pixmap,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       game_pixmap,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	g_object_set_data_full(G_OBJECT(game_pixmap), "game_pixbuf",
 			       pixbuf, g_object_unref);
 	gtk_widget_show(game_pixmap);
-	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
-			   0);
-	gtk_misc_set_alignment(GTK_MISC(game_pixmap), 0.5, 0);
+	gtk_table_attach(GTK_TABLE(display_table), game_pixmap,
+			 0, 1, 0, 4, 0, 0, 0, 0);
 
-	info_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_widget_ref(info_vbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "info_vbox", info_vbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(info_vbox);
-	gtk_box_pack_start(GTK_BOX(display_hbox), info_vbox, TRUE, TRUE, 0);
+	/* Add 'name' label and text. */
+	name_label = gtk_label_new(_("Game Name:"));
+	gtk_widget_ref(name_label);
+	g_object_set_data_full(G_OBJECT(dlg_info), "name_label",
+			       name_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(name_label);
+	gtk_table_attach(GTK_TABLE(display_table), name_label,
+			 1, 2, 0, 1, 0, 0, 0, 0);
 
-	name_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(name_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "name_hbox", name_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(name_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), name_hbox, TRUE, TRUE, 0);
-
-	label1 = gtk_label_new(_("Game Name:"));
-	gtk_widget_ref(label1);
-	g_object_set_data_full(G_OBJECT(dlg_info), "label1", label1,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label1);
-	gtk_box_pack_start(GTK_BOX(name_hbox), label1, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label1), 0.02, 0.5);
-
-	name = gtk_label_new("");
+	name = gtk_label_new(NULL);
 	gtk_widget_ref(name);
 	g_object_set_data_full(G_OBJECT(dlg_info), "name", name,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(name);
-	gtk_box_pack_start(GTK_BOX(name_hbox), name, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(name), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), name,
+			 2, 3, 0, 1, GTK_EXPAND, 0, 0, 0);
 
-	author_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(author_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "author_hbox",
-				 author_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(author_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), author_hbox, TRUE, TRUE, 0);
+	/* Add 'author' label and text. */
+	author_label = gtk_label_new(_("Author:"));
+	gtk_widget_ref(author_label);
+	g_object_set_data_full(G_OBJECT(dlg_info), "author_label",
+			       author_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(author_label);
+	gtk_table_attach(GTK_TABLE(display_table), author_label,
+			 1, 2, 1, 2, 0, 0, 0, 0);
 
-	label2 = gtk_label_new(_("Author:"));
-	gtk_widget_ref(label2);
-	g_object_set_data_full(G_OBJECT(dlg_info), "label2", label2,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label2);
-	gtk_box_pack_start(GTK_BOX(author_hbox), label2, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label2), 0.02, 0.5);
-
-	author = gtk_label_new("");
+	author = gtk_label_new(NULL);
 	gtk_widget_ref(author);
 	g_object_set_data_full(G_OBJECT(dlg_info), "author", author,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(author);
-	gtk_box_pack_start(GTK_BOX(author_hbox), author, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(author), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), author,
+			 2, 3, 1, 2, GTK_EXPAND, 0, 0, 0);
 
-	www_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(www_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "www_hbox", www_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(www_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), www_hbox, TRUE, TRUE, 0);
+	/* Add 'homepage' label and text. */
+	www_label = gtk_label_new(_("Homepage:"));
+	gtk_widget_ref(www_label);
+	g_object_set_data_full(G_OBJECT(dlg_info), "www_label", www_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(www_label);
+	gtk_table_attach(GTK_TABLE(display_table), www_label,
+			 1, 2, 2, 3, 0, 0, 0, 0);
 
-	label3 = gtk_label_new(_("Homepage:"));
-	gtk_widget_ref(label3);
-	g_object_set_data_full(G_OBJECT(dlg_info), "label3", label3,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label3);
-	gtk_box_pack_start(GTK_BOX(www_hbox), label3, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label3), 0.02, 0.5);
-
-	www = gtk_label_new("");
+	www = gtk_label_new(NULL);
 	gtk_widget_ref(www);
 	g_object_set_data_full(G_OBJECT(dlg_info), "www", www,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(www);
-	gtk_box_pack_start(GTK_BOX(www_hbox), www, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(www), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), www,
+			 2, 3, 2, 3, GTK_EXPAND, 0, 0, 0);
 
-	desc_hbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_ref(desc_hbox);
-	g_object_set_data_full(G_OBJECT(dlg_info), "desc_hbox", desc_hbox,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(desc_hbox);
-	gtk_box_pack_start(GTK_BOX(info_vbox), desc_hbox, TRUE, TRUE, 0);
+	/* Add 'description' label and text. */
+	desc_label = gtk_label_new(_("Room Description:"));
+	gtk_widget_ref(desc_label);
+	g_object_set_data_full(G_OBJECT(dlg_info), "desc_label",
+			       desc_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(desc_label);
+	gtk_table_attach(GTK_TABLE(display_table), desc_label,
+			 1, 2, 3, 4, 0, 0, 0, 0);
 
-	label4 = gtk_label_new(_("Room Description:"));
-	gtk_widget_ref(label4);
-	g_object_set_data_full(G_OBJECT(dlg_info), "label4", label4,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label4);
-	gtk_box_pack_start(GTK_BOX(desc_hbox), label4, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label4), 0.02, 0);
-
-	desc = gtk_label_new("");
+	desc = gtk_label_new(NULL);
 	gtk_widget_ref(desc);
 	g_object_set_data_full(G_OBJECT(dlg_info), "desc", desc,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(desc);
-	gtk_box_pack_start(GTK_BOX(desc_hbox), desc, TRUE, TRUE, 0);
-	gtk_label_set_line_wrap(GTK_LABEL(desc), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(desc), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(display_table), desc,
+			 2, 3, 3, 4, GTK_EXPAND, 0, 0, 0);
 
 	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
 	g_object_set_data(G_OBJECT(dlg_info), "dialog_action_area1",
@@ -267,8 +230,8 @@ GtkWidget *create_dlg_info(void)
 	button_box = gtk_hbutton_box_new();
 	gtk_widget_ref(button_box);
 	g_object_set_data_full(G_OBJECT(dlg_info), "button_box",
-				 button_box,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       button_box,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(button_box);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
 			   TRUE, 0);
@@ -276,16 +239,16 @@ GtkWidget *create_dlg_info(void)
 	ok_button = gtk_button_new_from_stock(GTK_STOCK_OK);
 	gtk_widget_ref(ok_button);
 	g_object_set_data_full(G_OBJECT(dlg_info), "ok_button", ok_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(ok_button);
 	gtk_container_add(GTK_CONTAINER(button_box), ok_button);
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
-	g_signal_connect(GTK_OBJECT(dlg_info), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
-	g_signal_connect_swapped(GTK_OBJECT(ok_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dlg_info));
+	g_signal_connect(dlg_info, "destroy",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
+	g_signal_connect_swapped(ok_button, "clicked",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 dlg_info);
 
 	return dlg_info;
 }
