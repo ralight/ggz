@@ -36,6 +36,10 @@ GGZGameServer::GGZGameServer () {
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_LEAVE, &handle_leave );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &handle_data );
 	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_ERROR, &handle_error );
+#ifdef GGZSPECTATORS
+	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &handle_spectator_join);
+	ggzdmod_set_handler ( ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &handle_spectator_leave);
+#endif
 	m_connected = 0;
 }
 
@@ -69,6 +73,16 @@ void GGZGameServer::joinEvent ( int player ) {
 // Virtual player leave hook
 void GGZGameServer::leaveEvent ( int player ) {
 }
+
+#ifdef GGZSPECTATORS
+// Virtual spectator join hook
+void GGZGameServer::spectatorJoinEvent ( int player ) {
+}
+
+// Virtual spectator leave hook
+void GGZGameServer::spectatorLeaveEvent ( int player ) {
+}
+#endif
 
 // Virtual game data hook
 void GGZGameServer::dataEvent ( int player ) {
@@ -110,7 +124,39 @@ void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* d
 	self->errorEvent ();
 }
 
+#ifdef GGZSPECTATORS
+// Callback for the spectator join hook
+void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+	int player = ((GGZSpectator*)data)->num;
+	std::cout << "GGZGameServer: spectatorJoinEvent" << std::endl;
+	self->spectatorJoinEvent ( player );
+}
+
+// Callback for the spectator leave hook
+void GGZGameServer::handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+	int player = ((GGZSpectator*)data)->num;
+	std::cout << "GGZGameServer: spectatorLeaveEvent" << std::endl;
+	self->spectatorLeaveEvent ( player );
+}
+#endif
+
 int GGZGameServer::fd ( int player ) {
 	return ggzdmod_get_seat ( ggzdmod, player ).fd;
+}
+
+int GGZGameServer::spectatorfd ( int spectator ) {
+#ifdef GGZSPECTATORS
+	return ggzdmod_get_spectator ( ggzdmod, spectator ).fd;
+#else
+	return -1;
+#endif
+}
+
+int GGZGameServer::spectators () {
+#ifdef GGZSPECTATORS
+	return ggzdmod_count_spectators ( ggzdmod );
+#else
+	return 0;
+#endif
 }
 

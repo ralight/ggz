@@ -21,6 +21,8 @@
 // GGZdMod includes
 #include <ggzdmod.h>
 
+/*#define GGZSPECTATORS*/
+
 // General virtual game server class (similar to Zone)
 class GGZGameServer {
 	public:
@@ -30,11 +32,17 @@ class GGZGameServer {
 
 	protected:
 		virtual void stateEvent ();
-		virtual void joinEvent ( int player );
+		virtual void joinEvent  ( int player );
 		virtual void leaveEvent ( int player );
-		virtual void dataEvent ( int player );
+		virtual void dataEvent  ( int player );
+#ifdef GGZSPECTATORS
+		virtual void spectatorJoinEvent  ( int player );
+		virtual void spectatorLeaveEvent ( int player );
+#endif
 		virtual void errorEvent ();
 		int fd ( int player );
+		int spectatorfd ( int spectator );
+		int spectators ();
 
 	private:
 		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
@@ -42,6 +50,10 @@ class GGZGameServer {
 		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
 		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
 		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+#ifdef GGZSPECTATORS
+		static void handle_spectator_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+		static void handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+#endif
 		int m_connected;
 };
 
