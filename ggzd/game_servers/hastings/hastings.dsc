@@ -3,7 +3,7 @@ Author = Josef Spillner
 Description = Conquer ancient reigns
 Homepage = http://ggz.sourceforge.net/games/hastings/
 Name = Hastings
-Version = 0.0.4
+Version = 0.0.5
 
 [LaunchInfo]
 ExecutablePath = ggzd.hastings
