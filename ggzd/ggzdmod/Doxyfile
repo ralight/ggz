@@ -3,7 +3,7 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = GGZdMod
-PROJECT_NUMBER         = 0.0.7
+PROJECT_NUMBER         = 0.0.8
 OUTPUT_DIRECTORY       = api/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO
