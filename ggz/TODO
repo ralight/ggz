@@ -1,27 +1,26 @@
 - Needs Done
 * Done
 
-
 For 0.0.2
 =========
+- put version in About box
 - IRC style actions in the chat (eg.  /me says hello)
 * Connect button in menu and toolbar
 * MOTD item under view menu
-- config file code
-- configurable font size in chat and MOTD
-- config dialog
+* config file code
 * make /beep not print to the terminal
 * Connect menu on far left (Connect, Disconnect, Login, Logout, Exit)
-- Help menu on far right (About)
+* Help menu on far right (About)
 * Game menu (Launch, Join, Leave)
-- View menu (Game types, MOTD)
+* View menu (Game types, MOTD)
 * double-click a game joins it
-- chat autoscroll off
 * Room support for chat
 
 For 0.0.3
 =========
-
+- chat autoscroll off
+- configurable font size in chat and MOTD
+- config dialog
 - Save last server/port/username between sessions
 - Server "Profiles" (last 5 servers/logins)
 - crypt() passwords ??

@@ -1,3 +1,701 @@
+2000-04-25 00:10:45  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c: - Don't add rc entries to the sorted list multiple times
+
+2000-04-21 05:06:48  rgade  <rgade@users.sourceforce.net>
+
+	* ggz_client.spec: RPM Spec file modifications
+
+	- Wrote the ggz_client spec file
+	- Updated the ggz_server spec file to allow a BuildRoot so it can be built
+	  by non-root users
+	- Updated ggz_server spec file to use /etc for the SYSCONFDIR
+
+	* game_clients/tictactoe/Makefile.am:
+	Include x.xpm and o.xpm in a 'make dist'
+
+2000-04-20 20:32:47  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c, ggz/ggzrc.h, ggz/main.c, ggz/parse_opt.c:
+	Enabled --file parameter on command line
+
+	parse_opt.c
+	  - Get the --file parameter
+
+	main.c
+	  - Pass a filename to ggzrc_initialize()
+
+	ggzrc.c
+	  - ggzrc_initialize() now takes a filename argument or NULL for normal run
+	  - Don't write over ~/.ggzrc from a test rc file
+
+2000-04-20 06:15:12  bmh  <bmh@users.sourceforce.net>
+
+	* acconfig.h, autogen.sh, configure.in, .cvsignore, game_clients/spades/.cvsignore, game_clients/spades/Makefile.am, game_clients/spades/spades.dsc, game_clients/tictactoe/.cvsignore, game_clients/tictactoe/Makefile.am, game_clients/tictactoe/ttt.dsc, ggz/.cvsignore, ggz/dlg_about.c, ggz/dlg_login.c, ggz/dlg_main.c, ggz/game.c, ggz/ggzrc.c, ggz/ggzrc.test.in, ggz/Makefile.am, glade/dlg_about.glade, Makefile.am:
+	- Some about box touchups
+	- Default to port 5688 like server
+	- Don't hardcode game paths, read them from rc file
+	- Re-did autoconf so that 'make install' works
+
+2000-04-19 03:26:31  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c:
+	- If a NULL is passed to ggzrc_read_string() as it's default, it will not
+	  automatically create a key if one isn't found, instead returning a NULL
+	  to indicate that the key was not found
+
+2000-04-14 22:46:21  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/err_func.c:
+	- Don't Show ES_READ or ES_WRITE errors unless in debug mode
+
+
+	We should be reporting the error in a meaningful manner. An example that I have already
+	added would be when connecting to the wrong port or invalid server, the message now says
+
+	Could not connect to server.
+
+	rather than error sending int
+
+	* ggz/dlg_error.c, ggz/err_func.c:
+	- Only show the PID in the error messageg if in DEBUG mode
+
+2000-04-14 02:20:21  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c:
+	- Continue to load $HOME/.ggzrc even if /etc/ggz.rc is not found
+
+2000-04-11 18:51:41  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/tictactoe/game.h, game_clients/tictactoe/main.c, game_clients/tictactoe/main_win.c, game_clients/tictactoe/main_win.h, game_clients/tictactoe/Makefile.am:
+	- Reworked some internals, putting global vars into a struct
+	- Keep a state variable: INIT, WAIT, MOVE, and DONE
+	- Only accept input from user if in MOVE state
+
+2000-04-10 21:58:12  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c, glade/main_win.glade:
+
+
+
+
+	- Added a limit of 512 to the chat msg_text entry.
+
+2000-04-08 22:46:17  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c:
+	- On initialization, read ggz.rc first, then process ~/.ggzrc
+
+2000-04-08 21:33:48  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c:
+	- Fixes left-click on players list crash
+
+	* ggz/dlg_motd.c, glade/dlg_motd.glade:
+	- fixed a Gtk-CRITICAL in the MOTD. I clicked a wrong option in GLADE.
+
+	* ggz/connect.c, ggz/dlg_motd.c, glade/dlg_motd.glade, glade/ggz.glade:
+	- Split dlg_motd out of ggz.glade into dlg_motd.glade
+	- turned on word-wrap for the motd dialog
+
+	* ggz/connect.c:
+	- If you can't connect to the server, the connect button is re-enabled to try again.
+
+	* ggz/dlg_login.c:
+	- When you click on the details button on the login dialog, it disables it, so only one details dialog can be shown
+
+2000-04-07 19:14:00  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/tictactoe/main.c, game_clients/tictactoe/main_win.c, game_clients/tictactoe/main_win.h:
+	- Moved pixmap init stuff into main_win.c in a callback for main_win
+	  realize
+	- Fixed up synchronization.
+	- Moved most logging messages to status bar
+
+2000-04-06 16:04:40  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/tictactoe/main.c, game_clients/tictactoe/main_win.c, game_clients/tictactoe/main_win.h, game_clients/tictactoe/Makefile.am, game_clients/tictactoe/o.xpm, game_clients/tictactoe/support.c, game_clients/tictactoe/support.h, game_clients/tictactoe/x.xpm:
+	- Simple GTK GUI hacked onto existing hack of a text client :)
+
+2000-04-05 22:34:50  bmh  <bmh@users.sourceforce.net>
+
+	* game_clients/tictactoe/main.c, game_clients/tictactoe/Makefile.am:
+	- Simple text-based hack for playing tictactoe
+
+2000-04-05 00:22:46  jzaun  <jzaun@users.sourceforce.net>
+
+	* glade/dlg_props.glade:
+	- Addition of a User Information tab
+
+2000-04-03 23:43:07  jzaun  <jzaun@users.sourceforce.net>
+
+	* glade/dlg_props.glade:
+	- Working properties dialog
+
+2000-04-03 17:36:21  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.h:
+	- Added #include <sys/types.h> for size_t
+
+	* ggz/connect.c, ggz/game.c:
+	- Fixed a few compile-time warnings.
+
+2000-04-03 07:21:12  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/ggzrc.c:
+	- ggzrc_initialize should init the hash even if file load fails
+
+	* ggz/ggzrc.c, ggz/ggzrc.h: Implemented remaining ggzrc functions
+
+	* ggz/ggzrc.c, ggz/ggzrc.h, ggz/main.c:
+	Implemented ggzrc_commit_changes()
+
+	- Added a sorted list so that we can output values to ~/.ggzrc in logically
+	  oriented sections
+
+	* ggz/ggzrc.c: - Found a sane way to g_free keys/values in the hash
+
+	* ggz/ggzrc.c, ggz/ggzrc.h, ggz/main.c:
+	- rc file is now opened, parsed and closed
+	- Configuration values stored in a hash pointed to by key '[section]varname'
+	- Implemented ggzrc_cleanup() function to destroy the hash
+	- There is no (sane) way to g_free the values stored in the hash :(
+
+	* ggz/ggzrc.c, ggz/ggzrc.h, ggz/main.c, ggz/Makefile.am:
+	Adding files for ggzrc() function calls
+	BE SURE TO DO AN AUTOGEN.SH!
+
+2000-04-02 23:48:55  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/protocols.h:
+	Added MSG_UPDATE_ROOMS to server and client
+
+	- Client does not yet act upon it, merely accepts it
+
+2000-04-02 19:14:09  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/game.c:
+	- Disable the room_combo while in a game, makes things less confusing
+
+2000-04-02 19:02:26  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/dlg_main.c:
+	- Don't default to global table list, they do not refresh automatically
+	  and a per room list is efficienter
+
+2000-04-01 22:17:58  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Fixed up the join and launch buttons/menus for enableing and disabling them, it got muffed when the new code was put in place. You can now only join or launch 1 game at a time
+
+	* ggz/dlg_about.c, ggz/dlg_about.h, ggz/dlg_main.c, ggz/Makefile.am, glade/dlg_about.glade, glade/main_win.glade:
+	- Added the about dialog
+
+2000-04-01 09:09:26  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/dlg_main.c, ggz/game.c:
+	- Added room support to {REQ|RSP}_LIST_TABLES.  Always set global flag
+	  so that it deafults to the old behavior
+	- Added path to ttt (requires ttt to be game type 1 and spades to be 0)
+
+2000-04-01 05:20:34  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c:
+	- Fixed a problem I made with the auto focus code
+
+	* ggz/dlg_main.c:
+	- Fixed up focus issuesin the client, you can now just type, and not worry about clicking on the entry anymore.
+
+2000-04-01 01:32:23  bmh  <bmh@users.sourceforce.net>
+
+	* configure.in, game_clients/Makefile.am, game_clients/tictactoe/.cvsignore, game_clients/tictactoe/main.c, game_clients/tictactoe/Makefile.am:
+	- Added stub tictactoe client
+
+	* game_clients/spades/client_main.c, ggz/datatypes.h, ggz/game.c, game_clients/spades/client_func.c, TODO:
+	- Use Unix domain sockets for talking with game client modules.  This
+	  allows the game module to have access to stdin and stdout.
+
+2000-03-31 02:20:19  jzaun  <jzaun@users.sourceforce.net>
+
+	* TODO:
+	- TODO list update
+
+2000-03-31 00:26:52  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/protocols.h:
+	- Added new error codes and a couple of checks for them
+
+2000-03-30 15:27:14  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_launch.c, ggz/err_func.c, ggz/mnu_tables.c:
+	- Compiler warning fixes
+
+	* glade/.cvsignore:
+	- Added .cvsignore file for glade dir
+
+	* glade/ggz.glade:
+	- Removed dlg_launch from main glade file
+
+	* glade/dlg_launch.glade:
+	- Split dlg_launch into separate glade file
+
+	* game_clients/spades/callbacks.c:
+	- Don't send ai to GGZ.  That's silly
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/dlg_launch.c, ggz/dlg_launch.h, ggz/dlg_main.c, ggz/game.c, ggz/mnu_tables.c:
+	- Rewrote launch dialog code and many callbacks
+	- Cleaned up launch_game code
+	- Don't reas ai from game client. That's silly
+	- Numerous little things
+
+2000-03-30 03:02:23  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Made disconnect() reset cur_room and new_room
+	- When in "room" -1 not displays a nice message insted of just nothing at all
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/dlg_main.c, ggz/main.c, ggz/protocols.h, glade/main_win.glade:
+	- Added protocol REQ/RSP_ROOM_JOIN
+	- Imlimented combo box on client
+
+	the ggx_room_changed() function in dlg_main.c is commented as to why
+	connection.cur_room starts at -3 and goes threw -2 until -1. If you
+	have any questions give a hollar.
+
+2000-03-29 20:11:33  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/datatypes.h:
+	- Fised to work with new RSP_LIST_ROOMS
+
+2000-03-29 02:37:40  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/dlg_launch.c, ggz/game.c:
+	- Small hack to send server all seat assignments including seat 0
+
+2000-03-29 02:36:49  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/dlg_main.c, ggz/main.c:
+	- protocols.h update with room stuff
+	- Current Room combo now displays all rooms
+
+2000-03-28 05:27:09  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/protocols.h:
+	- Updated to newest protcols.g (includes E_LEAVE_FORBIDDEN)
+	- Handle E_LEAVE_FORBIDDEN
+
+2000-03-28 04:35:18  rgade  <rgade@users.sourceforce.net>
+
+	* ggz/protocols.h: - Added protocol specifier for REQ/RSP_LIST_ROOMS
+	- Added documentation for REQ/RSP_LIST_ROOMS
+
+2000-03-28 02:20:12  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c, glade/main_win.glade:
+	- Switched connect/disconnect buttons around
+
+	* ggz/connect.c, ggz/dlg_login.c, ggz/dlg_login.h, ggz/dlg_main.c, glade/main_win.glade:
+	- Cleaned up enable/disable code
+	- Added connect/disconnect to toolbar
+
+2000-03-28 01:05:24  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/game.c, ggz/game.h, ggz/main.c:
+	- Handle SIGCHLD so we don't get zombies (OCHH!  ZOMBIES!)
+	- Do some checking before killing and removing handles
+
+2000-03-28 00:52:23  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_motd.c, ggz/game.c:
+	- enable/disable the launch/join buttons/menus when your in a game
+
+2000-03-28 00:33:43  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/dlg_exit.c:
+	- Call game_over() before exiting so that game client window gets
+	  killed
+
+2000-03-27 23:17:52  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_login.c, ggz/dlg_main.c, ggz/dlg_main.h, glade/main_win.glade:
+	- Word-Wrap placed into realize function
+	- Updated win_main.glade
+	- Fixed up Connect/Disconnect
+	- Removed Login/Logoff
+
+2000-03-27 20:49:03  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_login.c, ggz/dlg_main.c, ggz/game.c, ggz/game.h, ggz/protocols.h:
+	- Regenerated dlg_main.c from Glade including new "Leave Game" item
+	- Added support for RSP_TABLE_LEAVE
+	- Copied over new error codes
+	- Renamed widgets in callbacks to match glade
+	- Only attempt to destroy detail-win if one exists
+	- Create game_over() function to handle game_over stuff
+	- Kill running game when game is over, whether it's done or not :)
+
+	* glade/ggz.glade, glade/main_win.glade:
+	- Pulled main_win into its own glade file
+	- Made sure signals exist in glade for main_win widgets
+	- Added "Leave Game" menu item
+	- Moved Help menu to far right.
+
+2000-03-26 16:02:32  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_main.c, ggz/protocols.h:
+	- REQ/RSP_MOTD implimented
+
+2000-03-25 01:17:22  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c:
+	- GGZ/Connect is connected up
+
+2000-03-24 06:19:29  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Updated to use new es_read_string() interface
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- es_read_string() now takes the length of the user-provided buffer as an
+	  argument.  If the received string size exceeds the buffer length, it will
+	  return will an error.  This should prevent buffer overflows.
+	- es_read_string() now guarntees NULL-termination (again.  and it should
+	  work too)
+
+2000-03-24 01:22:28  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Cleans up motd_print_line
+
+2000-03-23 04:23:50  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_login.c:
+	- Fixes the problem with clicking the "connect" button twice in the launch dialog
+
+2000-03-23 03:58:43  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c: - ?Fixed? stack corruption bugs
+
+2000-03-22 23:37:05  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Adds a check to make shure the dlg_motd widget it there before adding text to it.
+	- Adds check to make shure there is only one dlg_motd widget
+
+	* ggz/connect.c, ggz/dlg_login.c, ggz/dlg_login.h, ggz/dlg_main.c, ggz/main.c:
+	- 3 functions added and put to usage:
+	-    login_disconnect()    --  enable/disable widgets for given state
+	-    login_connect()       --    "                "               "
+	-    login_online()        --    "                "               "
+
+	Basicaly this means users can't click things when the shouldn't.
+
+2000-03-22 08:45:45  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Silly Brent, in es_read_string_alloc(), message is a char**, not a char*.
+	  The correct way to null-terminate is (*message)[size] = '\0'
+
+2000-03-21 23:59:25  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/connect.h, ggz/datatypes.h, ggz/dlg_error.c, ggz/dlg_error.h, ggz/dlg_launch.c, ggz/dlg_launch.h, ggz/dlg_login.c, ggz/dlg_main.c, ggz/dlg_main.h, ggz/dlg_msgbox.c, ggz/dlg_msgbox.h, ggz/err_func.c, ggz/err_func.h, ggz/game.c, ggz/game.h, ggz/main.c, ggz/mnu_tables.c, ggz/parse_opt.c, ggz/parse_opt.h, ggz/seats.c, ggz/seats.h, TODO:
+	- int to gint
+	- unsigned int to guint
+	- char to gchar
+	- unsigned char to guchar
+
+2000-03-21 20:27:47  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Ensure that strings read using es_read_string_XXX are always
+	  NULL-terminated.
+
+2000-03-20 23:46:51  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/mnu_tables.c:
+	- Tables List's popup menu option "Players" now works
+
+	* ggz/connect.c:
+	- Beep nolonger uses printf
+
+2000-03-19 06:06:30  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_main.c, ggz/dlg_msgbox.c, ggz/main.c, ggz/mnu_tables.c, glade/ggz.glade:
+	- Game Table's popup is all hooked up best I can till some other things happen
+
+	* ggz/connect.c, ggz/connect.h, ggz/dlg_main.c, ggz/dlg_main.h:
+	- File, Login works now.
+
+	* ggz/dlg_main.c:
+	- Word wraping fixed in chat
+
+	* ggz/dlg_main.c, ggz/main.c, ggz/Makefile.am, ggz/mnu_players.c, ggz/mnu_players.h, ggz/mnu_tables.c, ggz/mnu_tables.h, glade/ggz.glade:
+	- Popup menus
+	- Double-Click a game to join
+
+2000-03-18 16:32:46  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_main.c, glade/ggz.glade:
+	- Big UI update for dlg_main
+
+	* ggz/connect.c, TODO:
+	- BIG TODO list update
+	- fixed table description
+
+	* ggz/connect.c, ggz/connect.h, ggz/dlg_login.c:
+	- Client will now display a message saying the name is taken, retry.
+	- and will allow someone to login again, on the same connection.
+
+	* ggz/connect.c, ggz/dlg_login.c, ggz/dlg_login.h:
+	- On username faial:
+	-    change button label to "Login"
+	-    hide server_frame
+
+2000-03-17 22:29:59  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_launch.c, ggz/dlg_main.c:
+	- Fix up a couple of compiler warnings
+	- Display table description *after* we receive it.
+
+	* ggz/connect.c, ggz/protocols.h:
+	- Added new message from server MSG_ERROR (not handled yet)
+	- Don't disconnect on login failures
+
+2000-03-17 00:52:09  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/dlg_launch.c, ggz/dlg_main.c, ggz/game.c, glade/ggz.glade:
+	- Adds the option for players to add a comment to games
+
+2000-03-15 03:44:40  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c:
+	- Fixes a buffer overflow in the chat code
+
+2000-03-14 00:38:10  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_main.c, TODO:
+	- Chat clean ups
+	- /me <message>		Actions
+	- /yell <message>	Yelling
+	- /beep <username>	Getting my attention in the other room
+
+2000-03-12 23:03:27  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/dlg_msgbox.c, ggz/dlg_msgbox.h, ggz/Makefile.am, glade/ggz.glade:
+
+	- Started the addition of a message box. I have a very simple example in use
+	- when you logoff.
+
+2000-03-11 19:57:51  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_launch.c:
+	- Launch dialog should be fully working, reservations and all
+
+2000-03-10 14:58:41  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_launch.c, ggz/dlg_launch.h, ggz/game.c:
+	- launching of game will now send server reservation name, but
+	- you can not enter one yet. still nead to enable entry when
+	- reservation is the chosen seat type.
+
+	rservation
+
+	* ggz/connect.c, ggz/dlg_launch.c, ggz/dlg_launch.h, ggz/game.c, glade/ggz.glade:
+	- New launch dialog is in place. computer and human is working.
+
+2000-03-09 06:43:25  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Created es_make_unix_socket() and es_make_unix_socket_or_die()
+
+2000-03-08 23:01:19  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/main.c:
+	- MOTD Color support %c0 threw %c9. Look in main.c at colors[] for what they are.
+
+2000-03-07 23:59:25  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h, /cvsroot/GGZ/easysock/TODO:
+	- Added data type ES_FD
+	- Fixed up es_*_fd() to fit our coding style
+	- Added output debugging and error messages to es_*_fd()
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- When printing out debug message in read_string(), use message, not *message.
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Replaced references to err_quit() with _err_func().  This allows us to
+	  actually like easysock to things...
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Added es_write_fd() and es_read_fd() based on functions by Richard
+	  Stevens in Unix Network Programming Vol 1.  These are untested by me.
+
+	* ggz/dlg_main.c:
+	- Don't depend on broken es_write_int() behavior.  This fixes the infamous
+	  "Can't send my chat" bug
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/TODO:
+	- s/bug/buf.  Stupid typo.  This lets us compile with
+	  --enable-debug-socket
+
+2000-03-07 05:24:12  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_motd.c:
+	- Fixed Gtk-CRITICAL in dlg_motd
+
+	* ggz/connect.c, ggz/dlg_motd.c, glade/ggz.glade:
+	- MOTD code added, will diplay anything sent, no parsing being done yet.
+
+	* glade/ggz.glade:
+	- glade file update for MOTD dialog
+
+2000-03-07 02:44:34  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Lots of code cleanups
+	- Use es_writen() and es_readn() for everything
+	- Make sure all functions (except readn/writen, and *_die()) return 0
+	  on success and -1 on failure
+
+2000-03-07 02:41:03  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/dlg_motd.c, ggz/dlg_motd.h, ggz/Makefile.am:
+	- Added the MOTD dialog, not used, not hooked up yet either
+	- Will add glade in tonight
+
+2000-03-07 01:55:02  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Fixed es_make_socket() so it returns on error instead of trying to
+	  continue
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Ran code through 'tindent -kr -i8'
+
+	* ggz/dlg_launch.c, ggz/dlg_main.c:
+	- New callback launch_fill_defaults() connected "realize" signal of
+	  launch dialog window.
+	- Don't just de-sensitize combo boxes, hide them
+	- Move combo box hiding code to launch_seat_show()
+	- Iterate over combo boxes to hide them
+	- Only call launch_seat_show() when game type changes
+	- Various cleanups
+
+2000-03-06 17:31:37  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/callbacks.c, ggz/callbacks.h, ggz/connect.c, ggz/dlg_details.c, ggz/dlg_exit.c, ggz/dlg_launch.c, ggz/dlg_login.c, ggz/dlg_login.h, ggz/dlg_main.c, ggz/dlg_main.h, ggz/main.c, ggz/Makefile.am:
+	- Callbacks are now in the correct dlg_* files. The only calbacks in the
+	- dlg_*.h files are those used by outside files.
+
+2000-03-06 15:33:02  bmh  <bmh@users.sourceforce.net>
+
+	* glade/ggz.glade:
+	- Added glade file for project, including Justin's launch dialog
+
+	* ggz/connect.c:
+	- Removed spurious REQ_LIST_PLAYERS
+
+2000-03-06 15:14:20  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/callbacks.c, ggz/dlg_details.c, ggz/dlg_details.h, ggz/dlg_launch.c, ggz/dlg_launch.h, ggz/dlg_login.c, ggz/dlg_login.h, ggz/dlg_main.c, ggz/dlg_main.h, ggz/interface.c, ggz/interface.h, ggz/main.c, ggz/Makefile.am:
+	- Little code seperation of interface.c *.h into the dlg_*.c and *.h files
+	- Its now easier to find what you need.
+
+2000-03-05 21:23:31  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/main.c:
+	- Color bug fixed. you=green others=blue
+
+	* ggz/interface.c:
+	- Break chat on words not in the middle of them
+
+	* ggz/callbacks.c, ggz/connect.c, ggz/main.c:
+	- Join game based on type not default to spades
+	- The ONLY place in the client that is now hardcoded to spades
+	- is in the launch_game function.
+
+	* ggz/callbacks.c, ggz/callbacks.h, ggz/connect.c, ggz/interface.c:
+	- rename callback functions to refect where they are comeing from
+	- ex. ggz_ details_ launch_
+
+	* game_clients/spades/gtk_dlg_options.c:
+	- Commented out the gtk_widget_show call for the computer/human seating tab of the
+	- spades options dialog.
+
+2000-03-04 23:21:25  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/callbacks.c, ggz/game.c:
+	- Everything except reservations are now working threw the Launch Game dialog.
+
+	* ggz/callbacks.c, ggz/connect.c, ggz/datatypes.h, ggz/interface.c:
+	- Updated client to accept the num_play_allow information
+	- The Launch Game dialog now enbles/disables the right amount
+	- of combo boxes for the number of allowed players
+
+2000-03-04 17:14:46  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/game.c, ggz/Makefile.am, ggz/seats.c, ggz/seats.h:
+	- Updated to new REQ_TABLE_LAUNCH and REQ_LIST_TABLES protocol
+	- Modified tabel structure to only track seat assignments
+	- Added seats.[ch] for functions like seats_num(), seats_open(), etc.
+	- Moved code inside RSP_LIST_TABLES case to its own function
+	  handle_list_tables()
+	- *Warning* game launch is hardcoded to 3 computer players until justin
+	  finishes his updates with the dialog box.
+
+2000-03-03 22:49:55  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggz/callbacks.c, ggz/callbacks.h, ggz/connect.c, ggz/interface.c, ggz/main.c:
+	- Started to add callbacks for game launch dialog
+	- Lots of FIXME stuff in callbacks.c
+	- You'll see the dialog now, but none of the settings do anything yet.
+
+	* ggz/interface.c, ggz/interface.h:
+	- Added gtk code for Launch Game dialog
+	- Nothing is hooked up, no callbacks yet either
+
+2000-03-02 15:30:29  bmh  <bmh@users.sourceforce.net>
+
+	* ggz/callbacks.c, ggz/connect.c, ggz/game.c, ggz/protocols.h:
+	- Renamed opcodes according to new design spec
+
+	* TODO:
+	- Updated TODO list for 0.0.2
+
+	* configure.in:
+	- Bumped version number to 0.0.2
+
+2000-03-02 01:15:09  jzaun  <jzaun@users.sourceforce.net>
+
+	* game_clients/spades/gtk_io.c:
+	- commented out the gtk_show call for taunt area. Spades now takes up much less room on the screen
+
+	* ggz/connect.c, ggz/datatypes.h, ggz/main.c:
+	- Added color support for user names in chat, and removed the FIXME.
+	- Currently anytime a view/players is called it remaps all colors and
+	- When a player's tabel status changes, it remaps that player
+
+2000-03-01 05:10:13  bmh  <bmh@users.sourceforce.net>
+
+	* README:
+	- Updated README for new package names
+
+	* configure.in:
+	- Renamed package to ggz_client (program files remain the same)
+
+2000-02-29 21:10:32  bmh  <bmh@users.sourceforce.net>
+
+	* AUTHORS, ChangeLog, configure.in, HACKING, Makefile.am, NEWS, README, TODO:
+	- Documentation updates for 0.0.1 release
+
+	* game_clients/spades/Makefile.am, ggz/Makefile.am:
+	- Replace 'SUBDIRS =' with 'SUBDIRS = .'  Seems make dist chokes if
+	  SUBDIRS is empty
+
+	* ChangeLog, ggz/callbacks.c:
+	- Formatting fixes
+
 Tue Feb 29 16:10:15 2000  bmh  <bmh@users.sourceforce.net>
 
 	* game_clients/spades/Makefile.am, ggz/Makefile.am:
