@@ -82,7 +82,7 @@ KGGZChat::KGGZChat(QWidget *parent = NULL, char *name = NULL)
 	for(int i = 0; i < 10; i++)
 		lag[i].lagid = 0;
 
-	receive(NULL, "GGZ Gaming Zone 0.0.4", RECEIVE_ADMIN);
+	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_ADMIN);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
 
 	m_listusers = 0;

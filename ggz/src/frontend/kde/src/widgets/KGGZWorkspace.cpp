@@ -129,3 +129,10 @@ KGGZLogo *KGGZWorkspace::widgetLogo()
 {
 	return m_logo;
 }
+
+void KGGZWorkspace::hideBar(int hide)
+{
+	if(hide) m_widget->hide();
+	else m_widget->show();
+}
+

@@ -7,5 +7,10 @@ player available, and launches the game immediately if a player is found on the
 server which is configured. That's GGZ Europe Two in normal case, but this can
 be reconfigured.
 
+Wishlist for 0.0.5:
+- Skinnable user interface (like KDE noatun does)
+- Handle different game UI's (gtk, kde, ...), together with modsniff
+- KDE taskbar functionality, drag'n'drop of Zone files
+
 Josef
 

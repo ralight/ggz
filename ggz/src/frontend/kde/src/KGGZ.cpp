@@ -433,6 +433,7 @@ void KGGZ::listPlayers()
 	KGGZDEBUGF("KGGZ::listPlayers()\n");
 	m_workspace->widgetUsers()->removeall();
 	m_workspace->widgetChat()->chatline()->removeAll();
+	if(m_grubby) m_grubby->removeAll();
 	KGGZDEBUG("* Removed all, now adding anew...\n");
 	number = kggzroom->countPlayers();
 	for(int i = 0; i < number; i++)
@@ -442,6 +443,7 @@ void KGGZ::listPlayers()
 		KGGZDEBUG(" # player: %s\n", playername);
 		m_workspace->widgetUsers()->add(playername);
 		m_workspace->widgetChat()->chatline()->addPlayer(playername);
+		if(m_grubby) m_grubby->addPlayer(playername);
 	}
 }
 
@@ -1145,18 +1147,27 @@ void KGGZ::menuView(int viewtype)
 	switch(viewtype)
 	{
 		case VIEW_CHAT:
+			m_workspace->hideBar(0);
 			m_workspace->widgetChat()->show();
 			m_workspace->widgetLogo()->show();
 			m_workspace->widgetTables()->show();
 			m_workspace->widgetUsers()->show();
 			break;
 		case VIEW_USERS:
+			//m_workspace->hideBar(1);
 			m_workspace->widgetChat()->hide();
-			m_workspace->widgetTables()->hide();
-			m_workspace->widgetLogo()->hide();
 			m_workspace->widgetUsers()->show();
+			m_workspace->widgetLogo()->hide();
+			m_workspace->widgetTables()->hide();
+			//m_workspace->widgetUsers()->resize(width(), height());
+			//m_workspace->widgetLogo()->setFixedHeight(1);
+			//m_workspace->widgetTables()->setFixedHeight(1);
+			//m_workspace->widgetUsers()->resize(width(), height());
+			//m_workspace->updateGeometry();
+			m_workspace->hideBar(1);
 			break;
 		case VIEW_TABLES:
+			m_workspace->hideBar(0);
 			m_workspace->widgetChat()->hide();
 			m_workspace->widgetLogo()->hide();
 			m_workspace->widgetTables()->show();
@@ -1327,6 +1338,7 @@ void KGGZ::menuGrubby()
 	if(m_grubby) delete m_grubby;
 	m_grubby = new KGGZGrubby(NULL, "KGGZGrubby");
 	m_grubby->show();
+	listPlayers();
 	connect(m_grubby, SIGNAL(signalAction(int)), SLOT(slotGrubby(int)));
 }
 

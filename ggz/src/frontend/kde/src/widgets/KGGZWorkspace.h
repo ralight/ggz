@@ -63,6 +63,8 @@ class KGGZWorkspace : public QWidget
 		KGGZUsers *widgetUsers();
 		// Returns pointer to logo widget
 		KGGZLogo *widgetLogo();
+		// Hides/shows upper bar
+		void hideBar(int hide);
 
 	protected:
 		// Handle resizing on its own
@@ -88,3 +90,4 @@ class KGGZWorkspace : public QWidget
 };
 
 #endif
+

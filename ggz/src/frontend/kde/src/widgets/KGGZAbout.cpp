@@ -34,6 +34,9 @@
 // Header file
 #include "KGGZAbout.h"
 
+// KGGZ includes
+#include "KGGZCommon.h"
+
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
@@ -102,7 +105,7 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	font.setWeight(QFont::Black);
 	p.setFont(font);
 	p.setPen(QColor(130.0, 0.0, 0.0));
-	p.drawText(x, 160, "GGZ Gaming Zone 0.0.4");
+	p.drawText(x, 160, "GGZ Gaming Zone " KGGZVERSION);
 	font.setPointSize(10);
 	font.setWeight(QFont::Normal);
 	p.setFont(font);

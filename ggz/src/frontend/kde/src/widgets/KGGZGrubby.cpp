@@ -45,7 +45,6 @@
 #include <qframe.h>
 #include <qmultilineedit.h>
 #include <qlineedit.h>
-#include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 
@@ -55,7 +54,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox, *hbox2, *hbox3;
 	QMultiLineEdit *mle;
-	QComboBox *combo, *player;
+	QComboBox *combo;
 	QLineEdit *ed;
 	QPushButton *go, *quit;
 	QFrame *image;
@@ -77,7 +76,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 	combo->insertItem(i18n("Thanks for taking the time!"), actionbye);
 
 	label = new QLabel(i18n("This is grubby:"), this);
-	player = new QComboBox(this);
+	m_player = new QComboBox(this);
 
 	vbox = new QVBoxLayout(this, 5);
 	hbox = new QHBoxLayout(vbox, 5);
@@ -85,7 +84,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent = NULL, char *name = NULL)
 	vbox2 = new QVBoxLayout(hbox, 5);
 	hbox3 = new QHBoxLayout(vbox2, 5);
 	hbox3->add(label);
-	hbox3->add(player);
+	hbox3->add(m_player);
 	vbox2->add(combo);
 	hbox2 = new QHBoxLayout(vbox2, 5);
 	hbox2->add(ed);
@@ -117,5 +116,15 @@ void KGGZGrubby::slotInvoke()
 void KGGZGrubby::slotActivated(int index)
 {
 	m_lastaction = index;
+}
+
+void KGGZGrubby::removeAll()
+{
+	m_player->clear();
+}
+
+void KGGZGrubby::addPlayer(char *player)
+{
+	m_player->insertItem(player);
 }
 

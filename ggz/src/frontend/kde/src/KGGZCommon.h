@@ -56,7 +56,11 @@
 // version
 // should always stick to GGZ version numbers
 #ifndef KGGZVERSION
+#ifdef VERSION
+#define KGGZVERSION VERSION
+#else
 #define KGGZVERSION "0.0.4"
+#endif
 #endif
 
 ////////////////////////////////////////////////////////////////
@@ -90,3 +94,4 @@ class KGGZCommon
 };
 
 #endif
+

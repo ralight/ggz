@@ -18,45 +18,49 @@ Essential points for GGZ 0.0.4:
 - GGZCore++ documentation
 ===============================
 
-Here are the docs (- means: yet todo):
+Here are the docs (- means: yet todo or unknown):
 
-main.cpp		=> main.cpp (enhancement)
-kggz.cpp		=> KGGZ.cpp (enhancement)
-kggz_browser.cpp	-
+main.cpp			=> main.cpp (enhancement)
+kggz.cpp			=> KGGZ.cpp (enhancement)
+kggz_browser.cpp	=> KGGZBrowser.cpp (enhancement)
 kggz_chat.cpp		=> KGGZWorkspace.cpp (replacement)
 kggz_chatwidget.cpp	=> KGGZChat.cpp (enhancement)
+					=> KGGZChatLine.cpp (new)
 kggz_connect.cpp	=> KGGZConnect.cpp (enhancement)
-kggz_ftp.cpp		-
+kggz_ftp.cpp		removed (will be handled by browser soon)
 kggz_games.cpp		-
-kggz_grubby.cpp		-
-kggz_hosts.cpp		-
+kggz_grubby.cpp		=> KGGZGrubby.cpp (enhancement)
+kggz_hosts.cpp		removed (obsolete because we use in-place editing now)
 kggz_install.cpp	-
 kggz_internal.cpp	removed
 kggz_launch.cpp		=> KGGZLaunch.cpp (enhancement)
-kggz_motd.cpp		-
-kggz_news.cpp		-
+kggz_motd.cpp		=> KGGZMotd.cpp
+kggz_news.cpp		removed (is now handled by browser)
 kggz_playerinfo.cpp	-
-kggz_preferences.cpp	-
-kggz_profiles.cpp	-
+kggz_preferences.cpp-
+kggz_profiles.cpp	removed (obsolete, same reason as kggz_hosts.cpp)
 kggz_roomsmenu.cpp	removed (obsolete)
 kggz_server.cpp		=> KGGZServer.cpp (enhancement)
-			=> KGGZRoom.cpp (new)
+					=> KGGZRoom.cpp (new)
 kggz_settings.cpp	-
-kggz_startup.cpp	-
-kggz_state.cpp		-
+kggz_startup.cpp	=> KGGZSplash.cpp
+					=> KGGZSplashScreen.cpp
+kggz_state.cpp		removed (state is now shown in status bar)
 kggz_tables.cpp		=> KGGZTables.cpp (enhancement)
 kggz_teams.cpp		-
-kggz_themes.cpp		-
+kggz_themes.cpp		removed (no themes available)
 kggz_update.cpp		-
 kggz_users.cpp		=> KGGZUsers.cpp (enhancement)
---			=> KGGZCommon.cpp (new)
---			=> KGGZBase.cpp (new)
---			=> KGGZCallback.cpp (new)
+--					=> KGGZCommon.cpp (new)
+--					=> KGGZBase.cpp (new)
+--					=> KGGZCallback.cpp (new)
 
 Please note that all sources are now split between the main program with its GGZ-related
 functionality and the additional widgets in the widgets/ directory, as well as non-UI classes
 in the abstract/directory.
 
-If you are interested in the old kggz files, please check out the MindX FTP space.
+If you are interested in the old kggz files, please check out the MindX FTP space
+(unless SourceForge closes it, sorry).
 
 Josef
+

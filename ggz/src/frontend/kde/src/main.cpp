@@ -80,3 +80,4 @@ int main(int argc, char **argv)
 	a->setMainWidget(kggzbase);
 	return a->exec();
 }
+
