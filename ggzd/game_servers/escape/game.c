@@ -384,7 +384,7 @@ int game_req_move(int num)
 	ggz_debug("game_req_move(num = %d)", num);
 
 	if(es_write_int(fd, ESCAPE_REQ_MOVE) < 0){
-		ggz_debug("\tgame_req_move() returning -1")
+		ggz_debug("\tgame_req_move() returning -1");
 		return -1;
 	}
 
