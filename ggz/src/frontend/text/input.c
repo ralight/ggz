@@ -47,7 +47,6 @@ static void input_handle_beep(char* line);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
-extern char *Room;
 
 int input_command(short events)
 {
@@ -150,8 +149,6 @@ static void input_handle_join(char* line)
 	int room;
 	
 	room = atoi(line);
-	Room = strdup(line);
-
 	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
 }
 

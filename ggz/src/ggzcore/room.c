@@ -148,9 +148,27 @@ int _ggzcore_room_list_replace(const unsigned int id, const char* name,
 }
 
 
+char* ggzcore_room_get_name(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZRoom data, *room;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(room_list, &data)))
+		return NULL;
+
+	room = _ggzcore_list_get_data(entry);
+	
+	return room->name;
+}
+
+/* Return 0 if equal and -1 otherwise */
 static int _ggzcore_room_compare(void* p, void* q)
 {
-	return (((struct _GGZRoom*)p)->id == ((struct _GGZRoom*)q)->id);
+	if (((struct _GGZRoom*)p)->id == ((struct _GGZRoom*)q)->id)
+		return 0;
+
+	return -1;
 }
 
 
@@ -202,3 +220,4 @@ static void _ggzcore_room_print(struct _GGZRoom *room)
 	ggzcore_debug(GGZ_DBG_ROOM, "  game: %d", room->game);
 	ggzcore_debug(GGZ_DBG_ROOM, "  desc: %s", room->desc);
 }
+

@@ -281,6 +281,9 @@ char* ggzcore_state_get_profile_name(void);
 char* ggzcore_state_get_profile_host(void);
 int ggzcore_state_get_room(void);
 
+char* ggzcore_room_get_name(const unsigned int);
+
+
 
 /* Debugging categories */
 typedef enum {

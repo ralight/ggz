@@ -37,6 +37,3 @@ void output_init(void);
 void output_shutdown(void);
 
 void output_display_help(void);
-
-char *Room;
-
