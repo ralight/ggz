@@ -137,6 +137,7 @@ gint connect_to_server(void)
 	sock_handle = gdk_input_add_full(client.sock, GDK_INPUT_READ,
 					 handle_server_fd, NULL, NULL);
 
+	ggz_update_title();
 	return 0;
 }
 

@@ -96,6 +96,28 @@ static void ggz_players_clist_append(Player* player, gpointer data);
 static void ggz_tables_clist_append(Table* table, gpointer data);
 
 
+void ggz_update_title(void)
+{
+	GtkWidget *tmp;
+	gchar *new_title;
+	gchar *profile;
+
+	tmp = lookup_widget(dlg_login, "profile_entry");
+	if( strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)), "") )
+	{
+		profile = g_strdup_printf(" %s ", gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}else{
+		tmp = lookup_widget(dlg_login, "host_entry");
+		profile = g_strdup_printf(" %s ", gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}
+
+	new_title = g_strdup_printf("Gnu Gaming Zone - [%s]", profile);
+	tmp = lookup_widget(main_win, "main_win");
+	gtk_window_set_title (GTK_WINDOW (tmp), new_title);
+	g_free(profile);
+	g_free(new_title);
+}
+
 void ggz_players_display(void)
 {
 	GtkWidget* list;

@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 
 GtkWidget* create_main_win (void);
+void ggz_update_title(void);
 void ggz_players_display(void);
 void ggz_tables_display(void);
 void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data);
