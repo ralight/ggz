@@ -1,9 +1,8 @@
 SUBDIRS = .
 
-xpm_DATA =  bishop_b.xpm knight_b.xpm queen_b.xpm rook_b.xpm king_b.xpm pawn_b.xpm \
-            bishop_w.xpm knight_w.xpm queen_w.xpm rook_w.xpm king_w.xpm pawn_w.xpm
+pieces_DATA =  bishop_b.svg.png knight_b.svg.png queen_b.svg.png rook_b.svg.png king_b.svg.png pawn_b.svg.png \
+               bishop_w.svg.png knight_w.svg.png queen_w.svg.png rook_w.svg.png king_w.svg.png pawn_w.svg.png
 
-# $(DESTDIR) prepended automatically
-xpmdir = $(ggzdatadir)/koenig/pics
+piecesdir = $(kde_datadir)/koenig/pics
 
 KDE_ICON = koenig warnmessage

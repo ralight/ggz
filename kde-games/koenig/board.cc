@@ -1,6 +1,6 @@
 // Koenig - KDE client for the GGZ chess game
 // Copyright (C) 2001 Tobias König, tokoe82@yahoo.de
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 
 #include <qdragobject.h>
 #include <qimage.h>
@@ -35,21 +36,25 @@
 ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	: QWidget(parent, name)
 {
+	KStandardDirs d;
+
 	kdDebug(12101) << "ChessBoard::ChessBoard()" << endl;
 
 	// load figure pixmaps
-	pixmaps[pawn_white] = QPixmap(GGZDATADIR "/koenig/pics/pawn_w.xpm");
-	pixmaps[pawn_black] = QPixmap(GGZDATADIR "/koenig/pics/pawn_b.xpm");
-	pixmaps[bishop_white] = QPixmap(GGZDATADIR "/koenig/pics/bishop_w.xpm");
-	pixmaps[bishop_black] = QPixmap(GGZDATADIR "/koenig/pics/bishop_b.xpm");
-	pixmaps[rook_white] = QPixmap(GGZDATADIR "/koenig/pics/rook_w.xpm");
-	pixmaps[rook_black] = QPixmap(GGZDATADIR "/koenig/pics/rook_b.xpm");
-	pixmaps[knight_white] = QPixmap(GGZDATADIR "/koenig/pics/knight_w.xpm");
-	pixmaps[knight_black] = QPixmap(GGZDATADIR "/koenig/pics/knight_b.xpm");
-	pixmaps[queen_white] = QPixmap(GGZDATADIR "/koenig/pics/queen_w.xpm");
-	pixmaps[queen_black] = QPixmap(GGZDATADIR "/koenig/pics/queen_b.xpm");
-	pixmaps[king_white] = QPixmap(GGZDATADIR "/koenig/pics/king_w.xpm");
-	pixmaps[king_black] = QPixmap(GGZDATADIR "/koenig/pics/king_b.xpm");
+	QString pixmapdir = d.findResource("data", "koenig/pics/");
+
+	pixmaps[pawn_white] = QPixmap(pixmapdir + "pawn_w.svg.png");
+	pixmaps[pawn_black] = QPixmap(pixmapdir + "pawn_b.svg.png");
+	pixmaps[bishop_white] = QPixmap(pixmapdir + "bishop_w.svg.png");
+	pixmaps[bishop_black] = QPixmap(pixmapdir + "bishop_b.svg.png");
+	pixmaps[rook_white] = QPixmap(pixmapdir + "rook_w.svg.png");
+	pixmaps[rook_black] = QPixmap(pixmapdir + "rook_b.svg.png");
+	pixmaps[knight_white] = QPixmap(pixmapdir + "knight_w.svg.png");
+	pixmaps[knight_black] = QPixmap(pixmapdir + "knight_b.svg.png");
+	pixmaps[queen_white] = QPixmap(pixmapdir + "queen_w.svg.png");
+	pixmaps[queen_black] = QPixmap(pixmapdir + "queen_b.svg.png");
+	pixmaps[king_white] = QPixmap(pixmapdir + "king_w.svg.png");
+	pixmaps[king_black] = QPixmap(pixmapdir + "king_b.svg.png");
 
 	// I like QuickHacks ;)
 	mouseDrag = true;
@@ -214,7 +219,7 @@ QPixmap ChessBoard::scalePixmap(const QPixmap& pixmap)
 	QPixmap tmp = pixmap;
 	int cellSize = width() / 8;
 
-	matrix.scale(1.0 / (64.0 / cellSize), 1.0 / (64.0 / cellSize));
+	matrix.scale(1.0 / ((float)pixmap.width() / cellSize), 1.0 / ((float)pixmap.height() / cellSize));
 	return tmp.xForm(matrix);
 }
 

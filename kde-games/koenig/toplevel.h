@@ -37,6 +37,7 @@ public:
 	TopLevel(const char *name = 0);
 	~TopLevel(void);
 	void initGameSocket(void); // wrapper!
+	void initLocal();
 
 public slots:
 	void newGame(void);

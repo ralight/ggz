@@ -129,6 +129,11 @@ void TopLevel::initGameSocket(void)
 	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 }
 
+void TopLevel::initLocal()
+{
+	slotStart(0);
+}
+
 void TopLevel::closeGame(void)
 {
 	if (chessBoard)
