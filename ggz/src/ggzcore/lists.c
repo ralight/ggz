@@ -6,7 +6,7 @@
  *
  * This is the code for handling list functions for ggzcore
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000,2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -310,6 +310,46 @@ _ggzcore_list_entry * _ggzcore_list_search(_ggzcore_list *list, void *data)
 
 	return NULL;
 }
+
+
+/* _ggzcore_list_search_alt()
+ *	This function searches the list for a value using the search
+ *	function specified by compare_func.  Note that the search cannot
+ *	terminate early unless it finds the search target as we cannot
+ *	assume that the list is in order for this comparison function.
+ *
+ *	Returns pointer to list entry which contains value
+ *		or NULL on failure
+ */
+_ggzcore_list_entry * _ggzcore_list_search_alt(_ggzcore_list *list, void *data,
+					      _ggzcoreEntryCompare compare_func)
+{
+	_ggzcore_list_entry *p;
+
+	if(!list) {
+		/* debug warn - "NULL list passed to _ggzcore_list_search_alt"*/
+		return NULL;
+	}
+	if(!data) {
+		/* debug warn - "NULL data passed to _ggzcore_list_search_alt"*/
+		return NULL;
+	}
+
+	if(compare_func == NULL) {
+		/* debug FATAL - "Cannot search list w/o a compare func" */
+		return NULL;
+	}
+
+	p = list->head;
+	while(p) {
+		if((compare_func) (p->data, data) == 0)
+			return p;
+		p = p->next;
+	}
+
+	return NULL;
+}
+
 
 
 /* _ggzcore_list_delete_entry()

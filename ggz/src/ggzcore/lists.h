@@ -6,7 +6,7 @@
  *
  * This is the code for handling list functions for ggzcore
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000,2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,6 +103,11 @@ _ggzcore_list_get_data		(_ggzcore_list_entry *entry);
 _ggzcore_list_entry *
 _ggzcore_list_search		(_ggzcore_list *list,
 				 void *data);
+
+_ggzcore_list_entry *
+_ggzcore_list_search_alt	(_ggzcore_list *list,
+				 void *data,
+				 _ggzcoreEntryCompare compare_func);
 
 void
 _ggzcore_list_delete_entry	(_ggzcore_list *list,
