@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2949 2001-12-19 09:44:56Z jdorje $
+ * $Id: table.c 2950 2001-12-19 09:49:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -500,7 +500,7 @@ void table_display_hand(int p)
 			continue;
 		x = cx + 0.5 + (i * ow);
 		y = cy + 0.5 + (i * oh);
-		if (i == selected_card) {
+		if (i == selected_card && p == ggzcards.play_hand) {
 			x += cxo;
 			y += cyo;
 		}
