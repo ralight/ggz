@@ -170,6 +170,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	guchar subop;
 	gint num, op, size, checksum, count, i, seat;
 	gchar buf[4096];
+	gchar *tmpstr;
 	static gint color_index=0;
 
         if (FAIL(es_read_int(source, &op))) {
@@ -439,11 +440,27 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case RSP_CHAT:
 		es_read_char(source, &status);
-		connect_msg("[%s] Chat Send Status: %d\n", opcode_str[op], status);
-		if (status == E_USR_LOOKUP)
-			chat_print(CHAT_COLOR_SERVER, "---", "User not found.");
-		if (status == E_NOT_IN_ROOM)
-			chat_print(CHAT_COLOR_SERVER, "---", "You must be in a room to chat.");
+		connect_msg("[%s] Chat Send Status: %d\n", opcode_str[op],
+							   status);
+		switch(status) {
+			case 0:
+				tmpstr = NULL;
+				break;
+			case E_USR_LOOKUP:
+				tmpstr = "User not found.";
+				break;
+			case E_NOT_IN_ROOM:
+				tmpstr = "You must be in a room to chat.";
+				break;
+			case E_AT_TABLE:
+				tmpstr = "Unable to send (player is at table)";
+				break;
+			default:
+				tmpstr = "Unknown chat error.";
+				break;
+		}
+		if(tmpstr)
+			chat_print(CHAT_COLOR_SERVER, "---", tmpstr);
 		break;
 
 	case MSG_CHAT:
