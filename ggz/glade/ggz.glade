@@ -10,9 +10,17 @@
   <language>C</language>
   <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
+  <use_widget_names>False</use_widget_names>
   <output_main_file>False</output_main_file>
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
+  <backup_source_files>True</backup_source_files>
+  <main_source_file>interface.c</main_source_file>
+  <main_header_file>interface.h</main_header_file>
+  <handler_source_file>callbacks.c</handler_source_file>
+  <handler_header_file>callbacks.h</handler_header_file>
+  <support_source_file>support.c</support_source_file>
+  <support_header_file>support.h</support_header_file>
 </project>
 
 <widget>
@@ -309,23 +317,6 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkEntry</class>
-	    <name>port_entry</name>
-	    <width>50</width>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
-	    <child>
-	      <padding>5</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
-	    </child>
-	  </widget>
-
-	  <widget>
 	    <class>GtkLabel</class>
 	    <name>port_label</name>
 	    <label>Port:</label>
@@ -337,6 +328,23 @@
 	    <ypad>0</ypad>
 	    <child>
 	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	      <pack>GTK_PACK_END</pack>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkEntry</class>
+	    <name>port_entry</name>
+	    <width>50</width>
+	    <can_focus>True</can_focus>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text></text>
+	    <child>
+	      <padding>5</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	      <pack>GTK_PACK_END</pack>
@@ -446,6 +454,29 @@
     <spacing>0</spacing>
 
     <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolled_window</name>
+      <border_width>10</border_width>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text></text>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkHBox</class>
       <child_name>Dialog:action_area</child_name>
       <name>dialog-action_area1</name>
@@ -487,809 +518,6 @@
 	  <label>Cancel</label>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolled_window</name>
-      <border_width>10</border_width>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkText</class>
-	<name>text</name>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
-      </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>main_win</name>
-  <width>580</width>
-  <signal>
-    <name>delete_event</name>
-    <handler>exit_dlg</handler>
-    <last_modification_time>Tue, 11 Jan 2000 21:20:40 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy</name>
-    <handler>gtk_main_quit</handler>
-    <last_modification_time>Tue, 11 Jan 2000 21:28:40 GMT</last_modification_time>
-  </signal>
-  <title>Gnu Gaming Zone</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>500</default_width>
-  <default_height>450</default_height>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkVBox</class>
-    <name>main_box</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkMenuBar</class>
-      <name>menu_bar</name>
-      <shadow_type>GTK_SHADOW_OUT</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>ggz1</name>
-	<label>_GGZ</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>ggz1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>connect2</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_C</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_connect2_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:45:11 GMT</last_modification_time>
-	    </signal>
-	    <label>_Connect</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>disconnect1</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_D</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_disconnect1_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:45:37 GMT</last_modification_time>
-	    </signal>
-	    <label>_Disconnect</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator4</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>login1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_login1_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:45:43 GMT</last_modification_time>
-	    </signal>
-	    <label>_Login</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>logout1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>logout</handler>
-	      <last_modification_time>Fri, 21 Jan 2000 22:14:23 GMT</last_modification_time>
-	    </signal>
-	    <label>L_ogout</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator3</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>exit1</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_X</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>exit_dlg</handler>
-	      <last_modification_time>Fri, 21 Jan 2000 22:15:53 GMT</last_modification_time>
-	    </signal>
-	    <label>E_xit</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>game_menu</name>
-	<label>G_ame</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>game_menu_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>new_game2</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_L</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>get_game_options</handler>
-	      <last_modification_time>Fri, 21 Jan 2000 22:14:01 GMT</last_modification_time>
-	    </signal>
-	    <label>_Launch Game</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>join_game1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>join_game</handler>
-	      <last_modification_time>Fri, 21 Jan 2000 22:14:11 GMT</last_modification_time>
-	    </signal>
-	    <label>_Join Game</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>edit1</name>
-	<label>_Edit</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>edit1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>properties1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_properties1_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:48:32 GMT</last_modification_time>
-	    </signal>
-	    <label>Properties</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>view_menu</name>
-	<label>_View</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>view_menu_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>game_types1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>get_types</handler>
-	      <last_modification_time>Fri, 21 Jan 2000 22:50:28 GMT</last_modification_time>
-	    </signal>
-	    <label>Game _Types</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>motd1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_motd1_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:47:52 GMT</last_modification_time>
-	    </signal>
-	    <label>_MOTD</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>help1</name>
-	<label>_Help</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>help1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>about1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_about1_activate</handler>
-	      <last_modification_time>Sat, 18 Mar 2000 16:53:54 GMT</last_modification_time>
-	    </signal>
-	    <label>_About</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkToolbar</class>
-      <name>toolbar</name>
-      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-      <type>GTK_TOOLBAR_TEXT</type>
-      <space_size>5</space_size>
-      <space_style>GTK_TOOLBAR_SPACE_EMPTY</space_style>
-      <relief>GTK_RELIEF_NORMAL</relief>
-      <tooltips>True</tooltips>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>launch_button</name>
-	<signal>
-	  <name>clicked</name>
-	  <handler>get_game_options</handler>
-	  <data>main_win</data>
-	  <last_modification_time>Tue, 18 Jan 2000 17:55:38 GMT</last_modification_time>
-	</signal>
-	<label>Launch Game</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>join_button</name>
-	<signal>
-	  <name>clicked</name>
-	  <handler>join_game</handler>
-	  <last_modification_time>Fri, 14 Jan 2000 16:51:48 GMT</last_modification_time>
-	</signal>
-	<label>Join Game</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>prefs_button</name>
-	<label>Change Prefs</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>stat_button</name>
-	<label>Stats</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>logout_button</name>
-	<signal>
-	  <name>clicked</name>
-	  <handler>logout</handler>
-	  <last_modification_time>Fri, 21 Jan 2000 22:29:17 GMT</last_modification_time>
-	</signal>
-	<label>Logout</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<child_name>Toolbar:button</child_name>
-	<name>exit_button</name>
-	<signal>
-	  <name>clicked</name>
-	  <handler>exit_dlg</handler>
-	  <last_modification_time>Fri, 21 Jan 2000 22:29:05 GMT</last_modification_time>
-	</signal>
-	<label>Exit</label>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkVPaned</class>
-      <name>v_pane</name>
-      <border_width>10</border_width>
-      <handle_size>10</handle_size>
-      <gutter_size>15</gutter_size>
-      <position>160</position>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkVBox</class>
-	<name>table_box</name>
-	<homogeneous>False</homogeneous>
-	<spacing>5</spacing>
-	<child>
-	  <shrink>True</shrink>
-	  <resize>False</resize>
-	</child>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>table_label</name>
-	  <label>Game Tables</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkScrolledWindow</class>
-	  <name>table_scroll</name>
-	  <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	  <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkCList</class>
-	    <name>table_tree</name>
-	    <can_focus>True</can_focus>
-	    <columns>7</columns>
-	    <column_widths>12,64,80,52,72,60,162</column_widths>
-	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	    <show_titles>True</show_titles>
-	    <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label47</name>
-	      <label> </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label48</name>
-	      <label>Table No.</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label49</name>
-	      <label>Game Type</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label50</name>
-	      <label>Seats</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label51</name>
-	      <label>Open Seats</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label52</name>
-	      <label>Humans</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <child_name>CList:title</child_name>
-	      <name>label53</name>
-	      <label>Description</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkHPaned</class>
-	<name>h_pane</name>
-	<border_width>5</border_width>
-	<handle_size>10</handle_size>
-	<gutter_size>10</gutter_size>
-	<position>160</position>
-	<child>
-	  <shrink>True</shrink>
-	  <resize>True</resize>
-	</child>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>player_box</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>5</spacing>
-	  <child>
-	    <shrink>True</shrink>
-	    <resize>False</resize>
-	  </child>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>player_label</name>
-	    <label>Players</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>player_scroll</name>
-	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkCList</class>
-	      <name>player_list</name>
-	      <can_focus>True</can_focus>
-	      <columns>2</columns>
-	      <column_widths>80,48</column_widths>
-	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	      <show_titles>True</show_titles>
-	      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>label6</name>
-		<label>Name</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>label7</name>
-		<label>Table</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-	      </widget>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkVBox</class>
-	  <name>chat_box</name>
-	  <border_width>5</border_width>
-	  <height>280</height>
-	  <homogeneous>False</homogeneous>
-	  <spacing>5</spacing>
-	  <child>
-	    <shrink>False</shrink>
-	    <resize>True</resize>
-	  </child>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>hbox16</name>
-	    <homogeneous>False</homogeneous>
-	    <spacing>0</spacing>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label54</name>
-	      <label>Current Room  </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkCombo</class>
-	      <name>game_room</name>
-	      <value_in_list>False</value_in_list>
-	      <ok_if_empty>True</ok_if_empty>
-	      <case_sensitive>False</case_sensitive>
-	      <use_arrows>True</use_arrows>
-	      <use_arrows_always>False</use_arrows_always>
-	      <items></items>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-
-	      <widget>
-		<class>GtkEntry</class>
-		<child_name>GtkCombo:entry</child_name>
-		<name>combo-entry2</name>
-		<can_focus>True</can_focus>
-		<editable>True</editable>
-		<text_visible>True</text_visible>
-		<text_max_length>0</text_max_length>
-		<text></text>
-	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>chat_scroll</name>
-	    <width>100</width>
-	    <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkText</class>
-	      <name>chat_text</name>
-	      <width>100</width>
-	      <height>132</height>
-	      <can_focus>True</can_focus>
-	      <editable>False</editable>
-	      <text></text>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkHSeparator</class>
-	    <name>chat_separator</name>
-	    <child>
-	      <padding>5</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>msg_box</name>
-	    <homogeneous>False</homogeneous>
-	    <spacing>5</spacing>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>msg_label</name>
-	      <label>Message: </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkEntry</class>
-	      <name>msg_entry</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>activate</name>
-		<handler>input_chat_msg</handler>
-		<data>msg_entry</data>
-		<last_modification_time>Tue, 08 Feb 2000 16:32:30 GMT</last_modification_time>
-	      </signal>
-	      <editable>True</editable>
-	      <text_visible>True</text_visible>
-	      <text_max_length>0</text_max_length>
-	      <text></text>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>msg_button</name>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>input_chat_msg</handler>
-		<data>msg_entry</data>
-		<last_modification_time>Tue, 08 Feb 2000 16:32:11 GMT</last_modification_time>
-	      </signal>
-	      <label>Send</label>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkStatusbar</class>
-      <name>statusbar</name>
-      <border_width>5</border_width>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
     </widget>
   </widget>
 </widget>
@@ -1374,53 +602,6 @@
     <name>vbox3</name>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
-
-    <widget>
-      <class>GtkHBox</class>
-      <child_name>Dialog:action_area</child_name>
-      <name>hbox12</name>
-      <border_width>10</border_width>
-      <homogeneous>True</homogeneous>
-      <spacing>5</spacing>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
-
-      <widget>
-	<class>GtkHButtonBox</class>
-	<name>hbuttonbox2</name>
-	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
-	<spacing>30</spacing>
-	<child_min_width>85</child_min_width>
-	<child_min_height>27</child_min_height>
-	<child_ipad_x>7</child_ipad_x>
-	<child_ipad_y>0</child_ipad_y>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>button4</name>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <label>Launch</label>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>button5</name>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <label>Cancel</label>
-	</widget>
-      </widget>
-    </widget>
 
     <widget>
       <class>GtkVBox</class>
@@ -2386,6 +1567,53 @@
 	</widget>
       </widget>
     </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>hbox12</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox2</name>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>button4</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <label>Launch</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>button5</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <label>Cancel</label>
+	</widget>
+      </widget>
+    </widget>
   </widget>
 </widget>
 
@@ -2408,6 +1636,29 @@
     <name>vbox6</name>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <border_width>5</border_width>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text2</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text></text>
+      </widget>
+    </widget>
 
     <widget>
       <class>GtkHBox</class>
@@ -2459,29 +1710,6 @@
 	    <fill>False</fill>
 	  </child>
 	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow2</name>
-      <border_width>5</border_width>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkText</class>
-	<name>text2</name>
-	<can_focus>True</can_focus>
-	<editable>False</editable>
-	<text></text>
       </widget>
     </widget>
   </widget>
