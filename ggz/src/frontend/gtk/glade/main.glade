@@ -480,6 +480,23 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>Current_room_label</name>
+      <label>Please select a room.</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+
+    <widget>
       <class>GtkHBox</class>
       <name>client_hbox</name>
       <homogeneous>False</homogeneous>
@@ -699,23 +716,6 @@
 	      <shrink>True</shrink>
 	      <resize>True</resize>
 	    </child>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>current_room__label</name>
-	      <label>Please Select A Room</label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
 
 	    <widget>
 	      <class>GtkHBox</class>
