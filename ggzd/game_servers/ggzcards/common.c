@@ -879,8 +879,6 @@ static int determine_host()
  */
 int handle_launch_event()
 {
-	player_t p;
-
 	ggz_debug("Handling a launch event.");
 	if(game.state != WH_STATE_PRELAUNCH) {
 		ggz_debug("ERROR: update: state wasn't prelaunch when handling a launch.");
@@ -892,11 +890,6 @@ int handle_launch_event()
 	game.host = -1;	/* no host since none has joined yet */
 	game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
 	/* we don't yet know the number of seats */
-
-	/* set AI names */
-	for (p=0; p<game.num_players; p++)
-		if (ggz_seats[p].assign == GGZ_SEAT_BOT)
-			snprintf(ggz_seats[p].name, 17, "%s", ai_get_name(p));
 
 	/* as soon as we know which game we're playing, we should init the game */
 	if (game.which_game != GGZ_GAME_UNKNOWN)
@@ -1122,6 +1115,7 @@ void set_num_seats(int num_seats)
 void init_game()
 {
 	seat_t s;
+	player_t p;
 
 	if (!games_valid_game(game.which_game)) {
 		ggz_debug("SERVER BUG: game_init_game: invalid game %d chosen.", game.which_game);
@@ -1174,6 +1168,11 @@ void init_game()
 		ggz_debug("SERVER BUG: game.bid_texts not allocated.");
 		exit(-1);
 	}
+
+	/* set AI names */
+	for (p=0; p<game.num_players; p++)
+		if (ggz_seats[p].assign == GGZ_SEAT_BOT)
+			snprintf(ggz_seats[p].name, 17, "%s", ai_get_name(p));
 
 	game.initted = 1;
 }
