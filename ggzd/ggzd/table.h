@@ -76,10 +76,10 @@ typedef struct TableInfo {
 	int pid;
 
 	/* Seat assignments */
-	int seats[MAX_TABLE_SIZE];
+	char* seats[MAX_TABLE_SIZE];
 
 	/* Seat reservations */
-	int reserve[MAX_TABLE_SIZE];
+	char* reserve[MAX_TABLE_SIZE];
 
 	/* Client-provided description of this table */
 	char desc[MAX_GAME_DESC_LEN + 1];

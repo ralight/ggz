@@ -105,7 +105,7 @@ static int transit_join(int index, int t_fd)
 	pthread_rwlock_rdlock(&tables.lock);
 	seats  = seats_num(tables.info[index]);
 	for (i = 0; i < seats; i++)
-		if (tables.info[index].seats[i] == GGZ_SEAT_OPEN)
+		if (strcmp(tables.info[index].seats[i], "<open>") == 0)
 			break;
 	pthread_rwlock_unlock(&tables.lock);
 	
@@ -153,10 +153,15 @@ static int transit_leave(int index, int t_fd)
 	dbg_msg(GGZ_DBG_TABLE, "Handling transit leave for table %d", index);
 	
 	p = tables.info[index].transit;
+
+	pthread_rwlock_rdlock(&players.info[p].lock);
+	strcpy(name, players.info[p].name);
+	pthread_rwlock_unlock(&players.info[p].lock);
+
 	pthread_rwlock_rdlock(&tables.lock);
 	seats  = seats_num(tables.info[index]);
 	for (i = 0; i < seats; i++)
-		if (tables.info[index].seats[i] == p)
+		if (strcmp(tables.info[index].seats[i], name) == 0)
 			break;
 	pthread_rwlock_unlock(&tables.lock);
 
@@ -165,10 +170,6 @@ static int transit_leave(int index, int t_fd)
 		return -1;
 
 	tables.info[index].transit_seat = i;
-
-	pthread_rwlock_rdlock(&players.info[p].lock);
-	strcpy(name, players.info[p].name);
-	pthread_rwlock_unlock(&players.info[p].lock);
 	
 	/* Send MSG_TABLE_LEAVE to table */
 	if (es_write_int(t_fd, REQ_GAME_LEAVE) < 0

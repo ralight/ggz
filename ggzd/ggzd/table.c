@@ -92,7 +92,7 @@ static int   table_event_callback(int p_index, int size, void* data);
  */
 static int table_check(int p_index, TableInfo table)
 {
-	int i, status=0;
+	int i, seat, status=0;
 	int ai_total=seats_bot(table);
 	int seat_total=seats_num(table);
 	int g_type=table.type_index;
@@ -122,8 +122,9 @@ static int table_check(int p_index, TableInfo table)
 	dbg_msg(GGZ_DBG_TABLE, "Num_reserve: %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table.state);
 	dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table.fd_to_game);
-	for (i = 0; i < seat_total; i++)
-		switch (table.seats[i]) {
+	for (i = 0; i < seat_total; i++) {
+		seat = seats_type(table, i);
+		switch (seat) {
 		case GGZ_SEAT_OPEN:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: open", i);
 			break;
@@ -134,11 +135,12 @@ static int table_check(int p_index, TableInfo table)
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: reserved for %d", i,
 				table.reserve[i]);
 			break;
-		default:
-			dbg_msg(GGZ_DBG_TABLE,
-				"Seat[%d]: player %d", i, table.seats[i]);
+		case GGZ_SEAT_PLAYER:
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
+				table.seats[i]);
+			break;
 		}
-
+	}
 	return status;
 }
 
@@ -279,9 +281,9 @@ static void table_run_game(int t_index, char *path)
  */
 static int table_send_opt(int t_index)
 {
-	int i, fd, uid;
+	int i, fd, seat;
 	char status = 0;
-	char name[MAX_USER_NAME_LEN];
+	char* name;
 	TableInfo table;
 
 	pthread_rwlock_rdlock(&tables.lock);
@@ -298,17 +300,17 @@ static int table_send_opt(int t_index)
 	/* Send seat assignments, names, and fd's */
 	for (i = 0; i < seats_num(table); i++) {
 
-		if (es_write_int(fd, table.seats[i]) < 0)
+		seat = seats_type(table, i);
+		if (es_write_int(fd, seat) < 0)
 			return -1;
 
-		switch(tables.info[t_index].seats[i]) {
+		switch (seat) {
+		case GGZ_SEAT_NONE:
 		case GGZ_SEAT_OPEN:
 		case GGZ_SEAT_BOT:
 			break;  /* no name for these */
 		case GGZ_SEAT_RESV:
-			uid = table.reserve[i];
-			/* FIXME: Look up player name by uid */
-			strcpy(name,"reserved");
+			name = table.reserve[i];
 			if (es_write_string(fd, name) < 0)
 				return -1;
 			break;
@@ -438,6 +440,7 @@ static int table_game_launch(int index, int fd)
 static int table_game_join(int index, int fd, char* transit)
 {
 	char status, flag;
+	char* name;
 	int p, seat;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d responded to join", index);
@@ -463,8 +466,13 @@ static int table_game_join(int index, int fd, char* transit)
 		dbg_msg(GGZ_DBG_TABLE, "Player %d at table %d, seat %d ", p,
 			index, seat);
 		
+		pthread_rwlock_rdlock(&players.info[p].lock);
+		name = strdup(players.info[p].name);
+		pthread_rwlock_unlock(&players.info[p].lock);
+
 		pthread_rwlock_wrlock(&tables.lock);
-		tables.info[index].seats[seat] = p;
+		free(tables.info[index].seats[seat]);
+		tables.info[index].seats[seat] = name;
 		if (!seats_open(tables.info[index])) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d full now", index);
 			tables.info[index].state = GGZ_TABLE_PLAYING;
@@ -526,7 +534,8 @@ static int table_game_leave(int index, int fd, char* transit)
 			index, seat);
 
 		pthread_rwlock_wrlock(&tables.lock);
-		tables.info[index].seats[seat] = GGZ_SEAT_OPEN;
+		free(tables.info[index].seats[seat]);
+		tables.info[index].seats[seat] = strdup("<open>");
 		if (!seats_human(tables.info[index])) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d now empty: removing",
 				index);
@@ -662,14 +671,11 @@ static void table_remove(int t_index)
 
 	/* Send out table-leave messages for remaining players */
 	for (i = 0; i < seats_num(tables.info[t_index]); i++) {
-		p = tables.info[t_index].seats[i];
-		switch (p) {
-		case GGZ_SEAT_OPEN:
-		case GGZ_SEAT_BOT:
-		case GGZ_SEAT_RESV:
+		p = seats_type(tables.info[t_index], i);
+		if (p != GGZ_SEAT_PLAYER)
 			continue;
-		}
-		
+		/* Lookup hashed player number */
+		p = hash_player_lookup(tables.info[t_index].seats[i]);
 		table_transit_event_enqueue(t_index, GGZ_UPDATE_LEAVE, p, i);
 	}
 
@@ -1001,7 +1007,7 @@ static int table_transit_pack(void** data, unsigned char opcode,
 static int table_event_callback(int p_index, int size, void* data)
 {
 	unsigned char opcode, state;
-	char player[MAX_USER_NAME_LEN + 1];
+	char* player = NULL;
 	int table, fd, seat, p, i;
 	char* current;
 	TableInfo info;
@@ -1045,23 +1051,20 @@ static int table_event_callback(int p_index, int size, void* data)
 		
 		/* Now send seat assignments */
 		for (i = 0; i < seats_num(info); i++) {
-			if (es_write_int(fd, info.seats[i]) < 0)
+			seat = seats_type(info, i);
+			if (es_write_int(fd, seat) < 0)
 				return -1;
 
-			switch(info.seats[i]) {
+			switch (seat) {
 			case GGZ_SEAT_OPEN:
 			case GGZ_SEAT_BOT:
 				continue;  /* no name for these */
 			case GGZ_SEAT_RESV:
-				/* Look up player name by uid */
-				strcpy(player, "reserved");
+				player = info.reserve[i];
 				break;
-			default: /* must be a player index */
-				p = info.seats[i];
-				/* FIXME: Race condition */
-				pthread_rwlock_rdlock(&players.info[p].lock);
-				strcpy(player, players.info[p].name);
-				pthread_rwlock_unlock(&players.info[p].lock);
+			case GGZ_SEAT_PLAYER: 
+				player = info.seats[i];
+				break;
 			}
 
 			if (es_write_string(fd, player) < 0)
@@ -1076,7 +1079,7 @@ static int table_event_callback(int p_index, int size, void* data)
 		seat = *(int*)current;
 
 		pthread_rwlock_rdlock(&players.info[p].lock);
-		strcpy(player, players.info[p].name);
+		player = strdup(players.info[p].name);
 		pthread_rwlock_unlock(&players.info[p].lock);
 		dbg_msg(GGZ_DBG_UPDATE, 
 			"Player %d sees player %d %s seat %d at table %d", 
@@ -1084,8 +1087,11 @@ static int table_event_callback(int p_index, int size, void* data)
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
 			seat, table);
 		if (es_write_int(fd, seat) < 0
-		    || es_write_string(fd, player) < 0)
+		    || es_write_string(fd, player) < 0) {
+			free(player);
 			return -1;
+		}
+		free(player);
 		break;
 	case GGZ_UPDATE_STATE:
 		state = *(unsigned char*)current;

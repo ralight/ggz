@@ -834,12 +834,9 @@ static int player_logout(int p, int fd)
 static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
 	TableInfo table;
-	int i, t_index = -1;
-	int status = 0;
-	int seats;
-	int room;
 	char name[MAX_USER_NAME_LEN + 1];
-	int count;
+	int t_index = -1;
+	int i, seats, seat, room, count, status = 0;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
 
@@ -861,16 +858,29 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		
 	/* Read in seat assignments */
 	for (i = 0; i < seats; i++) {
-		if (es_read_int(p_fd, &table.seats[i]) < 0)
+		if (es_read_int(p_fd, &seat) < 0)
 			return GGZ_REQ_DISCONNECT;
-		if (table.seats[i] != GGZ_SEAT_RESV)
-			continue;
-		if (read_name(p_fd, name) < 0)
-			return GGZ_REQ_DISCONNECT;
-		/*
-		 * FIXME: lookup uid of name and asign to table.reserve[i]
-		 * upon error, set status = E_USR_LOOKUP
-		 */
+		switch (seat) {
+		case GGZ_SEAT_OPEN:
+			table.seats[i] = strdup("<open>");
+			break;
+		case GGZ_SEAT_BOT:
+			table.seats[i] = strdup("<bot>");
+			break;
+		case GGZ_SEAT_NONE:
+			table.seats[i] = strdup("<none>");
+			break;
+		case GGZ_SEAT_RESV:
+			table.seats[i] = strdup("<reserved>");
+			if (read_name(p_fd, name) < 0)
+				return GGZ_REQ_DISCONNECT;
+			/*
+			 * FIXME: lookup reserve name to verify.
+			 * upon error, set status = E_USR_LOOKUP
+			 */
+			table.reserve[i] = strdup(name);
+			break;
+		}
 	}
 
 	/* Now that we've cleared the socket, check if in a room */
@@ -916,7 +926,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	table.pid = -1;
 	table.fd_to_game = -1;
 	for (i = seats; i < MAX_TABLE_SIZE; i++)
-		table.seats[i] = GGZ_SEAT_NONE;
+		table.seats[i] = strdup("<none>");
 	pthread_mutex_init(&table.transit_lock, NULL);
 	pthread_mutex_init(&table.state_lock, NULL);
 	pthread_cond_init(&table.transit_cond, NULL);
@@ -1232,8 +1242,8 @@ static int player_list_tables_room(const int fd, const int room, const int type)
 {
 	int *t_list, *indices;
 	TableInfo *my_tables;
-	int count=0, t_count, i, j, status, p_index, uid;
-	char *name;
+	int count=0, t_count, i, j, status, seat;
+	char *name = NULL;
 
 	/* Don't send list if they're not in a room */
 	if (room == -1) {
@@ -1309,39 +1319,32 @@ static int player_list_tables_room(const int fd, const int room, const int type)
 		}
 
 		for (j = 0; j < seats_num(my_tables[i]); j++) {
-			if (es_write_int(fd, my_tables[i].seats[j]) < 0) {
+			seat = seats_type(my_tables[i], j);
+			if (es_write_int(fd, seat) < 0) {
 				status = GGZ_REQ_DISCONNECT;
 				goto pltr_common_exit;
 			}
 
-			switch(my_tables[i].seats[j]) {
-				case GGZ_SEAT_OPEN:
-				case GGZ_SEAT_BOT:
-					continue;  /* no name for these */
-				case GGZ_SEAT_RESV:
-					uid = my_tables[i].reserve[j];
-					/* Look up player name by uid */
-					name = strdup("reserved");
-					break;
-				default: /* must be a player index */
-					p_index = my_tables[i].seats[j];
-					/* FIXME: Race condition */
-					pthread_rwlock_rdlock(&players.info[p_index].lock);
-					name=strdup(players.info[p_index].name);
-					pthread_rwlock_unlock(&players.info[p_index].lock);
+			switch (seat) {
+			case GGZ_SEAT_OPEN:
+			case GGZ_SEAT_BOT:
+				continue;  /* no name for these */
+			case GGZ_SEAT_RESV:
+				name = my_tables[i].reserve[j];
+				break;
+			case GGZ_SEAT_PLAYER: 
+				name = my_tables[i].seats[j];
+				break;
 			}
 
 			if (es_write_string(fd, name) < 0) {
-				free(name);
 				status = GGZ_REQ_DISCONNECT;
 				goto pltr_common_exit;
 			}
-
-			free(name);
 		}
 	}
 
-pltr_common_exit:
+ pltr_common_exit:
 	free(t_list);
 	free(my_tables);
 	if(indices != t_list)
@@ -1352,8 +1355,8 @@ pltr_common_exit:
 
 static int player_list_tables_global(const int fd, const int type)
 {
-	int i, j, index, uid, count = 0;
-	char name[MAX_USER_NAME_LEN + 1];
+	int i, j, seat, count = 0;
+	char* name = NULL;
 	TableInfo my_tables[MAX_TABLES];
 	int indices[MAX_TABLES];
 
@@ -1382,24 +1385,20 @@ static int player_list_tables_global(const int fd, const int type)
 			return GGZ_REQ_DISCONNECT;
 
 		for (j = 0; j < seats_num(my_tables[i]); j++) {
-			if (es_write_int(fd, my_tables[i].seats[j]) < 0)
+			seat = seats_type(my_tables[i], j);
+			if (es_write_int(fd, seat) < 0)
 				return GGZ_REQ_DISCONNECT;
 
-			switch(my_tables[i].seats[j]) {
-				case GGZ_SEAT_OPEN:
-				case GGZ_SEAT_BOT:
-					continue;  /* no name for these */
-				case GGZ_SEAT_RESV:
-					uid = my_tables[i].reserve[j];
-					/* Look up player name by uid */
-					strcpy(name,"reserved");
-					break;
-				default: /* must be a player index */
-					index = my_tables[i].seats[j];
-					/* FIXME: Race condition */
-					pthread_rwlock_rdlock(&players.info[index].lock);
-					strcpy(name, players.info[index].name);
-					pthread_rwlock_unlock(&players.info[index].lock);
+			switch (seat) {
+			case GGZ_SEAT_OPEN:
+			case GGZ_SEAT_BOT:
+				continue;  /* no name for these */
+			case GGZ_SEAT_RESV:
+				name = my_tables[i].reserve[j];
+				break;
+			case GGZ_SEAT_PLAYER:
+				name = my_tables[i].seats[j];
+				break;
 			}
 
 			if (es_write_string(fd, name) < 0)

@@ -29,3 +29,4 @@ int seats_num(TableInfo table);
 int seats_bot(TableInfo table);
 int seats_reserved(TableInfo table);
 int seats_human(TableInfo table);
+int seats_type(TableInfo table, int seat);
