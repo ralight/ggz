@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: play.c 3438 2002-02-21 10:11:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -33,6 +33,13 @@
 
 void req_play(player_t p, seat_t s)
 {
+	/* Sanity checks */
+	player_t p2;
+	assert(!game.players[p].is_playing);
+        for (p2 = 0; p2 < game.num_players; p2++)
+        	if (game.players[p2].is_playing)
+        		assert(game.players[p2].play_seat != s);
+	
 	/* although the game_* functions probably track this data themselves,
 	   we track it here as well just in case. */
 	game.players[p].is_playing = TRUE;
