@@ -1,0 +1,65 @@
+How to configure the GGZ Gaming Zone Meta Server
+================================================
+
+The GGZ metaserver uses a plain XML file for its configuration.
+This file is named metaservconf.xml and is normally installed under
+$(prefix)/share/metaserv.
+It starts with the normal header:
+
+	<?xml version="1.0"?>
+
+and has one major section which specifies the class, in our case that is 'ggz':
+
+	<configuration class="ggz">
+	...
+	</configuration>
+
+Within this root element, all entries are simply listed one after the other,
+with no differentiation of the type of each line.
+There are basically 3 entry types: 'connection', 'authorization' and 'peer'.
+
+The connection entry
+--------------------
+This entry specifies a valid GGZ server (ggzd) somewhere on the net. The URI of
+this server is the value of this entry.
+The attributes are the version of the specified server, and the preference. The
+higher (up to 100) a preference is, the more likely a client will connect to
+it. Slow servers should therefore get a low preference.
+This is like such an entry might look like:
+
+	<connection version="0.0.5pre" preference="50">
+		ggz://jzaun.com:5688
+	</connection>
+
+The authorization entry
+-----------------------
+The meta servers are logically connected to each other. They distribute changes
+among themselves automatically. Only trusted users and hosts are allowed to
+issue updates. Currently, every entity which provides a valid username and
+password is trusted.
+This entry has no value, but beside the username and password it requires
+capabilities to be specified in order to fine-tune the access rights. Currently
+only the 'update' capability is defined, and it makes no sense to set it to 0
+(which would make the whole entry obsolete), so it should be set to 1.
+Example:
+
+	<authorization username="josef" password="ggzrocks" update="1"/>
+
+The peer entry
+--------------
+The server has to know which servers are to be informed when changes occur. The
+task of configuring this properly is the duty of the meta server hosters. There
+is currently no loop check done, so the meta server network structure should be
+tree-like rather than web-like. That means, in a chain of updates no updating
+server should also get the same update again.
+This entry takes the URI of the peer meta server as value, and requires a login
+which consists of a username and a password.
+Example:
+
+	<peer username="node02" password="ggzrocks">
+		ggz://jzaun.com:5688
+	</peer>
+
+Josef Spillner
+09.12.2001
+

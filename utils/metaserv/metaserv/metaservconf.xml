@@ -4,5 +4,6 @@
 	<connection version="0.0.4" preference="100">ggz://ggz.snafu.de:5688</connection>
 	<connection version="0.0.4" preference="100">ggz://ggz.morat.net:5688</connection>
 	<authorization username="josef" password="ggzrocks" update="1"/>
+	<peer username="node02" password="ggzrocks">ggz://jzaun.com:5688</peer>
 </configuration>
 

@@ -166,6 +166,37 @@ int metaserv_auth(const char *username, const char *password, const char *capabi
 	return 0;
 }
 
+void metaserv_peers()
+{
+	int i, j;
+	ELE *el;
+	char *username, *password, *uri;
+
+	i = 0;
+	while((configuration->el) && (configuration->el->el) && (configuration->el->el[i]))
+	{
+		el = configuration->el->el[i];
+		if(!strcmp(el->name, "peer"))
+		{
+			uri = el->value;
+			j = 0;
+			username = NULL;
+			password = NULL;
+			while((el->at) && (el->at[j]))
+			{
+				if(!strcmp(el->at[j]->name, "username")) username = el->at[j]->value;
+				if(!strcmp(el->at[j]->name, "password")) password = el->at[j]->value;
+				j++;
+			}
+			if((uri) && (username) && (password))
+			{
+				printf("==> notify: %s:%s@%s\n", username, password, uri);
+			}
+		}
+		i++;
+	}
+}
+
 char *metaserv_update(const char *class, const char *category, const char *username, const char *password, const char *uri, ATT **att, int atnum)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"update\">";
@@ -227,6 +258,8 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 	xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(footer) + 1);
 	strcat(xmlret, footer);
 	ret = xmlret;
+
+	metaserv_peers();
 
 	return ret;
 }
