@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2314 2001-08-29 04:00:38Z jdorje $
+# $Id: Makefile.am 2478 2001-09-14 13:11:38Z bmh $
 
 SUBDIRS = .
 
+DB_ALL = ggzdb_db2.c ggzdb_db3.c 
 DB_SOURCES = ggzdb_@database@.c
-DB_OBJECTS = ggzdb_@database@.o
 
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DB_SOURCES)
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DB_ALL)
 
 bin_PROGRAMS = ggzd
 
@@ -45,6 +45,7 @@ ggzd_SOURCES =	chat.c\
 		hash.h \
 		ggzdb.c \
 		ggzdb.h \
+		$(DB_SOURCES) \
 		login.c \
 		login.h \
 		lists.c \
@@ -53,7 +54,7 @@ ggzd_SOURCES =	chat.c\
 		conf.h
 
 
-ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS)
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS)
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 
