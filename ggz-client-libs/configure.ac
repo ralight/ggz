@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5945 2004-02-16 22:19:52Z jdorje $
+dnl $Id: configure.ac 6074 2004-07-10 17:45:53Z jdorje $
 
-AC_INIT([GGZ client libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
+AC_INIT([GGZ client libraries],[0.0.8],[ggz-dev@mail.ggzgamingzone.org],[ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -15,7 +15,14 @@ AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
-AM_PROG_CC_STDC
+AC_PROG_CC()
+AC_DIAGNOSE([obsolete],[AM_PROG_CC_STDC:
+	your code should no longer depend upon `am_cv_prog_cc_stdc', but upon
+	`ac_cv_prog_cc_stdc'.  Remove this warning and the assignment when
+	you adjust the code.  You can also remove the above call to
+	AC_PROG_CC if you already called it elsewhere.])
+am_cv_prog_cc_stdc=$ac_cv_prog_cc_stdc
+
 AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
