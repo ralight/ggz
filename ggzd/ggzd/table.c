@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2326 2001-08-29 17:47:26Z jdorje $
+ * $Id: table.c 2330 2001-08-31 03:54:57Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -69,11 +69,11 @@ static void  table_remove(GGZTable* table);
 static void  table_run_game(GGZTable* table, char *path);
 static char** table_split_args(char *path);
 static int   table_send_opt(GGZTable* table);
-int   table_game_over(void* data);
-int   table_log(void *data, char *msg, int level, char debug);
-int   table_game_launch(void* data, char status);
-int   table_game_join(void* data, char status);
-int   table_game_leave(void* data, char status);
+int   table_game_over(GGZdmod *ggzdmod);
+int   table_log(GGZdmod *ggzdmod, char *msg, int level, char debug);
+int   table_game_launch(GGZdmod *ggzdmod, char status);
+int   table_game_join(GGZdmod *ggzdmod, char status);
+int   table_game_leave(GGZdmod *ggzdmod, char status);
 static int   table_event_enqueue(GGZTable* table, unsigned char opcode);
 static int   table_update_event_enqueue(GGZTable* table,
 					 unsigned char opcode, char* name,
@@ -143,7 +143,9 @@ static int table_check(GGZTable* table)
 	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-	dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table->fd);
+	dbg_msg(GGZ_DBG_TABLE, "GGZdmod    : %x", table->ggzdmod);
+	if (table->ggzdmod)
+		dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table->ggzdmod->fd);
 	for (i = 0; i < seat_total; i++) {
 		switch (seats_type(table, i)) {
 		case GGZ_SEAT_OPEN:
@@ -314,7 +316,10 @@ static void table_fork(GGZTable* table)
 		
 		pthread_rwlock_wrlock(&table->lock);
 		table->pid = pid;
-		table->fd = sfd[0];
+		table->ggzdmod = ggzdmod_new(sfd[0], table);
+		if (!table->ggzdmod) {
+			/* FIXME */
+		}
 		pthread_rwlock_unlock(&table->lock);
 		
 		if (table_send_opt(table) == 0)
@@ -322,7 +327,7 @@ static void table_fork(GGZTable* table)
 		
 		/* Make sure game server is dead */
 		kill(pid, SIGINT);
-		close(table->fd);
+		close(table->ggzdmod->fd);
 	}
 }
 
@@ -395,7 +400,7 @@ static int table_send_opt(GGZTable* table)
 			assign[i] = seats_type(&copy, i);
 			reserves[i] = copy.reserve[i];
 		}
-		if (ggzdmod_send_launch(copy.fd, num_seats, assign, reserves) < 0)
+		if (ggzdmod_launch_game(table->ggzdmod, num_seats, assign, reserves) < 0)
 			return -1;
 	}
 
@@ -409,7 +414,7 @@ static void table_loop(GGZTable* table)
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
 	
-	fd = table->fd;
+	fd = table->ggzdmod->fd;
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
 
@@ -433,15 +438,15 @@ static void table_loop(GGZTable* table)
 				err_sys_exit("select error");
 		}
 
-		if (ggzdmod_dispatch(fd, table) < 0)
+		if (ggzdmod_dispatch(table->ggzdmod) < 0)
 			break;
 	}
 }
 
 
-int table_game_launch(void* data, char status)
+int table_game_launch(GGZdmod *ggzdmod, char status)
 {
-	GGZTable* table = data;
+	GGZTable* table = ggzdmod->table_data;
 
 	/* FIXME: check status */
 
@@ -469,9 +474,9 @@ int table_game_launch(void* data, char status)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains malloced mem on entry
  */
-int table_game_join(void* data, char status)
+int table_game_join(GGZdmod *ggzdmod, char status)
 {
-	GGZTable* table = data;
+	GGZTable* table = ggzdmod->table_data;
 	char full;
 	char* name;
 	int seat, fd, msg_status;
@@ -538,9 +543,9 @@ int table_game_join(void* data, char status)
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-int table_game_leave(void* data, char status)
+int table_game_leave(GGZdmod *ggzdmod, char status)
 {
-	GGZTable *table = data;
+	GGZTable *table = ggzdmod->table_data;
 	char* name;
 	int seat;
 	int ret_val = 0;
@@ -590,9 +595,9 @@ int table_game_leave(void* data, char status)
 }
 
 
-int table_game_over(void* data)
+int table_game_over(GGZdmod *ggzdmod)
 {
-	GGZTable* table = data;
+	GGZTable* table = ggzdmod->table_data;
 
 	dbg_msg(GGZ_DBG_TABLE,
 		"Handling game-over request from table %d in room %d", 
@@ -608,9 +613,9 @@ int table_game_over(void* data)
 }
 
 
-int table_log(void* data, char* message, int level, char debug)
+int table_log(GGZdmod *ggzdmod, char* message, int level, char debug)
 {
-	GGZTable *table = data;
+	GGZTable *table = ggzdmod->table_data;
 	int type, len, pid;
 	char name[MAX_GAME_NAME_LEN];
 	char *prescan = message, *msg, *p, *m;
@@ -752,7 +757,7 @@ int table_launch(char* name, int type, int room, char* desc, int seats[],
 	table->transit_name = NULL;
 	table->transit_fd = -1;
 	table->transit_seat = -1;
-	table->fd = -1;
+	table->ggzdmod = NULL;
 	table->pid = -1;
 	strcpy(table->owner, name);	
 	strcpy(table->desc, desc);	
@@ -1116,6 +1121,7 @@ static void table_free(GGZTable* table)
 		/*if (table->reserve[i])
 		  free (table->reserve[i]);*/
 	}
+	ggzdmod_free(table->ggzdmod);
 	free(table);
 }
 

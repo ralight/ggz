@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 2317 2001-08-29 05:39:53Z bmh $
+ * $Id: transit.c 2330 2001-08-31 03:54:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -288,7 +288,7 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 	table->transit_fd = fd[1];
 
 	/* Send info to table */
-	if (ggzdmod_req_gamejoin(table->fd, i, name, fd[0]) < 0)
+	if (ggzdmod_player_join(table->ggzdmod, i, name, fd[0]) < 0)
 		return -1;
 
 	/* Must close remote end of socketpair */
@@ -323,7 +323,7 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	table->transit_seat = i;
 	
 	/* Send message to table */
-	ggzdmod_req_gameleave(table->fd, name);
+	ggzdmod_player_leave(table->ggzdmod, name);
 
 	return 0;
 }
