@@ -152,7 +152,7 @@ static void
 client_join_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
+	ggzcore_server_join_room(server, popup_row);
 }
 
 
@@ -301,7 +301,7 @@ client_info_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
 	/* Display room's info in a nice dialog */
-	info_create_or_raise(ggzcore_server_get_room(server, popup_row));		
+	info_create_or_raise(ggzcore_server_get_nth_room(server, popup_row));		
 }
 
 
@@ -482,7 +482,7 @@ client_room_clist_event			(GtkWidget	*widget,
 		/* Check the button which was pressed */
 		if(buttonevent->button == 1)
 		{
-			/* Double-Click, join roon */
+			/* Double-Click, join room */
 			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
 			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
 						     &row, &column);
