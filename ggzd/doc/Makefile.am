@@ -12,7 +12,9 @@ FIG_FILES  = images/server_arch.fig
 
 EXTRA_DIST = $(SGML_FILES) \
 	     $(FIG_FILES) \
-	     game-modules.txt
+	     game-modules.txt \
+	     admin-guide.txt \
+	     ggz.dsl
 
 
 all-docs: html-docs txt-docs
