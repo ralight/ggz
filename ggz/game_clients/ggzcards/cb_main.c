@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: cb_main.c 3642 2002-03-24 01:16:42Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "dlg_exit.h"
+
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
@@ -39,6 +41,18 @@
 #include "table.h"
 
 GtkWidget *player_dialog = NULL;
+
+static void try_to_exit_game(void)
+{
+	/* Really, we shouldn't be checking game_started here.  We
+	   should happily leave between games too.  But for now,
+	   this is fine. */
+	if (game_started) {
+		ggz_show_exit_dialog(TRUE);
+	} else {
+		gtk_main_quit();
+	}
+}
 
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
@@ -89,7 +103,7 @@ void on_mnu_forceredraw_activate(GtkMenuItem * menuitem, gpointer user_data)
 
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	gtk_main_quit();
+	try_to_exit_game();
 }
 
 void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -113,9 +127,8 @@ void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
 gboolean on_dlg_main_delete_event(GtkWidget * widget, GdkEvent * event,
 				  gpointer user_data)
 {
-	gtk_main_quit();
-
-	return FALSE;
+	try_to_exit_game();
+	return TRUE;
 }
 
 
