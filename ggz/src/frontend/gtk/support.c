@@ -339,7 +339,7 @@ void support_goto_url(gchar *url)
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Konqueror - Existing"))
 	{
-		command = g_strdup_printf("konqueror %s", url);
+		command = g_strdup_printf("dcop konqueror konqueror-mainwindow#1 openURL %s", url); /*FIXME: untested!*/
 		support_exec(command);
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Lynx"))
