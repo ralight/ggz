@@ -241,6 +241,13 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	gchar *name;
 	gchar *message;
 
+	 
+	/* Clear the player list */
+	/* We do this here so that on slower links people
+	 * don't think all the old people are in the old room */
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
 	ggzcore_room_list_tables(ggzcore_server_get_cur_room(server), -1, 0);

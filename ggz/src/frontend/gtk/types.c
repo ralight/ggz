@@ -40,6 +40,7 @@
 
 #include <ggzcore.h>
 #include "types.h"
+#include "msgbox.h"
 #include "support.h"
 
 extern GGZServer *server;
@@ -126,6 +127,8 @@ static void types_URL(GtkMenuItem *menuitem, gpointer data)
 
 static void types_filter_button(GtkWidget *widget, gpointer data)
 {
+        msgbox("Room filtering is not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+                MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 
 }
 
