@@ -1,4 +1,4 @@
-/* $Id: dlg_main.c 2841 2001-12-10 00:16:21Z jdorje $ */
+/* $Id: dlg_main.c 2939 2001-12-18 20:47:03Z jdorje $ */
 /* 
  * File: dlg_main.c
  * Author: Rich Gade
@@ -37,6 +37,7 @@
 
 #include "cb_main.h"
 #include "dlg_main.h"
+#include "game.h"
 #include "layout.h"
 #include "table.h"
 

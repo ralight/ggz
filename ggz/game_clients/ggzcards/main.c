@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2931 2001-12-18 07:27:02Z jdorje $
+ * $Id: main.c 2939 2001-12-18 20:47:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,6 +40,7 @@
 #include <ggz.h>		/* libggz */
 #include "common.h"
 
+#include "animation.h"
 #include "main.h"
 #include "dlg_main.h"
 #include "dlg_bid.h"
@@ -126,7 +127,7 @@ void table_get_play(int hand)
 {
 #ifdef ANIMATION
 	if (animating)
-		table_animation_zip(TRUE);
+		animation_zip(TRUE);
 	assert(!animating);
 #endif /* ANIMATION */
 
@@ -469,7 +470,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 void table_alert_badplay(char *err_msg)
 {
 #ifdef ANIMATION
-	table_animation_abort();
+	animation_abort();
 #endif /* ANIMATION */
 
 	/* redraw cards */
@@ -483,7 +484,7 @@ void table_alert_play(int player, card_t card, int pos)
 {
 #ifdef ANIMATION
 	if (animating)
-		table_animation_zip(TRUE);
+		animation_zip(TRUE);
 	assert(!animating);
 #endif /* ANIMATION */
 
@@ -504,7 +505,7 @@ void table_alert_trick(int player)
 
 #ifdef ANIMATION
 	if (animating)
-		table_animation_zip(TRUE);
+		animation_zip(TRUE);
 	assert(!animating);
 #endif /* ANIMATION */
 

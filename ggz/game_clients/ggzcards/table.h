@@ -1,4 +1,4 @@
-/* $Id: table.h 2931 2001-12-18 07:27:02Z jdorje $ */
+/* $Id: table.h 2939 2001-12-18 20:47:03Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -24,9 +24,11 @@
  */
 
 #include "hand.h"
-#include "game.h"		/* for ANIMATION */
 
 extern GtkRcStyle *fixed_font_style;
+extern GtkWidget *table;	/* widget containing the whole table */
+extern GtkStyle *table_style;	/* Style for the table */
+extern GdkPixmap *card_fronts[4];
 
 void table_initialize(void);
 void table_setup(void);
@@ -40,16 +42,14 @@ void table_set_bid(int, int);
 void table_set_tricks(int, int);
 void table_set_score(int, int);
 void table_set_trump(void);
-#ifdef ANIMATION
-void table_animation_abort(void);
-void table_animation_zip(gboolean);
-#endif /* ANIMATION */
 void table_clear_table(void);
-void table_show_cards();
+void table_show_cards(void);
 void table_redraw(void);
 
 void table_play_card(int p, card_t card, int pos);
 
+void table_show_table(int x, int y, int w, int h);
+void get_card_coordinates(card_t card, int orientation, int *x, int *y);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 
 void table_set_name(int player, const char *name);

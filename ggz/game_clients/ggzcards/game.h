@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2931 2001-12-18 07:27:02Z jdorje $
+ * $Id: game.h 2939 2001-12-18 20:47:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,16 +29,6 @@
 
 #ifndef __GAME_H__
 #define __GAME_H__
-
-/* if this is defined, the animation code will be used. I've disable it
-   because I broke it... */
-/* #define ANIMATION */
-
-#ifdef ANIMATION
-/* Are we currently in the process of animating? */
-extern int animating;
-#endif
-
 
 /** @brief Sends the bid to the server, and updates the graphics.
  *  @param bid An index into the list of bids sent by the server. */
