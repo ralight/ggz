@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4964 2002-10-20 08:24:21Z jdorje $
+ * $Id: room.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,22 +23,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
 #include <pthread.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include <ggzd.h>
-#include <datatypes.h>
-#include <room.h>
-#include <err_func.h>
-#include <protocols.h>
-#include <event.h>
-#include <chat.h>
-#include <net.h>
-#include <perms.h>
+#include "chat.h"
 #include "client.h"
+#include "err_func.h"
+#include "event.h"
+#include "datatypes.h"
+#include "ggzd.h"
+#include "net.h"
+#include "perms.h"
+#include "protocols.h"
+#include "room.h"
 
 
 /* Server wide data structures */

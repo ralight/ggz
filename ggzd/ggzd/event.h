@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4590 2002-09-16 22:46:10Z jdorje $
+ * $Id: event.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,8 +27,8 @@
 #ifndef _GGZ_EVENT_H
 #define _GGZ_EVENT_H
 
-#include <ggzd.h>
-#include <players.h>
+#include "ggzd.h"
+#include "players.h"
 
 /* 
  * Event callback function type 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4822 2002-10-09 06:17:54Z jdorje $
+ * $Id: players.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -26,8 +26,6 @@
 
 #ifndef _GGZ_PLAYER_H
 #define _GGZ_PLAYER_H
-
-#include <config.h>
 
 #include <pthread.h>
 #include <sys/time.h>

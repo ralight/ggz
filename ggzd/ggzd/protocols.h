@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4964 2002-10-20 08:24:21Z jdorje $
+ * $Id: protocols.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -25,8 +25,6 @@
 
 #ifndef _GGZ_PROTOCOL_H
 #define _GGZ_PROTOCOL_H
-
-#include <ggz_common.h>
 
 /* I thought of putting this into ggz_common (in libggz) along with the
    protocol opcodes, but it really needs to stay tied to the network code

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.h 4140 2002-05-03 03:49:09Z bmh $
+ * $Id: client.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2002 Brent Hendricks.
  *
@@ -26,8 +26,6 @@
 
 #ifndef _GGZ_CLIENT_H
 #define _GGZ_CLIENT_H
-
-#include "config.h"
 
 #include <pthread.h>
 

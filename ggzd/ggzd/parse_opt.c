@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4743 2002-09-26 21:11:22Z jdorje $
+ * $Id: parse_opt.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -23,27 +23,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <pthread.h>
+#include <ctype.h>
+#include <dirent.h>
 #include <popt.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <dirent.h>
+
+#include <ggz.h>
 
 #include "client.h"
-#include <ggzd.h>
-#include <ggz.h>
-#include <datatypes.h>
-#include <err_func.h>
-#include <motd.h>
-#include <room.h>
-#include <parse_opt.h>
-#include <perms.h>
-#include <players.h>
+#include "datatypes.h"
+#include "err_func.h"
+#include "ggzd.h"
+#include "motd.h"
+#include "parse_opt.h"
+#include "perms.h"
+#include "players.h"
+#include "room.h"
 #include "util.h"
+
 
 /* Stuff from control.c we need access to */
 extern Options opt;

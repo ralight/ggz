@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4589 2002-09-16 22:33:35Z jdorje $
+ * $Id: event.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,22 +23,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
+#include <ctype.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include <ctype.h>
 
-#include <err_func.h>
-#include <event.h>
-#include <room.h>
-#include <datatypes.h>
-#include <protocols.h>
-#include <players.h>
-#include <hash.h>
-#include <net.h>
 #include "client.h"
+#include "datatypes.h"
+#include "hash.h"
+#include "net.h"
+#include "players.h"
+#include "protocols.h"
+#include "err_func.h"
+#include "event.h"
+#include "room.h"
 #include "table.h"
+
 
 /* Server wide data structures */
 extern Options opt;

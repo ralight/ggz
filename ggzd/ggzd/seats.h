@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.h 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: seats.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,8 +27,9 @@
 #ifndef __GGZ_TABLE_H_
 #define __GGZ_TABLE_H_
 
-#include "table.h"
 #include <ggz_common.h>
+
+#include "table.h"
 
 
 /* Seat structure */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: seats.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -23,7 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>		/* Site specific config */
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
 #include <string.h>
 

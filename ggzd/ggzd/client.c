@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4800 2002-10-07 22:59:41Z jdorje $
+ * $Id: client.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -25,19 +25,21 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA */
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
 
-
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
 #include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <errno.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
 
 #include "client.h"
 #include "err_func.h"

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 4702 2002-09-25 19:38:01Z jdorje $
+ * $Id: room.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,12 +26,10 @@
 #ifndef _GGZ_ROOM_H
 #define _GGZ_ROOM_H
 
-#include <config.h>
-
 #include <pthread.h>
 
-#include <event.h>
-#include <players.h>
+#include "event.h"
+#include "players.h"
 
 /* 
  * The RoomStruct structure is meant to be a node in a linked list

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.h 4556 2002-09-13 18:01:57Z jdorje $
+ * $Id: login.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,8 +27,7 @@
 #ifndef _GGZ_LOGIN_H
 #define _GGZ_LOGIN_H
 
-#include <config.h>
-#include <players.h>
+#include "players.h"
 
 typedef enum {
 	GGZ_LOGIN,

@@ -3,6 +3,7 @@
  *  Copyright (C) 1996 Thomas Koenig
  *
  *  Modified 6/24/00 by Brent Hendricks for use with the GGZ project.
+ *  $Id: daemon.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,22 +20,23 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include "config.h"
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <signal.h>
+#include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <syslog.h>
-#include <errno.h>
 #include <string.h>
+#include <syslog.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-#include <daemon.h>
-#include <err_func.h>
+#include "daemon.h"
+#include "err_func.h"
 
 
 /* Server options */

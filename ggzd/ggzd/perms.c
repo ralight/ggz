@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 9/23/01
  * Desc: Functions for dealing with user permissions
+ * $Id: perms.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -22,12 +23,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <ggzd.h>
-#include <players.h>
-#include <perms.h>
-#include <ggzdb.h>
+#include "ggzd.h"
+#include "ggzdb.h"
+#include "perms.h"
+#include "players.h"
 
 void perms_init(GGZPlayer *player, ggzdbPlayerEntry *pe)
 {

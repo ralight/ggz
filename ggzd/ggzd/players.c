@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4957 2002-10-19 22:36:07Z jdorje $
+ * $Id: players.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -25,41 +25,44 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA */
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <config.h>
-
-#include <sys/time.h>
-#include <sys/types.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
+#include <ctype.h>
+#include <errno.h>
+#include <netdb.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
-#include <errno.h>
-#include <ctype.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <unistd.h>
+
 #include <ggz.h>
 
-#include <ggzd.h>
-#include <datatypes.h>
-#include <players.h>
-#include <table.h>
-#include <protocols.h>
-#include <err_func.h>
-#include <seats.h>
-#include <motd.h>
-#include <room.h>
-#include <chat.h>
-#include <hash.h>
-#include <transit.h>
-#include <net.h>
-#include <perms.h>
+#include "chat.h"
 #include "client.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "ggzd.h"
+#include "hash.h"
+#include "motd.h"
+#include "net.h"
+#include "perms.h"
+#include "players.h"
+#include "protocols.h"
+#include "room.h"
+#include "seats.h"
+#include "table.h"
+#include "transit.h"
 
 
 /* Timeout for server resync */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4964 2002-10-20 08:24:21Z jdorje $
+ * $Id: net.c 4965 2002-10-20 09:05:32Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -25,9 +25,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+# include <config.h>		/* Site specific config */
 #endif
 
 #include <errno.h>

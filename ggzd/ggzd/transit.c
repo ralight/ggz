@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4946 2002-10-18 20:49:12Z jdorje $
+ * $Id: transit.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,26 +23,29 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "ggzdmod.h"
 
-#include "ggzd.h"
-#include "datatypes.h"
-#include "protocols.h"
-#include "err_func.h"
-#include "transit.h"
-#include "seats.h"
-#include "event.h"
-#include "net.h"
 #include "client.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "event.h"
+#include "ggzd.h"
+#include "net.h"
+#include "protocols.h"
+#include "seats.h"
+#include "transit.h"
+
 
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];

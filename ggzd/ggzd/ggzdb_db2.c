@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Back-end functions for handling the db2 sytle database
- * $Id: ggzdb_db2.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: ggzdb_db2.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,22 +23,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
+
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <limits.h>
 
 #ifdef DB2_IN_DIR
-#include <db2/db.h>
+#  include <db2/db.h>
 #else
-#include <db.h>
+#  include <db.h>
 #endif
 
 #include "err_func.h"
 #include "ggzd.h"
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
+
 
 /* Internal variables */
 static DB *db_p = NULL;

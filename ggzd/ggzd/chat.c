@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4858 2002-10-10 21:04:56Z jdorje $
+ * $Id: chat.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,25 +23,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include <chat.h>
-#include <datatypes.h>
-#include <err_func.h>
-#include <event.h>
-#include <room.h>
-#include <ggzd.h>
-#include <protocols.h>
-#include <hash.h>
-#include <net.h>
-#include <players.h>
-#include <perms.h>
+#include "chat.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "event.h"
+#include "ggzd.h"
+#include "hash.h"
+#include "net.h"
+#include "perms.h"
+#include "players.h"
+#include "protocols.h"
+#include "room.h"
 #include "table.h"
-#include "client.h"
 
 
 /* Server wide data structures */

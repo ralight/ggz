@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 4964 2002-10-20 08:24:21Z jdorje $
+ * $Id: net.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -27,13 +27,12 @@
 #ifndef _GGZ_NET_H
 #define _GGZ_NET_H
 
-#include "config.h"
-#include "players.h"
-#include "login.h"
-#include "room.h"
-#include "datatypes.h"
-#include "protocols.h"
 #include "client.h"
+#include "datatypes.h"
+#include "login.h"
+#include "players.h"
+#include "protocols.h"
+#include "room.h"
 
 
 /* Create a new network IO object */

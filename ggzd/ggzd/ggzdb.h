@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzdb.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,8 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "ggzd.h"
 #include <time.h>
+
+#include "ggzd.h"
 
 /* Can't include twice */
 #ifndef GGZDB_VERSION_ID

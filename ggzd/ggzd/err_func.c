@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: err_func.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -23,22 +23,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#define SYSLOG_NAMES	/* We need access to the facility names from syslog.h */
-#include <stdio.h>
-#include <syslog.h>
-#include <stdarg.h>
-#include <stdlib.h>
+/* We need access to the facility names from syslog.h */
+#define SYSLOG_NAMES
+
 #include <errno.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
 #include <pthread.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <syslog.h>
+#include <time.h>
+#include <unistd.h>
 
-#include <ggzd.h>
-#include <datatypes.h>
-#include <err_func.h>
+#include "datatypes.h"
+#include "err_func.h"
+#include "ggzd.h"
 
 /* Logfile info */
 LogInfo log_info = { 0, 0,

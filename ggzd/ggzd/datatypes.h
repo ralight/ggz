@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4743 2002-09-26 21:11:22Z jdorje $
+ * $Id: datatypes.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -27,12 +27,9 @@
 #ifndef _GGZ_TYPES
 #define _GGZ_TYPES
 
-#include <config.h>
-
 #include <stdio.h>
 #include <pthread.h>
 
-#include <ggz.h>
 #include <ggz_common.h>
 
 #include "ggzd.h"

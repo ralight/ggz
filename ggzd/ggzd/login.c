@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4556 2002-09-13 18:01:57Z jdorje $
+ * $Id: login.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,22 +23,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
 #include <pthread.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <err_func.h>
-#include <ggzdb.h>
-#include <hash.h>
-#include <login.h>
-#include <motd.h>
-#include <net.h>
-#include <players.h>
-#include <protocols.h>
-#include <perms.h>
+#include "err_func.h"
+#include "ggzdb.h"
+#include "hash.h"
+#include "login.h"
+#include "motd.h"
+#include "net.h"
+#include "players.h"
+#include "protocols.h"
+#include "perms.h"
 #include "client.h"
 
 

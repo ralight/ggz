@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
+ * $Id: hash.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,17 +23,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <pthread.h>
-#include <string.h>
-#include <stdlib.h>
 #include <ctype.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <hash.h>
-#include <ggzd.h>
-#include <datatypes.h>
-#include <err_func.h>
+#include "hash.h"
+#include "ggzd.h"
+#include "datatypes.h"
+#include "err_func.h"
 
 
 /* Internal variables */

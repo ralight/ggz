@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
+ * $Id: hash.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,7 +24,7 @@
  */
 
 
-#include <players.h>
+#include "players.h"
 
 /* Exported functions */
 extern void hash_initialize(void);

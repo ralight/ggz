@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4796 2002-10-07 21:29:28Z jdorje $
+ * $Id: control.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -23,35 +23,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <config.h>		/* Site specific config */
-
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <signal.h>
-#include <pthread.h>
 #include <errno.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <time.h>
 #include <fcntl.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+
 #include <ggz.h>
 
-#include "chat.h"
-#include <ggzd.h>
-#include <datatypes.h>
-#include <err_func.h>
-#include <players.h>
-#include <parse_opt.h>
-#include <motd.h>
-#include <room.h>
-#include <ggzdb.h>
-#include <table.h>
-#include <daemon.h>
-#include <hash.h>
 #include "client.h"
+#include "chat.h"
+#include "daemon.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "ggzd.h"
+#include "ggzdb.h"
+#include "hash.h"
+#include "motd.h"
+#include "parse_opt.h"
+#include "players.h"
+#include "room.h"
+#include "table.h"
 #include "util.h"
 
 

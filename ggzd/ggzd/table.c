@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4964 2002-10-20 08:24:21Z jdorje $
+ * $Id: table.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -23,35 +23,36 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include "ggzd.h"
-#include "datatypes.h"
-#include "protocols.h"
-#include "err_func.h"
-#include "table.h"
-#include "players.h"
-#include "seats.h"
-#include "transit.h"
-#include "room.h"
-#include "hash.h"
-#include "net.h"
-
-#include <ggz_common.h>
-#include <sys/types.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/signal.h>
-#include <sys/time.h>
 #include <sys/stat.h>
-#include <pthread.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <stdio.h>
 
-#include <ggzdmod.h>
+#include "ggzdmod.h"
+
 #include "client.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "ggzd.h"
+#include "hash.h"
+#include "net.h"
+#include "players.h"
+#include "protocols.h"
+#include "room.h"
+#include "seats.h"
+#include "table.h"
+#include "transit.h"
 
 
 #define GGZ_RESYNC_SEC  0

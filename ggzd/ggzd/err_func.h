@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
+ * $Id: err_func.h 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -22,13 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-
 #include <stdarg.h>
 
 #include <ggz.h> /* libggz */
 
-#include <datatypes.h>
+#include "datatypes.h"
 
 /* Log levels for log_msg */
 #define GGZ_LOG_ALWAYS		(unsigned) 0x00000000

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzduedit.c 4965 2002-10-20 09:05:32Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,19 +23,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>		/* Site specific config */
+#endif
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
 #include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
 #define PERMS_DEFINE_STR_TABLE
-#include <perms.h>
+#include "perms.h"
 
 
 char *datadir = DATADIR;
