@@ -71,7 +71,8 @@ dnl Check for GGZ Requirements
 dnl ==============
 
 AC_GGZ_GGZCORE
-LDADD="$LDADD $LIB_GGZCORE"
+AC_GGZ_LIBGGZ
+LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
 	 	       
 
 dnl Use -Wall if we have gcc.
