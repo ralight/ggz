@@ -12,7 +12,7 @@ Current
 
 	Interaction
 	-----------
-	- Double-Click to enter room
+	* Double-Click to enter room
 
 	Implimentation
 	--------------
@@ -29,7 +29,7 @@ To Add
 	GUI
 	---
 	* About
-	- Game Types (Still needs planning)
+	* Game Types
 	- Launch
 	* Licence
 	* MOTD

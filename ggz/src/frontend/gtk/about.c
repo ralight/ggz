@@ -5,7 +5,7 @@
  *
  * This is the main program body for the GGZ client
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000, 2001 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,8 @@ void about_create_or_raise(void)
 }
 
 
-static GtkWidget*
+
+GtkWidget*
 create_dlg_about (void)
 {
   GtkWidget *dlg_about;
@@ -103,14 +104,14 @@ create_dlg_about (void)
   gtk_widget_show (title_label);
   gtk_box_pack_start (GTK_BOX (vbox1), title_label, FALSE, FALSE, 8);
 
-  label4 = gtk_label_new (_("(C) 1999, 2000"));
+  label4 = gtk_label_new (_("(C) 1999, 2000, 2001"));
   gtk_widget_ref (label4);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label4);
   gtk_box_pack_start (GTK_BOX (vbox1), label4, FALSE, FALSE, 0);
 
-  label2 = gtk_label_new (_("Authors:\n\t\tGTK+ Version\n\t\t\t\t\t\t\t\tBrian Cox          (bcox@users.sourceforge.net)\n\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n\t\t\t\t\t\t\t\tBrent Hendricks\t (bmh@users.sourceforge.net)\n\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n\n\t\tWindows Version\n\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(djh@users.sourceforge.net)\n\nWebsite:\n\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"));
+  label2 = gtk_label_new (_("Authors:\n     GTK+ Version\n          Brian Cox             (bcox@users.sourceforge.net)\n          Rich Gade             (rgade@users.sourceforge.net)\n          Brent Hendricks   (bmh@users.sourceforge.net)\n          Justin Zaun\t           (jzaun@users.sourceforge.net)\n\n     Windows Version\n          Doug Hudson        (djh@users.sourceforge.net)\n\n     KDE2 Version\n          Josef Spillner\n\nWebsite:\n     http://ggz.sourceforge.net\n"));
   gtk_widget_ref (label2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
