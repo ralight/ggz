@@ -2,10 +2,11 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: launch.c 3986 2002-04-15 04:17:33Z jdorje $
  *
- * This is the main program body for the GGZ client
+ * Code for launching games through the GTK client
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000-2002 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +40,6 @@
 #include <game.h>
 #include "ggzcore.h"
 #include <msgbox.h>
-
-/* Uncomment to allow reserved seats during the launch. */
-#define ALLOW_RESERVED_SEATS
 
 /* The maximum number of characters in the reserved seat name
    (not counting \0) */
@@ -148,16 +146,6 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 		g_free(text);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
-
-#ifndef ALLOW_RESERVED_SEATS
-	/* Disable the reserved option for now */
-	for (x = 1; x <= maxplayers; x++) {
-		text = g_strdup_printf("seat%d_resv", x);
-		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
-		g_free(text);
-		gtk_widget_set_sensitive(tmp, FALSE);
-	}
-#endif /* ALLOW_RESERVED_SEATS */
 }
 
 
