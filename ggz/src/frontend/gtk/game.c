@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3413 2002-02-18 12:42:40Z jdorje $
+ * $Id: game.c 3593 2002-03-16 21:59:51Z jdorje $
  *
  * Functions for handling game events
  *
@@ -256,7 +256,11 @@ static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_dat
 	GGZRoom *room;
 
 	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_send_game_data(room, event_data);
+	if (ggzcore_room_send_game_data(room, event_data)) {
+		/* FIXME: better error handling */
+		ggz_error_msg("Lost some game data on its way to the server!");
+		return GGZ_HOOK_ERROR;
+	}
 
 	return GGZ_HOOK_OK;
 }
