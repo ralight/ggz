@@ -43,7 +43,7 @@ for($i = 0; $i < $form_participants; $i++)
 	$varname = "form_participant_$i";
 	$name = $$varname;
 	$number = $ar[$i];
-	$database->exec($conn, "INSERT INTO tournamentplayers (id, number, name) VALUES ($tid, $number, '$name')");
+	$database->exec("INSERT INTO tournamentplayers (id, number, name) VALUES ($tid, $number, '$name')");
 	echo "Registered player $name as number $number.<br>\n";
 }
 ?>
