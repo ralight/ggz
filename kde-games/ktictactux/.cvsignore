@@ -6,3 +6,4 @@ ktictactux_client
 ktictactux_client_meta_unload*
 *.o
 *.moc.cpp
+module.dsc

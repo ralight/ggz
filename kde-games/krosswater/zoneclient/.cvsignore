@@ -1,0 +1,9 @@
+Makefile
+Makefile.in
+.libs
+.deps
+*.lo
+*.a
+*.la
+*.moc.cpp
+libzoneclient_meta_unload*
