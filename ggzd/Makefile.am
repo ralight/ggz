@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-DIST_SUBDIRS = easysock ggzd game_servers
+DIST_SUBDIRS = easysock ggzd game_servers doc
 SUBDIRS = @SUBDIRS@
 
 install-data-local:

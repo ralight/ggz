@@ -180,6 +180,7 @@ AC_SUBST(SUBDIRS)
 
 AC_OUTPUT([Makefile 
            ggzd/Makefile 
+	   doc/Makefile
 	   game_servers/Makefile
 	   game_servers/spades/Makefile
 	   ])
