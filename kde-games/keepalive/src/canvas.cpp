@@ -113,17 +113,18 @@ void Canvas::slotInput()
 		case op_moved:
 			*m_net >> name;
 			*m_net >> x >> y;
-			std::cout << "Receive move of: " << name << std::endl;
+			std::cout << "Receive move of: " << name << ": " << x << ", " << y << std::endl;
 			sprite = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/avatar.png", 1), this);
 			sprite->move(x, y);
+			sprite->show();
 			free(name);
 			break;
 		case op_loginfailed:
-			*m_net >> name;
-			*m_net >> message;
+			//*m_net >> name;
+			//*m_net >> message;
 			QMessageBox::information(NULL, "Notice", "Login failed");
-			free(name);
-			free(message);
+			//free(name);
+			//free(message);
 			break;
 		case op_chat:
 			QMessageBox::information(NULL, "Chat", QString("Chat from %1:\n%2").arg(name).arg(message));
