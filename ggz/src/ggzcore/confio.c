@@ -522,7 +522,7 @@ void _ggzcore_confio_cleanup(void)
 void ggzcore_confio_close(int handle)
 {
 	_ggzcore_list_entry	*f_entry;
-	_ggzcore_confio_file	*f_data;
+	_ggzcore_confio_file	*f_data=NULL;
 
 	f_entry = _ggzcore_list_head(file_list);
 	while(f_entry) {
@@ -552,7 +552,7 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 {
 	static int		next_handle=0;
 
-	_ggzcore_confio_file	*file_data;
+	_ggzcore_confio_file	*file_data=NULL;
 	_ggzcore_list		*section_list;
 	_ggzcore_list_entry	*file_entry;
 
