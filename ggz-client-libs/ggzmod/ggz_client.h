@@ -1,4 +1,4 @@
-/*	$Id: ggz_client.h 1749 2001-06-18 22:28:15Z riq $	*/
+/*	$Id: ggz_client.h 2092 2001-08-01 05:54:10Z jdorje $	*/
 /*
  * Copyright (C) 2000 GGZ devel team
  *
@@ -17,17 +17,51 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  *
  */
-/*
+
+/**
  * @file ggz_client.h
- * Functions for the client
+ * @brief Interface for ggzmod library.
+ *
+ * This file contains all libggzmod functions used by game clients to
+ * interface with GGZ.  Just include ggz_client.h and make sure your program
+ * is linked with libggzmod.  Then use the functions below as appropriate.
  */
 
 #ifndef __GGZ_CLIENT_GGZ_H
 #define __GGZ_CLIENT_GGZ_H
 
-extern int ggz_client_connect( void );
-extern int ggz_client_quit( void );
-extern int ggz_client_init( char *game_name );
-extern int ggz_client_get_sock();
+/**
+ * This does the physical work of connecting the game client to the GGZ client
+ * (which will then relay information through the ggz server to your game 
+ * server).  It should be called by your game at the appropriate time.
+ *
+ * @return The file descriptor for the communications socket (or -1 on failure).
+ */
+extern int ggz_client_connect( );
+
+/**
+ * This destroys all of ggzmod's internal data.  It does not yet disconnect 
+ * the communications socket.
+ *
+ * @return 0 on success; -1 on failure.
+ */
+extern int ggz_client_quit( );
+
+/**
+ * This prepares for connection to the GGZ client.  It should be
+ * called before ggz_client_connect.
+ *
+ * @param game_name The name of the card game; currently unused.
+ * @return 0 on success; -1 on failure.
+ */
+extern int ggz_client_init(char *game_name);
+
+/**
+ *  This returns the file descriptor of the communications socket to
+ *  the ggz client.
+ *
+ * @return The FD integer, or -1 on no connection.
+ */
+extern int ggz_client_get_sock( );
 
 #endif /* __GGZ_CLIENT_GGZ_H */
