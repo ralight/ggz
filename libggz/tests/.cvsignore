@@ -6,6 +6,7 @@ Makefile
 Makefile.in
 debugmsg
 testfile
+read_line
 cfgtest
 cfg_testfile
 misc
