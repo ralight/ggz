@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3315 2002-02-11 05:06:59Z jdorje $
+ * $Id: common.c 3317 2002-02-11 06:22:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>		/* for time() */
 #include <unistd.h>		/* for close() */
 
 #include <ggz.h>
@@ -70,6 +71,8 @@ int client_initialize(void)
 	ggz_debug_enable("core");
 #endif
 	ggz_debug_enable("core-error");
+	
+	srandom((unsigned) time(NULL));
 
 	game_internal.fd = -1;
 	game_internal.max_hand_size = 0;
@@ -560,7 +563,14 @@ static int match_card(card_t card, hand_t * hand)
 		if (hcard.face != -1)
 			tc_matches++;
 
-		if (tc_matches > matches) {
+		/* If we have a greater number of matches, we should always
+		   substitute.  If we have an equal number of matches, in
+		   theory we should pick a match at random.  This algorithm
+		   is an approximation of that; in the case where all matches
+		   are equally good it will be a random pick. */
+		if (tc_matches > matches
+		    || (tc_matches == matches
+		        && (random() % (hand->hand_size + 1 - tc)) == 0)) {
 			matches = tc_matches;
 			match = tc;
 		}
