@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
+ * $Id: motd.c 2266 2001-08-26 21:51:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -307,7 +308,8 @@ static char *motd_get_tables(int option,
 			     char *tables_str,
 			     int sz_tables_str)
 {
-	int i, num_tables=0;
+	int num_tables=0;
+	/* int i; */
 
 	if(option == 0) {
 		/* Get total number of tables */

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
+ * $Id: parse_opt.c 2266 2001-08-26 21:51:03Z jdorje $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -50,8 +51,8 @@ static void get_config_options(int);
 static void parse_line(char *);
 static void parse_game(char *, char *);
 static void parse_room(char *, char *);
-static int parse_gselect(struct dirent *);
-static int parse_rselect(struct dirent *);
+static int parse_gselect(const struct dirent *);
+static int parse_rselect(const struct dirent *);
 static unsigned parse_log_types(int, char **);
 static unsigned parse_dbg_types(int, char **);
 
@@ -832,14 +833,14 @@ static void parse_line(char *p)
 
 
 /* Return 1 if filename matches our pattern (ends in '.dsc') */
-static int parse_gselect(struct dirent *dent)
+static int parse_gselect(const struct dirent *dent)
 {
 	return(!strcmp(".dsc", dent->d_name+strlen(dent->d_name)-4));
 }
 
 
 /* Return 1 if filename matches our pattern (ends in '.room') */
-static int parse_rselect(struct dirent *dent)
+static int parse_rselect(const struct dirent *dent)
 {
 	return(!strcmp(".room", dent->d_name+strlen(dent->d_name)-5));
 }

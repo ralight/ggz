@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
+ * $Id: control.c 2266 2001-08-26 21:51:03Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -150,7 +151,8 @@ void init_data(void)
 
 int main(int argc, const char *argv[])
 {
-	int main_sock, new_sock, addrlen, status, flags;
+	int main_sock, new_sock, status, flags;
+	socklen_t addrlen;
 	struct sockaddr_in addr;
 	fd_set active_fd_set, read_fd_set;
 
