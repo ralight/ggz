@@ -1403,7 +1403,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
 +	spectator_free(old_spectator);
 +
 +	/* Send response to GGZ */
-+	if (_io_respond_join(ggzdmod->fd) < 0)
++	if (_io_respond_spectator_join(ggzdmod->fd) < 0)
 +		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 +}
 +
@@ -1447,7 +1447,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
 +	/* Delete old_seat */
 +	spectator_free(old_seat);
 +
-+	if (_io_respond_leave(ggzdmod->fd, status) < 0)
++	if (_io_respond_spectator_leave(ggzdmod->fd, status) < 0)
 +		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 +}
 +
