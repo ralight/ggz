@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4420 2002-09-06 19:58:30Z jdorje $
+ * $Id: netxml.c 4428 2002-09-07 07:21:14Z dr_maux $
  *
  * Code for parsing XML streamed from the server
  *
@@ -542,6 +542,17 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force)
 }
 
 
+int _ggzcore_net_send_table_leave_spectator(struct _GGZNet *net)
+{
+	int status = 0;
+
+	ggz_debug(GGZCORE_DBG_NET, "Sending table leave-as-spectator request");
+	_ggzcore_net_send_line(net, "<LEAVESPECTATOR/>");
+
+	return status;
+}
+
+
 int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Sending table seat update request");
@@ -879,6 +890,8 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 		else if  (strcmp(action, "joinspectator") == 0)
 			_ggzcore_room_set_table_join_status(room, code);
 		else if  (strcmp(action, "leave") == 0)
+			_ggzcore_room_set_table_leave_status(room, code);
+		else if  (strcmp(action, "leavespectator") == 0)
 			_ggzcore_room_set_table_leave_status(room, code);
 		else if  (strcmp(action, "chat") == 0) {
 			switch (code) {

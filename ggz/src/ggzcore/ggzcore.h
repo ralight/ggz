@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4404 2002-09-04 18:49:13Z dr_maux $
+ * $Id: ggzcore.h 4428 2002-09-07 07:21:14Z dr_maux $
  *
  * Interface file to be included by client frontends
  *
@@ -601,6 +601,7 @@ int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
 int ggzcore_room_join_table(GGZRoom *room, const unsigned int num);
 int ggzcore_room_join_table_spectator(GGZRoom *room, const unsigned int num);
 int ggzcore_room_leave_table(GGZRoom *room, int force);
+int ggzcore_room_leave_table_spectator(GGZRoom *room);
 
 
 /* Functions for manipulating GGZPlayer objects */

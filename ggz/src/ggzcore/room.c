@@ -303,6 +303,15 @@ int ggzcore_room_leave_table(GGZRoom *room, int force)
 }
 
 
+int ggzcore_room_leave_table_spectator(GGZRoom *room)
+{
+	if (room && room->server)
+		return _ggzcore_room_leave_table_spectator(room);
+	else
+		return -1;
+}
+
+
 /* 
  * Internal library functions (prototypes in room.h) 
  * NOTE:All of these functions assume valid inputs!
@@ -813,7 +822,7 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 	}
 }
 
-					 
+
 void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 {
 	char buf[128];
@@ -848,7 +857,7 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 		break;
 	}
 }
-					  
+
 
 void _ggzcore_room_table_event(struct _GGZRoom *room, GGZRoomEvent event, void *data)
 {
@@ -933,6 +942,26 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_leave(net, force);
+
+	if (status == 0)
+		_ggzcore_server_set_table_leaving(room->server);
+	
+	return status;
+}
+
+
+int _ggzcore_room_leave_table_spectator(struct _GGZRoom *room)
+{
+	int status;
+	struct _GGZNet *net;
+
+	/* Make sure we're at a table (FIXME: should probably make
+           sure we're in *this* room) */
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE)
+		return -1;
+
+	net = _ggzcore_server_get_net(room->server);
+	status = _ggzcore_net_send_table_leave_spectator(net);
 
 	if (status == 0)
 		_ggzcore_server_set_table_leaving(room->server);
