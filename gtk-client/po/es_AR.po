@@ -224,7 +224,7 @@ msgid "Watch an existing game - become a spectator of the table"
 msgstr ""
 
 #: ../ggz-gtk/client.c:841
-msgid "Lave a game"
+msgid "Leave a game"
 msgstr "Abandonar juego"
 
 #: ../ggz-gtk/client.c:841

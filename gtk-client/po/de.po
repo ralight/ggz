@@ -218,7 +218,7 @@ msgstr ""
 "Einem existierenden Spiel zuschauen - werde ein Zuschauer an diesem Tisch"
 
 #: ../ggz-gtk/client.c:841
-msgid "Lave a game"
+msgid "Leave a game"
 msgstr "Spiel verlassen"
 
 #: ../ggz-gtk/client.c:841

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5468 2003-03-08 05:30:09Z jdorje $
+ * $Id: client.c 5600 2003-05-19 10:08:17Z oojah $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -846,7 +846,7 @@ client_realize                    (GtkWidget       *widget,
 			     _("Watch an existing game - "
 			       "become a spectator of the table"));
 	tmp3 = lookup_widget(win_main, "leave_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Lave a game"), _("Leave the game you're currently playing"));
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Leave a game"), _("Leave the game you're currently playing"));
 	tmp3 = lookup_widget(win_main, "props_button");
 	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Show properties dialog"), _("Show the properties dialog to change the client settings"));
 	tmp3 = lookup_widget(win_main, "stats_button");
