@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5962 2004-02-28 03:57:40Z jdorje $
+ * $Id: ggzdb_pgsql.c 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -175,9 +175,25 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	rc = GGZDB_NO_ERROR;
 
-	/* Hack: Fire-and-forget table initialization. It might already be
-	 * present, or the database user doesn't have the privileges. */
+	/* Check whether the database is ok */
 	init = 1;
+	res = PQexec(conn, "SELECT value FROM control WHERE key = 'version'");
+	if(PQresultStatus(res) == PGRES_TUPLES_OK)
+	{
+		if(PQntuples(res) == 1)
+		{
+			init = 0;
+			version = PQgetvalue(res, 0, 0);
+			if(strcmp(version, GGZDB_VERSION_ID))
+			{
+				err_msg_exit("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
+				rc = GGZDB_ERR_DB;
+			}
+		}
+		PQclear(res);
+	}
+
+	/* Initialize the database if needed */
 	if(init)
 	{
 		snprintf(query, sizeof(query), "CREATE TABLE users "
@@ -186,9 +202,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 		res = PQexec(conn, query);
 
-		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
 		PQclear(res);
-
 
 		snprintf(query, sizeof(query), "CREATE TABLE stats "
 			"(id serial, handle varchar(256), game varchar(256), wins int8, losses int8, ties int8, forfeits int8, "
@@ -196,50 +211,47 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 		res = PQexec(conn, query);
 
-		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
 		PQclear(res);
 
+		snprintf(query, sizeof(query), "CREATE TABLE matches "
+			"(id serial, date int8, game varchar(256), winner varchar(256))");
+
+		res = PQexec(conn, query);
+
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
+		PQclear(res);
+
+		snprintf(query, sizeof(query), "CREATE TABLE matchplayers "
+			"(id serial, match int8, handle varchar(256))");
+
+		res = PQexec(conn, query);
+
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
+		PQclear(res);
 
 		snprintf(query, sizeof(query), "CREATE TABLE control "
 			"(key varchar(256), value varchar(256))");
 
 		res = PQexec(conn, query);
 
-		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
 		PQclear(res);
-	}
 
-	/* Check database format version */
-	if(rc == GGZDB_NO_ERROR)
-	{
-		res = PQexec(conn, "SELECT value FROM control WHERE key = 'version'");
-		if(PQresultStatus(res) == PGRES_TUPLES_OK)
-		{
-			if(PQntuples(res) == 1)
-			{
-				version = PQgetvalue(res, 0, 0);
-				if(strcmp(version, GGZDB_VERSION_ID))
-				{
-					err_msg_exit("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
-					rc = GGZDB_ERR_DB;
-				}
-				PQclear(res);
-			}
-			else
-			{
-				PQclear(res);
-				snprintf(query, sizeof(query), "INSERT INTO control "
-					"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
-				res = PQexec(conn, query);
-				PQclear(res);
-			}
-		}
-		else rc = GGZDB_ERR_DB;
+		snprintf(query, sizeof(query), "INSERT INTO control "
+			"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
+
+		res = PQexec(conn, query);
+
+		if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;
+		PQclear(res);
+
+		if(rc == GGZDB_ERR_DB)
+			err_msg_exit("Could not initialize the database.\n");
 	}
 
 	releaseconnection(conn);
 
-	/* Hack is here ;) */
 	return rc;
 }
 
@@ -522,7 +534,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 
 	conn = claimconnection();
 	if(!conn) {
-		err_msg("_ggzdb_player_add: couldn't claim connection");
+		err_msg("_ggzdb_stats_lookup: couldn't claim connection");
 		return rc;
 	}
 
@@ -564,7 +576,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 
 	conn = claimconnection();
 	if (!conn) {
-		err_msg("_ggzdb_player_add: couldn't claim connection");
+		err_msg("_ggzdb_stats_update: couldn't claim connection");
 		return rc;
 	}
 
@@ -602,6 +614,86 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 
 	releaseconnection(conn);
 
+	_ggzdb_stats_match(stats);
+
 	return rc;
 }
 
+GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+	char *number;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_stats_match: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"SELECT MAX(id) FROM matches");
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+		err_sys("couldn't read match");
+		number = NULL;
+	}
+	else {
+		number = PQgetvalue(res, 0, 0);
+	}
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO matchplayers "
+		"(match, handle) VALUES "
+		"(%s, '%s')",
+		number, stats->player);
+	PQclear(res);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_sys("couldn't insert matchplayer");
+	}
+	else rc = GGZDB_NO_ERROR;
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
+}
+
+GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_stats_newmatch: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO matches "
+		"(date, game, winner) VALUES "
+		"(%li, '%s', '%s')",
+		time(NULL), game, winner);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_sys("couldn't insert match");
+	}
+	else rc = GGZDB_NO_ERROR;
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
+}

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5902 2004-02-11 03:22:56Z jdorje $
+ * $Id: stats.c 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -217,6 +217,7 @@ void report_statistics(int room, int gametype,
 	char game_name[MAX_GAME_NAME_LEN + 1];
 	unsigned char records, ratings;
 	ggzdbPlayerGameStats stats[report->num_players];
+	char *winner;
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
 	strcpy(game_name, game_types[gametype].name);
@@ -292,6 +293,16 @@ void report_statistics(int room, int gametype,
 	   stats only change when *they* play, this will only
 	   be a problem for bots - an acceptable tradeoff. */
 
+	/* Check if there's a single winner */
+	winner = NULL;
+	for (i = 0; i < report->num_players; i++) {
+		if(report->results[i] == GGZ_GAME_WIN) {
+			if(winner) winner = "";
+			else winner = stats[i].player;
+		}
+	}
+	if(!winner) winner = "";
+
 	/* Calculate stats */
 	if (records)
 		calculate_records(stats, report);
@@ -299,6 +310,7 @@ void report_statistics(int room, int gametype,
 		calculate_ratings(stats, report, num_teams);
 
 	/* Rewrite the stats to the database. */
+	ggzdb_stats_newmatch(game_name, winner);
 	for (i = 0; i < report->num_players; i++) {
 		ggzdb_stats_update(&stats[i]);
 	}

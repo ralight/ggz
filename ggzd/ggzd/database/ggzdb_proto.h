@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: ggzdb_proto.h 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -106,5 +106,11 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
 
 /** Update game stats.  If the entry does not already exist, create it. */
 GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats);
+
+/* Create a new match statistics entry, possibly with a winner */
+GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner);
+
+/* Add player entry to a match statistics entry */
+GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
 
 unsigned int _ggzdb_player_next_uid(void);

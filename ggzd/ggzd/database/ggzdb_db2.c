@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Back-end functions for handling the db2 sytle database
- * $Id: ggzdb_db2.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: ggzdb_db2.c 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -389,5 +389,17 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	db_s->sync(db_s, 0);
 
 	return GGZDB_ERR_DB;
+}
+
+GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner);
+{
+	/* Not implemented, but do not return error */
+	return GGZDB_NO_ERROR;
 }
 

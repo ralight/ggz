@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.h 4178 2002-05-07 08:06:48Z jdorje $
+ * $Id: ggz_stats.h 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -70,5 +70,7 @@ int ggzstats_recalculate_records(GGZStats * stats);
    ggzd_set_game_winner for each player.  Returns 0 on success, -1 on
    failure. */
 int ggzstats_recalculate_ratings(GGZStats * stats);
+
+void ggzstats_add_game(GGZStats * stats);
 
 #endif /* __GGZ_STATS__ */

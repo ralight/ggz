@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5920 2004-02-13 17:21:57Z jdorje $
+ * $Id: ggzdb.c 5996 2004-05-17 14:16:42Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,28 +64,30 @@ int ggzdb_init(void)
 	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
-	snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
+	if(!connection.database) {
+		snprintf(fname, sizeof(fname), "%s%s", opt.data_dir, suffix);
 
-	if((vfile = fopen(fname, "r")) == NULL) {
+		if((vfile = fopen(fname, "r")) == NULL) {
 		/* File not found, so we can create it */
-		if((vfile = fopen(fname, "w")) == NULL)
-			err_sys_exit("fopen(w) failed in ggzdb_init()");
-		fprintf(vfile, "%s", GGZDB_VERSION_ID);
-		version_ok = 1;
-	} else {
-		/* File was found, so let's check it */
-		fgets(vid, 7, vfile);
-		if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
+			if((vfile = fopen(fname, "w")) == NULL)
+				err_sys_exit("fopen(w) failed in ggzdb_init()");
+			fprintf(vfile, "%s", GGZDB_VERSION_ID);
 			version_ok = 1;
-	}
-	fclose(vfile);
+		} else {
+			/* File was found, so let's check it */
+			fgets(vid, 7, vfile);
+			if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
+				version_ok = 1;
+		}
+		fclose(vfile);
 
-	if (!version_ok) {
-		printf("Bad db version id, remove or convert db files.\n"
-		       "Most likely this means you must upgrade your\n"
-		       "database.  It may be possible to automate this;\n"
-		       "see http://ggzgamingzone.org.\n");
-		exit(-1);
+		if (!version_ok) {
+			printf("Bad db version id, remove or convert db files.\n"
+			       "Most likely this means you must upgrade your\n"
+		    	   "database.  It may be possible to automate this;\n"
+			       "see http://ggzgamingzone.org.\n");
+			exit(-1);
+		}
 	}
 
 	/* Call backend's initialization */
@@ -230,6 +232,24 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 
 	if (rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_stats_lookup(stats);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
+GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_newmatch(game, winner);
 
 	_ggzdb_exit();
 
