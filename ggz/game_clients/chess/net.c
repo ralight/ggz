@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 6654 2005-01-13 23:36:52Z jdorje $
+ * $Id: net.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,14 +43,15 @@
 
 extern struct chess_info game_info;
 
-gboolean net_handle_input(GIOChannel * source, GIOCondition condition,
-			  gpointer data)
+gboolean net_handle_input(GGZMod *mod)
 {
-	int fd = g_io_channel_unix_get_fd(source);
 	char op;
 	char args[15];
 	int a = 0;
 	char *names;
+	int fd = ggzmod_get_server_fd(mod);
+
+	game_info.fd = fd;
 
 	/* Get the opcode */
 	if (ggz_read_char(fd, &op) < 0)

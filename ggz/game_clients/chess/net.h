@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for net.c
- * $Id: net.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: net.h 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <ggzmod.h>
 
 /* Send time option to server */
 void net_send_time(int time_option);
@@ -43,5 +45,4 @@ void net_update_server(int time);
 
 /* All server input will pass through here
  * Then we will filter it and send to game_update */
-gboolean net_handle_input(GIOChannel * source, GIOCondition condition,
-			  gpointer data);
+gboolean net_handle_input(GGZMod *mod);

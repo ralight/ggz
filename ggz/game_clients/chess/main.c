@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -55,27 +55,8 @@ static void initialize_about_dialog(void);
 
 static GGZMod *mod;
 
-static gboolean handle_ggz(GIOChannel * source, GIOCondition condition,
-			   gpointer data)
-{
-	ggzmod_dispatch(mod);
-	return TRUE;
-}
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-	GIOChannel *channel = g_io_channel_unix_new(fd);
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	game_info.fd = fd;
-	g_io_add_watch(channel, G_IO_IN, net_handle_input, NULL);
-}
-
 int main(int argc, char *argv[])
 {
-	int ret;
-
 	initialize_debugging();
 
 	ggz_intl_init("chess");
@@ -98,18 +79,8 @@ int main(int argc, char *argv[])
 	gtk_widget_show(main_win);
 	game_update(CHESS_EVENT_INIT, NULL);
 
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-	init_player_list(mod);
-	ggz_game_main_window = GTK_WINDOW(main_win);	/* HACK */
-
-	ret = ggzmod_connect(mod);
-	if (ret != 0)
-		return -1;
-
-	g_io_add_watch(g_io_channel_unix_new(ggzmod_get_fd(mod)),
-		       G_IO_IN, handle_ggz, NULL);
+	mod = init_ggz_gtk(GTK_WINDOW(main_win), net_handle_input);
+	if (!mod) return EXIT_FAILURE;
 
 	gtk_main();
 

@@ -65,18 +65,18 @@ void Network::slotControl()
 	ggzmod_dispatch(mod);
 }
 
-void Network::callback(GGZMod *mod, void *data)
+void Network::callback(GGZMod *mod, const void *data)
 {
 	QSocketNotifier *sn;
 
-	m_fd = *(int*)data;
+	m_fd = *(const int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
 	sn = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
 	connect(sn, SIGNAL(activated(int)), SIGNAL(signalData()));
 }
 
-void Network::callbackwrap(GGZMod *mod, GGZModEvent e, void *data)
+void Network::callbackwrap(GGZMod *mod, GGZModEvent e, const void *data)
 {
 	self->callback(mod, data);
 }

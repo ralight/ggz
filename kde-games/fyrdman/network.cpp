@@ -27,9 +27,9 @@ void Network::shutdown()
 	ggzmod_free(mod);
 }
 
-void Network::handle(GGZMod *mod, GGZModEvent e, void *data)
+void Network::handle(GGZMod *mod, GGZModEvent e, const void *data)
 {
-	me->m_fd = *(int*)data;
+	me->m_fd = *(const int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	emit me->signalData();
 }

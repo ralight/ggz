@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 11/11/2004
  * Desc: GGZ Handlers for GTK games
- * $Id: ggz_gtk.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: ggz_gtk.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -53,13 +53,14 @@ static gboolean handle_game_server(GIOChannel * channel, GIOCondition cond,
 	return (game_server_handler) (mod);
 }
 
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e,
+				 const void *data)
 {
-	int fd = *(int *)data;
+	const int *fd = data;
 	GIOChannel *channel;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	channel = g_io_channel_unix_new(fd);
+	channel = g_io_channel_unix_new(*fd);
 	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
 }
 

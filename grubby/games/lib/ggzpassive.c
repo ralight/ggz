@@ -35,9 +35,11 @@ static void ggz_handle_ggz()
 	ggzmod_dispatch(ggz_mod);
 }
 
-static void ggz_handle_server(GGZMod *ggzmod, GGZModEvent e, void *data)
+static void ggz_handle_server(GGZMod *ggzmod, GGZModEvent e, const void *data)
 {
-	ggz_gamefd = *(int*)data;
+	const int *fd = data;
+
+	ggz_gamefd = *fd;
 
 	ggzmod_set_state(ggz_mod, GGZMOD_STATE_PLAYING);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 6663 2005-01-14 03:19:43Z jdorje $
+ * $Id: client.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -50,11 +50,6 @@
 
 #include "client.h"
 
-#ifdef GUI_CLIENT
-/* GGZ handler */
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
-#endif /* GUI_CLIENT */
-
 static void handle_server_connect(int server_fd);
 
 static int handle_message_global(void);
@@ -89,10 +84,12 @@ GGZMod *client_get_ggzmod(void)
 
 
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
-				 void *data)
+				 const void *data)
 {
+  const int *fd = data;
+
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-	handle_server_connect(*(int *)data);
+	handle_server_connect(*fd);
 }
 #endif
 

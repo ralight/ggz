@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6816 2005-01-22 16:01:45Z josef $
+ * $Id: ggzmod.h 6903 2005-01-25 18:57:38Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -255,7 +255,7 @@ typedef struct GGZMod GGZMod;
  *    - GGZMOD_EVENT_SPECTATOR_SEAT: The old seat (GGZSpectatorSeat*)
  *    - GGZMOD_EVENT_ERROR: An error string (char*)
  */
-typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, void *data);
+typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, const void *data);
 
 /* 
  * Creation functions

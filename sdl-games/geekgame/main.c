@@ -1,7 +1,7 @@
 /*
  * Geekgame - a game which only real geeks understand
  * Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
- * $Id: main.c 6759 2005-01-20 05:17:31Z jdorje $
+ * $Id: main.c 6903 2005-01-25 18:57:38Z jdorje $
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -112,13 +112,13 @@ void musicdone(void);
 void rendermode(int x, int y, const char *mode);
 
 /* Return global read-only data directory */
-static const char *data_global()
+static const char *data_global(void)
 {
 	return GGZDATADIR "/geekgame";
 }
 
 /* Return local read-write data directory */
-static const char *data_local()
+static const char *data_local(void)
 {
 	static char *dl = NULL;
 	char *home, *path;
@@ -213,24 +213,25 @@ static void game_handle_io(void)
 }
 
 /* GGZMod event dispatcher */
-static void handle_ggz()
+static void handle_ggz(void)
 {
 	ggzmod_dispatch(mod);
 }
 
 /* GGZMod server event dispatcher */
-static void handle_ggzmod_server(GGZMod *ggzmod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod *ggzmod, GGZModEvent e,
+				 const void *data)
 {
-	int fd = *(int*)data;
+	const int *fd = data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	modfd = fd;
+	modfd = *fd;
 
 	/*players = ggzmod_get_num_seats(mod);*/ /* Doesn't work yet! */
 }
 
 /* Initialize GGZMod */
-static void ggz_init()
+static void ggz_init(void)
 {
 	int ret;
 

@@ -59,7 +59,8 @@ class Network : public QObject
 		int m_fd, m_cfd;
 
 		static Network *me;
-		static void handle(GGZMod *mod, GGZModEvent e, void *data);
+		static void handle(GGZMod *mod, GGZModEvent e,
+				   const void *data);
 		static GGZMod *mod;
 };
 

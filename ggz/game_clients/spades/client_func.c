@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 6670 2005-01-14 03:48:51Z jdorje $
+ * $Id: client_func.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -71,9 +71,6 @@ extern guint spadesHandle;
 option_t options;
 
 static GGZMod *ggzmod = NULL;
-
-/* Event handlers for ggzmod */
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
 
 
 static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
@@ -165,6 +162,20 @@ int CheckWriteString(int msgsock, const char *message)
 	return success;
 }
 
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e,
+				 const void *data)
+{
+	const int *fd = data;
+	GIOChannel *channel;
+
+	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
+	gameState.spadesSock = *fd;
+	channel = g_io_channel_unix_new(*fd);
+	spadesHandle = g_io_add_watch(channel, G_IO_IN,
+				      ReadServerSocket, NULL);
+}
+
+
 /*
  * One time application init.
  */
@@ -196,19 +207,6 @@ void AppInit(void)
 
 	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
 	spadesHandle = g_io_add_watch(channel, G_IO_IN, handle_ggz, NULL);
-}
-
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-	GIOChannel *channel;
-
-	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-	gameState.spadesSock = fd;
-	channel = g_io_channel_unix_new(fd);
-	spadesHandle = g_io_add_watch(channel, G_IO_IN,
-				      ReadServerSocket, NULL);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: ggzmod-ggz.h 6903 2005-01-25 18:57:38Z jdorje $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -59,7 +59,7 @@ typedef enum {
 } GGZModTransaction;
 
 typedef void (*GGZModTransactionHandler) (GGZMod * mod, GGZModTransaction t,
-					  void *data);
+					  const void *data);
 
 void ggzmod_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
 				    GGZModTransactionHandler func);

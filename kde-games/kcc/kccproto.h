@@ -137,7 +137,8 @@ class KCCProto
 		int m_ox1, m_oy1, m_ox2, m_oy2;
 
 		// Callback for control channel
-		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
+		static void handle_server(GGZMod *mod, GGZModEvent e,
+					  const void *data);
 		// Dispatch loop
 		void dispatch();
 };

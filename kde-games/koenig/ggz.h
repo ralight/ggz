@@ -54,7 +54,8 @@ class GGZ : public QObject
 		void recvData();
 
 	private:
-		static void recvEvent(GGZMod *mod, GGZModEvent e, void *data);
+		static void recvEvent(GGZMod *mod, GGZModEvent e,
+				      const void *data);
 
 		QSocketDevice *socket;
 		QDataStream *net;

@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: dlg_players.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -77,7 +77,7 @@ void update_player_lists(void)
 }
 
 static void handle_ggz_seat_event(GGZMod * ggzmod, GGZModEvent e,
-				  void *data)
+				  const void *data)
 {
 	update_player_lists();
 }

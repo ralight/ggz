@@ -203,7 +203,7 @@ static void cleanupwindow(void)
 	printf("%s\n", COLOR_WHITE);
 }
 
-static void query()
+static void query(void)
 {
 	gotoxy(1, maxline + 2);
 	maxline -= 2;
@@ -212,7 +212,7 @@ static void query()
 }
 
 
-static unsigned char readkey()
+static unsigned char readkey(void)
 {
 	unsigned char buf[2];
 	int ret;
@@ -298,17 +298,18 @@ static void game_handle_io(void)
 	}
 }
 
-static void handle_ggz()
+static void handle_ggz(void)
 {
 	ggzmod_dispatch(mod);
 }
 
-static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
+				 const void *data)
 {
-	int fd = *(int*)data;
+	const int *fd = data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	gamefd = fd;
+	gamefd = *fd;
 }
 
 static void ggz_init()
@@ -329,13 +330,13 @@ static void ggz_init()
 	}
 }
 
-static void ggz_finish()
+static void ggz_finish(void)
 {
 	ggzmod_disconnect(mod);
 	ggzmod_free(mod);
 }
 
-static void ggz_network()
+static void ggz_network(void)
 {
 	int maxfd;
 	fd_set set;

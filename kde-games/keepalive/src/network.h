@@ -42,8 +42,9 @@ class Network : public QObject
 
 	private:
 		static Network *self;
-		void callback(GGZMod *mod, void *data);
-		static void callbackwrap(GGZMod *mod, GGZModEvent e, void *data);
+		void callback(GGZMod *mod, const void *data);
+		static void callbackwrap(GGZMod *mod, GGZModEvent e,
+					 const void *data);
 		GGZMod *mod;
 		int m_fd, m_controlfd;
 };

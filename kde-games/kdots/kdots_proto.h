@@ -80,7 +80,8 @@ class KDotsProto
 		void init();
 		void sync();
 		void dispatch();
-		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
+		static void handle_server(GGZMod *mod, GGZModEvent e,
+					  const void *data);
 
 		void getPlayers();
 		void getSeat();

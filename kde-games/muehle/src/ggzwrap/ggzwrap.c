@@ -168,9 +168,11 @@ static void sighandler(int foo)
 }
 
 /* GGZ handler */
-static void callback(GGZMod *mod, GGZModEvent e, void *data)
+static void callback(GGZMod *mod, GGZModEvent e, const void *data)
 {
-	fdgame = *(int*)data;
+	const int *fd = data;
+
+	fdgame = *fd;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	
 }

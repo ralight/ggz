@@ -1,7 +1,7 @@
 /*
  * GGZ Gaming Zone TicTacToe 3D
  * Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net
- * $Id: main.c 6759 2005-01-20 05:17:31Z jdorje $
+ * $Id: main.c 6903 2005-01-25 18:57:38Z jdorje $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,12 +115,13 @@ static void handle_ggz()
 	ggzmod_dispatch(mod);
 }
 
-static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
+				 const void *data)
 {
-	int fd = *(int*)data;
+	const int *fd = data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	gamefd = fd;
+	gamefd = *fd;
 }
 
 static void ggz_init()

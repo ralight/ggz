@@ -73,10 +73,11 @@ void GGZ::recvRawData()
 	emit recvData();
 }
 
-void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, void *data)
+void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, const void *data)
 {
 	QSocketNotifier *sn;
-	self->socket = new QSocketDevice(*(int*)data, QSocketDevice::Stream);
+	self->socket = new QSocketDevice(*(const int*)data,
+					 QSocketDevice::Stream);
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 

@@ -134,7 +134,8 @@ class KTicTacTuxProto
 		static KTicTacTuxProto *self;
 
 		// Callback for control channel
-		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
+		static void handle_server(GGZMod *mod, GGZModEvent e,
+					  const void *data);
 		// Dispatch loop
 		void dispatch();
 };
