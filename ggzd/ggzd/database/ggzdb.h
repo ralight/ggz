@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5267 2002-11-25 19:16:38Z dr_maux $
+ * $Id: ggzdb.h 5327 2003-01-12 14:44:15Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -98,3 +98,4 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
 GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 
 #endif
+

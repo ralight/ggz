@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Back-end functions for handling the db2 sytle database
- * $Id: ggzdb_db2.c 5281 2002-12-09 13:25:29Z dr_maux $
+ * $Id: ggzdb_db2.c 5327 2003-01-12 14:44:15Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -315,7 +315,7 @@ void _ggzdb_player_drop_cursor(void)
 }
 
 
-GGZDBResult _ggzdb_init_stats(const char *datadir)
+GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
 {
 	u_int32_t flags;
 

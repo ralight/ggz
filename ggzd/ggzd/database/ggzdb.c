@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5267 2002-11-25 19:16:38Z dr_maux $
+ * $Id: ggzdb.c 5327 2003-01-12 14:44:15Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -245,11 +245,18 @@ static GGZDBResult ggzdb_player_init(void)
 static GGZDBResult ggzdb_stats_init(void)
 {
 	GGZDBResult rc;
+	ggzdbConnection connection;
 
 	if (db_needs_init)
 		return GGZDB_ERR_INIT;
 
-	rc = _ggzdb_init_stats(opt.data_dir);
+	connection.datadir = opt.data_dir;
+	connection.host = opt.dbhost;
+	connection.database = opt.dbname;
+	connection.username = opt.dbusername;
+	connection.password = opt.dbpassword;
+
+	rc = _ggzdb_init_stats(connection);
 	if (rc == GGZDB_NO_ERROR)
 		stats_needs_init = 0;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5323 2003-01-12 12:09:45Z dr_maux $
+ * $Id: ggzdb_pgsql.c 5327 2003-01-12 14:44:15Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -176,6 +176,16 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	snprintf(query, sizeof(query), "CREATE TABLE users "
 		"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
 		"lastlogin int8, permissions int8)");
+
+	res = PQexec(conn, query);
+
+	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
+	PQclear(res);
+
+
+	snprintf(query, sizeof(query), "CREATE TABLE stats "
+		"(id serial, handle varchar(256), game varchar(256), wins int8, losses int8, ties int8, forfeits int8, "
+		"rating float, ranking int8, highscore int8)");
 
 	res = PQexec(conn, query);
 
@@ -450,22 +460,86 @@ unsigned int _ggzdb_player_next_uid(void)
 	return 0;
 }
 
-/* dummy!!! */
-GGZDBResult _ggzdb_init_stats(const char *datadir)
+GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
 {
 	/* call ggzdb_init here, we use the same connection for playerdb and
-	   statsdb */
+	   statsdb, or assume it's already initialized */
 
 	return GGZDB_NO_ERROR;
 }
 
 GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 {
-	return GGZDB_NO_ERROR;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	GGZDBResult rc = GGZDB_ERR_DB;
+
+	conn = claimconnection();
+	if(!conn) {
+		err_msg("_ggzdb_player_add: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"SELECT "
+		"wins, losses, ties, forfeits, rating, ranking, highscore "
+		"FROM stats WHERE handle = '%s' AND game = '%s'",
+		stats->player, stats->game);
+
+	res = PQexec(conn, query);
+	if(PQresultStatus(res) == PGRES_TUPLES_OK) {
+		if(PQntuples(res) == 1) {
+			rc = GGZDB_NO_ERROR;
+			stats->wins = atoi(PQgetvalue(res, 0, 0));
+			stats->losses = atoi(PQgetvalue(res, 0, 1));
+			stats->ties = atoi(PQgetvalue(res, 0, 2));
+			stats->forfeits = atoi(PQgetvalue(res, 0, 3));
+			stats->rating = atof(PQgetvalue(res, 0, 4));
+			stats->ranking = atol(PQgetvalue(res, 0, 5));
+			stats->highest_score = atol(PQgetvalue(res, 0, 6));
+		} else {
+			err_sys("couldn't lookup player stats");
+			rc = GGZDB_ERR_NOTFOUND;
+		}
+	}
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
 }
 
 GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 {
-	return GGZDB_NO_ERROR;
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_player_add: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"UPDATE stats "
+		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, rating = %f, ranking = %u, highscore = %li "
+		"WHERE player = '%s' AND game = '%s'",
+		stats->wins, stats->losses, stats->ties, stats->forfeits, stats->rating, stats->ranking, stats->highest_score,
+		stats->player, stats->game);
+
+	res = PQexec(conn, query);
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_sys("couldn't update stats");
+	} else {
+		rc = GGZDB_NO_ERROR;
+	}
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
 }
 
