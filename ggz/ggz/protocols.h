@@ -98,4 +98,7 @@ typedef enum {
 #define E_TABLE_FULL   -4
 #define E_TABLE_EMPTY  -5
 #define E_LAUNCH_FAIL  -6
-#define E_RESPOND_FAIL -7
+#define E_JOIN_FAIL    -7
+#define E_NO_TABLE     -8
+#define E_LEAVE_FAIL   -9
+

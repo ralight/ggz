@@ -212,6 +212,24 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			}
 		}
 		break;
+		
+	case RSP_TABLE_LEAVE:
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if (status == 0) {
+			game_over();
+		}
+		else {
+			switch (status) {
+			case E_NO_TABLE:
+				warn_dlg("You are not at a table");
+				break;
+				
+			case E_LEAVE_FAIL:
+				warn_dlg("Can't leave table");
+			}
+		}
+		break;
 
 	case RSP_LOGOUT:
 		es_read_char(source, &status);

@@ -436,7 +436,8 @@ void login_show_details(GtkButton * button, gpointer user_data)
 
 void login_ok()
 {
-	gtk_widget_destroy(dlg_login);	
+	if(dlg_login)
+		gtk_widget_destroy(dlg_login);	
 }
 
 void login_bad_name()
@@ -455,16 +456,16 @@ void login_disconnect()
         GtkWidget *tmp;
 
 	/* Set sensitive FALSE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "view_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
@@ -473,7 +474,7 @@ void login_disconnect()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_room");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
@@ -493,7 +494,7 @@ void login_disconnect()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 	/* Set sensitive TRUE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect2");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 }
 
@@ -502,14 +503,14 @@ void login_connect()
         GtkWidget *tmp;
 
 	/* Set sensitive FALSE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect2");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "view_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
@@ -518,7 +519,7 @@ void login_connect()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_room");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
@@ -538,9 +539,9 @@ void login_connect()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 	/* Set sensitive TRUE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 }
 
@@ -549,19 +550,19 @@ void login_online()
         GtkWidget *tmp;
 
 	/* Set sensitive FALSE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect2");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "connect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "login");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 	/* Set sensitive TRUE */
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "disconnect");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "logout");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit1");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "edit");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "view_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
@@ -570,7 +571,7 @@ void login_online()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "game_room");
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");

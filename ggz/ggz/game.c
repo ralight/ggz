@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <easysock.h>
 
 #include "game.h"
@@ -214,10 +215,22 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 	status = es_writen(connection.sock, buf, size);
 
 	if (status <= 0) {	/* Game over */
-		dbg_msg("Game is over (msg from client)");
-		connection.playing = FALSE;
-		close(source);
-		gdk_input_remove(game_handle);
-		/* FIXME: also kill game process ?*/
+		game_over();
 	}
 }
+
+
+int game_over(void)
+{
+	dbg_msg("Game is over (msg from client)");
+	connection.playing = FALSE;
+	close(game.fd);
+	gdk_input_remove(game_handle);
+	kill(game.pid, SIGINT);
+
+	return 0;
+}
+
+
+
+
