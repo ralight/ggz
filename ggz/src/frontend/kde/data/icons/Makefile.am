@@ -21,6 +21,7 @@ pix_DATA = \
 	startup.png \
 	stopserver.png \
 	tables.png \
-	update.png
+	update.png \
+	metaserver.png
 
 pixdir = $(kde_datadir)/kggz/images/icons

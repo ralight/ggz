@@ -773,6 +773,12 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
+			kggzserver->listRooms(-1, 0);
+			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
+			{
+				KGGZDEBUG("HUH? Don't give me game type list?!\n");
+				return;
+			}
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
@@ -785,12 +791,6 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			if(!m_motd) m_motd = new KGGZMotd(NULL, "KGGZMotd");
 			m_motd->setSource(data);
 			m_motd->show();
-			kggzserver->listRooms(-1, 0);
-			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
-			{
-				KGGZDEBUG("HUH? Don't give me game type list?!\n");
-				return;
-			}
 			break;
 		case GGZCoreServer::roomlist:
 			KGGZDEBUG("roomlist\n");

@@ -244,6 +244,8 @@ void KGGZConnect::slotLoadProfile(int profile)
 	if(profile == -1)
 	{
 		profile_select->clear();
+		listentry = config->read("Session", "Metaserver", i18n("Meta server"));
+		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), listentry);
 		listentry = config->read("Session", "Defaultserver", i18n("Default server"));
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
 		KGGZDEBUG("Cleared profile_select. Rereading entries.\n");
