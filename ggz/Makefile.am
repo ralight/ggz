@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = easysock ggz game_clients intl po
+SUBDIRS = @SUBDIRS@
 
 EXTRA_DIST = HACKING
 
