@@ -106,6 +106,7 @@ int _ggzcore_gametype_list_add(const unsigned int id, const char* name, const ch
 	gametype.game = (char*)game;
 	gametype.players = players;
 	gametype.bots = bots;
+	gametype.desc = (char*)desc;
 	gametype.author = (char*)author;
 	gametype.url = (char*)url;
 

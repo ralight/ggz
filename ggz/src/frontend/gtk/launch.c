@@ -30,8 +30,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "launch.h"
-#include "support.h"
+#include <launch.h>
+#include <support.h>
+#include <ggzcore.h>
+#include <stdio.h>
 
 static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
@@ -43,12 +45,59 @@ static GtkWidget *launch_dialog;
 
 void launch_create_or_raise(void)
 {
+	GtkWidget *tmp;
+	gchar *text;
+	gint room;
+
+	room  = ggzcore_state_get_room();
+
+	printf("%d\n", room);
         if (!launch_dialog) {
                 launch_dialog = create_dlg_launch();
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "type_label");
+		text = g_strdup_printf("Game Type:  %s", ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "author_label");
+		text = g_strdup_printf("Author:  %s", ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "type_desc_label");
+		text = g_strdup_printf("Description:  %s", ggzcore_gametype_get_desc(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "web_label");
+		text = g_strdup_printf("Home Page:  %s", ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
                 gtk_widget_show(launch_dialog);
         }
         else {
                 gdk_window_show(launch_dialog->window);
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "type_label");
+		text = g_strdup_printf("Game Type:  %s", ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "author_label");
+		text = g_strdup_printf("Author:  %s", ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "type_desc_label");
+		text = g_strdup_printf("Description:  %s", ggzcore_gametype_get_desc(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
+                tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "web_label");
+		text = g_strdup_printf("Home Page:  %s", ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
+                gtk_label_set_text(GTK_LABEL(tmp), text);
+		g_free(text);
+
                 gdk_window_raise(launch_dialog->window);
         }
 }
