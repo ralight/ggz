@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2291 2001-08-28 03:48:00Z jdorje $
+ * $Id: ggz_server.h 2331 2001-08-31 21:58:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -82,6 +82,14 @@ typedef enum {
  *  @param seat The GGZ seat number of the queried seat
  *  @return The assignment status. */
 ggzd_assign_t ggzd_get_seat_status(int seat);
+
+/** @brief Change the status of a seat.
+ *  @param seat The number of the seat to be changed.
+ *  @param type The new status of the seat.
+ *  @return 0 on success, -1 on failure.
+ *  @note You may only switch between open<->bot seats.
+ *  @note This is an experimental function. */
+int ggzd_set_seat_status(int seat, ggzd_assign_t status);
 
 /** @brief Find the name of a given player.
  *  @param seat The GGZ seat number of the queried player

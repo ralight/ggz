@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2330 2001-08-31 03:54:57Z jdorje $
+ * $Id: ggzdmod.c 2331 2001-08-31 21:58:33Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -35,20 +35,22 @@ GGZdmod *ggzdmod_new(int fd, void *table_data)
 	GGZdmod *ggzdmod;
 
 	ggzdmod = malloc(sizeof(*ggzdmod));
-	if (!ggzdmod) return NULL;
+	if (!ggzdmod)
+		return NULL;
 
 	ggzdmod->fd = fd;
 	ggzdmod->table_data = table_data;
 	return ggzdmod;
 }
 
-void ggzdmod_free(GGZdmod *ggzdmod)
+void ggzdmod_free(GGZdmod * ggzdmod)
 {
 	/* anything else? */
 	free(ggzdmod);
 }
 
-int ggzdmod_launch_game(GGZdmod *ggzdmod, int num_seats, int *types, char **reserves)
+int ggzdmod_launch_game(GGZdmod * ggzdmod, int num_seats, int *types,
+			char **reserves)
 {
 	int i;
 
@@ -71,14 +73,15 @@ int ggzdmod_launch_game(GGZdmod *ggzdmod, int num_seats, int *types, char **rese
 	return 0;
 }
 
-static int ggzdmod_rsp_gameover(GGZdmod *ggzdmod)
+static int ggzdmod_rsp_gameover(GGZdmod * ggzdmod)
 {
 	if (es_write_int(ggzdmod->fd, RSP_GAME_OVER) < 0)
 		return -1;
 	return 0;
 }
 
-int ggzdmod_player_join(GGZdmod *ggzdmod, int seat, char *name, int player_fd)
+int ggzdmod_player_join(GGZdmod * ggzdmod, int seat, char *name,
+			int player_fd)
 {
 	if (es_write_int(ggzdmod->fd, REQ_GAME_JOIN) < 0
 	    || es_write_int(ggzdmod->fd, seat) < 0
@@ -89,7 +92,7 @@ int ggzdmod_player_join(GGZdmod *ggzdmod, int seat, char *name, int player_fd)
 }
 
 
-int ggzdmod_player_leave(GGZdmod *ggzdmod, char *name)
+int ggzdmod_player_leave(GGZdmod * ggzdmod, char *name)
 {
 	if (es_write_int(ggzdmod->fd, REQ_GAME_LEAVE) < 0
 	    || es_write_string(ggzdmod->fd, name) < 0)
@@ -97,7 +100,7 @@ int ggzdmod_player_leave(GGZdmod *ggzdmod, char *name)
 	return 0;
 }
 
-int ggzdmod_handle_log(GGZdmod *ggzdmod, char debug)
+int ggzdmod_handle_log(GGZdmod * ggzdmod, char debug)
 {
 	char *msg;
 	int level, status;
@@ -111,7 +114,24 @@ int ggzdmod_handle_log(GGZdmod *ggzdmod, char debug)
 	return status;
 }
 
-int ggzdmod_dispatch(GGZdmod *ggzdmod)
+int ggzdmod_handle_seat_change(GGZdmod * ggzdmod)
+{
+	int seat, status;
+
+	/* read the request */
+	if (es_read_int(ggzdmod->fd, &seat) < 0 ||
+	    es_read_int(ggzdmod->fd, &status) < 0)
+		return -1;
+
+	/* FIXME: handle the request rather than always responding "no". */
+	if (es_write_int(ggzdmod->fd, RSP_SEAT_CHANGE) < 0 ||
+	    es_write_int(ggzdmod->fd, -1) < 0)
+		return -1;
+
+	return 0;
+}
+
+int ggzdmod_dispatch(GGZdmod * ggzdmod)
 {
 	int status = 0, opcode;
 	GGZdmod *ggz = ggzdmod;
@@ -153,8 +173,11 @@ int ggzdmod_dispatch(GGZdmod *ggzdmod)
 		status = ggzdmod_handle_log(ggzdmod, op == MSG_DBG);
 		break;
 
-	case MSG_STATS:
+	case REQ_SEAT_CHANGE:
+		status = ggzdmod_handle_seat_change(ggzdmod);
+		break;
 
+	case MSG_STATS:
 	default:
 #define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020
 		dbg_msg(GGZ_DBG_PROTOCOL, "Table sent unimplemented op %d",

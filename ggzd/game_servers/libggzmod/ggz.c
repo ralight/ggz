@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2320 2001-08-29 06:57:37Z jdorje $
+ * $Id: ggz.c 2331 2001-08-31 21:58:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,6 +80,47 @@ ggzd_assign_t ggzd_get_seat_status(int seat)
 		return GGZ_SEAT_NONE;
 	} else
 		return seat_data[seat].assign;
+}
+
+
+int ggzd_set_seat_status(int seat, ggzd_assign_t status)
+{
+	int opcode, result;
+	char *name;
+
+	/* Make sure we can handle the request */
+	if (seat < 0
+	    || seat >= num_seats
+	    || (seat_data[seat].assign != GGZ_SEAT_OPEN
+		&& seat_data[seat].assign != GGZ_SEAT_BOT)) {
+		ggzd_debug("GGZDMOD: ggzd_set_seat_status: invalid seat %d/%d accessed.", seat, status);
+	}
+
+	/* Now see if it's okay with GGZD. */
+	if (es_write_int(ggzfd, REQ_SEAT_CHANGE) < 0 ||
+	    es_write_int(ggzfd, seat) < 0 ||
+	    es_write_int(ggzfd, status) < 0 ||
+	    es_read_int(ggzfd, &opcode) < 0 ||
+	    opcode != RSP_SEAT_CHANGE ||
+	    es_read_int(ggzfd, &result) < 0 ||
+	    result < 0)  {
+		ggzd_debug("GGZDMOD: ggzd_set_seat_status: server won't set seat %d to %d.", seat, status);
+		return -1;
+	}
+
+	/* It's okay so make the change. */
+	seat_data[seat].assign = status;
+	switch (status) {
+		case GGZ_SEAT_BOT:
+			name = "Bot";
+			break;
+		default:
+			name = "";
+			break;
+	}
+	snprintf(seat_data[seat].name, MAX_USER_NAME_LEN+1, "%s", name);
+
+	return 0;
 }
 
 const char* ggzd_get_player_name(int seat)
