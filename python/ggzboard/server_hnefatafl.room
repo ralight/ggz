@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Hnefatafl
+Description = Old nordic board game
+GameType = Hnefatafl
+MaxPlayers = 500
+MaxTables = 100
+

@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Checkers
+Description = Checkers
+GameType = Checkers
+MaxPlayers = 500
+MaxTables = 100
+
