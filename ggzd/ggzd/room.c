@@ -94,7 +94,7 @@ static int room_list_send(const int p_fd)
 
 	/* First we have to figure out how many rooms to announce  */
 	/* This is easy if a req_game filter hasn't been specified */
-	if(req_game == -1) {
+	if(req_game != -1) {
 		for(i=0; i<opt.num_rooms; i++)
 			if(req_game == chat_room[i].game_type)
 				count++;
