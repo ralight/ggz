@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 5890 2004-02-10 08:59:29Z jdorje $
+ * $Id: playerlist.c 5891 2004-02-10 09:21:36Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -419,7 +419,7 @@ GtkWidget *create_player_list(GtkWidget * window)
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 3,
 				    player_name_label);
 
-	gtk_signal_connect(GTK_OBJECT(player_clist), "event",
+	gtk_signal_connect(GTK_OBJECT(player_clist), "button-press-event",
 			   GTK_SIGNAL_FUNC(client_player_clist_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(player_clist), "select_row",
 			   GTK_SIGNAL_FUNC(client_player_clist_select_row),

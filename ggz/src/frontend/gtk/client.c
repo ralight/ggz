@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5890 2004-02-10 08:59:29Z jdorje $
+ * $Id: client.c 5891 2004-02-10 09:21:36Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1924,7 +1924,7 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (room_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_room_clist_select_row),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (room_clist), "event",
+  gtk_signal_connect (GTK_OBJECT (room_clist), "button-press-event",
                       GTK_SIGNAL_FUNC (client_room_clist_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",

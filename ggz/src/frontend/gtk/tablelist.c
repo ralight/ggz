@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: tablelist.c 5891 2004-02-10 09:21:36Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -316,7 +316,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 	gtk_signal_connect(GTK_OBJECT(table_clist), "click_column",
 			   GTK_SIGNAL_FUNC(client_table_clist_click_column),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT(table_clist), "event",
+	gtk_signal_connect(GTK_OBJECT(table_clist), "button-press-event",
 			   GTK_SIGNAL_FUNC(client_table_event), NULL);
 
 
