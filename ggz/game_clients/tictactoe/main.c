@@ -130,7 +130,7 @@ int get_players(void)
 			return -1;
 		
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
-			if (es_read_string(game.fd, (char*)&game.names[i], 9) < 0)
+			if (es_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;
 			game_status("Player %d named: %s", i, game.names[i]);
 		}
