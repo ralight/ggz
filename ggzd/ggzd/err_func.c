@@ -244,7 +244,7 @@ void logfile_initialize(void)
 		log_info.log_level = 1;
 	if(log_info.log_fname) {
 		if(strcmp("syslogd", log_info.log_fname)) {
-			log_info.logfile = fopen(log_info.log_fname, "w");
+			log_info.logfile = fopen(log_info.log_fname, "a");
 			if(log_info.logfile == NULL)
 				err_msg("Cannot open logfile for writing");
 			else
@@ -264,7 +264,7 @@ void logfile_initialize(void)
 		log_info.dbg_level = 0;
 	if(log_info.dbg_fname) {
 		if(strcmp("syslogd", log_info.dbg_fname)) {
-			log_info.dbgfile = fopen(log_info.dbg_fname, "w");
+			log_info.dbgfile = fopen(log_info.dbg_fname, "a");
 			if(log_info.dbgfile == NULL)
 				err_msg("Cannot open dbgfile for writing");
 			else
