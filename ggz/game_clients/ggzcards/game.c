@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3308 2002-02-11 01:19:31Z jdorje $
+ * $Id: game.c 3312 2002-02-11 03:05:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -319,6 +319,9 @@ void game_get_play(int hand)
 void game_alert_badplay(char *err_msg)
 {
 	ggz_debug("main", "Handling badplay alert.");
+
+	/* Restore the cards the way they should be. */
+	ggzcards.players[ggzcards.play_hand].table_card = UNKNOWN_CARD;
 
 	animation_stop(FALSE);
 

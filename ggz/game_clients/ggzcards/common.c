@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3311 2002-02-11 02:39:50Z jdorje $
+ * $Id: common.c 3312 2002-02-11 03:05:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -511,9 +511,6 @@ static int handle_msg_badplay(void)
 	/* Read the error message for the bad play. */
 	if (ggz_read_string_alloc(game_internal.fd, &err_msg) < 0)
 		return -1;
-
-	/* Restore the cards the way they should be. */
-	ggzcards.players[ggzcards.play_hand].table_card = UNKNOWN_CARD;
 
 	/* Get a new play. */
 	set_game_state(STATE_PLAY);
