@@ -396,10 +396,12 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 static void player_remove(int p_index)
 {
 	int fd;
-	
+
+	pthread_rwlock_wrlock(&players.lock);
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
 		players.info[p_index].uid);
-	pthread_rwlock_wrlock(&players.lock);
+	log_msg(GGZ_LOG_CONNECTION_INFO, "%s disconnected from server",
+		players.info[p_index].name);
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
