@@ -36,6 +36,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+
+#include <ggzcore.h>
 #include <game.h>
 #include <support.h>
 #include <options_dlg.h>
@@ -44,7 +46,6 @@
 #include <white.xpm>
 #include <easysock.h>
 
-#include <ggzcore.h>
 #include "about_dlg.h"
 
 
