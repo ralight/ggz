@@ -3,4 +3,4 @@
 SUBDIRS = ggz-txt tttxt man po
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ \
-	m4/ggz.m4
+	m4/ggz.m4 m4/iconv.m4

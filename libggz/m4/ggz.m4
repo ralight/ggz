@@ -754,6 +754,9 @@ intl=1
 if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
+AM_ICONV
+LIBS="$LIBICONV $LIBS"
+AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
 AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
