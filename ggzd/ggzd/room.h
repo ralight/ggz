@@ -23,6 +23,7 @@
  */
 
 extern RoomStruct *chat_room;
+extern RoomInfo room_info;
 
 extern void room_initialize(void);
 extern void room_create_additional(void);

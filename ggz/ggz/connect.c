@@ -85,6 +85,7 @@ gchar *opcode_str[] = { 	"MSG_SERVER_ID",
 			"MSG_UPDATE_PLAYERS",
 			"MSG_UPDATE_TYPES",
 			"MSG_UPDATE_TABLES",
+			"MSG_UPDATE_ROOMS",
 			"MSG_ERROR",
 			"RSP_LOGIN_NEW",
 			"RSP_LOGIN",
@@ -437,6 +438,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case MSG_UPDATE_TABLES:
 		connect_msg("[%s]\n", opcode_str[op]);
 		ggz_get_tables(NULL, NULL);
+		break;
+
+	case MSG_UPDATE_ROOMS:
+		connect_msg("[%s]\n", opcode_str[op]);
+		/*ggz_get_rooms(NULL, NULL);*/
 		break;
 
 	case RSP_LOGIN_NEW:

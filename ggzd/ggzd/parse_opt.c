@@ -833,7 +833,7 @@ void parse_room_files(void)
 	add_ignore_rooms = parse_cleanup_add_ignore_list(add_ignore_rooms);
 
 	/* At this point, we should have at least one working room */
-	if(opt.num_rooms == 0)
+	if(room_info.num_rooms == 0)
 		err_msg_exit("No rooms defined, ggzd unusable");
 }
 
@@ -864,11 +864,11 @@ static void parse_room(char *name)
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding room %s from %s", name, fname);
 
 	/* Allocate a room struct for this room */
-	if(opt.num_rooms == 0)
+	if(room_info.num_rooms == 0)
 		room_initialize();
 	else
 		room_create_additional();
-	num = opt.num_rooms - 1;
+	num = room_info.num_rooms - 1;
 	chat_room[num].game_type = -1;
 
 	while(fgets(line, 256, roomfile)) {

@@ -68,7 +68,8 @@ static void* player_new(void * sock_ptr);
 static void  player_loop(int p_index, int p_fd);
 static int   player_handle(int op, int p_index, int p_fd, int * t_fd);
 static void  player_remove(int p_index);
-static int   player_updates(int p_index, int p_fd, time_t*, time_t*, time_t*);
+static int   player_updates(int p_index, int p_fd,
+			    time_t*, time_t*, time_t*, time_t*);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
 static int   player_chat(int p_index, int p_fd);
@@ -208,6 +209,7 @@ static void player_loop(int p_index, int p_fd)
 	time_t player_ts;
 	time_t table_ts;
 	time_t type_ts;
+	time_t room_ts;
 
 	/* Start off listening only to player */
 	p_fd = players.info[p_index].fd;
@@ -215,12 +217,12 @@ static void player_loop(int p_index, int p_fd)
 	FD_SET(p_fd, &active_fd_set);
 
 	/* Initialize timestamps */
-	player_ts = table_ts = type_ts = time(NULL);
+	player_ts = table_ts = type_ts = room_ts = time(NULL);
 
 	for (;;) {
 		/* Send updated info if need be */
 		if (player_updates(p_index, p_fd, &player_ts, &table_ts, 
-				   &type_ts) < 0)
+				   &type_ts, &room_ts) < 0)
 			break;
 		
 		read_fd_set = active_fd_set;
@@ -442,11 +444,12 @@ static void player_remove(int p_index)
  * or chats which need to be sent to the player, and sends them
  */
 static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts, 
-			  time_t* type_ts) {
+			  time_t* type_ts, time_t* room_ts) {
 	int room;
 	char user_update = 0;
 	char table_update = 0;
 	char type_update = 0;
+	char room_update = 0;
 
 	/* Don't send updates to people who aren't logged in */
  	if (players.info[p].uid == GGZ_UID_NONE)
@@ -472,6 +475,15 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 		pthread_rwlock_unlock(&chat_room[room].lock);
 	}
 
+	/* Check for room list update */
+	/* pthread_rwlock_rdlock(&room_info.lock); */
+	if(difftime(room_info.timestamp, *room_ts) != 0) {
+		*room_ts = room_info.timestamp;
+		room_update = 1;
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs room update", p);
+	}
+	/* pthread_rwlock_unlock(&room_info.lock); */
+
 	/* Check for game type list updates*/
 	pthread_rwlock_rdlock(&game_types.lock);
 	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
@@ -484,7 +496,8 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	/* Send out proper update messages */
 	if ((user_update && es_write_int(fd, MSG_UPDATE_PLAYERS) < 0)
 	    || (type_update && es_write_int(fd, MSG_UPDATE_TYPES) < 0)
-	    || (table_update && es_write_int(fd, MSG_UPDATE_TABLES) < 0))
+	    || (table_update && es_write_int(fd, MSG_UPDATE_TABLES) < 0)
+	    || (room_update && es_write_int(fd, MSG_UPDATE_ROOMS) < 0))
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Send any unread chats */

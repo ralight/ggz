@@ -44,7 +44,6 @@ typedef struct {
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	int perform_lookups;
-	int num_rooms;
 } Options;
 
 
@@ -216,4 +215,11 @@ typedef struct {
 	unsigned dbg_types;
 #endif
 } LogInfo;
+
+typedef struct {
+	pthread_rwlock_t lock;	/* Not inititalized or used yet */
+	time_t timestamp;
+	int num_rooms;
+} RoomInfo;
+
 #endif

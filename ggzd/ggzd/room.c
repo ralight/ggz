@@ -44,6 +44,7 @@ extern struct GameTypes game_types;
 
 /* Decl of server wide chat room structure */
 RoomStruct *chat_room;
+RoomInfo room_info;
 
 /* Internal use only */
 static void room_spew_chat_room(const int);
@@ -117,11 +118,11 @@ static int room_list_send(const int p, const int p_fd)
 	/* First we have to figure out how many rooms to announce  */
 	/* This is easy if a req_game filter hasn't been specified */
 	if(req_game != -1) {
-		for(i=0; i<opt.num_rooms; i++)
+		for(i=0; i<room_info.num_rooms; i++)
 			if(req_game == chat_room[i].game_type)
 				count++;
 	} else
-		count = opt.num_rooms;
+		count = room_info.num_rooms;
 
 	/* Do da opcode, and announce our count */
 	if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
@@ -129,7 +130,7 @@ static int room_list_send(const int p, const int p_fd)
 		return -1;
 
 	/* Send off all the room announcements */
-	for(i=0; i<opt.num_rooms; i++)
+	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == chat_room[i].game_type) {
 			if(es_write_int(p_fd, i) < 0
 			   || es_write_string(p_fd, chat_room[i].name) < 0
@@ -149,10 +150,11 @@ void room_initialize(void)
 {
 	dbg_msg(GGZ_DBG_ROOM, "Initializing room array");
 
-	opt.num_rooms=1;
+	room_info.num_rooms=1;
+	room_info.timestamp = time(NULL);
 
 	/* Calloc a big enough array to hold all our first room */
-	if((chat_room = calloc(opt.num_rooms, sizeof(RoomStruct))) == NULL)
+	if((chat_room = calloc(room_info.num_rooms, sizeof(RoomStruct))) == NULL)
 		err_sys_exit("calloc failed in room_initialize_lists()");
 
 	/* Initialize the chat_tail and lock */
@@ -170,20 +172,20 @@ void room_create_additional(void)
 	/* Right now this is only used at startup, so we don't lock anything */
 	dbg_msg(GGZ_DBG_ROOM, "Creating a new room");
 
-	opt.num_rooms++;
+	room_info.num_rooms++;
 
 	/* Realloc the chat_room array */
-	chat_room = realloc(chat_room, opt.num_rooms * sizeof(RoomStruct));
+	chat_room = realloc(chat_room, room_info.num_rooms * sizeof(RoomStruct));
 	if(chat_room == NULL)
 		err_sys_exit("realloc failed in room_create_new()");
 
 	/* Initialize the chat_tail and lock on the new one */
-	chat_room[opt.num_rooms-1].player_count = 0;
-	chat_room[opt.num_rooms-1].table_count = 0;
-	chat_room[opt.num_rooms-1].chat_tail = NULL;
-	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
+	chat_room[room_info.num_rooms-1].player_count = 0;
+	chat_room[room_info.num_rooms-1].table_count = 0;
+	chat_room[room_info.num_rooms-1].chat_tail = NULL;
+	pthread_rwlock_init(&chat_room[room_info.num_rooms-1].lock, NULL);
 #ifdef DEBUG
-	chat_room[opt.num_rooms-1].chat_head = NULL;
+	chat_room[room_info.num_rooms-1].chat_head = NULL;
 #endif
 }
 
@@ -198,7 +200,7 @@ int room_handle_join(const int p_index, const int p_fd)
 		return -1;
 
 	/* Check for silliness from the user */
-	if(room > opt.num_rooms || room < 0)
+	if(room > room_info.num_rooms || room < 0)
 		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
 			return -1;
@@ -226,7 +228,7 @@ int room_join(const int p_index, const int room)
 	/* Check for valid inputs */
 	if(old_room == room)
 		return 0;
-	if(room > opt.num_rooms || room < -2)
+	if(room > room_info.num_rooms || room < -2)
 		return E_BAD_OPTIONS;
 
 	/* Give 'em their queued messages */
