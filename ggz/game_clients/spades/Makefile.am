@@ -6,7 +6,7 @@ SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 
-ggzmod_PROGRAMS = ggz.spades
+ggzexecmod_PROGRAMS = ggz.spades
 
 ggz_spades_SOURCES = card.c \
                     card.h \

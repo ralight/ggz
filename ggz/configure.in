@@ -131,17 +131,17 @@ AC_DEFINE_UNQUOTED(GGZCONFDIR, "${ggzconfdir}")
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   if test "x${exec_prefix}" = "xNONE"; then
     if test "x${prefix}" = "xNONE"; then
-      ggzmoddir="${ac_default_prefix}/lib/ggz"
+      ggzexecmoddir="${ac_default_prefix}/lib/ggz"
     else
-      ggzmoddir="${prefix}/lib/ggz"
+      ggzexecmoddir="${prefix}/lib/ggz"
     fi
   else
-    ggzmoddir="${exec_prefix}/lib/ggz"
+    ggzexecmoddir="${exec_prefix}/lib/ggz"
   fi
 else
-  ggzmoddir="${libdir}/ggz"
+  ggzexecmoddir="${libdir}/ggz"
 fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzmoddir}")
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
 
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
@@ -162,7 +162,7 @@ fi
 AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
 AC_SUBST(ggzconfdir)
-AC_SUBST(ggzmoddir)
+AC_SUBST(ggzexecmoddir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 

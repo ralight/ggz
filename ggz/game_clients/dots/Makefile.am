@@ -6,7 +6,7 @@ SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 
-bin_PROGRAMS = ggz.dots
+ggzexecmod_PROGRAMS = ggz.dots
 
 ggz_dots_SOURCES = \
 	main.c \
