@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2461 2001-09-12 08:39:11Z jdorje $
+ * $Id: spades.c 2462 2001-09-12 08:56:34Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -526,6 +526,7 @@ static card_t get_play(player_t p, seat_t s)
 
 	/* Determine the suit which was led and the highest card played so
 	   far. */
+	/* FIXME: this should call an external game function? */
 	if (game.leader != num) {
 		lead = game.seats[game.players[game.leader].seat].table;
 		high = game.leader;
@@ -554,6 +555,8 @@ static card_t get_play(player_t p, seat_t s)
 	   trying to take tricks or set our opponents.  We're less aggressive
 	   if we're trying to bag'em.  Agressiveness is on a scale from 0
 	   (least aggressive) to 100 (most aggressive). */
+
+	/* First determine how many more tricks we need. */
 	totTricks = game.seats[s].hand.hand_size;
 	myNeed = game.players[num].bid.sbid.val +
 		game.players[pard].bid.sbid.val;
@@ -561,10 +564,10 @@ static card_t get_play(player_t p, seat_t s)
 		myNeed -= game.players[num].tricks;
 	if (GSPADES.nil_tricks_count || game.players[pard].bid.sbid.val > 0)
 		myNeed -= game.players[pard].tricks;
-
 	if (myNeed < 0)
 		myNeed = 0;
 
+	/* Now determine how many more tricks the opponent needs. */
 	i = (num + 1) % 2;
 	oppNeed = game.players[i].bid.sbid.val +
 		game.players[i + 2].bid.sbid.val;
@@ -577,9 +580,6 @@ static card_t get_play(player_t p, seat_t s)
 
 	ai_debug("We need %d and they need %d out of %d.", myNeed, oppNeed,
 		 totTricks);
-
-	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks && this trick
-	   hopeless */
 
 	if ((myNeed == 0 || totTricks < myNeed)
 	    && (oppNeed == 0 || totTricks < oppNeed))
@@ -638,22 +638,19 @@ static card_t get_play(player_t p, seat_t s)
 	if (game.players[num].bid.sbid.spec == SPADES_NIL &&
 	    (game.players[num].tricks == 0 || oppNeed <= 0 || agg < 75))
 		chosen = PlayNil(num);
+
 	if (chosen < 0 && game.players[pard].bid.sbid.spec == SPADES_NIL
 	    && (agg <= 50 || game.players[pard].tricks == 0))
 		chosen = CoverNil(num, agg);
+
 	if (chosen < 0 && agg < 100)
 		chosen = SetNil(num, agg);
+
 	if (chosen < 0)
 		chosen = PlayNormal(num, agg, lastTrick);
 
 	ai_debug("Chosen play is %d", chosen);
-
-
-	for (i = 0; i < hand->hand_size; i++)
-		if (cards_equal(play[chosen].card, hand->cards[i]))
-			break;
-
-	return hand->cards[i];
+	return play[chosen].card;
 }
 
 
@@ -661,7 +658,6 @@ static card_t get_play(player_t p, seat_t s)
    will win a trick if we don't. */
 static void Calculate(int num, struct play *play, int agg)
 {
-
 	int mask, map, count, danger, trump, n, cover, sCount;
 	card_t high_card = game.seats[high].table;
 	char suit = game.seats[game.leader].table.suit;	/* the suit led */
