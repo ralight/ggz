@@ -64,13 +64,23 @@ static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_
 static GGZHookReturn ggz_chat_prvmsg(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data);
+static void ggz_input_removed(gpointer data);
+
+/* Table functions */
+static GGZHookReturn ggz_table_launched(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_left(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn ggz_table_data(GGZRoomEvent id, void*, void*);
+
 
 GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
@@ -104,9 +114,10 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 
 	/* Add the fd to the ggtk main loop */
 	fd = ggzcore_server_get_fd(server);
-	server_handle = gdk_input_add(fd, GDK_INPUT_READ, 
-				      (GdkInputFunction)ggz_check_fd, 
-				      (gpointer)server);
+	server_handle = gdk_input_add_full(fd, GDK_INPUT_READ, 
+					   (GdkInputFunction)ggz_check_fd, 
+					   (gpointer)server,
+					   ggz_input_removed);
 
 	return GGZ_HOOK_OK;
 }
@@ -229,6 +240,13 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, ggz_list_tables);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, ggz_room_enter);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, ggz_room_leave);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_LAUNCHED, ggz_table_launched);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_LAUNCH_FAIL, ggz_table_launch_fail);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_JOINED, ggz_table_joined);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, ggz_table_join_fail);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, ggz_table_left);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 	}
@@ -314,7 +332,6 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_
 {
 	gdk_input_remove(server_handle);
 	server_handle = -1;
-	/*ggzcore_server_free(server);*/
 	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
 	return GGZ_HOOK_OK;
 }
@@ -563,6 +580,63 @@ static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* u
 }
 
 
+static GGZHookReturn ggz_table_launched(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Table launched");*/
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Table launch failed: %s", event_data);*/
+
+	game_quit();
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Table joined");*/
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Table join failed: %s", event_data);*/
+
+	game_quit();
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_table_left(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Left table");*/
+
+	game_quit();
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	/*output_text("-- Table leave failed");*/
+	return GGZ_HOOK_OK;
+}
+	
+
+static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data)
+{
+        ggzcore_game_send_data(game, event_data);
+        return GGZ_HOOK_OK;
+}
+
 
 
 
@@ -575,6 +649,13 @@ GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
 {
 	ggzcore_server_read_data(server);
 	return 0;
+}
+
+
+/* GdkDestroyNotify function for server fd */
+static void ggz_input_removed(gpointer data)
+{
+	ggzcore_server_free((GGZServer*)data);
 }
 
 
@@ -654,16 +735,4 @@ void display_players(void)
 	}
 }
 
-
-static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data)
-{
-        ggzcore_game_send_data(game, event_data);
-        return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* user_data)
-{
-	game_quit();
-	return GGZ_HOOK_OK;
-}
 

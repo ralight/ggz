@@ -199,7 +199,7 @@ client_leave_activate		(GtkMenuItem	*menuitem,
 
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
         gtk_widget_set_sensitive(tmp, FALSE);
-	game_quit();
+	/*game_quit();*/
 	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
 
@@ -487,7 +487,7 @@ client_leave_button_clicked		(GtkButton	*button,
 
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
         gtk_widget_set_sensitive(tmp, FALSE);
-	game_quit();
+	/*game_quit();*/
 	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
 

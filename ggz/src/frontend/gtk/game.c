@@ -40,7 +40,7 @@ static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_data(GGZGameEvent, void *, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
-
+static void game_input_removed(gpointer data);
 
 GGZGame *game;
 static int fd = -1;
@@ -105,9 +105,10 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 	gtk_widget_set_sensitive(tmp, TRUE);
 	
 	fd = ggzcore_game_get_fd(game);
-        game_handle = gdk_input_add(fd, GDK_INPUT_READ,
-                                      (GdkInputFunction)game_process,
-                                      (gpointer)server);
+        game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
+					 (GdkInputFunction)game_process,
+					 (gpointer)server,
+					 game_input_removed);
 
 	return GGZ_HOOK_OK;
 }
@@ -168,9 +169,17 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 }
 
 
+/* GdkDestroyNotify function for server fd */
+static void game_input_removed(gpointer data)
+{
+	game_destroy();
+}
+
+
 int game_play(void)
 {
 	if(fd != -1)
 		return TRUE;
 	return FALSE;
 }
+
