@@ -20,7 +20,7 @@ Copyright (C) 2001, 2002 Josef Spillner
 @titlepage
 @title The GGZ Gaming Zone 0.0.6 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
-@author Josef Spillner
+@author GGZ Development Team
 
 @c Copyright page
 @page
@@ -126,6 +126,7 @@ More detailed calculations, including real-time games and measurement/control
 tools will follow later.
 
 @section Base installation
+
 Before the main server (ggzd) can be installed, its dependencies must be
 resolved. The GGZ package 'libggz' is currently the questioned
 package; this replaces the 'easysock' package which was used in version 0.0.4.
@@ -147,6 +148,12 @@ otherwise):
 is created on startup), and dynamic game data
 @end itemize
 
+The prefix can be changed when running
+@command{configure --prefix=/usr/local/ggz}, for example.
+Likewise, @command{--sysconfdir} may be used to specify the location for
+configuration files, and @command{--with-tmpdir} points to where temporary
+socket files are created.
+
 Although normally the server hierarchy will be under /usr or /usr/local, there
 are situations where someone doesn't have root access on a system to install
 the GGZ packages there.
@@ -157,19 +164,28 @@ This script, together with several others, will eventually be part of a server
 support package.
 For the time being, it is present in Appendix A.
 
+The database type can also be chosen freely. See the next chapter for details.
+
 @subsection Message of the day
 
 As each server should be unique in one way or the other, changing the MOTD
 (which the players read when they log in) is one of the first steps to be made.
 C-style variables place holders can be used, they are currently defined like:
 @itemize
-@item %h: server host
-@item %p: server port
-@item %d: current date
-@item %t: time zone
-@item %a: server administrator
-@item %e: administrator email address
+@item %a: server administrator's name
 @item %c: color switch; must be followed by a number between 0 and 9
+@item %C: server CPU type
+@item %d: current date
+@item %e: administrator's email address
+@item %g: current number of game tables
+@item %G: current number of game tables with open seats
+@item %h: server hostname
+@item %o: server operating system
+@item %p: server port
+@item %t: time zone (local time)
+@item %u: server uptime
+@item %U: number of users logged in
+@item %v: GGZ server version number
 @end itemize
 
 You can use premade MOTDs which are available from the motds directory of the
@@ -233,6 +249,16 @@ Currently, not only the traditional libdb format is supported (db2 and db3),
 but also MySQL and PostgreSQL. The latter ones are more difficult to set up,
 but provide greater flexibility because there exist a lot of standard tools to
 use the data in them.
+
+@section Berkeley DB setup
+
+When using libdb3, nothing special has to be done. For libdb2 support,
+running configure with @command{--with-database=db2} when installing from
+source is sufficient. The server cares about creating and managing the
+database.
+
+Sometimes the wrong libdb type is chosen, which prevents users from creating
+accounts and more. Forcing @command{--with-database=db3} might fix this.
 
 @section SQL setup
 
@@ -622,6 +648,74 @@ processes should look normal (barring any zombie ggzd child processes), the
 player database should be intact, and the transmitted network data, consisting
 mostly of the session protocol, chat texts and game data, should be checked for
 flooding or similar.
+
+@section Adding rooms
+
+@c verbatim quote from admin-guide.txt
+Games on the GGZ server take place in "rooms" By default, we provide
+you with a single room for each game type, but adding a room couldn't
+be easier.  By default, the ggzd.conf file will specify that the
+server should utilitze _all_ available rooms.  So now the question
+becomes, how do I make a room available?
+
+In the configuration directory (where you found ggzd.conf and
+ggzd.motd) you will find a subdirectory named 'rooms'.  Inside this
+subdirectory are a number of '*.room' files.  Each .room file
+specifies a different room, and by default each one of them will be
+loaded.
+
+Again, the sample files are self-explanatory.  To create a new room,
+simply copy one of the existing room files to a new file and edit the
+values as you see fit.
+@c end quote
+
+@section Adding games
+
+@c verbatim quote from admin-guide.txt
+Currently there are no user-installable game types.  All the games
+that are compliant with GGZ (that we know of) are included with GGZ at
+this time.  However, in the configuration directory, there is a
+'games' subdirectory.  Inside this subdirectory are a number of
+'*.dsc' files.  Each .dsc file specifies a different game type, and by
+default each one of them will be loaded.  This is where you would put
+a new game type if you had (ahem: wrote) one.
+
+In the future it will be very simple to install a new game module, and
+you can do it without recompiling your server.  Simple put a .dsc file
+in the aforementioned 'games' dir describing the game, and then put
+the server module in the appropriate directory (usually (prefix)/lib/ggzd).
+@c end quote
+
+@section Log files
+
+@c verbatim quote from admin-guide.txt
+You will no doubt want to log your GGZ server's activity.  Setting up
+logging, and the details to log, to a file is almost completely
+self-explanatory in the ggzd.conf file.  Setting up loggining via the
+syslog facility may be less than obvious.
+
+Logging via syslogd is the default unless you specify a log file
+(either in ggzd.conf or on the command line).  By default, log entries
+from the GGZ server will go to the facility local0.  This can be
+specified in ggzd.conf.
+
+You will however, need to setup your /etc/syslog.conf file to log those
+messages from facility local0 (or whatever you choose) into a specific
+file, probably /var/log/ggzd.
+
+If you compiled the GGZ server with debugging enabled, it will
+generate extra information which you may want to go to a separate
+file.  If you are are not using syslog then this is configurable in
+ggzd.conf.  If you *are* using syslog, here is a convenient set of
+syslog.conf entries to separate debug messages from standard log
+messages:
+
+local0.info·/var/log/ggzd.log
+local0.=debug·  /var/log/ggzd.debug
+
+Put those two lines into your syslog.conf, restart syslogd and your log
+nightmares are over.
+@c end quote
 
 @appendix Local GGZ server installation
 
