@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5921 2004-02-14 18:38:55Z jdorje $
+ * $Id: ggzdb.h 5922 2004-02-14 19:32:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
 
 /* Anytime structures change, bump the version id */
 /* Must be fewer than 7 characters. */
-#define GGZDB_VERSION_ID	"0.6r1"
+#define GGZDB_VERSION_ID	"0.5"
 
 /* For ggzdb_player_XXX */
 typedef struct {

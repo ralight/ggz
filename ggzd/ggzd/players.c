@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5906 2004-02-11 13:16:25Z josef $
+ * $Id: players.c 5922 2004-02-14 19:32:53Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -436,8 +436,11 @@ static GGZTable *check_table_perms(GGZPlayer *player,
 	if (!table)
 		return NULL;
 
-	if (perms_is_admin(player))
+	/* perms_check does a read-lock on the player.  This will succeed
+	 * since we are the player thread. */
+	if (perms_check(player, PERMS_EDIT_TABLES)) {
 		return table;
+	}
 
 	if (strcmp(table->owner, player->name) != 0) {
 		pthread_rwlock_unlock(&table->lock);
