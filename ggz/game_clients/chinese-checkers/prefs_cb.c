@@ -11,13 +11,7 @@
 #include "main_cb.h"
 
 
-void
-on_browse_button_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
+int sel;
 
 void
 on_ok_button_clicked                   (GtkButton       *button,
@@ -33,19 +27,21 @@ void
 on_apply_button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-	char *pixmap_dir;
+	char *theme;
 	int beep;
-	GtkWidget *entry, *toggle;
+	GtkWidget *list, *toggle;
 
-	entry = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "dir_entry");
+	list = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "theme_list");
 	toggle = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "check_beep");
 
-	pixmap_dir = gtk_entry_get_text(GTK_ENTRY(entry));
+	gtk_clist_get_text(GTK_CLIST(list), sel, 0, &theme);
+
 	if(GTK_TOGGLE_BUTTON(toggle)->active)
 		beep = 1;
 	else
 		beep = 0;
-	game_update_config(pixmap_dir, beep);
+
+	game_update_config(theme, beep);
 }
 
 
@@ -56,17 +52,13 @@ on_cancel_button_clicked               (GtkButton       *button,
 	gtk_widget_destroy(dlg_prefs);
 }
 
-
 void
-on_default_button_clicked              (GtkButton       *button,
+on_theme_list_select_row               (GtkCList        *clist,
+                                        gint             row,
+                                        gint             column,
+                                        GdkEvent        *event,
                                         gpointer         user_data)
 {
-	char *tmp;
-	GtkWidget *entry;
-
-	entry = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "dir_entry");
-	tmp = g_strdup_printf("%s/ccheckers/pixmaps/default", GAMEDIR);
-	gtk_entry_set_text(GTK_ENTRY(entry), tmp);
-	g_free(tmp);
+	sel = row;
 }
 

@@ -27,6 +27,8 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "main_cb.h"
 #include "main_dlg.h"
@@ -61,20 +63,43 @@ void
 on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
 					gpointer	 user_data)
 {
-	GtkWidget *entry, *toggle;
+	GtkWidget *list, *toggle;
+	int i, j=-1, d=-1;
+	char **text;
 
 	if(dlg_prefs != NULL) {
 		gdk_window_show(dlg_prefs->window);
 		gdk_window_raise(dlg_prefs->window);
 	} else {
+		text = calloc(1, sizeof(char *));
+
 		dlg_prefs = create_dlg_prefs();
 		gtk_signal_connect(GTK_OBJECT(dlg_prefs),
 				   "destroy",
 				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				   &dlg_prefs);
-		entry = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "dir_entry");
+		list = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "theme_list");
 		toggle = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "check_beep");
-		gtk_entry_set_text(GTK_ENTRY(entry), game.pixmap_dir);
+
+		gtk_clist_columns_autosize(GTK_CLIST(list));
+		for(i=0; i<game.num_themes; i++) {
+			text[0] = game.theme_names[i];
+			gtk_clist_append(GTK_CLIST(list), text);
+			if(!strcmp(game.theme_names[i], "default"))
+				d = i;
+			if(!strcmp(game.theme_names[i], game.theme))
+				j = i;
+		}
+		if(j == -1) {
+			if(d == -1)
+				j = d = 0;
+			else
+				j = d;
+		}
+		if(gtk_clist_row_is_visible(GTK_CLIST(list), j) != GTK_VISIBILITY_FULL)
+			gtk_clist_moveto(GTK_CLIST(list), j, 0, 0.5, 0);
+		gtk_clist_select_row(GTK_CLIST(list), j, 0);
+
 		if(game.beep == 1)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
 						     TRUE);

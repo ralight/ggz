@@ -30,6 +30,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
+
+#ifndef _DIRENT_HAVE_D_TYPE
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
 
 #include "ggzcore.h"
 #include "game.h"
@@ -55,13 +62,13 @@ static GSList *path_list;
 static void game_zap_board(void);
 static int game_make_move(int, int, int, int);
 static int game_find_path(int, int, int, int, int);
+static void get_theme_data(void);
 
 
 /* Perform game initialization tasks */
 void game_init(void)
 {
 	char *filename;
-	char *tmp;
 
 	/* Connect to GGZ */
 	ggz_connect();
@@ -75,20 +82,15 @@ void game_init(void)
 		 				GGZ_CONFIO_RDWR |
 						GGZ_CONFIO_CREATE);
 	g_free(filename);
-	tmp = g_strdup_printf("%s/ccheckers/pixmaps/default", GAMEDIR);
-	game.pixmap_dir = ggzcore_confio_read_string(game.conf_handle,
-						     "Options", "Theme", tmp);
-	g_free(tmp);
+	get_theme_data();
 	game.beep = ggzcore_confio_read_int(game.conf_handle, "Options",
 					    "Beep", 1);
 
 	/* Display the main dialog */
 	if(display_init() != 0) {
 		/* Theme loading failed, try default dir */
-		free(game.pixmap_dir);
-		tmp = g_strdup_printf("%s/ccheckers/pixmaps/default", GAMEDIR);
-		game.pixmap_dir = strdup(tmp);
-		g_free(tmp);
+		g_free(game.theme);
+		game.theme = strdup("default");
 		if(display_init() != 0) {
 			fprintf(stderr, "Failed to load default theme!\n");
 			exit(1);
@@ -496,7 +498,7 @@ void game_opponent_move(int seat, int ro, int co, int rd, int cd)
 }
 
 
-void game_update_config(char *pixmap_dir, int beep)
+void game_update_config(char *theme, int beep)
 {
 	if(beep != game.beep) {
 		game.beep = beep;
@@ -504,16 +506,78 @@ void game_update_config(char *pixmap_dir, int beep)
 					 "Beep", game.beep);
 	}
 
-	if(strcmp(pixmap_dir, game.pixmap_dir)) {
-		free(game.pixmap_dir);
-		game.pixmap_dir = strdup(pixmap_dir);
+	if(strcmp(theme, game.theme)) {
+		free(game.theme);
+		game.theme = strdup(theme);
 		ggzcore_confio_write_string(game.conf_handle, "Options",
-					    "Theme", game.pixmap_dir);
+					    "Theme", game.theme);
 		display_init();
 		display_refresh_board();
 	}
 
 	ggzcore_confio_commit(game.conf_handle);
+}
+
+
+static int select_dirs(const struct dirent *d)
+{
+	int ok=0;
+
+#ifndef _DIRENT_HAVE_D_TYPE
+	/* We have to do things the hard way, as dirent doesn't have the type */
+	struct stat buf;
+	char *pathname;
+
+	pathname = g_strdup_printf("%s/ccheckers/pixmaps/%s", GGZDATADIR,
+							      d->d_name);
+	if(stat(pathname, &buf) == -1)
+		perror(pathname);
+	if(S_ISDIR(buf.st_mode))
+		ok = 1;
+	g_free(pathname);
+#else
+	if(d->d_type == DT_DIR)
+		ok = 1;
+#endif
+
+	if(ok && d->d_name[0] != '.')
+		return 1;
+	return 0;
+}
+
+
+static void get_theme_data(void)
+{
+	char *theme_dir;
+	struct dirent **namelist;
+	int i;
+
+	/* Get the directory for themes and the .rc theme setting */
+	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps", GGZDATADIR);
+	game.theme = ggzcore_confio_read_string(game.conf_handle,
+						"Options", "Theme", "default");
+
+	/* Scan the theme directory and build an array of installed themes */
+	game.num_themes = scandir(theme_dir, &namelist, select_dirs, alphasort);
+	game.theme_names = calloc(game.num_themes, sizeof(char *));
+	for(i=0; i<game.num_themes; i++)
+		game.theme_names[i] = g_strdup(namelist[i]->d_name);
+
+	g_free(theme_dir);
+}
+
+
+char *get_theme_dir(void)
+{
+	static char *theme_dir=NULL;
+
+	if(theme_dir != NULL)
+		g_free(theme_dir);
+
+	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps/%s", GGZDATADIR,
+							       game.theme);
+
+	return theme_dir;
 }
 
 

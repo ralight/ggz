@@ -38,7 +38,9 @@ struct game_t {
 	char board[17][25];
 	int conf_handle;
 	int beep;
-	char *pixmap_dir;
+	char *theme;
+	char **theme_names;
+	int num_themes;
 };
 
 struct node_t {
@@ -56,3 +58,4 @@ extern void game_notify_our_turn(void);
 extern void game_opponent_move(int, int, int, int, int);
 extern void game_handle_sync(int);
 extern void game_update_config(char *, int);
+extern char *get_theme_dir(void);

@@ -27,11 +27,9 @@ create_dlg_prefs (void)
   GtkWidget *frame1;
   GtkWidget *check_beep;
   GtkWidget *frame2;
-  GtkWidget *hbox1;
-  GtkWidget *dir_entry;
-  GtkWidget *vbuttonbox1;
-  GtkWidget *browse_button;
-  GtkWidget *default_button;
+  GtkWidget *scrolledwindow1;
+  GtkWidget *theme_list;
+  GtkWidget *label1;
   GtkWidget *dialog_action_area1;
   GtkWidget *ok_button;
   GtkWidget *apply_button;
@@ -76,7 +74,7 @@ create_dlg_prefs (void)
   gtk_container_add (GTK_CONTAINER (frame1), check_beep);
   gtk_container_set_border_width (GTK_CONTAINER (check_beep), 2);
 
-  frame2 = gtk_frame_new ("Board Theme Directory");
+  frame2 = gtk_frame_new ("Board Theme Selection");
   gtk_widget_set_name (frame2, "frame2");
   gtk_widget_ref (frame2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "frame2", frame2,
@@ -84,52 +82,33 @@ create_dlg_prefs (void)
   gtk_widget_show (frame2);
   gtk_box_pack_start (GTK_BOX (vbox1), frame2, TRUE, TRUE, 0);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_set_name (hbox1, "hbox1");
-  gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "hbox1", hbox1,
+  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (scrolledwindow1, "scrolledwindow1");
+  gtk_widget_ref (scrolledwindow1);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox1);
-  gtk_container_add (GTK_CONTAINER (frame2), hbox1);
+  gtk_widget_show (scrolledwindow1);
+  gtk_container_add (GTK_CONTAINER (frame2), scrolledwindow1);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  dir_entry = gtk_entry_new ();
-  gtk_widget_set_name (dir_entry, "dir_entry");
-  gtk_widget_ref (dir_entry);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "dir_entry", dir_entry,
+  theme_list = gtk_clist_new (1);
+  gtk_widget_set_name (theme_list, "theme_list");
+  gtk_widget_ref (theme_list);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "theme_list", theme_list,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (dir_entry);
-  gtk_box_pack_start (GTK_BOX (hbox1), dir_entry, TRUE, TRUE, 0);
-  gtk_widget_set_usize (dir_entry, 225, -2);
-  gtk_tooltips_set_tip (tooltips, dir_entry, "Enter a directory pathname which contains a Chinese Checkers theme graphics set", NULL);
-  gtk_entry_set_text (GTK_ENTRY (dir_entry), "/usr/local/lib/ggz/ccheckers/pixmaps/default");
+  gtk_widget_show (theme_list);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow1), theme_list);
+  gtk_clist_set_column_width (GTK_CLIST (theme_list), 0, 80);
+  gtk_clist_set_selection_mode (GTK_CLIST (theme_list), GTK_SELECTION_BROWSE);
+  gtk_clist_column_titles_hide (GTK_CLIST (theme_list));
 
-  vbuttonbox1 = gtk_vbutton_box_new ();
-  gtk_widget_set_name (vbuttonbox1, "vbuttonbox1");
-  gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "vbuttonbox1", vbuttonbox1,
+  label1 = gtk_label_new ("label1");
+  gtk_widget_set_name (label1, "label1");
+  gtk_widget_ref (label1);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (hbox1), vbuttonbox1, TRUE, TRUE, 0);
-
-  browse_button = gtk_button_new_with_label ("Browse");
-  gtk_widget_set_name (browse_button, "browse_button");
-  gtk_widget_ref (browse_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "browse_button", browse_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (browse_button);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), browse_button);
-  GTK_WIDGET_SET_FLAGS (browse_button, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip (tooltips, browse_button, "Open a directory browser to locate a theme directory", NULL);
-
-  default_button = gtk_button_new_with_label ("Default");
-  gtk_widget_set_name (default_button, "default_button");
-  gtk_widget_ref (default_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_prefs), "default_button", default_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (default_button);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), default_button);
-  GTK_WIDGET_SET_FLAGS (default_button, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip (tooltips, default_button, "Click to reset default theme graphics", NULL);
+  gtk_widget_show (label1);
+  gtk_clist_set_column_widget (GTK_CLIST (theme_list), 0, label1);
 
   dialog_action_area1 = GTK_DIALOG (dlg_prefs)->action_area;
   gtk_widget_set_name (dialog_action_area1, "dialog_action_area1");
@@ -167,11 +146,8 @@ create_dlg_prefs (void)
   gtk_widget_set_usize (cancel_button, 48, -2);
   gtk_tooltips_set_tip (tooltips, cancel_button, "Cancel changes since the last apply", NULL);
 
-  gtk_signal_connect (GTK_OBJECT (browse_button), "clicked",
-                      GTK_SIGNAL_FUNC (on_browse_button_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (default_button), "clicked",
-                      GTK_SIGNAL_FUNC (on_default_button_clicked),
+  gtk_signal_connect (GTK_OBJECT (theme_list), "select_row",
+                      GTK_SIGNAL_FUNC (on_theme_list_select_row),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
                       GTK_SIGNAL_FUNC (on_ok_button_clicked),

@@ -147,7 +147,7 @@
       <widget>
 	<class>GtkFrame</class>
 	<name>frame2</name>
-	<label>Board Theme Directory</label>
+	<label>Board Theme Selection</label>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	<child>
@@ -157,69 +157,39 @@
 	</child>
 
 	<widget>
-	  <class>GtkHBox</class>
-	  <name>hbox1</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
+	  <class>GtkScrolledWindow</class>
+	  <name>scrolledwindow1</name>
+	  <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+	  <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 
 	  <widget>
-	    <class>GtkEntry</class>
-	    <name>dir_entry</name>
-	    <width>225</width>
-	    <tooltip>Enter a directory pathname which contains a Chinese Checkers theme graphics set</tooltip>
+	    <class>GtkCList</class>
+	    <name>theme_list</name>
 	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text>/usr/local/lib/ggz/ccheckers/pixmaps/default</text>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkVButtonBox</class>
-	    <name>vbuttonbox1</name>
-	    <layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
-	    <spacing>10</spacing>
-	    <child_min_width>85</child_min_width>
-	    <child_min_height>27</child_min_height>
-	    <child_ipad_x>7</child_ipad_x>
-	    <child_ipad_y>0</child_ipad_y>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
+	    <signal>
+	      <name>select_row</name>
+	      <handler>on_theme_list_select_row</handler>
+	      <last_modification_time>Mon, 02 Apr 2001 03:57:43 GMT</last_modification_time>
+	    </signal>
+	    <columns>1</columns>
+	    <column_widths>80</column_widths>
+	    <selection_mode>GTK_SELECTION_BROWSE</selection_mode>
+	    <show_titles>False</show_titles>
+	    <shadow_type>GTK_SHADOW_IN</shadow_type>
 
 	    <widget>
-	      <class>GtkButton</class>
-	      <name>browse_button</name>
-	      <tooltip>Open a directory browser to locate a theme directory</tooltip>
-	      <can_default>True</can_default>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_browse_button_clicked</handler>
-		<last_modification_time>Sun, 11 Mar 2001 08:16:31 GMT</last_modification_time>
-	      </signal>
-	      <label>Browse</label>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>default_button</name>
-	      <tooltip>Click to reset default theme graphics</tooltip>
-	      <can_default>True</can_default>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_default_button_clicked</handler>
-		<last_modification_time>Mon, 12 Mar 2001 03:09:55 GMT</last_modification_time>
-	      </signal>
-	      <label>Default</label>
+	      <class>GtkLabel</class>
+	      <child_name>CList:title</child_name>
+	      <name>label1</name>
+	      <label>label1</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
 	    </widget>
 	  </widget>
 	</widget>

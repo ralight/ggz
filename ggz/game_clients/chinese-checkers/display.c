@@ -68,7 +68,7 @@ static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	char *fullpath;
 	GdkPixmap *pixmap;
 
-	fullpath = g_strdup_printf("%s/%s", game.pixmap_dir, name);
+	fullpath = g_strdup_printf("%s/%s", get_theme_dir(), name);
 	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
 	if(pixmap == NULL)
 		fprintf(stderr, "Can't load pixmap %s\n", fullpath);
