@@ -26,7 +26,6 @@ GtkWidget *main_win;
 GtkWidget *opt_dialog;
 struct game_t game;
 
-static int request_options(void);
 static void ggz_connect(void);
 static void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
@@ -34,6 +33,7 @@ static int get_players(void);
 static int get_options(void);
 static int get_move_status(void);
 static int get_gameover_status(void);
+static int get_sync_info(void);
 
 int main(int argc, char *argv[])
 {
@@ -103,6 +103,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_MSG_GAMEOVER:
 			status = get_gameover_status();
+			break;
+		case DOTS_SND_SYNC:
+			status = get_sync_info();
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
@@ -227,6 +230,27 @@ static int get_move_status(void)
 		fprintf(stderr, "Client cheater!\n");
 
 	return (int)status;
+}
+
+
+static int get_sync_info(void)
+{
+	int i,j;
+
+	if(es_read_char(game.fd, &game.move) < 0
+	   || es_read_int(game.fd, &game.score[0]) < 0
+	   || es_read_int(game.fd, &game.score[1]) < 0)
+		return -1;
+	for(i=0; i<board_width; i++)
+		for(j=0; j<board_height-1; j++)
+			if(es_read_char(game.fd, &vert_board[i][j]) < 0)
+				return -1;
+	for(i=0; i<board_width-1; i++)
+		for(j=0; j<board_height; j++)
+			if(es_read_char(game.fd, &horz_board[i][j]) < 0)
+				return -1;
+
+	return 0;
 }
 
 

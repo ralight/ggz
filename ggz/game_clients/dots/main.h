@@ -15,7 +15,7 @@ struct game_t {
 	int score[2];
 	char names[2][9];
 	char state;
-	int move;
+	char move;
 };
 extern struct game_t game;
 

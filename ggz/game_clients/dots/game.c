@@ -281,7 +281,7 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 	}
 
 	if(result > 0) {
-                game.score[game.move] += result;
+                game.score[(int)game.move] += result;
                 l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
                 l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
                 text = g_strdup_printf("Score = %d", game.score[0]);
@@ -379,7 +379,7 @@ gint8 board_opponent_move(guint8 dir)
 	}
 
 	if(result > 0) {
-                game.score[game.move] += result;
+                game.score[(int)game.move] += result;
                 l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
                 l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
                 text = g_strdup_printf("Score = %d", game.score[0]);
