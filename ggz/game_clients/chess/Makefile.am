@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5319 2003-01-12 11:53:13Z dr_maux $
+#  $Id: Makefile.am 5320 2003-01-12 11:53:56Z dr_maux $
 
-SUBDIRS = libcgc .
+SUBDIRS = libcgc bitmaps
 
 INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) @GTK_CFLAGS@
 
