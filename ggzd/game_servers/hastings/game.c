@@ -46,7 +46,7 @@ void game_init(void)
 	hastings_game.turn = -1;
 
 	/* Initialization state */
-	hastings_game.state = HASTINGS_STATE_INIT;
+	/*hastings_game.state = HASTINGS_STATE_WAIT;*/
 
 	/* set up some knights*/
 	memmove(hastings_game.board[0], "11            555  ", 19);
@@ -85,7 +85,7 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 
 	if (es_read_int(ggz_fd, &op) < 0) return -1;
 
-	switch (op)
+	switch(op)
 	{
 		case REQ_GAME_LAUNCH:
 			if(ggz_game_launch() == 0) status = game_update(HASTINGS_EVENT_LAUNCH, NULL);
@@ -93,8 +93,9 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 		case REQ_GAME_JOIN:
 			if(ggz_player_join(&seat, p_fd) == 0)
 			{
-				status = game_update(HASTINGS_EVENT_JOIN, &seat);
+				game_update(HASTINGS_EVENT_JOIN, &seat);
 				status = 1;
+printf("# seat %i joined\n", seat);
 			}
 			break;
 		case REQ_GAME_LEAVE:
@@ -125,6 +126,8 @@ int game_handle_player(int num)
 	fd = ggz_seats[num].fd;
 
 	if (es_read_int(fd, &op) < 0) return -1;
+
+printf("## handle player: %i\n", num);
 
 	switch (op)
 	{
@@ -480,7 +483,9 @@ int game_update(int event, void* data)
 		break;
 
 	case HASTINGS_EVENT_JOIN:
+printf("## pre-join\n");
 		if (hastings_game.state != HASTINGS_STATE_WAIT) return -1;
+printf("## post-join\n");
 
 		seat = *(int*)data;
 		game_send_seat(seat);
