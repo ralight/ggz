@@ -19,7 +19,7 @@ The official GGZ Gaming Zone client for the Gtk 1.2 user interface.
 %setup
 
 %build
-./configure --prefix=/usr --sysconfdir=/etc
+./configure --prefix=/usr --sysconfdir=/etc --disable-debug
 make
 
 %install
@@ -35,9 +35,14 @@ rm -rf $RPM_BUILD_ROOT
 
 /usr/bin/ggz-gtk
 
+/usr/share/pixmaps/ggz
+
 /usr/man/man6/ggz-gtk.6.gz
 
 %changelog
+* Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
+- Debug should be off for release - added pixmap dir
+
 * Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
 - Updated for 0.0.5
 
