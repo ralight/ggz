@@ -3,7 +3,7 @@ SUBDIRS = .
 info_TEXINFOS = ggz-game-development-guide.texi
 
 guidedir = $(GGZDOCDIR)/guides
-guide_DATA = $(ggzgamedevelopmentguide)
+guide_DATA = $(ggzgamedevelopmentguide) ggz-game-development-guide.sxw
 
 docdir = $(GGZDOCDIR)/games
 dist_doc_DATA = games.html features.html
