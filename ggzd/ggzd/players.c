@@ -703,17 +703,16 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	    || es_read_int(p_fd, &seats) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	/* FIXME: What should we do about data leftover? */
+	/* Silly client. Tables are only so big*/
 	if (seats > MAX_TABLE_SIZE) {
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, -1) < 0)
 			return GGZ_REQ_DISCONNECT;
-		
 		return GGZ_REQ_FAIL;
 	}
 		
 	/* Read in seat assignments */
-	for (i = 1; i < seats; i++) {
+	for (i = 0; i < seats; i++) {
 		if (es_read_int(p_fd, &table.seats[i]) < 0)
 			return GGZ_REQ_DISCONNECT;
 		if (table.seats[i] != GGZ_SEAT_RESV)
@@ -741,8 +740,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	table.transit_flag = GGZ_TRANSIT_CLR;
 	table.pid = -1;
 	table.fd_to_game = -1;
-	/* FIXME:  When we implement reserves, should reserve seat */
-	table.seats[0] = GGZ_SEAT_OPEN;  
 	for (i = seats; i < MAX_TABLE_SIZE; i++)
 		table.seats[i] = GGZ_SEAT_NONE;
 	table.options = options;
@@ -777,7 +774,8 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	/* Return status to client */
 	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 	    || es_write_char(p_fd, (char)status) < 0) {
-		/* FIXME: leave table if table was launced */
+		if( status == 0)
+			table_leave(p_index, t_index);
 		return GGZ_REQ_DISCONNECT;
 	}
 
@@ -811,7 +809,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
  * returns 0 if successful, -1 on error.  If successful, returns table
  * fd by reference
  */
-/* FIXME: Some day we'll worry about reservations. Not today*/
 static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
 	int t_index;
@@ -837,7 +834,8 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	/* Return status to client*/
 	if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
 	    || es_write_char(p_fd, (char)status) < 0) {
-		/* FIXME: leave table if join was successful */
+		if (status == 0)
+			table_leave(p_index, t_index);
 		return GGZ_REQ_DISCONNECT;
 	}
 	
