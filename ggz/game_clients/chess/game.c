@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.c 6744 2005-01-19 22:53:59Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -243,7 +243,10 @@ void game_update(int event, void *arg)
 		if (game_info.state != CHESS_STATE_PLAYING)
 			break;
 		ggz_debug("main", "Sending move... %s", (char *)arg);
-		if (game_info.clock_type != CHESS_CLOCK_CLIENT)
+		if (game_info.clock_type != CHESS_CLOCK_CLIENT
+		    || game_info.turn == 0)
+			/* Client clock is only tracked if we're using that
+			 * clock system, and the first turn is never timed. */
 			net_send_move(arg, -1);
 		else {
 			g_source_remove(timeout_id);
