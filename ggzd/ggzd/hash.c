@@ -282,7 +282,7 @@ static void hash_dump_stats(void)
 		tot += num;
 		dbg_msg(GGZ_DBG_LISTS, "  List %d has %d entries", i, num);
 	}
-	avg = tot / (float)GGZ_DBG_LISTS;
+	avg = tot / (float)HASH_NUM_LISTS;
 
 	dbg_msg(GGZ_DBG_MISC, "  Total hash entries = %d", tot);
 	dbg_msg(GGZ_DBG_MISC, "  Minimum chain length = %d", min);
