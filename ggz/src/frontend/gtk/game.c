@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6089 2004-07-12 16:50:18Z josef $
+ * $Id: game.c 6329 2004-11-11 16:29:38Z jdorje $
  *
  * Functions for handling game events
  *
@@ -47,7 +47,6 @@
 
 /* Hooks for game events */
 static void game_register(GGZGame *game);
-static void game_process(void);
 static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
 static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
@@ -57,7 +56,7 @@ static void game_input_removed(gpointer data);
 
 GGZGame *game;
 static int fd = -1;
-static gint game_handle;
+static guint game_tag;
 
 static GGZModule * pick_module(GGZGameType *gt)
 {
@@ -228,10 +227,8 @@ void game_channel_ready(void)
 
 void game_quit(void)
 {
-	if (fd != -1)
-	{
-	        gdk_input_remove(game_handle);
-        	game_handle = -1;
+	if (fd != -1) {
+		g_source_remove(game_tag);
 		fd = -1;
 	}
 }
@@ -244,10 +241,17 @@ void game_destroy(void)
 }
 
 
-static void game_process(void)
+static gboolean game_process(GIOChannel *source, GIOCondition condition,
+			     gpointer data)
 {
-	if (game)
-		ggzcore_game_read_data(game);
+	return (game && ggzcore_game_read_data(game) >= 0);
+}
+
+
+/* GdkDestroyNotify function for server fd */
+static void game_input_removed(gpointer data)
+{
+	game_destroy();
 }
 
 
@@ -264,13 +268,16 @@ static void game_register(GGZGame *game)
 static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
 				   void* user_data)
 {
+	GIOChannel *channel;
+
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
-	
+
 	fd = ggzcore_game_get_control_fd(game);
-        game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
-					 (GdkInputFunction)game_process,
-					 (gpointer)server,
-					 game_input_removed);
+	channel = g_io_channel_unix_new(fd);
+	game_tag = g_io_add_watch_full(channel, G_PRIORITY_DEFAULT,
+				       G_IO_IN, game_process, server,
+				       game_input_removed);
+	g_io_channel_unref(channel);
 
 	return GGZ_HOOK_OK;
 }
@@ -312,13 +319,6 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data,
 		client_join_table();
 	
 	return GGZ_HOOK_OK;
-}
-
-
-/* GdkDestroyNotify function for server fd */
-static void game_input_removed(gpointer data)
-{
-	game_destroy();
 }
 
 
