@@ -132,6 +132,10 @@ class Game:
 		self.board[y][x] = self.board[oldy][oldx]
 		self.board[oldy][oldx] = None
 
+		# XXX: why not validatemove() above?
+		#valid = ggzchess.move(oldy * 8 + oldx, y * 8 + x, 0)
+		ggzchess.move(oldy * 8 + oldx, y * 8 + x, 0)
+
 		if ggzchess.checkmate():
 			self.isover = 1
 

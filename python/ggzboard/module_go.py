@@ -20,11 +20,6 @@ class Game:
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
 
-		#self.board[7][7] = ("piece", "w")
-		#self.board[7][8] = ("piece", "b")
-		#self.board[8][7] = ("piece", "b")
-		#self.board[8][8] = ("piece", "w")
-
 		self.isover = 0
 		self.lastmove = ""
 
