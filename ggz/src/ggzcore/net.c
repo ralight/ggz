@@ -356,8 +356,8 @@ static void _ggzcore_net_handle_server_id(void)
 
 static void _ggzcore_net_handle_login(void)
 {
-	char status, reservations;
-	int checksum;
+	char status, res;
+	int checksum, reservations;
 
 	if (es_read_char(ggz_server_sock, &status) < 0)
 		return;
@@ -365,15 +365,15 @@ static void _ggzcore_net_handle_login(void)
 	if (status == 0 && es_read_int(ggz_server_sock, &checksum) < 0)
 		return;
 	
-	if (es_read_char(ggz_server_sock, &reservations) < 0)
-		return;
-
 	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d", 
 		      status, checksum);
 	
 	switch (status) {
 	case 0:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, NULL, NULL);
+		if (es_read_char(ggz_server_sock, &res) < 0)
+			return;
+		reservations = (int)res;
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, (void*)reservations, NULL);
 		break;
 	case E_ALREADY_LOGGED_IN:
 		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
