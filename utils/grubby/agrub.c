@@ -29,10 +29,10 @@
 void handle_read(void);
 void req_login(void);
 void change_room(void);
-void handle_chat(char *, char *);
+void handle_chat(unsigned char , char *, char *);
 void handle_command(char *, char *);
-void send_chat(char *);
-void send_chat_insert_name(char *);
+void send_chat(char *, char *);
+void send_chat_insert_name(char *, char *);
 void do_logout(int);
 void save_known();
 void do_greet(char *);
@@ -47,7 +47,7 @@ void queue_message(char *, char *);
 void graceless_exit(int);
 void log_on(char *sender, char *command);
 void log_off(char *sender, char *command);
-log_it(char *left, char *right);
+void log_it(char *left, char *right);
 void cleanup(void);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
@@ -75,7 +75,7 @@ struct {
 	char *url;
 	char *info;
 	char *bday;
-	time_t last_seen;
+	int last_seen;
 	char *last_room;
 	int msg_count;
 	smsg msg[MAX_MESSAGES];
@@ -133,7 +133,7 @@ struct poptOption args[] = {
 
 int main(const int argc, const char *argv[])
 {
-	int opcode, i, j;
+	int i, j;
 	fd_set select_mux;
 	struct timeval timeout;
 	poptContext context;
@@ -336,8 +336,9 @@ int main(const int argc, const char *argv[])
 void handle_read(void)
 {
 	int opcode, i, num, num2, j, num3;
-	char *string, *string2;
+	char *string, *name, *message;
 	char chr;
+	unsigned char subop;
 
 	es_read_int(my_socket, &opcode);
 	switch(opcode) {
@@ -382,11 +383,17 @@ void handle_read(void)
 			player_greet = 1;
 			break;
 		case MSG_CHAT:
-			es_read_string_alloc(my_socket, &string);
-			es_read_string_alloc(my_socket, &string2);
-			handle_chat(string, string2);
-			free(string);
-			free(string2);
+	                es_read_char(my_socket, &subop);
+        	        es_read_string_alloc(my_socket, &name);
+	                if (subop & GGZ_CHAT_M_MESSAGE)
+        	                es_read_string_alloc(my_socket, &message);
+                	else{
+                        	message = malloc(2);
+				message[0] = '\0';
+			}
+			handle_chat(subop, name, message);
+			free(name);
+			free(message);
 			break;
 		case RSP_CHAT:
 			es_read_char(my_socket, &chr);
@@ -461,8 +468,6 @@ void handle_read(void)
 
 void req_login(void)
 {
-	int i;
-
 	es_write_int(my_socket, REQ_LOGIN_ANON);
 	es_write_string(my_socket, bot_name);
 }
@@ -484,50 +489,57 @@ void change_room(void)
 }
 
 
-void handle_chat(char *sender, char *msg)
+void handle_chat(unsigned char subop, char *sender, char *msg)
 {
 	char *newstr;
-
-	sprintf(out_msg, "%s: ", bot_name);
-	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
-		log_it(sender, msg);
-		handle_command(sender, msg+strlen(out_msg));
-		return;
-	}
-
-	sprintf(out_msg, "%s, ", bot_name);
-	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
-		log_it(sender, msg);
-		handle_command(sender, msg+strlen(out_msg));
-		return;
-	}
-
-	sprintf(out_msg, "%s ", bot_name);
-	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
-		log_it(sender, msg);
-		handle_command(sender, msg+strlen(out_msg));
-		return;
-	}
-
-	if(!strncasecmp(msg, "/me ", 4)) {
-		sprintf(out_msg, "%s %s", sender, msg+4);
-		log_it("*", out_msg);
-		return;
-	}else if(!strcmp(msg, "/SjoinS")
-	     && strcasecmp(sender, bot_name)) {
-		newstr = malloc(strlen(sender)+1);
-		strcpy(newstr, sender);
-		log_it("-->", newstr);
-		do_greet(newstr);
-		return;
-	}else if(!strcmp(msg, "/SpartS")
-	     && strcasecmp(sender, bot_name)) {
-		newstr = malloc(strlen(sender)+1);
-		strcpy(newstr, sender);
-		log_it("<--", newstr);
-		return;
-	} else {
-		log_it (sender,msg);
+	switch(subop)
+	{
+		case GGZ_CHAT_NORMAL:
+			sprintf(out_msg, "%s: ", bot_name);
+			if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+				log_it(sender, msg);
+				handle_command(sender, msg+strlen(out_msg));
+				return;
+			}
+	
+			sprintf(out_msg, "%s, ", bot_name);
+			if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+				log_it(sender, msg);
+				handle_command(sender, msg+strlen(out_msg));
+				return;
+			}
+	
+			sprintf(out_msg, "%s ", bot_name);
+			if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+				log_it(sender, msg);
+				handle_command(sender, msg+strlen(out_msg));
+				return;
+			}
+	
+			if(!strncasecmp(msg, "/me ", 4)) {
+				sprintf(out_msg, "%s %s", sender, msg+4);
+				log_it("*", out_msg);
+				return;
+			}else if(!strcmp(msg, "/SjoinS")
+			     && strcasecmp(sender, bot_name)) {
+				newstr = malloc(strlen(sender)+1);
+				strcpy(newstr, sender);
+				log_it("-->", newstr);
+				do_greet(newstr);
+				return;
+			}else if(!strcmp(msg, "/SpartS")
+			     && strcasecmp(sender, bot_name)) {
+				newstr = malloc(strlen(sender)+1);
+				strcpy(newstr, sender);
+				log_it("<--", newstr);
+				return;
+			} else {
+				log_it (sender,msg);
+			}
+			break;
+		case GGZ_CHAT_PERSONAL:
+			handle_command(sender, msg);
+		break;
 	}
 }
 
@@ -540,20 +552,20 @@ void handle_command(char *sender, char *command)
 
 	if(!strcasecmp(command, "help")) {
 		for(i=0; i<sizeof(help_strings)/sizeof(char *); i++)
-			send_chat_insert_name(help_strings[i]);
+			send_chat_insert_name(sender, help_strings[i]);
 	} else if(!strcasecmp(command, "about")) {
 		for(i=0; i<sizeof(about_strings)/sizeof(char *); i++)
-			send_chat_insert_name(about_strings[i]);
+			send_chat_insert_name(sender, about_strings[i]);
 	} else if(!strcasecmp(command, "go away")) {
-		send_chat("Fine, you don't want me around...");
- 		send_chat("Then I don't want to be here!");
+		send_chat(sender, "Fine, you don't want me around...");
+ 		send_chat(sender, "Then I don't want to be here!");
 		change_room();
 	} else if(!strcasecmp(command, "shutdown")) {
 		if(!strcmp(sender, owner)) {
-			send_chat("NOoooooo... I'm melting....");
+			send_chat(sender, "NOoooooo... I'm melting....");
 			do_logout(0);
 		} else {
-			send_chat("You can't order me around like that!");
+			send_chat(sender, "You can't order me around like that!");
 		}
 	} else if(!strncasecmp(command, "my name is ", 11)) {
 		store_aka(sender, command+11);
@@ -577,60 +589,62 @@ void handle_command(char *sender, char *command)
 		if(!strcmp(sender, owner)) {
 			log_on(sender,command+7);
 		} else {
-			send_chat("Sorry, only my owner can tell me to do that.");
+			send_chat(sender, "Sorry, only my owner can tell me to do that.");
 		}
 	} else if(!strncasecmp(command, "log off", 7)) {
 		if(!strcmp(sender, owner)) {
 			log_off(sender, NULL);
 		} else {
-			send_chat("Sorry, only my owner can tell me to do that.");
+			send_chat(sender, "Sorry, only my owner can tell me to do that.");
 		}
 	} else if(!strncasecmp(command, "save memory", 14)) {
 		if(!strcmp(sender, owner)) {
 			save_known();
-			send_chat("My memory is saved!");
+			send_chat(sender, "My memory is saved!");
 		} else {
-			send_chat("Sorry, only my owner can tell me to do that.");
+			send_chat(sender, "Sorry, only my owner can tell me to do that.");
 		}
 	} else if(!strncasecmp(command, "stay", 4)) {
 		if(!strcmp(sender, owner)) {
 			if(stay_still == 0){
 				stay_still = 1;
-				send_chat("Yes Master, I wont move again!");
+				send_chat(sender, "Yes Master, I wont move again!");
 			} else {
-				send_chat("I'm already staying put");
+				send_chat(sender, "I'm already staying put");
 			}
 		} else {
-			send_chat("Sorry, only my owner can tell me to do that.");
+			send_chat(sender, "Sorry, only my owner can tell me to do that.");
 		}
 	} else if(!strncasecmp(command, "move", 4)) {
 		if(!strcmp(sender, owner)) {
 			if(stay_still == 1){
 				stay_still = 0;
-				send_chat("Yes Master, I'll wonder around now.");
+				send_chat(sender, "Yes Master, I'll wonder around now.");
 			} else {
-				send_chat("I'm already moving about!");
+				send_chat(sender, "I'm already moving about!");
 			}
 		} else {
-			send_chat("Sorry, only my owner can tell me to do that.");
+			send_chat(sender, "Sorry, only my owner can tell me to do that.");
 		}
 	} else {
-		send_chat("Huh?");
+		send_chat(sender, "Huh?");
 		sprintf(out_msg, "Type '%s: Help' to see what commands I know!",
 			bot_name);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 	}
 }
 
 
-void send_chat(char *msg)
+void send_chat(char *name, char *msg)
 {
 	es_write_int(my_socket, REQ_CHAT);
+	es_write_char(my_socket, GGZ_CHAT_PERSONAL);
+	es_write_string(my_socket, name);
 	es_write_string(my_socket, msg);
 }
 
 
-void send_chat_insert_name(char *msg)
+void send_chat_insert_name(char *name, char *msg)
 {
 	char *p;
 	int percent_s=0;
@@ -644,7 +658,7 @@ void send_chat_insert_name(char *msg)
 	else
 		strcpy(out_msg, msg);
 
-	send_chat(out_msg);
+	send_chat(name, out_msg);
 }
 
 
@@ -759,13 +773,13 @@ void do_greet(char *name)
 
 	if(i == num_known || i >= MAX_KNOWN) {
 		sprintf(out_msg, "Hi %s, I'm %s.", name, bot_name);
-		send_chat(out_msg);
+		send_chat(name, out_msg);
 		sprintf(out_msg, "I haven't seen you before, please take a second to introduce yourself to me.");
-		send_chat(out_msg);
+		send_chat(name, out_msg);
 		sprintf(out_msg, "I'll remember your name if you say '%s: my name is <your name>'.", bot_name);
-		send_chat(out_msg);
+		send_chat(name, out_msg);
 		sprintf(out_msg, "You can always type '%s: help' to see what I can do!", bot_name);
-		send_chat(out_msg);
+		send_chat(name, out_msg);
 		if(i < MAX_KNOWN) {
 			known[num_known].name = name;
 			known[num_known].last_seen = time(NULL);
@@ -774,7 +788,7 @@ void do_greet(char *name)
 			sprintf(out_msg,
 				"Sorry %s, but I can only remember %d people.",
 				name, MAX_KNOWN);
-			send_chat(out_msg);
+			send_chat(name, out_msg);
 			free(name);
 		}
 	} else {
@@ -784,24 +798,24 @@ void do_greet(char *name)
 			sprintf(out_msg, "Good to see you again, %s!", known[i].aka);
 		else
 			sprintf(out_msg, "Good to see you again, %s!", name);
-		send_chat(out_msg);
+		send_chat(name, out_msg);
 		if((random()%15) == 0) {
 			sprintf(out_msg,
 				"Remember, you can type '%s: help'",
 				bot_name);
-			send_chat(out_msg);
+			send_chat(name, out_msg);
 		}
 		if((random()%15) == 0) {
 			k=(int) (total_greating*rand()/(RAND_MAX+1.0));
-			send_chat(great_strings[k]);
+			send_chat(name, great_strings[k]);
 		}
 		for(j=0;j<known[i].msg_count;j++)
 		{
 			sprintf(out_msg, "%s wanted me to tell you:",
 				known[i].msg[j].msg_from);
-			send_chat(out_msg);
+			send_chat(name, out_msg);
 			sprintf(out_msg, "    '%s'", known[i].msg[j].msg);
-			send_chat(out_msg);
+			send_chat(name, out_msg);
 			known[i].msg[j].msg_from = NULL;
 			free(known[i].msg[j].msg);
 			known[i].msg[j].msg = NULL;
@@ -825,7 +839,7 @@ void store_aka(char *sender, char *aka)
 			sender, aka);
 		sprintf(out_msg+strlen(out_msg),
 			"but I already know %d people.", MAX_KNOWN);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -836,7 +850,7 @@ void store_aka(char *sender, char *aka)
 	} else
 		sprintf(out_msg, "OK %s, I'll remember that your name is %s.",
 			sender, aka);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 
 	newstr = malloc(strlen(aka)+1);
 	strcpy(newstr, aka);
@@ -848,18 +862,18 @@ void log_on(char *sender, char *command)
 {
 	if(log_file != NULL)
 	{
-		send_chat("I'm already logging this room.");
+		send_chat(sender, "I'm already logging this room.");
 		return;
 	}
 	log_file = fopen(command, "w");
 	if (log_file == NULL)
 	{
-		send_chat("Error opening file.");
+		send_chat(sender, "Error opening file.");
 		return;
 	}
 	fprintf(log_file,"<center>\n");
 	fprintf(log_file,"<table border=0 width=540 cellpadding=\"1\" cellspacing=\"0\">\n");
-	send_chat("Logging on.");
+	send_chat(sender, "Logging on.");
 }
 
 
@@ -867,10 +881,10 @@ void log_off(char *sender, char *command)
 {
 	if (log_file == NULL)
 	{
-		send_chat("I'm not logging anything");
+		send_chat(sender, "I'm not logging anything");
 		return;
 	}
-	send_chat("Logging off.");
+	send_chat(sender, "Logging off.");
 	fclose(log_file);
 	log_file=NULL;
 }
@@ -889,7 +903,7 @@ void store_email(char *sender, char *email)
 			sender, email);
 		sprintf(out_msg+strlen(out_msg),
 			"but I already know %d people.", MAX_KNOWN);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -900,7 +914,7 @@ void store_email(char *sender, char *email)
 	} else
 		sprintf(out_msg, "OK %s, I'll remember that your email is %s.",
 			sender, email);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 
 	newstr = malloc(strlen(email)+1);
 	strcpy(newstr, email);
@@ -921,7 +935,7 @@ void store_url(char *sender, char *url)
 			sender, url);
 		sprintf(out_msg+strlen(out_msg),
 			"but I already know %d people.", MAX_KNOWN);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -932,7 +946,7 @@ void store_url(char *sender, char *url)
 	} else
 		sprintf(out_msg, "OK %s, I'll remember that your url is %s.",
 			sender, url);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 
 	newstr = malloc(strlen(url)+1);
 	strcpy(newstr, url);
@@ -953,7 +967,7 @@ void store_info(char *sender, char *info)
 			sender, info);
 		sprintf(out_msg+strlen(out_msg),
 			"but I already know %d people.", MAX_KNOWN);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -964,7 +978,7 @@ void store_info(char *sender, char *info)
 	} else
 		sprintf(out_msg, "OK %s, I'll remember that your info as %s.",
 			sender, info);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 
 	newstr = malloc(strlen(info)+1);
 	strcpy(newstr, info);
@@ -984,7 +998,7 @@ void store_bday(char *sender, char *bday)
 			sender, bday);
 		sprintf(out_msg+strlen(out_msg),
 			"but I already know %d people.", MAX_KNOWN);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -995,7 +1009,7 @@ void store_bday(char *sender, char *bday)
 	} else
 		sprintf(out_msg, "OK %s, I'll remember that your birthday as %s.",
 			sender, bday);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 
 	newstr = malloc(strlen(bday)+1);
 	strcpy(newstr, bday);
@@ -1042,15 +1056,19 @@ void check_seen(char *sender, char *name)
 
 		sz = 0;
 		if(days > 0)
+		{
 			if(days > 1)
 				sz = sprintf(tstr, "%d days, ", days);
 			else
 				sz = sprintf(tstr, "1 day, ");
+		}
 		if(hours > 0)
+		{
 			if(hours > 1)
 				sz += sprintf(tstr+sz, "%d hours, ", hours);
 			else
 				sz += sprintf(tstr+sz, "1 hour, ");
+		}
 		if(mins == 1)
 			sz += sprintf(tstr+sz, "1 minute and ");
 		else
@@ -1065,7 +1083,7 @@ void check_seen(char *sender, char *name)
 			disp_name, tstr, known[i].last_room, disp_sender);
 	}
 
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 }
 
 void whois(char *sender, char *name)
@@ -1092,7 +1110,7 @@ void whois(char *sender, char *name)
 	{
 		sprintf(out_msg, "Sorry %s, I've never encountered %s.",
 			disp_sender, name);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 	} else {
 		if(known[i].aka)
 			disp_name = known[i].aka;
@@ -1102,21 +1120,21 @@ void whois(char *sender, char *name)
 		url = known[i].url;
 		info = known[i].info;
 		sprintf(out_msg, "%s, %s's name is %s.", disp_sender, name, disp_name);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		if(email != NULL)
 		{
 			sprintf(out_msg, "%s, %s's email is %s.", disp_sender, disp_name, email);
-			send_chat(out_msg);
+			send_chat(sender, out_msg);
 		}
 		if(url != NULL)
 		{
 			sprintf(out_msg, "%s, %s's URL is %s.", disp_sender, disp_name, url);
-			send_chat(out_msg);
+			send_chat(sender, out_msg);
 		}
 		if(info != NULL)
 		{
 			sprintf(out_msg, "%s, %s's info is \"%s\".", disp_sender, disp_name, info);
-			send_chat(out_msg);
+			send_chat(sender, out_msg);
 		}
 	}
 
@@ -1131,22 +1149,22 @@ void queue_message(char *sender, char *command)
 	for(p=command; *p!='\0' && *p!=' '; p++)
 		;
 	if(*p == '\0') {
-		send_chat("Huh?");
+		send_chat(sender, "Huh?");
 		sprintf(out_msg,
 			"Type '%s: Help' to see what commands I know!",
 			 bot_name);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
 	*p = '\0';
 	p++;
 	if(*p == '\0') {
-		send_chat("Huh?");
+		send_chat(sender, "Huh?");
 		sprintf(out_msg,
 			"Type '%s: Help' to see what commands I know!",
 			 bot_name);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -1156,7 +1174,7 @@ void queue_message(char *sender, char *command)
 	if(i == num_known) {
 		sprintf(out_msg, "Sorry %s, I can't remember your name.",
 			sender);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 	disp_sender = known[i].name;
@@ -1169,14 +1187,14 @@ void queue_message(char *sender, char *command)
 	if(i == num_known) {
 		sprintf(out_msg, "Sorry %s, I don't know %s.",
 			disp_sender, command);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
 	if(known[i].msg_count == MAX_MESSAGES) {
 		sprintf(out_msg, "Sorry %s, I already %d messages for %s.",
 			disp_sender, MAX_MESSAGES, command);
-		send_chat(out_msg);
+		send_chat(sender, out_msg);
 		return;
 	}
 
@@ -1192,11 +1210,11 @@ void queue_message(char *sender, char *command)
 
 	sprintf(out_msg, "OK %s, I'll deliver that message next time I see %s.",
 		disp_sender, disp_name);
-	send_chat(out_msg);
+	send_chat(sender, out_msg);
 }
 
 
-log_it(char *left, char *right)
+void log_it(char *left, char *right)
 {
 	if (log_file != NULL && log_type == "HTML")
 	{
@@ -1208,9 +1226,9 @@ log_it(char *left, char *right)
 	if (log_file != NULL && log_type == "TEXT")
 	{
 		if(!strcmp("-->",left) || !strcmp("<--",left) || !strcmp("---",left) || !strcmp("*",left))
-			fprintf(log_file, "%s | %s%s\n",left, right);
+			fprintf(log_file, "%s | %s\n",left, right);
 		else
-			fprintf(log_file, "[%s] | %s%s\n",left, right);
+			fprintf(log_file, "[%s] | %s\n",left, right);
 	}
 }
 
