@@ -16,11 +16,13 @@
 
 /* defined by automake */
 
+#undef AF_LOCAL
 #undef DEBUG
 #undef GGZDATADIR
 #undef GGZCONFDIR
 #undef GAMEDIR
 #undef PACKAGE_SOURCE_DIR
+#undef PF_LOCAL
 #undef WAIT_ANY
     
 

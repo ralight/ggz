@@ -48,6 +48,21 @@ AC_EGREP_CPP(WAIT_ANY, [ #include <sys/wait.h>
 		 WAIT_ANY ], AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
 	         AC_DEFINE(WAIT_ANY, (pid_t)-1))
 
+dnl Check for PF_LOCAL/PF_UNIX
+dnl ==========================
+AC_MSG_CHECKING([for PF_LOCAL])
+AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
+                 PF_LOCAL ], AC_MSG_RESULT(no) 
+			     AC_MSG_CHECKING([for PF_UNIX])
+			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				          PF_UNIX ], AC_MSG_RESULT(no)
+				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
+                                          AC_MSG_RESULT(yes)
+					  AC_DEFINE(PF_LOCAL, PF_UNIX)
+			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+             AC_MSG_RESULT(yes))
+
+
 
 dnl Check for library functions
 dnl ===========================
