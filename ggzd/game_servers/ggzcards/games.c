@@ -82,6 +82,7 @@ int games_valid_game(int which_game)
 		case GGZ_GAME_SUARO:
 			return (game.num_players == 2);
 		case GGZ_GAME_ROOK:
+		case GGZ_GAME_SKAT:
 			return 0;	/* not yet supported */
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_LAPOCHA:
@@ -91,7 +92,7 @@ int games_valid_game(int which_game)
 		case GGZ_GAME_HEARTS:
 			return (game.num_players > 2 && game.num_players <= 7);	/* 3-7 players */
 		default:
-			ggz_debug("SERVER BUG: game_valid_gams: unknown game %d.", which_game);
+			ggz_debug("SERVER BUG: game_valid_game: unknown game %d.", which_game);
 			return 0;
 	}
 }

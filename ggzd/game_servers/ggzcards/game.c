@@ -1076,8 +1076,8 @@ char* game_verify_play(int card_index)
 
 	/* not following suit is never allowed */
 	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, game.lead_card.suit)) ) {
-		ggz_debug("Player %d, playing from seat %d, played %s when they have %d of %s.",
-			  game.next_play, s, suit_names[(int)card.suit], cnt, suit_names[(int)game.lead_card.suit]);
+		ggz_debug("Player %d/%s, playing from seat %d/%s, played %s when they have %d of %s.",
+			  game.next_play, ggz_seats[game.next_play].name, s, game.seats[s].ggz->name, suit_names[(int)card.suit], cnt, suit_names[(int)game.lead_card.suit]);
 		return "You must follow suit.";
 	}
 
@@ -1530,12 +1530,12 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	player_t p;
+	player_t p, p_r;
 
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
 			for(p=0; p<game.num_players; p++) {
-				ggz_debug("Player %d got %d tricks on a bid of %d", p,
+				ggz_debug("Player %d/%s got %d tricks on a bid of %d", p, ggz_seats[p].name,
 					  game.players[p].tricks, (int)game.players[p].bid.bid);
 				if(game.players[p].tricks == game.players[p].bid.bid)
 					game.players[p].score += 10 + (5 * game.players[p].bid.bid);
@@ -1622,14 +1622,14 @@ void game_end_hand(void)
 				/* you get the value of the contract MINUS
 				 * the number of overtricks == 2 * contract - tricks */
 				points = (SUARO.contract - overtricks) * SUARO.bonus;
-				ggz_debug("Player %d made their bid of %d, plus %d overtricks for %d points.",
-					  winner, SUARO.contract, overtricks, points);
+				ggz_debug("Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
+					  winner, ggz_seats[winner].name, SUARO.contract, overtricks, points);
 			} else {
 				winner = 1-SUARO.declarer;
 				/* for setting, you just get the value of the contract */
 				points = SUARO.contract * SUARO.bonus;
-				ggz_debug("Player %d set the bid of %d, earning %d points.",
-					  winner, SUARO.contract, points);
+				ggz_debug("Player %d/%s set the bid of %d, earning %d points.",
+					  winner, ggz_seats[winner].name, SUARO.contract, points);
 			}
 			set_global_message("", "%s %s the bid and earned %d point%s.",
 					ggz_seats[winner].name,
@@ -1665,7 +1665,7 @@ void game_end_hand(void)
 			for (p=0; p<4; p++) {
 				if (game.players[p].bid.sbid.spec == SPADES_NIL) {
 					int score = (game.players[p].tricks == 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-					ggz_debug("Player %d earned %d for going nil.", (int)p, score);
+					ggz_debug("Player %d/%s earned %d for going nil.", (int)p, ggz_seats[p].name, score);
 					game.players[p].score += score;
 					game.players[(p+2)%4].score += score;
 				}
