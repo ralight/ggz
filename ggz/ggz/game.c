@@ -155,5 +155,7 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 		dbg_msg("Game is over (msg from client)");
 		connection.playing = FALSE;
 		close(source);
+		gdk_input_remove(game_handle);
+		/* FIXME: also kill game process ?*/
 	}
 }
