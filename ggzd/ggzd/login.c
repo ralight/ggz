@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include <easysock.h>
 #include <err_func.h>
@@ -44,6 +45,7 @@ static int  login_player_normal(GGZPlayer* player, int fd);
 static int  logout_player(GGZPlayer* player, int fd);
 static void login_generate_password(char *);
 static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1]);
+static int  validate_username(char *);
 
 /* Handle opcodes from player_handle() */
 int login_handle_request(const unsigned int request, GGZPlayer* player, 
@@ -116,6 +118,17 @@ static int login_player_normal(GGZPlayer* player, int fd)
 	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
 		*dest = tolower(*src);
 	*dest = '\0';
+
+	/* Validate the username */
+	if(!validate_username(lc_name)) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
+			name);
+		/* FIXME: We should have a specific error code for this */
+		if(es_write_int(fd, RSP_LOGIN) < 0
+		   || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
 
 	/* Add the player name to the hash table */
 	name_ok = hash_player_add(lc_name, player);
@@ -231,6 +244,17 @@ static int login_player_new(GGZPlayer* player, int fd)
 	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
 		*dest = tolower(*src);
 	*dest = '\0';
+
+	/* Validate the username */
+	if(!validate_username(lc_name)) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
+			name);
+		/* FIXME: We should have a specific error code for this */
+		if(es_write_int(fd, RSP_LOGIN) < 0
+		   || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
 
 	/* Add the player name to the hash table */
 	name_ok = hash_player_add(lc_name, player);
@@ -351,6 +375,17 @@ static int login_player_anon(GGZPlayer* player, int fd)
 		*dest = tolower(*src);
 	*dest = '\0';
 
+	/* Validate the username */
+	if(!validate_username(lc_name)) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
+			name);
+		/* FIXME: We should have a specific error code for this */
+		if(es_write_int(fd, RSP_LOGIN) < 0
+		   || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
 	/* Check the name vs. the database */
 	name_ok = 1;
 	strcpy(db_pe.handle, lc_name);
@@ -432,4 +467,21 @@ static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 	name[MAX_USER_NAME_LEN] = '\0';
 	
 	return 0;    ;
+}
+
+
+/* This routine validates the username request */
+static int validate_username(char *name)
+{
+	char *p;
+
+	/* Nothing less than a space and no extended ASCII */
+	/* & - can mess with M$ Windows labels, etc */
+	/* % - can screw up log and debug's printf()s */
+	/* \ - can screw up log and debug's printf()s */
+	for(p=name; *p!='\0'; p++)
+		if(*p < 33 || *p == '%' || *p == '&' || *p == '\\' || *p > 126)
+			return 0;
+
+	return 1;
 }
