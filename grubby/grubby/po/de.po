@@ -8,37 +8,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 00:22+0100\n"
-"PO-Revision-Date: 2003-04-28 07:55+0200\n"
+"POT-Creation-Date: 2004-11-14 18:50+0100\n"
+"PO-Revision-Date: 2004-11-14 18:51+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/i18n.c:100
-msgid "Your language has been registered."
-msgstr "***"
-
-#: ../src/main.c:53
-msgid "Yes, I follow, my master."
-msgstr "***"
-
-#: ../src/main.c:63
-msgid "Toggled logging."
-msgstr "***"
-
-#: ../src/main.c:115
+#: ../src/main.c:120
 #, c-format
 msgid "Grubby - the GGZ Gaming Zone Chat Bot\n"
 msgstr "Grubby - der Chatbot der GGZ Gaming Zone\n"
 
-#: ../src/main.c:116
+#: ../src/main.c:121
 #, c-format
-msgid "Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"
-msgstr "Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"
+msgid "Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org\n"
+msgstr "Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org\n"
 
-#: ../src/main.c:117
+#: ../src/main.c:122
 #, c-format
 msgid ""
 "Published under GNU GPL conditions\n"
@@ -47,79 +35,79 @@ msgstr ""
 "Veröffentlicht unter den Bestimmungen der GNU GPL\n"
 "\n"
 
-#: ../src/main.c:118
+#: ../src/main.c:123
 #, c-format
 msgid "Recognized options:\n"
 msgstr "Erkannte Optionen:\n"
 
-#: ../src/main.c:119
+#: ../src/main.c:124
 #, c-format
 msgid "[-h | --help]:    Show this help screen\n"
 msgstr "[-h | --help]:    Zeigt diesen Hilfebildschirm an\n"
 
-#: ../src/main.c:120
+#: ../src/main.c:125
 #, c-format
 msgid "[-H | --host]:    Connect to this host\n"
 msgstr "[-H | --host]:    Verbindet sich zu diesem Rechner\n"
 
-#: ../src/main.c:121
+#: ../src/main.c:126
 #, c-format
 msgid "[-n | --name]:    Use this name\n"
 msgstr "[-n | --name]:    Nutzt diesen Namen\n"
 
-#: ../src/main.c:122
+#: ../src/main.c:127
 #, c-format
 msgid "[-d | --datadir]: Use this data directory (default: ~/.ggz)\n"
 msgstr ""
 "[-d | --datadir:] Nutzt dieses Datenverzeichnis (anstelle von ~/.ggz)\n"
 
-#: ../src/main.c:123
+#: ../src/main.c:128
 #, c-format
 msgid "[-v | --version]: Display version number\n"
 msgstr "[-v | --version]: Versionsnummer anzeigen\n"
 
-#: ../src/main.c:133
-#, fuzzy, c-format
+#: ../src/main.c:138
+#, c-format
 msgid "Grubby version %s\n"
-msgstr "Grubby Version 0.3\n"
+msgstr "Grubby Version %s\n"
 
-#: ../src/main.c:140
+#: ../src/main.c:145
 #, c-format
 msgid "Unknown command line option, try --help.\n"
 msgstr "Unbekanntes Kommandozeilenargument, versuche --help\n"
 
-#: ../src/main.c:147
+#: ../src/main.c:152
 #, c-format
 msgid "Grubby: initializing...\n"
 msgstr "Grubby: initialisiere...\n"
 
-#: ../src/main.c:151
+#: ../src/main.c:156
 #, c-format
 msgid "Grubby initialization failed!\n"
 msgstr "Die Initialisierung von Grubby ist fehlgeschlagen!\n"
 
-#: ../src/main.c:152
+#: ../src/main.c:157
 #, c-format
 msgid "Check if the bot is configured properly using grubby-config.\n"
 msgstr ""
 "Prüfe nach, ob der Chatbot ordentlich mit grubby-config konfiguriert wurde.\n"
 
-#: ../src/main.c:162
+#: ../src/main.c:167
 #, c-format
 msgid "Grubby: connect to %s...\n"
 msgstr "Grubby: verbinde zu %s...\n"
 
-#: ../src/main.c:174
+#: ../src/main.c:179
 #, c-format
 msgid "ERROR: Couldn't connect\n"
 msgstr "FEHLER: Konnte nicht verbinden\n"
 
-#: ../src/main.c:178
+#: ../src/main.c:183
 #, c-format
 msgid "Grubby: Logged in.\n"
 msgstr "Grubby: Eingeloggt.\n"
 
-#: ../src/main.c:182
+#: ../src/main.c:187
 #, c-format
 msgid "Grubby: Ready.\n"
 msgstr "Grubby: Fertig.\n"
@@ -189,43 +177,43 @@ msgstr "FEHLER: Unbekanntes Modul (init)!\n"
 msgid "ERROR: Invalid module (exec)!\n"
 msgstr "FEHLER: Unbekanntes Module (exec)!\n"
 
-#: ../src/module.c:259
-msgid "List of available modules:"
-msgstr "***"
-
-#: ../src/module.c:260
-msgid "No modules loaded at all."
-msgstr "***"
-
-#: ../src/module.c:330
-msgid "Module added."
-msgstr "***"
-
-#: ../src/module.c:331
-msgid "Error: Could not add module."
-msgstr "***"
-
-#: ../src/module.c:335
-msgid "Module removed."
-msgstr "***"
-
-#: ../src/module.c:336
-msgid "Error: Could not remove module."
-msgstr "***"
-
-#: ../src/module.c:341
-msgid "Module reloaded."
-msgstr "***"
-
-#: ../src/module.c:342
-msgid "Error: Could not reload module."
-msgstr "***"
-
-#: ../src/module.c:345
-msgid "Only my owner can change the module setup."
-msgstr "***"
-
 #: ../src/net.c:360
 #, c-format
 msgid "ERROR: %s\n"
 msgstr "FEHLER: %s\n"
+
+#~ msgid "Your language has been registered."
+#~ msgstr "***"
+
+#~ msgid "Yes, I follow, my master."
+#~ msgstr "***"
+
+#~ msgid "Toggled logging."
+#~ msgstr "***"
+
+#~ msgid "List of available modules:"
+#~ msgstr "***"
+
+#~ msgid "No modules loaded at all."
+#~ msgstr "***"
+
+#~ msgid "Module added."
+#~ msgstr "***"
+
+#~ msgid "Error: Could not add module."
+#~ msgstr "***"
+
+#~ msgid "Module removed."
+#~ msgstr "***"
+
+#~ msgid "Error: Could not remove module."
+#~ msgstr "***"
+
+#~ msgid "Module reloaded."
+#~ msgstr "***"
+
+#~ msgid "Error: Could not reload module."
+#~ msgstr "***"
+
+#~ msgid "Only my owner can change the module setup."
+#~ msgstr "***"
