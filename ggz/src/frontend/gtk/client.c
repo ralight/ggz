@@ -238,7 +238,7 @@ static void
 client_motd_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-//	ggzcore_event_enqueue(GGZ_USER_MOTD, NULL, NULL);
+	ggzcore_server_motd(server);
 }
 
 
