@@ -166,7 +166,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 {
 	gpointer tmp;
 	gchar *message;
-	gchar name[9];
+	gchar name[MAX_USER_NAME_LEN + 1];
 	gchar password[17];
 	gchar reservation_flag;
 	gchar status;
