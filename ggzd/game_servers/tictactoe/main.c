@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
 
 #include "game.h"
 #include "ggzdmod.h"
@@ -37,16 +38,11 @@ extern struct ttt_game_t ttt_game;
 int main(void)
 {
 	game_init();
-
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
-
 	
 	if (ggzdmod_connect(ttt_game.ggz) < 0) {
 		/* Error starting up game 
 		game_cleanup(); */
+		fprintf(stderr, "Could not connect to ggz.\n");
 		return -1;
 	}
 	
