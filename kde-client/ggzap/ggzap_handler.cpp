@@ -58,7 +58,7 @@ void GGZapHandler::init()
 	m_server = new GGZCoreServer();
 	attachServerCallbacks();
 
-	m_server->setHost(m_confserver, 5688);
+	m_server->setHost(m_confserver, 5688, 0);
 	result = m_server->connect();
 	//if(result == -1) emit signalState(connectfail);
 }
