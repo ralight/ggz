@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 523 $</revnumber>
-	<date>$Date: 2000-05-14 20:33:00 -0700 (Sun, 14 May 2000) $</date>
+	<revnumber>$Revision: 524 $</revnumber>
+	<date>$Date: 2000-05-15 16:51:31 -0700 (Mon, 15 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -212,51 +212,21 @@
 	<programlisting role="pseudocode">
       
 	  REQ_LIST_PLAYERS
+
 	  RSP_LIST_PLAYERS
-            int: number of users (-1 for error)
-            sequence of
-              str: user name
-              int: game table index (-1 if user not at a table)
 
 	  REQ_LIST_TYPES
             chr: verbose flag (0 for short list, 1 for long descriptions)
-	  RSP_LIST_TYPES
-            int: number of game types (-1 for error)
-            sequence of
-              int: game type index
-              str: game name
-	      str: version 
-	      chr: allowed player mask (WARNING: may be removed in the future)
-              str: description (only if long)
-              str: author (only if long)
-              str: homepage (only if long)
 
 	  REQ_LIST_TABLES
             int: game type index (-1 for all type, -2 for reserved, -3 for open games)
 	    chr: server wide search (1 if yes, 0 if no)
 	  RSP_LIST_TABLES
-            int: number of games (-1 for error)
-            sequence of
-	      int: room number
-   	      int: table index
-              int: game type index
-	      str: table description
-  	      chr: table state (1 if waiting for players, 2 if playing)
-   	      int: number of seats at table
-              sequence of
-	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV )
-  	        str: name of player (if assignment >=0 or == RESV)
 
 	  REQ_LIST_ROOMS
             int: Reqeusted game type index (-1 for all)
             chr: Verbose flag (0 for short list, 1 for long descriptions)
 	  RSP_LIST_ROOMS
-	    int: number of rooms (E_BAD_OPTIONS (-2) for error)
-	    sequence of
-	      int: Room number
-	      str: Name of room
-	      int: Supported game type index
-	      str: Long room description (long list)
 
 	  REQ_MOTD
 	  RSP_MOTD
@@ -284,16 +254,14 @@
 	    int: size of options in bytes (possibly 0)
             (game options)
           RSP_TABLE_LAUNCH
-            chr: success flag (0 for success, negative values for various failures)
   
 	  REQ_TABLE_JOIN
             int: table index
 	  RSP_TABLE_JOIN
-            chr: success flag (0 for success, -1 for failure)
 
           REQ_TABLE_LEAVE
+
 	  RSP_TABLE_LEAVE
-	    chr: success flag (0 for success, -1 for failure)
 	    
       </programlisting>
     </section>
@@ -1312,12 +1280,12 @@
 
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C3">
-		    <emphasis>sequence of</emphasis> lines
+		    <emphasis>sequence of</emphasis> lines:
 		  </entry>
 		</row>
 		
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">message</entry>
+		  <entry namest="C2" nameend="C2">message</entry>
 		  <entry>string</entry>
 		</row>
 
@@ -1397,29 +1365,27 @@
 		</row>
 		
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
+		  <entry><emphasis role="bold">Data</emphasis></entry>
 		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">sub-opcode</entry>
+		  <entry>sub-opcode</entry>
 		  <entry>char</entry>
+		  <entry>always</entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C2" nameend="C3">one or more fields</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C2" nameend="C2">player</entry>
+		  <entry>player</entry>
 		  <entry>string</entry>
+		  <entry>if bit set</entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C2" nameend="C2">message</entry>
+		  <entry>message</entry>
 		  <entry>string</entry>
+		  <entry>if bit set</entry>
 		</row>
 
 	      </tbody>
@@ -1441,20 +1407,21 @@
 		    <itemizedlist>
 		      <listitem>
 			<para>
-			  GGZ_CHAT_NORMAL (64) : typical chat message to all in room
-			  (include field: chat_string)
+			  GGZ_CHAT_NORMAL (64) : typical chat message
+			  to all in room (include field: message)
 			</para>
 		      </listitem>
 		      <listitem>
 			<para>
-			  GGZ_CHAT_BEEP (128) : send a beep to another player's console
-			  (include field: player_name)
+			  GGZ_CHAT_BEEP (128) : send a beep to another
+			  player's console (include field: player)
 			</para>
 		      </listitem>
 		      <listitem>
 			<para>
-			  GGZ_CHAT_PERSONAL (192) : typical chat message directed to a single
-			  player (include fields: player_name, chat_string)
+			  GGZ_CHAT_PERSONAL (192) : message directed
+			  to a single player (include fields:
+			  player, message)
 			</para>
 		      </listitem>
 		    </itemizedlist>
@@ -1465,7 +1432,9 @@
 		<term><emphasis role="bold">player</emphasis></term>
 		<listitem>
 		  <para>
-		    Name of player who originated message
+		    Name of player who originated message.  Only
+		    included if most-significant bit of sub-opcode is
+		    sent (ie. sub-opcode & 0x80 is true)
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -1473,7 +1442,9 @@
 		<term><emphasis role="bold">message</emphasis></term>
 		<listitem>
 		  <para>
-		    Chat message
+		    Chat message.  Only included if next to
+		    most-significant bit of sub-opcode is sent
+		    (ie. sub-opcode & 0x40 is true)
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -1486,64 +1457,6 @@
 	      MSG_CHAT is sent from the server to the client whenever
 	      that client has pending chats from other players.  This
 	      occurs only when the player is a room.
-	    </para>
-	  </refsect2>
-	</refsect1>
-      </refentry>
-
-      <refentry id="msg.update.rooms"><?dbhtml filename="msg_update_rooms.html">
-	<refmeta>
-	  <indexterm>
-	    <primary>MSG_UPDATE_ROOMS</primary>
-	  </indexterm>
-	  <refentrytitle>MSG_UPDATE_ROOMS</refentrytitle>
-	</refmeta>
-
-	<refnamediv>
-	  <refname>MSG_UPDATE_ROOMS</refname>
-	  <refpurpose>Notificatiion that the room listing has been changed</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv><title>Synopsis</title>
-	  <informaltable>
-	    <tgroup cols="3">
-	      <colspec colnum="1" colname="C1" align="left">
-	      <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-	      <tbody>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C2">
-                    <emphasis role="bold">Opcode</emphasis>
-                  </entry>
-		  <entry>7</entry>
-		</row>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">MSG_UPDATE_ROOMS</entry>
-		</row>
-		
-	      </tbody>
-	    </tgroup>
-	  </informaltable>
-	</refsynopsisdiv>
-
-	<refsect1>
-	  <title>Description</title>
-	  <para>Notification that the room list has changed since the
-	  last update</para>
-	  <refsect2>
-	    <title>Usage</title>
-	    <para>
-	      MSG_UPDATE_ROOMS is sent from the server to the client
-	      if the room list has changed since the last update.  It
-	      is also sent after a successful login (ie. after <link
-	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
-	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
-	      linkend="rsp.login">RSP_LOGIN</link>).  It is expected
-	      that the client will then send a <link
-	      linkend="rsp.list.rooms">REQ_LIST_ROOMS</link> to obtain
-	      the updated list.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -1571,7 +1484,7 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		  <entry>4</entry>
@@ -1597,9 +1510,9 @@
 	      if the list of players in the current room has changed
 	      since the last update.  It is also sent immediately upon
 	      entering a room (ie. after <link
-	      linkend="rsp.room.join">RSP_LOGIN_NEW</link>). It is
+	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>). It is
 	      expected that the client will then send a <link
-	      linkend="rsp.list.players">REQ_LIST_PLAYERS</link> to
+	      linkend="req.list.players">REQ_LIST_PLAYERS</link> to
 	      obtain the updated list.
 	    </para>
 	  </refsect2>
@@ -1658,7 +1571,7 @@
 	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
 	      linkend="rsp.login">RSP_LOGIN</link>).  It is expected
 	      that the client will then send a <link
-	      linkend="rsp.list.types">REQ_LIST_TYPES</link> to obtain
+	      linkend="req.list.types">REQ_LIST_TYPES</link> to obtain
 	      the updated list.
 	    </para>
 	  </refsect2>
@@ -1711,28 +1624,28 @@
 	    <para>
 	      MSG_UPDATE_TABLES is sent from the server to the client
 	      if the list of tables in the current room has changed
-	      since the last update.  It is also sent upon entry to 
-	      a new room (ie. after <link
-	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>).  It is expected
-	      that the client will then send a <link
-	      linkend="rsp.list.tables">REQ_LIST_TABLES</link> to obtain
-	      the updated list.
+	      since the last update.  It is also sent upon entry to a
+	      new room (ie. after <link
+	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>).  It is
+	      expected that the client will then send a <link
+	      linkend="req.list.tables">REQ_LIST_TABLES</link> to
+	      obtain the updated list.
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
 
-      <refentry id="rsp.login.new"><?dbhtml filename="rsp_login_new.html">
+      <refentry id="msg.update.rooms"><?dbhtml filename="msg_update_rooms.html">
 	<refmeta>
 	  <indexterm>
-	    <primary>RSP_LOGIN_NEW</primary>
+	    <primary>MSG_UPDATE_ROOMS</primary>
 	  </indexterm>
-	  <refentrytitle>RSP_LOGIN_NEW</refentrytitle>
+	  <refentrytitle>MSG_UPDATE_ROOMS</refentrytitle>
 	</refmeta>
 
 	<refnamediv>
-	  <refname>RSP_LOGIN_NEW</refname>
-	  <refpurpose>Server response to first-time login request</refpurpose>
+	  <refname>MSG_UPDATE_ROOMS</refname>
+	  <refpurpose>Notificatiion that the room listing has been changed</refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -1747,35 +1660,13 @@
 		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
-		  <entry>9</entry>
+		  <entry>7</entry>
 		</row>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">RSP_LOGIN_NEW</entry>
+		  <entry namest="C1" nameend="C3">MSG_UPDATE_ROOMS</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
-		  <entry>char</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">password</entry>
-		  <entry>string</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">checksum</entry>
-		  <entry>int</entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1783,48 +1674,237 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Server response to first-time login request</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
-		<listitem>
-		  <para>
-		    status of login request (zero if successful,
-		    negative on error)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	      <varlistentry>
-		<term><emphasis role="bold">password</emphasis></term>
-		<listitem>
-		  <para>
-		    Password for new account (only sent if login successful)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	      <varlistentry>
-		<term><emphasis role="bold">checksum</emphasis></term>
-		<listitem>
-		  <para>
-		    Checksum of game types (only sent if login successful)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
+	  <para>Notification that the room list has changed since the
+	  last update</para>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      RSP_LOGIN_NEW is sent from the server to the client in
-	      response to a new login request via <link
-	      linkend="req.login.new">REQ_LOGIN_NEW</link>.
+	      MSG_UPDATE_ROOMS is sent from the server to the client
+	      if the room list has changed since the last update.  It
+	      is also sent after a successful login (ie. after <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
+	      linkend="rsp.login">RSP_LOGIN</link>).  It is expected
+	      that the client will then send a <link
+	      linkend="req.list.rooms">REQ_LIST_ROOMS</link> to obtain
+	      the updated list.
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
+
+      <![IGNORE[
+
+    <refentry id="rsp.login.new"><?dbhtml filename="rsp_login_new.html">
+    <refmeta>
+    <indexterm>
+    <primary>RSP_LOGIN_NEW</primary>
+    </indexterm>
+    <refentrytitle>RSP_LOGIN_NEW</refentrytitle>
+    </refmeta>
+      
+    <refnamediv>
+    <refname>RSP_LOGIN_NEW</refname>
+    <refpurpose>Server response to first-time login request</refpurpose>
+    </refnamediv>
+      
+    <refsynopsisdiv><title>Synopsis</title>
+    <informaltable>
+    <tgroup cols="3">
+    <colspec colnum="1" colname="C1" align="left">
+    <colspec colnum="2" colname="C2">
+    <colspec colnum="3" colname="C3">
+    <tbody>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Opcode</emphasis>
+    </entry>
+    <entry>9</entry>
+    </row>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C3">RSP_LOGIN_NEW</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Data</emphasis>
+    </entry>
+    <entry><emphasis role="bold">Type</emphasis></entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">status</entry>
+    <entry>char</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">password</entry>
+    <entry>string</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">checksum</entry>
+    <entry>int</entry>
+    </row>
+      
+    </tbody>
+    </tgroup>
+    </informaltable>
+	</refsynopsisdiv>
+      
+    <refsect1>
+    <title>Description</title>
+    <para>Server response to first-time login request</para>
+    <refsect2>
+    <title>Message Data</title>
+    <variablelist>
+    <varlistentry>
+    <term><emphasis role="bold">status</emphasis></term>
+    <listitem>
+    <para>
+      status of login request (zero if successful,
+      negative on error)
+    </para>
+    </listitem>
+    </varlistentry>
+    <varlistentry>
+    <term><emphasis role="bold">password</emphasis></term>
+    <listitem>
+    <para>
+      Password for new account (only sent if login successful)
+    </para>
+    </listitem>
+    </varlistentry>
+    <varlistentry>
+    <term><emphasis role="bold">checksum</emphasis></term>
+    <listitem>
+    <para>
+      Checksum of game types (only sent if login successful)
+    </para>
+    </listitem>
+    </varlistentry>
+    </variablelist>
+    </refsect2>
+	  
+    <refsect2>
+    <title>Usage</title>
+    <para>
+      RSP_LOGIN_NEW is sent from the server to the client in
+      response to a new login request via <link
+      linkend="req.login.new">REQ_LOGIN_NEW</link>.
+    </para>
+    </refsect2>
+    </refsect1>
+    </refentry>
+      
+    <refentry id="rsp.login"><?dbhtml filename="rsp_login.html">
+    <refmeta>
+    <indexterm>
+    <primary>RSP_LOGIN</primary>
+    </indexterm>
+    <refentrytitle>RSP_LOGIN</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+    <refname>RSP_LOGIN</refname>
+    <refpurpose>Server response to login request</refpurpose>
+    </refnamediv>
+      
+    <refsynopsisdiv><title>Synopsis</title>
+    <informaltable>
+    <tgroup cols="3">
+    <colspec colnum="1" colname="C1" align="left">
+    <colspec colnum="2" colname="C2">
+    <colspec colnum="3" colname="C3">
+    <tbody>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Opcode</emphasis>
+    </entry>
+    <entry>10</entry>
+    </row>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C3">RSP_LOGIN</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Data</emphasis>
+    </entry>
+    <entry><emphasis role="bold">Type</emphasis></entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">status</entry>
+    <entry>char</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">checksum</entry>
+    <entry>int</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">reservations</entry>
+    <entry>char</entry>
+    </row>
+      
+    </tbody>
+    </tgroup>
+    </informaltable>
+    </refsynopsisdiv>
+      
+    <refsect1>
+    <title>Description</title>
+    <para>Server response to player login request</para>
+    <refsect2>
+    <title>Message Data</title>
+    <variablelist>
+    <varlistentry>
+    <term><emphasis role="bold">status</emphasis></term>
+    <listitem>
+    <para>
+      status of login request (zero if successful,
+      negative on error)
+    </para>
+    </listitem>
+    </varlistentry>
+    <varlistentry>
+    <term><emphasis role="bold">checksum</emphasis></term>
+    <listitem>
+    <para>
+      Checksum of game types (only sent if login successful)
+    </para>
+    </listitem>
+    </varlistentry>
+    <varlistentry>
+    <term><emphasis role="bold">reservation</emphasis></term>
+    <listitem>
+    <para>
+      Flag to indicate if player has resverations
+      waiting (only sent if login successful)
+    </para>
+    </listitem>
+    </varlistentry>
+    </variablelist>
+    </refsect2>
+      
+    <refsect2>
+    <title>Usage</title>
+    <para>
+      RSP_LOGIN is sent from the server to the client in
+      response to a login request via <link
+      linkend="rsp.login.new">RSP_LOGIN</link>.
+    </para>
+    </refsect2>
+    </refsect1>
+    </refentry>
+      
+      ]]>
 
       <refentry id="rsp.login.anon"><?dbhtml filename="rsp_login_anon.html">
 	<refmeta>
@@ -1912,111 +1992,6 @@
 	      RSP_LOGIN_ANON is sent from the server to the client in
 	      response to an "anonymous" login request via <link
 	      linkend="req.login.anon">REQ_LOGIN_ANON</link>.
-	    </para>
-	  </refsect2>
-	</refsect1>
-      </refentry>
-
-      <refentry id="rsp.login"><?dbhtml filename="rsp_login.html">
-	<refmeta>
-	  <indexterm>
-	    <primary>RSP_LOGIN</primary>
-	  </indexterm>
-	  <refentrytitle>RSP_LOGIN</refentrytitle>
-	</refmeta>
-
-	<refnamediv>
-	  <refname>RSP_LOGIN</refname>
-	  <refpurpose>Server response to login request</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv><title>Synopsis</title>
-	  <informaltable>
-	    <tgroup cols="3">
-	      <colspec colnum="1" colname="C1" align="left">
-	      <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-	      <tbody>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C2">
-                    <emphasis role="bold">Opcode</emphasis>
-                  </entry>
-		  <entry>10</entry>
-		</row>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">RSP_LOGIN</entry>
-		</row>
-		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
-		  <entry>char</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">checksum</entry>
-		  <entry>int</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">reservations</entry>
-		  <entry>char</entry>
-		</row>
-
-	      </tbody>
-	    </tgroup>
-	  </informaltable>
-	</refsynopsisdiv>
-
-	<refsect1>
-	  <title>Description</title>
-	  <para>Server response to player login request</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
-		<listitem>
-		  <para>
-		    status of login request (zero if successful,
-		    negative on error)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	      <varlistentry>
-		<term><emphasis role="bold">checksum</emphasis></term>
-		<listitem>
-		  <para>
-		    Checksum of game types (only sent if login successful)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	      <varlistentry>
-		<term><emphasis role="bold">reservation</emphasis></term>
-		<listitem>
-		  <para>
-		    Flag to indicate if player has resverations
-		    waiting (only sent if login successful)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
-	  <refsect2>
-	    <title>Usage</title>
-	    <para>
-	      RSP_LOGIN is sent from the server to the client in
-	      response to a login request via <link
-	      linkend="rsp.login.new">RSP_LOGIN</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -2150,17 +2125,17 @@
 
 		<row rowsep="1">
 		  <entry namest="C1" nameend="C3">
-		    <emphasis>sequence of</emphasis> players
+		    <emphasis>sequence of</emphasis> players:
 		  </entry>
 		</row>
 		
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">name</entry>
+		  <entry align="right" namest="C1" nameend="C2">name</entry>
 		  <entry>string</entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">table</entry>
+		  <entry align="right" namest="C1" nameend="C2">table</entry>
 		  <entry>int</entry>
 		</row>
 
@@ -2196,7 +2171,7 @@
 		<term><emphasis role="bold">table</emphasis></term>
 		<listitem>
 		  <para>
-		    Index of table at which player is "sitting" or -1
+		    ID number of table at which player is "sitting" or -1
 		    if the player is not at a table.
 		  </para>
 		</listitem>
@@ -2207,20 +2182,1080 @@
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      MSG_MOTD is sent from the server to the client upon
-	      successful login (ie. after <link
-	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
-	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
-	      linkend="rsp.login">RSP_LOGIN</link>)
+	      RSP_LIST_PLAYERS is sent from the server to the client
+	      in response to
+	      <link linkend="req.list.players">REQ_LIST_PLAYERS</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.list.types"><?dbhtml filename="rsp_list_types.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LIST_TYPES</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LIST_TYPES</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_LIST_TYPES</refname>
+	  <refpurpose>
+	    Server response to request for list of server-supported
+	    game types.
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <colspec colnum="4" colname="C4">
+	      <spanspec spanname="data.seq0" namest="C1" nameend="C2"
+			align="left">
+	      <spanspec spanname="data.seq1" namest="C1" nameend="C2"
+			align="right">
+	      <spanspec spanname="all" namest="C1" nameend="C4"
+			align="left"> 
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>16</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry spanname="all">RSP_LIST_TYPES</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq0">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq0">types</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> types:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">ID</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">name</entry>
+		  <entry>string</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">version</entry>
+		  <entry>string</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">player_mask</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">description</entry>
+		  <entry>string</entry>
+		  <entry>if verbose</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">author</entry>
+		  <entry>string</entry>
+		  <entry>if verbose</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">homepage</entry>
+		  <entry>string</entry>
+		  <entry>if verbose</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to request for list of players in
+	  current room</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>
+		    Unique numeric ID for this game type
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Name of game
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">version</emphasis></term>
+		<listitem>
+		  <para>
+		    Version string for this game type
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">player_mask</emphasis></term>
+		<listitem>
+		  <para>
+		    Bit mask of allowable player numbers
+		    FIXME:  Needs explained
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Longer decription of this game.  Only sent if the
+		    client requested a verbose listing.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">author</emphasis></term>
+		<listitem>
+		  <para>
+		    Author of this game module.  Only sent if the
+		    client requested a verbose listing.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">homepage</emphasis></term>
+		<listitem>
+		  <para>
+		    URL for obtaining this game module.  Only sent if the
+		    client requested a verbose listing.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_LIST_TYPES is sent from the server to the client
+	      in response to
+	      <link linkend="req.list.types">REQ_LIST_TYPES</link>
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
       
+      <refentry id="rsp.list.tables"><?dbhtml filename="rsp_list_tables.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LIST_TABLES</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LIST_TABLES</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_LIST_TABLES</refname>
+	  <refpurpose>
+	    Server response to request for list of tables
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <colspec colnum="4" colname="C4">
+	      <spanspec spanname="data.seq0" namest="C1" nameend="C3"
+			align="left">
+	      <spanspec spanname="data.seq1" namest="C1" nameend="C3"
+			align="center">
+	      <spanspec spanname="data.seq2" namest="C1" nameend="C3"
+			align="right">
+	      <spanspec spanname="all" namest="C1" nameend="C4"
+			align="left"> 
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>17</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry spanname="all">RSP_LIST_TABLES</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq0">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq0">tables</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> tables:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">room</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">ID</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">type</entry>
+		  <entry>int</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">description</entry>
+		  <entry>string</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">state</entry>
+		  <entry>char</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">seats</entry>
+		  <entry>int</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> seats:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq2">assignment</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq2">name</entry>
+		  <entry>string</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to request for list of tables</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">tables</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of tables, or -1 on error
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">room</emphasis></term>
+		<listitem>
+		  <para>
+		    Room in which table resides
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>
+		    Unique numeric ID for table
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_LIST_TABLES is sent from the server to the client
+	      in response to
+	      <link linkend="req.list.tables">REQ_LIST_TABLES</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.list.rooms"><?dbhtml filename="rsp_list_rooms.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LIST_ROOMS</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LIST_ROOMS</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_LIST_ROOMS</refname>
+	  <refpurpose>
+	    Server response to request for list of rooms
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <colspec colnum="4" colname="C4">
+	      <spanspec spanname="data.seq0" namest="C1" nameend="C2"
+			align="left">
+	      <spanspec spanname="data.seq1" namest="C1" nameend="C2"
+			align="right">
+	      <spanspec spanname="all" namest="C1" nameend="C4"
+			align="left">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>18</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry spanname="all">RSP_LIST_ROOMS</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq0">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq0">rooms</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> rooms:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">ID</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">name</entry>
+		  <entry>string</entry>
+		  <entry>always</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">game</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">description</entry>
+		  <entry>string</entry>
+		  <entry>if verbose</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to request for list of rooms</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">rooms</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of rooms, or -1 on error
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>
+		    Unique numeric room ID
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Room name
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">game</emphasis></term>
+		<listitem>
+		  <para>
+		    ID of game type played in this room
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Longer description of room.  Only sent if client
+		    requested verbose listing.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_LIST_ROOMS is sent from the server to the client in
+	      response to <link
+	      linkend="req.list.rooms">REQ_LIST_ROOMS</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.table.launch"><?dbhtml filename="rsp_table_launch.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_TABLE_LAUNCH</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_TABLE_LAUNCH</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_TABLE_LAUNCH</refname>
+	  <refpurpose>Server response to request for table launch</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>21</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_TABLE_LAUNCH</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request for new table launch</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of launch request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_TABLE_LAUNCH is sent from the server to client in
+	      response to a table launch request via <link
+	      linkend="req.table.launch">REQ_TABLE_LAUNCH</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.table.join"><?dbhtml filename="rsp_table_join.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_TABLE_JOIN</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_TABLE_JOIN</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_TABLE_JOIN</refname>
+	  <refpurpose>Server response to request to join table</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>22</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_TABLE_JOIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request to join table</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of join request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_TABLE_JOIN is sent from the server to client in response
+	      to a table join request via <link
+	      linkend="req.table.join">REQ_TABLE_JOIN</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.table.leave"><?dbhtml filename="rsp_table_leave.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_TABLE_LEAVE</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_TABLE_LEAVE</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_TABLE_LEAVE</refname>
+	  <refpurpose>Server response to table leave request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>23</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_TABLE_LEAVE</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request to leave tablet</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of logout request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_TABLE_LEAVE is sent from the server to client in response
+	      to a table leave request via <link
+	      linkend="req.table.leave">REQ_TABLE_LEAVE</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.game"><?dbhtml filename="rsp_game.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_GAME</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_GAME</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_GAME</refname>
+	  <refpurpose>Message from game module server</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>24</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_GAME</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">size</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">(raw data)</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Message from game module server</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">size</emphasis></term>
+		<listitem>
+		  <para>
+		    number of bytes sent from game module server to
+		    game module client
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_GAME is a message sent from the server to client 
+	      containing data from the game module server for the game
+	      module client.  See also <link
+	      linkend="req.game">REQ_GAME</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.chat"><?dbhtml filename="rsp_chat.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_CHAT</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_CHAT</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_CHAT</refname>
+	  <refpurpose>Server response to chat message request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>25</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_CHAT</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player chat request</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of chat message request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_CHAT is sent from the server to client in response
+	      to a chat message request via <link
+	      linkend="req.chat">REQ_CHAT</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+      
+      <refentry id="rsp.motd"><?dbhtml filename="rsp_motd.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_MOTD</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_MOTD</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_MOTD</refname>
+	  <refpurpose>Server response to request for MOTD</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>26</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">lines</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">
+		    <emphasis>sequence of</emphasis> lines:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C2" nameend="C2">message</entry>
+		  <entry>string</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Message of the day (MOTD) from the Server</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">lines</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of lines in MOTD to follow.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">message</emphasis></term>
+		<listitem>
+		  <para>
+		    A single line of the MOTD
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_MOTD is sent from the server to client in response
+	      to a logout request via <link
+	      linkend="req.motd">REQ_MOTD</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="rsp.room.join"><?dbhtml filename="rsp_room_join.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_ROOM_JOIN</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_ROOM_JOIN</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_ROOM_JOIN</refname>
+	  <refpurpose>Server response to room change request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>27</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">RSP_ROOM_JOIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request to chamge rooms</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of room change request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      RSP_ROOM_JOIN is sent from the server to client in response
+	      to a room chamge request via <link
+	      linkend="req.room.join">REQ_ROOM_JOIN</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
     </section>
     
     <section id ="client-to-server"><title>Client to server messages</title>
-    
+      
       <refentry id="req.login.new"><?dbhtml filename="req_login_new.html">
 	<refmeta>
 	  <indexterm>
@@ -2243,9 +3278,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>0</entry>
 		</row>
 
 		<row rowsep="0">
@@ -2300,86 +3336,7 @@
 	</refsect1>
       </refentry>
 
-      <refentry id="req.login.anon"><?dbhtml filename="req_login_anon.html">
-	<refmeta>
-	  <indexterm>
-	    <primary>REQ_LOGIN_ANON</primary>
-	  </indexterm>
-	  <refentrytitle>REQ_LOGIN_ANON</refentrytitle>
-	</refmeta>
-
-	<refnamediv>
-	  <refname>REQ_LOGIN_ANON</refname>
-	  <refpurpose>Client requested "anonymous" login</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv><title>Synopsis</title>
-	  <informaltable>
-	    <tgroup cols="3">
-	      <colspec colnum="1" colname="C1" align="left">
-	      <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-	      <tbody>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
-                    <emphasis role="bold">Opcode</emphasis>
-                  </entry>
-		</row>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">REQ_LOGIN_ANON</entry>
-		</row>
-		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">name</entry>
-		  <entry>string</entry>
-		</row>
-
-	      </tbody>
-	    </tgroup>
-	  </informaltable>
-	</refsynopsisdiv>
-
-	<refsect1>
-	  <title>Description</title>
-	  <para>Client requested login of "anonymous" player</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">name</emphasis></term>
-		<listitem>
-		  <para>
-		    Requested name for "anonymous" player
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
-	  <refsect2>
-	    <title>Usage</title>
-	    <para>
-	      REQ_LOGIN_ANON is sent from the client to the server to
-	      request an "anonymous" login with the given name.  The
-	      request may come after <link
-	      linkend="msg.server.id">MSG_SERVER_ID</link>.  The server
-	      will respond to the request with <link
-	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>
-	    </para>
-	  </refsect2>
-	</refsect1>
-      </refentry>
-
-      <refentry id="req.login"><?dbhtml filename="req_login.html">
+            <refentry id="req.login"><?dbhtml filename="req_login.html">
 	<refmeta>
 	  <indexterm>
 	    <primary>REQ_LOGIN</primary>
@@ -2401,9 +3358,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>1</entry>
 		</row>
 
 		<row rowsep="0">
@@ -2470,6 +3428,86 @@
 	</refsect1>
       </refentry>
 
+      <refentry id="req.login.anon"><?dbhtml filename="req_login_anon.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LOGIN_ANON</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LOGIN_ANON</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_LOGIN_ANON</refname>
+	  <refpurpose>Client requested "anonymous" login</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>2</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LOGIN_ANON</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">name</entry>
+		  <entry>string</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Client requested login of "anonymous" player</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Requested name for "anonymous" player
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LOGIN_ANON is sent from the client to the server to
+	      request an "anonymous" login with the given name.  The
+	      request may come after <link
+	      linkend="msg.server.id">MSG_SERVER_ID</link>.  The server
+	      will respond to the request with <link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
       <refentry id="req.logout"><?dbhtml filename="req_logout.html">
 	<refmeta>
 	  <indexterm>
@@ -2492,22 +3530,16 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>3</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">REQ_LOGOUT</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -2552,22 +3584,16 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>6</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">REQ_LIST_PLAYERS</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -2579,10 +3605,713 @@
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_LOGOUT is sent from the client to the server to
-	      request that the player be logged out.  The server will
-	      then respond with <link
-	      linkend="rsp.logout">RSP_LOGOUT</link>.
+	      REQ_LIST_PLAYERS is sent from the client to the server
+	      to request a list of all players in the current room.
+	      The server will respond with <link
+	      linkend="rsp.list.players">RSP_LIST_PLAYERS</link>.
+	      This request is only valid once the player has
+	      successfully joined a room.  See <link
+	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
+					     
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.list.types"><?dbhtml filename="req_list_types.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LIST_TYPES</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LIST_TYPES</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_LIST_TYPES</refname>
+	  <refpurpose>
+	    Client request for list of server-supported game types
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>7</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LIST_TYPES</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para></para>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LIST_TYPES is sent from the client to the server
+	      to request a list of all players in the current room.
+	      The server will respond with <link
+	      linkend="rsp.list.players">RSP_LIST_TYPES</link>.
+	      This request is only valid once the player has
+	      successfully joined a room.  See <link
+	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
+					     
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.list.tables"><?dbhtml filename="req_list_tables.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LIST_TABLES</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LIST_TABLES</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_LIST_TABLES</refname>
+	  <refpurpose>
+	    Client request for list of tables
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>8</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LIST_TABLES</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para></para>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LIST_TABLES is sent from the client to the server
+	      to request a list of all players in the current room.
+	      The server will respond with <link
+	      linkend="rsp.list.players">RSP_LIST_TABLES</link>.
+	      This request is only valid once the player has
+	      successfully joined a room.  See <link
+	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
+					     
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.list.rooms"><?dbhtml filename="req_list_rooms.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LIST_ROOMS</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LIST_ROOMS</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_LIST_ROOMS</refname>
+	  <refpurpose>
+	    Client request for list of players in current room.
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>9</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LIST_ROOMS</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para></para>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LIST_ROOMS is sent from the client to the server
+	      to request a list of all players in the current room.
+	      The server will respond with <link
+	      linkend="rsp.list.players">RSP_LIST_ROOMS</link>.
+	      This request is only valid once the player has
+	      successfully joined a room.  See <link
+	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
+					     
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.table.launch"><?dbhtml filename="req_table_launch.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_TABLE_LAUNCH</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_TABLE_LAUNCH</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_TABLE_LAUNCH</refname>
+	  <refpurpose>Client request for new table launch</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>12</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_TABLE_LAUNCH</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request for new table launch</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of launch request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_TABLE_LAUNCH is sent from the server to client in
+	      response to a table launch request via <link
+	      linkend="req.table.launch">REQ_TABLE_LAUNCH</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.table.join"><?dbhtml filename="req_table_join.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_TABLE_JOIN</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_TABLE_JOIN</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_TABLE_JOIN</refname>
+	  <refpurpose>Server response to request to join table</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>13</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_TABLE_JOIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request to join table</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of join request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_TABLE_JOIN is sent from the server to client in response
+	      to a table join request via <link
+	      linkend="req.table.join">REQ_TABLE_JOIN</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.table.leave"><?dbhtml filename="req_table_leave.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_TABLE_LEAVE</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_TABLE_LEAVE</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_TABLE_LEAVE</refname>
+	  <refpurpose>Server response to table leave request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>14</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_TABLE_LEAVE</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player request to leave tablet</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of logout request (zero if successful,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_TABLE_LEAVE is sent from the server to client in response
+	      to a table leave request via <link
+	      linkend="req.table.leave">REQ_TABLE_LEAVE</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.game"><?dbhtml filename="req_game.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_GAME</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_GAME</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_GAME</refname>
+	  <refpurpose>Message from game module client</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>15</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_GAME</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">size</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">(raw data)</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Message from game module client</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">size</emphasis></term>
+		<listitem>
+		  <para>
+		    number of bytes sent from game module client to
+		    game module server
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_GAME is a message sent from the client to the server
+	      containing data from the game module client for the game
+	      module server.  See also <link
+	      linkend="rsp.game">RSP_GAME</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.chat"><?dbhtml filename="req_chat.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_CHAT</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_CHAT</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_CHAT</refname>
+	  <refpurpose>Client chat message request</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>16</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_CHAT</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>char</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to player logout request</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">status</emphasis></term>
+		<listitem>
+		  <para>
+		    status of logout request (zero if successfule,
+		    negative on error)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_CHAT is sent from the server to client in response
+	      to a logout request via <link
+	      linkend="req.logout">REQ_LOGOUT</link>.  
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+      
+      <refentry id="req.motd"><?dbhtml filename="req_motd.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_MOTD</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_MOTD</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_MOTD</refname>
+	  <refpurpose>Request for MOTD from server</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>17</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_MOTD</entry>
+		</row>
+		
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Request fro MOTD from server</para>
+
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_MOTD is sent to request the MOTD.  The server is
+	      expected to respond with <link
+	      linkend="rsp.motd">RSP_MOTD</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="req.room.join"><?dbhtml filename="req_room_join.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_ROOM_JOIN</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_ROOM_JOIN</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_ROOM_JOIN</refname>
+	  <refpurpose>Request to chamge rooms</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>18</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_ROOM_JOIN</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">room</entry>
+		  <entry>int</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Request to change rooms</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">room</emphasis></term>
+		<listitem>
+		  <para>
+		    room ID of requested destination
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_ROOM_JOIN is sent from the client to the server to
+	      request a room change.  It is expected that the server
+	      will respond with <link
+	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>.  
 	    </para>
 	  </refsect2>
 	</refsect1>
