@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 4378 2002-08-20 21:19:06Z jdorje $
+ * $Id: types.c 4686 2002-09-24 18:18:12Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -47,10 +47,11 @@ static GtkWidget *types_dialog;
 static GtkWidget* create_dlg_types(void);
 
 #if 0 /* currently unused */
-static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer data);
-#endif
+static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event,
+				   gpointer data);
 static void types_upgrade(GtkMenuItem *menuitem, gpointer data);
 static void types_URL(GtkMenuItem *menuitem, gpointer data);
+#endif
 static void types_filter_button(GtkWidget *widget, gpointer data);
 
 
@@ -112,7 +113,6 @@ static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer 
 
 	return FALSE;
 }
-#endif
 
 
 static void types_upgrade(GtkMenuItem *menuitem, gpointer data)
@@ -125,6 +125,7 @@ static void types_URL(GtkMenuItem *menuitem, gpointer data)
 {
 
 }
+#endif
 
 
 static void types_filter_button(GtkWidget *widget, gpointer data)
