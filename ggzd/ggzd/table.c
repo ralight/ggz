@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2505 2001-09-24 02:36:50Z bmh $
+ * $Id: table.c 2768 2001-12-01 06:51:06Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -37,7 +37,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "ggzdmod.h"
+#include <ggzdmod.h>
 
 #include <ggzd.h>
 #include <datatypes.h>
@@ -63,16 +63,17 @@ extern Options opt;
 static int   table_check(GGZTable* table);
 static int   table_handler_launch(GGZTable* table);
 static void* table_new_thread(void *index_ptr);
-static void  table_fork(GGZTable* table);
+static int   table_start_game(GGZTable *table);
 static void  table_loop(GGZTable* table);
 static void  table_remove(GGZTable* table);
-static void  table_run_game(GGZTable* table, char *path, char **args);
-static int   table_send_opt(GGZTable* table);
-int   table_game_over(GGZdmod *ggzdmod);
-int   table_log(GGZdmod *ggzdmod, char *msg, int level, char debug);
-int   table_game_launch(GGZdmod *ggzdmod, char status);
-int   table_game_join(GGZdmod *ggzdmod, char status);
-int   table_game_leave(GGZdmod *ggzdmod, char status);
+
+/* Handlers for ggzdmod events */
+static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
+static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+
 static int   table_event_enqueue(GGZTable* table, unsigned char opcode);
 static int   table_update_event_enqueue(GGZTable* table,
 					 unsigned char opcode, char* name,
@@ -173,9 +174,10 @@ static int table_check(GGZTable* table)
 	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-	dbg_msg(GGZ_DBG_TABLE, "GGZdmod    : %x", table->ggzdmod);
+	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", table->ggzdmod);
 	if (table->ggzdmod)
-		dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table->ggzdmod->fd);
+		dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", ggzdmod_get_fd(table->ggzdmod));
+			
 	for (i = 0; i < seat_total; i++) {
 		switch (seats_type(table, i)) {
 		case GGZ_SEAT_OPEN:
@@ -238,7 +240,7 @@ static void* table_new_thread(void *index_ptr)
 {
 	GGZTable* table;
 	int i, status, count;
-	char *rname;
+	char *rname, *gname;
 
 	table = *((GGZTable**)index_ptr);
 	free(index_ptr);
@@ -268,8 +270,8 @@ static void* table_new_thread(void *index_ptr)
 
 	/* Setup an entry in the rooms */
 	pthread_rwlock_wrlock(&rooms[table->room].lock);
+	rname = strdup(rooms[table->room].name);
 	if (rooms[table->room].table_count == rooms[table->room].max_tables) {
-		rname = strdup(rooms[table->room].name);
 		pthread_rwlock_unlock(&rooms[table->room].lock);
 		log_msg(GGZ_LOG_NOTICE,
 			"ROOM_FULL - %s could not create table in %s",
@@ -288,11 +290,33 @@ static void* table_new_thread(void *index_ptr)
 	table->index = i;
 	pthread_rwlock_unlock(&table->lock);
 	pthread_rwlock_unlock(&rooms[table->room].lock);
-
+	
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count now = %d", table->room, 
 		count);
 
-	table_fork(table);
+	/* Get the name of this game type */
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	gname = strdup(game_types[table->type].name);
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+
+	/* Let the game begin...*/
+	if (table_start_game(table) == 0) {
+		log_msg(GGZ_LOG_TABLES,
+			"TABLE_START - %s started a new game of %s in %s",
+			table->owner, gname, rname);
+		free(rname);
+
+		table_loop(table);
+
+		log_msg(GGZ_LOG_TABLES,
+			"TABLE_END - Game of %s started by %s has ended",
+			gname, table->owner);
+		free(gname);
+	}
+	else 
+		dbg_msg(GGZ_DBG_TABLE, "Table %d failed to start game module", 
+			table->index);
+	
 	table_remove(table);
 	table_free(table);
 
@@ -300,149 +324,73 @@ static void* table_new_thread(void *index_ptr)
 }
 
 
-/*
- * table_fork is responsible for setting up a new game table process.
- * It forks the child to play the game, and kills the child when the
- * game is over.
- */
-static void table_fork(GGZTable* table)
+/* Create and start game module */
+static int table_start_game(GGZTable *table)
 {
-	pid_t pid;
-	char path[MAX_PATH_LEN];
-	char **args;
-	int n_args;
-	int i;
-	int type, sfd[2];
-	char *rname, *gname;
+#if 0
+	char *args[] = {"logmod", NULL};
+#endif
+	char *path, **args;
+	int type, n_args, i, num_seats;
+	GGZSeat seat;
 
-	/* Get room name for logs */
-	pthread_rwlock_rdlock(&rooms[table->room].lock);
-	rname = strdup(rooms[table->room].name);
-	pthread_rwlock_unlock(&rooms[table->room].lock);
+	pthread_rwlock_wrlock(&table->lock);
+	table->ggzdmod = ggzdmod_new(GGZDMOD_GGZ);
+	pthread_rwlock_unlock(&table->lock);	
 
-	/* Get path for game server */
-	type = table->type;
+	/* Some weird error in creating the module */
+	if (!table->ggzdmod)
+		return -1;
 
-	pthread_rwlock_rdlock(&game_types[type].lock);
-	strncpy(path, game_types[type].path, MAX_PATH_LEN);
 	/* Build our argument list */
+	type = table->type;
+	pthread_rwlock_rdlock(&game_types[type].lock);
+	path = game_types[type].path;
 	n_args = game_types[type].n_args;
+	/* Leave enough room for executable and terminating NULL */
 	args = calloc(n_args + 2, sizeof(char *));
-	if((args[0] = malloc(strlen(path)+1)) == NULL)
-		err_sys_exit("malloc failure in table_fork()");
-	strcpy(args[0], path);
-	for(i=0; i<n_args; i++) {
-		args[i+1] = malloc(strlen(game_types[type].args[i]) + 1);
-		if(args[i+1] == NULL)
-			err_sys_exit("malloc failure in table_fork()");
-		strcpy(args[i+1], game_types[type].args[i]);
+	if (!(args[0] = strdup(path)))
+		err_sys_exit("strdup failure in table_fork()");
+	for (i = 0; i < n_args; i++) {
+		if (!(args[i+1] = strdup(game_types[type].args[i])))
+			err_sys_exit("strdup failure in table_fork()");
 	}
-	gname = strdup(game_types[type].name);
 	pthread_rwlock_unlock(&game_types[type].lock);
 
-	/* Set up socket pair for ggz<->game communication */
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
-		err_sys_exit("socketpair failed");
+	/* Set a pointer to the table so we can get it back in the
+           event handlers */
+	ggzdmod_set_gamedata(table->ggzdmod, table);
 
-	/* Fork table process */
-	if ( (pid = fork()) < 0)
-		err_sys_exit("fork failed");
-	else if (pid == 0) {
-		/* child */
-		close(sfd[0]);
+	/* Setup handlers for game module events */
+        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
+        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_JOIN, &table_game_join);
+        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LEAVE, &table_game_leave);
+        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
+	
+        /* Setup seats for game table */
+	num_seats = seats_num(table);
+	ggzdmod_set_num_seats(table->ggzdmod, num_seats);
+        for (i = 0; i < num_seats; i++) {
+		seat.num = i;
+		seat.type = seats_type(table, i);
+		if (seat.type == GGZ_SEAT_RESV)
+			seat.name = table->reserve[i];
+		else
+			seat.name = NULL;
+		seat.fd = -1;
+		ggzdmod_set_seat(table->ggzdmod, &seat);
+        }
 
-		/* This debugging message used to be in table_run_game, but
-		 * after we close FD 3 we can't send anything more.  We
-		 * could backup the FD manually before overwriting it, but
-		 * I don't think it's worth it.  --JDS */
-		dbg_msg(GGZ_DBG_TABLE, "%s", path);
+	/* And start the game */
+	ggzdmod_set_module(table->ggzdmod, args);	
 
-		/* libggzdmod expects FD 3 to be the socket's FD */
-		if (sfd[1] != 3) {
-			/* We'd like to send an error message if either of
-			 * these fail, but we can't.  --JDS */
-			if (dup2(sfd[1], 3) != 3)
-				exit(-1);
-			if (close(sfd[1]) < 0)
-				exit(-1);
-		}
+	ggzdmod_connect(table->ggzdmod);
 
-		table_run_game(table, path, args);
-		/* table_run_game() should never return */
-		/* FIXME: handle more gracefully */
-		exit(-1); /* we still can't send error messages */
-	} else {
-		/* parent */
-		close(sfd[1]);
-		
-		pthread_rwlock_wrlock(&table->lock);
-		table->pid = pid;
-		table->ggzdmod = ggzdmod_new(sfd[0], table);
-		if (!table->ggzdmod) {
-			/* FIXME */
-		}
-		pthread_rwlock_unlock(&table->lock);
-
-		/* We can zap the args now */
-		for(i=0; i < n_args + 1; i++)
-			free(args[i]);
-		free(args);
-
-		log_msg(GGZ_LOG_TABLES,
-			"TABLE_START - %s started a new game of %s in %s",
-			table->owner, gname, rname);
-		free(rname);
-		
-		if (table_send_opt(table) == 0)
-			table_loop(table);
-
-		log_msg(GGZ_LOG_TABLES,
-			"TABLE_END - Game of %s started by %s has ended",
-			gname, table->owner);
-		free(gname);
-
-		/* Make sure game server is dead */
-		kill(pid, SIGINT);
-		close(table->ggzdmod->fd);
-	}
-}
-
-
-static void table_run_game(GGZTable* table, char *path, char **args)
-{
-	/* Comment out for now */
-	/*dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running on table %d", 
-		t_index);*/
-
-	/* FIXME: Close all other fd's and kill threads? */
-	/* FIXME: Not necessary to close other fd's if we use CLOSE_ON_EXEC */
-
-	execv(args[0], args);
-}
-
-
-static int table_send_opt(GGZTable* table)
-{
-	GGZTable copy;
-	int i;
-
-	pthread_rwlock_rdlock(&table->lock);
-	copy = *table;
-	pthread_rwlock_unlock(&table->lock);
-
-	{
-		/* This is a quick hack to get the interface to the
-		 * library working.  It should be cleaned up later. --JDS */
-		int num_seats = seats_num(&copy);
-		int assign[num_seats];
-		char* reserves[num_seats];
-		for (i=0; i<num_seats; i++) {
-			assign[i] = seats_type(&copy, i);
-			reserves[i] = copy.reserve[i];
-		}
-		if (ggzdmod_launch_game(table->ggzdmod, num_seats, assign, reserves) < 0)
-			return -1;
-	}
+	/* Free arguments */
+	for (i = 0; i < n_args + 1; i++)
+		free(args[i]);
+	free(args);
 
 	return 0;
 }
@@ -454,7 +402,7 @@ static void table_loop(GGZTable* table)
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
 	
-	fd = table->ggzdmod->fd;
+	fd = ggzdmod_get_fd(table->ggzdmod);
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
 
@@ -480,33 +428,13 @@ static void table_loop(GGZTable* table)
 
 		if (ggzdmod_dispatch(table->ggzdmod) < 0)
 			break;
+
+		if (table->state == GGZ_TABLE_DONE)
+			break;
 	}
-}
 
-
-int table_game_launch(GGZdmod *ggzdmod, char status)
-{
-	GGZTable* table = ggzdmod->table_data;
-
-	/* FIXME: check status */
-
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to launch", 
+	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d loop completed", 
 		table->index, table->room);
-
-	if (table->state != GGZ_TABLE_CREATED)
-		return -1;	
-	
-	pthread_rwlock_wrlock(&table->lock);
-	table->state = GGZ_TABLE_LAUNCHED;
-	pthread_rwlock_unlock(&table->lock);
-
-	/* Signal owner that all is good */
-	table_launch_event(table->owner, 0, table->index);
-	
-	/* Trigger a table update in this room */
-	table_event_enqueue(table, GGZ_UPDATE_ADD);
-		
-	return 0;
 }
 
 
@@ -514,10 +442,9 @@ int table_game_launch(GGZdmod *ggzdmod, char status)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains malloced mem on entry
  */
-int table_game_join(GGZdmod *ggzdmod, char status)
+static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
-	GGZTable* table = ggzdmod->table_data;
-	char full;
+	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
 	int seat, fd, msg_status;
 
@@ -526,7 +453,7 @@ int table_game_join(GGZdmod *ggzdmod, char status)
 
 	/* Error: we didn't request a join! */
 	if (!table->transit)
-		return -1;
+		return;
 
 	/* Read saved transit data */
 	name = table->transit_name;
@@ -534,38 +461,27 @@ int table_game_join(GGZdmod *ggzdmod, char status)
 	fd = table->transit_fd;
 
 	/* Notify player of transit status */
-	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN, status, 
+	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN, 0, 
 					  table->index, fd);
+	/* FIXME: we still need to handle the case where the join fails */
 
 	/* Transit successful: Assign seat */
-	if (status == 0) {
-		pthread_rwlock_wrlock(&table->lock);
-		strcpy(table->seats[seat], name);
-		/* Is table full now? */
-		if ( (full = !seats_open(table)))
-			table->state = GGZ_TABLE_PLAYING;
-		pthread_rwlock_unlock(&table->lock);
-		
-		/* If player notification failed, they must've logged out */
-		if (msg_status < 0) {
-			dbg_msg(GGZ_DBG_TABLE, "%s logged out during join",
-				name);
-			transit_table_event(table->room, table->index, 
-					    GGZ_TRANSIT_LEAVE, name);
-		} else {
-			table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
-						   name, seat);
-			dbg_msg(GGZ_DBG_TABLE, 
-				"%s in seat %d at table %d of room %d",
-				name, seat, table->index, table->room);
-						
-			if (full) {
-				table_event_enqueue(table, GGZ_UPDATE_STATE);
-				dbg_msg(GGZ_DBG_TABLE, 
-					"Table %d in room %d now full", 
-					table->index, table->room);
-			}
-		}
+	pthread_rwlock_wrlock(&table->lock);
+	strcpy(table->seats[seat], name);
+	pthread_rwlock_unlock(&table->lock);
+	
+	/* If player notification failed, they must've logged out */
+	if (msg_status < 0) {
+		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join",
+			name);
+		transit_table_event(table->room, table->index, 
+				    GGZ_TRANSIT_LEAVE, name);
+	} else {
+		table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
+					   name, seat);
+		dbg_msg(GGZ_DBG_TABLE, 
+			"%s in seat %d at table %d of room %d",
+			name, seat, table->index, table->room);
 	}
 	
 	/* Clear table for next transit */
@@ -575,27 +491,27 @@ int table_game_join(GGZdmod *ggzdmod, char status)
 	table->transit_name = NULL;
 	table->transit_fd = -1;
 	pthread_rwlock_unlock(&table->lock);
-
-	return 0;
 }
 
 
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-int table_game_leave(GGZdmod *ggzdmod, char status)
+static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
-	GGZTable *table = ggzdmod->table_data;
+	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
+	char status, empty = 0;
 	int seat;
-	int ret_val = 0;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to leave", 
 		table->index, table->room);
 
+	status = *(char*)data;
+
 	/* Error: we didn't request a leave! */
 	if (!table->transit)
-		return -1;
+		return ;
 
 	/* Read in saved transit data */
 	name = table->transit_name;
@@ -613,9 +529,8 @@ int table_game_leave(GGZdmod *ggzdmod, char status)
 		if (!seats_human(table)) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 				table->index, table->room);
-			ret_val = -1;
+			empty = 1;
 		}
-		
 		pthread_rwlock_unlock(&table->lock);
 		table_update_event_enqueue(table, GGZ_UPDATE_LEAVE, name, 
 					    seat);
@@ -631,34 +546,75 @@ int table_game_leave(GGZdmod *ggzdmod, char status)
 	table->transit_name = NULL;
 	table->transit_seat = -1;
 
-	return ret_val;
+	/* FIXME: is this the right thing to do???
+	   Maybe we should let the game do it by calling ggzdmod_halt_()*/
+	if (empty) 
+		ggzdmod_disconnect(ggzdmod);
 }
 
 
-int table_game_over(GGZdmod *ggzdmod)
+static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 {
-	GGZTable* table = ggzdmod->table_data;
+	GGZTable* table = ggzdmod_get_gamedata(mod);
+	GGZdModState cur, prev;
 
-	dbg_msg(GGZ_DBG_TABLE,
-		"Handling game-over request from table %d in room %d", 
-		table->index, table->room);
+	prev = *(GGZdModState*)data;
+	cur = ggzdmod_get_state(mod);
 
-	/* Mark table as done, so people don't attempt transits */
-	pthread_rwlock_wrlock(&table->lock);
-	table->state = GGZ_TABLE_DONE;
-	pthread_rwlock_unlock(&table->lock);
-	table_event_enqueue(table, GGZ_UPDATE_STATE);
+	switch (cur) {
+	case GGZDMOD_STATE_WAITING:
+		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now waiting", 
+			table->index, table->room);
 
-	return 0;
+		/* FIXME: maybe we shouldn't keep track of table state
+                   here any more? */
+		if (table->state != GGZ_TABLE_CREATED)
+			return;	
+		pthread_rwlock_wrlock(&table->lock);
+		table->state = GGZ_TABLE_WAITING;
+		pthread_rwlock_unlock(&table->lock);
+		
+		/* Signal owner that all is good */
+		table_launch_event(table->owner, 0, table->index);
+	
+		/* Trigger a table update in this room */
+		table_event_enqueue(table, GGZ_UPDATE_ADD);
+		break;
+		
+	case GGZDMOD_STATE_PLAYING:
+		pthread_rwlock_wrlock(&table->lock);
+		table->state = GGZ_TABLE_PLAYING;
+		pthread_rwlock_unlock(&table->lock);
+		
+		table_event_enqueue(table, GGZ_UPDATE_STATE);
+		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now full/playing",
+			table->index, table->room);
+		break;
+
+	case GGZDMOD_STATE_DONE:
+		dbg_msg(GGZ_DBG_TABLE,
+			"Table %d in room %d game module is done", 
+			table->index, table->room);
+
+		/* Mark table as done, so people don't attempt transits */
+		pthread_rwlock_wrlock(&table->lock);
+		table->state = GGZ_TABLE_DONE;
+		pthread_rwlock_unlock(&table->lock);
+		table_event_enqueue(table, GGZ_UPDATE_STATE);
+		break;
+	default:
+		/* FIXME: some kind of error handling here */
+		break;
+	}
 }
 
 
-int table_log(GGZdmod *ggzdmod, char* message, int level, char debug)
+static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
-	GGZTable *table = ggzdmod->table_data;
-	int type, len, pid;
+	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
+	int type, len;
 	char name[MAX_GAME_NAME_LEN];
-	char *prescan = message, *msg, *p, *m;
+	char *prescan = data, *msg, *p, *m;
 	char *buf;
 	int  pcts=0;
 
@@ -691,7 +647,6 @@ int table_log(GGZdmod *ggzdmod, char* message, int level, char debug)
 	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
 		pthread_rwlock_rdlock(&table->lock);
 		type = table->type;
-		pid = table->pid;
 		pthread_rwlock_unlock(&table->lock);
 		
 		pthread_rwlock_rdlock(&game_types[type].lock);
@@ -700,18 +655,11 @@ int table_log(GGZdmod *ggzdmod, char* message, int level, char debug)
 		
 		len = strlen(msg) + strlen(name) + 5;
 		
-		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
-			len += 6;
-		
 		if ( (buf = malloc(len)) == NULL)
 			err_sys_exit("malloc failed");
 
 		memset(buf, 0, len);
-
-		if (debug || (log_info.options & GGZ_LOGOPT_INC_PID))
-			snprintf(buf, (len - 1), "(%s:%d) ", name, pid);
-		else
-			snprintf(buf, (len - 1), "(%s) ", name);
+		snprintf(buf, (len - 1), "(%s) ", name);
 		
 		strncat(buf, msg, (len - 1));
 		if(msg != prescan)
@@ -719,21 +667,26 @@ int table_log(GGZdmod *ggzdmod, char* message, int level, char debug)
 		msg = buf;
 	}
 	
-	if (debug) 
-		dbg_msg(level, msg);
-	else
-		log_msg(level, msg);
+	dbg_msg(GGZ_DBG_TABLE, msg);
 
 	if(msg != prescan)
 		free(msg);
-	
-	return 0;
 }
+
+
+static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+{
+	dbg_msg(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
+}
+
 
 
 static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
+
+	/* Disconnect from the game server */
+	ggzdmod_disconnect(table->ggzdmod);
 
 	/* First get it off the list in rooms */
 	room = table->room;

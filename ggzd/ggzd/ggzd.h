@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 2622 2001-10-28 23:36:54Z rgade $
+ * $Id: ggzd.h 2768 2001-12-01 06:51:06Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -72,7 +72,7 @@
 /* Table state values */
 #define GGZ_TABLE_ERROR     -1
 #define GGZ_TABLE_CREATED    0
-#define GGZ_TABLE_LAUNCHED   1
+#define GGZ_TABLE_WAITING    1
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
 

@@ -145,7 +145,7 @@ static void* player_new(void *arg_ptr)
 	/* Initialize player data */
 	pthread_rwlock_init(&player->lock, NULL);
 	player->net = net_new(sock, player);
-	/*net_set_dump_file(player->net, "ggzd.protocol");*/
+	net_set_dump_file(player->net, "ggzd.protocol");
 
 	player->thread = pthread_self();
 	player->table = -1;

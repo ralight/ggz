@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 2330 2001-08-31 03:54:57Z jdorje $
+ * $Id: transit.c 2768 2001-12-01 06:51:06Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -262,6 +262,7 @@ static int transit_player_event_callback(void* target, int size, void* data)
  */
 static int transit_send_join_to_game(GGZTable* table, char* name)
 {
+	GGZSeat seat;
 	int seats, i, fd[2];
 
 	dbg_msg(GGZ_DBG_TABLE, "Sending join for table %d in room %d",
@@ -288,9 +289,13 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 	table->transit_fd = fd[1];
 
 	/* Send info to table */
-	if (ggzdmod_player_join(table->ggzdmod, i, name, fd[0]) < 0)
+	seat.num = i;
+	seat.name = name;
+	seat.fd = fd[0];
+	seat.type = GGZ_SEAT_PLAYER;
+	if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
 		return -1;
-
+	
 	/* Must close remote end of socketpair */
 	close(fd[0]);
 	
@@ -303,6 +308,7 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
  */
 static int transit_send_leave_to_game(GGZTable* table, char* name)
 {
+	GGZSeat seat;
 	int seats, i;
 	
 	dbg_msg(GGZ_DBG_TABLE, "Sending leave for table %d in room %d", 
@@ -323,7 +329,11 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	table->transit_seat = i;
 	
 	/* Send message to table */
-	ggzdmod_player_leave(table->ggzdmod, name);
+	seat.num = i;
+	seat.name = NULL;
+	seat.fd = -1;
+	seat.type = GGZ_SEAT_OPEN;
+	ggzdmod_set_seat(table->ggzdmod, &seat);
 
 	return 0;
 }
