@@ -96,7 +96,6 @@
 	    <last_modification_time>Sat, 29 Apr 2000 18:29:22 GMT</last_modification_time>
 	  </signal>
 	  <label>Connect</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -111,7 +110,6 @@
 	    <last_modification_time>Wed, 25 Oct 2000 01:07:34 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
@@ -215,7 +213,7 @@
 		    <data>dlg_login</data>
 		    <last_modification_time>Tue, 20 Jun 2000 22:41:21 GMT</last_modification_time>
 		  </signal>
-		  <editable>True</editable>
+		  <editable>False</editable>
 		  <text_visible>True</text_visible>
 		  <text_max_length>0</text_max_length>
 		  <text></text>
@@ -249,7 +247,6 @@
 		    <last_modification_time>Sat, 29 Apr 2000 18:22:50 GMT</last_modification_time>
 		  </signal>
 		  <label>Edit Profiles...</label>
-		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>

@@ -33,7 +33,7 @@
 #include "ggz.h"
 #include "license.h"
 #include "login.h"
-
+#include "server.h"
 
 extern GtkWidget *win_main;
 
@@ -47,6 +47,7 @@ int main (int argc, char *argv[])
 	opt.user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
 
 	ggzcore_init(opt);
+	server_profiles_load();
 	ggz_event_init();
 	ggz_state_init();
 	

@@ -34,6 +34,7 @@
 #include <gtk/gtk.h>
 
 #include "login.h"
+#include "server.h"
 #include "support.h"
 
 GtkWidget *login_dialog;
@@ -51,6 +52,7 @@ static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
 static void login_relogin(GtkButton *button, gpointer user_data);
 static void login_reconnect(GGZEventID id, void* event_data, void* user_data);
+static void login_set_entries(Server server);
 
 void
 login_create_or_raise(void)
@@ -128,11 +130,17 @@ login_fill_defaults                    (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	GtkWidget* tmp;
+	GList *items;
 
-	/* Default to Guest login for now */
-	tmp = lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	tmp = lookup_widget(login_dialog, "profile_combo");
 
+	/* Fill profile combo box if there are any profiles*/
+	if ( (items = server_get_name_list())) {
+		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	}
+	else
+		gtk_widget_set_sensitive(tmp, FALSE);
+		
 }
 
 
@@ -140,7 +148,18 @@ static void
 login_profile_changed                  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+	GtkWidget *tmp;
+	Server* server = NULL;
 
+	tmp = lookup_widget(login_dialog, "profile_entry");
+	server = server_get(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	if (!server) {
+		/* Profile Not Found */
+		return;
+	}
+
+	login_set_entries(*server);
 }
 
 
@@ -303,7 +322,51 @@ void login_reconnect(GGZEventID id, void* event_data, void* user_data)
 }
 
 
-static GtkWidget*
+static void login_set_entries(Server server)
+{
+	GtkWidget *tmp;
+	gchar *port;
+	
+	/*
+	tmp = lookup_widget(login_dialog, "profile_entry");
+	if (server.name)
+		gtk_entry_set_text(GTK_ENTRY(tmp), server.name);
+	*/
+
+	tmp = lookup_widget(login_dialog, "host_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), server.host);
+	
+	tmp = lookup_widget(login_dialog, "port_entry");
+	port = g_strdup_printf("%d", server.port);
+	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	g_free(port);
+
+	switch (server.type) {
+		case GGZ_LOGIN:
+		tmp = lookup_widget(login_dialog, "normal_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;	
+		case GGZ_LOGIN_GUEST:
+		tmp = lookup_widget(login_dialog, "guest_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;	
+		case GGZ_LOGIN_NEW:
+		tmp = lookup_widget(login_dialog, "first_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;	
+	}
+
+	tmp = lookup_widget(login_dialog, "name_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), server.login);
+
+	if (server.type == GGZ_LOGIN && server.password != NULL) {
+		tmp = lookup_widget(login_dialog, "pass_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
+	}
+}
+
+
+GtkWidget*
 create_dlg_login (void)
 {
   GtkWidget *dlg_login;
@@ -416,6 +479,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "profile_entry", profile_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_entry);
+  gtk_entry_set_editable (GTK_ENTRY (profile_entry), FALSE);
 
   profile_button_box = gtk_hbutton_box_new ();
   gtk_widget_ref (profile_button_box);
