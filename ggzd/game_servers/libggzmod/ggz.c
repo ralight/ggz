@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2064 2001-07-22 06:17:37Z jdorje $	*/
+/*	$Id: ggz.c 2167 2001-08-19 08:13:16Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -41,23 +41,17 @@
 
 /* Our storage of the player list */
 struct ggz_seat_t* ggz_seats=NULL;
+int ggzfd = -1;
+
+#define GGZ_SOCKET_FD 3
 
 /* Local copies of necessary data */
-static char* name=NULL;
-static int ggzfd;
 static int seats;
 
 
 /* Initialize data structures*/
 int ggz_server_init(char* game_name)
 {
-	int len;
-
-	len = strlen(game_name);
-	if ( (name = malloc(len+1)) == NULL)
-		return -1;
-	strcpy(name, game_name);
-	
 	return 0;
 }
 
@@ -65,35 +59,11 @@ int ggz_server_init(char* game_name)
 /* Connect to Unix domain socket */
 int ggz_server_connect(void)
 {
-	int sock, len;
-	char* fd_name;
-	struct sockaddr_un addr;
-	
-	if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
-		perror("ggz_server_connect:");
-		return -1;
-	}
+	/* TODO: check that the socket is real */
 
-	len = strlen(name) + strlen(TMPDIR) + 8;
-	if ( (fd_name = malloc(len)) == NULL) {
-		return -1;
-	}
-	snprintf(fd_name, len, "%s/%s.%d", TMPDIR, name, getpid());
-	
-	memset(&addr, 0, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-	free(fd_name);
-
-	if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		perror("ggz_server_connect:");
-		return -1;
-	}
-
-	ggzfd = sock;
-	ggz_debug("%s game started", name);
-
-	return sock;
+	ggzfd = GGZ_SOCKET_FD;
+	ggz_debug("Game started");
+	return ggzfd;
 }
 
 
@@ -288,6 +258,5 @@ int ggz_server_done(void)
 
 void ggz_server_quit(void)
 {
-	if(name) free(name);
 	if(ggz_seats) free(ggz_seats);
 }

@@ -265,50 +265,53 @@ static void table_fork(GGZTable* table)
 {
 	pid_t pid;
 	char path[MAX_PATH_LEN];
-	char prot_engine[MAX_GAME_NAME_LEN + 1];
-	char fd_name[MAX_PATH_LEN];
-	int type, sock, fd;
-	struct stat buf;
+	int type, sfd[2];
 
 	/* Get path for game server */
 	type = table->type;
 
 	pthread_rwlock_rdlock(&game_types[type].lock);
 	strncpy(path, game_types[type].path, MAX_PATH_LEN);
-	strncpy(prot_engine, game_types[type].p_engine, MAX_GAME_NAME_LEN);
 	pthread_rwlock_unlock(&game_types[type].lock);
+
+	/* Set up socket pair for ggz<->game communication */
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
+		err_sys_exit("socketpair failed");
 
 	/* Fork table process */
 	if ( (pid = fork()) < 0)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
-		/* Make sure the parent's socket is created before we go on */
-		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, prot_engine, getpid());
-		while (stat(fd_name, &buf) < 0)
-			sleep(1);
+		/* child */
+		close(sfd[0]);
+
+		/* This debugging message used to be in table_run_game, but
+		 * after we close FD 3 we can't send anything more.  We
+		 * could backup the FD manually before overwriting it, but
+		 * I don't think it's worth it.  --JDS */
+		dbg_msg(GGZ_DBG_TABLE, "%s", path);
+
+		/* libggzdmod expects FD 3 to be the socket's FD */
+		if (sfd[1] != 3) {
+			/* We'd like to send an error message if either of
+			 * these fail, but we can't.  --JDS */
+			if (dup2(sfd[1], 3) != 3)
+				exit(-1);
+			if (close(sfd[1]) < 0)
+				exit(-1);
+		}
 
 		table_run_game(table, path);
 		/* table_run_game() should never return */
 		/* FIXME: handle more gracefully */
-		err_sys_exit("exec of %s failed", path);
+		exit(-1); /* we still can't send error messages */
 	} else {
-		/* Create Unix domain socket for communication*/
-		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, prot_engine, pid);
-		sock = es_make_unix_socket(ES_SERVER, fd_name);
-		/* FIXME: need to check validity of fd */
-		
-		if (listen(sock, 1) < 0) 
-			err_sys_exit("listen failed");
-
-		if ( (fd = accept(sock, NULL, NULL)) < 0)
-			err_sys_exit("accept failed");
-
-		/* We don't accept any more connections */
-		close(sock);
+		/* parent */
+		close(sfd[1]);
 		
 		pthread_rwlock_wrlock(&table->lock);
 		table->pid = pid;
-		table->fd = fd;
+		table->fd = sfd[0];
 		pthread_rwlock_unlock(&table->lock);
 		
 		if (table_send_opt(table) == 0)
@@ -317,7 +320,6 @@ static void table_fork(GGZTable* table)
 		/* Make sure game server is dead */
 		kill(pid, SIGINT);
 		close(table->fd);
-		unlink(fd_name);
 	}
 }
 
@@ -335,7 +337,6 @@ static void table_run_game(GGZTable* table, char *path)
 
 	vpath = strdup(path);
 	args = table_split_args(vpath);
-	dbg_msg(GGZ_DBG_TABLE, "%s, %s, ", args[0], args[1]);
 	execv(args[0], args);
 	free(args);
 	free(vpath);
