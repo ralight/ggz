@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4150 2002-05-04 23:46:47Z jdorje $
+ * $Id: control.c 4688 2002-09-24 21:41:16Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include <fcntl.h>
 #include <ggz.h>
 
+#include "chat.h"
 #include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
@@ -62,7 +63,19 @@ struct GameInfo game_types[MAX_GAME_TYPES];
 struct GGZState state;
 
 /* Termination signal */
+static sig_atomic_t hup_signal;
 static sig_atomic_t term_signal;
+
+/* Hangup handler.  Eventually admins will be able to raise() this
+   over the network. */
+static RETSIGTYPE hup_handle(int signum)
+{
+	hup_signal = 1;
+	log_msg(GGZ_LOG_NOTICE, "Server received HUP");
+	chat_server_2_player(NULL,
+			     "This server is shutting down.  No new "
+			     "players will be able to join it.");
+}
 
 /* Termination handler */
 static RETSIGTYPE term_handle(int signum)
@@ -128,14 +141,13 @@ int main(int argc, const char *argv[])
 
 	logfile_initialize();
 
-	if (!opt.foreground) {
+	if (!opt.foreground)
 		daemon_init();
-
-		/* FIXME: use sigaction() */
-		signal(SIGTERM, term_handle);
-		signal(SIGINT, term_handle);
-	}
 	
+	/* FIXME: use sigaction() */
+	signal(SIGTERM, term_handle);
+	signal(SIGINT, term_handle);
+	signal(SIGHUP, hup_handle);
 	signal(SIGPIPE, SIG_IGN);
 
 	/* Create SERVER socket on main_port */
@@ -161,15 +173,51 @@ int main(int argc, const char *argv[])
 	/* Main loop */
 	while (!term_signal) {
 
+		if (main_sock < 0) {
+			/* After we receive a HUP, we've closed the main
+			   socket so we no longer accept connections.  Now
+			   we just loop until all players eventually leave. */
+			int players;
+
+			/* Is rd-locking necessary?  Or does the main
+			   thread own this lock? */
+			pthread_rwlock_rdlock(&state.lock);
+			players = state.players;
+			pthread_rwlock_unlock(&state.lock);
+
+			if (players == 0) break;
+
+			/* FIXME: it's bad to poll waiting for all players
+			   to leave.  It's also bad to hard-code 5 seconds
+			   here. */
+			sleep(5);
+
+			if (log_next_update_sec() <= 0)
+				log_generate_update();
+
+			continue;
+		}
+
 		read_fd_set = active_fd_set;
 		tv.tv_sec = log_next_update_sec();
 		tv.tv_usec = 0;
 		status = select((main_sock + 1), &read_fd_set, NULL, NULL, &tv);
 
 		if (status < 0) {
-			if (errno == EINTR)
+			if (errno == EINTR) {
+				if (hup_signal && main_sock >= 0) {
+					/* Once we get a HUP we want to ignore
+					   new connections.  You might think
+					   it would be clever to deflect new
+					   connections with some sort of XML
+					   message.  But actually we probably
+					   just want to start up a new server
+					   on the same port. */
+					close(main_sock);
+					main_sock = -1;
+				}
 				continue;
-			else
+			} else
 				err_sys_exit("select error in main()");
 		} else if(status == 0) {
 			log_generate_update();
@@ -193,7 +241,7 @@ int main(int argc, const char *argv[])
 		}
 	}
 
-	log_msg(GGZ_LOG_NOTICE, "GGZ server received termination signal");
+	log_msg(GGZ_LOG_NOTICE, "GGZ server terminating");
 
 	/* FIXME: do we need to stop all of threads? */
 	ggzdb_close();
@@ -201,6 +249,8 @@ int main(int argc, const char *argv[])
 	if (!opt.foreground) {
 		daemon_cleanup();
 	}
+
+	ggz_memory_check();
 
 	return 0;
 }

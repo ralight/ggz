@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4581 2002-09-16 05:56:37Z jdorje $
+ * $Id: chat.c 4688 2002-09-24 21:41:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -184,12 +184,30 @@ static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
 /* Although this could be a useful function for other uses. */
 GGZReturn chat_server_2_player(char *name, char *msg)
 {
-	GGZChatEventData *data;
+	if (name) {
+		/* Queue chat event for individual player */
+		GGZChatEventData *data;
 
-	/* Pack up chat message */
-	data = chat_pack(GGZ_CHAT_PERSONAL, "[Server]", msg);
-	
-	/* Queue chat event for individual player */
-	return event_player_enqueue(name, chat_event_callback,
-				      sizeof(*data), data, chat_free);
+		/* Pack up chat message */
+		data = chat_pack(GGZ_CHAT_PERSONAL, "[Server]", msg);
+
+		return event_player_enqueue(name, chat_event_callback,
+					    sizeof(*data), data, chat_free);
+	} else {
+		int rooms = room_get_num_rooms(), i;
+		GGZReturn status = GGZ_OK;
+
+		for (i = 0; i < rooms; i++) {
+			GGZChatEventData *data;
+
+			data = chat_pack(GGZ_CHAT_ANNOUNCE, "[Server]", msg);
+
+			if (event_room_enqueue(i, chat_event_callback,
+					       sizeof(*data), data,
+					       chat_free) != GGZ_OK)
+				status = GGZ_ERROR;
+		}
+
+		return status;
+	}
 }
