@@ -229,21 +229,22 @@ static void hearts_end_hand()
 
 	for (p=0; p<game.num_players; p++) {
 		int points = GHEARTS.points_on_hand[p];
-		int score = (points == 26 ? -26 : points);
 		/* if you take all 26 points you "shoot the moon" and earn -26 instead.
 		 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
-		game.players[p].score += score;
+		int score = (points == 26 ? -26 : points);
+		int fullscore = score;
 
 		if (GHEARTS.jack_winner == p)
-			game.players[p].score -= 10;
+			fullscore -= 10;
+		game.players[p].score += fullscore;
 
 		if (score == -26) {
 			snprintf(buf, sizeof(buf), "%s shot the moon.", ggz_seats[p].name);
 			max = 26;
-		} else if (score > max) {
+		} else if (fullscore > max) {
 			/* only the maximum player's score is written; this is less than ideal. */
-			max = score;
-			snprintf(buf, sizeof(buf), "%s took %d points.", ggz_seats[p].name, score);
+			max = fullscore;
+			snprintf(buf, sizeof(buf), "%s took %d points.", ggz_seats[p].name, fullscore);
 		}
 	}
 	set_global_message("", "%s", buf);
