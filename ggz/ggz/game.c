@@ -225,6 +225,8 @@ int game_over(void)
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
 	return 0;
 }

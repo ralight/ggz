@@ -216,6 +216,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 			connection.playing = TRUE;
 			break;
@@ -240,6 +242,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 			connection.playing = TRUE;
