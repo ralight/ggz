@@ -13,20 +13,20 @@ Server, Netzwerk und Informationen über Mirrors.
 <img src="/pics/site/flags/flag-us.png">
 <i>Haupt-GGZ-Server USA</i><br>
 Der Server ggzgamingzone.org befindet sich in Atlanta/USA. Er hostet www, dev, ftp,
-live, mail, bugs und cvs.
+mail, bugs und cvs.
 Das System ist ein gemietetes User-Mode-Linux-Image.
-Das Portal GGZ Community läuft ebenfalls auf diesem Server, aber es soll mittelfristig
-auf einen anderen umziehen.
 <br><br>
 <img src="/pics/site/flags/flag-de.png">
-<i>Mirror Deutschland</i><br>
+<i>Server Deutschland</i><br>
 Der Server de.ggzgamingzone.org läuft in Berlin. Er spiegelt die Bereiche www und ftp
 in einer Hostingumgebung. Desweiteren läuft hierauf die zentrale administrative
 Infrastruktur inklusive dem Nameserver.
 <br><br>
 <img src="/pics/site/flags/flag-fr.png">
-<i>Mirror Frankreich</i><br>
-Unser zweiter Mirror spiegelt ebenfalls www und ftp, und befindet sich in Paris.
+<i>Server Frankreich</i><br>
+Unser zweiter Mirror spiegelt ebenfalls www und ftp, und befindet sich in Lorraine.
+Er hostet desweiteren das Portal GGZ Community auf ggzcommunity.org/live.ggzgamingzone.org,
+und bietet auch eine IPv6-Verbindung an.
 <br><br>
 <img src="/pics/site/flags/flag-us.png">
 <i>Downloadserver USA</i><br>
@@ -39,12 +39,18 @@ Dank Sunsite ist es uns möglich, FTP-Speicherplatz auf einem Server in Dänemar
 <img src="/pics/site/flags/flag-be.png">
 <i>Downloadserver Belgien</i><br>
 Dank Belnet ist es uns möglich, FTP-Speicherplatz auf einem Server in Belgien zu nutzen.
+<br><br>
+<img src="/pics/site/flags/flag-de.png">
+<i>Downloadserver Deutschland</i><br>
+Dank KGT new media ist es uns möglich, FTP-Speicherplatz auf einem Server in Deutschland zu nutzen.
+Dieser Server hostet auch wwwmirror.ggzgamingzone.org.
 </td>
 </tr>
 </table>
 
 Kontaktiere bitte den <a href="mailto:hostmaster@ggzgamingzone.org">GGZ Hostmaster</a>,
-wenn du Hilfe beim Hosting anzubieten hast.
+wenn du Hilfe beim Hosting anzubieten hast. Momentan benötigen wir keine weiteren
+FTP-Mirrors mehr.
 </td>
 </tr>
 
