@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4405 2002-09-04 18:50:29Z dr_maux $
+ * $Id: launch.c 4505 2002-09-11 03:17:07Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -111,7 +111,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 	maxplayers = ggzcore_gametype_get_max_players(gt);
 	for (x=1; x <= maxplayers; x++)
 	{
-		if (ggzcore_gametype_num_players_is_valid(gt, x) == TRUE)
+		if (ggzcore_gametype_num_players_is_valid(gt, x))
 			items = g_list_append(items, g_strdup_printf("%d", x));
 	}
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");

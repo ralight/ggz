@@ -2,6 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: about.c 4505 2002-09-11 03:17:07Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -725,6 +726,8 @@ static gint about_update(gpointer data)
 	background = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
 	gdk_draw_pixmap (pixmap, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], bg_img, 0, 0, 0, 0,
 			250, 300);
+
+	/* FIXME: we ignore all status checks but the last?? */
 	status = about_draw_text(background, "GGZ Gaming Zone",	font1, Yloc, TRUE);
 	
 	status = about_draw_text(background, VERSION, font2, Yloc, FALSE);
@@ -765,7 +768,7 @@ static gint about_update(gpointer data)
 	gdk_draw_pixmap (GTK_WIDGET(background)->window, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], pixmap, 0, 0, 0, 0,
 			250, 300);
 
-	if (status == TRUE)
+	if (status)
 		Yloc = 320;
 	Yloc = Yloc - 2;
 	return TRUE;
@@ -775,7 +778,7 @@ static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *fo
 {
 	static int l;
 
-	if (start == TRUE)
+	if (start)
 	{
 		l = 0;
 	} else {

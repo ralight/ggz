@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4499 2002-09-09 20:43:45Z uid40310 $
+ * $Id: client.c 4505 2002-09-11 03:17:07Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -246,14 +246,12 @@ client_room_list_activate	(GtkMenuItem	*menuitem,
 	static gboolean room_view = TRUE;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_scrolledwindow");
-	if(room_view == TRUE)
-	{
+	if (room_view)
 		gtk_widget_hide(tmp);
-		room_view = FALSE;
-	} else {
+	else
 		gtk_widget_show(tmp);
-		room_view = TRUE;
-	}
+
+	room_view = !room_view;
 }
 
 
@@ -265,14 +263,12 @@ client_player_list_activate		(GtkMenuItem	*menuitem,
 	static gboolean player_view = TRUE;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_scrolledwindow");
-	if(player_view == TRUE)
-	{
+	if (player_view)
 		gtk_widget_hide(tmp);
-		player_view = FALSE;
-	} else {
+	else
 		gtk_widget_show(tmp);
-		player_view = TRUE;
-	}
+
+	player_view = !player_view;
 }
 
 
@@ -444,8 +440,8 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 	GtkWidget *tmp;
 	gint x, i, max, length, first = TRUE;
 	gchar *name = NULL, *text = NULL, *startname = NULL;
-  GGZList *last_list;
-  GGZListEntry *entry;
+	GGZList *last_list;
+	GGZListEntry *entry;
 
 	if (event->keyval == GDK_Tab)
 	{
@@ -482,7 +478,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 			gchar *out;
 			name = g_strdup(chat_complete_name(startname));
 			/* If it matches, copy the rest of the name */
-			if (first == TRUE)
+			if (first)
 				out = g_strdup_printf("%s%s: ", text, &name[strlen(startname)]);
 			else
 				out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
@@ -762,13 +758,13 @@ client_player_clist_event			(GtkWidget	*widget,
 
 			poping = TRUE;
 			tmp = lookup_widget(menu, "friends");
-			if(chat_is_friend(client_get_players_index(popup_row)) == TRUE)
+			if(chat_is_friend(client_get_players_index(popup_row)))
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
 			else
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
 
 			tmp = lookup_widget(menu, "ignore");
-			if(chat_is_ignore(client_get_players_index(popup_row)) == TRUE)
+			if(chat_is_ignore(client_get_players_index(popup_row)))
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
 			else
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
@@ -916,7 +912,7 @@ static void client_start_table_join(void)
 	if(tablerow <= numtables)
 	{
 		/* Make sure table has open seats */
-		if (client_get_table_open(tablerow) == FALSE) {
+		if (!client_get_table_open(tablerow)) {
 			msgbox("That table is full.", "Error Joining",
 				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 			return;
@@ -953,7 +949,7 @@ static void client_start_table_watch(void)
 	if(tablerow <= numtables)
 	{
 		/* Make sure table has open seats */
-		if (client_get_table_open(tablerow) == FALSE) {
+		if (!client_get_table_open(tablerow)) {
 			msgbox("That table is full.", "Error Joining",
 				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 			return;
@@ -1076,15 +1072,13 @@ static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
 {
 	char *pname;
 
-	if(poping == FALSE)
+	if (!poping)
 	{
 		pname = client_get_players_index(popup_row);
-		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE)
-		{
+		if (GTK_CHECK_MENU_ITEM(menuitem)->active)
 			chat_add_friend(pname, TRUE);
-		}else{
+		else
 			chat_remove_friend(pname);
-		}
 	}	
 }
 
@@ -1092,15 +1086,13 @@ static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
 {
 	char *pname;
 
-	if(poping == FALSE)
+	if (!poping)
 	{
 		pname = client_get_players_index(popup_row);
-		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE )
-		{
+		if (GTK_CHECK_MENU_ITEM(menuitem)->active)
 			chat_add_ignore(pname, TRUE);
-		}else{
+		else
 			chat_remove_ignore(pname);
-		}
 	}
 }
 

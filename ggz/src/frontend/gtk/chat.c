@@ -2,6 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: chat.c 4505 2002-09-11 03:17:07Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -116,7 +117,7 @@ void chat_init(void)
 	chatinfo.ignore = g_array_new(FALSE, FALSE, sizeof(gchar*));
 
 	/* sets up background color for chat area*/
-	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE) == TRUE)
+	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE))
 	{
 		colors[18] = ColorBlack;
 		colors[19] = ColorWhite;
@@ -187,7 +188,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 	if(player != NULL && chat_is_ignore(player))
 		ignore = TRUE;
 
-	if(ignore == FALSE)
+	if (!ignore)
 	{
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 		switch(id)
@@ -609,7 +610,7 @@ void chat_add_friend(gchar *name, gint display)
 	name_copy = ggz_strdup(name);
 	g_array_append_val(chatinfo.friends, name_copy);
 	friend_count++;
-	if(display == TRUE)
+	if (display)
 	{
 		out = g_strdup_printf(_("Added %s to your friends list."), name);
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
@@ -664,7 +665,7 @@ void chat_add_ignore(gchar *name, gint display)
 	name_copy = ggz_strdup(name);
 	g_array_append_val(chatinfo.ignore, name_copy);
 	ignore_count++;
-	if(display == TRUE)
+	if(display)
 	{
 		out = g_strdup_printf(_("Added %s to your ignore list."), name);
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
@@ -812,12 +813,12 @@ const gchar *chat_complete_name(gchar *name)
 
 		if (strncasecmp(fullname, name, strlen(name)) == 0)
 		{
-			if(multiple == FALSE)
+			if (!multiple)
 			{
 				returnname = fullname;
 				multiple = TRUE;
 			}else{
-				if(first == FALSE)
+				if (!first)
 				{
 					chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Multiple matches:"));
 					chat_display_message(CHAT_LOCAL_NORMAL, NULL, returnname);
