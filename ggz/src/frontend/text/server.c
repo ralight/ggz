@@ -71,10 +71,10 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
-static GGZHookReturn room_table_data(GGZRoomEvent id, void*, void*);
+/*static GGZHookReturn room_table_data(GGZRoomEvent id, void*, void*);*/
 
 
-GGZServer *server;
+GGZServer *server = NULL;
 static int fd;
 static int first_room_list = 0;
 
@@ -104,12 +104,14 @@ void server_logout(void)
 
 void server_disconnect(void)
 {
-	ggzcore_server_disconnect(server);
+	if((server) && (ggzcore_server_is_online(server))) {
+		ggzcore_server_disconnect(server);
 
 #ifdef DEBUG
-	output_text("--- Disconnected");
+		output_text("--- Disconnected");
 #endif
-	loop_remove_fd(fd);
+		loop_remove_fd(fd);
+	}
 }
 
 

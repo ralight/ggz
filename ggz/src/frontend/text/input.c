@@ -132,6 +132,9 @@ void input_command(void)
 		else if (strcmp(command, "version") == 0) {
 			output_text("--- Client version: %s", VERSION);
 		}
+		else {
+			output_text("--- Unknown command, try %chelp.", command_prefix);
+		}
 	} else {
 		/* Its a chat */
 		input_handle_chat(current);
