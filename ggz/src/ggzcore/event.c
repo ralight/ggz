@@ -106,6 +106,7 @@ static GGZStateID _server_list_players_states[] = {
 	-1          
 };
 
+#if 0
 static GGZStateID _server_chat_states[] = {
 	GGZ_STATE_IN_ROOM,       
 	GGZ_STATE_JOINING_TABLE, 
@@ -123,6 +124,7 @@ static GGZStateID _server_chat_fail_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };
+#endif
 
 static GGZStateID _server_chat_msg_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -284,6 +286,7 @@ static GGZStateID _user_list_players_states[] = {
 	-1          
 };                 
 
+#if 0
 static GGZStateID _user_chat_states[] = {
 	GGZ_STATE_IN_ROOM,       
 	GGZ_STATE_JOINING_TABLE, 
@@ -305,6 +308,7 @@ static GGZStateID _user_chat_beep_states[] = {
 	GGZ_STATE_LEAVING_TABLE, 
 	-1          
 };                    
+#endif
 
 static GGZStateID _user_motd_states[] = {
 	GGZ_STATE_ONLINE,        
@@ -338,14 +342,6 @@ static struct _GGZEvent _ggz_events[] = {
 	{GGZ_SERVER_LIST_PLAYERS,   
 	 "server_list_players",               
 	 _server_list_players_states},
-
-	{GGZ_SERVER_CHAT,           
-	 "server_chat",                       
-	 _server_chat_states},
-
-	{GGZ_SERVER_CHAT_FAIL,      
-	 "server_chat_fail",                  
-	 _server_chat_fail_states},
 
 	{GGZ_SERVER_CHAT_MSG,       
 	 "server_chat_msg",                   
@@ -386,18 +382,6 @@ static struct _GGZEvent _ggz_events[] = {
 	{GGZ_USER_LIST_PLAYERS,     
 	 "user_list_players",                 
 	 _user_list_players_states},
-
-	{GGZ_USER_CHAT,             
-	 "user_chat",                         
-	 _user_chat_states},
-
-	{GGZ_USER_CHAT_PRVMSG,      
-	 "user_chat_prvmsg",                  
-	 _user_chat_prvmsg_states},
-
-	{GGZ_USER_CHAT_BEEP,        
-	 "user_chat_beep",                    
-	 _user_chat_beep_states},
 
 	{GGZ_USER_MOTD,             
 	 "user_motd",                         

@@ -488,6 +488,22 @@ void ggzcore_server_logout(GGZServer *server)
 }
 
 
+void ggzcore_server_chat(GGZServer *server, 
+			 const GGZChatOp opcode,
+			 const char *player,
+			 const char *msg)
+{
+	int status;
+
+	if (!server)
+		return;
+	
+	status = _ggzcore_net_send_chat(server->fd, opcode, player, msg);
+
+	return GGZ_HOOK_OK;
+}
+
+
 int ggzcore_server_data_is_pending(GGZServer *server)
 {
 	int status = 0;
@@ -773,7 +789,6 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 
 
 static void _ggzcore_server_handle_list_players(GGZServer *server){}
-static void _ggzcore_server_handle_rsp_chat(GGZServer *server){}
 static void _ggzcore_server_handle_list_tables(GGZServer *server){}
 static void _ggzcore_server_handle_list_types(GGZServer *server){}
 
@@ -796,5 +811,31 @@ static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
 	_ggzcore_net_read_update_tables(server->fd);
 	ggzcore_event_process_all();
+}
+
+
+static void _ggzcore_server_handle_rsp_chat(GGZServer *server)
+{
+	char status;
+
+	_ggzcore_net_read_rsp_chat(server->fd, &status);
+
+#if 0
+	switch (status) {
+	case 0:
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT, NULL, NULL);
+		break;
+
+	case E_NOT_IN_ROOM:
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Not in a room",
+				      NULL);
+		break;
+
+	case E_BAD_OPTIONS:
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Bad options",
+				      NULL);
+		break;
+	}
+#endif
 }
 

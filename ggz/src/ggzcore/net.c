@@ -44,7 +44,6 @@
 
 /* Handlers for various server commands */
 static void _ggzcore_net_read_list_players(const unsigned int fd);
-static void _ggzcore_net_read_rsp_chat(const unsigned int fd);
 static void _ggzcore_net_read_list_tables(const unsigned int fd);
 static void _ggzcore_net_read_list_types(const unsigned int fd);
 
@@ -364,31 +363,15 @@ static void _ggzcore_net_read_list_players(const unsigned int fd)
 }
 
 
-static void _ggzcore_net_read_rsp_chat(const unsigned int fd)
+int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status)
 {
-	char status;
-	
-	if (es_read_char(fd, &status) < 0)
-		return;
+	if (es_read_char(fd, status) < 0)
+		return -1;
 
 	ggzcore_debug(GGZ_DBG_NET, "RSP_CHAT from server : %d",
-		      status);
+		      *status);
 	
-	switch (status) {
-	case 0:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT, NULL, NULL);
-		break;
-
-	case E_NOT_IN_ROOM:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Not in a room",
-				      NULL);
-		break;
-
-	case E_BAD_OPTIONS:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Bad options",
-				      NULL);
-		break;
-	}
+	return 0;
 }
 
 

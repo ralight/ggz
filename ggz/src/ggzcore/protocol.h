@@ -91,14 +91,6 @@ typedef enum {
 	RSP_ROOM_JOIN
 } GGZServerOp;
 
-/* Chat subops */					/* PMCCCCCC */
-typedef enum {
-	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
-	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
-	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
-	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
-} GGZChatOp;
-
 /* Chat subop bitmasks */
 
 #define GGZ_CHAT_M_MESSAGE	0x40	/* X1XXXXXX */

@@ -219,6 +219,21 @@ void ggzcore_server_list_rooms(GGZServer *server, const int type, const char ver
 void ggzcore_server_join_room(GGZServer *server, const int room);
 void ggzcore_server_logout(GGZServer *server);
 
+/* Chat subops */					/* PMCCCCCC */
+typedef enum {
+	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
+	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
+	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
+	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
+} GGZChatOp;
+
+
+/* Temporary hack until GGZRoom is done */
+void ggzcore_server_chat(GGZServer *server, 
+			 const GGZChatOp opcode,
+			 const char *player,
+			 const char *msg);
+
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);
 int ggzcore_server_read_data(GGZServer *server);
@@ -239,8 +254,6 @@ typedef enum {
 /* IDs for all GGZ events */
 typedef enum {
 	GGZ_SERVER_LIST_PLAYERS,
-	GGZ_SERVER_CHAT,
-	GGZ_SERVER_CHAT_FAIL,
 	GGZ_SERVER_CHAT_MSG,
 	GGZ_SERVER_CHAT_ANNOUNCE,
 	GGZ_SERVER_CHAT_PRVMSG,
@@ -251,9 +264,6 @@ typedef enum {
 	GGZ_USER_LIST_TYPES,
 	GGZ_USER_LIST_TABLES,
 	GGZ_USER_LIST_PLAYERS,
-	GGZ_USER_CHAT,
-	GGZ_USER_CHAT_PRVMSG,
-	GGZ_USER_CHAT_BEEP,
 	GGZ_USER_MOTD,
 } GGZEventID;
 

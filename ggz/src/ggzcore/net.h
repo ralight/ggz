@@ -69,6 +69,7 @@ int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
 int _ggzcore_net_read_chat(const unsigned int fd);
 int _ggzcore_net_read_update_players(const unsigned int fd);
 int _ggzcore_net_read_update_tables(const unsigned int fd);
+int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status);
 
 
 #endif /* __NET_H__ */

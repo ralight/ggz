@@ -38,7 +38,6 @@
 /* Hooks */
 static GGZHookReturn _ggzcore_user_list_players(GGZEventID, void*, void*);
 static GGZHookReturn _ggzcore_user_motd(GGZEventID, void*, void*);
-static GGZHookReturn _ggzcore_user_chat(GGZEventID, void*, void*);
 
 
 /* ggzcore_user_register() - Register hooks for UI events
@@ -52,14 +51,6 @@ void _ggzcore_user_register(void)
 	ggzcore_event_add_hook(GGZ_USER_LIST_PLAYERS, 
 				   _ggzcore_user_list_players);
 	ggzcore_event_add_hook(GGZ_USER_MOTD, _ggzcore_user_motd);
-
-	ggzcore_event_add_hook_full(GGZ_USER_CHAT, _ggzcore_user_chat, 
-					(void*)GGZ_CHAT_NORMAL);
-	ggzcore_event_add_hook_full(GGZ_USER_CHAT_PRVMSG, 
-					_ggzcore_user_chat,
-					(void*)GGZ_CHAT_PERSONAL);
-	ggzcore_event_add_hook_full(GGZ_USER_CHAT_BEEP, _ggzcore_user_chat,
-					(void*)GGZ_CHAT_BEEP);
 }
 
 
@@ -76,51 +67,6 @@ static GGZHookReturn _ggzcore_user_list_players(GGZEventID id, void* event_data,
 {
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_players");
 	_ggzcore_net_send_list_players(-1);
-
-	return GGZ_HOOK_OK;
-}
-
-
-/* _ggzcore_user_chat() - Hook for user chat events
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- *
- * Note: The chat type gets passed in the user data as an integer
- */
-static GGZHookReturn _ggzcore_user_chat(GGZEventID id, void* event_data, void* user_data)
-{
-	GGZUpdateOp opcode = (int)user_data;
-	char *player = NULL, *msg = NULL;
-	
-	
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_chat");
-
-	switch (opcode) {
-	case GGZ_CHAT_NORMAL:
-		msg = (char*)event_data;
-		ggzcore_debug(GGZ_DBG_USER, " --chat is %s", msg);
-		break;
-
-	case GGZ_CHAT_BEEP:
-		player = (char*)event_data;
-		ggzcore_debug(GGZ_DBG_USER, " --player is %s", player);
-		break;
-		
-	case GGZ_CHAT_PERSONAL:
-		player = ((char**)(event_data))[0];
-		msg    = ((char**)(event_data))[1];
-		ggzcore_debug(GGZ_DBG_USER, " --msg is %s to %s", msg, player);
-		
-	default:
-		break;
-	}
-
-	_ggzcore_net_send_chat(-1, opcode, player, msg);
 
 	return GGZ_HOOK_OK;
 }
