@@ -136,6 +136,9 @@ class GGZCoreServer
 		/** Return whether data is written. */
 		int dataWrite();
 
+		/** Log an XML session to a file */
+		int logSession(const char *filename);
+
 		static GGZCoreServer* instance();
 
 		GGZServer *server();

@@ -299,3 +299,8 @@ void GGZCoreServer::rescue()
 	m_server = NULL;
 }
 
+int GGZCoreServer::logSession(const char *filename)
+{
+	return ggzcore_server_log_session(m_server, filename);
+}
+

@@ -228,9 +228,9 @@ void KGGZ::slotConnectedStart()
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
-/* FIXME: ggzcore++ */
-ggzcore_server_log_session(kggzserver->server(), KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
-KGGZCommon::clear();
+	//ggzcore_server_log_session(kggzserver->server(), KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
+	kggzserver->logSession(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
+	KGGZCommon::clear();
 
 	kggzserver->setHost(m_save_host, m_save_port);
 	KGGZDEBUG("connect now!\n");
@@ -866,7 +866,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::chatfail:
 			KGGZDEBUG("chatfail\n");
-			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Chat error detected!"), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, i18n(QString("ERROR: Chat error detected: ").append((char*)data)), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::statechange:
 			KGGZDEBUG("statechange\n");
@@ -946,7 +946,10 @@ void KGGZ::slotChat(const char *text, char *player, int mode)
 				kggzroom->chat(GGZ_CHAT_NORMAL, player, sendtext);
 				break;
 			case KGGZChat::RECEIVE_ANNOUNCE:
-				kggzroom->chat(GGZ_CHAT_ANNOUNCE, player, sendtext);
+				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, sendtext) < 0)
+				{
+					m_workspace->widgetChat()->receive(NULL, "Only administrators are allowed to broadcast messages.", KGGZChat::RECEIVE_ADMIN);
+				}
 				break;
 			case KGGZChat::RECEIVE_BEEP:
 				kggzroom->chat(GGZ_CHAT_BEEP, player, sendtext);

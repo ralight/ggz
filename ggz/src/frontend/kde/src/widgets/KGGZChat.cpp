@@ -162,7 +162,7 @@ long KGGZChat::randomLag()
 // Send out a message or execute command
 void KGGZChat::slotSend()
 {
-	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP, EVENT_MARK, EVENT_AWAY};
+	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP, EVENT_MARK, EVENT_AWAY, EVENT_ANNOUNCE};
 	char *commands = NULL;
 	char *op2 = NULL;
 	int triggerevent;
@@ -198,12 +198,10 @@ void KGGZChat::slotSend()
 					if(commands) player = strtok(NULL, " ");
 					if(player)
 					{
-						KGGZDEBUG("--private message-- ASSIGN\n");
 						triggerevent = EVENT_PERSONAL;
 						op2 = strtok(NULL, " ");
 						if(op2) strcat(inputargs, op2);
 					}
-					KGGZDEBUG("--private message-- 1\n");
 					while(op2)
 					{
 						op2 = strtok(NULL, " ");
@@ -213,7 +211,18 @@ void KGGZChat::slotSend()
 							strcat(inputargs, op2);
 						}
 					}
-					KGGZDEBUG("--private message-- 2\n");
+				}
+				if(strncmp(inputtext, "/wall", 5) == 0)
+				{
+					KGGZDEBUG("--announcement message--\n");
+					triggerevent = EVENT_ANNOUNCE;
+					op2 = strtok(NULL, " ");
+					while(op2)
+					{
+						strcat(inputargs, " ");
+						strcat(inputargs, op2);
+						op2 = strtok(NULL, " ");
+					}
 				}
 				if(strcmp(commands, "/beep") == 0)
 				{
@@ -221,7 +230,6 @@ void KGGZChat::slotSend()
 					if(commands) player = strtok(NULL, " ");
 					if(player)
 					{
-						KGGZDEBUG("--beep message-- ASSIGN\n");
 						triggerevent = EVENT_BEEP;
 						op2 = strtok(NULL, " ");
 					}
@@ -257,6 +265,7 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("List of available commands:"), RECEIVE_ADMIN);
 			receive(NULL, i18n("/me &lt;msg&gt; - sends an emphasized phrase."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/msg &lt;player&gt; &lt;message&gt; - sends a private message."), RECEIVE_ADMIN);
+			receive(NULL, i18n("/wall &lt;message&gt; - sends a message to all rooms."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/beep &lt;player&gt; - send player a beep."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/help - this screen."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/mark - mark a time stamp."), RECEIVE_ADMIN);
@@ -264,6 +273,9 @@ void KGGZChat::slotSend()
 			break;
 		case EVENT_CHAT:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
+			break;
+		case EVENT_ANNOUNCE:
+			emit signalChat(inputtext, NULL, RECEIVE_ANNOUNCE);
 			break;
 		case EVENT_ME:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
