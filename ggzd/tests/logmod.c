@@ -22,7 +22,7 @@ typedef enum {
 typedef enum {
 	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
 	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
-	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
+	GGZ_SEAT_RESERVED = -3,	   /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZSeatType;
@@ -55,7 +55,7 @@ int handle_game_launch()
 		case GGZ_SEAT_BOT: 
 			printf("Received bot seat\n");
 			break;
-		case GGZ_SEAT_RESV: 
+		case GGZ_SEAT_RESERVED:
 			printf("Received reserved seat\n");
 			break;
 		case GGZ_SEAT_NONE: 
@@ -66,7 +66,8 @@ int handle_game_launch()
 			break;
 
 		}	
-		if (type == GGZ_SEAT_RESV && es_read_string(fd, name, 1024) < 0) {
+		if (type == GGZ_SEAT_RESERVED
+		    && es_read_string(fd, name, 1024) < 0) {
 			printf("Error reading reserved player name\n");
 			return -1;
 		}

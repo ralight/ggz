@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3105 2002-01-13 19:02:42Z jdorje $
+ * $Id: ggzdmod.c 3108 2002-01-14 00:06:53Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1000,7 +1000,7 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 			    seat.num, seat.name);
 		break;
 
-	case GGZ_SEAT_RESV:
+	case GGZ_SEAT_RESERVED:
 		ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d reserved for %s",
 			    seat.num, seat.name);
 		break;
@@ -1125,9 +1125,9 @@ static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
 	switch (seat->type) {
 	case GGZ_SEAT_OPEN: type = "OPEN"; break;
 	case GGZ_SEAT_BOT: type = "BOT"; break;		
-	case GGZ_SEAT_RESV: type = "RESV"; break;		
+	case GGZ_SEAT_RESERVED: type = "RESV"; break;		
 	case GGZ_SEAT_NONE: type = "NONE"; break;		
-	case GGZ_SEAT_PLAYER: type = "PLAYER"; break;
+	case GGZ_SEAT_PLAYER: type = "PLYR"; break;
 	}
 	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
 		    seat->num, type, seat->name, seat->fd);

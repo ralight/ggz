@@ -1477,7 +1477,7 @@ int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 	case GGZ_SEAT_BOT:
 		type = "bot";
 		break;
-	case GGZ_SEAT_RESV:
+	case GGZ_SEAT_RESERVED:
 		type = "reserved";
 		name = table->reserve[num];
 		break;

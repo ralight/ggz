@@ -113,7 +113,7 @@ int main (void) {
 	ggzdmod_set_seat(mod, &control[1]);
 
 	control[2].num = 2;
-	control[2].type = GGZ_SEAT_RESV;
+	control[2].type = GGZ_SEAT_RESERVED;
 	control[2].name = "Test 2";
 	control[2].fd = 80;
 	ggzdmod_set_seat(mod, &control[2]);
@@ -182,7 +182,7 @@ char * seat_desc(GGZSeatType type)
 		return "Open";
 	case GGZ_SEAT_BOT:
 		return "Bot";
-	case GGZ_SEAT_RESV: 
+	case GGZ_SEAT_RESERVED:
 		return "Reserved";
 	case GGZ_SEAT_NONE: 
 		return "None";

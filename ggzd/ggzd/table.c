@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3080 2002-01-12 08:06:23Z jdorje $
+ * $Id: table.c 3108 2002-01-14 00:06:53Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -186,7 +186,7 @@ static int table_check(GGZTable* table)
 		case GGZ_SEAT_BOT:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: computer", i);
 			break;
-		case GGZ_SEAT_RESV:
+		case GGZ_SEAT_RESERVED:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: reserved for %s", i,
 				table->reserve[i]);
 			break;
@@ -369,7 +369,7 @@ static int table_start_game(GGZTable *table)
         for (i = 0; i < num_seats; i++) {
 		seat.num = i;
 		seat.type = seats_type(table, i);
-		if (seat.type == GGZ_SEAT_RESV)
+		if (seat.type == GGZ_SEAT_RESERVED)
 			seat.name = table->reserve[i];
 		else
 			seat.name = NULL;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 2329 2001-08-31 03:06:17Z jdorje $
+ * $Id: seats.c 3108 2002-01-14 00:06:53Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -96,7 +96,7 @@ int seats_type(GGZTable* table, int seat)
 	if (strcmp(table->seats[seat], "<bot>") == 0)
 		return GGZ_SEAT_BOT;
 	if (strcmp(table->seats[seat], "<reserved>") == 0)
-		return GGZ_SEAT_RESV;
+		return GGZ_SEAT_RESERVED;
 	else /* Some player */
 		return GGZ_SEAT_PLAYER;
 }

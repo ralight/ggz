@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3105 2002-01-13 19:02:42Z jdorje $
+ * $Id: ggzdmod.h 3108 2002-01-14 00:06:53Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -191,7 +191,7 @@ extern "C" {
 typedef enum {
 	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
 	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
-	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
+	GGZ_SEAT_RESERVED = -3,	   /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZSeatType;

@@ -10,7 +10,7 @@ GGZSeat seats[] = {
 	{0, GGZ_SEAT_OPEN, NULL, -1},
 	{1, GGZ_SEAT_BOT, "Bob", -1},
 	{2, GGZ_SEAT_OPEN, NULL, -1},
-	{3, GGZ_SEAT_RESV, "Junior", -1}
+	{3, GGZ_SEAT_RESERVED, "Junior", -1}
 };
 
 void callback(GGZdMod *mod, GGZdModEvent event, void *data)
