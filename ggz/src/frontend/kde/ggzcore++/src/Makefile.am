@@ -15,7 +15,7 @@ libggzcorepp_la_SOURCES = \
 			GGZCoreTable.cpp \
 			GGZCoreCommon.cpp
 
-include_HEADERS = \
+noinst_HEADERS = \
 			GGZCore.h \
 			GGZCoreConf.h \
 			GGZCoreConfio.h \
