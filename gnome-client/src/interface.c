@@ -951,7 +951,7 @@ create_login (void)
 
   btnJoin = gtk_button_new_with_mnemonic (_("Join Game"));
   gtk_widget_set_name (btnJoin, "btnJoin");
-  gtk_object_set_data_full (GTK_OBJECT (window), "btnJoin", btnJoin,
+  gtk_object_set_data_full (GTK_OBJECT (window), "btnJoin", btnWatch,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnJoin);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnJoin);

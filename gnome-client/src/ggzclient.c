@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5004 2002-10-23 00:51:53Z jzaun $
+ * $Id: ggzclient.c 5032 2002-10-25 22:11:42Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -393,8 +393,10 @@ static GGZHookReturn ggz_chat_event(GGZRoomEvent id, void* event_data, void* use
 		case GGZ_CHAT_BEEP:
 			message = g_strdup_printf(_("You've been beeped by %s."), (char*)msg->sender);
 			chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
-			gdk_beep();
 			g_free(message);
+			gnome_sound_init ("localhost");
+			gnome_sound_play ("/usr/share/sounds/info.wav");
+			gnome_sound_shutdown ();
 			break;
 		case GGZ_CHAT_ANNOUNCE:
 			chat_display_message(CHAT_ANNOUNCE, (char*)msg->sender, (char*)msg->message);
