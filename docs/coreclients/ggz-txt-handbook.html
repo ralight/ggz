@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>
+GGZ Text Client Manual
+</title>
+</head>
+<body>
+
+<h3>GGZ Text Client Manual</h3>
+
+<i>Written for GGZ 0.0.9</i>
+<br>
+<i>Josef Spillner &lt;josef@ggzgamingzone.org&gt;</i>
+
+<h4>Command line options and arguments</h4>
+<p>
+The following options are supported:
+<ul>
+<li>--reverse (-r): Uses an alternative color scheme, which is useful for
+terminals with white background.
+<li>--version (-v): Displays version information and quits
+<li>--help (-h): Shows a little help screen and quits
+</ul>
+The only supported argument is a valid GGZ URI to connect to, which
+has the format: ggz://[user@]host[:port]. Examples would thus be:
+<pre>
+ggz://some.ggz.server
+ggz://me@some.other.ggz.server:5688
+</pre>
+</p>
+
+<h4>Startup script</h4>
+<p>
+A startup script can be used to execute commands automatically during the
+startup of the program. For example, a user might want to connect to a server
+and join a room without having to enter the commands by hand each time.
+</p>
+<p>
+The location of the script is at ~/.ggz/ggz-txt.startup.
+The example above might look like:
+<pre>
+/connect some.ggz.server
+/join room 1
+/list types
+Hi there, it's me again!
+</pre>
+</p>
+
+<h4>Playing games</h4>
+<p>
+This core client can be used like any other to play games.
+If it is running in a plain console ($DISPLAY is not set), only
+console game clients can be run by it, which currently only exist
+for the TicTacToe game.
+If it is running in a X11 environment terminal emulator, much more games are
+available.
+</p>
+
+</body>
+</html>
