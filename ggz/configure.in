@@ -252,8 +252,6 @@ AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
            easysock/Makefile
-	   ggz/Makefile
-	   ggz/ggzrc.test
 	   src/Makefile
 	   src/ggzcore/Makefile
 	   src/frontend/Makefile
@@ -267,13 +265,13 @@ AC_OUTPUT([Makefile
 	   game_clients/lapocha/Makefile
 	   game_clients/reversi/Makefile
 	   game_clients/combat/Makefile
-		 game_clients/combat/pixmaps/Makefile
-		 game_clients/combat/maps/Makefile
+	   game_clients/combat/pixmaps/Makefile
+	   game_clients/combat/maps/Makefile
 	   game_clients/hastings/Makefile
 	   game_clients/chinese-checkers/Makefile
 	   game_clients/chinese-checkers/pixmaps/Makefile
-     game_clients/chess/Makefile
-     game_clients/chess/libcgc/Makefile
+	   game_clients/chess/Makefile
+	   game_clients/chess/libcgc/Makefile
 	   intl/Makefile
 	   po/Makefile.in
 	   ])
