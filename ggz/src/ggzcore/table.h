@@ -32,7 +32,10 @@
 #include "gametype.h"
 #include "ggzcore.h"
 
-struct _GGZSeat {
+
+typedef struct GGZTableSeat GGZTableSeat;
+
+struct GGZTableSeat {
 	/* Seat index */
 	int index;
 
@@ -46,54 +49,21 @@ struct _GGZSeat {
 };
 
 
-/* Table Information */
-struct _GGZTable {
- 
-	/* Pointer to room this table resides in */
-	struct _GGZRoom *room;
+GGZTable* _ggzcore_table_new(void);
 
-        /* Server ID of table */
-        int id;
- 
-        /* Game Type */
-	struct _GGZGameType *gametype;
-
-	/* Table description */
-	const char * desc;        
-
-        /* Table state */
-        GGZTableState state;
-
-        /* Total seats */
-        unsigned int num_seats;
-
-	/* Seats */
-	struct _GGZSeat *seats;
-
-	/* Total spectator seats */
-	unsigned int num_spectator_seats;
-
-	/* Spectator seats - "type" is unused; player name is
-	   NULL for empty seat. */
-	struct _GGZSeat *spectator_seats;
-};
-
-
-struct _GGZTable* _ggzcore_table_new(void);
-
-void _ggzcore_table_init(struct _GGZTable *table, 
-			 struct _GGZGameType *gametype,
+void _ggzcore_table_init(GGZTable *table, 
+			 const GGZGameType *gametype,
 			 const char *desc,
 			 const unsigned int num_seats,
 			 const GGZTableState state,
 			 const int id);
 
-void _ggzcore_table_free(struct _GGZTable *table);
+void _ggzcore_table_free(GGZTable *table);
 
-void _ggzcore_table_set_room(struct _GGZTable *table, struct _GGZRoom *room);
-void _ggzcore_table_set_id(struct _GGZTable *table, const int id);
-void _ggzcore_table_set_state(struct _GGZTable *table, const GGZTableState state);
-void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc);
+void _ggzcore_table_set_room(GGZTable *table, GGZRoom *room);
+void _ggzcore_table_set_id(GGZTable *table, const int id);
+void _ggzcore_table_set_state(GGZTable *table, const GGZTableState state);
+void _ggzcore_table_set_desc(GGZTable *table, const char *desc);
 
 /** @brief Change a seat value.
  *
@@ -101,36 +71,22 @@ void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc);
  *  called by both front-end and back-end functions to do the
  *  actual work of changing the seat.
  */
-void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat);
+void _ggzcore_table_set_seat(GGZTable *table, GGZTableSeat *seat);
 
 
 /** @brief Change a spectator seat value.
  *
  *  This changes the seat status for any spectator seat at the table.
  */
-void _ggzcore_table_set_spectator_seat(struct _GGZTable *table,
-				       struct _GGZSeat *seat);
+void _ggzcore_table_set_spectator_seat(GGZTable *table,
+				       GGZTableSeat *seat);
 
-struct _GGZRoom*      _ggzcore_table_get_room(struct _GGZTable *table);
-int                   _ggzcore_table_get_id(struct _GGZTable *table);
-struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
-const char * _ggzcore_table_get_desc(struct _GGZTable *table);
-GGZTableState         _ggzcore_table_get_state(struct _GGZTable *table);
-int _ggzcore_table_get_num_seats(GGZTable *table);
-int _ggzcore_table_get_num_spectator_seats(GGZTable *table);
-int                   _ggzcore_table_get_seat_count(struct _GGZTable *table, GGZSeatType type);
-
-struct _GGZSeat* _ggzcore_table_get_nth_seat(GGZTable *table,
-					     const unsigned int num);
-struct _GGZSeat* _ggzcore_table_get_nth_spectator_seat(GGZTable *table,
-						       const unsigned int num);
-const char * _ggzcore_table_get_nth_player_name(struct _GGZTable *table,
-						const unsigned int num);
-GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);
-const char *_ggzcore_table_get_nth_spectator_name(GGZTable *table,
-						  const unsigned int num);
-
-
+/* These functions return pointers to the seat data directly within the
+ * table. */
+GGZTableSeat _ggzcore_table_get_nth_seat(const GGZTable *table,
+					 unsigned int num);
+GGZTableSeat _ggzcore_table_get_nth_spectator_seat(const GGZTable *table,
+						   unsigned int num);
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_table_compare(void* p, void* q);
 void* _ggzcore_table_create(void* p);

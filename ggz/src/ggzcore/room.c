@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6451 2004-12-12 05:35:52Z jdorje $
+ * $Id: room.c 6762 2005-01-20 07:31:47Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -46,14 +46,137 @@
 
 /* Local functions */
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event);
-static GGZHookReturn _ggzcore_room_event(struct _GGZRoom *room, 
+static GGZHookReturn _ggzcore_room_event(GGZRoom *room, 
 					 GGZRoomEvent id, void *data);
 
 /* Total number of server events messages */
 static unsigned int _ggzcore_num_events = sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0]);
 
 
-/* Publicly exported functions */
+/*
+ * Private functions
+ */
+
+
+static struct _GGZServer* _ggzcore_room_get_server(GGZRoom *room)
+{
+	return room->server;
+}
+
+
+static unsigned int _ggzcore_room_get_id(const GGZRoom *room)
+{
+	return room->id;
+}
+
+static char* _ggzcore_room_get_name(GGZRoom *room)
+{
+	return room->name;
+}
+
+
+static struct _GGZGameType* _ggzcore_room_get_game(GGZRoom *room)
+{
+	return _ggzcore_server_get_type_by_id(room->server, room->game);
+}
+
+
+static char* _ggzcore_room_get_desc(GGZRoom *room)
+{
+	return room->desc;
+}
+
+
+static unsigned int _ggzcore_room_get_num_players(GGZRoom *room)
+{
+	if (ggzcore_server_get_cur_room(room->server) == room) {
+		return room->num_players;
+	} else {
+		return room->player_count;
+	}
+}
+
+
+static struct _GGZPlayer* _ggzcore_room_get_nth_player(GGZRoom *room, 
+						       const unsigned int num)
+{
+	int i;
+	GGZListEntry *cur;
+	
+	cur = ggz_list_head(room->players);
+	for (i = 0; i < num; i++)
+		cur = ggz_list_next(cur);
+	
+	return ggz_list_get_data(cur);
+}
+
+
+static struct _GGZPlayer* _ggzcore_room_get_player_by_name(GGZRoom *room, 
+							   const char *name)
+{
+        GGZListEntry *entry;
+	struct _GGZPlayer player, *found = NULL;
+
+	if (room->players) {
+		player.name = (char*)name;
+		entry = ggz_list_search(room->players, &player);
+
+		if (entry)
+			found = ggz_list_get_data(entry);
+	}
+	
+	return found;
+}
+
+
+static unsigned int _ggzcore_room_get_num_tables(GGZRoom *room)
+{
+	/* FIXME: we should let the list track this instead of doing it ourselves */
+	return room->num_tables;
+}
+
+
+static struct _GGZTable* _ggzcore_room_get_nth_table(GGZRoom *room, 
+					       const unsigned int num)
+{
+	int i;
+	GGZListEntry *cur;
+	
+	cur = ggz_list_head(room->tables);
+	for (i = 0; i < num; i++)
+		cur = ggz_list_next(cur);
+	
+	return ggz_list_get_data(cur);
+}
+
+
+static struct _GGZTable* _ggzcore_room_get_table_by_id(GGZRoom *room, 
+						       const unsigned int id)
+{
+	GGZTable *found = NULL;
+
+	if (room->tables) {
+		GGZListEntry *entry;
+		GGZTable *search_table = ggzcore_table_new();
+	
+		_ggzcore_table_set_id(search_table, id);
+		entry = ggz_list_search(room->tables, search_table);
+		
+		if (entry)
+			found =  ggz_list_get_data(entry);
+
+		ggzcore_table_free(search_table);
+	}
+
+	return found;
+}
+
+
+/*
+ * Publicly exported functions
+ */
+
+
 GGZRoom* ggzcore_room_new(void)
 {
 	return _ggzcore_room_new();
@@ -91,7 +214,7 @@ GGZServer *ggzcore_room_get_server(GGZRoom *room)
 }
 
 
-int ggzcore_room_get_id(GGZRoom *room)
+int ggzcore_room_get_id(const GGZRoom *room)
 {
 	if (room)
 		return _ggzcore_room_get_id(room);
@@ -227,7 +350,7 @@ int ggzcore_room_list_tables(GGZRoom *room, const int type, const char global)
 }
 
 
-int ggzcore_room_chat(struct _GGZRoom *room, const GGZChatType type,
+int ggzcore_room_chat(GGZRoom *room, const GGZChatType type,
 		      const char *player, const char *msg)
 {
 	if (room && room->server) {
@@ -277,17 +400,17 @@ int ggzcore_room_leave_table(GGZRoom *room, int force)
 
 
 /* Create a new room object for a given server*/
-struct _GGZRoom* _ggzcore_room_new(void)
+GGZRoom* _ggzcore_room_new(void)
 {
-	struct _GGZRoom *room;
+	GGZRoom *room;
 
-	room = ggz_malloc(sizeof(struct _GGZRoom));
+	room = ggz_malloc(sizeof(GGZRoom));
 
 	return room;
 }
 
 
-void _ggzcore_room_init(struct _GGZRoom *room,
+void _ggzcore_room_init(GGZRoom *room,
 			const struct _GGZServer *server,
 			const unsigned int id, 
 			const char* name, 
@@ -313,7 +436,7 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_free(struct _GGZRoom *room)
+void _ggzcore_room_free(GGZRoom *room)
 {
 	int i;
 	
@@ -336,118 +459,7 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 }
 
 
-/* Functions to retrieve room information */
-struct _GGZServer* _ggzcore_room_get_server(struct _GGZRoom *room)
-{
-	return room->server;
-}
-
-
-unsigned int _ggzcore_room_get_id(struct _GGZRoom *room)
-{
-	return room->id;
-}
-
-char* _ggzcore_room_get_name(struct _GGZRoom *room)
-{
-	return room->name;
-}
-
-
-struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room)
-{
-	return _ggzcore_server_get_type_by_id(room->server, room->game);
-}
-
-
-char* _ggzcore_room_get_desc(struct _GGZRoom *room)
-{
-	return room->desc;
-}
-
-
-unsigned int _ggzcore_room_get_num_players(struct _GGZRoom *room)
-{
-	if (ggzcore_server_get_cur_room(room->server) == room) {
-		return room->num_players;
-	} else {
-		return room->player_count;
-	}
-}
-
-
-struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
-						const unsigned int num)
-{
-	int i;
-	GGZListEntry *cur;
-	
-	cur = ggz_list_head(room->players);
-	for (i = 0; i < num; i++)
-		cur = ggz_list_next(cur);
-	
-	return ggz_list_get_data(cur);
-}
-
-
-struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room, 
-						    const char *name)
-{
-        GGZListEntry *entry;
-	struct _GGZPlayer player, *found = NULL;
-
-	if (room->players) {
-		player.name = (char*)name;
-		entry = ggz_list_search(room->players, &player);
-
-		if (entry)
-			found = ggz_list_get_data(entry);
-	}
-	
-	return found;
-}
-
-
-unsigned int _ggzcore_room_get_num_tables(struct _GGZRoom *room)
-{
-	/* FIXME: we should let the list track this instead of doing it ourselves */
-	return room->num_tables;
-}
-
-
-struct _GGZTable* _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
-					       const unsigned int num)
-{
-	int i;
-	GGZListEntry *cur;
-	
-	cur = ggz_list_head(room->tables);
-	for (i = 0; i < num; i++)
-		cur = ggz_list_next(cur);
-	
-	return ggz_list_get_data(cur);
-}
-
-
-struct _GGZTable* _ggzcore_room_get_table_by_id(struct _GGZRoom *room, 
-						 const unsigned int id)
-{
-	GGZListEntry *entry;
-	struct _GGZTable table, *found = NULL;
-	
-	if (room->tables) {
-		_ggzcore_table_set_id(&table, id);
-		entry = ggz_list_search(room->tables, &table);
-		
-		if (entry)
-			found =  ggz_list_get_data(entry);
-	}
-
-	return found;
-}
-
-
-void _ggzcore_room_set_player_list(struct _GGZRoom *room,
+void _ggzcore_room_set_player_list(GGZRoom *room,
 				   unsigned int count,
 				   GGZList *list)
 {
@@ -469,7 +481,7 @@ void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_set_players(struct _GGZRoom *room,
+void _ggzcore_room_set_players(GGZRoom *room,
 			       int players)
 {
 	GGZServer *server = _ggzcore_room_get_server(room);
@@ -487,7 +499,7 @@ void _ggzcore_room_set_players(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_set_table_list(struct _GGZRoom *room,
+void _ggzcore_room_set_table_list(GGZRoom *room,
 				  unsigned int count,
 				  GGZList *list)
 {
@@ -510,7 +522,7 @@ void _ggzcore_room_set_table_list(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
+void _ggzcore_room_set_monitor(GGZRoom *room, char monitor)
 {
 	room->monitor = monitor;
 
@@ -527,7 +539,7 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
+void _ggzcore_room_add_player(GGZRoom *room, GGZPlayer *pdata,
 			      int from_room)
 {
 	struct _GGZPlayer *player;
@@ -571,7 +583,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
 }
 			      
 
-void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
+void _ggzcore_room_remove_player(GGZRoom *room, char *name,
 				 int to_room)
 {
 	struct _GGZPlayer player;
@@ -606,7 +618,7 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,
 }
 
 
-void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag)
+void _ggzcore_room_set_player_lag(GGZRoom *room, char *name, int lag)
 {
 	/* FIXME: This should be sending a player "class-based" event */
 	struct _GGZPlayer *player;
@@ -653,10 +665,10 @@ void _ggzcore_room_set_player_stats(GGZRoom *room, GGZPlayer *pdata)
 }
 
 
-void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table)
+void _ggzcore_room_add_table(GGZRoom *room, struct _GGZTable *table)
 {
 	ggz_debug(GGZCORE_DBG_ROOM, "Adding table %d", 
-		      _ggzcore_table_get_id(table));
+		  ggzcore_table_get_id(table));
 	
 	/* Set table to point to this room */
 	_ggzcore_table_set_room(table, room);
@@ -672,27 +684,30 @@ void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table)
 }
 
 
-void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id) 
+void _ggzcore_room_remove_table(GGZRoom *room, const unsigned int id) 
 {
-	GGZListEntry *entry;
-	struct _GGZTable table;
-
 	ggz_debug(GGZCORE_DBG_ROOM, "Deleting table: %d", id);
 
 	/* Only try to delete if the list exists */
 	if (room->tables) {
-		_ggzcore_table_set_id(&table, id);
-		entry = ggz_list_search(room->tables, &table);
+		GGZListEntry *entry;
+		GGZTable *search_table = ggzcore_table_new();;
+
+		_ggzcore_table_set_id(search_table, id);
+
+		entry = ggz_list_search(room->tables, search_table);
 		if (entry) {
 			ggz_list_delete_entry(room->tables, entry);
 			room->num_tables--;
 			_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
 		}
+
+		ggzcore_table_free(search_table);
 	}
 }
 
 
-void _ggzcore_room_player_set_table(struct _GGZRoom *room,
+void _ggzcore_room_player_set_table(GGZRoom *room,
 				    const char * name, int table)
 {
 	struct _GGZPlayer *player;
@@ -709,7 +724,7 @@ void _ggzcore_room_player_set_table(struct _GGZRoom *room,
 }
 
 
-int _ggzcore_room_load_playerlist(struct _GGZRoom *room)
+int _ggzcore_room_load_playerlist(GGZRoom *room)
 {
 	struct _GGZNet *net;
 
@@ -718,7 +733,7 @@ int _ggzcore_room_load_playerlist(struct _GGZRoom *room)
 }
 
 
-int _ggzcore_room_load_tablelist(struct _GGZRoom *room, const int type, const char global)
+int _ggzcore_room_load_tablelist(GGZRoom *room, const int type, const char global)
 {
 	struct _GGZNet *net;
 
@@ -727,7 +742,7 @@ int _ggzcore_room_load_tablelist(struct _GGZRoom *room, const int type, const ch
 }
 
 
-int _ggzcore_room_chat(struct _GGZRoom *room,
+int _ggzcore_room_chat(GGZRoom *room,
 		       const GGZChatType type,
 		       const char *player,
 		       const char *msg)
@@ -773,7 +788,7 @@ int _ggzcore_room_chat(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatType type,
+void _ggzcore_room_add_chat(GGZRoom *room, GGZChatType type,
 			    const char *name, const char *msg)
 {
 	GGZChatEventData data = { type : type,
@@ -792,7 +807,7 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatType type,
 }
 
 
-void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
+void _ggzcore_room_set_table_launch_status(GGZRoom *room, int status)
 {
 	_ggzcore_server_set_table_launch_status(room->server, status);
 
@@ -858,7 +873,7 @@ void _ggzcore_room_set_table_join(GGZRoom *room, int table_index)
 }
 					   
 
-void _ggzcore_room_set_table_join_status(struct _GGZRoom *room,
+void _ggzcore_room_set_table_join_status(GGZRoom *room,
 					 GGZClientReqError status)
 {
 	char buf[128];
@@ -931,7 +946,7 @@ void _ggzcore_room_set_table_leave(GGZRoom *room,
 	_ggzcore_room_event(room, GGZ_TABLE_LEFT, &event_data);
 }
 
-void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room,
+void _ggzcore_room_set_table_leave_status(GGZRoom *room,
 					  GGZClientReqError status)
 {
 	char buf[128];
@@ -971,13 +986,13 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_table_event(struct _GGZRoom *room, GGZRoomEvent event, void *data)
+void _ggzcore_room_table_event(GGZRoom *room, GGZRoomEvent event, void *data)
 {
 	_ggzcore_room_event(room, event, data);
 }
 
 
-int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
+int _ggzcore_room_launch_table(GGZRoom *room, struct _GGZTable *table)
 {
 	struct _GGZNet *net;
 	int status;
@@ -1003,7 +1018,7 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 }
 
 
-int _ggzcore_room_join_table(struct _GGZRoom *room,
+int _ggzcore_room_join_table(GGZRoom *room,
 			     const unsigned int num,
 			     int spectator)
 {
@@ -1036,7 +1051,7 @@ int _ggzcore_room_join_table(struct _GGZRoom *room,
 }
 
 
-int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
+int _ggzcore_room_leave_table(GGZRoom *room, int force)
 {
 	int status;
 	struct _GGZNet *net;
@@ -1096,7 +1111,7 @@ int _ggzcore_room_remove_event_hook_id(GGZRoom *room,
 /* Return 0 if equal and -1 otherwise */
 int _ggzcore_room_compare(void* p, void* q)
 {
-	if (((struct _GGZRoom*)p)->id == ((struct _GGZRoom*)q)->id)
+	if (((GGZRoom*)p)->id == ((GGZRoom*)q)->id)
 		return 0;
 
 	return -1;
@@ -1106,7 +1121,7 @@ int _ggzcore_room_compare(void* p, void* q)
 /* Create a copy of a room object */
 void* _ggzcore_room_copy(void* p)
 {
-	struct _GGZRoom *new, *src = p;
+	GGZRoom *new, *src = p;
 
 	new = _ggzcore_room_new();
 	_ggzcore_room_init(new, src->server, src->id, src->name, src->game,

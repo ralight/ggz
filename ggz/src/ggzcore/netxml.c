@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6761 2005-01-20 06:05:40Z jdorje $
+ * $Id: netxml.c 6762 2005-01-20 07:31:47Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -165,7 +165,7 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement*,
 static void _ggzcore_net_game_set_info(GGZXMLElement *,
 				       const char *, const char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
-static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*,
+static void _ggzcore_net_table_add_seat(GGZXMLElement*, GGZTableSeat*,
 					int spectator);
 static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
 				     const char *action);
@@ -177,8 +177,8 @@ static GGZTableData *_ggzcore_net_table_get_data(GGZXMLElement *table);
 static void _ggzcore_net_table_set_desc(GGZXMLElement*, char*);
 static GGZTableData* _ggzcore_net_tabledata_new(void);
 static void _ggzcore_net_tabledata_free(GGZTableData*);
-static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig);
-static void _ggzcore_net_seat_free(struct _GGZSeat*);
+static GGZTableSeat* _ggzcore_net_seat_copy(GGZTableSeat *orig);
+static void _ggzcore_net_seat_free(GGZTableSeat*);
 
 /* Trigger network error event */
 static void _ggzcore_net_error(GGZNet *net, char* message);
@@ -188,7 +188,7 @@ static void _ggzcore_net_dump_data(GGZNet *net, char *data, int size);
 static void _ggzcore_net_negotiate_tls(GGZNet *net);
 
 /* Utility functions */
-static int _ggzcore_net_send_table_seat(GGZNet *net, struct _GGZSeat *seat);
+static int _ggzcore_net_send_table_seat(GGZNet *net, GGZTableSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_pong(GGZNet *net, const char *id);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
@@ -534,17 +534,20 @@ int _ggzcore_net_send_table_launch(GGZNet *net, GGZTable *table)
 	
 	ggz_debug(GGZCORE_DBG_NET, "Sending table launch request");
 		
-	type = ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
-	desc = _ggzcore_table_get_desc(table);
-	num_seats = _ggzcore_table_get_num_seats(table);
+	type = ggzcore_gametype_get_id(ggzcore_table_get_type(table));
+	desc = ggzcore_table_get_desc(table);
+	num_seats = ggzcore_table_get_num_seats(table);
 
 	_ggzcore_net_send_line(net, "<LAUNCH>");
 	_ggzcore_net_send_line(net, "<TABLE GAME='%d' SEATS='%d'>", type, num_seats);
 	if (desc)
 		_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
 	
-	for (i = 0; i < num_seats; i++)
-		_ggzcore_net_send_table_seat(net, _ggzcore_table_get_nth_seat(table, i));
+	for (i = 0; i < num_seats; i++) {
+		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table, i);
+
+		_ggzcore_net_send_table_seat(net, &seat);
+	}
 	
 	_ggzcore_net_send_line(net, "</TABLE>");
 	_ggzcore_net_send_line(net, "</LAUNCH>");
@@ -554,7 +557,7 @@ int _ggzcore_net_send_table_launch(GGZNet *net, GGZTable *table)
 
 
 static int _ggzcore_net_send_table_seat(GGZNet *net,
-					struct _GGZSeat *seat)
+					GGZTableSeat *seat)
 {
 	const char *type;
 
@@ -628,14 +631,19 @@ int _ggzcore_net_send_table_reseat(GGZNet *net,
 
 
 int _ggzcore_net_send_table_seat_update(GGZNet *net, GGZTable *table,
-					struct _GGZSeat *seat)
+					GGZTableSeat *seat)
 {
+	const GGZRoom *room = ggzcore_table_get_room(table);
+	int room_id = ggzcore_room_get_id(room);
+	int id = ggzcore_table_get_id(table);
+	int num_seats = ggzcore_table_get_num_seats(table);
+
 	ggz_debug(GGZCORE_DBG_NET, "Sending table seat update request");
 	_ggzcore_net_send_line(net,
 			       "<UPDATE TYPE='table' ACTION='seat' ROOM='%d'>",
-			       _ggzcore_room_get_id(table->room));
+			       room_id);
 	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>",
-			       table->id, table->num_seats);
+			       id, num_seats);
 	_ggzcore_net_send_table_seat(net, seat);
 	_ggzcore_net_send_line(net, "</TABLE>");
 	return _ggzcore_net_send_line(net, "</UPDATE>");
@@ -646,11 +654,15 @@ int _ggzcore_net_send_table_seat_update(GGZNet *net, GGZTable *table,
 int _ggzcore_net_send_table_desc_update(GGZNet *net, GGZTable *table,
 					const char *desc)
 {
+	const GGZRoom *room = ggzcore_table_get_room(table);
+	int room_id = ggzcore_room_get_id(room);
+	int id = ggzcore_table_get_id(table);
+
 	ggz_debug(GGZCORE_DBG_NET, "Sending table description update request");
 	_ggzcore_net_send_line(net,
 			       "<UPDATE TYPE='table' ACTION='desc' ROOM='%d'>",
-			       _ggzcore_room_get_id(table->room));
-	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
+			       room_id);
+	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", id);
 	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
 	_ggzcore_net_send_line(net, "</TABLE>");
 	return _ggzcore_net_send_line(net, "</UPDATE>");	
@@ -658,8 +670,12 @@ int _ggzcore_net_send_table_desc_update(GGZNet *net, GGZTable *table,
 
 
 int _ggzcore_net_send_table_boot_update(GGZNet *net, GGZTable *table,
-					struct _GGZSeat *seat)
+					GGZTableSeat *seat)
 {
+	const GGZRoom *room = ggzcore_table_get_room(table);
+	int room_id = ggzcore_room_get_id(room);
+	int id = ggzcore_table_get_id(table);
+
 	ggz_debug(GGZCORE_DBG_NET, "Sending boot of player %s.", seat->name);
 
 	if (!seat->name)
@@ -669,9 +685,9 @@ int _ggzcore_net_send_table_boot_update(GGZNet *net, GGZTable *table,
 
 	_ggzcore_net_send_line(net,
 			       "<UPDATE TYPE='table' ACTION='boot' ROOM='%d'>",
-			       _ggzcore_room_get_id(table->room));
+			       room_id);
 
-	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='1'>", table->id);
+	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='1'>", id);
 	_ggzcore_net_send_table_seat(net, seat);
 	_ggzcore_net_send_line(net, "</TABLE>");
 
@@ -1284,7 +1300,7 @@ static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update,
 static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
 				      const char *action)
 {
-	int i, room_num;
+	int i, room_num, table_id;
 	GGZTable *table, *table_data;
 	GGZRoom *room;
 	const char *room_str;
@@ -1295,7 +1311,7 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
 		/* Assume we're talking about the current room.  This is
 		   no doubt preferable to simply dropping the connection. */
 		room = ggzcore_server_get_cur_room(net->server);
-		room_num = _ggzcore_room_get_id(room);
+		room_num = ggzcore_room_get_id(room);
 	} else
 		room_num = str_to_int(room_str, -1);
 
@@ -1313,14 +1329,15 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
 	}
 	
 	table_data = ggz_xmlelement_get_data(update);
-	table = _ggzcore_room_get_table_by_id(room, table_data->id);
+	table_id = ggzcore_table_get_id(table_data);
+	table = ggzcore_room_get_table_by_id(room, table_id);
 
 	/* Table can only be NULL if we're adding it */
 	if (!table && strcasecmp(action, "add") != 0) {
 		char msg[256];
 		snprintf(msg, sizeof(msg),
 			 "Server specified non-existent table %d",
-			 table_data->id);
+			 table_id);
 		_ggzcore_server_protocol_error(net->server, msg);
 		return;
 	}
@@ -1333,37 +1350,56 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
 		   which should copy it), but it appears as though it is. */
 		table_data = NULL;
 	} else if (strcasecmp(action, "delete") == 0)
-		_ggzcore_room_remove_table(room, table_data->id);
+		_ggzcore_room_remove_table(room, table_id);
 	else if (strcasecmp(action, "join") == 0) {
 		/* Loop over both seats and spectators. */
-		for (i = 0; i < table_data->num_seats; i++)
-			if (table_data->seats[i].type != GGZ_SEAT_NONE)
-				_ggzcore_table_set_seat(table,
-					&table_data->seats[i]);
-		for (i = 0; i < table_data->num_spectator_seats; i++) {
-			if (table_data->spectator_seats[i].name) {
+		for (i = 0; i < ggzcore_table_get_num_seats(table_data); i++) {
+			GGZTableSeat seat
+				= _ggzcore_table_get_nth_seat(table_data, i);
+
+			if (seat.type != GGZ_SEAT_NONE) {
+				_ggzcore_table_set_seat(table, &seat);
+			}
+		}
+		for (i = 0;
+		     i < ggzcore_table_get_num_spectator_seats(table_data);
+		     i++) {
+			GGZTableSeat spectator
+				= _ggzcore_table_get_nth_spectator_seat
+					(table_data, i);
+
+			if (spectator.name) {
 				_ggzcore_table_set_spectator_seat(table,
-					&table_data->spectator_seats[i]);
+								  &spectator);
 			}
 		}
 	} else if (strcasecmp(action, "leave") == 0) {
 		/* The server sends us the player that is leaving - that
 		   is, a GGZ_SEAT_PLAYER not a GGZ_SEAT_OPEN.  It may
 		   be either a regular or a spectator seat. */
-		for (i = 0; i < table_data->num_seats; i++) {
-			if (table_data->seats[i].type != GGZ_SEAT_NONE) {
+		for (i = 0; i < ggzcore_table_get_num_seats(table_data); i++) {
+			GGZTableSeat leave_seat
+				= _ggzcore_table_get_nth_seat(table_data, i);
+
+			if (leave_seat.type != GGZ_SEAT_NONE) {
 				/* Player is vacating seat */
-				struct _GGZSeat seat;
+				GGZTableSeat seat;
 				seat.index = i;
 				seat.type = GGZ_SEAT_OPEN;
 				seat.name = NULL;
 				_ggzcore_table_set_seat(table, &seat);
 			}
 		}
-		for (i = 0; i < table_data->num_spectator_seats; i++) {
-			if (table_data->spectator_seats[i].name) {
+		for (i = 0;
+		     i < ggzcore_table_get_num_spectator_seats(table_data);
+		     i++) {
+			GGZTableSeat leave_spectator
+				= _ggzcore_table_get_nth_spectator_seat
+					(table_data, i);
+
+			if (leave_spectator.name) {
 				/* Player is vacating seat */
-				struct _GGZSeat seat;
+				GGZTableSeat seat;
 				seat.index = i;
 				seat.name = NULL;
 				_ggzcore_table_set_spectator_seat(table,
@@ -1371,13 +1407,20 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
 			}
 		}
 	} else if (strcasecmp(action, "status") == 0) {
-		_ggzcore_table_set_state(table, table_data->state);
+		_ggzcore_table_set_state(table,
+					 ggzcore_table_get_state(table_data));
 	} else if (strcasecmp(action, "desc") == 0) {
-		_ggzcore_table_set_desc(table, table_data->desc);
+		_ggzcore_table_set_desc(table,
+					ggzcore_table_get_desc(table_data));
 	} else if (strcasecmp(action, "seat") == 0) {
-		for (i = 0; i < table_data->num_seats; i++) 
-			if (table_data->seats[i].type != GGZ_SEAT_NONE)
-				_ggzcore_table_set_seat(table, &table_data->seats[i]);
+		for (i = 0; i < ggzcore_table_get_num_seats(table_data); i++) {
+			GGZTableSeat seat
+				= _ggzcore_table_get_nth_seat(table_data, i);
+
+			if (seat.type != GGZ_SEAT_NONE) {
+				_ggzcore_table_set_seat(table, &seat);
+			}
+		}
 	}
 			
 	if (table_data)
@@ -1775,13 +1818,17 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *element)
 
 	/* Initialize seats to none */
 	/* FIXME: perhaps tables should come this way? */
-	for (i = 0; i < num_seats; i++)
-		table_obj->seats[i].type = GGZ_SEAT_NONE;
+	for (i = 0; i < num_seats; i++) {
+		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table_obj, i);
+
+		seat.type = GGZ_SEAT_NONE;
+		_ggzcore_table_set_seat(table_obj, &seat);
+	}
 
 	/* Add seats */
 	entry = ggz_list_head(seats);
 	while (entry) {
-		struct _GGZSeat* seat = ggz_list_get_data(entry);
+		GGZTableSeat* seat = ggz_list_get_data(entry);
 		_ggzcore_table_set_seat(table_obj, seat);
 		entry = ggz_list_next(entry);
 	}
@@ -1789,7 +1836,7 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *element)
 	/* Add spectator seats */
 	entry = ggz_list_head(spectatorseats);
 	while (entry) {
-		struct _GGZSeat* seat = ggz_list_get_data(entry);
+		GGZTableSeat* seat = ggz_list_get_data(entry);
 		_ggzcore_table_set_spectator_seat(table_obj, seat);
 		entry = ggz_list_next(entry);
 	}
@@ -1830,7 +1877,7 @@ static GGZTableData *_ggzcore_net_table_get_data(GGZXMLElement *table)
 }
 
 static void _ggzcore_net_table_add_seat(GGZXMLElement *table,
-					struct _GGZSeat *seat,
+					GGZTableSeat *seat,
 					int spectator)
 {
 	GGZTableData *data = _ggzcore_net_table_get_data(table);
@@ -1887,7 +1934,7 @@ static void _ggzcore_net_tabledata_free(GGZTableData *data)
 /* Functions for <SEAT> tag */
 static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *element)
 {
-	struct _GGZSeat seat_obj;
+	GGZTableSeat seat_obj;
 	GGZXMLElement *parent;
 	const char *parent_tag;
 
@@ -1916,7 +1963,7 @@ static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *element)
 static void _ggzcore_net_handle_spectator_seat(GGZNet *net,
 					       GGZXMLElement *element)
 {
-	struct _GGZSeat seat_obj;
+	GGZTableSeat seat_obj;
 	GGZXMLElement *parent;
 	const char *parent_tag;
 
@@ -1940,11 +1987,11 @@ static void _ggzcore_net_handle_spectator_seat(GGZNet *net,
 	_ggzcore_net_table_add_seat(parent, &seat_obj, 1);
 }
 
-static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig)
+static GGZTableSeat* _ggzcore_net_seat_copy(GGZTableSeat *orig)
 {
-	struct _GGZSeat *copy;
+	GGZTableSeat *copy;
 
-	copy = ggz_malloc(sizeof(struct _GGZSeat));
+	copy = ggz_malloc(sizeof(GGZTableSeat));
 
 	copy->index = orig->index;
 	copy->type = orig->type;
@@ -1954,7 +2001,7 @@ static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig)
 }
 
 
-static void _ggzcore_net_seat_free(struct _GGZSeat *seat)
+static void _ggzcore_net_seat_free(GGZTableSeat *seat)
 {
 	if (!seat)
 		return;

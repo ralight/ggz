@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 6737 2005-01-19 02:54:26Z jdorje $
+ * $Id: net.h 6762 2005-01-20 07:31:47Z jdorje $
  *
  * Code for performing network I/O
  *
@@ -88,11 +88,11 @@ int _ggzcore_net_send_table_reseat(struct _GGZNet *net,
 				   GGZReseatType opcode,
 				   int seat_num);
 int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, GGZTable *table,
-					struct _GGZSeat *seat);
+					GGZTableSeat *seat);
 int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, GGZTable *table,
 					const char *desc);
 int _ggzcore_net_send_table_boot_update(struct _GGZNet *net, GGZTable *table,
-					struct _GGZSeat *seat);
+					GGZTableSeat *seat);
 
 int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer);
 

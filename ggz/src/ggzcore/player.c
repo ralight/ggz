@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 6116 2004-07-16 19:07:48Z jdorje $
+ * $Id: player.c 6762 2005-01-20 07:31:47Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -208,7 +208,7 @@ GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 	if (player->table == -1)
 		return NULL;
 	
-	return _ggzcore_room_get_table_by_id(player->room, player->table);
+	return ggzcore_room_get_table_by_id(player->room, player->table);
 }
 
 

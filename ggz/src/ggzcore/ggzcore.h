@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6761 2005-01-20 06:05:40Z jdorje $
+ * $Id: ggzcore.h 6762 2005-01-20 07:31:47Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -934,7 +934,7 @@ void ggzcore_room_free(GGZRoom *room);
 GGZServer *ggzcore_room_get_server(GGZRoom *room);
 
 /** @brief Return the ID number of the room (or negative on error). */
-int ggzcore_room_get_id(GGZRoom *room);
+int ggzcore_room_get_id(const GGZRoom *room);
 
 /** @brief Return the name of the room (or NULL on error). */
 char* ggzcore_room_get_name(GGZRoom *room);
@@ -1126,7 +1126,7 @@ GGZTable* ggzcore_table_new(void);
 /** @brief Set data on a table object.
  *  @note Useful when launching a game. */
 int ggzcore_table_init(GGZTable *table,
-		       GGZGameType *gametype,
+		       const GGZGameType *gametype,
 		       const char *desc,
 		       const unsigned int num_seats);
 
@@ -1155,22 +1155,25 @@ int ggzcore_table_set_seat(GGZTable *table,
 int ggzcore_table_remove_player(GGZTable *table, char *name);
 
 /** @brief Return the ID of the table. */
-int           ggzcore_table_get_id(GGZTable *table);
+int ggzcore_table_get_id(const GGZTable *table);
+
+/** @brief Return the room this table is in. */
+const GGZRoom *ggzcore_table_get_room(const GGZTable *table);
 
 /** @brief Return the game type of the table. */
-GGZGameType*  ggzcore_table_get_type(GGZTable *table);
+const GGZGameType *ggzcore_table_get_type(const GGZTable *table);
 
 /** @brief Return the table's description (or NULL). */
-const char * ggzcore_table_get_desc(GGZTable *table);
+const char *ggzcore_table_get_desc(const GGZTable *table);
 
 /** @brief Return the state of the table. */
-GGZTableState ggzcore_table_get_state(GGZTable *table);
+GGZTableState ggzcore_table_get_state(const GGZTable *table);
 
 /** @brief Return the number of seats at the table. */
-int           ggzcore_table_get_num_seats(GGZTable *table);
+int ggzcore_table_get_num_seats(const GGZTable *table);
 
 /** @brief Set the table description. */
-int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
+int ggzcore_table_set_desc(GGZTable *table, const char *desc);
 
 /** @brief Count the seats of the given type.
  *
@@ -1181,23 +1184,23 @@ int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
  *  @param type A GGZSeatType.
  *  @return The number of seats matching the type, or -1 on error.
  */
-int          ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type);
+int ggzcore_table_get_seat_count(const GGZTable *table, GGZSeatType type);
 
 /** @brief Return the name of a player at the table, or NULL on error. */
-const char * ggzcore_table_get_nth_player_name(GGZTable *table,
-					       const unsigned int num);
+const char *ggzcore_table_get_nth_player_name(const GGZTable *table,
+					      const unsigned int num);
 
 /** @brief Return the number of spectator seats at the table, or -1. */
-int ggzcore_table_get_num_spectator_seats(GGZTable *table);
+int ggzcore_table_get_num_spectator_seats(const GGZTable *table);
 
 /** @brief Return the name of the nth spectator, or NULL if seat is empty. */
-const char *ggzcore_table_get_nth_spectator_name(GGZTable *table,
+const char *ggzcore_table_get_nth_spectator_name(const GGZTable *table,
 						 const unsigned int num);
 
 /** @brief Return the type of a player at the table, or GGZ_PLAYER_NONE on
  *  error. */
-GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table, 
-					       const unsigned int num);
+GGZSeatType ggzcore_table_get_nth_player_type(const GGZTable *table, 
+					      const unsigned int num);
 
 
 /** @brief Get the ID of this gametype.

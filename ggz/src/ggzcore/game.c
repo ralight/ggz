@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6724 2005-01-18 02:51:57Z jdorje $
+ * $Id: game.c 6762 2005-01-20 07:31:47Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -58,6 +58,7 @@
 #include "net.h"
 #include "room.h"
 #include "server.h"
+#include "table.h"
 
 /* Local functions */
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);
@@ -280,7 +281,7 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
 	game->server = server;
-	game->room_id = _ggzcore_room_get_id(room);
+	game->room_id = ggzcore_room_get_id(room);
 	game->table_id = -1;
 
 	_ggzcore_server_set_cur_game(server, game);
@@ -416,24 +417,27 @@ static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
-	GGZTable *table = _ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table = ggzcore_room_get_table_by_id(room, game->table_id);
 	char *name = data;
 	int i;
 
-	for (i = 0; i < table->num_seats; i++) {
-		struct _GGZSeat *seat = &table->seats[i];
-		if (seat->type != GGZ_SEAT_PLAYER
-		    || ggz_strcmp(seat->name, name))
+	for (i = 0; i < ggzcore_table_get_num_seats(table); i++) {
+		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table, i);
+
+		if (seat.type != GGZ_SEAT_PLAYER
+		    || ggz_strcmp(seat.name, name))
 			continue;
-		_ggzcore_net_send_table_boot_update(net, table, seat);
+		_ggzcore_net_send_table_boot_update(net, table, &seat);
 		return;
 	}
 
-	for (i = 0; i < table->num_spectator_seats; i++) {
-		struct _GGZSeat *seat = &table->spectator_seats[i];
-		if (ggz_strcmp(seat->name, name))
+	for (i = 0; i < ggzcore_table_get_num_spectator_seats(table); i++) {
+		GGZTableSeat spectator
+			= _ggzcore_table_get_nth_spectator_seat(table, i);
+
+		if (ggz_strcmp(spectator.name, name))
 			continue;
-		_ggzcore_net_send_table_boot_update(net, table, seat);
+		_ggzcore_net_send_table_boot_update(net, table, &spectator);
 		return;
 	}
 
@@ -448,10 +452,10 @@ static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
 	GGZGame* game = ggzmod_get_gamedata(mod);
 	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 	int seat_num = *(int*)data;
-	struct _GGZSeat seat = {index: seat_num, name: NULL};
+	GGZTableSeat seat = {index: seat_num, name: NULL};
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
-	GGZTable *table = _ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table = ggzcore_room_get_table_by_id(room, game->table_id);
 
 	if (t == GGZMOD_TRANSACTION_OPEN)
 		seat.type = GGZ_SEAT_OPEN;
@@ -499,29 +503,30 @@ void _ggzcore_game_set_table(GGZGame *game, int room_id, int table_id)
 	assert(game->table_id < 0 || game->table_id == table_id);
 
 	room = ggzcore_server_get_cur_room(game->server);
-	assert(_ggzcore_room_get_id(room) == room_id);
+	assert(ggzcore_room_get_id(room) == room_id);
 
 	game->table_id = table_id;
-	table = _ggzcore_room_get_table_by_id(room, table_id);
+	table = ggzcore_room_get_table_by_id(room, table_id);
 	assert(table && ggzcore_table_get_id(table) == table_id);
 
-	num_seats = _ggzcore_table_get_num_seats(table);
+	num_seats = ggzcore_table_get_num_seats(table);
 	for (i = 0; i < num_seats; i++) {
-		struct _GGZSeat *seat;
-		seat = _ggzcore_table_get_nth_seat(table, i);
-		_ggzcore_game_set_seat(game, seat);
+		GGZTableSeat seat = _ggzcore_table_get_nth_seat(table, i);
+
+		_ggzcore_game_set_seat(game, &seat);
 	}
 
-	num_seats = _ggzcore_table_get_num_spectator_seats(table);
+	num_seats = ggzcore_table_get_num_spectator_seats(table);
 	for (i = 0; i < num_seats; i++) {
-		struct _GGZSeat *seat;
-		seat = _ggzcore_table_get_nth_spectator_seat(table, i);
-		_ggzcore_game_set_spectator_seat(game, seat);
+		GGZTableSeat seat =
+		  _ggzcore_table_get_nth_spectator_seat(table, i);
+
+		_ggzcore_game_set_spectator_seat(game, &seat);
 	}
 }
 
 
-void _ggzcore_game_set_seat(GGZGame *game, struct _GGZSeat *seat)
+void _ggzcore_game_set_seat(GGZGame *game, GGZTableSeat *seat)
 {
 	GGZSeat mseat = {num: seat->index,
 			 type: seat->type,
@@ -529,7 +534,7 @@ void _ggzcore_game_set_seat(GGZGame *game, struct _GGZSeat *seat)
 	ggzmod_set_seat(game->client, &mseat);
 }
 
-void _ggzcore_game_set_spectator_seat(GGZGame *game, struct _GGZSeat *seat)
+void _ggzcore_game_set_spectator_seat(GGZGame *game, GGZTableSeat *seat)
 {
 	GGZSpectatorSeat mseat = {num: seat->index,
 				  name: seat->name};

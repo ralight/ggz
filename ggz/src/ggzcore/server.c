@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6761 2005-01-20 06:05:40Z jdorje $
+ * $Id: server.c 6762 2005-01-20 07:31:47Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -672,7 +672,7 @@ GGZRoom* _ggzcore_server_get_room_by_id(GGZServer *server,
 	int i;
 
 	for (i = 0; i < server->num_rooms; i++)
-		if (_ggzcore_room_get_id(server->rooms[i]) == id)
+		if (ggzcore_room_get_id(server->rooms[i]) == id)
 			return server->rooms[i];
 
 	return NULL;
@@ -1061,8 +1061,8 @@ int _ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
 
 	/* We need to send the room's ID on the server */
 	room = _ggzcore_server_get_nth_room(server, room_num);
-	room_id = _ggzcore_room_get_id(room);
-	
+	room_id = ggzcore_room_get_id(room);
+
 	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
 	
 	status = _ggzcore_net_send_join_room(server->net, room_id);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 5930 2004-02-15 02:55:50Z jdorje $
+ * $Id: room.h 6762 2005-01-20 07:31:47Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -114,25 +114,6 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 
 /* De-allocate room object and its children */
 void _ggzcore_room_free(struct _GGZRoom *room);
-
-/* Functions to retrieve room information */
-struct _GGZServer*   _ggzcore_room_get_server(struct _GGZRoom *room);
-unsigned int         _ggzcore_room_get_id(struct _GGZRoom *room);
-char*                _ggzcore_room_get_name(struct _GGZRoom *room);
-struct _GGZGameType* _ggzcore_room_get_game(struct _GGZRoom *room); 
-char*                _ggzcore_room_get_desc(struct _GGZRoom *room);
-
-unsigned int       _ggzcore_room_get_num_players(struct _GGZRoom *room);
-struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
-						const unsigned int num);
-struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room, 
-						    const char *name);
-
-unsigned int      _ggzcore_room_get_num_tables(struct _GGZRoom *room);
-struct _GGZTable* _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
-					      const unsigned int num);
-struct _GGZTable* _ggzcore_room_get_table_by_id(struct _GGZRoom *room, 
-						const unsigned int id);
 
 
 /* Functions for manipulating hooks to GGZRoom events */
