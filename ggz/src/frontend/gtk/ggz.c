@@ -129,6 +129,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 
 	login_destroy();
 	ggzcore_server_list_rooms(server, -1, 1);
+	ggzcore_server_list_gametypes(server, 1);
 
 	/* set senditivity */
 	/* Menu bar */

@@ -42,6 +42,7 @@
 #include "types.h"
 #include "support.h"
 
+extern GGZServer *server;
 
 static GtkWidget *types_dialog;
 static GtkWidget* create_dlg_types(void);
@@ -66,6 +67,7 @@ void types_create_or_raise(void)
 	GtkWidget  *menuitem;
 	gchar *gtype[6];
 	gint x;
+	GGZGameType *gt;
 
 	if (!types_dialog) {
 		types_dialog = create_dlg_types();
@@ -75,12 +77,13 @@ void types_create_or_raise(void)
 		menuitem = gtk_menu_item_new_with_label("None");
 		gtk_menu_append(GTK_MENU(menu), menuitem);
 		gtk_widget_show(menuitem);
-		for(x=0; x<ggzcore_gametype_get_num(); x++)
+		for(x=0; x<ggzcore_server_get_num_gametypes(server); x++)
 		{
-			gtype[0] = g_strdup(ggzcore_gametype_get_name(x));
-			gtype[1] = g_strdup(ggzcore_gametype_get_author(x));
-			gtype[2] = g_strdup(ggzcore_gametype_get_url(x));
-			gtype[3] = g_strdup(ggzcore_gametype_get_desc(x));
+			gt = ggzcore_server_get_nth_gametype(server, x);
+			gtype[0] = g_strdup(ggzcore_gametype_get_name(gt));
+			gtype[1] = g_strdup(ggzcore_gametype_get_author(gt));
+			gtype[2] = g_strdup(ggzcore_gametype_get_url(gt));
+			gtype[3] = g_strdup(ggzcore_gametype_get_desc(gt));
 			tmp = lookup_widget(types_dialog, "types_clist");
 			gtk_clist_append(GTK_CLIST(tmp), gtype);
 			g_free(gtype[0]);
@@ -90,7 +93,7 @@ void types_create_or_raise(void)
 
 			tmp = lookup_widget(types_dialog, "filter_optionmenu");
 			menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
-			menuitem = gtk_menu_item_new_with_label(ggzcore_gametype_get_name(x));
+			menuitem = gtk_menu_item_new_with_label(ggzcore_gametype_get_name(gt));
 			gtk_menu_append(GTK_MENU(menu), menuitem);
 			gtk_widget_show(menuitem);
 		}
