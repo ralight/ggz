@@ -121,7 +121,7 @@ int main(int argc, char** argv)
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggz_sock, &active_fd_set);
 
-	init_game(which_game);
+	init_ggzcards(which_game);
 	while(!game_over) {
 		
 		read_fd_set = active_fd_set;

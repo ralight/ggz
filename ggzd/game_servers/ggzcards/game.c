@@ -103,53 +103,10 @@ void game_init_game()
 	player_t p;
 	seat_t s;
 
-	if (!games_valid_game(game.which_game)) {
-		ggz_debug("SERVER BUG: game_init_game: invalid game %d chosen.", game.which_game);
-		exit(-1);
-	}
-
-	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
-		ggz_debug("SERVER BUG: game_init_game called on unknown or previously initialized game.");
-		return;
-	}
-
-	/* First, allocate the game */
-	switch (game.which_game) {
-		case GGZ_GAME_LAPOCHA:
-			game.specific = alloc(sizeof(lapocha_game_t));
-			break;
-		case GGZ_GAME_SUARO:
-			game.specific = alloc(sizeof(suaro_game_t));
-			break;
-		case GGZ_GAME_SPADES:
-			game.specific = alloc(sizeof(spades_game_t));
-			break;
-		case GGZ_GAME_HEARTS:
-			game.specific = alloc(sizeof(hearts_game_t));
-			break;
-		case GGZ_GAME_BRIDGE:
-			game.specific = alloc(sizeof(bridge_game_t));
-			break;
-		case GGZ_GAME_EUCHRE:
-			game.specific = alloc(sizeof(euchre_game_t));
-			break;
-		case GGZ_GAME_SKAT:
-			game.specific = alloc(sizeof(skat_game_t));
-			break;
-		default:
-			ggz_debug("game_alloc_game not implemented for game %d.", game.which_game);
-			exit(-1);
-	}
-
-	/* default values */
-	game.max_hand_length = 52 / game.num_players;
-	game.deck_type = GGZ_DECK_FULL;
-	game.last_trick = 1;
-	game.last_hand = 1;
-
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
+			game.specific = alloc(sizeof(euchre_game_t));
 			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
@@ -166,6 +123,7 @@ void game_init_game()
 			game.trump = -1;
 			break;
 		case GGZ_GAME_SKAT:
+			game.specific = alloc(sizeof(skat_game_t));
 			set_num_seats(game.num_players);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
@@ -182,6 +140,7 @@ void game_init_game()
 			{
 			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
 							    {GGZ_SEAT_NONE, "Up-Card", -1} };
+			game.specific = alloc(sizeof(suaro_game_t));
 			set_num_seats(4);
 			game.seats[0].ggz = &ggz_seats[0];
 			game.players[0].seat = 0;
@@ -205,6 +164,7 @@ void game_init_game()
 			}
 			break;
 		case GGZ_GAME_LAPOCHA:
+			game.specific = alloc(sizeof(lapocha_game_t));
 			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
@@ -219,6 +179,7 @@ void game_init_game()
 			game.name = "La Pocha";
 			break;
 		case GGZ_GAME_BRIDGE:
+			game.specific = alloc(sizeof(bridge_game_t));
 			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
@@ -235,6 +196,7 @@ void game_init_game()
 			BRIDGE.declarer = -1;
 			break;
 		case GGZ_GAME_SPADES:
+			game.specific = alloc(sizeof(spades_game_t));
 			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
@@ -252,6 +214,7 @@ void game_init_game()
 			game.name = "Spades";
 			break;
 		case GGZ_GAME_HEARTS:
+			game.specific = alloc(sizeof(hearts_game_t));
 			set_num_seats(game.num_players);
 			game.trump = -1; /* no trump in hearts */
 			for(p = 0; p < game.num_players; p++) {
@@ -269,29 +232,6 @@ void game_init_game()
 			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
 			game.name = "(Unknown)";
 	}
-
-	cards_create_deck(game.deck_type);
-
-	set_global_message("game", "%s", game.name);
-
-	/* allocate hands */
-	for (s=0; s<game.num_seats; s++) {
-		game.seats[s].hand.cards = (card_t *)alloc(game.max_hand_length * sizeof(card_t));
-	}
-
-	/* allocate bidding arrays */
-	game.bid_texts = alloc_string_array(game.max_bid_choices, game.max_bid_length);
-	game.bid_choices = (bid_t*)alloc(game.max_bid_choices * sizeof(bid_t));
-
-	set_global_message("", "%s", "");
-	for (s = 0; s < game.num_seats; s++)
-		game.seats[s].message[0] = 0;
-	if (game.bid_texts == NULL || game.bid_choices == NULL) {
-		ggz_debug("SERVER BUG: game.bid_texts not allocated.");
-		exit(-1);
-	}
-
-	game.initted = 1;
 }
 
 /* game_get_options

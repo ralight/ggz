@@ -776,7 +776,7 @@ int handle_player(player_t p)
 						game.which_game = game_types[0];
 					}
 
-					game_init_game();
+					init_game();
 					send_sync_all();
 
 					if (!ggz_seats_open())
@@ -816,11 +816,11 @@ int handle_player(player_t p)
 	return status;
 }
 
-/* init_game
+/* init_ggzcards
  *   Setup game state and board
  *   also initializes the _type_ of game
  */
-void init_game(int which)
+void init_ggzcards(int which)
 {
 	memset(&game, 0, sizeof(struct wh_game_t));
 
@@ -845,7 +845,8 @@ int newgame()
 	/* should be entered only when we're ready for a new game */
 	for (p=0; p<game.num_players; p++)
 		game.players[p].ready = 0;
-	if (!game.initted) game_init_game();
+	if (!game.initted)
+		init_game();
 	game_start_game();
 	for (p=0; p<game.num_players; p++)
 		game_set_player_message(p);
@@ -977,7 +978,7 @@ int handle_launch_event()
 
 	/* as soon as we know which game we're playing, we should init the game */
 	if (game.which_game != GGZ_GAME_UNKNOWN)
-		game_init_game();
+		init_game();
 
 	set_game_state(WH_STATE_NOTPLAYING);
 	save_game_state(); /* no players are connected yet, so we enter waiting phase */
@@ -1195,6 +1196,56 @@ void set_num_seats(int num_seats)
 	if (game.seats != NULL)
 		free(game.seats);
 	game.seats = (struct game_seat_t *)alloc(game.num_seats * sizeof(struct game_seat_t));
+}
+
+/* init_game
+ *   Initialized a new game type, calling game_init_game for the game-dependant parts
+ */
+void init_game()
+{
+	seat_t s;
+
+	if (!games_valid_game(game.which_game)) {
+		ggz_debug("SERVER BUG: game_init_game: invalid game %d chosen.", game.which_game);
+		exit(-1);
+	}
+
+	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
+		ggz_debug("SERVER BUG: game_init_game called on unknown or previously initialized game.");
+		return;
+	}
+
+	/* default values */
+	game.max_hand_length = 52 / game.num_players;
+	game.deck_type = GGZ_DECK_FULL;
+	game.last_trick = 1;
+	game.last_hand = 1;
+
+	/* now we do all the game-specific initialization... */
+	game_init_game();	
+
+	cards_create_deck(game.deck_type);
+
+	set_global_message("game", "%s", game.name);
+
+	/* allocate hands */
+	for (s=0; s<game.num_seats; s++) {
+		game.seats[s].hand.cards = (card_t *)alloc(game.max_hand_length * sizeof(card_t));
+	}
+
+	/* allocate bidding arrays */
+	game.bid_texts = alloc_string_array(game.max_bid_choices, game.max_bid_length);
+	game.bid_choices = (bid_t*)alloc(game.max_bid_choices * sizeof(bid_t));
+
+	set_global_message("", "%s", "");
+	for (s = 0; s < game.num_seats; s++)
+		game.seats[s].message[0] = 0;
+	if (game.bid_texts == NULL || game.bid_choices == NULL) {
+		ggz_debug("SERVER BUG: game.bid_texts not allocated.");
+		exit(-1);
+	}
+
+	game.initted = 1;
 }
 
 

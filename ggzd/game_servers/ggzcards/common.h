@@ -184,6 +184,7 @@ extern void send_badplay(player_t, char*);
 extern int send_hand(player_t, seat_t, int);
 extern int req_newgame(player_t);
 extern int send_newgame();
+extern void init_game();
 
 extern int rec_options(int, int*);
 
@@ -197,7 +198,7 @@ extern int handle_newgame_event(player_t);
 extern int handle_play_event(card_t);
 extern int handle_bid_event(bid_t);
 
-extern void init_game(int which); /* pass in the name of the game */
+extern void init_ggzcards(int which); /* pass in the name of the game */
 extern int handle_ggz(int, int *);
 extern int handle_player(player_t);
 
