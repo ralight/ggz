@@ -27,14 +27,14 @@ libgurumod_badword_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 libgurumod_self_la_SOURCES = self.c
 
 libgurumod_embed_la_SOURCES = embed.c
-libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries)
+libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries) $(python_libraries)
 
 libgurumod_extra_la_SOURCES = extra.c
 
 libgurumod_people_la_SOURCES = people.c
 libgurumod_people_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 
-INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes)
+INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
 
 libgurumod_learning_la_SOURCES = learning.c
 

@@ -24,15 +24,51 @@
 #include <EXTERN.h>
 #include <perl.h>
 #endif
+#ifdef EMBED_PYTHON
+#include <Python.h>
+#endif
 
 #define EMBEDCONF "/grubby/modembed.rc"
 
 static char **aliaslist = NULL;
 static char **scriptlist = NULL;
+static int *typelist = NULL;
 
 #ifdef EMBED_PERL
 static PerlInterpreter *my_perl;
 #endif
+#ifdef EMBED_PYTHON
+PyObject *pxDict;
+#endif
+
+#define TYPE_RUBY 1
+#define TYPE_PERL 2
+#define TYPE_PYTHON 3
+#define TYPE_UNKNOWN 4
+
+/* Determine mime type of a file */
+int mimetype(const char *file)
+{
+	FILE *f;
+	char buffer[128];
+	char *ret;
+	int type;
+
+	type = TYPE_UNKNOWN;
+	f = fopen(file, "r");
+	if(f)
+	{
+		ret = fgets(buffer, sizeof(buffer), f);
+		if(ret)
+		{
+			if(strstr(buffer, "perl")) type = TYPE_PERL;
+			if(strstr(buffer, "ruby")) type = TYPE_RUBY;
+			if(strstr(buffer, "python")) type = TYPE_PYTHON;
+		}
+		fclose(f);
+	}
+	return type;
+}
 
 /* Empty init */
 void gurumod_init(const char *datadir)
@@ -52,6 +88,10 @@ void gurumod_init(const char *datadir)
 	my_perl = perl_alloc();
 	perl_construct(my_perl);
 #endif
+#ifdef EMBED_PYTHON
+	pxDict = NULL;
+	Py_Initialize();
+#endif
 
 	path = (char*)malloc(strlen(datadir) + strlen(EMBEDCONF) + 1);
 	strcpy(path, datadir);
@@ -69,8 +109,10 @@ void gurumod_init(const char *datadir)
 		{
 			scriptlist = (char**)realloc(scriptlist, ++num * sizeof(char*));
 			scriptlist[num - 2] = (char*)malloc(strlen(script) + 1);
+			typelist = (int*)realloc(typelist, num * sizeof(int));
 			strcpy(scriptlist[num - 2], script);
 			scriptlist[num - 1] = NULL;
+			typelist[num - 2] = mimetype(script);
 			printf("|");
 		}
 		else printf(".");
@@ -84,6 +126,7 @@ void gurumod_init(const char *datadir)
 Guru *gurumod_exec(Guru *message)
 {
 	char *script = NULL;
+	int type;
 	int i;
 #ifdef EMBED_RUBY
 	int status;
@@ -100,55 +143,70 @@ Guru *gurumod_exec(Guru *message)
 	for(i = 0; scriptlist[i]; i++)
 	{
 		script = scriptlist[i];
+		type = typelist[i];
 
-#ifdef EMBED_RUBY
 		if(script)
 		{
-			answer = rb_ary_new();
-			rb_define_variable("$answer", &answer);
-			rb_ary_push(answer, rb_str_new2(message->message));
-			/*rb_global_variable(&answer);*/
-
-			ruby_script("grubby-embedded");
-			rb_load_file(script);
-
-			switch(fork())
+#ifdef EMBED_RUBY
+			if(type == TYPE_RUBY)
 			{
-				case -1:
-					return NULL;
-				case 0:
-					ruby_run();
-					exit(0);
-					break;
-				default:
-					wait(&status);
-			}
+				answer = rb_ary_new();
+				rb_define_variable("$answer", &answer);
+				rb_ary_push(answer, rb_str_new2(message->message));
+				/*rb_global_variable(&answer);*/
 
-			if(!NIL_P(answer))
-			{
-				if(RARRAY(answer)->len > 0)
+				ruby_script("grubby-embedded");
+				rb_load_file(script);
+
+				switch(fork())
 				{
-					tmp = rb_ary_pop(answer);
-					message->message = STR2CSTR(tmp);
-					return message;
+					case -1:
+						return NULL;
+					case 0:
+						ruby_run();
+						exit(0);
+						break;
+					default:
+						wait(&status);
+				}
+
+				if(!NIL_P(answer))
+				{
+					if(RARRAY(answer)->len > 0)
+					{
+						tmp = rb_ary_pop(answer);
+						message->message = STR2CSTR(tmp);
+						return message;
+					}
 				}
 			}
-		}
 #endif
 
 #ifdef EMBED_PERL
-		char *argv[] = {script, NULL};
-		perl_parse(my_perl, NULL, 2, argv, (char**)NULL);
-		/*set_sv("answer", message->message)*/
-		perl_run(my_perl);
+			if(type == TYPE_PERL)
+			{
+				char *argv[] = {script, NULL};
+				perl_parse(my_perl, NULL, 2, argv, (char**)NULL);
+				/*set_sv("answer", message->message)*/
+				perl_run(my_perl);
 
-		answerstring = SvPV(get_sv("answer", FALSE), tmpval);
-		if(answerstring)
-		{
-			message->message = answerstring;
-			return message;
-		}
+				answerstring = SvPV(get_sv("answer", FALSE), tmpval);
+				if(answerstring)
+				{
+					message->message = answerstring;
+					return message;
+				}
+			}
 #endif
+
+#ifdef EMBED_PYTHON
+			if(type == TYPE_PYTHON)
+			{
+				char *argv[] = {script, NULL};
+				Py_Main(2, argv);
+			}
+#endif
+		}
 	}
 
 	return NULL;
@@ -160,6 +218,9 @@ void gurumod_finish()
 #ifdef EMBED_PERL
 perl_destruct(perl);
 perl_free(perl);
+#endif
+#ifdef EMBED_PYTHON
+Py_Finalize();
 #endif
 }
 */
