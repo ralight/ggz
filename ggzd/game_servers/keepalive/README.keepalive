@@ -7,9 +7,15 @@ This game will have the following new features:
 - realtime
 - UDP communication (TODO)
 
+Also supported will be:
+- player spectators
+- server-side scripting extensions (using GGZSH)
+- multitier server (using GGZ-AGS)
+
 It won't be a cute game but rather a proof of concept.
-An example client exists for Qt 2.x.
+An example client exists for KDE 3.0.
 
 Josef Spillner
 12.01.2002
+updated 14.05.2002
 
