@@ -36,7 +36,7 @@ void KDotsProto::getPlayers()
 
 void KDotsProto::connect()
 {
-	char fd_name[64];
+	/*char fd_name[64];
 	struct sockaddr_un addr;
  
 	sprintf(fd_name, "/tmp/Dots.%d", getpid());
@@ -44,7 +44,8 @@ void KDotsProto::connect()
 	bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
 	strcpy(addr.sun_path, fd_name);
-	if(::connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);
+	if(::connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);*/
+	fd = 3;
 }
 
 void KDotsProto::sendMove(int x, int y, int direction)

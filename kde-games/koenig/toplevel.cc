@@ -1,6 +1,7 @@
 #include <kaction.h>
 #include <kstdaction.h>
 #include <klistbox.h>
+#include <klistview.h>
 #include <kmessagebox.h>
 
 #include <qlayout.h>
@@ -29,9 +30,15 @@ TopLevel::TopLevel(const char *name)
 	a = new KAction("Quit", "gamequit", 0, qApp, SLOT(quit()), actionCollection());
 	a = new KAction("Show moves", "showmovetable", 0, qApp, SLOT(quit()), actionCollection());
 
-	a = new KAction("Request sync", "gamesync", 0, this, SLOT(slotSync()), actionCollection());
-	a = new KAction("Call flag", "gameflag", 0, this, SLOT(slotFlag()), actionCollection());
-	a = new KAction("Request draw", "gamedraw", 0, this, SLOT(slotDraw()), actionCollection()); // HUH? how does this work?
+	a = new KAction("Request sync", "warnmessage", 0, this, SLOT(slotSync()), actionCollection(), "gamesync");
+	a = new KAction("Call flag", "warnmessage", 0, this, SLOT(slotFlag()), actionCollection(), "gameflag");
+	a = new KAction("Request draw", "warnmessage", 0, this, SLOT(slotDraw()), actionCollection(), "gamedraw");
+
+	a = new KAction("Show warnings as message boxes", "warnmessage", 0, this, SLOT(slotWarnmessages()), actionCollection(), "optionwarnmessages");
+	a = new KAction("Display board frame", "warnmessage", 0, this, SLOT(slotBoardframe()), actionCollection(), "optionboardframe");
+
+	a = new KAction("Show move table", "warnmessage", 0, this, SLOT(slotMoveTable()), actionCollection(), "showmovetable");
+	a = new KAction("Show chess board", "warnmessage", 0, this, SLOT(slotChessBoard()), actionCollection(), "showchessboard");
 
 	createGUI();
 
@@ -42,8 +49,14 @@ TopLevel::TopLevel(const char *name)
 	tab1 = new QMultiLineEdit(ctl);
 	tab2 = new KListBox(ctl);
 	tab2->insertItem("(Koenig launched)");
+	tab3 = new KListView(ctl);
+	tab3->setRootIsDecorated(true);
+	tab3->addColumn("Koenig Highscores");
+	(void)new KListViewItem(tab3, "Local scores");
+	(void)new KListViewItem(tab3, "Worldwide");
 	ctl->addTab(tab2, "Messages");
 	ctl->addTab(tab1, "Moves");
+	ctl->addTab(tab3, "Highscores");
 	setCentralWidget(ctl);
 
 	resize(400, 200);
@@ -123,7 +136,7 @@ void TopLevel::slotMove(QString msg)
 
 void TopLevel::slotStart(int seat)
 {
-	chessBoard->root()->resetBoard((seat ? COLOR_BLACK : COLOR_WHITE));
+	chessBoard->root()->resetBoard((seat ? ChessBoard::color_black : ChessBoard::color_white));
 }
 
 void TopLevel::slotSync()
@@ -152,5 +165,23 @@ void TopLevel::slotNetDraw()
 void TopLevel::slotDoMove(int x, int y, int x2, int y2)
 {
 	chessBoard->root()->moveFigure(x, y, x2, y2);
+}
+
+void TopLevel::slotWarnmessages()
+{
+}
+
+void TopLevel::slotBoardframe()
+{
+}
+
+void TopLevel::slotMoveTable()
+{
+}
+
+void TopLevel::slotChessBoard()
+{
+	if(chessBoard->isVisible()) chessBoard->hide();
+	else chessBoard->show();
 }
 

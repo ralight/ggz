@@ -1,4 +1,4 @@
-<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<!DOCTYPE kpartgui>
   <kpartgui name="Koenig" version="1">
   <MenuBar>
     <Menu name="file"><text>&amp;File</text>

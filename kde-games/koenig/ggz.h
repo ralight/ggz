@@ -1,5 +1,5 @@
-#ifndef GGZ_C_H
-#define GGZ_C_H
+#ifndef CHESS_GGZ_H
+#define CHESS_GGZ_H
 
 #include <qsocket.h>
 #include <qdatastream.h>

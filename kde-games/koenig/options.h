@@ -1,5 +1,5 @@
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef CHESS_OPTIONS_H
+#define CHESS_OPTIONS_H
 
 #include <qwidget.h>
 

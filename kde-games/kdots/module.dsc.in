@@ -6,5 +6,5 @@ Frontend = kde
 Homepage = http://mindx.sourceforge.net/
 Name = Dots
 ProtocolEngine = Dots
-ProtocolVersion = 0.0.1
-Version = 0.0.4
+ProtocolVersion = 1
+Version = 0.0.1

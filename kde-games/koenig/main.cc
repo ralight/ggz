@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 	KCmdLineArgs *args;
 	KAboutData aboutData("koenig",
 						"Koenig",
-						"0.01",
+						"0.0.1",
 						I18N_NOOP("GGZ Chess Frontend for KDE"),
 						KAboutData::License_GPL_V2,
 						"Copyright (C) 2001 Tobias Koenig & Josef Spillner",
@@ -33,7 +33,6 @@ int main(int argc, char **argv)
 
 	KApplication *app = new KApplication;
 	TopLevel *toplevel = new TopLevel;
-	CHECK_PTR(toplevel);
 	if(args->isSet("ggz")) toplevel->initGameSocket();
 	toplevel->show();
 	app->setMainWidget(toplevel);

@@ -1,4 +1,3 @@
-//#include <kiconloader.h>
 #include "config.h"
 
 #include <kdebug.h>
@@ -18,40 +17,25 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 {
 	kdDebug(12101) << "ChessBoard::ChessBoard()" << endl;
 
-	setAcceptDrops(true);
-
 	// load figure pixmaps
-	//KIconLoader loader;
-	//pixmaps[1] = loader.loadIcon("pawn_w", KIcon::Desktop);
-	//pixmaps[2] = loader.loadIcon("pawn_b", KIcon::Desktop);
-	//pixmaps[3] = loader.loadIcon("bishop_w", KIcon::Desktop);
-	//pixmaps[4] = loader.loadIcon("bishop_b", KIcon::Desktop);
-	//pixmaps[5] = loader.loadIcon("knight_w", KIcon::Desktop);
-	//pixmaps[6] = loader.loadIcon("knight_b", KIcon::Desktop);
-	//pixmaps[7] = loader.loadIcon("rook_w", KIcon::Desktop);
-	//pixmaps[8] = loader.loadIcon("rook_b", KIcon::Desktop);
-	//pixmaps[9] = loader.loadIcon("queen_w", KIcon::Desktop);
-	//pixmaps[10] = loader.loadIcon("queen_b", KIcon::Desktop);
-	//pixmaps[11] = loader.loadIcon("king_w", KIcon::Desktop);
-	//pixmaps[12] = loader.loadIcon("king_b", KIcon::Desktop);
-
-	pixmaps[1] = QPixmap(GGZDATADIR "/koenig/pics/pawn_w.xpm");
-	pixmaps[2] = QPixmap(GGZDATADIR "/koenig/pics/pawn_b.xpm");
-	pixmaps[3] = QPixmap(GGZDATADIR "/koenig/pics/bishop_w.xpm");
-	pixmaps[4] = QPixmap(GGZDATADIR "/koenig/pics/bishop_b.xpm");
-	pixmaps[5] = QPixmap(GGZDATADIR "/koenig/pics/pawn_w.xpm");
-	pixmaps[6] = QPixmap(GGZDATADIR "/koenig/pics/pawn_b.xpm");
-	pixmaps[7] = QPixmap(GGZDATADIR "/koenig/pics/knight_w.xpm");
-	pixmaps[8] = QPixmap(GGZDATADIR "/koenig/pics/knight_b.xpm");
-	pixmaps[9] = QPixmap(GGZDATADIR "/koenig/pics/queen_w.xpm");
-	pixmaps[10] = QPixmap(GGZDATADIR "/koenig/pics/queen_b.xpm");
-	pixmaps[11] = QPixmap(GGZDATADIR "/koenig/pics/king_w.xpm");
-	pixmaps[12] = QPixmap(GGZDATADIR "/koenig/pics/king_b.xpm");
+	pixmaps[pawn_white] = QPixmap(GGZDATADIR "/koenig/pics/pawn_w.xpm");
+	pixmaps[pawn_black] = QPixmap(GGZDATADIR "/koenig/pics/pawn_b.xpm");
+	pixmaps[bishop_white] = QPixmap(GGZDATADIR "/koenig/pics/bishop_w.xpm");
+	pixmaps[bishop_black] = QPixmap(GGZDATADIR "/koenig/pics/bishop_b.xpm");
+	pixmaps[rook_white] = QPixmap(GGZDATADIR "/koenig/pics/rook_w.xpm");
+	pixmaps[rook_black] = QPixmap(GGZDATADIR "/koenig/pics/rook_b.xpm");
+	pixmaps[knight_white] = QPixmap(GGZDATADIR "/koenig/pics/knight_w.xpm");
+	pixmaps[knight_black] = QPixmap(GGZDATADIR "/koenig/pics/knight_b.xpm");
+	pixmaps[queen_white] = QPixmap(GGZDATADIR "/koenig/pics/queen_w.xpm");
+	pixmaps[queen_black] = QPixmap(GGZDATADIR "/koenig/pics/queen_b.xpm");
+	pixmaps[king_white] = QPixmap(GGZDATADIR "/koenig/pics/king_w.xpm");
+	pixmaps[king_black] = QPixmap(GGZDATADIR "/koenig/pics/king_b.xpm");
 
 	// I like QuickHacks ;)
 	mouseDrag = true;
-	
-	resetBoard(COLOR_BLACK); // FIXME: invent COLOR_INACTIVE !!!
+
+	// initialize the board
+	resetBoard(color_inactive);
 }
 
 ChessBoard::~ChessBoard(void)
@@ -62,43 +46,48 @@ void ChessBoard::resetBoard(int color)
 {
 	// cleanup the virtual chessboard
 	for (int i = 0; i < 8; i++)
-	{
 		for (int j = 0; j < 8; j++)
-		{
 			board[i][j] = 0;
-		}
-	}
 
-	board[0][0] = ROOK_WHITE;
-	board[1][0] = KNIGHT_WHITE;
-	board[2][0] = BISHOP_WHITE;
-	board[3][0] = QUEEN_WHITE;
-	board[4][0] = KING_WHITE;
-	board[5][0] = BISHOP_WHITE;
-	board[6][0] = KNIGHT_WHITE;
-	board[7][0] = ROOK_WHITE;
+	// now fill up with the figures
+	board[0][0] = rook_white;
+	board[1][0] = knight_white;
+	board[2][0] = bishop_white;
+	board[3][0] = queen_white;
+	board[4][0] = king_white;
+	board[5][0] = bishop_white;
+	board[6][0] = knight_white;
+	board[7][0] = rook_white;
 
 	for (int i = 0; i < 8; i++)
 	{
-		board[i][1] = PAWN_WHITE;
-		board[i][6] = PAWN_BLACK;
+		board[i][1] = pawn_white;
+		board[i][6] = pawn_black;
 	}
 
-	board[0][7] = ROOK_BLACK;
-	board[1][7] = KNIGHT_BLACK;
-	board[2][7] = BISHOP_BLACK;
-	board[3][7] = QUEEN_BLACK;
-	board[4][7] = KING_BLACK;
-	board[5][7] = BISHOP_BLACK;
-	board[6][7] = KNIGHT_BLACK;
-	board[7][7] = ROOK_BLACK;
+	board[0][7] = rook_black;
+	board[1][7] = knight_black;
+	board[2][7] = bishop_black;
+	board[3][7] = queen_black;
+	board[4][7] = king_black;
+	board[5][7] = bishop_black;
+	board[6][7] = knight_black;
+	board[7][7] = rook_black;
 
+	// assign the correct color
 	activeColor = color;
-	if(color == COLOR_WHITE)
+	if(color == color_white)
 		parentWidget()->setCaption("Chess Board - White");
-	else
+	else if(color == color_black)
 		parentWidget()->setCaption("Chess Board - Black");
+	else
+		parentWidget()->setCaption("Chess Board - No color assigned yet");
 
+	// accept drag'n'drop actions
+	if(color != color_inactive)
+		setAcceptDrops(true);
+
+	// update the whole scenary
 	update();
 }
 
@@ -167,7 +156,7 @@ void ChessBoard::dropEvent(QDropEvent *e)
 	x = point.x();
 	y = point.y();
 
-	if ((((board[x][y]) % 2) != ((board[x][y]) % 2)) || (board[x][y] == 0))
+	if ((((board[dragStart.x()][dragStart.y()]) % 2) != ((board[x][y]) % 2)) || (board[x][y] == 0))
 	{
 		board[x][y] = board[dragStart.x()][dragStart.y()];
 		board[dragStart.x()][dragStart.y()] = 0;

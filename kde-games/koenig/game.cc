@@ -11,11 +11,10 @@ Game::Game(void)
 {
 	kdDebug(12101) << "Game::Game()" << endl;
 
-	ggz = new GGZ;
-	CHECK_PTR(ggz);
+	ggz = new GGZ();
 	ggz->connect("chess");
 	connect(ggz, SIGNAL(recvData()), SLOT(handleNetInput()));
-	
+
 	chessGame = cgc_create_game();
 	cgc_join_game(chessGame, WHITE);
 	cgc_join_game(chessGame, BLACK);
@@ -27,7 +26,7 @@ Game::Game(void)
 	chessInfo.t_seconds[0] = 0; // FIXME: link to timer
 	chessInfo.t_seconds[1] = 0;
 	chessInfo.turn = 0;
-	chessInfo.check = FALSE;
+	chessInfo.check = false;
 	chessInfo.name[0] = "White";
 	chessInfo.name[1] = "Black";
 }
@@ -38,17 +37,6 @@ Game::~Game(void)
 		delete ggz;
 	ggz = NULL;
 }
-
-// We don't need swap() do we?
-/*int swap(int value)
-{
-	int ret;
-	ret = (value & 0xFF) << 24 +
-		((value >> 8) & 0xFF) << 16 +
-		((value >> 16) & 0xFF) << 8 +
-		((value >> 24) & 0xFF);
-	return ret;
-}*/
 
 void Game::handleNetInput(void)
 {
@@ -61,9 +49,6 @@ void Game::handleNetInput(void)
 		return;
 
 	kdDebug(12101) << "Game::handleNetInput(); opcode: " << opcode << endl;
-
-	//opcode = swap(opcode);
-	//kdDebug(12101) << "Game::handleNetInput(); opcode is now: " << opcode << endl;
 
 	switch (opcode)
 	{
@@ -142,14 +127,13 @@ void Game::handleNetInput(void)
 			kdDebug(12101) << "Got an MSG_MOVE" << endl;
 
 			//s = ggz->getString(6);
-			kdDebug(12101) << "Args: ";
 			ggz->getChar();ggz->getChar();ggz->getChar();ggz->getChar(); // FIXME: read string length
-			x = ggz->getChar(); kdDebug(12101) << x;
-			y = ggz->getChar(); kdDebug(12101) << y;
-			x2 = ggz->getChar(); kdDebug(12101) << x2;
-			y2 = ggz->getChar(); kdDebug(12101) << y2;
-			cval = ggz->getChar(); kdDebug(12101) << cval; // should be 0 no?
-			kdDebug(12101) << endl;
+			x = ggz->getChar();
+			y = ggz->getChar();
+			x2 = ggz->getChar();
+			y2 = ggz->getChar();
+			cval = ggz->getChar();
+			kdDebug(12101) << "Args: from " << x << ", " << y << " to " << x2 << ", " << y2 << " - " << cval << endl; // cval should be 0 no?
 			if (chessInfo.clock_type != CHESS_CLOCK_NOCLOCK)
 			{
 				time = ggz->getInt();

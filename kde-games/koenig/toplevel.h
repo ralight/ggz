@@ -9,6 +9,7 @@ class Options;
 class Game;
 class QMultiLineEdit;
 class KListBox;
+class KListView;
 class KExtTabCtl;
 
 class TopLevel : public KMainWindow
@@ -33,6 +34,10 @@ public slots:
 	void slotFlag();
 	void slotDraw();
 	void slotNetDraw();
+	void slotWarnmessages();
+	void slotBoardframe();
+	void slotMoveTable();
+	void slotChessBoard();
 
 private:
 	void initGameData(void);
@@ -43,6 +48,7 @@ private:
 	Game *game;
 	QMultiLineEdit *tab1;
 	KListBox *tab2;
+	KListView *tab3;
 	KExtTabCtl *ctl;
 };
 

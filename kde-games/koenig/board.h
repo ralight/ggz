@@ -1,57 +1,65 @@
-#ifndef _chess_board_h
-#define _chess_board_h
+#ifndef CHESS_BOARD_H
+#define CHESS_BOARD_H
 
 #include <qevent.h>
 #include <qwidget.h>
 #include <qpixmap.h>
 
-#define PAWN_WHITE	1	// Bauer
-#define PAWN_BLACK	2
-#define BISHOP_WHITE	3	// Laeufer
-#define BISHOP_BLACK	4
-#define KNIGHT_WHITE	5	// Springer
-#define KNIGHT_BLACK	6
-#define ROOK_WHITE	7	// Turm
-#define ROOK_BLACK	8
-#define QUEEN_WHITE	9	// Dame
-#define QUEEN_BLACK	10
-#define KING_WHITE	11	// Koenig
-#define KING_BLACK	12
-
-#define COLOR_WHITE	1
-#define COLOR_BLACK	2
-
 class ChessBoard : public QWidget
 {
 	Q_OBJECT
-public:
-	ChessBoard(QWidget *parent = 0, const char *name = 0);
-	~ChessBoard(void);
+	public:
+		ChessBoard(QWidget *parent = 0, const char *name = 0);
+		~ChessBoard(void);
 
-	void resetBoard(int = COLOR_WHITE);
+		void resetBoard(int color);
 
-public slots:
-	void moveFigure(int xfrom, int yfrom, int xto, int yto);
+		enum Figures
+		{
+			pawn_white = 1,
+			pawn_black = 2,
+			bishop_white = 3,
+			bishop_black = 4,
+			knight_white = 5,
+			knight_black = 6,
+			rook_white = 7,
+			rook_black = 8,
+			queen_white = 9,
+			queen_black = 10,
+			king_white = 11,
+			king_black = 12
+		};
 
-signals:
-	void figureMoved(int xfrom, int yfrom, int xto, int yto);
+		enum Colors
+		{
+			color_white = 1,
+			color_black = 2,
+			color_inactive = 3
+		};
 
-protected:
-	virtual void paintEvent(QPaintEvent *e);
-	virtual void mouseMoveEvent(QMouseEvent *e);
-	virtual void dragEnterEvent(QDragEnterEvent *e);
-	virtual void dropEvent(QDropEvent *e);
+	public slots:
+		void moveFigure(int xfrom, int yfrom, int xto, int yto);
 
-private:
-	int board[8][8];
-	QPixmap pixmaps[13];
-	QPixmap dragPixmap;
-	QPoint dragStart;
-	bool mouseDrag;
+	signals:
+		void figureMoved(int xfrom, int yfrom, int xto, int yto);
 
-	int activeColor;
+	protected:
+		virtual void paintEvent(QPaintEvent *e);
+		virtual void mouseMoveEvent(QMouseEvent *e);
+		virtual void dragEnterEvent(QDragEnterEvent *e);
+		virtual void dropEvent(QDropEvent *e);
 
-	QPixmap scalePixmap(const QPixmap&);
+	private:
+		int board[8][8];
+		QPixmap pixmaps[13];
+		QPixmap dragPixmap;
+		QPoint dragStart;
+		bool mouseDrag;
+
+		int activeColor;
+
+		QPixmap scalePixmap(const QPixmap&);
 };
 
 #endif
+
