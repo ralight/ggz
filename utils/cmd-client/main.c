@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 3013 2002-01-08 10:04:17Z jdorje $
+ * $Id: main.c 4160 2002-05-05 07:13:20Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -64,7 +64,8 @@ int in_room = 0;
 void print_help(char *exec_name)
 {
 	fprintf(stderr,
-		"Usage: %s <host> <login> <passwd> <command> [<command opts> ...]\n",
+		"Usage: %s <host>[:<port>] <login> <passwd> <command> "
+		"[<command opts> ...]\n",
 		exec_name);
 	fprintf(stderr,
 		"  Commands include:\n"
@@ -72,7 +73,6 @@ void print_help(char *exec_name)
 		" <message> - announce message from room 0.\n");
 	fprintf(stderr,
 		"  Bugs and issues:\n"
-		"    - Only port 5688 is currently supported.\n"
 		"    - Only one command is currently supported.\n");
 
 }
@@ -81,7 +81,7 @@ void print_help(char *exec_name)
    structure.  Returns 0 on success, negative on failure. */
 int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 {
-	char *cmd_name;
+	char *cmd_name, *port_num;
 
 	if (argc < 5) {
 		print_help(argv[0]);
@@ -91,7 +91,14 @@ int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	/* argv[0] -> command name. */
 
 	cmd->host = argv[1];
-	cmd->port = 5688;	/* we should allow "<server>:<port>" */
+	
+	port_num = strchr(cmd->host, ':');
+	if (port_num) {
+		*port_num = '\0';
+		port_num++;
+		sscanf(port_num, "%d", &cmd->port);
+	} else
+		cmd->port = 5688;
 
 	/* We only allow standard logins, no guest ones. */
 	cmd->login_type = GGZ_LOGIN;
