@@ -755,7 +755,7 @@ if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
 AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
-AC_CHECK_FUNCS([libintl.h locale.h])
+AC_CHECK_HEADERS([libintl.h locale.h])
 if test "$intl" = 0; then
   if test "x$2" = "xignore"; then
     AC_MSG_WARN([Internationalization tools missing. (ignored)])
