@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"POT-Creation-Date: 2002-04-04 10:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,4 +122,31 @@ msgstr ""
 #: ../tictactoe/support.c:127
 #, c-format
 msgid "Error loading pixmap file: %s"
+msgstr ""
+
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr ""
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr ""
+
+#: ../common/dlg_exit.c:66
+msgid "Exit"
+msgstr ""
+
+#: ../common/dlg_exit.c:67
+msgid "Cancel"
+msgstr ""
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
 msgstr ""

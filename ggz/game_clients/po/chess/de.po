@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"POT-Creation-Date: 2002-04-04 10:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,55 +14,55 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../chess/main_win.c:64
+#: ../chess/main_win.c:63
 msgid "GGZ Chess"
 msgstr ""
 
-#: ../chess/main_win.c:80
+#: ../chess/main_win.c:79
 msgid "File"
 msgstr ""
 
-#: ../chess/main_win.c:94
+#: ../chess/main_win.c:93 ../common/dlg_exit.c:66
 msgid "Exit"
 msgstr ""
 
-#: ../chess/main_win.c:101
+#: ../chess/main_win.c:100
 msgid "Game"
 msgstr ""
 
-#: ../chess/main_win.c:115
+#: ../chess/main_win.c:114
 msgid "Request draw"
 msgstr ""
 
-#: ../chess/main_win.c:121
+#: ../chess/main_win.c:120
 msgid "Ask the other player for a draw"
 msgstr ""
 
-#: ../chess/main_win.c:123
+#: ../chess/main_win.c:122
 msgid "Call flag"
 msgstr ""
 
-#: ../chess/main_win.c:129
+#: ../chess/main_win.c:128
 msgid "If your opponent has run out of time, ask the server to end the game"
 msgstr ""
 
-#: ../chess/main_win.c:131
+#: ../chess/main_win.c:130
 msgid "Request update"
 msgstr ""
 
-#: ../chess/main_win.c:137
+#: ../chess/main_win.c:136
 msgid "Ask the server to update his time structures"
 msgstr ""
 
-#: ../chess/main_win.c:139
+#: ../chess/main_win.c:138
 msgid "Options"
 msgstr ""
 
-#: ../chess/main_win.c:153
+#: ../chess/main_win.c:152
 msgid "Auto call flag"
 msgstr ""
 
-#: ../chess/main_win.c:159
+#: ../chess/main_win.c:158
 msgid "Call a flag when your oponnents time drops below 0"
 msgstr ""
 
@@ -173,7 +173,7 @@ msgstr ""
 msgid "Send option"
 msgstr ""
 
-#: ../chess/popup.c:266
+#: ../chess/popup.c:266 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr ""
 
@@ -205,4 +205,23 @@ msgstr ""
 #: ../chess/support.c:130
 #, c-format
 msgid "Error loading pixmap file: %s"
+msgstr ""
+
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr ""
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr ""
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
 msgstr ""
