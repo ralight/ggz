@@ -4,6 +4,7 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "connect.h"
 #include "datatypes.h"
@@ -115,5 +116,24 @@ void on_options1_activate(GtkButton * button, gpointer user_data)
 
 void on_players1_activate(GtkButton * button, gpointer user_data)
 {
-	msg(0,"Table Players","The players names will go here\nJohn Doe\nrgade\nbrentmh\njzaun\netc...\n This needs to come from the server");
+	int i=0;
+	char buf[2048];
+	
+	strcpy(buf,"The selected table's players are as follows:\n\n");
+	for (i=0;i<MAX_TABLE_SIZE;i++)
+	{
+		if(tables.info[selected_table].seats[i] == GGZ_SEAT_OPEN)
+			strcat(buf,"\t<Open>\n");
+		if(tables.info[selected_table].seats[i] == GGZ_SEAT_COMP)
+			strcat(buf,"\t<Computer>\n");
+		if((tables.info[selected_table].seats[i] >= 0)
+		|| (tables.info[selected_table].seats[i] == GGZ_SEAT_RESV))
+		{
+			strcat(buf,"\t");
+			strcat(buf,&tables.info[selected_table].names[i]);
+			strcat(buf,"\n");
+		}
+	}
+
+	msg(0,"Table Players",buf);
 }

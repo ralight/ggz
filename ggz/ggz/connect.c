@@ -39,6 +39,7 @@
 #include "connect.h"
 #include "datatypes.h"
 #include "dlg_error.h"
+#include "dlg_login.h"
 #include "dlg_main.h"
 #include "dlg_msgbox.h"
 #include "dlg_motd.h"
