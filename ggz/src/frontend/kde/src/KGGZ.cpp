@@ -109,7 +109,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 
 	KGGZDEBUG("Initializing GGZCore...\n");
 	m_core = new GGZCore();
-	result = m_core->init(GGZCore::parser | GGZCore::modules, /*"/tmp/kggz.debug"*/NULL, GGZCore::all); // make a debug log configurable!
+	result = m_core->init(GGZCore::parser | GGZCore::modules, /*"/tmp/kggz.debug"*//*NULL*/QString("%1/.ggz/ggzcore.debug").arg(getenv("HOME")), GGZCore::all); // make a debug log configurable!
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not initialize ggzcore!\n");
