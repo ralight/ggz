@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5056 2002-10-26 23:35:29Z jdorje $
+ * $Id: game.c 5176 2002-11-03 19:46:25Z jdorje $
  *
  * Functions for handling game events
  *
@@ -65,8 +65,7 @@ extern GtkWidget *win_main;
 int game_init(int spectate)
 {
 	gchar *message;
-	gchar *name;
-	gchar *engine, *version;
+	const char *name, *engine, *version;
 	gchar *frontend;
 	guint num, i;
 	GGZRoom *room;

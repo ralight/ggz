@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5175 2002-11-03 19:43:26Z jdorje $
+ * $Id: client.c 5176 2002-11-03 19:46:25Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1097,7 +1097,8 @@ void client_clear_tables(void)
 void display_tables(void)
 {
 	GtkWidget *tmp;
-	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
+	gchar *table[4] = {NULL, NULL, NULL, NULL};
+	const char * desc;
 	gint i, num, avail, seats;
 	GGZRoom *room;
 	GGZTable *t = NULL;
