@@ -89,29 +89,31 @@ void QCw::paintEvent(QPaintEvent *e)
 			dark = (!i) * 40;
 			switch(m_board[i][j][0])
 			{
-				case 0:
+				case inactive:
 					p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0, 0, 80)));
 					for(int n = 0; n < 10; n++)
 						p.drawPoint(rand() % 20 + i * 20, rand() % 20 + j * 20);
 					break;
-				case 1:
-				case 2:
+				case active:
+				case active2:
 					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180 - dark, 110 - dark, 30)));
 					break;
-				case 3:
+				case path:
 					p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200, 200, 0)));
 					break;
-				//default:
-					//cout << "huh? " << m_board[i][j][0] << endl;
+				default:
+					break;
 			}
 
 			switch(m_board[i][j][1])
 			{
-				case -1:
+				case fromframe:
 					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(200, 200, 0)));
 					break;
-				case -2:
+				case toframe:
 					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(250, 250, 0)));
+					break;
+				default:
 					break;
 			}
 		}
@@ -189,7 +191,7 @@ void QCw::setSize(int width, int height)
 
 	for(int j = 0; j < height; j++)
 		for(int i = 0; i < width; i++)
-			m_board[i][j][1] = 0;
+			m_board[i][j][1] = inactive;
 
 	//m_enabled = 1;
 }
@@ -206,7 +208,7 @@ void QCw::mousePressEvent(QMouseEvent *e)
 
 	if(m_state == normal)
 	{
-		if(m_board[x][y][0] == 1)
+		if(m_board[x][y][0] == active)
 		{
 			m_x = x;
 			m_y = y;
@@ -216,7 +218,7 @@ void QCw::mousePressEvent(QMouseEvent *e)
 	else
 	{
 		m_state = normal;
-		if(m_board[x][y][0] == 0)
+		if(m_board[x][y][0] == inactive)
 			emit signalMove(m_x, m_y, x, y);
 	}
 

@@ -42,6 +42,15 @@ class QCw : public QWidget
 		void setPlayerTurn(int player);
 		void disable();
 		void enable();
+		enum StoneStates
+		{
+			inactive = 0,
+			active = 1,
+			active2 = 2,
+			path = 3,
+			fromframe = 4,
+			toframe = 5
+		};
 
 	signals:
 		void signalMove(int xfrom, int yfrom, int xto, int yto);

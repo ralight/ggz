@@ -5,6 +5,7 @@ ggzexecmod_PROGRAMS = krosswater_client
 krosswater_client_SOURCES = \
 	main.cpp \
 	krosswater.cpp \
+	krosswater_move.cpp \
 	dlg_person.cpp \
 	dlg_about.cpp \
 	dlg_help.cpp \
@@ -19,6 +20,7 @@ INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/krosswater/zonecl
 
 noinst_HEADERS = \
 	krosswater.h \
+	krosswater_move.h \
 	dlg_person.h \
 	dlg_about.h \
 	dlg_help.h \
@@ -29,7 +31,7 @@ METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
 
-KDE_ICON = ktictactux
+KDE_ICON = krosswater
 
 DISTCLEANFILES = $(METASOURCES)
 

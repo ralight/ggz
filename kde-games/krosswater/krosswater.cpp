@@ -28,6 +28,7 @@
 #include "dlg_person.h"
 #include "dlg_about.h"
 #include "dlg_help.h"
+#include "krosswater_move.h"
 
 // Qt includes
 #include <qlayout.h>
@@ -56,6 +57,8 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 
 	m_again = NULL;
 	m_broken = 0;
+	m_sleep = state_nosleep;
+	m_turn = 0;
 
 	dummy = new QWidget(this);
 	setCentralWidget(dummy);
@@ -94,6 +97,8 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	connect(this, SIGNAL(signalZoneTurnOver()), SLOT(slotZoneTurnOver()));
 	connect(this, SIGNAL(signalZoneOver()), SLOT(slotZoneOver()));
 	connect(this, SIGNAL(signalZoneInvalid()), SLOT(slotZoneInvalid()));
+
+	startTimer(1000);
 
 	setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	setCaption(i18n("Krosswater - Cross the Water!"));
@@ -208,6 +213,7 @@ void Krosswater::slotZoneInput(int op)
 			}
 		}
 		qcw->enable();
+		if((m_turn % ZoneGamePlayers) == zoneMe()) slotZoneTurn();
 	}
 	else if(op == proto_move_broadcast)
 	{
@@ -235,7 +241,7 @@ void Krosswater::slotZoneInput(int op)
 					protoError();
 					return;
 				}
-				qcw->setStone(x, y, 3);
+				qcw->setStone(x, y, QCw::path);
 			}
 		}
 		if(!m_again)
@@ -284,8 +290,8 @@ void Krosswater::slotZoneInvalid()
 // Finish a turn
 void Krosswater::slotZoneTurnOver()
 {
-	qcw->setStone(m_fromx, m_fromy, 0);
-	qcw->setStone(m_tox, m_toy, 1);
+	qcw->setStone(m_fromx, m_fromy, QCw::inactive);
+	qcw->setStone(m_tox, m_toy, QCw::active);
 }
 
 // Quit the game
@@ -336,11 +342,6 @@ void Krosswater::paintEvent(QPaintEvent *e)
 void Krosswater::slotZoneBroadcast()
 {
 	int fromx, tox, fromy, toy;
-	static int turn = 0;
-
-	if((turn % ZoneGamePlayers) == zoneMe()) turn++;
-	qcw->setPlayerTurn(turn % ZoneGamePlayers);
-	turn++;
 
  	showStatus(i18n("Get move"));
 
@@ -353,21 +354,59 @@ void Krosswater::slotZoneBroadcast()
 		return;
 	}
 
-	qcw->setStoneState(fromx, fromy, -1);
-	qcw->repaint();
-	sleep(1);
-	qcw->setStoneState(tox, toy, -2);
-	qcw->repaint();
-	sleep(1);
-	qcw->setStone(fromx, fromy, 0);
-	qcw->setStone(tox, toy, 1);
-	qcw->repaint();
-	sleep(1);
-	qcw->setStoneState(tox, toy, 0);
-	qcw->setStoneState(fromx, fromy, 0);
+	m_movelist.append(new KrosswaterMove(fromx, fromy, tox, toy));
+}
 
-	qcw->setPlayerTurn(turn % ZoneGamePlayers);
-	qcw->repaint();
+// Animation delay
+void Krosswater::timerEvent(QTimerEvent *e)
+{
+	KrosswaterMove *m;
+
+	showStatus(m_currentstate);
+
+	if(m_movelist.count()) m = m_movelist.at(0);
+
+	switch(m_sleep)
+	{
+		case state_sleep1:
+			qcw->setStoneState(m->fromx(), m->fromy(), QCw::fromframe);
+			qcw->repaint();
+			m_sleep = state_sleep2;
+			break;
+		case state_sleep2:
+			qcw->setStoneState(m->tox(), m->toy(), QCw::toframe);
+			qcw->repaint();
+			m_sleep = state_sleep3;
+			break;
+		case state_sleep3:
+			qcw->setStone(m->fromx(), m->fromy(), QCw::inactive);
+			qcw->setStone(m->tox(), m->toy(), QCw::active);
+			qcw->repaint();
+			m_sleep = state_sleep4;
+			break;
+		case state_sleep4:
+			qcw->setStoneState(m->tox(), m->toy(), QCw::inactive);
+			qcw->setStoneState(m->fromx(), m->fromy(), QCw::inactive);
+			qcw->setPlayerTurn(m_turn % ZoneGamePlayers);
+			qcw->repaint();
+			delete m;
+			m_movelist.remove(m);
+			m_sleep = state_nosleep;
+			if((m_turn % ZoneGamePlayers) == zoneMe()) slotZoneTurn();
+			break;
+		case state_nosleep:
+			if(m_movelist.count())
+			{
+				showStatus(i18n("Execute move"));
+				if((m_turn % ZoneGamePlayers) == zoneMe()) m_turn++;
+				qcw->setPlayerTurn(m_turn % ZoneGamePlayers);
+				m_turn++;
+				m_sleep = state_sleep1;
+			}
+			break;
+		default:
+			break;
+	}
 }
 
 // Ask for another game

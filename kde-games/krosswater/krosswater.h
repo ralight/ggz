@@ -28,6 +28,10 @@
 // Qt includes
 #include <qframe.h>
 #include <qevent.h>
+#include <qlist.h>
+
+// Forward includes
+class KrosswaterMove;
 
 // Main Krosswater widget
 class Krosswater : public ZoneGGZModUI
@@ -48,6 +52,15 @@ class Krosswater : public ZoneGGZModUI
 			proto_restart = 107
 		};
 
+		enum SleepStates
+		{
+			state_sleep1,
+			state_sleep2,
+			state_sleep3,
+			state_sleep4,
+			state_nosleep
+		};
+
 	public slots:
 		void slotSelected(int person);
 		void slotMove(int fromx, int fromy, int tox, int toy);
@@ -65,6 +78,7 @@ class Krosswater : public ZoneGGZModUI
 
 	protected:
 		void paintEvent(QPaintEvent *e);
+		void timerEvent(QTimerEvent *e);
 
 	private:
 		void showStatus(QString state);
@@ -77,6 +91,9 @@ class Krosswater : public ZoneGGZModUI
 		int m_selectedperson;
 		DlgAgain *m_again;
 		int m_broken;
+		int m_sleep;
+		QList<KrosswaterMove> m_movelist;
+		int m_turn;
 };
 
 #endif
