@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: msg.c 5850 2004-02-08 21:30:50Z jdorje $
  *
  * Debug and error messages
  *
@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <syslog.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>

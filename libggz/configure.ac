@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5844 2004-02-08 08:16:42Z jdorje $
+dnl $Id: configure.ac 5850 2004-02-08 21:30:50Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -35,10 +35,10 @@ AC_ARG_ENABLE([threading],
 
 # Check for header files
 # ======================
-AC_CHECK_HEADERS([fcntl.h syslog.h sys/param.h sys/wait.h], [],
+AC_CHECK_HEADERS([fcntl.h sys/param.h sys/wait.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
 AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/socket.h \
-                  sys/uio.h sys/un.h winsock.h])
+                  sys/uio.h sys/un.h sys/wait.h winsock.h])
 AC_HEADER_SYS_WAIT
 
 
@@ -60,6 +60,14 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[],
 	[save_cflags="$save_cflags -fsigned-char"])
 CFLAGS=$save_cflags
+
+
+# Check for debug types in syslog.h
+# =================================
+# If syslog is present, we take the log types from it.
+# If not, define our own enumeration.
+AC_CHECK_HEADER([syslog.h], [GGZ_HAVE_SYSLOG_H="1"], [GGZ_HAVE_SYSLOG_H="0"])
+AC_SUBST(GGZ_HAVE_SYSLOG_H)
 
 
 # Check for PF_LOCAL/PF_UNIX
@@ -219,6 +227,7 @@ AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile 
 	   src/Makefile
+	   src/ggz.h
 	   src/security/Makefile
 	   tests/Makefile
 	   man/Makefile])

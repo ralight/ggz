@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5817 2004-02-07 09:48:18Z josef $
+ * $Id: ggz.h.in 5850 2004-02-08 21:30:50Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -902,6 +902,23 @@ typedef enum {
 	GGZ_CHECK_NONE = 0x00, /**< No checks. */
 	GGZ_CHECK_MEM = 0x01   /**< Memory (leak) checks. */
 } GGZCheckType;
+
+#define GGZ_HAVE_SYSLOG_H @GGZ_HAVE_SYSLOG_H@
+#if GGZ_HAVE_SYSLOG_H
+# include <syslog.h>
+#else
+/** @brief Log types for ggz logging functions.
+ *
+ *  @see GGZDebugHandlerFunc.
+ *  @note If syslog.h is present the syslog types are used instead.
+ */
+enum {
+	LOG_DEBUG,	/**< A debugging message from ggz_debug. */
+	LOG_NOTICE,	/**< A general notice from ggz_log. */
+	LOG_ERR,	/**< An error from ggz_error_[msg|sys]. */
+	LOG_CRIT	/**< An error from ggz_error_[msg|sys]_exit. */
+};
+#endif
 
 /** @brief A callback function to handle debugging output.
  *

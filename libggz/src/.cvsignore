@@ -6,3 +6,4 @@
 Makefile
 Makefile.in
 libggz.la
+ggz.h
