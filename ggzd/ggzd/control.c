@@ -131,6 +131,10 @@ int main(int argc, char *argv[])
 	parse_args(argc, argv);
 	parse_conf_file();
 
+	/* Defaults */
+	if(!opt.main_port)
+		opt.main_port = 1174;
+
 	dbg_msg("Conf file: %s", opt.local_conf);
 	dbg_msg("Log level: %d", opt.log_level);
 	dbg_msg("Main Port: %d", opt.main_port);

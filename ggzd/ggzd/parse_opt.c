@@ -26,11 +26,22 @@
 
 #include <popt.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #include <datatypes.h>
 #include <err_func.h>
 
 extern Options opt;
+
+/* Private file parsing functions */
+static void parse_file(FILE *);
+static void parse_line(char *);
+
+/* Module local variables for parsing */
+static char *varname;
+static char *varvalue;
 
 static const struct poptOption args[] = {
 	
@@ -78,11 +89,126 @@ void parse_args(int argc, char *argv[])
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void)
 {
+	FILE *configfile;
+	char *cfname;
 
 	if (opt.local_conf) {
-		dbg_msg("Reading local conf file : %s", opt.local_conf);
-	} else {
-		dbg_msg("Reading global conf file : %s/netgamed.conf",
-			SYSCONFDIR);
+		if((configfile=fopen(opt.local_conf,"r"))) {
+			dbg_msg("Reading local conf file : %s", opt.local_conf);
+			parse_file(configfile);
+
+			return;
+		} else
+			err_msg("WARNING:  Local conf file not found!");
 	}
+
+	if((cfname=malloc(strlen(SYSCONFDIR)+11)) == NULL)
+		err_sys_exit("malloc error in parse_conf_file()");
+
+	strcpy(cfname, SYSCONFDIR);	/* If this changes, be sure to change */
+	strcat(cfname, "/ggzd.conf");	/* the malloc() above!!!!             */
+
+	if((configfile=fopen(cfname,"r"))) {
+		dbg_msg("Reading global conf file : %s", cfname);
+		parse_file(configfile);
+	} else
+		err_msg("WARNING:  No configuration file loaded!");
+
+	free(cfname);
+}
+
+
+
+/* Parse the pre-openend configuration file, close the file when done */
+static void parse_file(FILE *configfile)
+{
+	char line[256];		/* Lines longer than 256 are trunced */
+	int intval;
+	int linenum = 0;
+
+	while(fgets(line, 256, configfile)) {
+		linenum++;
+		parse_line(line);
+		if(varname == NULL)
+			continue; /* Blank line or comment */
+		dbg_msg("parse_line file found '%s, %s'\n", varname, varvalue);
+
+		/* Apply the configuration line, oh to be able to do */
+		/* a case construct with strings :)                  */
+
+		/*** PORT = X ***/
+		if(!strcmp(varname, "port")) {
+			if(varvalue == NULL) {
+				err_msg("Config file syntax error, line %d",
+					linenum);
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 1024 || intval > 32767) {
+				err_msg("Invalid port number, line %d",
+					linenum);
+				continue;
+			}
+			if(opt.main_port == 0)
+				opt.main_port = intval;
+			continue;
+		}
+		/*** END PORT = X ***/
+
+		/*** INVALID VARIABLE ***/
+		err_msg("Config file syntax error, line %d", linenum);
+	}
+
+	fclose(configfile);
+}
+
+
+/* Parse a single line of input into a left half and a right half */
+/* separated by an (optional) equals sign                         */
+static void parse_line(char *p)
+{
+	char csave;
+
+	varname = NULL;
+	/* Skip over whitespace */
+	while((*p == ' ' || *p == '\t' || *p == '\n') && *p != '\0')
+		p++;
+	if(*p == '\0' || *p == '#')
+		return;	/* The line is a comment */
+
+	varname = p;
+
+	varvalue = NULL;
+	/* Skip until we find the end of the variable name, converting */
+	/* everything (for convenience) to lowercase as we go */
+	while(*p != ' ' && *p != '\t' && *p != '\n' && *p != '=' && *p != '\0'){
+		*p = tolower(*p);
+		p++;
+	}
+	csave = *p;
+	*p = '\0';
+	p++;
+
+	if(csave == '\n' || csave == '\0')
+		return;	/* There is no argument */
+
+	/* There appears to be an argument, skip to the start of it */
+	while((*p == ' ' || *p == '\t' || *p == '\n' || *p == '=')&& *p != '\0')
+		p++;
+	if(*p == '\0')
+		return; /* Argument is missing */
+
+	/* There is an argument ... */
+	varvalue = p;
+
+	/* Terminate it ... */
+	while(*p != '\n' && *p != '\0')
+		p++;
+	/* Found EOL, now backspace over whitespace to remove trailing space */
+	p--;
+	while(*p == ' ' || *p == '\t' || *p == '\n')
+		p--;
+	p++;
+	/* Finally terminate it with a NUL */
+	*p = '\0'; /* Might have already been the NUL, but who cares? */
 }
