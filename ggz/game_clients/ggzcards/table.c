@@ -50,14 +50,14 @@
 
 #define UNKNOWN_CARD (struct card_t){-1, -1, -1}
 
-static GdkPixmap *table_buf;
+static GdkPixmap *table_buf = NULL;
 static GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 static GtkStyle *f1_style;
 static GtkWidget *f1;
-static GtkWidget *l_name[4]; //, *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
-static GtkWidget *label[4]; /* player labels; put in place of old bid/tricks/score */
-static GtkWidget *msglabel; /* global label; put in place of old l_trump */
+static GtkWidget *l_name[4] = {0};
+static GtkWidget *label[4] = {0}; /* player labels; put in place of old bid/tricks/score */
+static GtkWidget *msglabel = {0}; /* global label; put in place of old l_trump */
 static gboolean table_initialized = FALSE;
 
 #ifdef ANIMATION
@@ -139,7 +139,6 @@ static void draw_card_areas()
 void table_initialize(void)
 {
 	GdkBitmap *mask;
-	// GtkWidget *label;
 	int x, y, p;
 
 	gchar** xpm_fronts[4] = {cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm};
