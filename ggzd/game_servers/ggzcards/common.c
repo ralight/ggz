@@ -350,6 +350,9 @@ int send_table(player_t p)
 {
 	int s_r, s_abs, status = 0, fd = ggz_seats[p].fd;
 
+	if (game.num_seats == 0)
+		return 0;
+
 	ggz_debug("Sending table to player %d (%s).", p, ggz_seats[p].name);
 	
 	if (fd == -1) {
