@@ -34,6 +34,8 @@
 #include <gtk_connect.h>
 #include <client.h>
 
+#include "ggzintl.h"
+
 
 /* Global state of game variable */
 extern gameState_t gameState;
@@ -58,21 +60,21 @@ void StatDialog(GtkWidget * widget, gpointer data)
 	int i, sc0, sc1;
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), "Session Statistics");
+	gtk_window_set_title(GTK_WINDOW(window), _("Session Statistics"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */
-	titleLabel = gtk_label_new("Game Statistics");
-	queryLabel = gtk_label_new("Would you like to play again?");
+	titleLabel = gtk_label_new(_("Game Statistics"));
+	queryLabel = gtk_label_new(_("Would you like to play again?"));
 	gtk_widget_show(titleLabel);
 	gtk_widget_show(queryLabel);
 
 
 	/* Button widgets */
 	if (gameState.gameOver & GAME_QUERY) {
-		yesButton = gtk_button_new_with_label("Yes");
-		noButton = gtk_button_new_with_label("No");
+		yesButton = gtk_button_new_with_label(_("Yes"));
+		noButton = gtk_button_new_with_label(_("No"));
 		gtk_signal_connect(GTK_OBJECT(yesButton), "clicked",
 				   GTK_SIGNAL_FUNC(ReadQuery),
 				   GINT_TO_POINTER(1));
@@ -88,7 +90,7 @@ void StatDialog(GtkWidget * widget, gpointer data)
 		gtk_widget_show(noButton);
 
 	} else {
-		yesButton = gtk_button_new_with_label("OK");
+		yesButton = gtk_button_new_with_label(_("OK"));
 		noButton = NULL; /* avoid compiler warning */
 	}
 	gtk_signal_connect_object(GTK_OBJECT(yesButton), "clicked",
@@ -117,7 +119,7 @@ void StatDialog(GtkWidget * widget, gpointer data)
 		    gameState.record[2 * i +
 				     ((gameState.playerId + 1) % 2)];
 		scores =
-		    g_strdup_printf("Game %d:  %4d  %4d  (%c)", (i + 1),
+		    g_strdup_printf(_("Game %d:  %4d  %4d  (%c)"), (i + 1),
 				    sc0, sc1, (sc0 > sc1 ? 'W' : 'L'));
 		statsLabel = gtk_label_new(scores);
 		gtk_widget_show(statsLabel);
@@ -128,7 +130,7 @@ void StatDialog(GtkWidget * widget, gpointer data)
 	}
 	/* If no scores yet, show message as such */
 	if (i == 0) {
-		statsLabel = gtk_label_new("(No statistics yet)");
+		statsLabel = gtk_label_new(_("(No statistics yet)"));
 		gtk_widget_show(statsLabel);
 		gtk_box_pack_start(GTK_BOX(labelBox), statsLabel, FALSE,
 				   FALSE, 0);

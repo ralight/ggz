@@ -28,6 +28,8 @@
 
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 
 void AboutDialog(GtkWidget * widget, gpointer data)
 {
@@ -44,16 +46,16 @@ void AboutDialog(GtkWidget * widget, gpointer data)
 	char *buf;
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), "About GtkSpades");
+	gtk_window_set_title(GTK_WINDOW(window), _("About GtkSpades"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 
 	/* Label widgets */
-	buf = g_strdup_printf("GtkSpades Client Version %s\n", VERSION);
+	buf = g_strdup_printf(_("GtkSpades Client Version %s\n"), VERSION);
 
 	label1 = gtk_label_new(buf);
-	label2 = gtk_label_new("Copyright 1999: Brent Hendricks");
+	label2 = gtk_label_new(_("Copyright 1999: Brent Hendricks"));
 
 	g_free(buf);
 
@@ -62,7 +64,7 @@ void AboutDialog(GtkWidget * widget, gpointer data)
 
 
 	/* Button widgets */
-	okButton = gtk_button_new_with_label("OK");
+	okButton = gtk_button_new_with_label(_("OK"));
 
 	gtk_signal_connect_object(GTK_OBJECT(okButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),

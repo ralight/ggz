@@ -35,6 +35,8 @@
 #include <gtk_io.h>
 #include <client.h>
 
+#include "ggzintl.h"
+
 /* Global state of game variable */
 extern playArea_t *playArea;
 
@@ -51,18 +53,18 @@ void DisconnectDialog(GtkWidget * widget, gpointer data)
 	GtkWidget *noButton;
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), "Disconnect from Server");
+	gtk_window_set_title(GTK_WINDOW(window), _("Disconnect from Server"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */
-	label = gtk_label_new("Really Disconnect?");
+	label = gtk_label_new(_("Really Disconnect?"));
 	gtk_widget_show(label);
 
 
 	/* Button widgets */
-	noButton = gtk_button_new_with_label("No");
-	yesButton = gtk_button_new_with_label("Yes");
+	noButton = gtk_button_new_with_label(_("No"));
+	yesButton = gtk_button_new_with_label(_("Yes"));
 
 	gtk_signal_connect(GTK_OBJECT(yesButton), "clicked",
 			   GTK_SIGNAL_FUNC(Disconnect), NULL);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 3396 2002-02-17 09:59:47Z jdorje $
+ * $Id: client_func.c 3731 2002-04-04 08:47:54Z dr_maux $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -78,13 +78,13 @@ int CheckReadInt(int msgsock, int *message)
 
 	if (status < 0) {
 		DisplayError("Network error receiving int");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	} else if (status == 0) {
 		DisplayError("Socket closed while reading int");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	}
 
@@ -101,13 +101,13 @@ int CheckReadString(int msgsock, char **message)
 
 	if (status < 0) {
 		DisplayError("Network error receiving string");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	} else if (status == 0) {
 		DisplayError("Socket closed while reading string");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	}
 
@@ -125,8 +125,8 @@ int CheckWriteInt(int msgsock, int message)
 
 	if (status <= 0) {
 		DisplayError("Network error sending int");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	}
 
@@ -143,8 +143,8 @@ int CheckWriteString(int msgsock, char *message)
 
 	if (status <= 0) {
 		DisplayError("Network error sending string");
-		DisplayCleanup();
 		NetClose();
+		DisplayCleanup();
 		success = NET_FAIL;
 	}
 
@@ -722,7 +722,8 @@ void UpdateGame(void)
 
 void NetClose(void)
 {
-	g_printerr("I'm dying\n");
+	g_printerr("I'm dying 2\n");
+	gdk_input_remove(spadesHandle);
 	if (ggzmod_disconnect() < 0)
 		exit(-2); /* is this the desired behavior? */
 }

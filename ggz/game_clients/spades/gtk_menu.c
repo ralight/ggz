@@ -39,20 +39,22 @@
 #include <client.h>
 #include <display.h>
 
+#include "ggzintl.h"
+
 
 /* Global widget structure */
 extern playArea_t *playArea;
 
 static GtkItemFactoryEntry menuItems[] = {
-	{"/_Game", NULL, NULL, 0, "<Branch>"},
-	{"/Game/_New", NULL, OptionsDialog, 0, NULL},
-	{"/Game/_End", NULL, DisconnectDialog, 0, NULL},
-	{"/Game/_Statistics", NULL, StatDialog, 0, NULL},
-	{"/Game/sep1", NULL, NULL, 0, "<Separator>"},
-	{"/Game/_Quit", "<alt>F4", ExitDialog, 0, NULL},
-	{"/_Help", NULL, NULL, 0, "<LastBranch>"},
+	{_("/_Game"), NULL, NULL, 0, "<Branch>"},
+	{_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
+	{_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
+	{_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
+	{_("/Game/sep1"), NULL, NULL, 0, "<Separator>"},
+	{_("/Game/_Quit"), "<alt>F4", ExitDialog, 0, NULL},
+	{_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
 /*  {"/Help/_GamePlay",            NULL,       HelpDialog, 0, NULL},*/
-	{"/Help/_About", "<ctrl>A", AboutDialog, 0, NULL},
+	{_("/Help/_About"), "<ctrl>A", AboutDialog, 0, NULL},
 };
 
 
@@ -73,7 +75,7 @@ GtkWidget *CreateMenus(GtkWidget * window)
 	menuBar = gtk_item_factory_get_widget(playArea->menu, "<main>");
 
 	menuItem =
-	    gtk_item_factory_get_widget(playArea->menu, "<main>/Game/End");
+	    gtk_item_factory_get_widget(playArea->menu, _("<main>/Game/End"));
 	gtk_widget_set_sensitive(menuItem, FALSE);
 
 	return menuBar;

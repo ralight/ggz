@@ -35,6 +35,8 @@
 #include <options.h>
 #include <callbacks.h>
 
+#include "ggzintl.h"
+
 /* Global state of game variable */
 extern gameState_t gameState;
 extern playArea_t *playArea;
@@ -66,7 +68,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	/* Dialog window */
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_container_border_width(GTK_CONTAINER(window), 10);
-	gtk_window_set_title(GTK_WINDOW(window), "Options");
+	gtk_window_set_title(GTK_WINDOW(window), _("Options"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
@@ -90,8 +92,8 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	optionTabs = gtk_notebook_new();
 	gtk_widget_show(optionTabs); 
 
-	playerTab = gtk_label_new("Player Options");
-	gameTab = gtk_label_new("Game Options");
+	playerTab = gtk_label_new(_("Player Options"));
+	gameTab = gtk_label_new(_("Game Options"));
 
 	gtk_widget_show(playerTab); 
 	gtk_widget_show(gameTab); 
@@ -101,9 +103,9 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	name_label = gtk_label_new(gameState.userName);
 	gtk_widget_show(name_label);
 
-	inputs.playerTog1 = gtk_toggle_button_new_with_label("Human");
-	inputs.playerTog2 = gtk_toggle_button_new_with_label("Human");
-	inputs.playerTog3 = gtk_toggle_button_new_with_label("Human");
+	inputs.playerTog1 = gtk_toggle_button_new_with_label(_("Human"));
+	inputs.playerTog2 = gtk_toggle_button_new_with_label(_("Human"));
+	inputs.playerTog3 = gtk_toggle_button_new_with_label(_("Human"));
 
 	gtk_signal_connect(GTK_OBJECT(inputs.playerTog1), "toggled",
 			   GTK_SIGNAL_FUNC(PlayerToggled),
@@ -131,13 +133,13 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_show(inputs.playerTog3);
 
 	gtk_tooltips_set_tip(tooltips, inputs.playerTog1,
-			     "Click to toggle Human/Computer player",
+			     _("Click to toggle Human/Computer player"),
 			     NULL);
 	gtk_tooltips_set_tip(tooltips, inputs.playerTog2,
-			     "Click to toggle Human/Computer player",
+			     _("Click to toggle Human/Computer player"),
 			     NULL);
 	gtk_tooltips_set_tip(tooltips, inputs.playerTog3,
-			     "Click to toggle Human/Computer player",
+			     _("Click to toggle Human/Computer player"),
 			     NULL);
 
 
@@ -157,7 +159,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 
 	inputs.nilBids = 
 		gtk_toggle_button_new_with_label((options.bitOpt & MSK_NILS) ?
-						 "Yes" : "No");
+						 _("Yes") : _("No"));
 	gtk_signal_connect(GTK_OBJECT(inputs.nilBids), "toggled",
 			   GTK_SIGNAL_FUNC(NilToggled), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inputs.nilBids),
@@ -168,9 +170,9 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_show(inputs.nilBids);
 #endif
 
-	minBidLabel = gtk_label_new("Minimum Bid :");
-	endGameLabel = gtk_label_new("Game ends at :");
-	nilBidsLabel = gtk_label_new("Nil bids allowed :");
+	minBidLabel = gtk_label_new(_("Minimum Bid :"));
+	endGameLabel = gtk_label_new(_("Game ends at :"));
+	nilBidsLabel = gtk_label_new(_("Nil bids allowed :"));
 
 	gtk_widget_show(minBidLabel);
 	gtk_widget_show(endGameLabel);
@@ -180,8 +182,8 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 #endif
 
 	/* Dialog buttons */
-	connectButton = gtk_button_new_with_label("Start");
-	cancelButton = gtk_button_new_with_label("Cancel");
+	connectButton = gtk_button_new_with_label(_("Start"));
+	cancelButton = gtk_button_new_with_label(_("Cancel"));
 
 	gtk_widget_show(connectButton);
 	gtk_widget_show(cancelButton);
@@ -325,11 +327,11 @@ void PlayerToggled(GtkWidget * toggle, gpointer data)
 	if (GTK_TOGGLE_BUTTON(toggle)->active) {
 		options.bitOpt |= mask;
 		gtk_label_set_text(GTK_LABEL(GTK_BIN(toggle)->child),
-				   "Computer");
+				   _("Computer"));
 	} else {
 		options.bitOpt &= ~mask;
 		gtk_label_set_text(GTK_LABEL(GTK_BIN(toggle)->child),
-				   "Human");
+				   _("Human"));
 	}
 }
 
@@ -343,11 +345,11 @@ void NilToggled(GtkWidget * toggle, gpointer data)
 	if (GTK_TOGGLE_BUTTON(toggle)->active) {
 		options.bitOpt |= MSK_NILS;
 		gtk_label_set_text(GTK_LABEL(GTK_BIN(toggle)->child),
-				   "Yes");
+				   _("Yes"));
 	} else {
 		options.bitOpt &= ~MSK_NILS;
 		gtk_label_set_text(GTK_LABEL(GTK_BIN(toggle)->child),
-				   "No");
+				   _("No"));
 	}
 
 }

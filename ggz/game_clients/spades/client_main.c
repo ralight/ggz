@@ -36,6 +36,7 @@
 #include <stdio.h>
 
 #include <ggz.h>	/* libggz */
+#include "ggzintl.h"
 
 #include <card.h>
 #include <client.h>
@@ -58,6 +59,8 @@ int main(int argc, char *argv[])
 	int i;
 	
 	initialize_debugging();
+
+	ggz_intl_init("spades");
 
 	/* Arrange interrupts to terminate */
 	signal(SIGINT, die);

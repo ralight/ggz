@@ -47,6 +47,8 @@
 #include <gtk_play.h>
 #include <all-cards.xpm>
 
+#include "ggzintl.h"
+
 /* Global state of game variable */
 extern gameState_t gameState;
 playArea_t *playArea;
@@ -377,12 +379,12 @@ void DisplayScores(void)
 
 		/* Display Team Scores */
 		buf =
-		    g_strdup_printf("%s and %s", gameState.players[i],
+		    g_strdup_printf(_("%s and %s"), gameState.players[i],
 				    gameState.players[i + 2]);
 		gtk_label_set_text(GTK_LABEL(playArea->teams[i]), buf);
 		g_free(buf);
 
-		buf = g_strdup_printf("Score: % 4d", gameState.scores[i]);
+		buf = g_strdup_printf(_("Score: % 4d"), gameState.scores[i]);
 		gtk_label_set_text(GTK_LABEL(playArea->scores[i]), buf);
 		g_free(buf);
 
@@ -392,19 +394,19 @@ void DisplayScores(void)
 			if (gameState.bids[i] == BID_KNEEL
 			    || gameState.bids[i + 2] == BID_KNEEL) {
 				buf =
-				    g_strdup_printf("  Bid: n%3d ",
+				    g_strdup_printf(_("  Bid: n%3d "),
 						    (gameState.bids[i] +
 						     gameState.bids[i +
 								    2] -
 						     BID_KNEEL));
 			} else {
 				buf =
-				    g_strdup_printf("  Bid:  %3d ",
+				    g_strdup_printf(_("  Bid:  %3d "),
 						    gameState.bids[i] +
 						    gameState.bids[i + 2]);
 			}
 		} else {
-			buf = g_strdup_printf("  Bid:  ");
+			buf = g_strdup_printf(_("  Bid:  "));
 		}
 
 		gtk_label_set_text(GTK_LABEL(playArea->bids[i]), buf);
@@ -430,13 +432,13 @@ void DisplayPrompt(void)
 		if (gameState.curPlayer == gameState.playerId) {
 			gtk_widget_set_sensitive(playArea->bidButton,
 						 TRUE);
-			DisplayStatusLine("Your bid: ");
+			DisplayStatusLine(_("Your bid: "));
 		}
 		break;
 
 	case ST_GET_TRICK:
 		if (gameState.curPlayer == gameState.playerId) {
-			DisplayStatusLine("Please play a card");
+			DisplayStatusLine(_("Please play a card"));
 		}
 		break;
 

@@ -29,6 +29,8 @@
 
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 void DisplayMessage(char *message, gboolean quit)
 {
 
@@ -45,9 +47,9 @@ void DisplayMessage(char *message, gboolean quit)
 
 	window = gtk_dialog_new();
 	if (quit) {
-		gtk_window_set_title(GTK_WINDOW(window), "Error!");
+		gtk_window_set_title(GTK_WINDOW(window), _("Error!"));
 	} else {
-		gtk_window_set_title(GTK_WINDOW(window), "Warning!");
+		gtk_window_set_title(GTK_WINDOW(window), _("Warning!"));
 	}
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
@@ -55,9 +57,9 @@ void DisplayMessage(char *message, gboolean quit)
 
 	/* Label widgets */
 	if (quit) {
-		label1 = gtk_label_new("An error occurred!");
+		label1 = gtk_label_new(_("An error occurred!"));
 	} else {
-		label1 = gtk_label_new("Please note!");
+		label1 = gtk_label_new(_("Please note!"));
 	}
 	label2 = gtk_label_new(message);
 
@@ -66,7 +68,7 @@ void DisplayMessage(char *message, gboolean quit)
 
 
 	/* Button widgets */
-	okButton = gtk_button_new_with_label("OK");
+	okButton = gtk_button_new_with_label(_("OK"));
 
 	if (quit) {
 		gtk_signal_connect(GTK_OBJECT(okButton), "clicked",

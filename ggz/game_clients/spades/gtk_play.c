@@ -36,6 +36,8 @@
 #include <display.h>
 #include <gtkspinbutton.h>
 
+#include "ggzintl.h"
+
 /* Global state of game variable */
 extern gameState_t gameState;
 extern playArea_t *playArea;
@@ -197,7 +199,7 @@ void CreatePlayArea(void)
 
 
 	/* Create bid input dial */
-	bidLabel = gtk_label_new("Bid");
+	bidLabel = gtk_label_new(_("Bid"));
 	gtk_widget_show(bidLabel);
 	bidAdj = gtk_adjustment_new(3, -1, 13, 1, 10, 10);
 	bid = gtk_spin_button_new(GTK_ADJUSTMENT(bidAdj), 1, 0);
@@ -210,7 +212,7 @@ void CreatePlayArea(void)
 
 
 	/* Make bid button */
-	playArea->bidButton = gtk_button_new_with_label("Send Bid");
+	playArea->bidButton = gtk_button_new_with_label(_("Send Bid"));
 	gtk_widget_set_sensitive(playArea->bidButton, FALSE);
 	gtk_signal_connect_object(GTK_OBJECT(playArea->bidButton),
 				  "clicked", GTK_SIGNAL_FUNC(ReadBid),
@@ -461,11 +463,11 @@ static gint ReadCard(GtkWidget * widget, GdkEventButton * event)
 
 			case -1:	/* Card already played */
 				DisplayStatusLine
-				    ("You already played that card");
+				    (_("You already played that card"));
 				break;
 			case -2:	/* Renege */
 				DisplayStatusLine
-				    ("Hey, no cheating, you're not out yet");
+				    (_("Hey, no cheating, you're not out yet"));
 				break;
 			case 0:	/* Card ok */
 				DisplayPlayedCard(gameState.
@@ -506,11 +508,11 @@ void ReadBid(GtkWidget * widget)
 		switch (status) {
 
 		case -1:	/* Invalid Bid */
-			DisplayStatusLine("Invalid Bid");
+			DisplayStatusLine(_("Invalid Bid"));
 			break;
 		case -2:	/* Bid less than minimum */
 			DisplayStatusLine
-			    ("Your team must bid at least the minimum");
+			    (_("Your team must bid at least the minimum"));
 			break;
 		default:	/* Bid accepted */
 			DisplayTallys();
