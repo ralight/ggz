@@ -32,6 +32,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/poll.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -47,8 +49,14 @@ static void _ggzcore_game_exec(char *path);
 
 /* Array of GGZGame messages */
 static char* _ggzcore_game_events[] = {
-	"GGZ_LAUNCHED",
-	"GGZ_GAME_READY",
+	"GGZ_GAME_LAUNCHED",
+	"GGZ_GAME_LAUNCH_FAIL",
+	"GGZ_GAME_NEGOTIATED",
+	"GGZ_GAME_NEGOTIATE_FAIL",
+	"GGZ_GAME_DATA",
+	"GGZ_GAME_OVER",
+	"GGZ_GAME_IO_ERROR",
+	"GGZ_GAME_PROTO_ERROR"
 };
 
 /* Total number of server events messages */
@@ -151,6 +159,33 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 }
 
 
+int ggzcore_game_data_is_pending(GGZGame *game)
+{
+	if (game && game->fd != -1)
+		return _ggzcore_game_data_is_pending(game);
+	else
+		return 0;
+}
+
+
+int ggzcore_game_read_data(GGZGame *game)
+{
+	if (game && game->fd != -1)
+		return _ggzcore_game_read_data(game);
+	else
+		return -1;
+}
+		
+
+int ggzcore_game_write_data(GGZGame *game)
+{
+	if (game && game->fd != -1)
+		return _ggzcore_game_write_data(game);
+	else
+		return -1;
+}
+
+
 int ggzcore_game_get_fd(GGZGame *game)
 {
 	if (game)
@@ -202,6 +237,7 @@ void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module)
 	int i;
 
      	game->module = module;
+	game->fd = -1;
 
 	ggzcore_debug(GGZ_DBG_GAME, "Initializing new game");
 
@@ -215,12 +251,12 @@ void _ggzcore_game_free(struct _GGZGame *game)
 {
 	int i;
 
+	ggzcore_debug(GGZ_DBG_GAME, "Destroying game object");
 	if (game->file_name)
 		ggzcore_free(game->file_name);
 
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(game->event_hooks[i]);
-
 
 	ggzcore_free(game);
 }
@@ -252,6 +288,44 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 }
 
 
+int _ggzcore_game_data_is_pending(struct _GGZGame *game)
+{
+	int status = 0;
+	struct pollfd fd[1] = {{game->fd, POLLIN, 0}};
+	
+	ggzcore_debug(GGZ_DBG_POLL, "Checking for game events");	
+	if ( (status = poll(fd, 1, 0)) < 0) {
+		if (errno == EINTR) 
+			/* Ignore interruptions */
+			status = 0;
+		else 
+			ggzcore_error_sys_exit("poll failed in ggzcore_game_data_is_pending");
+	}
+	else if (status)
+		ggzcore_debug(GGZ_DBG_POLL, "Found a game event!");
+
+	return status;
+}
+
+
+int _ggzcore_game_read_data(struct _GGZGame *game)
+{
+	int size;
+	char buf[4096];
+
+	ggzcore_debug(GGZ_DBG_GAME, "Got game msg from game client");
+	size = read(game->fd, buf, 4096);
+
+	return 0;
+}
+
+
+int _ggzcore_game_write_data(struct _GGZGame *game)
+{
+	return 0;
+}
+
+
 int _ggzcore_game_get_fd(struct _GGZGame *game)
 {
 	return game->fd;
@@ -278,7 +352,10 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	ggzcore_debug(GGZ_DBG_GAME, "Exec path is  %s", path);
 
 	if (stat(path, &file_status) < 0) {
+		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
+				    strerror(errno));
 		ggzcore_debug(GGZ_DBG_GAME, "Bad path: %s", path);
+
 		return -1;
 	}
 	
@@ -289,7 +366,10 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	} else if (pid == 0) {
 		_ggzcore_game_exec(path);
 		/* If we get here, exec failed.  Bad news */
-		ggzcore_error_sys_exit("exec failed");
+		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
+				    strerror(errno));
+		ggzcore_debug(GGZ_DBG_GAME, "Exec failed");
+		return -1;
 	} else {
 		/* Create Unix domain socket for communication*/
 
@@ -299,6 +379,8 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		
 		sock_accept = es_make_unix_socket(ES_SERVER, game->file_name);
 		if (sock_accept < 0) {
+			_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
+					    strerror(errno));
 			ggzcore_debug(GGZ_DBG_GAME, "Failed to create Unix socket");
 			return -1;
 		}
@@ -314,7 +396,10 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		game->fd = fd;
 
 		ggzcore_debug(GGZ_DBG_GAME, "Successful launch");
-		_ggzcore_game_event(game, GGZ_LAUNCHED, NULL);
+		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
+		/* FIXME: for now, launch and negotiate are one and the same */
+		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+	
 	}
 
 	return 0;

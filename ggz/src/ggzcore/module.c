@@ -296,8 +296,8 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char 
 	_ggzcore_list_entry *entry;
 	struct _GGZModule mod;
 
-	mod.game = game;
-	mod.protocol = protocol;
+	mod.game = (char*)game;
+	mod.protocol = (char*)protocol;
 
 	entry = _ggzcore_list_search_alt(module_list, &mod, _ggzcore_module_match_version);
 	if (!entry) {

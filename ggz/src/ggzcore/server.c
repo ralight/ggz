@@ -94,6 +94,10 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_NET_ERROR",
 	"GGZ_PROTOCOL_ERROR",
 	"GGZ_CHAT_FAIL",
+	"GGZ_TABLE_LAUNCHED",
+	"GGZ_TABLE_JOINED",
+	"GGZ_LAUNCH_FAIL",
+	"GGZ_JOIN_FAIL",
 	"GGZ_STATE_CHANGE"
 };
 

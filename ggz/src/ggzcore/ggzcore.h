@@ -154,6 +154,10 @@ typedef enum {
 	GGZ_NET_ERROR,
 	GGZ_PROTOCOL_ERROR,
 	GGZ_CHAT_FAIL,
+	GGZ_TABLE_LAUNCHED,
+	GGZ_TABLE_JOINED,
+	GGZ_LAUNCH_FAIL,
+	GGZ_JOIN_FAIL,
 	GGZ_STATE_CHANGE
 } GGZServerEvent;
 
@@ -172,8 +176,14 @@ typedef enum {
 
 
 typedef enum {
-	GGZ_LAUNCHED,
-	GGZ_GAME_READY,
+	GGZ_GAME_LAUNCHED,
+	GGZ_GAME_LAUNCH_FAIL,
+	GGZ_GAME_NEGOTIATED,
+	GGZ_GAME_NEGOTIATE_FAIL,
+	GGZ_GAME_DATA,
+	GGZ_GAME_OVER,
+	GGZ_GAME_IO_ERROR,
+	GGZ_GAME_PROTO_ERROR,
 } GGZGameEvent;
 
 
@@ -186,6 +196,7 @@ typedef enum {
 	GGZ_STATE_ENTERING_ROOM,
 	GGZ_STATE_IN_ROOM,
 	GGZ_STATE_BETWEEN_ROOMS,
+	GGZ_STATE_LAUNCHING_TABLE,
 	GGZ_STATE_JOINING_TABLE,
 	GGZ_STATE_AT_TABLE,
 	GGZ_STATE_LEAVING_TABLE,
@@ -641,6 +652,13 @@ int ggzcore_game_remove_event_hook(GGZGame *game,
 int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const GGZGameEvent event, 
 				      const unsigned int hook_id);
+
+
+/* Functions for data processing */
+int ggzcore_game_data_is_pending(GGZGame *game);
+int ggzcore_game_read_data(GGZGame *game);
+int ggzcore_game_write_data(GGZGame *game);
+
 
 int        ggzcore_game_get_fd(GGZGame *game);
 GGZModule* ggzcore_game_get_module(GGZGame *game);

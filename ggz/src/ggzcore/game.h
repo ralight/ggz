@@ -52,6 +52,10 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 				       const GGZGameEvent event, 
 				       const unsigned int hook_id);
 
+int _ggzcore_game_data_is_pending(struct _GGZGame *game);
+int _ggzcore_game_read_data(struct _GGZGame *game);
+int _ggzcore_game_write_data(struct _GGZGame *game);
+
 int _ggzcore_game_get_fd(struct _GGZGame *game);
 struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
 

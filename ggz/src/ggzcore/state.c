@@ -104,6 +104,8 @@ static struct _GGZTransition _entering_room_transitions[] = {
 
 static struct _GGZTransition _in_room_transitions[] = {
 	{GGZ_TRANS_ENTER_TRY,    GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_TRANS_LAUNCH_TRY,   GGZ_STATE_LAUNCHING_TABLE},
+	{GGZ_TRANS_JOIN_TRY,     GGZ_STATE_JOINING_TABLE},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
@@ -119,19 +121,34 @@ static struct _GGZTransition _between_rooms_transitions[] = {
 	{-1, -1}
 };
 
+static struct _GGZTransition _launching_table_transitions[] = {
+	/* For now, server automatically tries to join us */
+	{GGZ_TRANS_LAUNCH_OK,    GGZ_STATE_JOINING_TABLE},
+	{GGZ_TRANS_LAUNCH_FAIL,  GGZ_STATE_IN_ROOM},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
+	{-1, -1}
+};
+
 static struct _GGZTransition _joining_table_transitions[] = {
+	{GGZ_TRANS_JOIN_OK,      GGZ_STATE_AT_TABLE},
+	{GGZ_TRANS_JOIN_FAIL,    GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _at_table_transitions[] = {
+	{GGZ_TRANS_LEAVE_TRY,    GGZ_STATE_LEAVING_TABLE},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _leaving_table_transitions[] = {
+	{GGZ_TRANS_LEAVE_OK,     GGZ_STATE_IN_ROOM},
+	/* FIXME: what to do if leave fails? */
+	{GGZ_TRANS_LEAVE_FAIL,   GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
@@ -147,18 +164,19 @@ static struct _GGZTransition _logging_out_transitions[] = {
 
 /* Array of all GGZ states */
 static struct _GGZState _ggz_states[] = {
-	{GGZ_STATE_OFFLINE,       "offline",       _offline_transitions},
-	{GGZ_STATE_CONNECTING,    "connecting",    _connecting_transitions},
-	{GGZ_STATE_ONLINE,        "online",        _online_transitions}, 
-	{GGZ_STATE_LOGGING_IN,    "logging_in",    _logging_in_transitions},
-	{GGZ_STATE_LOGGED_IN,     "logged_in",     _logged_in_transitions},
-	{GGZ_STATE_ENTERING_ROOM, "entering_room", _entering_room_transitions},
-	{GGZ_STATE_IN_ROOM,       "in_room",       _in_room_transitions},
-	{GGZ_STATE_BETWEEN_ROOMS, "between_rooms", _between_rooms_transitions},
-	{GGZ_STATE_JOINING_TABLE, "joining_table", _joining_table_transitions},
-	{GGZ_STATE_AT_TABLE,      "at_table",      _at_table_transitions},
-	{GGZ_STATE_LEAVING_TABLE, "leaving_table", _leaving_table_transitions},
-	{GGZ_STATE_LOGGING_OUT,   "logging_out",   _logging_out_transitions},
+	{GGZ_STATE_OFFLINE,         "offline",         _offline_transitions},
+	{GGZ_STATE_CONNECTING,      "connecting",      _connecting_transitions},
+	{GGZ_STATE_ONLINE,          "online",          _online_transitions}, 
+	{GGZ_STATE_LOGGING_IN,      "logging_in",      _logging_in_transitions},
+	{GGZ_STATE_LOGGED_IN,       "logged_in",       _logged_in_transitions},
+	{GGZ_STATE_ENTERING_ROOM,   "entering_room",   _entering_room_transitions},
+	{GGZ_STATE_IN_ROOM,         "in_room",         _in_room_transitions},
+	{GGZ_STATE_BETWEEN_ROOMS,   "between_rooms",   _between_rooms_transitions},
+	{GGZ_STATE_LAUNCHING_TABLE, "launching_table", _launching_table_transitions},
+	{GGZ_STATE_JOINING_TABLE,   "joining_table",   _joining_table_transitions},
+	{GGZ_STATE_AT_TABLE,        "at_table",        _at_table_transitions},
+	{GGZ_STATE_LEAVING_TABLE,   "leaving_table",   _leaving_table_transitions},
+	{GGZ_STATE_LOGGING_OUT,     "logging_out",     _logging_out_transitions},
 };
 
 
