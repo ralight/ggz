@@ -40,7 +40,7 @@ msgid ""
 "Maybe this game type isn't supported on the server?"
 msgstr ""
 "Konnte nicht in den Raum wechseln!\n"
-"Vielleicht ist dieser Spieletyp auf dem Server nicht verf¸gbar?"
+"Vielleicht ist dieser Spieletyp auf dem Server nicht verf√ºgbar?"
 
 #: ../../ggzap/ggzap.cpp:186
 msgid ""
@@ -48,7 +48,7 @@ msgid ""
 "Please make sure you have it installed."
 msgstr ""
 "Konnte das Spiel nicht starten!\n"
-"Stelle bitte sicher daﬂ es auch installiert ist."
+"Stelle bitte sicher da√ü es auch installiert ist."
 
 #: ../../ggzap/ggzap.cpp:165
 msgid ""

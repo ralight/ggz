@@ -20,15 +20,15 @@ msgstr "Aktiver Client:"
 
 #: ../../shadowbridge/shadowapp.cpp:45
 msgid "Add GGZ game client"
-msgstr "GGZ Spieleclient hinzufügen"
+msgstr "GGZ Spieleclient hinzufÃ¼gen"
 
 #: ../../shadowbridge/shadowapp.cpp:44
 msgid "Add game client"
-msgstr "Spieleclient hinzufügen"
+msgstr "Spieleclient hinzufÃ¼gen"
 
 #: ../../shadowbridge/shadowclient.cpp:38
 msgid "Application command line:"
-msgstr "Ausführungsbefehl für diese Anwendung:"
+msgstr "AusfÃ¼hrungsbefehl fÃ¼r diese Anwendung:"
 
 #: ../../shadowbridge/main.cpp:26 ../../shadowbridge/main.cpp:45
 msgid "Author"
@@ -88,7 +88,7 @@ msgstr "Eingangstest"
 
 #: ../../shadowbridge/shadowclient.cpp:39
 msgid "Inbound socket:"
-msgstr "Einführende Verbindung:"
+msgstr "EinfÃ¼hrende Verbindung:"
 
 #: ../../shadowbridge/shadowapp.cpp:51
 msgid "Incoming message"
@@ -109,15 +109,15 @@ msgstr "Ausgangstest"
 
 #: ../../shadowbridge/shadowclient.cpp:40
 msgid "Outbound socket:"
-msgstr "Ausführende Verbindung:"
+msgstr "AusfÃ¼hrende Verbindung:"
 
 #: ../../shadowbridge/shadowapp.cpp:52
 msgid "Outgoing message"
-msgstr "Ausführende Nachrichten"
+msgstr "AusfÃ¼hrende Nachrichten"
 
 #: ../../shadowbridge/shadowclientggz.cpp:50
 msgid "Please select a GGZ game client:"
-msgstr "Bitte wähle einen GGZ Spieleclient aus:"
+msgstr "Bitte wÃ¼hle einen GGZ Spieleclient aus:"
 
 #: ../../shadowbridge/shadowapp.cpp:48
 msgid "Quit"

@@ -1,0 +1,24 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-03-24 16:50+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../kcm_ggz/kcm_ggz.cpp:99
+msgid ""
+"<h1>GGZ Gaming Zone</1>  is a common way for playing internet games. "
+"Although it is possible to set all options from within the applications "
+"theirselves, some default data can be entered here which takes then "
+"precedence.<p> Please take a look at <a href='http://ggz.sourceforge."
+"net'>ggz.sourceforge.net</a> if you want to learn more."
+msgstr ""
