@@ -229,6 +229,9 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		case E_NOT_IN_ROOM:
 			warn_dlg("Must be in room to launch table");
 			break;
+		case E_BAD_OPTIONS:
+			warn_dlg("Your table launch was rejected due to invalid seat assignments");
+			break;
 		case 0:
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
