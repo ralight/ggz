@@ -167,7 +167,7 @@ static void
 login_edit_profiles                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	props_create_or_raise();
 }
 
 
