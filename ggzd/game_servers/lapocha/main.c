@@ -100,9 +100,6 @@ int main(void)
 					FD_CLR(fd, &active_fd_set);
 			}
 		}
-
-		if(game.state == LP_STATE_DONE)
-			game_over = 1;
 	}
 
 	ggz_quit();
