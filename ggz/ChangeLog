@@ -1,3 +1,177 @@
+2000-02-29 05:50:10  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- If reading of opcode fails, disconnect immediately
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Check for failure to read opcode
+
+2000-02-28 22:43:47  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- 102326
+	  DEBUG and ggz
+	  02/27/00 09:38
+	  none
+	  UFP2161
+
+	  Fixed - Removed #ifdef's around char *opcode_str[23]
+
+2000-02-27 01:46:54  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Added warn_dlg if you can't join a table.
+
+2000-02-26 21:14:41  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/interface.c, /cvsroot/GGZ/ggz/ggz/main.c:
+	- You can now join any table by selecting it in the list.
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/connect.c:
+	- If error on joining table, don't fork game, don't disconnect.
+
+2000-02-22 23:00:08  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/AUTHORS:
+	- Updated AUTHORS file
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/interface.c:
+	- Removed extra labels from the Game Tables list.
+
+2000-02-22 00:56:22  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c:
+	- es_write_int returns sizeof(int) when successful, not 0....
+
+2000-02-21 22:00:40  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Added handling of MSG_XXX_UPDATE
+	- Don't call server_sync() after login anymore (update messages handle
+	  this)
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c:
+	- Added some defaults for name, server and port if cmdline options are
+	  not specified
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/connect.h, /cvsroot/GGZ/ggz/ggz/dlg_error.c, /cvsroot/GGZ/ggz/ggz/dlg_exit.c, /cvsroot/GGZ/ggz/ggz/dlg_exit.h, /cvsroot/GGZ/ggz/ggz/interface.c:
+	- More coding-style changes: Disconnect->disconnect and
+	  ExitDialog->exit_dlg
+
+	* /cvsroot/GGZ/ggz/ggz/game.c:
+	- When game_client is finished, cann gdk_input_remove().  This keeps
+	  us from getting flooded with EOF messages over the socket.
+
+2000-02-20 03:37:52  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/Makefile.am, /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/client.h, /cvsroot/GGZ/ggz/ggz/client_func.c, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/dlg_error.c, /cvsroot/GGZ/ggz/ggz/dlg_error.h, /cvsroot/GGZ/ggz/ggz/err_func.c, /cvsroot/GGZ/ggz/ggz/err_func.h, /cvsroot/GGZ/ggz/ggz/game.c, /cvsroot/GGZ/ggz/ggz/main.c:
+	- Expand err_sock() to output operation type (int, char, string, etc)
+	- Set es_err_func to err_sock()
+	- Remove all traces of CheckReadInt and its ilk
+	- Rename DisplayError and co to err_dlg(), warn_dlg(), and msg_dlg()
+	- Make err_dlg() and warn_dlg() vararg functions
+	- Use g_strdup_printf and g_strdup_vprintf where appropriate
+
+2000-02-19 22:24:47  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/autogen.sh:
+	- Renamed project to "Gnu Gaming Zone" from NetGames
+
+	* /cvsroot/GGZ/ggz/ggz/Makefile.am, /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/datatypes.h, /cvsroot/GGZ/ggz/ggz/interface.c:
+	- Lots of little cleanups
+	- Update to be consistent with server coding style
+	- Eliminate some uneeded members of data structures
+	- Store game type and table indices
+	- Replace options.h with datatypes.h in Makefile.am
+
+	* /cvsroot/GGZ/ggz/ggz/client.h:
+	- Don't decalre global variables here, then don't need #ifdef
+	  _CLIENT_H
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/interface.c:
+	- Hide/Show password box on 'toggle' signal from anon_radio button
+	  rather than the 'slicked' signal on other buttons
+	- Make anon_radio the dafault in fill_defaults()
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/client.h, /cvsroot/GGZ/ggz/ggz/client_func.c, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/connect.h, /cvsroot/GGZ/ggz/ggz/datatypes.h, /cvsroot/GGZ/ggz/ggz/dlg_error.c, /cvsroot/GGZ/ggz/ggz/dlg_error.h, /cvsroot/GGZ/ggz/ggz/dlg_exit.c, /cvsroot/GGZ/ggz/ggz/dlg_exit.h, /cvsroot/GGZ/ggz/ggz/err_func.c, /cvsroot/GGZ/ggz/ggz/err_func.h, /cvsroot/GGZ/ggz/ggz/game.c, /cvsroot/GGZ/ggz/ggz/game.h, /cvsroot/GGZ/ggz/ggz/main.c, /cvsroot/GGZ/ggz/ggz/parse_opt.c, /cvsroot/GGZ/ggz/ggz/parse_opt.h, /cvsroot/GGZ/ggz/ggz/protocols.h, /cvsroot/GGZ/ggz/ggz/support.h:
+	- Ran code through 'indent -kr -i8'
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/client_func.c, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/datatypes.h, /cvsroot/GGZ/ggz/ggz/game.c, /cvsroot/GGZ/ggz/ggz/main.c, /cvsroot/GGZ/ggz/ggz/options.h, /cvsroot/GGZ/ggz/ggz/parse_opt.c, /cvsroot/GGZ/ggz/ggz/protocols.h:
+	- Fixed up global structures a bit:
+	- Moved from options.h into datatypes.h
+	- Split "Options" into ConnectInfo and Game
+
+2000-02-18 16:18:21  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/game.c, /cvsroot/GGZ/ggz/ggz/game.h:
+	- Added headers to a couple files that were missing them
+
+	* /cvsroot/GGZ/ggz/ggz/main.c:
+	- Un-glade-ified a bit.  (Removed comments and stuff we don't need)
+
+	* /cvsroot/GGZ/ggz/ggz/Makefile.am:
+	- Removed spurious \ on the last sources line
+
+2000-02-13 18:31:15  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/client.h, /cvsroot/GGZ/ggz/ggz/interface.c, /cvsroot/GGZ/ggz/ggz/main.c:
+	- updated dlg_login to hide the password entry if login type is anonymous and show it if login type is normal or first time.
+
+2000-02-12 22:36:28  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Fixed bug in displaying of tables list
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	-  changes RSP_USER_LIST and RSP_TABLE_LIST to clear before display and modified server_sync() not to.
+
+2000-02-10 17:56:46  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- in es_make_socket(), stop trying to connect if gethostbyname() has
+	  an error.  (Fixes segfaults when host doesn't exist)
+
+2000-02-10 00:44:31  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Added RSP_GAME_TYPES
+	- Updated RSP_TABLE_LIST to display the game type's name, not the number
+
+2000-02-08 23:03:58  jzaun  <jzaun@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Fixed a bug in the RSP_LIST_TABLES code works properly now
+
+2000-02-08 18:37:50  bmh  <bmh@ece.rice.edu>
+
+	* /cvsroot/GGZ/ggz/ChangeLog, /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/callbacks.h, /cvsroot/GGZ/ggz/ggz/connect.c:
+	- Added support for opcodes MSG_CHAT and RSP_CHAT
+	- Display incoming chat messages in chat text window
+	- Send out chats when button clicked, ot enter pressed
+
+	* /cvsroot/GGZ/ggz/ggz/interface.c:
+	- Increased default size of detail window
+	- Renamed a couple of widgets
+	- Added callback for clicking msg_button and hitting enter
+	  in msg_entry
+	- Re-generated from glade file
+
+	* /cvsroot/GGZ/ggz/game_clients/spades/callbacks.c, /cvsroot/GGZ/ggz/game_clients/spades/client.h, /cvsroot/GGZ/ggz/game_clients/spades/client_func.c, /cvsroot/GGZ/ggz/game_clients/spades/client_main.c, /cvsroot/GGZ/ggz/game_clients/spades/gtk_connect.c:
+	- Fixed spades client to accept '-o' option if player needs to
+	  set game options (and don't ask for them otherwise)
+	- Display main window earlier (so it looks like we're doing something)
+
+	* /cvsroot/GGZ/ggz/ggz/callbacks.c, /cvsroot/GGZ/ggz/ggz/connect.c, /cvsroot/GGZ/ggz/ggz/game.c, /cvsroot/GGZ/ggz/ggz/game.h:
+	- Support {RSP|REQ}_GAME opcodes.  This removes the dirty hack I
+	  was using to get the game_client and game_server to talk.
+	- Exec game_client with '-o' if we need options to be set
+	  (since players who join existing tables don't set options)
+	- Pass flag to launch_game() if we are actually launching
+	  (versus joining)
+
+	* /cvsroot/GGZ/ggz/ggz/protocols.h:
+	- Updated to newest protocols from ggzd
+
 Tue Feb  8 15:55:55 2000  bmh  <bmh@users.sourceforce.net>
 
 	* game_clients/spades/callbacks.c, game_clients/spades/client.h, game_clients/spades/client_func.c, game_clients/spades/client_main.c, game_clients/spades/gtk_connect.c:

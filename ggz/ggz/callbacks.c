@@ -160,9 +160,9 @@ void cancel_details(GtkButton * button, gpointer user_data)
 
 void join_game(GtkButton * button, gpointer user_data)
 {
-		dbg_msg("joining game");
-		es_write_int(connection.sock, REQ_JOIN_GAME);
-		es_write_int(connection.sock, selected_table);
+	dbg_msg("joining game");
+	es_write_int(connection.sock, REQ_JOIN_GAME);
+	es_write_int(connection.sock, selected_table);
 }
 
 
@@ -223,11 +223,9 @@ void input_chat_msg(GtkWidget * widget, gpointer user_data)
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
 
-void table_select_row_callback(GtkWidget *widget,
-                                gint row,
-                                gint column,
-                                GdkEventButton *event,
-                                gpointer data)
+
+void table_select_row_callback(GtkWidget *widget, gint row, gint column,
+			       GdkEventButton *event, gpointer data)
 {
 	gchar *text;
 
