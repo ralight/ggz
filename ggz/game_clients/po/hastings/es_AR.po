@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-20 22:01+0100\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
 "PO-Revision-Date: 2001-06-01 18:59BRT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -158,53 +158,53 @@ msgstr "Argh!! Deberas jugar al Batalla Naval para ese proposito!"
 msgid "Moved knight from %i/%i to %i/%i"
 msgstr "Cavallero modido de %i/%i hacia %i/%i"
 
-#: ../hastings/main_win.c:281
+#: ../hastings/main_win.c:315
 msgid "Do you really want to quit Hastings1066?"
 msgstr ""
 
-#: ../hastings/main_win.c:346
+#: ../hastings/main_win.c:380
 msgid "Not my turn yet"
 msgstr "Todava no es mi turno"
 
-#: ../hastings/main_win.c:370
+#: ../hastings/main_win.c:404
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
 msgstr "Buscando submarinos? Todava no estan inventados (Es el ao 1066)"
 
-#: ../hastings/main_win.c:375
+#: ../hastings/main_win.c:409
 msgid "I can't see anyone here. Can you?"
 msgstr "No puedo ver ms aca. Vos podes?"
 
-#: ../hastings/main_win.c:380
+#: ../hastings/main_win.c:414
 #, c-format
 msgid "Don't cheat! That's not yours! You are number %i, this is %i."
 msgstr ""
 "No hagas trampa! Es no es tuyo. Vos tenes el nmero %i, y este es  el %i"
 
-#: ../hastings/main_win.c:386
+#: ../hastings/main_win.c:420
 msgid "Where shall I go?"
 msgstr "A dnde debo ir?"
 
-#: ../hastings/main_win.c:423
+#: ../hastings/main_win.c:457
 msgid "Hastings1066"
 msgstr "Hastings1066"
 
-#: ../hastings/main_win.c:442
+#: ../hastings/main_win.c:476
 msgid "_Game"
 msgstr "_Juego"
 
-#: ../hastings/main_win.c:460
+#: ../hastings/main_win.c:494
 msgid "Re_sync"
 msgstr "Re_sincronizar"
 
-#: ../hastings/main_win.c:471
+#: ../hastings/main_win.c:505
 msgid "E_xit"
 msgstr "Sal_ir"
 
-#: ../hastings/main_win.c:482
+#: ../hastings/main_win.c:516
 msgid "_Help"
 msgstr "A_yuda"
 
-#: ../hastings/main_win.c:501
+#: ../hastings/main_win.c:535
 msgid "_About"
 msgstr "_Acerca"
 

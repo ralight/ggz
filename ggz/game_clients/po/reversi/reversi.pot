@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../reversi/main_win.c:466
+msgid "Reversi"
+msgstr ""
+
+#: ../reversi/main_win.c:483
+msgid "_Game"
+msgstr ""
+
+#: ../reversi/main_win.c:501
+msgid "Re_sync"
+msgstr ""
+
+#: ../reversi/main_win.c:512
+msgid "O_ptions"
+msgstr ""
+
+#: ../reversi/main_win.c:523
+msgid "E_xit"
+msgstr ""
+
+#: ../reversi/main_win.c:534
+msgid "_Help"
+msgstr ""
+
+#: ../reversi/main_win.c:553
+msgid "_About"
+msgstr ""
+
+#: ../reversi/support.c:118
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr ""
+
+#: ../reversi/support.c:127
+#, c-format
+msgid "Error loading pixmap file: %s"
+msgstr ""

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-20 22:01+0100\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -147,53 +147,53 @@ msgstr "Argh! Du solltest Schiffe Versenken spielen!"
 msgid "Moved knight from %i/%i to %i/%i"
 msgstr "Bewege Ritter von %i/%i nach %i/%i"
 
-#: ../hastings/main_win.c:281
+#: ../hastings/main_win.c:315
 msgid "Do you really want to quit Hastings1066?"
 msgstr ""
 
-#: ../hastings/main_win.c:346
+#: ../hastings/main_win.c:380
 msgid "Not my turn yet"
 msgstr "Nicht mein Zug"
 
-#: ../hastings/main_win.c:370
+#: ../hastings/main_win.c:404
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
 msgstr "Schaust du nach U-Booten? Sie sind noch nicht erfunden (im Jahr 1066)"
 
-#: ../hastings/main_win.c:375
+#: ../hastings/main_win.c:409
 msgid "I can't see anyone here. Can you?"
 msgstr "Ich kann niemanden sehen. Du etwa?"
 
-#: ../hastings/main_win.c:380
+#: ../hastings/main_win.c:414
 #, c-format
 msgid "Don't cheat! That's not yours! You are number %i, this is %i."
 msgstr ""
 "Nicht schummeln! Das ist nicht deiner! Du bist Nummer %i, er Nummer %i."
 
-#: ../hastings/main_win.c:386
+#: ../hastings/main_win.c:420
 msgid "Where shall I go?"
 msgstr "Wo soll ich hingehen?"
 
-#: ../hastings/main_win.c:423
+#: ../hastings/main_win.c:457
 msgid "Hastings1066"
 msgstr "Hastings1066"
 
-#: ../hastings/main_win.c:442
+#: ../hastings/main_win.c:476
 msgid "_Game"
 msgstr "_Spiel"
 
-#: ../hastings/main_win.c:460
+#: ../hastings/main_win.c:494
 msgid "Re_sync"
 msgstr "_Synchronisieren"
 
-#: ../hastings/main_win.c:471
+#: ../hastings/main_win.c:505
 msgid "E_xit"
 msgstr "_Verlassen"
 
-#: ../hastings/main_win.c:482
+#: ../hastings/main_win.c:516
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../hastings/main_win.c:501
+#: ../hastings/main_win.c:535
 msgid "_About"
 msgstr "_Über"
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Dots 0.1\n"
-"POT-Creation-Date: 2002-03-20 22:01+0100\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
 "PO-Revision-Date: 2002-03-20 22:01+0100\n"
 "Last-Translator: Josef Spillner <dr_maux@users.sourceforge.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../dots/dlg_about.c:54
 msgid "About Connect the Dots"
-msgstr "Über Connect the Dots"
+msgstr "ber Connect the Dots"
 
 #: ../dots/dlg_about.c:76
 msgid ""
@@ -48,7 +48,7 @@ msgstr "_Einstellungen"
 
 #: ../dots/dlg_main.c:144
 msgid "_Preferences"
-msgstr "_Persönliche Einstellungen"
+msgstr "_Persnliche Einstellungen"
 
 #: ../dots/dlg_main.c:155
 msgid "_Help"
@@ -56,7 +56,7 @@ msgstr "_Hilfe"
 
 #: ../dots/dlg_main.c:174
 msgid "_About"
-msgstr "_Über"
+msgstr "_ber"
 
 #: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:230
 #: ../dots/main.c:231
@@ -69,11 +69,11 @@ msgstr "Gegner"
 
 #: ../dots/dlg_new.c:58
 msgid "Game Over"
-msgstr "Spiel vorüber"
+msgstr "Spiel vorber"
 
 #: ../dots/dlg_new.c:73
 msgid "You beat NAME"
-msgstr "Du schlägst NAME"
+msgstr "Du schlgst NAME"
 
 #: ../dots/dlg_new.c:80
 msgid "SCR to SCR"
@@ -202,7 +202,7 @@ msgstr "Das Spiel ist vorbei, du besiegst "
 
 #: ../dots/main.c:391
 msgid "You beat "
-msgstr "Du schlägst "
+msgstr "Du schlgst "
 
 #: ../dots/main.c:393
 msgid "Game over, "
