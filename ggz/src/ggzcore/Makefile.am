@@ -4,9 +4,9 @@ SUBDIRS = .
 bin_PROGRAMS = ggz-config
 ggz_config_LDADD = libggzcore.la @LDADD@
 ggz_config_SOURCES = ggz-config.c
-sysconf_DATA = ggz.modules
+ggzconf_DATA = ggz.modules
 
-EXTRA_DIST = $(sysconf_DATA)
+EXTRA_DIST = $(ggzconf_DATA)
 
 lib_LTLIBRARIES = libggzcore.la
 
