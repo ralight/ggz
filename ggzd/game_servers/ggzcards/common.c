@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: common.c 4132 2002-05-02 04:30:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -47,13 +47,13 @@
 #include "net.h"
 #include "options.h"
 
-#ifdef USE_GGZ_STATS		/* defined in common.h */
-# include "../../ggzdmod/ggz_stats.h"
-#endif /* USE_GGZ_STATS */
+#include "ggz_stats.h"
 
 
 /* Global game variables */
-game_t game = { 0 };
+game_t game = {
+	use_stats: TRUE
+};
 
 /* FIXME:
  *
@@ -549,20 +549,18 @@ void handle_trick_event(player_t winner)
 void handle_gameover_event(int winner_cnt, player_t * winners)
 {
 	player_t p;
+
 	ggzdmod_log(game.ggz, "Handling gameover event.");
 
-
-#ifdef USE_GGZ_STATS		/* defined in common.h */
-	/* calculate new player ratings */
-	/* FIXME: this shouldn't be handled here.  It should be handled in
-	   the calling function. */
-	for (i = 0; i < winner_cnt; i++)
-		ggzd_set_game_winner(game.ggz, winners[i],
-				     1.0 / (double) winner_cnt);
-	if (ggzd_recalculate_ratings(game.ggz) < 0) {
-		ggzdmod_log(game.ggz, "ERROR: couldn't recalculate ratings.");
+	if (game.use_stats) {
+	int i;
+		/* calculate new player ratings */
+		for (i = 0; i < winner_cnt; i++)
+			ggzd_set_game_winner(game.ggz, winners[i],
+					     1.0 / (double) winner_cnt);
+		if (ggzd_recalculate_ratings(game.ggz) < 0)
+			ggzdmod_log(game.ggz, "ERROR: couldn't recalculate ratings.");
 	}
-#endif /* USE_GGZ_STATS */
 
 	set_game_state(STATE_NOTPLAYING);
 
@@ -699,8 +697,11 @@ void init_game()
 	assert(game.data != NULL);
 	assert(game.data->is_valid_game());
 	assert(!game.initted);
+	
+	ggzd_set_module(game.data->name);
 
 	/* default values */
+	game.use_stats = TRUE;
 	game.deck_type = GGZ_DECK_FULL;
 	game.last_trick = TRUE;
 	game.last_hand = TRUE;

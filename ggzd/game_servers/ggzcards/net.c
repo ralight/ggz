@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: net.c 4132 2002-05-02 04:30:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -45,10 +45,6 @@
 #include "net.h"
 #include "options.h"
 #include "play.h"
-
-#ifdef USE_GGZ_STATS		/* defined in common.h */
-# include "../../ggzdmod/ggz_stats.h"
-#endif /* USE_GGZ_STATS */
 
 #define NET_ERROR(p) return handle_neterror_event(p)
 

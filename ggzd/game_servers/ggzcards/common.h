@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: common.h 4132 2002-05-02 04:30:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -40,11 +40,6 @@
 #include "games.h"
 #include "protocol.h"
 #include "types.h"
-
-/* If defined, we'll use GGZ's stat tracking
-   features.  These aren't fully implemented
-   yet, so it's probably best not to use it. */
-/* #define USE_GGZ_STATS */
 
 /* GGZCards server game states */
 typedef enum {
@@ -89,6 +84,7 @@ typedef struct {
 	bool last_hand;		/**< should the last hand be sent to all the players? */
 	bool cumulative_scores;	/**< should the cumulative score be sent to all the players? */
 	bool bid_history;	/**< should a complete history of the hand's bidding be shown? */
+	bool use_stats;		/**< should we track player stats? */
 
 	/* Table options */
 	bool open_hands;	/**< are we playing with open hands? */
