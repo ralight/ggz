@@ -84,24 +84,37 @@ static void ggz_room_changed(GtkWidget* widget, gpointer data);
  */
 static void ggz_join_game(GtkButton * button, gpointer user_data)
 {
+	GtkWidget *tmp;
+	
         dbg_msg("joining game");
         es_write_int(connection.sock, REQ_TABLE_JOIN);
         es_write_int(connection.sock, selected_table);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 static void ggz_leave_game(GtkWidget* widget, gpointer data)
 {
+	GtkWidget *tmp;
+
         dbg_msg("leaving game");
         es_write_int(connection.sock, REQ_TABLE_LEAVE);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
 {
+	GtkWidget *tmp;
         gchar verbose = 1;
                  
         es_write_int(connection.sock, REQ_LIST_TYPES);
         write(connection.sock, &verbose, 1);
 
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
                                 
  
@@ -136,6 +149,7 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 static void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
                                GdkEventButton *event, gpointer data)
 {
+	GtkWidget *tmp;
         gchar *text;
         gint i;
         
@@ -147,17 +161,25 @@ static void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint colu
                 if(!strcmp(text,game_types.info[i].name))
                         selected_type=i;
         }
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 
 static void ggz_get_game_options(GtkButton * button, gpointer user_data)
 {
+	GtkWidget *tmp;
+
         if (!connection.connected)
                 warn_dlg("Not connected!");
         else {
                 dlg_launch = create_dlg_launch();
                 gtk_widget_show(dlg_launch);
         }
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
@@ -194,11 +216,16 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 	        es_write_int(connection.sock, selected_table);
 	}
 
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
+
 	return 0;
 }
 
 gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 {
+	GtkWidget *tmp;
+
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
 		GdkEventButton *bevent = (GdkEventButton *) event;
@@ -206,11 +233,15 @@ gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 			bevent->button, bevent->time);
         }
 
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
+
 	return 0;
 }
 
 static void ggz_disconnect(void)
 {
+	GtkWidget *tmp;
         dbg_msg("Logging out");
         es_write_int(connection.sock, REQ_LOGOUT);
 	display_chat("< <  > >","Logged off of from server.");
@@ -220,19 +251,32 @@ static void ggz_disconnect(void)
 	display_chat("< <  > >","Disconnected from server.");
 	
 	login_disconnect();
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 static void ggz_connect(void)
 {
+	GtkWidget *tmp;
+
 	disconnect(NULL,NULL);
 	dlg_login = create_dlg_login();
 	gtk_widget_show(dlg_login);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 static void ggz_motd(void)
 {
+	GtkWidget *tmp;
+
         dbg_msg("Requestiong the MOTD");
         es_write_int(connection.sock, REQ_MOTD);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 static void ggz_realize(GtkWidget* widget, gpointer data)
@@ -241,6 +285,9 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 void ggz_room_changed(GtkWidget* widget, gpointer data)
@@ -268,6 +315,9 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	}else{
 		connection.new_room=connection.cur_room;
 	}	
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
+	gtk_widget_grab_focus(tmp);
 }
 
 
