@@ -3,8 +3,8 @@
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
- * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 3347 2002-02-13 04:17:07Z jdorje $
+ * Desc: Game-dependent game data for Euchre (for use by AI)
+ * $Id: euchre.h 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -51,21 +51,3 @@ enum {
 	   here we need a name for it. */
 	EUCHRE_GO_TEAM,
 };
-
-#define EUCHRE ( *(euchre_game_t *)(game.specific) )
-typedef struct euchre_game_t {
-	player_t maker;		/* just like the declarer */
-	int dealer_gets_card;	/* does the dealer get the up-card? */
-	card_t up_card;		/* the "up-card" */
-	int alone;		/* is the dealer going alone? */
-	int suit;		/* the suit of trump (TODO: is this
-				   necessary?) */
-	int going_alone[4];	/* Is the player "going alone"? */
-	int req_alone_bid;	/* hack: have we already requested the
-				   "alone" bids? */
-
-	/* options */
-	int screw_the_dealer;	/* Dealer must bid if it goes around twice */
-	int super_euchre;	/* Defenders taking all five tricks get a
-				   "super euchre" bonus */
-} euchre_game_t;

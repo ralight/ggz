@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: euchre.c 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -40,6 +40,24 @@
 #include "team.h"
 
 #include "euchre.h"
+
+#define EUCHRE ( *(euchre_game_t *)(game.specific) )
+typedef struct euchre_game_t {
+	player_t maker;		/* just like the declarer */
+	int dealer_gets_card;	/* does the dealer get the up-card? */
+	card_t up_card;		/* the "up-card" */
+	int alone;		/* is the dealer going alone? */
+	int suit;		/* the suit of trump (TODO: is this
+				   necessary?) */
+	int going_alone[4];	/* Is the player "going alone"? */
+	int req_alone_bid;	/* hack: have we already requested the
+				   "alone" bids? */
+
+	/* options */
+	int screw_the_dealer;	/* Dealer must bid if it goes around twice */
+	int super_euchre;	/* Defenders taking all five tricks get a
+				   "super euchre" bonus */
+} euchre_game_t;
 
 static bool euchre_is_valid_game(void);
 static card_t euchre_map_card(card_t c);

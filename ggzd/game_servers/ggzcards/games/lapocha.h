@@ -3,8 +3,8 @@
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
- * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.h 3347 2002-02-13 04:17:07Z jdorje $
+ * Desc: Game-dependent game data for La Pocha (for use by AI)
+ * $Id: lapocha.h 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -23,13 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define LAPOCHA_TRUMP	1
-
-/* la pocha specific data */
-#define LAPOCHA ( *(lapocha_game_t *)(game.specific) )
-typedef struct lapocha_game_t {
-	int bid_sum;		/* what the sum of the bids is */
-} lapocha_game_t;
+enum {
+	LAPOCHA_BID,
+	LAPOCHA_TRUMP
+};
 
 /* Each of these opcodes is used for a GAME_MESSAGE_GAME.  The opcode is sent 
    as a 1-byte char. */

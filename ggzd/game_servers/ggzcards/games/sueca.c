@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: sueca.c 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -36,6 +36,11 @@
 #include "team.h"
 
 #include "sueca.h"
+
+#define GSUECA ( *(sueca_game_t *)(game.specific) )
+typedef struct sueca_game_t {
+	int points_on_hand[4];
+} sueca_game_t;
 
 static bool sueca_is_valid_game(void);
 static void sueca_deal_hand(void);

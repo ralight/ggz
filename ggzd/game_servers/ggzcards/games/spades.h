@@ -3,8 +3,8 @@
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/02/2001
- * Desc: Game-dependent game functions for Spades
- * $Id: spades.h 3425 2002-02-20 03:45:35Z jdorje $
+ * Desc: Game-dependent game data for Spades (for use by AI)
+ * $Id: spades.h 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,8 +24,9 @@
  */
 
 /* special bids */
-#define SPADES_NIL		1
-#define SPADES_NO_BLIND		2	/* a choice *not* to bid blind nil */
-
-/* double nil and blind nil are the same */
-#define SPADES_DOUBLE_NIL	3
+enum {
+	SPADES_BID,
+	SPADES_NIL,
+	SPADES_NO_BLIND,	/* a choice *not* to bid blind nil */
+	SPADES_DOUBLE_NIL	/* double nil and blind nil are the same */
+};

@@ -3,8 +3,8 @@
  * Author: Ismael Orenstein
  * Project: GGZCards Server
  * Date: 07/03/2001
- * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.h 3347 2002-02-13 04:17:07Z jdorje $
+ * Desc: Game-dependent game data for Sueca (for use by AI)
+ * $Id: sueca.h 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -23,8 +23,3 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#define GSUECA ( *(sueca_game_t *)(game.specific) )
-typedef struct sueca_game_t {
-	int points_on_hand[4];
-} sueca_game_t;

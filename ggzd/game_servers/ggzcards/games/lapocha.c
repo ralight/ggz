@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: lapocha.c 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -40,6 +40,12 @@
 #include "net.h"
 
 #include "lapocha.h"
+
+/* la pocha specific data */
+#define LAPOCHA ( *(lapocha_game_t *)(game.specific) )
+typedef struct lapocha_game_t {
+	int bid_sum;		/* what the sum of the bids is */
+} lapocha_game_t;
 
 static bool lapocha_is_valid_game(void);
 static void lapocha_init_game(void);

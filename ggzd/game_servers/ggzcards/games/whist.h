@@ -3,8 +3,8 @@
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 02/21/2002
- * Desc: Game-dependent game functions for Whist
- * $Id: whist.h 3439 2002-02-22 23:33:47Z jdorje $
+ * Desc: Game-dependent game data for Whist (for use by AI)
+ * $Id: whist.h 4040 2002-04-21 21:21:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
