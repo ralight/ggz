@@ -4,6 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
+ * $Id: main_win.c 4381 2002-08-20 22:15:09Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -114,7 +115,7 @@ void display_board(void)
 }
 
 
-void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
 	GdkBitmap* mask;
@@ -133,7 +134,7 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 }
 
 
-gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+static gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	/* FIXME: should call an "are you sure dialog" */
 	gtk_main_quit();
@@ -142,13 +143,13 @@ gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 }
 
 
-void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 {
 	
 }
 
 
-void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
 	/* FIXME: should call an "are you sure dialog" */
 	gtk_main_quit();
@@ -156,14 +157,14 @@ void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 }
 
 
-void game_about(GtkMenuItem *menuitem, gpointer user_data)
+static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
 
 }
 
 
-gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
-			  gpointer user_data)
+static gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
+			         gpointer user_data)
 {
 	if (ttt_buf)
 		gdk_pixmap_unref(ttt_buf);
@@ -205,8 +206,8 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 }
 
 
-gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event, 
-		       gpointer user_data)
+static gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event, 
+			      gpointer user_data)
 {
 	gdk_draw_pixmap( widget->window,
 			 widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
@@ -219,7 +220,7 @@ gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 }
 
 
-gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+static gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
 	int x = (int)(event->x);
 	int y = (int)(event->y);
