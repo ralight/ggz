@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<TITLE>class GGZCoreModule</TITLE>
+
+<META NAME="Generator" CONTENT="KDOC ">
+</HEAD>
+<BODY bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000099" alink= "#ffffff">
+<TABLE WIDTH="100%" BORDER="0">
+<TR>
+<TD>
+	<TABLE BORDER="0">
+		<TR><TD valign="top" align="left" cellspacing="10">
+		<h1>class GGZCoreModule</h1>
+		</TD>
+		<TD valign="top" align="right" colspan="1">
+ <small><A HREF="#longdesc">More...</A></small></TD></TR>
+	</TABLE>
+	<HR>
+	<TABLE BORDER="0">
+		<TR><TH>Definition</TH><TD><code>#include &lt;<A HREF="GGZCoreModule_h.html">GGZCoreModule.h</A>&gt;</code></TD></TR>
+<TR><TH><A HREF="full-list-GGZCoreModule.html">List of all Methods</A></TH></TR>
+	</TABLE>
+	</TD>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+</TABLE></TD></TR></TABLE>
+<h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref1">GGZCoreModule</A></b> () 
+</LI>
+<LI>~&nbsp;<b><A HREF="#ref2">GGZCoreModule</A></b> () 
+</LI>
+<LI>unsigned int &nbsp;<b><A HREF="#ref3">countAll</A></b> () 
+</LI>
+<LI>unsigned int &nbsp;<b><A HREF="#ref4">count</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref5">add</A></b> (const char* game, const char* version, const char* protocol, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref6">launch</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref7">game</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref8">version</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref9">protocol</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref10">author</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref11">frontend</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref12">url</A></b> () 
+</LI>
+<LI>char** &nbsp;<b><A HREF="#ref13">argv</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref14">pathIcon</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref15">pathHelp</A></b> () 
+</LI>
+<LI>void &nbsp;<b><A HREF="#ref16">init</A></b> (const char* game, const char* protocol) 
+</LI>
+<LI>void &nbsp;<b><A HREF="#ref17">setActive</A></b> (const unsigned int number) 
+</LI>
+<LI>GGZModule *&nbsp;<b><A HREF="#ref18">module</A></b> () 
+</LI>
+</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+</p>
+<p> A certain game module and its actual configuration can be handled by GGZCoreModule.
+ This class should be used for launching games.
+</p>
+<p></p>
+<A NAME="GGZCoreModule"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreModule</underline> ()
+</strong></td></tr></table><p></p><p> Constructor </p>
+<A NAME="GGZCoreModule"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreModule</underline> ()
+</strong></td></tr></table><p></p><p> Destructor </p>
+<A NAME="countAll"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>unsigned int &nbsp;<underline>countAll</underline> ()
+</strong></td></tr></table><p></p><p> Return all available games. </p>
+<A NAME="count"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>unsigned int &nbsp;<underline>count</underline> ()
+</strong></td></tr></table><p></p><p> Return all games which match the given type. </p>
+<A NAME="add"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>add</underline> (const char* game, const char* version, const char* protocol, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path)
+</strong></td></tr></table><p></p><p> Add a game. </p>
+<A NAME="launch"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>launch</underline> ()
+</strong></td></tr></table><p></p><p> Launch this module. </p>
+<A NAME="game"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>game</underline> ()
+</strong></td></tr></table><p></p><p> Return the name of this game module. </p>
+<A NAME="version"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>version</underline> ()
+</strong></td></tr></table><p></p><p> Return the version of this game module. </p>
+<A NAME="protocol"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>protocol</underline> ()
+</strong></td></tr></table><p></p><p> Return the protocol version of this game module. </p>
+<A NAME="author"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>author</underline> ()
+</strong></td></tr></table><p></p><p> Return the author of this game module. </p>
+<A NAME="frontend"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>frontend</underline> ()
+</strong></td></tr></table><p></p><p> Return the frontend type of this game module. </p>
+<A NAME="url"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>url</underline> ()
+</strong></td></tr></table><p></p><p> Return the homepage of this game module. </p>
+<A NAME="argv"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char** &nbsp;<underline>argv</underline> ()
+</strong></td></tr></table><p></p><p> Return the execution path of this game module, including command line options. </p>
+<A NAME="pathIcon"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>pathIcon</underline> ()
+</strong></td></tr></table><p></p><p> Return the icon path of this game module. </p>
+<A NAME="pathHelp"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>pathHelp</underline> ()
+</strong></td></tr></table><p></p><p> Return the help path of this game module. </p>
+<A NAME="init"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>void &nbsp;<underline>init</underline> (const char* game, const char* protocol)
+</strong></td></tr></table><p></p><A NAME="setActive"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>void &nbsp;<underline>setActive</underline> (const unsigned int number)
+</strong></td></tr></table><p></p><A NAME="module"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZModule *&nbsp;<underline>module</underline> ()
+</strong></td></tr></table><p></p><HR>
+	<table>
+	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	</table>
+</BODY>
+</HTML>

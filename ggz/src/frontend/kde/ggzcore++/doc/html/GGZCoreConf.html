@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>class GGZCoreConf</TITLE>
+
+<META NAME="Generator" CONTENT="KDOC ">
+</HEAD>
+<BODY bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000099" alink= "#ffffff">
+<TABLE WIDTH="100%" BORDER="0">
+<TR>
+<TD>
+	<TABLE BORDER="0">
+		<TR><TD valign="top" align="left" cellspacing="10">
+		<h1>class GGZCoreConf</h1>
+		</TD>
+		<TD valign="top" align="right" colspan="1">
+ <small><A HREF="#longdesc">More...</A></small></TD></TR>
+	</TABLE>
+	<HR>
+	<TABLE BORDER="0">
+		<TR><TH>Definition</TH><TD><code>#include &lt;<A HREF="GGZCoreConf_h.html">GGZCoreConf.h</A>&gt;</code></TD></TR>
+<TR><TH><A HREF="full-list-GGZCoreConf.html">List of all Methods</A></TH></TR>
+	</TABLE>
+	</TD>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+</TABLE></TD></TR></TABLE>
+<h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref1">GGZCoreConf</A></b> () 
+</LI>
+<LI>~&nbsp;<b><A HREF="#ref2">GGZCoreConf</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref3">init</A></b> (const char* global, const char* local) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref4">write</A></b> (const char* section, const char* key, const char* value) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref5">write</A></b> (const char* section, const char* key, int value) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref6">write</A></b> (const char* section, const char* key, int argc, char** argv) 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref7">read</A></b> (const char* section, const char* key, const char* def) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref8">read</A></b> (const char* section, const char* key, int def) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref9">read</A></b> (const char* section, const char* key, int* argcp, char*** argvp) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref10">removeKey</A></b> (const char* section, const char* key) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref11">removeSection</A></b> (const char* section) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref12">commit</A></b> () 
+</LI>
+</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+</p>
+<p> A GGZCoreConf object is intended to deal with configuration files.
+ It is able to use sections and string lists.
+</p>
+<p></p>
+<A NAME="GGZCoreConf"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreConf</underline> ()
+</strong></td></tr></table><p></p><p> Constructor. </p>
+<A NAME="GGZCoreConf"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreConf</underline> ()
+</strong></td></tr></table><p></p><p> Destructor </p>
+<A NAME="init"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>init</underline> (const char* global, const char* local)
+</strong></td></tr></table><p></p><p> Initialize the configuration object with the given global and local configuration path. </p>
+<A NAME="write"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>write</underline> (const char* section, const char* key, const char* value)
+</strong></td></tr></table><p></p><p> Write a string. </p>
+<A NAME="write"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>write</underline> (const char* section, const char* key, int value)
+</strong></td></tr></table><p></p><p> Write an integer value. </p>
+<A NAME="write"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>write</underline> (const char* section, const char* key, int argc, char** argv)
+</strong></td></tr></table><p></p><p> Write a NULL-terminated list of strings. </p>
+<A NAME="read"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>read</underline> (const char* section, const char* key, const char* def)
+</strong></td></tr></table><p></p><p> Read a string from the configuration. Use def as the default value if key not found. NULL may also be specified as the default. </p>
+<A NAME="read"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>read</underline> (const char* section, const char* key, int def)
+</strong></td></tr></table><p></p><p> Read an integer value. </p>
+<A NAME="read"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>read</underline> (const char* section, const char* key, int* argcp, char*** argvp)
+</strong></td></tr></table><p></p><p> Read a dynamically allocated list of strings. </p>
+<A NAME="removeKey"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeKey</underline> (const char* section, const char* key)
+</strong></td></tr></table><p></p><p> Remove an entry in the given section. </p>
+<A NAME="removeSection"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeSection</underline> (const char* section)
+</strong></td></tr></table><p></p><p> Remove a whole section. </p>
+<A NAME="commit"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>commit</underline> ()
+</strong></td></tr></table><p></p><p> Commit all write changes. </p>
+<HR>
+	<table>
+	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	</table>
+</BODY>
+</HTML>

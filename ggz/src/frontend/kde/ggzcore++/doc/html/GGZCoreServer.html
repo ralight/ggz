@@ -1,0 +1,197 @@
+<HTML>
+<HEAD>
+<TITLE>class GGZCoreServer</TITLE>
+
+<META NAME="Generator" CONTENT="KDOC ">
+</HEAD>
+<BODY bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000099" alink= "#ffffff">
+<TABLE WIDTH="100%" BORDER="0">
+<TR>
+<TD>
+	<TABLE BORDER="0">
+		<TR><TD valign="top" align="left" cellspacing="10">
+		<h1>class GGZCoreServer</h1>
+		</TD>
+		<TD valign="top" align="right" colspan="1">
+ A GGZCoreServer object represents not only a physical server, but also
+ the connection to it. <small><A HREF="#longdesc">More...</A></small></TD></TR>
+	</TABLE>
+	<HR>
+	<TABLE BORDER="0">
+		<TR><TH>Definition</TH><TD><code>#include &lt;<A HREF="GGZCoreServer_h.html">GGZCoreServer.h</A>&gt;</code></TD></TR>
+<TR><TH><A HREF="full-list-GGZCoreServer.html">List of all Methods</A></TH></TR>
+	</TABLE>
+	</TD>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+</TABLE></TD></TR></TABLE>
+<h4>Public Types</h4><ul><LI>enum <A HREF="#ref1"> GGZCoreServerEvent</A> {connected, connectfail, negotiated, negotiatefail, loggedin, loginfail, motdloaded, roomlist, typelist, entered, enterfail, loggedout, neterror, protoerror, chatfail, statechange }
+</LI>
+<LI>enum <A HREF="#ref2"> GGZCoreServerLogin</A> {normal, guest, firsttime }
+</LI>
+</ul><h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref3">GGZCoreServer</A></b> () 
+</LI>
+<LI>~&nbsp;<b><A HREF="#ref4">GGZCoreServer</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref5">addHook</A></b> (const GGZCoreServerEvent event, const GGZHookFunc func) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref6">addHook</A></b> (const GGZCoreServerEvent event, const GGZHookFunc func, void* data) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref7">removeHook</A></b> (const GGZCoreServerEvent event, const GGZHookFunc func) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref8">removeHook</A></b> (const GGZCoreServerEvent event, const unsigned int id) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref9">setHost</A></b> (const char* host, const unsigned int port) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref10">setLogin</A></b> (const int type, const char* username, const char* password) 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref11">host</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref12">port</A></b> () 
+</LI>
+<LI>GGZLoginType &nbsp;<b><A HREF="#ref13">type</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref14">username</A></b> () 
+</LI>
+<LI>char* &nbsp;<b><A HREF="#ref15">password</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref16">fd</A></b> () 
+</LI>
+<LI>GGZStateID &nbsp;<b><A HREF="#ref17">state</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref18">countRooms</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref19">countRoomsForce</A></b> () 
+</LI>
+<LI><A HREF="GGZCoreRoom.html">GGZCoreRoom</A>* &nbsp;<b><A HREF="#ref20">room</A></b> () 
+</LI>
+<LI><A HREF="GGZCoreRoom.html">GGZCoreRoom</A>* &nbsp;<b><A HREF="#ref21">room</A></b> (const unsigned int number) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref22">joinRoom</A></b> (const unsigned int number) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref23">countGames</A></b> () 
+</LI>
+<LI>GGZGameType* &nbsp;<b><A HREF="#ref24">game</A></b> (const unsigned int number) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref25">isOnline</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref26">isLoggedIn</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref27">isInRoom</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref28">isAtTable</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref29">connect</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref30">login</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref31">motd</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref32">logout</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref33">listRooms</A></b> (const int type, const char verbose) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref34">listGames</A></b> (const char verbose) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref35">dataPending</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref36">dataRead</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref37">dataWrite</A></b> () 
+</LI>
+<LI>GGZServer *&nbsp;<b><A HREF="#ref39">server</A></b> () 
+</LI>
+<LI>void &nbsp;<b><A HREF="#ref40">resetRoom</A></b> () 
+</LI>
+</ul><h4>Public Static Methods</h4><ul><LI>static  <A HREF="GGZCoreServer.html">GGZCoreServer</A>* &nbsp;<b><A HREF="#ref38">instance</A></b> () 
+</LI>
+</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+ A GGZCoreServer object represents not only a physical server, but also
+ the connection to it. It has also functionality for room and table
+ handling.
+</p>
+<A NAME="%2520GGZCoreServerEvent"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>enum <underline> GGZCoreServerEvent</underline> {connected, connectfail, negotiated, negotiatefail, loggedin, loginfail, motdloaded, roomlist, typelist, entered, enterfail, loggedout, neterror, protoerror, chatfail, statechange }
+</strong></td></tr></table><p></p><A NAME="%2520GGZCoreServerLogin"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>enum <underline> GGZCoreServerLogin</underline> {normal, guest, firsttime }
+</strong></td></tr></table><p></p><p> Login type </p>
+<A NAME="GGZCoreServer"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreServer</underline> ()
+</strong></td></tr></table><p></p><p> Constructor </p>
+<A NAME="GGZCoreServer"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreServer</underline> ()
+</strong></td></tr></table><p></p><p> Destructor </p>
+<A NAME="addHook"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreServerEvent event, const GGZHookFunc func)
+</strong></td></tr></table><p></p><p> Add a simple callback to the server. </p>
+<A NAME="addHook"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreServerEvent event, const GGZHookFunc func, void* data)
+</strong></td></tr></table><p></p><p> Add a callback with arguments. </p>
+<A NAME="removeHook"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreServerEvent event, const GGZHookFunc func)
+</strong></td></tr></table><p></p><p> Remove a callback from the server. </p>
+<A NAME="removeHook"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreServerEvent event, const unsigned int id)
+</strong></td></tr></table><p></p><p> Overloaded: Remove a callback on its id. </p>
+<A NAME="setHost"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>setHost</underline> (const char* host, const unsigned int port)
+</strong></td></tr></table><p></p><p> Specify the host data. </p>
+<A NAME="setLogin"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>setLogin</underline> (const int type, const char* username, const char* password)
+</strong></td></tr></table><p></p><p> Specify the login information. </p>
+<A NAME="host"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>host</underline> ()
+</strong></td></tr></table><p></p><p> Return the hostname of this server. </p>
+<A NAME="port"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>port</underline> ()
+</strong></td></tr></table><p></p><p> Return the port number. </p>
+<A NAME="type"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZLoginType &nbsp;<underline>type</underline> ()
+</strong></td></tr></table><p></p><p> Return the login type. </p>
+<A NAME="username"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>username</underline> ()
+</strong></td></tr></table><p></p><p> Return the username with which the player is logged in. </p>
+<A NAME="password"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>password</underline> ()
+</strong></td></tr></table><p></p><p> Return the player's password. </p>
+<A NAME="fd"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>fd</underline> ()
+</strong></td></tr></table><p></p><p> Return the server's specific file descriptor. </p>
+<A NAME="state"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZStateID &nbsp;<underline>state</underline> ()
+</strong></td></tr></table><p></p><p> Return the current server state. </p>
+<A NAME="countRooms"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countRooms</underline> ()
+</strong></td></tr></table><p></p><p> The number of available rooms. </p>
+<A NAME="countRoomsForce"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countRoomsForce</underline> ()
+</strong></td></tr></table><p></p><p> Same as above, but result is guaranteed. </p>
+<A NAME="room"></A><A NAME="ref20"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong><A HREF="GGZCoreRoom.html">GGZCoreRoom</A>* &nbsp;<underline>room</underline> ()
+</strong></td></tr></table><p></p><p> Return the current room. </p>
+<A NAME="room"></A><A NAME="ref21"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong><A HREF="GGZCoreRoom.html">GGZCoreRoom</A>* &nbsp;<underline>room</underline> (const unsigned int number)
+</strong></td></tr></table><p></p><p> Return an explicitely given room. </p>
+<A NAME="joinRoom"></A><A NAME="ref22"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>joinRoom</underline> (const unsigned int number)
+</strong></td></tr></table><p></p><p> Join a room. </p>
+<A NAME="countGames"></A><A NAME="ref23"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countGames</underline> ()
+</strong></td></tr></table><p></p><p> The number of available game types. </p>
+<A NAME="game"></A><A NAME="ref24"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZGameType* &nbsp;<underline>game</underline> (const unsigned int number)
+</strong></td></tr></table><p></p><p> Return a specific game. </p>
+<A NAME="isOnline"></A><A NAME="ref25"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isOnline</underline> ()
+</strong></td></tr></table><p></p><p> Check whether player is online or not. </p>
+<A NAME="isLoggedIn"></A><A NAME="ref26"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isLoggedIn</underline> ()
+</strong></td></tr></table><p></p><p> Check whether player is logged in. </p>
+<A NAME="isInRoom"></A><A NAME="ref27"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isInRoom</underline> ()
+</strong></td></tr></table><p></p><p> Check whether player is in a room or not. </p>
+<A NAME="isAtTable"></A><A NAME="ref28"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isAtTable</underline> ()
+</strong></td></tr></table><p></p><p> Check whether player is at a table. </p>
+<A NAME="connect"></A><A NAME="ref29"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>connect</underline> ()
+</strong></td></tr></table><p></p><p> Connect to a server. This method uses the information given in setHost. </p>
+<A NAME="login"></A><A NAME="ref30"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>login</underline> ()
+</strong></td></tr></table><p></p><p> Log into a server. See <A HREF="GGZCoreServer.html#setLogin">setLogin</A> for information how to set the login data. </p>
+<A NAME="motd"></A><A NAME="ref31"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>motd</underline> ()
+</strong></td></tr></table><p></p><p> Invoke the message of the day. </p>
+<A NAME="logout"></A><A NAME="ref32"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>logout</underline> ()
+</strong></td></tr></table><p></p><p> Cut the connection to a server. </p>
+<A NAME="listRooms"></A><A NAME="ref33"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>listRooms</underline> (const int type, const char verbose)
+</strong></td></tr></table><p></p><p> Retrieve rooms list. </p>
+<A NAME="listGames"></A><A NAME="ref34"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>listGames</underline> (const char verbose)
+</strong></td></tr></table><p></p><p> Retrieve games list. </p>
+<A NAME="dataPending"></A><A NAME="ref35"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataPending</underline> ()
+</strong></td></tr></table><p></p><p> Control data flow. </p>
+<A NAME="dataRead"></A><A NAME="ref36"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataRead</underline> ()
+</strong></td></tr></table><p></p><p> Returns whether data is read. </p>
+<A NAME="dataWrite"></A><A NAME="ref37"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataWrite</underline> ()
+</strong></td></tr></table><p></p><p> Return whether data is written. </p>
+<A NAME="instance"></A><A NAME="ref38"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong> <A HREF="GGZCoreServer.html">GGZCoreServer</A>* &nbsp;<underline>instance</underline> ()
+</strong></td></tr></table><p> <small>[static]</small></p><A NAME="server"></A><A NAME="ref39"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZServer *&nbsp;<underline>server</underline> ()
+</strong></td></tr></table><p></p><A NAME="resetRoom"></A><A NAME="ref40"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>void &nbsp;<underline>resetRoom</underline> ()
+</strong></td></tr></table><p></p><HR>
+	<table>
+	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	</table>
+</BODY>
+</HTML>
