@@ -32,7 +32,7 @@ test-recursive:
 	fi; 
 
 test-am:
-	@echo; echo "You may now run $(top_builddir)/ggzd/ggzd -f $(top_builddir)/ggzd/ggzd.test to test server"; echo
+	@echo; echo "You may now run $(top_builddir)/ggzd/ggzd -F -f $(top_builddir)/ggzd/ggzd.test to test server"; echo
 
 
 #install-data-local:
