@@ -24,7 +24,6 @@ char *guruname = NULL;
 char *guruguestname = NULL;
 FILE *logstream = NULL;
 FILE *irc = NULL;
-char *playername = NULL;
 char *chatroom = NULL;
 
 /* Prototypes */
@@ -103,9 +102,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 /* Establish connection: log into an IRC server */
 void net_connect(const char *host, int port, const char *name, const char *guestname)
 {
-	/*char buffer[256];*/
 	int fd;
-	/*int i;*/
 
 	guruname = (char*)name;
 	guruguestname = (char*)guestname;
@@ -123,16 +120,6 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 		return;
 	}
 
-	/*printf("Logon IRC...\n");*/
-	/*fcntl(fd, F_SETFL, O_NONBLOCK);*/
-
-	/*for(i = 0; i < 4; i++)
-	{
-		fgets(buffer, sizeof(buffer), irc);
-		buffer[strlen(buffer) - 1] = 0;
-		printf("Buffer: %s\n", buffer);
-	}*/
-
 	fprintf(irc, "NICK %s\r\n", guruname);
 	fflush(irc);
 	fprintf(irc, "USER %s %s %s :%s\r\n", guruname, "noosphere", "localhost", guruname);
@@ -144,11 +131,10 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 /* Change the current room (channel, in this case) */
 void net_join(const char *room)
 {
-	/*printf("Join IRC room...\n");*/
 	fprintf(irc, "JOIN %s\r\n", room);
 	fflush(irc);
 
-	chatroom = room;
+	chatroom = strdup(room);
 
 	status = NET_GOTREADY;
 }
@@ -185,7 +171,6 @@ Guru *net_input()
 {
 	if(queue)
 	{
-printf("input is '%s'\n", queue[queuelen - 2]->message);
 		return queue[queuelen - 2];
 	}
 	return NULL;
@@ -210,10 +195,10 @@ void net_output(Guru *output)
 				fflush(irc);
 				break;
 			case GURU_PRIVMSG:
-				/*printf("-> %s: %s\n", output->player, token);*/
+				fprintf(irc, "PRIVMSG %s :%s\r\n", output->player, token);
 				break;
 			case GURU_ADMIN:
-				/*printf(">> %s\n", token);*/
+				fprintf(irc, "PRIVMSG %s :[admin] %s\n", output->player, token);
 				break;
 		}
 		token = strtok(NULL, "\n");
@@ -225,20 +210,72 @@ void chat(const char *message)
 {
 	time_t t;
 	char *ts;
+	char *part;
+	char *tmp, *token;
+	char *msg, *player;
+	int type;
+
+	/* Extract player name */
+	player = strdup(message + 1);
+	part = strstr(player, "!");
+	if(part) part[0] = 0;
+	else player = NULL;
+
+	if(!player) return;
+
+	/* Extract message and message type */
+	type = 0;
+	msg = NULL;
+	part = strstr(message, "PRIVMSG");
+	if(part)
+	{
+		tmp = strdup(part);
+		token = strtok(tmp, " ");
+		if(token)
+		{
+			token = strtok(NULL, " ");
+			if(token)
+			{
+				if(!strcmp(token, chatroom))
+				{
+					token = strtok(NULL, "\r\n");
+					msg = strdup(token + 1);
+					type = GURU_CHAT;
+				}
+				else if(!strcmp(token, guruname))
+				{
+					token = strtok(NULL, "\r\n");
+					msg = strdup(token + 1);
+					type = GURU_PRIVMSG;
+				}
+			}
+		}
+		free(tmp);
+	}
+	else
+	{
+		if(strstr(message, " JOIN ")) type = GURU_ENTER;
+		if(strstr(message, " QUIT ")) type = GURU_LEAVE;
+	}
+
+	if(!type) return;
+	if((!msg) && ((type == GURU_PRIVMSG) || (type == GURU_CHAT))) return;
 
 	/* Ignore all self-generates messages */
-	playername = NULL;
-	net_internal_queueadd(playername, message, GURU_CHAT/*GURU_PRIVMSG*/);
+	net_internal_queueadd(player, msg, type);
 	status = NET_INPUT;
 
 	/* Log all messages to the logfile if enabled */
-	if(logstream)
+	if((logstream) && (msg))
 	{
 		t = time(NULL);
 		ts = ctime(&t);
 		ts[strlen(ts) - 1] = 0;
-		fprintf(logstream, "%s (%s) [%s]: %s\n", ts, "-", playername, message);
+		fprintf(logstream, "%s (%s) [%s]: %s\n", ts, "-", player, msg);
 		fflush(logstream);
 	}
+
+	if(msg) free(msg);
+	free(player);
 }
 

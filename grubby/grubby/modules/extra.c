@@ -86,7 +86,7 @@ Guru *gurumod_exec(Guru *message)
 			return NULL;
 			break;
 		case COMMAND_HI:
-			buf = (char*)malloc(strlen(message->player) + 10);
+			buf = (char*)malloc((message->player ? strlen(message->player) : 0) + 10);
 			sprintf(buf, _("Hi %s"), message->player);
 			message->message = buf;
 			return message;
