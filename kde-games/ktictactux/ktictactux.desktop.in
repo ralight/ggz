@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment=GGZ TicTacToe game for KDE
+Comment[de]=GGZ TicTacToe-Spiel für KDE
+Comment[fr]=Jeu GGZ TicTacToe pour KDE
+GenericName=GGZ TicTacToe game for KDE
+GenericName[de]=GGZ TicTacToe-Spiel für KDE
+GenericName[fr]=Jeu GGZ TicTacToe pour KDE
+Exec=@ggzexecmoddir@/ktictactux_client
+Icon=ktictactux
+MimeType=Application
+Name=KTicTacTux
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+
