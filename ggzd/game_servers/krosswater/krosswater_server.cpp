@@ -113,7 +113,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	if(op == proto_helloworld)
 	{
 		ZONEDEBUG("Hiya!\n");
-		ggz_read_string(fd, (char*)&string, 256);
+		ggz_read_string(fd, (char*)&string, sizeof(string));
 		ZONEDEBUG(":: %s ::\n", string);
 		status = 0;
 	}
@@ -191,7 +191,7 @@ void KrosswaterServer::getMove()
 		{
 			ZONEDEBUG("Player %i won the game!\n", zoneTurn());
 		}
-		else zoneNextTurn();
+		else zoneNextTurn(true);
 	}
 	else
 	{
@@ -210,7 +210,7 @@ void KrosswaterServer::sendRestart()
 	createMap();
 	createPlayers();
 
-	for(int i = 0; i < m_numplayers; i++)
+	for(int i = 0; i < m_maxplayers; i++)
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		if(seat.type == GGZ_SEAT_PLAYER)
@@ -326,7 +326,7 @@ void KrosswaterServer::slotZoneAI()
 	{
 		ZONEDEBUG("AI (%i) won the game!\n", zoneTurn());
 	}
-	else zoneNextTurn();
+	else zoneNextTurn(true);
 }
 
 // Accept a move and broadcast it
@@ -339,7 +339,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	if((!map) || (!path)) return 0;
 
 	// broadcast changes here!
-	for(int i = 0; i < m_numplayers; i++)
+	for(int i = 0; i < m_maxplayers; i++)
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		if((seat.type == GGZ_SEAT_PLAYER) && (i != zoneTurn()))
@@ -372,7 +372,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		//cout << "## Found the path (" << backtrace->x() << ", " << backtrace->y() << ") !!! Doing backtrace..." << endl;
 
 		// prepare for backtrace broadcast
-		for(int i = 0; i < m_numplayers; i++)
+		for(int i = 0; i < m_maxplayers; i++)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)
@@ -385,7 +385,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		{
 			// send everyone the good message
 			//cout << backtrace->x() << "," << backtrace->y() << endl;
-			for(int i = 0; i < m_numplayers; i++)
+			for(int i = 0; i < m_maxplayers; i++)
 			{
 				GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 				if(seat.type == GGZ_SEAT_PLAYER)
@@ -400,7 +400,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		while(backtrace->parent() != NULL);
 
 		// mark the end
-		for(int i = 0; i < m_numplayers; i++)
+		for(int i = 0; i < m_maxplayers; i++)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)
@@ -420,7 +420,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 	if(ret)
 	{
-		for(int i = 0; i < m_numplayers; i++)
+		for(int i = 0; i < m_maxplayers; i++)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)

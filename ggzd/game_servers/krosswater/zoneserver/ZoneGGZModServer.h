@@ -30,7 +30,7 @@ class ZoneGGZModServer
 		virtual void slotZoneAI();
 		int zoneMainLoop();
 		void ZoneRegister(char* gamename, int gamemode, int maxplayers);
-		void zoneNextTurn();
+		void zoneNextTurn(bool advance);
 
 		int zoneTurn();
 

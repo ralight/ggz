@@ -127,7 +127,9 @@ int ZoneGGZModServer::game_update(int event, void* data)
 			if(m_ready == 1)
 			{
 				m_ready = 2;
-				zoneNextTurn();
+				if(m_turn == -1) zoneNextTurn(true);
+				else if(m_turn == seat) zoneNextTurn(false);
+				else ZONEDEBUG("Turn is waiting for %i (this is %i)\n", m_turn, seat);
 			}
 			break;
 		case ZoneGGZ::leave:
@@ -175,12 +177,13 @@ int ZoneGGZModServer::game_send_players()
 			ZONEDEBUG("seat number: %i (step %i) => %i\n", fd, i, m_numplayers);
 		}
 	}
-	ZONEDEBUG("%i players found; sending number to clients...\n", m_numplayers);
+	ZONEDEBUG("%i of %i players found; sending number to clients...\n",
+		m_numplayers, m_maxplayers);
 
 	if(m_players) free(m_players);
-	m_players = (int*)malloc(m_numplayers * sizeof(int));
+	m_players = (int*)malloc(m_maxplayers * sizeof(int));
 
-	for (j = 0; j < m_numplayers; j++)
+	for (j = 0; j < m_maxplayers; j++)
 	{
 		m_players[j] = 1;
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, j);
@@ -198,14 +201,14 @@ int ZoneGGZModServer::game_send_players()
 			ZONEERROR("couldn't send ZoneGGZ::players\n");
 			return -1;
 		}
-		if(ggz_write_int(fd, m_numplayers) < 0)
+		if(ggz_write_int(fd, m_maxplayers) < 0)
 		{
 			ZONEERROR("couldn't send player number\n");
 			return -1;
 		}
 
 		m_ready = 1;
-		for(i = 0; i < m_numplayers; i++)
+		for(i = 0; i < m_maxplayers; i++)
 		{
 			GGZSeat seat2 = ggzdmod_get_seat(ggzdmod, i);
 			if(ggz_write_int(fd, seat2.type) < 0)
@@ -236,7 +239,7 @@ void ZoneGGZModServer::game_send_rules()
 
 	ZONEDEBUG("-- sending rules now ;)\n");
 
-	for(i = 0; i < m_numplayers; i++)
+	for(i = 0; i < m_maxplayers; i++)
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		fd = seat.fd;
@@ -275,13 +278,13 @@ void ZoneGGZModServer::ZoneRegister(char* gamename, int gamemode, int maxplayers
 }
 
 // Request next turn
-void ZoneGGZModServer::zoneNextTurn()
+void ZoneGGZModServer::zoneNextTurn(bool advance)
 {
 	int fd;
 	int counter;
 	GGZSeat seat;
 
-	if((m_gamemode == ZoneGGZ::turnbased) && (m_turn != -1))
+	if((m_gamemode == ZoneGGZ::turnbased) && (m_turn != -1) && (advance))
 	{
 		seat = ggzdmod_get_seat(ggzdmod, m_turn);
 		if(seat.type == ZONE_SEAT_PLAYER)
@@ -295,27 +298,31 @@ void ZoneGGZModServer::zoneNextTurn()
 		}
 	}
 
-	counter = 0;
-	do
+	if(advance)
 	{
-		m_turn++;
-		if(m_turn == m_numplayers) m_turn = 0;
-		seat = ggzdmod_get_seat(ggzdmod, m_turn);
-		ZONEDEBUG("Next player: %i (%i) [%i]\n", m_turn, seat.type, counter);
-		if(seat.type == ZONE_SEAT_BOT)
+		counter = 0;
+		do
 		{
-			ZONEDEBUG("== AI!\n");
-			slotZoneAI();
-			return;
+			m_turn++;
+			if(m_turn == m_maxplayers) m_turn = 0;
+			seat = ggzdmod_get_seat(ggzdmod, m_turn);
+			ZONEDEBUG("Next player: %i (%i) [%i]\n", m_turn, seat.type, counter);
+			if(seat.type == ZONE_SEAT_BOT)
+			{
+				ZONEDEBUG("== AI!\n");
+				slotZoneAI();
+				return;
+			}
+			counter++;
+			if(counter == m_maxplayers + 1)
+			{
+				ZONEERROR("Loop detected!!!\n");
+				return;
+			}
 		}
-		counter++;
-		if(counter == m_numplayers + 1)
-		{
-			ZONEERROR("Loop detected!!!\n");
-			return;
-		}
+		while(seat.type != ZONE_SEAT_PLAYER);
 	}
-	while(seat.type != ZONE_SEAT_PLAYER);
+	else seat = ggzdmod_get_seat(ggzdmod, m_turn);
 
 	if((m_gamemode == ZoneGGZ::turnbased) && (seat.type == ZONE_SEAT_PLAYER))
 	{
