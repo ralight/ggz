@@ -77,7 +77,6 @@ void motd_read_file(void)
 	}
 
 	/* Try to open the file */
-	motd_info.use_motd = 1;
 	if((motd_file = fopen(fullpath, "r")) == NULL) {
 		err_msg("MOTD file not found");
 		motd_info.use_motd = 0;

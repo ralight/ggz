@@ -93,13 +93,13 @@ void player_handler_launch(int sock)
 {
 
 	pthread_t thread;
-	char *arg_ptr;
+	void *arg_ptr;
 	int status;
 
 	/* Temporary storage to pass fd */
 	if ((arg_ptr = malloc(sizeof(int))) == NULL)
 		err_sys_exit("malloc error in player_handler_launch()");
-	*((int *) arg_ptr) = sock;
+	*((int *)arg_ptr) = sock;
 
 	status = pthread_create(&thread, NULL, player_new, arg_ptr);
 	if (status != 0) {
@@ -123,7 +123,7 @@ static void* player_new(void *arg_ptr)
 	struct hostent *host;
 
 	/* Get our arguments out of the arg buffer */
-	sock = *((int *) arg_ptr);
+	sock = *((int *)arg_ptr);
 	free(arg_ptr);
 
 	/* Detach thread since no one needs to join us */
@@ -137,10 +137,12 @@ static void* player_new(void *arg_ptr)
 	getpeername(sock, &addr, &addrlen);
 
 	/* Lookup the hostname if enabled in ggzd.conf */
-	if(opt.perform_lookups) {
+	if (opt.perform_lookups) {
+		/* FIXME: Use threadsafe version */
 		host = gethostbyaddr( (char*)&(addr.sin_addr),
-					sizeof(addr.sin_addr), AF_INET );
-		if((hostname = malloc(strlen(host->h_name)+1)) == NULL)
+				      sizeof(addr.sin_addr), AF_INET );
+		/* FIXME:  if we're going to malloc we have to free() */
+		if ((hostname = malloc(strlen(host->h_name)+1)) == NULL)
 			err_sys_exit("malloc error in player_new()");
 		strcpy(hostname, host->h_name);
 	}
@@ -154,6 +156,7 @@ static void* player_new(void *arg_ptr)
 	if (players.count == MAX_USERS) {
 		pthread_rwlock_unlock(&players.lock);
 		es_write_int(sock, MSG_SERVER_FULL);
+		close(sock);
 		pthread_exit(NULL);
 	}
 
@@ -169,18 +172,21 @@ static void* player_new(void *arg_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
+	/* FIXME: inet_ntoa is not reentrant */
 	strcpy(players.info[i].ip_addr, inet_ntoa(addr.sin_addr));
 	players.info[i].hostname = hostname;
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
-	
-	/* Send off the Message Of The Day */
-	if(motd_send_motd(sock))
-		pthread_exit(NULL);
 
 	dbg_msg("New player %d connected", i);
-	player_loop(i, sock);
 	
+	/* Send off the Message Of The Day */
+	if (motd_info.use_motd && (motd_send_motd(sock) < 0)) {
+		player_remove(i);
+		pthread_exit(NULL);
+	}
+
+	player_loop(i, sock);
 	player_remove(i);
 
 	return (NULL);

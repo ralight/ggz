@@ -41,6 +41,7 @@
 #include <players.h>
 #include <parse_opt.h>
 #include <chat.h>
+#include <motd.h>
 
 /* Server options */
 Options opt;
@@ -111,6 +112,9 @@ int main(int argc, char *argv[])
 	
 	init_data();
 	parse_game_files();
+	/* If the motd option is present, pre-read the file */
+	if (motd_info.use_motd)
+		motd_read_file();
 	chat_init();
 
 #ifndef DEBUG

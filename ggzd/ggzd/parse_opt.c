@@ -148,9 +148,6 @@ void parse_conf_file(void)
 	if(!opt.main_port)
 		opt.main_port = 5688;
 
-	/* If the motd option is present, pre-read the file */
-	if(motd_info.motd_file)
-		motd_read_file();
 }
 
 
@@ -250,6 +247,7 @@ static void parse_file(FILE *configfile)
 				err_sys_exit("parse_file: malloc error");
 			strcpy(strval, varvalue);
 			motd_info.motd_file = strval;
+			motd_info.use_motd = 1;
 			continue;
 		 }
 		
