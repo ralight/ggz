@@ -1,0 +1,197 @@
+# Deutsche Übersetzung von Grubby
+# Copyright (C) 2003 Josef Spillner
+# This file is distributed under the same license as the ggz-grubby package.
+# Josef Spillner <josef@ggzgamingzone.org>, 2003.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.3\n"
+"POT-Creation-Date: 2003-04-28 08:11+0200\n"
+"PO-Revision-Date: 2003-04-28 07:55+0200\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/i18n.c:78
+msgid "Your language has been registered."
+msgstr "***"
+
+#: ../src/main.c:112
+msgid "Grubby - the GGZ Gaming Zone Chat Bot\n"
+msgstr "Grubby - der Chatbot der GGZ Gaming Zone\n"
+
+#: ../src/main.c:113
+msgid "Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"
+msgstr "Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"
+
+#: ../src/main.c:114
+msgid ""
+"Published under GNU GPL conditions\n"
+"\n"
+msgstr ""
+"Veröffentlicht unter den Bestimmungen der GNU GPL\n"
+"\n"
+
+#: ../src/main.c:115
+msgid "Recognized options:\n"
+msgstr "Erkannte Optionen:\n"
+
+#: ../src/main.c:116
+msgid "[-h | --help]:    Show this help screen\n"
+msgstr "[-h | --help]:    Zeigt diesen Hilfebildschirm an\n"
+
+#: ../src/main.c:117
+msgid "[-H | --host]:    Connect to this host\n"
+msgstr "[-H | --host]:    Verbindet sich zu diesem Rechner\n"
+
+#: ../src/main.c:118
+msgid "[-n | --name]:    Use this name\n"
+msgstr "[-n | --name]:    Nutzt diesen Namen\n"
+
+#: ../src/main.c:119
+msgid "[-d | --datadir]: Use this data directory (default: ~/.ggz)\n"
+msgstr ""
+"[-d | --datadir:] Nutzt dieses Datenverzeichnis (anstelle von ~/.ggz)\n"
+
+#: ../src/main.c:120
+msgid "[-v | --version]: Display version number\n"
+msgstr "[-v | --version]: Versionsnummer anzeigen\n"
+
+#: ../src/main.c:130
+msgid "Grubby version 0.3\n"
+msgstr "Grubby Version 0.3\n"
+
+#: ../src/main.c:137
+msgid "Unknown command line option, try --help.\n"
+msgstr "Unbekanntes Kommandozeilenargument, versuche --help\n"
+
+#: ../src/main.c:144
+msgid "Grubby: initializing...\n"
+msgstr "Grubby: initialisiere...\n"
+
+#: ../src/main.c:148
+msgid "Grubby initialization failed!\n"
+msgstr "Die Initialisierung von Grubby ist fehlgeschlagen!\n"
+
+#: ../src/main.c:149
+msgid "Check if the bot is configured properly using grubby-config.\n"
+msgstr ""
+"Prüfe nach, ob der Chatbot ordentlich mit grubby-config konfiguriert wurde.\n"
+
+#: ../src/main.c:159
+#, c-format
+msgid "Grubby: connect to %s...\n"
+msgstr "Grubby: verbinde zu %s...\n"
+
+#: ../src/main.c:169
+msgid "ERROR: Couldn't connect\n"
+msgstr "FEHLER: Konnte nicht verbinden\n"
+
+#: ../src/main.c:173
+msgid "Grubby: Logged in.\n"
+msgstr "Grubby: Eingeloggt.\n"
+
+#: ../src/main.c:177
+msgid "Grubby: Ready.\n"
+msgstr "Grubby: Fertig.\n"
+
+#: ../src/module.c:87
+#, c-format
+msgid "Loading core module PLAYER: %s... "
+msgstr "Lade Kernmodul PLAYER: %s... "
+
+#: ../src/module.c:92 ../src/module.c:108 ../src/module.c:134
+msgid "ERROR: Not a shared library\n"
+msgstr "FEHLER: Keine dynamische Bibliothek\n"
+
+#: ../src/module.c:96
+msgid "ERROR: Couldn't find player functions\n"
+msgstr "FEHLER: Kann die Spieler-Funktionen nicht finden\n"
+
+#: ../src/module.c:104
+#, c-format
+msgid "Loading core module NET: %s... "
+msgstr "Lade Kernmodul NET: %s... "
+
+#: ../src/module.c:118
+msgid "ERROR: Couldn't find net functions\n"
+msgstr "FEHLER: Kann die Netzwerk-Funktionen nicht finden\n"
+
+#: ../src/module.c:130
+#, c-format
+msgid "Loading core module I18N: %s... "
+msgstr "Lade Kernmodul I18N: %s... "
+
+#: ../src/module.c:141
+msgid "ERROR: Couldn't find i18n functions\n"
+msgstr "FEHLER: Kann Internationalisierungs-Funktionen nicht finden\n"
+
+#: ../src/module.c:144
+msgid "OK\n"
+msgstr "OK\n"
+
+#: ../src/module.c:178
+#, c-format
+msgid "Loading module: %s... "
+msgstr "Lade Modul: %s... "
+
+#: ../src/module.c:185
+msgid "ERROR: Already loaded!!\n"
+msgstr "FEHLER: Bereits geladen!\n"
+
+#: ../src/module.c:192
+msgid "ERROR: Not a shared library!\n"
+msgstr "FEHLER: Keine dynamische Bibliothek!\n"
+
+#: ../src/module.c:198
+msgid "ERROR: Invalid module (init)!\n"
+msgstr "FEHLER: Unbekanntes Modul (init)!\n"
+
+#: ../src/module.c:204
+msgid "ERROR: Invalid module (exec)!\n"
+msgstr "FEHLER: Unbekanntes Module (exec)!\n"
+
+#: ../src/module.c:257
+msgid "List of available modules:"
+msgstr "***"
+
+#: ../src/module.c:258
+msgid "No modules loaded at all."
+msgstr "***"
+
+#: ../src/module.c:328
+msgid "Module added."
+msgstr "***"
+
+#: ../src/module.c:329
+msgid "Error: Could not add module."
+msgstr "***"
+
+#: ../src/module.c:333
+msgid "Module removed."
+msgstr "***"
+
+#: ../src/module.c:334
+msgid "Error: Could not remove module."
+msgstr "***"
+
+#: ../src/module.c:339
+msgid "Module reloaded."
+msgstr "***"
+
+#: ../src/module.c:340
+msgid "Error: Could not reload module."
+msgstr "***"
+
+#: ../src/module.c:343
+msgid "Only my owner can change the module setup."
+msgstr "***"
+
+#: ../src/net.c:272
+#, c-format
+msgid "ERROR: %s\n"
+msgstr "FEHLER: %s\n"
+

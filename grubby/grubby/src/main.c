@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2003 Josef Spillner, <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -9,6 +9,8 @@
 
 #include "guru.h"
 #include "net.h"
+#include "i18n.h"
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -96,6 +98,10 @@ int main(int argc, char *argv[])
 	int optindex;
 	int opt;
 
+	bindtextdomain("grubby", PREFIX "/share/locale");
+	textdomain("grubby");
+	setlocale(LC_ALL, "");
+
 	while(1)
 	{
 		opt = getopt_long(argc, argv, "hvH:n:d:", options, &optindex);
@@ -103,15 +109,15 @@ int main(int argc, char *argv[])
 		switch(opt)
 		{
 			case 'h':
-				printf("Grubby - the GGZ Gaming Zone Chat Bot\n");
-				printf("Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
-				printf("Published under GNU GPL conditions\n\n");
-				printf("Recognized options:\n");
-				printf("[-h | --help]:    Show this help screen\n");
-				printf("[-H | --host]:    Connect to this host\n");
-				printf("[-n | --name]:    Use this name\n");
-				printf("[-d | --datadir]: Use this data directory (default: ~/.ggz)\n");
-				printf("[-v | --version]: Display version number\n");
+				printf(_("Grubby - the GGZ Gaming Zone Chat Bot\n"));
+				printf(_("Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"));
+				printf(_("Published under GNU GPL conditions\n\n"));
+				printf(_("Recognized options:\n"));
+				printf(_("[-h | --help]:    Show this help screen\n"));
+				printf(_("[-H | --host]:    Connect to this host\n"));
+				printf(_("[-n | --name]:    Use this name\n"));
+				printf(_("[-d | --datadir]: Use this data directory (default: ~/.ggz)\n"));
+				printf(_("[-v | --version]: Display version number\n"));
 				exit(0);
 				break;
 			case 'H':
@@ -121,26 +127,26 @@ int main(int argc, char *argv[])
 				optname = optarg;
 				break;
 			case 'v':
-				printf("Grubby version 0.3\n");
+				printf(_("Grubby version 0.3\n"));
 				exit(0);
 				break;
 			case 'd':
 				optdatadir = optarg;
 				break;
 			default:
-				printf("Unknown command line option, try --help.\n");
+				printf(_("Unknown command line option, try --help.\n"));
 				exit(-1);
 				break;
 		}
 	}
 
 	/* Bring grubby to life */
-	printf("Grubby: initializing...\n");
+	printf(_("Grubby: initializing...\n"));
 	core = guru_init(optdatadir);
 	if(!core)
 	{
-		printf("Grubby initialization failed!\n");
-		printf("Check if the bot is configured properly using grubby-config.\n");
+		printf(_("Grubby initialization failed!\n"));
+		printf(_("Check if the bot is configured properly using grubby-config.\n"));
 		exit(-1);
 	}
 
@@ -150,7 +156,7 @@ int main(int argc, char *argv[])
 	if(optdatadir) core->datadir = optdatadir;
 
 	/* Start connection procedure */
-	printf("Grubby: connect to %s...\n", core->host);
+	printf(_("Grubby: connect to %s...\n"), core->host);
 	(core->net_log)(core->logfile);
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
 	if(core->i18n_init) (core->i18n_init)(core->language);
@@ -160,15 +166,15 @@ int main(int argc, char *argv[])
 		switch((core->net_status)())
 		{
 			case NET_ERROR:
-				printf("ERROR: Couldn't connect\n");
+				printf(_("ERROR: Couldn't connect\n"));
 				exit(-1);
 				break;
 			case NET_LOGIN:
-				printf("Grubby: Logged in.\n");
+				printf(_("Grubby: Logged in.\n"));
 				(core->net_join)(core->autojoin);
 				break;
 			case NET_GOTREADY:
-				printf("Grubby: Ready.\n");
+				printf(_("Grubby: Ready.\n"));
 				break;
 			case NET_INPUT:
 				guru = (core->net_input)();

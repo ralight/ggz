@@ -8,6 +8,7 @@
 ********************************************************************/
 
 #include "net.h"
+#include "i18n.h"
 #include <ggzcore.h>
 #include <stdlib.h>
 #include <string.h>
@@ -268,7 +269,7 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 /* Common error callback */
 GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
 {
-	printf("ERROR: %s\n", (char*)event_data);
+	printf(_("ERROR: %s\n"), (char*)event_data);
 	status = NET_ERROR;
 	return GGZ_HOOK_OK;
 }

@@ -84,16 +84,16 @@ Gurucore *guru_module_init(const char *datadir)
 	module = ggz_conf_read_string(handler, "guru", "player", NULL);
 	if(module)
 	{
-		printf("Loading core module PLAYER: %s... ", module);
+		printf(_("Loading core module PLAYER: %s... "), module);
 		fflush(NULL);
 		if((core->playerhandle = dlopen(module, RTLD_NOW | RTLD_GLOBAL)) != NULL) printf("OK\n");
 		else
 		{
-			printf("ERROR: Not a shared library\n");
+			printf(_("ERROR: Not a shared library\n"));
 			exit(-1);
 		}
 		if((playerinit = dlsym(core->playerhandle, "guru_player_init")) == NULL){
-			printf("ERROR: Couldn't find player functions\n");
+			printf(_("ERROR: Couldn't find player functions\n"));
 			exit(-1);
 		}
 		(playerinit)(datadir2);
@@ -101,11 +101,11 @@ Gurucore *guru_module_init(const char *datadir)
 
 	/* Load net plugin */
 	module = ggz_conf_read_string(handler, "guru", "net", NULL);
-	printf("Loading core module NET: %s... ", module);
+	printf(_("Loading core module NET: %s... "), module);
 	fflush(NULL);
 	if((!module) || ((core->nethandle = dlopen(module, RTLD_NOW)) == NULL))
 	{
-		printf("ERROR: Not a shared library\n");
+		printf(_("ERROR: Not a shared library\n"));
 		exit(-1);
 	}
 	if(((core->net_connect = dlsym(core->nethandle, "net_connect")) == NULL)
@@ -115,7 +115,7 @@ Gurucore *guru_module_init(const char *datadir)
 	|| ((core->net_output = dlsym(core->nethandle, "net_output")) == NULL)
 	|| ((core->net_log = dlsym(core->nethandle, "net_logfile")) == NULL))
 	{
-		printf("ERROR: Couldn't find net functions\n");
+		printf(_("ERROR: Couldn't find net functions\n"));
 		exit(-1);
 	}
 	printf("OK\n");
@@ -127,21 +127,21 @@ Gurucore *guru_module_init(const char *datadir)
 	module = ggz_conf_read_string(handler, "guru", "i18n", NULL);
 	if(module)
 	{
-		printf("Loading core module I18N: %s... ", module);
+		printf(_("Loading core module I18N: %s... "), module);
 		fflush(NULL);
 		if((!module) || ((core->i18nhandle = dlopen(module, RTLD_NOW)) == NULL))
 		{
-			printf("ERROR: Not a shared library\n");
-			exit;
+			printf(_("ERROR: Not a shared library\n"));
+			exit(-1);
 		}
 		if(((core->i18n_init = dlsym(core->i18nhandle, "guru_i18n_initialize")) == NULL)
 		|| ((core->i18n_translate = dlsym(core->i18nhandle, "guru_i18n_translate")) == NULL)
 		|| ((core->i18n_check = dlsym(core->i18nhandle, "guru_i18n_check")) == NULL))
 		{
-			printf("ERROR: Couldn't find i18n functions\n");
+			printf(_("ERROR: Couldn't find i18n functions\n"));
 			exit(-1);
 		}
-		printf("OK\n");
+		printf(_("OK\n"));
 	}
 
 	/* Add all specified generic plugins */
@@ -175,33 +175,33 @@ int guru_module_add(const char *modulealias)
 	/* Find appropriate shared library first */
 	if(!modulealias) return 0;
 	modulename = ggz_conf_read_string(handler, "modules", modulealias, NULL);
-	printf("Loading module: %s... ", modulename);
+	printf(_("Loading module: %s... "), modulename);
 	fflush(NULL);
 
 	/* Avoid duplicates */
 	for(i = 0; i < modulecount; i++)
 		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
-			printf("ERROR: Already loaded!!\n");
+			printf(_("ERROR: Already loaded!!\n"));
 			return 0;
 		}
 
 	/* Check plugin consistency */
 	if((handle = dlopen(modulename, RTLD_NOW)) == NULL)
 	{
-		printf("ERROR: Not a shared library!\n");
+		printf(_("ERROR: Not a shared library!\n"));
 		return 0;
 	}
 	init = dlsym(handle, "gurumod_init");
 	if(!init)
 	{
-		printf("ERROR: Invalid module (init)!\n");
+		printf(_("ERROR: Invalid module (init)!\n"));
 		return 0;
 	}
 	func = dlsym(handle, "gurumod_exec");
 	if(!func)
 	{
-		printf("ERROR: Invalid module (exec)!\n");
+		printf(_("ERROR: Invalid module (exec)!\n"));
 		return 0;
 	}
 
@@ -325,22 +325,22 @@ static Guru *guru_module_internal(Guru *message)
 		{
 			if(modadd)
 			{
-				if(guru_module_add(mod)) message->message = "Module added.";
-				else message->message = "Error: Could not add module.";
+				if(guru_module_add(mod)) message->message = _("Module added.");
+				else message->message = _("Error: Could not add module.");
 			}
 			if(modremove)
 			{
-				if(guru_module_remove(mod)) message->message = "Module removed.";
-				else message->message = "Error: Could not remove module.";
+				if(guru_module_remove(mod)) message->message = _("Module removed.");
+				else message->message = _("Error: Could not remove module.");
 			}
 			if(modreload)
 			{
 				guru_module_remove(mod);
-				if(guru_module_add(mod)) message->message = "Module reloaded.";
-				else message->message = "Error: Could not reload module.";
+				if(guru_module_add(mod)) message->message = _("Module reloaded.");
+				else message->message = _("Error: Could not reload module.");
 			}
 		}
-		else message->message = "Only my owner can change the module setup.";
+		else message->message = _("Only my owner can change the module setup.");
 		if(mod) free(mod);
 		return message;
 	}
