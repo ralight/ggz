@@ -193,9 +193,10 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 	g_free(name);
 
 	/* Display message in chat area */
-	message = g_strdup_printf("You've joined room %s", ggzcore_room_get_name(ggzcore_state_get_room()));
+	message = g_strdup_printf("You've joined room \"%s\".", ggzcore_room_get_name(ggzcore_state_get_room()));
 	chat_display_message(CHAT_BEEP, "---", message);
 	g_free(message);
+	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_state_get_room()));
 
 	/* set senditivity */
 	/* Menu bar */

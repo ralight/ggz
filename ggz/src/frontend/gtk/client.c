@@ -74,6 +74,7 @@ static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
 static void client_exit_button_clicked(GtkButton *button, gpointer data);
+static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static void client_room_clist_select_row(GtkCList *clist, gint row, 
 					 gint column, GdkEvent *event, 
 					 gpointer data);
@@ -87,7 +88,6 @@ static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
-static void client_enter_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
 				 
 
@@ -284,13 +284,6 @@ main_xtext_chat_create (gchar *widget_name, gchar *string1, gchar *string2,
 }
 
 
-static void
-client_enter_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         data)
-{
-
-}
-
 
 static void
 client_info_activate                       (GtkMenuItem     *menuitem,
@@ -427,27 +420,62 @@ client_props_button_clicked                (GtkButton         *button,
 
 
 static void
-client_stats_button_clicked                (GtkButton         *button,
-                                        gpointer         data)
+client_stats_button_clicked		(GtkButton	*button,
+					 gpointer	 data)
 {
 
 }
 
 
 static void
-client_exit_button_clicked                 (GtkButton         *button,
-                                        gpointer         data)
+client_exit_button_clicked		(GtkButton	*button,
+					 gpointer	 data)
 {
 	gtk_main_quit();
 }
 
+static gboolean 
+client_room_clist_event			(GtkWidget	*widget,
+					 GdkEvent	*event,
+					 gpointer	 data)
+{
+	GtkWidget *menu, *menuitem;
+	GtkWidget *tmp;
+	gchar *text;
+	gint row, column;
+
+	/* Check to see if the event was a mouse button press */
+	if( event->type == GDK_BUTTON_PRESS )
+	{
+		GdkEventButton *buttonevent = (GdkEventButton*)event;
+		/* Check the button which was pressed */
+		if(buttonevent->button == 3)
+		{
+			/* Right mouse button */
+			/* Build and display the menu */
+			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y, &row, &column);
+			menu = gtk_menu_new();
+			text = g_strdup_printf("Description:\n     %s\nPlayers: Unknown\nTables: Unknown",  ggzcore_room_get_desc(row));
+			menuitem = gtk_menu_item_new_with_label(text);
+			g_free(text);
+			gtk_label_set_justify(GTK_LABEL(GTK_BIN(menuitem)->child), GTK_JUSTIFY_LEFT);
+			gtk_menu_append(GTK_MENU(menu), menuitem);
+			gtk_widget_show(menuitem);
+			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
+				       NULL, buttonevent->button, 0);
+			return TRUE; 
+		}
+	}
+	return FALSE;
+}
 
 static void
-client_room_clist_select_row               (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         data)
+client_room_clist_select_row		(GtkCList       *clist,
+                                         gint            row,
+                                         gint            column,
+                                         GdkEvent       *event,
+                                         gpointer        data)
 {
 	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
 	gtk_clist_unselect_row(GTK_CLIST(clist), row, column);
@@ -496,6 +524,8 @@ client_realize                    (GtkWidget       *widget,
 #endif
 
 }
+
+
 
 
 GtkWidget*
@@ -1429,6 +1459,9 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (room_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_room_clist_select_row),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (room_clist), "event",
+                      GTK_SIGNAL_FUNC (client_room_clist_event),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (table_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_table_clist_select_row),
                       NULL);
@@ -1449,43 +1482,6 @@ create_win_main (void)
   gtk_window_add_accel_group (GTK_WINDOW (win_main), accel_group);
 
   return win_main;
-}
-
-
-GtkWidget*
-create_mnu_room (void)
-{
-  GtkWidget *mnu_room;
-  GtkAccelGroup *mnu_room_accels;
-  GtkWidget *enter;
-  GtkWidget *info;
-
-  mnu_room = gtk_menu_new ();
-  gtk_object_set_data (GTK_OBJECT (mnu_room), "mnu_room", mnu_room);
-  mnu_room_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_room));
-
-  enter = gtk_menu_item_new_with_label (_("Enter"));
-  gtk_widget_ref (enter);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_room), "enter", enter,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (enter);
-  gtk_container_add (GTK_CONTAINER (mnu_room), enter);
-
-  info = gtk_menu_item_new_with_label (_("Info"));
-  gtk_widget_ref (info);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_room), "info", info,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (info);
-  gtk_container_add (GTK_CONTAINER (mnu_room), info);
-
-  gtk_signal_connect (GTK_OBJECT (enter), "activate",
-                      GTK_SIGNAL_FUNC (client_enter_activate),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_info_activate),
-                      NULL);
-
-  return mnu_room;
 }
 
 GtkWidget*

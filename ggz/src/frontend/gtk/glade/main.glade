@@ -620,6 +620,11 @@
 		<handler>client_room_clist_select_row</handler>
 		<last_modification_time>Sun, 15 Oct 2000 00:07:21 GMT</last_modification_time>
 	      </signal>
+	      <signal>
+		<name>event</name>
+		<handler>client_room_clist_event</handler>
+		<last_modification_time>Sat, 11 Nov 2000 18:27:20 GMT</last_modification_time>
+	      </signal>
 	      <columns>1</columns>
 	      <column_widths>80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -929,7 +934,6 @@
 		    <last_modification_time>Sun, 15 Oct 2000 00:08:57 GMT</last_modification_time>
 		  </signal>
 		  <label>Send</label>
-		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>
@@ -981,35 +985,6 @@
 	</child>
       </widget>
     </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkMenu</class>
-  <name>mnu_room</name>
-
-  <widget>
-    <class>GtkMenuItem</class>
-    <name>enter</name>
-    <signal>
-      <name>activate</name>
-      <handler>client_enter_activate</handler>
-      <last_modification_time>Sun, 15 Oct 2000 00:09:10 GMT</last_modification_time>
-    </signal>
-    <label>Enter</label>
-    <right_justify>False</right_justify>
-  </widget>
-
-  <widget>
-    <class>GtkMenuItem</class>
-    <name>info</name>
-    <signal>
-      <name>activate</name>
-      <handler>client_info_activate</handler>
-      <last_modification_time>Sun, 15 Oct 2000 00:09:17 GMT</last_modification_time>
-    </signal>
-    <label>Info</label>
-    <right_justify>False</right_justify>
   </widget>
 </widget>
 
