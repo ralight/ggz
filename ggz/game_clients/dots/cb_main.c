@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
- * $Id: cb_main.c 3707 2002-03-28 08:01:35Z jdorje $
+ * $Id: cb_main.c 4886 2002-10-12 20:04:30Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -91,19 +91,7 @@ void
 on_mnu_about_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	static GtkWidget *dlg_about = NULL;
-
-	if(dlg_about != NULL) {
-		gdk_window_show(dlg_about->window);
-		gdk_window_raise(dlg_about->window);
-	} else {
-		dlg_about = create_dlg_about();
-		gtk_signal_connect(GTK_OBJECT(dlg_about),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_about);
-		gtk_widget_show(dlg_about);
-	}
+	create_or_raise_dlg_about();
 }
 
 gboolean

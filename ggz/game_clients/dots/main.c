@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4886 2002-10-12 20:04:30Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -40,6 +40,8 @@
 #include <ggzmod.h>
 #include <ggz_common.h>
 
+#include "dlg_about.h"
+
 #include "dlg_main.h"
 #include "dlg_opt.h"
 #include "dlg_new.h"
@@ -57,6 +59,7 @@ GGZMod *mod = NULL;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 
 static void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
@@ -89,6 +92,7 @@ int main(int argc, char *argv[])
 	ggz_intl_init("dots");
 
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
@@ -149,6 +153,29 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void initialize_about_dialog(void)
+{
+	char *header;
+	const char *content =
+	  _("Authors:\n"
+	    "        Gtk+ Client:\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "        Windows 9X Client:\n"
+	    "            Doug Hudson  <djh@users.sourceforge.net>\n"
+	    "\n"
+	    "        Game Server:\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "Website:\n"
+	    "        http://ggz.sourceforge.net/");
+
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "Connect The Dots Version %s"), VERSION);
+	init_dlg_about(_("About Connect the Dots"), header, content);
+	g_free(header);
 }
 
 

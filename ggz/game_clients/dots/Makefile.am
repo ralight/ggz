@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4886 2002-10-12 20:04:30Z jdorje $
 
 SUBDIRS = .
 
@@ -20,7 +20,6 @@ ggz_dots_SOURCES =	cb_main.c	cb_main.h	\
 			cb_new.c	cb_new.h	\
 			cb_opt.c	cb_opt.h	\
 			cb_pref.c	cb_pref.h	\
-			dlg_about.c	dlg_about.h	\
 			dlg_main.c	dlg_main.h	\
 			dlg_new.c	dlg_new.h	\
 			dlg_opt.c	dlg_opt.h	\
