@@ -92,7 +92,7 @@ int main(void) {
 				status = game_handle_player(i);
 				if (status < 0) {
 					ggz_debug("This player is crazy!\n");
-					FD_CLR(fd, &active_fd_set);
+					game_send_sync(i);
 				}
 			}
 		}

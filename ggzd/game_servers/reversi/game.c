@@ -237,13 +237,11 @@ int game_handle_player(int seat) {
 int game_handle_move(int seat, int *move) {
 	int fd = ggz_seats[seat].fd, status;
 
-	ggz_debug("Handling move for player %d\n", seat);
+	ggz_debug("Handling move %d,%dfor player %d\n", X(*move), Y(*move), seat);
 	
 	// Get the move from the message
 	if (es_read_int(fd, move) < 0)
 		return -1;
-
-	ggz_debug("Move: %d (X: %d, Y: %d)\n", *move, X(*move), Y(*move));
 
 
 	// Check if it's his turn
@@ -381,6 +379,10 @@ int game_make_move(int player, int move) {
 		game_play();
 
 	}
+
+	// If couldn`t make the move, sends sync to the player
+	if (status < 0)
+			game_send_sync(PLAYER2SEAT(player));
 
 	return status;
 
