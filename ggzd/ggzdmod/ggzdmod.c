@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2875 2001-12-11 06:29:21Z jdorje $
+ * $Id: ggzdmod.c 2915 2001-12-17 06:34:38Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -86,8 +86,20 @@ static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data)
 	if (mod->handlers[event])
 		(*mod->handlers[event]) (mod, event, data);
 	else {
+		/* We'd like to send a debugging message if there's
+		   no handler registered for an event.  But in the
+		   case of the ERROR event, this can cause problems
+		   since the problem is usually a missing connection!
+		   So, we use this hack to avoid a recursive loop. */
 		char *which = mod->type == GGZDMOD_GAME ? "game" : "ggz";
-		ggzdmod_log(mod, "GGZDMOD: unhandled event %d by %s.", event, which);
+		if (event != GGZDMOD_EVENT_ERROR)
+			ggzdmod_log(mod,
+				    "GGZDMOD: unhandled event %d by %s.",
+				    event, which);
+		else
+			fprintf(stderr,
+				"GGZDMOD: unhandled event %d by %s.\n",
+				event, which);
 	}
 }
 
