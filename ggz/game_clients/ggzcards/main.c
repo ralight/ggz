@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3380 2002-02-17 07:47:26Z jdorje $
+ * $Id: main.c 3382 2002-02-17 08:15:31Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -49,8 +49,8 @@
 GtkWidget *dlg_main = NULL;
 
 static void initialize_debugging(void);
-static void access_settings(int save);
 static void cleanup_debugging(void);
+static void access_settings(int save);
 
 int main(int argc, char *argv[])
 {
@@ -109,6 +109,20 @@ static void initialize_debugging(void)
 	g_free(file_name);
 
 	ggz_debug("main", "Starting GGZCards client.");
+}
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down GGZCards client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }
 
 void listen_for_server(int listen)
@@ -206,16 +220,6 @@ static void access_settings(int save)
 			ggz_conf_read_int(file, "BOOLEAN",
 					  "use_default_options", 0);
 	}
-}
-
-/* This function should be called at the end of the program to clean up
- * debugging, as necessary. */
-static void cleanup_debugging(void)
-{
-	/* ggz_cleanup_debug writes the data out to the file and does a
-	   memory check at the same time. */
-	ggz_debug("main", "Shutting down GGZCards client.");
-	ggz_debug_cleanup(GGZ_CHECK_MEM);
 }
 
 
