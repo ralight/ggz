@@ -359,47 +359,59 @@
     provided with NetSpades, the GGZ server provides the ability to
     send messages to other players via the server.  The following
     interactions describe how this messaging is accomplished.
-
-  <itemizedlist>
-    <listitem>
-      <para>
-	REQ_CHAT
-      </para>
-    </listitem>
     
-    <listitem>
-      <para>
-        MSG_CHAT
-      </para>
-    </listitem>
-  
-    <listitem>
-      <para>
-	RSP_CHAT
-      </para>
-    </listitem>
-  </itemizedlist>
-  </para>
-
-  <para>
-    Sub-opcodes for chat messages are as follows:d
     <itemizedlist>
       <listitem>
 	<para>
-	  GGZ_CHAT_NORMAL - typical chat message to all in room
-	  (include field: chat_string)
+	  When a player wishes to send a chat message, the client
+	  should send a <link linkend="req.chat">REQ_CHAT</link>.
+	  Different types of chat messages are distinguished by the
+	  <link linkend="chat-subopcodes">chat sub-opcodes</link> The
+	  server will respond with the status of the chat operation
+	  via <link linkend="rsp.chat">RSP_CHAT</link>
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  When a player receives a chat message from another player,
+	  the server will send <link
+	  linkend="msg.chat">MSG_CHAT</link> to the client.  The <link
+	  linkend="chat-subopcodes">chat sub-opcodes</link>
+	  distinguish between the various chat operations
+	</para>
+      </listitem>
+    </itemizedlist>
+  </para>
+
+  <para id="chat-subopcodes">
+    Sub-opcodes for chat messages are as follows:
+    <itemizedlist>
+      <listitem>
+	<para>
+	  <link linkend="ggz.chat.normal">GGZ_CHAT_NORMAL</link>
+	  signifies a "typical" chat message which is sent to all
+	  players in the current room.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	  GGZ_CHAT_BEEP - send a beep to another player's console
-	  (include field: player_name)
+	  <link linkend="ggz.chat.beep">GGZ_CHAT_BEEP</link> is a
+	  special message with no text content, which is sent to a
+	  specific player.  A typical client response to the receipt
+	  of this message would be to emit a beep.
 	</para>
       </listitem>
       <listitem>
 	<para>
-	  GGZ_CHAT_PERSONAL - typical chat message directed to a single
-	  player (include fields: player_name, chat_string)
+	  <link linkend="ggz.chat.normal">GGZ_CHAT_PERSONAL</link> is a
+	  private message directed to a single player.
+	  <warning>
+	    <para>
+	      To discourage cheating, private messages may not be sent
+	      or received while the player is at a game table.
+	    </para>
+	  </warning>
 	</para>
       </listitem>
     </itemizedlist>
@@ -409,24 +421,22 @@
   
 <section id="game-messages"><title>Game Interactions</title>
   <para>
-    In order to allow the GGZ server to identify chat and other
-    control messages during the course of a game, it is
-    necessary that interactions with a game being played have an
-    identifiable header.  This header will be stripped off
-    before the rest of the data is sent to the game itself.
-    Similarly, any messages from the game to the client will
-    have a header prepended.
-    
-    Messages from the client take the following form:
-    
-    <programlisting role="pseudocode">
-      REQ_GAME
-    </programlisting>
-    
-    Similarly, messages from the server appear as:
-    <programlisting role="pseudocode">
-      RSP_GAME
-    </programlisting>
+    In order to allow the GGZ server to identify control messages
+    during the course of a game, it is necessary that interactions
+    with a game module have an identifiable header.  Therefore, all
+    data destined for a game module should use the <link
+    linkend="req.game">REQ_GAME</link> message.  This header will
+    be stripped off before the data is sent to the game itself.
+    Similarly, any messages from the game to the client will be sent
+    via a <link linkend="rsp.game">RSP_GAME</link> message.
+
+    <note>
+      <para>
+	In the future, the game module client and server may
+	communicate directly via a separate socket connection.  When
+	this happens, these opcodes will be eliminated.
+      </para>
+    </note>
   </para>
 </section>
 

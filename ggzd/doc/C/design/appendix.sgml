@@ -366,19 +366,19 @@
 		Chat operation type:
 		<itemizedlist>
 		  <listitem>
-		    <para>
+		    <para id="ggz.chat.normal">
 		      GGZ_CHAT_NORMAL (64) : typical chat message
 		      to all in room (includes message field)
 		    </para>
 		  </listitem>
 		  <listitem>
-		    <para>
+		    <para id="ggz.chat.beep">
 		      GGZ_CHAT_BEEP (128) : send a beep to another
 		      player's console (does not include message)
 		    </para>
 		  </listitem>
 		  <listitem>
-		    <para>
+		    <para id="ggz.chat.personal">
 		      GGZ_CHAT_PERSONAL (192) : message directed
 		      to a single player (includes message field)
 		    </para>

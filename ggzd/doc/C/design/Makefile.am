@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-SGML_FILES = design.sgml
+SGML_FILES = design.sgml appendix.sgml client-server.sgml overview.sgml requirements.sgml
 TXT_FILES = txt/design.txt 
 HTML_FILES = html/index.html
 PS_FILES = ps/design.ps
@@ -8,7 +8,8 @@ PS_FILES = ps/design.ps
 FIG_FILES  = images/server_arch.fig
 
 EXTRA_DIST = $(SGML_FILES) \
-	     $(FIG_FILES)
+	     $(FIG_FILES) \
+	     ggz.dsl
 
 
 all-docs: html-docs txt-docs

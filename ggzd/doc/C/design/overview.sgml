@@ -1,5 +1,10 @@
-
 <para>
+  <warning>
+    <para>
+      This chapter is horribly out of date.  We will be fixing it soon
+    </para>
+  </warning>
+
   There are three parts which comprise the server side:
   <itemizedlist>
     <listitem>
