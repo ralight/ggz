@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4887 2002-10-12 20:13:51Z jdorje $
+ * $Id: main_win.c 4900 2002-10-13 04:22:57Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -420,22 +420,34 @@ static gboolean get_move(GtkWidget *widget, GdkEventButton *event,
 	return TRUE;
 }
 
+static GtkWidget *create_menus(GtkWidget *window)
+{
+	GtkAccelGroup *accel_group;
+	GtkItemFactory *menu;
+	GtkItemFactoryEntry items[] = {
+	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
+	  {_("/File/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
+	  {_("/File/E_xit"), "<ctrl>Q", game_exit, 0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+	};
+	const int num = sizeof(items) / sizeof(items[0]);
+
+	accel_group = gtk_accel_group_new();
+
+	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(menu, num, items, NULL);
+	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+
+	return gtk_item_factory_get_widget(menu, "<main>");
+}
+
 /* Gtk+ stuff: set up the window */
 GtkWidget* create_main_win (void)
 {
   GtkWidget *main_win;
   GtkWidget *main_box;
   GtkWidget *menubar;
-  guint tmp_key;
-  GtkWidget *game_menuhead;
-  GtkWidget *game_menu;
-  GtkAccelGroup *game_menu_accels;
-  GtkWidget *resync;
-  GtkWidget *exit;
-  GtkWidget *help_menuhead;
-  GtkWidget *help_menu;
-  GtkAccelGroup *help_menu_accels;
-  GtkWidget *about;
   GtkWidget *drawingarea;
   GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
@@ -454,82 +466,13 @@ GtkWidget* create_main_win (void)
   gtk_widget_show (main_box);
   gtk_container_add (GTK_CONTAINER (main_win), main_box);
 
-  menubar = gtk_menu_bar_new ();
+  menubar = create_menus(main_win);
   gtk_widget_ref (menubar);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "menubar", menubar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (main_box), menubar, FALSE, FALSE, 0);
 
-  game_menuhead = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game_menuhead)->child),
-                                   _("_Game"));
-  gtk_widget_add_accelerator (game_menuhead, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (game_menuhead);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "game_menuhead", game_menuhead,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (game_menuhead);
-  gtk_container_add (GTK_CONTAINER (menubar), game_menuhead);
-
-  game_menu = gtk_menu_new ();
-  gtk_widget_ref (game_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "game_menu", game_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (game_menuhead), game_menu);
-  game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (game_menu));
-
-  resync = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (resync)->child),
-                                   _("Re_sync"));
-  gtk_widget_add_accelerator (resync, "activate_item", game_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (resync);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "resync", resync,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (resync);
-  gtk_container_add (GTK_CONTAINER (game_menu), resync);
-
-  exit = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (exit)->child),
-                                   _("E_xit"));
-  gtk_widget_add_accelerator (exit, "activate_item", game_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (exit);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "exit", exit,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exit);
-  gtk_container_add (GTK_CONTAINER (game_menu), exit);
-
-  help_menuhead = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (help_menuhead)->child),
-                                   _("_Help"));
-  gtk_widget_add_accelerator (help_menuhead, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
-  gtk_widget_ref (help_menuhead);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "help_menuhead", help_menuhead,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (help_menuhead);
-  gtk_container_add (GTK_CONTAINER (menubar), help_menuhead);
-  gtk_menu_item_right_justify (GTK_MENU_ITEM (help_menuhead));
-
-  help_menu = gtk_menu_new ();
-  gtk_widget_ref (help_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "help_menu", help_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (help_menuhead), help_menu);
-  help_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (help_menu));
-
-  about = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (about)->child),
-                                   _("_About"));
-  gtk_widget_add_accelerator (about, "activate_item", help_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (about);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "about", about,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (about);
-  gtk_container_add (GTK_CONTAINER (help_menu), about);
 
   drawingarea = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea);
@@ -552,15 +495,6 @@ GtkWidget* create_main_win (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "realize",
                       GTK_SIGNAL_FUNC (on_main_win_realize),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (resync), "activate",
-                      GTK_SIGNAL_FUNC (game_resync),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (exit), "activate",
-                      GTK_SIGNAL_FUNC (game_exit),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (about), "activate",
-                      GTK_SIGNAL_FUNC (game_about),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (drawingarea), "configure_event",
                       GTK_SIGNAL_FUNC (configure_handle),
