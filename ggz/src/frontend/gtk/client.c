@@ -228,7 +228,7 @@ static void
 client_motd_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-
+	ggzcore_event_trigger(GGZ_USER_MOTD, NULL, NULL);
 }
 
 

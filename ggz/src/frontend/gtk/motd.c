@@ -37,6 +37,7 @@
 extern GdkColor colors[];
 static GtkWidget *dlg_motd;
 static GtkWidget* create_dlg_motd (void);
+static void motd_ok_button_clicked(GtkButton *button, gpointer user_data);
 
 
 void motd_create_or_raise(void)
@@ -134,8 +135,13 @@ void motd_print_line(gchar *line)
 }
 
 
+static void motd_ok_button_clicked(GtkButton *button, gpointer user_data)
+{
+	motd_destroy();
+}
 
-GtkWidget*
+
+static GtkWidget*
 create_dlg_motd (void)
 {
   GtkWidget *dlg_motd;
@@ -201,9 +207,9 @@ create_dlg_motd (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), ok_button);
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_motd));
+  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
+                      GTK_SIGNAL_FUNC (motd_ok_button_clicked),
+                      NULL);
 
   gtk_widget_grab_focus (ok_button);
   gtk_widget_grab_default (ok_button);

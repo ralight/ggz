@@ -76,11 +76,11 @@
 	  <has_focus>True</has_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_motd</object>
-	    <last_modification_time>Sat, 16 Sep 2000 15:47:46 GMT</last_modification_time>
+	    <handler>motd_ok_button_clicked</handler>
+	    <last_modification_time>Wed, 18 Oct 2000 00:15:24 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
