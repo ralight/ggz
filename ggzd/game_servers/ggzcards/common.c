@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2368 2001-09-05 07:01:58Z jdorje $
+ * $Id: common.c 2372 2001-09-05 16:44:55Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -698,10 +698,8 @@ void next_play(void)
 		ggzd_debug("Next play: dealing a new hand.");
 		if (game.funcs->test_for_gameover()) {
 			game.funcs->handle_gameover();
-			cards_destroy_deck();
-			if (game.specific != NULL)
-				free(game.specific);
 			set_game_state(WH_STATE_NOTPLAYING);
+			next_play(); /* start a new game */
 			return;
 		}
 
