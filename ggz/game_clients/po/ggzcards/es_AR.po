@@ -1,0 +1,278 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"PO-Revision-Date: 2001-06-01 18:59BRT\n"
+"Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
+"Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.2alpha\n"
+
+#: ../ggzcards/dlg_about.c:49
+msgid "About GGZCards"
+msgstr "Acerca de GGZCards"
+
+#: ../ggzcards/dlg_about.c:66
+msgid ""
+"GGZ Gaming Zone\n"
+"GGZ Cards Version 0.0.5pre"
+msgstr ""
+
+#: ../ggzcards/dlg_about.c:78
+msgid ""
+"Authors:\n"
+"        Gtk+ Client:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"\n"
+"        Game Server:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"        Game Modules:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"            Ismael Orenstein <perdig@users.sourceforge.net>\n"
+"\n"
+"        AI Modules:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Brent Hendricks  <bmh@users.sourceforge.net>\n"
+"\n"
+"Website:\n"
+"        http://ggz.sourceforge.net/"
+msgstr ""
+"Autores:\n"
+"        Cliente Gtk+:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"\n"
+"        Servidor:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"        Modulos:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"            Ismael Orenstein <perdig@users.sourceforge.net>\n"
+"\n"
+"        Modulos de IA:\n"
+"            Jason Short      <jdorje@users.sourceforge.net>\n"
+"            Brent Hendricks  <bmh@users.sourceforge.net>\n"
+"\n"
+"Pagina Web:\n"
+"        http://ggz.sourceforge.net/"
+
+#: ../ggzcards/dlg_about.c:116 ../ggzcards/dlg_players.c:186
+#: ../ggzcards/dlg_prefs.c:104
+msgid "Close"
+msgstr "Cerrar"
+
+#: ../ggzcards/dlg_bid.c:103
+msgid "Select your bid:"
+msgstr "Haga apuesta:"
+
+#: ../ggzcards/dlg_bid.c:158
+msgid "Bid Selection"
+msgstr "Seleccion de apuesta"
+
+#: ../ggzcards/dlg_main.c:116
+msgid "GGZ Gaming Zone - GGZ Cards"
+msgstr ""
+
+#: ../ggzcards/dlg_main.c:135
+msgid "Game"
+msgstr "Juego"
+
+#: ../ggzcards/dlg_main.c:155
+msgid "Start Game"
+msgstr "Empezar Juego"
+
+#: ../ggzcards/dlg_main.c:166
+msgid "Sync"
+msgstr "Sincronizar"
+
+#: ../ggzcards/dlg_main.c:175 ../ggzcards/dlg_prefs.c:61
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: ../ggzcards/dlg_main.c:185 ../ggzcards/dlg_players.c:151
+msgid "Player List"
+msgstr "Lista de jugadores"
+
+#: ../ggzcards/dlg_main.c:195
+msgid "Force Redraw"
+msgstr "Forzar redraw"
+
+#: ../common/dlg_exit.c:66 ../ggzcards/dlg_main.c:205
+msgid "Exit"
+msgstr "Salir"
+
+#: ../ggzcards/dlg_main.c:213
+msgid "Messages"
+msgstr "Mensajes"
+
+#: ../ggzcards/dlg_main.c:234
+msgid "Help"
+msgstr "Ayuda"
+
+#: ../ggzcards/dlg_main.c:252
+msgid "About"
+msgstr "Acerca"
+
+#: ../ggzcards/dlg_options.c:143
+msgid "Select Options"
+msgstr "Selecciona Opciones"
+
+#: ../ggzcards/dlg_options.c:207
+msgid "Send options"
+msgstr "Enviar opciones"
+
+#: ../ggzcards/dlg_players.c:51
+msgid "Occupied"
+msgstr "Ocupado"
+
+#: ../ggzcards/dlg_players.c:55
+msgid "Empty"
+msgstr "Vacio"
+
+#: ../ggzcards/dlg_players.c:59
+msgid "Bot"
+msgstr "Robot"
+
+#: ../ggzcards/dlg_players.c:63
+msgid "Reserved"
+msgstr "Reservado"
+
+#: ../ggzcards/dlg_players.c:67
+msgid "-"
+msgstr ""
+
+#: ../ggzcards/dlg_players.c:106
+msgid "#"
+msgstr ""
+
+#: ../ggzcards/dlg_players.c:114
+msgid "Status"
+msgstr "Estado"
+
+#: ../ggzcards/dlg_players.c:122
+msgid "Name"
+msgstr "Nombre"
+
+#: ../ggzcards/dlg_players.c:164
+msgid "List of players:"
+msgstr "Lista de jugadores:"
+
+#: ../ggzcards/game.c:64
+msgid "Waiting for server..."
+msgstr "Esperando el servidor..."
+
+#: ../ggzcards/game.c:81
+msgid "Sending bid to server..."
+msgstr "Enviando apuesta al servidor..."
+
+#: ../ggzcards/game.c:94
+msgid "Sending options to server..."
+msgstr "Enviando opciones al servidor..."
+
+#: ../ggzcards/game.c:111
+msgid "Sending play to server..."
+msgstr "Enviando jugada al servidor..."
+
+#: ../ggzcards/game.c:148
+msgid "Waiting for the other players..."
+msgstr "Esperando otros jugadores..."
+
+#: ../ggzcards/game.c:178
+msgid "Select \"Start Game\" to begin the game."
+msgstr "Selecciona \"Empezar Juego\" para empezar a jugar."
+
+#: ../ggzcards/game.c:214
+msgid "There was no winner"
+msgstr "No hubo ningun ganador"
+
+#: ../ggzcards/game.c:230
+msgid "won the game."
+msgstr "gano el juego"
+
+#: ../ggzcards/game.c:256
+#, c-format
+msgid "%s joined the table."
+msgstr "%s se unio al juego"
+
+#: ../ggzcards/game.c:260
+msgid "Empty Seat"
+msgstr "Asiento vacio"
+
+#: ../ggzcards/game.c:262
+#, c-format
+msgid "%s left the table."
+msgstr "%s se fue del juego"
+
+#: ../ggzcards/game.c:335
+msgid "It's your turn to bid.  Please choose a bid from the selection above."
+msgstr "Tu turno para apostar. Selecciona apuesta de la seleccion de arriba"
+
+#: ../ggzcards/game.c:338
+msgid "It's your turn to bid.  Please choose a bid from the bid window."
+msgstr "Tu turno para apostar. Selecciona apuesta de la ventana de apuestas"
+
+#: ../ggzcards/game.c:353
+msgid "It's your turn to play a card."
+msgstr "Tu turno para jugar una carta"
+
+#: ../ggzcards/game.c:357
+#, c-format
+msgid "It's your turn to play a card (from %s's hand)."
+msgstr "Tu turno para jugar una carta (de la mano de %s)"
+
+#: ../ggzcards/game.c:446
+#, c-format
+msgid "%s won the trick"
+msgstr "%s gano la mano"
+
+#: ../ggzcards/game.c:467
+msgid "Please select the game's options."
+msgstr "Selecciona las opciones del juego"
+
+#: ../ggzcards/game.c:487
+#, c-format
+msgid "GGZ Gaming Zone - %s"
+msgstr ""
+
+#: ../ggzcards/game.c:523
+#, c-format
+msgid "%s of %s"
+msgstr "%s de %s"
+
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr "Seguro que queres salir?"
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+"Seguro que queres salir?\n"
+"No vas a poder volver a entrar"
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr "Seguro queres salir?"
+
+#: ../common/dlg_exit.c:67
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
+msgstr "nls habilitado: %s"
