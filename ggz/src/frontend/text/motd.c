@@ -36,7 +36,7 @@
 void motd_print_line(char *line)
 {                                       
         char out[1024];
-        char outline[1024];
+        /*char outline[1024];*/
         int lindex=0;
         int oindex=0;                          
         int color_index=0; /* Black */
