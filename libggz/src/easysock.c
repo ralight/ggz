@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 6732 2005-01-18 23:58:25Z oojah $
+ * $Id: easysock.c 6827 2005-01-23 09:04:26Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -631,6 +631,13 @@ int ggz_write_fd(int sock, int sendfd)
 	} control_un;
 	struct cmsghdr *cmptr;
 
+	/* Zero out the msg struct.  We should really initialize it properly.
+	   There are some extra fields that don't get initialized below, but
+	   I don't know if it's portable to add initializers for them.  Try
+	   removing this line and running under valgrind to see the error.
+	   See also the memset down below. */
+	memset(&msg, 0, sizeof(msg));
+
 	msg.msg_control = control_un.control;
 	msg.msg_controllen = sizeof(control_un.control);
 
@@ -640,6 +647,9 @@ int ggz_write_fd(int sock, int sendfd)
 	cmptr->cmsg_type = SCM_RIGHTS;
 	*((int *) CMSG_DATA(cmptr)) = sendfd;
 #else
+	/* See the comment for memset() above. */
+	memset(&msg, 0, sizeof(msg));
+
 	msg.msg_accrights = (caddr_t) &sendfd;
 	msg.msg_accrightslen = sizeof(int);
 #endif
