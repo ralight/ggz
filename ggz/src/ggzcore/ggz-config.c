@@ -111,7 +111,7 @@ void load_fromfile(void)
 							"Version", NULL);
 	if(modexec == NULL)
 		modexec = ggzcore_confio_read_string(from, "ModuleInfo",
-						     "ExecPath", NULL);
+						     "CommandLine", NULL);
 	if(modui == NULL)
 		modui = ggzcore_confio_read_string(from, "ModuleInfo",
 						   "Frontend", NULL);
@@ -354,7 +354,7 @@ int install_module(void)
 		ggzcore_confio_write_string(global, module_id,
 					    "Author", modauthor);
 		ggzcore_confio_write_string(global, module_id,
-					    "ExecPath", modexec);
+					    "CommandLine", modexec);
 		ggzcore_confio_write_string(global, module_id,
 					    "Homepage", modurl);
 		if(modicon)
