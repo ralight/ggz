@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2696 2001-11-08 10:09:24Z jdorje $
+ * $Id: main.c 2699 2001-11-08 20:52:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -308,22 +308,23 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	GtkWidget *dlg, *canvas, *layout, **name_labels;
 	GdkPixmap *image = NULL;
 	int p, i, max_len = 0;
+	int width, height;
 	extern GtkWidget *table;	/* Damn, why can't I figure out
 					   another way to do this? */
+	extern GtkStyle *table_style;	/* And I do it twice!! */
+
+	/* determine dimensions */
+	for (p = 0; p < game.num_players; p++)
+		if (lengths[p] > max_len)
+			max_len = lengths[p];
+	height = CARDHEIGHT * game.num_players;
+	width = CARDWIDTH + (max_len - 1) * CARDWIDTH / 4;
 
 	verify_msg_menu();
 
 	dlg = get_message_dialog(mark);
 	if (!dlg) {
-		int width, height;
-
-		for (p = 0; p < game.num_players; p++)
-			if (lengths[p] > max_len)
-				max_len = lengths[p];
 		assert(max_len > 0);
-
-		height = CARDHEIGHT * game.num_players;
-		width = CARDWIDTH + (max_len - 1) * CARDWIDTH / 4;
 
 		dlg = new_message_dialog(mark);
 
@@ -368,6 +369,9 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	assert(image && canvas && name_labels);
 
 	/* Redraw image */
+	gdk_draw_rectangle(image,
+			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE, 0, 0, width, height);
 	for (p = 0; p < game.num_players; p++) {
 		for (i = 0; i < lengths[p]; i++) {
 			draw_card(cardlist[p][i], 0, i * CARDWIDTH / 4,
