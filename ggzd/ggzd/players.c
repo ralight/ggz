@@ -181,12 +181,6 @@ static void* player_new(void *arg_ptr)
 
 	dbg_msg("New player %d connected", i);
 	
-	/* Send off the Message Of The Day */
-	if (motd_info.use_motd && (motd_send_motd(sock) < 0)) {
-		player_remove(i);
-		pthread_exit(NULL);
-	}
-
 	player_loop(i, sock);
 	player_remove(i);
 
@@ -503,6 +497,12 @@ static int player_login_new(int p)
 	    || es_write_int(players.info[p].fd, 265) < 0)
 		return (-1);
 
+	/* Send off the Message Of The Day */
+	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) {
+		player_remove(p);
+		return -1;
+	}
+
 	dbg_msg("Successful new login of %s: UID = %d",
 		players.info[p].name, players.info[p].uid);
 
@@ -560,6 +560,12 @@ static int player_login_anon(int p, int fd)
 	    || es_write_char(fd, 0) < 0
 	    || es_write_int(fd, 265) < 0)
 		return -1;
+
+	/* Send off the Message Of The Day */
+	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) {
+		player_remove(p);
+		return -1;
+	}
 
 	dbg_msg("Successful anonymous login of %s", name);
 
