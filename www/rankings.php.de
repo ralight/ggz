@@ -1,0 +1,32 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Spieler-Bewertungen</b><br>
+Registrierte Spieler, die gegeneinander spielen, können langfristig
+gegeneinander antreten, indem sie ihre Position in der Spieler-Tabelle
+(Rankings) mitverfolgen.
+Wettbewerbe können organisiert werden, um die Spielerliste ein wenig
+aufzumischen...
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Bewertungen</i><br>
+<a href="http://rankings.ggzgamingzone.org">Rankings-Seite</a><br>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

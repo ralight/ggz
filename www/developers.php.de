@@ -1,0 +1,59 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Entwickler</b><br>
+Das GGZ-Projekt lebt von Entwicklern, Künstlern, Server-Administratoren und
+aktiven Nutzern. Als ein Gemeinschaftsprojekt bietet es jedem die Chance, das
+Projekt erfolgreicher zu machen.
+Die Entwicklung findet weltweit statt, neue Ideen sind stets willkommen.
+<br><br>
+
+<table class="inner" width="100%">
+<tr><td valign="bottom">
+
+<i>Ziele der Entwicklung</i><br>
+Wir möchten ein erstklassiges Online-Spiele-Zentrum für jedermann erstellen.
+Eine Sammlung von Desktop-übergreifenden Spielen zusammen mit einer mächtigen
+serverseitigen Infrastruktur wird geschaffen, um dieses Ziel zu erreichen.
+<br><br>
+
+<i>Derzeitige Arbeitsgebiete</i><br>
+Auf dem Stand der Version 0.0.8pre sind die dringendsten Aufgaben weitere
+Internationalisierung, Implementierung vorhandener GGZ-Merkmale in alle spiele,
+mehr Dokumentation, ein funktionierendes Python-Modul, sowie eine erhöhte
+Server-Skalierbarkeit.
+
+</td><td valign="bottom">
+
+<i>Links</i><br>
+<table class="list">
+<tr><td>
+<nobr>
+<a href="http://bugs.ggzgamingzone.org/">Bugtracker</a>
+<hr>
+<a href="http://mail.ggzgamingzone.org/">Mailinglisten</a>
+<hr>
+<a href="http://cvs.ggzgamingzone.org">CVS</a>
+<hr>
+<a href="admin/docs.php">Dokumente</a>
+<hr>
+<a href="admin/gallery.php">Gallerie</a>
+</nobr>
+</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

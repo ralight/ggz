@@ -1,0 +1,34 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Live-Spiele</b><br>
+Um ein Spiel auf GGZ zu spielen, startet man einen sogenannten Core-Client, und
+verbindet sich dann mit einem der GGZ-Server.
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Aktuelle stabile Server</i><br>
+<a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a> (0.0.7, Deutschland, schnell)<br>
+<a href="ggz://uk.ggzgamingzone.org">uk.ggzgamingzone.org</a> (0.0.7, England, schnell)<br>
+<br>
+
+<i>Server für Entwickler</i><br>
+<a href="ggz://sharky6000.dyndns.org">sharky6000.dyndns.org</a> (0.0.8pre, Kanada, mittel)<br>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
