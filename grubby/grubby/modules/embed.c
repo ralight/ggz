@@ -20,11 +20,19 @@
 #ifdef EMBED_RUBY
 #include <ruby.h>
 #endif
+#ifdef EMBED_PERL
+#include <EXTERN.h>
+#include <perl.h>
+#endif
 
 #define EMBEDCONF "/grubby/modembed.rc"
 
 static char **aliaslist = NULL;
 static char **scriptlist = NULL;
+
+#ifdef EMBED_PERL
+static PerlInterpreter *my_perl;
+#endif
 
 /* Empty init */
 void gurumod_init(const char *datadir)
@@ -39,6 +47,10 @@ void gurumod_init(const char *datadir)
 
 #ifdef EMBED_RUBY
 	ruby_init();
+#endif
+#ifdef EMBED_PERL
+	my_perl = perl_alloc();
+	perl_construct(my_perl);
 #endif
 
 	path = (char*)malloc(strlen(datadir) + strlen(EMBEDCONF) + 1);
@@ -76,6 +88,10 @@ Guru *gurumod_exec(Guru *message)
 #ifdef EMBED_RUBY
 	int status;
 	VALUE answer, tmp;
+#endif
+#ifdef EMBED_PERL
+	char *answerstring;
+	int tmpval;
 #endif
 
 	if(!scriptlist) return NULL;
@@ -119,8 +135,32 @@ Guru *gurumod_exec(Guru *message)
 			}
 		}
 #endif
+
+#ifdef EMBED_PERL
+		char *argv[] = {script, NULL};
+		perl_parse(my_perl, NULL, 2, argv, (char**)NULL);
+		/*set_sv("answer", message->message)*/
+		perl_run(my_perl);
+
+		answerstring = SvPV(get_sv("answer", FALSE), tmpval);
+		if(answerstring)
+		{
+			message->message = answerstring;
+			return message;
+		}
+#endif
 	}
 
 	return NULL;
 }
+
+/*
+void gurumod_finish()
+{
+#ifdef EMBED_PERL
+perl_destruct(perl);
+perl_free(perl);
+#endif
+}
+*/
 

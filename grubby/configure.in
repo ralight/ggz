@@ -43,7 +43,28 @@ dnl ===========
 if test "$enable_perl" = yes; then
 	echo -n "Extra check: perl... "
 
-	AC_MSG_RESULT(not yet supported.)
+	incs="/usr/lib/perl/5.8.0/CORE /usr/lib/perl/5.6.1/CORE /usr/lib/perl/5.6.0/CORE"
+	AC_GGZ_FIND_FILE("perl.h", $incs, perl_incdir)
+	perl_includes="$perl_incdir"
+
+	libs="/usr/local/lib /usr/lib"
+	AC_GGZ_FIND_FILE("libperl.so", $libs, perl_libdir)
+	perl_libraries="$perl_libdir"
+
+	if test "x$perl_includes" = "xNO" || test "x$perl_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+		perl_includes=""
+		perl_libraries=""
+	else
+		#perl_includes="-I $perl_includes"
+		#perl_libraries="-L $perl_libraries -lperl"
+		perl_includes=`perl -MExtUtils::Embed -e ccopts`
+		perl_libraries=`perl -MExtUtils::Embed -e ldopts`
+		AC_MSG_RESULT(ok.)
+		AC_SUBST(perl_includes)
+		AC_SUBST(perl_libraries)
+		AC_DEFINE(EMBED_PERL)
+	fi
 fi
 
 if test "$enable_ruby" = yes; then
