@@ -37,7 +37,7 @@
  * pairs are somewhat close together, so keep recent mallocs near the top */
 typedef struct _memptr {
 	struct _memptr	*next;
-	char		*tag;
+	const char	*tag;
 	int		line;
 	void		*ptr;
 	unsigned int	size;
@@ -50,7 +50,8 @@ static struct _memptr	*alloc = NULL;
 static pthread_mutex_t	mut = PTHREAD_MUTEX_INITIALIZER;
 
 
-static void * _ggz_allocate(const unsigned int size, char *tag, int line, int lock)
+static void * _ggz_allocate(const unsigned int size,
+                            const char *tag, int line, int lock)
 {
 	struct _memptr *newmem;
 
@@ -81,7 +82,7 @@ static void * _ggz_allocate(const unsigned int size, char *tag, int line, int lo
 }
 
 
-void * _ggz_malloc(const unsigned int size, char *tag, int line)
+void * _ggz_malloc(const size_t size, const char *tag, int line)
 {
 	void *new;
 
@@ -104,7 +105,8 @@ void * _ggz_malloc(const unsigned int size, char *tag, int line)
 }
 
 
-void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
+void * _ggz_realloc(const void *ptr, const size_t size,
+                    const char *tag, int line)
 {
 	struct _memptr *targetmem;
 	void *new;
@@ -159,7 +161,7 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 }
 
 
-int _ggz_free(const void *ptr, char *tag, int line)
+int _ggz_free(const void *ptr, const char *tag, int line)
 {
 	struct _memptr *prev, *targetmem;
 	unsigned int oldsize;
@@ -231,7 +233,7 @@ int ggz_memory_check(void)
 }
 
 
-char * _ggz_strdup(const char *src, char *tag, int line)
+char * _ggz_strdup(const char *src, const char *tag, int line)
 {
 	unsigned len;
 	char *new;

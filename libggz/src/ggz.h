@@ -104,52 +104,53 @@ extern "C" {
  * Function to actually perform memory allocation.  Don't call this
  * directly.  Instead, call ggz_malloc()
  * 
- * @param int size of memory to allocate
- * @param  char * string describing the calling function 
- * @param int linenumber 
+ * @param size size of memory to allocate
+ * @param tag string describing the calling function
+ * @param line linenumber
  * 
  * @return pointer to newly allocated, zeroed memory
 */
-void * _ggz_malloc(const unsigned int, char *, int);
+void * _ggz_malloc(const size_t size, const char * tag, int line);
 
 /** 
  * Function to perform memory reallocation.  Don't call this
  * directly.  Instead, call ggz_realloc()
  * 
- * @param void * pointer to memory to reallocate
- * @param const unsigned int new size 
- * @param  char * string describing the calling function 
- * @param int linenumber 
+ * @param ptr pointer to memory to reallocate
+ * @param size new size
+ * @param tag string describing the calling function
+ * @param line linenumber
  * 
  * @return pointer to allocated memory
 */
-void * _ggz_realloc(const void *, const unsigned int, char *, int);
+void * _ggz_realloc(const void * ptr, const size_t size,
+                    const char * tag, int line);
 
 /** 
  * Function to free allocated memory.  Don't call this
  * directly.  Instead, call ggz_free()
  * 
- * @param const void * pointer to memory
- * @param  char * string describing the calling function 
- * @param int linenumber 
+ * @param ptr pointer to memory
+ * @param tag string describing the calling function
+ * @param line linenumber
  * 
  * @return 0 on success, -1 on error
 */
-int _ggz_free(const void *, char *, int);
+int _ggz_free(const void * ptr, const char * tag, int line);
 
 /** 
  * Function to copy a string.  Don't call this
  * directly.  Instead, call ggz_strdup()
  * 
- * @param const char* string to duplicate
- * @param  char * string describing the calling function 
- * @param int linenumber 
+ * @param ptr string to duplicate
+ * @param tag string describing the calling function
+ * @param line linenumber
  * 
  * @return newly allocated string
  *
  * @note It is safe to pass a NULL string.
  */
-char * _ggz_strdup(const char *, char *, int);
+char * _ggz_strdup(const char * ptr, const char * tag, int line);
 
 
 /** 
