@@ -1,6 +1,6 @@
 	<h2>
 		<span class="itemleader">:: </span>
-		Public information
+		Public information for player <?php echo $lookup; ?>
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
 	</h2>

@@ -1,6 +1,8 @@
 <?php
 
 include_once("auth.php");
+include_once("countrylist.php");
+include_once("genderlist.php");
 
 class Player
 {
@@ -38,8 +40,24 @@ class Player
 		endif;
 		echo "Real name: $this->realname<br>\n";
 		echo "Email address: $this->email<br>\n";
-		echo "Gender: $this->gender<br>\n";
-		echo "Country: $this->country<br>\n";
+		if ($this->gender) :
+			$g = new Gender();
+			$gendername = $g->name($this->gender);
+			$pic = $g->graphics($this->gender);
+			echo "Gender: $pic $gendername";
+		else :
+			echo "Gender: (undisclosed)";
+		endif;
+		echo "<br\n>";
+		if ($this->country) :
+			$c = new Country();
+			$countryname = $c->name($this->country);
+			$flag = $c->flag($this->country);
+			echo "Country: $flag $countryname";
+		else :
+			echo "Country: (undisclosed)";
+		endif;
+		echo "<br\n>";
 	}
 }
 

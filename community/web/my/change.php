@@ -15,7 +15,7 @@
 
 <?php
 
-include("auth.php");
+include_once("auth.php");
 $ggzuser = Auth::username();
 
 $res = pg_exec($id, "SELECT * FROM users WHERE handle = '$ggzuser'");
@@ -37,8 +37,28 @@ endif;
 <tr><td>Photo:</td><td><input type='text' name='user_photo' value='<?php echo $photo; ?>'></td></tr>
 <tr><td>Real name:</td><td><input type='text' name='user_realname' value='<?php echo $realname; ?>'></td></tr>
 <tr><td>Email address:</td><td><input type='text' name='user_email' value='<?php echo $email; ?>'></td></tr>
-<tr><td>Gender:</td><td><input type='text' name='user_gender' value='<?php echo $gender; ?>'></td></tr>
-<tr><td>Country:</td><td><input type='text' name='user_country' value='<?php echo $country; ?>'></td></tr>
+<tr><td>Gender:</td><td>
+	<!-- <input type='text' name='user_gender' value='<?php echo $gender; ?>'> -->
+	<select name='user_gender'>
+<?php
+include("genderlist.php");
+$g = new Gender();
+$g->load($gender);
+$g->listall();
+?>
+	</select>
+</td></tr>
+<tr><td>Country:</td><td>
+	<!-- <input type='text' name='user_country' value='<?php echo $country; ?>'> -->
+	<select name='user_country'>
+<?php
+include("countrylist.php");
+$c = new Country();
+$c->load($country);
+$c->listall();
+?>
+	</select>
+</td></tr>
 <tr><td></td><td><input type='submit' value='Change'></td></tr>
 </table>
 </form>

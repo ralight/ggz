@@ -5,7 +5,8 @@ CREATE TABLE tournaments (
     id serial NOT NULL,
     name character varying(256),
     game character varying(256),
-    date bigint
+    date bigint,
+    organizer character varying(256)
 );
 
 CREATE TABLE tournamentplayers (

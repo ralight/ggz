@@ -9,6 +9,9 @@ www/hotstuff/directory/: Hotstuff (GHNS backend software)
 www/blogs/config/: Planet configuration (RSS feed aggregator)
  from setup/blogs
 
+www/db/ggzicons/flags/:
+ directory '/usr/share/locale/l10n' from KDE
+
 Create GGZ database
 -------------------
 
