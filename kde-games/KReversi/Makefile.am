@@ -21,7 +21,7 @@ EXTRA_DIST = \
 noinst_HEADERS = \
 	reversiprotocol.h\
 	reversiview.h\
-	kreversi.h\
+	kreversi.h
 
 rcdir = $(kde_datadir)/ggz.kreversi
 rc_DATA = ggz.kreversiui.rc
