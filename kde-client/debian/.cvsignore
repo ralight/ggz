@@ -1,6 +1,0 @@
-*.debhelper
-files
-dirs
-tmp
-*.substvars
-ggz-kde-client
