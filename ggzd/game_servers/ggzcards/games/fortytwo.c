@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: fortytwo.c 4074 2002-04-24 09:53:59Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -253,7 +253,7 @@ static void set_trump(char suit)
 		player_t p;
 		cards_sort_hand(&game.seats[s].hand);
 		for (p = 0; p < game.num_players; p++)
-			(void) game.data->send_hand(p, s);
+			game.data->send_hand(p, s);
 	}
 }
 

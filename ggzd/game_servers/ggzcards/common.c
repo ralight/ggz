@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: common.c 4074 2002-04-24 09:53:59Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -247,7 +247,7 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
-			(void) net_send_newgame_request(p);
+			net_send_newgame_request(p);
 		break;
 	case STATE_NEXT_HAND:
 		ggzdmod_log(game.ggz, "Next play: dealing a new hand.");
@@ -486,7 +486,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		net_send_newgame(player);
 
 	/* send all table info to joiner */
-	(void) send_sync(player);
+	send_sync(player);
 
 	/* We send player list to everyone.  This used to skip over the
 	   player joining.  I think it only did that because the player list
@@ -622,7 +622,7 @@ void handle_play_event(player_t p, card_t card)
 	hand = &game.seats[s].hand;
 
 	/* send the play */
-	(void) net_broadcast_play(s, card);
+	net_broadcast_play(s, card);
 	
 	/* FIXME: what happens if someone sends a card not even in their hand?? */
 
@@ -886,7 +886,7 @@ void broadcast_sync(void)
 
 void handle_client_sync(player_t p)
 {
-	(void) send_sync(p);
+	send_sync(p);
 }
 
 void send_hand(const player_t p, const seat_t s, int reveal)
@@ -900,7 +900,7 @@ void send_hand(const player_t p, const seat_t s, int reveal)
 	if (game.open_hands)
 		reveal = 1;
 		
-	(void) net_send_hand(p, s, reveal);
+	net_send_hand(p, s, reveal);
 }
 
 void set_num_seats(int num_seats)
