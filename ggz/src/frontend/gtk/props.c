@@ -167,6 +167,10 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "info_comments");
 	ggzcore_conf_write_string("USER INFO", "COMMENTS", gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, gtk_text_get_length(GTK_TEXT(tmp))));
 
+	/* Single click room entry */
+	tmp = lookup_widget((props_dialog), "roomclick_checkbutton");
+	ggzcore_conf_write_int("OPTIONS", "ROOMENTRY", GTK_TOGGLE_BUTTON(tmp)->active);
+
 	server_profiles_save();
 	ggzcore_conf_commit();
 
@@ -322,6 +326,10 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	tmp = lookup_widget((props_dialog), "info_comments");
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, ggzcore_conf_read_string("USER INFO", "COMMENTS", "."),
 			strlen(ggzcore_conf_read_string("USER INFO", "COMMENTS", ".")));
+
+	/* Single click room entry */
+	tmp = lookup_widget((props_dialog), "roomclick_checkbutton");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE));
 }
 
 
@@ -675,6 +683,7 @@ static void props_profiles_reload(void)
 
 
 
+
 GtkWidget*
 create_dlg_props (void)
 {
@@ -766,6 +775,9 @@ create_dlg_props (void)
   GtkWidget *scrolledwindow1;
   GtkWidget *info_comments;
   GtkWidget *label3;
+  GtkWidget *table1;
+  GtkWidget *roomclick_checkbutton;
+  GtkWidget *label67;
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox1;
   GtkWidget *button1;
@@ -1455,6 +1467,30 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), label3);
+
+  table1 = gtk_table_new (3, 3, FALSE);
+  gtk_widget_ref (table1);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "table1", table1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table1);
+  gtk_container_add (GTK_CONTAINER (notebook), table1);
+  gtk_container_set_border_width (GTK_CONTAINER (table1), 5);
+
+  roomclick_checkbutton = gtk_check_button_new_with_label (_("Single click to enter room"));
+  gtk_widget_ref (roomclick_checkbutton);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "roomclick_checkbutton", roomclick_checkbutton,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (roomclick_checkbutton);
+  gtk_table_attach (GTK_TABLE (table1), roomclick_checkbutton, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label67 = gtk_label_new (_("Options"));
+  gtk_widget_ref (label67);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label67", label67,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label67);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3), label67);
 
   dialog_action_area1 = GTK_DIALOG (dlg_props)->action_area;
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dialog_action_area1", dialog_action_area1);

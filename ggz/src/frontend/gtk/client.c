@@ -548,8 +548,25 @@ client_room_clist_event			(GtkWidget	*widget,
 					NULL, buttonevent->button, 0);
 			return TRUE; 
 		}
+
+		if( buttonevent->button == 1 && ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE) == TRUE)
+		{
+			GdkEventButton *buttonevent = (GdkEventButton*)event;
+			/* Check the button which was pressed */
+			if(buttonevent->button == 1)
+			{
+				/* Single-Click, join room */
+				tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+				gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
+							     &row, &column);
+				gtk_clist_select_row(GTK_CLIST(tmp), row, column);
+
+				ggzcore_server_join_room(server, row);
+				return TRUE; 
+			}
+		}
 	}
-	if( event->type == GDK_2BUTTON_PRESS )
+	if( event->type == GDK_2BUTTON_PRESS && ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE) == FALSE)
 	{
 		GdkEventButton *buttonevent = (GdkEventButton*)event;
 		/* Check the button which was pressed */
@@ -559,6 +576,7 @@ client_room_clist_event			(GtkWidget	*widget,
 			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
 			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
 						     &row, &column);
+			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
 
 			ggzcore_server_join_room(server, row);
 			return TRUE; 
