@@ -49,7 +49,7 @@ class KGGZSelector : public QWidget
 		// Destructor
 		~KGGZSelector();
 		// Adds a frontend
-		void addFrontend(const char *frontend, int position);
+		void addFrontend(QString name, QString frontend, int position);
 
 	public slots:
 		// User pressed ok

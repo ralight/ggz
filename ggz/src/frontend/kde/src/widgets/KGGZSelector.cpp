@@ -34,6 +34,9 @@
 // Header file
 #include "KGGZSelector.h"
 
+// KGGZ includes
+#include "KGGZCommon.h"
+
 // KDE includes
 #include <klocale.h>
 
@@ -74,9 +77,19 @@ KGGZSelector::~KGGZSelector()
 }
 
 // Adds a frontend
-void KGGZSelector::addFrontend(const char *frontend, int position)
+void KGGZSelector::addFrontend(QString name, QString frontend, int position)
 {
-	m_box->insertItem(frontend);
+	QString pixname = "game.png";
+	if((frontend == "gtk") || (frontend == "gnome")) pixname = "game_gnome.png";
+	if((frontend == "qt") || (frontend == "kde")) pixname = "game_kde.png";
+	if(frontend == "sdl") pixname = "game_sdl.png";
+	if(frontend == "x11") pixname = "game_x11.png";
+	if(frontend == "console") pixname = "game_console.png";
+	if(frontend == "guru") pixname = "game_grubby.png";
+
+	QPixmap pix(QString(KGGZ_DIRECTORY) + "/kcmggz/icons/" + pixname);
+
+	m_box->insertItem(pix, QString("%1 (%2)").arg(name).arg(frontend));
 	m_positions[m_box->count() - 1] = position;
 }
 

@@ -1538,7 +1538,7 @@ void KGGZ::slotGameFrontend()
 			m_module->setActive(i);
 			env = m_module->environment();
 			if((env == GGZCoreModule::xwindow) || (env == GGZCoreModule::xfullscreen))
-				m_selector->addFrontend(m_module->frontend(), i);
+				m_selector->addFrontend(m_module->game(), m_module->frontend(), i);
 		}
 		m_selector->show();
 		connect(m_selector, SIGNAL(signalFrontend(int)), SLOT(slotGamePrepare(int)));
