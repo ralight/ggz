@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4605 2002-09-17 15:06:22Z jdorje $
+ * $Id: net.c 4606 2002-09-17 15:24:42Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -278,32 +278,34 @@ void net_free(GGZNetIO *net)
 GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
+	GGZReturn status;
 
 	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
 	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
-	_net_send_line(net, "\t</SERVER>");
+	status = _net_send_line(net, "\t</SERVER>");
 
 	ggz_free(xml_srv_name);
 
-	return GGZ_OK;
+	return status;
 }
  
 
 GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name)
 {
 	char *xml_srv_name;
+	GGZReturn status;
 
 	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
+	status = _net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
 
 	ggz_free(xml_srv_name);
 
-	return GGZ_OK;
+	return status;
 }
 
 
@@ -341,8 +343,7 @@ GGZReturn net_send_motd(GGZNetIO *net)
 		ggz_free(line);
 	}
 
-	_net_send_line(net, "]]></MOTD>");
-	return GGZ_OK;
+	return _net_send_line(net, "]]></MOTD>");
 }
 
 
@@ -361,8 +362,7 @@ GGZReturn net_send_room_list_error(GGZNetIO *net, GGZClientReqError status)
 GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 {
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
-	_net_send_line(net, "<LIST TYPE='room'>");
-	return GGZ_OK;
+	return _net_send_line(net, "<LIST TYPE='room'>");
 }
 
 
@@ -373,17 +373,14 @@ GGZReturn net_send_room(GGZNetIO *net, int index,
 		       index, room->name, room->game_type);
 	if (verbose && room->description)
 		_net_send_line(net, "<DESC>%s</DESC>", room->description);
-	_net_send_line(net, "</ROOM>");
-
-	return GGZ_OK;
+	return _net_send_line(net, "</ROOM>");
 }
 
 
 GGZReturn net_send_room_list_end(GGZNetIO *net)
 {
 	_net_send_line(net, "</LIST>");
-	_net_send_line(net, "</RESULT>");
-	return GGZ_OK;
+	return _net_send_line(net, "</RESULT>");
 }
 
 
@@ -396,8 +393,7 @@ GGZReturn net_send_type_list_error(GGZNetIO *net, GGZClientReqError status)
 GGZReturn net_send_type_list_count(GGZNetIO *net, int count)
 {
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
-	_net_send_line(net, "<LIST TYPE='game'>");
-	return GGZ_OK;
+	return _net_send_line(net, "<LIST TYPE='game'>");
 }
 
 
@@ -422,16 +418,14 @@ GGZReturn net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose)
 			       type->author, type->homepage);
 		_net_send_line(net, "<DESC>%s</DESC>", type->desc);
 	}
-	_net_send_line(net, "</GAME>");
-	return GGZ_OK;
+	return _net_send_line(net, "</GAME>");
 }
 
 
 GGZReturn net_send_type_list_end(GGZNetIO *net)
 {
 	_net_send_line(net, "</LIST>");
-	_net_send_line(net, "</RESULT>");
-	return GGZ_OK;
+	return _net_send_line(net, "</RESULT>");
 }
 
 GGZReturn net_send_player_list_error(GGZNetIO *net, GGZClientReqError status)
@@ -447,8 +441,7 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 	room = player_get_room(net->client->data);
 	
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
-	_net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
-	return GGZ_OK;
+	return _net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
 }
 
 
@@ -495,8 +488,7 @@ static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *p2)
 GGZReturn net_send_player_list_end(GGZNetIO *net)
 {
 	_net_send_line(net, "</LIST>");
-	_net_send_line(net, "</RESULT>");
-	return GGZ_OK;
+	return _net_send_line(net, "</RESULT>");
 }
 
 
@@ -513,8 +505,7 @@ GGZReturn net_send_table_list_count(GGZNetIO *net, int count)
 	room = player_get_room(net->client->data);
 
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
-	_net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
-	return GGZ_OK;
+	return _net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
 }
 
 
@@ -544,17 +535,14 @@ GGZReturn net_send_table(GGZNetIO *net, GGZTable *table)
 	}
 #endif
 	
-	_net_send_line(net, "</TABLE>");
-
-	return GGZ_OK;
+	return _net_send_line(net, "</TABLE>");
 }
 
 
 GGZReturn net_send_table_list_end(GGZNetIO *net)
 {
 	_net_send_line(net, "</LIST>");
-	_net_send_line(net, "</RESULT>");
-	return GGZ_OK;
+	return _net_send_line(net, "</RESULT>");
 }
 
 
@@ -586,13 +574,12 @@ GGZReturn net_send_chat(GGZNetIO *net, unsigned char opcode,
 	}
 
 	if (msg) {
-		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'><![CDATA[%s]]></CHAT>", 
-			       type, name, msg);
+		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'>"
+				      "<![CDATA[%s]]></CHAT>", 
+				      type, name, msg);
 	} else 
-		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>", type, name);
-			       
-
-	return GGZ_OK;
+		return _net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>",
+				      type, name);
 }
 
 
@@ -632,8 +619,8 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 	case GGZ_UPDATE_DELETE:
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d'>", room);
 		_net_send_line(net, "<PLAYER ID='%s'/>", name);
-		_net_send_line(net, "</UPDATE>");
-		break;
+		return _net_send_line(net, "</UPDATE>");
+
 	case GGZ_UPDATE_ADD:
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
@@ -644,8 +631,8 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		pthread_rwlock_unlock(&player->lock);
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
 		net_send_player(net, player);
-		_net_send_line(net, "</UPDATE>");
-		break;
+		return _net_send_line(net, "</UPDATE>");
+
 	case GGZ_UPDATE_LAG:
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
@@ -656,11 +643,10 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		pthread_rwlock_unlock(&player->lock);
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
 		_net_send_player_lag(net, player);
-		_net_send_line(net, "</UPDATE>");
-		break;
+		return _net_send_line(net, "</UPDATE>");
 	}
 	
-	return GGZ_OK;
+	return GGZ_ERROR;
 }
 
 
@@ -736,9 +722,7 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 		return GGZ_ERROR;
 	}
 	
-	_net_send_line(net, "</UPDATE>");
-
-	return GGZ_OK;
+	return _net_send_line(net, "</UPDATE>");
 }
 
 
@@ -756,8 +740,7 @@ GGZReturn net_send_logout(GGZNetIO *net, GGZClientReqError status)
 
 GGZReturn net_send_ping(GGZNetIO *net)
 {
-	_net_send_line(net, "<PING/>");
-	return GGZ_OK;
+	return _net_send_line(net, "<PING/>");
 }
 
 
@@ -1680,9 +1663,7 @@ static GGZReturn _net_send_table_seat(GGZNetIO *net, GGZTable *table,
 	_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>", table->index, 
 		       seats_num(table));
 	_net_send_seat(net, seat);
-	_net_send_line(net, "</TABLE>");
-	
-	return GGZ_OK;
+	return _net_send_line(net, "</TABLE>");
 }
 
 
@@ -1692,9 +1673,7 @@ static GGZReturn _net_send_table_spectator(GGZNetIO *net, GGZTable *table,
 	_net_send_line(net, "<TABLE ID='%d' SPECTATORS='%d'>",
 		       table->index, spectator_seats_num(table));
 	_net_send_spectator(net, spectator);
-	_net_send_line(net, "</TABLE>");
-	
-	return GGZ_OK;
+	return _net_send_line(net, "</TABLE>");
 }
 
 
@@ -1702,9 +1681,7 @@ static GGZReturn _net_send_table_desc(GGZNetIO *net, GGZTable *table)
 {
 	_net_send_line(net, "<TABLE ID='%d'>", table->index);
 	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
-	_net_send_line(net, "</TABLE>");
-	
-	return GGZ_OK;
+	return _net_send_line(net, "</TABLE>");
 }
 
 
@@ -1733,23 +1710,20 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat)
 	}
 	
 	if (name)
-		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
-			       seat->index, type_str, name);
+		return _net_send_line(net,
+				      "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
+				      seat->index, type_str, name);
 	else
-		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-			       seat->index, type_str);
-
-	return GGZ_OK;
+		return _net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
+				      seat->index, type_str);
 }
 
 
 static GGZReturn _net_send_spectator(GGZNetIO *net,
 				     GGZTableSpectator *spectator)
 {
-	_net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>",
-		       spectator->index, spectator->name);
-
-	return GGZ_OK;
+	return _net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>",
+			      spectator->index, spectator->name);
 }
 
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
@@ -1785,8 +1759,7 @@ static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 	if (status == 0)
 		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
 	
-	_net_send_line(net, "</RESULT>");
-	return GGZ_OK;
+	return _net_send_line(net, "</RESULT>");
 }
 
 
