@@ -42,12 +42,7 @@ int main(int argc, char *argv[])
 	ggz_connect();
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
-	if(argc > 1) {
-		/* Get options from a dialog */
-		opt_dialog = create_dlg_opt();
-		gtk_widget_show(opt_dialog);
-	} else
-		game_init();
+	game_init();
 
 	gtk_main();
 	return 0;
@@ -107,6 +102,10 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_SND_SYNC:
 			status = get_sync_info();
+			break;
+		case DOTS_REQ_OPTIONS:
+			opt_dialog = create_dlg_opt();
+			gtk_widget_show(opt_dialog);
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
