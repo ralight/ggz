@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6126 2004-07-17 00:59:24Z josef $
+dnl $Id: configure.ac 6167 2004-08-17 14:38:15Z josef $
 
-AC_INIT([GGZ common libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [libggz])
+AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -26,7 +26,7 @@ AC_PROG_MAKE_SET
 # =================
 AC_ARG_WITH([gcrypt],
 	    AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
-	    [enable_gcrypt=yes], [enable_gcrypt=no])
+	    [enable_gcrypt=$enableval], [enable_gcrypt=no])
 AC_ARG_ENABLE([threading],
               AC_HELP_STRING([--disable-threading],
                              [Don't build in threading support]),
