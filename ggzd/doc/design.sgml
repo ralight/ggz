@@ -1,0 +1,650 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
+]>
+ 
+<book id="ggz-design">
+  <bookinfo>
+    <title>Gnu Gaming Zone Design Specification</title>
+    <authorgroup>
+      <author>
+        <firstname>Brent</firstname>
+        <surname>Hendricks</surname>
+        <affiliation>
+          <address>
+            <email>bmh@users.sourceforge.net</email>
+          </address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>1999, 2000</year>
+      <holder>Brent Hendricks</holder>
+    </copyright>
+    <revhistory>
+      <revision>
+	<revnumber>$Revision: 45 $</revnumber>
+	<date>$Date: 2000-02-16 21:33:52 -0800 (Wed, 16 Feb 2000) $</date>
+      </revision>
+    </revhistory>
+    <abstract>
+      <para>
+        Design specification for the Gnu Gaming Zone.  This document
+        covers the internal server architecture and the client/server
+        communication protocols.
+      </para>
+    </abstract>
+  </bookinfo>
+
+  <preface id="preface">
+    <title>Introduction</title>
+    <para>
+      At some point during the devlopment of
+      <application moreinfo="refentry">NetSpades</application>, I
+      realized that a major rewrite was in order.  I wasn't happy with
+      the client/server interactions, and I wanted to add some
+      features which just wouldn't work within the current
+      infrstructure.  So I began to formulate grandiose plans for
+      <application>NetSpades v5</application>, but continued to work
+      on the 4.X series.  A little later, I began to contemplate
+      adding the ability to play Hearts as well as Spades.  But why
+      stop there?  Why not develop a general framework for playing
+      networked games?  And so my plans have developed into what I
+      called <application>NetGames</application>.
+    </para>
+    <para>
+      Just before I was going to announce my new project on
+      <ulink url="http://www.sourceforge.net">SourceForge</ulink>, I
+      happened across Rich's announcement and plans for an online
+      gaming system.  It was to be in the same vein as Microsoft's
+      Internet Gaming Zone, so he named it the <application>Gnu Gaming
+      Zone</application>(<abbrev>GGZ</abbrev>).  His goals and plans
+      were so similar to mine that I suggested we merge projects and
+      collaborate.  He readily agreed, and the GGZ was born.
+    </para>
+  </preface>
+  
+  <chapter id="requirements"><title>Design Requirements</title>
+    <para>
+      There are many planned features for GGZ.  Some will take longer
+      than others to implement.  Some may be discarded at a later
+      date.  Planned features include (but are not limited to):
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>Password-based user accounts</para>
+      </listitem>
+      <listitem>
+        <para>Persistent user statistics</para>
+      </listitem>
+      <listitem>
+        <para>Ability to leave and then rejoin game</para>
+      </listitem>
+      <listitem>
+        <para>Ability to reserve games for specific users</para>
+      </listitem>
+      <listitem>
+        <para>Dynamic run-time configuration of server</para>
+      </listitem>
+      <listitem>
+        <para>
+          Ability to add/remove game types from server without
+          having to recompile
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Capability for users to chat without resorting to second
+          port/socket
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Basic infrastructure from game developers to write network games
+          without having to worry about connections/login/user
+          accounts/etc.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Multiple "rooms" in which to play games.  These rooms may
+          reside on different servers, transparent to the user.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+
+  <chapter id="comm"><title>Client-Server Communications</title>
+    <para>
+      The client and GGZ server will communicate via the protocol
+      described here.  Individual games will of course communicate via
+      their own protocol.  These messages must be embedded in the GGZ
+      message type REQ_GAME or RSP_GAME.  It is recommended that game
+      developers use a message passing scheme similar to the one
+      described here for consistency.
+    </para>
+
+    <para>
+      The server will provide a chat facility independent of the type
+      of game being played.  This facility is provided via the
+      REQ_CHAT/MSG_CHAT message types.
+    </para>
+    
+    <section id="opcodes"><title>Interactions</title>
+      <para>
+	Three types of data are exchanged between the client and the server:
+	<itemizedlist>
+	  <listitem>
+	    <para>chr: a 1-byte signed char</para>
+	  </listitem>
+	  <listitem>
+	    <para>int: a 4-byte signed integer in network byte order</para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      str: a multibyte null-terminated string preceeded by
+	      integer length.
+	    </para>
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Interactions take one of three forms: messages, requests, and
+	responses.  Each interaction will be prefaced by a header
+	indentifying it (some interactions consist solely of the
+	header).  The header (stored as an enumerated value) is sent
+	as an int.
+      </para>
+      
+      <para>
+	The following is a complete list of interactions between the
+	client and the server prior to launching a game (interactions
+	for specific game modules will be described elsewhere).
+	Rather than list all of the client originated messages, and
+	then all of the server originated messages, I have chosen to
+	intersperse client requests with the corresponding server
+	responses.
+      </para>
+    
+      <para>
+	List omitted for time being
+      </para>
+    </section>
+
+    <section id="chat"><title>Chat Facility</title>
+      <para>
+	Similar to the "Taunt" feature provided with NetSpades, the
+	GGZ server will provide the ability to send messages to other
+	players.  Here are the interactions necessary for the chat
+	functionality.
+      </para>
+  
+      <para>
+	List omitted for time being
+      </para>
+    </section>
+
+    <section id="gamemsg"><title>Game Interactions</title>
+      <para>
+	In order to allow the GGZ server to identify chat and other
+	control messages during the course of a game, it is necessary
+	that interactions with a game being played have an
+	identifiable header (REQ_GAME).  This header will be stripped
+	off before the rest of the data is sent to the game itself.
+	Similarly, any messages from the game to the client will have
+	a header prepended.
+      </para>
+    </section>
+  </chapter>
+
+  <chapter id="design"><title>Design Overview</title>
+
+    <para>
+      There are three parts which comprise the server side:
+      <itemizedlist>
+        <listitem>
+          <para>Main GGZ server (called GGZ-control)</para>
+        </listitem>
+        <listitem>
+          <para>Individual game servers</para>
+        </listitem>
+        <listitem>
+          <para>Run-time config utility program</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      We will discuss each of these in turn, but first we'll look at
+      the overall architecture.
+      <figure>
+	<title>Server Architecture</title>
+	<mediaobject>
+	  <imageobject>
+	    <imagedata fileref="images/server_arch.eps" format="eps">
+	  </imageobject>
+	  <imageobject>
+	    <imagedata fileref="server_arch.gif" format="gif">
+	  </imageobject>
+	  <textobject>
+	    <para>Server Architecture</para>
+	  </textobject>
+	</mediaobject>
+      </figure>
+      GGZ-control will handle incoming connections, manage the user
+      database, and keep track of all of the games being played
+      (referred to as game tables).  Clients are always in direct
+      communication with control.
+    </para>
+
+    <para>
+      Control will not handle the specifics of how to play any
+      particular game.  That logic is contained in the individual game
+      servers.  It is expected (and hoped!) that game developers will
+      write their own games servers for use with GGZ.  GGZ will
+      attempt to provide a simple franework for writing network games
+      in which developer need not worry about connections or user
+      logins or maintaining statistics.  All of that will be done by
+      GGZ.  Game devlopers should only have to concern themselves with
+      gameplay.
+    </para>
+
+    <para>
+      The third item is more loosely connected.  We will provide some
+      sort of run-time configuration utility for GGZ, so the main
+      server will not have to be restarted (or worse.. recompiled!) in
+      order for various options to be changed.
+    </para>
+
+    <para>
+      Some options may include:
+      <itemizedlist>
+        <listitem>
+          <para>Location of game servers</para>
+        </listitem>
+        <listitem>
+          <para>Set auto removal of inactive users
+            <itemizedlist>
+              <listitem>
+                <para>Set inactivity threshold</para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Set auto clearing of statistics
+            <itemizedlist>
+              <listitem>
+                <para>Set clearing interval</para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+        <listitem>
+          <para>Log level (level of detail in server logs)</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <section id="control"><title>GGZ-control</title>
+      <para>
+      This is the main brain for the server side of GGZ.  It handles
+      client logins and new user registrations.  It manages option
+      negotiation with the clients, and launches new game sessions.
+      It maintains a list of running game sessions and keeps a
+      database of win/lose statistics for each user.  Control
+      coordinates games, users, and databases, and is responsible for
+      interacting with the client, the running games, and the config
+      utility.
+    </para>
+    
+    <para>
+      I considered several possble designs before settling on the
+      current one.  It is possible that as GGZ develops this design
+      will change as well. Since control must communicate with
+      multiple parties (game tables, users, etc.) I decided to use a
+      multi-threaded concurrent server where each connection (be it
+      user or game table) gets its own thread.  This avoids the
+      situation where control is servicing a request and therefore
+      cannot handle any incoming connections or other requests.  I
+      chose threads rather than forking child processes because
+      threads have a smaller overhead and it is easier to share memory
+      between threads than between processes.
+    </para>
+    
+    <para>
+      Every time a new user connects, control creates a new thread to
+      handle all requests for that user.  This thread is known as the
+      player handler.  If the user decides to launch a new game table,
+      the player handler creates a thread to handle all requests from
+      the game table.  This new thread is known as the table handler.
+      The table handler waits until enough players have joined the
+      table and then forks a process, known as the game table process,
+      in which to run the game server (The reason game servers are not
+      run within a thread is so that game developers not be required
+      to worry about writing thread-dafe code).
+    </para>
+    
+    <para>
+      During the course of the game, the player thread for each player
+      acts as a liason between the player and the game table, passing
+      requests back and forth transparent to the player and the game
+      server.  When a player logs out, the player handler thread is
+      destroyed.
+    </para>
+
+      <section id="controlgame">
+	<title>Interactions between control and running games</title>
+	<para>
+	  Sample game servers will be provided with GGZ, but it
+	  is hoped that others will write game modules, and either
+	  submit them for inclusion in the GGZ package, or
+	  maintain and distribute them separately.  The following API
+	  describes how control will interact with the game processes.
+	</para>
+    
+	<para>
+	  The following is a complete list of messages between the
+	  game module and the control section of the server.  Again, I
+	  have chosen to intersperse game module requests with the
+	  corresponding control responses.
+	</para>
+    
+	<para>
+	  Please note: the following is not written stone, merely a
+	  list of ideas.
+	  <itemizedlist>
+	    <listitem>
+	      <para>Game launch
+		<itemizedlist>
+		  <listitem>
+		    <para>init routine</para>
+		  </listitem>
+		  <listitem>
+		    <para>control sends first player code and socket</para>
+		  </listitem>
+		  <listitem>
+		    <para>
+		      control sends options and requested reservations
+		    </para>
+		  </listitem>
+		</itemizedlist>
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Alter reservations [?]
+		<itemizedlist>
+		  <listitem>
+		    <para>game notifies control of modifications</para>
+		  </listitem>
+		</itemizedlist>
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Join player to game
+		<itemizedlist>
+		  <listitem>
+		    <para>control sends player code and socket</para>
+		  </listitem>
+		</itemizedlist>
+	      </para>
+        </listitem>
+	    <listitem>
+	      <para>Release player from game
+		<itemizedlist>
+              <listitem>
+		    <para>game notifies control that player has left</para>
+		  </listitem>
+		  <listitem>
+		    <para>also note whether between games or during game</para>
+		  </listitem>
+		</itemizedlist>
+	      </para>
+	    </listitem
+	    <listitem>
+	      <para>Game end
+		<itemizedlist>
+		  <listitem>
+		    <para>release all players</para>
+		  </listitem>
+		  <listitem>
+		    <para>control then updates player statistics</para>
+		  </listitem>
+		</itemizedlist>
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+      </section>
+  
+      <section id="controlconfig">
+	<title>Interactions between control and config utility</title>
+	<para>
+	  Since the server runs non-interactively in the background,
+	  there needs to be a run-time configuration tool so that
+	  server options may be changed without restarting.  This
+	  program will communicate with control via a Unix domain
+	  socket or a message queue, or some such thing.
+	</para>
+	
+	<para>
+	  Messages between control and the config utility include:
+	  <itemizedlist>
+	    <listitem>
+	      <para>Request available game types (loaded modules)</para>
+	    </listitem>
+	    <listitem>
+	      <para>Add/Remove Game types</para>
+	    </listitem>
+	    <listitem>
+	      <para>Remove users</para>
+	    </listitem>
+	    <listitem>
+	      <para>Request list of active games</para>
+	    </listitem>
+	    <listitem>
+	      <para>Clear Player statistics</para>
+	    </listitem>
+	    <listitem>
+	      <para>Modify logging</para>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+      </section>
+    </section>
+    
+    <section id="gameservers"><title>Individual Game Servers</title>
+      <para>
+	As described above, game servers run in their own processes,
+	and are responsible for handling the gameplay of a particular
+	game.
+      </para>
+    
+      <para>
+	There are three possibilities for game server design.
+	<itemizedlist>
+	  <listitem>
+	    <para>
+	      Compiled in.  The game table process calls a statrtup
+	      function which begins execution of the game server.
+	      This scheme has the benefit that the server has access
+	      to control's data structures at the time the process was
+	      forked.  Communication between the game table and
+	      control can be via pipes or a socketpair.  The problem
+	      with this scheme is that to change which games are
+	      offered by a particular server requires a reocmpile.
+	      Not good.
+          </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      Dynamically loaded modules.  Similar to the above except
+	      that game server exist as loadable modules which may be
+	      inserted and removed at runtime. This allows for adding
+	      new game types without a recompile.  Downside is that it
+	      requires both game developers and myself to know how to
+	      deal with loadable modules.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      Exec() separate program.  In this scheme, GGZ acts
+	      much like the inet daemon by handling the connections
+	      and then doing a fork()/exec() to launch the game
+	      server.  This scheme also allows for adding new games at
+	      runtime and has the bonus effect that game servers can
+	      be written in other kanguages that C.
+	    </para>
+	  </listitem>
+	</itemizedlist
+      </para>
+      
+      <para>
+	The current design requires game servers of type three.  It is
+	possible however, that in the future GGZ will allow
+	dynamically loaded server modules as well.
+      </para>
+      
+      <para>
+	Once the game server is running it is necessary that control
+	pass it some required information such as player names and
+	file descriptors.  This communication occurs over a pipe or
+	socketpair which is established prior to the forking of the
+	process.  The interactions between game modules and the
+	control section are listed above in section 3.1.1.1.
+      </para>
+    </section>
+
+    <section id="configutility">
+      <title>Config Utility</title>
+      <para>Not written</para>
+    </section>
+    
+    <section id="subsystems"><title>Key Subsystems</title>
+      <para>
+	While the architecture of the server is divided into the aforementioned
+	three parts, there are a few "subsystems" which are necessary.
+      </para>
+      
+      <section id="optionparse"><title>Options Parser</title>
+	<para>
+	  This is a two part system.  One to parse the command-line
+	  arguments, and one to parse the configuration file.  Options
+	  specified on the command line should have a higher
+	  precedence than those in the config file. Additionally, an
+	  alternate config file may be specified on the command line.
+	</para>
+	
+	<para>
+	  At the present, I am using the popt library for cmd-line
+	  parsing.  There have been no decision made about the config
+	  file format, or its parser.  One possibility is to use
+	  libxml which is popular under GNOME, however simplicity may
+	  reign instead.
+	</para>
+      </section>
+
+      <section id="userdb"><title>Login/User Database</title>
+	<para>
+	  The server will need to store a database of user ID, name,
+	  and password at the very least.  This system must allow
+	  searching by name or ID, and allow for easy
+	  addition/deletion.  GGZ ill probably use libdb for
+	  this.  a SQL database is possible but probably not
+	  necessary, and just too much for our simple requirements.
+	</para>
+      </section>
+  
+      <section id="stats"><title>Player Statistics</title>
+	<para>
+	  Since the game modules are dynamic, it makes sense to store
+	  the statistics on a per-game type basis, rather than on a
+	  per-user basis.
+	</para>
+      </section>
+  
+      <section id="module"><title>Module loading</title>
+	<para>Not written</para>
+      </section>
+    </section>
+    
+    <section id="structures"><title>Data Structures</title>
+      <para>
+	There will be an array of <emphasis>game_t</emphasis>
+	structures on the server.  This array will be initialized at
+	startup, and may be changed when dynamic loading of new game
+	modules occurs.  The index into this array is referred to as
+	the game type index.
+      </para>
+      <programlisting role="pseudocode">
+	game_t {
+          str: short string for name of game (16 chars?)
+          str: long string for description (256 chars?)
+          fnc: pointer to function for launching game
+          chr: allowable player numbers (2^num)
+          chr: allow computer players (1 for yes)
+          int: sizeof options struct in bytes
+          chr: enabled flag (1 if playing this game is enabled)
+	}
+      </programlisting>
+      
+      <para>
+	There will be an array of <emphasis>game_run_t</emphasis>
+	structures represnting running games, This array will be
+	dynamic since as games are started and finished, entries in
+	the array are created and destroyed.  The index into this
+	array is referred to as the game index.
+      </para>
+      <programlisting role="pseudocode">
+	game_run_t {
+          int: game type index
+          int: number of player slots
+          *int: array of player codes for registered players
+          chr: play/wait flag (0 if waiting for players, 1 if playing)
+          int: process or thread ID
+          *void: pointer to options struct for this game
+          *int: array of player codes for reservations
+          int: number of open player slots
+          int: file descriptor for communication
+	  chr: computer players (2^num)
+	}
+      </programlisting>
+
+      <para>
+	There will also be a large array of
+	<emphasis>user_t</emphasis> structures, representing connected
+	users.  As soon as a user connects, an entry is created and
+	the file descriptor filled in.  When the user completes the
+	login process, the user code and name are filled in.  When the
+	user launches, or joins a game, the game index is filled in.
+      </para>
+      <programlisting role="pseudocode">
+	user_t {
+          int: user code (unique user id number)
+          str: user name
+          int: file descriptor for communication
+          int: game index
+	}
+      </programlisting>
+
+      <para>
+	An array of <emphasis>reservation_t</emphasis> structures
+	holds all of the reservations requested.  These are created
+	when a game is launched with reservation requests.  They may
+	be altered once the game has been launched.  They are deleted
+	when a user accepts a reservation or declines it.
+      </para>
+      <programlisting role="pseudocode">
+	reservation_t {
+          int: game index
+          int: user code
+	}
+      </programlisting>
+
+      <para>
+	There will also be a structure for server options.  However,
+	since the options themselves are undertermined, the data
+	strucuture is not laid out here.
+      </para>
+    </section>
+  </chapter>
+</book>
