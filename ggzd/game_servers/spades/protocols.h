@@ -23,6 +23,8 @@
  */
 
 
+#define GGZ_CS_PROTO_VERSION  3
+
 typedef enum {
 	REQ_LOGIN_NEW,
 	REQ_LOGIN,
@@ -44,7 +46,9 @@ typedef enum {
 
 	REQ_GAME,
 	REQ_CHAT,
-        REQ_MOTD
+        REQ_MOTD,
+
+	REQ_ROOM_JOIN
 } UserToControl;
 
 
@@ -56,6 +60,7 @@ typedef enum {
 	MSG_UPDATE_PLAYERS,
 	MSG_UPDATE_TYPES,
 	MSG_UPDATE_TABLES,
+	MSG_UPDATE_ROOMS,
 	MSG_ERROR,
 
 	RSP_LOGIN_NEW,
@@ -78,9 +83,26 @@ typedef enum {
 
 	RSP_GAME,
 	RSP_CHAT,
-        RSP_MOTD
+        RSP_MOTD,
+
+	RSP_ROOM_JOIN
 } ControlToUser;
 
+/* Chat subops */					/* PMCCCCCC */
+#define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
+#define GGZ_CHAT_ANNOUNCE	(unsigned char) 0x60	/* 01100000 */
+#define GGZ_CHAT_BEEP		(unsigned char) 0x80	/* 10000000 */
+#define GGZ_CHAT_PERSONAL	(unsigned char) 0xC0	/* 11000000 */
+/* Chat subop bitmasks */
+#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
+#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
+
+/* Update opcodes */
+#define GGZ_UPDATE_DELETE 0
+#define GGZ_UPDATE_ADD    1
+#define GGZ_UPDATE_LEAVE  2
+#define GGZ_UPDATE_JOIN   3
+#define GGZ_UPDATE_STATE  4
 
 typedef enum {
 	RSP_GAME_LAUNCH,
@@ -88,15 +110,15 @@ typedef enum {
 	RSP_GAME_LEAVE,
         MSG_LOG,
         MSG_DBG,
-	MSG_GAME_OVER
+	REQ_GAME_OVER
 } TableToControl;
 
 typedef enum {
 	REQ_GAME_LAUNCH,
 	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE
+	REQ_GAME_LEAVE,
+	RSP_GAME_OVER
 } ControlToTable;
-
 
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
@@ -108,3 +130,8 @@ typedef enum {
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
 #define E_LEAVE_FORBIDDEN -10
+#define E_ALREADY_LOGGED_IN -11
+#define E_NOT_LOGGED_IN -12
+#define E_NOT_IN_ROOM   -13
+#define E_AT_TABLE     -14
+

@@ -874,11 +874,13 @@ int QueryNewGame( void ) {
 }
 	
 
-void SendGameOver(void) {
-
-  WriteIntOrDie(gameInfo.ggz_sock, MSG_GAME_OVER);
-  WriteIntOrDie(gameInfo.ggz_sock, 0);
-  /* FIXME: Send player stats */
+void SendGameOver(void) 
+{
+	int op;
+	WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_OVER);
+	WriteIntOrDie(gameInfo.ggz_sock, 0);
+	/* FIXME: Send player stats */
+	ReadIntOrDie(gameInfo.ggz_sock, &op);
 }
 
 
