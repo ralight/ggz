@@ -27,6 +27,9 @@
 // System includes
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 // Constructor: inherit from ggzgameserver
 WidelandsServer::WidelandsServer()
@@ -93,6 +96,11 @@ void WidelandsServer::dataEvent(int player)
 	int opcode;
 	char *ip;
 
+	struct sockaddr *addr;
+	struct sockaddr_in sa;
+	socklen_t addrsize;
+	unsigned int ipx;
+
 	std::cout << "WidelandsServer: dataEvent" << std::endl;
 
 	// Read data
@@ -102,8 +110,25 @@ void WidelandsServer::dataEvent(int player)
 	switch(opcode)
 	{
 		case op_reply_ip:
+			// Do not use IP provided by client
+			// instead, determine peer IP address
 			ggz_read_string_alloc(channel, &ip);
 			std::cout << "IP: " << ip << std::endl;
+			//m_ip = ggz_strdup(ip);
+			ggz_free(ip);
+
+			addrsize = 256;
+			addr = (struct sockaddr*)malloc(addrsize);
+			getpeername(channel, addr, &addrsize);
+			sa = *(struct sockaddr_in*)addr;
+			ipx = ntohl(sa.sin_addr.s_addr);
+			ip = (char*)ggz_malloc(128);
+			snprintf(ip, 128, "%i.%i.%i.%i",
+				(ipx >> 24) & 0xFF,
+				(ipx >> 16) & 0xFF,
+				(ipx >> 8) & 0xFF,
+				(ipx) & 0xFF);
+			std::cout << "IPx: " << ip << std::endl;
 			m_ip = ggz_strdup(ip);
 			ggz_free(ip);
 			break;
