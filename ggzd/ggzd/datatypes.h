@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 3080 2002-01-12 08:06:23Z jdorje $
+ * $Id: datatypes.h 4151 2002-05-05 00:22:08Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -78,6 +78,8 @@ typedef struct GameInfo {
 	   need not match up with the gametype. */
 	char *p_engine;
 	char *p_version;
+
+	char *data_dir;	/* The game's working directory. */
 	
 	char *desc;     /* Game description string. */
 	char *author;   /* String containing name(s) of author(s) */

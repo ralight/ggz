@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4050 2002-04-22 19:02:02Z jdorje $
+ * $Id: ggzdmod.c 4151 2002-05-05 00:22:08Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -210,6 +210,9 @@ void ggzdmod_free(GGZdMod * ggzdmod)
 	ggzdmod->num_seats = 0;
 
 	ggzdmod->type = -1;
+
+	if (ggzdmod->pwd)
+		ggz_free(ggzdmod->pwd);
 	
 	if (ggzdmod->argv) {
 		for (i = 0; ggzdmod->argv[i]; i++)
@@ -326,7 +329,8 @@ void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
 	_ggzdmod_set_num_seats(ggzdmod, num_seats);
 }
 			   
-void ggzdmod_set_module(GGZdMod * ggzdmod, char **argv)
+void ggzdmod_set_module(GGZdMod * ggzdmod,
+                        const char *pwd, char **argv)
 {
 	int i;
 
@@ -352,6 +356,7 @@ void ggzdmod_set_module(GGZdMod * ggzdmod, char **argv)
 	ggz_debug("GGZDMOD", "Set %d arguments", i);
 	
 	ggzdmod->argv = ggz_malloc(sizeof(char*)*(i+1));
+	ggzdmod->pwd = ggz_strdup(pwd);
 	
 	for (i = 0; argv[i]; i++) 
 		ggzdmod->argv[i] = ggz_strdup(argv[i]);
@@ -785,6 +790,12 @@ static int game_fork(GGZdMod * ggzdmod)
 		/* FIXME: Close all other fd's? */
 		/* FIXME: Not necessary to close other fd's if we use
 		   CLOSE_ON_EXEC */
+
+		/* Set working directory */
+		if (ggzdmod->pwd
+		    && chdir(ggzdmod->pwd) < 0) {
+			/* FIXME: what to do? */
+		}
 
 		/* FIXME: can we call ggzdmod_log() from here? */
 		execv(ggzdmod->argv[0], ggzdmod->argv);	/* run game */

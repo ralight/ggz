@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4023 2002-04-20 04:23:11Z jdorje $
+ * $Id: ggzdmod.h 4151 2002-05-05 00:22:08Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -419,15 +419,18 @@ void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
 void ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 			 GGZdModHandler func);
 
-/** @brief Set the module executable and it's arguments
+/** @brief Set the module executable, pwd, and arguments
  *
  *  GGZdmod must execute and launch the game to start a table; this
  *  function allows ggzd to specify how this should be done.
  *  @note This should not be called by the table, only ggzd.
- *  @param mod The GGZdmod object.
+ *  @param ggzdmod The GGZdmod object.
+ *  @param pwd The working directory for the game, or NULL.
  *  @param args The arguments for the program, as needed by exec.
+ *  @note The pwd directory must already exist.
  */
-void ggzdmod_set_module(GGZdMod * ggzdmod, char **args);
+void ggzdmod_set_module(GGZdMod * ggzdmod,
+                        const char *pwd, char **args);
 
 /** @brief Set seat data.
  *

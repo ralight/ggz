@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: parse_opt.c 4151 2002-05-05 00:22:08Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -43,6 +43,7 @@
 #include <parse_opt.h>
 #include <perms.h>
 #include <players.h>
+#include "util.h"
 
 /* Stuff from control.c we need access to */
 extern Options opt;
@@ -528,6 +529,16 @@ static void parse_game(char *name, char *dir)
 		}
 		ggz_free(b_list);
 	}
+
+	/* Set up data_dir. */
+	len = strlen(opt.data_dir) + strlen("/gamedata/")
+              + strlen(game_info->name) + 1;
+	game_info->data_dir = malloc(len);
+	if (game_info->data_dir == NULL)
+		err_sys_exit("malloc error in parse_game()");
+	snprintf(game_info->data_dir, len, "%s/gamedata/%s",
+	         opt.data_dir, game_info->name);
+	check_path(game_info->data_dir);
 
 	game_types[state.types] = *game_info;
 	state.types++;
