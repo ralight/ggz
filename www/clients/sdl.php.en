@@ -1,0 +1,36 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>SDL client: Vibora</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Features</i><br>
+<ul>
+<li>fullscreen graphical client
+<li>easy usage
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="/clients/pics/vibora.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
