@@ -758,6 +758,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
+			KMessageBox::information(this, i18n("Sorry, you cannot change the room while playing!"), i18n("Room join error"));
 			break;
 		case GGZCoreServer::loggedout:
 			KGGZDEBUG("loggedout\n");
@@ -789,6 +790,10 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::neterror:
 			KGGZDEBUG("neterror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error detected!"), KGGZChat::RECEIVE_ADMIN);
+			//emit signalMenu(MENUSIG_DISCONNECT);
+			//menuDisconnect();
+			// This is a quickhack, but for the user's sake
+			serverCollector(GGZCoreServer::loggedout, NULL);
 			break;
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
@@ -1138,6 +1143,7 @@ void KGGZ::menuView(int viewtype)
 			KGGZDEBUG("viewtype: unknown (%i)!\n", viewtype);
 	}
 	// Qt is crappy here... so we must do something for the chicks (animation)
+	KGGZDEBUG("resize from menuView()...\n");
 	m_workspace->resize(width() - 1, height() - 1);
 	m_workspace->resize(width(), height());
 }

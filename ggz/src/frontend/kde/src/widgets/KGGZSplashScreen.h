@@ -27,31 +27,30 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZSplash: Show a splash screen on startup of KGGZ. This is overload but cool. //
+// KGGZSplashScreen: The widget which does actually display the splash front page. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-// Header file
-#include "KGGZSplash.h"
+#ifndef KGGZ_SPLASH_SCREEN_H
+#define KGGZ_SPLASH_SCREEN_H
 
 // Qt includes
-#include <qlayout.h>
+#include <qwidget.h>
+#include <qevent.h>
 
-KGGZSplash::KGGZSplash(QWidget *parent = NULL, char *name = NULL)
-: QWidget(parent, name)
+// Display image on splash screen
+class KGGZSplashScreen : public QWidget
 {
-	QVBoxLayout *vbox;
+	Q_OBJECT
+	public:
+		// Constructor
+		KGGZSplashScreen(QWidget *parent = NULL, char *name = NULL);
+		// Destructor
+		~KGGZSplashScreen();
 
-	setBackgroundColor(QColor(255.0, 255.0, 255.0));
+	private:
+		// handle drawing of i18n'd text
+		void paintEvent(QPaintEvent *e);
+};
 
-	m_splash = new KGGZSplashScreen(this);
-
-	vbox = new QVBoxLayout(this, 0);
-	vbox->add(m_splash);
-}
-
-KGGZSplash::~KGGZSplash()
-{
-}
-
-
+#endif

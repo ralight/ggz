@@ -56,7 +56,7 @@ KGGZMotd::KGGZMotd(QWidget *parent = NULL, char *name = NULL)
 
 	m_edit = new QTextView(this);
 	m_edit->setGeometry(5, 5, 310, 360);
-	m_edit->setFont(QFont("Courier", 8, QFont::Bold));
+	m_edit->setFont(QFont("Courier", 10, QFont::Bold));
 
 	button = new QPushButton("OK", this);
 	button->setGeometry(100, 370, 120, 20);
@@ -81,11 +81,11 @@ void KGGZMotd::append(char *text)
 {
 	int i, j, count;
 	char tmp[8];
-	char *html[] = {"ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
+	char *html[] = {"000000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
 	//char buf[1024];
 	QString buffer;
 
-	//KGGZDEBUGF("KGGZMotd::append(%s)\n", text);
+	KGGZDEBUGF("KGGZMotd::append(%s)\n", text);
 	//KGGZDEBUGF("text length: %i\n", strlen(text));
 	count = 0;
 	//strcpy(buf, "");
@@ -107,6 +107,9 @@ void KGGZMotd::append(char *text)
 				case '>':
 					//sprintf(tmp, "&gt;");
 					buffer.append("&gt;");
+					break;
+				case '\n':
+					buffer.append("<br>");
 					break;
 				default:
 					//sprintf(tmp, "%c", text[i]);

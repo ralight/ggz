@@ -41,6 +41,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksimpleconfig.h>
+#include <kapp.h>
 
 KGGZBase::KGGZBase(char *name)
 : KTMainWindow(name)
@@ -65,7 +66,7 @@ KGGZBase::KGGZBase(char *name)
 	statusBar()->insertItem(i18n("  Not connected  "), 1);
 	statusBar()->insertItem(i18n("  Loading...  "), 2);
 
-        kggz = new KGGZ(this, "kggz");
+	kggz = new KGGZ(this, "kggz");
 
  	m_menu_ggz = new KPopupMenu(this, "menu_ggz");
   	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_CONNECT), i18n("&Connect"), MENU_GGZ_CONNECT);
@@ -138,9 +139,23 @@ KGGZBase::KGGZBase(char *name)
 
 	setView(kggz);
 	setCaption("KGGZ - [offline]");
-	if(x || x || width || height) setGeometry(x, y, width, height);
-	else resize(500, 430);
+	// Resize at dummy size first, then apply settings
+	//setGeometry(200, 200, 200, 200);
+	//show();
+	//updateGeometry();
+	if(x || y || width || height)
+	{
+		KGGZDEBUG("Geometry Management: Session at (%i, %i) found\n", x, y);
+		setGeometry(x, y, width, height);
+	}
+	else
+	{
+		KGGZDEBUG("No session - first start: resize to (500, 400)!\n");
+		//resize(500, 400);
+		setGeometry(KApplication::desktop()->width() / 2 - 250, KApplication::desktop()->height() / 2 - 225, 500, 441);
+	}
 	show();
+	//updateGeometry();
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 

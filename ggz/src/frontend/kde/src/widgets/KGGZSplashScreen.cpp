@@ -27,31 +27,43 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZSplash: Show a splash screen on startup of KGGZ. This is overload but cool. //
+// KGGZSplashScreen: The widget which does actually display the splash front page. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
 // Header file
-#include "KGGZSplash.h"
+#include "KGGZSplashScreen.h"
+
+// KGGZ includes
+#include "KGGZCommon.h"
+
+// KDE includes
+#include <klocale.h>
 
 // Qt includes
+#include <qpixmap.h>
 #include <qlayout.h>
+#include <qpainter.h>
 
-KGGZSplash::KGGZSplash(QWidget *parent = NULL, char *name = NULL)
+KGGZSplashScreen::KGGZSplashScreen(QWidget *parent = NULL, char *name = NULL)
 : QWidget(parent, name)
 {
-	QVBoxLayout *vbox;
-
-	setBackgroundColor(QColor(255.0, 255.0, 255.0));
-
-	m_splash = new KGGZSplashScreen(this);
-
-	vbox = new QVBoxLayout(this, 0);
-	vbox->add(m_splash);
+	setBackgroundColor(QColor(0.0, 0.0, 255.0));
+	setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/startup.png"));
+	setMaximumSize(500, 400);
 }
 
-KGGZSplash::~KGGZSplash()
+KGGZSplashScreen::~KGGZSplashScreen()
 {
 }
 
+void KGGZSplashScreen::paintEvent(QPaintEvent *e)
+{
+	QPainter p;
+
+	p.begin(this);
+	p.drawText(60, 273, i18n("Playing open source online games world-wide."));
+	p.drawText(60, 312, i18n("Selecting from more than 15 games."));
+	p.end();
+}
 

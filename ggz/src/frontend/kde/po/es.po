@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-05 17:01+0200\n"
+"POT-Creation-Date: 2001-04-30 21:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,7 +183,7 @@ msgstr ""
 msgid "Attempt to login refused!"
 msgstr ""
 
-#: KGGZ.cpp:1229
+#: KGGZ.cpp:1218
 msgid "Author: "
 msgstr ""
 
@@ -191,11 +191,11 @@ msgstr ""
 msgid "Bot"
 msgstr ""
 
-#: KGGZConnect.cpp:94
+#: KGGZConnect.cpp:92
 msgid "Cancel"
 msgstr ""
 
-#: KGGZConnect.cpp:151
+#: KGGZConnect.cpp:146
 msgid "Connect to server"
 msgstr ""
 
@@ -211,23 +211,23 @@ msgstr ""
 msgid "Couldn't connect to server!"
 msgstr ""
 
-#: KGGZ.cpp:1022
+#: KGGZ.cpp:1011
 msgid "Couldn't launch game!"
 msgstr ""
 
-#: KGGZConnect.cpp:220 KGGZConnect.cpp:245
+#: KGGZConnect.cpp:170 KGGZConnect.cpp:210
 msgid "Default server"
 msgstr ""
 
-#: KGGZConnect.cpp:76
+#: KGGZConnect.cpp:74
 msgid "Delete"
 msgstr ""
 
-#: KGGZ.cpp:1226
+#: KGGZ.cpp:1215
 msgid "Description: "
 msgstr ""
 
-#: KGGZ.cpp:804
+#: KGGZ.cpp:793
 msgid "ERROR: Chat error detected!"
 msgstr ""
 
@@ -243,7 +243,7 @@ msgstr ""
 msgid "ERROR: Couldn't leave table!"
 msgstr ""
 
-#: KGGZ.cpp:792
+#: KGGZ.cpp:785
 msgid "ERROR: Network error detected!"
 msgstr ""
 
@@ -251,7 +251,7 @@ msgstr ""
 msgid "ERROR: Network error!"
 msgstr ""
 
-#: KGGZ.cpp:800
+#: KGGZ.cpp:789
 msgid "ERROR: Protocol error detected!"
 msgstr ""
 
@@ -276,7 +276,7 @@ msgstr ""
 msgid "Error! Unknown command! Try /help instead."
 msgstr ""
 
-#: KGGZ.cpp:1100
+#: KGGZ.cpp:1089
 msgid "Failed launching the requested table!"
 msgstr ""
 
@@ -292,7 +292,7 @@ msgid ""
 "See help for details.\n"
 msgstr ""
 
-#: KGGZ.cpp:1242
+#: KGGZ.cpp:1231
 msgid "Game Type Information"
 msgstr ""
 
@@ -302,10 +302,6 @@ msgstr ""
 
 #: KGGZ.cpp:478 KGGZ.cpp:622
 msgid "Game over"
-msgstr ""
-
-#: KGGZInput.cpp:51
-msgid "Identifier"
 msgstr ""
 
 #: KGGZ.cpp:602
@@ -353,11 +349,11 @@ msgstr ""
 msgid "List of available commands:"
 msgstr ""
 
-#: KGGZConnect.cpp:80
+#: KGGZConnect.cpp:78
 msgid "Log in as user:"
 msgstr ""
 
-#: KGGZConnect.cpp:96
+#: KGGZConnect.cpp:94
 msgid "Log in as:"
 msgstr ""
 
@@ -366,7 +362,7 @@ msgstr ""
 msgid "Logged in as %s"
 msgstr ""
 
-#: KGGZ.cpp:765
+#: KGGZ.cpp:764
 msgid "Logged out"
 msgstr ""
 
@@ -378,11 +374,11 @@ msgstr ""
 msgid "Message Of The Day (MOTD)"
 msgstr ""
 
-#: KGGZ.cpp:1223
+#: KGGZ.cpp:1212
 msgid "Name: "
 msgstr ""
 
-#: KGGZConnect.cpp:75
+#: KGGZConnect.cpp:73
 msgid "New Profiles"
 msgstr ""
 
@@ -410,7 +406,7 @@ msgstr ""
 msgid "Players"
 msgstr ""
 
-#: KGGZ.cpp:1208
+#: KGGZ.cpp:1197
 msgid "Please join a room first."
 msgstr ""
 
@@ -418,15 +414,15 @@ msgstr ""
 msgid "Please join a room to start!"
 msgstr ""
 
-#: KGGZ.cpp:1187
+#: KGGZ.cpp:1176
 msgid "Please select a table to join!"
 msgstr ""
 
-#: KGGZConnect.cpp:79
+#: KGGZConnect.cpp:77
 msgid "Port:"
 msgstr ""
 
-#: KGGZ.cpp:1235
+#: KGGZ.cpp:1224
 msgid "Protocol: "
 msgstr ""
 
@@ -436,10 +432,6 @@ msgstr ""
 
 #: KGGZLaunch.cpp:264
 msgid "Reserved"
-msgstr ""
-
-#: KGGZ.cpp:761
-msgid "Room join error"
 msgstr ""
 
 #: KGGZBase.cpp:109
@@ -454,19 +446,15 @@ msgstr ""
 msgid "Seat assignments:"
 msgstr ""
 
-#: KGGZConnect.cpp:78
+#: KGGZConnect.cpp:76
 msgid "Server host:"
 msgstr ""
 
-#: KGGZ.cpp:1002
+#: KGGZ.cpp:991
 msgid "Sorry, no modules found for this game."
 msgstr ""
 
-#: KGGZ.cpp:761
-msgid "Sorry, you cannot change the room while playing!"
-msgstr ""
-
-#: KGGZConnect.cpp:108
+#: KGGZConnect.cpp:106
 msgid "Start ggzd server locally"
 msgstr ""
 
@@ -491,7 +479,7 @@ msgstr ""
 msgid "The ggzd server is already running!"
 msgstr ""
 
-#: KGGZ.cpp:1238
+#: KGGZ.cpp:1227
 msgid "URL: "
 msgstr ""
 
@@ -501,11 +489,11 @@ msgid ""
 "C, R, K, F"
 msgstr ""
 
-#: KGGZConnect.cpp:81
+#: KGGZConnect.cpp:79
 msgid "Use password:"
 msgstr ""
 
-#: KGGZ.cpp:1232
+#: KGGZ.cpp:1221
 msgid "Version: "
 msgstr ""
 
@@ -516,7 +504,7 @@ msgid ""
 "Your personal password is: %s"
 msgstr ""
 
-#: KGGZ.cpp:1154
+#: KGGZ.cpp:1143
 msgid "You cannot launch a game outside a room!"
 msgstr ""
 
@@ -524,15 +512,15 @@ msgstr ""
 msgid "Your most desired KDE network games launcher and chat system."
 msgstr ""
 
-#: KGGZConnect.cpp:100
+#: KGGZConnect.cpp:98
 msgid "guest"
 msgstr ""
 
-#: KGGZConnect.cpp:99
+#: KGGZConnect.cpp:97
 msgid "normal"
 msgstr ""
 
-#: KGGZConnect.cpp:101
+#: KGGZConnect.cpp:99
 msgid "starter"
 msgstr ""
 

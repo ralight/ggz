@@ -553,7 +553,9 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	{
 		case RECEIVE_CHAT:
 			tmp = QString("<font color=#0000ff>") + QString(player) + QString(":&nbsp;&nbsp;</font>");
-			output->append(tmp);
+			// Oh oh, Qt: that's your fault again (I'm happy with bug reports, eh)
+			//output->append(tmp);
+			output->setText(output->text() + tmp);
 			logChat(tmp);
 			parse(plaintext(message));
 			break;
@@ -599,3 +601,4 @@ void KGGZChat::shutdown()
 {
 	input->setEnabled(FALSE);
 }
+

@@ -34,6 +34,9 @@
 #ifndef KGGZ_SPLASH_H
 #define KGGZ_SPLASH_H
 
+// KGGZ includes
+#include "KGGZSplashScreen.h"
+
 // Qt includes
 #include <qwidget.h>
 
@@ -46,6 +49,10 @@ class KGGZSplash : public QWidget
 		KGGZSplash(QWidget *parent = NULL, char *name = NULL);
 		// Destructor
 		~KGGZSplash();
+
+	private:
+		// Widget holding the image
+		KGGZSplashScreen *m_splash;
 };
 
 #endif
