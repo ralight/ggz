@@ -34,6 +34,7 @@
 #include <poll.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdio.h>
 
 #define TIMEOUT 500
 
@@ -59,7 +60,8 @@ int main(void)
 	/* Setup options and initialize ggzcore lib */
 	opt.flags = GGZ_OPT_PARSER;
 	opt.global_conf = "/etc/ggz-text.rc";
-	opt.user_conf = "~/.ggz-txtrc";
+        opt.user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
+        sprintf(opt.user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
 
 	ggzcore_init(opt);
 
