@@ -1436,23 +1436,9 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		entry = ggz_list_head(seats);
 		while (entry) {
 			seat = ggz_list_get_data(entry);
-			switch (ggz_string_to_seattype(seat->type)) {
-			case GGZ_SEAT_OPEN:
-				/* Nothing to do: seats default to open */
-				break;
-			case GGZ_SEAT_BOT:
-				_ggzcore_table_add_bot(table_obj, seat->name, seat->index);
-				break;
-			case GGZ_SEAT_PLAYER:
-				_ggzcore_table_add_player(table_obj, seat->name, seat->index);
-				break;
-			case GGZ_SEAT_RESERVED:
-				_ggzcore_table_add_reserved(table_obj, seat->name, seat->index);
-				break;
-			case GGZ_SEAT_NONE:
-				/* Is this an error? */
-				break;
-			}
+			_ggzcore_table_set_seat(table_obj, seat->index,
+				ggz_string_to_seattype(seat->type),
+				seat->name);
 			entry = ggz_list_next(entry);
 		}
 		

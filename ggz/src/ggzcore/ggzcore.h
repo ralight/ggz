@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3199 2002-02-01 04:39:08Z jdorje $
+ * $Id: ggzcore.h 3270 2002-02-08 20:32:25Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -616,15 +616,23 @@ int ggzcore_table_init(GGZTable *table,
 			 
 void ggzcore_table_free(GGZTable *table);
 
-int ggzcore_table_add_player(GGZTable *table, 
-			    char *name, 
-			     const unsigned int seat);
-int ggzcore_table_add_bot(GGZTable *table, 
-			  char *name, 
-			  const unsigned int seat);
-int ggzcore_table_add_reserved(GGZTable *table, 
-			       char *name, 
-			       const unsigned int seat);
+/** @brief Set a seat type at a table, pre-launch.
+ *
+ *  When launching a table, call this function to set up a particular
+ *  seat at the table.  It can also be used to fiddle with already
+ *  existing tables, but that would be extremely unwise.
+ *
+ *  @param table The table object to change.
+ *  @param seat The seat number at the table to change.
+ *  @param type The type of seat to make it (open, reserved, or bot).
+ *  @param name The name of the seat (must be valid for reserved seats).
+ *  @return 0 on success, -1 on error.
+ *  @todo How do we stop the GGZ client from fiddling with random tables?
+ */
+int ggzcore_table_set_seat(GGZTable *table,
+			   const unsigned int seat,
+			   GGZSeatType type,
+			   char *name);
 int ggzcore_table_remove_player(GGZTable *table, char *name);
 
 int          ggzcore_table_get_id(GGZTable *table);

@@ -628,7 +628,7 @@ void _ggzcore_room_player_join_table(struct _GGZRoom *room,
 
 	if (room->tables) {
 		table = _ggzcore_room_get_table_by_id(room, id);
-		_ggzcore_table_add_player(table, name, seat);
+		_ggzcore_table_set_seat(table, seat, GGZ_SEAT_PLAYER, name);
 	
 		if (room->players) {
 			player = _ggzcore_room_get_player_by_name(room, name);

@@ -1593,19 +1593,7 @@ static struct _GGZTable* _ggzcore_net_handle_table(struct _GGZNet *net)
 			return NULL;
 		}
 		
-		switch (seat) {
-		case GGZ_SEAT_PLAYER:
-			_ggzcore_table_add_player(table, player, i);
-			break;
-		case GGZ_SEAT_RESERVED:
-			_ggzcore_table_add_reserved(table, player, i);
-			break;
-		case GGZ_SEAT_BOT:
-			_ggzcore_table_add_bot(table, NULL, i);
-			break;
-		default:
-			break;
-		}
+		_ggzcore_table_set_seat(table, i, seat, player);
 	}
 
 	return table;

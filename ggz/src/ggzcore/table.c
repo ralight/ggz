@@ -68,36 +68,29 @@ void ggzcore_table_free(GGZTable *table)
 }
 
 
-int ggzcore_table_add_player(GGZTable *table, char *name, const unsigned int seat)
+int ggzcore_table_set_seat(GGZTable *table,
+			   const unsigned int seat,
+			   GGZSeatType type,
+			   char *name)
 {
-	if (table && name && seat < table->num_seats) {
-		_ggzcore_table_add_player(table, name, seat);
-		return 0;
-	}
-	else 
+	/* Check table and seat number. */
+	if (!table || seat >= table->num_seats)
 		return -1;
-}
-
-
-int ggzcore_table_add_bot(GGZTable *table, char *name, const unsigned int seat)
-{
-	if (table && seat < table->num_seats) {
-		_ggzcore_table_add_bot(table, name, seat);
-		return 0;
-	}
-	else 
+		
+	/* The GGZ client should only set seats to OPEN, BOT, or RESERVED. */
+	if (type != GGZ_SEAT_OPEN
+	    && type != GGZ_SEAT_BOT
+	    && type != GGZ_SEAT_RESERVED)
 		return -1;
-}
-
-
-int ggzcore_table_add_reserved(GGZTable *table, char *name, const unsigned int seat)
-{
-	if (table && name && seat < table->num_seats) {
-		_ggzcore_table_add_reserved(table, name, seat);
-		return 0;
-	}
-	else 
+		
+	/* If we set a seat to RESERVED, we need a reservation name. */
+	if (type == GGZ_SEAT_RESERVED
+	    && !name)
 		return -1;
+		
+	/* Ok, go! */
+	_ggzcore_table_set_seat(table, seat, type, name);
+	return 0;
 }
 
 
@@ -252,54 +245,37 @@ void _ggzcore_table_set_state(struct _GGZTable *table, const char state)
 }
 
 
-void _ggzcore_table_add_player(struct _GGZTable *table, char *name, const unsigned int seat)
+void _ggzcore_table_set_seat(struct _GGZTable *table,
+			     const unsigned int seat,
+			     GGZSeatType type,
+			     char* name)
 {
-	struct _GGZSeat new_seat;
-
-	new_seat.type = GGZ_SEAT_PLAYER;
+	struct _GGZSeat new_seat;	
+	
+	/* Set up the new seat. */
+	new_seat.type = type;
 	new_seat.name = ggz_strdup(name);
-
-	table->seats[seat] = new_seat;
-}
-
-
-void _ggzcore_table_add_bot(struct _GGZTable *table, char *name, const unsigned int seat)
-{
-	struct _GGZSeat new_seat;
-
-	new_seat.type = GGZ_SEAT_BOT;
-	new_seat.name = ggz_strdup(name);
-
-	table->seats[seat] = new_seat;
-}
-
-
-void _ggzcore_table_add_reserved(struct _GGZTable *table, char *name, const unsigned int seat)
-{
-	struct _GGZSeat new_seat;
-
-	new_seat.type = GGZ_SEAT_RESERVED;
-	new_seat.name = ggz_strdup(name);
-
+	
+	/* Get rid of the old seat. */
+	if (table->seats[seat].name)
+		ggz_free(table->seats[seat].name);
+	
 	table->seats[seat] = new_seat;
 }
 
 
 int  _ggzcore_table_remove_player(struct _GGZTable *table, char *name)
 {
-	int i, status = -1;
+	int i;
 
 	for (i = 0; i < table->num_seats; i++)
 		if (table->seats[i].name != NULL 
 		    && strcmp(table->seats[i].name, name) == 0) {
-			ggz_free(table->seats[i].name);
-			table->seats[i].name = NULL;
-			table->seats[i].type = GGZ_SEAT_OPEN;
-			status = 0;
-			break;
+			_ggzcore_table_set_seat(table, i, GGZ_SEAT_OPEN, NULL);
+			return 0;
 		}
 
-	return status;
+	return -1;
 }
 
 

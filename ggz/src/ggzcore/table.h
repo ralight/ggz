@@ -77,15 +77,16 @@ void _ggzcore_table_free(struct _GGZTable *table);
 void _ggzcore_table_set_id(struct _GGZTable *table, const int id);
 void _ggzcore_table_set_state(struct _GGZTable *table, const char state);
 
-void _ggzcore_table_add_player(struct _GGZTable *table, 
-			       char *name, 
-			       const unsigned int seat);
-void _ggzcore_table_add_bot(struct _GGZTable *table, 
-			    char *name, 
-			    const unsigned int seat);
-void _ggzcore_table_add_reserved(struct _GGZTable *table, 
-				 char *name, 
-				 const unsigned int seat);
+/** @brief Change a seat value.
+ *
+ *  This changes the seat status for any seat at the table.  It is
+ *  called by both front-end and back-end functions to do the
+ *  actual work of changing the seat.
+ */
+void _ggzcore_table_set_seat(struct _GGZTable *table,
+			     const unsigned int seat,
+			     GGZSeatType type,
+			     char *name);
 int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
 
 int                   _ggzcore_table_get_id(struct _GGZTable *table);
