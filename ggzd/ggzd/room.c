@@ -302,6 +302,8 @@ static void room_notify_change(const int p, const int old, const int new)
 
 
 /* Queue up a chat emission for the room */
+/* Messages passed to room_emit() MUST be dynamically allocated via malloc */
+/* the caller MUST NOT free the msg as we need to keep it!                 */
 int room_emit(const int room, const int sender, char *msg)
 {
 	ChatItemStruct *new_chat;
