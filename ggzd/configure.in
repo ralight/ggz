@@ -255,6 +255,7 @@ AC_OUTPUT([Makefile
 	   game_servers/dots/Makefile
 	   game_servers/lapocha/Makefile
 	   game_servers/ggzcards/Makefile
+	   game_servers/ggzcards/games/Makefile
 	   game_servers/ggzcards/config/Makefile
 	   game_servers/reversi/Makefile
 	   game_servers/combat/Makefile
