@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: animation.c 5091 2002-10-28 22:53:23Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -49,7 +49,8 @@
 
 /* The delay before clearing cards off of the table (milliseconds). */
 #define TABLE_CLEARING_DELAY	\
-	(preferences.longer_clearing_delay ? 2000 : 1000)
+	(preferences.no_clearing_delay ? 100 \
+	 : (preferences.longer_clearing_delay ? 2000 : 1000))
 
 /* A backing store used only for animation.  It basically sits on top of
    table_buf. */

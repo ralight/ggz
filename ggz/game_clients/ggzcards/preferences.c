@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: preferences.c 5091 2002-10-28 22:53:23Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -84,6 +84,14 @@ PrefType pref_types[] = {
 	    "\"Last Trick\" selection of the \"Messages\" menu."),
 	 &preferences.longer_clearing_delay,
 	 FALSE},
+#ifdef DEBUG
+	{"no_clearing_delay",
+	 N_("Clear the table immediately after each trick"),
+	 N_("Setting this option causes the cards to be cleared from the "
+	    "table after just one-tenth of a second."),
+	 &preferences.no_clearing_delay,
+	 FALSE},
+#endif
 
 	{"single_click_play",
 	 N_("Single-click cards to play them"),
