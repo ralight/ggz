@@ -270,7 +270,7 @@ int GGZCoreServer::dataPending()
 
 int GGZCoreServer::dataRead()
 {
-	return ggzcore_server_read_data(m_server);
+	return ggzcore_server_read_data(m_server, ggzcore_server_get_fd(m_server));
 }
 
 int GGZCoreServer::dataWrite()

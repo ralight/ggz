@@ -71,20 +71,24 @@ int GGZCoreGame::join()
 
 int GGZCoreGame::dataSend(char* buffer)
 {
-	return ggzcore_game_send_data(m_game, buffer);
+	//return ggzcore_game_send_data(m_game, buffer);
+	return 0;
 }
 
 int GGZCoreGame::dataPending()
 {
-	return ggzcore_game_data_is_pending(m_game);
+	//return ggzcore_game_data_is_pending(m_game);
+	return 0;
 }
 
 int GGZCoreGame::dataRead()
 {
-	return ggzcore_game_read_data(m_game);
+	//return ggzcore_game_read_data(m_game);
+	return 0;
 }
 
 int GGZCoreGame::dataWrite()
 {
-	return ggzcore_game_write_data(m_game);
+	//return ggzcore_game_write_data(m_game);
+	return 0;
 }

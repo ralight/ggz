@@ -721,7 +721,12 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
 			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
-			m_killserver = 1;
+
+			detachServerCallbacks();
+			delete kggzserver;
+			kggzserver = NULL;
+			//m_killserver = 1;
+
 			menuConnect();
 			break;
 		case GGZCoreServer::loggedin:

@@ -187,7 +187,8 @@ int GGZCoreRoom::leaveTable(int force)
 
 int GGZCoreRoom::sendData(char* buffer)
 {
-	return ggzcore_room_send_game_data(m_room, buffer);
+	//return ggzcore_room_send_game_data(m_room, buffer);
+	return 0;
 }
 
 GGZRoom* GGZCoreRoom::room()
