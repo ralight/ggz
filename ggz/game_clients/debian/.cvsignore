@@ -1,7 +1,0 @@
-*.debhelper
-files
-dirs
-tmp
-*.substvars
-ggz-gtk-games
-
