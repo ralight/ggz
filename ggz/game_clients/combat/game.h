@@ -82,6 +82,7 @@ void game_start();
 // Draw stuff
 void game_draw_bg();
 void game_draw_board();
+void game_draw_extra();
 void game_draw_unit(int, int, int, int);
 void game_draw_terrain(int, int, int);
 void game_add_player_info(int);

@@ -42,6 +42,7 @@ combat_game cbt_game;
 GtkPixmap *tiles[12];
 GdkColor *player_colors;
 GdkColor last_color;
+GdkColor current_color;
 GdkColor lake_color;
 GdkColor open_color;
 GdkGC *solid_gc;
@@ -49,6 +50,9 @@ GdkGC *tile_gc;
 
 
 // TODO: Load all this information from a config file
+
+#define LAST_COLORNAME "RGB:55/77/55"
+#define CURRENT_COLORNAME "RGB:00/00/00"
 
 #define PIXMAPS 12 // (May have more: Lakes, Unknown units, etc)
 
@@ -181,7 +185,7 @@ int game_ask_options() {
 	combat_game _game;
 	char *game_str = NULL;
 	int a;
-	/* Default game  */
+	/* Default game */
 	_game.width = 10;
 	_game.height = 10;
 	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
@@ -205,9 +209,6 @@ int game_ask_options() {
 	_game.map[CART(8,5,10)].type  = T_LAKE;
 	_game.map[CART(7,6,10)].type  = T_LAKE;
 	_game.map[CART(8,6,10)].type  = T_LAKE;
-
-	// FIXME: Delete this
-	printf("Writing army data\n");
 
 	_game.army[0][U_FLAG] = 1;
 	_game.army[0][U_BOMB] = 6;
@@ -246,15 +247,15 @@ int game_ask_options() {
 	_game.army[0][U_FLAG] = 1;
 	_game.army[0][U_BOMB] = 0;
 	_game.army[0][U_SPY] = 0;
-	_game.army[0][U_SCOUT] = 1;
-	_game.army[0][U_MINER] = 1;
+	_game.army[0][U_SCOUT] = 3;
+	_game.army[0][U_MINER] = 0;
 	_game.army[0][U_SERGEANT] = 0;
 	_game.army[0][U_LIEUTENANT] = 0;
 	_game.army[0][U_CAPTAIN] = 0;
 	_game.army[0][U_MAJOR] = 0;
 	_game.army[0][U_COLONEL] = 0;
 	_game.army[0][U_GENERAL] = 0;
-	_game.army[0][U_MARSHALL] = 1; */
+	_game.army[0][U_MARSHALL] = 0; */
 	
 	game_status("Sending options string to server");
 
@@ -320,8 +321,11 @@ void game_init_board() {
 		gdk_colormap_alloc_color(sys_colormap, &player_colors[a], FALSE, TRUE);
 	}
 
-	gdk_color_parse("RGB:FF/FF/00", &last_color);
+	gdk_color_parse(LAST_COLORNAME, &last_color);
 	gdk_colormap_alloc_color(sys_colormap, &last_color, FALSE, TRUE);
+
+	gdk_color_parse(CURRENT_COLORNAME, &current_color);
+	gdk_colormap_alloc_color(sys_colormap, &current_color, FALSE, TRUE);
 
 	gdk_color_parse(lakename, &lake_color);
 	gdk_colormap_alloc_color(sys_colormap, &lake_color, FALSE, TRUE);
@@ -451,34 +455,71 @@ void game_draw_board() {
 				 LAST(cbt_game.map[a].unit), GET_OWNER(cbt_game.map[a].unit));
 	}
 
-	// Draw lasts
-	game_draw_unit(cbt_info.last_to%cbt_game.width, 
-			cbt_info.last_to/cbt_game.width,
-			cbt_info.last_unit, -1);
-
-	// Draw borders
-	gdk_gc_set_foreground(solid_gc, &last_color);
-	if (cbt_info.last_from >= 0)
-		gdk_draw_rectangle( cbt_buf,
-				solid_gc,
-				FALSE,
-				cbt_info.last_from%cbt_game.width*(PIXSIZE+1),
-			 	cbt_info.last_from/cbt_game.width*(PIXSIZE+1),
-				PIXSIZE, PIXSIZE);
-	if (cbt_info.last_to >= 0)
-		gdk_draw_rectangle( cbt_buf,
-				solid_gc,
-				FALSE,
-				cbt_info.last_to%cbt_game.width*(PIXSIZE+1),
-			 	cbt_info.last_to/cbt_game.width*(PIXSIZE+1),
-				PIXSIZE, PIXSIZE);
-	
+	game_draw_extra();
 
 	// Update the widget
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "mainarea");
 	gtk_widget_draw(tmp, NULL);
 
 }
+
+void game_draw_extra() {
+
+	// Draw lasts
+	if (cbt_info.last_unit >= 0)
+		game_draw_unit(cbt_info.last_to%cbt_game.width, 
+				cbt_info.last_to/cbt_game.width,
+				cbt_info.last_unit, -1);
+
+	// Draw borders
+	gdk_gc_set_foreground(solid_gc, &last_color);
+	if (cbt_info.last_from >= 0) {
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_from%cbt_game.width*(PIXSIZE+1),
+			 	cbt_info.last_from/cbt_game.width*(PIXSIZE+1),
+				PIXSIZE+1, PIXSIZE+1);
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_from%cbt_game.width*(PIXSIZE+1)+1,
+			 	cbt_info.last_from/cbt_game.width*(PIXSIZE+1)+1,
+				PIXSIZE-1, PIXSIZE-1);
+	}
+	if (cbt_info.last_to >= 0) {
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_to%cbt_game.width*(PIXSIZE+1),
+			 	cbt_info.last_to/cbt_game.width*(PIXSIZE+1),
+				PIXSIZE+1, PIXSIZE+1);
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_to%cbt_game.width*(PIXSIZE+1)+1,
+			 	cbt_info.last_to/cbt_game.width*(PIXSIZE+1)+1,
+				PIXSIZE-1, PIXSIZE-1);
+	}
+	if (cbt_info.current >= 0 && cbt_game.state == CBT_STATE_PLAYING) {
+		gdk_gc_set_foreground(solid_gc, &current_color);
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.current%cbt_game.width*(PIXSIZE+1),
+			 	cbt_info.current/cbt_game.width*(PIXSIZE+1),
+				PIXSIZE+1, PIXSIZE+1);
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.current%cbt_game.width*(PIXSIZE+1)+1,
+			 	cbt_info.current/cbt_game.width*(PIXSIZE+1)+1,
+				PIXSIZE-1, PIXSIZE-1);
+	}
+		
+
+}
+	
 
 void game_add_player_info(int number) {
 	int a, b;
@@ -674,6 +715,7 @@ void game_handle_move(int p) {
 			}
 		}
 	}
+	game_draw_board();
 	return;
 }
 
@@ -892,7 +934,7 @@ void game_get_attack() {
 		game_update_unit_list(seat2);
 		game_status("Two %s died", unitname[-f_u]);
 		// Update lasts
-		cbt_info.last_unit = -f_u;
+		cbt_info.last_unit = -1;
 		cbt_info.last_from = from;
 		cbt_info.last_to = to;
 	} else {
