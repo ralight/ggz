@@ -84,7 +84,7 @@ private: // Private attributes
   /** Check for validity */
   bool checkValid(int player, int mx, int my, int dx, int dy);
   /** Search for themes */
-  void scanThemeDir();
+  int scanThemeDir();
 protected slots: // Protected slots
   /** Tells the player that the game is over */
   void gameoverSlot(int winner);

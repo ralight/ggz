@@ -37,22 +37,35 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   char mboard[8][8];
   int x, y;
 
+  // Create the protocol
+  protocol = new ReversiProtocol();
+
   /* Handle the UI */
   // Create the KActions
   KStdAction::quit (kapp, SLOT(closeAllWindows()), actionCollection());
   requestSyncAct = new KAction(i18n("&Request sync"), 0, this, SLOT(requestSync()), actionCollection(), "requestSync");
   playAgainAct = new KAction(i18n("Play again"), 0, this, SLOT(playAgain()), actionCollection(), "playAgain");
   themes = new KActionMenu(i18n("Select theme"), actionCollection(), "themes");
-  scanThemeDir();
   createGUI();
-  // Now lets search for themes !
 
+  if (scanThemeDir() < 0) {
+    kapp->closeAllWindows();
+    kapp->quit();
+    delete this;
+    exit( -1 );
+  }
 
   // Create the game
   initGame();
 
 	// Create the view
 	view = new ReversiView(kapp->config()->readEntry("Default", "default"), this);
+  if (!view) {
+    kapp->closeAllWindows();
+    kapp->quit();
+    delete this;
+    exit( -1 );
+  }
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
       mboard[x][y] = board[x][y];
@@ -65,9 +78,6 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   statusBar()->insertItem(i18n("Wait..."), 1, 1);
   statusBar()->insertItem(view->getPlayer(0) + ": 2", 2, 2);
   statusBar()->insertItem(view->getPlayer(1) + ": 2", 3, 2);
-
-  // Create the protocol
-  protocol = new ReversiProtocol();
 
   // It's the main view
   this->setCentralWidget(view);
@@ -91,7 +101,12 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
 
 }
 
-void KReversi::scanThemeDir() {
+KReversi::~KReversi() {
+  delete view;
+  delete protocol;
+}
+
+int KReversi::scanThemeDir() {
   struct dirent **namelist;
   KRadioAction *theme_act;
   QString default_theme;
@@ -103,6 +118,11 @@ void KReversi::scanThemeDir() {
   default_theme = kapp->config()->readEntry("Default", "default");
 
   theme_num = scandir(theme_dir, &namelist, select_dirs, alphasort);
+  if (theme_num <= 0) {
+    /* Couldn't find any theme! */
+    KMessageBox::error(this, i18n("Couldn't find any theme in " + theme_dir +" ! Check your installation!"));
+    return -1;
+  }
   for (i = 0; i < theme_num; i++) {
     theme_act = new KRadioAction(namelist[i]->d_name, 0, this, SLOT(changeTheme()), actionCollection(), namelist[i]->d_name);
     theme_act->setExclusiveGroup("theme_group");
@@ -111,6 +131,8 @@ void KReversi::scanThemeDir() {
     if (default_theme == namelist[i]->d_name)
       theme_act->setChecked(true);
   }
+
+  return theme_num;
 
 }
 
@@ -125,10 +147,6 @@ void KReversi::changeTheme() {
       updateScore();
     }
   }
-}
-
-KReversi::~KReversi()
-{
 }
 
 /** Tell the player what is his color */

@@ -35,6 +35,8 @@ ReversiProtocol::ReversiProtocol() {
 };
 
 ReversiProtocol::~ReversiProtocol() {
+  /* Clean up the buffer */
+  readBuffer();
 };
 
 void ReversiProtocol::readBuffer() {

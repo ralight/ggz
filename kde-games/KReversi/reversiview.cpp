@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <config.h>
 #include <ksimpleconfig.h>
+#include <kapp.h>
+#include <kmessagebox.h>
+#include <klocale.h>
 #include "reversiview.h"
 
 /* Reversi Disc */
@@ -50,7 +53,13 @@ ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFl
 	setCanvas(canvas);
   
   /* Load pixmaps */
-  loadTheme( theme, false );
+  if ( loadTheme( theme, false ) < 0 ) {
+    kapp->closeAllWindows();
+    kapp->quit();
+    delete this;
+    exit(-1);
+    return;
+  }
 //  debug(theme);
 
   /* Add the initial four discs */
@@ -69,7 +78,7 @@ ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFl
 
 }
 
-void ReversiView::loadTheme( QString theme, bool keep ) {
+int ReversiView::loadTheme( QString theme, bool keep ) {
   ReversiDisc *d;
   int board[8][8];
   KSimpleConfig conf(GGZDATADIR "/kreversi/pixmaps/" + theme + "/themerc", true);
@@ -84,6 +93,13 @@ void ReversiView::loadTheme( QString theme, bool keep ) {
   /* Load images */
   conf.setGroup("Filenames");
   QPixmap tile_img(GGZDATADIR "/kreversi/pixmaps/" + theme + "/" + conf.readEntry("Tiles", "tiles.png"));
+
+  if (tile_img.isNull()) {
+    /* Couldn't load theme! */
+    KMessageBox::error(this, i18n("Couldn't load theme " + theme +"! Check your installation!"));
+    return -1;
+  }
+
   disc_img = new QCanvasPixmapArray( GGZDATADIR "/kreversi/pixmaps/" + theme + "/" + conf.readEntry("Disc", "disc%1.png") , frames);
 
   /* Names */
@@ -121,6 +137,8 @@ void ReversiView::loadTheme( QString theme, bool keep ) {
 
   canvas->update();
   canvas->setAdvancePeriod(speed);
+
+  return 0;
 
 }
 
