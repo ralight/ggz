@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4541 2002-09-13 05:49:33Z jdorje $
+ * $Id: table.h 4543 2002-09-13 06:49:00Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -125,7 +125,7 @@ int table_kill(int room, int index, char *name);
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
-		 struct GGZTable** tables);
+		 struct GGZTable*** tables);
 
 /* Find a player at a table */
 int table_find_player(int room, int index, char *name);

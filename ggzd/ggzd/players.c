@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4541 2002-09-13 05:49:33Z jdorje $
+ * $Id: players.c 4543 2002-09-13 06:49:00Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -870,7 +870,7 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
 GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
                                           char global)
 {
-	GGZTable *my_tables;
+	GGZTable **my_tables;
 	int count, i;
 	
 	dbg_msg(GGZ_DBG_UPDATE, "Handling table list request for %s", 
@@ -904,15 +904,18 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 		return GGZ_REQ_FAIL;
 	
 	for (i = 0; i < count; i++)
-		if (net_send_table(player->client->net, &my_tables[i]) < 0)
+		if (net_send_table(player->client->net, my_tables[i]) < 0)
 			return GGZ_REQ_DISCONNECT;
 
 
 	if (net_send_table_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	if (count > 0)
+	if (count > 0) {
+		int i;
+		for (i = 0; i < count; i++) table_free(my_tables[i]);
 		ggz_free(my_tables);
+	}
 	
 	return GGZ_REQ_OK;
 }

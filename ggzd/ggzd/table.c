@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4541 2002-09-13 05:49:33Z jdorje $
+ * $Id: table.c 4543 2002-09-13 06:49:00Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -74,7 +74,7 @@ typedef struct {
 /* Packaging for table events */
 typedef struct {
 	unsigned char opcode;
-	GGZTable table;
+	GGZTable *table;
 	/* player and seat are only used for some operations */
 	char player[MAX_USER_NAME_LEN + 1];
 	int seat;
@@ -86,6 +86,7 @@ extern struct GGZState state;
 extern Options opt;
 
 /* Local functions for handling tables */
+static GGZTable *table_copy(GGZTable *table);
 static int   table_check(GGZTable* table);
 static int   table_handler_launch(GGZTable* table);
 static void* table_new_thread(void *index_ptr);
@@ -112,6 +113,7 @@ static int   table_seat_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 /*static int   table_spectator_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 				      unsigned int spectator);*/
 			      
+static void table_event_data_free(void* data);
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 					       void* data);
 static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
@@ -169,6 +171,56 @@ GGZTable* table_new(void)
 	return table;
 }
 
+
+/* Copy a table, so that you can read it later.  The new table is not a
+   substitute for the old - it is just a snapshot of the state of the
+   table.  Thus transit, event, ggzdmod, and lock information on the copy
+   cannot be used.  But you can look and see who's at the table, etc.  The
+   table may be safely freed with table_free().
+
+   You must have a read lock on the table before calling this function. */
+static GGZTable *table_copy(GGZTable *table)
+{
+	size_t size;
+	GGZTable *new_table;
+
+	size = sizeof(GGZTable);
+	new_table = ggz_malloc(size);
+	memcpy(new_table, table, size);
+
+	/* Some elements need to be copied explicitly. */
+#ifdef UNLIMITED_SEATS
+	if (new_table->num_seats > 0) {
+		size = new_table->num_seats * sizeof(*new_table->seat_names);
+		new_table->seat_names = ggz_malloc(size);
+		memcpy(new_table->seat_names, table->seat_names, size);
+
+		size = new_table->num_seats * sizeof(*new_table->seat_types);
+		new_table->seat_types = ggz_malloc(size);
+		memcpy(new_table->seat_types, table->seat_types, size);
+	}
+#endif
+#ifdef UNLIMITED_SPECTATORS
+	if (new_table->max_num_spectators > 0) {
+		size = new_table->max_num_spectators
+			* sizeof(*new_table->spectators);
+		new_table->spectators = ggz_malloc(size);
+		memcpy(new_table->spectators, table->spectators, size);
+	} else
+		new_table->spectators = NULL;
+#endif
+
+	/* Some elements just shouldn't be copied. */
+	new_table->transit = 0;
+	new_table->transit_name = NULL;
+	new_table->transit_seat = -1;
+	new_table->ggzdmod = NULL;
+	new_table->events_head = NULL;
+	new_table->events_tail = NULL;
+	/* What about table->lock? */
+
+	return new_table;
+}
 
 
 /*
@@ -1022,7 +1074,7 @@ static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
-		 GGZTable** tables)
+		 GGZTable*** tables)
 {
 	GGZTable* t;
 	int max, i, t_count, count = 0;
@@ -1066,14 +1118,14 @@ int table_search(char* name, int room, int type, char global,
 		return 0;
 	}
 
-	*tables = ggz_malloc(t_count * sizeof(GGZTable));
+	*tables = ggz_malloc(t_count * sizeof(GGZTable*));
 
 	/* Copy the tables we want */
 	if (type == -1) {
 		for (i = 0; (i < max && count < t_count); i++) {
 			if ( (t = rooms[room].tables[i])) {
 				pthread_rwlock_rdlock(&t->lock);
-				(*tables)[count++] = *t;
+				(*tables)[count++] = table_copy(t);
 				pthread_rwlock_unlock(&t->lock);
 			}
 		}
@@ -1082,7 +1134,7 @@ int table_search(char* name, int room, int type, char global,
 			if ( (t = rooms[room].tables[i]) 
 			     && type_match_table(type, t)) {
 				pthread_rwlock_rdlock(&t->lock);
-				(*tables)[count++] = *t;
+				(*tables)[count++] = table_copy(t);
 				pthread_rwlock_unlock(&t->lock);
 			}
 		}
@@ -1146,12 +1198,13 @@ static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 	/* Pack data */
 	data->opcode = opcode;
 	pthread_rwlock_rdlock(&table->lock);
-	data->table = *table;
+	data->table = table_copy(table);
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* Queue table event for whole room */
 	status = event_room_enqueue(room, table_event_callback,
-				    sizeof(*data), data, NULL);
+				    sizeof(*data), data,
+				    table_event_data_free);
 	
 	return status;
 }
@@ -1166,14 +1219,15 @@ static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 	/* Pack up table update data */
 	data->opcode = opcode;
 	pthread_rwlock_rdlock(&table->lock);
-	data->table = *table;
+	data->table = table_copy(table);
 	pthread_rwlock_unlock(&table->lock);
 	strcpy(data->player, name);
 	data->seat = seat;
 
 	/* Queue table event for whole room */
 	status = event_room_enqueue(room, table_event_callback,
-				    sizeof(*data), data, NULL);
+				    sizeof(*data), data,
+				    table_event_data_free);
 
 	return status;
 }
@@ -1224,6 +1278,15 @@ static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode
 #endif
 
 
+static void table_event_data_free(void* data)
+{
+	GGZTableEventData *event_data = data;
+
+	table_free(event_data->table);
+	ggz_free(event_data);
+}
+
+
 /* Event callback for delivering table list update to a player */
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
                                                void* data)
@@ -1237,22 +1300,23 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 	switch (event->opcode) {
 	case GGZ_UPDATE_DELETE:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d deleted",
-			player->name, event->table.index);
+			player->name, event->table->index);
 		break;
 
 	case GGZ_UPDATE_ADD:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
-			player->name, event->table.index);
+			player->name, event->table->index);
 		break;
 
 	case GGZ_UPDATE_DESC:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
-			player->name, event->table.index, event->table.desc);
+			player->name, event->table->index, event->table->desc);
 		break;		
 		
 	case GGZ_UPDATE_STATE:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
-			player->name, event->table.index, event->table.state);
+			player->name, 
+			event->table->index, event->table->state);
 		break;
 
 	case GGZ_UPDATE_LEAVE:
@@ -1266,7 +1330,7 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, seat.name, 
 			event->opcode == GGZ_UPDATE_JOIN ? "join" : "leave",
-			seat.index, event->table.index);
+			seat.index, event->table->index);
 		break;
 
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
@@ -1281,12 +1345,12 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 			player->name, spectator.name,
 			event->opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join"
 				: "leave",
-			spectator.index, event->table.index);
+			spectator.index, event->table->index);
 		break;
 	}
 
 	if (net_send_table_update(player->client->net, event->opcode,
-				  &event->table, update_data) < 0)
+				  event->table, update_data) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -1367,7 +1431,9 @@ void table_free(GGZTable* table)
 
 	/* FIXME: do we need to free transit too? */
 
-	ggzdmod_free(table->ggzdmod);
+	if (table->ggzdmod)
+		ggzdmod_free(table->ggzdmod);
+
 	ggz_free(table);
 }
 
