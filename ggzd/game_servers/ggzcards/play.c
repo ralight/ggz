@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: play.c 4052 2002-04-22 23:40:45Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -34,6 +34,10 @@
 #include "net.h"
 #include "play.h"
 
+#ifndef DEBUG
+static bool hand_has_valid_card(player_t p, hand_t *hand);
+#endif /* DEBUG */
+
 void request_client_play(player_t p, seat_t s)
 {
 	/* Sanity checks */
@@ -53,6 +57,19 @@ void request_client_play(player_t p, seat_t s)
 	
 	net_send_play_request(p, s);
 }
+
+#ifdef DEBUG
+static bool hand_has_valid_card(player_t p, hand_t *hand)
+{
+	int i;
+
+	for (i = 0; i < hand->hand_size; i++)
+		if (game.data->verify_play(p, hand->cards[i]) == NULL)
+			return TRUE;
+			
+	return FALSE;
+}
+#endif /* DEBUG */
 
 void handle_client_play(player_t p, card_t card)
 {
@@ -104,6 +121,10 @@ void handle_client_play(player_t p, card_t card)
 		   ai must also check the validity as above.  This could be
 		   changed... */
 		handle_play_event(p, card);
-	else
+	else {
 		handle_badplay_event(p, err);
+#ifdef DEBUG
+		assert(hand_has_valid_card(p, hand));
+#endif
+	}
 }
