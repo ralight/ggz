@@ -811,17 +811,18 @@ please consult the GGZ meta server, using one of the available client-side
 tools.
 
 @itemize @bullet
-@item @url{ggz://jzaun.com} (USA, developers, medium connection)
-@item @url{ggz://ggz.snafu.de} (Germany, fast connection)
-@item @url{ggz://ggz.morat.net} (USA, fast connection) (Currently not available)
-@item @url{ggz://ggz.homeip.net} (Argentina, medium connection)
+@item @url{ggz://live.ggzgamingzone.org} (Germany, very fast connection)
+@item @url{ggz://jzaun.com} (USA, developers, medium connection, inactive)
+@item @url{ggz://ggz.snafu.de} (Germany, fast connection, inactive)
+@item @url{ggz://ggz.morat.net} (USA, fast connection) (Currently not available, inactive)
+@item @url{ggz://ggz.homeip.net} (Argentina, medium connection, inactive)
 @item @url{ggz://mindx.dyndns.org} (Germany, medium connection)
 @end itemize
 
 There are so far no known web pages or similar efforts. For more information,
 don't forget to check the GGZ home page regularly:
 
-@url{http://ggz.sourceforge.net}
+@url{http://www.ggzgamingzone.org}
 
 Server hosters are encouraged to subscribe to the ggz-servers mailing list.
 New servers are announced there, as are updates and hosting problems.

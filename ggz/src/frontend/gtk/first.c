@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: first.c 5619 2003-06-28 09:09:12Z dr_maux $
  *
  * Displayes information about the authors and the application.
  *
@@ -65,7 +65,7 @@ static struct {
 	int port;
 	int type;
 } hosts[] = { /* {"Morat.net (Fast)", "ggz.morat.net", 5688, 1}, */
-	      {"GGZ Europe (Fast)", "ggz.snafu.de", 5688, 1},
+	      {"GGZ Europe (Fast)", "live.ggzgamingzone.org", 5688, 1},
 	      {"CVS Developer Server", "jzaun.com", 5689, 1} };
 
 /* first_create_or_raise() - Displays the dialog or raises the

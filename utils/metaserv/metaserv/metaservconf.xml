@@ -3,8 +3,8 @@
 	<entrylist class="ggz">
 		<connection version="0.0.8pre" preference="100" location="pennsylvania/usa" speed="768">ggz://jzaun.com:5689</connection>
 		<connection version="0.0.6" preference="100" location="dresden/germany" speed="128">ggz://mindx.dyndns.org:5688</connection>
-		<connection version="0.0.7" preference="100" location="berlin/germany" speed="2000">ggz://ggz.snafu.de:5688</connection>
-		<meta version="0.1" preference="100">ggzmeta://ggz.snafu.de:15689</meta>
+		<connection version="0.0.7" preference="100" location="dresden/germany" speed="45000">ggz://live.ggzgamingzone.org:5688</connection>
+		<meta version="0.1" preference="100">ggzmeta://live.ggzgamingzone.org:15689</meta>
 		<meta version="0.1" preference="20">ggzmeta://mindx.dyndns.org:15689</meta>
 	</entrylist>
 	<entrylist class="teg">

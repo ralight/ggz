@@ -35,7 +35,7 @@ Directly before release
    (currently: Debian, Gentoo, Slackware, SourceMage, Arch Linux, Lunar Linux,
    Mandrake, Sorcerer)
 [] update permanent stable game servers
-   Currently, this is ggz.snafu.de.
+   Currently, this is live.ggzgamingzone.org.
    Also, the metaserver should contain an entry for the previous version,
    pointing to a convenience host.
    Announce on ggz-servers.
