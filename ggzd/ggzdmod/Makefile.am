@@ -1,7 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2925 2001-12-17 22:51:38Z jdorje $
+# $Id: Makefile.am 3846 2002-04-07 22:59:20Z jdorje $
 
 SUBDIRS = .
+
+EXTRA_DIST = Doxyfile
 
 # We prevent parallel execution since libggzdmod.a and libggzdmod.la will
 # interfere with each other (they use some of the same files, and make gets

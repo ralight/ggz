@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3111 2002-01-14 05:53:06Z jdorje $
+# $Id: Makefile.am 3846 2002-04-07 22:59:20Z jdorje $
+
+EXTRA_DIST = Doxyfile
 
 lib_LTLIBRARIES = libggzmod.la
 
