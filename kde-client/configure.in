@@ -62,6 +62,8 @@ dnl Create Makefiles
 dnl ================
 
 AC_OUTPUT(Makefile
+	modsniff/Makefile
+	ggzap/Makefile
 	ggz-kde/Makefile
 	ggz-kde/ggzcore++/Makefile
 	ggz-kde/ggzcore++/src/Makefile

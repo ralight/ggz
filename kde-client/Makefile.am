@@ -1,4 +1,4 @@
-SUBDIRS = ggz-kde
+SUBDIRS = ggz-kde modsniff ggzap
 
 dist-hook:
 	-perl am_edit
