@@ -70,6 +70,8 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 
 	/* Dialog window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_transient_for(GTK_WINDOW(window),
+				     GTK_WINDOW(playArea->window));
 	gtk_container_border_width(GTK_CONTAINER(window), 10);
 	gtk_window_set_title(GTK_WINDOW(window), _("Options"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
