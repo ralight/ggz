@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-09-09 19:01+0200\n"
+"POT-Creation-Date: 2001-10-13 23:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,7 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: ../modules/self.c:29
+#: ../modules/badword.c:96
+msgid " is a dirty evil bastard."
+msgstr " est fous."
+
+#: ../modules/badword.c:104
+msgid "Watch your language please!"
+msgstr "Regarde la langue s'il te plais!"
+
+#: ../modules/learning.c:121
+msgid "OK, learned that."
+msgstr "OK, appris."
+
+#: ../modules/learning.c:125
+msgid "You're too curious - I don't know everything."
+msgstr "Tu est trop curieux - je sais pas tous."
+
+#: ../modules/self.c:32
 #, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
@@ -23,7 +39,7 @@ msgid ""
 "Have fun :-)"
 msgstr ""
 
-#: ../modules/self.c:39
+#: ../modules/self.c:44
 msgid ""
 "This is the list of public commands I understand:\n"
 "about: let me tell about myself\n"
@@ -35,13 +51,21 @@ msgid ""
 "my name is <fullname>: register you as fullname"
 msgstr ""
 
+#: ../src/module.c:226
+msgid "List of available modules:"
+msgstr "Liste des modules:"
+
+#: ../src/module.c:227
+msgid "No modules loaded at all."
+msgstr "Pas des modules sont actives."
+
 #: dict.pl:28
 msgid "That's a word. Come on, I don't know your native language yet."
-msgstr ""
+msgstr "C'est un mot. Je sais pas ton langue native."
 
 #: dict.pl:31
 msgid "What is what dude?"
-msgstr ""
+msgstr "Qu'est-ce que c'est, ca?"
 
 #: dict.pl:59
 msgid ""
@@ -54,15 +78,15 @@ msgstr ""
 
 #: rdf.pl:28
 msgid "From what news source my friend?"
-msgstr ""
+msgstr "De quois lieu de nouvelles mon ami?"
 
 #: rdf.pl:29
 msgid "Available are: slashdot, register, happypenguin, heise"
-msgstr ""
+msgstr "Je te offre: slashdot, register, happypenguin, heise"
 
 #: rdf.pl:65
 msgid "News source not available."
-msgstr ""
+msgstr "Pas trouve."
 
 #~ msgid "If you read plain English here, kick your system administrator.\n"
 #~ msgstr "Voulez-vous cou.... ah non, nous sommes des geeks avec morále :)\n"

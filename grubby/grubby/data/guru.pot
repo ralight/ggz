@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-09-09 19:01+0200\n"
+"POT-Creation-Date: 2001-10-13 23:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,7 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: ../modules/self.c:29
+#: ../modules/badword.c:96
+msgid " is a dirty evil bastard."
+msgstr ""
+
+#: ../modules/badword.c:104
+msgid "Watch your language please!"
+msgstr ""
+
+#: ../modules/learning.c:121
+msgid "OK, learned that."
+msgstr ""
+
+#: ../modules/learning.c:125
+msgid "You're too curious - I don't know everything."
+msgstr ""
+
+#: ../modules/self.c:32
 #, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
@@ -23,7 +39,7 @@ msgid ""
 "Have fun :-)"
 msgstr ""
 
-#: ../modules/self.c:39
+#: ../modules/self.c:44
 msgid ""
 "This is the list of public commands I understand:\n"
 "about: let me tell about myself\n"
@@ -33,6 +49,14 @@ msgid ""
 "have you seen <nick>: ask me when I last saw nick\n"
 "my (email | pager) is <contact>: register contact information\n"
 "my name is <fullname>: register you as fullname"
+msgstr ""
+
+#: ../src/module.c:226
+msgid "List of available modules:"
+msgstr ""
+
+#: ../src/module.c:227
+msgid "No modules loaded at all."
 msgstr ""
 
 #: dict.pl:28
