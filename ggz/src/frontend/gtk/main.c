@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: main.c 3152 2002-01-19 19:51:05Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -102,4 +102,3 @@ int main (int argc, char *argv[])
 	
 	return 0;
 }
-
