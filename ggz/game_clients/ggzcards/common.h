@@ -1,4 +1,4 @@
-/* $Id: common.h 2085 2001-07-24 00:30:45Z jdorje $ */
+/* $Id: common.h 2379 2001-09-05 23:52:11Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -259,7 +259,8 @@ extern void table_alert_trick(int player);
  *  @param option_cnt The number of options.
  *  @param choice_cnt The number of choices for each option.
  *  @param defaults The default choice for each option.
- *  @param option_choices Text message for each choice of each option. */
+ *  @param option_choices Text message for each choice of each option.
+ *  @note All parameters are freed after the function returns. */
 extern void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
 			      char ***option_choices);
 

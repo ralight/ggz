@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.c 2080 2001-07-23 13:01:31Z jdorje $ */
+/* $Id: dlg_bid.c 2379 2001-09-05 23:52:11Z jdorje $ */
 /*
  * File: dlg_bid.c
  * Author: Rich Gade
@@ -99,6 +99,8 @@ void dlg_options_submit (GtkWidget *widget, gpointer data)
 
 	statusbar_message( _("Sending options to server") );
 
+	/* options_selected was allocated in table_get_options */
+	free(options_selected);
 	options_selected = NULL;
 	option_count = 0;
 
@@ -206,9 +208,11 @@ static void dlg_option_display(int option_cnt, int* option_sizes, char*** option
 
 void table_get_options(int option_cnt, int *choice_cnt, int *defaults, char*** option_choices)
 {
-
+	/* options_selected is freed in dlg_options_submit */
 	option_count = option_cnt;
-	options_selected = defaults;
+	options_selected = malloc(option_cnt * sizeof(*defaults));
+	memcpy(options_selected, defaults, option_cnt * sizeof(*defaults));
+
 	dlg_option_display(option_cnt, choice_cnt, option_choices);
 
 	statusbar_message( _("Please select options.") );

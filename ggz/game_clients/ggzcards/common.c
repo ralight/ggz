@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2377 2001-09-05 22:19:19Z jdorje $
+ * $Id: common.c 2379 2001-09-05 23:52:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -571,13 +571,13 @@ static int handle_req_options()
 	set_game_state(WH_STATE_OPTIONS);
 	table_get_options(option_cnt, choice_cnt, defaults, option_choices);
 
-	/* Clean up.  The list of defaults isn't deleted not because it's
-	   left around for the table to use (it gets deleted later). */
+	/* Clean up. */
 	for (i = 0; i < option_cnt; i++) {
 		for (j = 0; j < choice_cnt[i]; j++)
 			free(option_choices[i][j]);
 		free(option_choices[i]);
 	}
+	free(defaults);
 	free(option_choices);
 	free(choice_cnt);
 
@@ -615,11 +615,6 @@ int client_send_options(int option_cnt, int *options)
 	for (i = 0; i < option_cnt; i++)
 		if (es_write_int(ggzfd, options[i]) < 0)
 			status = -1;
-
-	/* FIXME: this is SO ugly!!! The "defaults" list from the options
-	   request gets kept around and changed and becomes this list which
-	   we free here! What the hell was I thinking??? */
-	free(options);
 
 	set_game_state(WH_STATE_WAIT);
 
