@@ -1,0 +1,107 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Games Pages</b><br>
+The following games have been created by the GGZ Gaming Zone developers:
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>Board games:</i><br>
+<a href="/games/tictactoe/">TicTacToe</a>
+with the frontends
+<a href="/games/tictactoe/">TicTacToe (Gtk+)</a>,
+<a href="/games/ktictactux/">KTicTacTux (KDE)</a>,
+<a href="/games/ttt3d/">TTT3D (SDL)</a>,
+<a href="/games/guruttt/">Guru-TTT (Grubby)</a> and
+<a href="/games/tttxt/">TTTXT (Console)</a>
+<br>
+<a href="/games/dots/">Connect The Dots</a>
+with the frontends
+<a href="/games/dots/">Dots (Gtk+)</a> and
+<a href="/games/kdots/">KDots (KDE)</a>
+<br>
+<a href="/games/hastings/">Hastings1066</a>
+with the frontends
+<a href="/games/hastings/">Hastings1066 (Gtk+)</a> and
+<a href="/games/fyrdman/">Fyrdman (KDE)</a>
+<br>
+<a href="/games/reversi/">Reversi</a>
+with the frontends
+<a href="/games/reversi/">Reversi (Gtk+)</a> and
+<a href="/games/kreversi/">KReversi (KDE)</a>
+<br>
+<a href="/games/combat/">Combat</a>
+<br>
+<a href="/games/chess/">Chess</a>
+with the frontends
+<a href="/games/chess/">Chess (Gtk+)</a> and
+<a href="/games/koenig/">Koenig (KDE)</a>
+<br>
+<a href="/games/cchess/">Chinese Chess</a>
+<br>
+<a href="/games/ccheckers/">Chinese Checkers</a>
+with the frontends
+<a href="/games/ccheckers/">Chinese Checkers (Gtk+)</a> and
+<a href="/games/kcc/">KCC (KDE)</a>
+<br>
+<a href="/games/krosswater/">Krosswater</a>
+<br>
+<a href="/games/muehle/">Mühle</a>
+<br>
+<a href="/games/escape/">Escape</a>
+with the frontends
+<a href="/games/escape/">Escape (Windows)</a> and
+<a href="/games/escape-sdl/">Escape/SDL (SDL)</a>
+<br>
+<a href="/games/connectx/">ConnectX</a>
+<br>
+<br>
+
+<i>Card games:</i><br>
+<a href="/games/spades/">NetSpades</a>
+<br>
+<a href="/games/lapocha/">LaPocha</a>
+<br>
+<a href="/games/ggzcards/">GGZCards</a>
+<br>
+<br>
+
+<i>Other games:</i><br>
+<a href="/games/keepalive/">Keepalive</a>
+<br>
+<a href="/games/geekgame/">Geekgame</a>
+
+</td>
+</tr>
+</table>
+
+There's also a number of games not being part of GGZ, which do however provide
+support for GGZ so they're nicely integrated into the system using spectators,
+statistics and so on.
+
+<table class="inner">
+<tr><td>
+
+<i>External games:</i><br>
+<a href="/games/kamikaze/">Kamikaze</a>
+with the frontends Kamikaze (KDE) and PyKamikaze (SDL)
+<br>
+<a href="/games/tuxman/">Tuxman</a>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
