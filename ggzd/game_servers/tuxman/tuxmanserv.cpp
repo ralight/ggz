@@ -28,6 +28,7 @@
 
 // System includes
 #include <iostream>
+#include <unistd.h> // close()
 
 // Constructor: inherit from ggzgameserver
 TuxmanServer::TuxmanServer()
