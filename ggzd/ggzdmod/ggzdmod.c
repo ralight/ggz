@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2654 2001-11-04 22:04:28Z jdorje $
+ * $Id: ggzdmod.c 2655 2001-11-04 22:18:06Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -289,15 +289,37 @@ void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func)
 	ggzdmod->handlers[e] = func;
 }
 
-void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
+int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
 {
 	_GGZdMod *ggzdmod = mod;
+	GGZSeat *oldseat;
 	if (!CHECK_GGZDMOD(ggzdmod) || !seat || seat->num < 0
-	    || seat->num >= ggzdmod->num_seats
-	    || ggzdmod->type != GGZDMOD_GGZ) {
-		return;		/* not very useful */
+	    || seat->num >= ggzdmod->num_seats) {
+		return -2;		
 	}
-	memcpy(&ggzdmod->seats[seat->num], seat, sizeof(ggzdmod->seats[0]));
+	
+	oldseat = &ggzdmod->seats[seat->num];
+	
+	if (oldseat->num != seat->num)
+		ggzdmod_log(ggzdmod, "GGZDMOD: ERROR: Seat number doesn't match.");
+	
+	if (ggzdmod->type != GGZDMOD_GGZ) {
+		if (seat->fd != oldseat->fd || seat->type != oldseat->type)
+			return -1;
+		if (seat->name != oldseat->name && seat->type != GGZ_SEAT_BOT)
+			return -1;
+	}
+	
+	oldseat->fd = seat->fd;
+	oldseat->type = seat->type;
+	
+	if (oldseat->name != seat->name) {
+		if (oldseat->name)
+			ggz_free(oldseat->name);
+		oldseat->name = ggz_strdup(seat->name);	
+	}
+	
+	return 0;
 }
 
 

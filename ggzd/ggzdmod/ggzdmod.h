@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2654 2001-11-04 22:04:28Z jdorje $
+ * $Id: ggzdmod.h 2655 2001-11-04 22:18:06Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -96,7 +96,7 @@ typedef enum {
 	GGZ_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
 	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
 	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
-	GGZ_STATE_DONE	        /**< Table halted, prepping to exit. */
+	GGZ_STATE_DONE		/**< Table halted, prepping to exit. */
 } GGZdModState;
 
 /* @brief Callback events. Each of these is a possible ggzdmod event.  For
@@ -227,9 +227,9 @@ void ggzdmod_set_module(GGZdMod * mod, char **args);
 /** @brief Set seat data.
  *  @note The seat parameter contains the seat number.
  *  @todo This interface is unwieldy.
- *  @todo The table would like to change data; a return value can tell of success.
+ *  @return 0 on success, negative on failure.
  */
-void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
+int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
 
 /* 
  * Event/Data handling
