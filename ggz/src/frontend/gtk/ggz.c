@@ -29,6 +29,7 @@
 #include "chat.h"
 #include "ggz.h"
 #include "login.h"
+#include "support.h"
 #include "xtext.h"
 
 extern GtkWidget *dlg_login;
@@ -102,13 +103,13 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_list_players(GGZEventID id, void* event_data, void* user_data)
 {
-	GtkCList *tmp;
+	GtkWidget *tmp;
 	gint i;
 	gchar **names;
 	gchar *player[4];
 
 	/* Clear current list of players */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
+	tmp = lookup_widget(win_main, "player_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Display current list of players */
@@ -130,12 +131,12 @@ void ggz_list_players(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_list_rooms(GGZEventID id, void* event_data, void* user_data)
 {
-	GtkCList *tmp;
+	GtkWidget *tmp;
 	gint i;
 	gchar **names;
 
 	/* Clear current list of rooms */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+	tmp = lookup_widget(win_main, "room_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Display current list of rooms */
@@ -150,7 +151,7 @@ void ggz_list_rooms(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 {
-	GtkLabel *tmp;
+	GtkWidget *tmp;
 	gchar *name;
 
 	/* Get player list */
@@ -158,49 +159,49 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 	ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
 	/* Set the room label to current room */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "Current_room_label");
+	tmp = lookup_widget(win_main, "Current_room_label");
 	name = g_strdup_printf("Current Room: %s", ggzcore_room_get_name(ggzcore_state_get_room()));
 	gtk_label_set_text(GTK_LABEL(tmp), name);
 	g_free(name);
 
 	/* set senditivity */
 	/* Menu bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "game");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "edit");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "view");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(win_main, "connect");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "disconnect");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "game");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "edit");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "view");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 	/* Tool bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "launch_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "join_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "props_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "stats_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(win_main, "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "disconnect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "launch_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "join_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "props_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "stats_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 	/* Client area */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "send_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "chat_entry");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "send_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 }
 
@@ -242,42 +243,42 @@ void ggz_login_ok(GGZEventID id, void* event_data, void* user_data)
 
 	/* set senditivity */
 	/* Menu bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "game");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "edit");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "view");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(win_main, "connect");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "disconnect");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "game");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "edit");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "view");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 	/* Tool bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "launch_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "join_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "props_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "stats_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(win_main, "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "disconnect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "launch_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "join_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "props_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "stats_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 	/* Client area */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "send_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "chat_entry");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "send_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
 
 }
 
@@ -290,17 +291,17 @@ void ggz_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "connect_button");
+	tmp = lookup_widget(dlg_login, "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	gtk_widget_set_sensitive(tmp, TRUE);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "top_panel");
+	tmp = lookup_widget(dlg_login, "top_panel");
 	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "profile_frame");
+	tmp = lookup_widget(dlg_login, "profile_frame");
 	gtk_frame_set_label(GTK_FRAME(tmp), "Sorry!");
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "msg_label");
+	tmp = lookup_widget(dlg_login, "msg_label");
 	gtk_label_set_text(GTK_LABEL(tmp),
 		"That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
 }
@@ -311,44 +312,47 @@ void ggz_sensitivity_init(void)
 
 	/* set senditivity */
 	/* Menu bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "game");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "edit");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "view");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(win_main, "connect");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "disconnect");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "game");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "edit");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "view");
+	gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Tool bar */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "connect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "disconnect_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "launch_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "join_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "props_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "stats_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(win_main, "connect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "disconnect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "launch_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "join_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "leave_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "props_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "stats_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Client area */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "send_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "chat_entry");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(win_main, "send_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Set the room label to current room */
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "Current_room_label");
+	tmp = lookup_widget(win_main, "Current_room_label");
 	gtk_label_set_text(GTK_LABEL(tmp), "Current Room:");
 }
+

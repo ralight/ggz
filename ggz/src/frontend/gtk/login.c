@@ -38,7 +38,22 @@
 
 GtkWidget *dlg_login;
 
-static GtkWidget* create_dlg_login (void);
+
+static GtkWidget* create_dlg_login(void);
+
+/* Callbacks login dialog box */
+static void login_fill_defaults(GtkWidget *widget, gpointer data);
+static void login_profile_changed(GtkEditable *editable, gpointer data);
+static void login_edit_profiles(GtkButton *button, gpointer data);
+static void login_entry_changed (GtkEditable *editable, gpointer data);
+static void login_normal_toggled(GtkToggleButton *togglebutton, gpointer data);
+static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
+static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
+static void login_get_entries(GtkButton *button, gpointer data);
+static void login_start_session(GtkButton *button, gpointer data);
+static void login_cancel_button_clicked(GtkButton *button, gpointer data);
+						    
+
 
 void
 login_create_or_raise(void)
@@ -53,6 +68,7 @@ login_create_or_raise(void)
 	}
 }
 
+
 void
 login_destroy(void)
 {
@@ -63,7 +79,7 @@ login_destroy(void)
 }
 
 
-void
+static void
 login_fill_defaults                    (GtkWidget       *widget,
                                         gpointer         user_data)
 {
@@ -71,7 +87,7 @@ login_fill_defaults                    (GtkWidget       *widget,
 }
 
 
-void
+static void
 login_profile_changed                  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
@@ -79,7 +95,7 @@ login_profile_changed                  (GtkEditable     *editable,
 }
 
 
-void
+static void
 login_edit_profiles                    (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -87,7 +103,7 @@ login_edit_profiles                    (GtkButton       *button,
 }
 
 
-void
+static void
 login_entry_changed                    (GtkEditable     *editable,
                                         gpointer         user_data)
 {
@@ -95,15 +111,22 @@ login_entry_changed                    (GtkEditable     *editable,
 }
 
 
-void
+/* Show password box for normal logins only */
+static void
 login_normal_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+	GtkWidget* tmp = lookup_widget(GTK_WIDGET(user_data), "password_box");
+
+        if (GTK_TOGGLE_BUTTON(togglebutton)->active) 
+                gtk_widget_show(tmp);
+        else
+                gtk_widget_hide(tmp);
 
 }
 
 
-void
+static void
 login_guest_toggled                    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -111,7 +134,7 @@ login_guest_toggled                    (GtkToggleButton *togglebutton,
 }
 
 
-void
+static void
 login_first_toggled                    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -119,7 +142,7 @@ login_first_toggled                    (GtkToggleButton *togglebutton,
 }
 
 
-void
+static void
 login_get_entries                      (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -127,7 +150,7 @@ login_get_entries                      (GtkButton       *button,
 }
 
 
-void
+static void
 login_start_session                    (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -146,14 +169,16 @@ login_start_session                    (GtkButton       *button,
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "name_entry");
 	profile->login = gtk_entry_get_text(tmp);
 
+	/* FIXME: handle other login types */
 	profile->type = GGZ_LOGIN_GUEST;
 
+	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
 
 }
 
 
-void
+static void
 login_cancel_button_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
