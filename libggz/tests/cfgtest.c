@@ -1,6 +1,10 @@
 /* Test program for configuration file functions */
 /* Bonus:  This also tests list handling pretty intensively */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])
 	/* Alarm isn't present on all platforms.  FIXME: implement without
 	 * using it. */
 	printf("This test cannot be completed on this platform.");
-	timeout();
+	timeout(SIGALRM);
 #endif
 
 	pid = fork();
