@@ -163,10 +163,13 @@ static void login_start_session(GtkWidget* button, gpointer window)
 	        connection.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
                 switch (connection.login_type) {
-                case 0: /*Normal login */  
-                case 2: /*First time login */
-                case 1: /*Anonymous login */
+                case GGZ_LOGIN: /*Normal login */  
+                case GGZ_LOGIN_ANON: /*Anonymous login */
                         anon_login();
+			break;
+                case GGZ_LOGIN_NEW: /*First time login */
+			new_login();
+			break;
                 }
 
                 return;

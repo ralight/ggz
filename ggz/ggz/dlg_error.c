@@ -31,7 +31,7 @@
 #include "connect.h"
 #include "support.h"
 
-void msg_dlg(gchar *str, gboolean quit)
+void msg_dlg(gchar *str, gint type)
 {
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
@@ -41,27 +41,32 @@ void msg_dlg(gchar *str, gboolean quit)
 	GtkWidget *buttonBox;
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
-	gchar* message;
+	gchar* message=str;
 
 #ifdef DEBUG
 	message = g_strdup_printf("[%d]: %s", getpid(), str);
 #endif
 
 	window = gtk_dialog_new();
-	if (quit) {
-		gtk_window_set_title(GTK_WINDOW(window), _("Error!"));
-	} else {
-		gtk_window_set_title(GTK_WINDOW(window), _("Warning!"));
-	}
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
-
 	/* Label widgets */
-	if (quit)
-		label1 = gtk_label_new(_("An error occurred!"));
-	else
-		label1 = gtk_label_new(_("Please note!"));
+	switch(type) {
+		case 0:
+			gtk_window_set_title(GTK_WINDOW(window), _("Notice"));
+			label1 = gtk_label_new(_("Please note!"));
+			break;
+		case 1:
+			gtk_window_set_title(GTK_WINDOW(window), _("Warning!"));
+			label1 = gtk_label_new(_("Please note!"));
+			break;
+		case 2:
+		default:
+			gtk_window_set_title(GTK_WINDOW(window), _("Error!"));
+			label1 = gtk_label_new(_("An error occurred!"));
+			break;
+	}
 	
 	label2 = gtk_label_new(message);
 
@@ -72,7 +77,7 @@ void msg_dlg(gchar *str, gboolean quit)
 	/* Button widgets */
 	okButton = gtk_button_new_with_label(_("OK"));
 
-	if (quit)
+	if (type > 1)
 		gtk_signal_connect(GTK_OBJECT(okButton), "clicked",
 				   GTK_SIGNAL_FUNC(disconnect), NULL);
 
@@ -121,7 +126,7 @@ void err_dlg(const gchar *fmt, ...)
 
 	va_start(ap,fmt);	
 	message = g_strdup_vprintf(fmt, ap);
-	msg_dlg(message, TRUE);
+	msg_dlg(message, 2);
 	va_end(ap);
 	g_free(message);
 }
@@ -134,7 +139,20 @@ void warn_dlg(const gchar *fmt, ...)
 
 	va_start(ap,fmt);	
 	message = g_strdup_vprintf(fmt, ap);
-	msg_dlg(message, FALSE);
+	msg_dlg(message, 1);
+	va_end(ap);
+	g_free(message);
+}
+
+
+void note_dlg(const gchar *fmt, ...)
+{
+	gchar *message;
+	va_list ap;
+
+	va_start(ap, fmt);
+	message = g_strdup_vprintf(fmt, ap);
+	msg_dlg(message, 0);
 	va_end(ap);
 	g_free(message);
 }

@@ -28,5 +28,6 @@
 
 void err_dlg(const gchar *, ...);
 void warn_dlg(const gchar *, ...);
+void note_dlg(const gchar *, ...);
 void msg_dlg(gchar *, gboolean);
 

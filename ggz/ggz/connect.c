@@ -167,6 +167,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gpointer tmp;
 	gchar *message;
 	gchar name[9];
+	gchar password[17];
 	gchar status;
 	gint i_status;
 	guchar subop;
@@ -193,18 +194,46 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		else {
 			switch (connection.login_type) {
-			case 0:	/*Normal login */
-			case 2:	/*First time login */
-			case 1:	/*Anonymous login */
+			case GGZ_LOGIN:	/*Normal login */
+			case GGZ_LOGIN_ANON:	/*Anonymous login */
 				anon_login();
+				break;
+			case GGZ_LOGIN_NEW:	/*First time login */
+				new_login();
+				break;
 			}
-			break;
 		}
 		break;
 		
 	case MSG_SERVER_FULL:
 		break;
 
+	case RSP_LOGIN_NEW:
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if(status < 0) {
+			login_bad_name();
+			warn_dlg("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
+			return;
+		}
+
+		/* Read in our server assigned password */
+		es_read_string(source, password, 16);
+		note_dlg("The server has assigned the password\n'%s' to you. Please write this down\nand change it as soon as possible.\n\nYou will need it to login in the future.", password);
+
+		es_read_int(source, &checksum);
+		login_ok();
+		login_online();
+		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
+
+		/* Get Room and type lists */
+                es_write_int(connection.sock, REQ_LIST_ROOMS);
+                es_write_int(connection.sock, -1);
+                es_write_char(connection.sock, 1);
+		es_write_int(connection.sock, REQ_LIST_TYPES);
+		es_write_char(connection.sock, 1);
+		break;
+			
 	case RSP_LOGIN_ANON:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
@@ -483,7 +512,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		/*ggz_get_rooms(NULL, NULL);*/
 		break;
 
-	case RSP_LOGIN_NEW:
 	case RSP_MOTD:
 		if (dlg_motd == NULL)
 			dlg_motd = create_dlgMOTD();
@@ -607,6 +635,15 @@ void add_table_list(TableInfo table)
 gint anon_login(void)
 {
 	es_write_int(connection.sock, REQ_LOGIN_ANON);
+	es_write_string(connection.sock, connection.username);
+
+	return 0;
+}
+
+
+gint new_login(void)
+{
+	es_write_int(connection.sock, REQ_LOGIN_NEW);
 	es_write_string(connection.sock, connection.username);
 
 	return 0;
