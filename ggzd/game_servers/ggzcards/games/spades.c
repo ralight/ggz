@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: spades.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -77,16 +77,13 @@ static int spades_is_valid_game()
 
 static void spades_init_game()
 {
-	player_t p;
 	seat_t s;
 
 	game.specific = alloc(sizeof(spades_game_t));
 	set_num_seats(4);
-	for(p = 0; p < game.num_players; p++) {
-		s = p;
-		game.players[p].seat = s;
-		game.seats[s].ggz = &ggzd_seats[p];
-	}
+	for(s = 0; s < game.num_players; s++)
+		assign_seat(s, s); /* one player per seat */
+
 	game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
 	game.target_score = 500;	/* adjustable by options */	
 	GSPADES.nil_value = 100;

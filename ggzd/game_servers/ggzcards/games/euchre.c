@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: euchre.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -90,16 +90,13 @@ static card_t euchre_map_card(card_t c)
 
 static void euchre_init_game()
 {
-	player_t p;
 	seat_t s;
 
 	game.specific = alloc(sizeof(euchre_game_t));
 	set_num_seats(4);
-	for(p = 0; p < game.num_players; p++) {
-		s = p;
-		game.players[p].seat = s;
-		game.seats[s].ggz = &ggzd_seats[p];
-	}
+	for(s = 0; s < game.num_seats; s++)
+		assign_seat(s, s); /* one player per seat */
+
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
 	game.target_score = 10;

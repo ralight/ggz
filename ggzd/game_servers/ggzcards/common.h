@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: common.h 2276 2001-08-27 10:29:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -177,14 +177,21 @@ int handle_newgame_event(player_t p);
 int handle_play_event(card_t card);
 int handle_bid_event(bid_t bid);
 
+/* initialization functions */
 void init_ggzcards(int which);	/* pass in the name of the game */
-
 void set_num_seats(int num_seats);
+void assign_seat(seat_t s, player_t p);	/* player #p sits in seat #s */
+void empty_seat(seat_t s, char *name);	/* seat s is empty; give it a label */
 
 /* the game structure */
 extern struct wh_game_t game;
 
 
+/* accessor functions */
+/* I made these when switching over to a new ggzdmod.  I don't think
+ * it's safe to access the data directly. */
+const char *get_seat_name(seat_t s);
+ggzd_assign_t get_seat_status(seat_t s);
 
 
 /* random helper functions */

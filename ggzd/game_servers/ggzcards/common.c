@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: common.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -62,13 +62,13 @@ void set_game_state(server_state_t state)
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		if (game.saved_state != state)
 			ggzd_debug("ERROR: SERVER BUG: "
-				      "Setting game saved state to %d - %ws.",
-				      state, game_states[state]);
+				   "Setting game saved state to %d - %ws.",
+				   state, game_states[state]);
 		game.saved_state = state;
 	} else {
 		if (game.state != state)
 			ggzd_debug("Setting game state to %d - %s.", state,
-				      game_states[state]);
+				   game_states[state]);
 		game.state = state;
 	}
 }
@@ -78,7 +78,7 @@ void save_game_state()
 	if (game.state == WH_STATE_WAITFORPLAYERS)
 		return;
 	ggzd_debug("Entering waiting state; old state was %d - %s.",
-		      game.state, game_states[game.state]);
+		   game.state, game_states[game.state]);
 	game.saved_state = game.state;
 	game.state = WH_STATE_WAITFORPLAYERS;
 }
@@ -86,7 +86,7 @@ void save_game_state()
 void restore_game_state()
 {
 	ggzd_debug("Ending waiting state; new state is %d - %s.",
-		      game.saved_state, game_states[game.saved_state]);
+		   game.saved_state, game_states[game.saved_state]);
 	game.state = game.saved_state;
 }
 
@@ -106,7 +106,7 @@ int send_player_list(player_t p)
 	s = game.players[p].seat;
 
 	ggzd_debug("Sending seat list to player %d/%s (%d seats)", p,
-		      ggzd_get_player_name(p), game.num_seats);
+		   ggzd_get_player_name(p), game.num_seats);
 
 	if (es_write_int(fd, WH_MSG_PLAYERS) < 0)
 		status = -1;
@@ -115,32 +115,18 @@ int send_player_list(player_t p)
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s_abs = (s_rel + s) % game.num_seats;
-		struct ggzd_seat_t *ggzseat = game.seats[s_abs].ggz;
-		if (ggzseat == NULL) {
-			/* We have a problem here, since seats may be sent out BEFORE
-			   the game is determined, in which case GGZ info for the
-			   seats wouldn't be known yet.  Here I fudge it by sending
-			   GGZ_SEAT_NONE instead. */
-			ggzd_debug("ERROR: SERVER BUG: "
-				      "NULL ggz found for seat %d.", s_abs);
-			if (es_write_int(fd, GGZ_SEAT_NONE) < 0)
-				status = -1;
-			if (es_write_string(fd, "(unknown)") < 0)
-				status = -1;
-			continue;
-		}
-		if (ggzseat->assign == GGZ_SEAT_OPEN)
-			/* TODO: this isn't the best place to do this... */
-			snprintf(ggzseat->name, 17, "Empty Seat");
-		if (es_write_int(fd, ggzseat->assign) < 0)
+
+		/* FIXME: is this the correct way to handle things when
+		 * we send out seats before the game has been determined? */
+
+		if (es_write_int(fd, get_seat_status(s_abs)) < 0)
 			status = -1;
-		if (es_write_string(fd, ggzseat->name) < 0)
+		if (es_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
 	}
 
 	if (status != 0)
-		ggzd_debug("ERROR: send_player_list: status is %d.",
-			      status);
+		ggzd_debug("ERROR: send_player_list: status is %d.", status);
 	return status;
 }
 
@@ -155,8 +141,8 @@ int send_play(card_t card, seat_t seat)
 	int status = 0;
 
 	ggzd_debug("Sending seat %d/%s's play (%i %i %i) out to everyone.",
-		      seat, game.seats[seat].ggz->name, card.face, card.suit,
-		      card.deck);
+		   seat, get_seat_name(seat), card.face, card.suit,
+		   card.deck);
 
 	for (p = 0; p < game.num_players; p++) {
 		fd = ggzd_get_player_socket(p);
@@ -216,7 +202,8 @@ int send_table(player_t p)
 	if (game.num_seats == 0)
 		return 0;
 
-	ggzd_debug("Sending table to player %d/%s.", p, ggzd_get_player_name(p));
+	ggzd_debug("Sending table to player %d/%s.", p,
+		   ggzd_get_player_name(p));
 
 	if (fd == -1) {
 		ggzd_debug("ERROR: send_table: fd==-1.");
@@ -246,7 +233,7 @@ int send_sync(player_t p)
 	int status = 0;
 
 	ggzd_debug("Sending sync to player %d/%s.  State is %s.", p,
-		      ggzd_get_player_name(p), game_states[game.state]);
+		   ggzd_get_player_name(p), game_states[game.state]);
 
 	if (send_player_list(p) < 0)
 		status = -1;
@@ -302,7 +289,7 @@ int req_play(player_t p, seat_t s)
 
 	ggzd_debug
 		("Requesting player %d/%s to play from seat %d/%s's hand.", p,
-		 ggzd_get_player_name(p), s, game.seats[s].ggz->name);
+		 ggzd_get_player_name(p), s, get_seat_name(s));
 
 	/* although the game_* functions probably track this data
 	 * themselves, we track it here as well just in case. */
@@ -317,8 +304,7 @@ int req_play(player_t p, seat_t s)
 		handle_play_event(ai_get_play(p, s));
 	} else {
 		if (fd == -1)
-			ggzd_debug("ERROR: SERVER BUG: "
-				      "-1 fd in req_play");
+			ggzd_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
 		if (es_write_int(fd, WH_REQ_PLAY) < 0
 		    || es_write_int(fd, s_r) < 0)
 			return -1;
@@ -401,7 +387,7 @@ void send_badplay(player_t p, char *msg)
 	if (fd == -1)
 		return;
 	ggzd_debug("Sending a bad play to player %d/%s - %s.",
-		      p, ggzd_get_player_name(p), msg);
+		   p, ggzd_get_player_name(p), msg);
 	es_write_int(fd, WH_MSG_BADPLAY);
 	es_write_string(fd, msg);
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
@@ -427,8 +413,8 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 		reveal = 1;
 
 	ggzd_debug("Sending player %d/%s hand %d/%s - %srevealing",
-		      p, ggzd_get_player_name(p), s, game.seats[s].ggz->name,
-		      reveal ? "" : "not ");
+		   p, ggzd_get_player_name(p), s, get_seat_name(s),
+		   reveal ? "" : "not ");
 
 	if (es_write_int(fd, WH_MSG_HAND) < 0
 	    || es_write_int(fd, CONVERT_SEAT(s, p)) < 0
@@ -456,7 +442,7 @@ void send_trick(player_t winner)
 	seat_t s;
 
 	ggzd_debug("Sending out trick (%d/%s won) and cleaning it up.",
-		      winner, ggzd_get_player_name(winner));
+		   winner, ggzd_get_player_name(winner));
 
 	for (s = 0; s < game.num_seats; s++)
 		/* note: we also clear the table at the beginning of every hand */
@@ -478,19 +464,19 @@ int req_newgame(player_t p)
 	fd = ggzd_get_player_socket(p);
 	if (fd == -1) {
 		ggzd_debug("ERROR: "
-			      "req_newgame: fd is -1 for player %d/%s.", p,
-			      ggzd_get_player_name(p));
+			   "req_newgame: fd is -1 for player %d/%s.", p,
+			   ggzd_get_player_name(p));
 		return -1;
 	}
 
 	ggzd_debug("Sending out a WH_REQ_NEWGAME to player %d/%s.", p,
-		      ggzd_get_player_name(p));
+		   ggzd_get_player_name(p));
 	status = es_write_int(fd, WH_REQ_NEWGAME);
 
 	if (status != 0)
 		ggzd_debug("ERROR: "
-			      "req_newgame: status is %d for player %d/%s.",
-			      status, p, ggzd_get_player_name(p));
+			   "req_newgame: status is %d for player %d/%s.",
+			   status, p, ggzd_get_player_name(p));
 	return status;
 }
 
@@ -534,7 +520,7 @@ int handle_player_event(ggzd_event_t event, void *data)
 
 	if (op >= 0 && op <= WH_REQ_SYNC)
 		ggzd_debug("Received %d (%s) from player %d/%s.", op,
-			      player_messages[op], p, ggzd_get_player_name(p));
+			   player_messages[op], p, ggzd_get_player_name(p));
 	else
 		ggzd_debug
 			("Received unknown message %d from player %d/%s.", op,
@@ -633,7 +619,7 @@ static int try_to_start_game()
 			 * but there would be no way for the client to
 			 * know that it was a duplicate. */
 			ggzd_debug("Player %d/%s is not ready.", p,
-				      ggzd_get_player_name(p));
+				   ggzd_get_player_name(p));
 			ready = 0;
 		}
 	if (ready && options_set()) {
@@ -650,7 +636,7 @@ static void newgame()
 
 	if (game.which_game == GGZ_GAME_UNKNOWN) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "starting newgame() on unknown game.");
+			   "starting newgame() on unknown game.");
 		exit(-1);
 	}
 
@@ -683,7 +669,7 @@ void next_play(void)
 	/* TODO: use looping instead of recursion */
 
 	ggzd_debug("Next play called while state is %s.",
-		      game_states[game.state]);
+		   game_states[game.state]);
 
 	switch (game.state) {
 	case WH_STATE_NOTPLAYING:
@@ -751,14 +737,15 @@ void next_play(void)
 		break;
 	case WH_STATE_NEXT_BID:
 		ggzd_debug("Next play: bid %d/%d - player %d/%s.",
-			      game.bid_count, game.bid_total, game.next_bid,
-			      ggzd_get_player_name(game.next_bid));
+			   game.bid_count, game.bid_total, game.next_bid,
+			   ggzd_get_player_name(game.next_bid));
 		game.funcs->get_bid();
 		break;
 	case WH_STATE_NEXT_PLAY:
 		ggzd_debug("Next play: playing %d/%d - player %d/%s.",
-			      game.play_count, game.play_total,
-			      game.next_play, ggzd_get_player_name(game.next_play));
+			   game.play_count, game.play_total,
+			   game.next_play,
+			   ggzd_get_player_name(game.next_play));
 		game.funcs->get_play(game.next_play);
 		break;
 	case WH_STATE_FIRST_TRICK:
@@ -790,8 +777,8 @@ void next_play(void)
 		break;
 	default:
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "game_play called with unknown state: %d",
-			      game.state);
+			   "game_play called with unknown state: %d",
+			   game.state);
 		break;
 	}
 
@@ -825,7 +812,7 @@ int handle_launch_event(ggzd_event_t event, void *data)
 	ggzd_debug("Handling a launch event.");
 	if (game.state != WH_STATE_PRELAUNCH) {
 		ggzd_debug("ERROR: "
-			      "state wasn't prelaunch when handling a launch.");
+			   "state wasn't prelaunch when handling a launch.");
 		return -1;
 	}
 
@@ -851,13 +838,19 @@ int handle_join_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
 	player_t p;
+	seat_t seat = game.players[player].seat;
 
 	ggzd_debug("Handling a join event for player %d.", player);
 	if (game.state != WH_STATE_WAITFORPLAYERS) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "someone joined while we weren't waiting.");
+			   "someone joined while we weren't waiting.");
 		return -1;
 	}
+
+	/* get player's name */
+	game.seats[seat].name = ggzd_get_player_name(player);
+	if (!game.seats[seat].name)
+		game.seats[seat].name = "[unknown]";
 
 	/* set the age of the player */
 	game.players[player].age = game.player_count;
@@ -903,7 +896,7 @@ int handle_join_event(ggzd_event_t event, void *data)
 int handle_newgame_event(player_t player)
 {
 	ggzd_debug("Handling a newgame event for player %d/%s.", player,
-		      ggzd_get_player_name(player));
+		   ggzd_get_player_name(player));
 	game.players[player].ready = 1;
 	if (player == game.host && !options_set())
 		get_options();
@@ -918,20 +911,30 @@ int handle_leave_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
 	player_t p;
+	seat_t seat = game.players[player].seat;
 
 	ggzd_debug("Handling a leave event.");
+
+	/* seat name */
+	game.seats[seat].name = "Empty Seat";
+
+	/* send new seat data */
 	for (p = 0; p < game.num_players; p++)
 		send_player_list(p);
 
+	/* reset player's age; find new host */
 	game.players[player].age = -1;
 	game.host = determine_host();
 	if (game.host >= 0)
 		set_player_message(game.host);
 
+	/* get rid of old player message */
 	set_player_message(player);
 
 	/* save old state and enter waiting phase */
-	save_game_state();
+	if (ggzd_seats_open() > 0)	/* should be a given... */
+		save_game_state();
+
 	return 0;
 }
 
@@ -980,7 +983,7 @@ int handle_play_event(card_t card)
 	else {
 		/* end of trick */
 		ggzd_debug("End of trick; %d/%d.  Scoring it.",
-			      game.trick_count, game.trick_total);
+			   game.trick_count, game.trick_total);
 		sleep(1);
 		game.funcs->end_trick();
 		send_last_trick();
@@ -989,8 +992,7 @@ int handle_play_event(card_t card)
 		set_game_state(WH_STATE_NEXT_TRICK);
 		if (game.trick_count == game.trick_total) {
 			/* end of the hand */
-			ggzd_debug("End of hand number %d.",
-				      game.hand_num);
+			ggzd_debug("End of hand number %d.", game.hand_num);
 			send_last_hand();
 			sleep(1);
 			game.funcs->end_hand();
@@ -1064,7 +1066,7 @@ int handle_bid_event(bid_t bid)
 		set_game_state(WH_STATE_NEXT_BID);
 	else
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
+			   "handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
 
 	/* this is the player that just finished bidding */
 	set_player_message(p);
@@ -1081,11 +1083,17 @@ int handle_bid_event(bid_t bid)
 
 void set_num_seats(int num_seats)
 {
+	seat_t s;
 	ggzd_debug("Setting number of seats to %d.", num_seats);
 	game.num_seats = num_seats;
 	if (game.seats != NULL)
 		free(game.seats);
 	game.seats = alloc(game.num_seats * sizeof(*game.seats));
+	for (s = 0; s < game.num_seats; s++) {
+		game.seats[s].player = -1;
+		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved seats */
+		game.seats[s].pmessage = NULL;
+	}
 }
 
 /* init_game
@@ -1098,14 +1106,14 @@ void init_game()
 
 	if (!games_valid_game(game.which_game)) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "game_init_game: invalid game %d chosen.",
-			      game.which_game);
+			   "game_init_game: invalid game %d chosen.",
+			   game.which_game);
 		exit(-1);
 	}
 
 	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "game_init_game called on unknown or previously initialized game.");
+			   "game_init_game called on unknown or previously initialized game.");
 		return;
 	}
 
@@ -1155,10 +1163,44 @@ void init_game()
 
 	/* set AI names */
 	for (p = 0; p < game.num_players; p++)
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
-			snprintf(ggzd_get_player_name(p), 17, "%s", ai_get_name(p));
+		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
+			int s = game.players[p].seat;
+			game.seats[s].name = ai_get_name(p);
+			ggzd_debug("Setting AI name to %s.",
+				   game.seats[s].name);
+		}
 
 	game.initted = 1;
+}
+
+
+void assign_seat(seat_t s, player_t p)
+{
+	game.seats[s].player = p;
+	game.players[p].seat = s;
+}
+
+void empty_seat(seat_t s, char *name)
+{
+	game.seats[s].player = -1;
+	game.seats[s].name = name;
+}
+
+
+const char *get_seat_name(seat_t s)
+{
+	if (game.seats[s].name)
+		return game.seats[s].name;
+	else
+		return "[null seat name]";
+}
+
+ggzd_assign_t get_seat_status(seat_t s)
+{
+	if (game.seats[s].player >= 0)
+		return ggzd_get_seat_status(game.seats[s].player);
+	else
+		return GGZ_SEAT_NONE;
 }
 
 

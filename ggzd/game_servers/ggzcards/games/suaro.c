@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: suaro.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -86,16 +86,14 @@ static int suaro_is_valid_game()
 
 static void suaro_init_game()
 {
-	static struct ggzd_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
-					    {GGZ_SEAT_NONE, "Up-Card", -1} };
 	game.specific = alloc(sizeof(suaro_game_t));
 	set_num_seats(4);
-	game.seats[0].ggz = &ggzd_seats[0];
-	game.players[0].seat = 0;
-	game.seats[2].ggz = &ggzd_seats[1];
-	game.players[1].seat = 2;
-	game.seats[1].ggz = &ggz[0];
-	game.seats[3].ggz = &ggz[1];
+
+	assign_seat(0, 0); /* seat 0 => player 0 */
+	assign_seat(2, 1); /* seat 2 => player 1 */
+	empty_seat(1, "Kitty");
+	empty_seat(3, "Up-Card");
+
 	game.deck_type = GGZ_DECK_SUARO;
 	game.max_hand_length = 9;
 	game.rules_url = "http://suaro.dhs.org/";
@@ -258,7 +256,7 @@ static void suaro_start_playing(void)
 	game.play_total = game.num_players;
 	/* declarer is set in game_handle_bid */
 	set_global_message("", "%s has the contract at %s%d %s%s.",
-		ggzd_get_player_name(SUARO.declarer),
+		game.seats[ game.players[SUARO.declarer].seat ].name,
 		SUARO.kitty ? "kitty " : "",
 		SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
 		SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");

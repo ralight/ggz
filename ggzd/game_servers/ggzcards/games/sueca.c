@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: sueca.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -76,16 +76,13 @@ static int sueca_is_valid_game()
 
 static void sueca_init_game()
 {
-	player_t p;
 	seat_t s;
 
 	game.specific = alloc(sizeof(sueca_game_t));
 	set_num_seats(game.num_players);
-	for(p = 0; p < game.num_players; p++) {
-		s = p;
-		game.players[p].seat = s;
-		game.seats[s].ggz = &ggzd_seats[p];
-	}
+	for(s = 0; s < game.num_seats; s++)
+		assign_seat(s, s); /* one player per seat */
+
   /* Target score is 4 */
 	game.target_score = 4;
   /* Must break trump */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: hearts.c 2276 2001-08-27 10:29:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -79,17 +79,14 @@ static int hearts_is_valid_game()
 
 static void hearts_init_game()
 {
-	player_t p;
 	seat_t s;
 
 	game.specific = alloc(sizeof(hearts_game_t));
 	set_num_seats(game.num_players);
+	for (s = 0; s < game.num_seats; s++)
+		assign_seat(s, s); /* one player per seat */
+
 	game.trump = -1;	/* no trump in hearts */
-	for (p = 0; p < game.num_players; p++) {
-		s = p;
-		game.players[p].seat = s;
-		game.seats[s].ggz = &ggzd_seats[p];
-	}
 	game.target_score = 100;
 
 	GHEARTS.no_blood = 1;

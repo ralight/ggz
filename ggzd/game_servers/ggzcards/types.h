@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: types.h 2276 2001-08-27 10:29:46Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -54,14 +54,19 @@ bid_t;
 /* the tricky thing is that GGZ knows only about _players_ while the
  * client game knows only about _seats_ */
 #define MAX_MESSAGE_LENGTH 100
+
+/* these are just used to make things more legible */
+typedef int player_t;
+typedef int seat_t;
+
 struct game_seat_t
 {
 	hand_t hand;
 	card_t table;
-	struct ggzd_seat_t *ggz;/* ggz seat data; probably points to something in ggz_seats */
+	const char *name;	/* the name of the player at this seat, or seat label */
+	player_t player;	/* the number of the seat's player (-1 for none) */
 	char *pmessage;		/* the "player message" (really associated with a seat) */
 };
-typedef int seat_t;		/* just to make things clearer */
 
 struct game_player_t
 {
@@ -72,10 +77,9 @@ struct game_player_t
 	bid_t bid;
 	bid_t *allbids;		/* corresponds to game.bid_rounds and max_bid_rounds */
 	int tricks;
-	int seat;		/* the number of the player's seat */
+	seat_t seat;		/* the number of the player's seat */
 	int ready;
 };
-typedef int player_t;		/* just to make things clearer */
 
 typedef struct global_message_list_t
 {
