@@ -12,6 +12,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-guides
 	# Add here commands to compile the package.
 	#$(MAKE)
