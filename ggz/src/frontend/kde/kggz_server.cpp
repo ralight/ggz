@@ -3,6 +3,8 @@
 
 #include "kggz_chatwidget.h"
 #include "kggz_connect.h"
+#include "kggz_roomsmenu.h"
+#include "kggz_motd.h"
 
 /* System includes */
 #include <stdlib.h>
@@ -10,31 +12,59 @@
 #include <string.h>
 
 int m_connected;
+int m_running;
+int m_roomslist;
+
+char memsavehost[1024];
+char memsaveusername[1024];
 
 void KGGZ_Server::init()
 {
 	GGZOptions opt;
+
+	if(m_running) return;
 
 	opt.flags = GGZ_OPT_PARSER;
 	opt.global_conf = "/etc/kggz.rc";
 	opt.user_conf = "~./kggzrc";
 	opt.local_conf = NULL;
 
-	ggzcore_init(opt);
+	if(ggzcore_init(opt) != 0)
+	{
+		printf("kggz_server::init: ggzcore could not be initialized.\n");
+		exit(-1);
+	}
 
-	ggzcore_event_connect(GGZ_SERVER_LOGIN, server_login_ok);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
-	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT, server_connect);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, server_login_ok);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGOUT, server_logout);
+	ggzcore_event_add_callback(GGZ_SERVER_MOTD, server_motd);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_FAIL, server_chat_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_MSG, server_chat_msg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
+	ggzcore_event_add_callback(GGZ_SERVER_ERROR, server_chat_beep);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, server_room_enter);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_JOIN, server_room_join);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_JOIN_FAIL, server_room_join_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_PLAYERS, server_list_players);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
+
+	m_connected = FALSE;
+	m_running = TRUE;
+	m_roomslist = FALSE;
 }
 
 void KGGZ_Server::shutdown()
 {
-	ggzcore_event_process_all();
+	if (!m_running) return;
+	m_running = FALSE;
+	KGGZ_RoomsMenu::removeAll();
+	ggzcore_event_poll(NULL, 0, 0);
 	ggzcore_destroy();
 }
 
@@ -48,25 +78,32 @@ void KGGZ_Server::connect(const char *host, int port, const char *username)
 		printf("ALERT: calloc failed in %s on line %i\n", __FILE__, __LINE__); //?? useful
 
 	profile->type = GGZ_LOGIN_GUEST;
-	profile->host = strdup(host);		// !!! MEMORY LEAK?!
+	//profile->host = strdup(host);		// !!! MEMORY LEAK?!
+	strcpy(memsavehost, host);
+	strcpy(memsaveusername, username);
+	profile->host = memsavehost;
+	profile->login = memsaveusername;
 	profile->port = port;
-	profile->login = strdup(username);
-	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
+	//profile->login = strdup(username);
+	printf("*pre-connect\n");
+	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
 	printf("*connect\n");
 }
 
 void KGGZ_Server::disconnect()
 {
+	printf("*pre-disconnect\n");
 	if(!m_connected) return;
+	m_connected = FALSE;
 	printf("*disconnect\n");
-	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
-	m_connected = 0;
+	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
 }
 
 void KGGZ_Server::server_login_ok(GGZEventID id, void *event_data, void *user_data)
 {
 	char *user = NULL, *room = NULL, *server = NULL;
 
+	printf("*login ok\n");
 	if (ggzcore_state_is_online()) {
 		user = ggzcore_state_get_profile_login();
 		server = ggzcore_state_get_profile_host();
@@ -78,16 +115,18 @@ void KGGZ_Server::server_login_ok(GGZEventID id, void *event_data, void *user_da
 	printf("%s in %s on %s!\n", user, room, server);
 	KGGZ_Chatwidget::adminreceive(QString("Connected: Server running on ") + QString(server));
 	KGGZ_Connect::success(TRUE);
-	m_connected = 1;
-	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)1, NULL);
-	printf("*auto-room-change\n");
+	m_connected = TRUE;
+	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	printf("*auto-list-rooms\n");
+	//ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)1, NULL);
+	//printf("*auto-room-change\n");
 }
 
 void KGGZ_Server::server_login_fail(GGZEventID id, void *event_data, void *user_data)
 {
 	printf("!! (2)\n");
 	KGGZ_Connect::success(FALSE);
-	m_connected = 0;
+	m_connected = FALSE;
 }
 
 void KGGZ_Server::server_logout(GGZEventID id, void *event_data, void *user_data)
@@ -128,11 +167,84 @@ void KGGZ_Server::server_chat_announce(GGZEventID id, void *event_data, void *us
 	printf("!! (7)\n");
 }
 
+void KGGZ_Server::server_connect(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (8)\n");
+}
+
+void KGGZ_Server::server_motd(GGZEventID id, void *event_data, void *user_data)
+{
+	char **motd;
+	int i;
+
+	printf("!! (9 - MOTD!)\n");
+
+	motd = (char**)event_data;
+	for(int i = 0; motd[i] != NULL; i++)
+		KGGZ_Motd::append(motd[i]);
+}
+
+void KGGZ_Server::server_chat_fail(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (10)\n");
+}
+
+void KGGZ_Server::server_room_enter(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (11)\n");
+}
+
+void KGGZ_Server::server_room_leave(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (12)\n");
+}
+
+void KGGZ_Server::server_room_join(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (13)\n");
+}
+
+void KGGZ_Server::server_room_join_fail(GGZEventID id, void *event_data, void *user_data)
+{
+	printf("!! (14)\n");
+}
+
+void KGGZ_Server::server_list_players(GGZEventID id, void *event_data, void *user_data)
+{
+	char **names;
+	int i;
+
+	printf("!! (15)\n");
+	if(!(names = ggzcore_player_get_names())) return;
+	KGGZ_Chatwidget::adminreceive("List of players:");
+	for(i = 0; names[i]; i++)
+		KGGZ_Chatwidget::adminreceive(QString("-- ") + QString(names[i]));
+	free(names);
+}
+
+void KGGZ_Server::server_list_rooms(GGZEventID id, void *event_data, void *user_data)
+{
+	char **names;
+	int i;
+
+	printf("!! (16)\n");
+	if(!(names = ggzcore_room_get_names())) return;
+	KGGZ_Chatwidget::adminreceive("List of rooms:");
+	for(i = 0; names[i]; i++)
+	{
+		KGGZ_Chatwidget::adminreceive(QString("-- ") + QString(names[i]));
+		if(!m_roomslist) KGGZ_RoomsMenu::add(names[i]);
+	}
+
+	free(names);
+	m_roomslist = TRUE;
+}
+
 void showstatus(int id)
 {
 	static int x;
 	char *currentstatus = NULL;
-	char *user = NULL;
+	char *user = NULL, *room = NULL;
 
 	if(x == id) return;
 	x = id;
@@ -161,6 +273,11 @@ void showstatus(int id)
 			break;
 		case GGZ_STATE_IN_ROOM:
 			currentstatus = "Chatting";
+			if (ggzcore_state_is_in_room())
+			{
+				room = ggzcore_room_get_name(ggzcore_state_get_room());
+				KGGZ_Chatwidget::adminreceive(QString("Now in room ") + QString(room));
+			}
 			break;
 		case GGZ_STATE_JOINING_TABLE:
 			currentstatus = "--> Table";
@@ -182,6 +299,7 @@ void showstatus(int id)
 
 void KGGZ_Server::loop()
 {
-	ggzcore_event_process_all();
+	ggzcore_event_poll(NULL, 0, 0);
+	//ggzcore_event_process_all(); // not this one, this is evil and costs me sunday afternoons
 	showstatus((int)ggzcore_state_get_id());
 }

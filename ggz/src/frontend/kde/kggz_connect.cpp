@@ -6,6 +6,7 @@
 
 /* KGGZ classes */
 #include "kggz_profiles.h"
+#include "kggz_motd.h"
 
 /* KDE classes */
 #include <kmessagebox.h>
@@ -20,6 +21,7 @@
 
 /* System includes */
 #include <stdlib.h>
+#include <stdio.h>
 
 QLineEdit *input_host, *input_port, *input_name;
 int m_connected2;
@@ -48,6 +50,10 @@ KGGZ_Connect::KGGZ_Connect(QWidget *parent, char *name)
 	input_host = new QLineEdit(this);
 	input_port = new QLineEdit(this);
 	input_name = new QLineEdit(this);
+
+	input_host->setText("localhost");
+	input_port->setText("5688");
+	input_name->setText("gambler");
 
 	button_ok = new QPushButton("OK", this);
 	button_cancel = new QPushButton(i18n("Cancel"), this);
@@ -88,24 +94,27 @@ KGGZ_Connect::~KGGZ_Connect()
 /* Start a connection */
 void KGGZ_Connect::accept()
 {
-	KGGZ_Server::init();
+	KGGZ_Motd *motd;
+
 	KGGZ_Server::connect(input_host->text(), atoi(input_port->text()), input_name->text());
 	while(m_connected2 == -1) KGGZ_Server::loop();
 	if(!m_connected2)
 	{
-		KGGZ_Server::shutdown();
+		m_connected2 = -1;
 		KMessageBox::error(this, i18n("Could not connect to the server!"), "Error!");
 	}
 	else
 	{
+		m_connected2 = -1;
+		motd = new KGGZ_Motd(NULL, "motd");
 		close();
 	}
-	m_connected2 = -1;
 }
 
 /* Query event */
 void KGGZ_Connect::success(int connection)
 {
+	printf("kggz_connect::success: %i\n", connection);
 	if(connection) m_connected2 = 1;
 	else m_connected2 = 0;
 }

@@ -44,7 +44,7 @@ KGGZ_Chatwidget::~KGGZ_Chatwidget()
 
 void KGGZ_Chatwidget::send()
 {
-        enum Events {EVENT_JOIN, EVENT_CHAT, EVENT_NOEVENT};
+        enum Events {EVENT_JOIN, EVENT_CHAT, EVENT_LIST, EVENT_WHO, EVENT_BEEP, EVENT_NOEVENT};
         char *commands;
         char *op1;
         char *preop;
@@ -66,23 +66,41 @@ void KGGZ_Chatwidget::send()
                         op1 = (char*)malloc(strlen(preop) + 1);
                         sprintf(op1, "%s", preop);
                 }
-                //while(commands != NULL) strtok(commands, " "); // ? is this necessary?
+                if(strcmp(commands, "/list") == 0) triggerevent = EVENT_LIST;
+                if(strcmp(commands, "/who") == 0) triggerevent = EVENT_WHO;
+		if(strcmp(commands, "/beep") == 0)
+		{
+                        preop = strtok(NULL, " ");
+                        op1 = (char*)malloc(strlen(preop) + 1);
+			sprintf(op1, "%s", preop);
+			if(strlen(op1) > 0) triggerevent = EVENT_BEEP;
+		}
+		//while(commands != NULL) strtok(commands, " "); // ? is this necessary?
         }
 
         switch(triggerevent)
         {
+                case EVENT_WHO:
+                        ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+                        break;
+                case EVENT_LIST:
+                        ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
+                        break;
                 case EVENT_JOIN:
-                        ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)atoi(op1), NULL);
+                        ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)atoi(op1), NULL);
                         break;
                 case EVENT_CHAT:
-	                ggzcore_event_trigger(GGZ_USER_CHAT, strdup(inputtext), free); //? memory leak?
+	                ggzcore_event_enqueue(GGZ_USER_CHAT, strdup(inputtext), free);
+                        break;
+                case EVENT_BEEP:
+	                ggzcore_event_enqueue(GGZ_USER_CHAT_BEEP, strdup(op1), free);
                         break;
                  default:
-                 ggzcore_event_trigger(GGZ_USER_CHAT, strdup("Error! Unknown command!"), free); //? memory leak?
+                 	ggzcore_event_enqueue(GGZ_USER_CHAT, strdup("Error! Unknown command!"), free);
         }
 	input->clear();
 
-        if(triggerevent == EVENT_JOIN)
+        if((triggerevent == EVENT_JOIN) || (triggerevent == EVENT_BEEP))
         {
                 free(op1);
         }
@@ -95,12 +113,13 @@ void KGGZ_Chatwidget::timerEvent(QTimerEvent *e)
 	if(strlen(m_buffer) != 0)
 	{
 		output->append(m_buffer);
+		output->scrollBy(0, 20);
 		sprintf(m_buffer, "");
 	}
 	// TODO: /me /list /who /help...
 }
 
-/* receive normal chat messages */
+/* receive normal chat messages */ /* TODO: bold text on own messages */
 void KGGZ_Chatwidget::receive(char *player, char *message)
 {
 	/* avoid long lines... */

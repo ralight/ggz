@@ -3,6 +3,7 @@
 
 #include <ktmainwindow.h>
 #include <qevent.h>
+#include <kpopupmenu.h>
 
 class KGGZ : public KTMainWindow
 {
@@ -10,11 +11,11 @@ Q_OBJECT
 public:
 	KGGZ();
 	~KGGZ();
-protected:
-	void resizeEvent(QResizeEvent *e);
-protected slots:
-	void handleMenu(int id);
-private:
+	static KPopupMenu *menuRooms();
+	static KPopupMenu *menuGGZ();
+	static KPopupMenu *menuClient();
+	static KPopupMenu *menuGame();
+
 	enum Menuitems {MENU_GGZ_CONNECT,
 			MENU_GGZ_DISCONNECT,
 			MENU_GGZ_QUIT,
@@ -33,6 +34,10 @@ private:
 			MENU_PREFERENCES_PREFERENCES,
 
 			MENU_ROOMS_SLOTS};
+public slots:
+	void handleMenu(int id);
+protected:
+	void resizeEvent(QResizeEvent *e);
 };
 
 #endif

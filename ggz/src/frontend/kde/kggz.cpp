@@ -11,12 +11,11 @@
 #include "kggz_profiles.h"
 #include "kggz_server.h"
 #include <kmenubar.h>
-#include <kpopupmenu.h>
 #include <qtextbrowser.h>
 #include <qiconview.h>
 #include <iostream.h>
 
-QString instdir = "/home/comtec/games/KGGZ/";
+QString instdir = "/usr/local/share/kggz/";
 QTextBrowser *helpbrowser;
 KMenuBar *menu;
 
@@ -24,11 +23,12 @@ KGGZ_Startup *startup;
 KGGZ_Chat *chat;
 KGGZ_Tables *tables;
 KGGZ_Users *userlist;
+KPopupMenu *menu_client, *menu_game, *menu_ggz, *menu_rooms;
 
 KGGZ::KGGZ()
 : KTMainWindow("window_main")
 {
-	KPopupMenu *menu_ggz, *menu_client, *menu_rooms, *menu_game, *menu_preferences, *menu_help;
+	KPopupMenu *menu_preferences, *menu_help;
 
 	menu = new KMenuBar(this);
 
@@ -36,6 +36,7 @@ KGGZ::KGGZ()
   	menu_ggz->insertItem("&Connect", MENU_GGZ_CONNECT);
   	menu_ggz->insertItem("&Disconnect", MENU_GGZ_DISCONNECT);
 	menu_ggz->insertItem("&Quit", MENU_GGZ_QUIT);
+	menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
 
  	menu_client = new KPopupMenu(this, "menu_client");
   	menu_client->insertItem("&Startup Screen", MENU_CLIENT_STARTUP);
@@ -43,17 +44,17 @@ KGGZ::KGGZ()
   	menu_client->insertItem("&Available tables", MENU_CLIENT_TABLES);
   	menu_client->insertItem("&List of players", MENU_CLIENT_PLAYERS);
 	menu_client->insertItem("&Quick Help", MENU_CLIENT_HELP);
+	menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
+	menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
+	menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
 
  	menu_rooms = new KPopupMenu(this, "menu_rooms");
-  	menu_rooms->insertItem("TicTacToe", new KGGZ_RoomsMenu("TicTacToe", this, NULL), MENU_ROOMS_SLOTS);
-	menu_rooms->insertItem("NetSpades", new KGGZ_RoomsMenu("NetSpades", this, NULL), MENU_ROOMS_SLOTS + 1);
-	menu_rooms->insertItem("La Pocha", new KGGZ_RoomsMenu("La Pocha", this, NULL), MENU_ROOMS_SLOTS + 2);
-  	menu_rooms->insertItem("Hastings1066", new KGGZ_RoomsMenu("Hastings1066", this, NULL), MENU_ROOMS_SLOTS + 3);
-	menu_rooms->insertItem("Reversi", new KGGZ_RoomsMenu("Reversi", this, NULL), MENU_ROOMS_SLOTS + 4);
+	menu_rooms->setEnabled(FALSE);
 
 	menu_game = new KPopupMenu(this, "menu_game");
 	menu_game->insertItem("&Launch new game", MENU_GAME_LAUNCH);
 	menu_game->insertItem("&Join game", MENU_GAME_JOIN);
+	menu_game->setEnabled(FALSE);
 
 	menu_preferences = new KPopupMenu(this, "menu_preferences");
 	menu_preferences->insertItem("Se&ttings", MENU_PREFERENCES_SETTINGS);
@@ -71,6 +72,7 @@ KGGZ::KGGZ()
 	menu->insertItem("&Help", menu_help);
 
 	startup = new KGGZ_Startup(this, "startup");
+	startup->setBackgroundColor(QColor(255, 255, 255));
 	startup->setBackgroundPixmap(QPixmap(instdir + "images/startup.png"));
 
 	chat = new KGGZ_Chat(this, "chat");
@@ -88,9 +90,12 @@ KGGZ::KGGZ()
 
         // can't connect directly to menu because help results in code 2 (exit)
 	connect(menu_ggz, SIGNAL(activated(int)), SLOT(handleMenu(int)));
+	connect(menu_client, SIGNAL(activated(int)), SLOT(handleMenu(int)));
         connect(menu_rooms, SIGNAL(activated(int)), SLOT(handleMenu(int)));
         connect(menu_game, SIGNAL(activated(int)), SLOT(handleMenu(int)));
         connect(menu_preferences, SIGNAL(activated(int)), SLOT(handleMenu(int)));
+
+	KGGZ_Server::init();
 
 	resize(500, 430);
 	show();
@@ -98,6 +103,28 @@ KGGZ::KGGZ()
 
 KGGZ::~KGGZ()
 {
+	KGGZ_Server::disconnect();
+	KGGZ_Server::shutdown();
+}
+
+KPopupMenu *KGGZ::menuRooms()
+{
+	return menu_rooms;
+}
+
+KPopupMenu *KGGZ::menuGGZ()
+{
+	return menu_ggz;
+}
+
+KPopupMenu *KGGZ::menuClient()
+{
+	return menu_client;
+}
+
+KPopupMenu *KGGZ::menuGame()
+{
+	return menu_game;
 }
 
 void KGGZ::handleMenu(int id)
@@ -107,6 +134,23 @@ void KGGZ::handleMenu(int id)
 	KGGZ_Launch *tmp3;
 	KGGZ_Preferences *tmp4;
 	KGGZ_Profiles *tmp5;
+
+	cout << "kggz::handlemenu: got id: " << id << endl;
+
+	switch(id)
+	{
+		case MENU_CLIENT_STARTUP:
+		case MENU_CLIENT_CHAT:
+		case MENU_CLIENT_TABLES:
+		case MENU_CLIENT_PLAYERS:
+		case MENU_CLIENT_HELP:
+			chat->hide();
+			helpbrowser->hide();
+			tables->hide();
+			userlist->hide();
+			startup->hide();
+			break;
+	}
 
 	switch(id)
 	{
@@ -122,38 +166,18 @@ void KGGZ::handleMenu(int id)
 			exit(0);
 			break;
 		case MENU_CLIENT_STARTUP:
-			chat->hide();
-			helpbrowser->hide();
-			tables->hide();
-			userlist->hide();
 			startup->show();
 			break;
 		case MENU_CLIENT_CHAT:
-			startup->hide();
-			helpbrowser->hide();
-			tables->hide();
-			userlist->hide();
 			chat->show();
 			break;
 		case MENU_CLIENT_TABLES:
-			startup->hide();
-			helpbrowser->hide();
-			chat->hide();
-			userlist->hide();
 			tables->show();
 			break;
 		case MENU_CLIENT_PLAYERS:
-			startup->hide();
-			helpbrowser->hide();
-			chat->hide();
-			tables->hide();
 			userlist->show();
 			break;
 		case MENU_CLIENT_HELP:
-			startup->hide();
-			chat->hide();
-			tables->hide();
-			userlist->hide();
 			helpbrowser->show();
 			break;
 		case MENU_GAME_LAUNCH:
