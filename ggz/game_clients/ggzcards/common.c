@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2387 2001-09-07 09:55:05Z jdorje $
+ * $Id: common.c 2402 2001-09-08 19:22:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -191,9 +191,12 @@ static int handle_msg_players()
 	int i, p, numplayers, different;
 	char *t_name;
 
+	/* It is possible to have 0 players.  At the begginning of a
+	   "general" game, you don't know how many seats will be used yet so
+	   the number of players is 0. */
 	if (es_read_int(ggzfd, &numplayers) < 0)
 		return -1;
-	assert(numplayers > 0);
+	assert(numplayers >= 0);
 
 	/* we may need to allocate memory for the players */
 	different = (game.num_players != numplayers);
