@@ -1,6 +1,7 @@
-prerm.debhelper
-postinst.debhelper
+*.debhelper
 files
 dirs
 tmp
-substvars
+*.substvars
+ggz-kde-games
+

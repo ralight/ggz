@@ -9,7 +9,6 @@ case "$1" in
 		echo register $i; \
 		ggz-config --install --fromfile=$i --force; \
 	done
-	ldconfig
 	;;
 	*)
 	;;
