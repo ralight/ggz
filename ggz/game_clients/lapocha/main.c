@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <ggz_client.h>
 
 #include "support.h"
 #include "main.h"
@@ -47,7 +48,6 @@
 GtkWidget *dlg_main = NULL;
 
 /* Private functions */
-static void ggz_connect(void);
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
 static int get_seat(void);
@@ -69,7 +69,11 @@ int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
 
-	ggz_connect();
+	ggz_client_init("LaPocha");
+	game.fd = ggz_client_connect();
+	if (game.fd < 0)
+		exit(-1);
+
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	dlg_main = create_dlg_main();
@@ -80,27 +84,9 @@ int main(int argc, char *argv[])
 	game_init();
 
 	gtk_main();
+
+	ggz_client_quit();
 	return 0;
-}
-
-
-static void ggz_connect(void)
-{
-	char fd_name[30];
-	struct sockaddr_un addr;
-
-	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/LaPocha.%d", getpid());
-
-	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-		exit(-1);
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-
-	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-		exit(-1);
 }
 
 
