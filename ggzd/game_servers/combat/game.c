@@ -27,8 +27,9 @@
 #include "combat.h"
 #include "protocols.h"
 #include <easysock.h>
-
 #include <stdlib.h>
+
+#define SET(OPTION) (cbt_game.options & OPTION)
 
 // Global game variables
 combat_game cbt_game;
@@ -435,6 +436,8 @@ void game_start() {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
+    if (SET(OPT_OPEN_MAP))
+      game_send_sync(a, 1);
 		if (es_write_int(fd, CBT_MSG_START) < 0)
 			ggz_debug("Can't send start message to player %d", a);
 	}
@@ -516,8 +519,14 @@ int game_handle_attack(int f_s, int from, int to) {
 			// The f_u is a Miner?
 			if (f_u == U_MINER)
 				f_u*=-1;
-			else
+			else {
+        // The bomb wins!
 				t_u*=-1;
+        // But we can use the variant that 
+        // makes the f_u also wins
+        if (SET(OPT_ONE_TIME_BOMB))
+          f_u*=-1;
+      }
 			break;
 		case U_SPY:
 		case U_SCOUT:
@@ -528,6 +537,12 @@ int game_handle_attack(int f_s, int from, int to) {
 		case U_MAJOR:
 		case U_COLONEL:
 		case U_GENERAL:
+      if (SET(OPT_TERRORIST_SPY) && f_u == U_SPY) {
+        // Both dies
+        f_u*=-1;
+        t_u*=-1;
+        break;
+      }
 			if (f_u > t_u)
 				f_u *= -1;
 			else if (t_u > f_u)
@@ -538,8 +553,11 @@ int game_handle_attack(int f_s, int from, int to) {
 			}
 			break;
 		case U_MARSHALL:
-			if (f_u == U_SPY)
+			if (f_u == U_SPY) {
+        if (SET(OPT_TERRORIST_SPY))
+          t_u *= -1;
 				f_u *= -1;
+      }
 			else if (f_u == U_MARSHALL) {
 				f_u *= -1;
 				t_u *= -1;

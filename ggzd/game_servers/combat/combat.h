@@ -167,7 +167,7 @@
  *      - OPT_TERRORIST_SPY           |\
  *      - OPT_MOVING_BOMB             | > first byte
  *      - OPT_SUPER_SCOUT             |/
- *      - OPT_UNITS_ADVANCE           |
+ *      - OPT_MOVING_FLAG             |
  *      - OPT_RANDOM_OUTCOME          |
  *      - OPT_ALLOW_DIAGONAL          /
  *
@@ -351,7 +351,7 @@
 #define OPT_TERRORIST_SPY    (1<<2)
 #define OPT_MOVING_BOMB      (1<<3)
 #define OPT_SUPER_SCOUT      (1<<4)
-#define OPT_UNITS_ADVANCE    (1<<5)
+#define OPT_MOVING_FLAG      (1<<5)
 #define OPT_RANDOM_OUTCOME   (1<<6)
 #define OPT_ALLOW_DIAGONAL   (1<<7)
 #define OPT_UNKNOWN_VICTOR   (1<<8)
