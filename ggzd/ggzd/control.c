@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 3192 2002-01-24 23:31:20Z jdorje $
+ * $Id: control.c 3259 2002-02-05 23:41:31Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -64,16 +64,21 @@ struct GameInfo game_types[MAX_GAME_TYPES];
 struct GGZState state;
 
 /* Termination signal */
-sig_atomic_t term_signal;
+static sig_atomic_t term_signal;
 
 /* Termination handler */
-RETSIGTYPE term_handle(int signum)
+static RETSIGTYPE term_handle(int signum)
 {
 	term_signal = 1;
 }
 
 
-int make_path(char* full, mode_t mode)
+/*
+ * Given a path and a mode, we create the given directory.  This
+ * is called only if we've determined the directory doesn't
+ * already exist.
+ */
+static int make_path(const char* full, mode_t mode)
 {
 	const char* slash = "/";
 	char* copy, *dir, *path;
@@ -103,32 +108,41 @@ int make_path(char* full, mode_t mode)
 }
 
 
-void init_dirs(void)
+/*
+ * Given a path for a directory, we check to see if that directory
+ * exists.  If it doesn't, we create it.
+ *
+ * This is functionally similar to "mkdir -p".
+ */
+static void check_path(const char* full_path)
 {
+	/* This could be done with system("mkdir -p $(full_path)"),
+	   but we'd have to check to see if -p was supported, etc.
+	   And it doesn't appear any library functions will do this... */
 	DIR* dir;
 	
-	if ( (dir = opendir(opt.tmp_dir)) == NULL) {
-		dbg_msg(GGZ_DBG_CONFIGURATION, 
-			"Couldn't open %s -- trying to create", opt.tmp_dir);
-		if (make_path(opt.tmp_dir, S_IRWXU) < 0)
-			err_sys_exit("Couldn't create %s", opt.tmp_dir);
-	}
-	else /* Everything eas OK, so close it */
-		closedir(dir);
-
-	if ( (dir = opendir(opt.data_dir)) == NULL) {
-		dbg_msg(GGZ_DBG_CONFIGURATION, 
-			"Couldn't open %s -- trying to create", opt.data_dir);
-		if (make_path(opt.data_dir, S_IRWXU) < 0)
-			err_sys_exit("Couldn't create %s", opt.data_dir);
-	}
-	else /* Everything eas OK, so close it */
+	if ( (dir = opendir(full_path)) == NULL) {
+		dbg_msg(GGZ_DBG_CONFIGURATION,
+			"Couldn't open %s -- trying to create", full_path);
+		if (make_path(full_path, S_IRWXU) < 0)
+			err_sys_exit("Couldn't create %s", full_path);
+	} else /* Everything eas OK, so close it */
 		closedir(dir);
 }
 
 
+/*
+ * Make sure all of our needed directories exist.  The first time
+ * running, they'll probably need to be created.
+ */
+static void init_dirs(void)
+{
+	check_path(opt.tmp_dir);
+	check_path(opt.data_dir);
+}
+
 /* Perhaps these should be put into their respective files? */
-void init_data(void)
+static void init_data(void)
 {
 	int i;
 
