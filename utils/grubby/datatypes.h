@@ -33,7 +33,7 @@ typedef struct {
 
 
 /*
- *  This is basicaly grubbies memmory,
+ *  This is basicaly grubbies memory,
  *  all information Grubby "knows" about 
  *  a person is stored here
  */
@@ -52,7 +52,7 @@ typedef struct {
 } People;
 
 /*
- * Little memmory space for random chatter
+ * Little memory space for random chatter
  */
 typedef struct {
 	char *text;
@@ -80,8 +80,8 @@ struct Grubby{
 	int	lang_check;			/* Check for fowl words	0 => Yes, 1 => No	*/
 };
 
-/* This holds all of AGRUB's memmory */
-struct Memmory {
+/* This holds all of AGRUB's memory */
+struct Memory {
 	int	num_people;
 	People	people[MAX_PEOPLE];
 	int	num_chatter;

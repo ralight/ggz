@@ -16,7 +16,7 @@
 #include "protocols.h"
 
 struct Grubby grubby;
-struct Memmory memmory;
+struct Memory memory;
 int sig;
 
 void init_chatter( void );
@@ -36,16 +36,16 @@ void grubby_init( void )
 	grubby.owner  = NULL;
 	grubby.lang_check = 0;
 
-	printf ("  |- Init Memmory\n");
-	/* Initilize grubbies memmory		*/
-	memmory.num_people = 0;
+	printf ("  |- Init Memory\n");
+	/* Initilize grubbies memory		*/
+	memory.num_people = 0;
 	for(i=0; i<MAX_PEOPLE; i++)
-		memmory.people[i].username
-		  = memmory.people[i].realname
-		  = memmory.people[i].email
-		  = memmory.people[i].url
-		  = memmory.people[i].info
-		  = memmory.people[i].lastroom
+		memory.people[i].username
+		  = memory.people[i].realname
+		  = memory.people[i].email
+		  = memory.people[i].url
+		  = memory.people[i].info
+		  = memory.people[i].lastroom
 		  = NULL;
 
 	init_chatter();
@@ -71,15 +71,15 @@ void ggz_init( void )
 
 void init_chatter( void )
 {
-	memmory.num_chatter = MAX_CHATTER;
-	memmory.chatter[0].text = "\"The further I get from the things that I care about, the less I care about how much further away I get.\" -Robert Smith, \"Fear of Ghosts\"";
-	memmory.chatter[0].type = GGZ_CHAT_NORMAL;
-	memmory.chatter[1].text = "It's all fun and games until someone gets hurt...then it's just fun.";
-	memmory.chatter[1].type = GGZ_CHAT_NORMAL;
-	memmory.chatter[2].text = "Patience is a virtue, afforded those with nothing better to do.";
-	memmory.chatter[2].type = GGZ_CHAT_NORMAL;
-	memmory.chatter[3].text = "A computer lets you make more mistakes faster than any invention in human history - with the possible exceptions of handguns and tequila.";
-	memmory.chatter[3].type = GGZ_CHAT_NORMAL;
-	memmory.chatter[4].text = "is having one heck of a time looking at all theis games at once!";
-	memmory.chatter[4].type = GGZ_CHAT_PERSONAL;
+	memory.num_chatter = MAX_CHATTER;
+	memory.chatter[0].text = "\"The further I get from the things that I care about, the less I care about how much further away I get.\" -Robert Smith, \"Fear of Ghosts\"";
+	memory.chatter[0].type = GGZ_CHAT_NORMAL;
+	memory.chatter[1].text = "It's all fun and games until someone gets hurt...then it's just fun.";
+	memory.chatter[1].type = GGZ_CHAT_NORMAL;
+	memory.chatter[2].text = "Patience is a virtue, afforded those with nothing better to do.";
+	memory.chatter[2].type = GGZ_CHAT_NORMAL;
+	memory.chatter[3].text = "A computer lets you make more mistakes faster than any invention in human history - with the possible exceptions of handguns and tequila.";
+	memory.chatter[3].type = GGZ_CHAT_NORMAL;
+	memory.chatter[4].text = "is having one heck of a time looking at all theis games at once!";
+	memory.chatter[4].type = GGZ_CHAT_PERSONAL;
 }

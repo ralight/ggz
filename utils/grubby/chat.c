@@ -21,7 +21,7 @@
 #include "support.h"
 
 extern struct Grubby grubby;
-extern struct Memmory memmory;
+extern struct Memory memory;
 
 void show_bad_lang( char *from );
 
@@ -94,16 +94,16 @@ void handle_chat( unsigned char OpCode, char *from, char *message )
 	{
 		if( i < MAX_PEOPLE )
 		{
-			memmory.people[memmory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
-			strcpy( memmory.people[memmory.num_people].username, from );
-			memmory.people[memmory.num_people].lastseen = time(NULL);
-			memmory.num_people++;
+			memory.people[memory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
+			strcpy( memory.people[memory.num_people].username, from );
+			memory.people[memory.num_people].lastseen = time(NULL);
+			memory.num_people++;
 		}
 	}
 
 	/* Known person */
 	else
-		memmory.people[i].lastseen = time(NULL);
+		memory.people[i].lastseen = time(NULL);
 
 	if( !strcmp(grubby.owner, from) )
 		owner_commands( words, word_c );
@@ -139,12 +139,12 @@ void handle_join( char *from )
 		send_msg( from, out );
 		if( i < MAX_PEOPLE )
 		{
-			memmory.people[memmory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
-			strcpy( memmory.people[memmory.num_people].username, from );
-			memmory.people[memmory.num_people].lastseen = time(NULL);
-			memmory.num_people++;
+			memory.people[memory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
+			strcpy( memory.people[memory.num_people].username, from );
+			memory.people[memory.num_people].lastseen = time(NULL);
+			memory.num_people++;
 		} else {
-			sprintf( out, "Sorry %s, but my memmory is all filled up, ask %s to make it bigger!",
+			sprintf( out, "Sorry %s, but my memory is all filled up, ask %s to make it bigger!",
 				 from, grubby.owner );
 			send_msg( from, out );
 		}
@@ -155,22 +155,22 @@ void handle_join( char *from )
 	{
 		sprintf( out, "Welcome back, %s.", get_name( from ) );
 		send_msg( from, out );
-		memmory.people[i].lastseen = time(NULL);
+		memory.people[i].lastseen = time(NULL);
 
 		/* Check for messages */
-		if( memmory.people[i].msgcount > 0 )
+		if( memory.people[i].msgcount > 0 )
 		{
-			for( m=0; m<memmory.people[i].msgcount; m++ )
+			for( m=0; m<memory.people[i].msgcount; m++ )
 			{
-				strftime( dt, 100, "%b %d @ %I:%M%p", localtime( &memmory.people[i].msg[m].timestamp ) );
+				strftime( dt, 100, "%b %d @ %I:%M%p", localtime( &memory.people[i].msg[m].timestamp ) );
 				sprintf( out, "Message %d from %s was left at %s:", 
-					 m+1, get_name( memmory.people[i].msg[m].from ), dt );
+					 m+1, get_name( memory.people[i].msg[m].from ), dt );
 				send_msg( from, out );
-				sprintf( out, "       %s", memmory.people[i].msg[m].text );
+				sprintf( out, "       %s", memory.people[i].msg[m].text );
 				send_msg( from, out );
-				free( memmory.people[i].msg[m].text );
+				free( memory.people[i].msg[m].text );
 			}
-			memmory.people[i].msgcount = 0;
+			memory.people[i].msgcount = 0;
 		}
 	}
 
@@ -199,7 +199,7 @@ void handle_part( char *from )
 	}
 
 	/* Known person */
-	if ( i < memmory.num_people )
+	if ( i < memory.num_people )
 	{
 		sprintf( out, "Yo %s, catch ya later! Have fun playin all these games.", get_name( from ) );
 		send_msg( from, out );

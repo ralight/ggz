@@ -12,19 +12,19 @@
 #include "datatypes.h"
 #include "support.h"
 
-extern struct Memmory memmory;
+extern struct Memory memory;
 
 int check_known( char *name )
 {
 	int i;
 
 	/* get the users number */
-	for(i=0; i<memmory.num_people; i++)
-		if( !strcmp(memmory.people[i].username, name))
+	for(i=0; i<memory.num_people; i++)
+		if( !strcmp(memory.people[i].username, name))
 			break;
 
 	/* Check if we know the user */
-	if( i >= memmory.num_people )
+	if( i >= memory.num_people )
 		return(-1);
 	else
 		return(i);
@@ -38,8 +38,8 @@ char *get_name( char *name )
 	if( i == -1 )
 		return( name );
 
-	if( memmory.people[i].realname )
-		return( memmory.people[i].realname );
+	if( memory.people[i].realname )
+		return( memory.people[i].realname );
 	else
 		return( name );
 }

@@ -18,7 +18,7 @@
 #include "support.h"
 
 struct Grubby grubby;
-struct Memmory memmory;
+struct Memory memory;
 
 void show_owner_help( void );
 void show_public_help( char *from );
@@ -143,7 +143,7 @@ void show_time( char *from, char *name )
 	}
 
 	/* Print out the time sence last seen */
-	secs = difftime( time(NULL), memmory.people[i].lastseen );
+	secs = difftime( time(NULL), memory.people[i].lastseen );
 	days = secs/86400;
 	secs -= days*86400;
 	hours = secs/3600;
@@ -254,7 +254,7 @@ void show_stats( void )
 	send_msg( grubby.owner, out );
 	sprintf( out, "Owner: %s", grubby.owner );
 	send_msg( grubby.owner, out );
-	sprintf( out, "Known People: %d", memmory.num_people );
+	sprintf( out, "Known People: %d", memory.num_people );
 	send_msg( grubby.owner, out );
 	send_msg( grubby.owner, "------------------------" );
 	if( grubby.lang_check == 0 )
@@ -281,9 +281,9 @@ void add_name( char *from, char *name )
 	{
 
 	} else {
-		memmory.people[i].realname = malloc( sizeof( char ) * ( strlen( name ) + 1 ) );
-		strcpy( memmory.people[i].realname, name);
-		sprintf( out, "I'll remember your name as %s from now on %s.", memmory.people[i].realname, from );
+		memory.people[i].realname = malloc( sizeof( char ) * ( strlen( name ) + 1 ) );
+		strcpy( memory.people[i].realname, name);
+		sprintf( out, "I'll remember your name as %s from now on %s.", memory.people[i].realname, from );
 		send_msg( from, out );
 	}
 }
@@ -320,11 +320,11 @@ void add_message( char *from, char *message )
 		sprintf( out, "Sorry %s, I don't know %s.", get_name( from ), name );
 		send_msg( from, out );
 	} else {
-		memmory.people[i].msg[memmory.people[i].msgcount].text = malloc( sizeof( char ) * ( strlen( text ) + 1 ) );
-		strcpy( memmory.people[i].msg[memmory.people[i].msgcount].text, text);
-		strcpy( memmory.people[i].msg[memmory.people[i].msgcount].from, from);
-		memmory.people[i].msg[memmory.people[i].msgcount].timestamp = time(NULL);
-		memmory.people[i].msgcount++;
+		memory.people[i].msg[memory.people[i].msgcount].text = malloc( sizeof( char ) * ( strlen( text ) + 1 ) );
+		strcpy( memory.people[i].msg[memory.people[i].msgcount].text, text);
+		strcpy( memory.people[i].msg[memory.people[i].msgcount].from, from);
+		memory.people[i].msg[memory.people[i].msgcount].timestamp = time(NULL);
+		memory.people[i].msgcount++;
 		sprintf( out, "I'll be sure to tell %s for you.", get_name( name ) );
 		send_msg( from, out );
 	}
