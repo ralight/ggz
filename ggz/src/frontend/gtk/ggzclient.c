@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5063 2002-10-27 12:46:52Z jdorje $
+ * $Id: ggzclient.c 5132 2002-11-01 07:01:07Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -76,6 +76,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn ggz_chat(GGZRoomEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
@@ -125,6 +126,7 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, ggz_state_sensitivity);
 	ggzcore_server_add_event_hook(server, GGZ_TABLE_LEFT, ggz_table_left);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, ggz_server_error);
+	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL, ggz_chat_fail);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, ggz_net_error);
 	
 }
@@ -382,6 +384,45 @@ static GGZHookReturn ggz_chat(GGZRoomEvent id, void* event_data, void* user_data
 
 	chat_display_server(chat_data->type,
 			    chat_data->sender, chat_data->message);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data,
+				   void* user_data)
+{
+	GGZErrorEventData *error = event_data;
+	char buf[512];
+
+	switch (error->status) {
+	case E_NOT_IN_ROOM:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("You can't chat while not in a room."));
+		break;
+	case E_NO_PERMISSION:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("You don't have permission to chat here."));
+		break;
+	case E_AT_TABLE:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("No private chatting at a table!."));
+		break;
+	case E_USR_LOOKUP:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("That player isn't in the room!"));
+		break;
+	case E_BAD_OPTIONS:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("There was an error sending the chat."));
+		break;
+	default:
+		snprintf(buf, sizeof(buf),
+			 _("Chat failed with uknown error %d."),
+			 error->status);
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf);
+		break;
+	}
 
 	return GGZ_HOOK_OK;
 }
