@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: animation.c 3295 2002-02-10 06:20:09Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -44,9 +44,8 @@ static struct {
 	int card_x, card_y;
 	float cur_x, cur_y;
 	float step_x, step_y;
-	gint cb_tag;
-} anim = {
--1};
+	guint cb_tag;
+} anim = {-1};
 
 static void animation_delete(void);
 
