@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2967 2001-12-20 08:18:41Z jdorje $
+ * $Id: types.h 2968 2001-12-20 08:25:05Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -92,11 +92,5 @@ struct game_player_t {
 
 	bid_data_t bid_data;	/* bidding information for this player */
 };
-
-typedef struct global_message_list_t {
-	char *mark;
-	char *message;
-	struct global_message_list_t *next;
-} global_message_list_t;
 
 #endif /* __TYPES_H__ */
