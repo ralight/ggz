@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 6136 2004-07-17 04:02:41Z josef $
+ * $Id: err_func.c 6168 2004-08-23 19:49:58Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -389,10 +389,10 @@ void log_logout_regd(void)
 
 void log_update_set_interval(int sec)
 {
-	/* No need to lock as this is only called before server init */
-	/* However, if this ever should change... doesn't hurt to play safe */
-
-	pthread_mutex_lock(&update_info.mut);
+	/* This must be called before threading starts.  We could potentially
+	 * re-read config files later in which case some form of locking
+	 * would be needed.  There used to be a mutex lock here but it
+	 * caused crashes because it was called before the mutex was even
+	 * initialized.  The easiest solution was just to remove it. */
 	update_info.update_interval = sec;
-	pthread_mutex_unlock(&update_info.mut);
 }
