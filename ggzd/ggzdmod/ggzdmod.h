@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3108 2002-01-14 00:06:53Z jdorje $
+ * $Id: ggzdmod.h 3112 2002-01-14 05:57:40Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -29,6 +29,7 @@
  */
 
 #include <ggz.h> /* libggz */
+#include <ggz_common.h>
 
 /** @file ggzdmod.h
  *  @brief Common functions for interfacing a game server and GGZ.
@@ -181,20 +182,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-/** @brief Seat status values.
- *
- * Each "seat" at a table of a GGZ game can have one of these values.
- * They are tracked by ggzdmod.
- */
-typedef enum {
-	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
-	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
-	GGZ_SEAT_RESERVED = -3,	   /**< The seat is reserved for a player. */
-	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
-	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
-} GGZSeatType;
 
 /** @brief Table states
  *

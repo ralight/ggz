@@ -1,7 +1,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <easysock.h>
+#include <ggz_common.h>
 
 int fd = 3;
 
@@ -18,14 +20,6 @@ typedef enum {
 	MSG_LOG,		/**< a message to log */
 	REQ_GAME_STATE,		/**< sent to tell of a game-over */
 } TableToControl;
-
-typedef enum {
-	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
-	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
-	GGZ_SEAT_RESERVED = -3,	   /**< The seat is reserved for a player. */
-	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
-	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
-} GGZSeatType;
 
 typedef enum {
 	GGZ_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
