@@ -308,7 +308,7 @@ int _ggzcore_confio_write_list(int handle, char *section, char *key,
 			}
 			if(dst >= eob)
 				return -1;
-			*dst++ = *src;
+			*dst++ = *src++;
 		}
 		if(dst >= eob)
 			return -1;
