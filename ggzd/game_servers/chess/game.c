@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -67,6 +67,12 @@ void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
   game_update(CHESS_EVENT_LEAVE, player);
 }
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
 /* game_update(int event_id, void *data) 
  * event_id is a id of the CHESS_EVENT_* family
  * data should be;
@@ -121,7 +127,7 @@ int game_update(int event_id, void *data) {
         game_send_time(*(int *)data);
       }
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_OPEN) == 0)
+      if (game_info.clock_type >= 0 && seats_full())
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_TIME:
@@ -143,7 +149,7 @@ int game_update(int event_id, void *data) {
       if (ggzdmod_get_seat(game_info.ggz, 1).type == GGZ_SEAT_PLAYER)
         game_send_time(1);
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_OPEN) == 0)
+      if (game_info.clock_type >= 0 && seats_full())
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_START:

@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -125,6 +125,13 @@ static void _handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 }
 
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+
 /* Callback for GGZDMOD_EVENT_JOIN */
 static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
@@ -135,7 +142,7 @@ static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 	game_send_players();
 	
 	/* We start playing only when there are no open seats. */
-	if (!ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN)) {
+	if (seats_full()) {
 
 		/* If we're continuing a game, send sync to new player */
 		if (ttt_game.turn != -1)

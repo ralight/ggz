@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -68,6 +68,13 @@ void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event, void *data) {
 	}
 }
 
+
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
 void game_handle_ggz_join(GGZdMod* ggz, GGZdModEvent event, void *data) {
 	int seat = *(int*)data;
 	
@@ -80,7 +87,7 @@ void game_handle_ggz_join(GGZdMod* ggz, GGZdModEvent event, void *data) {
 	game_send_players();
 
 	// Waiting for anyone?
-	if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0) {
+	if (seats_full()) {
 		// Game already going on?
 		ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
 		if (rvr_game.turn == EMPTY)

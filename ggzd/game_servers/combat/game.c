@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -87,6 +87,12 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
      rather than here (which is bad, but...). */
 }
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
 /* This handles a player "join" event from GGZ. */
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
   int seat = *(int*)data;
@@ -103,7 +109,7 @@ void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
         host = seat;
         game_request_options(host);
       }
-      if (!ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_OPEN) && cbt_game.map) {
+      if (cbt_game.map && seats_full()) {
         // Request setup!
         cbt_game.state = CBT_STATE_SETUP;
         game_request_setup(-1);
@@ -179,7 +185,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data) {
             game_send_options(a);
         }
         // Check if must start the game
-        if (!ggzdmod_count_seats(cbt_game.ggz, GGZ_SEAT_OPEN) && cbt_game.map) {
+        if (seats_full() && cbt_game.map) {
           cbt_game.state = CBT_STATE_SETUP;
           game_request_setup(-1);
           if (SET(OPT_RANDOM_SETUP))

@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -103,6 +103,13 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 }
 
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+
 /* Handle message from player */
 void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 {
@@ -125,7 +132,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 		case HASTINGS_REQ_INIT:
 			game_init(hastings_game.ggz);
 			game_send_sync(num);
-			if (!ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN))
+			if (seats_full())
 			{
 				hastings_game.state = HASTINGS_STATE_PLAYING;
 				game_move();

@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -524,6 +524,12 @@ void ggz_update_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 	game_update(ESCAPE_EVENT_LEAVE, data);
 }
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
 /* Update game state */
 int game_update(int event, void *d1)
 {
@@ -557,7 +563,7 @@ int game_update(int event, void *d1)
 
 			ggzdmod_log(escape_game.ggz, "\tOptions sent to players");
 			/* Start the game if we are ready to */
-			if(!ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN) && escape_game.play_again != 1) {
+			if(escape_game.play_again != 1 && seats_full()) {
 				escape_game.turn = 0;
 				escape_game.state = ESCAPE_STATE_PLAYING;
 				ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_PLAYING");
@@ -590,7 +596,7 @@ int game_update(int event, void *d1)
 			/* If options are already set, we can proceed */
 			game_send_options(seat);
 			ggzdmod_log(escape_game.ggz, "\tgame_send_options(%d)",seat);
-			if(!ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN)) {
+			if(seats_full()) {
 				if(escape_game.turn == -1){
 					escape_game.turn = 0;
 					ggzdmod_log(escape_game.ggz, "\tescape_game.turn = 0");
@@ -657,8 +663,9 @@ static int game_handle_newgame(int seat)
 
 	/* Issue the game start if second answer comes */
 	/* and options are already setup to go */
-	if(!ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN) && escape_game.state == ESCAPE_STATE_WAIT
-	   && escape_game.play_again == 2) {
+	if(escape_game.state == ESCAPE_STATE_WAIT
+	   && escape_game.play_again == 2
+	   && seats_full()) {
 		escape_game.turn = 0;
 		escape_game.state = ESCAPE_STATE_PLAYING;
 		escape_game.repeatmove = 0;

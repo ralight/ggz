@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -574,6 +574,13 @@ static int game_receive_trump(int num)
 }
 
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+
 /* Update game state */
 static int game_update(int event, void *data)
 {
@@ -600,7 +607,7 @@ static int game_update(int event, void *data)
 				game_send_sync(seat);
 
 			/* All the seats are occupied ? */
-			if(!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)) {
+			if(seats_full()) {
 				/* If first time, then initialize */
 				if(game.turn == -1) {
 					game.turn = 0;

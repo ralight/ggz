@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -451,6 +451,13 @@ char game_check_win(void)
 }
 
 
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+
 /* Update game state */
 int game_update(int event, void *d1, void *d2)
 {
@@ -476,7 +483,7 @@ int game_update(int event, void *d1, void *d2)
 					game_send_options(seat);
 
 			/* Start the game if we are ready to */
-			if(!ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN) && dots_game.play_again != 1) {
+			if(dots_game.play_again != 1 && seats_full()) {
 				dots_game.turn = 0;
 				dots_game.state = DOTS_STATE_PLAYING;
 				game_move();
@@ -504,7 +511,7 @@ int game_update(int event, void *d1, void *d2)
 
 			/* If options are already set, we can proceed */
 			game_send_options(seat);
-			if(!ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN)) {
+			if(seats_full()) {
 				if(dots_game.turn == -1)
 					dots_game.turn = 0;
 				else
@@ -564,8 +571,9 @@ static int game_handle_newgame(int seat)
 
 	/* Issue the game start if second answer comes */
 	/* and options are already setup to go */
-	if(!ggzdmod_count_seats(dots_game.ggz, GGZ_SEAT_OPEN) && dots_game.state == DOTS_STATE_WAIT
-	   && dots_game.play_again == 2) {
+	if(dots_game.state == DOTS_STATE_WAIT
+	   && dots_game.play_again == 2
+	   && seats_full()) {
 		dots_game.turn = 0;
 		dots_game.state = DOTS_STATE_PLAYING;
 		game_move();
