@@ -321,7 +321,9 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case RSP_LOGIN_NEW:
 	case MSG_MOTD:
-		dlg_motd = create_dlgMOTD();
+		if (dlg_motd == NULL)
+			dlg_motd = create_dlgMOTD();
+
 		es_read_int(source, &count);
 		connect_msg("[%s] MOTD line count %d\n", opcode_str[op], count);
 		for (i = 0; i < count; i++) {
@@ -599,6 +601,9 @@ void motd_print_line(gchar *line)
 	GdkFont *fixed_font;
 	gint color_index=9; /* Black */
 
+	/* Make shure the motd window it there */
+	if (dlg_motd == NULL)
+		return;
 
 	cmap = gdk_colormap_get_system();
 	if (!gdk_color_alloc(cmap, &colors[color_index])) {
