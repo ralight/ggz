@@ -30,5 +30,3 @@
 #include <datatypes.h>
 
 GtkWidget* create_dlg_launch (void);
-void launch_get_table(TableInfo* table);
-

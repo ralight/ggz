@@ -23,7 +23,7 @@
  */
 
 
-#define GGZ_CS_PROTO_VERSION  0
+#define GGZ_CS_PROTO_VERSION  1
 
 typedef enum {
 	REQ_LOGIN_NEW,

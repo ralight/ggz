@@ -59,7 +59,6 @@ static guint game_handle;
 
 static void run_game(gint type, gchar flag, gchar* path);
 static void handle_game(gpointer data, gint source, GdkInputCondition cond);
-static void handle_options(gpointer data, gint source, GdkInputCondition cond);
 
 
 void launch_game(gint type, gchar launch)
@@ -115,13 +114,9 @@ void launch_game(gint type, gchar launch)
 		game.pid = pid;
 		game.fd = fd;
 
-		if (launch)
-			callback = handle_options;
-		else
-			callback = handle_game;
-		
-		game_handle = gdk_input_add(fd, GDK_INPUT_READ, 
-					    *callback, NULL);
+		game_handle = gdk_input_add(fd, GDK_INPUT_READ, handle_game, 
+					    NULL);
+					    
 	}
 
 	g_free(game_name);
@@ -138,51 +133,6 @@ static void run_game(gint type, gchar flag, gchar* path)
 		execl(path, g_basename(path), "-o", NULL);
 	else
 		execl(path, g_basename(path), NULL);
-}
-
-
-static void handle_options(gpointer data, gint source, GdkInputCondition cond)
-{
-	gint i, size, seats;
-	void *options = NULL;
-	TableInfo table;
-
-	/* Get table launch info */
-	launch_get_table(&table);
-
-	/* Get number of seats */
-	seats = seats_num(table);
-
-	dbg_msg("Getting options from game client");
-	es_read_int(source, &size);
-	if (size && (options = malloc(size)) == NULL)
-		err_sys_exit("malloc falied");
-	es_readn(source, options, size);
-	
-	/* Send launch game request to server */
-	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
-	es_write_int(connection.sock, table.type_index);
-	es_write_string(connection.sock, table.desc);
-	es_write_int(connection.sock, seats);
-	for (i = 0; i < seats; i++) {
-		es_write_int(connection.sock, table.seats[i]);
-		if (table.seats[i] == GGZ_SEAT_RESV)
-			es_write_string(connection.sock, table.names[i]);
-	}
-	es_write_int(connection.sock, size);
-	if (size) {
-		es_writen(connection.sock, options, size);
-		free(options);
-	}
-
-	/* Go ahead and destroy dlg_launch now (it's been hiding) */
-        gtk_widget_destroy(dlg_launch);
-        dlg_launch = NULL;
-
-	/* Remove ourself as data handler and install handle_game */
-	gdk_input_remove(game_handle);
-	game_handle = gdk_input_add(source, GDK_INPUT_READ, handle_game,
-				    NULL);
 }
 
 
@@ -256,3 +206,4 @@ RETSIGTYPE game_dead(int sig)
 		dbg_msg("Game module is dead");
 	}
 }
+

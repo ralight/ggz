@@ -51,6 +51,7 @@
 #include "protocols.h"
 #include "seats.h"
 #include "xtext.h"
+#include "support.h"
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -67,6 +68,7 @@ extern gint selected_type;
 extern GdkColor colors[];
 extern struct GameTables tables;
 extern struct Rooms room_info;
+extern gint new_type;
 
 GtkWidget *detail_window = NULL;
 
@@ -233,24 +235,25 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			warn_dlg("Your table launch was rejected due to invalid seat assignments");
 			break;
 		case 0:
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+			tmp = lookup_widget(main_win, "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			tmp = lookup_widget(main_win, "join");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			tmp = lookup_widget(main_win, "join");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+			tmp = lookup_widget(main_win, "launch_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+			tmp = lookup_widget(main_win, "join_button");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			tmp = lookup_widget(mnu_tables, "launch1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			tmp = lookup_widget(mnu_tables, "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+			tmp = lookup_widget(main_win, "room_combo");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-
+			
 			connection.playing = TRUE;
+			launch_game(new_type, TRUE);
 			break;
 		}
 		break;
@@ -278,8 +281,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 			connection.playing = TRUE;
-			launch_game(selected_type,0);
-
+ 			launch_game(selected_type, FALSE);
 			break;
 		case E_NOT_IN_ROOM:
 			warn_dlg("Must be in room to join table");

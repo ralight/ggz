@@ -36,6 +36,8 @@
 #include "game.h"
 #include "err_func.h"
 #include "support.h"
+#include "protocols.h"
+#include "seats.h"
 
 
 /* Globals neaded by this dialog */
@@ -45,6 +47,7 @@ extern struct Rooms room_info;
 
 /* Global GtkWidget for this dialog */
 GtkWidget *dlg_launch;
+gint new_type;
 
 /* Local callbacks which no other file will call */
 static void launch_fill_defaults(GtkWidget* widget, gpointer data);
@@ -55,6 +58,7 @@ static gint max_allowed_players(guchar mask);
 static void launch_resv_toggle(GtkWidget* button, GtkWidget *entry);
 static gint launch_seat_type(gint i);
 static gchar* launch_get_reserve_name(gint seat);
+
 
 
 /*                              *
@@ -164,19 +168,46 @@ static void launch_seats_changed(GtkWidget* widget, gpointer data)
 
 static void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
 {
-        gint type;
-	
+        gint i, num, seats[8];
+	GtkEntry* entry;
+		
+	if (!connection.connected) {
+                warn_dlg("Not connected!");
+		gtk_widget_destroy(dlg_launch);
+		return;
+	}
+
         /* Hide it at this point, we still nead
            it there to get the information from */
         gtk_widget_hide(GTK_WIDGET(dlg_launch));
 	
 	/* Set game type information */
-	type = room_info.info[connection.cur_room].game_type;
+	new_type = room_info.info[connection.cur_room].game_type;
         
-        if (!connection.connected)
-                warn_dlg("Not connected!");
-        else
-                launch_game(type, TRUE);
+	/* Get table launch info */
+	
+	entry = GTK_ENTRY(lookup_widget(dlg_launch, "desc_entry"));
+	for (i = 0; i < MAX_TABLE_SIZE; i++)
+		seats[i] = launch_seat_type(i);
+	
+	/* Get number of seats */
+	for (i = 0; i < MAX_TABLE_SIZE; i++)
+		if (seats[i] == GGZ_SEAT_NONE)
+			break;
+	num = i;
+	
+	/* Send launch game request to server */
+	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
+	es_write_int(connection.sock, new_type);
+	es_write_string(connection.sock, gtk_entry_get_text(entry));
+	es_write_int(connection.sock, num);
+	for (i = 0; i < num; i++) {
+		es_write_int(connection.sock, seats[i]);
+		if (seats[i] == GGZ_SEAT_RESV)
+			es_write_string(connection.sock, 
+					launch_get_reserve_name(i));
+	}
+	
 }
 
 
@@ -187,22 +218,6 @@ static void launch_resv_toggle(GtkWidget* button, GtkWidget *entry)
 		gtk_widget_grab_focus(entry);
         } else
 		gtk_widget_set_sensitive(GTK_WIDGET(entry), FALSE);
-}
-
-
-void launch_get_table(TableInfo* table)
-{
-	int i;
-	gpointer tmp;
-
-	table->type_index = room_info.info[connection.cur_room].game_type;
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "desc_entry");
-	strcpy(table->desc, gtk_entry_get_text(GTK_ENTRY(tmp)));
-	for (i = 0; i < MAX_TABLE_SIZE; i++) {
-		table->seats[i] = launch_seat_type(i);
-		if (table->seats[i] == GGZ_SEAT_RESV)
-			strcpy(table->names[i], launch_get_reserve_name(i));
-	}
 }
 
 
