@@ -144,9 +144,9 @@ void parse_conf_file(void)
 		opt.game_dir = tempstr;
 	}
 
-	/* If no main_port, default it to 1174 */
+	/* If no main_port, default it to 5688 */
 	if(!opt.main_port)
-		opt.main_port = 1174;
+		opt.main_port = 5688;
 
 	/* If the motd option is present, pre-read the file */
 	if(motd_info.motd_file)

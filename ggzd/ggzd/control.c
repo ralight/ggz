@@ -26,16 +26,13 @@
 #include <config.h>		/* Site specific config */
 
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <signal.h>
-#include <string.h>
-#include <errno.h>
-#include <pthread.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+
+#include <pthread.h>
+#include <errno.h>
+#include <unistd.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -54,11 +51,10 @@ struct GameTables tables;
 struct Users players;
 
 
+/* Perhaps these should be put into their respective files? */
 void init_data(void)
 {
-
 	int i;
-	GameInfo spades;
 
 	pthread_rwlock_init(&game_types.lock, NULL);
 	pthread_rwlock_init(&tables.lock, NULL);
@@ -70,65 +66,17 @@ void init_data(void)
 	for (i = 0; i < MAX_TABLES; i++)
 		tables.info[i].type_index = -1;
 	
+	/* This is not necessary since game_types is in BSS */
 	for (i = 0; i < MAX_GAME_TYPES; i++)
 		game_types.info[i].enabled = 0;
 
-	parse_game_files();
-
-	if(game_types.count == 0) {
-	    /* FIXME: Temporary hack.  This info should be loaded from a file
-	     * or something
-	     */
-	    strncpy(spades.name, "NetSpades", MAX_GAME_NAME_LEN);
-	    strncpy(spades.version, "0.0.1", MAX_GAME_VER_LEN);
-	    strncpy(spades.desc,
-		"NetSpades is a multiuser networked spades game",
-		MAX_GAME_DESC_LEN);
-	    strncpy(spades.author, "Brent Hendricks", MAX_GAME_AUTH_LEN);
-	    strncpy(spades.homepage, "http://www.ece.rice.edu/~brentmh/spades", 
-		MAX_GAME_WEB_LEN);
-	    spades.num_play_allow = (char) (PLAY_ALLOW_FOUR);
-	    spades.comp_allow =
-		(char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
-			COMP_ALLOW_THREE);
-	    spades.options_size = 12;
-	    spades.enabled = 1;
-	    spades.launch = NULL;
-	    strncpy(spades.path, "../game_servers/spades/spades", MAX_PATH_LEN);
-
-	    game_types.info[0] = spades;
-	    game_types.count++;
-
-	    strncpy(spades.name, "Test Game", MAX_GAME_NAME_LEN);
-	    strncpy(spades.version, "1.0c", MAX_GAME_VER_LEN);
-	    strncpy(spades.desc,
-		"Very crude hack to start multi-game support",
-		MAX_GAME_DESC_LEN);
-	    strncpy(spades.author, "Anonymous", MAX_GAME_AUTH_LEN);
-	    strncpy(spades.homepage, "http://ggz.sourceforge.net", 
-		MAX_GAME_WEB_LEN);
-	    spades.num_play_allow = (char) (PLAY_ALLOW_FIVE);
-	    spades.comp_allow =
-		(char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
-			COMP_ALLOW_THREE);
-	    spades.options_size = 12;
-	    spades.enabled = 1;
-	    spades.launch = NULL;
-	    strncpy(spades.path, "../game_servers/spades/spades", MAX_PATH_LEN);
-
-	    game_types.info[1] = spades;
-	    game_types.count++;
-	}
-
-	chat_init();
 }
 
 
 void daemon_init(const char *pname, int facility)
 {
-
 	int pid;
-
+	
 	/* Daemonize */
 	if ((pid = fork()) < 0)
 		err_sys_exit("fork failed");
@@ -136,6 +84,7 @@ void daemon_init(const char *pname, int facility)
 		exit(0);
 
 	setsid();
+	/* Should chdir() to gamedir?*/
         /*chdir("/");*/
 	umask(0);
         close(STDIN_FILENO);
@@ -147,7 +96,6 @@ void daemon_init(const char *pname, int facility)
 
 int main(int argc, char *argv[])
 {
-
 	int main_sock, new_sock;
 	struct sockaddr_in addr;
 	int addrlen;
@@ -156,24 +104,20 @@ int main(int argc, char *argv[])
 	parse_args(argc, argv);
 	parse_conf_file();
 	logfile_initialize();
-
+	
 	dbg_msg("Conf file: %s", opt.local_conf);
 	dbg_msg("Log level: %d", log_info.log_level);
 	dbg_msg("Main Port: %d", opt.main_port);
+	
+	init_data();
+	parse_game_files();
+	chat_init();
 
 #ifndef DEBUG
 	daemon_init(argv[0], 0);
 #endif
 
-	init_data();
-
-#if 0				/* FIXME: need to write these */
-	setup_sighandlers();
-	load_game_mods();
-	setup_config_socket();
-#endif
-
-
+	/* FIXME: Need to set signal handlers */	
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
@@ -187,7 +131,6 @@ int main(int argc, char *argv[])
 
 	/* Main loop */
 	for (;;) {
-
 		addrlen = sizeof(addr);
 		if (FAIL(new_sock = accept(main_sock, &addr, &addrlen))) {
 			if (errno == EINTR)
@@ -198,14 +141,8 @@ int main(int argc, char *argv[])
 			/* This is where to test for ignored IP addresses */
 			player_handler_launch(new_sock);
 		}
-		
-	}		
+	}
 
-
-#if 0				/* FIXME: Not implemented yet */
-	cleanup();
-#endif
-
+	/* FIXME: Do we need some sort of cleanup? */
 	return 0;
-
 }
