@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2391 2001-09-07 13:10:52Z jdorje $
+ * $Id: spades.c 2454 2001-09-11 20:12:21Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -24,7 +24,6 @@
  */
 
 
-#include <easysock.h>
 #include <string.h>
 
 #include "../common.h"

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: hearts.c 2454 2001-09-11 20:12:21Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,7 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <easysock.h>
 #include <stdlib.h>
 
 #include "../common.h"

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2368 2001-09-05 07:01:58Z jdorje $
+ * $Id: euchre.c 2454 2001-09-11 20:12:21Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -22,8 +22,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
-#include <easysock.h>
 
 #include "../common.h"
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2453 2001-09-11 19:20:55Z jdorje $
+ * $Id: net.c 2454 2001-09-11 20:12:21Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -36,9 +36,8 @@
 
 #include "common.h"
 
-							   /* Send out player 
-							      list to player
-							      p */
+
+/* Send out player ist to player p */
 /** A player list packet is composed of:
  *    - The WH_MSG_PLAYERS opcode
  *    - An integer containing the number of seats
