@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4168 2002-05-05 21:44:03Z jdorje $
+ * $Id: game.c 4332 2002-08-02 03:35:46Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -64,6 +64,13 @@ void game_init(void)
 {
 	ggz_debug("main", "Entering game_init().");
 	statusbar_message(_("Waiting for server..."));
+}
+
+void game_handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	if (client_handle_ggz() < 0) {
+		/* ??? */
+	}
 }
 
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
@@ -201,7 +208,12 @@ void game_request_sync(void)
 
 
 
-
+void game_alert_server(int server_socket_fd)
+{
+	/* Start listening on the server socket.  We may stop later,
+	   if necessary. */
+	listen_for_server(TRUE);
+}
 
 void game_get_newgame(void)
 {

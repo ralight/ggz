@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4168 2002-05-05 21:44:03Z jdorje $
+ * $Id: client.h 4332 2002-08-02 03:35:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -123,14 +123,22 @@ extern struct ggzcards_game_t ggzcards;
  *  @{ */
 
 /** This function should be called when the client first launches.  It
-  * initializes all internal data and makes the connection to the GGZ
-  * client.
-  * @return The file descriptor that is used to communicate with the server. */
+  * initializes all internal data and makes (or prepares to make) the
+  * connection to the game server.
+  * @note The socket FD will be returned separately via game_alert_server.
+  * @return The FD of the connection ot the GGZ client.
+  * @note AI clients don't have a GGZ connection; the return will be -1. */
 int client_initialize(void);
+
+/** This function should be called on any input from the GGZ fd.  It will
+ *  do all the rest of the work, and call one of the callbacks if
+ *  necessary.
+ *  @see Callbacks */
+int client_handle_ggz(void);
 
 /** This function should be called on any input from the server fd.  It
  *  will do all the rest of the work, and call one of the callbacks if
- *  necessary.
+ *  necessary.  AI clients need not worry about this function.
  *  @see Callbacks */
 int client_handle_server(void);
 
@@ -150,6 +158,10 @@ int client_get_fd(void);
  * up to the frontend to define these functions appropriately.
  * @note These can easily be changed so that they'll fit better with other frontends.
  * @{ */
+
+/** Handles an update of the server socket.  This will only happen once, when
+ *  we first connect to the server. */
+extern void game_alert_server(int server_socket_fd);
 
 /** Handles a newgame request by calling client_send_newgame when
  *  ready (you may wish to ask the user first). */

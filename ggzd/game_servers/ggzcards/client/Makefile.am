@@ -1,7 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3997 2002-04-16 19:03:58Z jdorje $
+# $Id: Makefile.am 4332 2002-08-02 03:35:46Z jdorje $
 
 SUBDIRS = .
+
+CFLAGS = -DAI_CLIENT
 
 noinst_LIBRARIES = libclient.a
 

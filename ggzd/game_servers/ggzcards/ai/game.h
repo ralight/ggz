@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.h 4169 2002-05-05 21:46:42Z jdorje $
+ * $Id: game.h 4332 2002-08-02 03:35:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -32,6 +32,7 @@
 #define DBG_PLAY "play"
 #define DBG_AI "misc"
 
+void game_alert_server(int server_socket_fd);
 void game_get_newgame(void);
 void game_alert_newgame(cardset_type_t cardset_type);
 void game_alert_newhand(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4169 2002-05-05 21:46:42Z jdorje $
+ * $Id: client.c 4332 2002-08-02 03:35:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -27,6 +27,10 @@
 #  include <config.h>
 #endif
 
+#ifndef AI_CLIENT
+#  define GUI_CLIENT
+#endif
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -36,6 +40,9 @@
 #include <unistd.h>		/* for close() */
 
 #include <ggz.h>
+#ifdef GUI_CLIENT
+# include <ggzmod.h>
+#endif
 
 #include "net_common.h"
 #include "protocol.h"
@@ -43,6 +50,12 @@
 
 #include "client.h"
 
+#ifdef GUI_CLIENT
+/* GGZ handler */
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
+#endif /* GUI_CLIENT */
+
+static void handle_server_connect(int server_fd);
 
 static int handle_message_global(void);
 
@@ -53,12 +66,40 @@ static int handle_game_message(void);
 
 static struct {
 	int fd;
+#ifdef GUI_CLIENT
+	GGZMod *ggzmod;
+#endif /* GUI_CLIENT */
 	int max_hand_size;
-} game_internal;
+} game_internal = {0,
+#ifdef GUI_CLIENT
+		   NULL,
+#endif
+		   0
+};
 
 struct ggzcards_game_t ggzcards = { 0 };
 
 static int handle_req_play(void);
+
+#ifdef GUI_CLIENT
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+{
+	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
+	handle_server_connect( (int)data );
+}
+#endif
+
+static void handle_server_connect(int server_fd)
+{
+	game_internal.fd = server_fd;
+
+	if (client_send_language(getenv("LANG")) < 0) {
+		game_internal.fd = -1;
+		ggz_error_msg("Couldn't send message to server.");
+	}
+
+	game_alert_server(game_internal.fd); /* ?? */
+}
 
 int client_initialize(void)
 {
@@ -78,26 +119,40 @@ int client_initialize(void)
 	game_internal.fd = -1;
 	game_internal.max_hand_size = 0;
 
-	game_internal.fd = 3;	/* FIXME */
-	if (game_internal.fd < 0) {
-		ggz_error_msg_exit("Couldn't connect to ggz.");
-	}
 	ggzcards.state = STATE_INIT;
 	ggz_debug("core", "Client initialized.");
-	
-	if (client_send_language(getenv("LANG")) < 0)
-		return -1;
-	
-	return game_internal.fd;
+
+#ifdef GUI_CLIENT
+	game_internal.ggzmod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(game_internal.ggzmod,
+			   GGZMOD_EVENT_SERVER,
+			   &handle_ggzmod_server);
+	ggzmod_connect(game_internal.ggzmod);
+#else /* AI_CLIENT */
+	handle_server_connect(3);
+#endif
+
+#ifdef GUI_CLIENT
+	return ggzmod_get_fd(game_internal.ggzmod);
+#else
+	return -1;
+#endif
 }
 
 
 void client_quit(void)
 {
 	int p;
-	/* FIXME: is this the desired behavior? */
-	if (close(3) < 0)
+
+	/* Disconnect */
+#ifdef GUI_CLIENT
+	if (ggzmod_disconnect(game_internal.ggzmod) < 0)
+#else /* AI_CLIENT */
+	if (close(game_internal.fd) < 0)
+#endif
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
+
+	/* Free data */
 	for (p = 0; p < ggzcards.num_players; p++) {
 		if (ggzcards.players[p].hand.cards)
 			ggz_free(ggzcards.players[p].hand.cards);
@@ -108,6 +163,7 @@ void client_quit(void)
 	if (ggzcards.players != NULL)
 		ggz_free(ggzcards.players);
 	ggzcards.players = NULL;
+
 	ggz_debug("core", "Client disconnected.");
 }
 
@@ -949,6 +1005,12 @@ int client_send_sync_request(void)
 	return 0;
 }
 
+#ifdef GUI_CLIENT
+int client_handle_ggz(void)
+{
+	return ggzmod_dispatch(game_internal.ggzmod);
+}
+#endif
 
 /* This function handles any input from the server. */
 int client_handle_server(void)

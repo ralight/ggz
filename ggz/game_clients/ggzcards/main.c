@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: main.c 4332 2002-08-02 03:35:46Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -58,13 +58,14 @@ static void cleanup_debugging(void);
 
 int main(int argc, char *argv[])
 {
-	int fd;
+	int ggz_fd;
 
 	/* Standard initializations. */
 	initialize_debugging();
 	ggz_intl_init("ggzcards");
-	fd = client_initialize();
-	listen_for_server(TRUE);
+	ggz_fd = client_initialize();
+	gdk_input_add(ggz_fd, GDK_INPUT_READ,
+		      game_handle_ggz, NULL);
 	gtk_init(&argc, &argv);
 	load_preferences();
 
