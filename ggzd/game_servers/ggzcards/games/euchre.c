@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2736 2001-11-13 11:18:46Z jdorje $
+ * $Id: euchre.c 2737 2001-11-13 11:28:03Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -24,6 +24,7 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
 
 #include "../common.h"
 
@@ -37,6 +38,7 @@ static int euchre_get_bid(void);
 static void euchre_handle_bid(player_t p, bid_t bid);
 static void euchre_next_bid(void);
 static void euchre_start_playing(void);
+static void euchre_get_play(player_t p);
 static int euchre_deal_hand(void);
 static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
@@ -58,7 +60,7 @@ struct game_function_pointers euchre_funcs = {
 	euchre_start_playing,
 	game_verify_play,
 	game_next_play,
-	game_get_play,
+	euchre_get_play,
 	game_handle_play,
 	euchre_deal_hand,
 	euchre_end_trick,
@@ -127,9 +129,11 @@ static int euchre_get_bid(void)
 		/* If the maker has been chosen, then we need to request bids 
 		   from everyone to see if they're going alone or not. */
 		for (p = 0; p < 4; p++) {
-			game.next_bid = p;	/* hack */
-			add_sbid(0, 0, EUCHRE_GO_ALONE);
-			add_sbid(0, 0, EUCHRE_GO_TEAM);
+			if ((p + 2) % 4 != EUCHRE.maker) {
+				game.next_bid = p;	/* hack */
+				add_sbid(0, 0, EUCHRE_GO_ALONE);
+				add_sbid(0, 0, EUCHRE_GO_TEAM);
+			}
 		}
 		EUCHRE.req_alone_bid = 1;
 		return request_all_bids();
@@ -164,16 +168,14 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 	case EUCHRE_TAKE:
 		EUCHRE.maker = p;
 		game.trump = EUCHRE.up_card.suit;
-		game.bid_total = game.bid_count + 5;	/* hack: just 4 more
-							   bids after this
-							   one */
+		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
+							   after this one */
 		break;
 	case EUCHRE_TAKE_SUIT:
 		EUCHRE.maker = p;
 		game.trump = bid.sbid.suit;
-		game.bid_total = game.bid_count + 5;	/* hack: just 4 more
-							   bids after this
-							   one */
+		game.bid_total = game.bid_count + 4;	/* hack: 3 more bids
+							   after this one */
 		break;
 	case EUCHRE_GO_ALONE:
 		EUCHRE.going_alone[p] = 1;
@@ -204,19 +206,52 @@ static void euchre_start_playing(void)
 
 	game_start_playing();
 
-	assert(EUCHRE.maker >= 0);
-	/* maker is set in euchre_handle_bid */
+	assert(EUCHRE.maker >= 0);	/* maker is set in euchre_handle_bid */
+
+	/* Only one teammate can "go alone" */
+	for (p = 0; p < 2; p++)
+		if (EUCHRE.going_alone[p] && EUCHRE.going_alone[p + 2]) {
+			EUCHRE.going_alone[p + 2 * (random() % 2)] = 0;
+		}
+
+	/* Players "going alone" don't have a partner to play. */
+	game.play_total = 4;
+	for (p = 0; p < 4; p++)
+		if (EUCHRE.going_alone[p]) {
+			set_player_message(p);
+			game.play_total--;
+			game.seats[(p + 2) % 4].hand.hand_size = 0;
+		}
+
 	set_global_message("", "%s is the maker in %s.",
 			   ggzd_get_player_name(EUCHRE.maker),
 			   suit_names[(int) game.trump]);
 	game.leader = (game.dealer + 1) % game.num_players;
-	/* resort/resend hand - this should probably be a function in
-	   itself... */
+
+	/* resort/resend hand - this should be a separate function */
 	for (s = 0; s < game.num_seats; s++) {
 		cards_sort_hand(&game.seats[s].hand);
 		for (p = 0; p < game.num_players; p++)
 			(void) game.funcs->send_hand(p, s);
 	}
+}
+
+static void euchre_get_play(player_t p)
+{
+	while (EUCHRE.going_alone[(p + 2) % 4]) {
+		int p2 = (p + 1) % 4;
+		ggzd_debug
+			("EUCHRE: skipping player %d/%s; going on to player %d/%s",
+			 p, ggzd_get_player_name(p), p2,
+			 ggzd_get_player_name(p2));
+		p = p2;
+	}
+
+	game.next_play = p;	/* hack: we need to increment this too... */
+
+	/* in almost all cases, we just want the player to play from their
+	   own hand */
+	(void) send_play_request(p, p);
 }
 
 static int euchre_deal_hand(void)
@@ -252,7 +287,7 @@ static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid)
 	case EUCHRE_GO_ALONE:
 		return snprintf(buf, buf_len, "Go alone");
 	case EUCHRE_GO_TEAM:
-		return snprintf(buf, buf_len, "Go team");
+		return snprintf(buf, buf_len, "Go team");	/* ? */
 	}
 	return snprintf(buf, buf_len, "<error: no bid message>");
 }
@@ -271,10 +306,13 @@ static void euchre_set_player_message(player_t p)
 		add_player_message(s, "maker\n");
 	if (game.state == STATE_WAIT_FOR_PLAY
 	    || game.state == STATE_NEXT_TRICK
-	    || game.state == STATE_NEXT_PLAY)
+	    || game.state == STATE_NEXT_PLAY) {
+		if (EUCHRE.going_alone[p])
+			add_player_message(s, "Going Alone\n");
 		add_player_message(s, "Tricks: %d\n",
 				   game.players[p].tricks +
 				   game.players[(p + 2) % 4].tricks);
+	}
 	add_player_action_message(p);
 }
 

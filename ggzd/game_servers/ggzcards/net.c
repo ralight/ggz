@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2736 2001-11-13 11:18:46Z jdorje $
+ * $Id: net.c 2737 2001-11-13 11:28:03Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -275,7 +275,6 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 /* Request a player p to make a play from a specific seat s's hand */
 int send_play_request(player_t p, seat_t s)
 {
-	int fd = ggzd_get_player_socket(p);
 	seat_t s_r = CONVERT_SEAT(s, p);
 
 	ggzd_debug("Requesting player %d/%s "
@@ -294,6 +293,7 @@ int send_play_request(player_t p, seat_t s)
 		/* request a play from the ai */
 		handle_play_event(ai_get_play(p, s));
 	} else {
+		int fd = ggzd_get_player_socket(p);
 		if (fd == -1)
 			ggzd_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
 		if (write_opcode(fd, WH_REQ_PLAY) < 0
