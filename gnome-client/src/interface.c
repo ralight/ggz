@@ -56,6 +56,8 @@ void login_set_login (GtkWidget *login)
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "swRooms");
 	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "vbTables");
+	gtk_widget_hide(tmp);
 	
 	/*Change the background*/
 	tmp = lookup_widget(login, "pmBackground");
@@ -166,6 +168,8 @@ void login_set_new (GtkWidget *login)
 	tmp = lookup_widget(login, "vbChatDisplay");
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "swRooms");
+	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "vbTables");
 	gtk_widget_hide(tmp);
 	
 	/*Hide the star widget*/
@@ -298,6 +302,8 @@ void login_set_chat (GtkWidget *login)
 	gtk_widget_show(tmp);
 	tmp = lookup_widget(login, "swRooms");
 	gtk_widget_hide(tmp);							
+	tmp = lookup_widget(login, "vbTables");
+	gtk_widget_hide(tmp);							
 
 	/*Focus the chat text entry*/
 	tmp = lookup_widget(login, "entChatNew");
@@ -319,6 +325,8 @@ void login_set_chat_rooms(GtkWidget *login)
 	tmp = lookup_widget(login, "btnChatChat2");
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "vbChatDisplay");
+	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "vbTables");
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "swRooms");
 	gtk_widget_show(tmp);
@@ -343,6 +351,8 @@ void login_set_chat_games(GtkWidget *login)
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "swRooms");
 	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "vbTables");
+	gtk_widget_show(tmp);
 }
 
 GtkWidget*
@@ -410,6 +420,10 @@ create_login (void)
   GtkWidget *swRooms;
   GtkWidget *vpRooms;
   GtkWidget *vbRooms;
+  GtkWidget *vbTables;
+  GtkWidget *swTables;
+  GtkWidget *hbuttonbox1;
+  GtkWidget *btnLaunch;
   gint user_data;
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -866,6 +880,33 @@ create_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbRooms);
   gtk_container_add (GTK_CONTAINER (vpRooms), vbRooms);
+
+  vbTables = gtk_vbox_new (FALSE, 0);
+  gtk_object_set_data_full (GTK_OBJECT (window), "vbTables", vbTables,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbTables);
+  gtk_fixed_put (GTK_FIXED (fixMain), vbTables, 191, 112);
+  gtk_widget_set_usize (vbTables, 428, 348);
+
+  swTables = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_set_name (swTables, "swTables");
+  gtk_widget_show (swTables);
+  gtk_box_pack_start (GTK_BOX (vbTables), swTables, TRUE, TRUE, 5);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swTables), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swTables), GTK_SHADOW_ETCHED_IN);
+  gtk_scrolled_window_set_placement (GTK_SCROLLED_WINDOW (swTables), GTK_CORNER_BOTTOM_LEFT);
+
+  hbuttonbox1 = gtk_hbutton_box_new ();
+  gtk_widget_set_name (hbuttonbox1, "hbuttonbox1");
+  gtk_widget_show (hbuttonbox1);
+  gtk_box_pack_start (GTK_BOX (vbTables), hbuttonbox1, FALSE, TRUE, 5);
+  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 0);
+
+  btnLaunch = gtk_button_new_with_mnemonic (_("Launch New Game"));
+  gtk_widget_set_name (btnLaunch, "btnLaunch");
+  gtk_widget_show (btnLaunch);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnLaunch);
+  GTK_WIDGET_SET_FLAGS (btnLaunch, GTK_CAN_DEFAULT);
 
   pmStar1 = create_pixmap (window, "star1.xpm");
   gtk_widget_set_name (pmStar1, "pmStar1");

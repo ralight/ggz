@@ -16,6 +16,7 @@
 #include "msgboxc.h"
 #include "msgboxi.h"
 #include "support.h"
+#include "login.h"
 
 void msgbox_error(gchar *msg)
 {
@@ -23,96 +24,46 @@ void msgbox_error(gchar *msg)
 	GtkWidget *tmp;
 	GdkPixmap *bg;
 	GdkBitmap *mask;
-	gchar *out;
+	PangoLayout *out;
 	
 	msgbox = create_msgbox();
 	gtk_widget_realize(msgbox);
-	tmp = lookup_widget(msgbox, "pmBackground");
-	gtk_pixmap_get(GTK_PIXMAP(tmp), &bg, &mask);
-	
-	/*Note blank lines are left here so translators can make messages fit properlly!*/
-/*	if(!strcmp(msg, "Name taken"))
+	tmp = lookup_widget(msgbox, "lblText");
+
+	if (!strcmp(msg, "Name taken"))
 	{
-		out = g_strdup_printf("The username you have chosen is either registered");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 27, out);
-		g_free(out);
-		out = g_strdup_printf("to someone else, or already logged in to the zone.");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 42, out);
-		g_free(out);
-		out = g_strdup_printf("Please choose a different username and try again.");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 57, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 72, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 87, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 102, out);
-		g_free(out);
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"The username you have chosen is either "
+		"registered to someone else, or already "
+		"logged in to the zone. Please choose a "
+		"different username and try again.");
+		login_failed();
 	} else if(!strcmp(msg, "Error connecting to server: No such file or directory")) {
-		out = g_strdup_printf("The GGZ Gaming Zone server you are trying to");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 27, out);
-		g_free(out);
-		out = g_strdup_printf("connect to is not responding. Please check to make");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 42, out);
-		g_free(out);
-		out = g_strdup_printf("sure the server address you have entered is correct.");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 57, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 72, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 87, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 102, out);
-		g_free(out);
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"The GGZ Gaming Zone server you are "
+		"tryinh to connect to is not responding. "
+		" Please check to make sure the server "
+		"address you have entered is correct.");
+		login_connect_failed();
 	} else if(!strcmp(msg, "Already logged in")) {
-		out = g_strdup_printf("The username you are trying to use is invalid. Please");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 27, out);
-		g_free(out);
-		out = g_strdup_printf("make sure your username does not contain any of the");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 42, out);
-		g_free(out);
-		out = g_strdup_printf("following characters:");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 57, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 72, out);
-		g_free(out);
-		out = g_strdup_printf("\" \", \"'\", etc... get full list FIXME");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 87, out);
-		g_free(out);
-		out = g_strdup_printf(" ");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 102, out);
-		g_free(out);	
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"The username you are trying to use is "
+		"invalid. Please make sure your username "
+		"does not contain any of the following "
+		"characters:\n"
+		"\" \", \"'\"");
+		login_failed();
 	} else if(!strcmp(msg, "Error connecting to server: Connection refused")) {
-		out = g_strdup_printf("The computer you are trying to connect to does not");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 27, out);
-		g_free(out);
-		out = g_strdup_printf("apear to be running a server. One possible reason");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 42, out);
-		g_free(out);
-		out = g_strdup_printf("is that the GGZ Gaming Zone server is not running");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 57, out);
-		g_free(out);
-		out = g_strdup_printf("on the standard port.");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 72, out);
-		g_free(out);
-		out = g_strdup_printf("Please verify that the server address and port are");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 87, out);
-		g_free(out);
-		out = g_strdup_printf("correct and try again.");
-		gdk_draw_string(bg, GTK_WIDGET(tmp)->style->font, GTK_WIDGET(tmp)->style->black_gc, 130, 102, out);
-		g_free(out);	
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"The computer you are trying to connect to "
+		"does not apear to be running a server. "
+		"Please verify that the address and port "
+		"are correct and try again.");
+		login_connect_failed();
 	} else {	
 		g_print("%s\n", msg);
 	}
-*/	
-	gtk_pixmap_set(GTK_PIXMAP(tmp), bg, mask);
+
 	gtk_widget_show(msgbox);
 }
 
@@ -122,13 +73,14 @@ create_msgbox (void)
 {
   GtkWidget *window;
   GtkWidget *fixMain;
-  GtkWidget *btnOK;
   GtkWidget *pmBackground;
+  GtkWidget *lblText;
+  GtkWidget *btnOK;
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (window, "window");
   gtk_object_set_data (GTK_OBJECT (window), "window", window);
-  gtk_widget_set_usize (window, 450, 150);
+  gtk_widget_set_size_request (window, 450, 150);
   gtk_window_set_title (GTK_WINDOW (window), _("GGZ Gaming Zone"));
   gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, TRUE);
 
@@ -139,17 +91,7 @@ create_msgbox (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fixMain);
   gtk_container_add (GTK_CONTAINER (window), fixMain);
-  gtk_widget_set_usize (fixMain, 450, 150);
-
-  btnOK = gtk_button_new_with_label (_("OK"));
-  gtk_widget_set_name (btnOK, "btnOK");
-  gtk_widget_ref (btnOK);
-  gtk_object_set_data_full (GTK_OBJECT (window), "btnOK", btnOK,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (btnOK);
-  gtk_fixed_put (GTK_FIXED (fixMain), btnOK, 240, 120);
-  gtk_widget_set_uposition (btnOK, 240, 120);
-  gtk_widget_set_usize (btnOK, 70, 22);
+  gtk_widget_set_size_request (fixMain, 450, 150);
 
   pmBackground = create_pixmap (window, "msg.xpm");
   gtk_widget_set_name (pmBackground, "pmBackground");
@@ -159,7 +101,29 @@ create_msgbox (void)
   gtk_widget_show (pmBackground);
   gtk_fixed_put (GTK_FIXED (fixMain), pmBackground, 0, 0);
   gtk_widget_set_uposition (pmBackground, 0, 0);
-  gtk_widget_set_usize (pmBackground, 450, 150);
+  gtk_widget_set_size_request (pmBackground, 450, 150);
+
+  lblText = gtk_label_new (NULL);
+  gtk_label_set_justify (GTK_LABEL (lblText), GTK_JUSTIFY_LEFT);
+  gtk_label_set_line_wrap (GTK_LABEL (lblText), TRUE);
+  gtk_widget_set_name (lblText, "lblText");
+  gtk_widget_ref (lblText);
+  gtk_object_set_data_full (GTK_OBJECT (window), "lblText", lblText,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show(lblText);
+  gtk_fixed_put (GTK_FIXED (fixMain), lblText, 125, 12);
+  gtk_widget_set_uposition (lblText, 125, 12);
+  gtk_widget_set_size_request (lblText, 320, 75);
+
+  btnOK = gtk_button_new_with_label (_("OK"));
+  gtk_widget_set_name (btnOK, "btnOK");
+  gtk_widget_ref (btnOK);
+  gtk_object_set_data_full (GTK_OBJECT (window), "btnOK", btnOK,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (btnOK);
+  gtk_fixed_put (GTK_FIXED (fixMain), btnOK, 190, 120);
+  gtk_widget_set_uposition (btnOK, 190, 120);
+  gtk_widget_set_size_request (btnOK, 70, 22);
 
   gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4853 2002-10-10 18:44:36Z dr_maux $
+ * $Id: ggzclient.c 4903 2002-10-13 20:09:17Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -143,8 +143,6 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 	msgbox_error(msg);
 	g_free(msg);
 
-	login_connect_failed();
-
 	return GGZ_HOOK_OK;
 }
 
@@ -213,7 +211,6 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* u
 	gtk_widget_set_sensitive(tmp, TRUE);
 	tmp = lookup_widget(interface, "btnNew");
 	gtk_widget_set_sensitive(tmp, TRUE);
-	login_connect_failed();
 
 	return GGZ_HOOK_OK;
 }

@@ -23,6 +23,7 @@ void login_failed(void)
 {
 	/* First, disconnect from the server. */
 	ggzcore_server_disconnect(server);
+	server = NULL;
 }
 
 
