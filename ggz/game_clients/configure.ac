@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6345 2004-11-13 08:32:59Z jdorje $
+dnl $Id: configure.ac 6376 2004-11-15 19:37:11Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -126,6 +126,11 @@ AC_GGZ_DEBUG
 if test "$enable_debug" = yes; then
   EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-errors"
   EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-warnings"
+  AC_DEFINE([G_DISABLE_DEPRECATED], 1, [Disable deprecated glib functions])
+  AC_DEFINE([GDK_DISABLE_DEPRACATED], 1, [Disable deprecated GDK functions])
+fi
+if test "yes" = "no"; then
+  AC_DEFINE([GTK_DISABLE_DEPRECATED], 1, [Disable deprecated GTK functions])
 fi
 AC_SUBST(EXTRA_GAME_PARAMETERS)
 

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6255 2004-11-04 22:38:30Z jdorje $
+dnl $Id: configure.ac 6376 2004-11-15 19:37:11Z jdorje $
 
 AC_INIT([GGZ Gtk+ client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -74,7 +74,13 @@ AM_PATH_GTK_2_0([2.0.0], [],
 dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
-
+if test "$enable_debug" = yes; then
+  AC_DEFINE([G_DISABLE_DEPRECATED], 1, [Disable deprecated glib functions])
+  AC_DEFINE([GDK_DISABLE_DEPRACATED], 1, [Disable deprecated GDK functions])
+fi
+if test "yes" = "no"; then
+  AC_DEFINE([GTK_DISABLE_DEPRECATED], 1, [Disable deprecated GTK functions])
+fi
 
 dnl Various dirs
 dnl ============
