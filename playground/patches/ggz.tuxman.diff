@@ -1,0 +1,217 @@
+Binärdateien original.tuxman-0.7/bin/tuxman and tuxman-0.7/bin/tuxman sind verschieden.
+diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
+--- original.tuxman-0.7/Makefile	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/Makefile	2003-05-22 00:04:10.000000000 +0200
+@@ -1,7 +1,7 @@
+ all: bin/tuxman
+ 
+ CXX = g++
+-LDFLAGS = `sdl-config --libs`
++LDFLAGS = `sdl-config --libs` -lggzmod
+ CXXFLAGS = `sdl-config --cflags`
+ 
+ bin/tuxman: obj/main.o \
+Binärdateien original.tuxman-0.7/obj/main.o and tuxman-0.7/obj/main.o sind verschieden.
+Binärdateien original.tuxman-0.7/obj/tile.o and tuxman-0.7/obj/tile.o sind verschieden.
+diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
+--- original.tuxman-0.7/src/main.cpp	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/main.cpp	2003-05-22 00:03:48.000000000 +0200
+@@ -2,6 +2,65 @@
+ #include "control.h"
+ #include "tile.h"
+ #include "sound.h"
++#ifdef GGZ_SUPPORT
++#include <ggzmod.h>
++#endif
++
++#ifdef GGZ_SUPPORT
++static int fdes = -1;
++static GGZMod *mymod;
++
++static void pac_ggzmod(GGZMod *mod, GGZModEvent e, void *data)
++{
++	fdes = *(int*)data;
++	ggzmod_set_state(mymod, GGZMOD_STATE_PLAYING);
++}
++
++static void pac_ggz()
++{
++	ggzmod_dispatch(mymod);
++}
++
++static void pac_input()
++{
++}
++
++/* taken from sdl-games/ttt3d */
++static void pac_network()
++{
++	int maxfd;
++	fd_set set;
++	struct timeval tv;
++	int ret;
++	int serverfd;
++
++	FD_ZERO(&set);
++
++	serverfd = ggzmod_get_fd(mymod);
++
++	FD_SET(serverfd, &set);
++	maxfd = serverfd;
++	if(fdes >= 0)
++	{
++		FD_SET(fdes, &set);
++		if(fdes > maxfd) maxfd = fdes;
++	}
++
++	tv.tv_sec = 0;
++	tv.tv_usec = 0;
++
++	ret = select(maxfd + 1, &set, NULL, NULL, &tv);
++
++	if(ret)
++	{
++		if(fdes >= 0)
++		{
++			if(FD_ISSET(fdes, &set)) pac_input();
++		}
++		if(FD_ISSET(serverfd, &set)) pac_ggz();
++	}
++}
++#endif
+ 
+ int main(int argc, char *argv[]) {
+   int food, i;
+@@ -12,6 +71,16 @@
+ 
+   pac.readConfig("tuxman.conf",pac);  
+ 
++#ifdef GGZ_SUPPORT
++  if((argc == 2) && (!strcmp(argv[1], "--ggz"))) {
++	pac.ggzmode = 1;
++  } else {
++	pac.ggzmode = 0;
++  }
++#else
++  pac.ggzmode = 0;
++#endif
++
+   srand(time(0));
+   
+   pac.initSDL();
+@@ -25,12 +94,33 @@
+   pac.ac_level=1;
+   my_tile.my_pac.score=0;
+   my_tile.my_pac.lives = 10;
+- 
++
++#ifdef GGZ_SUPPORT
++  if(pac.ggzmode) {
++    pac.ggzmod = ggzmod_new(GGZMOD_GAME);
++	mymod = pac.ggzmod;
++	ggzmod_set_handler(pac.ggzmod, GGZMOD_EVENT_SERVER, &pac_ggzmod);
++    ggzmod_connect(pac.ggzmod);
++	/* pac_ggz(); */
++  }
++#endif
++
+   while(1) {
++#ifdef GGZ_SUPPORT
++	pac_network();
++#endif
+     pac.nextLevel();
+-    if (argc>=2)
++    if (argc>=2) {
+       sprintf(pac.level,"%s",argv[1]);
+- 
++	}
++
++#ifdef GGZ_SUPPORT
++	if(pac.ggzmode) {
++		/* ... */
++		while(1);
++    }
++#endif
++
+     my_tile.initTiles(pac);
+     playSound("share/hunger.wav");
+     SDL_PauseAudio(0);
+@@ -68,13 +158,24 @@
+ 	my_tile.showInformation(pac);
+ 	ctrl.checkPacmansDeath(my_tile, pac);
+ 	SDL_UpdateRect(pac.screen, 0, 0, 0, 0);
++#ifdef GGZ_SUPPORT
++	pac_network();
++#endif
+ 	SDL_Delay(pac.GameSpeed*10);
+       }
+     }
+     playSound("share/end.wav");
+     SDL_PauseAudio(0);
+     sleep(2);
+-  } 
++  }
++
++#ifdef GGZ_SUPPORT
++  if(pac.ggzmode) {
++	ggzmod_disconnect(pac.ggzmod);
++	ggzmod_free(pac.ggzmod);
++  }
++#endif
++
+   pac.quit();
+ }
+ 
+diff -Nur original.tuxman-0.7/src/main.h tuxman-0.7/src/main.h
+--- original.tuxman-0.7/src/main.h	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/main.h	2003-05-21 23:48:15.000000000 +0200
+@@ -11,6 +11,8 @@
+ #include <string.h>
+ #include <ctype.h>
+ 
++#define GGZ_SUPPORT         1
++
+ #define TILE_SIZE           32
+ 
+ #define ICON                ""
+diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
+--- original.tuxman-0.7/src/pacman.h	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/pacman.h	2003-05-22 00:02:07.000000000 +0200
+@@ -2,6 +2,9 @@
+ #define _pacman_h_
+ 
+ #include "main.h"
++#ifdef GGZ_SUPPORT
++#include <ggzmod.h>
++#endif
+ 
+ class pacman {
+ public:
+@@ -37,6 +40,11 @@
+   int frame_time;
+   int frame_last;
+ 
++  int ggzmode;
++#ifdef GGZ_SUPPORT
++  GGZMod *ggzmod;
++#endif
++
+   //Prototypes
+   void initSDL();
+   void setVideoMode();
+diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
+--- original.tuxman-0.7/src/tile.cpp	2003-05-21 23:36:00.000000000 +0200
++++ tuxman-0.7/src/tile.cpp	2003-05-21 23:43:34.000000000 +0200
+@@ -289,6 +289,12 @@
+   drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
+ 	   (pac.SCREEN_HEIGHT / 2) + FONT_HEIGHT + 5, pac);
+ 
++  if(pac.ggzmode) {
++    sprintf(font_string,"RUNNING IN GGZ MODE",my_pac.lives);
++    drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
++	   (pac.SCREEN_HEIGHT / 2) + FONT_HEIGHT * 2 + 10, pac);
++  }
++
+   SDL_UpdateRect(pac.screen, 0, 0, 0, 0);
+   sleep(5);
+ 
