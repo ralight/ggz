@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3407 2002-02-18 05:41:40Z jdorje $
+ * $Id: client.c 3613 2002-03-21 18:23:13Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -208,7 +208,7 @@ static void
 client_leave_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
 }
 
 
@@ -580,7 +580,7 @@ client_leave_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
 	/*game_quit();*/
-	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
+	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server), 0);
 }
 
 

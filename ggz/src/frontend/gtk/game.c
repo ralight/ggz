@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3593 2002-03-16 21:59:51Z jdorje $
+ * $Id: game.c 3613 2002-03-21 18:23:13Z jdorje $
  *
  * Functions for handling game events
  *
@@ -210,6 +210,7 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
+	/* FIXME: handle IO_ERROR and PROTO_ERROR events */
 }
 
 
@@ -281,7 +282,7 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 	    ggzcore_server_get_state(server) == GGZ_STATE_JOINING_TABLE)
 		ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 					      game_delayed_leave);
-	else if (ggzcore_room_leave_table(room) < 0)
+	else if (ggzcore_room_leave_table(room, 1) < 0)
 		msgbox(_("Error leaving table"),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 
@@ -300,7 +301,7 @@ static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, 
 	case GGZ_STATE_AT_TABLE:
 		/* We finally made it to the table, so leave it */
 		room = ggzcore_server_get_cur_room(server);
-		if (ggzcore_room_leave_table(room) < 0)
+		if (ggzcore_room_leave_table(room, 1) < 0)
 			msgbox(_("Error leaving table"), _("Game Error"), 
 			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 		return GGZ_HOOK_REMOVE;
