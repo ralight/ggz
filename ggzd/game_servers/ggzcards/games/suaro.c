@@ -37,6 +37,7 @@ static int suaro_is_valid_game();
 static void suaro_init_game();
 static void suaro_get_options();
 static int suaro_handle_option(char* option, int value);
+static char* suaro_get_option_text(char* buf, int bufsz, char* option, int value);
 static void suaro_start_bidding();
 static int suaro_get_bid();
 static void suaro_handle_bid(bid_t bid);
@@ -54,7 +55,7 @@ struct game_function_pointers suaro_funcs = {
 	suaro_init_game,
 	suaro_get_options,
 	suaro_handle_option,
-	game_get_option_text,
+	suaro_get_option_text,
 	suaro_set_player_message,
 	suaro_get_bid_text,
 	suaro_start_bidding,
@@ -153,6 +154,22 @@ static int suaro_handle_option(char* option, int value)
 	} else
 		return game_handle_option(option, value);
 	return 0;
+}
+
+static char* suaro_get_option_text(char* buf, int bufsz, char* option, int value)
+{
+	if (!strcmp(option, "shotgun"))
+		snprintf(buf, bufsz, "You're %splaying Shotgun Suaro.", value ? "" : "not ");
+	else if (!strcmp(option, "unlimited_redoubling"))
+		snprintf(buf, bufsz, "%s", value ? "Unlimited redoubling is allowed." : "");
+	else if (!strcmp(option, "persistent_doubles"))
+		snprintf(buf, bufsz, "%s", value ? "All doubles are persistent." : "");
+	else if (!strcmp(option, "target"))
+		/* shortcut by ignoring the "value" and just using the game's value */
+		snprintf(buf, bufsz, "The game is being played to %d.", game.target_score);
+	else
+		return game_get_option_text(buf, bufsz, option, value);
+	return buf;
 }
 
 static void suaro_start_bidding()

@@ -36,6 +36,7 @@ static int hearts_is_valid_game();
 static void hearts_init_game();
 static void hearts_get_options();
 static int hearts_handle_option(char* option, int value);
+static char* hearts_get_option_text(char* buf, int bufsz, char* option, int value);
 static int hearts_handle_gameover();
 static void hearts_start_bidding();
 static void hearts_start_playing();
@@ -48,7 +49,7 @@ struct game_function_pointers hearts_funcs = {
 	hearts_init_game,
 	hearts_get_options,
 	hearts_handle_option,
-	game_get_option_text,
+	hearts_get_option_text,
 	game_set_player_message,
 	game_get_bid_text,
 	hearts_start_bidding,
@@ -114,6 +115,17 @@ static int hearts_handle_option(char* option, int value)
 	else
 		return game_handle_option(option, value);
 	return 0;
+}
+
+static char* hearts_get_option_text(char* buf, int bufsz, char* option, int value)
+{
+	if (!strcmp("jack_diamonds", option))
+		snprintf(buf, bufsz, "The jack of diamonds rule is %sbeing used.", value ? "" : "not ");
+	else if (!strcmp("no_blood", option))
+		snprintf(buf, bufsz, "%s is allowed on the first trick.", value ? "No blood" : "Blood");
+	else
+		return game_get_option_text(buf, bufsz, option, value);
+	return buf;
 }
 
 static int hearts_handle_gameover()

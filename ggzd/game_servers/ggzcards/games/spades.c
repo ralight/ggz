@@ -38,6 +38,7 @@ static int spades_is_valid_game();
 static void spades_init_game();
 static void spades_get_options();
 static int spades_handle_option(char* option, int value);
+static char* spades_get_option_text(char* buf, int bufsz, char* option, int value);
 static int spades_get_bid();
 static int spades_deal_hand();
 static int spades_get_bid_text(char* buf, int buf_len, bid_t bid);
@@ -50,7 +51,7 @@ struct game_function_pointers spades_funcs = {
 	spades_init_game,
 	spades_get_options,
 	spades_handle_option,
-	game_get_option_text,
+	spades_get_option_text,
 	spades_set_player_message,
 	spades_get_bid_text,
 	game_start_bidding,
@@ -133,6 +134,19 @@ static int spades_handle_option(char* option, int value)
 	else
 		return game_handle_option(option, value);
 	return 0;
+}
+
+static char* spades_get_option_text(char* buf, int bufsz, char* option, int value)
+{
+	if (!strcmp(option, "nil_value"))
+		snprintf(buf, bufsz, "Nil is worth %d points.", GSPADES.nil_value);
+	else if (!strcmp(option, "target_score"))
+		snprintf(buf, bufsz, "The game is being played to %d.", game.target_score);
+	else if (!strcmp(option, "minimum_bid"))
+		snprintf(buf, bufsz, "The minimum team bid is %d.", GSPADES.minimum_team_bid);
+	else
+		return game_get_option_text(buf, bufsz, option, value);
+	return buf;
 }
 
 static int spades_get_bid()
