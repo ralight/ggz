@@ -1,172 +1,210 @@
-<HTML>
-<HEAD>
-<TITLE>
-The Grubby Admin Manual
-</TITLE>
-</HEAD>
-<BODY BGCOLOR=#DDDDDD TEXT=#000000 LINK=#0000FF ALINK=#0000FF VLINK=#000050>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+Grubby Administration Manual
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #c0e080}
+h3 {background-color: #c0e080}
+h4 {background-color: #e0f0b0}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
 
-<FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
-<FONT SIZE=2>Josef Spillner, 2001-10-12</FONT><BR>
-<FONT SIZE=2>Updated 2002-08-18</FONT><BR>
-<FONT SIZE=2>Updated 2002-11-04</FONT><BR>
-<FONT SIZE=2>Updated 2003-09-28</FONT>
-<BR><BR>
+<div>
 
-<HR>
-<B>Table Of Contents:</B><BR>
-<A HREF="#install">Installation</A><BR>
-<A HREF="#network">Network setup</A><BR>
-<A HREF="#commands">Admin commands</A><BR>
-<A HREF="#logfiles">Log files</A><BR>
-<A HREF="#modules">Modules</A><BR>
-<A HREF="#modexec">* Exec module</A><BR>
-<A HREF="#modembed">* Embed module</A><BR>
-<A HREF="#modnews">* News module (modexec)</A><BR>
-<A HREF="#moddict">* Dictionary module (modexec)</A><BR>
-<A HREF="#modmeeting">* Meeting module (modexec)</A><BR>
-<A HREF="#modtrans">* Translation module (modexec)</A><BR>
-<A HREF="#modgames">* Games module</A><BR>
-<HR>
-<BR><BR>
+<h2>Grubby Administration Manual</h2>
 
-<HR>
-<A NAME="install">
-<FONT SIZE=4>Installation</FONT>
-<BR><BR>
-Grubby consists of the binary "grubby", the perl script "grubby-config", lots
-of plugins (shared libraries), scripts for modexec and modembed, and data and
-translation files. Everything should install fine.
+<small>
+<i>Revision: 0.5</i><br>
+<i>Date: 26.03.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+This documentation is geared towards the configuration of grubby
+and basic understanding of its structure. For further reading,
+the Grubby User Manual and the Grubby Architecture Manual are available.
+</p>
+
+<h3>Installation</h3>
+
+<p>
+Grubby consists of the binary "grubby", the perl script "grubby-config", and
+many plugins (shared libraries). There are two groups of plugins: core modules,
+of which only one can be active at a time (to be determined at program startup),
+and normal modules, of which none to all can be loaded, and even unloaded and
+reloaded at runtime. Additionally, some scripts are available to be executed
+with either the <tt>embed</tt> or <tt>exec</tt> module, and then some data
+files and translated message catalogs.
+Everything should install fine.
+</p>
+
+<p>
 All you have to do then is to call grubby-config, which gives you a full
 default installation. You might want to cut the options down, just edit the
-configuration files under $HOME/.ggz.
+configuration files under $HOME/.ggz/grubby.rc.
 Then launch the bot while having a ggzd or IRC server running somewhere.
-If it fails, make sure you didn't cut too much options.
-Read docs/Setup for a sample file.
-<BR><BR>
+If it fails, make sure you didn't cut too much options. Use netconsole.so as
+<tt>net</tt> core module to test for errors not relating to network protocols.
+Read docs/Setup for a full sample file, a short overview follows.
+</p>
 
-<HR>
-<A NAME="network">
-<FONT SIZE=4>Network Setup</FONT>
-<BR><BR>
+<p>
+This is a minimal configuration file. By default it is expected to reside
+in $HOME/.ggz/grubby.rc. Entries which start with a hash mark (#) are
+optional.
+<blockquote>
+<pre>
+[preferences]
+name = Grubby # Bot name
+language = en # Bot default language
+autojoin = 0  # Channel/room to join after login
+owner = you   # Owner nickname
+host = localhost # Where to connect to
+#logfile = /tmp/guruchatlog
+
+[guru]
+net = /path/to/libguru_netggz.so # or netsilc.so, netirc.so, netconsole.so
+player = /path/to/libguru_player.so
+i18n = /path/to/libguru_i18n.so
+#modules = self people ...
+
+[modules]
+self = /path/to/libgurumod_self.so
+#...
+</pre>
+</blockquote>
+</p>
+
+<h3>Network setup</h3>
+
+<p>
 Grubby can communicate with users either locally (for debugging) or being
-logged into a GGZ or IRC server.
-The core module 'net' can be setup appropriately:
-<BR>
-<UL>
-<LI>netggz.so
-<LI>netirc.so
-<LI>netconsole.so
-</UL>
-For autojoining a room upon login, a number must be given for GGZ (e.g. 0),
-while IRC expects a channel (e.g. #ggz).
+logged into a GGZ, IRC or SILC server.
+The core module <tt>net</tt> can be configured appropriately:
+<ul>
+<li>netggz.so
+<li>netirc.so
+<li>netsilc.so
+<li>netconsole.so
+</ul>
+For autojoining a room upon login, a number or room name must be given for GGZ
+(e.g. 0 or tictactoe), while IRC expects a channel with hash mark (e.g. #ggz),
+and SILC expects a channel without hash mark (e.g. testroom).
 The implementation netggz.so does not only provide chat, but also gaming
 features, which are ignored by the other implementations.
-<BR><BR>
+</p>
 
-<HR>
-<A NAME="commands">
-<FONT SIZE=4>Admin Commands</FONT>
-<BR><BR>
-The owner of grubby, as specified in the configuration, may issue some more commands than the other players. Here's a list of what the admin can do:<BR>
-<UL>
-<LI>grubby insmod (modulename) - Inserts a plugin, like self or badword
-<LI>grubby rmmod (modulename) - Unloads a plugin
-<LI>grubby reload (modulename) - A combination of the above, makes sure the latest version is in memory
-<LI>grubby modules - List all loaded plugins
-<LI>grubby goto (roomnumber) - Let grubby join the given room
-<LI>grubby log (on|off) - Control whether the bot should log messages or not
-</UL>
-<BR><BR>
+<h3>Administrative commands</h3>
 
-<HR>
-<A NAME="logfiles">
-<FONT SIZE=4>Log files</FONT>
-<BR><BR>
+<p>
+The owner of grubby, as specified in the configuration, may issue some more commands
+than the other players. Here's a list of what the admin can do:
+<ul>
+<li>grubby insmod (modulename) - Inserts a plugin, like <tt>self</tt> or <tt>badword</tt>
+<li>grubby rmmod (modulename) - Unloads a plugin
+<li>grubby reload (modulename) - A combination of the above
+<li>grubby modules - List all loaded plugins
+<li>grubby goto (roomnumber/channelname) - Let grubby join the given room
+<li>grubby log (on|off) - Control whether the bot should log messages or not
+</ul>
+The reload command ensures that the latest version of a module is in memory.
+</p>
+
+<h3>Log files</h3>
+
+<p>
 Grubby can be requested to log all communication to a log file.
 Also, the player database at ~/.ggz/grubby/playerdb is filled with entries when
 players join the room Grubby is in. These entries can be enhanced by the
-players with additional information.
-<BR><BR>
+players with additional information using the <tt>player</tt> core module.
+</p>
 
-<HR>
-<A NAME="modules">
-<FONT SIZE=4>Modules</FONT>
-<BR><BR>
+<h3>Modules</h3>
+
+<p>
 Some of the available modules are documented here.
-<BR><BR>
+</p>
 
-<HR>
-<A NAME="modexec">
-<FONT SIZE=3>Exec Module</FONT>
-<BR><BR>
-This plugin executes external scripts and programs, writes to their stdin and reads from their stdout. It should be noted that the more
-external processes are spawned in serial order, the more time it consumes, and grubby may not react fast enough. Whereever available, a native
-plugin (shared library) should be preferred.
-<BR><BR>
+<h4>Exec module</h4>
 
-<HR>
-<A NAME="modembed">
-<FONT SIZE=3>Embed Module</FONT>
-<BR><BR>
-Similar to modexec, save it embeds the scripts directly. This works for python,
+<p>
+This plugin executes external scripts and programs, writes to their stdin and reads
+from their stdout. It should be noted that the more external processes are spawned
+in serial order, the more time it consumes, and grubby may not react fast enough.
+Whereever available, execution via the <tt>embed</tt> module or even a native plugin
+(shared library) should be preferred.
+</p>
+
+<h4>Embed module</h4>
+
+<p>
+Similar to <tt>exec</tt>, save it embeds the scripts directly. This works for python,
 perl and ruby so far and requires that support for those languages has been enabled
 at compile time.
 One advantage is that all commands are executed much faster.
-<BR><BR>
+</p>
 
-<HR>
-<A NAME="modnews">
-<FONT SIZE=3>News Module (via modexec)</FONT>
-<BR><BR>
-Several news sites offer RDF files which contain all headlines and links to the articles in XML format. Now when the user
-requests news from one of those sites, the module first fetches the latest RDF file from the target host (needs the perl module
-Net::Telnet installed), and randomly seeks one of the headlines which is to be returned.
-<BR><BR>
+<h4>Games module</h4>
 
-<HR>
-<A NAME="moddict">
-<FONT SIZE=3>Dictionary Module (via modexec)</FONT>
-<BR><BR>
-This module is presentated by the perl script "dict.pl", which in turn needs several dictionaries installed, or at least one of them.
-Under Unix, those are mostly under /usr/share/trans/X-Y, where X and Y are lowercase language letters, like "en" for English. The
-dictionary files contain key:value pairs of words. Now when a search is done, the module simply opens the appropriate file and scans
-it. In the case of inverse search, key and value are swapped. The module returns a concatenated string which contains all translations
-it found for the key word.
-<BR><BR>
-
-<HR>
-<A NAME="modmeeting">
-<FONT SIZE=3>Meeting Module (via modexec)</FONT>
-<BR><BR>
-This one needs Ruby installed, preferably version 1.6+. Its configurable database goes normally to /tmp/meetings, you might want to
-change that. It uses an interesting technique to store its data: Instead of writing key-value pairs, it dumps the whole object
-so one can transfer it from one host to another :)
-<BR><BR>
-
-<HR>
-<A NAME="modtrans">
-<FONT SIZE=3>Translation Module (via modexec)</FONT>
-<BR><BR>
-In case common shell tools (cut, grep, ...) and wget are available, the script
-webtrans.sh can be used for translations. It stores translated pairs of
-sentences into its cache (~/.ggz/grubby/google).
-<BR><BR>
-
-<HR>
-<A NAME="modgames">
-<FONT SIZE=3>Games Module</FONT>
-<BR><BR>
+<p>
 Grubby has the ability to launch game clients which have no GUI when
 commanded to do so. Those games are registered like normal GGZ game clients,
 except that their frontend is set to 'guru'.
-<BR><BR>
+</p>
 
-<HR>
-<FONT SIZE=2>
-This documentation is Copyright (C) 2001 - 2003 Josef Spillner.<BR>
-Published under the GNU Free Documentation License.<BR>
-</FONT>
+<h3>Scripts for the exec/embed modules</h3>
 
-</BODY>
-</HTML>
+<p>
+The following scripts are distributed along with grubby (but others can easily
+be added). The corresponding interpreters should be installed.
+</p>
+
+<h4>News module script (rdf.pl)</h4>
+
+<p>
+Several news sites offer RDF files which contain all headlines and links to the
+articles in XML format. Now when the user requests news from one of those sites,
+the module first fetches the latest RDF file from the target host (needs the perl
+module Net::Telnet installed), and randomly seeks one of the headlines which is to
+be returned.
+</p>
+
+<h4>Dictionary module script (dict.pl)</h4>
+
+<p>
+This module is presentated by the perl script "dict.pl", which in turn needs
+several dictionaries installed, or at least one of them. Under Unix, those are
+mostly under /usr/share/trans/X-Y, where X and Y are lowercase language letters,
+like "en" for English. The dictionary files contain key:value pairs of words.
+Now when a search is done, the module simply opens the appropriate file and scans
+it. In the case of inverse search, key and value are swapped. The module returns
+a concatenated string which contains all translations it found for the key word.
+</p>
+
+<h4>Meeting module script (meeting.rb)</h4>
+
+<p>
+This one needs Ruby installed, preferably version 1.6+. Its configurable database
+goes normally to $HOME/.ggz/grubby/meeting, similar to others. It uses an
+interesting technique to store its data: Instead of writing key-value pairs,
+it dumps the whole object so one can transfer it from one host to another.
+</p>
+
+<h4>Translation module script (webtranslator.sh)</h4>
+
+<p>
+In case common shell tools (cut, grep, ...) and wget are available, the script
+webtranslator.sh can be used for translations. It stores translated pairs of
+sentences into its cache (~/.ggz/grubby/google).
+</p>
+
+</div>
+
+</body>
+</html>

@@ -1,322 +1,167 @@
-<HTML>
-<HEAD>
-<TITLE>
-The Grubby User Manual
-</TITLE>
-</HEAD>
-<BODY BGCOLOR=#FFFFB0 TEXT=#000000 LINK=#A00000 ALINK=#000000 VLINK=#500000>
-<CENTER>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+Grubby User Manual
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #c0e080}
+h3 {background-color: #c0e080}
+h4 {background-color: #e0f0b0}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
 
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=5>
-The Grubby User Manual
-</FONT>
-</TD></TR></TABLE>
+<div>
 
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-Josef Spillner, 2001-10-12, last update: 2003-09-28
-</FONT>
-</TD></TR></TABLE>
+<h2>Grubby User Manual</h2>
 
-<BR><BR>
+<small>
+<i>Revision: 0.3</i><br>
+<i>Date: 26.03.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Table Of Contents:</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-<A HREF="#intro">Introduction</A><BR>
-<A HREF="#modnews">News module</A><BR>
-<A HREF="#moddict">Dictionary module</A><BR>
-<A HREF="#modtrans">Translation module</A><BR>
-<A HREF="#modmeeting">Meeting module</A><BR>
-<A HREF="#modprogramming">Programming module</A><BR>
-<A HREF="#modself">Self module</A><BR>
-<A HREF="#modbadword">Badword module</A><BR>
-<A HREF="#modpeople">People module</A><BR>
-<A HREF="#modmessage">Message module</A><BR>
-<A HREF="#modlearning">Learning module</A><BR>
-<A HREF="#modgames">Games module</A><BR>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+This documentation is geared towards the users of grubby on a chat network.
+It will teach the bots commands and explain the individual modules.
+For further reading, the Grubby Administration Manual and the Grubby
+Architecture Manual are available.
+</p>
 
-<BR><A NAME="intro">
+<h3>Introduction</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Introduction</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-The official GGZ Gaming Zone chat bot is known as Grubby, although it may have different names like Keeper or eurogrubby.
-It has been enhanced to work with both internal and external modules, called the "guru library". This is currently work in progress,
-but once the transition has been finished, it'll be worth the work. So this documentation covers all the new stuff which is not documented yet.
-<BR><BR>
-There are explicit modules, which means they only react if you speak to grubby directly, and implicit ones which let grubby react on what other player
-say in the chat. Not all modules may be loaded, so if you ever meet a chat bot, you will have to query his modules by asking him "grubby modules".
-The administrator can even, if allowed, load and unload them at runtime (external modules only), when he issues a "grubby modules add modexec" or
-"grubby modules remove modweird".
-<BR><BR>
-Make sure grubby knows your origin, you can tell him with "grubby I am from de" or similar.
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+The official GGZ Gaming Zone chat bot is known as Grubby, although it may have
+different names like Keeper or eurogrubby. It has been enhanced to work with both
+internal and external modules, called the "guru library". This is currently work
+in progress, but once the transition has been finished, it'll be worth the work.
+So this documentation covers all the new stuff which is not documented yet.
+<br><br>
+There are explicit modules, which means they only react if you speak to grubby
+directly, and implicit ones which let grubby react on what other player say in
+the chat. Not all modules may be loaded, so if you ever meet a chat bot, you will
+have to query his modules by asking him "grubby modules". The administrator can even,
+if allowed, load and unload them at runtime (external modules only), when he issues
+a "grubby modules add modexec" or "grubby modules remove modweird".
+<br><br>
+Make sure grubby knows your origin, you can tell him with "grubby I am from de"
+or similar.
+</p>
 
-<BR><A NAME="modnews">
+<h3>News module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>News Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-You can ask Grubby about the latest news world-wide. If you want him to tell you a news headline, just tell him:
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby news slashdot
-</FONT>
-</TD></TR></TABLE>
-The following news sources are available right now: Slashdot, Heise, The Register and Happy Penguin. It will list you the sources if you simply do a:
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby news
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+You can ask Grubby about the latest news world-wide. If you want him to tell you a
+news headline, just tell him:
+<br><tt>grubby news slashdot</tt><br>
+The following news sources are available right now:
+Slashdot, Heise, The Register and Happy Penguin.
+It will list you the sources if you simply do a:
+<br><tt>grubby news</tt><br>
+</p>
 
-<BR><A NAME="moddict">
+<h3>Dictionary module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Dictionary Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-In case you don't understand a word when chatting, this might help you: It translates words from English into your native language.
-In case grubby does already know where you're from, it can also do this the other way around. Here is how it goes:
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby what is Tree in german<BR>
-grubby what is Bier in fuzzy english
-</FONT>
-</TD></TR></TABLE>
-Please note the use of the modifier "fuzzy" here: It'll match all words which contain the word as a substring, hence give more output to the chat.
+<p>
+In case you don't understand a word when chatting, this might help you:
+It translates words from English into your native language.
+In case grubby does already know where you're from, it can also do this the
+other way around. Here is how it goes:
+<br><tt>grubby what is Tree in german</tt>
+<br><tt>grubby what is Bier in fuzzy english</tt><br>
+Please note the use of the modifier "fuzzy" here: It'll match all words which
+contain the word as a substring, hence give more output to the chat.
 You can use both descriptive names (like portuguese) or ISO codes (like pt).
-</FONT>
-</TD></TR>
-</TABLE>
+</p>
 
-<BR><A NAME="modtrans">
+<h3>Translation module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Translation Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
+<p>
 Grubby does now also support the translation of whole sentences, when a
 connection to the internet is available, using web services as its backend.
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby translate fr-en peut-tu me donner le source<BR>
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<br><tt>grubby translate fr-en peut-tu me donner le source</tt><br>
+</p>
 
-<BR><A NAME="modmeeting">
+<h3>Meeting module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Meeting Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-This might be especially interesting for those who want to drop a note about upcoming events. As opposed to the "tell" command, this one can
-be polled by everyone.
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby meeting
-</FONT>
-</TD></TR></TABLE>
-This command lists all available meetings or events. You can add some with add or delete some with remove:
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby meeting add Tomorrow: Big game bashing!
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+This might be especially interesting for those who want to drop a note about
+upcoming events. As opposed to the "tell" command, this one can be polled
+by everyone.
+<br><tt>grubby meeting</tt><br>
+This command lists all available meetings or events. You can add some with
+add or delete some with remove:
+<br><tt>grubby meeting add Tomorrow: Big game bashing!</tt><br>
+</p>
 
-<BR><A NAME="modprogramming">
+<h3>Programming module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Programming Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-This is an implicit module: From time to time, grubby recognizes that people speak about their programming language skills, and joins the discussion.
+<p>
+This is an implicit module: From time to time, grubby recognizes that people
+speak about their programming language skills, and joins the discussion.
 You don't know grubby's hacker skills!
-</FONT>
-</TD></TR>
-</TABLE>
+</p>
 
-<BR><A NAME="modself">
+<h3>Self module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Self Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
+<p>
 There are two little commands which let grubby tell a bit about himself:
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby about<BR>
-grubby help
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<br><tt>grubby about</tt>
+<br><tt>grubby help</tt><br>
+</p>
 
-<BR><A NAME="modbadword">
+<h3>Badword module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Badword Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-Another implicit module which takes care about what you say. You shouldn't say indisciplined things, so try to avoid any badword. And yes,
-"windows" is one of them :-)
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+Another implicit module which takes care about what you say. You shouldn't say
+indisciplined things, so try to avoid any badword. And yes, "windows" is one
+of them :-)
+</p>
 
-<BR><A NAME="modpeople">
+<h3>People module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>People Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-Useful to get information on other people, or to update your own public records in grubby's player database.
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby my name is Hans<BR>
-grubby have you seen Franz
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+Useful to get information on other people, or to update your own public records
+in grubby's player database.
+<br><tt>grubby my name is Hans</tt><br>
+<br><tt>grubby have you seen Franz</tt>
+</p>
 
-<BR><A NAME="modmessage">
+<h3>Message module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Message Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-Provides asynchronous communication with players who aren't even logged in. You only need to know their nicknames. If the paging is activated,
-you can even page people (which activates their pager or sends a Short Message (SMS) to them).
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby do i have any messages<BR>
-grubby tell Keeper you are a bot<BR>
-grubby page someone
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+Provides asynchronous communication with players who aren't even logged in.
+You only need to know their nicknames. If the paging is activated,
+you can even page people (which activates their pager or sends a Short Message
+(SMS) to them).
+<br><tt>grubby do i have any messages</tt>
+<br><tt>grubby tell Keeper you are a bot</tt>
+<br><tt>grubby page someone</tt><br>
+</p>
 
-<BR><A NAME="modlearning">
+<h3>Learning module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Learning Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-This makes grubby very smart when time goes by. It will learn without complaints, and tell others what it has learned so far.
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby microsoft is a strange company<BR>
-grubby microsoft
-</FONT>
-</TD></TR></TABLE>
-</FONT>
-</TD></TR>
-</TABLE>
+<p>
+This makes grubby very smart when time goes by. It will learn without complaints,
+and tell others what it has learned so far.
+<br><tt>grubby microsoft is a strange company</tt>
+<br><tt>grubby microsoft</tt><br>
+</p>
 
-<BR><A NAME="modgames">
+<h3>Games module</h3>
 
-<TABLE BORDER=0 CELLPADDING=4 CELLSPACING=0 WIDTH="80%">
-<TR><TD BGCOLOR=#FFA000>
-<FONT SIZE=4 FACE="arial, helvetica">
-<B>Games Module</B>
-</FONT>
-</TD></TR><TR><TD BGCOLOR=#FFC000>
-<FONT SIZE=3 FACE="arial, helvetica">
-Grubby is not only a chat bot, but also a gaming bot.
-Whereever a game module exists for it, it can be invited into a game via the
-command
-<BR>
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-grubby join my game
-</FONT>
-</TD></TR></TABLE>
+<p>
+Grubby is not only a chat bot, but also a gaming bot. Whereever a game module
+exists for it, it can be invited into a game via the command
+<br><tt>grubby join my game</tt><br>
 as long as at least one seat is still open.
-</FONT>
-</TD></TR>
-</TABLE>
+</p>
 
-<BR><BR>
+</div>
 
-<TABLE BORDER=0><TR><TD BGCOLOR=#FFE050>
-<FONT SIZE=2>
-This documentation is Copyright (C) 2001 - 2003 Josef Spillner.<BR>
-Published under the GNU Free Documentation License.<BR>
-</FONT>
-</TD></TR></TABLE>
-
-<BR><BR>
-
-</CENTER>
-</BODY>
-</HTML>
+</body>
+</html>
