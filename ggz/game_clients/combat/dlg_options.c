@@ -31,7 +31,7 @@ extern char unitname[12][36];
 static const char spin_name[12][8] = {"spin_F", "spin_B", "spin_1", "spin_2", "spin_3", "spin_4", "spin_5", "spin_6", "spin_7", "spin_8", "spin_9", "spin_10"};
 
 GtkWidget*
-create_dlg_options (void)
+create_dlg_options (int number)
 {
   GtkWidget *dlg_options;
   GtkWidget *dialog_vbox2;
@@ -519,6 +519,8 @@ create_dlg_options (void)
 
   mini_buf = NULL;
 
+  gtk_object_set_data(GTK_OBJECT(dlg_options), "number", GINT_TO_POINTER(number));
+
 	dlg_options_update(dlg_options);
 
   init_map_data(dlg_options);
@@ -536,7 +538,7 @@ void init_map_data(GtkWidget *dlg_options) {
 	// Now init the data
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options)
-    return;
+    dlg_options_update(dlg_options);
   if (options->map) {
     free(options->map);
     options->map = NULL;
@@ -546,6 +548,8 @@ void init_map_data(GtkWidget *dlg_options) {
 	  options->map[a].type = OPEN;
 
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
+  if (mini_buf)
+    draw_mini_board(dlg_options);
 
 }
  
@@ -561,30 +565,37 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   int tot = 0, other = 0, a;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
-  preview_game = map_load(filenames[row], &changed);
+  preview_game = (combat_game *)malloc(sizeof(combat_game));
+  preview_game->number = GPOINTER_TO_INT(
+                        gtk_object_get_data(GTK_OBJECT(user_data), "number"));
+  preview_game->army = (char **)calloc(preview_game->number+1, sizeof(char *));
+  preview_game->army[preview_game->number] = (char *)calloc(12, sizeof(char));
+  preview_game->map = NULL;
+  preview_game->name = NULL;
+  map_load(preview_game, filenames[row], &changed);
   if (changed == 0)
     dlg_options_list_maps(GTK_WIDGET(clist));
   gtk_object_set_data(GTK_OBJECT(user_data), "preview", preview_game);
   /* TODO: Show preview */
   draw_preview(user_data);
   for (a = U_FLAG; a < U_SERGEANT; a++)
-    tot+=preview_game->army[0][a];
+    tot+=ARMY(preview_game, a);
   for (a = U_SERGEANT; a < 12; a++) {
-    tot+=preview_game->army[0][a];
-    other+=preview_game->army[0][a];
+    tot+=preview_game->army[preview_game->number][a];
+    other+=ARMY(preview_game, a);
   }
   sprintf(preview_string, "%d x %d\n\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\nOthers: %d\n\nTotal: %d",
           preview_game->width, preview_game->height,
           unitname[U_FLAG],
-          preview_game->army[0][U_FLAG],
+          ARMY(preview_game, U_FLAG),
           unitname[U_BOMB],
-          preview_game->army[0][U_BOMB],
+          ARMY(preview_game, U_BOMB),
           unitname[U_SPY],
-          preview_game->army[0][U_SPY],
+          ARMY(preview_game, U_SPY),
           unitname[U_SCOUT],
-          preview_game->army[0][U_SCOUT],
+          ARMY(preview_game, U_SCOUT),
           unitname[U_MINER],
-          preview_game->army[0][U_MINER],
+          ARMY(preview_game, U_MINER),
           other,
           tot);
   gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
@@ -659,19 +670,24 @@ void load_map(char *filename, GtkWidget *dialog) {
   GtkWidget *width, *height;
   GtkWidget *unit_spin;
   int a;
-  combat_game *map;
-  map = map_load(filename, NULL);
+  combat_game *map = (combat_game *)malloc(sizeof(combat_game));
+  map->number = GPOINTER_TO_INT(
+                  gtk_object_get_data(GTK_OBJECT(dialog), "number"));
+  map->army = (char **)calloc(map->number+1, sizeof(char *));
+  map->army[map->number] = (char *)calloc(12, sizeof(char));
+  map->map = NULL;
+  map->name = NULL;
+  map_load(map, filename, NULL);
   /* Get the widgets */
   width = lookup_widget(dialog, "width");
   height = lookup_widget(dialog, "height");
-  /* Get the data from the file */
   // Width / Height
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(width), map->width);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(height), map->height);
   // Army
   for (a = 0; a < 12; a++) {
     unit_spin = lookup_widget(dialog, spin_name[a]);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), map->army[0][a]);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), ARMY(map, a));
   }
   // Terrain data
   gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
@@ -782,7 +798,9 @@ void dlg_options_update(GtkWidget *dlg_options) {
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options) {
     options = (combat_game *)malloc(sizeof(combat_game));
-    options->number = 0;
+    options->number = GPOINTER_TO_INT(
+                      gtk_object_get_data(GTK_OBJECT(dlg_options), "number"));
+    printf("DLG number: %d\n", options->number);
     options->army = (char **)calloc(options->number+1, sizeof(char *));
     options->army[options->number] = (char *)calloc(12, sizeof(char));
     options->map = NULL;
@@ -799,7 +817,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 	// Gets army data
 	for (a = 0; a < 12; a++) {
 		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
-		options->army[options->number][a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
+		ARMY(options, a) = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
 
   // Map was changed! It doesn't have a name now!
@@ -895,7 +913,7 @@ void update_counters(GtkWidget *dlg_options) {
 
   // Count units
   for (a = 0; a < 12; a++)
-    units+=options->army[options->number][a];
+    units+=ARMY(options, a);
 
   // Set widgets
   sprintf(label, "Total: %d", units);
@@ -1121,6 +1139,8 @@ void draw_mini_board(GtkWidget *dlg_options) {
 	GdkGC *solid_gc;
 
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  if (!options)
+    dlg_options_update(dlg_options);
 
 	solid_gc = gdk_gc_new(widget->window);
 

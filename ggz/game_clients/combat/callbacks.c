@@ -55,9 +55,10 @@ main_window_exit                       (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	// FIXME: Should call a "are you sure" dialog
+  printf("Should I quit?\n");
 	gtk_main_quit();
 
-  return FALSE;
+  return TRUE;
 }
 
 

@@ -5,12 +5,11 @@ What *must* be done before next version of GGZ:
 What should be done before next version of GGZ:
 
 - Add some map options
-- Fix the GTK errors
-- Clean up the code, separate the game logic from the graphics stuff
 
 What should be done someday
 
 - Tilesets
+- Clean up the code, separate the game logic from the graphics stuff
 - 3 or 4 players support
 - A webpage for the game
 - Saving/Resuming of games

@@ -73,6 +73,7 @@ int combat_options_string_read(char *_optstr, combat_game *_game) {
   // Copy the string from the parameter
   optstr = (char *)malloc((len+1) * sizeof(char));
   strncpy(optstr, _optstr, len);
+  optstr[len] = 0;
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
 		optstr[a]--;
@@ -218,18 +219,18 @@ int combat_check_move(combat_game *_game, int from, int to) {
 int combat_options_check(combat_game *_game) {
   int a, b, size = 0, cur_size = 0;
 
-	if (_game->army[_game->number][U_FLAG] <= 0)
+	if (ARMY(_game, U_FLAG) <= 0)
 		return CBT_ERROR_OPTIONS_FLAGS;
 
 	for (a = 2; a < 13; a++) {
 		if (a == 12)
 			return CBT_ERROR_OPTIONS_MOVING;
-		if (_game->army[_game->number][a] > 0)
+		if (ARMY(_game, a) > 0)
 			break;
 	}
 
 	for (a = 0; a < 12; a++)
-		size+=_game->army[_game->number][a];
+		size+=ARMY(_game, a);
 
 	// Checks for number of starting positions
 	for (a = 0; a < _game->number; a++) {	

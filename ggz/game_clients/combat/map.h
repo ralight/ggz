@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-combat_game *map_load(char *name, int *changed);
+void map_load(combat_game *, char *name, int *changed);
 
 int map_save(combat_game *map);
 

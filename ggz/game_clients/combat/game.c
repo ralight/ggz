@@ -199,12 +199,12 @@ int game_get_seat() {
 void game_ask_options() {
   GtkWidget *options_dialog;
   GtkWidget *ok_button;
-  options_dialog = create_dlg_options(); 
+  combat_game *_game;
+  options_dialog = create_dlg_options(cbt_game.number); 
   ok_button = lookup_widget(options_dialog, "ok_button"); 
   gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
                              GTK_SIGNAL_FUNC (game_send_options), 
                              GTK_OBJECT (options_dialog));
-  gtk_object_set_data(GTK_OBJECT(options_dialog), "number", GINT_TO_POINTER(cbt_game.number));
   gtk_widget_show_all(options_dialog);
 }
 
@@ -1024,18 +1024,19 @@ void game_request_sync() {
 int game_send_options(GtkWidget *options_dialog) {
   combat_game *_game;
   char *game_str = NULL;
-  int a;
+  int a = 0;
 
   _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
 
-  if (!_game)
-    return -1;
+  printf("Number: %d", _game->number);
 
-  game_str = combat_options_string_write(_game, 0);
+  if (!_game) {
+    game_message("No options?");
+    return -1;
+  }
 
   // Sanity check!
-  _game->number = cbt_game.number;
-  combat_options_string_read(game_str, _game);
+  game_str = combat_options_string_write(_game, 0);
 
   if ((a = combat_options_check(_game)) != 0) {
     switch (a) {

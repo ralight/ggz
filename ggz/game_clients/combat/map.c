@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <dirent.h>
 #include <fcntl.h>
 
@@ -36,6 +37,8 @@
 #include "map.h"
 
 #define GLOBAL_MAPS GAMEDIR "/combat/maps"
+
+void game_message(const char *format, ... );
 
 static unsigned int _generate_hash(char *);
 
@@ -146,28 +149,22 @@ int map_search(combat_game *map) {
   }
   return 0;
 }
-
-combat_game *map_load(char *filename, int *changed) {
+void map_load(combat_game *_game, char *filename, int *changed) {
   int handle;
   unsigned int hash;
   char hash_str[32];
   char *new_filename;
   int a, b;
-  combat_game *_game = (combat_game *)malloc(sizeof(combat_game));
   char *terrain_data;
   handle = _ggzcore_confio_parse(filename, 0);
   if (handle < 0)
-    return NULL;
+    return;
   /* Get the data from the file */
   // Width / Height
   _game->width = _ggzcore_confio_read_int(handle, "map", "width", 10);
   _game->height = _ggzcore_confio_read_int(handle, "map", "height", 10);
-  // Army -> Quick load, like if there is only no player
-  _game->number = 0;
-  _game->army = (char **)calloc(1, sizeof(char *));
-  _game->army[0] = (char *)calloc(12, sizeof(char));
   for (a = 0; a < 12; a++) {
-    _game->army[0][a] = _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
+    ARMY(_game, a) = _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
   }
   // Terrain data
   terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
@@ -226,8 +223,7 @@ combat_game *map_load(char *filename, int *changed) {
     a = rename(filename, new_filename);
     if (changed)
       *changed = a;
-  }
-  return _game;
+  };
 }
 
 char **map_list() {

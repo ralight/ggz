@@ -315,6 +315,9 @@
 #define X(I, WIDTH) (I%WIDTH)
 #define Y(I, WIDTH) (I/WIDTH)
 
+// Get a cbt_game and returns the default number of army
+#define ARMY(OPTIONS, TYPE) (OPTIONS->army[OPTIONS->number][TYPE])
+
 // Next turn
 #define NEXT(X,Y) (X >= (Y-1) ? 0 : X+1)
 
