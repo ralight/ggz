@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4121 2002-04-30 05:23:12Z jdorje $
+ * $Id: client.c 4134 2002-05-02 06:58:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -678,7 +678,7 @@ static int match_card(card_t card, hand_t * hand)
 /* A play message tells of a play from a hand to the table. */
 static int handle_msg_play(void)
 {
-	int p, c, tc;
+	int p, c, tc, card_pos;
 	card_t card;
 	hand_t *hand;
 
@@ -709,10 +709,10 @@ static int handle_msg_play(void)
 	assert(hand->cards);
 
 	/* Find a matching card to remove. */
-	tc = match_card(card, hand);
+	card_pos = match_card(card, hand);
 
 	/* Handle a bad match. */
-	if (tc < 0) {
+	if (card_pos < 0) {
 		/* This is theoretically possible even without errors! In
 		   fact, a clever server could _force_ us to pick wrong.
 		   Figure out how and you'll be ready for a "squeeze" play!
@@ -727,13 +727,13 @@ static int handle_msg_play(void)
 	   tricky, so be careful not to go off-by-one and overrun
 	   the buffer! */
 	hand->hand_size--;
-	for (c = tc; c < hand->hand_size; c++)
+	for (c = card_pos; c < hand->hand_size; c++)
 		hand->cards[c] = hand->cards[c + 1];
 	hand->cards[hand->hand_size] = UNKNOWN_CARD;
 	
 	/* Remove the card just by marking its meta category to FALSE.
 	   Note that we don't decrease hand_size in this case! */
-	for (c = 0; tc >= 0; c++) {
+	for (c = 0, tc = card_pos; tc >= 0; c++) {
 		if (!ggzcards.players[p].u_hand[c].is_valid)
 			continue;
 		tc--;
@@ -741,7 +741,7 @@ static int handle_msg_play(void)
 	ggzcards.players[p].u_hand[c - 1].is_valid = FALSE;
 
 	/* Update the graphics */
-	game_alert_play(p, card, tc);
+	game_alert_play(p, card, card_pos);
 
 	return 0;
 }
