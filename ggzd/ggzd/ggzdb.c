@@ -23,8 +23,10 @@
  */
 
 #include <config.h>
-
 #include <pthread.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "ggzd.h"
 #include "datatypes.h"
@@ -54,7 +56,34 @@ extern int _ggzdb_player_get(ggzdbPlayerEntry *);
 /* Function to initialize the database system */
 int ggzdb_init(void)
 {
+	char *fname;
+	char vid[7];	/* Space for 123.45 */
+	char version_ok=0;
+	FILE *vfile;
 	int rc;
+
+	/* Verify that db version is cool with us */
+	if((fname = malloc(strlen(opt.data_dir)+11)) == NULL)
+		err_sys_exit("malloc() failed in ggzdb_init()");
+	strcpy(fname, opt.data_dir);
+	strcat(fname, "/ggzdb.ver");
+	if((vfile = fopen(fname, "r")) == NULL) {
+		/* File not found, so we can create it */
+		if((vfile = fopen(fname, "w")) == NULL)
+			err_sys_exit("fopen(w) failed in ggzdb_init()");
+		fprintf(vfile, "%s", GGZDB_VERSION_ID);
+		version_ok = 1;
+	} else {
+		/* File was found, so let's check it */
+		fgets(vid, 7, vfile);
+		if(!strncmp(GGZDB_VERSION_ID, vid, strlen(GGZDB_VERSION_ID)))
+			version_ok = 1;
+	}
+	fclose(vfile);
+	free(fname);
+
+	if(!version_ok)
+		err_msg_exit("Bad db version id, remove or convert db files");
 
 	/* Call backend's initialization */
 	rc = _ggzdb_init(opt.data_dir);

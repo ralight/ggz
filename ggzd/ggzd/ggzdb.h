@@ -27,6 +27,9 @@
 
 /* Structures to use to pass data to front end functions */
 
+/* Anytime structures change, bump the version id */
+#define GGZDB_VERSION_ID	"0.1"
+
 /* For ggzdb_player_XXX */
 typedef struct ggzdbPlayerEntry {
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
