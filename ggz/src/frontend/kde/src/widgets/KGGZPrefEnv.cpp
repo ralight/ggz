@@ -44,6 +44,8 @@
 
 // KDE includes
 #include <klocale.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
 
 // Qt includes
 #include <qlabel.h>
@@ -70,6 +72,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), this);
 	m_chatlog = new QCheckBox(i18n("Log chat conversation"), this);
 	m_speech = new QCheckBox(i18n("Enable text-to-speech (rsynth)"), this);
+	m_motd = new QCheckBox(i18n("Display MOTD upon login"), this);
 
 	m_server = new QLineEdit(this);
 
@@ -85,6 +88,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	vbox->add(m_startup);
 	vbox->add(m_chatlog);
 	vbox->add(m_speech);
+	vbox->add(m_motd);
 	vbox->add(sep);
 
 	hbox = new QHBoxLayout(vbox, 5);
@@ -116,6 +120,7 @@ void KGGZPrefEnv::slotAccept()
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
 	config->write("Preferences", "Chatlog", m_startup->isChecked());
 	config->write("Preferences", "Speech", m_startup->isChecked());
+	config->write("Preferences", "MOTD", m_motd->isChecked());
 	config->commit();
 
 	delete config;
@@ -127,7 +132,7 @@ void KGGZPrefEnv::loadSettings()
 {
 	GGZCoreConfio *config;
 	char *server;
-	int startup, chatlog, speech;
+	int startup, chatlog, speech, motd;
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
@@ -135,11 +140,13 @@ void KGGZPrefEnv::loadSettings()
 	startup = config->read("Preferences", "Showdialog", 0);
 	chatlog = config->read("Preferences", "Chatlog", 0);
 	speech = config->read("Preferences", "Speech", 0);
+	motd = config->read("Preferences", "MOTD", 1);
 
 	m_server->setText(server);
 	m_startup->setChecked(startup);
 	m_chatlog->setChecked(chatlog);
 	m_speech->setChecked(speech);
+	m_motd->setChecked(motd);
 
 	delete config;
 }

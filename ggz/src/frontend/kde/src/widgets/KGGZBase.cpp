@@ -71,11 +71,15 @@ KGGZBase::KGGZBase()
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_CONNECT), i18n("&Connect"), MENU_GGZ_CONNECT);
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_DISCONNECT), i18n("&Disconnect"), MENU_GGZ_DISCONNECT);
 	m_menu_ggz->insertSeparator();
+	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_MOTD), i18n("Message of the day"), MENU_GGZ_MOTD);
+	m_menu_ggz->insertSeparator();
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STARTSERVER), i18n("Start server"), MENU_GGZ_STARTSERVER);
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STOPSERVER), i18n("Stop server"), MENU_GGZ_STOPSERVER);
 	m_menu_ggz->insertSeparator();
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_QUIT), i18n("&Quit"), MENU_GGZ_QUIT);
+
 	m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
+	m_menu_ggz->setItemEnabled(MENU_GGZ_MOTD, FALSE);
 	if(KGGZCommon::findProcess("ggzd") > 0) m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, FALSE);
 	else m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, FALSE);
 
@@ -252,6 +256,9 @@ void KGGZBase::slotMenu(int id)
 			kggz->menuDisconnect();
 			statusBar()->changeItem(i18n("Not connected"), 1);
 			break;
+		case MENU_GGZ_MOTD:
+			kggz->menuMotd();
+			break;
 		case MENU_GGZ_STARTSERVER:
 			kggz->menuServerLaunch();
 			break;
@@ -317,6 +324,7 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
+			m_menu_ggz->setItemEnabled(MENU_GGZ_MOTD, FALSE);
 			menuBar()->setItemEnabled(MENU_ROOMS, false);
 			menuBar()->setItemEnabled(MENU_GAME, false);
 			setCaption(i18n("offline"));
@@ -333,6 +341,7 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, TRUE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_CONNECT, FALSE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, TRUE);
+			m_menu_ggz->setItemEnabled(MENU_GGZ_MOTD, TRUE);
 			break;
 		case KGGZ::MENUSIG_SERVERSTOP:
 			m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, TRUE);

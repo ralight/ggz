@@ -36,7 +36,9 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qtextview.h>
+
+// Forward declarations
+class QTextView;
 
 // KGGZMotd: displays welcome message
 class KGGZMotd : public QWidget

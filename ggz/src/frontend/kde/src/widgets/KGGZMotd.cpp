@@ -44,6 +44,7 @@
 // Qt includes
 #include <qpushbutton.h>
 #include <qlayout.h>
+#include <qtextview.h>
 
 // System includes
 #include <stdio.h>
@@ -75,10 +76,6 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 
 	setCaption(i18n("Message Of The Day (MOTD)"));
 	resize(400, 400);
-
-	show();
-
-	startTimer(500);
 }
 
 // Destructor

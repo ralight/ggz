@@ -36,8 +36,10 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
+
+// Forward declarations
+class QCheckBox;
+class QLineEdit;
 
 // KGGZPrefEnv: Global configuration
 class KGGZPrefEnv : public QWidget
@@ -65,6 +67,8 @@ class KGGZPrefEnv : public QWidget
 			QCheckBox *m_chatlog;
 			// Enable text-to-speech synth of chat
 			QCheckBox *m_speech;
+			// Display MOTD upon login
+			QCheckBox *m_motd;
 };
 
 #endif

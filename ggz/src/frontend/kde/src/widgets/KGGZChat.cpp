@@ -250,7 +250,10 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("%1 -- MARK --").arg(timestring), RECEIVE_ADMIN);
 			break;
 		case EVENT_AWAY:
-			emit signalChat(i18n("/me is going to leave (%1)").arg(inputargs), NULL, RECEIVE_CHAT);
+			if((inputargs) && (strlen(inputargs) > 0))
+				emit signalChat(i18n("/me is going to leave (%1)").arg(inputargs), NULL, RECEIVE_CHAT);
+			else
+				emit signalChat(i18n("/me has returned"), NULL, RECEIVE_CHAT);
 			break;
 		default:
 			receive(NULL, i18n("Error! Unknown command! Try /help instead."), RECEIVE_ADMIN);
