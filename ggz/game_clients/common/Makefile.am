@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5043 2002-10-26 04:43:10Z jdorje $
+#  $Id: Makefile.am 5208 2002-11-04 07:45:38Z jdorje $
 
-SUBDIRS = .
+SUBDIRS = . cardsets
 
 INCLUDES = @GTK_CFLAGS@
 

@@ -33,7 +33,10 @@
 #include <stdarg.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
+
 #include "dlg_exit.h"
+#include "ggzintl.h"
 
 #include <card.h>
 #include <client.h>
@@ -45,12 +48,6 @@
 #include <gtk_menu.h>
 #include <gtk_taunt.h>
 #include <gtk_play.h>
-#include "../ggzcards/cards-1.xpm"
-#if 0 /* Card backs aren't used */
-#  include "../ggzcards/cards-b1.xpm"
-#endif
-
-#include "ggzintl.h"
 
 /* Global state of game variable */
 extern gameState_t gameState;
@@ -132,6 +129,22 @@ void DisplayInit(void)
 }
 
 
+static GdkPixmap *load_pixmap(GdkWindow *window, GdkBitmap **mask,
+			      GdkColor *trans, const char *name)
+{
+	char *fullpath;
+	GdkPixmap *pixmap;
+
+	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
+	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+	if(pixmap == NULL)
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
+
+	return pixmap;
+}
+
+
 void InitPixmaps(GtkWidget * window)
 {
 
@@ -142,15 +155,13 @@ void InitPixmaps(GtkWidget * window)
 	/* now for the pixmap from gdk */
 	style = gtk_widget_get_style(window);
 
-	playArea->cards =
-	    gdk_pixmap_create_from_xpm_d(window->window, &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) cards_xpm);
+	playArea->cards = load_pixmap(window->window, &mask,
+				      &style->bg[GTK_STATE_NORMAL],
+				      "cards-1.xpm");
 #if 0 /* Card backs aren't used */
-	playArea->cardbacks =
-	    gdk_pixmap_create_from_xpm_d(window->window, &mask,
-					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) cards_b1_xpm);
+	playArea->cardbacks = load_pixmap(window->window, &mask,
+					  &style->bg[GTK_STATE_NORMAL],
+					  "cards-b1.xpm");
 #endif
 }
 

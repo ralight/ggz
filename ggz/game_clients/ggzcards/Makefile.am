@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5207 2002-11-04 07:19:23Z jdorje $
+# $Id: Makefile.am 5208 2002-11-04 07:45:38Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -44,9 +44,3 @@ ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) \
 	$(top_builddir)/ggzcards/client/libclient.a \
 	$(LIB_GGZMOD)
 ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS)
-
-pixmap_DATA =	cards-1.xpm cards-b1.xpm \
-		cards-2.xpm cards-b2.xpm \
-		cards-3.xpm cards-b3.xpm \
-		cards-4.xpm cards-b4.xpm
-pixmapdir = $(ggzdatadir)/pixmaps

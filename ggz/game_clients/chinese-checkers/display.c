@@ -74,7 +74,8 @@ static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	fullpath = g_strdup_printf("%s/%s", get_theme_dir(), name);
 	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
 	if(pixmap == NULL)
-		ggz_error_msg("Can't load pixmap %s", fullpath);
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
 
 	return pixmap;
 }

@@ -30,17 +30,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ggz.h>
+
 #include "main.h"
 #include "game.h"
 #include "table.h"
 #include "hand.h"
 #include "dlg_bid.h"
-
-#include "../ggzcards/cards-1.xpm"
-#include "../ggzcards/cards-b1.xpm"
-#include "../ggzcards/cards-b2.xpm"
-#include "../ggzcards/cards-b3.xpm"
-#include "../ggzcards/cards-b4.xpm"
 
 /* The following would be hell to change */
 #define CARDWIDTH	71
@@ -69,6 +65,20 @@ static gint table_animation_callback(gpointer);
 static void table_animation_trigger(int, int, int, int, int);
 static void table_handle_table_click(int, int);
 
+static GdkPixmap *load_pixmap(GdkWindow *window, GdkBitmap **mask,
+			      GdkColor *trans, const char *name)
+{
+	char *fullpath;
+	GdkPixmap *pixmap;
+
+	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
+	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+	if(pixmap == NULL)
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
+
+	return pixmap;
+}
 
 /* table_initialize()
  *   Setup and draw the table areas on the fixed1 dialog item
@@ -81,21 +91,21 @@ void table_initialize(void)
 	/* This starts our drawing code */
 	f1 = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
 	f1_style = gtk_widget_get_style(f1);
-	cards = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
-					     &f1_style->bg[GTK_STATE_NORMAL],
-					     (gchar **) cards_xpm);
-	cards_b1 = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
-					    &f1_style->bg[GTK_STATE_NORMAL],
-					    (gchar **) cards_b1_xpm);
-	cards_b2 = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
-					    &f1_style->bg[GTK_STATE_NORMAL],
-					    (gchar **) cards_b2_xpm);
-	cards_b3 = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
-					    &f1_style->bg[GTK_STATE_NORMAL],
-					    (gchar **) cards_b3_xpm);
-	cards_b4 = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
-					    &f1_style->bg[GTK_STATE_NORMAL],
-					    (gchar **) cards_b4_xpm);
+	cards = load_pixmap(f1->window, &mask,
+			    &f1_style->bg[GTK_STATE_NORMAL],
+			    "cards-1.xpm");
+	cards_b1 = load_pixmap(f1->window, &mask,
+			       &f1_style->bg[GTK_STATE_NORMAL],
+			       "cards-b1.xpm");
+	cards_b2 = load_pixmap(f1->window, &mask,
+			       &f1_style->bg[GTK_STATE_NORMAL],
+			       "cards-b2.xpm");
+	cards_b3 = load_pixmap(f1->window, &mask,
+			       &f1_style->bg[GTK_STATE_NORMAL],
+			       "cards-b3.xpm");
+	cards_b4 = load_pixmap(f1->window, &mask,
+			       &f1_style->bg[GTK_STATE_NORMAL],
+			       "cards-b4.xpm");
 	table_buf = gdk_pixmap_new(f1->window,
 			     f1->allocation.width,
 			     f1->allocation.height,
