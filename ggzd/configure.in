@@ -69,19 +69,26 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
     AC_CHECK_HEADER(popt.h, ggzd_LIBS="$ggzd_LIBS -lpopt",
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
-    
-AC_CHECK_LIB(pthread, pthread_create,
-    AC_CHECK_HEADER(pthread.h, ggzd_LIBS="$ggzd_LIBS -lpthread" 
-         CFLAGS="$CFLAGS -D_REENTRANT"
-         AC_DEFINE(_XOPEN_SOURCE, 500),
-         AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
-    AC_MSG_ERROR(*** Cannot find pthread library ); exit)
 
 AC_CHECK_FUNC(strsep,
     AC_DEFINE(_BSD_SOURCE),
     AC_MSG_ERROR(*** Cannot find strsep function); exit )
 
 
+dnl Find pthread library
+dnl ====================   
+AC_CHECK_HEADER(pthread.h, 
+    AC_CHECK_LIB(pthread, pthread_create, 
+        ggzd_LIBS="$ggzd_LIBS -lpthread" 
+	CFLAGS="$CFLAGS -D_REENTRANT"
+	AC_DEFINE(_XOPEN_SOURCE, 500),
+	AC_CHECK_LIB(c_r, pthread_create, 
+	    ggzd_LIBS="$ggzd_LIBS -pthread"
+	    CFLAGS="$CFLAGS -D_THREAD_SAFE",
+            AC_MSG_ERROR(*** Cannot find pthread library); exit)),
+    AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
+
+ 
 dnl Check database libs
 dnl ===================
 if test "$database" = mysql; then
