@@ -14,6 +14,11 @@
 	<entrylist class="atlantik">
 		<connection version="0.1" preference="100">atlantik://capsi.com:9999</connection>
 	</entrylist>
+	<entrylist class="freeciv">
+		<connection version="1.12.0" preference="100" status="running" players="1" message="(game 3435) players welcome" lastturn="2m" joinas="-">
+			freeciv://civserver.freeciv.org:5550
+		</connection>
+	</entrylist>
 	<configuration>
 		<authorization username="josef" password="ggzrocks" realm="ggz" update="1"/>
 		<authorization username="capsi" password="whatever" realm="atlantik" update="1"/>
