@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 4864 2002-10-11 16:57:48Z jdorje $
+ * $Id: output.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -24,16 +24,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
 #include <config.h>
-#include <ggzcore.h>
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <time.h>
+
+#include <ggzcore.h>
+
 #include "output.h"
+#include "server.h"
 #include "state.h"
 
 /* Color Codes */
@@ -56,9 +59,6 @@
 
 /* Highest line number in the message buffer */
 #define MAX_LINES 100
-
-/* Pointer to the current server */
-extern GGZServer *server;
 
 static struct winsize window;
 static int tty_des;
@@ -424,10 +424,16 @@ void output_resize(void)
 
 void output_shutdown(void)
 {
+	int i;
+
 	fflush(NULL);
 	printf("\e[0;%dr",window.ws_row);
 	printf("\ec\e[2J");
 	fflush(NULL);
+
+	for (i = 0; chat[i]; i++)
+		ggz_free(chat[i]);
+	ggz_free(chat);
 }
 
 

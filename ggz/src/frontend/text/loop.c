@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: loop.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for handling main IO loop
  *
@@ -136,7 +137,12 @@ void loop(void)
 		output_status();
 	}
 
-	/* FIXME: go through removal process for all fds? */
+	if (num_fds > 0) {
+		/* FIXME: should we close the FD's? */
+		ggz_free(fds);
+		num_fds = 0;
+	}
+
 }
 
 

@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
+ * $Id: main.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Main loop
  *
@@ -79,7 +80,8 @@ static void init_debug(void)
 	/* Free up memory */
 	for (i = 0; i < num_types; i++)
 		ggz_free(debug_types[i]);
-	ggz_free(debug_types);
+	if (debug_types)
+		ggz_free(debug_types);
 	ggz_free(debug_file);
 	ggz_free(default_file);
 }
@@ -147,11 +149,16 @@ int main(int argc, char *argv[])
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
 	loop();
 
+	if (server) {
+		server_disconnect();
+		server_destroy();
+	}
 	ggzcore_destroy();
+	output_shutdown();
+
 #ifdef DEBUG
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
 #endif
-	output_shutdown();
 	
 	return 0;
 }

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 4867 2002-10-11 19:09:49Z jdorje $
+ * $Id: server.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for handling server events
  *
@@ -90,7 +90,8 @@ void server_init(char *host, int port, GGZLoginType type, char* login, char* pas
 	server_register(server);
 	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
 	ggzcore_server_log_session(server, sessiondump);
-	ggz_free(sessiondump);
+	if (sessiondump)
+		ggz_free(sessiondump);
 
 	ggzcore_server_connect(server);
 }

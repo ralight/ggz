@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: state.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for handling server events
  *
@@ -36,9 +37,6 @@
 #include "output.h"
 #include "server.h"
 #include "state.h"
-
-
-extern GGZServer *server;
 
 
 char* state_get(void)

@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: input.c 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -57,8 +58,6 @@ static void input_handle_exit(void);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
-extern GGZServer *server;
-
 void input_command(void)
 {
 	char line[LINE_LENGTH];
@@ -68,10 +67,6 @@ void input_command(void)
 	/* EOF means user closed session */
 	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
 		game_quit();
-		if (server) {
-			server_disconnect();
-			server_destroy();
-		}
 		loop_quit();
 		return;
 	}
@@ -179,9 +174,9 @@ static void input_handle_connect(char* line)
 
 	arg = strsep(&line, delim);
 	if (arg && strcmp(arg, "") != 0)
-		login = ggz_strdup(arg);
+		login = arg;
 	else
-		login = ggz_strdup(getenv("LOGNAME"));
+		login = getenv("LOGNAME");
 	
 	arg = strsep(&line, delim);
 	if (arg && strcmp(arg, "") != 0)

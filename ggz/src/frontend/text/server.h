@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: server.h 4868 2002-10-11 19:35:05Z jdorje $
  *
  * Functions for handling server events
  *
@@ -23,8 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include "ggzcore.h"
+#include <ggzcore.h>
 
 void server_init(char *host, int port, GGZLoginType type, char* login, char* password);
 
@@ -33,4 +33,5 @@ void server_disconnect(void);
 
 void server_destroy(void);
 
-
+/* Pointer to the current server */
+extern GGZServer *server;
