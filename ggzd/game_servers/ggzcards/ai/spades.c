@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2440 2001-09-10 08:19:13Z jdorje $
+ * $Id: spades.c 2442 2001-09-10 12:38:58Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -16,8 +16,8 @@
  * Unfortunately, many of the routines follow pretty bad spades
  * strategies.  I'm in the process of implementing better ones.
  *
- * There's a big bug in here that causes the AI to be really stupid.
- * Oddly, it works pretty well for Hearts.
+ * For some good advice on Spades strategy, see:
+ *               http://masterspades.home.att.net/
  *
  * Copyright (C) 1998 Brent Hendricks.
  *
@@ -45,6 +45,10 @@
 #include "aicommon.h"
 
 /* #define USE_AI_TRICKS */
+
+/* Aggressive bidding causes us to value our hand more aggressively.
+   Unfortunately the AI cannot back this up with good play. */
+/* #define AGGRESSIVE_BIDDING */
 
 
 static char *get_name(player_t p);
@@ -160,20 +164,20 @@ static void alert_play(player_t p, card_t play)
 }
 
 
-/* This counts the possible winners you'll get from trumping in.  It should
-   only be accurate when you have less than 3 trumps. */
-static int count_spade_ruff_winners(player_t num, int suitCount[4],
-				    int suitAvg[4])
+/* This counts the possible winners you'll get from ruffing (trumping in).
+   It's only accurate with weak trumps; with strong spades it'll underbid. */
+static int count_spade_ruff_winners(player_t num)
 {
-	int p1 = 0, p2 = 0, gap, count;
+	int points = 0, count, bonus;
 	int voids = 0, singletons = 0, doubletons = 0;
-	card_t card, c;
+	card_t c = { ACE_HIGH, SPADES, 0 };	/* suit=SPADES and deck=0 */
 	char s;
 
+	count = libai_count_suit(num, SPADES);
 	for (s = 0; s < 4; s++) {
 		if (s == SPADES)
 			continue;
-		switch (suitCount[(int) s]) {
+		switch (libai_count_suit(num, s)) {
 		case 0:
 			voids++;
 			break;
@@ -186,155 +190,96 @@ static int count_spade_ruff_winners(player_t num, int suitCount[4],
 		}
 	}
 
-	/* --------------- TRUMPS ----------------- */
-	/* Trumps serve two purposes -- first, any trump sequence down from
-	   some high trump may be automatic tricks.  The remaining trumps may
-	   either be useful as high trumps or for trumping other tricks if we
-	   have some voids, singletons, or doubletons. */
-
-	/* First, figure out the brute force points possible from trumps. */
-	for (card.suit = SPADES, card.face = ACE_HIGH, card.deck = 0, gap = 0;
-	     card.face >= 0; card.face--) {
-		if (libai_is_card_in_hand(num, card)) {
-			if (gap > 0)
-				gap--;
-			else {
-				p1 += 100;
-				ai_debug("Counting guaranteed spade as 100");
-			}
-		} else
-			gap++;
-	}
-
-	/* That done, frob p1 to count probable trump tricks. */
-	if (p1 == 0) {
-		/* King with 1+ covers */
-		c.suit = SPADES;
-		c.face = KING;
-		if (libai_is_card_in_hand(num, c) && suitCount[SPADES] >= 2) {
-			p1 += ((suitCount[SPADES] >= 3) ? 100 : 60);
-			ai_debug("Counting King of Spades as %d",
-				 (suitCount[SPADES] >= 3) ? 100 : 60);
-		}
-		c.face = QUEEN;
-		/* Queen with 2+ covers */
-		if (libai_is_card_in_hand(num, c) && suitCount[SPADES] >= 3) {
-			p1 += ((suitCount[SPADES] >= 4) ? 100 : 30);
-			ai_debug("Counting Queen of Spades as %d",
-				 (suitCount[SPADES] >= 4) ? 100 : 30);
-		}
-	}
-
-
-	/* Now figure if we use our trumps on other suits: */
-	count = suitCount[SPADES];
+	/* First count sure winners. */
 	for (c.face = ACE_HIGH; c.face >= 2 && libai_is_card_in_hand(num, c);
 	     c.face--) {
-		p2 += 100;
+		points += 100;
 		count--;
 	}
+
+	/* Now figure if we use our trumps on other suits */
 	for (; voids > 0 && count > 0; voids--) {
-		if (count >= 3) {
-			p2 += 225;
-			count -= 2;
-			ai_debug("Counting shortsuit as 225");
-		} else if (count >= 2) {
-			p2 += 190;
-			count -= 2;
-			ai_debug("Counting shortsuit as 190");
-		} else {
-			p2 += 90;
-			count -= 1;
-			ai_debug("Counting shortsuit as 90");
-		}
+		points += 90;
+		count--;
+		ai_debug("Counting void as 90 (first ruff only)");
+		singletons++;	/* we'll try to ruff it a second time! */
 	}
 	for (; singletons > 0 && count > 0; singletons--) {
-		if (count >= 2) {
-			p2 += 175;
-			count -= 2;
-			ai_debug("Counting singleton as 175");
-		} else {
-			p2 += 90;
-			count -= 1;
-			ai_debug("Counting singleton as 90");
-		}
+#ifdef AGGRESSIVE_BIDDING
+		bonus = 75;
+#else
+		bonus = 70;
+#endif
+		count -= 1;
+		points += bonus;
+		ai_debug("Counting singleton as %d", bonus);
+		doubletons++;	/* we'll try to ruff it a third time! */
 	}
 	for (; doubletons > 0 && count > 0; doubletons--) {
-		p2 += 75;
+#ifdef AGGRESSIVE_BIDDING
+		bonus = 50;
+#else
+		bonus = 40;
+#endif
 		count -= 1;
-		ai_debug("Counting doubleton as 75");
+		points += bonus;
+		ai_debug("Counting doubleton as %d", bonus);
 	}
 
-	if (count > suitAvg[SPADES]) {
-		/* Length DOES matter.  :-) */
-		p2 += (count - suitAvg[SPADES] - 1) * 80;
-		ai_debug("Counting extra spades as %d",
-			 (count - suitAvg[SPADES] - 1) * 80);
-	} else if (count == 0) {
-		p2 -= 30;	/* be wary of exhausting all trump */
-		ai_debug("Removing 30 points for exhausting spades(?)");
-	}
-
-
-	/* Okay, choose the better of the two scores. */
-	return (p1 > p2) ? p1 : p2;
+	return points;
 }
 
 /* This method of calculating trump winners ONLY counts length and strength
    in spades.  It is most accurate when you have 4 or more trumps */
-int count_spade_strength_winners(player_t p)
+static int count_spade_strength_winners(player_t p)
 {
 	int count = libai_count_suit(p, SPADES);
 	int points = 0;
-	card_t ace = { ACE_HIGH, SPADES, 0 };
-	card_t king = { KING, SPADES, 0 };
-	card_t queen = { QUEEN, SPADES, 0 };
+	card_t card = { ACE_HIGH, SPADES, 0 };
 
 	ai_debug("Counted %d spades for player %d.", count, p);
 
 	/* The ace/king/queen each get counted as one trick. */
 	/* Note that if we have fewer than 3 trumps some points will be
 	   subtracted later. */
-	if (libai_is_card_in_hand(p, ace)) {
-		ai_debug("Counted ACE as 1 trick.");
-		points += 100;
-	}
-	if (libai_is_card_in_hand(p, king)) {
-		ai_debug("Counted KING as 1 trick.");
-		points += 100;
-	}
-	if (libai_is_card_in_hand(p, queen)) {
-		ai_debug("Counted QUEEN as 1 trick.");
-		points += 100;
+	for (card.face = ACE_HIGH; card.face >= QUEEN; card.face--) {
+		if (libai_is_card_in_hand(p, card)) {
+			ai_debug("Counted %s of spades as 1 trick.",
+				 face_names[(int) card.face]);
+			points += 100;
+		}
 	}
 
 	/* The fourth spade gets counted as a 50% trick. */
 	if (count >= 4) {
+#ifdef AGGRESSIVE_BIDDING
+		ai_debug("Counted 4th spade 1 trick.");
+		points += 100;
+#elsif
 		ai_debug("Counted 4th spade as 1/2 trick.");
 		points += 50;
+#endif
 	}
 
 	/* The 5th and every spade thereafter gets counted 1 trick. */
 	if (count >= 5) {
+#ifndef AGGRESSIVE_BIDDING
+		/* also count the fourth spade as a full trick */
+		ai_debug("Counted 4th spade as another 1/2 trick.");
+		points += 50;
+#endif
 		ai_debug("Counted extra %d spades as %d tricks.", count - 4,
 			 count - 4);
 		points += 100 * (count - 4);
-	}
-
-	/* If we have more than 6 spades, you've got to figure some of our
-	   earlier ones will be winners. */
-	if (count >= 6) {
-		ai_debug("Counted 6th spade as 1/2 bonus trick.");
-		points += 50;
 	}
 
 	return points;
 }
 
 
-static int count_spade_tricks(player_t num, int suitCount[4], int suitAvg[4])
+static int count_spade_tricks(player_t num)
 {
-	int p1 = count_spade_ruff_winners(num, suitCount, suitAvg);
+	int p1 = count_spade_ruff_winners(num);
 	int p2 = count_spade_strength_winners(num);
 	int points = (p1 > p2) ? p1 : p2;
 
@@ -358,135 +303,190 @@ static int count_spade_tricks(player_t num, int suitCount[4], int suitAvg[4])
 		break;
 	}
 
-	ai_debug("Spade points: %d", points);
+	ai_debug("Final spade points: %d", points);
 	return points;
 }
 
-static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
+static int count_nonspade_tricks(player_t num, char s)
 {
-	int count, points, prob;
-	bid_t bid, pard;
-	int suitCount[4], suitAvg[4];
-	int nilrisk = 99;
-	card_t c = { 0, 0, 0 };
-	char s;			/* suit */
-
-	bid.bid = 0;
-
-	/* Partners's bid */
-	pard = game.players[(num + 2) % 4].bid;
-
-	/* First count our cards in each suit, and determine the average
-	   cards the other players each have in each suit.  Also count our
-	   voids, singletons, and doubletons. */
-	for (s = 0; s < 4; s++) {
-		suitCount[(int) s] = libai_count_suit(num, s);
-		suitAvg[(int) s] =
-			(game.hand_size -
-			 suitCount[(int) s]) / (game.num_players - 1);
-	}
-
-
-	points = count_spade_tricks(num, suitCount, suitAvg);
-
-	/* If our trumps are losable (ie. p1 == 0) and we don't have many of
-	   them, then consider whether we have low enough cards in each of
-	   the other suits to risk bidding nil. */
-	if (points <= 50) {
-		nilrisk = 0;
-		if (suitCount[SPADES] > 3) {
-			nilrisk += suitCount[SPADES] - 2;
-			ai_debug("Inc. nilrisk for %d excess spades",
-				 suitCount[SPADES] - 2);
-		}
-		for (s = 0; s < 4; s++) {
-			c.suit = s;
-
-			/* check if we're void -- good! */
-			if (suitCount[(int) s] == 0) {
-				if (s != SPADES) {
-					nilrisk -= 2;
-					ai_debug("Dec. nilrisk for shortsuit in %s", suit_names[(int) s]);
-				}
-				continue;	/* for( s = 0; s < 4; s++ ) */
-			}
-
-			/* count our low cards in the suit */
-			for (count = 0, c.face = 2; c.face < 9; c.face++) {
-				if (libai_is_card_in_hand(num, c))
-					count++;	/* count low cards */
-			}
-			if (count >= 3)	/* suit is covered */
-				continue;	/* for( s = 0; s < 4; s++ ) */
-			nilrisk += suitCount[(int) s] - count;	/* risky high
-								   cards */
-			ai_debug("Inc. nilrisk for %d high %s",
-				 suitCount[(int) s] - count,
-				 suit_names[(int) s]);
-			if (count == 0) {	/* no low cards */
-				nilrisk++;
-				ai_debug("Inc. nilrisk for no low cards");
-			}
-
-			/* check for the queen/king of spades */
-			if (s == SPADES) {
-				c.face = KING;
-				if (libai_is_card_in_hand(num, c)) {
-					nilrisk += 2;
-					ai_debug("Inc. nilrisk for King of spades");
-				}
-				c.face = QUEEN;
-				if (libai_is_card_in_hand(num, c)) {
-					nilrisk += 1;
-					ai_debug("Inc. nilrisk for Queen of spades");
-				}
-			} else {
-				c.face = KING;
-				if (libai_is_card_in_hand(num, c)
-				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king
-											   is
-											   riskier 
-											 */
-					ai_debug("Inc. nilrisk by %d for King of %s", (suitCount[(int) s] <= 2) ? 2 : 1, suit_names[(int) s]);
-				}
-				c.face = ACE_HIGH;
-				if (libai_is_card_in_hand(num, c)
-				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace
-											   is
-											   riskiest 
-											 */
-					ai_debug("Inc. nilrisk by %d for Ace of %s", (suitCount[(int) s] <= 2) ? 3 : 2, suit_names[(int) s]);
-				}
-			}
-		}
-	}
-
-	/* --------------- OTHER SUITS ----------------- */
-	/* We bid other suits using a confidence system.  We combine two
+	/* We bid non-trump using a confidence system.  We combine two
 	   factors: the confidence we can make some high card good, and the
 	   probability of that trick not getting trumped/finessed. */
-	for (s = 0; s < 3; s++) {
-		c.suit = s;
-		c.face = ACE_HIGH;
-		if ((count = suitAvg[(int) s]) > suitCount[(int) s])
-			count = suitCount[(int) s];	/* the number of
-							   probable tricks
-							   w/o trump */
-		prob = 100;	/* probability of not getting finessed */
-		for (; count > 0; count--, c.face--) {
-			if (libai_is_card_in_hand(num, c)) {
-				points += prob;
-				ai_debug("Counting %s of %s as %d",
-					 face_names[(int) c.face],
-					 suit_names[(int) c.suit], prob);
-				prob = prob * 9 / 10;
-			} else
-				prob = prob * 8 / 10;
-		}
+	/* FIXME: there are lots of problems with this system.  For one
+	   thing, it has a tendancy to overvalue queens.  If we have A-K-Q-x, 
+	   the queen shouldn't be counted .81 of a trick.  It undervalues the 
+	   K-Q combination if you have more than 4 trumps.  Finally, it's
+	   incapable of counting length beyond 3 in a strong suit when you
+	   have strong spades (of course the AI can't play hands like this
+	   either). */
+	card_t c = { ACE_HIGH, s, 0 };
+	int count, prob, points = 0;
+	int suit_count = libai_count_suit(num, s);
+
+	/* We calculate the probable number of tricks without ruffage. */
+	count = (game.hand_size - suit_count) / (game.num_players - 1);
+	if (count > suit_count)
+		count = suit_count;
+
+	prob = 100;		/* probability of not getting finessed */
+	for (; count > 0; count--, c.face--) {
+		if (libai_is_card_in_hand(num, c)) {
+			points += prob;
+			ai_debug("Counting %s of %s as %d",
+				 face_names[(int) c.face],
+				 suit_names[(int) c.suit], prob);
+			prob = prob * 9 / 10;
+		} else
+#ifdef AGGRESSIVE_BIDDING
+			prob = prob * 8 / 10;
+#else
+			prob = prob * 7 / 10;
+#endif
+	}
+	return points;
+}
+
+static char find_final_bid(player_t num, int points)
+{
+	int prob;		/* for rounding */
+	char bid_val;
+	bid_t pard = game.players[(num + 2) % 4].bid;
+
+	/* --------------- NORMAL BIDS ----------------- */
+	/* Okay, divide points by 100 and that's our bid. */
+	if (game.bid_count < 2) {
+		prob = 70;
+		ai_debug("Adding 70 because partner hasn't bid");
+	} else {
+		prob = 30;
+		ai_debug("Adding 30 because partner has bidn");
 	}
 
+	bid_val = (points + prob) / 100;
+	ai_debug("Subtotal bid: %d", bid_val);
+
+#if 0
+	/* Consider ramifications of others' bids if everyone else has bid. */
+	/* not taken into account yet */
+	count = bid;
+	for (i = 0; i < 4; i++) {
+		if (i == p)
+			continue;
+		if (S.p[i].bid < 0)
+			break;	/* hasn't bid yet -- break */
+		count += S.p[i].bid;
+	}
+	if (i >= 4) {		/* everyone has bid */
+		/* If the count is real high, reconsider potential tricks. If
+		   the count is high and they bid nil, consider bidding less. */
+		if (count >= 11) {
+			if (count >= 13)
+				bid = points / 100;
+			else if (p1 == 0 || p2 == 0)
+				bid = points / 100;
+		}
+	}
+#endif
+
+	/* don't forget the minimum bid!!! */
+	if (game.bid_count >= 2
+	    && (bid_val + pard.sbid.val < GSPADES.minimum_team_bid)) {
+		bid_val = GSPADES.minimum_team_bid - pard.sbid.val;
+		ai_debug("Upping bid to meet minimum of %d",
+			 GSPADES.minimum_team_bid);
+	}
+
+	return bid_val;
+}
+
+/* Returns TRUE if we should bid nil, FALSE otherwise */
+static int consider_bidding_nil(player_t num, int points)
+{
+	int nilrisk = 0, count, suitCount[4];
+	char s;
+	bid_t pard = game.players[(num + 2) % 4].bid;
+	card_t ace_of_spades = { ACE_HIGH, SPADES, 0 };
+
+	/* First count our cards in each suit.  Also count our voids,
+	   singletons, and doubletons. */
+	for (s = 0; s < 4; s++)
+		suitCount[(int) s] = libai_count_suit(num, s);
+
+	if (suitCount[SPADES] > 4
+	    || libai_is_card_in_hand(num, ace_of_spades)) {
+		ai_debug("Our spades are too strong to consider bidding nil.");
+		return 0;
+	}
+
+	if (suitCount[SPADES] == 4) {
+		nilrisk += 4;
+		ai_debug("Inc. nilrisk by 4 for 4 spades");
+	}
+	for (s = 0; s < 4; s++) {
+		card_t c = { 0, 0, 0 };	/* make sure it's deck 0 */
+		c.suit = s;
+
+		/* Voids are very helpful! */
+		if (suitCount[(int) s] == 0) {
+			nilrisk -= 2;
+			ai_debug("Dec. nilrisk for shortsuit in %s",
+				 suit_names[(int) s]);
+			continue;	/* for( s = 0; s < 4; s++ ) */
+		}
+
+		/* count our low cards in the suit */
+		for (count = 0, c.face = 2; c.face < 9; c.face++) {
+			if (libai_is_card_in_hand(num, c))
+				count++;	/* count low cards */
+		}
+		if (count >= 3)	/* suit is covered */
+			continue;	/* for( s = 0; s < 4; s++ ) */
+
+		nilrisk += suitCount[(int) s] - count;	/* risky high cards */
+		ai_debug("Inc. nilrisk for %d high %s",
+			 suitCount[(int) s] - count, suit_names[(int) s]);
+		if (count == 0) {	/* no low cards */
+			nilrisk++;
+			ai_debug("Inc. nilrisk for no low cards");
+		}
+
+		if (s == SPADES) {
+			/* check for high spades */
+			/* Length will make these cards safer.  Of course,
+			   length has its own dangers (see above). */
+			for (c.face = KING; c.face >= 10; c.face--) {
+				if (libai_is_card_in_hand(num, c)) {
+					int risk =
+						(c.face - 8) -
+						suitCount[SPADES];
+					nilrisk += risk;
+					ai_debug("Inc. nilrisk by %d for %s of spades", risk, face_names[(int) c.face]);
+				}
+			}
+		} else {
+			/* Check for high cards in other suits. */
+			/* High cards are riskier when you have less
+			   coverage. */
+			int risk = 4 - suitCount[(int) s];
+
+			c.face = KING;
+			if (libai_is_card_in_hand(num, c)
+			    && suitCount[(int) s] <= 3) {
+				nilrisk += risk;
+				ai_debug("Inc. nilrisk by %d for King of %s",
+					 risk, suit_names[(int) s]);
+			}
+
+			risk++;	/* Ace is riskier */
+			c.face = ACE_HIGH;
+			if (libai_is_card_in_hand(num, c)
+			    && suitCount[(int) s] <= 3) {
+				nilrisk += risk;
+				ai_debug("Inc. nilrisk by %d for Ace of %s",
+					 risk, suit_names[(int) s]);
+			}
+		}
+	}
 
 	/* --------------- NIL BIDS ----------------- */
 	/* Consider bidding nil. */
@@ -500,62 +500,39 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	    && ((nilrisk <= 0) || (nilrisk <= 1 && points < 250)
 		|| (nilrisk <= 2 && points < 150)
 		|| (pard.sbid.val >= 3 + nilrisk))) {
+		return 1;
+	}
+
+	return 0;
+}
+
+/** "If you are going to bid aggressive you must play like an expert."
+                            --Jay Tomlinson. */
+/* Unfortunately, we certainly don't play like an expert.  It seems easier to 
+   adjust the bidding code to bid like an expert than to make the AI play
+   like an expert. */
+static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
+{
+	int points;
+	bid_t bid;
+
+	bid.bid = 0;		/* reset bid */
+
+	/* Count winners in all suits. */
+	points = count_spade_tricks(num);
+	points += count_nonspade_tricks(num, HEARTS);
+	points += count_nonspade_tricks(num, DIAMONDS);
+	points += count_nonspade_tricks(num, CLUBS);
+
+	/* Figure out how risky it would be to bid nil. */
+	if (consider_bidding_nil(num, points)) {
 		bid.sbid.spec = SPADES_NIL;
 		ai_debug("Bidding nil");
+		return bid;
 	}
 
-
-
-	/* --------------- NORMAL BIDS ----------------- */
-	/* Okay, divide points by 100 and that's our bid. */
-	if (bid.bid == 0) {
-		if (game.bid_count < 2) {
-			prob = 70;
-			ai_debug("Adding 70 because partner hasn't bid");
-		} else {
-			prob = 30;
-			ai_debug("Adding 30 because partner has bidn");
-		}
-
-		bid.sbid.val = (points + prob) / 100;
-		ai_debug("Subtotal bid: %d", bid);
-
-#if 0
-		/* Consider ramifications of others' bids if everyone else
-		   has bid. */
-		/* not taken into account yet */
-		count = bid;
-		for (i = 0; i < 4; i++) {
-			if (i == p)
-				continue;
-			if (S.p[i].bid < 0)
-				break;	/* hasn't bid yet -- break */
-			count += S.p[i].bid;
-		}
-		if (i >= 4) {	/* everyone has bid */
-			/* If the count is real high, reconsider potential
-			   tricks. If the count is high and they bid nil,
-			   consider bidding less. */
-			if (count >= 11) {
-				if (count >= 13)
-					bid = points / 100;
-				else if (p1 == 0 || p2 == 0)
-					bid = points / 100;
-			}
-		}
-#endif
-
-		/* don't forget the minimum bid!!! */
-		if (game.bid_count >= 2
-		    && (bid.sbid.val + pard.sbid.val <
-			GSPADES.minimum_team_bid)) {
-			bid.sbid.val =
-				GSPADES.minimum_team_bid - pard.sbid.val;
-			ai_debug("Upping bid to meet minimum of %d",
-				 GSPADES.minimum_team_bid);
-		}
-	}
-	ai_debug("Final bid: %d", bid);
+	bid.sbid.val = find_final_bid(num, points);
+	ai_debug("Final bid: %d", bid.sbid.val);
 	return bid;
 }
 
