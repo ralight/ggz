@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 5891 2004-02-10 09:21:36Z jdorje $
+ * $Id: playerlist.c 5909 2004-02-11 13:53:01Z josef $
  * 
  * List of players in the current room
  * 
@@ -294,6 +294,7 @@ void display_players(void)
 
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
+		path = NULL;
 		if (ggzcore_player_get_lag(p) == -1
 		    || ggzcore_player_get_lag(p) == 0)
 			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
@@ -327,6 +328,7 @@ void display_players(void)
 		}
 
 
+		path = NULL;
 		if (ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
 			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
 					 "ggz_gtk_guest.xpm", NULL);
