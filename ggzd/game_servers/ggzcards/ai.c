@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <stdlib.h>
+
 #include "ai.h"
 #include "common.h"
 #include "ggz.h"
@@ -74,16 +76,33 @@ void ai_alert_play( player_t p, card_t card )
 /* this gets a bid or play from the ai */
 bid_t ai_get_bid( player_t p )
 {
-	char buf[100];
 	bid_t bid = ai_funcs[game.ai_type]->get_bid( p );
+#ifdef DEBUG
+	char buf[100];
+	int i;
 	game.funcs->get_bid_text(buf, sizeof(buf), bid);
 	ggz_debug("AI chose to bid %s.", buf);
+	for (i=0; i<game.num_bid_choices; i++)
+		if (game.bid_choices[i].bid == bid.bid)
+			break;
+	if (i > game.num_bid_choices)
+		ggz_debug("AI chose invalid bid!!!");
+#endif /* DEBUG */
 	return bid;
 }
 
 card_t ai_get_play( player_t p, seat_t s )
 {
 	card_t card = ai_funcs[game.ai_type]->get_play(p, s);
+#ifdef DEBUG
+	int i;
 	ggz_debug("AI selected card (%d %d %d) to play.", card.face, card.suit, card.deck);
+	for (i=0; i<game.seats[s].hand.hand_size; i++)
+		if (cards_equal(game.seats[s].hand.cards[i], card) &&
+		    game.funcs->verify_play(card) == NULL)
+			break;
+	if (i > game.seats[s].hand.hand_size)
+		ggz_debug("AI chose invalid play!");
+#endif /* DEBUG */
 	return card;
 }
