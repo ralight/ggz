@@ -1,8 +1,9 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.6
+Installation Requirements for the release 0.0.7
 -----------------------------------------------
+
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
 which any number of game clients may be installed.  It is important
@@ -18,7 +19,7 @@ If you are missing a package, they are freely downloadable in source
 format (as well as precompiled packages for RedHat-based systems and
 Debian GNU/Linux) from:
 
-http://ggz.sourceforge.net/
+http://ggzgamingzone.org/
 
 The packages have been tested on a variety of systems, including
 Linux, FreeBSD and Solaris.  It should work on pretty much any type of
@@ -80,15 +81,19 @@ Installing libggz
 
 Unpack the libggz sources.  They should extract into a directory
 named libggz-X.X.X.  Enter that directory and run the following
-commands: 
+commands:
 
 ./configure
 make
 make install (as root)
 
-
 This will install the libggz library under /usr/local.  You may also
 need to run ldconfig (as root) on some systems.
+
+The following important features exist:
+--disable-debug: omit debug code
+--with-gcrypt: enable hash functions
+--with-tls: enable encryptions functions
 
 
 Installing ggz-client-libs
@@ -104,7 +109,7 @@ Unpack the ggz-client-libs sources.  They should extract into a
 directory named ggz-client-libs-X.X.X.  Enter that directory and run
 the following commands:
 
-./configure 
+./configure
 make
 make install (as root)
 
@@ -115,16 +120,18 @@ This will install the GGZ client libraries and the ggz-config tool under
 Gtk Client Installation
 -----------------------
 
-The Gtk+ client requires that the Gtk+ libraries 1.2.X be installed.
-These can be downloaded from http://www.gtk.org. We recommend the
-latest stable version, 1.2.10.  The 2.0.X series is not currently
-supported. 
+The Gtk+ client requires that the Gtk+ libraries 1.2.X or 2.X be
+installed. These can be downloaded from http://www.gtk.org.
+We recommend the latest stable version, 1.2.10 or 2.2.1.
+Support for the 2.X series has just been added and might not always
+work correctly yet, it will however be the preferred toolkit in
+the future.
 
 Unpack the ggz-gtk-client sources.  They should extract into a
 directory named ggz-gtk-client-X.X.X.  Enter that directory and run
 the following commands:
 
-./configure 
+./configure
 make
 make install (as root)
 
@@ -136,8 +143,9 @@ KDE Client Installation
 
 The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.0.3.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.0.5 is recommended).
+latest stable version, 3.1.1a.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.1.1 is recommended as it is the version which
+KDE 3.1.1 development was based on).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
@@ -150,22 +158,40 @@ make install (as root)
 
 This will install the KDE client under your KDE installation.  You may
 also need to run ldconfig as root on some systems.
-Make sure to use the same configuration prefix as KDE does, otherwise no menu
-entries will show up, and programs might not work as expected. Professional
-users can use the KDEDIRS environment variable.
+Make sure to use the same configuration prefix as KDE does, otherwise
+no menu entries will show up, and programs might not work as expected.
+Professional users can use the KDEDIRS environment variable.
 
 
-Gtk/KDE Games Installation
---------------------------
+GNOME Client Installation
+-------------------------
+
+The GNOME client requires that the GNOME libraries 2.X be installed.
+You can get them from http://www.gnome.org. The recommended version
+is GNOME 2.2.1.
+
+Unpack the ggz-gnome-client sources.  They should extract into a
+directory named ggz-gnome-client-X.X.X.  Enter tjat directory and run
+the following commands:
+
+./configure
+make
+make install (as root)
+
+You will then find the GNOME client under /usr/local.
+
+
+Gtk/KDE/SDL Games Installation
+------------------------------
 
 Remember that all game modules can be used with any client.  Just
 because you're using one frontend for your client doesn't mean you
 can't use the games for the other frontend.
 
 Whether you are installing a single game, or the full gtk-games or
-kde-games package, the instructions are the same.  The ggz-config
-program must be on the path, and it will automatically set all the
-proper installation directory options for you.
+kde-games or sdl-games package, the instructions are the same.
+The ggz-config program must be on the path, and it will automatically
+set all the proper installation directory options for you.
 
 Typical Installation:
 ./configure
@@ -204,12 +230,12 @@ Troubleshooting/Tips
 6) Severe compilation or install issues should be brought up with the GGZ
    maintainers.  You can either contact us on the ggz-dev mailing list or
    via the trackers or forums on our SourceForge project page
-   (http://sourceforge.net/projects/ggz/) - A link to join the mailing
+   (http://dev.ggzgamingzone.org/) - A link to join the mailing
    list is also available here.
 
 7) Once you have everything compiled you need a server to connect to!  There
    is a permanent server installed at ggz.snafu.de (Germany) on port 5688.
-   Check the FAQ on our webpage (http://ggz.sourceforge.net) for any other
+   Check the FAQ on our webpage (http://ggzgamingzone.org) for any other
    permanent servers that may get setup.
 
 8) If you are compiling from CVS and are getting weird errors during
@@ -218,12 +244,13 @@ Troubleshooting/Tips
      libtool < 1.4
      automake 1.5d or 1.6
    The recommended compiler is gcc 3.2, although many other versions
-   (including 2.95 or previous 3.x) should work as well (see point 9 below).
+   (including 2.95 or previous or later 3.x) should work as well
+   (see point 9 below).
    On non-GNU systems, use gmake rather than make.
 
 9) All C++ code must be compiled with the same compiler. This does currently
-   affect the KDE packages of GGZ. It means that if your KDE and Qt has been
+   affect the KDE packages of GGZ.  It means that if your KDE and Qt has been
    compiled with gcc 2.9x, you cannot compile ggz-kde-client or ggz-kde-games
-   with gcc 3. The reverse is also true.
+   with gcc 3.  The reverse is also true.
 
 

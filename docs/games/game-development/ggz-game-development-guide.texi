@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.6 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.7 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -15,13 +15,13 @@ Copyright (C) 2002, 2003 Josef Spillner
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.6
+@subtitle Development of games for the GGZ Gaming Zone 0.0.7
 @author GGZ Development Team
 
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 Josef Spillner
+Copyright @copyright{} 2002, 2003 Josef Spillner
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -376,7 +376,7 @@ implementation, which will come with a native game server interface.
 
 @section General purpose wrappers
 
-GGZ as of version 0.0.6 provides two wrappers which make life easier for game
+GGZ from version 0.0.6 on is providing two wrappers which make life easier for game
 developers. Either of these wrappers replaces a game of choice, while the game
 itself is kept to be launched by the wrapper then.
 
