@@ -230,7 +230,7 @@ int handle_ggz(int ggz_fd, int* p_fd)
 			break;
 	}
 
-	if (status != 0)
+	if (status < 0)
 		ggz_debug("ERROR: handle_ggz: status is %d.", status);
 	return status;
 }
@@ -962,9 +962,12 @@ int update(int event, void *data)
 			if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 				games_req_gametype();
 
-			if (!ggz_seats_open() && game.which_game != GGZ_GAME_UNKNOWN)
+			if (!ggz_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
 				/* (Re)Start game play */
-				next_play();
+				if (game.state != WH_STATE_WAIT_FOR_BID && game.state != WH_STATE_WAIT_FOR_PLAY)
+					/* if we're in one of these two states, we have to wait for a response anyway */
+					next_play();
+			}
 			break;
 		case WH_EVENT_NEWGAME:
                         player = *(player_t *)data;
