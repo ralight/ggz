@@ -43,8 +43,11 @@ Parser::Parser(const char *file)
 		for(int i = 0; i < m_eventlist.count(); i++)
 		{
 			Event *event = m_eventlist.at(i);
-			event->setParent(eventgroup);
-			eventgroup->addEvent(event);
+			if(event->eventgroup() == eventgroup->id())
+			{
+				event->setParent(eventgroup);
+				eventgroup->addEvent(event);
+			}
 		}
 	}
 
@@ -193,6 +196,7 @@ int Parser::parseEventgroup(QDomNode *pnode)
 	}
 
 	Eventgroup *eventgroup = new Eventgroup(title, status, image, policy);
+	eventgroup->setId(pnode->toElement().attribute("id"));
 	m_eventgrouplist.append(eventgroup);
 
 	return ret;
@@ -249,6 +253,7 @@ int Parser::parseEvent(QDomNode *pnode)
 	}
 
 	Event *event = new Event(date.toInt(), location, title, description, status, image);
+	event->setEventgroup(pnode->toElement().attribute("eventgroup"));
 	m_eventlist.append(event);
 
 	for(int i = 0; i < m_participantlist.count(); i++)

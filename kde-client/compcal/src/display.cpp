@@ -97,6 +97,7 @@ void Eventdisplay::setEvent(Event *event)
 	Participant *p;
 	QListViewItem *tmp, *tmp2;
 	QString src, dst;
+	QPixmap pix;
 
 	m_list->clear();
 
@@ -116,13 +117,17 @@ void Eventdisplay::setEvent(Event *event)
 	src = event->parent()->image();
 	if(KIO::NetAccess::download(src, dst))
 	{
-		image->setBackgroundPixmap(QPixmap(dst));
+		pix = QPixmap(dst);
+		image->setBackgroundPixmap(pix);
+		image->setFixedSize(pix.width(), pix.height());
 	}
 
 	src = event->image();
 	if(KIO::NetAccess::download(src, dst))
 	{
-		logo->setBackgroundPixmap(QPixmap(dst));
+		pix = QPixmap(dst);
+		logo->setBackgroundPixmap(pix);
+		logo->setFixedSize(pix.width(), pix.height());
 	}
 }
 
