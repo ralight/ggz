@@ -21,6 +21,9 @@
 // Configuration includes
 #include "config.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qpushbutton.h>
 #include <qpainter.h>
@@ -88,7 +91,8 @@ void DlgPerson::paintEvent(QPaintEvent *e)
 	p.setPen(QPen(QColor(255.0, 255.0, 0.0)));
 	p.drawTiledPixmap(0, 0, 200, 300, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	p.drawPixmap(10, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
-	p.drawText(15, 90, "Please select your favorite character!");
+	p.drawText(15, 90, i18n("Please select your"));
+	p.drawText(15, 105, i18n("favorite character!"));
 	p.drawText(15, 178, "Bavarian");
 	p.drawText(15, 228, "Alien");
 	p.drawText(15, 278, "Geek");

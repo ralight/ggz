@@ -46,7 +46,7 @@ DlgAgain::DlgAgain(QWidget *parent, const char *name)
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 	connect(ok, SIGNAL(clicked()), SIGNAL(signalAgain()));
 
-	setCaption("Game Over");
+	setCaption(i18n("Game Over"));
 	setFixedSize(300, 180);
 	show();
 }
@@ -67,8 +67,8 @@ void DlgAgain::paintEvent(QPaintEvent *e)
 	p.setPen(QPen(QColor(255, 255, 0)));
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, i18n("The game is over."));
-	p.drawText(15, 103, m_result);
-	p.drawText(15, 116, i18n("Play another game?"));
+	p.drawText(15, 105, m_result);
+	p.drawText(15, 120, i18n("Play another game?"));
 	p.end();
 }
 

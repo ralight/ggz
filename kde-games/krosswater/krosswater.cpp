@@ -135,7 +135,7 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 		return;
 	}
 
-	showStatus(("Sending move"));
+	showStatus(i18n("Sending move"));
 
 	m_fromx = fromx;
 	m_fromy = fromy;

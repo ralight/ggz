@@ -78,20 +78,20 @@ void QCw::paintEvent(QPaintEvent *e)
 	}
 	p.begin(m_pix);
 
-	p.setPen(QColor(0, 0, 255));
+	p.setPen(QColor(0, 0, 200));
 	for(int j = 0; j < m_height; j++)
 		for(int i = 0; i < m_width; i++)
 		{
 			switch(m_board[i][j][0])
 			{
 				case 0:
-					p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0, 0, 160)));
+					p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0, 0, 80)));
 					for(int n = 0; n < 10; n++)
 						p.drawPoint(rand() % 20 + i * 20, rand() % 20 + j * 20);
 					break;
 				case 1:
 				case 2:
-					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180, 70, 0)));
+					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180, 110, 30)));
 					break;
 				case 3:
 					p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200, 200, 0)));

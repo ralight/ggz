@@ -34,10 +34,10 @@ DlgAbout::DlgAbout(QWidget *parent, const char *name)
 
 	ok = new QPushButton("OK", this);
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
-	ok->setGeometry(100, 270, 100, 20);
+	ok->setGeometry(125, 270, 100, 20);
 
 	setCaption("About Krosswater");
-	setFixedSize(300, 300);
+	setFixedSize(350, 300);
 	show();
 }
 
@@ -52,18 +52,18 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 	QPainter p;
 
 	p.begin(this);
-	p.drawTiledPixmap(0, 0, 300, 300, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
-	p.drawPixmap(60, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
+	p.drawTiledPixmap(0, 0, 350, 300, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
+	p.drawPixmap(90, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
 	p.setPen(QPen(QColor(255, 255, 0)));
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, "Try to cross the water the most efficient way!");
-	p.drawText(15, 103, "This game is part of the GGZ Gaming Zone.");
-	p.drawText(15, 116, "http://ggz.sourceforge.net");
-	p.drawText(15, 135, "Copyright (C) 2001 Josef Spillner");
-	p.drawText(15, 148, "dr_maux@users.sourceforge.net");
-	p.drawText(15, 161, "The MindX Open Source Project");
-	p.drawText(15, 174, "http://mindx.sourceforge.net");
-	p.drawPixmap(15, 190, QPixmap(GGZDATADIR "/krosswater/gfx/mindx.png"));
+	p.drawText(15, 105, "This game is part of the GGZ Gaming Zone.");
+	p.drawText(15, 120, "http://ggz.sourceforge.net/games/krosswater");
+	p.drawText(15, 140, "Copyright (C) 2001, 2002 Josef Spillner");
+	p.drawText(15, 155, "dr_maux@users.sourceforge.net");
+	p.drawText(15, 170, "The MindX Open Source Project");
+	p.drawText(15, 185, "http://mindx.sourceforge.net");
+	p.drawPixmap(140, 210, QPixmap(GGZDATADIR "/krosswater/gfx/mindx.png"));
 	p.end();
 }
 
