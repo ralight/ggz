@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: login.c 5936 2004-02-16 05:40:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -76,18 +76,23 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
 	
-	/* Sanity safety feature: don't send on any names longer than the
-	   code expects.  The code *should* be able to deal with it if
-	   this does happen, but currently it *can't*.  --JDS */
-	if (strlen(name) > MAX_USER_NAME_LEN)
-		name[MAX_USER_NAME_LEN] = 0;
+	/* A too-long username gives an error.  We used to just truncate it
+	   but that would probably just confuse the user. */
+	if (strlen(name) > MAX_USER_NAME_LEN) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Too-long username of %s", name);
+		if (net_send_login(player->client->net, type,
+				   E_TOO_LONG, NULL) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
 
 	/* Validate the username */
 	if(!is_valid_username(name)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
 			name);
 		/* FIXME: We should have a specific error code for this */
-		if (net_send_login(player->client->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
+		if (net_send_login(player->client->net, type,
+				   E_ALREADY_LOGGED_IN, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -118,7 +123,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	   name in the DB */
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
-		if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
+		if (net_send_login(player->client->net, type,
+				   E_USR_LOOKUP, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -139,7 +145,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		}
 		if(!name_ok) {
 			hash_player_delete(name);
-			if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->client->net, type,
+					   E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
@@ -159,7 +166,8 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 		if(db_status != GGZDB_ERR_NOTFOUND
 		   || login_add_user(&db_pe, name, new_pw) < 0) {
 			hash_player_delete(name);
-			if (net_send_login(player->client->net, type, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->client->net, type,
+					   E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
