@@ -9,13 +9,14 @@ ggzdgame_DATA =
 ggzdroom_DATA =
 
 ggzd_ggzcards_SOURCES = ggz.c ggz.h \
-		       main.c \
-		       cards.c cards.h \
-		       common.c common.h \
-		       game.c game.h \
-		       games.c games.h \
-		       protocols.h \
-		       protocol.h
+			main.c \
+			cards.c cards.h \
+			common.c common.h \
+			game.c game.h \
+			games.c games.h \
+			message.c message.h
+			protocols.h \
+			protocol.h
 
 
 ggzd_ggzcards_LDADD = $(LDADD)

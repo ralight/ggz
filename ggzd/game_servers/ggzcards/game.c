@@ -34,6 +34,7 @@
 #include "cards.h"
 #include "game.h"
 #include "games.h"
+#include "message.h"
 
 /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};

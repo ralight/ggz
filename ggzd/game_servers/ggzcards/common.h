@@ -162,15 +162,6 @@ struct wh_game_t {
 extern void set_game_state(server_state_t state);
 extern void save_game_state();
 extern void restore_game_state();
-extern void send_player_message(seat_t, player_t);
-extern void send_player_message_toall(seat_t);
-extern void set_all_player_messages();
-
-extern void send_global_message(char*, player_t);
-extern void send_global_message_toall(char*);
-extern void send_all_global_messages(player_t p);
-extern void set_global_message(char*, char*, ...);
-extern char* get_global_message(char*);
 
 extern int send_player_list(player_t);
 extern int send_play(card_t card, seat_t);
