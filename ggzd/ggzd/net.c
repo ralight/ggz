@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
- * $Id: net.c 3193 2002-01-25 00:49:45Z jdorje $
+ * $Id: net.c 3245 2002-02-05 02:15:13Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1238,9 +1238,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			} else {
 				/* This is some kind of error...but for now we
 				   just cover it up. */
-				dbg_msg(GGZ_DBG_TABLE, "Invalid name sent for "
-				        "reserved seat.  Changing it to an "
-				        "open seat.");
+				dbg_msg(GGZ_DBG_TABLE, "Invalid name '%s' sent for reserved seat.  Changing it to an open seat.", seat->name);
 				seat_type = GGZ_SEAT_OPEN;
 			}
 			break;
