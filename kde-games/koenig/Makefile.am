@@ -23,7 +23,7 @@ noinst_HEADERS = \
 	options.h \
 	kexttabctl.h
 
-INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I libcgc
+INCLUDES = $(LIBGGZ_INCLUDES) $(all_includes) -I libcgc
 
 UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
 koenig_LDADD = libcgc/libcgc.a $(all_libraries) $(UI) 
