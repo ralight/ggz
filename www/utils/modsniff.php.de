@@ -1,0 +1,43 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>ModSniffer</b><br>
+Erzeugung von KDE-Menüeinträgen für alle Spiele.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Hauptmerkmale</i><br>
+<ul>
+<li>Erstellt KDE-Systemmenü-Einträge unter Spiele/GGZ
+<li>Erstellt Startinformationen für GGZap
+</ul>
+<br>
+
+<i>Detaillierte Informationen</i><br>
+Dieses kleine Tool sollte einmalig nach der Installation aufgerufen werden,
+und anschließend jeweils nach dem Hinzufügen oder aktualiseren von Spielen.
+Die Unterstützung von externen Spielen durch ModSniffer ist auch vorgesehen.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<img src="pics/modsniff.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

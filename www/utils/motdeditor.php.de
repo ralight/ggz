@@ -1,0 +1,45 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>MOTD-Editor</b><br>
+GNOME-Anwendung zur Erstellung von MOTDs (Nachrichten des Tages).
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Hauptmerkmale</i><br>
+<ul>
+<li>Farbige Anzeige von MOTD-Texten
+<li>Laden und Speichern von MOTDs
+<li>Etliche vorgefertigte MOTDs als Vorlage enthalten
+</ul>
+<br>
+
+<i>Detaillierte Informationen</i><br>
+MOTDs werden bei jedem Login in GGZ angezeigt.
+Sie enthalten normalerweise Informationen über den Server,
+eine Kontaktadresse des Administrators und andere spezifische
+Eigenschaften.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<img src="pics/motd-editor.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

@@ -1,0 +1,32 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<i>17.09.2003: Online demonstration against software patents</i> (by josef)<br><br>
+
+<center>
+<img src="pics/site/patentkamikaze.png"><br clear="all">
+</center>
+
+Again, the introduction of software patents in Europe and associated lawsuits in the whole
+world calls for an online demonstration against this plan.
+Hundreds of thousands of people and at least thousands of companies have voted against
+it already. Developers are probably the ones most affected by the threat, but it concerns
+all of us.
+Linux games in times of software patents? Let's better go without...
+<br><br>
+
+Continue to <a href="index.php">frontpage</a> or
+<a href="http://swpat.ffii.org">read more</a> about patentability.
+<br><br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

@@ -1,0 +1,47 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Grubby</b><br>
+The GGZ Gaming Zone chat bot.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Grubby's features</i><br>
+<ul>
+<li>Modular design
+<li>Support for internationalization (i18n) and player properties
+<li>Network core plugins for GGZ, IRC and the console
+<li>About a dozen modules which react to explicit or implicit commands
+<li>Can play some games on invitation
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+Players might want to find out all the available commands, which are listed in the
+<a href="http://www.ggzgamingzone.org/docs/grubby/user-manual.en.html">user manual</a>.
+If you're interested in grubby's design, please have a look into the
+<a href="http://www.ggzgamingzone.org/docs/grubby/admin-manual.html">admin manual</a>.
+
+</td><td valign="top">
+
+<i>An image of grubby:</i><br>
+<img src="pics/grubbybig.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

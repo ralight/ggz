@@ -1,0 +1,44 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>MOTD Editor</b><br>
+GNOME application to create MOTDs (messages of the day).
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>The main features</i><br>
+<ul>
+<li>Coloured display of the MOTD texts
+<li>Loading/saving of MOTDs
+<li>Several pre-made MOTD templates available
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+MOTDs are displayed whenever a player logs into GGZ.
+They ususally contain information about the server, how to reach
+the admin and any other specifics.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<img src="pics/motd-editor.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

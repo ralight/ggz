@@ -1,0 +1,45 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Competition Calendar</b><br>
+Ereignis-Kalender-Anwendung für KDE
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Hauptmerkmale</i><br>
+<ul>
+<li>Zeigt Informationen zu zukünftigen und vergangenen GGZ-Veranstaltungen an
+<li>Verschiedene Kategorien und Eventgruppen
+</ul>
+<br>
+
+<i>Detaillierte Informationen</i><br>
+Wettkämpfe und Spielertreffs werden nicht nur durch compcal angekündigt,
+sondern auch für später archiviert.
+Normalerweise ist auch ein direkter Link zu dem organisierenden GGZ-Server
+enthalten, wie auch eine Liste der Regeln.
+Zukünftig soll auch eine Echtzeitverfolgung von laufenden Spielen möglich sein.
+
+</td><td valign="top">
+
+<i>Screenshot:</i><br>
+<img src="pics/compcal.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

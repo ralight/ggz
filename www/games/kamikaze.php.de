@@ -1,0 +1,54 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Kamikaze</b><br>
+Actionspiel für 2-8 Spieler.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Merkmale von Kamikaze</i><br>
+<ul>
+<li>2 Spiele-Clients verfügbar: KDE, SDL
+<li>KI-Gegner verfügbar
+<li>Einzelspielermodus (KDE-Client)
+<li>Level-Editor (KDE-Client)
+<li>Neue Levels via Internet (KDE-Client)
+</ul>
+<br>
+
+<i>Regeln von Kamikaze</i><br>
+Es gelten prinzipiell die Standardregeln von Bomberman-artigen Spielen.
+Der Spieler muß Bombem so platzieren, daß der Gegner getroffen wird, nicht
+aber der Spieler selbst.
+Verschiedene Fundstücke wie zusätzliche Leben, Explosionskraft oder Bomben müssen
+dabei eingesammelt werden. Manchmal finden sich auch seltene Stücke wie
+Splitterbomben, doppelte Geschwindigkeit oder der Heilige Grahl.
+Es gibt zwei Arten von Wänden: Steinwände (die nicht weggebombt werden können)
+und Holzwände. Und dann gibt es noch ab und zu Löcher im Boden - Aufpassen!
+
+</td><td valign="top">
+
+<i>KDE-Client:</i><br>
+<img src="pics/kamikaze.png"><br>
+
+<i>SDL-Client:</i><br>
+<img src="pics/pykamikaze.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
