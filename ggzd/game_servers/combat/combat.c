@@ -61,8 +61,8 @@ void combat_options_string_read(char *optstr, combat_game *_game, int num_player
 			_game->map[a].unit = U_EMPTY;
 	}
 	optstr+=_game->width*_game->height;
-	_game->army = (char **)calloc(num_players, sizeof(char*));
-	for (a = 0 ; a < num_players; a++) {
+	_game->army = (char **)calloc(num_players+1, sizeof(char*));
+	for (a = 0 ; a < num_players+1; a++) {
 		_game->army[a] = (char *)calloc(12, sizeof(char));
 		for (b = 0; b < 12; b++)
 			_game->army[a][b] = optstr[b];

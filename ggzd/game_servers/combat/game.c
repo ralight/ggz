@@ -192,7 +192,30 @@ void game_send_options(int seat) {
 }
 
 void game_send_players() {
-	// FIXME: Must add this!
+	int i, j, fd;
+
+	for (j = 0; j < ggz_seats_num(); j++) {
+		if ( (fd = ggz_seats[j].fd) == -1 ) {
+			ggz_debug("Bot seat\n");
+			continue;
+		}
+		ggz_debug("Sending player list to player %d", j);
+
+		if (es_write_int(fd, CBT_MSG_PLAYERS) < 0) {
+			ggz_debug("Can't send player list!\n");
+			return;
+		}
+	
+		for (i = 0; i < ggz_seats_num(); i++) {
+			if (es_write_int(fd, ggz_seats[i].assign) < 0)
+				return;
+			if (ggz_seats[i].assign != GGZ_SEAT_OPEN && es_write_string(fd, ggz_seats[i].name) < 0) {
+				ggz_debug("Can't send player name!\n");
+				return;
+			}
+		}
+	}
+
 	return;
 }
 
