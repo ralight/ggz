@@ -1,7 +1,7 @@
 [ModuleInfo]
 Game = Geekgame
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/geekgame
+CommandLine = @ggzexecmoddir@/geekgame -g
 Frontend = sdl
 Homepage = http://ggz.sourceforge.net/games/geekgame/
 Name = Geekgame

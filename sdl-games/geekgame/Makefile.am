@@ -3,7 +3,7 @@ ggzexecmod_PROGRAMS = geekgame
 geekgame_SOURCES = wwwget.c main.c
 geekgame_LDADD = $(SDL_LIBS) -lSDL_image -lSDL_ttf $(LIB_GGZ) $(LIB_GGZMOD)
 
-noinst_HEADERS = wwwget.h
+noinst_HEADERS = wwwget.h proto.h
 
 INCLUDES = $(SDL_CFLAGS) $(GGZ_INCLUDES) $(GGZMOD_INCLUDES)
 

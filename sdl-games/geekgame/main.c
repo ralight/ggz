@@ -11,6 +11,7 @@
 #include <getopt.h>
 
 #include "wwwget.h"
+#include "proto.h"
 
 #include "config.h"
 
@@ -20,21 +21,66 @@
 #define DATA_GLOBAL GGZDATADIR "/geekgame/"
 #define DATA_LOCAL "/tmp/"
 
+#define MATCH_SERVER "geekgame"
+#define MATCH_VERSION 1
+
+/* Global variables */
 static GGZMod *mod = NULL;
+static char *playerimage = NULL;
 static int modfd;
 static int ggzmode = 0;
+static SDL_Surface *screen, *image;
+
+/* Prototypes */
+int startgame(void);
+void loadsettings(void);
+void addplayer(const char *picture);
 
 static void game_handle_io(void)
 {
-	int op, i;
+	char op;
+	int version;
+	char greeting[64];
+	char player[64], pic[64];
 	
-	if (ggz_read_int(modfd, &op) < 0)
+	if (ggz_read_char(modfd, &op) < 0)
 	{
 		/* ... */
 		return;
 	}
 
 	printf("Read opcode: %i\n", op);
+	switch(op)
+	{
+		case OP_GREETING:
+			ggz_read_string(modfd, greeting, sizeof(greeting));
+			ggz_read_int(modfd, &version);
+			printf("Server is %s, version %i\n", greeting, version);
+			if((!strcmp(greeting, MATCH_SERVER)) && (version == MATCH_VERSION))
+			{
+				ggz_write_char(modfd, OP_PRESENTATION);
+				ggz_write_string(modfd, "dummy player");
+				ggz_write_string(modfd, playerimage);
+			}
+			break;
+		case OP_NEWPLAYER:
+			ggz_read_string(modfd, player, sizeof(player));
+			ggz_read_string(modfd, pic, sizeof(pic));
+			wwwget(pic, DATA_LOCAL "tmp.png");
+			addplayer(NULL);
+			break;
+		case OP_GAMESTART:
+			break;
+		case OP_GAMESTOP:
+			break;
+		case OP_GAMEEND:
+			break;
+		case OP_PRESENTATION:
+			break;
+		default:
+			/* discard */
+			break;
+	}
 }
 
 static void handle_ggz()
@@ -164,8 +210,6 @@ void drawturn(SDL_Surface *screen, int players, int turn)
 	}
 }
 
-int startgame(void);
-
 int main(int argc, char *argv[])
 {
 	struct option op[] =
@@ -199,6 +243,10 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	printf("<<<< Geekgame >>>>\n");
+
+	loadsettings();
+
 	if(ggzmode) ggz_init();
 
 	ret = startgame();
@@ -208,9 +256,42 @@ int main(int argc, char *argv[])
 	return ret;
 }
 
+void loadsettings(void)
+{
+	int conf;
+	char conffile[1024];
+
+	snprintf(conffile, sizeof(conffile), "%s/.ggz/personalization", getenv("HOME"));
+	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
+	if(conf != -1)
+	{
+		playerimage = ggz_conf_read_string(conf, "Personalization", "picture", NULL);
+	}
+	if((conf == -1) || (!playerimage)) playerimage = DATA_GLOBAL "bot.png";
+}
+
+void addplayer(const char *picture)
+{
+	static int counter = 0;
+	SDL_Rect rect;
+
+	image = IMG_Load(DATA_LOCAL "tmp.png");
+
+	if(image)
+	{
+		rect.x = 20 + counter * 150;
+		rect.y = 450;
+		SDL_BlitSurface(image, NULL, screen, &rect);
+		SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
+
+		drawbox(rect.x, rect.y, image->w, image->h, screen, 255);
+	}
+
+	counter++;
+}
+
 int startgame(void)
 {
-	SDL_Surface *screen, *image;
 	SDL_Rect rect;
 	SDL_Event event;
 	int i, j;
@@ -225,9 +306,6 @@ int startgame(void)
 	int sum;
 	int players;
 	int turn;
-	char *playerimage;
-	int conf;
-	char conffile[1024];
 
 	TTF_Font *font;
 	SDL_Surface *text;
@@ -253,31 +331,26 @@ int startgame(void)
 
 	drawturn(screen, players, -1);
 
-	snprintf(conffile, sizeof(conffile), "%s/.ggz/personalization", getenv("HOME"));
-	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
-	if(conf != -1)
+	if(!ggzmode)
 	{
-		playerimage = ggz_conf_read_string(conf, "Personalization", "picture", NULL);
-	}
-	if((conf == -1) || (!playerimage)) playerimage = DATA_GLOBAL "bot.png";
-
-	for(i = 0; i < players; i++)
-	{
-		sleep(1);
-
-		if(!i)
+		for(i = 0; i < players; i++)
 		{
-			wwwget("http://mindx.dyndns.org/homepage/photos/josef.png", DATA_LOCAL "tmp.png");
-			image = IMG_Load(DATA_LOCAL "tmp.png");
+			sleep(1);
+	
+			if(!i)
+			{
+				wwwget(playerimage, DATA_LOCAL "tmp.png");
+				image = IMG_Load(DATA_LOCAL "tmp.png");
+			}
+			else image = IMG_Load(DATA_GLOBAL "bot.png");
+
+			rect.x = 20 + i * 150;
+			rect.y = 450;
+			SDL_BlitSurface(image, NULL, screen, &rect);
+			SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
+
+			drawbox(rect.x, rect.y, image->w, image->h, screen, 255);
 		}
-		else image = IMG_Load(DATA_GLOBAL "bot.png");
-
-		rect.x = 20 + i * 150;
-		rect.y = 450;
-		SDL_BlitSurface(image, NULL, screen, &rect);
-		SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
-
-		drawbox(rect.x, rect.y, image->w, image->h, screen, 255);
 	}
 
 	turn = 0;
