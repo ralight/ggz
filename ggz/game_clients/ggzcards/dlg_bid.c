@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3363 2002-02-15 04:50:33Z jdorje $
+ * $Id: dlg_bid.c 3431 2002-02-21 02:53:38Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -32,7 +32,7 @@
 #include <gtk/gtk.h>
 
 #include <ggz.h>
-#include "common.h"
+#include "client.h"
 
 #include "dlg_bid.h"
 #include "game.h"

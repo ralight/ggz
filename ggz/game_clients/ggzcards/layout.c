@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: layout.c 3431 2002-02-21 02:53:38Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 #include <ggz.h>
-#include "common.h"
+#include "client.h"
 
 #include "game.h"
 #include "layout.h"

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3423 2002-02-19 13:06:43Z jdorje $
+ * $Id: game.h 3431 2002-02-21 02:53:38Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -25,7 +25,7 @@
 
 #include <gtk/gtk.h>
 
-#include "common.h"
+#include "client.h"
 #include "layout.h"
 
 #ifndef __GAME_H__
