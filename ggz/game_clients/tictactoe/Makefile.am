@@ -13,7 +13,9 @@ ggz_ttt_SOURCES = game.h \
 	      main_win.c \
 	      main_win.h \
 	      support.c \
-	      support.h
+	      support.h \
+	      x.xpm \
+	      o.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la 
