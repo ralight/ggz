@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 5016 2002-10-23 22:02:37Z jdorje $
+ * $Id: game.c 5025 2002-10-25 08:31:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -213,6 +213,8 @@ static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, voi
 
 static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
+	if (seats_empty())
+		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
 }
 #endif
 
