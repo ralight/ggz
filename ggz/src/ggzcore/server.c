@@ -596,7 +596,15 @@ void _ggzcore_server_set_password(struct _GGZServer *server, const char *passwor
 
 void _ggzcore_server_set_room(struct _GGZServer *server, struct _GGZRoom *room)
 {
+	struct _GGZRoom *old;
+	
+	/* Stop monitoring old room/start monitoring new one */
+	if ( (old = _ggzcore_server_get_cur_room(server)))
+		_ggzcore_room_set_monitor(old, 0);
+
 	server->room = room;
+	
+	_ggzcore_room_set_monitor(room, 1);
 }
 
 
@@ -634,6 +642,59 @@ void _ggzcore_server_set_login_status(struct _GGZServer *server, int status)
 }
 
 
+void _ggzcore_server_set_room_join_status(struct _GGZServer *server, int status)
+{
+	switch (status) {
+	case 0:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
+		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
+		break;
+	case E_AT_TABLE:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
+				      "Can't change rooms while at a table");
+		break;
+		
+	case E_IN_TRANSIT:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
+				      "Can't change rooms while joining/leaving a table");
+		break;
+		
+	case E_BAD_OPTIONS:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
+				      "Bad room number");
+		break;
+	}
+}
+
+					  
+void _ggzcore_server_set_table_launch_status(struct _GGZServer *server, int status)
+{
+
+}
+
+					     
+void _ggzcore_server_set_table_join_status(struct _GGZServer *server, int status)
+{
+
+}					   
+
+
+void _ggzcore_server_set_table_leave_status(struct _GGZServer *server, int status)
+{
+
+}
+
+
+void _ggzcore_server_set_logout_status(struct _GGZServer *server, int status)
+{
+	_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
+	_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
+}
+
+					    
 void _ggzcore_server_reset(struct _GGZServer *server)
 {
 	int i;

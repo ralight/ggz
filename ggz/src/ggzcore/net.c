@@ -696,35 +696,47 @@ static int _ggzcore_net_read_login_anon(struct _GGZNet *net, char *login_status)
 
 static int _ggzcore_net_read_motd(struct _GGZNet *net, int *lines, char ***buffer)
 {
-	int i;
+	int i, status = 0;
 	char **motd;
 
 	if (es_read_int(net->fd, lines) < 0)
-		return -1;
+		status = -1;
 
-	if (!(*buffer = calloc((*lines + 1), sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in net_read_motd");
-	
-	motd = *buffer;
-	
-	for (i = 0; i < *lines; i++) {
-		if (es_read_string_alloc(net->fd, &motd[i]) < 0)
-			return -1;
+	if (status == 0) {
+		/* FIXME: use ggzcore_malloc */
+		if (!(*buffer = calloc((*lines + 1), sizeof(char*))))
+			ggzcore_error_sys_exit("calloc() failed in net_read_motd");
+		motd = *buffer;
+		
+		for (i = 0; i < *lines; i++)
+			if (es_read_string_alloc(net->fd, &motd[i]) < 0) {
+				status = -1;
+				break;
+			}
 	}
-	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", *lines);
+	
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD : %d lines", *lines);
+	else
+		_ggzcore_net_error(net, "Reading motd");
 
-	return 0;
+	return status;
 }
 
 
-static int _ggzcore_net_read_logout(struct _GGZNet *net, char *status)
+static int _ggzcore_net_read_logout(struct _GGZNet *net, char *logout_status)
 {
-	if (es_read_char(net->fd, status) < 0)
-		return -1;
-
-	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGOUT from server : %d", *status);
+	int status = 0;
 	
-	return 0;
+	if (es_read_char(net->fd, logout_status) < 0)
+		status = -1;
+
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGOUT : %d", *logout_status);
+	else
+		_ggzcore_server_net_error(net->server, "Reading logout");
+	
+	return status;
 }
 
 
@@ -1066,36 +1078,25 @@ static void _ggzcore_net_handle_login_anon(struct _GGZNet *net)
 
 static void _ggzcore_net_handle_logout(struct _GGZNet *net)
 {
-	int status;
-	char ok;
+	char status;
 
-	status = _ggzcore_net_read_logout(net, &ok);
-
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
-		return;
+	if (_ggzcore_net_read_logout(net, &status) == 0) {
+		_ggzcore_net_disconnect(net);
+		net->fd = -1;
+		_ggzcore_server_set_logout_status(net->server, (int)status);
 	}
-
-	_ggzcore_net_disconnect(net);
-	net->fd = -1;
-
-	_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGOUT_OK);
-	_ggzcore_server_event(net->server, GGZ_LOGOUT, NULL);
 }
 
 
 static void _ggzcore_net_handle_motd(struct _GGZNet *net)
 {
-	int status, lines;
+	int lines;
 	char **motd;
 	
-	status = _ggzcore_net_read_motd(net, &lines, &motd);
-	
-	if (status < 0)
-		_ggzcore_server_net_error(net->server, NULL);
-	else
+	if (_ggzcore_net_read_motd(net, &lines, &motd) == 0) {
 		/* FIXME: store somewhere */
 		_ggzcore_server_event(net->server, GGZ_MOTD_LOADED, motd);
+	}
 }
 
 
@@ -1107,18 +1108,14 @@ static void _ggzcore_net_handle_motd(struct _GGZNet *net)
 	struct _GGZRoom *room;
 
 	/* Clear existing list (if any) */
-	if (ggzcore_server_get_num_rooms(net->server) > 0)
+	if (_ggzcore_server_get_num_rooms(net->server) > 0)
 		_ggzcore_server_free_roomlist(net->server);
 
-	status = _ggzcore_net_read_num_rooms(net, &num);
-
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
+	if (_ggzcore_net_read_num_rooms(net, &num) < 0)
 		return;
-	}
-	
+
 	if (num < 0) {
-		ggzcore_debug(GGZ_DBG_SERVER, "Error loading rooms");
+		ggzcore_debug(GGZ_DBG_NET, "Error loading rooms");
 		_ggzcore_server_protocol_error(net->server, "Error loading rooms");
 		return;
 	}
@@ -1193,51 +1190,12 @@ static void _ggzcore_net_handle_list_types(struct _GGZNet *net)
 
 static void _ggzcore_net_handle_room_join(struct _GGZNet *net)
 {
-	char ok;
-	int status;
-	struct _GGZRoom *room;
+	char status;
 
-	status = _ggzcore_net_read_room_join(net, &ok);
-
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
-		return;
-	}
-
-	ggzcore_debug(GGZ_DBG_SERVER, "Status of room join: %d", ok);
-
-	room = ggzcore_server_get_cur_room(net->server);
-	switch (ok) {
-	case 0:
-		/* Stop monitoring old room and start monitoring new one */
-		if (room)
-			_ggzcore_room_set_monitor(room, 0);
-		_ggzcore_room_set_monitor(net->new_room, 1);
-		_ggzcore_server_set_room(net->server, net->new_room);
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_ENTER_OK);
-		_ggzcore_server_event(net->server, GGZ_ENTERED, NULL);
-		break;
-	case E_AT_TABLE:
-		net->new_room = room;
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(net->server, GGZ_ENTER_FAIL,
-				      "Can't change rooms while at a table");
-		break;
-		
-	case E_IN_TRANSIT:
-		net->new_room = room;
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(net->server, GGZ_ENTER_FAIL,
-				      "Can't change rooms while joining/leaving a table");
-		break;
-		
-	case E_BAD_OPTIONS:
-		net->new_room = room;
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(net->server, GGZ_ENTER_FAIL, 
-				      "Bad room number");
-				      
-		break;
+	if (_ggzcore_net_read_room_join(net, &status) == 0) {
+		if (status == 0)
+			_ggzcore_server_set_room(net->server, net->new_room);
+		_ggzcore_server_set_room_join_status(net->server, (int)status);
 	}
 }
 

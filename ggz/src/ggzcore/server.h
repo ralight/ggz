@@ -66,8 +66,18 @@ void _ggzcore_server_set_room(struct _GGZServer *server,
 /* functions to pass status of other information to server object */
 void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, 
 					  int status);
-void _ggzcore_server_set_login_status(struct _GGZServer *server, int status);
-
+void _ggzcore_server_set_login_status(struct _GGZServer *server, 
+				      int status);
+void _ggzcore_server_set_room_join_status(struct _GGZServer *server, 
+					  int status);
+void _ggzcore_server_set_table_launch_status(struct _GGZServer *server, 
+					     int status);
+void _ggzcore_server_set_table_join_status(struct _GGZServer *server, 
+					   int status);
+void _ggzcore_server_set_table_leave_status(struct _GGZServer *server, 
+					    int status);
+void _ggzcore_server_set_logout_status(struct _GGZServer *server, 
+				       int status);
 
 /* functions to perform an action */
 
