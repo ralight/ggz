@@ -13,6 +13,7 @@ it merely serves 2 purposes:
 - future enhancements
 
 For images, PNG should be used. Thumbnails are 128x96 pixels.
+Screenshots are 200x150 pixels.
 
 Layout
 ------
@@ -49,4 +50,9 @@ TODO
 ----
 - replace <? ?> with <?php ?>
 - use absolute includes using DOCUMENT_ROOT for header and footer
+  (see de.ggzgamingzone.org)
+
+Credits
+-------
+The flag icons are taked from the KDE project.
 
