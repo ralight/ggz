@@ -118,6 +118,7 @@ static void client_remove_friend(GtkMenuItem *menuitem, gpointer data);
 static void client_add_ignore(GtkMenuItem *menuitem, gpointer data);
 static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data);
 static char *client_get_players_index(guint row);
+static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
 
 static void
@@ -823,8 +824,10 @@ client_realize                    (GtkWidget       *widget,
 	char *buf;
 
 
-	/* Set Properties */
 
+	/* Set Properties */
+	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_vpaned");
+	gtk_object_set(GTK_OBJECT(tmp), "user_data", 125, NULL);
 	font = gdk_font_load( ggzcore_conf_read_string("CHAT", "FONT", "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"));
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
@@ -884,7 +887,23 @@ static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data)
 
 }
 
+static void client_tables_size_request(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *tmp;
+	GGZRoom *room;
+	GGZGameType *gt;
 
+	tmp =  lookup_widget(win_main, "table_vpaned");
+
+	/* Check what the current game type is */
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
+
+	if(ggzcore_gametype_get_name(gt) != NULL)
+	{
+		gtk_object_set(GTK_OBJECT(tmp), "user_data",  GTK_PANED(tmp)->child1_size, NULL);
+	}
+}
 
 
 GtkWidget*
@@ -1843,6 +1862,9 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (player_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_player_clist_select_row),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",
+                      GTK_SIGNAL_FUNC (client_tables_size_request),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (table_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_table_clist_select_row),
                       NULL);
@@ -2062,3 +2084,4 @@ create_mnu_player (void)
 
   return mnu_player;
 }
+

@@ -176,6 +176,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 {
         GtkXText *tmp;
 	gchar *name = NULL;
+	gchar *command;
 
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 	switch(id)
@@ -188,6 +189,12 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 			} else {
 				name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player, message),  player);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			}
+		        if( ggzcore_conf_read_int("CHAT", "RSYNTH", FALSE) )
+			{
+				command = g_strdup_printf("esddsp say -f 8 \"%s\"", message);
+				support_exec(command);
+				g_free(command);
 			}
 			break;
 		case CHAT_PRVMSG:

@@ -745,6 +745,11 @@
 	  <widget>
 	    <class>GtkScrolledWindow</class>
 	    <name>scrolledwindow3</name>
+	    <signal>
+	      <name>size_request</name>
+	      <handler>client_tables_size_request</handler>
+	      <last_modification_time>Mon, 03 Sep 2001 16:59:43 GMT</last_modification_time>
+	    </signal>
 	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
 	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
 	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
