@@ -89,7 +89,7 @@ int _ggzdb_init_player(char *datadir)
 	/* Hack: Fire-and-forget table initialization. It might already be
 	 * present, or the database user doesn't have the privileges. */
 	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id int4, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
+		"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
 		"lastlogin int8, permissions int8)");
 	res = PQexec(conn, query);
 
@@ -107,7 +107,6 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
 
-	/* FIXME: use auto_increment SEQUENCE here */
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u)",
@@ -131,9 +130,9 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "SELECT "
-		"handle, password, name, email, lastlogin, permissions FROM users WHERE "
-		"id = %i",
-		pe->user_id);
+		"password, name, email, lastlogin, permissions FROM users WHERE "
+		"handle = '%s'",
+		pe->handle);
 	res = PQexec(conn, query);
 
 	rc = !(PQresultStatus(res) == PGRES_TUPLES_OK);
@@ -141,12 +140,11 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	{
 		if(PQntuples(res) == 1)
 		{
-			strncpy(pe->handle, PQgetvalue(res, 0, 0), sizeof(pe->handle));
-			strncpy(pe->password, PQgetvalue(res, 0, 1), sizeof(pe->password));
-			strncpy(pe->name, PQgetvalue(res, 0, 2), sizeof(pe->name));
-			strncpy(pe->email, PQgetvalue(res, 0, 3), sizeof(pe->email));
-			pe->last_login = atol(PQgetvalue(res, 0, 4));
-			pe->perms = atol(PQgetvalue(res, 0, 5));
+			strncpy(pe->password, PQgetvalue(res, 0, 0), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(res, 0, 1), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
+			pe->last_login = atol(PQgetvalue(res, 0, 3));
+			pe->perms = atol(PQgetvalue(res, 0, 4));
 		}
 		else
 		{
@@ -170,9 +168,9 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u, handle = '%s' WHERE "
-		"id = %i",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle, pe->user_id);
+		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
+		"handle = '%s'",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 	res = PQexec(conn, query);
 
 	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);

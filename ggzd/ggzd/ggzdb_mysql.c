@@ -128,9 +128,9 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, permissions, handle FROM users WHERE "
-		"id = %i",
-		pe->user_id);
+		"password, name, email, lastlogin, permissions FROM users WHERE "
+		"handle = '%s'",
+		pe->handle);
 	rc = mysql_query(conn, query);
 
 	if(!rc)
@@ -144,7 +144,6 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, row[2], sizeof(pe->email));
 			pe->last_login = atol(row[3]);
 			pe->perms = atol(row[4]);
-			strncpy(pe->handle, row[5], sizeof(pe->handle));
 		}
 		else
 		{
@@ -168,9 +167,9 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u, handle = '%s' WHERE "
-		"id = %i",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle, pe->user_id);
+		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
+		"handle = '%s'",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
 	rc = mysql_query(conn, query);
 
 	if(rc)
