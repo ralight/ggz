@@ -1,4 +1,4 @@
-/*	$Id: protocol.h 2767 2001-12-01 06:44:49Z bmh $	*/
+/*	$Id: protocol.h 2771 2001-12-01 16:56:21Z bmh $	*/
 /*
  * File: protocols.h
  * Author: Brent Hendricks
@@ -41,7 +41,7 @@ typedef enum {
 
 /** Messages sent from the ggz server to the game server. */
 typedef enum {
-	REQ_GAME_LAUNCH,	/**< sent on game launch */
+	MSG_GAME_LAUNCH,	/**< sent on game launch */
 	REQ_GAME_JOIN,		/**< sent on player join */
 	REQ_GAME_LEAVE,		/**< sent on player leave */
 	RSP_GAME_STATE,		/**< sent in response to a game state-change */

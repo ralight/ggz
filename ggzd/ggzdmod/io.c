@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: io.c 2771 2001-12-01 16:56:21Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -52,7 +52,7 @@ static int _io_read_msg_log(_GGZdMod *mod);
 /* Functions for sending IO messages */
 int _io_send_launch(int fd, int seats)
 {
-	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0 
+	if (es_write_int(fd, MSG_GAME_LAUNCH) < 0 
 	    || es_write_int(fd, seats) < 0)
 		return -1;
 	else
@@ -154,7 +154,7 @@ int _io_read_data(_GGZdMod * mod)
 
 	if (mod->type == GGZDMOD_GAME) {
 		switch (op) {
-		case REQ_GAME_LAUNCH:
+		case MSG_GAME_LAUNCH:
 			status = _io_read_req_launch(mod);
 			break;
 		case REQ_GAME_JOIN:
