@@ -373,6 +373,7 @@ static void parse_file(FILE *configfile)
 
 		/*** HOSTNAMELOOKUP = 0,1 ***/
 		if(!strcmp(varname, "hostnamelookup")) {
+#if 0
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
 				continue;
@@ -384,6 +385,10 @@ static void parse_file(FILE *configfile)
 			}
 			opt.perform_lookups = intval;
 			continue;
+#else /*1*/
+			PARSE_ERR("HostnameLookup is disabled");
+			continue;
+#endif
 		}
 
 		/*** TIMEINLOGS = 0,1 ***/

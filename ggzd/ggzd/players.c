@@ -121,7 +121,7 @@ static void* player_new(void *arg_ptr)
 	char *hostname = NULL;
 	struct sockaddr_in addr;
 	int addrlen = sizeof(addr);
-	struct hostent *host;
+	/*struct hostent *host;		Hostname lookups disabled */
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *)arg_ptr);
@@ -137,6 +137,7 @@ static void* player_new(void *arg_ptr)
 	/* Get the client's IP address and store it */
 	getpeername(sock, &addr, &addrlen);
 
+#if 0
 	/* Lookup the hostname if enabled in ggzd.conf */
 	if (opt.perform_lookups) {
 		/* FIXME: Use threadsafe version */
@@ -147,6 +148,7 @@ static void* player_new(void *arg_ptr)
 			err_sys_exit("malloc error in player_new()");
 		strcpy(hostname, host->h_name);
 	}
+#endif
 
 	/* Send server ID */
 	if (es_write_int(sock, MSG_SERVER_ID) < 0 
