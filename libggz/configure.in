@@ -120,6 +120,17 @@ AC_CHECK_FUNC(inet_ntoa, ,
     [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
 	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
+dnl Find pthread library
+dnl ====================
+AC_CHECK_HEADER(pthread.h,
+    [AC_CHECK_LIB(pthread, pthread_create,
+        LDADD="$LDADD -lpthread"
+    CFLAGS="$CFLAGS -D_REENTRANT",
+    [AC_CHECK_LIB(c_r, pthread_create,
+        [LDADD="$LDADD -lpthread"
+        CFLAGS="$CFLAGS -D_THREAD_SAFE"],
+            AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
+    AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
 
 dnl Use -Wall if we have gcc.
 dnl =========================
