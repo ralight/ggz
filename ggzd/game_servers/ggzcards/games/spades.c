@@ -219,14 +219,14 @@ static void spades_end_hand()
 			}
 		} else
 			score = -10 * bid;
-		ggz_debug("Team %d bid %d, took %d, earned %d.", (int)p, bid, tricks, score);
+		ggzdmod_debug("Team %d bid %d, took %d, earned %d.", (int)p, bid, tricks, score);
 		game.players[p].score += score;
 		game.players[p+2].score += score;
 	}
 	for (p=0; p<4; p++) {
 		if (game.players[p].bid.sbid.spec == SPADES_NIL) {
 			int score = (game.players[p].tricks == 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-			ggz_debug("Player %d/%s earned %d for going nil.", (int)p, ggz_seats[p].name, score);
+			ggzdmod_debug("Player %d/%s earned %d for going nil.", (int)p, ggz_seats[p].name, score);
 			game.players[p].score += score;
 			game.players[(p+2)%4].score += score;
 		}

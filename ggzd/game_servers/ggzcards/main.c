@@ -93,12 +93,12 @@ static char *get_option(const char *option_name, char **argv, int *i,
 static void es_error(const char *msg, const EsOpType op,
 		     const EsDataType data)
 {
-	ggz_debug("ERROR: " "Bad easysock operation: %s.", msg);
+	ggzdmod_debug("ERROR: " "Bad easysock operation: %s.", msg);
 }
 
 static void es_exit(int result)
 {
-	ggz_debug("ERROR: " "exiting because of easysock error.");
+	ggzdmod_debug("ERROR: " "exiting because of easysock error.");
 	exit(result);
 }
 
@@ -136,18 +136,18 @@ int main(int argc, char **argv)
 			set_option(option, val);
 		} else {
 			/* bad option */
-			ggz_debug("ERROR: bad options '%s'.", argv[i]);
+			ggzdmod_debug("ERROR: bad options '%s'.", argv[i]);
 		}
 	}
 
 	/* Initialize ggz */
-	if (ggz_server_init("GGZCards") < 0) {
-		ggz_debug("Failed ggz_init.");
+	if (ggzdmod_init("GGZCards") < 0) {
+		ggzdmod_debug("Failed ggz_init.");
 		return -1;
 	}
 
-	if ((ggz_sock = ggz_server_connect()) < 0) {
-		ggz_debug("Failed ggz_sock test.");
+	if ((ggz_sock = ggzdmod_connect()) < 0) {
+		ggzdmod_debug("Failed ggz_sock test.");
 		return -1;
 	}
 
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
 	while (!game_over) {
 
 		read_fd_set = active_fd_set;
-		fd_max = ggz_fd_max();
+		fd_max = ggzdmod_fd_max();
 
 		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
 
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 			switch (status) {
 
 			case -1:	/* Big error!! */
-				ggz_debug("handle_ggz gives status == -1.");
+				ggzdmod_debug("handle_ggz gives status == -1.");
 				return -1;
 
 			case 0:	/* All ok, how boring! */
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 		}
 
 		/* Check for message from player */
-		for (i = 0; i < ggz_seats_num(); i++) {
+		for (i = 0; i < ggzdmod_seats_num(); i++) {
 			fd = ggz_seats[i].fd;
 			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
 				status = handle_player(i);
@@ -209,6 +209,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	ggz_server_quit();
+	ggzdmod_quit();
 	return 0;
 }

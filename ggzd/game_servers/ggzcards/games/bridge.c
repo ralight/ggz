@@ -165,7 +165,7 @@ static int bridge_get_bid()
 static void bridge_handle_bid(bid_t bid)
 {
 	/* closely based on the Suaro code*/
-	ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
+	ggzdmod_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
 	
 	if (bid.sbid.spec == BRIDGE_PASS) {
 		BRIDGE.pass_count++;
@@ -183,7 +183,7 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.declarer = BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit];
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 
-		ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
+		ggzdmod_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
 		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;
 		else
@@ -197,11 +197,11 @@ static void bridge_next_bid()
 	if (BRIDGE.pass_count == 4) {
 		/* done bidding */
 		if (BRIDGE.contract == 0) {
-			ggz_debug("Four passes; redealing hand.");
+			ggzdmod_debug("Four passes; redealing hand.");
 			set_global_message("", "%s", "Everyone passed; redealing.");
 			set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 		} else {
-			ggz_debug("Three passes; bidding is over.");
+			ggzdmod_debug("Three passes; bidding is over.");
 			game.bid_total = game.bid_count;
 			/* contract was determined in game_handle_bid */
 		}
@@ -351,7 +351,7 @@ static void bridge_end_hand()
 	/* calculate tricks over book */
 	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks - 6;
 
-	ggz_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
+	ggzdmod_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
 
 	winning_team = (tricks >= BRIDGE.contract) ? BRIDGE.declarer % 2 : (BRIDGE.declarer+1) % 2;
 

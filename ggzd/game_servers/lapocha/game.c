@@ -79,17 +79,17 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 
 	switch(op) {
 		case REQ_GAME_LAUNCH:
-			if(ggz_game_launch() == 0)
+			if(ggzdmod_game_launch() == 0)
 				status = game_update(LP_EVENT_LAUNCH, NULL);
 			break;
 		case REQ_GAME_JOIN:
-			if(ggz_player_join(&seat, p_fd) == 0) {
+			if(ggzdmod_player_join(&seat, p_fd) == 0) {
 				status = game_update(LP_EVENT_JOIN, &seat);
 				status = 1;
 			}
 			break;
 		case REQ_GAME_LEAVE:
-			if((status = ggz_player_leave(&seat, p_fd)) == 0) {
+			if((status = ggzdmod_player_leave(&seat, p_fd)) == 0) {
 				game_update(LP_EVENT_LEAVE, &seat);
 				status = 2;
 			}
@@ -152,7 +152,7 @@ static int game_send_seat(int seat)
 {
 	int fd = ggz_seats[seat].fd;
 
-	ggz_debug("Sending player %d's seat num", seat);
+	ggzdmod_debug("Sending player %d's seat num", seat);
 
 	if(es_write_int(fd, LP_MSG_SEAT) < 0
 	   || es_write_int(fd, seat) < 0)
@@ -171,7 +171,7 @@ static int game_send_players(void)
 		if((fd = ggz_seats[j].fd) == -1)
 			continue;
 
-		ggz_debug("Sending player list to player %d", j);
+		ggzdmod_debug("Sending player list to player %d", j);
 
 		if(es_write_int(fd, LP_MSG_PLAYERS) < 0)
 			return -1;
@@ -180,7 +180,7 @@ static int game_send_players(void)
 			if(es_write_int(fd, ggz_seats[i].assign) < 0)
 				return -1;
 			if(ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0) 
+			    && es_write_string(fd, ggz_seats[i].name) < 0)
 				return -1;
 		}
 	}
@@ -199,7 +199,7 @@ static int game_send_bid(char bid)
 		/* If self or a computer, don't need to send */
 		if(i == game.bid_now || fd == -1)
 			continue;
-		ggz_debug("Sending player %d's bid to player %d",
+		ggzdmod_debug("Sending player %d's bid to player %d",
 			   game.bid_now, i);
 		if(es_write_int(fd, LP_MSG_BID) < 0
 		   || es_write_char(fd, game.bid_now) < 0
@@ -222,7 +222,7 @@ static int game_send_play(char card)
 		/* If self or a computer, don't need to send */
 		if(i == game.turn || fd == -1)
 			continue;
-		ggz_debug("Sending player %d's play to player %d",
+		ggzdmod_debug("Sending player %d's play to player %d",
 			   game.turn, i);
 		if(es_write_int(fd, LP_MSG_PLAY) < 0
 		   || es_write_char(fd, game.turn) < 0
@@ -239,7 +239,7 @@ static int game_send_sync(int num)
 {	
 	int i, fd = ggz_seats[num].fd;
 
-	ggz_debug("Handling sync for player %d", num);
+	ggzdmod_debug("Handling sync for player %d", num);
 
 	if(es_write_int(fd, LP_SND_SYNC) < 0
 	   || es_write_char(fd, game.turn) < 0)
@@ -342,7 +342,7 @@ static int game_send_gameover(void)
 		if((fd = ggz_seats[i].fd) == -1)
 			continue;
 
-		ggz_debug("Sending game-over to player %d", i);
+		ggzdmod_debug("Sending game-over to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -467,7 +467,7 @@ static int game_handle_bid(int num, char *bid)
 	int fd = ggz_seats[num].fd;
 	char status = 0;
 
-	ggz_debug("Handling bid from player %d", num);
+	ggzdmod_debug("Handling bid from player %d", num);
 	if(es_read_char(fd, bid) < 0)
 		return -1;
 
@@ -505,7 +505,7 @@ static int game_handle_play(int num, char *card)
 	char hi_trump, hi_trump_played;
 	int i;
 	
-	ggz_debug("Handling play for player %d", num);
+	ggzdmod_debug("Handling play for player %d", num);
 	if(es_read_char(fd, &card_num) < 0)
 		return -1;
 
@@ -616,7 +616,7 @@ static int game_update(int event, void *data)
 				game_send_sync(seat);
 
 			/* All the seats are occupied ? */
-			if(!ggz_seats_open()) {
+			if(!ggzdmod_seats_open()) {
 				/* If first time, then initialize */
 				if(game.turn == -1) {
 					game.turn = 0;
@@ -728,7 +728,7 @@ static int game_send_hand(int seat)
 	if(fd == -1)
 		return 0;
 
-	ggz_debug("Sending player %d their hand", seat);
+	ggzdmod_debug("Sending player %d their hand", seat);
 
 	if(es_write_int(fd, LP_MSG_HAND) < 0
 	   || es_write_char(fd, game.dealer) < 0
@@ -752,7 +752,7 @@ static int game_send_trump(int seat)
 	if(fd == -1)
 		return 0;
 
-	ggz_debug("Sending trump suit to player %d", seat);
+	ggzdmod_debug("Sending trump suit to player %d", seat);
 
 	if(es_write_int(fd, LP_MSG_TRUMP) < 0
 	   || es_write_char(fd, game.trump) < 0)
@@ -800,7 +800,7 @@ static void game_score_trick(void)
 		if((fd = ggz_seats[i].fd) == -1)
 			continue;
 
-		ggz_debug("Sending trick result to player %d", i);
+		ggzdmod_debug("Sending trick result to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_TRICK) == 0)
 			es_write_char(fd, (char)hi_player);
@@ -814,7 +814,7 @@ void game_score_hand(void)
 	int i, fd;
 
 	for(i=0; i<4; i++) {
-		ggz_debug("Player %d got %d tricks on a bid of %d", i,
+		ggzdmod_debug("Player %d got %d tricks on a bid of %d", i,
 			  game.tricks[i], game.bid[i]);
 		if(game.tricks[i] == game.bid[i])
 			game.score[i] += 10 + (5 * game.bid[i]);
@@ -830,7 +830,7 @@ void game_score_hand(void)
 		if((fd = ggz_seats[i].fd) == -1)
 			continue;
 
-		ggz_debug("Sending scores to player %d", i);
+		ggzdmod_debug("Sending scores to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_SCORES) < 0
 		   || es_write_int(fd, game.score[0]) < 0

@@ -206,7 +206,7 @@ static void hearts_start_playing()
 	}
 
 	if (game.leader == -1) {
-		ggz_debug("ERROR: SERVER BUG: ""nobody has a club.");
+		ggzdmod_debug("ERROR: SERVER BUG: ""nobody has a club.");
 		game.leader = (game.dealer + 1) % game.num_players;
 	}
 }

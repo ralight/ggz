@@ -62,13 +62,13 @@ void send_player_message(seat_t s, player_t p)
 	if (ggz_seats[p].assign == GGZ_SEAT_BOT ||
 	    game.seats[s].pmessage == NULL)
 		return;
-	ggz_debug("Sending seat %d/%s's message to player %d/%s: %s", s,
+	ggzdmod_debug("Sending seat %d/%s's message to player %d/%s: %s", s,
 		  game.seats[s].ggz->name, p, ggz_seats[p].name,
 		  game.seats[s].pmessage);
 	if (es_write_int(fd, WH_MESSAGE_PLAYER) < 0 ||
 	    es_write_int(fd, CONVERT_SEAT(s, p)) < 0 ||
 	    es_write_string(fd, game.seats[s].pmessage) < 0)
-		ggz_debug("ERROR: failed to send player message.");
+		ggzdmod_debug("ERROR: failed to send player message.");
 }
 
 static void doput_player_message(seat_t s, char *msg)
@@ -77,7 +77,7 @@ static void doput_player_message(seat_t s, char *msg)
 		free(game.seats[s].pmessage);
 	game.seats[s].pmessage = strdup(msg);
 	if (game.seats[s].pmessage == NULL) {
-		ggz_debug("ERROR: " "bad strdup.");
+		ggzdmod_debug("ERROR: " "bad strdup.");
 		exit(-1);
 	}
 }
@@ -124,9 +124,9 @@ void send_player_message_toall(seat_t s)
 {
 	player_t p;
 	if (s < 0 || s >= game.num_seats)
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "send_player_message_toall(%d) called.", s);
-	ggz_debug("Sending seat %d/%s's message to all.", s,
+	ggzdmod_debug("Sending seat %d/%s's message to all.", s,
 		  game.seats[s].ggz->name);
 	for (p = 0; p < game.num_players; p++)
 		send_player_message(s, p);
@@ -137,9 +137,9 @@ void set_player_message(player_t p)
 	if (game.which_game == GGZ_GAME_UNKNOWN)
 		/* silently fail; it's easier to check here than elsewhere */
 		return;
-	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
+	ggzdmod_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
 	if (p < 0 || p >= game.num_players)
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "set_player_message(%d) called.", p);
 	game.funcs->set_player_message(p);
 	send_player_message_toall(game.players[p].seat);
@@ -163,18 +163,18 @@ static void dosend_global_message(char *mark, char *message, player_t p)
 	if (ggz_seats[p].assign == GGZ_SEAT_BOT)
 		return;
 	if (mark == NULL) {
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "dosend_global_message: NULL mark.");
 		return;
 	}
 	if (message == NULL)
 		message = "";	/* this happens sometimes */
-	ggz_debug("Sending global message '%s' to player %d/%s: %s", mark, p,
+	ggzdmod_debug("Sending global message '%s' to player %d/%s: %s", mark, p,
 		  ggz_seats[p].name, message);
 	if (es_write_int(fd, WH_MESSAGE_GLOBAL) < 0
 	    || es_write_string(fd, mark) < 0
 	    || es_write_string(fd, message) < 0)
-		ggz_debug("ERROR: " "dosend_global_message: es error.");
+		ggzdmod_debug("ERROR: " "dosend_global_message: es error.");
 
 }
 
@@ -219,11 +219,11 @@ char *get_global_message(char *mark)
 static void put_global_message(char *mark, char *msg)
 {
 	global_message_list_t *gml;
-	ggz_debug("Setting global message for '%s'.  Length is %d.", mark,
+	ggzdmod_debug("Setting global message for '%s'.  Length is %d.", mark,
 		  strlen(msg));
 
 	if (!mark || !msg)
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "put_global_message called on NULL string.");
 
 	for (gml = game.message_head; gml != NULL; gml = gml->next) {
@@ -231,7 +231,7 @@ static void put_global_message(char *mark, char *msg)
 			free(gml->message);
 			gml->message = strdup(msg);
 			if (gml->message == NULL) {
-				ggz_debug("ERROR: " "bad strdup.");
+				ggzdmod_debug("ERROR: " "bad strdup.");
 				exit(-1);
 			}
 		}
@@ -447,7 +447,7 @@ void update_cumulative_scores()
 			realloc(cumulative_scores,
 				c_score_size * sizeof(int *));
 		if (cumulative_scores == NULL) {
-			ggz_debug
+			ggzdmod_debug
 				("ERROR: update_cumulative_scores: NULL realloc.");
 			exit(-1);
 		}

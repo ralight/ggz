@@ -85,7 +85,7 @@ int games_get_gametype(char *text)
 			return i;
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
-	ggz_debug("Unknown game for '%s'.", text);
+	ggzdmod_debug("Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;
 }
 
@@ -94,7 +94,7 @@ void games_handle_gametype(int option)
 	game.which_game = game_types[option];
 
 	if (game.which_game < 0 || game.which_game >= num_games) {
-		ggz_debug
+		ggzdmod_debug
 			("SERVER/CLIENT error: bad game type %d selected; using %d instead.",
 			 game.which_game, game_types[0]);
 		game.which_game = game_types[0];
@@ -121,7 +121,7 @@ int games_req_gametype()
 	int cnt = 0, i;
 	int status = 0;
 	if (fd == -1) {
-		ggz_debug("ERROR: SERVER BUG: " "nonexistent host.");
+		ggzdmod_debug("ERROR: SERVER BUG: " "nonexistent host.");
 		return -1;
 	}
 
@@ -133,13 +133,13 @@ int games_req_gametype()
 	}
 
 	if (cnt == 0) {
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "no valid games in games_req_gametype.");
 		exit(-1);
 	}
 
 	if (cnt == 1) {
-		ggz_debug("Just one valid game: choosing %d.", game_types[0]);
+		ggzdmod_debug("Just one valid game: choosing %d.", game_types[0]);
 		game.which_game = game_types[0];
 		init_game();
 		send_sync_all();
@@ -156,6 +156,6 @@ int games_req_gametype()
 			status = -1;
 
 	if (status != 0)
-		ggz_debug("ERROR: games_req_gametype: status is %d.", status);
+		ggzdmod_debug("ERROR: games_req_gametype: status is %d.", status);
 	return status;
 }

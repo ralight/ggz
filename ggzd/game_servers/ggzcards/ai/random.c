@@ -95,7 +95,7 @@ static card_t get_play(player_t p, seat_t s)
 		error = game.funcs->verify_play(selection);
 		if (error == NULL)
 			return selection;
-		ggz_debug
+		ggzdmod_debug
 			("random ai: card (%d %d %d) was invalid because %s.",
 			 selection.face, selection.suit, selection.deck,
 			 error);

@@ -72,7 +72,7 @@ int req_bid(player_t p)
 {
 	int i, fd = ggz_seats[p].fd, status = 0;
 
-	ggz_debug("Requesting a bid from player %d/%s; %d choices", p,
+	ggzdmod_debug("Requesting a bid from player %d/%s; %d choices", p,
 		  ggz_seats[p].name, bid_count);
 
 	/* although the game_* functions probably track this data
@@ -101,7 +101,7 @@ int req_bid(player_t p)
 	}
 
 	if (status != 0)
-		ggz_debug("ERROR: req_bid: status is %d.", status);
+		ggzdmod_debug("ERROR: req_bid: status is %d.", status);
 	return status;
 }
 
@@ -123,7 +123,7 @@ int rec_bid(player_t p, bid_t * bid)
 
 	/* First of all, is this a valid bid? */
 	if (p != game.next_bid) {
-		ggz_debug
+		ggzdmod_debug
 			("It's player %d/%s's turn to bid, not player %d/%s's.",
 			 game.next_bid, ggz_seats[game.next_bid].name, p,
 			 ggz_seats[p].name);
@@ -131,13 +131,13 @@ int rec_bid(player_t p, bid_t * bid)
 	} else if (!(game.state == WH_STATE_WAIT_FOR_BID ||
 		     (game.state == WH_STATE_WAITFORPLAYERS
 		      && game.saved_state == WH_STATE_WAIT_FOR_BID))) {
-		ggz_debug("We're not currently waiting for a bid!");
+		ggzdmod_debug("We're not currently waiting for a bid!");
 		return -1;
 	}
 
 	*bid = bids[index];
 
-	ggz_debug("Received bid choice %d from player %d/%s",
+	ggzdmod_debug("Received bid choice %d from player %d/%s",
 		  index, p, ggz_seats[p].name);
 	return 0;
 }

@@ -94,7 +94,7 @@ void add_option(char *key, int num, int dflt, ...)
 	for (i = 0; i < num; i++) {
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
-			ggz_debug("ERROR: SERVER BUG: "
+			ggzdmod_debug("ERROR: SERVER BUG: "
 				  "add_option: NULL option choice.");
 	}
 	va_end(ap);
@@ -109,15 +109,15 @@ void get_options()
 	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1;
 	int op, choice;
 
-	ggz_debug("Entering get_options.");
+	ggzdmod_debug("Entering get_options.");
 
 	game.funcs->get_options();
 
 	if (pending_options == NULL) {
 		options_initted = 1;
-		ggz_debug("get_options: no options to get.");
+		ggzdmod_debug("get_options: no options to get.");
 	} else if (fd == -1) {
-		ggz_debug("ERROR: SERVER BUG: " "no connection to host.");
+		ggzdmod_debug("ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
 		es_write_int(fd, WH_REQ_OPTIONS);
@@ -136,7 +136,7 @@ int rec_options(int num_options, int *options)
 {
 	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1, status = 0, i;
 	if (fd == -1) {
-		ggz_debug("SERVER bug: unknown host in rec_options.");
+		ggzdmod_debug("SERVER bug: unknown host in rec_options.");
 		exit(-1);
 	}
 
@@ -145,7 +145,7 @@ int rec_options(int num_options, int *options)
 			status = options[i] = -1;
 
 	if (status != 0)
-		ggz_debug("ERROR: rec_options: status is %d.", status);
+		ggzdmod_debug("ERROR: rec_options: status is %d.", status);
 	return status;
 }
 
@@ -154,7 +154,7 @@ void handle_options()
 	int options[pending_option_count], op;
 	struct pending_option_t *po = pending_options;
 
-	ggz_debug("Entering handle_options.");
+	ggzdmod_debug("Entering handle_options.");
 	rec_options(pending_option_count, options);
 
 	for (op = 0; op < pending_option_count; op++) {
@@ -183,7 +183,7 @@ void finalize_options()
 		optext = game.funcs->get_option_text(opbuf, sizeof(opbuf),
 						     op->key, op->value);
 		if (optext == NULL) {
-			ggz_debug("ERROR: SERVER BUG: "
+			ggzdmod_debug("ERROR: SERVER BUG: "
 				  "finalize_options: NULL optext returned for option (%s, %d).",
 				  op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,

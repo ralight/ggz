@@ -105,7 +105,7 @@ int game_compare_cards(card_t card1, card_t card2)
  */
 void game_init_game()
 {
-	ggz_debug("ERROR: SERVER BUG: "
+	ggzdmod_debug("ERROR: SERVER BUG: "
 		  "game_launch not implemented for game %d.",
 		  game.which_game);
 }
@@ -225,7 +225,7 @@ void game_start_bidding()
  */
 int game_get_bid()
 {
-	ggz_debug("ERROR: SERVER BUG: "
+	ggzdmod_debug("ERROR: SERVER BUG: "
 		  "game_get_bid called for unimplemented game.");
 	return -1;
 }
@@ -442,8 +442,8 @@ void game_set_player_message(player_t p)
 	   there is that the code is all spread out, and it's difficult to
 	   deal with multiple units of data */
 
-	/* Note that this way depends on this function being called at the proper 
-	   times - every time the player is affected, and on some game state 
+	/* Note that this way depends on this function being called at the proper
+	   times - every time the player is affected, and on some game state
 	   changes.  Much of this is handled by the game-independent code */
 
 	/* in this "example" function, we just put in several default pieces of
@@ -497,6 +497,6 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	ggz_debug("SERVER not implemented: game_end_hand for game %d.",
+	ggzdmod_debug("SERVER not implemented: game_end_hand for game %d.",
 		  game.which_game);
 }

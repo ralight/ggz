@@ -104,7 +104,7 @@ void cards_create_deck(deck_type_t which_deck)
 		/* use a full 52-card deck */
 		break;
 	default:
-		ggz_debug("Unknown deck %d.", which_deck);
+		ggzdmod_debug("Unknown deck %d.", which_deck);
 	}
 
 	/* Now generate an in-order deck */
@@ -122,7 +122,7 @@ void cards_create_deck(deck_type_t which_deck)
 				cardnum++;
 			}
 
-	ggz_debug("Built a deck of size %d.", deck_size);
+	ggzdmod_debug("Built a deck of size %d.", deck_size);
 }
 
 int cards_deck_size()
@@ -133,7 +133,7 @@ int cards_deck_size()
 void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
-		ggz_debug("ERROR: SERVER BUG: "
+		ggzdmod_debug("ERROR: SERVER BUG: "
 			  "cards_destroy_deck called on a NULL deck.");
 	free(gamedeck);
 	deck_size = 0;
@@ -148,7 +148,7 @@ void cards_shuffle_deck()
 	card_t temp;
 	int i, j;
 
-	ggz_debug("Shuffling deck.");
+	ggzdmod_debug("Shuffling deck.");
 
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
@@ -176,15 +176,15 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	int c;
 	card_t card;
 
-	ggz_debug("\tDealing out a hand of size %d.", handsize);
+	ggzdmod_debug("\tDealing out a hand of size %d.", handsize);
 
 	if (hand == NULL) {
-		ggz_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
+		ggzdmod_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
 		exit(-1);
 	}
 
 	if (gamedeck == NULL) {
-		ggz_debug("ERROR: SERVER BUG: " "can't deal from NULL deck.");
+		ggzdmod_debug("ERROR: SERVER BUG: " "can't deal from NULL deck.");
 		exit(-1);
 	}
 
@@ -192,7 +192,7 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	hand->hand_size = hand->full_hand_size = handsize;
 	for (c = 0; c < hand->hand_size; c++) {
 		if (deck_ptr >= deck_size) {
-			ggz_debug
+			ggzdmod_debug
 				("ERROR: SERVER BUG: "
 				 "too many cards being dealt out.");
 			exit(-1);
@@ -229,7 +229,7 @@ card_t cards_deal_card()
 {
 	card_t card;
 	if (deck_ptr >= deck_size) {
-		ggz_debug
+		ggzdmod_debug
 			("ERROR: SERVER BUG: "
 			 "too many cards being handed out.");
 		exit(-1);

@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2184 2001-08-20 19:08:41Z jdorje $	*/
+/*	$Id: ggz.c 2185 2001-08-23 05:37:18Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -42,7 +42,7 @@
 #include "ggz_protocols.h"
 
 
-/* debug level for ggz_debug() */
+/* debug level for ggzdmod_debug() */
 /* Moved out of ggz_server.h since it's not used outside the library.
  * Imported from ggzd; make sure it stays consistent!
  * A better alternative would be to #include ../../ggzd/err_func.h
@@ -61,24 +61,24 @@ static int seats;
 
 
 /* Initialize data structures*/
-int ggz_server_init(char* game_name)
+int ggzdmod_init(char* game_name)
 {
 	return 0;
 }
 
 
 /* Connect to Unix domain socket */
-int ggz_server_connect(void)
+int ggzdmod_connect(void)
 {
 	/* TODO: check that the socket is real */
 
 	ggzfd = GGZ_SOCKET_FD;
-	ggz_debug("Game started");
+	ggzdmod_debug("Game started");
 	return ggzfd;
 }
 
 
-int ggz_game_launch(void)
+int ggzdmod_game_launch(void)
 {
 	int i, len;
 	char status = 0;
@@ -104,14 +104,14 @@ int ggz_game_launch(void)
 	for (i = 0; i < seats; i++)
 		switch (ggz_seats[i].assign) {
 		case GGZ_SEAT_OPEN:
-			ggz_debug("Seat %d is open", i);
+			ggzdmod_debug("Seat %d is open", i);
 			break;
 		case GGZ_SEAT_BOT:
-			ggz_debug("Seat %d is a bot", i);
+			ggzdmod_debug("Seat %d is a bot", i);
 			strcpy(ggz_seats[i].name, "bot");
 			break;
 		case GGZ_SEAT_RESV:
-			ggz_debug("Seat %d reserved for %s", i, ggz_seats[i].name);
+			ggzdmod_debug("Seat %d reserved for %s", i, ggz_seats[i].name);
 			break;
 		}
 
@@ -123,7 +123,7 @@ int ggz_game_launch(void)
 }
 
 
-int ggz_player_join(int* p_seat, int* p_fd)
+int ggzdmod_player_join(int* p_seat, int* p_fd)
 {
 	int seat;
 	char status = 0;
@@ -137,7 +137,7 @@ int ggz_player_join(int* p_seat, int* p_fd)
 		return -1;
 
 	ggz_seats[seat].assign = GGZ_SEAT_PLAYER;	
-	ggz_debug("%s on %d in seat %d", ggz_seats[seat].name ,ggz_seats[seat].fd, seat);
+	ggzdmod_debug("%s on %d in seat %d", ggz_seats[seat].name ,ggz_seats[seat].fd, seat);
 	
 	*p_seat = seat;
 	*p_fd = ggz_seats[seat].fd;
@@ -146,7 +146,7 @@ int ggz_player_join(int* p_seat, int* p_fd)
 }
 
 
-int ggz_player_leave(int* p_seat, int* p_fd)
+int ggzdmod_player_leave(int* p_seat, int* p_fd)
 {
 	int i;
 	char status = 0;
@@ -166,7 +166,7 @@ int ggz_player_leave(int* p_seat, int* p_fd)
 		ggz_seats[i].fd = -1;
 		ggz_seats[i].assign = GGZ_SEAT_OPEN;
 		status = 0;
-		ggz_debug("Removed %s from seat %d", ggz_seats[i].name, i);
+		ggzdmod_debug("Removed %s from seat %d", ggz_seats[i].name, i);
 	}
 
 	if (es_write_int(ggzfd, RSP_GAME_LEAVE) < 0
@@ -177,7 +177,7 @@ int ggz_player_leave(int* p_seat, int* p_fd)
 }
 
 
-void ggz_debug(const char *fmt, ...)
+void ggzdmod_debug(const char *fmt, ...)
 {
 	char buf[4096];
 	va_list ap;
@@ -192,7 +192,7 @@ void ggz_debug(const char *fmt, ...)
 
 
 
-int ggz_seats_open(void)
+int ggzdmod_seats_open(void)
 {
 	int i, count = 0;
 	for (i = 0; i < seats; i++)
@@ -202,7 +202,7 @@ int ggz_seats_open(void)
 }
 
 
-int ggz_seats_num(void)
+int ggzdmod_seats_num(void)
 {
 	int i;
 	for (i = 0; i < seats; i++)
@@ -212,7 +212,7 @@ int ggz_seats_num(void)
 }
 
 
-int ggz_seats_bot(void)
+int ggzdmod_seats_bot(void)
 {
 	int i, count = 0;
 	for (i = 0; i < seats; i++)
@@ -222,7 +222,7 @@ int ggz_seats_bot(void)
 }
 
 
-int ggz_seats_reserved(void)
+int ggzdmod_seats_reserved(void)
 {
 	int i, count = 0;
 	for (i = 0; i < seats; i++)
@@ -232,7 +232,7 @@ int ggz_seats_reserved(void)
 }
 
 
-int ggz_seats_human(void)
+int ggzdmod_seats_human(void)
 {
 	int i, count = 0;
 	for (i = 0; i < seats; i++)
@@ -243,11 +243,11 @@ int ggz_seats_human(void)
 }
 
 
-int ggz_fd_max(void)
+int ggzdmod_fd_max(void)
 {
 	int i, max = ggzfd;
 	
-	for (i = 0; i < ggz_seats_num(); i++)
+	for (i = 0; i < ggzdmod_seats_num(); i++)
 		if (ggz_seats[i].fd > max)
 			max = ggz_seats[i].fd;
 	
@@ -256,7 +256,7 @@ int ggz_fd_max(void)
 }
 
 
-int ggz_server_done(void)
+int ggzdmod_done(void)
 {
 	/* FIXME: Should send actual statistics */
 	if (es_write_int(ggzfd, REQ_GAME_OVER) < 0
@@ -267,7 +267,7 @@ int ggz_server_done(void)
 }
 
 
-void ggz_server_quit(void)
+void ggzdmod_quit(void)
 {
 	if(ggz_seats) free(ggz_seats);
 }
@@ -279,23 +279,23 @@ void ggz_server_quit(void)
 /* IO: Hold the handlers here */
 static GGZHandler handlers[5];
 
-void ggz_server_set_handler(int event_id, const GGZHandler handler)
+void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 {
 	if (event_id > 4)
 		return;
 	handlers[event_id] = handler;
 }
 
-int ggz_server_main(char* game_name)
+int ggzdmod_main(char* game_name)
 {
 	char game_over = 0;
 	int i, fd, status, ggz_sock, fd_max, op, seat;
 	fd_set active_fd_set, read_fd_set;
 
-	if (ggz_server_init(game_name) < 0)
+	if (ggzdmod_init(game_name) < 0)
 		return -1;
 
-	if ((ggz_sock = ggz_server_connect()) < 0)
+	if ((ggz_sock = ggzdmod_connect()) < 0)
 		return -1;
 
 	FD_ZERO(&active_fd_set);
@@ -304,7 +304,7 @@ int ggz_server_main(char* game_name)
 	while (!game_over) {
 
 		read_fd_set = active_fd_set;
-		fd_max = ggz_fd_max();
+		fd_max = ggzdmod_fd_max();
 
 		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
 
@@ -322,13 +322,13 @@ int ggz_server_main(char* game_name)
 			switch (op) {
 
 			case REQ_GAME_LAUNCH:
-				if (ggz_game_launch() == 0
+				if (ggzdmod_game_launch() == 0
 				    && handlers[GGZ_EVENT_LAUNCH] != NULL)
 					(*handlers[GGZ_EVENT_LAUNCH])
 						(GGZ_EVENT_LAUNCH, NULL);
 				break;
 			case REQ_GAME_JOIN:
-				if (ggz_player_join(&seat, &fd) == 0) {
+				if (ggzdmod_player_join(&seat, &fd) == 0) {
 					FD_SET(fd, &active_fd_set);
 					if (handlers[GGZ_EVENT_JOIN] != NULL)
 						(*handlers[GGZ_EVENT_JOIN])
@@ -337,7 +337,7 @@ int ggz_server_main(char* game_name)
 				}
 				break;
 			case REQ_GAME_LEAVE:
-				if (ggz_player_leave(&seat, &fd) == 0) {
+				if (ggzdmod_player_leave(&seat, &fd) == 0) {
 					FD_CLR(fd, &active_fd_set);
 					if (handlers[GGZ_EVENT_LEAVE] != NULL)
 						(*handlers[GGZ_EVENT_LEAVE])
@@ -355,7 +355,7 @@ int ggz_server_main(char* game_name)
 		}
 
 		/* Check for message from player */
-		for (i = 0; i < ggz_seats_num(); i++) {
+		for (i = 0; i < ggzdmod_seats_num(); i++) {
 			fd = ggz_seats[i].fd;
 			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
 				if (handlers[GGZ_EVENT_PLAYER] != NULL)
@@ -366,6 +366,6 @@ int ggz_server_main(char* game_name)
 
 	}
 
-	ggz_server_quit();
+	ggzdmod_quit();
 	return 0;
 }

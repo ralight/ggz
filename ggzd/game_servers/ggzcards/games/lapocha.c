@@ -237,7 +237,7 @@ static void lapocha_end_hand()
 	player_t p;
 
 	for(p=0; p<game.num_players; p++) {
-		ggz_debug("Player %d/%s got %d tricks on a bid of %d", p, ggz_seats[p].name,
+		ggzdmod_debug("Player %d/%s got %d tricks on a bid of %d", p, ggz_seats[p].name,
 			  game.players[p].tricks, (int)game.players[p].bid.bid);
 		if(game.players[p].tricks == game.players[p].bid.bid)
 			game.players[p].score += 10 + (5 * game.players[p].bid.bid);

@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2184 2001-08-20 19:08:41Z jdorje $	*/
+/*	$Id: ggz_server.h 2185 2001-08-23 05:37:18Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -47,15 +47,15 @@ struct ggz_seat_t {
 extern struct ggz_seat_t* ggz_seats;
 
 /* Useful functions */
-void ggz_debug(const char *fmt, ...);
+void ggzdmod_debug(const char *fmt, ...);
 
-int ggz_seats_open(void);
-int ggz_seats_num(void);
-int ggz_seats_bot(void);
-int ggz_seats_reserved(void);
-int ggz_seats_human(void);
+int ggzdmod_seats_open(void);
+int ggzdmod_seats_num(void);
+int ggzdmod_seats_bot(void);
+int ggzdmod_seats_reserved(void);
+int ggzdmod_seats_human(void);
 
-int ggz_fd_max(void);
+int ggzdmod_fd_max(void);
 
 /*
  * FIXME: libggzdmod currently allows for *either* interface:
@@ -85,16 +85,16 @@ int ggz_fd_max(void);
  */
 
 /* Setup functions */
-int ggz_server_init(char* game_name);
-int ggz_server_connect(void);
-int ggz_server_done(void);
-void ggz_server_quit(void);
+int ggzdmod_init(char* game_name);
+int ggzdmod_connect(void);
+int ggzdmod_done(void);
+void ggzdmod_quit(void);
 
 /* Event functions */
-int ggz_game_launch(void);
-int ggz_game_over(void);
-int ggz_player_join(int* seat, int *fd);
-int ggz_player_leave(int* seat, int *fd);
+int ggzdmod_game_launch(void);
+int ggzdmod_game_over(void);
+int ggzdmod_player_join(int* seat, int *fd);
+int ggzdmod_player_leave(int* seat, int *fd);
 
 /* end of old-style GGZ interface */
 
@@ -115,11 +115,11 @@ enum {
 
 /* Set a handler for a specific event */
 typedef void (*GGZHandler)(int event_id, void *handler_data);
-void ggz_server_set_handler(int event_id, const GGZHandler handler);
+void ggzdmod_set_handler(int event_id, const GGZHandler handler);
 
 /* Open the ggz socket and wait for events,
  * calling handlers when necessary */
-int ggz_server_main(char* game_name);
+int ggzdmod_main(char* game_name);
 
 /* end of event-driven GGZ interface */
 
