@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_prefs.c 3688 2002-03-26 07:13:01Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -49,6 +49,7 @@ GtkWidget *create_dlg_prefs(void)
 	GtkWidget *button;
 	GtkWidget *action_area;
 	GtkWidget *close_button;
+	GtkTooltips *tooltips;
 	
 	PrefType *pref;
 
@@ -60,6 +61,13 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
+	
+	/*
+	 * Set up tooltips.
+	 */
+	/* FIXME: do the tooltips need to be freed when
+	   the window is destroyed? */
+	tooltips = gtk_tooltips_new();
 
 	/* 
 	 * Get vertical box packing widget.
@@ -72,6 +80,8 @@ GtkWidget *create_dlg_prefs(void)
 	/* Make preferences buttons. */
 	for (pref = pref_types; pref->name; pref++) {
 		button = gtk_check_button_new_with_label(_(pref->desc));
+		gtk_tooltips_set_tip(tooltips, button,
+		                     _(pref->fulldesc), NULL);
 		gtk_widget_ref(button);
 		gtk_widget_show(button);
 		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);

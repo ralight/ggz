@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.h 3400 2002-02-17 13:10:57Z jdorje $
+ * $Id: preferences.h 3688 2002-03-26 07:13:01Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -30,6 +30,7 @@
 typedef struct {
 	char *name;
 	char *desc;
+	char *fulldesc;
 	int *value;
 	int dflt;
 } PrefType;
