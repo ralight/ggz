@@ -154,10 +154,10 @@ char *build_line(int len)
 	int i;
 
 	/* The line is a psuedorandom uppercase string based on 'len' */
-	srandom(len);
+	srand(len);
 	new = ggz_malloc(len+1);
 	for(i=0; i<len; i++)
-		new[i] = (random() % 26) + 'A';
+		new[i] = (rand() % 26) + 'A';
 	new[i] = '\0';
 	return new;
 }
