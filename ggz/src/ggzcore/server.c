@@ -906,8 +906,12 @@ void _ggzcore_server_free(struct _GGZServer *server)
 void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 					  const int num)
 {
+	int i;
+
 	server->num_rooms = num;
 	server->rooms = ggzcore_malloc(num * sizeof(struct _GGZRoom*));
+	for(i = 0; i < num; i++)
+		server->rooms[i] = NULL;
 }
 
 
@@ -916,7 +920,8 @@ void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 	int i;
 
 	for (i = 0; i < server->num_rooms; i++) {
-		_ggzcore_room_free(server->rooms[i]);
+		if(server->rooms[i])
+			_ggzcore_room_free(server->rooms[i]);
 	}
 
 	ggzcore_free(server->rooms);
