@@ -102,6 +102,14 @@ char*  _ggzcore_gametype_get_url(struct _GGZGameType *type);
 
 char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type);
 
+/* Return the maximum number of allowed players/bots */
+unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type);
+unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type);
+
+/* Verify that a paticular number of players/bots is valid */
+unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num);
+unsigned int _ggzcore_gametype_num_bots_is_valid(struct _GGZGameType *type, unsigned int num);
+
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_gametype_compare(void* p, void* q);

@@ -417,12 +417,20 @@ GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table,
 
 
 /* These function are lookups to gametype information. */
-char*  ggzcore_gametype_get_name(GGZGameType *type);
-char*  ggzcore_gametype_get_protocol(GGZGameType *type);
-char*  ggzcore_gametype_get_version(GGZGameType *type);
-char*  ggzcore_gametype_get_author(GGZGameType *type);
-char*  ggzcore_gametype_get_url(GGZGameType *type);
-char*  ggzcore_gametype_get_desc(GGZGameType *type);
+char* ggzcore_gametype_get_name(GGZGameType *type);
+char* ggzcore_gametype_get_protocol(GGZGameType *type);
+char* ggzcore_gametype_get_version(GGZGameType *type);
+char* ggzcore_gametype_get_author(GGZGameType *type);
+char* ggzcore_gametype_get_url(GGZGameType *type);
+char* ggzcore_gametype_get_desc(GGZGameType *type);
+
+/* Return the maximum number of allowed players/bots */
+int ggzcore_gametype_get_max_players(GGZGameType *type);
+int ggzcore_gametype_get_max_bots(GGZGameType *type);
+
+/* Verify that a paticular number of players/bots is valid */
+int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
+int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num);
 
 
 /* ggzcore_error_sys()

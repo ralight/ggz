@@ -87,6 +87,43 @@ char* ggzcore_gametype_get_desc(GGZGameType *type)
 	return _ggzcore_gametype_get_desc(type);
 }
 
+/* Return the maximum number of allowed players/bots */
+int ggzcore_gametype_get_max_players(GGZGameType *type)
+{
+	if (!type)
+		return -1;
+
+	return _ggzcore_gametype_get_max_players(type);
+}
+
+
+int ggzcore_gametype_get_max_bots(GGZGameType *type)
+{
+	if (!type)
+		return -1;
+
+	return _ggzcore_gametype_get_max_bots(type);
+}
+
+
+/* Verify that a paticular number of players/bots is valid */
+int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_num_players_is_valid(type, num);
+}
+
+
+int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_num_bots_is_valid(type, num);
+}
+
 
 /* Internal library functions (prototypes in gametype.h) */
 
@@ -189,6 +226,63 @@ char*  _ggzcore_gametype_get_url(struct _GGZGameType *type)
 char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type)
 {
 	return type->desc;
+}
+
+
+/* Return the maximum number of allowed players/bots */
+unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type)
+{
+	int i, num = 0;
+	/* FIXME: come up with a cool bit maniuplation to do this */
+
+	for (i = 8; i > 0; i--)
+		if (_ggzcore_gametype_num_players_is_valid(type, i)) {
+			num = i;
+			break;
+		}
+	
+	return num;
+}
+
+
+unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type)
+{
+	int i, num = 0;
+	/* FIXME: come up with a cool bit maniuplation to do this */
+
+	for (i = 8; i > 0; i--)
+		if (_ggzcore_gametype_num_bots_is_valid(type, i)) {
+			num = i;
+			break;
+		}
+	
+	return num;
+}
+
+
+/* Verify that a paticular number of players/bots is valid */
+unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num)
+{
+	char mask;
+
+	/* 2^(num-1) */
+	mask = 1 << (num-1);
+
+	return ((type->allow_players & mask) != 0);
+}
+
+
+unsigned int _ggzcore_gametype_num_bots_is_valid(struct _GGZGameType *type, unsigned int num)
+{
+	char mask;
+
+	if (num != 0) {
+		/* 2^(num-1) */
+		mask = 1 << (num-1);
+		return ((type->allow_bots & mask) != 0);
+	}
+	else /* always allow 0 bots */
+		return 1;
 }
 
 
