@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4155 2002-05-05 05:39:17Z jdorje $
+ * $Id: suaro.c 4399 2002-09-03 17:25:09Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -323,7 +323,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 	return my_bid;
 }
 
-card_t get_play(int play_seat, int *valid_plays)
+card_t get_play(int play_seat, bool *valid_plays)
 {
 	assert(play_seat == ME);
 	

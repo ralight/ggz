@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: spades.c 4399 2002-09-03 17:25:09Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -66,7 +66,7 @@ void start_hand(void);
 void alert_bid(int p, bid_t bid);
 void alert_play(int p, card_t card);
 bid_t get_bid(bid_t * bid_choices, int bid_count);
-card_t get_play(int play_hand, int *valid_plays);
+card_t get_play(int play_hand, bool *valid_plays);
 
 enum {
 	ME = 0,
@@ -705,7 +705,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 }
 
 
-card_t get_play(int play_seat, int *valid_plays)
+card_t get_play(int play_seat, bool *valid_plays)
 {
 	int i, chosen = -1;
 	int myNeed, oppNeed, totTricks;
