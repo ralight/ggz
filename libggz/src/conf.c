@@ -196,7 +196,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 		*argvp = (char **) ggz_malloc((*argcp + 1) * sizeof(char *));
 		
 		/* Manually null-terminate list. */
-		argvp[*argcp] = NULL;
+		(*argvp)[*argcp] = NULL;
 
 
 		p = str;
