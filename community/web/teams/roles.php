@@ -10,17 +10,32 @@
 	</h1>
 	<div class="text">
 <?php
+$ggzuser = Auth::username();
+$res = pg_exec($id, "SELECT teamname FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%leader%'");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+$teamname = pg_result($res, $i, "teamname");
+echo "<h2>$teamname</h2>";
+
 	echo "<form action='teams.php?manage=1' method='POST'>\n";
 	echo "<table>\n";
 	echo "<tr><td>Player:</td><td>\n";
 	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
 	echo "<select name='player_name'>\n";
-	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res2 = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
+	for ($j = 0; $j < pg_numrows($res2); $j++)
 	{
-		$playername = pg_result($res, $i, "handle");
-		$role = pg_result($res, $i, "role");
-		echo "<option value='$playername'>$playername ($role)</option>\n";
+		$playername = pg_result($res2, $j, "handle");
+		$role = pg_result($res2, $j, "role");
+		$rolestr = "";
+		if (strstr($role, "leader")) :
+			$rolestr = "Leader";
+		elseif (strstr($role, "vice")) :
+			$rolestr = "Vice Leader";
+		elseif (strstr($role, "member")) :
+			$rolestr = "Member";
+		endif;
+		echo "<option value='$playername'>$playername ($rolestr)</option>\n";
 	}
 	echo "</select>\n";
 	echo "</td></tr>\n";
@@ -34,6 +49,7 @@
 	echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
 	echo "</table>\n";
 	echo "</form>\n";
+}
 ?>
 	</div>
 </div>

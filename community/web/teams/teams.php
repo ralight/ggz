@@ -15,6 +15,7 @@ endif;
 $team_name = $_POST["team_name"];
 $team_full = $_POST["team_full"];
 $team_homepage = $_POST["team_homepage"];
+$team_logo = $_POST["team_logo"];
 $player_name = $_POST["player_name"];
 $player_approval = $_POST["player_approval"];
 $player_role = $_POST["player_role"];
@@ -25,14 +26,16 @@ if ($join == 1) :
 		$res = pg_exec($id, "INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
 			"('$team_name', '$ggzuser', '')");
+	else:
+		pg_exec($id, "DELETE FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
 	endif;
 elseif ($create == 1) :
 	$res = pg_exec($id, "SELECT * FROM teams WHERE teamname = '$team_name'");
 	if (($res) && (pg_numrows($res) == 0)) :
 		$stamp = time();
 		$res = pg_exec($id, "INSERT INTO teams " .
-			"(teamname, fullname, icon, foundingdate, homepage) VALUES " .
-			"('$team_name', '$team_full', '', $stamp, '$team_homepage')");
+			"(teamname, fullname, icon, foundingdate, homepage, founder) VALUES " .
+			"('$team_name', '$team_full', '$team_logo', $stamp, '$team_homepage', '$ggzuser')");
 		$res = pg_exec($id, "INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
 			"('$team_name', '$ggzuser', 'leader,founder,member')");

@@ -1,5 +1,8 @@
 <?php
 
+include_once("locale.php");
+Locale::detect();
+
 if ($task == "register") :
 	Locale::includefile("register.inc");
 	exit;
