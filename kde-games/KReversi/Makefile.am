@@ -30,7 +30,6 @@ ggz_kreversi_SOURCES = \
 		kreversi.cpp
 EXTRA_DIST = \
 		main.cpp\
-		tiles.xpm\
 		reversiprotocol.cpp\
 		reversiprotocol.h\
 		reversiview.cpp\

@@ -1,4 +1,4 @@
-EXTRA_DIST = alien.png franzl.png bg.png geek.png title.png mindx.png ok.png
+EXTRA_DIST = alien.png franzl.png bg.png geek.png title.png mindx.png
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
