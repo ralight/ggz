@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6379 2004-11-16 00:13:22Z jdorje $
+ * $Id: about.c 6442 2004-12-08 21:00:46Z oojah $
  *
  * About dialog: Displays information about the authors and the application.
  *
@@ -189,7 +189,7 @@ static gint about_update(gpointer data)
 	status = about_draw_text(background, "(C) 1999-2004", font[1],
 				 Yloc, FALSE);
 	status =
-	    about_draw_text(background, "(http://ggz.sourceforge.net)",
+	    about_draw_text(background, "(http://www.ggzgamingzone.org)",
 			    font[3], Yloc, FALSE);
 	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
 	status = about_draw_text(background, " ", font[1], Yloc, FALSE);
