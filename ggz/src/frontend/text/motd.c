@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ text Client
- * $Id: motd.c 4851 2002-10-10 17:42:40Z jdorje $
+ * $Id: motd.c 4852 2002-10-10 18:09:53Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -21,13 +21,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "output.h"
 #include "motd.h"
@@ -52,28 +55,32 @@ void motd_print_line(const char *line)
 
 	while (line[lindex] != '\0') {
 		if (line[lindex] == '%') {
-			lindex++;
-			if (line[lindex] == 'c') {
-				lindex++;
-				color = atoi(&line[lindex]);
-				if (color >= 0 && color <= 9) {
-					strcat(out + oindex,
-					       color_sequences[color]);
-					oindex +=
-						strlen(color_sequences
-						       [color]);
-					lindex++;
-				} else {
-					lindex--;
-					lindex--;
-				}
+
+			/* % is a metacharacter.  It can be followed by:
+			 *    - %% => this just becomes %.
+			 *    - %cN => If N is a digit in 0..9, this means the
+			 *             current color should be changed to N.
+			 *    - %x => (x is anything other than 'c' or '%');
+			 *            this just becomes x (the % is skipped)
+			 */
+
+			lindex++; /* Skip past % */
+			if (line[lindex] == '%') {
+				/* %% becomes just %. */
+				out[oindex++] = line[lindex++];
+			} else if (line[lindex] == 'c'
+				   && line[lindex + 1] >= '0'
+				   && line[lindex + 1] <= '9') {
+				  lindex++; /* Skip past 'c' */
+				  color = line[lindex++] - '0';
+				  assert(color >= 0 && color <= 9);
+				  strcat(out + oindex, color_sequences[color]);
+				  oindex += strlen(color_sequences[color]);
 			} else {
-				lindex--;
+				/* Just keep going (skip the %) */
 			}
-		}
-		out[oindex] = line[lindex];
-		lindex++;
-		oindex++;
+		} else
+			out[oindex++] = line[lindex++];
 
 		if (out[oindex - 1] == '\n') {
 			/* Remove the \n as we add one in output_text */
