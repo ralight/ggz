@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: dlg_bid.c 4099 2002-04-28 00:59:37Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -44,7 +44,7 @@
 
 static GtkWidget *window = NULL;
 
-static void destroy_bid_window(void)
+void dlg_bid_destroy(void)
 {
 	if (window != NULL) {
 		gtk_object_destroy((GtkObject *) window);
@@ -80,7 +80,7 @@ void dlg_bid_display(int possible_bids,
 	int xw, yw, leftover;
 	GtkTooltips *tooltips = gtk_tooltips_new();
 
-	destroy_bid_window();
+	dlg_bid_destroy();
 
 	/* Calculate the dimensions of the box of bids */
 	xw = sqrt(possible_bids / 1.5);

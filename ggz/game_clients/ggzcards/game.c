@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: game.c 4099 2002-04-28 00:59:37Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -359,7 +359,9 @@ void game_get_bid(int possible_bids,
 		statusbar_message(_("It's your turn to bid.  Please choose "
 		                    "a bid from the bid window."));
 	}
-	
+
+	dlg_bid_destroy();
+
 #ifdef DEBUG
 	if (preferences.use_ai) {
 		/* We ignore bid_texts and bid_descs */
@@ -553,6 +555,8 @@ int game_get_options(int option_cnt,
 		     char ***option_choices)
 {
 	ggz_debug("main", "Handling option request.");
+
+	dlg_options_destroy();
 
 	if (preferences.use_default_options) {
 		return -1;
