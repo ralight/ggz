@@ -41,6 +41,9 @@ struct GGZTableSeat {
 
 	/* Player's name */
 	char name[MAX_USER_NAME_LEN + 1];
+
+	/* File descriptor */
+	int fd;
 };
 
 #define GGZ_SEATNUM_ANY -1

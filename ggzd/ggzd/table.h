@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: table.h 4161 2002-05-05 18:43:52Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -67,7 +67,6 @@ struct GGZTable {
 	 * and from table 
 	 */
 	char* transit_name;
-	int transit_fd;
 	int transit_seat;
 
 	/* Data for communicating with game server module */

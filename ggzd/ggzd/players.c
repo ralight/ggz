@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4142 2002-05-03 04:07:23Z bmh $
+ * $Id: players.c 4161 2002-05-05 18:43:52Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -74,8 +74,6 @@ extern Options opt;
 
 
 /* Local functions for handling players */
-static GGZPlayerHandlerStatus   player_updates(GGZPlayer* player);
-static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* player);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 static int player_get_time_since_ping(GGZPlayer *player);
@@ -114,94 +112,6 @@ GGZPlayer* player_new(GGZClient *client)
 	player->next_ping = 0;			/* Don't ping until login */
 
 	return player;
-}
-
-
-/*
- * player_loop() is the main player event loop.  It handles GGZEvents,
- * data from the client, and data for the client from the game module.
- *
- * Receives:
- * GGZPlayer* player : pointer to player structure managed by this thread
- * int p_fd : player's fd
- */
-void player_loop(GGZPlayer* player)
-{
-	int status, fd_max, p_fd;
-	fd_set active_fd_set, read_fd_set;
-	struct timeval timer;
-
-	/* Get socket from netIO object */
-	p_fd = net_get_fd(player->client->net);
-
-	/* Start off listening only to player */
-	FD_ZERO(&active_fd_set);
-	FD_SET(p_fd, &active_fd_set);
-	
-	while (!player->client->session_over) {
-		/* Process private events */
-		if ( (status = player_updates(player)) < 0)
-			break;
-		
-		switch (status) {
-		case GGZ_REQ_TABLE_JOIN:
-			dbg_msg(GGZ_DBG_TABLE, "%s now at a table",
-				player->name);
-			FD_SET(player->game_fd, &active_fd_set);
-			break;
-		case GGZ_REQ_TABLE_LEAVE:
-			dbg_msg(GGZ_DBG_TABLE, "%s's game-over", player->name);
-			
-			close(player->game_fd);
-			FD_CLR(player->game_fd, &active_fd_set);
-
-			pthread_rwlock_wrlock(&player->lock);
-			player->game_fd = -1;			
-			pthread_rwlock_unlock(&player->lock);
-			break;
-		}
-
-		read_fd_set = active_fd_set;
-		fd_max = ((p_fd > player->game_fd)? p_fd : player->game_fd)+1;
-		
-		/* Setup timeout for select*/
-		timer.tv_sec = GGZ_RESYNC_SEC;
-		timer.tv_usec = GGZ_RESYNC_USEC;
-		
-		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
-		
-		if (status <= 0) {
-			if (status == 0 || errno == EINTR)
-				continue;
-			else
-				err_sys_exit("select error in player_loop()");
-		}
-
-		/* Check for message from player */
-		if (FD_ISSET(p_fd, &read_fd_set)) {
-			if ( (status = net_read_data(player->client->net)) < 0)
-				break;
-		}
-		
-		/* Check for data from table */
-		if (player->game_fd != -1 
-		    && FD_ISSET(player->game_fd, &read_fd_set)) {
-
-			if ( (status = player_msg_to_sized(player)) < 0)
-				break;
-			
-			/* Stop listening on error */
-			if (status == GGZ_REQ_FAIL)
-				FD_CLR(player->game_fd, &active_fd_set);
-		}
-	} /* for(;;) */
-
-	/* Clean up if there was an error during a game */
-	if (player->game_fd != -1) {
-		dbg_msg(GGZ_DBG_TABLE, "%s logout during game", player->name);
-		player_transit(player, GGZ_TRANSIT_LEAVE, player->table);
-		close(player->game_fd);
-	}
 }
 
 
@@ -250,13 +160,15 @@ void player_logout(GGZPlayer* player)
 	/* FIXME: is this the right place for this? */
 	event_player_flush(player);
 
-	pthread_rwlock_wrlock(&player->lock);
-	net_disconnect(player->client->net);
-	pthread_rwlock_unlock(&player->lock);	
+	/* FIXME: need to leave table if we're at one 
+	player_transit(player, GGZ_TRANSIT_LEAVE, player->table);*/
 
-	pthread_rwlock_wrlock(&state.lock);
-	state.players--;
-	pthread_rwlock_unlock(&state.lock);
+	/* Close channel if it's open */
+	if (player->game_fd != -1) {
+		dbg_msg(GGZ_DBG_TABLE, "Closing leftover channel for %s", 
+			player->name);
+		close(player->game_fd);
+	}
 }
 
 
@@ -268,43 +180,28 @@ void player_logout(GGZPlayer* player)
  * GGZPlayer* player : pointer to player structure 
  *
  * Returns: 
- * int : one of
- *  GGZ_REQ_TABLE_JOIN   : player is now in a game. 
- *  GGZ_REQ_TABLE_LEAVE  : player has completed game
- *  GGZ_REQ_DISCONNECT   : player is being logged out (possbily due to error)
- *  GGZ_REQ_FAIL         : request failed
- *  GGZ_REQ_OK           : nothing special 
+ * int : 0 on sucess.  -1 on error
  */
-static GGZPlayerHandlerStatus player_updates(GGZPlayer* player)
+int player_updates(GGZPlayer* player)
 {
-	int old_table = player->table;
-	
-	/* Don't send updates to people who aren't logged in */
- 	if (player->uid == GGZ_UID_NONE)
- 		return GGZ_REQ_FAIL;
+	int changed = 0;
 
-	/* Process events from queue */
+	/* Process room events */
 	if (player->room != -1 && event_room_handle(player) < 0)
-		return GGZ_REQ_DISCONNECT;
+		return -1;
 	
+	/* Process personal events */
 	if (player->my_events_head)
 		if (event_player_handle(player) < 0)
-			return GGZ_REQ_DISCONNECT;
-
-	if (old_table == -1 && player->table != -1)
-		return GGZ_REQ_TABLE_JOIN;
-	
-	if (player->table == -1 && old_table != -1)
-		return GGZ_REQ_TABLE_LEAVE;	
+			return -1;
 
 	/* Lowest priority update - send a PING / check lag */
 	if(player->next_ping && time(NULL) >= player->next_ping) {
 		if(player_send_ping(player) < 0)
-			return GGZ_REQ_DISCONNECT;
+			return -1;
 	} else if (player->next_ping == 0) {
 		/* We're waiting for a PONG, but if we wait too long
 		   we should increase the lag class without waiting */
-		int changed = 0;
 		
 		while (player->lag_class < 5
 		       && player_get_time_since_ping(player) >=
@@ -317,7 +214,7 @@ static GGZPlayerHandlerStatus player_updates(GGZPlayer* player)
 			room_notify_lag(player->name, player->room);
 	}
 
-	return GGZ_REQ_OK;
+	return 0;
 }
 
 
@@ -511,6 +408,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 			seat.index = i;
 			seat.type = seats_type(table, i);
 			strcpy(seat.name, table->seat_names[i]);
+			seat.fd = -1;
 			
 			if ( (status = transit_seat_event(table->room, table->index, seat, player->name)))
 				break;
@@ -598,6 +496,12 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 
 	/* Check if leave during gameplay is allowed */
 	table = table_lookup(player->room, player->table);
+	
+	if (!table) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to leave table that was already gone", player->name);
+		return 0;
+	}		
+
 	gametype = table->type;
 	state = table->state;
 	pthread_rwlock_unlock(&table->lock);
@@ -650,15 +554,22 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 			return E_NO_TABLE;
 		seat.type = GGZ_SEAT_OPEN;
 		seat.name[0] = '\0';
+		seat.fd = -1;
 		
 		status = transit_seat_event(player->room, index, seat, player->name);
 		break;
 	case GGZ_TRANSIT_JOIN:
 		seat.index = GGZ_SEATNUM_ANY; /* Take first available seat */
 		seat.type = GGZ_SEAT_PLAYER;
+		seat.fd = player->game_fd;
 		strcpy(seat.name, player->name);
 		
 		status = transit_seat_event(player->room, index, seat, player->name);
+		/* Now that channel fd has been sent, rest it here */
+		pthread_rwlock_wrlock(&player->lock);
+		player->game_fd = -1;
+		pthread_rwlock_unlock(&player->lock);
+		
 		break;
 	default:
 		/* Should never get here */
@@ -826,56 +737,6 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	if (count > 0)
 		free(my_tables);
 	
-	return GGZ_REQ_OK;
-}
-
-
-static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* p)
-{
-	char buf[4096];
-	int size;
-	
-	if ( (size = read(p->game_fd, buf, 4096)) < 0) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Error reading from %s's game ", 
-			p->name);
-		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
-		return GGZ_REQ_FAIL;
-	}
-				     
-	if (size == 0) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Empty msg from %s's game ", 
-			p->name);
-		/*player_transit(p, GGZ_TRANSIT_LEAVE, p->table);*/
-		return GGZ_REQ_FAIL;
-	}
-
-	if (net_send_game_data(p->client->net, size, buf) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
-	dbg_msg(GGZ_DBG_GAME_MSG, "Game to User: %d bytes", size);
-		
-	return GGZ_REQ_OK;
-}
-
-
-GGZPlayerHandlerStatus player_msg_from_sized(GGZPlayer* p, int size, char *buf)
-{
-	
-	if (size == 0) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Empty game msg from %s", p->name);
-		/*player_transit(p, GGZ_TRANSIT_LEAVE, p->table);*/
-		return GGZ_REQ_FAIL;
-	}
-	
-	if (ggz_writen(p->game_fd, buf, size) < 0) {
-		dbg_msg(GGZ_DBG_CONNECTION, "Error writing to %s's game ", 
-			p->name);
-		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
-		return GGZ_REQ_FAIL;
-	}
-
-	dbg_msg(GGZ_DBG_GAME_MSG, "User to Game: %d bytes", size);	
-
 	return GGZ_REQ_OK;
 }
 

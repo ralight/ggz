@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4142 2002-05-03 04:07:23Z bmh $
+ * $Id: net.c 4161 2002-05-05 18:43:52Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -127,7 +127,6 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
-static void _net_handle_data(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
@@ -144,8 +143,6 @@ static int _net_send_table_desc(GGZNetIO *net, GGZTable *table);
 static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_line(GGZNetIO *net, char *line, ...)
 			  ggz__attribute((format(printf, 2, 3)));
-static int _net_send_string(GGZNetIO *net, char *fmt, ...)
-			    ggz__attribute((format(printf, 2, 3)));
 
 static GGZAuthData* _net_authdata_new(void);
 static void _net_authdata_free(GGZAuthData *data);
@@ -703,22 +700,6 @@ int net_send_logout(GGZNetIO *net, char status)
 }
 
 
-int net_send_game_data(GGZNetIO *net, int size, char *data)
-{
-	int i;
-	char buf[5];
-	_net_send_string(net, "<DATA SIZE='%d'><![CDATA[", size);
-	buf[0] = '\0';
-	for (i = 0; i < size; i++) {
-		sprintf(buf, "%d ", data[i]);
-		write(net->fd, buf, strlen(buf));
-	}
-	_net_send_string(net, "]]></DATA>");
-
-	return 0;
-}
-
-
 int net_send_ping(GGZNetIO *net)
 {
 	_net_send_line(net, "<PING/>");
@@ -919,8 +900,6 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_desc;
 	else if (strcmp(tag, "MOTD") == 0)
 		process_func = _net_handle_motd;
-	else if (strcmp(tag, "DATA") == 0)
-		process_func = _net_handle_data;
 	else if (strcmp(tag, "PONG") == 0)
 		process_func = _net_handle_pong;
 	else
@@ -933,10 +912,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 /* Functions for <SESSION> tag */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
 {
-	if (net->client->type == GGZ_CLIENT_PLAYER) {
-		net_send_logout(net, 0);
-	}
 	client_end_session(net->client);
+	net_send_logout(net, 0);
 }
 
 
@@ -1011,9 +988,6 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 		else {
 			client_set_type(net->client, GGZ_CLIENT_PLAYER);
 			login_player(login_type, net->client->data, auth->name, auth->password);
-			
-			/* FIXME: this is a hack so that the player loop will start */
-			client_end_session(net->client);
 		}
 
 		/* Free up any resources we allocated */
@@ -1552,51 +1526,6 @@ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *motd)
 }
 
 
-/* Functions for <DATA> tag */
-static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
-{
-	int i, size;
-	char buffer[4096];
-	char *msg;
-	char *token;
-
-	if (data) {
-
-		/* Grab data from tag */
-		size = safe_atoi(ggz_xmlelement_get_attr(data, "SIZE"));
-		msg = ggz_xmlelement_get_text(data);
-
-		if (!msg) {
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
-			return;
-		}
-		
-		/* check for possible buffer overflows */
-		/* FIXME: this is a difficult issue.  Limiting buffer length to
-		   4096 characters will break any games that send packets longer
-		   than this (unless they are broken up at the client end).  It
-		   is tempting just to malloc a buffer of appropriate size so
-		   that the data will always fit...but that's not a reasonable
-		   solution either, since it can be very easily abused.  In any
-		   case, once direct connections are used this won't be an
-		   issue.  --JDS */
-		if (size >= sizeof(buffer) ) {
-			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
-			return;
-		}
-		
-		token = strtok(msg, " ");
-		for (i = 0; i < size; i++) {
-			buffer[i] = safe_atoi(token);
-			token = strtok(NULL, " ");
-		}
-		
-		player_msg_from_sized(net->client->data, size, buffer);
-	}
-}
-
-
 /* Function for <PONG> tag */
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
 {
@@ -1726,17 +1655,5 @@ static int _net_send_line(GGZNetIO *net, char *line, ...)
 	vsprintf(buf, line, ap);
 	va_end(ap);
 	strcat(buf, "\n");
-	return write(net->fd, buf, strlen(buf));
-}
-
-
-static int _net_send_string(GGZNetIO *net, char *fmt, ...)
-{
-	char buf[4096];
-	va_list ap;
-
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
-	va_end(ap);
 	return write(net->fd, buf, strlen(buf));
 }

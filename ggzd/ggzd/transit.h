@@ -34,7 +34,4 @@ int transit_table_event(int room, int index, char opcode, char* name);
 
 int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller);
 
-int transit_player_event(char* name, char opcode, int status, int index, 
-			 int fd);
-
-				
+int transit_player_event(char* name, char opcode, int status, int index);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4151 2002-05-05 00:22:08Z jdorje $
+ * $Id: table.c 4161 2002-05-05 18:43:52Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -125,7 +125,6 @@ GGZTable* table_new(void)
 	table->state = GGZ_TABLE_CREATED;
 	table->transit = 0;
 	table->transit_name = NULL;
-	table->transit_fd = -1;
 	table->transit_seat = -1;
 	table->ggzdmod = NULL;
 
@@ -464,7 +463,7 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
-	int seat_num, fd, msg_status;
+	int seat_num, msg_status;
 	struct GGZTableSeat seat;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
@@ -477,11 +476,10 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	/* Read saved transit data */
 	name = table->transit_name;
 	seat_num = table->transit_seat;
-	fd = table->transit_fd;
 
 	/* Notify player of transit status */
 	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN, 0, 
-					  table->index, fd);
+					  table->index);
 	/* FIXME: we still need to handle the case where the join fails */
 
 	/* Transit successful: Assign seat */
@@ -498,6 +496,7 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		seat.index = seat_num;
 		seat.type = GGZ_SEAT_OPEN;
 		seat.name[0] = '\0';
+		seat.fd = -1;
 		
 		transit_seat_event(table->room, table->index, seat, name);
 
@@ -514,7 +513,6 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	table->transit = 0;
 	free(table->transit_name);
 	table->transit_name = NULL;
-	table->transit_fd = -1;
 	pthread_rwlock_unlock(&table->lock);
 }
 
@@ -562,7 +560,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	}
 
 	/* Notify player and mark transit as done */
-	transit_player_event(name, GGZ_TRANSIT_LEAVE, status, 0, 0);
+	transit_player_event(name, GGZ_TRANSIT_LEAVE, status, 0);
 
 	/* Free strdup'd player name */
 	free(table->transit_name);
@@ -588,7 +586,7 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	GGZSeat seat;
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* caller;
-	int seat_num, fd, msg_status;
+	int seat_num, msg_status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to seat change", 
 		table->index, table->room);
@@ -600,11 +598,10 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	/* Read saved transit data */
 	caller = table->transit_name;
 	seat_num = table->transit_seat;
-	fd = table->transit_fd;
 
 	/* Notify player of transit status */
 	msg_status = transit_player_event(caller, GGZ_TRANSIT_SEAT, 0, 
-					  table->index, fd);
+					  table->index);
 
 	/* Get new seat info */
 	seat = ggzdmod_get_seat(ggzdmod, seat_num);
@@ -637,7 +634,6 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	table->transit = 0;
 	free(table->transit_name);
 	table->transit_name = NULL;
-	table->transit_fd = -1;
 	pthread_rwlock_unlock(&table->lock);
 }
 
@@ -778,7 +774,7 @@ static void table_remove(GGZTable* table)
 			table_update_event_enqueue(table, GGZ_UPDATE_LEAVE, 
 						   table->seat_names[i], i);
 			transit_player_event(table->seat_names[i],
-					     GGZ_TRANSIT_LEAVE, 0, 0, 0);
+					     GGZ_TRANSIT_LEAVE, 0, 0);
 		}
 	}
 

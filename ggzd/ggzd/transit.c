@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: transit.c 4161 2002-05-05 18:43:52Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -83,8 +83,7 @@ int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *call
 }
 
     
-int transit_player_event(char* name, char opcode, int status, int index, 
-			 int fd)
+int transit_player_event(char* name, char opcode, int status, int index)
 {
 	int size;
 	char* current;
@@ -94,7 +93,7 @@ int transit_player_event(char* name, char opcode, int status, int index,
 	
 	/* We pass back the table index and fd if a join was successful */
 	if (opcode == GGZ_TRANSIT_JOIN && status == 0)
-		size += (2 * sizeof(int));
+		size += sizeof(int);
 
 	if ( (data = malloc(size)) == NULL)
 		err_sys_exit("malloc failed in transit_player_event");
@@ -110,9 +109,6 @@ int transit_player_event(char* name, char opcode, int status, int index,
 
 	if (opcode == GGZ_TRANSIT_JOIN && status == 0) {
 		*(int*)current = index;
-		current += sizeof(int);
-
-		*(int*)current = fd;
 		current += sizeof(int);
 	}
 
@@ -133,9 +129,10 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	struct GGZTableSeat *seat = &(event->seat);
 
 	dbg_msg(GGZ_DBG_TABLE, 
-		"%s requested seat change on table %d: Seat %d to %s (%s)", 
+		"%s requested seat change on table %d: Seat %d to %s (%s) with fd %d", 
 		event->caller, table->index, seat->index, 
-		ggz_seattype_to_string(seat->type), seat->name);
+		ggz_seattype_to_string(seat->type), seat->name,
+		seat->fd);
 
 	/* Figure out what kind of event this is */
 	if (seat->type == GGZ_SEAT_PLAYER)
@@ -158,7 +155,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	if (table->state == GGZ_TABLE_ERROR || table->state == GGZ_TABLE_DONE) {
 		/* Notify player that transit failed */
 		/* Don't care if this fails, we aren't transiting anyway */
-		transit_player_event(event->caller, action, E_BAD_OPTIONS, 0, 0);
+		transit_player_event(event->caller, action, E_BAD_OPTIONS, 0);
 		return GGZ_EVENT_OK;
 	}
 
@@ -167,7 +164,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	if (seat->type == GGZ_SEAT_PLAYER && seat->index == GGZ_SEATNUM_ANY) {
 		if ( (seat->index = transit_find_seat(table, event->caller)) < 0) {
 			/* Don't care if this fails, we aren't transiting anyway */
-			transit_player_event(event->caller, action, E_TABLE_FULL, 0, 0);
+			transit_player_event(event->caller, action, E_TABLE_FULL, 0);
 			return GGZ_EVENT_OK;
 		}
 	}
@@ -181,7 +178,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	}
 	/* Otherwise send an error message back to the player */
 	else {
-		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0, 0);
+		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0);
 		status = GGZ_EVENT_ERROR;
 	}
 
@@ -193,7 +190,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
                                                         int size,
                                                         void* data)
 {
-	int status, index = -1, fd = 0;
+	int status, index = -1;
 	char opcode;
 	char *current;
 	GGZPlayer* player = (GGZPlayer*)target;
@@ -209,9 +206,6 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 
 	if (opcode == GGZ_TRANSIT_JOIN && status == 0) {
 		index = *(int*)(current);
-		current += sizeof(int);
-
-		fd = *(int*)(current);
 		current += sizeof(int);
 	}
 	
@@ -233,10 +227,9 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
 		if (status == 0) {
-			player->game_fd = fd;
 			player->table = index;
 		}
-		pthread_rwlock_unlock(&player->lock);		
+		pthread_rwlock_unlock(&player->lock);
 
 		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
@@ -260,25 +253,19 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event)
 {
 	GGZSeat seat;
-	int fd[2] = {-1, -1}, status = 0;
+	int status = 0;
 
 	dbg_msg(GGZ_DBG_TABLE, "Sending seat for table %d in room %d",
 		table->index, table->room);
 	
-	/* If this is a 'join' create socket for communication with player thread */
-	if (event->seat.type == GGZ_SEAT_PLAYER)
-		if (socketpair(PF_UNIX, SOCK_STREAM, 0, fd) < 0)
-			err_sys_exit("socketpair failed in transit_join");
-	
 	/* Save transit info so we have it when game module responds */
 	table->transit_name = strdup(event->caller);
 	table->transit_seat = event->seat.index;
-	table->transit_fd = fd[1];
 
 	/* Assemble seat structure */
 	seat.num = event->seat.index;
 	seat.type = event->seat.type;
-	seat.fd = fd[0];
+	seat.fd = event->seat.fd;
 	/* Only dup name if it's not empty */
 	if (event->seat.name[0] != '\0')
 		seat.name = strdup(event->seat.name);
@@ -295,8 +282,8 @@ static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event
 		free(seat.name);
 	
 	/* Must close remote end of socketpair */
-	if (fd[0] != -1)
-		close(fd[0]);
+	if (event->seat.type == GGZ_SEAT_PLAYER)
+		close(seat.fd);
 	
 	return status;
 }

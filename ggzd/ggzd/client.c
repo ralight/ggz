@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4142 2002-05-03 04:07:23Z bmh $
+ * $Id: client.c 4161 2002-05-05 18:43:52Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -41,7 +41,9 @@
 
 #include "client.h"
 #include "err_func.h"
+#include "hash.h"
 #include "net.h"
+#include "table.h"
 
 
 /* Server wide data structures*/
@@ -58,6 +60,7 @@ static void* client_thread_init(void *arg_ptr);
 static GGZClient* client_new(int fd);
 static void client_loop(GGZClient* client);
 static void client_free(GGZClient *client);
+static void client_create_channel(GGZClient *client);
 
 /* Timeout for server resync */
 #define GGZ_RESYNC_SEC  0
@@ -175,6 +178,10 @@ static void* client_thread_init(void *arg_ptr)
 	client_loop(client);
 	client_free(client);
 
+	pthread_rwlock_wrlock(&state.lock);
+	state.players--;
+	pthread_rwlock_unlock(&state.lock);
+
 	return (NULL);
 }
 
@@ -217,12 +224,17 @@ static void client_loop(GGZClient* client)
 
 	/* Get socket from netIO object */
 	fd = net_get_fd(client->net);
-
-	/* Start off listening only to client */
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
 	
-	while(!client->session_over) {
+	while (!client->session_over) {
+
+		/* Process player events */
+		if (client->type == GGZ_CLIENT_PLAYER) {
+			if ( (status = player_updates(client->data)) < 0)
+				break;
+		}
+
 		read_fd_set = active_fd_set;
 		fd_max = fd + 1;
 		
@@ -245,34 +257,38 @@ static void client_loop(GGZClient* client)
 				break;
 		}
 		
-	} /* for(;;) */
+	} /* while (!client->session_over) */
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Generic client loop finished");
+	dbg_msg(GGZ_DBG_CONNECTION, "Client loop finished");
 
-	/* If we left the loop for a failure, return now */
-	if (status != GGZ_REQ_OK)
-		return;
-
-	/* FIXME: eventually we will expand the client loop to have the functionality of the player loop 
-	   so we don't need to do this. */
-	switch (client->type) {
-
-	case GGZ_CLIENT_PLAYER:
-		dbg_msg(GGZ_DBG_CONNECTION, "Starting player loop");
-		client->session_over = 0;
-		player_loop(client->data);
+	if (client->type == GGZ_CLIENT_PLAYER) {
 		player_logout(client->data);
-		break;
-		
-	case GGZ_CLIENT_CHANNEL:
-		dbg_msg(GGZ_DBG_CONNECTION, "Forming direct game connection");
-		break;
-
-	default:
-		break;
+		net_disconnect(client->net);
 	}
-
+	
 	return;
+}
+
+
+void client_create_channel(GGZClient *client)
+{
+	GGZPlayer *player;
+	int fd;
+
+	dbg_msg(GGZ_DBG_CONNECTION, "Forming direct game connection");
+	
+	/* FIXME: this is just a proof of concept hack */
+	dbg_msg(GGZ_DBG_CONNECTION, "Direct ID: %s", (char*)client->data);
+	fd = net_get_fd(client->net);
+	player = hash_player_lookup(client->data);
+	if (player) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Found player %s", player->name);
+		player->game_fd = fd;
+		pthread_rwlock_unlock(&player->lock);
+		dbg_msg(GGZ_DBG_CONNECTION, "Direct connection on fd %d", fd);
+	}
+	else 
+		dbg_msg(GGZ_DBG_CONNECTION, "No player %s", (char*)client->data);
 }
 
 
@@ -294,6 +310,10 @@ void client_set_type(GGZClient *client, GGZClientType type)
 
 void client_end_session(GGZClient *client)
 {
+	/* If it was a CHANNEL connection, create the channel before ending */
+	if (client->type == GGZ_CLIENT_CHANNEL) {
+		client_create_channel(client);
+	}
 	client->session_over = 1;
 }
 
