@@ -12,6 +12,7 @@ function country($lang)
 		if($lang == $l) break;
 		if(($lang == "en") && ($l == "en-us")) $lang = "en-us";
 		if(($lang == "en") && ($l == "en-ca")) $lang = "en-ca";
+		if(($lang == "en") && ($l == "en-gb")) $lang = "en-gb";
 		if(($lang == "pt") && ($l == "pt-br")) $lang = "pt-br";
 		if(($lang == "de") && ($l == "de-ch")) $lang = "de-ch";
 		if(($lang == "de") && ($l == "de-at")) $lang = "de-at";
@@ -19,7 +20,8 @@ function country($lang)
 
 	switch($lang)
 	{
-		case "en": return "gb"; break;
+		case "en": return "us"; break;
+		case "en-gb": return "gb"; break;
 		case "en-us": return "us"; break;
 		case "en-ca": return "ca"; break;
 		case "pt-br": return "br"; break;

@@ -1,6 +1,6 @@
 <?php
 
-$lang = "en";
+$lang = "en-us";
 
 $matches = array();
 // Mozilla/5.0 (X11; U; Linux i686; pt-BR; rv:1.6) Gecko/20040413 Debian/1.6-5 

@@ -1,9 +1,12 @@
 <?php
 
-$lang = "en";
+$lang = "en-us";
+
 $langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 $langs = str_replace(" ", "", $langs);
 $langs = preg_replace("/;[^,]*/", "", $langs);
+
+$langs = "$lang,$langs";
 $ar = split(",", $langs);
 
 foreach ($ar as $l)
