@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5407 2003-02-15 03:25:39Z jdorje $
+ * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -495,7 +495,7 @@ void game_gameover(void) {
 	}
 
 	/* Report game to GGZ */
-	ggzdmod_report_game(rvr_game.ggz, NULL, results);
+	ggzdmod_report_game(rvr_game.ggz, NULL, results, NULL);
 
 	// Send message	
 	for (seat = 0; seat < ggzdmod_get_num_seats(rvr_game.ggz); seat++) {

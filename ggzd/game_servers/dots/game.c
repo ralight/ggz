@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 5410 2003-02-15 03:45:28Z jdorje $
+ * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -399,7 +399,7 @@ int game_send_gameover(char winner)
 		results[(int)winner] = GGZ_GAME_WIN;
 		results[1 - winner] = GGZ_GAME_LOSS;
 	}
-	ggzdmod_report_game(dots_game.ggz, NULL, results);
+	ggzdmod_report_game(dots_game.ggz, NULL, results, NULL);
 	
 	for(i=0; i<2; i++) {
 		if((fd = ggzdmod_get_seat(dots_game.ggz, i).fd) == -1)

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5934 2004-02-16 00:21:35Z jdorje $
+ * $Id: ggzdmod.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1637,7 +1637,7 @@ void ggzdmod_check(GGZdMod *ggzdmod)
 
 void ggzdmod_report_game(GGZdMod *ggzdmod,
 			 int *teams,
-			 GGZGameResult *results)
+			 GGZGameResult *results, int *scores)
 {
 	if (ggzdmod) {
 		char *names[ggzdmod->num_seats];
@@ -1656,6 +1656,7 @@ void ggzdmod_report_game(GGZdMod *ggzdmod,
 			}
 		}
 
+		/* TODO: report scores */
 		_io_send_game_report(ggzdmod->fd,
 				     ggzdmod->num_seats,
 				     names, types, teams, results);

@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 6079 2004-07-11 04:40:07Z jdorje $
+ * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -409,7 +409,7 @@ static int game_send_gameover(int winner)
 		results[winner - 3] = GGZ_GAME_WIN;
 		results[4 - winner] = GGZ_GAME_FORFEIT;
 	}
-	ggzdmod_report_game(escape_game.ggz, NULL, results);
+	ggzdmod_report_game(escape_game.ggz, NULL, results, NULL);
 
 	return 0;
 }

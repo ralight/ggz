@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6065 2004-07-09 11:19:06Z josef $
+ * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -644,7 +644,7 @@ void game_send_gameover(char code) {
   /* Report results to GGZ. */
   results[winner] = GGZ_GAME_WIN;
   results[1 - winner] = GGZ_GAME_LOSS;
-  ggzdmod_report_game(game_info.ggz, NULL, results);
+  ggzdmod_report_game(game_info.ggz, NULL, results, NULL);
 
   for (a = 0; a < 2; a++) {
     fd = ggzdmod_get_seat(game_info.ggz, a).fd;

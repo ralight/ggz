@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 6077 2004-07-11 04:28:48Z jdorje $
+ * $Id: common.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -629,7 +629,7 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 		for (i = 0; i < winner_cnt; i++)
 			results[winners[i]] = GGZ_GAME_WIN;
 
-		ggzdmod_report_game(game.ggz, teams, results);
+		ggzdmod_report_game(game.ggz, teams, results, NULL);
 	}
 
 	set_game_state(STATE_NOTPLAYING);

@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 6080 2004-07-11 04:43:02Z jdorje $
+ * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -397,7 +397,7 @@ static int game_send_gameover(int winner)
 		/* Draw. */
 		results[0] = results[1] = GGZ_GAME_TIE;
 	}
-	ggzdmod_report_game(connectx_game.ggz, NULL, results);
+	ggzdmod_report_game(connectx_game.ggz, NULL, results, NULL);
 
 	return 0;
 }

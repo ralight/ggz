@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5820 2004-02-07 09:57:55Z josef $
+ * $Id: ggzdmod.h 6107 2004-07-15 18:58:18Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -631,10 +631,11 @@ typedef enum {
  *  @param ggzdmod The ggzdmod object.
  *  @param teams An array listing a team number for each player, or NULL.
  *  @param results An array listing the result of the game for each player.
+ *  @param scores The scores for all players (may be NULL)
  */
 void ggzdmod_report_game(GGZdMod *ggzdmod,
 			 int *teams,
-			 GGZGameResult *results);
+			 GGZGameResult *results, int *scores);
 
 /** @brief Tell GGZ to change the number of seats at this table.
  *  @note This functionality is incomplete, and should not yet be used. */
