@@ -1,2 +1,0 @@
-?package(ggz-gtk-client):command="/usr/bin/ggz-gtk" icon="/usr/share/pixmaps/ggz/ggz_gtk_guest.xpm" \
- needs="X11" section="Apps/Net" title="GGZ-Gtk"
