@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2226 2001-08-25 13:56:44Z jdorje $
+# $Id: Makefile.am 2364 2001-09-05 06:47:26Z jdorje $
 
 SUBDIRS = .
 
@@ -12,11 +12,15 @@ SUBDIRS = .
 
 # This compiles for static linking with ggzd's game servers
 noinst_LIBRARIES = libggzdmod.a
-libggzdmod_a_SOURCES = ggz.c ggz_server.h ggz_protocols.h
+libggzdmod_a_SOURCES =  ggz_protocols.h\
+			ggz.c ggz_server.h \
+			ggz_stats.h ggz_stats.c
 
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
-libggzdmod_la_SOURCES = ggz.c ggz_server.h ggz_protocols.h
-include_HEADERS = ggz_server.h
+libggzdmod_la_SOURCES = ggz_protocols.h \
+			ggz.c ggz_server.h \
+			ggz_stats.h ggz_stats.c
+include_HEADERS = ggz_server.h ggz_stats.h
 
 test: # nothing to be done
