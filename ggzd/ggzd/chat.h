@@ -22,17 +22,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggz_common.h>
 
-#include <players.h>
+#include "ggzd.h"
+#include "players.h"
 
 
 /* Queue up chat message for room consumption */
-int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender, 
-		      char *msg);
+GGZReturn chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender, 
+			    char *msg);
 
 /* Queue up a chat to a specific player */
-int chat_player_enqueue(char* receiver, unsigned char opcode, 
-			GGZPlayer* sender, char *msg);
+GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode, 
+				      GGZPlayer* sender, char *msg);
 
 /* Queue up a server announcement to a specific player's chat window */
-int chat_server_2_player(char *player_name, char *msg);
+GGZReturn chat_server_2_player(char *player_name, char *msg);

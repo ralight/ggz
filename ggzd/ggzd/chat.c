@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4535 2002-09-13 02:34:30Z jdorje $
+ * $Id: chat.c 4555 2002-09-13 17:55:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -62,39 +62,38 @@ static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
                                               void* event_data);
 
 /* Queue up a chat for the room */
-int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender, 
-		      char *msg)
+GGZReturn chat_room_enqueue(int room, unsigned char opcode,
+			    GGZPlayer* sender, char *msg)
 {
 	GGZChatEventData *data;
-	int status = 0;
 	int i, rooms;
 
 	/* A message to room -1 announces to all rooms */
 	if(room == -1) {
+		int status = GGZ_OK;
 		if(perms_check(sender, PERMS_CHAT_ANNOUNCE) != PERMS_ALLOW)
 			return E_NO_PERMISSION;
 		rooms = room_get_num_rooms();
 		for(i=0; i<rooms; i++)
-			status = chat_room_enqueue(i, opcode, sender, msg);
+			if (chat_room_enqueue(i, opcode,
+					      sender, msg) != GGZ_OK)
+				status = GGZ_ERROR;
 		return status;
 	}
 
 	/* Pack up chat message */
 	data = chat_pack(opcode, sender->name, msg);
 
-	status = event_room_enqueue(room, chat_event_callback,
-				    sizeof(*data), data, chat_free);
-
-	return status;
+	return event_room_enqueue(room, chat_event_callback,
+				  sizeof(*data), data, chat_free);
 }
 
 
 /* Queue up a chat for a player */
-int chat_player_enqueue(char* receiver, unsigned char opcode, 
-			GGZPlayer* sender, char *msg)
+GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode, 
+				      GGZPlayer* sender, char *msg)
 
 {
-	int status=0;
 	GGZPlayer* rcvr = NULL;
 	GGZChatEventData *data;
 
@@ -124,10 +123,11 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 	data = chat_pack(opcode, sender->name, msg);
 	
 	/* Queue chat event for individual player */
-	status = event_player_enqueue(receiver, chat_event_callback,
-				      sizeof(*data), data, chat_free);
+	if (event_player_enqueue(receiver, chat_event_callback,
+				 sizeof(*data), data, chat_free) != GGZ_OK)
+		return E_USR_LOOKUP; /* FIXME: is this correct? */
 
-	return status;
+	return E_OK;
 }
 
 
@@ -177,17 +177,14 @@ static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
 
 /* This is more or less a temporary hack for show_server_info() - room.c */
 /* Although this could be a useful function for other uses. */
-int chat_server_2_player(char *name, char *msg)
+GGZReturn chat_server_2_player(char *name, char *msg)
 {
 	GGZChatEventData *data;
-	int status;
 
 	/* Pack up chat message */
 	data = chat_pack(GGZ_CHAT_PERSONAL, "[Server]", msg);
 	
 	/* Queue chat event for individual player */
-	status = event_player_enqueue(name, chat_event_callback,
+	return event_player_enqueue(name, chat_event_callback,
 				      sizeof(*data), data, chat_free);
-
-	return status;
 }
