@@ -1,0 +1,13 @@
+#ifndef GEEKGAME_PROTO_H
+#define GEEKGAME_PROTO_H
+
+#define OP_GREETING 100
+#define OP_NEWPLAYER 101
+#define OP_GAMESTART 102
+#define OP_GAMESTOP 103
+#define OP_GAMEEND 104
+
+#define OP_PRESENTATION 200
+
+#endif
+
