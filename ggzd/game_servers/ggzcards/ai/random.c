@@ -57,7 +57,7 @@ struct ai_function_pointers random_ai_funcs = {
 static char* get_name(player_t p)
 {
 	char buf[17];
-	snprintf(buf, sizeof(buf), "Random Bot %d", p);
+	snprintf(buf, sizeof(buf), "Random %d", p);
 	return strdup(buf);
 }
 

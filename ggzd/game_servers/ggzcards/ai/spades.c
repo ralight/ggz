@@ -59,8 +59,17 @@ struct ai_function_pointers spades_ai_funcs = {
 
 static char* get_name(player_t p)
 {
-	char buf[17];
-	snprintf(buf, sizeof(buf), "Spades Bot %d", p);
+	char buf[17] = "";
+	switch (p) {
+		case 0: snprintf(buf, sizeof(buf), "(B) Yenne");
+			break;
+		case 1: snprintf(buf, sizeof(buf), "(B) Crouton");
+			break;
+		case 2: snprintf(buf, sizeof(buf), "(B) Britt");
+			break;
+		case 3: snprintf(buf, sizeof(buf), "(B) Brent");
+			break;
+	}
 	return strdup(buf);
 }
 
