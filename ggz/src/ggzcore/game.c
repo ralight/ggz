@@ -49,7 +49,9 @@
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);
 static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, 
 					 GGZGameEvent id, void *data);
+#if 0 /* currently unused */
 static char* _ggzcore_game_get_path(char **argv);
+#endif
 
 
 /* Array of GGZGame messages */
@@ -399,6 +401,7 @@ static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, GGZGameEvent id,
 }
 
 
+#if 0 /* currently unused */
 static char* _ggzcore_game_get_path(char **argv)
 {
 	char *mod_path;
@@ -423,4 +426,5 @@ static char* _ggzcore_game_get_path(char **argv)
 
 	return path;
 }
+#endif
 
