@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.c 6240 2004-11-03 19:24:53Z jdorje $
+ * $Id: main_win.c 6241 2004-11-03 19:54:24Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -116,6 +116,7 @@ GtkWidget *create_main_win(void)
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
   gtk_window_set_title (GTK_WINDOW (main_win), _("GGZ Chess"));
+  gtk_window_set_default_size(GTK_WINDOW(main_win), 640, 480);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -144,15 +145,15 @@ GtkWidget *create_main_win(void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hpaned1);
   gtk_box_pack_start (GTK_BOX (hbox1), hpaned1, TRUE, TRUE, 0);
-  gtk_paned_set_position (GTK_PANED (hpaned1), 0);
+  gtk_paned_set_position (GTK_PANED (hpaned1), 512);
 
   board = gtk_drawing_area_new ();
   gtk_widget_ref (board);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "board", board,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (board);
-  gtk_paned_pack1 (GTK_PANED (hpaned1), board, FALSE, FALSE);
-  gtk_widget_set_usize (board, 512, 512);
+  gtk_paned_pack1 (GTK_PANED (hpaned1), board, TRUE, TRUE);
+  gtk_widget_set_size_request(board, 64, 64);
   gtk_widget_set_events (board, GDK_BUTTON_PRESS_MASK);
 
   vpaned1 = gtk_vpaned_new ();
@@ -160,7 +161,7 @@ GtkWidget *create_main_win(void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "vpaned1", vpaned1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vpaned1);
-  gtk_paned_pack2 (GTK_PANED (hpaned1), vpaned1, TRUE, TRUE);
+  gtk_paned_pack2 (GTK_PANED (hpaned1), vpaned1, FALSE, FALSE);
   gtk_paned_set_position (GTK_PANED (vpaned1), 0);
 
   vbox2 = gtk_vbox_new (TRUE, 15);
