@@ -33,18 +33,26 @@
 
 struct _GGZServer* _ggzcore_server_new(void);
 
-void _ggzcore_server_reset(struct _GGZServer *server);
-int _ggzcore_server_connect(struct _GGZServer *server);
-int _ggzcore_server_login(struct _GGZServer *server);
-int _ggzcore_server_list_players(struct _GGZServer *server);
-int _ggzcore_server_list_tables(struct _GGZServer *server, 
-				const int type, 
-				const char global);
+/* functions to get a GGZServer attribute */
+struct _GGZNet* _ggzcore_server_get_net(struct _GGZServer *server);
+GGZLoginType    _ggzcore_server_get_type(struct _GGZServer *server);
+char*           _ggzcore_server_get_handle(struct _GGZServer *server);
+char*           _ggzcore_server_get_password(struct _GGZServer *server);
+GGZStateID      _ggzcore_server_get_state(struct _GGZServer *server);
 
+int              _ggzcore_server_get_num_rooms(struct _GGZServer *server);
+struct _GGZRoom* _ggzcore_server_get_cur_room(struct _GGZServer *server);
+struct _GGZRoom* _ggzcore_server_get_nth_room(struct _GGZServer *server, 
+					      const unsigned int num);
+struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
+						const unsigned int id);
 
-void _ggzcore_server_set_host(struct _GGZServer *server, const char *host);
-void _ggzcore_server_set_port(struct _GGZServer *server, 
-			      const unsigned int port);
+int          _ggzcore_server_get_num_gametypes(struct _GGZServer *server);
+struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server, const unsigned int num);
+struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
+						    const unsigned int id);
+						      
+/* functions to set a GGZServer attribute */
 void _ggzcore_server_set_logintype(struct _GGZServer *server, 
 				   const GGZLoginType type);
 void _ggzcore_server_set_handle(struct _GGZServer *server, 
@@ -55,18 +63,24 @@ void _ggzcore_server_set_password(struct _GGZServer *server,
 void _ggzcore_server_set_room(struct _GGZServer *server,
 			      struct _GGZRoom *room);
 
+/* functions to perform an action */
 
-struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
-						const unsigned int id);
+void _ggzcore_server_reset(struct _GGZServer *server);
+int _ggzcore_server_connect(struct _GGZServer *server);
+int _ggzcore_server_login(struct _GGZServer *server);
+int _ggzcore_server_load_motd(struct _GGZServer *server);
+int _ggzcore_server_load_typelist(struct _GGZServer *server, 
+				  const char verbose);
+int _ggzcore_server_load_roomlist(struct _GGZServer *server,
+				  const int type,
+				  const char verbose);
+int _ggzcore_server_join_room(struct _GGZServer *server, 
+			      const unsigned int room);
 
-struct _GGZRoom* _ggzcore_server_get_nth_room(struct _GGZServer *server, 
-					      const unsigned int num);
-
-struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
-						    const unsigned int id);
-
-struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server, 
-						      const unsigned int num);
+int _ggzcore_server_list_players(struct _GGZServer *server);
+int _ggzcore_server_list_tables(struct _GGZServer *server, 
+				const int type, 
+				const char global);
 
 int _ggzcore_server_chat(struct _GGZServer *server, 
 			 const GGZChatOp opcode,
@@ -83,7 +97,6 @@ int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num
 int _ggzcore_server_leave_table(struct _GGZServer *server);
 
 void _ggzcore_server_net_error(struct _GGZServer *server, char *message);
-
 void _ggzcore_server_protocol_error(struct _GGZServer *server, char *message);
 
 void _ggzcore_server_clear(struct _GGZServer *server);

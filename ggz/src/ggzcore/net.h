@@ -48,19 +48,17 @@ int _ggzcore_net_connect(struct _GGZNet *net);
 void _ggzcore_net_disconnect(struct _GGZNet *net);
 
 /* Functions for sending data/requests to server */
-int _ggzcore_net_send_login(struct _GGZNet *net, 
-			    GGZLoginType type, 
-			    const char* login, 
-			    const char* pass);
-int _ggzcore_net_send_logout(struct _GGZNet *net);
+int _ggzcore_net_send_login(struct _GGZNet *net);
 int _ggzcore_net_send_motd(struct _GGZNet *net);
-
-int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose);
+int _ggzcore_net_send_list_types(struct _GGZNet *net, 
+				 const char verbose);
 int _ggzcore_net_send_list_rooms(struct _GGZNet *net,
 				 const int type,
 				 const char verbose);
 int _ggzcore_net_send_join_room(struct _GGZNet *net, 
 				const unsigned int room_num);
+
+int _ggzcore_net_send_logout(struct _GGZNet *net);
 
 int _ggzcore_net_send_list_players(struct _GGZNet *net);
 int _ggzcore_net_send_list_tables(struct _GGZNet *net, 

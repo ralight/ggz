@@ -152,6 +152,7 @@ static int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status);
 
 static int _ggzcore_net_read_game_data(const unsigned int fd, int *size, char *buffer);
 
+static void _ggzcore_net_error(struct _GGZNet *net, char* message);
 
 /* Lookup table of server msgs -> handler functions */
 static struct _GGZServerMsg _ggzcore_server_msgs[] = {
@@ -214,27 +215,6 @@ void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const cha
 }
 
 
-/* FIXME: set a timeout for connecting */
-int _ggzcore_net_connect(struct _GGZNet *net)
-{
-	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
-	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
-	
-	if (net->fd >= 0)
-		return 0;  /* success */
-	else
-		return -1; /* error */
-}
-
-
-void _ggzcore_net_free(struct _GGZNet *net)
-{
-	if (net->host)
-		ggzcore_free(net->host);
-	ggzcore_free(net);
-}
-
-
 char* _ggzcore_net_get_host(struct _GGZNet *net)
 {
 	return net->host;
@@ -253,6 +233,27 @@ int _ggzcore_net_get_fd(struct _GGZNet *net)
 }
 
 
+void _ggzcore_net_free(struct _GGZNet *net)
+{
+	if (net->host)
+		ggzcore_free(net->host);
+	ggzcore_free(net);
+}
+
+
+/* FIXME: set a timeout for connecting */
+int _ggzcore_net_connect(struct _GGZNet *net)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
+	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
+	
+	if (net->fd >= 0)
+		return 0;  /* success */
+	else
+		return -1; /* error */
+}
+
+
 void _ggzcore_net_disconnect(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
@@ -261,66 +262,53 @@ void _ggzcore_net_disconnect(struct _GGZNet *net)
 }
 
 
-int _ggzcore_net_send_login(struct _GGZNet *net, 
-			     GGZLoginType type, 
-			     const char* login, 
-			     const char* pass)
+int _ggzcore_net_send_login(struct _GGZNet *net)
 {
+	GGZLoginType type;
+	char *handle, *password;
 	int status = 0;
 
+	type = _ggzcore_server_get_type(net->server);
+	handle = _ggzcore_server_get_handle(net->server);
+	password = _ggzcore_server_get_password(net->server);
+	
 	switch (type) {
 	case GGZ_LOGIN:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
 		if (es_write_int(net->fd, REQ_LOGIN) < 0
-		    || es_write_string(net->fd, login) < 0
-		    || es_write_string(net->fd, pass) < 0)
+		    || es_write_string(net->fd, handle) < 0
+		    || es_write_string(net->fd, password) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_GUEST:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
 		if (es_write_int(net->fd, REQ_LOGIN_ANON) < 0
-		    || es_write_string(net->fd, login) < 0)
+		    || es_write_string(net->fd, handle) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_NEW:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
 		if (es_write_int(net->fd, REQ_LOGIN_NEW) < 0
-		    || es_write_string(net->fd, login) < 0)
+		    || es_write_string(net->fd, handle) < 0)
 			status = -1;
 		break;
 	}
+	
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending login");
 
 	return status;
 }
 
 
-int _ggzcore_net_send_logout(struct _GGZNet *net)
-{
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
-	return es_write_int(net->fd, REQ_LOGOUT);
-}
-
-
 int _ggzcore_net_send_motd(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
-	return es_write_int(net->fd, REQ_MOTD);
-}
-
-
-int _ggzcore_net_send_list_rooms(struct _GGZNet *net,
-				 const int type, 
-				 const char verbose)
-{	
 	int status = 0;
 
-	net->room_verbose = verbose;
-
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
-	if (es_write_int(net->fd, REQ_LIST_ROOMS) < 0
-	    || es_write_int(net->fd, type) < 0
-	    || es_write_char(net->fd, verbose) < 0)
-		status = -1;
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
+	status = es_write_int(net->fd, REQ_MOTD);
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending motd request");
 
 	return status;
 }
@@ -337,23 +325,49 @@ int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 	    || es_write_char(net->fd, verbose) < 0)
 		status = -1;
 
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending typelist request");
+
 	return status;
 }
 
 
-int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int room_num)
+int _ggzcore_net_send_list_rooms(struct _GGZNet *net, const int type, const char verbose)
+{	
+	int status = 0;
+	
+	net->room_verbose = verbose;
+
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
+	if (es_write_int(net->fd, REQ_LIST_ROOMS) < 0
+	    || es_write_int(net->fd, type) < 0
+	    || es_write_char(net->fd, verbose) < 0)
+		status = -1;
+
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending roomlist request");
+
+	return status;
+}
+
+
+int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int id)
 {
 	int status = 0;
 	struct _GGZRoom *room;
 
-	room = ggzcore_server_get_nth_room(net->server, room_num);
+	room = _ggzcore_server_get_room_by_id(net->server, id);
 
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
 	if (es_write_int(net->fd, REQ_ROOM_JOIN) < 0
-	    || es_write_int(net->fd, room_num) < 0)
+	    || es_write_int(net->fd, id) < 0)
 		status = -1;
 	
-	net->new_room = room;
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending room join request");
+	else 
+		net->new_room = room;
+
 	return status;
 }
 
@@ -488,6 +502,13 @@ int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 	}
 
 	return pending;
+}
+
+
+int _ggzcore_net_send_logout(struct _GGZNet *net)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
+	return es_write_int(net->fd, REQ_LOGOUT);
 }
 
 
@@ -1543,3 +1564,9 @@ static struct _GGZTable* _ggzcore_net_handle_table(struct _GGZNet *net)
 }
 
 
+static void _ggzcore_net_error(struct _GGZNet *net, char* message)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Network error: %s", message);
+	_ggzcore_net_disconnect(net);
+	_ggzcore_server_net_error(net->server, message);
+}
