@@ -301,12 +301,14 @@ AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 
 AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 [
+	save_libs=$LIBS
+	LIBS="$LIBS -L/usr/lib/mysql"
 	AC_CHECK_LIB(mysqlclient_r, mysql_connect,
 	[
 		AC_CHECK_HEADER(mysql/mysql.h,
 		[
 			database=mysql
-			LIB_DATABASE="-lmysqlclient_r"
+			LIB_DATABASE="-L/usr/lib/mysql -lmysqlclient_r"
 		],
 		[
 			if test "$database" = mysql; then
@@ -319,6 +321,7 @@ AC_DEFUN([AC_GGZ_DATABASE_MYSQL],
 			AC_MSG_ERROR([cannot configure mysql (mysql library needed)])
 		fi
 	])
+	LIBS=$save_libs
 ])
 
 AC_DEFUN([AC_GGZ_DATABASE],
