@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 6446 2004-12-11 20:45:05Z jdorje $
+ * $Id: server.h 6877 2005-01-24 06:34:32Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -31,103 +31,101 @@
 #include "ggzcore.h"
 #include "room.h"
 #include "state.h"
+#include "net.h"
 
-GGZServer* _ggzcore_server_new(void);
+GGZServer *_ggzcore_server_new(void);
 
 /* functions to get a GGZServer attribute */
-struct _GGZNet* _ggzcore_server_get_net(GGZServer *server);
-GGZLoginType    _ggzcore_server_get_type(GGZServer *server);
-char*           _ggzcore_server_get_handle(GGZServer *server);
-char*           _ggzcore_server_get_password(GGZServer *server);
-GGZStateID      _ggzcore_server_get_state(GGZServer *server);
-int             _ggzcore_server_get_tls(struct _GGZServer *server);
+GGZNet *_ggzcore_server_get_net(GGZServer * server);
+GGZLoginType _ggzcore_server_get_type(GGZServer * server);
+char *_ggzcore_server_get_handle(GGZServer * server);
+char *_ggzcore_server_get_password(GGZServer * server);
+GGZStateID _ggzcore_server_get_state(GGZServer * server);
+int _ggzcore_server_get_tls(struct _GGZServer *server);
 
-int _ggzcore_server_get_num_players(GGZServer *server);
+int _ggzcore_server_get_num_players(GGZServer * server);
 
-int             _ggzcore_server_get_num_rooms(GGZServer *server);
-GGZRoom*        _ggzcore_server_get_cur_room(GGZServer *server);
-GGZRoom*        _ggzcore_server_get_nth_room(GGZServer *server, 
+int _ggzcore_server_get_num_rooms(GGZServer * server);
+GGZRoom *_ggzcore_server_get_cur_room(GGZServer * server);
+GGZRoom *_ggzcore_server_get_nth_room(GGZServer * server,
+				      const unsigned int num);
+GGZRoom *_ggzcore_server_get_room_by_id(GGZServer * server,
+					const unsigned int id);
+
+int _ggzcore_server_get_num_gametypes(GGZServer * server);
+GGZGameType *_ggzcore_server_get_nth_gametype(GGZServer * server,
 					      const unsigned int num);
-GGZRoom*        _ggzcore_server_get_room_by_id(GGZServer *server,
-					       const unsigned int id);
-
-int             _ggzcore_server_get_num_gametypes(GGZServer *server);
-GGZGameType*    _ggzcore_server_get_nth_gametype(GGZServer *server,
-					      const unsigned int num);
-GGZGameType*    _ggzcore_server_get_type_by_id(GGZServer *server,
+GGZGameType *_ggzcore_server_get_type_by_id(GGZServer * server,
 					    const unsigned int id);
-GGZGame* _ggzcore_server_get_cur_game(GGZServer *server);
-void _ggzcore_server_set_cur_game(GGZServer *server, GGZGame *game);
-						      
-/* functions to set a GGZServer attribute */
-void _ggzcore_server_set_logintype(GGZServer *server, const GGZLoginType type);
-void _ggzcore_server_set_handle(GGZServer *server, const char *handle);
-void _ggzcore_server_set_password(GGZServer *server, const char *password);
+GGZGame *_ggzcore_server_get_cur_game(GGZServer * server);
+void _ggzcore_server_set_cur_game(GGZServer * server, GGZGame * game);
 
-void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room);
+/* functions to set a GGZServer attribute */
+void _ggzcore_server_set_logintype(GGZServer * server,
+				   const GGZLoginType type);
+void _ggzcore_server_set_handle(GGZServer * server, const char *handle);
+void _ggzcore_server_set_password(GGZServer * server,
+				  const char *password);
+
+void _ggzcore_server_set_room(GGZServer * server, GGZRoom * room);
 
 /* functions to pass status of other information to server object */
-void _ggzcore_server_set_negotiate_status(GGZServer *server,
-					  struct _GGZNet *net,
+void _ggzcore_server_set_negotiate_status(GGZServer * server,
+					  GGZNet * net,
 					  GGZClientReqError status);
-void _ggzcore_server_set_login_status(GGZServer *server, 
+void _ggzcore_server_set_login_status(GGZServer * server,
 				      GGZClientReqError status);
-void _ggzcore_server_set_room_join_status(GGZServer *server, 
+void _ggzcore_server_set_room_join_status(GGZServer * server,
 					  GGZClientReqError status);
-void _ggzcore_server_set_table_launching(GGZServer *server);
-void _ggzcore_server_set_table_joining(GGZServer *server);
-void _ggzcore_server_set_table_leaving(GGZServer *server);
-void _ggzcore_server_set_table_launch_status(GGZServer *server, 
+void _ggzcore_server_set_table_launching(GGZServer * server);
+void _ggzcore_server_set_table_joining(GGZServer * server);
+void _ggzcore_server_set_table_leaving(GGZServer * server);
+void _ggzcore_server_set_table_launch_status(GGZServer * server,
 					     GGZClientReqError status);
-void _ggzcore_server_set_table_join_status(GGZServer *server, 
+void _ggzcore_server_set_table_join_status(GGZServer * server,
 					   GGZClientReqError status);
-void _ggzcore_server_set_table_leave_status(GGZServer *server, 
+void _ggzcore_server_set_table_leave_status(GGZServer * server,
 					    GGZClientReqError status);
-void _ggzcore_server_session_over(GGZServer *server, struct _GGZNet *net);
+void _ggzcore_server_session_over(GGZServer * server, GGZNet * net);
 
 /* functions to perform an action */
-int _ggzcore_server_log_session(GGZServer *server, const char *filename);
-void _ggzcore_server_reset(GGZServer *server);
-int _ggzcore_server_connect(GGZServer *server);
-int _ggzcore_server_create_channel(GGZServer *server);
-int _ggzcore_server_login(GGZServer *server);
-int _ggzcore_server_load_motd(GGZServer *server);
-int _ggzcore_server_load_typelist(GGZServer *server, const char verbose);
-int _ggzcore_server_load_roomlist(GGZServer *server,
+int _ggzcore_server_log_session(GGZServer * server, const char *filename);
+void _ggzcore_server_reset(GGZServer * server);
+int _ggzcore_server_connect(GGZServer * server);
+int _ggzcore_server_create_channel(GGZServer * server);
+int _ggzcore_server_login(GGZServer * server);
+int _ggzcore_server_load_motd(GGZServer * server);
+int _ggzcore_server_load_typelist(GGZServer * server, const char verbose);
+int _ggzcore_server_load_roomlist(GGZServer * server,
 				  const int type, const char verbose);
-int _ggzcore_server_join_room(GGZServer *server, 
-			      const unsigned int room);
+int _ggzcore_server_join_room(GGZServer * server, const unsigned int room);
 
-int _ggzcore_server_logout(GGZServer *server);
-int _ggzcore_server_disconnect(GGZServer *server);
-void _ggzcore_server_net_error(GGZServer *server, char *message);
-void _ggzcore_server_protocol_error(GGZServer *server, char *message);
+int _ggzcore_server_logout(GGZServer * server);
+int _ggzcore_server_disconnect(GGZServer * server);
+void _ggzcore_server_net_error(GGZServer * server, char *message);
+void _ggzcore_server_protocol_error(GGZServer * server, char *message);
 
-void _ggzcore_server_clear(GGZServer *server);
+void _ggzcore_server_clear(GGZServer * server);
 
-void _ggzcore_server_free(GGZServer *server);
+void _ggzcore_server_free(GGZServer * server);
 
 
 
 
 /* Functions for manipulating list of rooms */
-void _ggzcore_server_init_roomlist(GGZServer *server,
-				   const int num);
-void _ggzcore_server_free_roomlist(GGZServer *server);
-void _ggzcore_server_add_room(GGZServer *server, 
-			      GGZRoom *room);
+void _ggzcore_server_init_roomlist(GGZServer * server, const int num);
+void _ggzcore_server_free_roomlist(GGZServer * server);
+void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room);
 
 /* Functions for manipulating list of gametypes */
-void _ggzcore_server_init_typelist(GGZServer *server, 
-				   const int num);
-void _ggzcore_server_free_typelist(GGZServer *server);
-void _ggzcore_server_add_type(GGZServer *server, 
-			      GGZGameType *type);
+void _ggzcore_server_init_typelist(GGZServer * server, const int num);
+void _ggzcore_server_free_typelist(GGZServer * server);
+void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type);
 
 
 int _ggzcore_server_event_is_valid(GGZServerEvent event);
-void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans);
-GGZHookReturn _ggzcore_server_event(GGZServer*, GGZServerEvent, void*);
-void _ggzcore_server_queue_players_changed(GGZServer *server);
+void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans);
+GGZHookReturn _ggzcore_server_event(GGZServer *, GGZServerEvent, void *);
+void _ggzcore_server_queue_players_changed(GGZServer * server);
 
 #endif /* __SERVER_H__ */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: net.h 6877 2005-01-24 06:34:32Z jdorje $
  *
  * Code for performing network I/O
  *
@@ -34,74 +34,65 @@
 
 typedef struct _GGZNet GGZNet;
 
-struct _GGZNet* _ggzcore_net_new(void);
-void _ggzcore_net_init(struct _GGZNet *net, 
-		       struct _GGZServer *server, 
+GGZNet *_ggzcore_net_new(void);
+void _ggzcore_net_init(GGZNet * net,
+		       struct _GGZServer *server,
 		       const char *host,
-		       unsigned int port,
-			   unsigned int use_tls);
+		       unsigned int port, unsigned int use_tls);
 
-int _ggzcore_net_set_dump_file(struct _GGZNet *net, const char* filename);
-void _ggzcore_net_set_fd(struct _GGZNet *net, int fd);
+int _ggzcore_net_set_dump_file(GGZNet * net, const char *filename);
+void _ggzcore_net_set_fd(GGZNet * net, int fd);
 
-void _ggzcore_net_free(struct _GGZNet *net);
+void _ggzcore_net_free(GGZNet * net);
 
-const char* _ggzcore_net_get_host(struct _GGZNet *net);
-unsigned int _ggzcore_net_get_port(struct _GGZNet *net);
-int          _ggzcore_net_get_fd(struct _GGZNet *net);
-int          _ggzcore_net_get_tls(struct _GGZNet *net);
+const char *_ggzcore_net_get_host(GGZNet * net);
+unsigned int _ggzcore_net_get_port(GGZNet * net);
+int _ggzcore_net_get_fd(GGZNet * net);
+int _ggzcore_net_get_tls(GGZNet * net);
 
-int _ggzcore_net_connect(struct _GGZNet *net);
+int _ggzcore_net_connect(GGZNet * net);
 
-void _ggzcore_net_disconnect(struct _GGZNet *net);
+void _ggzcore_net_disconnect(GGZNet * net);
 
 /* Functions for sending data/requests to server */
-int _ggzcore_net_send_login(struct _GGZNet *net, GGZLoginType login_type,
+int _ggzcore_net_send_login(GGZNet * net, GGZLoginType login_type,
 			    const char *handle, const char *password,
 			    const char *language);
-int _ggzcore_net_send_channel(struct _GGZNet *net, const char *id);
-int _ggzcore_net_send_motd(struct _GGZNet *net);
-int _ggzcore_net_send_list_types(struct _GGZNet *net, 
-				 const char verbose);
-int _ggzcore_net_send_list_rooms(struct _GGZNet *net,
-				 const int type,
-				 const char verbose);
-int _ggzcore_net_send_join_room(struct _GGZNet *net, 
-				const unsigned int room_num);
+int _ggzcore_net_send_channel(GGZNet * net, const char *id);
+int _ggzcore_net_send_motd(GGZNet * net);
+int _ggzcore_net_send_list_types(GGZNet * net, const char verbose);
+int _ggzcore_net_send_list_rooms(GGZNet * net,
+				 const int type, const char verbose);
+int _ggzcore_net_send_join_room(GGZNet * net, const unsigned int room_num);
 
-int _ggzcore_net_send_list_players(struct _GGZNet *net);
-int _ggzcore_net_send_list_tables(struct _GGZNet *net, 
-				  const int type, 
-				  const char global);
+int _ggzcore_net_send_list_players(GGZNet * net);
+int _ggzcore_net_send_list_tables(GGZNet * net,
+				  const int type, const char global);
 
-int _ggzcore_net_send_chat(struct _GGZNet *net, 
+int _ggzcore_net_send_chat(GGZNet * net,
 			   const GGZChatType op,
-			   const char* player, 
-			   const char* msg); 
+			   const char *player, const char *msg);
 
-int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table);
-int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num,
+int _ggzcore_net_send_table_launch(GGZNet * net, struct _GGZTable *table);
+int _ggzcore_net_send_table_join(GGZNet * net, const unsigned int num,
 				 int spectator);
-int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force,
-				  int spectator);
-int _ggzcore_net_send_table_reseat(struct _GGZNet *net,
-				   GGZReseatType opcode,
-				   int seat_num);
-int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, GGZTable *table,
-					GGZTableSeat *seat);
-int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, GGZTable *table,
+int _ggzcore_net_send_table_leave(GGZNet * net, int force, int spectator);
+int _ggzcore_net_send_table_reseat(GGZNet * net,
+				   GGZReseatType opcode, int seat_num);
+int _ggzcore_net_send_table_seat_update(GGZNet * net, GGZTable * table,
+					GGZTableSeat * seat);
+int _ggzcore_net_send_table_desc_update(GGZNet * net, GGZTable * table,
 					const char *desc);
-int _ggzcore_net_send_table_boot_update(struct _GGZNet *net, GGZTable *table,
-					GGZTableSeat *seat);
+int _ggzcore_net_send_table_boot_update(GGZNet * net, GGZTable * table,
+					GGZTableSeat * seat);
 
-int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer);
+int _ggzcore_net_send_game_data(GGZNet * net, int size, char *buffer);
 
-int _ggzcore_net_send_logout(struct _GGZNet *net);
+int _ggzcore_net_send_logout(GGZNet * net);
 
 
 /* Functions for reading data from server */
-int _ggzcore_net_data_is_pending(struct _GGZNet *net);
-int _ggzcore_net_read_data(struct _GGZNet *net);
+int _ggzcore_net_data_is_pending(GGZNet * net);
+int _ggzcore_net_read_data(GGZNet * net);
 
 #endif /* __NET_H__ */
-

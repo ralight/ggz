@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: game.c 6877 2005-01-24 06:34:32Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -25,7 +25,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>		/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -62,15 +62,15 @@
 
 /* Local functions */
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);
-static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, 
+static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game,
 					 GGZGameEvent id, void *data);
-#if 0 /* currently unused */
-static char* _ggzcore_game_get_path(char **argv);
+#if 0	/* currently unused */
+static char *_ggzcore_game_get_path(char **argv);
 #endif
 
 
 /* Array of GGZGame messages */
-static char* _ggzcore_game_events[] = {
+static char *_ggzcore_game_events[] = {
 	"GGZ_GAME_LAUNCHED",
 	"GGZ_GAME_LAUNCH_FAIL",
 	"GGZ_GAME_NEGOTIATED",
@@ -82,7 +82,8 @@ static char* _ggzcore_game_events[] = {
 };
 
 /* Total number of server events messages */
-static unsigned int _ggzcore_num_events = sizeof(_ggzcore_game_events)/sizeof(_ggzcore_game_events[0]);
+static unsigned int _ggzcore_num_events =
+    sizeof(_ggzcore_game_events) / sizeof(_ggzcore_game_events[0]);
 
 
 /*
@@ -94,7 +95,8 @@ struct _GGZGame {
 	struct _GGZModule *module;
 
 	/* Room events */
-	struct _GGZHookList *event_hooks[sizeof(_ggzcore_game_events)/sizeof(_ggzcore_game_events[0])];
+	struct _GGZHookList *event_hooks[sizeof(_ggzcore_game_events) /
+					 sizeof(_ggzcore_game_events[0])];
 
 	/* GGZ Game module connection */
 	GGZMod *client;
@@ -107,7 +109,7 @@ struct _GGZGame {
 
 	/* What's our seat number? */
 	int seat_num;
-	
+
 	/* Which room this game is in. */
 	int room_id;
 
@@ -116,47 +118,46 @@ struct _GGZGame {
 };
 
 
-static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
+static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 				       void *data);
-static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_sit(GGZMod * mod, GGZModTransaction t,
 				     void *data);
-static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_stand(GGZMod * mod, GGZModTransaction t,
 				       void *data);
-static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_boot(GGZMod * mod, GGZModTransaction t,
 				      void *data);
-static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_seatchange(GGZMod * mod,
+					    GGZModTransaction t,
 					    void *data);
-static void _ggzcore_game_handle_chat(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
 				      void *data);
 
 
 /* Publicly exported functions */
 
-GGZGame* ggzcore_game_new(void)
+GGZGame *ggzcore_game_new(void)
 {
 	return _ggzcore_game_new();
 }
 
 
-int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module)
+int ggzcore_game_init(GGZGame * game, GGZServer * server,
+		      GGZModule * module)
 {
-	if (!game
-	    || !server
-	    || !_ggzcore_server_get_cur_room(server)
+	if (!game || !server || !_ggzcore_server_get_cur_room(server)
 	    || _ggzcore_server_get_cur_game(server))
 		return -1;
 
-	if (!module
-	    && !_ggzcore_module_is_embedded())
+	if (!module && !_ggzcore_module_is_embedded())
 		return -1;
 
 	_ggzcore_game_init(game, server, module);
-	
+
 	return 0;
 }
 
 
-void ggzcore_game_free(GGZGame *game)
+void ggzcore_game_free(GGZGame * game)
 {
 	if (game)
 		_ggzcore_game_free(game);
@@ -164,57 +165,60 @@ void ggzcore_game_free(GGZGame *game)
 
 
 /* Functions for attaching hooks to GGZGame events */
-int ggzcore_game_add_event_hook(GGZGame *game,
-				const GGZGameEvent event, 
+int ggzcore_game_add_event_hook(GGZGame * game,
+				const GGZGameEvent event,
 				const GGZHookFunc func)
 {
 	if (game && _ggzcore_game_event_is_valid(event)
 	    && game->event_hooks[event])
-		return _ggzcore_game_add_event_hook_full(game, event, func, NULL);
+		return _ggzcore_game_add_event_hook_full(game, event, func,
+							 NULL);
 	else
 		return -1;
 }
 
 
-int ggzcore_game_add_event_hook_full(GGZGame *game,
-				     const GGZGameEvent event, 
+int ggzcore_game_add_event_hook_full(GGZGame * game,
+				     const GGZGameEvent event,
 				     const GGZHookFunc func,
 				     const void *data)
 {
 	if (game && _ggzcore_game_event_is_valid(event)
 	    && game->event_hooks[event])
-		return _ggzcore_game_add_event_hook_full(game, event, func, data);
+		return _ggzcore_game_add_event_hook_full(game, event, func,
+							 data);
 	else
 		return -1;
 }
 
 
 /* Functions for removing hooks from GGZGame events */
-int ggzcore_game_remove_event_hook(GGZGame *game,
-				   const GGZGameEvent event, 
+int ggzcore_game_remove_event_hook(GGZGame * game,
+				   const GGZGameEvent event,
 				   const GGZHookFunc func)
 {
 	if (game && _ggzcore_game_event_is_valid(event)
 	    && game->event_hooks[event])
 		return _ggzcore_game_remove_event_hook(game, event, func);
-	else 
-		return -1;
-}
-
-
-int ggzcore_game_remove_event_hook_id(GGZGame *game,
-				      const GGZGameEvent event, 
-				      const unsigned int hook_id)
-{
-	if (game && _ggzcore_game_event_is_valid(event)
-	    && game->event_hooks[event])
-		return _ggzcore_game_remove_event_hook_id(game, event, hook_id);
 	else
 		return -1;
 }
 
 
-int ggzcore_game_get_control_fd(GGZGame *game)
+int ggzcore_game_remove_event_hook_id(GGZGame * game,
+				      const GGZGameEvent event,
+				      const unsigned int hook_id)
+{
+	if (game && _ggzcore_game_event_is_valid(event)
+	    && game->event_hooks[event])
+		return _ggzcore_game_remove_event_hook_id(game, event,
+							  hook_id);
+	else
+		return -1;
+}
+
+
+int ggzcore_game_get_control_fd(GGZGame * game)
 {
 	if (game)
 		return _ggzcore_game_get_control_fd(game);
@@ -223,25 +227,25 @@ int ggzcore_game_get_control_fd(GGZGame *game)
 }
 
 
-int ggzcore_game_read_data(GGZGame *game)
+int ggzcore_game_read_data(GGZGame * game)
 {
 	if (game)
 		return _ggzcore_game_read_data(game);
 	else
 		return -1;
-}   
+}
 
 
-GGZModule* ggzcore_game_get_module(GGZGame *game)
+GGZModule *ggzcore_game_get_module(GGZGame * game)
 {
 	if (game)
 		return _ggzcore_game_get_module(game);
 	else
 		return NULL;
 }
-	
 
-int ggzcore_game_launch(GGZGame *game)
+
+int ggzcore_game_launch(GGZGame * game)
 {
 	if (game && (game->module || _ggzcore_module_is_embedded()))
 		return _ggzcore_game_launch(game);
@@ -256,7 +260,7 @@ int ggzcore_game_launch(GGZGame *game)
  */
 
 
-struct _GGZGame* _ggzcore_game_new(void)
+struct _GGZGame *_ggzcore_game_new(void)
 {
 	struct _GGZGame *game;
 
@@ -267,8 +271,7 @@ struct _GGZGame* _ggzcore_game_new(void)
 
 
 void _ggzcore_game_init(struct _GGZGame *game,
-			GGZServer *server,
-			struct _GGZModule *module)
+			GGZServer * server, struct _GGZModule *module)
 {
 	int i;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
@@ -279,7 +282,7 @@ void _ggzcore_game_init(struct _GGZGame *game,
 
 	_ggzcore_server_set_cur_game(server, game);
 
-     	game->module = module;
+	game->module = module;
 
 	ggz_debug(GGZCORE_DBG_GAME, "Initializing new game");
 
@@ -315,8 +318,7 @@ void _ggzcore_game_init(struct _GGZGame *game,
 				       GGZMOD_TRANSACTION_CHAT,
 				       _ggzcore_game_handle_chat);
 	ggzmod_set_player(game->client,
-			  _ggzcore_server_get_handle(server),
-			  0, -1);
+			  _ggzcore_server_get_handle(server), 0, -1);
 
 	if (!_ggzcore_module_is_embedded())
 		ggzmod_set_module(game->client, NULL,
@@ -329,12 +331,12 @@ void _ggzcore_game_init(struct _GGZGame *game,
  * Game state changes are all initiated by the game client through ggzmod.
  * So if we get here we just have to update ggzcore and the ggz client based
  * on what changes have already happened. */
-static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
+static void _ggzcore_game_handle_state(GGZMod * mod, GGZModEvent event,
 				       void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_get_gamedata(mod);
 	const GGZModState new = ggzmod_get_state(mod);
-	const GGZModState * const prev = data;
+	const GGZModState *const prev = data;
 
 	ggz_debug(GGZCORE_DBG_GAME, "Game changing from state %d to %d",
 		  *prev, new);
@@ -381,12 +383,12 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
 }
 
 
-static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_sit(GGZMod * mod, GGZModTransaction t,
 				     void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
-	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
-	int seat_num = *(int*)data;
+	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	int seat_num = *(int *)data;
 	GGZReseatType op;
 
 	if (game->spectating)
@@ -398,23 +400,24 @@ static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
 }
 
 
-static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_stand(GGZMod * mod, GGZModTransaction t,
 				       void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
-	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
+	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
 
 	_ggzcore_net_send_table_reseat(net, GGZ_RESEAT_STAND, -1);
 }
 
-static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_boot(GGZMod * mod, GGZModTransaction t,
 				      void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
-	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
+	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
-	GGZTable *table = ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table =
+	    ggzcore_room_get_table_by_id(room, game->table_id);
 	char *name = data;
 	int i;
 
@@ -430,11 +433,12 @@ static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 
 	for (i = 0; i < ggzcore_table_get_num_spectator_seats(table); i++) {
 		GGZTableSeat spectator
-			= _ggzcore_table_get_nth_spectator_seat(table, i);
+		    = _ggzcore_table_get_nth_spectator_seat(table, i);
 
 		if (ggz_strcmp(spectator.name, name))
 			continue;
-		_ggzcore_net_send_table_boot_update(net, table, &spectator);
+		_ggzcore_net_send_table_boot_update(net, table,
+						    &spectator);
 		return;
 	}
 
@@ -443,16 +447,18 @@ static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 }
 
 
-static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_seatchange(GGZMod * mod,
+					    GGZModTransaction t,
 					    void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
-	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
-	int seat_num = *(int*)data;
-	GGZTableSeat seat = {index: seat_num, name: NULL};
+	GGZGame *game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	int seat_num = *(int *)data;
+      GGZTableSeat seat = { index: seat_num, name:NULL };
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
-	GGZTable *table = ggzcore_room_get_table_by_id(room, game->table_id);
+	GGZTable *table =
+	    ggzcore_room_get_table_by_id(room, game->table_id);
 
 	if (t == GGZMOD_TRANSACTION_OPEN)
 		seat.type = GGZ_SEAT_OPEN;
@@ -462,10 +468,10 @@ static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
 	_ggzcore_net_send_table_seat_update(net, table, &seat);
 }
 
-static void _ggzcore_game_handle_chat(GGZMod *mod, GGZModTransaction t,
+static void _ggzcore_game_handle_chat(GGZMod * mod, GGZModTransaction t,
 				      void *data)
 {
-	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZGame *game = ggzmod_get_gamedata(mod);
 	const char *chat = data;
 	GGZRoom *room = _ggzcore_server_get_cur_room(game->server);
 
@@ -489,7 +495,7 @@ void _ggzcore_game_free(struct _GGZGame *game)
 	ggz_free(game);
 }
 
-void _ggzcore_game_set_table(GGZGame *game, int room_id, int table_id)
+void _ggzcore_game_set_table(GGZGame * game, int room_id, int table_id)
 {
 	GGZRoom *room;
 	GGZTable *table;
@@ -516,29 +522,32 @@ void _ggzcore_game_set_table(GGZGame *game, int room_id, int table_id)
 	num_seats = ggzcore_table_get_num_spectator_seats(table);
 	for (i = 0; i < num_seats; i++) {
 		GGZTableSeat seat =
-		  _ggzcore_table_get_nth_spectator_seat(table, i);
+		    _ggzcore_table_get_nth_spectator_seat(table, i);
 
 		_ggzcore_game_set_spectator_seat(game, &seat);
 	}
 }
 
 
-void _ggzcore_game_set_seat(GGZGame *game, GGZTableSeat *seat)
+void _ggzcore_game_set_seat(GGZGame * game, GGZTableSeat * seat)
 {
-	GGZSeat mseat = {num: seat->index,
-			 type: seat->type,
-			 name: seat->name};
+      GGZSeat mseat = { num:seat->index,
+	      type:seat->type,
+	      name:seat->name
+	};
 	ggzmod_set_seat(game->client, &mseat);
 }
 
-void _ggzcore_game_set_spectator_seat(GGZGame *game, GGZTableSeat *seat)
+void _ggzcore_game_set_spectator_seat(GGZGame * game, GGZTableSeat * seat)
 {
-	GGZSpectatorSeat mseat = {num: seat->index,
-				  name: seat->name};
+      GGZSpectatorSeat mseat = { num:seat->index,
+	      name:seat->name
+	};
 	ggzmod_set_spectator_seat(game->client, &mseat);
 }
 
-void _ggzcore_game_set_player(GGZGame *game, int is_spectator, int seat_num)
+void _ggzcore_game_set_player(GGZGame * game, int is_spectator,
+			      int seat_num)
 {
 	if (game->spectating == is_spectator && game->seat_num == seat_num)
 		return;
@@ -552,50 +561,51 @@ void _ggzcore_game_set_player(GGZGame *game, int is_spectator, int seat_num)
 		assert(0);
 }
 
-void _ggzcore_game_inform_chat(GGZGame *game,
-			    const char *player, const char *msg)
+void _ggzcore_game_inform_chat(GGZGame * game,
+			       const char *player, const char *msg)
 {
 	if (ggzmod_inform_chat(game->client, player, msg) < 0) {
 		/* Nothing. */
 	}
 }
 
-int _ggzcore_game_is_spectator(GGZGame *game)
+int _ggzcore_game_is_spectator(GGZGame * game)
 {
 	return game->spectating;
 }
 
 
-int _ggzcore_game_get_seat_num(GGZGame *game)
+int _ggzcore_game_get_seat_num(GGZGame * game)
 {
 	return game->seat_num;
 }
 
 
-int _ggzcore_game_get_room_id(GGZGame *game)
+int _ggzcore_game_get_room_id(GGZGame * game)
 {
 	return game->room_id;
 }
 
 
-int _ggzcore_game_get_table_id(GGZGame *game)
+int _ggzcore_game_get_table_id(GGZGame * game)
 {
 	return game->table_id;
 }
 
 
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,
-				      const GGZGameEvent event, 
+				      const GGZGameEvent event,
 				      const GGZHookFunc func,
 				      const void *data)
 {
-	return _ggzcore_hook_add_full(game->event_hooks[event], func, data);
+	return _ggzcore_hook_add_full(game->event_hooks[event], func,
+				      data);
 }
 
 
 /* Functions for removing hooks from struct _GGZGame events */
 int _ggzcore_game_remove_event_hook(struct _GGZGame *game,
-				    const GGZGameEvent event, 
+				    const GGZGameEvent event,
 				    const GGZHookFunc func)
 {
 	return _ggzcore_hook_remove(game->event_hooks[event], func);
@@ -603,7 +613,7 @@ int _ggzcore_game_remove_event_hook(struct _GGZGame *game,
 
 
 int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
-				       const GGZGameEvent event, 
+				       const GGZGameEvent event,
 				       const unsigned int hook_id)
 {
 	return _ggzcore_hook_remove_id(game->event_hooks[event], hook_id);
@@ -621,8 +631,9 @@ int _ggzcore_game_get_control_fd(struct _GGZGame *game)
  */
 static void abort_game(struct _GGZGame *game)
 {
-	GGZTableLeaveEventData event_data = {reason: GGZ_LEAVE_NORMAL,
-					     player: NULL};
+      GGZTableLeaveEventData event_data = { reason:GGZ_LEAVE_NORMAL,
+	      player:NULL
+	};
 	GGZServer *server = game->server;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
@@ -631,11 +642,12 @@ static void abort_game(struct _GGZGame *game)
 	ggzmod_disconnect(game->client);
 
 	if (room) {
-		_ggzcore_room_table_event(room, GGZ_TABLE_LEFT, &event_data);
+		_ggzcore_room_table_event(room, GGZ_TABLE_LEFT,
+					  &event_data);
 	}
 
 	if (room && ggzcore_server_get_state(server) == GGZ_STATE_AT_TABLE) {
-		(void) ggzcore_room_leave_table(room, 1);
+		(void)ggzcore_room_leave_table(room, 1);
 	}
 
 	/* Make sure current game is free.  This way even if the leave
@@ -651,7 +663,8 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	int status;
 
 	status = ggzmod_dispatch(game->client);
-	ggz_debug(GGZCORE_DBG_GAME, "Result of reading from game: %d", status);
+	ggz_debug(GGZCORE_DBG_GAME, "Result of reading from game: %d",
+		  status);
 
 	if (status < 0) {
 		abort_game(game);
@@ -661,7 +674,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 }
 
 
-struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game)
+struct _GGZModule *_ggzcore_game_get_module(struct _GGZGame *game)
 {
 	return game->module;
 }
@@ -675,18 +688,17 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		ggz_debug(GGZCORE_DBG_GAME, "Launching embedded game");
 	else
 		ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
-		      _ggzcore_module_get_name(game->module));
+			  _ggzcore_module_get_name(game->module));
 
-	if ( (status = ggzmod_connect(game->client)) == 0) {
+	if ((status = ggzmod_connect(game->client)) == 0) {
 		ggz_debug(GGZCORE_DBG_GAME, "Launched game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
-	}
-	else {
+	} else {
 		ggz_debug(GGZCORE_DBG_GAME,
 			  "Failed to connect to game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL, NULL);
 	}
-		
+
 	return status;
 }
 
@@ -699,21 +711,22 @@ static int _ggzcore_game_event_is_valid(GGZGameEvent event)
 }
 
 
-static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, GGZGameEvent id, void *data)
+static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game,
+					 GGZGameEvent id, void *data)
 {
 	return _ggzcore_hook_list_invoke(game->event_hooks[id], data);
 }
 
 
-#if 0 /* currently unused */
-static char* _ggzcore_game_get_path(char **argv)
+#if 0	/* currently unused */
+static char *_ggzcore_game_get_path(char **argv)
 {
 	char *mod_path;
 	char *path;
 	int len;
 
 	mod_path = argv[0];
-	
+
 	if (mod_path[0] != '/') {
 		ggz_debug(GGZCORE_DBG_GAME,
 			  "Module has relative path, prepending gamedir");
@@ -724,11 +737,9 @@ static char* _ggzcore_game_get_path(char **argv)
 		strcpy(path, GAMEDIR);
 		strcat(path, "/");
 		strcat(path, mod_path);
-	}
-	else
+	} else
 		path = ggz_strdup(mod_path);
 
 	return path;
 }
 #endif
-
