@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6327 2004-11-11 06:08:56Z jdorje $
+ * $Id: client.c 6382 2004-11-16 03:37:51Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -311,7 +311,6 @@ main_xtext_chat_create			(gchar		*widget_name,
         return chat_text;
 }
 
-#ifdef MANY_BUTTONS
 static void
 client_connect_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
@@ -334,7 +333,6 @@ client_disconnect_button_clicked	(GtkButton	*button,
 
 	/*ggz_sensitivity_init();*/
 }
-#endif
 
 
 static void chat_line_entered(void)
@@ -535,14 +533,12 @@ client_stats_button_clicked		(GtkButton	*button,
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
-#ifdef MANY_BUTTONS
 static void
 client_exit_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
 	try_to_quit();
 }
-#endif
 
 
 void client_start_table_join(void)
@@ -774,9 +770,7 @@ create_win_main (void)
   GtkWidget *goto_web1;
   GtkWidget *handlebox1;
   GtkWidget *toolbar;
-#ifdef MANY_BUTTONS
   GtkToolItem *connect_button, *disconnect_button, *exit_button;
-#endif
   GtkToolItem *launch_button, *join_button, *watch_button, *leave_button;
   GtkToolItem *props_button, *stats_button;
   GtkWidget *Current_room_label;
@@ -873,7 +867,7 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (ggz_menu), separator1);
   gtk_widget_set_sensitive (separator1, FALSE);
 
-  exit = gtk_menu_item_new_with_label(_("Exit"));
+  exit = gtk_menu_item_new_with_label(_("Quit"));
   gtk_widget_ref (exit);
   g_object_set_data_full(G_OBJECT (win_main), "exit", exit,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1136,6 +1130,8 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (handlebox1), toolbar);
 
   launch_button = gtk_tool_button_new(NULL, _("Launch"));
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(launch_button),
+			       GTK_STOCK_NEW);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(launch_button), -1);
   gtk_widget_ref(GTK_WIDGET(launch_button));
@@ -1145,6 +1141,8 @@ create_win_main (void)
   gtk_widget_show(GTK_WIDGET(launch_button));
 
   join_button = gtk_tool_button_new(NULL, _("Join"));
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(join_button),
+			       GTK_STOCK_OPEN);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(join_button), -1);
   gtk_widget_ref(GTK_WIDGET(join_button));
@@ -1154,6 +1152,8 @@ create_win_main (void)
   gtk_widget_show(GTK_WIDGET(join_button));
 
   watch_button = gtk_tool_button_new(NULL, _("Watch"));
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(watch_button),
+			       GTK_STOCK_ZOOM_FIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(watch_button), -1);
   gtk_widget_ref(GTK_WIDGET(watch_button));
@@ -1163,6 +1163,8 @@ create_win_main (void)
   gtk_widget_show(GTK_WIDGET(watch_button));
 
   leave_button = gtk_tool_button_new(NULL, _("Leave"));
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(leave_button),
+			       GTK_STOCK_CLOSE);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(leave_button), -1);
   gtk_widget_ref(GTK_WIDGET(leave_button));
@@ -1171,7 +1173,7 @@ create_win_main (void)
   gtk_widget_set_sensitive(GTK_WIDGET(leave_button), FALSE);
   gtk_widget_show(GTK_WIDGET(leave_button));
 
-  props_button = gtk_tool_button_new(NULL, _("Props"));
+  props_button = gtk_tool_button_new_from_stock(GTK_STOCK_PREFERENCES);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(props_button), -1);
   gtk_widget_ref(GTK_WIDGET(props_button));
@@ -1186,17 +1188,30 @@ create_win_main (void)
   g_object_set_data_full(G_OBJECT(win_main), "stats_button",
 			 stats_button, (GtkDestroyNotify)gtk_widget_unref);
   gtk_widget_set_sensitive(GTK_WIDGET(stats_button), FALSE);
+#if 0
+  /* There's no stats dialog, but stats are handled
+     through the player list. */
   gtk_widget_show(GTK_WIDGET(stats_button));
+#endif
 
-#ifdef MANY_BUTTONS /* Removed - too many buttons */
+#ifdef GTK_STOCK_CONNECT
+  connect_button = gtk_tool_button_new_from_stock(GTK_STOCK_CONNECT);
+#else
   connect_button = gtk_tool_button_new(NULL, _("Connect"));
+  gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(connect_button),
+			       GTK_STOCK_JUMP_TO);
+#endif
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(connect_button), -1);
   gtk_widget_ref(GTK_WIDGET(connect_button));
   g_object_set_data_full(G_OBJECT(win_main), "connect_button",
 			 connect_button, (GtkDestroyNotify)gtk_widget_unref);
   gtk_widget_show(GTK_WIDGET(connect_button));
 
+#ifdef GTK_STOCK_DISCONNECT
+  disconnect_button = gtk_tool_button_new_from_stock(GTK_STOCK_DISCONNECT);
+#else
   disconnect_button = gtk_tool_button_new(NULL, _("Disconnect"));
+#endif
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(disconnect_button), -1);
   gtk_widget_ref(GTK_WIDGET(disconnect_button));
@@ -1206,14 +1221,13 @@ create_win_main (void)
   gtk_widget_set_sensitive(GTK_WIDGET(disconnect_button), FALSE);
   gtk_widget_show(GTK_WIDGET(disconnect_button));
 
-  exit_button = gtk_tool_button_new(NULL, _("Exit"));
+  exit_button = gtk_tool_button_new_from_stock(GTK_STOCK_QUIT);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar),
 		     GTK_TOOL_ITEM(exit_button), -1);
   gtk_widget_ref(GTK_WIDGET(exit_button));
   g_object_set_data_full(G_OBJECT(win_main), "exit_button",
 			 exit_button, (GtkDestroyNotify)gtk_widget_unref);
   gtk_widget_show(GTK_WIDGET(exit_button));
-#endif
 
   Current_room_label = gtk_label_new (_("Current Room:"));
   gtk_widget_ref (Current_room_label);
@@ -1462,14 +1476,12 @@ create_win_main (void)
   g_signal_connect (GTK_OBJECT (goto_web1), "activate",
                       GTK_SIGNAL_FUNC (client_goto_web1_activate),
                       NULL);
-#ifdef MANY_BUTTONS
   g_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (client_connect_button_clicked),
                       NULL);
   g_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
                       GTK_SIGNAL_FUNC (client_disconnect_button_clicked),
                       NULL);
-#endif
   g_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (client_launch_button_clicked),
                       NULL);
@@ -1488,11 +1500,9 @@ create_win_main (void)
   g_signal_connect (GTK_OBJECT (stats_button), "clicked",
                       GTK_SIGNAL_FUNC (client_stats_button_clicked),
                       NULL);
-#ifdef MANY_BUTTONS
   g_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (client_exit_button_clicked),
                       NULL);
-#endif
   g_signal_connect (GTK_OBJECT (scrolledwindow3), "size_request",
                       GTK_SIGNAL_FUNC (client_tables_size_request),
                       NULL);

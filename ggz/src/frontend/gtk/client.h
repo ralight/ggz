@@ -2,7 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.h 6321 2004-11-11 03:29:34Z jdorje $
+ * $Id: client.h 6382 2004-11-16 03:37:51Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,7 +33,3 @@ GtkWidget* create_win_main (void);
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
 
 extern GtkWidget *win_main;
-
-/* If defined there will be some extra toolbar buttons.  Removing it will
- * make the toolbar shorter but a few things will have to be fixed first. */
-#define MANY_BUTTONS
