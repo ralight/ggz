@@ -49,10 +49,8 @@ int ggzcore_init(GGZOptions options)
 	/* Initialize various systems */
 	/* FIXME: Get filename and levels from conf file */
 	_ggzcore_debug_init((GGZ_DBG_ALL & ~GGZ_DBG_POLL), "/tmp/ggz.debug");
-	_ggzcore_event_init();
-
-	/* State should have first callbacks registered(?) */
 	_ggzcore_state_init();
+	_ggzcore_event_init();
 	_ggzcore_net_init();
 
 	/* Register internal callbacks for events */
@@ -65,9 +63,8 @@ int ggzcore_init(GGZOptions options)
 
 void ggzcore_destroy(void)
 {
-	/* Clean up event system */
 	_ggzcore_event_destroy();
-
+	_ggzcore_state_destroy();
 	_ggzcore_debug_cleanup();
 }
 	

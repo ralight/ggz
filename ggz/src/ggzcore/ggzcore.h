@@ -271,7 +271,6 @@ int ggzcore_event_enqueue(const GGZEventID id, void *data,
 
 
 typedef enum {
-	GGZ_STATE_NONE, 
 	GGZ_STATE_OFFLINE,
 	GGZ_STATE_CONNECTING,
 	GGZ_STATE_ONLINE,
@@ -283,20 +282,21 @@ typedef enum {
 	GGZ_STATE_JOINING_TABLE,
 	GGZ_STATE_AT_TABLE,
 	GGZ_STATE_LEAVING_TABLE,
-	GGZ_STATE_LOGGING_OUT
+	GGZ_STATE_LOGGING_OUT,
+	GGZ_STATE_NONE
 } GGZStateID;
 
 
-/* ggzcore_net_get_fd() - Get a copy of the network socket
- * Receives:
- *
- * Returns:
- * int : network socket fd
- *
- * Note: this is for detecting network data arrival only.  Do *NOT* attempt
- * to write to this fd.
- */
-int ggzcore_net_get_fd(void);
+int ggzcore_state_add_callback(const GGZStateID id, const GGZCallback func);
+int ggzcore_state_add_callback_full(const GGZStateID id, 
+				    const GGZCallback func, 
+				    void* user_data,
+				    GGZDestroyFunc destroy);
+
+
+int ggzcore_state_remove_callback(const GGZStateID id, const GGZCallback func);
+int ggzcore_state_remove_callback_id(const GGZStateID id, 
+				     const unsigned int callback_id);
 
 
 /* ggzcore_state_is_XXXX()
@@ -315,6 +315,18 @@ char* ggzcore_state_get_profile_login(void);
 char* ggzcore_state_get_profile_name(void);
 char* ggzcore_state_get_profile_host(void);
 int ggzcore_state_get_room(void);
+
+
+/* ggzcore_net_get_fd() - Get a copy of the network socket
+ * Receives:
+ *
+ * Returns:
+ * int : network socket fd
+ *
+ * Note: this is for detecting network data arrival only.  Do *NOT* attempt
+ * to write to this fd.
+ */
+int ggzcore_net_get_fd(void);
 
 unsigned int ggzcore_room_get_num(void);
 char* ggzcore_room_get_name(const unsigned int);

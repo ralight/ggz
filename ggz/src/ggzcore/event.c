@@ -830,7 +830,7 @@ static GGZStateID _ggzcore_event_next_state(GGZEventID id)
 	if (states[i].cur == cur)
 		next = states[i].next;
 
-	ggzcore_debug(GGZ_DBG_EVENT, "Event %s next state: %d",
+	ggzcore_debug(GGZ_DBG_EVENT, "Event %s next state id: %d",
 		      ggz_events[id].name, next);
 	
 	return next;

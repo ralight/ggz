@@ -28,7 +28,7 @@
 
 #include <ggzcore.h>
 
-struct _GGZState {
+struct _GGZClientState {
 
 	/* State ID */
 	GGZStateID id;
@@ -51,9 +51,10 @@ struct _GGZState {
 
 
 /* Global state variable */
-extern struct _GGZState _ggzcore_state;
+extern struct _GGZClientState _ggzcore_state;
 
 void _ggzcore_state_init(void);
+void _ggzcore_state_destroy(void);
 
 void _ggzcore_state_set(GGZStateID id);
 
