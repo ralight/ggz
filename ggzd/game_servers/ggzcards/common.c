@@ -160,6 +160,8 @@ void set_global_message(char* mark, char* message, ...)
 	vsnprintf(buf, sizeof(buf), message, ap);
 	va_end(ap);
 
+	ggz_debug("Setting global message for '%s' to '%s'.", mark, buf);
+
 	/* we re-duplicate it each time; this is a little slower but saves memory.
 	 * we also check to see if it's identical; this saves bandwidth and user time overall */
 	if (game.messages[hash]) {

@@ -126,6 +126,7 @@ typedef struct suaro_game_t {
 #define EUCHRE ( *(euchre_game_t *)(game.specific) )
 typedef struct euchre_game_t {
 	player_t maker;		/* just like the declarer */
+	card_t up_card;		/* the "up-card" */
 	int alone;		/* is the dealer going alone? */
 	int suit;		/* the suit of trump (TODO: is this necessary?) */
 } euchre_game_t;

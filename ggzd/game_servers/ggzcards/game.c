@@ -119,6 +119,14 @@ int game_compare_cards(const void *c1, const void *c2)
 				return 0;
 			}			
 			goto normal_sorting;
+		case GGZ_GAME_EUCHRE:
+			/* ordering of cards in Euchre is crazy.  This is just
+			 * a start */
+			if (card1.face == JACK && card1.suit == 3-game.trump)
+				card1.suit = game.trump;
+			if (card2.face == JACK && card2.suit == 3-game.trump)
+				card2.suit = game.trump;
+			goto normal_sorting;
 		case GGZ_GAME_BRIDGE:
 			/* in Bridge, the trump suit is always supposed to be shown on the left */
 			if (card1.suit == game.trump && card2.suit != game.trump)
@@ -192,27 +200,20 @@ void game_init_game()
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
-			{
-			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
-								    {GGZ_SEAT_NONE, "Up-Card", -1} };
-			set_num_seats(6);
-			game.seats[0].ggz = &ggz_seats[0];
-			game.players[0].seat = 0;
-			game.seats[1].ggz = &ggz_seats[1];
-			game.players[1].seat = 1;
-			game.seats[3].ggz = &ggz_seats[2];
-			game.players[2].seat = 3;
-			game.seats[4].ggz = &ggz_seats[3];
-			game.players[3].seat = 4;
-			game.seats[2].ggz = &ggz[0];
-			game.seats[5].ggz = &ggz[1];
+			set_num_seats(4);
+			for(p = 0; p < game.num_players; p++) {
+				s = p;
+				game.players[p].seat = s;
+				game.seats[s].ggz = &ggz_seats[p];
+			}
 			game.deck_type = GGZ_DECK_EUCHRE;
 			game.max_bid_choices = 5;
 			game.max_bid_length = 20; /* TODO */
 			game.max_hand_length = 5;
 			game.target_score = 10;
 			game.name = "Euchre";
-			}
+			EUCHRE.maker = -1;
+			game.trump = -1;
 			break;
 		case GGZ_GAME_SKAT:
 			set_num_seats(game.num_players);
@@ -768,7 +769,7 @@ int game_handle_bid(int bid_index)
 			bid = game.bid_choices[bid_index];
 			if ( bid.sbid.spec == EUCHRE_TAKE ) {
 				EUCHRE.maker = game.next_bid;
-				game.trump = game.seats[5].hand.cards[0].suit;
+				game.trump = EUCHRE.up_card.suit;
 			} else if ( bid.sbid.spec == EUCHRE_TAKE_SUIT ) {
 				EUCHRE.maker = game.next_bid;
 				game.trump = bid.sbid.suit;
@@ -871,7 +872,10 @@ void game_next_bid()
 		case GGZ_GAME_EUCHRE:
 			if (EUCHRE.maker >= 0)
 				game.bid_total = game.bid_count;
-			else
+			else if (game.bid_count == 8) {
+				set_global_message("", "Everyone passed; redealing.");
+				set_game_state( WH_STATE_NEXT_HAND );
+			} else
 				goto normal_order;
 			break;
 		case GGZ_GAME_BRIDGE:
@@ -1221,14 +1225,12 @@ int game_deal_hand(void)
 			/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
 			 * the up-card (seat 5) gets one card, and the kitty (seat 2)
 			 * gets the other 3. */
+			cards_deal_hand(1, &game.seats[0].hand);
+			EUCHRE.up_card = game.seats[0].hand.cards[0];
+			set_global_message("", "The up-card is the %s of %s.",
+				face_names[(int)EUCHRE.up_card.face], suit_names[(int)EUCHRE.up_card.suit]);
 			game.hand_size = 5;
-			cards_deal_hand(5, &game.seats[0].hand);
-			cards_deal_hand(5, &game.seats[1].hand);
-			cards_deal_hand(5, &game.seats[3].hand);
-			cards_deal_hand(5, &game.seats[4].hand);
-			cards_deal_hand(3, &game.seats[2].hand);
-			cards_deal_hand(1, &game.seats[5].hand);
-			break;
+			goto regular_deal;
 		case GGZ_GAME_SPADES:
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_HEARTS:
@@ -1336,6 +1338,8 @@ void game_set_player_message(player_t p)
 
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
+			if (p == game.dealer)
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 				if (p == EUCHRE.maker)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
@@ -1574,6 +1578,7 @@ void game_end_hand(void)
 			game.players[winning_team].score += 1;
 			game.players[winning_team+2].score += 1;
 			EUCHRE.maker = -1;
+			game.trump = -1;
 			}
 			break;
 		case GGZ_GAME_SUARO:
