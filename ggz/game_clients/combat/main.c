@@ -52,6 +52,8 @@ int main(int argc, char *argv[]) {
 	
 	gtk_init(&argc, &argv);
 
+	game_init();
+
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
 

@@ -17,6 +17,7 @@ ggz_combat_SOURCES = combat.h \
 				callbacks.h \
 				interface.c \
 				interface.h \
+				gtk_player_info.c \
 				game.h \
 				game.c
 

@@ -18,6 +18,21 @@
 <widget>
   <class>GtkWindow</class>
   <name>main_window</name>
+  <signal>
+    <name>configure_event</name>
+    <handler>on_main_window_configure_event</handler>
+    <last_modification_time>Fri, 13 Oct 2000 19:20:40 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>main_window_exit</handler>
+    <last_modification_time>Fri, 13 Oct 2000 19:31:02 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>destroy_event</name>
+    <handler>main_window_exit</handler>
+    <last_modification_time>Fri, 13 Oct 2000 20:29:21 GMT</last_modification_time>
+  </signal>
   <title>Combat</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -45,26 +60,23 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>file_menu</name>
-	<signal>
-	  <name>activate</name>
-	  <handler>on_file_menu_activate</handler>
-	  <last_modification_time>Fri, 13 Oct 2000 13:00:29 GMT</last_modification_time>
-	</signal>
-	<stock_item>GNOMEUIINFO_MENU_FILE_TREE</stock_item>
+	<label>_File</label>
+	<right_justify>False</right_justify>
 
 	<widget>
 	  <class>GtkMenu</class>
 	  <name>file_menu_menu</name>
 
 	  <widget>
-	    <class>GtkPixmapMenuItem</class>
+	    <class>GtkMenuItem</class>
 	    <name>exit_menu</name>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_exit_menu_activate</handler>
-	      <last_modification_time>Fri, 13 Oct 2000 13:00:59 GMT</last_modification_time>
+	      <last_modification_time>Fri, 13 Oct 2000 19:35:18 GMT</last_modification_time>
 	    </signal>
-	    <stock_item>GNOMEUIINFO_MENU_EXIT_ITEM</stock_item>
+	    <label>E_xit</label>
+	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
       </widget>
@@ -84,28 +96,35 @@
       <widget>
 	<class>GtkDrawingArea</class>
 	<name>mainarea</name>
-	<width>340</width>
-	<height>450</height>
+	<width>490</width>
+	<height>490</height>
+	<signal>
+	  <name>expose_event</name>
+	  <handler>on_mainarea_expose_event</handler>
+	  <last_modification_time>Fri, 13 Oct 2000 19:27:59 GMT</last_modification_time>
+	</signal>
 	<child>
 	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
+	  <expand>False</expand>
+	  <fill>False</fill>
 	</child>
       </widget>
 
       <widget>
 	<class>GtkVSeparator</class>
 	<name>vseparator1</name>
+	<width>2</width>
 	<child>
 	  <padding>7</padding>
 	  <expand>False</expand>
-	  <fill>True</fill>
+	  <fill>False</fill>
 	</child>
       </widget>
 
       <widget>
 	<class>GtkVBox</class>
-	<name>Player List</name>
+	<name>player_box</name>
+	<width>180</width>
 	<homogeneous>False</homogeneous>
 	<spacing>0</spacing>
 	<child>
@@ -115,98 +134,7 @@
 	</child>
 
 	<widget>
-	  <class>GtkVBox</class>
-	  <name>Player info</name>
-	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>Player Name</name>
-	    <width>70</width>
-	    <label>Player Name</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <name>Unit list</name>
-	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkCList</class>
-	      <name>clist3</name>
-	      <width>70</width>
-	      <can_focus>True</can_focus>
-	      <columns>3</columns>
-	      <column_widths>80,80,80</column_widths>
-	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	      <show_titles>True</show_titles>
-	      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>name</name>
-		<label>Name</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>number</name>
-		<label>Number</label>
-		<justify>GTK_JUSTIFY_FILL</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-	      </widget>
-
-	      <widget>
-		<class>GtkLabel</class>
-		<child_name>CList:title</child_name>
-		<name>Power</name>
-		<label>Power</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-	      </widget>
-	    </widget>
-	  </widget>
+	  <class>Placeholder</class>
 	</widget>
       </widget>
     </widget>

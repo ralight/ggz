@@ -30,8 +30,15 @@
 #include "combat.h"
 
 GtkWidget *main_win;
+GtkWidget **player_list = NULL;
 struct game_info_t cbt_info;
 combat_game cbt_game;
+
+// Name of units
+static char unitname[12][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall"};
+
+// Graphics stuff
+GdkPixmap* cbt_buf;
 
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 	int op = -1;
@@ -72,6 +79,10 @@ int game_get_seat() {
 		return -1;
 
 	game_status("Getting init information\nSeat: %d\tPlayers: %d\tVersion: %d\n", cbt_info.seat, cbt_info.number, cbt_info.version);
+
+	cbt_game.state = CBT_STATE_WAIT;
+
+	game_add_player_info(cbt_info.number);
 
 	return 0;
 }
@@ -133,15 +144,91 @@ int game_ask_options() {
 
 int game_get_options() {
 	char *optstr = NULL;
+	int a;
 
 	if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
 		return -1;
 
 	combat_options_string_read(optstr, &cbt_game, cbt_info.number);
 
-	printf("Width: %d\nHeight: %d\n", cbt_game.width, cbt_game.height);
-	printf("X:5, Y:6 -> %d\n", cbt_game.map[CART(5,6,cbt_game.width)].type);
-	printf("Number of Majors: %d\n", cbt_game.army[1][U_MAJOR]);
+	for (a = 0; a < cbt_info.number; a++)
+		game_update_unit_list(a);
 
 	return 0;
+}
+
+void game_init() {
+	cbt_game.map = NULL;
+	cbt_game.width = 10;
+	cbt_game.height = 10;
+	cbt_game.army = NULL;
+	cbt_game.state = CBT_STATE_INIT;
+}
+
+void game_draw_bg() {
+	int i;
+
+	gdk_draw_rectangle( cbt_buf,
+			main_win->style->mid_gc[GTK_WIDGET_STATE(main_win)], TRUE, 0, 0, PIXSIZE*cbt_game.width, PIXSIZE*cbt_game.height);
+
+	for (i = 1; i < cbt_game.width; i++) {
+		gdk_draw_line(cbt_buf, main_win->style->black_gc,
+				i*PIXSIZE, 0, i*PIXSIZE, PIXSIZE*cbt_game.height);
+	}
+	for (i = 1; i < cbt_game.height; i++) {
+		gdk_draw_line(cbt_buf, main_win->style->black_gc,
+				0, i*PIXSIZE, PIXSIZE*cbt_game.width, i*PIXSIZE);;
+	}
+}
+	
+
+void game_draw_board() {
+}
+
+void game_add_player_info(int number) {
+	int a;
+	GtkWidget *box;
+	char name_str[32];
+
+	// Allocs memory
+	player_list = (GtkWidget **)calloc(number, sizeof(GtkWidget *));
+
+	// Finds box
+	box = gtk_object_get_data(GTK_OBJECT(main_win), "player_box");
+
+	// Creates and puts on the right place
+	for (a = 0; a < number; a++) {
+		sprintf(name_str, "player_list[%d]", a);
+		player_list[a] = (GtkWidget *)gtk_player_info_new(main_win, name_str);
+		gtk_box_pack_start (GTK_BOX(box), player_list[a], TRUE, TRUE, 0);
+		gtk_widget_show(player_list[a]);
+		gtk_widget_ref(player_list[a]);
+	}
+}
+
+void game_update_unit_list(int seat) {
+	GtkWidget *unit_list;
+	GtkWidget *player_info;
+	char widget_name[32];
+	char **info;
+	int a;
+
+	sprintf(widget_name, "player_list[%d]", seat);
+	player_info = gtk_object_get_data(GTK_OBJECT(main_win), widget_name);
+	unit_list = gtk_object_get_data(GTK_OBJECT(player_info), "unit_list");
+	info = (char **)calloc(3,sizeof(char *));
+	info[0] = (char*)malloc(32*sizeof(char)); 
+	info[1] = (char*)malloc(32*sizeof(char)); 
+	info[2] = (char*)malloc(32*sizeof(char)); 
+
+	for (a = 0; a < 12; a++) {
+		strcpy(info[0], unitname[a]);
+		sprintf(info[1], "%d/%d", cbt_game.army[seat][a],
+				cbt_game.army[cbt_info.number][a]);
+		if (a <= 1)
+			sprintf(info[2], "-");
+		else
+			sprintf(info[2], "%d", a-1);
+		gtk_clist_insert(GTK_CLIST(unit_list), a, info);
+	}
 }

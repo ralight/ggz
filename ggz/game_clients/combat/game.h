@@ -25,6 +25,10 @@
 // FIXME: Do that on the status bar
 #define game_status(STR...) printf(STR);
 
+// Size of images
+#define PIXSIZE 48
+
+
 // Game information
 struct game_info_t {
 	int fd;
@@ -42,3 +46,15 @@ int game_get_options();
 
 // Get info from the player
 int game_ask_options();
+
+// Init variables
+void game_init();
+
+// Draw stuff
+void game_draw_bg();
+void game_draw_board();
+void game_add_player_info(int);
+void game_update_unit_list(int);
+
+// Player info widget
+GtkWidget *gtk_player_info_new(GtkWidget *, char *);
