@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3188 2002-01-24 12:30:11Z jdorje $
+ * $Id: transit.c 3197 2002-01-30 08:16:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -168,7 +168,11 @@ static int transit_table_event_callback(void* target, int size, void* data)
 		break;
 	}
 
-	if (opcode == GGZ_TRANSIT_JOIN && !seats_open(table)) {
+	/* FIXME: This is the point where we should check for a reserved seat.
+	   Instead, we currently check later on...when it's harder to handle
+	   errors. */
+	if (opcode == GGZ_TRANSIT_JOIN
+	    && !seats_open(table) && !seats_reserved(table)) {
 		/* Don't care if this fails, we aren't transiting anyway */
 		transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
 		return GGZ_EVENT_OK;
@@ -286,8 +290,10 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 				break;
 	
 	/* Ack! Fatal error...this should never happen */
-	if (i == seats)
+	if (i == seats) {
+		dbg_msg(GGZ_DBG_TABLE, "No available seats for player!");
 		return -1;
+	}
 	
 	/* Create socket for communication with player thread */
 	if (socketpair(PF_UNIX, SOCK_STREAM, 0, fd) < 0)
