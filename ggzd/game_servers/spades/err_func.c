@@ -30,7 +30,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <easysock.h>
 #include <err_func.h>
 
 
@@ -115,21 +114,3 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
-void err_sock(const char *err, const EsOpType op, const EsDataType type)
-{
-
-	switch (op) {
-	case ES_CREATE:
-		err_msg("Error while creating socket: %s\n", err);
-		break;
-	case ES_READ:
-		err_msg("Error while reading from socket: %s\n", err);
-		break;
-	case ES_WRITE:
-		err_msg("Error while writing to socket: %s\n", err);
-		break;
-	case ES_ALLOCATE:
-		err_msg("Error while allocating memory: %s\n", err);
-		break;
-	}
-}

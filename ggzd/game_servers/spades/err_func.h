@@ -24,7 +24,6 @@
 
 #include <stdarg.h>
 
-#include <easysock.h>
 
 /*
  * Quick macro for determining operation failures
@@ -49,7 +48,3 @@ void err_sys_exit(const char *fmt, ...);
 void dbg_msg(const char *fmt, ...);
 
 
-/*
- * Error fprinting function for easysock lib
- */
-void err_sock(const char *, const EsOpType, const EsDataType);

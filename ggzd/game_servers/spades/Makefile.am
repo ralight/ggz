@@ -13,6 +13,7 @@ spades_SOURCES = card.c \
 		 err_func.h \
 		 ai.c \
 		 options.h \
+		 protocols.h \
 		 socketfunc.c \
 		 socketfunc.h
 		  
