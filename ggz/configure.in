@@ -255,6 +255,7 @@ AC_OUTPUT([Makefile
 	   game_clients/reversi/Makefile
 	   game_clients/combat/Makefile
 		 game_clients/combat/pixmaps/Makefile
+		 game_clients/combat/maps/Makefile
 	   game_clients/hastings/Makefile
 	   intl/Makefile
 	   po/Makefile.in
