@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2348 2001-09-04 02:07:51Z rgade $
+ * $Id: parse_opt.c 2350 2001-09-04 02:20:47Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -283,9 +283,11 @@ static void get_config_options(int ch)
 		log_info.dbg_types |= parse_dbg_types(t_count, t_list);
 #endif /*DEBUG*/
 	strval = conf_read_string(ch, "Logs", "Facility", NULL);
-	if(strval)
+	if(strval) {
 		if(logfile_set_facility(strval) < 0)
 			err_msg("Configuration: Invalid syslogd facility");
+		free(strval);
+	}
 	intval = conf_read_int(ch, "Logs", "PIDInLogs", 1);
 	if(intval == 0)
 		log_info.options &= ~GGZ_LOGOPT_INC_PID;
@@ -421,20 +423,30 @@ static void parse_game(char *name, char *dir)
 
 	/* [GameInfo] */
 	strval = conf_read_string(ch, "GameInfo", "Name", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->name, strval, MAX_GAME_NAME_LEN);
+		free(strval);
+	}
 	strval = conf_read_string(ch, "GameInfo", "Version", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->version, strval, MAX_GAME_VER_LEN);
+		free(strval);
+	}
 	strval = conf_read_string(ch, "GameInfo", "Description", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->desc, strval, MAX_GAME_DESC_LEN);
+		free(strval);
+	}
 	strval = conf_read_string(ch, "GameInfo", "Author", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->author, strval, MAX_GAME_AUTH_LEN);
+		free(strval);
+	}
 	strval = conf_read_string(ch, "GameInfo", "Homepage", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->homepage, strval, MAX_GAME_WEB_LEN);
+		free(strval);
+	}
 
 	/* [LaunchInfo] */
 	strval = conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
@@ -445,16 +457,21 @@ static void parse_game(char *name, char *dir)
 		else
 			snprintf(game_info->path, MAX_PATH_LEN,
 				  "%s/%s", opt.game_dir, strval);
+		free(strval);
 	}
 	game_info->enabled = !conf_read_int(ch, "LaunchInfo", "GameDisabled",0);
 
 	/* [Protocol] */
 	strval = conf_read_string(ch, "Protocol", "Engine", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->p_engine, strval, MAX_GAME_PROTOCOL_LEN);
+		free(strval);
+	}
 	strval = conf_read_string(ch, "Protocol", "Version", NULL);
-	if(strval)
+	if(strval) {
 		strncpy(game_info->p_version, strval, MAX_GAME_VER_LEN);
+		free(strval);
+	}
 
 	/* [TableOptions] */
 	game_info->allow_leave=conf_read_int(ch,"TableOptions","AllowLeave",0);
@@ -610,16 +627,18 @@ static void parse_room(char *name, char *dir)
 	rooms[num].max_players = conf_read_int(ch, "RoomInfo", "MaxPlayers", 0);
 	rooms[num].max_tables = conf_read_int(ch, "RoomInfo", "MaxTables", -1);
 	strval = conf_read_string(ch, "RoomInfo", "GameType", NULL);
-	for(i=0; i<state.types; i++)
-		if(!strcmp(strval, game_types[i].name))
-			break;
-	if(i != state.types)
-		rooms[num].game_type = i;
-	else if(!strcasecmp(strval, "none"))
-		rooms[num].game_type = -1;
-	else
-		err_msg("Invalid GameType specified in room %s", name);
-	free(strval);
+	if(strval) {
+		for(i=0; i<state.types; i++)
+			if(!strcmp(strval, game_types[i].name))
+				break;
+		if(i != state.types)
+			rooms[num].game_type = i;
+		else if(!strcasecmp(strval, "none"))
+			rooms[num].game_type = -1;
+		else
+			err_msg("Invalid GameType specified in room %s", name);
+		free(strval);
+	}
 
 	if(rooms[num].name == NULL) {
 		err_msg("No Name given for room %s", name);
