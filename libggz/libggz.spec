@@ -1,12 +1,13 @@
 # RPM Spec file for GGZ Gaming Zone common library
+# $Id: libggz.spec 4807 2002-10-08 00:08:24Z jdorje $
 
 Summary: Common library for the GGZ Gaming Zone
 Name: libggz
-Version: 0.0.5
+Version: 0.0.6
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/libggz-0.0.5.tar.gz
+Source: http://download.sourceforge.net/GGZ/libggz-0.0.6.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: GGZ Dev Team <ggz-dev@lists.sourceforge.net>
@@ -43,9 +44,14 @@ PATH="$PATH:/sbin" ldconfig
 /usr/lib/libggz.a
 /usr/lib/libggz.la
 /usr/lib/libggz.so
-/usr/lib/libggz.so.0
-/usr/lib/libggz.so.0.0.0
+/usr/lib/libggz.so.1
+/usr/lib/libggz.so.1.0.0
+
+/usr/man/man3/ggz.h.3.gz
 
 %changelog
+* Mon Oct 07 2002 Jason Short <jdorje@users.sourceforge.net>
+- Updated for 0.0.6 release
+
 * Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
 - First stab at a .spec file for the Gnu Gaming Zone common libraries
