@@ -31,11 +31,27 @@
 #include "room.h"
 
 
-int _ggzcore_server_list_players(struct _GGZServer *server);
+struct _GGZServer* _ggzcore_server_new(void);
 
+void _ggzcore_server_reset(struct _GGZServer *server);
+int _ggzcore_server_connect(struct _GGZServer *server);
+int _ggzcore_server_login(struct _GGZServer *server);
+int _ggzcore_server_list_players(struct _GGZServer *server);
 int _ggzcore_server_list_tables(struct _GGZServer *server, 
 				const int type, 
 				const char global);
+
+
+void _ggzcore_server_set_host(struct _GGZServer *server, const char *host);
+void _ggzcore_server_set_port(struct _GGZServer *server, 
+			      const unsigned int port);
+void _ggzcore_server_set_logintype(struct _GGZServer *server, 
+				   const GGZLoginType type);
+void _ggzcore_server_set_handle(struct _GGZServer *server, 
+				const char *handle);
+void _ggzcore_server_set_password(struct _GGZServer *server, 
+				  const char *password);
+
 
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 						const unsigned int id);
@@ -48,5 +64,8 @@ int _ggzcore_server_chat(struct _GGZServer *server,
 			 const char *player,
 			 const char *msg);
 
+void _ggzcore_server_clear(struct _GGZServer *server);
+
+void _ggzcore_server_free(struct _GGZServer *server);
 
 #endif /* __SERVER_H__ */

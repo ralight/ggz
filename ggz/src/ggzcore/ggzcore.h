@@ -197,11 +197,8 @@ typedef struct _GGZGameType GGZGameType;
 typedef struct _GGZModule   GGZModule;
 
 /* Function for allocating and initializing new GGZServer object */
-GGZServer* ggzcore_server_new(const char *host,
-			      const unsigned int port,
-			      const GGZLoginType type,
-			      const char *handle,
-			      const char *password);
+GGZServer* ggzcore_server_new(void);
+int ggzcore_server_reset(GGZServer *server);
 
 /* Functions for attaching hooks to GGZServer events */
 int ggzcore_server_add_event_hook(GGZServer *server,
@@ -221,6 +218,17 @@ int ggzcore_server_remove_event_hook(GGZServer *server,
 int ggzcore_server_remove_event_hook_id(GGZServer *server,
 					const GGZServerEvent event, 
 					const unsigned int hook_id);
+
+/* Functions for setting GGZServer data */
+int ggzcore_server_set_hostinfo(GGZServer *server, 
+				const char *host, 
+				const unsigned int port);
+
+int ggzcore_server_set_logininfo(GGZServer *server, 
+				 const GGZLoginType type, 
+				 const char *handle, 
+				 const char *password);
+
 
 /* Functions for querying a GGZServer object for information */
 char*        ggzcore_server_get_host(GGZServer *server);
