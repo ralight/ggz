@@ -195,7 +195,7 @@ int chess_ai_move(int from, int to)
 	int figure, color;
 	int i, j, max;
 	int allowed, factor;
-	int pos;
+	int pos, oldpos;
 
 	if((from < 0) || (from > 63)) return 0;
 	if((to < 0) || (to > 63)) return 0;
@@ -212,8 +212,10 @@ int chess_ai_move(int from, int to)
 		/*printf("figure %i: movement %i\n", figure, i);*/
 		max = 1;
 		if(movements[figure][i][C_MULTI]) max = 8;
+		pos = from;
 		for(j = 1; j <= max; j++)
 		{
+			oldpos = pos;
 			pos = from + movements[figure][i][C_MOVE] * factor * j;
 			/*printf("try out %i->%i\n", from, pos);*/
 			if((pos < 0) || (pos > 63)) break;
@@ -223,6 +225,7 @@ int chess_ai_move(int from, int to)
 				if(chess_ai_table[pos][C_COLOR] == C_NONE) break;*/
 				if(chess_ai_table[pos][C_COLOR] == color) break;
 			}
+			if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 			if(pos == to)
 			{
 				allowed = 1;
@@ -280,7 +283,7 @@ int chess_ai_find(int color, int *from, int *to)
 	int max;
 	int figure;
 	int i, j, k;
-	int pos, frompos, topos;
+	int pos, oldpos, frompos, topos;
 	int nextcolor, ret;
 	int factor;
 	int tmp;
@@ -316,10 +319,14 @@ int chess_ai_find(int color, int *from, int *to)
 				/*printf("movement %i\n", j);*/
 				max = 1;
 				if(movements[figure][j][C_MULTI]) max = 8;
+				pos = i;
 				for(k = 1; k <= max; k++)
 				{
+					oldpos = pos;
 					pos = i + movements[figure][j][C_MOVE] * factor * k;
+
 					/*printf("try out %i->%i\n", i, pos);*/
+					if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 					if((pos < 0) || (pos > 63)) break;
 					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
 					{
