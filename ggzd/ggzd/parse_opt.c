@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: parse_opt.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -422,8 +422,14 @@ static void parse_game(char *name, char *dir)
 	/* [GameInfo] */
 	/* FIXME: this data is never free'd.  This isn't really a problem,
 	   but... */
-	game_info.name = ggz_conf_read_string(ch, "GameInfo",
-					      "Name", "<Unnamed Game>");
+	tmp = ggz_conf_read_string(ch, "GameInfo",
+				   "Name", "<Unnamed Game>");
+	if (strlen(tmp) > MAX_GAME_NAME_LEN) {
+		err_msg("Game name '%s' too long: max length %d.",
+			tmp, MAX_GAME_NAME_LEN);
+		return;
+	}
+	strcpy(game_info.name, tmp);
 	game_info.version = ggz_conf_read_string(ch, "GameInfo",
 						 "Version", "");
 	game_info.desc = ggz_conf_read_string(ch, "GameInfo",
@@ -465,6 +471,9 @@ static void parse_game(char *name, char *dir)
 						  "AllowLeave",0);
 	game_info.kill_when_empty = ggz_conf_read_int(ch, "TableOptions",
 						      "KillWhenEmpty", 1);
+
+	game_info.stats_records = ggz_conf_read_int(ch, "Statistics",
+						    "Records", 0);
 
 	tmp = ggz_conf_read_string(ch, "TableOptions", "BotsAllowed", "");
 	game_info.bot_allow_list = ggz_numberlist_read(tmp);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: ggzdb.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,9 +46,11 @@ extern Options opt;
 /* Internal variables */
 static char db_needs_init = 1;
 static char player_needs_init = 1;
+static char stats_needs_init = 1;
 
 /* Internal functions */
 static GGZDBResult ggzdb_player_init(void);
+static GGZDBResult ggzdb_stats_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Function to initialize the database system */
@@ -186,21 +188,80 @@ unsigned int ggzdb_player_next_uid(void)
 }
 
 
+GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_lookup(stats);
+
+	if (rc == GGZDB_ERR_NOTFOUND) {
+		stats->wins = 0;
+		stats->losses = 0;
+		stats->ties = 0;
+		stats->rating = 1500;
+		stats->ranking = 1; /* ? */
+		stats->highest_score = 0; /* ? */
+		rc = GGZDB_NO_ERROR;
+	}
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
+GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_update(stats);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
 /*** INTERNAL FUNCTIONS ***/
 
 /* Function to initialize player tables if necessary */
 static GGZDBResult ggzdb_player_init(void)
 {
-	int rc=0;
+	GGZDBResult rc;
 
 	if(db_needs_init)
-		rc = GGZDB_ERR_INIT;
+		return GGZDB_ERR_INIT;
 
-	if(rc == 0)
-		rc = _ggzdb_init_player(opt.data_dir);
-
-	if(rc == 0)
+	rc = _ggzdb_init_player(opt.data_dir);
+	if (rc == GGZDB_NO_ERROR)
 		player_needs_init = 0;
+
+	return rc;
+}
+
+
+static GGZDBResult ggzdb_stats_init(void)
+{
+	GGZDBResult rc;
+
+	if (db_needs_init)
+		return GGZDB_ERR_INIT;
+
+	rc = _ggzdb_init_stats(opt.data_dir);
+	if (rc == GGZDB_NO_ERROR)
+		stats_needs_init = 0;
 
 	return rc;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: protocols.h 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -35,7 +35,8 @@
 typedef enum {
 	GGZ_PLAYER_UPDATE_ADD, /* player enters room */
 	GGZ_PLAYER_UPDATE_DELETE, /* player leaves room */
-	GGZ_PLAYER_UPDATE_LAG /* player's lag status changed */
+	GGZ_PLAYER_UPDATE_LAG, /* player's lag status changed */
+	GGZ_PLAYER_UPDATE_STATS /* player's stats changed */
 } GGZPlayerUpdateType;
 
 /* Update opcodes */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: ggzdb.h 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,7 +36,7 @@
 #define GGZDB_VERSION_ID	"0.4"
 
 /* For ggzdb_player_XXX */
-typedef struct ggzdbPlayerEntry {
+typedef struct {
 	unsigned int user_id;			/* Numeric UID */
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
 	char password[17];			/* Players password */
@@ -47,13 +47,26 @@ typedef struct ggzdbPlayerEntry {
 } ggzdbPlayerEntry;
 
 /* Connection information */
-typedef struct ggzdbConnection {
+typedef struct {
 	char *datadir;
 	char *host;
 	char *database;
 	char *username;
 	char *password;
 } ggzdbConnection;
+
+typedef struct {
+	/* FIXME: It would make sense to access by the UID, but
+	   that wouldn't easily allow tracking stats of bots. */
+	char player[MAX_USER_NAME_LEN + 1];
+	char game[MAX_GAME_NAME_LEN + 1];
+	int wins;
+	int losses;
+	int ties;
+	int rating;
+	int ranking;
+	int highest_score;
+} ggzdbPlayerGameStats;
 
 
 /* Error codes */
@@ -69,10 +82,14 @@ typedef enum {
 /* Exported functions */
 GGZReturn ggzdb_init(void);
 void ggzdb_close(void);
+
 GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *);
 GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *);
 GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *);
 /* GGZDBResult ggzdb_player_delete(const char *handle); */
 unsigned int ggzdb_player_next_uid(void);
+
+GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
+GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 
 #endif

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5058 2002-10-27 01:30:52Z jdorje $
+ * $Id: players.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -114,6 +114,10 @@ GGZPlayer* player_new(GGZClient *client)
 	player->my_events_tail = NULL;
 	player->lag_class = 1;			/* Assume they are low lag */
 	player->next_ping = 0;			/* Don't ping until login */
+	pthread_rwlock_init(&player->stats_lock, NULL);
+	player->wins = -1;
+	player->losses = -1;
+	player->ties = -1;
 
 	return player;
 }
@@ -236,7 +240,8 @@ GGZReturn player_updates(GGZPlayer* player)
 		}
 		
 		if (changed)
-			room_notify_lag(player->name, player->room);
+			room_update_event(player->name, GGZ_PLAYER_UPDATE_LAG,
+					  player->room);
 	}
 
 	return GGZ_OK;
@@ -1340,7 +1345,8 @@ void player_handle_pong(GGZPlayer *player)
 	if(lag_class != player->lag_class) {
 		player->lag_class = lag_class;
 		if(player->room >= 0)
-			room_notify_lag(player->name, player->room);
+			room_update_event(player->name, GGZ_PLAYER_UPDATE_LAG,
+					  player->room);
 	}
 
 	/* Queue our next ping */

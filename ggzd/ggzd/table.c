@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5058 2002-10-27 01:30:52Z jdorje $
+ * $Id: table.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -40,11 +40,13 @@
 #include <unistd.h>
 
 #include "ggzdmod.h"
+#include "ggzdmod-ggz.h"
 
 #include "client.h"
 #include "datatypes.h"
 #include "err_func.h"
 #include "ggzd.h"
+#include "ggzdb.h"
 #include "hash.h"
 #include "net.h"
 #include "players.h"
@@ -97,6 +99,8 @@ static void  table_remove(GGZTable* table);
 /* Handlers for ggzdmod events */
 static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_game_report(GGZdMod *ggzdmod, GGZdModEvent event,
+			      void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
 static GGZReturn table_event_enqueue(GGZTable* table,
@@ -454,6 +458,8 @@ static GGZReturn table_start_game(GGZTable *table)
 	/* Setup handlers for game module events */
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAMEREPORT,
+			    &table_game_report);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
 	
         /* Setup seats for game table */
@@ -894,6 +900,91 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		   safely log messages containing % and other printf
 		   meta-characters. */
 		dbg_msg(GGZ_DBG_TABLE, "%s", msg);
+	}
+}
+
+
+static void table_game_report(GGZdMod *ggzdmod,
+			      GGZdModEvent event, void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+	GGZdModGameReportData *report = data;
+	int i;
+	char game_name[MAX_GAME_NAME_LEN + 1];
+	unsigned char records;
+
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	strcpy(game_name, game_types[table->type].name);
+	records = game_types[table->type].stats_records;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+
+	/* First, check if we use *any* stats. */
+	if (!records)
+		return;
+
+	for (i = 0; i < report->num_players; i++) {
+		ggzdbPlayerGameStats stats;
+		GGZDBResult status;
+		const char *name = report->names[i];
+		GGZPlayer *player;
+
+		strcpy(stats.player, name);
+		strcpy(stats.game, game_name);
+		status = ggzdb_stats_lookup(&stats);
+
+		/* NOT_FOUND case is handled in lookup */
+		if (status != GGZDB_NO_ERROR) {
+			err_msg("DB error %d in table_game_report", status);
+			continue;
+		}
+
+		/* There's a potential threading problem here, but in
+		   practice it shouldn't hurt.  Since we look up the
+		   stats, then change them, then write them back, if
+		   someone else tries to change them during this time
+		   someone's data will be lost.  But as long as players
+		   stats only change when *they* play, this will only
+		   be a problem for bots - an acceptable tradeoff. */
+
+		if (records) {
+			switch (report->results[i]) {
+			case GGZ_GAME_WIN:
+				stats.wins++;
+				break;
+			case GGZ_GAME_LOSS:
+				stats.losses++;
+				break;
+			case GGZ_GAME_TIE:
+				stats.ties++;
+				break;
+			}
+		}
+
+		ggzdb_stats_update(&stats);
+
+		/* Send an update to the room. */
+		/* This isn't particularly elegant, but it should work at
+		   skipping over AI players, players who have left the
+		   room, and logged-out players. */
+		player = hash_player_lookup(name);
+		if (!player)
+			continue;
+		if (player->room != table->room) {
+			pthread_rwlock_unlock(&player->lock);
+			continue;
+		}
+		pthread_rwlock_wrlock(&player->stats_lock);
+		if (records) {
+			player->wins = stats.wins;
+			player->losses = stats.losses;
+			player->ties = stats.ties;
+		}
+		pthread_rwlock_unlock(&player->stats_lock);
+		pthread_rwlock_unlock(&player->lock);
+
+		room_update_event(report->names[i],
+				  GGZ_PLAYER_UPDATE_STATS,
+				  table->room);
 	}
 }
 

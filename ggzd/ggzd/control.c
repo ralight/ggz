@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: control.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -155,7 +155,6 @@ static void cleanup_data(void)
 
 	for (i = 0; game_types[i].name && i < MAX_GAME_TYPES; i++) {
 		char **args;
-		data_free(game_types[i].name);
 		data_free(game_types[i].version);
 		data_free(game_types[i].p_engine);
 		data_free(game_types[i].p_version);

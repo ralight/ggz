@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: players.h 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -44,7 +44,11 @@
  */
 struct _GGZPlayer {
 
-	/* Individual mutex lock */
+	/* Individual mutex lock.  The player structure (except as noted
+	   below) will only be *written* to by its own player thread.
+	   It may be read by any thread.  Thus a rdlock is necessary
+	   for those other threads to read it, and a rwlock is necessary
+	   when the player thread writes. */
 	pthread_rwlock_t lock;
 
 	/* Player name, leaving room for '\0' */
@@ -82,6 +86,13 @@ struct _GGZPlayer {
 	time_t next_ping;
 	struct timeval sent_ping;
 	int lag_class;
+
+	/* Stats tracking.  This holds stats information for the player in
+	   the current room.  Unlike the rest of the player structure, this
+	   data may be written to by any thread.  Thus it needs a separate
+	   lock, which everyone needs to use to read and write to it. */
+	pthread_rwlock_t stats_lock;
+	int wins, losses, ties;
 	
 	/* Connection info */
 	long login_time;

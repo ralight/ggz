@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: room.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -210,6 +210,41 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 }
 
 
+/* Read the player's stats for this room. */
+static void update_room_stats(GGZPlayer *player, int game_type)
+{
+	int wins, losses, ties;
+	ggzdbPlayerGameStats stats;
+	int records;
+
+	pthread_rwlock_rdlock(&game_types[game_type].lock);
+	strcpy(stats.game, game_types[game_type].name);
+	records = game_types[game_type].stats_records;
+	pthread_rwlock_unlock(&game_types[game_type].lock);
+
+	if (records) {
+		strcpy(stats.player, player->name);
+		ggzdb_stats_lookup(&stats);
+	}
+
+	if (records) {
+		wins = stats.wins;
+		losses = stats.losses;
+		ties = stats.ties;
+	} else {
+		wins = -1;
+		losses = -1;
+		ties = -1;
+	}
+
+	pthread_rwlock_wrlock(&player->stats_lock);
+	player->wins = wins;
+	player->losses = losses;
+	player->ties = ties;
+	pthread_rwlock_unlock(&player->stats_lock);
+}
+
+
 GGZClientReqError room_join(GGZPlayer* player, const int room)
 {
 	int old_room;
@@ -281,6 +316,10 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	if(old_room != -1)
 		pthread_rwlock_unlock(&rooms[old_room].lock);
 
+	/* Update their game stats for this room */
+	if (room != -1)
+		update_room_stats(player, rooms[room].game_type);
+
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
 		count = ++ rooms[room].player_count;
@@ -308,39 +347,29 @@ static void room_notify_change(char* name, const int old, const int new)
 	dbg_msg(GGZ_DBG_ROOM, "%s moved from room %d to %d", name, old, new);
 		
 	if (old != -1) {
-	/* Send DELETE update to old room */
-		GGZRoomEventData *data = ggz_malloc(sizeof(*data));
-
-		data->opcode = GGZ_PLAYER_UPDATE_DELETE;
-		strcpy(data->player, name);
-		
-		event_room_enqueue(old, room_event_callback, 
-				   sizeof(*data), data, NULL);
+		/* Send DELETE update to old room */
+		room_update_event(name, GGZ_PLAYER_UPDATE_DELETE, old);
 	}
 
-	/* Send ADD update to new room */
 	if (new != -1) {
-		GGZRoomEventData *data = ggz_malloc(sizeof(*data));
-
-		data->opcode = GGZ_PLAYER_UPDATE_ADD;
-		strcpy(data->player, name);
-		
-		event_room_enqueue(new, room_event_callback, 
-				   sizeof(*data), data, NULL);
+		/* Send ADD update to new room */
+		room_update_event(name, GGZ_PLAYER_UPDATE_ADD, new);
 	}
 }
 
 
-void room_notify_lag(char *name, int room)
+
+GGZReturn room_update_event(const char *player,
+			    GGZPlayerUpdateType update,
+			    int room)
 {
 	GGZRoomEventData *data = ggz_malloc(sizeof(*data));
+	data->opcode = update;
+	strcpy(data->player, player);
 
-	data->opcode = GGZ_PLAYER_UPDATE_LAG;
-	strcpy(data->player, name);
-	event_room_enqueue(room, room_event_callback,
-			   sizeof(*data), data, NULL);
+	return event_room_enqueue(room, room_event_callback,
+				  sizeof(*data), data, NULL);
 }
-
 
 /* Event callback for delivering player list update to player */
 static GGZEventFuncReturn room_event_callback(void* target_player,
@@ -349,8 +378,9 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 	GGZPlayer *player = target_player;
 	GGZRoomEventData *event = data;
 
-	/* Don't deliver updates about ourself (except lag) */
+	/* Don't deliver updates about ourself (except lag/stats) */
 	if (event->opcode != GGZ_PLAYER_UPDATE_LAG
+	    && event->opcode != GGZ_PLAYER_UPDATE_STATS
 	    && strcasecmp(event->player, player->name) == 0)
 		return GGZ_EVENT_OK;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: net.c 5064 2002-10-27 12:48:02Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -445,12 +445,13 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 }
 
 
-GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *p2)
+GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 {
 	GGZPlayerType type;
 	char *type_desc = "**none**";
+	char wins[32] = "", losses[32] = "", ties[32] = "";
 	
-	type = player_get_type(p2);
+	type = player_get_type(player);
 
 	switch (type) {
 	case GGZ_PLAYER_NORMAL:
@@ -466,21 +467,50 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *p2)
 		break;
 	}
 
-	/* FIXME: I coded lag_class the same way as table, but */
-	/* shouldn't both of these values be locked/copied? */
+	if (player->wins >= 0)
+		snprintf(wins, sizeof(wins), " WINS='%d'", player->wins);
+	if (player->losses >= 0)
+		snprintf(losses, sizeof(losses),
+			 " LOSSES='%d'", player->losses);
+	if (player->ties >= 0)
+		snprintf(ties, sizeof(ties),
+			 " TIES='%d'", player->ties);
+
+	/* The caller should ensure that these values are safe to access... */
 	return _net_send_line(net, 
-			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' LAG='%d'/>",
-			      p2->name, type_desc, p2->table, p2->lag_class);
+			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' "
+			      "LAG='%d'%s%s%s/>",
+			      player->name, type_desc, player->table,
+			      player->lag_class, wins, losses, ties);
 }
 
 
-static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *p2)
+static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *player)
 {
-	/* FIXME: I coded lag_class the same way as table, but */
-	/* shouldn't both of these values be locked/copied? */
+	/* The caller should ensure that these values are safe to access... */
 	return _net_send_line(net, 
 			      "<PLAYER ID='%s' LAG='%d'/>",
-			      p2->name, p2->lag_class);
+			      player->name, player->lag_class);
+}
+
+
+static GGZReturn _net_send_player_stats(GGZNetIO *net, GGZPlayer *player)
+{
+	char wins[32] = "", losses[32] = "", ties[32] = "";
+
+	/* The caller should ensure that these values are safe to access... */
+	if (player->wins >= 0)
+		snprintf(wins, sizeof(wins), " WINS='%d'", player->wins);
+	if (player->losses >= 0)
+		snprintf(losses, sizeof(losses),
+			 " LOSSES='%d'", player->losses);
+	if (player->ties >= 0)
+		snprintf(ties, sizeof(ties),
+			 " TIES='%d'", player->ties);
+
+	return _net_send_line(net,
+			      "<PLAYER ID='%s'%s%s%s/>",
+			      player->name, wins, losses, ties);
 }
 
 
@@ -655,9 +685,11 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 			err_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
-		pthread_rwlock_unlock(&player->lock);
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
+		pthread_rwlock_rdlock(&player->stats_lock);
 		net_send_player(net, player);
+		pthread_rwlock_unlock(&player->stats_lock);
+		pthread_rwlock_unlock(&player->lock);
 		return _net_send_line(net, "</UPDATE>");
 
 	case GGZ_PLAYER_UPDATE_LAG:
@@ -667,9 +699,22 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 			err_msg("Player lookup failed!");
 			return GGZ_OK;
 		}
-		pthread_rwlock_unlock(&player->lock);
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
 		_net_send_player_lag(net, player);
+		pthread_rwlock_unlock(&player->lock);
+		return _net_send_line(net, "</UPDATE>");
+	case GGZ_PLAYER_UPDATE_STATS:
+		/* This returns with player's write lock held, so drop it  */
+		player = hash_player_lookup(name);
+		if (!player) {
+			err_msg("Player lookup failed!");
+			return GGZ_OK;
+		}
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' ROOM='%d'>", room);
+		pthread_rwlock_rdlock(&player->stats_lock);
+		_net_send_player_stats(net, player);
+		pthread_rwlock_unlock(&player->stats_lock);
+		pthread_rwlock_unlock(&player->lock);
 		return _net_send_line(net, "</UPDATE>");
 	}
 

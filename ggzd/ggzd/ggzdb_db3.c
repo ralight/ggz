@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db3.c 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: ggzdb_db3.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,7 +45,8 @@
 
 
 /* Internal variables */
-static DB *db_p = NULL;
+static DB *db_p = NULL; /* player database (table) */
+static DB *db_s = NULL; /* stats database (table) */
 static DB_ENV *db_e;
 static int standalone = 0;
 
@@ -309,4 +310,85 @@ void _ggzdb_player_drop_cursor(void)
 		err_sys_exit("drop_cursor called before get_first, dummy");
 	db_c->c_close(db_c);
 	db_c = NULL;
+}
+
+
+GGZDBResult _ggzdb_init_stats(const char *datadir)
+{
+
+	u_int32_t flags;
+
+	if(standalone)
+		flags = 0;
+	else
+		flags = DB_CREATE | DB_THREAD;
+
+	/* Open the database file */
+	if (db_create(&db_s, db_e, 0) != 0)
+		err_sys_exit("db_create() failed in _ggzdb_init_stats()");
+	if (db_p->open(db_s, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
+		err_sys_exit("db_p->open() failed in _ggzdb_init_stats()");
+
+	return GGZDB_NO_ERROR;
+}
+
+
+GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
+{
+	DBT key, data;
+	int result;
+	char key_string[MAX_USER_NAME_LEN + MAX_GAME_NAME_LEN + 2];
+
+	snprintf(key_string, sizeof(key_string),
+		 "%s|%s", stats->player, stats->game);
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(key));
+	memset(&data, 0, sizeof(data));
+	key.data = key_string;
+	key.size = strlen(key_string);
+	data.size = sizeof(*stats);
+	data.flags = DB_DBT_MALLOC;
+
+	result = db_s->get(db_s, NULL, &key, &data, 0);
+	if (result == DB_NOTFOUND)
+		return GGZDB_ERR_NOTFOUND;
+	else if (result != 0) {
+		err_sys("get failed in _ggzdb_stats_lookup()");
+		return GGZDB_ERR_DB;
+	}
+
+	/* Copy it to the user data buffer */
+	memcpy(stats, data.data, sizeof(*stats));
+	free(data.data); /* Allocated in get() */
+
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
+{
+	DBT key, data;
+	char key_string[MAX_USER_NAME_LEN + MAX_GAME_NAME_LEN + 2];
+
+	snprintf(key_string, sizeof(key_string),
+		 "%s|%s", stats->player, stats->game);
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(key));
+	memset(&data, 0, sizeof(data));
+	key.data = key_string;
+	key.size = strlen(key_string);
+	data.data = stats;
+	data.size = sizeof(*stats);
+	data.flags = DB_DBT_USERMEM;
+
+	if (db_s->put(db_s, NULL, &key, &data, 0) != 0) {
+		err_sys("put failed in _ggzdb_stats_update()");
+		return GGZDB_ERR_DB;
+	}
+
+	/* FIXME: We won't have to do this once ggzd can exit */
+	db_s->sync(db_s, 0);
+
+	return GGZDB_ERR_DB;
 }

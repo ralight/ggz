@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5058 2002-10-27 01:30:52Z jdorje $
+ * $Id: transit.c 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include "ggzdmod.h"
+#include "ggzdmod-ggz.h"
 
 #include "client.h"
 #include "datatypes.h"

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 5059 2002-10-27 05:15:00Z jdorje $
+ * $Id: ggzdb_proto.h 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -93,5 +93,18 @@ GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry * player);
  *  This function can drop the cursor used by get_first and get_next.
  */
 void _ggzdb_player_drop_cursor(void);
+
+
+/** Initialize the stats database.  Return NO_ERROR or ERR_DB. */
+GGZDBResult _ggzdb_init_stats(const char *datadir);
+
+/** Look up game stats.  The "player" and "game" field should be already
+ *  filled in; everything else is filled in by the function.  If the entry
+ *  is not found, return GGZDB_ERR_NOTFOUND. 
+ */
+GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
+
+/** Update game stats.  If the entry does not already exist, create it. */
+GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 
 unsigned int _ggzdb_player_next_uid(void);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: datatypes.h 5064 2002-10-27 12:48:02Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -75,7 +75,7 @@ typedef struct GGZState {
 /* Info about a particular type of game*/
 typedef struct GameInfo {
 	pthread_rwlock_t lock;
-	char *name;    /* Game name; cleanup() */
+	char name[MAX_GAME_NAME_LEN + 1];    /* Game name */
 	char *version; /* Game version; cleanup() */
 	
 	/* Protocol data - the protocol engine is the name of the
@@ -103,6 +103,14 @@ typedef struct GameInfo {
 	/* Should we automatically kill the game server (table) when the
 	   last player leaves? */
 	unsigned char kill_when_empty;
+
+	/* Types of stats to keep */
+	unsigned char stats_records;
+#if 0
+	unsigned char stats_ratings;
+	unsigned char stats_rankings;
+	unsigned char stats_highscores;
+#endif
 	
 	/* Executable information: a NULL-terminated list of
 	   command-line arguments for the program.  The first argument
