@@ -109,6 +109,8 @@ AC_OUTPUT(Makefile
 	ggzap/Makefile
 	kio_ggz/Makefile
 	kio_ggz/kioslave/Makefile
+	kio_ggzmeta/Makefile
+	kio_ggzmeta/kioslave/Makefile
 	kcm_ggz/Makefile
 	kcm_ggz/modules/Makefile
 	ggz-kde/Makefile

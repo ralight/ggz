@@ -1,4 +1,4 @@
-SUBDIRS = ggz-kde modsniff ggzap shadowbridge kcm_ggz
+SUBDIRS = ggz-kde modsniff ggzap shadowbridge kio_ggz kio_ggzmeta kcm_ggz
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ
 
