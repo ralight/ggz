@@ -1,13 +1,159 @@
 #!/usr/bin/perl
+#
+# Grubby configuration script
 
-$GURU = "$ENV{HOME}/.ggz";
+# Directories
+$ggzdir = "$ENV{HOME}/.ggz";
+$grubbydir = "$ggzdir/grubby";
 
-mkdir $GURU, 0700 || die "Cannot start setup! Your system is severely broken.";
-$GURU = "$GURU/grubby";
-mkdir $GURU, 0700;
+# PREPARATION #########################################################################################
 
-open(FILE, ">$GURU/modexec.rc");
-print FILE "[programs]\n";
-print FILE "programs = $GURUDIR/data/meeting.rb\n";
+print "====================\n";
+print "Grubby configuration\n";
+print "--------------------\n\n";
+print "This script does help you in setting up grubby, the GGZ chat bot. Do you want to continue (y/n)?\n";
+$cont = <STDIN>;
+chomp($cont);
+if($cont ne "y"){exit;}
+
+# Test for save environment
+$pid = getppid();
+mkdir $ggzdir, 0700 || die "Cannot start setup! Your system is severely broken.\n";
+mkdir $grubbydir, 0700 || print "Warning: grubby directory already exists.\n";
+rename "$ggzdir/grubby.rc", "$ggzdir/grubby.rc.backup.$pid" && print "Warning: saved old grubby.rc file.\n";
+print "\n";
+
+# MAIN SETUP ##########################################################################################
+
+print "Main configuration: This one is essential.\n";
+print "Grubby's name: "; $name = <STDIN>; chomp($name);
+print "The owner of $name: "; $owner = <STDIN>; chomp($owner);
+print "Which room should $name join first? "; $room = <STDIN>; chomp($room);
+print "What is $names\'s default host (default: localhost)? "; $host = <STDIN>; chomp($host);
+print "Where should $name log to (default: no log file)? "; $logfile = <STDIN>; chomp($logfile);
+print "\n";
+
+if(!$host){$host = "localhost";}
+
+# Write grubby.rc
+open(FILE, ">$ggzdir/grubby.rc");
+print FILE "[preferences]\n";
+print FILE "name = $name\n";
+print FILE "owner = $owner\n";
+print FILE "autojoin = $room\n";
+print FILE "host = $host\n";
+if($logfile){print FILE "logfile = $logfile\n";}
 close(FILE);
+
+# SCAN FOR PLUGINS ####################################################################################
+
+print "Plugins: They are the ones which make $name unique.\n";
+%EXEC = ();
+scan("/usr/lib", 1);
+scan("/usr/local/lib", 1);
+print "\n";
+
+# Append to grubby.rc
+open(FILE, ">>$ggzdir/grubby.rc");
+print FILE "\n";
+print FILE "[modules]\n";
+$modulelist = join(" ", keys(%EXEC));
+foreach $key(keys(%EXEC)){
+	$value = $EXEC{$key};
+	print FILE "$key = $value\n";
+}
+close(FILE);
+
+# SCAN FOR CORE PLUGINS ###############################################################################
+
+print "Core plugins: They are needed for $name to operate properly.\n";
+%EXEC = ();
+scan("/usr/lib", 2);
+scan("/usr/local/lib", 2);
+print "\n";
+
+# Append to grubby.rc
+open(FILE, ">>$ggzdir/grubby.rc");
+print FILE "\n";
+print FILE "[guru]\n";
+foreach $key(keys(%EXEC)){
+	$value = $EXEC{$key};
+	print FILE "$key = $value\n";
+}
+print FILE "modules = $modulelist\n";
+close(FILE);
+
+# SCAN FOR EXEC PLUGINS ###############################################################################
+
+print "Exec plugin: This one enhances grubby with external programs. Specify which ones you want:\n";
+%EXEC = ();
+scan("/usr/share/grubby", 0);
+scan("/usr/local/share/grubby", 0);
+print "\n";
+
+# Write grubby/modexec.rc
+open(FILE, ">$grubbydir/modexec.rc");
+print FILE "[programs]\n";
+$p = join(" ", keys(%EXEC));
+print FILE "programs = $p\n";
+foreach $key(keys(%EXEC)){
+	$value = $EXEC{$key};
+	print FILE "$key = $value\n";
+}
+close(FILE);
+
+# BADWORDS ############################################################################################
+
+print "Badwords: Give a space-separated list of bad words which $name should look for.\n";
+$badwords = <STDIN>;
+chomp($badwords);
+print "\n";
+
+# Write grubby/modbadword.rc
+open(FILE, ">$grubbydir/modbadword.rc");
+print FILE "[badwords]\n";
+print FILE "badwords = $badwords\n";
+close(FILE);
+
+# FINISH ##############################################################################################
+
+print "Setup finished. To edit the configuration, look in $ggzdir/grubby.rc and in $grubbydir.\n";
+print "To start grubby, just type 'grubby'.\n";
+print "====================\n";
+
+# SUB-PROCEDURES ######################################################################################
+
+# Scan the directory to find executables
+sub scan
+{
+	my $dir = shift(@_);
+	my $mod = shift(@_);
+	if($mod == 2){
+		$xmod = "";
+	}else{
+		$xmod = "mod";
+	}
+	opendir(D, $dir) || return;
+	@files = readdir(D);
+	foreach $f(@files){
+		if(($f eq ".") || ($f eq "..")){next;}
+		if(($mod) && (!($f =~ /^libguru$xmod\_[A-za-z0-9]+\.so$/))){next;}
+		if($mod){
+			$n = $f;
+			$n =~ s/^libguru$xmod\_//;
+			$n =~ s/\.so//;
+		}else{
+			@m = split(/\./, $f);
+			$n = $m[0];
+		}
+		print "Found $dir/$f; register as [$n (default)] or [n]: ";
+		$x = <STDIN>;
+		chomp($x);
+		if($x ne "n"){
+			if($x eq ""){$x = $n;}
+			$EXEC{$x} = "$dir/$f";
+		}
+	}
+	closedir(D);
+}
 

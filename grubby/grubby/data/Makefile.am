@@ -3,6 +3,9 @@ SUBDIRS = .
 gurudatadir = $(prefix)/share/grubby
 gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb
 
+guruconfigdir = $(prefix)/bin
+guruconfig_DATA = grubby-config
+
 EXTRA_DIRS = dict.pl rdf.pl meeting.rb messages.rb
 
 XGETTEXT = xgettext
