@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5007 2002-10-23 17:50:56Z jdorje $
+ * $Id: ggzdmod.h 5027 2002-10-25 17:10:56Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -486,6 +486,7 @@ int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
  *  @param pwd The working directory for the game, or NULL.
  *  @param args The arguments for the program, as needed by exec.
  *  @note The pwd directory must already exist.
+ *  @note The executable must be an absolute path (or relative to pwd).
  */
 void ggzdmod_set_module(GGZdMod * ggzdmod,
                         const char *pwd, char **args);
