@@ -45,8 +45,8 @@ int main(void) {
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggz_sock, &active_fd_set);
 
-	// Initializes game variables
-	game_init();
+  // Initializes game variables
+  game_init();
 
 	while (!game_over) {
 

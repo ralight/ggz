@@ -26,14 +26,16 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-char *combat_options_string_write(char *optstr, combat_game *_game) {
+char *combat_options_string_write(combat_game *_game, int for_hash) {
 	char *ptr;
+  char *optstr;
 	int a;
-	int len = (2 + _game->width*_game->height + 12 + 1);
+	int len = (2 + _game->width*_game->height + 12);
   // Should we add space for the name option?
-  if (_game->name && (strcmp(_game->name, "") != 0))
+  if (!for_hash && _game->name && (strcmp(_game->name, "") != 0))
     len += 1 + strlen(_game->name) + 1 + 1;
-	optstr = (char *)malloc(sizeof(char) * len);
+	optstr = (char *)malloc(sizeof(char) * (len+1));
+  strcpy(optstr, "");
 	ptr = optstr;
   /* Width * Height */
 	*ptr = _game->width;
@@ -43,10 +45,10 @@ char *combat_options_string_write(char *optstr, combat_game *_game) {
 		*(++ptr) = _game->map[a].type;
   /* Army data */
 	for (a = 0; a < 12; a++)
-		*(++ptr) = _game->army[0][a];
+		*(++ptr) = _game->army[_game->number][a];
   /* Options */
   // Map name
-  if (_game->name && (strcmp(_game->name, "") != 0)) {
+  if (!for_hash && _game->name && (strcmp(_game->name, "") != 0)) {
     *(++ptr) = O_NAME; // It's a name option
     for (a = 0; a < strlen(_game->name); a++)
       *(++ptr) = _game->name[a];
@@ -62,7 +64,7 @@ char *combat_options_string_write(char *optstr, combat_game *_game) {
 	return optstr;
 }
 
-int combat_options_string_read(char *optstr, combat_game *_game, int num_players) {
+int combat_options_string_read(char *optstr, combat_game *_game) {
 	int a, b;
 	int len = strlen(optstr);
   int retval = 0;
@@ -81,8 +83,8 @@ int combat_options_string_read(char *optstr, combat_game *_game, int num_players
 	}
   /* Army Data */
 	optstr+=_game->width*_game->height;
-	_game->army = (char **)calloc(num_players+1, sizeof(char*));
-	for (a = 0 ; a < num_players+1; a++) {
+	_game->army = (char **)calloc(_game->number+1, sizeof(char*));
+	for (a = 0 ; a < _game->number+1; a++) {
 		_game->army[a] = (char *)calloc(12, sizeof(char));
 		for (b = 0; b < 12; b++)
 			_game->army[a][b] = optstr[b];

@@ -58,6 +58,8 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 				cbt_game.state = CBT_STATE_WAIT;
 				ggz_debug("Waiting for players");
 			}
+      // Now we know how many players we have!
+      cbt_game.number = ggz_seats_num();
 			status = CBT_SERVER_OK;
 			break;
 		case REQ_GAME_JOIN:
@@ -117,7 +119,7 @@ int game_handle_player(int seat) {
 		case CBT_MSG_OPTIONS:
 			if (game_get_options(seat)) {
 				// Sends options to everyone
-				for (a = 0; a < ggz_seats_num(); a++) {
+				for (a = 0; a < cbt_game.number; a++) {
 					if (ggz_seats[a].fd >= 0)
 						game_send_options(a);
 				}
@@ -127,7 +129,7 @@ int game_handle_player(int seat) {
 			} else {
 				// Free memory
 				free(cbt_game.map);
-				for (a = 0; a < ggz_seats_num(); a++)
+				for (a = 0; a < cbt_game.number; a++)
 					free(cbt_game.army[a]);
 				free(cbt_game.army);
 				// Init them again
@@ -152,7 +154,7 @@ int game_handle_player(int seat) {
 			if (a < 0)
 				game_send_move_error(seat, a);
 			else
-				cbt_game.turn = NEXT(cbt_game.turn, ggz_seats_num());
+				cbt_game.turn = NEXT(cbt_game.turn, cbt_game.number);
 			// Check if the game is over
 			a = game_check_over();
 			if (a <= 0)
@@ -228,8 +230,9 @@ void game_send_seat(int seat) {
 	int fd = ggz_seats[seat].fd;
 
 	ggz_debug("Sending player %d his seat numnber\n", seat);
+  ggz_debug("Number of players: %d\n", cbt_game.number);
 
-	if (es_write_int(fd, CBT_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0 || es_write_int(fd, ggz_seats_num()) < 0 || es_write_int(fd, PROTOCOL_VERSION) < 0) {
+	if (es_write_int(fd, CBT_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0 || es_write_int(fd, cbt_game.number) < 0 || es_write_int(fd, PROTOCOL_VERSION) < 0) {
 		ggz_debug("Couldn't send seat!\n");
 		return;
 	}
@@ -258,9 +261,9 @@ int game_get_options(int seat) {
 
 	ggz_debug("Len: %d", strlen(optstr));
 
-	combat_options_string_read(optstr, &cbt_game, ggz_seats_num());
+	combat_options_string_read(optstr, &cbt_game);
 
-	if (cbt_game.army[ggz_seats_num()][U_FLAG] <= 0) {
+	if (cbt_game.army[cbt_game.number][U_FLAG] <= 0) {
 		ggz_debug("Not enough flags");
 		return 0;
 	}
@@ -270,15 +273,15 @@ int game_get_options(int seat) {
 			ggz_debug("No moving units");
 			return 0;
 		}
-		if (cbt_game.army[ggz_seats_num()][a] > 0)
+		if (cbt_game.army[cbt_game.number][a] > 0)
 			break;
 	}
 
 	for (a = 0; a < 12; a++)
-		size+=cbt_game.army[ggz_seats_num()][a];
+		size+=cbt_game.army[cbt_game.number][a];
 
 	// Checks for number of starting positions
-	for (a = 0; a < ggz_seats_num(); a++) {	
+	for (a = 0; a < cbt_game.number; a++) {	
 		for (b = 0; b < cbt_game.width * cbt_game.height; b++) {
 			if (GET_OWNER(cbt_game.map[b].type) == a)
 				cur_size++;
@@ -301,7 +304,7 @@ void game_send_options(int seat) {
 		return;
 	}
 
-	if (es_write_int(fd, CBT_MSG_OPTIONS) < 0 || es_write_string(fd, combat_options_string_write(NULL, &cbt_game)) < 0)
+	if (es_write_int(fd, CBT_MSG_OPTIONS) < 0 || es_write_string(fd, combat_options_string_write(&cbt_game, 0)) < 0)
 			return;
 	
 	return;
@@ -310,7 +313,7 @@ void game_send_options(int seat) {
 void game_send_players() {
 	int i, j, fd;
 
-	for (j = 0; j < ggz_seats_num(); j++) {
+	for (j = 0; j < cbt_game.number; j++) {
 		if ( (fd = ggz_seats[j].fd) == -1 ) {
 			ggz_debug("Bot seat\n");
 			continue;
@@ -322,7 +325,7 @@ void game_send_players() {
 			return;
 		}
 	
-		for (i = 0; i < ggz_seats_num(); i++) {
+		for (i = 0; i < cbt_game.number; i++) {
 			if (es_write_int(fd, ggz_seats[i].assign) < 0)
 				return;
 			if (ggz_seats[i].assign != GGZ_SEAT_OPEN && es_write_string(fd, ggz_seats[i].name) < 0) {
@@ -338,7 +341,7 @@ void game_send_players() {
 void game_request_setup(int seat) {
 	int a, fd;
 	if (seat < 0) {
-		for (a = 0; a < ggz_seats_num(); a++) {
+		for (a = 0; a < cbt_game.number; a++) {
 			fd = ggz_seats[a].fd;
 			if (fd < 0)
 				continue;
@@ -389,7 +392,7 @@ int game_get_setup(int seat) {
 		used[LAST(setup[a])]++;
 
 	for (a = 0; a < 12; a++) {
-		if (used[a] != cbt_game.army[ggz_seats_num()][a])
+		if (used[a] != cbt_game.army[cbt_game.number][a])
 			return 0;
 	}
 
@@ -403,7 +406,7 @@ int game_get_setup(int seat) {
 
 	done_setup++;
 
-	if (done_setup == ggz_seats_num())
+	if (done_setup == cbt_game.number)
 		game_start();
 
 	return 1;
@@ -412,7 +415,7 @@ int game_get_setup(int seat) {
 void game_start() {
 	int a, fd;
 
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
@@ -426,7 +429,7 @@ void game_start() {
 void game_send_move_error(int seat, int error) {
 	int fd, a;
 
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
@@ -466,7 +469,7 @@ int game_handle_move(int seat, int from, int to) {
 	cbt_game.map[from].unit = U_EMPTY;
 	
 	// Ok... now send it!
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
@@ -554,7 +557,7 @@ int game_handle_attack(int f_s, int from, int to) {
 	}
 
 	// Send messages
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
@@ -574,9 +577,9 @@ int game_check_over() {
 
 	// TODO: Check if the player has no way to move his units
 	
-	alive = (int *)malloc(ggz_seats_num() * sizeof(int));
+	alive = (int *)malloc(cbt_game.number * sizeof(int));
 	
-	for (b = 0; b < ggz_seats_num(); b++) {
+	for (b = 0; b < cbt_game.number; b++) {
 		// Sees if the player has flags left
 		if (cbt_game.army[b][U_FLAG] <= 0) {
 			alive[b] = 0;
@@ -591,7 +594,7 @@ int game_check_over() {
 	}
 
 	// Now checks if it is only one alive
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		if (alive[a]) {
 			b = a;
 			no_alives++;
@@ -606,7 +609,7 @@ int game_check_over() {
 void game_send_gameover(int winner) {
 	int a, fd;
 
-	for (a = 0; a < ggz_seats_num(); a++) {
+	for (a = 0; a < cbt_game.number; a++) {
 		fd = ggz_seats[a].fd;
 		if (fd < 0)
 			continue;
