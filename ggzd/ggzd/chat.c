@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4823 2002-10-09 06:19:45Z jdorje $
+ * $Id: chat.c 4858 2002-10-10 21:04:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,6 +40,7 @@
 #include <net.h>
 #include <players.h>
 #include <perms.h>
+#include "table.h"
 #include "client.h"
 
 
@@ -56,10 +57,12 @@ typedef struct {
 
 /* Local functions and callbacks */
 static GGZChatEventData *chat_pack(GGZChatType type,
-				   char *sender, char *message);
+				   const char *sender, const char *message);
 static void chat_free(void *event_data);
 static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
                                               void* event_data);
+static GGZEventFuncReturn chat_table_event_callback(void *target, size_t size,
+						    void *event_data);
 
 /* Queue up a chat for the room */
 GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
@@ -91,6 +94,35 @@ GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 		return E_BAD_XML; /* internal server error? */
 	else
 		return E_OK;
+}
+
+
+/* Queue up a chat for a table */
+GGZClientReqError chat_table_enqueue(int room, int table, GGZChatType type,
+				     GGZPlayer *sender, const char *msg)
+{
+	GGZChatEventData *data;
+
+	if (room == -1 || table == -1)
+		return E_NO_TABLE;
+
+	data = chat_pack(type, sender->name, msg);
+
+	/* We can't just loop over the players at the table to do an
+	   event_player_enqueue on them - it's possible players might be
+	   joining or leaving the table in other threads, and that would
+	   be Bad.  So we must queue up a table event.  Unfortunately,
+	   the table event is done once for the entire table - not once
+	   per player - so in that event (in chat_table_event_callback)
+	   we then have to loop over the players at the table and
+	   enqueue the chat for them.  This extra step could be avoided
+	   if there were an event_tableplayer_enqueue that performed
+	   similarly to event_room_enqueue (but for tables).  --JDS */
+	if (event_table_enqueue(room, table, chat_table_event_callback,
+				sizeof(*data), data, chat_free) != GGZ_OK)
+		return E_BAD_XML; /* internal server error? */
+
+	return E_OK;
 }
 
 
@@ -138,7 +170,7 @@ GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type,
 
 /* Return packaged chat message in dynamically allocated memory */
 static GGZChatEventData *chat_pack(GGZChatType type,
-				   char* sender, char* msg)
+				   const char* sender, const char* msg)
 {
 	GGZChatEventData *data;
 
@@ -178,6 +210,53 @@ static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
 		return GGZ_EVENT_ERROR;
 		
 	return GGZ_EVENT_OK;
+}
+
+
+static GGZEventFuncReturn chat_table_event_callback(void *target, size_t size,
+						    void *event_data)
+{
+	GGZTable *table = target;
+	GGZChatEventData *data = event_data;
+	int i;
+	GGZEventFuncReturn status = GGZ_EVENT_OK;
+
+	/* We loop over all players at the table, and for each of them
+	   enqueue a player event to handle the chat.  Note that we have
+	   to repack the chat event data for each player, since it will
+	   be freed after the *table* event has been handled.  This is
+	   just another argument in favor of a event_tableplayer_enqueue()
+	   function.  --JDS */
+
+	for (i = 0; i < table->num_seats; i++) {
+		GGZChatEventData *ndata;
+		char *receiver = table->seat_names[i];
+
+		if (table->seat_types[i] != GGZ_SEAT_PLAYER)
+			continue;
+
+		ndata = chat_pack(data->type, data->sender, data->message);
+		if (event_player_enqueue(receiver, chat_event_callback,
+					 sizeof(*ndata), ndata,
+					 chat_free) != GGZ_OK)
+			status = GGZ_EVENT_ERROR;
+	}
+
+	for (i = 0; i < table->max_num_spectators; i++) {
+		GGZChatEventData *ndata;
+		char *receiver = table->spectators[i];
+
+		if (receiver[0] == '\0')
+			continue;
+
+		ndata = chat_pack(data->type, data->sender, data->message);
+		if (event_player_enqueue(receiver, chat_event_callback,
+					 sizeof(*ndata), ndata,
+					 chat_free) != GGZ_OK)
+			status = GGZ_EVENT_ERROR;
+	}
+
+	return status;
 }
 
 

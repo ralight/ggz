@@ -32,6 +32,10 @@
 GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 				    GGZPlayer* sender, char *msg);
 
+/* Queue up chat message for table consumption */
+GGZClientReqError chat_table_enqueue(int room, int table, GGZChatType type,
+				     GGZPlayer *sender, const char *msg);
+
 /* Queue up a chat to a specific player */
 GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type, 
 				      GGZPlayer* sender, char *msg);

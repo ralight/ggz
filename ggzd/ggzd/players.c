@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4822 2002-10-09 06:17:54Z jdorje $
+ * $Id: players.c 4858 2002-10-10 21:04:56Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -950,7 +950,7 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 {
 	int target_room=-1;	/* FIXME - this should come from net.c if we */
 				/* are going to support per-room announce... */
-	GGZClientReqError status;
+	GGZClientReqError status = E_BAD_OPTIONS;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
 	
@@ -965,9 +965,19 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 	
 	/* Parse type */
 	switch (type) {
+	case GGZ_CHAT_NONE:
+		/* An unrecognized chat op will be here.  This is probably
+		   a future chat type - not implemented yet.  We should
+		   handle it gracefully if possible.  So fall through
+		   to the "normal" case... */
 	case GGZ_CHAT_NORMAL:
 		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
 		status = chat_room_enqueue(player->room, type, player, msg);
+		break;
+	case GGZ_CHAT_TABLE:
+		dbg_msg(GGZ_DBG_CHAT, "%s sends table %s", player->name, msg);
+		status = chat_table_enqueue(player->room, player->table,
+					    type, player, msg);
 		break;
 	case GGZ_CHAT_BEEP:
 	case GGZ_CHAT_PERSONAL:
@@ -977,10 +987,6 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 		dbg_msg(GGZ_DBG_CHAT, "%s announces %s", player->name, msg);
 		status = chat_room_enqueue(target_room, type, player, msg);
 		break;
-	default:
-		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat type %d", 
-			player->name, type);
-		status = E_BAD_OPTIONS;
 	}
 
 	dbg_msg(GGZ_DBG_CHAT, "%s's chat result: %d", player->name, status);
