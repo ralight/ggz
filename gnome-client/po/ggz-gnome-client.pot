@@ -1,0 +1,302 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-02-04 21:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/callbacks.c:231 ../src/interface.c:111 ../src/profilesc.c:139
+#: ../src/profilesc.c:295
+msgid "There has been a problem loading your profiles.\n"
+msgstr ""
+
+#: ../src/chat.c:354
+msgid "Beep Sent"
+msgstr ""
+
+#: ../src/chat.c:409
+msgid "Chat Commands"
+msgstr ""
+
+#: ../src/chat.c:410
+msgid "-------------"
+msgstr ""
+
+#: ../src/chat.c:411
+msgid "/me <action> .............. Send an action"
+msgstr ""
+
+#: ../src/chat.c:412
+msgid "/msg <username> <message> . Private message a player"
+msgstr ""
+
+#: ../src/chat.c:413
+msgid "/beep <username> .......... Beep a player"
+msgstr ""
+
+#: ../src/chat.c:414
+msgid "/friends .................. List your friends"
+msgstr ""
+
+#: ../src/chat.c:415
+msgid "/ignore ................... List people your ignoring"
+msgstr ""
+
+#: ../src/chat.c:416
+msgid "/wall <message> ........... Admin command"
+msgstr ""
+
+#: ../src/chat.c:605
+#, c-format
+msgid "Added %s to your friends list."
+msgstr ""
+
+#: ../src/chat.c:629
+#, c-format
+msgid "Removed %s from your friends list."
+msgstr ""
+
+#: ../src/chat.c:660
+#, c-format
+msgid "Added %s to your ignore list."
+msgstr ""
+
+#: ../src/chat.c:685
+#, c-format
+msgid "Removed %s from your ignore list."
+msgstr ""
+
+#: ../src/chat.c:816
+msgid "Multiple matches:"
+msgstr ""
+
+#: ../src/ggzclient.c:345
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr ""
+
+#: ../src/ggzclient.c:394
+#, c-format
+msgid "You've been beeped by %s."
+msgstr ""
+
+#: ../src/ggzclient.c:466
+msgid "Offline"
+msgstr ""
+
+#: ../src/ggzclient.c:469
+msgid "Connecting"
+msgstr ""
+
+#: ../src/ggzclient.c:472
+msgid "Online"
+msgstr ""
+
+#: ../src/ggzclient.c:475
+msgid "Logging In"
+msgstr ""
+
+#: ../src/ggzclient.c:478
+msgid "Logged In"
+msgstr ""
+
+#: ../src/ggzclient.c:482
+msgid "--> Room"
+msgstr ""
+
+#: ../src/ggzclient.c:485
+msgid "Chatting"
+msgstr ""
+
+#: ../src/ggzclient.c:489
+msgid "--> Table"
+msgstr ""
+
+#: ../src/ggzclient.c:492
+msgid "Playing"
+msgstr ""
+
+#: ../src/ggzclient.c:495
+msgid "<-- Table"
+msgstr ""
+
+#: ../src/ggzclient.c:498
+msgid "Logging Out"
+msgstr ""
+
+#: ../src/ggzclient.c:501
+msgid "**none**"
+msgstr ""
+
+#: ../src/interface.c:447 ../src/msgboxi.c:88
+msgid "GGZ Gaming Zone"
+msgstr ""
+
+#: ../src/interface.c:488
+msgid "_LOGIN"
+msgstr ""
+
+#: ../src/interface.c:499
+msgid "_PROFILES"
+msgstr ""
+
+#: ../src/interface.c:509
+msgid "_QUIT"
+msgstr ""
+
+#: ../src/interface.c:526 ../src/profilesi.c:205
+msgid "Profiles"
+msgstr ""
+
+#: ../src/interface.c:565 ../src/interface.c:669
+msgid "USERNAME"
+msgstr ""
+
+#: ../src/interface.c:582
+msgid "PASSWORD"
+msgstr ""
+
+#: ../src/interface.c:600 ../src/interface.c:686
+msgid "SERVER"
+msgstr ""
+
+#: ../src/interface.c:625
+msgid "_GUEST"
+msgstr ""
+
+#: ../src/interface.c:634
+msgid "_REGISTERED"
+msgstr ""
+
+#: ../src/interface.c:653
+msgid "PROFILE NAME"
+msgstr ""
+
+#: ../src/interface.c:711
+msgid "_CREATE"
+msgstr ""
+
+#: ../src/interface.c:721
+msgid "C_ANCEL"
+msgstr ""
+
+#: ../src/interface.c:730
+msgid "A_DVANCED"
+msgstr ""
+
+#: ../src/interface.c:747
+msgid "L"
+msgstr ""
+
+#: ../src/interface.c:750
+msgid "T"
+msgstr ""
+
+#: ../src/interface.c:753
+msgid "Players"
+msgstr ""
+
+#: ../src/interface.c:775
+msgid "CHANGE _ROOM"
+msgstr ""
+
+#: ../src/interface.c:783 ../src/interface.c:799
+msgid "_CHAT"
+msgstr ""
+
+#: ../src/interface.c:791
+msgid "_TABLES"
+msgstr ""
+
+#: ../src/interface.c:807
+msgid "_LOGOFF"
+msgstr ""
+
+#: ../src/interface.c:875
+msgid "_SEND"
+msgstr ""
+
+#: ../src/interface.c:922
+msgid "ID"
+msgstr ""
+
+#: ../src/interface.c:925
+msgid "Free"
+msgstr ""
+
+#: ../src/interface.c:928
+msgid "Total"
+msgstr ""
+
+#: ../src/interface.c:931
+msgid "Description"
+msgstr ""
+
+#: ../src/interface.c:947
+msgid "Launch Game"
+msgstr ""
+
+#: ../src/interface.c:953
+msgid "Join Game"
+msgstr ""
+
+#: ../src/interface.c:961
+msgid "Watch Game"
+msgstr ""
+
+#: ../src/msgboxi.c:122
+msgid "OK"
+msgstr ""
+
+#: ../src/profilesi.c:56
+msgid "Advanced Profile Options"
+msgstr ""
+
+#: ../src/profilesi.c:71
+msgid ""
+"This is the advanced profile editor. Select a profile from the right to "
+"modify any of it's settings, when done click Apply. To create a new profile, "
+"fill out all information and click new."
+msgstr ""
+
+#: ../src/profilesi.c:84
+msgid "Profile Name:"
+msgstr ""
+
+#: ../src/profilesi.c:104
+msgid "Username:"
+msgstr ""
+
+#: ../src/profilesi.c:124
+msgid "Password:"
+msgstr ""
+
+#: ../src/profilesi.c:144
+msgid "Server:"
+msgstr ""
+
+#: ../src/profilesi.c:165
+msgid "_New"
+msgstr ""
+
+#: ../src/profilesi.c:174
+msgid "_Modify"
+msgstr ""
+
+#: ../src/profilesi.c:183
+msgid "D_elete"
+msgstr ""
+
+#: ../src/profilesi.c:192
+msgid "_Done"
+msgstr ""

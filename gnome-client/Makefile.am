@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5296 2002-12-17 08:53:47Z jdorje $
+#  $Id: Makefile.am 5394 2003-02-04 20:18:52Z dr_maux $
 
-SUBDIRS = src pixmaps
+SUBDIRS = src pixmaps po
 
 util_DATA = ggz-gnome.desktop
 utildir = $(prefix)/share/gnome/apps/Internet/Internet

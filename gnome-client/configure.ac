@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5387 2003-02-04 17:38:06Z jdorje $
+dnl $Id: configure.ac 5394 2003-02-04 20:18:52Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -15,21 +15,30 @@ AC_PROG_INSTALL
 
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-		     "${ac_default_prefix}/${DATADIRNAME}/locale",
+		     "${ac_default_prefix}/share/locale",
                      [The location to put message catalogs])
 else
   AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
-		     "${prefix}/${DATADIRNAME}/locale",
+		     "${prefix}/share/locale",
                      [The location to put message catalogs])
 fi
 
 AC_GGZ_INIT(defaults)
+AC_GGZ_INTL([], [])
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
+
+if test "x$XGETTEXT" = "x"; then
+	nls_enabled=0
+else
+	nls_enabled=1
+fi
 
 ggzdatadir=`ggz-config --datadir`
 AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
 		   [Location of GGZ module data])
+AC_DEFINE_UNQUOTED([ENABLE_NLS], $nls_enabled,
+		   [Define if your system supports NLS])
 AC_SUBST(ggzdatadir)
 
 LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
@@ -39,6 +48,7 @@ AC_CONFIG_FILES([
 Makefile
 pixmaps/Makefile
 src/Makefile
+po/Makefile
 ])
 AC_OUTPUT
 
