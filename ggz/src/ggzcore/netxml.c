@@ -168,7 +168,7 @@ static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 
 /* Utility functions */
 static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num);
-static void _ggzcore_net_send_xmldec(GGZNet *net);
+static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
 static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...);
 static int safe_atoi(char *string);
@@ -321,8 +321,6 @@ int _ggzcore_net_send_login(struct _GGZNet *net)
 		type = "guest";
 	}
 	
-	_ggzcore_net_send_xmldec(net);
-	_ggzcore_net_send_line(net, "<SESSION>");
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
 
@@ -775,8 +773,12 @@ static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 
 		net->chat_size = chatlen;
 		/* FIXME: Do something with name, status */
-		if (version == GGZ_CS_PROTO_VERSION)
+		if (version == GGZ_CS_PROTO_VERSION) {
+			/* Everything checked out so start session */
+			_ggzcore_net_send_header(net);
+
 			_ggzcore_server_set_negotiate_status(net->server, 0);
+		}
 		else
 			_ggzcore_server_set_negotiate_status(net->server, -1);
 	}
@@ -882,6 +884,9 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 				break;
 			case E_BAD_XML:
 				message = "Server didn't like our XML";
+				break;
+			default:
+				message = "Unknown protocol error";
 			}
 
 			_ggzcore_server_protocol_error(net->server, message);
@@ -1650,10 +1655,11 @@ static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
 }
 
 
-/* Send the XML declaration */
-static void _ggzcore_net_send_xmldec(GGZNet *net)
+/* Send the session header */
+static void _ggzcore_net_send_header(GGZNet *net)
 {
 	_ggzcore_net_send_line(net, "<?xml version='1.0' encoding='ISO-8859-1'?>");
+	_ggzcore_net_send_line(net, "<SESSION>");
 }
 
 
