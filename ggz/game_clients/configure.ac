@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5704 2003-12-05 01:01:11Z jdorje $
+dnl $Id: configure.ac 5708 2003-12-06 02:56:30Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -68,6 +68,25 @@ AC_GGZ_INTL(ignore)
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+AC_CHECK_HEADERS([fcntl.h libintl.h locale.h netdb.h netinet/in.h \
+                  sys/socket.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_HEADER_DIRENT
+AC_HEADER_STDBOOL
+AC_HEADER_SYS_WAIT
+
+
+# Check for library functions
+# ===========================
+AC_CHECK_FUNCS([localeconv memset mkdir setlocale socket sqrt strcasecmp \
+                strchr strdup strrchr strstr malloc realloc stat strtod \
+                bzero floor gethostbyname],
+               [], [AC_MSG_ERROR([cannot find required function])])
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STAT
+AC_FUNC_STRTOD
+
 
 dnl Check for gettext support
 dnl =========================
