@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3247 2002-02-05 02:33:42Z jdorje $
+ * $Id: transit.c 3249 2002-02-05 03:24:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -193,7 +193,7 @@ static int transit_table_event_callback(void* target, int size, void* data)
 		/* First look for my (reserved) seat. */
 		for (i = 0; i < num_seats; i++)
 			if (seats_type(table, i) == GGZ_SEAT_RESERVED
-			    && !strcmp(table->seat_names[i], name))
+			    && !strcasecmp(table->seat_names[i], name))
 				break;
 			
 		/* If that failed, look for any open seat. */
@@ -346,7 +346,7 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	seats  = seats_num(table);
 	for (i = 0; i < seats; i++)
 		if (table->seat_types[i] == GGZ_SEAT_PLAYER
-		    && strcmp(table->seat_names[i], name) == 0)
+		    && strcasecmp(table->seat_names[i], name) == 0)
 			break;
 
 	/* Ack! Fatal error...this should never happen */
