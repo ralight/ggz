@@ -49,6 +49,9 @@ LogInfo log_info = { 0, 0,
 #endif
 };
 
+/* Internal use functions */
+static FILE *log_open_logfile(char *);
+
 
 static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 {
@@ -100,8 +103,14 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
+				log_info.logfile =
+				      log_open_logfile(log_info.log_fname);
+			}
 			fputs(buf, log_info.logfile);
 			fflush(NULL);
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+				fclose(log_info.logfile);
 		}
 	}
 #ifdef DEBUG
@@ -109,8 +118,14 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		if(log_info.options & GGZ_DBGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
+				log_info.dbgfile =
+				      log_open_logfile(log_info.dbg_fname);
+			}
 			fputs(buf, log_info.dbgfile);
 			fflush(NULL);
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+				fclose(log_info.dbgfile);
 		}
 	}
 #endif
@@ -261,11 +276,14 @@ void logfile_initialize(void)
 		log_info.log_level = 1;
 	if(log_info.log_fname) {
 		if(strcmp("syslogd", log_info.log_fname)) {
-			log_info.logfile = fopen(log_info.log_fname, "a");
+			log_info.logfile = log_open_logfile(log_info.log_fname);
 			if(log_info.logfile == NULL)
 				err_msg("Cannot open logfile for writing");
-			else
+			else {
 				log_info.options &= ~GGZ_LOGOPT_USE_SYSLOG;
+				if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+					fclose(log_info.logfile);
+			}
 		}
 	}
 
@@ -281,11 +299,14 @@ void logfile_initialize(void)
 		log_info.dbg_level = 0;
 	if(log_info.dbg_fname) {
 		if(strcmp("syslogd", log_info.dbg_fname)) {
-			log_info.dbgfile = fopen(log_info.dbg_fname, "a");
+			log_info.dbgfile = log_open_logfile(log_info.dbg_fname);
 			if(log_info.dbgfile == NULL)
 				err_msg("Cannot open dbgfile for writing");
-			else
+			else {
 				log_info.options &= ~GGZ_DBGOPT_USE_SYSLOG;
+				if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+					fclose(log_info.dbgfile);
+			}
 		}
 	}
 
@@ -298,4 +319,21 @@ void logfile_initialize(void)
 
 	log_info.log_initialized = 1;
 	dbg_msg("Logfiles initialized");
+}
+
+
+/* Open a logfile and return a FILE pointer */
+static FILE *log_open_logfile(char *fname)
+{
+	char pidname[strlen(fname) + 9];
+	char *f=fname;
+
+	if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
+		/*if((pidname = malloc(strlen(fname) + 9)) == NULL)
+			err_sys_exit("malloc error in log_open_logfile()");*/
+		snprintf(pidname, sizeof(pidname), "%s_%u", fname, getpid());
+		f = pidname;
+	}
+
+	return( fopen(f, "a") );
 }
