@@ -31,6 +31,7 @@
 #include "datatypes.h"
 
 extern struct ConnectInfo connection;
+extern char *local_conf_fname;
 
 static const struct poptOption args[] = {
 	
@@ -42,6 +43,9 @@ static const struct poptOption args[] = {
 	
 	{"name", 'n', POPT_ARG_STRING, &connection.username, 0,
 	 "Player name", "PORT"},
+
+	{"file", 'f', POPT_ARG_STRING, &local_conf_fname, 0,
+	 "Test configuration file", "FILENAME" },
 	
 	{"version", 'V', POPT_ARG_NONE, NULL, 1},
 	

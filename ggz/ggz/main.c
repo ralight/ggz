@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <signal.h>
+#include <stdio.h>
 
 #include "datatypes.h"
 #include "parse_opt.h"
@@ -55,6 +56,7 @@ gint selected_table;
 gint selected_type;
 struct GameTables tables;
 struct Rooms room_info;
+char *local_conf_fname = NULL;
 
 /* Aray of GdkColors currently used for chat */
 GdkColor colors[] = 
@@ -74,12 +76,16 @@ GdkColor colors[] =
 
 gint main(gint argc, gchar *argv[])
 {
+	/* Read configuration values */
 	parse_args(argc, argv);
+	if(ggzrc_initialize(local_conf_fname) != 0) {
+		fprintf(stderr, "ERROR: No valid configuration file loaded\n");
+		fprintf(stderr, "Gnu Gaming Zone can not continue\n");
+		exit(1);
+	}
+
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
-
-	/* Load up the ggz.rc file */
-	ggzrc_initialize();
 
 	/* Signal handlers */
 	signal(SIGCHLD, game_dead);

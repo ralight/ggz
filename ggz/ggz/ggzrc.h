@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-extern int ggzrc_initialize(void);
+extern int ggzrc_initialize(char *);
 extern int ggzrc_commit_changes(void);
 extern void ggzrc_cleanup(void);
 extern void ggzrc_write_string(const char *, const char *, const char *);

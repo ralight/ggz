@@ -44,6 +44,7 @@ static char *varname;
 static char *varvalue;
 static GHashTable *rc_hash=NULL;
 static GSList *rc_list=NULL;
+static gboolean local_conf = FALSE;
 
 
 /* Write a string variable to the hash table */
@@ -107,7 +108,7 @@ int ggzrc_read_int(const char *section, const char *key, const int def)
 
 
 /* Initialize and read in the configuration file(s) */
-int ggzrc_initialize(void)
+int ggzrc_initialize(char *rc_fname)
 {
 	char *tempstr;
 	char *home;
@@ -115,6 +116,18 @@ int ggzrc_initialize(void)
 	int status = -1;
 
 	rc_hash = g_hash_table_new(g_str_hash, g_str_equal);
+
+	if(rc_fname) {
+		/* Open and parse a user specified rc file */
+		if((rc_file = fopen(rc_fname, "r")) == NULL) {
+			err_sys("Unable to read configuration file");
+			return -1;
+		}
+		dbg_msg("ggzrc: Reading %s", rc_fname);
+		ggzrc_load_rc(rc_file);
+		local_conf = TRUE;
+		return 0;
+	}
 
 	/* Open and parse the main ggz.rc file */
 	tempstr = g_strconcat(GGZCONFDIR, "/ggz.rc", NULL);
@@ -198,7 +211,11 @@ int ggzrc_commit_changes(void)
 	int first_section;
 	char *tmp, *section, *key, *value;
 	GSList *iter_list=rc_list;
-	
+
+	/* We don't overwrite real configuration files from test files */
+	if(local_conf)
+		return 0;
+
 	if((home=getenv("HOME")) == NULL) {
 		err_msg("ggzrc: Can't write ~/.ggzrc, can't find $HOME");
 		return -1;
