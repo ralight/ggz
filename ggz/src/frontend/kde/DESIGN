@@ -45,5 +45,9 @@ If you are very brave you can add --enable-final too, but this way the KDE
 macros will create lots of files and gcc will complain about Qt's shadow
 variables, so this is probably not what you really want.
 
+There is now a new way how games are started. I'll put a picture on it into the
+documentation CVS module.
+
+
 	- Josef
 

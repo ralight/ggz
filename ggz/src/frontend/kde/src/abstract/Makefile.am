@@ -6,10 +6,12 @@ ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la
 noinst_LIBRARIES = libkggzabstract.a
 
 libkggzabstract_a_SOURCES = \
-	KGGZCallback.cpp
+	KGGZCallback.cpp \
+	KGGZGameInfo.cpp
 
 noinst_HEADERS = \
-	KGGZCallback.h
+	KGGZCallback.h \
+	KGGZGameInfo.h
 
 CXXFLAGS = @COMPILEOPTIONS@
 

@@ -40,6 +40,7 @@
 #include "KGGZLaunch.h"
 #include "KGGZConnect.h"
 #include "KGGZMotd.h"
+#include "KGGZGameInfo.h"
 
 // KDE includes
 #include <kpopupmenu.h>
@@ -56,6 +57,7 @@
 #include "GGZCoreGame.h"
 #include "GGZCoreGametype.h"
 #include "GGZCoreModule.h"
+#include "GGZCoreTable.h"
 
 // Forward declarations
 class KGGZWorkspace;
@@ -151,11 +153,13 @@ class KGGZ : public QWidget
 		// Receive chat message
 		void slotChat(const char *text, char *player, int mode);
 		// Launch a table
-		void slotLaunch();
+		//void slotLaunch();
 		// Send grubby requests
 		void slotGrubby(const char *grubby, const char *argument, int id);
 		// Launches a selected game
-		void slotLaunchGameSelected(int selected);
+		//void slotLaunchGameSelected(int selected);
+		void slotGamePrepare(int frontend);
+		void slotGameStart();
 
 	protected:
 		// Handle resizing
@@ -204,7 +208,9 @@ class KGGZ : public QWidget
 		void listTables();
 
 		// Launches a game of the specified game type
-		void slotLaunchGame(GGZCoreGametype *gametype);
+		//void slotLaunchGame(GGZCoreGametype *gametype);
+		void slotGameFire();
+		void slotGameFrontend();
 		// Advices logo widget to load game logo
 		void slotLoadLogo();
 
@@ -222,8 +228,12 @@ class KGGZ : public QWidget
 		GGZCoreConf *m_config;
 		// Saved gametype on frontend selection
 		GGZCoreModule *m_module;
+		// Saved table for frontend selection
+		GGZCoreTable *m_table;
 		// Callback atoms (all unique)
 		KGGZCallback *kggzservercallback, *kggzroomcallback, *kggzgamecallback;
+		// Game information
+		KGGZGameInfo *m_gameinfo;
 		// User data saved from connection dialog
 		char *m_save_username, *m_save_password, *m_save_host;
 		// Connection data saved from connection dialog
