@@ -42,8 +42,10 @@
 
 
 /* Pixmaps */
-GdkPixmap* black_pix;
-GdkPixmap* white_pix;
+#define PIXSIZE 48
+GdkPixmap* pix[2];
+GdkBitmap* pix_mask[2];
+GdkGC* pix_gc;
 GdkPixmap* rvr_buf;
 
 GtkWidget *main_win;
@@ -81,31 +83,50 @@ void display_board(void)
 {
 	int i, x, y;
 	GtkWidget* tmp;
-	GdkPixmap* piece;
+	int piece = -1;
 	GtkStyle* style;
+	GtkWidget* white_label;
+	GtkWidget* black_label;
+	char score[29];
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
 
 	for (i = 0; i < 64; i++) {
-		if (game.board[i] == BLACK)
-			piece = black_pix;
-		else if (game.board[i] == WHITE)
-			piece = white_pix;
+		if (game.board[i] == BLACK) {
+			piece = PLAYER2SEAT(BLACK);
+		}
+		else if (game.board[i] == WHITE) {
+			piece = PLAYER2SEAT(WHITE);
+		}
 		else 
 			continue;
 		
-		x = (X(i)-1)*32;
-		y = (Y(i)-1)*32;
+		x = (X(i)-1)*PIXSIZE;
+		y = (Y(i)-1)*PIXSIZE;
 		
-		gdk_draw_pixmap(rvr_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-				piece, 0, 0, x, y, 32, 32);
+		//gdk_draw_pixmap(rvr_buf, piece_gc,
+				//piece, 0, 0, x, y, PIXSIZE, PIXSIZE);
+		gdk_gc_set_tile(pix_gc, pix[piece]);
+		gdk_gc_set_ts_origin(pix_gc, x, y);
+		gdk_gc_set_clip_origin(pix_gc, x, y);
+		gdk_gc_set_clip_mask(pix_gc, pix_mask[piece]);
+		gdk_draw_rectangle(rvr_buf, pix_gc, TRUE, x, y, PIXSIZE, PIXSIZE);
 	}
 
 	if (game.state == RVR_STATE_PLAYING && game.turn == game.num)
 		game_status("It's your turn!");
 	else if (game.state == RVR_STATE_PLAYING && game.turn == -game.num)
 		game_status("Wait for your oponnents turn");
+
+	// Update the scores
+	white_label = gtk_object_get_data( GTK_OBJECT(main_win), "white_label");
+	black_label = gtk_object_get_data( GTK_OBJECT(main_win), "black_label");
+	sprintf(score, "White(%s): %d", game.names[PLAYER2SEAT(WHITE)], game.white);
+	gtk_label_set_text(GTK_LABEL(white_label), score);
+	sprintf(score, "Black(%s): %d", game.names[PLAYER2SEAT(BLACK)], game.black);
+	gtk_label_set_text(GTK_LABEL(black_label), score);
+	
 	
 	gtk_widget_draw(tmp, NULL);
 }
@@ -114,18 +135,28 @@ void display_board(void)
 void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
-	GdkBitmap* mask;
 	
-	// now for the pixmap from gdk
+	// Get the current style
 	style = gtk_widget_get_style(main_win);
-	
-	black_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
+
+	// Create the pix gc
+	pix_gc = gdk_gc_new(main_win->window);
+	gdk_gc_ref(pix_gc);
+	gdk_gc_set_fill(pix_gc, GDK_TILED);
+
+	// Creathe the black pix
+	pix[PLAYER2SEAT(BLACK)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(BLACK)],
+					      &style->black, 
 					      (gchar**)black_xpm );
-	
-	white_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
+	gdk_pixmap_ref(pix[PLAYER2SEAT(BLACK)]);
+	gdk_bitmap_ref(pix_mask[PLAYER2SEAT(BLACK)]);
+
+	// Sets up the white pix
+	pix[PLAYER2SEAT(WHITE)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(WHITE)],
+					      &style->white, 
 					      (gchar**)white_xpm );
+	gdk_pixmap_ref(pix[PLAYER2SEAT(WHITE)]);
+	gdk_bitmap_ref(pix[PLAYER2SEAT(WHITE)]);
 }
 
 
@@ -172,7 +203,7 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 					  widget->allocation.height,
 					  -1);
 		gdk_draw_rectangle( rvr_buf,
-				    widget->style->white_gc,
+				    widget->style->mid_gc[3],
 				    TRUE,
 				    0, 0,
 				    widget->allocation.width,
@@ -181,13 +212,13 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 		for (i = 1; i < 8; i++) {
 			gdk_draw_line(rvr_buf, 
 			      widget->style->black_gc,
-			      i*32, 0,
-			      i*32, widget->allocation.height);
+			      i*PIXSIZE, 0,
+			      i*PIXSIZE, widget->allocation.height);
 
 			gdk_draw_line(rvr_buf, 
 			      widget->style->black_gc,
-			      0, i*32,
-			      widget->allocation.width, i*32);
+			      0, i*PIXSIZE,
+			      widget->allocation.width, i*PIXSIZE);
 		}
 	}
 	
@@ -214,8 +245,8 @@ gboolean handle_move(GtkWidget *widget, GdkEventButton *event, gpointer user_dat
 	int x = (int)(event->x);
 	int y = (int)(event->y);
 	int move, status = 0;
-	x/=32;
-	y/=32;
+	x/=PIXSIZE;
+	y/=PIXSIZE;
 	x++;
 	y++;
 	move = CART(x,y);
@@ -276,6 +307,11 @@ create_main_win (void)
   GtkWidget *main_win;
   GtkWidget *main_box;
   GtkWidget *menubar;
+	GtkWidget *black_label;
+	GtkWidget *black_label_frame;
+	GtkWidget *white_label;
+	GtkWidget *white_label_frame;
+	GtkWidget *label_box;
   guint tmp_key;
   GtkWidget *game_menuhead;
   GtkWidget *game_menu;
@@ -379,13 +415,53 @@ create_main_win (void)
   gtk_widget_show (about);
   gtk_container_add (GTK_CONTAINER (help_menu), about);
 
+	// Create labels frames
+	white_label_frame = gtk_frame_new(NULL);
+	gtk_widget_ref(white_label_frame);
+	gtk_object_set_data_full (GTK_OBJECT(main_win), "white_label_frame", white_label_frame, (GtkDestroyNotify)gtk_widget_unref);
+	gtk_widget_show(white_label_frame);
+	
+	black_label_frame = gtk_frame_new(NULL);
+	gtk_widget_ref(black_label_frame);
+	gtk_object_set_data_full (GTK_OBJECT(main_win), "black_label_frame", black_label_frame, (GtkDestroyNotify)gtk_widget_unref);
+	gtk_widget_show(black_label_frame);
+
+	// Create labels
+	white_label = gtk_label_new("White: 0");
+	// Why is that? Really don't know, but all the other scripts have it!
+  gtk_widget_ref (white_label);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "white_label", white_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+	black_label = gtk_label_new("Black: 0");
+  gtk_widget_ref (black_label);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "black_label", black_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+	gtk_container_add( GTK_CONTAINER(white_label_frame), white_label);
+	gtk_container_add( GTK_CONTAINER(black_label_frame), black_label);
+	gtk_widget_show(white_label);
+	gtk_widget_show(black_label);
+
+	// Label box
+	label_box = gtk_hbox_new(TRUE, 5);
+  gtk_widget_ref (label_box);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label_box", label_box,
+                            (GtkDestroyNotify) gtk_widget_unref);
+
+	gtk_widget_set_usize(label_box, PIXSIZE*8, 20);
+	gtk_box_pack_start( GTK_BOX(label_box), black_label_frame, FALSE, TRUE, 0 );
+	gtk_box_pack_start( GTK_BOX(label_box), white_label_frame, FALSE, TRUE, 0 );
+	gtk_widget_show(label_box);
+	gtk_box_pack_start( GTK_BOX(main_box), label_box, FALSE, TRUE, 0);
+
   drawingarea = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "drawingarea", drawingarea,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (drawingarea);
   gtk_box_pack_start (GTK_BOX (main_box), drawingarea, TRUE, TRUE, 0);
-  gtk_widget_set_usize (drawingarea, 256, 256);
+  gtk_widget_set_usize (drawingarea, PIXSIZE*8, PIXSIZE*8);
   gtk_widget_set_events (drawingarea, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 
   statusbar = gtk_statusbar_new ();

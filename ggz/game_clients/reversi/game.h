@@ -213,6 +213,7 @@ int request_sync();
 void game_make_move(int, int);
 void game_mark_board(int, int, int, int, int);
 int game_check_direction(int, int, int, int, int);
+void game_update_scores();
 
 
 // Graphic functions

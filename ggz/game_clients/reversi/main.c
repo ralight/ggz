@@ -132,10 +132,13 @@ void game_init() {
 	game.board[CART(4,5)] = BLACK;
 	game.board[CART(5,4)] = BLACK;
 
-	game.black = 0;
-	game.white = 0;
+	game.black = 2;
+	game.white = 2;
 	game.turn = BLACK;
 	game.state = RVR_STATE_INIT;
+
+	strcpy(game.names[0], "empty");
+	strcpy(game.names[1], "empty");
 
 }
 
@@ -192,8 +195,6 @@ int get_players() {
 int get_move() {
 	int move;
 
-	printf("Getting move!\n");
-
 	if (es_read_int(game.fd, &move) < 0)
 		return -1;
 
@@ -234,6 +235,9 @@ void game_make_move(int player, int move) {
 	// Change turn
 	game.turn*=-1;
 
+	// Update scores
+	game_update_scores();
+
 	return;
 
 }
@@ -245,10 +249,6 @@ void game_mark_board(int player, int vx, int vy, int x, int y) {
 		return;
 	for (i = x+vx, j = y+vy; GET(i,j) == -player; i+=vx, j+=vy) {
 		game.board[CART(i,j)]*=-1;
-		if (player == BLACK)
-			game.black++;
-		else
-			game.white++;
 	}
 	return;
 }
@@ -305,4 +305,16 @@ int get_sync() {
 			game.board[i] = fboard[i];
 	} 
 	return 0;
+}
+
+void game_update_scores() {
+	int i;
+	game.white = 0;
+	game.black = 0;
+	for (i = 0; i < 64; i++) {
+		if (game.board[i] == WHITE)
+			game.white++;
+		if (game.board[i] == BLACK)
+			game.black++;
+	}
 }
