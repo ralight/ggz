@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: common.h 4178 2002-05-07 08:06:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -35,6 +35,7 @@
 
 #include <ggz.h>		/* libggz */
 #include "ggzdmod.h"
+#include "ggz_stats.h"
 
 #include "deck.h"
 #include "games.h"
@@ -68,6 +69,7 @@ typedef enum {
 typedef struct {
 	/* GGZ data state object */
 	GGZdMod *ggz;
+	GGZStats *stats;
 
 	/* Game meta-data */
 	game_data_t *data;	/**< Game-specific data */

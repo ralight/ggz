@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: common.c 4178 2002-05-07 08:06:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -419,6 +419,10 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	ggz_debug(DBG_MISC,
 		    "Handling a join event for player %d (seat %d).", player,
 		    seat);
+		
+	/* Update stats for this player */
+	if (game.stats)
+		ggzstats_reread(game.stats);
 
 	/* set the age of the player */
 	game.players[player].age = game.player_count;
@@ -552,13 +556,13 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 
 	ggz_debug(DBG_MISC, "Handling gameover event.");
 
-	if (game.rated) {
+	if (game.rated && game.stats) {
 		int i;
 		/* calculate new player ratings */
 		for (i = 0; i < winner_cnt; i++)
-			ggzd_set_game_winner(game.ggz, winners[i],
+			ggzstats_set_game_winner(game.stats, winners[i],
 					     1.0 / (double) winner_cnt);
-		if (ggzd_recalculate_ratings(game.ggz) < 0)
+		if (ggzstats_recalculate_ratings(game.stats) < 0)
 			ggz_error_msg("ERROR: couldn't recalculate ratings.");
 	}
 
@@ -735,10 +739,11 @@ void init_game()
 			ggz_malloc(game.max_hand_length * sizeof(card_t));
 	}
 	
+	game.stats = ggzstats_new(game.ggz);
 	if (game.num_teams > 0) {
-		ggzd_set_num_teams(game.ggz, game.num_teams);
+		ggzstats_set_num_teams(game.stats, game.num_teams);
 		for (p = 0; p < game.num_players; p++)
-			ggzd_set_team(game.ggz, p, game.players[p].team);
+			ggzstats_set_team(game.stats, p, game.players[p].team);
 	}
 
 	set_global_message("", "%s", "");

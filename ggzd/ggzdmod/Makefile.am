@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3879 2002-04-10 13:37:12Z dr_maux $
+# $Id: Makefile.am 4178 2002-05-07 08:06:48Z jdorje $
 
 SUBDIRS = .
 
@@ -16,6 +16,8 @@ libggzdmod_la_LIBADD = @LDADD@
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 			io.c io.h \
 			protocol.h mod.h \
+			\
+			elo.h elo.c \
 			ggz_stats.h ggz_stats.c
 
 # This compiles for static linking with ggzd's game servers

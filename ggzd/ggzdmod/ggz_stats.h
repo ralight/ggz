@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.h 4156 2002-05-05 06:56:47Z jdorje $
+ * $Id: ggz_stats.h 4178 2002-05-07 08:06:48Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -23,24 +23,52 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __GGZ_STATS__
+#define __GGZ_STATS__
+
 #include "ggzdmod.h"
+
+typedef struct GGZStats GGZStats;
 
 /* Debugging type (used by ggz_debug) */
 #define DBG_GGZSTATS "ggz-stats"
 
-/* for display purposes only */
-int ggzd_get_rating(GGZdMod * ggz, int player);
 
-void ggzd_set_num_teams(GGZdMod * ggz, int num_teams);
-void ggzd_set_team(GGZdMod * ggz, int player, int team);
+/* Constructor - call to create a new GGZ Stats tracker */
+GGZStats *ggzstats_new(GGZdMod * ggzdmod);
+void ggzstats_free(GGZStats * stats);
+
+/* Call to re-read stats (as when players change, etc.) */
+int ggzstats_reread(GGZStats * stats);
+
+/* Call these once to initialize teams */
+void ggzstats_set_num_teams(GGZStats * stats, int num_teams);
+void ggzstats_set_team(GGZStats * stats, int player, int team);
+
+/* Call this at the start of each game (to reset data for calculating stats
+   about that game) */
+void ggzstats_new_game(GGZStats * stats);
+
+/* for display purposes.  Return 0 on success, -1 on failure. */
+int ggzstats_get_record(GGZStats * stats, int player,
+			int *wins, int *losses, int *ties);
+int ggzstats_get_rating(GGZStats * stats, int player, int *rating);
 
 /* score goes from 0-1 and indicates how much the player won that game.  0
-   indicates a loss (the default), 1 a win, 1/n an n-way tie. */
-void ggzd_set_game_winner(GGZdMod * ggz, int player, double score);
+   indicates a loss (the default), 1 a win, 1/n an n-way tie.  FIXME:
+   currently you should use 1/n if a team with n players on it wins the game. 
+ */
+void ggzstats_set_game_winner(GGZStats * stats, int player, double win_pct);
 
-/* recalculate all ratings.  This function can fail if for instance the
-   scores don't sum to 1.  Ultimately, this should extract the data from the
-   DB (with locking), recalculate, and send the data back to the database.
-   In the short-term there is no database so the data should be held locally
-   for the next game. */
-int ggzd_recalculate_ratings(GGZdMod * ggz);
+/* Call this to recaculate win-loss records, and write the data to the
+   database.  Must be called just once per game, after calling
+   ggzd_set_game_winner for each player. Returns 0 on success, -1 on failure. 
+ */
+int ggzstats_recalculate_records(GGZStats * stats);
+
+/* recalculate all ratings.  Must be called just once per game, after calling 
+   ggzd_set_game_winner for each player.  Returns 0 on success, -1 on
+   failure. */
+int ggzstats_recalculate_ratings(GGZStats * stats);
+
+#endif /* __GGZ_STATS__ */
