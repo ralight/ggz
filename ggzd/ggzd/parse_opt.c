@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3604 2002-03-20 05:24:35Z jdorje $
+ * $Id: parse_opt.c 4127 2002-05-01 06:08:38Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -476,11 +476,6 @@ static void parse_game(char *name, char *dir)
 		   nothing. */
 		return;
 	}
-	/* We must realloc to NULL-terminate the list.  It's too bad libggz
-	   can't do this for us. */
-	game_info->exec_args = ggz_realloc(game_info->exec_args,
-				(num_args+1)*sizeof(*game_info->exec_args));
-	game_info->exec_args[num_args] = NULL;
 	/* If there's no absolute path given, we prepend the game_dir. */
 	if (game_info->exec_args[0][0] != '/') {
 		int len = strlen(game_info->exec_args[0]) +
