@@ -144,6 +144,8 @@ struct _GtkXText
 	GtkWidget *(*error_function) (char *text);
 	int (*urlcheck_function) (GtkXText * xtext, char *word);
 
+	unsigned char scratch_buffer[4096];
+
 	unsigned int double_buffer:1;
 	unsigned int auto_indent:1;
 	unsigned int moving_separator:1;
@@ -189,6 +191,6 @@ void gtk_xtext_refresh (GtkXText * xtext, int do_trans);
 void gtk_xtext_thaw (GtkXText * xtext);
 void gtk_xtext_freeze (GtkXText * xtext);
 void *gtk_xtext_search (GtkXText * xtext, char *text, void *start);
-char *gtk_xtext_strip_color (unsigned char *text, int len);
+char *gtk_xtext_strip_color (unsigned char *text, int len, char *outbuf, int *newlen);
 
 #endif

@@ -25,10 +25,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
-
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
 #include "ggzcore.h"
 #include "chat.h"
 #include "xtext.h"
+#include "support.h"
 
 extern GtkWidget *win_main;
 
@@ -205,4 +209,89 @@ void chat_help(void)
 	chat_display_message(CHAT_BEEP, "---", "/me <action>");
 	chat_display_message(CHAT_BEEP, "---", "/msg <username> <message>");
 	chat_display_message(CHAT_BEEP, "---", "/beep <username>");
+}
+
+
+
+#define WORD_URL     1
+#define WORD_GGZ     2
+#define WORD_HOST    3
+#define WORD_EMAIL   4
+
+int chat_checkurl(GtkXText *xtext, char *word)
+{
+	char *at, *dot;
+	int i, dots;
+	int len = strlen (word);
+
+	/* Check for URLs */
+	if (!strncasecmp (word, "ftp.", 4))
+		return WORD_URL;
+	if (!strncasecmp (word, "ftp:", 4))
+		return WORD_URL;
+	if (!strncasecmp (word, "www.", 4))
+		return WORD_URL;
+	if (!strncasecmp (word, "http:", 5))
+		return WORD_URL;
+	if (!strncasecmp (word, "https:", 6))
+		return WORD_URL;
+	if (!strncasecmp (word, "ggz.", 4))
+		return WORD_GGZ;
+	if (!strncasecmp (word, "ggz://", 6))
+		return WORD_GGZ;
+
+	/* Check for email addresses */
+	at = strchr (word, '@');
+	dot = strrchr (word, '.');
+	if (at && dot)
+	{
+		if ((unsigned long) at < (unsigned long) dot)
+		{
+
+			if (strchr (word, '*'))
+				return WORD_HOST;
+			else
+				return WORD_EMAIL;
+		}
+	}
+
+	/* Check for IPs */
+	dots = 0;
+	for (i = 0; i < len; i++)
+	{
+		if (word[i] == '.')
+			dots++;
+	}
+	if(dots == 3)
+	{
+		if (inet_addr(word) != -1)
+			return WORD_HOST;
+	}
+
+	if (!strncasecmp (word + len - 5, ".html", 5))
+		return WORD_HOST;
+	if (!strncasecmp (word + len - 4, ".org", 4))
+		return WORD_HOST;
+	if (!strncasecmp (word + len - 4, ".net", 4))
+		return WORD_HOST;
+	if (!strncasecmp (word + len - 4, ".com", 4))
+		return WORD_HOST;
+	if (!strncasecmp (word + len - 4, ".edu", 4))
+		return WORD_HOST;
+
+
+	/* nothing of intrest to us */
+	return 0;
+}
+
+void chat_word_clicked(GtkXText *xtext, char *word,
+        GdkEventButton *event)
+{
+//	if(event->state & GDK_CONTROL_MASK)
+//	{
+		printf("%s - %d\n", word, chat_checkurl(xtext, word));
+		if(chat_checkurl(xtext, word) != 0)
+				goto_url(word);
+//	}
+//	return;
 }

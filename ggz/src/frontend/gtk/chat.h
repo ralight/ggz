@@ -25,6 +25,8 @@
 #ifndef _CHAT_
 #define _CHAT_
 
+#include "xtext.h"
+
 typedef enum {
 	CHAT_MSG		= 0x0001,
 	CHAT_PRVMSG		= 0x0002,
@@ -41,5 +43,8 @@ void chat_send_beep(void);
 void chat_enter(gchar *player);
 void chat_part(gchar *player);
 void chat_help(void);
+int chat_checkurl(GtkXText *xtext, char *word);
+void chat_word_clicked(GtkXText *xtext, char *word,
+	GdkEventButton *event);
 
 #endif

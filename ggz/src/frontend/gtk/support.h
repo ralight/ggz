@@ -44,6 +44,16 @@
 GtkWidget*  lookup_widget              (GtkWidget       *widget,
                                         const gchar     *widget_name);
 
+/*
+ * This function is needed by the xtext widget.
+ */
+char *nocasestrstr (char *text, char *tofind);
+
+/*
+ * Use this function to load a URL in netscape
+ */
+void goto_url(gchar *url);
+
 /* get_widget() is deprecated. Use lookup_widget instead. */
 #define get_widget lookup_widget
 

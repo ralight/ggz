@@ -132,6 +132,7 @@ void motd_print_line(gchar *line)
         out[oindex]='\0';
         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                         &colors[color_index], NULL, out, -1);
+
 }
 
 

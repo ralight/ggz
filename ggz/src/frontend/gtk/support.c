@@ -7,10 +7,12 @@
 #endif
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/stat.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <ctype.h>
 #include <gtk/gtk.h>
 
 #include "support.h"
@@ -157,3 +159,37 @@ check_file_exists                      (const gchar     *directory,
   return NULL;
 }
 
+char *nocasestrstr (char *text, char *tofind)
+{
+   char *ret = text, *find = tofind;
+
+   while (1)
+   {
+      if (*find == 0)
+         return ret;
+      if (*text == 0)
+         return 0;
+      if (toupper (*find) != toupper (*text))
+      {
+         ret = text + 1;
+         find = tofind;
+      } else
+         find++;
+      text++;
+   }
+}
+
+void goto_url(gchar *url)
+{
+	int pid;
+	char *path;
+
+	path = g_strdup_printf("/usr/bin/netscape");
+        if ( (pid = fork()) < 0) {
+                return;
+        } else if(pid == 0) {
+		execl(path, g_basename(path), url, NULL);
+                _exit(0);
+	} 
+	g_free(path);
+}

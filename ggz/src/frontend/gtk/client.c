@@ -270,7 +270,7 @@ static void
 client_goto_web1_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-
+	goto_url("http://ggz.sourceforge.net");
 }
 
 
@@ -473,6 +473,11 @@ client_realize                    (GtkWidget       *widget,
 	tmp->wordwrap = TRUE;
 	tmp->max_auto_indent = 200;
 	tmp->time_stamp = FALSE;
+	tmp->urlcheck_function = chat_checkurl;
+
+	gtk_signal_connect (GTK_OBJECT (tmp), "word_click",
+		GTK_SIGNAL_FUNC (chat_word_clicked), NULL);
+
 	gtk_xtext_refresh(tmp,0);
 
 	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);

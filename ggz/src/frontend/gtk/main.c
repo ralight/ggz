@@ -54,10 +54,10 @@ int main (int argc, char *argv[])
 	g_main_set_poll_func((GPollFunc)ggzcore_event_poll);
 
 	win_main = create_win_main();
-	login_create_or_raise();
-
 	ggz_sensitivity_init();
 	gtk_widget_show(win_main);
+	login_create_or_raise();
+
 
 	gtk_main();
 
