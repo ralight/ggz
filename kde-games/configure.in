@@ -1,4 +1,5 @@
 dnl Configuration for GGZ-KDE-Games
+dnl $Id: configure.in 2304 2001-08-28 06:51:14Z jdorje $
 dnl ===============================
 
 AC_INIT(acinclude.m4)
@@ -25,6 +26,12 @@ dnl ==========================
 
 AC_GGZ_EASYSOCK(0.3)
 AC_GGZ_CONFIG
+
+dnl JDS: this is a quick hack to check for ggzmod.
+AC_CHECK_LIB(ggzmod, ggz_connect,
+    AC_CHECK_HEADER(ggz_client.h, LDADD="$LDADD -lggzmod",
+	AC_MSG_ERROR(*** Cannot find ggz_client.h header)),
+AC_MSG_ERROR(*** Cannot find ggzmod library ))
 
 dnl Create Makefiles
 dnl ================
