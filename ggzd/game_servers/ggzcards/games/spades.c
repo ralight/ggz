@@ -230,25 +230,6 @@ static void spades_end_hand()
 {
 	player_t p;
 
-	if (game.last_hand) {
-		int s, c, bsiz = 0;
-		char buf[4096];
-		hand_t *hand;
-		for(s=0; s<game.num_seats; s++) {
-			hand = &game.seats[s].hand;
-			hand->hand_size = hand->full_hand_size;
-			cards_sort_hand( hand );
-			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s:   ", game.seats[s].ggz->name);
-			for (c=0; c<hand->hand_size; c++) {
-				card_t card = hand->cards[c];
-				bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s%s ",
-					short_face_names[(int)card.face], short_suit_names[(int)card.suit]);
-			}
-			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "\n");
-		}
-		set_global_message("Previous Hand", "%s", buf);
-	}
-
 	for (p=0; p<2; p++) {
 		int tricks, bid, score;
 		bid = game.players[p].bid.sbid.val + game.players[p+2].bid.sbid.val;

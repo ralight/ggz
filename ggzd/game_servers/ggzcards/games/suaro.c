@@ -342,7 +342,6 @@ static void suaro_end_hand()
 	int points, tricks;
 	player_t winner;
 
-	game_end_hand();
 	tricks = game.players[SUARO.declarer].tricks;
 	if (tricks >= SUARO.contract) {
 		int overtricks = tricks - SUARO.contract;
@@ -419,26 +418,6 @@ static void suaro_end_trick()
 		/* low card wins */
 		hi_player = lo_player;
 		hi_card = lo_card;
-	}
-
-	if (game.last_trick) {
-		/* this sets up a "last trick" message */
-		int p_r;
-		char message[512];
-		int msg_len = 0;
-		card_t card;
-		for (p_r=0; p_r<game.num_players; p_r++) {
-			p = (game.leader + p_r) % game.num_players;
-			card = game.seats[ game.players[p].seat ].table;
-			msg_len += snprintf(message+msg_len, sizeof(message)-msg_len,
-					"%s - %s of %s\n",
-					ggz_seats[p].name,
-					face_names[(int)card.face],
-					suit_names[(int)card.suit]
-					/*, p == hi_player ? " (winner)" : "" */
-					);
-		}
-		set_global_message("Last Trick", "%s", message);
 	}
 
 	game.players[hi_player].tricks++;

@@ -1086,27 +1086,6 @@ void game_end_trick(void)
 			break;
 	}
 
-
-	if (game.last_trick) {
-		/* this sets up a "last trick" message */
-		int p_r;
-		char message[512];
-		int msg_len = 0;
-		card_t card;
-		for (p_r=0; p_r<game.num_players; p_r++) {
-			p = (game.leader + p_r) % game.num_players;
-			card = game.seats[ game.players[p].seat ].table;
-			msg_len += snprintf(message+msg_len, sizeof(message)-msg_len,
-					"%s - %s of %s\n",
-					ggz_seats[p].name,
-					face_names[(int)card.face],
-					suit_names[(int)card.suit]
-					/*, p == hi_player ? " (winner)" : "" */
-					);
-		}
-		set_global_message("Last Trick", "%s", message);
-	}
-
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
@@ -1133,25 +1112,6 @@ void game_end_trick(void)
 void game_end_hand(void)
 {
 	player_t p;
-
-	if (game.last_hand) {
-		int s, c, bsiz = 0;
-		char buf[4096];
-		hand_t *hand;
-		for(s=0; s<game.num_seats; s++) {
-			hand = &game.seats[s].hand;
-			hand->hand_size = hand->full_hand_size;
-			cards_sort_hand( hand );
-			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s:   ", game.seats[s].ggz->name);
-			for (c=0; c<hand->hand_size; c++) {
-				card_t card = hand->cards[c];
-				bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s%s ",
-					short_face_names[(int)card.face], short_suit_names[(int)card.suit]);
-			}
-			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "\n");
-		}
-		set_global_message("Previous Hand", "%s", buf);
-	}
 
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:

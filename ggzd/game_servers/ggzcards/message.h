@@ -34,3 +34,7 @@ extern void send_global_message_toall(char*);
 extern void send_all_global_messages(player_t p);
 extern void set_global_message(char*, char*, ...);
 extern char* get_global_message(char*);
+
+/* the following are automated messages */
+extern void send_last_hand();
+extern void send_last_trick();

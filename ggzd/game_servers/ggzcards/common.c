@@ -991,12 +991,14 @@ int handle_play_event(card_t card)
 		ggz_debug("End of trick; %d/%d.  Scoring it.", game.trick_count, game.trick_total);
 		sleep(1);
 		game.funcs->end_trick();
+		send_last_trick();
 		send_trick(game.winner);
 		game.trick_count++;
 		set_game_state( WH_STATE_NEXT_TRICK );
 		if (game.trick_count == game.trick_total) {
 			/* end of the hand */
 			ggz_debug("End of hand number %d.", game.hand_num);
+			send_last_hand();
 			sleep(1);
 			game.funcs->end_hand();
 			set_all_player_messages();
