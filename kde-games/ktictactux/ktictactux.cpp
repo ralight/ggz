@@ -68,13 +68,14 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	m_score_opp = 0;
 	m_score_you = 0;
 
-	proto = new KTicTacTuxProto();
+	proto = new KTicTacTuxProto(this);
 	proto->num = 0;
 }
 
 // Destructor
 KTicTacTux::~KTicTacTux()
 {
+	proto->shutdown();
 	delete proto;
 }
 
@@ -245,8 +246,8 @@ void KTicTacTux::init()
 	if(m_opponent == PLAYER_NETWORK)
 	{
 		proto->connect();
-		sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
-		connect(sn, SIGNAL(activated(int)), SLOT(slotNetwork()));
+		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
+		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
 	}
 	else
 	{
@@ -358,6 +359,15 @@ void KTicTacTux::statistics()
 }
 
 // Handle network input
+void KTicTacTux::network()
+{
+	QSocketNotifier *sn;
+
+	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
+	connect(sn, SIGNAL(activated(int)), SLOT(slotNetwork()));
+}
+
+// Network data
 void KTicTacTux::slotNetwork()
 {
 	int op;
@@ -445,5 +455,11 @@ void KTicTacTux::setTheme(QString t1, QString t2)
 	m_t1 = t1;
 	m_t2 = t2;
 	drawBoard();
+}
+
+// Evaluate network control input
+void KTicTacTux::slotDispatch()
+{
+	proto->dispatch();
 }
 

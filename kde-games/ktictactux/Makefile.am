@@ -1,7 +1,5 @@
 SUBDIRS = .
 
-#bindir = $(ggzexecmoddir)
-
 ggzexecmod_PROGRAMS = ktictactux_client
 
 ktictactux_client_SOURCES = \
@@ -17,12 +15,10 @@ noinst_HEADERS = \
 	ktictactuxproto.h \
 	qwhiteframe.h
 
-INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES)
+INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 
-#UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-#ktictactux_client_LDFLAGS = -rpath
-ktictactux_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
-ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ)
+ktictactux_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS)
+ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD)
 
 METASOURCES = AUTO
 

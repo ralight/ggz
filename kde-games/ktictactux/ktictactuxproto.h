@@ -7,12 +7,17 @@
 #ifndef KTICTACTUX_PROTO_H
 #define KTICTACTUX_PROTO_H
 
+#include <ggzmod.h>
+
+// Forward declarations
+class KTicTacTux;
+
 // Generic TicTacToe client protocol handler
 class KTicTacTuxProto
 {
 	public:
 		// Constructor
-		KTicTacTuxProto();
+		KTicTacTuxProto(KTicTacTux *game);
 		// Destructor
 		~KTicTacTuxProto();
 
@@ -68,6 +73,8 @@ class KTicTacTuxProto
 
 		// Game socket
 		int fd;
+		// Game control socket
+		int fdcontrol;
 		// Seat number
 		int num;
 		// Both seats
@@ -90,6 +97,8 @@ class KTicTacTuxProto
 		void connect();
 		// Initialize protocol
 		void init();
+		// Shutdown game
+		void shutdown();
 
 		// Read opcode
 		int getOp();
@@ -116,6 +125,18 @@ class KTicTacTuxProto
 		void sendSync();
 		// Fetch statistics
 		void sendStatistics();
+
+		// GGZMod object
+		GGZMod *mod;
+		// Game object
+		KTicTacTux *gameobject;
+		// Self object
+		static KTicTacTuxProto *self;
+
+		// Callback for control channel
+		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);
+		// Dispatch loop
+		void dispatch();
 };
 
 #endif

@@ -45,12 +45,16 @@ class KTicTacTux : public QWidget
 		void sync();
 		// Request network scores
 		void statistics();
+		// Network operation
+		void network();
 
 	public slots:
 		// Evaluate user input
 		void slotSelected(QWidget *widget);
 		// Evaluate network input
 		void slotNetwork();
+		// Evaluate network control input
+		void slotDispatch();
 
 	signals:
 		// Emit the game status
