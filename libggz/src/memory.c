@@ -159,6 +159,7 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 int _ggz_free(const void *ptr, char *tag, int line)
 {
 	struct _memptr *prev, *targetmem;
+	unsigned int oldsize;
 
 	/* Sanity checks */
 	if(!tag)
@@ -186,10 +187,11 @@ int _ggz_free(const void *ptr, char *tag, int line)
 		alloc = targetmem->next;
 	else
 		prev->next = targetmem->next;
+	oldsize = targetmem->size;
 	recursive_unlock();				/* END CRITICAL */
 
 	_ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
-		   targetmem->size, ptr, tag, line);
+		   oldsize, ptr, tag, line);
 
 	free(targetmem);
 
