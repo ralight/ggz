@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: game.c 3384 2002-02-17 08:27:43Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -91,7 +91,7 @@ void game_init(void)
 		g_free(game.theme);
 		game.theme = strdup("default");
 		if(display_init() != 0) {
-			fprintf(stderr, "Failed to load default theme!\n");
+			ggz_error_msg("Failed to load default theme!\n");
 			exit(1);
 		}
 	}

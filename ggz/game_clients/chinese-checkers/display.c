@@ -30,6 +30,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ggz.h>	/* libggz */
+
 #include "display.h"
 #include "main_dlg.h"
 #include "game.h"
@@ -72,7 +74,7 @@ static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	fullpath = g_strdup_printf("%s/%s", get_theme_dir(), name);
 	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
 	if(pixmap == NULL)
-		fprintf(stderr, "Can't load pixmap %s\n", fullpath);
+		ggz_error_msg("Can't load pixmap %s\n", fullpath);
 
 	return pixmap;
 }

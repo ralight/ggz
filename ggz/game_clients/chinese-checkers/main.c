@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3384 2002-02-17 08:27:43Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -40,6 +40,8 @@
 #include "protocol.h"
 #include "display.h"
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
 
 static int get_seat(void);
 static int get_players(void);
@@ -51,6 +53,8 @@ static int get_sync_data(void);
 
 int main(int argc, char *argv[])
 {
+	initialize_debugging();
+
 	gtk_init(&argc, &argv);
 
 	game_init();
@@ -59,8 +63,44 @@ int main(int argc, char *argv[])
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+		
+	cleanup_debugging();
 
 	return 0;
+}
+
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/reversi-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/ccheckers-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting chinese checkers client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down chinese checkers client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }
 
 
@@ -98,13 +138,13 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 			status = get_move_response();
 			break;
 		default:
-			fprintf(stderr, "Unknown opcode received %d\n", op);
+			ggz_error_msg("Unknown opcode received %d\n", op);
 			status = -1;
 			break;
 	}
 
 	if(status < 0) {
-		fprintf(stderr, "Ouch!\n");
+		ggz_error_msg("Ouch!\n");
 		close(game.fd);
 		exit(1);
 	}
@@ -196,7 +236,7 @@ static int get_move_response(void)
 			game.my_turn = 0;
 			break;
 		default:
-			fprintf(stderr, "Err, CC_RSP_MOVE = %d\n", (int)status);
+			ggz_error_msg("Err, CC_RSP_MOVE = %d\n", (int)status);
 			return status;
 			break;
 	}
