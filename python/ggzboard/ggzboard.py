@@ -342,6 +342,8 @@ class GGZBoard:
 					sdlnewstuff.gethotnewstuff(game.name())
 				if key == K_p:
 					playertable.show()
+				if key == K_s:
+					pygame.image.save(ui.screen, "ggzboard-screenshot.bmp")
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos
