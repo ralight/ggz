@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 6230 2004-10-28 06:43:08Z jdorje $
+ * $Id: drawcard.c 6236 2004-11-03 06:15:32Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -58,8 +58,7 @@ static void draw_domino_card(card_t card, orientation_t orientation, int x,
 static int get_card_width0(void);
 static int get_card_height0(void);
 
-static GdkPixbuf *load_pixmap(GdkWindow *window, GdkBitmap **mask,
-	    GdkColor *trans, const char *name)
+static GdkPixbuf *load_pixmap(const char *name)
 {
 	char *fullpath;
 	GdkPixbuf *image;
@@ -85,12 +84,8 @@ static void load_french_cardset(void)
 		snprintf(fronts, sizeof(fronts), "cards-%d.png", i + 1);
 		snprintf(backs, sizeof(backs), "cards-b%d.png", i + 1);
 
-		cards[i].front = load_pixmap(table->window, NULL,
-					     &table_style->
-					     bg[GTK_STATE_NORMAL], fronts);
-		cards[i].back = load_pixmap(table->window, NULL,
-					    &table_style->
-					    bg[GTK_STATE_NORMAL], backs);
+		cards[i].front = load_pixmap(fronts);
+		cards[i].back = load_pixmap(backs);
 	}
 }
 
