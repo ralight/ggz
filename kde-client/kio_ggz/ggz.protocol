@@ -1,0 +1,8 @@
+[Protocol]
+exec=libkio_ggz
+protocol=ggz
+input=none
+output=filesystem
+reading=true
+Icon=ggz
+

@@ -1,0 +1,17 @@
+<article lang="&language;" id="ggz">
+<title>GGZ</title>
+
+<para>
+This ioslave enables you to browse GGZ Gaming Zone servers, and to login
+visually. It can also used to fetch data from the servers.
+</para>
+
+<para>
+For example, a command like <command>ggz://someggzserver.org</command> lists
+you all available rooms.
+</para>
+
+<para>Author: Josef Spillner <email>dr_maux@users.sourceforge.net</email></para>
+
+</article>
+
