@@ -1,10 +1,11 @@
 #! /usr/local/bin/python1.5
 
 from gtk import *
+from types import *
 import socket
 import sys
 from os import getpid
-from string import atoi
+from string import *
 
 # Connect to ggz socket
 def ggz_connect(name):
@@ -24,29 +25,52 @@ def handle_ggz(source, condition):
   s = "%5d %5x %5s\n" % (data, data, char)
   text.insert_defaults(s)
 
+# dtype = 0 -> int8
+# dtype = 1 -> int32
+# dtype = 2 -> char
+# dtype = 3 -> string
 def ggz_send(self):
   text_area = win.get_data("text")
   text = self.get_text()
-  int32 = 0
+  dtype = 0
+  # Check if mandatory int32
   if (text[-1] == "i"):
-    int32 = 1
+    dtype = 1
     text = text[:-1]
-  data = eval(text)
-  if (data > 255):
-    int32 = 1
-  if (int32):
+  try:
+    data = eval(text)
+  except NameError:
+    data = text
+  if type(data) is StringType:
+    # Ok, I wanna send a string
+    if (dtype == 1):
+      data = data + "i"
+      dtype = 0
+    dtype = 3
+  if (dtype == 0 and data > 255):
+    dtype = 1
+  if (dtype == 1):
     data = socket.htonl(data)
   for i in range(4):
-    sock.send(chr(data % 256))
-    if (data%256 > 32 and data%256 < 126):
+    if (dtype == 1 or dtype == 0):
+      sock.send(chr(data % 256))
+    else:
+      sock.send(data)
+    if ( (dtype == 0 or dtype == 1) and data%256 > 32 and data%256 < 126):
       char = chr(data%256)
+    elif (dtype == 3):
+      char = data
     else:
       char = " "
-    s = "%5d %5x %5s\n" % (data%256, data%256, char)
+    if (dtype == 0 or dtype == 1):
+      s = "%5d %5x %5s\n" % (data%256, data%256, char)
+    else:
+      s = "%5s\n" % (char)
     text_area.insert(text_area.get_style().font, text_area.get_colormap().alloc("red"),
     text_area.get_style().white, s)
-    data = data / 256
-    if (not int32):
+    if (dtype == 0 or dtype == 1):
+      data = data / 256
+    if (dtype != 1):
       break
   self.set_text("")
 
