@@ -1,5 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
-<!ENTITY protonum "2">
+<!ENTITY protonum "3">
 ]>
  
 <book id="index">
@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 575 $</revnumber>
-	<date>$Date: 2000-06-13 09:32:21 -0700 (Tue, 13 Jun 2000) $</date>
+	<revnumber>$Revision: 584 $</revnumber>
+	<date>$Date: 2000-06-16 17:11:09 -0700 (Fri, 16 Jun 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -1817,6 +1817,12 @@
 		</row>
 		
 		<row rowsep="1">
+		  <entry>state</entry>
+		  <entry>char</entry>
+		  <entry>if state</entry>
+		</row>
+
+		<row rowsep="1">
 		  <entry>seat</entry>
 		  <entry>int</entry>
 		  <entry>if join/leave</entry>
@@ -1921,6 +1927,12 @@
 			  has joined the table in the designated seat
 			</para>
 		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_STATE (4) : The state of the
+			  table has changed to the designated state
+			</para>
+		      </listitem>
 		    </itemizedlist>
 		  </para>
 		</listitem>
@@ -1930,6 +1942,15 @@
 		<listitem>
 		  <para>
 		    Unique numeric ID for table
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">state</emphasis></term>
+		<listitem>
+		  <para>
+		    Current state of this table.  Only sent when
+		    updating the table-state.
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -2770,6 +2791,12 @@
 		</row>
 
 		<row rowsep="1">
+		  <entry spanname="data.seq1">bot_mask</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
 		  <entry spanname="data.seq1">description</entry>
 		  <entry>string</entry>
 		  <entry>if verbose</entry>
@@ -2828,6 +2855,15 @@
 		<listitem>
 		  <para>
 		    Bit mask of allowable player numbers
+		    FIXME:  Needs explained
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">bot_mask</emphasis></term>
+		<listitem>
+		  <para>
+		    Bit mask of allowable bot-player numbers
 		    FIXME:  Needs explained
 		  </para>
 		</listitem>
@@ -2935,12 +2971,12 @@
 		</row>
 		
 		<row rowsep="1">
-		  <entry spanname="data.seq1">room</entry>
+		  <entry spanname="data.seq1">ID</entry>
 		  <entry>int</entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry spanname="data.seq1">ID</entry>
+		  <entry spanname="data.seq1">room</entry>
 		  <entry>int</entry>
 		</row>
 
