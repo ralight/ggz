@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4189 2002-05-11 16:08:04Z bmh $
+ * $Id: protocols.h 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -46,7 +46,10 @@ typedef enum {
 	GGZ_UPDATE_STATE  = 4,
 	GGZ_UPDATE_LAG	  = 5,
 	GGZ_UPDATE_SEAT   = 6,
-	GGZ_UPDATE_DESC   = 7
+	GGZ_UPDATE_DESC   = 7,
+	GGZ_UPDATE_SPECTATOR_LEAVE = 8,
+	GGZ_UPDATE_SPECTATOR_JOIN = 9,
+	GGZ_UPDATE_SPECTATOR = 10
 } GGZUpdateOpcode;
 
 #endif /*_GGZ_PROTOCOL_H*/

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4383 2002-08-20 22:29:58Z jdorje $
+ * $Id: net.c 4403 2002-09-04 18:48:34Z dr_maux $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -121,6 +121,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
@@ -139,8 +140,10 @@ static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
 static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_table_desc(GGZNetIO *net, GGZTable *table);
 static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_spectator(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_line(GGZNetIO *net, char *line, ...)
 			  ggz__attribute((format(printf, 2, 3)));
 
@@ -386,8 +389,8 @@ int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose)
 		       index, type->name, type->version);
 	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
 		       type->p_engine, type->p_version);
-	_net_send_line(net, "<ALLOW PLAYERS='%d' BOTS='%d'/>",
-		       type->player_allow_mask, type->bot_allow_mask);
+	_net_send_line(net, "<ALLOW PLAYERS='%d' BOTS='%d' SPECTATORS='%d'/>",
+		       type->player_allow_mask, type->bot_allow_mask, type->allow_spectators);
 	
 	if (verbose) {
 		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
@@ -572,6 +575,12 @@ int net_send_table_join(GGZNetIO *net, char status)
 }
 
 
+int net_send_table_join_spectator(GGZNetIO *net, char status)
+{
+	return _net_send_result(net, "joinspectator", status);
+}
+
+
 int net_send_table_leave(GGZNetIO *net, char status)
 {
 	return _net_send_result(net, "leave", status);
@@ -650,6 +659,12 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table
 	case GGZ_UPDATE_SEAT:
 		action = "seat";
 		break;
+	case GGZ_UPDATE_SPECTATOR_JOIN:
+		action = "joinspectator";
+		break;
+	case GGZ_UPDATE_SPECTATOR_LEAVE:
+		action = "leave";
+		break;
 	default:
 		/* We should never get any other update types */
 		return -1;
@@ -670,6 +685,10 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table
 	case GGZ_UPDATE_JOIN:
 	case GGZ_UPDATE_SEAT:
 		_net_send_table_seat(net, table, seat);
+		break;
+	case GGZ_UPDATE_SPECTATOR_JOIN:
+	case GGZ_UPDATE_SPECTATOR_LEAVE:
+		_net_send_table_spectator(net, table, seat);
 		break;
 	case GGZ_UPDATE_STATE:
 		_net_send_table_status(net, table);
@@ -888,6 +907,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_chat;
 	else if (strcmp(tag, "JOIN") == 0)
 		process_func = _net_handle_join;
+	else if (strcmp(tag, "JOINSPECTATOR") == 0)
+		process_func = _net_handle_join_spectator;
 	else if (strcmp(tag, "LEAVE") == 0)
 		process_func = _net_handle_leave;
 	else if (strcmp(tag, "LAUNCH") == 0)
@@ -1241,6 +1262,16 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 	}
 }
 
+/* Functions for <JOINSPECTATOR> tag */
+static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element)
+{
+	int table;
+
+	if (element) {
+		table = safe_atoi(ggz_xmlelement_get_attr(element, "TABLE"));
+		player_table_join_spectator(net->client->data, table);
+	}
+}
 
 /* Functions for <LEAVE> tag */
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
@@ -1561,6 +1592,17 @@ static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
 }
 
 
+static int _net_send_table_spectator(GGZNetIO *net, GGZTable *table, int spectator)
+{
+	_net_send_line(net, "<TABLE ID='%d' SPECTATORS='%d'>", table->index,
+		       spectators_count(table));
+	_net_send_spectator(net, table, spectator);
+	_net_send_line(net, "</TABLE>");
+	
+	return 0;
+}
+
+
 static int _net_send_table_desc(GGZNetIO *net, GGZTable *table)
 {
 	_net_send_line(net, "<TABLE ID='%d'>", table->index);
@@ -1612,6 +1654,17 @@ static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 	return 0;
 }
 
+
+static int _net_send_spectator(GGZNetIO *net, GGZTable *table, int num)
+{
+	char *name = NULL;
+
+	name = table->spectators[num];
+	
+	_net_send_line(net, "<SPECTATOR NUM='%d'>%s</SPECTATOR>", num, name);
+
+	return 0;
+}
 
 static int _net_send_result(GGZNetIO *net, char *action, char code)
 {

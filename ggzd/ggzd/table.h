@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4161 2002-05-05 18:43:52Z bmh $
+ * $Id: table.h 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -80,6 +80,9 @@ struct GGZTable {
 	GGZSeatType seat_types[MAX_TABLE_SIZE];
 	char seat_names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
+	/* Spectator assignments */
+	char spectators[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
+
 	/* Client-provided description of this table */
 	char desc[MAX_GAME_DESC_LEN + 1];
 
@@ -111,6 +114,9 @@ int table_search(char* name, int room, int type, char global,
 
 /* Find a player at a table */
 int table_find_player(int room, int index, char *name);
+
+/* Find a spectator */
+int table_find_spectator(int room, int index, char *name);
 
 
 /*

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4311 2002-07-20 16:24:54Z jdorje $
+ * $Id: parse_opt.c 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -500,6 +500,7 @@ static void parse_game(char *name, char *dir)
 	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
 	game_info->kill_when_empty =
 		ggz_conf_read_int(ch, "TableOptions", "KillWhenEmpty", 1);
+
 	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
@@ -530,6 +531,7 @@ static void parse_game(char *name, char *dir)
 		}
 		ggz_free(b_list);
 	}
+	game_info->allow_spectators = ggz_conf_read_int(ch, "TableOptions", "AllowSpectators",0);
 
 	/* Set up data_dir. */
 	len = strlen(opt.data_dir) + strlen("/gamedata/")

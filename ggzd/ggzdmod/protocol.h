@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 3498 2002-03-02 01:06:32Z bmh $
+ * $Id: protocol.h 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -55,6 +55,9 @@ typedef enum {
 	 */
 	RSP_GAME_LEAVE,
 
+	RSP_GAME_SPECTATOR_JOIN,
+	RSP_GAME_SPECTATOR_LEAVE,
+
 	/** @brief Signals the start of a RSP_GAME_SEAT packet.
 	 *
 	 *  The packet is composed of:
@@ -95,6 +98,7 @@ typedef enum {
 	 *  The packet is composed of:
 	 *    - An integer containing MSG_GAME_LAUNCH.
 	 *    - An integer containing the number of seats at the table.
+	 *    - An integer containing the number of spectators
 	 *    - Seat data for every seat at the table:
 	 *      - An integer containing the seat type (GGZSeatType).
 	 *      - If the seat type is GGZ_SEAT_RESERVED, the name of the
@@ -134,6 +138,9 @@ typedef enum {
 	 *  in response.
 	 */
 	REQ_GAME_LEAVE,
+
+	REQ_GAME_SPECTATOR_JOIN,
+	REQ_GAME_SPECTATOR_LEAVE,
 
 	/** @brief Signals the start of a REQ_GAME_SEAT packet.
 	 *

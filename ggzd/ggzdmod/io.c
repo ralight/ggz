@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4237 2002-06-09 06:20:58Z jdorje $
+ * $Id: io.c 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -48,6 +48,10 @@ static int _io_read_req_join(GGZdMod *ggzdmod);
 static int _io_read_rsp_join(GGZdMod *ggzdmod);
 static int _io_read_req_leave(GGZdMod *ggzdmod);
 static int _io_read_rsp_leave(GGZdMod *ggzdmod);
+static int _io_read_req_spectator_join(GGZdMod *ggzdmod);
+static int _io_read_rsp_spectator_join(GGZdMod *ggzdmod);
+static int _io_read_req_spectator_leave(GGZdMod *ggzdmod);
+static int _io_read_rsp_spectator_leave(GGZdMod *ggzdmod);
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
 static int _io_read_req_seat(GGZdMod * ggzdmod);
@@ -55,10 +59,11 @@ static int _io_read_rsp_seat(GGZdMod *ggzdmod);
 
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd, int seats)
+int _io_send_launch(int fd, int seats, int spectators)
 {
 	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0 
-	    || ggz_write_int(fd, seats) < 0)
+	    || ggz_write_int(fd, seats) < 0
+		|| ggz_write_int(fd, spectators) < 0)
 		return -1;
 	else
 		return 0;
@@ -112,6 +117,26 @@ int _io_send_leave(int fd, GGZSeat *seat)
 		return 0;
 }
 
+int _io_send_spectator_join(int fd, GGZSpectator *spectator)
+{
+	ggz_debug("GGZDMOD", "Sending spectator join");
+	if (ggz_write_int(fd, REQ_GAME_SPECTATOR_JOIN) < 0
+	    || ggz_write_int(fd, spectator->num) < 0
+	    || ggz_write_string(fd, spectator->name) < 0
+	    || ggz_write_fd(fd, spectator->fd) < 0)
+		return -1;
+	else
+		return 0;
+}
+
+int _io_send_spectator_leave(int fd, GGZSpectator *spectator)
+{
+	if (ggz_write_int(fd, REQ_GAME_SPECTATOR_LEAVE) < 0
+	    || ggz_write_string(fd, spectator->name) < 0)
+		return -1;
+	else
+		return 0;
+}
 
 int _io_send_state(int fd, GGZdModState state)
 {
@@ -167,6 +192,24 @@ int _io_respond_leave(int fd, int status)
 		return 0;
 }
 
+int _io_respond_spectator_join(int fd)
+{
+	if (ggz_write_int(fd, RSP_GAME_SPECTATOR_JOIN) < 0
+	    || ggz_write_char(fd, 0) < 0)
+		return -1;
+	else
+		return 0;
+}
+
+int _io_respond_spectator_leave(int fd, int status)
+{
+	if (ggz_write_int(fd, RSP_GAME_SPECTATOR_LEAVE) < 0 
+	    || ggz_write_char(fd, status) < 0)
+		return -1;
+	else
+		return 0;
+}
+
 
 int _io_respond_seat(int fd, int status)
 {
@@ -206,6 +249,12 @@ int _io_read_data(GGZdMod * ggzdmod)
 		case REQ_GAME_SEAT:
 			status = _io_read_req_seat(ggzdmod);
 			break;
+		case REQ_GAME_SPECTATOR_JOIN:
+			status = _io_read_req_spectator_join(ggzdmod);
+			break;
+		case REQ_GAME_SPECTATOR_LEAVE:
+			status = _io_read_req_spectator_leave(ggzdmod);
+			break;
 		case RSP_GAME_STATE:
 			_ggzdmod_handle_state_response(ggzdmod);
 			break;
@@ -223,6 +272,12 @@ int _io_read_data(GGZdMod * ggzdmod)
 			break;
 		case RSP_GAME_SEAT:
 			status = _io_read_rsp_seat(ggzdmod);
+			break;
+		case RSP_GAME_SPECTATOR_JOIN:
+			status = _io_read_rsp_spectator_join(ggzdmod);
+			break;
+		case RSP_GAME_SPECTATOR_LEAVE:
+			status = _io_read_rsp_spectator_leave(ggzdmod);
 			break;
 		case REQ_GAME_STATE:
 			status = _io_read_req_state(ggzdmod);
@@ -263,6 +318,30 @@ static int _io_read_rsp_leave(GGZdMod * ggzdmod)
 	return 0;
 }
 
+static int _io_read_rsp_spectator_join(GGZdMod *ggzdmod)
+{
+	char status;
+
+	if (ggz_read_char(ggzdmod->fd, &status) < 0)
+		return -1;
+	else
+		_ggzdmod_handle_spectator_join_response(ggzdmod, status);
+	
+	return 0;
+}
+
+
+static int _io_read_rsp_spectator_leave(GGZdMod * ggzdmod)
+{
+	char status;
+
+	if (ggz_read_char(ggzdmod->fd, &status) < 0)
+		return -1;
+	else
+		_ggzdmod_handle_spectator_leave_response(ggzdmod, status);
+	
+	return 0;
+}
 
 static int _io_read_rsp_seat(GGZdMod *ggzdmod)
 {
@@ -308,13 +387,15 @@ static int _io_read_msg_log(GGZdMod * ggzdmod)
 
 static int _io_read_req_launch(GGZdMod * ggzdmod)
 {
-	int seats, i;
+	int seats, spectators, i;
 	GGZSeat seat;
 	
 	if (ggz_read_int(ggzdmod->fd, &seats) < 0)
 		return -1;
+	if (ggz_read_int(ggzdmod->fd, &spectators) < 0)
+		return -1;
 
-	_ggzdmod_handle_launch_begin(ggzdmod, seats);
+	_ggzdmod_handle_launch_begin(ggzdmod, seats, spectators);
 
 	for (i = 0; i < seats; i++) {
 		/* Reset seat */
@@ -369,6 +450,34 @@ static int _io_read_req_leave(GGZdMod * ggzdmod)
 		return -1;
 
 	_ggzdmod_handle_leave(ggzdmod, name);
+	ggz_free(name);
+
+	return 0;
+}
+
+static int _io_read_req_spectator_join(GGZdMod * ggzdmod)
+{
+	GGZSpectator spectator;
+	
+	if (ggz_read_int(ggzdmod->fd, &spectator.num) < 0
+	    || ggz_read_string_alloc(ggzdmod->fd, &spectator.name) < 0
+	    || ggz_read_fd(ggzdmod->fd, &spectator.fd) < 0)
+		return -1;
+	else {
+		_ggzdmod_handle_spectator_join(ggzdmod, spectator);
+		ggz_free(spectator.name);
+		return 0;
+	}
+}
+
+static int _io_read_req_spectator_leave(GGZdMod * ggzdmod)
+{
+	char *name;
+
+	if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+		return -1;
+
+	_ggzdmod_handle_spectator_leave(ggzdmod, name);
 	ggz_free(name);
 
 	return 0;

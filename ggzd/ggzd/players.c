@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4170 2002-05-05 21:51:20Z rgade $
+ * $Id: players.c 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -469,6 +469,33 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 	return status;
 }
 
+GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
+{
+	int status;
+
+	dbg_msg(GGZ_DBG_TABLE, "Handling table join (as spectator) for %s", player->name);
+
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to join (as spectator) table %d in room %d", 
+		player->name, index, player->room);
+
+	if (player->table != -1)
+		status = E_AT_TABLE;
+	else if (player->transit)
+		status = E_IN_TRANSIT;
+	else if (perms_check(player, PERMS_JOIN_TABLE) == PERMS_DENY)
+		status = E_NO_PERMISSION;
+	else /* Send a join event to the table */
+		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR, index);
+
+	/* Return any immediate failures to client*/
+	if (status < 0) {
+		if (net_send_table_join_spectator(player->client->net, (char)status) < 0)
+			return GGZ_REQ_DISCONNECT;
+		status = GGZ_REQ_FAIL;
+	}
+	
+	return status;
+}
 
 /* 
  * player_table_leave() handles REQ_TABLE_LEAVE request from the
@@ -538,6 +565,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 static int player_transit(GGZPlayer* player, char opcode, int index)
 {
 	struct GGZTableSeat seat;
+	struct GGZTableSpectator spectator;
 	int status;
 
 	/* Do some quick sanity checking */
@@ -569,7 +597,28 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 		pthread_rwlock_wrlock(&player->lock);
 		player->game_fd = -1;
 		pthread_rwlock_unlock(&player->lock);
-		
+
+		break;
+	case GGZ_TRANSIT_JOIN_SPECTATOR:
+		spectator.index = GGZ_SEATNUM_ANY;
+		spectator.fd = player->game_fd;
+		strcpy(spectator.name, player->name);
+
+		status = transit_spectator_event(player->room, index, spectator, player->name);
+		/* Now that channel fd has been sent, rest it here */
+		pthread_rwlock_wrlock(&player->lock);
+		player->game_fd = -1;
+		pthread_rwlock_unlock(&player->lock);
+
+		break;
+	case GGZ_TRANSIT_LEAVE_SPECTATOR:
+		spectator.index = table_find_player(player->room, index, player->name);
+		if(spectator.index == -1)
+			return E_NO_TABLE;
+		spectator.name[0] = '\0';
+		spectator.fd = -1;
+
+		status = transit_spectator_event(player->room, index, spectator, player->name);
 		break;
 	default:
 		/* Should never get here */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 3198 2002-01-30 09:24:30Z jdorje $
+ * $Id: seats.c 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -39,6 +39,18 @@ int seats_count(GGZTable* table, GGZSeatType type)
 		if (table->seat_types[i] == type)
 			count++;
 	return count;
+}
+
+
+int spectators_count(GGZTable *table)
+{
+	/*int i, count = 0;
+	for (i = 0; i < MAX_TABLE_SIZE; i++)
+		if (!table->spectators[i][0])
+			count++;
+	return count;*/
+	/* FIXME: return actual maximum number of spectators! */
+	return MAX_TABLE_SIZE - 1;
 }
 
 

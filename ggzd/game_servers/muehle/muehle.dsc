@@ -17,4 +17,5 @@ AllowLeave = 1
 #BotsAllowed = 0 1
 BotsAllowed = 0
 PlayersAllowed = 2
+AllowSpectators = 1
 

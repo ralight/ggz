@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 3498 2002-03-02 01:06:32Z bmh $
+ * $Id: io.h 4403 2002-09-04 18:48:34Z dr_maux $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -33,10 +33,12 @@
 #include "mod.h"
 
 /* Functions for sending IO messages */
-int _io_send_launch(int fd, int seats);
+int _io_send_launch(int fd, int seats, int spectators);
 int _io_send_join(int fd, GGZSeat *seat);
 int _io_send_leave(int fd, GGZSeat *seat);
 int _io_send_seat_change(int fd, GGZSeat *seat);
+int _io_send_spectator_join(int fd, GGZSpectator *spectator);
+int _io_send_spectator_leave(int fd, GGZSpectator *spectator);
 int _io_send_state(int fd, GGZdModState state);
 int _io_send_seat(int fd, GGZSeat *seat);
 int _io_send_log(int fd, char *msg);
@@ -48,5 +50,7 @@ int _io_read_data(GGZdMod * ggzdmod);
 int _io_respond_launch(int fd, char status);
 int _io_respond_join(int fd);
 int _io_respond_leave(int fd, int status);
+int _io_respond_spectator_join(int fd);
+int _io_respond_spectator_leave(int fd, int status);
 int _io_respond_seat(int fd, int status);
 int _io_respond_state(int fd);

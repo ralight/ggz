@@ -46,6 +46,18 @@ struct GGZTableSeat {
 	int fd;
 };
 
+/* Spectator structure */
+struct GGZTableSpectator {
+	/* Spectator index */
+	int index;
+
+	/* Spectator's name */
+	char name[MAX_USER_NAME_LEN + 1];
+
+	/* File descriptor */
+	int fd;
+};
+
 #define GGZ_SEATNUM_ANY -1
 
 
@@ -71,6 +83,13 @@ int seats_num(GGZTable* table);
 s *  @return The type of the given seat.
  */
 GGZSeatType seats_type(GGZTable* table, int seat);
+
+/** @brief Return the total number of spectators at a table.
+ *
+ *  @param table The table to query.
+ *  @return The number of spectators at that table.
+ */
+int spectators_count(GGZTable *table);
 
 
 #endif /* __GGZ_TABLE_H_ */
