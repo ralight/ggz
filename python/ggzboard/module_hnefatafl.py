@@ -168,7 +168,8 @@ class Game:
 		return (ret, frompos, topos)
 
 	def domove(self, frompos, topos):
-		if self.validatemove(self.lastmove, frompos, topos):
+		#if self.validatemove(self.lastmove, frompos, topos):
+		if 1 == 1:
 			(oldx, oldy) = frompos
 			(x, y) = topos
 			self.board[y][x] = self.board[oldy][oldx]

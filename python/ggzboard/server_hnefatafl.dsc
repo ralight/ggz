@@ -19,6 +19,6 @@ PlayersAllowed = 2
 AllowSpectators = 0
 
 [Statistics]
-Records = 0
+Records = 1
 Ratings = 0
 

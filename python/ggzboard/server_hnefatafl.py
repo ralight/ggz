@@ -120,6 +120,7 @@ def hook_data (num, type, name, fd):
 			winner = 0 # FIXME!
 			net.sendbyte(net.MSG_GAMEOVER)
 			net.sendbyte(winner)
+			ggzdmod.reportStatistics(winner)
 
 	if net.error():
 		print "** network error! **"
