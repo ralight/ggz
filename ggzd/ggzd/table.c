@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4497 2002-09-09 10:28:33Z jdorje $
+ * $Id: table.c 4500 2002-09-10 00:11:01Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1441,6 +1441,10 @@ static void table_free(GGZTable* table)
 		/*if (table->reserve[i])
 		  free (table->reserve[i]);*/
 	}
+
+	if (table->spectators)
+		free(table->spectators);
+
 	ggzdmod_free(table->ggzdmod);
 	free(table);
 }
