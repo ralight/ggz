@@ -80,34 +80,41 @@ static void handle_list_tables(gint op, gint fd);
 static void motd_print_line(gchar *line);
 void display_rooms();
 
-gchar *opcode_str[] = { 	"MSG_SERVER_ID",
-			"MSG_SERVER_FULL",
-			"MSG_MOTD",
-			"MSG_CHAT",
-			"MSG_UPDATE_PLAYERS",
-			"MSG_UPDATE_TYPES",
-			"MSG_UPDATE_TABLES",
-			"MSG_UPDATE_ROOMS",
-			"MSG_ERROR",
-			"RSP_LOGIN_NEW",
-			"RSP_LOGIN",
-			"RSP_LOGIN_ANON",
-			"RSP_LOGOUT",
-			"RSP_PREF_CHANGE",
-			"RSP_REMOVE_USER",
-			"RSP_LIST_PLAYERS",
-			"RSP_LIST_TYPES",
-			"RSP_LIST_TABLES",
-			"RSP_LIST_ROOMS",
-			"RSP_TABLE_OPTIONS",
-			"RSP_USER_STAT",
-			"RSP_TABLE_LAUNCH",
-			"RSP_TABLE_JOIN",
-			"RSP_TABLE_LEAVE",
-			"RSP_GAME",
-			"RSP_CHAT",
-			"RSP_MOTD",
-			"RSP_ROOM_JOIN"
+gchar *opcode_str[] = {
+        "MSG_SERVER_ID", 
+        "MSG_SERVER_FULL",
+        "MSG_MOTD",
+        "MSG_CHAT",  
+        "MSG_UPDATE_PLAYERS",
+        "MSG_UPDATE_TYPES",
+        "MSG_UPDATE_TABLES",
+        "MSG_UPDATE_ROOMS",
+        "MSG_ERROR",
+        
+        "RSP_LOGIN_NEW", 
+        "RSP_LOGIN",
+        "RSP_LOGIN_ANON",
+        "RSP_LOGOUT",
+        "RSP_PREF_CHANGE",   
+        "RSP_REMOVE_USER", 
+
+        "RSP_LIST_PLAYERS",
+        "RSP_LIST_TYPES",
+        "RSP_LIST_TABLES",
+        "RSP_LIST_ROOMS",
+        "RSP_TABLE_OPTIONS",
+        "RSP_USER_STAT", 
+
+        "RSP_TABLE_LAUNCH",  
+        "RSP_TABLE_JOIN",  
+        "RSP_TABLE_LEAVE",
+
+        "RSP_GAME",
+        "RSP_CHAT",
+        "RSP_MOTD",
+        
+        "RSP_ROOM_JOIN"  
+
 };
 
 
@@ -157,6 +164,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gchar *message;
 	gchar name[9];
 	gchar status;
+	guchar  subop;
 	gint num, op, size, checksum, count, i;
 	gchar buf[4096];
 	static gint color_index=0;
@@ -413,17 +421,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case RSP_CHAT:
 		es_read_char(source, &status);
-		connect_msg("[%s] %d\n", opcode_str[op], status);
-		if (status == -1)
-			display_chat("< <  > >","You must join a room before you can chat or play games.");
+		connect_msg("[%s] Chat Send Status: %d\n", opcode_str[op], status);
 		break;
 
 	case MSG_CHAT:
+		es_read_char(source, &subop);
 		es_read_string(source, name, MAX_USER_NAME_LEN+1);
 		connect_msg("[%s] msg from %s\n", opcode_str[op], name);
-		es_read_string_alloc(source, &message);
-		connect_msg("[%s] %s\n", opcode_str[op], message);
-		display_chat(name, message);
+		if (subop & GGZ_CHAT_M_MESSAGE)
+			es_read_string_alloc(source, &message);
+		else
+			message = g_strdup_printf("");		
+		connect_msg("[%s] Message: %s\n", opcode_str[op], message);
+		display_chat(&subop, name, message);
 		g_free(message);
 		break;
 

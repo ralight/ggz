@@ -148,10 +148,24 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
         }
                         
         if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-            && es_write_int(connection.sock, REQ_CHAT) == 0)
-                        
-                es_write_string(connection.sock,
-                                gtk_entry_get_text(GTK_ENTRY(user_data)));
+	  && es_write_int(connection.sock, REQ_CHAT) == 0)
+	{
+		if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg ", 5))
+		{
+			if (es_write_char(connection.sock, GGZ_CHAT_PERSONAL) == 0)
+	        	        es_write_string(connection.sock,
+                        	        gtk_entry_get_text(GTK_ENTRY(user_data))+5);
+		} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep ", 6))
+		{
+			if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
+	        	        es_write_string(connection.sock,
+                        	        gtk_entry_get_text(GTK_ENTRY(user_data))+6);
+		}else{
+			if (es_write_char(connection.sock, GGZ_CHAT_NORMAL) == 0)
+	        	        es_write_string(connection.sock,
+                        	        gtk_entry_get_text(GTK_ENTRY(user_data)));
+		}
+	}
         
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }

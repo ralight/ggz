@@ -43,7 +43,7 @@ extern struct ConnectInfo connection;
 
 gint color_index;	/* color for chat */
 
-void display_chat(gchar *name, gchar *msg)
+void display_chat(guchar *op, gchar *name, gchar *msg)
 {
 	gchar *buf;
 	gchar cmd[1024];		/* command used in chat */
