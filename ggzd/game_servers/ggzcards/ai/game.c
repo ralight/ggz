@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4154 2002-05-05 01:02:23Z jdorje $
+ * $Id: game.c 4169 2002-05-05 21:46:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -166,7 +166,7 @@ void game_alert_badplay(char *err_msg)
 	client_send_sync_request();
 }
 
-void game_alert_play(int player, card_t card, int pos)
+void game_alert_play(int player, card_t card, int pos, int hand_pos)
 {
 	alert_play(player, card);
 }
