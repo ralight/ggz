@@ -146,6 +146,22 @@ void es_read_string_alloc_or_die(const int sock, char **data);
 
 
 /****************************************************************************
+ * Reading/Writing a file descriptor
+ * 
+ * sock  : socket fd
+ * data  : address of data to be read/written
+ * n     : size of data (in bytes) to be read/written
+ * 
+ * Returns 0 on success, or -1 on error
+ *
+ * Many thanks to Richard Stevens and his wonderful books, from which
+ * these functions come.
+ *
+ ***************************************************************************/
+int es_read_fd(const int sock, int *recvfd);
+int es_write_fd(const int sock, int sendfd);
+
+/****************************************************************************
  * Reading/Writing a byte sequence 
  * 
  * sock  : socket fd

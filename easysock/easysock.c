@@ -33,6 +33,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/uio.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -43,6 +44,8 @@
 
 #include <easysock.h>
 
+/* FIXME: Make configure test for this..*/
+#define HAVE_MSGHDR_MSG_CONTROL
 
 static es_err_func _err_func = NULL;
 static es_exit_func _exit_func = exit;
@@ -433,7 +436,6 @@ int es_writen(int fd, const void *vptr, size_t n)
 	_debug("Wrote %d bytes\n", n);
 	return (n);
 }
-/* end writen */
 
 
 /* Read "n" bytes from a descriptor. */
@@ -461,4 +463,106 @@ int es_readn(int fd, void *vptr, size_t n)
 	_debug("Read %d bytes\n", (n - nleft));
 	return (n - nleft);	/* return >= 0 */
 }
-/* end readn */
+
+
+int es_write_fd(int fd, int sendfd)
+{
+        int status;
+        struct msghdr	msg;
+	struct iovec	iov[1];
+
+#ifdef	HAVE_MSGHDR_MSG_CONTROL
+	union {
+	  struct cmsghdr	cm;
+	  char				control[CMSG_SPACE(sizeof(int))];
+	} control_un;
+	struct cmsghdr	*cmptr;
+
+	msg.msg_control = control_un.control;
+	msg.msg_controllen = sizeof(control_un.control);
+
+	cmptr = CMSG_FIRSTHDR(&msg);
+	cmptr->cmsg_len = CMSG_LEN(sizeof(int));
+	cmptr->cmsg_level = SOL_SOCKET;
+	cmptr->cmsg_type = SCM_RIGHTS;
+	*((int *) CMSG_DATA(cmptr)) = sendfd;
+#else
+	msg.msg_accrights = (caddr_t) &sendfd;
+	msg.msg_accrightslen = sizeof(int);
+#endif
+
+	msg.msg_name = NULL;
+	msg.msg_namelen = 0;
+
+        /* We're just sending a fd, so it's a dummy byte */
+        iov[0].iov_base = "";
+	iov[0].iov_len = 1;
+	msg.msg_iov = iov;
+	msg.msg_iovlen = 1;
+
+       if (sendmsg(fd, &msg, 0) < 0) {
+               return -1;
+       }
+  
+      return 0;
+}
+
+
+int es_read_fd(int fd, int *recvfd)
+{
+	struct msghdr	msg;
+	struct iovec	iov[1];
+	ssize_t			n;
+	int				newfd;
+        char dummy;
+  
+#ifdef	HAVE_MSGHDR_MSG_CONTROL
+	union {
+	  struct cmsghdr	cm;
+	  char				control[CMSG_SPACE(sizeof(int))];
+	} control_un;
+	struct cmsghdr	*cmptr;
+
+	msg.msg_control = control_un.control;
+	msg.msg_controllen = sizeof(control_un.control);
+#else
+	msg.msg_accrights = (caddr_t) &newfd;
+	msg.msg_accrightslen = sizeof(int);
+#endif
+
+	msg.msg_name = NULL;
+	msg.msg_namelen = 0;
+
+	iov[0].iov_base = &dummy;
+	iov[0].iov_len = 1;
+	msg.msg_iov = iov;
+	msg.msg_iovlen = 1;
+
+	if ( (n = recvmsg(fd, &msg, 0)) < 0) {
+		return -1;
+	}
+
+        if (n == 0) {
+	        return -1; 
+	}
+  
+#ifdef	HAVE_MSGHDR_MSG_CONTROL
+	if ( (cmptr = CMSG_FIRSTHDR(&msg)) != NULL &&
+	    cmptr->cmsg_len == CMSG_LEN(sizeof(int))) {
+		if (cmptr->cmsg_level != SOL_SOCKET)
+			err_quit("control level != SOL_SOCKET");
+		if (cmptr->cmsg_type != SCM_RIGHTS)
+			err_quit("control type != SCM_RIGHTS");
+		*recvfd = *((int *) CMSG_DATA(cmptr));
+	} else
+		*recvfd = -1;		/* descriptor was not passed */
+#else
+	if (msg.msg_accrightslen == sizeof(int))
+		*recvfd = newfd;
+	else 
+		*recvfd = -1;		/* descriptor was not passed */
+#endif
+
+        return (*recvfd != -1) ? 0 : -1;
+}
+
