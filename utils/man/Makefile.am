@@ -1,4 +1,5 @@
 SUBDIRS =
 
-man_MANS = grubby.6 agrub.6 agrue.6
-EXTRA_DIST = grubby.6 agrub.6 agrue.6
+man_MANS = cmd-client.1
+EXTRA_DIST = cmd-client.1
+
