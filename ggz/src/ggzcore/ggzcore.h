@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5130 2002-11-01 05:15:57Z jdorje $
+ * $Id: ggzcore.h 5131 2002-11-01 05:35:41Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -850,9 +850,6 @@ int ggzcore_server_data_is_pending(GGZServer *server);
 
 /** @brief Read data for the server on the specified FD. */
 int ggzcore_server_read_data(GGZServer *server, int fd);
-
-/** @brief Deprecated; does nothing. */
-int ggzcore_server_write_data(GGZServer *server);
 
 /** @brief Free GGZServer object and accompanying data */
 void ggzcore_server_free(GGZServer *server);
