@@ -152,7 +152,7 @@ void es_read_string_alloc_or_die(const int sock, char **data);
  * data  : address of data to be read/written
  * n     : size of data (in bytes) to be read/written
  * 
- * Returns number of bytes processes, or -1 on error
+ * Returns number of bytes processed, or -1 on error
  *
  * Many thanks to Richard Stevens and his wonderful books, from which
  * these functions come.

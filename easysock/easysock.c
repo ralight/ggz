@@ -50,9 +50,14 @@ static es_exit_func _exit_func = exit;
 static void _debug(const char *fmt, ...)
 {
 #ifdef DEBUG_SOCKET
+	char bug[4096];
 	va_list ap;
+
 	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
+	sprintf(buf, "[%d]: ", getpid());
+	vsprintf(buf + strlen(buf), fmt, ap);
+	
+	fputs(buf, stderr);
 	va_end(ap);
 #endif
 }
@@ -156,21 +161,15 @@ int es_make_socket_or_die(const EsSockType type, const unsigned short port,
 
 int es_write_char(const int sock, const char message)
 {
-
-	int status;
-
-	status = write(sock, &message, sizeof(char));
-	status = (status == 0 ? -1 : status);
-
-	if (status < 0) {
-		_debug("[%d]: Error sending char\n", getpid());
-		if (_err_func != NULL)
+	if (es_writen(sock, &message, sizeof(char)) < 0) {
+		_debug("Error sending char\n");
+		if (_err_func)
 			(*_err_func) (strerror(errno), ES_WRITE, ES_CHAR);
-	} else
-		_debug("[%d]: Sent \"%d\" : %d char\n", getpid(), message,
-		       status);
+		return -1;
+	}
 
-	return status;
+	_debug("Sent \"%d\" : char\n", message);
+	return 0;
 }
 
 
@@ -183,31 +182,30 @@ void es_write_char_or_die(const int sock, const char data)
 
 int es_read_char(const int sock, char *message)
 {
-
 	int status;
 
-	status = read(sock, message, sizeof(char));
-
-	if (status < 0) {
-		_debug("[%d]: Error receiving char\n", getpid());
-		if (_err_func != NULL)
+	if ( (status = es_readn(sock, message, sizeof(char))) < 0) {
+		_debug("Error receiving char\n");
+		if (_err_func)
 			(*_err_func) (strerror(errno), ES_READ, ES_CHAR);
-	} else if (status == 0) {
-		status = -1;
-		_debug("[%d]: Warning: fd is closed\n", getpid());
-		if (_err_func != NULL)
-			(*_err_func) ("Socket closed", ES_READ, ES_CHAR);
-	} else
-		_debug("[%d]: Received \"%d\" : %d char \n", getpid(),
-		       *message, status);
+		return -1;
+	} 
 
-	return status;
+	if (status < sizeof(char)) {
+		_debug("Warning: fd is closed\n");
+		if (_err_func)
+			(*_err_func) ("fd closed", ES_READ, ES_CHAR);
+		return -1;
+	} 
+	
+	_debug("Received \"%d\" : char\n", *message);
+	return 0;
 }
 
 
 void es_read_char_or_die(const int sock, char *data)
 {
-	if (es_read_char(sock, data) <= 0)
+	if (es_read_char(sock, data) < 0)
 		(*_exit_func) (-1);
 }
 
@@ -218,21 +216,17 @@ void es_read_char_or_die(const int sock, char *data)
  */
 int es_write_int(const int sock, const int message)
 {
+	int data = htonl(message);
 
-	int status, data = htonl(message);
-
-	status = write(sock, &data, sizeof(int));
-	status = (status == 0 ? -1 : status);
-
-	if (status < 0) {
-		_debug("[%d]: Error sending int\n", getpid());
-		if (_err_func != NULL)
+	if (es_writen(sock, &data, sizeof(int)) < 0) {
+		_debug("Error sending int\n");
+		if (_err_func)
 			(*_err_func) (strerror(errno), ES_WRITE, ES_INT);
-	} else
-		_debug("[%d]: Sent \"%d\" : %d bytes\n", getpid(), message,
-		       status);
+		return -1;
+	}
 
-	return status;
+	_debug("Sent \"%d\" : int\n", message);
+	return 0;
 }
 
 
@@ -249,33 +243,31 @@ void es_write_int_or_die(const int sock, const int data)
  */
 int es_read_int(const int sock, int *message)
 {
-
 	int data, status;
-
-	status = read(sock, &data, sizeof(int));
-
-	*message = ntohl(data);
-
-	if (status < 0) {
-		_debug("[%d]: Error receiving int\n", getpid());
-		if (_err_func != NULL)
+	
+	if ( (status = es_readn(sock, &data, sizeof(int))) < 0) {
+		_debug("Error receiving int\n");
+		if (_err_func)
 			(*_err_func) (strerror(errno), ES_READ, ES_INT);
-	} else if (status == 0) {
-		_debug("[%d]: Warning: fd is closed\n", getpid());
-		status = -1;
-		if (_err_func != NULL)
-			(*_err_func) ("Socket closed", ES_READ, ES_INT);
-	} else
-		_debug("[%d]: Received \"%d\" : %d bytes \n", getpid(),
-		       *message, status);
-
-	return status;
+		return -1;
+	}
+	
+	if (status < sizeof(int)) {
+		_debug("Warning: fd is closed\n");
+		if (_err_func)
+			(*_err_func) ("fd closed", ES_READ, ES_INT);
+		return -1;
+	}
+	
+	*message = ntohl(data);
+	_debug("Received \"%d\" : int\n", *message);
+	return 0;
 }
 
 
 void es_read_int_or_die(const int sock, int *data)
 {
-	if (es_read_int(sock, data) <= 0)
+	if (es_read_int(sock, data) < 0)
 		(*_exit_func) (-1);
 }
 
@@ -285,35 +277,25 @@ void es_read_int_or_die(const int sock, int *data)
  */
 int es_write_string(const int sock, const char *message)
 {
-
 	unsigned int size = strlen(message) * sizeof(char) + 1;
-	int status;
-
-	status = es_write_int(sock, size);
-
-	if (status > 0) {
-
-		status = write(sock, message, size);
-		status = (status == 0 ? -1 : status);
-
-		if (status < 0) {
-			_debug("[%d]: Error sending string\n");
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_WRITE, ES_STRING);
-		} else
-			_debug("[%d]: Sent \"%s\" : %d bytes \n", getpid(),
-			       message, status);
-
+	
+	if (es_write_int(sock, size) < 0)
+		return -1;
+	
+	if (es_writen(sock, message, size) < 0) {
+		_debug("Error sending string\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_WRITE, ES_STRING);
+		return -1;
 	}
-
-	return status;
-
+	
+	_debug("Sent \"%s\" : string \n", message);
+	return 0;
 }
 
 
 int es_va_write_string(const int sock, const char *fmt, ...)
 {
-
 	char buf[4096];
 	va_list ap;
 
@@ -322,7 +304,6 @@ int es_va_write_string(const int sock, const char *fmt, ...)
 	va_end(ap);
 
 	return es_write_string(sock, buf);
-
 }
 
 
@@ -335,7 +316,6 @@ void es_write_string_or_die(const int sock, const char *data)
 
 void es_va_write_string_or_die(const int sock, const char *fmt, ...)
 {
-
 	char buf[4096];
 	va_list ap;
 
@@ -352,36 +332,33 @@ void es_va_write_string_or_die(const int sock, const char *fmt, ...)
  */
 int es_read_string(const int sock, char *message)
 {
-
 	int size, status;
 
-	status = es_read_int(sock, &size);
+	if (es_read_int(sock, &size) < 0)
+		return -1;
 
-	if (status > 0) {
+       	if ( (status = es_readn(sock, message, size)) < 0) {
+		_debug("Error receiving string\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_READ, ES_STRING);
+		return -1;
+	} 
 
-		status = read(sock, message, size);
-
-		if (status < 0) {
-			_debug("[%d]: Error receiving string\n", getpid());
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_READ, ES_STRING);
-		} else if (status == 0) {
-			status = -1;
-			_debug("[%d]: Warning: fd is closed\n", getpid());
-
-		} else
-			_debug("[%d]: Received \"%s\" : %d bytes \n",
-			       getpid(), *message, status);
-
-	}
-
-	return status;
+	if (status < size) {
+		_debug("Warning: fd is closed\n");
+		if (_err_func)
+			(*_err_func) ("fd closed", ES_READ, ES_STRING);
+		return -1;
+	} 
+	
+	_debug("Received \"%s\" : string\n", *message);
+	return 0;
 }
 
 
 void es_read_string_or_die(const int sock, char *data)
 {
-	if (es_read_string(sock, data) <= 0)
+	if (es_read_string(sock, data) < 0)
 		(*_exit_func) (-1);
 }
 
@@ -391,55 +368,43 @@ void es_read_string_or_die(const int sock, char *data)
  */
 int es_read_string_alloc(const int sock, char **message)
 {
-
 	unsigned int size;
 	int status;
 
-	status = es_read_int(sock, &size);
-
-	if (status > 0) {
-
-		*message = (char *) malloc(size * sizeof(char));
-
-		if (*message == NULL) {
-			status = -1;
-			_debug("[%d]: Error: Not enough memory\n",
-			       getpid());
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_ALLOCATE,
-					      ES_STRING);
-		} else {
-			memset(*message, 0, size);
-			status = read(sock, *message, size);
-
-			if (status < 0) {
-				_debug("[%d]: Error receiving string\n",
-				       getpid());
-				if (_err_func != NULL)
-					(*_err_func) (strerror(errno),
-						      ES_READ, ES_STRING);
-			} else if (status == 0) {
-				status = -1;
-				_debug("[%d]: Warning: fd is closed\n",
-				       getpid());
-				if (_err_func != NULL)
-					(*_err_func) ("Socket closed",
-						      ES_READ, ES_STRING);
-			} else
-				_debug
-				    ("[%d]: Received \"%s\" : %d bytes \n",
-				     getpid(), *message, status);
-
-		}		/* else not out of memory */
+	if (es_read_int(sock, &size) < 0)
+		return -1;
+	
+	if ( (*message = (char *)malloc(size * sizeof(char))) == NULL) {
+		_debug("Error: Not enough memory\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_ALLOCATE, ES_STRING);
+		return -1;
 	}
-	/* if status >0  */
-	return status;
+
+	memset(*message, 0, size);
+
+	if ( (status = es_readn(sock, *message, size)) < 0) {
+		_debug("Error receiving string\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_READ, ES_STRING);
+		return -1;
+	}
+
+	if (status < size) {
+		_debug("Warning: fd is closed\n");
+		if (_err_func)
+			(*_err_func) ("fd closed", ES_READ, ES_STRING);
+		return -1;
+	} 
+
+	_debug("Received \"%s\" : string\n", *message);
+	return 0;
 }
 
 
 void es_read_string_alloc_or_die(const int sock, char **data)
 {
-	if (es_read_string_alloc(sock, data) <= 0)
+	if (es_read_string_alloc(sock, data) < 0)
 		(*_exit_func) (-1);
 }
 
@@ -465,6 +430,7 @@ int es_writen(int fd, const void *vptr, size_t n)
 		nleft -= nwritten;
 		ptr += nwritten;
 	}
+	_debug("Wrote %d bytes\n", n);
 	return (n);
 }
 /* end writen */
@@ -492,6 +458,7 @@ int es_readn(int fd, void *vptr, size_t n)
 		nleft -= nread;
 		ptr += nread;
 	}
+	_debug("Read %d bytes\n", (n - nleft));
 	return (n - nleft);	/* return >= 0 */
 }
 /* end readn */
