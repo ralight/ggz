@@ -61,6 +61,7 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 	time_t now;
 	struct tm localtm;
 	int kill_me = 0;
+	FILE *f;
 
 	/* I subtract one from the buffer size since we */
 	/* always want room for a '\n' at the end       */
@@ -103,14 +104,14 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
-			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
-				log_info.logfile =
-				      log_open_logfile(log_info.log_fname);
-			}
-			fputs(buf, log_info.logfile);
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+				f = log_open_logfile(log_info.log_fname);
+			else
+				f = log_info.logfile;
+			fputs(buf, f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
-				fclose(log_info.logfile);
+				fclose(f);
 		}
 	}
 #ifdef DEBUG
@@ -118,14 +119,14 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		if(log_info.options & GGZ_DBGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
-			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS) {
-				log_info.dbgfile =
-				      log_open_logfile(log_info.dbg_fname);
-			}
-			fputs(buf, log_info.dbgfile);
+			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
+				f = log_open_logfile(log_info.dbg_fname);
+			else
+				f = log_info.dbgfile;
+			fputs(buf, f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
-				fclose(log_info.dbgfile);
+				fclose(f);
 		}
 	}
 #endif
