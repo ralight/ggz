@@ -90,10 +90,12 @@ void World::removePlayer(const char *name)
 			{
 				std::cout << "Erase him" << std::endl;
 				m_playerlist.erase(it);
-				delete p;
+				//delete p;
+				std::cout << "Erased. " << std::endl;
 				return;
 			}
 	}
+	std::cout << "Player not found, not removed." << std::endl;
 }
 
 // Return a player from the list
@@ -144,10 +146,20 @@ void World::receive(const char *name, void *data)
 			{
 				ggz_write_char(p->fd(), op_name);
 				ggz_write_string(p->fd(), pname);
+				std::cout << "sent login succeeded" << std::endl;
+
+				for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+				{
+					ggz_write_char((*it).fd(), op_moved);
+					ggz_write_string((*it).fd(), name);
+					ggz_write_int((*it).fd(), p->x());
+					ggz_write_int((*it).fd(), p->y());
+				}
 			}
 			else
 			{
 				ggz_write_char(p->fd(), op_loginfailed);
+				std::cout << "sent login failed" << std::endl;
 			}
 			break;
 		case op_move:

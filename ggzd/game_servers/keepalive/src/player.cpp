@@ -75,11 +75,13 @@ char *Player::morph(const char *username, const char *password)
 	f.open(grave.c_str(), /*_IO_INPUT*/ios::in);
 	if(f.is_open())
 	{
+std::cout << "grave is open... let's see who's inside" << std::endl;
 		f >> user;
 		f >> pass;
 		f >> m_x;
 		f >> m_y;
 		f.close();
+std::cout << "Does " << pass.c_str() << " match " << password << "?" << std::endl;
 		if(pass != password)
 		{
 			return NULL;
@@ -88,8 +90,8 @@ char *Player::morph(const char *username, const char *password)
 		{
 			m_username = strdup(user.c_str());
 			m_password = strdup(pass.c_str());
-			m_x = 0;
-			m_y = 0;
+			//m_x = 0;
+			//m_y = 0;
 		}
 	}
 	else
@@ -114,16 +116,20 @@ void Player::die()
 	if(mkdir(graveyard.c_str(), S_IRWXU))
 	{
 		std::cout << "mkdir failed" << std::endl;
-		return;
+		//return;
 	}
 	string grave = graveyard + m_username;
 	f.open(grave.c_str(), /*_IO_OUTPUT*/ios::out);
 	if(f.is_open())
 	{
-		f << "username: " << m_username << endl;
-		f << "password: " << m_password << endl;
-		f << "x: " << m_x << endl;
-		f << "y: " << m_y << endl;
+		//f << "username: " << m_username << endl;
+		//f << "password: " << m_password << endl;
+		//f << "x: " << m_x << endl;
+		//f << "y: " << m_y << endl;
+		f << m_username << endl;
+		f << m_password << endl;
+		f << m_x << endl;
+		f << m_y << endl;
 		f.close();
 	}
 }

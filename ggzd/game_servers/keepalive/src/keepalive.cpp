@@ -85,14 +85,20 @@ void Keepalive::hookData(void *data)
 // Handler for joining players
 void Keepalive::hookJoin(void *data)
 {
+//std::cout << "hookJoin number: " << *(int*)data << std::endl;
 	GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
+std::cout << "hookJoin gives us: " << seat.name << std::endl;
 	m_world->addPlayer(seat.name, seat.fd);
 }
 
 // Handler for leaving players
 void Keepalive::hookLeave(void *data)
 {
-	GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
+//std::cout << "hookLeave number: " << *(int*)data << std::endl;
+	//GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
+
+GGZSeat seat = *(GGZSeat*)data;
+std::cout << "hookLeave gives us: " << seat.name << std::endl;
 	m_world->removePlayer(seat.name);
 }
 
@@ -115,18 +121,24 @@ void Keepalive::hookLog(void *data)
 void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	int player;
+
 	switch(event)
 	{
 		case GGZDMOD_EVENT_STATE:
 			me->hookState(data);
 			break;
 		case GGZDMOD_EVENT_JOIN:
+//std::cout << "Join event gives us: " << ((GGZSeat*)data)->name << std::endl;
 			player = ((GGZSeat*)data)->num;
+//std::cout << "Join event number: " << player << std::endl;
 			me->hookJoin(&player);
 			break;
 		case GGZDMOD_EVENT_LEAVE:
+//std::cout << "Leave event gives us: " << ((GGZSeat*)data)->name << std::endl;
 			player = ((GGZSeat*)data)->num;
-			me->hookLeave(&player);
+//std::cout << "Leave event number: " << player << std::endl;
+			//me->hookLeave(&player);
+			me->hookLeave(data);
 			break;
 		case GGZDMOD_EVENT_LOG:
 			me->hookLog(data);
