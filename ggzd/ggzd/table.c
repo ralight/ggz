@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3192 2002-01-24 23:31:20Z jdorje $
+ * $Id: table.c 3198 2002-01-30 09:24:30Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -131,7 +131,7 @@ GGZTable* table_new(void)
 static int table_check(GGZTable* table)
 {
 	int i, status = 0;
-	int ai_total = seats_bot(table);
+	int ai_total = seats_count(table, GGZ_SEAT_BOT);
 	int seat_total = seats_num(table);
 	int g_type = table->type;
 	int room_type;
@@ -171,8 +171,8 @@ static int table_check(GGZTable* table)
 		status = E_BAD_OPTIONS;
 	}
 
-	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_open(table));
-	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_reserved(table));
+	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
+	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
 	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
 	dbg_msg(GGZ_DBG_TABLE, "GGZdMod    : %x", (unsigned int)table->ggzdmod);
 	if (table->ggzdmod)
@@ -517,7 +517,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		pthread_rwlock_wrlock(&table->lock);
 		table->seat_types[seat] = GGZ_SEAT_OPEN;
 		
-		if (!seats_human(table)) {
+		if (!seats_count(table, GGZ_SEAT_PLAYER)) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 				table->index, table->room);
 			empty = 1;
@@ -1049,7 +1049,7 @@ int type_match_table(int type, GGZTable* table)
 	/* FIXME: Do reservation checking properly */
 	return ( type == GGZ_TYPE_ALL
 		 || (type >= 0 && type == table->type)
-		 || (type == GGZ_TYPE_OPEN && seats_open(table))
+		 || (type == GGZ_TYPE_OPEN && seats_count(table, GGZ_SEAT_OPEN))
 		 || type == GGZ_TYPE_RES);
 }
 

@@ -24,9 +24,25 @@
 
 #include <table.h>
 
-int seats_open(GGZTable* table);
+/** @brief Count the number of seats of the given type at the table.
+ *
+ *  @param table The table to count seats at.
+ *  @param type The type of seat to count.
+ *  @return The number of seats that match the type.
+ */
+int seats_count(GGZTable* table, GGZSeatType type);
+
+/** @brief Give the total number of seats at the table.
+ *
+ *  @param table The table we are querying.
+ *  @return The number of seats at the table.
+ */
 int seats_num(GGZTable* table);
-int seats_bot(GGZTable* table);
-int seats_reserved(GGZTable* table);
-int seats_human(GGZTable* table);
+
+/** @brief Find the type of the given seat at the table.
+ *
+ *  @param table The table we are querying.
+ *  @param seat The # of the seat we are querying.
+ *  @return The type of the given seat.
+ */
 GGZSeatType seats_type(GGZTable* table, int seat);

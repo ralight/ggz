@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3197 2002-01-30 08:16:01Z jdorje $
+ * $Id: transit.c 3198 2002-01-30 09:24:30Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -172,7 +172,8 @@ static int transit_table_event_callback(void* target, int size, void* data)
 	   Instead, we currently check later on...when it's harder to handle
 	   errors. */
 	if (opcode == GGZ_TRANSIT_JOIN
-	    && !seats_open(table) && !seats_reserved(table)) {
+	    && !seats_count(table, GGZ_SEAT_OPEN)
+	    && !seats_count(table, GGZ_SEAT_RESERVED)) {
 		/* Don't care if this fails, we aren't transiting anyway */
 		transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
 		return GGZ_EVENT_OK;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 3185 2002-01-24 10:59:56Z jdorje $
+ * $Id: seats.c 3198 2002-01-30 09:24:30Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -32,21 +32,13 @@
 #include <table.h>
 #include <seats.h>
 
-/* FIXME: most of this file could simply be removed.  --JDS */
-
-static int count_seats(GGZTable* table, GGZSeatType type)
+int seats_count(GGZTable* table, GGZSeatType type)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		if (table->seat_types[i] == type)
 			count++;
 	return count;
-}
-
-
-int seats_open(GGZTable* table)
-{
-	return count_seats(table, GGZ_SEAT_OPEN);
 }
 
 
@@ -57,24 +49,6 @@ int seats_num(GGZTable* table)
 		if (table->seat_types[i] == GGZ_SEAT_NONE)
 			break;
 	return i;
-}
-
-
-int seats_bot(GGZTable* table)
-{
-	return count_seats(table, GGZ_SEAT_BOT);
-}
-
-
-int seats_reserved(GGZTable* table)
-{
-	return count_seats(table, GGZ_SEAT_RESERVED);
-}
-
-
-int seats_human(GGZTable* table)
-{
-	return count_seats(table, GGZ_SEAT_PLAYER);
 }
 
 
