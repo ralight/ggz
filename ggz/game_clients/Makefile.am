@@ -1,7 +1,4 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = spades tictactoe dots lapocha reversi combat hastings \
-	  chinese-checkers chess
-
-
-
+SUBDIRS = @SUBDIRS@
+EXTRA_DIST = package
