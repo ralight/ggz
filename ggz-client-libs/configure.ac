@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6634 2005-01-11 02:44:38Z jdorje $
+dnl $Id: configure.ac 6683 2005-01-15 04:40:06Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -82,7 +82,7 @@ AC_CHECK_FUNCS([dup2 strcasecmp strchr strerror \
                 malloc vprintf], [],
                [AC_MSG_ERROR([cannot find required function])])
 AC_CHECK_FUNCS([fork select]) # These fail; dunno why
-AC_CHECK_FUNCS([close hstrerror kill socketpair alarm])
+AC_CHECK_FUNCS([close hstrerror kill socketpair alarm getenv setenv])
 AC_FUNC_FORK
 #AC_FUNC_MALLOC <- this doesn't do what you think it does
 AC_FUNC_SELECT_ARGTYPES

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6633 2005-01-11 02:44:15Z jdorje $
+ * $Id: ggzmod.c 6683 2005-01-15 04:40:06Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -663,6 +663,8 @@ int ggzmod_inform_chat(GGZMod * ggzmod, const char *player, const char *msg)
 }
 
 
+#define GGZMOD_SOCKET_FD "GGZMOD_SOCKET_FD"
+
 /* 
  * GGZmod actions
  */
@@ -700,7 +702,11 @@ int ggzmod_connect(GGZMod * ggzmod)
 		char buf[100];
 		int port, sock;
 
-		GetEnvironmentVariable("GGZMOD_SOCKET_FD", buf, sizeof(buf));
+#ifdef HAVE_GETENV
+		snprintf(buf, sizeof(buf), "%s", getenv(GGZMOD_SOCKET_FD));
+#else
+		GetEnvironmentVariable(GGZMOD_SOCKET_FD, buf, sizeof(buf));
+#endif
 		sscanf(buf, "%d", &port);
 
 		if (port == 0) {
@@ -932,7 +938,11 @@ static int game_fork(GGZMod * ggzmod)
 		return -1;
 	}
 	snprintf(buf, sizeof(buf), "%d", port);
-	SetEnvironmentVariable("GGZMOD_SOCKET_FD", buf);
+#ifdef HAVE_SETENV
+	setenv(GGZMOD_SOCKET_FD, buf, 1);
+#else
+	SetEnvironmentVariable(GGZMOD_SOCKET_FD, buf);
+#endif
 #endif
 
 #ifdef HAVE_FORK
@@ -940,6 +950,7 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
+#ifdef HAVE_SOCKETPAIR
 		close(fd_pair[0]);
 
 		/* debugging message??? */
@@ -951,6 +962,9 @@ static int game_fork(GGZMod * ggzmod)
 			if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
 				ggz_error_sys_exit("dup failed");
 		}
+#else
+		close(sock);
+#endif
 
 		/* FIXME: Close all other fd's? */
 		/* FIXME: Not necessary to close other fd's if we use
@@ -970,9 +984,11 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys_exit("exec of %s failed", ggzmod->argv[0]);
 	} else {
 		/* parent */
+#ifdef HAVE_SOCKETPAIR
 		close(fd_pair[1]);
 
 		ggzmod->fd = fd_pair[0];
+#endif
 		ggzmod->pid = pid;
 		
 		/* FIXME: should we delete the argv arguments? */
@@ -1003,7 +1019,11 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys("Listening to socket failed.");
 		return -1;
 	}
+#ifdef HAVE_WINSOCK_H
 	closesocket(sock);
+#else
+	close(sock);
+#endif
 	ggzmod->fd = sock2;
 #endif
 	return 0;
@@ -1039,7 +1059,11 @@ static int game_embedded(GGZMod * ggzmod)
 		return -1;
 	}
 	snprintf(buf, sizeof(buf), "%d", port);
-	SetEnvironmentVariable("GGZMOD_SOCKET_FD", buf);
+#ifdef HAVE_SETENV
+	setenv(GGZMOD_SOCKET_FD, buf, 1);
+#else
+	SetEnvironmentVariable(GGZMOD_SOCKET_FD, buf);
+#endif
 #endif
 
 #ifdef HAVE_SOCKETPAIR
@@ -1051,7 +1075,6 @@ static int game_embedded(GGZMod * ggzmod)
 	}
 
 	ggzmod->fd = fd_pair[0];
-	ggzmod->pid = -1; /* FIXME: use -1 for embedded ggzcore? getpid()? */
 #else
 	/* FIXME: we need to select, with a maximum timeout. */
 	/* FIXME: this is insecure; it should be restricted to local
@@ -1061,8 +1084,16 @@ static int game_embedded(GGZMod * ggzmod)
 		ggz_error_sys("Listening to socket failed.");
 		return -1;
 	}
+#ifdef HAVE_WINSOCK_H
 	closesocket(sock);
+#else
+	close(sock);
+#endif
 	ggzmod->fd = sock2;
+#endif
+#ifdef HAVE_FORK
+	ggzmod->pid = -1; /* FIXME: use -1 for embedded ggzcore? getpid()? */
+#else
 	ggzmod->process = INVALID_HANDLE_VALUE;
 #endif
 
