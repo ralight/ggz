@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3977 2002-04-13 23:59:43Z jdorje $
+ * $Id: ai.c 3978 2002-04-14 08:10:28Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -89,7 +89,7 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 #endif /* DEBUG */
 	   )
 		ggz_error_sys_exit("socketpair/pipe failed");
-		
+
 	if ( (pid = fork()) < 0)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
@@ -106,9 +106,12 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 		}
 		
 		/* Close stdin, stdout, and stderr. */
-		close(fileno(stdin));
-		close(fileno(stdout));
-		close(fileno(stderr));
+		if (fclose(stdin) < 0 ||
+		    fclose(stdout) < 0 ||
+		    fclose(stderr) < 0) {
+			/* There's not much we can do... */
+			assert(0);
+		}
 		
 #ifdef DEBUG
 		/* Move our pipe to stderr. */
