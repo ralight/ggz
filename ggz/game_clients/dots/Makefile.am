@@ -9,7 +9,7 @@ INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 ggzexecmod_PROGRAMS = ggz.dots
 
 ggz_dots_SOURCES = \
-	main.c \
+	main.c main.h \
 	support.c support.h \
 	dlg_main.c dlg_main.h \
 	cb_main.c cb_main.h \
