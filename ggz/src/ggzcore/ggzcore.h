@@ -30,6 +30,10 @@
 #include <stdarg.h>
 #include <poll.h>
 
+/** @file ggzcore.h
+ *  @brief The interface for the ggzcore library used by GGZ clients
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif 
@@ -56,7 +60,7 @@ typedef enum {
 } GGZOptionFlags;
 
 
-/* Debugging categories */
+/** Debugging categories */
 typedef enum {
 	GGZ_DBG_EVENT     = 0x00000001,
 	GGZ_DBG_NET       = 0x00000002,
@@ -79,42 +83,36 @@ typedef enum {
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
-/* Options structure for ggzcore library */
+/** Options structure for ggzcore library */
 typedef struct _GGZOptions {
 	
-	/* Option flags */
+	/** Option flags */
 	GGZOptionFlags flags;
 
-	/* Debugging file */
+	/** Debugging file */
 	char* debug_file;
 
-	/* Debugging levels */
+	/** Debugging levels */
 	GGZDebugLevel debug_levels;
 
 } GGZOptions;
 
 
-/* ggzcore_init() - Initializtion function for ggzcore lib.
+/** ggzcore_init() - Initializtion function for ggzcore lib.
  *
- * Receives:
- * GGZOption options : options structure
+ * @param options options structure
  *
- * Returns:
- * int : 0 if successful, -1 on failure
+ * @return int : 0 if successful, -1 on failure
  */
 int ggzcore_init(GGZOptions options);
 
 
-/* ggzcore_destroy() - Cleanup function for ggzcore lib.
- *
- * Receives:
- *
- * Returns:
+/** ggzcore_destroy() - Cleanup function for ggzcore lib.
  */
 void ggzcore_destroy(void);
 
 
-/* GGZ Hook function return types */
+/** GGZ Hook function return types */
 typedef enum {
       GGZ_HOOK_OK,
       GGZ_HOOK_REMOVE,
@@ -122,12 +120,12 @@ typedef enum {
       GGZ_HOOK_CRISIS
 } GGZHookReturn;
 
-/* GGZ Event hook function type, used as a vallback for events */
+/** GGZ Event hook function type, used as a vallback for events */
 typedef GGZHookReturn (*GGZHookFunc)(unsigned int id, 
 				     void* event_data, 
 				     void* user_data);
 
-/* GGZ object destroy function type */                        
+/** GGZ object destroy function type */
 typedef void (*GGZDestroyFunc)(void* data);
 
 
@@ -216,7 +214,7 @@ typedef enum {
 	GGZ_STATE_LOGGING_OUT,
 } GGZStateID;
 
-/* Chat subops */					/* PMCCCCCC */
+/** Chat subops */					/* PMCCCCCC */
 typedef enum {
 	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
 	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
@@ -235,8 +233,9 @@ typedef struct _GGZGameType GGZGameType;
 typedef struct _GGZModule   GGZModule;
 typedef struct _GGZGame     GGZGame;
 
-/* Function for allocating and initializing new GGZServer object */
+/** Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(void);
+
 int ggzcore_server_reset(GGZServer *server);
 
 /* Functions for attaching hooks to GGZServer events */
@@ -319,10 +318,10 @@ void ggzcore_server_free(GGZServer *server);
 /* Functions for manipulating GGZRoom objects */
 
 
-/* Allocate space for a new room object */
+/** Allocate space for a new room object */
 GGZRoom* ggzcore_room_new(void);
 
-/* Initialize room object */
+/** Initialize room object */
 int ggzcore_room_init(GGZRoom *room, 
 		      const GGZServer *server, 
 		      const unsigned int id, 
@@ -330,7 +329,7 @@ int ggzcore_room_init(GGZRoom *room,
 		      const unsigned int game, 
 		      const char *desc);
 
-/* De-allocate room object and its children */
+/** De-allocate room object and its children */
 void ggzcore_room_free(GGZRoom *room);
 
 
@@ -459,137 +458,123 @@ void ggzcore_error_msg_exit(const char *fmt, ...);
  *	Either g_path or u_path can be NULL if the file is not to be used.
  *	The user config file will be created if it does not exist.
  *
- *	Returns:
+ *	@return:
  *	  -1 on error
  *	  0 on success
  */
 int ggzcore_conf_initialize	(const char	*g_path,
 				 const char	*u_path);
 
-/* ggzcore_conf_write_string() - Write a string to the user config file
+/** ggzcore_conf_write_string() - Write a string to the user config file
  *
- * Receives:
- * char *section            : section to store value in
- * char *key                : key to store value under
- * char *value              : value to store
+ * @param section	section to store value in
+ * @param key		key to store value under
+ * @param value		value to store
  *
- * Returns:
- * int : 0 if successful, -1 on error
+ * @return int : 0 if successful, -1 on error
  */
 int ggzcore_conf_write_string(const char *section, 
 			      const char *key, 
 			      const char *value);
 
-/* ggzcore_conf_write_int() - Write a integer to the user config file
+/** ggzcore_conf_write_int() - Write a integer to the user config file
  *
- * Receives:
- * char *section            : section to store value in
- * char *key                : key to store value under
- * int value                : value to store
+ * @param section	section to store value in
+ * @param key		key to store value under
+ * @param value		value to store
  *
- * Returns:
- * int : 0 if successful, -1 on error
+ * @return int : 0 if successful, -1 on error
  */
 int ggzcore_conf_write_int(const char *section, 
 			   const char *key, 
 			   int value);
 
-/* ggzcore_conf_write_list() - Write a list to the user config file
+/** ggzcore_conf_write_list() - Write a list to the user config file
  *
- * Receives:
- * char *section            : section to store value in
- * char *key                : key to store value under
- * int argc                 : count of string arguments in list
- * char **argv              : array of NULL terminated strings
+ * @param section	section to store value in
+ * @param key		key to store value under
+ * @param argc		count of string arguments in list
+ * @param argv		array of NULL terminated strings
  *
- * Returns:
- * int : 0 if successful, -1 on error
+ * @return int : 0 if successful, -1 on error
  */
 int ggzcore_conf_write_list(const char *section, 
 			    const char *key, 
 			    int argc, 
 			    char **argv);
 
-/* ggzcore_conf_read_string() - Read a string from the configuration file(s)
+/** ggzcore_conf_read_string() - Read a string from the configuration file(s)
  *
- * Receives:
- * char *section            : section to get value from
- * char *key                : key value was stored under
- * char *def                : default value to return if none is found
+ * @param section	section to get value from
+ * @param key		key value was stored under
+ * @param def		default value to return if none is found
  *
- * Returns:
+ * @return
  *   a dynamically allocated string from the configuration file
  * OR
  *   a dynamically allocated copy of the default string
  *
- * Note that the default may be set to NULL, in which case a NULL will be
+ * @note The default may be set to NULL, in which case a NULL will be
  * returned if the value could not be found in either configuration file.
  */
 char * ggzcore_conf_read_string(const char *section, 
 				const char *key, 
 				const char *def);
 
-/* ggzcore_conf_read_int() - Read a integer from the configuration file(s)
+/** ggzcore_conf_read_int() - Read a integer from the configuration file(s)
  *
- * Receives:
- * char *section            : section to get value from
- * char *key                : key value was stored under
- * int def                  : default value to return if none is found
+ * @param section	section to get value from
+ * @param key		key value was stored under
+ * @param def		default value to return if none is found
  *
- * Returns:
+ * @return
  *   an integer from the configuration file
  * OR
  *   the default value
  *
- * Note that there is no guaranteed way to find if the call failed.  If you
+ * @note There is no guaranteed way to find if the call failed.  If you
  * must know, call ggzcore_conf_read_string with a NULL default value and
  * check for the NULL return.
  */
 int ggzcore_conf_read_int(const char *section, const char *key, int def);
 
-/* ggzcore_conf_read_list() - Read a list from the configuration file(s)
+/** ggzcore_conf_read_list() - Read a list from the configuration file(s)
  *
- * Receives:
- * char *section            : section to get value from
- * char *key                : key value was stored under
- * int *argcp               : ptr to int which will receive the list entry count
- * char ***argvp            : a pointer to a dynamically allocated array
- *                            that ggzcore_conf_read_list() will build
+ * @param section	section to get value from
+ * @param key		key value was stored under
+ * @param argcp		ptr to int which will receive the list entry count
+ * @param argvp		a pointer to a dynamically allocated array
+ * 			that ggzcore_conf_read_list() will build
  *
- * Returns:
- * int : 0 if successful, -1 on error
+ * @return int : 0 if successful, -1 on error
  */
 int ggzcore_conf_read_list(const char *section, 
 			   const char *key, 
 			   int *argcp, 
 			   char ***argvp);
 
-/* ggzcore_conf_remove_section() - Removes a section from the user config file
+/** ggzcore_conf_remove_section() - Removes a section from the user config file
  *
- * Receives:
- * char *section            : section to remove
+ * @param section	section to remove
  *
- * Returns:
+ * @return
  * int : 0 if successful, -1 on error, 1 on soft error (section did not exist)
  */
 int ggzcore_conf_remove_section(const char *section);
 
-/* ggzcore_conf_remove_key() - Removes a key entry from the user config file
+/** ggzcore_conf_remove_key() - Removes a key entry from the user config file
  *
- * Receives:
- * char *section            : section to remove
- * char *key                : key entry to remove
+ * @param section	section to remove
+ * @param key		key entry to remove
  *
- * Returns:
+ * @return
  * int : 0 if success, -1 on error, 1 on soft error (section/key didn't exist)
  */
 int ggzcore_conf_remove_key(const char *section, const char *key);
 
-/* ggzcore_conf_commit() - Commits the core user config file to disk
+/** ggzcore_conf_commit() - Commits the core user config file to disk
  *
- * Receives:	No arguments
- *
- * Returns:
+ * @return:
  * int : 0 if successful, -1 on error
  */
 int ggzcore_conf_commit(void);
