@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4068 2002-04-23 21:46:49Z jdorje $
+ * $Id: suaro.c 4098 2002-04-28 00:15:26Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -43,12 +43,6 @@
 #include "aicommon.h"
 
 static char *short_suaro_suit_names[] = { "lo", "C", "D", "H", "S", "hi" };
-
-void start_hand(void);
-void alert_bid(int p, bid_t bid);
-void alert_play(int p, card_t card);
-bid_t get_bid(bid_t * bid_choices, int bid_count);
-card_t get_play(int play_hand, int *valid_plays);
 
 static int declarer = -1;
 static bid_t contract;
@@ -125,14 +119,14 @@ void start_hand(void)
 }
 
 /* this alerts the ai to someone else's bid/play */
-void alert_bid(int p, bid_t bid)
+void alert_bid(int player, bid_t bid)
 {
-	ailib_alert_bid(p, bid);
+	ailib_alert_bid(player, bid);
 	
 	/* we really need to take advantage of this information! */
 
 	if (bid.sbid.val > 0) {
-		declarer = p;
+		declarer = player;
 		contract = bid;
 
 		contract.sbid.suit = bid.sbid.suit;
@@ -144,9 +138,9 @@ void alert_bid(int p, bid_t bid)
 	}
 }
 
-void alert_play(int p, card_t card)
+void alert_play(int player, card_t card)
 {
-	ailib_alert_play(p, card);
+	ailib_alert_play(player, card);
 	/* nothing else */
 }
 
