@@ -20,7 +20,7 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 // Forward declarations
 class KComboBox;
@@ -43,7 +43,7 @@ class ShadowClientGGZ : public QWidget
 
 	private:
 		KComboBox *combo;
-		QList<char> namelist, cmdlinelist;
+		QPtrList<char> namelist, cmdlinelist;
 		int m_activated;
 };
 

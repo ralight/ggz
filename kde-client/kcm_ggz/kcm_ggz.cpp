@@ -4,7 +4,7 @@
 #include <ktabctl.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 
 #include <qlayout.h>
 #include <qdir.h>

@@ -38,7 +38,7 @@
 #include "KGGZCommon.h"
 
 // KDE includes
-#include <kapp.h>
+#include <kapplication.h>
 #include <klocale.h>
 #include <kprocess.h>
 

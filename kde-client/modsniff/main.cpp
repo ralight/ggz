@@ -1,13 +1,12 @@
 #include "kmodsniff.h"
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
 
 int main(int argc, char **argv)
 {
-	KApplication *a;
 	KModSniff *sniff;
 	KAboutData *aboutData;
 
@@ -26,9 +25,9 @@ int main(int argc, char **argv)
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 
-	a = new KApplication();
+	KApplication a;
 	sniff = new KModSniff();
-	a->setMainWidget(sniff);
-	return a->exec();
+	a.setMainWidget(sniff);
+	return a.exec();
 }
 

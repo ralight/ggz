@@ -4,7 +4,7 @@
 
 // KDE includes
 #include <klocale.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 
 // Qt includes
 #include <qlabel.h>

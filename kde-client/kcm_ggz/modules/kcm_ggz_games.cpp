@@ -4,7 +4,7 @@
 #include <klistview.h>
 #include <qpushbutton.h>
 #include <ksimpleconfig.h>
-#include <kapp.h>
+#include <kapplication.h>
 #include <klocale.h>
 
 #include <qlayout.h>

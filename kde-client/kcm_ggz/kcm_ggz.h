@@ -2,7 +2,7 @@
 #define KCM_GGZ_H
 
 #include <kcmodule.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class KCMGGZPane;
 
@@ -21,7 +21,7 @@ class KCMGGZ : public KCModule
 		void slotChanged();
 
 	private:
-		QList<KCMGGZPane> panelist;
+		QPtrList<KCMGGZPane> panelist;
 };
 
 #endif

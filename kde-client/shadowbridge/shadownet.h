@@ -20,7 +20,7 @@
 
 // Qt includes
 #include <qobject.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 // Forward declarations
 class QDataStream;
@@ -50,7 +50,7 @@ class ShadowNet : public QObject
 		QString convert(char byte);
 		void simpleexec(const char *program);
 
-		QList<QDataStream> list;
+		QPtrList<QDataStream> list;
 		QDataStream *net;
 		int m_activated;
 		QString m_incoming, m_outgoing;

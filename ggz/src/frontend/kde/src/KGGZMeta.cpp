@@ -47,6 +47,7 @@
 #include <qdom.h>
 #include <qpushbutton.h>
 #include <qsocket.h>
+#include <qstringlist.h>
 
 KGGZMeta::KGGZMeta(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)

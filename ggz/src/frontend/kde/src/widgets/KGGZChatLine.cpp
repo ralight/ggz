@@ -102,10 +102,10 @@ void KGGZChatLine::keyPressEvent(QKeyEvent *e)
 			autocomplete(text().left(cursorPosition()));
 			break;
 		case Qt::Key_Left:
-			cursorLeft(mark);
+			cursorBackward(mark);
 			break;
 		case Qt::Key_Right:
-			cursorRight(mark);
+			cursorForward(mark);
 			break;
 		case Qt::Key_Delete:
 			del();

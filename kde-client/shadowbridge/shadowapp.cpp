@@ -29,6 +29,7 @@
 #include <kpopupmenu.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kstatusbar.h>
 
 ShadowApp::ShadowApp()
 : KMainWindow()

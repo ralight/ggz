@@ -41,9 +41,10 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksimpleconfig.h>
-#include <kapp.h>
+#include <kapplication.h>
 #include <kpopupmenu.h>
 #include <kmenubar.h>
+#include <kstatusbar.h>
 
 KGGZBase::KGGZBase()
 : KMainWindow()

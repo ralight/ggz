@@ -22,7 +22,7 @@
 #include "ggzap_gui.h"
 
 // KDE includes
-#include <kapp.h>
+#include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 

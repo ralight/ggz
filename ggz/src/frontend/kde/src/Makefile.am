@@ -32,10 +32,11 @@ kggz_METASOURCES = AUTO
 CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 kggz_LDFLAGS = -ggdb3
-LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
+kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
 	$(top_builddir)/ggz-kde/src/abstract/libkggzabstract.a \
 	@BROWSERLIB@ \
-	$(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
+	$(all_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT) \
+	$(ggz_libraries)
 
 DISTCLEANFILES = $(kggz_METASOURCES)
 

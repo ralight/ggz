@@ -37,6 +37,7 @@
 // Qt includes
 #include <qlineedit.h>
 #include <qevent.h>
+#include <qstringlist.h>
 
 // A QLineEdit extension
 class KGGZChatLine : public QLineEdit

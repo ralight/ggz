@@ -19,7 +19,7 @@
 #include "ggzap_game.h"
 
 // KDE includes
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 
 // System includes
 #include <string.h>

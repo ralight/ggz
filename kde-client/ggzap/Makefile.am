@@ -24,7 +24,8 @@ noinst_HEADERS = \
 
 CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES) -ggdb3
 
-ggzap_LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
+ggzap_LDFLAGS = $(all_libraries)
+ggzap_LDADD = $(ggz_libraries) $(KDE_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 
 METASOURCES = AUTO
 

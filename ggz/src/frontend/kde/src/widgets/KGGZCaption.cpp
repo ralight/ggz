@@ -51,7 +51,7 @@ KGGZCaption::KGGZCaption(QString caption, QString explanation, QWidget *parent, 
 
 	QFont font("helvetica", 11);
 	font.setBold(TRUE);
-	label->setFont(font, QFont::Black);
+	label->setFont(font);
 
 	setBackgroundColor(QColor(100, 0, 0));
 	label->setBackgroundColor(QColor(100, 0, 0));

@@ -20,7 +20,7 @@
 
 // KDE includes
 #include <klocale.h>
-#include <kapp.h>
+#include <kapplication.h>
 
 // Qt includes
 #include <qpixmap.h>
