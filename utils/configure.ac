@@ -12,7 +12,6 @@ AC_ARG_ENABLE(ggzcomm, [  --disable-ggzcomm       Dont' build GGZComm],, enable_
 AC_ARG_ENABLE(telggz, [  --disable-telggz       Dont' build TelGGZ],, enable_telggz=yes)
 AC_ARG_ENABLE(metaserv, [  --disable-metaserv     Dont' build MetaServ],, enable_metaserv=yes)
 AC_ARG_ENABLE(cmd_client, [  --disable-cmd-client Don't build command-line client],, enable_cmd_client=yes)
-AC_ARG_ENABLE(motd-editor, [  --disable-motd-editor Don't build MOTD editor],, enable_motd_editor=yes)
 AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 
 
@@ -115,15 +114,6 @@ if test "$enable_cmd_client" = yes || test "$enable_telggz" = yes; then
 	fi
 fi
 
-if test "$enable_motd_editor" = yes; then
-	AM_ACLOCAL_INCLUDE(motd-editor/macros)
-	GNOME_INIT
-	GNOME_COMPILE_WARNINGS
-	GNOME_X_CHECKS
-	
-	SUBDIRS="$SUBDIRS motd-editor"
-fi
-
 if test "$enable_metaserv" = yes; then
 	SUBDIRS="$SUBDIRS metaserv"
 	if test "$enable_telggz" = yes; then
@@ -162,7 +152,6 @@ echo "Modules to build:"
 echo "    TelGGZ......$enable_telggz"
 echo "    MetaServ....$enable_metaserv"
 echo "    cmd-client..$enable_cmd_client"
-echo "    motd-editor.$enable_motd_editor"
 echo "    GGZComm.....$enable_ggzcomm"
 echo "Build options:"
 echo "    Debug.......$enable_debug"

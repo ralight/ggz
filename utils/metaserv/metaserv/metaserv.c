@@ -761,11 +761,12 @@ static void *metaserv_worker(void *arg)
 	{
 		logline("Caching configuration to %s", cachefile);
 
-		snprintf(tmp, sizeof(tmp), "/tmp/metaservdump-%i-%li", fd, time(NULL));
+		snprintf(tmp, sizeof(tmp), "%s-%i-%li", cachefile, fd, time(NULL));
 		unlink(tmp);
 		minidom_dumpfile(configuration, tmp);
 		rename(tmp, cachefile);
 		chmod(cachefile, S_IRUSR);
+		/*minidom_dumpfile(configuration, cachefile);*/
 	}
 
 	return NULL;
