@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6736 2005-01-19 02:42:57Z jdorje $
+ * $Id: netxml.c 6737 2005-01-19 02:54:26Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -338,16 +338,15 @@ void _ggzcore_net_disconnect(GGZNet *net)
 
 /* ggzcore_net_send_XXX() functions for sending messages to the server */
 
-int _ggzcore_net_send_login(GGZNet *net)
+/* Sends login packet.  Login type is an enumerated value.  Password is needed
+ * only for registered logins. */
+int _ggzcore_net_send_login(GGZNet *net, GGZLoginType login_type,
+			    const char *handle, const char *password,
+			    const char *language)
 {
-	GGZLoginType login_type;
-	char *type, *handle, *password, *language;
-	int status = 0;
+	char *type = "guest";
+	int status;
 
-	login_type = _ggzcore_server_get_type(net->server);
-	handle = _ggzcore_server_get_handle(net->server);
-	password = _ggzcore_server_get_password(net->server);
-	
 	switch (login_type) {
 	case GGZ_LOGIN:
 		type = "normal";
@@ -356,19 +355,19 @@ int _ggzcore_net_send_login(GGZNet *net)
 		type = "first";
 		break;
 	case GGZ_LOGIN_GUEST:
-	default:
 		type = "guest";
+		break;
 	}
 
-	language = getenv("LANG");
 	_ggzcore_net_send_line(net, "<LANGUAGE>%s</LANGUAGE>", language);
-	
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
 
-	if (login_type == GGZ_LOGIN)
-		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
-	_ggzcore_net_send_line(net, "</LOGIN>");
+	if (login_type == GGZ_LOGIN && password)
+		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>",
+				       password);
+
+	status = _ggzcore_net_send_line(net, "</LOGIN>");
 
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending login");

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6736 2005-01-19 02:42:57Z jdorje $
+ * $Id: server.c 6737 2005-01-19 02:54:26Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -1023,7 +1023,9 @@ int _ggzcore_server_login(GGZServer *server)
 	ggz_debug(GGZCORE_DBG_SERVER, "Login (%d), %s, %s", server->type, 
 		      server->handle, server->password);
 
-	status = _ggzcore_net_send_login(server->net);
+	status = _ggzcore_net_send_login(server->net, server->type,
+					 server->handle, server->password,
+					 getenv("LANG"));
 
 	if (status == 0)
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_TRY);
