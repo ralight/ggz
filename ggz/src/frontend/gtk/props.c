@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: props.c 5203 2002-11-04 04:56:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -38,6 +38,7 @@
 #include "chat.h"
 #include "ggzcore.h"
 #include "login.h"
+#include "msgbox.h"
 #include "props.h"
 #include "server.h"
 #include "support.h"
@@ -1126,7 +1127,11 @@ create_dlg_props (void)
   gtk_widget_show (buttonbox);
   gtk_box_pack_end (GTK_BOX (edit_box), buttonbox, FALSE, FALSE, 0);
 
+#ifdef GTK2
+  add_button = gtk_button_new_from_stock(GTK_STOCK_ADD);
+#else
   add_button = gtk_button_new_with_label (_("Add"));
+#endif
   gtk_widget_ref (add_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "add_button", add_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1134,7 +1139,11 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (buttonbox), add_button);
   GTK_WIDGET_SET_FLAGS (add_button, GTK_CAN_DEFAULT);
 
+#ifdef GTK2
+  modify_button = stockbutton_new(GTK_STOCK_SAVE, _("Modify"));
+#else
   modify_button = gtk_button_new_with_label (_("Modify"));
+#endif
   gtk_widget_ref (modify_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "modify_button", modify_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1142,7 +1151,11 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (buttonbox), modify_button);
   GTK_WIDGET_SET_FLAGS (modify_button, GTK_CAN_DEFAULT);
 
+#ifdef GTK2
+  delete_button = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+#else
   delete_button = gtk_button_new_with_label (_("Delete"));
+#endif
   gtk_widget_ref (delete_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "delete_button", delete_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1722,7 +1735,11 @@ create_dlg_props (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
+#ifdef GTK2
+  button1 = gtk_button_new_from_stock(GTK_STOCK_OK);
+#else
   button1 = gtk_button_new_with_label (_("OK"));
+#endif
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1730,7 +1747,11 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), button1);
   GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
 
+#ifdef GTK2
+  button2 = gtk_button_new_from_stock(GTK_STOCK_APPLY);
+#else
   button2 = gtk_button_new_with_label (_("Apply"));
+#endif
   gtk_widget_ref (button2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button2", button2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1738,7 +1759,11 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), button2);
   GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
 
+#ifdef GTK2
+  button3 = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+#else
   button3 = gtk_button_new_with_label (_("Cancel"));
+#endif
   gtk_widget_ref (button3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button3", button3,
                             (GtkDestroyNotify) gtk_widget_unref);

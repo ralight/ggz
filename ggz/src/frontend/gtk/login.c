@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: login.c 5203 2002-11-04 04:56:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -38,6 +38,7 @@
 
 #include "client.h"
 #include "login.h"
+#include "msgbox.h"
 #include "server.h"
 #include "support.h"
 #include "props.h"
@@ -583,7 +584,12 @@ create_dlg_login (void)
   gtk_widget_show (profile_button_box);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_button_box, FALSE, FALSE, 5);
 
+#ifdef GTK2
+  edit_profiles_button = stockbutton_new(GTK_STOCK_PREFERENCES,
+					 _("Edit Profiles..."));
+#else
   edit_profiles_button = gtk_button_new_with_label (_("Edit Profiles..."));
+#endif
   gtk_widget_ref (edit_profiles_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "edit_profiles_button", edit_profiles_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -757,7 +763,11 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hbuttonbox), 5);
 
+#ifdef GTK2
+  connect_button = stockbutton_new(GTK_STOCK_JUMP_TO, _("Connect"));
+#else
   connect_button = gtk_button_new_with_label (_("Connect"));
+#endif
   gtk_widget_ref (connect_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "connect_button", connect_button,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -765,7 +775,11 @@ create_dlg_login (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox), connect_button);
   GTK_WIDGET_SET_FLAGS (connect_button, GTK_CAN_DEFAULT);
 
+#ifdef GTK2
+  cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+#else
   cancel_button = gtk_button_new_with_label (_("Cancel"));
+#endif
   gtk_widget_ref (cancel_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "cancel_button", cancel_button,
                             (GtkDestroyNotify) gtk_widget_unref);

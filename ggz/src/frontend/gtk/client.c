@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: client.c 5203 2002-11-04 04:56:43Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1779,7 +1779,11 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_hbuttonbox, FALSE, FALSE, 0);
   gtk_button_box_set_spacing (GTK_BUTTON_BOX (chat_hbuttonbox), 0);
 
+#ifdef GTK2
+  send_button = stockbutton_new(GTK_STOCK_EXECUTE, _("Send"));
+#else
   send_button = gtk_button_new_with_label (_("Send"));
+#endif
   gtk_widget_ref (send_button);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "send_button", send_button,
                             (GtkDestroyNotify) gtk_widget_unref);

@@ -2,6 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: license.c 5203 2002-11-04 04:56:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -80,7 +81,7 @@ create_dlg_license (void)
   GtkWidget *license_text;
   GtkWidget *dialog_action_area1;
   GtkWidget *button_box;
-  GtkWidget *ok_button;
+  GtkWidget *close_button;
 
   dlg_license = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_license), "dlg_license", dlg_license);
@@ -140,13 +141,18 @@ create_dlg_license (void)
   gtk_widget_show (button_box);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), button_box, TRUE, TRUE, 0);
 
-  ok_button = gtk_button_new_with_label ("OK");
-  gtk_widget_ref (ok_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license), "ok_button", ok_button,
+#ifdef GTK2
+  close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+#else
+  close_button = gtk_button_new_with_label (_("Close"));
+#endif
+  gtk_widget_ref (close_button);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_license),
+			    "close_button", close_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ok_button);
-  gtk_container_add (GTK_CONTAINER (button_box), ok_button);
-  GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
+  gtk_widget_show (close_button);
+  gtk_container_add (GTK_CONTAINER (button_box), close_button);
+  GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (dlg_license), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
@@ -154,12 +160,12 @@ create_dlg_license (void)
   gtk_signal_connect (GTK_OBJECT (dlg_license), "realize",
                       GTK_SIGNAL_FUNC (license_realize),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+  gtk_signal_connect_object (GTK_OBJECT (close_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_license));
 
-  gtk_widget_grab_focus (ok_button);
-  gtk_widget_grab_default (ok_button);
+  gtk_widget_grab_focus (close_button);
+  gtk_widget_grab_default (close_button);
   return dlg_license;
 }
 

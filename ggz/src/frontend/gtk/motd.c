@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: motd.c 5203 2002-11-04 04:56:43Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -178,7 +178,7 @@ create_dlg_motd (void)
   GtkWidget *motd_text;
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox1;
-  GtkWidget *ok_button;
+  GtkWidget *close_button;
 
   dlg_motd = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_motd), "dlg_motd", dlg_motd);
@@ -231,22 +231,27 @@ create_dlg_motd (void)
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
-  ok_button = gtk_button_new_with_label (_("OK"));
-  gtk_widget_ref (ok_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "ok_button", ok_button,
+#ifdef GTK2
+  close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+#else
+  close_button = gtk_button_new_with_label (_("Close"));
+#endif
+  gtk_widget_ref (close_button);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_motd),
+			    "close_button", close_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ok_button);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox1), ok_button);
-  GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
+  gtk_widget_show (close_button);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox1), close_button);
+  GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (dlg_motd), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
                       &motd_dialog);
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+  gtk_signal_connect_object (GTK_OBJECT (close_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_motd));
 
-  gtk_widget_grab_focus (ok_button);
-  gtk_widget_grab_default (ok_button);
+  gtk_widget_grab_focus (close_button);
+  gtk_widget_grab_default (close_button);
   return dlg_motd;
 }

@@ -22,6 +22,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef GTK2
+/* Creates a button with a stock icon and custom text. */
+GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text);
+#endif
 
 /*
  * A very easily cusomisible message box. This message box can be used to 
