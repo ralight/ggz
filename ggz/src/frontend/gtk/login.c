@@ -407,6 +407,7 @@ static void login_set_entries(Server server)
 }
 
 
+
 GtkWidget*
 create_dlg_login (void)
 {
@@ -512,7 +513,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_combo);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_combo, FALSE, TRUE, 5);
-  gtk_widget_set_usize (profile_combo, 175, -2);
+  gtk_widget_set_usize (profile_combo, 222, -2);
   gtk_combo_set_value_in_list (GTK_COMBO (profile_combo), TRUE, FALSE);
 
   profile_entry = GTK_COMBO (profile_combo)->entry;
@@ -559,7 +560,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (host_entry);
   gtk_box_pack_start (GTK_BOX (server_box), host_entry, FALSE, FALSE, 5);
-  gtk_widget_set_usize (host_entry, 175, -2);
+  gtk_widget_set_usize (host_entry, 222, -2);
   gtk_entry_set_text (GTK_ENTRY (host_entry), _("localhost"));
 
   port_label = gtk_label_new (_("Port: "));
@@ -631,7 +632,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (name_entry);
   gtk_box_pack_start (GTK_BOX (username_box), name_entry, FALSE, TRUE, 0);
-  gtk_widget_set_usize (name_entry, 150, -2);
+  gtk_widget_set_usize (name_entry, 210, -2);
 
   password_box = gtk_hbox_new (FALSE, 5);
   gtk_widget_ref (password_box);
@@ -655,7 +656,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pass_entry);
   gtk_box_pack_start (GTK_BOX (password_box), pass_entry, FALSE, TRUE, 0);
-  gtk_widget_set_usize (pass_entry, 150, -2);
+  gtk_widget_set_usize (pass_entry, 210, -2);
   gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
 
   radio_box = gtk_vbox_new (FALSE, 0);

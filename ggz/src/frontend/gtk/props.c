@@ -57,7 +57,6 @@ static void props_add_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_modify_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_delete_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_Font_button_clicked(GtkWidget *widget, gpointer user_data);
-static void props_color_toggled(GtkWidget *widget, gpointer user_data);
 static void props_color_type_toggled(GtkWidget *widget, gpointer user_data);
 static void props_ok_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_apply_button_clicked(GtkWidget *widget, gpointer user_data);
@@ -119,33 +118,21 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "ignore_check");
 	ggzcore_conf_write_int("CHAT", "IGNORE", GTK_TOGGLE_BUTTON(tmp)->active);
 
-	/* Chat Background */
-	tmp = lookup_widget((props_dialog), "background_check");
-	ggzcore_conf_write_int("CHAT", "BACKGROUND", GTK_TOGGLE_BUTTON(tmp)->active);
+	/* Background Color */
+	tmp = lookup_widget((props_dialog), "white_radio");
+	ggzcore_conf_write_int("CHAT", "BG_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
 
-	/* Color */
-	tmp = lookup_widget((props_dialog), "color_check");
-	ggzcore_conf_write_int("CHAT", "COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
-
-	/* Some Color */
-	tmp = lookup_widget((props_dialog), "some_radio");
-	ggzcore_conf_write_int("CHAT", "SOME_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
-
-	/* FULL Color */
-	tmp = lookup_widget((props_dialog), "full_radio");
-	ggzcore_conf_write_int("CHAT", "FULL_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
-
-	/* Your Color */
-	tmp = lookup_widget((props_dialog), "y_spin");
-	ggzcore_conf_write_int("CHAT", "Y_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
-
-	/* Friend Color */
+	/* Friends Color */
 	tmp = lookup_widget((props_dialog), "f_spin");
 	ggzcore_conf_write_int("CHAT", "F_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
-	/* Other Color */
-	tmp = lookup_widget((props_dialog), "o_spin");
-	ggzcore_conf_write_int("CHAT", "O_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+	/* Highlight Color */
+	tmp = lookup_widget((props_dialog), "h_spin");
+	ggzcore_conf_write_int("CHAT", "H_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+
+	/* Normal Color */
+	tmp = lookup_widget((props_dialog), "n_spin");
+	ggzcore_conf_write_int("CHAT", "N_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 
 	/* Name */
 	tmp = lookup_widget((props_dialog), "info_name");
@@ -168,8 +155,27 @@ static void props_update(void)
 	ggzcore_conf_write_string("USER INFO", "COMMENTS", gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, gtk_text_get_length(GTK_TEXT(tmp))));
 
 	/* Single click room entry */
-	tmp = lookup_widget((props_dialog), "roomclick_checkbutton");
+	tmp = lookup_widget((props_dialog), "click_checkbutton");
 	ggzcore_conf_write_int("OPTIONS", "ROOMENTRY", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Browser */
+	tmp = lookup_widget((props_dialog), "browser_entry");
+	ggzcore_conf_write_string("OPTIONS", "BROWSER", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* MOTD */
+	tmp = lookup_widget((props_dialog), "motd_all_radio");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+		ggzcore_conf_write_string("OPTIONS", "MOTD", "ALL");
+	tmp = lookup_widget((props_dialog), "motd_new_radio");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+		ggzcore_conf_write_string("OPTIONS", "MOTD", "NEW");
+	tmp = lookup_widget((props_dialog), "motd_important_radio");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+		ggzcore_conf_write_string("OPTIONS", "MOTD", "IMPORTANT");
+	tmp = lookup_widget((props_dialog), "motd_none_radio");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+		ggzcore_conf_write_string("OPTIONS", "MOTD", "NONE");
+
 
 	server_profiles_save();
 	ggzcore_conf_commit();
@@ -221,7 +227,7 @@ static void props_update(void)
 	}
 
 	/* Background Color */
-	tmp = lookup_widget((props_dialog), "background_check");
+	tmp = lookup_widget((props_dialog), "white_radio");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
 		colors[18] = ColorBlack;
@@ -270,10 +276,6 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	tmp = lookup_widget((props_dialog), "wrap_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE));
 
-	/* Background */
-	tmp = lookup_widget((props_dialog), "background_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE));
-
 	/* Sound */
 	tmp = lookup_widget((props_dialog), "sound_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "SOUND", TRUE));
@@ -282,29 +284,23 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	tmp = lookup_widget((props_dialog), "ignore_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "IGNORE", FALSE));
 
-	/* Color */
-	tmp = lookup_widget((props_dialog), "color_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "COLOR", TRUE));
+	/* Background Color */
+	tmp = lookup_widget((props_dialog), "white_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "BG_COLOR", TRUE));
+	tmp = lookup_widget((props_dialog), "black_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), 1 - ggzcore_conf_read_int("CHAT", "BG_COLOR", TRUE));
 
-	/* Some Color */
-	tmp = lookup_widget((props_dialog), "some_radio");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE));
-
-	/* FULL Color */
-	tmp = lookup_widget((props_dialog), "full_radio");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE));
-
-	/* Your Color */
-	tmp = lookup_widget((props_dialog), "y_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
-
-	/* Friend Color */
+	/* Friends Color */
 	tmp = lookup_widget((props_dialog), "f_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 0));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 2));
 
-	/* Other Color */
-	tmp = lookup_widget((props_dialog), "o_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
+	/* Highlight Color */
+	tmp = lookup_widget((props_dialog), "h_spin");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 2));
+
+	/* Normal Color */
+	tmp = lookup_widget((props_dialog), "n_spin");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
 
 	/* Name */
 	tmp = lookup_widget((props_dialog), "info_name");
@@ -328,8 +324,28 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 			strlen(ggzcore_conf_read_string("USER INFO", "COMMENTS", ".")));
 
 	/* Single click room entry */
-	tmp = lookup_widget((props_dialog), "roomclick_checkbutton");
+	tmp = lookup_widget((props_dialog), "click_checkbutton");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE));
+
+	/* Browser */
+	tmp = lookup_widget((props_dialog), "browser_entry");
+	gtk_entry_set_editable(GTK_ENTRY(tmp), TRUE);
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "BROWSER", "Netscape - New"));
+	gtk_entry_set_editable(GTK_ENTRY(tmp), FALSE);
+
+	/* MOTD */
+	tmp = lookup_widget((props_dialog), "motd_all_radio");
+	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "ALL"))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	tmp = lookup_widget((props_dialog), "motd_new_radio");
+	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "NEW"))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	tmp = lookup_widget((props_dialog), "motd_important_radio");
+	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "IMPORTANT"))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	tmp = lookup_widget((props_dialog), "motd_none_radio");
+	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "NONE"))
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 }
 
 
@@ -588,11 +604,6 @@ void props_Font_button_clicked(GtkWidget *widget, gpointer user_data)
 }
 
 
-void props_color_toggled(GtkWidget *widget, gpointer user_data)
-{
-
-}
-
 
 void props_color_type_toggled(GtkWidget *widget, gpointer user_data)
 {
@@ -736,24 +747,24 @@ create_dlg_props (void)
   GtkWidget *indent_check;
   GtkWidget *timestamp_check;
   GtkWidget *sound_check;
-  GtkWidget *background_check;
   GtkWidget *frame1;
   GtkWidget *vbox9;
-  GtkWidget *color_check;
   GtkWidget *color_table;
   GSList *Chat_Color_group = NULL;
-  GtkWidget *some_radio;
-  GtkWidget *full_radio;
+  GtkWidget *white_radio;
+  GtkWidget *black_radio;
   GtkWidget *label26;
   GtkWidget *label25;
   GtkWidget *label24;
+  GtkObject *h_spin_adj;
+  GtkWidget *h_spin;
+  GtkObject *n_spin_adj;
+  GtkWidget *n_spin;
   GtkObject *f_spin_adj;
   GtkWidget *f_spin;
-  GtkObject *o_spin_adj;
-  GtkWidget *o_spin;
-  GtkObject *y_spin_adj;
-  GtkWidget *y_spin;
-  GtkWidget *label27;
+  GtkWidget *f_label;
+  GtkWidget *h_label;
+  GtkWidget *n_label;
   GtkWidget *label2;
   GtkWidget *userinfo_box;
   GtkWidget *label16;
@@ -775,8 +786,23 @@ create_dlg_props (void)
   GtkWidget *scrolledwindow1;
   GtkWidget *info_comments;
   GtkWidget *label3;
+  GtkWidget *vbox10;
   GtkWidget *table1;
-  GtkWidget *roomclick_checkbutton;
+  GtkWidget *click_checkbutton;
+  GtkWidget *hbox16;
+  GtkWidget *label70;
+  GtkWidget *browser_combo;
+  GList *browser_combo_items = NULL;
+  GtkWidget *browser_entry;
+  GtkWidget *vbox11;
+  GtkWidget *hbox17;
+  GtkWidget *frame2;
+  GtkWidget *table2;
+  GSList *motd_group = NULL;
+  GtkWidget *motd_all_radio;
+  GtkWidget *motd_important_radio;
+  GtkWidget *motd_new_radio;
+  GtkWidget *motd_none_radio;
   GtkWidget *label67;
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox1;
@@ -786,9 +812,8 @@ create_dlg_props (void)
 
   dlg_props = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dlg_props", dlg_props);
-  gtk_widget_set_usize (dlg_props, 550, 350);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_props), TRUE, TRUE, TRUE);
+  gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, FALSE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_props)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dialog_vbox1", dialog_vbox1);
@@ -1164,15 +1189,6 @@ create_dlg_props (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  background_check = gtk_check_button_new_with_label (_("White Background"));
-  gtk_widget_ref (background_check);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "background_check", background_check,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (background_check);
-  gtk_table_attach (GTK_TABLE (chat_table), background_check, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   frame1 = gtk_frame_new (_("Chat Color"));
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "frame1", frame1,
@@ -1187,13 +1203,6 @@ create_dlg_props (void)
   gtk_widget_show (vbox9);
   gtk_container_add (GTK_CONTAINER (frame1), vbox9);
 
-  color_check = gtk_check_button_new_with_label (_("Color In Chat"));
-  gtk_widget_ref (color_check);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "color_check", color_check,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (color_check);
-  gtk_box_pack_start (GTK_BOX (vbox9), color_check, FALSE, FALSE, 0);
-
   color_table = gtk_table_new (3, 4, FALSE);
   gtk_widget_ref (color_table);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "color_table", color_table,
@@ -1201,27 +1210,27 @@ create_dlg_props (void)
   gtk_widget_show (color_table);
   gtk_box_pack_start (GTK_BOX (vbox9), color_table, TRUE, TRUE, 0);
 
-  some_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Some"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (some_radio));
-  gtk_widget_ref (some_radio);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "some_radio", some_radio,
+  white_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("White Background"));
+  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (white_radio));
+  gtk_widget_ref (white_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "white_radio", white_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (some_radio);
-  gtk_table_attach (GTK_TABLE (color_table), some_radio, 0, 1, 0, 1,
+  gtk_widget_show (white_radio);
+  gtk_table_attach (GTK_TABLE (color_table), white_radio, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 15, 0);
 
-  full_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Full"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (full_radio));
-  gtk_widget_ref (full_radio);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "full_radio", full_radio,
+  black_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Black Background"));
+  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (black_radio));
+  gtk_widget_ref (black_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "black_radio", black_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (full_radio);
-  gtk_table_attach (GTK_TABLE (color_table), full_radio, 0, 1, 1, 2,
+  gtk_widget_show (black_radio);
+  gtk_table_attach (GTK_TABLE (color_table), black_radio, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 15, 0);
 
-  label26 = gtk_label_new (_("Other's Color"));
+  label26 = gtk_label_new (_("Normal Color"));
   gtk_widget_ref (label26);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label26", label26,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1232,7 +1241,7 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (label26), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label26), TRUE);
 
-  label25 = gtk_label_new (_("Friend's Color"));
+  label25 = gtk_label_new (_("Highlight Color"));
   gtk_widget_ref (label25);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label25", label25,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1243,7 +1252,7 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label25), TRUE);
 
-  label24 = gtk_label_new (_("Your Color"));
+  label24 = gtk_label_new (_("Friends's Color"));
   gtk_widget_ref (label24);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label24", label24,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1254,51 +1263,71 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
   gtk_label_set_line_wrap (GTK_LABEL (label24), TRUE);
 
+  h_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
+  h_spin = gtk_spin_button_new (GTK_ADJUSTMENT (h_spin_adj), 1, 0);
+  gtk_widget_ref (h_spin);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "h_spin", h_spin,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (h_spin);
+  gtk_table_attach (GTK_TABLE (color_table), h_spin, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (h_spin, 45, -2);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (h_spin), TRUE);
+
+  n_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
+  n_spin = gtk_spin_button_new (GTK_ADJUSTMENT (n_spin_adj), 1, 0);
+  gtk_widget_ref (n_spin);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "n_spin", n_spin,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (n_spin);
+  gtk_table_attach (GTK_TABLE (color_table), n_spin, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (n_spin, 45, -2);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (n_spin), TRUE);
+
   f_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
   f_spin = gtk_spin_button_new (GTK_ADJUSTMENT (f_spin_adj), 1, 0);
   gtk_widget_ref (f_spin);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "f_spin", f_spin,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (f_spin);
-  gtk_table_attach (GTK_TABLE (color_table), f_spin, 2, 3, 1, 2,
+  gtk_table_attach (GTK_TABLE (color_table), f_spin, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_usize (f_spin, 45, -2);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (f_spin), TRUE);
 
-  o_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
-  o_spin = gtk_spin_button_new (GTK_ADJUSTMENT (o_spin_adj), 1, 0);
-  gtk_widget_ref (o_spin);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "o_spin", o_spin,
+  f_label = gtk_label_new (_("  "));
+  gtk_widget_ref (f_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "f_label", f_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (o_spin);
-  gtk_table_attach (GTK_TABLE (color_table), o_spin, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_EXPAND),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (o_spin, 45, -2);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (o_spin), TRUE);
-
-  y_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
-  y_spin = gtk_spin_button_new (GTK_ADJUSTMENT (y_spin_adj), 1, 0);
-  gtk_widget_ref (y_spin);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "y_spin", y_spin,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (y_spin);
-  gtk_table_attach (GTK_TABLE (color_table), y_spin, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (y_spin, 45, -2);
-  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (y_spin), TRUE);
-
-  label27 = gtk_label_new (_("  "));
-  gtk_widget_ref (label27);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label27", label27,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label27);
-  gtk_table_attach (GTK_TABLE (color_table), label27, 3, 4, 0, 1,
+  gtk_widget_show (f_label);
+  gtk_table_attach (GTK_TABLE (color_table), f_label, 3, 4, 0, 1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (label27, 240, -2);
+  gtk_widget_set_usize (f_label, 240, -2);
+
+  h_label = gtk_label_new (_(" "));
+  gtk_widget_ref (h_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "h_label", h_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (h_label);
+  gtk_table_attach (GTK_TABLE (color_table), h_label, 3, 4, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (h_label), 0, 0.5);
+
+  n_label = gtk_label_new (_(" "));
+  gtk_widget_ref (n_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "n_label", n_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (n_label);
+  gtk_table_attach (GTK_TABLE (color_table), n_label, 3, 4, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (n_label), 0, 0.5);
 
   label2 = gtk_label_new (_("Chat"));
   gtk_widget_ref (label2);
@@ -1468,21 +1497,136 @@ create_dlg_props (void)
   gtk_widget_show (label3);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), label3);
 
-  table1 = gtk_table_new (3, 3, FALSE);
+  vbox10 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox10);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox10", vbox10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox10);
+  gtk_container_add (GTK_CONTAINER (notebook), vbox10);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox10), 6);
+
+  table1 = gtk_table_new (3, 2, FALSE);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_container_add (GTK_CONTAINER (notebook), table1);
-  gtk_container_set_border_width (GTK_CONTAINER (table1), 5);
+  gtk_box_pack_start (GTK_BOX (vbox10), table1, FALSE, FALSE, 0);
 
-  roomclick_checkbutton = gtk_check_button_new_with_label (_("Single click to enter room"));
-  gtk_widget_ref (roomclick_checkbutton);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "roomclick_checkbutton", roomclick_checkbutton,
+  click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
+  gtk_widget_ref (click_checkbutton);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "click_checkbutton", click_checkbutton,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (roomclick_checkbutton);
-  gtk_table_attach (GTK_TABLE (table1), roomclick_checkbutton, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
+  gtk_widget_show (click_checkbutton);
+  gtk_table_attach (GTK_TABLE (table1), click_checkbutton, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  hbox16 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox16);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox16", hbox16,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox16);
+  gtk_table_attach (GTK_TABLE (table1), hbox16, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  label70 = gtk_label_new (_("Browser to launch URLs with:"));
+  gtk_widget_ref (label70);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label70", label70,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label70);
+  gtk_box_pack_start (GTK_BOX (hbox16), label70, FALSE, FALSE, 0);
+  gtk_misc_set_padding (GTK_MISC (label70), 6, 0);
+
+  browser_combo = gtk_combo_new ();
+  gtk_widget_ref (browser_combo);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "browser_combo", browser_combo,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (browser_combo);
+  gtk_box_pack_start (GTK_BOX (hbox16), browser_combo, TRUE, TRUE, 0);
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - Existing"));
+  gtk_combo_set_popdown_strings (GTK_COMBO (browser_combo), browser_combo_items);
+  g_list_free (browser_combo_items);
+
+  browser_entry = GTK_COMBO (browser_combo)->entry;
+  gtk_widget_ref (browser_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "browser_entry", browser_entry,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (browser_entry);
+  gtk_entry_set_editable (GTK_ENTRY (browser_entry), FALSE);
+  gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Netscape - New"));
+
+  vbox11 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox11);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox11", vbox11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox11);
+  gtk_box_pack_start (GTK_BOX (vbox10), vbox11, FALSE, FALSE, 0);
+
+  hbox17 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox17);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox17", hbox17,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox17);
+  gtk_box_pack_start (GTK_BOX (vbox11), hbox17, FALSE, TRUE, 0);
+
+  frame2 = gtk_frame_new (_("MOTD"));
+  gtk_widget_ref (frame2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "frame2", frame2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame2);
+  gtk_box_pack_start (GTK_BOX (hbox17), frame2, FALSE, FALSE, 0);
+
+  table2 = gtk_table_new (2, 2, TRUE);
+  gtk_widget_ref (table2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "table2", table2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (table2);
+  gtk_container_add (GTK_CONTAINER (frame2), table2);
+
+  motd_all_radio = gtk_radio_button_new_with_label (motd_group, _("Display All"));
+  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_all_radio));
+  gtk_widget_ref (motd_all_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_all_radio", motd_all_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (motd_all_radio);
+  gtk_table_attach (GTK_TABLE (table2), motd_all_radio, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  motd_important_radio = gtk_radio_button_new_with_label (motd_group, _("Display Important"));
+  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_important_radio));
+  gtk_widget_ref (motd_important_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_important_radio", motd_important_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (motd_important_radio);
+  gtk_table_attach (GTK_TABLE (table2), motd_important_radio, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  motd_new_radio = gtk_radio_button_new_with_label (motd_group, _("Display New"));
+  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_new_radio));
+  gtk_widget_ref (motd_new_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_new_radio", motd_new_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (motd_new_radio);
+  gtk_table_attach (GTK_TABLE (table2), motd_new_radio, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  motd_none_radio = gtk_radio_button_new_with_label (motd_group, _("Display None"));
+  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_none_radio));
+  gtk_widget_ref (motd_none_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_none_radio", motd_none_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (motd_none_radio);
+  gtk_table_attach (GTK_TABLE (table2), motd_none_radio, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   label67 = gtk_label_new (_("Options"));
@@ -1558,13 +1702,10 @@ create_dlg_props (void)
   gtk_signal_connect (GTK_OBJECT (Font_button), "clicked",
                       GTK_SIGNAL_FUNC (props_Font_button_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (color_check), "toggled",
-                      GTK_SIGNAL_FUNC (props_color_toggled),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (some_radio), "toggled",
+  gtk_signal_connect (GTK_OBJECT (white_radio), "toggled",
                       GTK_SIGNAL_FUNC (props_color_type_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (full_radio), "toggled",
+  gtk_signal_connect (GTK_OBJECT (black_radio), "toggled",
                       GTK_SIGNAL_FUNC (props_color_type_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (button1), "clicked",
