@@ -1,0 +1,42 @@
+Keeping the meta server up to date
+----------------------------------
+
+Much time and source code will have to be invested in making the GGZ Gaming
+Zone a distributed gaming environment.
+As meta servers play an important role for decentralized structures, they will
+have to be updated from time to time. Here's a proposal on how to automate
+this.
+
+Every meta server maintains (in metaserverconf.xml) a list of authorizations,
+beside the actual URIs. All people listed with the 'update' capability can
+submit updates. This does of course apply to servers as well once they're able
+to do so.
+
+	c->s:	<?xml version="1.0"?>
+			<update class="ggz" type="connection" username="heinz" password="*******">
+				<option name="version">0.0.5pre</option>
+				<option name="preference">50</option>
+				<uri>ggz://jzaun.com:5688</uri>
+			</update>
+	s->c:	<?xml version="1.0"?>
+			<resultset referer="update">
+				<result>
+					<status>accepted</status>
+				</result>
+			</resultset>
+
+The following status codes can occur:
+
+accepted: the update was completed successfully
+rejected: authorization failed
+wrong: wrong class/type/options
+error: internal error like disk full
+
+Please note that such a service must run permanently then to ensure that no
+data is lost when multiple requests arrive at the same time. For testing
+purpose we leave it at port 15689 spawned by inetd, however.
+
+Only queries should be done using the URI method, updates require XML format.
+
+Josef
+

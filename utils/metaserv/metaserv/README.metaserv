@@ -23,7 +23,7 @@ to be returned.
 				0.0.5pre
 			</query>
 	s->c:	<?xml version="1.0"?>
-			<resultset>
+			<resultset referer="query">
 				<result preference="100">
 					<uri>
 						ggz://jzaun.com:5688

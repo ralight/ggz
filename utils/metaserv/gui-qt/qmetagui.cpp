@@ -14,21 +14,26 @@
 QMetaGUI::QMetaGUI()
 : QWidget()
 {
-	QPushButton *uri, *xml;
+	QPushButton *uri, *xml, *submit;
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
-	QLabel *lhost, *lport;
+	QLabel *lhost, *lport, *lrawresult, *lresult, *ldata;
 	
 	host = new QLineEdit("localhost", this);
 	port = new QLineEdit("15689", this);
-	uri = new QPushButton("Simple URI Query", this);
-	xml = new QPushButton("Advanced XML Query", this);
+	uri = new QPushButton("Add Simple URI Query", this);
+	xml = new QPushButton("Add Advanced XML Query", this);
+	submit = new QPushButton("Submit Query", this);
 	view = new QListView(this);
 	view->addColumn("URI");
 	view->addColumn("Preference");
 	lhost = new QLabel("Host", this);
 	lport = new QLabel("Port", this);
+	lresult = new QLabel("Result", this);
+	lrawresult = new QLabel("Raw result", this);
+	ldata = new QLabel("Data to submit:", this);
 	raw = new QMultiLineEdit(this);
+	data = new QMultiLineEdit(this);
 
 	vbox = new QVBoxLayout(this, 5);
 	hbox = new QHBoxLayout(vbox, 5);
@@ -38,14 +43,20 @@ QMetaGUI::QMetaGUI()
 	hbox->add(port);
 	hbox->add(uri);
 	hbox->add(xml);
+	hbox->add(submit);
+	vbox->add(ldata);
+	vbox->add(data);
+	vbox->add(lrawresult);
 	vbox->add(raw);
+	vbox->add(lresult);
 	vbox->add(view);
 
 	setCaption("GGZ Gaming Zone Meta Server GUI");
-	setFixedSize(500, 300);
+	resize(600, 300);
 
 	connect(uri, SIGNAL(clicked()), SLOT(slotURI()));
 	connect(xml, SIGNAL(clicked()), SLOT(slotXML()));
+	connect(submit, SIGNAL(clicked()), SLOT(slotSubmit()));
 }
 
 QMetaGUI::~QMetaGUI()
@@ -54,8 +65,8 @@ QMetaGUI::~QMetaGUI()
 
 void QMetaGUI::slotURI()
 {
-	m_type = 0;
-	doconnection();
+	//m_type = 0;
+	data->setText("query://ggz/connection/0.0.4\n");
 }
 
 void QMetaGUI::doconnection()
@@ -68,40 +79,45 @@ void QMetaGUI::doconnection()
 
 void QMetaGUI::slotXML()
 {
-	m_type = 1;
+	//m_type = 1;
+	data->setText("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.4</query>\n");
+}
+
+void QMetaGUI::slotSubmit()
+{
 	doconnection();
 }
 
 void QMetaGUI::slotConnected()
 {
-	QString data;
+	//QString data;
 
-	if(m_type == 0) data = "query://ggz/connection/0.0.4\n";
-	else data = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.4</query>\n";
+	//if(m_type == 0) data = "query://ggz/connection/0.0.4\n";
+	//else data = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.4</query>\n";
 
-	sock->writeBlock(data.latin1(), data.length());
+	sock->writeBlock(data->text().latin1(), data->text().length());
 	sock->flush();
 }
 
 void QMetaGUI::slotRead()
 {
-	QString data;
+	QString rdata;
 	QDomDocument dom;
 	QDomNode node;
 	QDomElement element;
 	QString pref;
 
-	data = sock->readLine();
-	raw->setText(data);
+	rdata = sock->readLine();
+	raw->setText(rdata);
 
-	data.truncate(data.length() - 1);
+	rdata.truncate(rdata.length() - 1);
 	view->clear();
 
-	if(!data.contains("<?xml "))
-		(void)new QListViewItem(view, data, "(irrelevant)");
+	if(!rdata.contains("<?xml "))
+		(void)new QListViewItem(view, rdata, "(irrelevant)");
 	else
 	{
-		dom.setContent(data);
+		dom.setContent(rdata);
 		node = dom.documentElement().firstChild();
 		while(!node.isNull())
 		{

@@ -152,7 +152,7 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 					att->value[strlen(token) - pos - 1 - 2] = 0;
 				}
 				ele->atnum++;
-				ele->at = realloc(ele->at, ele->atnum + 1);
+				ele->at = realloc(ele->at, (ele->atnum + 1) * sizeof(ATT*));
 				ele->at[ele->atnum - 1] = att;
 				ele->at[ele->atnum] = NULL;
 			}

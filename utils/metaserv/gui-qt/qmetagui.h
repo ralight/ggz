@@ -24,12 +24,13 @@ class QMetaGUI : public QWidget
 		void slotRead();
 		void slotURI();
 		void slotXML();
+		void slotSubmit();
 	private:
 		void doconnection();
 
 		QLineEdit *host, *port;
 		QListView *view;
-		QMultiLineEdit *raw;
+		QMultiLineEdit *raw, *data;
 		QSocket *sock;
 		int m_type;
 };
