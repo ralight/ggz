@@ -21,6 +21,7 @@
 #include <klistbox.h>
 #include <klistview.h>
 #include <kmessagebox.h>
+#include <klocale.h>
 
 #include <qlayout.h>
 #include <qmultilineedit.h>
@@ -43,20 +44,20 @@ TopLevel::TopLevel(const char *name)
 
 	//KStdAction::openNew(this, SLOT(newGame()), actionCollection()); // don't handle standalone games yet
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
-	KStdAction::quit(qApp, SLOT(quit()), actionCollection());
+	KStdAction::quit(this, SLOT(close()), actionCollection());
 
-	a = new KAction("Quit", "gamequit", 0, qApp, SLOT(quit()), actionCollection());
-	a = new KAction("Show moves", "showmovetable", 0, qApp, SLOT(quit()), actionCollection());
+	a = new KAction(i18n("Quit"), "gamequit", 0, qApp, SLOT(quit()), actionCollection());
+	a = new KAction(i18n("Show moves"), "showmovetable", 0, qApp, SLOT(quit()), actionCollection());
 
-	a = new KAction("Request sync", "warnmessage", 0, this, SLOT(slotSync()), actionCollection(), "gamesync");
-	a = new KAction("Call flag", "warnmessage", 0, this, SLOT(slotFlag()), actionCollection(), "gameflag");
-	a = new KAction("Request draw", "warnmessage", 0, this, SLOT(slotDraw()), actionCollection(), "gamedraw");
+	a = new KAction(i18n("Request sync"), "warnmessage", 0, this, SLOT(slotSync()), actionCollection(), "gamesync");
+	a = new KAction(i18n("Call flag"), "warnmessage", 0, this, SLOT(slotFlag()), actionCollection(), "gameflag");
+	a = new KAction(i18n("Request draw"), "warnmessage", 0, this, SLOT(slotDraw()), actionCollection(), "gamedraw");
 
-	a = new KAction("Show warnings as message boxes", "warnmessage", 0, this, SLOT(slotWarnmessages()), actionCollection(), "optionwarnmessages");
-	a = new KAction("Display board frame", "warnmessage", 0, this, SLOT(slotBoardframe()), actionCollection(), "optionboardframe");
+	a = new KAction(i18n("Show warnings as message boxes"), "warnmessage", 0, this, SLOT(slotWarnmessages()), actionCollection(), "optionwarnmessages");
+	a = new KAction(i18n("Display board frame"), "warnmessage", 0, this, SLOT(slotBoardframe()), actionCollection(), "optionboardframe");
 
-	a = new KAction("Show move table", "warnmessage", 0, this, SLOT(slotMoveTable()), actionCollection(), "showmovetable");
-	a = new KAction("Show chess board", "warnmessage", 0, this, SLOT(slotChessBoard()), actionCollection(), "showchessboard");
+	a = new KAction(i18n("Show move table"), "warnmessage", 0, this, SLOT(slotMoveTable()), actionCollection(), "showmovetable");
+	a = new KAction(i18n("Show chess board"), "warnmessage", 0, this, SLOT(slotChessBoard()), actionCollection(), "showchessboard");
 
 	createGUI();
 
@@ -66,19 +67,19 @@ TopLevel::TopLevel(const char *name)
 	ctl = new KExtTabCtl(this);
 	tab1 = new QMultiLineEdit(ctl);
 	tab2 = new KListBox(ctl);
-	tab2->insertItem("(Koenig launched)");
+	tab2->insertItem(i18n("(Koenig launched)"));
 	tab3 = new KListView(ctl);
 	tab3->setRootIsDecorated(true);
-	tab3->addColumn("Koenig Highscores");
-	(void)new KListViewItem(tab3, "Local scores");
-	(void)new KListViewItem(tab3, "Worldwide");
-	ctl->addTab(tab2, "Messages");
-	ctl->addTab(tab1, "Moves");
-	ctl->addTab(tab3, "Highscores");
+	tab3->addColumn(i18n("Koenig Highscores"));
+	(void)new KListViewItem(tab3, i18n("Local scores"));
+	(void)new KListViewItem(tab3, i18n("Worldwide"));
+	ctl->addTab(tab2, i18n("Messages"));
+	ctl->addTab(tab1, i18n("Moves"));
+	ctl->addTab(tab3, i18n("Highscores"));
 	setCentralWidget(ctl);
 
 	resize(400, 200);
-	setCaption("Control Panel");
+	setCaption(i18n("Control Panel"));
 
 	chessBoard = new ChessBoardContainer(NULL, "ChessBoardContainer");
 	chessBoard->show();
@@ -106,7 +107,7 @@ void TopLevel::initGameData(void)
 	//chessBoard = new ChessBoard(NULL, "ChessBoard"); // can't be here, else only player 0 would see it
 	//chessBoard->show();
 	//if(game) connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
-	options = new Options(NULL, "Options");
+	options = new Options(NULL, i18n("Options"));
 	options->show();
 	connect(options, SIGNAL(signalTime(int, int)), SLOT(slotTime(int, int)));
 }
@@ -176,7 +177,7 @@ void TopLevel::slotNetDraw()
 	int answer;
 
 	answer = KMessageBox::questionYesNo(this,
-		"The other player requests a draw. Do you agree?", "Draw requested");
+		i18n("The other player requests a draw. Do you agree?"), i18n("Draw requested"));
 	game->answerDraw(answer);
 }
 
@@ -201,5 +202,15 @@ void TopLevel::slotChessBoard()
 {
 	if(chessBoard->isVisible()) chessBoard->hide();
 	else chessBoard->show();
+}
+
+bool TopLevel::queryClose()
+{
+	int ret;
+
+	ret = KMessageBox::questionYesNo(this, i18n("Do you really want to quit?"), i18n("Quit game"));
+
+	if(ret == KMessageBox::Yes) return true;
+	return false;
 }
 

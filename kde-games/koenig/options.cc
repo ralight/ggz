@@ -18,6 +18,8 @@
 
 #include "options.h"
 
+#include <klocale.h>
+
 #include <qlayout.h>
 #include <qradiobutton.h>
 #include <qlabel.h>
@@ -34,24 +36,24 @@ Options::Options(QWidget *parent, const char *name)
 	QPushButton *ok;
 	QButtonGroup *group;
 
-	group = new QButtonGroup("Selection", this);
+	group = new QButtonGroup(i18n("Selection"), this);
 
-	noclock = new QRadioButton("No clock", group);
+	noclock = new QRadioButton(i18n("No clock"), group);
 	noclock->setChecked(true);
-	serverclock = new QRadioButton("Server clock", group);
-	clientclock = new QRadioButton("Client clock", group);
+	serverclock = new QRadioButton(i18n("Server clock"), group);
+	clientclock = new QRadioButton(i18n("Client clock"), group);
 
-	heading = new QLabel("Chess game options", this);
-	text = new QLabel("Select which clock model to use for this game.", this);
-	timetext = new QLabel("How long is one turn?", this);
-	ok = new QPushButton("Submit settings", this);
+	heading = new QLabel(i18n("Chess game options"), this);
+	text = new QLabel(i18n("Select which clock model to use for this game."), this);
+	timetext = new QLabel(i18n("How long is one turn?"), this);
+	ok = new QPushButton(i18n("Submit settings"), this);
 
 	minutes = new QSpinBox(0, 30, 1, this);
 	minutes->setValue(15);
 	seconds = new QSpinBox(0, 30, 1, this);
 
-	labelminutes = new QLabel("Minutes:", this);
-	labelseconds = new QLabel("Seconds:", this);
+	labelminutes = new QLabel(i18n("Minutes:"), this);
+	labelseconds = new QLabel(i18n("Seconds:"), this);
 
 	vbox2 = new QVBoxLayout(group, 5);
 	vbox2->addSpacing(15);
@@ -76,7 +78,7 @@ Options::Options(QWidget *parent, const char *name)
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotTime()));
 
-	setCaption("Option");
+	setCaption(i18n("Options"));
 	show();
 }
 

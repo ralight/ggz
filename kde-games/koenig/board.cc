@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <kdebug.h>
+#include <klocale.h>
 
 #include <qdragobject.h>
 #include <qimage.h>
@@ -95,11 +96,11 @@ void ChessBoard::resetBoard(int color)
 	// assign the correct color
 	activeColor = color;
 	if(color == color_white)
-		parentWidget()->setCaption("Chess Board - White");
+		parentWidget()->setCaption(i18n("Chess Board - White"));
 	else if(color == color_black)
-		parentWidget()->setCaption("Chess Board - Black");
+		parentWidget()->setCaption(i18n("Chess Board - Black"));
 	else
-		parentWidget()->setCaption("Chess Board - No color assigned yet");
+		parentWidget()->setCaption(i18n("Chess Board - No color assigned yet"));
 
 	// accept drag'n'drop actions
 	if(color != color_inactive)

@@ -16,8 +16,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include <qlayout.h>
 #include <kdebug.h>
+#include <klocale.h>
+
+#include <qlayout.h>
 
 #include "boardcontainer.h"
 
@@ -35,7 +37,7 @@ ChessBoardContainer::ChessBoardContainer(QWidget *parent, const char *name)
 	vbox->add(m_root);
 
 	setBackgroundColor(QColor(255, 127, 0)); // FIXME: nice pixmap with wood :-)
-	setCaption("Chess Board - inactive");
+	setCaption(i18n("Chess Board - inactive"));
 }
 
 ChessBoardContainer::~ChessBoardContainer(void)

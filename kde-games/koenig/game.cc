@@ -19,10 +19,11 @@
 #include "game.h"
 #include "game.moc"
 
-#include <iostream>
 #include <kdebug.h>
+#include <klocale.h>
 
 #include <ggzmod.h>
+#include <iostream>
 
 Game::Game(void)
 {
@@ -44,8 +45,8 @@ Game::Game(void)
 	chessInfo.t_seconds[1] = 0;
 	chessInfo.turn = 0;
 	chessInfo.check = false;
-	chessInfo.name[0] = "White";
-	chessInfo.name[1] = "Black";
+	chessInfo.name[0] = i18n("White");
+	chessInfo.name[1] = i18n("Black");
 }
 
 Game::~Game(void)
@@ -78,12 +79,12 @@ void Game::handleNetInput(void)
 			chessInfo.seat = ggz->getChar();
 			chessInfo.version = ggz->getChar();
 			kdDebug(12101) << "Got seat " << chessInfo.seat << " and version " << chessInfo.version << endl;
-			emit signalMessage("Received seat.");
+			emit signalMessage(i18n("Received seat."));
 
 			if (chessInfo.version != PROTOCOL_VERSION)
 			{
 				kdDebug(12101) << "Incompatible version. The game may not run as expected" << endl;
-				emit signalMessage("Incompatible protocol version!");
+				emit signalMessage(i18n("Incompatible protocol version!"));
 			}
 
 			emit signalStart(chessInfo.seat);
@@ -99,7 +100,7 @@ void Game::handleNetInput(void)
 				chessInfo.name[1] = ggz->getString();
 
 			kdDebug(12101) << "Got players " << chessInfo.name[0] << " and " << chessInfo.name[1] << endl;
-			emit signalMessage("Received player names.");
+			emit signalMessage(i18n("Received player names."));
 			break;
 
 		case CHESS_REQ_TIME:
@@ -108,7 +109,7 @@ void Game::handleNetInput(void)
 			if (chessInfo.state != CHESS_STATE_WAIT)
         			break;
 
-			emit signalMessage("Received clock request.");
+			emit signalMessage(i18n("Received clock request."));
 			emit signalNewGame();
 			break;
 		case CHESS_RSP_TIME:
@@ -137,7 +138,7 @@ void Game::handleNetInput(void)
 			//	chessInfo.timer->changeInterval(1000);
 
 			kdDebug(12101) << "The game has started!" << endl;
-			emit signalMessage("Game: started.");
+			emit signalMessage(i18n("Game: started."));
 			break;
 
 		case CHESS_MSG_MOVE:
@@ -158,11 +159,11 @@ void Game::handleNetInput(void)
 			}
 			if((x >= 0) && (y >= 0) && (x2 >= 0) && (y2 >= 0))
 			{
-				emit signalMove(QString("Net: from %1/%2 to %3/%4").arg(QChar(x)).arg(QChar(y)).arg(QChar(x2)).arg(QChar(y2)));
+				emit signalMove(QString(i18n("Net: from %1/%2 to %3/%4")).arg(QChar(x)).arg(QChar(y)).arg(QChar(x2)).arg(QChar(y2)));
 				emit signalDoMove(x - 'A', y - '1', x2 - 'A', y2 - '1'); // FIXME: this is overhead, merge somewhere
 			}
 			else
-				emit signalMessage("Invalid move - try again!");
+				emit signalMessage(i18n("Invalid move - try again!"));
 			break;
 
 		case CHESS_MSG_GAMEOVER:
@@ -194,7 +195,7 @@ void Game::handleNetInput(void)
 		default:
 			kdDebug(12101) << "Unknown opcode: " << opcode << endl;
 
-			emit signalMessage("Invalid network opcode!");
+			emit signalMessage(i18n("Invalid network opcode!"));
 			break;
 	}
 }
@@ -220,7 +221,7 @@ void Game::slotMove(int x, int y, int x2, int y2)
 	ggz->putChar(y2 + '1');
 	ggz->putChar(0); // promote value
 	ggz->putChar(0);
-	emit signalMove(QString("%1: from %2/%3 to %4/%5").arg((chessInfo.seat ? "Black" : "White")).arg(
+	emit signalMove(QString(i18n("%1: from %2/%3 to %4/%5")).arg((chessInfo.seat ? i18n("Black") : i18n("White"))).arg(
 		QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
 }
 
@@ -232,47 +233,47 @@ void Game::answerDraw(int draw)
 
 void Game::handleGameOver(int cval)
 {
-	QString s = "Game over! Reason: ";
+	QString s = i18n("Game over! Reason: ");
 	switch(cval)
 	{
 		case CHESS_GAMEOVER_DRAW_AGREEMENT:
-			s += "both players agreed on a draw";
+			s += i18n("both players agreed on a draw");
 			break;
 		case CHESS_GAMEOVER_DRAW_STALEMATE:
-			s += "stalemate";
+			s += i18n("stalemate");
 			break;
 		case CHESS_GAMEOVER_DRAW_POSREP:
-			s += "too much repetition of positions";
+			s += i18n("too much repetition of positions");
 			break;
 		case CHESS_GAMEOVER_DRAW_MATERIAL:
-			s += "not enough material";
+			s += i18n("not enough material");
 			break;
 		case CHESS_GAMEOVER_DRAW_MOVECOUNT:
-			s += "maximum movecount reached";
+			s += i18n("maximum movecount reached");
 			break;
 		case CHESS_GAMEOVER_DRAW_TIMEMATERIAL:
-			s += "time over and no material left";
+			s += i18n("time over and no material left");
 			break;
 		case CHESS_GAMEOVER_WIN_1_MATE:
-			s += "player 1 wins by a mate";
+			s += i18n("player 1 wins by a mate");
 			break;
 		case CHESS_GAMEOVER_WIN_1_RESIGN:
-			s += "player 2 has resigned";
+			s += i18n("player 2 has resigned");
 			break;
 		case CHESS_GAMEOVER_WIN_1_FLAG:
-			s += "player 2 has run out of time";
+			s += i18n("player 2 has run out of time");
 			break;
 		case CHESS_GAMEOVER_WIN_2_MATE:
-			s += "player 2 wins by a mate";
+			s += i18n("player 2 wins by a mate");
 			break;
 		case CHESS_GAMEOVER_WIN_2_RESIGN:
-			s += "player 1 has resigned";
+			s += i18n("player 1 has resigned");
 			break;
 		case CHESS_GAMEOVER_WIN_2_FLAG:
-			s += "player 1 has run out of time";
+			s += i18n("player 1 has run out of time");
 			break;
 		default:
-			s += "unknown reason";
+			s += i18n("unknown reason");
 	}
 	emit signalMessage(s);
 }
@@ -283,23 +284,23 @@ void Game::handleClock(int cval)
 	{
 		case CHESS_CLOCK_NOCLOCK:
 			kdDebug(12101) << "This game won't have a time limit." << endl;
-			emit signalMessage("Clock: no limit.");
+			emit signalMessage(i18n("Clock: no limit."));
 			break;
 		case CHESS_CLOCK_CLIENT:
 			kdDebug(12101) << "This game will use a client clock.\nThis option should only be used when playing against people you trust, as it relies much in the client program, that can be cheated.\nSo, if the time behaves very strangely (like your oponnent time never wearing out), he may be running a cheated client.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
-			emit signalMessage("Clock: client-side.");
+			emit signalMessage(i18n("Clock: client-side."));
 			break;
 		case CHESS_CLOCK_SERVER:
 			kdDebug(12101) << "This game will use a server clock.\nIt is very difficult to cheat when using this type of clock, and you should use it if you suspect your oponnent may have a cheated client or if you don't trust him.\nHowever, if either your connection or your opponent's is deeply lagged, it will have a deep effect on the time count as well.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
-			emit signalMessage("Clock: server-side.");
+			emit signalMessage(i18n("Clock: server-side."));
 			break;
 		case CHESS_CLOCK_SERVERLAG:
 			kdDebug(12101) << "This game will use a server clock with lag support.\nIn this option, we will use a server clock, but using a lag meter to compensate for any lag due to Internet connection. Although it's possible to cheat with this option, it is much more difficult then cheating with the client clock.\nBesides, the lag of either connect won't have a so deep effect on the time of the players.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
-			emit signalMessage("Clock: server-side with lag.");
+			emit signalMessage(i18n("Clock: server-side with lag."));
 			break;
 		default:
 			kdDebug(12101) << "Clock type is " << chessInfo.clock_type << " and time is " << chessInfo.seconds[0] << " seconds." << endl;
-			emit signalMessage("Clock: Error - unexpected type.");
+			emit signalMessage(i18n("Clock: Error - unexpected type."));
 			break;
 	}
 }
