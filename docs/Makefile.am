@@ -1,1 +1,1 @@
-SUBDIRS = games spec
+SUBDIRS = games spec ggz-project
