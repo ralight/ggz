@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 				optname = optarg;
 				break;
 			case 'v':
-				printf("Grubby version 0.2\n");
+				printf("Grubby version 0.3\n");
 				exit(0);
 				break;
 			case 'd':
