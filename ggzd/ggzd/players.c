@@ -157,7 +157,9 @@ static void* player_new(void *arg_ptr)
 
 	/* Send server ID */
 	if (es_write_int(sock, MSG_SERVER_ID) < 0 
-	    || es_va_write_string(sock, "GGZ-%s", VERSION) < 0)
+	    || es_va_write_string(sock, "GGZ-%s", VERSION) < 0
+	    || es_write_int(sock, GGZ_CS_PROTO_VERSION) < 0
+	    || es_write_int(sock, MAX_CHAT_LEN) < 0)
 		pthread_exit(NULL);
 
 	pthread_rwlock_wrlock(&players.lock);
