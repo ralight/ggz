@@ -774,7 +774,7 @@ void motd_print_line(gchar *line)
 		g_error("couldn't allocate color");
 	}
 
-	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_motd), "txtMOTD");
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_motd), "text1");
 	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
 
         while(line[lindex] != '\0')
