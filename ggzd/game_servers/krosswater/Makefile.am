@@ -1,14 +1,14 @@
 SUBDIRS = stackpath zoneserver
 
-EXTRA_DIST = hastings.dsc hastings.room
+EXTRA_DIST = krosswater.dsc krosswater.room
 
 ggzdexecmod_PROGRAMS = krosswater_server
 ggzdroom_DATA = krosswater.room
 ggzdgame_DATA = krosswater.dsc
 
-INCLUDES = -I stackpath -I zoneserver
+INCLUDES = -I $(top_srcdir)/game_servers/krosswater/stackpath -I $(top_srcdir)/game_servers/krosswater/zoneserver
 
-krosswater_server_SOURCES = main.cpp krosswater_server.cpp
+krosswater_server_SOURCES = main.cpp krosswater_server.h krosswater_server.cpp
 
 krosswater_server_LDADD = zoneserver/libzoneserver.la stackpath/libstackpath.a -leasysock
 
