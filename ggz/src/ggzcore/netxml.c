@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5433 2003-02-22 05:40:33Z jdorje $
+ * $Id: netxml.c 5434 2003-02-22 06:16:31Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -459,44 +459,72 @@ int _ggzcore_net_send_list_tables(GGZNet *net, const int type, const char global
 	return status;
 }
 
-
+/* Send a <CHAT> tag. */
 int _ggzcore_net_send_chat(GGZNet *net, const GGZChatType type,
 			   const char* player, const char* msg)
 {
 	const char *type_str;
+	const char *chat_text;
+	char *my_text = NULL;
+	int result;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending chat");	
 
-	/* FIXME: We need to handle the case where the chat is longer than
-	   the server's allowed chat size */
-
 	type_str = ggz_chattype_to_string(type);
+
+	/* Truncate a chat that is too long.  It is left up to the caller
+	 * to split the text up into multiple packets (that's outside
+	 * of our scope here). */
+	if (msg && strlen(msg) > net->chat_size) {
+		/* It would be much better to allocate this data on the
+		 * stack, or to modify msg directly, but neither is easily
+		 * feasible - msg is read-only, and allocating on the
+		 * stack means lots of extra code (since chat_size may
+		 * be arbitrarily large). */
+		ggz_error_msg("Truncating too-long chat message.");
+		my_text = ggz_malloc(net->chat_size + 1);
+		strncpy(my_text, msg, net->chat_size);
+		my_text[net->chat_size] = '\0';
+		chat_text = my_text;
+	} else {
+		chat_text = msg;
+	}
 
 	switch (type) {
 	case GGZ_CHAT_NORMAL:
 	case GGZ_CHAT_ANNOUNCE:
 	case GGZ_CHAT_TABLE:
-		return _ggzcore_net_send_line(net,
+		result = _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s'><![CDATA[%s]]></CHAT>",
-			type_str, msg);
+			type_str, chat_text);
+		break;
 	case GGZ_CHAT_BEEP:
-		return _ggzcore_net_send_line(net,
+		result = _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s' TO='%s'/>",
 			type_str, player);
+		break;
 	case GGZ_CHAT_PERSONAL:
-		return _ggzcore_net_send_line(net,
+		result = _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s' TO='%s'><![CDATA[%s]]></CHAT>",
-			type_str, player, msg);
+			type_str, player, chat_text);
+		break;
 	case GGZ_CHAT_UNKNOWN:
+	default:
+		/* Returning an error would mean a *network* error,
+		   which isn't the case. */
+		result = 0;
+		ggz_error_msg("Unknown chat opcode %d specified.", type);
 		break;
 	}
 
 	ggz_error_msg("ggzcore_net_send_chat: "
 		      "unknown chat type given.");
 
-	/* Returning an error would mean a *network* error,
-	   which isn't the case. */
-	return 0;
+	if (my_text) {
+		ggz_free(my_text);
+	}
+
+	return result;
 }
 
 
