@@ -405,7 +405,7 @@ int game_deal_hand(void)
 {
 	seat_t s;
 
-	game.hand_size = 52 / game.num_players;	/* TODO */
+	game.hand_size = cards_deck_size() / game.num_players;
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
 		cards_deal_hand(game.hand_size, &game.seats[s].hand);

@@ -1263,7 +1263,6 @@ void init_game()
 	init_messages();
 
 	/* default values */
-	game.max_hand_length = 52 / game.num_players;
 	game.deck_type = GGZ_DECK_FULL;
 	game.last_trick = 1;
 	game.last_hand = 1;
@@ -1275,6 +1274,9 @@ void init_game()
 	game.funcs->init_game();
 
 	cards_create_deck(game.deck_type);
+	if (game.max_hand_length == 0)
+		/* note: problems if hand_length really _is_ 0 */
+		game.max_hand_length = cards_deck_size() / game.num_players;
 
 	/* set the game message */
 	if (game.name == NULL)
