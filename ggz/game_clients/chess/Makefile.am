@@ -1,10 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
 
 SUBDIRS = libcgc .
 
-INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES)
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) @GTK_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
 

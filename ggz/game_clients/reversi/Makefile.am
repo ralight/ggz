@@ -1,12 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4890 2002-10-12 20:42:19Z jdorje $
+#  $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES)
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) @GTK_CFLAGS@
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

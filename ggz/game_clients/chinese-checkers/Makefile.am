@@ -1,10 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4889 2002-10-12 20:34:26Z jdorje $
+#  $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
 
 SUBDIRS = . pixmaps
 
-INCLUDES = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES)
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+INCLUDES = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) @GTK_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
 
