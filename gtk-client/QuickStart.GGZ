@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.8
+Installation Requirements for the release 0.0.9
 -----------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
@@ -48,11 +48,11 @@ General Installation Guidelines
 Client packages should be installed in this order:
    libggz
    ggz-client-libs
-   xxx-client (where xxx is the user interface the client supports)
+   ggz-xxx-client (where xxx is the user interface the client supports)
 
 You do not need to install all of the client frontends, only the one
 for your preferred environment.  Following this, the game packages
-(xxx-games) and/or individual games may be installed.
+(ggz-xxx-games) and/or individual games may be installed.
 
 For most packages, the installation is as simple as:
 

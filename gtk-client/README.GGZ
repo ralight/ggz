@@ -1,4 +1,4 @@
-The GGZ Gaming Zone - Release 0.0.8
+The GGZ Gaming Zone - Release 0.0.9
 ===================================
 
 Welcome to the GGZ Gaming Zone, a multiuser networked gaming
@@ -9,7 +9,7 @@ interested in assisting with development or in writing a module for
 your favorite game, please let us know at:
 <ggz-dev@mail.ggzgamingzone.org>.
 
-The server currently supports fifteen different game types, including
+The server currently supports eighteen different game types, including
 spades, tic-tac-toe, chess, reversi, and others.  Players can create
 accounts, login, and play games in any one of multiple game rooms.
 Sometimes they can even watch other players.
@@ -19,7 +19,7 @@ other projects.
 The project homepage is located here:
 http://www.ggzgamingzone.org/
 
-An online player ranking system is available here:
+An online player ranking system with tournaments is available here:
 http://rankings.ggzgamingzone.org/
 
 Developers can find more information at:
@@ -54,9 +54,10 @@ flexibility.  The components are:
   chat with friends, move between rooms and launch tables (the actual
   games are distributed separately).  It is our goal to provide
   frontends for all environments.  We currently have a Gtk+ client, a
-  KDE client, a GNOME client, and a simple text-only client.
+  KDE client, a GNOME client, a SDL client, and a simple text-only client.
   These are available as ggz-YYY-client-X.X.X.tar.gz where YYY is one
   of kde, gtk, gnome, or txt, and X.X.X is the version number.
+  The SDL client is part of the ggz-python-X.X.X.tar.gz package.
 
 - GGZ game client modules
 
@@ -66,14 +67,17 @@ flexibility.  The components are:
   module should work with every GGZ client (within reason.  You can't
   expect X-based games to work on a text console, of course).  The
   games are distributed as ggz-YYY-games-X.X.X.tar.gz where YYY is kde
-  or gtk or sdl (no text-specific games yet), and X.X.X is the version
-  number.
+  or gtk or sdl, and X.X.X is the version number.
+  Some SDL games are available in the ggz-python-X.X.X.tar.gz package.
+  One text game is included in the text client.
 
 - Python module
   Game development using the Python programming language is supported
-  through the pyggzmod and pyggzdmod wrappers.
+  through the pyggzmod, pyggzdmod and pyggzcoresimple wrappers.
   This package is distributed as ggz-python-X.X.X.tar.gz, where X.X.X
   is the version number.
+  It also contains a core client and serveral game clients and
+  servers.
 
 - The GGZ server
 
@@ -91,7 +95,8 @@ flexibility.  The components are:
   For the very bleeding edge, some more (not distributed) software
   can be found in the playground CVS module.
   The web pages are also kept in CVS (module www), but not part of the
-  releases.
+  releases. The rankings/tournament web pages will be released in a
+  later version.
 
 - Documentation
   A whole bunch of documentation, including the GGZ hosting guide and
@@ -105,116 +110,6 @@ For more detailed instructions on configuring and installing each
 of GGZ components, please read the INSTALL file in each of the
 respective source directories.  For an overview of the installation
 process, please read the QuickStart.GGZ file.
-
-
-Using ggz-config to manage client game modules
-==============================================
-The ggz-config utility, installed as part of ggz-client-libs, allows
-you to manage the client game module installed on your system.  It
-takes information from a module description file (distributed with
-each game module) and stores it in a global configuration file.  All
-GGZ client frontends share this file to determine what game modules
-are available.
-
-ggz-config also allows client and game developers to automatically
-configure pathnames for executable files, data files and so forth
-without requiring direct access to the ggz-client-libs sources.
-
-
-ggz-config Game Module Install
-------------------------------
-Most game modules will call ggz-config automatically from their
-install scripts.  The syntax for calling ggz-config to install a game
-module manually is:
-
-    ggz-config --install --modfile=<module desc file>
-
-Some additional options may also be specified:
-
-    --force         Allows the installation information to overwrite
-                    existing information of the same game version.
-
-    --destdir       Typically used during package builds, this causes
-                    the installation information to go to a
-                    ggz.modules file in a temporary build
-                    directory, as specified by the DESTDIR environment
-                    variable.
-
-ggz-config Game Module Uninstall 
---------------------------------
-When a game module is removed, ggz-config should be run to remove the
-game's information from the ggz.modules file.  The preferred method of
-removing the module is to use the original module description file
-like this:
-
-
-     ggz-config --remove --modfile=<module desc file>
-
-In the event that the original module description file no longer
-exists, the game module information can be removed manually using the
-following options:
-
-    --modname=NAME      Specify the Name entry for the module
-    --modauthor=AUTHOR  Specify the Author entry for the module
-    --modui=<fe code>   Specify the frontend code for the module
-
-
-
-Basic ggz-config Queries
-------------------------
-The pathname query features can be used to query the pathnames that
-are compiled into the ggz-client-libs on a particular system.  These
-include the following locations:
-
-    --configdir     Query location of configuration directory
-    --gamedir       Query location of game modules directory
-    --datadir       Query location of game data storage directory
-
-Finally, the --version option of ggz-config can be used to check that the
-currently installed version of ggz-client-libs is sufficient for correct
-compilation/installation of the client or game.
-
-ggz-config will print the requested pathname(s) or version to standard
-output where it can easily be parsed by a shell script.
-
-Game Module Description File Format
------------------------------------
-The preferred method of installing a game module's launch information
-into the ggz.modules file is by using a module description file
-(commonly named module.dsc).  The command line method of installing
-information is not yet documented (and may eventually be removed).
-
-A module.dsc file should be formatted as follows:
-
-    # Comment lines are ignored
-    [ModuleInfo]
-    Author = Author Name
-    CommandLine = /pathname/to/executable/ggz.game
-    Frontend = <fe code>
-    Homepage = http://host.domain/location/
-    Name = <game name>
-    ProtocolEngine = <protocol engine>
-    ProrocolVersion = <protocol version>
-    Version = <game module version>
-
-The current <fe code>s which are understood are 'gtk', 'kde' and 'sdl'
-and should describe the native environment for this game.  This field
-is simply to give the various GGZ clients an idea of what toolkit a
-game was compiled with.  All game clients should always work with any
-client frontend (assuming the user has the required GUI environment
-installed).
-
-The <game name> should match the game name as used by the ggzd server.
-The actual displayed name for the game will be set by the server.
-
-The prorocol engine and version must match those of the game module
-server.  This insures that game clients, which may be of different
-versions will properly work with the game server.
-
-The <game module version> is used internally to identify which game
-version to be used.  This allows multiple clients to be installed as
-long as their game version is different - obviously (or perhaps not)
-these would need to have different CommandLine entries.
 
 
 Running

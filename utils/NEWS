@@ -1,4 +1,4 @@
-Announcing the release of The GGZ Gaming Zone v0.0.8!
+Announcing the release of The GGZ Gaming Zone v0.0.9!
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -7,15 +7,19 @@ where they can play their favorite games and chat with other players
 GGZ supports multiple rooms with varying skill levels, and records your
 statistics so you can see how you match up against other players
 (quite a few game support statistics now).
+A web interface allows for tournament, team and rankings tracking.
 
 Features in this release:
 
-- Overhauled project website, integrating player rankings and game information
-- Python package as an alternative to C/C++ game development
-- Chatbot game support and other enhancements
-- New game clients: KCC (Chinese Checkers), Escape/SDL (Escape)
-- New game server: Tuxman
+- Advanced player rankings and statistics
+- Tournaments and game match information in the web interface
+- Detail information about people in the individual gaming rooms
+- More python programs: a core client, a Chinese Chess game, a Go wrapper
+- Chatbot enhancements such as Chess support
 
 See README.GGZ for an overview, or QuickStart.GGZ to get started with the
 GGZ client.
+
+Additional information:
+http://www.ggzgamingzone.org/releases/0.0.9/
 
