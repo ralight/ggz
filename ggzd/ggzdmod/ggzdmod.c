@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2603 2001-10-24 02:30:03Z jdorje $
+ * $Id: ggzdmod.c 2604 2001-10-24 04:20:39Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -48,9 +48,6 @@
 
 /* The number of event handlers there are. */
 #define GGZDMOD_NUM_HANDLERS 6
-
-/* The maximum length of a player name.  Does not include trailing \0. */
-#define MAX_USER_NAME_LEN 16
 
 /* This is the actual structure, but it's only visible internally. */
 typedef struct _GGZdMod {
@@ -286,7 +283,7 @@ static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
 /* Game-side event: launch event received from ggzd */
 static void game_launch(_GGZdMod * ggzdmod)
 {
-	int i, status = 0, bots = 0;
+	int i, status = 0, bots = 0, len;
 #define NUM_BOT_NAMES (sizeof(bot_names)/sizeof(bot_names[0]))
 	char *rand_bot_names[NUM_BOT_NAMES];
 
@@ -310,8 +307,8 @@ static void game_launch(_GGZdMod * ggzdmod)
 			return;
 		ggzdmod->seats[i].fd = -1;
 		if (ggzdmod->seats[i].type == GGZ_SEAT_RESV
-		    && es_read_string(ggzdmod->fd, ggzdmod->seats[i].name,
-				      (MAX_USER_NAME_LEN + 1)))
+		    && es_read_string_alloc(ggzdmod->fd,
+					    &ggzdmod->seats[i].name))
 			return;
 	}
 
@@ -321,9 +318,14 @@ static void game_launch(_GGZdMod * ggzdmod)
 			ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is open", i);
 			break;
 		case GGZ_SEAT_BOT:
-			/* FIXME: we should truncate the name not the AI */
-			snprintf(ggzdmod->seats[i].name,
-				 MAX_USER_NAME_LEN + 1, "%s-AI",
+			if (ggzdmod->seats[i].name) {
+				ggzdmod_log(ggzdmod,
+					    "GGZDMOD: ERROR: non-null name on launch.");
+				free(ggzdmod->seats[i].name);
+			}
+			len = strlen(rand_bot_names[bots]) + 4;
+			ggzdmod->seats[i].name = malloc(len);
+			snprintf(ggzdmod->seats[i].name, len, "%s-AI",
 				 rand_bot_names[bots]);
 			ggzdmod_log(ggzdmod,
 				    "GGZDMOD: Seat %d is a bot named %s", i,
@@ -352,8 +354,7 @@ static void game_join(_GGZdMod * ggzdmod)
 	int seat;
 
 	if (es_read_int(ggzdmod->fd, &seat) < 0 ||
-	    es_read_string(ggzdmod->fd, ggzdmod->seats[seat].name,
-			   MAX_USER_NAME_LEN + 1) < 0
+	    es_read_string_alloc(ggzdmod->fd, &ggzdmod->seats[seat].name) < 0
 	    || es_read_fd(ggzdmod->fd, &ggzdmod->seats[seat].fd) < 0
 	    || es_write_int(ggzdmod->fd, RSP_GAME_JOIN) < 0)
 		return;
@@ -374,9 +375,9 @@ static void game_leave(_GGZdMod * ggzdmod)
 {
 	int seat;
 	char status = 0;
-	char name[MAX_USER_NAME_LEN + 1];
+	char *name;
 
-	if (es_read_string(ggzdmod->fd, name, (MAX_USER_NAME_LEN + 1)) < 0)
+	if (es_read_string_alloc(ggzdmod->fd, &name) < 0)
 		return;
 
 	for (seat = 0; seat < ggzdmod->num_seats; seat++)
@@ -388,6 +389,8 @@ static void game_leave(_GGZdMod * ggzdmod)
 	else {
 		FD_CLR(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
 		ggzdmod->seats[seat].fd = -1;
+		free(ggzdmod->seats[seat].name);
+		ggzdmod->seats[seat].name = NULL;
 		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
 		status = 0;
 		ggzdmod_log(ggzdmod, "Removed %s from seat %d",
