@@ -54,7 +54,6 @@ GtkWidget *mnu_players;
 GtkWidget *dlg_launch;
 gint selected_table;
 gint selected_type;
-struct GameTables tables;
 struct Rooms room_info;
 char *local_conf_fname = NULL;
 

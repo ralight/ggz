@@ -53,6 +53,8 @@ ggz_SOURCES = 	main.c \
 		seats.h \
 		support.c \
 	 	support.h \
+		table.c \
+		table.h \
 		xtext.c \
 		xtext.h
 

@@ -36,11 +36,11 @@
 
 #include <easysock.h>
 
-#include <datatypes.h>
+#include <table.h>
 #include <seats.h>
 
 
-gint seats_open(TableInfo table)
+gint seats_open(Table table)
 {
 	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
@@ -50,7 +50,7 @@ gint seats_open(TableInfo table)
 }
 
 
-gint seats_num(TableInfo table)
+gint seats_num(Table table)
 {
 	gint i;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
@@ -60,7 +60,7 @@ gint seats_num(TableInfo table)
 }
 
 
-gint seats_comp(TableInfo table)
+gint seats_comp(Table table)
 {
 	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
@@ -70,7 +70,7 @@ gint seats_comp(TableInfo table)
 }
 
 
-gint seats_reserved(TableInfo table)
+gint seats_reserved(Table table)
 {
 	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
@@ -80,7 +80,7 @@ gint seats_reserved(TableInfo table)
 }
 
 
-gint seats_human(TableInfo table)
+gint seats_human(Table table)
 {
 	gint i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
@@ -89,4 +89,5 @@ gint seats_human(TableInfo table)
 	
 	return count;
 }
+
 

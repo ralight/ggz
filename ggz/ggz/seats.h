@@ -22,10 +22,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <datatypes.h>
+#include <table.h>
 
-gint seats_open(TableInfo table);
-gint seats_num(TableInfo table);
-gint seats_comp(TableInfo table);
-gint seats_reserved(TableInfo table);
-gint seats_human(TableInfo table);
+gint seats_open(Table table);
+gint seats_num(Table table);
+gint seats_comp(Table table);
+gint seats_reserved(Table table);
+gint seats_human(Table table);
+

@@ -53,6 +53,7 @@
 #include "seats.h"
 #include "xtext.h"
 #include "support.h"
+#include "table.h"
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -66,7 +67,6 @@ extern GtkWidget *dlg_motd;
 extern gint selected_table;
 extern gint selected_type;
 extern GdkColor colors[];
-extern struct GameTables tables;
 extern struct Rooms room_info;
 extern gint new_type;
 
@@ -75,7 +75,6 @@ GtkWidget *detail_window = NULL;
 /* Various local handles */
 static guint sock_handle;
 static void connect_msg(const gchar *, ...);
-static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void handle_list_tables(gint op, gint fd);
 static void handle_list_players(gint op, gint fd);
@@ -511,7 +510,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		if (subop & GGZ_CHAT_M_MESSAGE)
 			es_read_string_alloc(source, &message);
 		else
-			message = g_strdup_printf("");		
+			message = g_strdup("");		
 		connect_msg("[%s] Message: %s\n", opcode_str[op], message);
 		display_chat(subop, name, message);
 		g_free(message);
@@ -625,36 +624,6 @@ void connect_msg(const gchar *format, ...)
 }
 
 
-void add_table_list(TableInfo table)
-{
-	gpointer tmp;
-	gchar *entry[7];
-
-	if (main_win == NULL)
-		return;
-
-	entry[0] = "";
-	entry[1] = g_strdup_printf("%d", table.table_index);
-	entry[2] = g_strdup_printf("%s", 
-				   game_types.info[table.type_index].name);
-	entry[3] = g_strdup_printf("%d", seats_num(table));
-	entry[4] = g_strdup_printf("%d", seats_open(table));
-	entry[5] = g_strdup_printf("%d", seats_human(table));
-	entry[6] = g_strdup_printf("%s", table.desc);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
-
-	gtk_clist_append(GTK_CLIST(tmp), entry);
-	g_free(entry[1]);
-	g_free(entry[2]);
-	g_free(entry[3]);
-	g_free(entry[4]);
-	g_free(entry[5]);
-	g_free(entry[6]);
-
-}
-
-
 gint normal_login(void)
 {
 	es_write_int(connection.sock, REQ_LOGIN);
@@ -685,43 +654,50 @@ gint new_login(void)
 
 static void handle_list_tables(gint op, gint fd)
 {
-	gint i, j,  count, num;
-	GtkObject* tmp;
+	gint i, j, count, seats;
+	gchar name[MAX_USER_NAME_LEN + 1];
+	Table* table;
 
-	selected_table = -1;
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
-	gtk_clist_clear(GTK_CLIST(tmp));
+	/* Clear list of tables since we're getting a new list */
+	table_list_clear();
+
+	/* Read in number of tables in list */
 	es_read_int(fd, &count);
 	connect_msg("[%s] Table List Count %d\n", opcode_str[op], count);
-	for (i = 0; i < count; i++) {
-		es_read_int(fd, &tables.info[i].room);
-		es_read_int(fd, &tables.info[i].table_index);
-		es_read_int(fd, &tables.info[i].type_index);
-		es_read_string(fd, tables.info[i].desc,
-			       MAX_GAME_DESC_LEN);
-		es_read_char(fd, &tables.info[i].playing);
-		es_read_int(fd, &num);
-		
-		for (j = 0; j < num; j++) {
-			es_read_int(fd, &tables.info[i].seats[j]);
-			if (tables.info[i].seats[j] >= 0
-			    || tables.info[i].seats[j] == GGZ_SEAT_RESV) 
-				es_read_string(fd, 
-					       (char*)&tables.info[i].names[j],
-					       MAX_USER_NAME_LEN+1);
-		}
-		for (j = num; j < MAX_TABLE_SIZE; j++)
-			tables.info[i].seats[j] = GGZ_SEAT_NONE;
-		
-		connect_msg("[%s] Room: %d\n", opcode_str[op],tables.info[i].room);
-		connect_msg("[%s] Type: %d\n", opcode_str[op],tables.info[i].type_index);
-		connect_msg("[%s] Playing: %d\n",opcode_str[op], tables.info[i].playing);
-		connect_msg("[%s] Seats: %d\n", opcode_str[op], num);
-		connect_msg("[%s] Desc: %s\n", opcode_str[op], tables.info[i].desc);
 
-		add_table_list(tables.info[i]);
+	for (i = 0; i < count; i++) {
+		/* Allocate a new table */
+		table = (Table*)g_malloc0(sizeof(Table));
+		
+		es_read_int(fd, &table->room);
+		es_read_int(fd, &table->id);
+		es_read_int(fd, &table->type);
+		es_read_string(fd, table->desc, MAX_GAME_DESC_LEN);
+		es_read_char(fd, &table->state);
+		es_read_int(fd, &seats);
+		
+		/* read in seat assignments */
+		for (j = 0; j < seats; j++) {
+			es_read_int(fd, &table->seats[j]);
+			if (table->seats[j] >= 0
+			    || table->seats[j] == GGZ_SEAT_RESV) {
+				es_read_string(fd, name, MAX_USER_NAME_LEN +1);
+				table->names[j] = g_strdup(name);
+			}
+		}
+		for (j = seats; j < MAX_TABLE_SIZE; j++)
+			table->seats[j] = GGZ_SEAT_NONE;
+		
+		connect_msg("[%s] Room: %d\n", opcode_str[op], table->room);
+		connect_msg("[%s] Type: %d\n", opcode_str[op], table->type);
+		connect_msg("[%s] State: %d\n", opcode_str[op], table->state);
+		connect_msg("[%s] Seats: %d\n", opcode_str[op], seats);
+		connect_msg("[%s] Desc: %s\n", opcode_str[op], table->desc);
+		table_list_add(table);
 	}
-	tables.count = count;
+
+	/* Display new list */
+	ggz_tables_display();
 }
 
 
@@ -735,7 +711,7 @@ static void handle_list_players(gint op, gint fd)
 	
 	/* Read in number of players in list */
 	es_read_int(fd, &count);
-	connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
+	connect_msg("[%s] Player List Count %d\n", opcode_str[op], count);
 	
 	for (i = 0; i < count; i++) {
 		es_read_string(fd, name, MAX_USER_NAME_LEN+1);
@@ -781,24 +757,27 @@ static void handle_update_players(gint op, gint fd)
 static void handle_update_tables(gint op, gint fd)
 {
 	guchar subop;
-	guint table, seat, count, i;
+	guint id, seat, i;
 	gchar name[MAX_USER_NAME_LEN + 1];		
-	
-	es_read_char(fd, &subop);
-	es_read_int(fd, &table);
-	switch (subop) {
+	Table* table;
 
+	es_read_char(fd, &subop);
+	es_read_int(fd, &id);
+	switch (subop) {
+		
 	case GGZ_UPDATE_DELETE:
-		connect_msg("[%s] Table %d deleted\n", opcode_str[op], table);
+		connect_msg("[%s] Table %d deleted\n", opcode_str[op], id);
+		table_list_remove(id);
 		break;
 
 	case GGZ_UPDATE_JOIN:
 		es_read_int(fd, &seat);
 		es_read_string(fd, name, MAX_USER_NAME_LEN + 1);
 		connect_msg("[%s] %s joined table %d in seat %d\n", 
-			    opcode_str[op], name, table, seat);
-		player_list_update(name, table, 0);
-		/* Display new list */
+			    opcode_str[op], name, id, seat);
+		player_list_update(name, id, 0);
+		table_list_player_join(id, seat, name);
+		/* Display new player list */
 		ggz_players_display();
 		break;
 			
@@ -806,46 +785,46 @@ static void handle_update_tables(gint op, gint fd)
 		es_read_int(fd, &seat);
 		es_read_string(fd, name, MAX_USER_NAME_LEN + 1);
 		connect_msg("[%s] %s left table %d in seat %d\n", 
-			    opcode_str[op], name, table, seat);
+			    opcode_str[op], name, id, seat);
 		player_list_update(name, -1, 0);
+		table_list_player_leave(id, seat);		
 		/* Display new list */
 		ggz_players_display();
 		break;
 
 	case GGZ_UPDATE_ADD:
-		count = tables.count;
-		es_read_int(fd, &tables.info[count].room);
-		es_read_int(fd, &tables.info[count].type_index);
-		es_read_string(fd, tables.info[count].desc, MAX_GAME_DESC_LEN);
-		es_read_char(fd, &tables.info[count].playing);
+		table = (Table*)g_malloc0(sizeof(Table));
+		table->id = id;
+		es_read_int(fd, &table->room);
+		es_read_int(fd, &table->type);
+		es_read_string(fd, table->desc, MAX_GAME_DESC_LEN);
+		es_read_char(fd, &table->state);
 		es_read_int(fd, &seat);
 		
 		for (i = 0; i < seat; i++) {
-			es_read_int(fd, &tables.info[count].seats[i]);
-			if (tables.info[count].seats[i] >= 0
-			    || tables.info[count].seats[i] == GGZ_SEAT_RESV) 
-				es_read_string(fd, (char*)&tables.info[count].names[i], MAX_USER_NAME_LEN+1);
+			es_read_int(fd, &table->seats[i]);
+			if (table->seats[i] >= 0
+			    || table->seats[i] == GGZ_SEAT_RESV) {
+				es_read_string(fd, name, MAX_USER_NAME_LEN +1);
+				table->names[i] = g_strdup(name);
+			}
 		}
 
 		for (i = seat; i < MAX_TABLE_SIZE; i++)
-			tables.info[count].seats[i] = GGZ_SEAT_NONE;
+			table->seats[i] = GGZ_SEAT_NONE;
 		
-		connect_msg("[%s] New table %d added\n", opcode_str[op], 
-			    table);
-		connect_msg("[%s] Room: %d\n", opcode_str[op],
-			    tables.info[i].room);
-		connect_msg("[%s] Type: %d\n", opcode_str[op],
-			    tables.info[i].type_index);
-		connect_msg("[%s] Playing: %d\n",opcode_str[op], 
-			    tables.info[i].playing);
+		connect_msg("[%s] New table %d added\n", opcode_str[op], id);
+		connect_msg("[%s] Room: %d\n", opcode_str[op], table->room);
+		connect_msg("[%s] Type: %d\n", opcode_str[op], table->type);
+		connect_msg("[%s] State: %d\n", opcode_str[op], table->state);
 		connect_msg("[%s] Seats: %d\n", opcode_str[op], seat);
-		connect_msg("[%s] Desc: %s\n", opcode_str[op], 
-			    tables.info[i].desc);
+		connect_msg("[%s] Desc: %s\n", opcode_str[op], table->desc);
+		table_list_add(table);
 		break;
 	}
 	
-	/* FIXME: Should update lists, not ask for new ones*/
-	ggz_get_tables(NULL, NULL);
+	/* Display new list */
+	ggz_tables_display();
 }
 
 

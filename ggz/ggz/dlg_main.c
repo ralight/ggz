@@ -45,6 +45,8 @@
 #include <ggzrc.h>
 #include <player.h>
 #include <protocols.h>
+#include <seats.h>
+#include <table.h>
 #include <dlg_about.h>
 #include <dlg_error.h>
 #include <dlg_exit.h>
@@ -91,6 +93,7 @@ static void ggz_room_changed(GtkWidget* widget, gpointer data);
 static void ggz_about(GtkWidget* widget, gpointer data);
 GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2);
 static void ggz_players_clist_append(Player* player, gpointer data);
+static void ggz_tables_clist_append(Table* table, gpointer data);
 
 
 void ggz_players_display(void)
@@ -105,6 +108,22 @@ void ggz_players_display(void)
 	gtk_clist_clear(GTK_CLIST(list));
 	
 	player_list_iterate((GFunc)ggz_players_clist_append);
+}
+
+
+void ggz_tables_display(void)
+{
+	GtkWidget* list;
+
+	if (main_win == NULL)
+		return;
+	
+	/* Clear old list */
+	list = lookup_widget(main_win, "table_tree");
+	gtk_clist_clear(GTK_CLIST(list));
+	selected_table = -1;
+	
+	table_list_iterate((GFunc)ggz_tables_clist_append);
 }
 
 
@@ -125,6 +144,31 @@ static void ggz_players_clist_append(Player* player, gpointer data)
 
 	if (player->table != -1)
 		g_free(entry[1]);
+}
+
+
+static void ggz_tables_clist_append(Table* table, gpointer data)
+{
+	GtkWidget* tree;
+	gchar *entry[7];
+
+	entry[0] = "";
+	entry[1] = g_strdup_printf("%d", table->id);
+	entry[2] = g_strdup_printf("%s", game_types.info[table->type].name);
+	entry[3] = g_strdup_printf("%d", seats_num(*table));
+	entry[4] = g_strdup_printf("%d", seats_open(*table));
+	entry[5] = g_strdup_printf("%d", seats_human(*table));
+	entry[6] = g_strdup_printf("%s", table->desc);
+
+	tree = lookup_widget(main_win, "table_tree");
+
+	gtk_clist_append(GTK_CLIST(tree), entry);
+	g_free(entry[1]);
+	g_free(entry[2]);
+	g_free(entry[3]);
+	g_free(entry[4]);
+	g_free(entry[5]);
+	g_free(entry[6]);
 }
 
 

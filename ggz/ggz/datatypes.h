@@ -31,15 +31,13 @@
 /* FIXME: Which of these do we really need ?*/
 #define MAX_USER_NAME_LEN 8
 #define MAX_GAME_NAME_LEN 16
-#define MAX_GAME_VER_LEN  8
 #define MAX_GAME_DESC_LEN 512
+#define MAX_GAME_VER_LEN  8
 #define MAX_GAME_AUTH_LEN 32
 #define MAX_GAME_WEB_LEN  128
 #define MAX_PATH_LEN 256
 #define MAX_GAME_TYPES 5
-#define MAX_TABLES  50
-#define MAX_USERS 500
-#define MAX_TABLE_SIZE 8
+
 
 /* Defines for allowable players */
 #define PLAY_ALLOW_ZERO    0
@@ -116,25 +114,6 @@ typedef struct {
 /* Array of game-types and their mutex */
 struct GameTypes {
 	GameInfo info[MAX_GAME_TYPES];
-	gint count;
-};
-
-
-/* Info about a particular game-table */
-typedef struct {
-	gint room;
-	gint table_index;
-	gint type_index;
-	guchar playing;
-	gint seats[MAX_TABLE_SIZE];
-	gchar names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
-	gchar desc[1024];
-} TableInfo;
-
-
-/* Array of game-tables, their mutex, and a counter */
-struct GameTables {
-	TableInfo info[MAX_TABLES];
 	gint count;
 };
 

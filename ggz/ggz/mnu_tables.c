@@ -117,9 +117,9 @@ void on_options1_activate(GtkButton * button, gpointer user_data)
 
 void on_players1_activate(GtkButton * button, gpointer user_data)
 {
+#if 0	
 	gint i=0;
 	gchar buf[2048];
-	
 	strcpy(buf,_("The selected table's players are as follows:\n\n"));
 	for (i=0;i<MAX_TABLE_SIZE;i++)
 	{
@@ -137,4 +137,5 @@ void on_players1_activate(GtkButton * button, gpointer user_data)
 	}
 
 	msg(0,_("Table Players"),buf);
+#endif
 }

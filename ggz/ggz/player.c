@@ -30,7 +30,7 @@
 #include <player.h>
 
 
-/* List  of players in current room */
+/* List of players in current room */
 static GList* players;
 
 /* Local functions for manipulating player list */
