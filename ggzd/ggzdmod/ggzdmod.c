@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2651 2001-11-04 19:36:16Z jdorje $
+ * $Id: ggzdmod.c 2653 2001-11-04 21:56:47Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -154,8 +154,9 @@ void ggzdmod_free(GGZdMod * mod)
 		return;
 	}
 	
-	/* FIXME: disconnect if we're connected. */
-
+	if (ggzdmod->fd != -1)
+		(void)ggzdmod_disconnect(ggzdmod);
+	
 	/* Free any fields the object contains */
 	ggzdmod->type = -1;
 	if (ggzdmod->seats)
@@ -775,16 +776,15 @@ int ggzdmod_connect(GGZdMod * mod)
 		return -1;
 	}
 
-	/* For the ggz side, we fork the game and then send the launch message */
 	if (ggzdmod->type == GGZDMOD_GGZ) {
+		/* For the ggz side, we fork the game and then send the launch message */
 		if (game_fork(ggzdmod) < 0 || send_game_launch(ggzdmod) < 0) {
+			/* FIXME: this might result in a forked but unused table. */
 			return -1;
-		}
-		else 
+		} else
 			return 0;
-	}
-	/* For client the game side we setup the fd */
-	else {
+	} else {
+		/* For the game side we setup the fd */
 		ggzdmod->fd = 3;
 		
 		if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
@@ -801,22 +801,22 @@ int ggzdmod_disconnect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	int response, p;
-	if (!CHECK_GGZDMOD(ggzdmod)) {
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd == -1) {
 		return -1;
 	}
 
-	/* For the ggz side, we kill the game server and close the socket */
 	if (ggzdmod->type == GGZDMOD_GGZ) {
+		/* For the ggz side, we kill the game server and close the socket */
+		
 		/* Make sure game server is dead */
 		if (ggzdmod->pid > 0)
 			kill(ggzdmod->pid, SIGINT);
 		ggzdmod->pid = -1;
-		close(ggzdmod->fd);
+		
 		/* FIXME: should we wait() to get an exit status?? */
 		/* FIXME: what other cleanups should we do? */
-	}
-	/* For client the game side we send a game over message */
-	else {
+	} else {
+		/* For client the game side we send a game over message */
 		
 		/* first send a gameover message (request) */
 		if (es_write_int(ggzdmod->fd, REQ_GAME_OVER) < 0)
@@ -835,21 +835,25 @@ int ggzdmod_disconnect(GGZdMod * mod)
 		}
 		
 		ggzdmod_log(ggzdmod, "GGZDMOD: Disconnected from GGZ server.");
-		
-		/* close all file descriptors */
-		for (p = 0; p < ggzdmod->num_seats; p++)
-			if (ggzdmod->seats[p].fd != -1) {
-				close(ggzdmod->seats[p].fd);
-				ggzdmod->seats[p].fd = -1;
-			}
-		
-		/* Clean up the ggzdmod object.  In theory it could now reconnect for 
-		   a new game. */
-		close(ggzdmod->fd);
-		ggzdmod->fd = -1;
-		free(ggzdmod->seats);
-		ggzdmod->seats = NULL;
+
 	}
+	
+	/* FIXME: will this work for ggzd?  It uses a different thread to
+	   monitor each player FD, so it might be Bad to close them without
+	   checking with the other threads.  --JDS */
+			
+	/* close all file descriptors */
+	for (p = 0; p < ggzdmod->num_seats; p++)
+		if (ggzdmod->seats[p].fd != -1) {
+			close(ggzdmod->seats[p].fd);
+		}
+	free(ggzdmod->seats);
+	ggzdmod->seats = NULL;
+		
+	/* Clean up the ggzdmod object.  In theory it could now reconnect for
+	   a new game. */
+	close(ggzdmod->fd);
+	ggzdmod->fd = -1;
 
 	return 0;
 }
