@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: ggzdmod.c 4432 2002-09-07 09:13:46Z dr_maux $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -642,7 +642,8 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 
 	/* If there is already a spectator, return error */
 	oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
-	if (oldspectator.name)
+	if (((oldspectator.name) && (spectator->name))
+	|| ((!oldspectator.name) && (!spectator->name)))
 		return -1;
 
 	if (ggzdmod->type == GGZDMOD_GAME) {
@@ -1474,7 +1475,7 @@ void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name)
 
 	status = 0;
 	spectator = *(GGZSpectator*)ggz_list_get_data(entry);
-	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
+	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from spectator seat %d",
 	           spectator.name, spectator.num);
 
 	/* Copy seat to old_seat. */

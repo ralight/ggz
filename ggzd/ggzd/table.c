@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: table.c 4432 2002-09-07 09:13:46Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -736,13 +736,14 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
-	char status, empty = 0;
+	char status;
 	int spectator;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to spectator leave", 
 		table->index, table->room);
 
-	status = *(char*)data;
+	if(data) status = *(char*)data;
+	else status = 0;
 
 	/* Error: we didn't request a leave! */
 	if (!table->transit)
@@ -758,16 +759,7 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 			"%s left spectator %d at table %d of room %d", name, spectator,
 			table->index, table->room);
 		
-		pthread_rwlock_wrlock(&table->lock);
-		
-		/* No spectators doesn't mean table is empty */
-		/*if (!spectators_count(table)) {
-			dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
-				table->index, table->room);
-			empty = 1;
-		}*/
-		pthread_rwlock_unlock(&table->lock);
-		table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_LEAVE, name, 
+		table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_LEAVE, name,
 					    spectator);
 	}
 
@@ -780,12 +772,6 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 	table->transit = 0;
 	table->transit_name = NULL;
 	table->transit_seat = -1;
-
-	/* If the game has set the KillWhenEmpty option, we kill it
-	   when the last player leaves.  If not, we rely on the game
-	   to halt itself. */
-	if (empty && game_types[table->type].kill_when_empty)
-		(void)ggzdmod_disconnect(ggzdmod);
 }
 
 
