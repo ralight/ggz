@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5839 2004-02-08 05:09:25Z jdorje $
+ * $Id: easysock.c 5840 2004-02-08 05:50:10Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -140,7 +140,11 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 
 	case GGZ_SOCK_SERVER:
 		if(server) {
+#ifdef HAVE_INET_PTON
 			inet_pton(AF_INET, server, &name.sin_addr.s_addr);
+#else
+			name.sin_addr.s_addr = inet_addr(server);
+#endif
 		} else {
 			name.sin_addr.s_addr = htonl(INADDR_ANY);
 		}

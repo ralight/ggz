@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5839 2004-02-08 05:09:25Z jdorje $
+dnl $Id: configure.ac 5840 2004-02-08 05:50:10Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -150,7 +150,7 @@ AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
 AC_CHECK_FUNCS([alarm gethostbyname getpagesize memmove memset mkdir socket \
                 stat strcasecmp strerror strstr], [],
                [AC_MSG_ERROR([cannot find required function])])
-AC_CHECK_FUNCS([strtok strtok_r])
+AC_CHECK_FUNCS([inet_pton strtok strtok_r])
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
