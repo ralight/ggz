@@ -3,7 +3,7 @@
 #define MAX_BOARD_HEIGHT 25
 
 /* Exposed globals */
-extern GtkWidget *main_win;
+extern GtkWidget *main_win, *opt_dialog;
 extern char game_state;
 
 struct game_t {
@@ -17,3 +17,7 @@ struct game_t {
 	int move;
 };
 extern struct game_t game;
+
+/* Exposed functions */
+extern int send_options(void);
+extern void game_init(void);

@@ -15,20 +15,20 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "interface.h"
+#include "dlg_main.h"
+#include "dlg_opt.h"
 #include "support.h"
 #include "main.h"
 #include "game.h"
 #include "easysock.h"
 
 GtkWidget *main_win;
+GtkWidget *opt_dialog;
 struct game_t game;
 
-static void game_init(void);
-static int send_options(void);
 static int request_options(void);
 static void ggz_connect(void);
-void game_handle_io(gpointer, gint, GdkInputCondition);
+static void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
 static int get_players(void);
 static int get_options(void);
@@ -39,24 +39,15 @@ int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
 
-	main_win = create_window();
-	gtk_widget_show(main_win);
-
-	game_init();
 	ggz_connect();
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	if(argc > 1) {
-		/* Get Options (board size) from a dialog */
-		board_width = 5;
-		board_height = 5;
-		if(send_options() < 0)
-			exit(1);
-	}
-
-	board_init(0, 0);
-	if(request_options() < 0)
-		exit(1);
+		/* Get options from a dialog */
+		opt_dialog = create_dlg_opt();
+		gtk_widget_show(opt_dialog);
+	} else
+		game_init();
 
 	gtk_main();
 	return 0;
@@ -67,7 +58,7 @@ char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
 		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
 		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_RSP_OPTIONS" };
 
-void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
 
@@ -135,6 +126,15 @@ void game_init(void)
 		for(j=0; j<MAX_BOARD_HEIGHT; j++)
 			horz_board[i][j] = 0;
 	game.state = DOTS_STATE_INIT;
+
+	/* Setup the main board now */
+	main_win = create_dlg_main();
+	gtk_widget_show(main_win);
+	board_init(0, 0);
+
+	/* Get options from the server */
+	if(request_options() < 0)
+		exit(1);
 }
 
 
@@ -148,7 +148,7 @@ int send_options(void)
 }
 
 
-int get_options(void)
+static int get_options(void)
 {
 	if(es_read_char(game.fd, &board_width) < 0
 	   || es_read_char(game.fd, &board_height) < 0)
@@ -157,7 +157,7 @@ int get_options(void)
 }
 
 
-int request_options(void)
+static int request_options(void)
 {
 	if(es_write_int(game.fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
@@ -165,7 +165,7 @@ int request_options(void)
 }
 
 
-void ggz_connect(void)
+static void ggz_connect(void)
 {
 	char fd_name[30];
 	struct sockaddr_un addr;
@@ -185,7 +185,7 @@ void ggz_connect(void)
 }
 
 
-int get_seat(void)
+static int get_seat(void)
 {
 	if(es_read_int(game.fd, &game.me) < 0)
 		return -1;
@@ -194,7 +194,7 @@ int get_seat(void)
 }
 
 
-int get_players(void)
+static int get_players(void)
 {
 	int i;
 
@@ -209,7 +209,7 @@ int get_players(void)
 }
 
 
-int get_move_status(void)
+static int get_move_status(void)
 {
 	char status;
 
@@ -222,7 +222,7 @@ int get_move_status(void)
 }
 
 
-int get_gameover_status(void)
+static int get_gameover_status(void)
 {
 	char status;
 	gchar *tstr;

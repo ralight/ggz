@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
-#include "callbacks.h"
-#include "interface.h"
+#include "cb_main.h"
+#include "dlg_main.h"
 #include "support.h"
 #include "main.h"
 #include "game.h"

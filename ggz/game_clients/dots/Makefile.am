@@ -11,8 +11,10 @@ bin_PROGRAMS = ggz.dots
 ggz_dots_SOURCES = \
 	main.c \
 	support.c support.h \
-	interface.c interface.h \
-	callbacks.c callbacks.h \
+	dlg_main.c dlg_main.h \
+	cb_main.c cb_main.h \
+	dlg_opt.c dlg_opt.h \
+	cb_opt.c cb_opt.h \
 	game.c game.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@

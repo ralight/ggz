@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#include "interface.h"
+#include "dlg_main.h"
 #include "support.h"
 #include "easysock.h"
 #include "main.h"
