@@ -32,6 +32,9 @@
 /* Global game variables */
 struct ttt_game_t ttt_game;
 
+/* Local utility functions */
+static void game_rotate_board(char b[9]);
+
 
 /* Setup game state and board */
 void game_init(void)
@@ -226,7 +229,7 @@ int game_move(void)
 	int move, num = ttt_game.turn;
 	
 	if (ggz_seats[num].assign == GGZ_SEAT_BOT) {
-		move = game_bot_move();
+		move = game_bot_move(num);
 		game_update(TTT_EVENT_MOVE, &move);
 	}
 	else
@@ -279,15 +282,183 @@ int game_handle_move(int num, int* move)
 
 
 /* Do bot moves */
-int game_bot_move(void)
+int game_bot_move(int me)
 {
-	int i;
-	
-	for (i = 0; i < 9; i++)
-		if (ttt_game.board[i] == -1)
-			return i;
+	int i, move = -1;
+	int him = 1 - me;
+	char board[9];
 
-	return -1;
+	/* Local copy of the boaard to rotate*/
+	memcpy(board, ttt_game.board, 9);
+	
+	/* Four possible board rotations to check */
+	ggz_debug("Checking for win");
+	for (i = 3; i >= 0; i--) {
+		
+		game_rotate_board(board);
+		
+		/* If three squares of interest filled, try again */
+		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
+			continue;
+		
+		/* 5 patterns to check for win */
+		if (board[0] == -1 && board[1] == me && board[2] == me) {
+			move = 0;
+			break;
+		}
+			
+		if (board[0] == -1 && board[3] == me && board[6] == me) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[4] == me && board[8] == me) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == me && board[1] == -1 && board[2] == me) {
+			move = 1;
+			break;
+		}
+
+		if (board[1] == -1 && board[4] == me && board[7] == me) {
+			move = 1;
+			break;
+		}
+
+		ggz_debug("Nowhere to win in rotation %d", i);
+	}
+	
+	/* We found a move.  Now "unrotate" it */
+	if (move != -1) {
+		while (i-- > 0) {
+			ggz_debug("Rotating move: %d ", move);
+			move = 2 + 3 * (move % 3) - move / 3;
+			ggz_debug("...into move: %d ", move);
+		}
+		return move;
+	}
+		
+	ggz_debug("Checking for immediate block");
+	for (i = 3; i >= 0; i--) {
+
+		game_rotate_board(board);
+
+		/* If three squares of interest filled, try again */
+		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
+			continue;
+		
+		/* 5 patterns to check for immediate block */
+		if (board[0] == -1 && board[1] == him && board[2] == him) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[3] == him && board[6] == him) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[4] == him && board[8] == him) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == him && board[1] == -1 && board[2] == him) {
+			move = 1;
+			break;
+		}
+		
+		if (board[1] == -1 && board[4] == him && board[7] == him) {
+			move = 1;
+			break;
+		}
+
+		ggz_debug("No immediate block in rotation %d", i);
+	}
+
+	/* FIXME: If not playing perfect, move here */
+	/* We found a move.  Now "unrotate" it */
+	if (move != -1) {
+		while (i-- > 0) {
+			ggz_debug("Rotating move: %d ", move);
+			move = 2 + 3 * (move % 3) - move / 3;
+			ggz_debug("...into move: %d ", move);
+		}
+		return move;
+	}
+	
+	ggz_debug("Checking for future block");
+	for (i = 3; i >= 0; i--) {
+
+		game_rotate_board(board);
+
+		/* If three squares of interest filled, try again */
+		if (board[0] != -1 && board[1] != -1 && board[3] != -1)
+			continue;
+		
+		/* 6 patterns to check for future block */
+		if (board[0] == -1 && board[1] == -1 && board[2] == him
+		    && board[3] == -1 && board[4] == me && board[5] == -1
+		    && board[6] == him && board[7] == -1 && board[8] == -1) {
+			move = 1;
+			break;
+		}
+
+		if (board[0] == -1 && board[1] == him && board[2] == -1
+		    && board[3] == him && board[4] == me && board[6] == -1) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[1] == -1 && board[2] == him
+		    && board[3] == him && board[4] == me && board[6] == -1) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[1] == -1 && board[2] == him
+		    && board[3] == -1 && board[4] == me && board[6] == him) {
+			move = 0;
+			break;
+		}
+
+		if (board[0] == -1 && board[4] == him && board[8] == -1) {
+			move = 0;
+			break;
+		}
+
+		if (board[1] == -1 && board[4] == him && board[7] == -1) {
+			move = 1;
+			break;
+		}
+
+		
+		ggz_debug("No future block in rotation %d", i);
+	}
+	
+	/* We found a move.  Now "unrotate" it */
+	if (move != -1) {
+		while (i-- > 0) {
+			ggz_debug("Rotating move: %d ", move);
+			move = 2 + 3 * (move % 3) - move / 3;
+			ggz_debug("...into move: %d ", move);
+		}
+	} else {
+		/* If we didn't match a pattern, just pick something*/
+		if (board[4] == -1) {
+			move = 4;
+		}
+		else
+			for (i = 0; i < 9; i++)
+				if (board[i] == -1) {
+					move = i;
+					break;
+				}
+	}
+
+	return move;
 }
 
 
@@ -436,5 +607,13 @@ int game_update(int event, void* data)
 }
 
 
-
-
+static void game_rotate_board(char b[9])
+{
+	int i, j;
+	char tmp[9];
+	
+	memcpy(tmp, b, 9);
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++)
+			b[3*i+j] = tmp[3*(2-j)+i];
+}

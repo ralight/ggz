@@ -77,7 +77,7 @@ int game_send_gameover(char winner);
 int game_move(void);
 int game_req_move(int num);
 int game_handle_move(int num, int* move);
-int game_bot_move(void);
+int game_bot_move(int num);
 
 char game_check_move(int num, int move);
 char game_check_win(void);
