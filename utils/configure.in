@@ -117,5 +117,5 @@ AC_SUBST(LDADD)
 AC_SUBST(grubby_LIBS)
 AC_SUBST(SUBDIRS)
 
-AC_OUTPUT(Makefile grubby/Makefile agrue/Makefile)
+AC_OUTPUT(Makefile grubby/Makefile agrue/Makefile man/Makefile)
 
