@@ -289,17 +289,9 @@ void _ggzcore_table_init(struct _GGZTable *table,
 		table->seats[i].name =  NULL;
 	}
 
-	table->num_spectator_seats = gametype->spectators_allowed ? 8 : 0;
-	ggz_debug(GGZCORE_DBG_TABLE, "Allocating %d spectator seats",
-		  table->num_spectator_seats);
-	if (table->num_spectator_seats)
-		table->spectator_seats =
-			ggz_malloc(table->num_spectator_seats * 
-				   sizeof(struct _GGZSeat));
-	for (i = 0; i < table->num_spectator_seats; i++) {
-		table->spectator_seats[i].index = i;
-		table->spectator_seats[i].name = NULL;
-	}
+	/* Allocated on demand later */
+	table->num_spectator_seats = 0;
+	table->spectator_seats = NULL;
 }
 
 
@@ -414,9 +406,24 @@ void _ggzcore_table_set_spectator_seat(struct _GGZTable *table,
 	struct _GGZSeat oldseat;
 
 	if (seat->index >= table->num_spectator_seats) {
+		int new = table->num_spectator_seats, i;
+
+		/* Grow the array geometrically to keep a constant ammortized
+		   overhead. */
+		while (seat->index >= new)
+			new = new ? new * 2 : 1;
+
 		ggz_debug(GGZCORE_DBG_TABLE,
-			  "Attempt to set spectator seat %d on table with only"
-			  "%d seats.", seat->index, table->num_seats);
+			  "Increasing number of spectator seats to %d.", new);
+
+		table->spectator_seats =
+			ggz_realloc(table->spectator_seats,
+				    new * sizeof(*table->spectator_seats));
+		for (i = table->num_spectator_seats + 1; i < new; i++) {
+			table->spectator_seats[i].index = i;
+			table->spectator_seats[i].name = NULL;
+		}
+		table->num_spectator_seats = new;
 	}
 
 	oldseat = table->spectator_seats[seat->index];
