@@ -36,6 +36,7 @@
 /* an extern should be listed here for each game function set you create
  * this is preferable to including the whole <game>.h file. */
 extern struct game_function_pointers suaro_funcs;
+extern struct game_function_pointers spades_funcs;
 
 /* These names are sent to the client when options are requested.  They're different
  * from what's sent to the client as the game name later.  They MUST
@@ -43,7 +44,7 @@ extern struct game_function_pointers suaro_funcs;
  * text name should be all lower-case and without any whitespace. */
 struct game_info game_data[] = {
 		{"suaro", &suaro_funcs},
-		{"spades", &game_funcs},
+		{"spades", &spades_funcs},
 		{"hearts", &game_funcs},
 		{"bridge", &game_funcs},
 		{"lapocha", &game_funcs},

@@ -190,24 +190,6 @@ void game_init_game()
 			/* TODO: for now we won't use bridge scoring */
 			BRIDGE.declarer = -1;
 			break;
-		case GGZ_GAME_SPADES:
-			game.specific = alloc(sizeof(spades_game_t));
-			set_num_seats(4);
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			/* most possible bids for spades: 0-13 + Nil = 15
-			 * longest possible bid: "Nil" = length 4 */
-			game.max_bid_choices = 15;
-			game.max_bid_length = 4;
-			game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
-			game.target_score = 500;	/* adjustable by options */	
-			GSPADES.nil_value = 100;
-			game.trump = SPADES;
-			game.name = "Spades";
-			break;
 		case GGZ_GAME_HEARTS:
 			game.specific = alloc(sizeof(hearts_game_t));
 			set_num_seats(game.num_players);
@@ -243,35 +225,6 @@ int game_get_options()
 		return -1;
 	}
 	switch (game.which_game) {
-		case GGZ_GAME_SPADES:
-			/* three options:
-			 *   target score: 100, 250, 500, 1000
-			 *   nil value: 50, 100
-			 *   minimum team bid: 0, 1, 2, 3, 4
-			 */
-			game.num_options = 3;
-			if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-				es_write_int(fd, game.num_options) < 0 || /* number of options */
-				es_write_int(fd, 2) < 0 || /* first option: 2 choices */
-				es_write_int(fd, 1) < 0 || /* first option: default is 1 */
-				es_write_string(fd, "Nil is worth 50") < 0 ||
-				es_write_string(fd, "Nil is worth 100") < 0 ||
-				es_write_int(fd, 4) < 0 || /* second option: 4 choices */
-				es_write_int(fd, 2) < 0 || /* second option: default is 2 */
-				es_write_string(fd, "Game to 100") < 0 ||
-				es_write_string(fd, "Game to 250") < 0 ||
-				es_write_string(fd, "Game to 500") < 0 ||
-				es_write_string(fd, "Game to 1000") < 0 ||
-				es_write_int(fd, 5) < 0 || /* third option: 4 choices */
-				es_write_int(fd, 3) < 0 || /* third option: default is 3 */
-				es_write_string(fd, "Minimum bid 0") < 0 ||
-				es_write_string(fd, "Minimum bid 1") < 0 ||
-				es_write_string(fd, "Minimum bid 2") < 0 ||
-				es_write_string(fd, "Minimum bid 3") < 0 ||
-				es_write_string(fd, "Minimum bid 4") < 0
-			   )
-				return -1;
-			break;
 		default:
 			game.options_initted = 1; /* no options */
 			break;
@@ -288,25 +241,6 @@ int game_get_options()
 void game_handle_options(int *options)
 {
 	switch (game.which_game) {
-		case GGZ_GAME_SPADES:
-			switch (options[0]) {
-				case 0: GSPADES.nil_value = 50;  break;
-				case 1: GSPADES.nil_value = 100; break;
-				default: break;
-			}
-			switch (options[1]) {
-				case 0: game.target_score = 100; break;
-				case 1: game.target_score = 250; break;
-				case 2: game.target_score = 500; break;
-				case 3: game.target_score = 1000; break;
-				default: break;
-			}
-			if (options[2] >= 0) GSPADES.minimum_team_bid = options[2];
-			set_global_message("Options",
-				"Nil is worth %d points.\nThe first team to %d points wins.",
-				GSPADES.nil_value, game.target_score);
-			game.options_initted = 1;
-			break;
 		default:
 			ggz_debug("SERVER/CLIENT bug: game_handle_options called incorrectly.");
 			break;
@@ -373,7 +307,6 @@ int game_handle_gameover(void)
 			if (winner_cnt > 0) break;
 			/* else fall through */
 		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_SPADES:
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, just take the highest score(s)
@@ -435,7 +368,6 @@ void game_start_bidding()
 			/* there is no bidding phase */
 			set_game_state( WH_STATE_FIRST_TRICK );
 			break;
-		case GGZ_GAME_SPADES:
 		default:
 			/* all players bid once */
 			game.bid_total = game.num_players;
@@ -457,31 +389,6 @@ int game_get_bid()
 	bid.bid = 0;
 
 	switch (game.which_game) {
-		case GGZ_GAME_SPADES:
-			{
-			int i, index = 0;
-			bid_t partners_bid = game.players[ (game.next_bid + 2) % 4].bid;
-			for (i = 0; i <= game.hand_size; i++) {
-				/* the second bidder on each team must make sure the minimum bid count is met */
-				if (game.bid_count >= 2 &&
-				    partners_bid.sbid.val + i < GSPADES.minimum_team_bid)
-					continue;
-				bid.sbid.val = i;
-				game.bid_choices[index] = bid;
-				index++;
-			}
-			
-			/* "Nil" bid */
-			bid.bid = 0;
-			bid.sbid.spec = SPADES_NIL;
-			game.bid_choices[index] = bid;
-			index++;
-
-			/* TODO: other specialty bids */
-
-			status = req_bid(game.next_bid, index, NULL);
-			}
-			break;
 		case GGZ_GAME_EUCHRE:
 			if (game.bid_count < 4) {
 				/* first four bids: either "pass" or "take" */
@@ -616,8 +523,6 @@ int game_handle_bid(bid_t bid)
 					game.trump = -1;
 			}
 			break;
-		case GGZ_GAME_SPADES:
-			break; /* no special handling necessary */
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 0) {
 				game.trump = bid.bid;
@@ -626,8 +531,7 @@ int game_handle_bid(bid_t bid)
 				LAPOCHA.bid_sum += bid.bid;
 			break;	
 		default:
-			ggz_debug("SERVER Not Implemented: game_handle_bid.");
- 			break;
+ 			break; /* no special handling necessary */
 	}
 
 	/* the bid message is set automatically */
@@ -680,7 +584,6 @@ void game_next_bid()
 				break;
 			}
 			goto normal_order;
-		case GGZ_GAME_SPADES:
 		default:
 normal_order:
 			if (game.bid_count == 0)
@@ -754,8 +657,6 @@ void game_start_playing(void)
 				game.leader = (game.dealer + 1) % game.num_players;
 			}
 			break;
-		case GGZ_GAME_SPADES:
-			/* fall through */
 		default:
 			game.leader = (game.dealer + 1) % game.num_players;
 			break;
@@ -926,7 +827,6 @@ int game_test_for_gameover()
 		case GGZ_GAME_BRIDGE:
 			ggz_debug("FIXME: bridge scoring not implemented.");
 			return 0;
-		case GGZ_GAME_SPADES:
 		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_EUCHRE:
 		default:
@@ -975,7 +875,6 @@ int game_deal_hand(void)
 				face_names[(int)EUCHRE.up_card.face], suit_names[(int)EUCHRE.up_card.suit]);
 			game.hand_size = 5;
 			goto regular_deal;
-		case GGZ_GAME_SPADES:
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_HEARTS:
 		default:
@@ -1035,9 +934,6 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			if (bid.sbid.spec == BRIDGE_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
 			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 			break;
-		case GGZ_GAME_SPADES:
-			if (bid.sbid.spec == SPADES_NIL) return snprintf(buf, buf_len, "Nil");
-			return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
 		case GGZ_GAME_LAPOCHA:
 			return snprintf(buf, buf_len, "%d", (int)bid.bid);
 		case GGZ_GAME_HEARTS:
@@ -1120,23 +1016,6 @@ void game_set_player_message(player_t p)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Contract: %d\n", (int)game.players[p].bid.bid);
 			}
 			REGULAR_TRICKS_MESSAGE;
-			REGULAR_BID_MESSAGE;
-			REGULAR_ACTION_MESSAGES;
-			break;
-		case GGZ_GAME_SPADES:
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d (%d)\n", game.players[p].score, GSPADES.bags[p%2]);
-			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
-				/* we show both the individual and team contract */
-				char bid_text[game.max_bid_length];
-				int contract = game.players[p].bid.sbid.val + game.players[(p+2)%4].bid.sbid.val;
-				game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-				if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s (%d)\n", bid_text, contract);
-			}
-			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) {
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d (%d)\n",
-					game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
-
-			}
 			REGULAR_BID_MESSAGE;
 			REGULAR_ACTION_MESSAGES;
 			break;
@@ -1246,10 +1125,9 @@ void game_end_trick(void)
 	/* update teammate's info, if necessary */
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_SPADES:
 		case GGZ_GAME_EUCHRE:
 			/* update teammate's info as well */
-			game_set_player_message((hi_player+2)%4);
+			game_set_player_message((game.winner+2)%4);
 			break;
 		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_LAPOCHA:
@@ -1362,35 +1240,6 @@ void game_end_hand(void)
 			game.players[winning_team+2].score += 1;
 			EUCHRE.maker = -1;
 			game.trump = -1;
-			}
-			break;
-		case GGZ_GAME_SPADES:
-			for (p=0; p<2; p++) {
-				int tricks, bid, score;
-				bid = game.players[p].bid.sbid.val + game.players[p+2].bid.sbid.val;
-				tricks = game.players[p].tricks + game.players[p+2].tricks;
-				if (tricks >= bid) {
-					int bags = tricks-bid;
-					score = 10 * bid + bags;
-					GSPADES.bags[p] += bags;
-					if (GSPADES.bags[p] >= 10) {
-						/* you lose 100 points for 10 overtricks */
-						GSPADES.bags[p] -= 10;
-						score -= 100;
-					}
-				} else
-					score = -10 * bid;
-				ggz_debug("Team %d bid %d, took %d, earned %d.", (int)p, bid, tricks, score);
-				game.players[p].score += score;
-				game.players[p+2].score += score;
-			}
-			for (p=0; p<4; p++) {
-				if (game.players[p].bid.sbid.spec == SPADES_NIL) {
-					int score = (game.players[p].tricks == 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-					ggz_debug("Player %d/%s earned %d for going nil.", (int)p, ggz_seats[p].name, score);
-					game.players[p].score += score;
-					game.players[(p+2)%4].score += score;
-				}
 			}
 			break;
 		case GGZ_GAME_HEARTS:

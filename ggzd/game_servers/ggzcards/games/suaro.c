@@ -24,11 +24,12 @@
 
 #include <easysock.h>
 
-#include "suaro.h"
 #include "../games.h"
 #include "../game.h"
 #include "../ggz.h"
 #include "../message.h"
+
+#include "suaro.h"
 
 static void suaro_init_game();
 static int suaro_get_options();

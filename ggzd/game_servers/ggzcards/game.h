@@ -36,20 +36,6 @@ typedef struct lapocha_game_t {
 	int bid_sum;		/* what the sum of the bids is */
 } lapocha_game_t;
 
-/* ---------- SPADES ---------- */
-
-/* special bids */
-#define SPADES_NIL 1
-
-#define GSPADES ( *(spades_game_t *)(game.specific) )
-typedef struct spades_game_t {
-	/* options */
-	int nil_value;		/* generally 50 or 100 */
-	int minimum_team_bid;	/* the minimum bid by one team */
-
-	int bags[2];
-} spades_game_t;
-
 /* ---------- HEARTS ---------- */
 
 #define GHEARTS ( *(hearts_game_t *)(game.specific) )
