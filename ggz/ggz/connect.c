@@ -57,6 +57,7 @@ extern struct Users users;
 extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
+extern GtkWidget *mnu_tables;
 extern GtkWidget *dlg_motd;
 extern gint selected_table;
 extern gint selected_type;
@@ -211,6 +212,22 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 				break;
 			}
 		}
+
+	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+
 		break;
 		
 	case RSP_TABLE_LEAVE:
@@ -346,6 +363,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_MOTD:
 		if (dlg_motd == NULL)
 			dlg_motd = create_dlgMOTD();
+        	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "motd");
+	        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 		es_read_int(source, &count);
 		connect_msg("[%s] MOTD line count %d\n", opcode_str[op], count);
@@ -359,6 +378,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case MSG_MOTD:
 		if (dlg_motd == NULL)
 			dlg_motd = create_dlgMOTD();
+        	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "motd");
+	        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 		es_read_int(source, &count);
 		connect_msg("[%s] MOTD line count %d\n", opcode_str[op], count);

@@ -7,9 +7,10 @@
 
 #include "dlg_motd.h"
 
-
 /* Global GtkWidget for this dialog */
 GtkWidget *dlg_motd;
+
+extern GtkWidget *main_win;
 
 /* Local callbacks which no other file will call */
 void motd_ok(GtkButton * button, gpointer user_data);
@@ -76,8 +77,12 @@ create_dlgMOTD (void)
  
 void motd_ok(GtkButton * button, gpointer user_data)
 {
+	GtkWidget *tmp;
+
         gtk_widget_destroy(dlg_motd);
         dlg_motd = NULL;
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "motd");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 }
  
 

@@ -47,6 +47,8 @@ extern GtkWidget *dlg_launch;
 extern struct ConnectInfo connection;
 extern struct Game game;
 extern struct GameTypes game_types;
+extern GtkWidget *main_win;
+extern GtkWidget *mnu_tables;
 
 /* Local data */
 static guint game_handle;
@@ -222,11 +224,26 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 
 int game_over(void)
 {
+	GtkWidget *tmp;
+
 	dbg_msg("Game is over (msg from client)");
 	connection.playing = FALSE;
 	close(game.fd);
 	gdk_input_remove(game_handle);
 	kill(game.pid, SIGINT);
+
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
 	return 0;
 }
