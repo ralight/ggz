@@ -41,7 +41,7 @@
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
+  <auto_shrink>True</auto_shrink>
 
   <widget>
     <class>GtkVBox</class>
@@ -240,7 +240,6 @@
 	      <widget>
 		<class>GtkHButtonBox</class>
 		<name>profile_button_box</name>
-		<width>150</width>
 		<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
 		<spacing>30</spacing>
 		<child_min_width>85</child_min_width>
@@ -249,14 +248,13 @@
 		<child_ipad_y>0</child_ipad_y>
 		<child>
 		  <padding>5</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
+		  <expand>False</expand>
+		  <fill>False</fill>
 		</child>
 
 		<widget>
 		  <class>GtkButton</class>
 		  <name>edit_profiles_button</name>
-		  <width>125</width>
 		  <can_default>True</can_default>
 		  <can_focus>True</can_focus>
 		  <signal>
@@ -322,12 +320,12 @@
 		<label>Port: </label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
-		<xalign>0.5</xalign>
+		<xalign>1</xalign>
 		<yalign>0.5</yalign>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
 		<child>
-		  <padding>5</padding>
+		  <padding>2</padding>
 		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
@@ -336,12 +334,12 @@
 	      <widget>
 		<class>GtkEntry</class>
 		<name>port_entry</name>
-		<width>90</width>
+		<width>50</width>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
 		<text_max_length>5</text_max_length>
-		<text></text>
+		<text>88888</text>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -358,25 +356,8 @@
 
 	  <widget>
 	    <class>GtkLabel</class>
-	    <name>label4</name>
-	    <label>label4</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0.5</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	  </widget>
-
-	  <widget>
-	    <class>Placeholder</class>
-	    <child_name>Notebook:tab</child_name>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label5</name>
-	    <label>label5</label>
+	    <name>msg_label</name>
+	    <label></label>
 	    <justify>GTK_JUSTIFY_CENTER</justify>
 	    <wrap>False</wrap>
 	    <xalign>0.5</xalign>
@@ -405,7 +386,7 @@
 	  <class>GtkHBox</class>
 	  <name>login_box</name>
 	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
+	  <spacing>10</spacing>
 	  <child>
 	    <padding>1</padding>
 	    <expand>False</expand>
@@ -438,7 +419,7 @@
 	      <widget>
 		<class>GtkLabel</class>
 		<name>user_label</name>
-		<width>80</width>
+		<width>62</width>
 		<label>Username: </label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
@@ -484,7 +465,7 @@
 	      <widget>
 		<class>GtkLabel</class>
 		<name>pass_label</name>
-		<width>80</width>
+		<width>62</width>
 		<label>Password: </label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
@@ -523,10 +504,9 @@
 	    <homogeneous>False</homogeneous>
 	    <spacing>0</spacing>
 	    <child>
-	      <padding>10</padding>
+	      <padding>0</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
 	    </child>
 
 	    <widget>
@@ -540,7 +520,7 @@
 		<last_modification_time>Mon, 12 Jun 2000 05:08:37 GMT</last_modification_time>
 	      </signal>
 	      <label>Normal Login</label>
-	      <active>False</active>
+	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>login_type</group>
 	      <child>
@@ -555,7 +535,7 @@
 	      <name>guest_radio</name>
 	      <can_focus>True</can_focus>
 	      <label>Guest Login</label>
-	      <active>True</active>
+	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>login_type</group>
 	      <child>
