@@ -117,7 +117,7 @@ int game_handle_player(int seat) {
 	switch (op) {
 
 		case CBT_MSG_OPTIONS:
-			if (game_get_options(seat)) {
+			if (game_get_options(seat) == 0) {
 				// Sends options to everyone
 				for (a = 0; a < cbt_game.number; a++) {
 					if (ggz_seats[a].fd >= 0)
@@ -252,7 +252,6 @@ void game_request_options(int seat) {
 int game_get_options(int seat) {
 	int fd = ggz_seats[seat].fd;
 	char *optstr = NULL;
-	int a, b, size = 0, cur_size = 0;
 
 	ggz_debug("Getting options");
 
@@ -263,37 +262,7 @@ int game_get_options(int seat) {
 
 	combat_options_string_read(optstr, &cbt_game);
 
-	if (cbt_game.army[cbt_game.number][U_FLAG] <= 0) {
-		ggz_debug("Not enough flags");
-		return 0;
-	}
-
-	for (a = 2; a < 13; a++) {
-		if (a == 12) {
-			ggz_debug("No moving units");
-			return 0;
-		}
-		if (cbt_game.army[cbt_game.number][a] > 0)
-			break;
-	}
-
-	for (a = 0; a < 12; a++)
-		size+=cbt_game.army[cbt_game.number][a];
-
-	// Checks for number of starting positions
-	for (a = 0; a < cbt_game.number; a++) {	
-		for (b = 0; b < cbt_game.width * cbt_game.height; b++) {
-			if (GET_OWNER(cbt_game.map[b].type) == a)
-				cur_size++;
-		}
-		if (cur_size < size) {
-			ggz_debug("Not enough space");
-			return 0;
-		}
-		cur_size = 0;
-	}
-
-	return 1;
+	return combat_options_check(&cbt_game);
 }
 
 void game_send_options(int seat) {

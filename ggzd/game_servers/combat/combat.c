@@ -25,6 +25,7 @@
 #include "combat.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include "string.h"
 
 char *combat_options_string_write(combat_game *_game, int for_hash) {
 	char *ptr;
@@ -64,10 +65,14 @@ char *combat_options_string_write(combat_game *_game, int for_hash) {
 	return optstr;
 }
 
-int combat_options_string_read(char *optstr, combat_game *_game) {
+int combat_options_string_read(char *_optstr, combat_game *_game) {
 	int a, b;
-	int len = strlen(optstr);
+	int len = strlen(_optstr);
   int retval = 0;
+  char *optstr;
+  // Copy the string from the parameter
+  optstr = (char *)malloc((len+1) * sizeof(char));
+  strncpy(optstr, _optstr, len);
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
 		optstr[a]--;
@@ -210,4 +215,33 @@ int combat_check_move(combat_game *_game, int from, int to) {
 
 }
 	
+int combat_options_check(combat_game *_game) {
+  int a, b, size = 0, cur_size = 0;
+
+	if (_game->army[_game->number][U_FLAG] <= 0)
+		return CBT_ERROR_OPTIONS_FLAGS;
+
+	for (a = 2; a < 13; a++) {
+		if (a == 12)
+			return CBT_ERROR_OPTIONS_MOVING;
+		if (_game->army[_game->number][a] > 0)
+			break;
+	}
+
+	for (a = 0; a < 12; a++)
+		size+=_game->army[_game->number][a];
+
+	// Checks for number of starting positions
+	for (a = 0; a < _game->number; a++) {	
+		for (b = 0; b < _game->width * _game->height; b++) {
+			if (GET_OWNER(_game->map[b].type) == a)
+				cur_size++;
+		}
+		if (cur_size < size)
+			return CBT_ERROR_OPTIONS_SIZE;
+		cur_size = 0;
+	}
+
+  return 0;
+}
 
