@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6124 2004-07-17 00:44:02Z josef $
+# $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
 
 SUBDIRS = .
 
@@ -10,7 +10,7 @@ lib_LTLIBRARIES = libggzcore.la
 # ggz_client isn't directly tied to ggzcore; it's used by ggzcore and
 # ggzmod.  But since they're both in the same library, I've just placed
 # it here for now - it can be moved later.
-INCLUDES = -I$(top_srcdir)/ggzmod $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzmod $(LIBGGZ_INCLUDES)
 
 include_HEADERS = ggzcore.h
 

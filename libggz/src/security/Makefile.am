@@ -9,7 +9,7 @@ libggzsecurity_la_SOURCES = \
 	ggz_tls_openssl.c \
 	ggz_tls_none.c
 
-INCLUDES = -I $(top_srcdir)/src
+AM_CPPFLAGS = -I $(top_srcdir)/src
 
 # from tls-branch
 #
@@ -18,7 +18,7 @@ INCLUDES = -I $(top_srcdir)/src
 #libggztls_la_SOURCES = ggz_tls_openssl.c ggz_tls_gnutls.c ggz_tls_none.c
 #libggztls_la_LIBADD = -L $(GGZTLS_LDFLAGS) $(LIB_GGZTLS)
 #
-#INCLUDES = -I $(top_srcdir) -I $(top_srcdir)/src
+#AM_CPPFLAGS = -I $(top_srcdir) -I $(top_srcdir)/src
 #
 #noinst_HEADERS = list.h
 #include_HEADERS = ggz_tls.h

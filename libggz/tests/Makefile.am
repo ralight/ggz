@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6175 2004-09-04 07:09:37Z jdorje $
+#  $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
 
-INCLUDES = -I$(top_srcdir)/src/
+AM_CPPFLAGS = -I$(top_srcdir)/src/
 LDADD = @LDADD@ $(top_builddir)/src/libggz.la
 
 check_PROGRAMS =	\

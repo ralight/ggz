@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6247 2004-11-03 23:30:47Z jdorje $
+#  $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+AM_CPPFLAGS = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		@GTK_CFLAGS@ @RSVG_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
