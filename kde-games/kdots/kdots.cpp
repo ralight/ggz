@@ -241,15 +241,27 @@ void KDots::gamesync()
 
 	for(int i = 0; i < proto->width; i++)
 		for(int j = 0; j < proto->height - 1; j++)
+		{
 			es_read_char(proto->fd, &dot);
+			dots->setBorderValue(i, j, QDots::down, 0, dot); 
+		}
 
 	for(int i = 0; i < proto->width - 1; i++)
 		for(int j = 0; j < proto->height; j++)
+		{
 			es_read_char(proto->fd, &dot);
+			dots->setBorderValue(i, j, QDots::right, 0, dot);
+		}
 
 	for(int i = 0; i < proto->width - 1; i++)
 		for(int j = 0; j < proto->height - 1; j++)
+		{
 			es_read_char(proto->fd, &dot);
+printf("%i/%i: %i\n", i, j, dot);
+			dots->setOwnership(i, j, dot);
+		}
+
+	dots->repaint();
 
 	emit signalStatus(i18n("Syncing successful"));
 }
