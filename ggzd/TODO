@@ -1,21 +1,18 @@
 For 0.0.2
 =========
-- Plot out mutex nesting and make sure deadlock is impossible
-- rename some of the #define's (and do we need COMP_ALLOW?)
-- s/comp/bot
-- Change player.info[].playing to state var
+- Check for player state at appropriate places
 - implement tic-tac-toe as simple game example
 - better handling of end-of-game
 - handle SIGCHLD for when game_servrs die
 - implement player database (at least API)
 - Finish up room protocol additions
+- List error codes and add to protocol
 
 
 For 0.0.3
 =========
 - table chat
 - private messages (game type options, server admin option
-
 
 Medium run
 ==========
