@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <datatypes.h>
 #include <err_func.h>
@@ -39,6 +40,9 @@ MOTDInfo motd_info;
 extern Options opt;
 
 #define MOTD_MAX 1024		/* Warning: changing this may break clients! */
+
+/* Local functions */
+static char *motd_parse_motd_line(char *);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -85,14 +89,69 @@ void motd_read_file(void)
 int motd_send_motd(int sock)
 {
 	int i;
+	char *pline;
 
 	if(FAIL(es_write_int(sock, MSG_MOTD)) ||
 	   FAIL(es_write_int(sock, motd_info.motd_lines)))
-		return 1;
+		return -1;
 	
-	for(i=0; i<motd_info.motd_lines; i++)
-		if(FAIL(es_write_string(sock, motd_info.motd_text[i])))
-			return 1;
+	for(i=0; i<motd_info.motd_lines; i++) {
+		pline = motd_parse_motd_line(motd_info.motd_text[i]);
+		if(FAIL(es_write_string(sock, pline)))
+			return -1;
+	}
 
 	return 0;
+}
+
+
+/* Parse a motd line and return a pointer to a string */
+static char *motd_parse_motd_line(char *line)
+{
+	static char outline[1024];
+	static char hostname[128];
+	static int firsttime = 1;
+
+	char *in = line;
+	char *p;
+	int outindex = 0;
+
+	/* Initialize statics that should remain as long as the server is up */
+	if(firsttime) {
+		if(gethostname(hostname, 127) != 0)
+			strcpy(hostname, "hostname.toolong.fixme");
+		firsttime = 0;
+	}
+
+	while(*in && (outindex < 1023)) {
+		if(*in == '%') {
+			in++;
+			switch(*in) {
+				case 'h':
+					p = hostname;
+					while(*p && outindex < 1023) {
+						outline[outindex] = *p;
+						p++;
+						outindex++;
+					}
+					break;
+				default:
+					outline[outindex] = '%';
+					outindex++;
+					if(outindex < 1023) {
+						outline[outindex] = *in;
+						outindex++;
+					}
+					break;
+			}
+			in++;
+			continue;
+		}
+		outline[outindex] = *in;
+		outindex++;
+		in++;
+	}
+	outline[outindex] = '\0';
+
+	return outline;
 }
