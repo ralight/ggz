@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5695 2003-12-04 07:54:47Z jdorje $
+dnl $Id: configure.ac 5699 2003-12-04 22:58:27Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -7,83 +7,96 @@ AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.7)
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
-dnl Check for standard build environment
-dnl ====================================
 
+# Check for standard build environment
+# ====================================
 AC_PROG_CC
+AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
+AC_PROG_RANLIB
 
-dnl Check for GGZ Requirements
-dnl ==========================
+
+# Check for GGZ Requirements
+# ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 
-dnl Check for header files
-dnl ======================
-AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(sys/time.h unistd.h)
 
-dnl Check for typedefs, structures, and compiler characteristics
-dnl ============================================================
+# Check for header files
+# ======================
+AC_CHECK_HEADERS([fcntl.h limits.h netdb.h sys/time.h sys/wait.h time.h \
+                  unistd.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+# We used to check for the presence of WAIT_ANY, and define it as
+# (pid_t)(-1) if not present.  Now we just leave it up to AC_HEADER_SYS_WAIT.
+
+
+# Check for typedefs, structures, and compiler characteristics
+# ============================================================
 AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
-AC_HEADER_TIME
-AC_EGREP_CPP(WAIT_ANY,
-	     [ #include <sys/wait.h>
-	       WAIT_ANY ],
-	     [AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
-	      AC_DEFINE([WAIT_ANY], (pid_t)-1,
-		        [Define if it is not provided by sys/wait.h])])
 
-dnl Check for PF_LOCAL/PF_UNIX
-dnl ==========================
+
+# Check for PF_LOCAL/PF_UNIX
+# ==========================
+# There should be an autoconf macro to check this???
 AC_MSG_CHECKING([for PF_LOCAL])
-AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
-                 PF_LOCAL ], AC_MSG_RESULT(no) 
-			     AC_MSG_CHECKING([for PF_UNIX])
-			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
-				          PF_UNIX ], AC_MSG_RESULT(no)
-				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
-                                          AC_MSG_RESULT(yes)
-					  AC_DEFINE([PF_LOCAL], PF_UNIX,
-						    [PF_UNIX is available])
-			                  
-			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
-						    [AF_UNIX is available])), 
+AC_EGREP_CPP(PF_LOCAL,
+             [#include <sys/socket.h>
+              PF_LOCAL ],
+             [AC_MSG_RESULT(no)
+              AC_MSG_CHECKING([for PF_UNIX])
+              AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				      PF_UNIX ],
+                           [AC_MSG_RESULT(no)
+			    AC_MSG_ERROR([cannot find PF_LOCAL or PF_UNIX])],
+                           [AC_MSG_RESULT(yes)
+                            AC_DEFINE([PF_LOCAL], PF_UNIX,
+				      [PF_UNIX is available])
+			    AC_DEFINE([AF_LOCAL], AF_UNIX,
+				      [AF_UNIX is available])])], 
              AC_MSG_RESULT(yes))
 
 
-dnl Check for library functions
-dnl ===========================
-AC_CHECK_FUNC(poll)
+# Check for library functions
+# ===========================
+AC_CHECK_FUNCS([dup2 select strcasecmp strchr strerror \
+                fork malloc select vprintf], [],
+               [AC_MSG_ERROR([cannot find required function])])
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_VPRINTF
 
 
-dnl Check for popt
-dnl ==============
-AC_CHECK_LIB(popt, poptGetNextOpt,
-    [AC_CHECK_HEADER(popt.h, LIBPOPT="-lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header))],
-    AC_MSG_ERROR(*** Cannot find popt library ))
+# Check for popt
+# ==============
+AC_CHECK_LIB(popt, poptGetNextOpt, [LIBPOPT="-lpopt"],
+             [AC_MSG_ERROR(cannot find popt library)])
+AC_CHECK_HEADER(popt.h, [],
+                [AC_MSG_ERROR(cannot find popt.h header)])
 AC_SUBST(LIBPOPT)
 
-dnl Check for expat
-dnl ==============
-AC_CHECK_LIB(expat, XML_ParserCreate,
-    [AC_CHECK_HEADER(expat.h, LIBEXPAT="-lexpat",
-        AC_MSG_ERROR(*** Cannot find expat.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find expat library ); exit)
+
+# Check for expat
+# ===============
+AC_CHECK_LIB(expat, XML_ParserCreate, [LIBEXPAT="-lexpat"],
+             [AC_MSG_ERROR(cannot find expat library)])
+AC_CHECK_HEADER(expat.h, [],
+                [AC_MSG_ERROR(cannot find expat.h header)]),
 AC_SUBST(LIBEXPAT)
 
 
-dnl Use -Wall if we have gcc.
-dnl =========================
+# Use -Wall if we have gcc.
+# =========================
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
   case " $CFLAGS " in
@@ -94,13 +107,13 @@ fi
 changequote([,])dnl
 
 
-dnl Debug modes
-dnl ===========
+# Debug modes
+# ===========
 AC_GGZ_DEBUG
 
 
-dnl Various dirs
-dnl ============
+# Various dirs
+# ============
 if test "x${sysconfdir}" = 'x${prefix}/etc'; then
   if test "x${prefix}" = "xNONE"; then
     ggzconfdir="${ac_default_prefix}/etc"  
@@ -165,8 +178,8 @@ AC_CONFIG_FILES([Makefile
 AC_OUTPUT
 
 
-dnl Status Output
-dnl =============
+# Status Output
+# =============
 echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
