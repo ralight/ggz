@@ -65,8 +65,8 @@ struct game_function_pointers game_funcs = {
 };
 
 /* is_valid_game
- *   returns true if the game is valid under the current game conditions (i.e. number of players);
- *   false otherwise
+ *   returns true if the game is valid under the current game conditions (i.e. number 
+ *   of players); false otherwise
  */
 int game_is_valid_game()
 {
@@ -222,7 +222,7 @@ int game_get_bid()
 }
 
 /* game_handle_bid
- *   Handle incoming bid from player.  Note that the player's bid (i.e. game.players[p].bid)
+ *   Handle incoming bid from player.  Note that the player's bid (game.players[p].bid)
  *   will already have been set automatically; all we need to do is any additional
  *   game-specific stuff.
  */
@@ -411,7 +411,7 @@ int game_send_hand(player_t p, seat_t s)
 }
 
 /* game_get_bid_text
- *   places text for the bid into the buffer.  Returns the length of the text (from snprintf).
+ *   places text for the bid into the buffer.  Returns the length of the text.
  */
 int game_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
@@ -427,16 +427,18 @@ void game_set_player_message(player_t p)
 	char *message = game.seats[s].message;
 	int len = 0;
 
-	/* This function is tricky.  The problem is that we're trying to assemble a single player string out of
-	 * multiple units of data - score, bid, tricks, etc.  The solution here is to integrate these all into one
-	 * function (this one).  The problem is that you have to check each unit of data to see if it should be
-	 * shown - for instance, tricks should only be shown while the hand is being played.  Another solution
-	 * would be to update things separately.  The disadvantage there is that the code is all spread out, and
-	 * it's difficult to deal with multiple units of data */
+	/* This function is tricky.  The problem is that we're trying to assemble a 
+	   single player string out of multiple units of data - score, bid, tricks, 
+	   etc.  The solution here is to integrate these all into one
+	   function (this one).  The problem is that you have to check each unit of 
+	   data to see if it should be shown - for instance, tricks should only be 
+	   shown while the hand is being played.  Another solution would be to update 
+	   things separately.  The disadvantage there is that the code is all 
+	   spread out, and it's difficult to deal with multiple units of data */
 
-	/* Note that this way depends on this function being called at the proper times -
-	 * i.e. every time the player is affected, and on some game state changes.  Much
-	 * of this is handled by the game-independent code */
+	/* Note that this way depends on this function being called at the proper 
+	   times - every time the player is affected, and on some game state 
+	   changes.  Much of this is handled by the game-independent code */
 
 	/* did I mention this was really ugly?  It could be much worse... */
 

@@ -55,10 +55,11 @@ static int determine_host();
 
 void set_game_state(server_state_t state)
 {
-	/* sometimes an event can happen that changes the state while we're waiting for players,
-	 * for instance a player finishing their bid even though someone's left the game.  In this
-	 * case we wish to advance to the next game state while continuing to wait for players.
-	 * However, this should be handled separately. */
+	/* sometimes an event can happen that changes the state while we're waiting 
+	   for players, for instance a player finishing their bid even though 
+	   someone's left the game.  In this case we wish to advance to the next 
+	   game state while continuing to wait for players.  However, this should 
+	   be handled separately. */
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		if (game.saved_state != state)
 			ggz_debug
@@ -171,9 +172,10 @@ int send_player_list(player_t p)
 		seat_t s_abs = (s_rel + s) % game.num_seats;
 		struct ggz_seat_t *ggzseat = game.seats[s_abs].ggz;
 		if (ggzseat == NULL) {
-			/* We have a problem here, since seats may be sent out BEFORE the
-			 * game is determined, in which case GGZ info for the seats wouldn't be
-			 * known yet.  Here I fudge it by sending GGZ_SEAT_NONE instead. */
+			/* We have a problem here, since seats may be sent out BEFORE 
+			   the game is determined, in which case GGZ info for the 
+			   seats wouldn't be known yet.  Here I fudge it by sending 
+			   GGZ_SEAT_NONE instead. */
 			ggz_debug("SERVER BUG: NULL ggz found for seat %d.",
 				  s_abs);
 			if (es_write_int(fd, GGZ_SEAT_NONE) < 0)
@@ -442,9 +444,10 @@ int rec_play(player_t p)
 		  card.face, card.suit, card.deck, p, ggz_seats[p].name);
 
 	/* we've verified that this card could have physically been played; we still
-	 * need to check if it's a legal play */
-	/* Note, however, that we don't return -1 on an error here.  An error returned indicates a GGZ
-	 * error, which is not what happened.  This is just a player mistake */
+	   need to check if it's a legal play
+	   Note, however, that we don't return -1 on an error here.  An error 
+	   returned indicates a GGZ error, which is not what happened.  This is just 
+	   a player mistake */
 	err = game.funcs->verify_play(card);
 	if (err == NULL)
 		/* any AI routine would also call handle_play_event, so the ai
@@ -468,7 +471,7 @@ int req_bid(player_t p, int num, char **bid_choices)
 		  ggz_seats[p].name, num);
 
 	/* although the game_* functions probably track this data
-	 * themselves, we track it here as well just in case. */
+	   themselves, we track it here as well just in case. */
 	game.num_bid_choices = num;
 	game.next_bid = p;
 	game.bid_text_ref = bid_choices;
@@ -507,7 +510,8 @@ int req_bid(player_t p, int num, char **bid_choices)
 
 /* rec_bid
  *   Receive a bid from an arbitrary player.  Test to make sure it's not out-of-turn.
- *   Note that a return of -1 here indicates a GGZ error, which will disconnect the player.
+ *   Note that a return of -1 here indicates a GGZ error, which will disconnect the 
+ *   player.
  */
 int rec_bid(player_t p, int *bid_index)
 {
@@ -774,8 +778,9 @@ static int try_to_start_game()
 	for (p = 0; p < game.num_players; p++)
 		if (!game.players[p].ready
 		    && ggz_seats[p].assign != GGZ_SEAT_BOT) {
-			/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
-			 * if we do, then the client may not be able to determine that it's a duplicate... */
+			/* TODO: should another WH_REQ_NEWGAME be sent, just as a 
+			   reminder? if we do, then the client may not be able to 
+			   determine that it's a duplicate... */
 			ggz_debug("Player %d/%s is not ready.", p,
 				  ggz_seats[p].name);
 			ready = 0;
@@ -941,7 +946,8 @@ void next_play(void)
 
 /* determine_host
  *   the oldest player becomes the host.  The oldest player is the
- *   one with the youngest "age". */
+ *   one with the youngest "age".
+ */
 static int determine_host()
 {
 	player_t p, host = -1;
@@ -1157,9 +1163,9 @@ int handle_bid_event(bid_t bid)
 
 	ggz_debug("Handling a bid event.");
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
-		/* if a player left while another player was in the middle of bidding, this
-		 * can happen.  The solution is to temporarily return to playing, handle the
-		 * bid, and then (below) return to waiting. */
+		/* if a player left while another player was in the middle of 
+		   bidding, this can happen.  The solution is to temporarily return 
+		   to playing, handle the bid, and then (below) return to waiting. */
 		restore_game_state();
 		was_waiting = 1;
 	}
@@ -1312,7 +1318,7 @@ void init_game()
 
 
 /* JDS: these are just helper functions which should be moved to another
- * file */
+   file */
 
 /* alloc
  *   this helper function checks to see if allocation fails, and also
