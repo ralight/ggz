@@ -14,11 +14,13 @@
 #include "xtext.h"
 #include "chat.h"
 #include "profilesi.h"
+#include "game.h"
 
 extern GtkWidget* interface;
 extern GdkColor colors[];
 extern GGZServer *server;
 extern GConfClient *config;
+
 
 gboolean
 on_window_destroy_event                (GtkWidget       *widget,
@@ -371,11 +373,12 @@ on_btnJoin_clicked                 (GtkButton       *button,
 	GtkTreeModel *model;
 	gint id, open, total;
 	gchar *desc;
+	char *name;
+	char *engine;
+	char *version;
 	GGZRoom *room;
 	GGZGameType *type;
-	gchar *name, *engine, *version;
 	GGZModule *module;
-	GGZGame *game;
 
 	/* Get current row */
 	tmp = lookup_widget (interface, "treTables");
@@ -383,20 +386,33 @@ on_btnJoin_clicked                 (GtkButton       *button,
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
-		gtk_tree_model_get (model, &iter, 1, &id, 1, &open, 1, &total, 0, &desc,	-1);
-
 		room = ggzcore_server_get_cur_room(server);
+		if (!room) 
+		{
+			g_print ("You must be in a room to launch a game\n");
+			return;
+		}
+
 		type = ggzcore_room_get_gametype(room);
+		if (!type) 
+		{
+			g_print ("No game types defined for this room\n");
+			return;
+		}
+	
 		name = ggzcore_gametype_get_name(type);
 		engine = ggzcore_gametype_get_prot_engine(type);
 		version = ggzcore_gametype_get_prot_version(type);
 		module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
-		game = ggzcore_game_new();
+		if (!module) 
+		{
+			g_print ("No game modules defined for that game\n");
+			g_print ("Download one from %s\n", ggzcore_gametype_get_url(type));
+			return;
+		}
 
-		ggzcore_room_join_table(room, id, FALSE);
-		ggzcore_game_init(game, server, module);
-		ggzcore_game_launch(game);
-
+		gtk_tree_model_get (model, &iter, 0, &id, 1, &open, 1, &total, 0, &desc, -1);
+		game_init(module, type, id);
 	}
 }
 
@@ -405,39 +421,8 @@ void
 on_btnWatch_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkWidget *tmp;
-	GtkTreeSelection *selection;
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	gint id, open, total;
-	gchar *desc;
-	GGZRoom *room;
-	GGZGameType *type;
-	gchar *name, *engine, *version;
-	GGZModule *module;
-	GGZGame *game;
 
-	/* Get current row */
-	tmp = lookup_widget (interface, "treTables");
-	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(tmp));
 
-	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-	{
-		gtk_tree_model_get (model, &iter, 1, &id, 1, &open, 1, &total, 0, &desc,	-1);
-
-		room = ggzcore_server_get_cur_room(server);
-		type = ggzcore_room_get_gametype(room);
-		name = ggzcore_gametype_get_name(type);
-		engine = ggzcore_gametype_get_prot_engine(type);
-		version = ggzcore_gametype_get_prot_version(type);
-		module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
-		game = ggzcore_game_new();
-
-		ggzcore_room_join_table(room, id, TRUE);
-		ggzcore_game_init(game, server, module);
-		ggzcore_game_launch(game);
-
-	}
 }
 
 

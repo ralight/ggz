@@ -61,6 +61,9 @@ void msgbox_error(gchar *msg)
 		gtk_label_set_text (GTK_LABEL (tmp), 
 		"A network error occured. The server "
 		"has disconnected you. ");
+	} else if(!strcmp(msg, "Server error: Server disconnected")) {
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"The server has just disconnected you../");
 	} else {	
 		g_print("%s\n", msg);
 	}

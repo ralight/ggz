@@ -59,6 +59,10 @@ void login_set_login (GtkWidget *login)
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "vbTables");
 	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "btnChatChange");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(login, "btnChatGame");
+	gtk_widget_set_sensitive(tmp, FALSE);
 	
 	/*Change the background*/
 	tmp = lookup_widget(login, "pmBackground");

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4967 2002-10-21 01:44:52Z jzaun $
+ * $Id: ggzclient.c 5004 2002-10-23 00:51:53Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -38,8 +38,9 @@
 #include "msgboxi.h"
 #include "ggzclient.h"
 #include "callbacks.h"
+#include "game.h"
 
-static gint server_handle=-1;
+static gint server_handle = -1;
 
 extern GGZServer *server;
 extern GtkWidget *interface;
@@ -56,6 +57,8 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_channel_connected(GGZServerEvent id, void *event_data, void *user_data);
+static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void* user_data);
@@ -101,6 +104,8 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATE_FAIL, ggz_connect_fail);
 	ggzcore_server_add_event_hook(Server, GGZ_LOGGED_IN, ggz_logged_in);
 	ggzcore_server_add_event_hook(Server, GGZ_LOGIN_FAIL, ggz_login_fail);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED, ggz_channel_connected);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, ggz_channel_ready);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, ggz_room_list);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, ggz_entered);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, ggz_entered_fail);
@@ -211,6 +216,19 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* u
 	gtk_widget_set_sensitive(tmp, TRUE);
 	tmp = lookup_widget(interface, "btnNew");
 	gtk_widget_set_sensitive(tmp, TRUE);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_channel_connected(GGZServerEvent id, void *event_data, void *user_data)
+{
+	game_channel_connected(ggzcore_server_get_channel(server));
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* user_data)
+{
+	game_channel_ready(ggzcore_server_get_channel(server));
 
 	return GGZ_HOOK_OK;
 }
@@ -482,11 +500,6 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void*
 		
 	}
 
-//	statebar = lookup_widget(win_main, "statebar");
-//	context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statebar), "state");
-//	gtk_statusbar_pop(GTK_STATUSBAR(statebar), context);
-//	gtk_statusbar_push(GTK_STATUSBAR(statebar), context, state);
-
 	return GGZ_HOOK_OK;
 }
 
@@ -517,15 +530,31 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		break;
 
 	case GGZ_STATE_LOGGING_IN:
+		tmp = lookup_widget(interface, "btnChatChange");
+		gtk_widget_set_sensitive(tmp, FALSE);
+		tmp = lookup_widget(interface, "btnChatGame");
+		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 
 	case GGZ_STATE_LOGGED_IN:
+		tmp = lookup_widget(interface, "btnChatChange");
+		gtk_widget_set_sensitive(tmp, TRUE);
+		tmp = lookup_widget(interface, "btnChatGame");
+		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
 
 	case GGZ_STATE_BETWEEN_ROOMS:
 	case GGZ_STATE_ENTERING_ROOM:
+		tmp = lookup_widget(interface, "btnChatChange");
+		gtk_widget_set_sensitive(tmp, FALSE);
+		tmp = lookup_widget(interface, "btnChatGame");
+		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
 	case GGZ_STATE_IN_ROOM:
+		tmp = lookup_widget(interface, "btnChatChange");
+		gtk_widget_set_sensitive(tmp, TRUE);
+		tmp = lookup_widget(interface, "btnChatGame");
+		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
 
 	case GGZ_STATE_LAUNCHING_TABLE:
@@ -612,6 +641,7 @@ static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, vo
 
 static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
 {
+
 	return GGZ_HOOK_OK;
 }
 
@@ -622,6 +652,7 @@ static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void* event_data, void
 
 	msg = g_strdup_printf("Error joining table: %s", (char*)event_data);
 //	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_print ("%s\n", msg);
 	g_free(msg);
 
 //	game_quit();
