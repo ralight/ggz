@@ -1,10 +1,8 @@
 
 SUBDIRS = .
 
-INCLUDES = @EASYSOCK_INC@
-
 bin_PROGRAMS = ggz-config
-ggz_config_LDADD = libggzcore.la $(LDADD)
+ggz_config_LDADD = libggzcore.la @LDADD@
 ggz_config_SOURCES = ggz-config.c
 sysconf_DATA = ggz.modules
 
@@ -14,7 +12,7 @@ lib_LTLIBRARIES = libggzcore.la
 
 include_HEADERS = ggzcore.h
 
-libggzcore_la_LIBADD = @LDADD@ @EASYSOCK_LIB@
+libggzcore_la_LIBADD = @LDADD@
 
 libggzcore_la_LDFLAGS = -version-info 0:0:0
 
