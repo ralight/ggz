@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4688 2002-09-24 21:41:16Z jdorje $
+ * $Id: control.c 4689 2002-09-25 05:04:53Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -114,6 +114,15 @@ static void init_data(void)
 	srandom((unsigned)time(NULL));
 }
 
+static void cleanup_data(void)
+{
+	/* FIXME: must destroy all threads first */
+	if (term_signal || !hup_signal) return;
+
+	motd_read_file(NULL);
+
+	ggz_memory_check();
+}
 
 int main(int argc, const char *argv[])
 {
@@ -135,9 +144,6 @@ int main(int argc, const char *argv[])
 	init_data();
 	parse_game_files();
 	parse_room_files();
-	/* If the motd option is present, pre-read the file */
-	if (motd_info.use_motd)
-		motd_read_file();
 
 	logfile_initialize();
 
@@ -250,7 +256,7 @@ int main(int argc, const char *argv[])
 		daemon_cleanup();
 	}
 
-	ggz_memory_check();
+	cleanup_data(); /* FIXME: must destroy all threads first */
 
 	return 0;
 }

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
+ * $Id: motd.h 4689 2002-09-25 05:04:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,29 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include <ggzd.h>
-
-
-/* MOTD info */
-typedef struct {
-	char *motd_file;			/* cleanup() */
-	char use_motd;
-	unsigned long startup_time;
-	int motd_lines;
-	char **motd_text;			/* cleanup() via ggz_free() */
-	char *hostname;				/* cleanup() */
-	char *sysname;				/* cleanup() */
-	char *cputype;				/* cleanup() */
-	char *port;				/* cleanup() */
-} MOTDInfo;
-
-
-/* MOTD info */
-extern MOTDInfo motd_info;
-
-/* Read the MOTD file */
-extern void motd_read_file(void);
+/* Read the MOTD file.  Currently this can only safely be done when no
+   threads are active on the server.  Call it with NULL to disable the
+   MOTD (or clean up when done). */
+void motd_read_file(const char *file);
 
 /* Returns 'true' if motd is defined */
 int motd_is_defined(void);
@@ -53,5 +35,4 @@ int motd_is_defined(void);
 int motd_get_num_lines(void);
 
 /* Parse a line of the motd, filling in parameters */
-char *motd_get_line(int);
-
+char *motd_get_line(int line);

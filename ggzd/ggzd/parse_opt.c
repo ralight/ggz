@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4625 2002-09-18 19:11:26Z jdorje $
+ * $Id: parse_opt.c 4689 2002-09-25 05:04:53Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -263,9 +263,9 @@ static void get_config_options(int ch)
 	}
 
 	/* [Files] */
-	motd_info.motd_file = ggz_conf_read_string(ch, "Files", "MOTD", NULL);
-	if(motd_info.motd_file != NULL)
-		motd_info.use_motd = 1;
+	strval = ggz_conf_read_string(ch, "Files", "MOTD", NULL);
+	motd_read_file(strval);
+	if (strval) ggz_free(strval);
 
 	/* [Logs] */
 	log_info.log_fname = ggz_conf_read_string(ch, "Logs", "LogFile", NULL);

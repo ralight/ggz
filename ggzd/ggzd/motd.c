@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4626 2002-09-18 19:16:08Z jdorje $
+ * $Id: motd.c 4689 2002-09-25 05:04:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,29 +23,53 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
+#include <fcntl.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
 #include <string.h>
-#include <sys/utsname.h>
-#include <pthread.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+#include <time.h>
+#include <unistd.h>
 
 #include <ggz.h>
-#include <ggzd.h>
-#include <datatypes.h>
-#include <err_func.h>
-#include <protocols.h>
-#include <table.h>
-#include <motd.h>
+
+#include "ggzd.h"
+#include "datatypes.h"
+#include "err_func.h"
+#include "protocols.h"
+#include "table.h"
+#include "motd.h"
+
+/* Check for system-defined maximum host name limit. */
+#ifndef HOST_NAME_MAX
+#  define HOST_NAME_MAX 256
+#endif
 
 /* MOTD info */
-MOTDInfo motd_info;
+typedef struct {
+	unsigned long startup_time;
+	int motd_lines;
+	char **motd_text;			/* cleanup() via ggz_free() */
+	char *hostname;				/* cleanup() */
+	char *sysname;				/* cleanup() */
+	char *cputype;				/* cleanup() */
+	char *port;				/* cleanup() */
+} MOTDInfo;
+
+/* MOTD info */
+MOTDInfo motd_info = { motd_lines : 0,
+		       motd_text : NULL,
+		       hostname : NULL,
+		       sysname : NULL,
+		       cputype : NULL,
+		       port : NULL};
 
 /* Server wide data structures */
 extern Options opt;
@@ -60,8 +84,37 @@ static char *motd_get_users(char *users_str, size_t sz_users_str);
 static char *motd_get_tables(int option,
 			     char *tables_str, size_t sz_tables_str);
 
+static void motd_cleanup(void)
+{
+	int i;
+
+	/* Cleanup... */
+	for (i = 0; i < motd_info.motd_lines; i++)
+	  ggz_free(motd_info.motd_text[i]);
+	if (motd_info.motd_text)
+	  ggz_free(motd_info.motd_text);
+	motd_info.motd_text = NULL;
+	motd_info.motd_lines = 0;
+
+	if (motd_info.hostname)
+	  ggz_free(motd_info.hostname);
+	motd_info.hostname = NULL;
+
+	if (motd_info.sysname)
+	  ggz_free(motd_info.sysname);
+	motd_info.sysname = NULL;
+
+	if (motd_info.cputype)
+	  ggz_free(motd_info.cputype);
+	motd_info.cputype = NULL;
+
+	if (motd_info.port)
+	  ggz_free(motd_info.port);
+	motd_info.port = NULL;
+}
+
 /* Read the motd file */
-void motd_read_file(void)
+void motd_read_file(const char *file)
 {
 	char *fullpath;
 	int motd_fdes;
@@ -71,26 +124,33 @@ void motd_read_file(void)
 	int lines;
 	int len;
 	struct utsname unames;
+	char hostname[HOST_NAME_MAX + 1];
+
+	motd_cleanup();
+
+	/* Check if we're even supposed to have a MOTD. */
+	if (!file) return;
 
 	/* Save the server startup time so we can calculate uptime later */
 	motd_info.startup_time = (unsigned int) time(NULL);
 
 	/* If it's an absolute path already, we don't need to add conf_dir */
-	if(motd_info.motd_file[0] == '/')
-		fullpath = motd_info.motd_file;
+	if(file[0] == '/')
+		fullpath = ggz_strdup(file);
 	else {
-		len = strlen(motd_info.motd_file) + strlen(opt.conf_dir) + 2;
+		len = strlen(file) + strlen(opt.conf_dir) + 2;
 		fullpath = ggz_malloc(len);
-		snprintf(fullpath, len, "%s/%s",
-			 opt.conf_dir, motd_info.motd_file);
+		snprintf(fullpath, len, "%s/%s", opt.conf_dir, file);
 	}
 
 	/* Try to open the file */
 	if((motd_fdes = open(fullpath, O_RDONLY)) < 0) {
 		err_msg("MOTD file not found");
-		motd_info.use_motd = 0;
+		ggz_free(fullpath);
+		motd_read_file(NULL);
 		return;
 	}
+	ggz_free(fullpath);
 
 	motd_file = ggz_get_file_struct(motd_fdes);
 
@@ -112,12 +172,14 @@ void motd_read_file(void)
 	close(motd_fdes);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Read MOTD file, %d lines", lines);
 
-	/* Initialize stuff that is constant as long as the server is up */
+	/* Initialize stuff that is constant as long as the server is up.
+	   This stuff is currently re-read every time we reread the MOTD.
+	   But that's probably OK... */
 
 	/* Get the hostname */
-	motd_info.hostname = ggz_malloc(128);
-	if(gethostname(motd_info.hostname, 127) != 0)
-		strcpy(motd_info.hostname, "hostname.toolong.fixme");
+	if(gethostname(hostname, HOST_NAME_MAX) != 0)
+		strncpy(hostname, "hostname.toolong.fixme", HOST_NAME_MAX);
+	motd_info.hostname = ggz_strdup(hostname);
 
 	/* Get the OS and CPU Type */
 	if(uname(&unames) < 0)
@@ -134,7 +196,7 @@ void motd_read_file(void)
 /* Returns 'true' if motd is defined */
 int motd_is_defined(void)
 {
-	return motd_info.use_motd;
+	return (motd_info.motd_text != NULL);
 }
 
 
