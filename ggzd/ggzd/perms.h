@@ -34,6 +34,7 @@
 #define PERMS_ROOMS_LOGIN	0x00000004	/* Can enter login-only rooms */
 #define PERMS_ROOMS_ADMIN	0x00000008	/* Can enter admin-only rooms */
 #define PERMS_CHAT_ANNOUNCE	0x00000010	/* Can make announcements */
+#define PERMS_CHAT_BOT      0x00000020  /* Player is a known bot */
 
 #define PERMS_ADMIN_MASK	0x00000018	/* Set all admin type bits */
 
@@ -47,6 +48,7 @@
 int perms_check(GGZPlayer *player, unsigned int perm);
 void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
 int perms_is_admin(GGZPlayer *player);
+int perms_is_bot(GGZPlayer *player);
 
 #ifdef PERMS_DEFINE_STR_TABLE
 char perms_str_table[32][21] = {
@@ -55,7 +57,7 @@ char perms_str_table[32][21] = {
 	"PERMS_ROOMS_LOGIN   ",
 	"PERMS_ROOMS_ADMIN   ",
 	"PERMS_CHAT_ANNOUNCE ",		/* 00000010 */
-	"undefined 0x00000020",
+	"PERMS_CHAT_BOT      ",
 	"undefined 0x00000040",
 	"undefined 0x00000080",
 	"undefined 0x00000100",		/* 00000100 */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: ggzd.h 5906 2004-02-11 13:16:25Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -73,7 +73,8 @@ typedef enum {
 	GGZ_PLAYER_NONE,
 	GGZ_PLAYER_NORMAL,
 	GGZ_PLAYER_GUEST,
-	GGZ_PLAYER_ADMIN
+	GGZ_PLAYER_ADMIN,
+	GGZ_PLAYER_BOT
 } GGZPlayerType;
 
 typedef struct _GGZPlayer GGZPlayer;
