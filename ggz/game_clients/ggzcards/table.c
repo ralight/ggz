@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3303 2002-02-10 12:00:00Z jdorje $
+ * $Id: table.c 3304 2002-02-10 12:27:09Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -74,6 +74,7 @@ static gboolean table_ready = FALSE;
 static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
 
+static void table_clear_table(void);
 static void table_card_clicked(int);
 
 void table_show_table(int x, int y, int w, int h)
@@ -112,16 +113,20 @@ static void draw_card_areas(void)
 	
 	assert(table_ready && game_started);
 
-	/* Clear the buffer to the style's background color */
-	gdk_draw_rectangle(table_buf,
-			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, 0, 0, get_table_width(), get_table_height());
-
 	/* Draw card areas */
 	for (p = 0; p < ggzcards.num_players; p++) {
 		draw_text_box(p);
 		draw_card_box(p);
 	}
+}
+
+static void table_clear_table(void)
+{
+	assert(table_buf && table_style);
+	/* Clear the buffer to the style's background color */
+	gdk_draw_rectangle(table_buf,
+			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE, 0, 0, get_table_width(), get_table_height());
 }
 
 /* Draws a "splash screen" that is shown before the game is initialized. */
@@ -135,9 +140,7 @@ static void draw_splash_screen(void)
 	assert(table_buf);
 	assert(ggzcards.num_players == 0);
 
-	gdk_draw_rectangle(table_buf,
-			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, 0, 0, get_table_width(), get_table_height());
+	table_clear_table();
 	draw_card(card, 0,
 		  (get_table_width() - CARDWIDTH) / 2,
 		  (get_table_height() - CARDHEIGHT) / 2, table_buf);
@@ -233,6 +236,8 @@ void table_setup(void)
 	/* Revert to having no selected card. */
 	selected_card = -1;
 
+	table_clear_table();
+
 	/* Add text labels to display */
 	for (p = 0; p < ggzcards.num_players; p++) {
 		get_text_box_pos(p, &x, &y);
@@ -261,7 +266,7 @@ void table_setup(void)
 		if (ggzcards.players[p].hand.hand_size > 0)
 			table_display_hand(p);
 	}
-
+	
 	/* Draw the boxes around the card areas */
 	draw_card_areas();
 
@@ -297,7 +302,8 @@ void table_redraw(void)
 		gtk_widget_grab_focus(dlg_main);
 
 		table_style = gtk_widget_get_style(table);
-
+		
+		table_clear_table();
 		draw_card_areas();
 
 		/* Redisplay any cards on table and in hands */
