@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 3110 2002-01-14 05:48:31Z jdorje $
+ * $Id: ggz_common.h 3113 2002-01-14 07:04:06Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -46,6 +46,26 @@ typedef enum {
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZSeatType;
+
+/** @brief Get a string identifier for the GGZSeatType.
+ *
+ *  This returns a pointer to a static string describing the given seat type.
+ *  It is useful for text-based communications protocols and debugging
+ *  output.
+ *  @param type The GGZSeatType, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_seattype.
+ */
+char *ggz_seattype_to_string(GGZSeatType type);
+
+/** @brief Get a GGZSeatType for the given string identifier.
+ *
+ *  This returns a GGZSeatType that is associated with the given string
+ *  description.
+ *  @param type_str A string describing a GGZSeatType.
+ *  @note If the type_str cannot be parsed GGZ_SEAT_NONE may be returned.
+ *  @note This is the inverse of ggz_seattype_to_string.
+ */
+GGZSeatType ggz_string_to_seattype(const char *type_str);
 
 #ifdef __cplusplus
 }
