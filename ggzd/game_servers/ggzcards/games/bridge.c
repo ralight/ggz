@@ -47,6 +47,9 @@ static int bridge_get_bid_text(char* buf, int buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
 static void bridge_end_trick();
 static void bridge_end_hand();
+static void bridge_start_game();
+
+static void bridge_set_score_message();
 
 struct game_function_pointers bridge_funcs = {
 	bridge_is_valid_game,
@@ -68,7 +71,7 @@ struct game_function_pointers bridge_funcs = {
 	game_deal_hand,
 	bridge_end_trick,
 	bridge_end_hand,
-	game_start_game,
+	bridge_start_game,
 	bridge_test_for_gameover,
 	game_handle_gameover,
 	game_map_card,
@@ -292,7 +295,9 @@ static void bridge_set_player_message(player_t p)
 	char* message = game.seats[s].message;
 	int len = 0;
 
+/*
 	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d|%d\n", BRIDGE.points_above_line[p%2], BRIDGE.points_below_line[p%2]);
+*/
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		if (p == BRIDGE.declarer)
 			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
@@ -319,6 +324,36 @@ static void bridge_end_trick()
 	/* update teammate's info as well */
 	set_player_message((game.winner+2)%4);
 	
+}
+
+static void bridge_set_score_message()
+{
+	player_t team;
+	int widths[2], len=0, i;
+	char buf[4096] = "";
+
+#define HORIZONTAL_LINE for (i=0; i<widths[0]+widths[1]+3; i++) \
+		len += snprintf(buf+len, sizeof(buf)-len, "%c", '-'); \
+	len += snprintf(buf+len, sizeof(buf)-len, "\n")
+#define BLANK_LINE len += snprintf(buf+len, sizeof(buf)-len, "%*s | %*s\n", widths[0], "", widths[1], "")
+
+	len = snprintf(buf, sizeof(buf), "%s/%s | %s/%s\n",
+		 ggz_seats[0].name, ggz_seats[2].name,
+		 ggz_seats[1].name, ggz_seats[3].name);
+	for(team=0; team<2; team++)
+		widths[team] = strlen(ggz_seats[team].name) + strlen(ggz_seats[team+2].name) + 1;
+
+	HORIZONTAL_LINE;
+	BLANK_LINE;
+
+	len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_above_line[0], widths[1], BRIDGE.points_above_line[1]);
+
+	BLANK_LINE;
+	HORIZONTAL_LINE;
+
+	len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_below_line[0], widths[1], BRIDGE.points_below_line[1]);
+
+	set_global_message("Scores", "%s", buf);
 }
 
 static void bridge_end_hand()
@@ -383,8 +418,16 @@ static void bridge_end_hand()
 	/* TODO: vulnerable, etc. */
 
 	set_global_message("", "%s", buf);
+	bridge_set_score_message();
 
 	BRIDGE.declarer = BRIDGE.dummy = -1;
 	BRIDGE.dummy_revealed = 0;
 	BRIDGE.contract = 0;
+}
+
+static void bridge_start_game()
+{
+	/* TODO: zero other scores */
+	bridge_set_score_message();
+	game_start_game();
 }
