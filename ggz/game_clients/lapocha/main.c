@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4888 2002-10-12 20:20:55Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,6 +40,7 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+#include "dlg_about.h"
 #include "ggzintl.h"
 
 #include "support.h"
@@ -55,6 +56,7 @@ GtkWidget *dlg_main = NULL;
 /* Private functions */
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
 static int get_seat(void);
@@ -91,6 +93,7 @@ int main(int argc, char *argv[])
 {
 	initialize_debugging();
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
 
 	ggz_intl_init("lapocha");
 
@@ -151,6 +154,30 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void initialize_about_dialog(void)
+{
+	const char *content =
+	  _("Authors:\n"
+	    "        Gtk+ Client:\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "        Windows 9X Client:\n"
+	    "            Doug Hudson  <djh@users.sourceforge.net>\n"
+	    "\n"
+	    "        Game Server:\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "Website:\n"
+	    "        http://ggz.sourceforge.net/games/lapocha/");
+	char *header;
+
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "La Pocha Version %s"), VERSION);
+	init_dlg_about(_("About La Pocha"),
+		       header, content);
+	g_free(header);
 }
 
 

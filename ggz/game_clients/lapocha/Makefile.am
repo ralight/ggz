@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4888 2002-10-12 20:20:55Z jdorje $
 
 SUBDIRS = .
 
@@ -19,7 +19,6 @@ ggzexecmod_PROGRAMS = ggz.lapocha
 ggz_lapocha_SOURCES =		\
 	cb_bid.c cb_bid.h	\
 	cb_main.c cb_main.h	\
-	dlg_about.c dlg_about.h	\
 	dlg_bid.c dlg_bid.h	\
 	dlg_main.c dlg_main.h	\
 	game.c game.h		\

@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Callbacks for La Pocha main Gtk window
- * $Id: cb_main.c 3848 2002-04-08 01:02:33Z jdorje $
+ * $Id: cb_main.c 4888 2002-10-12 20:20:55Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -29,11 +29,11 @@
 
 #include <gtk/gtk.h>
 
+#include "dlg_about.h"
 #include "dlg_exit.h"
 
 #include "cb_main.h"
 #include "dlg_main.h"
-#include "dlg_about.h"
 #include "game.h"
 #include "support.h"
 #include "table.h"
@@ -68,19 +68,7 @@ void
 on_mnu_about_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	static GtkWidget *dlg_about = NULL;
-
-	if(dlg_about != NULL) {
-		gdk_window_show(dlg_about->window);
-		gdk_window_raise(dlg_about->window);
-	} else {
-		dlg_about = create_dlg_about();
-		gtk_signal_connect(GTK_OBJECT(dlg_about),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_about);
-		gtk_widget_show(dlg_about);
-	}
+	create_or_raise_dlg_about();
 }
 
 
