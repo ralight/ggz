@@ -12,9 +12,10 @@ messages:
 
 install-data-local:
 	for j in $(top_srcdir)/po/*.po; do \
-		country=`echo $$j | cut -d "." -f 1`; \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
 		dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		echo "installing $$dir/ggz-txt.mo ($$j)"; \
+		echo "installing $$dir/ggz-txt.mo ($$k)"; \
 		install -d $$dir; \
 		$(MSGFMT) -o $$dir/ggz-txt.mo $$j; \
 	done;
