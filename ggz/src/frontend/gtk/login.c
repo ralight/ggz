@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 3752 2002-04-05 17:10:43Z jdorje $
+ * $Id: login.c 4373 2002-08-20 02:15:12Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -60,7 +60,9 @@ static void login_connect_button_clicked(GtkButton *button, gpointer data);
 static void login_cancel_button_clicked(GtkButton *button, gpointer data);
 static void login_start_session(void);
 static void login_relogin(void);
+#if 0 /* currently unused */
 static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* user_data);
+#endif
 static void login_set_entries(Server server);
 
 void
@@ -398,6 +400,7 @@ static void login_relogin(void)
 }
 
 
+#if 0 /* currently unused */
 static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* user_data)
 {
 	/* Now that we're disconnected, login to new server */
@@ -405,6 +408,7 @@ static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* 
 
 	return GGZ_HOOK_REMOVE;
 }
+#endif
 
 
 static void login_set_entries(Server server)

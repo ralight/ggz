@@ -45,7 +45,9 @@ extern GGZServer *server;
 static GtkWidget *types_dialog;
 static GtkWidget* create_dlg_types(void);
 
+#if 0 /* currently unused */
 static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer data);
+#endif
 static void types_upgrade(GtkMenuItem *menuitem, gpointer data);
 static void types_URL(GtkMenuItem *menuitem, gpointer data);
 static void types_filter_button(GtkWidget *widget, gpointer data);
@@ -103,13 +105,13 @@ void types_create_or_raise(void)
 	}
 }
 
-/*
+#if 0 /* currently unused */
 static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 
 	return FALSE;
 }
-*/
+#endif
 
 
 static void types_upgrade(GtkMenuItem *menuitem, gpointer data)
