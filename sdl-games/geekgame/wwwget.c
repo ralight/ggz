@@ -23,6 +23,20 @@ void wwwget_internal(const char *source, const char *dest)
 	execvp(program, args);
 }
 
+void wwwcopy_internal(const char *source, const char *dest)
+{
+	const char *program = "cp";
+	char *const args[] =
+	{
+		strdup(program),
+		strdup(source),
+		strdup(dest),
+		NULL
+	};
+
+	execvp(program, args);
+}
+
 void wwwget(const char *source, const char *dest)
 {
 	pid_t pid;
@@ -34,7 +48,14 @@ void wwwget(const char *source, const char *dest)
 		case -1:
 			return;
 		case 0:
-			wwwget_internal(source, dest);
+			if(source[0] != '/')
+			{
+				wwwget_internal(source, dest);
+			}
+			else
+			{
+				wwwcopy_internal(source, dest);
+			}
 			_exit(0);
 	}
 

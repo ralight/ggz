@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <string.h>
 
 #include "wwwget.h"
 #include "proto.h"
@@ -267,7 +268,7 @@ int main(int argc, char *argv[])
 	int index = 0, c;
 	int ret;
 
-	while((c = getopt_long(argc, argv, "g", op, &index)) != -1)
+	while((c = getopt_long(argc, argv, "ghn", op, &index)) != -1)
 	{
 		switch(c)
 		{
@@ -385,6 +386,40 @@ void renderscore(int x, int y, int sum)
 	}
 }
 
+void renderdesc(int x, int y, const char *desc, int active)
+{
+	SDL_Surface *text;
+	SDL_Rect rect;
+	char *token;
+	char *tmp;
+
+	SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
+	SDL_Color black = {0x00, 0x00, 0x00, 0};
+
+	tmp = strdup(desc);
+	token = strtok(tmp, "\n");
+	while(token)
+	{
+		text = TTF_RenderText_Solid(font, token, (active ? white : black));
+		if(text)
+		{
+			rect.x = x;
+			rect.y = y;
+			rect.w = text->w/*300*/;
+			rect.h = text->h/*100*/;
+			SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+			rect.w = text->w/*300*/;
+			SDL_BlitSurface(text, NULL, screen, &rect);
+			rect.w = text->w/*300*/;
+			SDL_FreeSurface(text);
+			SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+		}
+		token = strtok(NULL, "\n");
+		y += 30;
+	}
+	free(tmp);
+}
+
 void playnoise()
 {
 #ifdef HAVE_SOUND
@@ -401,12 +436,14 @@ void screen_intro()
 	int escape;
 	SDL_Event event;
 	Uint8 *keystate;
-	int x, y, i;
+	int x, y, i, oldy;
 	int dimmer, dimminc;
 	SDL_Rect rect;
+	char *desc1, *desc2, *desc3, *desc4;
 
 	x = 20;
 	y = 20;
+	oldy = y;
 
 	escape = 0;
 	playmode = -1;
@@ -466,6 +503,7 @@ void screen_intro()
 						if(y <= 15 + 3 * 30)
 						{
 							drawbox(x, y, 150, 20, screen, 0, 1);
+							oldy = y;
 							y += 30;
 						}
 					}
@@ -474,6 +512,7 @@ void screen_intro()
 						if(y >= 15 + 1 * 30)
 						{
 							drawbox(x, y, 150, 20, screen, 0, 1);
+							oldy = y;
 							y -= 30;
 						}
 					}
@@ -485,6 +524,50 @@ void screen_intro()
 					}
 					break;
 			}
+		}
+
+		if(oldy)
+		{
+			desc1 = "The sum of any row or column\nmust be zero.";
+			desc2 = "The sum of any row or column,\nmultiplied by 2, must be 42.";
+			desc3 = "Numbers encompassed by cursor\nmust divide by 4\nin binary coded format.";
+			desc4 = "Both cursor bars\nmust contain the same number\nof 1s";
+
+			if(oldy == 20)
+			{
+				renderdesc(150, 200, desc1, 0);
+			}
+			else if(oldy == 50)
+			{
+				renderdesc(150, 200, desc2, 0);
+			}
+			else if(oldy == 80)
+			{
+				renderdesc(150, 200, desc3, 0);
+			}
+			else if(oldy == 110)
+			{
+				renderdesc(150, 200, desc4, 0);
+			}
+
+			if(y == 20)
+			{
+				renderdesc(150, 200, desc1, 1);
+			}
+			else if(y == 50)
+			{
+				renderdesc(150, 200, desc2, 1);
+			}
+			else if(y == 80)
+			{
+				renderdesc(150, 200, desc3, 1);
+			}
+			else if(y == 110)
+			{
+				renderdesc(150, 200, desc4, 1);
+			}
+
+			oldy = 0;
 		}
 
 		drawbox(x, y, 150, 20, screen, dimmer, 1);
