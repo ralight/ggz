@@ -40,6 +40,18 @@ if test "$enable_ggzcorepp" = yes; then
 	SUBDIRS="ggzcore++ $SUBDIRS"
 fi
 
+dnl Find temporary categories_and_ratings patch
+func=ggzcore_gametype_get_category
+#func=ggzcore_server_new
+tmp=`grep $func $ggzcore_includes/ggzcore.h`
+if test "$tmp" = ""; then
+	patch_c_and_r=0;
+else
+	patch_c_and_r=1;
+	AC_DEFINE_UNQUOTED(KGGZ_PATCH_C_AND_R, $patch_c_and_r)
+fi
+echo "checking for GGZ patch 'Categories and Ratings' (C_and_R): $patch_c_and_r"
+
 dnl Set up variables for KGGZ
 dnl =========================
 
