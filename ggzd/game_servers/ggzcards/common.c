@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4091 2002-04-27 21:09:21Z jdorje $
+ * $Id: common.c 4092 2002-04-27 21:18:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -98,7 +98,6 @@ const char *get_state_name(server_state_t state)
 
 static void newgame(void);
 static int determine_host(void);
-static void set_player_name(player_t p, const char *name);
 
 /* Changes the state of the game, printing a debugging message. */
 void set_game_state(server_state_t state)
@@ -507,24 +506,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	}
 	
 	ggzdmod_log(game.ggz, "Player join successful.");
-}
-
-/* This sets not only the player name, but the name for the player's seat if
-   applicable. */
-static void set_player_name(player_t p, const char *name)
-{
-	GGZSeat player_seat = ggzdmod_get_seat(game.ggz, p);
-	player_seat.name = (char *) name;	/* discard const */
-	
-	ggzdmod_log(game.ggz, "Changing player %d (type %d)'s name to %s.", p,
-		    player_seat.type, name);
-	if (ggzdmod_set_seat(game.ggz, &player_seat) < 0) {
-		ggzdmod_log(game.ggz,
-			    "ERROR: SERVER BUG: "
-			    "Failed player name change for player %d/%s!",
-			    p, name);
-		name = NULL;
-	}
 }
 
 /* This handles the event of a player leaving */
@@ -958,14 +939,6 @@ void init_game()
 	}
 
 	set_global_message("", "%s", "");
-	/* This is no longer necessary under the put_player_message system
-	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; 
-	 */
-
-	/* set AI names */
-	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_BOT)
-			set_player_name(p, ai_get_name(p));
 
 	game.initted = TRUE;
 }

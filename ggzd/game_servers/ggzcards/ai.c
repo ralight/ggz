@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4065 2002-04-23 21:36:39Z jdorje $
+ * $Id: ai.c 4092 2002-04-27 21:18:12Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -47,17 +47,6 @@
 #include "net.h"
 
 static char* path = NULL;
-
-const char *ai_get_name(player_t p)
-{
-	const char *name;
-	
-	name = get_player_name(p);
-	if (name == NULL)
-		name = "Bot";
-	return name;
-}
-
 
 void start_ai(player_t p, const char* ai_type)
 {
