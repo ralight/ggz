@@ -36,6 +36,7 @@
 #include <event.h>
 #include <chat.h>
 #include <net.h>
+#include <perms.h>
 
 
 /* Server wide data structures */
@@ -234,6 +235,15 @@ int room_join(GGZPlayer* player, const int room)
 		if(room != -1)
 			pthread_rwlock_wrlock(&rooms[room].lock);
 		pthread_rwlock_wrlock(&rooms[old_room].lock);
+	}
+
+	/* Check permissions to enter new room */
+	if(room != -1 && rooms[room].perms != 0 &&
+	   perms_check(player, rooms[room].perms) == PERMS_DENY) {
+		pthread_rwlock_unlock(&rooms[room].lock);
+		if(old_room != -1)
+			pthread_rwlock_unlock(&rooms[old_room].lock);
+		return E_NO_PERMISSION;
 	}
 
 	/* Check for room full condition */

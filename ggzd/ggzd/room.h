@@ -63,6 +63,9 @@ typedef struct {
 	/* Type of game played in this room */
 	int game_type;
 
+	/* Room entry restrictions */
+	unsigned int perms;	/* Set bits to equal perms in perms.h */
+
 	/* Array of pointers to players in this room (dynamcially allocated) */
 	GGZPlayer **players;
 

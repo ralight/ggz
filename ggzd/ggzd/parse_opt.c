@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2505 2001-09-24 02:36:50Z bmh $
+ * $Id: parse_opt.c 2510 2001-09-27 21:06:07Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include <motd.h>
 #include <room.h>
 #include <conf.h>
+#include <perms.h>
 
 /* Stuff from control.c we need access to */
 extern Options opt;
@@ -622,6 +623,7 @@ static void parse_room(char *name, char *dir)
 		room_create_additional();
 	num = room_info.num_rooms - 1;
 	rooms[num].game_type = -2;
+	rooms[num].perms = 0;
 
 	/* [RoomInfo] */
 	rooms[num].name = conf_read_string(ch, "RoomInfo", "Name", NULL);
@@ -640,6 +642,18 @@ static void parse_room(char *name, char *dir)
 			rooms[num].game_type = -1;
 		else
 			err_msg("Invalid GameType specified in room %s", name);
+		free(strval);
+	}
+	strval = conf_read_string(ch, "RoomInfo", "EntryRestriction", NULL);
+	if(strval) {
+		if(!strcasecmp(strval, "Admin"))
+			rooms[num].perms = PERMS_ROOMS_ADMIN;
+		else if(!strcasecmp(strval, "Registered"))
+			rooms[num].perms = PERMS_ROOMS_LOGIN;
+		else if(!strcasecmp(strval, "None"))
+			rooms[num].perms = 0;
+		else
+			err_msg("Invalid EntryRestriction in room %s", name);
 		free(strval);
 	}
 
