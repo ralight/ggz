@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4139 2002-05-03 03:17:08Z bmh $
+# $Id: Makefile.am 4148 2002-05-03 20:39:12Z dr_maux $
 
 SUBDIRS = .
 
-DBALL = ggzdb_db2.c ggzdb_db3.c 
+DBALL = ggzdb_db2.c ggzdb_db3.c ggzdb_pgsql.c ggzdb_mysql.c
 DBSOURCES = ggzdb_@database@.c
 
 EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DBALL)

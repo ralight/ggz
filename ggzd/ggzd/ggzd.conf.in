@@ -42,6 +42,12 @@
 #IPBanList = 208.137.159.0/255.255.255.0
 #  (bans all addresses from 208.137.159.0 - 208.137.159.255)
 
+# SQL database connection options
+#DatabaseHost = localhost
+#DatabaseName = ggz
+#DatabaseUsername = ggzd
+#DatabasePassword = ggzd
+
 ############################################################################
 # Logging Options
 ############################################################################

@@ -1,0 +1,278 @@
+/*
+ * File: ggzdb_mysql.c
+ * Author: Josef Spillner
+ * Project: GGZ Server
+ * Date: 03.05.2002
+ * Desc: Back-end functions for handling the postgresql style database
+ *
+ * Copyright (C) 2000 Brent Hendricks.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+#include <config.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <limits.h>
+
+#include <mysql/mysql.h>
+#include <pthread.h>
+
+#include "ggzd.h"
+#include "ggzdb.h"
+#include "err_func.h"
+
+/* Internal variables */
+static MYSQL *conn = NULL;
+static MYSQL_RES *res = NULL;
+static MYSQL_RES *iterres = NULL;
+static MYSQL_ROW row = NULL;
+static int itercount;
+static char query[4096];
+static pthread_mutex_t mutex;
+
+/* Internal functions */
+
+
+/* Function to initialize the mysql database system */
+int _ggzdb_init(char *datadir, int set_standalone)
+{
+	if(conn) return 0;
+
+	conn = mysql_init(conn);
+	pthread_mutex_lock(&mutex);
+	conn = mysql_real_connect(conn, "localhost", "ggzd", "ggzd", "ggz", 0, NULL, 0);
+	pthread_mutex_unlock(&mutex);
+
+	if(!conn)
+	{
+		err_sys("Couldn't initialize database.");
+		return 1;
+	}
+	return 0;
+}
+
+
+/* Function to deinitialize the mysql database system */
+void _ggzdb_close(void)
+{
+	/*mysql_close(conn);
+	conn = NULL;*/
+}
+
+
+/* Function to enter the database */
+void _ggzdb_enter(void)
+{
+}
+
+
+/* Function to exit the database */
+void _ggzdb_exit(void)
+{
+}
+
+
+/* Function to initialize the player table */
+int _ggzdb_init_player(char *datadir)
+{
+	int rc;
+
+	snprintf(query, sizeof(query), "CREATE TABLE users "
+		"(handle varchar(255), password varchar(255), name varchar(255), "
+		"email varchar(255), lastlogin int8, permissions int8)");
+	rc = mysql_query(conn, query);
+
+	/* Hack. */
+	rc = 0;
+	return 0;
+}
+
+
+/* Function to add a player record */
+int _ggzdb_player_add(ggzdbPlayerEntry *pe)
+{
+	int rc;
+
+	snprintf(query, sizeof(query), "INSERT INTO users "
+		"(handle, password, name, email, lastlogin, permissions) VALUES "
+		"('%s', '%s', '%s', '%s', %li, %u)",
+		pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
+	rc = mysql_query(conn, query);
+
+	if(rc)
+	{
+		err_sys("Couldn't add player.");
+	}
+
+	return rc;
+}
+
+
+/* Function to retrieve a player record */
+int _ggzdb_player_get(ggzdbPlayerEntry *pe)
+{
+	int rc;
+
+	snprintf(query, sizeof(query), "SELECT "
+		"password, name, email, lastlogin, permissions FROM users WHERE "
+		"handle = '%s'",
+		pe->handle);
+	rc = mysql_query(conn, query);
+
+	if(!rc)
+	{
+		res = mysql_store_result(conn);
+		if(mysql_num_rows(res) == 1)
+		{
+			row = mysql_fetch_row(res);
+			strncpy(pe->password, row[0], sizeof(pe->password));
+			strncpy(pe->name, row[1], sizeof(pe->name));
+			strncpy(pe->email, row[2], sizeof(pe->email));
+			pe->last_login = atol(row[3]);
+			pe->perms = atol(row[4]);
+		}
+		else
+		{
+			err_sys("Not exactly one entry found.");
+			rc = GGZDB_ERR_NOTFOUND;
+		}
+		mysql_free_result(res);
+	}
+	else
+	{
+		err_sys("Couldn't lookup player.");
+	}
+
+	return rc;
+}
+
+
+/* Function to update a player record */
+int _ggzdb_player_update(ggzdbPlayerEntry *pe)
+{
+	int rc;
+
+	snprintf(query, sizeof(query), "UPDATE users SET "
+		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
+		"handle = '%s'",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+	rc = mysql_query(conn, query);
+
+	if(rc)
+	{
+		err_sys("Couldn't update player.");
+	}
+
+	return rc;
+}
+
+
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+
+int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+{
+	int rc;
+
+	if(iterres)
+	{
+		mysql_free_result(iterres);
+	}
+
+	snprintf(query, sizeof(query), "SELECT "
+		"handle, password, name, email, lastlogin, permissions FROM users");
+	rc = mysql_query(conn, query);
+
+	if(!rc)
+	{
+		iterres = mysql_store_result(conn);
+		if(mysql_num_rows(iterres) > 0)
+		{
+			row = mysql_fetch_row(iterres);
+			strncpy(pe->handle, row[0], sizeof(pe->handle));
+			strncpy(pe->password, row[1], sizeof(pe->password));
+			strncpy(pe->name, row[2], sizeof(pe->name));
+			strncpy(pe->email, row[3], sizeof(pe->email));
+			pe->last_login = atol(row[4]);
+			pe->perms = atol(row[5]);
+		}
+		else
+		{
+			err_sys("No entries found.");
+			rc = GGZDB_ERR_NOTFOUND;
+			mysql_free_result(iterres);
+			iterres = NULL;
+		}
+	}
+	else
+	{
+		err_sys("Couldn't lookup player.");
+		iterres = NULL;
+	}
+
+	itercount = 0;
+
+	return rc;
+}
+
+
+int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+{
+	int rc;
+
+	if(!iterres)
+	{
+		err_sys_exit("get_next called before get_first, dummy");
+	}
+
+	rc = 0;
+	if(itercount < mysql_num_rows(iterres) - 1)
+	{
+		itercount++;
+		row = mysql_fetch_row(iterres);
+		strncpy(pe->handle, row[0], sizeof(pe->handle));
+		strncpy(pe->password, row[1], sizeof(pe->password));
+		strncpy(pe->name, row[2], sizeof(pe->name));
+		strncpy(pe->email, row[3], sizeof(pe->email));
+		pe->last_login = atol(row[4]);
+		pe->perms = atol(row[5]);
+	}
+	else
+	{
+		rc = GGZDB_ERR_NOTFOUND;
+		mysql_free_result(iterres);
+		iterres = NULL;
+	}
+
+	return rc;
+}
+
+
+void _ggzdb_player_drop_cursor(void)
+{
+	if(!iterres)
+	{
+		/*err_sys_exit("drop_cursor called before get_first, dummy");*/
+		return;
+	}
+
+	mysql_free_result(iterres);
+	iterres = 0;
+}
+
