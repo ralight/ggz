@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 1749 2001-06-18 22:28:15Z riq $	*/
+/*	$Id: ggz.c 2061 2001-07-22 05:28:24Z jdorje $	*/
 /*
  * Copyright (C) 2000 GGZ devel team
  *
@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 static char *name=NULL;
-static int ggz_sock;
+static int ggz_sock=-1;
 
 /**
  * @fn void ggz_connect(void)
