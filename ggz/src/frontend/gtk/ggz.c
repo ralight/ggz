@@ -33,6 +33,7 @@
 #include "msgbox.h"
 #include "motd.h"
 #include "game.h"
+#include "server.h"
 #include "support.h"
 #include "xtext.h"
 
@@ -150,8 +151,16 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 {
 	gchar *password;
 	gchar *message;
+	gchar *title;
 	GtkWidget *tmp;
 
+
+	/* Set title */
+	title = g_strdup_printf("GGZ Gaming Zone - [%s:%d]",
+				ggzcore_server_get_host(server),
+				ggzcore_server_get_port(server));
+	gtk_window_set_title (GTK_WINDOW (win_main), title);
+	g_free(title);
 
 	login_destroy();
 	ggzcore_server_list_rooms(server, -1, 1);
@@ -338,6 +347,10 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_
 	gdk_input_remove(server_handle);
 	server_handle = -1;
 	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
+
+	/* set title */
+	gtk_window_set_title (GTK_WINDOW (win_main), "GGZ Gaming Zone");
+
 	return GGZ_HOOK_OK;
 }
 
