@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @prefix@/bin/xadrez-chines --ggz
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/games/xadrezchines/
+Name = Xadrez Chines
+ProtocolEngine = CChess
+ProtocolVersion = 1
+Version = 0.0.1
+
