@@ -377,8 +377,8 @@ void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat)
 			_ggzcore_room_player_set_table(table->room, oldseat.name, -1);
 	}
 	else {
-		/* FIXME: need to notify room of table update */
-		
+		if (table->room) 
+			_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 	}
 	
 	/* Get rid of the old seat. */
