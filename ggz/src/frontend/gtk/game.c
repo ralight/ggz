@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: game.c 6908 2005-01-28 04:58:49Z jdorje $
  *
  * Functions for handling game events
  *
@@ -156,6 +156,7 @@ int game_launch(void)
 }
 
 
+#ifdef GGZ_ENABLE_DEPRECATED
 void game_channel_ready(void)
 {
 	ggzcore_game_set_server_fd(game,
@@ -163,6 +164,7 @@ void game_channel_ready(void)
 }
 
 
+#endif
 void game_quit(void)
 {
 	if (fd != -1) {
@@ -226,7 +228,9 @@ static GGZHookReturn game_negotiated(GGZGameEvent id,
 				     const void *user_data)
 {
 	ggz_debug("game", "Game module ready (creating channel)");
+#ifdef GGZ_ENABLE_DEPRECATED
 	ggzcore_server_create_channel(server);
+#endif
 
 	return GGZ_HOOK_OK;
 }
