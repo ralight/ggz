@@ -25,6 +25,7 @@
 #include <kmessagebox.h>
 #include <dirent.h>
 #include <kstdaction.h>
+#include <kapplication.h>
 
 #define T2S(a) (a==BLACK?0:1)
 #define S2T(a) (a==0?BLACK:WHITE)

@@ -11,7 +11,7 @@
 
 #include "kdots_about.h"
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <klocale.h>
 
 #include <qpushbutton.h>

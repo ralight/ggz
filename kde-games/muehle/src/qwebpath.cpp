@@ -48,7 +48,7 @@ void QWebPath::create(int length)
 }
 
 // Return the pathlist found by the flood fill
-QList<QWebPoint> QWebPath::pathlist()
+QPtrList<QWebPoint> QWebPath::pathlist()
 {
 	return m_pathlist;
 }
@@ -56,8 +56,8 @@ QList<QWebPoint> QWebPath::pathlist()
 // Recursive flood fill-type search function
 void QWebPath::findRecursive(QWebPoint *old, QWebPoint *origin, int length)
 {
-	QList<QWebPoint> pointlist;
-	QList<QPoint> peerlist;
+	QPtrList<QWebPoint> pointlist;
+	QPtrList<QPoint> peerlist;
 	QWebPoint *wp;
 
 	m_pathlist.append(origin);

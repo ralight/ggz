@@ -20,7 +20,7 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 // Class declarations
 class Stone;
@@ -76,7 +76,7 @@ class Board : public QWidget
 			phasemove
 		};
 
-		QList<Stone> stonelist;
+		QPtrList<Stone> stonelist;
 		QWeb *web;
 		QPixmap *bg;
 		QPixmap *black, *white;

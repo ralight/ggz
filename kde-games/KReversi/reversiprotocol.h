@@ -24,7 +24,7 @@
 
 #include <qobject.h>
 #include <qsocket.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #define CHAR -1
 #define INT -2
@@ -60,7 +60,7 @@ public:
 private:
   int next;
   QSocket *sock;
-  QList<void> args;
+  QPtrList<void> args;
   void handleNewArg();
 signals:
   void gotSeat(int seatNumber);

@@ -11,7 +11,7 @@
 
 #include "kdots_win.h"
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>

@@ -29,12 +29,13 @@
 #include <kaction.h>
 #include <qstringlist.h>
 #include <qlayout.h>
+#include <qptrlist.h>
 
 class ReversiView;
 class ReversiProtocol;
 
 
-/** KReversi is the base class of the porject */
+/** KReversi is the base class of the project */
 class KReversi : public KMainWindow
 {
 Q_OBJECT 
@@ -74,7 +75,7 @@ private: // Private attributes
   KActionMenu *themes;
   /** Themes */
   int theme_num;
-  QList<KRadioAction> theme_list;
+  QPtrList<KRadioAction> theme_list;
   /** Init the board */
   void initGame();
   /** do a move */

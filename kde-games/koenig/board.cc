@@ -27,6 +27,7 @@
 #include <qpoint.h>
 #include <qwidget.h>
 #include <qwmatrix.h>
+#include <qcursor.h>
 
 #include "board.h"
 #include "board.moc"

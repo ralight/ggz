@@ -29,7 +29,7 @@ KDotsOptions::KDotsOptions(QWidget *parent, const char *name)
 	//QFont font("helvetica", 11);
 	QFont font = title->font();
 	font.setBold(TRUE);
-	title->setFont(font, QFont::Black);
+	title->setFont(font);
 
 	desc = new QLabel(i18n("Please specify the board size here."), this);
 

@@ -39,7 +39,7 @@ void QWebPoint::addPeer(QPoint p)
 	//cout << "peer: " << p.x() << "," << p.y() << endl;
 }
 
-QList<QPoint> QWebPoint::peerlist()
+QPtrList<QPoint> QWebPoint::peerlist()
 {
 	return m_peerlist;
 }
@@ -117,7 +117,7 @@ QPoint QWeb::getPoint(QPoint p)
 	return ret;
 }
 
-QList<QWebPoint> QWeb::pointlist()
+QPtrList<QWebPoint> QWeb::pointlist()
 {
 	return m_pointlist;
 }

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
   if(!args->isSet("ggz"))
   {
-    cout << "Sorry, this game does only work in GGZ mode so far." << endl;
+    std::cout << "Sorry, this game does only work in GGZ mode so far." << std::endl;
     exit(-1);
   }
 

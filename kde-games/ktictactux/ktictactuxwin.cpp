@@ -11,6 +11,7 @@
 #include <kpopupmenu.h>
 #include <kmenubar.h>
 #include <klocale.h>
+#include <kstatusbar.h>
 
 // Constructor
 KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)

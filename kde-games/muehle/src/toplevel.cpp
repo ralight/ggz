@@ -25,9 +25,10 @@
 #include <kpopupmenu.h>
 #include <kmenubar.h>
 #include <ksimpleconfig.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kstatusbar.h>
 
 // Qt includes
 #include <qlayout.h>

@@ -19,7 +19,7 @@
 #define QWEBPATH_H
 
 // Qt includes
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qpoint.h>
 
 // Class declaration
@@ -33,12 +33,12 @@ class QWebPath
 		QWebPath(QWeb *web, QWebPoint *point);
 		~QWebPath();
 		void create(int length);
-		QList<QWebPoint> pathlist();
+		QPtrList<QWebPoint> pathlist();
 
 	private:
 		void findRecursive(QWebPoint *old, QWebPoint *origin, int length);
 
-		QList<QWebPoint> m_pathlist;
+		QPtrList<QWebPoint> m_pathlist;
 		QWeb *m_web;
 		QWebPoint *m_wp;
 };

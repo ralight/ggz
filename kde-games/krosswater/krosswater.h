@@ -28,7 +28,7 @@
 // Qt includes
 #include <qframe.h>
 #include <qevent.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 // Forward includes
 class KrosswaterMove;
@@ -92,7 +92,7 @@ class Krosswater : public ZoneGGZModUI
 		DlgAgain *m_again;
 		int m_broken;
 		int m_sleep;
-		QList<KrosswaterMove> m_movelist;
+		QPtrList<KrosswaterMove> m_movelist;
 		int m_turn;
 };
 

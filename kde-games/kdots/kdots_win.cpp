@@ -16,6 +16,7 @@
 
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <kstatusbar.h>
 
 KDotsWin::KDotsWin()
 : KMainWindow()

@@ -35,8 +35,8 @@ int main(int argc, char **argv)
 		if(!strcmp(argv[i], "--ggz")) ggz = 1;
 	if(!ggz)
 	{
-		cerr << "This game cannot be launched from the command line." << endl;
-		cerr << "Please use a GGZ core client." << endl;
+		std::cerr << "This game cannot be launched from the command line." << std::endl;
+		std::cerr << "Please use a GGZ core client." << std::endl;
 		exit(-1);
 	}
 

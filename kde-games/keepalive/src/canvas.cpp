@@ -130,7 +130,7 @@ void Canvas::slotInput()
 			break;
 		default:
 			//QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
-			std::cout << "Unknown opcode: " << (int)c << endl;
+			std::cout << "Unknown opcode: " << (int)c << std::endl;
 	}
 }
 

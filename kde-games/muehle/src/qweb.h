@@ -19,7 +19,7 @@
 #define QWEB_H
 
 // Qt includes
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qpoint.h>
 
 // Class representing one single point in a QWeb
@@ -29,14 +29,14 @@ class QWebPoint
 		QWebPoint(QPoint p);
 		~QWebPoint();
 		void addPeer(QPoint p);
-		QList<QPoint> peerlist();
+		QPtrList<QPoint> peerlist();
 		QPoint point();
 		void setData(int data);
 		int data();
 
 	private:
 		QPoint m_point;
-		QList<QPoint> m_peerlist;
+		QPtrList<QPoint> m_peerlist;
 		int m_data;
 };
 
@@ -49,14 +49,14 @@ class QWeb
 		void addPoint(QPoint p);
 		void addPeer(QPoint p, QPoint p2);
 		QPoint getPoint(QPoint p);
-		QList<QWebPoint> pointlist();
+		QPtrList<QWebPoint> pointlist();
 		void setScale(float factor);
 		float scale();
 		void setData(QPoint p, int data);
 		int data(QPoint p);
 
 	private:
-		QList<QWebPoint> m_pointlist;
+		QPtrList<QWebPoint> m_pointlist;
 		QWebPoint *tmp;
 		float m_scale;
 };

@@ -18,6 +18,9 @@
 // Header file
 #include "qextpainter.h"
 
+// Qt includes
+#include <qptrlist.h>
+
 // System includes
 #include <iostream>
 
@@ -35,8 +38,8 @@ QExtPainter::~QExtPainter()
 // Draw a complete QWeb on the default paint device
 void QExtPainter::drawWeb(QWeb w)
 {
-	QList<QWebPoint> wplist;
-	QList<QPoint> plist;
+	QPtrList<QWebPoint> wplist;
+	QPtrList<QPoint> plist;
 	int x, y, x2, y2;
 	float s;
 

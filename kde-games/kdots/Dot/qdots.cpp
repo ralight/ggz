@@ -14,14 +14,14 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
-#include <qarray.h>
+#include <qmemarray.h>
 
 #include "config.h"
 
 QPixmap *bgpix;
 QImage *bgimg, *fgimg;
-QArray<int> *m_shadow;
-QArray<int> *m_shadowlines;
+QMemArray<int> *m_shadow;
+QMemArray<int> *m_shadowlines;
 int m_arywidth, m_aryheight;
 
 QDots::QDots(QWidget* parent = 0, char* name = 0)
@@ -210,8 +210,8 @@ void QDots::refreshBoard()
 	if(m_shadow) delete m_shadow;
 	if(m_shadowlines) delete m_shadowlines;
 
-	m_shadow = new QArray<int>((m_cols - 1) * (m_rows - 1));
-	m_shadowlines = new QArray<int>(m_cols * m_rows * 2);
+	m_shadow = new QMemArray<int>((m_cols - 1) * (m_rows - 1));
+	m_shadowlines = new QMemArray<int>(m_cols * m_rows * 2);
 	for(int j = 0; j < m_rows - 1; j++)
 		for(int i = 0; i < m_cols - 1; i++)
 			m_shadow->at(j * (m_cols - 1) + i) = -1;

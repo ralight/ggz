@@ -27,7 +27,7 @@
 #include "toplevel.h"
 
 // KDE includes
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -371,8 +371,8 @@ void Board::mousePressEvent(QMouseEvent *e)
 void Board::check(int x, int y, Stone *stone)
 {
 	QWebPoint *wp;
-	QList<QWebPoint> pointlist;
-	QList<QPoint> peerlist;
+	QPtrList<QWebPoint> pointlist;
+	QPtrList<QPoint> peerlist;
 	int xrow, yrow, xrows, yrows;
 	int color;
 

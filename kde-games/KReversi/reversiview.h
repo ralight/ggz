@@ -20,6 +20,7 @@
 
 #include <qcanvas.h>
 #include <qstringlist.h>
+#include <qptrlist.h>
 
 #define WHITE +1
 #define BLACK -1
@@ -72,7 +73,7 @@ protected: // Protected methods
   /** Used when the mouse is pressed */
   void contentsMousePressEvent(QMouseEvent *e);
   /** List of discs */
-  QList<ReversiDisc> discs;
+  QPtrList<ReversiDisc> discs;
   /** color names */
   QStringList colorNames;
 };
