@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: main.c 3459 2002-02-24 20:05:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -118,7 +118,7 @@ static void es_exit(int result)
 int main(int argc, char **argv)
 {
 	int i;
-	int which_game = GGZ_GAME_UNKNOWN;
+	char* which_game = NULL;
 
 	/* Initialize GGZ structures. */
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 		ggzdmod_log(game.ggz, "Reading option %s.", argv[i]);
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
-			ggzdmod_log(game.ggz, "which_game set to %d.",
+			ggzdmod_log(game.ggz, "which_game set to %s.",
 				    which_game);
 		} else if ((option =
 			    get_option("--option", argv, &i, argc)) != NULL) {

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3439 2002-02-22 23:33:47Z jdorje $
+ * $Id: games.c 3459 2002-02-24 20:05:07Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -80,7 +80,7 @@ static int game_types[NUM_GAMES];	/* possible types of games; used for
 /* games_get_gametype determines which game the text corresponds to.  If the
    --game=<game> parameter is passed to the server on startup, <game> is
    passed here to determine the type of game. */
-int games_get_gametype(char *text)
+char* games_get_gametype(char *text)
 {
 	int i;
 
@@ -89,53 +89,57 @@ int games_get_gametype(char *text)
 
 	for (i = 0; i < NUM_GAMES; i++)
 		if (!strcmp(text, game_data[i].name))
-			return i;
+			return game_data[i].name;
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case 
 	   this won't work. */
 	ggzdmod_log(game.ggz, "Unknown game for '%s'.", text);
-	return GGZ_GAME_UNKNOWN;
+	return NULL;
 }
 
-void games_handle_gametype(int option)
+void games_handle_gametype(int choice)
 {
-	game.which_game = game_types[option];
-
-	if (game.which_game < 0 || game.which_game >= NUM_GAMES) {
+	choice = game_types[choice];
+	if (choice < 0 || choice >= NUM_GAMES) {
 		ggzdmod_log(game.ggz,
-			    "SERVER/CLIENT error: bad game type %d selected; using %d instead.",
-			    game.which_game, game_types[0]);
-		game.which_game = game_types[0];
+			    "SERVER/CLIENT error: bad game type %d selected.",
+			    choice);
+		choice = 0;
 	}
+	game.which_game = game_data[choice].name;
 }
 
 
 
 /* game_valid_game returns a boolean, TRUE if the game is valid in the
    current setup and false otherwise. */
-int games_valid_game(int which_game)
+int games_get_game_id(char* game_name)
 {
-	return game_data[which_game].funcs->is_valid_game();
+	int i;
+	
+	for (i = 0; i < NUM_GAMES; i++) {
+		if (strcmp(game_data[i].name, game_name) == 0)
+			return i;
+	}
+	
+	assert(FALSE);
+	return -1;
 }
 
 /* This function requests the game type from the host client.  It's only
    called if this information isn't determined automatically (i.e. via
-   --game=spades parameter).  the reply is sent to games_handle_gametype,
+   --game=<game> parameter).  The reply is sent to games_handle_gametype,
    below. */
 int games_req_gametype()
 {
-	int fd = game.host >= 0 ? get_player_socket(game.host) : -1;
+	int fd = get_player_socket(game.host);
 	int cnt = 0, i;
 	int status = 0;
-
-	if (fd == -1) {
-		ggzdmod_log(game.ggz,
-			    "ERROR: SERVER BUG: " "nonexistent host.");
-		return -1;
-	}
+	
+	assert(fd >= 0);
 
 	for (i = 0; i < NUM_GAMES; i++) {
-		if (games_valid_game(i)) {
+		if (game_data[i].funcs->is_valid_game(i)) {
 			game_types[cnt] = i;
 			cnt++;
 		}
@@ -147,7 +151,7 @@ int games_req_gametype()
 	if (cnt == 1) {
 		ggzdmod_log(game.ggz, "Just one valid game: choosing %d.",
 			    game_types[0]);
-		game.which_game = game_types[0];
+		game.which_game = game_data[game_types[0]].name;
 		init_game();
 		broadcast_sync();
 		return 0;

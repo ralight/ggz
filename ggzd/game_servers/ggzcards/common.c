@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: common.c 3459 2002-02-24 20:05:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -183,7 +183,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 				    "SERVER/CLIENT bug: received options from non-host player.");
 			status = -1;
 		} else {
-			if (game.which_game == GGZ_GAME_UNKNOWN) {
+			if (game.which_game == NULL) {
 				int option;
 				rec_options(1, &option);
 				games_handle_gametype(option);
@@ -225,7 +225,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 }
 
 /* Setup game state and board.  Also initializes the _type_ of game. */
-void init_ggzcards(GGZdMod * ggz, int which)
+void init_ggzcards(GGZdMod * ggz, char* which_game)
 {
 	/* Seed the random number generator */
 	srandom((unsigned) time(NULL));
@@ -234,12 +234,12 @@ void init_ggzcards(GGZdMod * ggz, int which)
 	memset(&game, 0, sizeof(struct game_t));
 
 	/* JDS: Note: the game type must have been initialized by here */
-	game.which_game = which;
+	game.which_game = which_game;
 
 	game.state = STATE_PRELAUNCH;
 	game.ggz = ggz;
 
-	ggzdmod_log(game.ggz, "Game initialized as game %d.",
+	ggzdmod_log(game.ggz, "Game initialized as game %s.",
 		    game.which_game);
 }
 
@@ -271,7 +271,7 @@ static void newgame(void)
 {
 	player_t p;
 
-	if (game.which_game == GGZ_GAME_UNKNOWN)
+	if (game.which_game == NULL)
 		fatal_error("BUG: newgame(): unknown game.");
 
 	finalize_options();
@@ -458,7 +458,7 @@ static void handle_launch_event(void)
 
 	/* as soon as we know which game we're playing, we should init the
 	   game */
-	if (game.which_game != GGZ_GAME_UNKNOWN)
+	if (game.which_game != NULL)
 		init_game();
 
 	set_game_state(STATE_NOTPLAYING);
@@ -553,11 +553,11 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	      && game.saved_state == STATE_NOTPLAYING))
 		send_player_message_toall(seat);
 
-	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
+	if (player == game.host && game.which_game == NULL)
 		games_req_gametype();
 
 	if (seats_full()
-	    && game.which_game != GGZ_GAME_UNKNOWN) {
+	    && game.which_game != NULL) {
 		/* (Re)Start game play */
 		if (game.state != STATE_WAIT_FOR_BID
 		    && game.state != STATE_WAIT_FOR_PLAY)
@@ -832,13 +832,13 @@ void init_game()
 {
 	seat_t s;
 	player_t p;
+	int game_id = games_get_game_id(game.which_game);
+	
+	assert(game_data[game_id].funcs->is_valid_game());
 
-	if (!games_valid_game(game.which_game))
-		fatal_error("BUG: init_game: invalid game chosen.");
+	assert(!game.initted && game.which_game != NULL);
 
-	assert(!game.initted && game.which_game != GGZ_GAME_UNKNOWN);
-
-	game.funcs = game_data[game.which_game].funcs;
+	game.funcs = game_data[game_id].funcs;
 
 	/* default values */
 	game.deck_type = GGZ_DECK_FULL;
@@ -846,7 +846,7 @@ void init_game()
 	game.last_hand = TRUE;
 	game.cumulative_scores = TRUE;
 	game.bid_history = TRUE;
-	game.name = game_data[game.which_game].full_name;
+	game.name = game_data[game_id].full_name;
 
 	/* now we do all the game-specific initialization... */
 	assert(game.ai_type == NULL);

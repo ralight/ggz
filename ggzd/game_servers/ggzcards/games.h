@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3439 2002-02-22 23:33:47Z jdorje $
+ * $Id: games.h 3459 2002-02-24 20:05:07Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -95,27 +95,15 @@ struct game_info {
 	struct game_function_pointers *funcs;
 };
 
-/* Game types. */
-/* The game enumerations must start at 0 and count upwards */
-typedef enum game_type_t {
-	GGZ_GAME_UNKNOWN = -1,
-	GGZ_GAME_SUARO = 0,	/* http://suaro.dhs.org */
-	GGZ_GAME_SPADES = 1,
-	GGZ_GAME_HEARTS = 2,
-	GGZ_GAME_BRIDGE = 3,
-	GGZ_GAME_LAPOCHA = 4,
-	GGZ_GAME_EUCHRE = 5,
-	GGZ_GAME_ROOK = 6,
-	GGZ_GAME_SKAT = 7,
-	GGZ_GAME_SUECA = 8,
-	GGZ_GAME_WHIST = 9,
-} game_type_t;
-
 extern struct game_info game_data[];
 
-int games_get_gametype(char *);	/* which game is this? */
-void games_handle_gametype(int);	/* set the game */
+char* games_get_gametype(char *text);	/* which game is this? */
+
+void games_handle_gametype(int choice);	/* set the game */
+
+/* Get the ID (index into game_data) of the game. */
+int games_get_game_id(char* game_name);
+
 int games_req_gametype();	/* what do you want to play today? */
-int games_valid_game(int);	/* is the game valid? */
 
 #endif /* __GAMES_H__ */

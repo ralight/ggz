@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: game.c 3459 2002-02-24 20:05:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -70,6 +70,15 @@ struct game_function_pointers game_funcs = {
 };
 
 
+static void bad_game(char *func)
+{
+	assert(FALSE);
+	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
+	            "%s not implemented for game %s.",
+	            func, game.which_game);
+}
+
+
 /* is_valid_game returns true if the game is valid under the current game
    conditions (i.e. number of players); false otherwise */
 int game_is_valid_game(void)
@@ -85,9 +94,7 @@ int game_is_valid_game(void)
    players can both be used intelligently. */
 void game_init_game(void)
 {
-	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-		    "game_launch not implemented for game %d.",
-		    game.which_game);
+	bad_game("init_game");
 }
 
 
@@ -195,8 +202,7 @@ void game_start_bidding(void)
    pretty closely with the other bidding functions. */
 int game_get_bid(void)
 {
-	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-		    "game_get_bid called for unimplemented game.");
+	bad_game("get_bid");
 	return -1;
 }
 
@@ -391,9 +397,7 @@ void game_end_trick(void)
 /* Calculate scores for this hand and announce. */
 void game_end_hand(void)
 {
-	ggzdmod_log(game.ggz,
-		    "SERVER not implemented: game_end_hand for game %d.",
-		    game.which_game);
+	bad_game("end_hand");
 }
 
 
