@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: common.h 2820 2001-12-09 07:38:20Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -66,6 +66,9 @@ typedef enum {
 
 /* Data structure for generic trick-taking card game */
 struct game_t {
+	/* GGZ data state object */
+	GGZdMod *ggz;
+
 	/* Game meta-data */
 	game_type_t which_game;	/**< the type of game game */
 	struct game_function_pointers *funcs;	/**< an array of game-specific functions */
@@ -168,7 +171,7 @@ void set_game_state(server_state_t state);
 void save_game_state();
 void restore_game_state();
 
-void init_game();
+void init_game(void);
 
 
 void next_play(void);		/* make the next move */
@@ -176,11 +179,10 @@ void next_play(void);		/* make the next move */
 /* handle player events -- used to all just be "update" */
 
 /* these are GGZ communication events that we must handle */
-void handle_launch_event(GGZdModEvent event, void *data);
-void handle_join_event(GGZdModEvent event, void *data);
-void handle_leave_event(GGZdModEvent event, void *data);
-/* void handle_quit_event(GGZdModEvent event, void* data); */
-void handle_player_event(GGZdModEvent event, void *data);
+void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 
 /* these are internal GGZCards events */
 int handle_newgame_event(player_t p);
@@ -188,7 +190,8 @@ int handle_play_event(card_t card);
 int handle_bid_event(player_t p, bid_t bid);
 
 /* initialization functions */
-void init_ggzcards(int which);	/* pass in the name of the game */
+void init_ggzcards(GGZdMod * ggz, int which);	/* pass in the name of the
+						   game */
 void set_num_seats(int num_seats);
 void assign_seat(seat_t s, player_t p);	/* player #p sits in seat #s */
 void empty_seat(seat_t s, char *name);	/* seat s is empty; give it a label */

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 2819 2001-12-09 07:16:45Z jdorje $
+ * $Id: main.c 2820 2001-12-09 07:38:20Z jdorje $
  *
  * Copyright (C) Josef Spillner
  *
@@ -26,19 +26,30 @@
 
 /* System includes */
 #include <sys/types.h>
-#include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #include "game.h"
 
 int main(void)
 {
-	ggzd_set_handler(GGZDMOD_EVENT_STATE, &game_handle_ggz);
-	ggzd_set_handler(GGZDMOD_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 
-	(void)ggzd_main_loop();
+	game_init(ggz);
+	ggzdmod = ggz; /* FIXME -- uses ggz_server.h */
+	
+	if (ggzdmod_connect(ggz) < 0) {
+		fprintf(stderr, "Couldn't connect to GGZ!\n");
+		return -1;
+	}
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }

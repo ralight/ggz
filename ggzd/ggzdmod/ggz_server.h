@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2819 2001-12-09 07:16:45Z jdorje $
+ * $Id: ggz_server.h 2820 2001-12-09 07:38:20Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,9 +38,6 @@ extern "C" {
 	/* This interface is depricated and should not be used.  I
 	   am in the process of phasing it out. */
 
-	/* Return current state: CREATED, WAITING, PLAYING, DONE */
-#define ggzd_get_state() ggzdmod_get_state(ggzdmod)
-
 #define ggzd_get_seat_status(seat) (ggzdmod_get_seat(ggzdmod, seat).type)
 
 #define ggzd_get_player_name(seat) (ggzdmod_get_seat(ggzdmod, seat).name)
@@ -50,19 +47,10 @@ extern "C" {
 
 	int ggzd_debug(const char *fmt, ...);
 
-#define ggzd_seats_num() ggzd_get_seats_num()
 #define ggzd_seats_open() ggzd_get_seat_count(GGZ_SEAT_OPEN)
 #define ggzd_seats_num() ggzdmod_get_num_seats(ggzdmod)
 
 #define ggzd_get_seat_count(status) ggzdmod_count_seats(ggzdmod, status)
-
-	typedef void (*GGZDHandler) (GGZdModEvent event_id,
-				     void *handler_data);
-
-	void ggzd_set_handler(GGZdModEvent event_id,
-			      const GGZDHandler handler);
-
-	int ggzd_main_loop(void);
 
 #ifdef __cplusplus
 }

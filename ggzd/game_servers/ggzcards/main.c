@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2819 2001-12-09 07:16:45Z jdorje $
+ * $Id: main.c 2820 2001-12-09 07:38:20Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -107,10 +107,15 @@ static void es_exit(int result)
 int main(int argc, char **argv)
 {
 	int i;
-
 	int which_game = GGZ_GAME_UNKNOWN;
 
-	fprintf(stderr, "Starting.\n");
+	/* Initialize GGZ structures. */
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_launch_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_join_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
+			    &handle_player_event);
 
 	/* set up easysock functions to be called on error/exit */
 	es_err_func_set(es_error);
@@ -143,18 +148,17 @@ int main(int argc, char **argv)
 		}
 	}
 
-	init_ggzcards(which_game);
-
-	/* set up handlers */
-	ggzd_set_handler(GGZDMOD_EVENT_STATE, &handle_launch_event);
-	ggzd_set_handler(GGZDMOD_EVENT_JOIN, &handle_join_event);
-	ggzd_set_handler(GGZDMOD_EVENT_LEAVE, &handle_leave_event);
-	ggzd_set_handler(GGZDMOD_EVENT_PLAYER_DATA, &handle_player_event);
+	init_ggzcards(ggz, which_game);
+	ggzdmod = ggz;		/* FIXME -- uses ggz_server.h */
 
 	/* Connect to GGZ server; main loop */
-	(void) ggzd_main_loop();
-
-	fprintf(stderr, "Stopping.\n");
+	if (ggzdmod_connect(ggz) < 0) {
+		fprintf(stderr, "Couldn't connect to GGZ!\n");
+		return -1;
+	}
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }

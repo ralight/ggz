@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2820 2001-12-09 07:38:20Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -67,6 +67,7 @@
 
 /* Data structure for Hastings1066 */
 struct hastings_game_t {
+	GGZdMod *ggz; /* GGZ state object */
 	char board[6][19]; /* the game board with units */
 	char boardmap[6][19]; /* game board with hexagons */
 	char state; /* current state */
@@ -81,9 +82,9 @@ struct hastings_game_t {
 	char teamnames[8]; /* to be named */
 };
 
-void game_init(void);
-void game_handle_ggz(GGZdModEvent event, void *data);
-void game_handle_player(GGZdModEvent event, void *seat_data);
+void game_init(GGZdMod *ggz);
+void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data);
 
 int game_send_seat(int seat);
 int game_send_players(void);

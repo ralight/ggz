@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2819 2001-12-09 07:16:45Z jdorje $
+ * $Id: game.c 2820 2001-12-09 07:38:20Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -41,7 +41,7 @@
 struct hastings_game_t hastings_game;
 
 /* Setup game state and board */
-void game_init(void)
+void game_init(GGZdMod *ggz)
 {
 	int i, j;
 
@@ -78,11 +78,13 @@ void game_init(void)
 	memmove(hastings_game.boardmap[3], "xx  xxxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[4], "xx   xxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[5], " x   x x x x x     ", 19);
+	
+	hastings_game.ggz = ggz;
 }
 
 
 /* Handle event from GGZ server */
-void game_handle_ggz(GGZdModEvent event, void *data)
+void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	switch(event)
 	{
@@ -103,7 +105,7 @@ void game_handle_ggz(GGZdModEvent event, void *data)
 
 
 /* Handle message from player */
-void game_handle_player(GGZdModEvent event, void *seat_data)
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 {
 	int num = *(int*)seat_data;
 	int fd, op;
@@ -121,7 +123,7 @@ void game_handle_player(GGZdModEvent event, void *seat_data)
 				game_update(HASTINGS_EVENT_MOVE, NULL);
 			break;
 		case HASTINGS_REQ_INIT:
-			game_init();
+			game_init(hastings_game.ggz);
 			game_send_sync(num);
 			if (!ggzd_seats_open())
 			{
