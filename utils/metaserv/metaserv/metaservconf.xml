@@ -2,9 +2,14 @@
 <metaserver>
 	<entrylist class="ggz">
 		<connection version="0.0.5pre" preference="50">ggz://jzaun.com:5688</connection>
+		<connection version="0.0.5pre" preference="50">ggz://mindx.dyndns.org:5688</connection>
 		<connection version="0.0.4" preference="100">ggz://ggz.snafu.de:5688</connection>
 		<connection version="0.0.4" preference="100">ggz://ggz.morat.net:5688</connection>
 		<meta version="0.1" preference="100">ggzmeta://ggz.morat.net:15689</meta>
+	</entrylist>
+	<entrylist class="teg">
+		<connection version="5" preference="100">teg://ggz.homeip.net:2000</connection>
+		<connection version="5" preference="100">teg://mindx.dyndns.org:2000</connection>
 	</entrylist>
 	<entrylist class="atlantik">
 		<connection version="0.1" preference="100">atlantik://capsi.com:9999</connection>
