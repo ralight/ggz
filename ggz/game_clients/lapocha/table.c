@@ -91,52 +91,52 @@ void table_initialize(void)
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
 			   5, 111,
-			   106, 294);
+			   106, 241);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
-			   5, 410,
+			   5, 357,
 			   106, 106);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
-			   111, 410,
-			   294, 106);
+			   111, 357,
+			   241, 106);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
-			   410, 410,
+			   357, 357,
 			   106, 106);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
-			   410, 116,
-			   106, 294);
+			   357, 116,
+			   106, 241);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
-			   410, 5,
+			   357, 5,
 			   106, 106);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			   FALSE,
 			   116, 5,
-			   294, 106);
+			   241, 106);
 
 /* JUST TESTING FOR NOW */
 	/* Fill hand with random cards */
-	hand.hand_size = 13;
+	hand.hand_size = 10;
 	hand.selected_card = -1;
-	for(i=0; i<13; i++)
+	for(i=0; i<10; i++)
 		hand.card[i] = random() % 52;
 	game.state = LP_STATE_MOVE;
 
 	/* Put some cards in the buffer */
-	for(i=0; i<13; i++) {
+	for(i=0; i<10; i++) {
 		x1 = (hand.card[i] / 13) * CARDWIDTH;
 		y1 = (hand.card[i] % 13) * CARDHEIGHT;
 		x2 = 116.5 + (i * CARDWIDTH/4.0);
-		y2 = 416;
+		y2 = 363;
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
@@ -144,7 +144,7 @@ void table_initialize(void)
 				x2, y2,
 				CARDWIDTH, CARDHEIGHT);
 	}
-	for(i=0; i<13; i++) {
+	for(i=0; i<10; i++) {
 		x1 = 10;
 		y1 = 116.5 + (i * CARDWIDTH/4.0);
 		gdk_draw_pixmap(table_buf,
@@ -154,7 +154,7 @@ void table_initialize(void)
 				x1, y1,
 				CARDHEIGHT, CARDWIDTH);
 	}
-	for(i=12; i>=0; i--) {
+	for(i=9; i>=0; i--) {
 		x1 = 121.5 + (i * CARDWIDTH/4.0);
 		y1 = 10;
 		gdk_draw_pixmap(table_buf,
@@ -164,8 +164,8 @@ void table_initialize(void)
 				x1, y1,
 				CARDWIDTH, CARDHEIGHT);
 	}
-	for(i=12; i>=0; i--) {
-		x1 = 416;
+	for(i=9; i>=0; i--) {
+		x1 = 363;
 		y1 = 121.5 + (i * CARDWIDTH/4.0);
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
@@ -211,12 +211,12 @@ void table_handle_click_event(GdkEventButton *event)
 
 	/* Real quick, see if we even care */
 	if(event->x < 116 || event->x > 400
-	   || event->y < 416 || event->y > 512
+	   || event->y < 363 || event->y > 512
 	   || game.state != LP_STATE_MOVE)
 		return;
 
 	/* Calculate our card target */
-	for(target=0; target<12; target++) {
+	for(target=0; target<9; target++) {
 		x = 116.5 + ((target+1) * CARDWIDTH/4.0);
 		if(event->x <= x)
 			break;
@@ -265,33 +265,33 @@ static void table_card_select(int card)
 		gdk_draw_pixmap(table_buf,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				table_buf_backup,
-				112, 401,
-				112, 401,
-				292, 114);
+				112, 348,
+				112, 348,
+				239, 114);
 	else
 		/* Backup the table image */
 		gdk_draw_pixmap(table_buf_backup,
 				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				table_buf,
-				112, 401,
-				112, 401,
-				292, 114);
+				112, 348,
+				112, 348,
+				239, 114);
 
 	/* Clean the card area */
 	gdk_draw_rectangle(table_buf,
 		   	f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 		   	TRUE,
-		   	112, 411,
-		   	292, 104);
+		   	112, 358,
+		   	239, 104);
 
 	/* Draw the cards, with our selected card popped forward */
-	for(i=0; i<13; i++) {
+	for(i=0; i<10; i++) {
 		if(hand.card[i] < 0)
 			continue;
 		x1 = (hand.card[i] / 13) * CARDWIDTH;
 		y1 = (hand.card[i] % 13) * CARDHEIGHT;
 		x2 = 116.5 + (i * CARDWIDTH/4.0);
-		y2 = 416;
+		y2 = 363;
 		if(i == card)
 			y2 -= 10;
 		gdk_draw_pixmap(table_buf,
@@ -306,9 +306,9 @@ static void table_card_select(int card)
 	gdk_draw_pixmap(f1->window,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			table_buf,
-			112, 401,
-			112, 401,
-			292, 114);
+			112, 348,
+			112, 348,
+			239, 114);
 }
 
 
@@ -323,25 +323,25 @@ static void table_card_play(int card)
 	gdk_draw_pixmap(table_buf,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			table_buf_backup,
-			112, 401,
-			112, 401,
-			292, 114);
+			112, 348,
+			112, 348,
+			239, 114);
 
 	/* Clean the card area */
 	gdk_draw_rectangle(table_buf,
 		   	f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 		   	TRUE,
-		   	112, 411,
-		   	292, 104);
+		   	112, 358,
+		   	239, 104);
 
 	/* Draw the cards, eliminating the card in play */
-	for(i=0; i<13; i++) {
+	for(i=0; i<10; i++) {
 		if(hand.card[i] < 0)
 			continue;
 		x1 = (hand.card[i] / 13) * CARDWIDTH;
 		y1 = (hand.card[i] % 13) * CARDHEIGHT;
 		x2 = 116.5 + (i * CARDWIDTH/4.0);
-		y2 = 416;
+		y2 = 363;
 		if(i == card)
 			continue;
 		gdk_draw_pixmap(table_buf,
@@ -364,7 +364,7 @@ static void table_card_play(int card)
 	x1 = (hand.card[card] / 13) * CARDWIDTH;
 	y1 = (hand.card[card] % 13) * CARDHEIGHT;
 	x2 = 116.5 + (card * CARDWIDTH/4.0);
-	y2 = 416;
+	y2 = 363;
 	gdk_draw_pixmap(table_buf,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			cards,
@@ -376,12 +376,12 @@ static void table_card_play(int card)
 	gdk_draw_pixmap(f1->window,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			table_buf,
-			112, 401,
-			112, 401,
-			292, 114);
+			112, 348,
+			112, 348,
+			239, 114);
 
 	/* Setup and trigger the card animation */
-	table_animation_trigger(hand.card[card], x2, y2, 226, 275);
+	table_animation_trigger(hand.card[card], x2, y2, 199, 242);
 }
 
 
@@ -463,8 +463,8 @@ gint table_animation_callback(gpointer ignored)
 			table_buf,
 			ref_x, ref_y,
 			ref_x, ref_y,
-			CARDWIDTH + abs(anim.step_x + 2),
-			CARDHEIGHT + abs(anim.step_y + 2));
+			CARDWIDTH + abs(anim.step_x) + 2,
+			CARDHEIGHT + abs(anim.step_y) + 2);
 
 	/* If we are there, stop the animation process */
 	if(new_x == anim.dest_x && new_y == anim.dest_y) {
