@@ -3,7 +3,6 @@
 # To be used for CVS checkouts
 
 srcdir=`dirname $0`
-DIE=0
 
 if test -z "$*"; then
   echo "** Warning: I am going to run 'configure' with no arguments."
@@ -24,7 +23,7 @@ log="$log\t++ Checking for $1,"
 vline=`$1 --version | head -1`
 needed="$2"
 
-version=`echo $vline | sed 's/^[A-z-\.\ ()]*//;s/ .*$//'`
+version=`echo $vline | sed 's/^[a-zA-z\-\.\ ()]*//;s/ .*$//'`
 vmajor="0`echo $version | cut -d . -f 1`"
 vminor="0`echo $version | cut -s -d . -f 2`"
 vmicro="0`echo $version | cut -s -d . -f 3`"
@@ -62,10 +61,6 @@ if test "x$bailout" = "x1"; then
   echo
   echo "** Error: some prerequisites could not be found:"
   echo -e $log
-  exit
-fi
-
-if test "$DIE" -eq 1; then
   exit 1
 fi
 

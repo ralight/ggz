@@ -1,11 +1,12 @@
 dnl Configuration for KGGZ
 dnl ======================
 
-AC_INIT(configure.ac)
-AC_CANONICAL_SYSTEM
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CANONICAL_TARGET([])
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(ggz-kde-client, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 dnl Options for building KGGZ
 dnl =========================
@@ -51,35 +52,35 @@ dnl Find temporary categories_and_ratings patch
 func=ggzcore_gametype_get_category
 tmp=`grep $func $ggzcore_includes/ggzcore.h`
 if test "$tmp" = ""; then
-	patch_c_and_r=0;
+	patch_c_and_r=0
 else
-	patch_c_and_r=1;
-	AC_DEFINE_UNQUOTED(KGGZ_PATCH_C_AND_R, $patch_c_and_r)
+	patch_c_and_r=1
+	AC_DEFINE_UNQUOTED([KGGZ_PATCH_C_AND_R], $patch_c_and_r, [Categories and ratings patch to ggzcore])
 fi
 echo "checking for GGZ patch 'Categories and Ratings' (C_and_R): $patch_c_and_r"
 
 func=ggzcore_server_get_tls
 tmp=`grep $func $ggzcore_includes/ggzcore.h`
 if test "$tmp" = ""; then
-	patch_encryption=0;
+	patch_encryption=0
 else
-	patch_encryption=1;
-	AC_DEFINE_UNQUOTED(KGGZ_PATCH_ENCRYPTION, $patch_encryption)
+	patch_encryption=1
+	AC_DEFINE_UNQUOTED([KGGZ_PATCH_ENCRYPTION], $patch_encryption, [Encryption patch to ggzcore])
 fi
 echo "checking for GGZ patch 'Encryption' (Encryption): $patch_encryption"
 
 #func=ggzcore_room_join_table_spectator
 #tmp=`grep $func $ggzcore_includes/ggzcore.h`
 #if test "$tmp" = ""; then
-#	patch_spectators=0;
+#	patch_spectators=0
 #else
-#	patch_spectators=1;
-#	AC_DEFINE_UNQUOTED(KGGZ_PATCH_SPECTATORS, $patch_spectators)
+#	patch_spectators=1
+#	AC_DEFINE_UNQUOTED([KGGZ_PATCH_SPECTATORS], $patch_spectators, [Spectators patch to ggzcore])
 #fi
 #echo "checking for GGZ patch 'Spectators' (Spectators): $patch_spectators"
 
 echo "checking for GGZ patch 'Spectators' (Spectators): permanent"
-AC_DEFINE_UNQUOTED(KGGZ_PATCH_SPECTATORS, 1)
+AC_DEFINE_UNQUOTED([KGGZ_PATCH_SPECTATORS], 1, [Spectators patch to ggzcore])
 
 dnl Set up variables for KGGZ
 dnl =========================
@@ -88,7 +89,7 @@ if test "$enable_browser" = yes; then
 	kggzbrowservar=1;
 	BROWSERSUBDIR="more";
 	BROWSERLIB="\$(top_builddir)/ggz-kde/src/widgets/more/libkggzuimore.a -L\$(kde_libraries) \$(LIB_KHTML)";
-	AC_DEFINE_UNQUOTED(KGGZ_BROWSER, ${kggzbrowservar})
+	AC_DEFINE_UNQUOTED([KGGZ_BROWSER], ${kggzbrowservar}, [Build embedded browser])
 else
 	kggzbrowservar=;
 	BROWSERSUBDIR="";
@@ -115,12 +116,12 @@ fi
 if test "x${prefix}" = "xNONE"; then
 	prefix=/usr/local
 fi
-AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${prefix}/share/apps/kggz")
-AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+AC_DEFINE_UNQUOTED([KGGZ_DIRECTORY], "${prefix}/share/apps/kggz", [Data directory])
+AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [Prefix directory])
 
 dnl Be a bit more strict
 dnl ====================
-CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT"
+CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT -Wall"
 COMPILEOPTIONS="$COMPILEOPTIONS $CXXFLAGS"
 
 AC_SUBST(CXXFLAGS)
@@ -132,7 +133,7 @@ AC_SUBST(BROWSERLIB)
 dnl Create Makefiles
 dnl ================
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 	shadowbridge/Makefile
 	shadowbridge/pics/Makefile
 	modsniff/Makefile
@@ -173,7 +174,8 @@ AC_OUTPUT(Makefile
 	po/shadowbridge/Makefile
 	po/modsniff/Makefile
 	po/kcm_ggz/Makefile
-	)
+	])
+AC_OUTPUT
 
 dnl Report success
 dnl ==============
