@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: team.c 3573 2002-03-16 15:19:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -53,4 +53,28 @@ void map_func_to_team(team_t t, void (func)(player_t))
 		if (game.players[p].team == t)
 			func(p);
 	}
+}
+
+int get_team_tricks(team_t t)
+{
+	int tricks = 0;
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].team == t)
+			tricks += game.players[p].tricks;
+			
+	return tricks;
+}
+
+int get_team_score(team_t t)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].team == t)
+			return game.players[p].score;
+			
+	assert(0);
+	return 0;
 }
