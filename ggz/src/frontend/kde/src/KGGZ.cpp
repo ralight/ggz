@@ -747,6 +747,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	const char *chatsender = NULL, *chatmessage = NULL;
 	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
+	GGZRoomChangeEventData *event;
 
 	if(id == GGZCoreRoom::chatevent)
 		emit signalActivity(2);
@@ -818,21 +819,23 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
-			buffer.append((char*)data);
+			event = (GGZRoomChangeEventData*)data;
+			buffer.append(event->player_name);
 			buffer.append(i18n(" enters the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
-			m_workspace->widgetUsers()->add((char*)data);
-			m_workspace->widgetChat()->chatline()->addPlayer((char*)data);
-			if(m_grubby) m_grubby->addPlayer((char*)data);
+			m_workspace->widgetUsers()->add(event->player_name);
+			m_workspace->widgetChat()->chatline()->addPlayer(event->player_name);
+			if(m_grubby) m_grubby->addPlayer(event->player_name);
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
-			buffer.append((char*)data);
+			event = (GGZRoomChangeEventData*)data;
+			buffer.append(event->player_name);
 			buffer.append(i18n(" has left the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
-			m_workspace->widgetUsers()->remove((char*)data);
+			m_workspace->widgetUsers()->remove(event->player_name);
 			KGGZDEBUG("remove from chatline\n");
-			m_workspace->widgetChat()->chatline()->removePlayer((char*)data);
+			m_workspace->widgetChat()->chatline()->removePlayer(event->player_name);
 			KGGZDEBUG("Leave room event: ready\n");
 			break;
 		case GGZCoreRoom::tableupdate:
