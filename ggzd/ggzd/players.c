@@ -37,6 +37,7 @@
 #include <time.h>
 
 #include <easysock.h>
+#include <ggzd.h>
 #include <datatypes.h>
 #include <players.h>
 #include <table.h>

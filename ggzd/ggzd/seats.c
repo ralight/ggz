@@ -21,20 +21,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
 #include <config.h>		/* Site specific config */
 
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <signal.h>
-#include <string.h>
-#include <errno.h>
-#include <pthread.h>
-
-#include <easysock.h>
-
+#include <ggzd.h>
 #include <datatypes.h>
 #include <seats.h>
 

@@ -32,6 +32,7 @@
 #include <sys/utsname.h>
 #include <pthread.h>
 
+#include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
 #include <easysock.h>

@@ -32,12 +32,14 @@
 #include <errno.h>
 #include <string.h>
 
+#include <ggzd.h>
 #include <datatypes.h>
 #include <protocols.h>
 #include <err_func.h>
 #include <table.h>
 #include <players.h>
 #include <seats.h>
+
 
 /* Server wide data structures*/
 extern struct GameTypes game_types;

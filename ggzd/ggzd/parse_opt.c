@@ -31,6 +31,7 @@
 #include <ctype.h>
 #include <dirent.h>
 
+#include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
 #include <motd.h>

@@ -27,6 +27,7 @@
 #include <pthread.h>
 #include <string.h>
 
+#include <ggzd.h>
 #include <datatypes.h>
 #include <chat.h>
 #include <err_func.h>

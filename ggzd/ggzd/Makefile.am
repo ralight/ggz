@@ -14,6 +14,7 @@ ggzd_SOURCES =	chat.c \
 		datatypes.h \
 		err_func.c \
 		err_func.h \
+		ggzd.h \
 		parse_opt.c \
 		parse_opt.h \
 		players.c \
