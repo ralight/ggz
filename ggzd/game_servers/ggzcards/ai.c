@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: ai.c 2421 2001-09-09 09:16:41Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ai/aicommon.h"
 #include "ai.h"
 #include "common.h"
 
@@ -58,17 +59,20 @@ const char *ai_get_name(player_t p)
 /* this inits AI static data at the start of a hand */
 void ai_start_hand()
 {
+	ailib_start_hand();
 	ai_funcs[game.ai_type]->start_hand();
 }
 
 /* this alerts the ai to someone else's bid/play */
 void ai_alert_bid(player_t p, bid_t bid)
 {
+	ailib_alert_bid(p, bid);
 	ai_funcs[game.ai_type]->alert_bid(p, bid);
 }
 
 void ai_alert_play(player_t p, card_t card)
 {
+	ailib_alert_play(p, card);
 	ai_funcs[game.ai_type]->alert_play(p, card);
 }
 

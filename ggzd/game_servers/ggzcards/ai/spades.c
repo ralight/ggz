@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2419 2001-09-09 03:59:47Z jdorje $
+ * $Id: spades.c 2421 2001-09-09 09:16:41Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -36,11 +36,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <string.h>
-
 #include "../ai.h"
 #include "../common.h"
 #include "../games/spades.h"
+
+#include "aicommon.h"
 
 
 static char *get_name(player_t p);
@@ -97,11 +97,6 @@ static int SetNil(int);
 static int PlayNormal(int);
 static int card_comp(card_t c1, card_t c2);
 
-
-static int played[4];		/* bitmask of played cards for each suit */
-static char suits[4][4];	/* information about what each of the 4
-				   players holds in each of the 4 suits */
-
 static int HasCard(seat_t s, card_t c)
 {
 	/* TODO: avoid cheating! */
@@ -114,11 +109,7 @@ static int HasCard(seat_t s, card_t c)
 
 static void start_hand()
 {
-	/* reset cards played */
-	memset(played, 0, 4 * sizeof(*played));
 
-	/* anyone _could_ have any card */
-	memset(suits, 255, 4 * 4 * sizeof(*suits));
 }
 
 static void alert_bid(player_t p, bid_t bid)
@@ -128,17 +119,6 @@ static void alert_bid(player_t p, bid_t bid)
 
 static void alert_play(player_t p, card_t play)
 {
-	/* there's a lot of information we can track from players' plays */
-	card_t lead = game.seats[game.players[game.leader].seat].table;
-	player_t op;
-
-	/* first off, just remember which cards have been played. */
-	played[(int) play.suit] |= 1 << play.face;
-
-	/* if the player is void, remember it */
-	if (play.suit != lead.suit)
-		suits[p][(int) lead.suit] = 0;
-
 #if 0
 	/* when a nil player sluffs, they'll sluff their highest card in that
 	   suit */
@@ -170,10 +150,6 @@ static void alert_play(player_t p, card_t play)
 		}
 	}
 #endif
-
-	/* we now know that nobody has this card _anymore_ */
-	for (op = 0; op < 4; op++)
-		suits[op][(int) lead.suit] &= ~(1 << play.face);
 
 
 }
@@ -663,7 +639,7 @@ static void Calculate(int num, struct play *play)
 
 	/* If this is the highest trump then its future is just as bright as
 	   its present. */
-	if (play->card.suit == SPADES && (played[SPADES] & mask) == mask) {
+	if (play->card.suit == SPADES && libai_is_highest_in_suit(play->card)) {
 		play->future = 100;
 		if (high >= 0 && high_card.suit == SPADES
 		    && high_card.face > play->card.face)
@@ -793,10 +769,7 @@ static void Calculate(int num, struct play *play)
 	else {
 		/* Count the cards in this suit we know about.  Then average
 		   the remaining cards per player. */
-		n = 13;
-		for (r = 2; r <= ACE_HIGH; r++)
-			if (played[(int) s] & (1 << r))
-				n--;
+		n = libai_cards_left_in_suit(s);
 		for (r = 0; r < hand->hand_size; r++) {
 			if (cards_equal(hand->cards[(int) r], UNKNOWN_CARD))
 				continue;
@@ -843,7 +816,7 @@ static int SuitMap(seat_t p, player_t v, char s)
 				map |= 1 << hand->cards[i].face;
 		}
 	} else {
-		map = suits[p][(int) s];
+		map = libai_get_suit_map(p, s);
 		for (i = 0; i < hand->hand_size; i++) {
 			if (hand->cards[i].suit == s)
 				map &= ~(1 << hand->cards[i].face);
@@ -1051,8 +1024,7 @@ static int CoverNil(player_t p)
 		   current high, then just sluff. */
 		if (chosen >= 0 && high >= 0
 		    && play[chosen].card.suit == high_card.suit) {
-			for (r = high_card.face + 1;
-			     played[(int) high_card.suit] & (1 << r); r++)
+			for (r = high_card.face + 1; libai_is_card_played(high_card.suit, r); r++)
 				continue;
 			if (r == play[chosen].card.face) {
 				sluff = 1;
@@ -1163,7 +1135,7 @@ static int SetNil(int p)
 								   trump */
 				}
 				for (r++; r <= ACE_HIGH; r++) {
-					if (!(played[s] & (1 << r))) {
+					if (!libai_is_card_played(s, r)) {
 						for (i = 0; i < plays; i++)
 							if (play[i].card.
 							    suit == s
@@ -1386,7 +1358,7 @@ static int PlayNormal(int p)
 			 * based on which cards have been played.
 			 */
 			r = play[chosen].card.face + 1;
-			while (r <= ACE_HIGH && (played[s] & (1 << r))
+			while (r <= ACE_HIGH && libai_is_card_played(s, r)
 			       && (high < 0
 				   || !(game.seats[high].table.suit == s
 					&& game.seats[high].table.face == r)))

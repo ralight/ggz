@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai/aicommon.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 2420 2001-09-09 04:50:01Z jdorje $
+ * $Id: aicommon.c 2421 2001-09-09 09:16:41Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -28,4 +28,81 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* nothing yet */
+#include <string.h>
+
+#include "../common.h"
+
+#include "aicommon.h"
+
+static int played[4];		/* bitmask of played cards for each suit */
+static char suits[4][4];		/* information about what each of the 4
+				   players might hold in each of the 4 suits */
+
+void ailib_start_hand(void)
+{
+	/* reset cards played */
+	memset(played, 0, 4 * sizeof(*played));
+
+	/* anyone _could_ have any card */
+	memset(suits, 255, 4 * 4 * sizeof(*suits));
+}
+
+void ailib_alert_bid(player_t p, bid_t bid)
+{
+
+}
+
+void ailib_alert_play(player_t p, card_t play)
+{
+	/* there's a lot of information we can track from players' plays */
+	card_t lead = game.seats[game.players[game.leader].seat].table;
+	player_t p2;
+
+	/* remember which cards have been played. */
+	played[(int) play.suit] |= 1 << play.face;
+
+	/* if the player is void, remember it */
+	if (play.suit != lead.suit)
+		suits[p][(int) lead.suit] = 0;
+
+	/* we now know that nobody has this card _anymore_ */
+	for (p2 = 0; p2 < 4; p2++)
+		suits[p2][(int) lead.suit] &= ~(1 << play.face);
+
+}
+
+int libai_is_card_played(char suit, char face)
+{
+	return played[(int) suit] & (1 << face);
+}
+
+int libai_get_suit_map(player_t p, char suit)
+{
+	return suits[p][(int)suit];
+}
+
+int libai_might_player_have_card(player_t p, card_t card)
+{
+	return suits[p][(int)card.suit] & (1 << card.face);
+}
+
+int libai_is_highest_in_suit(card_t card)
+{
+	char face = card.face;
+	for (card.face = face + 1; card.face <= ACE_HIGH; card.face++)
+		if (libai_is_card_played(card.suit, card.face))
+			return 0;
+	return 1;
+}
+
+
+int libai_cards_left_in_suit(char suit)
+{
+	/* This assumes we use exactly 2-ACE_HIGH */
+	int n = 13;
+	char face;
+	for (face = 2; face <= ACE_HIGH; face++)
+		if (libai_is_card_played(suit, face))
+			n--;
+	return n;
+}

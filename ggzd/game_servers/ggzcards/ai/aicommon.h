@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai/aicommon.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 2420 2001-09-09 04:50:01Z jdorje $
+ * $Id: aicommon.h 2421 2001-09-09 09:16:41Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -28,4 +28,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* nothing yet */
+#include "../ai.h"
+#include "../types.h"
+
+/* FIXME: Right now this code assumes 4 players and 4 suits. */
+
+void ailib_start_hand(void);
+
+void ailib_alert_bid(player_t p, bid_t bid);
+
+void ailib_alert_play(player_t p, card_t play);
+
+/** @brief Has this card been played? */
+int libai_is_card_played(char suit, char face);
+
+/* A convenience function; returns the bitmap of cards p has in suit. */
+int libai_get_suit_map(player_t p, char suit);
+
+/** @brief Is it possible for the player to have this card? */
+int libai_might_player_have_card(player_t p, card_t card);
+
+/** @brief Is this the highest card in the suit? */
+int libai_is_highest_in_suit(card_t card);
+
+/** @brief How many cards remain out in this suit? */
+int libai_cards_left_in_suit(char suit);
