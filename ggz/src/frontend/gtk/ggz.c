@@ -87,6 +87,9 @@ static GGZHookReturn ggz_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn ggz_table_data(GGZRoomEvent id, void*, void*);
 
+/* One Time Functions */
+static GGZHookReturn ggz_auto_join(GGZServerEvent id, void*, void*);
+
 
 GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
@@ -163,6 +166,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 	g_free(title);
 
 	login_destroy();
+	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, ggz_auto_join);
 	ggzcore_server_list_rooms(server, -1, 1);
 	ggzcore_server_list_gametypes(server, 1);
 
@@ -194,7 +198,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 	GGZRoom *room;
 	gint i;
 	gchar *name;
-	static gint firstlist;
 
 	/* Clear current list of rooms */
 	tmp = lookup_widget(win_main, "room_clist");
@@ -226,12 +229,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
-	}
-
-	if(firstlist == 0)
-	{
-		firstlist = 1;
-		ggzcore_server_join_room(server, 0);
 	}
 
 	return GGZ_HOOK_OK;
@@ -956,4 +953,15 @@ void display_players(void)
 	}
 }
 
+
+static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data, void* user_data)
+{
+	GtkWidget *tmp;
+
+	ggzcore_server_join_room(server, 0);
+	tmp =  lookup_widget(win_main, "room_clist");
+	gtk_clist_select_row(GTK_CLIST(tmp), 0, 0);
+
+	return GGZ_HOOK_REMOVE;
+}
 
