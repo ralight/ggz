@@ -127,10 +127,14 @@ static void bridge_init_game()
 
 static void bridge_start_bidding()
 {
+	int i, j;
 	game.next_bid = game.dealer; /* dealer bids first */
 	game.bid_total = -1; /* no set total */
 	BRIDGE.pass_count = 0;
 	BRIDGE.bonus = 1;
+	for(i=0; i<2; i++)
+		for(j=0; j<5; j++)
+			BRIDGE.opener[i][j] = -1;
 }
 
 static int bridge_get_bid()
@@ -188,13 +192,16 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.pass_count = 1;
 		BRIDGE.bonus *= 2;
 	} else {
-		/* TODO: declarer is the first person to name the suit, not the last bidder */
-		BRIDGE.declarer = game.next_bid;
-		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
-		BRIDGE.bonus = 1;
-		BRIDGE.pass_count = 1;
 		BRIDGE.contract = bid.sbid.val;
 		BRIDGE.contract_suit = bid.sbid.suit;
+		BRIDGE.bonus = 1;
+		BRIDGE.pass_count = 1;
+
+		if (BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] == -1)
+			BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] = game.next_bid;
+		BRIDGE.declarer = BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit];
+		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
+
 		ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
 		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;

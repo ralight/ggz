@@ -43,6 +43,7 @@ typedef struct bridge_game_t {
 	int vulnerable[2];	/* also represents # of games won */
 
 	/* contract information */
+	player_t opener[2][5];	/* records which player on each team first opened in each suit */
 	int contract;		/* value of the contract */
 	int contract_suit;	/* suit of the contract; 0-4 */
 	int bonus;		/* 1=regular; 2=doubled; 4=redoubled */
