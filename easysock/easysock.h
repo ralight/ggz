@@ -27,6 +27,7 @@
 #ifndef _EASYSOCK_H
 #define _EASYSOCK_H
 
+#include <sys/types.h>
 
 /****************************************************************************
  * Error function
