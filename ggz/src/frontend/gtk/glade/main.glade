@@ -9,7 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>True</gettext_support>
+  <gettext_support>False</gettext_support>
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
@@ -22,6 +22,16 @@
   <name>win_main</name>
   <width>620</width>
   <height>400</height>
+  <signal>
+    <name>realize</name>
+    <handler>on_win_main_realize</handler>
+    <last_modification_time>Thu, 09 Nov 2000 22:53:43 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>gtk_main_quit</handler>
+    <last_modification_time>Fri, 10 Nov 2000 00:27:40 GMT</last_modification_time>
+  </signal>
   <title>GNU Gaming Zone</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -432,13 +442,23 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>connect_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_connect_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:29:45 GMT</last_modification_time>
+	  </signal>
 	  <label>Connect</label>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
-	  <name>disconnet_button</name>
+	  <name>disconnect_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_disconnect_button_clicked</handler>
+	    <last_modification_time>Sat, 11 Nov 2000 00:29:25 GMT</last_modification_time>
+	  </signal>
 	  <label>Disconnect</label>
 	</widget>
 
@@ -446,6 +466,11 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>launch_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_launch_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:29:57 GMT</last_modification_time>
+	  </signal>
 	  <label>Launch</label>
 	</widget>
 
@@ -453,6 +478,11 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>join_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_join_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:30:03 GMT</last_modification_time>
+	  </signal>
 	  <label>Join</label>
 	</widget>
 
@@ -460,6 +490,11 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>props_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_props_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:30:09 GMT</last_modification_time>
+	  </signal>
 	  <label>Props</label>
 	</widget>
 
@@ -467,6 +502,11 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>stats_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_stats_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:30:15 GMT</last_modification_time>
+	  </signal>
 	  <label>Stats</label>
 	</widget>
 
@@ -474,6 +514,11 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>exit_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_exit_button_clicked</handler>
+	    <last_modification_time>Fri, 10 Nov 2000 00:30:20 GMT</last_modification_time>
+	  </signal>
 	  <label>Exit</label>
 	</widget>
       </widget>
@@ -546,7 +591,11 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>room_clist</name>
-	      <can_focus>True</can_focus>
+	      <signal>
+		<name>select_row</name>
+		<handler>on_room_clist_select_row</handler>
+		<last_modification_time>Sat, 11 Nov 2000 00:26:05 GMT</last_modification_time>
+	      </signal>
 	      <columns>1</columns>
 	      <column_widths>80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -570,7 +619,7 @@
 
 	  <widget>
 	    <class>GtkScrolledWindow</class>
-	    <name>room_scrolledwindow</name>
+	    <name>player_scrolledwindow</name>
 	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
 	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
 	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -583,8 +632,7 @@
 
 	    <widget>
 	      <class>GtkCList</class>
-	      <name>clist4</name>
-	      <can_focus>True</can_focus>
+	      <name>player_clist</name>
 	      <columns>3</columns>
 	      <column_widths>10,10,80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -659,7 +707,16 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>table_clist</name>
-	      <can_focus>True</can_focus>
+	      <signal>
+		<name>select_row</name>
+		<handler>on_table_clist_select_row</handler>
+		<last_modification_time>Sat, 11 Nov 2000 02:06:25 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>click_column</name>
+		<handler>on_table_clist_click_column</handler>
+		<last_modification_time>Sat, 11 Nov 2000 02:06:36 GMT</last_modification_time>
+	      </signal>
 	      <columns>3</columns>
 	      <column_widths>26,38,80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -797,8 +854,21 @@
 
 	      <widget>
 		<class>GtkEntry</class>
-		<name>entry1</name>
+		<name>chat_entry</name>
 		<can_focus>True</can_focus>
+		<has_focus>True</has_focus>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_chat_entry_activate</handler>
+		  <data>chat_entry</data>
+		  <last_modification_time>Sat, 11 Nov 2000 02:08:44 GMT</last_modification_time>
+		</signal>
+		<signal>
+		  <name>key_press_event</name>
+		  <handler>on_chat_entry_key_press_event</handler>
+		  <after>True</after>
+		  <last_modification_time>Sat, 11 Nov 2000 02:09:01 GMT</last_modification_time>
+		</signal>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
 		<text_max_length>0</text_max_length>
@@ -829,7 +899,11 @@
 		  <class>GtkButton</class>
 		  <name>send_button</name>
 		  <can_default>True</can_default>
-		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_send_button_clicked</handler>
+		    <last_modification_time>Sat, 11 Nov 2000 02:05:53 GMT</last_modification_time>
+		  </signal>
 		  <label>Send</label>
 		</widget>
 	      </widget>

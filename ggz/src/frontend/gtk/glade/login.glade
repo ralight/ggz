@@ -9,7 +9,7 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>True</gettext_support>
+  <gettext_support>False</gettext_support>
   <output_main_file>False</output_main_file>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
@@ -294,7 +294,7 @@
 		<editable>True</editable>
 		<text_visible>True</text_visible>
 		<text_max_length>256</text_max_length>
-		<text></text>
+		<text>localhost</text>
 		<child>
 		  <padding>5</padding>
 		  <expand>False</expand>
