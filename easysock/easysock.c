@@ -547,12 +547,17 @@ int es_read_fd(int fd, int *recvfd)
 	}
   
 #ifdef	HAVE_MSGHDR_MSG_CONTROL
-	if ( (cmptr = CMSG_FIRSTHDR(&msg)) != NULL &&
+        if ( (cmptr = CMSG_FIRSTHDR(&msg)) != NULL &&
 	    cmptr->cmsg_len == CMSG_LEN(sizeof(int))) {
 		if (cmptr->cmsg_level != SOL_SOCKET)
-			err_quit("control level != SOL_SOCKET");
-		if (cmptr->cmsg_type != SCM_RIGHTS)
-			err_quit("control type != SCM_RIGHTS");
+		        if (_err_func)
+			        (*_err_func) ("control level != SOL_SOCKET", ES_READ, ES_STRING);
+	                return -1;
+		if (cmptr->cmsg_type != SCM_RIGHTS) {
+		        if (_err_func)
+			        (*_err_func) ("control type != SOL_RIGHTS", ES_READ, ES_STRING);
+	                return -1;
+		}
 		*recvfd = *((int *) CMSG_DATA(cmptr));
 	} else
 		*recvfd = -1;		/* descriptor was not passed */
