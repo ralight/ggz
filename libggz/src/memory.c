@@ -233,20 +233,14 @@ char * _ggz_strdup(const char *src, char *tag, int line)
 	unsigned len;
 	char *new;
 
-	/* Sanity checks */
+	/* If you ask for a copy of NULL, you get NULL back */
+	if (src == NULL)
+		return NULL;
+
+	/* Sanity check */
 	if(!tag)
 		tag = "<unknown>";
 
-	if(src == NULL) {
-#if 0
-		/* This message used to be enabled, but one of the purposes 
-		   of using the custom strdup function is so that it's not 
-		   needed. */
-		ggz_error_msg("ggz_strdup: NULL pointer from %s/%d",
-			       tag, line);
-#endif
-		return NULL;
-	}
 
 	len = strlen(src);
 
