@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 4268 2002-06-22 05:19:13Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include <game.h>
@@ -50,6 +51,9 @@ extern GtkWidget *main_win;
 /* Global game variables */
 struct game_state_t game;
 
+/* Various event handlers */
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
 int main(int argc, char* argv[])
 {
@@ -63,25 +67,41 @@ int main(int argc, char* argv[])
 	game_init();
 	display_board();
 	
-	game.fd = ggzmod_connect();
-	if (game.fd < 0) return -1;
+	ggzmod_connect(game.ggzmod);
+	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
 
-	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
-	
 	gtk_main();
 
-	if (ggzmod_disconnect() < 0)
-		return -2;
+	if (ggzmod_disconnect(game.ggzmod) < 0)
+		return -1;
 	
+	ggzmod_free(game.ggzmod);
 	return 0;
 }
+
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(game.ggzmod);
+}
+
+
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+
+	ggzmod_set_state(game.ggzmod, GGZMOD_STATE_PLAYING);
+	game.fd = fd;
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+}
+
 
 
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op;
 
-	if (ggz_read_int(game.fd, &op) < 0) {
+	if (ggz_read_int(source, &op) < 0) {
 		/* FIXME: do something here...*/
 		return;
 	}
@@ -224,11 +244,15 @@ int get_gameover(void)
 void game_init(void)
 {
 	int i;
+	GGZMod *ggzmod;
 	
 	for (i = 0; i < 9; i++)
 		game.board[i] = ' ';
 
 	game.state = STATE_INIT;
+	ggzmod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	game.ggzmod = ggzmod;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: game.h 4268 2002-06-22 05:19:13Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+
+#include <ggzmod.h>
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server */
@@ -53,6 +55,7 @@
 /* Data structure for Tac-Toe-Game */
 struct game_state_t {
 	/* Basic info about connection */
+	GGZMod *ggzmod;
 	int fd;
 	int num;
 	int seats[2];
