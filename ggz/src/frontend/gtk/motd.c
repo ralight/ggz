@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: motd.c 6322 2004-11-11 03:35:12Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -162,7 +162,7 @@ create_dlg_motd (void)
   g_object_set_data(G_OBJECT (dlg_motd), "dlg_motd", dlg_motd);
   gtk_widget_set_size_request(dlg_motd, 300, 455);
   gtk_window_set_title (GTK_WINDOW (dlg_motd), _("MOTD"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_motd), FALSE, TRUE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(dlg_motd), TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_motd)->vbox;
   g_object_set_data(G_OBJECT (dlg_motd), "dialog_vbox1", dialog_vbox1);

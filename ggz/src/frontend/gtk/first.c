@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 6289 2004-11-06 17:40:37Z jdorje $
+ * $Id: first.c 6322 2004-11-11 03:35:12Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -185,7 +185,7 @@ create_dlg_first (void)
   gtk_container_set_border_width (GTK_CONTAINER (dlg_first), 21);
   gtk_window_set_title (GTK_WINDOW (dlg_first), _("First Time Configuration"));
   gtk_window_set_position (GTK_WINDOW (dlg_first), GTK_WIN_POS_CENTER);
-  gtk_window_set_policy (GTK_WINDOW (dlg_first), FALSE, FALSE, FALSE);
+  gtk_window_set_resizable(GTK_WINDOW(dlg_first), FALSE);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox3);

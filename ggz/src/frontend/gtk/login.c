@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6305 2004-11-09 00:11:51Z jdorje $
+ * $Id: login.c 6322 2004-11-11 03:35:12Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -530,7 +530,7 @@ create_dlg_login (void)
   gtk_window_set_transient_for(GTK_WINDOW(dlg_login), GTK_WINDOW(win_main));
   g_object_set_data(G_OBJECT (dlg_login), "dlg_login", dlg_login);
   gtk_window_set_title (GTK_WINDOW (dlg_login), _("Connect and Login"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_login), FALSE, TRUE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(dlg_login), TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_login)->vbox;
   g_object_set_data(G_OBJECT (dlg_login), "dialog_vbox1", dialog_vbox1);

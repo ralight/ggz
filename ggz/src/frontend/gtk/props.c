@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6289 2004-11-06 17:40:37Z jdorje $
+ * $Id: props.c 6322 2004-11-11 03:35:12Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -891,7 +891,7 @@ create_dlg_props (void)
 			       GTK_WINDOW(win_main));
   g_object_set_data(G_OBJECT (dlg_props), "dlg_props", dlg_props);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, TRUE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW (dlg_props), TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_props)->vbox;
   g_object_set_data(G_OBJECT (dlg_props), "dialog_vbox1", dialog_vbox1);
@@ -1789,7 +1789,7 @@ create_dlg_props_font (void)
   dlg_props_font = gtk_font_selection_dialog_new (_("Select Font"));
   g_object_set_data(G_OBJECT (dlg_props_font), "dlg_props_font", dlg_props_font);
   gtk_container_set_border_width (GTK_CONTAINER (dlg_props_font), 4);
-  gtk_window_set_policy (GTK_WINDOW (dlg_props_font), FALSE, TRUE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(dlg_props_font), TRUE);
 
   ok_button1 = GTK_FONT_SELECTION_DIALOG (dlg_props_font)->ok_button;
   g_object_set_data(G_OBJECT (dlg_props_font), "ok_button1", ok_button1);
