@@ -63,6 +63,7 @@ extern gint selected_table;
 extern gint selected_type;
 extern GdkColor colors[];
 extern struct GameTables tables;
+extern struct Rooms room_info;
 
 GtkWidget *detail_window = NULL;
 
@@ -75,7 +76,7 @@ static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void handle_list_tables(gint op, gint fd);
 static void motd_print_line(gchar *line);
-
+void display_rooms();
 
 gchar *opcode_str[] = { 	"MSG_SERVER_ID",
 			"MSG_SERVER_FULL",
@@ -94,6 +95,7 @@ gchar *opcode_str[] = { 	"MSG_SERVER_ID",
 			"RSP_LIST_PLAYERS",
 			"RSP_LIST_TYPES",
 			"RSP_LIST_TABLES",
+			"RSP_LIST_ROOMS",
 			"RSP_TABLE_OPTIONS",
 			"RSP_USER_STAT",
 			"RSP_TABLE_LAUNCH",
@@ -180,6 +182,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		login_ok();
 		login_online();
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
+
+		/* Get Rooms */
+                es_write_int(connection.sock, REQ_LIST_ROOMS);
+                es_write_int(connection.sock, -1);
+                es_write_char(connection.sock, 1);
 		/*server_sync();*/
 		break;
 
@@ -293,6 +300,25 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case RSP_LIST_TABLES:
 		handle_list_tables(op, source);
+		break;
+
+	case RSP_LIST_ROOMS:
+		es_read_int(source, &count);
+		room_info.count = count;
+		connect_msg("[%s] Room List Count %d\n", opcode_str[op], count);
+		if (count>0)
+		{
+			room_info.info = calloc(count, sizeof(RoomInfo));
+			for (i = 0; i < count; i++) {
+				es_read_string_alloc(source, &room_info.info[i].name);
+				es_read_int(source, &room_info.info[i].game_type);
+				es_read_string_alloc(source, &room_info.info[i].desc);
+				connect_msg("[%s] Room Name %s\n", opcode_str[op], room_info.info[i].name);
+				connect_msg("[%s] Room Game %d\n", opcode_str[op], room_info.info[i].game_type);
+				connect_msg("[%s] Room Desc %s\n", opcode_str[op], room_info.info[i].desc);
+			}
+		}
+		display_rooms();
 		break;
 
 	case RSP_LIST_PLAYERS:
@@ -715,4 +741,17 @@ void motd_print_line(gchar *line)
 }
 
 
+void display_rooms()
+{
+	GtkWidget *tmp;
+	GList *items=NULL;
+	gint i;
 
+	for(i=0;i<room_info.count;i++)
+	{
+		items = g_list_append(items, room_info.info[i].name);
+	}
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+	gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+}

@@ -151,5 +151,15 @@ struct Users {
 	gint count;
 };
 
+typedef struct {
+	char *name;
+	char *desc;
+	int game_type;
+} RoomInfo;
+
+struct Rooms {
+	RoomInfo *info;
+	gint count;
+};
 
 #endif

@@ -53,6 +53,7 @@ GtkWidget *dlg_launch;
 gint selected_table;
 gint selected_type;
 struct GameTables tables;
+struct Rooms room_info;
 
 /* Aray of GdkColors currently used for chat */
 GdkColor colors[] = 

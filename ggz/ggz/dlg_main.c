@@ -99,6 +99,7 @@ void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
                  
         es_write_int(connection.sock, REQ_LIST_TYPES);
         write(connection.sock, &verbose, 1);
+
 }
                                 
  
