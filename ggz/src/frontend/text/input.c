@@ -41,8 +41,13 @@ static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
 static void input_handle_join(char* line);
 static void input_handle_chat(char* line);
+
 static char delim[] = " \n";
 static char command_prefix = '/';
+
+extern char *Username;
+extern char *Server;
+extern char *Room;
 
 int input_command(short events)
 {
@@ -50,7 +55,6 @@ int input_command(short events)
 	char *buffer;
 	char *command;
 
-	output_status("user input detected\n");
 	if (events & POLLIN) {
 		if (!fgets(line, sizeof(line)/sizeof(char), stdin))
 			return -1;
@@ -60,7 +64,6 @@ int input_command(short events)
 			buffer = strtok(line, delim);
 			command = &buffer[1];;
 
-			output_status("user command entered");
 			if (strcmp(command, "connect") == 0) {
 				input_handle_connect((char*)line);
 			}
@@ -75,9 +78,9 @@ int input_command(short events)
 			}
 		} else {
 			/* Its a chat */
-			output_status("chat entered");
 			input_handle_chat(line);
 		}
+		output_prompt(1);
 	}
 	return 0;
 }
@@ -93,9 +96,13 @@ static void input_handle_connect(char* line)
 
 	arg = strtok(NULL, delim);
 	if (arg && strcmp(arg, "") != 0)
+	{
+		Server = strdup (arg);
 		profile->host = strdup(arg);
-	else 
+	} else {
+		Server = strdup ("localhost");
 		profile->host = strdup("localhost");
+	}
 	
 	arg = strtok(NULL, delim);
 	if (arg && strcmp(arg, "") != 0)
@@ -105,9 +112,11 @@ static void input_handle_connect(char* line)
 
 	profile->type = GGZ_LOGIN_GUEST;
 	profile->login = strdup(getenv("LOGNAME"));
+	Username = strdup(getenv("LOGNAME"));
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
+	output_status();
 }
 
 
@@ -138,8 +147,10 @@ static void input_handle_join(char* line)
 	/* What are we listing (default to rooms) */
 	arg = strtok(NULL, delim);
 	*room = atoi(arg);
+	Room = strdup(arg);
 
 	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, room, free);
+	output_status();
 }
 
 
@@ -154,5 +165,6 @@ static void input_handle_chat(char *line)
 		msg = strdup(arg);
 		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
 	}
+	output_status();
 }
 

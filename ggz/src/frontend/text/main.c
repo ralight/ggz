@@ -68,13 +68,13 @@ int main(void)
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
 	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
 
-	output_prompt();
+	output_prompt(1);
 	for (;;) {
 		if (poll(fd, 1, TIMEOUT)) {
 			if (input_command(fd[0].revents) < 0)
 				break;
 			else
-				output_prompt();
+				output_prompt(0);
 		}
 		ggzcore_event_process_all();
 	}

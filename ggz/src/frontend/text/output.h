@@ -26,12 +26,17 @@
 
 void output_banner(void);
 
-void output_prompt(void);
+void output_prompt(int status);
 
 void output_chat(int type, char* player, char* message);
 
-void output_status(char* message);
+void output_status();
 
 void output_init(void);
 
 void output_shutdown(void);
+
+char *Username;
+char *Server;
+char *Room;
+

@@ -25,6 +25,7 @@
 
 
 #include <config.h>
+#include <ggzcore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -32,54 +33,90 @@
 
 static struct winsize window;
 static int tty_des;
+extern char *Username;
+extern char *Server;
+extern char *Room;
 
 void output_banner(void)
 {
 	fflush(NULL);
-	printf("\33[f\n");
+	printf("\e[f\n");
 	printf("Welcome to the text-only GGZ client!\n");
 	printf("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n");
 	printf("\n");
 	fflush(NULL);
 }
 
-void output_prompt(void)
+void output_prompt(int status)
 {
 	fflush(NULL);
-	printf("\33[%d;0f\33[2KGGZ> ",window.ws_row-1);
+	output_status();
+	printf("\e[%d;0f\e[2K",window.ws_row);
+	if (status == 1)
+		printf("\e[%d;0f\e[2K\e[1mGGZ\e[30m>\e[0m ",window.ws_row-1);
+	else
+		printf("\e[%d;0f\e[1mGGZ\e[30m>\e[0m ",window.ws_row-1);
 	fflush(NULL);
 }
 
 void output_chat(int type, char* player, char* message)
 {
+	fflush(NULL);
+	printf("\e7");
 	if(type == 0)
 	{
-		printf("\33[%d;0f\33D<%s> : %s",window.ws_row-3, player, message);
+		printf("\e[%d;0f\eD<%s> %s",window.ws_row-4, player, message);
 	} else if (type == 1) {
-		printf("\33[%d;0f\33D>%s< : %s",window.ws_row-3, player, message);
+		printf("\e[%d;0f\eD[%s] %s",window.ws_row-4, player, message);
+	} else if (type == 2) {
+		printf("\e[%d;0f\eD%s  %s",window.ws_row-4, player, message);
 	}
-	output_prompt();
+	printf("\e8");
+	fflush(NULL);
 }
 
-void output_status(char* message)
+void output_status()
 {
+	int num;
+
+	num = window.ws_col - 8;
+	if(Server)
+		num=num-strlen(Server);
+	
 	fflush(NULL);
-	printf("\33[%d;0f\33[K%s",window.ws_row-2, message);
+	printf("\e7");
+	if(Username)
+		printf("\e[%d;0f\e[1mU\e[0msername:\e[K \e[36m%s\e[0m", window.ws_row-3, Username);
+	else
+		printf("\e[%d;0f\e[1mU\e[0msername:\e[K ", window.ws_row-3);
+
+	if(Room)
+		printf("\e[%d;0f\e[1mR\e[0moom:\e[K \e[36m%s\e[0m", window.ws_row-2, Room);
+	else
+		printf("\e[%d;0f\e[1mR\e[0moom:\e[K ", window.ws_row-2);
+
+	if(Server)
+		printf("\e[%d;%df\e[1mS\e[0merver:\e[K \e[36m%s\e[0m", window.ws_row-3, num, Server);
+	else
+		printf("\e[%d;%df\e[1mS\e[0merver:\e[K ", window.ws_row-3, num);
+
+	printf("\e8");
 	fflush(NULL);
 }
 
 void output_init(void)
 {
 	fflush(NULL);
-	printf("\33[2J");
+	printf("\e[2J");
 	ioctl(tty_des, TIOCGWINSZ, &window);
-	printf("\33[0;%dr",window.ws_row-3);
+	printf("\e[0;%dr", window.ws_row-4);
 	fflush(NULL);
 }
 
 void output_shutdown(void)
 {
-	printf("\33[0;%dr",window.ws_row);
-	printf("\33[2J");
+	fflush(NULL);
+	printf("\e[0;%dr",window.ws_row);
+	printf("\e[2J");
 	fflush(NULL);
 }

@@ -30,11 +30,11 @@
 #include "output.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
-	output_status("connected");
-	output_prompt();
+	output_chat(2,"---", "Connected");
 }
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
@@ -44,24 +44,27 @@ void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
-
-	output_chat(0, player, message);
-	output_status("Chat");
-	output_prompt();
+	output_chat(1,player, message);
 }
 
 void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
-	output_status("Connection failed");
+	output_chat(2,"---", "Connection failed");
 
-	output_prompt();
+	/* For the time being disconnect at not to confuse us */
+	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 }
 
 
 void server_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	output_status("disconnected");
-
-	output_prompt();
+	output_chat(2,"---", "Disconnected");
+	free(Server);
+	Server = NULL;
+	free(Username);
+	Username = NULL;
+	free(Room);
+	output_status();
+	Room = NULL;
 }
 
