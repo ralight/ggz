@@ -158,6 +158,9 @@ static char *motd_parse_motd_line(char *line)
 				case 'o':
 					p = sysname;
 					break;
+				case 'v':
+					p = VERSION;
+					break;
 				default:
 					p = NULL;
 					outline[outindex] = '%';
