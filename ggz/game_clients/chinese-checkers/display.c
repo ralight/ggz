@@ -75,6 +75,7 @@ void display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
+	GtkWidget *tmpwidget;
 
 	/* Create and display the main dialog */
 	dlg_main = create_dlg_main();
@@ -163,6 +164,10 @@ void display_init(void)
 			0, 0,
 			0, 0,
 			400, 400);
+
+	/* Grey out the Preferences menu item */
+	tmpwidget = gtk_object_get_data(GTK_OBJECT(dlg_main), "preferences_menu");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmpwidget), FALSE);
 }
 
 
