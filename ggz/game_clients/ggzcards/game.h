@@ -46,6 +46,7 @@ struct game_t {
 	char state;		/* the state the game is, i.e. LA_STATE_<something> */
 	int play_hand;		/* the hand we're playing from */
 	int num_players;	/* starts at 0 so we know once we've received them */
+	int max_hand_size;	/* the maximum number of cards in a hand */
 	struct seat_t *players;	/* player info; must be allocated */
 };
 extern struct game_t game;

@@ -25,8 +25,6 @@
 #ifndef __HAND_H
 #define __HAND_H
 
-#define MAX_HAND_SIZE 13
-
 /* a card; this should go in a different file
  * as it's copied verbatim from the server code */
 typedef struct card_t {
@@ -56,7 +54,7 @@ typedef struct card_t {
 
 struct hand_t {
 	int hand_size; 							/* the number of cards in the hand */
-	card_t card[MAX_HAND_SIZE]; /* the list of cards */
+	card_t *card; /* the list of cards */
 	char selected_card;					/* the currently selected (highlighted) card (index) */
 };
 

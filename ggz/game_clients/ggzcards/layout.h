@@ -33,8 +33,8 @@
 #define XWIDTH		5
 
 /* #define WINDOW_WIDTH 469 */
-/* more cards will fit if you just change MAX_HAND_SIZE */
-#define HAND_WIDTH 	( (MAX_HAND_SIZE+3) * (CARDWIDTH/4.0) + 0.5 )
+/* more cards will fit if you just change game.max_hand_size */
+#define HAND_WIDTH 	( (game.max_hand_size+3) * (CARDWIDTH/4.0) + 0.5 )
 #define TEXT_WIDTH	CARDHEIGHT
 
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)

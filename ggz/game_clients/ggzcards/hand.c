@@ -53,7 +53,7 @@ int hand_read_hand(void)
 
 	/* Zap our hand */
 	/* TODO: fixme */
-	for(i=0; i<MAX_HAND_SIZE; i++)
+	for(i=0; i<game.max_hand_size; i++)
 		hand->card[i] = UNKNOWN_CARD;
 	hand->selected_card = -1; /* index into the array */
 
@@ -61,8 +61,8 @@ int hand_read_hand(void)
 	if(es_read_int(game.fd, &hand->hand_size) < 0)
 		return -1;
 
-	if (hand->hand_size > MAX_HAND_SIZE) {
-		ggz_debug("CLIENT BUG: can't handle hands with more than %d cards.", MAX_HAND_SIZE);
+	if (hand->hand_size > game.max_hand_size) {
+		ggz_debug("CLIENT BUG: can't handle hands with more than %d cards.", game.max_hand_size);
 		return -1;
 	}
 
