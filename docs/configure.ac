@@ -76,6 +76,7 @@ AC_CONFIG_FILES([Makefile
 	grubby/Makefile
 	spec/Makefile
 	overview/Makefile
+	overview/architecture/Makefile
 	server/Makefile
 	server/hosting/Makefile
 	articles/Makefile])
