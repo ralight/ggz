@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 # Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -12,44 +11,45 @@
 # PARTICULAR PURPOSE.
 
 
-SHELL = /bin/sh
+SHELL = @SHELL@
 
-srcdir = .
-top_srcdir = ../..
-prefix = /usr
-exec_prefix = ${prefix}
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
-bindir = ${exec_prefix}/bin
-sbindir = ${exec_prefix}/sbin
-libexecdir = ${exec_prefix}/libexec
-datadir = ${prefix}/share
-sysconfdir = /etc
-sharedstatedir = ${prefix}/com
-localstatedir = ${prefix}/var
-libdir = ${exec_prefix}/lib
-infodir = ${prefix}/info
-mandir = ${prefix}/man
-includedir = ${prefix}/include
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
 oldincludedir = /usr/include
 
 DESTDIR =
 
-pkgdatadir = $(datadir)/ggz_client
-pkglibdir = $(libdir)/ggz_client
-pkgincludedir = $(includedir)/ggz_client
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ../..
+top_builddir = ../../..
 
-ACLOCAL = aclocal
-AUTOCONF = autoconf
-AUTOMAKE = automake
-AUTOHEADER = autoheader
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
 
-INSTALL = /usr/bin/install -c
-INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
-INSTALL_DATA = ${INSTALL} -m 644
-INSTALL_SCRIPT = ${INSTALL}
-transform = s,x,x,
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
 
 NORMAL_INSTALL = :
 PRE_INSTALL = :
@@ -57,79 +57,78 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
+host_alias = @host_alias@
+host_triplet = @host@
 AS = @AS@
-CATALOGS = 
-CATOBJEXT = .gmo
-CC = gcc
-CPP = gcc -E
-DATADIRNAME = share
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CPP = @CPP@
+DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
-EASYSOCK_INC = 
-EASYSOCK_LIB = -leasysock
-FRONTENDDIRS =  text gtk grubby
-GENCAT = 
-GMOFILES =  de.gmo
-GMSGFMT = /usr/bin/msgfmt
-GTK_CFLAGS = -I/usr/lib/glib/include -I/usr/X11R6/include
-GTK_CONFIG = /usr/bin/gtk-config
-GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-GT_NO = 
-GT_YES = #YES#
-INCLUDE_LOCALE_H = #include <locale.h>
-INSTOBJEXT = .mo
-INTLDEPS = 
-INTLLIBS = 
-INTLOBJS = 
-LD = /usr/bin/ld
-LDADD =  -lpopt
-LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LN_S = ln -s
-MAINT = #
-MAKEINFO = makeinfo
-MKINSTALLDIRS = ./mkinstalldirs
-MSGFMT = /usr/bin/msgfmt
-NM = /usr/bin/nm -B
+EASYSOCK_INC = @EASYSOCK_INC@
+EASYSOCK_LIB = @EASYSOCK_LIB@
+FRONTENDDIRS = @FRONTENDDIRS@
+GENCAT = @GENCAT@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_CONFIG = @GTK_CONFIG@
+GTK_LIBS = @GTK_LIBS@
+GT_NO = @GT_NO@
+GT_YES = @GT_YES@
+INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+LD = @LD@
+LDADD = @LDADD@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
-PACKAGE = ggz_client
-POFILES =  de.po
-POSUB = po
-RANLIB = ranlib
-USE_INCLUDED_LIBINTL = no
-USE_NLS = yes
-VERSION = 0.0.4pre
-ggzconfdir = /etc
-ggzexecmoddir = /usr/lib/ggz
-l = 
-packagesrcdir = /home/jzaun/GGZ/ggz
-
-EXTRA_DIST = hastings.dsc
+PACKAGE = @PACKAGE@
+POFILES = @POFILES@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+ggzconfdir = @ggzconfdir@
+ggzexecmoddir = @ggzexecmoddir@
+l = @l@
+packagesrcdir = @packagesrcdir@
 
 SUBDIRS = .
 
-INCLUDES = -I/usr/lib/glib/include -I/usr/X11R6/include 
+INCLUDES = -I$(top_srcdir)/src/ggzcore @EASYSOCK_INC@
 
-ggzexecmod_PROGRAMS = ggz.hastings
+bin_PROGRAMS = grubby
 
-ggz_hastings_SOURCES = game.h 	      main.c 	      main_win.c 	      main_win.h 	      support.c 	      support.h 	      dlg_about.c 	      dlg_about.h 	      frame_ll.xpm 	      frame_lr.xpm 	      frame_ul.xpm 	      frame_ur.xpm 	      mangreen.xpm 	      manyellow.xpm 	      manbue.xpm 	      manred.xpm
+grubby_SOURCES = agrub.c 		 chat.c		chat.h 		 commands.c	commands.h 		 popt.c 	popt.h 		 init.c 	init.h 		 log.c		log.h 		 loop.c 	loop.h 		 net.c		net.h 		 support.c	support.h 
 
 
-CFLAGS = -I/usr/lib/glib/include -I/usr/X11R6/include -g -O2 -Wall
-ggz_hastings_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm $(LDADD) -leasysock
-ggz_hastings_LDFLAGS = -static
+grubby_LDADD = $(top_builddir)/src/ggzcore/libggzcore.a @EASYSOCK_LIB@ $(LDADD)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
+CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
-PROGRAMS =  $(ggzexecmod_PROGRAMS)
+PROGRAMS =  $(bin_PROGRAMS)
 
 
-DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
-CPPFLAGS =  -I/usr/include
-LDFLAGS =  -L/usr/lib
-LIBS = 
-ggz_hastings_OBJECTS =  main.o main_win.o support.o dlg_about.o
-ggz_hastings_DEPENDENCIES = 
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+grubby_OBJECTS =  agrub.o chat.o commands.o popt.o init.o log.o loop.o \
+net.o support.o
+grubby_DEPENDENCIES =  $(top_builddir)/src/ggzcore/libggzcore.a
+grubby_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -141,45 +140,45 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/dlg_about.P .deps/main.P .deps/main_win.P \
-.deps/support.P
-SOURCES = $(ggz_hastings_SOURCES)
-OBJECTS = $(ggz_hastings_OBJECTS)
+DEP_FILES =  .deps/agrub.P .deps/chat.P .deps/commands.P .deps/init.P \
+.deps/log.P .deps/loop.P .deps/net.P .deps/popt.P .deps/support.P
+SOURCES = $(grubby_SOURCES)
+OBJECTS = $(grubby_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
-$(srcdir)/Makefile.in: # Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu game_clients/hastings/Makefile
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/frontend/grubby/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-ggzexecmodPROGRAMS:
+mostlyclean-binPROGRAMS:
 
-clean-ggzexecmodPROGRAMS:
-	-test -z "$(ggzexecmod_PROGRAMS)" || rm -f $(ggzexecmod_PROGRAMS)
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-distclean-ggzexecmodPROGRAMS:
+distclean-binPROGRAMS:
 
-maintainer-clean-ggzexecmodPROGRAMS:
+maintainer-clean-binPROGRAMS:
 
-install-ggzexecmodPROGRAMS: $(ggzexecmod_PROGRAMS)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(ggzexecmoddir)
-	@list='$(ggzexecmod_PROGRAMS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(ggzexecmoddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(ggzexecmoddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-ggzexecmodPROGRAMS:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(ggzexecmod_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(ggzexecmoddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .s.o:
@@ -214,9 +213,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-ggz.hastings: $(ggz_hastings_OBJECTS) $(ggz_hastings_DEPENDENCIES)
-	@rm -f ggz.hastings
-	$(LINK) $(ggz_hastings_LDFLAGS) $(ggz_hastings_OBJECTS) $(ggz_hastings_LDADD) $(LIBS)
+grubby: $(grubby_OBJECTS) $(grubby_DEPENDENCIES)
+	@rm -f grubby
+	$(LINK) $(grubby_LDFLAGS) $(grubby_OBJECTS) $(grubby_LDADD) $(LIBS)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -225,7 +224,7 @@ ggz.hastings: $(ggz_hastings_OBJECTS) $(ggz_hastings_DEPENDENCIES)
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
 
-
+@SET_MAKE@
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
@@ -309,14 +308,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = game_clients/hastings
+subdir = src/frontend/grubby
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu game_clients/hastings/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/frontend/grubby/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -377,7 +376,7 @@ check-am: all-am
 check: check-recursive
 installcheck-am:
 installcheck: installcheck-recursive
-install-exec-am: install-ggzexecmodPROGRAMS
+install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
 install-data-am:
@@ -386,7 +385,7 @@ install-data: install-data-recursive
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-ggzexecmodPROGRAMS
+uninstall-am: uninstall-binPROGRAMS
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-recursive
@@ -394,7 +393,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(ggzexecmoddir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
 
 
 mostlyclean-generic:
@@ -406,25 +405,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-ggzexecmodPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-ggzexecmodPROGRAMS clean-compile clean-libtool \
-		clean-tags clean-depend clean-generic mostlyclean-am
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am
 
 clean: clean-recursive
 
-distclean-am:  distclean-ggzexecmodPROGRAMS distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-depend distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-recursive
 
-maintainer-clean-am:  maintainer-clean-ggzexecmodPROGRAMS \
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-depend \
 		maintainer-clean-generic distclean-am
@@ -433,9 +432,8 @@ maintainer-clean-am:  maintainer-clean-ggzexecmodPROGRAMS \
 
 maintainer-clean: maintainer-clean-recursive
 
-.PHONY: mostlyclean-ggzexecmodPROGRAMS distclean-ggzexecmodPROGRAMS \
-clean-ggzexecmodPROGRAMS maintainer-clean-ggzexecmodPROGRAMS \
-uninstall-ggzexecmodPROGRAMS install-ggzexecmodPROGRAMS \
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool install-data-recursive \

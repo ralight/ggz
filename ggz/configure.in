@@ -28,16 +28,23 @@ AC_PROG_MAKE_SET
 
 
 dnl Compiling Options
-dnl =====================
+dnl =================
 AC_ARG_WITH(included-easysock, [  --with-included-easysock Use the easysock lib included here],, with_included_easysock=no)
+AC_ARG_ENABLE(debug,           [  --enable-debug          Enable debugging ],, enable_debug=no)
+AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_ENABLE(debug-mem,       [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
+AC_ARG_ENABLE(debug-socket,    [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
+
+dnl Client Frontends
+dnl ================
 AC_ARG_ENABLE(client, [  --disable-client        Don't build GGZ clients],, enable_client=yes)
 AC_ARG_ENABLE(textfe, [  --disable-textfe        Don't build Text frontend],, enable_textfe=yes)
 AC_ARG_ENABLE(gtkfe,  [  --disable-gtkfe         Don't build Gtk frontend],, enable_gtkfe=yes)
+AC_ARG_ENABLE(grubby, [  --disable-grubby        Don't build Grubby bot],, enable_grubby=no)
+
+dnl Games
+dnl =====
 AC_ARG_ENABLE(games,  [  --disable-games         Don't build GGZ game modules],, enable_games=yes)
-AC_ARG_ENABLE(debug,  [  --enable-debug          Enable debugging ],, enable_debug=no)
-AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
-AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
 
 
 dnl Check for header files
@@ -152,6 +159,11 @@ if test "$enable_client" = yes; then
                 AC_MSG_ERROR(*** Cannot find popt.h header); exit),
         AC_MSG_ERROR(*** Cannot find popt library ); exit)
     fi
+
+    if test "$enable_grubby" = yes; then
+        FRONTENDDIRS="$FRONTENDDIRS grubby"
+    fi
+    
 fi
 
 if test "$enable_games" = yes; then
@@ -247,6 +259,7 @@ AC_OUTPUT([Makefile
 	   src/frontend/Makefile
 	   src/frontend/text/Makefile
 	   src/frontend/gtk/Makefile
+	   src/frontend/grubby/Makefile
 	   game_clients/Makefile
 	   game_clients/spades/Makefile
 	   game_clients/tictactoe/Makefile	
@@ -264,15 +277,23 @@ AC_OUTPUT([Makefile
 
 dnl Status Output
 dnl =============
-echo "*** The following frontends will be build: $FRONTENDDIRS"
-echo "***"
-echo "*** GGZ will be built with the following debugging flags: $DFLAGS"
-echo "***"
-echo "*** To compile and install client:"
-echo "***"
-echo "***'make install'"
-echo "***"
-echo "*** To compile and test client locally without installing:"
-echo "***"
-echo "*** 'make; cd ggz; ./ggz -f ggzrc.test'"
 echo ""
+echo "Options"
+echo "    General Debuging..$enable_debug"
+echo "    Socket Debuging...$enable_debug_socket"
+echo "    GDB Debuging......$enable_debug_gdb"
+echo "    Memmory Debuging..$enable_debug_mem"
+echo ""
+echo "Clients"
+echo "    Text..............$enable_textfe"
+echo "    GTK+..............$enable_gtkfe"
+echo "    Grubby............$enable_grubby"
+echo ""
+echo "-------------------------"
+echo "At the prompt type \"make\" to"
+echo "compile the game clients and"
+echo "front ends that are listed above."
+echo ""
+echo "When compleate su to root"
+echo "and type \"make install\" to"
+echo "install the client software."
