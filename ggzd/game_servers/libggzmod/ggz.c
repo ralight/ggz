@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2275 2001-08-27 07:52:17Z jdorje $
+ * $Id: ggz.c 2281 2001-08-27 18:59:15Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -292,20 +292,24 @@ static int ggzdmod_player_leave(int* p_seat, int* p_fd)
 
 int ggzd_debug(const char *fmt, ...)
 {
-	/* FIXME: if this is called before the GGZ connection is made,
-	 * it will just return with an error.  Instead it would be
-	 * better to save the string and send it when we do connect. */
 	char buf[4096];
 	va_list ap;
 	int status = 0;
 
 	va_start(ap, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, ap);
-	if (es_write_int(ggzfd, MSG_DBG) < 0 ||
-	    es_write_int(ggzfd, GGZ_DBG_TABLE) < 0 ||
-	    es_write_string(ggzfd, buf) < 0)
-		status = -1;
 	va_end(ap);
+
+	if (ggzfd >= 0) {
+		if (es_write_int(ggzfd, MSG_DBG) < 0 ||
+		    es_write_int(ggzfd, GGZ_DBG_TABLE) < 0 ||
+		    es_write_string(ggzfd, buf) < 0)
+			status = -1;
+	} else {
+		/* We could store the buffer to be sent later, but
+		 * this should be good enough. */
+		fprintf(stderr, "%s\n", buf);
+	}
 	return status;
 }
 
@@ -402,6 +406,7 @@ void ggzd_set_handler(ggzd_event_t event_id, const GGZDHandler handler)
 int ggzd_dispatch(void)
 {
         int op, seat, fd, gameover = 0;
+	int status = 0;
 
 	if (es_read_int(ggzfd, &op) < 0)
 		return -1;
@@ -410,34 +415,36 @@ int ggzd_dispatch(void)
 		case REQ_GAME_LAUNCH:
 			if (ggzdmod_game_launch() == 0
 			    && handlers[GGZ_EVENT_LAUNCH] != NULL)
-				(*handlers[GGZ_EVENT_LAUNCH])
-					(GGZ_EVENT_LAUNCH, NULL);
+				status = (*handlers[GGZ_EVENT_LAUNCH])
+						(GGZ_EVENT_LAUNCH, NULL);
 			break;
 		case REQ_GAME_JOIN:
 			if (ggzdmod_player_join(&seat, &fd) == 0) {
 				if (handlers[GGZ_EVENT_JOIN] != NULL)
-					(*handlers[GGZ_EVENT_JOIN])
-						(GGZ_EVENT_JOIN,
-						 &seat);
+					status = (*handlers[GGZ_EVENT_JOIN])
+							(GGZ_EVENT_JOIN,
+						 	&seat);
 			}
 			break;
 		case REQ_GAME_LEAVE:
 			if (ggzdmod_player_leave(&seat, &fd) == 0) {
 				if (handlers[GGZ_EVENT_LEAVE] != NULL)
-					(*handlers[GGZ_EVENT_LEAVE])
-						(GGZ_EVENT_LEAVE,
-						 &seat);
+					status = (*handlers[GGZ_EVENT_LEAVE])
+							(GGZ_EVENT_LEAVE,
+						 	&seat);
 			}
 			break;
 		case RSP_GAME_OVER:
 			gameover = 1;
 			if (handlers[GGZ_EVENT_QUIT] != NULL)
-				(*handlers[GGZ_EVENT_QUIT])
-					(GGZ_EVENT_QUIT, NULL);
+				status = (*handlers[GGZ_EVENT_QUIT])
+						(GGZ_EVENT_QUIT, NULL);
 			break;
 	}
 
-	return gameover;
+	if (status < 0) return -1; /* error */
+	if (status > 0 || gameover) return 1; /* gameover */
+	return 0;
 }
 
 /* return value:
@@ -448,7 +455,7 @@ int ggzd_dispatch(void)
 int ggzd_read_data(void)
 {
 	fd_set read_fd_set;
-	int i, fd, status;
+	int i, fd, status, result;
 	int gameover = 0;
 
 	read_fd_set = active_fd_set;
@@ -468,30 +475,38 @@ int ggzd_read_data(void)
 			return -1;
 	}
 
+	status = 0;
+
 	/* Check for message from GGZ server */
 	if (FD_ISSET(ggzfd, &read_fd_set)) {
-		status = ggzd_dispatch();
-		if (status < 0)
-			return -1;
-		else if (status > 0)
-			gameover = 1;
+		result = ggzd_dispatch();
+		if (result < 0) status = -1;
+		else if (result > 0) gameover = 1;
 	}
 
 	/* Check for message from player */
 	for (i = 0; i < ggzd_seats_num(); i++) {
 		fd = seat_data[i].fd;
-		if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
-			if (handlers[GGZ_EVENT_PLAYER] != NULL)
-				(*handlers[GGZ_EVENT_PLAYER])
+		if (fd != -1
+		    && FD_ISSET(fd, &read_fd_set)
+		    && handlers[GGZ_EVENT_PLAYER] != NULL) {
+			result = (*handlers[GGZ_EVENT_PLAYER])
 					(GGZ_EVENT_PLAYER, &i);
+			if (result > 0) gameover = 1;
+			else if (result < 0) status = -1;
 		}
 	}
 
 	/* A "tick" event is sent once each time through the loop */
-	if (handlers[GGZ_EVENT_TICK] != NULL)
-		(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
+	if (handlers[GGZ_EVENT_TICK] != NULL) {
+		result = (*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
+		if (result > 0) gameover = 1;
+		else if (result < 0) status = -1;
+	}
 
-	return gameover;
+	if (status < 0) return -1;
+	if (gameover) return 1;
+	return 0;
 }
 
 /* return values as of now (not finalized):

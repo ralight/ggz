@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2275 2001-08-27 07:52:17Z jdorje $
+ * $Id: ggz_server.h 2281 2001-08-27 18:59:15Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -165,7 +165,7 @@ typedef enum {
  *
  *  @param event_id The type of event that has just happened.
  *  @param handler_data Specific data; varies by event.
- *  @return A negative return value indicates unrecoverable failure.
+ *  @return A negative return value indicates unrecoverable failure; a positive indicates game over.
  *
  *  Here is an example function showing the most generic use:
  *  @code
