@@ -40,6 +40,7 @@ static gint server_handle;
 extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
 extern GGZServer *server;
+extern GGZGame *game;
 
 void display_tables(void);
 void display_players(void);
@@ -60,6 +61,7 @@ static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_
 static GGZHookReturn ggz_chat_prvmsg(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data);
@@ -224,6 +226,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, ggz_room_enter);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, ggz_room_leave);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
+		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 	}
 
 	return GGZ_HOOK_OK;
@@ -644,3 +647,8 @@ void display_players(void)
 }
 
 
+static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data)
+{
+        ggzcore_game_send_data(game, event_data);
+        return GGZ_HOOK_OK;
+}

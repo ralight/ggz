@@ -119,8 +119,6 @@ static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data, 
 				     void* user_data)
 {
-	chat_display_message(CHAT_BEEP, "---", "Negotiated game");
-	
 	return GGZ_HOOK_OK;
 }
 
@@ -128,8 +126,6 @@ static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	chat_display_message(CHAT_BEEP, "---", "Negotiated game");
-
 	return GGZ_HOOK_OK;
 }
 
@@ -137,8 +133,6 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
-
-	chat_display_message(CHAT_BEEP, "---", "Data from game");
 
 	room = ggzcore_server_get_cur_room(server);
 	ggzcore_room_send_game_data(room, event_data);

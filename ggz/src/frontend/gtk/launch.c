@@ -100,8 +100,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 	maxplayers = ggzcore_gametype_get_max_players(gt);
 	for (x=1; x <= maxplayers; x++)
 	{
-		if (ggzcore_gametype_num_players_is_valid(gt, x) == TRUE ||
-		    ggzcore_gametype_num_bots_is_valid(gt, x) == TRUE)
+		if (ggzcore_gametype_num_players_is_valid(gt, x) == TRUE)
 			items = g_list_append(items, g_strdup_printf("%d", x));
 	}
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
