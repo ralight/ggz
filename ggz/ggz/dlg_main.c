@@ -45,6 +45,7 @@ void ggz_get_game_options(GtkButton * button, gpointer user_data);
 gint ggz_event_tables( GtkWidget *widget, GdkEvent *event );
 gint ggz_event_players( GtkWidget *widget, GdkEvent *event );
 void ggz_disconnect();
+void ggz_connect();
 
 GtkWidget*
 create_main_win (void)
@@ -748,6 +749,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (disconnect1), "activate",
                       GTK_SIGNAL_FUNC (ggz_disconnect),
                       msg_entry);
+  gtk_signal_connect (GTK_OBJECT (connect2), "activate",
+                      GTK_SIGNAL_FUNC (ggz_connect),
+                      msg_entry);
   gtk_signal_connect_object (GTK_OBJECT (player_list), "event",
   		             GTK_SIGNAL_FUNC (ggz_event_players), GTK_OBJECT (mnu_players));
   gtk_signal_connect_object (GTK_OBJECT (table_tree), "event", GTK_SIGNAL_FUNC (ggz_event_tables),
@@ -910,4 +914,10 @@ void ggz_disconnect()
 	display_chat("< <  > >","Disconnected from server.");
 	
 	login_disconnect();
+}
+
+void ggz_connect()
+{
+	dlg_login = create_dlg_login();
+	gtk_widget_show(dlg_login);
 }
