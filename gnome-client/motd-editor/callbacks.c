@@ -487,7 +487,7 @@ void
 on_file_ok_button1_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
-	gchar *filename;
+	const gchar *filename;
 	FILE *fd;
 	gchar in[1024];
 	gchar *text;
