@@ -33,8 +33,9 @@
 
 #include "props.h"
 #include "support.h"
+#include "xtext.h"
 
-
+static void props_update(void);
 static void dlg_props_realize(GtkWidget *widget, gpointer user_data);
 static void props_profile_box_realized(GtkWidget *widget, gpointer user_data);
 static void props_profile_list_select(GtkCList *clist,
@@ -59,6 +60,7 @@ static void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data);
 static GtkWidget* create_dlg_props (void);
 static GtkWidget* create_dlg_props_font (void);
 
+extern GtkWidget *win_main;
 GtkWidget *props_dialog;
 GtkWidget *props_font_dialog;
 
@@ -74,10 +76,25 @@ void props_create_or_raise(void)
         }
 }
    
+static void props_update(void)
+{
+	GtkWidget *tmp;
+	GdkFont *font;
+
+	tmp = lookup_widget((props_dialog), "chat_font");
+	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	tmp = lookup_widget((win_main), "xtext_custom");
+	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+	gtk_xtext_refresh(GTK_XTEXT(tmp),0);
+}
+
 
 void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
 
+	tmp = lookup_widget((props_dialog), "chat_font");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8");
 }
 
 
@@ -154,6 +171,9 @@ void props_color_type_toggled(GtkWidget *widget, gpointer user_data)
 
 void props_ok_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	/* update the settings */
+	props_update();
+
         /* Close font selector if open */
         if (props_font_dialog)
                 gtk_widget_destroy(props_font_dialog);
@@ -163,7 +183,8 @@ void props_ok_button_clicked(GtkWidget *widget, gpointer user_data)
 
 void props_apply_button_clicked(GtkWidget *widget, gpointer user_data)
 {
-
+	/* update the settings */
+	props_update();
 }
 
 
