@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3411 2002-02-18 08:22:39Z jdorje $
+ * $Id: transit.c 3418 2002-02-19 06:57:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -166,6 +166,9 @@ static int transit_table_event_callback(void* target, int size, void* data)
 			return GGZ_EVENT_OK;
 		}
 		pthread_rwlock_unlock(&game_types[table->type].lock);
+		break;
+	case GGZ_TABLE_CREATED:
+	case GGZ_TABLE_WAITING:
 		break;
 	}
 	
