@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2189 2001-08-23 07:59:17Z jdorje $
+# $Id: Makefile.am 2277 2001-08-27 10:37:12Z jdorje $
 
 SUBDIRS = config games ai .
 
@@ -46,3 +46,5 @@ test-recursive:
 	if test "$$dot_seen" = "no"; then \
 	  $(MAKE) -s $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
 	fi; test -z "$$fail"
+
+test-am: # avoid warning
