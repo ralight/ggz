@@ -62,9 +62,7 @@ int GGZCoreModule::launch()
 
 char* GGZCoreModule::game()
 {
-	// inconsistency in ggzcore
-	//return ggzcore_module_get_game(m_module);
-	return NULL;
+	return ggzcore_module_get_name(m_module);
 }
 
 char* GGZCoreModule::version()
