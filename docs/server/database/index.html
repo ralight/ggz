@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Database
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0e000}
+h3 {background-color: #e0e000}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
+
+<div>
+
+<h2>GGZ Gaming Zone Database Documentation</h2>
+
+<small>
+<i>Revision: 0.1</i><br>
+<i>Date: 12.12.2004</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+This is a supplemental documentation.
+More information can be found in the GGZ Hosting Guide.
+</p>
+
+<h3>Database Overview</h3>
+
+<p>
+The GGZ server makes extensive use of its database.
+There can either be a basic installation, or a full installation.
+The full installation is currently only supported by the PostgreSQL and
+MySQL backends, while the libdb variants are limited to the basic installation.
+Running a GGZ server ('ggzd') does not require the full installation,
+but operating the web interface (ggz-community) does.
+</p>
+
+<p>
+The database backend has to be selected at compile time, for only one can
+be present at a time. The following graphics illustrates the programmer's view
+on the GGZ database.
+</p>
+
+<p style="text-align:center">
+<img src="ggzdb-modular.png" alt="GGZ database source code structure">
+</p>
+
+<p>
+The server is designed to create all structures automatically on its first
+startup, using the connection data specified in ggzd.conf.
+This only includes the basic setup however, so it can operate at minimum
+level, so it's recommended to use the provided SQL schema files for the
+table creation before starting ggzd.
+</p>
+
+<h3>Tables and Relations</h3>
+
+<p>
+The following image describes visually the database structure.
+The basic installation covers the tables <tt>users</tt> and <tt>stats</tt>.
+The tables <tt>matchplayers</tt>, <tt>tournamentplayers</tt> and
+<tt>teammembers</tt> are relations between entries of the table <tt>users</tt>
+on the one hand, and <tt>matches</tt>, <tt>tournaments</tt> and <tt>teams</tt>
+on the other.
+</p>
+
+<p style="text-align:center">
+<img src="ggzdb.png" alt="GGZ database schema">
+</p>
+
+<p>
+The <tt>placements</tt> table contains aggregate data, and is maintained by
+using the external script 'calcrankings'. The <tt>game</tt> table does not
+exist in the database, it will however be introduced in later versions and be
+maintained by the script 'ggzdconfig', together with a table named
+<tt>room</tt>.
+</p>
+
+<p>
+To edit entries in the database manually, the tool 'ggzduedit' can be used.
+</p>
+
+<h3>Table descriptions</h3>
+
+<p>
+Table <tt>users</tt>: contains all registered users.
+<table>
+<tr><th>id</th><td>unique identifier (serial)</td></tr>
+<tr><th>handle</th><td>player login name</td></tr>
+<tr><th>password</th><td>player password</td></tr>
+<tr><th>name</th><td>full name</td></tr>
+<tr><th>email</th><td>email address</td></tr>
+<tr><th>lastlogin</th><td>timestamp of last login</td></tr>
+<tr><th>permissions</th><td>permission bit mask</td></tr>
+</table>
+The permission bits can be queried using the views 'permissions', to get
+information about each single bit, and 'permissionmasks', to get information
+about the admin mask, bot mask and so on.
+This table is filled by ggzd (or ggz-community) upon registration with at
+least the id, handle, password and email field.
+</p>
+
+<p>
+Table <tt>stats</tt>: contains one entry for each player-gametype combination.
+<table>
+<tr><th>id</th><td>unique identifier (serial)</td></tr>
+<tr><th>handle</th><td>player login name</td></tr>
+<tr><th>game</th><td>gametype name</td></tr>
+<tr><th>wins</th><td>number of wins</td></tr>
+<tr><th>losses</th><td>number of losses</td></tr>
+<tr><th>ties</th><td>number of ties</td></tr>
+<tr><th>forfeits</th><td>number of forfeits (cancelled games)</td></tr>
+<tr><th>rating</th><td>calculated rating (e.g. Elo number)</td></tr>
+<tr><th>ranking</th><td>position in ranking for this gametype</td></tr>
+<tr><th>highscore</th><td>highest score ever reached</td></tr>
+</table>
+</p>
+
+<p>
+Table <tt>userinfo</tt>: (and others) TODO
+<table>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+<tr><th></th><td></td></tr>
+</table>
+</p>
+
+</div>
+
+</body>
+</html>
