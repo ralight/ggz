@@ -616,6 +616,12 @@ The 'checkonline' command has been invented for this task.
 
 @command{ggz-cmd localhost admin adminpassword checkonline}
 
+Administrators running Nagios to check the availability of hosts and services
+might want to use the checkonline method as well - this is why checknagios has
+been invented.
+
+@command{ggz-cmd localhost guest guestpassword checknagios}
+
 @section The ggzduedit command line utility
 
 If you want to lookup the registered players, you can do so very easily using
