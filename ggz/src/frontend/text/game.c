@@ -38,11 +38,14 @@ static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
 static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
-				      
+static GGZHookReturn game_data(GGZGameEvent, void *, void*);
+static GGZHookReturn game_over(GGZGameEvent, void *, void*);
+
 
 GGZGame *game;
 static int fd = -1;
 
+extern GGZServer *server;
 
 void game_init(GGZModule *module)
 {
@@ -81,7 +84,8 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
-
+	ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 }
 
 
@@ -123,3 +127,29 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 	return GGZ_HOOK_OK;
 }
 
+
+static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
+{
+	GGZRoom *room;
+
+	output_text("--- Data from game");
+
+	room = ggzcore_server_get_cur_room(server);
+	ggzcore_room_send_game_data(room, event_data);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
+{
+	GGZRoom *room;
+
+	output_text("--- Game over");
+
+	game_quit();
+	room = ggzcore_server_get_cur_room(server);
+	ggzcore_room_leave_table(room);
+
+	return GGZ_HOOK_OK;
+}

@@ -63,12 +63,12 @@ void input_command(void)
 
 	/* EOF means user closed session */
 	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
+		game_quit();
+		game_destroy();
 		if (server) {
 			server_disconnect();
 			server_destroy();
 		}
-		game_quit();
-		game_destroy();
 		loop_quit();
 		return;
 	}
@@ -276,6 +276,7 @@ static void input_handle_launch(char *line)
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
+	GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
 	type = ggzcore_room_get_gametype(room);
@@ -285,6 +286,12 @@ static void input_handle_launch(char *line)
 	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
 	output_text("Launching %s", ggzcore_module_get_path(module));
 	game_init(module);
+
+	table = ggzcore_table_new();
+	ggzcore_table_init(table, type, "Test", 2);
+	ggzcore_table_add_bot(table, NULL, 1);
+
+	ggzcore_room_launch_table(room, table);
 }
 
 	
