@@ -37,6 +37,42 @@ class TTTAbout extends Dialog implements ActionListener
 	}
 }
 
+class TTTOver extends Dialog implements ActionListener
+{
+	Button closebutton;
+
+	TTTOver(Frame parent, byte winner)
+	{
+		super(parent, "Game over", true);
+		setBackground(Color.blue);
+		setForeground(Color.white);
+		setSize(600, 150);
+
+		Font f = new Font("TimesRoman", Font.PLAIN, 12);
+		setFont(f);
+
+		GridLayout layout = new GridLayout(3, 1);
+		setLayout(layout);
+		if(winner == 2)
+			add(new Label("You won."));
+		else
+			add(new Label("You lost."));
+		closebutton = new Button("Close");
+		add(closebutton);
+
+		closebutton.addActionListener(this);
+	}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == closebutton)
+		{
+			dispose();
+			return;
+		}
+	}
+}
+
 class TTTProto
 {
 	public static final int msgseat = 0;
@@ -62,8 +98,10 @@ class TicTacToeEngine implements Runnable
 {
 	TicTacToeManager mManager;
 	FileInputStream s;
+	FileOutputStream o;
 	TTTProto proto;
 	byte[] input = null;
+	byte oldmove;
 
 	TicTacToeEngine(TicTacToeManager manager)
 	{
@@ -138,6 +176,19 @@ class TicTacToeEngine implements Runnable
 			input[i - cut] = tmp[i];
 	}
 
+	public byte readChar()
+	{
+		readNetwork();
+		if(input.length >= 1)
+		{
+			byte op = input[0];
+			cutArray(1);
+			return op;
+		}
+		else System.err.println("readChar(): buffer underrun");
+		return 0;
+	}
+
 	public int readInt()
 	{
 		readNetwork();
@@ -170,6 +221,8 @@ class TicTacToeEngine implements Runnable
 	public void run()
 	{
 		s = new FileInputStream(FileDescriptor.in);
+		o = new FileOutputStream(FileDescriptor.out);
+
 		proto = new TTTProto();
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
@@ -200,15 +253,35 @@ class TicTacToeEngine implements Runnable
 					break;
 				case TTTProto.msgmove:
 					System.err.println(">> msgmove");
+					int nummove = readInt();
+					int move = readInt();
+					System.err.println("MOVE: " + nummove + move);
+					byte[] msg = new byte[2];
+					msg[0] = 1;
+					msg[1] = (byte)move;
+					mManager.sendMessage(this, msg);
 					break;
 				case TTTProto.msggameover:
 					System.err.println(">> msggameover");
+					byte winner = readChar();
+					System.err.println("WINNER: " + winner);
+					TTTOver a = new TTTOver(mManager.gui(), winner);
+					a.show();
 					break;
 				case TTTProto.reqmove:
 					System.err.println(">> reqmove");
 					break;
 				case TTTProto.rspmove:
 					System.err.println(">> rspmove");
+					byte status = readChar();
+					System.err.println("MOVE STATUS: " + status);
+					if(status == 0)
+					{
+						byte[] msg2 = new byte[2];
+						msg2[0] = 0;
+						msg2[1] = oldmove;
+						mManager.sendMessage(this, msg2);
+					}
 					break;
 				case TTTProto.sndsync:
 					System.err.println(">> sndsync");
@@ -225,7 +298,6 @@ class TicTacToeEngine implements Runnable
 			System.err.println("engine::message " + message[i]);
 		//System.out.print(message);
 		//System.out.flush();
-		OutputStream o = new FileOutputStream(FileDescriptor.out);
 		try
 		{
 			o.write(message, 0, message.length);
@@ -235,6 +307,8 @@ class TicTacToeEngine implements Runnable
 		catch(IOException ex)
 		{
 		}
+
+		oldmove = message[7]; // HACK!
 	}
 }
 
@@ -315,9 +389,15 @@ class TicTacToeGui extends Frame implements ActionListener
 			for(int i = 0; i < 9; i++)
 				if(e.getSource() == buttons[i])
 				{
-					byte[] message = new byte[2];
-					message[0] = TTTProto.sndmove;
-					message[1] = (byte)i;
+					byte[] message = new byte[8];
+					message[0] = 0;
+					message[1] = 0;
+					message[2] = 0;
+					message[3] = TTTProto.sndmove;
+					message[4] = 0;
+					message[5] = 0;
+					message[6] = 0;
+					message[7] = (byte)i;
 					mManager.sendMessage(this, message);
 				}
 		}
@@ -327,6 +407,11 @@ class TicTacToeGui extends Frame implements ActionListener
 	{
 		for(int i = 0; i < message.length; i++)
 			System.err.println("gui::message " + message[i]);
+		int move = message[1];
+		int num = message[0];
+		Button b = buttons[move];
+		if(num == 0) b.setLabel("X");
+		else b.setLabel("O");
 	}
 }
 
@@ -342,6 +427,11 @@ class TicTacToeManager
 	public void setGui(TicTacToeGui gui)
 	{
 		mGui = gui;
+	}
+
+	public TicTacToeGui gui()
+	{
+		return mGui;
 	}
 
 	public void setEngine(TicTacToeEngine engine)
