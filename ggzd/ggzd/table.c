@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4534 2002-09-13 02:20:58Z jdorje $
+ * $Id: table.c 4540 2002-09-13 05:40:05Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -58,18 +58,27 @@
 #define GGZ_RESYNC_USEC 500000
 
 /* Packaging for seat events */
-struct GGZSeatChange {
+typedef struct {
 	int table;
 	int num_seats;
 	struct GGZTableSeat seat;
-};
+} GGZSeatChangeEventData;
 
 /* Packaging for spectator events */
-struct GGZSpectatorChange {
+typedef struct {
 	int table;
 	int num_spectators;
 	struct GGZTableSpectator spectator;
-};
+} GGZSpectatorChangeEventData;
+
+/* Packaging for table events */
+typedef struct {
+	unsigned char opcode;
+	GGZTable table;
+	/* player and seat are only used for some operations */
+	char player[MAX_USER_NAME_LEN + 1];
+	int seat;
+} GGZTableEventData;
 
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
@@ -103,10 +112,6 @@ static int   table_seat_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 /*static int   table_spectator_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 				      unsigned int spectator);*/
 			      
-static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
-static int   table_transit_pack(void** data, unsigned char opcode, 
-				GGZTable* table, char* name, 
-				unsigned int seat);
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 					       void* data);
 static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
@@ -1135,16 +1140,18 @@ int table_find_spectator(int room, int index, char *name)
 
 static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 {
-	void* data = NULL;
-	int size, status, room;
+	int status, room = table->room;
+	GGZTableEventData *data = ggz_malloc(sizeof(*data));
 
-	room = table->room;
+	/* Pack data */
+	data->opcode = opcode;
+	pthread_rwlock_rdlock(&table->lock);
+	data->table = *table;
+	pthread_rwlock_unlock(&table->lock);
 	
-	size = table_pack(&data, opcode, table);
-
 	/* Queue table event for whole room */
 	status = event_room_enqueue(room, table_event_callback,
-				    size, data, NULL);
+				    sizeof(*data), data, NULL);
 	
 	return status;
 }
@@ -1153,18 +1160,21 @@ static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 				       char* name, unsigned int seat)
 {
-	void* data = NULL;
-	int size, status, room;
+	int status, room = table->room;
+	GGZTableEventData *data = ggz_malloc(sizeof(*data));
 
-	room = table->room;
-	
 	/* Pack up table update data */
-	size = table_transit_pack(&data, opcode, table, name, seat);
+	data->opcode = opcode;
+	pthread_rwlock_rdlock(&table->lock);
+	data->table = *table;
+	pthread_rwlock_unlock(&table->lock);
+	strcpy(data->player, name);
+	data->seat = seat;
 
 	/* Queue table event for whole room */
 	status = event_room_enqueue(room, table_event_callback,
-				    size, data, NULL);
-	
+				    sizeof(*data), data, NULL);
+
 	return status;
 }
 
@@ -1173,7 +1183,7 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 				    unsigned int seat_num)
 {
 	int status;
-	struct GGZSeatChange *data;
+	GGZSeatChangeEventData *data;
 
 	data = ggz_malloc(sizeof(*data));
 
@@ -1214,147 +1224,69 @@ static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode
 #endif
 
 
-static int table_pack(void** data, unsigned char opcode, GGZTable* table)
-{
-	int size;
-	char* current;
-	GGZTable info;
-
-	/* Allocate space for opcode and table */
-	size = sizeof(char) + sizeof(GGZTable);
-
-	*data = ggz_malloc(size);
-	
-	pthread_rwlock_rdlock(&table->lock);
-	info = *table;
-	pthread_rwlock_unlock(&table->lock);
-	
-	current = (char*)*data;
-	
-	*(unsigned char*)current = opcode;
-	current += sizeof(char);
-	
-	*(GGZTable*)current = info;
-	current += sizeof(GGZTable);
-	
-	return size;
-}
-
-
-static int table_transit_pack(void** data, unsigned char opcode,
-			      GGZTable* table, char* name, unsigned int seat)
-{
-	int size;
-	char* current;
-	GGZTable info;
-
-	/* Allocate space for opcode, table, player name, and seat number */
-	size = sizeof(char) + sizeof(GGZTable) + strlen(name)+1 + sizeof(int);
-
-	pthread_rwlock_rdlock(&table->lock);
-	info = *table;
-	pthread_rwlock_unlock(&table->lock);
-	
-	*data = ggz_malloc(size);
-	
-	current = (char*)*data;
-	
-	*(unsigned char*)current = opcode;
-	current += sizeof(char);
-
-	*(GGZTable*)current = info;
-	current += sizeof(GGZTable);
-
-	strcpy(current, name);
-	current += (strlen(name) + 1);
-
-	*(unsigned int*)current = seat;
-	current += sizeof(int);
-
-	return size;
-}
-
-
 /* Event callback for delivering table list update to a player */
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
                                                void* data)
 {
-	unsigned char opcode;
-	char* current;
-	GGZTable info;
-	GGZPlayer* player;
+	GGZPlayer* player = target;
 	GGZTableSeat seat;
 	GGZTableSpectator spectator;
+	GGZTableEventData *event = data;
 	void* update_data = NULL;
 
-	player = (GGZPlayer*)target;
-
-	/* Unpack event data */
-	current = (char*)data;
-	
-	opcode = *(unsigned char*)current;
-	current += sizeof(char);
-	
-	info = *(GGZTable*)current;
-	current += sizeof(GGZTable);
-
-	
-	switch (opcode) {
+	switch (event->opcode) {
 	case GGZ_UPDATE_DELETE:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d deleted",
-			player->name, info.index);
+			player->name, event->table.index);
 		break;
 
 	case GGZ_UPDATE_ADD:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
-			player->name, info.index);
+			player->name, event->table.index);
 		break;
 
 	case GGZ_UPDATE_DESC:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
-			player->name, info.index, info.desc);
+			player->name, event->table.index, event->table.desc);
 		break;		
 		
 	case GGZ_UPDATE_STATE:
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
-			player->name, info.index, info.state);
+			player->name, event->table.index, event->table.state);
 		break;
 
 	case GGZ_UPDATE_LEAVE:
 	case GGZ_UPDATE_JOIN:
-		strcpy(seat.name, current);
-		current += (strlen(seat.name) + 1);
-		seat.index = *(int*)current;
-		current += sizeof(int);
+		strcpy(seat.name, event->player);
+		seat.index = event->seat;
 		seat.type = GGZ_SEAT_PLAYER;
 
 		update_data = &seat;
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, seat.name, 
-			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
-			seat.index, info.index);
+			event->opcode == GGZ_UPDATE_JOIN ? "join" : "leave",
+			seat.index, event->table.index);
 		break;
 
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
 	case GGZ_UPDATE_SPECTATOR_JOIN:
-		strcpy(spectator.name, current);
-		current += strlen(spectator.name) + 1;
-		spectator.index = *(int*)current;
-		current += sizeof(int);
+		strcpy(spectator.name, event->player);
+		spectator.index = event->seat;
 
 		update_data = &spectator;
 
 		dbg_msg(GGZ_DBG_UPDATE,
 			"%s sees %s %s spectator seat %d at table %d",
 			player->name, spectator.name,
-			opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join" : "leave",
-			spectator.index, info.index);
+			event->opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join"
+				: "leave",
+			spectator.index, event->table.index);
 		break;
 	}
 
-	if (net_send_table_update(player->client->net, opcode,
-				  &info, update_data) < 0)
+	if (net_send_table_update(player->client->net, event->opcode,
+				  &event->table, update_data) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -1367,7 +1299,7 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
 {
 	GGZTable info;
 	GGZPlayer* player = (GGZPlayer*)target;
-	struct GGZSeatChange *seat_change = data;
+	GGZSeatChangeEventData *seat_change = data;
 	struct GGZTableSeat *seat = &(seat_change->seat);
 
 	info.index = seat_change->table;
