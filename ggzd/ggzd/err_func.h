@@ -26,6 +26,8 @@
 
 #include <stdarg.h>
 
+#include <ggz.h> /* libggz */
+
 #include <easysock.h>
 #include <datatypes.h>
 
@@ -92,11 +94,16 @@ typedef struct {
  * 
  * dbg_msg : print a debugging message if DEBUG is defined
  */
-void err_msg(const char *fmt, ...);
-void err_sys(const char *fmt, ...);
-void err_msg_exit(const char *fmt, ...);
-void err_sys_exit(const char *fmt, ...);
-void dbg_msg(const unsigned, const char *fmt, ...);
+void err_msg(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
+void err_sys(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
+void err_msg_exit(const char *fmt, ...)
+		  ggz__attribute((format(printf, 1, 2)));
+void err_sys_exit(const char *fmt, ...)
+		  ggz__attribute((format(printf, 1, 2)));
+void dbg_msg(const unsigned, const char *fmt, ...)
+	     ggz__attribute((format(printf, 2, 3)));
 
 
 /*

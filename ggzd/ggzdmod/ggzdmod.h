@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2875 2001-12-11 06:29:21Z jdorje $
+ * $Id: ggzdmod.h 2932 2001-12-18 07:48:57Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -27,6 +27,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <ggz.h> /* libggz */
 
 /** @file ggzdmod.h
  *  @brief Common functions for interfacing a game server and GGZ.
@@ -451,7 +453,8 @@ int ggzdmod_disconnect(GGZdMod * mod);
  *  @param fmt A printf-style format string.
  *  @return 0 on success, -1 on failure.
  */
-int ggzdmod_log(GGZdMod * mod, char *fmt, ...);
+int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
+		ggz__attribute((format(printf, 2, 3)));
 
 
 #endif /* __GGZDMOD_H__ */

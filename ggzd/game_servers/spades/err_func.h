@@ -24,6 +24,8 @@
 
 #include <stdarg.h>
 
+#include <ggz.h> /* libggz */
+
 /* Log levels for log_msg */
 #define GGZ_LOG_ALWAYS          (unsigned) 0x0000
 #define GGZ_LOG_NOTICE          (unsigned) 0x0001
@@ -60,11 +62,17 @@
  * 
  * dbg_msg : print a debugging message if DEBUG is defined
  */
-void err_msg(const char *fmt, ...);
-void err_sys(const char *fmt, ...);
-void err_msg_exit(const char *fmt, ...);
-void err_sys_exit(const char *fmt, ...);
-void dbg_msg(const char *fmt, ...);
-void log_msg(const char *fmt, ...);
+void err_msg(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
+void err_sys(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
+void err_msg_exit(const char *fmt, ...)
+		  ggz__attribute((format(printf, 1, 2)));
+void err_sys_exit(const char *fmt, ...)
+		  ggz__attribute((format(printf, 1, 2)));
+void dbg_msg(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
+void log_msg(const char *fmt, ...)
+	     ggz__attribute((format(printf, 1, 2)));
 
 
