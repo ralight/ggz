@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4342 2002-08-07 06:57:57Z jdorje $
+ * $Id: common.h 4396 2002-09-02 02:34:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -252,12 +252,12 @@ void fatal_error(const char *message);
 
 #define players_iterate_end }
 
+#define IS_REAL_PLAYER(p) ((p) >= 0)
+
 #ifdef SUPPORT_SPECTATORS
-#  define IS_REAL_PLAYER(p) ((p) >= 0)
 #  define IS_SPECTATOR(p) ((p) < 0)
 #else
-#  define IS_REAL_PLAYER(p) (1)
-#  define IS_SPECTATOR(p) (0)
+#  define IS_SPECTATOR(p) (FALSE)
 #endif
 
 #endif /* __COMMON_H__ */
