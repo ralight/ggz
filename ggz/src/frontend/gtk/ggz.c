@@ -274,7 +274,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	if(ggzcore_gametype_get_name(gt) == NULL)
 	{
 		tmp = lookup_widget(win_main, "table_vpaned");
-		gtk_object_set(GTK_OBJECT(tmp), "user_data", GTK_PANED(tmp)->child1_size, NULL);
+		if(GTK_PANED(tmp)->child1_size != 0)
+			gtk_object_set(GTK_OBJECT(tmp), "user_data", GTK_PANED(tmp)->child1_size, NULL);
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);

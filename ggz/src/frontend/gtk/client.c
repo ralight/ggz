@@ -902,9 +902,9 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	gt = ggzcore_room_get_gametype(room);
 
 	if(ggzcore_gametype_get_name(gt) != NULL)
-	{
 		gtk_object_set(GTK_OBJECT(tmp), "user_data",  GTK_PANED(tmp)->child1_size, NULL);
-	}
+	if(ggzcore_gametype_get_name(gt) == NULL && GTK_PANED(tmp)->child1_size != 0 )
+		gtk_paned_set_position(GTK_PANED(tmp), 0);
 }
 
 
