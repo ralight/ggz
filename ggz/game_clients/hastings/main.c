@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: main.c 4272 2002-06-23 11:49:53Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 	gtk_widget_show(main_win);
 
 	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_STATE, &handle_ggzmod_server);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
 
 	ggzmod_connect(mod);
 
