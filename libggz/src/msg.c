@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4623 2002-09-18 18:50:40Z jdorje $
+ * $Id: msg.c 4651 2002-09-22 14:56:50Z jdorje $
  *
  * Debug and error messages
  *
@@ -176,8 +176,13 @@ void _ggz_msg(const char *fmt, ...)
 }
 
 
+/* This feature will fork the process and dump core, so that a core file will
+   be generated without hurting the running process.
+
+   But, it's disabled because it breaks some things (like KDE). */
 static void dump_core(void)
 {
+#if 0
 	int pid = fork();
 
 	if (pid < 0)
@@ -187,6 +192,7 @@ static void dump_core(void)
 	else
 		if (waitpid(pid, NULL, 0) <= 0)
 			ggz_error_sys_exit("Wait failed");
+#endif
 }
 
 
