@@ -85,6 +85,9 @@ void send_player_message_toall(seat_t s)
 
 void set_player_message(player_t p)
 {
+	if (game.which_game == GGZ_GAME_UNKNOWN)
+		/* silently fail; it's easier to check here than elsewhere */
+		return;
 	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
 	if (p < 0 || p >= game.num_players)
 		ggz_debug("ERROR: SERVER BUG: "
