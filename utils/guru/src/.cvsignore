@@ -1,6 +1,7 @@
 guru
 guru_i18n
 gi18n
+gplayer
 *.o
 Makefile
 Makefile.in
