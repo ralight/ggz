@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
+dnl $Id: configure.ac 5368 2003-02-04 08:53:23Z jdorje $
 
 AC_INIT(configure.ac)
 AM_INIT_AUTOMAKE(ggz-gtk-client, 0.0.7pre)
@@ -41,13 +41,17 @@ subdirs="ggz-gtk man"
 dnl Check for NLS
 dnl ============================================================
 if test "x$MSGFMT" != "x"; then
-	AC_DEFINE(ENABLE_NLS)
+	AC_DEFINE([ENABLE_NLS], 1, [Define to use NLS (i18n)])
 	allsubdirs="$subdirs po"
 	enable_gettext="yes"
 	if test "x${prefix}" = "xNONE"; then
-		AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale")
+		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+                                   "${ac_default_prefix}/share/locale",
+                                   [The location to put message catalogs])
 	else
-		AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale")
+		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+                                   "${prefix}/share/locale",
+                                   [The location to put message catalogs])
 	fi
 
 else
@@ -81,7 +85,7 @@ if test "$enable_gtk" = "gtk2" || test "$enable_gtk" = "yes"; then
   AM_PATH_GTK_2_0([2.0.0], [found_gtk2="yes"], [found_gtk2="no"])
   if test "$found_gtk2" = "yes"; then
     enable_gtk="gtk2"
-    AC_DEFINE(GTK2)
+    AC_DEFINE(GTK2, 1, [Define to link against GTK+-2.0 libraries])
   elif test "$enable_gtk" = "gtk2"; then
     AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])
   fi
@@ -118,10 +122,10 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
@@ -143,7 +147,7 @@ else
 fi
 
 
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Location of GGZ module data])
 
 SUBDIRS=$allsubdirs
 AC_SUBST(LDADD)
