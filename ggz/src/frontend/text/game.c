@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5913 2004-02-11 16:14:22Z josef $
+ * $Id: game.c 5917 2004-02-13 07:27:52Z jdorje $
  *
  * Functions for handling game events
  *
@@ -43,7 +43,6 @@ static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
-static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 
 
 static GGZGame *game = NULL;
@@ -189,18 +188,3 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 
 	return GGZ_HOOK_OK;
 }
-
-
-/*static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
-{
-	GGZRoom *room;
-
-	output_text("--- Game over");
-
-	game_quit();
-	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_leave_table(room, 0);
-
-	return GGZ_HOOK_OK;
-}*/
-
