@@ -351,9 +351,10 @@ void GGZapHandler::hookGameActive(unsigned int id, void *data)
 cout << "hookGameActive!" << endl;
 	switch(id)
 	{
-		case GGZCoreGame::data:
+		// FIXME: channel
+		/*case GGZCoreGame::data:
 			m_room->sendData((char*)data);
-			break;
+			break;*/
 		case GGZCoreGame::over:
 			detachGameCallbacks();
 			delete m_game;
@@ -454,7 +455,8 @@ void GGZapHandler::attachGameCallbacks()
 	m_game->addHook(GGZCoreGame::launchfail, &GGZapHandler::hookGame, (void*)this);
 	m_game->addHook(GGZCoreGame::negotiated, &GGZapHandler::hookGame, (void*)this);
 	m_game->addHook(GGZCoreGame::negotiatefail, &GGZapHandler::hookGame, (void*)this);
-	m_game->addHook(GGZCoreGame::data, &GGZapHandler::hookGame, (void*)this);
+	// FIXME: channel
+	/*m_game->addHook(GGZCoreGame::data, &GGZapHandler::hookGame, (void*)this);*/
 	m_game->addHook(GGZCoreGame::over, &GGZapHandler::hookGame, (void*)this);
 	m_game->addHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame, (void*)this);
 	m_game->addHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame, (void*)this);
@@ -466,7 +468,8 @@ void GGZapHandler::detachGameCallbacks()
 	m_game->removeHook(GGZCoreGame::launchfail, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::negotiated, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::negotiatefail, &GGZapHandler::hookGame);
-	m_game->removeHook(GGZCoreGame::data, &GGZapHandler::hookGame);
+	// FIXME: channel
+	/*m_game->removeHook(GGZCoreGame::data, &GGZapHandler::hookGame);*/
 	m_game->removeHook(GGZCoreGame::over, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame);

@@ -269,6 +269,8 @@ class KGGZ : public QWidget
 
 		// Non-blocking DNS for easysock's gethostbyname
 		QDns *m_dns;
+		// File descriptor of current channel
+		int m_channelfd;
 };
 
 #endif

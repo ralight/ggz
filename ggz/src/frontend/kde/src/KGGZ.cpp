@@ -68,6 +68,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	int result;
 	QLayout *vbox;
 
+	m_channelfd = -1;
 	kggzroom = NULL;
 	kggzserver = NULL;
 	m_save_username = NULL;
@@ -338,6 +339,12 @@ void KGGZ::dispatcher()
 void KGGZ::timerEvent(QTimerEvent *e)
 {
 	static int lag = 0;
+
+	if(m_channelfd >= 0)
+	{
+		// FIXME: ggzcore++
+		ggzcore_server_read_data(kggzserver->server(), m_channelfd);
+	}
 
 	if(m_killserver)
 	{
@@ -843,12 +850,56 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::channelconnected:
 			KGGZDEBUG("##### CHANNEL: connected!\n");
+			m_channelfd = kggzserver->channel();
 			break;
 		case GGZCoreServer::channelready:
 			KGGZDEBUG("##### CHANNEL: ready!\n");
+			m_channelfd = -1;
+
+			if(m_gameinfo->type() == KGGZGameInfo::typelaunch)
+			{
+				result = kggzroom->launchTable(m_table->table());
+				delete m_launch;
+				m_launch = NULL;
+				if(result < 0)
+				{
+					delete m_module;
+					m_module = NULL;
+					delete m_table;
+					m_table = NULL;
+					KMessageBox::error(this, i18n("Failed launching the requested table!"), i18n("Error!"));
+					return;
+				}
+
+				if(m_table)
+				{
+					delete m_table;
+					m_table = NULL;
+				}
+			}
+			else
+			{
+				if(m_gameinfo->type() == KGGZGameInfo::typejoin)
+					result = kggzroom->joinTable(m_gameinfo->table());
+				else
+					result = kggzroom->joinTableSpectator(m_gameinfo->table());
+				if(result < 0)
+				{
+					delete m_module;
+					m_module = NULL;
+					KMessageBox::error(this, i18n("Failed joining the requested table!"), i18n("Error!"));
+					return;
+				}
+			}
+
 			break;
 		case GGZCoreServer::channelfail:
 			KGGZDEBUG("##### CHANNEL: fail!\n");
+			if(m_table)
+			{
+				delete m_table;
+				m_table = NULL;
+			}
 			break;
 		default:
 			KGGZDEBUG("unknown\n");
@@ -1302,7 +1353,6 @@ void KGGZ::slotGameStart()
 	GGZCoreGametype *gametype;
 	int seats;
 	char *description;
-	int ret;
 
 	if(!kggzroom)
 	{
@@ -1354,38 +1404,11 @@ void KGGZ::slotGameStart()
 					KGGZDEBUG("* %i: unknown!\n", i);
 			}
 		}
-		ret = kggzroom->launchTable(m_table->table());
-		delete m_launch;
-		m_launch = NULL;
-		if(ret < 0)
-		{
-			delete m_module;
-			m_module = NULL;
-			delete m_table;
-			m_table = NULL;
-			KMessageBox::error(this, i18n("Failed launching the requested table!"), i18n("Error!"));
-			return;
-		}
+		kggzserver->createChannel();
 	}
 	else
 	{
-		if(m_gameinfo->type() == KGGZGameInfo::typejoin)
-			ret = kggzroom->joinTable(m_gameinfo->table());
-		else
-			ret = kggzroom->joinTableSpectator(m_gameinfo->table());
-		if(ret < 0)
-		{
-			delete m_module;
-			m_module = NULL;
-			KMessageBox::error(this, i18n("Failed joining the requested table!"), i18n("Error!"));
-			return;
-		}
-	}
-
-	if(m_table)
-	{
-		delete m_table;
-		m_table = NULL;
+		kggzserver->createChannel();
 	}
 }
 
