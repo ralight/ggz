@@ -101,6 +101,7 @@ AC_SUBST(LDADD)
 
 AC_OUTPUT([Makefile 
 	   ggz-txt/Makefile
+		man/Makefile
 	   ])
 
 
