@@ -579,6 +579,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			buffer.append(i18n(" enters the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add((char*)data);
+			m_workspace->widgetChat()->chatline()->addPlayer((char*)data);
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
@@ -588,6 +589,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			//strcat(buffer, i18n(" has left the room."));
 			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove((char*)data);
+			m_workspace->widgetChat()->chatline()->removePlayer((char*)data);
 			break;
 		case GGZCoreRoom::tableupdate:
 			KGGZDEBUG("tableupdate\n");
@@ -757,6 +759,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				kggzroom = NULL;
 				//kggzserver->resetRoom(); // This is damned required!!!! -> update: no :-) does now work automatically
 				m_workspace->widgetUsers()->removeall();
+				m_workspace->widgetChat()->chatline()->removeAll();
 			}
 			kggzroom = kggzserver->room();
 			//kggzroom = new GGZCoreRoom(ggzcore_server_get_cur_room(kggzserver->server()));
@@ -787,6 +790,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				detachRoomCallbacks();
 				delete kggzroom;
 				kggzroom = NULL;
+				m_workspace->widgetChat()->chatline()->removeAll();
 				m_workspace->widgetUsers()->removeall();
 				m_workspace->widgetTables()->reset();
 				m_workspace->widgetChat()->shutdown();
