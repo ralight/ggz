@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <ggz.h>
 #include <game.h>
@@ -184,6 +185,9 @@ int game_send_move(int num, char ro, char co, char rd, char cd)
 		   || es_write_char(fd, cd) < 0)
 			return -1;
 	}
+
+	/* Always wait 1 second after sending a player move */
+	sleep(1);
 
 	return 0;
 }

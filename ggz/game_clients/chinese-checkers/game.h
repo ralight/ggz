@@ -38,6 +38,11 @@ struct game_t {
 	char board[17][25];
 };
 
+struct node_t {
+	int ro, co;
+	int rd, cd;
+};
+
 extern struct game_t game;
 
 extern void game_init(void);

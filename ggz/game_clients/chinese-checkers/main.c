@@ -177,7 +177,8 @@ static int get_gameover_msg(void)
 	if(winner == game.me)
 		msg = "Game over!  You won!";
 	else
-		msg = g_strdup_printf("Game over!  %s won!",game.names[winner]);
+		msg = g_strdup_printf("Game over!  %s won!",
+				      game.names[(int)winner]);
 	display_statusbar(msg);
 	if(winner != game.me)
 		g_free(msg);

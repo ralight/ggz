@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "game.h"
 #include "ggz.h"
@@ -38,9 +39,9 @@
 
 
 struct game_t game;
+static GSList *path_list;
 
 static void game_zap_board(void);
-static void game_print_board(void);
 static int game_make_move(int, int, int, int);
 static int game_find_path(int, int, int, int, int);
 
@@ -59,7 +60,6 @@ void game_init(void)
 
 	/* Setup the board array */
 	game_zap_board();
-	game_print_board();
 }
 
 
@@ -159,42 +159,12 @@ void game_init_board(void)
 		}
 	}
 
-	game_print_board();
 	display_refresh_board();
 
 	msg = g_strdup_printf("You are playing the %s marbles",
 			      color[game.me]);
 	display_statusbar(msg);
 	g_free(msg);
-}
-
-
-/* Display the game board in text format */
-static void game_print_board(void)
-{
-	int i, j;
-
-	printf("Current game board:\n");
-	for(i=0; i<17; i++) {
-		for(j=0; j<25; j++)
-			switch(game.board[i][j]) {
-				case -1:
-					printf(" ");
-					break;
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-					printf("%c", '0'+game.board[i][j]);
-					break;
-				default:
-					printf("?");
-			}
-		printf("\n");
-	}
 }
 
 
@@ -224,13 +194,14 @@ void game_handle_click_event(int r, int c)
 		}
 	}
 
-	/* We are clicking the desitination marble */
-	if(game.board[r][c] == 0)
+	/* We are clicking the destination marble */
+	if(game.board[r][c] == 0) {
 		if(game_make_move(ro, co, r, c)) {
 			click_state = 0;
 			display_statusbar("Sending move to GGZ server...");
 			return;
 		}
+	}
 
 	/* Bad dest */
 	gdk_beep();
@@ -260,13 +231,14 @@ static int game_make_move(int ro, int co, int rd, int cd)
 		exit(1);
 
 	display_refresh_board();
-	game_print_board();
+	display_show_path(path_list);
 }
 
 
 static int game_find_path(int from, int ro, int co, int rd, int cd)
 {
 	int r, c;
+	struct node_t *node;
 	static char visited[17][25];
 
 	if(from == 0) {
@@ -274,6 +246,9 @@ static int game_find_path(int from, int ro, int co, int rd, int cd)
 		for(r=0; r<17; r++)
 			for(c=0; c<25; c++)
 				visited[r][c] = 0;
+
+		/* Clear our path list */
+		path_list = NULL;
 
 		/* Check each of the six immediate move directions for dest */
 		/* We don't have to check if the cell is occupied, as we    */
@@ -283,8 +258,15 @@ static int game_find_path(int from, int ro, int co, int rd, int cd)
 		   || (ro-1 == rd && co+1 == cd)
 		   || (ro == rd && co+2 == cd)
 		   || (ro+1 == rd && co+1 == cd)
-		   || (ro+1 == rd && co-1 == cd) )
+		   || (ro+1 == rd && co-1 == cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = rd;
+			node->cd = cd;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 
 		visited[ro][co] = 1;
 
@@ -292,33 +274,75 @@ static int game_find_path(int from, int ro, int co, int rd, int cd)
 		if((co-4 >= 0)
 		   && (game.board[ro][co-2] > 0)
 		   && (game.board[ro][co-4] == 0)
-		   && game_find_path(1, ro, co-4, rd, cd) )
+		   && game_find_path(1, ro, co-4, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro;
+			node->cd = co-4;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 		if((co-2 >= 0 && ro-2 >= 0)
 		   && (game.board[ro-1][co-1] > 0)
 		   && (game.board[ro-2][co-2] == 0)
-		   && game_find_path(2, ro-2, co-2, rd, cd) )
+		   && game_find_path(2, ro-2, co-2, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro-2;
+			node->cd = co-2;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 		if((co+2 < 25 && ro-2 >= 0)
 		   && (game.board[ro-1][co+1] > 0)
 		   && (game.board[ro-2][co+2] == 0)
-		   && game_find_path(3, ro-2, co+2, rd, cd) )
+		   && game_find_path(3, ro-2, co+2, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro-2;
+			node->cd = co+2;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 		if((co+4 < 25)
 		   && (game.board[ro][co+2] > 0)
 		   && (game.board[ro][co+4] == 0)
-		   && game_find_path(4, ro, co+4, rd, cd) )
+		   && game_find_path(4, ro, co+4, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro;
+			node->cd = co+4;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 		if((co+2 < 25 && ro+2 < 17)
 		   && (game.board[ro+1][co+1] > 0)
 		   && (game.board[ro+2][co+2] == 0)
-		   && game_find_path(5, ro+2, co+2, rd, cd) )
+		   && game_find_path(5, ro+2, co+2, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro+2;
+			node->cd = co+2;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 		if((co-2 >= 0 && ro+2 < 17)
 		   && (game.board[ro+1][co-1] > 0)
 		   && (game.board[ro+2][co-2] == 0)
-		   && game_find_path(6, ro+2, co-2, rd, cd) )
+		   && game_find_path(6, ro+2, co-2, rd, cd) ) {
+			node = g_malloc(sizeof(*node));
+			node->ro = ro;
+			node->co = co;
+			node->rd = ro+2;
+			node->cd = co-2;
+			path_list = g_slist_append(path_list, node);
 			return 1;
+		}
 
 		/* Failed in all six directions, not a valid move */
 		return 0;
@@ -339,38 +363,80 @@ static int game_find_path(int from, int ro, int co, int rd, int cd)
 	   && (co-4 >= 0)
 	   && (game.board[ro][co-2] > 0)
 	   && (game.board[ro][co-4] == 0)
-	   && game_find_path(1, ro, co-4, rd, cd) )
+	   && game_find_path(1, ro, co-4, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro;
+		node->cd = co-4;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 	if((from != 5)
 	   && (co-2 >= 0 && ro-2 >= 0)
 	   && (game.board[ro-1][co-1] > 0)
 	   && (game.board[ro-2][co-2] == 0)
-	   && game_find_path(2, ro-2, co-2, rd, cd) )
+	   && game_find_path(2, ro-2, co-2, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro-2;
+		node->cd = co-2;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 	if((from != 6)
 	   && (co+2 < 25 && ro-2 >= 0)
 	   && (game.board[ro-1][co+1] > 0)
 	   && (game.board[ro-2][co+2] == 0)
-	   && game_find_path(3, ro-2, co+2, rd, cd) )
+	   && game_find_path(3, ro-2, co+2, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro-2;
+		node->cd = co+2;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 	if((from != 1)
 	   && (co+4 < 25)
 	   && (game.board[ro][co+2] > 0)
 	   && (game.board[ro][co+4] == 0)
-	   && game_find_path(4, ro, co+4, rd, cd) )
+	   && game_find_path(4, ro, co+4, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro;
+		node->cd = co+4;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 	if((from != 2)
 	   && (co+2 < 25 && ro+2 < 17)
 	   && (game.board[ro+1][co+1] > 0)
 	   && (game.board[ro+2][co+2] == 0)
-	   && game_find_path(5, ro+2, co+2, rd, cd) )
+	   && game_find_path(5, ro+2, co+2, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro+2;
+		node->cd = co+2;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 	if((from != 3)
 	   && (co-2 >= 0 && ro+2 < 17)
 	   && (game.board[ro+1][co-1] > 0)
 	   && (game.board[ro+2][co-2] == 0)
-	   && game_find_path(6, ro+2, co-2, rd, cd) )
+	   && game_find_path(6, ro+2, co-2, rd, cd) ) {
+		node = g_malloc(sizeof(*node));
+		node->ro = ro;
+		node->co = co;
+		node->rd = ro+2;
+		node->cd = co-2;
+		path_list = g_slist_append(path_list, node);
 		return 1;
+	}
 
 	return 0;
 }
@@ -386,8 +452,42 @@ void game_notify_our_turn(void)
 
 void game_opponent_move(int seat, int ro, int co, int rd, int cd)
 {
+	(void)game_find_path(0, ro, co, rd, cd);
+
 	game.board[ro][co] = 0;
 	game.board[rd][cd] = seat+1;
 
 	display_refresh_board();
+	display_show_path(path_list);
 }
+
+
+#if 0
+/* Display the game board in text format */
+static void game_print_board(void)
+{
+	int i, j;
+
+	printf("Current game board:\n");
+	for(i=0; i<17; i++) {
+		for(j=0; j<25; j++)
+			switch(game.board[i][j]) {
+				case -1:
+					printf(" ");
+					break;
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+					printf("%c", '0'+game.board[i][j]);
+					break;
+				default:
+					printf("?");
+			}
+		printf("\n");
+	}
+}
+#endif

@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "display.h"
 #include "main_dlg.h"
@@ -54,6 +55,7 @@ static GdkGC *hole_gc;
 static GdkPixmap *marble_pixmap[6];
 static GdkBitmap *marble_mask[6];
 static GdkGC *marble_gc[6];
+static GdkGC *gc_line;
 
 
 static void display_draw_holes(void);
@@ -62,6 +64,9 @@ static void display_draw_holes(void);
 /* Initialize the game display (dlg_main and board) */
 void display_init(void)
 {
+	GdkColormap *sys_colormap;
+	GdkColor color;
+
 	/* Create and display the main dialog */
 	dlg_main = create_dlg_main();
 	gtk_widget_show(dlg_main);
@@ -72,7 +77,6 @@ void display_init(void)
 	statusbar = gtk_object_get_data(GTK_OBJECT(dlg_main), "statusbar1");
 	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
 						  "Game Messages");
-	display_statusbar("Chinese Checkers for GGZ, version 0.0.1");
 
 	/* Create a pixmap buffer from our xpm */
 	board_buf = gdk_pixmap_create_from_xpm_d(draw_area->window, NULL,
@@ -129,6 +133,16 @@ void display_init(void)
 							NULL,
 							(gchar **) purple_xpm);
 	gdk_gc_set_tile(marble_gc[5], marble_pixmap[5]);
+
+	/* Setup the gc for our line drawing */
+	gc_line = gdk_gc_new(draw_area->window);
+	sys_colormap = gdk_colormap_get_system();
+	gdk_color_parse("RGB:FF/FF/FF", &color);
+	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_line, &color);
+	gdk_gc_set_function(gc_line, GDK_XOR);
+	gdk_gc_set_line_attributes(gc_line, 2, GDK_LINE_SOLID,
+				   GDK_CAP_BUTT, GDK_JOIN_ROUND);
 
 	/* Add the holes to our pixmap buffer */
 	display_draw_holes();
@@ -200,6 +214,9 @@ void display_refresh_board(void)
 	int x, y;
 	int p;
 
+	/* Clear a path if one is showing */
+	display_show_path(NULL);
+
 	/* Refresh the holes */
 	display_draw_holes();
 
@@ -251,5 +268,90 @@ void display_handle_click_event(GdkEventButton *event)
 
 void display_statusbar(char *msg)
 {
+	static int firsttime=1;
+
+	if(firsttime)
+		firsttime = 0;
+	else
+		gtk_statusbar_pop(GTK_STATUSBAR(statusbar), sb_context);
+
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), sb_context, msg);
+}
+
+
+/* Not really animation, just draws a line from src to dest */
+void display_show_path(GSList *path_list)
+{
+	GdkRectangle update_rect;
+	struct node_t *node;
+	int x1, y1, x2, y2;
+	GSList *tmp;
+	static GSList *old_path_list=NULL;
+
+	if(old_path_list) {
+		tmp = old_path_list;
+		while(tmp) {
+			node = tmp->data;
+			x1 = (node->co*11)+67;
+			y1 = (node->ro*19.4)+44;
+			x2 = (node->cd*11)+67;
+			y2 = (node->rd*19.4)+44;
+			g_free(node);
+
+			if(x1 <= x2)
+				update_rect.x = x1-1;
+			else
+				update_rect.x = x2-1;
+			if(y1 <= y2)
+				update_rect.y = y1-1;
+			else
+				update_rect.y = y2-1;
+
+			update_rect.height = abs(y1-y2) + 2;
+			update_rect.width = abs(x1-x2) + 2;
+
+			gdk_draw_line(board_buf,
+				      gc_line,
+				      x1, y1,
+				      x2, y2);
+
+			gtk_widget_draw(draw_area, &update_rect);
+
+			tmp = g_slist_next(tmp);
+		}
+
+		g_slist_free(old_path_list);
+	}
+
+	tmp = path_list;
+	while(tmp) {
+		node = tmp->data;
+		x1 = (node->co*11)+67;
+		y1 = (node->ro*19.4)+44;
+		x2 = (node->cd*11)+67;
+		y2 = (node->rd*19.4)+44;
+
+		if(x1 <= x2)
+			update_rect.x = x1;
+		else
+			update_rect.x = x2;
+		if(y1 <= y2)
+			update_rect.y = y1;
+		else
+			update_rect.y = y2;
+
+		update_rect.height = abs(y1-y2) + 1;
+		update_rect.width = abs(x1-x2) + 1;
+
+		gdk_draw_line(board_buf,
+			      gc_line,
+			      x1, y1,
+			      x2, y2);
+
+		gtk_widget_draw(draw_area, &update_rect);
+
+		tmp = g_slist_next(tmp);
+	}
+
+	old_path_list = path_list;
 }

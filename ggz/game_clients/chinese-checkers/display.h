@@ -28,3 +28,4 @@ extern void display_handle_expose_event(GdkEventExpose *event);
 extern void display_refresh_board(void);
 extern void display_handle_click_event(GdkEventButton *event);
 extern void display_statusbar(char *);
+extern void display_show_path(GSList *);
