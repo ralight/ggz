@@ -29,7 +29,7 @@
 
 #include <stdio.h> /* just for debugging */
 
-/* Whist-like protocol */
+/* GGZCards protocol */
 /* Messages from server */
 /* TODO: numbers aren't finalized */
 #define WH_REQ_NEWGAME		0
@@ -111,7 +111,7 @@ struct game_player_t {
 };
 typedef int player_t; /* just to make things clearer */
 
-/* Data structure for generic whist-like game
+/* Data structure for generic trick-taking card game
  * this should go in game-common */
 struct wh_game_t {
 	int which_game;		/* the game; currently defined in cards.h */

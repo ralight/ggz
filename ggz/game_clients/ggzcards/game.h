@@ -53,7 +53,7 @@ extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
 
 /* NOTE: the following protocol information is copied from server code */
-/* Whist-like protocol */
+/* GGZCards protocol */
 /* Messages from server */
 /* TODO: numbers aren't finalized */
 #define WH_REQ_NEWGAME		0

@@ -63,7 +63,7 @@ create_dlg_main (void)
   dlg_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (dlg_main, "dlg_main");
   gtk_object_set_data (GTK_OBJECT (dlg_main), "dlg_main", dlg_main);
-  gtk_window_set_title (GTK_WINDOW (dlg_main), "GGZ Gaming Zone - Bridge-like Games");
+  gtk_window_set_title (GTK_WINDOW (dlg_main), "GGZ Gaming Zone - GGZ Cards");
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox1, "vbox1");

@@ -1,6 +1,6 @@
 /*
  * File: main.c
- * Author: Brent Hendricks
+ * Author: Brent Hendricks, Jason Short
  * Project: GGZCards game module
  * Date: 06/29/2000
  * Desc: Main loop

@@ -1,6 +1,6 @@
 /*
  * File: table.c
- * Author: Rich Gade
+ * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table

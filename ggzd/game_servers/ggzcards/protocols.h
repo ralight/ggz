@@ -1,6 +1,6 @@
 /*
  * File: protocols.h
- * Author: Brent Hendricks
+ * Author: Brent Hendricks, Jason Short
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
