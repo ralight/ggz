@@ -160,15 +160,19 @@ void check_testfile(void)
 	if((handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDWR)) < 0)
 		pass();
 	else {
+#ifdef HAVE_GETUID
 		/* I'm root, thou shalt not question my power */
 		if(!getuid()) {
+#endif
 			pass();
 			ggz_conf_cleanup();
-		}
-		else {
-			fail("ggz_conf_parse() thinks it can write to a RO file");
+#ifdef HAVE_GETUID
+		} else {
+			fail("ggz_conf_parse() thinks it can write to a "
+			     "RO file");
 			ggz_conf_cleanup();
 		}
+#endif
 	}
 	unlink("cfg_testfile");
 
