@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2964 2001-12-20 02:59:13Z jdorje $
+ * $Id: game.c 2966 2001-12-20 03:12:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -344,9 +344,6 @@ void game_alert_trick(int player)
 				ggzcards.players[player].name);
 	statusbar_message(t_str);
 	g_free(t_str);
-
-	/* TODO: make this sleep optional (a preference) */
-	sleep(1);
 
 	table_clear_table();
 }
