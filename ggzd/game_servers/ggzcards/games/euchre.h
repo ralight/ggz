@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 2735 2001-11-13 10:19:24Z jdorje $
+ * $Id: euchre.h 2738 2001-11-13 21:12:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,4 +66,5 @@ typedef struct euchre_game_t {
 
 	/* options */
 	int screw_the_dealer;
+	int super_euchre;
 } euchre_game_t;

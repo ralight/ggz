@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2737 2001-11-13 11:28:03Z jdorje $
+ * $Id: euchre.c 2738 2001-11-13 21:12:44Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -326,16 +326,48 @@ static void euchre_end_trick(void)
 
 static void euchre_end_hand(void)
 {
-	int tricks, winning_team;
-	tricks = game.players[EUCHRE.maker].tricks +
+	int winning_team, value;
+	char *msg, buf[4096];
+
+	int tricks =
+		game.players[EUCHRE.maker].tricks +
 		game.players[(EUCHRE.maker + 2) % 4].tricks;
-	if (tricks >= 3)
+	int maker_made = (tricks >= 3);
+	int maker_alone = EUCHRE.going_alone[EUCHRE.maker];
+	int defender_alone = EUCHRE.going_alone[(EUCHRE.maker + 1) % 4]
+		|| EUCHRE.going_alone[(EUCHRE.maker + 3) % 4];
+
+	if (maker_made) {
 		winning_team = EUCHRE.maker % 2;
-	else
+		value = (tricks == 5) ? 2 : 1;
+		msg = "The maker made the bid with %d tricks and earned %d point(s).";
+	} else {
+		/* Euchred!!! */
+		tricks = 5 - tricks;
 		winning_team = (EUCHRE.maker + 1) % 2;
-	/* TODO: point values other than 1 */
-	game.players[winning_team].score += 1;
-	game.players[winning_team + 2].score += 1;
+		value = 2;
+		if (tricks == 5 && EUCHRE.super_euchre)
+			value = 4;
+		msg = "The bid was Euchred!  The defenders took %d tricks earn %d points.";
+	}
+
+	if (maker_made && maker_alone && tricks == 5) {
+		value = 4;
+	} else if (!maker_made && defender_alone) {
+		value = 4;
+	}
+
+	game.players[winning_team].score += value;
+	game.players[winning_team + 2].score += value;
+
+	snprintf(buf, sizeof(buf), msg, tricks, value);
+	/* This message is quickly overwritten by the up-card message.  Ugh. */
+	set_global_message("", buf);
+	set_global_message("Scoring History", buf);	/* FIXME: this should 
+							   be added to the
+							   history, not
+							   overwrite it. */
+
 	EUCHRE.maker = -1;
 	game.trump = -1;
 }
