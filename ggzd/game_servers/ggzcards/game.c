@@ -575,7 +575,7 @@ void game_start_bidding()
 
 /* game_get_bid()
  *   asks for bid from the client/AI.
- *   AI can be inserted here; just call update with a WH_EVENT_BID;
+ *   AI can be inserted here; just call handle_bid_event;
  *   however, this has never been tested.  It needs to work pretty
  *   closely with the other bidding functions.
  */
@@ -1102,7 +1102,7 @@ void game_next_play()
 
 /* game_get_play
  *   this gets a play.  It most likely just requests one from the player, but
- *   AI can be inserted to call update on a WH_EVENT_PLAY.  We also handle
+ *   AI can be inserted to call handle_play_event.  We also handle
  *   game-specific stuff here (e.g. playing from the dummy hand in Bridge).
  */
 void game_get_play(player_t p)

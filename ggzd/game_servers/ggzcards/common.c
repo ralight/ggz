@@ -961,9 +961,13 @@ void next_play(void)
 	return;
 }
 
+/* handle_launch_event
+ *   this handles a launch event, when ggz connects to our server
+ *   for the first time.
+ */
 int handle_launch_event()
 {
-	ggz_debug("Handling a WH_EVENT_LAUNCH.");
+	ggz_debug("Handling a launch event.");
 	if(game.state != WH_STATE_PRELAUNCH) {
 		ggz_debug("ERROR: update: state wasn't prelaunch when handling a launch.");
 		return -1;
@@ -981,11 +985,14 @@ int handle_launch_event()
 	save_game_state(); /* no players are connected yet, so we enter waiting phase */
 }
 
+/* handle_join_event
+ *   this handles the event of a player joining.
+ */
 int handle_join_event(player_t player)
 {
 	player_t p;
 
-	ggz_debug("Handling a WH_EVENT_JOIN.");
+	ggz_debug("Handling a join event for player %d.", player);
 	if(game.state != WH_STATE_WAITFORPLAYERS) {
 		ggz_debug("SERVER BUG: someone joined while we weren't waiting.");
 		return -1;
@@ -1022,12 +1029,15 @@ int handle_join_event(player_t player)
 	return 0;
 }
 
+/* handle_newgame_event
+ *   this handles the event of a player responding to a newgame request
+ */
 int handle_newgame_event(player_t player)
 {
 	int ready = 0;
 	player_t p;
 
-	ggz_debug("Handling a WH_EVENT_NEWGAME for player %d/%s.", player, ggz_seats[player].name);
+	ggz_debug("Handling a newgame event for player %d/%s.", player, ggz_seats[player].name);
 	game.players[player].ready = 1;
 	ready = 1;
 	ggz_debug("Determining options.");
@@ -1047,10 +1057,13 @@ int handle_newgame_event(player_t player)
 	return 0;
 }
 
+/* handle_leave_event
+ *   this handles the event of a player leaving
+ */
 int handle_leave_event()
 {
 	player_t p;
-	ggz_debug("Handling a WH_EVENT_LEAVE.");
+	ggz_debug("Handling a leave event.");
 	for(p = 0; p < game.num_players; p++)
 		send_player_list(p);
 
@@ -1058,13 +1071,16 @@ int handle_leave_event()
 	save_game_state();
 }
 
+/* handle_play_event
+ *   this handles the event of someone playing a card
+ */
 int handle_play_event(int card_index)
 {
 	int i;
 	card_t c;
 	hand_t* hand;
 
-	ggz_debug("Handling a WH_EVENT_PLAY.");
+	ggz_debug("Handling a play event.");
 	/* determine the play */
 	hand = &game.seats[game.play_seat].hand;
 	c = hand->cards[card_index];
@@ -1122,13 +1138,16 @@ int handle_play_event(int card_index)
 	return 0;
 }
 
+/* handle_bid_event
+ *   this handles the event of someone making a bid
+ */
 int handle_bid_event(int bid_index)
 {
 	player_t p;
 	bid_t bid;
 	int was_waiting = 0;
 
-	ggz_debug("Handling a WH_EVENT_BID.");
+	ggz_debug("Handling a bid event.");
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		/* if a player left while another player was in the middle of bidding, this
 		 * can happen.  The solution is to temporarily return to playing, handle the
@@ -1143,11 +1162,9 @@ int handle_bid_event(int bid_index)
 	game.players[p].bid = bid;
 
 	/* handle the bid */
-	ggz_debug("Entering game_handle_bid(%d).", bid_index);
 	game_handle_bid(bid_index);
 
 	/* set up next move */
-	ggz_debug("Setting up next bid.");
 	game.bid_count++;
 	game_next_bid();
 	if (game.bid_count == game.bid_total)
@@ -1155,7 +1172,7 @@ int handle_bid_event(int bid_index)
 	else if (game.state == WH_STATE_WAIT_FOR_BID)
 		set_game_state(WH_STATE_NEXT_BID);
 	else
-		ggz_debug("SERVER BUG: handled WH_EVENT_BID while not in WH_STATE_WAIT_FOR_BID.");
+		ggz_debug("SERVER BUG: handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
 
 	/* this is the player that just finished bidding */
 	game_set_player_message(p);
