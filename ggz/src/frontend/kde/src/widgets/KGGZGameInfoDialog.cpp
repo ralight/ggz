@@ -27,7 +27,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZGameInfoDialogDialog: Show detailed game client and server information and specs. //
+// KGGZGameInfoDialog: Show detailed game client and server information and specs. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 

@@ -91,6 +91,7 @@ KGGZBase::KGGZBase()
 #ifdef KGGZ_BROWSER
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_HELP), i18n("&Web Browser"), MENU_CLIENT_HELP);
 #endif
+
 	m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
 	m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 	m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
@@ -108,6 +109,9 @@ KGGZBase::KGGZBase()
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_CANCEL), i18n("&Cancel game"), MENU_GAME_CANCEL);
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
+	m_menu_game->insertSeparator();
+	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_TEAM), i18n("Teams"), MENU_GAME_TEAM);
+
 	m_menu_game->setItemEnabled(MENU_GAME_CANCEL, FALSE);
 
 	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
@@ -301,6 +305,9 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GAME_INFO:
 			kggz->menuGameInfo();
+			break;
+		case MENU_GAME_TEAM:
+			kggz->menuGameTeam();
 			break;
 		case MENU_PREFERENCES_SETTINGS:
 			kggz->menuPreferencesSettings();

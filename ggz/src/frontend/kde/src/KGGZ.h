@@ -70,6 +70,8 @@ class KGGZGrubby;
 class KGGZPrefEnv;
 class KGGZSelector;
 class KGGZGameInfoDialog;
+class KGGZTeam;
+class QSocketNotifier;
 
 // Here comes KGGZ.
 class KGGZ : public QWidget
@@ -153,6 +155,8 @@ class KGGZ : public QWidget
 		void menuPreferencesSettings();
 		// Cancel a running game
 		void menuGameCancel();
+		// Invoke the team dialog
+		void menuGameTeam();
 
 		// Receive connection parameters
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode);
@@ -160,14 +164,17 @@ class KGGZ : public QWidget
 		void slotConnectedStart();
 		// Receive chat message
 		void slotChat(const char *text, char *player, int mode);
-		// Launch a table
-		//void slotLaunch();
 		// Send grubby requests
 		void slotGrubby(const char *grubby, const char *argument, int id);
-		// Launches a selected game
-		//void slotLaunchGameSelected(int selected);
+		// Prepares a game launch
 		void slotGamePrepare(int frontend);
+		// Launch the game
 		void slotGameStart();
+
+		// Game data
+		void slotGameData();
+		// Server data
+		void slotServerData();
 
 	protected:
 		// Handle resizing
@@ -270,6 +277,8 @@ class KGGZ : public QWidget
 		KGGZSelector *m_selector;
 		// Game information
 		KGGZGameInfoDialog *m_gameinfodialog;
+		// Team dialog
+		KGGZTeam *m_team;
 
 		// Non-blocking DNS for easysock's gethostbyname
 		QDns *m_dns;
@@ -279,6 +288,10 @@ class KGGZ : public QWidget
 		int m_gamefd;
 		// Display MOTD upon login
 		int m_showmotd;
+		// Game socket notifier
+		QSocketNotifier *m_sn_game;
+		// Server socket notifier
+		QSocketNotifier *m_sn_server;
 };
 
 #endif

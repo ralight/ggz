@@ -21,7 +21,8 @@ libkggzui_a_SOURCES = \
 	KGGZSelector.cpp \
 	KGGZLineSeparator.cpp \
 	KGGZCaption.cpp \
-	KGGZGameInfoDialog.cpp
+	KGGZGameInfoDialog.cpp \
+	KGGZTeam.cpp
 
 noinst_HEADERS = \
 	KGGZBase.h \
@@ -39,7 +40,8 @@ noinst_HEADERS = \
 	KGGZSelector.h \
 	KGGZLineSeparator.h \
 	KGGZCaption.h \
-	KGGZGameInfoDialog.h
+	KGGZGameInfoDialog.h \
+	KGGZTeam.h
 
 EXTRA_HEADERS = 
 
