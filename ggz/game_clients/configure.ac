@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6656 2005-01-14 01:20:45Z jdorje $
+dnl $Id: configure.ac 6659 2005-01-14 02:43:36Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -35,7 +35,7 @@ else
    subdirs=$DEFAULT_SUBDIRS
 fi
 
-allsubdirs="common po $subdirs"
+allsubdirs="common $subdirs po"
 
 AM_INIT_AUTOMAKE($package, $version)
 AM_CONFIG_HEADER([config.h])
