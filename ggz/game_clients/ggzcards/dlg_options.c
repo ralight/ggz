@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: dlg_options.c 4080 2002-04-25 21:20:28Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -64,7 +64,7 @@ static void decode_option_selection(gpointer selection, gint * option,
 	*choice = GPOINTER_TO_INT(selection) & 255;
 }
 
-static void destroy_options_selection(void)
+static void destroy_options_window(void)
 {
 	if (window != NULL) {
 		gtk_object_destroy((GtkObject *) window);
@@ -117,7 +117,7 @@ static void dlg_options_submit(GtkWidget * widget, gpointer data)
 {
 	game_send_options(option_count, options_selected);
 
-	destroy_options_selection();
+	destroy_options_window();
 }
 
 void dlg_option_display(int option_cnt,
@@ -130,6 +130,8 @@ void dlg_option_display(int option_cnt,
 	GtkWidget *button;
 	gint i, j;
 	GtkTooltips *tooltips;
+	
+	destroy_options_window();
 	
 	/* FIXME: do the tooltips need to be freed later? */
 	tooltips = gtk_tooltips_new();
