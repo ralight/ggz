@@ -134,6 +134,8 @@ install-ggzboard:
 	cp ggzboard/ggzboard $(DESTDIR)$(prefix)/bin
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/
 	cp ggzboard/*.jpg $(DESTDIR)$(prefix)/share/ggz/ggzboard
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/common/
+	cp ggzboard/common/*.png $(DESTDIR)$(prefix)/share/ggz/ggzboard/common
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/go

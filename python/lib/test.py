@@ -6,6 +6,7 @@ import sys
 import pygame
 from pygame.locals import *
 import sdlnewstuff
+import playertable
 
 def main(fullscreen):
 	""" Pygame setup """
@@ -21,7 +22,8 @@ def main(fullscreen):
 
 	pygame.display.flip()
 
-	sdlnewstuff.gethotnewstuff("fyrdman")
+	#sdlnewstuff.gethotnewstuff("fyrdman")
+	playertable.show()
 
 if __name__ == "__main__":
 	if len(sys.argv) == 2 and sys.argv[1] == "-f":

@@ -161,6 +161,9 @@ class GGZBoard:
 		pygame.init()
 		pygame.display.set_caption("GGZBoard")
 
+		icon = pygame.image.load(DATAPATH + "common/icon.png")
+		pygame.display.set_icon(icon)
+
 		self.ui.initfonts()
 
 		self.ui.screen = pygame.display.set_mode(self.ui.currentres, DOUBLEBUF)
