@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4152 2002-05-05 00:32:02Z jdorje $
+ * $Id: common.c 4153 2002-05-05 00:42:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -52,7 +52,7 @@
 
 /* Global game variables */
 game_t game = {
-	use_stats: TRUE
+	rated: TRUE
 };
 
 /* FIXME:
@@ -552,8 +552,8 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 
 	ggz_debug(DBG_MISC, "Handling gameover event.");
 
-	if (game.use_stats) {
-	int i;
+	if (game.rated) {
+		int i;
 		/* calculate new player ratings */
 		for (i = 0; i < winner_cnt; i++)
 			ggzd_set_game_winner(game.ggz, winners[i],
@@ -699,7 +699,7 @@ void init_game()
 	assert(!game.initted);
 
 	/* default values */
-	game.use_stats = TRUE;
+	game.rated = TRUE;
 	game.deck_type = GGZ_DECK_FULL;
 	game.last_trick = TRUE;
 	game.last_hand = TRUE;

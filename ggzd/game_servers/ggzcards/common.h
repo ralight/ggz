@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: common.h 4153 2002-05-05 00:42:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -93,7 +93,7 @@ typedef struct {
 	bool last_hand;		/**< should the last hand be sent to all the players? */
 	bool cumulative_scores;	/**< should the cumulative score be sent to all the players? */
 	bool bid_history;	/**< should a complete history of the hand's bidding be shown? */
-	bool use_stats;		/**< should we track player stats? */
+	bool rated;		/**< should we track player stats? */
 
 	/* Table options */
 	bool open_hands;	/**< are we playing with open hands? */
