@@ -59,7 +59,10 @@ void KGGZChatLine::addPlayer(char *name)
 
 void KGGZChatLine::removePlayer(char *name)
 {
+	KGGZDEBUGF("KGGZChatLine::removePlayer(%s)\n", name);
+	KGGZDEBUG("QString: %s\n", QString(name).latin1());
 	m_list.remove(QString(name));
+	KGGZDEBUG("Ready.\n");
 }
 
 void KGGZChatLine::keyPressEvent(QKeyEvent *e)

@@ -103,7 +103,8 @@ void KGGZUsers::remove(char *name)
 		if(strcmp(tokentmp, name) == 0)
 		{
 			KGGZDEBUG("Yes it is %s, removing...!\n", tokentmp);
-			itemmain->takeItem(tmp);
+			//itemmain->takeItem(tmp);
+			delete tmp;
 			tmp = NULL;
 		}
 		else
@@ -138,7 +139,8 @@ void KGGZUsers::removeall()
 	while(tmp)
 	{
 		KGGZDEBUG("removeall: %s\n", tmp->text(0).latin1());
-		itemmain->takeItem(tmp);
+		//itemmain->takeItem(tmp);
+		delete tmp;
 		tmp = itemmain->firstChild(); //!
 		//tmp = tmp->itemBelow();
 	}
@@ -148,7 +150,8 @@ void KGGZUsers::removeall()
 	else tmp = NULL;
 	while(tmp)
 	{
-		takeItem(tmp);
+		delete tmp;
+		//takeItem(tmp);
 		tmp = firstChild();
 	}
 	itemmain = new QListViewItem(this, i18n("Not playing"));
