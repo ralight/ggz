@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4003 2002-04-16 19:45:22Z jdorje $
+ * $Id: common.c 4020 2002-04-19 07:21:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -350,7 +350,7 @@ void next_play(void)
 
 /* The oldest player becomes the host.  The oldest player is the one with the
    youngest "age". */
-static int determine_host(void)
+static player_t determine_host(void)
 {
 	player_t p, host = -1;
 	int age = -1;
@@ -367,7 +367,7 @@ static int determine_host(void)
 /* This handles a launch event, when GGZ connects to us for the first time. */
 static void handle_launch_event(void)
 {
-	int p;
+	player_t p;
 	
 	ggzdmod_log(game.ggz, "Table launch.");
 	
@@ -406,10 +406,9 @@ static void handle_done_event(void)
 {
 	player_t p;
 	
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_BOT)
 			stop_ai(p);
-	}
 
 	/* Anything else to shut down? */
 }
@@ -444,8 +443,6 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	}
 
 	/* Otherwise do nothing (yet...) */
-	
-	return;
 }
 
 /* This handles the event of a player joining. */
@@ -462,11 +459,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		    "Handling a join event for player %d (seat %d).", player,
 		    seat);
 
-	if (game.state != STATE_WAITFORPLAYERS) {
-		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-			    "someone joined while we weren't waiting.");
-		return;
-	}
+	assert(game.state == STATE_WAITFORPLAYERS);
 
 	/* get player's name */
 	if (seat >= 0) {	/* see above comment about seat==-1 */
@@ -499,13 +492,14 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   as well. */
 	net_broadcast_player_list();
 
-	/* should this be in sync??? */
 	if (seat >= 0 &&	/* see above comment about seat==-1 */
 	    game.state != STATE_NOTPLAYING &&
 	    !(game.state == STATE_WAITFORPLAYERS
 	      && game.saved_state == STATE_NOTPLAYING))
 		send_player_message_toall(seat);
 
+	/* If we have not know what type of game to play, and this
+	   is the first player joining, request the type of game. */
 	if (player == game.host && game.data == NULL)
 		games_req_gametype();
 
