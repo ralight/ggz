@@ -1,4 +1,6 @@
 # TicTacToe description file
+# $Id: module.dsc.in 4472 2002-09-08 23:26:11Z jdorje $
+
 [ModuleInfo]
 Game = TicTacToe
 Author = Brent Hendricks
@@ -8,6 +10,5 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/games/tictactoe/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 2
+ProtocolVersion = 3-pre1
 Version = 0.0.2
-

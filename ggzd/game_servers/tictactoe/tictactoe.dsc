@@ -1,3 +1,5 @@
+# $Id: tictactoe.dsc 4472 2002-09-08 23:26:11Z jdorje $
+
 [GameInfo]
 Author = Brent Hendricks
 Description = Simple GGZ game module for playing Tic-Tac-Toe
@@ -10,11 +12,10 @@ ExecutablePath = ggzd.tictactoe
 
 [Protocol]
 Engine = TicTacToe
-Version = 2
+Version = 3-pre1
 
 [TableOptions]
 AllowLeave = 1
 BotsAllowed = 0 1
 PlayersAllowed = 2
 AllowSpectators = 1
-
