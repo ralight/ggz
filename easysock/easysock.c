@@ -385,13 +385,21 @@ void es_va_write_string_or_die(const int sock, const char *fmt, ...)
 /*
  * Read a char string from the given fd
  */
-int es_read_string(const int sock, char *message)
+int es_read_string(const int sock, char *message, const unsigned int len)
 {
-	int size, status;
+	unsigned int size;
+	int status;
 
 	if (es_read_int(sock, &size) < 0)
 		return -1;
-
+	
+	if (size > len) {
+		_debug("String too long for buffer\n");
+		if (_err_func)
+			(*_err_func) ("String too long", ES_READ, ES_STRING);
+		return -1;
+	}
+	
        	if ( (status = es_readn(sock, message, size)) < 0) {
 		_debug("Error receiving string\n");
 		if (_err_func)
@@ -406,17 +414,17 @@ int es_read_string(const int sock, char *message)
 		return -1;
 	} 
 	
-	/* Guarantee string is NULL terminated */
-	/*message[size] = '\0';*/
-
+	/* Guarantee NULL-termination */
+	message[len-1] = '\0';
+	
 	_debug("Received \"%s\" : string\n", message);
 	return 0;
 }
 
 
-void es_read_string_or_die(const int sock, char *data)
+void es_read_string_or_die(const int sock, char *data, const unsigned int len)
 {
-	if (es_read_string(sock, data) < 0)
+	if (es_read_string(sock, data, len) < 0)
 		(*_exit_func) (-1);
 }
 
@@ -454,9 +462,6 @@ int es_read_string_alloc(const int sock, char **message)
 			(*_err_func) ("fd closed", ES_READ, ES_STRING);
 		return -1;
 	} 
-
-	/* Guarantee string is NULL terminated */
-	/*(*message)[size] = '\0';*/
 
 	_debug("Received \"%s\" : string\n", *message);
 	return 0;

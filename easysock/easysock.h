@@ -135,6 +135,7 @@ void es_read_int_or_die(const int sock, int *data);
  * sock  : socket fd
  * data  : char string or address of char string for alloc func
  * fmt   : format string for sprintf-like behavior  
+ * len   : length of user-provided data buffer in bytes
  * 
  * Returns 0 if successful, -1 on error.
  *
@@ -143,8 +144,8 @@ int es_write_string(const int sock, const char *data);
 void es_write_string_or_die(const int sock, const char *data);
 int es_va_write_string(const int sock, const char *fmt, ...);
 void es_va_write_string_or_die(const int sock, const char *fmt, ...);
-int es_read_string(const int sock, char *data);
-void es_read_string_or_die(const int sock, char *data);
+int es_read_string(const int sock, char *data, const unsigned int len);
+void es_read_string_or_die(const int sock, char *data, const unsigned int len);
 int es_read_string_alloc(const int sock, char **data);
 void es_read_string_alloc_or_die(const int sock, char **data);
 
