@@ -93,6 +93,8 @@ AC_CONFIG_FILES([Makefile
 	fyrdman/data/fyrdman.desktop
 	kcc/Makefile
 	kcc/kcc.desktop
+	kcc/themes/Makefile
+	kcc/themes/default/Makefile
 	kcc/module.dsc
 	lib/Makefile])
 AC_OUTPUT
