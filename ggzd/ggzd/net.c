@@ -304,14 +304,14 @@ int net_send_room_list_count(GGZNetIO *net, int count)
 }
 
 
-int net_send_room(GGZNetIO *net, int index, char *name, int game, char *desc)
+int net_send_room(GGZNetIO *net, int index, RoomStruct *room)
 {
 	if (es_write_int(net->fd, index) < 0
-	    || es_write_string(net->fd, name) < 0
-	    || es_write_int(net->fd, game) < 0)
+	    || es_write_string(net->fd, room->name) < 0
+	    || es_write_int(net->fd, room->game_type) < 0)
 		return -1;
 
-	if (desc && es_write_string(net->fd, desc) <0)
+	if (room->description && es_write_string(net->fd, room->description) < 0)
 		return -1;
 
 	return 0;

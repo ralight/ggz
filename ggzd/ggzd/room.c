@@ -97,8 +97,7 @@ int room_list_send(GGZPlayer* player, int req_game, char verbose)
 	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
 			desc = verbose ? rooms[i].description : NULL;
-			if (net_send_room(player->net, i, rooms[i].name, 
-					  rooms[i].game_type, desc) < 0)
+			if (net_send_room(player->net, i, &rooms[i]) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
 

@@ -29,6 +29,7 @@
 #include <config.h>
 #include <players.h>
 #include <login.h>
+#include <room.h>
 
 typedef struct _GGZNetIO GGZNetIO;
 
@@ -56,7 +57,7 @@ int net_send_motd_error(GGZNetIO *net, char status);
 
 int net_send_room_list_error(GGZNetIO *net, char status);
 int net_send_room_list_count(GGZNetIO *net, int count);
-int net_send_room(GGZNetIO *net, int index, char *name, int game, char *desc);
+int net_send_room(GGZNetIO *net, int index, RoomStruct *room);
 
 int net_send_type_list_error(GGZNetIO *net, char status);
 int net_send_type_list_count(GGZNetIO *net, int count);
