@@ -320,7 +320,7 @@ static void login_start_session(GtkWidget* button, gpointer window)
 	
 	/* FIXME: Initialize for new game session */
 	if (connect_to_server() < 0) {
-		err_dlg("Could not connect");
+		err_dlg(_("Could not connect"));
 		return;
 	}
 	
@@ -371,24 +371,24 @@ void login_ok()
 	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3, buf, strlen(buf));
 	g_free(buf);
 
-	buf = g_strdup_printf("GTK+ Version:\00314 %d.%d.%d\n",
+	buf = g_strdup_printf(_("GTK+ Version:\00314 %d.%d.%d\n"),
 			      gtk_major_version, gtk_minor_version, 
 			      gtk_micro_version);
 	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,buf,strlen(buf));
 	g_free(buf);
 
-	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"Options:", 8);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,_("Options:"), 8);
 #ifndef DEBUG
-	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Debug: \00314No ", 15);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,_("  Debug: \00314No "), 15);
 #else
-	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Debug: \00314Yes", 15);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,_("  Debug: \00314Yes"), 15);
 #endif
 #ifndef SOCKET_DEBUG
-	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Socket Debug: \00314No ", 22);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,_("  Socket Debug: \00314No "), 22);
 #else
-	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Socket Debug: \00314Yes", 22);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,_("  Socket Debug: \00314Yes"), 22);
 #endif
-	buf = g_strdup_printf("Connected to server: %s", client.server.host);
+	buf = g_strdup_printf(_("Connected to server: %s"), client.server.host);
 	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,buf,strlen(buf));
 }
 
@@ -665,7 +665,7 @@ create_dlg_login (void)
   gtk_widget_show (port_entry);
   gtk_box_pack_start (GTK_BOX (server_box), port_entry, FALSE, FALSE, 0);
   gtk_widget_set_usize (port_entry, 50, -2);
-  gtk_entry_set_text (GTK_ENTRY (port_entry), _("5688"));
+  gtk_entry_set_text (GTK_ENTRY (port_entry), "5688");
 
   msg_label = gtk_label_new ("");
   gtk_widget_ref (msg_label);

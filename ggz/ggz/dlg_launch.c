@@ -80,17 +80,17 @@ static void launch_fill_defaults(GtkWidget* widget, gpointer data)
 	gtk_label_set_text(GTK_LABEL(tmp), game_types.info[type].name);
 
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "author_label");
-	buf = g_strdup_printf("Author: %s", game_types.info[type].author); 
+	buf = g_strdup_printf(_("Author: %s"), game_types.info[type].author); 
         gtk_label_set_text(GTK_LABEL(tmp), buf);
 	g_free(buf);
 
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "type_desc_label");
-	buf = g_strdup_printf("Desc: %s", game_types.info[type].desc); 
+	buf = g_strdup_printf(_("Desc: %s"), game_types.info[type].desc); 
         gtk_label_set_text(GTK_LABEL(tmp), buf);
 	g_free(buf);
 
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "web_label");
-	buf = g_strdup_printf("Homepage: %s", game_types.info[type].web); 
+	buf = g_strdup_printf(_("Homepage: %s"), game_types.info[type].web); 
         gtk_label_set_text(GTK_LABEL(tmp), buf);
 	g_free(buf);
 

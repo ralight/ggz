@@ -214,13 +214,13 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if(status < 0) {
-			login_bad_name("Sorry!", "That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
+			login_bad_name(_("Sorry!"), _("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name"));
 			return;
 		}
 		
 		/* Read in our server assigned password */
 		es_read_string(source, password, 16);
-		note_dlg("The server has assigned the password\n'%s' to you. Please write this down\nand change it as soon as possible.\n\nYou will need it to login in the future.", password);
+		note_dlg(_("The server has assigned the password\n'%s' to you. Please write this down\nand change it as soon as possible.\n\nYou will need it to login in the future."), password);
 		
 		es_read_int(source, &checksum);
 		login_ok();
@@ -239,7 +239,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if(status < 0) {
-			login_bad_name("Denied", "Login denied, please check your username\nand password before trying again.");
+			login_bad_name(_("Denied"), _("Login denied, please check your username\nand password before trying again."));
 			
 			return;
 		}
@@ -263,7 +263,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
-			login_bad_name("Sorry!", "That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name");
+			login_bad_name(_("Sorry!"), _("That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name"));
 			
 			return;
 		}
@@ -285,10 +285,10 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		switch (status) {
 		case E_NOT_IN_ROOM:
-			warn_dlg("Must be in room to launch table");
+			warn_dlg(_("Must be in room to launch table"));
 			break;
 		case E_BAD_OPTIONS:
-			warn_dlg("Your table launch was rejected due to invalid seat assignments");
+			warn_dlg(_("Your table launch was rejected due to invalid seat assignments"));
 			break;
 		case 0:
 			tmp = lookup_widget(main_win, "launch");
@@ -344,13 +344,13 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
  			launch_game(selected_type, FALSE);
 			break;
 		case E_NOT_IN_ROOM:
-			warn_dlg("Must be in room to join table");
+			warn_dlg(_("Must be in room to join table"));
 			break;
 		case E_TABLE_EMPTY: 
-			warn_dlg("No table selected to join.");
+			warn_dlg(_("No table selected to join."));
 			break;
 		case E_TABLE_FULL:
-			warn_dlg("Sorry, The table is full.");
+			warn_dlg(_("Sorry, The table is full."));
 			break;
 		}
 		
@@ -364,15 +364,15 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			game_over();
 			break;
 		case E_NO_TABLE:
-			warn_dlg("You are not at a table");
+			warn_dlg(_("You are not at a table"));
 			break;
 			
 		case E_LEAVE_FAIL:
-			warn_dlg("Can't leave table");
+			warn_dlg(_("Can't leave table"));
 			break;
 			
 		case E_LEAVE_FORBIDDEN:
-			warn_dlg("Can't leave table during game");
+			warn_dlg(_("Can't leave table during game"));
 			break;
 		}
 
@@ -456,16 +456,16 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 				tmpstr = NULL;
 				break;
 			case E_USR_LOOKUP:
-				tmpstr = "User not found.";
+				tmpstr = _("User not found.");
 				break;
 			case E_NOT_IN_ROOM:
-				tmpstr = "You must be in a room to chat.";
+				tmpstr = _("You must be in a room to chat.");
 				break;
 			case E_AT_TABLE:
-				tmpstr = "Unable to send (player is at table)";
+				tmpstr = _("Unable to send (player is at table)");
 				break;
 			default:
-				tmpstr = "Unknown chat error.";
+				tmpstr = _("Unknown chat error.");
 				break;
 		}
 		if(tmpstr)

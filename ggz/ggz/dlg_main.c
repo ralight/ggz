@@ -113,7 +113,7 @@ void ggz_update_title(void)
 		profile = g_strdup_printf(" %s ", gtk_entry_get_text(GTK_ENTRY(tmp)));
 	}
 
-	new_title = g_strdup_printf("Gnu Gaming Zone - [%s]", profile);
+	new_title = g_strdup_printf(_("Gnu Gaming Zone - [%s]"), profile);
 	tmp = lookup_widget(main_win, "main_win");
 	gtk_window_set_title (GTK_WINDOW (tmp), new_title);
 	g_free(profile);
@@ -297,7 +297,7 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 			        	        	es_write_string(client.sock,
         	        	        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+6+i);
 
-							chat_print(CHAT_COLOR_SERVER, "---", "Personal message sent");
+							chat_print(CHAT_COLOR_SERVER, "---", _("Personal message sent"));
 							i = strlen(name)+1;
 						}
 					}
@@ -319,15 +319,15 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 			}
 		}
         }else{
-		chat_print(CHAT_COLOR_SERVER, "---", "GNU Gaming Zone");
-		chat_print(CHAT_COLOR_SERVER, "---", "   Chat Help");
+		chat_print(CHAT_COLOR_SERVER, "---", _("GNU Gaming Zone"));
+		chat_print(CHAT_COLOR_SERVER, "---", _("   Chat Help"));
 		chat_print(CHAT_COLOR_SERVER, "---", " ");
-		chat_print(CHAT_COLOR_SERVER, "---", "/help");
-		chat_print(CHAT_COLOR_SERVER, "---", "   Display help on a given commad.");
-		chat_print(CHAT_COLOR_SERVER, "---", "/me <action>");
-		chat_print(CHAT_COLOR_SERVER, "---", "   Displays an action.");
-		chat_print(CHAT_COLOR_SERVER, "---", "/beep <user>");
-		chat_print(CHAT_COLOR_SERVER, "---", "   Makes <user>'s computer beep.");
+		chat_print(CHAT_COLOR_SERVER, "---", _("/help"));
+		chat_print(CHAT_COLOR_SERVER, "---", _("   Display help on a given commad."));
+		chat_print(CHAT_COLOR_SERVER, "---", _("/me <action>"));
+		chat_print(CHAT_COLOR_SERVER, "---", _("   Displays an action."));
+		chat_print(CHAT_COLOR_SERVER, "---", _("/beep <user>"));
+		chat_print(CHAT_COLOR_SERVER, "---", _("   Makes <user>'s computer beep."));
 	}
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
@@ -490,16 +490,16 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
 	g_free(buf);
 
-	gtk_xtext_append_indent(tmp,"---",3,"Options:", 8);
+	gtk_xtext_append_indent(tmp,"---",3,_("Options:"), 8);
 #ifndef DEBUG
-	gtk_xtext_append_indent(tmp,"---",3,"  Debug: \00314No ", 15);
+	gtk_xtext_append_indent(tmp,"---",3,_("  Debug: \00314No "), 15);
 #else
-	gtk_xtext_append_indent(tmp,"---",3,"  Debug: \00314Yes", 15);
+	gtk_xtext_append_indent(tmp,"---",3,_("  Debug: \00314Yes"), 15);
 #endif
 #ifndef SOCKET_DEBUG
-		gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug: \00314No ", 22);
+		gtk_xtext_append_indent(tmp,"---",3,_("  Socket Debug: \00314No "), 22);
 #else
-		gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug: \00314Yes", 22);
+		gtk_xtext_append_indent(tmp,"---",3,_("  Socket Debug: \00314Yes"), 22);
 #endif
 }
 

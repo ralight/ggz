@@ -36,6 +36,7 @@
 #include "ggzrc.h"
 #include "protocols.h"
 #include "xtext.h"
+#include "support.h"
 
 void chat_print(int color, char* left, char* right);
 
@@ -73,7 +74,7 @@ void display_chat(guchar op, gchar *name, gchar *msg)
 		case GGZ_CHAT_BEEP:
 			if(ggzrc_read_int("CHAT","Beep",TRUE) == TRUE) 
 				gdk_beep();
-			buf = g_strdup_printf("You've been beeped by %s.", name);
+			buf = g_strdup_printf(_("You've been beeped by %s."), name);
 			chat_print(CHAT_COLOR_SERVER, "---", buf);
 			g_free(buf);
 			break;
