@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5033 2002-10-25 22:13:36Z jdorje $
+ * $Id: game.c 5407 2003-02-15 03:25:39Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -475,17 +475,27 @@ void game_skip_move(void) {
 
 void game_gameover(void) {
 	int seat, fd, winner;
+	GGZGameResult results[2];
 	
 	// Ends everything
 	rvr_game.turn = EMPTY;
 	rvr_game.state = RVR_STATE_DONE;
 
-	if (rvr_game.black > rvr_game.white)
+	if (rvr_game.black > rvr_game.white) {
+		results[PLAYER2SEAT(BLACK)] = GGZ_GAME_WIN;
+		results[PLAYER2SEAT(WHITE)] = GGZ_GAME_LOSS;
 		winner = BLACK;
-	else if (rvr_game.white > rvr_game.black)
+	} else if (rvr_game.white > rvr_game.black) {
+		results[PLAYER2SEAT(WHITE)] = GGZ_GAME_WIN;
+		results[PLAYER2SEAT(BLACK)] = GGZ_GAME_LOSS;
 		winner = WHITE;
-	else
+	} else {
 		winner = EMPTY;
+		results[0] = results[1] = GGZ_GAME_TIE;
+	}
+
+	/* Report game to GGZ */
+	ggzdmod_report_game(rvr_game.ggz, NULL, results);
 
 	// Send message	
 	for (seat = 0; seat < ggzdmod_get_num_seats(rvr_game.ggz); seat++) {

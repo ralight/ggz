@@ -1,4 +1,4 @@
-# $Id: reversi.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: reversi.dsc 5407 2003-02-15 03:25:39Z jdorje $
 
 [GameInfo]
 Author = Ismael Orenstein
@@ -18,3 +18,7 @@ Version = 3
 AllowLeave = 1
 BotsAllowed = 1
 PlayersAllowed = 2
+
+[Statistics]
+Records = 1
+Ratings = 1
