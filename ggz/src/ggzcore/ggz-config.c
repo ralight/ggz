@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5497 2003-04-28 11:20:25Z dr_maux $
+ * $Id: ggz-config.c 5681 2003-11-23 11:05:13Z dr_maux $
  *
  * Configuration query and module install program.
  *
@@ -317,10 +317,9 @@ static int open_conffile(void)
 
 	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
 	if(global < 0) {
-		fprintf(stderr, "Invalid GGZ installation, please reinstall\n");
-		return -1;
+		printf("Setting up GGZ game modules configuration in %s\n", global_pathname);
 	}
-	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDWR);
+	global = ggz_conf_parse(global_pathname, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
 	if(global < 0) {
 		fprintf(stderr, "Insufficient permission to install modules\n");
 		ggz_conf_cleanup();
