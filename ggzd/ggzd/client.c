@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5809 2004-02-06 17:37:51Z jdorje $
+ * $Id: client.c 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -46,6 +46,7 @@
 #include "hash.h"
 #include "net.h"
 #include "table.h"
+#include "util.h"
 
 
 /* Server wide data structures*/
@@ -216,7 +217,6 @@ static void client_loop(GGZClient* client)
 {
 	int status = 0, fd;
 	fd_set active_fd_set;
-	struct timeval timer = {tv_sec: opt.ping_freq, tv_usec: 0};
 	sigset_t set;
 
 	/* Get socket from netIO object */
@@ -229,6 +229,26 @@ static void client_loop(GGZClient* client)
 	
 	while (!client->session_over) {
 		fd_set read_fd_set = active_fd_set;
+		struct timeval timer, *select_tv;
+		GGZPlayer *player = client->data; /* If GGZ_CLIENT_PLAYER. */
+
+		/* Figure out how long until the next polling action.
+		 *
+		 * For players, polls include pings and room updates.  These
+		 * are timed accurately to the nearest second.  For other
+		 * client types, there are no polls. */
+		if (client->type == GGZ_CLIENT_PLAYER
+		    && (player->next_room_update != 0
+			|| player->next_ping != 0)) {
+			time_t wait_time = MAX(player->next_ping,
+					       player->next_room_update);
+
+			timer.tv_sec = wait_time - time(NULL);
+			timer.tv_usec = 0;
+			select_tv = &timer;
+		} else {
+			select_tv = NULL;
+		}
 
 		/*
 		 * FIXME: This implementation won't scale well.
@@ -255,7 +275,7 @@ static void client_loop(GGZClient* client)
 		 * suspect we won't have a problem with this unless there
 		 * are a _lot_ of players.
 		 */
-		status = select(fd + 1, &read_fd_set, NULL, NULL, &timer);
+		status = select(fd + 1, &read_fd_set, NULL, NULL, select_tv);
 		if (status <= 0) {
 			if (status != 0 && errno != EINTR)
 				err_sys_exit("select error in client_loop()");

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 5590 2003-05-17 08:14:47Z dr_maux $
+ * $Id: protocols.h 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -52,6 +52,11 @@ typedef enum {
 	GGZ_TABLE_UPDATE_DESC, /* table desc changes */
 	GGZ_TABLE_UPDATE_RESIZE /* change size of table */
 } GGZTableUpdateType;
+
+/* Update opcodes. */
+typedef enum {
+	GGZ_ROOM_UPDATE_PLAYER_COUNT /* Number of players in room changes. */
+} GGZRoomUpdateType;
 
 typedef enum {
 	GGZ_RESEAT_SIT,

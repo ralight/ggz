@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 5335 2003-01-16 22:15:22Z dr_maux $
+ * $Id: login.c 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,6 +43,8 @@
 #include "perms.h"
 #include "client.h"
 
+
+extern Options opt;
 
 static void login_generate_password(char *);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
@@ -185,6 +187,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	ip_addr = player->client->addr;
 	player->login_time = (long) time(NULL);
 	player->next_ping = time(NULL) + 5;
+	/* Don't send any room updates until the player gets a room list. */
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 5870 2004-02-09 21:34:39Z jdorje $
+ * $Id: room.h 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -68,6 +68,9 @@ typedef struct {
 	/* Array of pointers to players in this room (dynamcially allocated) */
 	GGZPlayer **players;		/* cleanup() */
 
+	/* The time when the last player entered/exited the room. */
+	time_t last_player_change;
+
 	/* Array of pointers to tables in this room (dynamcially allocated) */
 	GGZTable **tables;		/* cleanup() */
 
@@ -81,7 +84,9 @@ typedef struct {
 
 /* Information about all rooms */
 typedef struct {
+#if 0
 	pthread_rwlock_t lock;	/* Not inititalized or used yet */
+#endif
 	int num_rooms;
 } RoomInfo;
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5870 2004-02-09 21:34:39Z jdorje $
+ * $Id: players.c 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -80,6 +80,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 					const int table_index,
 					const int seat_index,
 					int reason);
+static GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 static int player_get_time_since_ping(GGZPlayer *player);
 
@@ -114,6 +115,7 @@ GGZPlayer* player_new(GGZClient *client)
 	player->my_events_tail = NULL;
 	player->lag_class = 1;			/* Assume they are low lag */
 	player->next_ping = 0;			/* Don't ping until login */
+	player->next_room_update = 0;		/* Don't update until login. */
 	pthread_rwlock_init(&player->stats_lock, NULL);
 	player->wins = -1;
 	player->losses = -1;
@@ -242,6 +244,14 @@ GGZReturn player_updates(GGZPlayer* player)
 		if (changed)
 			room_update_event(player->name, GGZ_PLAYER_UPDATE_LAG,
 					  player->room, -1);
+	}
+
+	if (player->next_room_update != 0
+	    && time(NULL) >= player->next_room_update) {
+		if (player_send_room_update(player) < 0) {
+			return GGZ_ERROR;
+		}
+		player->next_room_update += opt.room_update_freq;
 	}
 
 	return GGZ_OK;
@@ -1318,6 +1328,36 @@ GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
 	if (net_send_motd(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
+	return GGZ_REQ_OK;
+}
+
+
+GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player)
+{
+	int i;
+	time_t curr_time = time(NULL);
+
+	if (opt.room_update_freq == 0) {
+		err_msg("Doing a room update even though they're disabled.");
+		return GGZ_REQ_OK;
+	}
+
+	for (i = 0; i < room_info.num_rooms; i++) {
+		int player_count;
+		time_t last_player_change;
+
+		pthread_rwlock_rdlock(&rooms[i].lock);
+		player_count = rooms[i].player_count;
+		last_player_change = rooms[i].last_player_change;
+		pthread_rwlock_unlock(&rooms[i].lock);
+
+		if (curr_time - last_player_change <= opt.room_update_freq) {
+			net_send_room_update(player->client->net,
+					     GGZ_ROOM_UPDATE_PLAYER_COUNT, i,
+					     player_count);
+		}
+	}
+
 	return GGZ_REQ_OK;
 }
 

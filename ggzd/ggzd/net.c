@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5870 2004-02-09 21:34:39Z jdorje $
+ * $Id: net.c 5897 2004-02-11 01:25:52Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -158,6 +158,9 @@ static GGZReturn _net_send_seat(GGZNetIO *net, GGZTableSeat *seat);
 static GGZReturn _net_send_spectator(GGZNetIO *net,
 				     GGZTableSpectator *spectator);
 static GGZReturn _net_send_pong(GGZNetIO *net, const char *id);
+
+static GGZReturn _net_send_room_player_count(GGZNetIO *net,
+					     int index, int player_count);
 static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 				ggz__attribute((format(printf, 2, 3)));
 
@@ -374,8 +377,9 @@ GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 GGZReturn net_send_room(GGZNetIO *net, int index,
 			RoomStruct *room, char verbose)
 {
-	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d'>",
-		       index, room->name, room->game_type);
+	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d' PLAYERS='%d'>",
+		       index, room->name, room->game_type,
+		       room->player_count);
 	if (verbose && room->description)
 		_net_send_line(net, "<DESC>%s</DESC>", room->description);
 	return _net_send_line(net, "</ROOM>");
@@ -813,6 +817,37 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 		break;
 	}
 	
+	return _net_send_line(net, "</UPDATE>");
+}
+
+
+GGZReturn _net_send_room_player_count(GGZNetIO *net,
+				      int index, int player_count)
+{
+	return _net_send_line(net, "<ROOM ID='%d' PLAYERS='%d'/>",
+			      index, player_count);
+}
+
+
+GGZReturn net_send_room_update(GGZNetIO *net, GGZRoomUpdateType opcode,
+			       int index, int player_count)
+{
+	char *action = NULL;
+
+	switch (opcode) {
+	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
+		action = "players";
+		break;
+	}
+
+	_net_send_line(net, "<UPDATE TYPE='room' ACTION='%s'>", action);
+
+	switch (opcode) {
+	case GGZ_ROOM_UPDATE_PLAYER_COUNT:
+		_net_send_room_player_count(net, index, player_count);
+		break;
+	}
+
 	return _net_send_line(net, "</UPDATE>");
 }
 

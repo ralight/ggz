@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 5747 2004-01-24 22:18:01Z josef $
+ * $Id: parse_opt.c 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -340,6 +340,8 @@ static void get_config_options(int ch)
 	opt.lag_class[1] = ggz_conf_read_int(ch, "Miscellaneous","LagClass2", 1000);
 	opt.lag_class[2] = ggz_conf_read_int(ch, "Miscellaneous","LagClass3", 2000);
 	opt.lag_class[3] = ggz_conf_read_int(ch, "Miscellaneous","LagClass4", 5000);
+	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
+						 "RoomUpdateFrequency", 60);
 
 	ggz_conf_cleanup();
 }

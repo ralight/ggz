@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5870 2004-02-09 21:34:39Z jdorje $
+ * $Id: room.c 5897 2004-02-11 01:25:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -112,14 +112,38 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
-			if (net_send_room(player->client->net, i, &rooms[i], verbose) < 0)
+			GGZReturn result;
+
+			/* We get a read-lock before sending because we
+			 * send the number of players which may change.  All
+			 * other data sent is unchanging and doesn't require
+			 * a lock.  However this assumes that the rooms
+			 * don't change once the server is started.  This
+			 * may not always be true.
+			 *
+			 * Using a second lock rooms[i].count_lock would
+			 * cut down on wait time for these locks.  Or we
+			 * could just make a copy of the room inside the
+			 * lock. */
+			pthread_rwlock_rdlock(&rooms[i].lock);
+			result = net_send_room(player->client->net, i,
+					       &rooms[i], verbose);
+			pthread_rwlock_unlock(&rooms[i].lock);
+
+			if (result != 0) {
 				return GGZ_REQ_DISCONNECT;
+			}
 		}
 
 	/* End room list */
 	if (net_send_room_list_end(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
-	
+
+	/* Schedule the next room update. */
+	if (opt.room_update_freq > 0) {
+		player->next_room_update = time(NULL) + opt.room_update_freq;
+	}
+
 	return GGZ_REQ_OK;
 }
 
@@ -156,6 +180,7 @@ void room_create_additional(void)
 
 	/* Initialize the chat_tail and lock on the new one */
 	rooms[room_info.num_rooms-1].player_count = 0;
+	rooms[room_info.num_rooms-1].last_player_change = 0;
 	rooms[room_info.num_rooms-1].table_count = 0;
 	rooms[room_info.num_rooms-1].event_tail = NULL;
 	pthread_rwlock_init(&rooms[room_info.num_rooms-1].lock, NULL);
@@ -314,6 +339,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 		if (player->room_events)
 			event_room_flush(player);
 		count = -- rooms[old_room].player_count;
+		rooms[old_room].last_player_change = time(NULL);
 		last = rooms[old_room].players[count];
 		for(i=0; i<=count; i++)
 			if(rooms[old_room].players[i] == player) {
@@ -338,6 +364,7 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
 		count = ++ rooms[room].player_count;
+		rooms[room].last_player_change = time(NULL);
 		rooms[room].players[count-1] = player;
 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
 	}
