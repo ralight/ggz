@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 2546 2001-10-09 00:04:59Z rgade $
+ * $Id: protocols.h 2746 2001-11-17 07:21:02Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -59,3 +59,4 @@
 #define E_AT_TABLE     -14
 #define E_IN_TRANSIT   -15
 #define E_NO_PERMISSION -16
+#define E_BAD_XML       -17

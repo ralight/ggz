@@ -764,11 +764,19 @@ int net_read_data(GGZNetIO *net)
 	
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
-	if (!XML_ParseBuffer(net->parser, len, done)) {
+
+	/* If client disconnected..*/
+	if (done) {
+		dbg_msg(GGZ_DBG_CONNECTION, "%s disconnected", 
+			net->player->name);
+	}
+	else if (!XML_ParseBuffer(net->parser, len, done)) {
 		dbg_msg(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
 			XML_GetCurrentLineNumber(net->parser),
 			XML_GetCurrentColumnNumber(net->parser),
 			XML_ErrorString(XML_GetErrorCode(net->parser)));
+
+		_net_send_result(net, "protocol", E_BAD_XML);
 		done = 1;
 	}
 	
