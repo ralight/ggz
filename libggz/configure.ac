@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5843 2004-02-08 08:06:50Z jdorje $
+dnl $Id: configure.ac 5844 2004-02-08 08:16:42Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -30,7 +30,7 @@ AC_ARG_WITH([gcrypt],
 AC_ARG_ENABLE([threading],
               AC_HELP_STRING([--disable-threading],
                              [Don't build in threading support]),
-              [enable_threading=no], [enable_threading=yes])
+              [enable_threading=$enableval], [enable_threading=yes])
 
 
 # Check for header files
