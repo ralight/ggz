@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4536 2002-09-13 02:36:52Z jdorje $
+ * $Id: transit.c 4537 2002-09-13 04:34:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,10 +49,15 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
 /* Packaging for seat events */
-struct GGZSeatEvent {
+typedef struct{
 	struct GGZTableSeat seat;
 	char caller[MAX_USER_NAME_LEN + 1];
-};
+} GGZSeatEventData;
+typedef struct {
+	GGZTransitType opcode;
+	int status;
+	int table_index; /* Only for certain operations */
+} GGZPlayerTransitEventData;
 
 /* Packaging for spectator events */
 struct GGZSpectatorEvent {
@@ -72,7 +77,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 							   size_t size,
 							   void* data);
 
-static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event);
+static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event);
 static int transit_find_seat(GGZTable *table, char *name);
 
 static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEvent *event);
@@ -81,9 +86,7 @@ static int transit_find_spectator(GGZTable *table, char *name);
 int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller)
 {
 	int status;
-	struct GGZSeatEvent *data;
-
-	data = ggz_malloc(sizeof(struct GGZSeatEvent));
+	GGZSeatEventData *data = ggz_malloc(sizeof(*data));
 
 	data->seat = seat;
 	strcpy(data->caller, caller);
@@ -112,34 +115,19 @@ int transit_spectator_event(int room, int index, struct GGZTableSpectator specta
 int transit_player_event(char* name, GGZTransitType opcode,
 			 int status, int index)
 {
-	int size;
-	char* current;
-	void* data;
+	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
-	size = sizeof(char) + sizeof(int);
+	data->opcode = opcode;
+	data->status = status;
+	if (status == 0
+	    && (opcode == GGZ_TRANSIT_JOIN
+		|| opcode == GGZ_TRANSIT_JOIN_SPECTATOR))
+		data->table_index = index;
+	else
+		data->table_index = -1;
 	
-	/* We pass back the table index and fd if a join was successful */
-	if ((opcode == GGZ_TRANSIT_JOIN || opcode == GGZ_TRANSIT_JOIN_SPECTATOR) && status == 0)
-		size += sizeof(int);
-
-	data = ggz_malloc(size);
-	
-	/* Start packing the data */
-	current = (char*)data;
-	
-	*(char*)current = opcode;
-	current += sizeof(char);
-	
-	*(int*)current = status;
-	current += sizeof(int);
-
-	if ((opcode == GGZ_TRANSIT_JOIN || opcode == GGZ_TRANSIT_JOIN_SPECTATOR) && status == 0) {
-		*(int*)current = index;
-		current += sizeof(int);
-	}
-
 	return event_player_enqueue(name, transit_player_event_callback, 
-				    size, data, NULL);
+				    sizeof(*data), data, NULL);
 }
 
 
@@ -151,7 +139,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	int status;
 	GGZTransitType action;
 	GGZTable *table = target;
-	struct GGZSeatEvent *event = data;
+	GGZSeatEventData *event = data;
 	struct GGZTableSeat *seat = &(event->seat);
 
 	dbg_msg(GGZ_DBG_TABLE, 
@@ -281,41 +269,25 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 
 static GGZEventFuncReturn transit_player_event_callback(void* target,
                                                         size_t size,
-                                                        void* data)
+                                                        void* event_data)
 {
-	int status, index = -1;
-	char opcode;
-	char *current;
-	GGZPlayer* player = (GGZPlayer*)target;
-
-	/* Unpack event data */
-	current = (char*)data;
-
-	opcode = *(char*)current;
-	current += sizeof(char);
-
-	status = *(int*)(current);
-	current += sizeof(int);
-
-	if ((opcode == GGZ_TRANSIT_JOIN
-	     || opcode == GGZ_TRANSIT_JOIN_SPECTATOR) && status == 0) {
-		index = *(int*)(current);
-		current += sizeof(int);
-	}
+	GGZPlayer* player = target;
+	GGZPlayerTransitEventData *data = event_data;
 	
-	dbg_msg(GGZ_DBG_TABLE, "%s transit result: %d", player->name, status);
+	dbg_msg(GGZ_DBG_TABLE, "%s transit result: %d",
+		player->name, data->status);
 	
-	switch (opcode) {
+	switch (data->opcode) {
 	case GGZ_TRANSIT_LEAVE:
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
-		if (status == 0)
+		if (data->status == 0)
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
 		
 		if (net_send_table_leave(player->client->net,
-					 (char)status) < 0)
+					 (char)data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
@@ -323,17 +295,19 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_JOIN_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
-		if (status == 0) {
-			player->table = index;
+		if (data->status == 0) {
+			player->table = data->table_index;
 		}
 		pthread_rwlock_unlock(&player->lock);
 
-		if (net_send_table_join(player->client->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net,
+					(char)data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
 	case GGZ_TRANSIT_SEAT:
-		if (net_send_update_result(player->client->net, (char)status) < 0)
+		if (net_send_update_result(player->client->net,
+					   (char)data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	}
@@ -348,7 +322,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
  * Returns 0 on success, -1 on failure (in which case the
  * player should be sent an failure notice).
  */
-static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event)
+static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event)
 {
 	GGZSeat seat;
 	int status = 0;
