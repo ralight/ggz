@@ -1,0 +1,24 @@
+Guru - Grubby Unmasks Real Users
+Chatbot for the GGZ Gaming Zone
+================================
+
+This is a step to the next-generation grubby.
+It does currently contain three major features:
+	- fully runtime-configurable internationalization (1)
+	- fully modular plugin system (2)
+	- generic system executable support (3)
+
+I intend to develop it until it reaches a usable state.
+Then it will be merged with the real grubby sources.
+
+Don't fear the Guru! It likes you very much and wants only
+some gettext and a dynamic module loader. Both are standard
+on today's systems, so it will feel very well.
+
+Josef Spillner
+<dr_maux@users.sourceforge.net>
+
+(1) not integrated yet
+(2) you'll need to install the *.lo's to *.so's to get this to work
+(3) a perl interpreter is needed for the demonstration
+

@@ -1,0 +1,33 @@
+Uh, this is a bit complicated.
+I'll try to draw it down:
+
+
+ +---------------+  +---------------+  +---------------+
+ | guru_mod_prog |  | guru_mod_perl |  | guru_mod_dict |		module shift
+ +---------------+  +---------------+  +---------------+
+ +-----------------------------------------------------+
+ | guru_module_api  guru_module_exec   guru_module_api |		API shift
+ +-----------------------------------------------------+
+              +---------------------------+
+              | The real guru lives here. |						Core shift
+              +---------------------------+
+                +-----------------------+
+                |       Guru i18n       |						I18n shift
+                +-----------------------+
+                +--------+     +--------+
+                | Parser |     | Delay  |						I/O shift
+                +--------+     +--------+
+                    ^              |
+                    |              v
+
+
+Understood it?
+The strings which it reads go through the parser, are tokenized there and
+(maybe) translated back. Guru does then pass it to its modules, until it gets
+an answer. In case it wants to put that answer back to the chat, the output is
+delayed a bit and then written back.
+Guru itself consists of the scoring system, the admin/owner command processor,
+an option file loader/writer part, a module loader and a bit of magic...
+
+Josef
+

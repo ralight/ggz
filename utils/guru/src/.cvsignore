@@ -1,0 +1,8 @@
+guru
+guru_i18n
+gi18n
+*.o
+Makefile
+Makefile.in
+.deps
+.libs
