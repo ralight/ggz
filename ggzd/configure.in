@@ -1,21 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4691 2002-09-25 09:29:10Z dr_maux $
+dnl $Id: configure.in 4719 2002-09-26 10:42:10Z dr_maux $
 
-AC_INIT(acinclude.m4)
+AC_INIT(acinclude.ggz)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.6pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
-
-
-dnl Make sure ${prefix}/include is on include path
-dnl ==============================================
-if test "x${prefix}" = "xNONE"; then
-   CPPFLAGS="$CPPFLAGS -isystem${ac_default_prefix}/include"
-   LDFLAGS="$LDFLAGS -L${ac_default_prefix}/lib"
-else
-   CPPFLAGS="$CPPFLAGS -isystem${prefix}/include"
-   LDFLAGS="$LDFLAGS -L${prefix}/lib"
-fi
 
 dnl Check for standard build environment
 dnl ====================================
@@ -27,7 +16,6 @@ AC_PROG_CPP
 AM_PROG_LIBTOOL
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
-#AC_PROG_RANLIB
 
 
 dnl Compiling Options
@@ -40,6 +28,11 @@ AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,e
 AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
 AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, pgsql, mysql], database=$withval, database=db3)
 
+
+dnl Check for GGZ Requirements
+dnl ==============
+AC_GGZ_INIT(defaults, export)
+AC_GGZ_LIBGGZ
 
 dnl Check for header files
 dnl ======================
@@ -93,12 +86,6 @@ AC_CHECK_HEADER(pthread.h,
             AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
 
-
-dnl Check for GGZ Requirements
-dnl ==============
-
-AC_GGZ_LIBGGZ
-LDADD="$LDADD $LIB_GGZ"
 
 dnl Check for expat
 dnl ==============
