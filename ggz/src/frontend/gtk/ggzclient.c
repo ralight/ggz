@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3194 2002-01-30 07:09:13Z jdorje $
+ * $Id: ggzclient.c 3195 2002-01-30 07:20:32Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -954,14 +954,19 @@ void display_players(void)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
 	GdkBitmap *mask1, *mask2;
-
-	/* Clear current list of players */
+	
+	/* Retrieve the player list (CList) widget. */
 	tmp = lookup_widget(win_main, "player_clist");
+	
+	/* "Freeze" the clist.  This prevents any graphical updating
+	 * until we "thaw" it later. */
+	gtk_clist_freeze(GTK_CLIST(tmp));
+	
+	/* Clear current list of players */
 	gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Display current list of players */
-	if ( (num = ggzcore_room_get_num_players(room)) <= 0)
-		return;
+	num = ggzcore_room_get_num_players(room);
 
 	for (i = 0; i < num; i++) {
 		p = ggzcore_room_get_nth_player(room, i);
@@ -1027,6 +1032,9 @@ void display_players(void)
 		g_free(player[1]);
 		g_free(player[2]);
 	}
+	
+	/* "Thaw" the clist (it was "frozen" up above). */
+	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 
