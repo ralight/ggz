@@ -10,6 +10,7 @@
 #ifndef GURU_I18N_H
 #define GURU_I18N_H
 
+#include <locale.h>
 #include <libintl.h>
 
 /* Macro: use this to mark messages to be translated */
