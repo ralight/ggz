@@ -241,7 +241,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	gchar *message;
 	GGZRoom *room;
 	GGZGameType *gt;
-	static int lastposition;
+	static int lastposition = 125;
 	 
 	/* Clear the player list */
 	/* We do this here so that on slower links people
