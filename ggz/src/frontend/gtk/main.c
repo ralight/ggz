@@ -43,20 +43,22 @@ GGZServer *server = NULL;
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
-	char *global_conf, *user_conf;
+	char *global_conf, *user_conf, *debugfile;
 
-	global_conf = "/etc/ggz/ggz.conf";
-	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
+	/*global_conf = "/etc/ggz/ggz.conf";*/
+	/* We don't support this quite yet */
+	global_conf = NULL;
+	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
-	if (!strcmp(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"), "/tmp/ggz-gtk.debug"))
-	{
-		opt.debug_file = g_strdup_printf("%s%d", "/tmp/ggz-gtk.debug", getpid());
-	} else {
-		opt.debug_file = g_strdup(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"));
-	}
+
+	/* Provide a sensible default for the debug file */
+	debugfile = g_strjoin("/", getenv("HOME"), ".ggz/ggz-gtk.debug", NULL);
+	opt.debug_file = ggzcore_conf_read_string("DEBUG", "FILE", debugfile);
+	g_free(debugfile);
+
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
 	ggzcore_init(opt);
 	free(opt.debug_file);
