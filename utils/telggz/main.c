@@ -19,7 +19,7 @@ void pref_listservers()
 
 	/* Of course I meant, people will kill me for C++isms... */
 	i = 0;
-	while(preflist[i])
+	while((preflist) && (preflist[i]))
 	{
 		iterator = preflist[i++];
 		printf("%3i %22s %10s %20s %10ik\n", iterator->id, iterator->host,
@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
 
 	/* Meta server stuff */
 	meta_init();
-	preflist = meta_query("0.0.5pre");
 	meta_sync();
+	preflist = meta_query("0.0.5pre");
 	/*meta_free(preflist);*/
 
 	/* This could be the default values. But we code in C here. */

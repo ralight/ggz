@@ -40,5 +40,10 @@ To make TelGGZ accessible from the web, simply use:
 <A HREF="telnet://server:port">Instant Access Now</A><BR>
 An example for this is on my student homepage www.maux.de.
 
+NEW - SETUP:
+The file $HOME/.ggz/metaserver.cache must be present and contain at least one
+meta server URI, like ggzmeta://localhost:15689.
+From then one TelGGZ keeps that database up to date automatically.
+
 Josef
 
