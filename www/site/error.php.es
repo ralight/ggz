@@ -1,4 +1,4 @@
-<? include_once($_SERVER['DOCUMENT_ROOT'] . "/site/header.php"); ?>
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . "/site/header.php"); ?>
 
 La p&aacute;gina requerida no se ha encontrado :(
 <br>
@@ -11,5 +11,5 @@ endif;
 ?>
 <br>
 
-<? include_once($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php"); ?>
+<?php include_once($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php"); ?>
 

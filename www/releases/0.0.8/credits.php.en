@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -60,4 +60,4 @@ All GGZ supporters, packagers and distributors<br>
 
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>

@@ -1,4 +1,4 @@
-<? include_once("../site/header.php"); ?>
+<?php include_once("../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -42,5 +42,5 @@ Since the game is named NetSpades, one can assume that Spades is trump.
 </tr>
 </table>
 
-<? include_once("../site/footer.php"); ?>
+<?php include_once("../site/footer.php"); ?>
 

@@ -1,4 +1,4 @@
-<? include_once("../site/header.php"); ?>
+<?php include_once("../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -24,4 +24,4 @@ schreibt bitte eine Mail zum
 
 </table>
 
-<? include_once("../site/footer.php"); ?>
+<?php include_once("../site/footer.php"); ?>

@@ -1,4 +1,4 @@
-<? include_once("../site/header.php"); ?>
+<?php include_once("../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -43,5 +43,5 @@ If you're interested in grubby's design, please have a look into the
 </tr>
 </table>
 
-<? include_once("../site/footer.php"); ?>
+<?php include_once("../site/footer.php"); ?>
 

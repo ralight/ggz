@@ -1,4 +1,4 @@
-<? include_once("../site/header.php"); ?>
+<?php include_once("../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -39,5 +39,5 @@ People who want to run a GGZ server should definitely read the
 </tr>
 </table>
 
-<? include_once("../site/footer.php"); ?>
+<?php include_once("../site/footer.php"); ?>
 

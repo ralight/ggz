@@ -1,4 +1,4 @@
-<? include_once("../site/header.php"); ?>
+<?php include_once("../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -41,5 +41,5 @@ Zukünftig soll auch eine Echtzeitverfolgung von laufenden Spielen möglich sein
 </tr>
 </table>
 
-<? include_once("../site/footer.php"); ?>
+<?php include_once("../site/footer.php"); ?>
 

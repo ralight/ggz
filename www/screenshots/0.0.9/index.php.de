@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -59,4 +59,4 @@ Spieler haben eine Wahl. Und TicTacToe ist der Anführer.
 </td></tr>
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>

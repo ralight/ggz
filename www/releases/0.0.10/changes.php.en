@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="pane" width="100%">
 <tr>
@@ -171,4 +171,4 @@ Every game and game-related developer is encouraged to use this module.
 
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>

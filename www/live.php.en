@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -25,5 +25,5 @@ To play a game on GGZ, launch a core client and connect to one of the GGZ server
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 

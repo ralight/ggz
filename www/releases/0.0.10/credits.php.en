@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="pane" width="100%">
 <tr>
@@ -98,4 +98,4 @@ Internet24 (ggzgamingzone.org), 01/2003-03/2004<br>
 
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>

@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -60,4 +60,4 @@ Gaim and Kopete bring GGZ to the IM community
 </td></tr>
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>

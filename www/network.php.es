@@ -1,5 +1,5 @@
-<? include_once("site/header.php"); ?>
-<? outdated(); ?>
+<?php include_once("site/header.php"); ?>
+<?php outdated(); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -91,5 +91,5 @@ Sin embargo nos alegraríamos si oímos que alguien está montando otra vez un s
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 

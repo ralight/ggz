@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -26,5 +26,5 @@ Tournaments can be organized to mix up the player list a bit...
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 

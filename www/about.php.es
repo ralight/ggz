@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -32,5 +32,5 @@ Con su sistema de clasificación del jugador y las características tales como e
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 

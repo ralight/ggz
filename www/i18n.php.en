@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -13,7 +13,7 @@ GGZ web pages exist in various languages.
 <tr>
 <td valign="top">
 
-<?
+<?php
 
 echo "PHP configuration (header, footer, news):<br>\n";
 echo "Browser language (high priority): $browserlang<br>\n";
@@ -35,5 +35,5 @@ echo "Finally selected language: $apachelang<br>\n";
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 

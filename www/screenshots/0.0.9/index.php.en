@@ -1,4 +1,4 @@
-<? include_once("../../site/header.php"); ?>
+<?php include_once("../../site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -58,4 +58,4 @@ Players do have a choice. And TicTacToe leads the pack.
 </td></tr>
 </table>
 
-<? include_once("../../site/footer.php"); ?>
+<?php include_once("../../site/footer.php"); ?>
