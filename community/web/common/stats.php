@@ -234,7 +234,11 @@ function stats_match($id, $lookup)
 			$handle = pg_result($res, $i, "handle");
 			$playertype = pg_result($res, $i, "playertype");
 
-			echo "<a href='/db/players/?lookup=$handle'>$handle ($playertype)</a><br>\n";
+			if ($playertype == "registered") :
+				echo "<a href='/db/players/?lookup=$handle'>$handle ($playertype)</a><br>\n";
+			else :
+				echo "<span class='linklike'>$handle ($playertype)</span><br>\n";
+			endif;
 		}
 	endif;
 }

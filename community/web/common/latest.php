@@ -32,7 +32,9 @@ function latest_tournaments()
 
 function latest_forumposts()
 {
-	include("forums/.htconf");
+	$ret = @include("forums/.htconf");
+	if(!$ret) $ret = @include("../forums/.htconf");
+	if(!$ret) $ret = @include("../../forums/.htconf");
 
 	$conn = mysql_connect($conf_host, $conf_user, $conf_pass);
 	mysql_select_db($conf_name, $conn);
@@ -52,7 +54,9 @@ function latest_blogs()
 {
 	$counter = 0;
 
-	$f = fopen("blogs/planet.inc", "r");
+	$f = @fopen("blogs/planet.inc", "r");
+	if(!$f) $f = @fopen("../blogs/planet.inc", "r");
+
 	while($a = fgets($f, 1024))
 	{
 		$a = substr($a, 0, strlen($a) - 1);
