@@ -38,10 +38,11 @@
 #include "datatypes.h"
 #include "game.h"
 #include "callbacks.h"
-#include "interface.h"
 #include "support.h"
 #include "err_func.h"
 
+#include "dlg_details.h"
+#include "dlg_launch.h"
 
 /* Global data */
 extern GtkWidget *detail_window;

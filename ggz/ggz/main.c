@@ -28,11 +28,13 @@
 
 #include <gtk/gtk.h>
 
-#include "interface.h"
 #include "datatypes.h"
 #include "parse_opt.h"
 #include "easysock.h"
 #include "err_func.h"
+
+#include "dlg_main.h"
+#include "dlg_login.h"
 
 /* Main global data structures */
 struct ConnectInfo connection;

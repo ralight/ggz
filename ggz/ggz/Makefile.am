@@ -12,16 +12,22 @@ ggz_SOURCES = 	main.c \
 		connect.c \
 	   	connect.h \
 		datatypes.h \
+		dlg_details.c \
+		dlg_details.h \
 		dlg_error.c \
 		dlg_error.h \
 		dlg_exit.c \
 		dlg_exit.h \
+		dlg_launch.c \
+		dlg_launch.h \
+		dlg_login.c \
+		dlg_login.h \
+		dlg_main.c \
+		dlg_main.h \
 		err_func.c \
 		err_func.h \
 		game.c \
 		game.h \
-		interface.c \
-		interface.h \
 		parse_opt.c \
 		parse_opt.h \
 		protocols.h \
