@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: net.c 4001 2002-04-16 19:35:22Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -50,6 +50,8 @@
 # include "../../ggzdmod/ggz_stats.h"
 #endif /* USE_GGZ_STATS */
 
+#define NET_ERROR(p) return handle_neterror_event(p)
+
 
 /* Send out player list to player p */
 /** A player list packet is composed of:
@@ -67,7 +69,7 @@ void net_send_player_list(player_t p)
 
 	if (write_opcode(fd, MSG_PLAYERS) < 0 ||
 	    ggz_write_int(fd, game.num_seats) < 0)
-		return;
+		NET_ERROR(p);
 
 	/* Note that this function can be called before we know what game
 	   we're playing.  In this case, we'll know the number of players
@@ -79,7 +81,7 @@ void net_send_player_list(player_t p)
 		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
 		if (ggz_write_int(fd, get_seat_status(s_abs)) < 0 ||
 		    ggz_write_string(fd, get_seat_name(s_abs)) < 0)
-			return;
+			NET_ERROR(p);
 	}
 }
 
@@ -109,15 +111,15 @@ void net_send_options_request(player_t p,
 	
 	if (write_opcode(fd, REQ_OPTIONS) < 0 ||
 	    ggz_write_int(fd, num_options) < 0)
-		return;
+		NET_ERROR(p);
 	for (i = 0; i < num_options; i++) {
 		if (ggz_write_string(fd, option_descs[i]) < 0 ||
 		    ggz_write_int(fd, num_choices[i]) < 0 ||
 		    ggz_write_int(fd, option_defaults[i]) < 0)
-			return;
+			NET_ERROR(p);
 		for (j = 0; j < num_choices[i]; j++)
 			if (ggz_write_string(fd, option_choices[i][j]) < 0)
-				return;
+				NET_ERROR(p);
 	}
 }
 
@@ -135,7 +137,7 @@ static void net_send_play(player_t p, seat_t player, card_t card)
 	if (write_opcode(fd, MSG_PLAY) < 0 ||
 	    write_seat(fd, CONVERT_SEAT(player, p)) < 0 ||
 	    write_card(fd, card) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_broadcast_play(seat_t player, card_t card)
@@ -163,13 +165,13 @@ static void net_send_gameover(player_t p, int winner_cnt, player_t * winners)
 
 	if (write_opcode(fd, MSG_GAMEOVER) < 0 ||
 	    ggz_write_int(fd, winner_cnt) < 0)
-		return;
+		NET_ERROR(p);
 	
 	for (i = 0; i < winner_cnt; i++) {
 		seat_t ws = game.players[winners[i]].seat;
 		
 		if (write_seat(fd, CONVERT_SEAT(ws, p)) < 0)
-			return;
+			NET_ERROR(p);
 	}
 }
 
@@ -187,18 +189,18 @@ void net_send_table(player_t p)
 	seat_t s_r, s_abs;
 	int fd = get_player_socket(p);
 
-	if (game.num_seats == 0)
+	if (game.num_seats == 0) /* FIXME: don't check this here */
 		return;
 
 	ggzdmod_log(game.ggz, "Sending table to player %d/%s.", p,
 		    get_player_name(p));
 
 	if (write_opcode(fd, MSG_TABLE) < 0)
-		return;
+		NET_ERROR(p);
 	for (s_r = 0; s_r < game.num_seats; s_r++) {
 		s_abs = UNCONVERT_SEAT(s_r, p);
 		if (write_card(fd, game.seats[s_abs].table) < 0)
-			return;
+			NET_ERROR(p);
 	}
 }
 
@@ -215,7 +217,7 @@ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
 
 	/* request a bid from the client */
 	if (write_opcode(fd, REQ_BID) < 0 || ggz_write_int(fd, bid_count) < 0)
-		return;
+		NET_ERROR(p);
 	for (i = 0; i < bid_count; i++) {
 		char bid_text[128] = "";
 		char bid_desc[1024] = "";
@@ -230,7 +232,7 @@ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
 		if (write_bid(fd, bids[i]) < 0 ||
 		    ggz_write_string(fd, bid_text) < 0 ||
 		    ggz_write_string(fd, bid_desc) < 0)
-			return;
+			NET_ERROR(p);
 	}
 }
 
@@ -242,7 +244,7 @@ static void net_send_bid(player_t p, player_t bidder, bid_t bid)
 	if (write_opcode(fd, MSG_BID) < 0 ||
 	    write_seat(fd, CONVERT_SEAT(seat, p)) < 0 ||
 	    write_bid(fd, bid) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_broadcast_bid(player_t bidder, bid_t bid)
@@ -266,7 +268,7 @@ void net_send_play_request(player_t p, seat_t s)
 		    get_player_name(p), s, get_seat_name(s));
 
 	if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_send_badplay(player_t p, char *msg)
@@ -274,7 +276,7 @@ void net_send_badplay(player_t p, char *msg)
 	int fd = get_player_socket(p);
 	
 	if (write_opcode(fd, MSG_BADPLAY) < 0 || ggz_write_string(fd, msg) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 /* Show a player a hand.  This will reveal the cards in the hand iff reveal
@@ -292,7 +294,7 @@ void net_send_hand(const player_t p, const seat_t s, int reveal)
 	if (write_opcode(fd, MSG_HAND) < 0
 	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
 	    || ggz_write_int(fd, game.seats[s].hand.hand_size) < 0)
-		return;
+		NET_ERROR(p);
 
 	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
 		card_t card;
@@ -301,7 +303,7 @@ void net_send_hand(const player_t p, const seat_t s, int reveal)
 		else
 			card = UNKNOWN_CARD;
 		if (write_card(fd, card) < 0)
-			return;
+			NET_ERROR(p);
 	}
 }
 
@@ -311,7 +313,7 @@ static void net_send_trick(player_t p, player_t winner)
 
 	if (write_opcode(fd, MSG_TRICK) < 0 ||
 	    write_seat(fd,CONVERT_SEAT(game.players[winner].seat, p)) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_broadcast_trick(player_t winner)
@@ -329,7 +331,7 @@ void net_send_newgame_request(player_t p)
 	ggzdmod_log(game.ggz, "Sending out a REQ_NEWGAME to player %d/%s.", p,
 		    get_player_name(p));
 	if (write_opcode(fd, REQ_NEWGAME) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_send_newgame(player_t p)
@@ -337,7 +339,7 @@ void net_send_newgame(player_t p)
 	int fd = get_player_socket(p);
 	
 	if (write_opcode(fd, MSG_NEWGAME) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_broadcast_newgame(void)
@@ -356,7 +358,7 @@ static void net_send_newhand(player_t p)
 	int fd = get_player_socket(p);
 	
 	if (write_opcode(fd, MSG_NEWHAND) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 
@@ -382,7 +384,7 @@ void net_send_global_text_message(player_t p, const char *mark,
 	    write_opcode(fd, GAME_MESSAGE_TEXT) < 0 ||
 	    ggz_write_string(fd, mark) < 0 ||
 	    ggz_write_string(fd, message) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 /* send_global_message_toall sends the truly global message to all players */
@@ -404,7 +406,7 @@ void net_send_player_text_message(player_t p, seat_t s, const char *message)
 	    write_opcode(fd, GAME_MESSAGE_PLAYER) < 0 ||
 	    write_seat(fd, CONVERT_SEAT(s, p)) < 0 ||
 	    ggz_write_string(fd, message) < 0)
-		return;
+		NET_ERROR(p);
 }
 
 void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths,
@@ -421,15 +423,15 @@ void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths
 	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
 	    write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0 ||
 	    ggz_write_string(fd, mark) < 0)
-		return;
+		NET_ERROR(p);
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s = UNCONVERT_SEAT(s_rel, p);
 		if (ggz_write_int(fd, lengths[s]) < 0)
-			return;
+			NET_ERROR(p);
 		for (i = 0; i < lengths[s]; i++)
 			if (write_card(fd, cardlist[s][i]) < 0)
-				return;
+				NET_ERROR(p);
 	}
 }
 
@@ -522,7 +524,7 @@ void net_read_player_data(player_t p)
 	client_msg_t op;
 
 	if (read_opcode(fd, &opcode) < 0)
-		return; /* FIXME: handle error */
+		NET_ERROR(p);
 	op = opcode;
 
 	ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
@@ -559,7 +561,5 @@ void net_read_player_data(player_t p)
 	}
 
 	if (status != 0)
-		ggzdmod_log(game.ggz,
-			    "ERROR: handle_player: status is %d on message from player %d/%s.",
-			    status, p, get_player_name(p));
+		NET_ERROR(p);
 }

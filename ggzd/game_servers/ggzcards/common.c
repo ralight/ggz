@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: common.c 4001 2002-04-16 19:35:22Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -805,6 +805,14 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 	net_broadcast_gameover(winner_cnt, winners);
 }
 
+void handle_neterror_event(player_t p)
+{
+	ggzdmod_log(game.ggz, "Network error for player %d.", p);
+	if (get_seat_status(p) == GGZ_SEAT_BOT) {
+		restart_ai(p);
+	}
+}
+
 void handle_client_language(player_t p, const char* lang)
 {
 	/* FIXME: store the language and use it to translate messages */
@@ -926,7 +934,7 @@ void init_game()
 	
 	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_BOT)
-			start_ai(&game, p, game.ai_type);
+			start_ai(p, game.ai_type);
 
 	game.deck = create_deck(game.deck_type);
 	if (game.max_hand_length == 0)
