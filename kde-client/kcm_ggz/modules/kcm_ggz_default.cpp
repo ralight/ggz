@@ -3,11 +3,14 @@
 
 #include <klocale.h>
 #include <ksimpleconfig.h>
+#include <kfiledialog.h>
 
+#include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qgroupbox.h>
 #include <qpixmap.h>
+#include <qpushbutton.h>
 
 #include <stdlib.h>
 
@@ -17,10 +20,10 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 : KCMGGZPane(parent, name)
 {
 	QLabel *label_server, *label_username;
-	QLabel *label_explanation;
-	QVBoxLayout *vbox, *vbox2;
+	QLabel *label_explanation, *label_personalization;
+	QVBoxLayout *vbox, *vbox2, *vbox3;
 	QHBoxLayout *hbox;
-	QGroupBox *box;
+	QGroupBox *box, *mebox;
 	QWidget *gear;
 
 	box = new QGroupBox(i18n("General"), this);
@@ -29,6 +32,9 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	box->move(10, 10);
 	box->setEraseColor(QColor(255, 200, 0));
 
+	mebox = new QGroupBox(i18n("Personalization"), this);
+	mebox->setEraseColor(QColor(255, 200, 0));
+
 	m_server = new QLineEdit(box);
 	m_username = new QLineEdit(box);
 
@@ -36,6 +42,11 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	label_server->setEraseColor(QColor(255, 200, 0));
 	label_username = new QLabel(i18n("Your login username"), box);
 	label_username->setEraseColor(QColor(255, 200, 0));
+
+	label_personalization = new QLabel(i18n("Load an image of yourself which is used in GGZ games."), mebox);
+	label_personalization->setEraseColor(QColor(255, 200, 0));
+	m_button_personalization = new QPushButton(mebox);
+	m_button_personalization->setFixedSize(140, 140);
 
 	label_explanation = new QLabel(i18n("The GGZ Gaming Zone needs some information\n"
 		" to be configured properly. You can specify here what is needed as\n"
@@ -53,16 +64,22 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	vbox->add(label_username);
 	vbox->add(m_username);
 
+	vbox3 = new QVBoxLayout(mebox, 15);
+	vbox3->add(label_personalization);
+	vbox3->add(m_button_personalization);
+
 	vbox2 = new QVBoxLayout(this, 15);
 	hbox = new QHBoxLayout(vbox2, 5);
 	hbox->add(gear);
 	hbox->addStretch(1);
+	hbox->add(mebox);
 	vbox2->addStretch(1);
 	vbox2->add(label_explanation);
 	vbox2->add(box);
 
 	connect(m_server, SIGNAL(textChanged(const QString &)), SIGNAL(signalChanged()));
 	connect(m_username, SIGNAL(textChanged(const QString &)), SIGNAL(signalChanged()));
+	connect(m_button_personalization, SIGNAL(clicked()), SLOT(slotPersonalization()));
 
 	setEraseColor(QColor(255, 200, 0));
 }
@@ -71,12 +88,34 @@ KCMGGZDefault::~KCMGGZDefault()
 {
 }
 
+void KCMGGZDefault::slotPersonalization()
+{
+	QString picname = KFileDialog::getOpenFileName();
+	if(!picname.isNull())
+	{
+		m_picture = picname;
+		loadPicture();
+		emit signalChanged();
+	}
+}
+
+void KCMGGZDefault::loadPicture()
+{
+	QPixmap pix = QPixmap(m_picture);
+	if(!pix.isNull())
+	{
+		m_button_personalization->setIconSet(QIconSet(pix, pix));
+	}
+}
+
 void KCMGGZDefault::load()
 {
 	KSimpleConfig conf(QString("%1/.ggz/ggzap.rc").arg(getenv("HOME")));
 	conf.setGroup("Global");
 	m_server->setText(conf.readEntry("Server"));
 	m_username->setText(conf.readEntry("Username"));
+	m_picture = conf.readEntry("Picture");
+	loadPicture();
 }
 
 void KCMGGZDefault::save()
@@ -85,6 +124,11 @@ void KCMGGZDefault::save()
 	conf.setGroup("Global");
 	conf.writeEntry("Server", m_server->text());
 	conf.writeEntry("Username", m_username->text());
+	conf.writeEntry("Picture", m_picture);
+
+	KSimpleConfig conf2(QString("%1/.ggz/personalization").arg(getenv("HOME")));
+	conf2.setGroup("Personalization");
+	conf2.writeEntry("picture", m_picture);
 }
 
 QString KCMGGZDefault::caption()

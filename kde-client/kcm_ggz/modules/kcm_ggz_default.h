@@ -3,7 +3,8 @@
 
 #include "kcm_ggz_pane.h"
 
-#include <qlineedit.h>
+class QPushButton;
+class QLineEdit;
 
 class KCMGGZDefault : public KCMGGZPane
 {
@@ -15,11 +16,18 @@ class KCMGGZDefault : public KCMGGZPane
 		void save();
 		QString caption();
 
+	public slots:
+		void slotPersonalization();
+
 	signals:
 		void signalChanged();
 
 	private:
+		void loadPicture();
+
 		QLineEdit *m_server, *m_username;
+		QPushButton *m_button_personalization;
+		QString m_picture;
 };
 
 #endif
