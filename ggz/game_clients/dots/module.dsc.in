@@ -6,5 +6,6 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/games/dots/
 Name = Dots
 ProtocolEngine = Dots
-ProtocolVersion = 3
-Version = 0.0.3
+ProtocolVersion = 4
+Version = 0.0.4
+

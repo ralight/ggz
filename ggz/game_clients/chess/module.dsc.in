@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = Chess
 Author = Ismael Orenstein
-Version = 0.0.7
+Version = 0.0.8
 ProtocolEngine = Chess
 ProtocolVersion = 3
 CommandLine = @ggzexecmoddir@/ggz.chess

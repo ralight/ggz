@@ -7,4 +7,5 @@ Homepage = http://ggz.sourceforge.net/games/lapocha/
 Name = LaPocha
 ProtocolEngine = LaPocha
 ProtocolVersion = 3
-Version = 0.0.2
+Version = 0.0.3
+

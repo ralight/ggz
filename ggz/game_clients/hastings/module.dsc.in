@@ -6,6 +6,6 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/games/hastings/
 Name = Hastings
 ProtocolEngine = Hastings
-ProtocolVersion = 3
-Version = 0.0.6
+ProtocolVersion = 4
+Version = 0.0.7
 
