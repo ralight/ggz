@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5707 2003-12-06 02:41:47Z jdorje $
+dnl $Id: configure.ac 5730 2003-12-31 17:27:00Z dr_maux $
 
-AC_INIT
+AC_INIT([GGZ Gtk+ client], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-gtk-client, 0.0.7)
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
