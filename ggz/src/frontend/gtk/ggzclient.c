@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: ggzclient.c 5202 2002-11-04 04:05:28Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -330,13 +330,10 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 		tmp = lookup_widget(win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}else{
-#ifndef GTK2 /* ??? What does this do?  --JDS */
-		GtkArg arg[1];
-		arg[0].name = "user_data";
+		int height;
 		tmp = lookup_widget(win_main, "table_vpaned");
-		gtk_object_getv(GTK_OBJECT(tmp), 1, arg);
-		gtk_paned_set_position(GTK_PANED(tmp), GTK_VALUE_UINT(arg[0]));
-#endif
+		gtk_object_get(GTK_OBJECT(tmp), "user_data", &height, NULL);
+		gtk_paned_set_position(GTK_PANED(tmp), height);
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		tmp = lookup_widget(win_main, "join_button");
