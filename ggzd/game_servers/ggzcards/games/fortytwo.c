@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4070 2002-04-24 08:46:27Z jdorje $
+ * $Id: fortytwo.c 4071 2002-04-24 09:05:48Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -244,7 +244,7 @@ static void set_trump(char suit)
 {
 	seat_t s;
 	const char *trump = suit == DOUBLES_VALUE ? "doubles"
-	                    : get_suit_name(game.trump);
+	                    : get_suit_name(suit);
 	
 	game.trump = suit;
 	set_global_message("Trump", "%s are trump.", trump);
