@@ -20,6 +20,7 @@
 #undef PACKAGE_LOCALE_DIR
 #undef GGZDATADIR
 #undef GAMEDIR
+#undef NDEBUG
 #undef PACKAGE_SOURCE_DIR
 
 
