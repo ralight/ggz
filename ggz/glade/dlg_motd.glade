@@ -67,9 +67,9 @@
     <widget>
       <class>GtkButton</class>
       <name>button3</name>
+      <can_default>True</can_default>
       <has_default>True</has_default>
       <can_focus>True</can_focus>
-      <has_focus>True</has_focus>
       <signal>
 	<name>clicked</name>
 	<handler>motd_ok</handler>

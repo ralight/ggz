@@ -79,6 +79,7 @@ create_dlgMOTD (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button3);
   gtk_box_pack_start (GTK_BOX (vbox2), button3, FALSE, FALSE, 0);
+  GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (dlgMOTD), "realize",
                       GTK_SIGNAL_FUNC (motd_realize),
@@ -87,7 +88,6 @@ create_dlgMOTD (void)
                       GTK_SIGNAL_FUNC (motd_ok),
                       NULL);
 
-  gtk_widget_grab_focus (button3);
   gtk_widget_grab_default (button3);
   return dlgMOTD;
 }
