@@ -76,6 +76,7 @@ class Krosswater : public ZoneGGZModUI
 		QFrame *m_statusframe;
 		int m_selectedperson;
 		DlgAgain *m_again;
+		int m_broken;
 };
 
 #endif

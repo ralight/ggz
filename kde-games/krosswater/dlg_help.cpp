@@ -21,6 +21,9 @@
 // Configuration includes
 #include "config.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qpixmap.h>
 #include <qpainter.h>
@@ -32,11 +35,11 @@ DlgHelp::DlgHelp(QWidget *parent, const char *name)
 {
 	QPushButton *ok;
 
-	ok = new QPushButton("OK", this);
+	ok = new QPushButton(i18n("OK"), this);
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 	ok->setGeometry(200, 270, 100, 20);
 
-	setCaption("Krosswater Help");
+	setCaption(i18n("Krosswater Help"));
 	setFixedSize(500, 300);
 	show();
 }
@@ -56,14 +59,14 @@ void DlgHelp::paintEvent(QPaintEvent *e)
 	p.drawPixmap(150, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
 	p.setPen(QPen(QColor(255, 255, 0)));
 	p.setFont(QFont("arial", 10));
-	p.drawText(15, 90, "As one of 2 to 4 players on the board, your task is to");
-	p.drawText(15, 105, "cross the water from the left to the right. This can be accomplished");
-	p.drawText(15, 120, "by clicking on a stone tile, and then clicking on a water tile to move");
-	p.drawText(15, 135, "the stone tile there.");
-	p.drawText(15, 150, "The more players participate, the more fun it is to steal stone tiles that");
-	p.drawText(15, 165, "have been placed by the opponents for their own purpose.");
-	p.drawText(15, 180, "The game ends if the first player has build a track of stones from his");
-	p.drawText(15, 195, "starting point to somewhere on the right side.");
+	p.drawText(15, 90, i18n("As one of 2 to 4 players on the board, your task is to"));
+	p.drawText(15, 105, i18n("cross the water from the left to the right. This can be accomplished"));
+	p.drawText(15, 120, i18n("by clicking on a stone tile, and then clicking on a water tile to move"));
+	p.drawText(15, 135, i18n("the stone tile there."));
+	p.drawText(15, 150, i18n("The more players participate, the more fun it is to steal stone tiles that"));
+	p.drawText(15, 165, i18n("have been placed by the opponents for their own purpose."));
+	p.drawText(15, 180, i18n("The game ends if the first player has build a track of stones from his"));
+	p.drawText(15, 195, i18n("starting point to somewhere on the right side."));
 	p.end();
 }
 

@@ -55,6 +55,7 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	QWidget *dummy;
 
 	m_again = NULL;
+	m_broken = 0;
 
 	dummy = new QWidget(this);
 	setCentralWidget(dummy);
@@ -95,7 +96,7 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	connect(this, SIGNAL(signalZoneInvalid()), SLOT(slotZoneInvalid()));
 
 	setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
-	setCaption("Krosswater - Cross the Water!");
+	setCaption(i18n("Krosswater - Cross the Water!"));
 	setFixedSize(700, 370);
 }
 
@@ -107,6 +108,7 @@ Krosswater::~Krosswater()
 // Handle protocol error
 void Krosswater::protoError()
 {
+	m_broken = 1;
 	KMessageBox::error(this, i18n("A protocol error has been detected. Aborting the game."), i18n("Client message"));
 	close();
 }
@@ -158,6 +160,8 @@ void Krosswater::slotZoneInput(int op)
 	int x, y, value;
 	int maxplayers;
 	int person;
+
+	if(m_broken) return;
 
 	showStatus(i18n("Receiving..."));
 

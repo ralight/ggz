@@ -35,13 +35,13 @@ DlgAgain::DlgAgain(QWidget *parent, const char *name)
 {
 	QPushButton *ok, *cancel;
 
-	ok = new QPushButton("Yes", this);
-	cancel = new QPushButton("No", this);
+	ok = new QPushButton(i18n("Yes"), this);
+	cancel = new QPushButton(i18n("No"), this);
 
 	ok->setGeometry(30, 140, 100, 30);
 	cancel->setGeometry(170, 140, 100, 30);
 
-	m_result = "(result unknown)";
+	m_result = i18n("(result unknown)");
 
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 	connect(ok, SIGNAL(clicked()), SIGNAL(signalAgain()));
