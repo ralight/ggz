@@ -33,8 +33,14 @@
 #include "err_func.h"
 
 
+/* A hash entry */
+typedef struct ggzrc_entry {
+	gboolean dirty;
+	gchar *value;
+} ggzrc_entry;
+
 /* Local use only functions */
-static void ggzrc_load_rc(FILE *);
+static void ggzrc_load_rc(FILE *, gboolean);
 static void ggzrc_parse_line(char *);
 static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
 static gint ggzrc_strcmp(gconstpointer, gconstpointer);
@@ -53,20 +59,27 @@ static gboolean local_conf = FALSE;
 void ggzrc_write_string(const char *section, const char *key, const char *value)
 {
 	char *hashkey;
-	gpointer old_key, old_value;
+	gpointer old_key;
+	ggzrc_entry *entry;
 
 	hashkey = g_strdup_printf("[%s]%s", section, key);
-	if(g_hash_table_lookup_extended(rc_hash, hashkey, &old_key, &old_value)
+	if(g_hash_table_lookup_extended(rc_hash, hashkey,
+					&old_key, (gpointer *)&entry)
 	   == TRUE) {
 		/* If it existed, let's use the same old key */
-		g_free(old_value);
+		g_free(entry->value);
 		g_free(hashkey);
 		hashkey = old_key;
 	} else {
-		/* If it didn't exist, put it into the rc_list */
+		/* If it didn't exist, put it into the rc_list and allocate
+		   space for a ggzrc_entry */
 		rc_list = g_slist_insert_sorted(rc_list, hashkey, ggzrc_strcmp);
+		entry = g_malloc(sizeof(ggzrc_entry));
 	}
-	g_hash_table_insert(rc_hash, hashkey, g_strdup(value));
+
+	entry->dirty = TRUE;
+	entry->value = g_strdup(value);
+	g_hash_table_insert(rc_hash, hashkey, entry);
 }
 
 
@@ -74,17 +87,18 @@ void ggzrc_write_string(const char *section, const char *key, const char *value)
 char *ggzrc_read_string(const char *section, const char *key, const char *def)
 {
 	char *hashkey, *data;
+	ggzrc_entry *entry;
 
 	hashkey = g_strdup_printf("[%s]%s", section, key);
-	data = g_hash_table_lookup(rc_hash, hashkey);
-	if(data == NULL) {
+	entry = g_hash_table_lookup(rc_hash, hashkey);
+	if(entry == NULL) {
 		if(def) {
 			ggzrc_write_string(section, key, def);
 			return g_strdup(def);
 		} else
 			return NULL;
 	}
-	return g_strdup(data);
+	return g_strdup(entry->value);
 }
 
 
@@ -256,7 +270,7 @@ int ggzrc_initialize(char *rc_fname)
 			return -1;
 		}
 		dbg_msg("ggzrc: Reading %s", rc_fname);
-		ggzrc_load_rc(rc_file);
+		ggzrc_load_rc(rc_file, FALSE);
 		local_conf = TRUE;
 		return 0;
 	}
@@ -265,7 +279,7 @@ int ggzrc_initialize(char *rc_fname)
 	tempstr = g_strconcat(GGZCONFDIR, "/ggz.rc", NULL);
 	if((rc_file = fopen(tempstr, "r"))) {
 		dbg_msg("ggzrc: Reading %s", tempstr);
-		ggzrc_load_rc(rc_file);
+		ggzrc_load_rc(rc_file, FALSE);
 		status = 0;
 	} else
 		dbg_msg("ggzrc: Unable to open %s/ggz.rc", GGZCONFDIR);
@@ -276,7 +290,7 @@ int ggzrc_initialize(char *rc_fname)
 		tempstr = g_strconcat(home, "/.ggzrc", NULL);
 		if((rc_file = fopen(tempstr, "r"))) {
 			dbg_msg("ggzrc: Reading %s/.ggzrc", home);
-			ggzrc_load_rc(rc_file);
+			ggzrc_load_rc(rc_file, TRUE);
 			status = 0;
 		} else
 			dbg_msg("ggzrc: Unable to open %s/.ggzrc", home);
@@ -289,13 +303,14 @@ int ggzrc_initialize(char *rc_fname)
 
 
 /* Parse the pre-openend rc file, close the file when done */
-static void ggzrc_load_rc(FILE *rc_file)
+static void ggzrc_load_rc(FILE *rc_file, gboolean dirty)
 {
 	char line[256];		/* Lines longer than 256 are trunced */
 	char *hashkey;
 	char *section;
 	int linenum = 0;
-	gpointer old_key, old_value;
+	gpointer old_key;
+	ggzrc_entry *entry;
 
 	/* Prepare the hash table for mass updates */
 	g_hash_table_freeze(rc_hash);
@@ -321,18 +336,21 @@ static void ggzrc_load_rc(FILE *rc_file)
 		dbg_msg("ggzrc: found '%s %s = %s'", section,varname,varvalue);
 		hashkey = g_strconcat(section, varname, NULL);
 		if(g_hash_table_lookup_extended(rc_hash, hashkey,
-						&old_key, &old_value)
+						&old_key, (gpointer *)&entry)
 	   	   == TRUE) {
 			/* If it existed, let's use the same old key */
-			g_free(old_value);
+			g_free(entry->value);
 			g_free(hashkey);
 			hashkey = old_key;
 		} else {
-			/* If it didn't exist, put it into the rc_list */
+			/* If it didn't exist, put it into the rc_list
+			   and allocated space for a ggzrc_entry */
 			rc_list = g_slist_prepend(rc_list, hashkey);
+			entry = g_malloc(sizeof(ggzrc_entry));
 		}
-		g_hash_table_insert(rc_hash, hashkey,
-				    ggzrc_decoded_string(varvalue));
+		entry->dirty = dirty;
+		entry->value = ggzrc_decoded_string(varvalue);
+		g_hash_table_insert(rc_hash, hashkey, entry);
 	}
 
 	/* Do time intensive stuff now that we are out of the loop */
@@ -354,7 +372,8 @@ int ggzrc_commit_changes(void)
 	char *encoded_value;
 	char *cur_section;
 	int first_section;
-	char *tmp, *section, *key, *value;
+	char *tmp, *section, *key;
+	ggzrc_entry *entry;
 	GSList *iter_list=rc_list;
 
 	/* We don't overwrite real configuration files from test files */
@@ -375,7 +394,12 @@ int ggzrc_commit_changes(void)
 	first_section = 1;
 	while(iter_list) {
 		data = g_strdup(iter_list->data);
-		value = g_hash_table_lookup(rc_hash, data);
+		entry = g_hash_table_lookup(rc_hash, data);
+		if(entry->dirty == FALSE) {
+			g_free(data);
+			iter_list = g_slist_next(iter_list);
+			continue;
+		}
 		tmp = section = data+1;
 		while(*tmp != ']')
 			tmp++;
@@ -390,9 +414,9 @@ int ggzrc_commit_changes(void)
 			} else
 				fprintf(rc_file, "\n[%s]\n", cur_section);
 		}
-		encoded_value = ggzrc_encoded_string(value);
+		encoded_value = ggzrc_encoded_string(entry->value);
 		fprintf(rc_file, "%s = %s\n", key,
-			(encoded_value != NULL) ? encoded_value : value);
+			(encoded_value != NULL) ? encoded_value : entry->value);
 		if (encoded_value != NULL) g_free(encoded_value);
 		g_free(data);
 		iter_list = g_slist_next(iter_list);
