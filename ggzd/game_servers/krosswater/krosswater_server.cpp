@@ -11,6 +11,8 @@
 #include <easysock.h>
 #include <ZoneGGZModGGZ.h>
 
+#include <iostream>
+
 // Gives a console output of the map
 void printpath(int width, int height, int **field)
 {
@@ -18,13 +20,13 @@ void printpath(int width, int height, int **field)
 	{
 		for(int i = 0; i < width; i++)
 		{
-			if(field[i][j]) cout << "\e[1m\e[39m";
-			else cout << "\e[0m\e[39m";
-			cout << field[i][j];
+			if(field[i][j]) std::cout << "\e[1m\e[39m";
+			else std::cout << "\e[0m\e[39m";
+			std::cout << field[i][j];
 		}
-		cout << endl;
+		std::cout << endl;
 	}
-	cout << "\e[0m\e[39m";
+	std::cout << "\e[0m\e[39m";
 }
 
 KrosswaterServer::KrosswaterServer()
