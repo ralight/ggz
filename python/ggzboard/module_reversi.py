@@ -147,3 +147,5 @@ class Game:
 	def over(self):
 		return self.isover
 
+ggzboardgame = Game()
+
