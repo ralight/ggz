@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2387 2001-09-07 09:55:05Z jdorje $
+ * $Id: protocol.h 2406 2001-09-08 23:21:57Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -123,16 +123,35 @@ typedef struct card_t {
 /** An entirely unknown card. */
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
-/** @brief An easysock wrapper to read a card from the socket.
- *  @param fd The file descriptor from which to read the card.
+
+/* 
+ * Communication functions
+ */
+
+/** @brief Reads a card from the socket.
+ *  @param fd The file descriptor from which to read.
  *  @param card A pointer to the card data.
  *  @return 0 on success, -1 on failure. */
-int es_read_card(int fd, card_t * card);
+int read_card(int fd, card_t * card);
 
-/** @brief An easysock wrapper to write a card to the socket.
- *  @param fd The file desciptor to which to write the card.
+/** @brief Wites a card to the socket.
+ *  @param fd The file desciptor to which to write.
  *  @param card The card to be written.
  *  @return 0 on success, -1 on failure. */
-int es_write_card(int fd, card_t card);
+int write_card(int fd, card_t card);
+
+/** @brief Reads an opcode from the socket.
+ *  @param fd The file descriptor from which to read.
+ *  @param op A pointer to the opcode data.
+ *  @return 0 on success, negative value on failure.
+ *  @see enum server_msg_t, enum client_msg_t */
+int read_opcode(int fd, int *op);
+
+/** @brief Writes an opcode to the socket.
+ *  @param fd The file descriptor to which to write.
+ *  @param op The opcode data.
+ *  @return 0 on success, negative value on failure.
+ *  @see enum server_msg_t, enum client_msg_t */
+int write_opcode(int fd, int op);
 
 #endif /* __PROTOCOL_H__ */

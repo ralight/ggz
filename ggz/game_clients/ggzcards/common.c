@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2402 2001-09-08 19:22:48Z jdorje $
+ * $Id: common.c 2406 2001-09-08 23:21:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -298,7 +298,7 @@ static int handle_msg_hand()
 
 	/* Read in all the card values */
 	for (i = 0; i < hand->hand_size; i++)
-		if (es_read_card(ggzfd, &hand->card[i]) < 0)
+		if (read_card(ggzfd, &hand->card[i]) < 0)
 			return -1;
 
 	/* Finally, show the hand. */
@@ -439,7 +439,7 @@ static int handle_msg_play(void)
 	struct hand_t *hand;
 
 	/* Read the card being played. */
-	if (es_read_int(ggzfd, &p) < 0 || es_read_card(ggzfd, &card) < 0)
+	if (es_read_int(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
 
@@ -482,7 +482,7 @@ static int handle_msg_table()
 
 	assert(game.players);
 	for (p = 0; p < game.num_players; p++)
-		if (es_read_card(ggzfd, &game.players[p].table_card) < 0)
+		if (read_card(ggzfd, &game.players[p].table_card) < 0)
 			return -1;
 
 	/* TODO: verify that the table cards have been removed from the hands 
@@ -571,7 +571,7 @@ static int handle_req_options()
 /* A newgame message tells the server to start a new game. */
 int client_send_newgame()
 {
-	if (es_write_int(ggzfd, WH_RSP_NEWGAME) < 0)
+	if (write_opcode(ggzfd, WH_RSP_NEWGAME) < 0)
 		return -1;
 	return 0;
 }
@@ -581,7 +581,7 @@ int client_send_newgame()
 int client_send_bid(int bid)
 {
 	set_game_state(WH_STATE_WAIT);
-	if (es_write_int(ggzfd, WH_RSP_BID) < 0 ||
+	if (write_opcode(ggzfd, WH_RSP_BID) < 0 ||
 	    es_write_int(ggzfd, bid) < 0)
 		return -1;
 	return 0;
@@ -593,7 +593,7 @@ int client_send_options(int option_cnt, int *options)
 {
 	int i, status = 0;
 
-	if (es_write_int(ggzfd, WH_RSP_OPTIONS) < 0)
+	if (write_opcode(ggzfd, WH_RSP_OPTIONS) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)
 		if (es_write_int(ggzfd, options[i]) < 0)
@@ -609,8 +609,8 @@ int client_send_options(int option_cnt, int *options)
 int client_send_play(card_t card)
 {
 	set_game_state(WH_STATE_WAIT);
-	if (es_write_int(ggzfd, WH_RSP_PLAY) < 0
-	    || es_write_card(ggzfd, card) < 0)
+	if (write_opcode(ggzfd, WH_RSP_PLAY) < 0
+	    || write_card(ggzfd, card) < 0)
 		return -1;
 	return 0;
 }
@@ -619,7 +619,7 @@ int client_send_play(card_t card)
 /* A sync request asks for a sync from the server. */
 int client_send_sync_request()
 {
-	if (es_write_int(ggzfd, WH_REQ_SYNC) < 0)
+	if (write_opcode(ggzfd, WH_REQ_SYNC) < 0)
 		return -1;
 	return 0;
 }
@@ -631,7 +631,7 @@ int client_handle_server()
 	int op, status = -1;
 
 	/* Read the opcode */
-	if (es_read_int(ggzfd, &op) < 0)
+	if (read_opcode(ggzfd, &op) < 0)
 		return -1;
 
 	switch (op) {
