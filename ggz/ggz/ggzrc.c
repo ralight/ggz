@@ -109,9 +109,12 @@ int ggzrc_initialize(void)
 {
 	FILE *rc_file;
 
+	/* This must be done */
+	rc_hash = g_hash_table_new(g_str_hash, g_str_equal);
+
 	/* Open our rc file */
 	if((rc_file = ggzrc_open_rc()) == NULL) {
-		dbg_msg("ggzrc: Unable to located ggz.rc or .ggzrc");
+		dbg_msg("ggzrc: Unable to locate ggz.rc or .ggzrc");
 		return -1;
 	}
 
@@ -155,8 +158,7 @@ static void ggzrc_load_rc(FILE *rc_file)
 	char *section;
 	int linenum = 0;
 
-	/* Initialize the hash and prepare for mass updates */
-	rc_hash = g_hash_table_new(g_str_hash, g_str_equal);
+	/* Prepare the hash table for mass updates */
 	g_hash_table_freeze(rc_hash);
 
 	section = g_strdup("[none]");
