@@ -41,7 +41,7 @@
 #include <msgbox.h>
 
 /* Uncomment to allow reserved seats during the launch. */
-/* #define ALLOW_RESERVED_SEATS */
+#define ALLOW_RESERVED_SEATS
 
 /* The maximum number of characters in the reserved seat name
    (not counting \0) */
