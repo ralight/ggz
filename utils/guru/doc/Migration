@@ -1,0 +1,31 @@
+What has happened to the old grubby functionality?
+Is it still present in its reincarnation as "guru"?
+
+Yes of course :)
+But now all extended functionality has gone into separate modules.
+
+modmessage:
+-----------
+grubby tell (G)knight where are you now?
+grubby do i have any messages
+grubby alert add someone
+
+modpeople:
+----------
+grubby my name is Igor
+grubby have you seen Vladimir
+
+modbadwords:
+------------
+grubby you suck!
+
+modself:
+--------
+grubby help
+grubby about
+
+modadmin:
+---------
+grubby goto 0
+grubby log off
+
