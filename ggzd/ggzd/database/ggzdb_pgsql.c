@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5267 2002-11-25 19:16:38Z dr_maux $
+ * $Id: ggzdb_pgsql.c 5323 2003-01-12 12:09:45Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -449,3 +449,23 @@ unsigned int _ggzdb_player_next_uid(void)
 	   know more?  --JDS */
 	return 0;
 }
+
+/* dummy!!! */
+GGZDBResult _ggzdb_init_stats(const char *datadir)
+{
+	/* call ggzdb_init here, we use the same connection for playerdb and
+	   statsdb */
+
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
+{
+	return GGZDB_NO_ERROR;
+}
+
+GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
+{
+	return GGZDB_NO_ERROR;
+}
+
