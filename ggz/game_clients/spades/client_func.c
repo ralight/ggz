@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 4925 2002-10-14 23:29:39Z jdorje $
+ * $Id: client_func.c 5113 2002-10-30 08:43:24Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -141,7 +141,7 @@ int CheckWriteInt(int msgsock, int message)
 }
 
 
-int CheckWriteString(int msgsock, char *message)
+int CheckWriteString(int msgsock, const char *message)
 {
 
 	int status, success = NET_OK;

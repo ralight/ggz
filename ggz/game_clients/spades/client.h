@@ -94,7 +94,7 @@ typedef struct gameState_t {
 int CheckReadInt(int, int *);
 int CheckReadString(int, char **);
 int CheckWriteInt(int, int);
-int CheckWriteString(int, char *);
+int CheckWriteString(int, const char *);
 
 /* Various init routines */
 void AppInit(void);
