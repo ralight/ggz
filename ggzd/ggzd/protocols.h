@@ -111,5 +111,7 @@ typedef enum {
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
 #define E_LEAVE_FORBIDDEN -10
-
+#define E_ALREADY_LOGGED_IN -11
+#define E_NOT_LOGGED_IN -12
+#define E_NOT_IN_ROOM   -13
 
