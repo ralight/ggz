@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 3426 2002-02-20 03:51:03Z jdorje $
+ * $Id: main.c 3567 2002-03-16 05:48:45Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,10 +37,12 @@
 
 #include "client.h"
 
+#include "aicommon.h"
+
 int main(int argc, char *argv[])
 {
 #ifdef DEBUG
-	const char* debug_types[] = {"ai", NULL};
+	const char* debug_types[] = {DBG_BID, DBG_PLAY, DBG_AI, NULL};
 #else
 	const char* debug_types[] = {NULL};
 #endif

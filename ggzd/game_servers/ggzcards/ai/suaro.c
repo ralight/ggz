@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3491 2002-02-27 09:42:22Z jdorje $
+ * $Id: suaro.c 3567 2002-03-16 05:48:45Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -59,7 +59,7 @@ enum {
 	OPP = 2
 };
 
-/*
+/* 
  *
  *  This is a simple expert system.  It follows the following algorithm:
  *
@@ -127,13 +127,14 @@ void start_hand(void)
 void alert_bid(int p, bid_t bid)
 {
 	/* we really need to take advantage of this information! */
-	
+
 	if (bid.sbid.val > 0) {
 		declarer = p;
 		contract = bid;
-		
+
 		contract.sbid.suit = bid.sbid.suit;
-		if (contract.sbid.suit == SUARO_HIGH || contract.sbid.suit == SUARO_LOW)
+		if (contract.sbid.suit == SUARO_HIGH
+		    || contract.sbid.suit == SUARO_LOW)
 			trump = -1;
 		else
 			trump = contract.sbid.suit - 1;
@@ -216,12 +217,13 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 	   and we bid it.  If the opponent has already bid higher, we pass. */
 
 	bidsuit = find_best_suit(FALSE) + 1;
-	ggz_debug("ai", "Best suit is %s.", short_suaro_suit_names[(int) bidsuit]);
+	ggz_debug(DBG_BID, "Best suit is %s.",
+		  short_suaro_suit_names[(int) bidsuit]);
 
 	/* This really needs to be more accurate.  It basically just affects
 	   rounding (way below). */
 	tricks = (libai_count_suit(0, bidsuit - 1) > 3) ? 50 : 20;
-	ggz_debug("ai", "Counting %d points for trump strength.", tricks);
+	ggz_debug(DBG_BID, "Counting %d points for trump strength.", tricks);
 
 	/* Count expected tricks in each suit.  For any card that we don't
 	   have, we figure the opponent has (at a conservative estimate) a
@@ -247,8 +249,9 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 		/* This actually counts badly because it doesn't consider
 		   that _we_ might run out of cards.  Oh well. */
 
-		ggz_debug("ai", "We have %d cards in %s.  Figure opponent has %d.",
-			 ourcount, suit_names[(int) c.suit], oppcount);
+		ggz_debug(DBG_BID,
+			  "We have %d cards in %s.  Figure opponent has %d.",
+			  ourcount, suit_names[(int) c.suit], oppcount);
 
 		for (c.face = ACE_HIGH; c.face >= 8; c.face--) {
 			if (libai_is_card_in_hand(ME, c)) {
@@ -259,7 +262,10 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 
 				tricks_in_suit += value;
 
-				ggz_debug("ai", "Counting %d of %s as %d (%d) points.", c.face, suit_names[(int) c.suit], value, cardvalue);
+				ggz_debug(DBG_BID,
+					  "Counting %d of %s as %d (%d) points.",
+					  c.face, suit_names[(int) c.suit],
+					  value, cardvalue);
 
 				cardvalue = MIN(cardvalue, 0);
 
@@ -267,8 +273,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 				oppcount -= 100;
 			} else {
 				if (oppcount > 0) {
-					/* guess 60% chance opponent has card
-					 */
+					/* guess 60% chance opponent has card */
 					oppcount -= 60;
 					cardvalue -= 60;
 
@@ -279,14 +284,14 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 			}
 		}
 
-		ggz_debug("ai", "Counting %d points in %s.",
-			 tricks_in_suit, suit_names[(int) c.suit]);
+		ggz_debug(DBG_BID, "Counting %d points in %s.",
+			  tricks_in_suit, suit_names[(int) c.suit]);
 		tricks += tricks_in_suit;
 
 	}
 
 	/* Now compute final # of tricks */
-	ggz_debug("ai", "Total number of points: %d.", tricks);
+	ggz_debug(DBG_BID, "Total number of points: %d.", tricks);
 	tricks /= 100;
 
 	my_bid.bid = 0;
@@ -294,11 +299,11 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 	    (tricks == min_bid.sbid.val && bidsuit > min_bid.sbid.suit)) {
 		my_bid.sbid.val = tricks;
 		my_bid.sbid.suit = bidsuit;
-		ggz_debug("ai", "Bidding %d %s.", (int) my_bid.sbid.val,
-			 short_suaro_suit_names[(int) my_bid.sbid.suit]);
+		ggz_debug(DBG_BID, "Bidding %d %s.", (int) my_bid.sbid.val,
+			  short_suaro_suit_names[(int) my_bid.sbid.suit]);
 	} else {
 		my_bid.sbid.spec = SUARO_PASS;
-		ggz_debug("ai", "Passing.");
+		ggz_debug(DBG_BID, "Passing.");
 	}
 	return my_bid;
 }
@@ -314,8 +319,7 @@ card_t get_play(int play_seat, int *valid_plays)
 		/* If we're the declarer and there is a trump, we want to
 		   pull trump. Otherwise just pick a strong suit. */
 		if (declarer == ME
-		    && trump >= 0
-		    && libai_count_suit(ME, trump) > 1)
+		    && trump >= 0 && libai_count_suit(ME, trump) > 1)
 			suit = trump;
 		else
 			suit = find_best_suit(contract.sbid.suit ==
@@ -333,8 +337,7 @@ card_t get_play(int play_seat, int *valid_plays)
 			card_t card;
 
 			/* Try to trump. */
-			if (trump >= 0
-			    && libai_count_suit(ME, trump) > 0) {
+			if (trump >= 0 && libai_count_suit(ME, trump) > 0) {
 				card_t card;
 
 				for (card.suit = trump, card.face =
