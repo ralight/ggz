@@ -721,7 +721,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("connected\n");
 			// possibly ggzcore bug:
 			// state has not been updated yet here
-			while(!kggzserver->isOnline()) kggzserver->dataRead();
+			while((kggzserver) && (!kggzserver->isOnline())) kggzserver->dataRead();
+			if(!kggzserver) return;
 			kggzserver->setLogin(m_save_loginmode, m_save_username, m_save_password);
 			result = kggzserver->login();
 			if(result == -1)
@@ -849,6 +850,11 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error detected!"), KGGZChat::RECEIVE_ADMIN);
+			detachServerCallbacks();
+			delete kggzserver;
+			kggzserver = NULL;
+			KMessageBox::error(this, "A protocol error occured!", "Error!");
+			menuConnect();
 			break;
 		case GGZCoreServer::chatfail:
 			KGGZDEBUG("chatfail\n");
