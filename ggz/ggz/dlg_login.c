@@ -2,16 +2,31 @@
 #  include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
+#include <stdio.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "callbacks.h"
+#include "connect.h"
+#include "dlg_details.h"
+#include "dlg_error.h"
 #include "dlg_login.h"
+#include "datatypes.h"
+
+
+/* Globals neaded by this dialog */
+extern struct ConnectInfo connection;
+extern GtkWidget *detail_window;
+
+/* Global GtkWidget for this dialog */
+GtkWidget *dlg_login;
+
+/* Local callbacks which no other file will call */
+void login_anon_toggled(GtkWidget* button, gpointer window);
+void login_fill_defaults(GtkWidget * win, gpointer user_data);
+void login_input_options(GtkButton * button, gpointer window);
+void login_start_session(GtkButton * button, gpointer window);
+void login_show_details(GtkButton * button, gpointer user_data);
+
 
 GtkWidget*
 create_dlg_login (void)
@@ -298,3 +313,108 @@ create_dlg_login (void)
 
   return dlg_login;
 }
+
+
+/*                              *
+ *           Callbacks          *
+ *                              */
+
+void login_anon_toggled(GtkWidget* button, gpointer window)
+{ 
+        gpointer tmp;
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "pass_box");
+ 
+        if (GTK_TOGGLE_BUTTON(button)->active) 
+                gtk_widget_hide(GTK_WIDGET(tmp));
+        else
+                gtk_widget_show(GTK_WIDGET(tmp));
+}
+
+
+void login_fill_defaults(GtkWidget * win, gpointer user_data)
+{
+        gpointer *tmp;
+        char port[5];
+
+        tmp = gtk_object_get_data(GTK_OBJECT(win), "name_entry");
+        if (connection.username)
+                gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
+        else
+                gtk_entry_set_text(GTK_ENTRY(tmp), getenv("LOGNAME"));
+
+
+        tmp = gtk_object_get_data(GTK_OBJECT(win), "host_entry");
+        if (connection.server)
+                gtk_entry_set_text(GTK_ENTRY(tmp), connection.server);
+        else
+                gtk_entry_set_text(GTK_ENTRY(tmp), "localhost");
+
+        tmp = gtk_object_get_data(GTK_OBJECT(win), "port_entry");
+        if (connection.port) {
+                snprintf(port, 5, "%d", connection.port);
+                gtk_entry_set_text(GTK_ENTRY(tmp), port);
+        }
+        else
+                gtk_entry_set_text(GTK_ENTRY(tmp), "7626");
+
+        tmp = gtk_object_get_data(GTK_OBJECT(win), "anon_radio");
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+}
+
+void login_input_options(GtkButton * button, gpointer window)
+{
+        gpointer tmp;
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "name_entry");
+        connection.username = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "pass_entry");
+        connection.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "host_entry");
+        connection.server = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "port_entry");
+        connection.port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "normal_radio");
+        if (GTK_TOGGLE_BUTTON(tmp)->active)
+                connection.login_type = GGZ_LOGIN;
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "anon_radio");
+        if (GTK_TOGGLE_BUTTON(tmp)->active)
+                connection.login_type = GGZ_LOGIN_ANON;
+
+        tmp = gtk_object_get_data(GTK_OBJECT(window), "first_radio");
+        if (GTK_TOGGLE_BUTTON(tmp)->active)
+                connection.login_type = GGZ_LOGIN_NEW;
+}
+
+void login_start_session(GtkButton * button, gpointer window)
+{
+        if (connection.connected) {
+                warn_dlg("Already Connected.");
+                return;
+        }
+
+        /* FIXME: Initialize for new game session */
+
+        if (connect_to_server() < 0) {
+                err_dlg("Could not connect");
+                return;
+        }
+
+        /* Close connect dialog if we were successful */
+        connection.connected = TRUE;
+        gtk_widget_destroy(GTK_WIDGET(window));
+
+        /*FIXME: Other session starting things ? */
+}
+
+
+void login_show_details(GtkButton * button, gpointer user_data)
+{
+        detail_window = create_dlg_details();
+        gtk_widget_show(detail_window);
+}
+

@@ -7,8 +7,6 @@ INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 bin_PROGRAMS = ggz
 
 ggz_SOURCES = 	main.c \
-		callbacks.c \
-	   	callbacks.h \
 		connect.c \
 	   	connect.h \
 		datatypes.h \

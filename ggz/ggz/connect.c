@@ -35,13 +35,13 @@
 #include <string.h>
 
 #include "connect.h"
-#include "dlg_error.h"
-#include "easysock.h"
-#include "protocols.h"
-#include "err_func.h"
 #include "datatypes.h"
-#include "callbacks.h"
+#include "dlg_error.h"
+#include "dlg_main.h"
+#include "easysock.h"
+#include "err_func.h"
 #include "game.h"
+#include "protocols.h"
 #include "seats.h"
 
 

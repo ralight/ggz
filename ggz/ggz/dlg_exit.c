@@ -30,7 +30,6 @@
 #include <gtk/gtk.h>
 
 #include <dlg_exit.h>
-#include <callbacks.h>
 
 
 void exit_dlg(GtkWidget * widget, gpointer data)

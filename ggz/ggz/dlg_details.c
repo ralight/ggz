@@ -2,16 +2,17 @@
 #  include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "callbacks.h"
 #include "dlg_details.h"
+
+
+/* Global GtkWidget for this dialog */
+GtkWidget *detail_window;
+
+/* Local callbacks which no other file will call */
+void details_cancel_details(GtkButton * button, gpointer user_data);
 
 
 GtkWidget*
@@ -77,5 +78,16 @@ create_dlg_details (void)
                       NULL);
 
   return dlg_details;
+}
+
+
+/*                              *
+ *           Callbacks          *
+ *                              */
+        
+void details_cancel_details(GtkButton * button, gpointer user_data)
+{
+        gtk_widget_destroy(detail_window);
+        detail_window = NULL;
 }
 
