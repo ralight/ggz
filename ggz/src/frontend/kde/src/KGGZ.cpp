@@ -51,6 +51,10 @@
 #include <klocale.h>
 #include <kurl.h>
 #include <krandomsequence.h>
+#ifdef KGGZ_WALLET
+#include <klineeditdlg.h>
+#include <kwallet.h>
+#endif
 
 // Qt includes
 #include <qiconview.h>
@@ -212,6 +216,29 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 
 void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
+#ifdef KGGZ_WALLET
+	QString pass, p;
+	KWallet::Wallet *w = NULL;
+
+	if(mode != GGZCoreServer::guest)
+		w = KWallet::Wallet::openWallet("kggz");
+	if(w)
+	{
+		if(!w->hasFolder("passwords"))
+		{
+			w->createFolder("passwords");
+			pass = KLineEditDlg::getText(i18n("Password"), i18n("Please invent a new password:"), NULL, NULL);
+		}
+		w->setFolder("passwords");
+		if(pass) w->writePassword(host, pass);
+
+		w->readPassword(host, p);
+		password = p.latin1();
+
+		KMessageBox::information(this, i18n("Wallet password: %1").arg(password), i18n("debug"));
+	}
+#endif
+
 	if(m_connect->optionServer())
 	{
 		KGGZDEBUG("Start server\n");
@@ -594,7 +621,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 {
 	int result;
 	int seats;
-	char *description;
+	const char *description;
 	GGZCoreGametype *gametype;
 
 	switch(id)
@@ -651,11 +678,12 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 					KGGZDEBUG("Huh?\n");
 					return;
 				}
-				description = (char*)m_launch->description();
+				if(m_launch->description().isEmpty()) description = "";
+				else description = m_launch->description().latin1();
 				seats = m_launch->seats();
 
 				m_table = new GGZCoreTable();
-				m_table->init(gametype->gametype(), description, seats);
+				m_table->init(gametype->gametype(), strdup(description), seats); // bad strdup
 				for(int i = 0; i < seats; i++)
 				{
 					switch(m_launch->seatType(i))

@@ -345,10 +345,12 @@ void KGGZConnect::slotModes(int loginmode)
 {
 	m_loginmode = loginmode;
 	group_mode->setButton(loginmode);
+#ifndef KGGZ_WALLET
 	if(loginmode == 0)
 		input_password->setEnabled(true);
 	else
 		input_password->setEnabled(false);
+#endif
 }
 
 void KGGZConnect::slotInvoke()

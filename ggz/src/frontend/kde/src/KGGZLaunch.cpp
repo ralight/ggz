@@ -184,9 +184,9 @@ void KGGZLaunch::slotChanged(int value)
 	}
 }
 
-const char *KGGZLaunch::description()
+QString KGGZLaunch::description()
 {
-	return m_edit->text().latin1();
+	return m_edit->text();
 }
 
 int KGGZLaunch::seats()

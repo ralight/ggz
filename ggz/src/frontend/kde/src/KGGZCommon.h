@@ -59,8 +59,14 @@
 #ifdef VERSION
 #define KGGZVERSION VERSION
 #else
-#define KGGZVERSION "0.0.5pre"
+#define KGGZVERSION "0.0.8pre"
 #endif
+#endif
+
+// wallet support
+#include <kdeversion.h>
+#if (KDE_VERSION_MAJOR > 3) || ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 2)) || (KDE_VERSION_RELEASE >= 90)
+#define KGGZ_WALLET
 #endif
 
 ////////////////////////////////////////////////////////////////

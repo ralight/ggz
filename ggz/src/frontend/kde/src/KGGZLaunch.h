@@ -62,7 +62,7 @@ class KGGZLaunch : public QWidget
 		// Initialize the dialog with the given parameters
 		void initLauncher(char *playername, int maxplayers, int maxbots);
 		// Return the customizable room description
-		const char *description();
+		QString description();
 		// Return the number of seats wanted
 		int seats();
 		// For each seat, return the set type
