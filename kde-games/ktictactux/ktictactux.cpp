@@ -31,7 +31,7 @@ KTicTacTux::KTicTacTux(QWidget *parent = NULL, char *name = NULL)
 		}
 	}
 
-	label = new QLabel(i18n("KTicTacTux - You start!"), this);
+	label = new QLabel(i18n("KTicTacTux - Waiting for opponent!"), this);
 	label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	label->setFixedHeight(20);
 	vbox->add(label);
@@ -41,7 +41,7 @@ KTicTacTux::KTicTacTux(QWidget *parent = NULL, char *name = NULL)
 	show();
 
 	m_firstid = frame[0][0]->winId();
-	m_turn = proto->opponent;
+	m_turn = 0;
 
 	m_opponent = PLAYER_AI;
 
@@ -62,6 +62,7 @@ void KTicTacTux::slotSelected(QWidget *widget)
 {
 	int id;
 
+	if(proto->state != proto->statemove) return;
 	if(m_turn != proto->num)
 	{
 		printf("Hey, wrong turn!!! (%i should be %i)\n", m_turn, proto->num);
@@ -82,12 +83,12 @@ void KTicTacTux::slotSelected(QWidget *widget)
 		proto->sendMyMove();
 	}
 
-	getNextTurn();
+	//getNextTurn();
 }
 
 void KTicTacTux::yourTurn()
 {
-	status(i18n("Your turn"));
+	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) status(i18n("Your turn"));
 
 	if(gameOver()) return;
 }
@@ -187,6 +188,8 @@ int KTicTacTux::gameOver()
 void KTicTacTux::announce(QString str)
 {
 	int ret;
+
+	if(m_opponent == PLAYER_NETWORK) return;
 
 	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), "Information");
 
@@ -310,6 +313,7 @@ void KTicTacTux::slotNetwork()
 		case proto->reqmove:
 		printf("=== Req Move!\n");
 			proto->state = proto->statemove;
+			m_turn = proto->num;
 			status(i18n("Your move"));
 			break;
 		case proto->rspmove:

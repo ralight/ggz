@@ -56,7 +56,7 @@ int KTicTacTuxProto::getMoveStatus()
 
 	es_read_char(fd, &status);
 
-	if(status == 0) board[move % 3][move / 3] = seats[num];
+	if(status == 0) board[move % 3][move / 3] = player;
 }
 
 int KTicTacTuxProto::getOpponentMove()
@@ -64,7 +64,7 @@ int KTicTacTuxProto::getOpponentMove()
 	int move;
 
 	es_read_int(fd, &move);
-	board[move % 3][move / 3] = seats[(num + 1) % 2];
+	board[move % 3][move / 3] = opponent;
 }
 
 int KTicTacTuxProto::getSync()
