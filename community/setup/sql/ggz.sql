@@ -2,7 +2,7 @@
 --- Add indices etc. as you like :)
 
 CREATE TABLE "users" (
-	"id" integer DEFAULT nextval('"users_id_seq"'::text) NOT NULL,
+	"id" serial NOT NULL,
 	"handle" character varying(256) NOT NULL,
 	"password" character varying(256),
 	"name" character varying(256),
@@ -12,7 +12,7 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "stats" (
-	"id" integer DEFAULT nextval('"stats_id_seq"'::text) NOT NULL,
+	"id" serial NOT NULL,
 	"handle" character varying(256),
 	"game" character varying(256),
 	"wins" bigint,
@@ -30,25 +30,25 @@ CREATE TABLE "control" (
 );
 
 CREATE TABLE matches (
-    id serial NOT NULL,
-    date bigint,
-    game character varying(256),
-    winner character varying(256),
-	savegame character varying(256)
+	"id" serial NOT NULL,
+	"date" bigint,
+	"game" character varying(256),
+	"winner" character varying(256),
+	"savegame" character varying(256)
 );
 
 CREATE TABLE matchplayers (
-    id serial NOT NULL,
-    "match" bigint,
-    handle character varying(256),
-    playertype character varying(256)
+	"id" serial NOT NULL,
+	"match" bigint,
+	"handle" character varying(256),
+	"playertype" character varying(256)
 );
 
 CREATE TABLE savegames (
-    id serial NOT NULL,
-    date bigint,
-    game character varying(256),
-    owner character varying(256),
-	savegame character varying(256)
+	"id" serial NOT NULL,
+	"date" bigint,
+	"game" character varying(256),
+	"owner" character varying(256),
+	"savegame" character varying(256)
 );
 
