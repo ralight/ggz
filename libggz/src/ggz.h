@@ -489,15 +489,59 @@ typedef enum {
 	GGZ_CHECK_MEM = 0x01
 } GGZCheckType;
 
-
+/**
+ * @brief Initialize and configure debugging for the program.
+ * 
+ * This should be called early in the program to set up the debugging routines.
+ * @param types A null-terminated list of arbitrary string debugging "types".
+ * @param file A file to write debugging output to, or NULL for none.
+ * @see ggz_debug
+ */
 void ggz_debug_init(const char **types, const char* file);
+
+/**
+ * @brief Enable a specific type of debugging.
+ *
+ * Any ggz_debug calls that use that type will then be logged.
+ * @param type The "type" of debugging to enable.
+ * @see ggz_debug
+ */
 void ggz_debug_enable(const char *type);
+
+/**
+ * @brief Disable a specific type of debugging.
+ *
+ * Any ggz_debug calls that use the given type of debugging will then not be
+ * logged.
+ * @param type The "type" of debugging to disable.
+ * @see ggz_debug
+ */
 void ggz_debug_disable(const char *type);
+
+/**
+ * @brief Log a debugging message.
+ *
+ * This function takes a debugging "type" as well as a printf-style list of
+ * arguments.  It assembles the debugging message (printf-style) and logs it
+ * if the given type of debugging is enabled.
+ * @param type The "type" of debugging (similar to a loglevel).
+ * @param fmt A printf-style format string
+ * @see ggz_debug_enable, ggz_debug_disable
+ */
 void ggz_debug(const char *type, const char *fmt, ...);
 void ggz_error_sys(const char *fmt, ...);
 void ggz_error_sys_exit(const char *fmt, ...);
 void ggz_error_msg(const char *fmt, ...);
 void ggz_error_msg_exit(const char *fmt, ...);
+
+/**
+ * @brief Cleans up debugging state and prepares for exit.
+ *
+ * This function should be called right before the program exits.  It cleans
+ * up all of the debugging state data, including writing out the memory check
+ * data (if enabled) and closing the debugging file (if enabled).
+ * @param check A mask of things to check.
+ */
 void ggz_debug_cleanup(GGZCheckType check);
 /** @} */
 
