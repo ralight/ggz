@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 380 $</revnumber>
-	<date>$Date: 2000-04-05 05:42:32 -0700 (Wed, 05 Apr 2000) $</date>
+	<revnumber>$Revision: 442 $</revnumber>
+	<date>$Date: 2000-04-20 23:10:35 -0700 (Thu, 20 Apr 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -709,7 +709,7 @@
 	      be written in other kanguages that C.
 	    </para>
 	  </listitem>
-	</itemizedlist
+	</itemizedlist>
       </para>
       
       <para>
@@ -750,10 +750,54 @@
 	
 	<para>
 	  At the present, I am using the popt library for cmd-line
-	  parsing.  There have been no decision made about the config
-	  file format, or its parser.  One possibility is to use
-	  libxml which is popular under GNOME, however simplicity may
-	  reign instead.
+	  parsing.
+	</para>
+
+	<para>
+	  The configuration file parsing is a three-phase process which
+	  bootstraps itself from a dark, dreary and empty server to one
+	  supporting multiple chat rooms, each of which can host one specific
+	  game:
+	  <itemizedlist>
+	    <listitem>
+	      <para>
+		Phase One: Read the ggzd.conf file from SYSCONFDIR.
+		The file to read can be determined at runtime with
+		the <emphasis>--file=/path/to/conffile</emphasis>
+		option.  This feature is most notably used when testing a
+		new configuration.
+	      </para>
+	      <para>
+		The same line parser is used throughout the configuration
+		process.  It is relatively simplistic, much like strtok(),
+		but processes an entire line in a single shot.  It then
+		sets two module variables 'varname' and 'varvalue' to the
+		appropriate contexts from the configuration line.  The file
+		parsers can then use these strings to configure various
+		run-time variables.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		Phase Two: Scan all the game description files and parse
+		those which have been signaled as in use by the main
+		configuration file.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		Phase Three: Scan all the room description files and parse
+		those which have been signaled as in use by the main
+		configuration file.  These must be processed after the
+		game files, as each room will host a game which is already
+		loaded by phase two.
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	</para>
+	<para>
+	  The actual contents of the configuration files is discussed in
+	  the server administration documentation.
 	</para>
       </section>
 
@@ -762,8 +806,8 @@
 	  The server will need to store a database of user ID, name,
 	  and password at the very least.  This system must allow
 	  searching by name or ID, and allow for easy
-	  addition/deletion.  GGZ ill probably use libdb for
-	  this.  a SQL database is possible but probably not
+	  addition/deletion.  GGZ will probably use libdb for
+	  this.  A SQL database is possible but probably not
 	  necessary, and just too much for our simple requirements.
 	</para>
       </section>
@@ -938,10 +982,107 @@
       </programlisting>
 
       <para>
-	There will also be a structure for server options.  However,
-	since the options themselves are undertermined, the data
-	strucuture is not laid out here.
+	The server options are stored in a <emphasis>Options</emphasis>
+	structure.  This holds many run-time configurable options.
+	<emphasis>Note:</emphasis> Not all of these options are implemented
+	at this current time.
       </para>
+      <programlisting role="psuedocode">
+	Options {
+	  str: Name of configuration file specified in --file
+	  chr: remove_users
+	  int: User inactivity time
+	  chr: clear_stats
+	  int: stat_clr_time
+	  int: TCP/IP port to use for communications
+	  str: Directory in which game description files are found
+	  str: tmp_dir
+	  str: The base configuration directory
+	  str: The server admin's name
+	  str: The server admin's email address
+	  int: Whether to perform hostname lookups for log files
+	}
+      </programlisting>
+
+      <para>
+	A chat room is implemented internally in a
+	<emphasis>RoomStruct</emphasis>.  These are stored in a run-time
+	allocated array as needed.  Hopefuly this will allow on-the-fly
+	room creation in the future.
+      </para>
+      <programlisting>
+	RoomStruct {
+	  str: Short room name
+	  str: Long room description
+	  int: Number of players in room
+	  int: Maximum number of players allowed in this room
+	  int: Number of active tables in room
+	  int: Maximum number of active tables in room
+	  int: The game type this room hosts
+	  time_t: A timestamp when the player list last changed
+	  time_t: A timestamp when the table list last changed
+	  *int: An array of player indices (players in room)
+	  *int: An array of table indices
+	  *ChatItemStruct: The tail of a linked list of chat for this room
+	}
+      </programlisting>
+
+      <para>
+	Chat messages are implemented as a set of linked lists, one per
+	chat room.  The chat room itself points to the tail of the linked
+	list so that chats may easily be tacked onto the end.  Each player
+	has a pointer to their head of the chain, which is the next message
+	they expect to receive.  A <emphasis>ChatItem</emphasis> is stored
+	as follows:
+      </para>
+      <programlisting>
+	ChatItem {
+	  int: Number of players who have not read this chat
+	  str: The name of the sender of this chat
+	  str: The message itself
+	  *ChatItem: The next message in the linked list
+	}
+      </programlisting>
+
+      <para>
+	The message of the day is stored internally in a
+	<emphasis>MOTDInfo</emphasis> structure.  It is read at system
+	initialization and will not change dynamically (at least yet).
+      </para>
+      <programlisting>
+	MOTDInfo {
+	  str: Filename where MOTD is found
+	  chr: Whether to utilize the MOTD (bool)
+	  ulong: Time the server started up (used to calc uptime)
+	  int: Number of lines in MOTD file
+	  *str: An array of MOTD text lines
+	  str: The server's hostname
+	  str: The server's system name (eg: Linux)
+	  str: The server's CPU identifier - this is not strictly accurate
+	       and depends on who compiled the kernel
+	  str: The port number the server is using
+	}
+      </programlisting>
+
+      <para>
+	Logfile options are stored separately from the main server
+	options in a <emphasis>LogInfo</emphasis> structure:
+      </para>
+      <programlisting>
+	LogInfo {
+	  int: Have log files been initialized?  If no, we emit to stdout/err
+	  int: Which syslog facility to use
+	  uint: A bitmap of options (see err_func.h)
+	  str: Filename for logfile (if not syslog)
+	  *FILE: Stream for logfile
+	  uint: Log types to include in logs (see err_func.h)
+	    ** The following are only included if debug is on **
+	  chr: A flag to note that debug level was set on command line
+	  str: Filename for debug file (if not syslog)
+	  *FILE: Stream for debug file
+	  uint: Debug types to include in logs (see err_func.h)
+	}
+      </programlisting>
     </section>
   </chapter>
 </book>
