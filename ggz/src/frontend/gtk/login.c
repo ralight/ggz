@@ -38,10 +38,10 @@
 
 GtkWidget *login_dialog;
 
-static struct reconnect{
-	GGZProfile profile = NULL;
+static struct{
+	GGZProfile *profile;
 	int id;
-};
+} reconnect;
 
 static GtkWidget *create_dlg_login(void);
 
@@ -55,7 +55,7 @@ static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
-void login_reconnect(void);
+static void login_reconnect(GGZEventID id, void* event_data, void* user_data);
 
 void
 login_create_or_raise(void)
@@ -197,19 +197,19 @@ login_start_session                    (GtkButton       *button,
 
 	if(ggzcore_state_is_online())
 	{
-		/* If currently online, disconnect */
-		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
-
 		/* Set to connect after logout */
 		reconnect.profile = profile;
-		reconnect.id = ggzcore_event_add(GGZ_SERVER_LOGOUT, login_reconnect);
+		reconnect.id = ggzcore_event_connect(GGZ_SERVER_LOGOUT, login_reconnect);
+
+		/* If currently online, disconnect */
+		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 	} else {
 		/* FIXME: provide a destroy function that frees the appropriate mem */
 		ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
 	}
 }
 
-void login_reconnect(void)
+void login_reconnect(GGZEventID id, void* event_data, void* user_data)
 {
 	/* 
 	 * Check to see if we should connect to a server

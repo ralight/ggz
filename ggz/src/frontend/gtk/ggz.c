@@ -107,7 +107,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_logout(GGZEventID id, void* event_data, void* user_data)
 {
-
+	chat_display_message(CHAT_BEEP, "---", "Disconnected from Server.");
 }
 
 
