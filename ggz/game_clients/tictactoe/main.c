@@ -33,6 +33,9 @@
 #include <game.h>
 #include <main_win.h>
 
+#include "ggzintl.h"
+
+#include "support.h"
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -43,6 +46,8 @@ struct game_state_t game;
 
 int main(int argc, char* argv[])
 {
+	ggz_intl_init("tictactoe");
+		
 	gtk_init (&argc, &argv);
 
 	main_win = create_main_win();
@@ -82,7 +87,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		
 	case TTT_REQ_MOVE:
 		game.state = STATE_MOVE;
-		game_status("Your move");
+		game_status(_("Your move"));
 		break;
 		
 	case TTT_RSP_MOVE:
@@ -111,7 +116,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 int get_seat(void)
 {
-	game_status("Getting seat number");
+	game_status(_("Getting seat number"));
 
 	if (es_read_int(game.fd, &game.num) < 0)
 		return -1;
@@ -124,7 +129,7 @@ int get_players(void)
 {
 	int i;
 
-	game_status("Getting player names");
+	game_status(_("Getting player names"));
 	for (i = 0; i < 2; i++) {
 		if (es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
@@ -144,7 +149,7 @@ int get_opponent_move(void)
 {
 	int move;
 
-	game_status("Getting opponent's move");
+	game_status(_("Getting opponent's move"));
 	
 	if (es_read_int(game.fd, &move) < 0)
 		return -1;
@@ -161,22 +166,22 @@ int get_sync(void)
 	char turn;
 	char space;
 	
-	game_status("Getting re-sync");
+	game_status(_("Getting re-sync"));
 	
 	if (es_read_char(game.fd, &turn) < 0)
 		return -1;
 
-	game_status("Player %d's turn", turn);
+	game_status(_("Player %d's turn"), turn);
 	
         for (i = 0; i < 9; i++) {
 		if (es_read_char(game.fd, &space) < 0)
 			return -1;
-		game_status("Read a %d ", space);
+		game_status(_("Read a %d "), space);
 		if (space >= 0)
 			game.board[i] = (space == 0 ? 'x' : 'o');
 	}
 	
-	game_status("Sync completed");
+	game_status(_("Sync completed"));
 	return 0;
 }
 
@@ -185,7 +190,7 @@ int get_gameover(void)
 {
 	char winner;
 	
-	game_status("Game over");
+	game_status(_("Game over"));
 
 	if (es_read_char(game.fd, &winner) < 0)
 		return -1;
@@ -193,10 +198,10 @@ int get_gameover(void)
 	switch (winner) {
 	case 0:
 	case 1:
-		game_status("Player %d won", winner);
+		game_status(_("Player %d won"), winner);
 		break;
 	case 2:
-		game_status("Tie game!");
+		game_status(_("Tie game!"));
 		break;
 	}
 
@@ -217,7 +222,7 @@ void game_init(void)
 
 int send_my_move(void)
 {
-	game_status("Sending my move: %d", game.move);
+	game_status(_("Sending my move: %d"), game.move);
 	if (es_write_int(game.fd, TTT_SND_MOVE) < 0
 	    || es_write_int(game.fd, game.move) < 0)
 		return -1;
@@ -229,7 +234,7 @@ int send_my_move(void)
 
 int send_options(void) 
 {
-	game_status("Sending NULL options");
+	game_status(_("Sending NULL options"));
 	return (es_write_int(game.fd, 0));
 }
 
@@ -243,19 +248,19 @@ int get_move_status(void)
 
 	switch(status) {
 	case TTT_ERR_STATE:
-		game_status("Server not ready!!");
+		game_status(_("Server not ready!!"));
 		break;
 	case TTT_ERR_TURN:
-		game_status("Not my turn !!");
+		game_status(_("Not my turn !!"));
 		break;
 	case TTT_ERR_BOUND:
-		game_status("Move out of bounds");
+		game_status(_("Move out of bounds"));
 		break;
 	case TTT_ERR_FULL:
-		game_status("Space already occupied");
+		game_status(_("Space already occupied"));
 		break;
 	case 0:
-		game_status("Move OK");
+		game_status(_("Move OK"));
 		game.board[game.move] = (game.num == 0 ? 'x' : 'o');
 		break;
 	}
@@ -282,3 +287,4 @@ void ggz_connect(void)
 	if (connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 		exit(-1);
 }
+

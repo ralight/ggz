@@ -1,0 +1,125 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2001-06-01 00:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: ../tictactoe/main.c:90
+msgid "Your move"
+msgstr ""
+
+#: ../tictactoe/main.c:119
+msgid "Getting seat number"
+msgstr ""
+
+#: ../tictactoe/main.c:132
+msgid "Getting player names"
+msgstr ""
+
+#: ../tictactoe/main.c:152
+msgid "Getting opponent's move"
+msgstr ""
+
+#: ../tictactoe/main.c:169
+msgid "Getting re-sync"
+msgstr ""
+
+#: ../tictactoe/main.c:174
+#, c-format
+msgid "Player %d's turn"
+msgstr ""
+
+#: ../tictactoe/main.c:179
+#, c-format
+msgid "Read a %d "
+msgstr ""
+
+#: ../tictactoe/main.c:184
+msgid "Sync completed"
+msgstr ""
+
+#: ../tictactoe/main.c:193
+msgid "Game over"
+msgstr ""
+
+#: ../tictactoe/main.c:201
+#, c-format
+msgid "Player %d won"
+msgstr ""
+
+#: ../tictactoe/main.c:204
+msgid "Tie game!"
+msgstr ""
+
+#: ../tictactoe/main.c:225
+#, c-format
+msgid "Sending my move: %d"
+msgstr ""
+
+#: ../tictactoe/main.c:237
+msgid "Sending NULL options"
+msgstr ""
+
+#: ../tictactoe/main.c:251
+msgid "Server not ready!!"
+msgstr ""
+
+#: ../tictactoe/main.c:254
+msgid "Not my turn !!"
+msgstr ""
+
+#: ../tictactoe/main.c:257
+msgid "Move out of bounds"
+msgstr ""
+
+#: ../tictactoe/main.c:260
+msgid "Space already occupied"
+msgstr ""
+
+#: ../tictactoe/main.c:263
+msgid "Move OK"
+msgstr ""
+
+#: ../tictactoe/main_win.c:272
+msgid "Tic-Tac-Toe"
+msgstr ""
+
+#: ../tictactoe/main_win.c:290
+msgid "_Game"
+msgstr "_Spiel"
+
+#: ../tictactoe/main_win.c:308
+msgid "Re_sync"
+msgstr "S_ynchronisieren"
+
+#: ../tictactoe/main_win.c:319
+msgid "E_xit"
+msgstr ""
+
+#: ../tictactoe/main_win.c:330
+msgid "_Help"
+msgstr ""
+
+#: ../tictactoe/main_win.c:349
+msgid "_About"
+msgstr ""
+
+#: ../tictactoe/support.c:118
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr ""
+
+#: ../tictactoe/support.c:127
+#, c-format
+msgid "Error loading pixmap file: %s"
+msgstr ""

@@ -44,6 +44,7 @@
 #include <game.h>
 #include <support.h>
 #include <dlg_about.h>
+#include "ggzintl.h"
 
 /* Pixmap files */
 #include <newmanred.xpm>

@@ -34,6 +34,8 @@
 #include <game.h>
 #include <main_win.h>
 
+#include "ggzintl.h"
+
 /* main window widget */
 extern GtkWidget *main_win;
 
@@ -43,6 +45,8 @@ struct game_state_t game;
 /* Main function: connect and set up everything */
 int main(int argc, char* argv[])
 {
+	ggz_intl_init("hastings");
+		
 	gtk_init (&argc, &argv);
 
 	main_win = create_main_win();
@@ -83,7 +87,7 @@ printf("** Input arrived.\n");
 			break;
 		case HASTINGS_REQ_MOVE:
 			game.state = STATE_SELECT;
-			game_status("Your move: select a knight (you are number %d)", game.self);
+			game_status(_("Your move: select a knight (you are number %d)"), game.self);
 			break;
 		case HASTINGS_RSP_MOVE:
 			get_move_status();
@@ -108,11 +112,11 @@ printf("** Input arrived.\n");
 /* Read in own data: seat number */
 int get_seat(void)
 {
-	game_status("Getting seat number");
+	game_status(_("Getting seat number"));
 
 	if (es_read_int(game.fd, &game.num) < 0) return -1;
 
-	game_status("Received seat number: %i", game.num);
+	game_status(_("Received seat number: %i"), game.num);
 
 	/* Is this necessary? TODO!! */
 	game.self = game.num;
@@ -125,7 +129,7 @@ int get_players(void)
 {
 	int i;
 
-	game_status("Getting player names");
+	game_status(_("Getting player names"));
 
 	/* Number unknown; this will change now: */
 	if (es_read_int(game.fd, &game.playernum) < 0) return -1;
@@ -139,12 +143,12 @@ int get_players(void)
 		if(game.seats[i] != GGZ_SEAT_OPEN)
 		{
 			if (es_read_string(game.fd, (char*)&game.knightnames[i], 17) < 0) return -1;
-			game_status("Player %d named: %s", i, game.knightnames[i]);
+			game_status(_("Player %d named: %s"), i, game.knightnames[i]);
 		}
 	}
 
 	/* If not starting player, inform about */
-	game_status("Your turn will be soon... have a look at the map in the meantime.");
+	game_status(_("Your turn will be soon... have a look at the map in the meantime."));
 
 	return 0;
 }
@@ -152,7 +156,7 @@ int get_players(void)
 /* Enemy has moved his guy */
 int get_opponent_move(void)
 {
-	game_status("Getting opponent's move");
+	game_status(_("Getting opponent's move"));
 
 	if ((es_read_int(game.fd, &game.num) < 0)
 	|| (es_read_int(game.fd, &game.move_src_x) < 0)
@@ -173,7 +177,7 @@ printf("Opponent %i: From %i/%i to %i/%i!\n", game.num, game.move_src_x, game.mo
 
 int request_sync(void)
 {
-	game_status("Requesting synchronization");
+	game_status(_("Requesting synchronization"));
 
 	es_write_int(game.fd, HASTINGS_REQ_SYNC);
 
@@ -186,11 +190,11 @@ int get_sync(void)
 	int i, j;
 	char space;
 
-	game_status("Getting re-sync");
+	game_status(_("Getting re-sync"));
 
 	if (es_read_int(game.fd, &game.num) < 0) return -1;
 
-	game_status("Player %d's turn", game.num);
+	game_status(_("Player %d's turn"), game.num);
 
         for (i = 0; i < 6; i++)
 	{
@@ -209,7 +213,7 @@ int get_sync(void)
 		}
 	}
 
-	game_status("Sync completed");
+	game_status(_("Sync completed"));
 
 	return 0;
 }
@@ -219,7 +223,7 @@ int get_gameover(void)
 {
 	char winner;
 
-	game_status("Game over");
+	game_status(_("Game over"));
 
 	if (es_read_char(game.fd, &winner) < 0) return -1;
 
@@ -227,7 +231,7 @@ int get_gameover(void)
 	{
 		case 0:
 		case 1:
-			game_status("Player %d won", winner);
+			game_status(_("Player %d won"), winner);
 			break;
 	}
 
@@ -239,7 +243,7 @@ void game_init(void)
 {
 	game.state = STATE_PREINIT;
 
-	game_status("Requesting game initialization");
+	game_status(_("Requesting game initialization"));
 
 	es_write_int(game.fd, HASTINGS_REQ_INIT);
 }
@@ -247,7 +251,7 @@ void game_init(void)
 /* Forwarding my move to the Hastings server */
 int send_my_move(void)
 {
-	game_status("Sending my move: %d/%d to %d/%d", game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
+	game_status(_("Sending my move: %d/%d to %d/%d"), game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
 
 	if ((es_write_int(game.fd, HASTINGS_SND_MOVE) < 0)
 	    || (es_write_int(game.fd, game.move_src_x) < 0)
@@ -257,7 +261,7 @@ int send_my_move(void)
 		return -1;
 
 	game.state = STATE_WAIT;
-	game_status("My status: I'm waiting (what for? AI players!)");
+	game_status(_("My status: I'm waiting (what for? AI players!)"));
 	return 0;
 }
 
@@ -279,28 +283,28 @@ int get_move_status(void)
 	switch(status)
 	{
 		case HASTINGS_ERR_STATE:
-			game_status("Server not ready!!");
+			game_status(_("Server not ready!!"));
 			break;
 		case HASTINGS_ERR_TURN:
-			game_status("Not my turn !!");
+			game_status(_("Not my turn !!"));
 			break;
 		case HASTINGS_ERR_BOUND:
-			game_status("Move out of bounds");
+			game_status(_("Move out of bounds"));
 			break;
 		case HASTINGS_ERR_EMPTY:
-			game_status("Nothing to move (erm?)");
+			game_status(_("Nothing to move (erm?)"));
 			break;
 		case HASTINGS_ERR_FULL:
-			game_status("Space already occupied");
+			game_status(_("Space already occupied"));
 			break;
 		case HASTINGS_ERR_DIST:
-			game_status("Hey, that is far too far!");
+			game_status(_("Hey, that is far too far!"));
 			break;
 		case HASTINGS_ERR_MAP:
-			game_status("Argh! You should play 'sink the ship' for that purpose!");
+			game_status(_("Argh! You should play 'sink the ship' for that purpose!"));
 			break;
 		case 0:
-			game_status("Moved knight from %i/%i to %i/%i",
+			game_status(_("Moved knight from %i/%i to %i/%i"),
 				game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
 			game.board[game.move_src_x][game.move_src_y] = -1;
 			game.board[game.move_dst_x][game.move_dst_y] = game.self;
@@ -328,3 +332,4 @@ void ggz_connect(void)
 
 	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);
 }
+

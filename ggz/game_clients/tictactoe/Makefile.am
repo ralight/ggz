@@ -16,6 +16,8 @@ ggz_ttt_SOURCES = game.h \
 	      main_win.h \
 	      support.c \
 	      support.h \
+		  ggzintl.c \
+		  ggzintl.h \
 	      x.xpm \
 	      o.xpm
 

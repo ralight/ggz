@@ -11,7 +11,7 @@
 /*
  * Standard gettext macros.
  */
-#ifdef ENABLE_NLS
+/*#ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
 #  define _(String) dgettext (PACKAGE, String)
@@ -28,7 +28,8 @@
 #  define bindtextdomain(Domain,Directory) (Domain)
 #  define _(String) (String)
 #  define N_(String) (String)
-#endif
+#endif*/
+#include "ggzintl.h"
 
 
 /*
