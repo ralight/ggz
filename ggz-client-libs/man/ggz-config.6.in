@@ -1,4 +1,4 @@
-.TH "ggz-config" "6" "0.0.9" "The GGZ Development Team" "GGZ Gaming Zone"
+.TH "ggz-config" "6" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
 .SH "NAME"
 .LP 
 ggz\-config \- GGZ Gaming Zone configuration manager
