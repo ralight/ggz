@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2597 2001-10-23 21:53:31Z jdorje $
+ * $Id: ggzdmod.h 2600 2001-10-24 01:10:13Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -70,7 +70,7 @@ typedef void (*GGZdModHandler) (GGZdMod *, GGZdModEvent e, void *data);
 
 typedef struct _GGZSeat {
 
-	/* Seat index */
+	/* Seat index; 0..(num_seats-1) */
 	int num;
 
 	/* Type of seat */

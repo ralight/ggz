@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2599 2001-10-24 00:36:12Z jdorje $
+ * $Id: ggzdmod.c 2600 2001-10-24 01:10:13Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -43,10 +43,15 @@
 
 #include "ggzdmod.h"
 
-#define CHECK_GGZDMOD(ggzdmod)                             \
-	(ggzdmod && ggzdmod->magic == MAGIC_VALUE && (ggzdmod->type == GGZDMOD_GGZ || ggzdmod->type==GGZDMOD_GAME))
+/* A note on debugging: all of the debugging code inside #ifdef DEBUG will be 
+   compiled iff the library is compiled with debugging, regardless of whether 
+   or not the game itself is. */
 
-#define GGZDMOD_NUM_HANDLERS 6
+/* This ugly macro checks the ggzdmod object for validity as best it can. */
+#define CHECK_GGZDMOD(ggzdmod)                                           \
+	(ggzdmod && ggzdmod->magic == MAGIC_VALUE &&                     \
+	 (ggzdmod->type == GGZDMOD_GGZ || ggzdmod->type==GGZDMOD_GAME))
+#define GGZDMOD_NUM_HANDLERS 8
 
 /* The maximum length of a player name.  Does not include trailing \0. */
 #define MAX_USER_NAME_LEN 16
@@ -61,10 +66,8 @@ typedef struct _GGZdMod {
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
 	int gameover;
 	/* etc. */
-#ifdef DEBUG
 #define MAGIC_VALUE 0xdeadbeef
 	int magic;		/* for sanity checking */
-#endif
 } _GGZdMod;
 
 
@@ -111,11 +114,9 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
+	ggzdmod->magic = MAGIC_VALUE;
 	/* Put any other necessary initialization here.  All fields should be 
 	   initialized. */
-#ifdef DEBUG
-	ggzdmod->magic = MAGIC_VALUE;
-#endif
 
 	return ggzdmod;
 }
@@ -124,12 +125,15 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 void ggzdmod_free(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return;
+	}
 
 	/* Free any fields the object contains */
 	if (ggzdmod->seats)
 		free(ggzdmod->seats);
+	ggzdmod->magic = 0;
 
 	/* Free the object */
 	free(ggzdmod);
@@ -144,8 +148,10 @@ void ggzdmod_free(GGZdMod * mod)
 int ggzdmod_get_fd(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
+	}
 	return ggzdmod->fd;
 }
 
@@ -153,8 +159,10 @@ int ggzdmod_get_fd(GGZdMod * mod)
 GGZdModType ggzdmod_get_type(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return 0;	/* not very useful */
+	}
 	return ggzdmod->type;
 }
 
@@ -162,8 +170,10 @@ GGZdModType ggzdmod_get_type(GGZdMod * mod)
 int ggzdmod_get_num_seats(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
+	}
 	return ggzdmod->num_seats;
 }
 
@@ -183,17 +193,31 @@ GGZSeat *ggzdmod_get_seat(GGZdMod * mod, int seat)
 void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	int seat;
+
+	/* Check parameters */
+	if (!CHECK_GGZDMOD(ggzdmod) || num_seats < 0) {
+		assert(0);
 		return;		/* not very useful */
-	/* FIXME: we need some more checks here. */
-	assert(ggzdmod->num_seats == 0);	/* FIXME */
-	ggzdmod->num_seats = num_seats;
+	}
+
+	/* (Re)allocate seats. */
 	ggzdmod->seats =
 		realloc(ggzdmod->seats, num_seats * sizeof(*ggzdmod->seats));
 	if (!ggzdmod->seats) {
 		/* With no error return value, there's not much we can do. */
 		ggzdmod->num_seats = 0;
+		return;
 	}
+
+	/* Initialize new seats (if any) */
+	for (seat = ggzdmod->num_seats; seat < num_seats; seat++) {
+		ggzdmod->seats[seat].num = seat - 1;
+		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
+		ggzdmod->seats[seat].name = NULL;
+		ggzdmod->seats[seat].fd = -1;
+	}
+	ggzdmod->num_seats = num_seats;
 }
 
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func)
@@ -381,7 +405,7 @@ static void game_over(_GGZdMod * ggzdmod)
 						     NULL);
 }
 
-void ggz_rsp_launch(_GGZdMod * ggzdmod)
+static void ggz_rsp_launch(_GGZdMod * ggzdmod)
 {
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
@@ -392,7 +416,7 @@ void ggz_rsp_launch(_GGZdMod * ggzdmod)
 						       &status);
 }
 
-void ggz_rsp_join(_GGZdMod * ggzdmod)
+static void ggz_rsp_join(_GGZdMod * ggzdmod)
 {
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
@@ -402,7 +426,7 @@ void ggz_rsp_join(_GGZdMod * ggzdmod)
 						     &status);
 }
 
-void ggz_rsp_leave(_GGZdMod * ggzdmod)
+static void ggz_rsp_leave(_GGZdMod * ggzdmod)
 {
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
@@ -412,7 +436,7 @@ void ggz_rsp_leave(_GGZdMod * ggzdmod)
 						      &status);
 }
 
-void ggz_req_gameover(_GGZdMod * ggzdmod)
+static void ggz_req_gameover(_GGZdMod * ggzdmod)
 {
 	es_write_int(ggzdmod->fd, RSP_GAME_OVER);	/* ignore error */
 	if (ggzdmod->handlers[GGZ_GAME_OVER])
@@ -420,7 +444,7 @@ void ggz_req_gameover(_GGZdMod * ggzdmod)
 						     NULL);
 }
 
-void ggz_log(_GGZdMod * ggzdmod)
+static void ggz_log(_GGZdMod * ggzdmod)
 {
 	char *msg;
 
@@ -443,6 +467,7 @@ int ggzdmod_dispatch(GGZdMod * mod)
 	int op;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
 	}
 
@@ -501,6 +526,7 @@ int ggzdmod_io_pending(GGZdMod * mod)
 	struct timeval timeout;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
 	}
 
@@ -527,6 +553,7 @@ void ggzdmod_io_read(GGZdMod * mod)
 	_GGZdMod *ggzdmod = mod;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return;
 	}
 
@@ -563,6 +590,7 @@ int ggzdmod_loop(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
 	}
 	while (!ggzdmod->gameover) {
@@ -574,11 +602,14 @@ int ggzdmod_loop(GGZdMod * mod)
 int ggzdmod_halt_game(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod))
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		assert(0);
 		return -1;
+	}
 	if (ggzdmod->type == GGZDMOD_GAME) {
 		ggzdmod->gameover = 1;
 	} else {
+		/* TODO: not implemented */
 		assert(0);
 		return -1;
 	}
@@ -591,6 +622,7 @@ int ggzdmod_halt_game(GGZdMod * mod)
 
 int ggzdmod_launch_game(GGZdMod * mod, char **args)
 {
+	/* TODO: not implemented */
 	assert(0);
 	return -1;
 }
@@ -602,8 +634,10 @@ int ggzdmod_launch_game(GGZdMod * mod, char **args)
 int ggzdmod_connect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME)
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
+		assert(0);
 		return -1;
+	}
 	ggzdmod->fd = 3;
 
 	if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
@@ -622,8 +656,10 @@ int ggzdmod_disconnect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	int response, p;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME)
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
+		assert(0);
 		return -1;
+	}
 
 	/* first send a gameover message (request) */
 	if (es_write_int(ggzdmod->fd, REQ_GAME_OVER) < 0)
