@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2676 2001-11-05 21:11:37Z jdorje $
+ * $Id: ggzdmod.c 2677 2001-11-05 21:14:31Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -136,11 +136,12 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
+	ggzdmod->gamedata = NULL;
 
 	ggzdmod->pid = -1;
 	ggzdmod->argv = NULL;
 	/* Put any other necessary initialization here.  All fields should be
-	   initialized. */
+	   initialized.  Note NULL may not necessarily be 0 on all platforms. */
 
 	return ggzdmod;
 }
