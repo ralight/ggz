@@ -58,7 +58,7 @@ static GtkStyle *f1_style;
 static GtkWidget *f1;
 static GtkWidget *l_name[MAX_NUM_PLAYERS] = {NULL};
 static GtkWidget *label[MAX_NUM_PLAYERS] = {NULL}; /* player labels; put in place of old bid/tricks/score */
-static GtkWidget *msglabel = NULL; /* global label; put in place of old l_trump */
+/* static GtkWidget *msglabel = NULL; */ /* global label; put in place of old l_trump */
 static gboolean table_initialized = FALSE;
 
 #ifdef ANIMATION
@@ -238,6 +238,7 @@ void table_setup()
 
 	/* Current trump entry */
 	/* TODO: put this position into an list */
+/*
 	if (msglabel) {
 		gtk_widget_hide(msglabel);
 		gtk_widget_destroy(msglabel);
@@ -248,8 +249,8 @@ void table_setup()
 	y = TEXT_BOX_WIDTH + CARD_BOX_WIDTH + 2* XWIDTH - 20;
 	gtk_fixed_put(GTK_FIXED(f1), msglabel, x, y);
 	gtk_label_set_justify(GTK_LABEL(msglabel), GTK_JUSTIFY_LEFT);
-	/* gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1); */
 	gtk_widget_show(msglabel);
+*/
 
 	/* Display the buffer */
 	if (game.num_players >0 && game.max_hand_size > 0)
@@ -267,7 +268,8 @@ void table_set_message(char* mark, char* message)
 	assert(table_initialized);
 	if (!*mark)
 		/* this is the "global" message */
-		gtk_label_set_text(GTK_LABEL(msglabel), message);
+		/* gtk_label_set_text(GTK_LABEL(msglabel), message); */
+		messagebar_message(message);
 	else if (!strcmp(mark, "game")) {
 		/* this is the game's name; we just adjust the title bar */
 		char title[50];
@@ -742,16 +744,15 @@ void table_play_card(int p, card_t card)
  */
 void table_clear_table(void)
 {
-	int i;
-	int size = 2 * (CARDHEIGHT + CARDHEIGHT/12);
+	int i, x, y, w, h;
+	get_table_dim(&x, &y, &w, &h);
 	gdk_draw_rectangle(table_buf,
 			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 			   TRUE,
-			   (get_table_width()-size)/2, (get_table_height()-size)/2,
-			   size,size);
+			   x, y,
+			   w,h);
 
-	table_show_table((get_table_width()-size)/2, (get_table_height()-size)/2,
-			   size,size);
+	table_show_table(x, y, w, h);
 
 	for(i = 0; i < game.num_players; i++) {
 		game.players[i].table_card = UNKNOWN_CARD;

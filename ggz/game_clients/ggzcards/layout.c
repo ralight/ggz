@@ -154,6 +154,7 @@ int orientation(int p)
 	return LAYOUT->orientations[p];
 }
 
+
 void get_tablecard_pos(int p, int *x, int *y)
 {
 	int offset = CARDHEIGHT/12;
@@ -176,6 +177,26 @@ void get_tablecard_pos(int p, int *x, int *y)
 		*y = positions[p][1];
 	}
 }
+
+void get_table_dim(int *x, int *y, int *w, int *h)
+{
+	if (game.num_players <= 4) {
+		*w = 2 * CARDWIDTH + CARDHEIGHT/6;
+		*h = 2 * CARDHEIGHT + CARDHEIGHT/6;
+	} else {
+		*w = 2 * CARDWIDTH + CARDHEIGHT/6;
+		*h = 3 * CARDHEIGHT + CARDHEIGHT/6;
+	}
+	*x = (get_table_width()-*w)/2;
+	*y = (get_table_height()-*h)/2;
+}
+
+void get_fulltable_size(int *w, int *h)
+{
+	*w = get_table_width() - 2 * (XWIDTH + TEXT_BOX_WIDTH);
+	*h = get_table_height() - 2 * (XWIDTH + TEXT_BOX_WIDTH);
+}
+
 
 void get_text_box_pos(int p, int *x, int *y)
 {

@@ -34,14 +34,14 @@
 #include "game.h"
 #include "table.h"
 #include "hand.h"
+#include "layout.h"
 
 /* hand_read_hand()
  *   Sets the cards in any player's hand based on a server message
  */
 int hand_read_hand(void)
 {
-	int i;
-	int p;
+	int i, p;
 	struct hand_t *hand;
 
 	assert(game.players);
@@ -68,7 +68,18 @@ int hand_read_hand(void)
 		int p;
 		ggz_debug("Expanding max_hand_size to allow for %d cards (previously max was %d).", hand->hand_size, game.max_hand_size);
 		game.max_hand_size = hand->hand_size;
-		if (game.max_hand_size < 13) game.max_hand_size = 13;
+		while (1) {
+			/* the inner table must be at least large enough.
+			 * So, if it's not we make the hand sizes larger. */
+			int x, y, w, h, w1, h1;
+			get_table_dim(&x, &y, &w, &h);
+			get_fulltable_size(&w1, &h1);
+			if (w1 > w && h1 > h)
+				break;
+			ggz_debug("Increasing max hand size because the available table size (%d %d) isn't as big as what's required (%d %d).", w, h, w1, h1);
+			game.max_hand_size++;
+		}
+		/* if (game.max_hand_size < 13) game.max_hand_size = 13; */
 		for (p = 0; p<game.num_players; p++) {
 			if (game.players[p].hand.card)
 				g_free(game.players[p].hand.card);

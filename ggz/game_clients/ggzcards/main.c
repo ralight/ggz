@@ -359,6 +359,21 @@ void statusbar_message(char *msg)
 	ggz_debug("     Put up statusbar message: '%s'", msg);
 }
 
+void messagebar_message(char *msg)
+{
+	static GtkWidget *sb=NULL;
+	static guint sb_context;
+
+	if(sb == NULL) {
+		sb = gtk_object_get_data(GTK_OBJECT(dlg_main), "messagebar");
+		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
+							  "Game Messages");
+	}
+
+	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+	ggz_debug("     Put up messagebar message: '%s'", msg);
+}
+
 static void handle_badplay(void)
 {
 	char err_msg[100];

@@ -25,3 +25,4 @@
 extern GtkWidget *dlg_main;
 
 extern void statusbar_message(char *msg);
+extern void messagebar_message(char *msg);

@@ -59,6 +59,7 @@ create_dlg_main (void)
   GtkWidget *mnu_about;
   GtkWidget *fixed1;
   GtkWidget *statusbar1;
+  GtkWidget *messagebar;
 
   dlg_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (dlg_main, "dlg_main");
@@ -161,6 +162,14 @@ create_dlg_main (void)
   gtk_widget_show (fixed1);
   gtk_box_pack_start (GTK_BOX (vbox1), fixed1, TRUE, TRUE, 0);
   gtk_widget_set_usize (fixed1, get_table_width(), get_table_height());
+
+  messagebar = gtk_statusbar_new ();
+  gtk_widget_set_name (messagebar, "messagebar");
+  gtk_widget_ref (messagebar);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "messagebar", messagebar,
+			    (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (messagebar);
+  gtk_box_pack_start (GTK_BOX (vbox1), messagebar, FALSE, FALSE, 0);
 
   statusbar1 = gtk_statusbar_new ();
   gtk_widget_set_name (statusbar1, "statusbar1");

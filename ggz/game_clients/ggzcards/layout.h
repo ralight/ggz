@@ -44,7 +44,11 @@ extern int get_table_width();
 extern int get_table_height();
 
 extern int orientation(int p);
+
 extern void get_tablecard_pos(int p, int *x, int *y);
+extern void get_table_dim(int *x, int *y, int *w, int *h);
+extern void get_fulltable_size(int *w, int *h);
+
 extern void get_text_box_pos(int p, int *x, int *y);
 extern void get_card_box_pos(int p, int *x, int *y);
 extern void get_card_box_dim(int p, int *w, int *h);
