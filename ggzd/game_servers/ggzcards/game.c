@@ -535,7 +535,7 @@ static int req_play(player_t p, seat_t s)
 
 	/* although the game_* functions probably track this data
 	 * themselves, we track it here as well just in case. */
-	game.next_play = p;
+	game.curr_play = p;
 	game.play_seat = s;
 
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
@@ -569,7 +569,7 @@ static int rec_play(player_t p, int *card_index)
 	}
 
 	/* Is is this player's turn to play? */
-	if (game.next_play != p) {
+	if (game.curr_play != p) {
 		/* better to just ignore it; a WH_MSG_BADPLAY requests a new play */
 		ggz_debug("SERVER/CLIENT BUG: player %d played out of turn!?!?", p);
 		return -1;	
@@ -1828,6 +1828,7 @@ static int game_handle_bid(int bid_index)
 				BRIDGE.bonus *= 2;
 			} else {
 				BRIDGE.declarer = game.next_bid;
+				BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 				BRIDGE.pass_count = 1;
 				BRIDGE.contract = bid.sbid.val;
 				BRIDGE.contract_suit = bid.sbid.suit;
@@ -2089,7 +2090,7 @@ static void game_get_play(player_t p)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
-			if (p == (BRIDGE.declarer + 2) % 4) {
+			if (p == BRIDGE.dummy) {
 				/* the declarer plays the dummy's hand */
 				req_play(BRIDGE.declarer, game.players[p].seat);
 				break;
@@ -2112,10 +2113,10 @@ static void game_handle_play(card_t c)
 			if (game.play_count == 0 && game.trick_count == 0) {
 				/* after the first play of the hand, we reveal
 				 * the dummy's hand to everyone */
-				player_t p, dummy = (BRIDGE.declarer + 2) % 4;
-				seat_t dummy_seat = game.players[dummy].seat;
+				player_t p;
+				seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
 				for (p=0; p<game.num_players; p++) {
-					if (p == dummy) continue;
+					if (p == BRIDGE.dummy) continue;
 					send_hand(p, dummy_seat, 1);
 				}
 			}
@@ -2397,7 +2398,7 @@ static void game_end_hand(void)
 			int points_above, points_below, tricks;
 			int winning_team, team;
 			int tricks_above, tricks_below;
-			tricks = game.players[BRIDGE.declarer].tricks + game.players[(BRIDGE.declarer+2)%4].tricks;
+			tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks;
 			if (tricks >= BRIDGE.contract) {
 				winning_team = BRIDGE.declarer % 2;
 				tricks_below = BRIDGE.contract;
@@ -2441,7 +2442,7 @@ static void game_end_hand(void)
 			/* TODO: vulnerable, etc. */
 			}
 
-			BRIDGE.declarer = -1;
+			BRIDGE.declarer = BRIDGE.dummy = -1;
 			BRIDGE.contract = 0;
 			break;
 		case GGZ_GAME_SUARO:

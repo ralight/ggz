@@ -151,6 +151,13 @@ struct wh_game_t {
 	int play_count;		/* how many plays there have been this trick */
 	int play_total;		/* how many plays there will be this trick */
 	player_t next_play;	/* current/next player */
+	player_t curr_play;	/* current player, tracked automatically by req_bid */
+				/* Note: the difference between these two is subtle, but important.  next_play is used
+				 * to track the player whose hand is being played from.  curr_play is used automatically
+				 * to remember who is supposed to be playing now.  In the case of bridge, next_play
+				 * will go around the table (0, 1, 2, 3) for each play.  However, when the dummy is
+				 * playing curr_play will point to the declarer, since they're the one we request the play
+				 * from. */
 	seat_t play_seat;	/* the seat being played from */
 
 	player_t winner;	/* who won last trick */
@@ -224,6 +231,7 @@ typedef struct bridge_game_t {
 	int contract_suit;	/* suit of the contract; 0-4 */
 	int bonus;		/* 1=regular; 2=doubled; 4=redoubled */
 	player_t declarer;	/* player with the contract */
+	player_t dummy;		/* dummy player; the declarer's partner */
 } bridge_game_t;
 
 /* ---------- SUARO ---------- */
