@@ -9,6 +9,8 @@ bin_PROGRAMS = ttt
 ttt_SOURCES = main.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ttt_LDADD = @GTK_LIBS@ $(LDADD)
+ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la 
+ttt_LDFLAGS = -static
+
 
 
