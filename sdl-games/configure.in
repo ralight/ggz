@@ -54,6 +54,7 @@ dnl ================
 
 AC_OUTPUT(Makefile
 	geekgame/Makefile
+	geekgame/module.dsc
 	ttt3d/Makefile
 	ttt3d/module.dsc)
 

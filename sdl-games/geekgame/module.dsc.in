@@ -1,0 +1,11 @@
+[ModuleInfo]
+Game = Geekgame
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/geekgame
+Frontend = sdl
+Homepage = http://ggz.sourceforge.net/games/geekgame/
+Name = Geekgame
+ProtocolEngine = Geekgame
+ProtocolVersion = 1
+Version = 0.0.1
+
