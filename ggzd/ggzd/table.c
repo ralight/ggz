@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5405 2003-02-15 01:35:23Z jdorje $
+ * $Id: table.c 5406 2003-02-15 01:41:20Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -88,6 +88,8 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_game_report(GGZdMod *ggzdmod, GGZdModEvent event,
 			      void *data);
+static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
+				     void *data);
 static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
 				void *data);
 static void table_game_req_bot(GGZdMod *ggzdmod, GGZdModEvent event,
@@ -453,6 +455,8 @@ static GGZReturn table_start_game(GGZTable *table)
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAMEREPORT,
 			    &table_game_report);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS,
+			    &table_game_req_num_seats);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
 			    &table_game_req_boot);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOT,
@@ -910,6 +914,76 @@ static void table_game_report(GGZdMod *ggzdmod,
 	GGZdModGameReportData *report = data;
 
 	report_statistics(table->room, table->type, report);
+}
+
+
+/* Must be called with a write-lock on the table. */
+static void table_change_num_seats(GGZTable *table, int num_seats)
+{
+	table->num_seats = num_seats;
+	table->seat_types = ggz_realloc(table->seat_types, num_seats
+					* sizeof(*table->seat_types));
+	table->seat_names = ggz_realloc(table->seat_names, num_seats
+					* sizeof(*table->seat_names));
+}
+
+
+static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
+				     void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);	
+	int num_seats = *(int*)data;
+	int old_seats = table->num_seats;
+	int seat;
+
+	if (num_seats <= 0) {
+		err_msg("table_game_req_num_seats: table in room %d "
+			"requested %d seats.",
+			table->room, num_seats);
+		return;
+	}
+
+	if (num_seats > old_seats) {
+		/* We're increasing the number of seats. */
+
+		pthread_rwlock_wrlock(&table->lock);
+		table_change_num_seats(table, num_seats);
+		for (seat = old_seats; seat < num_seats; seat++) {
+			table->seat_types[seat] = GGZ_SEAT_OPEN;
+			/* Should we initialize the name? */
+		}
+		pthread_rwlock_unlock(&table->lock);
+
+
+	} else if (num_seats < old_seats) {
+		/* Remove the extra seats; booting anyone from them. */
+		for (seat = num_seats; seat < old_seats; seat++) {
+			if (table->seat_types[seat] != GGZ_SEAT_PLAYER)
+				continue;
+			/* Boot the player from the seat. */
+			/* FIXME: would it be better to move them to a
+			   lower-numbered seat?  Should we provide a
+			   mechanism for the game to reseat players to
+			   let them take care of it? */
+			
+			/* Notify player.  We don't care if this fails. */
+			/* FIXME: better notification (don't just say
+			   "[server]") */
+			transit_player_event(table->seat_names[seat],
+					     GGZ_TRANSIT_LEAVE,
+					     E_NO_STATUS, "[server]",
+					     GGZ_LEAVE_BOOT, 0);
+		}
+		pthread_rwlock_wrlock(&table->lock);
+		table_change_num_seats(table, num_seats);
+		pthread_rwlock_unlock(&table->lock);
+	}
+
+	/* FIXME: there's a bug whereby if a table requests a resize
+	   immediately after launch, the resize will be reported to the
+	   clients before the launch is.  This is quite bad. */
+	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_RESIZE,
+				   NULL, 0);
 }
 
 
@@ -1471,6 +1545,9 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 		break;
 	case GGZ_TABLE_UPDATE_RESIZE:
 		/* TODO? */
+		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d resized %d",
+			player->name, 
+			event->table->index, event->table->num_seats);
 		break;
 	}
 
