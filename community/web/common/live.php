@@ -16,7 +16,7 @@ class Live
 	{
 		$f = @fsockopen($this->host, $this->port, $errno, $errstr, 10);
 		if ($f) :
-			echo "The following people are currently playing games on $host:<br>\n";
+			echo "The following people are currently playing games on $this->host:<br>\n";
 
 			do
 			{
