@@ -25,57 +25,7 @@
 
 #include "ggzdmod.h"
 
-
-/* Tic-Tac-Toe protocol */
-/* Messages from server */
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
-#define TTT_MSG_MOVE     2
-#define TTT_MSG_GAMEOVER 3
-#define TTT_REQ_MOVE     4
-#define TTT_RSP_MOVE     5
-#define TTT_SND_SYNC     6
-
-/* Move errors */
-#define TTT_ERR_STATE   -1
-#define TTT_ERR_TURN    -2
-#define TTT_ERR_BOUND   -3
-#define TTT_ERR_FULL    -4
-
-/* Messages from client */
-#define TTT_SND_MOVE     0
-#define TTT_REQ_SYNC     1
-
-
-/* Data structure for Tac-Toe-Game */
-struct ttt_game_t {
-	GGZdMod *ggz;
-	char board[9];
-	char state;
-	char turn;
-	char move_count;
-};
-
 void game_init(GGZdMod *ggzdmod);
-void game_handle_state_event(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_join_event(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_leave_event(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
-
-int game_send_seat(int seat);
-int game_send_players(void);
-int game_send_move(int num, int move);
-int game_send_sync(int num);
-int game_send_gameover(char winner);
-
-int game_next_move(void);
-int game_req_move(int num);
-int game_handle_move(int num, int* move);
-int game_bot_move(int num);
-int game_do_move(int move);
-
-char game_check_move(int num, int move);
-char game_check_win(void);
 
 
 

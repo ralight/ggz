@@ -23,39 +23,29 @@
  */
 
 
+#include <ggzdmod.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
 
 #include "game.h"
-#include "ggzdmod.h"
-
-/* Global game variables */
-extern struct ttt_game_t ttt_game;
 
 
 int main(void)
 {
 	/* ggzdmod initializations */
 	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_state_event);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_join_event);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_leave_event);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
-	
 	game_init(ggzdmod);
 	
 	if (ggzdmod_connect(ggzdmod) < 0) {
-		/* Error starting up game 
-		game_cleanup(); */
-		fprintf(stderr, "Could not connect to ggz.\n");
+		fprintf(stderr, "Could not connect to ggz server.\n");
+		ggzdmod_free(ggzdmod);
 		return -1;
 	}
 	
 	(void)ggzdmod_log(ggzdmod, "Starting game of Tic-Tac-Toe");
 	(void)ggzdmod_loop(ggzdmod);
-	
 	(void)ggzdmod_log(ggzdmod, "Ending game of Tic-Tac-Toe");
 	(void)ggzdmod_disconnect(ggzdmod);
 	ggzdmod_free(ggzdmod);

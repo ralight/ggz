@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2839 2001-12-09 23:55:02Z bmh $
+ * $Id: game.c 2840 2001-12-10 00:11:23Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,11 +30,64 @@
 
 #include "game.h"
 
+/* Data structure for Tic-Tac-Toe-Game */
+struct ttt_game_t {
+	GGZdMod *ggz;
+	char board[9];
+	char state;
+	char turn;
+	char move_count;
+};
+
+/* Tic-Tac-Toe protocol */
+/* Messages from server */
+#define TTT_MSG_SEAT     0
+#define TTT_MSG_PLAYERS  1
+#define TTT_MSG_MOVE     2
+#define TTT_MSG_GAMEOVER 3
+#define TTT_REQ_MOVE     4
+#define TTT_RSP_MOVE     5
+#define TTT_SND_SYNC     6
+
+/* Messages from client */
+#define TTT_SND_MOVE     0
+#define TTT_REQ_SYNC     1
+
+/* Move errors */
+#define TTT_ERR_STATE   -1
+#define TTT_ERR_TURN    -2
+#define TTT_ERR_BOUND   -3
+#define TTT_ERR_FULL    -4
+
+
 /* Global game variables */
-struct ttt_game_t ttt_game;
+static struct ttt_game_t ttt_game;
+
+/* GGZdMod callbacks */
+static void _handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
+static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+static void _handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+static void _handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data);
+
+/* Network IO functions */
+static int game_send_seat(int seat);
+static int game_send_players(void);
+static int game_send_move(int num, int move);
+static int game_send_sync(int num);
+static int game_send_gameover(char winner);
+static int game_read_move(int num, int* move);
+
+/* TTT-move functions */
+static int game_next_move(void);
+static int game_req_move(int num);
+static int game_bot_move(int num);
+static int game_do_move(int move);
 
 /* Local utility functions */
 static void game_rotate_board(char b[9]);
+static char game_check_move(int num, int move);
+static char game_check_win(void);
+
 
 /* Setup game state and board */
 void game_init(GGZdMod *ggzdmod)
@@ -46,12 +99,18 @@ void game_init(GGZdMod *ggzdmod)
 	for (i = 0; i < 9; i++)
 		ttt_game.board[i] = -1;
 		
+	/* Setup GGZ game module */
 	ttt_game.ggz = ggzdmod;
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &_handle_ggz_state);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &_handle_ggz_join);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &_handle_ggz_leave);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &_handle_ggz_player);
+	
 }
 
 
 /* Callback for GGZDMOD_EVENT_STATE */
-void game_handle_state_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void _handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 
 	switch(ggzdmod_get_state(ggz)) {
@@ -68,11 +127,9 @@ void game_handle_state_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Callback for GGZDMOD_EVENT_JOIN */
-void game_handle_join_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void _handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int seat;
-
-	seat = *(int*)data;
+	int seat = *(int*)data;
 
 	/* Send the info to our players */
 	game_send_seat(seat);
@@ -91,7 +148,7 @@ void game_handle_join_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Callback for GGZDMOD_EVENT_LEAVE */
-void game_handle_leave_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void _handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	if (ggzdmod_get_state(ggz) == GGZDMOD_STATE_PLAYING) {
 		ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
@@ -107,7 +164,7 @@ void game_handle_leave_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Handle message from player */
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
+static void _handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	int num = *(int*)data;
 	int fd, op, move;
@@ -122,7 +179,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 	switch (op) {
 
 	case TTT_SND_MOVE:
-		if (game_handle_move(num, &move) == 0)
+		if (game_read_move(num, &move) == 0)
 			game_do_move(move);
 		break;
 	case TTT_REQ_SYNC:
@@ -135,7 +192,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Send out seat assignment */
-int game_send_seat(int num)
+static int game_send_seat(int num)
 {
 	GGZSeat seat;
 
@@ -151,7 +208,7 @@ int game_send_seat(int num)
 
 
 /* Send out player list to everybody */
-int game_send_players(void)
+static int game_send_players(void)
 {
 	int i, j, fd;
 	GGZSeat seat;
@@ -181,7 +238,7 @@ int game_send_players(void)
 
 
 /* Send out move for player: num */
-int game_send_move(int num, int move)
+static int game_send_move(int num, int move)
 {
 	int opponent = (num + 1) % 2;
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, opponent);
@@ -201,7 +258,7 @@ int game_send_move(int num, int move)
 
 
 /* Send out board layout */
-int game_send_sync(int num)
+static int game_send_sync(int num)
 {	
 	int i;
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
@@ -221,7 +278,7 @@ int game_send_sync(int num)
 	
 
 /* Send out game-over message */
-int game_send_gameover(char winner)
+static int game_send_gameover(char winner)
 {
 	int i;
 	GGZSeat seat;
@@ -241,41 +298,8 @@ int game_send_gameover(char winner)
 }
 
 
-/* Do the next move*/
-int game_next_move(void)
-{
-	int move, num = ttt_game.turn;
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
-	
-	if (seat.type == GGZ_SEAT_BOT) {
-		move = game_bot_move(num);
-		game_do_move(move);
-	}
-	else
-		game_req_move(num);
-
-	return 0;
-}
-
-
-/* Request move from current player */
-int game_req_move(int num)
-{
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
-	
-	ggzdmod_log(ttt_game.ggz, "Requesting move from player %d on %d", num, seat.fd);
-	
-	if (es_write_int(seat.fd, TTT_REQ_MOVE) < 0) {
-		ggzdmod_log(ttt_game.ggz, "Error requesting move from player %d", num);
-		return -1;
-	}
-
-	return 0;
-}
-
-
-/* Handle incoming move from player */
-int game_handle_move(int num, int* move)
+/* Read incoming move from player */
+int game_read_move(int num, int* move)
 {
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 	char status;
@@ -304,7 +328,40 @@ int game_handle_move(int num, int* move)
 }
 
 
-int game_do_move(int move)
+/* Do the next move*/
+static int game_next_move(void)
+{
+	int move, num = ttt_game.turn;
+	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
+	
+	if (seat.type == GGZ_SEAT_BOT) {
+		move = game_bot_move(num);
+		game_do_move(move);
+	}
+	else
+		game_req_move(num);
+
+	return 0;
+}
+
+
+/* Request move from current player */
+static int game_req_move(int num)
+{
+	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
+	
+	ggzdmod_log(ttt_game.ggz, "Requesting move from player %d on %d", num, seat.fd);
+	
+	if (es_write_int(seat.fd, TTT_REQ_MOVE) < 0) {
+		ggzdmod_log(ttt_game.ggz, "Error requesting move from player %d", num);
+		return -1;
+	}
+
+	return 0;
+}
+
+
+static int game_do_move(int move)
 {
 	char victor;
 	
@@ -332,7 +389,7 @@ int game_do_move(int move)
 
 
 /* Do bot moves */
-int game_bot_move(int me)
+static int game_bot_move(int me)
 {
 	int i, move = -1;
 	int him = 1 - me;
@@ -497,7 +554,7 @@ int game_bot_move(int me)
 
 
 /* Check for valid move */
-char game_check_move(int num, int move)
+static char game_check_move(int num, int move)
 {
 	/* Check for correct state */
 	if (ggzdmod_get_state(ttt_game.ggz) != GGZDMOD_STATE_PLAYING)
@@ -520,7 +577,7 @@ char game_check_move(int num, int move)
 
 
 /* Check for a win */
-char game_check_win(void)
+static char game_check_win(void)
 {
 	/* Check horizontals */
 	if (ttt_game.board[0] == ttt_game.board[1]
