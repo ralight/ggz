@@ -380,9 +380,10 @@ typedef struct combat_game_struct {
   char *name;
   int state;
   int turn;
+  int number;
 } combat_game;
 
 // Commom functions
-char *combat_options_string_write(char *, combat_game *);
-int combat_options_string_read(char *, combat_game *, int);
+char *combat_options_string_write(combat_game *, int);
+int combat_options_string_read(char *, combat_game *);
 int combat_check_move(combat_game *, int, int);

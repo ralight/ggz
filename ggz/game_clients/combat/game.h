@@ -37,7 +37,6 @@
 struct game_info_t {
 	int fd;
 	int seat;
-	int number;
 	char **names;
 	int *seats;
 	int version;
@@ -95,3 +94,8 @@ void game_change_turn();
 
 // Player info widget
 GtkWidget *gtk_player_info_new(GtkWidget *, char *);
+
+// Saves maps
+int game_search_map();
+void game_ask_save_map();
+void game_confirm_save_map(GtkButton *, gpointer );

@@ -25,6 +25,8 @@ extern GdkColor *player_colors;
 extern int unitdefault[12];
 extern char unitname[12][36];
 
+extern char file_unit_name[12][36];
+
 static const char spin_name[12][8] = {"spin_F", "spin_B", "spin_1", "spin_2", "spin_3", "spin_4", "spin_5", "spin_6", "spin_7", "spin_8", "spin_9", "spin_10"};
 
 GtkWidget*
@@ -493,8 +495,6 @@ void load_map(char *filename, GtkWidget *dialog) {
   GtkWidget *unit_spin;
   int a;
   char *terrain_data;
-  char file_unit_name[12][36] = {"flag", "bomb", "spy", "scout", "miner", "sergeant", "lieutenant", "captain",
-                            "major", "colonel", "general", "marshall"};
   handle = _ggzcore_confio_parse(filename, 0);
   if (handle < 0) {
     printf("Can't find the map?\n");
@@ -561,8 +561,8 @@ create_dlg_save (void)
   GtkWidget *map_name;
   GtkWidget *dialog_action_area3;
   GtkWidget *hbuttonbox4;
-  GtkWidget *button3;
-  GtkWidget *button4;
+  GtkWidget *yes;
+  GtkWidget *no;
 
   dlg_save = gtk_dialog_new ();
   gtk_widget_set_name (dlg_save, "dlg_save");
@@ -615,23 +615,30 @@ create_dlg_save (void)
   gtk_widget_show (hbuttonbox4);
   gtk_box_pack_start (GTK_BOX (dialog_action_area3), hbuttonbox4, TRUE, TRUE, 0);
 
-  button3 = gtk_button_new_with_label (_("Yep"));
-  gtk_widget_set_name (button3, "button3");
-  gtk_widget_ref (button3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "button3", button3,
+  yes = gtk_button_new_with_label (_("Yep"));
+  gtk_widget_set_name (yes, "button3");
+  gtk_widget_ref (yes);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "yes", yes,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button3);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox4), button3);
-  GTK_WIDGET_SET_FLAGS (button3, GTK_CAN_DEFAULT);
+  gtk_widget_show (yes);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox4), yes);
+  GTK_WIDGET_SET_FLAGS (yes, GTK_CAN_DEFAULT);
 
-  button4 = gtk_button_new_with_label (_("Nope"));
-  gtk_widget_set_name (button4, "button4");
-  gtk_widget_ref (button4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "button4", button4,
+  no = gtk_button_new_with_label (_("Nope"));
+  gtk_widget_set_name (no, "button4");
+  gtk_widget_ref (no);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "no", no,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button4);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox4), button4);
-  GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
+  gtk_widget_show (no);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox4), no);
+  GTK_WIDGET_SET_FLAGS (no, GTK_CAN_DEFAULT);
+
+  gtk_signal_connect_object (GTK_OBJECT (no), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      GTK_OBJECT(dlg_save));
+  gtk_signal_connect_object_after (GTK_OBJECT (yes), "clicked",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                      GTK_OBJECT(dlg_save));
 
   return dlg_save;
 }
@@ -667,13 +674,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 
 }
 
-int maps_only(const struct dirent *entry) {
-  if (*entry->d_name == '.')
-    return 0;
-  if (strcmp(entry->d_name, "CVS") == 0)
-    return 0;
-  return 1;
-}
+int maps_only(const struct dirent *entry);
 
 void dlg_options_list_maps(GtkWidget *dlg) {
   int n;

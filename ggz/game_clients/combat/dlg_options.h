@@ -12,6 +12,7 @@ void load_map(char *filename, GtkWidget *dialog);
 void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data);
 
+
 gboolean
 mini_board_expose             (GtkWidget       *widget,
                                         GdkEventExpose  *event,
