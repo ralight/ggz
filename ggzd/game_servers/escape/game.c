@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2221 2001-08-24 22:31:26Z jdorje $
+ * $Id: game.c 2224 2001-08-25 13:41:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,6 @@
 
 #include <easysock.h>
 #include "../libggzmod/ggz_server.h"
-#include "../libggzmod/ggz_protocols.h"
 
 #include "game.h"
 
