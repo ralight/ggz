@@ -46,6 +46,10 @@ class TTTProto
 	public static final int reqmove = 4;
 	public static final int rspmove = 5;
 	public static final int sndsync = 6;
+	public static final int sndstats = 7;
+
+	public static final int SEAT_PLAYER = 3;
+	public static final int SEAT_BOT = 2;
 
 	TTTProto()
 	{
@@ -55,82 +59,162 @@ class TTTProto
 class TicTacToeEngine implements Runnable
 {
 	TicTacToeManager mManager;
+	FileInputStream s;
+	TTTProto proto;
+	byte[] input = null;
 
 	TicTacToeEngine(TicTacToeManager manager)
 	{
-//		Thread t = new Thread(this);
-//		t.start();
-
 		manager.setEngine(this);
 		mManager = manager;
-
 	}
 
-	public void run()
+	public void readNetwork()
 	{
-		FileInputStream s = new FileInputStream(FileDescriptor.in);
-		TTTProto proto = new TTTProto();
-		int x = 0;
+		int x;
 
-		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-
-		while(x != -1)
+		try
 		{
+			x = s.available();
+		}
+		catch(IOException ex)
+		{
+			x = -1;
+		}
+		if(x > 0)
+		{
+			byte[] b = new byte[x];
 			try
 			{
-				x = s.available();
+				s.read(b);
 			}
 			catch(IOException ex)
 			{
 				x = -1;
 			}
-			if(x > 0)
+			for(int i = 0; i < x; i++)
 			{
-				byte[] b = new byte[x];
-				try
-				{
-					s.read(b);
-				}
-				catch(IOException ex)
-				{
-					x = -1;
-				}
-				for(int i = 0; i < x; i++)
-				{
-					System.out.println("Char: " + b[i]);
-				}
+				System.err.println("Char: " + b[i]);
+			}
 
-				mManager.sendMessage(this, b);
+			int tmplength = 0;
+			byte[] tmp = null;
+			if(input != null)
+			{
+				tmp = new byte[input.length];
+				for(int i = 0; i < tmp.length; i++)
+					tmp[i] = input[i];
+				tmplength = tmp.length;
+			}
+			input = new byte[tmplength + b.length];
+			if(tmp != null)
+			{
+				for(int i = 0; i < tmplength; i++)
+					input[i] = tmp[i];
+			}
+			for(int i = tmplength; i < tmplength + b.length; i++)
+				input[i] = b[i - tmplength];
+		}
+	}
 
-				int op = 0;
-				if(x >= 4)
-					op = b[0] + (b[1] << 8) + (b[2] << 16) + (b[3] << 24);
-				switch(op)
-				{
-					case TTTProto.msgseat:
-						System.err.println(">> msgseat");
-						break;
-					case TTTProto.msgplayers:
-						System.err.println(">> msgplayers");
-						break;
-					case TTTProto.msgmove:
-						System.err.println(">> msgmove");
-						break;
-					case TTTProto.msggameover:
-						System.err.println(">> msggameover");
-						break;
-					case TTTProto.reqmove:
-						System.err.println(">> reqmove");
-						break;
-					case TTTProto.rspmove:
-						System.err.println(">> rspmove");
-						break;
-					case TTTProto.sndsync:
-						System.err.println(">> sndsync");
-						break;
-					default:
-						System.err.println(">> ERROR: Unknown opcode " + op);
-				}
+	public int readAvailable()
+	{
+		readNetwork();
+
+		if(input == null) return 0;
+		return input.length;
+	}
+
+	public void cutArray(int cut)
+	{
+		byte[] tmp = new byte[input.length];
+		for(int i = 0; i < tmp.length; i++)
+			tmp[i] = input[i];
+
+		input = new byte[tmp.length - cut];
+		for(int i = cut; i < tmp.length; i++)
+			input[i - cut] = tmp[i];
+	}
+
+	public int readInt()
+	{
+		readNetwork();
+		if(input.length >= 4)
+		{
+			int op = input[0] + (input[1] << 8) + (input[2] << 16) + (input[3] << 24);
+			cutArray(4);
+			return op;
+		}
+		else System.err.println("readInt(): buffer underrun");
+		return 0;
+	}
+
+	public String readString()
+	{
+		int len = readInt();
+
+		if(input.length >= len)
+		{
+			char[] str = new char[len];
+			for(int i = 0; i < len; i++)
+				str[i] = (char)input[i];
+			cutArray(len);
+			return new String(str);
+		}
+		else System.err.println("readString(): buffer underrun");
+		return "";
+	}
+
+	public void run()
+	{
+		s = new FileInputStream(FileDescriptor.in);
+		proto = new TTTProto();
+		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+		//mManager.sendMessage(this, b);
+
+		while(true)
+		{
+			if(readAvailable() == 0) continue;
+
+			int op = readInt();
+			System.err.println("- OPCODE: " + op);
+			switch(op)
+			{
+				case TTTProto.msgseat:
+					System.err.println(">> msgseat");
+					int seat = readInt();
+					System.err.println("SEAT: " + seat);
+					break;
+				case TTTProto.msgplayers:
+					System.err.println(">> msgplayers");
+					for(int i = 0; i < 2; i++)
+					{
+						int seattype = readInt();
+						String seatname;
+						if((seattype == TTTProto.SEAT_PLAYER) || (seattype == TTTProto.SEAT_BOT))
+							seatname = readString();
+						else seatname = null;
+						System.err.println("PLAYER: " + seattype + seatname);
+					}
+					break;
+				case TTTProto.msgmove:
+					System.err.println(">> msgmove");
+					break;
+				case TTTProto.msggameover:
+					System.err.println(">> msggameover");
+					break;
+				case TTTProto.reqmove:
+					System.err.println(">> reqmove");
+					break;
+				case TTTProto.rspmove:
+					System.err.println(">> rspmove");
+					break;
+				case TTTProto.sndsync:
+					System.err.println(">> sndsync");
+					break;
+				default:
+					System.err.println(">> ERROR: Unknown opcode " + op);
 			}
 		}
 	}
@@ -138,7 +222,7 @@ class TicTacToeEngine implements Runnable
 	public void sendMessage(byte[] message)
 	{
 		for(int i = 0; i < message.length; i++)
-			System.out.println("engine::message " + message[i]);
+			System.err.println("engine::message " + message[i]);
 	}
 }
 
@@ -229,7 +313,7 @@ class TicTacToeGui extends Frame implements ActionListener
 	public void sendMessage(byte[] message)
 	{
 		for(int i = 0; i < message.length; i++)
-			System.out.println("gui::message " + message[i]);
+			System.err.println("gui::message " + message[i]);
 	}
 }
 
@@ -275,8 +359,8 @@ public class TicTacToeClient
 
 		if(ggz == 0)
 		{
-			System.out.println("This game is not intended to be run directly.");
-			System.out.println("Please launch it from a GGZ core client.");
+			System.err.println("This game is not intended to be run directly.");
+			System.err.println("Please launch it from a GGZ core client.");
 			System.exit(0);
 		}
 
