@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 351 $</revnumber>
-	<date>$Date: 2000-03-31 23:07:30 -0800 (Fri, 31 Mar 2000) $</date>
+	<revnumber>$Revision: 380 $</revnumber>
+	<date>$Date: 2000-04-05 05:42:32 -0700 (Wed, 05 Apr 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -274,7 +274,7 @@
   	        str: name of player (if assignment >=0 or == RESV)
 
           REQ_TABLE_OPTIONS
-            int: game index
+            int: table index
           RSP_TABLE_OPTIONS
             int: size of options struct (-1 for error)
             struct: game options
@@ -331,7 +331,7 @@
             chr: success flag (0 for success, negative values for various failures)
   
 	  REQ_TABLE_JOIN
-            int: game index
+            int: table index
 	  RSP_TABLE_JOIN
             chr: success flag (0 for success, -1 for failure)
 
