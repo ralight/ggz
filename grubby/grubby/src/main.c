@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 	/* Start connection procedure */
 	printf(_("Grubby: connect to %s...\n"), core->host);
 	(core->net_log)(core->logfile);
-	(core->net_connect)(core->host, 5688, core->name, core->guestname);
+	(core->net_connect)(core->host, 5688, core->name, core->password);
 	if(core->i18n_init) (core->i18n_init)(core->language, getenv("LANG"));
 
 	/* Main loop */

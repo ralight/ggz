@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -23,7 +23,7 @@ enum States
 };
 
 /* Interface */
-void net_connect(const char *host, int port, const char *name, const char *guestname);
+void net_connect(const char *host, int port, const char *name, const char *password);
 void net_join(const char *room);
 int net_status(void);
 Guru *net_input(void);

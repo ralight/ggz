@@ -13,7 +13,7 @@
 #include "gurumod.h"
 
 /* Net function handlers */
-typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
+typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *password);
 typedef void (*netjoinfunc)(const char *room);
 typedef int (*netstatusfunc)(void);
 typedef Guru* (*netinputfunc)(void);
@@ -35,8 +35,8 @@ struct gurucore_t
 	char *host;
 	char *owner;
 	char *name;
+	char *password;
 	char *language;
-	char *guestname;
 	char *datadir;
 	char *logfile;
 	void *nethandle;

@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -21,7 +21,7 @@ int status = NET_NOOP;
 Guru **queue = NULL;
 int queuelen = 1;
 char *guruname = NULL;
-char *guruguestname = NULL;
+char *gurupassword = NULL;
 FILE *logstream = NULL;
 FILE *irc = NULL;
 char *chatroom = NULL;
@@ -100,12 +100,12 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 }
 
 /* Establish connection: log into an IRC server */
-void net_connect(const char *host, int port, const char *name, const char *guestname)
+void net_connect(const char *host, int port, const char *name, const char *password)
 {
 	int fd;
 
 	guruname = (char*)name;
-	guruguestname = (char*)guestname;
+	gurupassword = (char*)password;
 
 	fd = ggz_make_socket(GGZ_SOCK_CLIENT, 6667, host);
 	if(fd < 0)

@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -72,9 +72,7 @@ Gurucore *guru_module_init(const char *datadir)
 
 	core->host = ggz_conf_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggz_conf_read_string(handler, "preferences", "name", "grubby/unnamed");
-	core->guestname = (char*)malloc(strlen(core->name) + 4);
-	strcpy(core->guestname, core->name);
-	strcat(core->guestname, "(G)");
+	core->password = ggz_conf_read_string(handler, "preferences", "password", NULL);
 	core->owner = ggz_conf_read_string(handler, "preferences", "owner", NULL);
 	core->language = ggz_conf_read_string(handler, "preferences", "language", "en");
 	core->autojoin = ggz_conf_read_string(handler, "preferences", "autojoin", NULL);

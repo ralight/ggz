@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -25,7 +25,7 @@ static GGZGame *game = NULL;
 static Guru **queue = NULL;
 static int queuelen = 1;
 static char *guruname = NULL;
-static char *guruguestname = NULL;
+static char *gurupassword = NULL;
 static FILE *logstream = NULL;
 static int tableid = -1;
 static int gamefd = -1;
@@ -142,10 +142,10 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 }
 
 /* Transparently connect to any host */
-void net_connect(const char *host, int port, const char *name, const char *guestname)
+void net_connect(const char *host, int port, const char *name, const char *password)
 {
 	guruname = (char*)name;
-	guruguestname = (char*)guestname;
+	gurupassword = (char*)password;
 
 	net_internal_init();
 
@@ -309,7 +309,10 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 
 	if(status == NET_NOOP)
 	{
-		ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, "");
+		if(gurupassword)
+			ggzcore_server_set_logininfo(server, GGZ_LOGIN, guruname, gurupassword);
+		else
+			ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, guruname, "");
 		ggzcore_server_login(server);
 	}
 	return GGZ_HOOK_OK;
@@ -482,8 +485,7 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	GGZChatEventData *chat = event_data;
 
 	/* Ignore all self-generates messages */
-	if (strcmp(chat->sender, guruname)
-	    && strcmp(chat->sender, guruguestname))
+	if (strcmp(chat->sender, guruname))
 	{
 		if (chat->type == GGZ_CHAT_PERSONAL) type = GURU_PRIVMSG;
 		else type = GURU_CHAT;

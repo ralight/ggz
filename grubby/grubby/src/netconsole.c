@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001, 2002 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Copyright (C) 2001 - 2005 Josef Spillner <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -20,7 +20,7 @@ int status = NET_NOOP;
 Guru **queue = NULL;
 int queuelen = 1;
 char *guruname = NULL;
-char *guruguestname = NULL;
+char *gurupassword = NULL;
 FILE *logstream = NULL;
 char *playername;
 
@@ -98,12 +98,12 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 }
 
 /* Dummy connection: just setup the console */
-void net_connect(const char *host, int port, const char *name, const char *guestname)
+void net_connect(const char *host, int port, const char *name, const char *password)
 {
 	char buffer[16];
 
 	guruname = (char*)name;
-	guruguestname = (char*)guestname;
+	gurupassword = (char*)password;
 
 	printf("Enter your name please:\n");
 	fgets(buffer, sizeof(buffer), stdin);
