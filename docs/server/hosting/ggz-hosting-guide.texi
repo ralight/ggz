@@ -321,6 +321,13 @@ To do that from the command line, for example to announce that a server will go
 down in a few minutes, the utily ggz-cmd can be used.
 It is available from the utils/cmd-client directory.
 
+@section The ggzduedit command line utily
+
+If you want to lookup the registered players, you can do so very easily using
+the ggzduedit tool. This allows you to retrieve the passwords of the registered
+players, and to add or delete them manually.
+It is also very helpful for debugging.
+
 @node Server Maintaining, (dir), GGZ Server Tools, Top
 @chapter Server Maintaining
 @c @cindex Index entry for Seventh Chapter
@@ -359,23 +366,21 @@ flooding or similar.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.4 installation.
-They will be updated as soon as the first real-world 0.0.5 experiences have
-been gathered.
+These instructions apply to a vanilla 0.0.5 installation.
+You may have to modify some details though.
 
 @verbatim
 cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.4
-cd ggz-0.0.4
+mkdir ggz-0.0.5
+cd ggz-0.0.5
 export CVSROOT=:pserver:anonymous \
 	@cvs.ggz.sourceforge.net:/cvsroot/ggz
 cvs login
-cvs -z3 co -reasysock-0-3-0 easysock
-cvs -z3 co -rggzd-0-0-4 ggzd
-cd easysock
+cvs -z3 co -rGGZ_0_0_5_RELEASE libggz ggzd
+cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
 make install
@@ -401,6 +406,7 @@ tools.
 @item @url{ggz://ggz.snafu.de} (Germany)
 @item @url{ggz://ggz.morat.net} (USA)
 @item @url{ggz://ggz.homeip.net} (Argentina)
+@item @url{ggz://mindx.dyndns.org} (Germany)
 @end itemize
 
 There are so far no known web pages or similar efforts. For more information,
