@@ -219,6 +219,19 @@ static struct _GGZTransition _server_room_leave_transitions[] = {
 	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
 };                        
 
+static struct _GGZTransition _server_table_update_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
 /* FIXME: this will be going away with error callbacks */
 static struct _GGZTransition _net_error_transitions[] = {
 	{GGZ_STATE_CONNECTING,    GGZ_STATE_OFFLINE},
@@ -413,6 +426,10 @@ static struct _GGZEvent ggz_events[] = {
 	{GGZ_SERVER_ROOM_LEAVE,     
 	 "server_room_leave",                        
 	 _server_room_leave_transitions},
+
+	{GGZ_SERVER_TABLE_UPDATE,
+	 "server_table_update",
+	 _server_table_update_transitions},
 
 	{GGZ_NET_ERROR,             
 	 "net_error",                         

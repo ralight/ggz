@@ -30,5 +30,7 @@ libggzcore_a_SOURCES =	conf.c \
 			server.h \
 			state.c \
 			state.h \
+			table.c \
+			table.h \
 			user.c \
 			user.h 

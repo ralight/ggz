@@ -32,13 +32,13 @@
 #include <player.h>
 #include <room.h>
 #include <state.h>
+#include <table.h>
 
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
 #include <string.h>
 #include <errno.h>
-
 
 /* Handlers for various server commands */
 static void _ggzcore_net_handle_server_id(void);
@@ -53,6 +53,7 @@ static void _ggzcore_net_handle_rsp_chat(void);
 static void _ggzcore_net_handle_chat(void);
 static void _ggzcore_net_handle_update_players(void);
 static void _ggzcore_net_handle_update_tables(void);
+static void _ggzcore_net_handle_list_tables(void);
 
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
@@ -95,7 +96,7 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{RSP_REMOVE_USER,    "rsp_remove_user", NULL},
 	{RSP_LIST_PLAYERS,   "rsp_list_players", _ggzcore_net_handle_list_players},
 	{RSP_LIST_TYPES,     "rsp_list_types", NULL},
-	{RSP_LIST_TABLES,    "rsp_list_tables", NULL},
+	{RSP_LIST_TABLES,    "rsp_list_tables", _ggzcore_net_handle_list_tables},
 	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_net_handle_list_rooms},
 	{RSP_TABLE_OPTIONS,  "rsp_table_options", NULL},
 	{RSP_USER_STAT,      "rsp_user_stat", NULL},
@@ -525,6 +526,11 @@ static void _ggzcore_net_handle_room_join(void)
 				      "Bad room number", NULL);
 		break;
 	}
+
+	/* Get list of tables */
+        es_write_int(ggz_server_sock, REQ_LIST_TABLES);
+        es_write_int(ggz_server_sock, -1);
+        es_write_char(ggz_server_sock, 0);
 }
 		
 
@@ -645,7 +651,7 @@ static void _ggzcore_net_handle_update_players(void)
 static void _ggzcore_net_handle_update_tables(void)
 {
 	char subop, state;
-	int table, room, type, num, i;
+	int table, room, type, num, i, open;
 	char *player, *desc;
 	GGZSeatType seat;
 
@@ -657,6 +663,7 @@ static void _ggzcore_net_handle_update_tables(void)
 	
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
+		_ggzcore_table_list_remove(table);
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d done", table);
 		break;
 		
@@ -671,9 +678,7 @@ static void _ggzcore_net_handle_update_tables(void)
 		if (es_read_int(ggz_server_sock, &num) < 0
 		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
 			return;
-		ggzcore_debug(GGZ_DBG_NET, 
-			      "UPDATE_TABLE: %s joined seat %d at table %d", 
-			      player, num, table);
+		_ggzcore_table_list_join(table);
 		_ggzcore_player_list_replace(player, table);
 		break;
 
@@ -681,10 +686,8 @@ static void _ggzcore_net_handle_update_tables(void)
 		if (es_read_int(ggz_server_sock, &seat) < 0
 		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
 			return;
-		ggzcore_debug(GGZ_DBG_NET, 
-			      "UPDATE_TABLE: %s left seat %d at table %d", 
-			      player, seat, table);
-		_ggzcore_player_list_replace(player, -1);
+		_ggzcore_table_list_leave(table);
+		_ggzcore_player_list_replace(player, table);
 		break;
 		
 	case GGZ_UPDATE_ADD:
@@ -694,14 +697,18 @@ static void _ggzcore_net_handle_update_tables(void)
 		es_read_char(ggz_server_sock, &state);
 		es_read_int(ggz_server_sock, &num);
 		
+		open = 0;
 		for (i = 0; i < num; i++) {
 			es_read_int(ggz_server_sock, &seat);
 			if (seat == GGZ_SEAT_PLAYER
 			    || seat == GGZ_SEAT_RESV) {
 				es_read_string_alloc(ggz_server_sock, &player);
 			}
+			if (seat == GGZ_SEAT_OPEN)
+				open++;
 		}
 
+		_ggzcore_table_list_add(table, type, desc, state, num, open);
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: new table %d", 
 			      table);
 		break;
@@ -709,4 +716,45 @@ static void _ggzcore_net_handle_update_tables(void)
 
 	/* FIXME: Should we have the client redisplay the full list of players? */
 	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
 }
+
+
+static void _ggzcore_net_handle_list_tables(void)
+{
+	int total, id, room, type, num, i, x, open;
+	char *player = NULL, *desc = NULL;
+	char state;
+	int seat;
+
+	_ggzcore_table_list_clear();
+		
+	if (es_read_int(ggz_server_sock, &total) < 0)
+		return;
+
+	for (i = 0; i < total; i++) {
+		es_read_int(ggz_server_sock, &id);
+		es_read_int(ggz_server_sock, &room);
+		es_read_int(ggz_server_sock, &type);
+		es_read_string_alloc(ggz_server_sock, &desc);
+		es_read_char(ggz_server_sock, &state);
+		es_read_int(ggz_server_sock, &num);
+
+		open = 0;
+		for (x = 0; x < num; x++) {
+			es_read_int(ggz_server_sock, &seat);
+			if (seat == GGZ_SEAT_PLAYER
+			    || seat == GGZ_SEAT_RESV) {
+				es_read_string_alloc(ggz_server_sock, &player);
+				free(player);
+			}
+			if (seat == GGZ_SEAT_OPEN)
+				open++;
+		}
+		_ggzcore_table_list_add(id, type, desc, state, num, open);
+		free(desc);
+	}
+
+	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
+}
+

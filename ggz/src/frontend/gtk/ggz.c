@@ -49,6 +49,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data);
 void ggz_logout(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_enter(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_part(GGZEventID id, void* event_data, void* user_data);
+void ggz_table_update(GGZEventID id, void* event_data, void* user_data);
 static void ggz_state_change(GGZStateID id, void* event_data, void* user_data);
 
 void ggz_event_init(void)
@@ -67,6 +68,7 @@ void ggz_event_init(void)
 	ggzcore_event_add_callback(GGZ_SERVER_ERROR, NULL);
 	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, ggz_room_enter);
 	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, ggz_room_part);
+	ggzcore_event_add_callback(GGZ_SERVER_TABLE_UPDATE, ggz_table_update);
 	ggzcore_event_add_callback(GGZ_NET_ERROR, NULL);
 }
 
@@ -448,4 +450,35 @@ static void ggz_state_change(GGZStateID id, void* event_data, void* user_data)
 	gtk_statusbar_pop(GTK_STATUSBAR(statebar), id);
 	gtk_statusbar_push(GTK_STATUSBAR(statebar), id, state);
 
+}
+
+void ggz_table_update(GGZEventID id, void* event_data, void* user_data)
+{
+	GtkWidget *tmp;
+	gchar *table[4];
+	gint *numbers;
+	gint i;
+
+	/* clear the list */
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
+
+	/* Display current list of players */
+	if (!(numbers = ggzcore_table_get_numbers()))
+		return;
+
+
+	for (i = 0; i < ggzcore_table_get_num(); i++)
+	{
+		table[0] = g_strdup_printf("%d", numbers[i]);
+		table[1] = g_strdup_printf("%d/%d", ggzcore_table_get_open(numbers[i]),
+						    ggzcore_table_get_seats(numbers[i]));
+		table[2] = g_strdup_printf("%s", ggzcore_table_get_desc(numbers[i]));
+		gtk_clist_append(GTK_CLIST(tmp), table);
+		g_free(table[0]);
+		g_free(table[1]);
+		g_free(table[2]);
+	}
+	free(numbers);
 }

@@ -98,6 +98,7 @@ typedef enum {
 	GGZ_SERVER_ERROR,
 	GGZ_SERVER_ROOM_ENTER,
 	GGZ_SERVER_ROOM_LEAVE,
+	GGZ_SERVER_TABLE_UPDATE,
 	GGZ_NET_ERROR,
 	GGZ_USER_LOGIN, 
 	GGZ_USER_LIST_ROOMS,
@@ -523,9 +524,13 @@ char* ggzcore_module_get_icon_path(const unsigned int id);
 char* ggzcore_module_get_help_path(const unsigned int id);
 
 
-
-
-
+/* These function are lookups to table information. All you need pass
+   is the table number.*/
+unsigned int ggzcore_table_get_num(void);
+int ggzcore_table_get_seats(int number);
+int ggzcore_table_get_open(int number);
+char *ggzcore_table_get_desc(int number);
+int* ggzcore_table_get_numbers(void);
 
 #ifdef __cplusplus
 }
