@@ -1,0 +1,57 @@
+dnl Configuration for GGZ-KDE-Games
+dnl ===============================
+
+AC_INIT(acinclude.m4)
+AC_CANONICAL_SYSTEM
+AC_ARG_PROGRAM
+AM_INIT_AUTOMAKE(ggz-kde-games,0.0.4pre)
+AM_CONFIG_HEADER(config.h)
+
+dnl Check for Qt and KDE
+dnl ====================
+
+KDE_SET_PREFIX
+KDE_USE_QT(2)
+AC_CHECK_COMPILERS
+AC_ENABLE_SHARED(yes)
+AC_ENABLE_STATIC(no)
+KDE_PROG_LIBTOOL
+AM_PROG_LIBTOOL
+AM_KDE_WITH_NLS
+AC_PATH_KDE
+
+dnl Check for easysock
+dnl ==================
+
+AC_GGZ_EASYSOCK
+AC_GGZ_CONFIG
+
+dnl Create Makefiles
+dnl ================
+
+AC_OUTPUT(Makefile
+	KReversi/Makefile
+	KReversi/module.dsc
+	KReversi/pixmaps/Makefile
+	krosswater/Makefile
+	krosswater/module.dsc
+	krosswater/zoneclient/Makefile
+	krosswater/gfx/Makefile
+	kdots/Makefile
+	kdots/module.dsc
+	kdots/Dot/Makefile
+	ktictactux/Makefile
+	ktictactux/module.dsc)
+
+dnl Report success
+dnl ==============
+
+echo ""
+echo "GGZ-KDE-Games is now configured. Please type 'make' in order to compile it."
+echo "The following installation layout is used:"
+echo ""
+echo "Generic installation prefix: $prefix (for libraries etc.)"
+echo "Game executable directory: $ggzexecmoddir"
+echo "Game data directory: $ggzdatadir"
+echo ""
+

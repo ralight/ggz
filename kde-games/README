@@ -1,0 +1,26 @@
+======================================
+The GGZ Gaming Zone - KDE Game Modules
+======================================
+
+We are proud to say that there are now some KDE games available
+for the GGZ Gaming Zone. Some of them are just other frontends
+for existing games, others are completely new ones.
+
+Content of GGZ-KDE-Games:
+	- KReversi:
+		A two-player game which is compatible with its Gtk+ brother.
+	- Krosswater:
+		KDE port of the Java game "Cross the Water". For two - four
+		players.
+	- KDots:
+		Connect the Dots for KDE. Compatible with the Gtk+ version.
+Please read 'INSTALL' if you aren't experienced with the build yet.
+
+If you encounter any bugs, please send them to
+	Josef Spillner, <dr_maux@users.sourceforge.net>,
+or to the mailing list,
+	ggz-dev@lists.sourceforge.net.
+
+Have fun!
+	- The GGZ Gaming Zone Development Team
+

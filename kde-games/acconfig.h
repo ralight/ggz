@@ -1,0 +1,5 @@
+
+#undef GAMEDIR
+#undef GGZDATADIR
+#undef PACKAGE_SOURCE_DIR
+
