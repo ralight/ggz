@@ -36,24 +36,35 @@
 static void _ggzcore_xmlelement_do_free(GGZXMLElement *element);
 
 
-GGZXMLElement* _ggzcore_xmlelement_new(char *tag, void (*process)(), void (*free)())
+GGZXMLElement* _ggzcore_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)())
 {
 	GGZXMLElement *element;
 
 	element = ggzcore_malloc(sizeof(GGZXMLElement));
 	
-	_ggzcore_xmlelement_init(element, tag, process, free);
+	_ggzcore_xmlelement_init(element, tag, attrs, process, free);
 
 	return element;
 }
 
 
-void _ggzcore_xmlelement_init(GGZXMLElement *element, char *tag, void (*process)(), void (*free)())
+void _ggzcore_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)())
 {
+	int i;
+
 	if (element) {
 		element->tag = ggzcore_strdup(tag);
+		element->attributes = _ggzcore_list_create(NULL, 
+							   _ggzcore_list_create_str,
+							   _ggzcore_list_destroy_str,
+							   _GGZCORE_LIST_ALLOW_DUPS);
 		element->text = NULL;
 		element->process = process;
+		
+		
+		for (i = 0; attrs[i]; i++)
+			_ggzcore_list_insert(element->attributes, attrs[i]);
+
 		
 		if (free)
 			element->free = free;
@@ -63,9 +74,44 @@ void _ggzcore_xmlelement_init(GGZXMLElement *element, char *tag, void (*process)
 }
 
 
+void _ggzcore_xmlelement_set_data(GGZXMLElement *element, void *data)
+{
+	if (element)
+		element->data = data;
+}
+
+
 char* _ggzcore_xmlelement_get_tag(GGZXMLElement *element)
 {
 	return (element ? element->tag : NULL);
+}
+
+
+char* _ggzcore_xmlelement_get_attr(GGZXMLElement *element, char *attr)
+{
+	_ggzcore_list_entry *item;
+	char *data;
+	char *value = NULL;
+
+	item = _ggzcore_list_head(element->attributes);
+	while (item) {
+		data = _ggzcore_list_get_data(item);
+		if (strcmp(data, attr) == 0) {
+			value = _ggzcore_list_get_data(_ggzcore_list_next(item));
+			break;
+		}
+			
+		/* Every other item is a value */
+		item = _ggzcore_list_next(_ggzcore_list_next(item));
+	}
+
+	return value;
+}
+
+
+void* _ggzcore_xmlelement_get_data(GGZXMLElement *element)
+{
+	return (element ? element->data : NULL);
 }
 
 
@@ -107,6 +153,8 @@ void _ggzcore_xmlelement_free(GGZXMLElement *element)
 			ggzcore_free(element->tag);
 		if (element->text)
 			ggzcore_free(element->text);
+		if (element->attributes)
+			_ggzcore_list_destroy(element->attributes);
 		if (element->free)
 			element->free(element);
 	}

@@ -26,6 +26,8 @@
 #ifndef __XMLELEMENT_H__
 #define __XMLELEMENT_H__
 
+#include "lists.h"
+
 struct _GGZXMLElement {
 	
 	/* The name of the tag */
@@ -33,7 +35,13 @@ struct _GGZXMLElement {
 
 	/* Text content */
 	char *text;
+
+	/* Tag attributes */
+	_ggzcore_list *attributes;
 	
+	/* Extra data associated with tag (usually gleaned from children) */
+	void *data;
+
 	/* Function to free allocated memory */
 	void (*free)();
 
@@ -44,11 +52,14 @@ struct _GGZXMLElement {
 
 typedef struct _GGZXMLElement GGZXMLElement;
 
-GGZXMLElement* _ggzcore_xmlelement_new(char *tag, void (*process)(), void (*free)());
-void _ggzcore_xmlelement_init(GGZXMLElement *element, char *tag, void (*process)(), void (*free)());
+GGZXMLElement* _ggzcore_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)());
+void _ggzcore_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)());
+
+void _ggzcore_xmlelement_set_data(GGZXMLElement*, void *data);
 
 char* _ggzcore_xmlelement_get_tag(GGZXMLElement*);
-/*void* _ggzcore_xmlelement_get_data(GGZXMLElement*);*/
+char* _ggzcore_xmlelement_get_attr(GGZXMLElement *element, char *attr);
+void* _ggzcore_xmlelement_get_data(GGZXMLElement*);
 char* _ggzcore_xmlelement_get_text(GGZXMLElement*);
 void _ggzcore_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
 

@@ -29,6 +29,7 @@
 
 #include "config.h"
 #include "ggzcore.h"
+#include "xmlelement.h"
 
 struct _GGZNet* _ggzcore_net_new(void);
 void _ggzcore_net_init(struct _GGZNet *net, 
@@ -96,7 +97,7 @@ GGZRoom* _ggzcore_net_get_new_room(struct _GGZNet *net);
 void _ggzcore_net_set_fd(struct _GGZNet *net, int fd);
 void _ggzcore_net_set_chat_size(struct _GGZNet *net, int size);
 
-
+GGZXMLElement* _net_get_head(struct _GGZNet *net);
 
 
 #endif /* __NET_H__ */

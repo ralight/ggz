@@ -608,18 +608,14 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 
 static void _net_parse_end_tag(void *data, const char *el)
 {
+	GGZXMLElement *element;
 	struct _GGZNet *net = (struct _GGZNet*)data;
-	GGZStack *stack = net->stack;
-	GGZXMLElement *element, *head;
 	
 	/* Pop element off stack */
-	element = _ggzcore_stack_pop(stack);
+	element = _ggzcore_stack_pop(net->stack);
 
-	/* Check top of stack */
-	head = _ggzcore_stack_top(stack);
-	
 	/* Process tag */
-	_ggzcore_protocol_process_element(element, head, net);
+	_ggzcore_protocol_process_element(element, net);
 
 	/* Free data structures */
 	_ggzcore_xmlelement_free(element);
@@ -649,4 +645,9 @@ static void _net_dump_data(struct _GGZNet *net, char *data, int size)
 {
 	if (net->dump_file > 0)
 		write(net->dump_file, data, size);
+}
+
+GGZXMLElement* _net_get_head(struct _GGZNet *net)
+{
+	return _ggzcore_stack_top(net->stack);
 }

@@ -44,6 +44,48 @@
 #include <errno.h>
 
 
+/* Server opcodes */
+typedef enum {
+	MSG_SERVER_ID,
+	MSG_SERVER_FULL,
+	MSG_MOTD,
+	MSG_CHAT,
+	MSG_UPDATE_PLAYERS,
+	MSG_UPDATE_TYPES,
+	MSG_UPDATE_TABLES,
+	MSG_UPDATE_ROOMS,
+	MSG_ERROR,
+	RSP_LOGIN_NEW,
+	RSP_LOGIN,
+	RSP_LOGIN_ANON,
+	RSP_LOGOUT,
+	RSP_PREF_CHANGE,
+	RSP_REMOVE_USER,
+	RSP_LIST_PLAYERS,
+	RSP_LIST_TYPES,
+	RSP_LIST_TABLES,
+	RSP_LIST_ROOMS,
+	RSP_TABLE_OPTIONS,
+	RSP_USER_STAT,
+	RSP_TABLE_LAUNCH,
+	RSP_TABLE_JOIN,
+	RSP_TABLE_LEAVE,
+	RSP_GAME,
+	RSP_CHAT,
+        RSP_MOTD,
+	RSP_ROOM_JOIN
+} GGZServerOp;
+
+/* Update opcodes */
+typedef enum {
+	GGZ_UPDATE_DELETE,
+	GGZ_UPDATE_ADD,
+	GGZ_UPDATE_LEAVE,
+	GGZ_UPDATE_JOIN,
+	GGZ_UPDATE_STATE
+} GGZUpdateOp;
+
+
 /* GGZNet structure for handling the network connection to the server */
 struct _GGZNet {
 	
