@@ -58,13 +58,17 @@ int main (void) {
 	/* Test various accessor functions */
 	mod = ggzdmod_new(GGZDMOD_GGZ);
 	if (ggzdmod_get_state(mod) != GGZDMOD_STATE_CREATED)
-		printf("-- Error: initial state: %d\n", ggzdmod_get_state(mod));
+		printf("-- Error: initial state: %d\n",
+		       ggzdmod_get_state(mod));
 	if (ggzdmod_get_fd(mod) != -1)
-		printf("-- Error: nitial fd: %d\n", ggzdmod_get_fd(mod));
-	if (ggzdmod_get_num_seats(mod) != 0)
-		printf("-- Error: nitial seats: %d\n", ggzdmod_get_num_seats(mod));
+		printf("-- Error: initial fd: %d\n",
+		       ggzdmod_get_fd(mod));
+	if (ggzdmod_get_num_seats(mod) > 0)
+		printf("-- Error: initial seats: %d\n",
+		       ggzdmod_get_num_seats(mod));
 	if (ggzdmod_get_gamedata(mod) != NULL)
-		printf("-- Error: initial gamedata: %p\n", ggzdmod_get_gamedata(mod));
+		printf("-- Error: initial gamedata: %p\n",
+		       ggzdmod_get_gamedata(mod));
 	
 
 	/* Set setting/getting game data */
