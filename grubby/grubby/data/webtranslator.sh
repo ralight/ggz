@@ -1,30 +1,33 @@
 #!/bin/sh
 # Ripped from debianforum.de (thanks chimera)
+# http://212.184.215.215/~feltel/debianforum/viewtopic.php?t=292
 
-test -d ~/google
+dir=~/.ggz/grubby/google
+
+test -d $dir
 if [ $? != 0 ]
 then
-  mkdir ~/google > /dev/null
+  mkdir -p $dir > /dev/null
 fi
 
-touch ~/google/translations
+touch $dir/translations
 
-if ( test -z "$1" ) || ( test -z "$2" ) || ( test -z "$3" )
+if ( test -z "$1" ) || ( test -z "$2" ) || ( test -z "$3" ) || ( test -z "$4" )
 then
   exit
 else
-  trans=$1
-  lang=`echo $3 | tr '-' '|'` 
-  ausdruck=`echo $2 | tr " " "+"` 
-  if ( test ! "$1" = "translate" )
+  trans=$2
+  lang=`echo $4 | tr '-' '|'` 
+  ausdruck=`echo $3 | tr " " "+"` 
+  if ( test ! "$2" = "translate" )
   then
     exit
   fi
 
-  grep "$ausdruck" ~/google/translations > /dev/null
+  grep "$lang	$ausdruck" $dir/translations > /dev/null
 if [ $? == 0 ]
   then
-   grep "$ausdruck" ~/google/translations | cut -f2
+   grep "$lang	$ausdruck" $dir/translations | cut -f3
    sleep 1
 else
   url="http://translate.google.com/translate_t"
@@ -34,13 +37,13 @@ else
 fi
 fi
 
-grep "$ausdruck" ~/google/translations > /dev/null
+grep "$lang	$ausdruck" $dir/translations > /dev/null
 if [ $? != 0 ]
 then
   test -z "$translated"
   if [ $? != 0 ]
    then
-    echo -e "$ausdruck\t$translated" >> ~/google/translations
+    echo -e "$lang\t$ausdruck\t$translated" >> $dir/translations
   fi
 fi
 
