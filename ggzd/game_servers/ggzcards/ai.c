@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4021 2002-04-19 07:33:52Z jdorje $
+ * $Id: ai.c 4024 2002-04-20 08:30:54Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -94,9 +94,9 @@ void start_ai(player_t p, const char* ai_type)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
-		close(fd_pair[0]);
+		(void) close(fd_pair[0]);
 #ifdef DEBUG
-		close(err_fd_pair[0]);
+		(void) close(err_fd_pair[0]);
 #endif /* DEBUG */
 		
 		if (fd_pair[1] != 3) {
@@ -104,20 +104,16 @@ void start_ai(player_t p, const char* ai_type)
 			    || close(fd_pair[1]) < 0)
 				ggz_error_sys_exit("dup/close failed");
 		}
-		
-		/* Close stdin, stdout, and stderr. */
-		if (fclose(stdin) < 0 ||
-		    fclose(stdout) < 0 ||
-		    fclose(stderr) < 0) {
-			/* There's not much we can do... */
-			assert(0);
-		}
+
+		/* We used to close stdin, stdout, and stderr here,
+		   but really that's best left up to someone else.
+		   Currently GGZ does it when in daemon mode. */
 		
 #ifdef DEBUG
 		/* Move our pipe to stderr. */
-		assert(err_fd_pair[1] != 2);
-		if (dup2(err_fd_pair[1], 2) != 2
-		    || close(err_fd_pair[1]) < 0)
+		if (err_fd_pair[1] != STDERR_FILENO
+		    && (dup2(err_fd_pair[1], STDERR_FILENO) != STDERR_FILENO
+		        || close(err_fd_pair[1]) < 0))
 			ggz_error_sys_exit("dup/close failed");
 #endif /* DEBUG */
 		
@@ -126,11 +122,11 @@ void start_ai(player_t p, const char* ai_type)
 		ggz_error_sys_exit("exec of %s failed", argv[0]);
 	} else {
 		/* parent */
-		close(fd_pair[1]);
+		(void) close(fd_pair[1]);
 		game.players[p].fd = fd_pair[0];
 		
 #ifdef DEBUG
-		close(err_fd_pair[1]);
+		(void) close(err_fd_pair[1]);
 		game.players[p].err_fd = err_fd_pair[0];
 #endif /* DEBUG */
 		game.players[p].pid = pid;
