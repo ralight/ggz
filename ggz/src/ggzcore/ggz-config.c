@@ -232,6 +232,12 @@ char *get_engine_id(int global)
 						    "Author", NULL);
 		ui = ggz_conf_read_string(global, engine_id,
 						"Frontend", NULL);
+
+		if((!author) || (!ui))
+		{
+			return "error";
+		}
+
 		if(modversion) {
 			version = ggz_conf_read_string(global, engine_id,
 							     "Version", NULL);
@@ -360,6 +366,14 @@ int install_module(void)
 		return global;
 
 	engine_id = get_engine_id(global);
+
+	if((engine_id) && (!strcmp(engine_id, "error")))
+	{
+		fprintf(stderr, "Your configuration is broken - aborting\n");
+		ggz_conf_cleanup();
+		return -1;
+	}
+
 	if(!modforce) {
 		if(engine_id != NULL) {
 			fprintf(stderr, "Cannot overwrite existing module\n");
