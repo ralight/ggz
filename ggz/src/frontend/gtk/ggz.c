@@ -553,6 +553,7 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void*
 	case GGZ_STATE_IN_ROOM:
 		state = _("Chatting");
 		break;
+	case GGZ_STATE_LAUNCHING_TABLE:
 	case GGZ_STATE_JOINING_TABLE:
 		state = _("--> Table");
 		break;

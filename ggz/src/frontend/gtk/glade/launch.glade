@@ -96,9 +96,8 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_launch</object>
-	    <last_modification_time>Sun, 05 Nov 2000 06:26:01 GMT</last_modification_time>
+	    <handler>launch_cancel_button_clicked</handler>
+	    <last_modification_time>Tue, 10 Apr 2001 13:03:57 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>

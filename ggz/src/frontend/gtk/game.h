@@ -26,7 +26,9 @@
 
 #include "ggzcore.h"
 
-void game_init(GGZModule *module);
+int game_init(void);
+
+int game_launch(void);
 
 void game_quit(void);
 

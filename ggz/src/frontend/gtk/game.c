@@ -25,9 +25,11 @@
 
 
 #include "game.h"
+#include "chat.h"
+#include "msgbox.h"
+#include "support.h"
 
 #include <gtk/gtk.h>
-#include <chat.h>
 #include <ggzcore.h>
 #include <stdlib.h>
 
@@ -49,12 +51,89 @@ static gint game_handle;
 extern GGZServer *server;
 extern GtkWidget *win_main;
 
-void game_init(GGZModule *module)
+
+int game_init(void)
 {
+	gchar *message;
+	gchar *name;
+	gchar *protocol;
+	gint num;
+	GGZRoom *room;
+	GGZGameType *gt;
+	GGZModule *module;
+
+	/* Make sure we aren't already in a game */
+	if (game) {
+		msgbox(_("You can only play one game at a time."),
+		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		return -1;
+	}
+
+	/* Make sure we're in a room */
+	room = ggzcore_server_get_cur_room(server);
+	if (!room) {
+		msgbox(_("You must be in a room to launch a game.\nLaunch aborted"), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return -1;
+	}
+
+	/* Get game type for this room */
+	gt = ggzcore_room_get_gametype(room);
+	if (!gt) {
+		msgbox(_("No game types defined for this server.\nLaunch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return -1;
+	}
+
+	name = ggzcore_gametype_get_name(gt);
+	protocol = ggzcore_gametype_get_protocol(gt);
+
+	/* Check how many modules are registered for this game type */
+	num = ggzcore_module_get_num_by_type(name, protocol);
+	if (num == 0) {
+		message = g_strdup_printf(_("You don't have this game installed. You can download\nit from %s."), ggzcore_gametype_get_url(gt));
+	
+		msgbox(message, _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, 
+		       MSGBOX_NORMAL);
+		       
+		g_free(message);
+		return -1;
+	}
+
+	/* FIXME: if num > 1, popup a dialog and let the user choose */
+	module = ggzcore_module_get_nth_by_type(name, protocol, 0);
+	if (!module) {
+		msgbox(_("No modules defined for this game.\nLaunch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		return -1;
+	}
+		
+	/* Create new game using this module */
 	game = ggzcore_game_new();
 	ggzcore_game_init(game, module);
+
+	/* Register callbacks */
 	game_register(game);
-	ggzcore_game_launch(game);
+
+	return 0;
+}
+
+
+int game_launch(void)
+{
+	gint status;
+	gchar *message;
+
+	/* Launch game */
+	status = ggzcore_game_launch(game);
+	if (status < 0) {
+		msgbox(_("Failed to execute game module.\n Launch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		game_destroy();
+		return -1;
+	}
+
+	message = g_strdup_printf("Launching Game");
+	chat_display_message(CHAT_BEEP, "---", message);
+	g_free(message);
+
+	return 0;
 }
 
 

@@ -110,6 +110,7 @@ static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
 static void client_join_table(void);
 
+
 static void
 client_connect_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
@@ -156,8 +157,7 @@ static void
 client_launch_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	if(game_play() != TRUE)
-		launch_create_or_raise();
+	launch_create_or_raise();
 }
 
 
@@ -488,8 +488,7 @@ static void
 client_launch_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	if(game_play() != TRUE)
-		launch_create_or_raise();
+	launch_create_or_raise();
 }
 
 
@@ -710,28 +709,14 @@ static void client_join_room(guint room)
 
 static void client_join_table(void)
 {
-        char *name;
-        char *protocol;
-        GGZRoom *room;
-        GGZGameType *type;
-        GGZModule *module;
+	GGZRoom *room;
         int table_index;
-
-	/* FIXME: Check for game type */
 
 	/* Make sure a table is selected */
 	if (tablerow == -1) {
 		msgbox("You must highlight a table before you can join it.", 
 		       "Error Joining", MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
-		return;
-	}
-
-	/* Make sure we aren't already in a game */
-	if (game_play() == TRUE) {
-		msgbox("You can only play one game at a time.", 
-		       "Error Joining",
-		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 		return;
 	}
 
@@ -742,14 +727,13 @@ static void client_join_table(void)
 		return;
 	}
 
-	room = ggzcore_server_get_cur_room(server);
-	type = ggzcore_room_get_gametype(room);
-	name = ggzcore_gametype_get_name(type);
-	protocol = ggzcore_gametype_get_protocol(type);
-	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
-	game_init(module);
-	
+	/* Initialize a game module */
+	if (game_init() < 0 || game_launch() < 0)
+		return;
+
 	table_index = client_get_table_index(tablerow);
+
+	room = ggzcore_server_get_cur_room(server);
 	ggzcore_room_join_table(room, table_index);
 	tablerow = -1;
 }

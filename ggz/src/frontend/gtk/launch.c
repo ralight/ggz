@@ -44,6 +44,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
 static void launch_resv_toggle(GtkWidget *widget, gpointer data);
 static void launch_start_game(GtkWidget *widget, gpointer data);
+static void launch_cancel_button_clicked(GtkWidget *widget, gpointer data);
 static void launch_seat_show(gint seat, gchar show);
 static GtkWidget* create_dlg_launch (void);
 
@@ -52,12 +53,16 @@ static GtkWidget *launch_dialog;
 void launch_create_or_raise(void)
 {
         if (!launch_dialog) {
-                launch_dialog = create_dlg_launch();
-                gtk_widget_show(launch_dialog);
+		/* Create new game object first */
+		if (game_init() == 0) {
+			/* Dialog for setting table seats */
+			launch_dialog = create_dlg_launch();
+			gtk_widget_show(launch_dialog);
+		}
         }
         else {
+		/* It already exists, so raise it */
                 gdk_window_show(launch_dialog->window);
-		launch_fill_defaults(launch_dialog, NULL);
                 gdk_window_raise(launch_dialog->window);
         }
 }
@@ -182,66 +187,50 @@ static void launch_resv_toggle(GtkWidget *widget, gpointer data)
 static void launch_start_game(GtkWidget *widget, gpointer data)
 {
 	GtkWidget *tmp;
-	gchar *message;
-	gchar *name;
-	gchar *protocol;
-	gint seats, x, status;
 	GGZRoom *room;
-	GGZGameType *gt;
-	GGZModule *module;
 	GGZTable *table;
+	GGZGameType *gt;
+	gint x, seats;
+	gchar *widget_name;
 
-	room = ggzcore_server_get_cur_room(server);
-	if(!room)
-	{
-		status = msgbox("You must be in a room to launch a\ngame. Launch aborted", "Launch Error",
-				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	/* Initialize a game module */
+	if (game_launch() < 0)
 		return;
-	}
 
-	gt = ggzcore_room_get_gametype(room);
-	if(!gt)
-	{
-		status = msgbox("No game types defined for this\nserver. Launch aborted.", "Launch Error",
-				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-		return;
-	}
-	name = ggzcore_gametype_get_name(gt);
-	protocol = ggzcore_gametype_get_protocol(gt);
-	message = g_strdup_printf("Launching Game of %s, v%s", name, protocol);
-	chat_display_message(CHAT_BEEP, "---", message);
-	g_free(message);
-	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
-	game_init(module);
-	if(!module)
-	{
-		message = g_strdup_printf("You don't have this game installed. You can download\nit from %s.",
-					ggzcore_gametype_get_url(gt));
-		status = msgbox(message, "Launch Error",
-				MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-		g_free(message);
-		return;
-	}
-
+	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
+
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
 	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "desc_entry");
+
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
 	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)), seats);
+
 	for( x = 0; x < seats; x++ )
 	{
-                message = g_strdup_printf("seat%d_bot", (x+1));
-		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), message);
-		g_free(message);
+                widget_name = g_strdup_printf("seat%d_bot", (x+1));
+		tmp = lookup_widget(launch_dialog, widget_name);
+		g_free(widget_name);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
-		{
 			ggzcore_table_add_bot(table, NULL, x);
-		}
 	}
 
 	ggzcore_room_launch_table(room, table);
 	ggzcore_table_free(table);
+
 	gtk_widget_destroy(launch_dialog);
+}
+
+
+static void launch_cancel_button_clicked(GtkWidget *widget, gpointer data)
+{
+	/* Free up game we allocated but never launched */
+	game_destroy();
+
+	gtk_widget_destroy(launch_dialog);
+	launch_dialog = NULL;
 }
 
 
@@ -261,7 +250,7 @@ static void launch_seat_show(gint seat, gchar show)
 }
 
 
-static GtkWidget*
+GtkWidget*
 create_dlg_launch (void)
 {
   GtkWidget *dlg_launch;
@@ -922,9 +911,10 @@ create_dlg_launch (void)
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (launch_start_game),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_launch));
+  gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
+                      GTK_SIGNAL_FUNC (launch_cancel_button_clicked),
+                      NULL);
 
   return dlg_launch;
 }
+
