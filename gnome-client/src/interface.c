@@ -438,7 +438,8 @@ create_login (void)
   GtkWidget *btnLaunch;
   GtkWidget *btnJoin;
   GtkWidget *btnWatch;
-  
+  static FakeTips  tipsPlayer;
+
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (window, "window");
   gtk_object_set_data (GTK_OBJECT (window), "window", window);
@@ -1086,6 +1087,15 @@ create_login (void)
   g_signal_connect (G_OBJECT (selProfiles), "changed",
 		      G_CALLBACK (on_tree_selection_changed),
 		      NULL);
+  gtk_signal_connect (GTK_OBJECT (trePlayers), "motion_notify_event",
+		      GTK_SIGNAL_FUNC (on_player_tree_motion_notify_event),
+		      &tipsPlayer);
+  gtk_signal_connect (GTK_OBJECT (trePlayers), "enter_notify_event",
+		      GTK_SIGNAL_FUNC (on_player_tree_enter_notify_event),
+		      &tipsPlayer);
+  gtk_signal_connect (GTK_OBJECT (trePlayers), "leave_notify_event",
+		      GTK_SIGNAL_FUNC (on_player_tree_leave_notify_event),
+		      &tipsPlayer);
   gtk_signal_connect (GTK_OBJECT (btnChatChange), "clicked",
                       GTK_SIGNAL_FUNC (on_btnChatChange_clicked),
                       NULL);
@@ -1116,6 +1126,8 @@ create_login (void)
   gtk_signal_connect (GTK_OBJECT (entChatNew), "activate",
 		      GTK_SIGNAL_FUNC (on_entCharNew_activate),
 		      NULL);
-  
+
+  gtk_timeout_add(40, on_player_tree_timeout, &tipsPlayer);
+
   return window;
 }

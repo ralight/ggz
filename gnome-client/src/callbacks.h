@@ -38,6 +38,24 @@ void
 on_tree_selection_changed		(GtkTreeSelection *selection,
 					 gpointer data);
 
+gint
+on_player_tree_timeout                  (gpointer         user_data);
+
+gboolean
+on_player_tree_motion_notify_event	(GtkWidget	*widget,
+					 GdkEventMotion  *event,
+					 gpointer	*user_data);
+
+gboolean
+on_player_tree_enter_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data);
+
+gboolean
+on_player_tree_leave_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data);
+
 void
 on_btnChatChange_clicked               (GtkButton       *button,
                                         gpointer         user_data);

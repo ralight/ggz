@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5032 2002-10-25 22:11:42Z jzaun $
+ * $Id: ggzclient.c 5097 2002-10-29 00:59:19Z jzaun $
  *
  * This is the main program body for the GGZ client
  *

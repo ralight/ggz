@@ -21,6 +21,11 @@ extern GdkColor colors[];
 extern GGZServer *server;
 extern GConfClient *config;
 
+gboolean
+on_player_tree_popup_leave_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data);
+
 
 gboolean
 on_window_destroy_event                (GtkWidget       *widget,
@@ -282,6 +287,107 @@ on_tree_selection_changed 		(GtkTreeSelection *selection,
 		
 		g_free (strProfile);
 	}
+}
+
+
+gint
+on_player_tree_timeout                  (gpointer         user_data)
+{
+	FakeTips *tips;
+
+	tips = (FakeTips*)user_data;
+	if (tips->mouse && tips->timeout < 27)
+		tips->timeout++;
+
+	if (tips->timeout == 1)
+	{
+		if (tips->menu)
+		{
+			gtk_widget_destroy(tips->menu);
+			tips->item = NULL;
+			tips->menu = NULL;
+		}
+	}
+
+	if (tips->timeout == 25)
+	{
+		tips->menu = gtk_menu_new();
+		tips->item = gtk_menu_item_new_with_label("test");
+		gtk_widget_show(tips->item);
+		gtk_container_add (GTK_CONTAINER (tips->menu), tips->item);
+		gtk_signal_connect (GTK_OBJECT (tips->menu), "leave_notify_event",
+				    GTK_SIGNAL_FUNC (on_player_tree_popup_leave_notify_event),
+				    user_data);
+		gtk_menu_popup (GTK_MENU (tips->menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+	}
+
+	return TRUE;
+}
+
+
+gboolean
+on_player_tree_popup_leave_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data)
+{
+	FakeTips *tips;
+	static gint count = 0;
+
+	tips = (FakeTips*)user_data;
+	if (count < 6)
+	{
+		count++;
+	} else {
+		count = 0;
+		gtk_menu_popdown(GTK_MENU(tips->menu));
+	}
+
+
+	return TRUE;
+}
+
+
+gboolean
+on_player_tree_motion_notify_event	(GtkWidget	*widget,
+					 GdkEventMotion  *event,
+					 gpointer	*user_data)
+{
+	FakeTips *tips;
+
+	tips = (FakeTips*)user_data;
+	tips->timeout=0;
+
+	return TRUE;
+}
+
+
+gboolean
+on_player_tree_enter_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data)
+{
+	FakeTips *tips;
+
+	tips = (FakeTips*)user_data;
+	tips->timeout=0;
+	tips->mouse = TRUE;
+
+	return TRUE;
+}
+
+
+gboolean
+on_player_tree_leave_notify_event	(GtkWidget	*widget,
+					 GdkEventCrossing *event,
+					 gpointer	*user_data)
+{
+	FakeTips *tips;
+
+	tips = (FakeTips*)user_data;
+	tips->timeout=0;
+	tips->mouse = FALSE;
+
+	return TRUE;
 }
 
 
