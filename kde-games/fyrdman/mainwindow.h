@@ -28,7 +28,7 @@ class MainWindow : public KMainWindow
 		void levelSelector();
 		void synchronize();
 
-		bool checkMove();
+		bool checkMove(int self);
 		void aiMove();
 
 		enum Items
@@ -59,6 +59,7 @@ class MainWindow : public KMainWindow
 		QSocketNotifier *sn, *snc;
 		QPtrList<Level> m_levels;
 		int m_movex, m_movey, m_movex2, m_movey2;
+		int m_self;
 };
 
 #endif

@@ -219,7 +219,7 @@ int Level::players()
 	return m_players;
 }
 
-char Level::cell(int i, int j)
+int Level::cell(int i, int j)
 {
 	if((i >= 0) && (i < m_height) && (j >= 0) && (j < m_width))
 		return m_cell[i][j];
@@ -233,7 +233,7 @@ char Level::cellboard(int i, int j)
 	return -1;
 }
 
-char Level::cellown(int i, int j)
+int Level::cellown(int i, int j)
 {
 	if((i >= 0) && (i < m_height) && (j >= 0) && (j < m_width))
 		return m_cellown[i][j];

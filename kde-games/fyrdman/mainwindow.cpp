@@ -180,6 +180,7 @@ void MainWindow::levelSelector()
 		}
 		else
 		{
+			m_self = 1;
 			statusBar()->changeItem(i18n("Game started"), status_state);
 			statusBar()->changeItem(i18n("Select a knight"), status_task);
 		}
@@ -356,24 +357,21 @@ void MainWindow::slotMove(int x, int y, int x2, int y2)
 		statusBar()->changeItem(i18n("Calculating..."), status_task);
 
 		statusBar()->changeItem(i18n("Checking move..."), status_state);
-		checkMove();
+		checkMove(m_self);
 		statusBar()->changeItem(i18n("Move checked"), status_state);
 
 		statusBar()->changeItem(i18n("Moving AI..."), status_state);
 		aiMove();
 		statusBar()->changeItem(i18n("AI moved"), status_state);
 
-		statusBar()->changeItem(i18n("Wait..."), status_task);
+		statusBar()->changeItem(i18n("Select a knight"), status_task);
 	}
 }
 
-bool MainWindow::checkMove()
+bool MainWindow::checkMove(int self)
 {
 	int x, y, x2, y2;
 	Level *l;
-	int self;
-
-	self = 1;
 
 	l = map->level();
 
@@ -394,15 +392,13 @@ bool MainWindow::checkMove()
 //	if((x2 - x == -1) && (y2 - y == 1) && (y % 2 != 0)) return false;
 //	if((x2 - x == 1) && (y2 - y == -1) && (y % 2 == 0)) return false;
 
-	kdDebug() << "cell(x,y)=" << l->cell(x, y) << endl;
-	kdDebug() << "cell(x2,y2)=" << l->cell(x2, y2) << endl;
-	kdDebug() << "cellboard(x2,y2)=" << l->cellboard(x2, y2) << endl;
+	//kdDebug() << "cell(x,y)=" << l->cell(x, y) << endl;
+	//kdDebug() << "cell(x2,y2)=" << l->cell(x2, y2) << endl;
+	//kdDebug() << "cellboard(x2,y2)=" << l->cellboard(x2, y2) << endl;
 
-	if(l->cell(x, y) == -1) return false;
+	if(l->cell(x, y) != self) return false;
 	if(l->cell(x2, y2) == self) return false;
-	if(l->cellboard(x2, y2) == -1) return false;
-
-	// ...
+	if(l->cellboard(x2, y2) != 'x') return false;
 
 	map->move(m_movex, m_movey, m_movex2, m_movey2);
 
@@ -412,22 +408,66 @@ bool MainWindow::checkMove()
 void MainWindow::aiMove()
 {
 	Level *l;
-	int self;
+	int done;
+	int k, j;
 	
-	self = -1;
-
 	l = map->level();
 
 	for(int bot = 0; bot < l->players(); bot++)
 	{
-		if(bot == self) continue;
+		if(bot == m_self) continue;
 
+		done = 0;
 		for(int x = 0; x < l->width(); x++)
+		{
 			for(int y = 0; y < l->height(); y++)
+			{
 				if(l->cell(x, y) == bot)
 				{
-					// ...
+					kdDebug() << "** move bot at " << x << ", " << y << endl;
+					m_movex = x;
+					m_movey = y;
+					if(y < 10)
+					{
+						for(k = 2; k > -3; k--)
+						{
+							for(j = 2; j > -3; j--)
+							{
+								if((!j) && (!k)) continue;
+								m_movex2 = x + k;
+								m_movey2 = y + j;
+								if(checkMove(bot))
+								{
+									done = 1;
+									break;
+								}
+							}
+							if(done) break;
+						}
+					}
+					else
+					{
+						for(k = -2; k < 3; k++)
+						{
+							for(j = -2; j < 3; j++)
+							{
+								if((!j) && (!k)) continue;
+								m_movex2 = x + k;
+								m_movey2 = y + j;
+								if(checkMove(bot))
+								{
+									done = 1;
+									break;
+								}
+							}
+							if(done) break;
+						}
+					}
 				}
+				if(done) break;
+			}
+			if(done) break;
+		}
 	}
 }
 

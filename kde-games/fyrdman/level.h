@@ -16,9 +16,9 @@ class Level
 		int width();
 		int height();
 		int players();
-		char cell(int i, int j);
+		int cell(int i, int j);
 		char cellboard(int i, int j);
-		char cellown(int i, int j);
+		int cellown(int i, int j);
 
 		void setCell(int i, int j, int value);
 
