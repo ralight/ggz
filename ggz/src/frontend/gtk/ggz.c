@@ -242,7 +242,9 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	GtkWidget *tmp;
 	gchar *name;
 	gchar *message;
-
+	GGZRoom *room;
+	GGZGameType *gt;
+	static int lastposition;
 	 
 	/* Clear the player list */
 	/* We do this here so that on slower links people
@@ -268,6 +270,27 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	g_free(message);
 	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
 
+	/* Check what the current game type is */
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
+
+	if(ggzcore_gametype_get_name(gt) == NULL)
+	{
+		tmp = lookup_widget(win_main, "table_vpaned");
+		lastposition = GTK_PANED(tmp)->child1_size;
+		gtk_paned_set_position(GTK_PANED(tmp), 0);
+		tmp = lookup_widget(win_main, "launch_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+		tmp = lookup_widget(win_main, "join_button");
+		gtk_widget_set_sensitive(tmp, FALSE);
+	}else{
+		tmp = lookup_widget(win_main, "table_vpaned");
+		gtk_paned_set_position(GTK_PANED(tmp), lastposition);
+		tmp = lookup_widget(win_main, "launch_button");
+		gtk_widget_set_sensitive(tmp, TRUE);
+		tmp = lookup_widget(win_main, "join_button");
+		gtk_widget_set_sensitive(tmp, TRUE);
+	}
 
 	return GGZ_HOOK_OK;
 }
