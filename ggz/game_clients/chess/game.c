@@ -63,13 +63,43 @@ void game_init() {
 	game_info.timer = g_timer_new();
 }
 
-/* FIXME: Create a game_popup
 void game_popup(const char *format, ...) {
-  game_message(format);
-}
-*/
+	va_list ap;
+	char *message;
+	GtkWidget *dialog;
+	GtkWidget *ok;
+	GtkWidget *label;
 
-#define game_popup game_message
+	/* Create the message */
+	va_start( ap, format );
+	message = g_strdup_vprintf(format, ap);
+	va_end(ap);
+
+	/* Create the widgets */
+	dialog = gtk_dialog_new();
+	label = gtk_label_new(message);
+	ok = gtk_button_new_with_label("OK");
+	gtk_label_set_line_wrap( GTK_LABEL(label), TRUE );
+
+  /* Ensure that the dialog box is destroyed when
+   * the user clicks ok. */
+ 
+  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dialog));
+
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
+                     ok);
+
+  /* Add the label, and show everything
+   * we've added to the dialog. */
+
+   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox),
+                      label);
+   gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+   gtk_widget_show_all (dialog);
+
+	g_free(message);
+}
 
 void game_message(const char *format, ...) {
   int id;
@@ -154,7 +184,23 @@ void game_update(int event, void *arg) {
       game_info.seconds[1] = (*((int*)arg)) & 0xFFFFFF;
       game_info.t_seconds[0] = (*((int*)arg)) & 0xFFFFFF;
       game_info.t_seconds[1] = (*((int*)arg)) & 0xFFFFFF;
-      game_popup("Clock type is %d and time is %d", game_info.clock_type, game_info.seconds[0]);
+			switch(game_info.clock_type) {
+				case CHESS_CLOCK_NOCLOCK:
+					game_popup("This game won't have a time limit.");
+					break;
+				case CHESS_CLOCK_CLIENT:
+					game_popup("This game will use a client clock.\nThis option should only be used when playing against people you trust, as it relies much in the client program, that can be cheated.\nSo, if the time behaves very strangely (like your oponnent time never wearing out), he may be running a cheated client.\n\nEach player will have %d min : %d sec to win the game.", game_info.seconds[0]/60, game_info.seconds[0]%60);
+					break;
+				case CHESS_CLOCK_SERVER:
+					game_popup("This game will use a server clock.\nIt is very difficult to cheat when using this type of clock, and you should use it if you suspect your oponnent may have a cheated client or if you don't trust him.\nHowever, if either your connection or your opponent's is deeply lagged, it will have a deep effect on the time count as well.\n\nEach player will have %d min : %d sec to win the game.", game_info.seconds[0]/60, game_info.seconds[0]%60);
+					break;
+				case CHESS_CLOCK_SERVERLAG:
+					game_popup("This game will use a server clock with lag support.\nIn this option, we will use a server clock, but using a lag meter to compensate for any lag due to Internet connection. Although it's possible to cheat with this option, it is much more difficult then cheating with the client clock.\nBesides, the lag of either connect won't have a so deep effect on the time of the players.\n\nEach player will have %d min : %d sec to win the game.", game_info.seconds[0]/60, game_info.seconds[0]%60);
+					break;
+				default:
+					game_popup("Clock type is %d and time is %d", game_info.clock_type, game_info.seconds[0]);
+					break;
+			}
       board_info_update();
       break;
     case CHESS_EVENT_START:

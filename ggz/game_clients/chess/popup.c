@@ -132,6 +132,9 @@ create_clock_dialog (void)
   GtkWidget *hbuttonbox2;
   GtkWidget *send_option;
   GtkWidget *cancel;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   clock_dialog = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (clock_dialog), "clock_dialog", clock_dialog);
@@ -156,6 +159,7 @@ create_clock_dialog (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (no_clock);
   gtk_box_pack_start (GTK_BOX (vbox1), no_clock, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, no_clock, _("If you select this option, this game won't have a time limit"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (no_clock), TRUE);
 
   server_clock = gtk_radio_button_new_with_label (time_option_group, _("Server clock"));
@@ -165,6 +169,7 @@ create_clock_dialog (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_clock);
   gtk_box_pack_start (GTK_BOX (vbox1), server_clock, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, server_clock, _("Selecting this option, the server will keep track of the time of each player. So, the time a player takes to complete a move will start the moment the server sends a message to him requesting his move, until the time where the server receives his move back. Although it is very hard to cheat using this model, the players who have a very lagged connection will be at a strong disadvantage. You should only use it on a local LAN or if both you and your oponnent have similar connection speeds."), NULL);
 
   server_lag_clock = gtk_radio_button_new_with_label (time_option_group, _("Server clock with lag meter"));
   time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (server_lag_clock));
@@ -174,6 +179,7 @@ create_clock_dialog (void)
   gtk_widget_show (server_lag_clock);
   gtk_box_pack_start (GTK_BOX (vbox1), server_lag_clock, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (server_lag_clock, FALSE);
+  gtk_tooltips_set_tip (tooltips, server_lag_clock, _("This option works just like the server clock, except that it uses ggz's builtin lag meter to compensate for lagged connections. It provides a good balance between security (the strong point in the server clock) and fairness (the strong point in the client clock)"), NULL);
 
   client_clock = gtk_radio_button_new_with_label (time_option_group, _("Client clock"));
   time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (client_clock));
@@ -182,6 +188,7 @@ create_clock_dialog (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (client_clock);
   gtk_box_pack_start (GTK_BOX (vbox1), client_clock, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, client_clock, _("Selecting this option, each client will keep track of its current time. This is the most fair option, as it reduces to zero the effect of lagged connections. However, as we keep too much trust in the client, a bad user can use a cheated client that won't report the time as expected. So, only use this option if you trust your oponnent."), NULL);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
