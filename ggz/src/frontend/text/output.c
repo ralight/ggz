@@ -53,6 +53,8 @@
 #define COLOR_PURPLE		"\e[0m\e[36m"
 #define COLOR_WHITE		"\e[0m\e[37m"
 
+#define MAX_LINES 100
+
 extern GGZServer *server;
 
 static struct winsize window;
@@ -114,15 +116,11 @@ void output_text(char* fmt, ...)
 	vsprintf(message, fmt, ap);
 	va_end(ap);
 
-
-	for (x = 100; x >= 1; x--)
-	{
-		free(chat[x]);
-		chat[x] = strdup(chat[x-1]);
-	}
-
-	free(chat[0]);
-
+	/* Shift everything in the buffer up */
+	if (chat[MAX_LINES])
+		free(chat[MAX_LINES]);
+	for (x = MAX_LINES; x > 0; x--)
+		chat[x] = chat[x-1];
 	chat[0] = strdup(message);
 
 	fflush(NULL);
@@ -130,11 +128,13 @@ void output_text(char* fmt, ...)
 	output_goto(0, 0);
 	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
 	{
-		printf("\e[K%s\n", chat[x]);
+		if (chat[x])
+			printf("\e[K%s\n", chat[x]);
+		else
+			printf("\e[K\n");
 		fflush(NULL);
 	}
 	printf("\e8");
-	
 
 #if 0
 	fflush(NULL);
@@ -144,9 +144,6 @@ void output_text(char* fmt, ...)
 	printf("\e8");
 	fflush(NULL);
 #endif
-
-
-
 }
 
 void output_chat(ChatTypes type, char *player, char *message)
@@ -333,19 +330,16 @@ void output_label(char *label)
 
 void output_init(void)
 {
-	int x;
-
 	fflush(NULL);
 	printf("\e[2J");
 	ioctl(tty_des, TIOCGWINSZ, &window);
 	printf("\e[0;%dr", window.ws_row-4);
 	fflush(NULL);
 
-	/* Initilize chat memmory */
-	chat  = calloc((101), sizeof(char*));
-	for (x = 100; x >= 0; x--)
-		chat[x] = malloc(sizeof(char));
+	/* Initilize and zero chat memmory */
+	chat = calloc((MAX_LINES+1), sizeof(char*));
 }
+
 
 void output_shutdown(void)
 {
