@@ -4,6 +4,4 @@ EXTRA_DIST = Doxyfile
 
 SUBDIRS = src tests
 
-clean-local:
-	rm -rf config.status
 
