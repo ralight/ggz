@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4408 2002-09-04 19:46:33Z dr_maux $
+ * $Id: common.h 4417 2002-09-06 18:33:02Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -31,7 +31,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define SUPPORT_SPECTATORS
+/* #define SUPPORT_SPECTATORS */
 
 #include <assert.h>
 
