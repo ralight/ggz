@@ -72,6 +72,7 @@ int game_ask_options();
 void game_handle_setup(int);
 void game_handle_move(int);
 void game_send_setup();
+int game_send_options(GtkWidget *);
 void game_request_sync();
 
 // Init variables

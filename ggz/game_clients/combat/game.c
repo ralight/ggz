@@ -29,6 +29,7 @@
 #include <gdk/gdk.h>
 #include "game.h"
 #include "combat.h"
+#include "dlg_options.h"
 
 #include "callbacks.h"
 #include "support.h"
@@ -182,10 +183,18 @@ int game_get_seat() {
 }
 
 int game_ask_options() {
+	GtkWidget *options_dialog;
+	GtkWidget *ok_button;
 	combat_game _game;
 	char *game_str = NULL;
 	int a;
-	/* Default game */
+	options_dialog = create_dlg_options(); 
+	ok_button = lookup_widget(options_dialog, "ok_button"); 
+	gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+			                       GTK_SIGNAL_FUNC (game_send_options), 
+														 GTK_OBJECT (options_dialog));
+	gtk_widget_show_all(options_dialog);
+	/* Default game 
 	_game.width = 10;
 	_game.height = 10;
 	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
@@ -223,7 +232,7 @@ int game_ask_options() {
 	_game.army[0][U_GENERAL] = 1;
 	_game.army[0][U_MARSHALL] = 1;
 
-	/* Mini Game
+	Mini Game
 	_game.width = 4;
 	_game.height = 4;
 	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
@@ -257,6 +266,7 @@ int game_ask_options() {
 	_game.army[0][U_GENERAL] = 0;
 	_game.army[0][U_MARSHALL] = 0; */
 	
+		/*
 	game_status("Sending options string to server");
 
 	game_str = combat_options_string_write(game_str, &_game);
@@ -264,6 +274,7 @@ int game_ask_options() {
 	if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
 		return -1;
 	return 0;
+	*/
 }
 
 int game_get_options() {
@@ -1035,3 +1046,66 @@ void game_request_sync() {
 
 	return;
 }
+
+int game_send_options(GtkWidget *options_dialog) {
+	combat_game _game;
+	int a;
+	char *map_data;
+	char *game_str = NULL;
+
+
+	dlg_options_update(options_dialog);
+
+	// Gets data
+	_game.width = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(options_dialog), "width_v"));
+	_game.height = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(options_dialog), "height_v"));
+	map_data = gtk_object_get_data(GTK_OBJECT(options_dialog), "map_data");
+
+	_game.map = (tile *)malloc(_game.width * _game.height * sizeof(tile));
+	for (a = 0; a < _game.width * _game.height; a++) {
+		switch (map_data[a]) {
+			case 0:
+				_game.map[a].type = T_OPEN;
+				break;
+			case 1:
+				_game.map[a].type = T_LAKE;
+				break;
+			case 2:
+				_game.map[a].type = T_NULL;
+				break;
+			case 3:
+				_game.map[a].type = OWNER(0) + T_OPEN;
+				break;
+			case 4:
+				_game.map[a].type = OWNER(1) + T_OPEN;
+				break;
+		}
+	}
+
+	// Default army for now
+	_game.army = (char **)calloc(1, sizeof(char *));
+	_game.army[0] = (char *)calloc(12, sizeof(char));
+	_game.army[0][U_FLAG] = 1;
+	_game.army[0][U_BOMB] = 6;
+	_game.army[0][U_SPY] = 1;
+	_game.army[0][U_SCOUT] = 8;
+	_game.army[0][U_MINER] = 5;
+	_game.army[0][U_SERGEANT] = 4;
+	_game.army[0][U_LIEUTENANT] = 4;
+	_game.army[0][U_CAPTAIN] = 4;
+	_game.army[0][U_MAJOR] = 3;
+	_game.army[0][U_COLONEL] = 2;
+	_game.army[0][U_GENERAL] = 1;
+	_game.army[0][U_MARSHALL] = 1;
+
+	game_str = combat_options_string_write(game_str, &_game);
+
+	if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
+		return -1;
+
+	gtk_widget_destroy(options_dialog);
+
+	return 0;
+	
+}
+	

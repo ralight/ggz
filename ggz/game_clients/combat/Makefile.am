@@ -18,6 +18,8 @@ ggz_combat_SOURCES = combat.h \
 				interface.c \
 				interface.h \
 				gtk_player_info.c \
+				dlg_options.c \
+				dlg_options.h \
 				game.h \
 				game.c
 
