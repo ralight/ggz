@@ -7,10 +7,10 @@
  *
  * Copyright (C) 2001 Richard Gade.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software; cou can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * (at cour option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -92,7 +92,7 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 int game_handle_player(int num)
 {
 	int fd, op, status;
-	unsigned char xo, yo, xd, yd;
+	unsigned char ro, co, rd, cd;
 
 	fd = ggz_seats[num].fd;
 	
@@ -101,8 +101,8 @@ int game_handle_player(int num)
 
 	switch(op) {
 		case CC_SND_MOVE:
-			if((status = game_handle_move(num, &xo, &yo, &xd, &yd)) == 0)
-				game_update(CC_EVENT_MOVE, &xo, &yo, &xd, &yd);
+			if((status = game_handle_move(num, &ro, &co, &rd, &cd)) == 0)
+				game_update(CC_EVENT_MOVE, &ro, &co, &rd, &cd);
 			break;
 		case CC_REQ_SYNC:
 			status = game_send_sync(num);
@@ -165,7 +165,7 @@ int game_send_players(void)
 
 
 /* Send out move for player: num */
-int game_send_move(int num, char xo, char yo, char xd, char yd)
+int game_send_move(int num, char ro, char co, char rd, char cd)
 {
 	int fd;
 	int i;
@@ -178,10 +178,10 @@ int game_send_move(int num, char xo, char yo, char xd, char yd)
 
 		if(es_write_int(fd, CC_MSG_MOVE) < 0
 		   || es_write_int(fd, num) < 0
-		   || es_write_char(fd, xo) < 0
-		   || es_write_char(fd, yo) < 0
-		   || es_write_char(fd, xd) < 0
-		   || es_write_char(fd, yd) < 0)
+		   || es_write_char(fd, ro) < 0
+		   || es_write_char(fd, co) < 0
+		   || es_write_char(fd, rd) < 0
+		   || es_write_char(fd, cd) < 0)
 			return -1;
 	}
 
@@ -189,7 +189,7 @@ int game_send_move(int num, char xo, char yo, char xd, char yd)
 }
 
 
-/* Send out board layout */
+/* Send out board lacout */
 int game_send_sync(int num)
 {	
 	int i, j, fd = ggz_seats[num].fd;
@@ -232,11 +232,11 @@ int game_send_gameover(char winner)
 int game_move(void)
 {
 	int num = game.turn;
-	unsigned char xo, yo, xd, yd;
+	unsigned char ro, co, rd, cd;
 
 	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
-		ai_move(&xo, &yo, &xd, &yd);
-		game_update(CC_EVENT_MOVE, &xo, &yo, &xd, &yd);
+		ai_move(&ro, &co, &rd, &cd);
+		game_update(CC_EVENT_MOVE, &ro, &co, &rd, &cd);
 	} else
 		game_req_move(num);
 
@@ -257,8 +257,8 @@ int game_req_move(int num)
 
 
 /* Handle incoming move from player */
-int game_handle_move(int num, unsigned char *xo, unsigned char *yo,
-			      unsigned char *xd, unsigned char *yd)
+int game_handle_move(int num, unsigned char *ro, unsigned char *co,
+			      unsigned char *rd, unsigned char *cd)
 {
 	int fd = ggz_seats[num].fd;
 	char status;
@@ -269,28 +269,28 @@ int game_handle_move(int num, unsigned char *xo, unsigned char *yo,
 			return -1;
 
 	ggz_debug("Handling move for player %d", num);
-	if(es_read_char(fd, xo) < 0)
+	if(es_read_char(fd, ro) < 0)
 		return -1;
-	if(es_read_char(fd, yo) < 0)
+	if(es_read_char(fd, co) < 0)
 		return -1;
-	if(es_read_char(fd, xd) < 0)
+	if(es_read_char(fd, rd) < 0)
 		return -1;
-	if(es_read_char(fd, yd) < 0)
+	if(es_read_char(fd, cd) < 0)
 		return -1;
 
-	if(*xo >= 17 || *yo >= 25 || *xd >=17 || *yd >= 25
-	   || game.board[*xo][*yo] == -1 || game.board[*xd][*yd] == -1)
+	if(*ro >= 17 || *co >= 25 || *rd >=17 || *cd >= 25
+	   || game.board[*ro][*co] == -1 || game.board[*rd][*cd] == -1)
 		status = CC_ERR_BOUND;
-	else if(game.board[*xo][*yo] != num+1)
+	else if(game.board[*ro][*co] != num+1)
 		status = CC_ERR_INVALID;
-	else if(game.board[*xd][*yd] != 0)
+	else if(game.board[*rd][*cd] != 0)
 		status = CC_ERR_FULL;
-	else if(!game_find_path(0, *xo, *yo, *xd, *yd))
+	else if(!game_find_path(0, *ro, *co, *rd, *cd))
 		status = CC_ERR_INVALID;
 	else {
 		status = 0;
-		game.board[*xo][*yo] = 0;
-		game.board[*xd][*yd] = num+1;
+		game.board[*ro][*co] = 0;
+		game.board[*rd][*cd] = num+1;
 	}
 
 	/* Send back move status */
@@ -311,20 +311,11 @@ int game_handle_move(int num, unsigned char *xo, unsigned char *yo,
 }
 
 
-/* Check for a win */
-char game_check_win(void)
-{
-
-	/* Game not over yet */
-	return -1;
-}
-
-
 /* Update game state */
 int game_update(int event, void *d1, void *d2, void *d3, void *d4)
 {
 	int seat;
-	char xo, yo, xd, yd;
+	char ro, co, rd, cd;
 	char victor;
 	
 	switch(event) {
@@ -362,12 +353,12 @@ int game_update(int event, void *d1, void *d2, void *d3, void *d4)
 			if(game.state != CC_STATE_PLAYING)
 				return -1;
 		
-			xo = *(char*)d1;
-			yo = *(char*)d2;
-			xd = *(char*)d3;
-			yd = *(char*)d4;
+			ro = *(char*)d1;
+			co = *(char*)d2;
+			rd = *(char*)d3;
+			cd = *(char*)d4;
 
-			game_send_move(game.turn, xo, yo, xd, yd);
+			game_send_move(game.turn, ro, co, rd, cd);
 
 			if((victor = game_check_win()) < 0) {
 				/* Request next move */
@@ -515,100 +506,132 @@ static void game_print_board(void)
 }
 
 
-static int game_find_path(int from, int xo, int yo, int xd, int yd)
+static int game_find_path(int from, int ro, int co, int rd, int cd)
 {
-	/* FIXME: This code is not guaranteed to terminate! */
+	int r, c;
+	static char visited[17][25];
 
 	if(from == 0) {
+		/* Zero out the array of nodes we've visited */
+		for(r=0; r<17; r++)
+			for(c=0; c<25; c++)
+				visited[r][c] = 0;
+
 		/* Check each of the six immediate move directions for dest */
 		/* We don't have to check if the cell is occupied, as we    */
 		/* know the destination cell to be open */
-		if((xo == xd && yo-2 == yd)
-		   || (xo-1 == xd && yo-1 == yd)
-		   || (xo-1 == xd && yo+1 == yd)
-		   || (xo == xd && yo+2 == yd)
-		   || (xo+1 == xd && yo+1 == yd)
-		   || (xo+1 == xd && yo-1 == yd) )
+		if((ro == rd && co-2 == cd)
+		   || (ro-1 == rd && co-1 == cd)
+		   || (ro-1 == rd && co+1 == cd)
+		   || (ro == rd && co+2 == cd)
+		   || (ro+1 == rd && co+1 == cd)
+		   || (ro+1 == rd && co-1 == cd) )
 			return 1;
 
+		visited[ro][co] = 1;
+
 		/* Check all six possible jump directions recursively */
-		if((yo-4 >= 0)
-		   && (game.board[xo][yo-2] > 0)
-		   && (game.board[xo][yo-4] == 0)
-		   && game_find_path(1, xo, yo-4, xd, yd) )
+		if((co-4 >= 0)
+		   && (game.board[ro][co-2] > 0)
+		   && (game.board[ro][co-4] == 0)
+		   && game_find_path(1, ro, co-4, rd, cd) )
 			return 1;
-		if((yo-2 >= 0 && xo-2 >= 0)
-		   && (game.board[xo-1][yo-1] > 0)
-		   && (game.board[xo-2][yo-2] == 0)
-		   && game_find_path(2, xo-2, yo-2, xd, yd) )
+		if((co-2 >= 0 && ro-2 >= 0)
+		   && (game.board[ro-1][co-1] > 0)
+		   && (game.board[ro-2][co-2] == 0)
+		   && game_find_path(2, ro-2, co-2, rd, cd) )
 			return 1;
-		if((yo+2 < 25 && xo-2 >= 0)
-		   && (game.board[xo-1][yo+1] > 0)
-		   && (game.board[xo-2][yo+2] == 0)
-		   && game_find_path(3, xo-2, yo+2, xd, yd) )
+		if((co+2 < 25 && ro-2 >= 0)
+		   && (game.board[ro-1][co+1] > 0)
+		   && (game.board[ro-2][co+2] == 0)
+		   && game_find_path(3, ro-2, co+2, rd, cd) )
 			return 1;
-		if((yo+4 < 25)
-		   && (game.board[xo][yo+2] > 0)
-		   && (game.board[xo][yo+4] == 0)
-		   && game_find_path(4, xo, yo+4, xd, yd) )
+		if((co+4 < 25)
+		   && (game.board[ro][co+2] > 0)
+		   && (game.board[ro][co+4] == 0)
+		   && game_find_path(4, ro, co+4, rd, cd) )
 			return 1;
-		if((yo+2 < 25 && xo+2 < 17)
-		   && (game.board[xo+1][yo+1] > 0)
-		   && (game.board[xo+2][yo+2] == 0)
-		   && game_find_path(5, xo+2, yo+2, xd, yd) )
+		if((co+2 < 25 && ro+2 < 17)
+		   && (game.board[ro+1][co+1] > 0)
+		   && (game.board[ro+2][co+2] == 0)
+		   && game_find_path(5, ro+2, co+2, rd, cd) )
 			return 1;
-		if((yo-2 >= 0 && xo+2 < 17)
-		   && (game.board[xo+1][yo-1] > 0)
-		   && (game.board[xo+2][yo-2] == 0)
-		   && game_find_path(6, xo+2, yo-2, xd, yd) )
+		if((co-2 >= 0 && ro+2 < 17)
+		   && (game.board[ro+1][co-1] > 0)
+		   && (game.board[ro+2][co-2] == 0)
+		   && game_find_path(6, ro+2, co-2, rd, cd) )
 			return 1;
 
 		/* Failed in all six directions, not a valid move */
 		return 0;
 	}
 
+	/* Check to make sure we haven't visited here before */
+	if(visited[ro][co])
+		return 0;
+	visited[ro][co] = 1;
+
 	/* Is it soup yet? */
-	if(xo == xd && yo == yd)
+	if(ro == rd && co == cd)
 		return 1;
 
 	/* Check all six possible jump directions recursively */
 	/* EXCEPT the one we came from */
 	if((from != 4)
-	   && (yo-4 >= 0)
-	   && (game.board[xo][yo-2] > 0)
-	   && (game.board[xo][yo-4] == 0)
-	   && game_find_path(1, xo, yo-4, xd, yd) )
+	   && (co-4 >= 0)
+	   && (game.board[ro][co-2] > 0)
+	   && (game.board[ro][co-4] == 0)
+	   && game_find_path(1, ro, co-4, rd, cd) )
 		return 1;
 	if((from != 5)
-	   && (yo-2 >= 0 && xo-2 >= 0)
-	   && (game.board[xo-1][yo-1] > 0)
-	   && (game.board[xo-2][yo-2] == 0)
-	   && game_find_path(2, xo-2, yo-2, xd, yd) )
+	   && (co-2 >= 0 && ro-2 >= 0)
+	   && (game.board[ro-1][co-1] > 0)
+	   && (game.board[ro-2][co-2] == 0)
+	   && game_find_path(2, ro-2, co-2, rd, cd) )
 		return 1;
 	if((from != 6)
-	   && (yo+2 < 25 && xo-2 >= 0)
-	   && (game.board[xo-1][yo+1] > 0)
-	   && (game.board[xo-2][yo+2] == 0)
-	   && game_find_path(3, xo-2, yo+2, xd, yd) )
+	   && (co+2 < 25 && ro-2 >= 0)
+	   && (game.board[ro-1][co+1] > 0)
+	   && (game.board[ro-2][co+2] == 0)
+	   && game_find_path(3, ro-2, co+2, rd, cd) )
 		return 1;
 	if((from != 1)
-	   && (yo+4 < 25)
-	   && (game.board[xo][yo+2] > 0)
-	   && (game.board[xo][yo+4] == 0)
-	   && game_find_path(4, xo, yo+4, xd, yd) )
+	   && (co+4 < 25)
+	   && (game.board[ro][co+2] > 0)
+	   && (game.board[ro][co+4] == 0)
+	   && game_find_path(4, ro, co+4, rd, cd) )
 		return 1;
 	if((from != 2)
-	   && (yo+2 < 25 && xo+2 < 17)
-	   && (game.board[xo+1][yo+1] > 0)
-	   && (game.board[xo+2][yo+2] == 0)
-	   && game_find_path(5, xo+2, yo+2, xd, yd) )
+	   && (co+2 < 25 && ro+2 < 17)
+	   && (game.board[ro+1][co+1] > 0)
+	   && (game.board[ro+2][co+2] == 0)
+	   && game_find_path(5, ro+2, co+2, rd, cd) )
 		return 1;
 	if((from != 3)
-	   && (yo-2 >= 0 && xo+2 < 17)
-	   && (game.board[xo+1][yo-1] > 0)
-	   && (game.board[xo+2][yo-2] == 0)
-	   && game_find_path(6, xo+2, yo-2, xd, yd) )
+	   && (co-2 >= 0 && ro+2 < 17)
+	   && (game.board[ro+1][co-1] > 0)
+	   && (game.board[ro+2][co-2] == 0)
+	   && game_find_path(6, ro+2, co-2, rd, cd) )
 		return 1;
 
 	return 0;
+}
+
+
+/* Check for a win */
+char game_check_win(void)
+{
+	int i, dest, x, y;
+
+	dest = (homes[seats-1][game.turn] + 3) % 6;
+	for(i=0; i<10; i++) {
+		x = homexy[dest][i][0];
+		y = homexy[dest][i][1];
+		/* If any of the target holes are not ours, we haven't won */
+		if(game.board[x][y] != game.turn + 1)
+			return -1;
+	}
+
+	/* This game is over, we won! */
+	return game.turn;
 }

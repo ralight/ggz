@@ -7,10 +7,10 @@
  *
  * Copyright (C) 2001 Richard Gade.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software; cou can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * (at cour option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -252,99 +252,112 @@ static int game_make_move(int ro, int co, int rd, int cd)
 }
 
 
-static int game_find_path(int from, int xo, int yo, int xd, int yd)
+static int game_find_path(int from, int ro, int co, int rd, int cd)
 {
-	/* FIXME: This code is not guaranteed to terminate! */
+	int r, c;
+	static char visited[17][25];
 
 	if(from == 0) {
+		/* Zero out the array of nodes we've visited */
+		for(r=0; r<17; r++)
+			for(c=0; c<25; c++)
+				visited[r][c] = 0;
+
 		/* Check each of the six immediate move directions for dest */
 		/* We don't have to check if the cell is occupied, as we    */
 		/* know the destination cell to be open */
-		if((xo == xd && yo-2 == yd)
-		   || (xo-1 == xd && yo-1 == yd)
-		   || (xo-1 == xd && yo+1 == yd)
-		   || (xo == xd && yo+2 == yd)
-		   || (xo+1 == xd && yo+1 == yd)
-		   || (xo+1 == xd && yo-1 == yd) )
+		if((ro == rd && co-2 == cd)
+		   || (ro-1 == rd && co-1 == cd)
+		   || (ro-1 == rd && co+1 == cd)
+		   || (ro == rd && co+2 == cd)
+		   || (ro+1 == rd && co+1 == cd)
+		   || (ro+1 == rd && co-1 == cd) )
 			return 1;
 
+		visited[ro][co] = 1;
+
 		/* Check all six possible jump directions recursively */
-		if((yo-4 >= 0)
-		   && (game.board[xo][yo-2] > 0)
-		   && (game.board[xo][yo-4] == 0)
-		   && game_find_path(1, xo, yo-4, xd, yd) )
+		if((co-4 >= 0)
+		   && (game.board[ro][co-2] > 0)
+		   && (game.board[ro][co-4] == 0)
+		   && game_find_path(1, ro, co-4, rd, cd) )
 			return 1;
-		if((yo-2 >= 0 && xo-2 >= 0)
-		   && (game.board[xo-1][yo-1] > 0)
-		   && (game.board[xo-2][yo-2] == 0)
-		   && game_find_path(2, xo-2, yo-2, xd, yd) )
+		if((co-2 >= 0 && ro-2 >= 0)
+		   && (game.board[ro-1][co-1] > 0)
+		   && (game.board[ro-2][co-2] == 0)
+		   && game_find_path(2, ro-2, co-2, rd, cd) )
 			return 1;
-		if((yo+2 < 25 && xo-2 >= 0)
-		   && (game.board[xo-1][yo+1] > 0)
-		   && (game.board[xo-2][yo+2] == 0)
-		   && game_find_path(3, xo-2, yo+2, xd, yd) )
+		if((co+2 < 25 && ro-2 >= 0)
+		   && (game.board[ro-1][co+1] > 0)
+		   && (game.board[ro-2][co+2] == 0)
+		   && game_find_path(3, ro-2, co+2, rd, cd) )
 			return 1;
-		if((yo+4 < 25)
-		   && (game.board[xo][yo+2] > 0)
-		   && (game.board[xo][yo+4] == 0)
-		   && game_find_path(4, xo, yo+4, xd, yd) )
+		if((co+4 < 25)
+		   && (game.board[ro][co+2] > 0)
+		   && (game.board[ro][co+4] == 0)
+		   && game_find_path(4, ro, co+4, rd, cd) )
 			return 1;
-		if((yo+2 < 25 && xo+2 < 17)
-		   && (game.board[xo+1][yo+1] > 0)
-		   && (game.board[xo+2][yo+2] == 0)
-		   && game_find_path(5, xo+2, yo+2, xd, yd) )
+		if((co+2 < 25 && ro+2 < 17)
+		   && (game.board[ro+1][co+1] > 0)
+		   && (game.board[ro+2][co+2] == 0)
+		   && game_find_path(5, ro+2, co+2, rd, cd) )
 			return 1;
-		if((yo-2 >= 0 && xo+2 < 17)
-		   && (game.board[xo+1][yo-1] > 0)
-		   && (game.board[xo+2][yo-2] == 0)
-		   && game_find_path(6, xo+2, yo-2, xd, yd) )
+		if((co-2 >= 0 && ro+2 < 17)
+		   && (game.board[ro+1][co-1] > 0)
+		   && (game.board[ro+2][co-2] == 0)
+		   && game_find_path(6, ro+2, co-2, rd, cd) )
 			return 1;
 
 		/* Failed in all six directions, not a valid move */
 		return 0;
 	}
 
+	/* Check to make sure we haven't visited here before */
+	if(visited[ro][co])
+		return 0;
+	visited[ro][co] = 1;
+
 	/* Is it soup yet? */
-	if(xo == xd && yo == yd)
+	if(ro == rd && co == cd)
 		return 1;
 
 	/* Check all six possible jump directions recursively */
 	/* EXCEPT the one we came from */
 	if((from != 4)
-	   && (yo-4 >= 0)
-	   && (game.board[xo][yo-2] > 0)
-	   && (game.board[xo][yo-4] == 0)
-	   && game_find_path(1, xo, yo-4, xd, yd) )
+	   && (co-4 >= 0)
+	   && (game.board[ro][co-2] > 0)
+	   && (game.board[ro][co-4] == 0)
+	   && game_find_path(1, ro, co-4, rd, cd) )
 		return 1;
 	if((from != 5)
-	   && (yo-2 >= 0 && xo-2 >= 0)
-	   && (game.board[xo-1][yo-1] > 0)
-	   && (game.board[xo-2][yo-2] == 0)
-	   && game_find_path(2, xo-2, yo-2, xd, yd) )
+	   && (co-2 >= 0 && ro-2 >= 0)
+	   && (game.board[ro-1][co-1] > 0)
+	   && (game.board[ro-2][co-2] == 0)
+	   && game_find_path(2, ro-2, co-2, rd, cd) )
 		return 1;
 	if((from != 6)
-	   && (yo+2 < 25 && xo-2 >= 0)
-	   && (game.board[xo-1][yo+1] > 0)
-	   && (game.board[xo-2][yo+2] == 0)
-	   && game_find_path(3, xo-2, yo+2, xd, yd) )
+	   && (co+2 < 25 && ro-2 >= 0)
+	   && (game.board[ro-1][co+1] > 0)
+	   && (game.board[ro-2][co+2] == 0)
+	   && game_find_path(3, ro-2, co+2, rd, cd) )
 		return 1;
 	if((from != 1)
-	   && (yo+4 < 25)
-	   && (game.board[xo][yo+2] > 0)
-	   && (game.board[xo][yo+4] == 0)
-	   && game_find_path(4, xo, yo+4, xd, yd) )
+	   && (co+4 < 25)
+	   && (game.board[ro][co+2] > 0)
+	   && (game.board[ro][co+4] == 0)
+	   && game_find_path(4, ro, co+4, rd, cd) )
 		return 1;
 	if((from != 2)
-	   && (yo+2 < 25 && xo+2 < 17)
-	   && (game.board[xo+1][yo+1] > 0)
-	   && (game.board[xo+2][yo+2] == 0)
-	   && game_find_path(5, xo+2, yo+2, xd, yd) )
+	   && (co+2 < 25 && ro+2 < 17)
+	   && (game.board[ro+1][co+1] > 0)
+	   && (game.board[ro+2][co+2] == 0)
+	   && game_find_path(5, ro+2, co+2, rd, cd) )
 		return 1;
 	if((from != 3)
-	   && (yo-2 >= 0 && xo+2 < 17)
-	   && (game.board[xo+1][yo-1] > 0)
-	   && (game.board[xo+2][yo-2] == 0)
-	   && game_find_path(6, xo+2, yo-2, xd, yd) )
+	   && (co-2 >= 0 && ro+2 < 17)
+	   && (game.board[ro+1][co-1] > 0)
+	   && (game.board[ro+2][co-2] == 0)
+	   && game_find_path(6, ro+2, co-2, rd, cd) )
 		return 1;
 
 	return 0;

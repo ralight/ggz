@@ -42,6 +42,7 @@ static int get_seat(void);
 static int get_players(void);
 static int get_opponent_move(void);
 static int get_move_response(void);
+static int get_gameover_msg(void);
 
 
 int main(int argc, char *argv[])
@@ -75,6 +76,9 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case CC_MSG_MOVE:
 			status = get_opponent_move();
+			break;
+		case CC_MSG_GAMEOVER:
+			status = get_gameover_msg();
 			break;
 		case CC_REQ_MOVE:
 			game_notify_our_turn();
@@ -155,4 +159,15 @@ static int get_move_response(void)
 		return -1;
 
 	return status;
+}
+
+
+static int get_gameover_msg(void)
+{
+	char winner;
+
+	if(es_read_char(game.fd, &winner) < 0)
+		return -1;
+
+	return 0;
 }
