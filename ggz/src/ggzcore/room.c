@@ -286,10 +286,10 @@ int ggzcore_room_join_table(GGZRoom *room, const unsigned int num)
 }
 
 
-int ggzcore_room_leave_table(GGZRoom *room)
+int ggzcore_room_leave_table(GGZRoom *room, int force)
 {
 	if (room && room->server)
-		return _ggzcore_room_leave_table(room);
+		return _ggzcore_room_leave_table(room, force);
 	else
 		return -1;
 }
@@ -900,7 +900,7 @@ int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
 }
 
 
-int _ggzcore_room_leave_table(struct _GGZRoom *room)
+int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 {
 	int status;
 	struct _GGZNet *net;
@@ -911,7 +911,7 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room)
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
-	status = _ggzcore_net_send_table_leave(net);
+	status = _ggzcore_net_send_table_leave(net, force);
 
 	if (status == 0)
 		_ggzcore_server_set_table_leaving(room->server);

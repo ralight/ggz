@@ -540,9 +540,11 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 }
 
 
-int _ggzcore_net_send_table_leave(struct _GGZNet *net)
+int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force)
 {
 	int status = 0;
+	
+	/* we cannot force... */
 
 	ggz_debug("GGZCORE:NET", "Sending REQ_TABLE_LEAVE");
 	status = ggz_write_int(net->fd, REQ_TABLE_LEAVE);

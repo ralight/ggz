@@ -501,12 +501,13 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 }
 
 
-int _ggzcore_net_send_table_leave(struct _GGZNet *net)
+int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force)
 {
 	int status = 0;
 
 	ggz_debug("GGZCORE:NET", "Sending table leave request");
-	_ggzcore_net_send_line(net, "<LEAVE FORCE='false'/>");
+	_ggzcore_net_send_line(net, "<LEAVE FORCE='%s'/>",
+			       force ? "true" : "false");
 
 	return status;
 }
