@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6151 2004-07-17 22:45:57Z josef $
+ * $Id: ggzmod.h 6424 2004-11-24 08:41:00Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -201,7 +201,7 @@ typedef struct {
 
 typedef struct {
 	const char *player;
-	const char *message;
+	const char *message;    /**< Chat message (in UTF-8). */
 } GGZChat;
 
 /** @brief A GGZmod object, used for tracking a ggz<->table connection.
@@ -407,11 +407,34 @@ int ggzmod_connect(GGZMod * ggzmod);
 int ggzmod_disconnect(GGZMod * ggzmod);
 
 
+/** @brief Stand up (move from your seat into a spectator seat).
+ *  @param ggzmod The ggzmod object. */
 void ggzmod_request_stand(GGZMod * ggzmod);
+
+/** @brief Sit down (move from a spectator seat into a player seat).
+ *  @param ggzmod The ggzmod object.
+ *  @param seat_num The seat to sit in. */
 void ggzmod_request_sit(GGZMod * ggzmod, int seat_num);
+
+/** @brief Boot a player.  Only the game host may do this.
+ *  @param ggzmod The ggzmod object.
+ *  @param name The name of the player to boot. */
 void ggzmod_request_boot(GGZMod * ggzmod, const char *name);
+
+/** @brief Change the requested seat from an opean seat to a bot.
+ *  @param ggzmod The ggzmod object.
+ *  @param seat_num The number of the seat to toggle. */
 void ggzmod_request_bot(GGZMod * ggzmod, int seat_num);
+
+/** @brief Change the requested seat from a bot to an open seat.
+ *  @param ggzmod The ggzmod object.
+ *  @param seat_num The number of the seat to toggle. */
 void ggzmod_request_open(GGZMod * ggzmod, int seat_num);
+
+/** @brief Chat!  This initiates a table chat.
+ *  @param ggzmod The ggzmod object.
+ *  @param chat_msg The chat message.
+ *  @note The chat message should be in UTF-8. */
 void ggzmod_request_chat(GGZMod *ggzmod, const char *chat_msg);
 
 /** @brief Get the player's win-loss record.

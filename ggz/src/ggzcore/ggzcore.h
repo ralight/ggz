@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6304 2004-11-08 23:03:21Z jdorje $
+ * $Id: ggzcore.h 6424 2004-11-24 08:41:00Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -316,7 +316,7 @@ typedef enum {
 typedef struct {
 	GGZChatType type; /**< The type of chat. */
 	const char *sender; /**< The person who sent the message, or NULL */
-	const char *message; /**< The message itself, or NULL */
+	const char *message; /**< The message itself (in UTF-8), or NULL */
 } GGZChatEventData;
 
 /** @brief The data associated with a GGZ_TABLE_LEFT room event. */
@@ -1007,7 +1007,8 @@ int ggzcore_room_list_tables(GGZRoom *room,
  *  @param opcode The chat type.
  *  @param player The name of the target player (only for certain chat types)
  *  @param msg The text of the chat message (some chat types don't need it)
- *  @return 0 on success, negative on (any) failure */
+ *  @return 0 on success, negative on (any) failure
+ *  @note The chat message should be in UTF-8. */
 int ggzcore_room_chat(GGZRoom *room,
 		      const GGZChatType opcode,
 		      const char *player,
