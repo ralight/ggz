@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 2000
  * Desc: Options dialog code
- * $Id: options_dlg.c 6336 2004-11-12 04:56:10Z jdorje $
+ * $Id: options_dlg.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2000-2004 GGZ Development Team
  *
@@ -69,7 +69,7 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 	gtk_widget_set_name(dialog1, "dialog1");
 	g_object_set_data(G_OBJECT(dialog1), "dialog1", dialog1);
 	gtk_window_set_title(GTK_WINDOW(dialog1), ("Options dialog"));
-	gtk_window_set_policy(GTK_WINDOW(dialog1), FALSE, FALSE, TRUE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog1), TRUE);
 
 	dialog_vbox1 = GTK_DIALOG(dialog1)->vbox;
 	gtk_widget_set_name(dialog_vbox1, "dialog_vbox1");

@@ -226,8 +226,7 @@ gboolean ReadServerSocket(GIOChannel * channel, GIOCondition cond,
 		if (GetTallys() == NET_OK) {
 			DisplayTallys();
 			/* Set a timeout for when to clear screen */
-			gtk_timeout_add(CLEAR_DELAY,
-					TableClearTimer, NULL);
+			g_timeout_add(CLEAR_DELAY, TableClearTimer, NULL);
 			/* Don't accept server input until we've cleared the table */
 			g_source_remove(spadesHandle);
 		}

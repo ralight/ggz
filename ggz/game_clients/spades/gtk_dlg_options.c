@@ -74,7 +74,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 				     GTK_WINDOW(playArea->window));
 	gtk_container_border_width(GTK_CONTAINER(window), 10);
 	gtk_window_set_title(GTK_WINDOW(window), _("Options"));
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	g_signal_connect(GTK_OBJECT(window), "delete_event",

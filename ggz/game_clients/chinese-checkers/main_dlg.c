@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Chinese Checkers Client
  * Desc: Main dialog code
- * $Id: main_dlg.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main_dlg.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -84,7 +84,6 @@ GtkWidget *create_dlg_main(void)
 	g_object_set_data(G_OBJECT(dlg_main), "dlg_main", dlg_main);
 	gtk_window_set_title(GTK_WINDOW(dlg_main),
 			     "Chinese Checkers for GGZ");
-	//  gtk_window_set_policy (GTK_WINDOW (dlg_main), FALSE, FALSE, FALSE);
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(vbox1, "vbox1");

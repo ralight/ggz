@@ -68,7 +68,7 @@ GtkWidget *create_dlg_pref(GtkWidget * parent)
 	g_object_set_data(G_OBJECT(dlg_pref), "dlg_pref", dlg_pref);
 	gtk_window_set_title(GTK_WINDOW(dlg_pref),
 			     _("Dots - Color Preferences"));
-	gtk_window_set_policy(GTK_WINDOW(dlg_pref), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_pref), FALSE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_pref)->vbox;
 	gtk_widget_set_name(dialog_vbox1, "dialog_vbox1");

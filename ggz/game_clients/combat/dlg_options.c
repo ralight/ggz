@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6347 2004-11-13 08:38:07Z jdorje $
+ * $Id: dlg_options.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -320,7 +320,7 @@ GtkWidget *create_dlg_options(int number)
 			  dlg_options);
 	gtk_window_set_title(GTK_WINDOW(dlg_options), _("Game options"));
 	gtk_window_set_modal(GTK_WINDOW(dlg_options), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(dlg_options), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_options), TRUE);
 
 	dialog_vbox2 = GTK_DIALOG(dlg_options)->vbox;
 	gtk_widget_set_name(dialog_vbox2, "dialog_vbox2");
@@ -1472,7 +1472,7 @@ GtkWidget *create_dlg_save(void)
 	g_object_set_data(G_OBJECT(dlg_save), "dlg_save", dlg_save);
 	gtk_window_set_title(GTK_WINDOW(dlg_save), _("Save Map?"));
 	gtk_window_set_modal(GTK_WINDOW(dlg_save), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(dlg_save), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_save), TRUE);
 
 	dialog_vbox3 = GTK_DIALOG(dlg_save)->vbox;
 	gtk_widget_set_name(dialog_vbox3, "dialog_vbox3");

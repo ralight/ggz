@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6341 2004-11-12 17:32:37Z jdorje $
+ * $Id: main_win.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -452,7 +452,7 @@ GtkWidget *create_main_win(void)
 	main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(main_win), "main_win", main_win);
 	gtk_window_set_title(GTK_WINDOW(main_win), _("Hastings1066"));
-	gtk_window_set_policy(GTK_WINDOW(main_win), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(main_win), FALSE);
 
 	main_box = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(main_box);

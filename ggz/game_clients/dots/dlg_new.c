@@ -59,7 +59,7 @@ GtkWidget *create_dlg_new(void)
 				     GTK_WINDOW(main_win));
 	g_object_set_data(G_OBJECT(dlg_new), "dlg_new", dlg_new);
 	gtk_window_set_title(GTK_WINDOW(dlg_new), _("Game Over"));
-	gtk_window_set_policy(GTK_WINDOW(dlg_new), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_new), TRUE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_new)->vbox;
 	g_object_set_data(G_OBJECT(dlg_new), "dialog_vbox1", dialog_vbox1);

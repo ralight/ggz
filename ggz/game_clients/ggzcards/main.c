@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6339 2004-11-12 17:26:54Z jdorje $
+ * $Id: main.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -313,7 +313,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 	gtk_widget_ref(dialog);
 	g_object_set_data(G_OBJECT(msg_menu), mark, dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
-	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 	(void)g_signal_connect_swapped(GTK_OBJECT(dialog), "delete_event",
 				       GTK_SIGNAL_FUNC(gtk_widget_hide),
 				       GTK_OBJECT(dialog));

@@ -103,7 +103,7 @@ GtkWidget *create_dlg_main(void)
 	dlg_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	g_object_set_data(G_OBJECT(dlg_main), "dlg_main", dlg_main);
 	gtk_window_set_title(GTK_WINDOW(dlg_main), "Connect the Dots");
-	gtk_window_set_policy(GTK_WINDOW(dlg_main), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_main), FALSE);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_ref(vbox);

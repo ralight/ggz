@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Preferences dialog
- * $Id: prefs_dlg.c 6337 2004-11-12 17:10:03Z jdorje $
+ * $Id: prefs_dlg.c 6354 2004-11-13 18:19:09Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -101,7 +101,7 @@ GtkWidget *create_dlg_prefs(void)
 	g_object_set_data(G_OBJECT(dlg_prefs), "dlg_prefs", dlg_prefs);
 	gtk_window_set_title(GTK_WINDOW(dlg_prefs),
 			     "Chinese Checkers Preferences");
-	gtk_window_set_policy(GTK_WINDOW(dlg_prefs), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dlg_prefs), TRUE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_prefs)->vbox;
 	gtk_widget_set_name(dialog_vbox1, "dialog_vbox1");

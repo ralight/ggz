@@ -55,7 +55,7 @@ void DisconnectDialog(GtkWidget * widget, gpointer data)
 	window = gtk_dialog_new();
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Disconnect from Server"));
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */

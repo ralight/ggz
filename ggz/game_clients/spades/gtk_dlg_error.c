@@ -55,7 +55,7 @@ void DisplayMessage(char *message, gboolean quit)
 	} else {
 		gtk_window_set_title(GTK_WINDOW(window), _("Warning!"));
 	}
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 
