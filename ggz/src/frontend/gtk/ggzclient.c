@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4423 2002-09-06 21:06:15Z jdorje $
+ * $Id: ggzclient.c 4424 2002-09-06 22:22:19Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -962,6 +962,19 @@ static void ggz_check_fd(gpointer my_server, gint fd, GdkInputCondition cond)
 /* GdkDestroyNotify function for server fd */
 static void ggz_input_removed(gpointer data)
 {
+	if (server != data) {
+		/* This function should only be called once when we
+		   disconnect; calling it more than once would attempt to
+		   free the server twice.  See server_disconnect().  It's
+		   possible this could cause some errors since the
+		   ggzcore_server_free() doesn't get called immediately.
+		   The alternative is to put this code into
+		   server_disconnect(), and drop this function
+		   entirely.  --JDS */
+		assert(0);
+		return;
+	}
+
 	ggzcore_server_free((GGZServer*)data);
 	server = NULL;
 }
@@ -1148,8 +1161,12 @@ void server_disconnect(void)
 	if (server_handle == -1)
 		return;
 
+	/* Removing the input handler prompts the calling of 
+	   ggz_input_removed, which frees the server data.   This is
+	   a bit kludgy, but... */
 	gdk_input_remove(server_handle);
 	server_handle = -1;
+
 	chat_display_message(CHAT_LOCAL_HIGH, NULL,
 			     _("Disconnected from server."));
 }
