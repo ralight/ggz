@@ -4,7 +4,7 @@ QUICK1 = kcm_ggz.moc.lo
 QUICK2 = kcm_ggz_pane.moc.lo
 KSTUFF = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 
-lib_LTLIBRARIES = libkcm_ggz.la
+kde_module_LTLIBRARIES = libkcm_ggz.la
 libkcm_ggz_la_SOURCES = kcm_ggz.cpp
 libkcm_ggz_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 
