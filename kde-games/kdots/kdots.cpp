@@ -250,5 +250,7 @@ void KDots::gamesync()
 	for(int i = 0; i < proto->width - 1; i++)
 		for(int j = 0; j < proto->height - 1; j++)
 			es_read_char(proto->fd, &dot);
+
+	emit signalStatus(i18n("Syncing successful"));
 }
 

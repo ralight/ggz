@@ -31,16 +31,18 @@ KDotsOptions::KDotsOptions(QWidget *parent, char *name)
 	labelv = new QLabel("Vertical", this);
 
 	sliderh = new QSlider(QSlider::Horizontal, this);
-	sliderh->setRange(2, 25);
+	sliderh->setRange(2, 24);
 	sliderh->setValue(7);
 	sliderh->setTickmarks(QSlider::Below);
 	sliderh->setTickInterval(1);
+	sliderh->setPageStep(1);
 
 	sliderv = new QSlider(QSlider::Horizontal, this);
-	sliderv->setRange(2, 25);
+	sliderv->setRange(2, 24);
 	sliderv->setValue(7);
 	sliderv->setTickmarks(QSlider::Below);
 	sliderv->setTickInterval(1);
+	sliderv->setPageStep(1);
 
 	labelhn = new QLabel("7", this);
 	labelvn = new QLabel("7", this);

@@ -61,14 +61,14 @@ void KDotsHelp::paintEvent(QPaintEvent *e)
 	p.setFont(QFont("courier", 16, QFont::Normal));
 	p.drawText(10, 40, i18n("Game help for KDots"));
 	p.setFont(QFont("courier", 12, QFont::Normal));
-	p.drawText(10, 120, i18n("This game consists of a game board with"));
-	p.drawText(10, 140, i18n("dots which are to be connected. Whenever"));
-	p.drawText(10, 160, i18n("you achieve it to fill one square by surrounding"));
-	p.drawText(10, 180, i18n("it, it is marked as yours. If all dots are"));
-	p.drawText(10, 200, i18n("connected, the player with the highest number"));
-	p.drawText(10, 220, i18n("of fields has won. Tip: Prefer always an odd"));
-	p.drawText(10, 240, i18n("number of dots to prevent a tie game!"));
-	p.drawText(10, 270, i18n("Have fun!"));
+	p.drawText(10, 80, i18n("This game consists of a game board with"));
+	p.drawText(10, 100, i18n("dots which are to be connected. Whenever"));
+	p.drawText(10, 120, i18n("you achieve it to fill one square by surrounding"));
+	p.drawText(10, 140, i18n("it, it is marked as yours. If all dots are"));
+	p.drawText(10, 160, i18n("connected, the player with the highest number"));
+	p.drawText(10, 180, i18n("of fields has won. Tip: Prefer always an odd"));
+	p.drawText(10, 200, i18n("number of dots to prevent a tie game!"));
+	p.drawText(10, 230, i18n("Have fun!"));
 	p.end();
 }
 

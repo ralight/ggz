@@ -24,6 +24,7 @@
 QPixmap *bgpix;
 QImage *bgimg, *fgimg;
 QArray<int> *m_shadow;
+QArray<int> *m_shadowlines;
 int m_arywidth, m_aryheight;
 
 QDots::QDots(QWidget* parent = 0, char* name = 0)
@@ -33,6 +34,7 @@ QDots::QDots(QWidget* parent = 0, char* name = 0)
 	fgimg = NULL;
 	bgimg = NULL;
 	m_shadow = NULL;
+	m_shadowlines = NULL;
 
 	//setBackgroundColor(Qt::blue);
 	//setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/dragon.png"));
@@ -49,6 +51,7 @@ QDots::~QDots()
 	if(bgimg) delete bgimg;
 	if(fgimg) delete fgimg;
 	if(m_shadow) delete m_shadow;
+	if(m_shadowlines) delete m_shadowlines;
 }
 
 QPixmap *QDots::grayscale(QPixmap *pix)
@@ -98,7 +101,7 @@ void QDots::resizeEvent(QResizeEvent *e)
 
 	vResizeBoard(w, h);
 
-	paintEvent(NULL);
+	repaint();
 }
 
 void QDots::paintEvent(QPaintEvent *e)
@@ -109,6 +112,7 @@ void QDots::paintEvent(QPaintEvent *e)
 	QPainter p;
 	int w, h;
 	int ws, hs;
+	int updatescreen;
 
 	if((m_rows < 0) || (m_cols < 0)) return;
 	if(!m_shadow) return;
@@ -120,6 +124,44 @@ void QDots::paintEvent(QPaintEvent *e)
 	h = height();
 	ws = w / (m_cols + 1);
 	hs = h / (m_rows + 1);
+	updatescreen = 0;
+
+	p.begin(bgpix);
+	for(int j = 1; j <= m_rows; j++)
+	{
+		for(int i = 1; i <= m_cols; i++)
+		{
+			if((i < m_cols) && (m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) != border(i - 1, j - 1, right)))
+			{
+				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2) = border(i - 1, j - 1, right);
+				if(border(i - 1, j - 1, right) != -1) p.setPen(Qt::darkBlue);
+				else p.setPen(Qt::yellow);
+				p.drawLine(i * ws, j * hs, (i + 1) * ws, j * hs);
+				p.drawLine(i * ws, j * hs + 1, (i + 1) * ws, j * hs + 1);
+				updatescreen = 1;
+			}
+
+			if((j < m_rows) && (m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) != border(i - 1, j - 1, down)))
+			{
+				m_shadowlines->at(((j - 1) * m_cols + (i - 1)) * 2 + 1) = border(i - 1, j - 1, down);
+				if(border(i - 1, j - 1, down) != -1) p.setPen(Qt::darkBlue);
+				else p.setPen(Qt::yellow);
+				p.drawLine(i * ws, j * hs, i * ws, (j + 1) * hs);
+				p.drawLine(i * ws + 1, j * hs, i * ws + 1, (j + 1) * hs);
+				updatescreen = 1;
+			}
+
+			if(updatescreen)
+			{
+				p.setPen(QPen(Qt::white));
+				p.drawPoint(i * ws, j * hs);
+				p.drawPoint(i * ws + 1, j * hs);
+				p.drawPoint(i * ws, j * hs + 1);
+				p.drawPoint(i * ws + 1, j * hs + 1);
+			}
+		}
+	}
+	p.end();
 
 	for(int j = 1; j < m_rows; j++)
 	{
@@ -139,45 +181,15 @@ void QDots::paintEvent(QPaintEvent *e)
 						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, qRgb(0, 0, bluepart));
 					}
 				p.begin(bgpix);
-				p.drawImage(0, 0, *fgimg, 0, 0, width(), height());
+				//p.drawImage(0, 0, *fgimg, 0, 0, width(), height());
+				p.drawImage(i * tilewidth, j * tileheight, *fgimg, i * tilewidth, j * tileheight, tilewidth, tileheight);
 				p.end();
-				setBackgroundPixmap(*bgpix);
+				updatescreen = 1;
 			}
 		}
 	}
 
-	p.begin(this);
-
-	for(int j = 1; j <= m_rows; j++)
-	{
-		for(int i = 1; i <= m_cols; i++)
-		{
-
-			if(i < m_cols)
-			{
-				if(border(i - 1, j - 1, right) != -1) p.setPen(Qt::darkBlue);
-				else p.setPen(Qt::yellow);
-				p.drawLine(i * ws, j * hs, (i + 1) * ws, j * hs);
-				p.drawLine(i * ws, j * hs + 1, (i + 1) * ws, j * hs + 1);
-			}
-
-			if(j < m_rows)
-			{
-				if(border(i - 1, j - 1, down) != -1) p.setPen(Qt::darkBlue);
-				else p.setPen(Qt::yellow);
-				p.drawLine(i * ws, j * hs, i * ws, (j + 1) * hs);
-				p.drawLine(i * ws + 1, j * hs, i * ws + 1, (j + 1) * hs);
-			}
-
-			p.setPen(QPen(Qt::white));
-			p.drawPoint(i * ws, j * hs);
-			p.drawPoint(i * ws + 1, j * hs);
-			p.drawPoint(i * ws, j * hs + 1);
-			p.drawPoint(i * ws + 1, j * hs + 1);
-		}
-	}
-
-	p.end();
+	if(updatescreen) setBackgroundPixmap(*bgpix);
 }
 
 void QDots::mousePressEvent(QMouseEvent *e)
@@ -202,11 +214,19 @@ void QDots::refreshBoard()
 	QPainter p;
 
 	if(m_shadow) delete m_shadow;
+	if(m_shadowlines) delete m_shadowlines;
 
 	m_shadow = new QArray<int>((m_cols - 1) * (m_rows - 1));
-	for(int j = 0; j < m_rows -1; j++)
+	m_shadowlines = new QArray<int>(m_cols * m_rows * 2);
+	for(int j = 0; j < m_rows - 1; j++)
 		for(int i = 0; i < m_cols - 1; i++)
 			m_shadow->at(j * (m_cols - 1) + i) = -1;
+	for(int j = 0; j < m_rows; j++)
+		for(int i = 0; i < m_cols; i++)
+		{
+			m_shadowlines->at((j * m_cols + i) * 2) = 0;
+			m_shadowlines->at((j * m_cols + i) * 2 + 1) = 0;
+		}
 	m_arywidth = m_cols - 1;
 	m_aryheight = m_rows - 1;
 
@@ -220,3 +240,4 @@ void QDots::refreshBoard()
 	resizeEvent(NULL);
 	repaint();
 }
+

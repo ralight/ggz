@@ -51,6 +51,7 @@ KDotsWin::KDotsWin(char *name = NULL)
 
 	slotStatus(i18n("Waiting for opponent..."));
 
+	setFixedSize(400, 400);
 	setCaption(i18n("Connect The Dots for KDE"));
 	show();
 }
