@@ -149,6 +149,17 @@ if test "x$1" = "xexport" || test "x$2" = "xexport"; then
   CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
   LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
 fi
+
+save_cflags=$CFLAGS
+save_cxxflags=$CXXFLAGS
+CFLAGS="-Wall -Werror"
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+	[[void signedness(void){char c;if(c==-1)c=0;}]])],
+	[],
+	[save_cflags="$save_cflags -fsigned-char"
+	 save_cxxflags="$save_cxxflags -fsigned-char"])
+CFLAGS=$save_cflags
+CXXFLAGS=$save_cxxflags
 ])
 
 dnl ------------------------------------------------------------------------
