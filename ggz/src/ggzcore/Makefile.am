@@ -37,10 +37,8 @@ libggzcore_la_SOURCES =	conf.c \
 			module.h \
 			msg.c \
 			msg.h \
-#			net.c \
-#			net.h \
+			net.h \
 			netxml.c \
-			netxml.h \
 			player.c \
 			player.h \
 			protocol.c \
