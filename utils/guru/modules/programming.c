@@ -17,25 +17,27 @@ void gurumod_init()
 
 Guru *gurumod_exec(Guru *message)
 {
-	const char *tokenizer = " ,.()?!";
-	char *token;
-	char *outtoken;
-	
-	token = strtok(strdup(message->message), tokenizer);
+	int i;
+	char *token, *outtoken;
+
+	i = 0;
 	outtoken = NULL;
-	while((token) && (!outtoken))
+	while((message->list) && (message->list[i]))
 	{
+		token = message->list[i];
 		if(!strcasecmp(token, "java")) outtoken = "Java? You don't know _my_ skills!";
 		if(!strcasecmp(token, "basic")) outtoken = "I though Basic is for beginners only. You must be childish.";
 		if(!strcasecmp(token, "c")) outtoken = "Don't talk about C. It's so crappy, nobody used it. .NET rulez.";
 		if(!strcasecmp(token, "pascal")) outtoken = "Oh, I've learned that at school. However, it sucks when compared to Prolog.";
-		token = strtok(NULL, tokenizer);
+		if(!strcasecmp(token, "perl")) outtoken = "Yeah, perl. I hate write-only languages.";
+		if(outtoken)
+		{
+			message->message = outtoken;
+			return message;
+		}
+		i++;
 	}
-	while(token) token = strtok(NULL, tokenizer);
-	if(outtoken) sleep(strlen(outtoken) / 30);
-	message->message = outtoken;
-	message->type = GURU_CHAT;
-	return message;
+	return NULL;
 }
 
 

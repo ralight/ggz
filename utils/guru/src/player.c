@@ -1,19 +1,16 @@
+/*******************************************************************
+*
+* Guru - functional example of a next-generation grubby
+* Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Original written by Rich Gade and enhanced by Justin Zaun
+* Published under GNU GPL conditions - see 'COPYING' for details
+*
+********************************************************************/
+
 #include "player.h"
 #include <ggzcore.h>
 #include <stdlib.h>
 #include <string.h>
-
-/*struct player_t
-{
-	char *name;
-	char *realname;
-	int firstseen, lastseen, lastactive;
-	char *language;
-	char *publicinfo;
-	int status;
-};
-
-typedef struct player_t Player;*/
 
 #define MAXPLAYERS 1024
 

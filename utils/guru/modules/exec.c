@@ -139,15 +139,13 @@ Guru *gurumod_exec(Guru *message)
 		answer = process(programlist[i], message);
 		if(answer)
 		{
-			free(message->message);
 			message->message = strdup(answer);
 			printf(" --> GOT ANSWER: '%s'\n", answer);
 			return message;
 		}
 		i++;
 	}
-	message->message = NULL;
-	return message;
+	return NULL;
 }
 
 void gurumod_init()

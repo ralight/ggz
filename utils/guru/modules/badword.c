@@ -35,27 +35,24 @@ void gurumod_init()
 
 Guru *gurumod_exec(Guru *message)
 {
-	const char *tokenizer = " ,.()?!";
-	char *token;
-	char *outtoken;
-	int i;
+	int i, j;
 	
-	token = strtok(strdup(message->message), tokenizer);
-	outtoken = NULL;
-	while((token) && (!outtoken))
+	j = 0;
+	while((message->list) && (message->list[j]))
 	{
 		i = 0;
 		while((badwordlist) && (badwordlist[i]))
 		{
-			if(!strcasecmp(token, badwordlist[i])) outtoken = "Watch your language please!";
+			if(!strcasecmp(message->list[j], badwordlist[i]))
+			{
+				message->message = "Watch your language please!";
+				return message;
+			}
 			i++;
 		}
-		token = strtok(NULL, tokenizer);
+		j++;
 	}
-	while(token) token = strtok(NULL, tokenizer);
-	message->message = outtoken;
-	message->type = GURU_CHAT;
-	return message;
+	return NULL;
 }
 
 

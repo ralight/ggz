@@ -2,6 +2,7 @@
 *
 * Guru - functional example of a next-generation grubby
 * Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -12,6 +13,8 @@
 #define GURU_CHAT 1
 #define GURU_PRIVMSG 2
 #define GURU_ADMIN 3
+#define GURU_ENTER 4
+#define GURU_LEAVE 5
 
 struct guru_t
 {

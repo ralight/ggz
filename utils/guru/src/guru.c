@@ -2,6 +2,7 @@
 *
 * Guru - functional example of a next-generation grubby
 * Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/

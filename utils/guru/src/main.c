@@ -2,6 +2,7 @@
 *
 * Guru - functional example of a next-generation grubby
 * Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -16,14 +17,14 @@ int main(int argc, char *argv[])
 	Gurucore *core;
 	Guru *guru;
 
-	printf("Guru: initializing...\n");
+	printf("Grubby: initializing...\n");
 	core = guru_init();
 	if(!core)
 	{
-		printf("Guru initialization failed!\n");
+		printf("Grubby initialization failed!\n");
 		exit(-1);
 	}
-	printf("Guru: connect...\n");
+	printf("Grubby: connect...\n");
 
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
 	while(1)
@@ -35,18 +36,19 @@ int main(int argc, char *argv[])
 				exit(-1);
 				break;
 			case NET_LOGIN:
-				printf("Logged in.\n");
+				printf("Grubby: Logged in.\n");
 				(core->net_join)(core->autojoin);
 				break;
 			case NET_GOTREADY:
-				printf("Ready.\n");
+				printf("Grubby: Ready.\n");
 				break;
 			case NET_INPUT:
 				guru = (core->net_input)();
-				printf("Received: %s\n", guru->message);
+				/*printf("Received: %s\n", guru->message);*/
 				guru = guru_work(guru);
 				if(guru)
-					{printf("Answer is: %s\n", guru->message);
+				{
+					/*printf("Answer is: %s\n", guru->message);*/
 					(core->net_output)(guru);
 				}
 				break;

@@ -1,8 +1,8 @@
-This is my setup for the current version of guru:
+This is my setup for the current version of grubby:
 
-=========================
-/home/josef/.ggz/guru.rc:
-=========================
+===========================
+/home/josef/.ggz/grubby.rc:
+===========================
 
 [preferences]
 name = Grubby

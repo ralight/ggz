@@ -17,25 +17,26 @@ void gurumod_init()
 
 Guru *gurumod_exec(Guru *message)
 {
-	const char *tokenizer = " ,.()?!";
-	char *token;
-	char *outtoken;
 	int i;
 	
-	token = strtok(strdup(message->message), tokenizer);
-	outtoken = NULL;
 	i = 0;
-	while((token) && (!outtoken))
+	while((message->list) && (message->list[i]))
 	{
-		if((i == 1) && (!strcasecmp(token, "about"))) outtoken = "I'm the reincarnation of Grubby!";
-		if((i == 1) && (!strcasecmp(token, "help"))) outtoken = "Yeah, let me help you my friend.";
-		token = strtok(NULL, tokenizer);
+		if((i == 1) && (!strcasecmp(message->list[i], "about")))
+		{
+			message->message = "I'm the reincarnation of Grubby!";
+			message->type = GURU_PRIVMSG;
+			return message;
+		}
+		if((i == 1) && (!strcasecmp(message->list[i], "help")))
+		{
+			message->message = "Yeah, let me help you my friend.";
+			message->type = GURU_PRIVMSG;
+			return message;
+		}
 		i++;
 	}
-	while(token) token = strtok(NULL, tokenizer);
-	message->message = outtoken;
-	message->type = GURU_CHAT;
-	return message;
+	return NULL;
 }
 
 

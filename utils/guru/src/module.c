@@ -2,6 +2,7 @@
 *
 * Guru - functional example of a next-generation grubby
 * Copyright (C) 2001 Josef Spillner, <dr_maux@users.sourceforge.net>
+* Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
 ********************************************************************/
@@ -32,14 +33,14 @@ Gurucore *guru_module_init()
 	int count, i;
 	char *module;
 
-	sprintf(path, "%s/.ggz/guru.rc", getenv("HOME"));
+	sprintf(path, "%s/.ggz/grubby.rc", getenv("HOME"));
 	handler = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
 	if(handler < 0) return NULL;
 
 	core = (Gurucore*)malloc(sizeof(Gurucore));
 
 	core->host = ggzcore_confio_read_string(handler, "preferences", "host", "localhost");
-	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "guru/unnamed");
+	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "grubby/unnamed");
 	core->guestname = (char*)malloc(strlen(core->name) + 4);
 	strcpy(core->guestname, core->name);
 	strcat(core->guestname, "(G)");
@@ -140,7 +141,7 @@ int guru_module_remove(const char *modulealias)
 	{
 		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
-printf("DEBUG: FOUND IT at %i!!!\n", i);
+/*printf("DEBUG: FOUND IT at %i!!!\n", i);*/
 			modulelist[i] = NULL;
 			/*free(modulenamelist[i]);*/ /* HUH? */
 			modulenamelist[i] = NULL;
@@ -150,7 +151,7 @@ printf("DEBUG: FOUND IT at %i!!!\n", i);
 		}
 	}
 
-printf("DEBUG: DIDN'T FIND!\n");
+/*printf("DEBUG: DIDN'T FIND!\n");*/
 	return 0;
 }
 
@@ -182,36 +183,40 @@ Guru *guru_module_internal(Guru *message)
 	int modules, modadd, modremove;
 	char *mod;
 
-	token = strtok(strdup(message->message), ",-./: ");
 	i = 0;
 	modules = 0;
 	modadd = 0;
 	modremove = 0;
 	mod = NULL;
-	while(token)
+	while((message->list) && (message->list[i]))
 	{
-if(i == 0)
+		token = message->list[i];
+/*if(i == 0)
 {
 	printf("COMPARE: %s -> %s, %s\n", token, core->name, core->guestname);
-}
+}*/
 		if((i == 0) && (!strcasecmp(token, core->name))) modules++;
 		if((i == 0) && (!strcasecmp(token, core->guestname))) modules++;
 		if((i == 1) && (!strcmp(token, "modules"))) modules++;
 		if((i == 1) && (!strcmp(token, "insmod"))) modadd++;
 		if((i == 1) && (!strcmp(token, "rmmod"))) modremove++;
 		if((i == 2) && ((modadd) || (modremove))) mod = strdup(token);
-		token = strtok(NULL, ",-./: ");
 		i++;
 	}
+	if(message->type == GURU_PRIVMSG) modules++;
 
 	if(modules == 2)
 	{
+		free(message->message);
 		message->message = guru_modules_list();
+		message->type = GURU_PRIVMSG;
 		return message;
 	}
 	if((modules == 1) && ((modadd) || (modremove)) && (mod))
 	{
-printf("DEBUG: add or remove\n");
+/*printf("DEBUG: add or remove\n");*/
+		free(message->message);
+		message->type = GURU_PRIVMSG;
 		if((core->owner) && (!strcmp(core->owner, message->player)))
 		{
 			if(modadd)
@@ -221,7 +226,7 @@ printf("DEBUG: add or remove\n");
 			}
 			if(modremove)
 			{
-printf("DEBUG: remove %s\n", mod);
+/*printf("DEBUG: remove %s\n", mod);*/
 				if(guru_module_remove(mod)) message->message = "Module removed.";
 				else message->message = "Error: Could not remove module.";
 			}
@@ -240,7 +245,7 @@ Guru *guru_module_work(Guru *message, int priority)
 	modulefunc func;
 	Guru *ret;
 	char *savemsg;
-	Guru extrasave;
+	char *moresave;
 
 	ret = guru_module_internal(message);
 	if(ret) return ret;
@@ -253,19 +258,22 @@ Guru *guru_module_work(Guru *message, int priority)
 		{
 			if(!functionlist[i]) continue;
 			message->message = strdup(savemsg);
+			moresave = message->message;
 			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
 			func = functionlist[i];
-			extrasave = *message;
-			extrasave.message = strdup(savemsg);
-			ret = (func)(&extrasave);
-			if(ret->message)
+			ret = (func)(message);
+			free(moresave); /* EH?! */
+			if((ret) && (ret->message))
 			{
 				printf("Debug: got %s\n", ret->message);
 				/*sleep(strlen(g.message) / 7);*/
+				free(savemsg);
 				return ret;
 			}
+			/*else printf("No answer :(\n");*/
 		}
 	}
+	free(savemsg);
 	return NULL;
 }
 
