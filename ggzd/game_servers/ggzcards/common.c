@@ -349,6 +349,8 @@ int send_gameover(int cnt, player_t* plist)
 int send_table(player_t p)
 {
 	int s_r, s_abs, status = 0, fd = ggz_seats[p].fd;
+
+	ggz_debug("Sending table to player %d (%s).", p, ggz_seats[p].name);
 	
 	if (fd == -1) {
 		ggz_debug("ERROR: send_table: fd==-1.");
@@ -377,7 +379,7 @@ int send_sync(player_t p)
 	seat_t s;
 	int status = 0;
 
-	ggz_debug("Sending sync to player %d (%s)", p, ggz_seats[p].name);
+	ggz_debug("Sending sync to player %d (%s).  State is %s.", p, ggz_seats[p].name, game_states[game.state]);
 
 	if (send_player_list(p) < 0)
 		status = -1;
@@ -402,7 +404,7 @@ int send_sync(player_t p)
 		if (req_bid(game.next_bid, game.num_bid_choices, game.bid_text_ref) < 0)
 			status = -1;
 	if (game.state == WH_STATE_WAIT_FOR_PLAY &&
-	    game.next_play == p)
+	    game.curr_play == p)
 		if (req_play(game.next_play, game.play_seat) < 0)
 			status = -1;
 
@@ -991,7 +993,7 @@ int update(int event, void *data)
 
 			if (game.state != WH_STATE_NOTPLAYING &&
 			    !(game.state == WH_STATE_WAITFORPLAYERS && game.saved_state == WH_STATE_NOTPLAYING))
-				game_set_player_message(player); /* should this be in sync??? */
+				send_player_message_toall(player); /* should this be in sync??? */
 
 			if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 				games_req_gametype();
