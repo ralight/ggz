@@ -33,6 +33,7 @@
 #include <kprocess.h>
 #include <kstandarddirs.h>
 #include <kio/netaccess.h>
+#include <kiconloader.h>
 
 #include <kdebug.h>
 
@@ -112,13 +113,6 @@ void App::load(bool destructive)
 	QListViewItem *tmp = NULL, *tmp2 = NULL, *tmp3 = NULL;
 	KStandardDirs d;
 	Series *s;
-	QString icontheme;
-
-#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
-	icontheme = "crystalsvg";
-#else
-	icontheme = "hicolor";
-#endif
 
 	if(destructive) m_list->clear();
 
@@ -130,7 +124,7 @@ void App::load(bool destructive)
 		if(m_view == sorted)
 		{
 			tmp = new QListViewItem(m_list, s->title());
-			tmp->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/folder_yellow.png"));
+			tmp->setPixmap(0, KGlobal::iconLoader()->loadIcon("folder_yellow", KIcon::Small));
 		}
 		QPtrList<Eventgroup> eventgrouplist = s->eventgroups();
 		for(Eventgroup *eventgroup = eventgrouplist.first(); eventgroup; eventgroup = eventgrouplist.next())
@@ -138,7 +132,7 @@ void App::load(bool destructive)
 			if(m_view == sorted)
 			{
 				tmp2 = new QListViewItem(tmp, eventgroup->title());
-				tmp2->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/folder_green.png"));
+				tmp2->setPixmap(0, KGlobal::iconLoader()->loadIcon("folder_green", KIcon::Small));
 			}
 			QPtrList<Event> eventlist = eventgroup->events();
 			for(Event *event = eventlist.first(); event; event = eventlist.next())
@@ -151,7 +145,7 @@ void App::load(bool destructive)
 				{
 					tmp3 = new QListViewItem(m_list, QString("%1").arg(event->date()), event->title());
 				}
-				tmp3->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/exec.png"));
+				tmp3->setPixmap(0, KGlobal::iconLoader()->loadIcon("exec", KIcon::Small));
 			}
 		}
 	}
