@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6800 2005-01-22 10:08:50Z jdorje $
+ * $Id: ggzmod.c 6825 2005-01-23 08:54:26Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -802,11 +802,17 @@ int ggzmod_dispatch(GGZMod * ggzmod)
 	return _ggzmod_handle_event(ggzmod, read_fd_set);
 }
 
-
 int ggzmod_disconnect(GGZMod * ggzmod)
 {
-	if (!ggzmod || ggzmod->fd < 0 ) {
+	if (!ggzmod) {
 		return -1;
+	}
+	if (ggzmod->fd < 0) {
+		/* This isn't an error; it usually means
+		   we already disconnected.  The invariant is that the
+		   process (ggzmod->pid) exists iff the socket (ggzmod->fd)
+		   exists. */
+		return 0;
 	}
 
 	if (ggzmod->type == GGZMOD_GGZ) {
