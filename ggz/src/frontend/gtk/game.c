@@ -57,7 +57,7 @@ int game_init(void)
 {
 	gchar *message;
 	gchar *name;
-	gchar *protocol;
+	gchar *engine, *version;
 	gchar *frontend;
 	guint num, i;
 	GGZRoom *room;
@@ -94,10 +94,11 @@ int game_init(void)
 	}
 
 	name = ggzcore_gametype_get_name(gt);
-	protocol = ggzcore_gametype_get_protocol(gt);
+	engine = ggzcore_gametype_get_prot_engine(gt);
+	version = ggzcore_gametype_get_prot_version(gt);
 
 	/* Check how many modules are registered for this game type */
-	num = ggzcore_module_get_num_by_type(name, protocol);
+	num = ggzcore_module_get_num_by_type(name, engine, version);
 	if (num == 0) {
 		message = g_strdup_printf(_("You don't have this game installed. You can download\nit from %s."), ggzcore_gametype_get_url(gt));
 	
@@ -110,14 +111,14 @@ int game_init(void)
 
 	/* If there's only one choice, use it regardless of frontend */
 	if (num == 1)
-		module = ggzcore_module_get_nth_by_type(name, protocol, 0);
+		module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
 
 
 	/* FIXME: if num > 1, popup a dialog and let the user choose */
 	if (num > 1) {
-		g_print("%s v %s had %d modules\n", name, protocol, num);
+		g_print("%s v %s %s had %d modules\n", name, engine, version, num);
 		for (i = 0; i < num; i++) {
-			module = ggzcore_module_get_nth_by_type(name, protocol, i);
+			module = ggzcore_module_get_nth_by_type(name, engine, version, i);
 			frontend = ggzcore_module_get_frontend(module);
 			g_print("Module %d by %s frontend %s..", i,
 				ggzcore_module_get_author(module),
