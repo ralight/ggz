@@ -2,8 +2,6 @@
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.reversi
 ggzdgame_DATA = reversi.dsc
 ggzdroom_DATA = reversi.room
@@ -17,8 +15,7 @@ ggzd_reversi_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_reversi_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_reversi_LDFLAGS = -static
+ggzd_reversi_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

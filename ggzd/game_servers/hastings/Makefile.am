@@ -4,8 +4,6 @@ EXTRA_DIST = hastings.dsc hastings.room
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock
-
 ggzdexecmod_PROGRAMS = ggzd.hastings
 ggzdgame_DATA = hastings.dsc
 ggzdroom_DATA = hastings.room
@@ -18,8 +16,7 @@ ggzd_hastings_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_hastings_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la
-ggzd_hastings_LDFLAGS = -static
+ggzd_hastings_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

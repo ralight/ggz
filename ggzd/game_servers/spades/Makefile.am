@@ -4,8 +4,6 @@ EXTRA_DIST = spades.dsc spades.room
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.spades
 ggzdgame_DATA = spades.dsc
 ggzdroom_DATA = spades.room
@@ -23,8 +21,7 @@ ggzd_spades_SOURCES = card.c \
 		      socketfunc.c \
 		      socketfunc.h
 
-ggzd_spades_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_spades_LDFLAGS = -static
+ggzd_spades_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

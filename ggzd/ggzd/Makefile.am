@@ -7,8 +7,6 @@ DB_OBJECTS = ggzdb_@database@.o
 
 EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd $(DB_SOURCES)
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 bin_PROGRAMS = ggzd
 
 ggzd_SOURCES =	chat.c\
@@ -45,9 +43,7 @@ ggzd_SOURCES =	chat.c\
 		login.h
 
 
-ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la
-		     
-ggzd_LDFLAGS = -static
+ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS)
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 

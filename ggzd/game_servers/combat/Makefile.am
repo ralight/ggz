@@ -2,8 +2,6 @@
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.combat
 ggzdgame_DATA = combat.dsc
 ggzdroom_DATA = combat.room
@@ -19,8 +17,7 @@ ggzd_combat_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_combat_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_combat_LDFLAGS = -static
+ggzd_combat_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

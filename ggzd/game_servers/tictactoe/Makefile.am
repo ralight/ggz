@@ -4,8 +4,6 @@ EXTRA_DIST = tictactoe.dsc tictactoe.room
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.tictactoe
 ggzdgame_DATA = tictactoe.dsc
 ggzdroom_DATA = tictactoe.room
@@ -18,8 +16,7 @@ ggzd_tictactoe_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_tictactoe_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_tictactoe_LDFLAGS = -static
+ggzd_tictactoe_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

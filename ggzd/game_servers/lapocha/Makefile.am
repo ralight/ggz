@@ -4,8 +4,6 @@ EXTRA_DIST = lapocha.dsc lapocha.room
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.lapocha
 ggzdgame_DATA = lapocha.dsc
 ggzdroom_DATA = lapocha.room
@@ -17,8 +15,7 @@ ggzd_lapocha_SOURCES = ggz.c ggz.h \
 		       protocols.h
 
 
-ggzd_lapocha_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_lapocha_LDFLAGS = -static
+ggzd_lapocha_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

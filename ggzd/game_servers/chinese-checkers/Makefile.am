@@ -4,8 +4,6 @@ EXTRA_DIST = ccheckers.dsc ccheckers.room
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/easysock 
-
 ggzdexecmod_PROGRAMS = ggzd.ccheckers
 ggzdgame_DATA = ccheckers.dsc
 ggzdroom_DATA = ccheckers.room
@@ -20,8 +18,7 @@ ggzd_ccheckers_SOURCES = ggz.c \
 			 protocols.h
 
 
-ggzd_ccheckers_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ggzd_ccheckers_LDFLAGS = -static
+ggzd_ccheckers_LDADD = $(LDADD)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
