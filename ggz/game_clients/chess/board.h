@@ -4,6 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for board.c
+ * $Id: board.h 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,33 +44,33 @@
 	gdk_bitmap_ref(pieces_mask[bitmap]); } while (0)
 
 /* Load the bitmaps */
-void board_init();
+void board_init(void);
 
 /* translate between the cgc piece value and the game piece value */
-int board_translate();
+int board_translate(int cgc_val);
 
 /* dnd stuff */
-void board_dnd_init();
+void board_dnd_init(void);
 void board_dnd_highlight( int x, int y, GdkDragContext *drag_context );
 
 /* info (labels and move list) */
-void board_info_init();
-void board_info_update();
+void board_info_init(void);
+void board_info_update(void);
 void board_info_add_move(char *);
 
 /* Draw stuff */
-void board_draw();
-void board_draw_bg();
-void board_draw_pieces();
-void board_draw_highlights();
+void board_draw(void);
+void board_draw_bg(void);
+void board_draw_pieces(void);
+void board_draw_highlights(void);
 void board_draw_outline(int, int, GdkGC *);
 void board_draw_piece(int piece, int x, int y);
 
 /* UI */
-void board_request_draw();
-void board_call_flag();
-void board_request_update();
-int board_auto_call();
+void board_request_draw(void);
+void board_call_flag(void);
+void board_request_update(void);
+int board_auto_call(void);
 
 /* Promote hack */
 void

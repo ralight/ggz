@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -49,8 +49,8 @@ GtkWidget *main_win;
 /* Game info */
 struct chess_info game_info;
 
-static void initialize_debugging();
-static void cleanup_debugging();
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
 
 static GGZMod *mod;
 

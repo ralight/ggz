@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: net.c 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -39,6 +39,7 @@
 
 #include "game.h"
 #include "chess.h"
+#include "net.h"
 
 extern struct chess_info game_info;
 
@@ -145,15 +146,15 @@ void net_send_move(char *move, int time) {
   */
 }
 
-void net_send_draw() {
+void net_send_draw(void) {
   ggz_write_char(game_info.fd, CHESS_REQ_DRAW);
 }
 
-void net_call_flag() {
+void net_call_flag(void) {
   ggz_write_char(game_info.fd, CHESS_REQ_FLAG);
 }
 
-void net_request_update() {
+void net_request_update(void) {
 	ggz_write_char(game_info.fd, CHESS_REQ_UPDATE);
 }
 

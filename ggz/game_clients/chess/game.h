@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: game.h 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -25,7 +25,7 @@
 
 #include <gtk/gtk.h>
 
-void game_init();
+void game_init(void);
 void game_message(const char *, ...);
 void game_popup(const char *, ...);
 void game_update(int event, void *arg);

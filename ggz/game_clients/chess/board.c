@@ -5,6 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
+ * $Id: board.c 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -73,7 +74,7 @@ extern struct chess_info game_info;
 /* dnd stuff */
 GtkTargetEntry *target;
 
-void board_init() {
+void board_init(void) {
   if (pieces)
     return;
   /* Load images */
@@ -128,7 +129,7 @@ void board_init() {
 	//board_info_init();
 }
 
-void board_info_init() {
+void board_info_init(void) {
 	GtkWidget *black, *white;
 	GtkWidget *black_arrow, *white_arrow;
 	GdkColor color;
@@ -170,7 +171,7 @@ void board_info_init() {
 
 }
 
-void board_info_update() {
+void board_info_update(void) {
 	GtkWidget *black, *white;
 	char text[32];
 
@@ -200,7 +201,7 @@ void board_info_update() {
 	
 
 
-void board_dnd_init() {
+void board_dnd_init(void) {
   GtkWidget *board;
   target = (GtkTargetEntry *)malloc(sizeof(GtkTargetEntry));
 
@@ -216,7 +217,7 @@ void board_dnd_init() {
 
 }
 
-void board_draw() {
+void board_draw(void) {
   board_draw_bg();
   board_draw_pieces();
   board_draw_highlights();
@@ -224,7 +225,7 @@ void board_draw() {
   gtk_widget_draw(lookup_widget(main_win, "board"), NULL);
 }
 
-void board_draw_highlights() {
+void board_draw_highlights(void) {
   int x, y;
 	char output[80];
 	cgc_getboard(output, game->board);
@@ -262,7 +263,7 @@ void board_draw_outline(int x, int y, GdkGC *gc) {
 
   
 
-void board_draw_bg() {
+void board_draw_bg(void) {
   int i, j;
   if (!pieces)
     board_init();
@@ -296,7 +297,7 @@ void board_draw_bg() {
 
 }
 
-void board_draw_pieces() {
+void board_draw_pieces(void) {
   int x, y;
 	char output[80];
 
@@ -368,17 +369,17 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
   game_info.src_y = y;
 }
 
-void board_request_draw() {
+void board_request_draw(void) {
   game_message("Requesting draw!");
   net_send_draw();
 }
 
-void board_call_flag() {
+void board_call_flag(void) {
   game_message("Calling flag");
   net_call_flag();
 }
 
-int board_auto_call() {
+int board_auto_call(void) {
   GtkWidget *auto_call;
   auto_call = lookup_widget(main_win, "auto_call_flag");
   return GTK_CHECK_MENU_ITEM(auto_call)->active;
@@ -425,6 +426,6 @@ promote_piece                          (GtkButton       *button,
 
 }
 
-void board_request_update() {
+void board_request_update(void) {
 	net_request_update();
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: game.c 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -55,7 +55,7 @@ gint timeout_id;
 
 game_t *game = NULL;
 
-void game_init() {
+void game_init(void) {
   /* Init the libcgc structures */
   game = cgc_create_game();
   cgc_join_game(game, WHITE);
@@ -172,7 +172,7 @@ void game_update(int event, void *arg) {
         break;
       /* Update the game info structure */
       game_info.assign[0] = *(char *)arg;
-      game_info.assign[1] = *(char *)(arg+20);
+      game_info.assign[1] = *(((char *)arg) + 20);
 			if (game_info.assign[0] != GGZ_SEAT_OPEN)
 				strcpy(game_info.name[0], (char *)(arg+1));
 			if (game_info.assign[1] != GGZ_SEAT_OPEN)

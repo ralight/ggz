@@ -4,6 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for net.c
+ * $Id: net.h 4491 2002-09-09 04:51:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -29,13 +30,13 @@ void net_send_time(int time_option);
 void net_send_move(char *move, int time);
 
 /* Request draw */
-void net_send_draw();
+void net_send_draw(void);
 
 /* Call flag */
-void net_call_flag();
+void net_call_flag(void);
 
 /* Request update */
-void net_request_update();
+void net_request_update(void);
 
 /* Update server */
 void net_update_server(int time);
