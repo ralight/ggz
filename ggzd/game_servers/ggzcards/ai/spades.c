@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2439 2001-09-10 08:15:35Z jdorje $
+ * $Id: spades.c 2440 2001-09-10 08:19:13Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -91,14 +91,14 @@ static struct play {
 	int trick;		/* likelyhood card will take this trick */
 	int future;		/* likelyhood card will take future trick */
 } play[13];
-static int plays, high, lastTrick;
+static int plays, high;
 
 static void Calculate(player_t num, struct play *play, int agg);
 static int SuitMap(seat_t, player_t, char);
 static int PlayNil(player_t p);
 static int CoverNil(player_t p, int agg);
 static int SetNil(player_t p, int agg);
-static int PlayNormal(player_t p, int agg);
+static int PlayNormal(player_t p, int agg, int lastTrick);
 static int card_comp(card_t c1, card_t c2);
 
 static void start_hand()
@@ -564,7 +564,7 @@ static card_t get_play(player_t p, seat_t s)
 {
 	int i, chosen = -1;
 	int myNeed, oppNeed, totTricks;
-	int agg;
+	int agg, lastTrick;
 	int num = p;
 	player_t pard = (num + 2) % 4;
 	card_t lead, hi_card;
@@ -692,7 +692,7 @@ static card_t get_play(player_t p, seat_t s)
 	if (chosen < 0 && agg < 100)
 		chosen = SetNil(num, agg);
 	if (chosen < 0)
-		chosen = PlayNormal(num, agg);
+		chosen = PlayNormal(num, agg, lastTrick);
 
 	ai_debug("Chosen play is %d", chosen);
 
@@ -1287,7 +1287,7 @@ static int SetNil(player_t p, int agg)
 }
 
 
-static int PlayNormal(player_t p, int agg)
+static int PlayNormal(player_t p, int agg, int lastTrick)
 {
 
 	int i, chosen = -1, n, r, s /* , tmp */ ;
