@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6054 2004-06-25 13:32:46Z josef $
+ * $Id: server.c 6586 2005-01-02 15:30:59Z josef $
  *
  * Functions for handling server events
  *
@@ -56,6 +56,7 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_loggedout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_motd_loaded(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_playercount(GGZServerEvent id, void*, void*);
 
 static GGZHookReturn server_channel_connected(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_channel_ready(GGZServerEvent id, void*, void*);
@@ -74,9 +75,13 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_playercount(GGZRoomEvent id, void*, void*);
 
 
 GGZServer *server = NULL;
+int players_on_server = 0;
+int players_in_room = 0;
+
 static int fd;
 static int first_room_list = 0;
 static int workinprogress = 0;
@@ -199,6 +204,8 @@ static void server_register(GGZServer *server)
 				      server_channel_connected);
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY,
 				      server_channel_ready);
+	ggzcore_server_add_event_hook(server, GGZ_SERVER_PLAYERS_CHANGED,
+				      server_playercount);
 }
 
 
@@ -215,6 +222,7 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, room_table_join_fail);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, room_table_left);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, room_table_leave_fail);
+	ggzcore_room_add_event_hook(room, GGZ_PLAYER_COUNT, room_playercount);
 }
 
 
@@ -397,6 +405,9 @@ static GGZHookReturn room_list_players(GGZRoomEvent id, void* event_data, void* 
 {
 	server_workinprogress(COMMAND_LIST, 0);
 	output_players();
+
+	room_playercount(GGZ_PLAYER_COUNT, NULL, NULL);
+
 	return GGZ_HOOK_OK;
 }
 
@@ -528,4 +539,24 @@ static GGZHookReturn server_motd_loaded(GGZServerEvent id, void* event_data, voi
         return GGZ_HOOK_OK;
 }
 
+
+static GGZHookReturn server_playercount(GGZServerEvent id, void* event_data, void* user_data)
+{
+		players_on_server = ggzcore_server_get_num_players(server);
+
+        return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn room_playercount(GGZRoomEvent id, void* event_data, void* user_data)
+{
+		GGZRoom *room;
+
+		room = ggzcore_server_get_cur_room(server);
+		if(!room) return GGZ_HOOK_OK;
+
+		players_in_room = ggzcore_room_get_num_players(room);
+
+        return GGZ_HOOK_OK;
+}
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 6449 2004-12-11 21:26:50Z jdorje $
+ * $Id: main.c 6586 2005-01-02 15:30:59Z josef $
  *
  * Main loop
  *
@@ -219,6 +219,7 @@ int main(int argc, char *argv[])
 		while(fgets(command, sizeof(command), startup)) {
 			command[strlen(command) - 1] = '\0';
 			if(strlen(command) > 0) {
+				if(command[0] == '#') continue;
 				output_text(_("Startup command: %s"), command);
 				input_commandhandler(command);
 			}

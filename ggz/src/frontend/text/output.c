@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 6054 2004-06-25 13:32:46Z josef $
+ * $Id: output.c 6586 2005-01-02 15:30:59Z josef $
  *
  * Functions for display text/messages
  *
@@ -380,6 +380,8 @@ void output_status(void)
 		output_goto(window.ws_row - 3, 28);
 		output_label(_("Server"));
 		printf("\e[K%s", host);
+		if(players_on_server > 0)
+			printf(_(" (%i players)"), players_on_server);
 	} else {
 		output_goto(window.ws_row - 3, 28);
 		output_label(_("Server"));
@@ -396,6 +398,8 @@ void output_status(void)
 		output_label(_("Room"));
 		/*printf("\e[K %d -- %s", roomnum, roomname);*/
 		printf("\e[K %s", roomname);
+		if(players_in_room > 0)
+			printf(_(" (%i players)"), players_in_room);
 		
 	} else {
 		output_goto(window.ws_row - 2, 0);

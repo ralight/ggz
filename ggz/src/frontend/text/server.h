@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.h 5997 2004-05-17 14:20:01Z josef $
+ * $Id: server.h 6586 2005-01-02 15:30:59Z josef $
  *
  * Functions for handling server events
  *
@@ -42,3 +42,7 @@ void server_progresswait(void);
 
 /* Pointer to the current server */
 extern GGZServer *server;
+
+extern int players_on_server;
+extern int players_in_room;
+
