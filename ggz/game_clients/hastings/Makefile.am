@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
+#  $Id: Makefile.am 6691 2005-01-16 01:35:32Z oojah $
 
 SUBDIRS = . pixmaps
 
@@ -24,7 +24,7 @@ ggz_hastings_SOURCES = \
 	support.c support.h \
 	selector.c selector.h
 
-ggz_hastings_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
-			$(top_builddir)/common/libgtk-games.a	\
+ggz_hastings_LDADD =	$(top_builddir)/common/libgtk-games.a	\
+			@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_hastings_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)

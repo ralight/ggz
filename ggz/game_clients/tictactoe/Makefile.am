@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
+#  $Id: Makefile.am 6691 2005-01-16 01:35:32Z oojah $
 
 SUBDIRS = .
 
@@ -22,8 +22,8 @@ ggz_ttt_SOURCES =			\
 	main_win.c	main_win.h	\
 	support.c	support.h
 
-ggz_ttt_LDADD =	@GTK_LIBS@ @RSVG_LIBS@ @INTLLIBS@ $(LDADD)		\
-		$(top_builddir)/common/libgtk-games.a			\
+ggz_ttt_LDADD =	$(top_builddir)/common/libgtk-games.a			\
+		@GTK_LIBS@ @RSVG_LIBS@ @INTLLIBS@ $(LDADD)		\
 		$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_ttt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
