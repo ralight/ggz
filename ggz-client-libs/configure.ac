@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6117 2004-07-16 19:08:39Z josef $
+dnl $Id: configure.ac 6172 2004-09-04 05:39:38Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -82,7 +82,7 @@ AC_CHECK_FUNCS([dup2 strcasecmp strchr strerror \
 AC_CHECK_FUNCS([fork select]) # These fail; dunno why
 AC_CHECK_FUNCS([close hstrerror kill])
 AC_FUNC_FORK
-AC_FUNC_MALLOC
+#AC_FUNC_MALLOC <- this doesn't do what you think it does
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_VPRINTF
 
