@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: table.h 3289 2002-02-10 01:53:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,8 @@ extern GtkRcStyle *fixed_font_style;
 extern GtkWidget *table;	/* widget containing the whole table */
 extern GtkStyle *table_style;	/* Style for the table */
 extern GdkPixmap *card_fronts[4];
+
+extern gboolean table_ready;
 
 void table_initialize(void);
 void table_setup(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: game.c 3289 2002-02-10 01:53:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,7 +47,7 @@
 struct prefs preferences;
 
 int table_max_hand_size = 0;
-int game_started = 0;
+int game_started = FALSE;
 
 static void text_cardlist_message(const char *mark, int *lengths,
 				  card_t ** cardlist);
@@ -175,7 +175,7 @@ void game_get_newgame(void)
 void game_alert_newgame(void)
 {
 	ggz_debug("main", "Received newgame alert from server.");
-	game_started = 1;
+	game_started = TRUE;
 	table_setup();
 	/* do nothing... */
 }
@@ -250,6 +250,7 @@ void game_alert_num_players(int new, int old)
 	/* We ignore new and old; ggzcards.num_players contains the new value 
 	   anyway. */
 	if (game_started) {
+		assert(new > 0);
 		ggz_debug("main", "Changing number of players.");
 		table_setup();
 	}
@@ -350,6 +351,7 @@ void game_alert_play(int player, card_t card, int pos)
 void game_alert_table(void)
 {
 	if (game_started) {
+		assert(table_ready);
 		ggz_debug("main", "Handling table update alert.");
 		table_show_cards();
 	}

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3283 2002-02-09 23:12:57Z jdorje $
+ * $Id: table.c 3289 2002-02-10 01:53:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,8 +69,7 @@ static GdkPixmap *card_backs[4];
 GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
 static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
 
-/* static GtkWidget *msglabel = NULL; *//* global label; put in place of old l_trump */
-static gboolean table_ready = FALSE;
+gboolean table_ready = FALSE;
 
 static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
@@ -130,7 +129,7 @@ static void draw_splash_screen(void)
 
 	ggz_debug("table", "Drawing splash screen.");
 
-	assert(!game_started);
+	assert(!game_started && !table_ready);
 	assert(table_buf);
 	assert(ggzcards.num_players == 0);
 
@@ -207,6 +206,8 @@ void table_setup(void)
 	   just tells us 0 - even if there are players already connected. */
 	if (ggzcards.num_players == 0 || table_max_hand_size == 0)
 		return;
+		
+	assert(game_started);
 
 	ggz_debug("table", "Setting up table." "  Width and height are %d."
 		  "  %d players.", get_table_width(), ggzcards.num_players);
@@ -289,8 +290,7 @@ void table_redraw(void)
 {
 	ggz_debug("table", "Redrawing table. " " game_started is %d.",
 		  game_started);
-	if (game_started) {
-		assert(table_ready);
+	if (table_ready) {
 		animation_stop(TRUE);
 
 		gtk_widget_grab_focus(dlg_main);
