@@ -1,0 +1,9 @@
+# GGZ Cards description file
+[ModuleInfo]
+Author = Jason Short, Rich Gade
+CommandLine = @ggzexecmoddir@/ggz.ggzcards
+Frontend = gtk
+Homepage = http://ggz.sourceforge.net/
+Name = GGZCards
+Protocol = 0.0.1
+Version = 0.0.1

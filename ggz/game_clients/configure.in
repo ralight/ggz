@@ -8,7 +8,7 @@ fi
 
 DEFAULT_PACKAGE="ggz-gtk-games"
 DEFAULT_VERSION="0.0.4"
-DEFAULT_SUBDIRS="spades tictactoe dots lapocha reversi combat hastings chinese-checkers chess"
+DEFAULT_SUBDIRS="spades tictactoe dots lapocha ggzcards reversi combat hastings chinese-checkers chess"
 
 dnl If an override is present, use it
 dnl =================================
@@ -176,6 +176,8 @@ AC_OUTPUT([Makefile
 	   dots/module.dsc
 	   lapocha/Makefile
 	   lapocha/module.dsc
+	   ggzcards/Makefile
+	   ggzcards/module.dsc
 	   reversi/Makefile
 	   reversi/module.dsc
 	   combat/Makefile

@@ -1,0 +1,889 @@
+/*
+ * File: table.c
+ * Author: Rich Gade
+ * Project: GGZCards Client
+ * Date: 08/14/2000
+ * Desc: Routines to handle the Gtk game table
+ *
+ * Copyright (C) 2000 Brent Hendricks.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <gtk/gtk.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "main.h"
+#include "game.h"
+#include "table.h"
+#include "hand.h"
+#include "dlg_bid.h"
+
+#include "cards-1.xpm"
+#include "cards-2.xpm"
+#include "cards-3.xpm"
+#include "cards-4.xpm"
+
+#include "cards-b1.xpm"
+#include "cards-b2.xpm"
+#include "cards-b3.xpm"
+#include "cards-b4.xpm"
+
+#define UNKNOWN_CARD (struct card_t){-1, -1, -1}
+
+static GdkPixmap *table_buf;
+static GdkPixmap *card_fronts[4];
+static GdkPixmap *card_backs[4];
+static GtkStyle *f1_style;
+static GtkWidget *f1;
+static GtkWidget *l_name[4]; //, *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
+static GtkWidget *label[4]; /* player labels; put in place of old bid/tricks/score */
+static GtkWidget *msglabel; /* global label; put in place of old l_trump */
+static gboolean table_initialized = FALSE;
+
+#ifdef ANIMATION
+static struct {
+	card_t	card;
+	int	dest_x, dest_y;
+	int	card_x, card_y;
+	float	cur_x, cur_y;
+	float	step_x, step_y;
+	gint	cb_tag;
+} anim;
+#endif /* ANIMATION */
+
+static void table_card_clicked(int);
+static void table_card_play(int);
+
+static void table_show_card(int, card_t);
+
+#ifdef ANIMATION
+static gint table_animation_callback(gpointer);
+static void table_animation_trigger(card_t, int, int, int, int);
+#endif /* ANIMATION */
+
+/* THIS TOP PART IS THE LAYOUT SECTION; it should probably go into layout.c */
+
+/* this is the upper left corner of the 4 text box squares.
+ * the width is CARDHEIGHT+2*XWIDTH for all of them. */
+/*
+int text_boxes[4][2] = { {XWIDTH,                           WINDOW_HEIGHT-3*XWIDTH-CARDHEIGHT},
+			 {XWIDTH,                           XWIDTH},
+			 {WINDOW_WIDTH-3*XWIDTH-CARDHEIGHT, XWIDTH},
+			 {WINDOW_WIDTH-3*XWIDTH-CARDHEIGHT, WINDOW_HEIGHT-3*XWIDTH-CARDHEIGHT} };
+*/
+
+/* this includes the upper left corner of the 4 card boxes, plus the orientation (0->3) of each box.
+ *   the height is CARDHEIGHT+2*XWIDTH and width is HAND_WIDTH+2*XWIDTH for all. */
+/*
+int card_boxes[4][3] = { {3*XWIDTH + CARDHEIGHT,                WINDOW_HEIGHT - 3*XWIDTH - CARDHEIGHT, 0},
+			 {XWIDTH,                               3*XWIDTH+CARDHEIGHT,                   1},
+			 {3*XWIDTH+CARDHEIGHT,                  XWIDTH,                                2},
+			 {WINDOW_WIDTH - 3*XWIDTH - CARDHEIGHT, 3*XWIDTH + CARDHEIGHT,                 3} };
+*/
+
+
+int player_boxes[4][3] = { {XWIDTH,                                 WINDOW_HEIGHT - XWIDTH - TEXT_BOX_WIDTH, 0},
+			   {XWIDTH,                                 XWIDTH,                                  1},
+			   {2*XWIDTH + TEXT_BOX_WIDTH,              XWIDTH,                                  2},
+			   {WINDOW_WIDTH - XWIDTH - TEXT_BOX_WIDTH, 2*XWIDTH + TEXT_BOX_WIDTH,               3} };
+
+static inline int orientation(int p)
+{
+	return player_boxes[p][2];
+}
+
+static void get_text_box_pos(int p, int *x, int *y)
+{
+	int or = orientation(p);
+	*x = player_boxes[p][0];
+	*y = player_boxes[p][1];
+	if (or == 2)
+		*x = player_boxes[p][0] + 2*XWIDTH + HAND_WIDTH;
+	else if (or == 3)
+		*y = player_boxes[p][1] + 2*XWIDTH + HAND_WIDTH;
+}
+
+static void get_card_box_pos(int p, int *x, int *y)
+{
+	int or = orientation(p);
+	*x = player_boxes[p][0];
+	*y = player_boxes[p][1];
+	if (or == 0)
+		*x = player_boxes[p][0] + 2*XWIDTH + CARDHEIGHT;
+	else if (or == 1)
+		*y = player_boxes[p][1] + 2*XWIDTH + CARDHEIGHT;
+}
+
+static void get_card_box_dim(int p, int *w, int *h)
+{
+	switch (orientation(p)) {
+		case 0:
+		case 2:
+			*w = CARD_BOX_WIDTH;
+			*h = TEXT_BOX_WIDTH;
+			break;
+		case 1:
+		case 3:
+			*w = TEXT_BOX_WIDTH;
+			*h = CARD_BOX_WIDTH;	
+			break;
+		default:
+			ggz_debug("CLIENT BUG: get_card_box_dim");
+	}
+}
+
+static void get_full_card_area(int p,
+		int *x, int *y, /* the (x, y) position of the upper left corner */
+		int *w, int *h, /* the width and height of the box */
+		int *xo, int *yo /* the x and y offsets for "selected" cards */)
+{
+	/* the actual card area is inset within the card box by
+	 * XWIDTH units, and extends inwards (toward the table)
+	 * by 2*XWIDTH units. */
+
+	/* get the outer box area */
+	get_card_box_pos(p, x, y);
+	get_card_box_dim(p, w, h);
+
+	/* take the inset within the box */
+	*x += XWIDTH;
+	*y += XWIDTH;
+	*w -= 2*XWIDTH;
+	*h -= 2*XWIDTH;
+
+	*xo = 0;
+	*yo = 0;
+
+	/* now account for the offset */
+	switch (orientation(p)) {
+		case 0:
+			*y -= 2*XWIDTH;
+			*h += 2*XWIDTH;
+			*yo = -2*XWIDTH;
+			break;
+		case 1:
+			*w += 2*XWIDTH;
+			*xo = 2*XWIDTH;
+			break;
+		case 2:
+			*h += 2*XWIDTH;
+			*yo = 2*XWIDTH;
+			break;
+		case 3:
+			*x -= 2*XWIDTH;
+			*w += 2*XWIDTH;
+			*xo = -2*XWIDTH;
+			break;
+		default:
+			ggz_debug("CLIENT BUG: get_full_card_area");
+	}
+}
+
+static void get_inner_card_area_pos(int p, int *x, int *y)
+{
+	get_card_box_pos(p, x, y);
+	*x += XWIDTH;
+	*y += XWIDTH;
+}
+
+static void get_card_offset(int p, float *w, float *h)
+{
+	switch (orientation(p)) {
+		case 0:
+		case 2:
+			*w = CARDWIDTH/4.0;
+			*h = 0;
+			break;
+		case 1:
+		case 3:
+			*w = 0;
+			*h = CARDWIDTH/4.0;
+			break;
+		default:
+			ggz_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation(p));
+	}
+}
+
+static void get_card_size(int orientation, int *w, int *h)
+{
+	switch (orientation) {
+		case 0:
+		case 2:
+			*w = CARDWIDTH;
+			*h = CARDHEIGHT;
+			break;
+		case 1:
+		case 3:
+			*w = CARDHEIGHT;
+			*h = CARDWIDTH;
+			break;
+		default:
+			ggz_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation);		
+	}
+}
+
+/* end of layout information */
+
+static void table_show_table(int x, int y, int w, int h)
+{
+	/* Display the buffer */
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			x, y,
+			x, y,
+			w, h);
+}
+
+static void draw_text_box(int p)
+{
+	int x, y;
+	get_text_box_pos(p, &x, &y);
+	gdk_draw_rectangle(table_buf,
+		f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+		FALSE,
+		x, y,
+		TEXT_BOX_WIDTH, TEXT_BOX_WIDTH);
+}
+
+static void draw_card_box(int p)
+{
+	int x, y, w, h;
+
+	get_card_box_pos(p, &x, &y);
+	get_card_box_dim(p, &w, &h);
+	gdk_draw_rectangle(table_buf,
+		   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+		   FALSE,
+		   x, y,
+		   w, h);
+}
+
+static void draw_card_areas()
+{
+	int p;
+	/* Clear our buffer to the style's background color */
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   0, 0,
+			   f1->allocation.width, f1->allocation.height);
+
+	/* Draw card areas */
+	for (p=0; p<4; p++) {
+		draw_text_box(p);
+		draw_card_box(p);
+	}
+}
+
+/* table_initialize()
+ *   Setup and draw the table areas on the fixed1 dialog item
+ */
+void table_initialize(void)
+{
+	GdkBitmap *mask;
+	// GtkWidget *label;
+	int x, y, p;
+
+	gchar** xpm_fronts[4] = {cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm};
+	gchar** xpm_backs[4] = {cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm};
+	int i;
+
+	/* This starts our drawing code */
+	f1 = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
+	f1_style = gtk_widget_get_style(f1);
+
+	/* build pixmaps from the xpms */
+	for (i = 0; i < 4; i++) {
+		card_fronts[i] = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
+						     &f1_style->bg[GTK_STATE_NORMAL],
+						     (gchar **) xpm_fronts[i]);
+		card_backs[i] = gdk_pixmap_create_from_xpm_d(f1->window, &mask,
+						    &f1_style->bg[GTK_STATE_NORMAL],
+						    (gchar **) xpm_backs[i]);
+	}
+
+	table_buf = gdk_pixmap_new(f1->window,
+			     f1->allocation.width,
+			     f1->allocation.height,
+			     -1);
+
+	ggz_debug("Width and height are %d and %d.", f1->allocation.width, f1->allocation.height);
+
+	draw_card_areas();
+
+	/* Display the buffer */
+	table_show_table(0, 0, f1->allocation.width, f1->allocation.height);	
+
+
+	/* Add text labels to display */
+	for(p = 0; p < 4; p++) {
+		get_text_box_pos(p, &x, &y);
+
+		/* Name entries */
+		l_name[p] = gtk_label_new("Empty Seat");
+		gtk_fixed_put(GTK_FIXED(f1), l_name[p], x+3, y+1);
+		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
+		gtk_widget_show(l_name[p]);
+
+		/* TODO: hack: inserted 4 players here since we haven't gotten
+		 * the actual data yet */
+		label[p] = gtk_label_new("(message goes here)");
+		gtk_fixed_put(GTK_FIXED(f1), label[p], x+3, y+20);
+		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
+		gtk_label_set_justify(GTK_LABEL(label[p]),  GTK_JUSTIFY_LEFT);
+		gtk_widget_show(label[p]);
+	}
+
+	/* Current trump entry */
+	get_text_box_pos(0, &x, &y);
+	msglabel = gtk_label_new(NULL);
+	gtk_fixed_put(GTK_FIXED(f1), msglabel, x+3, y + TEXT_BOX_WIDTH - 16);
+	gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1);
+	gtk_widget_show(msglabel);
+
+	table_initialized = TRUE;
+}
+
+void table_set_player_message(int p, char* message)
+{
+	/* TODO: is any more necessary??? */
+	gtk_label_set_text(GTK_LABEL(label[p]), message);
+}
+
+void table_set_message(char* mark, char* message)
+{
+	if (!*mark)
+		/* this is the "global" message */
+		gtk_label_set_text(GTK_LABEL(msglabel), message);
+	else if (!strcmp(mark, "game")) {
+		/* this is the game's name; we just adjust the title bar */
+		char title[50];
+		snprintf(title, sizeof(title), "GGZ Gaming Zone - %s", message);
+		gtk_window_set_title (GTK_WINDOW (dlg_main), title);
+	} else
+		ggz_debug("SERVER/CLIENT BUG: unknown global message mark '%s' is '%s'.", mark, message);
+}
+
+/* table_style_change()
+ *   Handle a redraw of necessary items when a Gtk style change
+ *   is signaled.
+ */
+void table_style_change(void)
+{
+	if(!table_initialized)
+		return;
+
+	gtk_widget_grab_focus(dlg_main);
+
+	f1_style = gtk_widget_get_style(f1);
+
+	draw_card_areas();
+
+#ifdef ANIMATION
+	/* If there's an animation in progress, zip it */
+	if(game.state == WH_STATE_ANIM)
+		table_animation_zip(FALSE);
+#endif /* ANIMATION */
+
+	/* Redisplay any cards on table and in hands */
+	table_display_all_hands();
+	table_show_cards();
+
+	/* There has GOT to be a better way to force the redraw! */
+	gdk_window_hide(f1->window);
+	gdk_window_show(f1->window);
+}
+
+
+/* table_handle_expose_event()
+ *   Redraw our table areas that just got exposed, including
+ *   all dependent widgets.
+ */
+void table_handle_expose_event(GdkEventExpose *event)
+{
+	table_show_table(event->area.x, event->area.y,
+			event->area.width, event->area.height);
+}
+
+
+/* table_handle_click_event()
+ *   Check for what card has been clicked and process it
+ */
+void table_handle_click_event(GdkEventButton *event)
+{
+	/* this function is tricky.  There are lots of different variables:
+	 *  x, y, w, h describe the card area itself, including the "selected card" area.
+	 *  xo and yo describe the offset given by the "selected card".
+ 	 *  x1 and y1 are specific coordinates of a card
+	 *  xdiff and ydiff is the overlapping offset for cards in hand.
+	 * there are so many variables because hands can be facing any direction!
+	 */
+	int target;
+	int which = -1;
+	int x_outer, y_outer, w_outer, h_outer, xo, yo;
+	int x, y, x1, y1;
+	int p = 0; /* player whose hand it is */
+	float xdiff, ydiff;
+	int card_width, card_height;
+
+	/* Real quick, see if we even care */
+	if (game.state != WH_STATE_PLAY) return;
+
+	/* this gets all of the layout information... */
+	get_full_card_area(p, &x_outer, &y_outer, &w_outer, &h_outer, &xo, &yo);
+	get_card_offset(p, &xdiff, &ydiff);
+	get_inner_card_area_pos(p, &x, &y);
+	get_card_size(orientation(p), &card_width, &card_height);
+	
+	/* make sure it's at least within the card area */
+	if (event->x < x_outer) return;
+	if (event->x > x_outer + w_outer) return;
+	if (event->y < y_outer) return;
+	if (event->y > y_outer + h_outer) return;
+	
+	/* Calculate our card target */
+	for(target=0; target<game.players[p].hand.hand_size; target++) {
+		x1 = x + .5 + (target * xdiff);
+		y1 = y + .5 + (target * ydiff);
+		if (target == game.players[p].hand.selected_card) {
+			/* account for the selected card being offset */
+			x1 += xo;
+			y1 += yo;
+		}
+		if (event->x >= x1 && event->x <= x1 + card_width
+			/* TODO: generalize for any orientation */
+		    && event->y >= y1 && event->y <= y1 + card_height)
+			which = target;
+	}
+	if (which == -1) return;
+
+	table_card_clicked(which);
+}
+
+
+/* table_card_clicked()
+ *   Handle a card that has been clicked by either popping it forward
+ *   or playing it if it is already selected.
+ */
+static void table_card_clicked(int card)
+{
+	if(card == game.players[0].hand.selected_card) {
+		card_t c;
+		game.players[0].hand.selected_card = -1;
+
+		/* Start the graphic animation */
+		table_card_play(card);
+
+		/* We save these values in case the server rejects the card */
+		c = game.players[0].hand.card[card];
+		game.players[0].hand.in_play_card_num = card;
+		game.players[0].hand.in_play_card_val = game.players[0].hand.card[card];
+
+		/* Now, remove the card from our hand */
+		/* NO, don't remove it from our hand.  We just skip over it when we look at it. */
+
+		/* Call the game function to notify server of play */
+		game_play_card(c);
+	} else {
+		/* Pop the card forward and select it */
+		game.players[0].hand.selected_card = card;
+		table_display_hand(0);
+	}
+}
+
+static void get_card_coordinates(card_t card,
+				 int orientation, /* 0 to 3 */
+				 int* x, int* y)
+{
+	int xc = 0, yc = 0;
+	int xp, yp;
+	int height = (orientation % 2 == 0) ? CARDHEIGHT : CARDWIDTH;
+	int width = (orientation % 2 == 0) ? CARDWIDTH : CARDHEIGHT;
+
+	/* this converts the "face" value of the card into the 0-12 range. */
+	yp = card.face;
+	if (yp == ACE_HIGH) yp = ACE_LOW;
+	yp--;
+
+	xp = card.suit;
+
+	/* y is measured from the top; x from the left.  This just rotates the grid. */
+	switch (orientation) {
+		case 0:
+			xc = xp; yc = yp;
+			break;
+		case 1:
+			xc = 13 - yp - 1;
+			yc = xp;
+			break;
+		case 2: /* just mirror everything */
+			xc = 4 - xp - 1;
+			yc = 12 - yp - 1;
+			break;
+		case 3:
+			xc = yp;
+			yc = 4 - xp - 1;
+			break;
+	}
+
+	*x = xc * width;
+	*y = yc * height;
+}
+
+static void draw_card(card_t card,
+		      int orientation, /* 0 to 3 */
+		      int x, int y)
+{
+	int width, height;
+	int xc = 0, yc = 0;
+	int show = (card.suit != -1 && card.face != -1);
+
+	get_card_size(orientation, &width, &height);
+	if (show)
+		get_card_coordinates(card, orientation, &xc, &yc);
+	else {
+		/* based on there being 4 different backs */
+		/* TODO: do different decks differently */
+		int xy[4][2] = { {2 * CARDWIDTH, 0}, {0, 2 * CARDWIDTH}, {CARDWIDTH, 0}, {0, CARDWIDTH} };
+		xc = xy[orientation][0];
+		yc = xy[orientation][1];
+	}
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			show ? card_fronts[orientation] : card_backs[orientation],
+			xc, yc,
+			x, y,
+			width, height);
+}
+
+/* table_card_play()
+ *   Move the selected card out onto the playing area.
+ */
+static void table_card_play(int card)
+{
+	int x, y;
+
+	game.players[0].table_card = game.players[0].hand.card[card];
+
+	/* Draw the cards, eliminating the card in play */
+	table_display_hand(0);
+
+	/* Now draw the card on the table */
+	x = TEXT_BOX_WIDTH + 2*XWIDTH + 0.5 + (card * CARDWIDTH/4.0);
+	y = f1->allocation.height - TEXT_BOX_WIDTH;
+	draw_card(game.players[0].hand.card[card], 0, x, y);
+
+	/* And refresh the on-screen image */
+	table_show_table(TEXT_BOX_WIDTH + XWIDTH, f1->allocation.height - TEXT_BOX_WIDTH - 2*XWIDTH,
+			CARD_BOX_WIDTH, CARDHEIGHT);
+
+#ifdef ANIMATION
+	/* Setup and trigger the card animation */
+	table_animation_trigger(game.players[0].hand.card[card], x, y, 199, 242);
+#else
+	game.state = WH_STATE_WAIT;	
+#endif /* ANIMATION */
+}
+
+
+#ifdef ANIMATION
+/* table_animation_trigger()
+ *   Function to setup and trigger a card animation
+ */
+void table_animation_trigger(card_t card, int x1, int y1, int x2, int y2)
+{
+	#define FRAMES		15
+	#define DURATION	500	/* In milliseconds */
+
+	/* Store all our info */
+	anim.card = card;
+	get_card_coordinates(card, 0, &anim.card_x, &anim.card_y);
+	anim.cur_x = x1;
+	anim.cur_y = y1;
+	anim.dest_x = x2;
+	anim.dest_y = y2;
+
+	/* This sets up 15 frames of animation */
+	anim.step_x = (x1 - x2) / (float) FRAMES;
+	anim.step_y = (y1 - y2) / (float) FRAMES;
+
+	/* This sets up our timeout callback */
+	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
+				      table_animation_callback, NULL);
+
+	game.state = WH_STATE_ANIM;
+}
+
+
+/* table_animation_callback()
+ *   Handle one frame of card animation, this is triggered by a GtkTimeout
+ *   setup in table_animation_trigger().
+ */
+gint table_animation_callback(gpointer ignored)
+{
+	float new_x, new_y;
+	int ref_x, ref_y;
+
+	/* Calculate our next move */
+	new_x = anim.cur_x - anim.step_x;
+	if(abs(new_x - anim.dest_x) < 2)
+		new_x = anim.dest_x;
+	new_y = anim.cur_y - anim.step_y;
+	if(abs(new_y - anim.dest_y) < 2)
+		new_y = anim.dest_y;
+
+	/* Draw our new card position */
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			card_fronts[0],
+			anim.card_x, anim.card_y,
+			new_x, new_y,
+			CARDWIDTH, CARDHEIGHT);
+
+	/* And refresh the on-screen image */
+	if(new_x < anim.cur_x)
+		ref_x = new_x;
+	else
+		ref_x = anim.cur_x;
+	if(new_y < anim.cur_y)
+		ref_y = new_y;
+	else
+		ref_y = anim.cur_y;
+	table_show_table(ref_x, ref, y,
+			CARDWIDTH + abs(anim.step_x) + 2,
+			CARDHEIGHT + abs(anim.step_y) + 2);
+
+	/* Update our information for next time */
+	anim.cur_x = new_x;
+	anim.cur_y = new_y;
+
+	/* If we are there, stop the animation process */
+	if(new_x == anim.dest_x && new_y == anim.dest_y) {
+		game.state = WH_STATE_WAIT;
+		return FALSE;
+	}
+
+	/* Continue animating */
+	return TRUE;
+}
+
+
+/* table_animation_abort()
+ *   Exposed function to abort the animation process
+ */
+void table_animation_abort(void)
+{
+	/* First, kill off the animation callback */
+	if(game.state == WH_STATE_ANIM) {
+		gtk_timeout_remove(anim.cb_tag);
+		game.state = WH_STATE_WAIT;
+	}
+
+	/* The caller is assumed to have restored the card to the hand */
+	/* so we can redraw the full hand and should be done */
+	table_display_hand(0);
+}
+
+
+/* table_animation_zip
+ *   Exposed function to zip to the finish of an animation sequence
+ *   so that a new one may be started
+ */
+void table_animation_zip(gboolean restore)
+{
+	/* First, kill off the animation callback */
+	if(game.state == WH_STATE_ANIM) {
+		gtk_timeout_remove(anim.cb_tag);
+		game.state = WH_STATE_WAIT;
+	}
+
+	/* And move the card to it's final resting place */
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			card_fronts[0],
+			anim.card_x, anim.card_y,
+			anim.dest_x, anim.dest_y,
+			CARDWIDTH, CARDHEIGHT);
+	table_show_table(anim.dest_x, anim.dest_y,
+			CARDWIDTH, CARDHEIGHT);
+}
+#endif /* ANIMATION */
+
+/* table_set_name()
+ *   Exposed function to set name on display
+ */
+void table_set_name(int p, char *name)
+{
+	gtk_label_set_text(GTK_LABEL(l_name[p]), name);
+}
+
+
+/* table_set_p_message()
+ *   Exposed function to set player message on display
+ */
+void table_set_p_message(int p, char* msg)
+{
+	gtk_label_set_text(GTK_LABEL(label[p]), msg);
+}
+
+/* table_display_hand()
+ *   Exposed function to show one player's hand
+ */
+/* TODO: make your hand and other players' hands work the same way
+ * the way they should work: none of this -1 to represent an empty card
+ * empty cards are removed, UNKNOWN_CARD represents an unknown (unseen)
+ * card.  Draw all hands equally, but show only the backs for any
+ * unknown cards. */
+void table_display_hand(int p)
+{
+	int i, x, y;
+	int x_outer, y_outer;
+	int cx, cy, cw, ch, cxo, cyo;
+	float ow, oh;
+
+	ggz_debug("     Displaying hand for player %d.", p); 		
+
+	/* get layout information */
+	get_full_card_area(p, &x_outer, &y_outer, &cw, &ch, &cxo, &cyo);
+	get_inner_card_area_pos(p, &cx, &cy);
+	get_card_offset(p, &ow, &oh);
+
+	/* Clean the total drawing area */
+	gdk_draw_rectangle(table_buf,
+			f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			TRUE,
+			x_outer, y_outer, cw, ch);
+
+	/* redraw outer rectangle */
+	draw_card_box(p);
+
+	/* Draw the cards */
+	for(i=0; i<game.players[p].hand.hand_size; i++) {
+		x = cx + 0.5 + (i * ow);
+		y = cy + 0.5 + (i * oh);
+		if (i==game.players[p].hand.selected_card) {
+			x += cxo;
+			y += cyo;
+		}
+		draw_card(game.players[p].hand.card[i], orientation(p), x, y);
+	}
+
+	/* And refresh the on-screen image for card areas */
+	table_show_table(x_outer, y_outer,
+			cw, ch);
+
+	ggz_debug("     Done displaying hand.");
+}
+
+/* table_display_all_hands
+ *   exposed function to show all players' hands
+ */
+void table_display_all_hands(void)
+{
+	int p;
+	for(p = 0; p < game.num_players; p++)
+		table_display_hand(p);
+}
+
+
+#ifdef ANIMATION
+/* table_animation()
+ *   Exposed function to setup an animation
+ */
+void table_animation(int p, card_t card)
+{
+	int pos[4][4] = { {0,0,0,0},
+			  {0, 146, 120, 186},
+			  {159, 0, 199, 130},
+			  {f1->allocation.width-CARDWIDTH, 226, 280, 186} };
+
+	table_animation_trigger(card, pos[p][0], pos[p][1], pos[p][2], pos[p][3]);
+}
+#endif /* ANIMATION */
+
+
+void table_play_card(int p, card_t card)
+{
+#ifdef ANIMATION
+	table_animation(p, card);
+#else
+	table_show_card(p, card);
+#endif
+}
+
+
+/* table_clear_table()
+ *   Exposed function to clear cards off the table area
+ */
+void table_clear_table(void)
+{
+	int i;
+	int outer = CARDHEIGHT + 4*XWIDTH + 1;
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   outer, outer,
+			   f1->allocation.width - 2 * outer, f1->allocation.height- 2 * outer);
+
+	table_show_table(outer, outer,
+			f1->allocation.width- outer, f1->allocation.height - outer);
+
+	for(i = 0; i < game.num_players; i++) {
+		game.players[i].table_card = UNKNOWN_CARD;
+	}
+}
+
+
+/* table_show_card
+ *   Exposed function to show one player's cards on the table area
+ */
+static void table_show_card(int p, card_t c)
+{
+	int x, y;
+	int offset = CARDHEIGHT/12;
+	int mx = f1->allocation.width / 2, my = f1->allocation.height / 2;
+	int positions[4][2] = { {mx-CARDWIDTH/2, my+offset},
+				{mx-CARDWIDTH-offset, my-CARDHEIGHT/2},
+                          	{mx-CARDWIDTH/2, my-offset-CARDHEIGHT},
+				{mx+offset, my-CARDHEIGHT/2} };
+
+	if (c.face == -1 || c.suit == -1) return;
+
+	x = positions[p][0];
+	y = positions[p][1];
+
+	draw_card(c, 0, x, y);
+	table_show_table(x, y,
+			CARDWIDTH, CARDHEIGHT);
+}
+
+/* table_show_cards()
+ *   Exposed function to show all four cards on the table area
+ */
+void table_show_cards()
+{
+	int p;
+	for (p=0; p<game.num_players; p++)
+		table_show_card(p, game.players[p].table_card);
+}
+
