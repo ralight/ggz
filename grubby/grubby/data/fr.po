@@ -9,10 +9,10 @@ msgstr ""
 "POT-Creation-Date: 2002-03-02 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Francais <fr@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../modules/badword.c:97
 msgid " is a dirty evil bastard."
@@ -20,24 +20,24 @@ msgstr " est fous."
 
 #: ../modules/badword.c:100
 msgid "You aren't any better, bugger."
-msgstr ""
+msgstr "T'es pas plus bien comme moi."
 
 #: ../modules/badword.c:105
 msgid "Watch your language please!"
-msgstr "Regarde la langue s'il te plais!"
+msgstr "Regarde la langue s'il te plaîs!"
 
 #: ../modules/extra.c:89
 #, c-format
 msgid "Hi %s"
-msgstr ""
+msgstr "Salut %s"
 
 #: ../modules/extra.c:113
 msgid "funny eh?"
-msgstr ""
+msgstr "c'est drôle?"
 
 #: ../modules/extra.c:117
 msgid "hehe"
-msgstr ""
+msgstr "hehe"
 
 #: ../modules/learning.c:121
 msgid "OK, learned that."
@@ -49,33 +49,35 @@ msgstr "Tu est trop curieux - je sais pas tous."
 
 #: ../modules/people.c:65
 msgid "Nice to see you here again, "
-msgstr ""
+msgstr "Quelle surprise de te revoir ici, "
 
 #: ../modules/people.c:70
 msgid ": Great you come here!"
-msgstr ""
+msgstr ": C'est bon que tu es arrivé!"
 
 #: ../modules/people.c:79
 msgid "Hi "
-msgstr ""
+msgstr "Salut"
 
 #: ../modules/people.c:81
 msgid ", I'm "
-msgstr ""
+msgstr ", je suis "
 
 #: ../modules/people.c:83
 msgid ""
 ". I have never seen you before here.\n"
 "Type '"
 msgstr ""
+". Je t'ai jamais vu ici en avant.\n"
+"Saisisses '"
 
 #: ../modules/people.c:85
 msgid " help' to change this :)"
-msgstr ""
+msgstr " help' pour le changer :)"
 
 #: ../modules/people.c:97
 msgid "See you later, "
-msgstr ""
+msgstr "A bientôt, "
 
 #: ../modules/people.c:102
 msgid "Have a nice rest."
@@ -87,36 +89,36 @@ msgstr ""
 
 #: ../modules/people.c:110
 msgid "Eh, why has he gone?"
-msgstr ""
+msgstr "Pourquois est-il quitté?"
 
 #: ../modules/people.c:152
 msgid "OK, registered your information."
-msgstr ""
+msgstr "Bien, les informations sont régistrés."
 
 #: ../modules/people.c:169
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: ../modules/people.c:169
 msgid "Contact"
-msgstr ""
+msgstr "Contact"
 
 #: ../modules/people.c:172
 msgid "Sorry, I don't know who this is."
-msgstr ""
+msgstr "Excuse-moi, je ne sais pas c'est qui."
 
 #: ../modules/people.c:185
 msgid "I'm looking right at you now :)"
-msgstr ""
+msgstr "C'est toi mon ami :)"
 
 #: ../modules/people.c:194
 #, c-format
 msgid "Yeah, he was here at %s"
-msgstr ""
+msgstr "Il a été ici à %s"
 
 #: ../modules/people.c:197
 msgid "Nope, never seen this guy here."
-msgstr ""
+msgstr "Jamais vue ce garcon ici."
 
 #: ../modules/self.c:32
 #, c-format
@@ -126,6 +128,10 @@ msgid ""
 "You may type '%s help ' to get to know what I understand.\n"
 "Have fun :-)"
 msgstr ""
+"Je suis %s, ton chat bot préféré!\n"
+"Je peut repondre à tes questions, et apprende de toi.\n"
+"S'il te doit aider, appelle-moi avec '%s help'.\n"
+"Beaucoup de chance :-)"
 
 #: ../modules/self.c:44
 msgid ""
@@ -142,7 +148,7 @@ msgstr ""
 
 #: ../src/i18n.c:77
 msgid "Your language has been registered."
-msgstr ""
+msgstr "Ta langue est enrégistrée."
 
 #: ../src/module.c:257
 msgid "List of available modules:"
@@ -164,10 +170,12 @@ msgstr "Qu'est-ce que c'est, ca?"
 msgid ""
 "I'm so uneducated I only know english, german, spanish, portuguese, italian."
 msgstr ""
+"Mois, je sais seulement l'anglais, l'allemand, l'espagnol, le portuguese et "
+"l'italien."
 
 #: dict.pl:106
 msgid "Sorry, I don't know what a $WORD is."
-msgstr ""
+msgstr "Je sais pas c'est quoi, un $WORD."
 
 #: rdf.pl:28
 msgid "From what news source my friend?"
@@ -179,7 +187,7 @@ msgstr "Je te offre: slashdot, register, happypenguin, heise"
 
 #: rdf.pl:65
 msgid "News source not available."
-msgstr "Pas trouve."
+msgstr "Pas trouvé."
 
 #~ msgid "If you read plain English here, kick your system administrator.\n"
-#~ msgstr "Voulez-vous cou.... ah non, nous sommes des geeks avec mor�le :)\n"
+#~ msgstr "Voulez-vous cou.... ah non, nous sommes des geeks avec morale :)\n"

@@ -8,10 +8,6 @@ guruconfig_SCRIPTS = grubby-config
 
 EXTRA_DIST = dict.pl rdf.pl meeting.rb messages.rb grubby-config.in webtranslator.sh
 
-XGETTEXT = xgettext
-MSGMERGE = msgmerge
-MSGFMT = msgfmt
-
 messages:
 	touch guru.pot
 	$(XGETTEXT) -k_ -kN_ -ki18n ../modules/*.c ../src/*.c *.pl -o guru.pot

@@ -9,10 +9,10 @@ msgstr ""
 "POT-Creation-Date: 2002-03-02 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: ../modules/badword.c:97
 msgid " is a dirty evil bastard."
@@ -45,7 +45,7 @@ msgstr "OK, habe das gelernt."
 
 #: ../modules/learning.c:125
 msgid "You're too curious - I don't know everything."
-msgstr "Du bist zu neugierig - ich weiss doch nicht alles."
+msgstr "Du bist zu neugierig - ich weiß doch nicht alles."
 
 #: ../modules/people.c:65
 msgid "Nice to see you here again, "
@@ -73,11 +73,11 @@ msgstr ""
 
 #: ../modules/people.c:85
 msgid " help' to change this :)"
-msgstr "' ein um das zu äBndern :)"
+msgstr "' ein um das zu ändern :)"
 
 #: ../modules/people.c:97
 msgid "See you later, "
-msgstr "Bis späBter, "
+msgstr "Bis später, "
 
 #: ../modules/people.c:102
 msgid "Have a nice rest."
@@ -105,7 +105,7 @@ msgstr "Kontakt"
 
 #: ../modules/people.c:172
 msgid "Sorry, I don't know who this is."
-msgstr "Tut mir leid, ich weißOBn nicht wer das ist."
+msgstr "Tut mir leid, ich weiß nicht wer das ist."
 
 #: ../modules/people.c:185
 msgid "I'm looking right at you now :)"
@@ -121,7 +121,7 @@ msgid "Nope, never seen this guy here."
 msgstr "Habe ihn noch nie hier gesehen."
 
 #: ../modules/self.c:32
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
 "I'm here to answer your question, and learn more about you.\n"
@@ -129,12 +129,11 @@ msgid ""
 "Have fun :-)"
 msgstr ""
 "Ich bin %s, dein Lieblings-Chatbot!\n"
-"Ich bin hier um deine Fragen zu beantworten, und mehr �ber dich zu erfahren.\n"
-"Gib 'grubby help' ein um zu sehen was ich verstehe.\n"
-"Hab viel SpaßOC :-)"
+"Ich bin hier um deine Fragen zu beantworten, und mehr über dich zu erfahren.\n"
+"Gib '%s help' ein um zu sehen was ich verstehe.\n"
+"Hab viel Spaß :-)"
 
 #: ../modules/self.c:44
-#, fuzzy
 msgid ""
 "This is the list of public commands I understand:\n"
 "about: let me tell about myself\n"
@@ -147,12 +146,13 @@ msgid ""
 "my name is <fullname>: register you as fullname"
 msgstr ""
 "Dies ist die Liste der Kommandos die ich verstehe:\n"
-"about: lass mich üCber mich selbst erzzäChlen\n"
-"do i have any messages: ich üBberbringe dir Botschaften\n"
-"tell <nick> <nachricht>: üBberbringe eine Botschaft an nick\n"
-"who is <nick>: Zeige Informationen üBber nick an\n"
+"about: lass mich über mich selbst erzählen\n"
+"do i have any messages: ich überbringe dir Botschaften\n"
+"tell <nick> <nachricht>: überbringe eine Botschaft an nick\n"
+"who is <nick>: Zeige Informationen über nick an\n"
 "have you seen <nick>: Frag mich wann ich nick zum letzten Mal gesehen habe.\n"
 "my (email | sms) is <kontakt>: Registriere Kontaktinformationen\n"
+"<nick> ist von <ländercode>: Sprache registrieren\n"
 "my name is <voller_name>: Registriere mich mit vollem Namen"
 
 #: ../src/i18n.c:77
@@ -161,15 +161,15 @@ msgstr "Deine Sprache wurde registriert."
 
 #: ../src/module.c:257
 msgid "List of available modules:"
-msgstr "Liste der verfüOBgbaren Module:"
+msgstr "Liste der verfügbaren Module:"
 
 #: ../src/module.c:258
 msgid "No modules loaded at all."
-msgstr "üOBerhapt keine Module geladen."
+msgstr "überhapt keine Module geladen."
 
 #: dict.pl:28
 msgid "That's a word. Come on, I don't know your native language yet."
-msgstr "Das ist ein Wort. Ich kenne deine native Sprache noch nicht."
+msgstr "Das ist ein Wort. Ich kenne deine Muttersprache noch nicht."
 
 #: dict.pl:31
 msgid "What is what dude?"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: dict.pl:106
 msgid "Sorry, I don't know what a $WORD is."
-msgstr "Sorry, ich weißOB nicht was ein $WORD ist."
+msgstr "Sorry, ich weiß nicht was ein $WORD ist."
 
 #: rdf.pl:28
 msgid "From what news source my friend?"
@@ -192,8 +192,8 @@ msgstr "Von welcher News-Quelle mein Freund?"
 
 #: rdf.pl:29
 msgid "Available are: slashdot, register, happypenguin, heise"
-msgstr "VerfüBgbar sind: slashdot, register, happypenguin, heise"
+msgstr "Verfügbar sind: slashdot, register, happypenguin, heise"
 
 #: rdf.pl:65
 msgid "News source not available."
-msgstr "News-Quelle ist nicht verfüAgbar."
+msgstr "News-Quelle ist nicht verfügbar."
