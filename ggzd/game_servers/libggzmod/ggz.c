@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2215 2001-08-24 04:16:58Z jdorje $	*/
+/*	$Id: ggz.c 2216 2001-08-24 04:31:57Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -54,8 +54,6 @@
 struct ggz_seat_t* ggz_seats=NULL;
 int ggzfd = -1;
 
-#define GGZ_SOCKET_FD 3
-
 /* Local copies of necessary data */
 static int seats;
 
@@ -66,10 +64,15 @@ static int seats;
  * a lazy server can get started with GGZ quickly.  --JDS */
 int ggzdmod_connect(void)
 {
-	/* TODO: check that the socket is real -
-	 * send dummy message, perhaps? */
-	ggzfd = GGZ_SOCKET_FD;
-	ggzdmod_debug("GGZDMOD: Connected to GGZ server.");
+	/* GGZD sets us up with FD 3 as a usable
+	 * socket.  If only it were always this easy... */
+	ggzfd = 3;
+
+	/* we test if the socket works by sending this message. */
+	/* FIXME: is this legit?  Will it work w/o debugging? */
+	if (ggzdmod_debug("GGZDMOD: Connected to GGZ server.") < 0)
+		ggzfd = -1;
+
 	return ggzfd;
 }
 
