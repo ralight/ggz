@@ -1,19 +1,19 @@
-# Escape description file
+[GameInfo]
+Author = Roger Light
+Description = Escape from the Room!
+Homepage = http://wggz.sf.net
 Name = Escape
 Version = 0.0.1
-ProtocolEngine = Escape
-ProtocolVersion = 1
-Description = Escape from the Room!
-Author = Roger Light
-Homepage = http://wggz.sf.net
-# PlayersAllowed and BotsAllowed should be repeated as many times as
-# necessary to specify the valid distinct options which can appear
-PlayersAllowed = 2
-# Set AllowLeave to 1 if game supports players leaving during gameplay
-AllowLeave = 1
-# ExecutablePath is figured relative to GameDir unless starting with /
+
+[LaunchInfo]
 ExecutablePath = ggzd.escape
-# GameDisabled is a quick way to turn off the game if necessary
-#GameDisabled
+#GameDisabled = 1
 
+[Protocol]
+Engine = Escape
+Version = 1
 
+[TableOptions]
+AllowLeave = 1
+BotsAllowed = 0
+PlayersAllowed = 2

@@ -1,23 +1,19 @@
-# Krosswater description file
+[GameInfo]
+Author = Josef Spillner
+Description = Try to cross the water first.
+Homepage = http://mindx.sourceforge.net
 Name = Krosswater
 Version = 0.0.4
-ProtocolEngine = Krosswater
-ProtocolVersion = 1
-Description = Try to cross the water first.
-Author = Josef Spillner
-Homepage = http://mindx.sourceforge.net
-# PlayersAllowed and BotsAllowed should be repeated as many times as
-# necessary to specify the valid distinct options which can appear
-PlayersAllowed = 2
-PlayersAllowed = 3
-PlayersAllowed = 4
-BotsAllowed = 0
-BotsAllowed = 1
-BotsAllowed = 2
-BotsAllowed = 3
-# Set AllowLeave to 1 if game supports players leaving during gameplay
-AllowLeave = 1
-# ExecutablePath is figured relative to GameDir unless starting with /
+
+[LaunchInfo]
 ExecutablePath = krosswater_server
-# GameDisabled is a quick way to turn off the game if necessary
-#GameDisabled
+#GameDisabled = 1
+
+[Protocol]
+Engine = Krosswater
+Version = 1
+
+[TableOptions]
+AllowLeave = 1
+BotsAllowed = 0 1 2 3
+PlayersAllowed = 2 3 4

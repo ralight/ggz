@@ -1,17 +1,19 @@
-# Combat description file
+[GameInfo]
+Author = Ismael Orenstein
+Description = Stratego(tm) like game for GGZ
+Homepage = http://ggz.sourceforge.net
 Name = Combat
 Version = 1.0
-ProtocolEngine = Combat
-ProtocolVersion = 1
-Description = Stratego(tm) like game for GGZ
-Author = Ismael Orenstein
-Homepage = http://ggz.sourceforge.net
-# PlayersAllowed and BotsAllowed should be repeated as many times as
-# necessary to specify the valid distinct options which can appear
-PlayersAllowed = 2
-# Set AllowLeave to 1 if game supports players leaving during gameplay
-AllowLeave = 1
-# ExecutablePath is figured relative to GameDir unless starting with /
+
+[LaunchInfo]
 ExecutablePath = ggzd.combat
-# GameDisabled is a quick way to turn off the game if necessary
-#GameDisabled
+#GameDisabled = 1
+
+[Protocol]
+Engine = Combat
+Version = 1
+
+[TableOptions]
+AllowLeave = 1
+BotsAllowed = 0
+PlayersAllowed = 2

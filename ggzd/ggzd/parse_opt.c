@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2266 2001-08-26 21:51:03Z jdorje $
+ * $Id: parse_opt.c 2296 2001-08-28 04:33:14Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -338,7 +338,7 @@ void parse_game_files(void)
 			parse_game(g_list[i], dir);
 	} else {
 		/* Scan for all .dsc files in the dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all games in %s", dir);
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding all games in %s", dir);
 		num_games = scandir(dir, &namelist, parse_gselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
@@ -368,7 +368,18 @@ void parse_game_files(void)
 
 	free(dir);
 
-	/* FIXME - Cleanup g_list */
+	/* Cleanup the g_list */
+	if(g_count < 0)
+		g_count = -g_count;
+	if(g_count > 0) {
+		for(i=0; i<g_count; i++)
+			free(g_list[i]);
+		free(g_list);
+		g_list = NULL;
+		g_count = 0;
+	}
+
+	conf_cleanup();
 }
 
 
@@ -376,12 +387,12 @@ void parse_game_files(void)
 static void parse_game(char *name, char *dir)
 {
 	char *fname;
-	FILE *gamefile;
+	int ch;
 	GameInfo *game_info;
-	char line[256];
-	int linenum = 0;
-	int intval;
-	int len;
+	char *strval;
+	int intval, len, i;
+	char **b_list;
+	int b_count = 0;
 	char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
 		GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
 		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
@@ -398,7 +409,7 @@ static void parse_game(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.dsc", dir, name);
 
-	if((gamefile = fopen(fname, "r")) == NULL) {
+	if((ch = conf_parse(fname, CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
@@ -413,149 +424,78 @@ static void parse_game(char *name, char *dir)
 	game_info->enabled = 1;
 	pthread_rwlock_init(&game_info->lock, NULL);	
 
-	while(fgets(line, 256, gamefile)) {
-		linenum++;
-		parse_line(line);
-		if(varname == NULL)
-			continue; /* Blank line or comment */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
-			varname, varvalue);
+	/* [GameInfo] */
+	strval = conf_read_string(ch, "GameInfo", "Name", NULL);
+	if(strval)
+		strncpy(game_info->name, strval, MAX_GAME_NAME_LEN);
+	strval = conf_read_string(ch, "GameInfo", "Version", NULL);
+	if(strval)
+		strncpy(game_info->version, strval, MAX_GAME_VER_LEN);
+	strval = conf_read_string(ch, "GameInfo", "Description", NULL);
+	if(strval)
+		strncpy(game_info->desc, strval, MAX_GAME_DESC_LEN);
+	strval = conf_read_string(ch, "GameInfo", "Author", NULL);
+	if(strval)
+		strncpy(game_info->author, strval, MAX_GAME_AUTH_LEN);
+	strval = conf_read_string(ch, "GameInfo", "Homepage", NULL);
+	if(strval)
+		strncpy(game_info->homepage, strval, MAX_GAME_WEB_LEN);
 
-		/*** Name = String ***/
-		if(!strcmp(varname, "name")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->name, varvalue, MAX_GAME_NAME_LEN);
-		}
+	/* [LaunchInfo] */
+	strval = conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
+	if(strval) {
+		/* Copy just the string if we have an absolute path */
+		if(*strval == '/')
+			strncpy(game_info->path, strval, MAX_PATH_LEN);
+		else
+			snprintf(game_info->path, MAX_PATH_LEN,
+				  "%s/%s", opt.game_dir, strval);
+	}
+	game_info->enabled = !conf_read_int(ch, "LaunchInfo", "GameDisabled",0);
 
-		/*** Version = X.Y.Z ***/
-		if(!strcmp(varname, "version")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->version, varvalue, MAX_GAME_VER_LEN);
-		}
+	/* [Protocol] */
+	strval = conf_read_string(ch, "Protocol", "Engine", NULL);
+	if(strval)
+		strncpy(game_info->p_engine, strval, MAX_GAME_PROTOCOL_LEN);
+	strval = conf_read_string(ch, "Protocol", "Version", NULL);
+	if(strval)
+		strncpy(game_info->p_version, strval, MAX_GAME_VER_LEN);
 
-		/*** Description = String ***/
-		if(!strcmp(varname, "description")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->desc, varvalue, MAX_GAME_DESC_LEN);
-		}
-
-		/*** ProtocolEngine = String ***/
-		if(!strcmp(varname, "protocolengine")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->p_engine, varvalue,
-				 MAX_GAME_PROTOCOL_LEN);
-		}
-
-		/*** ProtocolVersion = String ***/
-		if(!strcmp(varname, "protocolversion")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->p_version, varvalue,
-				MAX_GAME_VER_LEN);
-		}
-
-		/*** Author = String ***/
-		if(!strcmp(varname, "author")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->author, varvalue, MAX_GAME_AUTH_LEN);
-		}
-
-		/*** Homepage = String ***/
-		if(!strcmp(varname, "homepage")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			strncpy(game_info->homepage, varvalue,MAX_GAME_WEB_LEN);
-		}
-
-		/*** PlayersAllowed = # ***/
-		if(!strcmp(varname, "playersallowed")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 1 || intval > 8) {
-				PARSE_ERR("PlayersAllowed value invalid");
-				continue;
-			}
-			game_info->player_allow_mask |= allow_bits[intval];
-		}
-
-		/*** BotsAllowed = # ***/
-		if(!strcmp(varname, "botsallowed")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
+	/* [TableOptions] */
+	game_info->allow_leave=conf_read_int(ch,"TableOptions","AllowLeave",0);
+	conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
+	if(b_count != 0) {
+		for(i=0; i<b_count; i++) {
+			intval = atoi(b_list[i]);
 			if(intval < 0 || intval > 8) {
-				PARSE_ERR("BotAllowed value invalid");
+				err_msg("BotsAllowed has invalid value [%s]",
+					name);
 				continue;
 			}
 			game_info->bot_allow_mask |= allow_bits[intval];
+			free(b_list[i]);
 		}
-
-		/*** OptionsSize = # ***/
-		if(!strcmp(varname, "optionssize")) {
-			PARSE_ERR("Obsolete reference to OptionsSize ignored");
-		}
-
-		/*** ExecutablePath = String ***/
-		if(!strcmp(varname, "executablepath")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
+		free(b_list);
+		b_list = NULL;
+		b_count = 0;
+	}
+	conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
+	if(b_count != 0) {
+		for(i=0; i<b_count; i++) {
+			intval = atoi(b_list[i]);
+			if(intval < 1 || intval > 8) {
+				err_msg("PlayersAllowed has invalid value");
 				continue;
 			}
-			/* Copy just the string if we have an absolute path */
-			if(*varvalue == '/')
-				strncpy(game_info->path, varvalue,MAX_PATH_LEN);
-			else
-				snprintf(game_info->path, MAX_PATH_LEN,
-					  "%s/%s", opt.game_dir, varvalue);
+			game_info->player_allow_mask |= allow_bits[intval];
+			free(b_list[i]);
 		}
-
-		/*** AllowLeave = 0,1 ***/
-		if(!strcmp(varname, "allowleave")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval != 0 && intval != 1) {
-				PARSE_ERR("AllowLeave value invalid");
-				continue;
-			}
-			game_info->allow_leave = intval;
-		}
-
-		/*** GameDisabled ***/
-		if(!strcmp(varname, "gamedisabled"))
-			game_info->enabled = 0;
+		free(b_list);
 	}
 
 	game_types[state.types] = *game_info;
 	state.types++;
 
-	fclose(gamefile);
 	free(game_info);
 	free(fname);
 }
@@ -587,7 +527,7 @@ void parse_room_files(void)
 				parse_room(r_list[i], dir);
 	} else {
 		/* Scan for all .room files in dir */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all rooms in %s", dir);
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding all rooms in %s", dir);
 		num_rooms = scandir(dir, &namelist, parse_rselect, 0);
 		for(i=0; i<num_rooms; i++) {
 			/* Make a temporary copy of the name w/o .room */
@@ -623,7 +563,16 @@ void parse_room_files(void)
 	if(room_info.num_rooms == 0)
 		err_msg_exit("No rooms defined, ggzd unusable");
 
-	/* FIXME - Cleanup r_list */
+	/* Cleanup the r_list */
+	if(r_count < 0)
+		r_count = -r_count;
+	if(r_count > 0) {
+		for(i=0; i<r_count; i++)
+			free(r_list[i]);
+		free(r_list);
+		r_list = NULL;
+		r_count = 0;
+	}
 }
 
 
@@ -864,10 +813,12 @@ static unsigned parse_log_types(int num, char **entry)
 				"%s added to log types", log_types[j].name);
 			types |= log_types[j].type;
 		}
+
+		free(entry[i]);
 	}
 
+	free(entry);
 	return types;
-	/* FIXME - Cleanup the ENTRY array */
 }
 
 
@@ -889,8 +840,10 @@ static unsigned parse_dbg_types(int num, char **entry)
 				"%s added to debug types", dbg_types[j].name);
 			types |= dbg_types[j].type;
 		}
+
+		free(entry[i]);
 	}
 
+	free(entry);
 	return types;
-	/* FIXME - Cleanup the ENTRY array */
 }

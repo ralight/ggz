@@ -1,21 +1,19 @@
-# NetSpades description file
+[GameInfo]
+Author = Brent Hendricks
+Description = NetSpades is a multiuser networked spades game
+Homepage = http://www.ece.rice.edu/~brentmh/spades
 Name = NetSpades
 Version = 0.0.3
-ProtocolEngine = NetSpades
-ProtocolVersion = 1
-Description = NetSpades is a multiuser networked spades game
-Author = Brent Hendricks
-Homepage = http://www.ece.rice.edu/~brentmh/spades
-# PlayersAllowed and BotsAllowed should be repeated as many times as
-# necessary to specify the valid distinct options which can appear
-PlayersAllowed = 4
-BotsAllowed = 0
-BotsAllowed = 1
-BotsAllowed = 2
-BotsAllowed = 3
-# Set AllowLeave to 1 if game supports players leaving during gameplay
-AllowLeave = 0
-# ExecutablePath is figured relative to GameDir unless starting with /
+
+[LaunchInfo]
 ExecutablePath = ggzd.spades
-# GameDisabled is a quick way to turn off the game if necessary
-#GameDisabled
+#GameDisabled = 1
+
+[Protocol]
+Engine = NetSpades
+Version = 1
+
+[TableOptions]
+AllowLeave = 0
+BotsAllowed = 0 1 2 3
+PlayersAllowed = 4
