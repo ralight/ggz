@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: game.c 5019 2002-10-24 00:56:26Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -29,10 +29,20 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h> /* sleep() */
 
 #include <ggz.h>
 
 #include "game.h"
+
+static int num_human_players(void)
+{
+	int p, num = 0;
+	for (p = 0; p < ggzcards.num_players; p++)
+		if (ggzcards.players[p].status == GGZ_SEAT_PLAYER)
+			num++;
+	return num;
+}
 
 void game_alert_server(int server_socket_fd)
 {
@@ -59,8 +69,7 @@ void game_handle_gameover(int num_winners, int *winners)
 	/* nothing */
 }
 
-void game_alert_player(int player, GGZSeatType status,
-			      const char *name)
+void game_alert_player(int player, GGZSeatType status, const char *name)
 {
 	/* nothing */
 }
@@ -184,6 +193,12 @@ void game_alert_table(void)
 void game_alert_trick(int winner)
 {
 	alert_trick(winner);
+
+	/* If there are no human players at the table, we simulate
+	   a delay - both to allow any spectators to keep up and to
+	   prevent the game server/bots from hogging resources. */
+	if (num_human_players() == 0)
+		sleep(2);
 }
 
 int game_get_options(int option_cnt,
