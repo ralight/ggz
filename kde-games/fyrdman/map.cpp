@@ -124,10 +124,13 @@ void Map::setupMap(Level *level)
 	m_level = level;
 	if(!level)
 	{
-		setFixedSize(400, 300);
-		m_width = 0;
-		m_height = 0;
-		setBackground("bayeux.png");
+		if(m_width > 0)
+		{
+			setFixedSize(400, 300);
+			m_width = 0;
+			m_height = 0;
+			setBackground("bayeux.png");
+		}
 		return;
 	}
 
