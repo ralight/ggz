@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5727 2003-12-31 17:02:57Z dr_maux $
+dnl $Id: configure.ac 5749 2004-01-27 08:55:45Z josef $
 
-AC_INIT([GGZ client libraries], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-client-libs])
+AC_INIT([GGZ client libraries], [0.0.8pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -91,7 +91,7 @@ AC_SUBST(LIBPOPT)
 AC_CHECK_LIB(expat, XML_ParserCreate, [LIBEXPAT="-lexpat"],
              [AC_MSG_ERROR(cannot find expat library)])
 AC_CHECK_HEADER(expat.h, [],
-                [AC_MSG_ERROR(cannot find expat.h header)]),
+                [AC_MSG_ERROR(cannot find expat.h header)])
 AC_SUBST(LIBEXPAT)
 
 
