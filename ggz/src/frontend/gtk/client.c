@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5089 2002-10-28 21:37:04Z jdorje $
+ * $Id: client.c 5090 2002-10-28 22:10:58Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -62,16 +62,13 @@ extern GGZServer *server;
 static gint table_selection_id = -1;
 static gint spectating = -1;
 
-/*
- * FIXME: There has got to be a better way than
- *        a global var. This is set at popup time
- *        search for the word popup.
- */
-gint popup_row = 0;
-gint poping = FALSE;
-
 /* Maximum cache size for last entries */
 #define CHAT_MAXIMUM_CACHE 5
+
+#define PLAYER_LIST_COL_LAG 0
+#define PLAYER_LIST_COL_TABLE 1
+#define PLAYER_LIST_COL_STATS 2
+#define PLAYER_LIST_COL_NAME 3
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -79,7 +76,7 @@ static void client_connect_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_disconnect_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_exit_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_launch_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_join_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_room_join_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_joinm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_watchm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
@@ -107,6 +104,7 @@ static void client_exit_button_clicked(GtkButton *button, gpointer data);
 static gboolean client_player_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean client_table_event(GtkWidget *widget, GdkEvent *event, gpointer data);
+
 static void client_player_clist_select_row(GtkCList *clist, gint row, 
 					 gint column, GdkEvent *event, 
 					 gpointer data);
@@ -122,15 +120,18 @@ static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
+static GtkWidget* create_mnu_room(int room_num);
 static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
 static void client_start_table_join(void);
 static void client_start_table_watch(void);
+static GtkWidget* create_mnu_player(int player_num, gboolean is_friend,
+				    gboolean is_ignore);
+static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
 static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
-static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data);
 static char *client_get_players_index(guint row);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
@@ -200,11 +201,10 @@ client_launch_activate		(GtkMenuItem	*menuitem,
 }
 
 
-static void
-client_join_activate		(GtkMenuItem	*menuitem,
-				 gpointer	 data)
+static void client_room_join_activate(GtkMenuItem *menuitem, gpointer data)
 {
-	client_join_room(popup_row);
+	int room_num = GPOINTER_TO_INT(data);
+	client_join_room(room_num);
 }
 
 
@@ -365,12 +365,11 @@ main_xtext_chat_create			(gchar		*widget_name,
 
 
 
-static void
-client_room_info_activate			(GtkMenuItem	*menuitem,
-					 gpointer	 data)
+static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* Display room's info in a nice dialog */
-	info_create_or_raise(ggzcore_server_get_nth_room(server, popup_row));		
+	int room_num = GPOINTER_TO_INT(data);
+	info_create_or_raise(ggzcore_server_get_nth_room(server, room_num));		
 }
 
 
@@ -626,59 +625,46 @@ client_room_clist_event			(GtkWidget	*widget,
 					 GdkEvent	*event,
 					 gpointer	 data)
 {
-	gboolean single_join, do_join = 0;
+	gboolean single_join;
 	gint row, column;
-	GtkWidget *menu, *tmp;
-	GdkEventButton* buttonevent;
+	GtkWidget *menu;
+	GdkEventButton* buttonevent = (GdkEventButton*)event;
+	GtkWidget *clist= lookup_widget(win_main, "room_clist");
+
+	gtk_clist_get_selection_info(GTK_CLIST(clist),
+				     buttonevent->x,
+				     buttonevent->y,
+				     &row, &column);
+	if (row < 0 || row >= numrooms)
+		return FALSE;
+	gtk_clist_select_row(GTK_CLIST(clist), row, column);
 
 	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
-	buttonevent = (GdkEventButton*)event;
 
 	switch(event->type) { 
 	case GDK_2BUTTON_PRESS:
 		/* Double click */
-		if (buttonevent->button == 1 && !single_join)
-			do_join = TRUE;
+		if (buttonevent->button == 1 && !single_join) {
+			client_join_room(row);
+			return TRUE;
+		}
 		break;
 	case GDK_BUTTON_PRESS:
 		/* Single click */
-		if (buttonevent->button == 1 && single_join)
-			do_join = TRUE;
-		if (buttonevent->button == 3)
-		{
+		if (buttonevent->button == 1 && single_join) {
+			client_join_room(row);
+			return TRUE;
+		} else if (buttonevent->button == 3) {
 			/* Right mouse button */
 			/* Create and display the menu */
-			menu = create_mnu_room();
-			tmp =  lookup_widget(win_main, "room_clist");
-			gtk_clist_get_selection_info(GTK_CLIST(tmp), 
-						     buttonevent->x, 
-						     buttonevent->y,
-						     &row, &column);
-
-			if(row < numrooms) {
-				/* FIXME: There has to be a better way to pass*/
-				popup_row=row;
-				gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
-						NULL, buttonevent->button, 0);
-			}
+			menu = create_mnu_room(row);
+			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
+					NULL, buttonevent->button, 0);
 		}
 		break;
 	default:
 		/* Some Other event */
 		break;
-	}
-
-	if (do_join) {
-		tmp =  lookup_widget(win_main, "room_clist");
-		gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, 
-					     buttonevent->y, &row, &column);
-		if(row < numrooms) {
-			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
-
-			client_join_room(row);
-
-			return TRUE;
-		}
 	}
 
 	return FALSE;
@@ -735,48 +721,31 @@ client_player_clist_event			(GtkWidget	*widget,
 					 gpointer	 data)
 {
 	gint row, column;
-	GtkWidget *menu, *tmp;
-	GdkEventButton* buttonevent;
+	GtkWidget *menu;
+	GdkEventButton* buttonevent = (GdkEventButton*)event;
+	GtkWidget *clist = lookup_widget(win_main, "player_clist");
 
-	buttonevent = (GdkEventButton*)event;
+	gtk_clist_get_selection_info(GTK_CLIST(clist), 
+				     buttonevent->x, 
+				     buttonevent->y,
+				     &row, &column);
+	gtk_clist_select_row(GTK_CLIST(clist), row, column);
+	if (row < 0 || row > GTK_CLIST(clist)->rows)
+		return FALSE;
 
 	switch(event->type) { 
 	case GDK_BUTTON_PRESS:
 		/* Single click */
-		if (buttonevent->button == 3)
-		{
+		if (buttonevent->button == 3) {
 			/* Right mouse button */
 			/* Create and display the menu */
-			menu = create_mnu_player();
-			tmp =  lookup_widget(win_main, "player_clist");
-			gtk_clist_get_selection_info(GTK_CLIST(tmp), 
-						     buttonevent->x, 
-						     buttonevent->y,
-						     &row, &column);
-			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
-
-			/* FIXME: There has to be a better way to pass*/
-			popup_row=row;
-			if(popup_row<0 || popup_row>GTK_CLIST(tmp)->rows)
-				return FALSE;
+			const char* player = client_get_players_index(row);
+			int is_friend = chat_is_friend(player);
+			int is_ignore = chat_is_ignore(player);
+			menu = create_mnu_player(row, is_friend, is_ignore);
 
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
-
-			poping = TRUE;
-			tmp = lookup_widget(menu, "friends");
-			if(chat_is_friend(client_get_players_index(popup_row)))
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
-			else
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
-
-			tmp = lookup_widget(menu, "ignore");
-			if(chat_is_ignore(client_get_players_index(popup_row)))
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
-			else
-				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
-
-			poping = FALSE;
 		}
 		break;
 	default:
@@ -811,7 +780,8 @@ static char *client_get_players_index(guint row)
 	gchar *text = NULL;
 
 	tmp = lookup_widget(win_main, "player_clist");
-	gtk_clist_get_pixtext(GTK_CLIST(tmp), row, 2, &text, &space, &pixmap, &mask);
+	gtk_clist_get_pixtext(GTK_CLIST(tmp), row, PLAYER_LIST_COL_NAME,
+			      &text, &space, &pixmap, &mask);
 	
 	return text;
 }
@@ -1076,34 +1046,6 @@ client_realize                    (GtkWidget       *widget,
 
 }
 
-static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
-{
-	char *pname;
-
-	if (!poping)
-	{
-		pname = client_get_players_index(popup_row);
-		if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-			chat_add_friend(pname, TRUE);
-		else
-			chat_remove_friend(pname);
-	}	
-}
-
-static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
-{
-	char *pname;
-
-	if (!poping)
-	{
-		pname = client_get_players_index(popup_row);
-		if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-			chat_add_ignore(pname, TRUE);
-		else
-			chat_remove_ignore(pname);
-	}
-}
-
 static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* TODO */
@@ -1111,7 +1053,30 @@ static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data)
 	   show information about the player (whatever we have, especially
 	   statistics) and allow you to send a private dialog to the player
 	   (with a text entry similar to the chat line). */
+	/* int player_num = GPOINTER_TO_INT(data); */
 	assert(0);
+}
+
+static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
+{
+	int player_num = GPOINTER_TO_INT(data);
+	char *pname = client_get_players_index(player_num);
+
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		chat_add_friend(pname, TRUE);
+	else
+		chat_remove_friend(pname);
+}
+
+static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
+{
+	int player_num = GPOINTER_TO_INT(data);
+	char *pname = client_get_players_index(player_num);
+
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		chat_add_ignore(pname, TRUE);
+	else
+		chat_remove_ignore(pname);
 }
 
 static void client_tables_size_request(GtkWidget *widget, gpointer data)
@@ -1250,9 +1215,11 @@ void display_players(void)
 		
 		/* These values are freed down below. */
 		if(!table)
-			player[1] = g_strdup("--");
+			player[PLAYER_LIST_COL_TABLE] = g_strdup("--");
 		else
-			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
+			player[PLAYER_LIST_COL_TABLE]
+				= g_strdup_printf("%d",
+						  ggzcore_table_get_id(table));
 
 		if (ggzcore_player_get_ranking(p, &ranking)) {
 			snprintf(stats, sizeof(stats),
@@ -1279,9 +1246,10 @@ void display_players(void)
 			}
 		} else
 			snprintf(stats, sizeof(stats), "%s", "");;
-		player[2] = stats;
+		player[PLAYER_LIST_COL_STATS] = stats;
 
-		player[3] = g_strdup(ggzcore_player_get_name(p));
+		player[PLAYER_LIST_COL_NAME]
+			= g_strdup(ggzcore_player_get_name(p));
 		
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
@@ -1308,7 +1276,9 @@ void display_players(void)
 			pixmap1 = gdk_pixmap_create_from_xpm(tmp->window, &mask1,
 							    NULL, path);
 			if (pixmap1)
-				gtk_clist_set_pixmap(GTK_CLIST(tmp), i, 0, pixmap1, mask1);
+				gtk_clist_set_pixmap(GTK_CLIST(tmp), i,
+						     PLAYER_LIST_COL_LAG,
+						     pixmap1, mask1);
 			g_free(path);
 		}
 
@@ -1327,14 +1297,18 @@ void display_players(void)
 			pixmap2 = gdk_pixmap_create_from_xpm(tmp->window, &mask2,
 							    NULL, path);
 			if (pixmap2)
-				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 3, player[3], 5, pixmap2, mask2);
+				gtk_clist_set_pixtext
+					(GTK_CLIST(tmp), i,
+					 PLAYER_LIST_COL_NAME,
+					 player[PLAYER_LIST_COL_NAME],
+					 5, pixmap2, mask2);
 			g_free(path);
 		}
 		
-		/* Note player[3] is used right above, so these calls
+		/* Note the name is used right above, so these calls
 		   have to come way down here. */
-		g_free(player[1]);
-		g_free(player[3]);
+		g_free(player[PLAYER_LIST_COL_TABLE]);
+		g_free(player[PLAYER_LIST_COL_NAME]);
 	}
 	
 	/* "Thaw" the clist (it was "frozen" up above). */
@@ -2423,21 +2397,22 @@ create_mnu_table (void)
   gtk_widget_show (info);
   gtk_container_add (GTK_CONTAINER (mnu_table), info);
 
+#if 0 /* not implemented */
   gtk_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_join_activate),
-                      NULL);
+                      GTK_SIGNAL_FUNC (client_join_table_activate),
+                      GINT_TO_POINTER(table_num));
   gtk_signal_connect (GTK_OBJECT (leave), "activate",
                       GTK_SIGNAL_FUNC (client_leave_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_room_info_activate),
-                      NULL);
+                      GTK_SIGNAL_FUNC (client_table_info_activate),
+                      GINT_TO_POINTER(table_num));
+#endif
 
   return mnu_table;
 }
 
-GtkWidget*
-create_mnu_room (void)
+static GtkWidget* create_mnu_room(int room_num)
 {
   GtkWidget *mnu_room;
   GtkAccelGroup *mnu_room_accels;
@@ -2473,18 +2448,18 @@ create_mnu_room (void)
 
   gtk_signal_connect (GTK_OBJECT (info), "activate",
                       GTK_SIGNAL_FUNC (client_room_info_activate),
-                      NULL);
+                      GINT_TO_POINTER(room_num));
   gtk_signal_connect (GTK_OBJECT (join), "activate",
-                      GTK_SIGNAL_FUNC (client_join_activate),
-                      NULL);
+                      GTK_SIGNAL_FUNC (client_room_join_activate),
+                      GINT_TO_POINTER(room_num));
 
   gtk_menu_set_accel_group (GTK_MENU (mnu_room), accel_group);
 
   return mnu_room;
 }
 
-GtkWidget*
-create_mnu_player (void)
+static GtkWidget* create_mnu_player(int player_num, gboolean is_friend,
+				    gboolean is_ignore)
 {
   GtkWidget *mnu_player;
   GtkAccelGroup *mnu_player_accels;
@@ -2520,6 +2495,7 @@ create_mnu_player (void)
   gtk_widget_show (friends);
   gtk_container_add (GTK_CONTAINER (mnu_player), friends);
   gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (friends), TRUE);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(friends), is_friend);
 
   ignore = gtk_check_menu_item_new_with_label (_("Ignore"));
   gtk_widget_ref (ignore);
@@ -2528,15 +2504,17 @@ create_mnu_player (void)
   gtk_widget_show (ignore);
   gtk_container_add (GTK_CONTAINER (mnu_player), ignore);
   gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (ignore), TRUE);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore), is_ignore);
 
   gtk_signal_connect(GTK_OBJECT(info), "activate",
-		      GTK_SIGNAL_FUNC(client_player_info_activate), NULL);
+		     GTK_SIGNAL_FUNC(client_player_info_activate),
+		     GINT_TO_POINTER(player_num));
   gtk_signal_connect (GTK_OBJECT (friends), "activate",
                       GTK_SIGNAL_FUNC (client_player_friends_click),
-                      NULL);
+                      GINT_TO_POINTER(player_num));
   gtk_signal_connect (GTK_OBJECT (ignore), "activate",
                       GTK_SIGNAL_FUNC (client_player_ignore_click),
-                      NULL);
+                      GINT_TO_POINTER(player_num));
 
   return mnu_player;
 }

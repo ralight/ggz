@@ -29,8 +29,6 @@ void display_players(void);
 void client_join_table(void);
 
 GtkWidget* create_win_main (void);
-GtkWidget* create_mnu_room (void);
-GtkWidget* create_mnu_player (void);
 GtkWidget* create_mnu_table (void);
 
 /* Default font */
