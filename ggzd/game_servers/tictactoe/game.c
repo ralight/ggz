@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4387 2002-08-22 07:05:06Z dr_maux $
+ * $Id: game.c 4395 2002-09-01 23:23:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
 #include "game.h"
 
 #define GGZSTATISTICS
-/*#define GGZSPECTATORS*/
+/*#define GGZSPECTATORS */
 
 #ifdef GGZSTATISTICS
 # include "ggz_stats.h"
@@ -279,6 +279,7 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 	}
 }
 
+#ifdef GGZSPECTATORS
 /* Handle message from spectator */
 static void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
@@ -300,6 +301,7 @@ static void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *da
 		ggzdmod_log(ggz, "Unrecognized spectator opcode %d.", op);
 	}
 }
+#endif
 
 /* Send out seat assignment */
 static int game_send_seat(int num)
