@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5122 2002-10-30 22:12:20Z jdorje $
+ * $Id: game.c 5123 2002-10-30 22:18:43Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -84,9 +84,15 @@ int unitdefault[12] = {1, 6, 1, 8, 5, 4, 4, 4, 3, 2, 1, 1};
 // File names
 char filename[12][36] = {"flag.xpm", "bomb.xpm", "spy.xpm", "scout.xpm", "miner.xpm", "sergeant.xpm", "lieutenant.xpm", "captain.xpm", "major.xpm", "colonel.xpm", "general.xpm", "marshall.xpm"};
 // Color names
+#ifdef GTK2
+char colorname[2][36] = {"red", "blue"};
+char lakename[] = "dark green";
+char openname[] = "beige";
+#else /* For some reason these don't work with GTK2. */
 char colorname[2][36] = {"RGB:FF/00/00", "RGB:00/00/FF"};
 char lakename[] = {"RGB:00/55/00"};
 char openname[] = {"RGB:DC/DC/A0"};
+#endif
 
 // Graphics stuff
 GdkPixmap* cbt_buf;
