@@ -18,7 +18,7 @@
 #ifndef KEEPALIVE_H
 #define KEEPALIVE_H
 
-// #define SUPPORT_SPECTATORS
+#define GGZSPECTATORS
 
 // Class declarations
 class World;

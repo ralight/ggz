@@ -21,7 +21,7 @@
 // GGZdMod includes
 #include <ggzdmod.h>
 
-/*#define GGZSPECTATORS*/
+#define GGZSPECTATORS
 
 // General virtual game server class (similar to Zone)
 class GGZGameServer {
