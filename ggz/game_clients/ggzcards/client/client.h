@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4989 2002-10-22 08:24:34Z jdorje $
+ * $Id: client.h 4990 2002-10-22 08:32:21Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -23,8 +23,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef AI_CLIENT
+#  define GUI_CLIENT
+#endif
+
 #include <ggz_common.h>
-#include <ggzmod.h>
+#ifdef GUI_CLIENT
+#  include <ggzmod.h>
+#endif
 
 #include "protocol.h"
 #include "shared.h"
@@ -115,7 +121,9 @@ struct ggzcards_game_t {
 	int play_hand;		
 };
 
+#ifdef GUI_CLIENT
 GGZMod *client_get_ggzmod(void);
+#endif
 
 /** This is the game structure that contains all the common information
  *  about the ongoing game */

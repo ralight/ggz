@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4989 2002-10-22 08:24:34Z jdorje $
+ * $Id: client.c 4990 2002-10-22 08:32:21Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -81,12 +81,13 @@ struct ggzcards_game_t ggzcards = { 0 };
 
 static int handle_req_play(void);
 
+#ifdef GUI_CLIENT
 GGZMod *client_get_ggzmod(void)
 {
 	return game_internal.ggzmod;
 }
 
-#ifdef GUI_CLIENT
+
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
