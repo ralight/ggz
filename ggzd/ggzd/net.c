@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4161 2002-05-05 18:43:52Z bmh $
+ * $Id: net.c 4383 2002-08-20 22:29:58Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -216,7 +216,7 @@ int net_get_fd(GGZNetIO *net)
 
 
 /* For debugging purposes only! */
-void net_set_fd(GGZNetIO *net, int fd)
+static void net_set_fd(GGZNetIO *net, int fd)
 {
 	net->fd = fd;
 }
@@ -454,7 +454,7 @@ int net_send_player(GGZNetIO *net, GGZPlayer *p2)
 }
 
 
-int _net_send_player_lag(GGZNetIO *net, GGZPlayer *p2)
+static int _net_send_player_lag(GGZNetIO *net, GGZPlayer *p2)
 {
 	/* FIXME: I coded lag_class the same way as table, but */
 	/* shouldn't both of these values be locked/copied? */
@@ -708,7 +708,7 @@ int net_send_ping(GGZNetIO *net)
 
 
 /* Check for incoming data */
-int net_data_is_pending(GGZNetIO *net)
+static int net_data_is_pending(GGZNetIO *net)
 {
 	int pending = 0;
 	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
