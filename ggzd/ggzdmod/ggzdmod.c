@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2691 2001-11-08 00:39:06Z jdorje $
+ * $Id: ggzdmod.c 2708 2001-11-09 02:47:03Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -341,6 +341,18 @@ void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func)
 	ggzdmod->handlers[e] = func;
 }
 
+/* returns 0 if s1 and s2 are the same, 1 otherwise.  NULL-safe. */
+static int strings_differ(char *s1, char *s2)
+{
+	if (s1 == NULL && s2 == NULL)
+		return 0;
+	if (s1 == NULL && s2 != NULL)
+		return 1;
+	if (s1 != NULL && s2 == NULL)
+		return 1;
+	return strcmp(s1, s2);
+}
+
 int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
 {
 	_GGZdMod *ggzdmod = mod;
@@ -358,7 +370,10 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
 	if (ggzdmod->type != GGZDMOD_GGZ) {
 		if (seat->fd != oldseat->fd || seat->type != oldseat->type)
 			return -1;
-		if (strcmp(seat->name, oldseat->name) && seat->type != GGZ_SEAT_BOT)
+		/* For now, we allow games to change the names of Bot players,
+		   but that's it.  This information is _not_ transmitted back
+		   to ggzd (yet). */
+		if (oldseat->type != GGZ_SEAT_BOT && strings_differ(seat->name, oldseat->name))
 			return -1;
 	}
 	
