@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4829 2002-10-09 23:12:15Z jdorje $
+ * $Id: chat.c 4857 2002-10-10 20:59:45Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -58,6 +58,7 @@ static int ignore_count;
 static void chat_send_msg(GGZServer *server, const gchar *message);
 
 static void chat_send_prvmsg(GGZServer *server, const gchar *message);
+static void chat_send_tablemsg(GGZServer *server, const gchar *message);
 static void chat_send_wall(GGZServer *server, const gchar *message);
 static void chat_send_beep(GGZServer *server, const gchar *message);
 static void chat_help(GGZServer *server, const gchar *message);
@@ -70,6 +71,8 @@ struct {
 	const char *help;
 } commands[] = { {"/msg", chat_send_prvmsg,
 		  N_("/msg <username> <message> . Private message a player")},
+		 {"/table", chat_send_tablemsg,
+		  N_("/table <message> .......... Message to your table")},
 		 {"/wall", chat_send_wall,
 		  N_("/wall <message> ........... Admin command")},
 		 {"/beep", chat_send_beep,
@@ -203,7 +206,7 @@ void chat_display_server(GGZChatType type,
 			  const char *sender, const char *message)
 {
         GtkXText *tmp;
-	gchar *name = NULL;
+	gchar *name;
 
 	/* are we ignoring this person? */
 	if (sender && chat_is_ignore(sender))
@@ -213,17 +216,30 @@ void chat_display_server(GGZChatType type,
 
 	switch (type) {
 	case GGZ_CHAT_NORMAL:
+	case GGZ_CHAT_TABLE:
 	case GGZ_CHAT_NONE: /* We should handle the unknown case somehow */
 		if (!strncasecmp(message, "/me ", 4)) {
 			name = g_strdup_printf("%s %s", sender, message+4);
 			gtk_xtext_append_indent(GTK_XTEXT(tmp), "*",
 						1, name, strlen(name));
+			g_free(name);
 		} else {
-			name = g_strdup_printf("<\003%s%s\003>",
-				chat_get_color(sender, message),  sender);
+			char bracketl, bracketr;
+			if (type == GGZ_CHAT_NORMAL) {
+				bracketl = '<';
+				bracketr = '>';
+			} else
+				bracketl = bracketr = '|';
+
+			name = g_strdup_printf("%c\003%s%s\003%c",
+					       bracketl,
+					       chat_get_color(sender, message),
+					       sender,
+					       bracketr);
 			gtk_xtext_append_indent(GTK_XTEXT(tmp),
 						name, strlen(name),
 						message, strlen(message));
+			g_free(name);
 		}
 		if (ggzcore_conf_read_int("CHAT", "RSYNTH", FALSE)) {
 			char *command;
@@ -239,6 +255,7 @@ void chat_display_server(GGZChatType type,
 				       sender);
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name),
 					message, strlen(message));
+		g_free(name);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
 		name = g_strdup_printf("[\003%s%s\003]",
@@ -246,6 +263,7 @@ void chat_display_server(GGZChatType type,
 				       sender);
 		gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name),
 					message, strlen(message));
+		g_free(name);
 		break;
 	case GGZ_CHAT_BEEP:
 		name = g_strdup_printf(_("You've been beeped by %s."), sender);
@@ -256,7 +274,6 @@ void chat_display_server(GGZChatType type,
 		break;
 	}
 
-	g_free(name);
 	gtk_xtext_refresh(tmp, 0);
 }
 
@@ -374,6 +391,21 @@ static void chat_send_prvmsg(GGZServer *server, const gchar *message)
 			     "on the network."));	
 }
 
+/* chat_send_prvmsg() - Sends a chat to a user as private
+ *
+ * Recieves:
+ *	GGZServer *server	: Currently connected server
+ *	gchar *message		: The text to send as a private message
+ *
+ * Returns:
+ */
+static void chat_send_tablemsg(GGZServer *server, const gchar *message)
+{
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	char *msg = g_strstrip(ggz_strdup(message));
+	ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, msg);
+	ggz_free(msg);
+}
 
 
 /* chat_send_wall() - Sends a message to all rooms
