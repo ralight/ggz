@@ -23,6 +23,11 @@
   <name>dlg_props</name>
   <width>500</width>
   <height>300</height>
+  <signal>
+    <name>realize</name>
+    <handler>dlg_props_realize</handler>
+    <last_modification_time>Sun, 23 Apr 2000 01:24:37 GMT</last_modification_time>
+  </signal>
   <title>Properties</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -67,9 +72,12 @@
 	  <class>GtkButton</class>
 	  <name>ok_button</name>
 	  <width>47</width>
-	  <can_default>True</can_default>
-	  <has_default>True</has_default>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>props_ok_button_clicked</handler>
+	    <last_modification_time>Sun, 23 Apr 2000 01:21:28 GMT</last_modification_time>
+	  </signal>
 	  <label>OK</label>
 	  <child>
 	    <padding>0</padding>
@@ -83,6 +91,11 @@
 	  <name>apply_button</name>
 	  <width>47</width>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>props_apply_button_clicked</handler>
+	    <last_modification_time>Sun, 23 Apr 2000 01:21:36 GMT</last_modification_time>
+	  </signal>
 	  <label>Apply</label>
 	  <child>
 	    <padding>0</padding>
@@ -96,6 +109,11 @@
 	  <name>cancel_button</name>
 	  <width>47</width>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>props_cancel_button_clicked</handler>
+	    <last_modification_time>Sun, 23 Apr 2000 01:34:18 GMT</last_modification_time>
+	  </signal>
 	  <label>Cancel</label>
 	  <child>
 	    <padding>0</padding>
@@ -183,6 +201,11 @@
 		<name>add_button</name>
 		<width>55</width>
 		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_add_button_clicked</handler>
+		  <last_modification_time>Sun, 23 Apr 2000 01:21:55 GMT</last_modification_time>
+		</signal>
 		<label>Add</label>
 		<child>
 		  <padding>0</padding>
@@ -196,6 +219,11 @@
 		<name>modify_button</name>
 		<width>55</width>
 		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_modify_button_clicked</handler>
+		  <last_modification_time>Sun, 23 Apr 2000 01:22:02 GMT</last_modification_time>
+		</signal>
 		<label>Modify</label>
 		<child>
 		  <padding>0</padding>
@@ -209,6 +237,11 @@
 		<name>delete_button</name>
 		<width>55</width>
 		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_delete_button_clicked</handler>
+		  <last_modification_time>Sun, 23 Apr 2000 01:22:11 GMT</last_modification_time>
+		</signal>
 		<label>Delete</label>
 		<child>
 		  <padding>0</padding>
@@ -519,6 +552,11 @@
 	      <name>Font_button</name>
 	      <width>50</width>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>props_Font_button_clicked</handler>
+		<last_modification_time>Sun, 23 Apr 2000 01:22:54 GMT</last_modification_time>
+	      </signal>
 	      <label>Change</label>
 	      <child>
 		<padding>0</padding>
@@ -529,201 +567,179 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame1</name>
-	    <border_width>5</border_width>
-	    <label>Chat Colors</label>
-	    <label_xalign>0.02</label_xalign>
-	    <shadow_type>GTK_SHADOW_IN</shadow_type>
+	    <class>GtkTable</class>
+	    <name>chat_table</name>
+	    <rows>3</rows>
+	    <columns>3</columns>
+	    <homogeneous>False</homogeneous>
+	    <row_spacing>0</row_spacing>
+	    <column_spacing>0</column_spacing>
 	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkVBox</class>
-	      <name>vbox5</name>
-	      <border_width>6</border_width>
-	      <homogeneous>True</homogeneous>
-	      <spacing>0</spacing>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox9</name>
-		<border_width>2</border_width>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-
-		<widget>
-		  <class>GtkLabel</class>
-		  <name>label13</name>
-		  <width>100</width>
-		  <label>Your Messages:</label>
-		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
-		  <yalign>0.5</yalign>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkDrawingArea</class>
-		  <name>your_da</name>
-		  <child>
-		    <padding>10</padding>
-		    <expand>True</expand>
-		    <fill>True</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkButton</class>
-		  <name>your_button</name>
-		  <width>50</width>
-		  <can_focus>True</can_focus>
-		  <label>Change</label>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-	      </widget>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox10</name>
-		<border_width>2</border_width>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>True</fill>
-		</child>
-
-		<widget>
-		  <class>GtkLabel</class>
-		  <name>label14</name>
-		  <width>100</width>
-		  <label>Other People:</label>
-		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
-		  <yalign>0.5</yalign>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkDrawingArea</class>
-		  <name>other_da</name>
-		  <child>
-		    <padding>10</padding>
-		    <expand>True</expand>
-		    <fill>True</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkButton</class>
-		  <name>other_button</name>
-		  <width>50</width>
-		  <can_focus>True</can_focus>
-		  <label>Change</label>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-	      </widget>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox11</name>
-		<border_width>2</border_width>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
-
-		<widget>
-		  <class>GtkLabel</class>
-		  <name>label15</name>
-		  <width>100</width>
-		  <label>Server Message:</label>
-		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
-		  <yalign>0.5</yalign>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkDrawingArea</class>
-		  <name>server_da</name>
-		  <child>
-		    <padding>10</padding>
-		    <expand>True</expand>
-		    <fill>True</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkButton</class>
-		  <name>server_button</name>
-		  <width>50</width>
-		  <can_focus>True</can_focus>
-		  <label>Change</label>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>sound_button</name>
-	    <can_focus>True</can_focus>
-	    <label>Play incoming sounds</label>
-	    <active>True</active>
-	    <draw_indicator>True</draw_indicator>
-	    <child>
-	      <padding>0</padding>
+	      <padding>4</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	    </child>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>sound_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Play Sounds</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>0</top_attach>
+		<bottom_attach>1</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>color_un_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Color Usernames</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>1</top_attach>
+		<bottom_attach>2</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>color_chat_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Color In Chat</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>1</right_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>timestamp_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Timestamp Chats</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>0</top_attach>
+		<bottom_attach>1</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>ignore_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Ignore Join/Part Messages</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>1</top_attach>
+		<bottom_attach>2</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>wrap_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Word Wrap</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>indent_check</name>
+	      <can_focus>True</can_focus>
+	      <label>Auto Indent</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>2</left_attach>
+		<right_attach>3</right_attach>
+		<top_attach>0</top_attach>
+		<bottom_attach>1</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
 	  </widget>
 	</widget>
 
@@ -1013,57 +1029,6 @@
 	  <child_name>Notebook:tab</child_name>
 	  <name>label3</name>
 	  <label>User Information</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>Placeholder</class>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>Notebook:tab</child_name>
-	  <name>label4</name>
-	  <label>label4</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>Placeholder</class>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>Notebook:tab</child_name>
-	  <name>label5</name>
-	  <label>label5</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>Placeholder</class>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>Notebook:tab</child_name>
-	  <name>label6</name>
-	  <label>label6</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

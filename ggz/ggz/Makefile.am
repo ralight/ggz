@@ -30,6 +30,8 @@ ggz_SOURCES = 	main.c \
 		dlg_main.h \
 		dlg_motd.c \
 		dlg_motd.h \
+		dlg_props.c \
+		dlg_props.h \
 		err_func.c \
 		err_func.h \
 		game.c \
@@ -46,7 +48,9 @@ ggz_SOURCES = 	main.c \
 		seats.c \
 		seats.h \
 		support.c \
-	 	support.h
+	 	support.h \
+		xtext.c \
+		xtext.h
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@

@@ -38,6 +38,7 @@
 
 #include "connect.h"
 #include "datatypes.h"
+#include "ggzrc.h"
 #include "dlg_error.h"
 #include "dlg_login.h"
 #include "dlg_main.h"
@@ -48,7 +49,7 @@
 #include "game.h"
 #include "protocols.h"
 #include "seats.h"
-
+#include "xtext.h"
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -600,13 +601,11 @@ gint anon_login(void)
 
 void display_chat(gchar *name, gchar *msg)
 {
-	gchar *buf;			/* incomeing text */
+	gchar *buf;
 	gpointer tmp;			/* chat widget */
-	GdkColormap *cmap;		/* system colormap */
-	GdkFont *fixed_font;		/* font for chat */
 	gint color_index;		/* color for chat */
-	gchar cmd[1024];			/* command used in chat */
-	gchar out[1024];			/* text following command */
+	gchar cmd[1024];		/* command used in chat */
+	gchar out[1024];		/* text following command */
 	gchar *line;			/* line to parse */
 	gint cmd_index=0, out_index=0;	/* indexes */
 
@@ -617,16 +616,6 @@ void display_chat(gchar *name, gchar *msg)
 	color_index=1;
 	if (!strcmp(connection.username, name))
 		color_index=0;
-
-	/* Load a fixed-size font for chat, */
-	/* if not fixed size, things don't look good */
-	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
-		
-	/* Get the system color map and allocate the color. */
-	cmap = gdk_colormap_get_system();
-	if (!gdk_color_alloc(cmap, &colors[color_index])) {
-		g_error("couldn't allocate color");
-	}
 
         
         /* Skip until we find the end of the command, converting */
@@ -648,68 +637,34 @@ void display_chat(gchar *name, gchar *msg)
         }
 	out[out_index]='\0';
 
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+
 	if (!strcmp(cmd,"/me")){		/* Action, like in IRC */
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
-		g_free(buf);
-		buf = g_strdup_printf(" %s\n", out);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
-		g_free(buf);
-	}else if (!strcmp(cmd,"/yell")){	/* Yelling in chat */
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
-		g_free(buf);
-		buf = g_strdup_printf(" yells from across the room \"%s\".\n", out);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		buf = g_strdup_printf("%s %s", name, out);
+		gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, buf, strlen(buf));
 		g_free(buf);
 	}else if (!strcmp(cmd,"/beep")){	/* Beep a person threw chat */
 		if (!strcmp(out,connection.username)){
-
-			gdk_beep();
-
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-			buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
-			gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
-			g_free(buf);
-			buf = g_strdup_printf(" is beeping you!\n");
-			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+			if(ggzrc_read_int("CHAT","Beep",TRUE) == TRUE)
+				gdk_beep();
+			buf = g_strdup_printf("You've been beeped by %s", name);
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, buf, strlen(buf));
 			g_free(buf);
 		}else{
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-			buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
-			gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
-			g_free(buf);
-			buf = g_strdup_printf(" beeped %s.\n", out);
-			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+			buf = g_strdup_printf("%s was been beeped by %s", out, name);
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, buf, strlen(buf));
 			g_free(buf);
 		}
 	}else if (!strcmp(cmd,"/sjoins")){	/* Server message join room */
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("< < <  > > > ");
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[3], NULL, buf, -1);
-		g_free(buf);
-		buf = g_strdup_printf("%s entered the room.\n", name);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
-		g_free(buf);
+		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), "-->", 3, name, strlen(name));
 	}else if (!strcmp(cmd,"/sparts")){	/* Server message part room */
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("< < <  > > > ");
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[3], NULL, buf, -1);
-		g_free(buf);
-		buf = g_strdup_printf("%s left the room.\n", name);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
-		g_free(buf);
+		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
+			gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, name, strlen(name));
 	}else{		/* No command given, display it all */
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("< %s >%*s", name, MAX_USER_NAME_LEN+1-strlen(name), " ");
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[color_index], NULL, buf, -1);
-		g_free(buf);
-		buf = g_strdup_printf("%s\n", msg);
-		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
-		g_free(buf);
+		gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), msg, strlen(msg));
 	}
+	gtk_xtext_refresh(tmp);
 }
 
 

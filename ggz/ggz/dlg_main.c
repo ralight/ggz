@@ -41,17 +41,22 @@
 #include <err_func.h>
 #include <easysock.h>
 #include <connect.h>
+#include <ggzrc.h>
 #include <protocols.h>
 #include <dlg_about.h>
 #include <dlg_error.h>
 #include <dlg_exit.h>
 #include <dlg_launch.h>
 #include <dlg_login.h>
+#include <dlg_props.h>
+#include <xtext.h>
 
 /* Globals neaded by this dialog */
+extern GdkColor colors[];
 extern GtkWidget *dlg_about;
 extern GtkWidget *dlg_launch;
 extern GtkWidget *dlg_login;
+extern GtkWidget *dlg_props;
 extern GtkWidget *mnu_players;
 extern GtkWidget *mnu_tables;
 extern gint selected_table;
@@ -67,6 +72,7 @@ GtkWidget *main_win;
 static void ggz_join_game(GtkButton * button, gpointer user_data);
 static void ggz_leave_game(GtkWidget* widget, gpointer data);
 static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data);
+static void ggz_props_clicked(GtkWidget * widget, gpointer user_data);
 static void ggz_table_select_row_callback(GtkWidget *widget, gint row, 
 					  gint column, GdkEventButton *event, 
 					  gpointer data);
@@ -79,6 +85,7 @@ static void ggz_motd(void);
 static void ggz_realize(GtkWidget* widget, gpointer data);
 static void ggz_room_changed(GtkWidget* widget, gpointer data);
 static void ggz_about(GtkWidget* widget, gpointer data);
+GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2);
 
 
 /*
@@ -200,7 +207,6 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 			gtk_clist_unselect_all (GTK_CLIST (tmp));
 			gtk_clist_select_row (GTK_CLIST (tmp), row, 0);
 		}
-
 		gtk_menu_popup (GTK_MENU (mnu_tables), NULL, NULL, NULL, NULL,
 			event->button.button, event->button.time);
         }
@@ -216,8 +222,6 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 
 gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 {
-	GtkWidget *tmp;
-
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
 		GdkEventButton *bevent = (GdkEventButton *) event;
@@ -270,13 +274,37 @@ static void ggz_motd(void)
 
 static void ggz_realize(GtkWidget* widget, gpointer data)
 {
-	GtkWidget *tmp;
+	GtkXText *tmp;
+	char *buf;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
+	gtk_xtext_set_font(GTK_XTEXT(tmp), NULL, 0);
+	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors);
+	tmp->auto_indent = ggzrc_read_int("CHAT","AutoIndent",TRUE);
+	tmp->wordwrap = ggzrc_read_int("CHAT","WordWrap",TRUE);
+	tmp->max_auto_indent = 50;
+	tmp->time_stamp = ggzrc_read_int("CHAT","Timestamp",FALSE);
+	gtk_xtext_refresh(tmp);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
-	gtk_widget_grab_focus(tmp);
+	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);
+	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
+	g_free(buf);
+	buf = g_strdup_printf("GTK+ Version:\00314 %d.%d.%d\n",
+		gtk_major_version, gtk_minor_version, gtk_micro_version);
+	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
+	g_free(buf);
+
+	gtk_xtext_append_indent(tmp,"---",3,"Options:", 8);
+#ifdef DEBUG
+	gtk_xtext_append_indent(tmp,"---",3,"  Debug", 7);
+#else
+	gtk_xtext_append_indent(tmp,"---",3,"  No Debug", 10);
+#endif
+#ifdef DEBUG_SOCKET
+	gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug", 14);
+#else
+	gtk_xtext_append_indent(tmp,"---",3,"  No Socket Debug", 17);
+#endif
 }
 
 void ggz_room_changed(GtkWidget* widget, gpointer data)
@@ -309,7 +337,6 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	gtk_widget_grab_focus(tmp);
 }
 
-
 void ggz_about(GtkWidget* widget, gpointer data)
 {
 	GtkWidget *dlg_about;
@@ -320,6 +347,26 @@ void ggz_about(GtkWidget* widget, gpointer data)
 
 	dlg_about = create_dlg_about();
 	gtk_widget_show(dlg_about);
+}
+
+static void ggz_props_clicked(GtkWidget * widget, gpointer user_data)
+{
+	GtkWidget *tmp;
+
+	dlg_props = create_dlg_props();
+	gtk_widget_show(dlg_props);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "props_button");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+}
+
+GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2)
+{
+	GtkWidget *chat_text;
+	chat_text = gtk_xtext_new (TRUE, TRUE);
+	return chat_text;
 }
 
 
@@ -361,7 +408,7 @@ create_main_win (void)
   GtkWidget *disconnect_button;
   GtkWidget *launch_button;
   GtkWidget *join_button;
-  GtkWidget *prefs_button;
+  GtkWidget *props_button;
   GtkWidget *stats_button;
   GtkWidget *exit_button;
   GtkWidget *v_pane;
@@ -388,8 +435,9 @@ create_main_win (void)
   GtkWidget *room_label;
   GtkWidget *room_combo;
   GtkWidget *room_entry;
-  GtkWidget *chat_scroll;
+  GtkWidget *hbox1;
   GtkWidget *chat_text;
+  GtkWidget *chat_vscroll;
   GtkWidget *chat_separator;
   GtkWidget *msg_box;
   GtkWidget *msg_label;
@@ -402,7 +450,7 @@ create_main_win (void)
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
-  gtk_widget_set_usize (main_win, 580, -2);
+  gtk_widget_set_usize (main_win, 602, -2);
   gtk_window_set_title (GTK_WINDOW (main_win), "Gnu Gaming Zone");
   gtk_window_set_default_size (GTK_WINDOW (main_win), 500, 450);
 
@@ -688,16 +736,16 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (join_button);
 
-  prefs_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+  props_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
-                                "Change Prefs",
+                                "Change Props",
                                 NULL, NULL,
                                 NULL, NULL, NULL);
-  gtk_widget_ref (prefs_button);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "prefs_button", prefs_button,
+  gtk_widget_ref (props_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "props_button", props_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (prefs_button);
+  gtk_widget_show (props_button);
 
   stats_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -910,22 +958,28 @@ create_main_win (void)
   gtk_widget_show (room_entry);
   gtk_entry_set_editable (GTK_ENTRY (room_entry), FALSE);
 
-  chat_scroll = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (chat_scroll);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_scroll", chat_scroll,
+  hbox1 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (chat_scroll);
-  gtk_box_pack_start (GTK_BOX (chat_box), chat_scroll, TRUE, TRUE, 0);
-  gtk_widget_set_usize (chat_scroll, 100, -2);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (chat_scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  gtk_widget_show (hbox1);
+  gtk_box_pack_start (GTK_BOX (chat_box), hbox1, TRUE, TRUE, 0);
 
-  chat_text = gtk_text_new (NULL, NULL);
+  chat_text = ggz_xtext_new ("chat_text", NULL, NULL, 0, 0);
   gtk_widget_ref (chat_text);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_text", chat_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_text);
-  gtk_container_add (GTK_CONTAINER (chat_scroll), chat_text);
-  gtk_widget_set_usize (chat_text, 100, 132);
+  gtk_box_pack_start (GTK_BOX (hbox1), chat_text, TRUE, TRUE, 0);
+  GTK_WIDGET_UNSET_FLAGS (chat_text, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS (chat_text, GTK_CAN_DEFAULT);
+
+  chat_vscroll = gtk_vscrollbar_new (GTK_XTEXT(chat_text)->adj);
+  gtk_widget_ref (chat_vscroll);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_vscroll", chat_vscroll,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (chat_vscroll);
+  gtk_box_pack_start (GTK_BOX (hbox1), chat_vscroll, FALSE, TRUE, 0);
 
   chat_separator = gtk_hseparator_new ();
   gtk_widget_ref (chat_separator);
@@ -997,6 +1051,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (leave), "activate",
                       GTK_SIGNAL_FUNC (ggz_leave_game),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (properties), "activate",
+                      GTK_SIGNAL_FUNC (ggz_props_clicked),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (types), "activate",
                       GTK_SIGNAL_FUNC (ggz_get_types),
                       NULL);
@@ -1017,6 +1074,9 @@ create_main_win (void)
                       main_win);
   gtk_signal_connect (GTK_OBJECT (join_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_join_game),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (props_button), "clicked",
+                      GTK_SIGNAL_FUNC (ggz_props_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (exit_dlg),

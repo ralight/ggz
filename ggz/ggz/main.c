@@ -58,12 +58,12 @@ struct GameTables tables;
 struct Rooms room_info;
 char *local_conf_fname = NULL;
 
-/* Aray of GdkColors currently used for chat */
+/* Aray of GdkColors currently used for chat and MOTD */
 GdkColor colors[] = 
 {
-	{0, 0, 0xcccc, 0},		/* 0   green		Self	*/
-	{0, 0, 0, 0xcccc},		/* 1   bule		Others	*/
-	{0, 0xcccc, 0, 0},		/* 2   red		Buddies	*/
+	{0, 0, 0xcccc, 0},		/* 0   green			*/
+	{0, 0, 0, 0xcccc},		/* 1   bule			*/
+	{0, 0xcccc, 0, 0},		/* 2   red			*/
 	{0, 0xbbbb, 0xbbbb, 0},		/* 3   yellow/brown		*/
 	{0, 0xbbbb, 0, 0xbbbb},		/* 4   purple			*/
 	{0, 0xffff, 0xaaaa, 0},		/* 5   orange			*/
@@ -71,11 +71,23 @@ GdkColor colors[] =
 	{0, 0, 0xcccc, 0xcccc},		/* 7   aqua			*/
 	{0, 0, 0, 0xcccc},		/* 8   blue markBack		*/
 	{0, 0, 0, 0},			/* 9   black			*/
+	{0, 0xcccc, 0xcccc, 0xcccc},	/* 10  white			*/
+	{0, 0xffff, 0xffff, 0},		/* 11  yellow			*/
+	{0, 0, 0xffff, 0},		/* 12  green			*/
+	{0, 0, 0xffff, 0xffff},		/* 13  light aqua		*/
+	{0, 0, 0, 0xffff},		/* 14  blue			*/
+	{0, 0xffff, 0, 0xffff},		/* 15  pink			*/ 
+	{0, 0x9999, 0x9999, 0x9999},	/* 16  light grey		*/
+	{0, 0xeeee, 0xeeee, 0xeeee},	/* 17  white markFore		*/
+	{0, 0, 0, 0},			/* 18  foreground (black)	*/
+	{0, 0xffff, 0xffff, 0xffff}	/* 19  background (white)	*/
 };
 
 
 gint main(gint argc, gchar *argv[])
 {
+	gint i;
+
 	/* Read configuration values */
 	parse_args(argc, argv);
 	if(ggzrc_initialize(local_conf_fname) != 0) {
@@ -90,6 +102,21 @@ gint main(gint argc, gchar *argv[])
 	/* Signal handlers */
 	signal(SIGCHLD, game_dead);
 	
+	/* Allocate standared colors */
+        if (!colors[0].pixel)        /* don't do it again */
+        {
+                for (i = 0; i < 20; i++)
+                {
+                        colors[i].pixel = (gulong) ((colors[i].red & 0xff00) * 256 +
+                                        (colors[i].green & 0xff00) +
+                                        (colors[i].blue & 0xff00) / 256);
+                        if (!gdk_color_alloc (gdk_colormap_get_system(),
+                            &colors[i]))
+                                g_error("*** GGZ: Couldn't alloc color\n");
+                }
+        }
+
+
 	/* Popup Menus */
 	mnu_tables = create_mnu_tables();
 	mnu_players = create_mnu_players();
@@ -104,6 +131,7 @@ gint main(gint argc, gchar *argv[])
 	connection.new_room = -1;
 	connection.cur_room = -3;
 
+	/* Initilize GUI */
 	login_disconnect();
 
 	gtk_main();
