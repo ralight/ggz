@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4020 2002-04-19 07:21:41Z jdorje $
+ * $Id: common.c 4021 2002-04-19 07:33:52Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -523,19 +523,20 @@ static void set_player_name(player_t p, const char *name)
 	int s = game.players[p].seat;
 	GGZSeat player_seat = ggzdmod_get_seat(game.ggz, p);
 	player_seat.name = (char *) name;	/* discard const */
+	
 	ggzdmod_log(game.ggz, "Changing player %d (type %d)'s name to %s.", p,
 		    player_seat.type, name);
-	if (ggzdmod_set_seat(game.ggz, &player_seat) >= 0) {
-		/* s might be -1 if seats aren't assigned yet. */
-		if (s >= 0)
-			game.seats[s].name = name;
-	} else {
+	if (ggzdmod_set_seat(game.ggz, &player_seat) < 0) {
 		ggzdmod_log(game.ggz,
 			    "ERROR: SERVER BUG: "
 			    "Failed player name change for player %d/%s!",
 			    p, name);
-		game.seats[s].name = NULL;
+		name = NULL;
 	}
+	
+	/* s might be -1 if seats aren't assigned yet. */
+	if (s >= 0)
+		game.seats[s].name = name;
 }
 
 /* This handles the event of a player leaving */
@@ -561,9 +562,16 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* reset player's age; find new host */
 	game.players[player].age = -1;
-	game.host = determine_host();
-	if (game.host >= 0)
-		set_player_message(game.host);
+	if (game.host == player) {
+		game.host = determine_host();
+		if (game.host >= 0)
+			set_player_message(game.host);
+			
+		/* This happens when the host leaves the table before choosing
+		   a game.  Now the new host must choose. */
+		if (game.data == NULL)
+			games_req_gametype();		
+	}
 
 	/* get rid of old player message */
 	set_player_message(player);

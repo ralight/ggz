@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4020 2002-04-19 07:21:41Z jdorje $
+ * $Id: ai.c 4021 2002-04-19 07:33:52Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -141,9 +141,18 @@ void start_ai(player_t p, const char* ai_type)
 void stop_ai(player_t p)
 {
 	pid_t pid;
+	
+	/* Check to see if the AI has been spawned yet.  It's much easier to
+	   check here than elsewhere. */
+	if (game.players[p].pid < 0) {
+		assert(game.players[p].fd < 0);
+#ifdef DEBUG
+		assert(game.players[p].err_fd < 0);
+#endif
+		return;
+	}
 
 	/* Clean up process. */
-	assert(game.players[p].pid > 0);
 	kill(game.players[p].pid, SIGINT);
 	pid = waitpid(game.players[p].pid, NULL, 0);
 	if (pid != game.players[p].pid)
