@@ -168,9 +168,10 @@ GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *
 {
 	GGZapHandler *handler;
 
-cout << "server " << id << endl;
-
+/*cout << "server " << id << endl;*/
 	handler = (GGZapHandler*)user_data;
+
+	if(!handler->m_server) return GGZ_HOOK_ERROR;
 	handler->hookServerActive(id);
 	return GGZ_HOOK_OK;
 }
@@ -179,9 +180,10 @@ GGZHookReturn GGZapHandler::hookRoom(unsigned int id, void *event_data, void *us
 {
 	GGZapHandler *handler;
 
-cout << "room " << id << endl;
-
+/*cout << "room " << id << endl;*/
 	handler = (GGZapHandler*)user_data;
+
+	if(!handler->m_room) return GGZ_HOOK_ERROR;
 	handler->hookRoomActive(id, event_data);
 	return GGZ_HOOK_OK;
 }
@@ -190,7 +192,7 @@ GGZHookReturn GGZapHandler::hookGame(unsigned int id, void *event_data, void *us
 {
 	GGZapHandler *handler;
 
-cout << "game " << id << endl;
+/*cout << "game " << id << endl;*/
 
 	handler = (GGZapHandler*)user_data;
 	handler->hookGameActive(id, event_data);
@@ -202,7 +204,7 @@ void GGZapHandler::hookServerActive(unsigned int id)
 	int join, ret;
 	GGZCoreGametype *gametype;
 
-cout << "hookServerActive!" << endl;
+/*cout << "hookServerActive!" << endl;*/
 
 	switch(id)
 	{
@@ -222,6 +224,8 @@ cout << "hookServerActive!" << endl;
 			if(ret < 0) emit signalState(loginfail);
 			break;
 		case GGZCoreServer::negotiatefail:
+			detachServerCallbacks();
+			m_server = NULL;
 			emit signalState(negotiatefail);
 			break;
 		case GGZCoreServer::loggedin:
@@ -274,12 +278,12 @@ void GGZapHandler::getModule()
 
 	m_module = new GGZCoreModule();
 	gametype = m_room->gametype();
-cout << "##### init with: " << gametype->name() << ", " << gametype->protocolVersion() << endl;
+/*cout << "##### init with: " << gametype->name() << ", " << gametype->protocolVersion() << endl;*/
 	m_module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	count = m_module->count();
 	if(!count)
 	{
-cout << "##### no module defined!!!" << endl;
+/*cout << "##### no module defined!!!" << endl;*/
 		delete m_module;
 		m_module = NULL;
 		emit signalState(startfail);
@@ -295,7 +299,7 @@ cout << "##### no module defined!!!" << endl;
 				if(!strcmp(m_frontendtype, m_module->frontend())) break;
 			}
 		}
-cout << "##### frontend: " << m_module->frontend() << endl;
+/*cout << "##### frontend: " << m_module->frontend() << endl;*/
 	}
 }
 
@@ -308,7 +312,7 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 	int join;
 	int ret;
 
-cout << "hookRoomActive!" << endl;
+/*cout << "hookRoomActive!" << endl;*/
 
 	switch(id)
 	{
@@ -333,7 +337,7 @@ cout << "hookRoomActive!" << endl;
 				getModule();
 				if(m_module)
 				{
-cout << "##### joinTable: " << join << endl;
+/*cout << "##### joinTable: " << join << endl;*/
 					//m_room->joinTable(join);
 					m_activetable = join;
 				}
@@ -347,7 +351,7 @@ cout << "##### joinTable: " << join << endl;
 			m_module = NULL;
 			if(m_game->launch() < 0)
 			{
-cout << "##### game launch fail" << endl;
+/*cout << "##### game launch fail" << endl;*/
 				emit signalState(startfail);
 			}
 			else emit signalState(started);
@@ -369,7 +373,7 @@ cout << "##### game launch fail" << endl;
 		case GGZCoreRoom::tablejoinfail:
 			delete m_module;
 			m_module = NULL;
-cout << "##### tablejoinfail" << endl;
+/*cout << "##### tablejoinfail" << endl;*/
 			emit signalState(startfail);
 			break;
 		case GGZCoreRoom::tabledata:
@@ -385,7 +389,7 @@ cout << "##### tablejoinfail" << endl;
 
 void GGZapHandler::hookGameActive(unsigned int id, void *data)
 {
-cout << "hookGameActive!" << endl;
+/*cout << "hookGameActive!" << endl;*/
 	switch(id)
 	{
 		// FIXME: channel
