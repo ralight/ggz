@@ -11,13 +11,13 @@ What follows is the protocol top-level tag ('ggzcomm'), which contains the
 game name ('engine') and its version ('version').
 
 	<ggzcomm engine="GGZCards" version="2">
-	..
+		...
 	</ggzcomm>
 
 Within these tags, we have 4 types of tags now: Those which describes which
 events are sent by the server ('server'), which ones are sent by the client and
 received by the server ('client'), those who guarantee a certain order
-('protocol'), and constants definitions ('def').
+('protocol'), and constants definitions ('definitions').
 
 The following applies to the client and server tags:
 Each side can have any number of events ('event'), each of them may carry
@@ -31,7 +31,7 @@ care should then be taken for the naming, as renaming of variables can happen
 if any conflicts are discovered.
 
 	<event name="msg_language">
-	<data name="language" type="string"/>
+		<data name="language" type="string"/>
 	</event>
 
 If many elements of one type are to be read or written, a 'sequence' may be
@@ -39,26 +39,31 @@ used within an event.
 A NULL-terminated list (array) of this type is then returned.
 
 	<sequence count="number">
-	<data name="option" type="int"/>
+		<data name="option" type="int"/>
 	</sequence>
 
 A constant can be defined in order to allow evaluations.
 
-	<def name="game_message_text" value="5"/>
+	<definitions>
+		<def name="game_message_text" value="5"/>
+	</definitions>
 
 This can then be used for simple types of algorithms:
 
 	<event name="message_game">
-	<data name="msgtype" type="int"/>
-	<eval name="msgtype" result="game_message_text">
-	<data name="marker" type="string"/>
-	<data name="message" type="string"/>
-	</eval>
+		<data name="msgtype" type="int"/>
+		<eval>
+			<condition name="msgtype" result="game_message_text">
+			<data name="marker" type="string"/>
+			<data name="message" type="string"/>
+		</eval>
 	</event>
 
 Finally, the links exist to ensure a certain order of data.
 
-	<link server="req_move" client="rsp_move"/>
+	<protocol>
+		<link server="req_move" client="rsp_move"/>
+	</protocol>
 
 Josef Spillner
 30.04.2002

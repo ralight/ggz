@@ -21,17 +21,16 @@
 			<data name="version" type="byte"/>
 		</event>
 		<event name="msgplayers">
-			<data name="assign" type="byte"/>
-			<eval name="assign" value="ggz_seat_player">
-				<data name="name" type="string"/>
-			</eval>
-			<data name="assign2" type="byte"/>
-			<eval name="assign2" value="ggz_seat_player">
-				<data name="name2" type="string"/>
-			</eval>
+			<sequence count="2">
+				<data name="assign" type="byte"/>
+				<eval>
+					<condition name="assign" result="ggz_seat_player"/>
+					<data name="name" type="string"/>
+				</eval>
+			</sequence>
 		</event>
 		<event name="reqtime"/>
-		<event name="rsptime>
+		<event name="rsptime">
 			<data name="time" type="int"/>
 		</event>
 		<event name="msgstart"/>
@@ -42,7 +41,8 @@
 			<data name="x2" type="byte"/>
 			<data name="y2" type="byte"/>
 			<data name="cval" type="byte"/>
-			<eval name="clocktype" value="???">
+			<eval>
+				<condition name="clocktype" result="???"/>
 				<data name="time" type="int"/>
 			</eval>
 		</event>

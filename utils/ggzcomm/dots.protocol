@@ -28,10 +28,9 @@
 		<event name="msgplayers">
 			<sequence count="2">
 				<data name="seattmp" type="int"/>
-				<eval name="seattmp" value="ggz_seat_player">
-					<data name="player" type="string"/>
-				</eval>
-				<eval name="seattmp" value="ggz_seat_player">
+				<eval>
+					<condition name="seat" result="ggz_seat_player"/>
+					<condition name="seat" result="ggz_seat_bot"/>
 					<data name="player" type="string"/>
 				</eval>
 			</sequence>

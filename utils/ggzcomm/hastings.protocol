@@ -45,7 +45,9 @@
 			<data name="playernum" type="int"/>
 			<sequence count="playernum">
 				<data name="type" type="int"/>
-				<eval name="name">
+				<eval>
+					<condition name="type" result="ggz_seat_player"/>
+					<condition name="type" result="ggz_seat_bot"/>
 					<data name="name" type="string"/>
 				</eval>
 			</sequence>

@@ -7,8 +7,8 @@
 		<event name="rsp_newgame"/>
 		<event name="rsp_options">
 			<data name="number" type="int"/>
-			<sequence count="$number">
-				<data name="option[i]" type="int"/>
+			<sequence count="number">
+				<data name="option" type="int"/>
 			</sequence>
 		</event>
 		<event name="rsp_play">
@@ -24,25 +24,25 @@
 		<event name="msg_newgame"/>
 		<event name="msg_gameover">
 			<data name="number" type="int"/>
-			<sequence count="$number">
-				<data name="winner[i]" type="int"/>
+			<sequence count="number">
+				<data name="winner" type="int"/>
 			</sequence>
 		</event>
 		<event name="msg_players">
 			<data name="number" type="int"/>
-			<sequence count="$number">
-				<data name="seat[i]" type="int"/>
-				<data name="name[i]" type="string"/>
+			<sequence count="number">
+				<data name="seat" type="int"/>
+				<data name="name" type="string"/>
 			</sequence>
 		</event>
 		<event name="req_options">
 			<data name="number" type="int"/>
-			<sequence count="$number">
+			<sequence count="number">
 				<data name="description" type="string"/>
 				<data name="choices" type="int"/>
 				<data name="default" type="int"/>
-				<sequence count="$choices">
-					<data name="choice[i]" type="string"/>
+				<sequence count="choices">
+					<data name="choice" type="string"/>
 				</sequence>
 			</sequence>
 		</event>
@@ -50,8 +50,8 @@
 		<event name="msg_hand">
 			<data name="seat" type="int"/>
 			<data name="size" type="int"/>
-			<sequence count="$size">
-				<data name="card[i]" type="int"/>
+			<sequence count="size">
+				<data name="card" type="int"/>
 			</sequence>
 		</event>
 		<event name="req_play">
@@ -69,9 +69,9 @@
 		</event>
 		<event name="req_bid">
 			<data name="size" type="int"/>
-			<sequence count="$size">
-				<data name="bid[i]" type="string"/>
-				<data name="description[i]" type="string"/>
+			<sequence count="size">
+				<data name="bid" type="string"/>
+				<data name="description" type="string"/>
 			</sequence>
 		</event>
 		<event name="msg_bid">
@@ -79,34 +79,38 @@
 			<data name="bid" type="int"/>
 		</event>
 		<event name="msg_table">
-			<sequence count="???">
-				<data name="card[i]" type="int"/>
+			<sequence count="number"> <!-- playercount! from msgplayers -->
+				<data name="card" type="int"/>
 			</sequence>
 		</event>
 		<event name="message_game">
 			<data name="msgtype" type="int"/>
-			<eval name="$msgtype" result="game_message_text">
+			<eval>
+				<condition name="msgtype" result="game_message_text"/>
 				<data name="marker" type="string"/>
 				<data name="message" type="string"/>
 			</eval>
-			<eval name="$msgtype" result="game_message_player">
+			<eval>
+				<condition name="msgtype" result="game_message_player"/>
 				<data name="seat" type="int"/>
 				<data name="message" type="string"/>
 			</eval>
-			<eval name="$msgtype" result="game_message_cardlist">
+			<eval>
+				<condition name="msgtype" result="game_message_cardlist"/>
 				<data name="marker" type="string"/>
 				<sequence count="???">
-					<data name="count[i]" type="int"/>
-					<sequence count="$count[i]">
-						<data name="card[i]" type="int"/>
+					<data name="count" type="int"/>
+					<sequence count="count">
+						<data name="card" type="int"/>
 					</sequence>
 				</sequence>
 			</eval>
-			<eval name="$msgtype" result="game_message_game">
+			<eval>
+				<condition name="msgtype" result="game_message_game"/>
 				<data name="name" type="string"/>
 				<data name="count" type="int"/>
-				<sequence count="$count">
-					<data name="rawdata[i]" type="int"/>
+				<sequence count="count">
+					<data name="rawdata" type="int"/>
 				</sequence>
 			</eval>
 		</event>

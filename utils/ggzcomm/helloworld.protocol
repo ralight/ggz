@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ggzcomm engine="helloworld" version="1">
+	<definitions>
+		<def name="greetrequest" value="23"/>
+		<def name="greeting" value="42"/>
+	</definitions>
+	<client>
+		<event name="greetrequest"/>
+	</client>
+	<server>
+		<event name="greeting">
+			<data name="name" type="string"/>
+		</event>
+	</server>
+	<protocol>
+		<link client="greetrequest" server="greeting"/>
+	</protocol>
+</ggzcomm>
+

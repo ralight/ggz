@@ -47,11 +47,11 @@ This could look like:
 	</server>
 	<client>
 		<event name="sendmove">
-			<data name="move" type="int">
+			<data name="move" type="int"/>
 		</event>
 	</client>
 	<protocol>
-		<link server="nextturn" client="sendmove">
+		<link server="nextturn" client="sendmove"/>
 	</protocol>
 </ggzcomm>
 

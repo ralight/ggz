@@ -1,7 +1,18 @@
 <?xml version="1.0"?>
-<ggzcomm engine="tictactoe" version="2">
-	<def name="ggz_seat_bot" value="2"/>
-	<def name="ggz_seat_player" value="3"/>
+<ggzcomm engine="tictactoe" version="4">
+	<definitions>
+		<def name="ggz_seat_bot" value="2"/>
+		<def name="ggz_seat_player" value="3"/>
+		<def name="msgseat" value="0"/>
+		<def name="msgplayers" value="1"/>
+		<def name="msgmove" value="2"/>
+		<def name="msggameover" value="3"/>
+		<def name="reqmove" value="4"/>
+		<def name="rspmove" value="5"/>
+		<def name="sndsync" value="6"/>
+		<def name="sndmove" value="0"/>
+	</definitions>
+<!--	<def name="reqsync" value="1"/> -->
 	<client>
 		<event name="sndmove">
 			<data name="move" type="int"/>
