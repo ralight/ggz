@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "datatypes.h"
 #include "net.h"
 
