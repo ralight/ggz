@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: engine_func.c 4486 2002-09-09 04:11:44Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -91,7 +91,8 @@ inline void WriteIntOrDie( int msgsock, int message ) {
 }
 
 
-int num_comp_play(unsigned char mask) {
+#if 0 /* Unused */
+static int num_comp_play(unsigned char mask) {
 
   int i, count = 0;
 
@@ -102,6 +103,7 @@ int num_comp_play(unsigned char mask) {
 
   return count;
 }
+#endif
 
 
 void svNetClose( void ) {
