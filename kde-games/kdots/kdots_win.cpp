@@ -25,7 +25,9 @@ KDotsWin::KDotsWin()
 	kdots_help = NULL;
 	kdots_about = NULL;
 
-	statusBar()->insertItem(i18n("Launching KDots..."), 1);
+	m_color = new QWidget(statusBar());
+	statusBar()->insertItem(i18n("Launching KDots..."), 1, 1);
+	statusBar()->addWidget(m_color, 1, true);
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem(i18n("Synchronize"), menusync);
@@ -47,6 +49,7 @@ KDotsWin::KDotsWin()
 	setCentralWidget(m_dots);
 
 	connect(m_dots, SIGNAL(signalStatus(const char*)), SLOT(slotStatus(const char*)));
+	connect(m_dots, SIGNAL(signalColor(const QColor&)), SLOT(slotColor(const QColor&)));
 
 	slotStatus(i18n("Waiting for opponent..."));
 
@@ -83,5 +86,10 @@ void KDotsWin::slotMenu(int id)
 void KDotsWin::slotStatus(const char *message)
 {
 	statusBar()->changeItem(message, 1);
+}
+
+void KDotsWin::slotColor(const QColor& color)
+{
+	m_color->setBackgroundColor(QColor(color));
 }
 

@@ -42,7 +42,6 @@ KDots::KDots(QWidget *parent, const char *name)
 
 	setBackgroundColor(QColor(100, 100, 100));
 	setCaption("KDE Dots");
-	//dots->setFixedSize(400, 400);
 	setFixedSize(400, 400);
 	show();
 
@@ -121,7 +120,7 @@ void KDots::slotSync()
 {
 	if(proto->turn == -1)
 	{
-		KMessageBox::sorry(this, i18n("No game running yet!"), i18n("Error"));
+		KMessageBox::sorry(this, i18n("No game running yet!"), i18n("Synchronization"));
 		return;
 	}
 	proto->sync();
@@ -143,41 +142,35 @@ void KDots::slotInput()
 	switch(op)
 	{
 		case proto->msgseat:
-			/*printf("##### msgseat\n");*/
 			proto->getSeat();
+			if(proto->num == 1) emit signalColor(QColor(0, 0, 250));
+			else emit signalColor(QColor(0, 0, 50));
 			break;
 		case proto->msgplayers:
-			/*printf("##### msgplayers\n");*/
 			proto->getPlayers();
 			if(proto->state != proto->statechoose) proto->state = proto->statewait;
 			break;
 		case proto->msgoptions:
-			/*printf("##### msgoptions\n");*/
 			proto->getOptions();
-			//slotStart(proto->width, proto->height);
 			dots->resizeBoard(proto->width - 1, proto->height - 1);
 			dots->refreshBoard();
 			break;
 		case proto->reqmove:
-			/*printf("##### reqmove\n");*/
 			emit signalStatus(i18n("Your turn."));
 			proto->state = proto->statemove;
 			proto->turn = proto->num;
 			break;
 		case proto->msgmoveh:
-			/*printf("##### msgmoveh\n");*/
 			proto->getOppMove(proto->sndmoveh);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, 1);
 			dots->repaint();
 			break;
 		case proto->msgmovev:
-			/*printf("##### msgmovev\n");*/
 			proto->getOppMove(proto->sndmovev);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, 1);
 			dots->repaint();
 			break;
 		case proto->rspmove:
-			/*printf("##### rspmove\n");*/
 			if(proto->getMove() != -1)
 			{
 				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, 1);
@@ -190,7 +183,6 @@ void KDots::slotInput()
 			}
 			break;
 		case proto->msggameover:
-			/*printf("##### msggameover\n");*/
 			status = proto->getStatus();
 			if(status == -1) exit(-1);
 			proto->state = proto->statechoose;
@@ -207,17 +199,15 @@ void KDots::slotInput()
 			}
 			break;
 		case proto->sndsync:
-			/*printf("##### sndsync\n");*/
 			gamesync();
 			break;
 		case proto->reqoptions:
-			/*printf("##### reqoptions\n");*/
 			slotOptions();
 			break;
 		default:
-			/*printf("##### unknown opcode -> %i\n", op);*/
+			proto->state = proto->statedone;
 			KMessageBox::error(this, i18n("A protocol error has been detected. Aborting the game."), i18n("Protocol error"));
-			close();
+			exit(-1);
 	}
 }
 
@@ -255,7 +245,6 @@ void KDots::gamesync()
 		for(int j = 0; j < proto->height - 1; j++)
 		{
 			dot = proto->getSyncMove();
-			/*printf("%i/%i: %i\n", i, j, dot);*/
 			dots->setOwnership(i, j, dot);
 		}
 

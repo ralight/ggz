@@ -37,11 +37,13 @@ class KDotsWin : public KMainWindow
 	public slots:
 		void slotMenu(int id);
 		void slotStatus(const char *message);
+		void slotColor(const QColor& color);
 
 	private:
 		KDots *m_dots;
 		KDotsAbout *kdots_about;
 		KDotsHelp *kdots_help;
+		QWidget *m_color;
 };
 
 #endif

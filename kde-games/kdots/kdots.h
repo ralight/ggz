@@ -27,14 +27,18 @@ class KDots : public QWidget
 		~KDots();
 		void gameinit();
 		void gamesync();
+
 	public slots:
 		void slotOptions();
 		void slotStart(int horizontal, int vertical);
 		void slotTurn(int x, int y, int direction);
 		void slotInput();
 		void slotSync();
+
 	signals:
 		void signalStatus(const char *message);
+		void signalColor(const QColor& color);
+
 	private:
 		int m_rows;
 		int m_cols;
