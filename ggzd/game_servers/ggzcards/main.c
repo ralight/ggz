@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: main.c 4130 2002-05-02 02:47:59Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -50,7 +50,7 @@ static char *get_option(const char *option_name, char **argv, int *i,
 static void main_loop(GGZdMod * ggz);
 
 static void es_error(const char *msg, const GGZIOType op,
-		     const GGZDataType data);
+                     int fd, const GGZDataType data);
 static void es_exit(int result);
 
 /**************************************************************************
@@ -102,7 +102,7 @@ static char *get_option(const char *option_name, char **argv, int *i,
    report the error! Therefore we instead just send it to stderr, which isn't 
    very useful. */
 static void es_error(const char *msg, const GGZIOType op,
-		     const GGZDataType data)
+                     int fd, const GGZDataType data)
 {
 	fprintf(stderr, "ERROR: " "Bad easysock operation: %s.\n", msg);
 }
