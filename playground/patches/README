@@ -4,15 +4,18 @@ be merged with the sources.
 Current patches
 ---------------
 
-Embedding ggzcore into game clients:
- ggz-client-libs.embedded.diff
- widelands.embedded.diff
+Widelands GGZ integration:
+ widelands.netmenu.diff
 
 Game-side channels (for running GGZ in windows):
  ggz-client-libs.channels.diff
 
 Old patches (just to keep it in memory)
 ---------------------------------------
+
+Embedding ggzcore into game clients:
+ ggz-client-libs.embedded.diff
+ widelands.embedded.diff
 
 Gensecure patches:
  ggz-0.0.5pre-gensecure.ggz-client-libs.patch

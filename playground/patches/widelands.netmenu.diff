@@ -1,0 +1,402 @@
+Index: src/main.cc
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/main.cc,v
+retrieving revision 1.53
+diff -u -r1.53 main.cc
+--- src/main.cc	15 Jan 2005 14:51:53 -0000	1.53
++++ src/main.cc	22 Jan 2005 11:56:47 -0000
+@@ -284,7 +284,9 @@
+             }
+             break;
+          }
+-			else if(code == Fullscreen_Menu_NetSetup::GGZGAME) {
++			else if((code == Fullscreen_Menu_NetSetup::JOINGGZGAME)
++				|| (code == Fullscreen_Menu_NetSetup::HOSTGGZGAME)) {
++				if(code == Fullscreen_Menu_NetSetup::HOSTGGZGAME) NetGGZ::ref()->launch();
+ 				if(NetGGZ::ref()->host()) netgame = new NetHost();
+ 				else
+ 				{
+Index: src/network.cc
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/network.cc,v
+retrieving revision 1.17
+diff -u -r1.17 network.cc
+--- src/network.cc	12 Jan 2005 01:30:53 -0000	1.17
++++ src/network.cc	22 Jan 2005 11:56:48 -0000
+@@ -1093,7 +1093,7 @@
+ 	return ip_address;
+ }
+ 
+-void NetGGZ::initcore()
++void NetGGZ::initcore(const char *hostname)
+ {
+ #ifdef HAVE_GGZ
+ 	GGZOptions opt;
+@@ -1126,7 +1126,7 @@
+ 	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_CONNECTED, &NetGGZ::callback_server);
+ 	ggzcore_server_add_event_hook(ggzserver, GGZ_CHANNEL_READY, &NetGGZ::callback_server);
+ 
+-	ggzcore_server_set_hostinfo(ggzserver, "live.ggzgamingzone.org", 5688, 0);
++	ggzcore_server_set_hostinfo(ggzserver, hostname, 5688, 0);
+ 	ggzcore_server_connect(ggzserver);
+ 
+ 	printf("GGZCORE ## start loop\n");
+@@ -1136,6 +1136,17 @@
+ #endif
+ }
+ 
++void NetGGZ::deinitcore()
++{
++#ifdef HAVE_GGZ
++	ggzcore_server_logout(ggzserver);
++	ggzcore_server_disconnect(ggzserver);
++	ggzcore_server_free(ggzserver);
++	ggzserver = 0;
++	ggzcore_destroy();
++#endif
++}
++
+ bool NetGGZ::usedcore()
+ {
+ #ifdef HAVE_GGZ
+@@ -1307,13 +1318,25 @@
+ #ifdef HAVE_GGZ
+ 	GGZRoom *room;
+ 	GGZGame *game;
++	GGZTable *table;
++	GGZGameType *gametype;
+ 
+ 	switch(id)
+ 	{
+ 		case GGZ_GAME_PLAYING:
+ 			printf("GGZCORE/game ## -- playing\n");
+ 			room = ggzcore_server_get_cur_room(ggzserver);
+-			ggzcore_room_join_table(room, tableid, 0);
++			if(tableid == -1)
++			{
++				table = ggzcore_table_new();
++				gametype = ggzcore_room_get_gametype(room);
++				ggzcore_table_init(table, gametype, "test", ggzcore_gametype_get_max_players(gametype));
++				for(int i = 1; i < ggzcore_gametype_get_max_players(gametype); i++)
++					ggzcore_table_set_seat(table, i, GGZ_SEAT_OPEN, NULL);
++				ggzcore_room_launch_table(room, table);
++				ggzcore_table_free(table);
++			}
++			else ggzcore_room_join_table(room, tableid, 0);
+ 			break;
+ 		case GGZ_GAME_LAUNCHED:
+ 			printf("GGZCORE/game ## -- launched\n");
+@@ -1380,3 +1403,25 @@
+ #endif
+ }
+ 
++void NetGGZ::launch()
++{
++#ifdef HAVE_GGZ
++	GGZGame *game;
++
++	printf("GGZCORE ## launch table\n");
++
++	tableid = -1;
++
++	game = ggzcore_game_new();
++	ggzcore_game_init(game, ggzserver, NULL);
++
++	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, &NetGGZ::callback_game);
++	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, &NetGGZ::callback_game);
++	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, &NetGGZ::callback_game);
++	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, &NetGGZ::callback_game);
++	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, &NetGGZ::callback_game);
++
++	ggzcore_game_launch(game);
++#endif
++}
++
+Index: src/network.h
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/network.h,v
+retrieving revision 1.10
+diff -u -r1.10 network.h
+--- src/network.h	12 Jan 2005 01:30:53 -0000	1.10
++++ src/network.h	22 Jan 2005 11:56:48 -0000
+@@ -303,9 +303,11 @@
+ 		op_broadcast_ip = 4
+ 	};
+ 
+-	void initcore();
++	void initcore(const char *hostname);
++	void deinitcore();
+ 	bool usedcore();
+ 	void datacore();
++	void launch();
+ 	void join(const char *tablename);
+ 
+     private:
+Index: src/network_lan_promotion.cc
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/network_lan_promotion.cc,v
+retrieving revision 1.4
+diff -u -r1.4 network_lan_promotion.cc
+--- src/network_lan_promotion.cc	1 Jan 2005 17:16:59 -0000	1.4
++++ src/network_lan_promotion.cc	22 Jan 2005 11:56:48 -0000
+@@ -181,11 +181,18 @@
+ 
+ LAN_Game_Finder::LAN_Game_Finder ()
+ {
+-    char magic[8];
+-    
+     callback=0;
+     
+     bind (WIDELANDS_LAN_DISCOVERY_PORT);
++
++    reset();
++}
++
++void LAN_Game_Finder::reset ()
++{
++    char magic[8];
++
++    opengames.clear();
+     
+     strncpy (magic, "QUERY", 8);
+     magic[6]=LAN_PROMOTION_PROTOCOL_VERSION;
+Index: src/network_lan_promotion.h
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/network_lan_promotion.h,v
+retrieving revision 1.2
+diff -u -r1.2 network_lan_promotion.h
+--- src/network_lan_promotion.h	31 Dec 2004 17:34:48 -0000	1.2
++++ src/network_lan_promotion.h	22 Jan 2005 11:56:48 -0000
+@@ -89,6 +89,7 @@
+ 	LAN_Game_Finder ();
+ 	~LAN_Game_Finder ();
+ 	
++	void reset ();
+ 	void run ();
+ 	
+ 	void set_callback (void(*)(int, const LAN_Open_Game*, void*), void*);
+Index: src/options.cc
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/options.cc,v
+retrieving revision 1.28
+diff -u -r1.28 options.cc
+--- src/options.cc	12 Jan 2005 01:30:53 -0000	1.28
++++ src/options.cc	22 Jan 2005 11:56:48 -0000
+@@ -59,7 +59,6 @@
+ " --coredump       Generates a core dump on segfaults instead of using the SDL\n"
+ "\n"
+ " --ggz            Starts game as GGZ Gaming Zone client (don't use!)\n"
+-" --ggzcore        GGZ embedded mode (TEMPORARY -> make menu button!)\n"
+ "\n"
+ " --help           Show this help\n"
+ " --version        Show version\n"
+@@ -108,10 +107,6 @@
+ 			NetGGZ::ref()->init();
+ 			continue;
+ 		}
+-		if (!strcmp(opt, "ggzcore")) {
+-			NetGGZ::ref()->initcore();
+-			continue;
+-		}
+ 
+ 		value = strchr(opt, '=');
+ 		if (!value) {
+Index: src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc,v
+retrieving revision 1.9
+diff -u -r1.9 fullscreen_menu_netsetup.cc
+--- src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	12 Jan 2005 01:30:54 -0000	1.9
++++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	22 Jan 2005 11:56:48 -0000
+@@ -30,11 +30,8 @@
+ Fullscreen_Menu_NetSetup::Fullscreen_Menu_NetSetup ()
+ 	:Fullscreen_Menu_Base("singleplmenu.jpg") // change this
+ {
+-	if(!NetGGZ::ref()->usedcore())
+-	{
+-		discovery=new LAN_Game_Finder();
+-		discovery->set_callback (discovery_callback, this);
+-	}
++	discovery=new LAN_Game_Finder();
++	discovery->set_callback (discovery_callback, this);
+ 	
+ 	// Text
+ 	UITextarea* title= new UITextarea(this, MENU_XRES/2, 140, "Begin Network Game", Align_HCenter);
+@@ -44,11 +41,11 @@
+ 	UIButton* b;
+ 
+ 	b = new UIButton(this, 60, 170, 174, 24, 1, JOINGAME);
+-	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::end_modal);
++	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::joingame);
+ 	b->set_title("Join a Game");
+ 
+ 	b = new UIButton(this, 60, 210, 174, 24, 1, HOSTGAME);
+-	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::end_modal);
++	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::hostgame);
+ 	b->set_title("Host a New Game");
+ 
+ 	b = new UIButton(this, 60, 250, 174, 24, 1, INTERNETGAME);
+@@ -58,10 +55,16 @@
+ 	b = new UIButton(this, 60, 290, 174, 24, 0, CANCEL);
+ 	b->clickedid.set(this, &Fullscreen_Menu_NetSetup::end_modal);
+ 	b->set_title("Back");
+-	
++
+ 	// Hostname
+ 	hostname=new UIEdit_Box(this, 288, 170, 174, 24, 2, 0);
+ 	hostname->set_text("localhost");	
++
++	// LAN or GGZ game
++	networktype = new UIButton(this, 482, 170, 124, 24, 0, -1);
++	networktype->clickedid.set(this, &Fullscreen_Menu_NetSetup::toggle_networktype);
++	networktype->set_title("LAN games");
++	internetgame = false;
+ 	
+ 	// List of open games in local network
+ 	opengames=new UITable(this, 288, 210, 320, 128);
+@@ -73,17 +76,17 @@
+ 
+ Fullscreen_Menu_NetSetup::~Fullscreen_Menu_NetSetup ()
+ {
+-	if(!NetGGZ::ref()->usedcore())
+-	{
+-		delete discovery;
+-	}
++	delete discovery;
+ }
+ 
+ void Fullscreen_Menu_NetSetup::think ()
+ {
+ 	Fullscreen_Menu_Base::think ();
+ 	
+-	discovery->run ();
++	if(!NetGGZ::ref()->usedcore())
++	{
++		discovery->run ();
++	}
+ }
+ 
+ bool Fullscreen_Menu_NetSetup::get_host_address (ulong& addr, ushort& port)
+@@ -115,13 +118,7 @@
+ {
+ 	LAN_Open_Game* game=(LAN_Open_Game*) (opengames->get_selection());
+ 	
+-	if(game)
+-		hostname->set_text (game->info.hostname);
+-	else {
+-		UITable_Entry *entry = opengames->get_entry(opengames->get_selection_index());
+-		NetGGZ::ref()->join(entry->get_string(1));
+-		end_modal(GGZGAME);
+-	}
++	if(game) hostname->set_text (game->info.hostname);
+ }
+ 
+ void Fullscreen_Menu_NetSetup::update_game_info (UITable_Entry* entry, const LAN_Game_Info& info)
+@@ -189,3 +186,53 @@
+ 	}
+ }
+ 
++void Fullscreen_Menu_NetSetup::toggle_networktype(int code)
++{
++	if(internetgame)
++	{
++		NetGGZ::ref()->deinitcore();
++	}
++
++	internetgame = !internetgame;
++
++	opengames->clear();
++
++	if(internetgame)
++	{
++		hostname->set_text("live.ggzgamingzone.org");
++		NetGGZ::ref()->initcore(hostname->get_text());
++		networktype->set_title("GGZ games");
++	}
++	else
++	{
++		hostname->set_text("localhost");
++		discovery->reset();
++		networktype->set_title("LAN games");
++	}
++}
++
++//bool Fullscreen_Menu_NetSetup::is_internetgame()
++//{
++//	return internetgame;
++//}
++
++void Fullscreen_Menu_NetSetup::joingame(int code)
++{
++	if(NetGGZ::ref()->usedcore())
++	{
++		int index = opengames->get_selection_index();
++		if(index < 0) return;
++		UITable_Entry *entry = opengames->get_entry(index);
++		if(!entry) return;
++		NetGGZ::ref()->join(entry->get_string(1));
++		end_modal(JOINGGZGAME);
++	}
++	else end_modal(JOINGAME);
++}
++
++void Fullscreen_Menu_NetSetup::hostgame(int code)
++{
++	if(NetGGZ::ref()->usedcore()) end_modal(HOSTGGZGAME);
++	else end_modal(HOSTGAME);
++}
++
+Index: src/ui/ui_fs_menus/fullscreen_menu_netsetup.h
+===================================================================
+RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netsetup.h,v
+retrieving revision 1.7
+diff -u -r1.7 fullscreen_menu_netsetup.h
+--- src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	12 Jan 2005 01:30:54 -0000	1.7
++++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	22 Jan 2005 11:56:48 -0000
+@@ -28,6 +28,7 @@
+ class UIEdit_Box;
+ class UITable;
+ class UITable_Entry;
++class UIButton;
+ 
+ class LAN_Game_Finder;
+ class LAN_Open_Game;
+@@ -40,7 +41,8 @@
+ 			HOSTGAME,
+ 			JOINGAME,
+ 			INTERNETGAME,
+-			GGZGAME
++			HOSTGGZGAME,
++			JOINGGZGAME
+ 		};
+ 		
+ 		Fullscreen_Menu_NetSetup ();
+@@ -51,12 +53,17 @@
+ 		bool get_host_address (ulong&, ushort&);
+ 		// return true if the selected or entered hostname is valid
+ 
++		//bool is_internetgame();
++		// return true if game should be played over GGZ
++
+ 		void fill(std::list<std::string> tables);
+ 	
+ 	private:
+ 		UIEdit_Box*		hostname;
+ 		UITable*		opengames;
+ 		LAN_Game_Finder*	discovery;
++		UIButton*		networktype;
++		bool			internetgame;
+ 		
+ 		void game_selected (int);
+ 		
+@@ -67,6 +74,10 @@
+ 		void game_updated (const LAN_Open_Game*);
+ 		
+ 		void update_game_info (UITable_Entry*, const LAN_Game_Info&);
++
++		void toggle_networktype(int code);
++		void joingame(int code);
++		void hostgame(int code);
+ };
+ 
+ #endif
