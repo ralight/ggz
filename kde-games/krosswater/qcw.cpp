@@ -23,6 +23,9 @@ QCw::QCw(QWidget* parent = 0, char* name = 0)
 	m_state = normal;
 	startTimer(1000);
 	m_numplayers = 0;
+
+	for(int i = 0; i < 4; i++)
+		m_players[i][2] = -1;
 }
 
 QCw::~QCw()
@@ -86,7 +89,7 @@ void QCw::paintEvent(QPaintEvent *e)
 				playerpixmap = GGZDATADIR "/krosswater/gfx/geek.png";
 				break;
 		}
-		p.drawPixmap(m_players[i][0] * 20, m_players[i][1] * 20, QPixmap(playerpixmap));
+		if(m_players[i][2] >= 0) p.drawPixmap(m_players[i][0] * 20, m_players[i][1] * 20, QPixmap(playerpixmap));
 	}
 
 	if(m_state == selected)
@@ -195,11 +198,13 @@ void QCw::addPlayer(int x, int y)
 	m_players[m_numplayers][0] = x;
 	m_players[m_numplayers][1] = y;
 	m_numplayers++;
+	cout << "QCW: setPlayer at " << x << ", " << y << endl;
 }
 
 void QCw::setPlayerPixmap(int player, int pixmap)
 {
 	if((player < 0) || (player > m_numplayers)) return;
 	m_players[player][2] = pixmap;
+	cout << "QCW: setPlayerPixmap for " << player << endl;
 }
 

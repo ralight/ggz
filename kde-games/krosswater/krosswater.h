@@ -2,6 +2,7 @@
 #define KROSSWATER_H
 
 #include "qcw.h"
+#include "dlg_again.h"
 #include <ZoneGGZModUI.h>
 #include <qframe.h>
 #include <qevent.h>
@@ -36,18 +37,20 @@ class Krosswater : public ZoneGGZModUI
 		void slotMenuQuit();
 		void slotMenuAbout();
 		void slotMenuHelp();
+		void slotAgain();
 
 	protected:
 		void paintEvent(QPaintEvent *e);
 
 	private:
-		void showStatus(char *state);
+		void showStatus(const char *state);
 
 		QCw* qcw;
 		int m_fromx, m_fromy, m_tox, m_toy;
-		char *m_currentstate;
+		const char *m_currentstate;
 		QFrame *m_statusframe;
 		int m_selectedperson;
+		DlgAgain *m_again;
 };
 
 #endif

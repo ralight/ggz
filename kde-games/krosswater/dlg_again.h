@@ -9,8 +9,17 @@ class DlgAgain : public QWidget
 	public:
 		DlgAgain(QWidget *parent, char *name);
 		~DlgAgain();
+
+		void setResult(const char *result);
+
+	signals:
+		void signalAgain();
+		
 	protected:
 		void paintEvent(QPaintEvent *e);
+
+	private:
+		QString m_result;
 };
 
 #endif

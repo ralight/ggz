@@ -3,11 +3,11 @@
 #include <kmessagebox.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
+#include <klocale.h>
 
 #include "dlg_person.h"
 #include "dlg_about.h"
 #include "dlg_help.h"
-#include "dlg_again.h"
 
 #include <qlayout.h>
 #include <qpainter.h>
@@ -28,6 +28,8 @@ Krosswater::Krosswater(QWidget *parent, char *name)
 	KPopupMenu *menu_game, *menu_help;
 	QWidget *dummy;
 
+	m_again = NULL;
+
 	qcw = new QCw(this, "qcw");
 
 	dummy = new QWidget(this);
@@ -40,7 +42,7 @@ Krosswater::Krosswater(QWidget *parent, char *name)
 	//m_status = new QLabel("", statusframe);
 	//m_status->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	//m_status->setFixedSize(300, 20);
-	showStatus("Uninitialized");
+	showStatus(i18n("Uninitialized"));
 	//vbox2 = new QVBoxLayout(statusframe, 2);
 	//vbox2->add(m_status);
 
@@ -91,8 +93,8 @@ void Krosswater::slotSelected(int person)
 	cout << "zonePlayers: " << zonePlayers() << endl;
 	cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
 	cout << "Person: " << person << endl;
-	if(zonePlayers() == ZoneMaxplayers) showStatus("Game started");
-	else showStatus("Waiting for other players...");
+	if(zonePlayers() == ZoneMaxplayers) showStatus(("Game started"));
+	else showStatus(("Waiting for other players..."));
 
 	for(int i = 0; i < zonePlayers(); i++)
 	{
@@ -116,7 +118,7 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 		return;
 	}
 
-	showStatus("Sending move");
+	showStatus(("Sending move"));
 
 	m_fromx = fromx;
 	m_fromy = fromy;
@@ -136,11 +138,12 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 void Krosswater::slotZoneInput(int op)
 {
 	int x, y, value;
-	DlgAgain *again;
 	int maxplayers;
 	int person;
 
 	printf("CHILD: slotZoneInput() -> Type: %i\n", op);
+
+	showStatus(i18n("Receiving..."));
 
 	if(op == proto_map_respond)
 	{
@@ -190,6 +193,11 @@ void Krosswater::slotZoneInput(int op)
 	if(op == proto_map_backtrace)
 	{
 		x = 0;
+		if(es_read_int(fd(), &person) < 0)
+		{
+			printf("error in protocol (9+)\n");
+			return;
+		}
 		while(x != -1)
 		{
 			if(es_read_int(fd(), &x) < 0)
@@ -208,13 +216,23 @@ void Krosswater::slotZoneInput(int op)
 				qcw->setStone(x, y, 3);
 			}
 		}
-		again = new DlgAgain(NULL, "DlgAgain");
+		if(!m_again)
+		{
+			m_again = new DlgAgain(NULL, "DlgAgain");
+			connect(m_again, SIGNAL(signalAgain()), SLOT(slotAgain()));
+		}
+		if(person == zoneMe()) m_again->setResult(i18n("You won the game."));
+		else m_again->setResult(i18n("Sorry, but you lost the game."));
+		m_again->show();
 	}
 }
 
 void Krosswater::slotZoneReady()
 {
 	printf("CHILD: slotZoneReady()\n");
+
+	showStatus(i18n("Send map"));
+
 	/*if(es_write_int(fd(), proto_helloworld) < 0)
 	{
 		printf("error in protocol 1\n");
@@ -233,10 +251,13 @@ void Krosswater::slotZoneReady()
 void Krosswater::slotZoneTurn()
 {
 	cout << "SLOT: Turn!" << endl;
+	showStatus(i18n("Your turn"));
 }
 
 void Krosswater::slotZoneOver()
 {
+	showStatus(i18n("Game over"));
+
 	KMessageBox::information(this, "The game is over!", "Server message");
 	// fooo
 }
@@ -274,7 +295,7 @@ void Krosswater::slotMenuHelp()
 	dlghelp = new DlgHelp(NULL, "DlgHelp");
 }
 
-void Krosswater::showStatus(char *state)
+void Krosswater::showStatus(const char *state)
 {
 	QPainter p;
 
@@ -289,7 +310,7 @@ void Krosswater::showStatus(char *state)
 	p.end();
 
 	m_currentstate = state;
-	printf("State: %s\n", state);
+	//printf("State: %s\n", state);
 }
 
 void Krosswater::paintEvent(QPaintEvent *e)
@@ -301,7 +322,7 @@ void Krosswater::slotZoneBroadcast()
 {
 	int fromx, tox, fromy, toy;
 
- 	showStatus("Get move");
+ 	showStatus(i18n("Get move"));
 
 	if((es_read_int(fd(), &fromx) < 0)
 	|| (es_read_int(fd(), &fromy) < 0)
@@ -327,3 +348,10 @@ void Krosswater::slotZoneBroadcast()
 	qcw->setStoneState(fromx, fromy, 0);
 	qcw->repaint();
 }
+
+void Krosswater::slotAgain()
+{
+	m_again->close();
+	cout << "Requested another game!" << endl;
+}
+
