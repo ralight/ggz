@@ -213,6 +213,7 @@ int game_get_options() {
   int a;
   int old_width = cbt_game.width;
   int old_height = cbt_game.height;
+  char *title;
   GtkWidget *widget = lookup_widget(main_win, "mainarea");
 
   if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
@@ -239,8 +240,12 @@ int game_get_options() {
       cbt_game.map[a].unit = OWNER(GET_OWNER(cbt_game.map[a].type)) + U_UNKNOWN;
   }
 
-  // TODO: Resize the mainarea widget to fit the map size
-
+  if (cbt_game.name) {
+    title = malloc(strlen("Combat - ") + strlen(cbt_game.name) + 1);
+    sprintf(title, "Combat - %s", cbt_game.name);
+    gtk_window_set_title(GTK_WINDOW(main_win), title);
+    free(title);
+  }
 
   return 0;
 }

@@ -65,6 +65,7 @@ create_dlg_options (void)
   GtkWidget *vbox2;
   GtkWidget *table2;
   GtkWidget *preview_board;
+  GtkWidget *preview_label;
   GtkWidget *label11;
   GtkWidget *hbuttonbox3;
   GtkWidget *load;
@@ -343,7 +344,17 @@ create_dlg_options (void)
   gtk_table_attach (GTK_TABLE (table2), preview_board, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_widget_set_usize (preview_board, 100, 100);
+  //gtk_widget_set_usize (preview_board, 100, 100);
+
+  preview_label = gtk_label_new ("Preview\nData");
+  gtk_label_set_line_wrap(GTK_LABEL(preview_label), TRUE);
+  gtk_widget_set_name (preview_label, "preview_label");
+  gtk_widget_ref (preview_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "preview_label", preview_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (preview_label);
+  gtk_table_attach (GTK_TABLE (table2), preview_label, 0, 1, 1, 2,
+                    0, 0, 3, 0);
 
   label11 = gtk_label_new (_("Map Preview"));
   gtk_widget_set_name (label11, "label11");
@@ -352,8 +363,7 @@ create_dlg_options (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label11);
   gtk_table_attach (GTK_TABLE (table2), label11, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND),
-                    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
+                    0, 0, 0, 3);
 
   hbuttonbox3 = gtk_hbutton_box_new ();
   gtk_widget_set_name (hbuttonbox3, "hbuttonbox3");
@@ -501,15 +511,17 @@ create_dlg_options (void)
 	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object_after(GTK_OBJECT (width), "changed",
-										 GTK_SIGNAL_FUNC (init_mini_board), GTK_OBJECT (dlg_options));
+										 GTK_SIGNAL_FUNC (init_map_data), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object(GTK_OBJECT (height), "changed",
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	gtk_signal_connect_object_after(GTK_OBJECT (height), "changed",
-										 GTK_SIGNAL_FUNC (init_mini_board), GTK_OBJECT (dlg_options));
+										 GTK_SIGNAL_FUNC (init_map_data), GTK_OBJECT (dlg_options));
 
   mini_buf = NULL;
 
 	dlg_options_update(dlg_options);
+
+  init_map_data(dlg_options);
 
   dlg_options_list_maps(maps_list);
 
@@ -517,11 +529,36 @@ create_dlg_options (void)
   return dlg_options;
 }
 
+void init_map_data(GtkWidget *dlg_options) {
+  combat_game *options;
+  int a;
+
+	// Now init the data
+  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  if (!options)
+    return;
+  if (options->map) {
+    free(options->map);
+    options->map = NULL;
+  }
+	options->map = (tile *)malloc(sizeof(tile) * options->width * options->height + 1);
+	for (a = 0; a < options->width * options->height; a++)
+	  options->map[a].type = OPEN;
+
+	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
+
+}
+ 
+
+
 void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data) {
   combat_game *preview_game;
+  GtkWidget *preview_label = lookup_widget(user_data, "preview_label");
   char **filenames;
+  char preview_string[256];
   int changed = -1;
+  int tot = 0, other = 0, a;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
   preview_game = map_load(filenames[row], &changed);
@@ -530,7 +567,27 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   gtk_object_set_data(GTK_OBJECT(user_data), "preview", preview_game);
   /* TODO: Show preview */
   draw_preview(user_data);
-
+  for (a = U_FLAG; a < U_SERGEANT; a++)
+    tot+=preview_game->army[0][a];
+  for (a = U_SERGEANT; a < 12; a++) {
+    tot+=preview_game->army[0][a];
+    other+=preview_game->army[0][a];
+  }
+  sprintf(preview_string, "%d x %d\n\n%s: %d\n%s: %d\n%s: %d\n%s: %d\n%s: %d\nOthers: %d\n\nTotal: %d",
+          preview_game->width, preview_game->height,
+          unitname[U_FLAG],
+          preview_game->army[0][U_FLAG],
+          unitname[U_BOMB],
+          preview_game->army[0][U_BOMB],
+          unitname[U_SPY],
+          preview_game->army[0][U_SPY],
+          unitname[U_SCOUT],
+          preview_game->army[0][U_SCOUT],
+          unitname[U_MINER],
+          preview_game->army[0][U_MINER],
+          other,
+          tot);
+  gtk_label_set_text(GTK_LABEL(preview_label), preview_string);
 }
 
 void delete_button_clicked(GtkButton *button, gpointer dialog) {
@@ -1036,9 +1093,8 @@ gboolean draw_preview (GtkWidget *dlg_options) {
 }
 
 void init_mini_board(GtkWidget *dlg_options) {
-	int width, height, a;
+	int width, height;
 	GtkWidget *widget = lookup_widget(dlg_options, "mini_board");
-  combat_game *options;
 
 	if (widget == NULL) {
 		game_status("Can't find widget!");
@@ -1051,18 +1107,6 @@ void init_mini_board(GtkWidget *dlg_options) {
 	if (mini_buf)
 		gdk_pixmap_unref(mini_buf);
 	mini_buf = gdk_pixmap_new( widget->window, width, height, -1 );
-
-	// Now init the data
-  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
-  if (options->map) {
-    free(options->map);
-    options->map = NULL;
-  }
-	options->map = (tile *)malloc(sizeof(tile) * options->width * options->height + 1);
-	for (a = 0; a < options->width * options->height; a++)
-	  options->map[a].type = OPEN;
-
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
 	draw_mini_board(dlg_options);
 

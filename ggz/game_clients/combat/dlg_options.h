@@ -50,6 +50,8 @@ mini_board_click         (GtkWidget       *widget,
 void init_mini_board(GtkWidget *);
 void draw_mini_board(GtkWidget *);
 
+void init_map_data(GtkWidget *);
+
 #define OPEN T_OPEN
 #define LAKE T_LAKE
 #define BLACK T_NULL

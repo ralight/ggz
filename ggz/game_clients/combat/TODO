@@ -4,14 +4,11 @@ What *must* be done before next version of GGZ:
 
 What should be done before next version of GGZ:
 
-- Combat title window should be "Map Title"
-* - More information to preview: Number of units
 - Add some map options
 - Make the client check if the current map options are valid before sending
   them
   - Put those checks in the combat.[ch] files
   - Make the server combat.[ch] files compatible w/ the client's
-- Add a "Yes/No" dialog widget
 - Clean up the code, separate the game logic from the graphics stuff
 
 What should be done someday
@@ -22,3 +19,4 @@ What should be done someday
 - Saving/Resuming of games
 - About dialog
 - Are you sure? on some places
+  - Add a "Yes/No" dialog widget
