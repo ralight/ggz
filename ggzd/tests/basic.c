@@ -5,13 +5,13 @@
 #include "ggzdmod.h"
 #include "ggz.h"
 
-void print_seat(GGZSeat seat);
-char * seat_desc(GGZSeatType type);
-int seatcmp(GGZSeat seat1, GGZSeat seat2);
-int safe_strcmp(char *str1, char *str2);
-int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
+static void print_seat(GGZSeat seat);
+static char * seat_desc(GGZSeatType type);
+static int seatcmp(GGZSeat seat1, GGZSeat seat2);
+static int safe_strcmp(char *str1, char *str2);
+static int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
 
-void test_handler(GGZdMod *mod, GGZdModEvent e, void *data) { }
+static void test_handler(GGZdMod *mod, GGZdModEvent e, void *data) { }
 
 char* test_args[] = {"Arg1", "Arg2", NULL};
 
@@ -164,7 +164,7 @@ int main (void) {
 }
 
 
-void print_seat(GGZSeat seat)
+static void print_seat(GGZSeat seat)
 {
 	printf("\n -- Begin GGZSeat --\n");
 	printf("   Num: %d\n", seat.num);
@@ -175,7 +175,7 @@ void print_seat(GGZSeat seat)
 }
 
 
-char * seat_desc(GGZSeatType type)
+static char * seat_desc(GGZSeatType type)
 {
 	switch (type) {
 	case GGZ_SEAT_OPEN:
@@ -195,7 +195,7 @@ char * seat_desc(GGZSeatType type)
 
 
 
-int seatcmp(GGZSeat seat1, GGZSeat seat2)
+static int seatcmp(GGZSeat seat1, GGZSeat seat2)
 {
 	if (seat1.num == seat2.num 
 	    && seat1.type == seat2.type
@@ -207,7 +207,7 @@ int seatcmp(GGZSeat seat1, GGZSeat seat2)
 }
 
 
-int compare_seats(GGZdMod *mod, int num, GGZSeat *seats)
+static int compare_seats(GGZdMod *mod, int num, GGZSeat *seats)
 {
 	int count, i;
 	GGZSeat test;
@@ -238,7 +238,7 @@ int compare_seats(GGZdMod *mod, int num, GGZSeat *seats)
 }
 
 
-int safe_strcmp(char *str1, char *str2)
+static int safe_strcmp(char *str1, char *str2)
 {
 	if (!str1) {
 		if (!str2)

@@ -29,7 +29,7 @@ typedef enum {
 } GGZdModState;
 
 
-int handle_game_launch()
+static int handle_game_launch()
 {
 	int i, num;
 	char name[1024];
@@ -77,7 +77,7 @@ int handle_game_launch()
 }
 
 
-int handle_game_join(void)
+static int handle_game_join(void)
 {
 	int num, pfd;
 	char *name;
@@ -102,7 +102,7 @@ int handle_game_join(void)
 }
 
 
-int handle_game_leave(void)
+static int handle_game_leave(void)
 {
 	char *name;
 
@@ -123,7 +123,7 @@ int handle_game_leave(void)
 }
 
 
-int handle_game_state(void)
+static int handle_game_state(void)
 {
 	printf("GGZ Acknowledged state change\n");
 
@@ -131,7 +131,7 @@ int handle_game_state(void)
 }
 
 
-int handle_opcode(int opcode)
+static int handle_opcode(int opcode)
 {
 	int status = 0;
 	
