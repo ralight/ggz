@@ -25,6 +25,8 @@ ggz_SOURCES = 	main.c \
 		parse_opt.c \
 		parse_opt.h \
 		protocols.h \
+		seats.c \
+		seats.h \
 		support.c \
 	 	support.h
 

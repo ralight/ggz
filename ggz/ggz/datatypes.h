@@ -39,6 +39,7 @@
 #define MAX_GAME_TYPES 5
 #define MAX_TABLES  50
 #define MAX_USERS 500
+#define MAX_TABLE_SIZE 8
 
 /* Defines for allowable players */
 #define PLAY_ALLOW_ZERO    0
@@ -62,11 +63,16 @@
 #define COMP_ALLOW_SEVEN   (1 << 6)
 #define COMP_ALLOW_EIGHT   (1 << 7)
 
-
 /* Login types */
 #define GGZ_LOGIN      0
 #define GGZ_LOGIN_ANON 1
 #define GGZ_LOGIN_NEW  2
+
+/* special seat assignment values */
+#define GGZ_SEAT_OPEN   -1
+#define GGZ_SEAT_COMP   -2
+#define GGZ_SEAT_RESV   -3
+#define GGZ_SEAT_NONE   -4
 
 /* Info about a connection */
 struct ConnectInfo {
@@ -114,12 +120,9 @@ struct GameTypes {
 typedef struct {
 	int table_index;
 	int type_index;
-	int num_seats;
-	int num_humans;
-	int open_seats;
-	unsigned char comp_players;
 	unsigned char playing;
-	int players[8];
+	int seats[MAX_TABLE_SIZE];
+	char names[MAX_USER_NAME_LEN + 1];
 } TableInfo;
 
 

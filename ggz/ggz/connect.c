@@ -42,6 +42,8 @@
 #include "datatypes.h"
 #include "callbacks.h"
 #include "game.h"
+#include "seats.h"
+
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -64,6 +66,8 @@ static void add_table_list(TableInfo table);
 static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
+static void handle_list_tables(int op, int fd);
+
 
 char *opcode_str[] = { 	"MSG_SERVER_ID",
 			"MSG_SERVER_FULL",
@@ -130,9 +134,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	char *message;
 	char name[9];
 	char status;
-	int num, op, size, checksum, count, i, j;
+	int num, op, size, checksum, count, i;
 	char buf[4096];
-	TableInfo tmp_table;
 	int color_index;
 
         if (FAIL(es_read_int(source, &op))) {
@@ -231,37 +234,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_LIST_TABLES:
-		selected_table = -1;
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
-		gtk_clist_clear(GTK_CLIST(tmp));
-		es_read_int(source, &count);
-		connect_msg("[%s] Table List Count %d\n", opcode_str[op],
-			    count);
-		for (i = 1; i <= count; i++) {
-			es_read_int(source, &tmp_table.table_index);
-			es_read_int(source, &tmp_table.type_index);
-			es_read_char(source, &tmp_table.playing);
-			es_read_int(source, &tmp_table.num_seats);
-			es_read_int(source, &tmp_table.open_seats);
-			es_read_int(source, &tmp_table.num_humans);
-			
-			connect_msg("[%s] Type %d\n", opcode_str[op],
-				    tmp_table.type_index);
-			connect_msg("[%s] Playing %d\n",opcode_str[op],
-				    tmp_table.playing);
-			connect_msg("[%s] Seats %d\n", opcode_str[op],
-				    tmp_table.num_seats);
-			connect_msg("[%s] Open %d\n", opcode_str[op],
-				    tmp_table.open_seats);
-			connect_msg("[%s] Names Count %d\n", opcode_str[op],
-				    tmp_table.num_humans);
-
-			for (j = 1; j <= tmp_table.num_humans; j++) {
-				es_read_string_alloc(source, &message);
-			}
-
-			add_table_list(tmp_table);
-		}
+		handle_list_tables(op, source);
 		break;
 
 	case RSP_LIST_PLAYERS:
@@ -401,9 +374,9 @@ void add_table_list(TableInfo table)
 	entry[1] = g_strdup_printf("%d", table.table_index);
 	entry[2] = g_strdup_printf("%s", 
 				   game_types.info[table.type_index].name);
-	entry[3] = g_strdup_printf("%d", table.num_seats);
-	entry[4] = g_strdup_printf("%d", table.open_seats);
-	entry[5] = g_strdup_printf("%d", table.num_humans);
+	entry[3] = g_strdup_printf("%d", seats_num(table));
+	entry[4] = g_strdup_printf("%d", seats_open(table));
+	entry[5] = g_strdup_printf("%d", seats_human(table));
 	entry[6] = "";
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
@@ -467,4 +440,40 @@ static void display_chat(char *name, char *msg)
 	buf = g_strdup_printf("%s\n", msg);
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1);
 	g_free(buf);
+}
+
+
+void handle_list_tables(int op, int fd)
+{
+	int i, j,  count, num;
+	GtkObject* tmp;
+	TableInfo table;
+	
+	selected_table = -1;
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+	gtk_clist_clear(GTK_CLIST(tmp));
+	es_read_int(fd, &count);
+	connect_msg("[%s] Table List Count %d\n", opcode_str[op], count);
+	for (i = 0; i < count; i++) {
+		es_read_int(fd, &table.table_index);
+		es_read_int(fd, &table.type_index);
+		es_read_char(fd, &table.playing);
+		es_read_int(fd, &num);
+		
+		connect_msg("[%s] Type %d\n", opcode_str[op],table.type_index);
+		connect_msg("[%s] Playing %d\n",opcode_str[op], table.playing);
+		connect_msg("[%s] Seats %d\n", opcode_str[op], num);
+		
+		for (j = 0; j < num; j++) {
+			es_read_int(fd, &table.seats[j]);
+			if (table.seats[j] >= 0
+			    || table.seats[j] == GGZ_SEAT_RESV) 
+				es_read_string(fd, &table.names[j]);
+		}
+		for (j = num; j < MAX_TABLE_SIZE; j++)
+			table.seats[j] = GGZ_SEAT_NONE;
+		
+		add_table_list(table);
+	}
+
 }

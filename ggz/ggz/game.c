@@ -126,8 +126,9 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
 	es_write_int(connection.sock, 0);	/* Game type index */
 	es_write_int(connection.sock, 4);	/* Number of seats */
-	es_write_char(connection.sock, ai);	/* AI players */
-	es_write_int(connection.sock, 0);	/* Number of reservations */
+	es_write_int(connection.sock, GGZ_SEAT_COMP);
+	es_write_int(connection.sock, GGZ_SEAT_COMP);
+	es_write_int(connection.sock, GGZ_SEAT_COMP);
 	es_write_int(connection.sock, size);
 	es_writen(connection.sock, options, size);
 	free(options);
