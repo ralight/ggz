@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4442 2002-09-07 19:47:27Z jdorje $
+ * $Id: ggzdmod.h 4443 2002-09-07 20:14:31Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -527,8 +527,13 @@ int ggzdmod_count_seats(GGZdMod * ggzdmod, GGZSeatType seat_type);
 
 /** @brief Count current number of spectators.
  *
+ *  This function returns the number of spectators watching the game.  Note
+ *  that the spectator numbers may not match up: if there are two spectators
+ *  they could be numbered 0 and 4.  If you're trying to iterate through the
+ *  existing spectators, you probably want ggzdmod_get_max_num_spectators()
+ *  instead.
  *  @param ggzdmod The ggzdmod object
- *  @return The number of spectators watching the game
+ *  @return The number of spectators watching the game (0 on error)
  */
 int ggzdmod_count_spectators(GGZdMod * ggzdmod);
 
