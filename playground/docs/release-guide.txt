@@ -1,6 +1,32 @@
 Stuff to do before release:
 
-  - Bump version numbers in configure.in for each module.
-  - Bump game version numbers from e.g. "2-pre1" to "2", where applicable.
-  - Bump Doxyfile version numbers (ggzdmod, libggz, ggzcore, ggzmod).
-  - Regenerate Doxygen man pages (ggzdmod, libggz, ggzcore, ggzmod).
+  * BEFORE RELEASE
+    - Verify "make distcheck" works for all modules.  For gtk-games and
+      kde-games you'll need "make DESTDIR=~/ggz distcheck".
+    - Update RPM .spec files.
+
+  * FEATURE FREEZE
+    - Run msgmerge on po files.  This varies by module.
+    - Bump version numbers in configure.in for each module.
+    - Update QuickStart.GGZ and README.GGZ.
+    - Bump game version numbers from e.g. "2-pre1" to "2", where applicable.
+    - Bump Doxyfile version numbers (ggzdmod, libggz, ggzcore, ggzmod).
+    - Regenerate Doxygen man pages (ggzdmod, libggz, ggzcore, ggzmod).
+    - Write NEWS.
+    - Generate ChangeLog (how?).
+
+  * RELEASE
+    - Run "make dist" to generate tarballs for each module.
+    - Add distribution files to SF's file manager.
+    - Generate .rpm and .deb files; add them to SF's file manager.
+    - Update the download document (currently dl.php; this file should be
+      manually edited).
+
+  * ANNOUNCEMENT
+    - An article on ggz.sf.net
+    - Announcement on linuxgames, freshmeat, etc.
+    - E-mail to ggz-dev.
+
+  * CLEAN-UP
+    - Update all sorts of web documentation: REAMDE.GGZ and QuickStart.GGZ,
+      api docs, etc.
