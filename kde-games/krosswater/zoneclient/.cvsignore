@@ -6,4 +6,4 @@ Makefile.in
 *.a
 *.la
 *.moc.cpp
-libzoneclient_meta_unload*
+libzoneclient_la_meta_unload*

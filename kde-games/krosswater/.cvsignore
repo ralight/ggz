@@ -5,3 +5,4 @@ krosswater_client*
 .deps
 Makefile
 Makefile.in
+module.dsc
