@@ -28,12 +28,20 @@ extern GdkPixmap *board_buf;
 extern GtkTargetEntry *target;
 
 
+static void try_to_quit(void)
+{
+  if (game_info.state == CHESS_STATE_PLAYING)
+    ggz_show_exit_dialog(0);
+  else
+    gtk_main_quit();
+}
+
 gboolean
 ExitDialog                             (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-  ggz_show_exit_dialog(0);
+  try_to_quit();
   return TRUE;
 }
 
@@ -41,7 +49,7 @@ void
 on_exit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  ggz_show_exit_dialog(1);
+  try_to_quit();
 }
 
 
