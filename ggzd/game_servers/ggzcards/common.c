@@ -1087,8 +1087,7 @@ void init_game()
 		return;
 	}
 
-	/* TODO */
-	game.funcs = &game_funcs;
+	game.funcs = game_data[game.which_game].funcs;
 
 	init_messages();
 

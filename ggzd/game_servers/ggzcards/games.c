@@ -34,7 +34,14 @@
 
 /* These names are sent to the client when options are requested.  They're different
  * from what's sent to the client as the game name later */
-char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchre", "Rook"};
+struct game_info game_data[7] = {
+		{"Suaro", &game_funcs},
+		{"Spades", &game_funcs},
+		{"Hearts", &game_funcs},
+		{"Bridge", &game_funcs},
+		{"La Pocha", &game_funcs},
+		{"Euchre", &game_funcs},
+		{"Rook", &game_funcs} };
 
 /* these aren't *quite* worthy of being in the game struct */
 /* static int game_type_cnt; */
@@ -137,7 +144,7 @@ int games_req_gametype()
 	    es_write_int(fd, 0) < 0) /* default is 0 */
 		status = -1;
 	for (i=0; i<cnt; i++)
-		if (es_write_string(fd, game_names[game_types[i]]) < 0)
+		if (es_write_string(fd, game_data[game_types[i]].name) < 0)
 			status = -1;
 
 	if (status != 0)

@@ -59,24 +59,29 @@ struct game_function_pointers {
 	int	(*send_hand)(player_t, seat_t);
 };
 
+struct game_info {
+	char* name;
+	struct game_function_pointers *funcs;
+};
+
 /* Game types. */
 /* NOTE: because of the way options are handled, these must start at 0 and
  * count up directly.   See games_req_gametype. */
 /* They also must match with game_names, below */
 typedef enum game_type_t {
 	GGZ_GAME_UNKNOWN = -1,
-	GGZ_GAME_SUARO,		/* http://suaro.dhs.org */
-	GGZ_GAME_SPADES,
-	GGZ_GAME_HEARTS,
-	GGZ_GAME_BRIDGE,
-	GGZ_GAME_LAPOCHA,
-	GGZ_GAME_EUCHRE,
-	GGZ_GAME_ROOK,
-	GGZ_GAME_SKAT
+	GGZ_GAME_SUARO = 0,		/* http://suaro.dhs.org */
+	GGZ_GAME_SPADES = 1,
+	GGZ_GAME_HEARTS = 2,
+	GGZ_GAME_BRIDGE = 3,
+	GGZ_GAME_LAPOCHA = 4,
+	GGZ_GAME_EUCHRE = 5,
+	GGZ_GAME_ROOK = 6,
+	GGZ_GAME_SKAT = 7
 } game_type_t;
 
 /* this MUST correspond to the numbers above */
-extern char* game_names[];
+extern struct game_info game_data[];
 
 #define GGZ_NUM_GAMES		8	/* the _number_ of valid games */
 
@@ -84,6 +89,6 @@ extern int game_types[];
 
 extern int games_get_gametype(char*);	/* which game is this? */
 extern int games_req_gametype();	/* what do you want to play today? */
-extern int games_valid_game(int);		/* is the game valid? */
+extern int games_valid_game(int);	/* is the game valid? */
 
 #endif /* __GAMES_H__ */
