@@ -87,7 +87,8 @@ int ggzcore_module_get_num_by_type(const char *game,
 				   const char *engine,
 				   const char *version)
 {
-	if (!game || !engine || !version)
+	/* A NULL version means any version */
+	if (!game || !engine)
 		return -1;
 
 	return _ggzcore_module_get_num_by_type(game, engine, version);
@@ -334,7 +335,7 @@ int _ggzcore_module_get_num_by_type(const char *game,
 		_ggzcore_module_read(&module, ids[i]);
 		/* Subtract out modules that aren't the same protocol */
 		if (strcmp(engine, module.prot_engine) != 0
-		    || strcmp(version, module.prot_version) != 0
+		    || (version && strcmp(version, module.prot_version) != 0)
 		    /* || game not included in game list */)
 			count--;
 	}
