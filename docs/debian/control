@@ -1,13 +1,14 @@
 Source: ggz-docs
-Section: games
+Section: doc
 Priority: optional
 Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
-Standards-Version: 3.0.1
-Build-Depends: debhelper
+Standards-Version: 3.5.2
+Build-Depends: debhelper (>> 3.0.0), texinfo (>= 4.0-1)
 
 Package: ggz-docs
 Architecture: any
-Depends: ${shlibs:Depends}
+Section: doc
+Recommends: postscript-viewer
 Description: GGZ Gaming Zone Documentation
  This package contains design documents, reference material
  and tutorials for developers, but also some help for users

@@ -1,3 +1,11 @@
+ggz-docs (0.0.5-1) unstable; urgency=low
+
+  * New GGZ release
+  * Now included: The GGZ hosting guide
+  * Now included: The GGZ game development guide
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun,  7 Apr 2002 09:48:49 +0200
+
 ggz-docs (0.0.4-1) unstable; urgency=low
 
   * Initial Release.
