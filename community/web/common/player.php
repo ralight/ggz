@@ -6,6 +6,7 @@ include_once("genderlist.php");
 
 class Player
 {
+	var $handle;
 	var $realname;
 	var $email;
 	var $photo;
@@ -15,6 +16,8 @@ class Player
 	function Player($ggzuser)
 	{
 		global $id;
+
+		$this->handle = $ggzuser;
 
 		$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$ggzuser'");
 		if (($res) && (pg_numrows($res) == 1)) :
@@ -58,6 +61,57 @@ class Player
 			echo "Country: (undisclosed)";
 		endif;
 		echo "<br\n>";
+	}
+
+	function items()
+	{
+		global $id;
+
+		$ggzuser = $this->handle;
+
+		$res = pg_exec($id, "SELECT teams.teamname, teams.fullname " .
+			"FROM teammembers, teams " .
+			"WHERE teams.teamname = teammembers.teamname AND handle = '$ggzuser'");
+		if (($res) && (pg_numrows($res) > 0)) :
+			echo "<h2>Teams</h2>\n";
+			for ($i = 0; $i < pg_numrows($res); $i++)
+			{
+				$team = pg_result($res, $i, "teamname");
+				$teamname = pg_result($res, $i, "fullname");
+				if (!$teamname) :
+					$teamname = "($team)";
+				endif;
+				echo "<a href='/db/teams/?lookup=$team'>$teamname</a>\n";
+				echo "<br>\n";
+			}
+		endif;
+
+		$res = pg_exec($id, "SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
+		if (($res) && (pg_numrows($res) > 0)) :
+			echo "<h2>Tournaments</h2>\n";
+			for ($i = 0; $i < pg_numrows($res); $i++)
+			{
+				$name = pg_result($res, $i, "name");
+				$tid = pg_result($res, $i, "id");
+				echo "<a href='/db/tournaments/?lookup=$tid'>$name</a>\n";
+				echo "<br>\n";
+			}
+		endif;
+
+		include("hotstuff/.htconf");
+
+		$conn = pg_connect("host=$conf_host dbname=$conf_name user=$conf_user password=$conf_pass");
+
+		$res = pg_exec($conn, "SELECT * FROM directory WHERE author = '$this->realname'");
+		if (($res) && (pg_numrows($res) > 0)) :
+			echo "<h2>Game data</h2>\n";
+			for ($i = 0; $i < pg_numrows($res); $i++)
+			{
+				$name = pg_result($res, $i, "name");
+				echo "<a href='/hotstuff/'>$name</a>\n";
+				echo "<br>\n";
+			}
+		endif;
 	}
 }
 

@@ -17,12 +17,11 @@
 
 	<form class="leather" action="" method="get">
 		<h1>My Community items</h1>
-		<h2>Teams</h2>
-		<a href="/db/teams/?lookup=myteam">My Team</a>
-		<br>
-		<h2>Game data</h2>
-		<a href="/hotstuff/">Kamikaze level</a>
-		<br>
+<?php
+include_once("player.php");
+$p = new Player(Auth::username());
+$p->items();
+?>
 	</form>
 </div>
 
