@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2798 2001-12-07 02:56:06Z jdorje $
+ * $Id: ggzdmod.c 2799 2001-12-07 03:06:51Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -902,16 +902,25 @@ void _ggzdmod_handle_state(_GGZdMod * mod, GGZdModState state)
 
 	/* There's only certain ones the game is allowed to set it to,
 	   and they can only change it if the state is currently
-	   WAITING or DONE. */
+	   WAITING or PLAYING. */
 	switch (state) {
 	case GGZDMOD_STATE_WAITING:
 	case GGZDMOD_STATE_PLAYING:
 	case GGZDMOD_STATE_DONE:
-		if (mod->state != GGZDMOD_STATE_CREATED &&
-		    mod->state != GGZDMOD_STATE_DONE) {
-			set_state(mod, state);
-			break;
-		}
+		/* In contradiction to what I say above, the game
+		   actually _is_ allowed to change its state from
+		   CREATED to WAITING.  When ggzdmod-ggz sends a
+		   launch packet to ggzdmod-game, ggzdmod-game
+		   automatically changes the state from CREATED
+		   to WAITING.  When this happens, it tells
+		   ggzdmod-ggz of this change and we end up back
+		   here.  So, although it's a bit unsafe, we have
+		   to allow this for now.  The alternative would
+		   be to have ggzdmod-ggz and ggzdmod-game both
+		   separately change states when the launch packet
+		   is sent. */
+		set_state(mod, state);
+		break;
 	default:
 		_ggzdmod_error(mod, "Game requested incorrect state value");
 	}
