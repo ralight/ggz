@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4167 2002-05-05 21:18:48Z jdorje $
+ * $Id: table.c 4654 2002-09-22 23:48:23Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -221,10 +221,18 @@ void table_setup(void)
 	   work.  The problem is that before you choose what game you're
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
-	if (ggzcards.num_players == 0 || get_max_hand_size() == 0)
-		return;
-	if (get_card_width(0) == 0 || get_card_height(0) == 0)
-		return;
+	if (ggzcards.num_players == 0) {
+	  ggz_error_msg("table_setup: num_players is zero.");
+	  return;
+	}
+	if (get_max_hand_size() == 0) {
+	  ggz_error_msg("table_setup: max hand size is zero.");
+	  return;
+	}
+	if (get_card_width(0) == 0 || get_card_height(0) == 0) {
+	  ggz_error_msg("table_setup: max card size is zero.");
+	  return;
+	}
 		
 	if (!game_started) {
 		/* If we join a game in progress, this can happen.  Probably
