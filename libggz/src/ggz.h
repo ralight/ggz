@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4186 2002-05-11 06:02:27Z rgade $
+ * $Id: ggz.h 4274 2002-06-23 19:49:15Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -47,6 +47,12 @@ extern "C" {
 #  define ggz__attribute(att)
 #endif
 
+#if defined __GNUC__ && (__GNUC__ >= 3)
+#  define _GGZFUNCTION_
+#else
+#  define _GGZFUNCTION_ __FUNCTION__
+#endif
+
 /**
  * @defgroup memory Memory Handling
  *
@@ -69,7 +75,7 @@ extern "C" {
  * 
  * @return a pointer to the newly allocated and zeroed memory
  */
-#define ggz_malloc(size) _ggz_malloc(size, __FUNCTION__ " in " __FILE__, __LINE__)
+#define ggz_malloc(size) _ggz_malloc(size, _GGZFUNCTION_ " in " __FILE__, __LINE__)
 						   
 
 /** 
@@ -80,7 +86,7 @@ extern "C" {
  * 
  * @return pointer to allocated memory
  */
-#define ggz_realloc(mem, size) _ggz_realloc(mem, size, __FUNCTION__ " in " __FILE__, __LINE__)
+#define ggz_realloc(mem, size) _ggz_realloc(mem, size, _GGZFUNCTION_ " in " __FILE__, __LINE__)
 						       
 
 /** 
@@ -90,7 +96,7 @@ extern "C" {
  * 
  * @return failure code
  */
-#define ggz_free(mem) _ggz_free(mem, __FUNCTION__ " in " __FILE__,  __LINE__)
+#define ggz_free(mem) _ggz_free(mem, _GGZFUNCTION_ " in " __FILE__,  __LINE__)
 						 
 
 /** 
@@ -102,7 +108,7 @@ extern "C" {
  *
  * @note It is safe to pass a NULL string.
  */
-#define ggz_strdup(string) _ggz_strdup(string, __FUNCTION__ " in " __FILE__,  __LINE__)
+#define ggz_strdup(string) _ggz_strdup(string, _GGZFUNCTION_ " in " __FILE__,  __LINE__)
 						 
 
 
