@@ -34,7 +34,7 @@
 #define MAX_GAME_AUTH_LEN 32
 #define MAX_GAME_WEB_LEN  128
 #define MAX_PATH_LEN 256
-#define MAX_GAME_TYPES 5
+#define MAX_GAME_TYPES 15
 #define MAX_TABLES  50
 #define MAX_USERS 500
 #define MAX_CHAT_LEN 512

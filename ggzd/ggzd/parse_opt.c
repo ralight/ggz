@@ -720,6 +720,12 @@ static void parse_game(char *name, char *dir)
 		GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
 		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
 
+	/* Check to see if we are allocating too many games */
+	if(state.types == MAX_GAME_TYPES) {
+		err_msg("Ignoring game %s, already at MAX_GAME_TYPES", name);
+		return;
+	}
+
 	/* Allocate space and setup a full pathname to description file */
 	if((fname = malloc(strlen(name)+strlen(dir)+6)) == NULL)
 		err_sys_exit("malloc error in parse_game()");
