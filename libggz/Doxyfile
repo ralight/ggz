@@ -1,3 +1,4 @@
+# $Id: Doxyfile 3696 2002-03-27 23:08:23Z jdorje $
 # Doxyfile 1.2.10
 
 # This file describes the settings to be used by the documentation system
@@ -585,7 +586,7 @@ RTF_EXTENSIONS_FILE    =
 # If the GENERATE_MAN tag is set to YES (the default) Doxygen will 
 # generate man pages
 
-GENERATE_MAN           = NO
+GENERATE_MAN           = YES
 
 # The MAN_OUTPUT tag is used to specify where the man pages will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
