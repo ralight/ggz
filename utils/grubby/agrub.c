@@ -36,6 +36,7 @@ void do_logout(void);
 void do_greet(char *);
 void store_aka(char *, char *);
 void check_seen(char *, char *);
+void whois(char *sender, char *name);
 void queue_message(char *, char *);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
@@ -63,7 +64,8 @@ char *help_strings[] = {
 	"    %s: Go away",
 	"    %s: My name is <name>",
 	"    %s: Have you seen <name>",
-	"    %s: Tell <name> <A message>"
+	"    %s: Tell <name> <A message>",
+	"    %s: Whois <name>"
 } ;
 char *about_strings[] = {
 	"Hi, I'm %s, and I'm A GRUB.",
@@ -452,6 +454,10 @@ void handle_command(char *sender, char *command)
 		check_seen(sender, command+14);
 	} else if(!strncasecmp(command, "tell ", 5)) {
 		queue_message(sender, command+5);
+	} else if(!strncasecmp(command, "who is ", 7)) {
+		whois(sender, command+7);
+	} else if(!strncasecmp(command, "whois ", 6)) {
+		whois(sender, command+6);
 	} else {
 		send_chat("Huh?");
 		sprintf(out_msg, "Type '%s: Help' to see what commands I know!",
@@ -669,6 +675,38 @@ void check_seen(char *sender, char *name)
 		       "I last greeted %s %d seconds ago in the '%s' room, %s.",
 			disp_name, (int)difftime(now, known[i].last_seen),
 			known[i].last_room, disp_sender);
+	}
+
+	send_chat(out_msg);
+}
+
+void whois(char *sender, char *name)
+{
+	int i, j;
+	time_t now;
+	char *disp_sender, *disp_name;
+
+	now = time(NULL);
+
+	for(i=0; i<num_known; i++)
+		if(!strcasecmp(known[i].name, name))
+			break;
+	for(j=0; j<num_known; j++)
+		if(!strcasecmp(known[j].name, sender))
+			break;
+	disp_sender = sender;
+	if(j != num_known && known[j].aka)
+		disp_sender = known[j].aka;
+
+	if(i == num_known)
+		sprintf(out_msg, "Sorry %s, I've never encountered %s.",
+			disp_sender, name);
+	else {
+		if(known[i].aka)
+			disp_name = known[i].aka;
+		else
+			disp_name = name;
+		sprintf(out_msg, "%s, %s's name is %s.", disp_sender, name, disp_name);
 	}
 
 	send_chat(out_msg);
