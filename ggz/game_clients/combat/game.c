@@ -211,7 +211,7 @@ int game_ask_options() {
 	_game.army[0][U_GENERAL] = 1;
 	_game.army[0][U_MARSHALL] = 1;
 	
-	game_status("Sending options string to server\n");
+	game_status("Sending options string to server");
 
 	game_str = combat_options_string_write(game_str, &_game);
 
@@ -567,17 +567,10 @@ void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 }
 
 void game_handle_move(int p) {
-	int last_current;
-	// If not your turn, just forget
-	if (cbt_game.turn != cbt_info.seat) {
-		game_status("This is not your turn!");
-		return;
-	}
+	int last_current, a;
 	// Select unit or do move?
 	if (cbt_info.current < 0) {
-		// Select unit!
 		// TODO: Check if this is valid!
-		/*
 		if (GET_OWNER(cbt_game.map[p].unit) != cbt_info.seat) {
 			game_status("This is not yours...");
 			return;
@@ -586,28 +579,29 @@ void game_handle_move(int p) {
 			game_status("This can't be moved!");
 			return;
 		}
-		*/
 		game_status("Selected %s", unitname[LAST(cbt_game.map[p].unit)]);
 		cbt_info.current = p;
 	} else {
 		// Do move!
-		// TODO: Check what I'm doing!
 		// No more current move
 		last_current = cbt_info.current;
 		cbt_info.current = -1;
-		game_status("Moved to %d", p);
-		if (es_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
-				es_write_int(cbt_info.fd, last_current) < 0 ||
-				es_write_int(cbt_info.fd, p) < 0) {
-			game_status("Can't send message to server!");
-			return;
+		a = combat_check_move(&cbt_game, last_current, p);
+		if (a < 0)
+			game_status("This move is invalid!");
+		else {
+			if (es_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
+					es_write_int(cbt_info.fd, last_current) < 0 ||
+					es_write_int(cbt_info.fd, p) < 0) {
+				game_status("Can't send message to server!");
+				return;
+			}
 		}
 	}
 	return;
 }
 
 void game_handle_setup(int p) {
-	// TODO: This can be heavily improved!!!
 	
 	// Only to reduce size of lines
 	char unit;

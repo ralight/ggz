@@ -22,9 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 5
+#define PROTOCOL_VERSION 6
 
-/* Combat Protocol Version 0.0.3
+/* Combat Protocol Version 0.0.4
  *
  * g : ggz server (gserv)
  * s : combat server (cserv)
@@ -238,6 +238,10 @@
  * 	  Unit data. If its the unit of the requesting player, then it
  * 	  sends the correct data. Else, it sends 1111 (UNKNOWN)
  *
+ * The client may have forgotten the options for some weird reason. If he
+ * wants to get them again, he can just send:
+ * [ 1c --> s : CBT_REQ_OPTIONS ]
+ *
  * I guess this is all... at least for now...
  * TODO: Add PLAY_AGAIN feature
 */
@@ -274,6 +278,9 @@
 // Get the last part of the code (U/T)
 #define LAST(NUM) (NUM&15)
 
+// Get the first part of the code (OWNER CODE)
+#define FIRST(NUM) (NUM&240)
+
 // Transform Cartesian(X,Y) into index number
 #define CART(X,Y,WIDTH) ((Y-1)*WIDTH+(X-1))
 
@@ -307,6 +314,8 @@
 #define CBT_REQ_SYNC 11
 #define CBT_MSG_SYNC 12
 
+/* CHECK MOVE RETURN VALUES */
+
 // Error messages
 #define CBT_ERROR_SOCKET -1
 #define CBT_ERROR_OUTRANGE -2
@@ -315,7 +324,16 @@
 #define CBT_ERROR_NOTOPEN -5
 #define CBT_ERROR_CRAZY -6
 #define CBT_ERROR_NOTMOVING -7
-#define CBT_ERROR_INVALIDMOVE -8
+
+// Invalid move errors
+#define CBT_ERROR_MOVE_NOMOVE -8
+#define CBT_ERROR_MOVE_DIAGONAL -9
+#define CBT_ERROR_MOVE_BIGMOVE -10
+#define CBT_ERROR_MOVE_SCOUT -11
+
+// Ok messages
+#define CBT_CHECK_MOVE 1
+#define CBT_CHECK_ATTACK 2
 
 
 
@@ -339,3 +357,4 @@ typedef struct combat_game_struct {
 // Commom functions
 char *combat_options_string_write(char *, combat_game *);
 void combat_options_string_read(char *, combat_game *, int);
+int combat_check_move(combat_game *, int, int);
