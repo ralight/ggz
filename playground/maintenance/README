@@ -1,0 +1,16 @@
+debian-depgraph.sh:
+ Generates an image which explains all the dependencies
+ between GGZ packages.
+
+makedist.sh:
+ For release dudes.
+ Creates all tarballs for release.
+
+missingtranslation.pl:
+ For webmasters.
+ See file Webmasters.
+
+projectserver/:
+ For hostmasters.
+ Comes with separate documentation.
+

@@ -1,0 +1,43 @@
+GGZ Gaming Zone Webmasters Reference
+====================================
+
+The CVS module which keeps the web pages is called 'www'.
+Both the 'www' and the 'dev' subdomain rely on them.
+This reference explains some concepts.
+
+File types
+----------
+PHP is used as a base. However not much PHP functions are used,
+it merely serves 2 purposes:
+- dynamic content negotiation, error pages and alternatives
+- future enhancements
+
+For images, PNG should be used. Thumbnails are 128x96 pixels.
+
+Layout
+------
+The page headers and footers are always the same, thus include
+files are used. Design elements are the main box, image (thumbnail)
+boxes and lists. All of those have specific CSS elements.
+
+Internationalization
+--------------------
+Mostly, apache content negotiation is used. This has one severe drawback:
+If a web page is available in language x.php.foo, but the browser only accepts
+bar, no web page at all is served. Adding x.php would however always override
+the browser language. The key is to have x.php.php as the fallback solution.
+
+Maintenance
+-----------
+The script missingtranslation.pl should be called from time to time,
+especially using the --defaults parameter, in /var/www/ggz/www.
+The generated files should not be added to CVS.
+
+Links
+-----
+Links should not end up in /file.php but rather in /file/. This allows for
+later enhancements by creating a directory /file/ and renaming /file.php to
+/file/index.php.
+Images are to be placed in /pics/section/, or (if /section/ exists)
+/section/pics/.
+
