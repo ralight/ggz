@@ -146,6 +146,8 @@ AC_OUTPUT(Makefile
 	po/Makefile
 	po/ggzap/Makefile
 	po/shadowbridge/Makefile
+	po/modsniff/Makefile
+	po/kcm_ggz/Makefile
 	)
 
 dnl Report success
