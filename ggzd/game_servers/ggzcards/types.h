@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: types.h 3437 2002-02-21 10:05:18Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -80,6 +80,13 @@ struct game_player_t {
 	int pid;
 
 	bid_data_t bid_data;	/* bidding information for this player */
+	
+	bool is_playing;	/* is this player currently playing? */
+	/* Note: In the case of bridge, game.next_play will go
+	   around the table (0, 1, 2, 3) for each play.  However, when the
+	   dummy is playing it is actually the declarer who plays (and has
+	   is_playing set, with the dummy as the play_seat). */
+	seat_t play_seat;	/* what seat are we playing from? */
 };
 
 #endif /* __TYPES_H__ */

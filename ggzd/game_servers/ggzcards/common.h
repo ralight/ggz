@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: common.h 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -54,17 +54,17 @@
 
 /* GGZCards server game states */
 typedef enum {
-	STATE_NONE,		/**< no state is set; we'd better figure one out! */
 	STATE_PRELAUNCH,	/**< before the launch happens */
 	STATE_NOTPLAYING,	/**< no game started */
 	STATE_WAITFORPLAYERS,	/**< waiting for players; saved state */
 	STATE_NEXT_HAND,	/**< ready to create a new hand */
+	STATE_WAIT_FOR_BID,	/**< waiting for a player to respond to a bid */
+	STATE_WAIT_FOR_PLAY,	/**< waiting for a player to respond to a play */
 	STATE_FIRST_BID,	/**< about to have the first bid */
-	STATE_NEXT_BID,	/**< asking for new bid */
+	STATE_NEXT_BID,		/**< asking for new bid */
 	STATE_FIRST_TRICK,	/**< about to have the first trick of a hand */
 	STATE_NEXT_TRICK,	/**< time for the next trick */
 	STATE_NEXT_PLAY,	/**< asking for a new play */
-	STATE_WAIT_FOR_PLAY	/**< waiting for a play */
 } server_state_t;
 
 /* Data structure for generic trick-taking card game */
@@ -131,15 +131,8 @@ struct game_t {
 	int play_count;		/**< how many plays there have been this trick */
 	int play_total;		/**< how many plays there will be this trick */
 	player_t next_play;	/**< current/next player */
-	player_t curr_play;	/**< current player, tracked automatically by req_play */
-	/* Note: the difference between these two is subtle, but important.
-	   next_play is used to track the player whose hand is being played
-	   from.  curr_play is used automatically to remember who is supposed 
-	   to be playing now.  In the case of bridge, next_play will go
-	   around the table (0, 1, 2, 3) for each play.  However, when the
-	   dummy is playing curr_play will point to the declarer, since
-	   they're the one we request the play from. */
-	seat_t play_seat;	/**< the seat being played from */
+	//player_t curr_play;	/**< current player, tracked automatically by req_play */
+	//seat_t play_seat;	/**< the seat being played from */
 
 	/* State-tracking data: tricks */
 	player_t winner;	/**< who won last trick */
@@ -197,7 +190,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 
 /* these are internal GGZCards events */
 int handle_newgame_event(player_t p);
-int handle_play_event(card_t card);
+int handle_play_event(player_t p, card_t card);
 int handle_bid_event(player_t p, bid_t bid);
 
 /* initialization functions */

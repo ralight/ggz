@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: game.h 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -97,7 +97,7 @@ void game_next_bid();
 void game_start_playing();
 
 /** @brief Check the validity of a play. */
-char *game_verify_play(card_t card);
+char *game_verify_play(player_t p, card_t card);
 
 /** @brief Prep for the next play. */
 void game_next_play();

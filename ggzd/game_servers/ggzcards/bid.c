@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: bid.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -82,7 +82,7 @@ int req_bid(player_t p)
 	bid_data->is_bidding = 1;
 
 	set_player_message(p);
-	set_game_state(STATE_NONE);
+	set_game_state(STATE_WAIT_FOR_BID);
 
 	return send_bid_request(p, bid_data->bid_count,
 					bid_data->bids);
@@ -92,6 +92,7 @@ int req_bid(player_t p)
    needed, rather than req_bid, because req_bid will not do actions in the
    correct order for multiple bids.  In fact, this function _could_ replace
    req_bid; the only drawback is that it's much slower. */
+/* FIXME: I don't think this is necessary anymore. */
 int request_all_bids(void)
 {
 	player_t p;
@@ -109,7 +110,7 @@ int request_all_bids(void)
 			set_player_message(p);
 		}
 
-	set_game_state(STATE_NONE);
+	set_game_state(STATE_WAIT_FOR_BID);
 
 	/* Send all human-player bid requests */
 	for (p = 0; p < game.num_players; p++)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: euchre.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,7 @@
 #include <stdlib.h>
 
 #include "common.h"
+#include "play.h"
 
 #include "euchre.h"
 
@@ -297,7 +298,7 @@ static void euchre_get_play(player_t p)
 
 	/* in almost all cases, we just want the player to play from their
 	   own hand */
-	(void) send_play_request(p, p);
+	req_play(p, p);
 }
 
 static int euchre_deal_hand(void)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: game.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -39,6 +39,7 @@
 #include <unistd.h>
 
 #include "common.h"
+#include "play.h"
 
 struct game_function_pointers game_funcs = {
 	game_is_valid_game,
@@ -242,10 +243,10 @@ void game_start_playing(void)
    we only check that it's legal _for this game_. Except for games that have
    special rules (outside of those covered by game.must_overtrump and
    game.must_break_trump), no changes should be necessary. */
-char *game_verify_play(card_t card)
+char *game_verify_play(player_t p, card_t card)
 {
 	card_t c;
-	seat_t s = game.play_seat;
+	seat_t s = game.players[p].play_seat;
 	int cnt;
 
 	card = game.funcs->map_card(card);
@@ -326,7 +327,7 @@ void game_get_play(player_t p)
 {
 	/* in almost all cases, we just want the player to play from their
 	   own hand */
-	(void) send_play_request(p, game.players[p].seat);
+	req_play(p, game.players[p].seat);
 }
 
 

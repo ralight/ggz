@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: games.h 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -68,7 +68,7 @@ struct game_function_pointers {
 	/* playing */
 	void (*start_playing) ();	/* updates data after the last
 					   bid/before the playing starts */
-	char *(*verify_play) (card_t);	/* verifies the play is legal */
+	char *(*verify_play) (player_t, card_t); /* verifies the play is legal */
 	void (*next_play) ();	/* sets up for next play */
 	void (*get_play) ();	/* retreives a play */
 	void (*handle_play) (card_t);	/* handle a play */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: hearts.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -42,7 +42,7 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 static int hearts_handle_gameover(void);
 static void hearts_start_bidding(void);
 static void hearts_start_playing(void);
-static char *hearts_verify_play(card_t card);
+static char *hearts_verify_play(player_t p, card_t card);
 static void hearts_end_trick(void);
 static void hearts_end_hand(void);
 
@@ -224,9 +224,9 @@ static void hearts_start_playing(void)
 	}
 }
 
-static char *hearts_verify_play(card_t card)
+static char *hearts_verify_play(player_t p, card_t card)
 {
-	seat_t s = game.play_seat;
+	seat_t s = game.players[p].play_seat;
 
 	/* in hearts, we have two additional rules about leading: the low
 	   club must lead the first trick, and hearts cannot be lead until
@@ -260,9 +260,9 @@ static char *hearts_verify_play(card_t card)
 	     || (card.suit == SPADES && card.face == QUEEN))) {
 		int i;
 		card_t c;
-		for (i = 0; i < game.seats[game.play_seat].hand.hand_size;
+		for (i = 0; i < game.seats[s].hand.hand_size;
 		     i++) {
-			c = game.seats[game.play_seat].hand.cards[i];
+			c = game.seats[s].hand.cards[i];
 			if (c.suit == HEARTS)
 				continue;
 			if (c.suit == SPADES && c.face == QUEEN)
@@ -271,7 +271,7 @@ static char *hearts_verify_play(card_t card)
 		}
 	}
 
-	return game_verify_play(card);
+	return game_verify_play(p, card);
 }
 
 static void hearts_end_trick(void)

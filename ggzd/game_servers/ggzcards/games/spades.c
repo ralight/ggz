@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: spades.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -300,7 +300,7 @@ static void spades_set_player_message(player_t p)
 	/* we show both the individual and team contract, if applicable.
 	   But is this really the best way to tell if it's applicable? */
 	if (game.state != STATE_NEXT_BID
-	    && game.state != STATE_NONE) {
+	    && game.state != STATE_WAIT_FOR_BID) {
 		char bid_text[512];
 		int contract =
 			game.players[p].bid.sbid.val +

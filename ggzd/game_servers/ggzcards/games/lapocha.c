@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: lapocha.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -153,7 +153,7 @@ static int lapocha_get_bid(void)
 			bid.bid = 0;
 			bid.sbid.suit = cards_deal_card(game.deck).suit;
 			bid.sbid.spec = LAPOCHA_TRUMP;
-			handle_bid_event(game.next_bid, bid);
+			handle_bid_event(game.next_bid, bid); /* hack */
 		} else {
 			char suit;
 			for (suit = 0; suit < 4; suit++)

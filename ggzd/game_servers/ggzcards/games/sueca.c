@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: sueca.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -235,7 +235,7 @@ static void sueca_set_player_message(player_t p)
 
 	score_this_hand =
 		GSUECA.points_on_hand[p] + GSUECA.points_on_hand[(p + 2) % 4];
-	if (!(game.state == STATE_WAIT_FOR_PLAY && p == game.curr_play))
+	if (!(game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing))
 		sprintf(status, " ");
 	put_player_message(s, "Score:\nIn the game: %d\nIn the hand: %d\n%s",
 			   game.players[p].score, score_this_hand, status);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: bridge.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "common.h"
+#include "play.h"
 
 #include "bridge.h"
 
@@ -250,7 +251,7 @@ static void bridge_get_play(player_t p)
 {
 	if (p == BRIDGE.dummy)
 		/* the declarer plays the dummy's hand */
-		send_play_request(BRIDGE.declarer, game.players[p].seat);
+		req_play(BRIDGE.declarer, game.players[p].seat);
 	else
 		game_get_play(p);
 }

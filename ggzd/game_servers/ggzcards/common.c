@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3434 2002-02-21 07:42:14Z jdorje $
+ * $Id: common.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -61,8 +61,8 @@ static bool seats_full(void)
 const char *get_state_name(server_state_t state)
 {
 	switch (state) {
-	case STATE_NONE:
-		return "NONE";
+	case STATE_WAIT_FOR_BID:
+		return "WAIT_FOR_BID";
 	case STATE_PRELAUNCH:
 		return "PRELAUNCH";
 	case STATE_NOTPLAYING:
@@ -559,7 +559,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (seats_full()
 	    && game.which_game != GGZ_GAME_UNKNOWN) {
 		/* (Re)Start game play */
-		if (game.state != STATE_NONE
+		if (game.state != STATE_WAIT_FOR_BID
 		    && game.state != STATE_WAIT_FOR_PLAY)
 			/* if we're in one of these two states, we have to
 			   wait for a response anyway */
@@ -647,17 +647,24 @@ int handle_newgame_event(player_t player)
 }
 
 /* This handles the event of someone playing a card */
-int handle_play_event(card_t card)
+int handle_play_event(player_t p, card_t card)
 {
-	int i;
+	seat_t s = game.players[p].play_seat;
+	int i, still_playing;
 	hand_t *hand;
+	player_t p2;
+	
+	assert(game.players[p].is_playing);
+	
+	/* is this the right place for this? */
+	game.players[p].is_playing = FALSE;
 
 	ggzdmod_log(game.ggz, "Handling a play event.");
 	/* determine the play */
-	hand = &game.seats[game.play_seat].hand;
+	hand = &game.seats[s].hand;
 
 	/* send the play */
-	(void) broadcast_play(game.play_seat, card);
+	(void) broadcast_play(s, card);
 	
 	/* FIXME: what happens if someone sends a card not even in their hand?? */
 
@@ -672,7 +679,7 @@ int handle_play_event(card_t card)
 	hand->hand_size--;
 
 	/* Move the card onto the table */
-	game.seats[game.play_seat].table = card;
+	game.seats[s].table = card;
 	if (game.next_play == game.leader)
 		game.lead_card = card;
 
@@ -680,6 +687,18 @@ int handle_play_event(card_t card)
 	if (card.suit == game.trump)
 		game.trump_broken = TRUE;
 	game.funcs->handle_play(card);
+	
+	for (p2 = 0, still_playing = 0; p2 < game.num_players; p2++)
+		if (game.players[p2].is_playing)
+			still_playing++;
+
+	/* this is the player that just finished playing */
+	set_player_message(p);
+	
+	if (still_playing > 0) {
+		assert(game.state == STATE_WAIT_FOR_PLAY);
+		return 0;
+	}
 
 	/* set up next move */
 	game.play_count++;
@@ -709,9 +728,6 @@ int handle_play_event(card_t card)
 		}
 	}
 
-	/* this is the player that just finished playing */
-	set_player_message(game.curr_play);
-
 	/* do next move */
 	next_play();
 	return 0;
@@ -737,7 +753,7 @@ int handle_bid_event(player_t p, bid_t bid)
 		was_waiting = 1;
 	}
 
-	set_game_state(STATE_NONE);
+	set_game_state(STATE_WAIT_FOR_BID);
 
 	/* determine the bid */
 	game.players[p].bid = bid;
@@ -775,7 +791,7 @@ int handle_bid_event(player_t p, bid_t bid)
 	/* This is a minor hack.  The game's next_bid function might have
 	   changed the game's state.  If that happened, we don't want to
 	   change it back! */
-	if (game.state == STATE_NONE) {
+	if (game.state == STATE_WAIT_FOR_BID) {
 		if (game.bid_count == game.bid_total)
 			set_game_state(STATE_FIRST_TRICK);
 		else

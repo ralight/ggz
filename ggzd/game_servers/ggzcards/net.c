@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: net.c 3437 2002-02-21 10:05:18Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -228,8 +228,8 @@ int send_sync(player_t p)
 		     game.players[p].bid_data.bids) < 0)
 			status = -1;
 	}
-	if (game.state == STATE_WAIT_FOR_PLAY && game.curr_play == p)
-		if (send_play_request(game.curr_play, game.play_seat) < 0)
+	if (game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing)
+		if (send_play_request(p, game.players[p].play_seat) < 0)
 			status = -1;
 
 	if (status != 0)
@@ -296,18 +296,12 @@ int send_play_request(player_t p, seat_t s)
 {
 	seat_t s_r = CONVERT_SEAT(s, p);
 	int fd = get_player_socket(p);
+	
+	assert(game.players[p].is_playing);
 
 	ggzdmod_log(game.ggz, "Requesting player %d/%s "
 		    "to play from seat %d/%s's hand.", p,
 		    get_player_name(p), s, get_seat_name(s));
-
-	/* although the game_* functions probably track this data themselves,
-	   we track it here as well just in case. */
-	game.curr_play = p;
-	game.play_seat = s;
-
-	set_game_state(STATE_WAIT_FOR_PLAY);
-	set_player_message(p);
 
 	if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
 		return -1;
@@ -450,8 +444,7 @@ int rec_play(player_t p)
 {
 	int fd = get_player_socket(p), i;
 	card_t card;
-	seat_t s = game.play_seat;
-	hand_t *hand = &game.seats[s].hand;
+	hand_t *hand;
 	char *err;
 
 	/* read the card played */
@@ -467,7 +460,7 @@ int rec_play(player_t p)
 	}
 
 	/* Is is this player's turn to play? */
-	if (game.curr_play != p) {
+	if (!game.players[p].is_playing) {
 		/* better to just ignore it; a MSG_BADPLAY requests a new
 		   play */
 		ggzdmod_log(game.ggz,
@@ -477,6 +470,7 @@ int rec_play(player_t p)
 	}
 
 	/* find the card played */
+	hand = &game.seats[game.players[p].play_seat].hand;
 	for (i = 0; i < hand->hand_size; i++)
 		if (are_cards_equal(hand->cards[i], card))
 			break;
@@ -501,12 +495,12 @@ int rec_play(player_t p)
 	   don't return -1 on an error here.  An error returned indicates a
 	   GGZ error, which is not what happened.  This is just a player
 	   mistake */
-	err = game.funcs->verify_play(card);
+	err = game.funcs->verify_play(p, card);
 	if (err == NULL)
 		/* any AI routine would also call handle_play_event, so the
 		   ai must also check the validity as above.  This could be
 		   changed... */
-		handle_play_event(card);
+		handle_play_event(p, card);
 	else
 		(void) send_badplay(p, err);
 
