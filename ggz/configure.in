@@ -236,6 +236,18 @@ else
 fi
 AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
 
+
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    ggzdatadir="${ac_default_prefix}/share/ggz"
+  else
+    ggzdatadir="${prefix}/share/ggz"
+  fi
+else
+  ggzdatadir="${datadir}/ggz"
+fi
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
+
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
@@ -248,6 +260,7 @@ AC_SUBST(SUBDIRS)
 AC_SUBST(FRONTENDDIRS)
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)
+AC_SUBST(ggzdatadir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
