@@ -19,6 +19,9 @@
 #include "login.h"
 #include "config.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -46,9 +49,9 @@ Login::Login(QWidget *parent, const char *name)
 	frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	frame->setFixedHeight(200);
 
-	explanation = new QLabel("Enter the game Keepalive!\n"
+	explanation = new QLabel(i18n("Enter the game Keepalive!\n"
 		"If you are new to this game, please select a login name and a password for it.\n"
-		"Otherwise log in with your data to restore your avatar.\n",
+		"Otherwise log in with your data to restore your avatar.\n"),
 		frame);
 
 	logo = new QWidget(this);
@@ -58,11 +61,11 @@ Login::Login(QWidget *parent, const char *name)
 	logo->setMask(logomap);
 	logo->setFixedSize(logopix.width(), logopix.height());
 
-	lusername = new QLabel("Username", frame);
-	lpassword = new QLabel("Password", frame);
+	lusername = new QLabel(i18n("Username"), frame);
+	lpassword = new QLabel(i18n("Password"), frame);
 	m_username = new QLineEdit(frame);
 	m_password = new QLineEdit(frame);
-	ok = new QPushButton("Login...", frame);
+	ok = new QPushButton(i18n("Login..."), frame);
 	ok->setFixedWidth(100);
 
 	vbox = new QVBoxLayout(frame, 5);

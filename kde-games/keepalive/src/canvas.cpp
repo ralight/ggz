@@ -47,6 +47,10 @@ Canvas::Canvas(QWidget *parent, const char *name)
 	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/grass.png"));
 
 	setAdvancePeriod(50);
+
+	// FIXME: I'm afraid we have to do this here (spectators catch-22 problem)
+	init();
+	m_spectator = 0;
 }
 
 // Destructor
@@ -113,7 +117,9 @@ void Canvas::slotInput()
 			}
 			break;
 		case op_spectator:
+			std::cout << "SPECTATOR!" << std::endl;
 			emit signalLoggedin(i18n("spectator"));
+			m_spectator = 1;
 			break;
 		case op_name:
 			*m_net >> name;
@@ -159,6 +165,8 @@ void Canvas::move(int x, int y)
 {
 	int vx, vy;
 
+	if(m_spectator) return;
+
 	if(!m_net) return;
 
 	std::cout << "key-1" << std::endl;
@@ -181,6 +189,8 @@ void Canvas::move(int x, int y)
 // Log into the game server
 void Canvas::login(QString username, QString password)
 {
+	if(m_spectator) return;
+
 	if(!m_net) init();
 
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
@@ -193,6 +203,8 @@ void Canvas::keyPressEvent(QKeyEvent *e)
 
 void Canvas::chat(QString message)
 {
+	if(m_spectator) return;
+
 	*m_net << (Q_INT8)op_chat << message.latin1();
 }
 

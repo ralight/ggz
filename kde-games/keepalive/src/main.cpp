@@ -15,8 +15,10 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-// Qt includes
-#include <qapplication.h>
+// KDE includes
+#include <kapplication.h>
+#include <klocale.h>
+#include <kcmdlineargs.h>
 
 // Keepalive includes
 #include "win.h"
@@ -25,22 +27,34 @@
 #include <iostream>
 #include <cstdlib>
 
+// Command line arguments
+static const KCmdLineOptions op[] =
+{
+	{"ggz", I18N_NOOP("Start game in GGZ mode"), 0},
+	{0, 0, 0}
+};
+
 // Main function: fire up the top-level window
 int main(int argc, char **argv)
 {
 	Win *win;
+	KCmdLineArgs *args;
 	int ggz = 0;
 
-	for(int i = 1; i < argc; i++)
-		if(!strcmp(argv[i], "--ggz")) ggz = 1;
+	KCmdLineArgs::init(argc, argv, "", "", "");
+	KCmdLineArgs::addCmdLineOptions(op);
+	args = KCmdLineArgs::parsedArgs();
+
+	if(args->isSet("ggz")) ggz = 1;
+
 	if(!ggz)
 	{
-		std::cerr << "This game cannot be launched from the command line." << std::endl;
-		std::cerr << "Please use a GGZ core client." << std::endl;
+		std::cerr << i18n("This game cannot be launched from the command line.").latin1() << std::endl;
+		std::cerr << i18n("Please use a GGZ core client.").latin1() << std::endl;
 		exit(-1);
 	}
 
-	QApplication a(argc, argv);
+	KApplication a(argc, argv);
 	win = new Win();
 	a.setMainWidget(win);
 	return a.exec();

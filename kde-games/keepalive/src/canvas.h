@@ -52,6 +52,7 @@ class Canvas : public QCanvas
 		QCanvasSprite *m_player;
 		QSocketDevice *m_dev;
 		QDataStream *m_net;
+		int m_spectator;
 };
 
 #endif
