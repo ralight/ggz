@@ -1,7 +1,7 @@
 dnl Configuration for KGGZ
 dnl ======================
 
-AC_INIT(acinclude.m4)
+AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(ggz-kde-client, 0.0.6)
