@@ -333,23 +333,46 @@ commonly called 'external games'. Their installation base is varying, although
 it is not very difficult to support these games as well. All major GGZ servers
 should include all of them to give their players a better choice.
 
+@section Availability
+
+See @url{http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=12} to
+view the list of external games. There are already patched convenience tarballs
+available at:
+
+@url{http://teg.sf.net/teg-0.9.3-ggz.tar.gz}
+
+@url{http://teg.sf.net/gbatnav-1.0.4pre.tar.gz}
+
+@url{http://teg.sf.net/xtux-ggz.tar.gz}
+
+@url{http://teg.sf.net/freeciv-1.12.0-ggz.tar.bz2}
+
 @section Description of available external games
 
 @subsection Batalla Naval
 
 This is a graphical server using the Gnome libraries, so it is only of interest
 for people who run a GGZ server on a desktop system.
+It has GGZ support built-in.
 See @url{http://batnav.sourceforge.net}.
 
 @subsection bzFlag
 
 The server for the well-known realtime 3D tank game. This server is a patched
 version of bzFlag, which is available from @url{http://www.bzflag.org}.
+Note that bzFlag support is work in progress.
 
 @subsection Freeciv
 
 A patched version of the FreeCiv server (@url{http://www.freeciv.org}) runs
 over GGZ as well.
+A possible configuration is:
+
+@command{./configure  --enable-client=no --enable-ggz=yes
+--with-ggzdmod-dir=$prefix
+--with-ggzmod-dir=$prefix
+--with-ggzconfig=$prefix/bin
+--prefix=$prefix}
 
 @subsection Stalker
 
@@ -358,8 +381,18 @@ See @url{http://stalker.sourceforge.net}.
 
 @subsection T.E.G.
 
-T.E.G. is a Gnome game, which has GGZ support built-in. The server needs libxml
-and libglib installed.
+T.E.G. is a Gnome game, which has GGZ support built-in. The server needs
+libxml2 and libglib 1.2 installed.
+Be sure to alter the include paths if necessary when compiling from source.
+@url{http://teg.sourceforge.net}
+
+@subsection XTux
+
+XTux is also available with GGZ support.
+However, it is not configured using GNU autotools, so you will have to adjust
+all the paths by yourself if necessary. This includes the directory src/ggz and
+src/server.
+@url{http://xtux.sourceforge.net}
 
 @node Other GGZ Servers, GGZ Server Tools, External Games, Top
 @chapter Other GGZ Servers
@@ -409,6 +442,11 @@ Admins are allowed to broadcast messages to all rooms via the /wall command.
 To do that from the command line, for example to announce that a server will go
 down in a few minutes, the utily ggz-cmd can be used.
 It is available from the utils/cmd-client directory.
+
+An example on how to use ggz-cmd on a server (the specified user must be
+registered as administrator, using ggzduedit, see below):
+
+@command{ggz-cmd localhost admin adminpassword announce Attention, server reboot in five minutes}
 
 @section The ggzduedit command line utily
 
