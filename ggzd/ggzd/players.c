@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: players.c 4100 2002-04-28 23:00:01Z rgade $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -764,6 +764,8 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 	switch (opcode) {
 	case GGZ_TRANSIT_LEAVE: 
 		seat.index = table_find_player(player->room, index, player->name);
+		if(seat.index == -1)
+			return E_NO_TABLE;
 		seat.type = GGZ_SEAT_OPEN;
 		seat.name[0] = '\0';
 		

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: table.c 4100 2002-04-28 23:00:01Z rgade $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -943,14 +943,16 @@ int table_find_player(int room, int index, char *name)
 
 	/* grab handle to table (along with write lock) */
 	table = table_lookup(room, index);
-	seats  = seats_num(table);
-	for (i = 0; i < seats; i++)
-		if (table->seat_types[i] == GGZ_SEAT_PLAYER
-		    && strcasecmp(table->seat_names[i], name) == 0) {
-			seat = i;
-			break;
-		}
-	pthread_rwlock_unlock(&table->lock);
+	if(table != NULL) {
+		seats  = seats_num(table);
+		for (i = 0; i < seats; i++)
+			if (table->seat_types[i] == GGZ_SEAT_PLAYER
+			    && strcasecmp(table->seat_names[i], name) == 0) {
+				seat = i;
+				break;
+			}
+		pthread_rwlock_unlock(&table->lock);
+	}
 
 	return seat;
 }
