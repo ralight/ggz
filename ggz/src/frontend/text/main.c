@@ -68,7 +68,7 @@ char* string_cat(char *s1, char *s2)
 
 int main(void)
 {
-	char *g_path, *u_path, *debugfile;
+	char *u_path, *debugfile;
 	GGZOptions opt;
 
 	output_init();
@@ -78,10 +78,9 @@ int main(void)
 
 	/* Setup options and initialize ggzcore lib */
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
-	g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");
+	/*g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");*/
         u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
-	ggzcore_conf_initialize(g_path, u_path);
-	free(g_path);
+	ggzcore_conf_initialize(NULL, u_path);
 	free(u_path);
 
 	debugfile = string_cat(getenv("HOME"),"/.ggz/ggz-text.debug");
