@@ -480,6 +480,7 @@ void KGGZ::listPlayers()
 		m_workspace->widgetChat()->chatline()->addPlayer(playername);
 		if(m_grubby) m_grubby->addPlayer(playername);
 	}
+	m_workspace->widgetUsers()->assignSelf(m_save_username);
 }
 
 void KGGZ::gameCollector(unsigned int id, void* data)

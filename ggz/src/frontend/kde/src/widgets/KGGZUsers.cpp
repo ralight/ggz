@@ -37,6 +37,9 @@
 // KGGZ includes
 #include "KGGZCommon.h"
 
+// GGZCore++ includes
+#include "GGZCoreConfio.h"
+
 // KDE includes
 #include <klocale.h>
 
@@ -46,6 +49,7 @@
 // System includes
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // static members
 //QListViewItem *KGGZUsers::itemmain;
@@ -62,11 +66,23 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	insertItem(itemmain);
 
 	setRootIsDecorated(TRUE);
+
+	m_menu = NULL;
+
+	m_menu_assign = new QPopupMenu(NULL);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png")), i18n("Player"), assignplayer);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png")), i18n("Buddy"), assignbuddy);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")), i18n("Banned"), assignbanned);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/bot.png")), i18n("Bot"), assignbot);
+
+	connect(this, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotClicked(QListViewItem*, const QPoint&, int)));
+	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
 }
 
 // Destructor
 KGGZUsers::~KGGZUsers()
 {
+	delete m_menu_assign;
 }
 
 // add a player to the list
@@ -76,9 +92,10 @@ void KGGZUsers::add(char *name)
 
 	KGGZDEBUG("USER CONTROL: ===========> add player %s\n", name);
 	tmp = new QListViewItem(itemmain, name);
-	tmp->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png"));
+	//tmp->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png"));
 	itemmain->insertItem(tmp);
 	KGGZDEBUG("Added token %s\n", name);
+	assign(tmp, -1);
 }
 
 // remove a player from the list
@@ -163,7 +180,6 @@ void KGGZUsers::removeall()
 	itemmain->setOpen(TRUE);
 }
 
-
 void KGGZUsers::addTable(int i)
 {
 	//char foo[128];
@@ -198,6 +214,7 @@ void KGGZUsers::addTablePlayer(int i, char *name)
 	KGGZDEBUG("Create new player item!\n");
 	tmp = new QListViewItem(tmp2, name);
 	tmp2->insertItem(tmp);
+	assign(tmp, -1);
 }
 
 QListViewItem *KGGZUsers::table(int i)
@@ -231,3 +248,101 @@ QListViewItem *KGGZUsers::table(int i)
 	KGGZDEBUG("Hm, none found :(\n");
 	return NULL;
 }
+
+// Returns the item which represents the wanted player
+QListViewItem *KGGZUsers::player(const char *player)
+{
+	QListViewItem *tmp;
+
+	if(!player) return NULL;
+	tmp = firstChild();
+	while(tmp)
+	{
+		if(strcmp(tmp->text(0).latin1(), player) == 0) return tmp;
+		KGGZDEBUG("Assignments? Not for %s\n", tmp->text(0).latin1());
+		tmp = tmp->itemBelow();
+		//KGGZDEBUG("ASSIGN: This one is new: %s\n", tmp->text(0).latin1());
+	}
+	return NULL;
+}
+
+// Click on a player
+void KGGZUsers::slotClicked(QListViewItem *item, const QPoint& point, int column)
+{
+	if(!item) return;
+	if(item->text(0) == m_self) return;
+
+	if(m_menu) delete m_menu;
+	m_menu = new QPopupMenu(this);
+	m_menu->insertItem(i18n("Send private message"), -1);
+	m_menu->insertItem(i18n("Assign a role"), m_menu_assign);
+	//connect(m_menu, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
+
+	m_menu->popup(point);
+}
+
+// Assign role to player
+void KGGZUsers::slotAssigned(int id)
+{
+	QListViewItem *tmp;
+
+	tmp = selectedItem();
+	if(!tmp) return;
+
+	assign(tmp, id);
+}
+
+void KGGZUsers::assignSelf(QString self)
+{
+	m_self = self;
+	assign(player(self.latin1()), assignyou);
+}
+
+void KGGZUsers::assign(QListViewItem *item, int role)
+{
+	QString pixmap;
+	GGZCoreConfio *config;
+	int save;
+
+	if(!item) return;
+
+	save = 1;
+	if(role == -1)
+	{
+		save = 0;
+		config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readonly);
+		KGGZCommon::clear();
+		role = config->read("Assignments", item->text(0).latin1(), assignplayer);
+		delete config;
+	}
+
+	switch(role)
+	{
+		case assignplayer:
+			pixmap = "player.png";
+			break;
+		case assignbuddy:
+			pixmap = "buddy.png";
+			break;
+		case assignbanned:
+			pixmap = "banned.png";
+			break;
+		case assignbot:
+			pixmap = "bot.png";
+			break;
+		case assignyou:
+			pixmap = "you.png";
+			break;
+	}
+	item->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap));
+
+	if(save)
+	{
+		config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+		KGGZCommon::clear();
+		config->write("Assignments", item->text(0).latin1(), role);
+		config->commit();
+		delete config;
+	}
+}
+

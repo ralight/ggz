@@ -36,6 +36,7 @@
 
 // Qt includes
 #include <qlistview.h>
+#include <qpopupmenu.h>
 
 // KGGZ_Users: list of all players in current room
 class KGGZUsers : public QListView
@@ -56,13 +57,41 @@ class KGGZUsers : public QListView
 		void addTable(int i);
 		// Add a player to a table, or move hime there
 		void addTablePlayer(int i, char *name);
+		// Specify the player's name
+		void assignSelf(QString self);
+
+		enum Assignments
+		{
+			assignyou,
+			assignbuddy,
+			assignplayer,
+			assignbanned,
+			assignbot
+		};
+
+	public slots:
+		// Click on a player
+		void slotClicked(QListViewItem *item, const QPoint& point, int column);
+		// Assign role to player
+		void slotAssigned(int id);
 
 	private:
 		// Returns the item which represents the requested table
 		QListViewItem *table(int i);
-
+		// Returns the item which represents the wanted player
+		QListViewItem *player(const char *player);
+		// Assign a role
+		void assign(QListViewItem *item, int role);
+		
 		// The list displaying the users
 		QListViewItem *itemmain;
+		// Context menu for players
+		QPopupMenu *m_menu;
+		// Menu for assignments
+		QPopupMenu *m_menu_assign;
+		// Name of the player
+		QString m_self;
 };
 
 #endif
+
