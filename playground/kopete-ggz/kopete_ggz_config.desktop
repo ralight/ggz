@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Icon=ggz
+Type=Service
+ServiceTypes=KCModule
+
+X-KDE-ModuleType=Library
+X-KDE-Library=kopete_ggz
+#X-KDE-FactoryName=PluginGGZPreferencesFactory
+X-KDE-ParentApp=kopete_ggz
+X-KDE-ParentComponents=kopete_ggz
+
+Name=GGZ
+Comment=Foo

@@ -10,10 +10,7 @@
 #include "kopeteplugin.h"
 
 class QStringList;
-/*namespace Kopete
-{
-	class ChatSession;
-}*/
+class QComboBox;
 
 class GGZPluginGui : public QObject, public KXMLGUIClient
 {
@@ -22,7 +19,8 @@ public:
 	GGZPluginGui(Kopete::ChatSession *parent, const char *name = 0);
 
 private slots:
-	void slotGGZ();
+	void slotGGZ(QString game);
+	void slotGGZSelect();
 
 private:
 	Kopete::ChatSession *session;
@@ -48,10 +46,23 @@ class GGZPluginLauncher
 public:
 	GGZPluginLauncher(QObject *parent);
 
-	void launch(QString player1, QString player2);
+	void launch(QString player1, QString player2, QString game);
 
 private:
 	QObject *m_parent;
+};
+
+class GGZPluginSelect : public QWidget
+{
+	Q_OBJECT
+public:
+	GGZPluginSelect(QWidget *parent = 0, const char *name = 0);
+public slots:
+	void slotSelected();
+signals:
+	void signalSelected(QString game);
+private:
+	QComboBox *m_gamescombo;
 };
 
 #endif

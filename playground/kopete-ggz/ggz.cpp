@@ -4,8 +4,13 @@
 #include <kmainwindow.h>
 #include <kmenubar.h>
 #include <kprocess.h>
+#include <kconfig.h>
 
 #include <qpopupmenu.h>
+#include <qcombobox.h>
+#include <qlayout.h>
+#include <qpushbutton.h>
+#include <qregexp.h>
 
 #include "kopetemessage.h"
 #include "kopetemessagemanagerfactory.h"
@@ -51,10 +56,12 @@ void GGZPlugin::slotProcessDisplay(Kopete::Message& msg)
 
 	if(msg.from()->contactId() != m_self)
 	{
-		if(msg.plainBody() == "jeu")
+		QRegExp re("^jeu\ (\\S+)$");
+		if(re.exactMatch(msg.plainBody()))
 		{
 			GGZPluginLauncher *l = new GGZPluginLauncher(this);
-			l->launch("ggz-kop-peer", msg.from()->contactId());
+			QString game = re.cap(1);
+			l->launch("ggz-kop-peer", msg.from()->contactId(), game);
 		}
 	}
 }
@@ -62,16 +69,24 @@ void GGZPlugin::slotProcessDisplay(Kopete::Message& msg)
 GGZPluginGui::GGZPluginGui(Kopete::ChatSession *parent, const char *name)
 : QObject(parent, name), KXMLGUIClient(parent)
 {
-	(void)new KAction(i18n("Play GGZ game"), "ggz", 0, this, SLOT(slotGGZ()), actionCollection(), "playggz");
+	(void)new KAction(i18n("Play GGZ game"), "ggz", 0, this, SLOT(slotGGZSelect()), actionCollection(), "playggz");
 	setXMLFile("ggzchatui.rc");
 	kdDebug() << "GGZ PLUGIN ACTIVATED IN MESSAGE WINDOW" << endl;
 
 	session = parent;
 }
 
-void GGZPluginGui::slotGGZ()
+void GGZPluginGui::slotGGZSelect()
 {
-	kdDebug() << "PLAY GGZ GAME" << endl;
+	GGZPluginSelect *select;
+	
+	select = new GGZPluginSelect();
+	connect(select, SIGNAL(signalSelected(QString)), SLOT(slotGGZ(QString)));
+}
+
+void GGZPluginGui::slotGGZ(QString game)
+{
+	kdDebug() << "PLAY GGZ GAME " << game << endl;
 
 	Kopete::ContactPtrList players = session->members();
 	for(Kopete::Contact *c = players.first(); c; c = players.next())
@@ -79,12 +94,12 @@ void GGZPluginGui::slotGGZ()
 		kdDebug() << "PLAY WITH " << c->contactId() << endl;
 	}
 
-	Kopete::Message msg(session->myself(), session->members(), "jeu", Kopete::Message::Outbound);
-	//msg.setBody("jeu");
+	Kopete::Message msg(session->myself(), session->members(), QString::null, Kopete::Message::Outbound);
+	msg.setBody(QString("%1 %2").arg("jeu").arg(game));
 	session->sendMessage(msg);
 
 	GGZPluginLauncher *l = new GGZPluginLauncher(this);
-	l->launch(session->myself()->contactId(), QString::null);
+	l->launch(session->myself()->contactId(), QString::null, game);
 }
 
 GGZPluginLauncher::GGZPluginLauncher(QObject *parent)
@@ -92,18 +107,52 @@ GGZPluginLauncher::GGZPluginLauncher(QObject *parent)
 {
 }
 
-void GGZPluginLauncher::launch(QString player1, QString player2)
+void GGZPluginLauncher::launch(QString player1, QString player2, QString game)
 {
-	kdDebug() << "LAUNCHER " << player1 << " " << player2 << endl;
+	kdDebug() << "LAUNCHER " << player1 << " " << player2 << ": " << game << endl;
+
+	KConfig conf("kopeteggzrc");
+	conf.setGroup("default");
+
+	QString server = conf.readEntry("Server", "live.ggzgamingzone.org");
 
 	KProcess *proc = new KProcess(m_parent);
 	*proc << "ggz-wrapper";
-	*proc << "-s" << "live.ggzgamingzone.org";
-	*proc << "-g" << "TicTacToe";
+	*proc << "-s" << server;
+	*proc << "-g" << game;
 	*proc << "-u" << player1;
 	if(!player2.isNull())
 		*proc << "-d" << player2;
 	proc->start(KProcess::DontCare);
+}
+
+GGZPluginSelect::GGZPluginSelect(QWidget *parent, const char *name)
+: QWidget(parent, name)
+{
+	QVBoxLayout *vbox;
+	QPushButton *ok;
+
+	m_gamescombo = new QComboBox(this);
+
+	m_gamescombo->insertItem("TicTacToe");
+	m_gamescombo->insertItem("Reversi");
+	m_gamescombo->insertItem("Chess");
+
+	ok = new QPushButton(i18n("Play"), this);
+
+	vbox = new QVBoxLayout(this, 5);
+	vbox->add(m_gamescombo);
+	vbox->add(ok);
+
+	connect(ok, SIGNAL(clicked()), SLOT(slotSelected()));
+
+	show();
+}
+
+void GGZPluginSelect::slotSelected()
+{
+	emit signalSelected(m_gamescombo->currentText());
+	close();
 }
 
 #include "ggz.moc"
