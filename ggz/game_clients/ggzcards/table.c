@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2987 2001-12-23 02:11:02Z jdorje $
+ * $Id: table.c 2988 2001-12-23 03:02:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -130,6 +130,7 @@ static void draw_splash_screen(void)
 
 	ggz_debug("table", "Drawing splash screen.");
 
+	assert(!game_started);
 	assert(table_buf);
 	assert(ggzcards.num_players == 0);
 
@@ -157,6 +158,8 @@ void table_initialize(void)
 	/* Just a sanity check; we don't want to call this function twice. */
 	assert(call_count == 0);
 	call_count++;
+
+	ggz_debug("table", "Initializing table.");
 
 	/* This starts our drawing code */
 	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
@@ -262,6 +265,7 @@ void table_setup(void)
 /* Display's a player's name on the table. */
 void table_set_name(int player, const char *name)
 {
+	ggz_debug("table", "Setting player name: %d => %s.", player, name);
 	if (l_name[player] != NULL)
 		gtk_label_set_text(GTK_LABEL(l_name[player]), name);
 }
@@ -269,6 +273,7 @@ void table_set_name(int player, const char *name)
 /* Displays a player's message on the table. */
 void table_set_player_message(int player, const char *message)
 {
+	ggz_debug("table", "Setting player message for %d.", player);
 	if (label[player] != NULL)
 		gtk_label_set_text(GTK_LABEL(label[player]), message);
 }
@@ -277,7 +282,10 @@ void table_set_player_message(int player, const char *message)
    is signaled. */
 void table_redraw(void)
 {
-	if (table_ready) {
+	ggz_debug("table", "Redrawing table. " " game_started is %d.",
+		  game_started);
+	if (game_started) {
+		assert(table_ready);
 		animation_stop(TRUE);
 
 		gtk_widget_grab_focus(dlg_main);
@@ -473,6 +481,8 @@ void table_display_hand(int p)
 	float ow, oh;
 	card_t table_card = ggzcards.players[p].table_card;
 
+	assert(table_ready && game_started);
+
 	/* The server may send out a hand of size 0 when we first connect,
 	   but we just want to ignore it. */
 	if (!table_ready)
@@ -529,6 +539,7 @@ void table_show_card(int player, card_t card)
 {
 	int x, y;
 
+	assert(table_ready && game_started);
 	assert(card.face != -1 && card.suit != -1);
 
 	get_tablecard_pos(player, &x, &y);
@@ -541,6 +552,8 @@ void table_show_card(int player, card_t card)
 void table_show_cards(void)
 {
 	int table_x, table_y, table_w, table_h, p;
+
+	assert(table_ready && game_started);
 
 	get_table_dim(&table_x, &table_y, &table_w, &table_h);
 	gdk_draw_rectangle(table_buf,

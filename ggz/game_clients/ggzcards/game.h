@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2972 2001-12-21 01:45:19Z jdorje $
+ * $Id: game.h 2988 2001-12-23 03:02:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,9 +37,16 @@ struct prefs {
 	int cardlists;
 };
 
+/* Our set of preferences.  See above. */
 extern struct prefs preferences;
 
+/* This is the maximum hand size we can sustain.  The client-common
+   code will tell us when we need to increase it. */
 extern int table_max_hand_size;
+
+/* This isn't set to 1 until we start a game; until then
+   we keep up the splash screen. */
+extern int game_started;
 
 /*
  * This first group is called by the table and

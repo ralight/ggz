@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2977 2001-12-21 09:38:32Z jdorje $
+ * $Id: game.c 2988 2001-12-23 03:02:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,6 +47,7 @@
 struct prefs preferences;
 
 int table_max_hand_size = 0;
+int game_started = 0;
 
 static void text_cardlist_message(const char *mark, int *lengths,
 				  card_t ** cardlist);
@@ -167,13 +168,16 @@ void game_get_newgame(void)
 		ggz_debug("main", "Handling newgame request from server.");
 
 		statusbar_message(_
-				  ("Select \"Start Game\" to begin the game."));
+				  ("Select \"Start Game\" "
+				   "to begin the game."));
 	}
 }
 
 void game_alert_newgame(void)
 {
 	ggz_debug("main", "Received newgame alert from server.");
+	game_started = 1;
+	table_setup();
 	/* do nothing... */
 }
 
@@ -244,8 +248,10 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 
 void game_setup_table(void)
 {
-	ggz_debug("main", "Setting up table.");
-	table_setup();
+	if (game_started) {
+		ggz_debug("main", "Setting up table.");
+		table_setup();
+	}
 }
 
 void game_alert_hand_size(int max_hand_size)
@@ -340,8 +346,10 @@ void game_alert_play(int player, card_t card, int pos)
 
 void game_alert_table(void)
 {
-	ggz_debug("main", "Handling table update alert.");
-	table_show_cards();
+	if (game_started) {
+		ggz_debug("main", "Handling table update alert.");
+		table_show_cards();
+	}
 }
 
 void game_alert_trick(int player)
