@@ -41,11 +41,12 @@ function latest_forumposts()
 	$phpbb = new Database("postgresql");
 	$phpbb->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
-	$res = $phpbb->exec("SELECT * FROM phpbb_posts_text ORDER BY post_id DESC LIMIT 3");
+	$res = $phpbb->exec("SELECT * FROM phpbb_posts_text AS a, phpbb_posts AS b " .
+		"WHERE a.post_id = b.post_id ORDER BY a.post_id DESC LIMIT 3");
 	for ($i = 0; $i < $phpbb->numrows($res); $i++)
 	{
 		$subject = $phpbb->result($res, $i, "post_subject");
-		$id = $phpbb->result($res, $i, "post_id");
+		$id = $phpbb->result($res, $i, "topic_id");
 
 		$tag = htmlspecialchars($subject, ENT_QUOTES);
 
