@@ -30,7 +30,7 @@ txtdir:
 
 psdir:
 	(cd $(srcdir); mkdir -p ps;)
-	
+
 %.txt: %.sgml
 	-cd $(srcdir) && jade -t sgml -dascii-lynx.dsl $^ > tmp.html
 	-lynx -dump tmp.html -nolist > txt/$@
@@ -59,12 +59,12 @@ eps-files: $(FIG_FILES)
 	done
 
 
-dist-hook: html-docs
+dist-hook: html-docs txt-docs
 	mkdir -p $(distdir)/html
 	-cp -a $(srcdir)/html/* $(distdir)/html
-	-cp $(srcdir)/txt $(distdir)
+	-cp $(srcdir)/txt/* $(distdir)
 	mkdir -p $(distdir)/images
-	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
+	-cp $(srcdir)/images/*.gif $(distdir)/images
 
 #install-data-local: 
 #	$(mkinstalldirs) $(DESTDIR)$(gnumeric_helpdir)/images
