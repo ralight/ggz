@@ -22,7 +22,7 @@
 #include "world.h"
 
 // GGZdMod includes
-#include <ggzdmod.h>
+#include "ggzdmod.h"
 
 // System includes
 #include <iostream>
