@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2707 2001-11-09 02:22:20Z jdorje $
+ * $Id: net.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -225,8 +225,8 @@ int send_sync(player_t p)
 		status = -1;
 
 	/* request bid/play again, if necessary */
-	if (game.state == WH_STATE_WAIT_FOR_BID && game.next_bid == p)
-		if (req_bid(game.next_bid) < 0)
+	if (game.players[p].bid_data.is_bidding)
+		if (req_bid(p) < 0)
 			status = -1;
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && game.curr_play == p)
 		if (send_play_request(game.curr_play, game.play_seat) < 0)

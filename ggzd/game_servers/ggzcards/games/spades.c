@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: spades.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -38,7 +38,7 @@ static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
 static void spades_start_bidding(void);
 static int spades_get_bid(void);
-static void spades_handle_bid(bid_t bid);
+static void spades_handle_bid(player_t p, bid_t bid);
 static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
@@ -226,13 +226,14 @@ static int spades_get_bid()
 }
 
 
-static void spades_handle_bid(bid_t bid)
+static void spades_handle_bid(player_t p, bid_t bid)
 {
+	assert(game.next_bid == p);
 	/* Regular bids don't need any special handling; however blind bids
 	   do. */
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
-		GSPADES.show_hand[game.next_bid] = 1;
-		spades_send_hand(game.next_bid, game.next_bid);
+		GSPADES.show_hand[p] = 1;
+		spades_send_hand(p, p);
 		if (bid.sbid.spec != SPADES_NO_BLIND)
 			game.bid_count++;	/* skip regular bid */
 	}

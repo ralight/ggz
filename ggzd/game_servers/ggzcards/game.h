@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: game.h 2730 2001-11-13 06:29:00Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -88,7 +88,7 @@ void game_start_bidding();
 int game_get_bid();
 
 /** @brief Specialty handling of a bid. */
-void game_handle_bid(bid_t bid);
+void game_handle_bid(player_t p, bid_t bid);
 
 /** @brief Specialty handling to prep for next bid. */
 void game_next_bid();

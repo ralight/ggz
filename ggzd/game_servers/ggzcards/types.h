@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: types.h 2730 2001-11-13 06:29:00Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -47,6 +47,20 @@ typedef union bid_t {
 	} sbid;
 } bid_t;
 
+
+/* This struct holds all data about a player's bidding status. */
+typedef struct {
+	int is_bidding;		/* is this player currently bidding? Are we
+				   waiting for a bid from them? */
+
+	/* FIXME: should this use libggz's list structure? */
+	bid_t *bids;		/* An array holding the bid choices the
+				   player will be/has been given */
+	int bid_size;		/* The size of the array */
+	int bid_count;		/* Number of bids in the array (some of the
+				   array may be unused) */
+} bid_data_t;
+
 /* all players have seats, but every seat doesn't necessarily have a player.
    some seats may be dummies or kitties */
 /* the tricky thing is that GGZ knows only about _players_ while the client
@@ -81,6 +95,8 @@ struct game_player_t {
 	int tricks;
 	seat_t seat;		/* the number of the player's seat */
 	int ready;
+
+	bid_data_t bid_data;	/* bidding information for this player */
 };
 
 typedef struct global_message_list_t {

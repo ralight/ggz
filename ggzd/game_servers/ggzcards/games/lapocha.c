@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: lapocha.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -27,18 +27,18 @@
 
 #include "lapocha.h"
 
-static int lapocha_is_valid_game();
-static void lapocha_init_game();
-static int lapocha_handle_gameover();
-static void lapocha_start_bidding();
-static int lapocha_get_bid();
-static void lapocha_handle_bid(bid_t bid);
-static void lapocha_next_bid();
-static int lapocha_test_for_gameover();
-static int lapocha_deal_hand();
+static int lapocha_is_valid_game(void);
+static void lapocha_init_game(void);
+static int lapocha_handle_gameover(void);
+static void lapocha_start_bidding(void);
+static int lapocha_get_bid(void);
+static void lapocha_handle_bid(player_t p, bid_t bid);
+static void lapocha_next_bid(void);
+static int lapocha_test_for_gameover(void);
+static int lapocha_deal_hand(void);
 static int lapocha_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void lapocha_set_player_message(player_t p);
-static void lapocha_end_hand();
+static void lapocha_end_hand(void);
 
 struct game_function_pointers lapocha_funcs = {
 	lapocha_is_valid_game,
@@ -138,7 +138,7 @@ static int lapocha_get_bid()
 			bid.bid = 0;
 			bid.sbid.suit = cards_deal_card().suit;
 			bid.sbid.spec = LAPOCHA_TRUMP;
-			handle_bid_event(bid);
+			handle_bid_event(game.next_bid, bid);
 		} else {
 			char suit;
 			for (suit = 0; suit < 4; suit++)
@@ -160,8 +160,9 @@ static int lapocha_get_bid()
 	return 0;
 }
 
-static void lapocha_handle_bid(bid_t bid)
+static void lapocha_handle_bid(player_t p, bid_t bid)
 {
+	assert(game.next_bid == p);
 	if (bid.sbid.spec == LAPOCHA_TRUMP) {
 		game.trump = bid.sbid.suit;
 		set_global_message("", "Trump is %s.",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: common.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -182,7 +182,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 		break;
 	case WH_RSP_BID:
 		if ((status = rec_bid(p, &bid)) == 0)
-			handle_bid_event(bid);
+			handle_bid_event(p, bid);
 		break;
 	case WH_RSP_PLAY:
 		status = rec_play(p);
@@ -629,12 +629,12 @@ int handle_play_event(card_t card)
 }
 
 /* This handles the event of someone making a bid */
-int handle_bid_event(bid_t bid)
+int handle_bid_event(player_t p, bid_t bid)
 {
-	player_t p = game.next_bid;
 	int was_waiting = 0;
 
-	clear_bids();
+	game.players[p].bid_data.is_bidding = 0;
+	clear_bids(p);
 
 	ggzd_debug("Handling a bid event.");
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
@@ -650,11 +650,12 @@ int handle_bid_event(bid_t bid)
 	game.players[p].bid = bid;
 
 	/* handle the bid */
-	ai_alert_bid(game.next_bid, bid);
+	ai_alert_bid(p, bid);
 	game.players[p].bid_count++;
-	game.funcs->handle_bid(bid);
+	game.funcs->handle_bid(p, bid);
 
 	/* add the bid to the "bid list" */
+	/* FIXME: this needs work!!! */
 	if (p <= game.prev_bid)
 		game.bid_rounds++;
 	if (game.bid_rounds >= game.max_bid_rounds) {

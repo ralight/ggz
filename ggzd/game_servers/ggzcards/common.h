@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: common.h 2730 2001-11-13 06:29:00Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -32,6 +32,8 @@
 #define __COMMON_H__
 
 #include <config.h>		/* Site-specific config */
+
+#include <assert.h>
 
 #include <ggz.h>		/* libggz */
 #include "../../ggzdmod/ggz_server.h"
@@ -78,7 +80,7 @@ struct wh_game_t {
 	int initted;		/**< has the game been initialized? */
 	player_t host;		/**< the host of the table; cannot be an AI */
 
-	/* state functions */
+	/* state data */
 	server_state_t state;	/**< the current state of the game */
 	server_state_t saved_state;	/**< any time while waiting, the state we _would_ be in if we weren't waiting */
 
@@ -111,8 +113,8 @@ struct wh_game_t {
 	int bid_rounds;		/**< number of *rounds* of bidding */
 	int max_bid_rounds;	/**< the maximum number of bid rounds we can
 				   hold (increased at need) */
-	player_t prev_bid;	/**< who made the _previous_ bid? */
-	player_t next_bid;	/**< current/next bidder */
+	player_t prev_bid;	/**< who made the most recent bid? */
+	player_t next_bid;	/**< who is going to be bidding next? */
 
 	/* State-tracking data: playing */
 	card_t lead_card;	/**< the card that was lead this trick */
@@ -120,7 +122,7 @@ struct wh_game_t {
 	int play_count;		/**< how many plays there have been this trick */
 	int play_total;		/**< how many plays there will be this trick */
 	player_t next_play;	/**< current/next player */
-	player_t curr_play;	/**< current player, tracked automatically by req_bid */
+	player_t curr_play;	/**< current player, tracked automatically by req_play */
 	/* Note: the difference between these two is subtle, but important.
 	   next_play is used to track the player whose hand is being played
 	   from.  curr_play is used automatically to remember who is supposed 
@@ -183,7 +185,7 @@ void handle_player_event(ggzd_event_t event, void *data);
 /* these are internal GGZCards events */
 int handle_newgame_event(player_t p);
 int handle_play_event(card_t card);
-int handle_bid_event(bid_t bid);
+int handle_bid_event(player_t p, bid_t bid);
 
 /* initialization functions */
 void init_ggzcards(int which);	/* pass in the name of the game */

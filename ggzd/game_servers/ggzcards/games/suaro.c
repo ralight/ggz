@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: suaro.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -29,23 +29,23 @@
 
 #include "suaro.h"
 
-static int suaro_is_valid_game();
-static void suaro_init_game();
-static void suaro_get_options();
+static int suaro_is_valid_game(void);
+static void suaro_init_game(void);
+static void suaro_get_options(void);
 static int suaro_handle_option(char *option, int value);
 static char *suaro_get_option_text(char *buf, int bufsz, char *option,
 				   int value);
-static void suaro_start_bidding();
-static int suaro_get_bid();
-static void suaro_handle_bid(bid_t bid);
-static void suaro_next_bid();
+static void suaro_start_bidding(void);
+static int suaro_get_bid(void);
+static void suaro_handle_bid(player_t p, bid_t bid);
+static void suaro_next_bid(void);
 static void suaro_start_playing(void);
-static int suaro_deal_hand();
+static int suaro_deal_hand(void);
 static int suaro_send_hand(player_t p, seat_t s);
 static int suaro_get_bid_text(char *buf, int buf_len, bid_t bid);
-static void suaro_end_hand();
+static void suaro_end_hand(void);
 static void suaro_set_player_message(player_t p);
-static void suaro_end_trick();
+static void suaro_end_trick(void);
 
 struct game_function_pointers suaro_funcs = {
 	suaro_is_valid_game,
@@ -233,8 +233,9 @@ static int suaro_get_bid()
 	return req_bid(game.next_bid);
 }
 
-static void suaro_handle_bid(bid_t bid)
+static void suaro_handle_bid(player_t p, bid_t bid)
 {
+	assert(p == game.next_bid);
 	if (bid.sbid.spec == SUARO_PASS) {
 		SUARO.pass_count++;
 	} else if (bid.sbid.spec == SUARO_DOUBLE ||
@@ -242,7 +243,7 @@ static void suaro_handle_bid(bid_t bid)
 		SUARO.pass_count = 1;	/* one more pass will end it */
 		SUARO.bonus *= 2;
 	} else {
-		SUARO.declarer = game.next_bid;
+		SUARO.declarer = p;
 		SUARO.pass_count = 1;	/* one more pass will end it */
 		if (!SUARO.persistent_doubles)
 			SUARO.bonus = 1;	/* reset any doubles */
@@ -269,7 +270,7 @@ static void suaro_next_bid()
 		} else {
 			ggzd_debug("A pass; bidding is over.");
 			game.bid_total = game.bid_count;
-			/* contract was determined in game_handle_bid */
+			/* contract was determined in suaro_handle_bid */
 		}
 	} else
 		game_next_bid();
@@ -281,7 +282,7 @@ static void suaro_start_playing(void)
 
 	game.trick_total = game.hand_size;
 	game.play_total = game.num_players;
-	/* declarer is set in game_handle_bid */
+	/* declarer is set in suaro_handle_bid */
 	set_global_message("", "%s has the contract at %s%d %s%s.",
 			   ggzd_get_player_name(SUARO.declarer),
 			   SUARO.kitty ? "kitty " : "",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: euchre.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -34,7 +34,7 @@ static card_t euchre_map_card(card_t c);
 static void euchre_init_game(void);
 static void euchre_start_bidding(void);
 static int euchre_get_bid(void);
-static void euchre_handle_bid(bid_t bid);
+static void euchre_handle_bid(player_t p, bid_t bid);
 static void euchre_next_bid(void);
 static void euchre_start_playing(void);
 static int euchre_deal_hand(void);
@@ -137,13 +137,13 @@ static int euchre_get_bid(void)
 	}
 }
 
-static void euchre_handle_bid(bid_t bid)
+static void euchre_handle_bid(player_t p, bid_t bid)
 {
 	if (bid.sbid.spec == EUCHRE_TAKE) {
-		EUCHRE.maker = game.next_bid;
+		EUCHRE.maker = p;
 		game.trump = EUCHRE.up_card.suit;
 	} else if (bid.sbid.spec == EUCHRE_TAKE_SUIT) {
-		EUCHRE.maker = game.next_bid;
+		EUCHRE.maker = p;
 		game.trump = bid.sbid.suit;
 	}
 	/* bidding is ended automatically by euchre_next_bid */
@@ -170,7 +170,7 @@ static void euchre_start_playing(void)
 	game_start_playing();
 
 	assert(EUCHRE.maker >= 0);
-	/* maker is set in game_handle_bid */
+	/* maker is set in euchre_handle_bid */
 	set_global_message("", "%s is the maker in %s.",
 			   ggzd_get_player_name(EUCHRE.maker),
 			   suit_names[(int) game.trump]);

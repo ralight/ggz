@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: bid.h 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -27,17 +27,19 @@
 
 #include "types.h"
 
-/* clear_bids clears the list of possible bids. It's called automatically by
-   handle_bid_event(). */
-void clear_bids();
+/* clear_bids clears the list of possible bids. It's called by
+   handle_bid_event().  Thus, after a player responds to one bid request the
+   game can start setting up their next bid. */
+void clear_bids(player_t p);
 
 /* add_bid and add_sbid add another bid to the list of possible bids.
-   add_sbid is just a convenience. */
+   add_sbid is just a convenience.  They add to the bid list for the player
+   noted by game.next_bid - this makes things easier for most games. */
 void add_bid(bid_t bid);
 void add_sbid(char val, char suit, char spec);
 
 /* req_bid requests a bid from the client _or_ AI. */
-int req_bid(player_t);
+int req_bid(player_t p);
 
 /* rec_bid receives a bid from the client */
-int rec_bid(player_t, bid_t *);
+int rec_bid(player_t p, bid_t * bid);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: bridge.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -29,25 +29,25 @@
 
 #include "bridge.h"
 
-static int bridge_is_valid_game();
+static int bridge_is_valid_game(void);
 static int bridge_compare_cards(card_t, card_t);
-static void bridge_init_game();
-static void bridge_start_bidding();
-static int bridge_get_bid();
-static void bridge_handle_bid(bid_t bid);
-static void bridge_next_bid();
-static void bridge_start_playing();
+static void bridge_init_game(void);
+static void bridge_start_bidding(void);
+static int bridge_get_bid(void);
+static void bridge_handle_bid(player_t p, bid_t bid);
+static void bridge_next_bid(void);
+static void bridge_start_playing(void);
 static void bridge_get_play(player_t p);
 static void bridge_handle_play(card_t card);
-static int bridge_test_for_gameover();
+static int bridge_test_for_gameover(void);
 static int bridge_send_hand(player_t p, seat_t s);
 static int bridge_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
-static void bridge_end_trick();
-static void bridge_end_hand();
-static void bridge_start_game();
+static void bridge_end_trick(void);
+static void bridge_end_hand(void);
+static void bridge_start_game(void);
 
-static void bridge_set_score_message();
+static void bridge_set_score_message(void);
 
 struct game_function_pointers bridge_funcs = {
 	bridge_is_valid_game,
@@ -167,8 +167,9 @@ static int bridge_get_bid()
 	return req_bid(game.next_bid);
 }
 
-static void bridge_handle_bid(bid_t bid)
+static void bridge_handle_bid(player_t p, bid_t bid)
 {
+	assert(game.next_bid == p);
 	/* closely based on the Suaro code */
 	ggzd_debug("The bid chosen is %d %s %d.", bid.sbid.val,
 		   short_bridge_suit_names[(int) bid.sbid.suit],
@@ -186,14 +187,9 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.bonus = 1;
 		BRIDGE.pass_count = 1;
 
-		if (BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] ==
-		    -1)
-			BRIDGE.opener[game.next_bid %
-				      2][BRIDGE.contract_suit] =
-				game.next_bid;
-		BRIDGE.declarer =
-			BRIDGE.opener[game.next_bid %
-				      2][BRIDGE.contract_suit];
+		if (BRIDGE.opener[p % 2][BRIDGE.contract_suit] == -1)
+			BRIDGE.opener[p % 2][BRIDGE.contract_suit] = p;
+		BRIDGE.declarer = BRIDGE.opener[p % 2][BRIDGE.contract_suit];
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 
 		ggzd_debug("Setting bridge contract to %d %s.",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2628 2001-10-29 05:31:50Z jdorje $
+ * $Id: game.c 2730 2001-11-13 06:29:00Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -200,17 +200,18 @@ int game_get_bid()
 /* game_handle_bid Handle incoming bid from player.  Note that the player's
    bid (game.players[p].bid) will already have been set automatically; all we 
    need to do is any additional game-specific stuff. */
-void game_handle_bid(bid_t bid)
+void game_handle_bid(player_t p, bid_t bid)
 {
 	/* no special handling necessary */
 	/* the bid message is set automatically */
 }
 
 
-/* game_next_bid sets up for the next bid note that game.bid_count has
-   already been incremented, and will now equal the number of the current
-   bid.  game.next_bid should equal the player who just bid, and should be
-   changed to the player who bids next. */
+/* game_next_bid sets up for the next bid.  game.bid_count has already been
+   incremented, and will now equal the number of the current bid.
+   game.next_bid should equal the player who just bid, and should be changed
+   to the player who bids next.  In games that allow more than one person to
+   bid at once, game.next_bid may not be accurate! */
 void game_next_bid()
 {
 	if (game.bid_count == 0)
