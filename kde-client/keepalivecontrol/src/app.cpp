@@ -35,16 +35,25 @@ App::App(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QHBoxLayout *hbox;
+	QListViewItem *tmp;
+	KStandardDirs d;
 
 	popup = NULL;
 	m_create = NULL;
+	commanditem = NULL;
+	commandnumber = -1;
 
 	m_list = new KListView(this);
 	m_list->addColumn(i18n("Server content"));
 	m_list->setRootIsDecorated(true);
 
-	(void)new QListViewItem(m_list, i18n("Worlds"));
-	(void)new QListViewItem(m_list, i18n("Avatars"));
+	tmp = new QListViewItem(m_list, i18n("Worlds"));
+	QPixmap worlds(d.findResource("data", "keepalivecontrol/worlds.png"));
+	tmp->setPixmap(0, worlds);
+
+	tmp = new QListViewItem(m_list, i18n("Avatars"));
+	QPixmap avatars(d.findResource("data", "keepalivecontrol/avatars.png"));
+	tmp->setPixmap(0, avatars);
 
 	hbox = new QHBoxLayout(this, 5);
 	hbox->add(m_list);
@@ -82,8 +91,12 @@ void App::slotInput()
 {
 	const int type_admin = 16;
 	const int command_listanswer = 2;
+	const int command_success = 11;
+	const int command_failure = 12;
 	const int option_worlds = 2;
 	const int option_avatars = 1;
+	const int option_normal = 5;
+	const int option_frozen = 6;
 	unsigned char type;
 	unsigned char opcode;
 	short length;
@@ -92,7 +105,8 @@ void App::slotInput()
 	int error = 0;
 	QString world;
 	int count;
-	QListViewItem *parent;
+	QListViewItem *parent, *tmp;
+	KStandardDirs d;
 
 	if(m_sock->bytesAvailable() < 7) return;
 
@@ -103,12 +117,11 @@ void App::slotInput()
 		*s >> opcode;
 		*s >> length;
 		length = ((length & 0x00FF) << 8) + ((length & 0xFF00) >> 8);
-		if(length < 7) error = 1;
+		if(length < 5) error = 1;
 		else
 		{
 			*s >> opcode;
-			if(opcode != command_listanswer) error = 1;
-			else
+			if(opcode == command_listanswer)
 			{
 				*s >> opcode;
 				*s >> number;
@@ -125,12 +138,46 @@ void App::slotInput()
 				}
 				for(int i = 0; i < number; i++)
 				{
-					(void)new QListViewItem(parent, world);
+					tmp = new QListViewItem(parent, world);
+					QPixmap normalworld(d.findResource("data", "keepalivecontrol/normalworld.png"));
+					tmp->setPixmap(0, normalworld);
 					while(worldbuf[count++]);
 					world = worldbuf + count;
 				}
 				delete[] worldbuf;
 			}
+			else if(opcode == command_success)
+			{
+				KMessageBox::information(this, i18n("Command executed successfully."), i18n("Status"));
+				QPixmap frozenworld(d.findResource("data", "keepalivecontrol/frozenworld.png"));
+				QPixmap normalworld(d.findResource("data", "keepalivecontrol/normalworld.png"));
+				switch(commandnumber)
+				{
+					case menucreate:
+						if((commanditem) && (m_create))
+						{
+							tmp = new QListViewItem(commanditem, m_create->world());
+							tmp->setPixmap(0, normalworld);
+						}
+						break;
+					case menudestroy:
+						if(commanditem) delete commanditem;
+						break;
+					case menufreeze:
+						if(commanditem) commanditem->setPixmap(0, frozenworld);
+						break;
+					case menuunfreeze:
+						if(commanditem) commanditem->setPixmap(0, normalworld);
+						break;
+					default:
+						break;
+				}
+			}
+			else if(opcode == command_failure)
+			{
+				KMessageBox::sorry(this, i18n("Command failed."), i18n("Status"));
+			}
+			else error = 1;
 		}
 	}
 }
@@ -167,6 +214,8 @@ void App::slotSelected(QListViewItem *item, const QPoint& point, int column)
 		}
 	}
 
+	commanditem = item;
+
 	popup->popup(point);
 	connect(popup, SIGNAL(activated(int)), SLOT(slotItem(int)));
 }
@@ -178,6 +227,8 @@ void App::slotItem(int id)
 	const int command_freezeworld = 8;
 	const int command_unfreezeworld = 9;
 	int length;
+
+	commandnumber = id;
 
 	switch(id)
 	{

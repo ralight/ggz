@@ -59,6 +59,8 @@ class App : public QWidget
 		QDataStream *s;
 		QPopupMenu *popup;
 		Create *m_create;
+		QListViewItem *commanditem;
+		int commandnumber;
 };
 
 #endif

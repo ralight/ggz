@@ -66,3 +66,8 @@ void Create::slotWorld()
 	close();
 }
 
+QString Create::world()
+{
+	return input_world->text();
+}
+

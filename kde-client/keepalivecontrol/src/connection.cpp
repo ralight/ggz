@@ -43,9 +43,9 @@ Connection::Connection(QWidget *parent, const char *name)
 	label_username = new QLabel(i18n("Username"), this);
 	label_password = new QLabel(i18n("Password"), this);
 
-	input_server = new QLineEdit(this);
-	input_username = new QLineEdit(this);
-	input_password = new QLineEdit(this);
+	input_server = new QLineEdit("localhost", this);
+	input_username = new QLineEdit("josef", this);
+	input_password = new QLineEdit("moo", this);
 
 	button_connect = new QPushButton(i18n("Connect"), this);
 	button_cancel = new QPushButton(i18n("Cancel"), this);

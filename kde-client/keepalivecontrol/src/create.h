@@ -30,6 +30,7 @@ class Create : public QWidget
 	public:
 		Create(QWidget *parent = NULL, const char *name = NULL);
 		~Create();
+		QString world();
 
 	signals:
 		void signalWorld(QString world);
