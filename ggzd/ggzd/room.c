@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4170 2002-05-05 21:51:20Z rgade $
+ * $Id: room.c 4479 2002-09-09 02:50:06Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -367,11 +367,12 @@ void room_notify_lag(char *name, int room)
 static int room_event_callback(GGZPlayer* player, int size, void* data)
 {
 	unsigned char opcode;
+	char* current = data;
 	char* name;
 
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
-	name = (char*)(data + sizeof(char));
+	name = current + 1;
 
 	/* Don't deliver updates about ourself (except lag) */
 	if (opcode != GGZ_UPDATE_LAG && strcmp(name, player->name) == 0)

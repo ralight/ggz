@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: chat.c 4479 2002-09-09 02:50:06Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -167,14 +167,17 @@ static GGZEventFuncReturn chat_event_callback(void* target, int size,
 	char* name;
 	char* msg = NULL;
 	GGZPlayer* player = (GGZPlayer*)target;
-	
+	char* current = data;
 
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
-	name = (char*)(data + sizeof(char));
+	current += 1;
+
+	name = current;
+	current += strlen(name) + 1;
 
 	if (opcode & GGZ_CHAT_M_MESSAGE)
-		msg = (char*)(data + sizeof(char) + strlen(name) + 1);
+		msg = current;
 	
 	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %d, sender: %s, msg: %s",
 		player->name, opcode, name, msg);
