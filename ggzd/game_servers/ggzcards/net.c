@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2499 2001-09-19 06:25:26Z jdorje $
+ * $Id: net.c 2620 2001-10-28 09:47:24Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,6 +30,8 @@
 
 #include <config.h>		/* Site-specific config */
 
+#include <assert.h>
+
 #include <easysock.h>
 #include "../libggzmod/ggz_server.h"
 #include "../libggzmod/ggz_stats.h"	/* FIXME */
@@ -49,7 +51,7 @@
 int send_player_list(player_t p)
 {
 	int fd;
-	seat_t s_rel, s = game.players[p].seat;
+	seat_t s_rel;
 	int status = 0;
 
 	fd = ggzd_get_player_socket(p);
@@ -70,7 +72,7 @@ int send_player_list(player_t p)
 	   set to zero and no data being sent out.  Later it might be
 	   desirable to finesse data by sending the player list instead. */
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
-		seat_t s_abs = (s_rel + s) % game.num_seats;
+		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
 		if (es_write_int(fd, get_seat_status(s_abs)) < 0 ||
 		    es_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
@@ -175,7 +177,7 @@ int send_table(player_t p)
 	if (write_opcode(fd, WH_MSG_TABLE) < 0)
 		status = -1;
 	for (s_r = 0; s_r < game.num_seats; s_r++) {
-		s_abs = (game.players[p].seat + s_r) % game.num_seats;
+		s_abs = UNCONVERT_SEAT(s_r, p);
 		if (write_card(fd, game.seats[s_abs].table) < 0)
 			status = -1;
 	}
@@ -463,4 +465,63 @@ int rec_play(player_t p)
 		(void) send_badplay(p, err);
 
 	return 0;
+}
+
+void send_global_text_message(player_t p, const char *mark,
+			      const char *message)
+{
+	int fd = ggzd_get_player_socket(p);
+	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT
+	    || ggzd_get_seat_status(p) == GGZ_SEAT_OPEN)
+		return;
+	assert(mark);
+	if (message == NULL)
+		message = "";	/* this happens sometimes (hmmm, really?
+				   how?) */
+	if (fd < 0
+	    || write_opcode(fd, WH_MESSAGE_GLOBAL) < 0
+	    || es_write_string(fd, mark) < 0
+	    || write_opcode(fd, GL_MESSAGE_TEXT) < 0
+	    || es_write_string(fd, message) < 0)
+		ggzd_debug("ERROR: " "send_global_text_message: es error.");
+
+}
+
+void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
+				  card_t ** cardlist)
+{
+	int fd = ggzd_get_player_socket(p);
+	int error = 0, i;
+	seat_t s_rel;
+
+	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT
+	    || ggzd_get_seat_status(p) == GGZ_SEAT_OPEN)
+		return;
+	assert(mark && cardlist && lengths);
+	ggzd_debug("Sending global cardlist message to player %d.", p);
+	if (fd < 0 || write_opcode(fd, WH_MESSAGE_GLOBAL) < 0
+	    || es_write_string(fd, mark) < 0
+	    || write_opcode(fd, GL_MESSAGE_CARDLIST) < 0)
+		error++;
+
+	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
+		seat_t s = CONVERT_SEAT(p, s_rel);
+		if (es_write_int(fd, lengths[s]) < 0)
+			error++;
+		for (i = 0; i < lengths[s]; i++)
+			if (write_card(fd, cardlist[s][i]) < 0)
+				error++;
+
+		if (error)
+			ggzd_debug("ERROR: "
+				   "send_global_cardlist_message: es error.");
+	}
+}
+
+void broadcast_global_cardlist_message(const char *mark, int *lengths,
+				       card_t ** cardlist)
+{
+	player_t p;
+	for (p = 0; p < game.num_players; p++)
+		send_global_cardlist_message(p, mark, lengths, cardlist);
 }

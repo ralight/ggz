@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2619 2001-10-28 09:10:27Z jdorje $
+ * $Id: common.c 2620 2001-10-28 09:47:24Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -843,8 +843,10 @@ void *alloc(int size)
 	return ret;
 }
 
-/* This allocates an array of num blocks of size len. */
-void **alloc2(int num, int len)
+/* This allocates an double-array of num blocks of size len, complete with
+   linkages. Unfortunately, it returns just a void* instead of a void** since 
+   C doesn't treat a void** as nicely as void*'s. */
+void *alloc2(int num, int len)
 {
 	int i;
 	void **bids, *bids2;
@@ -852,7 +854,6 @@ void **alloc2(int num, int len)
 	/* We do some magical math to just use one malloc. */
 
 	bids = bids2 = alloc(num * sizeof(void *) + num * len);
-	memset(bids, 0, num * sizeof(void *) + num * len);
 
 	for (i = 0; i < num; i++)
 		bids[i] = bids2 + num * sizeof(void *) + i * len;	/* magic!!! 
