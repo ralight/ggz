@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6468 2004-12-14 18:04:45Z josef $
+ * $Id: server.c 6469 2004-12-14 18:16:16Z josef $
  *
  * Functions for handling server events
  *
@@ -25,9 +25,7 @@
  */
 
 
-#include <config.h>
 #include "server.h"
-#include "output.h"
 #include "loop.h"
 #include "game.h"
 
@@ -174,7 +172,7 @@ static GGZHookReturn server_connected(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_connect_fail(GGZServerEvent id, void* event_data,
 					 void* user_data)
 {
-	output_text("--- Connection failed: %s", (char*)event_data);
+	fprintf(stderr, "Connection failed: %s\n", (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }
@@ -198,7 +196,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	output_text("--- Login failed: %s", (char*)event_data);
+	fprintf(stderr, "Login failed: %s\n", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_server_logout(server);
@@ -304,7 +302,7 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	output_text("--- Enter failed: %s", (char*)event_data);
+	fprintf(stderr, "Enter failed: %s\n", (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }
@@ -329,7 +327,7 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
 					   void* user_data)
 {
 	char *msg = event_data;
-	output_text("--- Server error: %s disconnected", msg);
+	fprintf(stderr, "Server error: %s disconnected\n", msg);
 	exit(0);
 	loop_remove_fd(fd);
 
@@ -432,7 +430,7 @@ static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void
 static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	char *err_msg = event_data;
-	output_text("-- Table launch failed: %s", err_msg);
+	fprintf(stderr, "Table launch failed: %s\n", err_msg);
 
 	game_quit();
 
@@ -450,7 +448,7 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* 
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	char *err_msg = event_data;
-	output_text("-- Table join failed: %s", err_msg);
+	fprintf(stderr, "Table join failed: %s\n", err_msg);
 
 	game_quit();
 
@@ -471,7 +469,7 @@ static GGZHookReturn room_table_left(GGZRoomEvent id, void* event_data, void* us
 
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("-- Table leave failed");
+	fprintf(stderr, "Table leave failed\n");
 	return GGZ_HOOK_OK;
 }
 	
@@ -480,7 +478,6 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 {
 	int i, num;
 	
-	//output_rooms();
 	if(first_room_list == 1)
 		first_room_list = 0;
 

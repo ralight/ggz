@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6468 2004-12-14 18:04:45Z josef $
+ * $Id: game.c 6469 2004-12-14 18:16:16Z josef $
  *
  * Functions for handling game events
  *
@@ -24,8 +24,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,7 +31,6 @@
 
 #include "game.h"
 #include "loop.h"
-#include "output.h"
 #include "server.h"
 
 /* Hooks for game events */
@@ -54,7 +51,7 @@ void game_init(GGZModule *module, GGZGameType *type, int index, char *nick)
 {
 	user = nick;
 	if (game) {
-		output_text("You're already playing a game!");
+		fprintf(stderr, "You're already playing a game!\n");
 		return;
 	}
 
@@ -133,7 +130,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	output_text("--- Launch failed: %s", (char*)event_data);
+	fprintf(stderr, "Launch failed: %s\n", (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }
@@ -152,7 +149,7 @@ static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	output_text("--- Negotiate failed: %s", (char*)event_data);
+	fprintf(stderr, "Negotiate failed: %s\n", (char*)event_data);
 
 	return GGZ_HOOK_OK;
 }

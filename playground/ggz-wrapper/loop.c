@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 6299 2004-11-07 16:28:09Z phh $
+ * $Id: loop.c 6469 2004-12-14 18:16:16Z josef $
  *
  * Functions for handling main IO loop
  *
@@ -25,7 +25,6 @@
  */
 
 #include "loop.h"
-#include "output.h"
 #include "server.h"
 
 #include <ggz.h>
