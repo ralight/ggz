@@ -1,0 +1,43 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Server</b><br>
+The GGZ Gaming Zone Main Server (ggzd).
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>GGZ Server features</i><br>
+<ul>
+<li>User system with authorized users and anonymous access
+<li>Provides rooms with associated game types
+<li>Chat in rooms, between users and on tables
+<li>Database backend for users and statistics
+<li>Speaks GGZ protocol (specified) on port 5688 (standardized)
+</ul>
+<br>
+
+<i>Detailed information</i><br>
+The GGZ protocol can be looked up <a href="/docs/design/html/">here</a>.
+People who want to run a GGZ server should definitely read the
+<a href="/docs/guides/hosting/">GGZ Hosting Guide</a>.
+
+</td><td valign="top">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

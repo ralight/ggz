@@ -1,0 +1,46 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Webschnittstelle</b><br>
+Anzeige der GGZ-Statistiken in Webbrowsern.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Die wichtigsten Merkmale</i><br>
+<ul>
+<li>Nimmt Spieler-Registrierungen vor
+<li>Zeigt Statistiken von Spielern und Spielen an
+<li>Spieler-Bewertungen
+</ul>
+<br>
+
+<i>Detaillierte Informationen</i><br>
+Die Webschnittstelle kann online unter
+<a href="http://rankings.ggzgamingzone.org">http://rankings.ggzgamingzone.org</a>
+aufgerufen werden.
+Sie ist auf den GGZ-Server von <a href="ggz://live.ggzgamingzone.org">live.ggzgamingzone.org</a>
+konfiguriert.
+
+</td><td valign="top">
+
+<i>Abbildung:</i><br>
+<img src="/admin/pics/db2web.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

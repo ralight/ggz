@@ -1,0 +1,43 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ-Server</b><br>
+Der GGZ Gaming Zone-Hauptserver (ggzd).
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Merkmale des GGZ-Servers</i><br>
+<ul>
+<li>Nutzerverwaltung mit authorisierten Nutzern und anonymen Zugriffen
+<li>Bietet Räume mit zugehörigen Spieltypen an
+<li>Chat in den Räumen, unter Nutzern und an den Tischen
+<li>Datenbank-Unterstützung für Nutzerverwaltung und Statistiken
+<li>Sprichte das GGZ-Protokoll (spezifiert) auf Port 5688 (standardisiert)
+</ul>
+<br>
+
+<i>Detaillierte Informationen</i><br>
+Das GGZ-Protokoll kann <a href="/docs/design/html/">hier</a> nachgeschaut werden.
+Wer einen GGZ-Server betreiben möchte, sollte unbedingt den
+<a href="/docs/guides/hosting/">GGZ Hosting Guide</a> lesen.
+
+</td><td valign="top">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

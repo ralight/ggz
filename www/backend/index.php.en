@@ -1,0 +1,41 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Backends and Infrastructure</b><br>
+The following components comprise a full-featured GGZ server.
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>Main Server:</i><br>
+<a href="/backend/server/">GGZ Server</a>
+<br>
+<i>Metaserver:</i><br>
+<a href="/backend/metaserver/">Metaserver</a>
+<br>
+<i>Command and control client:</i><br>
+<a href="/backend/cmd/">ggz-cmd</a>
+<br>
+<i>Chatbot:</i><br>
+<a href="/backend/grubby/">Grubby</a>
+<br>
+<i>Rankings and Tournaments:</i><br>
+<a href="/backend/web/">Web Interface</a>
+<br>
+
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

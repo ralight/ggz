@@ -1,0 +1,36 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Command Client</b><br>
+Tool for administration tasks (ggz-cmd).
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Command Client features</i><br>
+<ul>
+<li>Can check the availability of GGZ servers (either standalone or through
+<a href="http://www.nagios.org/">Nagios</a>)
+<li>Can send broadcast messages to all rooms of a GGZ server
+</ul>
+<br>
+
+</td><td valign="top">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
