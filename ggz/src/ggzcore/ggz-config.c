@@ -32,13 +32,11 @@
 #include "confio.h"
 
 
-int open_conffile(char *global_filename)
+int open_conffile(void)
 {
 	char	*global_pathname;
+	char	*global_filename = "ggz.modules";
 	int	global;
-
-	if(global_filename == NULL)
-		global_filename = "ggz.rc";
 
 	global_pathname = malloc(strlen(GGZCONFDIR) + strlen(global_filename) + 2);
 	if(global_pathname == NULL) {
@@ -63,12 +61,12 @@ int open_conffile(char *global_filename)
 }
 
 
-int remove_module(const char *name, char *global_filename)
+int remove_module(const char *name)
 {
 	char	*temp;
 	int	global, rc;
 
-	if((global = open_conffile(global_filename)) < 0)
+	if((global = open_conffile()) < 0)
 		return global;
 	temp = ggzcore_confio_read_string(global, name, "Version", NULL);
 	if(temp == NULL) {
@@ -89,13 +87,12 @@ int remove_module(const char *name, char *global_filename)
 
 
 int install_module(const char *name, const char *version,
-		   const char *executable, char *global_filename,
-		   const int force)
+		   const char *executable, const int force)
 {
 	char	*temp;
 	int	global, rc;
 
-	if((global = open_conffile(global_filename)) < 0)
+	if((global = open_conffile()) < 0)
 		return global;
 
 	if(!force) {
@@ -128,11 +125,9 @@ int install_module(const char *name, const char *version,
 #define MODNAME		6
 #define MODVERS		7
 #define MODEXEC		8
-#define MODGLOB		9
 static char *modname = NULL;
 static char *modvers = NULL;
 static char *modexec = NULL;
-static char *modglob = NULL;
 static int modforce = 0;
 static int install_mod = 0;
 static int remove_mod = 0;
@@ -151,8 +146,6 @@ static const struct poptOption args[] = {
 
 	{"modname",	'\0',	POPT_ARG_STRING,	&modname,	MODNAME,
 	 "[INSTALL | REMOVE] (RQD) - set the game name", "NAME"},
-	{"conffile",	'\0',	POPT_ARG_STRING,	&modglob,	MODGLOB,
-	 "[INSTALL | REMOVE] (OPT) - set the configuration filename - note that it must reside in GGZCONFDIR", "FILENAME"},
 	{"modversion",	'\0',	POPT_ARG_STRING,	&modvers,	MODVERS,
 	 "[INSTALL] (RQD) - set the game version", "VERSION"},
 	{"modexec",	'\0',	POPT_ARG_STRING,	&modexec,	MODEXEC,
@@ -193,9 +186,6 @@ int main(const int argc, const char **argv)
 			case MODEXEC:
 				install_exec++;
 				break;
-			case MODGLOB:
-				install_glob++;
-				break;
 
 			default:
 				fprintf(stderr, "%s: %s\n",
@@ -214,7 +204,7 @@ int main(const int argc, const char **argv)
 	}
 
 	if(install_mod > 0 &&
-	   (install_glob > 1 || remove_mod > 0 ||
+	   (remove_mod > 0 ||
 	   (install_name == 0 || install_name > 1) ||
 	   (install_vers == 0 || install_vers > 1) ||
 	   (install_exec == 0 || install_exec > 1))) {
@@ -223,7 +213,7 @@ int main(const int argc, const char **argv)
 	}
 
 	if(remove_mod > 0 &&
-	   (install_glob > 1 || install_mod > 0 || install_vers > 0 ||
+	   (install_mod > 0 || install_vers > 0 ||
 	    install_exec > 0 ||
 	   (install_name == 0 || install_name > 1))) {
 		fprintf(stderr, "Error: redundant or missing arguments for module removal\n");
@@ -231,9 +221,9 @@ int main(const int argc, const char **argv)
 	}
 
 	if(install_mod)
-		rc = install_module(modname, modvers, modexec, modglob, modforce);
+		rc = install_module(modname, modvers, modexec, modforce);
 	else if(remove_mod)
-		rc = remove_module(modname, modglob);
+		rc = remove_module(modname);
 
 	return rc;
 }
