@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: game.c 3348 2002-02-13 04:47:13Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -339,8 +339,16 @@ void game_alert_badplay(char *err_msg)
 
 	animation_stop(FALSE);
 
-	/* redraw cards */
+	/* When we first play the card, we'll move it out of the hand, so
+	   it's necessary to re-draw the hand with the card back in it if
+	   the play fails. */
 	table_display_hand(ggzcards.play_hand, TRUE);
+	
+	/* When we first play the card, we also start animation, and if
+	   the animation plays through to completion before the badplay
+	   message comes the card will be left up on the table and will
+	   need to be cleared off. */
+	table_show_cards(TRUE);
 
 	statusbar_message(err_msg);
 }
