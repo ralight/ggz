@@ -21,7 +21,7 @@
 <widget>
   <class>GtkDialog</class>
   <name>dlg_props</name>
-  <width>600</width>
+  <width>550</width>
   <height>350</height>
   <signal>
     <name>realize</name>
@@ -32,9 +32,9 @@
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
+  <allow_shrink>True</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>True</auto_shrink>
 
   <widget>
     <class>GtkVBox</class>
@@ -80,7 +80,7 @@
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_ok_button_clicked</handler>
-	    <last_modification_time>Sat, 24 Jun 2000 17:46:35 GMT</last_modification_time>
+	    <last_modification_time>Tue, 25 Jul 2000 00:40:01 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
 	</widget>
@@ -93,7 +93,7 @@
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_apply_button_clicked</handler>
-	    <last_modification_time>Sat, 24 Jun 2000 17:46:43 GMT</last_modification_time>
+	    <last_modification_time>Tue, 25 Jul 2000 00:39:53 GMT</last_modification_time>
 	  </signal>
 	  <label>Apply</label>
 	</widget>
@@ -106,7 +106,7 @@
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_cancel_button_clicked</handler>
-	    <last_modification_time>Sat, 24 Jun 2000 17:46:52 GMT</last_modification_time>
+	    <last_modification_time>Tue, 25 Jul 2000 00:39:47 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
 	</widget>
@@ -127,7 +127,7 @@
 
       <widget>
 	<class>GtkNotebook</class>
-	<name>notebook1</name>
+	<name>notebook</name>
 	<can_focus>True</can_focus>
 	<show_tabs>True</show_tabs>
 	<show_border>True</show_border>
@@ -144,14 +144,20 @@
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox2</name>
-	  <border_width>5</border_width>
+	  <name>props_profile_box</name>
+	  <border_width>10</border_width>
+	  <signal>
+	    <name>realize</name>
+	    <handler>props_profile_box_realized</handler>
+	    <last_modification_time>Tue, 25 Jul 2000 00:49:05 GMT</last_modification_time>
+	  </signal>
 	  <homogeneous>False</homogeneous>
-	  <spacing>0</spacing>
+	  <spacing>10</spacing>
 
 	  <widget>
 	    <class>GtkScrolledWindow</class>
-	    <name>scrolledwindow2</name>
+	    <name>scrolledwindow4</name>
+	    <width>175</width>
 	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
 	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
 	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -168,8 +174,8 @@
 	      <can_focus>True</can_focus>
 	      <signal>
 		<name>select_row</name>
-		<handler>on_profile_list_select_row</handler>
-		<last_modification_time>Sun, 23 Jul 2000 19:22:41 GMT</last_modification_time>
+		<handler>props_profile_list_select</handler>
+		<last_modification_time>Tue, 25 Jul 2000 00:40:12 GMT</last_modification_time>
 	      </signal>
 	      <columns>1</columns>
 	      <column_widths>80</column_widths>
@@ -180,7 +186,7 @@
 	      <widget>
 		<class>GtkLabel</class>
 		<child_name>CList:title</child_name>
-		<name>label28</name>
+		<name>label66</name>
 		<label>Profiles</label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
@@ -193,103 +199,46 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkVButtonBox</class>
-	    <name>vbuttonbox1</name>
-	    <layout_style>GTK_BUTTONBOX_START</layout_style>
-	    <spacing>10</spacing>
-	    <child_min_width>85</child_min_width>
-	    <child_min_height>27</child_min_height>
-	    <child_ipad_x>7</child_ipad_x>
-	    <child_ipad_y>0</child_ipad_y>
-	    <child>
-	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button4</name>
-	      <width>44</width>
-	      <can_default>True</can_default>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>props_add_button_clicked</handler>
-		<last_modification_time>Sat, 24 Jun 2000 17:47:12 GMT</last_modification_time>
-	      </signal>
-	      <label>Add</label>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button5</name>
-	      <can_default>True</can_default>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>props_modify_button_clicked</handler>
-		<last_modification_time>Sat, 24 Jun 2000 17:47:28 GMT</last_modification_time>
-	      </signal>
-	      <label>Modify</label>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>button6</name>
-	      <can_default>True</can_default>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>props_delete_button_clicked</handler>
-		<last_modification_time>Sat, 24 Jun 2000 17:47:45 GMT</last_modification_time>
-	      </signal>
-	      <label>Delete</label>
-	    </widget>
-	  </widget>
-
-	  <widget>
 	    <class>GtkVBox</class>
-	    <name>vbox2</name>
-	    <width>162</width>
+	    <name>edit_box</name>
 	    <homogeneous>False</homogeneous>
 	    <spacing>0</spacing>
 	    <child>
-	      <padding>5</padding>
+	      <padding>0</padding>
 	      <expand>True</expand>
 	      <fill>True</fill>
 	    </child>
 
 	    <widget>
 	      <class>GtkVBox</class>
-	      <name>vbox3</name>
+	      <name>data_box</name>
 	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
+	      <spacing>7</spacing>
 	      <child>
 		<padding>0</padding>
 		<expand>True</expand>
-		<fill>True</fill>
+		<fill>False</fill>
 	      </child>
 
 	      <widget>
 		<class>GtkHBox</class>
-		<name>hbox4</name>
+		<name>profile_box</name>
 		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
+		<spacing>5</spacing>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
-		  <fill>True</fill>
+		  <fill>False</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
-		  <name>label7</name>
-		  <width>95</width>
-		  <label>Profile Name:  </label>
+		  <name>profile_label</name>
+		  <width>62</width>
+		  <label>Profile:</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
+		  <wrap>False</wrap>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -302,19 +251,19 @@
 
 		<widget>
 		  <class>GtkEntry</class>
-		  <name>pro_name</name>
+		  <name>profile_entry</name>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>changed</name>
-		    <handler>props_pro_name_changed</handler>
-		    <last_modification_time>Sun, 23 Jul 2000 22:00:21 GMT</last_modification_time>
+		    <handler>props_profile_entry_changed</handler>
+		    <last_modification_time>Thu, 27 Jul 2000 23:00:51 GMT</last_modification_time>
 		  </signal>
 		  <editable>True</editable>
 		  <text_visible>True</text_visible>
-		  <text_max_length>20</text_max_length>
+		  <text_max_length>256</text_max_length>
 		  <text></text>
 		  <child>
-		    <padding>0</padding>
+		    <padding>5</padding>
 		    <expand>True</expand>
 		    <fill>True</fill>
 		  </child>
@@ -323,23 +272,23 @@
 
 	      <widget>
 		<class>GtkHBox</class>
-		<name>hbox5</name>
+		<name>server_box</name>
 		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
+		<spacing>5</spacing>
 		<child>
-		  <padding>5</padding>
+		  <padding>0</padding>
 		  <expand>False</expand>
-		  <fill>True</fill>
+		  <fill>False</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
-		  <name>label8</name>
-		  <width>95</width>
-		  <label>Server:  </label>
+		  <name>server_label</name>
+		  <width>62</width>
+		  <label>Server:</label>
 		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
+		  <wrap>False</wrap>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
@@ -352,15 +301,14 @@
 
 		<widget>
 		  <class>GtkEntry</class>
-		  <name>pro_server</name>
-		  <width>221</width>
+		  <name>server_entry</name>
 		  <can_focus>True</can_focus>
 		  <editable>True</editable>
 		  <text_visible>True</text_visible>
-		  <text_max_length>0</text_max_length>
+		  <text_max_length>256</text_max_length>
 		  <text></text>
 		  <child>
-		    <padding>0</padding>
+		    <padding>5</padding>
 		    <expand>True</expand>
 		    <fill>True</fill>
 		  </child>
@@ -368,33 +316,33 @@
 
 		<widget>
 		  <class>GtkLabel</class>
-		  <name>label9</name>
-		  <width>45</width>
-		  <label> Port:  </label>
+		  <name>port_label</name>
+		  <label>Port:</label>
 		  <justify>GTK_JUSTIFY_CENTER</justify>
 		  <wrap>False</wrap>
-		  <xalign>0.5</xalign>
+		  <xalign>1</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
 		  <ypad>0</ypad>
 		  <child>
-		    <padding>0</padding>
+		    <padding>2</padding>
 		    <expand>False</expand>
-		    <fill>False</fill>
+		    <fill>True</fill>
 		  </child>
 		</widget>
 
 		<widget>
 		  <class>GtkEntry</class>
-		  <name>pro_port</name>
+		  <name>port_entry</name>
+		  <width>50</width>
 		  <can_focus>True</can_focus>
 		  <editable>True</editable>
 		  <text_visible>True</text_visible>
 		  <text_max_length>6</text_max_length>
 		  <text></text>
 		  <child>
-		    <padding>0</padding>
-		    <expand>True</expand>
+		    <padding>5</padding>
+		    <expand>False</expand>
 		    <fill>True</fill>
 		  </child>
 		</widget>
@@ -402,120 +350,191 @@
 
 	      <widget>
 		<class>GtkHBox</class>
-		<name>hbox6</name>
+		<name>user_box</name>
 		<homogeneous>False</homogeneous>
 		<spacing>0</spacing>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
-		  <fill>True</fill>
-		</child>
-
-		<widget>
-		  <class>GtkLabel</class>
-		  <name>label10</name>
-		  <width>95</width>
-		  <label>Username:  </label>
-		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
-		  <yalign>0.5</yalign>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkEntry</class>
-		  <name>pro_username</name>
-		  <can_focus>True</can_focus>
-		  <editable>True</editable>
-		  <text_visible>True</text_visible>
-		  <text_max_length>8</text_max_length>
-		  <text></text>
-		  <child>
-		    <padding>0</padding>
-		    <expand>True</expand>
-		    <fill>True</fill>
-		  </child>
-		</widget>
-	      </widget>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox7</name>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-		<child>
-		  <padding>5</padding>
-		  <expand>False</expand>
-		  <fill>True</fill>
-		</child>
-
-		<widget>
-		  <class>GtkLabel</class>
-		  <name>label11</name>
-		  <width>95</width>
-		  <label>Password:  </label>
-		  <justify>GTK_JUSTIFY_LEFT</justify>
-		  <wrap>True</wrap>
-		  <xalign>0.5</xalign>
-		  <yalign>0.5</yalign>
-		  <xpad>0</xpad>
-		  <ypad>0</ypad>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkEntry</class>
-		  <name>pro_password</name>
-		  <can_focus>True</can_focus>
-		  <editable>True</editable>
-		  <text_visible>True</text_visible>
-		  <text_max_length>0</text_max_length>
-		  <text></text>
-		  <child>
-		    <padding>0</padding>
-		    <expand>True</expand>
-		    <fill>True</fill>
-		  </child>
-		</widget>
-	      </widget>
-
-	      <widget>
-		<class>GtkFrame</class>
-		<name>frame2</name>
-		<label>Login Type</label>
-		<label_xalign>0</label_xalign>
-		<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>True</fill>
+		  <fill>False</fill>
 		</child>
 
 		<widget>
 		  <class>GtkVBox</class>
-		  <name>vbox10</name>
-		  <border_width>5</border_width>
+		  <name>user_data_box</name>
+		  <homogeneous>False</homogeneous>
+		  <spacing>10</spacing>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+
+		  <widget>
+		    <class>GtkHBox</class>
+		    <name>username_box</name>
+		    <homogeneous>False</homogeneous>
+		    <spacing>5</spacing>
+		    <child>
+		      <padding>0</padding>
+		      <expand>True</expand>
+		      <fill>True</fill>
+		    </child>
+
+		    <widget>
+		      <class>GtkLabel</class>
+		      <name>username_label</name>
+		      <width>62</width>
+		      <label>Username:</label>
+		      <justify>GTK_JUSTIFY_LEFT</justify>
+		      <wrap>False</wrap>
+		      <xalign>1</xalign>
+		      <yalign>0.5</yalign>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <child>
+			<padding>0</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+
+		    <widget>
+		      <class>GtkEntry</class>
+		      <name>username_entry</name>
+		      <width>140</width>
+		      <can_focus>True</can_focus>
+		      <editable>True</editable>
+		      <text_visible>True</text_visible>
+		      <text_max_length>16</text_max_length>
+		      <text></text>
+		      <child>
+			<padding>5</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+		  </widget>
+
+		  <widget>
+		    <class>GtkHBox</class>
+		    <name>password_box</name>
+		    <homogeneous>False</homogeneous>
+		    <spacing>5</spacing>
+		    <child>
+		      <padding>0</padding>
+		      <expand>True</expand>
+		      <fill>True</fill>
+		    </child>
+
+		    <widget>
+		      <class>GtkLabel</class>
+		      <name>password_label</name>
+		      <width>62</width>
+		      <label>Password:</label>
+		      <justify>GTK_JUSTIFY_LEFT</justify>
+		      <wrap>False</wrap>
+		      <xalign>1</xalign>
+		      <yalign>0.5</yalign>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <child>
+			<padding>0</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+
+		    <widget>
+		      <class>GtkEntry</class>
+		      <name>password_entry</name>
+		      <width>140</width>
+		      <can_focus>True</can_focus>
+		      <editable>True</editable>
+		      <text_visible>False</text_visible>
+		      <text_max_length>0</text_max_length>
+		      <text></text>
+		      <child>
+			<padding>5</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+		  </widget>
+
+		  <widget>
+		    <class>GtkHBox</class>
+		    <name>confirm_box</name>
+		    <homogeneous>False</homogeneous>
+		    <spacing>5</spacing>
+		    <child>
+		      <padding>0</padding>
+		      <expand>True</expand>
+		      <fill>True</fill>
+		    </child>
+
+		    <widget>
+		      <class>GtkLabel</class>
+		      <name>confirm_label</name>
+		      <width>62</width>
+		      <label>Confirm:</label>
+		      <justify>GTK_JUSTIFY_LEFT</justify>
+		      <wrap>False</wrap>
+		      <xalign>1</xalign>
+		      <yalign>0.5</yalign>
+		      <xpad>0</xpad>
+		      <ypad>0</ypad>
+		      <child>
+			<padding>0</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+
+		    <widget>
+		      <class>GtkEntry</class>
+		      <name>confirm_entry</name>
+		      <width>140</width>
+		      <can_focus>True</can_focus>
+		      <editable>True</editable>
+		      <text_visible>False</text_visible>
+		      <text_max_length>0</text_max_length>
+		      <text></text>
+		      <child>
+			<padding>5</padding>
+			<expand>False</expand>
+			<fill>False</fill>
+		      </child>
+		    </widget>
+		  </widget>
+		</widget>
+
+		<widget>
+		  <class>GtkVBox</class>
+		  <name>radio_box</name>
+		  <border_width>15</border_width>
 		  <homogeneous>False</homogeneous>
 		  <spacing>0</spacing>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
 
 		  <widget>
 		    <class>GtkRadioButton</class>
-		    <name>radiobutton3</name>
+		    <name>normal_radio</name>
 		    <can_focus>True</can_focus>
-		    <label>Normal</label>
-		    <active>False</active>
+		    <signal>
+		      <name>toggled</name>
+		      <handler>props_normal_toggled</handler>
+		      <data>dlg_props</data>
+		      <last_modification_time>Tue, 25 Jul 2000 00:39:10 GMT</last_modification_time>
+		    </signal>
+		    <label>Normal Login</label>
+		    <active>True</active>
 		    <draw_indicator>True</draw_indicator>
+		    <group>login_type</group>
 		    <child>
 		      <padding>0</padding>
 		      <expand>False</expand>
@@ -525,11 +544,12 @@
 
 		  <widget>
 		    <class>GtkRadioButton</class>
-		    <name>radiobutton4</name>
+		    <name>guest_radio</name>
 		    <can_focus>True</can_focus>
-		    <label>Guest</label>
+		    <label>Guest Login</label>
 		    <active>False</active>
 		    <draw_indicator>True</draw_indicator>
+		    <group>login_type</group>
 		    <child>
 		      <padding>0</padding>
 		      <expand>False</expand>
@@ -537,6 +557,62 @@
 		    </child>
 		  </widget>
 		</widget>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkHButtonBox</class>
+	      <name>buttonbox</name>
+	      <layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	      <spacing>30</spacing>
+	      <child_min_width>85</child_min_width>
+	      <child_min_height>27</child_min_height>
+	      <child_ipad_x>7</child_ipad_x>
+	      <child_ipad_y>0</child_ipad_y>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+		<pack>GTK_PACK_END</pack>
+	      </child>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>add_button</name>
+		<can_default>True</can_default>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_add_button_clicked</handler>
+		  <last_modification_time>Tue, 25 Jul 2000 00:39:20 GMT</last_modification_time>
+		</signal>
+		<label>Add</label>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>modify_button</name>
+		<can_default>True</can_default>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_modify_button_clicked</handler>
+		  <last_modification_time>Tue, 25 Jul 2000 00:39:26 GMT</last_modification_time>
+		</signal>
+		<label>Modify</label>
+	      </widget>
+
+	      <widget>
+		<class>GtkButton</class>
+		<name>delete_button</name>
+		<can_default>True</can_default>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>props_delete_button_clicked</handler>
+		  <last_modification_time>Tue, 25 Jul 2000 00:39:31 GMT</last_modification_time>
+		</signal>
+		<label>Delete</label>
 	      </widget>
 	    </widget>
 	  </widget>
@@ -557,7 +633,7 @@
 
 	<widget>
 	  <class>GtkVBox</class>
-	  <name>vbox4</name>
+	  <name>chat_box</name>
 	  <border_width>5</border_width>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
@@ -1086,7 +1162,7 @@
 
 	<widget>
 	  <class>GtkVBox</class>
-	  <name>vbox6</name>
+	  <name>userinfo_box</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 
