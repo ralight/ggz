@@ -78,7 +78,16 @@ struct {
 } known[MAX_KNOWN];
 int num_known = 0;
 
-
+float total_greating=6.0;
+char *great_strings[] = {
+	"Hey, Howsit?",
+	"Glad to see ya again!",
+	"Hello there.",
+	"Welcome to the room!",
+	"Howsit goin?",
+	"Hello, whats up?",
+	"Hey, ready for a good game or two?"
+};
 char *help_strings[] = {
 	"I am aware of the following commands:",
 	"    %s: About",
@@ -553,10 +562,10 @@ void handle_command(char *sender, char *command)
 		} else {
 			send_chat("Sorry, only my owner can tell me to do that.");
 		}
-	} else if(!strncasecmp(command, "save memmory", 14)) {
+	} else if(!strncasecmp(command, "save memory", 14)) {
 		if(!strcmp(sender, owner)) {
 			save_known();
-			send_chat("My memmory is saved!");
+			send_chat("My memory is saved!");
 		} else {
 			send_chat("Sorry, only my owner can tell me to do that.");
 		}
@@ -690,7 +699,7 @@ void save_known()
 
 void do_greet(char *name)
 {
-	int i,j;
+	int i,j,k;
 
 	if(!strcmp(name, bot_name)) {
 		free(name);
@@ -736,9 +745,8 @@ void do_greet(char *name)
 			send_chat(out_msg);
 		}
 		if((random()%15) == 0) {
-			sprintf(out_msg,
-				"Hows it hanging?");
-			send_chat(out_msg);
+			k=(int) (total_greating*rand()/(RAND_MAX+1.0));
+			send_chat(great_strings[k]);
 		}
 		for(j=0;j<known[i].msg_count;j++)
 		{
