@@ -139,7 +139,7 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
 
-	ggz_sensitivity_init();
+	/*ggz_sensitivity_init();*/
 }
 
 
@@ -181,10 +181,6 @@ static void
 client_leave_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	GtkWidget *tmp;
-
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
-        gtk_widget_set_sensitive(tmp, FALSE);
 	/*game_quit();*/
 	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
@@ -364,7 +360,7 @@ client_disconnect_button_clicked	(GtkButton	*button,
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
 
-	ggz_sensitivity_init();
+	/*ggz_sensitivity_init();*/
 }
 
 
@@ -504,10 +500,6 @@ static void
 client_leave_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	GtkWidget *tmp;
-
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
-        gtk_widget_set_sensitive(tmp, FALSE);
 	/*game_quit();*/
 	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
@@ -950,6 +942,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (disconnect);
   gtk_container_add (GTK_CONTAINER (ggz_menu), disconnect);
+  gtk_widget_set_sensitive (disconnect, FALSE);
   gtk_widget_add_accelerator (disconnect, "activate", accel_group,
                               GDK_D, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
@@ -986,6 +979,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (game);
   gtk_container_add (GTK_CONTAINER (menubar), game);
+  gtk_widget_set_sensitive (game, FALSE);
 
   game_menu = gtk_menu_new ();
   gtk_widget_ref (game_menu);
@@ -1086,6 +1080,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (view);
   gtk_container_add (GTK_CONTAINER (menubar), view);
+  gtk_widget_set_sensitive (view, FALSE);
 
   view_menu = gtk_menu_new ();
   gtk_widget_ref (view_menu);
@@ -1316,6 +1311,7 @@ create_win_main (void)
   gtk_object_set_data_full (GTK_OBJECT (win_main), "disconnect_button", disconnect_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (disconnect_button);
+  gtk_widget_set_sensitive (disconnect_button, FALSE);
 
   launch_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1327,6 +1323,7 @@ create_win_main (void)
   gtk_object_set_data_full (GTK_OBJECT (win_main), "launch_button", launch_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (launch_button);
+  gtk_widget_set_sensitive (launch_button, FALSE);
 
   join_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1338,6 +1335,7 @@ create_win_main (void)
   gtk_object_set_data_full (GTK_OBJECT (win_main), "join_button", join_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (join_button);
+  gtk_widget_set_sensitive (join_button, FALSE);
 
   leave_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1349,6 +1347,7 @@ create_win_main (void)
   gtk_object_set_data_full (GTK_OBJECT (win_main), "leave_button", leave_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (leave_button);
+  gtk_widget_set_sensitive (leave_button, FALSE);
 
   props_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1371,6 +1370,7 @@ create_win_main (void)
   gtk_object_set_data_full (GTK_OBJECT (win_main), "stats_button", stats_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (stats_button);
+  gtk_widget_set_sensitive (stats_button, FALSE);
 
   exit_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -1432,6 +1432,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (room_clist);
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_clist);
+  gtk_widget_set_sensitive (room_clist, FALSE);
   GTK_WIDGET_UNSET_FLAGS (room_clist, GTK_CAN_FOCUS);
   gtk_widget_set_events (room_clist, GDK_BUTTON_PRESS_MASK);
   gtk_clist_set_column_width (GTK_CLIST (room_clist), 0, 80);
@@ -1458,6 +1459,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (player_clist);
   gtk_container_add (GTK_CONTAINER (player_scrolledwindow), player_clist);
+  gtk_widget_set_sensitive (player_clist, FALSE);
   GTK_WIDGET_UNSET_FLAGS (player_clist, GTK_CAN_FOCUS);
   gtk_clist_set_column_width (GTK_CLIST (player_clist), 0, 10);
   gtk_clist_set_column_width (GTK_CLIST (player_clist), 1, 10);
@@ -1509,6 +1511,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table_clist);
   gtk_container_add (GTK_CONTAINER (scrolledwindow3), table_clist);
+  gtk_widget_set_sensitive (table_clist, FALSE);
   GTK_WIDGET_UNSET_FLAGS (table_clist, GTK_CAN_FOCUS);
   gtk_clist_set_column_width (GTK_CLIST (table_clist), 0, 26);
   gtk_clist_set_column_width (GTK_CLIST (table_clist), 1, 38);
@@ -1595,6 +1598,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_entry);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_entry, TRUE, TRUE, 0);
+  gtk_widget_set_sensitive (chat_entry, FALSE);
 
   chat_hbuttonbox = gtk_hbutton_box_new ();
   gtk_widget_ref (chat_hbuttonbox);
@@ -1610,6 +1614,7 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (send_button);
   gtk_container_add (GTK_CONTAINER (chat_hbuttonbox), send_button);
+  gtk_widget_set_sensitive (send_button, FALSE);
   GTK_WIDGET_UNSET_FLAGS (send_button, GTK_CAN_FOCUS);
   GTK_WIDGET_SET_FLAGS (send_button, GTK_CAN_DEFAULT);
 

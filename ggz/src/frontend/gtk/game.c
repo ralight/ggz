@@ -186,11 +186,7 @@ static void game_register(GGZGame *game)
 static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
 				   void* user_data)
 {
-	GtkWidget *tmp;
-
 	chat_display_message(CHAT_BEEP, "---", "Launched game");
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
-	gtk_widget_set_sensitive(tmp, TRUE);
 	
 	fd = ggzcore_game_get_fd(game);
         game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
@@ -205,11 +201,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	GtkWidget *tmp;
-
 	chat_display_message(CHAT_BEEP, "---", "Launched faild");
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
-	gtk_widget_set_sensitive(tmp, TRUE);
 
 	return GGZ_HOOK_OK;
 }
@@ -242,12 +234,9 @@ static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_dat
 
 static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
 	GGZRoom *room;
 
 	chat_display_message(CHAT_BEEP, "---", "Game Over");
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "leave_button");
-	gtk_widget_set_sensitive(tmp, FALSE);
 
 	game_quit();
 	room = ggzcore_server_get_cur_room(server);

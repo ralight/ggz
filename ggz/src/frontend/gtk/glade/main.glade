@@ -87,6 +87,7 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>disconnect</name>
+	    <sensitive>False</sensitive>
 	    <accelerator>
 	      <modifiers>GDK_CONTROL_MASK</modifiers>
 	      <key>GDK_D</key>
@@ -129,6 +130,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>game</name>
+	<sensitive>False</sensitive>
 	<label>G_ame</label>
 	<right_justify>False</right_justify>
 
@@ -227,6 +229,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>view</name>
+	<sensitive>False</sensitive>
 	<label>_View</label>
 	<right_justify>False</right_justify>
 
@@ -465,6 +468,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>disconnect_button</name>
+	  <sensitive>False</sensitive>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>client_disconnect_button_clicked</handler>
@@ -477,6 +481,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>launch_button</name>
+	  <sensitive>False</sensitive>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>client_launch_button_clicked</handler>
@@ -489,6 +494,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>join_button</name>
+	  <sensitive>False</sensitive>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>client_join_button_clicked</handler>
@@ -501,6 +507,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>leave_button</name>
+	  <sensitive>False</sensitive>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>client_leave_button_clicked</handler>
@@ -525,6 +532,7 @@
 	  <class>GtkButton</class>
 	  <child_name>Toolbar:button</child_name>
 	  <name>stats_button</name>
+	  <sensitive>False</sensitive>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>client_stats_button_clicked</handler>
@@ -615,6 +623,7 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>room_clist</name>
+	      <sensitive>False</sensitive>
 	      <events>GDK_BUTTON_PRESS_MASK</events>
 	      <signal>
 		<name>select_row</name>
@@ -663,6 +672,7 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>player_clist</name>
+	      <sensitive>False</sensitive>
 	      <columns>3</columns>
 	      <column_widths>10,10,80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -737,6 +747,7 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>table_clist</name>
+	      <sensitive>False</sensitive>
 	      <signal>
 		<name>select_row</name>
 		<handler>client_table_clist_select_row</handler>
@@ -890,6 +901,7 @@
 	      <widget>
 		<class>GtkEntry</class>
 		<name>chat_entry</name>
+		<sensitive>False</sensitive>
 		<can_focus>True</can_focus>
 		<has_focus>True</has_focus>
 		<signal>
@@ -933,6 +945,7 @@
 		<widget>
 		  <class>GtkButton</class>
 		  <name>send_button</name>
+		  <sensitive>False</sensitive>
 		  <can_default>True</can_default>
 		  <signal>
 		    <name>clicked</name>

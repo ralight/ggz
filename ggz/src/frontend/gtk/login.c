@@ -76,12 +76,6 @@ login_create_or_raise(void)
 void
 login_connect_failed(void)
 {
-	GtkWidget *tmp;
-
-	/* Re-enable connect button */
-	tmp = lookup_widget(login_dialog, "connect_button");
-	gtk_widget_set_sensitive(tmp, TRUE);
-
 	/* Destroy server object */
 	ggzcore_server_free(server);
 	server = NULL;
@@ -93,6 +87,7 @@ login_failed(void)
 {
 	GtkWidget *tmp;
 
+	/* Re-enable the "connect" button and change it say "Login" */
 	tmp = lookup_widget(login_dialog, "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
 	gtk_widget_set_sensitive(tmp, TRUE);
@@ -277,9 +272,9 @@ static void login_start_session(void)
 	tmp = lookup_widget(win_main, "player_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 
-	/* FIXME: perhaps this should be done elsewhere? */
-	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
-	gtk_widget_set_sensitive(tmp, FALSE);
+	/* FIXME: perhaps this should be done elsewhere? 
+	   tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);*/
 
 	/* Get connection and login data */
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "host_entry");
@@ -332,9 +327,9 @@ static void login_relogin(void)
 	char *login = NULL, *password = NULL;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
-	/* FIXME: perhaps this should be done elsewhere? */
+	/* FIXME: perhaps this should be done elsewhere? 
 	tmp = lookup_widget(login_dialog, "connect_button");
-	gtk_widget_set_sensitive(tmp, FALSE);
+	gtk_widget_set_sensitive(tmp, FALSE);*/
 
 	/* Get login data */
 	tmp = lookup_widget(login_dialog, "name_entry");
