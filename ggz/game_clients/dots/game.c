@@ -34,6 +34,7 @@ void board_init(guint8 width, guint8 height)
 	GdkColormap *sys_colormap;
 	GdkColor color;
 	GtkWidget *p1b, *p2b;
+	GdkRectangle update_rect;
 
 	board = gtk_object_get_data(GTK_OBJECT(main_win), "board");
 	statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
@@ -103,6 +104,12 @@ void board_init(guint8 width, guint8 height)
 				       gc_fg,
 				       x, y);
 		}
+
+	update_rect.x = 0;
+	update_rect.y = 0;
+	update_rect.width = board->allocation.width;
+	update_rect.height = board->allocation.height;
+	gtk_widget_draw(board, &update_rect);
 
 	game.move = -1;
 
