@@ -63,6 +63,7 @@ static struct winsize window;
 static int tty_des;
 static char **chat;
 static int chat_offset = 0;
+static int reverse_display = 0;
 
 /* Private functions */
 static void output_table_info(GGZTable *table);
@@ -80,14 +81,14 @@ void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
 
 void output_display_help(void)
 {
-	output_text("--- GNU Gaming Zone -- Help");
+	output_text("--- GGZ Gaming Zone -- Help");
 	output_text("--- -----------------------");
 	output_text("---");
 	output_text("--- /beep <player>                          Beep player <player>");
 	output_text("--- /connect [<server>[:<port>]] [<nick>] [<password>]");
 	output_text("---    Connect to a GGZ server");
 	output_text("--- /disconnect                             Disconnect from server");
-	output_text("--- /exit                                   Quit GNU Gaming Zone");
+	output_text("--- /exit                                   Quit GGZ Gaming Zone");
 	output_text("--- /desc <room>                            Get description of room <room>");
 	output_text("--- /join room|table <num>                  Join room or table <num>");
 	output_text("--- /list players|rooms|tables|types        List the requested information.");
@@ -359,14 +360,26 @@ void output_goto(int row, int col)
 
 void output_label(char *label)
 {
-	printf("%s%c%s%s: %s",
-		COLOR_BRIGHT_WHITE, label[0],
-		COLOR_BRIGHT_GREEN, &label[1],
-		COLOR_BRIGHT_PINK);
+	if(reverse_display)
+	{
+		printf("%s%c%s%s: %s",
+			COLOR_BLUE, label[0],
+			COLOR_BRIGHT_BLUE, &label[1],
+			COLOR_BRIGHT_PINK);
+	}
+	else
+	{
+		printf("%s%c%s%s: %s",
+			COLOR_BRIGHT_WHITE, label[0],
+			COLOR_BRIGHT_GREEN, &label[1],
+			COLOR_BRIGHT_PINK);
+	}
 }
 
-void output_init(void)
+void output_init(int reverse)
 {
+	reverse_display = reverse;
+
 	fflush(NULL);
 	printf("\e[2J");
 	ioctl(tty_des, TIOCGWINSZ, &window);

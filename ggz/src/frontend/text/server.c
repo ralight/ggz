@@ -123,7 +123,7 @@ void server_destroy(void)
 static void server_process(void)
 {
 	if (server)
-		ggzcore_server_read_data(server);
+		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 }
 
 
@@ -178,8 +178,7 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, room_table_join_fail);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, room_table_left);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, room_table_leave_fail);
-	ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, room_table_data);
-
+	/*ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, room_table_data);*/
 }
 
 
@@ -443,12 +442,12 @@ static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void* event_data, vo
 }
 	
 
-static GGZHookReturn room_table_data(GGZRoomEvent id, void* event_data, void* user_data)
+/*static GGZHookReturn room_table_data(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	output_text("--- Data from server");
 	ggzcore_game_send_data(game, event_data);
 	return GGZ_HOOK_OK;
-}
+}*/
 
 
 static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void* user_data)

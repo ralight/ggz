@@ -54,7 +54,7 @@ void output_types(void);
 
 void output_status(void);
 
-void output_init(void);
+void output_init(int reverse);
 
 void output_shutdown(void);
 

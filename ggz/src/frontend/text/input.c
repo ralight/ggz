@@ -277,10 +277,22 @@ static void input_handle_chat(char *line)
 {
 	char *msg;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZStateID state = ggzcore_server_get_state(server);
 
-	if (line && strcmp(line, "") != 0) {
-		msg = strdup(line);
-		ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
+	if(state == -1 || state == GGZ_STATE_OFFLINE)
+	{
+		output_text("You must connect to a server first.");
+	}
+	else if(!room)
+	{
+		output_text("You must join a room first.");
+	}
+	else
+	{
+		if (line && strcmp(line, "") != 0) {
+			msg = strdup(line);
+			ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
+		}
 	}
 }
 

@@ -37,6 +37,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
 
 
 /* Event loop timeout value */
@@ -83,12 +84,42 @@ void init_debug(void)
 }
 
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	char *u_path;
 	GGZOptions opt;
+	struct option options[] =
+	{
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
+		{"reverse", no_argument, 0, 'r'}
+	};
+	int optindex;
+	char option;
+	int opt_reverse = 0;
 
-	output_init();
+	while(1)
+	{
+		option = getopt_long(argc, argv, "hrv", options, &optindex);
+		if(option == -1) break;
+		switch(option)
+		{
+			case 'h':
+				printf("The GGZ Gaming Zone Text Client\n");
+				printf("http://ggz.sourceforge.net/\n");
+				exit(0);
+				break;
+			case 'v':
+				printf("%s\n", VERSION);
+				exit(0);
+				break;
+			case 'r':
+				opt_reverse = 1;
+				break;
+		}
+	}
+
+	output_init(opt_reverse);
 	signal(SIGTERM, term_handle);
 	signal(SIGINT, term_handle);
 	output_banner();

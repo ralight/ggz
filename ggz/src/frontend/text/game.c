@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3788 2002-04-06 19:12:42Z jdorje $
+ * $Id: game.c 4312 2002-07-29 18:24:33Z dr_maux $
  *
  * Functions for handling game events
  *
@@ -85,7 +85,7 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);
+	/*ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);*/
 	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 }
 
@@ -95,7 +95,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 {
 	output_text("--- Launched game");
 	
-	fd = ggzcore_game_get_fd(game);
+	/*fd = ggzcore_game_get_fd(game);*/
 	loop_add_fd(fd, game_process, game_destroy);
 
 	return GGZ_HOOK_OK;
@@ -129,7 +129,7 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
+/*static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
 
@@ -139,7 +139,7 @@ static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_dat
 	ggzcore_room_send_game_data(room, event_data);
 
 	return GGZ_HOOK_OK;
-}
+}*/
 
 
 static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
