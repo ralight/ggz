@@ -11,7 +11,7 @@ dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
 dnl between them all.  Currently the following modules use it:
 dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
-dnl ggz-client-libs, ggzd.
+dnl ggz-client-libs, ggzd, gnome-client.
 dnl
 dnl ======================================
 dnl
