@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: motd.c 6906 2005-01-26 03:24:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,13 +64,13 @@ typedef struct {
 } MOTDInfo;
 
 /* MOTD info - the fields are initialized to their starting values. */
-MOTDInfo motd_info = { startup_time : 0,
-		       motd_lines : 0,
-		       motd_text : NULL,
-		       hostname : NULL,
-		       sysname : NULL,
-		       cputype : NULL,
-		       port : NULL};
+MOTDInfo motd_info = { .startup_time = 0,
+		       .motd_lines = 0,
+		       .motd_text = NULL,
+		       .hostname = NULL,
+		       .sysname = NULL,
+		       .cputype = NULL,
+		       .port = NULL};
 
 /* Local functions */
 static char *motd_get_uptime(char *uptime_str, size_t sz_uptime_str);

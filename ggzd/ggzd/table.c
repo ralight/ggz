@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 6905 2005-01-26 03:00:49Z jdorje $
+ * $Id: table.c 6906 2005-01-26 03:24:27Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1013,9 +1013,9 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		/* FIXME: send error to game... */
 		return;
 	} else if (is_spectator) {
-		GGZSpectator seat = {num: seat_num,
-				     name: NULL,
-				     fd: -1};
+		GGZSpectator seat = {.num = seat_num,
+				     .name = NULL,
+				     .fd = -1};
 		dbg_msg(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting spectator %s.",
 			table->index, table->room, name);
@@ -1023,10 +1023,10 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
 		update = GGZ_TABLE_UPDATE_SPECTATOR_LEAVE;
 	} else {
-		GGZSeat seat = {num: seat_num,
-				name: NULL,
-				type: GGZ_SEAT_OPEN,
-				fd: -1};
+		GGZSeat seat = {.num = seat_num,
+				.name = NULL,
+				.type = GGZ_SEAT_OPEN,
+				.fd = -1};
 		dbg_msg(GGZ_DBG_TABLE,
 			"Table %d/%d: server is booting seat %s.",
 			table->index, table->room, name);
