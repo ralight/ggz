@@ -2,7 +2,10 @@
 
 SUBDIRS = .
 
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd
+DB_SOURCES = ggzdb_db2.c
+DB_OBJECTS = ggzdb_@database@.o
+
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd $(DB_SOURCES)
 
 INCLUDES = -I$(top_srcdir)/easysock 
 
@@ -35,11 +38,11 @@ ggzd_SOURCES =	chat.c\
 		hash.c \
 		hash.h \
 		ggzdb.c \
-		ggzdb.h \
-		ggzdb_db2.c
+		ggzdb.h
 
 
-ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la
+ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la
+		     
 ggzd_LDFLAGS = -static
 
 ggzdconf_DATA = ggzd.conf ggzd.motd

@@ -15,6 +15,7 @@ AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,e
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
 AC_ARG_WITH(tmpdir,         [  --with-tempdir=PATH     directory to put pid and temporary socket files], tmpdir=$withval, tmpdir=/tmp/ggzd)
+AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2], database=$withval, database=db2)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -74,10 +75,19 @@ AC_CHECK_LIB(pthread, pthread_create,
          AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
     AC_MSG_ERROR(*** Cannot find pthread library ); exit)
 
-AC_CHECK_LIB(db, db_appinit,
-    AC_CHECK_HEADER(db.h, ggzd_LIBS="$ggzd_LIBS -ldb",
-      AC_MSG_ERROR(*** Cannot find db.h header); exit),
-    AC_MSG_ERROR(*** Cannot find db library ); exit)
+
+dnl Check database libs
+dnl ===================
+if test "$database" = mysql; then
+   dnl test for mySQL database
+   AC_MSG_WARN(*** MySQL not supprted yet, defaulting to libdb2)
+else 
+    database=db2
+    AC_CHECK_LIB(db, db_appinit,
+        AC_CHECK_HEADER(db.h, ggzd_LIBS="$ggzd_LIBS -ldb",
+            AC_MSG_ERROR(*** Cannot find db.h header); exit),
+        AC_MSG_ERROR(*** Cannot find db library ); exit)
+fi
 
 
 dnl Use -Wall if we have gcc.
@@ -178,6 +188,7 @@ AC_SUBST(ggzdgamedir)
 AC_SUBST(ggzdexecmoddir)
 AC_SUBST(ggzddatadir)
 AC_SUBST(packagesrcdir)
+AC_SUBST(database)
 
 AC_OUTPUT([Makefile 
            ggzd/Makefile 
