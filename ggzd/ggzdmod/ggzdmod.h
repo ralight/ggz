@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3810 2002-04-07 08:28:03Z jdorje $
+ * $Id: ggzdmod.h 3843 2002-04-07 22:07:10Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -227,13 +227,56 @@ typedef enum {
  *  @see ggzdmod_set_handler
  */
 typedef enum {
-	GGZDMOD_EVENT_STATE,		/**< Module status changed */
-	GGZDMOD_EVENT_JOIN,		/**< Player joined */
-	GGZDMOD_EVENT_LEAVE,		/**< Player left */
-	GGZDMOD_EVENT_SEAT,		/**< Seat change */
-	GGZDMOD_EVENT_LOG,		/**< Module log request */
-	GGZDMOD_EVENT_PLAYER_DATA,	/**< Data avilable from player */
-	GGZDMOD_EVENT_ERROR		/**< Error (not used yet) */
+	/** @brief Module status changed
+	 *  This event occurs when the game's status changes.  The old
+	 *  state (a GGZdModState*) is passed as the event's data.
+	 *  @see GGZdModState */
+	GGZDMOD_EVENT_STATE,
+	
+	/** @brief Player joined
+	 *  This event occurs when a player joins the table.  The
+	 *  player number (an int*) is passed as the event's data.
+	 *  The seat information will be updated before the event
+	 *  is invoked.
+	 *  @note This may be dropped in favor of the SEAT event. */
+	GGZDMOD_EVENT_JOIN,		
+	
+	/** @brief Player left
+	 *  This event occurs when a player leaves the table.  The
+	 *  player number (an int*) is passed as the event's data.
+	 *  The seat information will be updated before the event
+	 *  is invoked.
+	 *  @note This may be dropped in favor of the SEAT event */
+	GGZDMOD_EVENT_LEAVE,		
+	
+	/** @brief General seat change
+	 *  This event occurs when a seat change other than a player
+	 *  leave/join happens.  The player number (an int*) is
+	 *  passed as the event's data.  The seat information will
+	 *  be updated before the event is invoked.
+	 *  @todo It is impossible to see the old seat data during the event. */
+	GGZDMOD_EVENT_SEAT,		
+	
+	/** @brief Module log request
+	 *  This event occurs when a log request happens.  This will
+	 *  only be used by the GGZ server; the game server should
+	 *  use ggzdmod_log to generate the log. */
+	GGZDMOD_EVENT_LOG,		
+	
+	/** @brief Data avilable from player
+	 *  This event occurs when there is data ready to be read from
+	 *  one of the player sockets.  The player number (an int*) is
+	 *  passed as the event's data.  This event will not be
+	 *  generated from within ggzdmod_dispatch. */
+	GGZDMOD_EVENT_PLAYER_DATA,	
+	
+	/** @brief An error has occurred
+	 *  This event occurs when a GGZdMod error has occurred.  An
+	 *  error message (a char*) will be passed as the event's data.
+	 *  GGZdMod may attempt to recover from the error, but it is
+	 *  not guaranteed that the GGZ connection will continue to
+	 *  work after an error has happened. */
+	GGZDMOD_EVENT_ERROR		
 } GGZdModEvent;
 
 /** @brief The "type" of ggzdmod.
@@ -264,9 +307,10 @@ typedef struct GGZdMod GGZdMod;
  *    - GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
  *    - GGZDMOD_EVENT_JOIN: The player number (int*)
  *    - GGZDMOD_EVENT_LEAVE: The player number (int*)
+ *    - GGZDMOD_EVENT_SEAT: The player number (int*)
  *    - GGZDMOD_EVENT_LOG: The message string (char*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
- *    - GGZDMOD_EVENT_ERROR: NULL (for now)
+ *    - GGZDMOD_EVENT_ERROR: An error string (char*)
  */
 typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
 
