@@ -43,6 +43,8 @@
 #define GGZ_DBG_MISC		(unsigned) 0x0080
 #define GGZ_DBG_ALL		(unsigned) 0xFFFF
 
+#define GGZ_DBG_ROOM	GGZ_DBG_CHAT
+
 /* Logging options */
 #define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001
 #define GGZ_LOGOPT_INC_TIME	(unsigned) 0x0002

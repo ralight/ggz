@@ -49,6 +49,7 @@
 #include <chat.h>
 #include <seats.h>
 #include <motd.h>
+#include <room.h>
 
 
 /* Timeout for server resync */
@@ -180,6 +181,9 @@ static void* player_new(void *arg_ptr)
 					sizeof(players.info[i].ip_addr)));
 	players.info[i].hostname = hostname;
 	players.count++;
+	players.info[i].room = room_join(-1);
+	players.info[i].chat_head = NULL;
+	players.info[i].personal_head = NULL;
 	pthread_rwlock_unlock(&players.lock);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "New player %d connected", i);
@@ -368,7 +372,14 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 			
 	case REQ_CHAT:
-		status = player_chat(p_index, p_fd);
+		pthread_rwlock_rdlock(&players.lock);
+		if(players.info[p_index].room == -1) {
+			pthread_rwlock_unlock(&players.lock);
+			status = player_chat(p_index, p_fd);
+		} else {
+			pthread_rwlock_unlock(&players.lock);
+			status = 0;
+		}
 		break;
 
 	case REQ_LOGIN_NEW:
@@ -406,7 +417,12 @@ static void player_remove(int p_index)
 	players.info[p_index].fd = -1;
 	players.count--;
 	players.timestamp = time(NULL);
-	chat_mark_all_read(p_index);
+	if(players.info[p_index].room == -1)
+		chat_mark_all_read(p_index);
+	else {
+		room_zap_chat(p_index);
+		room_zap_personal(p_index);
+	}
 	pthread_rwlock_unlock(&players.lock);
 
 	close(fd);
@@ -461,15 +477,20 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Send any unread chats */
-	count = chat_check_num_unread(p);
-	for (i = 0; (i < MAX_CHAT_BUFFER && count > 0) ; i++)
-		if (chat_check_unread(p, i)) {
-			chat_get(i, player, chat);
-			chat_mark_read(p, i);
-			if (player_send_chat(p, fd, player, chat) < 0)
-				return(-1);
-			count--;
-		}
+	pthread_rwlock_rdlock(&players.lock);
+	if(players.info[p].room == -1) {
+		pthread_rwlock_unlock(&players.lock);
+		count = chat_check_num_unread(p);
+		for (i = 0; (i < MAX_CHAT_BUFFER && count > 0) ; i++)
+			if (chat_check_unread(p, i)) {
+				chat_get(i, player, chat);
+				chat_mark_read(p, i);
+				if (player_send_chat(p, fd, player, chat) < 0)
+					return(-1);
+				count--;
+			}
+	} else
+		pthread_rwlock_unlock(&players.lock);
 	
 	return GGZ_REQ_OK;
 }

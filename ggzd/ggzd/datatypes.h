@@ -44,6 +44,7 @@ typedef struct {
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	int perform_lookups;
+	int num_rooms;
 } Options;
 
 
@@ -106,6 +107,22 @@ struct GameTables {
 };
 
 
+/* A list item for chats */
+typedef struct ChatItem {
+	int reference_count;
+	char *chat_sender;
+	char *chat_msg;
+	struct ChatList *next;
+} ChatItemStruct;
+
+
+/* A Room Structure */
+typedef struct {
+	pthread_rwlock_t lock;
+	ChatItemStruct *chat_tail;
+} RoomStruct;
+
+
 /* Info about a logged-in user */
 typedef struct {
 	int uid;
@@ -116,6 +133,9 @@ typedef struct {
 	int table_index;
 	char ip_addr[16];
 	char *hostname;				/* cleanup() */
+	int room;
+	ChatItemStruct *chat_head;
+	ChatItemStruct *personal_head;
 } UserInfo;
 
 
@@ -145,7 +165,7 @@ struct Chats {
 	int player_unread_count[MAX_USERS];
 	pthread_rwlock_t lock;
 };
-	
+
 
 /* Reservation info */
 typedef struct {
@@ -181,6 +201,4 @@ typedef struct {
 	unsigned dbg_types;
 #endif
 } LogInfo;
-
 #endif
-

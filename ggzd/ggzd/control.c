@@ -42,6 +42,7 @@
 #include <parse_opt.h>
 #include <chat.h>
 #include <motd.h>
+#include <room.h>
 
 /* Server options */
 Options opt;
@@ -71,6 +72,10 @@ void init_data(void)
 	for (i = 0; i < MAX_GAME_TYPES; i++)
 		game_types.info[i].enabled = 0;
 
+	/* Initialize chat room information */
+	/* For now, we just dump a 1 into num_rooms */
+	opt.num_rooms = 1;
+	room_initialize_lists();
 }
 
 
