@@ -2,7 +2,7 @@ Source: ggz-client-libs
 Section: devel
 Priority: optional
 Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
-Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libggz-dev (>= 0.0.5-1), libexpat1-dev (>= 1.94-1), libc6-dev (>= 2.2.1-1)
+Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libggz-dev (>= 0.0.5-1), libexpat1-dev (>= 1.94-1), libc6-dev (>= 2.2.1-1), libpopt-dev (>= 1.6.0-1)
 Standards-Version: 3.5.2
 
 Package: libggzcore1
@@ -20,7 +20,7 @@ Description: GGZ Core Library
 Package: libggzcore-dev
 Architecture: any
 Section: devel
-Depends: libggzcore1 (= ${Source-Version}), libc6-dev (>= 2.2.1-1), libggz-dev (>= 0.0.5-1), libexpat1-dev (>= 1.94-1)
+Depends: libggzcore1 (= ${Source-Version}), libc6-dev (>= 2.2.1-1), libggz-dev (>= 0.0.5-1), libexpat1-dev (>= 1.94-1), libpopt-dev (>= 1.6.0-1)
 Description: GGZ Core Library - Development files
  This package contains the header file <ggzcore.h>
  which is necessary if you want to use the ggzcore
