@@ -3,7 +3,8 @@ dnl =======================================
 
 AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(ggz-docs, 0.0.6)
+AM_INIT_AUTOMAKE(ggz-docs, 0.0.7pre)
+AM_CONFIG_HEADER(config.h)
 
 dnl Options for building GGZ-Docs
 dnl =============================
