@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4021 2002-04-19 07:33:52Z jdorje $
+ * $Id: common.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -179,7 +179,9 @@ void init_ggzcards(GGZdMod * ggz, game_data_t *game_data)
 bool try_to_start_game(void)
 {
 	player_t p;
-	int ready = TRUE;
+	bool ready = TRUE;
+
+	assert(are_options_set());
 
 	for (p = 0; p < game.num_players; p++)
 		if (!game.players[p].ready) {
@@ -190,11 +192,10 @@ bool try_to_start_game(void)
 				    get_player_name(p));
 			ready = FALSE;
 		}
-	if (ready && options_set()) {
+
+	if (ready)
 		newgame();
-		return TRUE;
-	} else
-		return FALSE;
+	return ready;
 }
 
 /* start a new game! */
@@ -501,7 +502,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* If we have not know what type of game to play, and this
 	   is the first player joining, request the type of game. */
 	if (player == game.host && game.data == NULL)
-		games_req_gametype();
+		request_client_gametype();
 
 	if (seats_full()
 	    && game.data != NULL) {
@@ -570,7 +571,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		/* This happens when the host leaves the table before choosing
 		   a game.  Now the new host must choose. */
 		if (game.data == NULL)
-			games_req_gametype();		
+			request_client_gametype();		
 	}
 
 	/* get rid of old player message */
@@ -595,9 +596,11 @@ void handle_newgame_event(player_t player)
 	ggzdmod_log(game.ggz, "Handling a newgame event for player %d/%s.",
 		    player, get_player_name(player));
 	game.players[player].ready = TRUE;
-	if (player == game.host && !options_set())
-		get_options();
-	try_to_start_game();
+	if (!are_options_set()) {
+		if (player == game.host)
+			get_options();
+	} else
+		(void) try_to_start_game();
 }
 
 /* This handles the event of someone playing a card */

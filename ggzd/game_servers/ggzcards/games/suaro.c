@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: suaro.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -280,7 +280,7 @@ static void suaro_get_bid(void)
 	/* make "pass" bid */
 	add_sbid(0, 0, SUARO_PASS);
 
-	req_bid(game.next_bid);
+	request_client_bid(game.next_bid);
 }
 
 static void suaro_handle_bid(player_t p, bid_t bid)

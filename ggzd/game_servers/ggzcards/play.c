@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: play.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
 #include "net.h"
 #include "play.h"
 
-void req_play(player_t p, seat_t s)
+void request_client_play(player_t p, seat_t s)
 {
 	/* Sanity checks */
 	player_t p2;

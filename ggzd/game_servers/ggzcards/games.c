@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 4000 2002-04-16 19:14:01Z jdorje $
+ * $Id: games.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -114,7 +114,7 @@ void games_handle_gametype(int choice)
    called if this information isn't determined automatically (i.e. via
    --game=<game> parameter).  The reply is sent to games_handle_gametype,
    below. */
-void games_req_gametype(void)
+void request_client_gametype(void)
 {
 	int cnt = 0, i;
 

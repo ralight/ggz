@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: bridge.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -182,7 +182,7 @@ static void bridge_get_bid(void)
 	/* make "pass" bid */
 	add_sbid(0, 0, BRIDGE_PASS);
 
-	req_bid(game.next_bid);
+	request_client_bid(game.next_bid);
 }
 
 static void bridge_handle_bid(player_t p, bid_t bid)
@@ -263,7 +263,7 @@ static void bridge_get_play(player_t p)
 {
 	if (p == BRIDGE.dummy)
 		/* the declarer plays the dummy's hand */
-		req_play(BRIDGE.declarer, game.players[p].seat);
+		request_client_play(BRIDGE.declarer, game.players[p].seat);
 	else
 		game_get_play(p);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: euchre.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -203,13 +203,13 @@ static void euchre_get_bid(void)
 			}
 		}
 		EUCHRE.req_alone_bid = 1;
-		request_all_bids();
+		request_all_client_bids();
 	} else if (game.bid_count < 4) {
 		/* Tirst four bids are either "pass" or "take".  The suit of
 		   the up-card becomes trump. */
 		add_sbid(0, 0, EUCHRE_PASS);
 		add_sbid(0, 0, EUCHRE_TAKE);
-		req_bid(game.next_bid);
+		request_client_bid(game.next_bid);
 	} else {
 		/* After we've bid around, the bidding becomes either "pass"
 		   or "take" with a specific suit. */
@@ -222,7 +222,7 @@ static void euchre_get_bid(void)
 			add_sbid(0, 0, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
-		req_bid(game.next_bid);
+		request_client_bid(game.next_bid);
 	}
 }
 
@@ -317,7 +317,7 @@ static void euchre_get_play(player_t p)
 
 	/* in almost all cases, we just want the player to play from their
 	   own hand */
-	req_play(p, p);
+	request_client_play(p, p);
 }
 
 static void euchre_deal_hand(void)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.h 3482 2002-02-27 04:36:02Z jdorje $
+ * $Id: play.h 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -26,7 +26,7 @@
 #include "types.h"
 
 /* Request player p to play from seat s's hand. */
-void req_play(player_t p, seat_t s);
+void request_client_play(player_t p, seat_t s);
 
 /* Handle a play from a client.  This will verify the play
    and call handle_play_event if necessary. */

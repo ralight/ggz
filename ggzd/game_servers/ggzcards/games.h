@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: games.h 4025 2002-04-20 09:10:07Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -101,6 +101,6 @@ game_data_t *games_get_gametype(char *game_name);
 
 void games_handle_gametype(int choice);	/* set the game */
 
-void games_req_gametype(void);	/* what do you want to play today? */
+void request_client_gametype(void);	/* what do you want to play today? */
 
 #endif /* __GAMES_H__ */

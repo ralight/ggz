@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: options.h 4025 2002-04-20 09:10:07Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -40,7 +40,7 @@
  *  Options are set after get_options is called and then (if
  *  necessary) handle_options handle's the client's response.
  *  @note Only needed by common code. */
-int options_set(void);
+bool are_options_set(void);
 
 /** adds an option to the list of pending options
  *  @param key the key string for the option

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: bid.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -71,7 +71,7 @@ void add_sbid(char val, char suit, char spec)
 
 /* Request bid from current bidder parameters are: player to get bid from,
    number of possible bids, text entry for each bid */
-void req_bid(player_t p)
+void request_client_bid(player_t p)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
 
@@ -93,7 +93,7 @@ void req_bid(player_t p)
    correct order for multiple bids.  In fact, this function _could_ replace
    req_bid; the only drawback is that it's much slower. */
 /* FIXME: I don't think this is necessary anymore. */
-void request_all_bids(void)
+void request_all_client_bids(void)
 {
 	player_t p;
 

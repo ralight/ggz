@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: spades.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -270,7 +270,7 @@ static void spades_get_bid(void)
 	}
 
 	/* TODO: other specialty bids */
-	req_bid(game.next_bid);
+	request_client_bid(game.next_bid);
 }
 
 

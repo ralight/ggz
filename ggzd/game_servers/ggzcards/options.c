@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: options.c 4025 2002-04-20 09:10:07Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -79,7 +79,7 @@ static int pending_option_count = 0;
  *  @todo Perhaps should be called handle_options_event? */
 static void handle_options(int *options);
 
-int options_set(void)
+bool are_options_set(void)
 {
 	return options_initted;
 }
@@ -210,7 +210,7 @@ static void handle_options(int *options)
 
 	options_initted = TRUE;
 	
-	try_to_start_game();
+	(void) try_to_start_game();
 }
 
 void finalize_options(void)
