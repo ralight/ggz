@@ -47,8 +47,10 @@ static PyObject *pyggzcore_cb_game = NULL;
 /**********************************************/
 
 staticforward PyTypeObject pyggzcore_ServerType;
+/*
 staticforward PyTypeObject pyggzcore_RoomType;
 staticforward PyTypeObject pyggzcore_GameType;
+*/
 
 typedef struct
 {
@@ -56,6 +58,7 @@ typedef struct
 }
 pyggzcore_ServerObject;
 
+/*
 typedef struct
 {
 	PyObject_HEAD
@@ -67,11 +70,15 @@ typedef struct
 	PyObject_HEAD
 }
 pyggzcore_GameObject;
+*/
 
 static void pyggzcore_delete_server(PyObject *self)
 {
-	ggzcore_server_free(ggzserver);
-	ggzserver = NULL;
+	if(ggzserver)
+	{
+		ggzcore_server_free(ggzserver);
+		ggzserver = NULL;
+	}
 
 	PyObject_Del(self);
 }
@@ -80,12 +87,13 @@ static PyTypeObject pyggzcore_ServerType =
 {
 	PyObject_HEAD_INIT(NULL)
 	0,
-	"Server",
+	"GGZCore Server",
 	sizeof(pyggzcore_ServerObject),
 	0,
 	pyggzcore_delete_server,
 };
 
+/*
 static void pyggzcore_delete_room(PyObject *self)
 {
 	PyObject_Del(self);
@@ -95,7 +103,7 @@ static PyTypeObject pyggzcore_RoomType =
 {
 	PyObject_HEAD_INIT(NULL)
 	0,
-	"Room",
+	"GGZCore Room",
 	sizeof(pyggzcore_RoomObject),
 	0,
 	pyggzcore_delete_room,
@@ -110,11 +118,12 @@ static PyTypeObject pyggzcore_GameType =
 {
 	PyObject_HEAD_INIT(NULL)
 	0,
-	"Game",
+	"GGZCore Game",
 	sizeof(pyggzcore_GameObject),
 	0,
 	pyggzcore_delete_game,
 };
+*/
 
 /**********************************************/
 /* GGZDMod object methods just like in C       */
@@ -316,15 +325,24 @@ static PyMethodDef pyggzcore_methods[] =
 	{NULL, NULL, 0}
 };
 
+static PyObject *pyggzcore_server_getattr(PyObject *self, char *name)
+{
+	PyObject *ret = NULL;
+
+	ret = Py_FindMethod(pyggzcore_server_methods, self, name);
+
+	return ret;
+}
+
 static PyObject *pyggzcore_new_server(PyObject *self, PyObject *args)
 {
 	pyggzcore_ServerObject *server;
-	PyTypeObject type;
 
-//	if(!PyArg_ParseTuple(args, ":new_server")) return NULL;
+	pyggzcore_ServerType.ob_type = &PyType_Type;
 
-	type = pyggzcore_ServerType;
-	type.tp_methods = &pyggzcore_server_methods;
+	pyggzcore_ServerType.tp_methods = (struct PyMethodDef*)pyggzcore_server_methods;
+	pyggzcore_ServerType.tp_getattr = (getattrfunc)pyggzcore_server_getattr;
+
 	server = PyObject_New(pyggzcore_ServerObject, &pyggzcore_ServerType);
 
 	return (PyObject*)server;
@@ -337,8 +355,37 @@ static PyObject *pyggzcore_new_server(PyObject *self, PyObject *args)
 static GGZHookReturn pyggzcore_cb_server_hook(unsigned int id, void *event_data, void *user_data)
 {
 	PyObject *arg, *res;
+	char *str, **e;
+	int i;
 
-	arg = Py_BuildValue("(iO)", id, event_data);
+printf("(pyggzcore) server event: %i %p %p\n", id, event_data, user_data);
+
+	str = NULL;
+
+	if((id == GGZ_CONNECT_FAIL) || (id == GGZ_NEGOTIATE_FAIL))
+	{
+		str = strdup((char*)event_data);
+	}
+
+	if(id == GGZ_MOTD_LOADED)
+	{
+		e = (char**)event_data;
+
+		if((e) && (e[0]))
+		{
+			str = strdup(e[0]);
+			i = 1;
+			while(e[i])
+			{
+				str = (char*)realloc(str, strlen(str) + strlen(e[i]) + 2);
+				strcat(str, "\n");
+				strcat(str, e[i]);
+			}
+		}
+	}
+
+	//arg = Py_BuildValue("(iO)", id, event_data);
+	arg = Py_BuildValue("(is)", id, str);
 	res = PyEval_CallObject(pyggzcore_cb_server, arg);
 	if(res == NULL)
 	{
@@ -348,6 +395,8 @@ static GGZHookReturn pyggzcore_cb_server_hook(unsigned int id, void *event_data,
 		printf("----------------------------\n");
 	}
 //	Py_DECREF(arg);
+
+	if(str) free(str);
 
 	return GGZ_HOOK_OK;
 }
@@ -395,8 +444,12 @@ static GGZHookReturn pyggzcore_cb_game_hook(unsigned int id, void *event_data, v
 void initggzcore(void)
 {
 	PyObject *core;
-	PyObject *server, *room, *game;
+	PyObject *server;
+/*
+	PyObject *room, *game;
+*/
 	GGZOptions opt;
+	int ret;
 
 	core = Py_InitModule("ggzcore", pyggzcore_methods);
 
@@ -468,10 +521,14 @@ void initggzcore(void)
 	room = Py_BuildValue("Oi", ggzroom, 0);
 	game = Py_BuildValue("Oi", ggzgame, 0);*/
 
-	server = Py_InitModule("server", pyggzcore_server_methods);
-	/*server = pyggzcore_new_server(core, NULL);
-	printf("%p\n", server);*/
-	PyModule_AddObject(core, "server", server);
+	//PyType_Init(pyggzcore_ServerType);
+	//pyggzcore_ServerType.ob_type = &PyType_Type;
+
+	//server = Py_InitModule("server", pyggzcore_server_methods);
+	server = pyggzcore_new_server(NULL, NULL);
+	printf("%p\n", server);
+	ret = PyModule_AddObject(core, "server", server);
+	printf("PyModule_AddObject returned %i\n", ret);
 	/*PyModule_AddObject(core, "room", room);
 	PyModule_AddObject(core, "game", game);*/
 
