@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6873 2005-01-24 04:18:31Z jdorje $
+ * $Id: server.c 6907 2005-01-28 04:23:51Z jdorje $
  *
  * Functions for handling server events
  *
@@ -73,11 +73,13 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id, const void *,
 static GGZHookReturn server_loggedout(GGZServerEvent id, const void *,
 				      const void *);
 
+#ifdef GGZ_ENABLE_DEPRECATED
 static GGZHookReturn server_channel_connected(GGZServerEvent id,
 					      const void *, const void *);
 static GGZHookReturn server_channel_ready(GGZServerEvent id, const void *,
 					  const void *);
 
+#endif
 static GGZHookReturn server_net_error(GGZServerEvent id, const void *,
 				      const void *);
 static GGZHookReturn server_protocol_error(GGZServerEvent id, const void *,
@@ -163,10 +165,12 @@ static void server_register(GGZServer * server)
 				      server_net_error);
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR,
 				      server_protocol_error);
+#ifdef GGZ_ENABLE_DEPRECATED
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED,
 				      server_channel_connected);
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY,
 				      server_channel_ready);
+#endif
 }
 
 static void room_register(GGZRoom * room)
@@ -527,6 +531,7 @@ static GGZHookReturn server_list_types(GGZServerEvent id,
 			game_name);
 		exit(0);
 	}
+#ifdef GGZ_ENABLE_DEPRECATED
 	return GGZ_HOOK_OK;
 }
 
@@ -543,5 +548,6 @@ static GGZHookReturn server_channel_ready(GGZServerEvent id,
 					  const void *user_data)
 {
 	game_channel_ready(ggzcore_server_get_channel(server));
+#endif
 	return GGZ_HOOK_OK;
 }
