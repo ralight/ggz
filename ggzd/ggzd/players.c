@@ -427,13 +427,9 @@ static void player_remove(int p_index)
 		chat_mark_all_read(p_index);
 		pthread_rwlock_unlock(&players.lock);
 	} else {
-		room = players.info[p_index].room;
-		pthread_rwlock_wrlock(&chat_room[room].lock);
-		room_dequeue_chat(p_index);
-		pthread_rwlock_unlock(&chat_room[room].lock);
-		room_dequeue_personal(p_index);
 		pthread_rwlock_unlock(&players.lock);
 		room_join(p_index, -1);
+		/*room_dequeue_personal(p_index);*/
 	}
 
 	close(fd);
