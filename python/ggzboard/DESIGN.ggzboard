@@ -1,0 +1,90 @@
+How GGZBoard is designed
+========================
+
+The core engine
+---------------
+The python script ggzboard.py is the central point of GGZBoard.
+On startup, it either launches a supported game client directly,
+or provides a game selection menu.
+
+Beside the game objects, which are all non-GUI classes representing
+the games rules and the local AI, the core engine also manages two
+other objects: a configuration object and a user interface object.
+
+core.conf (Conf): configuration object
+core.game (Game): game object
+core.ui (GGZBoardUI): user interface object
+core.modulelist (string[]): list of available game client names
+core.modulefilelist (string[]): list of python files of available game clients
+
+core.rect(Surface, (int int, int), int, int, int, (int, int, int)): draw a rectangle
+core.svgsurface(string, int, int): return a rendered SVG pixmap
+core.walker(None, string, string[]): convenience directory scan method
+core.load(string): scans for all games and then loads a game
+core.loadgame(string): loads a game
+core.main(int): runs the engine in either ggz or local mode
+core.intro(): game client selection screen
+core.rungame(): starts a selected game
+
+Configuration
+-------------
+The 'conf' object is flat, and only provides simple assignments.
+It is hardcoded right now but later versions of the core engine will be able to
+load alternative configurations from the user's GGZ directory.
+
+conf.alpha (int): alpha value for blitting the game board on the background
+conf.background (string): background image, optional, will be scaled automatically
+conf.cellwidth (int): width of a board cell in pixels
+conf.cellheight (int): height of a board cell in pixels
+conf.cellspace (int): pixels between a board cell
+conf.marginwidth (int): margin left to the board in pixels
+conf.marginheight (int): margin above the board in pixels
+conf.tilecolor ((int, int, int)): color of the (probably transparent) board cells
+conf.darktilecolor ((int, int, int)): if used by the game, color of alternating cells
+conf.resolution ((int, int)): initial resolution in pixels for the game display
+conf.fullscreen (int): if set, game will start in fullscreen (toggling later is possible)
+
+User interface
+--------------
+The 'ui' object does not only provide some key-value pairs, but also useful methods.
+
+ui.origsurface (Surface): optional background image in unaltered size
+ui.surface (Surface): optional background image in size scaled to fit current display
+ui.backgroundara (Surface): area based on background, which is constantly modified by the engine
+ui.screen (Surface): main background, only altered on resolution changes
+ui.origres ((int, int)): original resolution of game display
+ui.currentres ((int, int)): current resolution of game display, might differ in fullscreen mode
+ui.isfullscreen (int): determines whether fullscreen is currently activated or not
+ui.font (Font): large truetype font (48 pixels)
+ui.smallfont (Font): small truetype font (24 pixels)
+
+ui.initfonts(): initialize the fonts
+ui.togglefullscreen(): switches between fullscreen and windowing mode, including scaled images
+ui.deepcopy(Surface): convenience function to duplicate a surface
+ui.setsurface(Surface): either None or a surface to be used as background image
+
+Games
+-----
+Games are objects keeping track of the board state, and transparently provide AI and move
+validation, be it internal code or an external module.
+
+game.width (int): number of horizontal board cells
+game.height (int): number of vertical board cells
+game.swaptiles (int): use alternating colours for board display
+game.autoscaletiles (int): fit board cells to display size (recommended for larger boards)
+game.setonly (int): game does not allow move of pieces
+game.intersections (int): pieces are put at intersections of cells, not inside them
+game.board ((string, string)[][]): the entire game board (implementation dependent)
+
+game.name(): returns the full name of the game module
+game.figure(string): returns the filename to represent a board cell state
+game.validatemove((int, int), (int, int)): returns whether a move is correct or not
+game.trymove((int, int), (int, int)): tries to execute a move (will be validated first)
+game.aimove(): tries to find a AI move
+game.domove((int, int), (int, int)): executes a previously checked move (will be revalidated)
+game.over(): returns whether a game is still running or over yet
+
+Networking
+----------
+***TO BE DONE***
+
