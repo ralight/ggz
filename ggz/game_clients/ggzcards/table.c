@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 6734 2005-01-19 01:58:21Z jdorje $
+ * $Id: table.c 6983 2005-03-11 07:43:05Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -632,7 +632,7 @@ static void clear_card_area(int p)
 			   TRUE, cx, cy, cw, ch);
 }
 
-static void show_card_area(p)
+static void show_card_area(int p)
 {
 	int cx, cy, cw, ch;
 
