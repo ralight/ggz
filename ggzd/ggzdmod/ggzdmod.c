@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 6885 2005-01-24 20:15:57Z jdorje $
+ * $Id: ggzdmod.c 6889 2005-01-25 01:24:10Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1647,28 +1647,55 @@ void ggzdmod_check(GGZdMod *ggzdmod)
 
 
 void ggzdmod_report_game(GGZdMod *ggzdmod,
-			 int *teams,
-			 GGZGameResult *results, int *scores)
+			 int *the_teams,
+			 GGZGameResult *the_results, int *the_scores)
 {
-	if (ggzdmod) {
-		char *names[ggzdmod->num_seats];
+	if (ggzdmod && ggzdmod->type == GGZDMOD_GAME) {
 		GGZSeatType types[ggzdmod->num_seats];
-		int p;
+		char *names[ggzdmod->num_seats];
+		int teams[ggzdmod->num_seats];
+		GGZGameResult results[ggzdmod->num_seats];
+		int scores[ggzdmod->num_seats];
+		int p, r = 0;
 
+		/* Currently the values reported correspond to the seats
+		 * currently at the table.  However this could be changed
+		 * to allow the game to give us this info. */
 		for (p = 0; p < ggzdmod->num_seats; p++) {
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, p);
-			types[p] = seat.type;
-			if (seat.type == GGZ_SEAT_PLAYER
-			    || seat.type == GGZ_SEAT_BOT)
-				names[p] = seat.name;
-			else {
-				_ggzdmod_error(ggzdmod, "Invalid player.");
-				return;
+			int usable = 0;
+
+			switch (seat.type) {
+			case GGZ_SEAT_PLAYER:
+			case GGZ_SEAT_BOT:
+				usable = 1;
+				break;
+			case GGZ_SEAT_RESERVED:
+			case GGZ_SEAT_OPEN:
+			case GGZ_SEAT_NONE:
+				break;
 			}
+			/* An ugly switch is used so if a new type is added
+			 * we'll get a warning. */
+			if (!usable) {
+				continue;
+			}
+
+			types[r] = seat.type;
+			names[r] = seat.name;
+			if (seat.type == GGZ_SEAT_BOT
+			    && (!names[r] || names[r][0] == '\0')) {
+				/* Game may have already set the name; if not
+				   we do it here. */
+				names[r] = "AI";
+			}
+			teams[r] = the_teams ? the_teams[p] : r;
+			results[r] = the_results[p];
+			scores[r] = the_scores ? the_scores[p] : 0;
+			r++;
 		}
 
-		_io_send_game_report(ggzdmod->fd,
-				     ggzdmod->num_seats,
+		_io_send_game_report(ggzdmod->fd, r,
 				     names, types, teams, results, scores);
 	}
 }
