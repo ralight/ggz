@@ -19,7 +19,7 @@ BotsAllowed = 1
 AllowLeave = 1
 
 # ExecutablePath is figured relative to GameDir unless starting with /
-ExecutablePath = ggzd.ggzcards --game=suaro
+ExecutablePath = ggzd.ggzcards --game=suaro --option=open_hands:0
 
 # GameDisabled is a quick way to turn off the game if necessary
 #GameDisabled
