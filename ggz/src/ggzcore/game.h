@@ -61,7 +61,8 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
 
 int _ggzcore_game_launch(struct _GGZGame *game);
 int _ggzcore_game_join(struct _GGZGame *game);
-
+int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer);
+			    
 
 #endif /* __GAME_H_ */
 

@@ -81,7 +81,7 @@ int ggzcore_table_add_player(GGZTable *table, char *name, const unsigned int sea
 
 int ggzcore_table_add_bot(GGZTable *table, char *name, const unsigned int seat)
 {
-	if (table && name && seat < table->num_seats) {
+	if (table && seat < table->num_seats) {
 		_ggzcore_table_add_bot(table, name, seat);
 		return 0;
 	}

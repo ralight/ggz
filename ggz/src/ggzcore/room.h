@@ -125,6 +125,19 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 			    char *name,
 			    char *msg);
 
+int  _ggzcore_room_send_game_data(struct _GGZRoom *room, 
+				  char *buffer);
+
+void _ggzcore_room_recv_game_data(struct _GGZRoom *room,
+				  char *buffer);
+
+int _ggzcore_room_launch_table(struct _GGZRoom *room, 
+			       struct _GGZTable *table);
+
+int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);
+
+int _ggzcore_room_leave_table(struct _GGZRoom *room);
+
 void _ggzcore_room_list_players(struct _GGZRoom *room);
 
 void _ggzcore_room_list_tables(struct _GGZRoom *room, 

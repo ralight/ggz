@@ -205,6 +205,76 @@ int _ggzcore_net_send_chat(const unsigned int fd,
 	return 0;
 }
 
+
+int _ggzcore_net_send_table_launch(const unsigned int fd,
+				   const int type,
+				   char *desc,
+				   const int num_seats)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LAUNCH");
+	if (es_write_int(fd, REQ_TABLE_LAUNCH) < 0
+	    || es_write_int(fd, type) < 0
+	    || es_write_string(fd, desc) < 0
+	    || es_write_int(fd, num_seats) < 0)
+		return -1;
+
+	return 0;
+}
+
+
+int _ggzcore_net_send_table_join(const unsigned int fd, const unsigned int num)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_JOIN");
+	if (es_write_int(fd, REQ_TABLE_JOIN) < 0
+	    || es_write_int(fd, num) < 0)
+		return -1;
+
+	return 0;
+}
+
+
+int _ggzcore_net_send_table_leave(const unsigned int fd)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LEAVE");
+	return es_write_int(fd, REQ_TABLE_LEAVE);
+}
+
+
+int _ggzcore_net_send_seat(const unsigned int fd, 
+			   GGZSeatType seat, 
+			   char *name)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending seat");
+	if (es_write_int(fd, seat) < 0)
+		return -1;
+
+	switch (seat) {
+	case GGZ_SEAT_PLAYER:
+	case GGZ_SEAT_RESERVED:
+		es_write_string(fd, name);
+		break;
+	case GGZ_SEAT_BOT:
+		break;
+	default:
+		break;
+	}
+	
+	return 0;
+}
+
+
+int _ggzcore_net_send_game_data(const unsigned int fd, int size, char *buffer)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_GAME: %d bytes from game", size);
+	if (es_write_int(fd, REQ_GAME) < 0
+	    || es_write_int(fd, size) < 0
+	    || es_writen(fd, buffer, size) < 0)
+		return -1;
+
+	return 0;
+}
+
+
 #if 0
 static void _ggzcore_net_err_func(const char * msg, const EsOpType op, 
 				  const EsDataType data)
@@ -563,3 +633,46 @@ int _ggzcore_net_read_update_tables(const unsigned int fd, GGZUpdateOp *op,
 }
 
 
+int _ggzcore_net_read_table_launch(const unsigned int fd, char *status)
+{
+	if (es_read_char(fd, status) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_LAUNCH from server : %d", *status);
+	
+	return 0;
+}
+
+
+int _ggzcore_net_read_table_join(const unsigned int fd, char *status)
+{
+	if (es_read_char(fd, status) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_JOIN from server : %d", *status);
+	
+	return 0;
+}
+
+
+int _ggzcore_net_read_table_leave(const unsigned int fd, char *status)
+{
+	if (es_read_char(fd, status) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_LEAVE from server : %d", *status);
+	
+	return 0;
+}
+
+
+int _ggzcore_net_read_game_data(const unsigned int fd, int *size, char *buffer)
+{
+	if (es_read_int(fd, size) < 0
+	    || es_readn(fd, buffer, *size) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_GAME: %d bytes from server", *size);
+
+	return 0;
+}

@@ -50,7 +50,8 @@ static char* _ggzcore_room_events[] = {
 	"GGZ_BEEP",
 	"GGZ_ROOM_ENTER",
 	"GGZ_ROOM_LEAVE",
-	"GGZ_TABLE_UPDATE"
+	"GGZ_TABLE_UPDATE",
+	"GGZ_TABLE_DATA"
 };
 
 /* Total number of server events messages */
@@ -91,7 +92,10 @@ struct _GGZRoom {
 
 	/* List of tables in the room */
 	struct _ggzcore_list *tables;
-
+	
+	/* Currently playing table */
+	struct _GGZTable *table;
+	
 	/* Room events */
 	GGZHookList *event_hooks[sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0])];
 
@@ -263,6 +267,42 @@ void ggzcore_room_chat(struct _GGZRoom *room,
 	/* FIXME: check validty of args */
 	
 	_ggzcore_room_chat(room, opcode, player, msg);
+}
+
+
+int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table)
+{
+	if (!room || !table)
+		return -1;
+	
+	return _ggzcore_room_launch_table(room, table);
+}
+
+
+int ggzcore_room_join_table(GGZRoom *room, const unsigned int num)
+{
+	if (!room || num >= room->num_tables)
+		return -1;
+
+	return _ggzcore_room_join_table(room, num);
+}
+
+
+int ggzcore_room_leave_table(GGZRoom *room)
+{
+	if (!room || !room->table)
+		return -1;
+	
+	return _ggzcore_room_leave_table(room);
+}
+
+
+int ggzcore_room_send_game_data(GGZRoom *room, char *buffer)
+{
+	if (!room || !buffer)
+		return -1;
+	
+	return _ggzcore_room_send_game_data(room, buffer);
 }
 
 
@@ -685,12 +725,49 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 }
 
 
+int _ggzcore_room_send_game_data(struct _GGZRoom *room, char *buffer)
+{
+	return _ggzcore_server_send_game_data(room->server, buffer);
+}
+
+
+void _ggzcore_room_recv_game_data(struct _GGZRoom *room, char *buffer)
+{
+	_ggzcore_room_event(room, GGZ_TABLE_DATA, buffer);
+}
+
+
 void _ggzcore_room_chat(struct _GGZRoom *room,
 			const GGZChatOp opcode,
 			const char *player,
 			const char *msg)
 {
 	_ggzcore_server_chat(room->server, opcode, player, msg);
+}
+
+
+int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
+{
+	int status;
+
+	status = _ggzcore_server_launch_table(room->server, table);
+
+	if (status == 0)
+		room->table = table;
+
+	return status;
+}
+
+
+int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
+{
+	return -1;
+}
+
+
+int _ggzcore_room_leave_table(struct _GGZRoom *room)
+{
+	return _ggzcore_server_leave_table(room->server);
 }
 
 
@@ -736,6 +813,9 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 
 	if (room->tables)
 		_ggzcore_list_destroy(room->tables);
+
+	if (room->table)
+		ggzcore_table_free(room->table);
 
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(room->event_hooks[i]);

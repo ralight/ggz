@@ -165,6 +165,7 @@ typedef enum {
 	GGZ_CHAT_FAIL,
 	GGZ_TABLE_LAUNCHED,
 	GGZ_TABLE_JOINED,
+	GGZ_TABLE_LEFT,
 	GGZ_LAUNCH_FAIL,
 	GGZ_JOIN_FAIL,
 	GGZ_STATE_CHANGE
@@ -181,6 +182,7 @@ typedef enum {
 	GGZ_ROOM_ENTER,
 	GGZ_ROOM_LEAVE,
 	GGZ_TABLE_UPDATE,
+	GGZ_TABLE_DATA,
 } GGZRoomEvent;
 
 
@@ -344,6 +346,10 @@ void ggzcore_room_chat(GGZRoom *room,
 		       const char *player,
 		       const char *msg);
 
+int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
+int ggzcore_room_join_table(GGZRoom *room, const unsigned int num);
+int ggzcore_room_leave_table(GGZRoom *room);
+int ggzcore_room_send_game_data(GGZRoom *room, char *buffer);
 
 
 /* Functions for querying a GGZRoom object for information */
@@ -695,9 +701,11 @@ int ggzcore_game_write_data(GGZGame *game);
 int        ggzcore_game_get_fd(GGZGame *game);
 GGZModule* ggzcore_game_get_module(GGZGame *game);
 
+
 int ggzcore_game_launch(GGZGame *game);
 int ggzcore_game_join(GGZGame *game);
-
+int ggzcore_game_send_data(GGZGame *game, char *buffer);
+			   
 
 #ifdef __cplusplus
 }

@@ -39,6 +39,7 @@
 #include <string.h>
 #include <easysock.h>
 #include <stdio.h>
+#include <signal.h>
 
 
 /* Local functions */
@@ -97,17 +98,18 @@ GGZGame* ggzcore_game_new(void)
 
 int ggzcore_game_init(GGZGame *game, GGZModule *module)
 {
-	if (!game)
-		return -1;
-
-	_ggzcore_game_init(game, module);
-	return 0;
+	if (game && module) {
+		_ggzcore_game_init(game, module);
+		return 0;
+	}
+	
+	return -1;
 }
 
 
 void ggzcore_game_free(GGZGame *game)
 {
-	if (!game)
+	if (game)
 		_ggzcore_game_free(game);
 }
 
@@ -206,7 +208,7 @@ GGZModule* ggzcore_game_get_module(GGZGame *game)
 
 int ggzcore_game_launch(GGZGame *game)
 {
-	if (game)
+	if (game && game->module)
 		return _ggzcore_game_launch(game);
 	else
 		return -1;
@@ -214,6 +216,15 @@ int ggzcore_game_launch(GGZGame *game)
 
 
 int ggzcore_game_join(GGZGame *game);
+
+
+int ggzcore_game_send_data(GGZGame *game, char *buffer)
+{
+	if (game && buffer)
+		return _ggzcore_game_send_data(game, buffer);
+	else
+		return -1;
+}
 
 
 /* 
@@ -238,6 +249,7 @@ void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module)
 
      	game->module = module;
 	game->fd = -1;
+	game->pid = -1;
 
 	ggzcore_debug(GGZ_DBG_GAME, "Initializing new game");
 
@@ -254,6 +266,12 @@ void _ggzcore_game_free(struct _GGZGame *game)
 	ggzcore_debug(GGZ_DBG_GAME, "Destroying game object");
 	if (game->file_name)
 		ggzcore_free(game->file_name);
+
+	if (game->fd != -1)
+		close(game->fd);
+
+	if (game->pid != -1)
+		kill(game->pid, SIGTERM);
 
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(game->event_hooks[i]);
@@ -310,11 +328,34 @@ int _ggzcore_game_data_is_pending(struct _GGZGame *game)
 
 int _ggzcore_game_read_data(struct _GGZGame *game)
 {
-	int size;
+	unsigned int size;
 	char buf[4096];
+	char *buf_offset;
 
 	ggzcore_debug(GGZ_DBG_GAME, "Got game msg from game client");
-	size = read(game->fd, buf, 4096);
+
+	/* Leave room for storing 'size' in the first buf_offset bytes */
+	buf_offset = buf + sizeof(size);
+	size = read(game->fd, buf_offset, 4096); /* FIXME: check for error */
+
+
+	/* If there's actual data */
+	if (size > 0) {
+		*(int*)buf = size;
+		_ggzcore_game_event(game, GGZ_GAME_DATA, buf);
+	}
+
+	/* If the socket gets closed */
+	if (size == 0) {
+		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
+		close(game->fd);
+	}
+
+	/* Socket error */
+	if (size < 0) {
+		_ggzcore_game_event(game, GGZ_GAME_IO_ERROR, NULL);
+		close(game->fd);
+	}
 
 	return 0;
 }
@@ -407,6 +448,23 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 
 
 int _ggzcore_game_join(struct _GGZGame *game);
+
+int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer)
+{
+	int size;
+	char *buf_offset;
+
+	/* Extract size from first bytes of buffer */
+	size = *(int*)buffer;
+	buf_offset = buffer + sizeof(size);
+
+	if (es_writen(game->fd, buf_offset, size) < 0) {
+		/* FIXME: game error */
+		return -1;
+	}
+
+	return 0;
+}
 
 
 /* Static functions internal to this file */

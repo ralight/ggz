@@ -70,6 +70,15 @@ int _ggzcore_server_chat(struct _GGZServer *server,
 			 const char *player,
 			 const char *msg);
 
+int _ggzcore_server_send_game_data(struct _GGZServer *server, char *buffer);
+
+int _ggzcore_server_launch_table(struct _GGZServer *server, 
+				 struct _GGZTable *table);
+
+int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num);
+
+int _ggzcore_server_leave_table(struct _GGZServer *server);
+
 void _ggzcore_server_clear(struct _GGZServer *server);
 
 void _ggzcore_server_free(struct _GGZServer *server);

@@ -58,6 +58,18 @@ int _ggzcore_net_send_chat(const unsigned int fd,
 			   const char* player, 
 			   const char* msg); 
 
+int _ggzcore_net_send_table_launch(const unsigned int fd,
+				   const int type,
+				   char *desc,
+				   const int num_seats);
+int _ggzcore_net_send_table_join(const unsigned int fd, const unsigned int num);
+int _ggzcore_net_send_table_leave(const unsigned int fd);
+
+int _ggzcore_net_send_seat(const unsigned int fd, 
+			   GGZSeatType seat, 
+			   char *name);
+int _ggzcore_net_send_game_data(const unsigned int fd, int size, char *buffer);
+
 /* Functions for reasding data from server */
 int _ggzcore_net_read_opcode(const unsigned int fd, GGZServerOp *op);
 int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol);
@@ -97,7 +109,14 @@ int _ggzcore_net_read_table_seat(const unsigned int fd, int *id, int *seat, char
 int _ggzcore_net_read_update_tables(const unsigned int fd, 
 				    GGZUpdateOp *op,
 				    int *table);
+
+int _ggzcore_net_read_table_launch(const unsigned int fd, char *status);
+int _ggzcore_net_read_table_join(const unsigned int fd, char *status);
+int _ggzcore_net_read_table_leave(const unsigned int fd, char *status);
+
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status);
+
+int _ggzcore_net_read_game_data(const unsigned int fd, int *size, char *buffer);
 
 
 #endif /* __NET_H__ */

@@ -73,6 +73,10 @@ static void _ggzcore_server_handle_update_players(GGZServer *server);
 static void _ggzcore_server_handle_update_tables(GGZServer *server);
 static void _ggzcore_server_handle_list_tables(GGZServer *server);
 static void _ggzcore_server_handle_list_types(GGZServer *server);
+static void _ggzcore_server_handle_table_launch(GGZServer *server);
+static void _ggzcore_server_handle_table_join(struct _GGZServer *server);
+static void _ggzcore_server_handle_table_leave(struct _GGZServer *server);
+static void _ggzcore_server_handle_rsp_game(struct _GGZServer *server);
 
 /* Utility functions */
 static struct _GGZTable* _ggzcore_server_handle_table(GGZServer *server);
@@ -98,6 +102,7 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_CHAT_FAIL",
 	"GGZ_TABLE_LAUNCHED",
 	"GGZ_TABLE_JOINED",
+	"GGZ_TABLE_LEFT",
 	"GGZ_LAUNCH_FAIL",
 	"GGZ_JOIN_FAIL",
 	"GGZ_STATE_CHANGE"
@@ -198,10 +203,10 @@ static struct _GGZServerMsg _ggzcore_server_msgs[] = {
 	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_server_handle_list_rooms},
 	{RSP_TABLE_OPTIONS,  "rsp_table_options", NULL},
 	{RSP_USER_STAT,      "rsp_user_stat", NULL},
-	{RSP_TABLE_LAUNCH,   "rsp_table_launch", NULL},
-	{RSP_TABLE_JOIN,     "rsp_table_join", NULL},
-	{RSP_TABLE_LEAVE,    "rsp_table_leave", NULL},
-	{RSP_GAME,           "rsp_game", NULL},
+	{RSP_TABLE_LAUNCH,   "rsp_table_launch", _ggzcore_server_handle_table_launch},
+	{RSP_TABLE_JOIN,     "rsp_table_join", _ggzcore_server_handle_table_join},
+	{RSP_TABLE_LEAVE,    "rsp_table_leave", _ggzcore_server_handle_table_leave},
+	{RSP_GAME,           "rsp_game", _ggzcore_server_handle_rsp_game},
 	{RSP_CHAT,           "rsp_chat", _ggzcore_server_handle_rsp_chat},
         {RSP_MOTD,           "rsp_motd", _ggzcore_server_handle_motd},
 	{RSP_ROOM_JOIN,      "rsp_room_join", _ggzcore_server_handle_room_join}
@@ -890,6 +895,53 @@ int _ggzcore_server_chat(GGZServer *server,
 }
 
 
+int _ggzcore_server_send_game_data(struct _GGZServer *server, char *buffer)
+{
+	int size;
+	char *buf_offset;
+
+	/* Extract size from first bytes of buffer */
+	size = *(int*)buffer;
+	buf_offset = buffer + sizeof(size);
+
+	return _ggzcore_net_send_game_data(server->fd, size, buf_offset);
+}
+
+
+int _ggzcore_server_launch_table(struct _GGZServer *server, struct _GGZTable *table)
+{
+	int i, type, num_seats;
+	char *desc, *name;
+	GGZSeatType seat;
+
+	type = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
+	desc = _ggzcore_table_get_desc(table);
+	num_seats = _ggzcore_table_get_num_seats(table);
+	_ggzcore_net_send_table_launch(server->fd, type, desc, num_seats);
+	
+	for (i = 0; i < num_seats; i++) {
+		seat = _ggzcore_table_get_nth_player_type(table, i);
+		name = _ggzcore_table_get_nth_player_name(table, i);
+		_ggzcore_net_send_seat(server->fd, seat, name);
+	}
+	
+	return 0;
+}
+
+
+int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num)
+{
+	return _ggzcore_net_send_table_join(server->fd, num);
+
+}
+
+
+int _ggzcore_server_leave_table(struct _GGZServer *server)
+{
+	return _ggzcore_net_send_table_leave(server->fd);
+}
+
+
 void _ggzcore_server_clear(struct _GGZServer *server)
 {
 	int i;
@@ -1520,6 +1572,85 @@ static void _ggzcore_server_handle_rsp_chat(GGZServer *server)
 	case E_BAD_OPTIONS:
 		_ggzcore_server_event(server, GGZ_CHAT_FAIL, "Bad options");
 		break;
+	}
+}
+
+
+static void _ggzcore_server_handle_rsp_game(struct _GGZServer *server)
+{
+	unsigned int size;
+	int status;
+	char buffer[4096];
+	char *buf_offset;
+
+	/* Leave room for storing 'size' in the first buf_offset bytes */
+	buf_offset = buffer + sizeof(size);
+	status = _ggzcore_net_read_game_data(server->fd, &size, buf_offset);
+	*(int*)buffer = size;
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	_ggzcore_room_recv_game_data(server->room, buffer);
+}
+
+
+static void _ggzcore_server_handle_table_launch(struct _GGZServer *server)
+{
+	int net_status;
+	char op_status;
+
+	net_status = _ggzcore_net_read_table_launch(server->fd, &op_status);
+
+	if (net_status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	switch (op_status) {
+	case 0: /* Do nothing if successful */
+		break; 
+	}
+}
+
+
+static void _ggzcore_server_handle_table_join(struct _GGZServer *server)
+{
+	int net_status;
+	char op_status;
+
+	net_status = _ggzcore_net_read_table_join(server->fd, &op_status);
+
+	if (net_status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	switch (op_status) {
+	case 0: /* Do nothing if successful */
+		break; 
+	}
+}
+
+
+static void _ggzcore_server_handle_table_leave(struct _GGZServer *server)
+{
+	int net_status;
+	char op_status;
+
+	net_status = _ggzcore_net_read_table_leave(server->fd, &op_status);
+
+	if (net_status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	switch (op_status) {
+	case 0: 
+		_ggzcore_server_event(server, GGZ_TABLE_LEFT, NULL);
+		break; 
 	}
 }
 
