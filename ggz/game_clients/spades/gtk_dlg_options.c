@@ -88,13 +88,13 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 
 	/* Notebook */
 	optionTabs = gtk_notebook_new();
-	gtk_widget_show(optionTabs);
+	gtk_widget_show(optionTabs); 
 
 	playerTab = gtk_label_new("Player Options");
 	gameTab = gtk_label_new("Game Options");
 
-	gtk_widget_show(playerTab);
-	gtk_widget_show(gameTab);
+	gtk_widget_show(playerTab); 
+	gtk_widget_show(gameTab); 
 
 
 	/* Player options tab */
@@ -263,7 +263,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_grab_default(connectButton);
 
 	gtk_widget_show(mainBox);
-	gtk_widget_show(playerOpt);
+/*	gtk_widget_show(playerOpt); */
 	gtk_widget_show(gameOpt);
 	gtk_widget_show(serverBox);
 	gtk_widget_show(portBox);
