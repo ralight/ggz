@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: ggzcore.h 6874 2005-01-24 04:27:30Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -313,6 +313,7 @@ typedef enum {
 	 *  @see ggzcore_server_get_state */
 	GGZ_STATE_CHANGE,
 
+#ifndef GGZ_DISABLE_DEPRECATED
 	/** Status event: a requested direct game connection has been
 	 *  established.  To start a game (table), a channel must be
 	 *  created.  This event will alert that the channel has been
@@ -320,6 +321,7 @@ typedef enum {
 	 *  input, which should then be passed back to the server object
 	 *  for handling.
 	 *  @param data NULL
+	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_get_channel
 	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_CONNECTED,
@@ -329,6 +331,7 @@ typedef enum {
 	 *  eventually it will be negotiated and ready to use.  At this point
 	 *  it is ready for the game client to use.
 	 *  @param data NULL
+	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_READY,
 
@@ -337,8 +340,10 @@ typedef enum {
 	 *  instead of GGZ_CHANNEL_READY or GGZ_CHANNEL_CONNECTED event.  At
 	 *  this point the channel is no longer useful (I think).
 	 *  @param data An unhelpful error string
+	 *  @note This event is deprecated and should not be used.
 	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_FAIL,
+#endif
 
 	/** Terminator.  Do not use. */
 	GGZ_NUM_SERVER_EVENTS
@@ -496,8 +501,8 @@ typedef enum {
 	GGZ_GAME_LAUNCH_FAIL,
 
 	/** Negotiation with server was successful.  This should happen
-	 *  some time after the launch succeeds.  The core client should
-	 *  create a channel at this point.
+	 *  some time after the launch succeeds.  The core client need do
+	 *  nothing at this point.
 	 *  @param data NULL */
 	GGZ_GAME_NEGOTIATED,
 
@@ -760,8 +765,10 @@ char*        ggzcore_server_get_password(GGZServer *server);
  */
 int          ggzcore_server_get_fd(GGZServer *server);
 
+#ifndef GGZ_DISABLE_DEPRECATED
 /** @brief Deprecated function.  Do not use. */
 #define ggzcore_server_get_channel(server) (-1)
+#endif
 
 /** @brief Get the state of the server connection.
  *
@@ -844,8 +851,10 @@ int ggzcore_server_is_at_table(GGZServer *server);
  */
 int ggzcore_server_connect(GGZServer *server);
 
+#ifndef GGZ_DISABLE_DEPRECATED
 /** @brief Deprecated function.  Do not use. */
 #define ggzcore_server_create_channel(server) (void)0
+#endif
 
 /** @brief Log in to the server.
  *
@@ -1499,8 +1508,10 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 /** @brief Return the control (ggzmod) socket for the game. */
 int  ggzcore_game_get_control_fd(GGZGame *game);
 
+#ifndef GGZ_DISABLE_DEPRECATED
 /** @brief Deprecated function.  Do not use. */
 #define ggzcore_game_set_server_fd(game, fd) (void)0
+#endif
 
 /** @brief Return the module set for the game. */
 GGZModule* ggzcore_game_get_module(GGZGame *game);
