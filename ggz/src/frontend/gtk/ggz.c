@@ -109,6 +109,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 	int fd;
 
 	/* Desensitize the connect button */
+	/* Should be done elsewhere? */
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
@@ -125,16 +126,14 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 
 static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
 	gchar* msg;
 
 	msg = g_strdup_printf("Error connecting to server: %s", (char*)event_data);
 	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
-	gtk_widget_set_sensitive(tmp, TRUE);
-	
+	login_connect_failed();
+
 	return GGZ_HOOK_OK;
 }
 
@@ -145,6 +144,7 @@ static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* u
 
 	return GGZ_HOOK_OK;
 }
+
 
 static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* user_data)
 {
@@ -208,6 +208,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 
 	return GGZ_HOOK_OK;
 }
+
 
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
@@ -673,6 +674,7 @@ GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
 static void ggz_input_removed(gpointer data)
 {
 	ggzcore_server_free((GGZServer*)data);
+	server = NULL;
 }
 
 

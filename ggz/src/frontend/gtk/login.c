@@ -52,9 +52,10 @@ static void login_entry_changed (GtkEditable *editable, gpointer data);
 static void login_normal_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
-static void login_get_entries(GtkButton *button, gpointer data);
-static void login_start_session(GtkButton *button, gpointer data);
-static void login_relogin(GtkButton *button, gpointer user_data);
+static void login_connect_button_clicked(GtkButton *button, gpointer data);
+static void login_cancel_button_clicked(GtkButton *button, gpointer data);
+static void login_start_session(void);
+static void login_relogin(void);
 static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* user_data);
 static void login_set_entries(Server server);
 
@@ -72,6 +73,21 @@ login_create_or_raise(void)
 }
 
 
+void
+login_connect_failed(void)
+{
+	GtkWidget *tmp;
+
+	/* Re-enable connect button */
+	tmp = lookup_widget(login_dialog, "connect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+
+	/* Destroy server object */
+	ggzcore_server_free(server);
+	server = NULL;
+}
+
+
 void 
 login_failed(void)
 {
@@ -80,14 +96,6 @@ login_failed(void)
 	tmp = lookup_widget(login_dialog, "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
 	gtk_widget_set_sensitive(tmp, TRUE);
-
-	/* Disconnect usual callback */
-	gtk_signal_disconnect_by_func(GTK_OBJECT(tmp), login_start_session, 
-				       login_dialog);
-	gtk_signal_connect (GTK_OBJECT(tmp), "clicked",
-			    GTK_SIGNAL_FUNC (login_relogin), NULL);
-
-
 
 	tmp = lookup_widget(login_dialog, "top_panel");
 	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
@@ -215,17 +223,37 @@ login_first_toggled                    (GtkToggleButton *togglebutton,
 }
 
 
-static void
-login_get_entries                      (GtkButton       *button,
-                                        gpointer         user_data)
+static void login_connect_button_clicked(GtkButton *button, gpointer data)
 {
-
+	/* If the server object doesn't exist, create a new one */
+	if (!server) {
+		login_start_session();
+	}
+	/* If we're not logged in yet, assume second login attempt */
+	else if (ggzcore_server_get_state(server) == GGZ_STATE_ONLINE) {
+		login_relogin();
+	}
+	/* otherwise disconnect then reconnect */
+	else {
+		/* FIXME: should popup modal "Are you sure?" */
+		ggzcore_server_logout(server);
+		/* FIXME: should provide service to reconnect */
+	}
 }
 
 
-static void
-login_start_session                    (GtkButton       *button,
-                                        gpointer         user_data)
+static void login_cancel_button_clicked(GtkButton *button, gpointer data)
+{
+	/* If we're already connected, disconnect */
+	if (server) {
+		ggzcore_server_logout(server);
+	}
+	gtk_widget_destroy(login_dialog);
+	login_dialog = NULL;
+}
+
+
+static void login_start_session(void)
 {
 	GtkWidget *tmp;
 	char *host = NULL, *login = NULL, *password = NULL;
@@ -233,6 +261,7 @@ login_start_session                    (GtkButton       *button,
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	/* Clearout the room, table and player lists */
+	/* FIXME: this should be done as a function in client.c */
 	tmp = lookup_widget(win_main, "room_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 	tmp = lookup_widget(win_main, "table_clist");
@@ -240,14 +269,11 @@ login_start_session                    (GtkButton       *button,
 	tmp = lookup_widget(win_main, "player_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
 
-	if(ggzcore_server_is_logged_in(server)) {
-		/* If currently online, disconnect */
-		ggzcore_server_logout(server);
-	}
-
+	/* FIXME: perhaps this should be done elsewhere? */
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
+	/* Get connection and login data */
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "host_entry");
 	host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
@@ -258,51 +284,47 @@ login_start_session                    (GtkButton       *button,
 	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
-	if(GTK_TOGGLE_BUTTON (tmp)->active)
+	if (GTK_TOGGLE_BUTTON (tmp)->active)
 	{
 		type = GGZ_LOGIN;
 		tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "pass_entry");
 		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "guest_radio");
-	if(GTK_TOGGLE_BUTTON (tmp)->active)
+	if (GTK_TOGGLE_BUTTON (tmp)->active)
 		type = GGZ_LOGIN_GUEST;
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "first_radio");
-	if(GTK_TOGGLE_BUTTON (tmp)->active)
+	if (GTK_TOGGLE_BUTTON (tmp)->active)
 		type = GGZ_LOGIN_NEW;
 
+	/* Create new server object and set connection/login info */
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port);
 	ggzcore_server_set_logininfo(server, type, login, password);
 
+	/* Setup callbacks on server */
 	ggz_event_init(server);
+
+	/* Start connection */
 	ggzcore_server_connect(server);
 }
 
 
-static void 
-login_relogin                          (GtkButton       *button,
-                                        gpointer         user_data)
+static void login_relogin(void)
 {
 	GtkWidget *tmp;
-	char *host = NULL, *login = NULL, *password = NULL;
-	int port;
+	char *login = NULL, *password = NULL;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	/* FIXME: perhaps this should be done elsewhere? */
+	tmp = lookup_widget(login_dialog, "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
-	/* FIXME: grab this info from existing profile */
-	tmp = lookup_widget(login_dialog, "host_entry");
-	host = gtk_entry_get_text(GTK_ENTRY(tmp));
-
-	tmp = lookup_widget(login_dialog, "port_entry");
-	port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
-
+	/* Get login data */
 	tmp = lookup_widget(login_dialog, "name_entry");
 	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
+	tmp = lookup_widget(login_dialog, "normal_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
 	{
 		type = GGZ_LOGIN;
@@ -717,16 +739,12 @@ create_dlg_login (void)
                       GTK_SIGNAL_FUNC (login_first_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (login_get_entries),
-                      dlg_login);
-  gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (login_start_session),
-                      dlg_login);
-  gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_login));
+                      GTK_SIGNAL_FUNC (login_connect_button_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
+                      GTK_SIGNAL_FUNC (login_cancel_button_clicked),
+                      NULL);
 
   gtk_widget_grab_default (connect_button);
   return dlg_login;
 }
-
