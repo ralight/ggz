@@ -115,6 +115,8 @@ static void bridge_init_game()
 	game.max_bid_choices = 37;
 	game.max_bid_length = 9;
 
+	game.cumulative_scores = 0;
+
 	/* TODO: for now we won't use bridge scoring */
 	BRIDGE.declarer = -1;
 }
