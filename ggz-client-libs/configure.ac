@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5620 2003-07-11 23:20:45Z jdorje $
+dnl $Id: configure.ac 5693 2003-12-04 07:15:41Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.7)
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment

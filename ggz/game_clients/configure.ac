@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5663 2003-10-09 08:27:50Z jdorje $
+dnl $Id: configure.ac 5693 2003-12-04 07:15:41Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -37,7 +37,7 @@ fi
 allsubdirs="common po $subdirs"
 
 AM_INIT_AUTOMAKE($package, $version)
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
