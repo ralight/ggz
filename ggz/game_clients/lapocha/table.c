@@ -43,11 +43,7 @@
 #define CARDHEIGHT	96
 
 static GdkPixmap *table_buf, *table_buf_backup;
-#ifdef GTK2
 static GdkPixbuf *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
-#else
-static GdkPixmap *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
-#endif
 static GtkStyle *f1_style;
 static GtkWidget *f1;
 static GtkWidget *l_name[4], *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
@@ -69,28 +65,15 @@ static gint table_animation_callback(gpointer);
 static void table_animation_trigger(int, int, int, int, int);
 static void table_handle_table_click(int, int);
 
-#ifndef GTK2
-static GdkPixmap *
-#else
-static GdkPixbuf *
-#endif /* GTK2 */
-load_pixmap(GdkWindow *window, GdkBitmap **mask,
+static GdkPixbuf *load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	    GdkColor *trans, const char *name)
 {
 	char *fullpath;
-#ifndef GTK2
-	GdkPixmap *image;
-#else
 	GdkPixbuf *image;
 	GError *error = NULL;
-#endif /* GTK2 */
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
-#ifndef GTK2
-	image = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
-#else
 	image = gdk_pixbuf_new_from_file(fullpath, &error);
-#endif /* GTK2 */
 	if(image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
@@ -98,13 +81,9 @@ load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	return image;
 }
 
-#ifdef GTK2
 #define render(target, gc, image, x1, y1, x2, y2, w, h) \
   gdk_pixbuf_render_to_drawable(image, target, gc, x1, y1, x2, y2, w, h, \
                                 GDK_RGB_DITHER_NONE, 0, 0)
-#else
-#define render gdk_draw_pixmap
-#endif
 
 /* table_initialize()
  *   Setup and draw the table areas on the fixed1 dialog item
