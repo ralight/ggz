@@ -1,6 +1,6 @@
 /*
  * Geekgame - a game which only real geeks understand
- * Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
+ * Copyright (C) 2002 - 2004 Josef Spillner, josef@ggzgamingzone.org
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,7 @@ static int usesound = 1;
 static int usefullscreen = 0;
 static int gamerunning = 0;
 static int modemenu = 0;
+static int arraywidth, arrayheight;
 #ifdef HAVE_SOUND
 Mix_Music *music = NULL;
 Mix_Chunk *chunk = NULL;
@@ -135,6 +136,7 @@ static void game_handle_io(void)
 	char player[64], pic[64];
 	char path[STRING_LENGTH];
 	int result;
+	int i, j, field;
 	
 	if (ggz_read_char(modfd, &op) < 0)
 	{
@@ -169,6 +171,18 @@ static void game_handle_io(void)
 		case OP_GAMESTART:
 			rendermode(150, 170, "Game has started!       ");
 			gamerunning = 1;
+			ggz_read_int(modfd, &arrayheight);
+			ggz_read_int(modfd, &arraywidth);
+			if((arrayheight > ARRAY_HEIGHT) || (arrayheight < 1))
+				arrayheight = ARRAY_HEIGHT;
+			if((arraywidth > ARRAY_WIDTH) || (arraywidth < 1))
+				arraywidth = ARRAY_WIDTH;
+			for(j = 0; j < arrayheight; j++)
+				for(i = 0; i < arraywidth; i++)
+				{
+					ggz_read_int(modfd, &field);
+					array[i][j] = field;
+				}
 			break;
 		case OP_GAMESTOP:
 			rendermode(150, 170, "Game stopped. Try again.");
@@ -274,11 +288,11 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 	if(autocrop)
 	{
 		if(x < 20) x = 20;
-		if(x + w > ARRAY_WIDTH * 32 + 18)
-			x = ARRAY_WIDTH * 32 + 18 - w;
+		if(x + w > arraywidth * 32 + 18)
+			x = arraywidth * 32 + 18 - w;
 		if(y < 20) y = 20;
-		if(y + h > ARRAY_HEIGHT * 32 + 18)
-			y = ARRAY_HEIGHT * 32 + 18 - h;
+		if(y + h > arrayheight * 32 + 18)
+			y = arrayheight * 32 + 18 - h;
 	}
 	else
 	{
@@ -389,7 +403,8 @@ int main(int argc, char *argv[])
 				printf("[-g | --ggz       ] Run game in GGZ mode\n");
 				printf("[-h | --help      ] This help\n");
 				printf("[-n | --nosound   ] Don't use sound or music\n");
-				printf("[-p | --players=x ] Number of players for single player mode (default: 5)\n");
+				printf("[-p | --players=x ] Number of players for single player mode ");
+				printf("(default: %i)\n", MAX_PLAYERS);
 				return 0;
 				break;
 			case 'n':
@@ -984,9 +999,9 @@ int gameinput(int *ox, int *oy, int userinput)
 			}
 		}
 
-		if((march == right) && (x >= (ARRAY_WIDTH - 1) * 32)) march = none;
+		if((march == right) && (x >= (arraywidth - 1) * 32)) march = none;
 		else if((march == left) && (x < 1 * 32)) march = none;
-		else if((march == down) && (y >= (ARRAY_HEIGHT - 1) * 32)) march = none;
+		else if((march == down) && (y >= (arrayheight - 1) * 32)) march = none;
 		else if((march == up) && (y < 1 * 32)) march = none;
 
 		if(!userinput)
@@ -997,40 +1012,40 @@ int gameinput(int *ox, int *oy, int userinput)
 				wanty = -1;
 				if(playmode == MODE_EASY)
 				{
-					minzeroes = ARRAY_WIDTH * ARRAY_HEIGHT;
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					minzeroes = arraywidth * arrayheight;
+					for(j = 0; j < arrayheight; j++)
 					{
 						zeroes = 0;
-						for(i = 0; i < ARRAY_WIDTH; i++) zeroes += array[i][j];
+						for(i = 0; i < arraywidth; i++) zeroes += array[i][j];
 						if((zeroes < minzeroes) && (zeroes > 0))
 						{
 							minzeroes = zeroes;
 							wantx = -1;
 							wanty = j;
-							for(tries = 0; ((tries < ARRAY_WIDTH) && (wantx == -1)); tries++)
+							for(tries = 0; ((tries < arraywidth) && (wantx == -1)); tries++)
 							{
-								i = rand() % ARRAY_WIDTH;
+								i = rand() % arraywidth;
 								if(array[i][j]) wantx = i;
 							}
-							for(i = 0; i < ARRAY_WIDTH; i++)
+							for(i = 0; i < arraywidth; i++)
 								if(array[i][j]) wantx = i;
 						}
 					}
-					for(i = 0; i < ARRAY_WIDTH; i++)
+					for(i = 0; i < arraywidth; i++)
 					{
 						zeroes = 0;
-						for(j = 0; j < ARRAY_HEIGHT; j++) zeroes += array[i][j];
+						for(j = 0; j < arrayheight; j++) zeroes += array[i][j];
 						if((zeroes < minzeroes) && (zeroes > 0))
 						{
 							minzeroes = zeroes;
 							wantx = i;
 							wanty = -1;
-							for(tries = 0; ((tries < ARRAY_HEIGHT) && (wanty == -1)); tries++)
+							for(tries = 0; ((tries < arrayheight) && (wanty == -1)); tries++)
 							{
-								j = rand() % ARRAY_HEIGHT;
+								j = rand() % arrayheight;
 								if(array[i][j]) wanty = j;
 							}
-							for(j = 0; j < ARRAY_HEIGHT; j++)
+							for(j = 0; j < arrayheight; j++)
 								if(array[i][j]) wanty = j;
 						}
 					}
@@ -1038,14 +1053,14 @@ int gameinput(int *ox, int *oy, int userinput)
 				else if(playmode == MODE_MATRIX)
 				{
 					bestsum = 0;
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					for(j = 0; j < arrayheight; j++)
 					{
-						for(i = 0; i < ARRAY_WIDTH; i++)
+						for(i = 0; i < arraywidth; i++)
 						{
 							sum = 0;
-							for(l = 0; l < ARRAY_HEIGHT; l++)
+							for(l = 0; l < arrayheight; l++)
 								sum += array[i][l];
-							for(k = 0; k < ARRAY_WIDTH; k++)
+							for(k = 0; k < arraywidth; k++)
 								sum += array[k][j];
 							sum = sum - array[i][j] * 2 + (!array[i][j]) * 2;
 							sum *= 2;
@@ -1064,17 +1079,17 @@ int gameinput(int *ox, int *oy, int userinput)
 				}
 				else if(playmode == MODE_HAVOC)
 				{
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					for(j = 0; j < arrayheight; j++)
 					{
-						for(i = 0; i < ARRAY_WIDTH; i++)
+						for(i = 0; i < arraywidth; i++)
 						{
 							sum = 0;
 							sx = i - 3;
 							sy = j - 3;
 							if(sx < 0) sx = 0;
 							if(sy < 0) sy = 0;
-							if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
-							if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+							if(sx + 6 >= arraywidth) sx = arraywidth - 6 - 1;
+							if(sy + 6 >= arrayheight) sy = arrayheight - 6 - 1;
 							for(l = sy; l <= sy + 6; l++)
 								sum += array[i][l];
 							for(k = sx; k <= sx + 6; k++)
@@ -1090,11 +1105,11 @@ int gameinput(int *ox, int *oy, int userinput)
 				}
 				else if(playmode == MODE_HAX0R)
 				{
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					for(j = 0; j < arrayheight; j++)
 					{
 						if((wantx != -1) && (wanty != -1) && (!(rand() % 6)))
 							break;
-						for(i = 0; i < ARRAY_WIDTH; i++)
+						for(i = 0; i < arraywidth; i++)
 						{
 							sum = 0;
 							sum2 = 0;
@@ -1102,8 +1117,8 @@ int gameinput(int *ox, int *oy, int userinput)
 							sy = j - 3;
 							if(sx < 0) sx = 0;
 							if(sy < 0) sy = 0;
-							if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
-							if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+							if(sx + 6 >= arraywidth) sx = arraywidth - 6 - 1;
+							if(sy + 6 >= arrayheight) sy = arrayheight - 6 - 1;
 							for(l = sy; l <= sy + 6; l++)
 								sum += array[i][l];
 							for(k = sx; k <= sx + 6; k++)
@@ -1122,8 +1137,8 @@ int gameinput(int *ox, int *oy, int userinput)
 
 				if((wantx == -1) || (wanty == -1))
 				{
-					wantx = (rand() % ARRAY_WIDTH) * 32 + 18;
-					wanty = (rand() % ARRAY_HEIGHT) * 32 + 18;
+					wantx = (rand() % arraywidth) * 32 + 18;
+					wanty = (rand() % arrayheight) * 32 + 18;
 				}
 				else
 				{
@@ -1251,14 +1266,14 @@ void screen_game()
 				case MODE_EASY:
 					sum = 0;
 					i = x / 32;
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					for(j = 0; j < arrayheight; j++)
 						sum += array[i][j];
 					renderscore(x + 10, 360, sum);
 					if(!sum) makescore = 1;
 
 					sum = 0;
 					j = y / 32;
-					for(i = 0; i < ARRAY_WIDTH; i++)
+					for(i = 0; i < arraywidth; i++)
 						sum += array[i][j];
 					renderscore(680, y + 10, sum);
 					if(!sum) makescore = 1;
@@ -1266,13 +1281,13 @@ void screen_game()
 				case MODE_MATRIX:
 					sum = 0;
 					i = x / 32;
-					for(j = 0; j < ARRAY_HEIGHT; j++)
+					for(j = 0; j < arrayheight; j++)
 						sum += array[i][j];
 					renderscore(x + 10, 360, sum * 2);
 
 					sum2 = 0;
 					j = y / 32;
-					for(i = 0; i < ARRAY_WIDTH; i++)
+					for(i = 0; i < arraywidth; i++)
 						sum2 += array[i][j];
 					renderscore(680, y + 10, sum2 * 2);
 
@@ -1284,8 +1299,8 @@ void screen_game()
 					sy = y / 32 - 3;
 					if(sx < 0) sx = 0;
 					if(sy < 0) sy = 0;
-					if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
-					if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+					if(sx + 6 >= arraywidth) sx = arraywidth - 6 - 1;
+					if(sy + 6 >= arrayheight) sy = arrayheight - 6 - 1;
 					for(j = sy; j <= sy + 6; j++)
 						sum += array[x / 32][j];
 					for(i = sx; i <= sx + 6; i++)
@@ -1300,8 +1315,8 @@ void screen_game()
 					sy = y / 32 - 3;
 					if(sx < 0) sx = 0;
 					if(sy < 0) sy = 0;
-					if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
-					if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+					if(sx + 6 >= arraywidth) sx = arraywidth - 6 - 1;
+					if(sy + 6 >= arrayheight) sy = arrayheight - 6 - 1;
 
 					for(j = sy; j <= sy + 6; j++)
 						sum += array[x / 32][j];
@@ -1433,6 +1448,9 @@ int startgame(void)
 
 	if(!players) players = MAX_PLAYERS;
 
+	arraywidth = ARRAY_WIDTH;
+	arrayheight = ARRAY_HEIGHT;
+
 	drawturn(screen, players, -1);
 
 	screen_scanning(1);
@@ -1453,9 +1471,9 @@ int startgame(void)
 
 		drawturn(screen, players, 0);
 
-		for(j = 0; j < ARRAY_HEIGHT; j++)
+		for(j = 0; j < arrayheight; j++)
 		{
-			for(i = 0; i < ARRAY_WIDTH; i++)
+			for(i = 0; i < arraywidth; i++)
 			{
 				x = rand() % 2;
 				drawnumber(screen, i, j, x);
