@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.7
+Installation Requirements for the release 0.0.8
 -----------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
@@ -16,8 +16,8 @@ will be able to release a new version of a client or game module
 without requiring every subsystem to be replaced anew.
 
 If you are missing a package, they are freely downloadable in source
-format (as well as precompiled packages for RedHat-based systems and
-Debian GNU/Linux) from:
+format (as well as precompiled or preconfigured packages for a number
+of GNU/Linux distributions and BSD systems) from:
 
 http://ggzgamingzone.org/
 
@@ -26,6 +26,8 @@ Linux, FreeBSD and Solaris.  It should work on pretty much any type of
 UNIX system that supports X Windows and sockets, though it may require
 some changes in order to work.  We will be glad to assist anyone who
 wishes to port the software to other platforms.
+Windows users can use either the native Windows client ports (might be
+outdated) or the newer Cygwin packages.
 
 The remainder of this document assumes that you are installing from
 source code.  If you are installing pre-compiled packages, please keep
@@ -122,7 +124,7 @@ Gtk Client Installation
 
 The Gtk+ client requires that the Gtk+ libraries 1.2.X or 2.X be
 installed. These can be downloaded from http://www.gtk.org.
-We recommend the latest stable version, 1.2.10 or 2.2.1.
+We recommend the latest stable version, 1.2.10 or 2.2.4.
 Support for the 2.X series has just been added and might not always
 work correctly yet, it will however be the preferred toolkit in
 the future.
@@ -143,9 +145,9 @@ KDE Client Installation
 
 The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.1.1a.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.1.1 is recommended as it is the version which
-KDE 3.1.1 development was based on).
+latest stable version, 3.2.0.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.2.3 is recommended as it is the version which
+KDE 3.2 development was based on).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
@@ -160,7 +162,7 @@ This will install the KDE client under your KDE installation.  You may
 also need to run ldconfig as root on some systems.
 Make sure to use the same configuration prefix as KDE does, otherwise
 no menu entries will show up, and programs might not work as expected.
-Professional users can use the KDEDIRS environment variable.
+Advanced users can use the KDEDIRS environment variable.
 
 
 GNOME Client Installation
@@ -168,7 +170,7 @@ GNOME Client Installation
 
 The GNOME client requires that the GNOME libraries 2.X be installed.
 You can get them from http://www.gnome.org. The recommended version
-is GNOME 2.2.1.
+is GNOME 2.4.1.
 
 Unpack the ggz-gnome-client sources.  They should extract into a
 directory named ggz-gnome-client-X.X.X.  Enter tjat directory and run
@@ -229,13 +231,14 @@ Troubleshooting/Tips
 
 6) Severe compilation or install issues should be brought up with the GGZ
    maintainers.  You can either contact us on the ggz-dev mailing list or
-   via the trackers or forums on our SourceForge project page
+   via the bug tracker accessible from our developer page
    (http://dev.ggzgamingzone.org/) - A link to join the mailing
    list is also available here.
 
 7) Once you have everything compiled you need a server to connect to!  There
-   is a permanent server installed at ggz.snafu.de (Germany) on port 5688.
-   Check the FAQ on our webpage (http://ggzgamingzone.org) for any other
+   is a permanent server installed at ggz://live.ggzgamingzone.org (Germany)
+   on port 5688.
+   Check the FAQ on our webpage (http://ggzgamingzone.org/) for any other
    permanent servers that may get setup.
 
 8) If you are compiling from CVS and are getting weird errors during
@@ -243,7 +246,7 @@ Troubleshooting/Tips
    build tool. The following are known to cause problems:
      libtool < 1.4
      automake 1.5d or 1.6
-   The recommended compiler is gcc 3.2, although many other versions
+   The recommended compiler is gcc 3.3, although many other versions
    (including 2.95 or previous or later 3.x) should work as well
    (see point 9 below).
    On non-GNU systems, use gmake rather than make.

@@ -1,5 +1,5 @@
 =================================================================
-The GGZ Gaming Zone - Various Tools and Utilities - Version 0.0.7
+The GGZ Gaming Zone - Various Tools and Utilities - Version 0.0.8
 =================================================================
 
 This is a convenience package which contains lots of nice applications
@@ -11,8 +11,6 @@ Content of GGZ-Utils:
 	- Metaserv:
 	  The first prototype of a GGZ meta server. It is completely XML-based
 	  but understands URI queries as well.
-	- Motd-Editor:
-	  A Gnome-based editor for creating MOTDs.
 	- Motds:
 	  Collection of nice MOTDs.
 	- TelGGZ:
@@ -24,10 +22,9 @@ For an overall view on the GGZ setup procedures, please consult the file
 README.GGZ.
 Have a look at QuickStart.GGZ to learn about the installation process.
 
-If you encounter any bugs, please send them to
-	Josef Spillner <dr_maux@users.sourceforge.net>,
-or to the mailing list,
-	<ggz-dev@lists.sourceforge.net>.
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
 
 Have fun!
 	The GGZ Gaming Zone Development Team

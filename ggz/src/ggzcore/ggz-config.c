@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5689 2003-11-23 20:05:30Z dr_maux $
+ * $Id: ggz-config.c 5790 2004-02-05 10:46:53Z josef $
  *
  * Configuration query and module install program.
  *
@@ -447,7 +447,7 @@ static int install_module(void)
 
 	if(rc != 0) {
 		fprintf(stderr, "ggz.modules configuration may be corrupt\n");
-		fprintf(stderr, "Module installation failed, see documentation");
+		fprintf(stderr, "Module installation failed, see documentation\n");
 	}
 
 	ggz_conf_cleanup();

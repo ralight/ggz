@@ -1,3 +1,107 @@
+2004-02-04 16:52  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/po/: de.po, kggz.pot: - updated German translation
+
+2004-02-04 16:45  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/KGGZ.cpp: - don't write KWallet password everytime,
+	but only at firsttime login
+
+2004-01-31 11:52  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/ggz.m4, autogen.sh: - sync common files
+
+2004-01-27 19:12  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCore.cpp, ggzcore++/src/GGZCore.h,
+	src/KGGZ.cpp: - new wrapper GGZCore::reload() - use reloading
+	before launching a game, and after switching rooms (icon)
+
+2004-01-27 14:53  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZConnect.cpp: - much better KWallet
+	integration
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-12-27 06:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, widgets/KGGZChat.cpp, widgets/KGGZChat.h:
+	- more ASCII->Unicode cleanups - remove nasty highlighting methods,
+	replaced with QRegExps
+
+2003-12-04 08:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER. 
+	This is required by automake.
+
+2003-11-10 22:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggzmeta/: kio_ggzmeta.cpp, kio_ggzmeta.h: - implement some
+	more parts of the atlantik slave
+
+2003-09-28 09:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZConnect.cpp, abstract/Makefile.am: -
+	use kde's include directory for abstract directory as well - work
+	around a semantical change in how parent-less widgets are used	
+	(the connection dialog wouldn't be shown with KDE 3.2 otherwise)
+
+2003-08-25 16:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZCommon.h, KGGZConnect.cpp,
+	KGGZLaunch.cpp, KGGZLaunch.h: - new feature: use kwallet (for
+	single-sign login) if KDE >= 3.2 is present - Qt 3.2 bugfix: if
+	table description is empty, don't latin1() it but rather   hardcode
+	to "". This sucks :(
+	
+	The KWallet thingie should maybe made configurable.
+
+2003-07-26 13:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: data/icons/Makefile.am, data/icons/watcher_off.png,
+	data/icons/watcher_on.png, src/KGGZ.cpp, src/KGGZ.h,
+	src/widgets/KGGZBase.cpp, src/widgets/KGGZBase.h: - implement a
+	watcher for the panel (system tray)
+	
+	Now it's possible to run several hidden kggzs while still not
+	missing any potential players
+
+2003-06-28 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZConnect.cpp, ggz-kde/src/KGGZMeta.cpp,
+	ggzap/ggzap_config.cpp, ggzap/ggzap_handler.cpp,
+	kcm_ggz/modules/kcm_ggz_metaserver.cpp: - replace ggz.snafu.de
+	entries with live.ggzgamingzone.org
+	
+	Of course, if all metaserver queries were implemented properly,
+	this would not be necessary. But most sources query only one of
+	them, so this commit is appropriate for backporting, while HEAD
+	should become more robust.
+
+2003-05-18 17:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZChat.cpp, KGGZChat.h, KGGZChatLine.cpp,
+	KGGZChatLine.h, KGGZMotd.cpp: - new kickass chat input line:
+	enables autocompletion with hints - also improve the chat output
+	widget and MOTD widget: append() single lines	(performance), and
+	use fixed width fonts in MOTD
+
+2003-05-17 10:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/splash/: title-version-mask.png, title-version.png:
+	- reflect new version number in kggz splash screen
+
+2003-05-17 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-17 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* m4/kde.m4: - look into /usr/include/qt3 as well

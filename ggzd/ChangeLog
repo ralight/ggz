@@ -1,3 +1,170 @@
+2004-02-01 15:53  Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/krosswater/: krosswater.dsc, krosswater_server.cpp:
+	- bumping version number, keeping same protocol number
+
+2004-02-01 15:23  Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/geekgame/: geekgame.dsc, main.cpp: - bump geekgame
+	server version numbers
+
+2004-01-31 11:48  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - sync common files
+
+2004-01-31 11:33  Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/krosswater/: krosswater_server.cpp,
+	zoneserver/ZoneGGZModServer.cpp, zoneserver/ZoneGGZModServer.h: -
+	make rejoin work - mostly drop m_numplayers in favor of
+	m_maxplayers
+	
+	This was historic garbage from the ggzdmod conversion
+
+2004-01-30 23:10  Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/geekgame/: geekgame.cpp, main.cpp: - fix array
+	subscript (switch x/y)
+
+2004-01-30 11:03  Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/ggz-debug.m4, m4/ggz.m4: - autodetect libdb4.2
+	correctly
+
+2004-01-30 10:53  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/database/ggzdb_db4.c: - change minor version check from == 1
+	to >= 1
+	
+	This makes it work with all of libdb 4.0, 4.1 and 4.2 now.
+
+2004-01-27 14:27  Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/krosswater/zoneserver/ZoneGGZModServer.cpp: - allow
+	for players < 4
+
+2004-01-27 14:11  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/database/: ggzdb_db3.c, ggzdb_db4.c: - skip the &nxtuid&
+	entry in DB4 in player_get_first()
+	
+	This would otherwise return nonsense in ggzduedit.
+
+2004-01-24 23:18  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/: control.c, datatypes.h, ggzd.conf.in, parse_opt.c: [cvs
+	test stage]
+	
+	- new configuration option Interface to restrict listening to one
+	interface   (like 127.0.0.1 for localhost:5688)
+
+2004-01-17 19:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/tuxman/: tuxman.dsc, tuxman.room: - forgot .room and
+	.dsc files
+
+2004-01-17 19:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac, game_servers/Makefile.am,
+	game_servers/tuxman/.cvsignore, game_servers/tuxman/Makefile.am,
+	game_servers/tuxman/level9.pac, game_servers/tuxman/main.cpp,
+	game_servers/tuxman/map.cpp, game_servers/tuxman/map.h,
+	game_servers/tuxman/pacman.cpp, game_servers/tuxman/pacman.h,
+	game_servers/tuxman/proto.h, game_servers/tuxman/tuxmanserv.cpp,
+	game_servers/tuxman/tuxmanserv.h,
+	game_servers/tuxman/lib/.cvsignore,
+	game_servers/tuxman/lib/Makefile.am,
+	game_servers/tuxman/lib/ggzgameserver.cpp,
+	game_servers/tuxman/lib/ggzgameserver.h,
+	game_servers/tuxman/lib/net.cpp, game_servers/tuxman/lib/net.h: -
+	game server for the game Tuxman
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-12-19 18:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/table.c: - log table joins and leaves as log events, not
+	debug events
+	
+	First step towards external tracking of currently running games. 
+	This doesn't have to be something sophisticated for the beginning,
+	thus log entries are good enough.
+
+2003-12-18 12:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - remove unneeded comma
+
+2003-12-18 12:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/connectx/Makefile.am,
+	game_servers/escape/Makefile.am,
+	game_servers/ggzcards/ai/Makefile.am,
+	game_servers/keepalive/src/Makefile.am, tests/Makefile.am: Allow
+	--prefix to be different from --with-libggz-dir.  This is very
+	convenient for testing new ggzds. It should in theory work with
+	each of our modules.
+	
+	Note that AC_HEADER_STDBOOL and AC_FUNC_REALLOC are not available
+	on older (woody) systems.
+
+2003-12-06 11:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/: geekgame.cpp, geekgame.dsc, main.cpp,
+	protocol.h: - improved multiplayer code - preparations for bots
+	support
+
+2003-12-05 01:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Rewrite large parts of the autoconf file to satisfy
+	autoscan and make it prettier.
+
+2003-12-05 00:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac, m4/ggz-debug.m4: Move the -Wall test into the
+	AC_GGZ_DEBUG macro.
+
+2003-12-04 08:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER. 
+	This is required by automake.
+
+2003-10-25 14:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_db4.c: - the _4000 and _4001 suffixes seem to
+	be deprecated
+
+2003-10-25 14:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_db4.c: - don't use autocommit flag
+
+2003-07-29 18:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/keepalive/ggzsh/ggzsh.cpp: - fix stupid bug (reverse
+	logic) which led to a crash
+
+2003-07-16 19:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/client/client.c: Port changes to server.
+
+2003-06-07 07:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_db4.c, configure.ac: - first try on db4.1
+	compatibility
+
+2003-05-17 10:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/protocols.h: - bump GGZ protocol version
+
+2003-05-17 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

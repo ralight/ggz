@@ -1,3 +1,77 @@
+2004-02-04 10:17  Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac: - upgrade
+	everything to 0.0.8 - includes prototype for global release files
+
+2004-02-04 10:15  Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/ggz-game-development-guide.texi: - mention
+	ggz-python
+
+2004-02-04 10:13  Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/hosting/ggz-hosting-guide.texi: - URL updates - mentioning
+	the Interface config option for ggzd
+
+2004-02-04 10:08  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/: Internationalization, Roadmap, cvs-modules.txt: -
+	lists.sourceforge.net -> mail.ggzgamingzone.org
+
+2004-02-01 15:54  Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: features.html, games.html: - preliminary
+	game comparison updates
+
+2004-01-31 11:46  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - sync common files
+
+2004-01-17 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT - use new-style AC_OUTPUT
+
+2003-12-09 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - mention checknagios
+	stuff in the hosting guide
+
+2003-11-22 13:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac,
+	games/game-development/ggz-game-development-guide.texi,
+	server/hosting/ggz-hosting-guide.texi: - minor versioning updates -
+	mention the python Network class
+
+2003-09-28 11:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* spec/dtd/: ggz_client.dtd, ggzd.dtd: - add Roger's DTD files to
+	the specification
+
+2003-09-28 11:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: admin-manual.html, user-manual.de.html,
+	user-manual.en.html: - document the grubby games plugin
+
+2003-06-28 11:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/release-procedure,
+	server/hosting/ggz-hosting-guide.texi: - no more snafu
+
+2003-06-10 09:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/release-procedure: - and another distro (Sorcerer)
+	
+	They have a nice 'ggz' meta package which installs all GGZ stuff
+
+2003-05-17 10:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog to reflect our lazyness^Whard work
+
 2003-05-16 20:32  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

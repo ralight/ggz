@@ -1,0 +1,27 @@
+2004-01-27 21:49  Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, .cvsignore, README, aclocal.m4, configure.ac,
+	escape-sdl/Makefile, dresden/README.dresden, dresden/dresden.py,
+	dresden/saggse.png, dresden/stone.png, escape-sdl/.cvsignore,
+	escape-sdl/escape-sdl, escape-sdl/module.dsc.in,
+	pyggzdmod/.cvsignore, pyggzdmod/README.pyggzdmod,
+	pyggzdmod/setup.py, pyggzdmod/src/pyggzdmod_init.c,
+	pyggzdmod/src/test.py, pyggzmod/.cvsignore,
+	pyggzmod/README.pyggzmod, pyggzmod/setup.py,
+	pyggzmod/src/pyggzmod_init.c, pyggzmod/src/test.py: - new GGZ
+	module: ggz-python for all python-related stuff - doesn't contain
+	README.GGZ etc. yet
+
+2004-01-27 21:49  Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, .cvsignore, README, aclocal.m4, configure.ac,
+	escape-sdl/Makefile, dresden/README.dresden, dresden/dresden.py,
+	dresden/saggse.png, dresden/stone.png, escape-sdl/.cvsignore,
+	escape-sdl/escape-sdl, escape-sdl/module.dsc.in,
+	pyggzdmod/.cvsignore, pyggzdmod/README.pyggzdmod,
+	pyggzdmod/setup.py, pyggzdmod/src/pyggzdmod_init.c,
+	pyggzdmod/src/test.py, pyggzmod/.cvsignore,
+	pyggzmod/README.pyggzmod, pyggzmod/setup.py,
+	pyggzmod/src/pyggzmod_init.c, pyggzmod/src/test.py: Initial
+	revision
+

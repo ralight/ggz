@@ -6,13 +6,13 @@ environment.  This project is still in the development phase, and as
 such may have some bugs.  It may not even compile or run (although we
 do our best to make sure it does).  If you are interested in assisting
 with development or in writing server modules for you favorite game,
-please let us know at ggz-dev@lists.sourceforge.net
+please let us know at ggz-dev@mail.ggzgamingzone.org.
 
 
 Downloading
 ===========
 You can always download the latest released version of GGZ from our
-homepage at http://ggz.sourceforge.net, or for the absolute bleeding
+homepage at http://ggzgamingzone.org/, or for the absolute bleeding
 edge you can check out the sources via anonymous CVS (instructions are
 at the aforementioned homepage).  You should be aware that the client
 and the server are distributed separately.  Please see README.GGZ for
@@ -60,7 +60,7 @@ use the following steps:
 Bugs
 ====
 Bugs in our code?  Never! :)  But if you do happen to find one, you
-can report it at http://sourceforge.net/bugs/?group_id=1325 or feel
+can report it at http://bugs.ggzgamingzone.org/ or feel
 free to contact us at the email address below.
 
 
@@ -69,6 +69,6 @@ Please let us know if you have any problems, comments, feedback. etc.
 
 Enjoy!
 --The GGZ Development Team
-<ggz-dev@lists.sourceforge.net>
+<ggz-dev@mail.ggzgamingzone.org>
 
 

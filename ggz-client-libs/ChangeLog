@@ -1,3 +1,109 @@
+2004-01-31 11:47  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - sync common files
+
+2004-01-27 19:11  Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, init.c, module.c: - new function:
+	ggzcore_reload() reloads the module database while a ggz core  
+	client is running
+
+2004-01-27 09:55  Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/ggz-debug.m4, m4/ggz.m4: - prevent underquoting
+	in ggz.m4 as well - change maintainer list address - remove odd
+	comma
+	
+	The first two changes must be propagated to all GGZ modules!
+
+2004-01-17 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 17:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-12-05 00:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac, m4/ggz-debug.m4: Move the -Wall test into the
+	AC_GGZ_DEBUG macro.
+
+2003-12-04 23:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Rewrite large parts of the autoconf file to satisfy
+	autoscan and make it prettier.
+
+2003-12-04 08:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, m4/ggz-debug.m4: Use the AC_GGZ_DEBUG
+	macro to determine debugging info.
+
+2003-12-04 08:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/server.c: Apparently "a ^^ b" isn't valid C.	But this
+	only shows up when compiling with debugging.
+
+2003-12-04 08:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER. 
+	This is required by automake.
+
+2003-11-23 21:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - some minor fixes so it doesn't crash on
+	empty config files - revert check 5 modification, a string compare
+	is sufficient there
+
+2003-11-23 20:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - change all Games entries to be lists
+	instead of string, and handle each of	the list elements - also
+	include a new check for forward references to see whether an entry 
+	 exists at all, numbered 4b (the entry check itself is done in 1
+	already) - remove a strange xref check
+
+2003-11-23 18:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - some more sanity checks to ggz-config's
+	autocheck (--check)
+	
+	Note that this feature has never worked since the time we started
+	using multiple frontends per game engine. It will have to be
+	reworked some more.
+
+2003-11-23 12:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - create config file if it doesn't exist
+	yet
+
+2003-11-23 09:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/: Makefile.am, ggz.modules: - deprecate the empty
+	ggz.modules file
+	
+	This file is more harmful than useful. Now if it's missing,
+	ggz_conf spits out a warning but everything else works ok.
+
+2003-07-12 01:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac, ggzcore/Makefile.am: Don't link ggzmod with expat
+	or popt libraries (only ggzcore uses these).
+
+2003-05-17 10:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/protocol.h: - bump GGZ protocol version
+	
+	Except for table chat and such, this shouldn't be necessary, but
+	strangely enough weird errors happen when connecting to a GGZ 0.0.6
+	server with a 0.0.7 client.
+	
+	This puts us on the safe side (for now).
+
+2003-05-17 10:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

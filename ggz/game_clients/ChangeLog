@@ -1,3 +1,74 @@
+2004-01-31 11:51  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/ggz.m4, autogen.sh: - sync common files
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-06 06:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Allow gtk-games to pass configure again.
+
+2003-12-06 03:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Add new checks to satisfy autoscan.
+
+2003-12-05 02:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac, m4/ggz-debug.m4: Move the -Wall test into the
+	AC_GGZ_DEBUG macro.
+
+2003-12-04 09:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, m4/ggz-debug.m4: Use the AC_GGZ_DEBUG
+	macro to determine debugging info.
+
+2003-12-04 08:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER. 
+	This is required by automake.
+
+2003-11-23 12:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove ggz.modules installation kludge
+
+2003-10-25 14:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcards/animation.c: - set clearing delay to 100 (just a guess,
+	is this correct?)
+
+2003-10-09 10:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, chess/Makefile.am,
+	chinese-checkers/Makefile.am, combat/Makefile.am, dots/Makefile.am,
+	ggzcards/Makefile.am, hastings/Makefile.am, lapocha/Makefile.am,
+	m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4, m4/lcmessage.m4,
+	m4/locale.m4, m4/progtest.m4, reversi/Makefile.am,
+	spades/Makefile.am, tictactoe/Makefile.am: Add more rigorous
+	checking for NLS linkage.
+
+2003-07-17 04:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/Makefile.am, chinese-checkers/Makefile.am,
+	combat/Makefile.am, dots/Makefile.am, ggzcards/Makefile.am,
+	hastings/Makefile.am, lapocha/Makefile.am, reversi/Makefile.am,
+	spades/Makefile.am, tictactoe/Makefile.am: Make sure we link
+	against libggz as well as ggzmod, and add the includes and ldflags
+	from libggz as well.
+
+2003-07-16 11:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/client.c: Avoid a segfault if $LANG is NULL.
+
+2003-05-17 12:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, po/Makefile.am: - make uninstall-local stuff
+
+2003-05-17 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-17 09:37  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* po/tictactoe/: de.po, tictactoe.pot: - fix German translation, so
@@ -3698,7 +3769,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 5588 2003-05-17 08:10:42Z dr_maux $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 5790 2004-02-05 10:46:53Z josef $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -3707,7 +3778,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 5588 2003-05-17 08:10:42Z dr_maux $.
+	substitution for $Id: ChangeLog 5790 2004-02-05 10:46:53Z josef $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

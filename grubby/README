@@ -1,5 +1,5 @@
 ==========================================================
-The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.7
+The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.8
 ==========================================================
 
 This package contains grubby, the almighty chatbot. It's a single binary, but
@@ -16,10 +16,9 @@ ggz-docs package.
 Please read 'INSTALL' if you aren't experienced with the build yet.
 The file README.GGZ does give you additional information.
 
-If you encounter any bugs, please send them to
-	Josef Spillner <dr_maux@users.sourceforge.net>,
-or to the mailing list,
-	<ggz-dev@lists.sourceforge.net>.
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
 
 Have fun!
 	The GGZ Gaming Zone Development Team

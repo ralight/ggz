@@ -1,3 +1,74 @@
+2004-02-01 15:21  Josef Spillner <josef@ggzgamingzone.org>
+
+	* geekgame/: main.c, module.dsc.in: - bump protocol version - bump
+	game client version
+
+2004-01-31 11:53  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - sync common files
+
+2004-01-30 23:09  Josef Spillner <josef@ggzgamingzone.org>
+
+	* geekgame/main.c: - fix reading the map and its dimensions
+
+2004-01-27 19:06  Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, m4/ggz.m4: - when using Xcursor, use Xrender too -
+	use new maintainer list address
+
+2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT - remove (unneeded?)
+	AC_ARG_PROGRAM
+
+2003-12-06 11:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/protocol-description: - more accurate protocol
+	description
+
+2003-11-23 16:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/main.c: - AI capabilities for the other 3 game modes -
+	draw lines with a thickness of 2 pixel for better visibility -
+	change Hax0r mode to something more difficult than previously
+	
+	Now the AI is more or less unbeatable in most modes.  In the
+	future, more randomization must thus be added.
+
+2003-11-23 14:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - bump to 0.0.8 pre
+
+2003-11-23 14:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/main.c: - command line argument --players to define the
+	number of players for single   player games - smoother movements,
+	slide if key is kept pressed - implement "real" AI for the easy
+	mode
+
+2003-11-23 13:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - guru-ttt is part of grubby and not located here
+	any longer
+
+2003-11-23 12:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove ggz.modules installation kludge
+
+2003-05-18 18:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ttt3d/main.c: - fix a usability bug found out by a player:   When
+	it's a player's turn, set the selector not to the first   tile, but
+	to the first free one
+
+2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

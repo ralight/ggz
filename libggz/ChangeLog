@@ -1,3 +1,61 @@
+2004-01-27 23:28  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - new perl-based autotools versioning checks (no more
+	sed)
+
+2004-01-27 09:44  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/: ggz-debug.m4, tls.m4: - prevent aclocal macros from being
+	underquoted
+	
+	This is necessary for aclocal 1.8.
+
+2004-01-24 23:10  Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, src/easysock.c, src/ggz.h: [cvs test stage]
+	
+	- use AC_LANG_PROGRAM instead of AC_LANG_SOURCE - use server
+	variable in ggz_make_socket() in server mode too,   to indicate the
+	interface to listen to
+
+2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 17:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - convert obsolete AC_TRY_LINK macros to
+	AC_LINK_IFELSE - use the AC_INIT style used in the Debian packages
+
+2003-12-05 00:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Rewrite large parts of the autoconf file to satisfy
+	autoscan and make it prettier.
+
+2003-12-05 00:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac, m4/ggz-debug.m4: Move the -Wall test into the
+	AC_GGZ_DEBUG macro.
+
+2003-10-25 14:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* tests/Makefile.am: - use same LDADD settings as in the src/
+	directory
+
+2003-10-05 22:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/security/ggz_tls_gnutls.c: - slightly better compatibility
+	fix
+
+2003-06-28 09:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/security/: ggz_tls_gnutls.c, hashfunc.c: - compatibility with
+	older gcrypt and gnutls libraries
+
+2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-13 22:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - fix sed incompatibility: a-zA-z becomes A-Za-z now

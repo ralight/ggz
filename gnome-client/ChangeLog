@@ -1,3 +1,45 @@
+2004-01-31 11:48  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/ggz.m4, autogen.sh: - sync common files
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-09-20 15:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/.cvsignore: - remove duplicated .deps
+
+2003-08-28 00:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/de.po, po/ggz-gnome-client.pot, src/interface.c,
+	src/msgboxi.c: - more strings marked for translation - brought
+	German translation up-to-date
+
+2003-06-26 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.ac: - include MOTD editor in gnome-client
+	build
+
+2003-06-26 11:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* motd-editor/: .cvsignore, Makefile.am, callbacks.c, callbacks.h,
+	interface.c, interface.h, main.c, motd-editor.glade: - MOTD editor,
+	(roughly) ported to GNOME 2.x
+
+2003-05-17 12:47  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - add uninstall-local stuff so make distcheck
+	works
+
+2003-05-17 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

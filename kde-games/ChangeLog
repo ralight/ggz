@@ -1,3 +1,119 @@
+2004-02-03 11:04  Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: kcc.cpp, kcc.h, kccproto.cpp, kccproto.h: - fix multiplayer
+	mode - delay opponent moves in singleplayer mode - animate moves
+	(show traces)
+
+2004-02-01 15:10  Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/module.dsc.in: - synchronize version numbers
+
+2004-02-01 15:09  Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: main.cpp, module.dsc.in: - use correct version 0.1
+
+2004-02-01 15:04  Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/main.cc: - version bump for koenig
+
+2004-02-01 12:48  Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: game.cc, game.h, ggz.cc, ggz.h, main.cc: - change
+	QSocket to QSocketDevice - fix bug: don't try to read move
+	information if move was invalid
+	
+	The QSocket(Device) changes are really evil. They potentially break
+	all applications using QDataStream on them, like Kamikaze or
+	Keepalive.  Previously, if not enough data was available, the
+	socket blocked for a while, whereas now it simply returns garbage. 
+	I consider it to be a workaround until Qt gets sane again.  The
+	affected versions are AFAIK Qt 3.2 (or 3.1?) through 3.3.
+
+2004-01-31 17:28  Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: kcc.cpp, kcc.h, kccproto.cpp, kccproto.h, kccwin.cpp,
+	kccwin.h, main.cpp, module.dsc.in: - AI players for kcc (not
+	animated yet) - homepage updates
+
+2004-01-31 14:59  Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcc/: kcc.cpp, kcc.h, kccproto.cpp, kccproto.h, main.cpp,
+	point0.png, point2.png: - proper drawing, excluding uninitialized
+	boards - command line option to restrict the number of local AI
+	players - change of colour of empty points to blue (matching
+	background)
+
+2004-01-31 11:52  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/ggz.m4, autogen.sh: - sync common files
+
+2004-01-31 11:32  Josef Spillner <josef@ggzgamingzone.org>
+
+	* krosswater/krosswater.cpp: - less ambigous message display
+
+2004-01-30 20:36  Josef Spillner <josef@ggzgamingzone.org>
+
+	* kdots/: kdots_about.cpp, kdots_help.cpp, main.cpp: - change about
+	information - prevent lag when displaying about dialog
+	
+	This was caused by a recursive trigger for repainting in the
+	repaint method.
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 18:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-12-04 08:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Use AM_CONFIG_HEADER instead of AC_CONFIG_HEADER. 
+	This is required by automake.
+
+2003-11-23 12:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove ggz.modules installation kludge
+
+2003-09-27 18:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcc/: kcc.cpp, kcc.h, kccproto.cpp, kccproto.h, kccwin.cpp: -
+	some improvements - preparation of single player mode
+
+2003-09-27 16:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.ac: - include kcc in the compilation
+
+2003-09-20 23:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcc/.cvsignore: - fix cvsignore to match kcc file names
+
+2003-09-20 23:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcc/mask.png: - forgot to add this one while in Czechia
+
+2003-08-28 06:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcc/: .cvsignore, Makefile.am, bg.png, hi16-app-kcc.png,
+	hi32-app-kcc.png, hi48-app-kcc.png, kcc.cpp, kcc.desktop.in, kcc.h,
+	kccproto.cpp, kccproto.h, kccwin.cpp, kccwin.h, main.cpp,
+	module.dsc.in, point0.png, point1.png, point2.png, point3.png,
+	point4.png, point5.png, point6.png: - beginnings for a new game
+	called 'KCC', the KDE client for Chinese Checkers
+	
+	This is based upon KTicTacTux ("based" as in copied over), so it
+	contains a lots of KTicTacTux code which will have to be cleaned
+	up.
+
+2003-05-17 13:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - uninstall ggz.modules
+
+2003-05-17 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-17 08:35  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* m4/kde.m4: - include new qt3 dir in search

@@ -1,3 +1,61 @@
+2004-01-31 11:49  Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/ggz.m4, autogen.sh: - sync common files
+
+2004-01-17 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 17:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-11-06 19:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/self.c: - make grubby report its uptime on request
+	
+	This is certainly platform-specific.  The Linux process accounting
+	functions are horrible.
+
+2003-11-06 18:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - detect perl includes correctly
+
+2003-10-25 15:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - damn typo
+
+2003-10-25 15:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - python 2.3 is now supported too
+
+2003-09-27 15:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, games/.cvsignore, games/Makefile.am,
+	games/guru-ttt/.cvsignore, games/guru-ttt/Makefile.am,
+	games/guru-ttt/main.c, games/guru-ttt/module.dsc.in,
+	grubby/modules/Makefile.am, grubby/modules/game.c,
+	grubby/src/gurumod.h, grubby/src/net.c: - game module to let grubby
+	join a game - network module support for games - add sample ttt
+	game with stupid AI
+
+2003-09-27 12:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/self.c: - only react to about and help commands if
+	people speak with grubby directly
+
+2003-09-10 12:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - suppress errors if the binary 'ruby' is not found
+
+2003-09-09 21:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - much more robust check for ruby
+
+2003-05-17 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

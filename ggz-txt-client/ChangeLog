@@ -1,3 +1,29 @@
+2004-01-31 11:54  Josef Spillner <josef@ggzgamingzone.org>
+
+	* autogen.sh: - sync common files
+
+2004-01-27 19:27  Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, ggz-txt/Makefile.am, m4/ggz.m4: - link against
+	ggzmod
+
+2004-01-17 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync
+
+2003-12-31 17:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use new-style AC_INIT
+
+2003-05-19 22:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac, ggz-txt/Makefile.am: - blindly add -lncurses as
+	curses library to fix obnoxious linker errors
+
+2003-05-17 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog
+
 2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* autogen.sh: - apply autogen.sh changes from libggz

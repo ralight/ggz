@@ -1,5 +1,5 @@
 ======================================================
-The GGZ Gaming Zone - SDL Game Modules - Release 0.0.7
+The GGZ Gaming Zone - SDL Game Modules - Release 0.0.8
 ======================================================
 
 GGZ does not only feature Gtk+ and KDE games, but also
@@ -18,10 +18,9 @@ The file README.GGZ does give you additional information.
 
 Have a look at QuickStart.GGZ to learn about the installation process.
 
-If you encounter any bugs, please send them to
-	Josef Spillner <dr_maux@users.sourceforge.net>,
-or to the mailing list,
-	<ggz-dev@lists.sourceforge.net>.
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@mail.ggzgamingzone.org>.
+Or use the bug tracker at http://bugs.ggzgamingzone.org/.
 
 Have fun!
 	The GGZ Gaming Zone Development Team
