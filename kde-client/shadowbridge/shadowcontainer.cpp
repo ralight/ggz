@@ -78,9 +78,9 @@ void ShadowContainer::slotAdmin(const QString& data)
 
 void ShadowContainer::addEntry(const QString &data, const char *pixmap)
 {
-	KListViewItem *tmp;
+	QListViewItem *tmp;
 
-	tmp = new KListViewItem(view);
+	tmp = new QListViewItem(view);
 	tmp->setText(0, QTime::currentTime().toString());
 	tmp->setPixmap(1, QPixmap(pixmap));
 	tmp->setText(2, data);

@@ -20,7 +20,7 @@
 
 // KDE includes
 #include <klineedit.h>
-#include <kpushbutton.h>
+#include <qpushbutton.h>
 #include <klocale.h>
 
 // Qt includes
@@ -33,7 +33,7 @@ ShadowClient::ShadowClient(QWidget *parent, const char *name)
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
 	QLabel *label_exec, *label_fdin, *label_fdout;
-	KPushButton *ok, *cancel;
+	QPushButton *ok, *cancel;
 
 	label_exec = new QLabel(i18n("Application command line:"), this);
 	label_fdin = new QLabel(i18n("Inbound socket:"), this);
@@ -43,8 +43,8 @@ ShadowClient::ShadowClient(QWidget *parent, const char *name)
 	edit_fdin = new KLineEdit("3", this);
 	edit_fdout = new KLineEdit("3", this);
 
-	ok = new KPushButton(i18n("OK"), this);
-	cancel = new KPushButton(i18n("Cancel"), this);
+	ok = new QPushButton(i18n("OK"), this);
+	cancel = new QPushButton(i18n("Cancel"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(label_exec);
