@@ -36,6 +36,7 @@
 static FILE *ggzrc_open_rc(void);
 static void ggzrc_load_rc(FILE *);
 static void ggzrc_parse_line(char *);
+static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
 
 /* Local use only variables */
 static char *varname;
@@ -130,7 +131,19 @@ static void ggzrc_load_rc(FILE *rc_file)
 /* Cleanup by freeing up the hash table */
 void ggzrc_cleanup(void)
 {
+	g_hash_table_foreach_remove(rc_hash, ggzrc_free_keyval, NULL);
 	g_hash_table_destroy(rc_hash);
+}
+
+
+/* Phase 1 of cleanup is to free the keys/values */
+static gboolean ggzrc_free_keyval(gpointer key, gpointer value, gpointer data)
+{
+	g_return_val_if_fail(key != NULL, FALSE);
+	g_return_val_if_fail(value != NULL, FALSE);
+	g_free(key);
+	g_free(value);
+	return TRUE;
 }
 
 
