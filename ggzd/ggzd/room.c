@@ -179,6 +179,7 @@ void room_create_additional(void)
 
 	/* Initialize the chat_tail and lock on the new one */
 	chat_room[opt.num_rooms-1].player_count = 0;
+	chat_room[opt.num_rooms-1].table_count = 0;
 	chat_room[opt.num_rooms-1].chat_tail = NULL;
 	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
 #ifdef DEBUG
@@ -255,15 +256,16 @@ int room_join(const int p_index, const int room)
 	if(old_room != -1) {
 		if(players.info[p_index].chat_head != NULL)
 			room_dequeue_chat(p_index);
-		count = chat_room[old_room].player_count;
-		last = chat_room[old_room].player_index[count-1];
-		for(i=0; i<count; i++)
-			if(chat_room[old_room].player_index[i] == p_index)
+		count = -- chat_room[old_room].player_count;
+		last = chat_room[old_room].player_index[count];
+		for(i=0; i<=count; i++)
+			if(chat_room[old_room].player_index[i] == p_index) {
 				chat_room[old_room].player_index[i] = last;
-		chat_room[old_room].player_count --;
-		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", old_room,
-			chat_room[old_room].player_count);
-		chat_room[old_room].timestamp = time(NULL);
+				break;
+			}
+		dbg_msg(GGZ_DBG_ROOM,
+			"Room %d player count = %d", old_room, count);
+		chat_room[old_room].player_timestamp = time(NULL);
 	}
 
 	/* Put them in the new room, and free up the old room */
@@ -275,8 +277,8 @@ int room_join(const int p_index, const int room)
 	if(room != -1) {
 		count = ++ chat_room[room].player_count;
 		chat_room[room].player_index[count-1] = p_index;
-		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", room, count);
-		chat_room[room].timestamp = time(NULL);
+		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
+		chat_room[room].player_timestamp = time(NULL);
 	}
 
 	/* Finally we can release the other chat room lock */

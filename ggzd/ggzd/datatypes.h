@@ -125,10 +125,13 @@ typedef struct {
 	char *description;
 	int player_count;
 	int max_players;
+	int table_count;
 	int max_tables;
 	int game_type;
-	time_t timestamp;
+	time_t player_timestamp;
+	time_t table_timestamp;
 	int *player_index;
+	int *table_index;
 	ChatItemStruct *chat_tail;
 #ifdef DEBUG
 	ChatItemStruct *chat_head;

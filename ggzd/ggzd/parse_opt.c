@@ -978,6 +978,10 @@ static void parse_room(char *name)
 					     sizeof(int));
 	if(chat_room[num].player_index == NULL)
 		err_sys_exit("calloc failed in parse_room()");
+	chat_room[num].table_index = calloc(chat_room[num].max_tables,
+					    sizeof(int));
+	if(chat_room[num].table_index == NULL)
+		err_sys_exit("calloc failed in parse_room()");
 
 	fclose(roomfile);
 	free(fname);

@@ -43,6 +43,7 @@
 #include <players.h>
 #include <seats.h>
 #include <transit.h>
+#include <room.h>
 
 #define GGZ_RESYNC_SEC  0
 #define GGZ_RESYNC_USEC 500000
@@ -564,7 +565,23 @@ static int table_log(int index, int fd, char debug)
 
 static void table_remove(int t_index)
 {
+	int room, count, last, i;
+
 	dbg_msg(GGZ_DBG_TABLE, "Removing table %d", t_index);
+
+	/* First get it off the list in chat_room */
+	room = tables.info[t_index].room;
+	pthread_rwlock_wrlock(&chat_room[room].lock);
+	count = -- chat_room[room].table_count;
+	last = chat_room[room].table_index[count];
+	for(i=0; i<=count; i++)
+		if(chat_room[room].table_index[i] == t_index) {
+			chat_room[room].table_index[i] = last;
+			break;
+		}
+	dbg_msg(GGZ_DBG_ROOM, "Room %d table count = %d", room, count);
+	chat_room[room].table_timestamp = time(NULL);
+	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[t_index].type_index = -1;

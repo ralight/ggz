@@ -452,26 +452,25 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
  	if (players.info[p].uid == GGZ_UID_NONE)
  		return GGZ_REQ_FAIL;
 
-	/* Check for player list updates in our room */
 	if ( (room = players.info[p].room) != -1) {
+		/* Check for player list updates in our room */
 		pthread_rwlock_rdlock(&chat_room[room].lock);
-		if (difftime(chat_room[room].timestamp, *player_ts) != 0) {
-			*player_ts = chat_room[room].timestamp;
+		if (difftime(chat_room[room].player_timestamp, *player_ts) !=0){
+			*player_ts = chat_room[room].player_timestamp;
 			user_update = 1;
-			dbg_msg(GGZ_DBG_UPDATE, "Player %d needs player update"
-				, p);
+			dbg_msg(GGZ_DBG_UPDATE,
+				"Player %d needs player update", p);
+		}
+
+		/* Check for table list updates in our room */
+		if (difftime(chat_room[room].table_timestamp, *table_ts) != 0) {
+			*table_ts = chat_room[room].table_timestamp;
+			table_update = 1;
+			dbg_msg(GGZ_DBG_UPDATE,
+				"Player %d needs table update", p);
 		}
 		pthread_rwlock_unlock(&chat_room[room].lock);
 	}
-
-	/* Check for table list updates*/
-	pthread_rwlock_rdlock(&tables.lock);
-	if (difftime(tables.timestamp, *table_ts) != 0 ) {
-		*table_ts = tables.timestamp;
-		table_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs table update", p);
-	}
-	pthread_rwlock_unlock(&tables.lock);
 
 	/* Check for game type list updates*/
 	pthread_rwlock_rdlock(&game_types.lock);
@@ -677,6 +676,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	int room;
 	void *options = NULL;
 	char name[MAX_USER_NAME_LEN + 1];
+	int count;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
 
@@ -739,6 +739,8 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Make sure type index matches */
 	/* FIXME: Do we need a room lock here? */
+	/* RG: Eventually we will need more room locks when we have dynamic */
+	/*     rooms, right now the room's game_type can't change           */
 	if (table.type_index != chat_room[room].game_type) {
 		if (options)
 			free(options);
@@ -769,10 +771,19 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Player %d's table launch failed with err %d", p_index,
 			status);
-	else
+	else {
 		dbg_msg(GGZ_DBG_TABLE, "Player %d's table launch successful", 
 			p_index);
-	
+		/* Setup an entry in the chat_room */
+		pthread_rwlock_wrlock(&chat_room[table.room].lock);
+		count = ++ chat_room[table.room].table_count;
+		chat_room[table.room].table_index[count-1] = t_index;
+		dbg_msg(GGZ_DBG_ROOM,
+			"Room %d table count = %d", table.room, count);
+		chat_room[table.room].table_timestamp = time(NULL);
+		pthread_rwlock_unlock(&chat_room[table.room].lock);
+	}
+
 	/* Join newly created table */
 	status = table_join(p_index, t_index, t_fd);
 
@@ -820,6 +831,7 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
 	int t_index;
 	int status = 0;
+	int room;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join for player %d", p_index);
 	if (es_read_int(p_fd, &t_index) < 0)
@@ -862,6 +874,14 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
+	/* Update notifications */
+	pthread_rwlock_rdlock(&tables.lock);
+	room = tables.info[t_index].room;
+	pthread_rwlock_unlock(&tables.lock);
+	pthread_rwlock_wrlock(&chat_room[room].lock);
+	chat_room[room].table_timestamp = time(NULL);
+	pthread_rwlock_unlock(&chat_room[room].lock);
+
 	return GGZ_REQ_OK;
 }
 
@@ -870,6 +890,7 @@ static int player_table_leave(int p_index, int p_fd)
 {
 	int t_index;
 	int status = 0;
+	int room;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for player %d", p_index);
 
@@ -906,6 +927,14 @@ static int player_table_leave(int p_index, int p_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
+	/* Update notifications */
+	pthread_rwlock_rdlock(&tables.lock);
+	room = tables.info[t_index].room;
+	pthread_rwlock_unlock(&tables.lock);
+	pthread_rwlock_wrlock(&chat_room[room].lock);
+	chat_room[room].table_timestamp = time(NULL);
+	pthread_rwlock_unlock(&chat_room[room].lock);
+
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p_index].table_index = -1;
 	players.timestamp = time(NULL);
@@ -1011,11 +1040,12 @@ static int player_list_types(int p_index, int fd)
 static int player_list_tables(int p_index, int fd)
 {
 
-	int i, j, type, index, uid, room, count = 0;
+	int i, j, k, type, index, uid, room, count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
 	char global;
 	TableInfo my_tables[MAX_TABLES];
 	int indices[MAX_TABLES];
+	int *t_list=NULL;
 
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling table list request for player %d", p_index);	
@@ -1034,30 +1064,58 @@ static int player_list_tables(int p_index, int fd)
 
 	room = players.info[p_index].room;
 	
-	/* Copy tables of interest to local list */
-	pthread_rwlock_rdlock(&tables.lock);
-	for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
-		if (tables.info[i].type_index != -1 
-		    && type_match_table(type, i)
-		    && (global || tables.info[i].room == room)) {
-			my_tables[count] = tables.info[i];
-			indices[count++] = i;
+	if( !global) {
+		/* Copy all tables w/o searching */
+		pthread_rwlock_rdlock(&tables.lock);
+		memcpy(my_tables, tables.info, sizeof(my_tables));
+		pthread_rwlock_unlock(&tables.lock);
+
+		/* And copy a list of tables we are interested in */
+		pthread_rwlock_rdlock(&chat_room[room].lock);
+		count = chat_room[room].table_count;
+		if( (t_list = calloc(count, sizeof(int))) == NULL) {
+			pthread_rwlock_unlock(&chat_room[room].lock);
+			err_sys_exit("calloc error in player_list_tables()");
 		}
+		memcpy(t_list, chat_room[room].table_index, count*sizeof(int));
+		pthread_rwlock_unlock(&chat_room[room].lock);
+	} else {
+		/* Copy tables of interest to local list */
+		pthread_rwlock_rdlock(&tables.lock);
+		for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
+			if (tables.info[i].type_index != -1 
+		    	&& type_match_table(type, i) ) {
+				my_tables[count] = tables.info[i];
+				indices[count++] = i;
+			}
+		}
+		pthread_rwlock_unlock(&tables.lock);
 	}
-	pthread_rwlock_unlock(&tables.lock);
 
 	if (es_write_int(fd, RSP_LIST_TABLES) < 0
 	    || es_write_int(fd, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, indices[i]) < 0
-		    || es_write_int(fd, my_tables[i].type_index) < 0
-		    || es_write_string(fd, my_tables[i].desc) < 0
-		    || es_write_char(fd, my_tables[i].state) < 0
-		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
+	for (k = 0; k < count; k++) {
+		/* Hack hack hack */
+		if(global)
+			i = k;
+		else
+			i = t_list[k];
+		if (es_write_int(fd, my_tables[i].room) < 0)
 			return GGZ_REQ_DISCONNECT;
+		if(global) {
+			if(es_write_int(fd, indices[i]) < 0)
+				return GGZ_REQ_DISCONNECT;
+		} else {
+			if(es_write_int(fd, i) < 0)
+				return GGZ_REQ_DISCONNECT;
+		}
+		if(es_write_int(fd, my_tables[i].type_index) < 0
+		   || es_write_string(fd, my_tables[i].desc) < 0
+		   || es_write_char(fd, my_tables[i].state) < 0
+		   || es_write_int(fd, seats_num(my_tables[i])) < 0)
+		       return GGZ_REQ_DISCONNECT;
 
 		for (j = 0; j < seats_num(my_tables[i]); j++) {
 
