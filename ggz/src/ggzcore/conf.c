@@ -369,26 +369,32 @@ int ggzcore_conf_commit(void)
  */
 int make_path(char *full, mode_t mode)
 {
-	char		*copy, *dir, *path;
+	char		*copy, *node, *path;
 	struct stat	stats;
 
 	copy = strdup(full);
 
 	/* FIXME: check validity */
-	if((path = malloc(strlen(full)+1)) == NULL)
+	/* Allocate and zero memory for path */
+	if((path = calloc(strlen(full)+1, sizeof(char))) == NULL)
 		ggzcore_error_sys_exit("malloc failed in make_path");
-
+ 
 	/* Skip preceding / */
 	if (copy[0] == '/')
 		copy++;
 
-	while ((dir = strsep(&copy, "/"))) {
-		strcat(strcat(path, "/"), dir);
-		if (mkdir(path, mode) < 0
-		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-			free(path);
-			free(copy);
-			return -1;
+	while ((node = strsep(&copy, "/"))) {
+		/* While there's still stuff left, it's a directory */
+		if (copy != NULL) {
+			fprintf(stderr, "Making %s, leaving %s\n", node, copy);
+			strcat(strcat(path, "/"), node);
+			if (mkdir(path, mode) < 0
+			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+				free(path);
+				free(copy);
+				
+				return -1;
+			}
 		}
 	}
 
