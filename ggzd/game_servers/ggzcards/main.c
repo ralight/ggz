@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4474 2002-09-09 00:49:58Z jdorje $
+ * $Id: main.c 5457 2003-02-26 13:14:51Z dr_maux $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -219,11 +219,11 @@ static void main_loop(GGZdMod * ggz)
 	   the bot channels. */
 	do {
 		/* this is a whole lot of unnecessary code... */
-		fd_set fd_set;
+		fd_set fdset;
 		int max_fd = ggzdmod_get_fd(ggz), status;
 
-		FD_ZERO(&fd_set);
-		FD_SET(max_fd, &fd_set);
+		FD_ZERO(&fdset);
+		FD_SET(max_fd, &fdset);
 
 		/* Assemble a list of file descriptors to monitor.  This list
 		   includes the main GGZ connection, a connection for each
@@ -233,8 +233,8 @@ static void main_loop(GGZdMod * ggz)
 			int fd = get_player_socket(p);
 			if (fd >= 0) {
 				max_fd = MAX(max_fd, fd);
-				assert(!FD_ISSET(fd, &fd_set));
-				FD_SET(fd, &fd_set);
+				assert(!FD_ISSET(fd, &fdset));
+				FD_SET(fd, &fdset);
 			}
 
 #ifdef DEBUG
@@ -242,14 +242,14 @@ static void main_loop(GGZdMod * ggz)
 				fd = game.players[p].err_fd;
 				if (fd >= 0) {
 					max_fd = MAX(max_fd, fd);
-					assert(!FD_ISSET(fd, &fd_set));
-					FD_SET(fd, &fd_set);
+					assert(!FD_ISSET(fd, &fdset));
+					FD_SET(fd, &fdset);
 				}
 			}
 #endif /* DEBUG */
 		} allplayers_iterate_end;
 
-		status = select(max_fd + 1, &fd_set, NULL, NULL, NULL);
+		status = select(max_fd + 1, &fdset, NULL, NULL, NULL);
 
 		if (status <= 0) {
 			if (errno != EINTR)
@@ -257,7 +257,7 @@ static void main_loop(GGZdMod * ggz)
 			continue;
 		}
 
-		if (FD_ISSET(ggzdmod_get_fd(ggz), &fd_set))
+		if (FD_ISSET(ggzdmod_get_fd(ggz), &fdset))
 			ggzdmod_dispatch(ggz);
 
 		/* Check each FD for activity */
@@ -267,7 +267,7 @@ static void main_loop(GGZdMod * ggz)
 			/* This is the player's communication socket.  Note
 			   that AI players will have such a socket too, since
 			   they are run as client-like programs. */
-			if (fd >= 0 && FD_ISSET(fd, &fd_set)) {
+			if (fd >= 0 && FD_ISSET(fd, &fdset)) {
 				/* Note - this handles spectator data too,
 				   but the spectator is given a player
 				   number. */
@@ -279,7 +279,7 @@ static void main_loop(GGZdMod * ggz)
 			   us and translated as debugging output. */
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
 				fd = game.players[p].err_fd;
-				if (fd >= 0 && FD_ISSET(fd, &fd_set))
+				if (fd >= 0 && FD_ISSET(fd, &fdset))
 					handle_ai_stderr(p);
 			}
 #endif /* DEBUG */
