@@ -48,6 +48,50 @@ void ggzcore_debug(const char *fmt, ...)
 }
 
 
+void ggzcore_error_sys(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+}
+
+
+void ggzcore_error_sys_exit(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
+}
+
+
+void ggzcore_error_msg(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(0, fmt, ap);
+	va_end(ap);
+}
+
+
+void ggzcore_error_msg_exit(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
+}
+
+
 static void err_doit(int flag, const char *fmt, va_list ap)
 {
 	char buf[4096];

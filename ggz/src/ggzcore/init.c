@@ -25,14 +25,31 @@
 
 #include <config.h>
 #include <ggzcore.h>
-
+#include <event.h>
+#include <user.h>
 
 int ggzcore_init(GGZOptionFlags options, const char* global, const char* local)
 {
-	if (options & GGZ_ENABLE_PARSER) {
+	if (options & GGZ_OPT_PARSER) {
 		ggzcore_debug("Parsing system conf file: %s", global);
 		ggzcore_debug("Parsing local conf file: %s", local);
 	}
 	
+	/* Initialize event system */
+	ggzcore_event_init();
+	
+	/* Register callbacks for UI functions */
+	ggzcore_user_register();
+	
 	return 0;
 }
+
+
+void ggzcore_destroy(void)
+{
+	/* Clean up event system */
+	ggzcore_event_destroy();
+}
+	
+
+

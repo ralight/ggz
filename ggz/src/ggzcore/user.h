@@ -1,10 +1,10 @@
 /*
- * File: main.c
+ * File: user.h
  * Author: Brent Hendricks
- * Project: GGZ Text Client 
- * Date: 9/15/00
+ * Project: GGZ Core Client Lib
+ * Date: 9/16/00
  *
- * Main loop
+ * Code for responding to user events
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,27 +23,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <ggzcore.h>
 
-#include <stdlib.h>
-
-
-int main(void)
-{
-	char* string;
-
-	string = malloc(6);
-	strcpy(string, "Hello");
-
-	ggzcore_init(GGZ_OPT_PARSER, "/etc/ggz-text.rc", "~/.ggz-txtrc");
-
-	ggzcore_event_process_all();
-	ggzcore_event_trigger(GGZ_USER_LOGIN_GUEST, NULL, 0);
-	ggzcore_event_trigger(GGZ_USER_CHAT, string, strlen(string)+1);
-	ggzcore_event_process_all();
-
-	ggzcore_destroy();
-
-	return 0;
-}
+void ggzcore_user_register(void);

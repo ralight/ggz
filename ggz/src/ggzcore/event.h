@@ -22,3 +22,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+
+#ifndef __EVENT_H__
+#define __EVENT_H__
+
+/* ggzcore_event_init() - Initialize event system
+ *
+ * Receives:
+ *
+ * Returns:
+ */
+void ggzcore_event_init(void);
+
+
+/* ggzcore_event_destroy() - Cleanup event system
+ *
+ * Receives:
+ *
+ * Returns:
+ */
+void ggzcore_event_destroy(void);
+
+
+#endif /* __EVENT_H__ */
