@@ -13,7 +13,7 @@ krosswater_client_SOURCES = \
 	qcw.cpp
 
 krosswater_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
-krosswater_client_LDADD = $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIB_GGZ) zoneclient/libzoneclient.la
+krosswater_client_LDADD = $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_GGZ) zoneclient/libzoneclient.la
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/krosswater/zoneclient
 
