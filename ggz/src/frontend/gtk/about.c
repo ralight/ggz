@@ -22,6 +22,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/*
+ * Dialof Description
+ *
+ * Displayes information about the authors and the application.
+ */
+
 #include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -37,6 +43,14 @@
 
 static GtkWidget *about_dialog;
 static GtkWidget* create_dlg_about(void);
+
+/* about_create_or_raise() - Displays the dialog or raises the
+ *                           current dialog
+ *
+ * Recieves:
+ *
+ * Returns:   
+ */
 
 void about_create_or_raise(void)
 {

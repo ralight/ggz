@@ -22,6 +22,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/*
+ * Dialog Description
+ *
+ * This dialog is used to display information about a selected room to
+ * the user. 
+ */
+
 #include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -38,6 +45,18 @@
 
 static GtkWidget *info_dialog;
 static GtkWidget* create_dlg_info(void);
+
+
+
+
+/* info_create_or_raise() - Displays the dialog or updates current dialog
+ *                          with new room's information
+ *
+ * Recieves:
+ * gint		room	: Room number to display info about
+ *
+ * Returns:
+ */
 
 void info_create_or_raise(gint room)
 {

@@ -22,6 +22,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/*
+ * Description
+ *
+ * This file contains all functions that are chat related.
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
@@ -62,6 +68,16 @@ GdkColor colors[] =
         {0, 0xffff, 0xffff, 0xffff}     /* 19  background (white)       */
 };
 
+
+/* chat_allocate_colors() - Allocates the collors all at once so they
+ *                          can be called without the need to allocate
+ *                          each time.
+ *
+ * Recieves:
+ *
+ * Returns:   
+ */
+
 void chat_allocate_colors(void)
 {
 	gint i;
@@ -79,6 +95,17 @@ void chat_allocate_colors(void)
                 }
         }
 }
+
+/* chat_display_message() - Adds text to the xtext widget wich is used to diaplying
+ *                          chatt and system messages.
+ *
+ * Recieves:
+ * CHATTypes	id	: How the chat should be displayed
+ * char		*player	: Diaplayed to the left of the line
+ * char		*message: Displayed to the right of the line
+ *
+ * Returns:
+ */
 
 void chat_display_message(CHATTypes id, char *player, char *message)
 {
@@ -120,6 +147,13 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 }
 
 
+/* chat_send_msg() - sends the current text on chat_entry to the server
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
+
 void chat_send_msg(void)
 {
         GtkEntry *tmp = NULL;
@@ -135,6 +169,13 @@ void chat_send_msg(void)
         }
 }
 
+
+/* chat_send_prvmsg() - Sends a privet nessage to a users
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
 
 void chat_send_prvmsg(void)
 {
@@ -169,6 +210,13 @@ void chat_send_prvmsg(void)
 }
 
 
+/* chat_send_beep() - Sends a beep to a user
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
+
 void chat_send_beep(void)
 {
         GtkEntry *tmp = NULL;
@@ -186,6 +234,15 @@ void chat_send_beep(void)
 }
 
 
+/* chat_enter() - Displays a message in the chat area when someone
+ *                enters the room
+ *
+ * Recieves:
+ * gchar	*player	: The players username
+ *
+ * Returns:
+ */
+
 void chat_enter(gchar *player)
 {
         GtkEntry *tmp = NULL;
@@ -195,6 +252,15 @@ void chat_enter(gchar *player)
 }
 
 
+/* chat_part() - Displays a message in the chat area when someone
+ *               leaves the room
+ *
+ * Recieves:
+ * gchar	*player	: The players username
+ *
+ * Returns:
+ */
+
 void chat_part(gchar *player)
 {
         GtkEntry *tmp = NULL;
@@ -202,6 +268,13 @@ void chat_part(gchar *player)
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
         gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, player, strlen(player));
 }
+
+/* chat_help() - Displays help on all the chat commands
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
 
 void chat_help(void)
 {
@@ -218,6 +291,18 @@ void chat_help(void)
 #define WORD_GGZ     2
 #define WORD_HOST    3
 #define WORD_EMAIL   4
+
+/* chat_checkurl() - Checks the current word to see if it is a valid URL
+ *                   to underline.
+ *
+ * Recieves:
+ * GtkXText	*xtest	: The xtext widget the word if from
+ * char		word	: The current word to chek
+ *
+ * Returns:
+ * 0		: Not a valid URL
+ * WORD_*	: The URL Type
+ */
 
 int chat_checkurl(GtkXText *xtext, char *word)
 {
@@ -284,6 +369,17 @@ int chat_checkurl(GtkXText *xtext, char *word)
 	/* nothing of intrest to us */
 	return 0;
 }
+
+/* chat_word_clicked() - The callback for clicking on a word in a
+ *                       xtext widget
+ *
+ * Recieves:
+ * GtkXText		*xtext	: The current xtext widget
+ * char			*word	: The word that was clicked
+ * GdkEventButton	*event	: The button event used to click the word
+ *
+ * Returns:
+ */
 
 void chat_word_clicked(GtkXText *xtext, char *word,
         GdkEventButton *event)
