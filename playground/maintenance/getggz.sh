@@ -5,10 +5,37 @@
 
 version=0.0.10
 tmp=$HOME/.ggz/getggz-$version
+log=$tmp/getggz.log
 prefix=$HOME/ggz
 
 echo "GGZ $version Installation"
-echo "----------------------"
+echo "-----------------------"
+
+echo "Please select a download mirror:"
+echo "Germany, viaKGT new media (1)"
+echo "USA, via ibiblio          (2)"
+echo "Denmark, via dotsrc       (3)"
+echo "Belgium, via Belnet       (4)"
+read -p "? " mirror
+
+case $mirror in
+	1)
+	mirror="ftp://ftp2.kgt.org/pub/ggzgamingzone.org"
+	;;
+	2)
+	mirror="ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone"
+	;;
+	3)
+	mirror="ftp://ftp.dotsrc.org/mirrors/ggzgamingzone"
+	;;
+	4)
+	mirror="ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org"
+	;;
+	*)
+	echo "Invalid mirror!"
+	exit
+	;;
+esac
 
 echo "Please select the installation method:"
 echo "Client (c)"
@@ -118,28 +145,46 @@ if test "x$method" = "xc"; then
 	fi
 fi
 
-echo "Downloading the following packages into $tmp:"
+echo "Downloading the following packages:"
 echo $pkg
+echo "From $mirror into $tmp"
 
 mkdir -p $tmp
 cd $tmp
+rm $log
+
+echo "Download of all packages"
 for p in $pkg; do
-	wget http://ftp.ggzgamingzone.org/pub/ggz/$version/$p-$version.tar.gz
+	echo "+ $p (download)"
+	tarball=$mirror/ggz/$version/$p-$version.tar.gz
+	wget $tarball >>$log 2>&1
+	if test $? -ne 0; then
+		echo "Downloading $tarball failed!"
+		exit
+	fi
 done
 
 echo "Unpacking of all packages"
 for p in $pkg; do
-	tar xzvf $p-$version.tar.gz
+	echo "+ $p (decompression)"
+	tar xzvf $p-$version.tar.gz >>$log 2>&1
 done
 
 echo "Configuration and compilation of all packages"
+echo "Packages will be installed into $prefix"
 for p in $pkg; do
+	echo "+ $p (configuration)"
 	cd $p-$version
-	./configure --prefix=$prefix
-	make
-	make install
+	./configure --prefix=$prefix >>$log 2>&1
+	echo "+ $p (compilation)"
+	make >>$log 2>&1
+	echo "+ $p (installation)"
+	make install >>$log 2>&1
 	cd $tmp
 done
 
-echo "Finished!"
+echo "Finished! GGZ $version is now installed."
+echo "Do not forget to set up the following paths:"
+echo "export PATH=$prefix/bin:\$PATH"
+echo "export LD_LIBRARY_PATH=$prefix/lib:\$LD_LIBRARY_PATH"
 
