@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4912 2002-10-14 20:22:18Z jdorje $
+ * $Id: ggzmod.c 4914 2002-10-14 21:59:49Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -129,6 +129,9 @@ void ggzmod_free(GGZMod * ggzmod)
 		(void)ggzmod_disconnect(ggzmod);
 	
 	ggzmod->type = -1;
+
+	if (ggzmod->my_name)
+		ggz_free(ggzmod->my_name);
 
 	if (ggzmod->pwd)
 		ggz_free(ggzmod->pwd);
@@ -279,18 +282,26 @@ int ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
 }
 
 void _ggzmod_handle_player(GGZMod *ggzmod,
+			   const char *name,
 			   int is_spectator, int seat_num)
 {
 	int old[2] = {ggzmod->i_am_spectator, ggzmod->my_seat_num};
 
+	assert(ggzmod->type == GGZMOD_GAME);
+
+	if (ggzmod->my_name)
+		ggz_free(ggzmod->my_name);
+	ggzmod->my_name = name;
+
 	ggzmod->i_am_spectator = is_spectator;
 	ggzmod->my_seat_num = seat_num;
 
-	call_handler(ggzmod, GGZMOD_EVENT_PLAYER, old);
+	if (ggzmod->state != GGZMOD_STATE_CREATED)
+		call_handler(ggzmod, GGZMOD_EVENT_PLAYER, old);
 }
 
-void ggzmod_get_my_seat(GGZMod *ggzmod,
-			int *is_spectator, int *seat_num)
+const char *ggzmod_get_player(GGZMod *ggzmod,
+			      int *is_spectator, int *seat_num)
 {
 	if (ggzmod->state == GGZMOD_STATE_CREATED)
 		ggz_error_msg("ggzmod_get_my_seat:"
@@ -298,19 +309,25 @@ void ggzmod_get_my_seat(GGZMod *ggzmod,
 
 	*is_spectator = ggzmod->i_am_spectator;
 	*seat_num = ggzmod->my_seat_num;
+
+	return ggzmod->my_name;
 }
 
-int ggzmod_set_my_seat(GGZMod *ggzmod, int is_spectator, int seat_num)
+int ggzmod_set_player(GGZMod *ggzmod, const char *name,
+		      int is_spectator, int seat_num)
 {
 	if (!ggzmod
 	    || ggzmod->type != GGZMOD_GGZ)
 		return -1;
 
+	if (ggzmod->my_name)
+		ggz_free(ggzmod->my_name);
+	ggzmod->my_name = ggz_strdup(name);
 	ggzmod->i_am_spectator = is_spectator;
 	ggzmod->my_seat_num = seat_num;
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED)
-		_io_send_player(ggzmod->fd, is_spectator, seat_num);
+		_io_send_player(ggzmod->fd, name, is_spectator, seat_num);
 
 	return 0;
 }
@@ -693,29 +710,30 @@ static int send_game_launch(GGZMod * ggzmod)
 
 	if (_io_send_launch_begin(ggzmod->fd,
 				  ggzmod->num_seats,
-				  ggzmod->num_spectator_seats,
-				  ggzmod->i_am_spectator,
-				  ggzmod->my_seat_num) < 0) {
-		_ggzmod_error(ggzmod, "Error writing to game");
+				  ggzmod->num_spectator_seats) < 0)
 		return -1;
-	}
+
+	if (_io_send_player(ggzmod->fd,
+			    ggzmod->my_name,
+			    ggzmod->i_am_spectator,
+			    ggzmod->my_seat_num) < 0)
+		return -2;
 
 	for (i = 0; i < ggzmod->num_seats; i++) {
 		GGZSeat seat = ggzmod_get_seat(ggzmod, i);
-		_io_send_seat(ggzmod->fd, &seat);
+		if (_io_send_seat(ggzmod->fd, &seat) < 0)
+			return -3;
 	}
 	for (i = 0; i < ggzmod->num_spectator_seats; i++) {
 		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(ggzmod, i);
-		_io_send_spectator_seat(ggzmod->fd, &seat);
+		if (_io_send_spectator_seat(ggzmod->fd, &seat) < 0)
+			return -4;
 	}
 
 	/* If the server fd has already been set, send that too */
-	if (ggzmod->server_fd != -1) {
-		if (_io_send_server(ggzmod->fd, ggzmod->server_fd) < 0) {
-			_ggzmod_error(ggzmod, "Error writing to game");
-			return -1;
-		}
-	}
+	if (ggzmod->server_fd != -1)
+		if (_io_send_server(ggzmod->fd, ggzmod->server_fd) < 0)
+			return -5;
 
 	return 0;
 }
@@ -831,19 +849,9 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	/* Is this right? has the gameover happened yet? */   
 }
 
-void _ggzmod_handle_launch_begin(GGZMod * ggzmod,
-				 int num_seats, int num_spectator_seats,
-				 int is_spectator, int seat_num)
+void _ggzmod_handle_launch_begin(GGZMod * ggzmod)
 {
-	/* We allow 0 seats since GGZ might not want to bother telling
-	   us. */
-	if (num_seats < 0 || num_spectator_seats < 0) {
-		_ggzmod_error(ggzmod, "Invalid number of (spectator) seats.");
-		return;
-	}
-
-	ggzmod->i_am_spectator = is_spectator;
-	ggzmod->my_seat_num = seat_num;
+	/* Nothing */
 }
 				 
 
@@ -851,7 +859,7 @@ void _ggzmod_handle_launch_end(GGZMod * ggzmod)
 {
 	/* Normally we let the game control its own state, but
 	   we control the transition from CREATED to WAITING. */
-        _ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
+	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
 }
 
 

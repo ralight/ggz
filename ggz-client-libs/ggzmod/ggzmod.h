@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 4912 2002-10-14 20:22:18Z jdorje $
+ * $Id: ggzmod.h 4914 2002-10-14 21:59:49Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -290,9 +290,10 @@ GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod,
  *  @param ggzmod The GGZMod object.
  *  @param is_spectator Will be set to TRUE iff player is spectating.
  *  @param seat_num Will be set to the number of our (spectator) seat.
+ *  @return The name of the player (or NULL on error).
  */
-void ggzmod_get_my_seat(GGZMod *ggzmod,
-			int *is_spectator, int *seat_num);
+const char * ggzmod_get_player(GGZMod *ggzmod,
+				int *is_spectator, int *seat_num);
 
 /** @brief Return gamedata pointer
  *
@@ -351,8 +352,9 @@ void ggzmod_set_server_fd(GGZMod * ggzmod, int fd);
  *  @param seat_num The seat or spectator seat number.
  *  @return 0 on success, negative on error.
  */
-int ggzmod_set_my_seat(GGZMod *ggzmod,
-		       int is_spectator, int seat_num);
+int ggzmod_set_player(GGZMod *ggzmod,
+		      const char *my_name,
+		      int is_spectator, int seat_num);
 
 /** @brief Set seat data.
  *
