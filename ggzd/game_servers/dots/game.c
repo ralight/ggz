@@ -157,6 +157,17 @@ int game_send_options(int seat)
 }
 
 
+/* Send a request for client to set options */
+int game_send_options_request(int seat)
+{
+	int fd = ggz_seats[seat].fd;
+
+	if(es_write_int(fd, DOTS_REQ_OPTIONS) < 0)
+		return -1;
+	return 0;
+}
+
+
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
@@ -431,8 +442,7 @@ int game_update(int event, void *d1, void *d2)
 	int seat;
 	char x, y;
 	char victor;
-	static int join_queue[2];
-	static int waiting=0;
+	static int first_join=1;
 	
 	switch(event) {
 		case DOTS_EVENT_LAUNCH:
@@ -444,37 +454,41 @@ int game_update(int event, void *d1, void *d2)
 			if(dots_game.state != DOTS_STATE_OPTIONS)
 				return -1;
 			dots_game.state = DOTS_STATE_WAIT;
-			while(waiting) {
-				seat = join_queue[--waiting];
-				game_send_options(seat);
-				game_send_seat(seat);
-				game_send_players();
-			}
 
+			/* Send the options to anyone waitng for them */
+			for(seat=0; seat<2; seat++)
+				if(ggz_seats[seat].assign == GGZ_SEAT_PLAYER)
+					game_send_options(seat);
+
+			/* Start the game if we are ready to */
 			if(!ggz_seats_open()) {
-				if(dots_game.turn == -1)
-					dots_game.turn = 0;
-				else 
-					game_send_sync(seat);
-			
+				dots_game.turn = 0;
 				dots_game.state = DOTS_STATE_PLAYING;
 				game_move();
 			}
 			break;
 		case DOTS_EVENT_JOIN:
-			seat = *(int*)d1;
-			if(dots_game.state == DOTS_STATE_OPTIONS) {
-				join_queue[waiting++] = seat;
-				return 0;
-			}
-
-			if(dots_game.state != DOTS_STATE_WAIT)
+			if(dots_game.state != DOTS_STATE_WAIT
+			   && dots_game.state != DOTS_STATE_OPTIONS)
 				return -1;
 
-			game_send_options(seat);
+			/* Send out seat assignments and player list */
+			seat = *(int*)d1;
 			game_send_seat(seat);
 			game_send_players();
 
+			/* The first joining client gets asked to set options */
+			if(dots_game.state == DOTS_STATE_OPTIONS) {
+				if(first_join) {
+					if(game_send_options_request(seat) < 0)
+						return -1;
+					first_join = 0;
+				}
+				return 0;
+			}
+
+			/* If options are already set, we can proceed */
+			game_send_options(seat);
 			if(!ggz_seats_open()) {
 				if(dots_game.turn == -1)
 					dots_game.turn = 0;
