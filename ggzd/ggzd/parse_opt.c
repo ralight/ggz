@@ -312,6 +312,7 @@ static void parse_file(FILE *configfile)
 		if(!strcmp(varname, "debugfile")) {
 #ifndef DEBUG
 			PARSE_ERR("Debugging not enabled");
+			continue;
 #else
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
@@ -329,6 +330,7 @@ static void parse_file(FILE *configfile)
 		if(!strcmp(varname, "debuglevel")) {
 #ifndef DEBUG
 			PARSE_ERR("Debugging not enabled");
+			continue;
 #else
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
