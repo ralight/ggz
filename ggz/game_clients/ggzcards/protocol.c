@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3318 2002-02-11 06:40:29Z jdorje $
+ * $Id: protocol.c 3323 2002-02-11 08:52:13Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -85,17 +85,51 @@ const char* get_client_opcode_name(client_msg_t opcode)
 
 const card_t UNKNOWN_CARD = {-1, -1, -1};
 
+/* Umm, these must be defined in some header file somewhere... */
+#define TRUE 1
+#define FALSE 0
+
+static int is_valid_card(card_t card)
+{
+	if (   (card.face == -1
+	        || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
+	    && (card.suit == -1
+	       || (card.suit >= CLUBS && card.suit <= SPADES))
+	    && (card.deck == -1
+	       || (card.deck >= 0 && card.deck <= 1 /* ? */)))
+		return TRUE;
+	else
+		return FALSE;
+}
+
 int read_card(int fd, card_t * card)
 {
 	if (ggz_read_char(fd, &card->face) < 0 ||
 	    ggz_read_char(fd, &card->suit) < 0 ||
 	    ggz_read_char(fd, &card->deck) < 0)
 		return -1;
+		
+	/* We go ahead and check the card for validity. */
+	if (is_valid_card(*card))
+		return 0;
+	
+#if 0 /* This could be dangerous - anyone could crash us! */
+	assert(FALSE);
+#endif
+
+#if 0 /* This probably makes the most sense, but... */
+	return -1;
+#endif
+
+	*card = UNKNOWN_CARD;
 	return 0;
 }
 
 int write_card(int fd, card_t card)
 {
+	/* Check for validity. */
+	assert(is_valid_card(card));
+	
 	if (ggz_write_char(fd, card.face) < 0 ||
 	    ggz_write_char(fd, card.suit) < 0 ||
 	    ggz_write_char(fd, card.deck) < 0)
