@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 4833 2002-10-10 00:53:29Z jdorje $
+ * $Id: server.c 4836 2002-10-10 01:37:38Z jdorje $
  *
  * Functions for handling server events
  *
@@ -366,14 +366,16 @@ static GGZHookReturn room_list_tables(GGZRoomEvent id, void* event_data, void* u
 
 static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("--> %s entered the room.", event_data);
+	char *player = event_data;
+	output_text("--> %s entered the room.", player);
 	return GGZ_HOOK_OK;
 }
 
 
 static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("<-- %s left the room.", event_data);
+	char *player = event_data;
+	output_text("<-- %s left the room.", player);
 	return GGZ_HOOK_OK;
 }
 
@@ -387,7 +389,8 @@ static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void
 
 static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("-- Table launch failed: %s", event_data);
+	char *err_msg = event_data;
+	output_text("-- Table launch failed: %s", err_msg);
 
 	game_quit();
 
@@ -404,7 +407,8 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* 
 
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("-- Table join failed: %s", event_data);
+	char *err_msg = event_data;
+	output_text("-- Table join failed: %s", err_msg);
 
 	game_quit();
 
