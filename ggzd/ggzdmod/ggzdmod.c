@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2612 2001-10-24 18:53:54Z jdorje $
+ * $Id: ggzdmod.c 2613 2001-10-24 19:23:09Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include <easysock.h>
@@ -59,6 +60,8 @@ typedef struct _GGZdMod {
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
+
+	int pid;		/* ggz-side only */
 	/* etc. */
 } _GGZdMod;
 
@@ -105,7 +108,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
-	/* Put any other necessary initialization here.  All fields should be 
+	/* Put any other necessary initialization here.  All fields should be
 	   initialized. */
 
 	return ggzdmod;
@@ -622,6 +625,7 @@ int ggzdmod_halt_game(GGZdMod * mod)
 
 /* Sends a game launch packet to ggzdmod-game. A negative return value
    indicates a serious (fatal) error. */
+/* No locking should be necessary within this function. */
 static int send_game_launch(_GGZdMod * ggzdmod)
 {
 	int seat;
@@ -645,6 +649,55 @@ static int send_game_launch(_GGZdMod * ggzdmod)
 	return 0;
 }
 
+/* Forks the game.  A negative return value indicates a serious error. */
+/* No locking should be necessary within this function. */
+static int game_fork(_GGZdMod * ggzdmod, char **argv)
+{
+	int argc = 0, pid;
+	int sfd[2];		/* socketpair */
+
+	if (argv == NULL)
+		return -1;
+	while (argv[argc] != NULL)
+		argc++;
+	if (argc < 1)		/* First argument: the executable */
+		return -1;
+
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
+		ggz_error_sys_exit("socketpair failed");
+
+	if ((pid = fork()) < 0)
+		ggz_error_sys_exit("fork failed");
+	else if (pid == 0) {
+		/* child */
+		close(sfd[0]);
+
+		/* debugging message??? */
+
+		if (sfd[1] != 3) {
+			/* We'd like to send an error message if either of
+			   these fail, but we can't.  --JDS */
+			if (dup2(sfd[1], 3) != 3 || close(sfd[1]) < 0)
+				exit(-1);
+		}
+
+		/* FIXME: Close all other fd's and kill threads? */
+		/* FIXME: Not necessary to close other fd's if we use
+		   CLOSE_ON_EXEC */
+		execv(argv[0], argv);	/* run game */
+
+		exit(-1);	/* we still can't send error messages */
+	} else {
+		/* parent */
+		close(sfd[1]);
+
+		ggzdmod->pid = pid;
+		/* That's all! */
+	}
+	return 0;
+}
+
+/* Launches a game.  A negative return value indicates a serious error. */
 int ggzdmod_launch_game(GGZdMod * mod, char **args)
 {
 	_GGZdMod *ggzdmod = mod;
@@ -655,7 +708,8 @@ int ggzdmod_launch_game(GGZdMod * mod, char **args)
 	/* This needs to allocate everything, launch the actual program, then 
 	   call send_game_launch to tell the game to start. */
 	abort();
-	send_game_launch(ggzdmod);
+	if (game_fork(ggzdmod, args) < 0 || send_game_launch(ggzdmod) < 0)
+		return -1;
 	return -1;
 }
 
