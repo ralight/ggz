@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2843 2001-12-10 02:19:53Z jdorje $
+ * $Id: common.c 2845 2001-12-10 03:07:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,6 +50,15 @@ struct game_t game = { 0 };
 
 int client_initialize(void)
 {
+	/* A word on debugging: the client-common code uses ggz for internal
+	   memory management; i.e. ggz_malloc+ggz_free. Anything allocated
+	   with easysock will be allocated with malloc and must be freed with 
+	   free.  The table code (which is gui-specific) may use whatever
+	   memory management routines it wants (currently the GTK client uses 
+	   g_malloc and g_free). This may be unnecessarily complicated, but
+	   remember that the internal client-common variables are always kept 
+	   separate from the GUI variables, so there should be no confusion
+	   there. And all of the easysock-allocated variables are labelled. */
 #ifdef DEBUG
 	ggz_debug_enable("core");
 #endif
@@ -214,7 +223,7 @@ static int handle_message_player(void)
 
 	table_set_player_message(p, message);
 
-	free(message);		/* message is allocated by easysock */
+	free(message);		/* allocated by easysock */
 
 	return 0;
 }
@@ -340,17 +349,24 @@ static int handle_msg_hand(void)
 		table_alert_hand_size(game_max_hand_size);
 
 		for (p = 0; p < game.num_players; p++) {
+#if 0
 			/* TODO: figure out how this code could even fail at
 			   all. In the meantime, I've disabled the call to
-			   free, conceding the memory leak so that we don't
-			   have an unexplained seg fault (which we would have
-			   if these two lines were included) */
-			/* if (game.players[p].hand.card != NULL)
-			   free(game.players[p].hand.card); */
+			   free (realloc), conceding the memory leak so that
+			   we don't have an unexplained seg fault (which we
+			   would have if the realloc method were used
+			   instead!!). */
+			game.players[p].hand.card =
+				ggz_realloc(game.players[p].hand.card,
+					    game_max_hand_size *
+					    sizeof(*game.players[p].hand.
+						   card));
+#else
 			game.players[p].hand.card =
 				ggz_malloc(game_max_hand_size *
 					   sizeof(*game.players[p].hand.
 						  card));
+#endif
 		}
 
 		table_setup();	/* redesign table */
