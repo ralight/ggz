@@ -4,7 +4,7 @@
  * Project: GGZD
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.h 2322 2001-08-29 07:03:38Z jdorje $
+ * $Id: ggzdmod.h 2326 2001-08-29 17:47:26Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -53,7 +53,7 @@ extern int table_game_launch(void *data, char status);
 extern int table_game_join(void *data, char status);
 extern int table_game_leave(void *data, char status);
 extern int table_game_over(void *data);
-extern int table_log(void *data, char *msg, char debug);
+extern int table_log(void *data, char *msg, int level, char debug);
 extern void dbg_msg(const unsigned dbg_type, const char *fmt, ...);
 
 #endif /* _GGZDMOD_H */

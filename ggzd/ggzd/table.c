@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2322 2001-08-29 07:03:38Z jdorje $
+ * $Id: table.c 2326 2001-08-29 17:47:26Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ static void  table_run_game(GGZTable* table, char *path);
 static char** table_split_args(char *path);
 static int   table_send_opt(GGZTable* table);
 int   table_game_over(void* data);
-int   table_log(void *data, char *msg, char debug);
+int   table_log(void *data, char *msg, int level, char debug);
 int   table_game_launch(void* data, char status);
 int   table_game_join(void* data, char status);
 int   table_game_leave(void* data, char status);
@@ -608,10 +608,10 @@ int table_game_over(void* data)
 }
 
 
-int table_log(void* data, char* message, char debug)
+int table_log(void* data, char* message, int level, char debug)
 {
 	GGZTable *table = data;
-	int level, type, len, pid;
+	int type, len, pid;
 	char name[MAX_GAME_NAME_LEN];
 	char *prescan = message, *msg, *p, *m;
 	char *buf;
