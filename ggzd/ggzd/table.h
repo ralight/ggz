@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
+ * $Id: table.h 2267 2001-08-26 22:09:09Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -29,9 +30,7 @@
 
 #include <pthread.h>
 
-#include <ggzd.h>
-
-/* 
+/*
  * The GGZTable structure contains information about a single game
  * table 
  */
