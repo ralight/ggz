@@ -25,23 +25,25 @@ class Network(NetworkBase, NetworkInfo):
 		NetworkInfo.__init__(self)
 		self.MSG_SEAT = 0
 		self.MSG_PLAYERS = 1
+		self.MSG_START = 5
+
 		self.MSG_MOVE = 2
 		self.MSG_GAMEOVER = 3
 		self.REQ_MOVE = 4
-		self.MSG_START = 5
-		self.MSG_SYNC = 6
-		self.REQ_SYNC = 7
-		self.REQ_AGAIN = 8
 
-		self.SRV_ERROR = -1
-		self.SRV_OK = 0
-		self.SRV_JOIN = 1
-		self.SRV_LEFT = 2
-		self.SRV_QUIT = 3
+#		self.MSG_SYNC = 6
+#		self.REQ_SYNC = 7
+#		self.REQ_AGAIN = 8
 
-		self.ERROR_INVALIDMOVE = -1
-		self.ERROR_WRONGTURN = -2
-		self.ERROR_CANTMOVE = -3
+#		self.SRV_ERROR = -1
+#		self.SRV_OK = 0
+##		self.SRV_JOIN = 1
+#		self.SRV_LEFT = 2
+#		self.SRV_QUIT = 3
+
+#		self.ERROR_INVALIDMOVE = -1
+#		self.ERROR_WRONGTURN = -2
+#		self.ERROR_CANTMOVE = -3
 
 		self.movequeue = []
 
@@ -64,37 +66,35 @@ class Network(NetworkBase, NetworkInfo):
 					print " + player", player
 		elif op == self.MSG_MOVE:
 			print "- move"
-			move = self.getbyte()
-			print " + move", move
-			# FIXME: error handling...
-			if move > 0:
-				topos = (move % 8, move / 8)
-				self.movequeue.append((None, topos))
+			fromposval = self.getbyte()
+			toposval = self.getbyte()
+			print " + move", fromposval, toposval
+			frompos = (fromposval % 8, fromposval / 8)
+			topos = (toposval % 8, toposval / 8)
+			self.movequeue.append((frompos, topos))
 		elif op == self.MSG_GAMEOVER:
 			print "- gameover"
 			winner = self.getbyte()
 			print " + winner", winner
-#		elif op == self.REQ_MOVE:
-#			print "- req move"
+			self.inputallowed = 0
 		elif op == self.MSG_START:
 			print "- start"
 			self.inputallowed = 1
-		elif op == self.MSG_SYNC:
-			print "- sync"
-#		elif op == self.REQ_SYNC:
-#			print "- req sync"
-#		elif op == self.REQ_AGAIN:
-#			print "- req again"
+#		elif op == self.MSG_SYNC:
+#			print "- sync"
 		else:
 			print "- unknown opcode"
 			self.errorcode = 1
 
 	def domove(self, frompos, topos):
 		self.sendbyte(self.REQ_MOVE)
-		(x, y) = topos
-		toposval = y * 8 + x
+		(x, y) = frompos
+		(x2, y2) = topos
+		fromposval = y * 8 + x
+		toposval = y2 * 8 + x2
+		self.sendbyte(fromposval)
 		self.sendbyte(toposval)
-		print "*** SENT", toposval
+		print "*** SENT", fromposval, toposval
 
 	def netmove(self):
 		if len(self.movequeue) == 0:

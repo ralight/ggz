@@ -35,15 +35,15 @@ class Network(NetworkBase, NetworkInfo):
 #		self.REQ_SYNC = 7
 #		self.REQ_AGAIN = 8
 
-		self.SRV_ERROR = -1
-		self.SRV_OK = 0
-		self.SRV_JOIN = 1
-		self.SRV_LEFT = 2
-		self.SRV_QUIT = 3
+#		self.SRV_ERROR = -1
+#		self.SRV_OK = 0
+#		self.SRV_JOIN = 1
+#		self.SRV_LEFT = 2
+#		self.SRV_QUIT = 3
 
-		self.ERROR_INVALIDMOVE = -1
-		self.ERROR_WRONGTURN = -2
-		self.ERROR_CANTMOVE = -3
+#		self.ERROR_INVALIDMOVE = -1
+#		self.ERROR_WRONGTURN = -2
+#		self.ERROR_CANTMOVE = -3
 
 		self.movequeue = []
 
@@ -76,6 +76,7 @@ class Network(NetworkBase, NetworkInfo):
 			print "- gameover"
 			winner = self.getbyte()
 			print " + winner", winner
+			self.inputallowed = 0
 		elif op == self.MSG_START:
 			print "- start"
 			self.inputallowed = 1

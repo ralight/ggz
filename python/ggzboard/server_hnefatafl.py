@@ -29,11 +29,11 @@ class Server(NetworkBase):
 #		self.REQ_SYNC = 7
 #		self.REQ_AGAIN = 8
 
-		self.SRV_ERROR = -1
-		self.SRV_OK = 0
-		self.SRV_JOIN = 1
-		self.SRV_LEFT = 2
-		self.SRV_QUIT = 3
+#		self.SRV_ERROR = -1
+#		self.SRV_OK = 0
+#		self.SRV_JOIN = 1
+#		self.SRV_LEFT = 2
+#		self.SRV_QUIT = 3
 
 	def table_full(self):
 		full = 1
@@ -140,13 +140,10 @@ def initggz():
 def main():
 	global net
 	global ggzboardgame
-#	global xadrez
 
 	print "### launched"
 
 	""" Setup """
-
-#	xadrez = Xadrez()
 
 	print "### go init ggz"
 
