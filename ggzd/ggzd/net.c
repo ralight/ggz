@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5226 2002-11-06 07:06:39Z jdorje $
+ * $Id: net.c 5340 2003-01-22 13:50:38Z dr_maux $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -133,6 +133,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int str_to_int(const char *str, int dflt);
@@ -277,7 +278,7 @@ void net_free(GGZNetIO *net)
 
 /* net_send_XXX() functions for sending messages to the client */
 
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name)
+GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls)
 {
 	char *xml_srv_name;
 	GGZReturn status;
@@ -285,7 +286,8 @@ GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name)
 	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s' TLS_SUPPORT='%s'>",
+		VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok", ((use_tls && ggz_tls_support_query()) ? "yes" : "no"));
 	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
 	status = _net_send_line(net, "\t</SERVER>");
 
@@ -879,7 +881,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		err_sys_exit("Couldn't allocate buffer");
 
 	/* Read in data from socket */
-	if ( (len = read(net->fd, buf, BUFFSIZE)) < 0) {
+	if ( (len = ggz_tls_read(net->fd, buf, BUFFSIZE)) < 0) {
 		
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
@@ -1034,6 +1036,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_pong;
 	else if (strcasecmp(tag, "PING") == 0)
 		process_func = _net_handle_ping;
+	else if (strcmp(tag, "TLS_START") == 0)
+		process_func = _net_handle_tls_start;
 	else
 		process_func = NULL;
 	
@@ -1791,6 +1795,11 @@ static void _net_handle_ping(GGZNetIO *net, GGZXMLElement *element)
 	_net_send_pong(net, id);
 }
 
+/* Function for <TLS_START> tag */
+static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *data)
+{
+	ggz_tls_enable_fd(net->fd, GGZ_TLS_SERVER, GGZ_TLS_VERIFY_NONE);
+}
 
 /************ Utility/Convenience functions *******************/
 
@@ -1948,7 +1957,7 @@ static GGZReturn _net_send_line(GGZNetIO *net, char *line, ...)
 	va_end(ap);
 	strcat(buf, "\n");
 
-	if (write(net->fd, buf, strlen(buf)) < 0)
+	if (ggz_tls_write(net->fd, buf, strlen(buf)) < 0)
 		return GGZ_ERROR;
 	else
 		return GGZ_OK;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5051 2002-10-26 07:43:26Z jdorje $
+ * $Id: client.c 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -146,7 +146,7 @@ static void* client_thread_init(void *arg_ptr)
 	}
 	
 	/* Send server ID */
-	if (net_send_serverid(client->net, opt.server_name) < 0) {
+	if (net_send_serverid(client->net, opt.server_name, opt.tls_use) < 0) {
 		client_free(client);
 		pthread_exit(NULL);
 	}
@@ -168,9 +168,8 @@ static void* client_thread_init(void *arg_ptr)
 		client->addr);
 	
 	/* FIXME: use a new file for each client */
-#if 0
-	net_set_dump_file(client->net, "ggzd.protocol");
-#endif
+
+	net_set_dump_file(client->net, opt.dump_file);
 
 	/* Main client event loop */
 	client_loop(client);

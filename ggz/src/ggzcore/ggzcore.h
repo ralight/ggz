@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5223 2002-11-05 10:18:42Z jdorje $
+ * $Id: ggzcore.h 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Interface file to be included by client frontends
  *
@@ -610,7 +610,8 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
  */
 int ggzcore_server_set_hostinfo(GGZServer *server, 
 				const char *host, 
-				const unsigned int port);
+				const unsigned int port,
+				const unsigned int use_tls);
 
 /** @brief Set login info for logging in to the server.
  *
@@ -716,6 +717,13 @@ int ggzcore_server_get_channel(GGZServer *server);
  *  @return The state of the connection, or -1 on error.
  */
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
+
+/** @brief Get the current TLS status of this server
+ *
+ * @param server The GGZ server object
+ * @return Whether TLS is active or not
+ */
+int          ggzcore_server_get_tls(GGZServer *server);
 
 /** @brief Return the number of rooms on the server, or -1 on error.
  *  @note Until we retrieve the list of rooms, this will return 0.

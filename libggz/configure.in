@@ -137,6 +137,11 @@ if test "$enable_gcrypt" = yes; then
 		[AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])])
 fi
 
+dnl Encryption: TLS library
+AC_GGZ_TLS
+LDADD="$LDADD $GGZTLS_LDFLAGS $GGZTLS_LIB"
+CFLAGS="$CFLAGS $GGZTLS_INCLUDES"
+
 dnl Use -Wall if we have gcc.
 dnl =========================
 changequote(,)dnl
@@ -181,6 +186,9 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Encryption support.$enable_gcrypt"
+if test "$enable_gcrypt" = yes; then
+	echo "      TLS library support: $TLS_TYPE"
+fi
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to"

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5335 2003-01-16 22:15:22Z dr_maux $
+ * $Id: control.c 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -201,6 +201,7 @@ int main(int argc, const char *argv[])
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Encryption in use: %d", opt.tls_use);
 	
 	init_dirs();
 	init_data();
@@ -222,6 +223,9 @@ int main(int argc, const char *argv[])
 	pthread_key_create(&player_key, NULL);
 	signal(TABLE_EVENT_SIGNAL, table_handle_event_signal);
 	pthread_key_create(&table_key, NULL);
+
+	/* Setup TLS */
+	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
 
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, NULL);

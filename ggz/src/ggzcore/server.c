@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5131 2002-11-01 05:35:41Z jdorje $
+ * $Id: server.c 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Code for handling server connection state and properties
  *
@@ -196,11 +196,11 @@ void ggzcore_server_free(GGZServer *server)
 
 
 int ggzcore_server_set_hostinfo(GGZServer *server, const char *host,
-				const unsigned int port)
+				const unsigned int port, const unsigned int use_tls)
 {
 	/* Check for valid arguments */
 	if (server && host && server->state == GGZ_STATE_OFFLINE) {
-		_ggzcore_net_init(server->net, server, host, port);
+		_ggzcore_net_init(server->net, server, host, port, use_tls);
 		return 0;
 	}
 	else
@@ -379,6 +379,15 @@ GGZGame* ggzcore_server_get_cur_game(GGZServer *server)
 		return _ggzcore_server_get_cur_game(server);
 	else
 		return NULL;
+}
+
+
+int ggzcore_server_get_tls(GGZServer *server)
+{
+	if (server)
+		return _ggzcore_server_get_tls(server);
+	else
+		return -1;
 }
 
 
@@ -582,6 +591,17 @@ char* _ggzcore_server_get_password(GGZServer *server)
 GGZStateID _ggzcore_server_get_state(GGZServer *server)
 {
 	return server->state;
+}
+
+
+int _ggzcore_server_get_tls(struct _GGZServer *server)
+{
+	int tls;
+
+	tls = 0;
+	if (server && server->net)
+		tls = _ggzcore_net_get_tls(server->net);
+	return tls;
 }
 
 
@@ -896,7 +916,7 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	server->channel = _ggzcore_net_new();
 	host = _ggzcore_net_get_host(server->net);
 	port = _ggzcore_net_get_port(server->net);
-	_ggzcore_net_init(server->channel, server, host, port);
+	_ggzcore_net_init(server->channel, server, host, port, 0);
 	status = _ggzcore_net_connect(server->channel);
 	
 	if (status < 0) {

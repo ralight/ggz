@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5227 2002-11-06 07:10:06Z jdorje $
+ * $Id: netxml.c 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Code for parsing XML streamed from the server
  *
@@ -95,6 +95,9 @@ struct _GGZNet {
 
 	/* File to dump protocol session */
 	int dump_file;
+
+	/* Whether to use TLS or not */
+	int use_tls;
 };
 
 
@@ -173,6 +176,7 @@ static void _ggzcore_net_error(GGZNet *net, char* message);
 
 /* Dump network data to debugging file */
 static void _ggzcore_net_dump_data(GGZNet *net, char *data, int size);
+static void _ggzcore_net_negotiate_tls(GGZNet *net);
 
 /* Utility functions */
 static int _ggzcore_net_send_table_seat(GGZNet *net, struct _GGZSeat *seat);
@@ -195,18 +199,20 @@ GGZNet* _ggzcore_net_new(void)
 	/* Set fd to invalid value */
 	net->fd = -1;
 	net->dump_file = -1;
+	net->use_tls = -1;
 	
 	return net;
 }
 
 
 void _ggzcore_net_init(GGZNet *net, GGZServer *server,
-		       const char *host, unsigned int port)
+		       const char *host, unsigned int port, unsigned int use_tls)
 {
 	net->server = server;
 	net->host = ggz_strdup(host);
 	net->port = port;
 	net->fd = -1;
+	net->use_tls = use_tls;
 
 	/* Init parser */
 	if (!(net->parser = XML_ParserCreate("UTF-8")))
@@ -256,6 +262,12 @@ unsigned int _ggzcore_net_get_port(GGZNet *net)
 int _ggzcore_net_get_fd(GGZNet *net)
 {
 	return net->fd;
+}
+
+
+int _ggzcore_net_get_tls(struct _GGZNet *net)
+{
+	return net->use_tls;
 }
 
 
@@ -685,7 +697,7 @@ int _ggzcore_net_read_data(GGZNet *net)
 		ggz_error_sys_exit("Couldn't allocate buffer");
 
 	/* Read in data from socket */
-	if ( (len = read(net->fd, buf, XML_BUFFSIZE)) < 0) {
+	if ( (len = ggz_tls_read(net->fd, buf, XML_BUFFSIZE)) < 0) {
 		
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
@@ -840,7 +852,7 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 /* Functions for <SERVER> tag */
 void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *element)
 {
-	char *name, *id, *status;
+	char *name, *id, *status, *tls;
 	int version;
 	int *chatlen;
 
@@ -850,6 +862,7 @@ void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *element)
 	id = ATTR(element, "ID");
 	status = ATTR(element, "STATUS");
 	version = str_to_int(ATTR(element, "VERSION"), -1);
+	tls = ATTR(element, "TLS_SUPPORT");
 
 	chatlen = ggz_xmlelement_get_data(element);
 	/* If no chat length is specified, assume an unlimited
@@ -857,14 +870,18 @@ void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *element)
 	net->chat_size = chatlen ? *chatlen : 60000;
 
 	ggz_debug(GGZCORE_DBG_NET, 
-		  "%s(%s) : status %s: protocol %d: chat size %d", 
-		  name, id, status, version, net->chat_size);
+		  "%s(%s) : status %s: protocol %d: chat size %d tls: %s",
+		  name, id, status, version, net->chat_size, tls);
 
 	/* FIXME: Do something with name, status */
 	if (version == GGZ_CS_PROTO_VERSION) {
 		/* Everything checked out so start session */
 		_ggzcore_net_send_header(net);
-		
+
+		/* If TLS is enabled set it up */
+		if(tls && !strcmp(tls, "yes") && _ggzcore_net_get_tls(net) == 1 && ggz_tls_support_query())
+			_ggzcore_net_negotiate_tls(net);
+
 		_ggzcore_server_set_negotiate_status(net->server, net,
 						     E_OK);
 	} else
@@ -1973,6 +1990,19 @@ int _ggzcore_net_send_pong(GGZNet *net, const char *id)
 }
 
 
+/* Send a TLS_START notice and negotiate the handshake */
+static void _ggzcore_net_negotiate_tls(GGZNet *net)
+{
+	int ret;
+
+	_ggzcore_net_send_line(net, "<TLS_START/>");
+	/* This should return a status one day to tell client if */
+	/* the handshake failed for some reason */
+	ret = ggz_tls_enable_fd(net->fd, GGZ_TLS_CLIENT, GGZ_TLS_VERIFY_NONE);
+	if(!ret) net->use_tls = 0;
+}
+
+
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 {
 	char buf[4096];
@@ -1985,7 +2015,7 @@ static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 
 	/* Some of our callers assume we return 0 on success.  So don't
 	   return a positive value... */
-	if (write(net->fd, buf, strlen(buf)) < 0)
+	if (ggz_tls_write(net->fd, buf, strlen(buf)) < 0)
 		return -1;
 	return 0;
 }

@@ -27,6 +27,9 @@
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
 #undef USE_GCRYPT
+#undef GGZ_TLS_GNUTLS
+#undef GGZ_TLS_NONE
+#undef GGZ_TLS_OPENSSL
     
 
 /* Leave that blank line there!!  Autoheader needs it.

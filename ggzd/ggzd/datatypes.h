@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5335 2003-01-16 22:15:22Z dr_maux $
+ * $Id: datatypes.h 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -60,6 +60,11 @@ typedef struct {
 	char *dbusername;
 	char *dbpassword;
 	char *dbhashing;
+	int tls_use;
+	char *tls_key;
+	char *tls_cert;
+	char *tls_password;
+	char *dump_file;
 } Options;
 
 

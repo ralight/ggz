@@ -12,4 +12,5 @@ cfg_testfile
 ggzcommon
 misc
 strcmp
+tls
 debug.log

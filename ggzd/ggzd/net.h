@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: net.h 5340 2003-01-22 13:50:38Z dr_maux $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -54,7 +54,7 @@ void net_disconnect(GGZNetIO* net);
 void net_free(GGZNetIO* net);
 
 /* Functions to send data to the client */
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name);
+GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls);
 GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name);
 GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
 			 GGZClientReqError status, char *password);
