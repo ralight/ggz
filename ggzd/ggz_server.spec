@@ -23,7 +23,7 @@ are included with GGZ:
 %setup
 
 %build
-./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/tmp
 make
 
 %install
@@ -53,6 +53,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %changelog
 * Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>
 - Updated for release 0.0.3
+- Moved default location for db files to /var/tmp
 
 * Mon Aug 21 2000 Rich Gade <rgade@usrs.sourceforge.net>
 - Updated for version 0.0.3pre
