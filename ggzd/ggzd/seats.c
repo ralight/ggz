@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: seats.c 5924 2004-02-14 22:14:26Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -54,7 +54,6 @@ int seats_num(GGZTable* table)
 {
 	int i;
 
-#ifdef UNLIMITED_SEATS
 	i = table->num_seats;
 
 #  ifdef DEBUG
@@ -64,11 +63,6 @@ int seats_num(GGZTable* table)
 			break;
 		}
 #  endif
-#else
-	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (table->seat_types[i] == GGZ_SEAT_NONE)
-			break;
-#endif
 
 	return i;
 }
@@ -88,17 +82,7 @@ int spectators_count(GGZTable* table)
 
 int spectator_seats_num(GGZTable *table)
 {
-#ifdef UNLIMITED_SPECTATORS
 	return table->max_num_spectators;
-#else
-	int allow_spectators;
-
-	pthread_rwlock_rdlock(&game_types[table->type].lock);
-	allow_spectators = game_types[table->type].allow_spectators;
-	pthread_rwlock_unlock(&game_types[table->type].lock);
-
-	return allow_spectators ? MAX_TABLE_SPECTATORS : 0;
-#endif
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: transit.c 5924 2004-02-14 22:14:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -433,25 +433,13 @@ static int transit_find_available_seat(GGZTable *table, char *name)
 static int transit_find_available_spectator(GGZTable *table, char *name)
 {
 	int i, allow_spectators;
-#ifdef UNLIMITED_SPECTATORS
 	int new, old;
-#else
-	int old = -1;
-
-	/* See if we allow specators here. */
-	pthread_rwlock_rdlock(&game_types[table->type].lock);
-	allow_spectators = game_types[table->type].allow_spectators;
-	pthread_rwlock_unlock(&game_types[table->type].lock);
-
-	if (!allow_spectators) return -1;
-#endif
 
 	/* Look for first open spectator. */
 	for (i = 0; i < spectator_seats_num(table); i++)
 		if (!table->spectators[i][0])
 			return i;
 
-#ifdef UNLIMITED_SPECTATORS
 	/* If that failed, see if we allow specators here. */
 	pthread_rwlock_rdlock(&game_types[table->type].lock);
 	allow_spectators = game_types[table->type].allow_spectators;
@@ -463,13 +451,13 @@ static int transit_find_available_spectator(GGZTable *table, char *name)
 
 	/* Otherwise increase the size of the spectator array. */
 	old = table->max_num_spectators;
-	new = old ? old * 2 : 1;
+	new = (old > 0) ? old * 2 : 1;
 	table->spectators = ggz_realloc(table->spectators,
 					new * sizeof(*table->spectators));
-	for (i = old; i < new; i++)
+	for (i = old; i < new; i++) {
 		table->spectators[i][0] = '\0';
+	}
 	table->max_num_spectators = new;
-#endif
 
 	return old;
 }

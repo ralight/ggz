@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: net.c 5924 2004-02-14 22:14:26Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1563,7 +1563,6 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table->type = str_to_int(ggz_xmlelement_get_attr(element, "GAME"), -1);
 	num_seats = str_to_int(ggz_xmlelement_get_attr(element, "SEATS"), 0);
 
-#ifdef UNLIMITED_SEATS
 	if (num_seats > 0) {
 		int i;
 		/* FIXME: what if num_seats is really large? */
@@ -1577,7 +1576,6 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			table->seat_names[i][0] = '\0';
 		}
 	}
-#endif
 
 	/* If room was specified, use it, otherwise use players current room */
 	table->room = player_get_room(net->client->data);
@@ -1595,13 +1593,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		seat = ggz_list_get_data(entry);
 		seat_type = ggz_string_to_seattype(seat->type);
 
-		if (seat->index < 0 ||
-#ifdef UNLIMITED_SEATS
-		    seat->index >= table->num_seats
-#else
-		    seat->index >= MAX_TABLE_SIZE
-#endif
-		    ) {
+		if (seat->index < 0 || seat->index >= table->num_seats) {
 			/* We treat this as an error -
 			   we could just skip the seat instead */
 			if (data) _net_tabledata_free(data);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: players.c 5924 2004-02-14 22:14:26Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -330,21 +330,11 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
-	
-#ifndef UNLIMITED_SEATS
-	/* Silly client. Tables are only so big*/
-	if (seats_num(table) > MAX_TABLE_SIZE) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"%s tried to launch a table with > %d seats",
-			player->name, MAX_TABLE_SIZE);
-		if (net_send_table_launch(player->client->net, E_BAD_OPTIONS) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-#else
+
+	/* We used to check for _max_ table size here. Now there is no
+	 * max table size. */
 	/* Shouldn't some check be done?  Note that the number of players is
 	   checked against the player_allow_list later.  --JDS */
-#endif
 	
 	/* Don't allow multiple table launches */
 	if (player->table != -1 || player->launching) {

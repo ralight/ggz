@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: table.c 5924 2004-02-14 22:14:26Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -115,9 +115,6 @@ static int   type_match_table(int type, GGZTable* table);
 GGZTable* table_new(void)
 {
 	GGZTable *table;
-#if !defined UNLIMITED_SEATS || !defined UNLIMITED_SPECTATORS
-	int i;
-#endif
 	
 	/* Allocate a new table structure */
 	table = ggz_malloc(sizeof(*table));
@@ -129,22 +126,12 @@ GGZTable* table_new(void)
 	table->state = GGZ_TABLE_CREATED;
 	table->ggzdmod = NULL;
 
-#ifdef UNLIMITED_SEATS
 	table->num_seats = 0;
 	table->seat_types = NULL;
 	table->seat_names = NULL;
-#else
-	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		table->seat_types[i] = GGZ_SEAT_NONE;
-#endif
 
-#ifdef UNLIMITED_SPECTATORS
 	table->max_num_spectators = 0;
 	table->spectators = NULL;
-#else
-	for (i = 0; i < MAX_TABLE_SPECTATORS; i++)
-		table->spectators[i][0] = '\0';
-#endif
 
 	return table;
 }
@@ -167,7 +154,6 @@ static GGZTable *table_copy(GGZTable *table)
 	memcpy(new_table, table, size);
 
 	/* Some elements need to be copied explicitly. */
-#ifdef UNLIMITED_SEATS
 	if (new_table->num_seats > 0) {
 		size = new_table->num_seats * sizeof(*new_table->seat_names);
 		new_table->seat_names = ggz_malloc(size);
@@ -177,8 +163,7 @@ static GGZTable *table_copy(GGZTable *table)
 		new_table->seat_types = ggz_malloc(size);
 		memcpy(new_table->seat_types, table->seat_types, size);
 	}
-#endif
-#ifdef UNLIMITED_SPECTATORS
+
 	if (new_table->max_num_spectators > 0) {
 		size = new_table->max_num_spectators
 			* sizeof(*new_table->spectators);
@@ -186,7 +171,6 @@ static GGZTable *table_copy(GGZTable *table)
 		memcpy(new_table->spectators, table->spectators, size);
 	} else
 		new_table->spectators = NULL;
-#endif
 
 	/* Some elements just shouldn't be copied. */
 	new_table->ggzdmod = NULL;
@@ -1571,16 +1555,13 @@ static GGZReturn table_launch_event(char* name,
 /* Free dynamically allocated memory associated with a table*/
 void table_free(GGZTable* table)
 {
-#ifdef UNLIMITED_SEATS
 	if (table->num_seats > 0) {
 		ggz_free(table->seat_types);
 		ggz_free(table->seat_names);
 	}
-#endif
-#ifdef UNLIMITED_SPECTATORS
-	if (table->max_num_spectators > 0)
+	if (table->max_num_spectators > 0) {
 		ggz_free(table->spectators);
-#endif
+	}
 
 	if (table->ggzdmod)
 		ggzdmod_free(table->ggzdmod);

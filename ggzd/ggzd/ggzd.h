@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: ggzd.h 5924 2004-02-14 22:14:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -39,10 +39,6 @@ typedef unsigned char _Bool;
 # define __bool_true_false_are_defined 1
 #endif
 
-/* Server options */
-#define UNLIMITED_SEATS
-#define UNLIMITED_SPECTATORS
-
 /* Server limits */
 #define MAX_USER_NAME_LEN 16
 #define MAX_GAME_NAME_LEN 24
@@ -53,12 +49,6 @@ typedef unsigned char _Bool;
 #define MAX_CHAT_LEN 512
 #define MAX_GAME_DESC_LEN 512
 #define MAX_CHAT_BUFFER 32
-#ifndef UNLIMITED_SEATS
-#  define MAX_TABLE_SIZE 8
-#endif
-#ifndef UNLIMITED_SPECTATORS
-#  define MAX_TABLE_SPECTATORS 4
-#endif
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
 
