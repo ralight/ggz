@@ -73,6 +73,8 @@ private: // Private attributes
   void doMove(int move);
   /** mark the board */
   int markBoard(int player, int mx, int my, int dx, int dy, char mboard[8][8]);
+  /** Decoreate the board for ReversiView */
+  void maskBoard(int player, char board[8][8]);
   /** Check for validity */
   bool checkValid(int player, int mx, int my, int dx, int dy);
 protected slots: // Protected slots

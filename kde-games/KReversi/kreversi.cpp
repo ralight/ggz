@@ -29,6 +29,8 @@
 
 KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name)
 {
+  char mboard[8][8];
+  int x, y;
 
   /* Handle the UI */
   // Create the KActions
@@ -47,7 +49,13 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
 
 	// Create the view
 	view = new ReversiView(this);
-  view->updateBoard(board);
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      mboard[x][y] = board[x][y];
+    }
+  }
+  maskBoard(turn, mboard);
+  view->updateBoard(mboard);
 
   // Create the protocol
   protocol = new ReversiProtocol();
@@ -166,6 +174,7 @@ void KReversi::playerMoveSlot(int x, int y) {
     statusMsg("Invalid move!");
     return;
   }
+  statusBar()->changeItem("Sending move...", 1);
   protocol->send(RVR_REQ_MOVE);
   protocol->send(y*8 + x);
 }
@@ -215,18 +224,24 @@ void KReversi::doMove(int move) {
   markBoard(turn, mx, my, -1, 1, mboard);
   markBoard(turn, mx, my, -1, -1, mboard);
 
-  /* Check possible moves */
-  for (x = 0; x < 8; x++) {
-    for (y = 0; y < 8; y++) {
-      if (isValid(-turn, x, y))
-        mboard[x][y] = VIEW_POSSIBLE;
-    }
-  }
+  maskBoard(-turn, mboard);
 
   /* Update the board mask */
   view->updateBoard(mboard);
   turn = -turn;
 }
+
+void KReversi::maskBoard(int player, char board[8][8]) {
+  int x, y;
+  /* Check possible moves */
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      if (isValid(player, x, y))
+        board[x][y] = VIEW_POSSIBLE;
+    }
+  }
+}
+
 
 int KReversi::markBoard(int player, int mx, int my, int dx, int dy, char mboard[8][8]) {
   // Recursivaly marks the board
@@ -249,16 +264,19 @@ int KReversi::markBoard(int player, int mx, int my, int dx, int dy, char mboard[
 void KReversi::syncSlot(char _turn, char *_board) {
   int x, y;
   char *a = _board;
+  char mboard[8][8];
   turn = _turn;
   for (y = 0; y < 8; y++) {
     for (x = 0; x < 8; x++) {
       board[x][y] = *a++;
+      mboard[x][y] = board[x][y];
     }
   }
   moveSlot(-1);
   updateScore();
   statusMsg(i18n("Syncing game!"));
-  view->updateBoard(board);
+  maskBoard(turn, mboard);
+  view->updateBoard(mboard);
 }
 
 void KReversi::requestSync() {
@@ -286,11 +304,19 @@ void KReversi::initGame() {
 }
 
 void KReversi::playAgain() {
+  int x, y;
+  char mboard[8][8];
   if (playing)
     return;
   protocol->send(RVR_REQ_AGAIN);
   initGame();
-  view->updateBoard(board);
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      mboard[x][y] = board[x][y];
+    }
+  }
+  maskBoard(turn, mboard);
+  view->updateBoard(mboard);
 }
 
   /* Check if a move is valid */
