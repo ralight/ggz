@@ -5,9 +5,9 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3063 2002-01-11 17:11:15Z dr_maux $
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* System includes */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -31,12 +32,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
+/* GGZ includes */
 #include <easysock.h>
 #include <ggzmod.h>
 
-#include <game.h>
-#include <main_win.h>
-
+/* Hastings includes */
+#include "game.h"
+#include "main_win.h"
 #include "ggzintl.h"
 
 /* main window widget */
@@ -62,9 +64,6 @@ int main(int argc, char* argv[])
 
 	gtk_main();
 
-/* FIXME: um, doesn't this printf get executed only at the end? --JDS */
-printf("** Game started.\n");
-
 	if (ggzmod_disconnect() < 0)
 		return -2;
 
@@ -81,8 +80,6 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		/* FIXME: do something here...*/
 		return;
 	}
-
-printf("** Input arrived.\n");
 
 	/* Distinguish between different server responses */
 	switch(op)
@@ -178,12 +175,13 @@ int get_opponent_move(void)
 	game.board[game.move_src_x][game.move_src_y] = -1;
 	game.board[game.move_dst_x][game.move_dst_y] = game.num;
 
-/* DEBUG */
-printf("Opponent %i: From %i/%i to %i/%i!\n", game.num, game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
+	/*printf("Opponent %i: From %i/%i to %i/%i!\n", game.num,
+		game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);*/
 
 	return 0;
 }
 
+/* Request synchronization from the server */
 int request_sync(void)
 {
 	game_status(_("Requesting synchronization"));
@@ -205,22 +203,19 @@ int get_sync(void)
 
 	game_status(_("Player %d's turn"), game.num);
 
-        for (i = 0; i < 6; i++)
-	{
+	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
 		{
 			if (es_read_char(game.fd, &space) < 0) return -1;
 			game.board[i][j] = space;
 		}
-	}
-        for (i = 0; i < 6; i++)
-	{
-	        for (j = 0; j < 19; j++)
+
+	for (i = 0; i < 6; i++)
+		for (j = 0; j < 19; j++)
 		{
 			if (es_read_char(game.fd, &space) < 0) return -1;
 			game.boardmap[i][j] = space;
 		}
-	}
 
 	game_status(_("Sync completed"));
 
@@ -260,7 +255,8 @@ void game_init(void)
 /* Forwarding my move to the Hastings server */
 int send_my_move(void)
 {
-	game_status(_("Sending my move: %d/%d to %d/%d"), game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
+	game_status(_("Sending my move: %d/%d to %d/%d"),
+		game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
 
 	if ((es_write_int(game.fd, HASTINGS_SND_MOVE) < 0)
 	    || (es_write_int(game.fd, game.move_src_x) < 0)
@@ -323,3 +319,4 @@ int get_move_status(void)
 
 	return 0;
 }
+

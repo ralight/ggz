@@ -6,7 +6,7 @@
  * Date: 09/10/2000
  * Desc: Create the "About" Gtk dialog
  *
- * Copyright (C) 2000 Josef Spillnr
+ * Copyright (C) 2000 - 2002 Josef Spillnr
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,24 +23,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* Configration file */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+/* System includes */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
 
+/* Gtk+ includes */
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+/* Hastings includes */
 #include "dlg_about.h"
 #include "support.h"
 #include "ggzintl.h"
 
-GtkWidget*
-create_dlg_about (void)
+/* Create and show the about dialog */
+GtkWidget* create_dlg_about (void)
 {
   GtkWidget *dlg_about;
   GtkWidget *dialog_vbox1;
@@ -67,14 +71,20 @@ create_dlg_about (void)
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
 
-  label3 = gtk_label_new ("GGZ Gaming Zone\nHastings1066 Version 0.0.4");
+  label3 = gtk_label_new ("GGZ Gaming Zone\nHastings1066 Version 0.0.5pre");
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (vbox1), label3, FALSE, FALSE, 0);
 
-  label4 = gtk_label_new (_("Authors:\n        Gtk+ Client:\n            Josef Spillner        <dr_maux@users.sourceforge.net>\n\n        Game Server:\n            Josef Spillner        <dr_maux@users.sourceforge.net>\n\nWebsite:\n        http://mindx.sourceforge.net/"));
+  label4 = gtk_label_new (_("Authors:\n"
+	"        Gtk+ Client:\n"
+	"            Josef Spillner        <dr_maux@users.sourceforge.net>\n\n"
+	"        Game Server:\n"
+	"            Josef Spillner        <dr_maux@users.sourceforge.net>\n\n"
+	"Website:\n"
+	"        http://ggz.sourceforge.net/games/hastings/"));
   gtk_widget_ref (label4);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);

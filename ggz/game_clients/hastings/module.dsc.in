@@ -1,10 +1,11 @@
-# La Pocha description file
+# Hastings description file
 [ModuleInfo]
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/ggz.hastings
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/
+Homepage = http://ggz.sourceforge.net/games/hastings/
 Name = Hastings
 ProtocolEngine = Hastings
 ProtocolVersion = 1
 Version = 0.0.4
+

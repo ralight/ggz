@@ -6,7 +6,7 @@
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,10 +40,11 @@
 #include <gtk/gtk.h>
 
 /* Hastings files */
-#include <main_win.h>
-#include <game.h>
-#include <support.h>
-#include <dlg_about.h>
+#include "main_win.h"
+#include "game.h"
+#include "support.h"
+#include "dlg_about.h"
+#include "dlg_yesno.h"
 #include "ggzintl.h"
 
 /* Pixmap files */
@@ -103,7 +104,7 @@ void game_status( const char* format, ... )
 	gtk_statusbar_pop(GTK_STATUSBAR(tmp), id);
 	gtk_statusbar_push(GTK_STATUSBAR(tmp), id, message);
 
-	printf("STATUS: %s\n", message);
+	/*printf("STATUS: %s\n", message);*/
 
 	g_free(message);
 
@@ -216,10 +217,14 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	/* now for the pixmap from gdk */
 	style = gtk_widget_get_style(main_win);
 
-	man_pix[0] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[0], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanred_xpm);
-	man_pix[1] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[1], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanblue_xpm);
-	man_pix[2] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[2], &style->bg[GTK_STATE_NORMAL], (gchar**)newmangreen_xpm);
-	man_pix[3] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[3], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanyellow_xpm);
+	man_pix[0] = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&man_mask[0], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanred_xpm);
+	man_pix[1] = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&man_mask[1], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanblue_xpm);
+	man_pix[2] = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&man_mask[2], &style->bg[GTK_STATE_NORMAL], (gchar**)newmangreen_xpm);
+	man_pix[3] = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&man_mask[3], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanyellow_xpm);
 
 	for(i = 0; i < 4; i++)
 	{
@@ -228,20 +233,25 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 		gdk_gc_set_tile(man_gc[i], man_pix[i]);
 	}
 
-	frame_ul_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ul_xpm);
-	frame_ur_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ur_xpm);
- 	frame_ll_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ll_xpm);
-	frame_lr_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_lr_xpm);
+	frame_ul_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ul_xpm);
+	frame_ur_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ur_xpm);
+ 	frame_ll_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ll_xpm);
+	frame_lr_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_lr_xpm);
 
-	frame_black_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_black_xpm);
+	frame_black_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_black_xpm);
 
-	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm);
+	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm);
 }
 
 /* Quit the game */
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-	/* FIXME: should call an "are you sure dialog" */
 	gtk_main_quit();
 
 	return FALSE;
@@ -256,14 +266,25 @@ void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 /* Leave the game */
 void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
-	/* FIXME: should call an "are you sure dialog" */
-	gtk_main_quit();
+	static GtkWidget *dlg_yesno = NULL;
+
+	if(dlg_yesno != NULL)
+	{
+		gdk_window_show(dlg_yesno->window);
+		gdk_window_raise(dlg_yesno->window);
+	}
+	else
+	{
+		dlg_yesno = create_dlg_yesno(_("Do you really want to quit Hastings1066?"));
+		gtk_signal_connect(GTK_OBJECT(dlg_yesno),
+		   "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dlg_yesno);
+		gtk_widget_show(dlg_yesno);
+	}
 }
 
 /* Display the about dialog, crediting me all over... */
 void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
-
 	static GtkWidget *dlg_about = NULL;
 
 	if(dlg_about != NULL)
@@ -290,15 +311,9 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 	else
 	{
 		hastings_buf = gdk_pixmap_new(widget->window,
-					  widget->allocation.width,
-					  widget->allocation.height,
-					  -1);
-		gdk_draw_rectangle(hastings_buf,
-				    widget->style->black_gc,
-				    TRUE,
-				    0, 0,
-				    widget->allocation.width,
-				    widget->allocation.height);
+			widget->allocation.width, widget->allocation.height, -1);
+		gdk_draw_rectangle(hastings_buf, widget->style->black_gc,
+			TRUE, 0, 0, widget->allocation.width, widget->allocation.height);
 	}
 	return TRUE;
 }
@@ -307,12 +322,9 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 		       gpointer user_data)
 {
-	gdk_draw_pixmap(widget->window,
-			widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
-			hastings_buf,
-			event->area.x, event->area.y,
-			event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	gdk_draw_pixmap(widget->window, widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
+		hastings_buf, event->area.x, event->area.y,	event->area.x, event->area.y,
+		event->area.width, event->area.height);
 
 	return FALSE;
 }
@@ -382,8 +394,7 @@ gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 }
 
 /* Gtk+ stuff: set up the window */
-GtkWidget*
-create_main_win (void)
+GtkWidget* create_main_win (void)
 {
   GtkWidget *main_win;
   GtkWidget *main_box;
@@ -538,3 +549,4 @@ create_main_win (void)
 
   return main_win;
 }
+

@@ -6,7 +6,7 @@
  * Date: 09/10/2000
  * Desc: Create the "About" Gtk dialog
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,4 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef HASTINGS_DLG_ABOUT_H
+#define HASTINGS_DLG_ABOUT_H
+
+/* Show the 'About...' dialog of Hastings */
 GtkWidget* create_dlg_about (void);
+
+#endif
+

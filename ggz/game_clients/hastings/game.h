@@ -5,9 +5,9 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
+ * $Id: game.h 3063 2002-01-11 17:11:15Z dr_maux $
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef HASTINGS_GAME_H
+#define HASTINGS_GAME_H
 
 /* Hastings1066 protocol */
 /* Messages from server */
@@ -98,3 +100,6 @@ int send_my_move(void);
 
 /* Requests */
 int request_sync(void);
+
+#endif
+

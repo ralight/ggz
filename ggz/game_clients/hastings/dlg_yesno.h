@@ -1,10 +1,9 @@
 /*
- * File: main.c
+ * File: dlg_yesno.h
  * Author: Josef Spillner
- * Original Author: Brent Hendricks
- * Project: GGZ Hastings1066 game module
- * Date: 09/13/00
- * Desc: Main window creation and utility funcs
+ * Project: GGZ Hastings1066 Client
+ * Date: 11/01/2002
+ * Desc: Create a "Yes/No" Gtk dialog
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -23,17 +22,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef HASTINGS_MAIN_WIN_H
-#define HASTINGS_MAIN_WIN_H
+#ifndef HASTINGS_DLG_YESNO_H
+#define HASTINGS_DLG_YESNO_H
 
-/* Create the main window */
-GtkWidget* create_main_win (void);
-
-/* Display the game status */
-void game_status( const char* format, ... );
-
-/* Paint the game board */
-void display_board(void);
+/* Show a question to be answered with yes or no */
+GtkWidget* create_dlg_yesno(const char *question);
 
 #endif
 
