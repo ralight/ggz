@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: main.c 2805 2001-12-08 05:26:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,27 +30,28 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../../ggzdmod/ggz_server.h"
-
 #include "game.h"
 
 int main(void)
 {
-	/* Seed the random number generator */
-	srandom((unsigned)time(NULL));
-
-	game_init();
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
 
 	/* FIXME: game_handle_ggz is useless; it just calls
 	 * another function right away.  That other function
 	 * should be the handler instead. --JDS */
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	/* ggzd_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz); */
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 
-	(void)ggzd_main_loop();
+	/* Seed the random number generator */
+	srandom((unsigned)time(NULL));
+	game_init(ggz);
+
+	(void)ggzdmod_connect(ggz);
+	(void)ggzdmod_loop(ggz);
+	(void)ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }

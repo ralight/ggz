@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2805 2001-12-08 05:26:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,9 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef GGZ_CARDS_INCLUDED
-#  include "cards.h"
-#endif
+#include "ggzdmod.h"
+
+#include "cards.h"
 
 /* La Pocha protocol */
 /* Messages from server */
@@ -79,6 +79,7 @@
 
 /* Data structure for La Pocha game */
 struct lp_game_t {
+	GGZdMod *ggz; /* GGZ data */
 	char state;
 	char saved_state;
 	int turn;
@@ -101,8 +102,10 @@ struct lp_game_t {
 
 extern struct lp_game_t game;
 
-extern void game_init(void);
+void game_init(GGZdMod *ggz);
 
 /* GGZ handler functions */
-void game_handle_ggz(GGZdModEvent event, void *data);
-void game_handle_player(GGZdModEvent event, void *data);
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);

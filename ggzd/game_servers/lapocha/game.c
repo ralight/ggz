@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
- * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.c 2805 2001-12-08 05:26:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,6 @@
 #include <unistd.h>
 
 #include <easysock.h>
-#include "../../ggzdmod/ggz_server.h"
 
 #include "cards.h"
 #include "game.h"
@@ -58,9 +57,11 @@ static void game_score_hand(void);
 
 
 /* Setup game state and board */
-void game_init(void)
+void game_init(GGZdMod *ggz)
 {
 	int i;
+	
+	game.ggz = ggz;
 	
 	game.turn = -1;
 	game.state = LP_STATE_INIT;
@@ -70,33 +71,33 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz(GGZdModEvent event, void* data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void* data)
 {
-	switch(event) {
-		case GGZ_EVENT_LAUNCH:
-			game_update(LP_EVENT_LAUNCH, NULL);
-			break;
-		case GGZ_EVENT_JOIN:
-			game_update(LP_EVENT_JOIN, (int*)data);
-			break;
-		case GGZ_EVENT_LEAVE:
-			game_update(LP_EVENT_LEAVE, (int*)data);
-			break;
-		default:
-			/* Unrecognized opcode */
-			ggzd_debug("ERROR: unexpected GGZ event %d.", event);
-	}
+	GGZdModState old_state = *(GGZdModState*)data;
+	if (old_state == GGZDMOD_STATE_CREATED)
+		game_update(LP_EVENT_LAUNCH, NULL);
+}
+
+
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void* data)
+{
+	game_update(LP_EVENT_JOIN, (int*)data);
+}
+
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void* data)
+{
+	game_update(LP_EVENT_LEAVE, (int*)data);
 }
 
 
 /* Handle message from player */
-void game_handle_player(GGZdModEvent event, void* data)
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void* data)
 {
 	int num = *(int*)data;
 	int fd, op;
 	char bid, card;
 
-	fd = ggzd_get_player_socket(num);
+	fd = ggzdmod_get_seat(game.ggz, num).fd;
 	
 	if(fd < 0 || es_read_int(fd, &op) < 0)
 		return;
@@ -124,7 +125,7 @@ void game_handle_player(GGZdModEvent event, void* data)
 			break;*/
 		default:
 			/* Unrecognized opcode */
-			ggzd_debug("ERROR: unrecognized player opcode %d.", op);
+			ggzdmod_log(game.ggz, "ERROR: unrecognized player opcode %d.", op);
 			break;
 	}
 }
@@ -133,9 +134,9 @@ void game_handle_player(GGZdModEvent event, void* data)
 /* Send out seat assignment */
 static int game_send_seat(int seat)
 {
-	int fd = ggzd_get_player_socket(seat);
+	int fd = ggzdmod_get_seat(game.ggz, seat).fd;
 
-	ggzd_debug("Sending player %d's seat num", seat);
+	ggzdmod_log(game.ggz, "Sending player %d's seat num", seat);
 
 	if(es_write_int(fd, LP_MSG_SEAT) < 0
 	   || es_write_int(fd, seat) < 0)
@@ -151,19 +152,20 @@ static int game_send_players(void)
 	int i, j, fd;
 	
 	for(j=0; j<4; j++) {
-		if((fd = ggzd_get_player_socket(j)) == -1)
+		if((fd = ggzdmod_get_seat(game.ggz, j).fd) == -1)
 			continue;
 
-		ggzd_debug("Sending player list to player %d", j);
+		ggzdmod_log(game.ggz, "Sending player list to player %d", j);
 
 		if(es_write_int(fd, LP_MSG_PLAYERS) < 0)
 			return -1;
 	
 		for(i=0; i<4; i++) {
-			if(es_write_int(fd, ggzd_get_seat_status(i)) < 0)
+			GGZSeat seat = ggzdmod_get_seat(game.ggz, i);
+			if(es_write_int(fd, seat.type) < 0)
 				return -1;
-			if(ggzd_get_seat_status(i) != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggzd_get_player_name(i)) < 0)
+			if(seat.type != GGZ_SEAT_OPEN
+			    && es_write_string(fd, seat.name) < 0)
 				return -1;
 		}
 	}
@@ -178,11 +180,11 @@ static int game_send_bid(char bid)
 	int fd;
 
 	for(i=0; i<4; i++) {
-		fd = ggzd_get_player_socket(i);
+		fd = ggzdmod_get_seat(game.ggz, i).fd;
 		/* If self or a computer, don't need to send */
 		if(i == game.bid_now || fd == -1)
 			continue;
-		ggzd_debug("Sending player %d's bid to player %d",
+		ggzdmod_log(game.ggz, "Sending player %d's bid to player %d",
 			   game.bid_now, i);
 		if(es_write_int(fd, LP_MSG_BID) < 0
 		   || es_write_char(fd, game.bid_now) < 0
@@ -201,11 +203,11 @@ static int game_send_play(char card)
 	int fd;
 
 	for(i=0; i<4; i++) {
-		fd = ggzd_get_player_socket(i);
+		fd = ggzdmod_get_seat(game.ggz, i).fd;
 		/* If self or a computer, don't need to send */
 		if(i == game.turn || fd == -1)
 			continue;
-		ggzd_debug("Sending player %d's play to player %d",
+		ggzdmod_log(game.ggz, "Sending player %d's play to player %d",
 			   game.turn, i);
 		if(es_write_int(fd, LP_MSG_PLAY) < 0
 		   || es_write_char(fd, game.turn) < 0
@@ -220,9 +222,9 @@ static int game_send_play(char card)
 /* Send out current game hand, score, etc */
 static int game_send_sync(int num)
 {	
-	int i, fd = ggzd_get_player_socket(num);
+	int i, fd = ggzdmod_get_seat(game.ggz, num).fd;
 
-	ggzd_debug("Handling sync for player %d", num);
+	ggzdmod_log(game.ggz, "Handling sync for player %d", num);
 
 	if(es_write_int(fd, LP_SND_SYNC) < 0
 	   || es_write_char(fd, game.turn) < 0)
@@ -322,10 +324,10 @@ static int game_send_gameover(void)
 	}
 
 	for(i=0; i<4; i++) {
-		if((fd = ggzd_get_player_socket(i)) == -1)
+		if((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1)
 			continue;
 
-		ggzd_debug("Sending game-over to player %d", i);
+		ggzdmod_log(game.ggz, "Sending game-over to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -411,7 +413,7 @@ static void game_play(void)
 /* Request bid from current bidder */
 static int game_req_bid(void)
 {
-	int fd = ggzd_get_player_socket(game.bid_now);
+	int fd = ggzdmod_get_seat(game.ggz, game.bid_now).fd;
 
 	if(es_write_int(fd, LP_REQ_BID) < 0)
 		return -1;
@@ -423,7 +425,7 @@ static int game_req_bid(void)
 /* Request play from current player */
 static int game_req_play()
 {
-	int fd = ggzd_get_player_socket(game.turn);
+	int fd = ggzdmod_get_seat(game.ggz, game.turn).fd;
 
 	if(es_write_int(fd, LP_REQ_PLAY) < 0)
 		return -1;
@@ -435,7 +437,7 @@ static int game_req_play()
 /* Request trump from the dealer */
 static int game_req_trump()
 {
-	int fd = ggzd_get_player_socket(game.dealer);
+	int fd = ggzdmod_get_seat(game.ggz, game.dealer).fd;
 
 	if(es_write_int(fd, LP_REQ_TRUMP) < 0)
 		return -1;
@@ -447,10 +449,10 @@ static int game_req_trump()
 /* Handle incoming bid from player */
 static int game_handle_bid(int num, char *bid)
 {
-	int fd = ggzd_get_player_socket(num);
+	int fd = ggzdmod_get_seat(game.ggz, num).fd;
 	char status = 0;
 
-	ggzd_debug("Handling bid from player %d", num);
+	ggzdmod_log(game.ggz, "Handling bid from player %d", num);
 	if(es_read_char(fd, bid) < 0)
 		return -1;
 
@@ -482,13 +484,13 @@ static int game_handle_bid(int num, char *bid)
 /* Handle incoming play from player */
 static int game_handle_play(int num, char *card)
 {
-	int fd = ggzd_get_player_socket(num);
+	int fd = ggzdmod_get_seat(game.ggz, num).fd;
 	char status;
 	char card_num, c;
 	char hi_trump, hi_trump_played;
 	int i;
 	
-	ggzd_debug("Handling play for player %d", num);
+	ggzdmod_log(game.ggz, "Handling play for player %d", num);
 	if(es_read_char(fd, &card_num) < 0)
 		return -1;
 
@@ -550,7 +552,7 @@ static int game_handle_play(int num, char *card)
 /* Get the trump suit from the dealer */
 static int game_receive_trump(int num)
 {
-	int fd = ggzd_get_player_socket(num);
+	int fd = ggzdmod_get_seat(game.ggz, num).fd;
 	char status;
 
 	/* If it ain't the dealer, just ignore */
@@ -599,7 +601,7 @@ static int game_update(int event, void *data)
 				game_send_sync(seat);
 
 			/* All the seats are occupied ? */
-			if(!ggzd_seats_open()) {
+			if(!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)) {
 				/* If first time, then initialize */
 				if(game.turn == -1) {
 					game.turn = 0;
@@ -704,14 +706,14 @@ static int game_generate_next_hand(void)
 /* Send a player their hand */
 static int game_send_hand(int seat)
 {
-	int fd = ggzd_get_player_socket(seat);
+	int fd = ggzdmod_get_seat(game.ggz, seat).fd;
 	int i;
 
 	/* Don't send to a bot */
 	if(fd == -1)
 		return 0;
 
-	ggzd_debug("Sending player %d their hand", seat);
+	ggzdmod_log(game.ggz, "Sending player %d their hand", seat);
 
 	if(es_write_int(fd, LP_MSG_HAND) < 0
 	   || es_write_char(fd, game.dealer) < 0
@@ -729,13 +731,13 @@ static int game_send_hand(int seat)
 /* Send trump to a player */
 static int game_send_trump(int seat)
 {
-	int fd = ggzd_get_player_socket(seat);
+	int fd = ggzdmod_get_seat(game.ggz, seat).fd;
 
 	/* Don't send to a bot */
 	if(fd == -1)
 		return 0;
 
-	ggzd_debug("Sending trump suit to player %d", seat);
+	ggzdmod_log(game.ggz, "Sending trump suit to player %d", seat);
 
 	if(es_write_int(fd, LP_MSG_TRUMP) < 0
 	   || es_write_char(fd, game.trump) < 0)
@@ -780,10 +782,10 @@ static void game_score_trick(void)
 	for(i=0; i<4; i++) {
 		game.table[i] = -1;
 
-		if((fd = ggzd_get_player_socket(i)) == -1)
+		if((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1)
 			continue;
 
-		ggzd_debug("Sending trick result to player %d", i);
+		ggzdmod_log(game.ggz, "Sending trick result to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_TRICK) == 0)
 			es_write_char(fd, (char)hi_player);
@@ -797,7 +799,7 @@ void game_score_hand(void)
 	int i, fd;
 
 	for(i=0; i<4; i++) {
-		ggzd_debug("Player %d got %d tricks on a bid of %d", i,
+		ggzdmod_log(game.ggz, "Player %d got %d tricks on a bid of %d", i,
 			  game.tricks[i], game.bid[i]);
 		if(game.tricks[i] == game.bid[i])
 			game.score[i] += 10 + (5 * game.bid[i]);
@@ -810,10 +812,10 @@ void game_score_hand(void)
 	game.state = LP_STATE_NEW_HAND;
 
 	for(i=0; i<4; i++) {
-		if((fd = ggzd_get_player_socket(i)) == -1)
+		if((fd = ggzdmod_get_seat(game.ggz, i).fd) == -1)
 			continue;
 
-		ggzd_debug("Sending scores to player %d", i);
+		ggzdmod_log(game.ggz, "Sending scores to player %d", i);
 
 		if(es_write_int(fd, LP_MSG_SCORES) < 0
 		   || es_write_int(fd, game.score[0]) < 0
