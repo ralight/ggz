@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2856 2001-12-10 07:10:08Z jdorje $
+ * $Id: common.c 2858 2001-12-10 17:02:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -316,11 +316,48 @@ static int handle_msg_players(void)
 	return 0;
 }
 
+/* Possibly increase the maximum hand size we can sustain. */
+static void increase_max_hand_size(int max_hand_size)
+{
+	int p;
+
+	if (max_hand_size <= game_max_hand_size)	/* no problem */
+		return;
+
+	ggz_debug("core",
+		  "Expanding max_hand_size to allow for %d cards"
+		  " (previously max was %d).", max_hand_size,
+		  game_max_hand_size);
+	game_max_hand_size = max_hand_size;
+
+	/* Let the table know how big a hand might be. */
+	table_alert_hand_size(game_max_hand_size);
+
+	for (p = 0; p < game.num_players; p++) {
+#if 0
+		/* TODO: figure out how this code could even fail at all. In
+		   the meantime, I've disabled the call to free (realloc),
+		   conceding the memory leak so that we don't have an
+		   unexplained seg fault (which we would have if the realloc
+		   method were used instead!!). */
+		game.players[p].hand.card =
+			ggz_realloc(game.players[p].hand.card,
+				    game_max_hand_size *
+				    sizeof(*game.players[p].hand.card));
+#else
+		game.players[p].hand.card =
+			ggz_malloc(game_max_hand_size *
+				   sizeof(*game.players[p].hand.card));
+#endif
+	}
+
+	table_setup();		/* redesign table */
+}
 
 /* A hand message tells you all the cards in one player's hand. */
 static int handle_msg_hand(void)
 {
-	int i, player;
+	int player, hand_size, i;
 	struct hand_t *hand;
 
 	assert(game.players);
@@ -329,53 +366,19 @@ static int handle_msg_hand(void)
 	if (read_seat(ggzfd, &player) < 0)
 		return -1;
 	assert(player >= 0 && player < game.num_players);
-	hand = &game.players[player].hand;
-
-	/* Zap our current hand */
-	for (i = 0; i < game_max_hand_size; i++)
-		hand->card[i] = UNKNOWN_CARD;
 
 	/* Find out how many cards in this hand */
-	if (es_read_int(ggzfd, &hand->hand_size) < 0)
+	if (es_read_int(ggzfd, &hand_size) < 0)
 		return -1;
 
 	/* Reallocate hand structures, if necessary */
-	if (hand->hand_size > game_max_hand_size) {
-		int p;
-		ggz_debug("core",
-			  "Expanding max_hand_size to allow for %d cards"
-			  " (previously max was %d).", hand->hand_size,
-			  game_max_hand_size);
-		game_max_hand_size = hand->hand_size;
+	increase_max_hand_size(hand_size);
 
-		/* Let the table know how big a hand might be. */
-		table_alert_hand_size(game_max_hand_size);
-
-		for (p = 0; p < game.num_players; p++) {
-#if 0
-			/* TODO: figure out how this code could even fail at
-			   all. In the meantime, I've disabled the call to
-			   free (realloc), conceding the memory leak so that
-			   we don't have an unexplained seg fault (which we
-			   would have if the realloc method were used
-			   instead!!). */
-			game.players[p].hand.card =
-				ggz_realloc(game.players[p].hand.card,
-					    game_max_hand_size *
-					    sizeof(*game.players[p].hand.
-						   card));
-#else
-			game.players[p].hand.card =
-				ggz_malloc(game_max_hand_size *
-					   sizeof(*game.players[p].hand.
-						  card));
-#endif
-		}
-
-		table_setup();	/* redesign table */
-	}
-
-	/* Read in all the card values */
+	/* Read in all the card values.  It's important that we don't change
+	   anything before here so that any functions we call from
+	   increase_max_hand_size won't have inconsistent data. */
+	hand = &game.players[player].hand;
+	hand->hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++)
 		if (read_card(ggzfd, &hand->card[i]) < 0)
 			return -1;
