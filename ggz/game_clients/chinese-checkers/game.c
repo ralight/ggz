@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: game.c 6669 2005-01-14 03:48:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -545,8 +545,9 @@ static int select_dirs(const struct dirent *d)
 static void get_theme_data(void)
 {
 	char *theme_dir;
-	struct dirent **namelist;
-	int i;
+	int i = 0;
+	DIR *dir;
+	struct dirent *entry;
 
 	/* Get the directory for themes and the .rc theme setting */
 	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps", GGZDATADIR);
@@ -554,12 +555,18 @@ static void get_theme_data(void)
 	game.theme = ggz_conf_read_string(game.conf_handle,
 					  "Options", "Theme", "default");
 
-	/* Scan the theme directory and build an array of installed themes */
-	game.num_themes =
-	    scandir(theme_dir, &namelist, select_dirs, alphasort);
-	game.theme_names = calloc(game.num_themes, sizeof(char *));
-	for (i = 0; i < game.num_themes; i++)
-		game.theme_names[i] = g_strdup(namelist[i]->d_name);
+	/* Scan the theme directory and build an array of installed themes.
+	 * This used to use scandir but that's not portable. */
+	dir = opendir(theme_dir);
+	while ((entry = readdir(dir))) {
+		if (!select_dirs(entry))  continue;
+		i++;
+		game.theme_names = realloc(game.theme_names,
+					   i * sizeof(*game.theme_names));
+		game.theme_names[i - 1] = g_strdup(entry->d_name);
+	}
+	game.num_themes = i;
+	closedir(dir);
 
 	g_free(theme_dir);
 }
