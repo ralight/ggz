@@ -27,5 +27,22 @@
 
 easysock     easysock 
 ggzd	     ggzd &easysock
-ggz	     ggz 
 
+# Old client module
+ggz             -s DEPRECATED ggz
+
+# Frontend specific games
+gtk-games       ggz/game_clients
+kde-games       kde-games
+
+# Frontends (and such)
+ggz-gtk         ggz/src/frontend/gtk
+ggz-kde         ggz/src/frontend/kde
+ggz-grubby      ggz/src/frontend/grubby
+
+# Libs
+ggzcore         -s INTERNAL ggz/src/ggzcore
+ggz-client-libs ggz-client-libs &ggzcore
+
+# Meta-module for pulling gtk client together
+ggz-gtk-all     ggz-gtk-all &easysock &ggzcore &gtk-games
