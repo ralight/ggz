@@ -26,6 +26,7 @@ void show_time( char *from, char *name );
 void toggle_lang_checker( char *word );
 void show_stats( void );
 void add_name( char *from, char *name );
+void add_message( char *from, char *message );
 
 void owner_commands( char **words, int totalwords )
 {
@@ -98,6 +99,13 @@ void public_commands( char *from, char **words, int totalwords, char *fullmessag
 		if( !strncasecmp( fullmessage, out, strlen( out ) ) )
 		{
 			add_name( from, fullmessage+strlen( out ) );
+			return;
+		}
+
+		sprintf( out, "%s tell ", grubby.name );
+		if( !strncasecmp( fullmessage, out, strlen( out ) ) )
+		{
+			add_message( from, fullmessage+strlen( out ) );
 			return;
 		}
 	}
@@ -179,6 +187,8 @@ void show_public_help( char *from )
 	send_msg( from, "                             I saw <username>." );
 	send_msg( from, "my name is <ream name> ..... I'd love to get to know" );
 	send_msg( from, "                             you a little better." );
+	send_msg( from, "tell <username> <message>  . I'll tell <username> your" );
+	send_msg( from, "                             <message> next time I see them." );
 	send_msg( from, " ");
 	send_msg( from, "When you're telling, or asking something of me, please" );
 	send_msg( from, "make sure to address me properly:");
@@ -270,3 +280,46 @@ void add_name( char *from, char *name )
 		send_msg( from, out );
 	}
 }
+
+void add_message( char *from, char *message )
+{
+	int i, size;
+	char *name = NULL;
+	char *text = NULL;
+	char out[grubby.chat_length];
+
+	/* Get the name and message */
+	size = strlen( message )+1;
+	for( i=0; i<size; i++ )
+		if( message[i] == ' ' )
+		{
+			message[i] = '\0';
+			name = message;
+			text = message+i+1;
+			break;
+		}
+
+	/* Make sure we have a name and message */
+	if( name == NULL || text == NULL )
+	{
+		send_msg( from, "Usage: tell <username> <message>" );
+		return;
+	}
+
+	/* Check if we know the user */
+	i = check_known( name );
+	if( i == -1 )
+	{
+		sprintf( out, "Sorry %s, I don't know %s.", get_name( from ), name );
+		send_msg( from, out );
+	} else {
+		memmory.people[i].msg[memmory.people[i].msgcount].text = malloc( sizeof( char ) * ( strlen( text ) + 1 ) );
+		strcpy( memmory.people[i].msg[memmory.people[i].msgcount].text, text);
+		strcpy( memmory.people[i].msg[memmory.people[i].msgcount].from, from);
+		memmory.people[i].msg[memmory.people[i].msgcount].timestamp = time(NULL);
+		memmory.people[i].msgcount++;
+		sprintf( out, "I'll be sure to tell %s for you.", get_name( name ) );
+		send_msg( from, out );
+	}
+}
+

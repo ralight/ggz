@@ -108,4 +108,5 @@ void log_write( char *left, char *right )
 	}
 	else if( !strcasecmp( grubby.logtype, "TEXT" ) )
 		fprintf( grubby.logfile, "%s | %s\n", left, right );
+	fflush( grubby.logfile );
 }

@@ -108,7 +108,8 @@ void handle_join( char *from )
 {
 	char out[grubby.chat_length];
 
-	int i;
+	int i, m;
+	char dt[30];
 
 	i = check_known( from );
 
@@ -138,6 +139,22 @@ void handle_join( char *from )
 		sprintf( out, "Welcome back, %s.", get_name( from ) );
 		send_msg( from, out );
 		memmory.people[i].lastseen = time(NULL);
+
+		/* Check for messages */
+		if( memmory.people[i].msgcount > 0 )
+		{
+			for( m=0; m<memmory.people[i].msgcount; m++ )
+			{
+				strftime( dt, 100, "%b %d @ %I:%M%p", localtime( &memmory.people[i].msg[m].timestamp ) );
+				sprintf( out, "Message %d from %s was left at %s:", 
+					 m+1, get_name( memmory.people[i].msg[m].from ), dt );
+				send_msg( from, out );
+				sprintf( out, "       %s", memmory.people[i].msg[m].text );
+				send_msg( from, out );
+				free( memmory.people[i].msg[m].text );
+			}
+			memmory.people[i].msgcount = 0;
+		}
 	}
 
 	/* check if we are logging */

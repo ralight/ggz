@@ -2,6 +2,7 @@
 #define _AGRUB_DATATYPES_
 
 #include <stdio.h>
+#include <time.h>
 
 /*
  *  Server Limites
@@ -25,9 +26,9 @@
  */
 
 typedef struct {
-	char	from[MAX_USER_NAME_LEN];	/* Who's this message from?		 	*/
+	char	from[MAX_USER_NAME_LEN+1];	/* Who's this message from?		 	*/
 	char	*text;				/* The text of the message.			*/
-	int	timestamp;			/* The time the message was recorded		*/
+	time_t	timestamp;			/* The time the message was recorded		*/
 } Message;
 
 
