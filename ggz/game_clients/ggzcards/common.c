@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2411 2001-09-09 00:06:17Z jdorje $
+ * $Id: common.c 2413 2001-09-09 02:44:20Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -219,7 +219,7 @@ static int handle_msg_players()
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		if (read_seat(ggzfd, &game.players[i].seat) < 0 ||
+		if (es_read_int(ggzfd, &game.players[i].seat) < 0 ||
 		    es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;
 
