@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2192 2001-08-23 08:50:43Z jdorje $	*/
+/*	$Id: ggz_server.h 2198 2001-08-23 09:55:56Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -29,24 +29,31 @@
 
 #define MAX_USER_NAME_LEN 16
 
-/* Seat assignment values */
+/** Seat assignment values */
 enum {
-	GGZ_SEAT_OPEN	= -1,
-	GGZ_SEAT_BOT	= -2,
-	GGZ_SEAT_RESV	= -3,
-	GGZ_SEAT_NONE	= -4,
-	GGZ_SEAT_PLAYER	= -5
+	GGZ_SEAT_OPEN	= -1, /**< The seat is open (unoccupied). */
+	GGZ_SEAT_BOT	= -2, /**< The seat has a bot (AI) in it. */
+	GGZ_SEAT_RESV	= -3, /**< The seat is reserved for a player. */
+	GGZ_SEAT_NONE	= -4, /**< This seat does not exist. */
+	GGZ_SEAT_PLAYER	= -5  /**< The seat has a regular player in it. */
 };
 
+/** A GGZ seat; one spot at a table. */
 struct ggz_seat_t {
+	/** The seat assignment value */
 	int assign;
+	/** The name of the player at the seat */
 	char name[MAX_USER_NAME_LEN +1];
+	/** A file descriptor for communicating with that player */
 	int fd;
 };
 
+/** The array of seats at the table */
 extern struct ggz_seat_t* ggz_seats;
 
-/* Useful functions */
+/** Sends a debugging message to ggzd to be logged.
+ *  @param fmt a printf-style format string
+ *  @param ... a printf-stype list of arguments */
 void ggzdmod_debug(const char *fmt, ...);
 
 int ggzdmod_seats_open(void);
