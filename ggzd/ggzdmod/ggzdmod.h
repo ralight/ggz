@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2784 2001-12-06 02:22:17Z jdorje $
+ * $Id: ggzdmod.h 2787 2001-12-06 09:23:06Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -74,12 +74,14 @@
  *         if (ggzdmod_connect(mod) < 0) {
  *             exit(-1);
  *         }
+ *         (void)ggzdmod_log(mod, "Starting game.");
  *
  *         // ggzdmod_loop does most of the work, dispatching handlers
  *         // above as necessary.
  *         (void)ggzdmod_loop(mod);
  *
  *         // At the end, we disconnect and destroy the ggzdmod object.
+ *         (void)ggzdmod_log(mod, "Stopping game.");
  *         (void)ggzdmod_disconnect(mod);
  *         ggzdmod_free(mod);
  *     }
@@ -240,7 +242,12 @@ int ggzdmod_get_num_seats(GGZdMod * mod);
  *  @note This has not been finalized. */
 GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat);
 
-/** @brief Return gamedata pointer*/
+/** @brief Return gamedata pointer
+ *
+ *  Each ggzdmod object can be given a "gamedata" pointer,
+ *  that is returned by this function.  This is useful for
+ *  when a single process serves multiple ggzdmod's.
+ *  @see ggzdmod_set_gamedata */
 void * ggzdmod_get_gamedata(GGZdMod * mod);
 
 /** @brief Set the number of seats for the table.
@@ -248,10 +255,11 @@ void * ggzdmod_get_gamedata(GGZdMod * mod);
  *  @todo How does this work for the table? */
 void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
 
-/** @brief Set gamedata pointer*/
+/** @brief Set gamedata pointer */
 void ggzdmod_set_gamedata(GGZdMod * mod, void * data);
 
-/** @brief Set a handler for the given event. */
+/** @brief Set a handler for the given event.
+ *  @see ggzdmod_get_gamedata */
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
 
 /** @brief Set the module executable and it's arguments 
@@ -279,7 +287,10 @@ int ggzdmod_dispatch(GGZdMod * mod);
 
 /** @brief Loop while handling input.
  *
- *  This function repeatedly handles input from all sockets.
+ *  This function repeatedly handles input from all sockets.  It will
+ *  only stop once the game state has been changed to DONE.
+ *  @param mod The ggzdmod object.
+ *  @return 0 on success, -1 on error.
  *  @see ggzdmod_dispatch
  *  @see ggzdmod_halt_table */
 int ggzdmod_loop(GGZdMod * mod);
@@ -293,19 +304,23 @@ int ggzdmod_loop(GGZdMod * mod);
  *  This function should be called when the table is finished.  When
  *  called by the game, it will stop looping and change the game state.
  *  @note It should inform ggzd of this change.
- *  @note ggzd should be able to request this as well. */
+ *  @note ggzd should be able to request this as well.
+ *  @note This is deprecated and will probably be replaced by ggzdmod_set_state(). */
 int ggzdmod_halt_table(GGZdMod * mod);
 
 /** @brief Connect to ggz
  *
  *  This function makes the physical connection to ggz.
+ *  @param mod The ggzdmod object.
+ *  @return The ggzdmod socket FD on success, -1 on failure.
  */
 int ggzdmod_connect(GGZdMod * mod);
 
 /** @brief Disconnect from ggz
  *
  *  This function stops the connection to ggz.
- *  @note It should not be called by ggzd, only the table. */
+ *  @param mod The ggzdmod object.
+ *  @return 0 on success, -1 on failure. */
 int ggzdmod_disconnect(GGZdMod * mod);
 
 
@@ -313,7 +328,12 @@ int ggzdmod_disconnect(GGZdMod * mod);
 /** @brief Log data
  *
  *  This function sends the specified string (printf-style) to
- *  ggzd to be logged. */
+ *  ggzd to be logged.
+ *  @param mod The ggzdmod object.
+ *  @param fmt A printf-style format string.
+ *  @return 0 on success, -1 on failure.
+ *  @todo We might want to specify the log level (LOG, DEBUG, ...)
+ */
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...);
 
 
