@@ -53,14 +53,20 @@
 #define COLOR_PURPLE		"\e[0m\e[36m"
 #define COLOR_WHITE		"\e[0m\e[37m"
 
+/* Highest line number in the message buffer */
 #define MAX_LINES 100
 
+/* Pointer to the current server */
 extern GGZServer *server;
 
 static struct winsize window;
 static int tty_des;
 static char **chat;
 static int chat_offset = 0;
+
+/* Private functions */
+static void output_table_info(GGZTable *table);
+
 
 void output_label(char *label);		/* Display the color label in the	*/
 					/* Status line.				*/
@@ -218,16 +224,37 @@ void output_players(void)
 		if (table)
 			output_text("-- %s at table %d", 
 				    ggzcore_player_get_name(player),
-				    ggzcore_table_get_num(table));
+				    ggzcore_table_get_id(table));
 		else 
 			output_text("-- %s", ggzcore_player_get_name(player));
 	}
 }
 
 
+void output_tables(void)
+{
+	int i, num_tables;
+	GGZRoom *room;
+	GGZTable *table;
+
+	room = ggzcore_server_get_cur_room(server);
+	num_tables = ggzcore_room_get_num_tables(room);
+
+	if (num_tables > 0) {
+		output_text("Tables in current room:");
+		for (i = 0; i < num_tables; i++) {
+			table = ggzcore_room_get_nth_table(room, i);
+			output_table_info(table);
+		}
+	}
+	else
+		output_text("No tables");
+}
+
+
 void output_status(void)
 {
-	int num, roomnum = -1;
+	int num;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
@@ -349,3 +376,36 @@ void output_shutdown(void)
 	fflush(NULL);
 }
 
+
+static void output_table_info(GGZTable *table)
+{
+	int i, num_seats;
+
+	output_text("Table %d : %s", ggzcore_table_get_id(table),
+		    ggzcore_table_get_desc(table));
+
+	num_seats = ggzcore_table_get_num_seats(table);
+	for (i = 0; i < num_seats; i++) {
+		switch (ggzcore_table_get_nth_player_type(table, i)) {
+		case GGZ_SEAT_PLAYER:
+			output_text("-- Seat %d: %s", i,
+				    ggzcore_table_get_nth_player_name(table, i));
+			break;
+		case GGZ_SEAT_RESERVED:
+			output_text("-- Seat %d: Reserved for %s", i,
+				    ggzcore_table_get_nth_player_name(table, i));
+			break;
+		case GGZ_SEAT_BOT:
+			output_text("-- Seat %d: -Bot-", i);
+			break;
+		case GGZ_SEAT_OPEN:
+			output_text("-- Seat %d: -Open-", i);
+			break;
+		case GGZ_SEAT_NONE:
+			output_text("-- Not a seat");
+			break;
+		default:
+			output_text("Internal error");
+		}
+	}
+}

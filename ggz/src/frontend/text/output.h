@@ -46,6 +46,8 @@ void output_chat(ChatTypes type, char *player, char *message);
 
 void output_players(void);
 
+void output_tables(void);
+
 void output_rooms(void);
 
 void output_types(void);

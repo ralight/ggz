@@ -60,6 +60,7 @@ static GGZHookReturn room_chat_prvmsg(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_beep(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_announce(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_list_players(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_list_tables(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_enter(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_leave(GGZRoomEvent id, void*, void*);
 
@@ -140,6 +141,7 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, room_chat_prvmsg);
 	ggzcore_room_add_event_hook(room, GGZ_BEEP, room_chat_beep);
 	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, room_list_players);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, room_list_tables);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, room_enter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, room_leave);
 }
@@ -321,6 +323,14 @@ static GGZHookReturn room_list_players(GGZRoomEvent id, void* event_data, void* 
 	output_players();
 	return GGZ_HOOK_OK;
 }
+
+
+static GGZHookReturn room_list_tables(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_tables();
+	return GGZ_HOOK_OK;
+}
+
 
 static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_data)
 {

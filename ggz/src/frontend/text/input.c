@@ -39,6 +39,7 @@
 
 #define LINE_LENGTH 160
 
+static int input_is_command(char *line);
 static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
 static void input_handle_join(char* line);
@@ -77,8 +78,8 @@ void input_command(void)
 		line[strlen(line)-1] = '\0';
 
 	current = line;
-	if (line[0] == command_prefix)
-	{
+	if (input_is_command(line)) {
+		
 		/* Point at command (minus the prefix char) */
 		command = strsep(&current, delim);
 		command++;
@@ -132,6 +133,12 @@ void input_command(void)
 }
 
 
+static int input_is_command(char *line)
+{
+	return (line[0] == command_prefix);
+}
+
+
 static void input_handle_connect(char* line)
 {
 	int portnum;
@@ -170,27 +177,35 @@ static void input_handle_list(char* line)
 	GGZRoom *room;
 
 	/* What are we listing? */
-	if (strcmp(line, "types") == 0)
-		ggzcore_server_list_gametypes(server, 1);
+	if (strcmp(line, "types") == 0) {
+		if (ggzcore_server_get_num_gametypes(server) > 0)
+			output_types();
+		else /* Get list from server */
+			ggzcore_server_list_gametypes(server, 1);
+	}
+	else if (strcmp(line, "rooms") == 0) {
+		if (ggzcore_server_get_num_rooms(server) > 0)
+			output_rooms();
+		else /* Get list from server */
+			ggzcore_server_list_rooms(server, -1, 1);
+	}
 	else if (strcmp(line, "tables") == 0) {
 		room = ggzcore_server_get_cur_room(server);
-		ggzcore_room_list_tables(room, -1, 0);
+		if (ggzcore_room_get_num_tables(room) > 0)
+			output_tables();
+		else /* Get list from server */
+			ggzcore_room_list_tables(room, -1, 0);
 	}
 	else if (strcmp(line, "players") == 0) {
 		room = ggzcore_server_get_cur_room(server);
-		if (ggzcore_room_get_num_players(room) >= 1) {
+		if (ggzcore_room_get_num_players(room) > 0) {
 			output_players();
 		}
-		else {
+		else /* Get list from server */
 			ggzcore_room_list_players(room);
-		}
 	}
-	else if (strcmp(line, "rooms") == 0) {
-		if (ggzcore_server_get_num_rooms(server) >= 1)
-			output_rooms();
-		else 
-			ggzcore_server_list_rooms(server, -1, 1);
-	}
+	else
+		output_text("List what?");
 }
 
 

@@ -87,7 +87,7 @@ int main(void)
 	debugfile = string_cat(getenv("HOME"),"/.ggz/ggz-text.debug");
 	opt.debug_file = ggzcore_conf_read_string("Debug", "File", debugfile);
 	free(debugfile);
-	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_HOOK & ~GGZ_DBG_MEMDETAIL); 
+	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_HOOK); 
 	ggzcore_init(opt);
 	free(opt.debug_file);
 
