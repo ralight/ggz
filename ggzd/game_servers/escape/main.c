@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 2204 2001-08-23 21:11:51Z jdorje $
+ * $Id: main.c 2218 2001-08-24 06:15:14Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,72 +36,17 @@
 
 int main(void)
 {
-	char game_over = 0;
-	int i, fd, ggz_sock, fd_max, status;
-	fd_set active_fd_set, read_fd_set;
-	
-	/* Initialize ggz */
-	if ( (ggz_sock = ggzdmod_connect()) < 0)
-		return -1;
-
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
-	
-	FD_ZERO(&active_fd_set);
-	FD_SET(ggz_sock, &active_fd_set);
 
 	game_init();
-	while(!game_over) {
-		
-		read_fd_set = active_fd_set;
-		fd_max = ggzdmod_fd_max();
-		
-		status = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
-		
-		if (status <= 0) {
-			if (errno == EINTR)
-				continue;
-			else
-				return -1;
-		}
 
-		/* Check for message from GGZ server */
-		if (FD_ISSET(ggz_sock, &read_fd_set)) {
-			status = game_handle_ggz(ggz_sock, &fd);
-			switch (status) {
-				
-			case -1:  /* Big error!! */
-				return -1;
-				
-			case 0: /* All ok, how boring! */
-				break;
+	ggzdmod_set_handler(GGZ_EVENT_LAUNCH, &game_update);
+	ggzdmod_set_handler(GGZ_EVENT_JOIN, &game_update);
+	ggzdmod_set_handler(GGZ_EVENT_LEAVE, &game_update);
+	ggzdmod_set_handler(GGZ_EVENT_QUIT, &game_update);
+	ggzdmod_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-			case 1: /* A player joined */
-				FD_SET(fd, &active_fd_set);
-				break;
-				
-			case 2: /* A player left */
-				FD_CLR(fd, &active_fd_set);
-				break;
-				
-			case 3: /*Safe to exit */
-				game_over = 1;
-				break;
-			}
-		}
-
-		/* Check for message from player */
-		for (i = 0; i < ggzdmod_seats_num(); i++) {
-			fd = ggz_seats[i].fd;
-			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
-				status = game_handle_player(i);
-				if (status < 0)
-					FD_CLR(fd, &active_fd_set);
-			}
-		}
-	}
-
-	(void)ggzdmod_disconnect();
-	return 0;
+	return ggzdmod_main();
 }
 

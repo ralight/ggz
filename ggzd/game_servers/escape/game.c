@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2204 2001-08-23 21:11:51Z jdorje $
+ * $Id: game.c 2218 2001-08-24 06:15:14Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,68 +47,11 @@ void game_init(void)
 	escape_game.state = ESCAPE_STATE_INIT;
 }
 
-/* Handle message from GGZ server */
-int game_handle_ggz(int ggz_fd, int* p_fd)
-{
-	int op, seat, status = -1;
-
-	ggzdmod_debug("game_handle_ggz()");
-
-	if(es_read_int(ggz_fd, &op) < 0)
-	{
-		ggzdmod_debug("\tes_read_int(ggz_fd, &op) < 0, premature exit");
-		return -1;
-	}
-
-	switch(op) {
-		case REQ_GAME_LAUNCH:
-			ggzdmod_debug("\top == REQ_GAME_LAUNCH");
-			if(ggzdmod_game_launch() == 0)
-			{
-				ggzdmod_debug("\tGame launch ok");
-				status = game_update(ESCAPE_EVENT_LAUNCH, NULL);
-			}else{
-				ggzdmod_debug("\tGame launch failed");
-			}
-			break;
-		case REQ_GAME_JOIN:
-			ggzdmod_debug("op == REQ_GAME_JOIN");
-			if(ggzdmod_player_join(&seat, p_fd) == 0) {
-				ggzdmod_debug("\tggz_player_join(%d, p_fd) ok",seat);
-				status = game_update(ESCAPE_EVENT_JOIN, &seat);
-				status = 1;
-			}else{
-				ggzdmod_debug("\tggz_player_join(%d, p_fd) failed",seat);
-			}
-			break;
-		case REQ_GAME_LEAVE:
-			ggzdmod_debug("\top == REQ_GAME_LEAVE");
-			if((status = ggzdmod_player_leave(&seat, p_fd)) == 0) {
-				ggzdmod_debug("\tggz_player_leave(%d, p_fd) ok",seat);
-				game_update(ESCAPE_EVENT_LEAVE, &seat);
-				status = 2;
-			}else{
-				ggzdmod_debug("\tggz_player_leave(%d, p_fd) failed",seat);
-			}
-			break;
-		case RSP_GAME_OVER:
-			ggzdmod_debug("\top == REQ_GAME_OVER");
-			status = 3; /* Signal safe to exit */
-			break;
-		default:
-			ggzdmod_debug("\top was unrecognised");
-			/* Unrecognized opcode */
-			status = -1;
-			break;
-	}
-	ggzdmod_debug("\tgame_handle_ggz() is returning %d",status);
-	return status;
-}
-
 //FIXME
 /* Handle message from player */
-int game_handle_player(int num)
+int game_handle_player(int event, void *data)
 {
+	int num = *(int*)data; /* player number */
 	int fd, op, status;
 	unsigned char direction;
 
