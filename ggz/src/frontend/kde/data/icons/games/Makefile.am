@@ -19,6 +19,8 @@ pix_DATA = \
 	Geekgame.png \
 	Kamikaze.png \
 	TEG.png \
+	CChess.png \
+	Escape.png \
 	notinstalled.png \
 	lounge.png
 
