@@ -11,6 +11,7 @@ GGZRoom *room = NULL;
 Guru **queue = NULL;
 int queuelen = 1;
 char *guruname = NULL;
+char *guruguestname = NULL;
 FILE *logfile;
 
 /* Prototypes */
@@ -55,11 +56,12 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	queue[queuelen - 1] = NULL;
 }
 
-void net_connect(const char *host, int port, const char *name)
+void net_connect(const char *host, int port, const char *name, const char *guestname)
 {
 	net_internal_init();
 
 	guruname = (char*)name;
+	guruguestname = (char*)guestname;
 
 	server = ggzcore_server_new();
 
@@ -174,19 +176,17 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 {
 	char *player, *message;
-	char guruguestname[256];
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 
-	/*sprintf(guruguestname, "%s(G)", player);*/ /* not needed - serverside! */
-	if((strcmp(player, guruname)) /*&& (strcmp(player, guruguestname))*/)
+	if((strcmp(player, guruname)) && (strcmp(player, guruguestname)))
 	{
 		net_internal_queueadd(player, message, GURU_CHAT);
 		status = NET_INPUT;
 	}
 
-	/* Loggin here? */
+	/* Logging here? */
 	fprintf(logfile, "[%s]: %s\n", player, message);
 	fflush(logfile);
 

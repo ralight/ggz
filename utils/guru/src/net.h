@@ -12,7 +12,7 @@ enum States
 	NET_INPUT
 };
 
-void net_connect(const char *host, int port, const char *name);
+void net_connect(const char *host, int port, const char *name, const char *guestname);
 void net_join(int room);
 int net_status();
 Guru *net_input();

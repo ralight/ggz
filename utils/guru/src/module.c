@@ -40,6 +40,9 @@ Gurucore *guru_module_init()
 
 	core->host = ggzcore_confio_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "guru/unnamed");
+	core->guestname = (char*)malloc(strlen(core->name) + 4);
+	strcpy(core->guestname, core->name);
+	strcat(core->guestname, "(G)");
 	core->owner = ggzcore_confio_read_string(handler, "preferences", "owner", NULL);
 	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
 
@@ -179,7 +182,7 @@ Guru *guru_module_internal(Guru *message)
 	int modules, modadd, modremove;
 	char *mod;
 
-	token = strtok(strdup(message->message), "(),-./: ");
+	token = strtok(strdup(message->message), ",-./: ");
 	i = 0;
 	modules = 0;
 	modadd = 0;
@@ -187,12 +190,17 @@ Guru *guru_module_internal(Guru *message)
 	mod = NULL;
 	while(token)
 	{
+if(i == 0)
+{
+	printf("COMPARE: %s -> %s, %s\n", token, core->name, core->guestname);
+}
 		if((i == 0) && (!strcasecmp(token, core->name))) modules++;
+		if((i == 0) && (!strcasecmp(token, core->guestname))) modules++;
 		if((i == 1) && (!strcmp(token, "modules"))) modules++;
 		if((i == 1) && (!strcmp(token, "insmod"))) modadd++;
 		if((i == 1) && (!strcmp(token, "rmmod"))) modremove++;
 		if((i == 2) && ((modadd) || (modremove))) mod = strdup(token);
-		token = strtok(NULL, "(),-./: ");
+		token = strtok(NULL, ",-./: ");
 		i++;
 	}
 

@@ -11,7 +11,7 @@
 
 #include "gurumod.h"
 
-typedef void (*netconnectfunc)(const char *host, int port, const char *name);
+typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
 typedef void (*netjoinfunc)(int room);
 typedef int (*netstatusfunc)();
 typedef Guru* (*netinputfunc)();
@@ -22,6 +22,7 @@ struct gurucore_t
 	char *host;
 	char *owner;
 	char *name;
+	char *guestname;
 	void *nethandle;
 	int autojoin;
 	netconnectfunc net_connect;
