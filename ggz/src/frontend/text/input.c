@@ -43,6 +43,8 @@ static int input_is_command(char *line);
 static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
 static void input_handle_join(char* line);
+static void input_handle_join_room(char* line);
+static void input_handle_join_table(char* line);
 static void input_handle_desc(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
@@ -210,8 +212,28 @@ static void input_handle_list(char* line)
 
 static void input_handle_join(char* line)
 {
+	char *arg;
+
+	arg = strsep(&line, delim);
+	if (!arg || strcmp(arg, "") == 0)
+		return;
+
+	output_text("Joining a %s", arg);
+
+	/* What are we listing? */
+	if (strcmp(arg, "room") == 0)
+		input_handle_join_room(line);
+	else if (strcmp(arg, "table") == 0)
+		input_handle_join_table(line);
+	else
+		output_text("Join what?");
+}
+
+
+static void input_handle_join_room(char* line)
+{
 	int room;
-	
+
 	room = atoi(line);
 	ggzcore_server_join_room(server, room);
 }
@@ -294,7 +316,30 @@ static void input_handle_launch(char *line)
 	ggzcore_table_free(table);
 }
 
+
+static void input_handle_join_table(char *line)
+{
+	char *name;
+	char *protocol;
+	GGZRoom *room;
+	GGZGameType *type;
+	GGZModule *module;
+	int table_index;
+
+	room = ggzcore_server_get_cur_room(server);
+	type = ggzcore_room_get_gametype(room);
+	name = ggzcore_gametype_get_name(type);
+	protocol = ggzcore_gametype_get_protocol(type);
+	output_text("Launching game of %s, v%s", name, protocol);
+	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	output_text("Launching %s", ggzcore_module_get_path(module));
+	game_init(module);
+
+	table_index = atoi(line);
+	ggzcore_room_join_table(room, table_index);
+}
 	
+
 static void input_handle_exit(void)
 {
         loop_quit();
