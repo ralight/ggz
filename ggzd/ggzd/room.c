@@ -340,6 +340,10 @@ static int room_event_callback(int p_index, int size, void* data)
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
 	player = *(int*)(data + sizeof(char));
+
+	/* Don't deliver updates about ourself! */
+	if (p_index == player)
+		return 0;
 	
 	pthread_rwlock_rdlock(&players.lock);
 	strcpy(name, players.info[player].name);

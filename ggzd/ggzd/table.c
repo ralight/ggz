@@ -70,7 +70,14 @@ static int   table_game_launch(int index, int fd);
 static int   table_game_join(int index, int fd, char* transit);
 static int   table_game_leave(int index, int fd, char* transit);
 static int   table_event_enqueue(unsigned int table, unsigned char opcode);
+static int   table_transit_event_enqueue(unsigned int table, 
+					 unsigned char opcode,
+					 unsigned int player,
+					 unsigned int seat);
 static int   table_pack(void** data, unsigned char opcode, unsigned int table);
+static int   table_transit_pack(void** data, unsigned char opcode, 
+				unsigned int table, unsigned int player, 
+				unsigned int seat);
 static int   table_event_callback(int p_index, int size, void* data);
 
 
@@ -461,7 +468,7 @@ static int table_game_join(int index, int fd, char* transit)
 			tables.info[index].state = GGZ_TABLE_PLAYING;
 		}
 		pthread_rwlock_unlock(&tables.lock);
-		table_event_enqueue(index, GGZ_UPDATE_JOIN);
+		table_transit_event_enqueue(index, GGZ_UPDATE_JOIN, p, seat);
 	}
 
 	/* Mark transit as done and signal player*/
@@ -517,7 +524,7 @@ static int table_game_leave(int index, int fd, char* transit)
 		}
 		
 		pthread_rwlock_unlock(&tables.lock);
-		table_event_enqueue(index, GGZ_UPDATE_LEAVE);
+		table_transit_event_enqueue(index, GGZ_UPDATE_LEAVE, p, seat);
 	}
 
 	/* Mark transit as done and signal player*/
@@ -618,7 +625,7 @@ static int table_log(int index, int fd, char debug)
 
 static void table_remove(int t_index)
 {
-	int room, count, last, i;
+	int room, count, last, i, p;
 
 	dbg_msg(GGZ_DBG_TABLE, "Removing table %d", t_index);
 
@@ -640,6 +647,20 @@ static void table_remove(int t_index)
 	tables.info[t_index].state = GGZ_TABLE_ERROR;
 	tables.count--;
 	pthread_rwlock_unlock(&tables.lock);
+
+	/* Send out table-leave messages for remaining players */
+	for (i = 0; i < seats_num(tables.info[t_index]); i++) {
+		p = tables.info[t_index].seats[i];
+		switch (p) {
+		case GGZ_SEAT_OPEN:
+		case GGZ_SEAT_BOT:
+		case GGZ_SEAT_RESV:
+			continue;
+		}
+		
+		table_transit_event_enqueue(t_index, GGZ_UPDATE_LEAVE, p, i);
+	}
+
 	table_event_enqueue(t_index, GGZ_UPDATE_DELETE);
 
 	/* Signal anyone waiting for this table */
@@ -854,6 +875,26 @@ static int table_event_enqueue(unsigned int table, unsigned char opcode)
 }
 
 
+static int table_transit_event_enqueue(unsigned int table, 
+				       unsigned char opcode,
+				       unsigned int player,
+				       unsigned int seat)
+{
+	void* data = NULL;
+	int size, status, room;
+
+	room = tables.info[table].room;
+	
+	/* Pack up table update data */
+	size = table_transit_pack(&data, opcode, table, player, seat);
+
+	/* Queue table event for whole room */
+	status = event_room_enqueue(room, table_event_callback, size, data);
+	
+	return status;
+}
+
+
 static int table_pack(void** data, unsigned char opcode, unsigned int table)
 {
 	int size;
@@ -875,19 +916,57 @@ static int table_pack(void** data, unsigned char opcode, unsigned int table)
 }
 
 
+static int table_transit_pack(void** data, unsigned char opcode, 
+			      unsigned int table, unsigned int player,
+			      unsigned int seat)
+{
+	int size;
+	char* current;
+
+	size = sizeof(char) + 3 * sizeof(int);
+	
+	if ( (*data = malloc(size)) == NULL)
+		err_sys_exit("malloc failed in table_transit_pack");
+	
+	current = (char*)*data;
+	
+	*(unsigned char*)current = opcode;
+	current += sizeof(char);
+
+	*(unsigned int*)current = table;
+	current += sizeof(int);
+
+	*(unsigned int*)current = player;
+	current += sizeof(int);
+
+	*(unsigned int*)current = seat;
+	current += sizeof(int);
+
+	
+
+	return size;
+}
+
+
 /* Event callback for delivering table list update to a player */
 static int table_event_callback(int p_index, int size, void* data)
 {
 	unsigned char opcode;
 	char player[MAX_USER_NAME_LEN + 1];
 	int table, fd, seat, p, i;
+	char* current;
 	TableInfo info;
 
 	fd = players.info[p_index].fd;
 
 	/* Unpack event data */
-	opcode = *(unsigned char*)data;
-	table = *(int*)(data + sizeof(char));
+	current = (char*)data;
+
+	opcode = *(unsigned char*)current;
+	current += sizeof(char);
+
+	table = *(int*)current;
+	current += sizeof(int);
 
 	/* Always send opcode and table index */
 	if (es_write_int(fd, MSG_UPDATE_TABLES) < 0 
@@ -943,8 +1022,10 @@ static int table_event_callback(int p_index, int size, void* data)
 		
 	case GGZ_UPDATE_LEAVE:
 	case GGZ_UPDATE_JOIN:
-		p = tables.info[table].transit;
-		seat = tables.info[table].transit_seat;
+		p = *(int*)current;
+		current += sizeof(int);
+		seat = *(int*)current;
+
 		pthread_rwlock_rdlock(&players.lock);
 		strcpy(player, players.info[p].name);
 		pthread_rwlock_unlock(&players.lock);
