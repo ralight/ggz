@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: ggzdmod.h 2783 2001-12-06 02:04:55Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -47,20 +47,69 @@
  * invoke the appropriate handler (see below), but will never actually
  * read any data.
  *
- * Here's the simplest possible example:
+ * Here is a fairly complete example:
  * @code
- *     void ggz_update(GGZdModEvent event, GGZdMod* mod, void* data); // See GGZDHandler
+ *     // Game-defined handler function; see below.
+ *     void ggz_update(GGZdModEvent event, GGZdMod* mod, void* data);
+ *
+ *     // Other game-defined functions (not ggz-related).
+ *     void handle_state_change(GGZdModState old, GGZdModState new);
+ *     void handle_player_join(int player, int socket_fd, char* name, GGZdModSeat type);
+ *     void handle_player_leave(int player);
+ *     void handle_player_data(int player);
+ *     void game_init(GGZdMod *ggzdmod);
  *
  *     int main() {
  *         GGZdMod *mod = ggzdmod_new(GGZ_GAME);
  *         // First we register functions to handle some events.
- *         ggzdmod_set_handler(GGZ_EVENT_STATE, &ggz_update);
- *         ggzdmod_set_handler(GGZ_EVENT_JOIN, &ggz_update);
- *         ggzdmod_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
- *         ggzdmod_set_handler(GGZ_EVENT_PLAYER_DATA, &ggz_update);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_STATE,       &ggz_update);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_JOIN,        &ggz_update);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_LEAVE,       &ggz_update);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_PLAYER_DATA, &ggz_update);
  *
- *         // Then ggzd_main_loop does all the rest.
- *         ggzdmod_loop();
+ *         // Do any other game initializations.
+ *         game_init(mod);
+ *
+ *         // Then we must connect to ggzd
+ *         if (ggzdmod_connect(mod) < 0) {
+ *             exit(-1);
+ *         }
+ *
+ *         // ggzdmod_loop does most of the work, dispatching handlers
+ *         // above as necessary.
+ *         (void)ggzdmod_loop(mod);
+ *
+ *         // At the end, we disconnect and destroy the ggzdmod object.
+ *         (void)ggzdmod_disconnect(mod);
+ *         ggzdmod_free(mod);
+ *     }
+ *
+ *     void ggz_update(GGZdMod *mod, GGZdModEvent event, void *data) {
+ *         int player, socket_fd;
+ *         GGZdModState old_state, new_state;
+ *         GGZdModSeat seat;
+ *         switch (event) {
+ *           case GGZDMOD_EVENT_STATE:
+ *             old_state = *(GGZdModState*)data;
+ *             new_state = ggzdmod_get_state(mod);
+ *             handle_state_change(old_state, new_state);
+ *             break;
+ *           case GGZDMOD_EVENT_JOIN:
+ *             player = *(int*)data;
+ *             seat = ggzdmod_get_seat(mod, player);
+ *             handle_player_join(player, seat.fd, seat.name, seat.type);
+ *             break;
+ *           case GGZDMOD_EVENT_LEAVE:
+ *             player = *(int*)data;
+ *             handle_player_leave(player);
+ *             break;
+ *           case GGZDMOD_EVENT_PLAYER_DATA:
+ *             player = *(int*)data;
+ *             handle_player_data(player, fd);
+ *             break;
+ *           default:
+ *             // We don't handle the other events.
+ *         }
  *     }
  * @endcode
  *
@@ -99,9 +148,13 @@ typedef enum {
 	GGZDMOD_STATE_DONE		/**< Table halted, prepping to exit. */
 } GGZdModState;
 
-/* @brief Callback events. Each of these is a possible ggzdmod event.  For
-   each event, the table may register a handler with ggzdmod to handle that
-   event. @see GGZdModHandler @see ggzdmod_set_handler */
+/** @brief Callback events.
+ *
+ *  Each of these is a possible ggzdmod event.  For each event, the
+ *  table may register a handler with ggzdmod to handle that
+ *  event.
+ *  @see GGZdModHandler
+ *  @see ggzdmod_set_handler */
 typedef enum {
 	GGZDMOD_EVENT_STATE,	/**< Module status changed */
 	GGZDMOD_EVENT_JOIN,		/**< Player joined */
@@ -120,7 +173,7 @@ typedef enum {
 	GGZDMOD_GAME /**< Used by the table/game end. */
 } GGZdModType;
 
-/**< @brief A ggzdmod object, used for tracking a ggz<->table connection.
+/** @brief A ggzdmod object, used for tracking a ggz<->table connection.
  *
  * A game should track a pointer to a GGZdMod object; it contains all the
  * state information for a ggz<->table connection. */
@@ -133,38 +186,12 @@ typedef void GGZdMod;
  *  @param e The event that has occured.
  *  @param data Pointer to additional data for the event.
  *  The additional data will be of the following form:
- *    - GGZDMOD_EVENT_STATE: NULL
+ *    - GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
  *    - GGZDMOD_EVENT_JOIN: The player number (int*)
  *    - GGZDMOD_EVENT_LEAVE: The player number (int*)
  *    - GGZDMOD_EVENT_LOG: The message string (char*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
  *    - GGZDMOD_EVENT_ERROR: NULL (for now)
- *
- *  Here is an example function showing the most generic use for a table:
- *  @code
- *      void ggz_update(GGZdModEvent event, void *data) {
- *          int player, socket_fd;
- *          switch (event) {
- *            case GGZDMOD_EVENT_STATE:
- *              old_state = *(GGZdModState*)data; // data for this event
- *              // do something to handle a game launch (startup or quit)
- *              break;
- *            case GGZDMOD_EVENT_JOIN:
- *              player = *(int*)data; // data for this event
- *              // do something to handle a player joining
- *              break;
- *            case GGZDMOD_EVENT_LEAVE:
- *              player = *(int*)data; // data for this event
- *              // do something to handle a player leaving
- *              break;
- *            case GGZDMOD_EVENT_PLAYER_DATA:
- *              player = *(int*)data;
- *              socket_fd = ggzd_get_player_socket(player);
- *              // read and handle data from the player
- *              break;
- *          }
- *      }
- *  @endcode
  */
 typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
 
