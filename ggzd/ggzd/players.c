@@ -27,7 +27,10 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
+#include <netdb.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +59,7 @@
 extern struct GameTypes game_types;
 extern struct GameTables tables;
 extern struct Users players;
+extern Options opt;
 
 
 /* Local functions for handling players */
@@ -116,7 +120,9 @@ void player_handler_launch(int sock, char *ip_addr)
 static void* player_new(void *arg_ptr)
 {
 	int sock, status, i;
-	char *ip_addr;
+	char *ip_addr, *hostname = NULL;
+	struct hostent *host;
+	struct in_addr addr;
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *) arg_ptr);
@@ -133,6 +139,15 @@ static void* player_new(void *arg_ptr)
 	if (status != 0) {
 		errno = status;
 		err_sys_exit("pthread_detach error");
+	}
+
+	/* Lookup the hostname if enabled in ggzd.conf */
+	if(opt.perform_lookups) {
+		inet_aton(ip_addr, &addr);
+		host = gethostbyaddr((char*)&addr, sizeof(addr), AF_INET);
+		if((hostname = malloc(strlen(host->h_name)+1)) == NULL)
+			err_sys_exit("malloc error in player_new()");
+		strcpy(hostname, host->h_name);
 	}
 
 	/* Send server ID */
@@ -160,6 +175,7 @@ static void* player_new(void *arg_ptr)
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
 	players.info[i].ip_addr = ip_addr;
+	players.info[i].hostname = hostname;
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 	
@@ -505,6 +521,7 @@ static int player_login_new(int p)
 static int player_login_anon(int p, int fd)
 {
 	char name[MAX_USER_NAME_LEN + 1];
+	char *ip_addr, *hostname;
 
 	dbg_msg("Creating anonymous login for player %d", p);
 	
@@ -516,6 +533,8 @@ static int player_login_anon(int p, int fd)
 	players.info[p].uid = NG_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
 	players.timestamp = time(NULL);
+	ip_addr = players.info[p].ip_addr;
+	hostname = players.info[p].hostname;
 	pthread_rwlock_unlock(&players.lock);
 
 	if (FAIL(es_write_int(fd, RSP_LOGIN_ANON)) 
@@ -524,7 +543,15 @@ static int player_login_anon(int p, int fd)
 		return (-1);
 
 	dbg_msg("Successful anonymous login of %s", name);
-	
+
+	if(hostname)
+		log_msg(CONNECTION_INFO,
+			"Anonymous player %s logged in from %s (%s)",
+			name, hostname, ip_addr);
+	else
+		log_msg(CONNECTION_INFO,
+			"Anonymous player %s logged in from %s", name, ip_addr);
+
 	return 0;
 }
 

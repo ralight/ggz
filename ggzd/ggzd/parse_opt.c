@@ -373,6 +373,21 @@ static void parse_file(FILE *configfile)
 			continue;
 		}
 
+		/*** HOSTNAMELOOKUP = 0,1 ***/
+		if(!strcmp(varname, "hostnamelookup")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0 || intval > 1) {
+				PARSE_ERR("Invalid value for HostnameLookup");
+				continue;
+			}
+			opt.perform_lookups = intval;
+			continue;
+		}
+
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}
