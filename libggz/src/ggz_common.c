@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5104 2002-10-29 11:29:45Z jdorje $
+ * $Id: ggz_common.c 5108 2002-10-30 01:02:02Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -201,7 +201,7 @@ const char *ggz_error_to_string(GGZClientReqError err)
 	case E_LEAVE_FORBIDDEN:
 		return "leave forbidden";
 	case E_ALREADY_LOGGED_IN:
-		return "already logged_in";
+		return "already logged in";
 	case E_NOT_LOGGED_IN
 		: return "not logged in";
 	case E_NOT_IN_ROOM:
