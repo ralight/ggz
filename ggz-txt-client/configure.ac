@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6695 2005-01-16 06:54:26Z jdorje $
+dnl $Id: configure.ac 6696 2005-01-16 07:10:13Z jdorje $
 
 AC_INIT([GGZ text client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -34,6 +34,7 @@ AC_GGZ_CONFIG
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+AC_HEADER_TIME
 AC_CHECK_HEADERS([libintl.h winsock.h sys/ioctl.h])
 
 dnl Check for NLS
@@ -47,14 +48,9 @@ AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 
 
-dnl Check for typedefs, structures, and compiler characteristics
-dnl ============================================================
-AC_C_CONST
-AC_TYPE_SIZE_T
-AC_HEADER_TIME
-
 dnl Check for library functions
 dnl ===========================
+AC_CHECK_FUNCS([strsep])
 
 dnl Use -Wall if we have gcc.
 dnl =========================

@@ -2,7 +2,7 @@
  * File: support.h
  * Author: Jason Short
  * Project: GGZ TXT Client
- * $Id: support.h 6642 2005-01-13 01:55:40Z jdorje $
+ * $Id: support.h 6696 2005-01-16 07:10:13Z jdorje $
  *
  * Support code
  *
@@ -41,4 +41,8 @@
 #  define N_(x) (x)
 #  define _(x) (x)
 #  define PL_(x) (x)
+#endif
+
+#ifndef HAVE_STRSEP
+char *strsep(char **stringp, const char *delim);
 #endif

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6642 2005-01-13 01:55:40Z jdorje $
+# $Id: Makefile.am 6696 2005-01-16 07:10:13Z jdorje $
 
 SUBDIRS = .
 
@@ -20,6 +20,7 @@ ggz_txt_SOURCES = 	game.c \
 			server.h \
 			state.c \
 			state.h \
+			strsep.c \
 			support.h
 
 ggz_txt_LDADD = $(LIB_GGZCORE) $(LIB_GGZMOD) $(LIB_GGZ) $(LIB_READLINE) $(LIB_CURSES)
