@@ -1,0 +1,5 @@
+.deps
+.libs
+agrue
+Makefile
+Makefile.in

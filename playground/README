@@ -1,0 +1,45 @@
+
+	The GGZ Playground
+	==================
+
+	"Uh", said the little game, "when I've grown up I want to become a really
+	strong game!"
+
+	No problem, saith the older ones... but mature in the playground first!
+	You'll find lots of friends here who will help you during you grow up.
+
+	"Cool", replied the little game.
+	And started to become really strong...
+
+
+	-------------------------------------------------------------------------
+	This CVS module is not intended for distribution.
+	Therefore it can be used for new projects which will eventually move into
+	another GGZ CVS module, or even found a new one.
+
+	Each sub directory will have its own configuration files, unless this
+	will not make sense anymore (right now it does).
+
+	-------------------------------------------------------------------------
+	A summary of what is contained (might be out of date):
+
+	Agrue
+		A GGZ Real User Emulator
+		Simulates high load on servers. Needs porting to the new GGZ protocol.
+
+	GGZ-Java:
+	GGZ-Python:
+	GGZ-Ruby:
+		Language bindings for GGZ and some apps/games programmed in these
+		languages.
+		If you don't like C or C++, this is your chance!
+
+	Patches:
+		Non-structured, partly non-working patches.
+		If you have a good one just add it here.
+
+	GGZWars:
+		A Gtk+/SDL game. Needs to be cleaned up, and before any release
+		the sounds and graphics have to get rid of any copyright/trademark
+		issues.
+

@@ -1,0 +1,82 @@
+
+ How to realize a distributed GGZ service
+ ========================================
+
+ Explanation:
+  This is a draft document which outlines how such a service could be
+  implemented without touching the source of ggzd. Another possibility would be
+  to have this in ggzd directly, but this is not in the scope of this draft.
+
+ Needed components:
+  - ggzd, the GGZ Gaming Zone Server (version 0.0.6)
+  - ggzd.dist, the Distributed GGZ wrapper (version 0.0.1)
+
+ Setup:
+  Traditionally, a GGZ server listens on port 5688 for incoming
+  connections and spawns a new thread for each client.
+  Each game is then launched in a sub-process.
+
+  The ggzd.dist server wrapper does now listen on port 5688, forwarding
+  the filtered input to port X, where X could be 5689. The ggzd server
+  listens on 5689 now, only accepting connections from localhost to be safe.
+
+ Functionality:
+  As a GGZ server expects valid XML input from the network, any tags known to
+  the server wrapper can be scanned for non-local access.
+  For example, if a player requests the list of all players, it is passed
+  through without filtering, but the resulting output is enhanced with the list
+  of players in the same room on the other server - unless the room is
+  'virtual' (mirrored from the other server), then it is redirected to this
+  server, or a dummy room is opened on the local one.
+  This information is shared among the ggzd.dist servers by another connection,
+  on port Y where Y could be 5670.
+  Each server wrapper has a list of its known peers.
+
+ Possible scenarios:
+  - connection
+	ggzd.dist accepts the connection, ggzd is completely unaffected
+  - login
+	ggzd.dist forwards this to ggzd, on success informs other server wrappers;
+	however, names must be unique so any attempt to login with a known name is
+	returned as a failed login
+  - room listing
+	ggzd.dist merges both the local rooms and the remote ones (which it got
+	from its peers), unless there are no known remote rooms
+  - room joining
+	if the room exists local, nothing special happens other than informing the peers
+	if the room exists remote ('virtual'), the data is forwarded and the result
+	is passed back; unless dynamic room creation is possible where a local room
+	with the same name would be founded
+  - player listing
+	ggzd.dist returns all known players from rooms with this name
+  - chatting
+	this is either forwared or mirrored, depending on the room joining method
+  - playing games
+	this is not defined yet, it depends on how games will be handled in the future;
+	therefore ggzd.dist refuses any game play in the moment from non-local players
+  - room leaving
+	a player is deleted locally and all peers are informed
+
+ Status:
+  - The dynamic creation of rooms is possible, although not widely used yet
+  - Does ggzd break if all incoming connections are from localhost:5688?
+
+ Implementation:
+  As ggzd.dist's source is completely distinct from ggzd's, any programming
+  language with the ability to work effectively with connections and XML could
+  be used.
+
+ Scalability:
+  This depends on the implementation. There are two obvious bottlenecks which
+  have to be avoided:
+  - much traffic between the peers
+  - large data structures in each peer's memory
+
+ Security:
+  Only peer connections from allowed IP addresses are permitted. Additionally,
+  a secret only known by these two could be used, like a magic string or TLS
+  certificate from a known chain.
+
+Josef Spillner
+28.10.2001
+

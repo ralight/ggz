@@ -1,0 +1,5 @@
+- zuerst convert-mp3s ausfuehren
+- cd libgame ; make
+- cd .. ; make
+
+spielen

@@ -1,0 +1,20 @@
+
+ The GGZ Gaming Zone - Java Implementation
+ =========================================
+
+ The efforts which have been put into free Java implementations
+ show first results. A complete gaming environment using free Java
+ components (GNU, jikes, org.*, ...) is now possible.
+
+ This experimental package contains:
+ - GGZDMod, an implementation of the GGZDMod library
+ - TicTacToe, a sample game server
+ - TicTacToeClient, an AWT-based frontend for the TTT server
+ - Distributed GGZ, a test program which will eventually allow
+   distruted chat
+
+ All sources are covered by the GNU GPL.
+
+ Josef Spillner
+ 26.01.2002
+
