@@ -1,4 +1,4 @@
-SUBDIRS = . test
+SUBDIRS = .
 
 lib_LTLIBRARIES = libggzkde.la
 libggzkde_la_SOURCES = kplayerface.cpp kpfgallery.cpp kgamehelp.cpp
