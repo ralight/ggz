@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3523 2002-03-03 15:47:58Z dr_maux $
+ * $Id: ggzclient.c 3563 2002-03-16 01:47:33Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -884,7 +884,12 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, voi
 
 static GGZHookReturn ggz_table_data(GGZRoomEvent id, void* event_data, void* user_data)
 {
-        ggzcore_game_send_data(game, event_data);
+	if (ggzcore_game_send_data(game, event_data) < 0) {
+		/* FIXME: better handling here.  We should probably
+		   terminate the game. */
+		ggz_error_msg("Error sending data to game.");
+		return GGZ_HOOK_ERROR;	
+	}
         return GGZ_HOOK_OK;
 }
 
