@@ -24,6 +24,10 @@
 // GGZdMod includes
 #include <ggzdmod.h>
 
+// System includes
+#include <iostream>
+#include <unistd.h>
+
 // Prototypes
 static void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
@@ -39,7 +43,8 @@ Keepalive::Keepalive()
 {
 	me = this;
 
-	m_world = new World();
+	m_valid = 0;
+	m_world = NULL;
 
 	ggzdmod = ggzdmod_new(GGZDMOD_GAME);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, hook_events);
@@ -70,6 +75,10 @@ void Keepalive::loop()
 
 	ret = ggzdmod_connect(ggzdmod);
 	if(ret < 0) return;
+
+	m_world = new World();
+	m_valid = 1;
+
 	ggzdmod_loop(ggzdmod);
 	ggzdmod_disconnect(ggzdmod);
 }
@@ -122,25 +131,31 @@ void Keepalive::hookSpectatorData(void *data)
 }
 #endif
 
-// HAndler for state changes
+// Handler for state changes
 void Keepalive::hookState(void *data)
 {
 }
 
-// HAndler for errors
+// Handler for errors
 void Keepalive::hookError(void *data)
 {
+	close(ggzdmod_get_fd(ggzdmod));
+	m_valid = 0;
+	std::cerr << "An error occured: " << (char*)data << std::endl;
 }
 
 // Handler for logging events
 void Keepalive::hookLog(void *data)
 {
+	std::cout << "(log) " << (char*)data << std::endl;
 }
 
 // Callback for events
 void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	int player;
+
+	if(!me->m_valid) return;
 
 	switch(event)
 	{
@@ -184,6 +199,8 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 // Callback for game data
 void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
+	if(!me->m_valid) return;
+
 	switch(event)
 	{
 		case GGZDMOD_EVENT_PLAYER_DATA:

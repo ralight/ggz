@@ -40,6 +40,8 @@ class Keepalive
 		void hookError(void *data);
 		void hookLog(void *data);
 
+		int m_valid;
+
 	private:
 		World *m_world;
 };
