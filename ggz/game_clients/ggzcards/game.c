@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3289 2002-02-10 01:53:42Z jdorje $
+ * $Id: game.c 3303 2002-02-10 12:00:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -351,7 +351,6 @@ void game_alert_play(int player, card_t card, int pos)
 void game_alert_table(void)
 {
 	if (game_started) {
-		assert(table_ready);
 		ggz_debug("main", "Handling table update alert.");
 		table_show_cards();
 	}

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3289 2002-02-10 01:53:42Z jdorje $
+ * $Id: table.c 3303 2002-02-10 12:00:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,7 +69,7 @@ static GdkPixmap *card_backs[4];
 GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
 static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
 
-gboolean table_ready = FALSE;
+static gboolean table_ready = FALSE;
 
 static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
@@ -109,6 +109,8 @@ static void draw_card_box(int p)
 static void draw_card_areas(void)
 {
 	int p;
+	
+	assert(table_ready && game_started);
 
 	/* Clear the buffer to the style's background color */
 	gdk_draw_rectangle(table_buf,
@@ -226,7 +228,7 @@ void table_setup(void)
 				   get_table_width(), get_table_height(), -1);
 
 	/* _Now_ we're ready to draw stuff. */
-	table_ready = 1;
+	table_ready = TRUE;
 
 	/* Revert to having no selected card. */
 	selected_card = -1;
@@ -288,8 +290,7 @@ void table_set_player_message(int player, const char *message)
    is signaled. */
 void table_redraw(void)
 {
-	ggz_debug("table", "Redrawing table. " " game_started is %d.",
-		  game_started);
+	ggz_debug("table", "Redrawing table. ");
 	if (table_ready) {
 		animation_stop(TRUE);
 
