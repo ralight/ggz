@@ -1,4 +1,4 @@
-/* $Id: game.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: game.c 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: game.c
  * Author: Rich Gade
@@ -36,20 +36,13 @@
 #include "game.h"
 #include "easysock.h"
 
-struct game_t game = {0};
-
 
 /* game_send_bid
  *   the "bid" is the index into the list of choices sent to us by server
  */
 void game_send_bid(int bid)
 {
-	int status = 0;
-	client_debug("Sending bid to server: index %i.", bid);
-	if (es_write_int(ggzfd, WH_RSP_BID) < 0 ||
-	    es_write_int(ggzfd, bid) < 0)
-		status = -1;
-	set_game_state( WH_STATE_WAIT ); /* return to waiting */
+	int status = client_send_bid(bid);
 
 	statusbar_message( _("Sending bid to server") );
 
@@ -59,14 +52,10 @@ void game_send_bid(int bid)
 
 void game_send_options(int options_cnt, int* options)
 {
-	int i, status = 0;
+	int status;
 	client_debug("Sending options to server.");
 
-	es_write_int(ggzfd, WH_RSP_OPTIONS);
-	for (i=0; i<options_cnt; i++)
-		if (es_write_int(ggzfd, options[i]) < 0)
-			status = -1;
-	set_game_state( WH_STATE_WAIT ); /* return to waiting */
+	status = client_send_options(options_cnt, options);
 
 	statusbar_message( _("Sending options to server") );
 
@@ -76,32 +65,13 @@ void game_send_options(int options_cnt, int* options)
 
 void game_play_card(card_t card)
 {
-	int status = 0;
+	int status;
 
-	client_debug("Sending play to server: %i %i %i.", card.face, card.suit, card.deck);
-	if (es_write_int(ggzfd, WH_RSP_PLAY) < 0 ||
-	    es_write_card(ggzfd, card) < 0)
-		status = -1;
+	status = client_send_play(card);
 
 	statusbar_message( _("Sending play to server") );
 
 	assert(status == 0);
-}
-
-static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID",
-#ifdef ANIMATION
-				"ANIM",
-#endif /* ANIMATION */
-				"DONE", "OPTIONS"};
-
-void set_game_state(client_state_t state)
-{
-	if (state == game.state)
-		client_debug("Staying in state %d.", game.state);
-	else {
-		client_debug("Changing state from %s to %s.", game_states[(int)game.state], game_states[(int)state]);
-		game.state = state;
-	}
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: hand.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: hand.c 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: hand.c
  * Author: Rich Gade
@@ -39,92 +39,14 @@
 #include "hand.h"
 #include "layout.h"
 
-/* hand_read_hand()
- *   Sets the cards in any player's hand based on a server message
- */
-int hand_read_hand(void)
+int table_verify_hand_size()
 {
-	int i, player;
-	struct hand_t *hand;
-
-	assert(game.players);
-
-	/* first read the player whose hand it is */
-	if (es_read_int(ggzfd, &player) < 0)
-		return -1;
-	assert(player >= 0 && player < game.num_players);
-	hand = &game.players[player].hand;
-
-	client_debug("     Reading the hand of player %d.", player);
-
-	/* Zap our hand */
-	/* TODO: fixme */
-	for(i=0; i<game.max_hand_size; i++)
-		hand->card[i] = UNKNOWN_CARD;
-	hand->selected_card = -1; /* index into the array */
-
-	/* First find out how many cards in this hand */
-	if(es_read_int(ggzfd, &hand->hand_size) < 0)
-		return -1;
-
-	if (hand->hand_size > game.max_hand_size) {
-		int p;
-		client_debug("Expanding max_hand_size to allow for %d cards (previously max was %d).", hand->hand_size, game.max_hand_size);
-		game.max_hand_size = hand->hand_size;
-		while (1) {
-			/* the inner table must be at least large enough.
-			 * So, if it's not we make the hand sizes larger. */
-			int x, y, w, h, w1, h1;
-			get_table_dim(&x, &y, &w, &h);
-			get_fulltable_size(&w1, &h1);
-			if (w1 > w && h1 > h)
-				break;
-			client_debug("Increasing max hand size because the available table size (%d %d) isn't as big as what's required (%d %d).", w, h, w1, h1);
-			game.max_hand_size++;
-		}
-		for (p = 0; p<game.num_players; p++) {
-			/* TODO: figure out how this code could even fail at all.
-			   In the meantime, I've disabled the call to free, conceding
-			   the memory leak so that we don't have an unexplained seg fault
-			   (which we would have if these two lines were included) */
-/*
-			if (game.players[p].hand.card != NULL)
-				g_free(game.players[p].hand.card);
-*/
-			game.players[p].hand.card = (card_t *)g_malloc(game.max_hand_size * sizeof(card_t));
-		}
-		table_setup();
-	}
-
-	client_debug("     Read hand_size as %d.", game.players[player].hand.hand_size);
-
-	/* Read in all the card values */
-	for(i=0; i<hand->hand_size; i++)
-		if(es_read_card(ggzfd, &hand->card[i]) < 0)
-			return -1;
-
-	table_display_hand(player);
-
+	/* the inner table must be at least large enough.
+	 * So, if it's not we make the hand sizes larger. */
+	int x, y, w, h, w1, h1;
+	get_table_dim(&x, &y, &w, &h);
+	get_fulltable_size(&w1, &h1);
+	if (w1 > w && h1 > h)
+		return 1;
 	return 0;
 }
-
-
-/* none of this should go here, but that's okay for now */
-#include "easysock.h"
-
-int es_read_card(int fd, card_t *card)
-{
- 	if (es_read_char(fd, &card->face) < 0) return -1;
-	if (es_read_char(fd, &card->suit) < 0) return -1;
-	if (es_read_char(fd, &card->deck) < 0) return -1;
-	return 0;
-}
-
-int es_write_card(int fd, card_t card)
-{
- 	if (es_write_char(fd, card.face) < 0) return -1;
-	if (es_write_char(fd, card.suit) < 0) return -1;
-	if (es_write_char(fd, card.deck) < 0) return -1;
-	return 0;
-}
-

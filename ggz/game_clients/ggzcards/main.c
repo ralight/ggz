@@ -1,4 +1,4 @@
-/* $Id: main.c 2072 2001-07-23 00:38:33Z jdorje $ */
+/* $Id: main.c 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: main.c
  * Author: Rich Gade
@@ -53,21 +53,17 @@ GtkWidget *dlg_main = NULL;
 /* Private functions */
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
-static int get_players(void);
-static int get_gameover_status(void);
-static void handle_badplay(void);
-static int handle_play(void);
-static int handle_msg_table(void);
-static int get_trick_winner(void);
 
 
 int main(int argc, char *argv[])
 {
+	int fd;
+
 	gtk_init(&argc, &argv);
 
-	client_initialize();
+	fd = client_initialize();
 
-	gdk_input_add(ggzfd, GDK_INPUT_READ, game_handle_io, NULL);
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* this shouldn't go here, but I see no better place right now */
 	fixed_font_style = gtk_rc_style_new ();
@@ -87,109 +83,31 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static int handle_req_play()
+void table_get_newgame()
 {
-	if (es_read_int(ggzfd, &game.play_hand) < 0)
-		return -1;
+	sleep(1);
+	client_send_newgame();
+}
 
-	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
-
+void table_get_play(int hand)
+{
 #ifdef ANIMATION
 	if(game.state == WH_STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	set_game_state( WH_STATE_PLAY );
-	if (game.play_hand == 0)
+	if (hand == 0)
 		statusbar_message( _("Your turn to play a card") );
 	else {
 		char buf[100];
-		ggz_snprintf(buf, sizeof(buf), _("Your turn to play a card from %s's hand."), game.players[game.play_hand].name);
+		ggz_snprintf(buf, sizeof(buf), _("Your turn to play a card from %s's hand."), game.players[hand].name);
 		statusbar_message( buf );
 	}
-	return 0;	
 }
-
-char *opstr[] = { "WH_REQ_NEWGAME", "WH_MSG_NEWGAME",  "WH_MSG_GAMEOVER",
-		  "WH_MSG_PLAYERS", "WH_MSG_HAND",
-		  "WH_REQ_BID",	    "WH_REQ_PLAY",     "WH_MSG_BADPLAY",
-		  "WH_MSG_PLAY",    "WH_MSG_TRICK",    "WH_MESSAGE_GLOBAL",
-		  "WH_MESSAGE_PLAYER", "WH_REQ_OPTIONS", "WH_MSG_TABLE" };
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
-	int op, status;
-
-	if(es_read_int(ggzfd, &op) < 0) {
-		/* FIXME: do something here... */
-		return;
-	}
-
-	status = 0;
-
-	if (op >= WH_REQ_NEWGAME && op <= WH_REQ_OPTIONS)
-		client_debug("Received opcode: %s", opstr[op]);
-	else
-		client_debug("Received opcode %d", op);
-
-	switch(op) {
-		case WH_REQ_NEWGAME:
-			/* TODO: ask player about this */
-			sleep(1);
-			status = es_write_int(ggzfd, WH_RSP_NEWGAME);
-			client_debug("     Handled WH_REQ_NEWGAME: status is %d.", status);
-			break;
-		case WH_MSG_NEWGAME:
-			/* TODO: don't make "new game" until here */
-			break;
-		case WH_MSG_GAMEOVER:
-			status = get_gameover_status();
-			break;
-		case WH_MSG_PLAYERS:
-			status = get_players();
-			break;
-		case WH_MSG_HAND:
-			status = hand_read_hand();
-			break;
-		case WH_REQ_BID:
-			if (handle_bid_request() < 0)
-				client_debug("Error or bug: -1 returned by handle_bid_request."); /* TODO */
-			break;
-		case WH_REQ_PLAY:
-			status = handle_req_play();
-			break;
-		case WH_MSG_BADPLAY:
-			handle_badplay();
-			break;
-		case WH_MSG_PLAY:
-			status = handle_play();
-			break;
-		case WH_MSG_TABLE:
-			status = handle_msg_table();
-			break;
-		case WH_MSG_TRICK:
-			status = get_trick_winner();
-			break;
-		case WH_MESSAGE_GLOBAL:
-			status = handle_message_global();
-			break;
-		case WH_MESSAGE_PLAYER:
-			status = handle_message_player();
-			break;
-		case WH_REQ_OPTIONS:
-			status = handle_option_request();
-			break;
-		default:
-			client_debug("SERVER/CLIENT bug: unknown opcode received %d", op);
-			status = -1;
-			break;
-	}
-
-	if(status == -1) {
-		client_debug("Lost connection to server?!");
-		close(ggzfd);
-		exit(-1);
-	}
+	client_handle_server();
 }
 
 
@@ -201,91 +119,41 @@ static void game_init(void)
 }
 
 
-static int get_players(void)
+void table_alert_player_name(int player, char* name)
 {
-	int i, left=0, p, numplayers, different;
-	char *temp, t_name[17];
-
-	if (es_read_int(ggzfd, &numplayers) < 0)
-		return -1;
-
-	/* TODO: support for changing the number of players */
-
-	/* we may need to allocate memory for the players */
-	different = (game.num_players != numplayers);
-	if (different) {
-		if (game.players) {
-			for (p=0; p<game.num_players; p++)
-				if (game.players[p].hand.card)
-					g_free(game.players[p].hand.card);
-			g_free(game.players);
-		}
-		client_debug("get_players: (re)allocating game.players.");
-  		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
-		bzero(game.players, numplayers * sizeof(struct seat_t));
-		game.max_hand_size = 0; /* this forces reallocating later */
+	if (player != 0 && game.num_players &&
+	    strcmp(name, game.players[player].name)) {
+		char* temp = g_strdup_printf( _("%s joined the table"), name);
+		statusbar_message(temp);
+		g_free(temp);
 	}
-
-	for(i = 0; i < numplayers; i++) {
-		if (es_read_int(ggzfd, &game.players[i].seat) < 0)
-			return -1;
-		if (es_read_string(ggzfd, (char*)&t_name, 17) < 0)
-			return -1;
-		if (i != 0 && game.num_players
-				&& strcmp(t_name, game.players[i].name)) {
-			temp = g_strdup_printf( _("%s joined the table"), t_name);
-			statusbar_message(temp);
-			g_free(temp);
-		}
-		strncpy(game.players[i].name, t_name, 17);
-		table_set_name(i, game.players[i].name);
-		/* TODO: check for leaving the table, etc. */
-	}
-
-	game.num_players = numplayers;
-
-	if (different)
-		table_setup();
-
-	if(left && game.state == WH_STATE_BID) {
-		/* TODO: cancel bid (I think????) */
-	}
-	if(left)
-		set_game_state( WH_STATE_WAIT );
-
-	return 0;
+	table_set_name(player, name);
 }
 
 
-static int get_gameover_status(void)
+void table_handle_gameover(int num_winners, int *winners)
 {
-	int num_winners;
-	int winner;
 	char msg[100] = "";
-	int mlen = 0;
-
-	if (es_read_int(ggzfd, &num_winners) < 0)
-		return -1;
-	assert(num_winners >= 0 && num_winners <= game.num_players);
+	int i, mlen = 0;
 
 	/* handle different cases */	
 	if (num_winners == 0)
 		ggz_snprintf(msg, sizeof(msg), _("There was no winner") );
 	else {
-		for(; num_winners; num_winners--) {
-			if (es_read_int(ggzfd, &winner) < 0)
-				return -1;
-			assert(winner >= 0 && winner < game.num_players);
+		for(i=0; i < num_winners; i++) {;
 			/* TODO: better grammar */
-			mlen += ggz_snprintf(msg+mlen, 100-mlen, "%s ", game.players[winner].name);		
+			mlen += ggz_snprintf(msg+mlen, sizeof(msg)-mlen, "%s ", game.players[winners[i]].name);		
 		}
 		ggz_snprintf(msg+mlen, 100-mlen, _("won the game") );
 	}
 	
 	statusbar_message(msg);
-	set_game_state( WH_STATE_DONE );
+}
 
-	return 0;
+void table_get_bid(int possible_bids, char** bid_choices)
+{
+	dlg_bid_display(possible_bids, bid_choices);
+	statusbar_message( _("Your turn to bid") );
 }
 
 void statusbar_message(char *msg)
@@ -414,111 +282,39 @@ void menubar_message(const char *mark, const char *msg)
 	}
 }
 
-static void handle_badplay(void)
+
+void table_alert_badplay(char *err_msg)
 {
-	char *err_msg;
-	int p = game.play_hand;
-
-	if(es_read_string_alloc(ggzfd, &err_msg) < 0)
-		ggz_snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
-
-	/* Restore the cards the way they should be */
-	game.players[p].table_card = UNKNOWN_CARD;
 #ifdef ANIMATION
 	table_animation_abort();
 #endif /* ANIMATION */
 
 	/* redraw cards */
-	table_display_hand(p);
-
-	set_game_state( WH_STATE_PLAY );
+	table_display_hand(game.play_hand);
 	
 	statusbar_message(err_msg);
 	sleep(1); /* just a delay? */
-	g_free( err_msg );
 }
 
-
-static int handle_play(void)
+void table_alert_play(int player, card_t card)
 {
-	int p, c, tc;
-	card_t card;
-	struct hand_t *hand;
-
-	/* TODO: handle plays by self */
-
-	if(es_read_int(ggzfd, &p) < 0
-	   || es_read_card(ggzfd, &card) < 0)
-		return -1;
-	assert(p >= 0 && p < game.num_players);
-
-	client_debug("     Received play from player %d: %i %i %i.", p, card.face, card.suit, card.deck);
-
 #ifdef ANIMATION
 	if(game.state == WH_STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	/* remove the card from the hand */
-	assert(game.players);
-	hand = &game.players[p].hand;
-	assert(game.players[p].hand.card);
-
-	/* first, find a matching card to remove.
-	 * Anything "unknown" will match, as will the card itself*/
-	for (tc=hand->hand_size-1; tc>=0; tc--) {
-		/* TODO: this won't work in mixed known-unknown hands */
-		card_t hcard = hand->card[tc];
-		if (hcard.deck != -1 && hcard.deck != card.deck) continue;
-		if (hcard.suit != -1 && hcard.suit != card.suit) continue;
-		if (hcard.face != -1 && hcard.face != card.face) continue;
-		break;
-	}
-	if (tc == -1) {
-		client_debug("SERVER/CLIENT BUG: unknown card played.  Hand is:");
-		for (tc = 0; tc < hand->hand_size; tc++) {
-			card_t hcard = hand->card[tc];
-			client_debug("     Card %d is (%d %d %d).", tc, hcard.face, hcard.suit, hcard.deck);
-		}
-		return -1;
-	}
-
-	/* now, remove the card */
-	for (c=tc; c<hand->hand_size; c++)
-		hand->card[c] = hand->card[c+1];
-	hand->card[hand->hand_size] = UNKNOWN_CARD;
-	hand->hand_size--;
-
-	/* now update the graphics */
-	table_display_hand(p);
-	table_play_card(p, card);
-
-	return 0;
+	table_display_hand(player);
+	table_play_card(player, card);
 }
 
-static int handle_msg_table(void)
+
+void table_alert_table()
 {
-	int p, status=0;
-
-	assert(game.players);
-	for (p=0; p<game.num_players; p++)
-		if (es_read_card(ggzfd, &game.players[p].table_card) < 0)
-			status = -1;
-
-	/* TODO: verify that the table cards have been removed from the hands */
-
 	table_show_cards();
-	return status;
 }
 
-
-
-/* get_trick_winner
- *   handles the end of a trick
- */
-static int get_trick_winner(void)
+void table_alert_trick(int player)
 {
-	int p;
 	char *t_str;
 
 #ifdef ANIMATION
@@ -526,11 +322,7 @@ static int get_trick_winner(void)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	if(es_read_int(ggzfd, &p) < 0)
-		return -1;
-	assert(p >= 0 && p < game.num_players);
-
-	t_str = g_strdup_printf(_("%s won the trick"), game.players[p].name);
+	t_str = g_strdup_printf(_("%s won the trick"), game.players[player].name);
 	statusbar_message(t_str);
 	g_free(t_str);
 
@@ -538,10 +330,4 @@ static int get_trick_winner(void)
 	sleep(1);
 
 	table_clear_table();
-
-	return 0;
 }
-
-
-
-

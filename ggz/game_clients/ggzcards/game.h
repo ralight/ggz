@@ -1,4 +1,4 @@
-/* $Id: game.h 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: game.h 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: game.h
  * Author: Rich Gade
@@ -26,7 +26,6 @@
 #include <assert.h>
 
 #include "hand.h"
-#include "protocol.h"
 
 #ifndef __GAME_H__
 #define __GAME_H__
@@ -35,41 +34,10 @@
  * I've disable it because I broke it... */
 /* #define ANIMATION */
 
-/* GGZCards client game states */
-typedef enum {
-	WH_STATE_INIT,	  	/* game hasn't started yet */
-	WH_STATE_WAIT,	  	/* waiting for others */
-	WH_STATE_PLAY,		/* our turn to play */
-	WH_STATE_BID,		/* our turn to bid */
-#ifdef ANIMATION
-	WH_STATE_ANIM,		/* we're animating stuff */
-#endif /* ANIMATION */
-	WH_STATE_DONE,		/* game's over */
-	WH_STATE_OPTIONS	/* determining options */
-} client_state_t;
-
-struct seat_t {
- 	int seat;		/* ggz seating info */
-	char name[17];		/* player's name */
-	char message[100];	/* message info */
-	card_t table_card;	/* card on table, index into hand */
-	struct hand_t hand;	/* player's hand */
-};
-
-struct game_t {
-	client_state_t state;	/* the state the game is, i.e. LA_STATE_<something> */
-	int play_hand;		/* the hand we're playing from */
-	int num_players;	/* starts at 0 so we know once we've received them */
-	int max_hand_size;	/* the maximum number of cards in a hand */
-	struct seat_t *players;	/* player info; must be allocated */
-};
-extern struct game_t game;
-
 extern void game_send_bid(int);
 extern void game_send_options(int option_cnt, int* options);
 extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
-extern void set_game_state(client_state_t);
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1

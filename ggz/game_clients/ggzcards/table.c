@@ -1,4 +1,4 @@
-/* $Id: table.c 2072 2001-07-23 00:38:33Z jdorje $ */
+/* $Id: table.c 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: table.c
  * Author: Rich Gade, Jason Short
@@ -478,8 +478,6 @@ static void table_card_play(int p, int card)
 #ifdef ANIMATION
 	/* Setup and trigger the card animation */
 	table_animation_trigger(game.players[p].hand.card[card], x, y, 199, 242);
-#else
-	set_game_state( WH_STATE_WAIT );	
 #endif /* ANIMATION */
 }
 

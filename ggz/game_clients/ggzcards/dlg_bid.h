@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.h 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: dlg_bid.h 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: dlg_bid.h
  * Author: Rich Gade
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-extern int handle_bid_request(void); /* handles a WH_REQ_BID */
+void dlg_bid_display(int possible_bids, char** bid_choices);
 
 /* this next one is included in this file because it's almost identical to handle_bid_request */
 extern int handle_option_request(void); /* handles a WH_REQ_OPTIONS */

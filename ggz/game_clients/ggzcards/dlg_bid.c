@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: dlg_bid.c 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: dlg_bid.c
  * Author: Rich Gade
@@ -48,8 +48,8 @@
 
 static GtkWidget *window = NULL; /* bid/option dialog window */
 
-int option_cnt;
-int* options_selected;
+static int option_count;
+static int* options_selected;
 
 /* dlg_bid_clicked
  *   callback function for when a bid is clicked on
@@ -95,10 +95,10 @@ void dlg_option_toggled (GtkWidget *widget, gpointer data)
 
 void dlg_options_submit (GtkWidget *widget, gpointer data)
 {
-	game_send_options( option_cnt, options_selected );
+	game_send_options( option_count, options_selected );
 	g_free(options_selected);
 	options_selected = NULL;
-	option_cnt = 0;
+	option_count = 0;
 
 	gtk_widget_hide (window);
 	window = NULL;
@@ -202,87 +202,14 @@ static void dlg_option_display(int option_cnt, int* option_sizes, char*** option
 	gtk_widget_show( window );	
 }
 
-/* handle_bid_request
- *   handles a bid request from the server
- *   this is mostly gui-independent, and should probably go somewhere else
- */
-int handle_bid_request(void)
+void table_get_options(int option_cnt, int *choice_cnt, int *defaults, char*** option_choices)
 {
-	int i;
-	int possible_bids;
-	char** bid_choices;
 
-	if (game.state == WH_STATE_BID)
-		/* TODO: the new bid request should override the old one */
-		return -1;
-	set_game_state( WH_STATE_BID );
-
-	if (es_read_int(ggzfd, &possible_bids) < 0)
-		return -1;
-
-	client_debug("     Handling bid request: %d possible bids.", possible_bids);
-	bid_choices = (char**)g_malloc(possible_bids * sizeof(char*));
-
-	for(i = 0; i < possible_bids; i++) {
-		if (es_read_string_alloc(ggzfd, &bid_choices[i]) < 0) {
-			client_debug("Error reading string %d.", i);
-			return -1;
-		}
-
-	}
-
-	dlg_bid_display(possible_bids, bid_choices);
-
-	for(i = 0; i < possible_bids; i++)
-		g_free(bid_choices[i]);
-	g_free(bid_choices);
-
-	statusbar_message( _("Your turn to bid") );
-
-	return 0;
-}
-
-
-int handle_option_request(void)
-{
-	int i, j;
-	char*** option_choices; /* ugly! */
-	int* option_sizes;
-
-	if (es_read_int(ggzfd, &option_cnt) < 0)
-		return -1;
-	client_debug("     Handling option request: %d possible options.", option_cnt);
-	option_choices = (char***)g_malloc(option_cnt * sizeof(char**));
-	option_sizes = (int*)g_malloc(option_cnt * sizeof(int));
-	options_selected = (int*)g_malloc(option_cnt * sizeof(int));
-
-	for (i = 0; i < option_cnt; i++) {
-		if (es_read_int(ggzfd, &option_sizes[i]) < 0) return -1;
-		if (es_read_int(ggzfd, &options_selected[i]) < 0) return -1; /* read the default */
-		option_choices[i] = (char**)g_malloc(option_sizes[i] * sizeof(char*));
-		for (j = 0; j < option_sizes[i]; j++)
-			if (es_read_string_alloc(ggzfd, &option_choices[i][j]) < 0)
-				return -1;
-	}
-
-	if (game.state == WH_STATE_OPTIONS) {
-		client_debug("Received second option request.  Ignoring it.");
-	} else {
-		set_game_state( WH_STATE_OPTIONS );
-		dlg_option_display(option_cnt, option_sizes, option_choices);
-	}
-
-	for(i = 0; i < option_cnt; i++) {
-		for(j = 0; j < option_sizes[i]; j++)
-			g_free(option_choices[i][j]);
-		g_free(option_choices[i]);
-	}
-	g_free(option_choices);
-	g_free(option_sizes);
+	option_count = option_cnt;
+	options_selected = defaults;
+	dlg_option_display(option_cnt, choice_cnt, option_choices);
 
 	statusbar_message( _("Please select options.") );
-
-	return 0;
 }
 
 

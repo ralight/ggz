@@ -1,4 +1,4 @@
-/* $Id: hand.h 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: hand.h 2073 2001-07-23 07:47:48Z jdorje $ */
 /*
  * File: hand.h
  * Author: Rich Gade
@@ -23,45 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "common.h"
+
 #ifndef __HAND_H
 #define __HAND_H
-
-/* a card; this should go in a different file
- * as it's copied verbatim from the server code */
-typedef struct card_t {
-#define UNKNOWN_FACE -1
-#define JACK 11
-#define QUEEN 12
-#define KING 13
-#define ACE_HIGH 14
-#define ACE_LOW 1
-#define JOKER1 0
-#define JOKER2 1
-	char face; /* -1: unknown, 1-13: A-K, 14: A
-	            *	             for "none" suit, 0-1 are jokers */
-#define UNKNOWN_SUIT -1
-#define CLUBS 0
-#define DIAMONDS 1
-#define HEARTS 2
-#define SPADES 3
-#define NO_SUIT 4	
-	char suit; /* -1: unknown, 0-3: clubs-spades; 4: none */
-#define UNKNOWN_DECK -1
-	char deck; /* -1: unknown, 0+: the deck number */
-} card_t;
-
-#define UNKNOWN_CARD (card_t){-1, -1, -1}
-
-struct hand_t {
-	int hand_size; 							/* the number of cards in the hand */
-	card_t *card; /* the list of cards */
-	char selected_card;					/* the currently selected (highlighted) card (index) */
-};
-
-extern int hand_read_hand(void);
-
-/* copied directly from server code */
-extern int es_read_card(int fd, card_t *card);
-extern int es_write_card(int fd, card_t card);
 
 #endif /* __HAND_H */
