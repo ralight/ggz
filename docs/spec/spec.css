@@ -1,0 +1,113 @@
+body{
+background-color:white;
+}
+
+annotation-xml{
+display:none;
+}
+
+math, math[mode="inline"] {
+/*Change from mathml.css, other syntax did not work.*/
+  display: inline;
+}
+math {color: red;}
+mi {color: red;}
+/*This makes roman text normal.  This should really just un-italicize is
+so that things can be bold, etc. */
+[class="mathrm"] {font-style: normal}
+
+h1{
+background-color:teal;
+font-weight:bold;
+margin-bottom:0.5em;
+padding-bottom:0.5em;
+padding-top:0.5em;
+}
+
+div.problem{
+background-color: #99CCFF;
+text-indent:0;
+margin-bottom: .25em;
+margin-top: .25em;
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+}
+
+div.solution{
+display:none;
+background-color: #99CCFF;
+text-indent:0;
+margin-bottom: .25em;
+margin-top: .25em;
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+}
+
+h2{
+background-color:tan;
+font-weight:bold;
+margin-bottom:0.4em;
+padding-bottom:0.4em;
+padding-top:0.4em;
+margin-top:0.4em;
+}
+
+h3{
+background-color:#CCCCCC;
+font-weight:bold;
+margin-bottom:0.4em;
+padding-bottom:0.2em;
+padding-top:0.2em;
+margin-top:0.4em;
+}
+
+p.para{
+text-indent: 2.5em;
+margin-bottom: .25em;
+margin-top: .25em;
+line-height: 125%;
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+}
+
+/*Not needed anymore.*/
+/*
+p.exercise{
+text-indent:0;
+margin-bottom: .25em;
+margin-top: .25em;
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+background-color: #99CCFF
+}*/
+
+p.equation{
+align:center; 
+margin:0; 
+padding:0; 
+}
+
+p.caption{
+text-indent:0;
+line-height:80%;
+margin-top:0;
+margin-bottom:0;
+margin-left: 8em;
+margin-right: 8em;
+padding-bottom:0;
+}
+
+ul{
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+margin-bottom: .5em;
+margin-top: .5em;
+}
+
+ol{
+margin-left: 1.5cm;
+margin-right: 1.5cm;
+margin-bottom: .5em;
+margin-top: .5em;
+}
+

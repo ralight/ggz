@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+
+  <section name='Section' id='section'>
+    <section name='Description' id='secdesc'>
+      <para id='secp1'>
+      The &lt;section&gt; tag is used to DIVIDE a module into pieces,
+      as its name suggests.
+      </para>
+    </section>
+    <section name='Attributes' id='secattr'>
+      <list>
+	<item>name is a required attribute.  It contains the name of
+	  the section.
+	</item>
+	<item>A unique id attribute is required.
+	</item>
+      </list>
+    </section>
+    <section name="Examples" id='secex'>
+      <code>
+	<![CDATA[
+      <para id='para1'>
+	There are three ideal circuit elements.  They are the resistor,
+	capacitor, and the inductor.
+      </para>
+      <section name='Resistor' id='res'>
+      <para id='para2'>
+	Here is some information about the resistor.
+      </para>
+      </section>
+      <section name='Capacitor' id='cap'>
+      <para id='para3'>
+	Here is some information about the capacitor.
+      </para>
+      </section>
+      <section name='inductor' id='ind'>
+      <para id='para4'>
+	Here is some informatino about the inductor.
+      <para>
+      </section>
+	]]>
+      </code>
+    </section>
+    <section name='Children' id='secchild'>
+      <para>
+      &lt;section&gt; can contain one or more <cnxn
+      target='section'>section</cnxn>, <cnxn
+      target='cnxn'>cnxn</cnxn>, <cnxn target='link'>link</cnxn>,
+      <cnxn target='important'>important</cnxn>, <cnxn
+      target='emphasis'>emphasis</cnxn>, <cnxn
+      target='math'>math<!--FIX ME should this be different?--></cnxn>, <cnxn target='para'>para</cnxn>, <cnxn
+      target='equation'>equation</cnxn>, <cnxn
+      target='list'>list</cnxn>, <cnxn target='code'>code</cnxn>,
+      <cnxn target='figure'>figure</cnxn>, <cnxn target='table'>table</cnxn>,
+      <cnxn target='example'>example</cnxn>, or <cnxn
+      target='exercise'>exercise</cnxn>.
+      </para>
+    </section>
+    
+  </section>
+  <section name='Para' id='para'>
+    <section name='Description' id='parades'>
+      <para>
+	A &lt;para&gt; contains a paragraph of text. 
+      </para>
+    </section>
+    <section name='Attributes' id='paraatt'>
+      <list>
+	<item>
+	  It has a required id attribute.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='paraex'>
+      <code>
+	<![CDATA[
+      <para id='para1'>
+	Prince Andrei was on duty that day and in constant attendance on the
+	Commander in Chief.
+      </para>
+      <para id='para2'>
+	At six o'clock in the evening Kutuzov went to the Enperor's
+	headquarters, and after remaining but a short time with him, went to
+	the Grand Marshal of the Court, Count Tolstoy.  
+      </para>
+	]]>
+      </code>
+    </section>
+    <section name='Children' id='parachild'>
+      <para>
+	A paragraph must contain at least one of <cnxn
+      target='emphasis'>emphasis</cnxn>, <cnxn
+      target='important'>important</cnxn>, <cnxn
+      target='list'>list</cnxn>, <cnxn target='cnxn'>cnxn</cnxn>,
+      <cnxn target='link'>link</cnxn>, <cnxn
+      target='equation'>equation</cnxn>, <cnxn target='math'>math<!--FIX ME--></cnxn> or plain text. 
+      </para>
+    </section>
+  </section>
+  
+  <section name='Figure' id='fig'>
+    <section name='Description' id='figdes'>
+      <para>
+	A &lt;figure&gt; contains the structure for creating a figure within a
+      document.  A figure could contain such things as an image, or a table,
+      or several of these.  The stylesheet could be set up so that the
+      figure could be referenced elsewhere in the document.    
+      </para>
+    </section>
+    <section name='Attributes' id='figatt'>
+      <list>
+	<item>
+	  Has a required id attribute.
+	</item>
+	<item>
+	  It has an optional name attribute.  This should be used to give a
+	  description of the figure that would help a search engine find it.  
+	</item>
+	<item>
+	  There is a required <!--is this right? what if there are no subfigures--> orient attribute.  This 
+	  attribute can be set to horizontal or vertical.  This attribute is
+	  used when there are subfigures.  It allows the writer to determine
+	  which way subfigures should line up.  That is, if there is an
+	  important reason why a series of subfigures should places next to each
+	  other then this attribute is set to horizontal, and if they should be
+	  on top of each other then it is set to vertical.  
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='figex'>
+      <code>
+	<![CDATA[
+      <figure name='figures' id='fig1'>
+        <title>A Happy Cat</title>
+        <mediaobject type='image' src='image1.png'/>
+	<caption>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</caption>
+      </figure>
+	]]>
+      </code>
+      This might be displayed as:
+      <figure name='figures' id='fig1'>
+	<title>A Happy Cat</title>
+	<mediaobject type='image' src='image1.png'/>
+	<caption>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</caption>
+      </figure>      
+    </section>
+    <section name='Children' id='figchild'>
+      <list>
+	<item>
+	  The first child is an optional &lt;title&gt;.
+	</item>
+	<item>
+	  Next, is one <cnxn
+	  target='mediaobject'>&lt;mediaobject&gt;</cnxn>, <cnxn target='table'>&lt;table&gt;</cnxn>, or
+	  <cnxn target='code'>&lt;code&gt;</cnxn>.  Instead of contain one of these, &lt;figure&gt; can
+	  contain multiple <cnxn target='subfigure'>&lt;subfigure&gt;</cnxn> tags.   
+	</item>
+	<item>
+	  The last child is an optional &lt;caption&gt; tag.  
+	</item>
+      </list>
+    </section>
+  </section>
+  <section name='Title' id='title'>
+    <section name='Description' id='titledes'>
+      <para>
+      A &lt;title&gt; tag is only used as the first child of a
+    &lt;figure&gt;.  It provides a short title for a figure. Its
+    role is distinct from &lt;caption&lt;, which provides a
+    description of the figure and which might be rather lengthy.  
+      </para>
+    </section>
+    <section name='Attributes' id='titleatt'>
+      <list>
+	<item>
+	  It has no attributes.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='titleex'>
+      <code>
+	<![CDATA[
+      <figure name='figures' id='fig2'>
+        <title>A Happy Cat</title>
+        <mediaobject type='image' src='image1.png'/>
+      </figure>
+	]]>
+      </code>
+      This might be displayed as:
+      <figure name='figures' id='fig2'>
+	<title>A Happy Cat</title>
+	<mediaobject type='image' src='image1.png'/>
+      </figure>
+    </section>
+    <section name='Children' id='titlechild'>
+      <para>
+	&lt;title&gt; can only contain plain text <!--and math? FIX ME-->. 
+      </para>
+    </section>
+  </section>
+  <section name='Subfigure' id='subfigure'>
+    <section name='Description' id='subfigdes'>
+      <para>
+	A subfigure is used inside of a &lt;figure&gt; when you want
+	to use more than one &lt;mediaobject&gt; or &lt;table&gt;, etc. inside of
+	the same &lt;figure&gt;.  In fact, the use of &lt;subfigure&gt;
+	is the same as the use of &lt;figure&gt; except that it can not
+	contain &lt;title&gt; or other &lt;subfigure&gt;.  
+      </para>
+    </section>
+    <section name='Attributes' id='subfigatt'>
+      <list>
+	<item>
+	  It has an optional id attribute.
+	</item>
+	<item>
+	  When using this tag you should set the orient attribute for
+	  the &lt;figure&gt; that contains it.  The orient attribute
+	  can be set to horizontal or vertical depending on which
+	  direction you want to layout the subfigures.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='subfigex'>
+<code>
+	<![CDATA[
+      <figure name='horizontal figures' id='horfig'>
+      <subfigure id='subfig1'>
+      <mediaobject type='image' src='image1.png'/>
+      </subfigure>
+      <subfigure id='subfig2'>
+      <mediaobject type='image' src='image2.png'/>
+      </subfigure>
+      </figure>
+      <figure name='vertical figures' id='vertfig'>
+      <subfigure id='subfig3'>
+      <mediaobject type='image' src='image1.png'/>
+      </subfigure>
+      <subfigure id='subfig4'>
+      <mediaobject type='image' src='image2.png'/>
+      </subfigure>
+      </figure>
+	]]>
+      </code>
+      And this might be rendered like this:
+      <figure name='horizontal figures' id='horfig'>
+	<subfigure id='subfig1'>
+	  <mediaobject type='image' src='image1.png'/>
+	</subfigure>
+	<subfigure id='subfig2'>
+	  <mediaobject type='image' src='image2.png'/>
+	</subfigure>
+      </figure>
+      <figure name='vertical figures' id='vertfig'>
+	<subfigure id='subfig3'>
+	  <mediaobject type='image' src='image1.png'/>
+	</subfigure>
+	<subfigure id='subfig4'>
+	  <mediaobject type='image' src='image2.png'/>
+	</subfigure>
+      </figure>
+    </section>
+    <section name='Children' id='subfigchild'>
+      <para>
+    &lt;subfigure&gt; can contain one of <cnxn
+    target='mediaobject'>mediaobject</cnxn>, <cnxn
+    target='table'>table</cnxn>, or <cnxn target='code'>code</cnxn>
+    followed by an optional <cnxn target='caption'>caption</cnxn>.
+      </para>
+    </section>
+  </section>  
+  <section name='Caption' id='caption'>
+    <section name='Description' id='captiondes'>
+      <para>
+      A &lt;caption&gt; tag is only used to provide a note about a
+      &lt;figure&gt; or a &lt;subfigure&gt;.  This would be suitable
+      for printing. &lt;caption&gt; is distinct from &lt;title&lt; in
+      that it provides a, possibly lengthy, description of the figure
+      for the reader's use and not an over all title.
+      </para>
+    </section>
+    <section name='Attributes' id='captionatt'>
+      <list>
+	<item>
+	  It has no attributes.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='captionex'>
+      <code>
+	<![CDATA[
+      <figure name='figures' id='fig3'>
+        <title>A Happy Cat</title>
+        <mediaobject type='image' src='image1.png'/>
+	<caption>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</caption>
+      </figure>
+	]]>
+      </code>
+      This might be displayed as:
+      <figure name='figures' id='fig3'>
+	<title>A Happy Cat</title>
+	<mediaobject type='image' src='image1.png'/>
+	<caption>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</caption>
+      </figure>
+    </section>
+    <section name='Children' id='titlechild'>
+      <para>
+      &lt;caption&gt; can contain any plain text, math, and the following
+      tags: cnxn, link, important, and emphasis.
+      </para>
+    </section>
+  </section>  
+  <section name='Example' id='example'>
+    <section name='Description' id='des'>
+      <para>
+	The example tag is used to contain examples.  Examples are
+	problems that are worked out in the text.  
+      </para>
+    </section>
+    <section name='Attributes' id='att'>
+      <list>
+	<item>
+	  It has a required id attribute.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='ex'>
+      <code>
+	<![CDATA[
+	<example id='example'>
+	  FIX ME 
+	</example>
+	]]>
+      </code>
+      This might be displayed as:
+      
+    </section>
+    <section name='Children' id='child'>
+      <para>
+	&lt;example&gt; can contain plain text, math and any of the
+	following tags: cnxn, link, important, emphasis, para,
+	equation, list, code, figure, table, and exercise.
+      </para>
+    </section>
+  </section>
+  <section name='Table' id='table'>
+    <section name='Description' id='tabledes'>
+      <para>
+	The table tag is used to create tables.  It is designed to be
+	a generalized table.  That is, there are not rows and
+	columns.  Instead, there are two separate sets of groupings.
+	One set of groups is defined by the &lt;group&gt; tag, which
+	contains &lt;elem&gt; tags or elements.  The
+	other set is defined by &lt;category&gt; tags.  Both an &lt;elem&gt;
+	and its &lt;category&gt; have a desc attribute with the same
+	value.
+      </para>
+    </section>
+    <section name='Attributes' id='tableatt'>
+      <list>
+	<item>
+	  It has a required id attribute.
+	</item>
+	<item>
+	  It has a required <!--FIX ME is this correct?-->orient
+	  attribute.  This attribute can take values of horizontal or
+	  vertical.  Vertical corresponds to the elements with the
+	  same category being on top of each other (that is, category
+	  become a column).  Horizontal corresponds to the elements
+	  with the same group being on top of each other (that is,
+	  group defines a column).  
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='tableex'>
+      <para>The following table has groups of items that are defined
+      by being a fruit or vegetable and by their color.  For example, the first
+      element is a red fruit.
+      <code>
+	<![CDATA[
+	<table id='table' orient='vertical'>
+	  <categories>
+	    <category desc='fruit'>Fruit</category>
+	    <category desc='veg'>Vegetables</category>
+	  </categories>
+	  <group>
+	    <elem desc='fruit'>Apple</elem>
+	    <elem desc='vegetable'>Tomato</elem>
+	  </group>
+	  <group>
+	    <elem desc='fruit'>Orange</elem>
+	    <elem desc='vegetable'>Carrot</elem>
+	  </group>
+	  <group>
+	    <elem desc='fruit'>Grape</elem>
+	    <elem desc='vegetable'>Lettuce</elem>
+	  </group>
+	</table>
+	]]>
+      </code>
+	and it might be rendered like this:
+<table id='table' orient='vertical'>
+	  <categories>
+	    <category desc='fruit'>Fruit</category>
+	    <category desc='veg'>Vegetables</category>
+	  </categories>
+	  <group>
+	    <elem desc='fruit'>Apple</elem>
+	    <elem desc='vegetable'>Tomato</elem>
+	  </group>
+	  <group>
+	    <elem desc='fruit'>Orange</elem>
+	    <elem desc='vegetable'>Carrot</elem>
+	  </group>
+	  <group>
+	    <elem desc='fruit'>Grape</elem>
+	    <elem desc='vegetable'>Lettuce</elem>
+	  </group>
+	</table>
+      </para>
+    </section>
+    <section name='Children' id='tablechild'>
+      <para>
+	&lt;table&gt; contains one <cnxn target='categories'>&lt;categories&gt;</cnxn> tag followed by
+	one or more <cnxn target='group'>&lt;group&gt;</cnxn> tags.  
+      </para>
+    </section>
+  </section>
+  
+  <section name='Categories' id='cats'>
+    <section name='Description' id='catsdes'>
+      <para>
+	&lt;categories&lt; groups all of the &lt;category&gt; tags
+	together.
+      </para>
+    </section>
+    <section name='Attributes' id='catsatt'>
+      <list>
+	<item>
+	  It has no attributes.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='catsex'>
+      See the <cnxn target='tableex'>table example</cnxn>.
+    </section>
+    <section name='Children' id='catschild'>
+      <para>
+	&lt;categories&gt; must contain one or more &lt;category&gt;
+	tags. The order of the &lt;category&gt; tags with the
+	&lt;categories&gt; tag defines what order they will be
+	displayed in. 
+      </para>
+    </section>
+  </section>
+  <section name='Category' id='cat'>
+    <section name='Description' id='catdes'>
+      <para>
+	Each &lt;category&gt; tag serves to group one set of things.
+	The desc attribute links the category to the element. The
+	content of the &lt;category&gt; will be used as the header for
+	the column or row defined by the category.  
+      </para>
+    </section>
+    <section name='Attributes' id='catatt'>
+      <list>
+	<item>
+	  Must contain a desc attribute.  The value of the attribute
+	  will be used repeatedly to link the category to specific
+	  elements so it should be short.  
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='catex'>
+      See the <cnxn target='tableex'>table example</cnxn>.
+    </section>
+    <section name='Children' id='catchild'>
+      <para>
+	It must contain plain text<!--FIX ME or math-->.
+      </para>
+    </section>
+  </section>
+  <section name='Group' id='group'>
+    <section name='Description' id='groupdes'>
+      <para>
+	The &lt;group&gt; tag pulls together several elements.  Those
+	elements are contained within the &lt;group&gt; tag.  
+      </para>
+    </section>
+    <section name='Attributes' id='groupatt'>
+      <list>
+	<item>
+	  It has no attributes.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='groupex'>
+      See the <cnxn target='tableex'>table example</cnxn>.
+    </section>
+    <section name='Children' id='groupchild'>
+      <para>
+	&lt;group&gt; must contain one or more &lt;elem&gt; tags. 
+      </para>
+    </section>
+  </section>
+ <section name='Elem' id='elem'>
+    <section name='Description' id='elemdes'>
+      <para>
+	The &lt;elem&gt;, or element, tag contains the actual information of the
+	table. On the one hand it is grouped by the &lt;group&gt;
+	tag.  On the other hand it is grouped by the &lt;category&gt;
+	that has the same attribute value for the desc attribute.
+      </para>
+    </section>
+    <section name='Attributes' id='elematt'>
+      <list>
+	<item>
+	  Must contain a desc attribute.  The value of the attribute
+	  will be used to link the element to a &lt;category&gt;.  
+	</item>
+	<item>
+	  It can contain an optional id attribute.
+	</item>
+      </list>
+    </section>
+    <section name='Examples' id='elemex'>
+      See the <cnxn target='tableex'>table example</cnxn>.
+    </section>
+    <section name='Children' id='elemchild'>
+      <para>
+	&lt;elem&gt; must contain one or more of plain text, math or
+	one of the following tags: cnxn, link, important, emphasis.
+      </para>
+    </section>
+  </section>

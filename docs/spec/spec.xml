@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet 
+		type="text/css" href="spec.css"
+	?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:math="http://www.w3.org/1998/Math/MathML"><head><title>CNXML 0.1 Language Specifcation</title><script  language="javascript" xml:space="preserve">
+function showSolution(id) 
+{
+    document.getElementById(id).style.display="block";
+}
+function hideSolution(id) 
+{
+    document.getElementById(id).style.display="none";
+}
+</script></head><body><h1>CNXML 0.1 Language Specifcation</h1>
+
+  
+    
+    
+    
+  
+  
+  <h2 id="version">1  Document History</h2>
+    <p class="para" id="">
+      Version pre-release:  Document not released yet
+    </p>
+  
+
+  
+  
+  
+   
+
+  <h2 id="section">2  Section</h2>
+    <h3 id="secdesc">2.1  Description</h3>
+      <p class="para" id="secp1">
+      The &lt;section&gt; tag is used to DIVIDE a module into pieces,
+      as its name suggests.
+      </p>
+    
+    <h3 id="secattr">2.2  Attributes</h3>
+      <ul id=""><li id="">name is a required attribute.  It contains the name of
+	  the section.
+	</li><li id="">A unique id attribute is required.
+	</li></ul>
+    
+    <h3 id="secex">2.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+      &lt;para id='para1'&gt;
+	There are three ideal circuit elements.  They are the resistor,
+	capacitor, and the inductor.
+      &lt;/para&gt;
+      &lt;section name='Resistor' id='res'&gt;
+      &lt;para id='para2'&gt;
+	Here is some information about the resistor.
+      &lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section name='Capacitor' id='cap'&gt;
+      &lt;para id='para3'&gt;
+	Here is some information about the capacitor.
+      &lt;/para&gt;
+      &lt;/section&gt;
+      &lt;section name='inductor' id='ind'&gt;
+      &lt;para id='para4'&gt;
+	Here is some informatino about the inductor.
+      &lt;para&gt;
+      &lt;/section&gt;
+	
+      
+	</pre>
+    
+    <h3 id="secchild">2.4  Children</h3>
+      <p class="para" id="">
+      &lt;section&gt; can contain one or more <a href="#section" shape="rect">section</a>, <a href="#cnxn" shape="rect">cnxn</a>, <a href="#link" shape="rect">link</a>,
+      <a href="#important" shape="rect">important</a>, <a href="#emphasis" shape="rect">emphasis</a>, <a href="#math" shape="rect">math</a>, <a href="#para" shape="rect">para</a>, <a href="#equation" shape="rect">equation</a>, <a href="#list" shape="rect">list</a>, <a href="#code" shape="rect">code</a>,
+      <a href="#figure" shape="rect">figure</a>, <a href="#table" shape="rect">table</a>,
+      <a href="#example" shape="rect">example</a>, or <a href="#exercise" shape="rect">exercise</a>.
+      </p>
+    
+    
+  
+  <h2 id="para">3  Para</h2>
+    <h3 id="parades">3.1  Description</h3>
+      <p class="para" id="">
+	A &lt;para&gt; contains a paragraph of text. 
+      </p>
+    
+    <h3 id="paraatt">3.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has a required id attribute.
+	</li></ul>
+    
+    <h3 id="paraex">3.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+      &lt;para id='para1'&gt;
+	Prince Andrei was on duty that day and in constant attendance on the
+	Commander in Chief.
+      &lt;/para&gt;
+      &lt;para id='para2'&gt;
+	At six o'clock in the evening Kutuzov went to the Enperor's
+	headquarters, and after remaining but a short time with him, went to
+	the Grand Marshal of the Court, Count Tolstoy.  
+      &lt;/para&gt;
+	
+      
+	</pre>
+    
+    <h3 id="parachild">3.4  Children</h3>
+      <p class="para" id="">
+	A paragraph must contain at least one of <a href="#emphasis" shape="rect">emphasis</a>, <a href="#important" shape="rect">important</a>, <a href="#list" shape="rect">list</a>, <a href="#cnxn" shape="rect">cnxn</a>,
+      <a href="#link" shape="rect">link</a>, <a href="#equation" shape="rect">equation</a>, <a href="#math" shape="rect">math</a> or plain text. 
+      </p>
+    
+  
+  
+  <h2 id="fig">4  Figure</h2>
+    <h3 id="figdes">4.1  Description</h3>
+      <p class="para" id="">
+	A &lt;figure&gt; contains the structure for creating a figure within a
+      document.  A figure could contain such things as an image, or a table,
+      or several of these.  The stylesheet could be set up so that the
+      figure could be referenced elsewhere in the document.    
+      </p>
+    
+    <h3 id="figatt">4.2  Attributes</h3>
+      <ul id=""><li id="">
+	  Has a required id attribute.
+	</li><li id="">
+	  It has an optional name attribute.  This should be used to give a
+	  description of the figure that would help a search engine find it.  
+	</li><li id="">
+	  There is a required  orient attribute.  This 
+	  attribute can be set to horizontal or vertical.  This attribute is
+	  used when there are subfigures.  It allows the writer to determine
+	  which way subfigures should line up.  That is, if there is an
+	  important reason why a series of subfigures should places next to each
+	  other then this attribute is set to horizontal, and if they should be
+	  on top of each other then it is set to vertical.  
+	</li></ul>
+    
+    <h3 id="figex">4.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+      &lt;figure name='figures' id='fig1'&gt;
+        &lt;title&gt;A Happy Cat&lt;/title&gt;
+        &lt;mediaobject type='image' src='image1.png'/&gt;
+	&lt;caption&gt;The cat displayed in this picture is enjoying playing
+        with a ball of yarn.&lt;/caption&gt;
+      &lt;/figure&gt;
+	
+      
+	</pre>
+          
+      <a name="fig1" shape="rect"/><br clear="none"/><center><b>A Happy Cat</b><br clear="none"/><img src="image1.png"/><table align="center"><tr/></table></center><p class="caption"><font size="-1"><b>
+			Figure 1 
+			</b>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</font></p><br clear="none"/>      
+    
+    <h3 id="figchild">4.4  Children</h3>
+      <ul id=""><li id="">
+	  The first child is an optional &lt;title&gt;.
+	</li><li id="">
+	  Next, is one <a href="#mediaobject" shape="rect">&lt;mediaobject&gt;</a>, <a href="#table" shape="rect">&lt;table&gt;</a>, or
+	  <a href="#code" shape="rect">&lt;code&gt;</a>.  Instead of contain one of these, &lt;figure&gt; can
+	  contain multiple <a href="#subfigure" shape="rect">&lt;subfigure&gt;</a> tags.   
+	</li><li id="">
+	  The last child is an optional &lt;caption&gt; tag.  
+	</li></ul>
+    
+  
+  <h2 id="title">5  Title</h2>
+    <h3 id="titledes">5.1  Description</h3>
+      <p class="para" id="">
+      A &lt;title&gt; tag is only used as the first child of a
+    &lt;figure&gt;.  It provides a short title for a figure. Its
+    role is distinct from &lt;caption&lt;, which provides a
+    description of the figure and which might be rather lengthy.  
+      </p>
+    
+    <h3 id="titleatt">5.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has no attributes.
+	</li></ul>
+    
+    <h3 id="titleex">5.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+      &lt;figure name='figures' id='fig2'&gt;
+        &lt;title&gt;A Happy Cat&lt;/title&gt;
+        &lt;mediaobject type='image' src='image1.png'/&gt;
+      &lt;/figure&gt;
+	
+      
+	</pre>
+          
+      <a name="fig2" shape="rect"/><br clear="none"/><center><b>A Happy Cat</b><br clear="none"/><img src="image1.png"/><table align="center"><tr/></table></center><p class="caption"><font size="-1"><b>
+			Figure 2 
+			</b></font></p><br clear="none"/>
+    
+    <h3 id="titlechild">5.4  Children</h3>
+      <p class="para" id="">
+	&lt;title&gt; can only contain plain text . 
+      </p>
+    
+  
+  <h2 id="subfigure">6  Subfigure</h2>
+    <h3 id="subfigdes">6.1  Description</h3>
+      <p class="para" id="">
+	A subfigure is used inside of a &lt;figure&gt; when you want
+	to use more than one &lt;mediaobject&gt; or &lt;table&gt;, etc. inside of
+	the same &lt;figure&gt;.  In fact, the use of &lt;subfigure&gt;
+	is the same as the use of &lt;figure&gt; except that it can not
+	contain &lt;title&gt; or other &lt;subfigure&gt;.  
+      </p>
+    
+    <h3 id="subfigatt">6.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has an optional id attribute.
+	</li><li id="">
+	  When using this tag you should set the orient attribute for
+	  the &lt;figure&gt; that contains it.  The orient attribute
+	  can be set to horizontal or vertical depending on which
+	  direction you want to layout the subfigures.
+	</li></ul>
+    
+    <h3 id="subfigex">6.3  Examples</h3>
+<pre  xml:space="preserve">
+		
+	
+      &lt;figure name='horizontal figures' id='horfig'&gt;
+      &lt;subfigure id='subfig1'&gt;
+      &lt;mediaobject type='image' src='image1.png'/&gt;
+      &lt;/subfigure&gt;
+      &lt;subfigure id='subfig2'&gt;
+      &lt;mediaobject type='image' src='image2.png'/&gt;
+      &lt;/subfigure&gt;
+      &lt;/figure&gt;
+      &lt;figure name='vertical figures' id='vertfig'&gt;
+      &lt;subfigure id='subfig3'&gt;
+      &lt;mediaobject type='image' src='image1.png'/&gt;
+      &lt;/subfigure&gt;
+      &lt;subfigure id='subfig4'&gt;
+      &lt;mediaobject type='image' src='image2.png'/&gt;
+      &lt;/subfigure&gt;
+      &lt;/figure&gt;
+	
+      
+	</pre>
+            
+      <a name="horfig" shape="rect"/><br clear="none"/><center><b/><br clear="none"/><table align="center"><tr><td colspan="1" rowspan="1"><img src="image1.png"/><br clear="none"/></td><td colspan="1" rowspan="1"><img src="image2.png"/><br clear="none"/></td></tr></table></center><p class="caption"><font size="-1"><b>
+			Figure 3 
+			</b></font></p><br clear="none"/>
+      <a name="vertfig" shape="rect"/><br clear="none"/><center><b/><br clear="none"/><table align="center"><tr><td colspan="1" rowspan="1"><img src="image1.png"/><br clear="none"/></td><td colspan="1" rowspan="1"><img src="image2.png"/><br clear="none"/></td></tr></table></center><p class="caption"><font size="-1"><b>
+			Figure 4 
+			</b></font></p><br clear="none"/>
+    
+    <h3 id="subfigchild">6.4  Children</h3>
+      <p class="para" id="">
+    &lt;subfigure&gt; can contain one of <a href="#mediaobject" shape="rect">mediaobject</a>, <a href="#table" shape="rect">table</a>, or <a href="#code" shape="rect">code</a>
+    followed by an optional <a href="#caption" shape="rect">caption</a>.
+      </p>
+    
+    
+  <h2 id="caption">7  Caption</h2>
+    <h3 id="captiondes">7.1  Description</h3>
+      <p class="para" id="">
+      A &lt;caption&gt; tag is only used to provide a note about a
+      &lt;figure&gt; or a &lt;subfigure&gt;.  This would be suitable
+      for printing. &lt;caption&gt; is distinct from &lt;title&lt; in
+      that it provides a, possibly lengthy, description of the figure
+      for the reader's use and not an over all title.
+      </p>
+    
+    <h3 id="captionatt">7.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has no attributes.
+	</li></ul>
+    
+    <h3 id="captionex">7.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+      &lt;figure name='figures' id='fig3'&gt;
+        &lt;title&gt;A Happy Cat&lt;/title&gt;
+        &lt;mediaobject type='image' src='image1.png'/&gt;
+	&lt;caption&gt;The cat displayed in this picture is enjoying playing
+        with a ball of yarn.&lt;/caption&gt;
+      &lt;/figure&gt;
+	
+      
+	</pre>
+          
+      <a name="fig3" shape="rect"/><br clear="none"/><center><b>A Happy Cat</b><br clear="none"/><img src="image1.png"/><table align="center"><tr/></table></center><p class="caption"><font size="-1"><b>
+			Figure 5 
+			</b>The cat displayed in this picture is enjoying playing
+        with a ball of yarn.</font></p><br clear="none"/>
+    
+    <h3 id="titlechild">7.4  Children</h3>
+      <p class="para" id="">
+      &lt;caption&gt; can contain any plain text, math, and the following
+      tags: cnxn, link, important, and emphasis.
+      </p>
+    
+    
+  <h2 id="example">8  Example</h2>
+    <h3 id="des">8.1  Description</h3>
+      <p class="para" id="">
+	The example tag is used to contain examples.  Examples are
+	problems that are worked out in the text.  
+      </p>
+    
+    <h3 id="att">8.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has a required id attribute.
+	</li></ul>
+    
+    <h3 id="ex">8.3  Examples</h3>
+      <pre  xml:space="preserve">
+		
+	
+	&lt;example id='example'&gt;
+	  FIX ME 
+	&lt;/example&gt;
+	
+      
+	</pre>
+          
+      
+    
+    <h3 id="child">8.4  Children</h3>
+      <p class="para" id="">
+	&lt;example&gt; can contain plain text, math and any of the
+	following tags: cnxn, link, important, emphasis, para,
+	equation, list, code, figure, table, and exercise.
+      </p>
+    
+  
+  <h2 id="table">9  Table</h2>
+    <h3 id="tabledes">9.1  Description</h3>
+      <p class="para" id="">
+	The table tag is used to create tables.  It is designed to be
+	a generalized table.  That is, there are not rows and
+	columns.  Instead, there are two separate sets of groupings.
+	One set of groups is defined by the &lt;group&gt; tag, which
+	contains &lt;elem&gt; tags or elements.  The
+	other set is defined by &lt;category&gt; tags.  Both an &lt;elem&gt;
+	and its &lt;category&gt; have a desc attribute with the same
+	value.
+      </p>
+    
+    <h3 id="tableatt">9.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has a required id attribute.
+	</li><li id="">
+	  It has a required orient
+	  attribute.  This attribute can take values of horizontal or
+	  vertical.  Vertical corresponds to the elements with the
+	  same category being on top of each other (that is, category
+	  become a column).  Horizontal corresponds to the elements
+	  with the same group being on top of each other (that is,
+	  group defines a column).  
+	</li></ul>
+    
+    <h3 id="tableex">9.3  Examples</h3>
+      <p class="para" id="">The following table has groups of items that are defined
+      by being a fruit or vegetable and by their color.  For example, the first
+      element is a red fruit.
+      <pre  xml:space="preserve">
+		
+	
+	&lt;table id='table' orient='vertical'&gt;
+	  &lt;categories&gt;
+	    &lt;category desc='fruit'&gt;Fruit&lt;/category&gt;
+	    &lt;category desc='veg'&gt;Vegetables&lt;/category&gt;
+	  &lt;/categories&gt;
+	  &lt;group&gt;
+	    &lt;elem desc='fruit'&gt;Apple&lt;/elem&gt;
+	    &lt;elem desc='vegetable'&gt;Tomato&lt;/elem&gt;
+	  &lt;/group&gt;
+	  &lt;group&gt;
+	    &lt;elem desc='fruit'&gt;Orange&lt;/elem&gt;
+	    &lt;elem desc='vegetable'&gt;Carrot&lt;/elem&gt;
+	  &lt;/group&gt;
+	  &lt;group&gt;
+	    &lt;elem desc='fruit'&gt;Grape&lt;/elem&gt;
+	    &lt;elem desc='vegetable'&gt;Lettuce&lt;/elem&gt;
+	  &lt;/group&gt;
+	&lt;/table&gt;
+	
+      
+	</pre>
+	and it might be rendered like this:
+<table border="3" align="center"><tr><td colspan="1" rowspan="1"><B>Fruit</B></td><td colspan="1" rowspan="1"><B>Vegetables</B></td></tr><tr><td colspan="1" rowspan="1">Apple</td><td colspan="1" rowspan="1">Tomato</td></tr><tr><td colspan="1" rowspan="1">Orange</td><td colspan="1" rowspan="1">Carrot</td></tr><tr><td colspan="1" rowspan="1">Grape</td><td colspan="1" rowspan="1">Lettuce</td></tr></table>
+      </p>
+    
+    <h3 id="tablechild">9.4  Children</h3>
+      <p class="para" id="">
+	&lt;table&gt; contains one <a href="#categories" shape="rect">&lt;categories&gt;</a> tag followed by
+	one or more <a href="#group" shape="rect">&lt;group&gt;</a> tags.  
+      </p>
+    
+  
+  
+  <h2 id="cats">10  Categories</h2>
+    <h3 id="catsdes">10.1  Description</h3>
+      <p class="para" id="">
+	&lt;categories&lt; groups all of the &lt;category&gt; tags
+	together.
+      </p>
+    
+    <h3 id="catsatt">10.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has no attributes.
+	</li></ul>
+    
+    <h3 id="catsex">10.3  Examples</h3>
+        <a href="#tableex" shape="rect">table example</a>
+    
+    <h3 id="catschild">10.4  Children</h3>
+      <p class="para" id="">
+	&lt;categories&gt; must contain one or more &lt;category&gt;
+	tags. The order of the &lt;category&gt; tags with the
+	&lt;categories&gt; tag defines what order they will be
+	displayed in. 
+      </p>
+    
+  
+  <h2 id="cat">11  Category</h2>
+    <h3 id="catdes">11.1  Description</h3>
+      <p class="para" id="">
+	Each &lt;category&gt; tag serves to group one set of things.
+	The desc attribute links the category to the element. The
+	content of the &lt;category&gt; will be used as the header for
+	the column or row defined by the category.  
+      </p>
+    
+    <h3 id="catatt">11.2  Attributes</h3>
+      <ul id=""><li id="">
+	  Must contain a desc attribute.  The value of the attribute
+	  will be used repeatedly to link the category to specific
+	  elements so it should be short.  
+	</li></ul>
+    
+    <h3 id="catex">11.3  Examples</h3>
+        <a href="#tableex" shape="rect">table example</a>
+    
+    <h3 id="catchild">11.4  Children</h3>
+      <p class="para" id="">
+	It must contain plain text.
+      </p>
+    
+  
+  <h2 id="group">12  Group</h2>
+    <h3 id="groupdes">12.1  Description</h3>
+      <p class="para" id="">
+	The &lt;group&gt; tag pulls together several elements.  Those
+	elements are contained within the &lt;group&gt; tag.  
+      </p>
+    
+    <h3 id="groupatt">12.2  Attributes</h3>
+      <ul id=""><li id="">
+	  It has no attributes.
+	</li></ul>
+    
+    <h3 id="groupex">12.3  Examples</h3>
+        <a href="#tableex" shape="rect">table example</a>
+    
+    <h3 id="groupchild">12.4  Children</h3>
+      <p class="para" id="">
+	&lt;group&gt; must contain one or more &lt;elem&gt; tags. 
+      </p>
+    
+  
+ <h2 id="elem">13  Elem</h2>
+    <h3 id="elemdes">13.1  Description</h3>
+      <p class="para" id="">
+	The &lt;elem&gt;, or element, tag contains the actual information of the
+	table. On the one hand it is grouped by the &lt;group&gt;
+	tag.  On the other hand it is grouped by the &lt;category&gt;
+	that has the same attribute value for the desc attribute.
+      </p>
+    
+    <h3 id="elematt">13.2  Attributes</h3>
+      <ul id=""><li id="">
+	  Must contain a desc attribute.  The value of the attribute
+	  will be used to link the element to a &lt;category&gt;.  
+	</li><li id="">
+	  It can contain an optional id attribute.
+	</li></ul>
+    
+    <h3 id="elemex">13.3  Examples</h3>
+        <a href="#tableex" shape="rect">table example</a>
+    
+    <h3 id="elemchild">13.4  Children</h3>
+      <p class="para" id="">
+	&lt;elem&gt; must contain one or more of plain text, math or
+	one of the following tags: cnxn, link, important, emphasis.
+      </p>
+    
+  
+
+  
+  
+  
+  
+<hr/><a href="http://cnx.rice.edu/bugreport.html" shape="rect">Submit a BUG REPORT.</a><br clear="none"/><a href="http://cnx.rice.edu/comment.html" shape="rect">Submit a SUGGESTION.</a></body></html>

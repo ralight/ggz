@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE module SYSTEM "http://cnx.rice.edu/cnxml/0.1/DTD/cnxml.dtd" [
+<!ENTITY intro      SYSTEM "intro.cnxml">
+<!ENTITY doctype    SYSTEM "doctype.cnxml">
+<!ENTITY headertags SYSTEM "headertags.cnxml">
+<!ENTITY bodytags1  SYSTEM "bodytags1.cnxml">
+<!ENTITY bodytags2  SYSTEM "bodytags2.cnxml">
+<!ENTITY appendixA  SYSTEM "appendixA.cnxml">
+<!ENTITY appendixB  SYSTEM "appendixB.cnxml">
+]>
+
+<module id="spec" name="CNXML 0.1 Language Specifcation" levelmask="" 
+	dateofcreation="2000-11-20" 
+	dateoflastrevision="2000-11-20">
+
+  <authorlist>
+    <author id="coppin" name="Sarah Coppin" />
+    <author id="brentmh" name="Brent Hendricks" />
+    <author id="ricky" name="Ricky RS" />
+  </authorlist>
+  
+  <section id="version" name="Document History">
+    <para>
+      Version pre-release:  Document not released yet
+    </para>
+  </section>
+
+  <!--  &intro; -->
+  <!--  &doctype; -->
+  <!-- &headertags; -->
+  &bodytags1;
+  <!-- &bodytags2; -->
+  <!-- &appendixA; -->
+  <!-- &appendixB; -->
+  
+</module>
+  
+  
+
