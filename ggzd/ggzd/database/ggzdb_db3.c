@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db3.c 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb_db3.c 5750 2004-01-27 13:11:28Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -251,7 +251,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	if(db_c == NULL
 	   && db_p->cursor(db_p, NULL, &db_c, 0) != 0) {
-		err_sys("Failed to create db2 cursor");
+		err_sys("Failed to create db3 cursor");
 		return GGZDB_ERR_DB;
 	}
 

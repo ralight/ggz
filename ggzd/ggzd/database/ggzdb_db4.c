@@ -3,8 +3,8 @@
  * Author: Rich Gade
  * Project: GGZ Server
  * Date: 11/10/2000
- * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db4.c 5665 2003-10-25 12:09:43Z dr_maux $
+ * Desc: Back-end functions for handling the db4 sytle database
+ * $Id: ggzdb_db4.c 5750 2004-01-27 13:11:28Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -261,7 +261,7 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 
 	if(db_c == NULL
 	   && db_p->cursor(db_p, NULL, &db_c, 0) != 0) {
-		err_sys("Failed to create db2 cursor");
+		err_sys("Failed to create db4 cursor");
 		return GGZDB_ERR_DB;
 	}
 
@@ -280,6 +280,8 @@ GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
 	free(data.data); /* Allocated by db4? */
 
+	if(!strcmp(pe->handle, "&nxtuid&"))
+		return _ggzdb_player_get_next(pe);
 	return GGZDB_NO_ERROR;
 }
 
