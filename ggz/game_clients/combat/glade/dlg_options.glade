@@ -713,7 +713,7 @@
 	<widget>
 	  <class>GtkEventBox</class>
 	  <name>eventbox10</name>
-	  <tooltip>If set, the deffense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit.</tooltip>
+	  <tooltip>If set, the defense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit.</tooltip>
 	  <child>
 	    <left_attach>1</left_attach>
 	    <right_attach>2</right_attach>

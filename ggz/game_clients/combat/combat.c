@@ -358,7 +358,7 @@ char *combat_options_describe(combat_game *_game, int short_desc) {
   if (_game->options & OPT_UNKNOWN_VICTOR)
     DESC("Unknown victor");
   if (_game->options & OPT_SILENT_DEFENSE)
-    DESC("Silent deffense");
+    DESC("Silent defense");
   if (_game->options & OPT_SILENT_OFFENSE)
     DESC("Silent offense");
   if (_game->options & OPT_RANDOM_SETUP)

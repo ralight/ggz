@@ -469,7 +469,7 @@ create_dlg_options (int number)
   gtk_table_attach (GTK_TABLE (options_table), eventbox10, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_tooltips_set_tip (tooltips, eventbox10, _("If set, the deffense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit."), NULL);
+  gtk_tooltips_set_tip (tooltips, eventbox10, _("If set, the defense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit."), NULL);
 
   opt_bin1[9] = gtk_check_button_new_with_label (_("Silent Defense"));
   gtk_widget_set_name (opt_bin1[9], "opt_bin1[9]");
