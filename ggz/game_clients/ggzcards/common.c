@@ -1,4 +1,4 @@
-/* $Id: common.c 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: common.c 2074 2001-07-23 07:56:35Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -200,10 +200,8 @@ static int handle_msg_players()
 			free(game.players);
 		}
 		client_debug("get_players: (re)allocating game.players.");
-		game.players =
-			(struct seat_t *) malloc(numplayers *
-						 sizeof(struct seat_t));
-		memset(game.players, 0, numplayers * sizeof(struct seat_t));
+		game.players = (seat_t *) malloc(numplayers * sizeof(seat_t));
+		memset(game.players, 0, numplayers * sizeof(seat_t));
 		game.max_hand_size = 0;	/* this forces reallocating later */
 	}
 
@@ -569,7 +567,8 @@ int client_handle_server()
 		"WH_MSG_PLAYERS", "WH_MSG_HAND", "WH_REQ_BID", "WH_REQ_PLAY",
 		"WH_MSG_BADPLAY", "WH_MSG_PLAY", "WH_MSG_TRICK",
 		"WH_MESSAGE_GLOBAL", "WH_MESSAGE_PLAYER", "WH_REQ_OPTIONS",
-		"WH_MSG_TABLE" };
+		"WH_MSG_TABLE"
+	};
 
 	if (es_read_int(ggzfd, &op) < 0)
 		return -1;
