@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2321 2001-08-29 07:01:30Z jdorje $
+ * $Id: ggzdmod.c 2322 2001-08-29 07:03:38Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -22,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <stdlib.h>
 
 #include <easysock.h>
 #include "../game_servers/libggzmod/ggz_protocols.h"
@@ -51,7 +53,7 @@ int ggzdmod_send_launch(int fd, int num_seats, int *types, char **reserves)
 	return 0;
 }
 
-int ggzdmod_rsp_gameover(int fd)
+static int ggzdmod_rsp_gameover(int fd)
 {
 	if (es_write_int(fd, RSP_GAME_OVER) < 0)
 		return -1;
@@ -114,12 +116,11 @@ int ggzdmod_dispatch(int fd, void *data)
 		break;
 
 	case MSG_LOG:
-		status = table_log(data, 0);
+	case MSG_DBG:
+		status = ggzdmod_handle_log(fd, data, op == MSG_DBG);
 		break;
 
-	case MSG_DBG:
-		status = table_log(data, 1);
-		break;
+	case MSG_STATS:
 
 	default:
 #define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020

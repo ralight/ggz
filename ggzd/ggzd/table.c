@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2317 2001-08-29 05:39:53Z bmh $
+ * $Id: table.c 2322 2001-08-29 07:03:38Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ static void  table_run_game(GGZTable* table, char *path);
 static char** table_split_args(char *path);
 static int   table_send_opt(GGZTable* table);
 int   table_game_over(void* data);
-int   table_log(void* data, char debug);
+int   table_log(void *data, char *msg, char debug);
 int   table_game_launch(void* data, char status);
 int   table_game_join(void* data, char status);
 int   table_game_leave(void* data, char status);
@@ -608,18 +608,14 @@ int table_game_over(void* data)
 }
 
 
-int table_log(void* data, char debug)
+int table_log(void* data, char* message, char debug)
 {
 	GGZTable *table = data;
 	int level, type, len, pid;
 	char name[MAX_GAME_NAME_LEN];
-	char *prescan, *msg, *p, *m;
+	char *prescan = message, *msg, *p, *m;
 	char *buf;
 	int  pcts=0;
-
-	if (es_read_int(table->fd, &level) < 0
-	    || es_read_string_alloc(table->fd, &prescan) < 0)
-		return -1;
 
 	/* If the message has any %'s in it they must be escaped. */
 	/* We could eliminate them, but this would prevent games  */
@@ -685,7 +681,6 @@ int table_log(void* data, char debug)
 
 	if(msg != prescan)
 		free(msg);
-	free(prescan);
 	
 	return 0;
 }
