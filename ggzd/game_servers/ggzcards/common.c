@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4105 2002-04-29 03:31:43Z jdorje $
+ * $Id: common.c 4106 2002-04-29 04:02:27Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -218,7 +218,6 @@ void next_move(void)
 		ggzdmod_log(game.ggz, "Next play: dealing a new hand.");
 		if (game.data->test_for_gameover()) {
 			game.data->handle_gameover();
-			set_game_state(STATE_NOTPLAYING);
 			next_move();	/* start a new game */
 			return;
 		}
@@ -734,6 +733,8 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 		ggzdmod_log(game.ggz, "ERROR: couldn't recalculate ratings.");
 	}
 #endif /* USE_GGZ_STATS */
+
+	set_game_state(STATE_NOTPLAYING);
 
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);	/* some data could have changed */
