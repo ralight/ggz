@@ -801,8 +801,11 @@ static int _ggzcore_net_read_type(struct _GGZNet *net, struct _GGZGameType *type
 	    
 	ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s", id, name);
 
-	_ggzcore_gametype_init(type, id, name, version, players, bots, desc,
-			       author, url);
+	_ggzcore_gametype_init(type, id, name, version, 
+			       /* FIXME: replace with p_eng, and p_ver */
+			       name, version,  
+			       players, bots, desc, author, url);
+			       
 	
 	return 0;
 }

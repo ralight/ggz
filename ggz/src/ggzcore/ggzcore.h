@@ -416,7 +416,8 @@ GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table,
 
 /* These function are lookups to gametype information. */
 char* ggzcore_gametype_get_name(GGZGameType *type);
-char* ggzcore_gametype_get_protocol(GGZGameType *type);
+char* ggzcore_gametype_get_prot_engine(GGZGameType *type);
+char* ggzcore_gametype_get_prot_version(GGZGameType *type);
 char* ggzcore_gametype_get_version(GGZGameType *type);
 char* ggzcore_gametype_get_author(GGZGameType *type);
 char* ggzcore_gametype_get_url(GGZGameType *type);
@@ -649,26 +650,28 @@ unsigned int ggzcore_module_get_num(void);
 
 /* This adds a local module to the list.  It returns 0 if successful or
    -1 on failure. */
-int ggzcore_module_add(const char *game,
+int ggzcore_module_add(const char *name,
 	               const char *version,
-	               const char *protocol,
+	               const char *prot_engine,
+	               const char *prot_version,
                        const char *author,
 		       const char *frontend,
 		       const char *url,
 		       const char *exe_path,
 		       const char *icon_path,
-		       const char *help_path);
-		       
+		       const char *help_path);		       
 
 
 /* Returns how many modules support this game and protocol */
-int ggzcore_module_get_num_by_type(const char *game, const char *protocol);
+int ggzcore_module_get_num_by_type(const char *game, 
+				   const char *engine,
+				   const char *version);
 
 /* Returns n-th module that supports this game and protocol */
 GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
-					  const char *protocol, 
+					  const char *engine,
+					  const char *version,
 					  const unsigned int num);
-
 
 
 /* This attempts to launch the specified module and returns 0 is
@@ -682,7 +685,8 @@ int ggzcore_module_launch(GGZModule *module);
    graphically.*/
 char* ggzcore_module_get_game(GGZModule *module);
 char* ggzcore_module_get_version(GGZModule *module);
-char* ggzcore_module_get_protocol(GGZModule *module);
+char* ggzcore_module_get_prot_engine(GGZModule *module);
+char* ggzcore_module_get_prot_version(GGZModule *module);
 char* ggzcore_module_get_author(GGZModule *module);
 char* ggzcore_module_get_frontend(GGZModule *module);
 char* ggzcore_module_get_url(GGZModule *module);

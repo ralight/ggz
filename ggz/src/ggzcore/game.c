@@ -397,7 +397,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	char *name, *path, **argv;
 	struct stat file_status;
 	
-	name = _ggzcore_module_get_game(game->module);
+	name = _ggzcore_module_get_name(game->module);
 	argv = _ggzcore_module_get_argv(game->module);
 	path = _ggzcore_game_get_path(argv);
 

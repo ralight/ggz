@@ -52,12 +52,21 @@ char* ggzcore_gametype_get_author(GGZGameType *type)
 	return _ggzcore_gametype_get_author(type);
 }
 
-char*  ggzcore_gametype_get_protocol(GGZGameType *type)
+char*  ggzcore_gametype_get_prot_engine(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
 
-	return _ggzcore_gametype_get_protocol(type);
+	return _ggzcore_gametype_get_prot_engine(type);
+}
+
+
+char*  ggzcore_gametype_get_prot_version(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_prot_version(type);
 }
 
 
@@ -142,6 +151,8 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const unsigned int id,
 			    const char* name, 
 			    const char* version,
+			    const char* prot_engine,
+			    const char* prot_version,
 			    const GGZAllowed allow_players, 
 			    const GGZAllowed allow_bots,  
 			    const char* desc,
@@ -154,11 +165,12 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 	
 	if (name)
 		gametype->name = strdup(name);
-	if (version) {
+	if (version)
 		gametype->version = strdup(version);
-		/* FIXME: use actual protocol */
-		gametype->protocol = strdup(version);
-	}
+	if (prot_engine)
+		gametype->prot_engine = strdup(prot_engine);
+	if (prot_version)
+		gametype->prot_version = strdup(prot_version);
 	if (desc)
 		gametype->desc = strdup(desc);
 	if (author)
@@ -172,8 +184,10 @@ void _ggzcore_gametype_free(struct _GGZGameType *type)
 {
 	if (type->name)
 		free(type->name);
-	if (type->protocol)
-		free(type->protocol);
+	if (type->prot_engine)
+		free(type->prot_engine);
+	if (type->prot_version)
+		free(type->prot_version);
 	if (type->version)
 		free(type->version);
 	if (type->desc)
@@ -199,9 +213,15 @@ char*  _ggzcore_gametype_get_name(struct _GGZGameType *type)
 }
 
 
-char*  _ggzcore_gametype_get_protocol(struct _GGZGameType *type)
+char*  _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type)
 {
-	return type->protocol;
+	return type->prot_engine;
+}
+
+
+char*  _ggzcore_gametype_get_prot_version(struct _GGZGameType *type)
+{
+	return type->prot_version;
 }
 
 
@@ -307,6 +327,7 @@ void* _ggzcore_gametype_create(void* p)
 	new = _ggzcore_gametype_new();
 
 	_ggzcore_gametype_init(new, src->id, src->name, src->version,
+			       src->prot_engine, src->prot_version,
 			       src->allow_players, src->allow_bots, src->desc,
 			       src->author, src->url);
 	

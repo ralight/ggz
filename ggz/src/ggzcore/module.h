@@ -29,14 +29,20 @@
 /* Structure describing particular client-side game module */
 struct _GGZModule {
 
-	/* Type of game played by this module */
-	char *game;
-	
+	/* Name of module */
+	char *name;
+
 	/* Game module version */
 	char *version;
 
+	/* Protocol engine implemented */
+	char *prot_engine;
+
 	/* Protocol version implemented */
-	char *protocol;
+	char *prot_version;
+
+	/* Supported games */
+	char **games;
 
 	/* Module author */
 	char *author;
@@ -62,17 +68,24 @@ int _ggzcore_module_setup(void);
 unsigned int _ggzcore_module_get_num(void);
 
 /* Returns how many modules support this game and protocol */
-int _ggzcore_module_get_num_by_type(const char *game, const char *protocol);
+int _ggzcore_module_get_num_by_type(const char *game, 
+				    const char *engine,
+				    const char *version);
 
 /* Returns n-th module that supports this game and protocol */
-struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num);
+struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, 
+						   const char *engine,
+						   const char *version,
+						   const unsigned int num);
+
 
 int _ggzcore_module_launch(struct _GGZModule *module);
 void _ggzcore_module_cleanup(void);
 
-char* _ggzcore_module_get_game(struct _GGZModule *module);
+char* _ggzcore_module_get_name(struct _GGZModule *module);
 char* _ggzcore_module_get_version(struct _GGZModule *module);
-char* _ggzcore_module_get_protocol(struct _GGZModule *module);
+char* _ggzcore_module_get_prot_engine(struct _GGZModule *module);
+char* _ggzcore_module_get_prot_version(struct _GGZModule *module);
 char* _ggzcore_module_get_author(struct _GGZModule *module);
 char* _ggzcore_module_get_frontend(struct _GGZModule *module);
 char* _ggzcore_module_get_url(struct _GGZModule *module);

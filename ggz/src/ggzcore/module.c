@@ -44,9 +44,10 @@ static int mod_handle = -1;
 /* static internal functions */
 static struct _GGZModule* _ggzcore_module_new(void);
 static void _ggzcore_module_init(struct _GGZModule *module,
-				 const char *game,
+				 const char *name,
 				 const char *version,
-				 const char *protocol,
+				 const char *prot_engine,
+				 const char *prot_version,
 				 const char *author,
 				 const char *frontend,
 				 const char *url,
@@ -62,7 +63,9 @@ static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
 /* Utility functions used by _ggzcore_list */
 static int   _ggzcore_module_compare(void* p, void* q);
+#if 0
 static int   _ggzcore_module_match_version(void *p, void *q);
+#endif
 static void* _ggzcore_module_create(void* p);
 static void  _ggzcore_module_destroy(void* p);
 
@@ -78,30 +81,37 @@ unsigned int ggzcore_module_get_num(void)
 
 
 /* Returns how many modules support this game and protocol */
-int ggzcore_module_get_num_by_type(const char *game, const char *protocol)
+int ggzcore_module_get_num_by_type(const char *game, 
+				   const char *engine,
+				   const char *version)
 {
-	if (!game || !protocol)
+	if (!game || !engine || !version)
 		return -1;
 
-	return _ggzcore_module_get_num_by_type(game, protocol);
+	return _ggzcore_module_get_num_by_type(game, engine, version);
 }
 
 
 /* Returns n-th module that supports this game and protocol */
-GGZModule* ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num)
+GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
+					  const char *engine,
+					  const char *version,
+					  const unsigned int num)
 {
-	if (!game || !protocol)
+	/* FIXME: should check bounds on num */
+	if (!game || !engine || !version)
 		return NULL;
 
-	return _ggzcore_module_get_nth_by_type(game, protocol, num);
+	return _ggzcore_module_get_nth_by_type(game, engine, version, num);
 }
 
 
 /* This adds a local module to the list.  It returns 0 if successful or
    -1 on failure. */
-int ggzcore_module_add(const char *game,
+int ggzcore_module_add(const char *name,
 	               const char *version,
-	               const char *protocol,
+	               const char *prot_engine,
+	               const char *prot_version,
                        const char *author,
 		       const char *frontend,
 		       const char *url,
@@ -128,12 +138,12 @@ int ggzcore_module_launch(GGZModule *module)
    icon to the list we discussed at the meeting.  This is an optional xpm
    file that the module can provide to use for representing the game
    graphically.*/
-char* ggzcore_module_get_game(GGZModule *module)
+char* ggzcore_module_get_name(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
 
-	return _ggzcore_module_get_game(module);
+	return _ggzcore_module_get_name(module);
 }
 
 
@@ -146,12 +156,21 @@ char* ggzcore_module_get_version(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_protocol(GGZModule *module)
+char* ggzcore_module_get_prot_engine(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
 
-	return _ggzcore_module_get_protocol(module);
+	return _ggzcore_module_get_prot_engine(module);
+}
+
+
+char* ggzcore_module_get_prot_version(GGZModule *module)
+{	
+	if (!module)
+		return NULL;
+
+	return _ggzcore_module_get_prot_version(module);
 }
 
 
@@ -249,15 +268,14 @@ int _ggzcore_module_setup(void)
 	}
 	
 	/* Read in list of supported gametypes */
-	status = ggzcore_confio_read_list(mod_handle, "Games", "*GameList*", 
+	status = ggzcore_confio_read_list(mod_handle, "Games", "*Engines*", 
 					  &count_types, &games);
 	if (status < 0) {
-		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't read gametype list");
+		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't read engine list");
 		return -1;
 	}	
-	ggzcore_debug(GGZ_DBG_MODULE, "%d gametypes supported", count_types);
-
-
+	ggzcore_debug(GGZ_DBG_MODULE, "%d game engines supported", count_types);
+	
 	for (i = 0; i < count_types; i++) {
 		status = ggzcore_confio_read_list(mod_handle, "Games", 
 						  games[i], &count_modules, 
@@ -289,7 +307,9 @@ unsigned int _ggzcore_module_get_num(void)
 }
 
 
-int _ggzcore_module_get_num_by_type(const char *game, const char *protocol)
+int _ggzcore_module_get_num_by_type(const char *game, 
+				    const char *engine,
+				    const char *version)
 {
 	int count, status, i;
 	char **ids;
@@ -303,8 +323,9 @@ int _ggzcore_module_get_num_by_type(const char *game, const char *protocol)
 	
 	for (i = 0; i < count; i++) {
 		_ggzcore_module_read(&module, ids[i]);
-		/* Subtract out modules that aren't the same version */
-		if (strcmp(protocol, module.protocol) != 0)
+		/* Subtract out modules that aren't the same protocol */
+		if (strcmp(engine, module.prot_engine) != 0
+		    || strcmp(version, module.prot_version) != 0)
 			count--;
 	}
 
@@ -314,14 +335,21 @@ int _ggzcore_module_get_num_by_type(const char *game, const char *protocol)
 
 
 /* FIXME: do this right */
-struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num)
+struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, 
+						   const char *engine,
+						   const char *version,
+						   const unsigned int num)
 {
 	int i, total, status, count;
 	char **ids;
 	struct _GGZModule *module;
 
-	status = ggzcore_confio_read_list(mod_handle, "Games", game,
+	status = ggzcore_confio_read_list(mod_handle, "Games", engine,
 					  &total, &ids);
+
+	ggzcore_debug(GGZ_DBG_MODULE, "Found %d modules matching %s", total,
+		      engine);
+	
 	if (status < 0)
 		return NULL;
 
@@ -332,7 +360,8 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char 
 	for (i = 0; i < total; i++) {
 		module = _ggzcore_module_new();
 		_ggzcore_module_read(module, ids[i]);
-		if (strcmp(protocol, module->protocol) == 0) {
+		if (strcmp(version, module->prot_version) == 0) {
+			/* FIXME:  also check to see if 'game' is in supported list */
 			if (count++ == num)
 				return module;
 		}
@@ -344,9 +373,9 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char 
 }
 
 
-char* _ggzcore_module_get_game(struct _GGZModule *module)
+char* _ggzcore_module_get_name(struct _GGZModule *module)
 {
-	return module->game;
+	return module->name;
 }
 
 
@@ -356,9 +385,15 @@ char* _ggzcore_module_get_version(struct _GGZModule *module)
 }
 
 
-char* _ggzcore_module_get_protocol(struct _GGZModule *module)
+char* _ggzcore_module_get_prot_engine(struct _GGZModule *module)
 {
-	return module->protocol;
+	return module->prot_engine;
+}
+
+
+char* _ggzcore_module_get_prot_version(struct _GGZModule *module)
+{
+	return module->prot_version;
 }
 
 
@@ -429,9 +464,10 @@ static struct _GGZModule* _ggzcore_module_new(void)
 
 		
 static void _ggzcore_module_init(struct _GGZModule *module,
-				 const char *game,
+				 const char *name,
 				 const char *version,
-				 const char *protocol,
+				 const char *prot_engine,
+				 const char *prot_version,
 				 const char *author,
 				 const char *frontend,
 				 const char *url,
@@ -439,12 +475,14 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 				 const char *icon_path,
 				 const char *help_path)
 {
-	if (game)
-		module->game = strdup(game);
+	if (name)
+		module->name = strdup(name);
 	if (version)
 		module->version = strdup(version);
-	if (protocol)
-		module->protocol = strdup(protocol);
+	if (prot_engine)
+		module->prot_engine = strdup(prot_engine);
+	if (prot_version)
+		module->prot_version = strdup(prot_version);
 	if (author)
 		module->author = strdup(author);
 	if (frontend)
@@ -463,12 +501,14 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 static void _ggzcore_module_free(struct _GGZModule *module)
 {
 	
-	if (module->game)
-		free(module->game);
+	if (module->name)
+		free(module->name);
 	if (module->version)
 		free(module->version);
-	if (module->protocol)
-		free(module->protocol);
+	if (module->prot_engine)
+		free(module->prot_engine);
+	if (module->prot_version)
+		free(module->prot_version);
 	if (module->author)
 		free(module->author);
 	if (module->frontend)
@@ -519,11 +559,20 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 	int argc;
 	/* FIXME: check for errors on all of these */
 
-	mod->game = ggzcore_confio_read_string(mod_handle, id, "Name", NULL);
+	mod->name = ggzcore_confio_read_string(mod_handle, id, "Name", NULL);
 	mod->version = ggzcore_confio_read_string(mod_handle, id, "Version",
 						     NULL);
-	mod->protocol = ggzcore_confio_read_string(mod_handle, id, "Protocol",
-						    NULL);
+	mod->prot_engine = ggzcore_confio_read_string(mod_handle, id, 
+						      "ProtocolEngine", NULL);
+
+	mod->prot_engine = ggzcore_confio_read_string(mod_handle, id, 
+						      "ProtocolEngine", NULL);
+
+	mod->prot_version = ggzcore_confio_read_string(mod_handle, id, 
+						       "ProtocolVersion", NULL);
+	ggzcore_confio_read_list(mod_handle, id, "SupportedGames", &argc, 
+				 &mod->games);
+      
 	mod->author = ggzcore_confio_read_string(mod_handle, id, "Author", 
 						  NULL);
 	mod->frontend = ggzcore_confio_read_string(mod_handle, id, "Frontend",
@@ -531,6 +580,7 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 	mod->url = ggzcore_confio_read_string(mod_handle, id, "Homepage", NULL);
      	ggzcore_confio_read_list(mod_handle, id, "CommandLine", &argc, 
 				 &mod->argv);
+	
 	mod->icon = ggzcore_confio_read_string(mod_handle, id, "IconPath", 
 						NULL);
 	mod->help = ggzcore_confio_read_string(mod_handle, id, "HelpPath", 
@@ -542,9 +592,17 @@ static void _ggzcore_module_print(struct _GGZModule *module)
 {
 	int i=0;
 	
-	ggzcore_debug(GGZ_DBG_MODULE, "Game: %s", module->game);
+	ggzcore_debug(GGZ_DBG_MODULE, "Name: %s", module->name);
 	ggzcore_debug(GGZ_DBG_MODULE, "Version: %s", module->version);
-	ggzcore_debug(GGZ_DBG_MODULE, "Protocol: %s", module->protocol);
+	ggzcore_debug(GGZ_DBG_MODULE, "ProtocolEngine: %s", module->prot_engine);	
+	ggzcore_debug(GGZ_DBG_MODULE, "ProtocolVersion: %s", module->prot_version);
+	if (module->games)
+		while (module->games[i]) {
+			ggzcore_debug(GGZ_DBG_MODULE, "Game[%d]: %s", i, 
+				      module->games[i]);
+			++i;
+		}
+
 	ggzcore_debug(GGZ_DBG_MODULE, "Author: %s", module->author);
 	ggzcore_debug(GGZ_DBG_MODULE, "Frontend: %s", module->frontend);
 	ggzcore_debug(GGZ_DBG_MODULE, "URL: %s", module->url);
@@ -574,6 +632,7 @@ static int _ggzcore_module_compare(void* p, void* q)
 }
 
 
+#if 0
 static int _ggzcore_module_match_version(void *p, void *q)
 {
 	int compare;
@@ -588,7 +647,7 @@ static int _ggzcore_module_match_version(void *p, void *q)
 	else
 		return strcmp(pmod->protocol, qmod->protocol);
 }
-
+#endif
 
 static void* _ggzcore_module_create(void* p)
 {
@@ -596,7 +655,8 @@ static void* _ggzcore_module_create(void* p)
 
 	new = _ggzcore_module_new();
 	
-	_ggzcore_module_init(new, src->game, src->version, src->protocol,
+	_ggzcore_module_init(new, src->name, src->version, 
+			     src->prot_engine, src->prot_version,
 			     src->author, src->frontend, src->url, 
 			     src->argv[0], src->icon, src->help);
 			     

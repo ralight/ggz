@@ -49,8 +49,11 @@ struct _GGZGameType {
 	/* Version */
 	char *version;
 
-	/* Protocol */
-	char *protocol;
+	/* Protocol engine */
+	char *prot_engine;
+
+	/* Protocol version */
+	char *prot_version;
 
 	/* Game description */
 	char *desc;
@@ -80,6 +83,8 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const unsigned int id,
 			    const char* name, 
 			    const char* version,
+			    const char* prot_engine,
+			    const char* prot_version,
 			    const GGZAllowed allow_players, 
 			    const GGZAllowed allow_bots,  
 			    const char* desc,
@@ -92,9 +97,11 @@ unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type);
 
 char*  _ggzcore_gametype_get_name(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_protocol(struct _GGZGameType *type);
-
 char*  _ggzcore_gametype_get_version(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type);
+
+char*  _ggzcore_gametype_get_prot_version(struct _GGZGameType *type);
 
 char*  _ggzcore_gametype_get_author(struct _GGZGameType *type);
 
