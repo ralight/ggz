@@ -2,11 +2,11 @@
 
 Summary: GGZ Client Libraries
 Name: ggz-client-libs
-Version: 0.0.4pre
+Version: 0.0.4
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-client-libs-0.0.4pre.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-client-libs-0.0.4.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
