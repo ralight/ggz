@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: de.ggz.h 6966 2005-03-10 10:37:42Z josef $
+ * $Id: de.ggz.h 6967 2005-03-10 11:13:33Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -718,56 +718,54 @@ void ggz_list_destroy_str	(void *data);
 
 
 /**
- * @defgroup stack Stacks
+ * @defgroup stack Stacks (Stapelspeicher)
  *
- * Data Structures and functions for manipulating stacks
+ * Datenstrukturen und Funktionen zur Manipulation von Stacks.
  *
  * @{
  */
 
-/** @brief Simple implementation of stacks using ::GGZList
- *
+/** @brief Einfache Implementierung von Stacks mit Hilfe einer ::GGZList.
  */
 typedef struct _GGZList GGZStack;
 
 
-
-/** @brief Create a new stack
+/** @brief Erzeugung eines neuen Stack.
  *
- * @return Pointer to a newly allocated ::GGZStack object
+ * @return Pointer zum neu allokierten ::GGZStack-Objekt
  */
 GGZStack* ggz_stack_new(void);
 
 
-/** @brief Push a data item onto the top of the stack
+/** @brief Ablage eines Elementes auf den Stack.
  *
- * @param stack Pointer to a ::GGZStack
- * @param data Pointer to data to insert onto stack
+ * @param stack Pointer zu einem ::GGZStack
+ * @param data Pointer zu den abzulegenden Daten
  */
 void ggz_stack_push(GGZStack *stack, void *data);
 
 
-/** @brief Pop the top item off of the stack
+/** @brief Herunternahme eines Elementes vom Stack.
  *
- * @param stack Pointer to a ::GGZStack
- * @return Pointer to the data item on the top of the stack
+ * @param stack Pointer zu einem ::GGZStack
+ * @return Pointer zu dem obenauf befindlichen heruntergenommenen Element
  */
 void* ggz_stack_pop(GGZStack *stack);
 
 
-/** @brief Get the top item on the stack without popping it
+/** @brief Rückgabe des obersten Elementes ohne Herunternahme von Stack.
  *
- * @param stack Pointer to a ::GGZList
- * @return Pointer to the data item currently in to of the stack
+ * @param stack Pointer zu einer ::GGZList
+ * @return Pointer zu dem obenauf befindlichen Element
  */
 void* ggz_stack_top(GGZStack *stack);
 
 
-/** @brief Free the stack
+/** @brief Freigabe des Stack.
  *
- * @note This does not free the data stored in the stack
+ * @note Diese Funktion gibt nicht die auf dem Stack abgelegten Elemente frei.
  *
- * @param stack Pointer to a ::GGZStack
+ * @param stack Pointer zu einem ::GGZStack
  */
 void ggz_stack_free(GGZStack *stack);
 
@@ -775,129 +773,128 @@ void ggz_stack_free(GGZStack *stack);
 
 
 /**
- * @defgroup xml XML parsing 
- * 
- * Utility functions for doing simple XML parsing.  These can be used
- * with streaming XML parsers, and don't have the overhead of a full
- * DOM tree.  ::GGZXMLElement represents a single element, along with
- * its attributes and text data.  
+ * @defgroup xml XML-Verarbeitung
  *
- * @note This does not parse your XML.  It is simply for use to store
- * the data as you are parsing.
+ * Hilfsfunktionen zur einfachen Verarbeitung von XML. Diese können mit einem
+ * XML-Flussparser eingesetzt werden, ohne den Aufwand eines vollen DOM-Baumes
+ * in Kauf nehmen zu müssen. ::GGZXMLElement steht dabei für ein einzelnes
+ * Element, zusammen mit seinen Attributen und Textdaten.
+ *
+ * @note Die Funktionalität enthält keinen XML-Parser. Sie ist nur dafür da,
+ * die bereits ausgelesenen Werte abzuspeichern.
  *
  * @{ */
 
-/** @brief Object representing a single XML element
+/** @brief Objekt, welches ein einzelnes XML-Element darstellt.
  *
- *  Except for "process", do not access these members directly.
- *  Instead use the provided accessor functions.  "process" is meant
- *  to be inovked as a method on instances of GGZXMLElement.
+ *  Außer "process" sollte keine Komponente direkt angesprochen werden.
+ *  Dafür stehen Zugriffsfunktionen bereit. "process" sollte als Methode
+ *  auf Instanzen von GGZXMLElement angewendet werden.
  */
 struct _GGZXMLElement {
 	
-	char *tag;           /**< The name of the element */
-	char *text;          /**< Text content of an element */
-	GGZList *attributes; /**< List of attributes on the element */
-	void *data;          /**< Extra data associated with tag (usually gleaned from children) */
-	void (*free)();      /**< Function to free allocated memory */
-	void (*process)();   /**< Function to "process" tag */
+	char *tag;           /**< Der Name des Elements */
+	char *text;          /**< Textinhalt des Elements */
+	GGZList *attributes; /**< Liste der Elementattribute */
+	void *data;          /**< Weitere Daten des Elements */
+	void (*free)();      /**< Funktion zur Freigabe allokierter Speicherbereiche */
+	void (*process)();   /**< Funktion zur Verarbeitung dieses Objektes */
 };
 
 
-/** @brief Object representing a single XML element
+/** @brief Objekt, welches ein einzelnes XML-Element darstellt.
  */
 typedef struct _GGZXMLElement GGZXMLElement;
 
 
-/** @brief Create a new ::GGZXMLElement element 
+/** @brief Erzeugung eines neuen ::GGZXMLElement.
  *
- * @param tag The name of the XML element (tag)
- * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
- * @param process User-defined function for processing XML elements
- * @param free User-defined function for deallocating ::GGZXMLElement
- * objects.  If provided, this will be invoked by
- * ggz_xmlelement_free(), and in addition to any user-defined
- * processing should call ggz_free() the element itself.
- * @return Pointer to a newly allocated ::GGZXMLElement object 
+ * @param tag Name des XML-Elements (Tag)
+ * @param attrs NULL-terminiertes Feld von Attributen und Werten, welche
+ * eindimensional alternierend angeordnet sind
+ * @param process Nutzerdefinierte Funktion zur Verarbeitung der XML-Elemente
+ * @param free Nutzerdefinierte Funktion zur Freigabe von ::GGZXMLElement-Objekten,
+ * welche von ggz_xmlelement_free() aufgerufen wird, und zusätzlich für das
+ * Element ggz_free() aufrufen sollte
+ * @return Pointer zum neu allokierten ::GGZXMLElement-Objekt
  */
 GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
 				  void (*process)(), void (*free)());
 
 
-/** @brief Initialize a ::GGZXMLElement
+/** @brief Initialisierung eines ::GGZXMLElement
  *
- * @param element Pointer to a ::GGZXMLElemtn to initialize
- * @param tag The name of the XML element (tag)
- * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
- * @param process User-defined function for processing XML elements
- * @param free User-defined function for deallocating ::GGZXMLElement
- * objects.  If provided, this will be invoked by
- * ggz_xmlelement_free(), and in addition to any user-defined
- * processing should call ggz_free() the element itself.
- * @return Pointer to a newly allocated ::GGZXMLElement object 
+ * @param element Pointer zum zu initialisierenden ::GGZXMLElement
+ * @param tag Name des XML-Elements (Tag)
+ * @param attrs NULL-terminiertes Feld von Attributen und Werten, welche
+ * eindimensional alternierend angeordnet sind
+ * @param process Nutzerdefinierte Funktion zur Verarbeitung der XML-Elemente
+ * @param free Nutzerdefinierte Funktion zur Freigabe von ::GGZXMLElement-Objekten,
+ * welche von ggz_xmlelement_free() aufgerufen wird, und zusätzlich für das
+ * Element ggz_free() aufrufen sollte
+ * @return Pointer zum neu allokierten ::GGZXMLElement-Objekt
  */
 void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 			 const char * const *attrs,
 			 void (*process)(), void (*free)());
 
 
-/** @brief Set ancillary data on a ::GGZXMLElement object
+/** @brief Ergänzt zusätzliche Daten zu einem ::GGZXMLElement-Objekt.
  *
- * Associate some extra data with an XML element.
+ * Verknüpfung von zusätzlichen Daten mit einem ::GGZXMLElement-Objekt.
  * 
- * @param element Pointer to an XML element
- * @param data Pointer to user-supplied data
- * @return The element's name
+ * @param element Pointer zu einem XML-Element
+ * @param data Pointer zu nutzerspezifischen Daten
+ * @return Name des Elements
  */
 void ggz_xmlelement_set_data(GGZXMLElement *element, void *data);
 
 
-/** @brief Get an XML element's name
+/** @brief Rückgabe des Namens eines XML-Elements.
  *
- * @param element Pointer to an XML element
- * @return The element's name
+ * @param element Pointer zum betreffenden XML-Element
+ * @return Name des Elements
  */
 const char *ggz_xmlelement_get_tag(GGZXMLElement *element);
 
 
-/** @brief Get the value of an attribute on XML element
+/** @brief Rückgabe eines Attributwertes von einem XML-Element.
  *
- * @param element Pointer to an XML element
- * @param attr An attribute name 
- * @return The value of the attribute, or NULL is there is no such
- * attribute present 
+ * @param element Pointer zu einem XML-Element
+ * @param attr Attributname
+ * @return Wert des Attributs, oder NULL falls es nicht existiert
  */
 const char *ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr);
 
 
-/** @brief Get the user-supplied data associated with an XML element
+/** @brief Rückgabe der nutzerspezifischen Daten eines XML-Elements.
  *
- * @param element Pointer to an XML element
- * @return Pointer to the user-supplied data
+ * @param element Pointer zu einem XML-Element
+ * @return Pointer zu den nutzerspezifischen Daten
  */
 void* ggz_xmlelement_get_data(GGZXMLElement *element);
 
 
-/** @brief Get an XML element's content text
+/** @brief Rückgabe der Kontext-Textdaten eines XML-Elements.
  *
- * @param element Pointer to an XML element
- * @return The text content of the element
+ * @param element Pointer zu einem XML-Element
+ * @return Textinhalt des Elements
  */
 char* ggz_xmlelement_get_text(GGZXMLElement *element);
 
 
-/** @brief Append a string to the element's content text
+/** @brief Anfügen einer Zeichenkette zum Textinhalt eines Elements.
  *
- * @param element Pointer to an XML element
- * @param text String to append
- * @param len The string's length
+ * @param element Pointer zu einem XML-Element
+ * @param text Anzuhängende Zeichenkette
+ * @param len Länge der Zeichenkette, in Bytes
  */
 void ggz_xmlelement_add_text(GGZXMLElement *element, const char *text, int len);
 
 
-/** @brief Free the memory associated with an XML element
+/** @brief Freigabe der mit einem XML-Element verknüpften Speicherbereiche
  *
- * @param element Pointer to an XML element
+ * @param element Pointer zu einem XML-Element
  */
 void ggz_xmlelement_free(GGZXMLElement *element);
 
