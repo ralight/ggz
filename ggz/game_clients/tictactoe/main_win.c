@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6227 2004-10-28 06:12:03Z jdorje $
+ * $Id: main_win.c 6242 2004-11-03 20:27:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,13 +43,10 @@
 #include "main_win.h"
 #include "game.h"
 #include "support.h"
-#include "x.xpm"
-#include "o.xpm"
 
 
 /* Pixmaps */
-GdkPixmap* x_pix;
-GdkPixmap* o_pix;
+GdkPixbuf *x_pix, *o_pix;
 GdkPixmap* ttt_buf;
 
 GtkWidget *main_win;
@@ -85,7 +82,7 @@ void display_board(void)
 {
 	int i, x, y;
 	GtkWidget* tmp;
-	GdkPixmap* piece;
+	GdkPixbuf* piece;
 	GtkStyle* style;
 
 #if 0
@@ -110,31 +107,41 @@ void display_board(void)
 		
 		x = (i % 3)*60 + 10 + 20;
 		y = (i / 3)*60 + 10 + 20;
-		
-		gdk_draw_pixmap(ttt_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-				piece, 0, 0, x, y, 18, 20);
+
+		gdk_pixbuf_render_to_drawable(piece, ttt_buf,
+					style->fg_gc[GTK_WIDGET_STATE(tmp)],
+					      0, 0, x, y, 18, 20,
+					      GDK_RGB_DITHER_NONE, 0, 0);
 	}
 	
 	gtk_widget_draw(tmp, NULL);
 }
 
 
+static GdkPixbuf *load_pixmap(const char *name)
+{
+  char *fullpath = g_strdup_printf("%s/tictactoe/pixmaps/%s.png",
+				   GGZDATADIR, name);
+  GdkPixbuf *image;
+  GError *error = NULL;
+
+  image = gdk_pixbuf_new_from_file(fullpath, &error);
+  if (image == NULL)
+    ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+  g_free(fullpath);
+
+  return image;
+}
+
 static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
-	GdkBitmap* mask;
-	
+
 	/* now for the pixmap from gdk */
 	style = gtk_widget_get_style(main_win);
-	
-	x_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
-					      (gchar**)x );
-	
-	o_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
-					      (gchar**)o );
-	
+
+	x_pix = load_pixmap("x");
+	o_pix = load_pixmap("o");
 }
 
 
