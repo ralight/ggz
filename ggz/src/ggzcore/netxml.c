@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4439 2002-09-07 17:16:45Z jdorje $
+ * $Id: netxml.c 4465 2002-09-08 06:34:27Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -872,11 +872,7 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 			_ggzcore_room_set_table_launch_status(room, code);
 		else if  (strcmp(action, "join") == 0)
 			_ggzcore_room_set_table_join_status(room, code);
-		else if  (strcmp(action, "joinspectator") == 0)
-			_ggzcore_room_set_table_join_status(room, code);
 		else if  (strcmp(action, "leave") == 0)
-			_ggzcore_room_set_table_leave_status(room, code);
-		else if  (strcmp(action, "leavespectator") == 0)
 			_ggzcore_room_set_table_leave_status(room, code);
 		else if  (strcmp(action, "chat") == 0) {
 			switch (code) {

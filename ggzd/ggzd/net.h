@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 4435 2002-09-07 13:11:21Z dr_maux $
+ * $Id: net.h 4465 2002-09-08 06:34:27Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -86,9 +86,7 @@ int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg);
 int net_send_chat_result(GGZNetIO *net, char status);
 int net_send_table_launch(GGZNetIO *net, char status);
 int net_send_table_join(GGZNetIO *net, char status);
-int net_send_table_join_spectator(GGZNetIO *net, char status);
 int net_send_table_leave(GGZNetIO *net, char status);
-int net_send_table_leave_spectator(GGZNetIO *net, char status);
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name);
 int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table, int seat);
 int net_send_update_result(GGZNetIO *net, char status);

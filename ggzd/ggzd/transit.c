@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4456 2002-09-08 01:59:41Z jdorje $
+ * $Id: transit.c 4465 2002-09-08 06:34:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -296,7 +296,8 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	status = *(int*)(current);
 	current += sizeof(int);
 
-	if ((opcode == GGZ_TRANSIT_JOIN || (opcode == GGZ_TRANSIT_JOIN_SPECTATOR)) && status == 0) {
+	if ((opcode == GGZ_TRANSIT_JOIN
+	     || opcode == GGZ_TRANSIT_JOIN_SPECTATOR) && status == 0) {
 		index = *(int*)(current);
 		current += sizeof(int);
 	}
@@ -305,15 +306,6 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	
 	switch (opcode) {
 	case GGZ_TRANSIT_LEAVE:
-		pthread_rwlock_wrlock(&player->lock);
-		player->transit = 0;
-		if (status == 0)
-			player->table = -1;
-		pthread_rwlock_unlock(&player->lock);
-		
-		if (net_send_table_leave(player->client->net, (char)status) < 0)
-			return GGZ_EVENT_ERROR;
-		break;
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
@@ -321,11 +313,13 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
 		
-		if (net_send_table_leave_spectator(player->client->net, (char)status) < 0)
+		if (net_send_table_leave(player->client->net,
+					 (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
 	case GGZ_TRANSIT_JOIN:
+	case GGZ_TRANSIT_JOIN_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
 		if (status == 0) {
@@ -336,17 +330,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
-	case GGZ_TRANSIT_JOIN_SPECTATOR:
-		pthread_rwlock_wrlock(&player->lock);
-		player->transit = 0;
-		if (status == 0) {
-			player->table = index;
-		}
-		pthread_rwlock_unlock(&player->lock);
 
-		if (net_send_table_join_spectator(player->client->net, (char)status) < 0)
-			return GGZ_EVENT_ERROR;
-		break;
 	case GGZ_TRANSIT_SEAT:
 		if (net_send_update_result(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;

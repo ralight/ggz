@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4452 2002-09-08 01:06:03Z jdorje $
+ * $Id: net.c 4465 2002-09-08 06:34:27Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -574,22 +574,11 @@ int net_send_table_join(GGZNetIO *net, char status)
 }
 
 
-int net_send_table_join_spectator(GGZNetIO *net, char status)
-{
-	return _net_send_result(net, "joinspectator", status);
-}
-
-
 int net_send_table_leave(GGZNetIO *net, char status)
 {
 	return _net_send_result(net, "leave", status);
 }
 
-
-int net_send_table_leave_spectator(GGZNetIO *net, char status)
-{
-	return _net_send_result(net, "leavespectator", status);
-}
 
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 {

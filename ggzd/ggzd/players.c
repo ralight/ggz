@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4429 2002-09-07 07:21:45Z dr_maux $
+ * $Id: players.c 4465 2002-09-08 06:34:27Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -489,7 +489,7 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_table_join_spectator(player->client->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -607,7 +607,8 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_table_leave_spectator(player->client->net, (char)status) < 0)
+		if (net_send_table_leave(player->client->net,
+					 (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
