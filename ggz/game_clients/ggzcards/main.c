@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3382 2002-02-17 08:15:31Z jdorje $
+ * $Id: main.c 3400 2002-02-17 13:10:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -39,18 +39,18 @@
 #include "common.h"
 
 #include "animation.h"
-#include "main.h"
 #include "dlg_main.h"
 #include "dlg_bid.h"
-#include "table.h"
 #include "game.h"
 #include "layout.h"
+#include "main.h"
+#include "preferences.h"
+#include "table.h"
 
 GtkWidget *dlg_main = NULL;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
-static void access_settings(int save);
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 	fd = client_initialize();
 	listen_for_server(TRUE);
 	gtk_init(&argc, &argv);
-	access_settings(0);
+	load_preferences();
 
 	/* This shouldn't go here, but I see no better place right now. The
 	   message windows are supposed to use a fixed-width font. */
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 	client_quit();
 	table_cleanup();
 
-	access_settings(1);
+	save_preferences();
 	ggz_conf_cleanup();
 
 	cleanup_debugging();
@@ -141,84 +141,6 @@ void listen_for_server(int listen)
 	} else if (!listen && listening) {
 		gdk_input_remove(server_socket_tag);
 		listening = FALSE;			
-	}
-}
-
-/* This function can be called at any time to save _or_ load the global
- * settings (preferences).
- *
- * If "save" is TRUE, we'll save the settings.  Otherwise we'll load
- * them.
- *
- * File name, etc., are all taken care of internally by the function.
- *
- * Note, this function need not have anything to do with the code for
- * the user to edit their preferences.  This code just read/writes the
- * data to/from the file.
- */
-static void access_settings(int save)
-{
-	static int file = -1;
-
-	if (file < 0) {
-		/* Preferences go in ~/.ggz/ggzcards-gtk.rc */
-		char *name = g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
-					     getenv("HOME"));
-		file = ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
-
-		if (file < 0)
-			ggz_debug("main", "Couldn't open conf file '%s'.",
-				  name);
-
-		g_free(name);
-	}
-
-	if (save) {
-		/* Save. */
-		ggz_conf_write_int(file, "BOOLEAN", "animation",
-				   preferences.animation);
-		ggz_conf_write_int(file, "BOOLEAN", "faster_animation",
-				   preferences.faster_animation);
-		ggz_conf_write_int(file, "BOOLEAN", "smoother_animation",
-		                   preferences.smoother_animation);
-		ggz_conf_write_int(file, "BOOLEAN", "multiple_animation",
-		                   preferences.multiple_animation);
-		ggz_conf_write_int(file, "BOOLEAN", "longer_clearing_delay",
-		                   preferences.longer_clearing_delay);
-		ggz_conf_write_int(file, "BOOLEAN", "cardlists",
-				   preferences.cardlists);
-		ggz_conf_write_int(file, "BOOLEAN", "autostart",
-				   preferences.autostart);
-		ggz_conf_write_int(file, "BOOLEAN", "use_default_options",
-				   preferences.use_default_options);
-		ggz_conf_write_int(file, "BOOLEAN", "bid_on_table",
-		                   preferences.bid_on_table);
-		ggz_conf_commit(file);
-	} else {
-		/* Load. */
-		preferences.animation =
-			ggz_conf_read_int(file, "BOOLEAN", "animation", 1);
-		preferences.faster_animation =
-			ggz_conf_read_int(file, "BOOLEAN",
-					  "faster_animation", 0);
-		preferences.smoother_animation =
-			ggz_conf_read_int(file, "BOOLEAN",
-					  "smoother_animation", 0);
-		preferences.multiple_animation =
-			ggz_conf_read_int(file, "BOOLEAN",
-					  "multiple_animation", 0);
-		preferences.longer_clearing_delay =
-			ggz_conf_read_int(file, "BOOLEAN",
-			                  "longer_clearing_delay", 0);
-		preferences.cardlists =
-			ggz_conf_read_int(file, "BOOLEAN", "cardlists", 1);
-		preferences.bid_on_table =
-			ggz_conf_read_int(file, "BOOLEAN", "bid_on_table", 0);
-		preferences.autostart =
-			ggz_conf_read_int(file, "BOOLEAN", "autostart", 0);
-		preferences.use_default_options =
-			ggz_conf_read_int(file, "BOOLEAN",
-					  "use_default_options", 0);
 	}
 }
 

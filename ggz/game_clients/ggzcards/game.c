@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3376 2002-02-17 02:05:13Z jdorje $
+ * $Id: game.c 3400 2002-02-17 13:10:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -43,7 +43,7 @@
 #include "main.h"
 #include "table.h"
 
-struct prefs preferences;
+Preferences preferences;
 
 int table_max_hand_size = 0;
 int game_started = FALSE;

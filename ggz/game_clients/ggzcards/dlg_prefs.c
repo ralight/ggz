@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3376 2002-02-17 02:05:13Z jdorje $
+ * $Id: dlg_prefs.c 3400 2002-02-17 13:10:57Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -31,60 +31,14 @@
 
 #include "game.h"
 #include "dlg_prefs.h"
+#include "preferences.h"
 
-static void on_animation_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
+static void on_pref_toggled(GtkToggleButton * togglebutton,
+				 gpointer value)
 {
-	preferences.animation = togglebutton->active;
+	*(int*)value = togglebutton->active;
 }
 
-static void on_fasteranimation_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.faster_animation = togglebutton->active;
-}
-
-static void on_smootheranimation_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.smoother_animation = togglebutton->active;
-}
-
-static void on_multipleanimation_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.multiple_animation = togglebutton->active;
-}
-
-static void on_longerclearingdelay_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.longer_clearing_delay = togglebutton->active;
-}
-
-static void on_cardlists_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.cardlists = togglebutton->active;
-}
-
-static void on_bidontable_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.bid_on_table = togglebutton->active;
-}
-
-static void on_autostart_toggled(GtkToggleButton * togglebutton,
-				 gpointer user_data)
-{
-	preferences.autostart = togglebutton->active;
-}
-
-static void on_defaultoptions_toggled(GtkToggleButton *togglebutton,
-				      gpointer user_data)
-{
-	preferences.use_default_options = togglebutton->active;
-}
 
 GtkWidget *create_dlg_prefs(void)
 {
@@ -93,6 +47,8 @@ GtkWidget *create_dlg_prefs(void)
 	GtkWidget *button;
 	GtkWidget *action_area;
 	GtkWidget *close_button;
+	
+	PrefType *pref;
 
 	/* 
 	 * Create outer window.
@@ -111,120 +67,18 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
-	/* 
-	 * Make "animation" button
-	 */
-	button = gtk_check_button_new_with_label(_("Use animation"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.animation);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_animation_toggled), NULL);
-
-	/*
-	 * Make "faster animation" button
-	 */
-	button = gtk_check_button_new_with_label(_("Faster animation"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.faster_animation);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_fasteranimation_toggled), NULL);
-
-	/*
-	 * Make "smoother animation" button
-	 */
-	button = gtk_check_button_new_with_label(_("Smoother animation"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.smoother_animation);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_smootheranimation_toggled), NULL);
-
-	/*
-	 * Make "multiple animation" button
-	 */
-	button = gtk_check_button_new_with_label(_("Multiple (simultaneous) "
-						   "animation"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.multiple_animation);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_multipleanimation_toggled), NULL);
-
-	/*
-	 * Make "longer clearing delay" button
-	 */
-	button = gtk_check_button_new_with_label(_("Have a longer delay "
-	                                           "before clearing the table"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.longer_clearing_delay);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_longerclearingdelay_toggled),
-			   NULL);
-
-	/* 
-	 * Make "cardlists" button
-	 */
-	button = gtk_check_button_new_with_label(_("Show graphical "
-		"cardlists (may not take effect immediately)"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.cardlists);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_cardlists_toggled), NULL);
-			
-	/*
-	 * Make "bid_on_table" button
-	 */
-	button = gtk_check_button_new_with_label(_("Show bid choices "
-	                                           "right on the table"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.bid_on_table);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_bidontable_toggled), NULL);
-
-	/* 
-	 * Make "autostart" button
-	 */
-	button = gtk_check_button_new_with_label(_("Automatically "
-						   "start game"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.autostart);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_autostart_toggled), NULL);
-			
-	/*
-	 * Make "use_default_options" button
-	 */
-	button = gtk_check_button_new_with_label(_("Always use "
-						   "default options"));
-	gtk_widget_ref(button);
-	gtk_widget_show(button);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-				     preferences.use_default_options);
-	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-			   GTK_SIGNAL_FUNC(on_defaultoptions_toggled), NULL);
+	/* Make preferences buttons. */
+	for (pref = pref_types; pref->name; pref++) {
+		button = gtk_check_button_new_with_label(pref->desc);
+		gtk_widget_ref(button);
+		gtk_widget_show(button);
+		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+		                             *pref->value);
+		(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
+				GTK_SIGNAL_FUNC(on_pref_toggled),
+				pref->value);
+	}
 
 	/* 
 	 * Get "action area"

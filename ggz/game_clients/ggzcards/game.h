@@ -1,10 +1,10 @@
-/* 
+/*
  * File: game.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3376 2002-02-17 02:05:13Z jdorje $
+ * $Id: game.h 3400 2002-02-17 13:10:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,15 +34,10 @@
 /*
  * Current list of preferences.
  *
- * To add a new preference:
- *   - Add it to the struct prefs.
- *   - Add code to load/save it to access_settings() in main.c.  The
- *     defaults are also set here.
- *   - Add editing code to dlg_prefs.c.  This includes a new function
- *     of the form on_XXX_toggled(), as well as code in create_dlg_prefs()
- *     to create the toggle button.
+ * To add a new preference, add a value for it here and insert
+ * information about it into the pref_types array in preferences.c.
  */
-struct prefs {
+typedef struct {
 	int animation;
 	int faster_animation;
 	int smoother_animation;
@@ -54,10 +49,10 @@ struct prefs {
 	
 	int autostart;
 	int use_default_options;
-};
+} Preferences;
 
 /* Our set of preferences.  See above. */
-extern struct prefs preferences;
+extern Preferences preferences;
 
 /* This is the maximum hand size we can sustain.  The client-common code will 
    tell us when we need to increase it. */

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3174 2002-01-21 08:09:42Z jdorje $
+# $Id: Makefile.am 3400 2002-02-17 13:10:57Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -30,6 +30,7 @@ ggz_ggzcards_SOURCES = \
 	dlg_about.c dlg_about.h \
 	dlg_options.c dlg_options.h \
 	dlg_prefs.c dlg_prefs.h \
+	preferences.c preferences.h \
 	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
 	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm \
 	\
