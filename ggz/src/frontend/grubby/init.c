@@ -51,10 +51,10 @@ void ggz_init( void )
 	/* Initilize GGZCORE */
 	opt.flags = GGZ_OPT_PARSER;
 	global_conf = NULL;
-	user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
+	user_conf = malloc((strlen(getenv("HOME"))+16)*sizeof(char*));
 	sprintf(user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
 	ggzcore_conf_initialize(global_conf, user_conf);
-	free(user_conf);
+//	free(user_conf);
 
         debugfile = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-grubby.debug");
         opt.debug_file = malloc((strlen(debugfile)+10)*sizeof(char*));
