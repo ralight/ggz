@@ -47,3 +47,4 @@ ggz_gtk_SOURCES =	main.c \
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@
+EXTRA_DIST = $(ggzdata_DATA)
