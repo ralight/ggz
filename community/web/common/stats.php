@@ -162,11 +162,14 @@ function stats_team($id, $lookup)
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Members of the team:<br>\n";
-		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup'");
+		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup' ORDER BY entrydate ASC");
 		for ($i = 0; $i < pg_numrows($res); $i++)
 		{
 			$handle = pg_result($res, $i, "handle");
 			$role = pg_result($res, $i, "role");
+			$entrydate = pg_result($res, $i, "entrydate");
+
+			$date = date("d.m.Y", $entrydate);
 
 			$color = "silver";
 			$number = 1;
@@ -192,7 +195,7 @@ function stats_team($id, $lookup)
 			$title = substr($title, 0, strlen($title) - 2);
 
 			echo "<img src='/db/ggzicons/rankings/$color$attribute.png' title='$title'>\n";
-			echo "<a href='/db/players/?lookup=$handle'>$handle</a><br>\n";
+			echo "<a href='/db/players/?lookup=$handle'>$handle</a> (since $date)<br>\n";
 		}
 	endif;
 }
