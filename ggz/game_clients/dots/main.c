@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
+ * $Id: main.c 6668 2005-01-14 03:22:03Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -30,7 +30,6 @@
 #include <gtk/gtk.h>
 
 #include <sys/types.h>
-#include <sys/un.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
