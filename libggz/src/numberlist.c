@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 4506 2002-09-11 03:25:20Z jdorje $
+ * $Id: numberlist.c 4507 2002-09-11 03:37:21Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -144,4 +144,19 @@ int ggz_numberlist_isset(GGZNumberList *list, int value)
 		return 0;
 
 	return !!(list->values & (1 << (value - 1)));
+}
+
+int ggz_numberlist_get_max(GGZNumberList *list)
+{
+	int min = list->max, i;
+
+	if (min <= 0)
+		min = 0;
+
+	/* FIXME: come up with a cool bit maniuplation to do this */
+	for (i = 32; i > min; i--)
+		if (list->values & (1 << (i - 1)))
+			return i;
+
+	return min;
 }
