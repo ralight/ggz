@@ -154,6 +154,9 @@ dnl Create Makefiles
 dnl ================
 
 AC_CONFIG_FILES([Makefile
+	kgrubby/Makefile
+	kgrubby/src/Makefile
+	kgrubby/data/Makefile
 	shadowbridge/Makefile
 	shadowbridge/pics/Makefile
 	modsniff/Makefile
