@@ -10,7 +10,8 @@ include_HEADERS = easysock.h
 
 libeasysock_la_LIBADD = @LDADD@
 
-libeasysock_la_LDFLAGS = -version-info 1:0:1
+libeasysock_la_LDFLAGS = -version-info @EASYSOCK_VERSION_INFO@
+
 
 
 
