@@ -633,15 +633,8 @@ int game_update(int event, void *d1)
 				return -1;
 		
 			direction = *(char*)d1;
-			if (escape_game.repeatmove){ // player making move has another turn so send move to *other* player
-				ggz_debug("\tgame_send_move(%d, %d, %d)\n",(escape_game.turn+1)%2, event, direction);
-				ggz_debug("\tPlayer has another move\n");
-				game_send_move((escape_game.turn+1)%2, event, direction);
-			}else{
-				ggz_debug("\tgame_send_move(%d, %d, %d)\n",escape_game.turn, event, direction);
-				ggz_debug("\tPlayer relinquishes move\n");
-				game_send_move(escape_game.turn, event, direction);
-			}
+			ggz_debug("\tgame_send_move(%d, %d, %d)\n",escape_game.turn, event, direction);
+			game_send_move(escape_game.turn, event, direction);
 		
 			if((victor = game_check_win()) < 0) {
 				/* Request next move */
