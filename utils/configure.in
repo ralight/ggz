@@ -140,9 +140,10 @@ dnl Output Status
 dnl =============
 
 echo ""
-echo "Build options:"
+echo "Modules to build:"
 echo "    TelGGZ......$enable_telggz"
 echo "    MetaServ....$enable_metaserv"
 echo "    cmd-client..$enable_cmd_client"
+echo "Build options:"
 echo "    Debug.......$enable_debug"
 
