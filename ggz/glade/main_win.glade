@@ -795,6 +795,12 @@
 		<data>msg_entry</data>
 		<last_modification_time>Mon, 27 Mar 2000 16:34:27 GMT</last_modification_time>
 	      </signal>
+	      <signal>
+		<name>key_press_event</name>
+		<handler>ggz_input_chat_keystroke</handler>
+		<after>True</after>
+		<last_modification_time>Tue, 22 Aug 2000 19:02:50 GMT</last_modification_time>
+	      </signal>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>
 	      <text_max_length>512</text_max_length>

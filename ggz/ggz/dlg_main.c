@@ -94,6 +94,8 @@ static void ggz_about(GtkWidget* widget, gpointer data);
 GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2);
 static void ggz_players_clist_append(Player* player, gpointer data);
 static void ggz_tables_clist_append(Table* table, gpointer data);
+static gboolean ggz_input_chat_keystroke(GtkWidget *widget, GdkEventKey *event,
+					 gpointer data);
 
 
 void ggz_update_title(void)
@@ -565,11 +567,65 @@ GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gi
 	return chat_text;
 }
 
+static gboolean ggz_input_chat_keystroke(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+	GtkXText *chat_text;
+	gfloat new_val;
+ 
+	chat_text = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+	switch(event->keyval) {
+ 	case GDK_Up:
+ 	case GDK_KP_Up:
+ 		new_val= chat_text->adj->value - chat_text->adj->step_increment;
+ 		if(new_val < chat_text->adj->lower)	
+ 			new_val = chat_text->adj->lower;
+ 		gtk_adjustment_set_value(chat_text->adj, new_val);
+ 		gtk_signal_emit_by_name(GTK_OBJECT(chat_text->adj), "changed");
+ 		return TRUE;
+ 		break;
+ 	case GDK_Down:
+ 	case GDK_KP_Down:
+ 		new_val= chat_text->adj->value + chat_text->adj->step_increment;
+ 		if(new_val > chat_text->adj->upper)	
+			new_val = chat_text->adj->upper;
+		gtk_adjustment_set_value(chat_text->adj, new_val);
+ 		gtk_signal_emit_by_name(GTK_OBJECT(chat_text->adj), "changed");
+ 		return TRUE;
+ 		break;
+ 	case GDK_Page_Up:
+ 	case GDK_KP_Page_Up:
+ 		new_val= chat_text->adj->value - chat_text->adj->page_increment;
+ 		if(new_val < chat_text->adj->lower)	
+ 			new_val = chat_text->adj->lower;
+ 		gtk_adjustment_set_value(chat_text->adj, new_val);
+ 		gtk_signal_emit_by_name(GTK_OBJECT(chat_text->adj), "changed");
+ 		return TRUE;
+ 		break;
+ 	case GDK_Page_Down:
+ 	case GDK_KP_Page_Down:
+ 		new_val= chat_text->adj->value + chat_text->adj->page_increment;
+ 		if(new_val > chat_text->adj->upper)	
+ 			new_val = chat_text->adj->upper;
+ 		gtk_adjustment_set_value(chat_text->adj, new_val);
+ 		gtk_signal_emit_by_name(GTK_OBJECT(chat_text->adj), "changed");
+ 		return TRUE;
+ 		break;
+ 	case GDK_Left:
+ 	case GDK_Right:
+ 	case GDK_KP_Left:
+ 	case GDK_KP_Right:
+ 	case GDK_space:
+ 		return TRUE;
+ 		break;
+ 	default:
+ 		return FALSE;
+	}
+}
+
 
 GtkWidget*
 create_main_win (void)
 {
-  GtkWidget *main_win;
   GtkWidget *main_box;
   GtkWidget *menu_bar;
   guint tmp_key;
@@ -1292,6 +1348,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (msg_entry), "activate",
                       GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
+  gtk_signal_connect_after (GTK_OBJECT (msg_entry), "key_press_event",
+                            GTK_SIGNAL_FUNC (ggz_input_chat_keystroke),
+                            NULL);
   gtk_signal_connect (GTK_OBJECT (msg_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
@@ -1300,3 +1359,4 @@ create_main_win (void)
 
   return main_win;
 }
+
