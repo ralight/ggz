@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 5384 2003-02-04 17:11:48Z jdorje $
+ * $Id: login.c 5940 2004-02-16 06:50:51Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -23,8 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <ggzcore.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -35,14 +38,15 @@
 #include <gtk/gtk.h>
 
 #include <ggz.h>
+#include <ggzcore.h>
 
 #include "client.h"
+#include "ggzclient.h"
 #include "login.h"
 #include "msgbox.h"
+#include "props.h"
 #include "server.h"
 #include "support.h"
-#include "props.h"
-#include "ggzclient.h"
 
 GtkWidget *login_dialog;
 gint entries_update;
@@ -87,10 +91,10 @@ login_connect_failed(void)
 }
 
 
-void 
-login_failed(void)
+void login_failed(GGZErrorEventData *error)
 {
 	GtkWidget *tmp;
+	char msg[1024];
 	
 	/* First, disconnect from the server. */
 	if (ggzcore_server_logout(server) < 0)
@@ -108,8 +112,29 @@ login_failed(void)
 	gtk_frame_set_label(GTK_FRAME(tmp), _("Sorry!"));
 	
 	tmp = lookup_widget(login_dialog, "msg_label");
-	gtk_label_set_text(GTK_LABEL(tmp),
-			   _("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name"));
+
+	switch (error->status) {
+	case E_ALREADY_LOGGED_IN:
+		snprintf(msg, sizeof(msg),
+			 _("That username is already in usage."));
+		break;
+	case E_USR_LOOKUP:
+		snprintf(msg, sizeof(msg),
+			 _("That username is already in usage,\nor not "
+			   "permitted on this server.\n\nPlease choose a "
+			   "different name"));
+		break;
+	case E_TOO_LONG:
+		snprintf(msg, sizeof(msg),
+			 _("The username is too long!"));
+		break;
+	default:
+		snprintf(msg, sizeof(msg),
+			 _("Login failed for unknown reason: %s"),
+			 error->message);
+		break;
+	}
+	gtk_label_set_text(GTK_LABEL(tmp), msg);
 }
 
 
