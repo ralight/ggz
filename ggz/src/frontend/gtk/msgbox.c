@@ -26,7 +26,12 @@
 #include <config.h>
 #include "msgbox.h"
 
-MBReturn status;
+static MBReturn mb_status;
+
+/* TODO  - Make Icon backgrounds transparent
+ * TODO  - Make the icon take up less toom on the left of the dialog
+ */
+
 
 void CloseTheApp (GtkWidget *window, gpointer data)
 {
@@ -36,25 +41,25 @@ void CloseTheApp (GtkWidget *window, gpointer data)
 
 void DialogOKClicked (GtkButton *button, gpointer data)
 {
-	status = MSGBOX_OK;
+	mb_status = MSGBOX_OK;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
 void DialogCancelClicked (GtkButton *button, gpointer data)
 {
-	status = MSGBOX_CANCEL;
+	mb_status = MSGBOX_CANCEL;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
 void DialogYesClicked (GtkButton *button, gpointer data)
 {
-	status = MSGBOX_YES;
+	mb_status = MSGBOX_YES;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
 void DialogNoClicked (GtkButton *button, gpointer data)
 {
-	status = MSGBOX_NO;
+	mb_status = MSGBOX_NO;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
@@ -64,11 +69,120 @@ GtkWidget *AddWidget (GtkWidget *widget, GtkWidget *packingbox)
 	return widget;
 }
 
-MBReturn msgbox (gchar *textmessage, gchar *title, MBType type)
+
+/* XPM */
+static char *stop[] = {
+/* width height ncolors chars_per_pixel */
+"32 32 16 1",
+/* colors */
+"  c #000000000000",
+"! c #800000000000",
+"# c #000080000000",
+"$ c #800080000000",
+"% c #000000008000",
+"& c #800000008000",
+"' c #000080008000",
+"( c #800080008000",
+") c #c000c000c000",
+"* c #ff0000000000",
+"+ c #0000ff000000",
+", c #ff00ff000000",
+"- c #00000000ff00",
+". c #ff000000ff00",
+"/ c #0000ff00ff00",
+"0 c #ff00ff00ff00",
+/* pixels */
+"                                ",
+"00000000000000000000000000000000",
+"0000000******************0000000",
+"000000**0000000000000000**000000",
+"00000**0****************0**00000",
+"0000**0******************0**0000",
+"000**0********************0**000",
+"00**0**********************0**00",
+"0**0************************0**0",
+"**0**************************0**",
+"*0****************************0*",
+"*0****************************0*",
+"*0****************************0*",
+"*0****0000*00000**000**0000***0*",
+"*0***0*******0***0***0*0***0**0*",
+"*0***0*******0***0***0*0***0**0*",
+"*0***0*******0***0***0*0000***0*",
+"*0****000****0***0***0*0******0*",
+"*0*******0***0***0***0*0******0*",
+"*0*******0***0***0***0*0******0*",
+"*0*******0***0***0***0*0******0*",
+"*0***0000****0****000**0******0*",
+"*0****************************0*",
+"*0****************************0*",
+"**0**************************0**",
+"0**0************************0**0",
+"00**0**********************0**00",
+"000**0********************0**000",
+"0000**0******************0**0000",
+"00000**0****************0**00000",
+"000000**0000000000000000**000000",
+"0000000******************0000000"
+} ;
+
+
+/* XPM */
+static char *info[] = {
+/* width height ncolors chars_per_pixel */
+"32 32 4 1",
+/* colors */
+"` c black",
+"a c cyan",
+"b c white",
+"c c slate grey",
+/* pixels */
+"bbbbbbbbbbbbbbbaaaabbbbbbbbbbbbb",
+"bbbbbbbbbbbbbb````aabbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````abbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````abbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````abbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````bbbbbbbbbbbbb",
+"bbbbbbbbbbbbbb````bbbbbbbbbbbbbb",
+"bbbbbbbbbbbccccccccccbbbbbbbbbbb",
+"bbbbbbbbbbaaaaaaaaaacbbbbbbbbbbb",
+"bbbbbbbbb``````````acbbbbbbbbbbb",
+"bbbbbbbbb``````````acbbbbbbbbbbb",
+"bbbbbbbbb``````````acbbbbbbbbbbb",
+"bbbbbbbbb``````````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbbb``````acbbbbbbbbbbb",
+"bbbbbbbbbbbcc``````acccccbbbbbbb",
+"bbbbbbbbbbaaa``````aaaaacbbbbbbb",
+"bbbbbbbbb``````````````acbbbbbbb",
+"bbbbbbbbb``````````````acbbbbbbb",
+"bbbbbbbbb``````````````abbbbbbbb",
+"bbbbbbbbb``````````````bbbbbbbbb"
+};
+
+
+
+MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype)
 {
 	GtkWidget *dialogwindow;
 	GtkWidget *packingbox;
 	GtkWidget *packingbox2;
+	GtkWidget *packingbox3;
+	GtkWidget *icon;
+	GdkColormap *colormap;
+	GdkPixmap *pixmap;
+	GdkPixmap *mask;
 	GtkWidget *dialogwidget;
 	GtkWidget *btnok;
 	GtkWidget *btncancel;
@@ -83,7 +197,33 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type)
 	packingbox = gtk_vbox_new (TRUE, 5);
 	gtk_container_add (GTK_CONTAINER(dialogwindow), packingbox);
 
-	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox);
+	packingbox3 = gtk_hbox_new (TRUE, 2);
+	dialogwidget = AddWidget (packingbox3, packingbox);
+
+	if (itype == MSGBOX_STOP)
+	{
+		colormap = gtk_widget_get_colormap (dialogwidget);
+		pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, stop);
+		if (pixmap == NULL)
+			g_error ("Couldn't create replacement pixmap.");
+		icon = gtk_pixmap_new (pixmap, mask);
+		gdk_pixmap_unref (pixmap);
+		gdk_bitmap_unref (mask);
+		dialogwidget = AddWidget (icon, packingbox3);
+	}
+	if (itype == MSGBOX_INFO)
+	{
+		colormap = gtk_widget_get_colormap (dialogwidget);
+		pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, info);
+		if (pixmap == NULL)
+			g_error ("Couldn't create replacement pixmap.");
+		icon = gtk_pixmap_new (pixmap, mask);
+		gdk_pixmap_unref (pixmap);
+		gdk_bitmap_unref (mask);
+		dialogwidget = AddWidget (icon, packingbox3);
+	}
+
+	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox3);
 	dialogwidget = AddWidget (gtk_hseparator_new(), packingbox);
 	packingbox2 = gtk_hbox_new (TRUE, 2);
 	dialogwidget = AddWidget (packingbox2, packingbox);
@@ -128,5 +268,6 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type)
 	gtk_window_set_modal (GTK_WINDOW (dialogwindow), TRUE);
 	gtk_widget_show_all (dialogwindow);
 	gtk_main();
-	return status;
+	return mb_status;
 }
+

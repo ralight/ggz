@@ -45,4 +45,10 @@ typedef enum {
 	MSGBOX_OKONLY	= 3
 }	MBType;
 
-MBReturn msgbox (gchar *textmessage, gchar *title, MBType type);
+typedef enum {
+	MSGBOX_NONE	= 1,
+	MSGBOX_STOP	= 2,
+	MSGBOX_INFO	= 3
+}	MBIcon;
+
+MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype);
