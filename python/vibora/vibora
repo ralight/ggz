@@ -353,7 +353,7 @@ def background_chat():
 	return bg
 
 def ggz_game_event(id, data):
-	print "*game_event*", id, data
+	pass
 
 def ggz_room_event(id, data):
 	global chatoutput
@@ -519,8 +519,7 @@ def main(host):
 	pygame.init()
 	pygame.display.set_caption("GGZ Gaming Zone (Vibora Client)")
 
-	#screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF | FULLSCREEN)
-	screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF)
+	screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF | FULLSCREEN)
 
 	bigfont = pygame.font.Font(None, 48)
 	font = pygame.font.Font(None, 20)
@@ -783,6 +782,8 @@ def main(host):
 								namestr += " (guest)"
 							elif status == "admin":
 								namestr += " (admin)"
+							elif status == "bot":
+								namestr += " (bot)"
 							players.append(namestr)
 
 					rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 30 + 10 * len(players)))
