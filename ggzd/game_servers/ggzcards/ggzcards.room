@@ -1,0 +1,21 @@
+# These set maximum values for this room
+MaxPlayers = 150
+MaxTables = 45
+# GameDisabled is a quick way to turn off the game if necessary
+#GameDisabled
+
+
+# Generalized bridge-like room
+# This is the short name for the room
+Name = GGZ Cards
+# This is the long descriptive name for the room
+Description = GGZ Bridge-like Card Game Room
+# The gametype should match up to the Name of an added game
+GameType = GGZCards
+
+
+# An example description for a specific game room
+# Name = GGZ Spades
+# Description = Spades Game Room
+# GameType = GGZCards-Spades
+
