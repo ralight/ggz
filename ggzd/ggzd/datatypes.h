@@ -204,8 +204,9 @@ typedef struct {
 typedef struct {
 	char *motd_file;
 	char use_motd;
+	unsigned long startup_time;
 	int motd_lines;
-	char *motd_text[15];	/* 15 line maximum also hardcoded in motd.c */
+	char *motd_text[40];	/* 40 line maximum also hardcoded in motd.c */
 } MOTDInfo;
 
 #endif
