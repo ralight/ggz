@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: login.c 4142 2002-05-03 04:07:23Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -201,25 +201,6 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	return GGZ_REQ_OK;
 }
 
-
-
-/*
- * logout_player implements the following exchange:
- * 
- * REQ_LOGOUT
- * RSP_LOGOUT
- *  chr: success flag (0 for success, -1 for error )
- */
-GGZPlayerHandlerStatus logout_player(GGZPlayer* player)
-{
-	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for %s", player->name);
-
-	/* FIXME: Saving of stats and other things */
-	if (net_send_logout(player->client->net, 0) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	return GGZ_REQ_OK;
-}
 
 
 static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",

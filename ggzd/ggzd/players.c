@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4140 2002-05-03 03:49:09Z bmh $
+ * $Id: players.c 4142 2002-05-03 04:07:23Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -206,12 +206,12 @@ void player_loop(GGZPlayer* player)
 
 
 /*
- * player_remove() does various cleanups for logout
+ * player_logout() does various cleanups for logout
  *
  * Receives:
  * GGZPlayer* player : pointer to player structure
  */
-void player_remove(GGZPlayer* player)
+void player_logout(GGZPlayer* player)
 {
 	long connect_time;
 	int hours, mins, secs;
@@ -241,7 +241,7 @@ void player_remove(GGZPlayer* player)
 	} else
 		pthread_rwlock_unlock(&player->lock);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Removing %s", player->name);
+	dbg_msg(GGZ_DBG_CONNECTION, "Logging out %s", player->name);
 
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)

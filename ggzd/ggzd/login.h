@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.h 3420 2002-02-19 08:04:27Z jdorje $
+ * $Id: login.h 4142 2002-05-03 04:07:23Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,7 +42,6 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 int  login_player_anon(GGZPlayer* player, char *name);
 int  login_player_new(GGZPlayer* player, char *name);
 int  login_player_normal(GGZPlayer* player, char *name, char *password);
-GGZPlayerHandlerStatus logout_player(GGZPlayer* player);
 
 
 #endif /* _GGZ_LOGIN_H */

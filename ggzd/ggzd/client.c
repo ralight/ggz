@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4140 2002-05-03 03:49:09Z bmh $
+ * $Id: client.c 4142 2002-05-03 04:07:23Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -173,7 +173,8 @@ static void* client_thread_init(void *arg_ptr)
 
 	/* Main client event loop */
 	client_loop(client);
-	
+	client_free(client);
+
 	return (NULL);
 }
 
@@ -260,8 +261,7 @@ static void client_loop(GGZClient* client)
 		dbg_msg(GGZ_DBG_CONNECTION, "Starting player loop");
 		client->session_over = 0;
 		player_loop(client->data);
-		player_remove(client->data);
-		free(client->data);
+		player_logout(client->data);
 		break;
 		
 	case GGZ_CLIENT_CHANNEL:
@@ -298,10 +298,11 @@ void client_end_session(GGZClient *client)
 }
 
 
-void client_free(GGZClient *client)
+static void client_free(GGZClient *client)
 {
-	net_disconnect(client->net);
 	net_free(client->net);
+	if (client->data)
+		free(client->data);
 	free(client);
 }
 

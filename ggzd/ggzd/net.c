@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4141 2002-05-03 03:50:35Z bmh $
+ * $Id: net.c 4142 2002-05-03 04:07:23Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -933,8 +933,9 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 /* Functions for <SESSION> tag */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
 {
-	if (net->client->type == GGZ_CLIENT_PLAYER)
-		logout_player(net->client->data);
+	if (net->client->type == GGZ_CLIENT_PLAYER) {
+		net_send_logout(net, 0);
+	}
 	client_end_session(net->client);
 }
 
@@ -959,6 +960,7 @@ static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel)
 		/* FIXME: perhaps lookup table and point net->client->data at it */
 		
 		client_set_type(net->client, GGZ_CLIENT_CHANNEL);
+		net->client->data = strdup(id);
 	}
 }
 

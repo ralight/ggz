@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: players.h 4142 2002-05-03 04:07:23Z bmh $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -86,8 +86,8 @@ struct _GGZPlayer {
 
 
 GGZPlayer* player_new(GGZClient *client);
-void  player_loop(GGZPlayer* player);
-void  player_remove(GGZPlayer* player);
+void player_loop(GGZPlayer* player);
+void player_logout(GGZPlayer* player);
 
 GGZEventFuncReturn player_launch_callback(void* target, int size, void* data);
 
