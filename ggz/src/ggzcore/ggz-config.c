@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5688 2003-11-23 19:11:25Z dr_maux $
+ * $Id: ggz-config.c 5689 2003-11-23 20:05:30Z dr_maux $
  *
  * Configuration query and module install program.
  *
@@ -717,13 +717,18 @@ phase_two:
 			str = ggz_conf_read_string(global, g_list[k], "ProtocolEngine", NULL);
 			if(!str)
 			{
-				printf("ERR Section %s doesn't exist in %s, removed\n",
+				errs++;
+				printf("ERR Section %s doesn't exist in %s, removed reference\n",
 					g_list[k], k_list[i]);
 				ggz_free(g_list[k]);
 				g_count -= 1;
-				if(k <= g_count)
-					g_list[k] = g_list[g_count];
-				ggz_conf_write_list(global, "Games", k_list[i], g_count, g_list);
+				if(g_count) {
+					if(k <= g_count)
+						g_list[k] = g_list[g_count];
+					ggz_conf_write_list(global, "Games", k_list[i], g_count, g_list);
+				} else {
+					ggz_conf_remove_key(global, "Games", k_list[i]);
+				}
 			}
 			else ggz_free(str);
 		}
@@ -739,10 +744,7 @@ phase_two:
 phase_five:
 	ggz_conf_read_list(global, "Games", "*Engines*", &e_count, &e_list);
 	for(i=0; i<e_count; i++) {
-		/*str = ggz_conf_read_string(global, "Games", e_list[i], NULL);*/
-		ggz_conf_read_list(global, "Games", e_list[i], &g_count, &g_list);
-		for(k = 0; k < g_count; k++) {
-			str = g_list[k];
+		str = ggz_conf_read_string(global, "Games", e_list[i], NULL);
 
 			if(!str) {
 				errs++;
@@ -750,24 +752,22 @@ phase_five:
 				       e_list[i]);
 				ggz_free(e_list[i]);
 				e_count--;
-				if(i < e_count)
-					e_list[i] = e_list[e_count];
-				ggz_conf_write_list(global, "Games","*Engines*",
-						    e_count, e_list);
+				if(e_count) {
+					if(i < e_count)
+						e_list[i] = e_list[e_count];
+					ggz_conf_write_list(global, "Games", "*Engines*",
+						e_count, e_list);
+				} else {
+					ggz_conf_remove_key(global, "Games", "*Engines*");
+				}
 				for(i=0; i<e_count; i++)
 					ggz_free(e_list[i]);
 				ggz_free(e_list);
-				for(i=k; i<g_count; i++)
-					ggz_free(g_list[i]);
-				ggz_free(g_list);
 
 				/*** Restart the phase ***/
 				goto phase_five;
 			}
-			/*ggz_free(str);*/
-			ggz_free(g_list[k]);
-		}
-		ggz_free(g_list);
+			ggz_free(str);
 	}
 	/* e_list is still valid and used in next phase */
 
@@ -799,12 +799,13 @@ phase_five:
 		}
 		ggz_free(k_list[i]);
 	}
-	ggz_free(k_list);
-	ggz_conf_write_list(global, "Games", "*Engines*", e_count, e_list);
+	if(k_list) ggz_free(k_list);
+	if(e_count)
+		ggz_conf_write_list(global, "Games", "*Engines*", e_count, e_list);
 	for(i=0; i<e_count; i++)
 		if(alt || i<e_count-1)
 			ggz_free(e_list[i]);
-	ggz_free(e_list);
+	if(e_list) ggz_free(e_list);
 
 	if(errs)
 		printf("Finished - writing %d repairs\n", errs);
