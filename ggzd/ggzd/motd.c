@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4689 2002-09-25 05:04:53Z jdorje $
+ * $Id: motd.c 4731 2002-09-26 12:42:45Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -130,6 +130,7 @@ void motd_read_file(const char *file)
 
 	/* Check if we're even supposed to have a MOTD. */
 	if (!file) return;
+	if (!opt.conf_dir) return;
 
 	/* Save the server startup time so we can calculate uptime later */
 	motd_info.startup_time = (unsigned int) time(NULL);
