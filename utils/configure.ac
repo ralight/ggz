@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-utils, 0.0.6)
+AM_INIT_AUTOMAKE(ggz-utils, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -63,12 +63,6 @@ AC_CHECK_FUNC(inet_ntoa, ,
     [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
 	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
-AC_CHECK_LIB(popt, poptGetNextOpt,
-    [AC_CHECK_HEADER(popt.h, grubby_LIBS="$grubby_LIBS -lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find popt library ); exit)
-
-
 dnl Use -Wall if we have gcc.
 dnl ========================
 changequote(,)dnl
@@ -86,20 +80,20 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
 if test "$enable_debug_socket" = yes; then
-    AC_DEFINE(DEBUG_SOCKET)
+    AC_DEFINE([DEBUG_SOCKET], 1, [Define to enable socket debugging])
     DFLAGS="$DFLAGS DEBUG_SOCKET"
 fi
 
 if test "$enable_debug_mem" = yes; then
-    AC_DEFINE(DEBUG_MEM)
+    AC_DEFINE([DEBUG_MEM], 1, [Define to enable memory debugging])
     DFLAGS="$DFLAGS DEBUG_MEM"
     LDADD="$LDADD -ldmalloc"
 fi
@@ -114,9 +108,11 @@ dnl ======================
 
 SUBDIRS="man"
 
-if test "$enable_cmd_client" = yes; then
-	SUBDIRS="$SUBDIRS cmd-client"
+if test "$enable_cmd_client" = yes || test "$enable_telggz" = yes; then
 	AC_GGZ_GGZCORE
+	if test "$enable_cmd_client" = yes; then
+		SUBDIRS="$SUBDIRS cmd-client"
+	fi
 fi
 
 if test "$enable_motd_editor" = yes; then
@@ -145,7 +141,7 @@ prefix="${prefix}"
 if test "x$prefix" = "xNONE"; then
 	prefix="${ac_default_prefix}"
 fi
-AC_DEFINE_UNQUOTED(PREFIX, "$prefix")
+AC_DEFINE_UNQUOTED([PREFIX], "$prefix", [Set to installation prefix])
 
 AC_CONFIG_FILES([Makefile
 		cmd-client/Makefile
