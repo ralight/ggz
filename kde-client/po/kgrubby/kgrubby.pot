@@ -1,0 +1,285 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-28 19:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../kgrubby/src/app.cpp:102
+msgid "Ability to play some games"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:64
+msgid "Add Profile..."
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:83
+msgid "Autojoin room/channel"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:284
+msgid "Bad word"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:100
+msgid "Bad words"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:15
+msgid "Chatbot configuration"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:109
+msgid "Comments about languages"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:18
+msgid "Configuration of grubby, the GGZ chatbot"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:127
+msgid "Configure..."
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:73 ../../kgrubby/src/app.cpp:382
+#: ../../kgrubby/src/app.cpp:513
+msgid "Console"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:265
+msgid "Contact"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:88
+msgid "Description"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:21
+msgid "Developer"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:204
+msgid "Do you really want to remove this profile?"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:99
+msgid "Echo"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:97
+msgid "Embedding"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:96
+msgid "Execution"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:93
+msgid "Extras"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:263
+msgid "First seen"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:71 ../../kgrubby/src/app.cpp:378
+#: ../../kgrubby/src/app.cpp:511
+msgid "GGZ Gaming Zone"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:91
+msgid "Games"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:161
+msgid "General"
+msgstr ""
+
+#: ../../kgrubby/src/toplevel.cpp:26
+msgid "Help"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:92
+msgid "Himself"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:81
+msgid "Hostname"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:72 ../../kgrubby/src/app.cpp:380
+#: ../../kgrubby/src/app.cpp:512
+msgid "IRC"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:13
+msgid "KGrubby"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:266
+msgid "Language"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:261
+msgid "Last active"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:262
+msgid "Last seen"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:95
+msgid "Learning"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:111
+msgid "Looks for nasty words"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:272
+msgid "Meaning"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:75 ../../kgrubby/src/app.cpp:87
+#: ../../kgrubby/src/app.cpp:260
+msgid "Name"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:69
+msgid "Network type"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:187
+msgid "New profile"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:77
+msgid "Owner"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:94
+msgid "People"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:105
+msgid "Player data registration"
+msgstr ""
+
+#: ../../kgrubby/src/plugin.cpp:12
+msgid "Plugin configuration"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:162
+msgid "Plugins"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:79
+msgid "Primary language (2-letter)"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:160
+msgid "Profile"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:238 ../../kgrubby/src/toplevel.cpp:51
+msgid "Profile change"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:188
+msgid "Profile name:"
+msgstr ""
+
+#: ../../kgrubby/src/toplevel.cpp:25
+msgid "Program"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:107
+msgid "Program execution"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:276
+msgid "Program location"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:98
+msgid "Programming"
+msgstr ""
+
+#: ../../kgrubby/src/toplevel.cpp:21
+msgid "Quit"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:267
+msgid "Realname"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:65
+msgid "Remove"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:205
+msgid "Remove profile"
+msgstr ""
+
+#: ../../kgrubby/src/toplevel.cpp:18
+msgid "Save"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:280
+msgid "Script location"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:108
+msgid "Scripts execution"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:103
+msgid "Self presentation and help"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:104
+msgid "Several extra messages"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:237
+msgid "Should the changes be saved before changing the profile?"
+msgstr ""
+
+#: ../../kgrubby/src/toplevel.cpp:50
+msgid "Should the changes be saved before quitting?"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:264
+msgid "Status"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:22
+msgid "TRANSLATOR-EMAIL"
+msgstr ""
+
+#: ../../kgrubby/src/main.cpp:22
+msgid "TRANSLATOR-NAME"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:110
+msgid "Test plugin to return every line"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:271
+msgid "Word"
+msgstr ""
+
+#: ../../kgrubby/src/app.cpp:106
+msgid "Word database"
+msgstr ""
