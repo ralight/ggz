@@ -1,7 +1,7 @@
 # Muehle description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/muehle --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/muehle.png
+CommandLine = @ggzexecmoddir@/ggzwrap --exec=@ggzexecmoddir@/muehle\ --ggz\ --icon\ @prefix@/share/icons/hicolor/32x32/apps/muehle.png --fdin=0 --fdout=1 --convert
 Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/muehle/
 Name = Muehle
