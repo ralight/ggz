@@ -483,11 +483,12 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 
 void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
 {
-	struct _GGZPlayer player;
+	struct _GGZPlayer *player;
 	
 	/* Default new people in room to no table (-1) */
-	_ggzcore_player_init(&player, name, room, -1);
-	_ggzcore_list_insert(room->players, &player);
+	player = _ggzcore_player_new();
+	_ggzcore_player_init(player, name, room, -1);
+	_ggzcore_list_insert(room->players, player);
 	room->num_players++;
 	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
 }
