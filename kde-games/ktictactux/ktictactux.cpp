@@ -172,6 +172,9 @@ int KTicTacTux::gameOver()
 				m_y = j;
 			}
 
+	conf = kapp->config();
+	conf->setGroup("Score");
+
 	// evaluate if game is still in progress
 	if(m_x != -1)
 	{
@@ -180,8 +183,6 @@ int KTicTacTux::gameOver()
 		{
 			emit signalStatus(i18n("Game Over!"));
 
-			conf = kapp->config();
-			conf->setGroup("Score");
 			if((m_opponent == PLAYER_NETWORK) && (proto->num < 0))
 			{
 				announce(i18n("The game is over."));
@@ -211,6 +212,9 @@ int KTicTacTux::gameOver()
 	else
 	{
 		emit signalStatus(i18n("Game Over!"));
+
+		if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humantied", conf->readNumEntry("humantied") + 1);
+		else conf->writeEntry("aitied", conf->readNumEntry("aitied") + 1);
 		announce(i18n("The game is over. There is no winner."));
 		emit signalGameOver();
 		return 1;
@@ -362,7 +366,9 @@ void KTicTacTux::sync()
 // Statistics
 void KTicTacTux::statistics()
 {
-	proto->sendStatistics();
+	proto->getStatistics();
+
+	emit signalNetworkScore(proto->stats[0], proto->stats[1], proto->stats[2]);
 }
 
 // Handle network input
@@ -424,10 +430,10 @@ void KTicTacTux::slotNetwork()
 		case proto->sndsync:
 			proto->getSync();
 			break;
-		case proto->sndstats:
-			proto->getStatistics();
-			emit signalNetworkScore(proto->stats[0], proto->stats[1]);
-			break;
+//		case proto->sndstats:
+//			proto->getStatistics();
+//			emit signalNetworkScore(proto->stats[0], proto->stats[1]);
+//			break;
 		case proto->msggameover:
 			proto->getGameOver();
 			proto->state = proto->statedone;

@@ -148,8 +148,18 @@ int KTicTacTuxProto::getGameOver()
 // Read statistics
 void KTicTacTuxProto::getStatistics()
 {
-	ggz_read_int(fd, &stats[0]);
-	ggz_read_int(fd, &stats[1]);
+	int wins, losses, ties, forfeits;
+	GGZSeat seat;
+
+	seat = ggzmod_get_seat(mod, num);
+
+	ggzmod_player_get_record(&seat, &wins, &losses, &ties, &forfeits);
+	stats[0] = wins;
+	stats[1] = losses;
+	stats[2] = ties;
+
+//	ggz_read_int(fd, &stats[0]);
+//	ggz_read_int(fd, &stats[1]);
 }
 
 // Send the options

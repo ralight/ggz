@@ -53,7 +53,7 @@ class KTicTacTuxWin : public KMainWindow
 		// Receive a new score
 		void slotScore(const QString &score);
 		// Receive statistics
-		void slotNetworkScore(int wins, int losses);
+		void slotNetworkScore(int wins, int losses, int ties);
 		// Menu slot
 		void slotMenu(int id);
 		// Game is over

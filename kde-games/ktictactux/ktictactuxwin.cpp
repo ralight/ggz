@@ -65,7 +65,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 
 	connect(m_tux, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
-	connect(m_tux, SIGNAL(signalNetworkScore(int, int)), SLOT(slotNetworkScore(int, int)));
+	connect(m_tux, SIGNAL(signalNetworkScore(int, int, int)), SLOT(slotNetworkScore(int, int, int)));
 	connect(m_tux, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -182,6 +182,7 @@ void KTicTacTuxWin::score()
 	conf->setGroup("Score");
 	int ailost = conf->readNumEntry("ailost");
 	int aiwon = conf->readNumEntry("aiwon");
+	int aitied = conf->readNumEntry("aitied");
 
 	QString comment = "";
 	if(!(ailost + aiwon))
@@ -192,16 +193,16 @@ void KTicTacTuxWin::score()
 		comment = i18n("You're a TicTacTux expert!");
 
 	KMessageBox::information(this,
-		i18n("You won %1 times and lost %2 times against the AI. "
-			"%3").arg(ailost).arg(aiwon).arg(comment),
+		i18n("You won %1 times, lost %2 times and tied %3 times against the AI. "
+			"%4").arg(ailost).arg(aiwon).arg(aitied).arg(comment),
 		i18n("KTicTacTux score"));
 }
 
 // Display network score
-void KTicTacTuxWin::slotNetworkScore(int wins, int losses)
+void KTicTacTuxWin::slotNetworkScore(int wins, int losses, int ties)
 {
 	QString comment = "";
-	if(!(wins + losses))
+	if(!(wins + losses + ties))
 		comment = i18n("Of course, because you didn't play yet.");
 	else if(losses > wins * 2)
 		comment = i18n("You are so bad.");
@@ -210,7 +211,8 @@ void KTicTacTuxWin::slotNetworkScore(int wins, int losses)
 
 	KMessageBox::information(this,
 		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
-			"%3").arg(wins).arg(losses).arg(comment),
+			"%3 ties were achieved. "
+			"%4").arg(wins).arg(losses).arg(ties).arg(comment),
 		i18n("KTicTacTux network score"));
 }
 
