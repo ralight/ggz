@@ -62,7 +62,7 @@ void metaserv_cache()
 	}
 }
 
-static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
+static char *metaserv_lookup(const char *class, const char *category, const char *delta, const char *key, int xmlformat)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"query\">";
 	const char *footer = "</resultset>";
@@ -73,6 +73,7 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 	ATT **att;
 	int preference, pref;
 	char tmp[1024];
+	char *lastupdate;
 
 	if((!configuration)
 	|| (!configuration->el)
@@ -130,11 +131,22 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 		r = NULL;
 		if(!strcmp(ele[i]->name, category))
 		{
-			version = MD_att(ele[i], "version");
+			version = MD_att(ele[i], "ggzmeta:version");
+			if(!version) version = MD_att(ele[i], "version"); /* backward compatibility */
 			if((!version) || (strcmp(version, key)))
 			{
 				i++;
 				continue;
+			}
+
+			if(delta)
+			{
+				lastupdate = MD_att(ele[i], "ggzmeta:update");
+				if((lastupdate) && (atoi(lastupdate) < atoi(delta)))
+				{
+					i++;
+					continue;
+				}
 			}
 
 			r = ele[i]->value;
@@ -165,7 +177,7 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 				while((att) && (att[j]))
 				{
 					if(!(strcmp(att[j]->name, "preference"))
-					|| (!strcmp(att[j]->name, "version")))
+					|| (!strncmp(att[j]->name, "ggzmeta:", 8)))
 					{
 						j++;
 						continue;
@@ -512,7 +524,7 @@ static char *metaserv_xml(const char *uri)
 	DOM *query;
 	ATT **att;
 	char *ret;
-	char *class, *category;
+	char *class, *category, *delta;
 	char *username, *password;
 	char *uri2, *name;
 	char *mode;
@@ -520,6 +532,7 @@ static char *metaserv_xml(const char *uri)
 #ifdef METASERV_OPTIMIZED
 	int j;
 #endif
+	char tmp[128];
 
 	ret = NULL;
 	uri2 = NULL;
@@ -543,18 +556,21 @@ static char *metaserv_xml(const char *uri)
 #ifdef METASERV_OPTIMIZED
 		class = NULL;
 		category = NULL;
+		delta = NULL;
 		i = 0;
 		while((query->el->at) && (query->el->at[i]))
 		{
 			if(!strcmp(query->el->at[i]->name, "class")) class = query->el->at[i]->value;
 			if(!strcmp(query->el->at[i]->name, "type")) category = query->el->at[i]->value;
+			if(!strcmp(query->el->at[i]->name, "delta")) delta = query->el->at[i]->value;
 			i++;
 		}
 #else
 		class = MD_att(query->el, "class");
 		category = MD_att(query->el, "type");
+		delta = MD_att(query->el, "delta");
 #endif
-		ret = metaserv_lookup(class, category, query->el->value, 1);
+		ret = metaserv_lookup(class, category, delta, query->el->value, 1);
 	}
 	else if(!strcmp(query->el->name, "update"))
 	{
@@ -611,7 +627,10 @@ static char *metaserv_xml(const char *uri)
 						atnum++;
 						att = (ATT**)realloc(att, (atnum + 1) * sizeof(ATT*));
 						att[atnum - 1] = (ATT*)malloc(sizeof(ATT));
-						att[atnum - 1]->name = strdup(name);
+						if(!strcmp(name, "version"))
+							att[atnum - 1]->name = strdup("ggzmeta:version");
+						else
+							att[atnum - 1]->name = strdup(name);
 						att[atnum - 1]->value = strdup(query->el->el[i]->value);
 						att[atnum] = NULL;
 						/*printf("Got: %s/%s\n", name, query->el->el[i]->value);*/
@@ -621,6 +640,15 @@ static char *metaserv_xml(const char *uri)
 			/*if(!strcmp(query->el->el[i]->name, "uri")) uri2 = query->el->el[i]->value;*/
 			i++;
 		}
+
+		atnum++;
+		att = (ATT**)realloc(att, (atnum + 1) * sizeof(ATT*));
+		att[atnum - 1] = (ATT*)malloc(sizeof(ATT));
+		att[atnum - 1]->name = strdup("ggzmeta:update");
+		snprintf(tmp, sizeof(tmp), "%li", time(NULL) + 7200); /* 2 hours tolerance */
+		att[atnum - 1]->value = strdup(tmp);
+		att[atnum] = NULL;
+
 		ret = metaserv_update(class, category, username, password, uri2, att, atnum, mode);
 	}
 	else if(!strcmp(query->el->name, "help"))
@@ -661,7 +689,7 @@ static char *metaserv_uri(char *requri)
 		category = strdup(token);
 		token = strtok(NULL, ":/");
 		/* 0.0.5pre */
-		if(token) ret = metaserv_lookup(class, category, token, 0);
+		if(token) ret = metaserv_lookup(class, category, NULL, token, 0);
 		free(category);
 		free(class);
 	}
