@@ -84,6 +84,7 @@ struct escape_game_t {
 	int y;
 	char state;
 	char turn;
+	char repeatmove;
 	int opponent;
 	unsigned char options[2];
 	unsigned char play_again;

@@ -398,7 +398,6 @@ int game_handle_move(int num, unsigned char *direction)
 	int newx, newy;
 	char status=0;
 	int count=0;
-	int givenewmove=1;
 	
 	ggz_debug("Handling move for player %d", num);
 	if(es_read_char(fd, direction) < 0)
@@ -448,6 +447,7 @@ int game_handle_move(int num, unsigned char *direction)
 			/* We make a note who our opponent is, easier on the update func */
 			escape_game.opponent = (num + 1) % 2;
 
+			escape_game.repeatmove=0;
 			for(i=1; i<10; i++)
 			{
 				if((escape_game.board[newx][newy][i]!=dtEmpty)&&
@@ -457,12 +457,12 @@ int game_handle_move(int num, unsigned char *direction)
 						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight-1)&&(i==3))))
 				{
 					// give new move
-				}else{
+					escape_game.repeatmove=1;
+//				}else{
 					// pass move on
-					givenewmove = 0;
-				}
+//				}
 			}		
-			if(!givenewmove){
+			if(!escape_game.repeatmove){ // move on to next player
 				escape_game.turn = (escape_game.turn + 1) % 2;
 			}
 			if(num%2){
@@ -542,7 +542,6 @@ int game_update(int event, void *d1)
 	char direction;
 	char victor;
 	static int first_join=1;
-	char turn;
 	
 	ggz_debug("game_update(%d, ) entered\n",event);
 
@@ -625,12 +624,12 @@ int game_update(int event, void *d1)
 			break;
 		case ESCAPE_EVENT_MOVE:
 			ggz_debug("\tESCAPE_EVENT_MOVE\n");
-			turn = escape_game.turn; // current player
+
 			if(escape_game.state != ESCAPE_STATE_PLAYING)
 				return -1;
 		
 			direction = *(char*)d1;
-			if (turn == escape_game.turn){ // player making move has another turn so send move to *other* player
+			if (escape_game.repeatmove){ // player making move has another turn so send move to *other* player
 				ggz_debug("\tgame_send_move(%d, %d, %d)\n",(escape_game.turn+1)%2, event, direction);
 				ggz_debug("\tPlayer has another move\n");
 				game_send_move((escape_game.turn+1)%2, event, direction);
