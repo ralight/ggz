@@ -9,6 +9,7 @@
 #include "game.h"
 #include "table.h"
 #include "hand.h"
+#include "dlg_bid.h"
 
 #include "cards.xpm"
 #include "cards-b1.xpm"
@@ -232,16 +233,16 @@ void table_initialize(void)
 	label = gtk_label_new("Bid:");
 	gtk_fixed_put(GTK_FIXED(f1), label, 360, 406);
 	gtk_widget_show(label);
-	l_bid[0] = gtk_label_new("0");
+	l_bid[0] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_bid[0], 57, 404);
 	gtk_widget_show(l_bid[0]);
-	l_bid[1] = gtk_label_new("0");
+	l_bid[1] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_bid[1], 57, 54);
 	gtk_widget_show(l_bid[1]);
-	l_bid[2] = gtk_label_new("0");
+	l_bid[2] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_bid[2], 408, 54);
 	gtk_widget_show(l_bid[2]);
-	l_bid[3] = gtk_label_new("0");
+	l_bid[3] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_bid[3], 408, 406);
 	gtk_widget_show(l_bid[3]);
 
@@ -258,16 +259,16 @@ void table_initialize(void)
 	label = gtk_label_new("Tricks:");
 	gtk_fixed_put(GTK_FIXED(f1), label, 360, 430);
 	gtk_widget_show(label);
-	l_tricks[0] = gtk_label_new("0");
+	l_tricks[0] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_tricks[0], 57, 429);
 	gtk_widget_show(l_tricks[0]);
-	l_tricks[1] = gtk_label_new("0");
+	l_tricks[1] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_tricks[1], 57, 78);
 	gtk_widget_show(l_tricks[1]);
-	l_tricks[2] = gtk_label_new("0");
+	l_tricks[2] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_tricks[2], 408, 78);
 	gtk_widget_show(l_tricks[2]);
-	l_tricks[3] = gtk_label_new("0");
+	l_tricks[3] = gtk_label_new(" ");
 	gtk_fixed_put(GTK_FIXED(f1), l_tricks[3], 408, 430);
 	gtk_widget_show(l_tricks[3]);
 
@@ -276,6 +277,9 @@ void table_initialize(void)
 	gtk_fixed_put(GTK_FIXED(f1), l_trump, 8, 448);
 	gtk_widget_set_usize(l_trump, 98, -1);
 	gtk_widget_show(l_trump);
+
+	/* Finally, build the fixed area for bidding */
+	dlg_bid_setup(f1);
 }
 
 
@@ -577,12 +581,42 @@ gint table_animation_callback(gpointer ignored)
 }
 
 
+/* Convenience macro, wraps a player number to a visual seat position */
+#define SEAT_POS(x)	((4 + x - game.me) % 4)
+
 /* table_set_name()
  *   Exposed function to set name on display
  */
 void table_set_name(int p, char *name)
 {
-	gtk_label_set_text(GTK_LABEL(l_name[p]), name);
+	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(p)]), name);
+}
+
+
+/* table_set_bid()
+ *   Exposed function to set bid on display
+ */
+void table_set_bid(int p, int bid)
+{
+	char *t_str;
+
+	t_str = g_strdup_printf("%d", bid);
+	gtk_label_set_text(GTK_LABEL(l_bid[SEAT_POS(p)]), t_str);
+	g_free(t_str);
+}
+
+
+/* table_set_trump()
+ *   Exposed function to set trump on display
+ */
+void table_set_trump(void)
+{
+	char *t_str;
+	char *suits[] = { "Clubs", "Diamonds", "Hearts", "Spades" };
+
+	t_str = g_strdup_printf("Trump is %s", suits[game.trump_suit]);
+	gtk_label_set_text(GTK_LABEL(l_trump), t_str);
+	g_free(t_str);
 }
 
 

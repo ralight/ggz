@@ -20,6 +20,7 @@
 #include "support.h"
 #include "main.h"
 #include "dlg_main.h"
+#include "dlg_bid.h"
 #include "table.h"
 #include "game.h"
 #include "hand.h"
@@ -35,6 +36,9 @@ static int get_players(void);
 static int get_play_status(void);
 static int get_gameover_status(void);
 static int get_sync_info(void);
+static int get_bid_status(void);
+static int get_player_bid(void);
+static int get_trump_suit(void);
 
 
 int main(int argc, char *argv[])
@@ -80,7 +84,8 @@ static void ggz_connect(void)
 char *opstr[] = { "LP_MSG_SEAT",    "LP_MSG_PLAYERS",    "LP_MSG_GAMEOVER",
 		  "LP_MSG_HAND",    "LP_REQ_BID",        "LP_RSP_BID",
                   "LP_MSG_BID",     "LP_REQ_PLAY",       "LP_RSP_PLAY",
-                  "LP_MSG_PLAY",    "LP_SND_SYNC" };
+                  "LP_MSG_PLAY",    "LP_SND_SYNC",       "LP_MSG_TRUMP",
+		  "LP_REQ_TRUMP" };
 #endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
@@ -109,12 +114,26 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = get_gameover_status();
 			break;
 		case LP_MSG_HAND:
-			/* We ignore this unless we've seen an opponents move */
 			status = hand_read_hand();
+			break;
+		case LP_REQ_BID:
+			game.state = LP_STATE_BID;
+			dlg_bid_display(hand.hand_size);
+			status = 0;
+			break;
+		case LP_RSP_BID:
+			status = get_bid_status();
+			break;
+		case LP_MSG_BID:
+			status = get_player_bid();
 			break;
 		case LP_REQ_PLAY:
 			game.state = LP_STATE_PLAY;
+			statusbar_message("Your turn to play a card");
 			status = 0;
+			break;
+		case LP_MSG_TRUMP:
+			status = get_trump_suit();
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
@@ -122,8 +141,8 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 	}
 
-	if(status < 0) {
-		fprintf(stderr, "Ouch!\n");
+	if(status == -1) {
+		fprintf(stderr, "Lost connection to server?!\n");
 		close(game.fd);
 		exit(-1);
 	}
@@ -226,4 +245,60 @@ void statusbar_message(char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+}
+
+
+static int get_bid_status(void)
+{
+	char status;
+
+	if(es_read_char(game.fd, &status) < 0)
+		return -1;
+
+	if(status == 0) {
+		table_set_bid(game.me, game.bid[game.me]);
+		statusbar_message("Your bid was accepted");
+		game.state = LP_STATE_WAIT;
+	} else if(status == LP_ERR_INVALID) {
+		dlg_bid_display(hand.hand_size);
+		statusbar_message("Invalid bid, please resubmit");
+	}
+
+	return status;
+}
+
+
+static int get_player_bid(void)
+{
+	char cnum;
+	int num;
+	char bid;
+	char *t_str;
+
+	if(es_read_char(game.fd, &cnum) < 0
+	   || es_read_char(game.fd, &bid) < 0)
+		return -1;
+	num = cnum;
+
+	game.bid[num] = bid;
+	table_set_bid(num, bid);
+
+	t_str = g_strdup_printf("%s bid %d", game.names[num], game.bid[num]);
+	statusbar_message(t_str);
+	g_free(t_str);
+
+	return 0;
+}
+
+
+static int get_trump_suit(void)
+{
+	char trump;
+
+	if(es_read_char(game.fd, &trump) < 0)
+		return -1;
+
+	game.trump_suit = trump;
+	table_set_trump();
+	return 0;
 }
