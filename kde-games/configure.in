@@ -20,10 +20,10 @@ AM_PROG_LIBTOOL
 AM_KDE_WITH_NLS
 AC_PATH_KDE
 
-dnl Check for easysock
-dnl ==================
+dnl Check for GGZ requirements
+dnl ==========================
 
-AC_GGZ_EASYSOCK
+AC_GGZ_EASYSOCK(0.3)
 AC_GGZ_CONFIG
 
 dnl Create Makefiles
@@ -41,7 +41,11 @@ AC_OUTPUT(Makefile
 	kdots/module.dsc
 	kdots/Dot/Makefile
 	ktictactux/Makefile
-	ktictactux/module.dsc)
+	ktictactux/module.dsc
+	koenig/Makefile
+	koenig/module.dsc
+	koenig/libcgc/Makefile
+	koenig/pics/Makefile)
 
 dnl Report success
 dnl ==============

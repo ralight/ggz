@@ -11,7 +11,7 @@ dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_FIND_FILE - macro for convenience (extern in acinclude.kde !!!)
-dnl AC_GGZ_EASYSOCK - find the easysock headers and libraries
+dnl AC_GGZ_EASYSOCK - find the easysock headers and libraries (new: with version numbers)
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_GGZCOREPP - find any GGZCore++ installation (TODO)
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -70,8 +70,40 @@ if test "$ac_easysock_includes" = NO || test "$ac_easysock_libraries" = NO; then
 
   AC_MSG_ERROR([Easysock not found. Please check your installation! ]);
 else
-  have_easysock="yes"
+
+  major=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+  minor=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+  micro=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+  mineasysockversion=ifelse([$1], , 0.3.0, $1)
+  wmajor=`echo $mineasysockversion | cut -d "." -f 1`
+  wminor=`echo $mineasysockversion | cut -d "." -f 2`
+  wmicro=`echo $mineasysockversion | cut -d "." -f 3`
+
+  if test "$wmicro" = ""; then
+    wmicro=0
+  fi
+
+  have_easysock="no"
+  if let "$major > $wmajor"; then
+    have_easysock="yes"
+  else
+    if let "$major == $wmajor && $minor > $wminor"; then
+      have_easysock="yes"
+    else
+      if let "$major == $wmajor && $minor == $wminor && $micro >= $wmicro"; then
+        have_easysock="yes"
+      fi
+    fi
+  fi
+
+  if test "$have_easysock" = "no"; then
+    ac_cv_have_easysock="have_easysock=no"
+    ac_easysock_notfound=""
+    AC_MSG_ERROR([Wrong easysock version - $major.$minor.$micro found, $wmajor.$wminor.$wmicro needed.]);
+  fi
+
 fi
+
 ])
 
 eval "$ac_cv_have_easysock"
@@ -81,7 +113,7 @@ if test "$have_easysock" != yes; then
 else
   ac_cv_have_easysock="have_easysock=yes \
     ac_easysock_includes=$ac_easysock_includes ac_easysock_libraries=$ac_easysock_libraries"
-  AC_MSG_RESULT([libraries $ac_easysock_libraries, headers $ac_easysock_includes])
+  AC_MSG_RESULT([libraries $ac_easysock_libraries, headers $ac_easysock_includes ($major.$minor.$micro)])
 
   easysock_libraries="$ac_easysock_libraries"
   easysock_includes="$ac_easysock_includes"
