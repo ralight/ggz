@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2988 2001-12-23 03:02:33Z jdorje $
+ * $Id: table.c 3003 2002-01-06 06:57:10Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -481,7 +481,11 @@ void table_display_hand(int p)
 	float ow, oh;
 	card_t table_card = ggzcards.players[p].table_card;
 
+#if 0
+	/* It looks like the server violates this, although it's probably
+	   a bug in the server. */
 	assert(table_ready && game_started);
+#endif
 
 	/* The server may send out a hand of size 0 when we first connect,
 	   but we just want to ignore it. */
