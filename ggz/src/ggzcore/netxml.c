@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5918 2004-02-13 07:31:26Z jdorje $
+ * $Id: netxml.c 5930 2004-02-15 02:55:50Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -123,10 +123,12 @@ typedef struct {
 
 
 /* Callbacks for XML parser */
-static void _ggzcore_net_parse_start_tag(void *, const char*, const char **);
+static void _ggzcore_net_parse_start_tag(void *data, const char *el,
+					 const char ** attr);
 static void _ggzcore_net_parse_end_tag(void *data, const char *el);
 static void _ggzcore_net_parse_text(void *data, const char *text, int len);
-static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs);
+static GGZXMLElement* _ggzcore_net_new_element(const char *tag,
+					       const char * const *attrs);
 
 /* Handler functions for various tags */
 static void _ggzcore_net_handle_server(GGZNet*, GGZXMLElement*);
@@ -156,17 +158,22 @@ static void _ggzcore_net_handle_session(GGZNet*, GGZXMLElement*);
 /* Extra functions fot handling data associated with specific tags */
 static void _ggzcore_net_list_insert(GGZXMLElement*, void*);
 static GGZGameData *_ggzcore_net_game_get_data(GGZXMLElement *game);
-static void _ggzcore_net_game_set_protocol(GGZXMLElement*, char*, char *);
+static void _ggzcore_net_game_set_protocol(GGZXMLElement *game,
+					   const char *engine,
+					   const char *version);
 static void _ggzcore_net_game_set_allowed(GGZXMLElement*,
 					  GGZNumberList, GGZNumberList, int);
-static void _ggzcore_net_game_set_info(GGZXMLElement*, char*, char *);
+static void _ggzcore_net_game_set_info(GGZXMLElement *,
+				       const char *, const char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
 static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*,
 					int spectator);
 static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
-				     char *action);
-static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char *action);
-static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *action);
+				     const char *action);
+static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update,
+				       const char *action);
+static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
+				      const char *action);
 static GGZTableData *_ggzcore_net_table_get_data(GGZXMLElement *table);
 static void _ggzcore_net_table_set_desc(GGZXMLElement*, char*);
 static GGZTableData* _ggzcore_net_tabledata_new(void);
@@ -223,8 +230,8 @@ void _ggzcore_net_init(GGZNet *net, GGZServer *server,
 
 	/* Setup handlers for tags */
 	XML_SetElementHandler(net->parser, 
-			      _ggzcore_net_parse_start_tag, 
-			      _ggzcore_net_parse_end_tag);
+		(XML_StartElementHandler)_ggzcore_net_parse_start_tag, 
+		(XML_EndElementHandler)_ggzcore_net_parse_end_tag);
 	XML_SetCharacterDataHandler(net->parser, _ggzcore_net_parse_text);
 	XML_SetUserData(net->parser, net);
 
@@ -766,7 +773,8 @@ int _ggzcore_net_read_data(GGZNet *net)
 
 
 /********** Callbacks for XML parser **********/
-static void _ggzcore_net_parse_start_tag(void *data, const char *el, const char **attr)
+static void _ggzcore_net_parse_start_tag(void *data, const char *el,
+					 const char ** attr)
 {
 	GGZNet *net = data;
 	GGZStack *stack = net->stack;
@@ -775,7 +783,7 @@ static void _ggzcore_net_parse_start_tag(void *data, const char *el, const char 
 	ggz_debug(GGZCORE_DBG_XML, "New %s element", el);
 	
 	/* Create new element object */
-	element = _ggzcore_net_new_element((char*)el, (char**)attr);
+	element = _ggzcore_net_new_element(el, attr);
 
 	/* Put element on stack so we can process its children */
 	ggz_stack_push(stack, element);
@@ -827,7 +835,8 @@ static void _ggzcore_net_dump_data(GGZNet *net, char *data, int size)
 		write(net->dump_file, data, size);
 }
 
-static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
+static GGZXMLElement* _ggzcore_net_new_element(const char *tag,
+					       const char * const *attrs)
 {
 	void (*process_func)();
 
@@ -886,7 +895,7 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 /* Functions for <SERVER> tag */
 void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *element)
 {
-	char *name, *id, *status, *tls;
+	const char *name, *id, *status, *tls;
 	int version;
 	int *chatlen;
 
@@ -958,8 +967,8 @@ static void _ggzcore_net_handle_options(GGZNet *net, GGZXMLElement *element)
 /* Functions for <MOTD> tag */
 static void _ggzcore_net_handle_motd(GGZNet *net, GGZXMLElement *element)
 {
-	char *message, *priority;
-	char **buffer;
+	const char *message, *priority;
+	const char **buffer;
 
 	message = ggz_xmlelement_get_text(element);
 	priority = ATTR(element, "PRIORITY");
@@ -983,7 +992,7 @@ static void _ggzcore_net_handle_motd(GGZNet *net, GGZXMLElement *element)
 static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *element)
 {
 	GGZRoom *room;
-	char *action;
+	const char *action;
 	GGZClientReqError code;
 	void *data;
 	char *message;
@@ -1103,7 +1112,7 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *element)
 	GGZListEntry *entry;
 	GGZRoom *room;
 	int count, room_num;
-	char *type;
+	const char *type;
 
 	if (!element)
 		return;
@@ -1170,7 +1179,7 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 	/* If list doesn't already exist, create it */
 	if (!list) {
 		/* Setup actual list */	
-		char *type = ATTR(list_tag, "TYPE");
+		const char *type = ATTR(list_tag, "TYPE");
 		ggzEntryCompare compare_func = NULL;
 		ggzEntryCreate  create_func = NULL;
 		ggzEntryDestroy destroy_func = NULL;
@@ -1200,7 +1209,7 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 /* Functions for <UPDATE> tag */
 static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *element)
 {
-	char *action, *type;
+	const char *action, *type;
 
 	/* Return if there's no tag */
 	if (!element)
@@ -1223,7 +1232,7 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *element)
 
 /* Handle room update. */
 static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
-				     char *action)
+				     const char *action)
 {
 	GGZRoom *roomdata, *room;
 
@@ -1244,7 +1253,7 @@ static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
 
 /* Handle Player update */
 static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update,
-				       char *action)
+				       const char *action)
 {
 	int room_num;
 	GGZPlayer *player;
@@ -1277,12 +1286,12 @@ static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update,
 
 /* Handle table update */
 static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update,
-				      char *action)
+				      const char *action)
 {
 	int i, room_num;
 	GGZTable *table, *table_data;
 	GGZRoom *room;
-	char *room_str;
+	const char *room_str;
 
 	/* Sanity check: we can't proceed without a room number */
 	room_str = ATTR(update, "ROOM");
@@ -1389,7 +1398,7 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 	const char *parent_tag, *parent_type;
 	int id;
-	char *name, *version;
+	const char *name, *version;
 	const char *prot_engine = NULL;
 	const char *prot_version = NULL;
 	GGZNumberList player_allow_list = ggz_numberlist_new();
@@ -1472,7 +1481,8 @@ static GGZGameData *_ggzcore_net_game_get_data(GGZXMLElement *game)
 
 
 static void _ggzcore_net_game_set_protocol(GGZXMLElement *game,
-					   char *engine, char *version)
+					   const char *engine,
+					   const char *version)
 {
 	GGZGameData *data = _ggzcore_net_game_get_data(game);
 
@@ -1497,7 +1507,7 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement *game,
 
 
 static void _ggzcore_net_game_set_info(GGZXMLElement *game,
-				       char *author, char *url)
+				       const char *author, const char *url)
 {
 	GGZGameData *data = _ggzcore_net_game_get_data(game);
 
@@ -1628,7 +1638,7 @@ static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *element)
 {
 	GGZRoom *ggz_room;
 	int id, game, players;
-	char *name, *desc;
+	const char *name, *desc;
 	GGZXMLElement *parent = ggz_stack_top(net->stack);
 	const char *parent_tag, *parent_type;
 
@@ -1678,7 +1688,7 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *element)
 	GGZPlayer *ggz_player;
 	GGZPlayerType type;
 	GGZRoom *room;
-	char *name, *str_type;
+	const char *name, *str_type;
 	int table, lag;
 	GGZXMLElement *parent;
 	const char *parent_tag, *parent_type;
@@ -1992,7 +2002,7 @@ static void _ggzcore_net_handle_join(GGZNet *net, GGZXMLElement *element)
 /* Functions for <CHAT> tag */
 static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *element)
 {
-	char *msg, *type_str, *from;
+	const char *msg, *type_str, *from;
 	GGZRoom *room;
 	GGZChatType type;
 

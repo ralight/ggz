@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 5899 2004-02-11 01:48:34Z jdorje $
+ * $Id: room.h 5930 2004-02-15 02:55:50Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -180,8 +180,8 @@ void _ggzcore_room_table_event(struct _GGZRoom *, GGZRoomEvent, void *data);
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, 
 			    GGZChatType type, 
-			    char *name,
-			    char *msg);
+			    const char *name,
+			    const char *msg);
 
 /* Functions for notifying GGZRoom */
 void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, 
