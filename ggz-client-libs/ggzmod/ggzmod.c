@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6614 2005-01-08 19:03:18Z josef $
+ * $Id: ggzmod.c 6632 2005-01-11 01:26:25Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1038,8 +1038,11 @@ static int game_embedded(GGZMod * ggzmod)
 		ggz_error_msg("Could not listen on socket.");
 		return -1;
 	}
+	snprintf(buf, sizeof(buf), "%d", port);
+	SetEnvironmentVariable("GGZMOD_SOCKET_FD", buf);
 #endif
 
+#ifdef HAVE_SOCKKETPAIR
 	if (fd_pair[1] != 103) {
 		/* We'd like to send an error message if either of
 		   these fail, but we can't.  --JDS */
@@ -1049,8 +1052,7 @@ static int game_embedded(GGZMod * ggzmod)
 
 	ggzmod->fd = fd_pair[0];
 	ggzmod->pid = -1; /* FIXME: use -1 for embedded ggzcore? getpid()? */
-
-#ifndef HAVE_SOCKETPAIR
+#else
 	/* FIXME: we need to select, with a maximum timeout. */
 	/* FIXME: this is insecure; it should be restricted to local
 	 * connections. */
@@ -1061,7 +1063,9 @@ static int game_embedded(GGZMod * ggzmod)
 	}
 	closesocket(sock);
 	ggzmod->fd = sock2;
+	ggzmod->process = INVALID_HANDLE_VALUE;
 #endif
+
 	return 0;
 }
 
