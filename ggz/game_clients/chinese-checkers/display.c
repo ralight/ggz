@@ -56,6 +56,15 @@ static GdkPixmap *marble_pixmap[6];
 static GdkBitmap *marble_mask[6];
 static GdkGC *marble_gc[6];
 static GdkGC *gc_line;
+static GtkWidget *label[6];
+static char *label_color[6] = {
+	"RGB:FF/00/00",
+	"RGB:00/00/FF",
+	"RGB:00/FF/00",
+	"RGB:FF/FF/00",
+	"RGB:00/FF/FF",
+	"RGB:FF/00/FF"
+};
 
 
 static void display_draw_holes(void);
@@ -66,6 +75,8 @@ void display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
+	GtkStyle *label_style;
+	int i, j;
 
 	/* Create and display the main dialog */
 	dlg_main = create_dlg_main();
@@ -154,6 +165,23 @@ void display_init(void)
 			0, 0,
 			0, 0,
 			400, 400);
+
+	/* Setup the styles for our name labels */
+	label[0] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p1_label");
+	label[1] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p2_label");
+	label[2] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p3_label");
+	label[3] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p4_label");
+	label[4] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p5_label");
+	label[5] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p6_label");
+	for(i=0; i<6; i++) {
+		gdk_color_parse(label_color[i], &color);
+		gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
+		label_style = gtk_style_new();
+		label_style->font = gdk_font_load("fixed");
+		for(j=0; j<5; j++)
+			label_style->fg[j] = color;
+		gtk_widget_set_style(label[i], label_style);
+	}
 }
 
 
@@ -354,4 +382,10 @@ void display_show_path(GSList *path_list)
 	}
 
 	old_path_list = path_list;
+}
+
+
+void display_set_name(int p, char *p_name)
+{
+	gtk_label_set_text(GTK_LABEL(label[p]), p_name);
 }
