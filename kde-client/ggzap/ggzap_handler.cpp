@@ -66,7 +66,7 @@ void GGZapHandler::init()
 	strcpy(confdir, getenv("HOME"));
 	strcat(confdir, "/.ggz/ggzap.rc");
 	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
-	m_confserver = conf->read("Global", "Server", "141.30.227.122");
+	m_confserver = conf->read("Global", "Server", "mindx.dyndns.org");
 	user = conf->read("Global", "Username", "");
 	delete conf;
 
@@ -318,7 +318,7 @@ cout << "##### game launch fail" << endl;
 			if(!m_module) return;
 			gametype = m_room->gametype();
 			table = new GGZCoreTable();
-			table->init(gametype->gametype(), "foobar", 2);
+			table->init(gametype->gametype(), "ggzap game", 2);
 			ret = m_room->launchTable(table->table());
 			delete table;
 			if(ret >= 0) emit signalState(waiting);

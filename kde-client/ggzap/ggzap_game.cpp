@@ -18,6 +18,9 @@
 // Header file
 #include "ggzap_game.h"
 
+// KDE includes
+#include <kstddirs.h>
+
 // System includes
 #include <string.h>
 #ifndef strdup
@@ -27,6 +30,7 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <fnmatch.h>
+#include <iostream>
 
 GGZapGame::GGZapGame()
 {
@@ -82,8 +86,9 @@ void GGZapGame::clear()
 
 void GGZapGame::autoscan()
 {
-	char dir[1024];
-	char filename[1024];
+	KStandardDirs d;
+	QString dir, filename;
+
 	char buffer[512];
 	char *token;
 	FILE *f;
@@ -91,9 +96,8 @@ void GGZapGame::autoscan()
 	struct dirent *ep;
 	char *module, *frontend;
 
-	strcpy(dir, getenv("HOME"));
-	strcat(dir, "/.kde/share/applnk/Games/ggz/games");
-	dp = opendir(dir);
+	dir = d.localkdedir() + "/share/applnk/Games/ggz/games";
+	dp = opendir(dir.latin1());
 	if(dp)
 	{
 		while((ep = readdir(dp)) != 0)
@@ -102,8 +106,8 @@ void GGZapGame::autoscan()
 			{
 				module = NULL;
 				frontend = NULL;
-				sprintf(filename, "%s/%s", dir, ep->d_name);
-				f = fopen(filename, "r");
+				filename = dir + QString("/%1").arg(ep->d_name);
+				f = fopen(filename.latin1(), "r");
 				if(f)
 				{
 					while(fgets(buffer, sizeof(buffer), f))

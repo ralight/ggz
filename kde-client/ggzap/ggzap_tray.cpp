@@ -83,14 +83,15 @@ void GGZapTray::slotMenu(int id)
 	{
 		case menulaunch:
 			contextMenu()->removeItem(menulaunch);
+			contextMenu()->removeItem(menucancel);
 			contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
 			setMovie(QMovie(KGGZ_DIRECTORY "/ggzap/trayradar.mng"));
 			break;
 		case menucancel:
 			emit signalCancel();
-			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
 			setPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/tray.png"));
 			contextMenu()->removeItem(menucancel);
+			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
 			break;
 		case menuconfigure:
 			if(!m_config) m_config = new GGZapConfig(NULL, "GGZapConfig");

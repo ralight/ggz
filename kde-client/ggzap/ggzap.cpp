@@ -132,6 +132,7 @@ void GGZap::slotState(int state)
 			break;
 		case GGZapHandler::waiting:
 			m_gui->setProgress(4);
+			emit signalMenu(GGZapTray::menulaunch);
 			break;
 		case GGZapHandler::started:
 			m_gui->setProgress(5);
@@ -143,7 +144,7 @@ void GGZap::slotState(int state)
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::finish:
-			slotCancel();
+			//slotCancel();
 			emit signalMenu(GGZapTray::menucancel);
 			break;
 	}
