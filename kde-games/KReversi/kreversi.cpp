@@ -193,6 +193,17 @@ void KReversi::doMove(int move) {
   markBoard(turn, mx, my, -1, -1);
 
   view->updateBoard(board);
+  /* Has updated, now clean it up */
+  for (mx = 0; mx < 8; mx++) {
+    for (my = 0; my < 8; my++) {
+      if (board[mx][my] > 0)
+        board[mx][my] = 1;
+      else if (board[mx][my] < 0)
+        board[mx][my] = -1;
+      else
+        board[mx][my] = 0;
+    }
+  }
   turn = -turn;
 }
 
@@ -200,12 +211,13 @@ int KReversi::markBoard(int player, int mx, int my, int dx, int dy) {
   // Recursivaly marks the board
   if (mx+dx < 0 || my+dy < 0 || mx+dx >= 8 || my+dy >= 8)
     return 0;
-  if (board[mx+dx][my+dy] == -player) {
+  int b = board[mx+dx][my+dy];
+  if (b == -player || b == -2*player) {
     if (markBoard(player, mx+dx, my+dy, dx, dy)) {
-      board[mx+dx][my+dy] *= -1;
+      board[mx+dx][my+dy] = 2*player;
       return 1;
     }
-  } else if (board[mx+dx][my+dy] == player) {
+  } else if (b == player || b == 2*player) {
     return 1;
   }
 

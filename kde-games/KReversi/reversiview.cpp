@@ -20,6 +20,32 @@
 #include "reversiview.h"
 #include "tiles.xpm"
 
+/* Reversi Disc */
+ReversiDisc::ReversiDisc( QCanvasPixmapArray *seq, QCanvas *canv ) : QCanvasSprite(seq, canv) {
+}
+
+ReversiDisc::~ReversiDisc() {
+}
+
+void ReversiDisc::advance( int stage ) {
+  int a = frame();
+  if (stage == 0)
+    return;
+  if (a < 10) {
+    setFrame(a+1);
+    if (a == 9)
+      setAnimated(false);
+  } else if (a >= 10 && a < 19) {
+    setFrame(a+1);
+    if (a == 18)
+      setAnimated(false);
+  } else if (a == 19) {
+    setFrame(0);
+  }
+}
+
+/* Reversi View */
+
 ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanvasView(0, parent, name, f) {
 	canvas = new QCanvas( QPixmap::QPixmap(tiles_xpm), 8, 8, 50, 50 );
   /*
@@ -37,18 +63,20 @@ ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanva
 //  debug(theme);
 
   /* Add the initial four discs */
-  discs.append( new QCanvasSprite(disc_img, canvas) );
+  discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 3*50, 3*50, 10 );
   discs.last()->show();
-  discs.append( new QCanvasSprite(disc_img, canvas) );
+  discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 4*50, 4*50, 10 );
   discs.last()->show();
-  discs.append( new QCanvasSprite(disc_img, canvas) );
+  discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 3*50, 4*50, 0 );
   discs.last()->show();
-  discs.append( new QCanvasSprite(disc_img, canvas) );
+  discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 4*50, 3*50, 0 );
   discs.last()->show();
+
+  canvas->setAdvancePeriod( 100 );
 
 
 }
@@ -62,15 +90,17 @@ void ReversiView::updateBoard(char board[8][8]) {
     }
     printf("\n");
   }
-  for (a = discs.first(); a; a = discs.next())
+  for (a = discs.first(); a; a = discs.next()) {
     a->hide();
+    a->setAnimated(false);
+  }
   a = discs.first();
   for (y = 0; y < 8; y++) {
     for (x = 0; x < 8; x++) {
       if (board[x][y] == OPEN)
         continue;
       if (!a) {
-        discs.append( new QCanvasSprite(disc_img, canvas) );
+        discs.append( new ReversiDisc(disc_img, canvas) );
         a = discs.last();
       }
       if (board[x][y] == WHITE) {
@@ -79,6 +109,14 @@ void ReversiView::updateBoard(char board[8][8]) {
       } else if (board[x][y] == BLACK) {
         a->move(x*50, y*50, 0);
         a->show();
+      } else if (board[x][y] == 2*WHITE) {
+        a->move(x*50, y*50, 0);
+        a->show();
+        a->setAnimated(true);
+      } else if (board[x][y] == 2*BLACK) {
+        a->move(x*50, y*50, 10);
+        a->show();
+        a->setAnimated(true);
       }
       a = discs.next();
     }

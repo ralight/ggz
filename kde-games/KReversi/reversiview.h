@@ -24,6 +24,19 @@
 #define BLACK -1
 #define OPEN 0
 
+/**Little disc
+  *@author Ismael Orenstein
+  */
+
+class ReversiDisc : public QCanvasSprite {
+
+public:
+  ReversiDisc( QCanvasPixmapArray *, QCanvas *);
+  ~ReversiDisc();
+  virtual void advance( int stage );
+
+};
+
 /**Abstracts the game view
   *@author Ismael Orenstein
   */
@@ -44,7 +57,7 @@ protected: // Protected methods
   /** Used when the mouse is pressed */
   void contentsMousePressEvent(QMouseEvent *e);
   /** List of discs */
-  QList<QCanvasSprite> discs;
+  QList<ReversiDisc> discs;
   /** discs image */
   QCanvasPixmapArray *disc_img;
 };
