@@ -141,6 +141,7 @@ typedef struct skat_game_t {
 
 
 /* Game-specific functions */
+extern int game_compare_cards(const void *, const void *);
 
 extern int game_send_hand(int, int);		/* send a hand to a player */
 

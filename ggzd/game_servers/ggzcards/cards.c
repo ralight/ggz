@@ -141,21 +141,6 @@ void cards_shuffle_deck()
 	deck_ptr = 0;	
 }
 
-/* compare_cards
- *   Returns -1, 0, or 1 if c1 is lower, equal, or higher than c2
- *   of particular use in conjunction with qsort
- */
-static int compare_cards(const void *c1, const void *c2)
-{
- 	card_t *card1 = (card_t *)c1;
-	card_t *card2 = (card_t *)c2;
-	if (card1->suit < card2->suit) return -1;
-	if (card1->suit > card2->suit) return 1;
-	if (card1->face < card2->face) return -1;
-	if (card1->face > card2->face) return 1;
-	return 0; /* ignore decks for now */
-}
-
 /* cards_deal_hand
  *   This deals the cards out from a pre-shuffled deck into a hand structure
  *
@@ -193,7 +178,7 @@ void cards_deal_hand(int handsize, hand_t *hand)
 
 	/* sort cards -- this should be in another function
 	 * so it can be done later as well */
-	qsort(hand->cards, hand->hand_size, sizeof(card_t), compare_cards);
+	qsort(hand->cards, hand->hand_size, sizeof(card_t), game_compare_cards);
 }
 
 

@@ -97,6 +97,25 @@ static void free_string_array(char** bids)
 }
 */
 
+
+/* game_compare_cards
+ *   Returns -1, 0, or 1 if c1 is lower, equal, or higher than c2.
+ *   This function is used for the automatic sorting of hands.
+ */
+int game_compare_cards(const void *c1, const void *c2)
+{
+	register card_t card1 = *(card_t *)c1;
+	register card_t card2 = *(card_t *)c2;
+	switch (game.which_game) {
+		default:
+			if (card1.suit < card2.suit) return -1;
+			if (card1.suit > card2.suit) return 1;
+			if (card1.face < card2.face) return -1;
+			if (card1.face > card2.face) return 1;
+			return 0; /* ignore decks for now */
+	}
+}
+
 /* game_init_game
  *   as soon as the game type is determined, the game should be initialized.  This is called
  *   by game-independent code, but may be called in one of several places (e.g. launch, connection, newgame)
