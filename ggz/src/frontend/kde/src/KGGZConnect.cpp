@@ -336,7 +336,7 @@ void KGGZConnect::slotAccept()
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("mindx.dyndns.org", 15689);
+		m_sock->connectToHost("ggz.snafu.de", 15689);
 	}
 }
 
