@@ -832,7 +832,6 @@ static int metaserv_work(int fd, int session)
 					logline("[%i] No result", session);
 				}
 				fflush(stream);
-				fclose(stream);
 			}
 			else logline("[%i] Broken pipe", session);
 		}
