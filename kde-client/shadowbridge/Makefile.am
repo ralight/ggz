@@ -20,9 +20,9 @@ noinst_HEADERS = \
 METASOURCES = AUTO
 
 INCLUDES = -I $(top_srcdir)/ggz-kde/ggzcore++/src $(all_includes)
-LDFLAGS = $(all_libraries)
+AM_LDFLAGS = $(all_libraries)
 LDADD = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
-CXXFLAGS = @COMPILEOPTIONS@
+AM_CXXFLAGS = @COMPILEOPTIONS@
 
 KDE_ICON = shadowbridge
 

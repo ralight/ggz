@@ -28,7 +28,7 @@ libkcm_ggz_games_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 libkcm_ggz_games_la_METASOURCES = kcm_ggz_games.moc
 
 INCLUDES = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
-LDFLAGS = $(KSTUFF)
+AM_LDFLAGS = $(KSTUFF)
 
 noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h
 

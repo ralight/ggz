@@ -10,6 +10,7 @@ INCLUDES = $(all_includes) -I $(top_srcdir)/ggz-kde/src
 
 libkggzuimore_a_METASOURCES = AUTO
 
-CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
+AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 DISTCLEANFILES = $(libkggzuimore_a_METASOURCES)
+

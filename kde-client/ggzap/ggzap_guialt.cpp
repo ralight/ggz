@@ -16,7 +16,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // Header file
-#include "ggzap_gui.h"
+#include "ggzap_guialt.h"
 
 // KDE includes
 #include <klocale.h>
@@ -30,34 +30,33 @@
 // Configuration files
 #include "config.h"
 
-GGZapGui::GGZapGui(QWidget *parent, const char *name)
+GGZapGuiAlt::GGZapGuiAlt(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
 {
-	setPaletteBackgroundColor(QColor(30, 20, 140));
-	setFixedSize(300, 200);
-
+	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/ggzap/redgear.png");
+	setErasePixmap(pix);
+	setFixedSize(pix.width(), pix.height());
+	setMask(QBitmap(KGGZ_DIRECTORY "/ggzap/redgearmask.png"));
 	setMouseTracking(1);
 	m_x = -1;
 	m_y = -1;
 	m_progress = 0;
 	m_hide = 0;
 	m_help = 0;
-
-	startTimer(200);
 }
 
-GGZapGui::~GGZapGui()
+GGZapGuiAlt::~GGZapGuiAlt()
 {
 }
 
-void GGZapGui::mouseMoveEvent(QMouseEvent *e)
+void GGZapGuiAlt::mouseMoveEvent(QMouseEvent *e)
 {
 	int tmp;
 
 	if((m_x != -1) || (m_y != -1))
 		move(e->globalX() - m_x, e->globalY() - m_y);
 
-	/*tmp = m_hide;
+	tmp = m_hide;
 	if((e->x() > 240) && (e->x() < 270) && (e->y() > 340) && (e->y() < 357)) m_hide = 1;
 	else m_hide = 0;
 	if(tmp != m_hide) repaint(240, 340, 30, 17, false);
@@ -65,15 +64,15 @@ void GGZapGui::mouseMoveEvent(QMouseEvent *e)
 	tmp = m_help;
 	if((e->x() > 240) && (e->x() < 270) && (e->y() > 360) && (e->y() < 377)) m_help = 1;
 	else m_help = 0;
-	if(tmp != m_help) repaint(240, 360, 30, 17, false);*/
+	if(tmp != m_help) repaint(240, 360, 30, 17, false);
 }
 
-void GGZapGui::mousePressEvent(QMouseEvent *e)
+void GGZapGuiAlt::mousePressEvent(QMouseEvent *e)
 {
 	m_x = e->x();
 	m_y = e->y();
 
-	/*if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357))
+	if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357))
 	{
 		m_x = -1;
 		m_y = -1;
@@ -85,39 +84,40 @@ void GGZapGui::mousePressEvent(QMouseEvent *e)
 		kapp->invokeBrowser("http://ggz.sourceforge.net/clients/ggzap/");
 		m_x = -1;
 		m_y = -1;
-	}*/
+	}
 
 }
 
-void GGZapGui::mouseReleaseEvent(QMouseEvent *e)
+void GGZapGuiAlt::mouseReleaseEvent(QMouseEvent *e)
 {
 	m_x = -1;
 	m_y = -1;
 }
 
-void GGZapGui::paintEvent(QPaintEvent *e)
+void GGZapGuiAlt::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 
 	p.begin(this);
 	p.setFont(QFont("arial", 24, QFont::Bold));
 	p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 50, "GGZap");
+	p.drawText(200, 190, "GGZap");
 	p.setFont(QFont("arial", 10, QFont::Bold));
 
 	p.setPen(QColor(255, 255, 0));
-	if(m_progress < 1) p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 100, i18n("Connecting to server"));
-	if(m_progress < 2) p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 120, i18n("Logging in"));
-	if(m_progress < 3) p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 140, i18n("Joining room"));
-	if(m_progress < 4) p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 160, i18n("Waiting..."));
-	if(m_progress < 5) p.setPen(QColor(255, 255, 255));
-	p.drawText(20, 180, i18n("Launch game"));
+	if(m_progress < 1) p.setPen(QColor(0, 0, 0));
+	p.drawText(145, 220, i18n("Connecting to server"));
+	if(m_progress < 2) p.setPen(QColor(0, 0, 0));
+	p.drawText(135, 240, i18n("Logging in"));
+	if(m_progress < 3) p.setPen(QColor(0, 0, 0));
+	p.drawText(130, 260, i18n("Joining room"));
+	if(m_progress < 4) p.setPen(QColor(0, 0, 0));
+	p.drawText(135, 280, i18n("Waiting..."));
+	if(m_progress < 5) p.setPen(QColor(0, 0, 0));
+	p.drawText(145, 300, i18n("Launch game"));
 
-	/*if(m_hide)
+
+	if(m_hide)
 		p.setPen(QColor(255, 255, 0));
 	else
 		p.setPen(QColor(255, 255, 255));
@@ -127,37 +127,24 @@ void GGZapGui::paintEvent(QPaintEvent *e)
 		p.setPen(QColor(255, 255, 0));
 	else
 		p.setPen(QColor(255, 255, 255));
-	p.drawText(240, 370, i18n("Help"));*/
+	p.drawText(240, 370, i18n("Help"));
 
 	QFontMetrics m(this->font());
 	int w = m.width(m_game);
-	int h = m.height();
-	QPixmap pix(m_icon);
-
-	p.setPen(QColor(255, 255, 255));
-	p.drawText(width() - w - 20, h + 20, m_game);
-	p.drawPixmap(width() - pix.width() - 20, height() - 20 - pix.height(), pix);
+	p.drawText(340 - w, 320, m_game);
+	p.drawPixmap(290, 240, QPixmap(m_icon));
 	p.end();
 }
 
-void GGZapGui::setProgress(int progress)
+void GGZapGuiAlt::setProgress(int progress)
 {
 	m_progress = progress;
 	repaint();
 }
 
-void GGZapGui::setGame(QString game)
+void GGZapGuiAlt::setGame(QString game)
 {
 	m_game = game;
 	m_icon = QString("%1/images/icons/games/%2.png").arg(KGGZ_DIRECTORY).arg(game);
-}
-
-void GGZapGui::timerEvent(QTimerEvent *e)
-{
-	static int a = 0;
-	a++;
-	setPaletteBackgroundColor(QColor(30, 20 + a, 140));
-
-	repaint();
 }
 

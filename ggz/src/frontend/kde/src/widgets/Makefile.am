@@ -45,7 +45,7 @@ noinst_HEADERS = \
 
 EXTRA_HEADERS = 
 
-CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
+AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 INCLUDES = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
 

@@ -10,7 +10,7 @@ INCLUDES = -I $(qt_includes) -I $(kde_includes)
 libkio_ggzmeta_la_LDFLAGS = $(all_libraries) $(KDE_PLUGIN)
 libkio_ggzmeta_la_LIBADD = $(LIB_KIO)
 
-CXXFLAGS = @COMPILEOPTIONS@
+AM_CXXFLAGS = @COMPILEOPTIONS@
 
 METASOURCES = AUTO
 

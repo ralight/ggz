@@ -29,7 +29,7 @@ INCLUDES = -I $(top_srcdir)/ggz-kde/src/abstract \
 
 kggz_METASOURCES = AUTO
 
-CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
+AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 kggz_LDFLAGS = -ggdb3
 kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \

@@ -15,19 +15,19 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef GGZAP_GUI_H
-#define GGZAP_GUI_H
+#ifndef GGZAP_GUIALT_H
+#define GGZAP_GUIALT_H
 
 // Qt includes
 #include <qwidget.h>
 #include <qevent.h>
 
 // Next generation GUI for GGZap
-class GGZapGui : public QWidget
+class GGZapGuiAlt : public QWidget
 {
 	public:
-		GGZapGui(QWidget *parent = NULL, const char *name = NULL);
-		~GGZapGui();
+		GGZapGuiAlt(QWidget *parent = NULL, const char *name = NULL);
+		~GGZapGuiAlt();
 		void setProgress(int progress);
 		void setGame(QString game);
 
@@ -36,7 +36,6 @@ class GGZapGui : public QWidget
 		void mousePressEvent(QMouseEvent *e);
 		void mouseReleaseEvent(QMouseEvent *e);
 		void paintEvent(QPaintEvent *e);
-		void timerEvent(QTimerEvent *e);
 
 	private:
 		int m_x, m_y;

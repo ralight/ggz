@@ -13,7 +13,7 @@ noinst_HEADERS = \
 	KGGZCallback.h \
 	KGGZGameInfo.h
 
-CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
+AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src
 
