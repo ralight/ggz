@@ -23,7 +23,6 @@ extern option_t options;
 
 void launch_game(GtkButton * button, gpointer user_data)
 {
-	char ai;
 	input_t *in = (input_t *) user_data;
 
 	options.endGame =
@@ -31,11 +30,8 @@ void launch_game(GtkButton * button, gpointer user_data)
 	options.minBid =
 		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(in->minBid));
 
-	ai = (options.bitOpt & MSK_AI) >> 1;
-
 	CheckWriteInt(gameState.spadesSock, sizeof(options));
 	write(gameState.spadesSock, &options, sizeof(options));
-	write(gameState.spadesSock, &ai, 1);	/* AI players */	
 	g_printerr("Sent options\n");
 
 	DisplayInit();
