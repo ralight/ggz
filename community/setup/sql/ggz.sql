@@ -44,3 +44,11 @@ CREATE TABLE matchplayers (
     playertype character varying(256)
 );
 
+CREATE TABLE savegames (
+    id serial NOT NULL,
+    date bigint,
+    game character varying(256),
+    owner character varying(256),
+	savegame character varying(256)
+);
+
