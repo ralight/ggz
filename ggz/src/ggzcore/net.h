@@ -42,6 +42,8 @@ int _ggzcore_net_process(void);
 void _ggzcore_net_send_login(GGZLoginType type, const char* login, const char* pass);
 void _ggzcore_net_send_logout(void);
 
+void _ggzcore_net_send_motd(void);
+
 void _ggzcore_net_send_list_rooms(const int type, const char verbose);
 void _ggzcore_net_send_join_room(const int room);
 

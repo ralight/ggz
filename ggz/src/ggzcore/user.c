@@ -39,6 +39,7 @@ static void _ggzcore_user_login(GGZEventID, void*, void*);
 static void _ggzcore_user_list_rooms(GGZEventID, void*, void*);
 static void _ggzcore_user_join_room(GGZEventID, void*, void*);
 static void _ggzcore_user_list_players(GGZEventID, void*, void*);
+static void _ggzcore_user_motd(GGZEventID, void*, void*);
 static void _ggzcore_user_chat(GGZEventID, void*, void*);
 static void _ggzcore_user_logout(GGZEventID, void*, void*);
 
@@ -55,6 +56,7 @@ void _ggzcore_user_register(void)
 	ggzcore_event_connect(GGZ_USER_LIST_ROOMS, _ggzcore_user_list_rooms);
 	ggzcore_event_connect(GGZ_USER_JOIN_ROOM, _ggzcore_user_join_room);
 	ggzcore_event_connect(GGZ_USER_LIST_PLAYERS, _ggzcore_user_list_players);
+	ggzcore_event_connect(GGZ_USER_MOTD, _ggzcore_user_motd);
 
 	ggzcore_event_connect_full(GGZ_USER_CHAT, _ggzcore_user_chat, 
 				   (void*)GGZ_CHAT_NORMAL, NULL);
@@ -212,6 +214,25 @@ static void _ggzcore_user_chat(GGZEventID id, void* event_data, void* user_data)
 }
 
 
+/* _ggzcore_user_motd() - Callback for user motd request
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_user_motd(GGZEventID id, void* event_data, void* user_data)
+{
+	if (!(_ggzcore_state_event_isvalid(id)))
+		return;
+
+	ggzcore_debug(GGZ_DBG_USER, "Executing user_motd");	
+	_ggzcore_net_send_motd();
+}
+
+
 /* _ggzcore_user_logout() - Callback for user login events
  *
  * Receives:
@@ -230,5 +251,3 @@ static void _ggzcore_user_logout(GGZEventID id, void* event_data, void* user_dat
 	_ggzcore_net_send_logout();
 	_ggzcore_state_set(GGZ_STATE_LOGGING_OUT);
 }
-
-

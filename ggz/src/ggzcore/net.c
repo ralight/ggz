@@ -248,6 +248,13 @@ void _ggzcore_net_send_logout(void)
 }
 
 
+void _ggzcore_net_send_motd(void)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
+	es_write_int(ggz_server_sock, REQ_MOTD);
+}
+
+
 void _ggzcore_net_send_list_rooms(const int type, const char verbose)
 {	
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
