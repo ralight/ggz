@@ -45,12 +45,14 @@ void grubby_init( void )
 void ggz_init( void )
 {
 	GGZOptions opt;
+	char *global_conf, *user_conf;
 
 	/* Initilize GGZCORE */
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = NULL;
-	opt.user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
-	sprintf(opt.user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
+	global_conf = NULL;
+	user_conf = malloc((strlen(getenv("HOME"))+15)*sizeof(char*));
+	sprintf(user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
+	ggzcore_conf_initialize(global_conf, user_conf);
 	ggzcore_init(opt);
 
 	/* Connect Callbacks */
