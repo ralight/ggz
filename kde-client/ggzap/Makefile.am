@@ -1,7 +1,7 @@
 SUBDIRS =
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
-ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la
+ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(GGZCORE_LDFLAGS) $(LIB_GGZCORE)
 
 bin_PROGRAMS = ggzap
 
@@ -20,7 +20,7 @@ noinst_HEADERS = \
 	ggzap_handler.h \
 	ggzap_game.h
 
-CXXFLAGS = @COMPILEOPTIONS@
+CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 ggzap_LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
 
