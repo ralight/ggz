@@ -441,11 +441,16 @@ static void ggz_motd(void)
 
 static void ggz_realize(GtkWidget* widget, gpointer data)
 {
+	GdkFont* fixed;
 	GtkXText *tmp;
 	char *buf;
 
+	
+	fixed = gdk_font_load("-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8");
+		
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-	gtk_xtext_set_font(GTK_XTEXT(tmp), NULL, 0);
+	gtk_xtext_set_font(GTK_XTEXT(tmp), fixed, 0);
+
 	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors);
 	tmp->auto_indent = ggzrc_read_int("CHAT","AutoIndent",TRUE);
 	tmp->wordwrap = ggzrc_read_int("CHAT","WordWrap",TRUE);
