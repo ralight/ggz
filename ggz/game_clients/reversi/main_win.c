@@ -92,6 +92,7 @@ void play_again(GtkButton *button, gpointer user_data) {
 
 	// Wait for time to start
 	game_init();
+	gtk_widget_hide(GTK_WIDGET(button));
 
 	return;
 }
@@ -222,15 +223,14 @@ void game_about(GtkMenuItem *menuitem, gpointer user_data)
 gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
 			  gpointer user_data)
 {
-	if (rvr_buf)
-		gdk_pixmap_unref(rvr_buf);
-	else {
+	if (!rvr_buf)
 		rvr_buf = gdk_pixmap_new( widget->window,
 					  PIXSIZE*8,
 					  PIXSIZE*8,
 					  -1);
-	}
+		
 	draw_bg(widget);
+	display_board();
 
 	return TRUE;
 }
@@ -477,7 +477,6 @@ create_main_win (void)
 	gtk_widget_ref(again_button);
 	gtk_object_set_data_full(GTK_OBJECT(main_win), "again_button", again_button, 
 													 (GtkDestroyNotify)gtk_widget_unref);
-	gtk_widget_show(again_button);
 	//gtk_container_add(GTK_CONTAINER(main_win), again_button);
 	//gtk_widget_set_usize(again_button, 50, 50);
 
@@ -567,7 +566,6 @@ int game_check_move(int player, int move) {
 int get_gameover() {
 	int winner;
 	GtkWidget *button;
-	GtkWidget *box;
 
 	if (es_read_int(game.fd, &winner) < 0)
 		return -1;
@@ -582,6 +580,9 @@ int get_gameover() {
 		game_status("That's too bad... you lost!");
 	else
 		game_status("That's a draw! Not bad!");
+
+	button = gtk_object_get_data(GTK_OBJECT(main_win), "again_button");
+	gtk_widget_show(button);
 
 	return 1;
 
