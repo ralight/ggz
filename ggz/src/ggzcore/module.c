@@ -64,9 +64,10 @@ static char* _ggzcore_module_conf_filename(void);
 static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
 /* Utility functions used by ggz_list */
+static void _ggz_free_chars(char **argv);
 static int   _ggzcore_module_compare(void* p, void* q);
-#if 0
 static int   _ggzcore_module_match_version(void *p, void *q);
+#if 0
 static void* _ggzcore_module_create(void* p);
 #endif /* #if 0 */
 static void  _ggzcore_module_destroy(void* p);
@@ -254,7 +255,7 @@ int _ggzcore_module_setup(void)
 	}
 
 	
-	module_list = ggz_list_create(_ggzcore_module_compare, NULL,
+	module_list = ggz_list_create(_ggzcore_module_match_version, NULL,
 				      _ggzcore_module_destroy, 0);
 	num_modules = 0;
 
@@ -292,8 +293,13 @@ int _ggzcore_module_setup(void)
 			_ggzcore_module_add(module);
 			ggzcore_debug(GGZ_DBG_MODULE, "Module %d: %s", j, 
 				      ids[j]);
+
 		}
+		
+		_ggz_free_chars(ids);
 	}
+
+	_ggz_free_chars(games);
 
 	_ggzcore_module_list_print();
 	
@@ -309,6 +315,8 @@ unsigned int _ggzcore_module_get_num(void)
 }
 
 
+/* FIXME: do this right.  We should parse through module_list not
+   re-read the config file */
 int _ggzcore_module_get_num_by_type(const char *game, 
 				    const char *engine,
 				    const char *version)
@@ -332,12 +340,15 @@ int _ggzcore_module_get_num_by_type(const char *game,
 			count--;
 	}
 
+	_ggz_free_chars(ids);
+
 
 	return count;
 }
 
 
-/* FIXME: do this right */
+/* FIXME: do this right.  We should parse through module_list not
+   re-read the config file */
 struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, 
 						   const char *engine,
 						   const char *version,
@@ -345,7 +356,8 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 {
 	int i, total, status, count;
 	char **ids;
-	struct _GGZModule *module;
+	struct _GGZModule *module, *found = NULL;
+	GGZListEntry *entry;
 
 	status = ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
 	
@@ -355,23 +367,34 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 	if (status < 0)
 		return NULL;
 
-	if (num >= total)
+	if (num >= total) {
 		return NULL;
-	
+		_ggz_free_chars(ids);
+	}
+
 	count = 0;
 	for (i = 0; i < total; i++) {
 		module = _ggzcore_module_new();
 		_ggzcore_module_read(module, ids[i]);
 		if (strcmp(version, module->prot_version) == 0) {
 			/* FIXME:  also check to see if 'game' is in supported list */
-			if (count++ == num)
-				return module;
+			if (count++ == num) {
+				/* Now find same module in list */
+				entry = ggz_list_search(module_list, module);
+				found = ggz_list_get_data(entry);
+				_ggzcore_module_free(module);
+				break;
+			}
 		}
+		_ggzcore_module_free(module);
 	}
-	
-	/* If we get here it wasn't found */
 
-	return NULL;
+	/* Free the rest of the ggz_conf memory */
+	_ggz_free_chars(ids);
+	
+	
+	/* Return found module (if any) */
+	return found;
 }
 
 
@@ -508,12 +531,14 @@ static void _ggzcore_module_free(struct _GGZModule *module)
 		ggz_free(module->frontend);
 	if (module->url)
 		ggz_free(module->url);
-	/*if (module->path)
-	  ggz_free(module->path);*/
 	if (module->icon)
 		ggz_free(module->icon);
 	if (module->help)
 		ggz_free(module->help);
+	if (module->games)
+		_ggz_free_chars(module->games);
+	if (module->argv)
+		_ggz_free_chars(module->argv);
 	
 	ggz_free(module);
 }
@@ -552,6 +577,7 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 	int argc;
 	/* FIXME: check for errors on all of these */
 
+	/* Note: the memory allocated here is freed in _ggzcore_module_free */
 	mod->name = ggz_conf_read_string(mod_handle, id, "Name", NULL);
 	mod->version = ggz_conf_read_string(mod_handle, id, "Version", NULL);
 	mod->prot_engine = ggz_conf_read_string(mod_handle, id, 
@@ -607,13 +633,25 @@ static void _ggzcore_module_list_print(void)
 
 
 /* Utility functions used by ggz_list */
+
+static void _ggz_free_chars(char **argv)
+{
+	int i;
+	
+	for (i = 0; argv[i]; i++)
+		ggz_free(argv[i]);
+	
+	ggz_free(argv);
+}
+
+
 static int _ggzcore_module_compare(void* p, void* q)
 {
 	return 1;
 }
 
 
-#if 0
+/* Match game module by 'name', 'prot_engine', 'prot_version' */
 static int _ggzcore_module_match_version(void *p, void *q)
 {
 	int compare;
@@ -621,14 +659,19 @@ static int _ggzcore_module_match_version(void *p, void *q)
 	struct _GGZModule *pmod = (struct _GGZModule*)p;
 	struct _GGZModule *qmod = (struct _GGZModule*)q;
 
-	compare = strcmp(pmod->game, qmod->game);
+	compare = strcmp(pmod->name, qmod->name);
 
-	if (compare != 0)
-		return compare;
-	else
-		return strcmp(pmod->protocol, qmod->protocol);
+	if (compare == 0) {
+		compare = strcmp(pmod->prot_engine, qmod->prot_engine);
+		if (compare == 0) {
+			compare = strcmp(pmod->prot_version, qmod->prot_version);
+		}
+	}
+	
+	return compare; 
 }
 
+#if 0
 static void* _ggzcore_module_create(void* p)
 {
 	struct _GGZModule *new, *src = p;
