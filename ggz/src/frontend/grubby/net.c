@@ -23,12 +23,12 @@
 
 extern struct Grubby grubby;
 
-static void net_login_ok(GGZEventID id, void*, void*);
-static void net_chat_msg(GGZEventID id, void*, void*);
-static void net_chat_prvmsg(GGZEventID id, void*, void*);
-static void net_room_enter(GGZEventID id, void*, void*);
-static void net_room_leave(GGZEventID id, void*, void*);
-void net_register_callbacks(void);
+static GGZHookReturn net_login_ok(GGZEventID id, void*, void*);
+static GGZHookReturn net_chat_msg(GGZEventID id, void*, void*);
+static GGZHookReturn net_chat_prvmsg(GGZEventID id, void*, void*);
+static GGZHookReturn net_room_enter(GGZEventID id, void*, void*);
+static GGZHookReturn net_room_leave(GGZEventID id, void*, void*);
+void net_register_hooks(void);
 
 void net_send_msg(char *message)
 {
@@ -91,22 +91,23 @@ void net_connect(void)
  * Callbacks for GGZCORE
  */
 
-void net_register_callbacks(void)
+void net_register_hooks(void)
 {
-	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, net_login_ok);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_MSG, net_chat_msg);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_PRVMSG, net_chat_prvmsg);
-	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, net_room_enter);
-	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, net_room_leave);
+	ggzcore_event_add_hook(GGZ_SERVER_LOGIN, net_login_ok);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_MSG, net_chat_msg);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_PRVMSG, net_chat_prvmsg);
+	ggzcore_event_add_hook(GGZ_SERVER_ROOM_ENTER, net_room_enter);
+	ggzcore_event_add_hook(GGZ_SERVER_ROOM_LEAVE, net_room_leave);
 }
 
 
-static void net_login_ok(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn net_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
 	net_change_room(ggzcore_conf_read_int("GRUBBYSETTINGS", "AUTOJOIN", -1));
+	return GGZ_HOOK_OK;
 }
 
-static void net_chat_msg(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn net_chat_msg(GGZEventID id, void* event_data, void* user_data)
 {
         char* player;
         char* message;
@@ -116,9 +117,10 @@ static void net_chat_msg(GGZEventID id, void* event_data, void* user_data)
 
 	log_write(player, message);
 	chat_parse(player, message);
+	return GGZ_HOOK_OK;
 }
 
-static void net_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn net_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 {
         char* player;
         char* message;
@@ -135,9 +137,10 @@ static void net_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 	chat_parse(player, fixed);
 
 	free(fixed);
+	return GGZ_HOOK_OK;
 }
 
-static void net_room_enter(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn net_room_enter(GGZEventID id, void* event_data, void* user_data)
 {
 	char out[1024];
 	int i, num_msg;
@@ -182,11 +185,13 @@ static void net_room_enter(GGZEventID id, void* event_data, void* user_data)
 		net_send_prvmsg(event_data, "This room is being logged to file.");
 
 	log_write("-->", event_data);
+	return GGZ_HOOK_OK;
 }
 
 
-static void net_room_leave(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn net_room_leave(GGZEventID id, void* event_data, void* user_data)
 {
 	ggzcore_conf_write_int(event_data,"LASTSEEN", time(NULL));
 	log_write("<--", event_data);
+	return GGZ_HOOK_OK;
 }

@@ -63,7 +63,7 @@ void ggz_init( void )
 	ggzcore_init(opt);
 
 	/* Connect Callbacks */
-	net_register_callbacks();
+	net_register_hooks();
 }
 
 
