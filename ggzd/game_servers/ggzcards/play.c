@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: play.c 4126 2002-05-01 03:26:52Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -157,9 +157,6 @@ void handle_play_event(player_t p, card_t card)
 	            get_player_name(p),
 	            get_face_name(card.face),
 	            get_suit_name(card.suit));
-
-	/* send the play */
-	net_broadcast_play(s, card);
 	
 	/* is this the right place for this? */
 	assert(game.players[p].is_playing);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 4053 2002-04-22 23:43:27Z jdorje $
+ * $Id: game.c 4126 2002-05-01 03:26:52Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -327,7 +327,8 @@ void game_get_play(player_t p)
    Bridge). */
 void game_handle_play(player_t p, seat_t s, card_t c)
 {
-	/* nothing needs to be done... */
+	/* send the play */
+	net_broadcast_play(s, c);
 }
 
 

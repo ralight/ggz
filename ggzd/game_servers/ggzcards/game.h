@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: game.h 4126 2002-05-01 03:26:52Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -242,11 +242,11 @@ void game_get_play(player_t p);
 
 /** @brief Specialty handling of a played card.
  *
- *  This function is called to handle every accepted play.  By default, it
- *  does nothing.  However, the core code also does a lot of handling of the
- *  play already.  It will mark game.trump_broken and game.lead_card, if
- *  appropriate.  It will remove the card from the hand, of course.  It will
- *  put the card on the table, and reset the player's message.
+ *  This function is called to handle every accepted play.  The core code also
+ *  does a lot of handling of the play already.  It will mark game.trump_broken
+ *  and game.lead_card, if appropriate.  It will remove the card from the hand,
+ *  of course.  It will  put the card on the table, and reset the player's message.
+ *  All this function does is broadcast the play to everyone.
  *
  *  @param p The player who played.
  *  @param s The seat they played from.
