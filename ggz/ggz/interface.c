@@ -43,8 +43,8 @@ create_dlg_login (void)
   GtkWidget *server_box;
   GtkWidget *host_label;
   GtkWidget *host_entry;
-  GtkWidget *port_label;
   GtkWidget *port_entry;
+  GtkWidget *port_label;
   GtkWidget *hseparator;
   GtkWidget *button_box;
   GtkWidget *connect_button;
@@ -219,13 +219,6 @@ create_dlg_login (void)
   gtk_widget_show (host_entry);
   gtk_box_pack_start (GTK_BOX (server_box), host_entry, FALSE, FALSE, 5);
 
-  port_label = gtk_label_new ("Port:");
-  gtk_widget_ref (port_label);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_login), "port_label", port_label,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (port_label);
-  gtk_box_pack_end (GTK_BOX (server_box), port_label, FALSE, FALSE, 0);
-
   port_entry = gtk_entry_new ();
   gtk_widget_ref (port_entry);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "port_entry", port_entry,
@@ -233,6 +226,13 @@ create_dlg_login (void)
   gtk_widget_show (port_entry);
   gtk_box_pack_end (GTK_BOX (server_box), port_entry, FALSE, FALSE, 5);
   gtk_widget_set_usize (port_entry, 50, -2);
+
+  port_label = gtk_label_new ("Port:");
+  gtk_widget_ref (port_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_login), "port_label", port_label,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (port_label);
+  gtk_box_pack_end (GTK_BOX (server_box), port_label, FALSE, FALSE, 0);
 
   hseparator = gtk_hseparator_new ();
   gtk_widget_ref (hseparator);
@@ -317,7 +317,7 @@ create_dlg_details (void)
   gtk_object_set_data (GTK_OBJECT (dlg_details), "dlg_details", dlg_details);
   gtk_window_set_title (GTK_WINDOW (dlg_details), "Connection Messages");
   gtk_window_set_position (GTK_WINDOW (dlg_details), GTK_WIN_POS_CENTER);
-  gtk_window_set_default_size (GTK_WINDOW (dlg_details), -1, 200);
+  gtk_window_set_default_size (GTK_WINDOW (dlg_details), 400, 300);
   gtk_window_set_policy (GTK_WINDOW (dlg_details), TRUE, TRUE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_details)->vbox;
@@ -420,13 +420,13 @@ create_main_win (void)
   GtkWidget *label7;
   GtkWidget *chat_box;
   GtkWidget *chat_scroll;
-  GtkWidget *text3;
-  GtkWidget *hseparator1;
-  GtkWidget *taunt_box;
-  GtkWidget *taunt_label;
-  GtkWidget *entry2;
-  GtkWidget *taunt_button;
-  GtkWidget *statusbar2;
+  GtkWidget *chat_text;
+  GtkWidget *chat_separator;
+  GtkWidget *msg_box;
+  GtkWidget *msg_label;
+  GtkWidget *msg_entry;
+  GtkWidget *msg_button;
+  GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -834,56 +834,56 @@ create_main_win (void)
   gtk_widget_set_usize (chat_scroll, 100, -2);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (chat_scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-  text3 = gtk_text_new (NULL, NULL);
-  gtk_widget_ref (text3);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "text3", text3,
+  chat_text = gtk_text_new (NULL, NULL);
+  gtk_widget_ref (chat_text);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_text", chat_text,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (text3);
-  gtk_container_add (GTK_CONTAINER (chat_scroll), text3);
-  gtk_widget_set_usize (text3, 100, 146);
+  gtk_widget_show (chat_text);
+  gtk_container_add (GTK_CONTAINER (chat_scroll), chat_text);
+  gtk_widget_set_usize (chat_text, 100, 146);
 
-  hseparator1 = gtk_hseparator_new ();
-  gtk_widget_ref (hseparator1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "hseparator1", hseparator1,
+  chat_separator = gtk_hseparator_new ();
+  gtk_widget_ref (chat_separator);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_separator", chat_separator,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hseparator1);
-  gtk_box_pack_start (GTK_BOX (chat_box), hseparator1, FALSE, FALSE, 5);
+  gtk_widget_show (chat_separator);
+  gtk_box_pack_start (GTK_BOX (chat_box), chat_separator, FALSE, FALSE, 5);
 
-  taunt_box = gtk_hbox_new (FALSE, 5);
-  gtk_widget_ref (taunt_box);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "taunt_box", taunt_box,
+  msg_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (msg_box);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "msg_box", msg_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (taunt_box);
-  gtk_box_pack_start (GTK_BOX (chat_box), taunt_box, FALSE, FALSE, 0);
+  gtk_widget_show (msg_box);
+  gtk_box_pack_start (GTK_BOX (chat_box), msg_box, FALSE, FALSE, 0);
 
-  taunt_label = gtk_label_new ("Message: ");
-  gtk_widget_ref (taunt_label);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "taunt_label", taunt_label,
+  msg_label = gtk_label_new ("Message: ");
+  gtk_widget_ref (msg_label);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "msg_label", msg_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (taunt_label);
-  gtk_box_pack_start (GTK_BOX (taunt_box), taunt_label, FALSE, FALSE, 0);
+  gtk_widget_show (msg_label);
+  gtk_box_pack_start (GTK_BOX (msg_box), msg_label, FALSE, FALSE, 0);
 
-  entry2 = gtk_entry_new ();
-  gtk_widget_ref (entry2);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "entry2", entry2,
+  msg_entry = gtk_entry_new ();
+  gtk_widget_ref (msg_entry);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "msg_entry", msg_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (entry2);
-  gtk_box_pack_start (GTK_BOX (taunt_box), entry2, TRUE, TRUE, 0);
+  gtk_widget_show (msg_entry);
+  gtk_box_pack_start (GTK_BOX (msg_box), msg_entry, TRUE, TRUE, 0);
 
-  taunt_button = gtk_button_new_with_label ("Send");
-  gtk_widget_ref (taunt_button);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "taunt_button", taunt_button,
+  msg_button = gtk_button_new_with_label ("Send");
+  gtk_widget_ref (msg_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "msg_button", msg_button,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (taunt_button);
-  gtk_box_pack_start (GTK_BOX (taunt_box), taunt_button, FALSE, FALSE, 0);
+  gtk_widget_show (msg_button);
+  gtk_box_pack_start (GTK_BOX (msg_box), msg_button, FALSE, FALSE, 0);
 
-  statusbar2 = gtk_statusbar_new ();
-  gtk_widget_ref (statusbar2);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "statusbar2", statusbar2,
+  statusbar = gtk_statusbar_new ();
+  gtk_widget_ref (statusbar);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "statusbar", statusbar,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (statusbar2);
-  gtk_box_pack_end (GTK_BOX (main_box), statusbar2, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (statusbar2), 5);
+  gtk_widget_show (statusbar);
+  gtk_box_pack_end (GTK_BOX (main_box), statusbar, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (statusbar), 5);
 
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
                       GTK_SIGNAL_FUNC (ExitDialog),
@@ -924,6 +924,12 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (exit_button), "clicked",
                       GTK_SIGNAL_FUNC (ExitDialog),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (msg_entry), "activate",
+                      GTK_SIGNAL_FUNC (input_chat_msg),
+                      msg_entry);
+  gtk_signal_connect (GTK_OBJECT (msg_button), "clicked",
+                      GTK_SIGNAL_FUNC (input_chat_msg),
+                      msg_entry);
 
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
 
