@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <string.h>
+#include <time.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -358,16 +359,17 @@ int main(int argc, char *argv[])
 {
 	struct option op[] =
 	{
-		{"fullscreen", 0, 0, 'f'},
-		{"ggz", 0, 0, 'g'},
-		{"help", 0, 0, 'h'},
-		{"nosound", 0, 0, 'n'},
+		{"fullscreen", no_argument, 0, 'f'},
+		{"ggz", no_argument, 0, 'g'},
+		{"help", no_argument, 0, 'h'},
+		{"nosound", no_argument, 0, 'n'},
+		{"players", required_argument, 0, 'p'},
 		{0, 0, 0, 0}
 	};
 	int index = 0, c;
 	int ret;
 
-	while((c = getopt_long(argc, argv, "fghn", op, &index)) != -1)
+	while((c = getopt_long(argc, argv, "fghnp:", op, &index)) != -1)
 	{
 		switch(c)
 		{
@@ -382,13 +384,22 @@ int main(int argc, char *argv[])
 				printf("\n");
 				printf("Recognized options:\n");
 				printf("[-f | --fullscreen] Use full screen mode\n");
-				printf("[-g | --ggz ] Run game in GGZ mode\n");
-				printf("[-h | --help] This help\n");
-				printf("[-n | --nosound] Don't use sound or music\n");
+				printf("[-g | --ggz       ] Run game in GGZ mode\n");
+				printf("[-h | --help      ] This help\n");
+				printf("[-n | --nosound   ] Don't use sound or music\n");
+				printf("[-p | --players=x ] Number of players for single player mode (default: 5)\n");
 				return 0;
 				break;
 			case 'n':
 				usesound = 0;
+				break;
+			case 'p':
+				players = atoi(optarg);
+				if((players <= 0) || (players > MAX_PLAYERS))
+				{
+					printf("Invalid player count %s, using %i\n", optarg, MAX_PLAYERS);
+					players = MAX_PLAYERS;
+				}
 				break;
 			default:
 				fprintf(stderr, "Type '%s --help' to get a list of options.\n", argv[0]);
@@ -398,6 +409,8 @@ int main(int argc, char *argv[])
 	}
 
 	printf("<<<< Geekgame >>>>\n");
+
+	srand(time(NULL));
 
 	loadsettings();
 
@@ -920,6 +933,7 @@ int gameinput(int *ox, int *oy, int userinput)
 	int dimminc;
 	enum Directions {right, left, up, down, none, done};
 	int march;
+	int tries, i, j, zeroes, minzeroes;
 
 	x = *ox;
 	y = *oy;
@@ -930,10 +944,10 @@ int gameinput(int *ox, int *oy, int userinput)
 	wantx = 0;
 	wanty = 0;
 
+	march = none;
+
 	while(1)
 	{
-		march = none;
-
 		while(SDL_PollEvent(&event))
 		{
 			switch(event.type)
@@ -943,13 +957,13 @@ int gameinput(int *ox, int *oy, int userinput)
 					if(keystate[SDLK_ESCAPE]) return 0;
 					if(userinput)
 					{
-						if((keystate[SDLK_RIGHT]) && (x < (ARRAY_WIDTH - 1) * 32))
+						if(keystate[SDLK_RIGHT])
 							march = right;
-						if((keystate[SDLK_LEFT]) && (x >= 1 * 32))
+						if(keystate[SDLK_LEFT])
 							march = left;
-						if((keystate[SDLK_DOWN]) && (y <= (ARRAY_HEIGHT - 1) * 32))
+						if(keystate[SDLK_DOWN])
 							march = down;
-						if((keystate[SDLK_UP]) && (y >= 1 * 32))
+						if(keystate[SDLK_UP])
 							march = up;
 						if(keystate[SDLK_RETURN])
 							march = done;
@@ -960,15 +974,73 @@ int gameinput(int *ox, int *oy, int userinput)
 						showcursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
 					}
 					break;
+				case SDL_KEYUP:
+					march = none;
+					break;
 			}
 		}
+
+		if((march == right) && (x >= (ARRAY_WIDTH - 1) * 32)) march = none;
+		else if((march == left) && (x < 1 * 32)) march = none;
+		else if((march == down) && (y >= (ARRAY_HEIGHT - 1) * 32)) march = none;
+		else if((march == up) && (y < 1 * 32)) march = none;
 
 		if(!userinput)
 		{
 			if(!found)
 			{
-				wantx = (rand() % ARRAY_WIDTH) * 32 + 18;
-				wanty = (rand() % ARRAY_HEIGHT) * 32 + 18;
+				wantx = -1;
+				wanty = -1;
+				if(playmode == MODE_EASY)
+				{
+					minzeroes = ARRAY_WIDTH * ARRAY_HEIGHT;
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+					{
+						zeroes = 0;
+						for(i = 0; i < ARRAY_WIDTH; i++) zeroes += array[i][j];
+						if((zeroes < minzeroes) && (zeroes > 0))
+						{
+							minzeroes = zeroes;
+							wantx = -1;
+							wanty = j;
+							for(tries = 0; ((tries < ARRAY_WIDTH) && (wantx == -1)); tries++)
+							{
+								i = rand() % ARRAY_WIDTH;
+								if(array[i][j]) wantx = i;
+							}
+							for(i = 0; i < ARRAY_WIDTH; i++)
+								if(array[i][j]) wantx = i;
+						}
+					}
+					for(i = 0; i < ARRAY_WIDTH; i++)
+					{
+						zeroes = 0;
+						for(j = 0; j < ARRAY_HEIGHT; j++) zeroes += array[i][j];
+						if((zeroes < minzeroes) && (zeroes > 0))
+						{
+							minzeroes = zeroes;
+							wantx = i;
+							wanty = -1;
+							for(tries = 0; ((tries < ARRAY_HEIGHT) && (wanty == -1)); tries++)
+							{
+								j = rand() % ARRAY_HEIGHT;
+								if(array[i][j]) wanty = j;
+							}
+							for(j = 0; j < ARRAY_HEIGHT; j++)
+								if(array[i][j]) wanty = j;
+						}
+					}
+				}
+				if((wantx == -1) || (wanty == -1))
+				{
+					wantx = (rand() % ARRAY_WIDTH) * 32 + 18;
+					wanty = (rand() % ARRAY_HEIGHT) * 32 + 18;
+				}
+				else
+				{
+					wantx = wantx * 32 + 18;
+					wanty = wanty * 32 + 18;
+				}
 				found = 1;
 			}
 
@@ -1267,7 +1339,7 @@ int startgame(void)
 
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, (usefullscreen ? SDL_FULLSCREEN : 0));
 
-	players = MAX_PLAYERS;
+	if(!players) players = MAX_PLAYERS;
 
 	drawturn(screen, players, -1);
 
