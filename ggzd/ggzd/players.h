@@ -85,15 +85,15 @@ void player_handler_launch(int sock);
 
 int player_launch_callback(void* target, int size, void* data);
 
-int   player_msg_from_sized(GGZPlayer* player);
+int player_msg_from_sized(GGZPlayer* p, int size, char *buf);
 int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg);
-int   player_table_launch(GGZPlayer* player, int p_fd);
-int   player_table_join(GGZPlayer* player, int p_fd);
-int   player_table_leave(GGZPlayer* player, int p_fd);
-int   player_list_players(GGZPlayer* player, int fd);
-int   player_list_types(GGZPlayer* player, int fd);
-int   player_list_tables(GGZPlayer* player, int fd);
-int   player_motd(GGZPlayer* player, int fd);
+int player_table_launch(GGZPlayer* player, int type, char *desc, int count, int seats[], char* names[MAX_TABLE_SIZE]);
+int   player_table_join(GGZPlayer* player, int index);
+int   player_table_leave(GGZPlayer* player);
+int   player_list_players(GGZPlayer* player);
+int   player_list_types(GGZPlayer* player, char verbose);
+int   player_list_tables(GGZPlayer* player, int type, char global);
+int   player_motd(GGZPlayer* player);
 
 
 #endif

@@ -43,13 +43,13 @@
 /* Private internal functions */
 static int _net_handle_login(GGZLoginType type, GGZPlayer *player);
 static int _net_handle_logout(GGZPlayer *player);
-static int _net_handle_room_list(GGZPlayer *player);
 static int _net_handle_room_join(GGZPlayer *player);
 static int _net_handle_table_launch(GGZPlayer *player);
 static int _net_handle_table_join(GGZPlayer *player);
 static int _net_handle_table_leave(GGZPlayer *player);
 static int _net_handle_list_players(GGZPlayer *player);
 static int _net_handle_list_types(GGZPlayer *player);
+static int _net_handle_list_rooms(GGZPlayer *player);
 static int _net_handle_list_tables(GGZPlayer *player);
 static int _net_handle_msg_from_sized(GGZPlayer *player);
 static int _net_handle_chat(GGZPlayer *player);
@@ -134,7 +134,7 @@ int net_read_data(GGZPlayer* player)
 		break;
 
 	case REQ_LIST_ROOMS:
-		status = _net_handle_room_list(player);
+		status = _net_handle_list_rooms(player);
 		break;
 
 	case REQ_ROOM_JOIN:
@@ -165,6 +165,28 @@ int net_read_data(GGZPlayer* player)
 	}
 
 	return status;
+}
+
+
+int net_send_serverid(GGZPlayer *player)
+{
+	int fd = _net_get_fd(player);
+
+	if (es_write_int(fd, MSG_SERVER_ID) < 0 
+	    || es_va_write_string(fd, "GGZ-%s", VERSION) < 0
+	    || es_write_int(fd, GGZ_CS_PROTO_VERSION) < 0
+	    || es_write_int(fd, MAX_CHAT_LEN) < 0)
+		return -1;
+
+	return 0;
+}
+ 
+
+int net_send_server_full(GGZPlayer *player)
+{
+	int fd = _net_get_fd(player);
+	
+	return es_write_int(fd, MSG_SERVER_FULL);
 }
 
 
@@ -254,32 +276,111 @@ int net_send_room(GGZPlayer *player, int index, char *name, int game, char *desc
 }
 
 
-int net_send_room_join(GGZPlayer *player, char status)
+int net_send_type_list_error(GGZPlayer *player, char status)
 {
-	return _net_send_result(player, RSP_ROOM_JOIN, status);
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_TYPES) < 0
+	    || es_write_int(fd, (int)status) < 0)
+		return -1;
+	
+	return 0;
 }
 
 
-int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg)
+int net_send_type_list_count(GGZPlayer *player, int count)
 {
 	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_TYPES) < 0
+	    || es_write_int(fd, count) < 0)
+		return -1;
+	
+	return 0;
+}
 
-	if (es_write_int(fd, MSG_CHAT) < 0
-	    || es_write_char(fd, opcode) < 0
-	    || es_write_string(fd, name) < 0)
+
+int net_send_type(GGZPlayer *player, int index, GameInfo *type, char verbose)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, index) < 0
+	    || es_write_string(fd, type->name) < 0
+	    || es_write_string(fd, type->version) < 0
+	    || es_write_string(fd, type->p_engine) < 0
+	    || es_write_string(fd, type->p_version) < 0
+	    || es_write_char(fd, type->player_allow_mask) < 0
+	    || es_write_char(fd, type->bot_allow_mask) < 0)
 		return -1;
 
-	if (opcode & GGZ_CHAT_M_MESSAGE
-	    && es_write_string(fd, msg) < 0)
-		return -1;
+	if (verbose) {
+		if (es_write_string(fd, type->desc) < 0
+		    || es_write_string(fd, type->author) < 0
+		    || es_write_string(fd, type->homepage) < 0)
+			return -1;
+	}
 
 	return 0;
 }
 
 
-int net_send_chat_result(GGZPlayer *player, char status)
+int net_send_player_list_error(GGZPlayer *player, char status)
 {
-	return _net_send_result(player, RSP_CHAT, status);
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+	    || es_write_int(fd, (int)status) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_player_list_count(GGZPlayer *player, int count)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+	    || es_write_int(fd, count) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_player(GGZPlayer *player, GGZPlayer *p2)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_string(fd, p2->name) < 0
+	    || es_write_int(fd, p2->table) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_table_list_error(GGZPlayer *player, char status)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_TABLES) < 0
+	    || es_write_int(fd, (int)status) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_table_list_count(GGZPlayer *player, int count)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_TABLES) < 0
+	    || es_write_int(fd, count) < 0)
+		return -1;
+	
+	return 0;
 }
 
 
@@ -288,7 +389,7 @@ int net_send_table(GGZPlayer *player, GGZTable *table)
 	char *name = NULL;
 	int i, seat, fd = _net_get_fd(player);
 	
-
+	
 	if (es_write_int(fd, table->index) < 0
 	    || es_write_int(fd, table->room) < 0
 	    || es_write_int(fd, table->type) < 0
@@ -319,6 +420,35 @@ int net_send_table(GGZPlayer *player, GGZTable *table)
 	}
 
 	return 0;
+}
+
+
+int net_send_room_join(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_ROOM_JOIN, status);
+}
+
+
+int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg)
+{
+	int fd = _net_get_fd(player);
+
+	if (es_write_int(fd, MSG_CHAT) < 0
+	    || es_write_char(fd, opcode) < 0
+	    || es_write_string(fd, name) < 0)
+		return -1;
+
+	if (opcode & GGZ_CHAT_M_MESSAGE
+	    && es_write_string(fd, msg) < 0)
+		return -1;
+
+	return 0;
+}
+
+
+int net_send_chat_result(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_CHAT, status);
 }
 
 
@@ -394,6 +524,19 @@ int net_send_logout(GGZPlayer *player, char status)
 }
 
 
+int net_send_game_data(GGZPlayer *player, int size, char *data)
+{
+	int fd = _net_get_fd(player);
+
+	if (es_write_int(fd, RSP_GAME) < 0
+	    || es_write_int(fd, size) < 0
+	    || es_writen(fd, data, size) < 0)
+		return -1;
+
+	return 0;
+}
+
+
 /**************** Opcode Handlers **************************/
 
 static int _net_handle_login(GGZLoginType type, GGZPlayer *player) 
@@ -419,27 +562,12 @@ static int _net_handle_logout(GGZPlayer *player)
 }
 
 
-static int _net_handle_room_list(GGZPlayer *player)
-{
-	int fd = _net_get_fd(player);
-	int game;
-	char verbose;
-	
-	/* Get the options from teh client */
-	if(es_read_int(fd, &game) < 0
-	   || es_read_char(fd, &verbose) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	return room_list_send(player, game, verbose);
-}
-
-
 static int _net_handle_room_join(GGZPlayer *player)
 {
 	int room, fd = _net_get_fd(player);
 	
 	/* Get the user's room request */
-	if(es_read_int(fd, &room) < 0)
+	if (es_read_int(fd, &room) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	return room_handle_join(player, room);
@@ -448,49 +576,107 @@ static int _net_handle_room_join(GGZPlayer *player)
 
 static int _net_handle_table_launch(GGZPlayer *player) 
 {
+	int type, count, i;
+	char desc[MAX_GAME_DESC_LEN + 1];
+	int seats[MAX_TABLE_SIZE];
+	char names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 	int fd = _net_get_fd(player);
-	return player_table_launch(player, fd);
+
+	if (es_read_int(fd, &type) < 0
+	    || es_read_string(fd, desc, (MAX_GAME_DESC_LEN + 1)) < 0
+	    || es_read_int(fd, &count) < 0)
+		return -1;
+
+	/* Read in seat assignments */
+	for (i = 0; i < count; i++) {
+		if (es_read_int(fd, &seats[i]) < 0)
+			return -1;
+		if (seats[i] == GGZ_SEAT_RESV 
+		    && _net_read_name(fd, names[i]) < 0)
+			return -1;
+	}
+
+	/* Blank out the other seats */
+	for (i = count; i < MAX_TABLE_SIZE; i++)
+		seats[i] = GGZ_SEAT_NONE;
+
+	return player_table_launch(player, type, desc, count, seats, names);
 }
 
 
 static int _net_handle_table_join(GGZPlayer *player) 
 {
-	int fd = _net_get_fd(player);
-	return player_table_join(player, fd);
+	int index, fd = _net_get_fd(player);
+
+	if (es_read_int(fd, &index) < 0)
+		return -1;
+
+	return player_table_join(player, index);
 }
 
 
 static int _net_handle_table_leave(GGZPlayer *player) 
 {
-	int fd = _net_get_fd(player);
-	return player_table_leave(player, fd);
+	return player_table_leave(player);
 }
 
 
 static int _net_handle_list_players(GGZPlayer *player) 
 {
-	int fd = _net_get_fd(player);
-	return player_list_players(player, fd);
+	return player_list_players(player);
 }
 
 
 static int _net_handle_list_types(GGZPlayer *player) 
 {
 	int fd = _net_get_fd(player);
-	return player_list_types(player, fd);
+	char verbose;
+
+	if (es_read_char(fd, &verbose) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	return player_list_types(player, verbose);
 }
 
 
 static int _net_handle_list_tables(GGZPlayer *player) 
 {
+	int type, fd = _net_get_fd(player);
+	char global;
+
+	if (es_read_int(fd, &type) < 0
+	    || es_read_char(fd, &global) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	return player_list_tables(player, type, global);
+}
+
+
+static int _net_handle_list_rooms(GGZPlayer *player)
+{
 	int fd = _net_get_fd(player);
-	return player_list_tables(player, fd);;
+	int game;
+	char verbose;
+	
+	/* Get the options from teh client */
+	if (es_read_int(fd, &game) < 0
+	    || es_read_char(fd, &verbose) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	return room_list_send(player, game, verbose);
 }
 
 
 static int _net_handle_msg_from_sized(GGZPlayer *player) 
 {
-	return player_msg_from_sized(player);
+	int size, fd = _net_get_fd(player);
+	char data[4096];	
+
+	if (es_read_int(fd, &size) < 0
+	    || es_readn(fd, data, size) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	return player_msg_from_sized(player, size, data);
 }
  
 
@@ -528,8 +714,7 @@ static int _net_handle_chat(GGZPlayer *player)
 
 static int _net_handle_motd(GGZPlayer *player) 
 {
-	int fd = _net_get_fd(player);
-	return player_motd(player, fd);
+	return player_motd(player);
 }
 
 
