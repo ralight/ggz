@@ -1,0 +1,89 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-04-04 09:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../chinese-checkers/about_dlg.c:54
+msgid "About Chinese Checkers for GGZ"
+msgstr ""
+
+#: ../chinese-checkers/about_dlg.c:62
+msgid ""
+"\n"
+"Chinese Checkers for GGZ, version 0.0.1\n"
+"is part of the GGZ Gaming Zone project.\n"
+"Visit us at http://ggz.sourceforge.net/\n"
+"\n"
+" Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
+msgstr ""
+
+#: ../chinese-checkers/about_dlg.c:79
+msgid "OK"
+msgstr ""
+
+#: ../chinese-checkers/game.c:196
+#, c-format
+msgid "You are playing the %s marbles"
+msgstr ""
+
+#: ../chinese-checkers/game.c:210
+msgid "Wait for your turn..."
+msgstr ""
+
+#: ../chinese-checkers/game.c:220
+msgid "Click where you want to move the marble."
+msgstr ""
+
+#: ../chinese-checkers/game.c:233
+msgid "Sending move to GGZ server..."
+msgstr ""
+
+#: ../chinese-checkers/game.c:240
+msgid "Bad move! Click a marble to move."
+msgstr ""
+
+#: ../chinese-checkers/game.c:483
+msgid "Your move. Click a marble to move"
+msgstr ""
+
+#: ../chinese-checkers/main.c:186
+#, c-format
+msgid "%s joined the table"
+msgstr ""
+
+#: ../chinese-checkers/main.c:192
+#, c-format
+msgid "%s left the table"
+msgstr ""
+
+#: ../chinese-checkers/main.c:196
+msgid "empty"
+msgstr ""
+
+#: ../chinese-checkers/main.c:234
+msgid "Move accepted. Waiting for opponents"
+msgstr ""
+
+#: ../chinese-checkers/main.c:237
+msgid "Cannot accept move until table is full"
+msgstr ""
+
+#: ../chinese-checkers/main.c:260
+msgid "Game over!  You won!"
+msgstr ""
+
+#: ../chinese-checkers/main.c:262
+#, c-format
+msgid "Game over!  %s won!"
+msgstr ""
