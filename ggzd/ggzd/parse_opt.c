@@ -56,6 +56,32 @@ static int parse_dselect(struct dirent *);
 static unsigned parse_log_types(char *, int);
 static unsigned parse_dbg_types(char *, int);
 
+/* Log types name lookup tables*/
+struct LogTypes {
+	char *name;
+	unsigned type;
+};
+static const struct LogTypes log_types[] = {
+	{ "all",		GGZ_LOG_ALL },
+	{ "notices",		GGZ_LOG_NOTICE },
+	{ "connections",	GGZ_LOG_CONNECTION_INFO }
+};
+static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
+static struct LogTypes dbg_types[] = {
+	{ "all",		GGZ_DBG_ALL },
+	{ "configuration",	GGZ_DBG_CONFIGURATION },
+	{ "process",		GGZ_DBG_PROCESS },
+	{ "connection",		GGZ_DBG_CONNECTION },
+	{ "chat",		GGZ_DBG_CHAT },
+	{ "table",		GGZ_DBG_TABLE },
+	{ "protocol",		GGZ_DBG_PROTOCOL },
+	{ "update",		GGZ_DBG_UPDATE },
+	{ "misc",		GGZ_DBG_MISC },
+	{ "room",		GGZ_DBG_ROOM },
+	{ "lists",		GGZ_DBG_LISTS }
+};
+static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
+
 /* Module local variables for parsing */
 static char *varname;
 static char *varvalue;
@@ -751,6 +777,7 @@ static unsigned parse_log_types(char *var, int linenum)
 	char *s, *e;
 	unsigned types=0;
 	int lasttime=0;
+	int i;
 
 	s = var;
 	while(*s != '\0' && !lasttime) {
@@ -771,20 +798,17 @@ static unsigned parse_log_types(char *var, int linenum)
 		*e = '\0';
 
 		/* Now 's' points to a log type */
-		/* This stuff should be built into a table */
-		if(!strcmp(s, "all")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION, "All log types enabled");
-			types |= GGZ_LOG_ALL;
-		} else if(!strcmp(s, "notices")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Notices added to log types");
-			types |= GGZ_LOG_NOTICE;
-		} else if(!strcmp(s, "connections")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Connection Info added to log types");
-			types |= GGZ_LOG_CONNECTION_INFO;
-		} else
+		for(i = 0; i<num_log_types; i++)
+			if(!strcmp(s, log_types[i].name))
+				break;
+
+		if(i == num_log_types)
 			PARSE_ERR("Invalid log type specified");
+		else {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"%s added to log types", log_types[i].name);
+			types |= log_types[i].type;
+		}
 
 		s = e+1;
 	}
@@ -799,6 +823,7 @@ static unsigned parse_dbg_types(char *var, int linenum)
 	char *s, *e;
 	unsigned types=0;
 	int lasttime=0;
+	int i;
 
 	s = var;
 	while(*s != '\0' && !lasttime) {
@@ -819,53 +844,17 @@ static unsigned parse_dbg_types(char *var, int linenum)
 		*e = '\0';
 
 		/* Now 's' points to a log type */
-		/* This stuff should be built into a table */
-		if(!strcmp(s, "all")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"All debug types enabled");
-			types |= GGZ_DBG_ALL;
-		} else if(!strcmp(s, "configuration")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Configuration added to debug types");
-			types |= GGZ_DBG_CONFIGURATION;
-		} else if(!strcmp(s, "process")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Process added to debug types");
-			types |= GGZ_DBG_PROCESS;
-		} else if(!strcmp(s, "connection")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Connection added to debug types");
-			types |= GGZ_DBG_CONNECTION;
-		} else if(!strcmp(s, "chat")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Chat added to debug types");
-			types |= GGZ_DBG_CHAT;
-		} else if(!strcmp(s, "table")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Table added to debug types");
-			types |= GGZ_DBG_TABLE;
-		} else if(!strcmp(s, "protocol")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Protocol added to debug types");
-			types |= GGZ_DBG_PROTOCOL;
-		} else if(!strcmp(s, "update")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Update added to debug types");
-			types |= GGZ_DBG_UPDATE;
-		} else if(!strcmp(s, "misc")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Update added to debug types");
-			types |= GGZ_DBG_MISC;
-		} else if(!strcmp(s, "room")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Room added to debug types");
-			types |= GGZ_DBG_ROOM;
-		} else if(!strcmp(s, "lists")) {
-			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"Lists added to debug types");
-			types |= GGZ_DBG_LISTS;
-		} else
+		for(i = 0; i<num_dbg_types; i++)
+			if(!strcmp(s, dbg_types[i].name))
+				break;
+
+		if(i == num_dbg_types)
 			PARSE_ERR("Invalid debug type specified");
+		else {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"%s added to debug types", dbg_types[i].name);
+			types |= dbg_types[i].type;
+		}
 
 		s = e+1;
 	}
