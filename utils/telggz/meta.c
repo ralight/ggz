@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,10 +39,10 @@ char **metaservers;
 int metaservercount;
 
 /* Prototypes */
-char *meta_query_internal(int fd, const char *text);
-int meta_connect_internal(const char *hostname, int port);
-char *meta_uri_host_internal(const char *uri);
-int meta_uri_port_internal(const char *uri);
+static char *meta_query_internal(int fd, const char *text);
+static int meta_connect_internal(const char *hostname, int port);
+static char *meta_uri_host_internal(const char *uri);
+static int meta_uri_port_internal(const char *uri);
 
 /* Public functions */
 
@@ -234,7 +234,7 @@ void meta_free(ServerGGZ **server)
 
 /* Internal functions */
 
-char *meta_query_internal(int fd, const char *text)
+static char *meta_query_internal(int fd, const char *text)
 {
 	char buffer[1024];
 	char *ret;
@@ -247,7 +247,7 @@ char *meta_query_internal(int fd, const char *text)
 	return ret;
 }
 
-int meta_connect_internal(const char *hostname, int port)
+static int meta_connect_internal(const char *hostname, int port)
 {
 	int fd, ret;
 	struct sockaddr_in sa;
@@ -268,7 +268,7 @@ int meta_connect_internal(const char *hostname, int port)
 	return fd;
 }
 
-char *meta_uri_host_internal(const char *uri)
+static char *meta_uri_host_internal(const char *uri)
 {
 	char *s;
 
@@ -282,7 +282,7 @@ char *meta_uri_host_internal(const char *uri)
 	return NULL;
 }
 
-int meta_uri_port_internal(const char *uri)
+static int meta_uri_port_internal(const char *uri)
 {
 	char *s;
 

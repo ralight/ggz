@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,10 @@ char *buffer = NULL;
 int m_allow = 1;
 char *host = NULL;
 
-/* Functions */
+/* Prototypes */
+static void flush_buffer(void);
+
+/* Public Functions */
 
 void net_init()
 {
@@ -195,11 +198,55 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 
 GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data)
 {
+	int oldsize;
+	char *player;
+
+	player = (char*)event_data;
+
+	if(m_allow)
+	{
+		flush_buffer();
+		printf("TelGGZ: %s has joined the room.\n", player);
+		fflush(NULL);
+	}
+	else
+	{
+		oldsize = (buffer ? strlen(buffer) : 0);
+		buffer = (char*)realloc(buffer, oldsize + strlen(player) + 33);
+		if(oldsize) strcat(buffer, "");
+		else(strcpy(buffer, ""));
+		strcat(buffer, "TelGGZ: ");
+		strcat(buffer, player);
+		strcat(buffer, " has joined the room.\n");
+	}
+
 	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data)
 {
+	int oldsize;
+	char *player;
+
+	player = (char*)event_data;
+
+	if(m_allow)
+	{
+		flush_buffer();
+		printf("TelGGZ: %s has left the room.\n", player);
+		fflush(NULL);
+	}
+	else
+	{
+		oldsize = (buffer ? strlen(buffer) : 0);
+		buffer = (char*)realloc(buffer, oldsize + strlen(player) + 31);
+		if(oldsize) strcat(buffer, "");
+		else(strcpy(buffer, ""));
+		strcat(buffer, "TelGGZ: ");
+		strcat(buffer, player);
+		strcat(buffer, " has left the room.\n");
+	}
+
 	return GGZ_HOOK_OK;
 }
 
@@ -212,12 +259,7 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	message = ((char**)(event_data))[1];
 	if(m_allow)
 	{
-		if(buffer)
-		{
-			printf(buffer);
-			free(buffer);
-			buffer = NULL;
-		}
+		flush_buffer();
 		printf("[%s]: %s\n", player, message);
 		fflush(NULL);
 	}
@@ -238,6 +280,41 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 
 GGZHookReturn net_hook_prvmsg(unsigned int id, void *event_data, void *user_data)
 {
+	char *player, *message;
+	int oldsize;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+	if(m_allow)
+	{
+		flush_buffer();
+		printf("[[%s]]: %s\n", player, message);
+		fflush(NULL);
+	}
+	else
+	{
+		oldsize = (buffer ? strlen(buffer) : 0);
+		buffer = (char*)realloc(buffer, oldsize + strlen(message) + strlen(player) + 8);
+		if(oldsize) strcat(buffer, "[[");
+		else strcpy(buffer, "[[");
+		strcat(buffer, player);
+		strcat(buffer, "]]: ");
+		strcat(buffer, message);
+		strcat(buffer, "\n");
+	}
+
 	return GGZ_HOOK_OK;
+}
+
+/* Private Functions */
+
+static void flush_buffer(void)
+{
+	if(buffer)
+	{
+		printf(buffer);
+		free(buffer);
+		buffer = NULL;
+	}
 }
 

@@ -142,7 +142,7 @@ void chat_loop()
 					|| (!strcmp(list[0], "/?")))
 					{
 						printf("TelGGZ - The GGZ Gaming Zone Telnet Wrapper.\n");
-						printf("Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net\n");
+						printf("Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
 						printf("Published under GNU GPL conditions\n");
 						printf("\n");
 						printf("Available commands:\n");

@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef META_H
-#define META_H
+#ifndef TELGGZ_META_H
+#define TELGGZ_META_H
 
 /* GGZ server information structure */
 struct serverggz_t

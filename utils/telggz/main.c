@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 /* TelGGZ version number */
-#define TELGGZ_VERSION "0.1"
+#define TELGGZ_VERSION "0.2"
 
 /* Configuration */
 #include "config.h"
@@ -53,6 +53,12 @@ static void pref_listservers()
 		printf("%3i %22s %10s %20s %10ik\n", iterator->id, iterator->host,
 			iterator->version, iterator->location, iterator->speed);
 	}
+	if(!i)
+	{
+		printf("TelGGZ: Error! No servers are available.\n");
+		fflush(NULL);
+		exit(-1);
+	}
 }
 
 /* The main function. How sweet. */
@@ -70,8 +76,6 @@ int main(int argc, char *argv[])
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
-	/*opt.debug_file = NULL;
-	opt.debug_levels = 0;*/
 
 	/* We just announce us the the world. */
 	if(gethostname(hostname, sizeof(hostname))) strcpy(hostname, "[unknown]");
