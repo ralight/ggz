@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2291 2001-08-28 03:48:00Z jdorje $
+ * $Id: ggz.c 2294 2001-08-28 04:12:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -84,31 +84,24 @@ ggzd_assign_t ggzd_get_seat_status(int seat)
 
 const char* ggzd_get_player_name(int seat)
 {
-	char *name = NULL;
-
-	if (seat < 0 || seat >= num_seats) {
+	if (seat < 0
+	    || seat >= num_seats
+	    || seat_data[seat].assign == GGZ_SEAT_NONE) {
 		ggzd_debug("GGZDMOD: ggzd_get_player_name: invalid seat %d queried.", seat);
-		name = "[out-of-range seat]";
-	} else {
-		if (seat_data[seat].assign == GGZ_SEAT_NONE) {
-			ggzd_debug("GGZDMOD: ggzd_get_player_socket: unused seat %d queried.", seat);
-			name = "[invalid seat]";
-		} else if (seat_data[seat].name == NULL) {
-			ggzd_debug("GGZDMOD: ggzd_get_player_socket: NULL name for seat %d.", seat);
-			name = "[null name]";
-		} else
-			name = seat_data[seat].name;
+		return "[out-of-range seat]";
 	}
-	return name;
+	return seat_data[seat].name;
 }
 
 int ggzd_set_player_name(int seat, char* name)
 {
-	if (!name) return -1;
-	if (seat < 0 || seat >= num_seats) return -1;
-
-	/* currently only bots can have their names set */
-	if (seat_data[seat].assign != GGZ_SEAT_BOT) return -1;
+	if (!name
+	    || seat < 0
+	    || seat >= num_seats
+	    || seat_data[seat].assign != GGZ_SEAT_BOT) {
+		ggzd_debug("GGZDMOD: ggzd_set_player_name: invalid seat %d named.", seat);
+		return -1;
+	}
 
 	strncpy(seat_data[seat].name, name, MAX_USER_NAME_LEN);
 	return 0;
@@ -116,14 +109,14 @@ int ggzd_set_player_name(int seat, char* name)
 
 int ggzd_get_player_socket(int seat)
 {
-	if (seat < 0 || seat >= num_seats) {
+	if (seat < 0
+	    || seat >= num_seats
+	    || seat_data[seat].assign == GGZ_SEAT_NONE) {
 		ggzd_debug("GGZDMOD: ggzd_get_player_socket: invalid seat %d queried.", seat);
 		return -1;
-	} else {
-		if (seat_data[seat].assign == GGZ_SEAT_NONE)
-			ggzd_debug("GGZDMOD: ggzd_get_player_socket: unused seat %d queried.", seat);
-		return seat_data[seat].fd;
 	}
+
+	return seat_data[seat].fd;
 }
 
 int ggzd_get_player_udp_socket(int seat)
