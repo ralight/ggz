@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4405 2002-09-04 18:50:29Z dr_maux $
+ * $Id: ggzclient.c 4421 2002-09-06 20:37:18Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -27,11 +27,13 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
-#include <ggz.h>
-#include <ggzcore.h>
 #include <stdlib.h>
 #include <sys/time.h>
+
+#include <ggz.h>
+#include <ggzcore.h>
 
 #include "chat.h"
 #include "client.h"
@@ -951,9 +953,10 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, voi
  * main loop
  */
 
-static void ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond)
+static void ggz_check_fd(gpointer my_server, gint fd, GdkInputCondition cond)
 {
-	ggzcore_server_read_data(server, fd);
+	assert(server == my_server);
+	ggzcore_server_read_data(my_server, fd);
 }
 
 
