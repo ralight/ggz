@@ -52,6 +52,7 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context );
 /* info (labels and move list) */
 void board_info_init();
 void board_info_update();
+void board_info_add_move(char *);
 
 /* Draw stuff */
 void board_draw();

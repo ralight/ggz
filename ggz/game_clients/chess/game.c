@@ -186,6 +186,7 @@ void game_update(int event, void *arg) {
       }
       game_info.turn++;
 			board_info_update();
+      board_info_add_move(move);
       board_draw();
       break;
     case CHESS_EVENT_GAMEOVER:

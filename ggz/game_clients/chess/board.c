@@ -360,3 +360,11 @@ void board_request_draw() {
   printf("Requesting draw!\n");
   net_send_draw();
 }
+
+void board_info_add_move(char *move) {
+  GtkWidget *move_list = lookup_widget(main_win, "last_moves");
+  char *text;
+  text = g_strdup_printf("%s -> %s\n", game_info.turn % 2 ? "White" : "Black", move);
+  gtk_text_insert(GTK_TEXT(move_list), gtk_widget_get_style(move_list)->font, &gtk_widget_get_style(move_list)->black, &gtk_widget_get_style(move_list)->white, text, strlen(text)+1);
+  free(text);
+}

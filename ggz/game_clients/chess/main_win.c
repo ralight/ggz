@@ -45,6 +45,7 @@ create_main_win (void)
   GtkWidget *black_time;
   GtkWidget *vbox3;
   GtkWidget *last_moves_label;
+  GtkWidget *scrolledwindow1;
   GtkWidget *last_moves;
   GtkWidget *statusbar;
   GtkTooltips *tooltips;
@@ -213,13 +214,22 @@ create_main_win (void)
   gtk_widget_show (last_moves_label);
   gtk_box_pack_start (GTK_BOX (vbox3), last_moves_label, FALSE, FALSE, 0);
 
-  last_moves = gtk_list_new ();
+  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "scrolledwindow1", scrolledwindow1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow1);
+  gtk_box_pack_start (GTK_BOX (vbox3), scrolledwindow1, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+
+  last_moves = gtk_text_new (NULL, NULL);
   gtk_widget_ref (last_moves);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "last_moves", last_moves,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (last_moves);
-  gtk_box_pack_start (GTK_BOX (vbox3), last_moves, TRUE, TRUE, 0);
-  gtk_widget_set_usize (last_moves, 150, -2);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow1), last_moves);
+  gtk_text_insert (GTK_TEXT (last_moves), NULL, NULL, NULL,
+                   _("Last moves:\n"), 12);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
