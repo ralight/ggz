@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5811 2004-02-06 20:31:52Z josef $
+dnl $Id: configure.ac 5948 2004-02-21 05:27:59Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -21,7 +21,7 @@ dnl ==============================================================
 
 if test "$game" != ""; then
    subdirs=$game
-   version=`cat $game/module.dsc | grep Version | sed 's/Version = //'`
+   version=`cat $game/module.dsc | grep Version | grep -v ProtocolVersion | sed 's/Version = //'`
    game=`cat $game/module.dsc | grep Name | sed 's/Name = //' | tr [A-Z] [a-z]`
    package=ggz-gtk-$game
 elif test "$OVERRIDE_PACKAGE" != ""; then 
