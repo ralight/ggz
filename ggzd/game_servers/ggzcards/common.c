@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 5010 2002-10-23 18:41:30Z jdorje $
+ * $Id: common.c 5015 2002-10-23 22:01:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -57,28 +57,16 @@ game_t game = {
 
 bool seats_full(void)
 {
-	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) == 0
+		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
 }
 
 bool seats_empty(void)
 {
-	int i;
-
-	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) > 0) {
-	  printf("There are player seats.\n");
-		return FALSE;
-	}
-
-	for (i = 0; i < ggzdmod_get_max_num_spectators(game.ggz); i++)
-		if (ggzdmod_get_spectator(game.ggz, i).name) 
-		  {
-		    printf("Spectator %d - named %s.\n",
-			   i, ggzdmod_get_spectator(game.ggz, i).name);
-			return FALSE;
-		  }
-
-	return TRUE;
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0
+		&& ggzdmod_count_spectators(game.ggz) == 0;
 }
 
 const char *get_state_name(server_state_t state)
