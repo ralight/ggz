@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Documentation
 dnl =======================================
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(ggz-docs, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
