@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6250 2004-11-04 01:40:38Z jdorje $
+ * $Id: main_win.c 6267 2004-11-05 07:31:58Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -202,6 +202,8 @@ static void board_resized(void)
 
 	gtk_widget_realize(widget);
 	rvr_buf = gdk_pixmap_new(widget->window, w, h, -1);
+	gdk_draw_rectangle(rvr_buf, widget->style->black_gc, TRUE,
+			   0, 0, w, h);
 
 	PIXSIZE = MIN(w, h) / 8;
 

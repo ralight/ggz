@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6249 2004-11-04 00:17:50Z jdorje $
+ * $Id: main_win.c 6267 2004-11-05 07:31:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -176,6 +176,9 @@ static void window_resized(void)
 
 	gtk_widget_realize(widget); /* HACK: must be realized before used. */
 	ttt_buf = gdk_pixmap_new(widget->window, w, h, -1);
+	gdk_draw_rectangle(ttt_buf,
+			   widget->style->black_gc, TRUE, 0, 0, w, h);
+
 
 	BORDERSIZE = MIN(w, h) / 20;
 	GRIDSIZE = (MIN(w, h) - 2 * BORDERSIZE) / 3;
