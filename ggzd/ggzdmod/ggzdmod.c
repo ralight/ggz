@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: ggzdmod.c 2776 2001-12-05 22:33:25Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -57,16 +57,27 @@
 
 
 /* 
- * internal functions
+ * internal function prototypes
  */
 
+static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data);
+static int get_fd_max(_GGZdMod * mod);
+static fd_set get_active_fd_set(_GGZdMod *mod);
+static void _ggzdmod_set_num_seats(_GGZdMod *mod, int num_seats);
+static int strings_differ(char *s1, char *s2);
+static void set_state(_GGZdMod * ggzdmod, GGZdModState state);
+static int handle_event(_GGZdMod * mod, fd_set read_fds);
+static int send_game_launch(_GGZdMod * mod);
+static int game_fork(_GGZdMod * mod);
 
 /* Functions for manipulating seats */
 static GGZSeat* seat_copy(GGZSeat *orig);
 static int seat_compare(GGZSeat *a, GGZSeat *b);
 static int seat_find_player(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
+#if 0 /* Not currently used */
 static void dump_seats(_GGZdMod *mod);
+#endif
 static int seats_open(_GGZdMod* mod);
 static void seat_print(_GGZdMod* mod, GGZSeat *seat);
 
@@ -987,10 +998,8 @@ void _ggzdmod_handle_state_response(_GGZdMod * ggzdmod)
 }
 
 
-
-
-
-
+#if 0 /* Not currently used.  See also the
+	 prototype up above. */
 static void dump_seats(_GGZdMod *mod)
 {
 	GGZListEntry *entry;
@@ -1007,6 +1016,7 @@ static void dump_seats(_GGZdMod *mod)
 	}
 	ggzdmod_log(mod, "GGZDMOD: End Seat dump");
 }
+#endif
 
 
 static int seats_open(_GGZdMod* mod)
