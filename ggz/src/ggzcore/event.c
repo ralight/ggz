@@ -29,6 +29,7 @@
 #include <state.h>
 #include <net.h>
 
+#include <errno.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -356,9 +357,14 @@ int ggzcore_event_ispending(void)
 	struct pollfd fd[1] = {{event_pipe[0], POLLIN, 0}};
 
 	ggzcore_debug(GGZ_DBG_POLL, "Checking for GGZ events");
-	if ( (status = poll(fd, 1, 0)) < 0)
-		ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
-	else if (status > 0)
+	if ( (status = poll(fd, 1, 0)) < 0) {
+		if (errno == EINTR) 
+			/* Ignore interruptions */
+			status = 0;
+		else 
+			ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
+	} 
+	else if (status)
 		ggzcore_debug(GGZ_DBG_POLL, "Found a GGZ event!");
 
 	return status;
@@ -411,9 +417,14 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
 	
 	/* FIXME: add game module */
 
-	if ( (count = poll(fds, total_fds, timeout)) < 0)
-		ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
-	
+	if ( (count = poll(fds, total_fds, timeout)) < 0) {
+		if (errno == EINTR) 
+			/* Ignore interruptions */
+			count = 0;
+		else 
+			ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
+	}
+
 	if (do_net && fds[nfds+1].revents) {
 		if (fds[nfds+1].revents == POLLHUP)
 			_ggzcore_net_disconnect();

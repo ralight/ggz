@@ -180,10 +180,14 @@ int _ggzcore_net_ispending(void)
 		return 0;
 
 	ggzcore_debug(GGZ_DBG_POLL, "Checking for net events");	
-	if (ggz_server_sock >= 0 && (status = poll(fd, 1, 0)) < 0)
-		ggzcore_error_sys_exit("poll failed in _ggzcore_net_pending");
-
-	if (status)
+	if ( (status = poll(fd, 1, 0)) < 0) {
+		if (errno == EINTR) 
+			/* Ignore interruptions */
+			status = 0;
+		else 
+			ggzcore_error_sys_exit("poll failed in _ggzcore_net_pending");
+	}
+	else if (status)
 		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
 
 	return status;
