@@ -19,6 +19,7 @@
 #undef DEBUG
 #undef ENABLE_NLS
 #undef GGZDATADIR
+#undef GTK2
 #undef NDEBUG
 #undef PACKAGE_LOCALE_DIR
 
