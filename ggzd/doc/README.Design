@@ -1,0 +1,538 @@
+/*
+ * File: README.Design
+ * Author: Brent Hendricks
+ * Project: NetGames
+ * Date: 10/29/99
+ * Desc: Design document
+ *
+ * Copyright (C) 1999 Brent Hendricks.
+ *
+ * File version : $Revision: 12 $
+ * Last modification : $Date: 2000-01-26 08:31:43 -0800 (Wed, 26 Jan 2000) $
+ */
+
+
+Table of Contents
+
+1 Introduction
+  1.1 Desired Features
+2 Client-Server Communication
+  2.1 Pre-Game Interactions 
+  2.2 Chat Facility
+  2.3 Game interactions
+3 Design Overview
+  3.1 Server Design
+      3.1.1 Main NetGames server (control)
+      3.1.2 Individual Game Servers
+      3.1.3 Run-time Config Utility
+      3.1.4 Key "Subsystems"
+      3.1.5 Data Structures
+
+
+1 Introduction
+===============
+
+At some point during the devlopment of NetSpades, I realized that a major
+rewrite was in order.  I wasn't happy with the client/server interactions,
+and I wanted to add some features which just wouldn't work within the
+current infrstructure.  So I began to formulate grandiose plans for
+"NetSpades v5", but continued to work on the 4.X series.  A little later, I
+began to contemplate adding the ability to play Hearts as well as Spades.
+But why stop there?  Why not develop a general framework for playing
+networked games?  And so my plans have developed into what I am now calling
+NetGames.  This document outline my plans for the NetGames system, along
+with some design issues/decisions.
+
+
+1.1 Desired Features
+=====================
+
+There are many planned features for NetGames.  Some will take longer than
+others to implement.  Some may be discarded at a later date.  Planned
+features include (but are not limited to):
+
+- Password-based user accounts
+- Persistent user statistics
+- Ability to leave and then rejoin game
+- Ability to reserve games for specific users
+- Dynamic run-time configuration of server
+- Ability to add/remove game types from server without having to recompile
+- Capability for users to chat without resorting to second port/socket
+- Basic infrastructure from game developers to write network games without
+  having to worry about connections/login/user accounts/etc.
+  
+
+2 Client-Server Communications
+==============================
+
+Each game will have its own specified protocol for interactions between
+client and server.  Before a game is launched however, the client and server
+will communicate via the protocol described here. It is recommended that
+game developers use a message passing scheme similar to the one described
+here for consistency.
+
+The server will provide a chat facility independent of the type of game
+being played.
+
+
+2.1 Pre-Game Interactions 
+=========================
+
+Three types of data are exchanged between the client and the server:
+- chr: a 1-byte signed char 
+- int: a 4-byte signed integer in network byte order 
+- str: a multibyte null-terminated string preceeded by integer length. 
+
+Interactions take one of three forms: messages, requests, and responses.
+Each interaction will be prefaced by a header indentifying it (some
+interactions consist solely of the header).  The header is sent as an int.
+
+The following is a complete list of interactions between the client and the
+server prior to launching a game (interactions for specific game modules will
+be described elsewhere).  Rather than list all of the client originated
+messages, and then all of the server originated messages, I have chosen to
+intersperse client requests and responses.
+
+
+MSG_SERVER_ID
+  str: server identification (plus relevant server options)
+
+MSG_SERVER_FULL
+  
+REQ_NEW_LOGIN
+  str: login name
+RSP_NEW_LOGIN
+  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+  str: initial password (if success)
+  int: game type checksum (if success)
+
+REQ_LOGIN
+  str: login name
+  str: password
+RSP_LOGIN
+  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+  int: game type checksum (if success)
+  chr: reservation flag 
+
+REQ_ANON_LOGIN
+  str: name
+RSP_ANON_LOGIN
+  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+  int: game type checksum (if success)
+
+REQ_MOTD
+RSP_MOTD
+  str: message of the day (useful or otherwise information from server)
+
+REQ_LOGOUT
+RSP_LOGOUT
+  chr: success flag (0 for success, -1 error)
+
+REQ_PREF_CHANGE
+  chr: preference flag (indicates pref to change)
+  (str): new data value
+RSP_PREF_CHANGE
+  chr: success flag (0 for success, -1 error)
+
+REQ_REMOVE_USER
+  str: login name
+  str: password
+RSP_REMOVE_USER
+  chr: success flag (0 for success, -1 error)
+
+REQ_USER_LIST
+RSP_USER_LIST
+  int: number of users (-1 for error)
+  sequence of
+    str: user name
+    int: game table index (-1 if user not at a table)
+
+REQ_GAME_TYPES
+  chr: verbose flag (0 for short list, 1 for long descriptions)
+RSP_GAME_TYPES
+  int: number of game types (-1 for error)
+  sequence of
+    int: game type index
+    str: game name
+    str: version 
+    str: description (only if long)
+    str: author (only if long)
+    str: homepage (only if long)
+
+REQ_TABLE_LIST
+  int: game type index (-1 for all type, -2 for reserved, -3 for open games)
+RSP_TABLE_LIST
+  int: number of game tables (-1 for error)
+  sequence of
+    int: table index
+    int: game type index
+    chr: play/wait flag (0 if waiting for players, 1 if playing)
+    int: number of seats at table
+    int: number of open seats
+    int: number of human players at table
+    sequence of
+      str: names of human players at table
+      
+REQ_TABLE_OPTIONS
+  int: table index
+RSP_TABLE_OPTIONS
+  int: size of options struct (-1 for error)
+  struct: game options
+  
+REQ_LAUNCH_GAME
+  int: game type index
+  int: number of players
+  chr: computer player bitmask
+  int: number of reservations (possibly 0)
+  sequence of
+    str: login name for reservation
+  int: size of options struct
+  struct: game options
+RSP_LAUNCH_GAME
+  chr: success flag (0 for success, negative values for various failures)
+  
+REQ_JOIN_GAME
+  int: game index
+RSP_JOIN_GAME
+  chr: success flag (0 for success, 01 for failure)
+  
+REQ_USER_STAT
+  str: login name (NULL for all users)
+  int: game type index (-1 for all types)
+RSP_USER_STAT
+  int: number of game types (-1 for error)
+  sequence of
+    int: game type index
+    int: number of users 
+    sequence of 
+      int: number of games played 
+      int: number of games won
+
+
+2.2 Chat Facility
+=================
+
+Similar to the "Taunt" feature provided with NetSpades, the NetGames server
+will provide the ability to send messages to other players.  Here are the
+interactions necessary for the chat functionality.
+
+REQ_CHAT
+  str: chat string 
+RSP_CHAT
+  chr: success flag (0 for success, -1 error)
+  
+MSG_CHAT
+  str: name of user who sent chat
+  str: chat string
+  
+
+2.3 Game Interactions
+=====================
+
+In order to allow the NetGames server to identify chat and other control
+messages during the course of a game, it is necessary that interactions with
+a game being played have an identifiable header (MSG_GAMEPLAY).  This header
+will be stripped off before the rest of the data is sent to the game itself.
+Similarly, any messages from the game to the client will have a header
+prepended.  NetGames will no doubt provide library functions which handle
+the headers.
+
+
+3 Design Overview
+==================
+
+3.1 Server Design
+==================
+
+There are three parts which comprise the server side:
+
+- Main NetGames server (called control)
+- Individual game servers
+- Run-time config utility program
+
+We will discuss each of these in turn, but first we'll look at the overall
+architecture.  A sketch of the server architecture is in server_arch.fig.
+The main server (control) will handle incoming connections, manage the user
+database, and keep track of all of the games being played (referred to as
+game tables).  When a user is not playing at a specific game table, he is
+communicating with control.
+
+Control will not handle the specifics of how to play any particulat game.
+That logic is contained in the individual game servers.  It is expected (and
+hoped!) that game developers will write their own servers for use with
+NetGames.  NetGames will attempt to provide a simple franework for writing
+network games in which developer need not worry about connections or user
+logins or maintaining statistics.  All of that will be done by NetGames.
+Game devlopers should only have to concern themselves with gameplay.
+
+The third item is more loosely connected.  We will provide some sort of
+run-time configuration utility for NetGames, so the main server will not
+have to be restarted (or worse.. recompiled!) in order for various options
+to be changed. 
+
+
+Some options may include:
+
+- Location of game servers
+- Set auto removal of inactive users
+  * Set inactivity threshold
+- Set auto clearing of statistics
+  * Set clearing interval
+- Log level (level of detail in server logs)
+
+
+3.1.1 Main NetGames server (control)
+====================================
+
+This is the main brain for the server side of NetGames.  It handles client
+logins and new user registrations.  It manages option negotiation with the
+clients, and launches new game sessions.  It maintains a list of running
+game sessions and keeps a database of win/lose statistics for each user.
+Control coordinates games, users, and databases, and is responsible for
+interacting with the client, the running games, and the config utility.
+
+I considered several possble designs before settling on the current one.  It
+is possible that as NetGames develops this design will change as well. Since
+control must communicate with multiple parties (game tables, users, etc.) I
+decided to use a multi-threaded concurrent server where each connection (be
+it user or game table) gets its own thread.  This avoids the situation where
+control is servicing a request and therefore cannot handle any incoming
+connections or other requests.  I chose threads rather than forking child
+processes because threads have a smaller overhead and it is easier to share
+memory between threads than between processes.
+
+Every time a new user connects, control creates a new thread to handle all
+requests for that user.  This thread is known as the player handler.  If the
+user decides to launch a new game table, the player handler creates a thread
+to handle all requests from the game table.  This new thread is known as the
+table handler.  The table handler waits until enough players have joined the
+table and then forks a process, known as the game table process, in which to
+run the game server (The reason game servers are not run within a thread is
+so that game developers not be required to worry about writing thread-dafe
+code).
+
+During the course of the game, the player thread for each player acts as a
+liason between the player and the game table, passing requests back and
+forth transparent to the player and the game server.  When a player logs
+out, the player handler thread is destroyed.
+
+
+
+3.1.1.1  Interactions between control and running games
+==========================================================
+
+Sample game servers will be provided with NetGames, but it is hoped that
+others will write game modules, and either submit them for inclusion in the
+NetGames package, or maintain and distribute them separately.  The following
+API describes how control will interact with the game processes.
+
+The following is a complete list of messages between the game module and the
+control section of the server.  Again, I have chosen to intersperse game
+module requests with the corresponding control responses.
+
+Please note: the following is not written stone, merely a list of ideas.
+
+REQ_GAME_LAUNCH
+  struct: game options
+  int: number of seats
+  chr: computer player mask
+  sequence of
+    str: player name
+    int: player fd
+  int: number of reservations (possibly 0)
+  sequence of
+RSP_GAME_LAUNCH
+  chr: successflag (0 if succesful, -1 on error)
+
+MSG_GAME_OVER
+  int: number of player statistics
+  sequence of 
+    int: player index
+    int: games won
+    int: games lost
+  
+
+- Alter reservations [?]
+  * game notifies control of modifications
+- Join player to game
+  * control sends player code and socket
+- Release player from game
+  * game notifies control that player has left
+  * also note whether between games or during game
+- Game end
+  * release all players
+  * control then updates player statistics
+
+
+3.1.1.2  Interactions between control and config utility
+========================================================
+
+Since the server runs non-interactively in the background, there needs to be
+a run-time configuration tool so that server options may be changed without
+restarting.  This program will communicate with control via a Unix domain
+socket or a message queue, or some such thing.
+
+Messages between control and the config utility include:
+
+- Request available game types (loaded modules)
+- Add/Remove Game types
+- Remove users
+- Request list of active games
+- Clear Player statistics
+- Modify logging
+
+
+3.1.2 Individual Game Servers
+=============================
+
+As described above, game servers run in their own processes, and are
+responsible for handling the gameplay of a particular game.
+
+There are three possibilities for game server design.
+
+1) Compiled in.  The game table process calls a statrtup function which
+begins execution of the game server.  This scheme has the benefit that the
+server has access to control's data structures at the time the process was
+forked.  Communication between the game table and control can be via pipes
+or a socketpair.  The problem with this scheme is that to change which games
+are offered by a particular server requires a reocmpile.  Not good.
+
+2) Dynamically loaded modules.  Similar to the above except that game server
+exist as loadable modules which may be inserted and removed at runtime.
+This allows for adding new game types without a recompile.  Downside is that
+it requires both game developers and myself to know how to deal with
+loadable modules.
+
+3) Exec() separate program.  In this scheme, NetGames acts much like the
+inet daemon by handling the connections and then doing a fork()/exec() to
+launch the game server.  This scheme also allows for adding new games at
+runtime and has the bonus effect that game servers can be written in other
+kanguages that C.
+
+The current design requires game servers of type three.  It is possible
+however, that in the future NetGames will allow dynamically loaded server
+modules as well.
+
+Once the game server is running it is necessary that control pass it some
+required information such as player names and file descriptors.  This
+communication occurs over a pipe or socketpair which is established prior to
+the forking of the process.  The interactions between game modules and the
+control section are listed above in section 3.1.1.1.
+
+
+3.1.3 Config Utility
+====================
+
+[FIXME: Write this section]
+
+
+3.1.4 Key Subsystems
+====================
+
+While the architecture of the server is divided into the aforementioned
+three parts, there are a few "subsystems" which are necessary.
+
+
+3.1.4.1 Options Parser
+======================
+
+This is a two part system.  One to parse the command-line arguments, and one
+to parse the configuration file.  Options specified on the command line
+should have a higher precedence than those in the config file. Additionally,
+an alternate config file may be specified on the command line.
+
+At the present, I am using the popt library for cmd-line parsing.  There
+have been no decision made about the config file format, or its parser.  One
+possibility is to use libxml which is popular under GNOME, however
+simplicity may reign instead.
+
+
+3.1.4.2 Login/User Database
+===========================
+
+The server will need to store a database of user ID, name, and password at
+the very least.  This system must allow searching by name or ID, and allow
+for easy addition/deletion.  NetGames ill probably use libdb for this.  a
+SQL database is possible but probably not necessary, and just too much for
+our simple requirements.
+
+
+3.1.4.3 Player Statistics
+=========================
+
+Since the game modules are dynamic, it makes sense to store the statistics
+on a per-game type basis, rather than on a per-user basis.
+
+
+3.1.4.4 Module loading
+======================
+
+[FIXME: Need researched and written]
+
+
+3.1.5 Data Structures
+=====================
+
+Game information structure
+  str: short string for name of game (16 chars?)
+  str: long string for description (256 chars?)
+  chr: allowable player number bitmask
+  chr: allow computer players (1 for yes)
+  int: sizeof options struct in bytes
+  fnc: pointer to function for launching game
+  chr: enabled flag (1 if playing this game is enabled)
+  str: path to game server executable
+  
+There will be an array of these on the server.  This array will be
+initialized at startup, and may be changed when dynamic loading of new game
+modules occurs.  The index into this array is referred to as the game type
+index.
+
+
+Table information structure
+  int: game type index
+  int: number of player seats
+  int: number of open player seats
+  int: number of reserved seats
+  chr: computer players bitmask
+  chr: play/wait flag (0 if waiting for players, 1 if playing)
+  int: file descriptor for communication between table and control
+  int: process or thread ID
+  int[]: array of player indices for registered players
+  int[]: array of player indices for reservations
+  void*: pointer to options struct for this game
+
+ 
+There will be an array of these representing running games.  The index
+into this array is referred to as the table index.
+
+
+User information structure
+  int: user code (unique user id number)
+  str: user name
+  int: file descriptor for communication
+  int: process or thread ID for player handler
+  int: game index
+
+
+There will also be a large array of these, representing connected users.  As
+soon as a user connects, an entry is created and the file descriptor filled
+in.  When the user completes the login process, the user code and name are
+filled in.  When the user launches, or joins a game, the game index is
+filled in.
+
+
+reservation_t {
+  int: game index
+  int: user code
+}
+
+An array of these holds all of the reservations requested.  These are
+created when a game is launched with reservation requests.  They may be
+altered once the game has been launched.  They are deleted when a user
+accepts a reservation or declines it.
+
+There will also be a structure for server options.  However, since the
+options themselves are undertermined, rthe data strucuture is not laid out
+here.
+
