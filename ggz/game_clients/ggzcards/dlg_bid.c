@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: dlg_bid.c 3362 2002-02-15 04:36:48Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -77,6 +77,8 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 	destroy_bid_window();
 
 	xw = sqrt(possible_bids / 1.5);
+	if (xw == 0)
+		xw++;
 	yw = (possible_bids + xw - 1) / xw;	/* division, rounded up */
 	leftover = xw * yw - possible_bids;	/* calculate the part of the
 						   rectangle unused */
