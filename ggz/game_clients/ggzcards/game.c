@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2972 2001-12-21 01:45:19Z jdorje $
+ * $Id: game.c 2973 2001-12-21 02:26:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,7 +43,8 @@
 #include "main.h"
 #include "table.h"
 
-struct prefs preferences = { TRUE, FALSE, TRUE };
+/* This is initialized on startup in load_settings(). */
+struct prefs preferences;
 
 int table_max_hand_size = 0;
 
@@ -155,9 +156,8 @@ void game_get_newgame(void)
 	if (preferences.autostart) {
 		(void) game_send_newgame();
 	} else {
-		GtkWidget *menu =
-			gtk_object_get_data(GTK_OBJECT(dlg_main),
-					    "mnu_startgame");
+		GtkWidget *menu = gtk_object_get_data(GTK_OBJECT(dlg_main),
+						      "mnu_startgame");
 		gtk_widget_set_sensitive(menu, TRUE);
 
 		ggz_debug("main", "Handling newgame request from server.");

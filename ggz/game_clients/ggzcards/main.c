@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2945 2001-12-18 23:33:44Z jdorje $
+ * $Id: main.c 2973 2001-12-21 02:26:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,6 +51,7 @@
 GtkWidget *dlg_main = NULL;
 
 static void initialize_debugging(void);
+static void access_settings(int save);
 static void cleanup_debugging(void);
 
 int main(int argc, char *argv[])
@@ -59,8 +60,9 @@ int main(int argc, char *argv[])
 
 	/* Standard initializations. */
 	initialize_debugging();
-	gtk_init(&argc, &argv);
 	fd = client_initialize();
+	gtk_init(&argc, &argv);
+	access_settings(0);
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* This shouldn't go here, but I see no better place right now. The
@@ -79,7 +81,12 @@ int main(int argc, char *argv[])
 	gtk_main();
 
 	/* Now clean up and shut down. */
+	ggz_debug("main", "Cleaning up and quitting.");
 	client_quit();
+
+	access_settings(1);
+	ggz_conf_cleanup();
+
 	cleanup_debugging();
 	return 0;
 }
@@ -98,6 +105,44 @@ static void initialize_debugging(void)
 	g_free(file_name);
 
 	ggz_debug("main", "Starting GGZCards client.");
+}
+
+/* save==0 => load; save==0 => save */
+static void access_settings(int save)
+{
+	static int file = -1;
+
+	if (file < 0) {
+		char *name =
+			g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
+					getenv("HOME"));
+		file = ggz_conf_parse(name, CONF_RDWR | CONF_CREATE);
+
+		if (file < 0)
+			ggz_debug("main", "Couldn't open conf file '%s'.",
+				  name);
+
+		g_free(name);
+	}
+
+	if (save) {
+		/* Save. */
+		ggz_conf_write_int(file, "BOOLEAN", "animation",
+				   preferences.animation);
+		ggz_conf_write_int(file, "BOOLEAN", "cardlists",
+				   preferences.cardlists);
+		ggz_conf_write_int(file, "BOOLEAN", "autostart",
+				   preferences.autostart);
+		ggz_conf_commit(file);
+	} else {
+		/* Load. */
+		preferences.animation =
+			ggz_conf_read_int(file, "BOOLEAN", "animation", 1);
+		preferences.cardlists =
+			ggz_conf_read_int(file, "BOOLEAN", "cardlists", 1);
+		preferences.autostart =
+			ggz_conf_read_int(file, "BOOLEAN", "autostart", 0);
+	}
 }
 
 static void cleanup_debugging(void)
