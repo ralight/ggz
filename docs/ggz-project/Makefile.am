@@ -5,12 +5,14 @@ doc_DATA = \
 	cvs-modules.txt \
 	security-and-privacy \
 	Roadmap \
-	release-procedure
+	release-procedure \
+	buildsystem
 
 EXTRA_DIST = \
 	Internationalization \
 	cvs-modules.txt \
 	security-and-privacy \
 	Roadmap \
-	release-procedure
+	release-procedure \
+	buildsystem
 
