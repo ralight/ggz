@@ -100,8 +100,14 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       break;
     case CHESS_MSG_GAMEOVER:
       /* The game is over */
+      printf("Got a MSG_GAMEOVER\n");
       es_read_char(fd, &args[0]);
       game_update(CHESS_EVENT_GAMEOVER, args);
+      break;
+    case CHESS_REQ_DRAW:
+      /* Do you want to draw the game ? */
+      printf("Got a REQ_DRAW\n");
+      game_update(CHESS_EVENT_DRAW, NULL);
       break;
     default:
       game_message("Unknown opcode: %d\n", op);
@@ -119,4 +125,8 @@ void net_send_move(char from, char to) {
   es_write_char(game_info.fd, CHESS_REQ_MOVE);
   es_write_char(game_info.fd, from);
   es_write_char(game_info.fd, to);
+}
+
+void net_send_draw() {
+  es_write_char(game_info.fd, CHESS_REQ_DRAW);
 }

@@ -31,6 +31,7 @@
 #include "game.h"
 #include "board.h"
 #include "chess.h"
+#include "popup.h"
 #include "net.h"
 
 /* Game info struct */
@@ -222,6 +223,9 @@ void game_update(int event, void *arg) {
           game_message("The game should be over, I don't know why");
       }
       game_info.state = CHESS_STATE_DONE;
+      break;
+    case CHESS_EVENT_DRAW:
+      gtk_widget_show(create_draw_dialog("The server wants to know if you want to draw the game"));
       break;
     default:
       game_message("Unknown event! %d", event);

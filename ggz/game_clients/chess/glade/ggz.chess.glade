@@ -76,6 +76,31 @@
 	  </widget>
 	</widget>
       </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>game</name>
+	<label>Game</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>game_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>request_draw</name>
+	    <tooltip>Ask the other player for a draw</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>board_request_draw</handler>
+	      <last_modification_time>Wed, 14 Feb 2001 01:17:12 GMT</last_modification_time>
+	    </signal>
+	    <label>Request draw</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
     </widget>
 
     <widget>

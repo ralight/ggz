@@ -56,3 +56,6 @@ void board_draw_pieces();
 void board_draw_highlights();
 void board_draw_outline(int, int, GdkGC *);
 void board_draw_piece(int piece, int x, int y);
+
+/* UI */
+void board_request_draw();

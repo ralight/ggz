@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include "board.h"
 #include "game.h"
+#include "net.h"
 #include "libcgc/cgc.h"
 #include "support.h"
 #include "chess.h"
@@ -278,4 +279,9 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
       pieces[piece], pieces_mask[piece], 5, 5);
   game_info.src_x = x;
   game_info.src_y = y;
+}
+
+void board_request_draw() {
+  printf("Requesting draw!\n");
+  net_send_draw();
 }

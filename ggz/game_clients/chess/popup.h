@@ -1,9 +1,9 @@
 /*
- * File: net.h
+ * File: popup.h
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Date: 09/17/2000
- * Desc: Header for net.c
+ * Desc: Popup windows (draw game and time option)
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,15 +22,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* Send time option to server */
-void net_send_time(int time_option);
+GtkWidget* create_draw_dialog (const char *message);
 
-/* Send move to server */
-void net_send_move(char from, char to);
-
-/* Request draw */
-void net_send_draw();
-
-/* All server input will pass through here
- * Then we will filter it and send to game_update */
-void net_handle_input(gpointer data, int fd, GdkInputCondition cond);

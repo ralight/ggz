@@ -23,6 +23,8 @@ ggz_chess_SOURCES = main_win.c \
                     net.h \
                     ggz.c \
                     ggz.h \
+                    popup.c \
+                    popup.h \
                     main.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@

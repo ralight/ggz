@@ -28,6 +28,10 @@ create_main_win (void)
   GtkWidget *file_menu;
   GtkAccelGroup *file_menu_accels;
   GtkWidget *exit;
+  GtkWidget *game;
+  GtkWidget *game_menu;
+  GtkAccelGroup *game_menu_accels;
+  GtkWidget *request_draw;
   GtkWidget *hbox1;
   GtkWidget *hpaned1;
   GtkWidget *board;
@@ -39,6 +43,9 @@ create_main_win (void)
   GtkWidget *last_moves_label;
   GtkWidget *last_moves;
   GtkWidget *statusbar;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
@@ -78,6 +85,28 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (exit);
   gtk_container_add (GTK_CONTAINER (file_menu), exit);
+
+  game = gtk_menu_item_new_with_label (_("Game"));
+  gtk_widget_ref (game);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "game", game,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (game);
+  gtk_container_add (GTK_CONTAINER (menubar), game);
+
+  game_menu = gtk_menu_new ();
+  gtk_widget_ref (game_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "game_menu", game_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
+  game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (game_menu));
+
+  request_draw = gtk_menu_item_new_with_label (_("Request draw"));
+  gtk_widget_ref (request_draw);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "request_draw", request_draw,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (request_draw);
+  gtk_container_add (GTK_CONTAINER (game_menu), request_draw);
+  gtk_tooltips_set_tip (tooltips, request_draw, _("Ask the other player for a draw"), NULL);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
@@ -170,6 +199,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (on_exit_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (request_draw), "activate",
+                      GTK_SIGNAL_FUNC (board_request_draw),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (board), "configure_event",
                       GTK_SIGNAL_FUNC (on_board_configure_event),
                       NULL);
@@ -188,6 +220,8 @@ create_main_win (void)
   gtk_signal_connect_after (GTK_OBJECT (board), "drag_drop",
                             GTK_SIGNAL_FUNC (on_board_drag_drop),
                             NULL);
+
+  gtk_object_set_data (GTK_OBJECT (main_win), "tooltips", tooltips);
 
   return main_win;
 }
