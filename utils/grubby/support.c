@@ -18,8 +18,6 @@ int check_known( char *name )
 {
 	int i;
 
-	printf( "Checking on name: %s, Total known: %d\n", name, memmory.num_people );
-
 	/* get the users number */
 	for(i=0; i<memmory.num_people; i++)
 		if( !strcmp(memmory.people[i].username, name))

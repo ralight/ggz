@@ -207,3 +207,22 @@ void show_bad_lang( char *from )
 	sprintf( out, "%s, please watch your language.", from);
 	send_chat( out );
 }
+
+void send_chat_insert_name( char *from, char *msg )
+{
+	char *p;
+	char out[grubby.chat_length];
+	int percent_s=0;
+
+	for( p=msg; *p!='\0'; p++ )
+		if( *p == '%' && *(p+1) == 's' )
+			percent_s++;
+
+	if( percent_s )
+		sprintf( out, msg, grubby.name ); 
+	else
+		strcpy( out, msg );
+
+	send_msg( from, out );
+}
+

@@ -14,6 +14,7 @@
 #include "chat.h"
 #include "datatypes.h"
 #include "log.h"
+#include "messages.h"
 #include "support.h"
 
 struct Grubby grubby;
@@ -61,6 +62,7 @@ void owner_commands( char **words, int totalwords )
 void public_commands( char *from, char **words, int totalwords)
 {
 	char out[grubby.chat_length];
+	int i;
 
 	if( !strcasecmp(words[0], grubby.name) )
 	{
@@ -69,6 +71,10 @@ void public_commands( char *from, char **words, int totalwords)
 			case 2:
 				if( !strcasecmp(words[1], "help") )
 					show_public_help( from );
+
+				if( !strcasecmp(words[1], "about") )
+					for(i=0; i<sizeof(about_strings)/sizeof(char *); i++)
+						send_chat_insert_name( from, about_strings[i] );
 				break;
 			case 5:
 				if( !strcasecmp( words[1], "have" ) && !strcasecmp( words[2], "you") &&
@@ -171,6 +177,8 @@ void show_public_help( char *from )
 	send_msg( from, "          Public Commands I Understand" );
 	send_msg( from, "          ----------------------------" );
 	send_msg( from, " " );
+	send_msg( from, "about ...................... I'll tell you a little about");
+	send_msg( from, "                             my history." );
 	send_msg( from, "help ....................... Displays the commands that");
 	send_msg( from, "                             I will accept from you." );
 	send_msg( from, "have you seen <username> ... Will return how long ago" );

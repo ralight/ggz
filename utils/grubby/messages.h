@@ -18,27 +18,6 @@ char *great_strings[] = {
 
 
 /*
- *  This message is given out when a users
- *  request '/help'. %s is Gurbbies username.
- */
-
-char *help_strings[] = {
-	"I am aware of the following commands:",
-	"    %s: About",
-	"    %s: Help",
-	"    %s: Go away",
-	"    %s: My name is <name>",
-	"    %s: My email is <email>",
-	"    %s: My url is <URL>",
-	"    %s: My info is <info about yourself>",
-	"    %s: My birthday is <MM-DD-YYYY>",
-	"    %s: Have you seen <name>",
-	"    %s: Tell <name> <A message>",
-	"    %s: Whois <name>"
-} ;
-
-
-/*
  *  When someone asks for information about Grubby
  *  threw '/about' the following is returned.
  *  %s is Grubbies username
@@ -56,3 +35,4 @@ char *about_strings[] = {
 	"problems with me, be sure to inform him!"
 } ;
 
+#endif
