@@ -567,14 +567,9 @@ int ggz_conf_parse(const char *path, const GGZConfType options)
 	opt_rdonly = ((options & GGZ_CONF_RDONLY) == GGZ_CONF_RDONLY);
 	opt_rdwr = ((options & GGZ_CONF_RDWR) == GGZ_CONF_RDWR);
 
-	if(opt_rdonly && (opt_rdwr || opt_create)) {
-		_ggz_debug("CONF",
-			      "ggzcore_confio_parse: Invalid options");
-		return -1;
-	}
-	if(!opt_rdonly && !opt_rdwr) {
-		_ggz_debug("CONF",
-			      "ggzcore_confio_parse: Invalid options");
+	if((opt_rdonly && (opt_rdwr || opt_create)) ||
+	   (!opt_rdonly && !opt_rdwr)) {
+		ggz_error_msg("ggzcore_conf_parse: Invalid options");
 		return -1;
 	}
 
