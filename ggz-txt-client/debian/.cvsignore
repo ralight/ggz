@@ -1,5 +1,4 @@
-prerm.debhelper
-postinst.debhelper
+*.debhelper
 files
 dirs
 tmp
