@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2640 2001-11-03 22:29:06Z bmh $
+ * $Id: ggzdmod.c 2641 2001-11-03 23:03:17Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -31,12 +31,14 @@
 #include <config.h>		/* site-specific config */
 
 #include <errno.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include <easysock.h>
@@ -63,7 +65,7 @@ typedef struct _GGZdMod {
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
 
-	int pid;		/* ggz-side only */
+	pid_t pid;		/* ggz-side only */
 	char **argv;            /* command-line arguments for launching module */
 
 	/* etc. */
@@ -783,10 +785,10 @@ int ggzdmod_disconnect(GGZdMod * mod)
 	}
 
 	/* For the ggz side, we kill the game server and close the socket */
-	if (ggzdmod->type = GGZMOD_GGZ) {
+	if (ggzdmod->type == GGZDMOD_GGZ) {
 		/* Make sure game server is dead */
 		if (ggzdmod->pid > 0)
-			kill(ggzdmodpid, SIGINT);
+			kill(ggzdmod->pid, SIGINT);
 		close(ggzdmod->fd);
 		/* FIXME: what other cleanups should we do? */
 	}
