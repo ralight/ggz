@@ -215,19 +215,19 @@ int handle_ggz(int ggz_fd, int* p_fd)
 		case REQ_GAME_LAUNCH:
 			ggz_debug("Received a GGZ REQ_GAME_LAUNCH.");
 			if(ggz_game_launch() == 0)
-				status = update(WH_EVENT_LAUNCH, NULL);
+				status = handle_launch_event();
 			break;
 		case REQ_GAME_JOIN:
 			ggz_debug("Received a GGZ REQ_GAME_JOIN.");
 			if(ggz_player_join(&p, p_fd) == 0) {
-				status = update(WH_EVENT_JOIN, &p);
+				status = handle_join_event(p);
 				status = 1;
 			}
 			break;
 		case REQ_GAME_LEAVE:
 			ggz_debug("Received a GGZ REQ_GAME_LEAVE.");
 			if((status = ggz_player_leave(&p, p_fd)) == 0) {
-				update(WH_EVENT_LEAVE, &p);
+				handle_leave_event(p);
 				status = 2;
 			}
 			break;
@@ -533,7 +533,7 @@ int rec_play(player_t p, int *card_index)
 	 * error, which is not what happened.  This is just a player mistake */
 	err = game_verify_play(index);
 	if (err == NULL)
-		update(WH_EVENT_PLAY, &index);
+		handle_play_event(index);
 	else
 		send_badplay(p, err);
 
@@ -756,7 +756,7 @@ int handle_player(player_t p)
 		case WH_RSP_NEWGAME:
 			if (game.state == WH_STATE_NOTPLAYING) {
 				status = 0;
-				update(WH_EVENT_NEWGAME, &p);
+				handle_newgame_event(p);
 			} else {
 				ggz_debug("SERVER/CLIENT bug?: received WH_RSP_NEWGAME while we were in state %d (%s).", game.state, game_states[game.state]);
 				status = -1;
@@ -798,7 +798,7 @@ int handle_player(player_t p)
 			break;
 		case WH_RSP_BID:
 			if((status = rec_bid(p, &index)) == 0)
-				update(WH_EVENT_BID, &index);
+				handle_bid_event(index);
 			break;
 		case WH_RSP_PLAY:
 			status = rec_play(p, &index);
@@ -1165,34 +1165,6 @@ int handle_bid_event(int bid_index)
 	else
 		/* do next move */
 		next_play();
-	return 0;
-}
-
-/* Update game state */
-int update(server_event_t event, void *data)
-{
-	
-	switch (event) {
-		case WH_EVENT_LAUNCH:
-                        handle_launch_event();
-			break;
-		case WH_EVENT_JOIN:
-                        handle_join_event(*(player_t*)data);
-			break;
-		case WH_EVENT_NEWGAME:
-                        handle_newgame_event(*(player_t *)data);
-			break;
-		case WH_EVENT_LEAVE:
-                        handle_leave_event();
-			break;
-		case WH_EVENT_PLAY:
-                        handle_play_event(*(int *)data);
-			break;
-		case WH_EVENT_BID:
-			handle_bid_event(*(int*)data);
-			break;
-	}
-	
 	return 0;
 }
 

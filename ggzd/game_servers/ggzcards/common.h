@@ -44,16 +44,6 @@ typedef enum {
 	WH_STATE_WAIT_FOR_PLAY		/* waiting for a play */
 } server_state_t;
 
-/* GGZCards game events */
-typedef enum {
-	WH_EVENT_LAUNCH,		
-	WH_EVENT_NEWGAME,	
-	WH_EVENT_JOIN,		
-	WH_EVENT_LEAVE,		
-	WH_EVENT_BID,		
-	WH_EVENT_PLAY		
-} server_event_t;
-
 
 /* in different games, bids may have different meanings.
  *   we'll just use this arbitrary data structure for it */
@@ -198,7 +188,14 @@ extern int send_newgame();
 extern int rec_options(int, int*);
 
 extern void next_play(void);				/* make the next move */
-extern int update(server_event_t event, void *data);	/* receive a player move */
+
+/* handle player events -- used to all just be "update" */
+extern int handle_launch_event();
+extern int handle_join_event(player_t);
+extern int handle_leave_event();
+extern int handle_newgame_event(player_t);
+extern int handle_play_event(int);
+extern int handle_bid_event(int);
 
 extern void init_game(int which); /* pass in the name of the game */
 extern int handle_ggz(int, int *);

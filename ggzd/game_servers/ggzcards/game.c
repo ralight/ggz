@@ -639,7 +639,7 @@ int game_get_bid()
 				/* handled just like a bid */
 				if(game.hand_size != 10) {
 					bid.bid = (long)cards_deal_card().suit;
-					update(WH_EVENT_BID, (void*)&bid);
+					handle_bid_event((int) bid.bid); /* TODO: MUST FIX */
 				} else
 					status = req_bid(game.dealer, 4, suit_names);
 			} else { /* get a player's numberical bid */
