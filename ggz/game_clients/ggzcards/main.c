@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: main.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -445,7 +445,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	name_labels = g_object_get_data(G_OBJECT(dlg), "names");
 	assert(image && canvas && name_labels);
 
-	gdk_window_get_size(image, &w, &h);
+	gdk_drawable_get_size(image, &w, &h);
 	if (w != width || h != height) {
 		GdkPixmap *old_image = image;
 		image = gdk_pixmap_new(table->window, width, height, -1);

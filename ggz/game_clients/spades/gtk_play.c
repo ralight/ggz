@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: gtk_play.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -65,9 +65,6 @@ void CreatePlayArea(void)
 	    *hBar3,
 	    *hBar4,
 	    *hBar5, /**hand,*/ *hBox, *ioBox, *bid, *bidLabel, *bidTable;
-
-	GdkFont *fixedFont;
-	GtkStyle *style;
 	GtkObject *bidAdj;
 
 
@@ -105,28 +102,6 @@ void CreatePlayArea(void)
 	gtk_misc_set_alignment(GTK_MISC(playArea->tallys[2]), 0, 0.5);
 	gtk_misc_set_alignment(GTK_MISC(playArea->tallys[3]), 0, 0.5);
 
-
-	/* Use fixed font for tally regions */
-	fixedFont =
-	    gdk_font_load
-	    ("-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-iso8859-8");
-	if (fixedFont != NULL) {
-		style =
-		    gtk_style_copy(gtk_widget_get_style
-				   (playArea->teams[0]));
-		gtk_style_set_font(style, fixedFont);
-
-		gtk_widget_set_style(playArea->teams[0], style);
-		gtk_widget_set_style(playArea->teams[1], style);
-		gtk_widget_set_style(playArea->scores[0], style);
-		gtk_widget_set_style(playArea->scores[1], style);
-		gtk_widget_set_style(playArea->bids[0], style);
-		gtk_widget_set_style(playArea->bids[1], style);
-		gtk_widget_set_style(playArea->tallys[0], style);
-		gtk_widget_set_style(playArea->tallys[1], style);
-		gtk_widget_set_style(playArea->tallys[2], style);
-		gtk_widget_set_style(playArea->tallys[3], style);
-	}
 
 	/* ... and show them */
 	gtk_widget_show(playArea->teams[0]);

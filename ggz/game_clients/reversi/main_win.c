@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: main_win.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -227,17 +227,17 @@ static void on_main_win_realize(GtkWidget * widget, gpointer user_data)
 
 	// Create the pix gc
 	pix_gc = gdk_gc_new(main_win->window);
-	gdk_gc_ref(pix_gc);
+	g_object_ref(pix_gc);
 	gdk_gc_set_fill(pix_gc, GDK_TILED);
 
 	bg_gc = gdk_gc_new(main_win->window);
 	gdk_gc_copy(bg_gc, style->mid_gc[3]);
-	gdk_gc_ref(bg_gc);
+	g_object_ref(bg_gc);
 	gdk_gc_set_fill(bg_gc, GDK_SOLID);
 
 	last_gc = gdk_gc_new(main_win->window);
 	gdk_gc_copy(last_gc, style->light_gc[3]);
-	gdk_gc_ref(last_gc);
+	g_object_ref(last_gc);
 	gdk_gc_set_fill(last_gc, GDK_SOLID);
 
 	/* Use configuration options.  They've already been

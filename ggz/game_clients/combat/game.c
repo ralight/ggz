@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: game.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -361,9 +361,9 @@ void game_init_board(void)
 	}
 	// Loads GC
 	solid_gc = gdk_gc_new(main_win->window);
-	gdk_gc_ref(solid_gc);
+	g_object_ref(solid_gc);
 	tile_gc = gdk_gc_new(main_win->window);
-	gdk_gc_ref(tile_gc);
+	g_object_ref(tile_gc);
 	gdk_gc_set_fill(tile_gc, GDK_TILED);
 
 	/* Add the player info */

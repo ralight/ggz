@@ -56,7 +56,8 @@ on_dlg_colorsel_ok_clicked(GtkButton * button, gpointer user_data)
 		new_bg.red = (guint16) (color[0] * 65535.0);
 		new_bg.green = (guint16) (color[1] * 65535.0);
 		new_bg.blue = (guint16) (color[2] * 65535.0);
-		gdk_color_alloc(sys_colormap, &new_bg);
+		gdk_colormap_alloc_color(sys_colormap, &new_bg, FALSE,
+					 TRUE);
 		gdk_window_set_background(bg_spot->window, &new_bg);
 		gdk_window_clear(bg_spot->window);
 		break;
@@ -64,7 +65,8 @@ on_dlg_colorsel_ok_clicked(GtkButton * button, gpointer user_data)
 		new_p2.red = (guint16) (color[0] * 65535.0);
 		new_p2.green = (guint16) (color[1] * 65535.0);
 		new_p2.blue = (guint16) (color[2] * 65535.0);
-		gdk_color_alloc(sys_colormap, &new_p2);
+		gdk_colormap_alloc_color(sys_colormap, &new_p2, FALSE,
+					 TRUE);
 		gdk_window_set_background(p2_spot->window, &new_p2);
 		gdk_window_clear(p2_spot->window);
 		break;
@@ -72,7 +74,8 @@ on_dlg_colorsel_ok_clicked(GtkButton * button, gpointer user_data)
 		new_p1.red = (guint16) (color[0] * 65535.0);
 		new_p1.green = (guint16) (color[1] * 65535.0);
 		new_p1.blue = (guint16) (color[2] * 65535.0);
-		gdk_color_alloc(sys_colormap, &new_p1);
+		gdk_colormap_alloc_color(sys_colormap, &new_p1, FALSE,
+					 TRUE);
 		gdk_window_set_background(p1_spot->window, &new_p1);
 		gdk_window_clear(p1_spot->window);
 		break;
@@ -80,7 +83,8 @@ on_dlg_colorsel_ok_clicked(GtkButton * button, gpointer user_data)
 		new_fg.red = (guint16) (color[0] * 65535.0);
 		new_fg.green = (guint16) (color[1] * 65535.0);
 		new_fg.blue = (guint16) (color[2] * 65535.0);
-		gdk_color_alloc(sys_colormap, &new_fg);
+		gdk_colormap_alloc_color(sys_colormap, &new_fg, FALSE,
+					 TRUE);
 		gdk_window_set_background(fg_spot->window, &new_fg);
 		gdk_window_clear(fg_spot->window);
 		break;

@@ -93,25 +93,25 @@ GtkWidget *CreateTauntArea(void)
 	tauntColor[0].red = 0;
 	tauntColor[0].green = 0;
 	tauntColor[0].blue = 0;
-	if (!gdk_color_alloc(cMap, &tauntColor[0])) {
+	if (!gdk_colormap_alloc_color(cMap, &tauntColor[0], FALSE, TRUE)) {
 		g_error("couldn't allocate colour");
 	}
 	tauntColor[1].red = 0xffff;
 	tauntColor[1].green = 0;
 	tauntColor[1].blue = 0;
-	if (!gdk_color_alloc(cMap, &tauntColor[1])) {
+	if (!gdk_colormap_alloc_color(cMap, &tauntColor[1], FALSE, TRUE)) {
 		g_error("couldn't allocate colour");
 	}
 	tauntColor[2].red = 0;
 	tauntColor[2].green = 0x8888;
 	tauntColor[2].blue = 0xa0a0;
-	if (!gdk_color_alloc(cMap, &tauntColor[2])) {
+	if (!gdk_colormap_alloc_color(cMap, &tauntColor[2], FALSE, TRUE)) {
 		g_error("couldn't allocate colour");
 	}
 	tauntColor[3].red = 0;
 	tauntColor[3].green = 0;
 	tauntColor[3].blue = 0xffff;
-	if (!gdk_color_alloc(cMap, &tauntColor[3])) {
+	if (!gdk_colormap_alloc_color(cMap, &tauntColor[3], FALSE, TRUE)) {
 		g_error("couldn't allocate colour");
 	}
 

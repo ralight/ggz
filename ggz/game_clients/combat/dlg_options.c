@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: dlg_options.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -1690,7 +1690,7 @@ gboolean mini_board_click(GtkWidget * widget, GdkEventButton * event,
 
 	options = g_object_get_data(G_OBJECT(user_data), "options");
 
-	gdk_window_get_size(widget->window, &width, &height);
+	gdk_drawable_get_size(widget->window, &width, &height);
 
 	pix_width = width / options->width;
 	pix_height = height / options->height;
@@ -1733,7 +1733,7 @@ gboolean init_preview(GtkWidget * widget, GdkEventConfigure * event,
 		      gpointer user_data)
 {
 	int width, height;
-	gdk_window_get_size(widget->window, &width, &height);
+	gdk_drawable_get_size(widget->window, &width, &height);
 
 	if (preview_buf)
 		g_object_unref(preview_buf);
@@ -1781,7 +1781,7 @@ gboolean draw_preview(GtkWidget * dlg_options)
 		return FALSE;
 
 	solid_gc = gdk_gc_new(widget->window);
-	gdk_window_get_size(widget->window, &width, &height);
+	gdk_drawable_get_size(widget->window, &width, &height);
 
 	// Draw background
 	gdk_draw_rectangle(preview_buf,
@@ -1860,7 +1860,7 @@ void init_mini_board(GtkWidget * dlg_options)
 		return;
 	}
 	// Init the pixmap
-	gdk_window_get_size(widget->window, &width, &height);
+	gdk_drawable_get_size(widget->window, &width, &height);
 	if (mini_buf)
 		g_object_unref(mini_buf);
 	mini_buf = gdk_pixmap_new(widget->window, width, height, -1);
@@ -1884,7 +1884,7 @@ void draw_mini_board(GtkWidget * dlg_options)
 
 	solid_gc = gdk_gc_new(widget->window);
 
-	gdk_window_get_size(widget->window, &width, &height);
+	gdk_drawable_get_size(widget->window, &width, &height);
 
 	// Draw background
 	gdk_draw_rectangle(mini_buf,

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 10/14/2000
  * Desc: Player info widget
- * $Id: gtk_player_info.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: gtk_player_info.c 6334 2004-11-12 02:49:43Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -68,7 +68,6 @@ GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 
 	/* Color of label */
 	label_style = gtk_style_new();
-	gtk_style_set_font(label_style, gdk_font_load("fixed"));
 	for (j = 0; j < 5; j++)
 		label_style->fg[j] = player_colors[seat];
 	gtk_widget_set_style(player_name, label_style);
