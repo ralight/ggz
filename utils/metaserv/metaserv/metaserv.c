@@ -40,8 +40,26 @@
 static DOM *configuration = NULL;
 char *logfile = NULL;
 static char *cachefile = NULL;
-int daemonport = 0;
-int verbosity = 0;
+static int daemonmode = 0;
+static int daemonport = 0;
+static int verbosity = 0;
+pthread_mutex_t mutex;
+
+void metaserv_cache()
+{
+	char tmp[1024];
+
+	if(cachefile)
+	{
+		logline("Caching configuration to %s", cachefile);
+		snprintf(tmp, sizeof(tmp), "%s-%li.tmp", cachefile, time(NULL));
+		unlink(tmp);
+		minidom_dumpfile(configuration, tmp);
+		rename(tmp, cachefile);
+		chmod(cachefile, S_IRUSR);
+		/*minidom_dumpfile(configuration, cachefile);*/
+	}
+}
 
 static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
@@ -384,6 +402,10 @@ static char *metaserv_update(const char *class, const char *category, const char
 	{
 		status = "rejected";
 	}
+	else if(!daemonmode)
+	{
+		status = "readonly";
+	}
 	else
 	{
 		i = 0;
@@ -402,11 +424,13 @@ static char *metaserv_update(const char *class, const char *category, const char
 					j++;
 				}
 #else
-			att2 = MD_att(ele2, "class");
+				att2 = MD_att(ele2, "class");
 #endif
 			}
 			i++;
 		}
+
+		pthread_mutex_lock(&mutex);
 
 		if(att2)
 		{
@@ -431,6 +455,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 				metaserv_peers(ele);
 
 				/* dump new configuration */
+				metaserv_cache();
 				/*minidom_dump(configuration);*/
 			}
 			else if(!strcmp(mode, "modify"))
@@ -445,6 +470,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 				metaserv_peers(NULL);
 
 				/* dump new configuration */
+				metaserv_cache();
 				/*minidom_dump(configuration);*/
 			}
 			else status = "wrong";
@@ -453,6 +479,8 @@ static char *metaserv_update(const char *class, const char *category, const char
 		{
 			status = "wrong";
 		}
+
+		pthread_mutex_unlock(&mutex);
 	}
 
 	logline("Update: status=%s", status);
@@ -760,17 +788,17 @@ static void *metaserv_worker(void *arg)
 	int ret;
 	struct hostent host, *hp;
 	int herr;
-	char tmp[1024];
 	const char *peer;
 	static long session = 0;
 	int tmpsession;
+	char tmp[1024];
 
 	fd = *(int*)arg;
 	free(arg);
 
 	namelen = sizeof(struct sockaddr_in);
 	getpeername(fd, (struct sockaddr*)&peername, &namelen);
-	ret = gethostbyaddr_r(&peername.sin_addr, sizeof(struct in_addr), AF_INET, &host, tmp, 1024, &hp, &herr);
+	ret = gethostbyaddr_r(&peername.sin_addr, sizeof(struct in_addr), AF_INET, &host, tmp, sizeof(tmp), &hp, &herr);
 	if(!ret) peer = host.h_name;
 	else peer = "(unknown)";
 
@@ -778,18 +806,6 @@ static void *metaserv_worker(void *arg)
 	logline("Accepted connection from %s as [%i]", peer, tmpsession);
 	metaserv_work(fd, tmpsession);
 	logline("Disconnection from %s as [%i]", peer, tmpsession);
-
-	if(cachefile)
-	{
-		logline("Caching configuration to %s", cachefile);
-
-		snprintf(tmp, sizeof(tmp), "%s-%i-%li", cachefile, fd, time(NULL));
-		unlink(tmp);
-		minidom_dumpfile(configuration, tmp);
-		rename(tmp, cachefile);
-		chmod(cachefile, S_IRUSR);
-		/*minidom_dumpfile(configuration, cachefile);*/
-	}
 
 	return NULL;
 }
@@ -801,7 +817,7 @@ static void metaserv_daemon()
 	int on;
 	int ret;
 	int fd;
-	pthread_t thread;
+	pthread_t *thread;
 	int *arg;
 
 	sock = socket(PF_INET, SOCK_STREAM, 0);
@@ -824,6 +840,8 @@ static void metaserv_daemon()
 	ret = listen(sock, 1);
 	if(ret < 0) return;
 
+	pthread_mutex_init(&mutex, NULL);
+
 	while(1)
 	{
 		fd = accept(sock, NULL, NULL);
@@ -831,7 +849,8 @@ static void metaserv_daemon()
 
 		arg = (int*)malloc(sizeof(int));
 		*arg = fd;
-		pthread_create(&thread, NULL, metaserv_worker, arg);
+		thread = (pthread_t*)malloc(sizeof(pthread_t));
+		pthread_create(thread, NULL, metaserv_worker, arg);
 	}
 }
 
@@ -841,7 +860,6 @@ int main(int argc, char *argv[])
 	char *config = NULL;
 	int optindex;
 	int opt;
-	int daemonmode = 0;
 	struct option options[] =
 	{
 		{"configuration", required_argument, 0, 'c'},
