@@ -53,6 +53,7 @@ void guru_i18n_check(char *player, char *message)
 	char *token;
 	int i, c;
 
+	if(!message) return;
 	message = strdup(message);
 	token = strtok(message, " .,:");
 	i = 0;
@@ -100,6 +101,11 @@ printf("--trans2: %s, %s\n", player, messageset);
 		ret = NULL;
 	}
 
+	message = _(messageset);
+printf("MESSAGE: %s\n", message);
+printf("MESSAGESET: %s\n", messageset);
+	if(strcmp(message, messageset)) return strdup(message); /* FIXME: another leak */
+	
 	dup = strdup(messageset);
 	messageset = dup;
 	token = strtok(messageset, "\n");

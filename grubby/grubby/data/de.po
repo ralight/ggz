@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-09-01 17:09+0200\n"
+"POT-Creation-Date: 2001-09-09 19:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,18 +14,21 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: ../modules/self.c:28
+#: ../modules/self.c:29
+#, fuzzy, c-format
 msgid ""
-"I'm Grubby, your favorite chat bot!\n"
+"I'm %s, your favorite chat bot!\n"
 "I'm here to answer your question, and learn more about you.\n"
 "You may type 'grubby help' to get to know what I understand.\n"
 "Have fun :-)"
-msgstr "Ich bin grubby, dein Lieblings-Chatbot!\n"
-"Ich bin hier um deine Fragen zu beantworten, und mehr über dich zu erfahren.\n"
+msgstr ""
+"Ich bin grubby, dein Lieblings-Chatbot!\n"
+"Ich bin hier um deine Fragen zu beantworten, und mehr über dich zu "
+"erfahren.\n"
 "Gib 'grubby help' ein um zu sehen was ich verstehe.\n"
 "Hab viel Spaß :-)"
 
-#: ../modules/self.c:37
+#: ../modules/self.c:39
 msgid ""
 "This is the list of public commands I understand:\n"
 "about: let me tell about myself\n"
@@ -36,10 +39,14 @@ msgid ""
 "my (email | pager) is <contact>: register contact information\n"
 "my name is <fullname>: register you as fullname"
 msgstr ""
-
-#: ../src/test_i18n.c:17
-msgid "If you read plain English here, kick your system administrator.\n"
-msgstr ""
+"Dies ist die Liste der Kommandos die ich verstehe:\n"
+"about: lass mich über mich selbst erzählen\n"
+"do i have any messages: ich überbringe dir Botschaften\n"
+"tell <nick> <nachricht>: Überbringe eine Botschaft an nick\n"
+"who is <nick>: Zeige Informationen über nick an\n"
+"have you seen <nick>: Frag mich wann ich nick zum letzten Mal gesehen habe.\n"
+"my (email | sms) is <kontakt>: Registriere Kontaktinformationen\n"
+"my name is <voller_name>: Registriere mich mit vollem Namen"
 
 #: dict.pl:28
 msgid "That's a word. Come on, I don't know your native language yet."

@@ -9,7 +9,7 @@
 # guru meeting add 2001-12-24 xmas			-> add whatever text (no special format)
 # guru meeting remove 2001-12-24 xmas		-> remove that entry again
 
-databasedir = "/tmp"
+databasedir = ENV['HOME'] + "/.ggz/grubby"
 
 ####################################################################################
 

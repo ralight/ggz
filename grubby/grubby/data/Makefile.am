@@ -1,7 +1,9 @@
 SUBDIRS = .
 
 gurudatadir = $(prefix)/share/grubby
-gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb
+gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb
+
+EXTRA_DIRS = dict.pl rdf.pl meeting.rb messages.rb
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge

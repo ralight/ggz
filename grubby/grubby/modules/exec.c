@@ -46,7 +46,7 @@ char *const *optlist(char *cmdline, char *options)
 	strcpy(list[0], cmdline);
 	list[1] = NULL;
 	listsize = 2;
-	token = strtok(options, " ,().");
+	token = strtok(options, " ,.");
 	while(token)
 	{
 		listsize++;
@@ -54,16 +54,15 @@ char *const *optlist(char *cmdline, char *options)
 		list[listsize - 2] = (char*)malloc(strlen(token) + 1);
 		strcpy(list[listsize - 2], token);
 		list[listsize - 1] = NULL;
-		token = strtok(NULL, " ,().");
+		token = strtok(NULL, " ,.");
 	}
 
 	return list;
 }
 
-void simpleexec(const char *cmdline, const char *options)
+void simpleexec(const char *cmdline, const char *player)
 {
-	/*char *const *opts = optlist(strdup(cmdline), strdup(options));*/
-	char *const *opts = optlist((char*)cmdline, NULL);
+	char *const *opts = optlist((char*)cmdline, (char*)player);
 
 	execvp(cmdline, opts);
 }
@@ -99,7 +98,7 @@ char *process(const char *program, Guru *message)
 		case 0:
 			dup2(fd[0], 0);
 			dup2(fd[0], 1);
-			simpleexec(program, message->message);
+			simpleexec(program, message->player);
 			exit(-1);
 			break;
 		default:
