@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.h 4028 2002-04-21 01:41:23Z jdorje $
+ * $Id: drawcard.h 4029 2002-04-21 01:58:31Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -28,15 +28,17 @@
 
 #include <gtk/gtk.h>
 
+#define CARDWIDTH (get_card_width(0))
+#define CARDHEIGHT (get_card_height(0))
+#define CARD_VISIBILITY (get_card_visibility())
+
 void load_card_data(void);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
-void get_card_size(int orientation, int *w, int *h);
 
-/* The following will eventually be allowed to change. */
-#define CARDWIDTH	71
-#define CARDHEIGHT	96
+int get_card_width(int orientation);
+int get_card_height(int orientation);
 
 /* This is the minimum amount of the card that must be visible. */
-#define CARD_VISIBILITY ((float)CARDWIDTH / 4.0)
+float get_card_visibility(void);
 
 #endif /* __DRAWCARD_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: table.c 4029 2002-04-21 01:58:31Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -509,7 +509,8 @@ void table_handle_click_event(GdkEventButton * event)
 			   &yo);
 	get_card_offset(p, &xdiff, &ydiff);
 	get_inner_card_area_pos(p, &x, &y);
-	get_card_size(orientation(p), &card_width, &card_height);
+	card_width = get_card_width(orientation(p));
+	card_height = get_card_height(orientation(p));
 
 	/* make sure it's within the card area */
 	if (event->x < x_outer || event->x > x_outer + w_outer

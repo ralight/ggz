@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4028 2002-04-21 01:41:23Z jdorje $
+ * $Id: drawcard.c 4029 2002-04-21 01:58:31Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -143,7 +143,8 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 
 	/* First find the width/height the card will need at this
 	   orientation. */
-	get_card_size(orientation, &width, &height);
+	width = get_card_width(orientation);
+	height = get_card_height(orientation);
 
 	if (show)
 		get_card_coordinates(card, orientation, &xc, &yc);
@@ -163,23 +164,27 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 			show ? card_fronts[orientation] :
 			card_backs[orientation], xc, yc, x, y, width, height);
 }
+/* The following will eventually be allowed to change. */
+#define MY_CARDWIDTH	71
+#define MY_CARDHEIGHT	96
 
-void get_card_size(int orientation, int *w, int *h)
+int get_card_width(int orientation)
 {
-	switch (orientation) {
-	case 0:
-	case 2:
-		*w = CARDWIDTH;
-		*h = CARDHEIGHT;
-		break;
-	case 1:
-	case 3:
-		*w = CARDHEIGHT;
-		*h = CARDWIDTH;
-		break;
-	default:
-		ggz_debug("table",
-			  "CLIENT BUG: get_card_size: unknown orientation %d.",
-			  orientation);
-	}
+	if (orientation % 2 == 0)
+		return MY_CARDWIDTH;
+	else
+		return MY_CARDHEIGHT;
+}
+
+int get_card_height(int orientation)
+{
+	if (orientation % 2 == 0)
+		return MY_CARDHEIGHT;
+	else
+		return MY_CARDWIDTH;
+}
+
+float get_card_visibility(void)
+{
+	return ((float)MY_CARDWIDTH / 4.0);
 }
