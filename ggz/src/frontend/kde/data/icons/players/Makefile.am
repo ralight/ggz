@@ -5,6 +5,12 @@ pix_DATA = \
 	buddy.png \
 	player.png \
 	banned.png \
-	bot.png
+	bot.png \
+	lag0.png \
+	lag1.png \
+	lag2.png \
+	lag3.png \
+	lag4.png \
+	lag5.png
 
 pixdir = $(kde_datadir)/kggz/images/icons/players
