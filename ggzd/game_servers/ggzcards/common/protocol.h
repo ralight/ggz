@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: protocol.h 4077 2002-04-25 08:28:32Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -49,11 +49,12 @@
    version number so that slightly different protocols are supported
    compatibly. */
 
-/* Note: in the below, we refer to "opcodes", "cards", and "seat numbers" (or 
-   "player numbers"). These are sent and received in a ggzcards-chosen format 
-   by the protocol functions at the bottom of this file. We'll also refer to
-   data in the form of a "char", "int", or "string".  These will be sent in
-   easysock format (see the easysock library for more on this). */
+/* Note: in the below, we refer to "opcodes", "cards", "bids", and 
+   "seat numbers" (or  "player numbers"). These are sent and received in a
+   ggzcards-chosen format by the protocol functions in net_common.h. We'll
+   also refer to data in the form of a "char", "int", or "string".  These 
+   will be sent in easysock format (see the easysock library for more on 
+   this). */
 
 /* Messages from server */
 typedef enum {
@@ -119,9 +120,10 @@ typedef enum {
 	MSG_TRICK,
 
 	/* Requests a bid from the client.  It'll be followed by an integer
-	   n, then n bid choices.  Each bid choice consists of two strings:
-	   a short bid text, and a longer bid description.  The client must
-	   choose one of these bids and send a RSP_BID in response. */
+	   n, then n bid choices.  Each bid choice consists of the bid
+	   itself (see read_bid/write_bid) and two strings: a short bid
+	   text, and a longer bid description.  The client must choose one 
+	   of these bids and send a RSP_BID in response. */
 	REQ_BID,
 	
 	/* Tells the client of a player's bid.  It is followed by a seat # for
