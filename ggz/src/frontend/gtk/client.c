@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3149 2002-01-19 19:16:49Z perdig $
+ * $Id: client.c 3379 2002-02-17 06:52:13Z rgade $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -65,6 +65,9 @@ gint poping = FALSE;
 
 /* Maximum cache size for last entries */
 #define CHAT_MAXIMUM_CACHE 5
+
+/* Default font */
+#define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -905,6 +908,7 @@ client_realize                    (GtkWidget       *widget,
 	GtkXText *tmp, *tmp2;
 	GtkWidget *tmp3;
 	char *buf;
+	char *font_str;
 
 	/* setup Tooltips */
 	client_window_tips = gtk_tooltips_new();
@@ -929,7 +933,9 @@ client_realize                    (GtkWidget       *widget,
 	/* Set Properties */
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_vpaned");
 	gtk_object_set(GTK_OBJECT(tmp), "user_data", 125, NULL);
-	font = gdk_font_load( ggzcore_conf_read_string("CHAT", "FONT", "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"));
+	font_str = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
+	font = gdk_font_load(font_str);
+	ggz_free(font_str);
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
 
@@ -970,26 +976,32 @@ client_realize                    (GtkWidget       *widget,
 
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
 {
+	char *pname;
+
 	if(poping == FALSE)
 	{
+		pname = client_get_players_index(popup_row);
 		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE)
 		{
-			chat_add_friend(client_get_players_index(popup_row), TRUE);
+			chat_add_friend(pname, TRUE);
 		}else{
-			chat_remove_friend(client_get_players_index(popup_row));
+			chat_remove_friend(pname);
 		}
 	}	
 }
 
 static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
 {
+	char *pname;
+
 	if(poping == FALSE)
 	{
+		pname = client_get_players_index(popup_row);
 		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE )
 		{
-			chat_add_ignore(client_get_players_index(popup_row), TRUE);
+			chat_add_ignore(pname, TRUE);
 		}else{
-			chat_remove_ignore(client_get_players_index(popup_row));
+			chat_remove_ignore(pname);
 		}
 	}
 }

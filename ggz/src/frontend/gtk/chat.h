@@ -55,5 +55,6 @@ void chat_save_lists(void);
 gchar *chat_complete_name(gchar *name);
 gint chat_is_friend(gchar *name);
 gint chat_is_ignore(gchar *name);
+void chat_lists_cleanup(void);
 
 #endif

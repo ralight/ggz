@@ -65,6 +65,9 @@ void server_profiles_load(void);
 void server_profiles_save(void);
 
 
+/* Cleanup the server profiles structures */
+void server_profiles_cleanup(void);
+
 /* 
  * Add a server to the profile list.  server should be be a pointer to
  * dynamically allocated Server structure.  All string members should

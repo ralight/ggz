@@ -17,6 +17,7 @@
 #include <stdlib.h>
 
 #include <ggzcore.h>
+#include <ggz.h>
 #include "props.h"
 #include "support.h"
 
@@ -310,76 +311,70 @@ char *nocasestrstr (char *text, char *tofind)
 void support_goto_url(gchar *url)
 {
 	char *command = NULL;
+	char *browser_opt;
+	char *lynx_opt;
 
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "None"))
-	{
+	browser_opt = ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
+
+        if(!strcmp(browser_opt, "None")) {
 		command = g_strdup(" ");
 		props_create_or_raise();
 	}
-
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Galeon - New"))
-	{
+	else if(!strcmp(browser_opt, "Galeon - New")) {
 		command = g_strdup_printf("galeon %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Galeon - Existing"))
-	{
+	else if(!strcmp(browser_opt, "Galeon - Existing")) {
 		command = g_strdup_printf("galeon -w %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Gnome URL Handler"))
-	{
+	else if(!strcmp(browser_opt, "Gnome URL Handler")) {
 		command = g_strdup_printf("gnome-moz-remote %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Konqueror - New"))
-	{
+	else if(!strcmp(browser_opt, "Konqueror - New")) {
 		command = g_strdup_printf("konqueror %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Konqueror - Existing"))
-	{
+	else if(!strcmp(browser_opt, "Konqueror - Existing")) {
 		command = g_strdup_printf("dcop konqueror default getWindows");
 		support_exec(command);
 		g_free(command);
 		command = g_strdup_printf("dcop konqueror konqueror-mainwindow#1 openURL %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Lynx"))
-	{
-		command = g_strdup_printf("%s -e lynx %s", ggzcore_conf_read_string("OPTIONS", "LYNX", "xterm"), url);
+	else if(!strcmp(browser_opt, "Lynx")) {
+		lynx_opt = ggzcore_conf_read_string("OPTIONS", "LYNX", "xterm");
+		command = g_strdup_printf("%s -e lynx %s", lynx_opt, url);
+		ggz_free(lynx_opt);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Mozilla - New"))
-	{
+	else if(!strcmp(browser_opt, "Mozilla - New")) {
 		command = g_strdup_printf("mozilla %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Mozilla - Existing"))
-	{
+	else if(!strcmp(browser_opt, "Mozilla - Existing")) {
 		command = g_strdup_printf("mozilla -remote 'openURL(%s)'", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - New"))
-	{
+        else if(!strcmp(browser_opt, "Netscape - New")) {
 		command = g_strdup_printf("netscape %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - Existing"))
-	{
+        else if(!strcmp(browser_opt, "Netscape - Existing")) {
 		command = g_strdup_printf("netscape -remote 'openURL(%s)'", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Opera - New"))
-	{
+        else if(!strcmp(browser_opt, "Opera - New")) {
 		command = g_strdup_printf("opera %s", url);
 		support_exec(command);
 	}
-        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Opera - Existing"))
-	{
+        else if(!strcmp(browser_opt, "Opera - Existing")) {
 		command = g_strdup_printf("opera -remote 'openURL(%s,new-window)'", url);
 		support_exec(command);
 	}
+
+	ggz_free(browser_opt);
 
 	g_free(command);
 }

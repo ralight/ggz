@@ -38,6 +38,7 @@
 #include <glib.h>
 
 #include "chat.h"
+#include "ggz.h"
 #include "ggzcore.h"
 #include "login.h"
 #include "xtext.h"
@@ -55,6 +56,9 @@ void chat_list_ignore(void);
 static gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
+
+static int friend_count;
+static int ignore_count;
 
 /* Aray of GdkColors currently used for chat and MOTD
  * They are all non-ditherable and as such should look the same everywhere
@@ -107,16 +111,9 @@ struct chatinfo {
  */
 void chat_init(void)
 {
-	gchar *dummy;
-
 	chat_allocate_colors();
-	chatinfo.friends = g_array_new(TRUE, TRUE, sizeof(gchar*));
-	chatinfo.ignore = g_array_new(TRUE, TRUE, sizeof(gchar*));
-
-	dummy = g_strdup(" ");
-	g_array_prepend_val(chatinfo.friends, dummy);
-	g_array_prepend_val(chatinfo.ignore, dummy);
-	g_free(dummy);
+	chatinfo.friends = g_array_new(FALSE, FALSE, sizeof(gchar*));
+	chatinfo.ignore = g_array_new(FALSE, FALSE, sizeof(gchar*));
 
 	/* sets up background color for chat area*/
 	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE) == TRUE)
@@ -124,7 +121,6 @@ void chat_init(void)
 		colors[18] = ColorBlack;
 		colors[19] = ColorWhite;
 	}
-
 
 	chat_load_lists();
 }
@@ -185,22 +181,17 @@ void chat_display_message(CHATTypes id, char *player, char *message)
         GtkXText *tmp = NULL;
 	gchar *name = NULL;
 	gchar *command;
-	gint pos;
 	gint ignore = FALSE;
+	int i;
+	char *p;
 
 	/* are we ignoring this person? */
-	pos = 0;
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.ignore, gchar*, pos) == NULL)
-			break;
-		if(player != NULL)
-			if(!strcmp(g_array_index(chatinfo.ignore, gchar*, pos), player))
-			{
+	if(player != NULL) {
+		for(i=0; i<ignore_count; i++) {
+			p = g_array_index(chatinfo.ignore, char *, i);
+			if(!strcmp(p, player))
 				ignore = TRUE;
-			}
-		pos++;
+		}
 	}
 
 	if(ignore == FALSE)
@@ -548,6 +539,7 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 }
 
 
+
 /* chat_get_color() - Get the color for a user based on name
  *
  * Recieves:
@@ -558,49 +550,41 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  * gchar		*color	: The color to use
  */
 
+/* FIXME: Everything that calls this needs to free the memory */
 gchar *chat_get_color(gchar *name, gchar *msg)
 {
+	int i;
 	int pos;
+	char *srv_handle;
+	char *p;
+	int c;
 
 	/* Is our name in the message? */
-	if(strlen(msg) > strlen(ggzcore_server_get_handle(server))+1)
+	srv_handle = ggzcore_server_get_handle(server);
+	if(strlen(msg) > strlen(srv_handle)+1)
 	{
-		for(pos=0; pos<strlen(msg)-strlen(ggzcore_server_get_handle(server))+1; pos++)
+		for(pos=0; pos<strlen(msg)-strlen(srv_handle)+1; pos++)
 		{
-			if(!strncasecmp(msg + pos, ggzcore_server_get_handle(server), strlen(ggzcore_server_get_handle(server))))
+			if(!strncasecmp(msg+pos, srv_handle,strlen(srv_handle)))
 			{
-				if(ggzcore_conf_read_int("CHAT", "H_COLOR", 3) > 9)
-					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
-				else
-					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
+				c = ggzcore_conf_read_int("CHAT", "H_COLOR", 3);
+				return g_strdup_printf("%02d", c);
 			}
 		}
 	}
 
 	/* Is a friend talking? */
-	pos = 0;
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.friends, gchar*, pos) == NULL)
-			break;
-		if(!strcmp(g_array_index(chatinfo.friends, gchar*, pos), name))
-		{
-			if(ggzcore_conf_read_int("CHAT", "F_COLOR", 6) > 9)
-				return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
-			else
-				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
+	for(i=0; i<friend_count; i++) {
+		p = g_array_index(chatinfo.friends, char *, i);
+		if(!strcmp(p, name)) {
+			c = ggzcore_conf_read_int("CHAT", "F_COLOR", 6);
+			return g_strdup_printf("%02d", c);
 		}
-		pos++;
 	}
 
 	/* Normal color */
-	if(ggzcore_conf_read_int("CHAT", "N_COLOR", 2) > 9)
-		return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
-	else
-		return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
-
-	return "00";
+	c = ggzcore_conf_read_int("CHAT", "N_COLOR", 2);
+	return g_strdup_printf("%02d", c);
 }
 
 
@@ -616,8 +600,11 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 void chat_add_friend(gchar *name, gint display)
 {
 	gchar *out;
+	char *name_copy;
 
-	g_array_append_val(chatinfo.friends, name);
+	name_copy = ggz_strdup(name);
+	g_array_append_val(chatinfo.friends, name_copy);
+	friend_count++;
 	if(display == TRUE)
 	{
 		out = g_strdup_printf(_("Added %s to your friends list."), name);
@@ -636,23 +623,21 @@ void chat_add_friend(gchar *name, gint display)
 
 void chat_remove_friend(gchar *name)
 {
-	int x=0;
-	gchar *out;
+	int i;
+	char *p;
+	char *out;
 
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
-			break;
-		if(!strcmp(g_array_index(chatinfo.friends, gchar*, x), name))
-		{
-			g_array_remove_index_fast(chatinfo.friends, x);
+	for(i=0; i<friend_count; i++) {
+		p = g_array_index(chatinfo.friends, char *, i);
+		if(!strcmp(p, name)) {
+			g_array_remove_index_fast(chatinfo.friends, i);
 			out = g_strdup_printf(_("Removed %s from your friends list."), name);
 			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
 			g_free(out);
-			break;
+			friend_count--;
+			ggz_free(p);
+			return;
 		}
-		x++;
 	}
 }
 
@@ -670,8 +655,11 @@ void chat_remove_friend(gchar *name)
 void chat_add_ignore(gchar *name, gint display)
 {
 	gchar *out;
+	char *name_copy;
 
-	g_array_append_val(chatinfo.ignore, name);
+	name_copy = ggz_strdup(name);
+	g_array_append_val(chatinfo.ignore, name_copy);
+	ignore_count++;
 	if(display == TRUE)
 	{
 		out = g_strdup_printf(_("Added %s to your ignore list."), name);
@@ -691,23 +679,21 @@ void chat_add_ignore(gchar *name, gint display)
 
 void chat_remove_ignore(gchar *name)
 {
-	int x=0;
-	gchar *out;
+	int i;
+	char *p;
+	char *out;
 
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
-			break;
-		if(!strcmp(g_array_index(chatinfo.ignore, gchar*, x), name))
-		{
-			g_array_remove_index_fast(chatinfo.ignore, x);
+	for(i=0; i<ignore_count; i++) {
+		p = g_array_index(chatinfo.ignore, char *, i);
+		if(!strcmp(p, name)) {
+			g_array_remove_index_fast(chatinfo.ignore, i);
 			out = g_strdup_printf(_("Removed %s from your ignore list."), name);
 			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
 			g_free(out);
-			break;
+			ignore_count--;
+			ggz_free(p);
+			return;
 		}
-		x++;
 	}
 }
 
@@ -721,30 +707,26 @@ void chat_remove_ignore(gchar *name)
 
 void chat_save_lists(void)
 {
-	int x=1;
+	int i;
+	char *p;
+	char *c_num;
 
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
-			break;
-		ggzcore_conf_write_string("IGNORE",  g_strdup_printf("%d",x),
-			g_array_index(chatinfo.ignore, gchar*, x));
-		x++;
+	for(i=0; i<ignore_count; i++) {
+		p = g_array_index(chatinfo.ignore, char *, i);
+		c_num = g_strdup_printf("%d", i+1);
+		ggzcore_conf_write_string("IGNORE", c_num, p);
+		g_free(c_num);
 	}
-	ggzcore_conf_write_int("IGNORE", "TOTAL", x - 1);
+	ggzcore_conf_write_int("IGNORE", "TOTAL", ignore_count);
 
-	x=1;
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
-			break;
-		ggzcore_conf_write_string("FRIENDS",   g_strdup_printf("%d",x),
-			g_array_index(chatinfo.friends, gchar*, x));
-		x++;
+	for(i=0; i<friend_count; i++) {
+		p = g_array_index(chatinfo.friends, char *, i);
+		c_num = g_strdup_printf("%d", i+1);
+		ggzcore_conf_write_string("FRIENDS", c_num, p);
+		g_free(c_num);
 	}
-	ggzcore_conf_write_int("FRIENDS", "TOTAL", x - 1);
+	ggzcore_conf_write_int("FRIENDS", "TOTAL", friend_count);
+
 	ggzcore_conf_commit();
 }
 
@@ -758,61 +740,50 @@ void chat_save_lists(void)
 
 void chat_load_lists(void)
 {
-	int x;
-	int y=1;
-	char *num;
+	int i, count;
+	char *num, *p;
 
-	x = ggzcore_conf_read_int("IGNORE", "TOTAL", 0);
-	for(y=1;y<=x;y++)
-	{
-		num = g_strdup_printf("%d",y);
-		chat_add_ignore(ggzcore_conf_read_string("IGNORE", num, "unknown"), FALSE);
+	count = ggzcore_conf_read_int("IGNORE", "TOTAL", 0);
+	for(i=0; i<count; i++) {
+		num = g_strdup_printf("%d", i+1);
+		p = ggzcore_conf_read_string("IGNORE", num, "Unknown");
+		chat_add_ignore(p, FALSE);
 		g_free(num);
+		ggz_free(p);
 	}
 
-	x = ggzcore_conf_read_int("FRIENDS", "TOTAL", 0);
-	for(y=1;y<=x;y++)
-	{
-		num = g_strdup_printf("%d",y);
-		chat_add_friend(ggzcore_conf_read_string("FRIENDS", num, "unknown"), FALSE);
+	count = ggzcore_conf_read_int("FRIENDS", "TOTAL", 0);
+	for(i=0; i<count; i++) {
+		num = g_strdup_printf("%d", i+1);
+		p = ggzcore_conf_read_string("FRIENDS", num, "Unknown");
+		chat_add_friend(p, FALSE);
 		g_free(num);
+		ggz_free(p);
 	}
 }
 
 
 void chat_list_friend(void)
 {
-	int x=1;
+	int i;
 
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People currently your friends");
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "-----------------------------");
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
-			break;
+	for(i=0; i<friend_count; i++)
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
-			g_array_index(chatinfo.friends, gchar*, x));
-		x++;
-	}
+			g_array_index(chatinfo.friends, char *, i));
 }
 
 
 void chat_list_ignore(void)
 {
-	int x=0;
+	int i;
 
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People your currently ignoring");
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "------------------------------");
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
-			break;
+	for(i=0; i<ignore_count; i++)
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
-			g_array_index(chatinfo.ignore, gchar*, x));
-		x++;
-	}
+			g_array_index(chatinfo.ignore, char *, i));
 }
 
 
@@ -871,37 +842,34 @@ gchar *chat_complete_name(gchar *name)
 
 gint chat_is_friend(gchar *name)
 {
-	gint f=FALSE;
-	gint pos = 0;
+	int i;
 
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.friends, gchar*, pos) == NULL)
-			break;
-		if(!strcmp(g_array_index(chatinfo.friends, gchar*, pos), name))
-			f = TRUE;	
-		pos++;
-	}
-	
-	return f;
+	for(i=0; i<friend_count; i++)
+		if(!strcmp(g_array_index(chatinfo.friends, char *, i), name))
+			return TRUE;
+
+	return FALSE;
 }
 
 gint chat_is_ignore(gchar *name)
 {
-	gint f=FALSE;
-	gint pos = 0;
+	int i;
 
-	while(1)
-	{
-		/* have we hit the end of the list */
-		if(g_array_index(chatinfo.ignore, gchar*, pos) == NULL)
-			break;
-		if(!strcmp(g_array_index(chatinfo.ignore, gchar*, pos), name))
-			f = TRUE;	
-		pos++;
-	}
-	
-	return f;
+	for(i=0; i<ignore_count; i++)
+		if(!strcmp(g_array_index(chatinfo.ignore, char *, i), name))
+			return TRUE;
+
+	return FALSE;
 }
 
+
+void chat_lists_cleanup(void)
+{
+	int i;
+
+	for(i=0; i<ignore_count; i++)
+		ggz_free(g_array_index(chatinfo.ignore, char *, i));
+
+	for(i=0; i<friend_count; i++)
+		ggz_free(g_array_index(chatinfo.friends, char *, i));
+}

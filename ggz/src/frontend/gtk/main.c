@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3152 2002-01-19 19:51:05Z jzaun $
+ * $Id: main.c 3379 2002-02-17 06:52:13Z rgade $
  *
  * This is the main program body for the GGZ client
  *
@@ -36,6 +36,7 @@
 #endif
 
 #include <ggzcore.h>
+#include <ggz.h>
 
 #include "about.h"
 #include "chat.h"
@@ -51,11 +52,10 @@ extern GtkWidget *win_main;
 GGZServer *server = NULL;
 
 
-
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
-	char *global_conf, *user_conf, *debugfile;
+	char *global_conf, *user_conf, *debugfile, *init_version;
 
 #ifdef ENABLE_NLS
 	bindtextdomain("ggz-gtk", NULL);
@@ -79,14 +79,16 @@ int main (int argc, char *argv[])
 
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
 	ggzcore_init(opt);
+	ggz_debug_init(NULL, "/tmp/gtk-client-debug");
 	ggz_free(opt.debug_file);
 	server_profiles_load();
 	
 	gtk_init(&argc, &argv);
 	chat_init();
 
+	init_version = ggzcore_conf_read_string("INIT", "VERSION", VERSION);
 	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
-	    strcmp(ggzcore_conf_read_string("INIT", "VERSION", VERSION), VERSION) !=0 )
+	    strcmp(init_version, VERSION) !=0 )
 	{
 		first_create_or_raise();
 	} else {
@@ -95,8 +97,12 @@ int main (int argc, char *argv[])
 		gtk_widget_show(win_main);
 		login_create_or_raise();
 	}
+	ggz_free(init_version);
 
 	gtk_main();
+
+	server_profiles_cleanup();
+	chat_lists_cleanup();
 
 	ggzcore_destroy();
 	

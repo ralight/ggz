@@ -28,7 +28,9 @@
 #include <string.h>
 
 #include <ggzcore.h>
+#include <ggz.h>
 #include <server.h>
+#include "support.h"
 
 /* List of server profiles */
 static GList* servers;
@@ -39,6 +41,16 @@ static void server_list_print(void);
 static void server_print(gpointer server, gpointer data);
 static void server_free_node(gpointer server, gpointer data);
 static gint server_match_name(gconstpointer, gconstpointer);
+
+
+void server_profiles_cleanup(void)
+{
+	if(servers) {
+		g_list_foreach(servers, server_free_node, NULL); 	
+		g_list_free(servers);
+		servers = NULL;
+	}
+}
 
 
 void server_profiles_load(void)
@@ -64,7 +76,7 @@ void server_profiles_load(void)
 	ggzcore_conf_read_list("Servers", "ProfileList", &count, &profiles);
 
 	for (i = 0; i < count; i++) {
-		server = g_malloc0(sizeof(Server));
+		server = ggz_malloc(sizeof(Server));
 		server->name = profiles[i];
 		server->host = ggzcore_conf_read_string(server->name, "Host", NULL);
 		server->port = ggzcore_conf_read_int(server->name, "Port", 5688);
@@ -77,6 +89,8 @@ void server_profiles_load(void)
 		server_list_add(server);
 	}
 	server_list_print();
+
+	ggz_free(profiles);
 }
 
 
@@ -211,18 +225,18 @@ static void server_print(gpointer server, gpointer data)
 static void server_free_node(gpointer server, gpointer data)
 {
 	if (((Server*)server)->name)
-		g_free(((Server*)server)->name);
+		ggz_free(((Server*)server)->name);
 
 	if (((Server*)server)->host)
-		g_free(((Server*)server)->host);
+		ggz_free(((Server*)server)->host);
 
 	if (((Server*)server)->login)
-		g_free(((Server*)server)->login);
+		ggz_free(((Server*)server)->login);
 
 	if (((Server*)server)->password)
-		g_free(((Server*)server)->password);
+		ggz_free(((Server*)server)->password);
 
-	g_free(server);
+	ggz_free(server);
 }
 
 
