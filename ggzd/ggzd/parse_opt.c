@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4544 2002-09-13 14:36:44Z jdorje $
+ * $Id: parse_opt.c 4546 2002-09-13 15:48:13Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -637,8 +637,11 @@ static void parse_room(char *name, char *dir)
 
 	rooms[num].players = ggz_malloc(rooms[num].max_players
 					* sizeof(GGZPlayer*));
-	rooms[num].tables = ggz_malloc(rooms[num].max_tables
-				       * sizeof(GGZTable*));
+	if (rooms[num].max_tables > 0)
+		rooms[num].tables = ggz_malloc(rooms[num].max_tables
+					       * sizeof(GGZTable*));
+	else
+		rooms[num].tables = NULL;
 }
 
 
