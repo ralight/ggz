@@ -13,33 +13,40 @@ grubby_LTLIBRARIES = \
 	libgurumod_embed.la \
 	libgurumod_game.la
 
+INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
+
+noinst_HEADERS = game.h
+
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
+libgurumod_simplereturn_la_LDFLAGS = -module -avoid-version
 
 libgurumod_programming_la_SOURCES = programming.c
+libgurumod_programming_la_LDFLAGS = -module -avoid-version
 
 libgurumod_exec_la_SOURCES = exec.c
 libgurumod_exec_la_LIBADD = $(LIB_GGZCORE)
-libgurumod_exec_la_LDFLAGS = $(GGZCORE_LDFLAGS)
+libgurumod_exec_la_LDFLAGS = -module -avoid-version $(GGZCORE_LDFLAGS)
 
 libgurumod_badword_la_SOURCES = badword.c
 libgurumod_badword_la_LIBADD = $(LIB_GGZCORE)
-libgurumod_badword_la_LDFLAGS = $(GGZCORE_LDFLAGS)
+libgurumod_badword_la_LDFLAGS = -module -avoid-version $(GGZCORE_LDFLAGS)
 
 libgurumod_self_la_SOURCES = self.c
+libgurumod_self_la_LDFLAGS = -module -avoid-version
 
 libgurumod_embed_la_SOURCES = embed.c
 libgurumod_embed_la_LIBADD = $(ruby_libraries) $(perl_libraries) $(python_libraries)
+libgurumod_embed_la_LDFLAGS = -module -avoid-version
 
 libgurumod_extra_la_SOURCES = extra.c
+libgurumod_extra_la_LDFLAGS = -module -avoid-version
 
 libgurumod_people_la_SOURCES = people.c
-libgurumod_people_la_LDFLAGS = $(GGZCORE_LDFLAGS)
-
-INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
+libgurumod_people_la_LDFLAGS = -module -avoid-version $(GGZCORE_LDFLAGS)
 
 libgurumod_learning_la_SOURCES = learning.c
+libgurumod_learning_la_LDFLAGS = -module -avoid-version
 
 libgurumod_game_la_SOURCES = game.c
-
-noinst_HEADERS = game.h
+libgurumod_game_la_LDFLAGS = -module -avoid-version
 
