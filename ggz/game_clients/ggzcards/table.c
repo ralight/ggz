@@ -167,11 +167,16 @@ void table_initialize(void)
 	if (game.num_players > 0) {
 		table_setup();
 	} else {
-		/* TODO: draw a "splash screen" here. */
 		table_buf = gdk_pixmap_new(f1->window,
 			     get_table_width(),
 			     get_table_height(),
 			     -1);
+		/* this draws a "splash screen */
+		gdk_draw_rectangle(table_buf,
+			f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			TRUE,
+			0, 0,
+			get_table_width(), get_table_height());
 		draw_card( card, 0,
 			   (get_table_width() - CARDWIDTH)/2,
 			   (get_table_height() - CARDHEIGHT)/2);
