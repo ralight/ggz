@@ -89,8 +89,9 @@ def main():
 	oldy = -1
 	aiturn = 0
 	shift = 0
+	inputallowed = 1
 
-	ggzchess.init(ggzchess.WHITE, 1)
+	ggzchess.init(ggzchess.WHITE, 2)
 
 	while 1:
 		pygame.event.pump()
@@ -100,7 +101,7 @@ def main():
 			key = event.key
 			if key == K_ESCAPE or pygame.event.peek(QUIT):
 				break
-			if key == K_r:
+			if key == K_r and inputallowed:
 				ret = ggzchess.rochade(ggzchess.WHITE, shift)
 				print "rochade", shift, ret
 				kold = 4
@@ -131,7 +132,7 @@ def main():
 		if event.type == MOUSEMOTION:
 			(posx, posy) = event.pos
 
-		if event.type == MOUSEBUTTONDOWN:
+		if event.type == MOUSEBUTTONDOWN and inputallowed:
 			if posx % 50 < 40 and posy % 50 < 40:
 				x = (posx / 50)
 				y = (posy / 50)
@@ -183,6 +184,11 @@ def main():
 			updatescreen = 0
 
 		pygame.display.flip()
+
+		if inputallowed and ggzchess.checkmate():
+			print "CHECK MATE!"
+			aiturn = 0
+			inputallowed = 0
 
 		if aiturn:
 			aiturn = 0
