@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4927 2002-10-15 01:57:43Z jdorje $
+ * $Id: ggzmod.c 4968 2002-10-21 04:27:00Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -48,6 +48,7 @@
 #include <ggz.h>
 
 #include "ggzmod.h"
+#include "ggzmod-ggz.h"
 #include "mod.h"
 #include "io.h"
 #include "protocol.h"
@@ -58,6 +59,7 @@
  */
 
 static void call_handler(GGZMod *ggzmod, GGZModEvent event, void *data);
+static void call_transaction(GGZMod * ggzmod, GGZModTransaction t, void *data);
 static int _ggzmod_handle_event(GGZMod * ggzmod, fd_set read_fds);
 static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
 static int send_game_launch(GGZMod * ggzmod);
@@ -111,6 +113,8 @@ GGZMod *ggzmod_new(GGZModType type)
 
 	ggzmod->pid = -1;
 	ggzmod->argv = NULL;
+	for (i = 0; i < GGZMOD_NUM_TRANSACTIONS; i++)
+		ggzmod->thandlers[i] = NULL;
 
 	return ggzmod;
 }
@@ -245,10 +249,28 @@ void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e,
 			 GGZModHandler func)
 {
 	if (!ggzmod || e < 0 || e >= GGZMOD_NUM_HANDLERS) {
+		ggz_error_msg("ggzmod_set_handler: "
+			      "invalid params");
 		return;		/* not very useful */
 	}
 
 	ggzmod->handlers[e] = func;
+}
+
+
+void ggzmod_set_transaction_handler(GGZMod * ggzmod,
+				    GGZModTransaction t,
+				    GGZModTransactionHandler func)
+{
+	if (!ggzmod
+	    || t < 0 || t >= GGZMOD_NUM_TRANSACTIONS
+	    || ggzmod->type != GGZMOD_GGZ) {
+		ggz_error_msg("ggzmod_set_transaction_handler: "
+			      "invalid params");
+		return;
+	}
+
+	ggzmod->thandlers[t] = func;
 }
 
 
@@ -807,6 +829,33 @@ static int game_fork(GGZMod * ggzmod)
 }
 
 
+/**** Transaction requests  ****/
+
+void ggzmod_request_stand(GGZMod * ggzmod)
+{
+	_io_send_req_stand(ggzmod->fd);
+}
+
+void ggzmod_request_sit(GGZMod * ggzmod, int seat_num)
+{
+	_io_send_req_sit(ggzmod->fd, seat_num);
+}
+
+void ggzmod_request_boot(GGZMod * ggzmod, const char *name)
+{
+	_io_send_req_boot(ggzmod->fd, name);
+}
+
+void ggzmod_request_bot(GGZMod * ggzmod, int seat_num)
+{
+	_io_send_request_bot(ggzmod->fd, seat_num);
+}
+
+void ggzmod_request_open(GGZMod * ggzmod, int seat_num)
+{
+	_io_send_request_open(ggzmod->fd, seat_num);
+}
+
 /**** Internal library functions ****/
 
 /* Invokes handlers for the specified event */
@@ -814,6 +863,22 @@ static void call_handler(GGZMod *ggzmod, GGZModEvent event, void *data)
 {
 	if (ggzmod->handlers[event])
 		(*ggzmod->handlers[event]) (ggzmod, event, data);
+}
+
+
+static void call_transaction(GGZMod * ggzmod, GGZModTransaction t, void *data)
+{
+	if (!ggzmod->thandlers[t]) {
+		ggz_error_msg("Unhandled transaction %d.", t);
+		return;
+	}
+
+	if (ggzmod->type != GGZMOD_GGZ) {
+		ggz_error_msg("The game can't handle transactions!");
+		return;
+	}
+
+	(*ggzmod->thandlers[t])(ggzmod, t, data);
 }
 
 
@@ -853,6 +918,32 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	
 	/* Is this right? has the gameover happened yet? */   
 }
+
+void _ggzmod_handle_stand_request(GGZMod *ggzmod)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_STAND, NULL);
+}
+
+void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_SIT, &seat_num);
+}
+
+void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_BOOT, name);
+}
+
+void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_BOT, &seat_num);
+}
+
+void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num)
+{
+	call_transaction(ggzmod, GGZMOD_TRANSACTION_OPEN, &seat_num);
+}
+
 
 void _ggzmod_handle_launch(GGZMod * ggzmod)
 {

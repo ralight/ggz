@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 4912 2002-10-14 20:22:18Z jdorje $
+ * $Id: protocol.h 4968 2002-10-21 04:27:00Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -34,6 +34,12 @@
 /** Messages sent from the game server to the ggz server. */
 typedef enum {
 	MSG_GAME_STATE,
+
+	REQ_STAND,
+	REQ_SIT,
+	REQ_BOOT,
+	REQ_BOT,
+	REQ_OPEN
 } TableToControl;
 
 /** Messages sent from the ggz server to the game server. */

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 4914 2002-10-14 21:59:49Z jdorje $
+ * $Id: ggzmod.h 4968 2002-10-21 04:27:00Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -280,8 +280,7 @@ int ggzmod_get_num_spectator_seats(GGZMod *ggzmod);
  *  @param spectator The number, between 0 and (number of spectators - 1).
  *  @return A valid GGZSpectator structure, if given a valid seat.
  */
-GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod,
-					   int seat);
+GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod, int seat);
 
 /** @brief Get data about this player.
  *
@@ -293,7 +292,7 @@ GGZSpectatorSeat ggzmod_get_spectator_seat(GGZMod * ggzmod,
  *  @return The name of the player (or NULL on error).
  */
 const char * ggzmod_get_player(GGZMod *ggzmod,
-				int *is_spectator, int *seat_num);
+			       int *is_spectator, int *seat_num);
 
 /** @brief Return gamedata pointer
  *
@@ -323,55 +322,6 @@ void ggzmod_set_gamedata(GGZMod * ggzmod, void * data);
  *  @see ggzmod_get_gamedata
  */
 void ggzmod_set_handler(GGZMod * ggzmod, GGZModEvent e, GGZModHandler func);
-			
-
-/** @brief Set the module executable, pwd, and arguments
- *
- *  GGZmod must execute and launch the game to start a table; this
- *  function allows ggz to specify how this should be done.
- *  @note This should not be called by the table, only ggz.
- *  @param ggzmod The GGZmod object.
- *  @param pwd The working directory for the game, or NULL.
- *  @param args The arguments for the program, as needed by exec.
- *  @note The pwd directory must already exist.
- */
-void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **args);
-		       
-
-/** @brief Set the fd of the game server connection
- *  @param ggzmod The GGZMod object.
- *  @return The server connection fd
- */
-void ggzmod_set_server_fd(GGZMod * ggzmod, int fd);
-
-/** @brief Set data about which seat at which this ggzmod is sitting.
- *
- *  The GGZ client can use this function to set data about this client.
- *  @param ggzmod The GGZMod object.
- *  @param is_spectator TRUE iff the player is a spectator.
- *  @param seat_num The seat or spectator seat number.
- *  @return 0 on success, negative on error.
- */
-int ggzmod_set_player(GGZMod *ggzmod,
-		      const char *my_name,
-		      int is_spectator, int seat_num);
-
-/** @brief Set seat data.
- *
- *  The GGZ client can use this function to set data about
- *  a seat.
- *  @param seat The new seat structure (which includes seat number).
- *  @return 0 on success, negative on failure.
- */
-int ggzmod_set_seat(GGZMod *ggzmod, GGZSeat * seat);
-
-/** @brief Set spectator data.
- *
- *  The GGZ client can use this function to set data about a spectator seat.
- *  @param seat The new spectator seat data.
- *  @return 0 on success, negative on failure.
- */
-int ggzmod_set_spectator_seat(GGZMod * ggzmod, GGZSpectatorSeat * seat);
 
 
 /* 
@@ -430,6 +380,12 @@ int ggzmod_connect(GGZMod * ggzmod);
  */
 int ggzmod_disconnect(GGZMod * ggzmod);
 
+
+void ggzmod_request_stand(GGZMod * ggzmod);
+void ggzmod_request_sit(GGZMod * ggzmod, int seat_num);
+void ggzmod_request_boot(GGZMod * ggzmod, const char *name);
+void ggzmod_request_bot(GGZMod * ggzmod, int seat_num);
+void ggzmod_request_open(GGZMod * ggzmod, int seat_num);
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 4926 2002-10-15 01:39:35Z jdorje $
+ * $Id: mod.h 4968 2002-10-21 04:27:00Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -35,9 +35,11 @@
 #include <ggz.h>
 
 #include "ggzmod.h"
+#include "ggzmod-ggz.h"
 
 /* The number of event handlers there are. */
-#define GGZMOD_NUM_HANDLERS 7
+#define GGZMOD_NUM_HANDLERS (GGZMOD_EVENT_ERROR + 1)
+#define GGZMOD_NUM_TRANSACTIONS (GGZMOD_TRANSACTION_BOT + 1)
 
 /* This is the actual structure, but it's only visible internally. */
 struct GGZMod {
@@ -59,9 +61,10 @@ struct GGZMod {
 	GGZList *spectator_seats;
 
 	/* ggz-only data */
-	pid_t pid;		/* process ID of table */
-	char *pwd;		/* working directory for game */
-	char **argv;            /* command-line arguments for launching module */
+	pid_t pid;	/* process ID of table */
+	char *pwd;	/* working directory for game */
+	char **argv;	/* command-line arguments for launching module */
+	GGZModTransactionHandler thandlers[GGZMOD_NUM_TRANSACTIONS];
 
 	/* etc. */
 };
@@ -70,6 +73,11 @@ void _ggzmod_error(GGZMod *ggzmod, char* error);
 
 /* GGZ side functions for handling various messages */
 void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state);
+void _ggzmod_handle_stand_request(GGZMod *ggzmod);
+void _ggzmod_handle_sit_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_handle_boot_request(GGZMod *ggzmod, char *name);
+void _ggzmod_handle_bot_request(GGZMod *ggzmod, int seat_num);
+void _ggzmod_handle_open_request(GGZMod *ggzmod, int seat_num);
 
 /* Game side functions for handling various messages */
 void _ggzmod_handle_launch(GGZMod * ggzmod);
