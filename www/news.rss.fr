@@ -13,8 +13,8 @@
 <title><i>10.01.2005: Jubilée: 5 ans de GGZ et lançement de la Communauté GGZ</i> (de josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
-The GGZ Gaming Zone project has turned 5 years old. Linked to this event is the
-launch of a new web-based online gaming platform, named GGZ Community.
+Le projet GGZ Gaming Zone a fêté ses 5 ans. Lié à cet évenement,
+l'ouverture d'une nouvelle plateforme basé sur internet, appelé GGZ Community.
 <a href='https://www.ggzcommunity.org/'>https://www.ggzcommunity.org/</a>
 </full>
 </item>
@@ -42,7 +42,7 @@ Regardez les liens suivant pour plus d'informations.
 <title><i>07.04.2004: Changement de serveur</i> (de josef)</title>
 <link>http://www.ggzgamingzone.org/</link>
 <full>
-Le projet GGZ a changé d'hébergement, vers un nouveau fournissuer.
+Le projet GGZ a changé d'hébergement, vers un nouveau fournisseur.
 Désolé pour le dérangement de ces derniers jours.
 </full>
 </item>
