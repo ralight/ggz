@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3315 2002-02-11 05:06:59Z jdorje $
+ * $Id: common.h 3321 2002-02-11 07:24:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -88,7 +88,15 @@ struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
-	int play_hand;		/**< The hand we're currently playing from */
+	
+	/** @brief The hand we're currently playing from.
+	 *
+	 *  This is the hand we're currently playing from, or -1 if
+	 *  we're not currently playing.  Note when a play response
+	 *  is sent to the server, it's not reset to -1 until
+	 *  we get verification.
+	 */
+	int play_hand;		
 };
 
 /** This is the game structure that contains all the common information

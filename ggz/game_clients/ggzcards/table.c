@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3315 2002-02-11 05:06:59Z jdorje $
+ * $Id: table.c 3321 2002-02-11 07:24:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -360,6 +360,8 @@ void table_handle_click_event(GdkEventButton * event)
 	/* If it's not our turn to play, we don't care. */
 	if (ggzcards.state != STATE_PLAY)
 		return;
+		
+	assert(p >= 0 && p < ggzcards.num_players);
 
 	ggz_debug("table", "table_handle_click_event: " "click at %f %f.",
 		  event->x, event->y);

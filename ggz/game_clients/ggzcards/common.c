@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3320 2002-02-11 06:55:47Z jdorje $
+ * $Id: common.c 3321 2002-02-11 07:24:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -591,7 +591,13 @@ static int handle_msg_play(void)
 	if (read_seat(game_internal.fd, &p) < 0
 	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
+		
 	assert(p >= 0 && p < ggzcards.num_players);
+	assert(ggzcards.play_hand < 0 || p == ggzcards.play_hand);
+	
+	/* Reset the play_hand, just to be safe. */
+	if (p == ggzcards.play_hand)
+		ggzcards.play_hand = -1;
 	
 	/* Place the card on the table.  Note, this contradicts what
 	   the table code does, since that runs animation that may
@@ -834,6 +840,7 @@ int client_handle_server(void)
 	switch (op) {
 	case REQ_NEWGAME:
 		game_get_newgame();
+		ggzcards.play_hand = -1;
 		status = 0;
 		break;
 	case MSG_NEWGAME:
