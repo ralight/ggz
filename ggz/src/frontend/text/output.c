@@ -143,12 +143,21 @@ void output_rooms(void)
 {
 	int i, num;
 	GGZRoom *room;
+	GGZGameType *type;
 
 	num = ggzcore_server_get_num_rooms(server);
 	
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
-		output_text("-- Room %d : %s", i, ggzcore_room_get_name(room));
+		type = ggzcore_room_get_gametype(room);
+		if (type)
+			output_text("-- Room %d : %s (%s)", i, 
+				    ggzcore_room_get_name(room),
+				    ggzcore_gametype_get_name(type));
+		else
+			output_text("-- Room %d : %s", i, 
+				    ggzcore_room_get_name(room));
+				    
 	}
 }
 
@@ -170,20 +179,25 @@ void output_types(void)
 
 void output_players(void)
 {
-	int i;
-	char** names;
+	int i, num;
 	GGZRoom *room;
+	GGZPlayer *player;
+	GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
-
-	if (!(names = ggzcore_room_get_player_names(room)))
-		return;  
+	num = ggzcore_room_get_num_players(room);
 
 	output_text("Players in current room");
-	for (i = 0; names[i]; i++)
-		output_text("-- %s", names[i]);
-
-	free(names);
+	for (i = 0; i < num; i++) {
+		player = ggzcore_room_get_nth_player(room, i);
+		table = ggzcore_player_get_table(player);
+		if (table)
+			output_text("-- %s at table %d", 
+				    ggzcore_player_get_name(player),
+				    ggzcore_table_get_num(table));
+		else 
+			output_text("-- %s", ggzcore_player_get_name(player));
+	}
 }
 
 
@@ -207,7 +221,7 @@ void output_status(void)
 	if (ggzcore_server_is_in_room(server)) {
 		room = ggzcore_server_get_cur_room(server);
 		roomname = ggzcore_room_get_name(room);
-		roomnum = ggzcore_room_get_num(room);
+		/*roomnum = ggzcore_room_get_num(room);*/
 	}
 	
 	now = time(NULL);
@@ -247,7 +261,9 @@ void output_status(void)
 	{
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");
-		printf("\e[K %d -- %s", roomnum, roomname);
+		/*printf("\e[K %d -- %s", roomnum, roomname);*/
+		printf("\e[K %s", roomname);
+		
 	} else {
 		output_goto(window.ws_row - 2, 0);
 		output_label("Room");
