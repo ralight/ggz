@@ -1,0 +1,327 @@
+# Deutsche Übersetzung von Fyrdman
+# Copyright (C) 2004 Josef Spillner
+# This file is distributed under the same license as the ggz-kde-games package.
+# Josef Spillner <josef@ggzgamingzone.org>, 2004.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-11-17 22:11+0100\n"
+"PO-Revision-Date: 2004-11-17 22:12+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../fyrdman/mainwindow.cpp:495
+msgid "AI moved"
+msgstr "Zug des Computergegners"
+
+#: ../../fyrdman/mainwindow.cpp:80
+msgid "Animation"
+msgstr "Animation"
+
+#: ../../fyrdman/mainwindow.cpp:78
+msgid "Background"
+msgstr "Hintergrundbild"
+
+#: ../../fyrdman/mainwindow.cpp:64
+msgid "Bayeux"
+msgstr "Bayeux"
+
+#: ../../fyrdman/mainwindow.cpp:457
+msgid "Bogus network message received."
+msgstr "Ungültige Netzwerknachricht empfangen."
+
+#: ../../fyrdman/mainwindow.cpp:376
+msgid "Bot"
+msgstr "Computerspieler"
+
+#: ../../fyrdman/mainwindow.cpp:484
+msgid "Calculating..."
+msgstr "Berechne..."
+
+#: ../../fyrdman/levelselector.cpp:26
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../../fyrdman/mainwindow.cpp:486
+msgid "Checking move..."
+msgstr "Überprüfung des Spielzugs..."
+
+#: ../../fyrdman/levelselector.cpp:25 ../../fyrdman/unitinfo.cpp:29
+msgid "Close"
+msgstr "Schließen"
+
+#: ../../fyrdman/main.cpp:23
+msgid "Copyright (C) 2002, 2003 Josef Spillner"
+msgstr "Copyright (C) 2002, 2003 Josef Spillner"
+
+#: ../../fyrdman/mainwindow.cpp:413
+msgid "Disallowed by map"
+msgstr "Auf der Karte nicht erlaubt"
+
+#: ../../fyrdman/mainwindow.cpp:79
+msgid "Display mode"
+msgstr "Anzeigemodus"
+
+#: ../../fyrdman/mainwindow.cpp:410
+msgid "Distance too large"
+msgstr "Entfernung zu groß"
+
+#: ../../fyrdman/main.cpp:19 ../../fyrdman/mainwindow.cpp:98
+msgid "Fyrdman"
+msgstr "Fyrdman"
+
+#: ../../fyrdman/mainwindow.cpp:84
+msgid "Game"
+msgstr "Spiel"
+
+#: ../../fyrdman/mainwindow.cpp:49 ../../fyrdman/mainwindow.cpp:212
+msgid "Game information"
+msgstr "Spiel-Informationen"
+
+#: ../../fyrdman/mainwindow.cpp:453
+msgid "Game interrupted"
+msgstr "Spiel unterbrochen"
+
+#: ../../fyrdman/mainwindow.cpp:445 ../../fyrdman/mainwindow.cpp:450
+msgid "Game over"
+msgstr "Spiel vorbei"
+
+#: ../../fyrdman/mainwindow.cpp:700
+msgid "Game over!"
+msgstr "Spiel vorbei!"
+
+#: ../../fyrdman/mainwindow.cpp:304
+msgid "Game started"
+msgstr "Spiel begonnen"
+
+#: ../../fyrdman/mainwindow.cpp:53
+msgid "Get levels"
+msgstr "Levels erhalten"
+
+#: ../../fyrdman/mainwindow.cpp:66
+msgid "Harold's return"
+msgstr "Harolds Rückkehr"
+
+#: ../../fyrdman/mainwindow.cpp:86
+msgid "Help"
+msgstr "Hilfe"
+
+#: ../../fyrdman/mainwindow.cpp:47
+msgid "Information"
+msgstr "Informationen"
+
+#: ../../fyrdman/main.cpp:28
+msgid "Initial developer"
+msgstr "Ursprünglicher Entwickler"
+
+#: ../../fyrdman/mainwindow.cpp:499
+msgid "Invalid move"
+msgstr "Ungültiger Zug"
+
+#: ../../fyrdman/main.cpp:21
+msgid "KDE client for the Hastings1066 game."
+msgstr "KDE-Client für das Spiel Hastings1066."
+
+#: ../../fyrdman/mainwindow.cpp:70
+msgid "Knights"
+msgstr "Ritter"
+
+#: ../../fyrdman/levelselector.cpp:42
+msgid "Level information"
+msgstr "Level-Informationen"
+
+#: ../../fyrdman/mainwindow.cpp:289
+msgid "Level: %1"
+msgstr "Level: %1"
+
+#: ../../fyrdman/levelselector.cpp:78
+msgid "Level: <i>%1</i><br>Author: <i>%2</i><br>Version: <i>%3</i><br>"
+msgstr "Level: <i>%1</i><br>Autor: <i>%2</i><br>Version: <i>%3</i><br>"
+
+#: ../../fyrdman/mainwindow.cpp:69
+msgid "Map"
+msgstr "Karte"
+
+#: ../../fyrdman/mainwindow.cpp:392
+msgid "Move accepted"
+msgstr "Zug akzeptiert"
+
+#: ../../fyrdman/mainwindow.cpp:491
+msgid "Move checked"
+msgstr "Zug überprüft"
+
+#: ../../fyrdman/mainwindow.cpp:480
+msgid "Move sent"
+msgstr "Zug gesendet"
+
+#: ../../fyrdman/mainwindow.cpp:493
+msgid "Moving AI..."
+msgstr "Ziehe Computerspieler..."
+
+#: ../../fyrdman/mainwindow.cpp:458
+msgid "Network error"
+msgstr "Netzwerkfehler"
+
+#: ../../fyrdman/mainwindow.cpp:45
+msgid "New game"
+msgstr "Neues Spiel"
+
+#: ../../fyrdman/mainwindow.cpp:89 ../../fyrdman/mainwindow.cpp:446
+#: ../../fyrdman/mainwindow.cpp:454
+msgid "No level selected"
+msgstr "Kein Level ausgewählt"
+
+#: ../../fyrdman/mainwindow.cpp:702
+msgid "Not playing"
+msgstr "Nicht im Spiel"
+
+#: ../../fyrdman/mainwindow.cpp:88
+msgid "Not yet playing"
+msgstr "Noch nicht im Spiel"
+
+#: ../../fyrdman/mainwindow.cpp:398
+msgid "Not your turn"
+msgstr "Nicht dein Zug"
+
+#: ../../fyrdman/mainwindow.cpp:404
+msgid "Nothing to move"
+msgstr "Nichts zu bewegen"
+
+#: ../../fyrdman/mainwindow.cpp:85
+msgid "Options"
+msgstr "Optionen"
+
+#: ../../fyrdman/mainwindow.cpp:401
+msgid "Out of bounds move"
+msgstr "Zug außerhalb der zulässigen Grenzen"
+
+#: ../../fyrdman/mainwindow.cpp:430
+msgid "Performing sync..."
+msgstr "Führe Synchronisation aus"
+
+#: ../../fyrdman/levelselector.cpp:24
+msgid "Play"
+msgstr "Spielen"
+
+#: ../../fyrdman/main.cpp:10
+msgid "Play in GGZ mode"
+msgstr "Im GGZ-Modus spielen"
+
+#: ../../fyrdman/mainwindow.cpp:449
+msgid "Player %1 has won."
+msgstr "Spieler %1 hat gewonnen."
+
+#: ../../fyrdman/mainwindow.cpp:71
+msgid "Possession"
+msgstr "Landbesitz"
+
+#: ../../fyrdman/mainwindow.cpp:56
+msgid "Quit"
+msgstr "Beenden"
+
+#: ../../fyrdman/mainwindow.cpp:714
+msgid "Request synchronization"
+msgstr "Synchronisation anfordern"
+
+#: ../../fyrdman/mainwindow.cpp:305 ../../fyrdman/mainwindow.cpp:384
+#: ../../fyrdman/mainwindow.cpp:502
+msgid "Select a knight"
+msgstr "Wähle einen Ritter"
+
+#: ../../fyrdman/levelselector.cpp:41
+msgid "Select a level"
+msgstr "Wähle ein Level"
+
+#: ../../fyrdman/mainwindow.cpp:90
+msgid "Select a level..."
+msgstr "Wähle ein Level..."
+
+#: ../../fyrdman/mainwindow.cpp:356
+msgid "Selecting map"
+msgstr "Wähle Karte aus"
+
+#: ../../fyrdman/mainwindow.cpp:474
+msgid "Sending move..."
+msgstr "Sende Zug..."
+
+#: ../../fyrdman/mainwindow.cpp:395
+msgid "Server not ready yet"
+msgstr "Server noch nicht bereit"
+
+#: ../../fyrdman/mainwindow.cpp:407
+msgid "Space occupied"
+msgstr "Platz belegt"
+
+#: ../../fyrdman/mainwindow.cpp:65
+msgid "Standard map"
+msgstr "Standard-Karte"
+
+#: ../../fyrdman/mainwindow.cpp:442
+msgid "Sync successful"
+msgstr "Synchronisation erfolgreich"
+
+#: ../../fyrdman/mainwindow.cpp:50
+msgid "Synchronize"
+msgstr "Synchronisiere"
+
+#: ../../fyrdman/main.cpp:29
+msgid "TRANSLATOR-EMAIL"
+msgstr "josef@ggzgamingzone.org"
+
+#: ../../fyrdman/main.cpp:29
+msgid "TRANSLATOR-NAME"
+msgstr "Josef Spillner"
+
+#: ../../fyrdman/mainwindow.cpp:208
+msgid "The enemy claims %1 percent instead.\n"
+msgstr "Der Feind nimmt %1 Prozent in Anspruch.\n"
+
+#: ../../fyrdman/mainwindow.cpp:210
+msgid "The enemy has %1.\n"
+msgstr "Der Feind hat %1.\n"
+
+#: ../../fyrdman/mainwindow.cpp:699
+msgid "The game is over. Winner is alliance %1."
+msgstr "Das Spiel ist vorüber. Gewinner ist die Allianz %1."
+
+#: ../../fyrdman/main.cpp:24
+msgid "This game is part of the GGZ Gaming Zone."
+msgstr "Dieses Spiel ist Teil der GGZ Gaming Zone."
+
+#: ../../fyrdman/unitinfo.cpp:22
+msgid "This is the unit type assigned to you."
+msgstr "Dies ist der dir zugewiesene Einheitentyp."
+
+#: ../../fyrdman/mainwindow.cpp:48 ../../fyrdman/unitinfo.cpp:44
+msgid "Unit information"
+msgstr "Einheiteninformationen"
+
+#: ../../fyrdman/mainwindow.cpp:329 ../../fyrdman/mainwindow.cpp:420
+msgid "Wait..."
+msgstr "Warte..."
+
+#: ../../fyrdman/mainwindow.cpp:298
+msgid "Waiting for players"
+msgstr "Warte auf Mitspieler"
+
+#: ../../fyrdman/levelselector.cpp:79
+msgid "Width: <i>%1</i><br>Height: <i>%2</i><br>Players: <i>%3</i>"
+msgstr "Breite: <i>%1</i><br>Höhe: <i>%2</i><br>Spieler: <i>%3</i>"
+
+#: ../../fyrdman/unitinfo.cpp:23
+msgid "You are player %1"
+msgstr "Du bist Spieler %1"
+
+#: ../../fyrdman/mainwindow.cpp:209
+msgid "You have %1 soldiers to offer.\n"
+msgstr "Du hast %1 Soldaten im Angebot.\n"
+
+#: ../../fyrdman/mainwindow.cpp:207
+msgid "Your alliance has conquered %1 percent of the territory.\n"
+msgstr "Deine Allianz hat bereits %1 Prozent des Gebiets erobert.\n"
