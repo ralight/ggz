@@ -23,5 +23,8 @@ void guru_i18n_initialize();
 /* Sets the language to the given locale code */
 void guru_i18n_setlanguage(const char *language);
 
+/* Translate a message or set of messages */
+char *guru_i18n_translate(char *messageset);
+
 #endif
 

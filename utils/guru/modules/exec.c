@@ -109,7 +109,7 @@ char *process(const char *program, Guru *message)
 			/*fcntl(fd[1], F_SETFL, O_NONBLOCK);*/
 			i = read(fd[1], readbuffer, 1024);
 if(i != -1) printf("FIRST: %i\n", i);
-			i = -2;
+else i = -2;
 			while((waitpid(pid, NULL, WNOHANG) == 0) && (time(NULL) - start < MAXDELAY) && (i <= 1))
 			{
 				i = read(fd[1], readbuffer, 1024);
@@ -118,7 +118,7 @@ if(i != -1) printf("NOW: %i\n", i);
 			printf("<== (%i)\n", i);
 			if(i > 1)
 			{
-				readbuffer[strlen(readbuffer) - 1] = 0;
+				//readbuffer[strlen(readbuffer) - 1] = 0;
 				return readbuffer;
 			}
 			break;

@@ -148,15 +148,23 @@ Guru *net_input()
 
 void net_output(Guru *output)
 {
+	char *token;
+
 	if(!room) return;
-	switch(output->type)
+
+	token = strtok(output->message, "\n");
+	while(token)
 	{
-		case GURU_CHAT:
-			ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, output->message);
-			break;
-		case GURU_PRIVMSG:
-			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, output->player, output->message);
-			break;
+		switch(output->type)
+		{
+			case GURU_CHAT:
+				ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, token);
+				break;
+			case GURU_PRIVMSG:
+				ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, output->player, token);
+				break;
+		}
+		token = strtok(NULL, "\n");
 	}
 }
 

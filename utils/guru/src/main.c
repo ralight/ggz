@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 	printf("Grubby: connect...\n");
 
 	(core->net_connect)(core->host, 5688, core->name, core->guestname, core->logfile);
+	if(core->i18n_init) (core->i18n_init)();
 	while(1)
 	{
 		switch((core->net_status)())
@@ -48,7 +49,9 @@ int main(int argc, char *argv[])
 				guru = guru_work(guru);
 				if(guru)
 				{
-					/*printf("Answer is: %s\n", guru->message);*/
+					printf("Answer is: %s\n", guru->message);
+					if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->message);
+					printf("Translated-Answer is: %s\n", guru->message);
 					(core->net_output)(guru);
 				}
 				break;

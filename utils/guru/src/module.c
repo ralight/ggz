@@ -51,7 +51,6 @@ Gurucore *guru_module_init()
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
 	fflush(NULL);
-
 	if((!module) || ((core->nethandle = dlopen(module, RTLD_NOW)) == NULL))
 	{
 		printf("ERROR: Not a shared library\n");
@@ -67,6 +66,27 @@ Gurucore *guru_module_init()
 		exit(-1);
 	}
 	printf("OK\n");
+
+	core->i18n_init = NULL;
+	core->i18n_translate = NULL;
+	module = ggzcore_confio_read_string(handler, "guru", "i18n", NULL);
+	if(module)
+	{
+		printf("Loading core module I18N: %s... ", module);
+		fflush(NULL);
+		if((!module) || ((core->i18nhandle = dlopen(module, RTLD_NOW)) == NULL))
+		{
+			printf("ERROR: Not a shared library\n");
+			exit;
+		}
+		if(((core->i18n_init = dlsym(core->i18nhandle, "guru_i18n_initialize")) == NULL)
+		|| ((core->i18n_translate = dlsym(core->i18nhandle, "guru_i18n_translate")) == NULL))
+		{
+			printf("ERROR: Couldn't find i18n functions\n");
+			exit(-1);
+		}
+		printf("OK\n");
+	}
 
 	ret = ggzcore_confio_read_list(handler, "guru", "modules", &count, &list);
 	if(ret >= 0)

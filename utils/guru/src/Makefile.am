@@ -3,7 +3,8 @@ SUBDIRS = .
 bin_PROGRAMS = guru gplayer
 
 guru_SOURCES = guru.c main.c module.c
-guru_LDADD = -ldl -L/usr/local/lib -lggzcore
+guru_LDADD = -ldl -lggzcore
+guru_LDFLAGS = -L/usr/local/lib
 
 #gi18n_SOURCES = i18n.c test_i18n.c
 #gi18n_LDADD =
@@ -11,11 +12,13 @@ guru_LDADD = -ldl -L/usr/local/lib -lggzcore
 gplayer_SOURCES = player.c test_player.c
 gplayer_LDADD = -lggzcore
 
-lib_LTLIBRARIES = libguru_netggz.la
+lib_LTLIBRARIES = libguru_netggz.la libguru_i18n.la
 
 libguru_netggz_la_SOURCES = net.c
 libguru_netggz_la_LIBADD = -lggzcore
 libguru_netggz_la_LDFLAGS = -L/usr/local/lib
+
+libguru_i18n_la_SOURCES = i18n.c
 
 #gnet_SOURCES = test_net.c
 #gnet_LDADD = libguru_netggz.la

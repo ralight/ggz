@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-08-02 16:00+0200\n"
+"POT-Creation-Date: 2001-09-01 17:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,6 +14,55 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/test_i18n.c:9
+#: ../modules/self.c:28
+msgid ""
+"I'm Grubby, your favorite chat bot!\n"
+"I'm here to answer your question, and learn more about you.\n"
+"You may type 'grubby help' to get to know what I understand.\n"
+"Have fun :-)"
+msgstr ""
+
+#: ../modules/self.c:37
+msgid ""
+"This is the list of public commands I understand:\n"
+"about: let me tell about myself\n"
+"do i have any messages: let me look up if there's news for you\n"
+"tell <nick> <message>: store message for player nick\n"
+"who is <nick>: request information about nick\n"
+"have you seen <nick>: ask me when I last saw nick\n"
+"my (email | pager) is <contact>: register contact information\n"
+"my name is <fullname>: register you as fullname"
+msgstr ""
+
+#: ../src/test_i18n.c:17
 msgid "If you read plain English here, kick your system administrator.\n"
+msgstr ""
+
+#: dict.pl:28
+msgid "That's a word. Come on, I don't know your native language yet."
+msgstr ""
+
+#: dict.pl:31
+msgid "What is what dude?"
+msgstr ""
+
+#: dict.pl:59
+msgid ""
+"I'm so uneducated I only know english, german, spanish, portuguese, italian."
+msgstr ""
+
+#: dict.pl:106
+msgid "Sorry, I don't know what a $WORD is."
+msgstr ""
+
+#: rdf.pl:28
+msgid "From what news source my friend?"
+msgstr ""
+
+#: rdf.pl:29
+msgid "Available are: slashdot, register, happypenguin, heise"
+msgstr ""
+
+#: rdf.pl:65
+msgid "News source not available."
 msgstr ""

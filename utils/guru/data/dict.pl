@@ -13,6 +13,8 @@ $dictdir = "/usr/share/trans";
 
 ###################################################################################
 
+sub i18n{$foo = shift(@_);return $foo;}
+
 $inputline = <STDIN>;
 chomp($inputline);
 @input = split(/\ /, $inputline);
@@ -23,10 +25,10 @@ if(($input[1] eq "what") && ($input[2] eq "is")){
 		if(($input[4] eq "in") && ($input[5] ne "")){
 			$letthrough = 1;
 		}else{
-			print "That\'s a word. Come on, I don\'t know your native language yet.\n";
+			print i18n("That\'s a word. Come on, I don\'t know your native language yet.");
 		}
 	}else{
-		print "What is what dude?\n";
+		print i18n("What is what dude?");
 	}
 }
 if(!$letthrough){
@@ -54,7 +56,7 @@ if($LANG eq "portuguese"){$LANG = "pt";}
 if($LANG eq "english"){$LANG = "en";}
 
 if(($LANG ne "de") && ($LANG ne "en") && ($LANG ne "it") && ($LANG ne "pt") && ($LANG ne "es")){
-	print "I\'m so uneducated I only know english, german, spanish, portuguese, italian.\n";
+	print i18n("I\'m so uneducated I only know english, german, spanish, portuguese, italian.");
 	close(STDOUT);
 	sleep(1);
 	exit(0);
@@ -101,7 +103,7 @@ close(FILE);
 if($answer){
 	print "$answer\n";
 }else{
-	print "Sorry, I don't know what a $WORD is.\n";
+	print i18n("Sorry, I don't know what a $WORD is.");
 }
 close(STDOUT);
 sleep(1);

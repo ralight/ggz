@@ -25,7 +25,7 @@ class GuruMeeting
   end
   def tell
 	print "Planned meetings: ", @notes.join " - "
-	print "\n"
+	#print "\n"
 	$stdout.flush
 	sleep 1
   end

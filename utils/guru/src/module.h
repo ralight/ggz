@@ -18,6 +18,9 @@ typedef int (*netstatusfunc)();
 typedef Guru* (*netinputfunc)();
 typedef void (*netoutputfunc)(Guru *output);
 
+typedef void (*i18ninitfunc)();
+typedef char* (*i18ntransfunc)(char *message);
+
 struct gurucore_t
 {
 	char *host;
@@ -26,12 +29,15 @@ struct gurucore_t
 	char *guestname;
 	char *logfile;
 	void *nethandle;
+	void *i18nhandle;
 	int autojoin;
 	netconnectfunc net_connect;
 	netjoinfunc net_join;
 	netstatusfunc net_status;
 	netinputfunc net_input;
 	netoutputfunc net_output;
+	i18ninitfunc i18n_init;
+	i18ntransfunc i18n_translate;
 };
 
 typedef struct gurucore_t Gurucore;
