@@ -33,7 +33,7 @@ class Login : public QWidget
 		~Login();
 
 	signals:
-		void signalLogin(QString username, QString password);
+		void signalLogin(QString username, QString password, QString hostname);
 
 	public slots:
 		void slotLogin();

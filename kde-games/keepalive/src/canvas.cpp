@@ -32,6 +32,7 @@
 #include <qsocketdevice.h>
 #include <qdatastream.h>
 #include <qmessagebox.h>
+#include <qsocket.h>
 
 // System includes
 #include <iostream>
@@ -288,10 +289,25 @@ void Canvas::domove(int x, int y)
 }
 
 // Log into the game server
-void Canvas::login(QString username, QString password)
+void Canvas::login(QString username, QString password, QString hostname)
 {
 	if(m_spectator) return;
-	if(!m_network) return;
+	if(!m_network)
+	{
+		if(!hostname.isEmpty())
+		{
+			std::cout << "Connect to server: " << hostname << ":10001" << std::endl;
+			QSocket *sock;
+			sock = new QSocket(this);
+			sock->connectToHost(hostname, 10001);
+			//connect(sock, SIGNAL(connected()), SLOT(slotConnected()));
+			//connect(sock, SIGNAL(error(int)), SLOT(slotError()));
+			// ...
+			return;
+			
+		}
+		else return;
+	}
 
 	if(!m_net)
 	{

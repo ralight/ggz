@@ -73,6 +73,8 @@ Intro::Intro(QWidget *parent, const char *name)
 
 	setErasePixmap(background);
 
+	m_ggz = 0;
+
 	blendval_title = 0;
 	blendval_login = -1;
 
@@ -97,6 +99,11 @@ Intro::Intro(QWidget *parent, const char *name)
 	edit_password->setFixedSize(120, 18);
 	edit_password->move(300, 340);
 	edit_password->hide();
+
+	edit_hostname = new QLineEdit(this);
+	edit_hostname->setFixedSize(120, 18);
+	edit_hostname->move(300, 380);
+	edit_hostname->hide();
 
 	edit_avatar = new QLineEdit(this);
 	edit_avatar->setFixedSize(120, 18);
@@ -176,8 +183,12 @@ void Intro::drawalllogin()
 			p.setFont(QFont("", 16, QFont::Bold));
 			p.drawText(300, 295, "Username");
 			p.drawText(300, 335, "Password");
+			if(!m_ggz)
+			{
+				p.drawText(300, 375, "Hostname");
+			}
 			p.setPen(QColor(255, 255, 0));
-			p.drawText(300, 395, "Login");
+			p.drawText(300, 415, "Login");
 			if((av1) && (av1->count()))
 			{
 				p.drawPixmap(320, 150, *(av1->image(5)));
@@ -191,6 +202,10 @@ void Intro::drawalllogin()
 
 			edit_username->show();
 			edit_password->show();
+			if(!m_ggz)
+			{
+				edit_hostname->show();
+			}
 
 			transition = none;
 			forcedraw = 1;
@@ -199,6 +214,7 @@ void Intro::drawalllogin()
 		{
 			edit_username->hide();
 			edit_password->hide();
+			edit_hostname->hide();
 		}
 
 		if(blendval_login <= 0)
@@ -249,6 +265,7 @@ void Intro::drawalllogin2()
 
 			edit_username->hide();
 			edit_password->hide();
+			edit_hostname->hide();
 		}
 
 		if(blendval_login <= 0)
@@ -296,7 +313,7 @@ void Intro::drawallblack()
 			transitiontarget = none;
 			arrownum = 0;
 
-			emit signalLogin(username, password);
+			emit signalLogin(username, password, hostname);
 		}
 	}
 
@@ -714,11 +731,15 @@ void Intro::mousePressEvent(QMouseEvent *e)
 			transitiontarget = nonetomain;
 			screentarget = screenmain;
 		}
-		if((x >= 300) && (x <= 340) && (y >= 380) && (y <= 400))
+		if((x >= 300) && (x <= 340) && (y >= 400) && (y <= 420))
 		{
-			screen = screenlogin2;
 			username = edit_username->text();
 			password = edit_password->text();
+			hostname = edit_hostname->text();
+			if((!username.isEmpty()) && (!password.isEmpty()))
+			{
+				if((!hostname.isEmpty()) || (m_ggz)) screen = screenlogin2;
+			}
 		}
 	}
 	else if(screen == screenlogin2)
@@ -853,5 +874,10 @@ void Intro::mousePressEvent(QMouseEvent *e)
 	}
 
 	forcedraw = 1;
+}
+
+void Intro::enableGGZ()
+{
+	m_ggz = 1;
 }
 

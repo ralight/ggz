@@ -33,9 +33,10 @@ class Intro : public QWidget
 	public:
 		Intro(QWidget *parent = NULL, const char *name = NULL);
 		~Intro();
+		void enableGGZ();
 
 	signals:
-		void signalLogin(QString username, QString password);
+		void signalLogin(QString username, QString password, QString hostname);
 
 	protected:
 		void timerEvent(QTimerEvent *e);
@@ -58,7 +59,7 @@ class Intro : public QWidget
 		QImage im_avatar, im_avatarbm, im_scores, im_scoresbm;
 		QImage im_black, im_blackbm;
 
-		QLineEdit *edit_username, *edit_password, *edit_avatar;
+		QLineEdit *edit_username, *edit_password, *edit_avatar, *edit_hostname;
 		int arrownum;
 		int forcedraw;
 
@@ -97,7 +98,9 @@ class Intro : public QWidget
 		int selectedavatar, selectedworld;
 		int delayselect;
 
-		QString username, password;
+		QString username, password, hostname;
+
+		int m_ggz;
 };
 
 #endif

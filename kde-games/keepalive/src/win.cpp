@@ -68,10 +68,10 @@ Win::Win(QWidget *parent, const char *name)
 	vbox->add(m_login);
 	vbox->add(m_intro);
 
-	connect(m_login, SIGNAL(signalLogin(QString, QString)),
-		SLOT(slotLogin(QString, QString)));
-	connect(m_intro, SIGNAL(signalLogin(QString, QString)),
-		SLOT(slotLogin(QString, QString)));
+	connect(m_login, SIGNAL(signalLogin(QString, QString, QString)),
+		SLOT(slotLogin(QString, QString, QString)));
+	connect(m_intro, SIGNAL(signalLogin(QString, QString, QString)),
+		SLOT(slotLogin(QString, QString, QString)));
 
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
@@ -101,9 +101,9 @@ void Win::slotChat(QString message)
 }
 
 // Try to log into the server
-void Win::slotLogin(QString username, QString password)
+void Win::slotLogin(QString username, QString password, QString hostname)
 {
-	m_canvas->login(username, password);
+	m_canvas->login(username, password, hostname);
 }
 
 // Login and show game screen
@@ -180,5 +180,6 @@ void Win::init()
 {
 	// FIXME: I'm afraid we have to do this here (spectators catch-22 problem)
 	m_canvas->init();
+	m_intro->enableGGZ();
 }
 

@@ -107,6 +107,6 @@ Login::~Login()
 // Send login attempt to the server
 void Login::slotLogin()
 {
-	emit signalLogin(m_username->text(), m_password->text());
+	emit signalLogin(m_username->text(), m_password->text(), QString::null);
 }
 

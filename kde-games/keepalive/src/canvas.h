@@ -38,7 +38,7 @@ class Canvas : public QCanvas
 		void load();
 		void move(int x, int y);
 		void moveTo(int x, int y);
-		void login(QString username, QString password);
+		void login(QString username, QString password, QString hostname);
 		void chat(QString message);
 
 	signals:

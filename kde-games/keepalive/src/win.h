@@ -40,7 +40,7 @@ class Win : public QWidget
 		void init();
 
 	public slots:
-		void slotLogin(QString username, QString password);
+		void slotLogin(QString username, QString password, QString hostname);
 		void slotLoggedin(QString name);
 		void slotChat(QString message);
 		void slotUnit(QCanvasPixmapArray *a);
