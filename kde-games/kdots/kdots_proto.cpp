@@ -156,5 +156,6 @@ void KDotsProto::getOppMove(int direction)
 
 	movex = nx;
 	movey = ny;
+	if(turn == -1) turn = !num;
 }
 
