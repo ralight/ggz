@@ -1,6 +1,6 @@
 /*
  * The GGZ Gaming Zone Metaserver Project
- * Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org
+ * Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
  * Published under GNU GPL conditions.
  */
 
@@ -18,6 +18,7 @@
 #include <getopt.h>
 #include <pthread.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "minidom.h"
 
@@ -433,6 +434,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum) || (!mode))
 	{
 		logline("Update: Missing arguments");
+logline("Update: class=%s, category=%s, username=%s, password=%s, uri=%s :: %s %i %s", class, category, username, password, uri, att, atnum, mode);
 		return NULL;
 	}
 
@@ -934,7 +936,9 @@ static void metaserv_daemon()
 		arg = (int*)malloc(sizeof(int));
 		*arg = fd;
 		thread = (pthread_t*)malloc(sizeof(pthread_t));
-		pthread_create(thread, NULL, metaserv_worker, arg);
+		ret = pthread_create(thread, NULL, metaserv_worker, arg);
+		if(ret) close(fd);
+		else pthread_detach(*thread);
 	}
 }
 
@@ -975,7 +979,7 @@ int main(int argc, char *argv[])
 			case 'h':
 				printf("The GGZ Gaming Zone Meta Server\n");
 				printf("Version %s (GGZ %s)\n", METASERV_VERSION, VERSION);
-				printf("Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n");
+				printf("Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org\n");
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Available options:\n");
 				printf("[-c | --configuration]: Use this configuration file\n");
