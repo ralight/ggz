@@ -21,7 +21,7 @@ ggzd_spades_SOURCES = card.c \
 		      socketfunc.c \
 		      socketfunc.h
 
-ggzd_spades_LDADD = $(LDADD)
+ggzd_spades_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
 INCLUDES = $(LIBGGZ_INCLUDES)
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2769 2001-12-01 06:53:01Z bmh $
+# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
 
 EXTRA_DIST = escape.dsc escape.room
 
@@ -14,9 +14,8 @@ ggzd_escape_SOURCES = main.c \
                       game.h
 
 INCLUDES = -I$(top_srcdir)/ggzdmod
-ggzd_escape_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a
 
-ggzd_escape_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.a
+ggzd_escape_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

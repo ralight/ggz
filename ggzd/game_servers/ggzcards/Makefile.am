@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4402 2002-09-04 05:38:20Z jdorje $
+# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
 
 SUBDIRS = common client config games ai .
 
@@ -24,8 +24,7 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			types.h
 
 ggzd_ggzcards_DEPENDENCIES = games/libgames.a \
-			     common/libcommon.a \
-                             $(top_builddir)/ggzdmod/libggzdmod.a
+			     common/libcommon.a
 
 # NOTE: ggzdmod must come last so we don't include "protocol.h" from
 # that directory!!  Ugh!
@@ -35,7 +34,7 @@ INCLUDES = -I$(top_srcdir)/game_servers/ggzcards/common \
 	   $(LIBGGZ_INCLUDES)
 ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a \
 		      common/libcommon.a \
-                      $(top_builddir)/ggzdmod/libggzdmod.a
+                      $(top_builddir)/ggzdmod/libggzdmod.la
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

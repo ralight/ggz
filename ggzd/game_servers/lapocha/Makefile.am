@@ -13,9 +13,8 @@ ggzd_lapocha_SOURCES = main.c \
 		       cards.c cards.h
 
 INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
-ggzd_lapocha_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a
 
-ggzd_lapocha_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.a
+ggzd_lapocha_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
