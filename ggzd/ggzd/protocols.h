@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4051 2002-04-22 19:40:12Z jdorje $
+ * $Id: protocols.h 4189 2002-05-11 16:08:04Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,6 +27,8 @@
 #define _GGZ_PROTOCOL_H
 
 #include <ggz_common.h>
+
+#define GGZ_CS_PROTO_VERSION 7
 
 /* Chat subops - these are defined separately in ggzcore */
 							/* PMCCCCCC */
