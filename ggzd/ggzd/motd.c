@@ -54,6 +54,7 @@ static char *motd_get_date(void);
 static char *motd_get_time(void);
 static char *motd_get_users(void);
 static char *motd_get_tables(int);
+static char *motd_get_port(void);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -162,6 +163,9 @@ static char *motd_parse_motd_line(char *line)
 					break;
 				case 'o':
 					p = sysname;
+					break;
+				case 'p':
+					p = motd_get_port();
 					break;
 				case 't':
 					p = motd_get_time();
@@ -302,4 +306,14 @@ static char *motd_get_tables(int option)
 
 	snprintf(tables_str, 6, "%d", num_tables);
 	return tables_str;
+}
+
+/* Get the port */
+static char *motd_get_port(void)
+{
+	static char port[6];
+
+	snprintf(port, 6, "%d", opt.main_port);
+
+	return port;
 }
