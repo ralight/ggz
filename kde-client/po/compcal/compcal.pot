@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-05-09 21:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../compcal/src/toplevel.cpp:41
+msgid "Chronological"
+msgstr ""
+
+#: ../../compcal/src/main.cpp:32
+msgid "Competition Calendar"
+msgstr ""
+
+#: ../../compcal/src/app.cpp:92
+msgid "Could not fetch event list."
+msgstr ""
+
+#: ../../compcal/src/app.cpp:53
+msgid "Date"
+msgstr ""
+
+#: ../../compcal/src/main.cpp:40
+msgid "Developer"
+msgstr ""
+
+#: ../../compcal/src/app.cpp:54
+msgid "Event"
+msgstr ""
+
+#: ../../compcal/src/app.cpp:92
+msgid "Fetch error"
+msgstr ""
+
+#: ../../compcal/src/display.cpp:85
+msgid "GGZ Event"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:45
+msgid "Help"
+msgstr ""
+
+#: ../../compcal/src/main.cpp:37
+msgid "Manages GGZ Gaming Zone tournaments and challenges"
+msgstr ""
+
+#: ../../compcal/src/main.cpp:34
+msgid "Online game scheduling system"
+msgstr ""
+
+#: ../../compcal/src/display.cpp:51
+msgid "Participants"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:43
+msgid "Program"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:37
+msgid "Quit"
+msgstr ""
+
+#: ../../compcal/src/display.cpp:48
+msgid "Score"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:40
+msgid "Sorted"
+msgstr ""
+
+#: ../../compcal/src/display.cpp:47
+msgid "Teams/Players"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:36
+msgid "Update events"
+msgstr ""
+
+#: ../../compcal/src/toplevel.cpp:44
+msgid "View"
+msgstr ""

@@ -1,2 +1,2 @@
-SUBDIRS = ggzap shadowbridge modsniff kcm_ggz
+SUBDIRS = ggzap shadowbridge modsniff kcm_ggz compcal
 
