@@ -96,6 +96,10 @@ int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1],
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
+	/* Don't allow personal chat to a player at a table */
+	if(players.info[rcv_id].table_index != -1)
+		return E_AT_TABLE;
+
 	/* Pack up chat message */
 	size = chat_pack(&data, opcode, players.info[sender].name, msg);
 	
