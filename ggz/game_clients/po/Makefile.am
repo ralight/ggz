@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
+#  $Id: Makefile.am 4669 2002-09-23 16:31:25Z jdorje $
 
 SUBDIRS = .
 
@@ -11,7 +11,8 @@ MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi s
 
 messages:
 	@for i in $(MODULES); do \
-		$(XGETTEXT) -k_ ../$$i/*.c ../common/*.c -o $$i/$$i.pot; \
+		$(XGETTEXT) -k_ ../$$i/*.c ../common/*.c -o $$i/$$i.pot \
+		  --keyword=N_; \
 		for j in `cd $$i; ls -1 *.po`; do \
 			echo "process $$i.$$j"; \
 			$(MSGMERGE) $$i/$$j $$i/$$i.pot > .$$j 2>/dev/null; \
