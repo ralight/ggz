@@ -1,3 +1,1357 @@
+2000-04-25 03:55:16  bmh  <bmh@users.sourceforce.net>
+
+	* doc/Makefile.am:
+	- Include our DSSSL file and admin guide in dist
+
+	* ggz_server.spec:
+	- Don't include easysock files
+
+	* /cvsroot/GGZ/easysock/configure.in, /cvsroot/GGZ/easysock/Makefile.am:
+	- Bumped version to 0.0.1
+	- Bumped so number to 1.0.1 in accordance with libtool suggestions
+
+2000-04-24 04:18:24  bmh  <bmh@users.sourceforce.net>
+
+	* INSTALL, README:
+	- Updated docs to reflect new compilation and install procedures
+
+	* doc/game-modules.txt:
+	- Updated to document Unix domain socket used for communication
+	- Mention tic-tac-toe example module
+
+	* doc/admin-guide.txt:
+	- Moved configuration stuff into INSTALL.  Added/clarified some stuff.
+
+	* doc/design.sgml:
+	- Added REQ/RSP_LOGIN_* items to appendix
+
+2000-04-23 23:30:15  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml, doc/ggz.dsl:
+	- Put all server interactions into refentries in appendix
+
+2000-04-22 15:41:39  bmh  <bmh@users.sourceforce.net>
+
+	* doc/admin-guide.txt:
+	- Rich's first go at a GGZ admin guide (with the syslog stuff added)
+
+2000-04-21 22:49:02  bmh  <bmh@users.sourceforce.net>
+
+	* doc/Makefile.am:
+	- Always remake docs
+
+2000-04-21 06:10:35  rgade  <rgade@users.sourceforce.net>
+
+	* doc/design.sgml: Documentation updated muchly:
+
+	- New documentation for room, chat, server options, MOTD and log internals
+	- Description of the config file parse phases
+	- A few bad tags and mispelings fixed I happened to see
+
+	* ggz_server.spec: RPM Spec file modifications
+
+	- Wrote the ggz_client spec file
+	- Updated the ggz_server spec file to allow a BuildRoot so it can be built
+	  by non-root users
+	- Updated ggz_server spec file to use /etc for the SYSCONFDIR
+
+2000-04-18 20:18:41  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/ggzd.conf.in, game_servers/spades/.cvsignore, game_servers/spades/Makefile.am, game_servers/spades/spades.dsc, game_servers/tictactoe/.cvsignore, game_servers/tictactoe/Makefile.am, game_servers/tictactoe/tictactoe.dsc, TODO:
+	- Renamed game modules to ggzd.* rather than ggzd_*
+
+2000-04-15 17:27:48  rgade  <rgade@users.sourceforce.net>
+
+	* ggz_server.spec: A spec file to generate a GGZ Server RPM
+
+	* game_servers/spades/Makefile.am, game_servers/spades/spades.dsc, game_servers/tictactoe/Makefile.am, game_servers/tictactoe/tictactoe.dsc:
+	spades executable now ggzd_spades
+	tictactoe executable now ggzd_tictactoe
+
+2000-04-11 15:41:36  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/protocols.h, ggzd/table.c, game_servers/tictactoe/game.c, game_servers/tictactoe/ggz.c, game_servers/tictactoe/main.c, game_servers/tictactoe/protocols.h:
+	- MSG_GAME_OVER -> REQ/RSP_GAME_OVER
+	- Game module doesn't exit until receiving RSP_GAME_OVER
+	- As soon as table handler receives REQ_GANE_OVER, make table as done
+	- Don't follow through with leave, if table marked as done
+
+	* ggzd/transit.c:
+	- If there is an error in transit, set GGZ_TRANSIT_RECV so player
+	  thread won't hang.
+
+	* game_servers/spades/Makefile.am, game_servers/tictactoe/game.c, game_servers/tictactoe/Makefile.am, ggzd/ggzd.conf.in, ggzd/ggzd.test.in, ggzd/transit.c, Makefile.am:
+	- Small autoconf updates (typos, omitted files, etc)
+	- Don't forget to close the remote end of the socketpair!!!
+
+2000-04-10 22:46:24  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/table.c:
+	- Added more log entries for failure conditions
+
+2000-04-10 22:35:39  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/table.c:
+	- Make sure the socket is created before we exec() the game server
+
+2000-04-10 21:25:34  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/spades/Makefile.am, game_servers/tictactoe/Makefile.am, ggzd/ggzd.motd, ggzd/ggzd.test.in, ggzd/Makefile.am, ggzd/table.c:
+	- Added sample ggzd.motd
+	- Force overwrite of files when doing 'make test'
+
+2000-04-09 20:12:22  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c: - Turned off TmpDir option parsing for now
+
+2000-04-09 19:56:02  bmh  <bmh@users.sourceforce.net>
+
+	* autogen.sh, configure.in, .cvsignore, game_servers/Makefile.am, game_servers/spades/Makefile.am, game_servers/tictactoe/Makefile.am, ggzd/.cvsignore, ggzd/ggzd.test.in, ggzd/Makefile.am, Makefile.am, TODO:
+	- Added 'test' target.  Just do a 'make test' to create the testdir
+	- Added ggzd.test.in to be filled in by configure and then used in
+	  testing.
+
+2000-04-09 19:51:00  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Allocate a MAX_CHAT_LEN buffer for chat messages rather than allowing
+	  arbitrary size strings.
+
+2000-04-08 21:12:33  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/err_func.c, ggzd/parse_opt.c:
+	- If the user specifies --debug=#, don't overwrite it from ggzd.conf
+
+2000-04-08 21:08:50  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/ggzd.conf.in:
+	- Added example for ConfDir option, but default to commented out
+
+2000-04-08 20:46:42  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c: - Set error defaults for admin name and email
+
+	* game_servers/tictactoe/tictactoe.room: - GameType should be TicTacToe
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/motd.c, ggzd/parse_opt.c:
+	Making directory structure work
+
+	control.c
+	  - Keep logfiles off until JUST before daemon_init
+
+	datatypes.h
+	  - Added tmp_dir, conf_dir
+
+	motd.c
+	  - Default to loading MOTD file from conf_dir
+
+	parse_opt.c
+	  - Use GGZDCONFDIR for finding config file
+	  - Set defaults for directories which are not specified in conf file
+	  - Use opt.conf_dir as base directory for game and room files
+
+2000-04-08 19:41:19  bmh  <bmh@users.sourceforce.net>
+
+	* acconfig.h, configure.in, game_servers/spades/Makefile.am, game_servers/spades/spades.dsc, game_servers/spades/spades.room, game_servers/tictactoe/Makefile.am, game_servers/tictactoe/tictactoe.dsc, game_servers/tictactoe/tictactoe.room, ggzd/ggzd_casual.room, ggzd/ggzd_competitive.room, ggzd/ggzd.conf, ggzd/ggzd.conf.in, ggzd/Makefile.am, ggzd/parse_opt.c, ggzd/players.c, TODO:
+	- Redid autoconf stuff to put things in correct places
+	- Moved room files in with game modules
+	- Have configure create ggzd.conf from ggzd.conf.in
+	- Enable debugging by default
+
+2000-04-07 19:13:56  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/room.c: room.c
+	  - room_join - don't ignore error code from room_send_chat
+	  - Don't bother trying to send chat if they are moving off the server
+	  - Check for GGZ_REQ_DISCONNECT in room_handle_join
+	  - Replaced 0/-1's with GGZ_REQ_OK/GGZ_REQ_DISCONNECT
+
+	control.c
+	  - Don't ignore a SIGPIPE except in production
+
+2000-04-07 19:11:30  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/tictactoe/game.c:
+	- Fixed game_send_sync() to send whole board, not just first row
+
+2000-04-07 01:23:32  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c: - Setup to ignore SIGPIPE from a sick client
+
+2000-04-06 21:16:25  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Separated player_list_tables() into separate functions
+	- player_list_tables_room() handles room-specific table lists
+	- player_list_tables_global() handles server-wide table lists
+
+2000-04-05 22:31:26  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/tictactoe/game.c, game_servers/tictactoe/game.h, game_servers/tictactoe/ggz.c, game_servers/tictactoe/tictactoe.dsc:
+	- Collapsed TTT_STATE_WAIT_INIT and TTT_STATE_WAIT_MID
+	- Initalize turn to -1 in game_init() and then set to 0 when game
+	  begins
+	- Rewrote game_update to be event based, not state based
+	- Add void* data parameter to game_update.  Much more useful now
+	- Always send name, even if it's a bot
+	- New function game_bot_move() does a simple bot (first available
+	  square)
+	- New function game_move() abstracts player and bot
+	- Updated .dsc file now that bots are allowed
+
+	* ggzd/room.c:
+	- In room_join(), don't call room_send_chat() if in room -1
+
+	* ggzd/control.c:
+	- Remove mtrace stuff (it's GNU specific and not that helpful)
+
+	* ggzd/room.c:
+	- Fixed bug in room_handle_join if user tries to enter non-existent
+	  room.
+
+2000-04-05 18:23:26  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/ggzd.h, ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Lock fixes/optimizations on room code
+
+	players.c
+	  - Send file descriptor to room_join() and room_send_chat()
+
+	room.c
+	  - Rewrote room_send_chat, no buffer - chats sent outside of locks
+	  - room_send_chat builds a list of chats to delete and removes them
+	    outside of lock
+	  - Don't call room_spew_chat_room() unless list debugging is enabled as it
+	    is a high cost algorithm
+
+2000-04-05 12:42:32  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml:
+	- s/game/table in a couple places
+
+2000-04-05 04:22:04  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/ggzd.h, ggzd/room.c: ggzd.h
+	  - New define: CHAT_OUTBUF_SIZE
+
+	room.c
+	  - room_chat_send() now copies chats to a buffer, then sends out
+	    the I/O in a lock-free loop.
+
+	* ggzd/room.c: - Fixed a missing free()
+
+	* ggzd/control.c, ggzd/players.c: - Fixed two nasty memory leaks
+	- Added a call to mtrace() in control.c if DEBUG is on
+
+2000-04-04 19:57:30  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Return error if trying to do a non-global table list when not in
+	  room
+
+	* ggzd/room.c:
+	- In room_send_chat, unlock the chat_room lock if there is an error
+	  sending the chats.  This should prevent hangs due to inability to
+	  acquire locks held by dead people.
+
+2000-04-03 20:28:34  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/tictactoe/game.c, game_servers/tictactoe/game.h:
+	- Added detection for tie game
+
+	* /cvsroot/GGZ/easysock/easysock.h:
+	- Added #include <sys/types.h> for size_t
+
+	* TODO:
+	- Fixed up a bit.  Moved some itmes from 0.0.2 to 0.0.3
+
+	* game_servers/tictactoe/game.c, game_servers/tictactoe/game.h, game_servers/tictactoe/ggz.c, game_servers/tictactoe/ggz.h, game_servers/tictactoe/main.c, game_servers/tictactoe/Makefile.am, game_servers/tictactoe/protocols.h:
+	- First stab at a Tic-Tac-Toe game with GGZ stuff tucked nicely away
+	  in ggz.[ch]
+
+	* ggzd/table.c, ggzd/transit.c:
+	- Fixed bug where a message coming from the game server between
+	  REQ_GAME_{LEAVE|JOIN} and RSP_GAME_{LEAVE|JOIN} would cause the
+	  table thread to hang.
+
+2000-04-02 23:48:55  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/parse_opt.c, ggzd/players.c, ggzd/protocols.h, ggzd/room.c, ggzd/room.h:
+	Added MSG_UPDATE_ROOMS to server and client
+
+	- Client does not yet act upon it, merely accepts it
+
+	* ggzd/players.c, ggzd/table.c:
+	- Table changes have to trigger a player list update
+
+	* ggzd/datatypes.h, ggzd/parse_opt.c, ggzd/players.c, ggzd/room.c, ggzd/table.c:
+	Room support for tables:
+
+	datatypes.h
+	  - Timestamp for table changes in chat room
+	  - List of table indices in chat room
+
+	parse_opt.c
+	  - Allocate the list of table indices for chat room
+
+	players.c
+	  - Alter update code to use table_timestamp from chat room
+	  - Alter joins/launches to update chat room table_timestamp
+	  - Alter launches to update table index list in chat room
+	  - Alter player_list_tables() to avoid search for valid tables if !global
+
+	room.c
+	  - Zap out the count of tables at room initialization
+	  - Small optimization to reordering of player index list
+
+	table.c
+	  - Remove table index from chat room on table_remove and update timestamp
+
+2000-04-01 08:56:08  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/players.c:
+	- Added room member to TableInfo
+	- Do some error checking on REQ_TABLE_LAUNCH (type checking, and don't
+	  allow multiple tables per player)
+	- Add room support to {REQ|RSP}_LIST_TABLES to comply with protocol spec
+
+	* doc/design.sgml:
+	- Added MSG_UPDATE_ROOMS and added room stuff to REQ_TABLE_LIST
+	- Minor renaming to GGZ <-> game server protocol to prevent namespace
+	  clash
+
+	**Client/Server Protocol is now frozen for 0.0.2 release**
+
+2000-03-31 23:43:59  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/spades/engine_func.c:
+	- Comply with protocols (had forgotten to recevie size of options)
+
+	* ggzd/players.c, ggzd/table.c:
+	- Added Rich's patch for player_list_players (more efficient lock handling)
+	- Don't send player list if we're not in a room.
+	- Rewrote table_pass_options to be more lock-efficient and to comply
+	  with protocol.
+
+2000-03-31 19:50:43  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/err_func.c: err_msg_exit() shouldn't print errno string
+
+2000-03-31 06:34:00  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/ggzd.h, ggzd/players.c:
+	- Removed state member from UserInfo object (it's function can be done
+	  just as easily elsewhere)
+
+	* TODO:
+	- Updated TODO list
+
+	* ggzd/players.c, ggzd/room.c:
+	- Do better validity checking
+	- Don't allow anything until you're logged in (except logging in)
+
+	* ggzd/players.c:
+	- Don't try to update player list when in room -1
+
+2000-03-31 04:28:02  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/players.c, ggzd/room.c:
+	Modified RSP_LIST_PLAYERS to only list players in a user's room
+
+	- Move timestamp into the chat_room, so only if the room contents changed
+	  does an update go out
+	- Rewrite of player_list_players
+	- room_join updates the timestamps
+
+	* ggzd/players.c, ggzd/room.c: Fixed some lock misuses
+
+	players.c
+	  - race condition in room_emit()
+
+	both files
+	  - removed extraneous unlocks of player structure
+
+2000-03-31 03:12:47  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml:
+	- Actually commit these changes....
+	- Make sure protocol matches what we actually do.
+
+	* ggzd/players.c, ggzd/protocols.h:
+	- Check player state in appropriate places
+	- New error codes
+
+2000-03-30 23:10:30  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/ggzd.h, ggzd/players.c, ggzd/players.h, ggzd/seats.c, ggzd/seats.h, ggzd/table.c:
+	- s/comp/bot in various places (it's shorter and more recognizable)
+
+	* ggzd/datatypes.h, ggzd/ggzd.h, ggzd/parse_opt.c, ggzd/players.c, ggzd/protocols.h, ggzd/table.c:
+	- Finally got around to renaming defines to get rid of NG_ prefix
+	- Eliminated COMP_ALLOW_XXX
+	- Renamed type allow member elements to player_allow_mask and
+	  bot_allow_mask
+	- Renamed UserInfo element from playing to state
+	- Created some #defines for player state
+
+2000-03-30 16:19:11  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c, ggzd/room.h:
+	- Added warning about room_emit() behaviour in room.c and room.h
+
+2000-03-30 14:59:04  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/chat.c, ggzd/chat.h, ggzd/control.c, ggzd/players.c, ggzd/Makefile.am, TODO:
+	- Removed last vestiges of old chat system
+	- Updated TODO list
+
+	* ggzd/parse_opt.c, ggzd/room.c:
+	- Added memset() to cleae game_info when we malloc it
+	- Remove extraneous RSP_ROOM_JOIN
+
+2000-03-30 03:04:57  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/protocols.h, ggzd/room.c:
+	REQ/RSP_ROOM_JOIN implemented
+
+	room.c
+	  - Wrote room_handle_join()
+
+	players.c
+	  - Players start in room -1
+	  - Chat in room -1 receives a RSP_CHAT code of -1
+	  - "/join" command removed
+	  - cleanups to follow
+
+2000-03-30 00:58:26  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml:
+	- Reverted ROOM_JOIN protocol change
+
+2000-03-29 23:48:23  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c:
+	- Fixed a bug in room_create_additional() - realloc() doesn't initialize
+	  memory to 0's like malloc() does
+	- Made same change to room_initialize() just in case
+
+	* doc/design.sgml: - Small change to REQ/RSP_ROOM_JOIN for Justin
+
+	* doc/design.sgml: - Added REQ/RSP section for rooms
+	- Documented REQ/RSP_ROOM_JOIN
+
+	* ggzd/room.c: Rewrote room_create_additional() to use realloc()
+
+	* ggzd/room.c, doc/design.sgml: RSP_LIST_ROOMS protocol fix
+
+	* ggzd/parse_opt.c:
+	- Fixed lack of fclose() on game and room configuration files
+	- Fixed invalid parse of AllowLeave config option
+
+	* ggzd/players.c, ggzd/table.c:
+	Altered select call wait times, 5 seconds is a long time to wait
+	 - just a test to see how it affects load (shouldn't)
+
+2000-03-29 02:46:13  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/room.c:
+	- fixed small bug in room code == -1 to != -1
+
+2000-03-29 02:21:35  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Expect seat 0 information from client when doing table launch
+	- leave table if error in responding to client after successful launch
+	  or join
+
+2000-03-28 07:25:53  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Implemented REQ/RSP_LIST_ROOMS on server end
+
+	players.c
+	  - Inserted call to room_handle_request()
+
+	room.c
+	  - Added room_handle_request() to handle all opcodes dealing with rooms
+	  - Added room_list_send() to handle a REQ_LIST_ROOMS per latest protocol spec
+
+2000-03-28 05:25:26  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/spades/protocols.h, game_servers/spades/spades.dsc, game_servers/tictactoe/protocols.h, game_servers/tictactoe/tictactoe.dsc, ggzd/protocols.h, ggzd/table.c:
+	- When enough people have joined a table, mark it as GGZ_TABLE_PLAYING
+	- Don't attempt leave if table type is -1 (prevents leaving a removed table)
+	- Don't attempt leave if !allow_leave and state is playing
+	- New error code E_TABLE_FORBIDDEN for when allow_leave is 0
+	- Added AllowLeave and a comment to .dsc files
+
+2000-03-28 04:49:43  rgade  <rgade@users.sourceforce.net>
+
+	* doc/design.sgml: Protocol change to REQ/RSP_LIST_ROOMS
+
+	* doc/design.sgml, game_servers/spades/protocols.h, ggzd/protocols.h:
+	- Added protocol specifier for REQ/RSP_LIST_ROOMS
+	- Added documentation for REQ/RSP_LIST_ROOMS
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/ggzd_casual.room, ggzd/ggzd_competitive.room, ggzd/ggzd.conf, ggzd/ggzd.h, ggzd/parse_opt.c, ggzd/parse_opt.h, ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Added AllowLeave game option to GameInfo parse and datatype
+
+	Removed an unused var from players.c
+
+	Implemented room definition files
+	  - Put *.room files into game_dir.  Sample files are included.
+	  - MaxTables parsed, stored, but not enforced.
+
+2000-03-28 02:00:14  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/table.c, ggzd/transit.c:
+	- Try to avoid another ghost condition by calling table_leave() when
+	  doing the player's table cleanup.
+	- Added some dbg messages to the transit code
+	- Don't update timestamp if you've removed last player (remove will do
+	  it)
+
+	* ggzd/players.c:
+	- Call table_leave() upon player logout/error (prevents ghost tables)
+
+2000-03-27 23:02:31  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/players.c, ggzd/table.c, TODO:
+	- Added new debug level GGZ_DBG_GAME_MSG for those byte-level "User to
+	  Game" messages that everybody loves
+	- Lengthed log/debug defines to 32 bit
+	- Fixed truncation problem on MSG_LOG/DEBUG
+
+	* game_servers/spades/engine_main.c, game_servers/spades/err_func.c, game_servers/spades/err_func.h:
+	- Added log_msg() function which utilizes MSG_LOG to the GGZ server
+
+	* doc/ascii-lynx.dsl, doc/design.sgml, doc/ggz.dsl, doc/Makefile.am:
+	- Created GGZ stylesheet from gnome one
+	- Improved doc-making system
+
+	* ggzd/table.c, ggzd/transit.c:
+	- Put game module type and pid in log/debug files if options enabled
+
+	* game_servers/spades/engine_func.c:
+	- Use es_read_int_or_die() when reading bids.
+
+	* ggzd/datatypes.h, ggzd/players.c, ggzd/table.c:
+	- When launching a table, don't hardcode self to seat[0].  Instead,
+	  wait until table is launched and then call table_join()
+	- Removed player_fd member of TableInfo (no longer necessary)
+
+	* ggzd/datatypes.h, ggzd/players.c, ggzd/table.c, ggzd/transit.c:
+	- Made transit_flag an unsigned char so we can use all 8 bits
+	- Fixup TRANSIT_LEAVE logic since it's not a flag but the absence of
+	  one.
+	- Added some debug messages to transit code
+	- Remove table if seat count goes down to zero (fixes some ghost tables)
+
+2000-03-27 18:55:32  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c: General cleanups to room_join()
+	  - Cleaned up deadlock avoidance strategy
+	  - Now checks for invalid room number rather than implicitly trusting caller
+	  - Send off chat messages from old room before switching
+	  - Check for already NULL chat_head before sending off to dequeue()
+	  - A few other misc cleanups
+
+	* ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c:
+	Added option for GameTypeInLogs
+
+	err_func.c
+	  - Intialize log options to default to GameTypeInLogs ON
+
+	err_func.h
+	  - Added GGZ_LOGOPT_INC_GAMETYPE bitmask
+
+	ggzd.conf
+	  - Demonstration of syntax
+
+	parse_opt.c
+	  - Parse and set the log option
+
+2000-03-27 04:24:31  bmh  <bmh@users.sourceforce.net>
+
+	* TODO:
+	- Fixed up TODO list
+
+	* ggzd/datatypes.h, ggzd/err_func.h, ggzd/ggzd.h, ggzd/Makefile.am, ggzd/players.c, ggzd/table.c, ggzd/table.h, ggzd/transit.c, ggzd/transit.h:
+	- Moved much of transit code to transit.c
+	- Rewrote launch and transit systems to not require synchronous messages
+	  from game module
+	- Added transit variable transit_seat to hold seat number of joining
+	  player
+	- Cleaned up table_handle()
+
+	* game_servers/spades/engine_func.c, game_servers/spades/engine_main.c, game_servers/spades/err_func.c, game_servers/spades/err_func.h, game_servers/spades/protocols.h:
+	- Use MSG_LOG/MSG_DEBUG mechanism.
+	- Updated to newest protcols.h
+	- Code cleanups
+
+2000-03-27 02:48:00  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c:
+	Streamlined parse_log/dbg_types() using table searches
+
+2000-03-26 23:43:12  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c:
+	- room_join() now tests for room full conditions and returns E_ROOM_FULL
+	- locks rewritten using trywrlock() to avoid deadlock
+
+2000-03-26 09:30:12  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/motd.c, ggzd/players.c, ggzd/protocols.h, ggzd/table.c:
+	- Implemented REQ/RSP_MOTD
+	- Implemented MSG_LOG and MSG_DBG
+
+	* doc/design.sgml:
+	- Formatting changes
+	- Spelling Fixes
+	- Added REQ/RSP_MOTD
+	- Added MSG_LOG, MSG_DBG
+
+2000-03-26 06:58:26  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/err_func.c:
+	- Added lock around fputs based log output when not using multi-threaded logs
+
+2000-03-25 19:48:25  bmh  <bmh@users.sourceforce.net>
+
+	* configure.in:
+	- Create tictactoe makefile
+
+	* game_servers/Makefile.am:
+	- Added tictactoe to list of modules to make
+
+	* game_servers/spades/engine_func.c:
+	- Added support for REQ_GAME_LEAVE
+
+	* game_servers/tictactoe/.cvsignore, game_servers/tictactoe/ggz.c, game_servers/tictactoe/ggz.h, game_servers/tictactoe/main.c, game_servers/tictactoe/Makefile.am, game_servers/tictactoe/protocols.h, game_servers/tictactoe/tictactoe.dsc:
+	- Added skeleton of new game module
+
+2000-03-25 17:38:59  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/ggzd.h, ggzd/room.c:
+	- Added array of indexes to players in room
+	- Search players in room when chatting, not all players
+	- WARNING: There is no check for overstuffing a room yet, I want to think
+		   about how to handle a failed room_join() from -1 to 0 first.
+		   So don't let >100 people in a room :)
+		-  Option 1: Drop their connection
+		-  Option 2: Qeuue them for entry
+		-  Option 3: Find any room we can stuff 'em into
+
+2000-03-24 18:46:26  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c:
+	DOH! - Always 'make' even after a simple change.  Missing semicolon fixed.
+
+	* ggzd/room.h: Removed room_dequeue_chat() - static function now
+
+	* ggzd/players.c, ggzd/room.c: room.c
+	  - Restructured locks to make player lock unnecessary
+	  - Made room_dequeue_chat() static
+
+	players.c
+	  - Removed an unncessary call to room_dequeue_chat()
+
+2000-03-24 06:17:16  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Updated to new es_read_string() interface
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- es_read_string() now takes the length of the user-provided buffer as an
+	  argument.  If the received string size exceeds the buffer length, it will
+	  return will an error.  This should prevent buffer overflows.
+	- es_read_string() now guarntees NULL-termination (again.  and it should
+	  work too)
+
+2000-03-24 02:58:23  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c:
+	- Small chat bug-fix, fixes a "this could never happen" crash
+
+	* ggzd/room.c:
+	- Minor chat improvement, changed a write lock to a read lock
+
+2000-03-23 05:07:32  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/players.c, ggzd/room.c:
+	Emit a room change message for both entering and leaving a room
+
+	control.c
+	  - We now have 2 rooms hardcoded, 0 and 1
+
+	players.c
+	  - Players enter at room -1, auto-switched to room 0 at login completion
+	  - Blocked off entry to room -1 (old chat can cause hung chats)
+	  - Players switch to room -1 at disconnect
+	    (By entering and leaving at room -1 causes a room change msg automatically)
+
+	room.c
+	  - Fixed an assumption in room_emit() which is not true for room leave msgs
+	    (check for chat emission to an empty room)
+	  - Reconnected room_notify_change() now that problems from last night are gone
+	  - Fixed a VERY minor memory leak (only occured if a malloc() failed)
+
+	* /cvsroot/GGZ/easysock/easysock.c: - ?Fixed? stack corruption bugs
+
+2000-03-22 19:25:51  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c:
+	- Repaired a memory leak, strings need to be dealloced with chat items
+
+2000-03-22 08:45:45  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Silly Brent, in es_read_string_alloc(), message is a char**, not a char*.
+	  The correct way to null-terminate is (*message)[size] = '\0'
+
+	* ggzd/players.c, ggzd/protocols.h, ggzd/table.c, ggzd/table.h:
+	- Implemented {REQ,RSP}_TABLE_LEAVE
+
+2000-03-22 04:12:27  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/room.c: - Fixed a negative array index bug in room.c
+	- Set default # of rooms back to 1
+
+2000-03-21 21:07:44  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Chat now works in room 0, should work in 'X' rooms also, but haven't tried yet
+
+	players.c
+	  - Inserted hooks to read chat from our current room
+
+	room.c
+	  - Wrote room_send_chat() to send room chat to a player
+	  - Fixed a memory leak in room_dequeue_chat()
+	  - Fixed a nasty server lock in room_join()
+
+2000-03-21 20:27:47  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Ensure that strings read using es_read_string_XXX are always
+	  NULL-terminated.
+
+2000-03-21 19:20:36  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	- Messages are now enqueued for player consumption in room 0
+	- This server should be memory leak free (/join is safe to use)
+	- Can't read messages yet, but can view them queueing in debug
+
+	datatypes.h
+	  - Couple of tweaks
+
+	err_func.h
+	  - Added new debug types (GGZ_DBG_ROOM, GGZ_DBG_LISTS)
+
+	parse_opt.h
+	  - Added new debug types (GGZ_DBG_ROOM, GGZ_DBG_LISTS)
+
+	players.c
+	  - Calling conventions altered for some room_* calls
+	  - Fixed all known memory leaks
+
+	room.c
+	  - Chat now enqueued for (later) consumption
+	  - Dequeueing chat works properly
+	  - List debug spewer coded - to check for leaks
+	  - No memory leaks have been noticed
+
+	* ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Room change code, DON'T use '/join #' to change rooms (see ggz-dev)
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.h, ggzd/Makefile.am, ggzd/players.c, ggzd/room.c, ggzd/room.h:
+	Starting to add room functionality
+
+	Changes are pretty self-explanatory, basically what I've done is setup
+	the player to automatically join room -1 at connection time.  There is no
+	way to change to another room :)
+
+	If the player's room is -1, then the old chat functions are used as-is.
+
+	* ggzd/players.c: - Emit a log_msg() when a player is removed
+
+2000-03-20 05:00:14  bmh  <bmh@users.sourceforce.net>
+
+	* game_servers/spades/engine_func.c, game_servers/spades/Makefile.am, game_servers/spades/protocols.h:
+	- Updated to work with new table launching/joining system
+
+	* ggzd/datatypes.h, ggzd/ggzd.h, ggzd/motd.c, ggzd/players.c, ggzd/protocols.h, ggzd/table.c, ggzd/table.h:
+	- Rewrote table launching/joining code to fork table immediately upon
+	  launch and then pass players to table as they join
+	- Removed all code that actually deals with table to table.c
+	- Created new "transit" system for joining/leaving table
+	- Replaced table.info[].playing flag with table.info[].state variable
+
+2000-03-19 05:32:03  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c: Changed the short form option for --debug to -d
+
+	* ggzd/parse_opt.c:
+	Added --debug configuration line option so we can debug GGZ_DBG_CONFIGURATION
+
+	* ggzd/chat.c, ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/motd.c, ggzd/parse_opt.c, ggzd/players.c, ggzd/table.c:
+	DebugTypes is now implemented
+
+	Important changes:
+	  dbg_msg now requires the FIRST parameter to be a valid GGZ_DBG_* debug type
+	  See ggzd.conf for configuration file syntax
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/parse_opt.h:
+	LogLevel has been replaced by bitmap LogTypes
+
+	ggzd.conf
+	  - Describes and demonstrates new syntax
+
+	control.c
+	  - Updated printf() of log level to print log types as a hex value
+
+	err_func.c
+	  - log_msg() now outputs if the level passes through the log type bitmask
+
+	parse_opt.c
+	  - parse_log_types() parses a list of log types and returns a bitmask
+
+	* ggzd/err_func.c: - Fixed a reentrancy problem
+
+	* ggzd/err_func.c, ggzd/ggzd.conf:
+	ThreadLogs configuration option now works
+
+	err_func.c
+	  - log_open_logfile() opens a logfile, appending PID if necessary
+	  - err_doit() now fopen()'s the log before writing and the fclose()'s it
+
+	ggzd.conf
+	  - Cleaned up example ggzd.conf a little bit
+
+2000-03-18 22:25:07  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/players.c:
+	Initial changes to support logs by thread PID
+
+	- Moved all log options into log_info.options bitmap, there were enough options
+	  to make it worthwhile
+	- Altered #defines to reduce namespace pollution
+	- Rewrote functions to deal with bitmap options
+	- Parse (but don't act on) the ThreadLogs ggzd.conf directive
+
+	* ggzd/players.c: - Replaced inet_ntoa with thread-safe inet_ntop
+
+	* ggzd/parse_opt.c, ggzd/players.c:
+	- Disabled HostnameLookup until further notice
+
+	* ggzd/err_func.c, ggzd/motd.c:
+	- Replaced all calls to localtime() with calls to thread-safe localtime_r()
+
+2000-03-18 05:34:38  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/players.c, TODO:
+	- Update table description
+
+2000-03-18 03:13:35  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Move motd display into player_login_* so it appears after successful login
+
+2000-03-17 23:11:09  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/err_func.h, ggzd/motd.c, ggzd/players.c, ggzd/table.c:
+	- Removed all occurrences of FAIL() macro since some system
+	  calls return different values for success and failure
+
+	* ggzd/ggzd.h, ggzd/players.c, ggzd/protocols.h:
+	- Added MSG_ERROR to protocol
+	- New function player_send_error() to send MSG_ERROR to client in
+	  response to unrecognized opcodes
+	- Rename player_handler() responses
+	- Fixed bug in player_updates() where player number not printed
+	  correctly
+	- When checking for duplicate names, don't compare to players who
+	  aren't logged in
+	- Don't disconnect on failed login
+	- Cleaned up read_name()
+
+	* ggzd/control.c, ggzd/motd.c, ggzd/parse_opt.c, ggzd/players.c:
+	- In parse_file(), set motd_info.use_motd if a motd file is specified
+	- Call motd_read_file() from main() if it is set
+	- Only try to send MOTD to client if it is set
+	- Don't set it by default in motd_read_file()
+	- Flag some non-reentrant functions in players.c
+	- Close socket if we encounter an error in player_new()
+
+	* ggzd/control.c, ggzd/parse_opt.c:
+	- Removed hardcoded spades gametype.  Game types *MUST* be loaded from
+	  description files in gamedir now.
+	- Various cleanups
+	- Make 5688 default port (as we discussed on ggz-dev)
+
+2000-03-17 04:36:38  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/players.c: - Fixed a warning in players.c
+
+	* ggzd/players.c, ggzd/players.h:
+	- anonymous login now fails on duplicate name
+
+	* ggzd/datatypes.h, ggzd/players.c:
+	- player handler thread now determines IP address for itself
+
+	* ggzd/control.c, ggzd/players.c, ggzd/players.h:
+	- We no longer pass ip_addr to the thread, it will determine it on it's own
+
+	* ggzd/chat.c:
+	- fixed chat_mark_all_read() to remove a finished chat message
+
+2000-03-17 00:52:01  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/players.c:
+	- Adds the option for players to add coments to games
+
+2000-03-16 03:25:39  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/chat.c, ggzd/players.c:
+	- Implemented chat_mark_all_read(), should fix bug #102763
+
+2000-03-15 04:04:36  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/err_func.c:
+	- fixed log file opens to append rather than overwrite
+
+2000-03-14 00:37:38  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/err_func.c, ggzd/ggzd.conf, ggzd/parse_opt.c:
+	- Added configuration option for logs (TimeInLogs) to include a timestamp
+
+	- Fixed some potential buffer overruns in err_doit() - replaced all
+	  v/sprintf with v/snprintf so we can't do that in the future.
+
+2000-03-12 23:39:31  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/ggzd.conf: Removed erroneous (Not Implemented) flags
+
+	* ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/players.c:
+	Hostname lookup on connecting client IP address now performed.  The default
+	is not to do a hostname lookup, configurable in ggzd.conf.
+
+	* ggzd/datatypes.h, ggzd/err_func.c, ggzd/ggzd.conf, ggzd/parse_opt.c:
+	Enabled new ggzd.conf feature (PIDInLogs)
+
+	* ggzd/parse_opt.c:
+	Fixed a bug which caused a syntax error if debugging not enabled
+
+	* ggzd/datatypes.h:
+	Marked some items for eventual cleanup() that I hadn't been keeping up with :)
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/players.c, ggzd/players.h:
+	IP address is now sent down to player functions to store in player table
+
+	datatypes.h
+	  - added ip_addr to UserInfo
+
+	control.c
+	  - stuff the ip address into a char buffer
+
+	players.c
+	  - modified players_handler_launch() and player_new() to pass the
+	    IP address to player_new() in addition to the socket fd
+	  - player_new() stores IP address in player info structure
+
+	* ggzd/control.c, ggzd/err_func.c, ggzd/err_func.h, ggzd/parse_opt.c:
+	Created log_msg function for general log messages
+
+	err_func.c
+	  - log_info now gets initialized with some defaults
+	  - added log_msg function
+	  - default log_level is set to 1
+
+	err_func.h
+	  - several defines added for log_level implementation
+
+	control.c
+	  - added some examples of using log_msg()
+	  - we now retrieve the IP address of connections made to the server
+
+	parse_opt.c
+	  - don't overwrite log_level if specified at command prompt
+
+2000-03-11 06:13:21  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c:
+	Basic logfile handling introduced
+
+	err_func.c
+	  - logfile_set_facility() sets the syslogd facility to use
+	  - logfile_initialize() opens logfiles or sets up syslog
+	  - err_doit() now logs to stderr only if logging not initialized yet
+	  - err_doit() is now passed a syslog priority to use
+
+	parse_opt.c
+	  - parse the logfile configuration options
+
+	datatypes.h
+	  - added a log_info structure to keep things organized
+
+	control.c
+	  - calls logfile_initialize() after configuration files parsed
+
+2000-03-10 01:52:07  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/motd.c:
+	- Added cputype to message of the day parsing (%C)
+
+	* doc/design.sgml: - Updated to include %C code in MOTD parsing
+
+2000-03-09 20:48:26  bmh  <bmh@users.sourceforce.net>
+
+	* TODO:
+	- Some TODO updates (still needs work)
+
+	* game_servers/spades/engine_func.c, game_servers/spades/engine.h, game_servers/spades/engine_main.c, game_servers/spades/socketfunc.c, game_servers/spades/socketfunc.h:
+	- Use unix domain socket to communicate with GGZ rather than stdin/stdout
+	- Fixed various compiler warnings
+
+	* ggzd/table.c:
+	- Changed GGZ to use unix domain sockets for communication with game_server.
+	  Socket names take the form of /tmp/<game name>.<process id>
+	- Don't close STDIN and STDOUT on forked table
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Created es_make_unix_socket() and es_make_unix_socket_or_die()
+
+	* ggzd/chat.c, ggzd/control.c, ggzd/datatypes.h, ggzd/ggzd.h, ggzd/Makefile.am, ggzd/motd.c, ggzd/parse_opt.c, ggzd/players.c, ggzd/seats.c, ggzd/table.c:
+	- Split out #define statements into ggzd.h
+
+2000-03-09 04:09:27  rgade  <rgade@users.sourceforce.net>
+
+	* doc/design.sgml: - Added docs for MOTD
+	- Fixed a missing </listitem>
+
+2000-03-08 23:10:02  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/ggzd.conf, ggzd/motd.c, ggzd/parse_opt.c:
+	- Added AdminName and AdminEmail to ggzd.conf
+	- Added %a and %e to MOTD
+
+	* ggzd/datatypes.h, ggzd/motd.c:
+	- Removed static variables from motd functions
+
+2000-03-08 02:36:58  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/motd.c:
+	- Upped the MOTD to 80 lines, should be enought to make most people happy
+	- Addet %p for the port number, please check it to make shure I did it right
+
+2000-03-08 01:40:52  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/motd.c:
+	- Implemented %g (total tables running) and %G (tables waiting for
+	  players) codes for MOTD
+
+2000-03-08 00:20:01  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/motd.c:
+	- Added version to motd paser
+
+2000-03-08 00:18:50  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml:
+	- Filled in section on GGZ-control/game_server protocol
+	- Added MOTD subsystem
+
+2000-03-07 23:59:54  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/motd.c: - More MOTD functionality
+	- Added MAX_MOTD_LINES to resolve potential future problems
+
+2000-03-07 23:59:25  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h, /cvsroot/GGZ/easysock/TODO:
+	- Added data type ES_FD
+	- Fixed up es_*_fd() to fit our coding style
+	- Added output debugging and error messages to es_*_fd()
+
+2000-03-07 23:17:28  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h: - Upped maximum MOTD lines to 40
+
+2000-03-07 23:09:06  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/motd.c:
+	- Made the MOTD a little longer 40 lines now.
+
+2000-03-07 18:09:27  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- When printing out debug message in read_string(), use message, not *message.
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Replaced references to err_quit() with _err_func().  This allows us to
+	  actually like easysock to things...
+
+2000-03-07 06:59:57  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h:
+	- Just popped a little warning comment in the motd structure
+
+2000-03-07 06:58:40  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Added es_write_fd() and es_read_fd() based on functions by Richard
+	  Stevens in Unix Network Programming Vol 1.  These are untested by me.
+
+2000-03-07 06:53:47  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/motd.c: - motd lines are now sent through motd_parse_motd_line()
+	- %h specifier is replaced by hostname
+
+2000-03-07 05:41:06  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/TODO:
+	- s/bug/buf.  Stupid typo.  This lets us compile with
+	  --enable-debug-socket
+
+2000-03-07 04:59:10  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/motd.c, ggzd/players.c: motd.c
+	  - altered return code of motd_show_motd to return true on failure
+
+	players.c
+	  - moved call to motd_show_motd to a more sensible location
+
+	* ggzd/ggzd.conf, ggzd/motd.c, ggzd/motd.h, ggzd/players.c:
+	Server now sends out (basic) MOTD file
+
+	motd.c
+	  - added motd_send_motd() function
+
+	players.c
+	  - calls motd_send_motd() function after sending server ID
+
+	* ggzd/motd.c: - Server now reads in the motd file
+
+2000-03-07 02:44:34  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Lots of code cleanups
+	- Use es_writen() and es_readn() for everything
+	- Make sure all functions (except readn/writen, and *_die()) return 0
+	  on success and -1 on failure
+
+2000-03-07 02:27:56  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/ggzd.conf, ggzd/Makefile.am, ggzd/motd.c, ggzd/motd.h, ggzd/parse_opt.c:
+	- Added motd.c, motd.h
+	- parse_opt.c calls motd_read_file()
+
+	* ggzd/datatypes.h:
+	- Added a structure for message of the day information
+
+2000-03-07 01:55:02  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- Fixed es_make_socket() so it returns on error instead of trying to
+	  continue
+
+	* /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	- Ran code through 'tindent -kr -i8'
+
+2000-03-07 00:05:12  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c:
+	- Fixed a few logic errors that could cause a segfault later
+
+2000-03-06 01:53:11  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/parse_opt.c:
+	- parse and store the motd_file from the configuration file
+
+	* ggzd/ggzd.conf:
+	- Removed (Not Implemented) notations where applicable
+
+	* game_servers/spades/spades.dsc, ggzd/control.c, ggzd/parse_opt.c, ggzd/parse_opt.h:
+	control.c
+	  - setup to call parse_game_files()
+	  - if it failed, use the old hardwired code for people who don't have
+	    valid conf files
+	  - moved code to set default port to parse_opt.c
+
+	parse_opt.h
+	  - added prototype for parse_game_files()
+
+	parse_opt.c
+	  - set defaults at end of parse_conf_file() for important values, including
+	    Port and GameDir
+	  - added parse_game_files() - selects game files to add to game_types
+	  - parse_game_files() cleans up the add_ignore_list when done
+	  - added parse_dselect() - selects filenames ending in ".dsc" for scandir
+	  - added parse_game() - opens a game description file and imports values
+	    into a GameInfo struct and finally adding it to game_types
+	  - reorganized order of functions in module
+
+	spades.dsc
+	  - Updated syntax in spades.dsc
+
+2000-03-06 00:34:42  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Write timestamp while we still have write lock!
+
+2000-03-05 19:25:49  rgade  <rgade@users.sourceforce.net>
+
+	* game_servers/spades/spades.dsc, game_servers/spades.dsc:
+	- Moved spades.dsc file into the spades srcdir proper
+
+2000-03-05 14:26:57  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Added a tables.timestamp to joining a table. The table list client side
+	- now show the correct number of open seats.
+
+2000-03-04 20:46:14  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/ggzd.conf, ggzd/players.c:
+	- When sending the game type list, we now send the num_play_allow as well
+	- This is neede by the client so the launch dialog know how many combo
+	- items to show.
+
+2000-03-04 17:05:49  bmh  <bmh@users.sourceforce.net>
+
+	* doc/design.sgml, game_servers/spades/engine_func.c, game_servers/spades/engine_main.c, ggzd/datatypes.h, ggzd/Makefile.am, ggzd/players.c, ggzd/seats.c, ggzd/seats.h, ggzd/table.c, TODO:
+	- Changed TableInfo structure to only hold information about not seat
+	  assignments, not num_players, comp_players, etc.
+	- Updated REQ_LAUNCH_GAME and REQ_LIST_TABLES to reflect new table structure
+	- Changed the table data passed to game_server for same reason
+	- Added seats.[ch] to provide functions seats_num(), seats_open(), etc.
+	- #define special seat assignments GGZ_SEAT_OPEN, GGZ_SEAT_COMP,
+	  GGZ_SEAT_RESV, and GGZ_SEAT_NONE
+
+2000-03-04 00:49:27  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/ggzd.conf, ggzd/parse_opt.c:
+	- Added initial functionality for AddGame, AddAllGames, and IgnoreGame
+
+2000-03-03 22:13:53  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/table.c, TODO:
+	- Acquire readlock in a couple places
+	- Small formatting changes
+
+2000-03-03 05:39:59  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/parse_opt.c: - Fixed a spurious conf file syntax error
+
+	* game_servers/spades.dsc: - Sample spades.dsc file
+
+	* ggzd/datatypes.h, ggzd/ggzd.conf, ggzd/parse_opt.c:
+	- Added some functionality for GameDir parameter
+	  (parsed, not acted upon yet)
+
+2000-03-02 22:02:33  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/players.c:
+	- Fixed list_players() and list_types() send correct results even if
+	  desired elements are not the first elements (closes bug #102477)
+
+	* ggzd/control.c, ggzd/players.c:
+	- Don't initialize player's table_index and uid upon startup
+	- Don't need to obtain write lock when initializing types since at that
+	  point there is only one thread
+	- Initialize player info fields when we find an open spot.  Then we
+	  don't need to do it in player_remove()
+	- Have player_handler() pass players fd as often as possible to avoid
+	  having to look it up.
+	- Fixed a few spots that needs to obtain write-lock
+	- Don't rely on players.info[].playing.  Do we even need this*?
+	- Mark player timestamp when player leaves table at end of game
+	- Some formatting changes
+
+	* ggzd/chat.c, ggzd/chat.h:
+	- Change chat_add() to accpet a 'name' string as well.  This
+	  eliminates another lookup requiring mutex locks
+	- Acquire read lock on players before doing chat_mark_all_unread
+	  since we need to determine who is online
+	- Determine online status by looking at fd, not uid (since we no
+	  longer initilaize uid to UID_NONE)
+
+	* ggzd/chat.c, ggzd/control.c, ggzd/players.c, ggzd/table.c, TODO:
+	- Renamed global structure from game_tables to tables (concise is
+	  good)
+
+	* ggzd/players.c, ggzd/table.c:
+	-  Rename functions to match file and opcode names where appropriate
+
+	* ggzd/players.c, ggzd/protocols.h, TODO:
+	- Renamed opcodes according to new design spec
+
+	* TODO:
+	- Updated TODO list for 0.0.2
+
+	* doc/design.sgml:
+	- Renamed a few opcodes to be more consistent
+	- Added REQ_TABLE_LEAVE
+
+2000-03-02 06:48:15  rgade  <rgade@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/ggzd.conf, ggzd/parse_opt.c: control.c
+		- If no port specified, default to 1174
+
+	ggzd.conf
+		- Sample ggzd.conf
+
+	parse_opt.c
+		- Altered parse_conf_file to open a configuration file
+		- Added parse_file to drive the configuration file parse
+		- Added parse_line to parse individual lines of config file
+		- Port=### syntax implemented
+
+2000-03-02 06:04:05  bmh  <bmh@users.sourceforce.net>
+
+	* configure.in:
+	- Bumped version to 0.0.2
+
+2000-03-01 05:10:53  bmh  <bmh@users.sourceforce.net>
+
+	* README:
+	- Updated README for new package names
+
+	* configure.in:
+	- Renamed package to ggz_server (prgram files remain the same)
+
+2000-02-29 21:13:42  bmh  <bmh@users.sourceforce.net>
+
+	* ChangeLog, configure.in, doc/design.sgml, doc/game-modules.txt, doc/Makefile.am, Makefile.am, NEWS, README:
+	- Documentation updates for 0.0.1 release
+
+	* HACKING:
+	- First go at a HACKING file to describe GGZ coding style
+
+	* game_servers/spades/err_func.c, game_servers/spades/err_func.h, game_servers/spades/Makefile.am:
+	- Remove easysock dependent portion since we don't use it here
+
+	* doc/Makefile.am:
+	- Fixed up rules so that text and html docs get distributed
+
+	* doc/Makefile.am, game_servers/spades/Makefile.am, ggzd/Makefile.am, Makefile.am:
+	- make dist chokes when SUBDIRS is empty, so put SUBDIRS = .
+
+	* AUTHORS, TODO:
+	- Documentation updates
+
+	* ggzd/control.c, ggzd/players.c:
+	- Don't chdir to / when daemonizing (we still have hardcoded paths)
+	- Don't send RSP_GAME header if "message" from game is a closed socket
+
+	* game_servers/spades/engine_func.c, game_servers/spades/engine_main.c, game_servers/spades/err_func.c, game_servers/spades/err_func.h, game_servers/spades/Makefile.am, game_servers/spades/socketfunc.c:
+	- Use dbg_msg() rather than fprintf()
+
+	* doc/design.sgml, doc/game-modules.txt, doc/Makefile.am:
+	- Documentation updates
+
 Tue Feb 29 18:42:39 2000  bmh  <bmh@users.sourceforce.net>
 
 	* HACKING:
