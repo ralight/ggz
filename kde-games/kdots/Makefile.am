@@ -9,17 +9,19 @@ kdots_client_SOURCES = \
 	kdots.cpp \
 	kdots_about.cpp \
 	kdots_options.cpp \
-	kdots_help.cpp
+	kdots_help.cpp \
+	kdots_proto.cpp
 
 noinst_HEADERS = \
 	kdots.h \
 	kdots_about.h \
 	kdots_options.h \
-	kdots_help.h
+	kdots_help.h \
+	kdots_proto.h
 
 INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I Dot
 
-kdots_client_LDADD = $(all_libraries) -lqt -lkdeui -lkdecore -L Dot -ldot
+kdots_client_LDADD = $(all_libraries) -lqt -lkdeui -lkdecore -L Dot -ldot $(LIB_EASYSOCK)
 
 METASOURCES = AUTO
 

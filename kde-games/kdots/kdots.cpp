@@ -34,6 +34,8 @@ KDots::KDots(QWidget *parent, char *name)
 	QPopupMenu *menu_game, *menu_help;
 	QVBoxLayout *vbox;
 
+cout << "fire up kdots" << endl;
+
 	menu_game = new QPopupMenu();
 	menu_game->insertItem("Quit", this, SLOT(slotQuit()));
 
@@ -47,7 +49,11 @@ KDots::KDots(QWidget *parent, char *name)
 	menubar->insertSeparator();
 	menubar->insertItem("Help", menu_help);
 
+cout << "create qdots" << endl;
+
 	dots = new QDots(this, "qdots");
+
+cout << "ready" << endl;
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(dots);
@@ -59,15 +65,20 @@ KDots::KDots(QWidget *parent, char *name)
 
 	connect(dots, SIGNAL(signalTurn(int, int, int)), SLOT(slotTurn(int, int, int)));
 
+cout << "kdots ready" << endl;
+
 	setCaption("KDE Dots");
 	dots->resize(390, 390);
 	resize(400, 400);
 	show();
 	slotOptions();
+
+	proto = new KDotsProto();
 }
 
 KDots::~KDots()
 {
+	delete proto;
 }
 
 void KDots::slotAbout()
@@ -104,5 +115,61 @@ void KDots::slotStart(int horizontal, int vertical)
 
 void KDots::slotTurn(int x, int y, int direction)
 {
+	int sdotx, sdoty;
+
+	sdotx = x;
+	sdoty = y;
+
+	if(direction == QDots::up) sdoty--;
+	if(direction == QDots::left) sdotx--;
+
 	cout << "*** SLOT TURN ***" << endl;
+	cout << "Send to server: " << endl;
+	if((direction == QDots::up) || (direction == QDots::down))
+	{
+		cout << "VERTICAL " << sdotx << ", " << sdoty << endl;
+	}
+	else
+	{
+		cout << "HORIZONTAL " << sdotx << ", " << sdoty << endl;
+	}
 }
+
+void KDots::slotInput()
+{
+	int op;
+
+	es_read_int(proto->fd, &op);
+
+	switch(op)
+	{
+		case proto->msgseat:
+			proto->getSeat();
+			break;
+		case proto->msgplayers:
+			proto->getPlayers();
+			if(proto->state != proto->statechoose) proto->state = proto->statewait;
+			break;
+		case proto->msgoptions:
+//			if((status = get_options()) == 0)
+//                board_init(board_width, board_height);
+			break;
+		case proto->reqmove:
+			proto->state = proto->statemove;
+// game.move = game.me, that is ;)
+			break;
+		case proto->msgmoveh:
+			break;
+		case proto->msgmovev:
+			break;
+		case proto->rspmove:
+			break;
+		case proto->msggameover:
+			break;
+		case proto->sndsync:
+			break;
+		case proto->reqoptions:
+			break;
+	}
+}
+

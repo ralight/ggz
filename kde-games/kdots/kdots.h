@@ -14,6 +14,7 @@
 
 #include <qwidget.h>
 #include <qevent.h>
+#include "kdots_proto.h"
 
 class KDots : public QWidget
 {
@@ -28,11 +29,13 @@ class KDots : public QWidget
 		void slotStart(int horizontal, int vertical);
 		void slotHelp();
 		void slotTurn(int x, int y, int direction);
+		void slotInput();
 	private:
 		int m_rows;
 		int m_cols;
 		int m_running;
 		int *m_field;
+		KDotsProto *proto;
 };
 
 #endif

@@ -38,7 +38,7 @@ KDotsAbout::KDotsAbout(QWidget *parent, char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 
 	setCaption("About KDots");
-	resize(200, 200);
+	setFixedSize(300, 200);
 	show();
 }
 
