@@ -36,7 +36,7 @@ install: build
 
 	# Add here commands to install the package into debian/tmp.
 	$(MAKE) install prefix=`pwd`/debian/ggz-gtk-client/usr \
-		ggzdatadir=`pwd`/debian/usr/share/ggz
+		ggzdatadir=`pwd`/debian/ggz-gtk-client/usr/share/ggz
 
 
 # Build architecture-independent files here.
