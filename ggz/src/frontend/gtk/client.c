@@ -493,28 +493,36 @@ static void
 client_realize                    (GtkWidget       *widget,
 				   gpointer         data)
 {
-	GdkFont* fixed;
+	GdkFont* font;
 	GtkXText *tmp, *tmp2;
 	char *buf;
 
 
-	fixed = gdk_font_load( "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8" );
+	/* Set Properties */
 
+	font = gdk_font_load( ggzcore_conf_read_string("CHAT", "FONT", "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"));
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-	gtk_xtext_set_font(GTK_XTEXT(tmp), fixed, 0);
+	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
 
 	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors); 
-	tmp->auto_indent = TRUE;
-	tmp->wordwrap = TRUE;
+	tmp->auto_indent = ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE);
+	tmp->wordwrap = ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE);
 	tmp->max_auto_indent = 200;
-	tmp->time_stamp = FALSE;
-	tmp->urlcheck_function = chat_checkurl;
+	tmp->time_stamp = ggzcore_conf_read_int("CHAT", "TIMESTAMP", FALSE);
 
+
+	/* URL Handiler */
+	tmp->urlcheck_function = chat_checkurl;
 	gtk_signal_connect (GTK_OBJECT (tmp), "word_click",
 		GTK_SIGNAL_FUNC (chat_word_clicked), NULL);
 
 	gtk_xtext_refresh(tmp,0);
 
+	/* Initialize the scroll bar */
+	tmp2 = gtk_object_get_data(GTK_OBJECT(win_main), "chat_vscrollbar");
+	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
+
+	/* Print out client information */
 	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf)); 
 	g_free(buf);
@@ -522,9 +530,6 @@ client_realize                    (GtkWidget       *widget,
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
 	g_free(buf);
-
-	tmp2 = gtk_object_get_data(GTK_OBJECT(win_main), "chat_vscrollbar");
-	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
 
 #ifdef DEBUG
 	gtk_xtext_append_indent(tmp,"---",3,"Compiled with debugging.", 24);

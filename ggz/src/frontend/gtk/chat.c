@@ -41,6 +41,7 @@
 #include "xtext.h"
 #include "support.h"
 
+static gint chat_get_color(gchar *name);
 extern GtkWidget *win_main;
 
 /* Aray of GdkColors currently used for chat and MOTD */
@@ -121,12 +122,12 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 				name = g_strdup_printf("%s %s", player, message+4);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
 			} else {
-				name = g_strdup_printf("<%s>", player);
+				name = g_strdup_printf("<\003%d%s\00300>", chat_get_color(player), player);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			}
 			break;
 		case CHAT_PRVMSG:
-			name = g_strdup_printf(">%s<", player);
+			name = g_strdup_printf(">\003%d%s\00300<", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_BEEP:
@@ -134,7 +135,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_ANNOUNCE:
-			name = g_strdup_printf("[%s]", player);
+			name = g_strdup_printf("[\003%d%s\00300]", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_SEND_PRVMSG:
@@ -247,8 +248,11 @@ void chat_enter(gchar *player)
 {
         GtkEntry *tmp = NULL;
 
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-        gtk_xtext_append_indent(GTK_XTEXT(tmp), "-->", 3, player, strlen(player));
+        if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
+        {
+	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+        	gtk_xtext_append_indent(GTK_XTEXT(tmp), "-->", 3, player, strlen(player));
+	}
 }
 
 
@@ -265,8 +269,11 @@ void chat_part(gchar *player)
 {
         GtkEntry *tmp = NULL;
 
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-        gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, player, strlen(player));
+        if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
+        {
+	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+        	gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, player, strlen(player));
+	}
 }
 
 /* chat_help() - Displays help on all the chat commands
@@ -396,4 +403,34 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 		default:
 			break;
 	}
+}
+
+
+/* chat_get_color() - Get the color for a user based on name
+ *
+ * Recieves:
+ * gchar		*name	: The name to get the color for
+ *
+ * Returns:
+ * gint			color	: The color to use
+ */
+
+gint chat_get_color(gchar *name)
+{
+	if(!ggzcore_conf_read_int("CHAT", "COLOR", TRUE))
+	{
+		/* Dont use color */
+		return 0;
+	} else {
+		if(ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE))
+		{
+			if(!strcmp(name,  ggzcore_state_get_profile_login()))
+				return ggzcore_conf_read_int("CHAT", "Y_COLOR", 8);
+
+			return ggzcore_conf_read_int("CHAT", "O_COLOR", 2);
+		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
+			
+		}
+	}
+	return 0;
 }

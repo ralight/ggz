@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include "chat.h"
+#include "ggzcore.h"
 #include "props.h"
 #include "support.h"
 #include "xtext.h"
@@ -83,6 +84,57 @@ static void props_update(void)
 	GdkFont *font;
 
 	/* Save Changes */
+
+	/* Set XText font */
+	tmp = lookup_widget((props_dialog), "chat_font");
+	ggzcore_conf_write_string("CHAT", "FONT", gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	/* Auto-Indent */
+	tmp = lookup_widget((props_dialog), "indent_check");
+	ggzcore_conf_write_int("CHAT", "AUTO_INDENT", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Timestamp */
+	tmp = lookup_widget((props_dialog), "timestamp_check");
+	ggzcore_conf_write_int("CHAT", "TIMESTAMP", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Word Wrap */
+	tmp = lookup_widget((props_dialog), "wrap_check");
+	ggzcore_conf_write_int("CHAT", "WORD_WRAP", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Sound */
+	tmp = lookup_widget((props_dialog), "sound_check");
+	ggzcore_conf_write_int("CHAT", "SOUND", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Join/Part Messages */
+	tmp = lookup_widget((props_dialog), "ignore_check");
+	ggzcore_conf_write_int("CHAT", "IGNORE", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Color */
+	tmp = lookup_widget((props_dialog), "color_check");
+	ggzcore_conf_write_int("CHAT", "COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Some Color */
+	tmp = lookup_widget((props_dialog), "some_radio");
+	ggzcore_conf_write_int("CHAT", "SOME_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* FULL Color */
+	tmp = lookup_widget((props_dialog), "full_radio");
+	ggzcore_conf_write_int("CHAT", "FULL_COLOR", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Your Color */
+	tmp = lookup_widget((props_dialog), "y_spin");
+	ggzcore_conf_write_int("CHAT", "Y_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+
+	/* Friend Color */
+	tmp = lookup_widget((props_dialog), "f_spin");
+	ggzcore_conf_write_int("CHAT", "F_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+
+	/* Other Color */
+	tmp = lookup_widget((props_dialog), "o_spin");
+	ggzcore_conf_write_int("CHAT", "O_COLOR", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
+
+	ggzcore_conf_commit();
+
 
 
 	/* Activate Changes */
@@ -142,9 +194,54 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 
-	/* Set a default font */
+	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
-	gtk_entry_set_text(GTK_ENTRY(tmp), "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("CHAT", "FONT", "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"));
+
+	/* Auto-Indent */
+	tmp = lookup_widget((props_dialog), "indent_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE));
+
+	/* Timestamp */
+	tmp = lookup_widget((props_dialog), "timestamp_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "TIMESTAMP", FALSE));
+
+	/* Word Wrap */
+	tmp = lookup_widget((props_dialog), "wrap_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE));
+
+	/* Sound */
+	tmp = lookup_widget((props_dialog), "sound_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "SOUND", TRUE));
+
+	/* Join/Part Messages */
+	tmp = lookup_widget((props_dialog), "ignore_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "IGNORE", FALSE));
+
+	/* Color */
+	tmp = lookup_widget((props_dialog), "color_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "COLOR", TRUE));
+
+	/* Some Color */
+	tmp = lookup_widget((props_dialog), "some_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE));
+
+	/* FULL Color */
+	tmp = lookup_widget((props_dialog), "full_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE));
+
+	/* Your Color */
+	tmp = lookup_widget((props_dialog), "y_spin");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
+
+	/* Friend Color */
+	tmp = lookup_widget((props_dialog), "f_spin");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 0));
+
+	/* Other Color */
+	tmp = lookup_widget((props_dialog), "o_spin");
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
+
 }
 
 

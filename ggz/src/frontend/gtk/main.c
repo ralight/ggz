@@ -25,6 +25,7 @@
 #include <config.h>
 #include <gtk/gtk.h>
 #include <ggzcore.h>
+#include <stdlib.h>
 
 #include "about.h"
 #include "chat.h"
@@ -42,9 +43,9 @@ int main (int argc, char *argv[])
 	GGZOptions opt;
 
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/ggz-text.rc";
-	opt.user_conf = "~/.ggz-txtrc";
-	
+	opt.global_conf = "/etc/ggz/ggz.conf";
+	opt.user_conf = g_strdup_printf("%s/.ggzrc", getenv("HOME"));;
+
 	ggzcore_init(opt);
 	ggz_event_init();
 	ggz_state_init();

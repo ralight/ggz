@@ -117,7 +117,8 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = g_strdup_printf("You've been beeped by %s.", player);
 	chat_display_message(CHAT_BEEP, "---", message);
-	gdk_beep();
+	if( ggzcore_conf_read_int("CHAT", "SOUND", TRUE) )
+		gdk_beep();
 
 	g_free(message);
 }
