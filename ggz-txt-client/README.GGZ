@@ -1,4 +1,4 @@
-The GGZ Gaming Zone - Release 0.0.6
+The GGZ Gaming Zone - Release 0.0.7
 ===================================
 
 Welcome to the GGZ Gaming Zone, a multiuser networked gaming
@@ -6,20 +6,30 @@ environment.  This project is still in the development phase, and as
 such may have some bugs.  It may not even compile or run on your
 machine (although we do our best to make sure it does).  If you are
 interested in assisting with development or in writing a module for
-your favorite game, please let us know at ggz-dev@lists.sourceforge.net
+your favorite game, please let us know at:
+<ggz-dev@lists.sourceforge.net>.
 
-The server currently supports thirteen different game types, including
+The server currently supports fifteen different game types, including
 spades, tic-tac-toe, chess, reversi, and others.  Players can create
 accounts, login, and play games in any one of multiple game rooms.
 Sometimes they can even watch other players.
 More game servers are available in experimental state or as part of
 other projects.
 
+The project homepage is located here:
+http://www.ggzgamingzone.org/
+
+An online player ranking system is available here:
+http://rankings.ggzgamingzone.org/
+
+Developers can find more information at:
+http://dev.ggzgamingzone.org/
+
 
 Downloading
 ===========
 You can always download the latest released version of GGZ from our
-homepage at http://ggz.sourceforge.net, or for the absolute bleeding
+homepage at http://ggzgamingzone.org, or for the absolute bleeding
 edge you can check out the sources via anonymous CVS (instructions are
 at the aforementioned homepage).  GGZ is comprised of several
 components, each of which is packaged separately for maximum
@@ -44,9 +54,9 @@ flexibility.  The components are:
   chat with friends, move between rooms and launch tables (the actual
   games are distributed separately).  It is our goal to provide
   frontends for all environments.  We currently have a Gtk+ client, a
-  KDE client, and a simple text-only client.  These are available as
-  ggz-YYY-client-X.X.X.tar.gz where YYY is one of kde, gtk, or txt,
-  and X.X.X is the version number.
+  KDE client, a GNOME client, and a simple text-only client.
+  These are available as ggz-YYY-client-X.X.X.tar.gz where YYY is one
+  of kde, gtk, gnome, or txt, and X.X.X is the version number.
 
 - GGZ game client modules
 
@@ -56,7 +66,8 @@ flexibility.  The components are:
   module should work with every GGZ client (within reason.  You can't
   expect X-based games to work on a text console, of course).  The
   games are distributed as ggz-YYY-games-X.X.X.tar.gz where YYY is kde
-  or gtk (no text-specific games yet), and X.X.X is the version number.
+  or gtk or sdl (no text-specific games yet), and X.X.X is the version
+  number.
 
 - The GGZ server
 
@@ -76,9 +87,8 @@ flexibility.  The components are:
 
 - Documentation
   A whole bunch of documentation, including the GGZ hosting guide and
-  the GGZ development guide, as well as information on the various games
-  and the project itself can be found in ggz-docs-X.X.X.
-
+  the GGZ development guide, as well as information on the various
+  games and the project itself can be found in ggz-docs-X.X.X.
 
 
 Compiling and Installing
@@ -91,7 +101,6 @@ process, please read the QuickStart.GGZ file.
 
 Using ggz-config to manage client game modules
 ==============================================
-
 The ggz-config utility, installed as part of ggz-client-libs, allows
 you to manage the client game module installed on your system.  It
 takes information from a module description file (distributed with
@@ -110,17 +119,18 @@ Most game modules will call ggz-config automatically from their
 install scripts.  The syntax for calling ggz-config to install a game
 module manually is:
 
-       ggz-config --install --modfile=<module desc file>
+    ggz-config --install --modfile=<module desc file>
 
 Some additional options may also be specified:
 
-	--force         Allows the installation information to overwrite
-			existing information of the same game version.
+    --force         Allows the installation information to overwrite
+                    existing information of the same game version.
 
-	--destdir       Typically used during package builds, this causes
-			the installation information to go to a
-			ggz.modules file in a temporary build
-			directory, as specified by the DESTDIR environment variable.
+    --destdir       Typically used during package builds, this causes
+                    the installation information to go to a
+                    ggz.modules file in a temporary build
+                    directory, as specified by the DESTDIR environment
+                    variable.
 
 ggz-config Game Module Uninstall 
 --------------------------------
@@ -130,15 +140,15 @@ removing the module is to use the original module description file
 like this:
 
 
-	 ggz-config --remove --modfile=<module desc file>
+     ggz-config --remove --modfile=<module desc file>
 
 In the event that the original module description file no longer
 exists, the game module information can be removed manually using the
 following options:
 
-	--modname=NAME		Specify the Name entry for the module
-	--modauthor=AUTHOR	Specify the Author entry for the module
-	--modui=<fe code>	Specify the frontend code for the module
+    --modname=NAME      Specify the Name entry for the module
+    --modauthor=AUTHOR  Specify the Author entry for the module
+    --modui=<fe code>   Specify the frontend code for the module
 
 
 
@@ -148,9 +158,9 @@ The pathname query features can be used to query the pathnames that
 are compiled into the ggz-client-libs on a particular system.  These
 include the following locations:
 
-	--configdir	Query location of configuration directory
-	--gamedir	Query location of game modules directory
-	--datadir	Query location of game data storage directory
+    --configdir     Query location of configuration directory
+    --gamedir       Query location of game modules directory
+    --datadir       Query location of game data storage directory
 
 Finally, the --version option of ggz-config can be used to check that the
 currently installed version of ggz-client-libs is sufficient for correct
@@ -168,21 +178,21 @@ information is not yet documented (and may eventually be removed).
 
 A module.dsc file should be formatted as follows:
 
-  # Comment lines are ignored
-  [ModuleInfo]
-  Author = Author Name
-  CommandLine = /pathname/to/executable/ggz.game
-  Frontend = <fe code>
-  Homepage = http://host.domain/location/
-  Name = <game name>
-  ProtocolEngine = <protocol engine>
-  ProrocolVersion = <protocol version>
-  Version = <game module version>
+    # Comment lines are ignored
+    [ModuleInfo]
+    Author = Author Name
+    CommandLine = /pathname/to/executable/ggz.game
+    Frontend = <fe code>
+    Homepage = http://host.domain/location/
+    Name = <game name>
+    ProtocolEngine = <protocol engine>
+    ProrocolVersion = <protocol version>
+    Version = <game module version>
 
-The current <fe code>s which are understood are 'gtk' and 'kde' and
-should describe the native environment for this game.  This field is
-simply to give the various GGZ clients an idea of what toolkit a game
-was compiled with.  All game clients should always work with any
+The current <fe code>s which are understood are 'gtk', 'kde' and 'sdl'
+and should describe the native environment for this game.  This field
+is simply to give the various GGZ clients an idea of what toolkit a
+game was compiled with.  All game clients should always work with any
 client frontend (assuming the user has the required GUI environment
 installed).
 
@@ -206,8 +216,9 @@ use to you.  The server does not have to be running on your machine,
 however, if you have no (or slow!) network access, you may want to run
 both the client and the server locally.  If you choose to install the
 GGZ server, you may launch it simply by running the command 'ggzd'
-This will start the server listening on port of 5688.
-You can find a list of GGZ servers on our homepage.
+This will start the server listening on port of 5688 (ggz).
+You can find a list of GGZ servers on our homepage, or query to GGZ
+metaserver to get this information.
 
 The command to launch the client will vary, depending on the
 particular flavor you have installed.  For example, the Gtk+ client is
