@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
 
 SUBDIRS = zoneclient gfx
 
@@ -30,8 +30,6 @@ noinst_HEADERS = \
 	qcw.h
 
 METASOURCES = AUTO
-
-EXTRA_DIST = module.dsc.in
 
 KDE_ICON = krosswater
 

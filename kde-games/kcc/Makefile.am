@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
 
 SUBDIRS = themes
 
@@ -23,12 +23,10 @@ kcc_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
 
 METASOURCES = AUTO
 
-EXTRA_DIST = module.dsc.in
-
 KDE_ICON = kcc
 
-appsdir = $(kde_appsdir)/Games/ggz
-apps_DATA = kcc.desktop
+desktopdir = $(datadir)/applications
+desktop_DATA = kcc.desktop
 
 kde_conf_DATA = kccrc
 

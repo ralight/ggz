@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
 
 SUBDIRS = Dot .
 
@@ -30,8 +30,6 @@ kdots_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD) Dot/libdot.a
 
 METASOURCES = AUTO
-
-EXTRA_DIST = module.dsc.in
 
 KDE_ICON = kdots
 

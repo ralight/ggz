@@ -72,8 +72,7 @@ class ZoneGGZModUI : public KMainWindow
 		void zoneCallOver();
 		void zoneCallInvalid();
 
-		static void handle_server(GGZMod *mod, GGZModEvent e,
-					  const void *data);
+		static void handle_server(GGZMod *mod, GGZModEvent e, const void *data);
 
 		QSocketNotifier *zone_sn, *zone_sn_ctl;
 		int zone_fd, zone_fd_ctl;

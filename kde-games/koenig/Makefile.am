@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6774 2005-01-20 21:55:33Z josef $
+# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
 
 SUBDIRS = libcgc pics pieces
 
@@ -35,7 +35,7 @@ koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a \
 
 METASOURCES = AUTO
 
-EXTRA_DIST = module.dsc.in koenigui.rc
+EXTRA_DIST = koenigui.rc
 
 rcdir = $(kde_datadir)/koenig
 rc_DATA = koenigui.rc

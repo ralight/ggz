@@ -1,4 +1,6 @@
 [Desktop Entry]
+Encoding=UTF-8
+
 Name=KTicTacTux
 GenericName=TicTacToe game for KDE
 GenericName[de]=TicTacToe-Spiel für KDE
@@ -11,4 +13,4 @@ Type=Application
 Exec=@ggzexecmoddir@/ktictactux_client
 Icon=ktictactux
 Terminal=false
-Categories=X-GGZ-Games;BoardGame;KDE;Qt;
+Categories=X-GGZ-Games;BoardGame;Game;KDE;Qt;

@@ -77,12 +77,14 @@ AC_CONFIG_FILES([Makefile
 	muehle/src/ai/Makefile
 	muehle/src/ggzwrap/Makefile
 	muehle/pics/Makefile
+	muehle/pics/muehle.desktop
 	muehle/pics/standard/Makefile
 	muehle/pics/alt/Makefile
 	muehle/variants/Makefile
 	muehle/doc/Makefile
 	keepalive/Makefile
 	keepalive/module.dsc
+	keepalive/keepalive.desktop
 	keepalive/src/Makefile
 	keepalive/pics/Makefile
 	man/Makefile

@@ -1,4 +1,6 @@
 [Desktop Entry]
+Encoding=UTF-8
+
 Name=Fyrdman
 GenericName=Hastings1066 Strategy Game
 GenericName[de]=Hastings1066 Strategiespiel
@@ -11,4 +13,4 @@ Type=Application
 Exec=@ggzexecmoddir@/fyrdman
 Icon=fyrdman
 Terminal=false
-Categories=X-GGZ-Games;StrategyGame;KDE;Qt;
+Categories=X-GGZ-Games;StrategyGame;Game;KDE;Qt;

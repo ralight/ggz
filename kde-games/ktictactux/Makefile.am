@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
 
 SUBDIRS = themes
 
@@ -25,15 +25,13 @@ ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(
 
 METASOURCES = AUTO
 
-EXTRA_DIST = module.dsc.in
-
 pixmapdir = @ggzdatadir@/ktictactux
 pixmap_DATA = bg.png
 
 KDE_ICON = ktictactux
 
-appsdir = $(kde_appsdir)/Games/ggz
-apps_DATA = ktictactux.desktop
+desktopdir = $(datadir)/applications
+desktop_DATA = ktictactux.desktop
 
 kde_conf_DATA = ktictactuxrc
 

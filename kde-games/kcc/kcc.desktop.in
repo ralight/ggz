@@ -1,4 +1,6 @@
 [Desktop Entry]
+Encoding=UTF-8
+
 Name=KCC
 GenericName=Chinese Checkers game for KDE
 GenericName[de]=Halmaspiel für KDE
@@ -9,4 +11,4 @@ Type=Application
 Exec=@ggzexecmoddir@/kcc
 Icon=kcc
 Terminal=false
-Categories=X-GGZ-Games;BoardGame;KDE;Qt;
+Categories=X-GGZ-Games;BoardGame;Game;KDE;Qt;
