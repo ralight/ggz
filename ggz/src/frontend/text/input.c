@@ -38,6 +38,9 @@
 #define LINE_LENGTH 80
 
 static void input_handle_connect(char* line);
+static void input_handle_list(char* line);
+static void input_handle_join(char* line);
+static void input_handle_chat(char* line);
 static char delim[] = " \n";
 
 
@@ -59,7 +62,15 @@ int input_command(short events)
 		else if (strcmp(command, "disconnect") == 0) {
 			ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 		}
-		
+		else if (strcmp(command, "list") == 0) {
+			input_handle_list((char*)line);
+		}
+		else if (strcmp(command, "join") == 0) {
+			input_handle_join((char*)line);
+		}
+		else if (strcmp(command, "chat") == 0) {
+			input_handle_chat((char*)line);
+		}
 	}
 	return 0;
 }
@@ -93,8 +104,47 @@ static void input_handle_connect(char* line)
 }
 
 
+static void input_handle_list(char* line)
+{
+	char* arg;
+
+	/* What are we listing (default to rooms) */
+	arg = strtok(NULL, delim);
+	if (!arg || strcmp(arg, "rooms") == 0)
+		ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	else if (strcmp(arg, "types") == 0)
+		ggzcore_event_trigger(GGZ_USER_LIST_TYPES, NULL, NULL);
+	else if (strcmp(arg, "tables") == 0)
+		ggzcore_event_trigger(GGZ_USER_LIST_TABLES, NULL, NULL);
+	else if (strcmp(arg, "players") == 0)
+		ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+}
 
 
+static void input_handle_join(char* line)
+{
+	char* arg;
+	int* room;
+	
+	room = malloc(sizeof(int));
+
+	/* What are we listing (default to rooms) */
+	arg = strtok(NULL, delim);
+	*room = atoi(arg);
+
+	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, room, free);
+}
 
 
+static void input_handle_chat(char* line)
+{
+	char* arg;
+	char* msg;
+	
+	arg = strtok(NULL, "\n");
+	if (arg) {
+		msg = strdup(arg);
+		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
+	}
+}
 

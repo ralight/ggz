@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include <ggzcore.h>
+#include <protocol.h>
 
 void _ggzcore_net_init(void);
 
@@ -40,6 +41,12 @@ int _ggzcore_net_process(void);
 
 void _ggzcore_net_send_login(GGZLoginType type, const char* login, const char* pass);
 void _ggzcore_net_send_logout(void);
+
+void _ggzcore_net_send_list_rooms(const int type, const char verbose);
+void _ggzcore_net_send_join_room(const int room);
+
+void _ggzcore_net_send_chat(const GGZChatOp op, const char* player, 
+			    const char* msg); 
 
 #endif /* __NET_H__ */
 

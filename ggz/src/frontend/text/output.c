@@ -47,3 +47,7 @@ void output_prompt(void)
 }
 
 
+void output_chat(char* player, char* message)
+{
+	printf("\n <%s> : %s\n", player, message);
+}

@@ -35,6 +35,8 @@
 
 /* Callbacks */
 static void _ggzcore_server_connect(GGZEventID, void*, void*);
+static void _ggzcore_server_list_rooms(GGZEventID, void*, void*);
+static void _ggzcore_server_room_join(GGZEventID, void*, void*);
 static void _ggzcore_server_logout(GGZEventID, void*, void*);
 
 /* ggzcore_server_register() - Register callbacks for server events
@@ -47,6 +49,8 @@ void _ggzcore_server_register(void)
 {
 	ggzcore_event_connect(GGZ_SERVER_CONNECT, _ggzcore_server_connect);
 /*	ggzcore_event_connect(GGZ_SERVER_LOGIN_OK, _ggzcore_server_login_ok);*/
+	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, _ggzcore_server_list_rooms);
+	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, _ggzcore_server_room_join);
 	ggzcore_event_connect(GGZ_SERVER_LOGOUT, _ggzcore_server_logout);
 }
 
@@ -94,4 +98,41 @@ static void _ggzcore_server_logout(GGZEventID id, void* event_data,
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_logout");
 
 	_ggzcore_net_disconnect();
+}
+
+
+/* server_list_rooms() - Callback for server logout event
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_server_list_rooms(GGZEventID id, void* event_data, 
+				   void* user_data)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_list_rooms");
+
+}
+
+
+/* server_room_join() - Callback for server room-join event
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_server_room_join(GGZEventID id, void* event_data, 
+				   void* user_data)
+{
+	char *status;
+
+	status = (char*)event_data;
+
+	ggzcore_debug(GGZ_DBG_SERVER, "Room join status: %d", *status);
 }

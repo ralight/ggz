@@ -81,8 +81,17 @@ static struct _GGZEvent ggz_events[] = {
 	{GGZ_SERVER_CONNECT,    "server_connect",    1, NULL, NULL},
 	{GGZ_SERVER_LOGIN_OK,   "server_login_ok",   1, NULL, NULL},
 	{GGZ_SERVER_LOGIN_FAIL, "server_login_fail", 1, NULL, NULL},
+	{GGZ_SERVER_LIST_ROOMS, "server_list_rooms", 1, NULL, NULL},
+	{GGZ_SERVER_ROOM_JOIN,  "server_room_join",  1, NULL, NULL},
+	{GGZ_SERVER_CHAT_STATUS,"server_chat_status",1, NULL, NULL},
+	{GGZ_SERVER_CHAT_MSG,   "server_chat_msg",   1, NULL, NULL},
 	{GGZ_SERVER_LOGOUT,     "server_logout",     1, NULL, NULL},
 	{GGZ_USER_LOGIN,        "user_login",        1, NULL, NULL},
+	{GGZ_USER_LIST_ROOMS,   "user_list_rooms",   1, NULL, NULL},
+	{GGZ_USER_LIST_TYPES,   "user_list_types",   1, NULL, NULL},
+	{GGZ_USER_JOIN_ROOM,    "user_join_room",    1, NULL, NULL},
+	{GGZ_USER_LIST_TABLES,  "user_list_tables",  1, NULL, NULL},
+	{GGZ_USER_LIST_PLAYERS, "user_list_players", 1, NULL, NULL},
 	{GGZ_USER_CHAT,         "user_chat",         1, NULL, NULL},
 	{GGZ_USER_LOGOUT,       "user_logout",       1, NULL, NULL}
 };

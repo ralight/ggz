@@ -27,3 +27,5 @@
 void output_banner(void);
 
 void output_prompt(void);
+
+void output_chat(char* player, char* message);

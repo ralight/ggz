@@ -23,6 +23,9 @@
  */
 
 
+#ifndef __PROTOCOL_H__
+#define __PROTOCOL_H__
+
 #define GGZ_CS_PROTO_VERSION  3
 
 typedef enum {
@@ -88,15 +91,19 @@ typedef enum {
 	RSP_ROOM_JOIN
 } GGZServerOp;
 
-
 /* Chat subops */					/* PMCCCCCC */
-#define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
-#define GGZ_CHAT_ANNOUNCE	(unsigned char) 0x60	/* 01100000 */
-#define GGZ_CHAT_BEEP		(unsigned char) 0x80	/* 10000000 */
-#define GGZ_CHAT_PERSONAL	(unsigned char) 0xC0	/* 11000000 */
+typedef enum {
+	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
+	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
+	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
+	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
+} GGZChatOp;
+
 /* Chat subop bitmasks */
-#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
-#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
+
+#define GGZ_CHAT_M_MESSAGE	0x40	/* X1XXXXXX */
+#define GGZ_CHAT_M_PLAYER 	0x80	/* 1XXXXXXX */
+
 
 /* Update opcodes */
 #define GGZ_UPDATE_DELETE 0
@@ -121,3 +128,4 @@ typedef enum {
 #define E_NOT_IN_ROOM   -13
 #define E_AT_TABLE     -14
 
+#endif /*__PROTOCOL_H__*/

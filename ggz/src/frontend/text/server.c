@@ -39,6 +39,18 @@ void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 	output_prompt();
 }
 
+void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
+{
+	char* player;
+	char* message;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+
+	output_chat(player, message);
+
+	output_prompt();
+}
 
 void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {

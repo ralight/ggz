@@ -43,16 +43,72 @@ static void _ggzcore_net_handle_server_id(void);
 static void _ggzcore_net_handle_login_anon(void);
 static void _ggzcore_net_handle_motd(void);
 static void _ggzcore_net_handle_logout(void);
+static void _ggzcore_net_handle_list_rooms(void);
+static void _ggzcore_net_handle_room_join(void);
+static void _ggzcore_net_handle_rsp_chat(void);
+static void _ggzcore_net_handle_chat(void);
+
 
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
 				  const EsDataType);
 			 
 
+/* Datatype for a message from the server */
+struct _GGZServerMsg {
+
+	/* Opcode from server */
+	GGZServerOp opcode;
+
+	/* Name of opcode */
+	char* name;
+
+	/* Handler */
+	void (*handler)(void); 
+};
+
+/* Array of all server messages */
+static struct _GGZServerMsg ggz_server_msgs[] = {
+	{MSG_SERVER_ID,      "msg_server_id", _ggzcore_net_handle_server_id},
+	{MSG_SERVER_FULL,    "msg_server_full", NULL },
+	{MSG_MOTD,           "msg_motd", _ggzcore_net_handle_motd},
+	{MSG_CHAT,           "msg_chat", _ggzcore_net_handle_chat},
+	{MSG_UPDATE_PLAYERS, "msg_update_players", NULL},
+	{MSG_UPDATE_TYPES,   "msg_update_types", NULL},
+	{MSG_UPDATE_TABLES,  "msg_update_tables", NULL},
+	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
+	{MSG_ERROR,          "msg_error", NULL},
+	{RSP_LOGIN_NEW,      "rsp_login_new", NULL},
+	{RSP_LOGIN,          "rsp_login", NULL},
+	{RSP_LOGIN_ANON,     "rsp_login_anon", _ggzcore_net_handle_login_anon},
+	{RSP_LOGOUT,         "rsp_logout", _ggzcore_net_handle_logout},
+	{RSP_PREF_CHANGE,    "rsp_pref_change", NULL},
+	{RSP_REMOVE_USER,    "rsp_remove_user", NULL},
+	{RSP_LIST_PLAYERS,   "rsp_list_players", NULL},
+	{RSP_LIST_TYPES,     "rsp_list_types", NULL},
+	{RSP_LIST_TABLES,    "rsp_list_tables", NULL},
+	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_net_handle_list_rooms},
+	{RSP_TABLE_OPTIONS,  "rsp_table_options", NULL},
+	{RSP_USER_STAT,      "rsp_user_stat", NULL},
+	{RSP_TABLE_LAUNCH,   "rsp_table_launch", NULL},
+	{RSP_TABLE_JOIN,     "rsp_table_join", NULL},
+	{RSP_TABLE_LEAVE,    "rsp_table_leave", NULL},
+	{RSP_GAME,           "rsp_game", NULL},
+	{RSP_CHAT,           "rsp_chat", _ggzcore_net_handle_rsp_chat},
+        {RSP_MOTD,           "rsp_motd", NULL},
+	{RSP_ROOM_JOIN,      "rsp_room_join", _ggzcore_net_handle_room_join}
+};
+
+/* Total number of recognized messages */
+static unsigned int num_messages;
+
 void _ggzcore_net_init(void)
 {
 	/* Install socket error handler */
 	es_err_func_set(_ggzcore_net_err_func);
+
+	/* Obtain accurate message count */
+	num_messages = sizeof(ggz_server_msgs)/sizeof(struct _GGZServerMsg);
 }
 
 
@@ -99,29 +155,26 @@ int _ggzcore_net_ispending(void)
 int _ggzcore_net_process(void)
 {
 	GGZServerOp opcode;
+	void (*handler)(void);
 
 	ggzcore_debug(GGZ_DBG_NET, "Processing net events");
 	if (es_read_int(_ggzcore_state.sock, (int*)&opcode) < 0)
 		ggzcore_error_sys_exit("read failed in _ggzcore_net_process");
 
-	switch(opcode) {
-	case MSG_SERVER_ID:
-		_ggzcore_net_handle_server_id();
-		break;
-	case RSP_LOGIN_ANON:
-		_ggzcore_net_handle_login_anon();
-		break;
-	case MSG_MOTD:
-		_ggzcore_net_handle_motd();
-		break;
-	case RSP_LOGOUT:
-		_ggzcore_net_handle_logout();
-		break;
-	default:
-		/* not implemented yet! */
-		break;
-	}
+	if (opcode < 0 || opcode >= num_messages)
+		/* FIXME: should trigger an error event here */
+		return -1;
 	
+	/* Call handler function */
+	if (!(handler = ggz_server_msgs[opcode].handler))
+		ggzcore_debug(GGZ_DBG_NET, "Server msg: %s not handled yet", 
+			      ggz_server_msgs[opcode].name);
+	else {
+		ggzcore_debug(GGZ_DBG_NET, "Handling %s", 
+			      ggz_server_msgs[opcode].name);
+		handler();
+	}
+
 	return 0;
 }
 
@@ -151,8 +204,42 @@ void _ggzcore_net_send_login(GGZLoginType type, const char* login,
 
 void _ggzcore_net_send_logout(void)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Executing net logout");	
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
 	es_write_int(_ggzcore_state.sock, REQ_LOGOUT);
+}
+
+void _ggzcore_net_send_list_rooms(const int type, const char verbose)
+{	
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
+	/* FIXME: check for errors */
+	es_write_int(_ggzcore_state.sock, REQ_LIST_ROOMS);
+	es_write_int(_ggzcore_state.sock, type);
+	es_write_char(_ggzcore_state.sock, verbose);
+}
+
+
+void _ggzcore_net_send_join_room(const int room)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
+	/* FIXME: check for errors */
+	es_write_int(_ggzcore_state.sock, REQ_ROOM_JOIN);
+	es_write_int(_ggzcore_state.sock, room);
+}
+
+
+void _ggzcore_net_send_chat(const GGZChatOp op, const char* player, 
+			    const char* msg)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
+	/* FIXME: check for errors */
+	es_write_int(_ggzcore_state.sock, REQ_CHAT);
+	es_write_char(_ggzcore_state.sock, op);
+	
+	if (op & GGZ_CHAT_M_PLAYER)
+		es_write_string(_ggzcore_state.sock, player);
+
+	if (op & GGZ_CHAT_M_MESSAGE)
+		es_write_string(_ggzcore_state.sock, msg);
 }
 
 
@@ -176,8 +263,6 @@ static void _ggzcore_net_handle_server_id(void)
 	char* status;
 	char msg[4096];
 
-	ggzcore_debug(GGZ_DBG_NET, "Handling MSG_SERVER_ID");
-
 	status = malloc(sizeof(char));
 	*status = 0;
 
@@ -199,8 +284,6 @@ static void _ggzcore_net_handle_login_anon(void)
 {
 	char* status;
 	int checksum;
-
-	ggzcore_debug(GGZ_DBG_NET, "Handling RSP_LOGIN_ANON");
 
 	status = malloc(sizeof(char));
 	*status = 0;
@@ -226,8 +309,6 @@ static void _ggzcore_net_handle_motd(void)
 	int i, lines;
 	char buf[4096];
 
-	ggzcore_debug(GGZ_DBG_NET, "Handling RSP_MOTD");
-
 	/* FIXME: check for errors */
 	es_read_int(_ggzcore_state.sock, &lines);
 	for (i = 0; i < lines; i++)
@@ -241,8 +322,6 @@ static void _ggzcore_net_handle_logout(void)
 {
 	char* status;
 
-	ggzcore_debug(GGZ_DBG_NET, "Handling RSP_LOGOUT");
-
 	status = malloc(sizeof(char));
 	*status = 0;
 
@@ -253,3 +332,71 @@ static void _ggzcore_net_handle_logout(void)
 	
 	ggzcore_event_trigger(GGZ_SERVER_LOGOUT, status, free);
 }
+
+
+static void _ggzcore_net_handle_list_rooms(void)
+{
+	int i, rooms, id, game;
+	char name[4096];
+	
+	es_read_int(_ggzcore_state.sock, &rooms);
+
+	for (i = 0; i < rooms; i++) {
+		es_read_int(_ggzcore_state.sock, &id);
+		es_read_string(_ggzcore_state.sock, name, 4096);
+		es_read_int(_ggzcore_state.sock, &game);
+		ggzcore_debug(GGZ_DBG_NET, "Room: %d plays %d %s", id, game, 
+			      name);
+	}
+	
+	/* FIXME: read in information and actually pass back to client */
+	ggzcore_event_trigger(GGZ_SERVER_LIST_ROOMS, NULL, NULL);
+}
+
+
+static void _ggzcore_net_handle_room_join(void)
+{
+	char *status;
+	
+	status = malloc(sizeof(char));
+	*status = 0;
+
+	/* FIXME: need to trigger network error event */
+	if (es_read_char(_ggzcore_state.sock, status) < 0)
+		*status = -1;
+
+	ggzcore_event_trigger(GGZ_SERVER_ROOM_JOIN, status, free);
+}
+
+
+static void _ggzcore_net_handle_rsp_chat(void)
+{
+	char *status;
+	
+	status = malloc(sizeof(char));
+	*status = 0;
+
+	/* FIXME: need to trigger network error event */
+	if (es_read_char(_ggzcore_state.sock, status) < 0)
+		*status = -1;
+}
+
+
+static void _ggzcore_net_handle_chat(void)
+{
+	char subop;
+	char** data;
+
+	if (!(data = calloc(2, sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in net_handle_chat");
+
+	es_read_char(_ggzcore_state.sock, &subop);
+	es_read_string_alloc(_ggzcore_state.sock, &(data[0]));
+
+	if (subop & GGZ_CHAT_M_MESSAGE) {
+		es_read_string_alloc(_ggzcore_state.sock, &(data[1]));
+		/* FIXME: come up with a function to free data */
+		ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
+	}
+}
+
