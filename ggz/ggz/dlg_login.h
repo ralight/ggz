@@ -28,3 +28,6 @@
 #include <gtk/gtk.h>
 
 GtkWidget* create_dlg_login (void);
+
+void login_ok();
+void login_bad_name();

@@ -170,10 +170,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
+			login_bad_name();
 			warn_dlg("Invalid name!");
 			return;
 		}
 		es_read_int(source, &checksum);
+		login_ok();
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 		/*server_sync();*/
 		break;

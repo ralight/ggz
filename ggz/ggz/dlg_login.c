@@ -17,7 +17,7 @@
 extern struct ConnectInfo connection;
 extern GtkWidget *detail_window;
 
-/* Global GtkWidget for this dialog */
+/* Global widget for this dialog */
 GtkWidget *dlg_login;
 
 /* Local callbacks which no other file will call */
@@ -395,18 +395,17 @@ void login_start_session(GtkButton * button, gpointer window)
         if (connection.connected) {
                 warn_dlg("Already Connected.");
                 return;
-        }
+        } else {
 
-        /* FIXME: Initialize for new game session */
+        	/* FIXME: Initialize for new game session */
 
-        if (connect_to_server() < 0) {
-                err_dlg("Could not connect");
-                return;
-        }
-
+	        if (connect_to_server() < 0) {
+        	        err_dlg("Could not connect");
+                	return;
+	        }
+	}
         /* Close connect dialog if we were successful */
         connection.connected = TRUE;
-        gtk_widget_destroy(GTK_WIDGET(window));
 
         /*FIXME: Other session starting things ? */
 }
@@ -418,3 +417,17 @@ void login_show_details(GtkButton * button, gpointer user_data)
         gtk_widget_show(detail_window);
 }
 
+void login_ok()
+{
+	gtk_widget_destroy(dlg_login);	
+}
+
+void login_bad_name()
+{
+        GtkWidget *tmp;
+
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "connect_button");
+	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
+        tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "server_frame");
+	gtk_widget_hide(tmp);
+}
