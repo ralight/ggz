@@ -1,12 +1,17 @@
 /*
  * File: strsep.c
- * Author: Brent Hendricks
- * Project: GGZ Core Client Lib
+ * Author: Brent Hendricks, Jason Short
+ * Project: GGZ
  * Date: 11/06/01
+ * $Id: strsep.c 6697 2005-01-16 07:20:57Z jdorje $
  *
- * Local copy of strsep in case some system doesn't have it
+ * Local copy of strsep for systems that don't have it.  This file should
+ * always be compiled (but only for executables, not for libraries - don't
+ * use strsep in libraries), and requires that AC_CHECK_FUNCS([strsep]) be
+ * in configure.ac.  We could use AC_REPLACE_FUNCS but that seems more
+ * complicated.
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2005 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +28,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <string.h>
 
-char* strsep(char **stringp, const char *delim)
+#ifndef HAVE_STRSEP
+char *strsep(char **stringp, const char *delim)
 {
-        return strtok_r(*stringp, delim, stringp);
-}
+	char *end, *begin = *stringp;
 
+	if (begin == NULL) return NULL;
+
+	end = strpbrk(*stringp, delim);
+
+	if (end) {
+		*end++ = '\0';
+		*stringp = end;
+	} else {
+		*stringp = NULL;
+	}
+
+	return begin;
+}
+#endif
