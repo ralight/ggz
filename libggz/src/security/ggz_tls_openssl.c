@@ -4,7 +4,9 @@ Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 Published under GNU GPL conditions
 **************************************************************************/
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 #ifdef GGZ_TLS_OPENSSL
 
 /* Include files */

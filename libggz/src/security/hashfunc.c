@@ -1,4 +1,6 @@
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 #include <stdio.h>
 #ifdef USE_GCRYPT
 # include <gcrypt.h>
