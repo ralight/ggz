@@ -184,6 +184,7 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 	if((frontend == "gtk") || (frontend == "gnome")) pixname = "game_gnome.png";
 	if((frontend == "qt") || (frontend == "kde")) pixname = "game_kde.png";
 	if(frontend == "sdl") pixname = "game_sdl.png";
+	if(frontend == "x11") pixname = "game_x11.png";
 	if(frontend == "console") pixname = "game_console.png";
 	if(frontend == "guru") pixname = "game_grubby.png";
 	item->setPixmap(0, QPixmap(QString(KGGZ_DIRECTORY) + "/kcmggz/icons/" + pixname));
