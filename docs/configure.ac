@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Documentation
 dnl =======================================
 
-AC_INIT([GGZ documentation], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-docs])
+AC_INIT([GGZ documentation], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-docs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -42,11 +42,20 @@ if test "$enable_spec" = yes; then
 	if test "x$SGML2HTML" = "x"; then
 		AC_PATH_PROG([SGML2HTML], [docbook2html])
 	fi
+	AC_PATH_PROG([SGML2PDF], [docbook-2-pdf])
+	if test "x$SGML2PDF" = "x"; then
+		AC_PATH_PROG([SGML2PDF], [docbook2pdf])
+	fi
 	AC_PATH_PROG([JADE], [jade])
 	AC_PATH_PROG([LYNX], [lynx])
+	AC_PATH_PROG([FIG2DEV], [fig2dev])
 	if test "x$SGML2HTML" = "x" || test "x$JADE" = "x" || test "x$LYNX" = "x"; then
 		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
 	fi
+	if test "x$SGML2PDF" = "x" || test "x$FIG2DEV" = "x"; then
+		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
+	fi
+	#AC_SUBST()
 
 	EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
 fi

@@ -327,8 +327,8 @@ Version = <protocol version>
 
 [TableOptions]
 AllowLeave = <0/1>
-BotsAllowed = <0 [1 [2 ...]]>
-PlayersAllowed = <1 [2 [3 ...]]>
+BotsAllowed = <0 [1 2 ...]>
+PlayersAllowed = <1 [2 3 ...]>
 KillWhenEmpty = <0/1>
 AllowSpectators = <0/1>
 

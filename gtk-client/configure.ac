@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6645 2005-01-13 06:42:30Z jdorje $
+dnl $Id: configure.ac 6812 2005-01-22 15:28:57Z josef $
 
-AC_INIT([GGZ Gtk+ client], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
+AC_INIT([GGZ Gtk+ client], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
