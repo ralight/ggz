@@ -1,0 +1,2 @@
+SUBDIRS = minidom metaserv
+

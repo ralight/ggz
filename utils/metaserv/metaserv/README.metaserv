@@ -1,0 +1,49 @@
+The GGZ Gaming Zone meta server
+-------------------------------
+
+This component should be able to deal with two types of queries.
+The first one is the simple case: one passes an URI, and it returns another URI
+then.
+
+	c->s: query://connection/0.0.5pre
+	s->c: ggz://jzaun.com:5688
+
+This implementation returns a NULL pointer if no entry could be found or the
+URI didn't have a valid format.
+For 0.0.5 all core clients should be able to deal with ggz:// URI's since
+they're used in the chat, in the connection dialog, maybe in KDE io slaves
+(GnomeVFS the same?) and (hopefully) on web pages.
+
+For more complex queries, an extendable result set may be required. The format
+for that is therefore XML. The advantage is that multiple entries are allowed
+to be returned.
+
+	c->s:	<?xml version="1.0"?>
+			<query type="connection">
+				0.0.5pre
+			</query>
+	s->c:	<?xml version="1.0"?>
+			<resultset>
+				<result preference="100">
+					<host version="0.0.5pre">
+						jzaun.com
+					</host>
+					<port>
+						5688
+					</port>
+					<location>
+						pennsylvania, us
+					</location>
+				</result>
+			</queryresult>
+
+The meta server does automatically handle both cases. Although right now this
+does also require two different configurations, but this is acceptable.
+
+A propos configuration: This is mine:
+
+josef@athlon500:~$ cat /home/josef/.ggz/metaserv.rc
+[connection]
+0.0.5pre = ggz://jzaun.com:5688
+0.0.4 = ggz://ggz.snafu.de:5688
+

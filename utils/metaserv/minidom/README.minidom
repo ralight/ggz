@@ -1,0 +1,30 @@
+Minidom - simple XML parser for the GGZ Gaming Zone
+---------------------------------------------------
+
+The goal of minidom is not to give you the latest and greatest in b2b xml
+manager stuff.
+It's only intention is to parse very simple XML documents and let you iterate
+over their content.
+
+
+<?xml version="1.0"?>			-> automatically recognized and skipped during pre-parse
+	<foobar>					-> spaces, tabs, newlines are removed
+		blah					-> content of the element
+	</foobar>
+	<quuux/>					-> NOT supported yet: tag without closing tag
+	<notme reason="not supported">
+		hehe					-> NOT supported yet: text AND inside elements
+		<he>
+		</he>
+	</notme>
+
+</foobar>
+
+
+Please don't expect so much from this little hack. Right now only the meta
+server requires it, and it gets requests like:
+
+	<?xml version="1.0"?><query type="connection">0.0.5pre</query>
+
+Josef
+

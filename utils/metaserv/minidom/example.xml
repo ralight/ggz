@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<resultset>
+	<result preference="100">
+		<host version="0.0.5pre">
+			jzaun.com
+		</host>
+		<port>
+			5688
+		</port>
+		<location>
+			pennsylvania, us
+		</location>
+	</result>
+</queryresult>
+
