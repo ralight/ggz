@@ -52,7 +52,7 @@ class KGGZMotd : public QWidget
 
 		private:
 			// Append a line to the display
-			void append(char *text);
+			void append(const char *text);
 
 			// The display itself
 			QTextView *m_edit;

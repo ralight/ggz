@@ -87,7 +87,7 @@ KGGZMotd::~KGGZMotd()
 }
 
 // add more lines
-void KGGZMotd::append(char *text)
+void KGGZMotd::append(const char *text)
 {
 	unsigned int i;
 	int j, count;
@@ -118,11 +118,11 @@ void KGGZMotd::append(char *text)
 					buffer.append(text[i]);
 			}
 			count++;
-			if(count > 37)
+			/*if(count > 37)
 			{
 				count = 0;
 				buffer.append("<br>");
-			}
+			}*/
 		}
 		else
 		{
