@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4491 2002-09-09 04:51:32Z jdorje $
+ * $Id: game.c 4492 2002-09-09 05:23:55Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -174,9 +174,9 @@ void game_update(int event, void *arg) {
       game_info.assign[0] = *(char *)arg;
       game_info.assign[1] = *(((char *)arg) + 20);
 			if (game_info.assign[0] != GGZ_SEAT_OPEN)
-				strcpy(game_info.name[0], (char *)(arg+1));
+				strcpy(game_info.name[0], (char *)arg + 1);
 			if (game_info.assign[1] != GGZ_SEAT_OPEN)
-				strcpy(game_info.name[1], (char *)(arg+21));
+				strcpy(game_info.name[1], (char *)arg + 21);
 			board_info_update();
       free(arg);
       break;
