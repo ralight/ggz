@@ -50,6 +50,9 @@ install: build
 	install -m 755 -d `pwd`/debian/tmp/DEBIAN
 	install -m 644 debian/shlibs debian/tmp/DEBIAN
 
+	# No development library, only runtime
+	rm -f `pwd`/debian/tmp/usr/lib/libggzcorepp.so
+
 
 # Build architecture-independent files here.
 binary-indep: build install
