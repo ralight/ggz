@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3457 2002-02-24 19:57:25Z jdorje $
+ * $Id: protocol.h 3461 2002-02-25 09:12:02Z jdorje $
  *
  * This just contains the communications protocol information.
  *
