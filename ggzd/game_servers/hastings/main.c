@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 4647 2002-09-21 16:46:58Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -45,6 +45,9 @@ int main(void)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_JOIN, &game_handle_ggz);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_DATA, &game_handle_spectator);
 
 	game_init(ggz);
 

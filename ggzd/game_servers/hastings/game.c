@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 4485 2002-09-09 04:09:53Z jdorje $
+ * $Id: game.c 4647 2002-09-21 16:46:58Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -91,6 +91,7 @@ void game_init(GGZdMod *ggz)
 void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	int player;
+
 	switch(event)
 	{
 		case GGZDMOD_EVENT_STATE:
@@ -104,6 +105,13 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 		case GGZDMOD_EVENT_LEAVE:
 			player = ((GGZSeat*)data)->num;
 			game_update(HASTINGS_EVENT_LEAVE, &player);
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_JOIN:
+			/* trigger synchonization */
+			game_send_players();
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
+			/* do nothing */
 			break;
 		default:
 			ggzdmod_log(hastings_game.ggz, "game_handle_ggz: bad event.");
@@ -140,7 +148,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 			break;
 		case HASTINGS_REQ_INIT:
 			/*game_init(hastings_game.ggz);*/
-			game_send_sync(num);
+			game_send_sync(num, fd);
 			if (seats_full())
 			{
 				hastings_game.state = HASTINGS_STATE_PLAYING;
@@ -148,11 +156,38 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 			}
 			break;
 		case HASTINGS_REQ_SYNC:
-			game_send_sync(num);
+			game_send_sync(num, fd);
 			break;
 		default:
 			/* Unrecognized opcode */
 			ggzdmod_log(hastings_game.ggz, "ERROR: unrecognized player opcode %d.", op);
+			break;
+	}
+}
+
+
+/* Handle message from player */
+void game_handle_spectator(GGZdMod *ggz, GGZdModEvent event, void *spectator_data)
+{
+	int num;
+	int fd, op;
+
+	num = *(int*)spectator_data;
+	fd = ggzdmod_get_spectator(hastings_game.ggz, num).fd;
+
+	if (fd < 0 || ggz_read_int(fd, &op) < 0) return;
+
+	ggzdmod_log(hastings_game.ggz, "## handle spectator: %i\n", num);
+
+	switch (op)
+	{
+		case HASTINGS_REQ_INIT:
+		case HASTINGS_REQ_SYNC:
+			game_send_sync(num, fd);
+			break;
+		default:
+			/* Unrecognized opcode */
+			ggzdmod_log(hastings_game.ggz, "ERROR: unrecognized spectator opcode %d.", op);
 			break;
 	}
 }
@@ -176,6 +211,7 @@ int game_send_players(void)
 {
 	int i, j;
 	GGZSeat seat, seat2;
+	int fd;
 
 	/* Determine number of players, 8 at a maximum */
 	hastings_game.playernum = ggzdmod_get_num_seats(hastings_game.ggz);
@@ -206,6 +242,26 @@ int game_send_players(void)
 					return -1;
 		}
 	}
+
+	/* Send players to spectators */
+	for (j = 0; j < ggzdmod_get_max_num_spectators(hastings_game.ggz); j++)
+	{
+		fd = ggzdmod_get_spectator(hastings_game.ggz, j).fd;
+		if(fd < 0) continue;
+
+		if(ggz_write_int(fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
+		if(ggz_write_int(fd, hastings_game.playernum) < 0) return -1;
+
+		for(i = 0; i < hastings_game.playernum; i++)
+		{
+			seat2 = ggzdmod_get_seat(hastings_game.ggz, i);
+			if(ggz_write_int(fd, seat2.type) < 0) return -1;
+			if((seat.type != GGZ_SEAT_OPEN) && (seat2.name))
+				if(ggz_write_string(fd, seat2.name) < 0)
+					return -1;
+		}
+	}
+
 	return 0;
 }
 
@@ -216,7 +272,9 @@ int game_send_move(int num)
 	int i, fd;
 	int status = 0;
 	GGZSeat seat;
+	GGZSpectator spectator;
 
+	/* Send to all other players */
 	for(i = 0; i < hastings_game.playernum; i++)
 	{
 		if(i != num)
@@ -239,21 +297,36 @@ int game_send_move(int num)
 		}
 	}
 
+	/* Send to possible spectators */
+	for(i = 0; i < ggzdmod_get_max_num_spectators(hastings_game.ggz); i++)
+	{
+		spectator = ggzdmod_get_spectator(hastings_game.ggz, i);
+		fd = spectator.fd;
+
+		/* Avoid sending to spectators who left already */
+		if (fd < 0) continue;
+
+		ggzdmod_log(hastings_game.ggz, "Sending player %d's move to spectator %d\n", num, i);
+
+		if (ggz_write_int(fd, HASTINGS_MSG_MOVE) < 0
+			|| ggz_write_int(fd, num) < 0
+			|| ggz_write_int(fd, hastings_game.move_src_x) < 0
+			|| ggz_write_int(fd, hastings_game.move_src_y) < 0
+			|| ggz_write_int(fd, hastings_game.move_dst_x) < 0
+			|| ggz_write_int(fd, hastings_game.move_dst_y) < 0)
+			status = -1;
+	}
+
 	return status;
 }
 
 
 /* Send out board layout */
-int game_send_sync(int num)
+int game_send_sync(int num, int fd)
 {
-	int i, j, fd;
+	int i, j;
 	GGZSeat seat;
 	char knight;
-
-	/* Find the right player */
-	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
-	if(fd < 0) return -1;
-	ggzdmod_log(hastings_game.ggz, "Handling sync for player %d\n", num);
 
 	/* First player? */
 	if (hastings_game.turn == -1) hastings_game.turn = 0;
@@ -536,6 +609,7 @@ void game_bot_move(int me)
 	}
 
 	sleep(1);
+	ggzdmod_dispatch(hastings_game.ggz);
 
 	/* no move found - player dead */
 	if(!moved)
