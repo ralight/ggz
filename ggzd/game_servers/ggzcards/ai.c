@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3434 2002-02-21 07:42:14Z jdorje $
+ * $Id: ai.c 3494 2002-02-27 10:21:23Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -55,7 +55,7 @@ const char *ai_get_name(player_t p)
 }
 
 
-void start_ai(player_t p, char* ai_type)
+void start_ai(game_t *g, player_t p, char* ai_type)
 {
 	/* It would be really cool if we could use the ggzmod library
 	   to do this part... */
@@ -94,8 +94,8 @@ void start_ai(player_t p, char* ai_type)
 		/* parent */
 		close(fd_pair[1]);
 		
-		game.players[p].fd = fd_pair[0];
-		game.players[p].pid = pid;
+		g->players[p].fd = fd_pair[0];
+		g->players[p].pid = pid;
 	}	
 }
 			
