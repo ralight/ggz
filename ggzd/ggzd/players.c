@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: players.c 4427 2002-09-07 03:38:43Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -577,14 +577,16 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 	/* Implement LEAVE by setting my seat to open */
 	switch (opcode) {
 	case GGZ_TRANSIT_LEAVE: 
-		seat.index = table_find_player(player->room, index, player->name);
+		seat.index = table_find_player(player->room, index,
+					       player->name);
 		if(seat.index == -1)
 			return E_NO_TABLE;
 		seat.type = GGZ_SEAT_OPEN;
 		seat.name[0] = '\0';
 		seat.fd = -1;
 		
-		status = transit_seat_event(player->room, index, seat, player->name);
+		status = transit_seat_event(player->room, index, seat,
+					    player->name);
 		break;
 	case GGZ_TRANSIT_JOIN:
 		seat.index = GGZ_SEATNUM_ANY; /* Take first available seat */
@@ -592,7 +594,8 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 		seat.fd = player->game_fd;
 		strcpy(seat.name, player->name);
 		
-		status = transit_seat_event(player->room, index, seat, player->name);
+		status = transit_seat_event(player->room, index, seat,
+					    player->name);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
 		player->game_fd = -1;
@@ -604,7 +607,8 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 		spectator.fd = player->game_fd;
 		strcpy(spectator.name, player->name);
 
-		status = transit_spectator_event(player->room, index, spectator, player->name);
+		status = transit_spectator_event(player->room, index,
+						 spectator, player->name);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
 		player->game_fd = -1;
@@ -612,13 +616,15 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 
 		break;
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
-		spectator.index = table_find_player(player->room, index, player->name);
+		spectator.index = table_find_spectator(player->room, index,
+						       player->name);
 		if(spectator.index == -1)
 			return E_NO_TABLE;
 		spectator.name[0] = '\0';
 		spectator.fd = -1;
 
-		status = transit_spectator_event(player->room, index, spectator, player->name);
+		status = transit_spectator_event(player->room, index,
+						 spectator, player->name);
 		break;
 	default:
 		/* Should never get here */
