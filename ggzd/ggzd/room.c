@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4514 2002-09-11 07:44:05Z jdorje $
+ * $Id: room.c 4530 2002-09-12 21:55:33Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -52,7 +52,8 @@ RoomInfo room_info;
 
 /* Internal use only */
 static void room_notify_change(char* name, const int, const int);
-static int room_event_callback(GGZPlayer* player, int size, void* data);
+static GGZEventFuncReturn room_event_callback(void* target_player,
+					      int size, void* data);
 static int show_server_info(GGZPlayer *player);
 
 
@@ -321,7 +322,7 @@ static void room_notify_change(char* name, const int old, const int new)
 		strcpy(current, name);
 		current += (strlen(name) + 1);
 		
-		event_room_enqueue(old, (GGZEventFunc)room_event_callback, 
+		event_room_enqueue(old, room_event_callback, 
 				   size, data);
 	}
 
@@ -337,7 +338,7 @@ static void room_notify_change(char* name, const int old, const int new)
 		strcpy(current, name);
 		current += (strlen(name) + 1);
 		
-		event_room_enqueue(new, (GGZEventFunc)room_event_callback, 
+		event_room_enqueue(new, room_event_callback, 
 				   size, data);
 	}
 }
@@ -352,14 +353,16 @@ void room_notify_lag(char *name, int room)
 	data = ggz_malloc(datalen);
 	data[0] = GGZ_UPDATE_LAG;
 	strcpy(data+1, name);
-	event_room_enqueue(room, (GGZEventFunc) room_event_callback,
+	event_room_enqueue(room, room_event_callback,
 			   datalen, data);
 }
 
 
 /* Event callback for delivering player list update to player */
-static int room_event_callback(GGZPlayer* player, int size, void* data)
+static GGZEventFuncReturn room_event_callback(void* target_player,
+					      int size, void* data)
 {
+	GGZPlayer *player = target_player;
 	unsigned char opcode;
 	char* current = data;
 	char* name;
@@ -370,12 +373,12 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 
 	/* Don't deliver updates about ourself (except lag) */
 	if (opcode != GGZ_UPDATE_LAG && strcasecmp(name, player->name) == 0)
-		return 0;
+		return GGZ_EVENT_OK;
 
 	if (net_send_player_update(player->client->net, opcode, name) < 0)
-		return -1;
+		return GGZ_EVENT_ERROR;
 	
-	return 0;
+	return GGZ_EVENT_OK;
 }
 
 
