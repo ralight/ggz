@@ -107,7 +107,7 @@ static const struct poptOption args[] = {
 	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,
 	 "Types of logging to perform", "LEVEL"},
 #ifdef DEBUG
-	{"debug", 'd', POPT_ARG_INT, &log_info.dbg_types, 0,
+	{"debug", 'd', POPT_ARG_INT, &log_info.dbg_types, 2,
 	 "Types of debug logging to perform", "DBGLEVEL"},
 #endif
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
@@ -130,6 +130,11 @@ void parse_args(int argc, const char *argv[])
 			       VERSION);
 			poptFreeContext(context);
 			exit(0);
+#ifdef DEBUG
+		case 2: /* They specified --debug */
+			log_info.popt_dbg++;
+			break;
+#endif
 		case POPT_ERROR_NOARG:
 		case POPT_ERROR_BADOPT:
 		case POPT_ERROR_BADNUMBER:
@@ -470,6 +475,8 @@ static void parse_file(FILE *configfile)
 			PARSE_ERR("Debugging not enabled");
 			continue;
 #else
+			if(log_info.popt_dbg)	/* Don't overwrite popt's */
+				continue;	/* --debug=X stuff        */
 			if(varvalue == NULL) {
 				PARSE_ERR("Warning: no DebugTypes specified");
 				continue;

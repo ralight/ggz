@@ -212,6 +212,7 @@ typedef struct {
 	FILE *logfile;
 	unsigned log_types;
 #ifdef DEBUG
+	char popt_dbg;
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
 	unsigned dbg_types;

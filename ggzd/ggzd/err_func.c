@@ -47,7 +47,7 @@ LogInfo log_info = { 0, 0,
 		       | GGZ_DBGOPT_USE_SYSLOG ),
 		     NULL, NULL, 0
 #ifdef DEBUG
-		   , NULL, NULL, 0
+		   , 0, NULL, NULL, 0
 #endif
 };
 
