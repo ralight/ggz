@@ -439,6 +439,7 @@ struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room,
 
 unsigned int _ggzcore_room_get_num_tables(struct _GGZRoom *room)
 {
+	/* FIXME: we should let the list track this instead of doing it ourselves */
 	return room->num_tables;
 }
 
@@ -493,12 +494,21 @@ void _ggzcore_room_set_table_list(struct _GGZRoom *room,
 				  unsigned int count,
 				  GGZList *list)
 {
+	GGZListEntry *cur;
+	GGZTable *table;
+
 	/* Get rid of old list */
 	ggz_list_free(room->tables);
 
 	room->num_tables = count;
 	room->tables = list;
 
+	/* Sanity check: make sure these tables point to us */
+	for (cur = ggz_list_head(list); cur; cur = ggz_list_next(cur)) {
+		table = ggz_list_get_data(cur);
+		_ggzcore_table_set_room(table, room);
+	}
+	
 	_ggzcore_room_event(room, GGZ_TABLE_LIST, NULL);
 }
 
@@ -584,13 +594,15 @@ void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
 	ggzcore_debug(GGZ_DBG_ROOM, "Adding table %d", 
 		      _ggzcore_table_get_id(table));
+	
+	/* Set table to point to this room */
+	_ggzcore_table_set_room(table, room);
 
 	/* Create the list if it doesn't exist yet */
 	if (!room->tables)
-		room->tables = ggz_list_create(_ggzcore_table_compare, 
-						    NULL,
-						    _ggzcore_table_destroy, 0);
-
+		room->tables = ggz_list_create(_ggzcore_table_compare, NULL,
+					       _ggzcore_table_destroy, 0);
+	
 	ggz_list_insert(room->tables, table);
 	room->num_tables++;
 	_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
@@ -669,7 +681,7 @@ void _ggzcore_room_player_leave_table(struct _GGZRoom *room,
 }
 
 
-void _ggzcore_room_new_table_state(struct _GGZRoom *room, const unsigned int id, char state)
+void _ggzcore_room_new_table_state(struct _GGZRoom *room, const unsigned int id, GGZTableState state)
 {
 	struct _GGZTable *table;
 			

@@ -112,7 +112,7 @@ void _ggzcore_room_player_leave_table(struct _GGZRoom *room,
 
 void _ggzcore_room_new_table_state(struct _GGZRoom *room,
 				   const unsigned int table,
-				   char state);
+				   GGZTableState state);
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, 
 			    GGZChatOp op, 

@@ -27,7 +27,7 @@
 #define __PROTOCOL_H__
 
 
-#define GGZ_CS_PROTO_VERSION  5
+#define GGZ_CS_PROTO_VERSION  6
 
 /* Chat subop bitmasks */
 

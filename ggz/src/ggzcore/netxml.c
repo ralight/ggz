@@ -166,7 +166,7 @@ static void _ggzcore_net_error(struct _GGZNet *net, char* message);
 static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 
 /* Utility functions */
-static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num);
+static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
 static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...);
@@ -466,7 +466,7 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 		_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
 	
 	for (i = 0; i < num_seats; i++)
-		_ggzcore_net_send_table_seat(net, table, i);
+		_ggzcore_net_send_table_seat(net, _ggzcore_table_get_nth_seat(table, i));
 	
 	_ggzcore_net_send_line(net, "</TABLE>");
 	_ggzcore_net_send_line(net, "</LAUNCH>");
@@ -475,25 +475,21 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 }
 
 
-static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num)
+static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat)
 {
 	int status = 0;
-	char *name, *type = NULL;
-	GGZSeatType seat;
+	char *type;
 
 	ggzcore_debug(GGZ_DBG_NET, "Sending seat info");
 	
-	seat = _ggzcore_table_get_nth_player_type(table, num);
-	name = _ggzcore_table_get_nth_player_name(table, num);
-
-	type = ggz_seattype_to_string(seat);
+	type = ggz_seattype_to_string(seat->type);
 	
-	if (name)
+	if (seat->name)
 		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
-			       num, type, name);
+				       seat->index,type, seat->name);
 	else
 		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-			       num, type);
+				       seat->index, type);
 	
 	return status;
 }
@@ -518,6 +514,33 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 	_ggzcore_net_send_line(net, "<LEAVE FORCE='false'/>");
 
 	return status;
+}
+
+
+int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending table seat update request");
+	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
+	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
+	_ggzcore_net_send_table_seat(net, seat);
+	_ggzcore_net_send_line(net, "</TABLE>");
+	_ggzcore_net_send_line(net, "</UPDATE>");	
+
+	return 0;
+}
+
+
+
+int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table)
+{
+	ggzcore_debug(GGZ_DBG_NET, "Sending table description update request");
+	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
+	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
+	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	_ggzcore_net_send_line(net, "</TABLE>");
+	_ggzcore_net_send_line(net, "</UPDATE>");	
+
+	return 0;
 }
 
 
@@ -1643,7 +1666,6 @@ static void _ggzcore_net_handle_session(GGZNet *net, GGZXMLElement *data)
 	_ggzcore_net_disconnect(net);
 	_ggzcore_server_set_logout_status(net->server, 1);
 }
-
 
 /* Send the session header */
 static void _ggzcore_net_send_header(GGZNet *net)

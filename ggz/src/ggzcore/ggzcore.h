@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3370 2002-02-16 03:08:59Z bmh $
+ * $Id: ggzcore.h 3430 2002-02-21 02:25:31Z bmh $
  *
  * Interface file to be included by client frontends
  *
@@ -640,6 +640,7 @@ GGZGameType*  ggzcore_table_get_type(GGZTable *table);
 char*         ggzcore_table_get_desc(GGZTable *table);
 GGZTableState ggzcore_table_get_state(GGZTable *table);
 int           ggzcore_table_get_num_seats(GGZTable *table);
+int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
 
 /** @brief Count the seats of the given type.
  *

@@ -34,6 +34,9 @@
 
 struct _GGZSeat {
 
+	/* Seat index */
+	int index;
+
 	/* Type of player in seat */
 	GGZSeatType type;
 
@@ -45,6 +48,9 @@ struct _GGZSeat {
 /* Table Information */
 struct _GGZTable {
  
+	/* Pointer to room this table resides in */
+	struct _GGZRoom *room;
+
         /* Server ID of table */
         int id;
  
@@ -71,13 +77,15 @@ void _ggzcore_table_init(struct _GGZTable *table,
 			 struct _GGZGameType *gametype,
 			 const char *desc,
 			 const unsigned int num_seats,
-			 const char state,
+			 const GGZTableState state,
 			 const int id);
 
 void _ggzcore_table_free(struct _GGZTable *table);
 
+void _ggzcore_table_set_room(struct _GGZTable *table, struct _GGZRoom *room);
 void _ggzcore_table_set_id(struct _GGZTable *table, const int id);
 void _ggzcore_table_set_state(struct _GGZTable *table, const GGZTableState state);
+void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc);
 
 /** @brief Change a seat value.
  *
@@ -91,6 +99,7 @@ void _ggzcore_table_set_seat(struct _GGZTable *table,
 			     char *name);
 int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
 
+struct _GGZRoom*      _ggzcore_table_get_room(struct _GGZTable *table);
 int                   _ggzcore_table_get_id(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
@@ -98,6 +107,7 @@ GGZTableState         _ggzcore_table_get_state(struct _GGZTable *table);
 int                   _ggzcore_table_get_num_seats(struct _GGZTable *table);
 int                   _ggzcore_table_get_seat_count(struct _GGZTable *table, GGZSeatType type);
 
+struct _GGZSeat* _ggzcore_table_get_nth_seat(struct _GGZTable *table, const unsigned int num);
 char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num);
 GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);
 
@@ -108,3 +118,4 @@ void* _ggzcore_table_create(void* p);
 void  _ggzcore_table_destroy(void* p);
 
 #endif /* __TABLE_H_ */
+
