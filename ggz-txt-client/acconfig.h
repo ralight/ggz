@@ -17,6 +17,7 @@
 /* defined by automake */
 
 #undef DEBUG
+#undef NDEBUG
 #undef PACKAGE_LOCALE_DIR
     
 
