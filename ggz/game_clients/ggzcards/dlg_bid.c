@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3362 2002-02-15 04:36:48Z jdorje $
+ * $Id: dlg_bid.c 3363 2002-02-15 04:50:33Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ static gint dlg_bid_delete(GtkWidget * widget, gpointer data)
 /* displays a popup window from which the user can choose their bid */
 void dlg_bid_display(int possible_bids, char **bid_choices)
 {
-	GtkWidget *table_box;
+	GtkWidget *table_box, *label;
 	gint i;
 	int xw, yw, leftover;
 
@@ -83,7 +83,12 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 	leftover = xw * yw - possible_bids;	/* calculate the part of the
 						   rectangle unused */
 
-	table_box = gtk_table_new(yw, xw, FALSE);
+	table_box = gtk_table_new(yw + 1, xw, FALSE);
+	
+	/* Create a title label within the table itself. */
+	label = gtk_label_new(_("Select your bid:"));
+	gtk_table_attach_defaults(GTK_TABLE(table_box), label,
+	                          0, xw, 0, 1);
 		
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
@@ -96,10 +101,10 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 					  GINT_TO_POINTER(i));
 
 		x = i % xw;
-		y = i / xw;
+		y = i / xw + 1;
 
-		gtk_table_attach_defaults(GTK_TABLE(table_box), button, x, x + 1,
-					  y, y + 1);
+		gtk_table_attach_defaults(GTK_TABLE(table_box), button,
+		                          x, x + 1, y, y + 1);
 		gtk_widget_show(button);
 
 	}
@@ -123,7 +128,7 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 	} else {
 		/* Create a dialog window to place the table_box in. */
 		window = gtk_window_new(GTK_WINDOW_DIALOG);
-		gtk_window_set_title(GTK_WINDOW(window), _("Select your bid"));
+		gtk_window_set_title(GTK_WINDOW(window), _("Bid Selection"));
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 		gtk_container_add(GTK_CONTAINER(window), table_box);
 		
