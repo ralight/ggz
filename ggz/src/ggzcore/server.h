@@ -98,7 +98,7 @@ int _ggzcore_server_join_room(struct _GGZServer *server,
 			      const unsigned int room);
 
 int _ggzcore_server_logout(struct _GGZServer *server);
-
+int _ggzcore_server_disconnect(struct _GGZServer *server);
 void _ggzcore_server_net_error(struct _GGZServer *server, char *message);
 void _ggzcore_server_protocol_error(struct _GGZServer *server, char *message);
 

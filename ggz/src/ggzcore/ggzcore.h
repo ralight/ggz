@@ -313,6 +313,7 @@ int ggzcore_server_list_rooms(GGZServer *server, const int type, const char verb
 int ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
 int ggzcore_server_join_room(GGZServer *server, const unsigned int room);
 int ggzcore_server_logout(GGZServer *server);
+int ggzcore_server_disconnect(GGZServer *server);
 
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);

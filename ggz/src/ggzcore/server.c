@@ -454,6 +454,15 @@ int ggzcore_server_logout(GGZServer *server)
 }
 
 
+int ggzcore_server_disconnect(GGZServer *server)
+{
+	if (server && server->state != GGZ_STATE_OFFLINE)
+		return _ggzcore_server_disconnect(server);
+	else
+		return -1;
+}
+
+
 int ggzcore_server_data_is_pending(GGZServer *server)
 {
 	int pending = 0;
@@ -866,6 +875,19 @@ int _ggzcore_server_logout(struct _GGZServer *server)
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
 
 	return status;
+}
+
+
+int _ggzcore_server_disconnect(struct _GGZServer *server)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Disconnecting");
+	_ggzcore_net_disconnect(server->net);
+
+	/* Force the server object into the offline state */
+	server->state = GGZ_STATE_OFFLINE;
+	_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
+
+	return 0;
 }
 
 
