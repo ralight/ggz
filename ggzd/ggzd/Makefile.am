@@ -42,7 +42,11 @@ ggzd_SOURCES =	chat.c\
 		ggzdb.c \
 		ggzdb.h \
 		login.c \
-		login.h
+		login.h \
+		lists.c \
+		lists.h \
+		conf.c \
+		conf.h
 
 
 ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS)
