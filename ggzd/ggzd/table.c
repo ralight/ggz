@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4946 2002-10-18 20:49:12Z jdorje $
+ * $Id: table.c 4950 2002-10-19 00:42:22Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -103,10 +103,10 @@ static GGZReturn table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
 static GGZReturn table_update_event_enqueue(GGZTable* table,
 					    GGZUpdateOpcode opcode, char* name,
 					    unsigned int seat);
+#if 0
 static GGZReturn table_seat_event_enqueue(GGZTable* table,
 					  GGZUpdateOpcode opcode,
 					  unsigned int seat);
-#if 0
 static GGZReturn table_spectator_event_enqueue(GGZTable* table,
 					       GGZUpdateOpcode opcode,
 					       unsigned int spectator);
@@ -1079,6 +1079,7 @@ static GGZReturn table_update_event_enqueue(GGZTable* table,
 }
 
 
+#if 0
 static GGZReturn table_seat_event_enqueue(GGZTable *table,
 					  GGZUpdateOpcode opcode,
 					  unsigned int seat_num)
@@ -1099,7 +1100,7 @@ static GGZReturn table_seat_event_enqueue(GGZTable *table,
 				  sizeof(*data), data, NULL);
 }
 
-#if 0
+
 static GGZReturn table_spectator_event_enqueue(GGZTable *table,
 					       GGZUpdateOpcode opcode,
 	unsigned int spectator_num)
