@@ -13,6 +13,7 @@ krosswater_client_SOURCES = \
 
 krosswater_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 krosswater_client_LDADD = $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT) $(LIB_GGZ) zoneclient/libzoneclient.la
+CXXFLAGS = -ggdb3 -O2
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/krosswater/zoneclient
 

@@ -41,6 +41,7 @@ class QCw : public QWidget
 		void setPlayerPixmap(int player, int pixmap);
 		void setPlayerTurn(int player);
 		void disable();
+		void enable();
 
 	signals:
 		void signalMove(int xfrom, int yfrom, int xto, int yto);
@@ -64,6 +65,7 @@ class QCw : public QWidget
 		int m_numplayers;
 		QPixmap *m_pix;
 		int m_update;
+		int m_allupdate;
 		int m_enabled;
 		int m_turn;
 };

@@ -48,6 +48,7 @@ QCw::QCw(QWidget* parent, const char* name)
 	m_update = 0;
 	m_enabled = 0;
 	m_turn = -1;
+	m_allupdate = 0;
 
 	resetPlayers();
 }
@@ -67,8 +68,10 @@ void QCw::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
 	char *playerpixmap;
+	int dark;
 
 	if(!m_update) return;
+	if(!m_allupdate) return;
 	if((m_width < 0) || (m_height < 0)) return;
 	m_update = 0;
 
@@ -83,6 +86,7 @@ void QCw::paintEvent(QPaintEvent *e)
 	for(int j = 0; j < m_height; j++)
 		for(int i = 0; i < m_width; i++)
 		{
+			dark = (!i) * 40;
 			switch(m_board[i][j][0])
 			{
 				case 0:
@@ -92,7 +96,7 @@ void QCw::paintEvent(QPaintEvent *e)
 					break;
 				case 1:
 				case 2:
-					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180, 110, 30)));
+					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180 - dark, 110 - dark, 30)));
 					break;
 				case 3:
 					p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200, 200, 0)));
@@ -159,6 +163,8 @@ void QCw::setSize(int width, int height)
 	m_width = width;
 	m_height = height;
 
+	m_allupdate = 0;
+
 	setFixedSize(m_width * 20, m_height * 20);
 	setBackgroundColor(Qt::blue);
 
@@ -185,7 +191,7 @@ void QCw::setSize(int width, int height)
 		for(int i = 0; i < width; i++)
 			m_board[i][j][1] = 0;
 
-	m_enabled = 1;
+	//m_enabled = 1;
 }
 
 void QCw::mousePressEvent(QMouseEvent *e)
@@ -230,7 +236,7 @@ void QCw::setStone(int x, int y, int value)
 
 	m_board[x][y][0] = value;
 	m_update = 1;
-	repaint();
+	if(m_allupdate) repaint();
 }
 
 void QCw::setStoneState(int x, int y, int state)
@@ -259,6 +265,13 @@ void QCw::setPlayerPixmap(int player, int pixmap)
 void QCw::disable()
 {
 	m_enabled = 0;
+}
+
+void QCw::enable()
+{
+	m_allupdate = 1;
+	m_enabled = 1;
+	repaint();
 }
 
 void QCw::setPlayerTurn(int player)

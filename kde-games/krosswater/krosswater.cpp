@@ -207,6 +207,7 @@ void Krosswater::slotZoneInput(int op)
 				qcw->setPlayerPixmap(i, person);
 			}
 		}
+		qcw->enable();
 	}
 	else if(op == proto_move_broadcast)
 	{
@@ -237,7 +238,7 @@ void Krosswater::slotZoneInput(int op)
 				qcw->setStone(x, y, 3);
 			}
 		}
-		if((!m_again) && (person == 0))
+		if(!m_again)
 		{
 			m_again = new DlgAgain(NULL, "DlgAgain");
 			connect(m_again, SIGNAL(signalAgain()), SLOT(slotAgain()));
