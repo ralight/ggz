@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4661 2002-09-23 07:59:45Z jdorje $
+dnl $Id: configure.in 4678 2002-09-24 05:20:35Z jdorje $
 
 dnl AC_INIT(configure.in)
 AC_INIT(acinclude.m4)
@@ -138,23 +138,11 @@ fi
 dnl Various dirs
 dnl ============
 
-ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
-
-ggzdatadir=`$GGZ_CONFIG --datadir`
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
-
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
-
 SUBDIRS=$allsubdirs
 
 AC_SUBST(LDADD)
 AC_SUBST(subdirs)
 AC_SUBST(SUBDIRS)
-AC_SUBST(ggzexecmoddir)
-AC_SUBST(ggzdatadir)
-AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
 	   package
@@ -196,6 +184,11 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Gettext support....$enable_gettext"
+echo ""
+echo "Paths"
+echo "    Installation prefix: $prefix"
+echo "    Game executable directory: $ggzexecmoddir"
+echo "    Game data directory: $ggzdatadir"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to compile the game modules and"
