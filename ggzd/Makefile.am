@@ -4,7 +4,7 @@ DIST_SUBDIRS = ggzd game_servers doc man
 CLEAN_FILES = ggzd.debug ggzd.log
 SUBDIRS = @SUBDIRS@
 
-EXTRA_DIST = HACKING
+EXTRA_DIST = HACKING README.GGZ
 
 test: all testdir test-recursive
 

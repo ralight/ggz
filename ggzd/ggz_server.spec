@@ -1,12 +1,12 @@
 # RPM Spec file for Gnu Gaming Zone server
 
 Summary: Server software for the Gnu Gaming Zone
-Name: ggz_server
-Version: 0.0.3
+Name: ggz-server
+Version: 0.0.4
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz_server-0.0.3.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.4.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -51,6 +51,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 /usr/lib/ggzd
 
 %changelog
+* Thu Jun 31 2001 Brent Hendricks <bmh@users.sourceforge.net>
+- Updated for release 0.0.4
+
 * Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>
 - Updated for release 0.0.3
 - Moved default location for db files to /var/tmp
