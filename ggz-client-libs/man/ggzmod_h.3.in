@@ -1,39 +1,41 @@
-.TH "ggzmod.h" 3 "26 Aug 2001" "GGZMod" \" -*- nroff -*-
+.TH "ggzmod.h" 3 "12 Apr 2002" "GGZMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-ggz_client.h \- The interface for the ggzmod library used by game clients. 
+ggzmod.h \- The interface for the ggzmod library used by game clients. 
 .SH SYNOPSIS
 .br
 .PP
-.SS Functions
+\fC#include <ggz_common.h>\fP
+.br
+.SS "Functions"
 
 .in +1c
 .ti -1c
-.RI "int \fBggz_connect\fR (void)"
+.RI "int \fBggzmod_connect\fP (void)"
 .br
-.RI "\fIConnects to GGZ.\fR"
+.RI "\fIConnects to GGZ.\fP"
 .ti -1c
-.RI "int \fBggz_disconnect\fR (void)"
+.RI "int \fBggzmod_disconnect\fP (void)"
 .br
-.RI "\fIDisconnects from GGZ.\fR"
+.RI "\fIDisconnects from GGZ.\fP"
 .ti -1c
-.RI "int \fBggz_get_sock\fR (void)"
+.RI "int \fBggzmod_get_fd\fP (void)"
 .br
-.RI "\fIReturns the GGZ TCP communications socket.\fR"
+.RI "\fIReturns the GGZ TCP communications socket.\fP"
 .ti -1c
-.RI "int \fBggz_get_udp_sock\fR (void)"
+.RI "int \fBggzmod_get_udp_fd\fP (void)"
 .br
-.RI "\fIReturns the GGZ UDP communications socket.\fR"
+.RI "\fIReturns the GGZ UDP communications socket.\fP"
 .in -1c
-.SH DETAILED DESCRIPTION
+.SH "DETAILED DESCRIPTION"
 .PP 
 The interface for the ggzmod library used by game clients.
 .PP
 .PP
- This file contains all libggzmod functions used by game clients to interface with GGZ. Just include \fBggz_client.h\fR and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
+ This file contains all libggzmod functions used by game clients to interface with GGZ. Just include \fBggzmod.h\fP and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
 .PP
-Under the GGZ model, instead of connecting directly to the game server a game will connect to the GGZ client using a similar socket. The GGZ client and server will then relay packets between the game client and server. To the client, everything should look the same except that the method used to connect is different.
+Under the GGZ model, instead of connecting directly to the game server a game will be connected by GGZ. To the client, everything should look the same except that the method used to connect is different.
 .PP
 .nf
 
@@ -41,7 +43,7 @@ Under the GGZ model, instead of connecting directly to the game server a game wi
  *                          +--------...-->--------+
  *                          |                      |
  *                          |                      V
- *    ggz_connect()   +-----+------+         +-----+------+   ggzd_connect()
+ *   ggzmod_connect() +-----+------+         +-----+------+ ggzdmod_connect()
  *              +---->+ GGZ client |         | GGZ server +<----+
  *              |     +------------+         +------------+     |
  *              |              ^                |               |
@@ -70,7 +72,7 @@ Here is a generic example of how a game should be changed to use GGZ. Say the ol
          int fd;
 
          if (with_ggz) // typically determined by command-line option
-             fd = ggz_connect();
+             fd = ggzmod_connect();
          else          // if not using GGZ, use the old method
              fd = connect_to_server();
          ...
@@ -88,74 +90,70 @@ Here is an example of how a GTK client may connect:
      }
 
      int main(int argc, char** argv) {
-         fd = ggz_connect();          // connect to GGZ
+         fd = ggzmod_connect();       // connect to GGZ
          if (fd < 0) return -1;
          gtk_init(&argc, &argv);
          gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
          gtk_main();
-         ggz_disconnect();            // disconnect from GGZ
+         ggzmod_disconnect();         // disconnect from GGZ
          return 0;
      }
 .fi
 .PP
 For more information, see the documentation at http://ggz.sf.net/.
 .PP
-.SH FUNCTION DOCUMENTATION
+.SH "FUNCTION DOCUMENTATION"
 .PP 
-.SS int ggz_connect (void)
+.SS "int ggzmod_connect (void)"
 .PP
 Connects to GGZ.
 .PP
 .PP
  This does the physical work of connecting to GGZ. It should be called by the game client upon startup.
 .PP
-\fBReturns: \fR
+\fBReturns: \fP
 .in +1c
 The file descriptor for the TCP communications socket (or -1 on failure). 
 .PP
-\fBSee also: \fR
+\fBSee also: \fP
 .in +1c
-\fBggz_get_sock\fR 
-.PP
-\fB\fBTodo: \fR\fR
-.in +1c
- Should it just return 0 on success, -1 on failure?  
-.SS int ggz_disconnect (void)
+\fBggzmod_get_fd\fP 
+.SS "int ggzmod_disconnect (void)"
 .PP
 Disconnects from GGZ.
 .PP
 .PP
  This disconnects from GGZ and destroys all internal data. It should be called by the game client before exiting.
 .PP
-\fBReturns: \fR
+\fBReturns: \fP
 .in +1c
 0 on success, -1 on failure. 
-.SS int ggz_get_sock (void)
+.SS "int ggzmod_get_fd (void)"
 .PP
 Returns the GGZ TCP communications socket.
 .PP
 .PP
  This returns the file descriptor of the TCP communications socket. The socket can be used for two-way communication to the game server through TCP.
 .PP
-\fBReturns: \fR
+\fBReturns: \fP
 .in +1c
 The FD integer, or -1 on no connection. 
-.SS int ggz_get_udp_sock (void)
+.SS "int ggzmod_get_udp_fd (void)"
 .PP
 Returns the GGZ UDP communications socket.
 .PP
 .PP
  This returns the file descriptor of the UDP communications socket. The socket can be used for two-way communication to the game server through UDP.
 .PP
-\fBReturns: \fR
+\fBReturns: \fP
 .in +1c
 The FD integer, or -1 on no connection. 
 .PP
-\fB\fBTodo: \fR\fR
+\fB\fBTodo: \fP\fP
 .in +1c
 Is this a good way to access the UDP socket? 
 .PP
  This functionality is not yet implemented; it will return -1.  
-.SH AUTHOR
+.SH "AUTHOR"
 .PP 
 Generated automatically by Doxygen for GGZMod from the source code.
