@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 5167 2002-11-03 09:38:36Z jdorje $
+ * $Id: dlg_exit.c 6225 2004-10-28 05:48:01Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -44,9 +44,7 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	GtkWidget *labelBox;
 	GtkWidget *exitButton;
 	GtkWidget *cancelButton;
-#ifdef GTK2
 	GtkWidget *image;
-#endif
 	char *text;
 	
 	if (can_return) {
@@ -68,20 +66,13 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	label = gtk_label_new(text);
 	gtk_widget_show(label);
 
-#ifdef GTK2
 	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
 					 GTK_ICON_SIZE_DIALOG);
 	gtk_widget_show(image);
-#endif
 
 	/* Button widgets */
-#ifndef GTK2
-	exitButton = gtk_button_new_with_label(_("Exit"));
-	cancelButton = gtk_button_new_with_label(_("Cancel"));
-#else
 	exitButton = gtk_button_new_from_stock(GTK_STOCK_QUIT);
 	cancelButton = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-#endif /* GTK2 */
 
 	gtk_signal_connect(GTK_OBJECT(exitButton), "clicked",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
@@ -112,9 +103,7 @@ static GtkWidget *make_exit_dialog(int can_return, GtkWidget *parent_window)
 	gtk_box_pack_start(GTK_BOX(buttonBox), cancelButton, TRUE, TRUE,
 			   0);
 
-#ifdef GTK2
 	gtk_box_pack_start(GTK_BOX(labelBox), image, FALSE, FALSE, 0);
-#endif
 	gtk_box_pack_start(GTK_BOX(labelBox), label, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), buttonBox, TRUE,

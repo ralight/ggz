@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.c 5112 2002-10-30 07:57:03Z jdorje $
+ * $Id: main_win.c 6225 2004-10-28 05:48:01Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -241,27 +241,18 @@ create_main_win (void)
   gtk_box_pack_start (GTK_BOX (vbox3), scrolledwindow1, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-#ifdef GTK2
   last_moves = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
   gtk_text_view_set_editable(GTK_TEXT_VIEW(last_moves), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(last_moves), FALSE);
-#else
-  last_moves = gtk_text_new (NULL, NULL);
-#endif
   gtk_widget_ref (last_moves);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "last_moves", last_moves,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (last_moves);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), last_moves);
-#ifdef GTK2
   gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer
 				   (GTK_TEXT_VIEW(last_moves)),
 				   _("Last moves: \n"),
 				   -1);
-#else
-  gtk_text_insert (GTK_TEXT (last_moves), NULL, NULL, NULL,
-                   _("Last moves:\n"), -1);
-#endif
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);

@@ -717,20 +717,10 @@ create_dlg_options (int number)
   gtk_table_attach(GTK_TABLE(table2), preview_options_scroll, 0, 3, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), 0, 0);
   gtk_widget_set_usize (preview_options_scroll, -1, 30);
 
-#ifdef GTK2
   preview_options = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(preview_options), GTK_WRAP_WORD);
   gtk_text_view_set_editable(GTK_TEXT_VIEW(preview_options), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(preview_options), FALSE);
-#else
-  preview_options = gtk_text_new(gtk_scrolled_window_get_hadjustment(
-                                  GTK_SCROLLED_WINDOW(preview_options_scroll)),
-                                 gtk_scrolled_window_get_vadjustment(
-                                  GTK_SCROLLED_WINDOW(preview_options_scroll)));
-  gtk_text_set_word_wrap(GTK_TEXT(preview_options), TRUE);
-  gtk_text_set_line_wrap(GTK_TEXT(preview_options), TRUE);
-  gtk_text_set_editable(GTK_TEXT(preview_options), FALSE);
-#endif
   gtk_widget_set_name(preview_options, "preview_options");
   gtk_object_set_data(GTK_OBJECT(dlg_options), "preview_options", preview_options);
   gtk_widget_show(preview_options);

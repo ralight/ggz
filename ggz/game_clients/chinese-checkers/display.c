@@ -447,11 +447,7 @@ void display_set_label_colors(void)
 		gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
 		label_style = gtk_style_new();
 		font = gdk_font_load("fixed");
-#ifdef GTK2
 		gtk_style_set_font(label_style, font);
-#else
-		label_style->font = font;
-#endif
 		for(j=0; j<5; j++)
 			label_style->fg[j] = color;
 		gtk_widget_set_style(label[l_index], label_style);

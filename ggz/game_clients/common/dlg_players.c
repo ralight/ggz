@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 5186 2002-11-03 22:07:46Z jdorje $
+ * $Id: dlg_players.c 6225 2004-10-28 05:48:01Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -278,11 +278,7 @@ static GtkWidget *create_dlg_players(void)
 	/* 
 	 * Make "close" button
 	 */
-#ifndef GTK2
-	close_button = gtk_button_new_with_label(_("Close"));
-#else
 	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-#endif /* GTK2 */
 	gtk_widget_ref(close_button);
 	gtk_widget_show(close_button);
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
