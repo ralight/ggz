@@ -4,6 +4,6 @@ Name = Reversi
 Author = Ismael Orenstein
 CommandLine = @ggzexecmoddir@/ggz.reversi
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=7
 Protocol = 0.0.5
 Version = 0.1
