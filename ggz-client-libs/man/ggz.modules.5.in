@@ -1,0 +1,101 @@
+.TH "ggz.modules" "5" "0.0.4" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+\fBggz.modules\fR \- GGZ Gaming Zone module configuration file
+.SH "DESCRIPTION"
+.LP 
+The GGZ Gaming Zone uses the file \fBggz.modules\fR
+in order to configure which game modules are properly
+installed.  The only approved method of altering this
+file is using the \fIggz\-config\fP utility, however
+the file structure is documented here in order to
+facilitate manual repairs if necessary.
+.SH "PARAMETERS"
+.LP 
+The \fBggz.modules\fR file is formattted in sections,
+each of which begins with a \fI[SectionID]\fP line.  The
+first (required) section is \fI[Games]\fP.  This section
+is followed by any number of game\-specific sections named
+\fI[g#]\fP.
+.LP 
+The \fI[Games]\fP section is formatted as follows:
+.LP 
+[Games]
+.br 
+\fB*GameList*\fR = GameName1 GameName2 ...
+.br 
+\fBGameName1\fR = g1 g2 ...
+.br 
+\fBGameName2\fR = g3 ...
+.TP 
+\fB*GameList*\fR
+Should be set to a list of all the game names which are
+currently installed.  Each name should appear once and only
+once, and should be the internal game name (eg: 
+\fINetSpades\fP) and not the full descriptive name of
+the game.
+.TP 
+\fBGameNameX\fR
+Should equal a game name from the \fI*GameList*\fP, a real
+world example would be \fINetSpades\fP.  It should be
+set to a list of unique game section ID's of the form
+\fIg#\fP.  Each game section ID must be the name of a
+section ID which follows in the file.  The ID's need not
+be in any specific order, and ID numbers may be skipped but
+NOT repeated.
+
+.LP 
+A game section is formatted as follows:
+.LP 
+\fB[g#]\fR
+.br 
+Author = Game's Author
+.br 
+CommandLine = /path/to/command [optionlist]
+.br 
+Frontend = \fBFECODE\fR
+.br 
+Homepage = URL to Game's homepage
+.br 
+Name = \fBGameName\fR
+.br 
+Protocol = \fBProtocolVersion\fR
+.br 
+Version = \fBGameVersion\fR
+.LP 
+Most of these parameters are self explanatory, however
+the following may need clarification:
+.TP 
+\fB[g#]\fR
+This section code ID must be present in one of the game
+lists in the \fI[Games]\fP section above.
+.TP 
+\fBFECODE\fR
+The frontend code should be set to either \fIgtk\fP or
+\fIkde\fP depending on which user interface the game
+was designed for.  Note that the game is expected to work
+with either the GTK+ or KDE clients, assuming that the
+user has the proper windowing system installed.
+.TP 
+\fBGameName\fR
+This must equal the game name (in the \fI[Games]\fP
+section) which properly points to this \fI[g#]\fP
+section.
+.TP 
+\fBProtocolVersion\fR
+This will be used to match an installed game client with
+the protocol version currently used by the game server.
+This allows a new game client to be installed, while
+retaining the old client for backwards compatibility
+with older servers.
+.TP 
+\fBGameVersion\fR
+This is simply the version of the game client itself.
+It need not be the same version as the game server as long
+as the \fIProtocolVersion\fP ID matches.
+.SH "FILES"
+.LP 
+\fI@ggzconfdir@/ggz.modules\fP
+.SH "SEE ALSO"
+.LP 
+ggz\-config(6)
