@@ -1,4 +1,4 @@
-/* $Id: common.h 2871 2001-12-11 00:05:03Z jdorje $ */
+/* $Id: common.h 2872 2001-12-11 06:15:35Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -41,17 +41,17 @@
 /** Hand structure.
  *  @todo Should this be merged into struct seat_t?
  */
-struct hand_t {
+typedef struct {
 	int hand_size;		/**< the number of cards in the hand */
 	card_t *card;		/**< the list of cards */
-};
+} hand_t;
 
 /** Contains all information about a seat at the table. */
 typedef struct seat_t {
 	GGZdModSeat status;	/**< ggz seating assignment info */
 	char *name;		/**< player's name */
 	card_t table_card;	/**< card on table */
-	struct hand_t hand;	/**< player's hand */
+	hand_t hand;		/**< player's hand */
 } seat_t;
 
 /** @} end of Player group */
@@ -119,6 +119,9 @@ void client_quit(void);
  *  ready (you may wish to ask the user first). */
 extern void table_get_newgame(void);
 
+/** Alerts the table to the start of a new game. */
+extern void table_alert_newgame(void);
+
 /** Handles a gameover message.
   * @param num_winners The number of players who won the game (0 or more)
   * @param winners An array with the player numbers of the winners. */
@@ -185,9 +188,10 @@ extern void table_alert_trick(int player);
  *  @param choice_cnt The number of choices for each option.
  *  @param defaults The default choice for each option.
  *  @param option_choices Text message for each choice of each option.
+ *  @return 0 if you are going to handle the option request, -1 if you aren't
  *  @note All parameters are freed after the function returns. */
-extern void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
-			      char ***option_choices);
+extern int table_get_options(int option_cnt, int *choice_cnt, int *defaults,
+			     char ***option_choices);
 
 /** A gui-dependent function called to set a global TEXT message.
  *  This should be defined by the frontend code and is accessed by a
@@ -229,7 +233,7 @@ extern void table_set_player_message(int player, const char *msg);
  *  @param size The amount of data ready to be read.
  *  @return The number of bytes read, or negative for error.
  *  @note When in doubt, just use "return 0". */
-extern int table_handle_game_message(int fd, int game, int size);
+extern int table_handle_game_message(int fd, int game_num, int size);
 
 /** @} end of Callbacks */
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2855 2001-12-10 06:34:27Z jdorje $
+ * $Id: dlg_options.c 2872 2001-12-11 06:15:35Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -198,8 +198,8 @@ static void dlg_option_display(int option_cnt, int *option_sizes,
 	gtk_widget_show(window);
 }
 
-void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
-		       char ***option_choices)
+int table_get_options(int option_cnt, int *choice_cnt, int *defaults,
+		      char ***option_choices)
 {
 	/* options_selected is freed in dlg_options_submit */
 	option_count = option_cnt;
@@ -209,4 +209,6 @@ void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
 	dlg_option_display(option_cnt, choice_cnt, option_choices);
 
 	statusbar_message(_("Please select options."));
+
+	return 0;
 }

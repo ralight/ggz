@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2871 2001-12-11 00:05:03Z jdorje $
+ * $Id: common.c 2872 2001-12-11 06:15:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -208,6 +208,8 @@ static int handle_game_message(void)
 
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
+	ggz_debug("core", "Received game message of size %d for game %d.",
+		  size, game);
 
 	handled = table_handle_game_message(ggzfd, game, size);
 	if (handled < 0)
@@ -369,7 +371,7 @@ static void increase_max_hand_size(int max_hand_size)
 	table_alert_hand_size(game_max_hand_size);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
-#if 1
+#if 0
 		/* TODO: figure out how this code could even fail at all. In
 		   the meantime, I've disabled the call to free (realloc),
 		   conceding the memory leak so that we don't have an
@@ -393,7 +395,7 @@ static void increase_max_hand_size(int max_hand_size)
 static int handle_msg_hand(void)
 {
 	int player, hand_size, i;
-	struct hand_t *hand;
+	hand_t *hand;
 
 	assert(ggzcards.players);
 
@@ -505,7 +507,7 @@ static int handle_msg_badplay(void)
 
 
 /* returns an index into the hand's card for a match to the given card */
-static int match_card(card_t card, struct hand_t *hand)
+static int match_card(card_t card, hand_t * hand)
 {
 	int tc, matches = -1, match = -1;
 	/* Anything "unknown" will match, as will the card itself.  However,
@@ -555,7 +557,7 @@ static int handle_msg_play(void)
 {
 	int p, c, tc;
 	card_t card;
-	struct hand_t *hand;
+	hand_t *hand;
 
 	/* Read the card being played. */
 	if (read_seat(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
@@ -679,7 +681,10 @@ static int handle_req_options(void)
 
 	/* Get the options. */
 	set_game_state(STATE_OPTIONS);
-	table_get_options(option_cnt, choice_cnt, defaults, option_choices);
+	if (table_get_options
+	    (option_cnt, choice_cnt, defaults, option_choices) < 0) {
+		(void) client_send_options(option_cnt, defaults);
+	}
 
 	/* Clean up. */
 	for (i = 0; i < option_cnt; i++) {
@@ -782,6 +787,7 @@ int client_handle_server(void)
 		break;
 	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
+		table_alert_newgame();
 		status = 0;
 		break;
 	case MSG_GAMEOVER:
