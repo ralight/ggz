@@ -91,6 +91,8 @@ create_winProfiles (void)
 
   entProfileName = gtk_entry_new ();
   gtk_widget_set_name (entProfileName, "entProfileName");
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "entProfileName", entProfileName,
+                            NULL);
   gtk_widget_show (entProfileName);
   gtk_box_pack_start (GTK_BOX (hbox2), entProfileName, TRUE, TRUE, 0);
 
@@ -109,6 +111,8 @@ create_winProfiles (void)
 
   entUsername = gtk_entry_new ();
   gtk_widget_set_name (entUsername, "entUsername");
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "entUsername", entUsername,
+                            NULL);
   gtk_widget_show (entUsername);
   gtk_box_pack_start (GTK_BOX (hbox3), entUsername, TRUE, TRUE, 0);
 
@@ -127,6 +131,8 @@ create_winProfiles (void)
 
   entPassword = gtk_entry_new ();
   gtk_widget_set_name (entPassword, "entPassword");
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "entPassword", entPassword,
+                            NULL);
   gtk_widget_show (entPassword);
   gtk_box_pack_start (GTK_BOX (hbox4), entPassword, TRUE, TRUE, 0);
 
@@ -145,6 +151,8 @@ create_winProfiles (void)
 
   entServer = gtk_entry_new ();
   gtk_widget_set_name (entServer, "entServer");
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "entServer", entServer,
+                            NULL);
   gtk_widget_show (entServer);
   gtk_box_pack_start (GTK_BOX (hbox5), entServer, TRUE, TRUE, 0);
 
@@ -157,18 +165,27 @@ create_winProfiles (void)
   btnNew = gtk_button_new_with_mnemonic (_("_New"));
   gtk_widget_set_name (btnNew, "btnNew");
   gtk_widget_show (btnNew);
+  gtk_widget_set_sensitive (GTK_WIDGET(btnNew), FALSE);
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "btnNew", btnNew,
+                            NULL);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnNew);
   GTK_WIDGET_SET_FLAGS (btnNew, GTK_CAN_DEFAULT);
 
   btnApply = gtk_button_new_with_mnemonic (_("_Apply"));
   gtk_widget_set_name (btnApply, "btnApply");
   gtk_widget_show (btnApply);
+  gtk_widget_set_sensitive (GTK_WIDGET(btnApply), FALSE);
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "btnApply", btnApply,
+                            NULL);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnApply);
   GTK_WIDGET_SET_FLAGS (btnApply, GTK_CAN_DEFAULT);
 
   btnDelete = gtk_button_new_with_mnemonic (_("D_elete"));
   gtk_widget_set_name (btnDelete, "btnDelete");
   gtk_widget_show (btnDelete);
+  gtk_widget_set_sensitive (GTK_WIDGET(btnDelete), FALSE);
+  gtk_object_set_data_full (GTK_OBJECT (winProfiles), "btnDelete", btnDelete,
+                            NULL);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), btnDelete);
   GTK_WIDGET_SET_FLAGS (btnDelete, GTK_CAN_DEFAULT);
 
@@ -201,16 +218,16 @@ create_winProfiles (void)
 
   gtk_signal_connect (GTK_OBJECT (entProfileName), "changed",
                       GTK_SIGNAL_FUNC (on_entries_changed),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (entUsername), "changed",
                       GTK_SIGNAL_FUNC (on_entries_changed),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (entPassword), "changed",
                       GTK_SIGNAL_FUNC (on_entries_changed),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (entServer), "changed",
                       GTK_SIGNAL_FUNC (on_entries_changed),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnNew), "clicked",
                       GTK_SIGNAL_FUNC (on_btnNew_clicked),
                       NULL);
@@ -223,6 +240,9 @@ create_winProfiles (void)
   gtk_signal_connect (GTK_OBJECT (btnDone), "clicked",
                       GTK_SIGNAL_FUNC (on_btnDone_clicked),
                       GTK_OBJECT (winProfiles));
+  g_signal_connect (G_OBJECT (selProfiles), "changed",
+		      G_CALLBACK (on_profiles_changed),
+		      GTK_OBJECT (winProfiles));
 
 
   return winProfiles;
