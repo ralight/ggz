@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5071 2002-10-27 23:04:44Z jdorje $
+# $Id: Makefile.am 5080 2002-10-28 04:56:55Z jdorje $
 
 SUBDIRS = .
 
@@ -20,6 +20,8 @@ ggzd_SOURCES =	chat.c\
 		daemon.c \
 		daemon.h \
 		datatypes.h \
+		elo.c \
+		elo.h \
 		err_func.c \
 		err_func.h \
 		event.c \

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: err_func.h 5080 2002-10-28 04:56:55Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -38,7 +38,8 @@
 #define GGZ_LOG_UPDATE		(unsigned) 0x00000010
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
-/* Debug levels for dbg_msg */
+/* Debug levels for dbg_msg.  If you add a new entry, make sure to
+   add it to dbg_types[] in parse_opt.c. */
 #define GGZ_DBG_CONFIGURATION	"configuration"
 #define GGZ_DBG_PROCESS		"process"
 #define GGZ_DBG_CONNECTION	"connection"
@@ -50,6 +51,7 @@
 #define GGZ_DBG_ROOM		"room"
 #define GGZ_DBG_LISTS		"lists"
 #define GGZ_DBG_GAME_MSG	"game_msg"
+#define GGZ_DBG_STATS		"stats"
 #define GGZ_DBG_XML             "xml"
 
 /* Logging options */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5073 2002-10-28 00:09:53Z jdorje $
+ * $Id: room.c 5080 2002-10-28 04:56:55Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -244,7 +244,7 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 	}
 	player->have_rating = ratings;
 	if (ratings) 
-		player->rating = stats.rating;
+		player->rating = (int)(stats.rating + 0.5);
 	pthread_rwlock_unlock(&player->stats_lock);
 }
 
