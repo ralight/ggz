@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: de.ggz.h 6968 2005-03-10 12:25:34Z josef $
+ * $Id: de.ggz.h 6970 2005-03-10 15:43:24Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -1155,356 +1155,368 @@ int ggz_strcasecmp(const char *s1, const char *s2);
 
 
 /**
- * @defgroup easysock Easysock IO
+ * @defgroup easysock Easysock-Netzwerkfunktionen
  * 
- * Simple functions for reading/writing binary data across file descriptors.
+ * Einfache Funktionen, um binäre Daten über Dateideskriptoren zu lesen und schreiben.
  *
  * @{
  */
 
-/** @brief ggz_debug debugging type for Easysock debugging.
+/** @brief Debug-Typ für Netzwerk-Debugging.
  *
- *  To enable socket debugging, add this to the list of debugging types.
+ *  Um Socket-Debugmeldungen zu erlauben, muß dieser Wert zur Liste der Debug-Werte
+ *  hinzugefügt werden.
  *  @see ggz_debug_enable
  */
 #define GGZ_SOCKET_DEBUG "socket"
 
-/** @brief An error type for the GGZ socket functions.
+/** @brief Fehlertypen für die Socketfunktionen von GGZ.
  *
- *  If there is a GGZ socket error, the registered error handler will be
- *  called and will be given one of these error types.
+ *  Wenn es einen GGZ-Socketfehler gibt, wird die registrierte Verarbeitungsfunktion
+ *  aufgerufen und bekommt einen dieser Fehlertypen mitgeliefert.
  */
 typedef enum {
-	GGZ_IO_CREATE,  /**< Error creating a socket. */
-	GGZ_IO_READ,    /**< Error reading from a socket. */
-	GGZ_IO_WRITE,   /**< Error writing to a socket. */
-	GGZ_IO_ALLOCATE /**< Error when the allocation limit is exceeded. */
+	GGZ_IO_CREATE,  /**< Fehler beim Erstellen eines Sockets. */
+	GGZ_IO_READ,    /**< Fehler beim Lesen von einem Socket. */
+	GGZ_IO_WRITE,   /**< Fehler beim Schreiben auf einen Socket. */
+	GGZ_IO_ALLOCATE /**< Fehler bei der Anforderung von Speicher. */
 } GGZIOType;
 
-/** @brief A data type for the GGZ socket function error handler.
+/** @brief Datentypen für die Verarbeitungsfunktion für GGZ-Socketfehler.
  *
- *  If there is a GGZ socket error, the registered error handler will be
- *  called and will be given one of these error data types.
+ *  Wenn es einen GGZ-Socketfehler gibt, wird die registrierte Verarbeitungsfunktion
+ *  aufgerufen und bekommt einen dieser Fehlerdatentypen mitgeliefert.
  */
 typedef enum {
-	GGZ_DATA_NONE,   /**< No data is associated with the error. */
-	GGZ_DATA_CHAR,   /**< The error occurred while dealing with a char. */
-	GGZ_DATA_INT,    /**< The error occurred in dealing with an integer. */
-	GGZ_DATA_STRING, /**< The error occurred in dealing with a string. */
-	GGZ_DATA_FD      /**< Error while dealing with a file descriptor. */
+	GGZ_DATA_NONE,   /**< Keine Daten sind mit diesem Fehler verknüpft. */
+	GGZ_DATA_CHAR,   /**< Der Fehler trat bei der Bearbeitung eines Zeichens auf. */
+	GGZ_DATA_INT,    /**< Der Fehler trat bei der Bearbeitung einer Ganzzahl auf. */
+	GGZ_DATA_STRING, /**< Der Fehler trat bei der Bearbeitung einer Zeichenkette auf. */
+	GGZ_DATA_FD      /**< Fehler bei der Behandlung eines Dateideskriptors. */
 } GGZDataType;
 
-/** @brief An error function type.
+/** @brief Fehlerfunktionstyp.
  *
- *  This function type will be called when there is an error in a GGZ
- *  socket function.
+ *  Eine Funktion diesen Typs wird aufgerufen, wenn ein Fehler in einem GGZ-Socket
+ *  auftritt.
  *
- *  @param msg The strerror message associated with the error.
- *  @param type The type of error that occurred.
- *  @param fd The socket on which the error occurred, or -1 if not applicable.
- *  @param data Extra data associated with the error.
+ *  @param msg Die zugehörige Fehlermeldung als Zeichenkette
+ *  @param type Der Typ des aufgetretenen Fehlers
+ *  @param fd Der Socket, auf welchem der Fehler passierte, oder -1 falls unbekannt
+ *  @param data Zusätzliche Daten, die mit dem Fehler zusammenhängen
  */
 typedef void (*ggzIOError) (const char * msg,
                             const GGZIOType type,
                             const int fd,
 			    const GGZDataType data);
 
-/** @brief Set the ggz/easysock error handling function.
+/** @brief Richtet die Fehlerbehandlungsfunktion für GGZ/Easysock ein.
  *
- *  Any time an error occurs in a GGZ socket function, the registered error
- *  handling function will be called.  Use this function to register a new
- *  error function.  Any previous error function will be discarded.
+ *  Jedes Mal, wenn in einer GGZ-Socketfunktion ein Fehler auftritt,
+ *  wird die registrierte Fehlerbehandlungsfunktion aufgerufen. Mit
+ *  dieser Funktion kann man diese Fehlerfunktion registrieren. Dabei
+ *  werden vorher registrierte Funktionen verworfen.
  *
- *  @param func The new error-handling function.
+ *  @param func Die neue Fehlerbehandlungsfunktion
  *  @return 0
- *  @todo Shouldn't this function return a void or ggzIOError?
+ *  @todo Sollte diese Funktion nicht ein void oder ggzIOError zurückliefern?
  */
 int ggz_set_io_error_func(ggzIOError func);
 
-/** @brief Remove the ggz/easysock error handling function.
+/** @brief Entfernt eine Fehlerbehandlungsfunktion.
  *
- *  The default behavior when a socket failure occurs in one of the GGZ socket
- *  functions is to do nothing (outside of the function's return value).  This
- *  may be overridden by registering an error handler with
- *  ggz_set_io_error_func, but the behavior may be returned by calling this
- *  function to remove the error handler.
+ *  Das Standardverhalten im Fehlerfall in einem GGZ-Socket ist es, nichts zu
+ *  tun, abgesehen vom Rückgabewert der Funktionen. Durch die Einrichtung
+ *  einer Fehlerbehandlungsfunktion mit ggz_set_io_error_func() kann das
+ *  geändert werden, aber das alte Verhalten kann auch wieder hergestellt werden,
+ *  indem diese Funktion aufgerufen wird.
  *
- *  @return The previous error-handling function, or NULL if none.
+ *  @return Die vorherige Fehlerbehandlungsfunktion, oder NULL falls es keine gab.
  */
 ggzIOError ggz_remove_io_error_func(void);
 
 
-/** @brief An exit function type.
+/** @brief Funktionstyp zur Beendigung des Programms.
  *
- *  This function type will be called to exit the program.
- *  @param status The exit value.
+ *  Eine Funktion diesen Typs wird aufgerufen, um das Programm zu beenden.
+ *  @param status Statuscode für das Programmende.
  */
 typedef void (*ggzIOExit) (int status);
 
-/** @brief Set the ggz/easysock exit function.
+/** @brief Einrichtung der Programmbeendigungsfunktion für GGZ/Easysock.
  *
- *  Any of the *_or_die() functions will call the set exit function if there
- *  is an error.  If there is no set function, exit() will be called.
- *  @param func The newly set exit function.
+ *  Jegliche der *_or_die()-Funktionen ruft die eingerichtete Beendigungsfunktion
+ *  auf, falls ein Fehler auftritt. Wenn keine solche Funktion gesetzt ist,
+ *  wird einfach exit() aufgerufen.
+ *  @param func Die neu gesetzte Beendigungsfunktion
  *  @return 0
- *  @todo Shouldn't this return a void?
+ *  @todo Sollte hier nicht ein void zurückgegeben werden?
  */
 int ggz_set_io_exit_func(ggzIOExit func);
 
-/** @brief Remove the ggz/easysock exit function.
+/** @brief Entfernt eine Programmbeendigungsfunktion.
  *
- *  This removes the existing exit function, if one is set.  exit() will
- *  then be called to exit the program.
- *  @return The old exit function (or NULL if none).
+ *  Dies entfernt die existierende Beendigungsfunktion, und im Fehlerfall
+ *  wird von nun an wieder exit() aufgerufen, um das Programm zu beenden.
+ *  @return Die vorherige Beendigungsfunktion, oder NULL falls es keine gab.
  */
 ggzIOExit ggz_remove_io_exit_func(void);
 
-/** @brief Get libggz's limit on memory allocation.
+/** @brief Rückgabe der maximalen Größe für Speicherallokationen.
  *
- *  @return The limit (in bytes) to allow on ggz_read_XXX_alloc() calls.
+ *  @return Obergrenze für alle ggz_read_*_alloc()-Aufrufe, in Bytes
  *  @see ggz_set_io_alloc_limit
  */
 unsigned int ggz_get_io_alloc_limit(void);
 
-/** @brief Set libggz's limit on memory allocation.
+/** @brief Setzen der Obergrenze für Speicherallokationen.
  *
- *  In functions of the form ggz_read_XXX_alloc(), libggz will itself
- *  allocate memory for the XXX object that is being read in.  This
- *  presents an obvious security concern, so we limit the amount of
- *  memory that can be allocated.  The default value is 32,767 bytes,
- *  but it can be changed by calling this function.
+ *  In Funktionen der Form ggz_read_*_alloc() allokiert die Bibliothek
+ *  selbständig Speicher für das jeweilige *-Objekt, welches eingelesen
+ *  wird. Aus Sicherheitsgründen kann der Speicherbereich begrenzt
+ *  werden. Der Standardwert sind 32.767 Bytes, aber er kann durch
+ *  diese Funktion abgeändert werden.
  *
- *  @param limit The new limit (in bytes) to allow on alloc-style calls.
- *  @return The previous limit.
+ *  @param limit Die neue Obergrenze für Speicherallokationen, in Bytes
+ *  @return Die vorherige Obergrenze
  *  @see ggz_get_io_alloc_limit
  *  @see ggz_read_string_alloc
  */
 unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
 
 
-/** @brief Initialize the network.
+/** @brief Initialisierung der Netzwerkfunktionen.
  *
- *  This function will do anything necessary to initialize the network to
- *  use sockets (this is needed on some platforms).  It should be called at
- *  least once before any sockets are put to use.  Calling it more than once
- *  is harmless.  It will be called automatically at the start of all GGZ
- *  socket creation functions.
+ *  Diese Funktion führt alle Aufgaben durch, die in Zusammenhang mit der
+ *  Initialisierung des Netzwerkes (je nach Plattform) notwendig sind.
+ *  Sie sollte mindestens einmal aufgerufen werden, bevor andere Socketfunktionen
+ *  verwendet werden. Mehrfache Aufrufe sind möglich.
+ *  Die Funktionen, welche GGZ-Sockets erstellen, rufen diese Funktion auch
+ *  automatisch auf.
  *
- *  @return 0 on success; negative on failure */
+ *  @return 0 im Erfolgsfall, negativ im Fehlerfall
+ */
 int ggz_init_network(void);
 			      
 
 /****************************************************************************
- * Creating a socket.
+ * Erstellung eines Sockets.
  * 
- * type  :  one of GGZ_SERVER or GGZ_CLIENT
- * port  :  tcp port number 
- * server:  hostname to connect to (only relevant for client)
+ * type  :  entweder GGZ_SERVER oder GGZ_CLIENT
+ * port  :  TCP-Portnummer
+ * server:  Hostname für die Verbindung (nur relevant für den Client)
  * 
- * Returns socket fd or -1 on error
+ * Gibt den Dateideskriptor zurück, oder -1 im Fehlerfall
  ***************************************************************************/
 
-/** @brief A socket type.
+/** @brief Sockettyp.
  *
- *  These socket types are used by ggz_make_socket and friends to decide
- *  what actions are necessary in making a connection.
+ *  Diese Sockettypen werden von Funktionen wie ggz_make_socket() verwendet,
+ *  um entscheiden zu können, welche Aktionen für eine Verbindung notwendig sind.
  */
 typedef enum {
-	GGZ_SOCK_SERVER, /**< Just listen on a particular port. */
-	GGZ_SOCK_CLIENT  /**< Connect to a particular port of a server. */
+	GGZ_SOCK_SERVER, /**< Lauschen auf einem angegebenen Port. */
+	GGZ_SOCK_CLIENT  /**< Verbinden zu einem Port auf einem Server. */
 } GGZSockType;
 
-/** @brief Make a socket connection.
+/** @brief Erstellen einer Netzwerkverbindung.
  *
- *  This function makes a TCP socket connection.
- *    - For a server socket, we'll just listen on the given port an accept
- *      the first connection that is made there.
- *    - For a client socket, we'll connect to a server that is (hopefully)
- *      listening at the given port and hostname.
+ *  Diese Funktion erstellt eine TCP-Socketverbindung.
+ *    - Bei einem Serversocket wird auf dem angegebenen Port gelauscht,
+ *      und die erste Verbindung angenommen, die dort ankommt.
+ *    - Bei einem Clientsocket wird sich zu dem Server verbunden, welcher
+ *      (hoffentlich) auf den angegebenen Port lauscht.
  *
- *  @param type The type of socket (server or client).
- *  @param port The port to listen/connect to.
- *  @param server The server hostname for clients, the interface address else
- *  @return File descriptor on success, -1 on creation error, -2 on lookup
- *  error.
+ *  @param type Der Sockettyp (Server oder Client)
+ *  @param port Der Port für die Verbindungs bzw. Verbindungsannahme
+ *  @param server Der Hostname des Servers für Clients, ansonsten die Adresse der
+ *  Schnittstelle
+ *  @return Dateideskriptor im Erfolgsfall, -1 bei Fehlern der Erstellung,
+ *  -2 bei Fehlern der Hostnamen-Auflösung
  */
 int ggz_make_socket(const GGZSockType type, 
 		    const unsigned short port, 
 		    const char *server);
 
-/** @brief Make a socket connection, exiting on error.
+/** @brief Erstellung einer Netzwerkverbindung mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this is identical to ggz_make_socket.
+ *  Abgesehen von der Fehlerbedingung ist diese Funktion identisch zu ggz_make_socket().
  */
 int ggz_make_socket_or_die(const GGZSockType type,
 			   const unsigned short port, 
 			   const char *server);
 
-/** @brief Connect to a unix domain socket.
+/** @brief Verbindung zu einem Unix-Domain-Socket.
  *
- *  This function connects to a unix domain socket, a socket associated with
- *  a file on the VFS.
- *    - For a server socket, we unlink the socket file first and then
- *      create it.
- *    - For a client socket, we connect to a pre-existing socket file.
+ *  Diese Funktion stellt eine Verbindung zu einem Unix-Domain-Socket her,
+ *  welcher mit einer Datei auf dem Dateisystem verknüpft ist.
+ *    - Bei Serversockets wird diese Datei erst gelöscht und dann neu angelegt.
+ *    - Bei Clientsockets wird sich zu einer bereits existierenden Datei verbunden.
  *
- *  @param type The type of socket (server or client).
- *  @param name The name of the socket file.
- *  @return The socket FD on success, -1 on error.
- *  @note When possible, this should not be used.  Use socketpair() instead.
+ *  @param type Der Sockettyp (Server oder Client)
+ *  @param name Der Name der zugehörigen Datei
+ *  @return Dateideskriptor des Sockets im Erfolgsfall, -1 im Fehlerfall
+ *  @note Wenn möglich, sollte diese Funktion nicht genutzt werden.
+ *  Stattdessen ist socketpair() zu empfehlen.
  */
 int ggz_make_unix_socket(const GGZSockType type, const char* name);
 
-/** @brief Connect to a unix domain socket, exiting on error.
+/** @brief Verbindung zu einem Unix-Domain-Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this is identical to ggz_make_unix_socket.
+ *  Abgesehen von der Fehlerbedingung ist diese Funktion identisch zu
+ *  ggz_make_unix_socket().
  */
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
 
 
-/** @brief Write a character value to the given socket.
+/** @brief Schreibt ein Zeichen auf den angegebenen Socket.
  *
  *  This function will write a single character to the socket.  The
  *  character will be readable at the other end with ggz_read_char.
  *
- *  @param sock The socket file descriptor to write to.
- *  @param data A single character to write.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Dateideskriptor, auf den geschrieben werden soll
+ *  @param data Einzelnes Zeichen zum Schreiben
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_write_char(const int sock, const char data);
 
-/** @brief Write a character value to the given socket, exiting on error.
+/** @brief Schreibt ein Zeichen auf den angegebenen Socket mit Abbruch im Fehlerfall.
  *
- *  @param sock The socket file descriptor to write to.
- *  @param data A single character to write.
- *  @note Aside from error handling, this is identical to ggz_write_char.
+ *  @param sock Der Dateideskriptor, auf den geschrieben werden soll
+ *  @param data Einzelnes Zeichen zum Schreiben
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_write_char().
  */
 void ggz_write_char_or_die(const int sock, const char data);
 
-/** @brief Read a character value from the given socket.
+/** @brief Liest ein Zeichen von einem Socket.
  *
- *  This function will read a single character (as written by
- *  ggz_write_char) from a socket.  It places the value into the
- *  character pointed to.
+ *  Diese Funktion liest ein einzelnes Zeichen, welches von ggz_write_char()
+ *  geschrieben wurde, von einem Socket.
+ *  Der Wert wird in das angegebene Zeichen übertragen.
  *
- *  @param sock The socket file descriptor to read from.
- *  @param data A pointer to a single character.
- *  @return 0 on success, -1 on error
+ *  @param sock Der Dateideskriptor, von dem gelesen werden soll
+ *  @param data Pointer zu einem einzelnen Zeichen
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_read_char(const int sock, char *data);
 
-/** @brief Read a character value from the given socket, exiting on error.
+/** @brief Liest ein Zeichen von einem Socket mit Abbruch im Fehlerfall.
  *
- *  @param sock The socket file descriptor to read from.
- *  @param data A pointer to a single character.
- *  @note Aside from error handling, this is identical to ggz_read_char.
+ *  @param sock Der Dateideskriptor, von dem gelesen werden soll
+ *  @param data Pointer zu einem einzelnen Zeichen
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_read_char().
  */
 void ggz_read_char_or_die(const int sock, char *data);
 
-/** @brief Write an integer to the socket in network byte order.
+/** @brief Schreibt eine Ganzzahl auf den angegebenen Socket.
  *
- *  ggz_write_int and ggz_read_int can be used to send an integer across a
- *  socket.  The integer will be sent in network byte order, so the
- *  functions may safely be used across a network.  Note, though, that it
- *  is probably not safe to use this function to send structs or other
- *  data that may use a different representation than a simple integer.
+ *  ggz_write_int() und ggz_read_int() können verwendet werden, um
+ *  Ganzzahlen über einen Socket zu senden. Die Zahlen werden in
+ *  Netzwerkanordnung (network byte order) gesendet, um die Funktionen
+ *  sicher in einem Netzwerk einsetzen zu können. Es ist jedoch nicht
+ *  empfohlen, mit diesen Funktionen Strukturen oder ähnliche Daten
+ *  zu senden, die auf dem Zielsystem eine andere Darstellung haben könnten.
  *
- *  @param sock The socket to write to.
- *  @param data The integer to write.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Dateideskriptor, auf den geschrieben werden soll
+ *  @param data Einzelne Ganzzahl zum Schreiben
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_write_int(const int sock, const int data);
 
-/** @brief Write an integer to the socket, exiting on error.
+/** @brief Schreibt eine Ganzzahl auf den angegebenen Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_write_int.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_write_int().
  */
 void ggz_write_int_or_die(const int sock, const int data);
 
-/** @brief Read an integer from the socket in network byte order.
- *  
+/** @brief Liest eine Ganzzahl von einem Socket.
+ *
  *  @see ggz_write_int
  *
- *  @param sock The socket to write to.
- *  @param data A pointer to an integer in which to place the data.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Dateideskriptor, von dem gelesen werden soll
+ *  @param data Pointer zu einer einzelnen Ganzzahl
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_read_int(const int sock, int *data);
 
-/** @brief Read an integer from the socket, exiting on error.
+/** @brief Liest eine Ganzzahl von einem Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_read_int.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_read_int().
  */
 void ggz_read_int_or_die(const int sock, int *data);
 
-/** @brief Write a string to the given socket.
+/** @brief Schreibt eine Zeichenkette auf den angegebenen Socket.
  *
- *  This function will write a full string to the given socket.  The string
- *  may be read at the other end by ggz_read_string and friends.
+ *  Diese Funktion schreibt eine komplette Zeichenkette auf den
+ *  angegebenen Socket. Die Zeichenkette kann am anderen Ende
+ *  durch Funktionen wie ggz_read_string() wieder gelesen werden.
  *
- *  @param sock The socket file descriptor to write to.
- *  @param data A pointer to the string to write.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Dateideskriptor, auf den geschrieben werden soll
+ *  @param data Pointer zur Zeichenkette zum Schreiben
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_write_string(const int sock, const char *data);
 
-/** @brief Write a string to the given socket, exiting on error.
+/** @brief Schreibt eine Zeichenkette auf den Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_write_string.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_write_string().
  */
 void ggz_write_string_or_die(const int sock, const char *data);
 
-/** @brief Write a printf-style formatted string to the given socket.
+/** @brief Schreibt eine printf-artige Formatzeichenkette auf den Socket.
  *
- *  This function allows a format string and a list of arguments
- *  to be passed in.  The function will assemble the string (printf-style)
- *  and write it to the socket.
+ *  Diese Funktion nimmt eine Formatzeichenkette und eine Liste von
+ *  Argumenten entgegen. Die Zeichenkette wird dann printf-artig
+ *  zusammengesetzt und auf den Socket geschrieben.
  *
- *  @param sock The socket file descriptor to write to.
- *  @param fmt A printf-style formatting string.
- *  @param ... A printf-style list of arguments.
- *  @note This function will write identically to ggz_write_string.
+ *  @param sock Der Dateideskriptor, auf den geschrieben werden soll
+ *  @param fmt Eine printf-artige Formatzeichenkette
+ *  @param ... Eine printf-artige Liste von Argumenten
+ *  @note Diese Funktion arbeitet prinzipiell wie ggz_write_string().
  */
 int ggz_va_write_string(const int sock, const char *fmt, ...)
                         ggz__attribute((format(printf, 2, 3)));
-			
-/** @brief Write a formatted string to the socket, exiting on error.
+
+/** @brief Schreibt eine Formateichenkette auf den Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_va_write_string.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_va_write_string().
  */
 void ggz_va_write_string_or_die(const int sock, const char *fmt, ...)
                                 ggz__attribute((format(printf, 2, 3)));
-			
-/** @brief Read a string from the given socket.
+
+/** @brief Liest eine Zeichenkette von einem Socket.
  *
- *  This function will read a full string from the given socket.  The string
- *  may be written at the other end by ggz_write_string and friends.  The
- *  length of the string is given as well to avoid buffer overruns; any
- *  characters beyond this will be lost.
+ *  Diese Funktion liest eine kompletten Zeichenkette von dem angegebenen Socket.
+ *  Die Zeichenkette ist von Funktionen wie ggz_write_string() am anderen Ende
+ *  geschrieben worden.
+ *  Die Länge der Zeichenkette wird ebenfalls mitgegeben, um Pufferüberläufe
+ *  zu vermeiden; Zeichen nach dieser Grenze gehen verloren.
  *
- *  @param sock The socket file descriptor to write to.
- *  @param data A pointer to the string to read; it will be changed.
- *  @param len The length of the string pointed to by len
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Dateideskriptor, von dem gelesen werden soll
+ *  @param data Pointer zu einer Zeichenkette; dieser wird modifiziert
+ *  @param len Länge der Zeichenkette, auf die data zeigt
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_read_string(const int sock, char *data, const unsigned int len);
 
-/** @brief Read a string from the given socket, exiting on error.
+/** @brief Liest eine Zeichenkette von einem Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_read_string.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_read_string().
  */
 void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
 
-/** @brief Read and allocate a string from the given socket.
+/** @brief Liest eine Zeichenkette von einem Socket und allokiert dafür Speicher.
  *
- *  This function reads a string from the socket, just like ggz_read_string.
- *  But instead of passing in a pre-allocated buffer to write in, here
- *  we pass a pointer to a string pointer:
+ *  Diese Funktion liest eine Zeichenkette ein genau so wie ggz_read_string().
+ *  Allerdings wird kein vorher allokierter Puffer zur Verfügung gestellt,
+ *  sondern ein Pointer zu einer Zeichenkette.
  *
  *  @code
  *    char* str;
@@ -1514,229 +1526,238 @@ void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
  *    }
  *  @endcode
  *
- *  @param sock The socket file descriptor to write to.
- *  @param data A pointer to an empty string pointer.
- *  @return 0 on success, -1 on error.
- *  @note The use of this function is a security risk.
+ *  @param sock Der Dateideskriptor, von dem gelesen werden soll
+ *  @param data Pointer vom Typ Zeichenkette; die Zeichenkette wird allokiert
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
+ *  @note Die Verwendung dieser Funktion ist ein Sicherheitsproblem.
  *  @see ggz_set_io_alloc_limit
  */
 int ggz_read_string_alloc(const int sock, char **data);
 
-/** @brief Read and allocate string from the given socket, exiting on error.
+/** @brief Liest eine allokierte Zeichenkette von einem Socket mit Abbruch im Fehlerfall.
  *
- *  Aside from the error condition, this function is identical to
- *  ggz_read_string_alloc.
+ *  @note Abgesehen von der Fehlerbehandlung ist diese Funktion identisch zu
+ *  ggz_read_string_alloc().
  */
 void ggz_read_string_alloc_or_die(const int sock, char **data);
 
-/* ggz_write_fd/ggz_read_fd are not supported on all systems. */
+/* ggz_write_fd/ggz_read_fd werden nicht auf allen Systemen unterstützt. */
 
-/** @brief Write a file descriptor to the given (local) socket.
+/** @brief Schreibt einen Dateideskriptor auf einen gegebenen (lokalen) Socket.
  *
- *  ggz_write_fd and ggz_read_fd handle the rather tricky task of sending
- *  a file descriptor across a socket.  The FD is written with ggz_write_fd
- *  and can be read at the other end by ggz_read_fd.  Note that this will
- *  only work for local sockets (i.e. not over the network).  Many thanks to
- *  Richard Stevens and his wonderful books, from which these functions come.
+ *  ggz_write_fd() und ggz_read_fd() übernehmen die ziemlich schwierige
+ *  Aufgabe, einen Dateideskriptor über einen Socket zu übertragen. Der
+ *  Dateideskriptor wird mit Hilfe von ggz_write_fd() geschrieben und am
+ *  anderen Ende mit ggz_read_fd() gelesen. Dies funktioniert nur über
+ *  lokale Sockets, also nicht über das Netz.
+ *  Vielen Dank an Richard Stevens und seine wundervollen Bücher, aus
+ *  denen diese Funktionen stammen.
  *
- *  @param sock The socket to write to.
- *  @param sendfd The FD to send across the socket.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Socket, auf den geschrieben werden soll
+ *  @param sendfd Der zu sendende Dateideskriptor
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_write_fd(const int sock, int sendfd);
 
-/** @brief Read a file descriptor from the given (local) socket.
+/** @brief Liest einen Dateideskriptor von einem gegebenen (lokalen) Socket.
  *  
  *  @see ggz_write_fd
  *
- *  @param sock The socket to read from.
- *  @param recvfd The FD that is read.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Socket, von dem gelesen werden soll
+ *  @param recvfd Der zu lesende Dateideskriptor
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  **/
 int ggz_read_fd(const int sock, int *recvfd);
 
-/** @brief Write a sequence of bytes to the socket.
+/** @brief Schreibt eine Bytesequenz auf einen gegebenen Socket.
  *
- *  ggz_writen and ggz_readn are used to send an arbitrary quantity of raw
- *  data across the a socket.  The data is written with ggz_writen and can
- *  be read at the other end with ggz_readn.  Many thanks to Richard Stevens
- *  and his wonderful books, from which these functions come.
+ *  ggz_writen() und ggz_readn() werden genutzt, um beliebige Mengen
+ *  an Daten über einen Socket zu senden. Die Daten werden mit Hilfe von
+ *  ggz_writen() geschrieben und können am anderen Ende mit ggz_readn()
+ *  wieder gelesen werden. Vielen Dank an Richard Stevens und seine
+ *  wundervollen Bücher, von denen diese Funktionen kommen.
  *
- *  @param sock The socket to write to.
- *  @param vdata A pointer to the data to write.
- *  @param n The number of bytes of data to write from vdata.
- *  @return 0 on success, -1 on error.
+ *  @param sock Der Socket, auf den geschrieben werden soll
+ *  @param vdata Pointer auf die zu schreibenden Daten
+ *  @param n Die Größe der zu schreibenden Daten, in Bytes
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
  */
 int ggz_writen(const int sock, const void *vdata, size_t n);
 
-/** @brief Read a sequence of bytes from the socket.
+/** @brief Liest eine Bytesequenz von einem gegebenen Socket.
  *
  *  @see ggz_writen
  *
- *  @param sock The socket to read from.
- *  @param data A pointer a buffer of size >= n in which to place the data.
- *  @param n The number of bytes to read.
- *  @return 0 on success, -1 on error.
- *  @note You must know how much data you want _before_ calling this function.
+ *  @param sock Der Socket, von dem gelesen werden soll
+ *  @param data Pointer auf die zu lesenden Daten, mindestens n Bytes groß
+ *  @param n Die Größe der zu lesenden Daten, in Bytes
+ *  @return 0 im Erfolgsfall, -1 im Fehlerfall
+ *  @note Es muß VOR dem Aufruf dieser Funktion bekannt sein, wieviele Daten
+ *  gelesen werden sollen.
  */
 int ggz_readn(const int sock, void *data, size_t n);
 
 /** @} */
 
 /**
- * @defgroup security Security functions
+ * @defgroup security Sicherheitsfunktionen
  *
- * All functions related to encryption and encoding go here.
+ * Alle Funktionen, welche einen Bezug zur Kryptographie und Kodierung haben,
+ * sind in dieser Gruppe zu finden.
  *
- * Encryption functions use gcrypt, and will always fail if support for gcrypt
- * has not been compiled in. Encoding functions will always be available.
+ * Die Verschlüsselungsfunktionen nutzen gcrypt, und schlagen immer fehl,
+ * wenn keine Unterstützung für gcrypt einkompiliert worden ist. Die Funktionen
+ * zur Kodierung sind hingegen immer verfügbar.
  *
  * @{
  */
 
-/** @brief Hash data structure
+/** @brief Hash-Datenstruktur.
  *
- *  Contains a string and its length, so that NULL-safe
- *  functions are possible.
+ *  Enthält eine Zeichenkette und ihre Länge, so dass die Behandlung
+ *  von Zeichenketten mit NULL-Zeichen möglich ist.
  */
 typedef struct
 {
-	char *hash;		/**< Hash value */
-	int hashlen;	/**< Length of the hash value in bytes */
+	char *hash;		/**< Hashwert */
+	int hashlen;	/**< Länge des Hashwertes, in Bytes */
 } hash_t;
 
-/** @brief Create a hash over a text
+/** @brief Bildung einer Hashsumme für einen Text.
  *
- *  A hash sum over a given text is created, using the given
- *  algorithm. Space is allocated as needed.
+ *  Die Hashsumme für den angegebenen Text wird mit dem
+ *  ebenfalls gegebenen Algorithmus erstellt. Dabei wird Speicher
+ *  allokiert, falls notwendig.
  *
- *  @param algo The algorithm, like md5 or sha1
- *  @param text Plain text used to calculate the hash sum
- *  @return Hash value in a structure
+ *  @param algo Der Algorithmus, wie md5 oder sha1
+ *  @param text Klartext zur Berechnung der Hashsumme
+ *  @return Hashwert in einer ::hash_t-Struktur
  */
 hash_t ggz_hash_create(const char *algo, const char *text);
 
-/** @brief Create a HMAC hash over a text
+/** @brief Bildung einer HMAC-Hashsumme für einen Text.
  *
- *  Creates a hash sum using a secret key.
- *  Space is allocated as needed and must be freed afterwards.
+ *  Bildet mit Hilfe eines geheimen Schlüssels eine Hashsumme.
+ *  Speicher wird, falls notwendig, allokiert und muss anschließend
+ *  wieder freigegeben werden.
  *
- *  @param algo The algorithm to use, like md5 or sha1
- *  @param text Plain text used to calculate the hash sum
- *  @param secret Secret key to be used for the HMAC creation
- *  @return Hash value in a structure
+ *  @param algo Der Algorithmus, wie md5 oder sha1
+ *  @param text Klartext zur Berechnung der Hashsumme
+ *  @param secret Geheimer Schlüssel für die Bildung des HMAC
+ *  @return Hashwert in einer ::hash_t-Struktur
  */
 hash_t ggz_hmac_create(const char *algo, const char *text, const char *secret);
 
-/** @brief Encodes text to base64
+/** @brief Kodierung von Text nach base64
  *
- *  Plain text with possibly unsafe characters is converted
- *  to the base64 format through this function.
- *  The returned string is allocated internally and must be freed.
+ *  Klartext mit möglicherweise unsicheren Zeichen wird durch diese Funktion
+ *  in das base64-Format gewandelt.
+ *  Die zurückgelieferte Zeichenkette wird intern allokiert und muss deshalb
+ *  anschließend freigegeben werden.
  *
- *  @param text Plain text to encode
- *  @param length Length of the text (which may contain binary characters)
- *  @return Base64 representation of the text
+ *  @param text Zu kodierender Text
+ *  @param length Länge des Textes, welcher Binärzeichen enthalten könnte, in Bytes
+ *  @return Base64-Darstellung des Textes
  */
 char *ggz_base64_encode(const char *text, int length);
 
-/** @brief Decodes text from base64
+/** @brief Dekodierung von Text im base64-Format
  *
- *  This is the reverse function to ggz_base64_encode.
- *  It will also allocate space as needed.
+ *  Diese Funktion ist die Reverse von ggz_base64_encode().
+ *  Sie allokiert ebenso den benötigten Speicher.
  *
- *  @param text Text in base64 format
- *  @param length Length of the text
- *  @return Native representation, may contain binary characters
+ *  @param text Text base64-Darstellung
+ *  @param length Länge des Textes, in Bytes
+ *  @return Unkodierte Darstellung, möglicherweise mit Binärzeichen
  */
 char *ggz_base64_decode(const char *text, int length);
 
-/** @brief TLS operation mode
+/** @brief Modus der TLS-Operationen.
  *
- *  Hints whether the TLS handshake will happen in either
- *  client or server mode.
+ *  Gibt an, ob der TLS-Handshake als Client oder als Server erfolgt.
  *
  *  @see ggz_tls_enable_fd
  */
 typedef enum {
-	GGZ_TLS_CLIENT,		/**< Operate as client */
-	GGZ_TLS_SERVER		/**< Operate as server */
+	GGZ_TLS_CLIENT,		/**< Als Client verbinden */
+	GGZ_TLS_SERVER		/**< Als Server verbinden */
 } GGZTLSType;
 
-/** @brief TLS verification type
+/** @brief TLS-Verifikationstyp.
  *
- *  The authentication (verification) model to be used
- *  for the handshake. None means that no certificate
- *  is validated.
+ *  Das Modell für die Authentisierung (Verifikation),
+ *  welches für den Handshake verwendet wird. None heißt,
+ *  dass keine Zertifikate überprüft werden.
  *
  *  @see ggz_tls_enable_fd
  */
 typedef enum {
-	GGZ_TLS_VERIFY_NONE,		/**< Don't perform verification */
-	GGZ_TLS_VERIFY_PEER			/**< Perform validation of the server's cert */
+	GGZ_TLS_VERIFY_NONE,		/**< Keine Verifikation durchführen */
+	GGZ_TLS_VERIFY_PEER			/**< Überprüfung des Server-Zertifikats */
 } GGZTLSVerificationType;
 
-/** @brief Initialize TLS support on the server side
+/** @brief Initialisierung von TLS auf der Serverseite.
  *
- *  This function ought only be used on the server side.
- *  It sets up the necessary initialization values.
+ *  Diese Funktion darf nur auf der Serverseite ausgeführt werden.
+ *  Sie richtet die notwendigen Startwerte ein.
  *
- *  @param certfile File containing the certificate, or NULL
- *  @param keyfile File containing the private key, or NULL
- *  @param password Password to the private key, or NULL
+ *  @param certfile Datei welche das Zertifikat enthält, oder NULL
+ *  @param keyfile Datei welche den privaten Schlüssel enthält, oder NULL
+ *  @param password Passwort zum privaten Schlüssel, oder NULL
  */
 void ggz_tls_init(const char *certfile, const char *keyfile, const char *password);
 
-/** @brief Check TLS support
+/** @brief Überprüfung auf Unterstützung von TLS.
  *
- *  Since handshakes can fail, this function checks whether TLS
- *  was actually successfully activated.
+ *  Da Handshakes fehlschlagen können, überprüft diese Funktion,
+ *  ob die Unterstützung von TLS erfolgreich aktiviert worden ist.
  *
- *  @return 1 if TLS is supported, 0 if no support is present
+ *  @return 1 wenn TLS unterstützt wird, 0 wenn keine Unterstützung möglich ist
  */
 int ggz_tls_support_query(void);
 
-/** @brief Enable TLS for a file descriptor
+/** @brief TLS für einen Dateideskriptor einschalten.
  *
- *  A TLS handshake is performed for an existing connection on the given
- *  file descriptor. On success, all consecutive data will be encrypted.
+ *  Ein TLS-Handshake läuft für eine bereits existierenden Verbindung auf
+ *  deren Dateideskriptor ab. Im Erfolgsfall werden alle nachfolgenden
+ *  Daten verschlüsselt.
  *
- *  @param fdes File descriptor in question
- *  @param whoami Operation mode (client or server)
- *  @param verify Verification mode
- *  @return 1 on success, 0 on failure
+ *  @param fdes Verwendeter Dateideskriptor
+ *  @param whoami Modus der Operation (Client oder Server)
+ *  @param verify Modus der Verifikation
+ *  @return 1 im Erfolgsfall, 0 im Fehlerfall
  */
 int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify);
 
-/** @brief Disable TLS for a file descriptor
+/** @brief TLS für einen Dateideskriptor ausschalten.
  *
- *  An existing TLS connection is reset to a normal connection on which
- *  all communication happens without encryption.
+ *  Eine existierende TLS-Verbindung wird auf eine normale Verbindung zurückgesetzt,
+ *  auf der sämtliche Kommunikation ohne Verschlüsselung abläuft.
  *
- *  @param fdes File descriptor in question
- *  @return 1 on success, 0 on failure
+ *  @param fdes Verwendeter Dateideskriptor
+ *  @return 1 im Erfolgsfall, 0 im Fehlerfall
  */
 int ggz_tls_disable_fd(int fdes);
 
-/** @brief Write some bytes to a secured file descriptor
+/** @brief Schreibt ein paar Bytes auf einen gesicherten Dateideskriptor.
  *
- *  This function acts as a TLS-aware wrapper for write(2).
+ *  Diese Funktion agiert als TLS-fähiger Ersatz für write(2).
  *
- *  @param fd File descriptor to use
- *  @param ptr Pointer to the data to write
- *  @param n Length of the data to write
- *  @return Actual number of bytes written
+ *  @param fd Zu verwendender Dateideskriptor
+ *  @param ptr Pointer zu den zu schreibenden Daten
+ *  @param n Länge der zu schreibenden Daten, in Bytes
+ *  @return Tatsächlich geschriebene Anzahl an Bytes
  */
 size_t ggz_tls_write(int fd, void *ptr, size_t n);
 
-/** @brief Read from a secured file descriptor
+/** @brief Liest ein paar Bytes von einem gesicherten Dateideskriptor.
  *
- *  This function acts as a TLS-aware wrapper for read(2).
+ *  Diese Funktion agiert als TLS-fähiger Ersatz für read(2).
  *
- *  @param fd File descriptor to use
- *  @param ptr Pointer to a buffer to store the data into
- *  @param n Number of bytes to read, and minimum size of the buffer
- *  @return Actually read number of bytes
+ *  @param fd Zu verwendender Dateideskriptor
+ *  @param ptr Pointer zum Puffer, in den gelesen werden soll
+ *  @param n Länge der zu lesenden Daten, in Bytes
+ *  @return Tatsächlich gelesene Anzahl an Bytes
  */
 size_t ggz_tls_read(int fd, void *ptr, size_t n);
 
