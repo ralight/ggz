@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: common.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -220,6 +220,7 @@ static void newgame(void)
 	
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
+	assert(get_cardset_type() != UNKNOWN_CARDSET);
 	net_broadcast_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state(STATE_NEXT_HAND);

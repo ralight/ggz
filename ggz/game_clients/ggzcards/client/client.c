@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4037 2002-04-21 08:14:26Z jdorje $
+ * $Id: client.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -297,6 +297,22 @@ static int handle_message_global(void)
 }
 
 
+static int handle_msg_newgame(void)
+{
+	int cardset;
+	cardset_type_t cardset_type;
+	
+	if (ggz_read_int(game_internal.fd, &cardset) < 0)
+		return -1;
+	cardset_type = cardset;
+
+	assert(cardset_type != UNKNOWN_CARDSET);	
+	set_cardset_type(cardset_type);
+	game_alert_newgame(cardset_type);
+	return 0;
+}
+
+
 /* A gameover message tells you the game is over, and who won. */
 static int handle_msg_gameover(void)
 {
@@ -434,23 +450,6 @@ static void increase_max_hand_size(int max_hand_size)
 	}
 }
 
-static void handle_card_type(char type)
-{
-	static bool alerted = FALSE;
-	static enum card_type_enum card_type = -1;
-	
-	if (type == UNKNOWN_CARDSET)
-		return;
-	
-	if (alerted) {
-		assert(card_type == type);
-		return;
-	}
-	alerted = TRUE;
-	card_type = type;
-	game_alert_card_type(card_type);
-}
-
 /* A hand message tells you all the cards in one player's hand. */
 static int handle_msg_hand(void)
 {
@@ -476,13 +475,9 @@ static int handle_msg_hand(void)
 	   increase_max_hand_size won't have inconsistent data. */
 	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
-	for (i = 0; i < hand->hand_size; i++) {
+	for (i = 0; i < hand->hand_size; i++)
 		if (read_card(game_internal.fd, &hand->cards[i]) < 0)
 			return -1;
-	}
-	
-	if (hand_size > 0)
-		handle_card_type(hand->cards[0].type);
 
 	ggz_debug("core", "Received hand message for player %d; %d cards.",
 		  player, hand->hand_size);
@@ -661,8 +656,6 @@ static int handle_msg_play(void)
 	if (read_seat(game_internal.fd, &p) < 0
 	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
-		
-	handle_card_type(card.type);
 
 	assert(p >= 0 && p < ggzcards.num_players);
 	assert(ggzcards.play_hand < 0 || p == ggzcards.play_hand);
@@ -728,7 +721,6 @@ static int handle_msg_table(void)
 		if (read_card(game_internal.fd, &card) < 0)
 			return -1;
 		ggzcards.players[p].table_card = card;
-		handle_card_type(card.type);
 	}
 
 	/* TODO: verify that the table cards have been removed from the hands 
@@ -940,8 +932,7 @@ int client_handle_server(void)
 		break;
 	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
-		game_alert_newgame();
-		status = 0;
+		status = handle_msg_newgame();
 		break;
 	case MSG_GAMEOVER:
 		status = handle_msg_gameover();

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.h 4030 2002-04-21 02:56:53Z jdorje $
+ * $Id: drawcard.h 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -32,7 +32,7 @@
 #define CARDHEIGHT (get_card_height(0))
 #define CARD_VISIBILITY (get_card_visibility())
 
-void load_card_data(enum card_type_enum card_type);
+void load_card_data(cardset_type_t cardset_type);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 
 int get_card_width(int orientation);

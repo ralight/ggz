@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4045 2002-04-21 23:27:00Z jdorje $
+ * $Id: cards.h 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -32,16 +32,12 @@
 #ifndef __CARDS_H__
 #define __CARDS_H__
 
-/*
- * Card structure - must be the same between server and client
- */
-
 /** @brief The type of deck.
  *
  *  In theory, many different types of decks are possible.  Currently
  *  only the standard French deck is used.
  */
-enum card_type_enum {
+typedef enum {
 	UNKNOWN_CARDSET = -1,
 
 	/** A standard (French) card deck (A/K/Q/J/10..2). */
@@ -52,7 +48,14 @@ enum card_type_enum {
 	 *  side will be considered the "suit" and the lower side the
 	 *  "face". */
 	CARDSET_DOMINOES	
-};
+} cardset_type_t;
+
+void set_cardset_type(cardset_type_t cardset_type);
+cardset_type_t get_cardset_type(void);
+
+/*
+ * Card structure - must be the same between server and client
+ */
 
 /** Regular values for card faces.
  *  @note If a player does not know the card face, UNKNOWN will be sent.
@@ -102,9 +105,6 @@ typedef struct card_t {
 	/** The deck number of the card.
 	 *  @see card_deck_enum */
 	char deck;
-	/** The deck type.
-	 *  @see card_type_enum */
-	char type;
 } card_t;
 
 const char *get_suit_name(char suit);

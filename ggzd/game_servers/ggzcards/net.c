@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4033 2002-04-21 06:15:20Z jdorje $
+ * $Id: net.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -338,7 +338,8 @@ void net_send_newgame(player_t p)
 {
 	int fd = get_player_socket(p);
 	
-	if (write_opcode(fd, MSG_NEWGAME) < 0)
+	if (write_opcode(fd, MSG_NEWGAME) < 0
+	    || ggz_write_int(fd, get_cardset_type()) < 0)
 		NET_ERROR(p);
 }
 

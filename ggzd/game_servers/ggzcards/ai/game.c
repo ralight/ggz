@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4031 2002-04-21 02:57:42Z jdorje $
+ * $Id: game.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -41,12 +41,7 @@ void game_get_newgame(void)
 	client_send_newgame();
 }
 
-void game_alert_newgame(void)
-{
-	/* nothing */
-}
-
-void game_alert_card_type(enum card_type_enum card_type)
+void game_alert_newgame(cardset_type_t cardset_type)
 {
 	/* nothing */
 }

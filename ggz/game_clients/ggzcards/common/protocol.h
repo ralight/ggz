@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3999 2002-04-16 19:09:47Z jdorje $
+ * $Id: protocol.h 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -61,7 +61,8 @@ typedef enum {
 	   data. */
 	REQ_NEWGAME,
 
-	/* Tells the client of a start of a new game.  No data. */
+	/* Tells the client of a start of a new game.  Followed by an
+	   integer containing the cardset type. */
 	MSG_NEWGAME,
 
 	/* Tells the client of a gameover situation.  It'll be followed by an 

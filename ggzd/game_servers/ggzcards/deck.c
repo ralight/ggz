@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 4035 2002-04-21 07:03:47Z jdorje $
+ * $Id: deck.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -48,7 +48,7 @@ deck_t *create_deck(deck_type_t which_deck)
 	int face, suit, deck;
 	int cardnum;
 	char *deck_faces, *deck_suits, *deck_decks;
-	char deck_type = CARDSET_FRENCH;
+	cardset_type_t cardset_type = CARDSET_FRENCH;
 	int deck_face_cnt = 13, deck_suit_cnt = 4, deck_deck_cnt = 1;
 
 	char std_deck_faces[] =
@@ -109,11 +109,13 @@ deck_t *create_deck(deck_type_t which_deck)
 		deck_face_cnt = 7;
 		deck_suits = domino_deck_faces;
 		deck_suit_cnt = 7;
-		deck_type = CARDSET_DOMINOES;
+		cardset_type = CARDSET_DOMINOES;
 		break;
 	default:
 		ggzdmod_log(game.ggz, "Unknown deck %d.", which_deck);
 	}
+	
+	set_cardset_type(cardset_type);
 
 	/* Now generate an in-order deck */
 	mydeck->size = deck_face_cnt * deck_suit_cnt * deck_deck_cnt;
@@ -123,8 +125,7 @@ deck_t *create_deck(deck_type_t which_deck)
 	for (deck = 0; deck < deck_deck_cnt; deck++)
 		for (suit = 0; suit < deck_suit_cnt; suit++)
 			for (face = 0; face < deck_face_cnt; face++) {
-				card_t card = {type: deck_type,
-				               face: deck_faces[face],
+				card_t card = {face: deck_faces[face],
 				               suit: deck_suits[suit],
 				               deck: deck_decks[deck]};
 				if (is_valid_card(card)) {

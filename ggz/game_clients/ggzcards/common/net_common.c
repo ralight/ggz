@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 04/16/2002
  * Desc: GGZCards network common code
- * $Id: net_common.c 3999 2002-04-16 19:09:47Z jdorje $
+ * $Id: net_common.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Contains common networking functions.
  *
@@ -40,8 +40,7 @@
 
 int read_card(int fd, card_t * card)
 {
-	if (ggz_read_char(fd, &card->type) < 0 ||
-	    ggz_read_char(fd, &card->face) < 0 ||
+	if (ggz_read_char(fd, &card->face) < 0 ||
 	    ggz_read_char(fd, &card->suit) < 0 ||
 	    ggz_read_char(fd, &card->deck) < 0)
 		return -1;
@@ -67,12 +66,7 @@ int write_card(int fd, card_t card)
 	/* Check for validity. */
 	assert(is_valid_card(card));
 	
-	/* Note - the "type" should theoretically come first (and does, here),
-	   but we list it last in the struct definition for
-	   backwards-compatibility. */
-	
-	if (ggz_write_char(fd, card.type) < 0 ||
-	    ggz_write_char(fd, card.face) < 0 ||
+	if (ggz_write_char(fd, card.face) < 0 ||
 	    ggz_write_char(fd, card.suit) < 0 ||
 	    ggz_write_char(fd, card.deck) < 0)
 		return -1;

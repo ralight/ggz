@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4030 2002-04-21 02:56:53Z jdorje $
+ * $Id: client.h 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -27,8 +27,8 @@
 
 #include "protocol.h"
 
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef __CLIENT_H__
+#define __CLIENT_H__
 
 
 /** @defgroup Player
@@ -137,13 +137,10 @@ int client_get_fd(void);
 extern void game_get_newgame(void);
 
 /** Alerts the table to the start of a new game. */
-extern void game_alert_newgame(void);
+extern void game_alert_newgame(cardset_type_t cardset_type);
 
 /** Alerts the table to the start of a new hand. */
 extern void game_alert_newhand(void);
-
-/** Alerts the table as to what type of card we'll be using. */
-extern void game_alert_card_type(enum card_type_enum card_type);
 
 /** Handles a gameover message.
   * @param num_winners The number of players who won the game (0 or more)
@@ -316,4 +313,4 @@ int client_send_sync_request(void);
 
 /** @} end of Responses */
 
-#endif /* __COMMON_H__ */
+#endif /* __CLIENT_H__ */

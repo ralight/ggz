@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 4044 2002-04-21 23:20:16Z jdorje $
+ * $Id: cards.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -38,10 +38,21 @@
 #include "cards.h"
 #include "shared.h"
 
+static cardset_type_t cardset_type = UNKNOWN_CARDSET;
+
+void set_cardset_type(cardset_type_t cardset)
+{
+	cardset_type = cardset;
+}
+
+cardset_type_t get_cardset_type(void)
+{
+	return cardset_type;
+}
+
 const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
                              suit: UNKNOWN_SUIT,
-                             deck: UNKNOWN_DECK,
-                             type: UNKNOWN_CARDSET};
+                             deck: UNKNOWN_DECK};
 
 const char *get_suit_name(char suit)
 {
@@ -143,7 +154,7 @@ const char *get_short_face_name(char face)
 
 int is_valid_card(card_t card)
 {
-	switch (card.type) {
+	switch (cardset_type) {
 	case UNKNOWN_CARDSET:
 		return card.face == UNKNOWN_FACE
 		       && card.suit == UNKNOWN_SUIT

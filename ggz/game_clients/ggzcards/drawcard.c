@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4038 2002-04-21 08:54:06Z jdorje $
+ * $Id: drawcard.c 4046 2002-04-22 00:04:41Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -50,7 +50,9 @@
 GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 
-static enum card_type_enum client_card_type = -1;
+static cardset_type_t client_card_type = UNKNOWN_CARDSET;
+
+static void load_french_cardset(void);
 
 static void get_card_coordinates(card_t card, int orientation, int *x, int *y);
 static void draw_french_card(card_t card, int orientation,
@@ -61,20 +63,14 @@ static void draw_domino_card(card_t card, int orientation,
 static int get_card_width0(void);
 static int get_card_height0(void);
 
-void load_card_data(enum card_type_enum card_type)
-{               	
+static void load_french_cardset(void)
+{
 	int i;
 	GdkBitmap *mask;
 	gchar **xpm_fronts[4] =
 		{ cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm };
 	gchar **xpm_backs[4] =
 		{ cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm };
-
-	/* Check and set the card type */
-#if 0
-	assert(client_card_type == -1);
-#endif
-	client_card_type = card_type;
 
 	/* build pixmaps from the xpms */
 	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
@@ -94,6 +90,25 @@ void load_card_data(enum card_type_enum card_type)
 				  "couldn't load card pixmaps "
 				  "for orientation %d.",
 				  i);
+	}
+}
+
+void load_card_data(cardset_type_t cardset_type)
+{
+	/* Check and set the card type */
+	if (client_card_type == cardset_type)
+		return;
+	client_card_type = cardset_type;
+
+	switch (cardset_type) {
+	case CARDSET_FRENCH:
+		load_french_cardset();
+		break;
+	case CARDSET_DOMINOES:
+		break;
+	case UNKNOWN_CARDSET:
+		assert(FALSE);
+		break;
 	}
 }
 
@@ -260,8 +275,6 @@ static void draw_domino_card(card_t card, int orientation,
 /* Draws the given card at the given location with the given orientation. */
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 {
-	assert(card.type == client_card_type);
-	
 	switch (client_card_type) {
 	case CARDSET_FRENCH:
 		draw_french_card(card, orientation, x, y, image);
