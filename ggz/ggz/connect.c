@@ -319,23 +319,27 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		switch (status) {
 		case 0:
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
-			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			/* break if already in a game */
+			if (client.playing)
+				break;
 
+			tmp = lookup_widget(main_win, "launch");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(main_win, "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(main_win, "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(main_win, "launch_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(main_win, "join_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(mnu_tables, "launch");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(mnu_tables, "join1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(main_win, "room_combo");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			
 			client.playing = TRUE;
  			launch_game(selected_type, FALSE);
 			break;

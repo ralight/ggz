@@ -137,18 +137,26 @@ static void run_game(gint type, gchar flag, gchar* path)
 
 static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 {
-	gint size, status;
+	gint size, status = 0;
 	gchar buf[4096];
 
 	dbg_msg("Got game msg from game client");
 
 	size = read(source, buf, 4096);
 	dbg_msg("Client sent %d bytes", size);
-	es_write_int(client.sock, REQ_GAME);
-	es_write_int(client.sock, size);
-	status = es_writen(client.sock, buf, size);
+	
+	if (size == 0 && client.playing) {
+		es_write_int(client.sock, REQ_TABLE_LEAVE);
+		gdk_input_remove(game_handle);
+		game_handle = 0;
+	}
+	else {
+		es_write_int(client.sock, REQ_GAME);
+		es_write_int(client.sock, size);
+		status = es_writen(client.sock, buf, size);
+	}
 
-	if (status <= 0) {	/* Game over */
+	if (status < 0) {	/* Game over */
 		game_over();
 	}
 }
