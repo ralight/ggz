@@ -477,7 +477,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 	}
 	
 	/* ggz_malloc zeroes memory, but we do it again anyway. */
-	message[size] = 0;
+	(*message)[size] = 0;
 
 	if (status < size) {
 		_debug("Warning: fd is closed\n");
