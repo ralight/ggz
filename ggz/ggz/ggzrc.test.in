@@ -17,3 +17,7 @@ Path = @packagesrcdir@/game_clients/lapocha/ggz.lapocha
 [Reversi]
 Version = 0.0.1
 Path = @packagesrcdir@/game_clients/reversi/ggz.reversi
+
+[ccheckers]
+Version = 0.0.1
+Path = @packagesrcdir@/game_clients/chinese-checkers/ggz.ccheckers

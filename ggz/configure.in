@@ -270,6 +270,7 @@ AC_OUTPUT([Makefile
 		 game_clients/combat/pixmaps/Makefile
 		 game_clients/combat/maps/Makefile
 	   game_clients/hastings/Makefile
+	   game_clients/chinese-checkers/Makefile
 	   intl/Makefile
 	   po/Makefile.in
 	   ])
