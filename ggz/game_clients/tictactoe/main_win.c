@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5959 2004-02-21 19:26:49Z jdorje $
+ * $Id: main_win.c 6227 2004-10-28 06:12:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -283,11 +283,7 @@ create_main_win (void)
   gtk_window_set_title (GTK_WINDOW (main_win), _("Tic-Tac-Toe"));
 
   /* TTT will crash if resized. */
-#ifdef GTK2
   gtk_window_set_resizable(GTK_WINDOW(main_win), FALSE);
-#else
-  gtk_window_set_policy(GTK_WINDOW(main_win), FALSE, FALSE, TRUE);
-#endif
 
   main_box = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (main_box);

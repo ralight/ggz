@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 5119 2002-10-30 20:55:58Z jdorje $
+ * $Id: gtk_play.c 6227 2004-10-28 06:12:03Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -35,9 +35,6 @@
 #include <gtk_play.h>
 #include <client.h>
 #include <display.h>
-#ifndef GTK2
-#include "gtkspinbutton.h"
-#endif
 
 #include "ggzintl.h"
 
@@ -117,11 +114,7 @@ void CreatePlayArea(void)
 		style =
 		    gtk_style_copy(gtk_widget_get_style
 				   (playArea->teams[0]));
-#ifdef GTK2
 		gtk_style_set_font(style, fixedFont);
-#else
-		style->font = fixedFont;
-#endif
 
 		gtk_widget_set_style(playArea->teams[0], style);
 		gtk_widget_set_style(playArea->teams[1], style);
@@ -210,10 +203,11 @@ void CreatePlayArea(void)
 	gtk_widget_show(bidLabel);
 	bidAdj = gtk_adjustment_new(3, -1, 13, 1, 10, 10);
 	bid = gtk_spin_button_new(GTK_ADJUSTMENT(bidAdj), 1, 0);
-#ifdef GTK2 /* This makes things *slightly* better under GTK2. */
+
+	/* This makes things *slightly* better under GTK2. */
 	gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(bid),
 					  GTK_UPDATE_IF_VALID);
-#endif
+
 	gtk_widget_show(bid);
 	gtk_signal_connect(GTK_OBJECT(bid), "input",
 			   GTK_SIGNAL_FUNC(SpinInput), NULL);
@@ -548,10 +542,9 @@ static gint SpinInput(GtkSpinButton * spin, gfloat * new_val)
 
 	if (strcasecmp("nil", gtk_entry_get_text(GTK_ENTRY(spin))) == 0) {
 		*new_val = (gfloat) (-1);
-#ifdef GTK2 /* This makes things *slightly* better under GTK2. */
+		/* This makes things *slightly* better under GTK2. */
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin),
 					  (gfloat) (-1));
-#endif
 		return TRUE;
 	} else {
 		return FALSE;

@@ -32,11 +32,7 @@ typedef struct playArea_t {
 	GtkWidget *field;
 	GtkWidget *hand;
 	GdkPixmap *handBuf;
-#ifdef GTK2
 	GdkPixbuf *cards;
-#else
-	GdkPixmap *cards;
-#endif
 #if 0 /* Card backs aren't used */
 	GdkPixmap *cardbacks;
 #endif
