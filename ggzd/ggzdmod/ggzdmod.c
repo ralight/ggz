@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2792 2001-12-06 22:04:17Z jdorje $
+ * $Id: ggzdmod.c 2798 2001-12-07 02:56:06Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -844,8 +844,8 @@ int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 	char buf[4096];
 	va_list ap;
 
-	if (!CHECK_GGZDMOD(ggzdmod) || !fmt || ggzdmod->fd < 0
-	    || ggzdmod->type != GGZDMOD_GAME) {
+	if (!CHECK_GGZDMOD(ggzdmod) || !fmt ||
+	    (ggzdmod->type == GGZDMOD_GAME && ggzdmod->fd < 0)) {
 		/* This will happen when ggzdmod_log is called before
 		   connection.  We could store the buffer for later, but... */
 		return -1;
@@ -854,10 +854,16 @@ int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
-
-	if (_io_send_log(ggzdmod->fd, buf) < 0) {
-		_ggzdmod_error(ggzdmod, "Error writing to GGZ");
-		return -1;
+	
+	if (ggzdmod->type == GGZDMOD_GAME) {
+		if (_io_send_log(ggzdmod->fd, buf) < 0) {
+			_ggzdmod_error(ggzdmod, "Error writing to GGZ");
+			return -1;
+		}
+	} else {
+		/* This is here mainly so that ggzdmod can use
+		   ggzdmod_log internally. */
+		_ggzdmod_handle_log(ggzdmod, buf);
 	}
 
 	return 0;
