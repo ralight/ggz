@@ -2,6 +2,7 @@
 #define ZONE_GGZ_H
 
 #include <ZoneProtocols.h>
+#include <string.h>
 
 #define ZONE_SEAT_OPEN -1
 #define ZONE_SEAT_BOT -2
