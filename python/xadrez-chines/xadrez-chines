@@ -7,7 +7,6 @@ import pygame
 import pygame.image
 from pygame.locals import *
 from Numeric import *
-import socket
 import sys
 import time
 import random
@@ -27,7 +26,14 @@ elif path.startswith("/usr"):
 else:
 	DATAPATH = "./"
 
-def networkprocess(message):
+def networkprocess(line):
+	global madeturn
+	global humanerror
+	global message
+	global winner
+	global xadrez
+	global aierror
+
 	turn = re.compile("your turn")
 	responseok = re.compile("move was ok")
 	responseinvalid = re.compile("move was invalid")
@@ -36,17 +42,18 @@ def networkprocess(message):
 	event = re.compile("(\S+) took figure at (\d+),(\d+) from (\S+)")
 	gameover = re.compile("(\S+) won")
 
-	line = message
-
 	m = turn.match(line)
 	if m:
-		pass
+		madeturn = 0
+		message = "It's your turn"
 	m = responseok.match(line)
 	if m:
-		pass
+		humanerror = 0
+		madeturn = 1
+		message = ""
 	m = responseinvalid.match(line)
 	if m:
-		pass
+		humanerror = 1
 	m = responseturn.match(line)
 	if m:
 		pass
@@ -57,61 +64,24 @@ def networkprocess(message):
 		y1 = m.group(3)
 		x2 = m.group(4)
 		y2 = m.group(5)
+		ret = xadrez.validate(x1, y1, x2, y2)
+		if ret != xadrez.proto.move_ok:
+			print "huh? server fubared"
+			aierror = 1
 	m = event.match(line)
 	if m:
 		player = m.group(1)
 		x1 = m.group(2)
 		y1 = m.group(3)
 		player2 = m.group(4)
+		pass
 	m = gameover.match(line)
 	if m:
 		winner = m.group(1)
-
-class Network:
-	def __init__(self):
-		self.sock = None
-		self.gamefd = -1
-
-		#self.game = Game()
-
-	def init(self, fd):
-		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
-
-	def getbyte(self):
-		opstr = self.sock.recv(4)
-		op = ord(opstr[0]) * 256 * 256 * 256
-		op += ord(opstr[1]) * 256 * 256
-		op += ord(opstr[2]) * 256
-		op += ord(opstr[3])
-		return op
-
-	def getchar(self):
-		opstr = self.sock.recv(1)
-		op = ord(opstr[0])
-		return op
-
-	def getstring(self):
-		length = self.getbyte()
-		opstr = self.sock.recv(length)
-		return opstr
-
-	def sendbyte(self, byte):
-		nbyte = socket.htonl(byte)
-		c1 = (nbyte >> 0) & 0xFF
-		c2 = (nbyte >> 8) & 0xFF
-		c3 = (nbyte >> 16) & 0xFF
-		c4 = (nbyte >> 24) & 0xFF
-		self.sock.send(chr(c1))
-		self.sock.send(chr(c2))
-		self.sock.send(chr(c3))
-		self.sock.send(chr(c4))
-
-	def sendchar(self, char):
-		self.sock.send(chr(char))
-
-	def sendstring(self, str):
-		self.sendbyte(len(str))
-		self.sock.send(str)
+		if winner == "opponent":
+			winner = 2
+		else:
+			winner = 1
 
 def network():
 	global net
@@ -145,9 +115,14 @@ def handle_network():
 
 def main(ggzmode):
 	global net
+	#global surface
+
 	global madeturn
-	global surface
+	global humanerror
+	global message
 	global winner
+	global xadrez
+	global aierror
 
 	xadrez = Xadrez()
 
@@ -301,6 +276,8 @@ def main(ggzmode):
 
 	""" Network setup """
 
+	madeturn = 0
+	initialization = 0
 	ggzsuccess = 0
 
 	if ggzmode:
@@ -317,6 +294,8 @@ def main(ggzmode):
 		ggzfont = pygame.font.Font(None, 20)
 		if ggzsuccess:
 			ggz = ggzfont.render("Running on GGZ", 1, (165, 140, 0))
+			madeturn = 1
+			initialization = 1
 		else:
 			ggz = ggzfont.render("GGZ unavailable", 1, (165, 140, 0))
 
@@ -324,13 +303,15 @@ def main(ggzmode):
 
 	""" Main loop """
 
-	madeturn = 0
 	againturn = 0
 	aierror = 0
 	humanerror = 0
 	gameover = 0
 	winner = 0
-	message = ""
+	if madeturn == 0:
+		message = "It's your turn"
+	else:
+		message = "Initialization..."
 
 	mouse = blob
 	pressed = 0
@@ -357,42 +338,36 @@ def main(ggzmode):
 			if y > 5:
 				y = y - 1
 			if x >= 0 and x < 9 and y >= 0 and y < 11:
-				figure = ""
-				color = ""
-				options = ""
-				if xadrez.field[x][y] is not "":
-					if xadrez.field[x][y].count(":") == 1:
-						(figure, color) = xadrez.field[x][y].split(":")
-					elif xadrez.field[x][y].count(":") == 2:
-						(figure, color, options) = xadrez.field[x][y].split(":")
+				(figure, color, options) = xadrez.components(xadrez.field[x][y])
 				print "got", figure, "of color", color
 				(oldx, oldy) = lastpos
 				print "lastpos:", oldx, oldy
 				if oldx >= 0 and oldy >= 0:
-					val = xadrez.validate(oldx, oldy, x, y)
-					if val is not xadrez.proto.move_invalid:
-						tmp = xadrez.field[oldx][oldy]
-						xadrez.field[oldx][oldy] = ""
-						xadrez.field[x][y] = tmp
-						madeturn = 1
-						humanerror = 0
+					if ggzsuccess == 1:
+						frompos = str(oldx) + "," + str(oldy)
+						topos = str(x) + "," + str(y)
+						net.sendstring("move from " + frompos + " to " + topos)
+						message = "Sending move..."
 					else:
-						humanerror = 1
+						val = xadrez.validate(oldx, oldy, x, y)
+						if val is not xadrez.proto.move_invalid:
+							madeturn = 1
+							humanerror = 0
+							message = ""
+						else:
+							humanerror = 1
 					lastpos = (-1, -1)
 				else:
-					if figure is not "":
+					if figure is not "" and color != xadrez.aicolor():
 						message = "Where to move to?"
 						lastpos = (x, y)
+						humanerror = 0
 			pressed = 1
 
 		if not b1 and pressed:
 			pressed = 0
 
 		screen.blit(surface, (0, 0))
-
-		#(x, y, player) = blobpos
-		#(x, y) = (0, 0)
-		#screen.blit(blob, (x * 55 + 40 - 8, y * 55 + 20 - 8))
 
 		river = 0
 		for y in range(0, 11):
@@ -409,11 +384,12 @@ def main(ggzmode):
 		(x, y) = pygame.mouse.get_pos()
 		screen.blit(mouse, (x - 16, y - 16))
 
-		if (y == 0 and x == 4) or (y == 10 and x == 4):
-			if y == 0:
-				winner = 2
-			else:
+		if xadrez.winner() != "":
+			message = ""
+			if xadrez.winner() == xadrez.aicolor():
 				winner = 1
+			else:
+				winner = 2
 
 		if winner:
 			font4 = pygame.font.Font(None, 24)
@@ -425,13 +401,15 @@ def main(ggzmode):
 			gameover = 1
 			madeturn = 1
 
-		if madeturn and not gameover:
+		if madeturn and not gameover and not initialization:
 			font4 = pygame.font.Font(None, 24)
 			if aierror:
 				waiting = font4.render("AI error, game over", 1, (165, 140, 0))
 			else:
 				waiting = font4.render("Waiting for opponent", 1, (165, 140, 0))
 			screen.blit(waiting, (770 - waiting.get_width(), 400))
+		elif madeturn == 0:
+			initialization = 0
 
 		if humanerror:
 			font4 = pygame.font.Font(None, 24)
@@ -445,11 +423,13 @@ def main(ggzmode):
 
 		pygame.display.flip()
 
-		if madeturn and not aierror and not gameover:
-			madeturn = 0
-			message = ""
-			#else:
-			#	aierror = 1
+		if madeturn and not aierror and not gameover and not ggzsuccess:
+			ret = xadrez.ai()
+			if ret == xadrez.proto.move_ok:
+				madeturn = 0
+				message = "It's your turn"
+			else:
+				aierror = 1
 
 if __name__ == "__main__":
 	if len(sys.argv) == 2 and sys.argv[1] == "--ggz":

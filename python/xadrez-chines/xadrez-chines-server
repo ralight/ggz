@@ -4,7 +4,6 @@
 # Published under GNU GPL conditions
 
 from Numeric import *
-import socket
 import sys
 import time
 import random
@@ -14,26 +13,68 @@ import re
 import ggzdmod
 from xadrezlib import *
 
-def hook_state ():
-	print "* state"
+def hook_state (state):
+	print "* state:", str(state)
 
-def hook_join (seat):
-	print "* join: ", seat
-	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+def hook_join (num, type, name, fd):
+	print "* join:", num, type, name, fd
+	#print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+	print "fd =", fd
+	net.init(fd)
+	net.sendstring("your turn")
 
-def hook_leave (seat):
-	print "* leave: ", seat
-	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+def hook_leave (num, type, name, fd):
+	print "* leave:", num, type, name, fd
+	#print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
 
-def hook_log ():
-	print "* log"
+def hook_log (line):
+	print "* log:", line
 
-def hook_data (seat):
-	print "* data: ", seat
-	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+def hook_data (num, type, name, fd):
+	print "* data:", num, type, name, fd
+	#print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
+	print "fd =", fd
+	net.init(fd)
+
+	line = net.getstring()
+
+	move = re.compile("move from (\d+),(\d+) to (\d+),(\d+)")
+	m = move.match(line)
+	if m:
+		x1 = m.group(1)
+		y1 = m.group(2)
+		x2 = m.group(3)
+		y2 = m.group(4)
+
+		ret = xadrez.proto.move_invalid
+		if x1 >= 0 and x1 < 9 and y1 >= 0 and y1 < 11:
+			if x2 >= 0 and x2 < 9 and y2 >= 0 and y2 < 11:
+				(figure, color, options) = xadrez.field[x1][y1]
+				if color != xadrez.aicolor():
+					ret = xadrez.validate(x1, y1, x2, y2)
+		if ret == xadrez.proto.move_ok:
+			net.sendstring("move was ok")
+			frompos = str(x1) + "," + str(y1)
+			topos = str(x2) + "," + str(y2)
+			net.sendstring("you moved from " + frompos + " to " + topos)
+			ret = xadrez.ai() # XXX server-side ai error?
+			(x1, y1, x2, y2) = xadrez.aituple()
+			frompos = str(x1) + "," + str(y1)
+			topos = str(x2) + "," + str(y2)
+			net.sendstring("opponent moved from " + frompos + " to " + topos)
+			if xadrez.winner() != "":
+				if xadrez.winner() == xadrez.aicolor():
+					winner = "you"
+				else:
+					winner = "opponent"
+				net.sendstring(winner + " won")
+			else:
+				net.sendstring("your turn")
+		else:
+			net.sendstring("move was not ok")
 
 def hook_error (arg):
-	print "* error"
+	print "* error:", arg
 
 def initggz():
 	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
@@ -45,9 +86,9 @@ def initggz():
 
 def main():
 	global net
-	global madeturn
-	global surface
-	global winner
+#	global madeturn
+#	global surface
+#	global winner
 
 	print "### launched"
 
@@ -58,6 +99,7 @@ def main():
 	print "### go init ggz"
 
 	initggz()
+	net = Network()
 
 	print "### now go loop"
 
@@ -66,27 +108,18 @@ def main():
 
 	""" Main loop """
 
-	madeturn = 0
-	againturn = 0
-	aierror = 0
-	humanerror = 0
-	gameover = 0
-	winner = 0
-	message = ""
-
-	lastpos = (-1, -1)
-
-	move = re.compile("move from (\d+),(\d+) to (\d+),(\d+)")
+#	madeturn = 0
+#	againturn = 0
+#	aierror = 0
+#	humanerror = 0
+#	gameover = 0
+#	winner = 0
+#	message = ""
+#
+#	lastpos = (-1, -1)
 
 	while 1:
-		line = raw_input(": ")
-		m = move.match(line)
-		if m:
-			x1 = m.group(1)
-			y1 = m.group(2)
-			x2 = m.group(3)
-			y2 = m.group(4)
-			# xadrez.validate(x1, y1, x2, y2)
+		pass
 
 if __name__ == "__main__":
 	main()
