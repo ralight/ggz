@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = spades tictactoe dots lapocha reversi combat
+SUBDIRS = spades tictactoe dots lapocha reversi combat hastings
 
 
 test:test-recursive

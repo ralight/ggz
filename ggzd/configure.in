@@ -248,6 +248,7 @@ AC_OUTPUT([Makefile
 	   game_servers/lapocha/Makefile
 	   game_servers/reversi/Makefile
 	   game_servers/combat/Makefile
+	   game_servers/hastings/Makefile
 	   ])
 
 
