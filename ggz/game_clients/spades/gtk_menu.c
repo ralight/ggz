@@ -23,6 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+/* FIXME: compilation breaks if we uncomment this! */
+/* #  include <config.h> */			/* Site-specific config */
+#endif
 
 #include <gtk/gtk.h>
 

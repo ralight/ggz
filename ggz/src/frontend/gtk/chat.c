@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ GTK Client
  *
- * This is the main program body for the GGZ client
+ * This file contains all functions that are chat related.
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -22,11 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/*
- * Description
- *
- * This file contains all functions that are chat related.
- */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <assert.h>
 #include <stdio.h>

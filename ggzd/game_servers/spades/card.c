@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 3/24/98
- * $Id: card.c 2261 2001-08-26 21:25:21Z jdorje $
+ * $Id: card.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * This file contains the functions which operate on the type card. See the
  * header file card.h for a better description of these functions.  
@@ -25,6 +25,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <card.h>
 

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 3064 2002-01-11 17:42:38Z dr_maux $
+ * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -23,6 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 /* System includes */
 #include <sys/types.h>

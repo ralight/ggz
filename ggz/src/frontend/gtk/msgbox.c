@@ -23,8 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 #include <gtk/gtk.h>
-#include <config.h>
 #include "msgbox.h"
 
 static MBReturn mb_status;

@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 // Include files
 #include "ggzsh.h"
 #include <Python.h>

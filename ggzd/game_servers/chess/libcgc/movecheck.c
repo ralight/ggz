@@ -23,8 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1161 2001-02-22 21:38:39Z bugg $
+ *  $Id: movecheck.c 3990 2002-04-15 07:23:26Z jdorje $
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>

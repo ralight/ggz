@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3613 2002-03-21 18:23:13Z jdorje $
+ * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Functions for handling game events
  *
@@ -24,6 +24,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include "game.h"
 #include "chat.h"

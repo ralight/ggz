@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 #include <gtk/gtk.h>
 
 extern GdkColor *player_colors;

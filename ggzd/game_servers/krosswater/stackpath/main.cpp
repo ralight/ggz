@@ -11,6 +11,10 @@
 //                                         //
 /////////////////////////////////////////////
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 // CWPathitem include
 #include "cwpathitem.h"
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_players.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <assert.h>
 #include <gtk/gtk.h>

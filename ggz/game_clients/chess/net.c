@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 3391 2002-02-17 09:17:14Z jdorje $
+ * $Id: net.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,6 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

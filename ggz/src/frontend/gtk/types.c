@@ -3,7 +3,8 @@
  * Author: Justin Zaun
  * Project: GGZ GTK Client
  *
- * This is the main program body for the GGZ client
+ * This dialog is used to display information about a selected room to
+ * the user.
  *
  * Copyright (C) 2001 Justin Zaun.
  *
@@ -22,14 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/*
- * Dialog Description
- *
- * This dialog is used to display information about a selected room to
- * the user. 
- */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
-#include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

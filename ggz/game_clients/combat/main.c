@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 3658 2002-03-24 17:40:17Z dr_maux $
+ * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,6 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +43,6 @@
 #include "interface.h"
 #include "callbacks.h"
 #include "support.h"
-#include "config.h"
 
 #define DEFAULTINSTALLEDDIR GGZDATADIR "/combat/pixmaps/default/"
 #define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/combat/pixmaps/default"

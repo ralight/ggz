@@ -29,7 +29,10 @@
 
 /* Slightly modified (the includes) by Brent Hendricks for inclusion 
  * with NetSpades.  See note in README*/
- 
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

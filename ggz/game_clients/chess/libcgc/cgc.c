@@ -23,8 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: cgc.c 1106 2001-02-17 16:28:41Z bugg $
+ *  $Id: cgc.c 3990 2002-04-15 07:23:26Z jdorje $
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include "cgc.h"
 

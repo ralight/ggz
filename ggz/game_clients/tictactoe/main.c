@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <sys/types.h>
 #include <sys/socket.h>

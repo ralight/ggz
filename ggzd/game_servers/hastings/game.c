@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3716 2002-04-01 21:51:03Z dr_maux $
+ * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -23,6 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 /* Header file */
 #include "game.h"

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3621 2002-03-23 04:02:29Z bmh $
+ * $Id: ggzclient.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <gtk/gtk.h>
 #include <ggzcore.h>

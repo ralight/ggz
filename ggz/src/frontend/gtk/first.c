@@ -2,9 +2,9 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 3389 2002-02-17 09:08:58Z rgade $
+ * $Id: first.c 3990 2002-04-15 07:23:26Z jdorje $
  *
- * This is the main program body for the GGZ client
+ * Displayes information about the authors and the application.
  *
  * Copyright (C) 2000-2002 Justin Zaun.
  *
@@ -23,13 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/*
- * Dialof Description
- *
- * Displayes information about the authors and the application.
- */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
-#include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

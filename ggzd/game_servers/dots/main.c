@@ -4,7 +4,7 @@
  * Project: GGZ Connect The Dots game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
+ * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,6 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <sys/types.h>
 #include <errno.h>

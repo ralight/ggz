@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
+ * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <libcgc/cgc.h>
 #include <sys/time.h>

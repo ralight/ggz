@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 3256 2002-02-05 21:09:08Z jdorje $
+ * $Id: game.c 3990 2002-04-15 07:23:26Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -22,6 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdlib.h>
 #include <unistd.h>
