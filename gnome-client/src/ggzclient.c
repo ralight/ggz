@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5097 2002-10-29 00:59:19Z jzaun $
+ * $Id: ggzclient.c 6682 2005-01-14 23:36:02Z josef $
  *
  * This is the main program body for the GGZ client
  *
@@ -64,7 +64,6 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data);
 
