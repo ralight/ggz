@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3491 2002-02-27 09:42:22Z jdorje $
+ * $Id: types.h 3495 2002-02-27 13:02:23Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -49,6 +49,7 @@ typedef struct {
 /* these are just used to make things more legible */
 typedef int player_t;
 typedef int seat_t;
+typedef int team_t;
 
 struct game_seat_t {
 	hand_t hand;
@@ -72,7 +73,8 @@ struct game_player_t {
 	bid_t *allbids;		/* corresponds to game.bid_rounds and
 				   max_bid_rounds */
 	int tricks;
-	seat_t seat;		/* the number of the player's seat */
+	seat_t seat;		/* the number of the player's seat. */
+	team_t team;		/* The player's team, or -1 for none. */
 	int ready;
 	
 	/* Used for tracking AI processees. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: whist.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -33,6 +33,7 @@
 #include "common.h"
 #include "game.h"
 #include "message.h"
+#include "team.h"
 
 #include "whist.h"
 
@@ -80,8 +81,11 @@ static void whist_init_game(void)
 	seat_t s;
 	
 	set_num_seats(4);
-	for (s = 0; s < game.num_players; s++)
+	set_num_teams(2);
+	for (s = 0; s < game.num_players; s++) {
 		assign_seat(s, s);
+		assign_team(s % 2, s);
+	}
 		
 	game.target_score = 5;
 }

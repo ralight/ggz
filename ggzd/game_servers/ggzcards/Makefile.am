@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3490 2002-02-27 08:57:33Z jdorje $
+# $Id: Makefile.am 3495 2002-02-27 13:02:23Z jdorje $
 
 SUBDIRS = common client config games ai .
 
@@ -20,6 +20,7 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			net.c net.h \
 			options.c options.h \
 			play.c play.h \
+			team.c team.h \
 			types.h
 
 ggzd_ggzcards_DEPENDENCIES = games/libgames.a \

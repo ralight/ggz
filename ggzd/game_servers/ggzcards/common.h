@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3493 2002-02-27 10:17:16Z jdorje $
+ * $Id: common.h 3495 2002-02-27 13:02:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -125,8 +125,6 @@ typedef struct {
 	int play_count;		/**< how many plays there have been this trick */
 	int play_total;		/**< how many plays there will be this trick */
 	player_t next_play;	/**< current/next player */
-	//player_t curr_play;	/**< current player, tracked automatically by req_play */
-	//seat_t play_seat;	/**< the seat being played from */
 
 	/* State-tracking data: tricks */
 	player_t winner;	/**< who won last trick */
@@ -136,13 +134,16 @@ typedef struct {
 	int trump_broken;	/**< has trump been broken this hand?  See must_break_trump, above. */
 
 	/* table data: players */
-	player_t num_players;	/**< the number of players in the game */
+	int num_players;	/**< the number of players in the game */
 	int player_count;	/**< the number of human players who have joined, in total */
 	struct game_player_t *players;	/**< data for each player, allocated in game_init */
 
 	/* table data: seats */
-	seat_t num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
+	int num_seats;	/**< the number of "seats" in the table (which includes fake non-players */
 	struct game_seat_t *seats;	/**< data for each seat, allocated in game_init */
+	
+	/* table data: teams */
+	int num_teams;
 
 	/* Global messages */
 	global_message_list_t *message_head;	/**< global message list head */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3488 2002-02-27 08:14:31Z jdorje $
+ * $Id: game.h 3495 2002-02-27 13:02:23Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -257,11 +257,9 @@ void game_deal_hand(void);
  *  highest card of the suit lead wins), increment that player's trick
  *  count, set that player to lead the next trick (game.leader).  We also
  *  mark that player as the winner (game.winner), and reset their player
- *  message.
+ *  message and that of any of their teammates.
  *
- *  @note Any team game will probably need to override this.
  *  @todo We should update teammates' messages automatically.
- *  @see bridge_end_trick
  *  @see hearts_end_trick
  */
 void game_end_trick(void);

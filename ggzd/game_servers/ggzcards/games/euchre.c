@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: euchre.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include "message.h"
 #include "options.h"
 #include "play.h"
+#include "team.h"
 
 #include "euchre.h"
 
@@ -56,7 +57,6 @@ static void euchre_get_play(player_t p);
 static void euchre_deal_hand(void);
 static int euchre_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
-static void euchre_end_trick(void);
 static void euchre_end_hand(void);
 
 struct game_function_pointers euchre_funcs = {
@@ -77,7 +77,7 @@ struct game_function_pointers euchre_funcs = {
 	euchre_get_play,
 	game_handle_play,
 	euchre_deal_hand,
-	euchre_end_trick,
+	game_end_trick,
 	euchre_end_hand,
 	game_start_game,
 	game_test_for_gameover,
@@ -112,8 +112,11 @@ static void euchre_init_game(void)
 
 	/* Game seat data */
 	set_num_seats(4);
-	for (s = 0; s < game.num_seats; s++)
+	set_num_teams(2);
+	for (s = 0; s < game.num_seats; s++) {
 		assign_seat(s, s);	/* one player per seat */
+		assign_team(s % 2, s);
+	}
 
 	/* Game-type options */
 	game.deck_type = GGZ_DECK_EUCHRE;
@@ -370,14 +373,6 @@ static void euchre_set_player_message(player_t p)
 				   game.players[(p + 2) % 4].tricks);
 	}
 	add_player_action_message(p);
-}
-
-static void euchre_end_trick(void)
-{
-	game_end_trick();
-
-	/* update teammate's info as well */
-	set_player_message((game.winner + 2) % 4);
 }
 
 static void euchre_end_hand(void)

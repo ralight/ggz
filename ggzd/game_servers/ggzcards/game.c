@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: game.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -44,6 +44,7 @@
 #include "net.h"
 #include "options.h"
 #include "play.h"
+#include "team.h"
 
 static void bad_game(char *func)
 {
@@ -365,7 +366,10 @@ void game_end_trick(void)
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
-	set_player_message(hi_player);
+	if (game.players[hi_player].team >= 0)
+		map_func_to_team(game.players[hi_player].team, set_player_message);
+	else
+		set_player_message(hi_player);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3488 2002-02-27 08:14:31Z jdorje $
+ * $Id: bridge.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include "message.h"
 #include "net.h"
 #include "play.h"
+#include "team.h"
 
 #include "bridge.h"
 
@@ -53,7 +54,6 @@ static int bridge_test_for_gameover(void);
 static int bridge_send_hand(player_t p, seat_t s);
 static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
-static void bridge_end_trick(void);
 static void bridge_end_hand(void);
 static void bridge_start_game(void);
 
@@ -77,7 +77,7 @@ struct game_function_pointers bridge_funcs = {
 	bridge_get_play,
 	bridge_handle_play,
 	game_deal_hand,
-	bridge_end_trick,
+	game_end_trick,
 	bridge_end_hand,
 	bridge_start_game,
 	bridge_test_for_gameover,
@@ -118,9 +118,13 @@ static void bridge_init_game(void)
 	seat_t s;
 
 	game.specific = ggz_malloc(sizeof(bridge_game_t));
+	
 	set_num_seats(4);
-	for (s = 0; s < game.num_seats; s++)
+	set_num_teams(2);
+	for (s = 0; s < game.num_seats; s++) {
 		assign_seat(s, s);	/* one player per seat */
+		assign_team(s % 2, s);
+	}
 
 	game.cumulative_scores = 0;
 
@@ -329,15 +333,6 @@ static void bridge_set_player_message(player_t p)
 				   game.players[(p + 2) % 4].tricks);
 	add_player_bid_message(p);
 	add_player_action_message(p);
-}
-
-static void bridge_end_trick(void)
-{
-	game_end_trick();
-
-	/* update teammate's info as well */
-	set_player_message((game.winner + 2) % 4);
-
 }
 
 static void bridge_set_score_message(void)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3487 2002-02-27 07:29:13Z jdorje $
+ * $Id: spades.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
+#include "team.h"
 
 #include "spades.h"
 
@@ -69,7 +70,6 @@ static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
 static void spades_deal_hand(void);
-static void spades_end_trick(void);
 static void spades_end_hand(void);
 static void spades_start_game(void);
 static int spades_send_hand(player_t p, seat_t s);
@@ -92,7 +92,7 @@ struct game_function_pointers spades_funcs = {
 	game_get_play,
 	game_handle_play,
 	spades_deal_hand,
-	spades_end_trick,
+	game_end_trick,
 	spades_end_hand,
 	spades_start_game,
 	game_test_for_gameover,
@@ -112,9 +112,13 @@ static void spades_init_game(void)
 	seat_t s;
 
 	game.specific = ggz_malloc(sizeof(spades_game_t));
+	
 	set_num_seats(4);
-	for (s = 0; s < game.num_players; s++)
+	set_num_teams(2);
+	for (s = 0; s < game.num_players; s++) {
 		assign_seat(s, s);	/* one player per seat */
+		assign_team(s % 2, s);
+	}
 
 	game.must_break_trump = 1;	/* in spades, you can't lead trump
 					   until it's broken */
@@ -345,13 +349,6 @@ static void spades_deal_hand(void)
 		GSPADES.show_hand[s] = shown;
 
 	game_deal_hand();
-}
-
-static void spades_end_trick(void)
-{
-	game_end_trick();
-	/* update teammate's info as well */
-	set_player_message((game.winner + 2) % 4);
 }
 
 static void spades_end_hand(void)

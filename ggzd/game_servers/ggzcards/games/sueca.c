@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: sueca.c 3495 2002-02-27 13:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -33,6 +33,7 @@
 #include "common.h"
 #include "game.h"
 #include "message.h"
+#include "team.h"
 
 #include "sueca.h"
 
@@ -85,9 +86,13 @@ static void sueca_init_game(void)
 	seat_t s;
 
 	game.specific = ggz_malloc(sizeof(sueca_game_t));
+	
 	set_num_seats(game.num_players);
-	for (s = 0; s < game.num_seats; s++)
+	set_num_teams(2);
+	for (s = 0; s < game.num_seats; s++) {
 		assign_seat(s, s);	/* one player per seat */
+		assign_team(s % 2, s);
+	}
 
 	/* Target score is 4 */
 	game.target_score = 4;
