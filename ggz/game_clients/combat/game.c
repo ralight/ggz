@@ -199,7 +199,6 @@ int game_get_seat() {
 void game_ask_options() {
   GtkWidget *options_dialog;
   GtkWidget *ok_button;
-  combat_game *_game;
   options_dialog = create_dlg_options(cbt_game.number); 
   ok_button = lookup_widget(options_dialog, "ok_button"); 
   gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",

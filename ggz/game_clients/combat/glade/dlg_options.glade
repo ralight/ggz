@@ -414,15 +414,477 @@
       </widget>
 
       <widget>
-	<class>GtkLabel</class>
-	<name>sorry</name>
-	<label>No options yet! Sorry...</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
+	<class>GtkTable</class>
+	<name>options_table</name>
+	<rows>8</rows>
+	<columns>2</columns>
+	<homogeneous>False</homogeneous>
+	<row_spacing>0</row_spacing>
+	<column_spacing>0</column_spacing>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox2</name>
+	  <tooltip>If set, the bombs who explode will be removed from the game.</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_one_time</name>
+	    <can_focus>True</can_focus>
+	    <label>One Time Bomb</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox3</name>
+	  <tooltip>If set, the spy will be able to kill any unit he attacks (except bombs), but he will die with the unit (think of it like a terrorist, with a body full of bombs)</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_bomberman_spy</name>
+	    <can_focus>True</can_focus>
+	    <label>Terrorist Spy</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox4</name>
+	  <tooltip>If set, the bombs can walk, just like regular officers. But they aren't able to attack! (think of it like a officer carrying a bomb)</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_moving_bomb</name>
+	    <can_focus>True</can_focus>
+	    <label>Moving Bombs</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox5</name>
+	  <tooltip>If set, scouts are able to walk more then one square at a time and attack at the same turn.</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_super_scout</name>
+	    <can_focus>True</can_focus>
+	    <label>Super Scout</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox6</name>
+	  <tooltip>If set, the units can only walk forward, like a pawn in chess</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>5</top_attach>
+	    <bottom_attach>6</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_advance_only</name>
+	    <can_focus>True</can_focus>
+	    <label>Units can only advance</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox7</name>
+	  <tooltip>If set, the outcome of attacks will be solved randomly. Spies and bombs are treated the normal way. Units of equal rank have a 50% odd of winning. The difference in the ranks modifies this as follow: 1: 5%, 2: 10%, 3: 15%, 4: 20%, 5: 27%, 6: 33%, 7: 39%, 8: 45%</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>6</top_attach>
+	    <bottom_attach>7</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_random_combat</name>
+	    <can_focus>True</can_focus>
+	    <label>Random outcome of attacks</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox8</name>
+	  <tooltip>If set, units will be able to move (and attack) diagonally. (Scouts will be able of walking how many squares as they want diagonally)</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>7</top_attach>
+	    <bottom_attach>8</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>True</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_diagonal_move</name>
+	    <can_focus>True</can_focus>
+	    <label>Allow diagonal moves</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox9</name>
+	  <tooltip>If set, the type of the winning unit in a attack will not be shown.</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>True</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_unknown_victor</name>
+	    <can_focus>True</can_focus>
+	    <label>Unknow Victor</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox10</name>
+	  <tooltip>If set, the deffense won't have to reveal what is his type, only wheter he wins or loses to the attacking unit.</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>1</top_attach>
+	    <bottom_attach>2</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_silent_defense</name>
+	    <can_focus>True</can_focus>
+	    <label>Silent Defense</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox11</name>
+	  <tooltip>If set, the attacking won't have to reveal it's type, only wheter it wins or loses to the defending unit.</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>2</top_attach>
+	    <bottom_attach>3</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_silent_offense</name>
+	    <can_focus>True</can_focus>
+	    <label>Silent Offense</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox12</name>
+	  <tooltip>If set, the players won't be able to setup their units. It will be randomly set up by the server.</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>3</top_attach>
+	    <bottom_attach>4</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_random_setup</name>
+	    <can_focus>True</can_focus>
+	    <label>Random Setup</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox13</name>
+	  <tooltip>If set, the sergeant of all the teams will have been through a higly rigorous training, and will be able to walk through lakes. It won't be able to stay in a lake, instead, it will be able to appear at the opposite margin of a lake (it must go through a straight line, and it must be only like tiles between the source and the destination)</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_sf_sergeant</name>
+	    <can_focus>True</can_focus>
+	    <label>Special Forces Sergeant</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox14</name>
+	  <tooltip>If set, the units will be able to do a rush attack, when they walk how many tiles as they want (in a straight line, just like a scout) and then attack the enemy, in the same turn. However, your units die after this attack, even if they succeed doing it.</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>5</top_attach>
+	    <bottom_attach>6</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_rush</name>
+	    <can_focus>True</can_focus>
+	    <label>Rush Attack</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox15</name>
+	  <tooltip>If set, the bomb will be inofensive, ie, it won't kill any unit. It will work as a wall, however. (although miners can still destroy it)</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>6</top_attach>
+	    <bottom_attach>7</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_wall_bomb</name>
+	    <can_focus>True</can_focus>
+	    <label>Wall-like bomb</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>eventbox16</name>
+	  <tooltip>If set, the server will ask the clients to show the enemy units for just one turn (right after a attack, for instance). However, it can't be enforceable, and a bad client could cheat, showing all the enemy units it knows about (just the ones that the server tells them, like after an attack)</tooltip>
+	  <child>
+	    <left_attach>1</left_attach>
+	    <right_attach>2</right_attach>
+	    <top_attach>7</top_attach>
+	    <bottom_attach>8</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_forget_enemy_units</name>
+	    <can_focus>True</can_focus>
+	    <label>Forget enemy units</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkEventBox</class>
+	  <name>opt_box_open_map</name>
+	  <tooltip>If set, all the units will be shown to both players</tooltip>
+	  <child>
+	    <left_attach>0</left_attach>
+	    <right_attach>1</right_attach>
+	    <top_attach>0</top_attach>
+	    <bottom_attach>1</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>True</yfill>
+	  </child>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>opt_open_map</name>
+	    <can_focus>True</can_focus>
+	    <label>Open Map</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	  </widget>
+	</widget>
       </widget>
 
       <widget>
