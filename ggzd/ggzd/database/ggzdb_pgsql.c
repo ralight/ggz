@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5334 2003-01-16 22:11:58Z dr_maux $
+ * $Id: ggzdb_pgsql.c 5422 2003-02-16 16:16:58Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -558,7 +558,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 {
 	PGconn *conn;
-	PGresult *res;
+	PGresult *res, *res2;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
 
@@ -571,15 +571,32 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, rating = %f, ranking = %u, highscore = %li "
-		"WHERE player = '%s' AND game = '%s'",
+		"WHERE handle = '%s' AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits, stats->rating, stats->ranking, stats->highest_score,
 		stats->player, stats->game);
 
 	res = PQexec(conn, query);
+
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 		err_sys("couldn't update stats");
 	} else {
-		rc = GGZDB_NO_ERROR;
+		if (!strcmp(PQcmdTuples(res), "0")) {
+			snprintf(query, sizeof(query),
+				"INSERT INTO stats "
+				"(handle, game, wins, losses, ties, forfeits, rating, ranking, highscore) VALUES "
+				"('%s', '%s', %i, %i, %i, %i, %f, %u, %li)",
+				stats->player, stats->game, stats->wins, stats->losses, stats->ties, stats->forfeits,
+				stats->rating, stats->ranking, stats->highest_score);
+
+			res2 = PQexec(conn, query);
+
+			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+				err_sys("couldn't insert stats");
+			}
+			else rc = GGZDB_NO_ERROR;
+			PQclear(res2);
+		}
+		else rc = GGZDB_NO_ERROR;
 	}
 	PQclear(res);
 
