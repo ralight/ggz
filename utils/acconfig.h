@@ -19,6 +19,7 @@
 #undef DEBUG
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
+#undef NDEBUG
     
 
 /* Leave that blank line there!!  Autoheader needs it.

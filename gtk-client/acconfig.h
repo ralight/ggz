@@ -18,6 +18,7 @@
 
 #undef DEBUG
 #undef GGZDATADIR
+#undef NDEBUG
 #undef PACKAGE_LOCALE_DIR
 
 
