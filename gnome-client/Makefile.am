@@ -4,7 +4,8 @@ SUBDIRS = src pixmaps
 
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	autogen.sh \
-	GGZ.glade
+	GGZ.glade \
+	m4/ggz.m4
 
 util_DATA = ggz-gnome.desktop
 utildir = $(prefix)/share/gnome/apps/Internet/Internet
