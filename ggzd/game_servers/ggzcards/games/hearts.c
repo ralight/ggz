@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: hearts.c 3490 2002-02-27 08:57:33Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -121,12 +121,12 @@ static int hearts_handle_option(char *option, int value)
 		GHEARTS.num_decks = value + 1;
 		game.deck_type =
 			(value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
-		cards_destroy_deck(game.deck);
-		game.deck = cards_create_deck(game.deck_type);
+		destroy_deck(game.deck);
+		game.deck = create_deck(game.deck_type);
 
 		/* allocate hands */
 		game.max_hand_length =
-			cards_deck_size(game.deck) / game.num_players;
+			get_deck_size(game.deck) / game.num_players;
 		for (s = 0; s < game.num_seats; s++) {
 			if (game.seats[s].hand.cards)
 				ggz_free(game.seats[s].hand.cards);

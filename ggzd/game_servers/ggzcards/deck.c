@@ -1,10 +1,10 @@
 /* 
- * File: cards.c
+ * File: deck.c
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
- * Date: 08/14/2000
- * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 3469 2002-02-25 14:42:22Z jdorje $
+ * Date: 08/14/2000 (as cards.c)
+ * Desc: Various useful deck manipulation routines for card games
+ * $Id: deck.c 3490 2002-02-27 08:57:33Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include "common.h"
+#include "deck.h"
 
 struct deck_t {
 	card_t *cards;
@@ -42,7 +43,7 @@ struct deck_t {
 /* cards_create_deck() set up the deck of the given type This is more complex 
    than might seem necessary, but allows a game-designer to very easily
    invent new card deck types by merely setting the params */
-deck_t *cards_create_deck(deck_type_t which_deck)
+deck_t *create_deck(deck_type_t which_deck)
 {
 	int face, suit, deck;
 	int cardnum;
@@ -127,7 +128,7 @@ deck_t *cards_create_deck(deck_type_t which_deck)
 	return mydeck;
 }
 
-void cards_destroy_deck(deck_t * deck)
+void destroy_deck(deck_t * deck)
 {
 	if (deck == NULL || deck->cards == NULL)
 		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
@@ -136,13 +137,13 @@ void cards_destroy_deck(deck_t * deck)
 	ggz_free(deck);
 }
 
-int cards_deck_size(deck_t * deck)
+int get_deck_size(deck_t * deck)
 {
 	return deck->size;
 }
 
 /* shuffle the deck */
-void cards_shuffle_deck(deck_t * deck)
+void shuffle_deck(deck_t * deck)
 {
 	card_t temp;
 	int i, j;
@@ -167,7 +168,7 @@ void cards_shuffle_deck(deck_t * deck)
 
 /* This deals the cards out from a pre-shuffled deck into a
    hand structure Game-nonspecific */
-void cards_deal_hand(deck_t * deck, int handsize, hand_t * hand)
+void deal_hand(deck_t * deck, int handsize, hand_t * hand)
 {
 	int c;
 	card_t card;
@@ -188,6 +189,19 @@ void cards_deal_hand(deck_t * deck, int handsize, hand_t * hand)
 	cards_sort_hand(hand);
 }
 
+/* cards_deal_card This deals one card out from the deck Game-nonspecific */
+card_t deal_card(deck_t * deck)
+{
+	card_t card;
+
+	assert(deck->ptr < deck->size);
+
+	card = deck->cards[deck->ptr];
+	deck->ptr++;
+	return card;
+}
+
+
 int compare_cards(const void *c1, const void *c2)
 {
 	register card_t card1 = game.funcs->map_card(*(card_t *) c1);
@@ -200,19 +214,6 @@ void cards_sort_hand(hand_t * hand)
 	/* sort cards -- this should be in another function so it can be done 
 	   later as well */
 	qsort(hand->cards, hand->hand_size, sizeof(card_t), compare_cards);
-}
-
-
-/* cards_deal_card This deals one card out from the deck Game-nonspecific */
-card_t cards_deal_card(deck_t * deck)
-{
-	card_t card;
-
-	assert(deck->ptr < deck->size);
-
-	card = deck->cards[deck->ptr];
-	deck->ptr++;
-	return card;
 }
 
 /* cards_suit_in_hand? This checks to see how many of a suit is contained in

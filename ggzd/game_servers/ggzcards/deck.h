@@ -1,10 +1,10 @@
 /* 
- * File: cards.h
+ * File: deck.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
- * Date: 08/14/2000
+ * Date: 08/14/2000 (as cards.h)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: deck.h 3490 2002-02-27 08:57:33Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -25,11 +25,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef GGZ_CARDS_INCLUDED
+#ifndef __DECK_H__
+#define __DECK_H__
 
 #include "protocol.h"		/* contains actual card structures */
 
-/* A deck structure.  It's declared in cards.c. */
+/* A deck structure.  It's declared in deck.c. */
 typedef struct deck_t deck_t;
 
 /* there should be an entry here for every kind of deck, and cards.c should
@@ -44,20 +45,36 @@ typedef enum deck_type_t {
 	GGZ_DECK_SUECA,		/* missing 10, 9, 8 */
 } deck_type_t;
 
-/* Exported functions */
-deck_t *cards_create_deck(deck_type_t which_deck);
-void cards_destroy_deck(deck_t * deck);
+/** Create a deck of the given type. */
+deck_t *create_deck(deck_type_t which_deck);
 
-int cards_deck_size(deck_t * deck);
+/** Deallocate the given deck. */
+void destroy_deck(deck_t * deck);
 
-void cards_shuffle_deck(deck_t * deck);
-void cards_deal_hand(deck_t * deck, int handsize, hand_t * hand);
-card_t cards_deal_card(deck_t * deck);	/* deals one card */
-char cards_cut_for_trump(deck_t * deck);
+/** Return the size (number of cards in) the (full) deck. */
+int get_deck_size(deck_t * deck);
+
+/** Return all cards to the deck and shuffle it. */
+void shuffle_deck(deck_t * deck);
+
+/** Deal out a hand from the deck. */
+void deal_hand(deck_t * deck, int handsize, hand_t * hand);
+
+/** Deal out a single card. */
+card_t deal_card(deck_t * deck);
+
+/** Pull a single card from the deck, then return it. */
+/* card_t deck_cut(deck_t * deck); */
+
+
+/*
+ * The rest don't rightfully belong here...
+ */
 
 void cards_sort_hand(hand_t * hand);
+
 int cards_suit_in_hand(hand_t * hand, char suit);
+
 char cards_highest_in_suit(hand_t * hand, char suit);
 
-#define GGZ_CARDS_INCLUDED
-#endif /* GGZ_CARDS_INCLUDED */
+#endif /* __DECK_H__ */
