@@ -5,7 +5,7 @@ motd = ggzd.motd
 LogFile = @packagesrcdir@/ggzd.log
 LogTypes = Notices, Connections
 DebugFile = @packagesrcdir@/ggzd.debug
-DebugTypes = Process, Connection, Table, Protocol, Update, Misc, Room, Lists
+DebugTypes = Process, Connection, Table, Protocol, Update, Misc, Room
 ConfDir = @packagesrcdir@/test
 GameDir = @packagesrcdir@/test
 AddAllGames

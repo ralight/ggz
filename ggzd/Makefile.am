@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 DIST_SUBDIRS = easysock ggzd game_servers doc
+CLEAN_FILES = ggzd.debug ggzd.log
 SUBDIRS = @SUBDIRS@
 
 EXTRA_DIST = HACKING
@@ -30,7 +31,7 @@ test-recursive:
 	fi; 
 
 test-am:
-	@echo; echo "You many now run $(top_builddir)/ggzd/ggzd -f $(top_builddir)/ggzd/ggzd.test to test server"; echo
+	@echo; echo "You may now run $(top_builddir)/ggzd/ggzd -f $(top_builddir)/ggzd/ggzd.test to test server"; echo
 
 
 #install-data-local:

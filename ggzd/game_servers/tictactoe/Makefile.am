@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = tictactoe.dsc tictactoe.room
+
 SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/easysock 

@@ -121,6 +121,8 @@ static int transit_join(int index, int t_fd)
 	    || es_write_fd(t_fd, fd[0]) < 0)
 		return -1;
 
+	/* Must close remote end of socketpair*/
+	close(fd[0]);
 	tables.info[index].transit_flag |= GGZ_TRANSIT_SENT;
 	
 	return 0;

@@ -133,7 +133,7 @@ DebugTypes = All
 # MOTD File
 #   File in ConfDir containing MOTD to be sent to clients.  If the
 #   file doesn't exist, no message of the day will be sent.
-#motd = ggzd.motd
+motd = ggzd.motd
 
 ############################################################################
 # Game Options
