@@ -37,6 +37,7 @@
 // Qt includes
 #include <qwidget.h>
 #include <qcombobox.h>
+#include <qmap.h>
 
 // A widget containing all available game frontends
 class KGGZSelector : public QWidget
@@ -48,7 +49,7 @@ class KGGZSelector : public QWidget
 		// Destructor
 		~KGGZSelector();
 		// Adds a frontend
-		void addFrontend(const char *frontend);
+		void addFrontend(const char *frontend, int position);
 
 	public slots:
 		// User pressed ok
@@ -61,6 +62,7 @@ class KGGZSelector : public QWidget
 	private:
 		// A frontend selection box
 		QComboBox *m_box;
+		QMap<int, int> m_positions;
 };
 
 #endif

@@ -74,15 +74,19 @@ KGGZSelector::~KGGZSelector()
 }
 
 // Adds a frontend
-void KGGZSelector::addFrontend(const char *frontend)
+void KGGZSelector::addFrontend(const char *frontend, int position)
 {
 	m_box->insertItem(frontend);
+	m_positions[m_box->count() - 1] = position;
 }
 
 // User pressed ok
 void KGGZSelector::slotAccept()
 {
-	emit signalFrontend(m_box->currentItem());
+	int position;
+
+	position = m_positions[m_box->currentItem()];
+	emit signalFrontend(position);
 	close();
 }
 
