@@ -187,7 +187,7 @@ static void table_fork(int t_index)
 	else if (pid == 0) {
 		/* Make sure the parent's socket is created before we go on */
 		sprintf(fd_name, "/tmp/%s.%d", game, getpid());
-		while(stat(fd_name, &buf) < 0)
+		while (stat(fd_name, &buf) < 0)
 			sleep(1);
 
 		table_run_game(t_index, path);

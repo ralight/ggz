@@ -583,6 +583,8 @@ static int player_login_anon(int p, int fd)
 
 	/* Can't login twice */
 	if (players.info[p].uid != GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_CONNECTION, 
+			"Player %d attempted to log in again", p);
 		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -703,6 +705,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Silly client. Tables are only so big*/
 	if (seats > MAX_TABLE_SIZE) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to launch a table with > %d seats",
+			p_index, MAX_TABLE_SIZE);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -735,6 +740,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Now that we've cleared the socket, check if in a room */
 	if ( (room = players.info[p_index].room) == -1) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to launch a table from room -1",
+			p_index);
 		if (options)
 			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
@@ -745,6 +753,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Don't allow multiple table launches */
 	if (players.info[p_index].table_index != -1) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to launch a table while at one",
+			p_index);
 		if (options)
 			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
@@ -758,6 +769,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	/* RG: Eventually we will need more room locks when we have dynamic */
 	/*     rooms, right now the room's game_type can't change           */
 	if (table.type_index != chat_room[room].game_type) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to launch a table from wrong room",
+			p_index);
 		if (options)
 			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
@@ -816,7 +830,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	/* Return status to client */
 	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 	    || es_write_char(p_fd, (char)status) < 0) {
-		if( status == 0)
+		if (status == 0)
 			table_leave(p_index, t_index);
 		return GGZ_REQ_DISCONNECT;
 	}
@@ -859,6 +873,9 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 
 	/* Now that we've cleared the socket, check if in a room */
 	if (players.info[p_index].room == -1) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to join a table from room -1",
+			p_index);
 		if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -918,6 +935,9 @@ static int player_table_leave(int p_index, int p_fd)
 
 	/* Now that we've cleared the socket, check if at table */
 	if (t_index < 0) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d tried to leave a table, but not at one",
+			p_index);
 		if (es_write_int(p_fd, RSP_TABLE_LEAVE) < 0
 		    || es_write_char(p_fd, E_NO_TABLE) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -974,6 +994,9 @@ static int player_list_players(int p_index, int fd)
 
  	/* Don't send list if they're not in a room */
  	if (players.info[p_index].room == -1) {
+		dbg_msg(GGZ_DBG_UPDATE, 
+			"Player %d requested player list from room -1",
+			p_index);
  		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
  		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
  			return GGZ_REQ_DISCONNECT;
@@ -1027,6 +1050,9 @@ static int player_list_types(int p_index, int fd)
 
 	/* Don't send list if they're not logged in */
  	if (players.info[p_index].uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_UPDATE, 
+			"Player %d requested type list before logging in",
+			p_index);
  		if (es_write_int(fd, RSP_LIST_TYPES) < 0
  		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
@@ -1075,6 +1101,9 @@ static int player_list_tables(int p_index, int fd)
 
  	/* Don't send list if they're not logged in */
  	if (players.info[p_index].uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_UPDATE, 
+			"Player %d requested table list before logging in",
+			p_index);
  		if (es_write_int(fd, RSP_LIST_TABLES) < 0
  		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
@@ -1321,6 +1350,9 @@ static int player_chat(int p_index, int p_fd)
 
 	/* No lock needed, no one can change our room but us */
 	if (players.info[p_index].room == -1) {
+		dbg_msg(GGZ_DBG_CHAT, 
+			"Player %d tried to chat from room -1",
+			p_index);
 		free(msg);
 		if (es_write_int(p_fd, RSP_CHAT) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
@@ -1385,6 +1417,9 @@ int player_motd(int p_index, int fd)
 
  	/* Don't send motd if they're not logged in */
  	if (players.info[p_index].uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_CHAT, 
+			"Player %d requested motd before loggin in",
+			p_index);
  		if (es_write_int(fd, RSP_MOTD) < 0
  		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
