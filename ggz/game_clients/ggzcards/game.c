@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3348 2002-02-13 04:47:13Z jdorje $
+ * $Id: game.c 3357 2002-02-14 10:51:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -111,7 +111,7 @@ void game_play_card(int card_num)
 	/* Setup and trigger the card animation.  Because of the ugly way
 	   this is handled, this function has to be called _before_ we
 	   update table_cards[player] (below). */
-	animation_start(player, card, card_num);
+	animation_start(player, card, card_num, -1);
 
 	/* We go ahead and move the card out onto the table, even though
 	   we don't yet have validation that it's been played. */
@@ -363,7 +363,7 @@ void game_alert_play(int player, card_t card, int pos)
 		/* If this is a card _we_ played, then we'll already be
 		   animating, and we really don't want to stop just to start
 		   over.  But we leave that up to animation_start. */
-		animation_start(player, card, pos);
+		animation_start(player, card, pos, -1);
 	}
 	
 	/* This probably isn't necessary at this point, but it's consistent
@@ -403,10 +403,16 @@ void game_alert_trick(int player)
 	ggz_debug("main", "Handling trick alert; player %d won.", player);
 	
 	/* Clear cards off the table. */
-	for (p = 0; p < MAX_NUM_PLAYERS; p++)
+	for (p = 0; p < ggzcards.num_players; p++) {
+		card_t card = table_cards[p];
+		
+		/* Animate the card off the table - but only
+		   if there _is_ a card there. */
+		if (card.suit >= 0 && card.face >= 0)
+			animation_start(p, card, -1, player);
+		
 		table_cards[p] = UNKNOWN_CARD;
-
-	animation_stop(TRUE);
+	}
 
 	t_str = g_strdup_printf(_("%s won the trick"),
 				ggzcards.players[player].name);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: common.h 3357 2002-02-14 10:51:54Z jdorje $
  *
  * Copyright (C) 2001--2002 Brent Hendricks.
  *
@@ -124,6 +124,11 @@ int client_handle_server(void);
 
 /** This function should be called just before the client exits. */
 void client_quit(void);
+
+/** This function will return the file descriptor that is used to communicate
+ *  with the server.
+ */
+int client_get_fd(void);
 
 /** @} end of Setup */
 

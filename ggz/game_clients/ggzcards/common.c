@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: common.c 3357 2002-02-14 10:51:54Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -95,6 +95,12 @@ void client_quit(void)
 	if (ggzcards.players)
 		ggz_free(ggzcards.players);
 	ggz_debug("core", "Client disconnected.");
+}
+
+
+int client_get_fd(void)
+{
+	return game_internal.fd;
 }
 
 

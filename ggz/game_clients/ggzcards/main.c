@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3353 2002-02-13 21:32:09Z jdorje $
+ * $Id: main.c 3357 2002-02-14 10:51:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -60,9 +60,9 @@ int main(int argc, char *argv[])
 	/* Standard initializations. */
 	initialize_debugging();
 	fd = client_initialize();
+	listen_for_server(TRUE);
 	gtk_init(&argc, &argv);
 	access_settings(0);
-	(void) gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* This shouldn't go here, but I see no better place right now. The
 	   message windows are supposed to use a fixed-width font. */
@@ -109,6 +109,23 @@ static void initialize_debugging(void)
 	g_free(file_name);
 
 	ggz_debug("main", "Starting GGZCards client.");
+}
+
+void listen_for_server(int listen)
+{
+	static guint server_socket_tag;
+	static int listening = FALSE;
+	int fd = client_get_fd();
+	assert(fd > 0);
+	
+	if (listen && !listening) {
+		server_socket_tag = gdk_input_add(fd, GDK_INPUT_READ,
+		                                  game_handle_io, NULL);
+		listening = TRUE;
+	} else if (!listen && listening) {
+		gdk_input_remove(server_socket_tag);
+		listening = FALSE;			
+	}
 }
 
 /* This function can be called at any time to save _or_ load the global
