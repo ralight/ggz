@@ -46,7 +46,6 @@
 #include <table.h>
 #include <protocols.h>
 #include <err_func.h>
-#include <chat.h>
 #include <seats.h>
 #include <motd.h>
 #include <room.h>
@@ -72,7 +71,6 @@ static void  player_remove(int p_index);
 static int   player_updates(int p_index, int p_fd, time_t*, time_t*, time_t*);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
-static int   player_send_chat(int p_index, int fd, char* name, char* chat);
 static int   player_chat(int p_index, int p_fd);
 static int   player_login_anon(int p, int fd);
 static int   player_login_new(int p_index);
@@ -84,7 +82,6 @@ static int   player_list_players(int p_index, int fd);
 static int   player_list_types(int p_index, int fd);
 static int   player_list_tables(int p_index, int fd);
 static int   player_send_error(int p_index, int fd);
-static int   player_handle_chat_enqueue(int p_index, int p_fd);
 static int   player_motd(int p_index, int fd);
 
 /* Utility functions: Should either get renamed or moved */
@@ -336,7 +333,6 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 {
 	int status;
 	UserToControl op = (UserToControl)request;
-	char *junk_str;
 
 	switch (op) {
 	case REQ_LOGIN_ANON:
@@ -393,17 +389,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 			
 	case REQ_CHAT:
-		/* No lock needed, no one can change our room but us */
-		if(players.info[p_index].room == -1) {
-			if(es_read_string_alloc(p_fd, &junk_str) < 0
-			   || es_write_int(p_fd, RSP_CHAT) < 0
-			   || es_write_char(p_fd, -1) < 0)
-				status = -1;
-			else
-				status = 0;
-			free(junk_str);
-		} else
-			status = player_handle_chat_enqueue(p_index, p_fd);
+		status = player_chat(p_index, p_fd);
 		break;
 
 	case REQ_MOTD:
@@ -463,9 +449,6 @@ static void player_remove(int p_index)
 static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts, 
 			  time_t* type_ts) {
 
-	int i, count;
-	char player[MAX_USER_NAME_LEN + 1];
-	char chat[MAX_CHAT_LEN + 1];
 	char user_update = 0;
 	char table_update = 0;
 	char type_update = 0;
@@ -475,7 +458,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(players.timestamp, *player_ts) != 0 ) {
 		*player_ts = players.timestamp;
 		user_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE,"Player %d needs player list update", p);
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs player update", p);
 	}
 	pthread_rwlock_unlock(&players.lock);
 
@@ -484,7 +467,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(tables.timestamp, *table_ts) != 0 ) {
 		*table_ts = tables.timestamp;
 		table_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs table list update", p);
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs table update", p);
 	}
 	pthread_rwlock_unlock(&tables.lock);
 
@@ -493,7 +476,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
 		*type_ts = game_types.timestamp;
 		type_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs type list update", p);
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs type update", p);
 	}
 	pthread_rwlock_unlock(&game_types.lock);
 
@@ -504,10 +487,9 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Send any unread chats */
-	if(players.info[p].room != -1) {
-		if(room_send_chat(p) < 0)
-			return -1;
-	}
+	if (players.info[p].room != -1
+	    && (room_send_chat(p) < 0))
+		return GGZ_REQ_DISCONNECT;
 	
 	return GGZ_REQ_OK;
 }
@@ -1048,55 +1030,37 @@ static int player_msg_from_sized(int in, int out)
 }
 
 
-static int player_send_chat(int p_index, int fd, char* name, char* msg) 
-{
-	if (es_write_int(fd, MSG_CHAT) < 0
-	    || es_write_string(fd, name) < 0
-	    || es_write_string(fd, msg) < 0)
-		return(-1);
-	
-	return 0;
-}
-
-
 static int player_chat(int p_index, int p_fd) 
 {
-	char* tmp;
-	char msg[MAX_CHAT_LEN + 1];
+	char* msg;
 	int status;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
-
-	if (es_read_string_alloc(p_fd, &tmp) < 0)
-		return(-1);
 	
-	strncpy(msg, tmp, MAX_CHAT_LEN);
-	free(tmp);
-	msg[MAX_CHAT_LEN] = '\0';  /* Make sure strings are null-terminated */
-
-	/* Garish hack for now to change rooms */
-	if(strncmp(msg, "/join", 5))
-		status = chat_add(p_index, players.info[p_index].name, msg);
-	else {
-		int room;
-
-		if(strlen(msg) > 6) {
-			room = atoi(msg+6);
-			if(room >= 0  && room < opt.num_rooms) {
-				room_join(p_index, room);
-			}
-		}
-
-		/* We always tell them it worked, because we are antisocial */
-		status = 0;
+	/* No lock needed, no one can change our room but us */
+	if (players.info[p_index].room == -1) {
+		if (es_read_string_alloc(p_fd, &msg) < 0
+		    || es_write_int(p_fd, RSP_CHAT) < 0
+		    || es_write_char(p_fd, -1) < 0)
+			status = GGZ_REQ_DISCONNECT;
+		else
+			status = GGZ_REQ_FAIL;
+		free(msg);
+		return status;
 	}
 		
+	if (es_read_string_alloc(p_fd, &msg) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s", p_index, msg);
+	
+	status = room_emit(players.info[p_index].room, p_index, msg);
 
 	if (es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
-	return 0;
+	return status;
 }
 
 
@@ -1152,34 +1116,6 @@ int type_match_table(int type, int num)
 		 || type == NG_TYPE_RES);
 }
 		
-
-/* This decides where to send a chat, then queues it */
-int player_handle_chat_enqueue(int p_index, int p_fd)
-{
-	char *msg;
-	int status;
-	int room;
-
-	dbg_msg(GGZ_DBG_CHAT, "Handling chat enqueue for player %d", p_index);
-
-	pthread_rwlock_rdlock(&players.lock);
-	room = players.info[p_index].room;
-	pthread_rwlock_unlock(&players.lock);
-
-	if (es_read_string_alloc(p_fd, &msg) < 0)
-		return(-1);
-
-	dbg_msg(GGZ_DBG_CHAT, "(message is) %s", msg);
-
-	status = room_emit(room, p_index, msg);
-
-	if (es_write_int(p_fd, RSP_CHAT) < 0
-	    || es_write_char(p_fd, status) < 0)
-		return (-1);
-
-	return 0;
-}
-
 
 int player_motd(int p_index, int fd)
 {

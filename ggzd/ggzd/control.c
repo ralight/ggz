@@ -40,7 +40,6 @@
 #include <err_func.h>
 #include <players.h>
 #include <parse_opt.h>
-#include <chat.h>
 #include <motd.h>
 #include <room.h>
 
@@ -116,7 +115,6 @@ int main(int argc, const char *argv[])
 	/* If the motd option is present, pre-read the file */
 	if (motd_info.use_motd)
 		motd_read_file();
-	chat_init();
 
 #ifndef DEBUG
 	daemon_init(argv[0], 0);
