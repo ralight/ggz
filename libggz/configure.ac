@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5701 2003-12-04 23:29:31Z jdorje $
+dnl $Id: configure.ac 5726 2003-12-31 16:45:29Z dr_maux $
 
-AC_INIT
+AC_INIT([GGZ common libraries], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(libggz, 0.0.7)
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
 
@@ -81,13 +81,16 @@ AC_EGREP_CPP(PF_LOCAL,
 # Check for SUN_LEN
 # =================
 AC_MSG_CHECKING([for SUN_LEN])
-AC_TRY_LINK([#include<sys/types.h>
-	     #include<sys/un.h>
-	    ],
-    [struct sockaddr_un su; int i = SUN_LEN(&su);], 
-    [AC_MSG_RESULT(yes)
-     AC_DEFINE([HAVE_SUN_LEN], 1, [Define if the SUN_LEN macro exists])],
-    AC_MSG_RESULT(no))
+AC_LINK_IFELSE([
+	AC_LANG_SOURCE([[
+		#include<sys/types.h>
+		#include<sys/un.h>
+		]],
+		[[struct sockaddr_un su; int i = SUN_LEN(&su);]])
+	],
+	[AC_MSG_RESULT(yes)
+	 AC_DEFINE([HAVE_SUN_LEN], 1, [Define if the SUN_LEN macro exists])],
+	[AC_MSG_RESULT(no)])
 
 
 # Check for msghdr member msg_controllen
@@ -96,32 +99,43 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 		AC_DEFINE([HAVE_MSGHDR_MSG_CONTROL], 1,
 			  [Define if msghdr has a msg_controllen member])
 			AC_MSG_CHECKING([for CMSG_ALIGN])
-			AC_TRY_LINK([#include<sys/types.h>
-						#include<sys/socket.h>],
-				[int i = CMSG_ALIGN(0);], 
-				AC_MSG_RESULT(yes)
-				AC_DEFINE([HAVE_CMSG_ALIGN], 1,
-					  [Define if CMSG_ALIGN is available]),
-				AC_MSG_RESULT(no))
+			AC_LINK_IFELSE([
+				AC_LANG_SOURCE([[
+					#include<sys/types.h>
+					#include<sys/socket.h>
+					]],
+					[[int i = CMSG_ALIGN(0);]])
+				],
+				[AC_MSG_RESULT(yes)
+				 AC_DEFINE([HAVE_CMSG_ALIGN], 1,
+					  [Define if CMSG_ALIGN is available])],
+				[AC_MSG_RESULT(no)])
 
 			AC_MSG_CHECKING([for CMSG_LEN])
-			AC_TRY_LINK([#include<sys/types.h>
-						#include<sys/socket.h>],
-				[int i = CMSG_LEN(0);], 
-				AC_MSG_RESULT(yes)
-				AC_DEFINE([HAVE_CMSG_LEN], 1,
-					  [Define if CMSG_LEN is available]),
-				AC_MSG_RESULT(no))
+			AC_LINK_IFELSE([
+				AC_LANG_SOURCE([[
+					#include<sys/types.h>
+					#include<sys/socket.h>
+					]],
+					[[int i = CMSG_LEN(0);]])
+				],
+				[AC_MSG_RESULT(yes)
+				 AC_DEFINE([HAVE_CMSG_LEN], 1,
+					  [Define if CMSG_LEN is available])],
+				[AC_MSG_RESULT(no)])
 
 			AC_MSG_CHECKING([for CMSG_SPACE])
-			AC_TRY_LINK([#include<sys/types.h>
-				     #include<sys/socket.h>
-				    ],
-				[int i = CMSG_SPACE(0);], 
-				AC_MSG_RESULT(yes)
-				AC_DEFINE([HAVE_CMSG_SPACE], 1,
-					  [Define if CMSG_SPACE is available]),
-				AC_MSG_RESULT(no))
+			AC_LINK_IFELSE([
+				IF_LANG_SOURCE([[
+					#include<sys/types.h>
+					#include<sys/socket.h>
+					]],
+					[[int i = CMSG_SPACE(0);]])
+				],
+				[AC_MSG_RESULT(yes)
+				 AC_DEFINE([HAVE_CMSG_SPACE], 1,
+					  [Define if CMSG_SPACE is available])],
+				[AC_MSG_RESULT(no)])
 )
 
 
@@ -191,11 +205,12 @@ AC_GGZ_DEBUG
 
 AC_SUBST(LDADD)
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   src/Makefile
 	   src/security/Makefile
 	   tests/Makefile
 	   man/Makefile])
+AC_OUTPUT
 
 
 # Status Output
