@@ -269,6 +269,7 @@ class GGZBoard:
 		aiturn = 0
 		shift = 0
 
+		thinking = 0
 		inputallowed = 1
 		if self.ggzmode:
 				inputallowed = 0
@@ -288,6 +289,9 @@ class GGZBoard:
 				else:
 					if net.allowed() != inputallowed:
 						inputallowed = net.allowed()
+						updatescreen = 1
+					if net.thinking() != thinking:
+						thinking = net.thinking()
 						updatescreen = 1
 					move = net.netmove()
 					if move:
@@ -330,7 +334,7 @@ class GGZBoard:
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos
 
-			if event.type == MOUSEBUTTONDOWN and inputallowed:
+			if event.type == MOUSEBUTTONDOWN and inputallowed and not thinking:
 				considered = 0
 				if game.intersections:
 					x = (posx - conf.marginwidth + 5) % width
@@ -360,6 +364,7 @@ class GGZBoard:
 									game.toggleplayer()
 									game.domove(None, (x, y))
 									aiturn = 1
+									thinking = 1
 						else:
 							oldx = x
 							oldy = y
@@ -376,6 +381,7 @@ class GGZBoard:
 								game.toggleplayer()
 								game.domove(frompos, topos)
 								aiturn = 1
+								thinking = 1
 
 						updatescreen = 1
 
@@ -437,6 +443,14 @@ class GGZBoard:
 							ui.backgroundarea.blit(player, (x - player.get_width(), y + 30))
 							i += 1
 
+				if thinking:
+					w = ui.backgroundarea.get_width()
+					h = ui.backgroundarea.get_height()
+					x = w - conf.marginwidth
+					y = h - conf.marginheight - 60
+					caption = ui.smallfont.render("Thinking...", 1, (255, 200, 0))
+					ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
+
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
@@ -449,6 +463,7 @@ class GGZBoard:
 
 			if aiturn:
 				aiturn = 0
+				thinking = 0
 				(ret, frompos, topos) = game.aimove()
 				print "RET(find)", ret
 				if ret:

@@ -78,9 +78,64 @@ class Game:
 		return (ret, None, None)
 
 	def domove(self, frompos, topos):
+		if self.lastmove == "":
+			self.lastmove = "b"
 		if self.validatemove(self.lastmove, topos):
 			(x, y) = topos
 			self.board[y][x] = ("piece", self.lastmove)
+			if self.lastmove == "w":
+				self.lastmove = "b"
+			else:
+				self.lastmove = "w"
+
+			# find captures
+			print "===== CAPTURE CHECK BEGIN"
+			print "affected", topos, self.lastmove
+			for start in ((x, y + 1), (x, y - 1), (x + 1, y), (x - 1, y)):
+				(i, j) = start
+				if i < 0 or i >= self.width or j < 0 or j >= self.height:
+					continue
+				piece = self.board[j][i]
+				if not piece:
+					continue
+				else:
+					print "--> found potential start piece", start, piece
+					(gfx, color) = piece
+					if color != self.lastmove:
+						continue
+				print "examine", start
+				moves = []
+				moves.append(start)
+				liberties = 0
+				expand = 1
+				while expand:
+					expand = 0
+					for pos in moves:
+						(i, j) = pos
+						for p in ((i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)):
+							(k, l) = p
+							if k < 0 or k >= self.width or l < 0 or l >= self.height:
+								continue
+							piece = self.board[l][k]
+							if not piece:
+								liberties += 1
+							else:
+								if p not in moves:
+									(gfx, color) = piece
+									if color == self.lastmove:
+										moves.append(p)
+										expand += 1
+					print "--> capture from", start, moves
+					print "--> liberties", liberties, "expanded", expand
+				if liberties == 0:
+					print "NO LIBERTIES!"
+					print "REMOVE", moves
+					for pos in moves:
+						(i, j) = pos
+						self.board[j][i] = None
+				else:
+					print "not considered", start
+			print "===== CAPTURE CHECK END"
 
 	def over(self):
 		return self.isover

@@ -38,6 +38,8 @@ class Network(NetworkBase, NetworkInfo):
 		self.lastcommand = -1
 		self.lastmove = None
 
+		self.inputthinking = 1
+
 	def network(self):
 		print "network!"
 
@@ -114,6 +116,7 @@ class Network(NetworkBase, NetworkInfo):
 					elif basiccommand == self.command_move:
 						print "command: move"
 						self.gotmove((commandoptions & 0x200) >> 9, commandoptions & 0x1FF)
+						self.inputthinking = 0
 					elif basiccommand == self.command_takeback:
 						print "command: takeback"
 					elif basiccommand == self.command_extended:
@@ -173,6 +176,7 @@ class Network(NetworkBase, NetworkInfo):
 		self.lastmove = (x2, y2)
 
 		self.sendcommand(basiccommand, commandoptions)
+		self.inputthinking = 1
 
 	def netmove(self):
 		if len(self.movequeue) == 0:

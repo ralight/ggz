@@ -12,6 +12,7 @@ class NetworkBase:
 		self.gamefd = -1
 		self.errorcode = 0
 		self.inputallowed = 0
+		self.inputthinking = 0
 
 	def handle_network(self):
 		networked = 0
@@ -46,6 +47,9 @@ class NetworkBase:
 
 	def allowed(self):
 		return self.inputallowed
+	
+	def thinking(self):
+		return self.inputthinking
 
 	def getbyte(self):
 		#k = 0
