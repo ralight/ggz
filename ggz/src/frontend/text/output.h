@@ -38,7 +38,7 @@ typedef enum {
 
 void output_banner(void);
 
-void output_prompt(int status);
+void output_prompt(void);
 
 void output_text(char* fmt, ...);
 

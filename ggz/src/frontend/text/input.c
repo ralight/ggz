@@ -108,7 +108,7 @@ int input_command(short events)
 			/* Its a chat */
 			input_handle_chat(current);
 		}
-		output_prompt(1);
+		output_prompt();
 	}
 	return 0;
 }

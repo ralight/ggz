@@ -76,13 +76,14 @@ int main(void)
 	ggzcore_event_connect(GGZ_SERVER_ROOM_ENTER, server_room_enter);
 	ggzcore_event_connect(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
 
-	output_prompt(1);
+	output_status();
+	output_prompt();
 	for (;;) {
 		if (poll(fd, 1, TIMEOUT)) {
 			if (input_command(fd[0].revents) < 0)
 				break;
 			else
-				output_prompt(0);
+				output_prompt();
 		}
 		ggzcore_event_process_all();
 		output_status();

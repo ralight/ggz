@@ -56,6 +56,8 @@
 static struct winsize window;
 static int tty_des;
 
+void output_label(char *label);		/* Display the color label in the	*/
+					/* Status line.				*/
 void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
 					/* a dangerious function if not	used	*/
 					/* properly!				*/
@@ -88,23 +90,15 @@ void output_banner(void)
 	fflush(NULL);
 }
 
-void output_prompt(int status)
+void output_prompt(void)
 {
 	fflush(NULL);
 	output_goto(window.ws_row, 0);
 	printf("\e[2K");
-	if (status == 1)
-	{
-		output_goto(window.ws_row - 1, 0);
-		printf("\e[2K%sGGZ%s>%s ",
-			COLOR_BRIGHT_WHITE, COLOR_GREY,
-			COLOR_WHITE);
-	} else {
-		output_goto(window.ws_row - 1, 0);
-		printf("%sGGZ%s>%s ",
-			COLOR_BRIGHT_WHITE, COLOR_GREY,
-			COLOR_WHITE);
-	}
+	output_goto(window.ws_row - 1, 0);
+	printf("\e[2K%sGGZ%s>%s ",
+		COLOR_BRIGHT_WHITE, COLOR_GREY,
+		COLOR_WHITE);
 	fflush(NULL);
 }
 
@@ -236,43 +230,39 @@ void output_status(void)
 	if(user)
 	{
 		output_goto(window.ws_row - 3, 0);
-		printf("%sU%ssername:\e[K %s%s",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
-			COLOR_BRIGHT_PINK, user);
+		output_label("Username");
+		printf("\e[K%s", user);
 	} else {
 		output_goto(window.ws_row - 3, 0);
-		printf("%sU%ssername:\e[K ",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+		output_label("Username");
+		printf("\e[K");
 	}
 	
 	if(server)
 	{
 		output_goto(window.ws_row - 3, 28);
-		printf("%sS%server:\e[K %s%s",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
-			COLOR_BRIGHT_PINK, server);
+		output_label("Server");
+		printf("\e[K%s", server);
 	} else {
 		output_goto(window.ws_row - 3, 28);
-		printf("%sS%server:\e[K",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+		output_label("Server");
+		printf("\e[K");
 	}
 
 	output_goto(window.ws_row - 3, window.ws_col - 19);
-	printf("%sS%status:\e[K %s%s",
-		COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
-		COLOR_BRIGHT_PINK, currentstatus);
+	output_label("Status");
+	printf("\e[K%s", currentstatus);
 	
 	if (ggzcore_state_is_in_room())
 	{
 		output_goto(window.ws_row - 2, 0);
-		printf("%sR%soom:\e[K %s%d - %s",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
-			COLOR_BRIGHT_PINK, ggzcore_state_get_room(),
-			room);
+		output_label("Room");
+		printf("\e[K %d -- %s", ggzcore_state_get_room(),
+			ggzcore_room_get_name(ggzcore_state_get_room()));
 	} else {
 		output_goto(window.ws_row - 2, 0);
-		printf("%sR%soom:\e[K",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+		output_label("Room");
+		printf("\e[K");
 	}
 
 	currenttime = strdup(ctime(&now));
@@ -289,9 +279,8 @@ void output_status(void)
 	free(currenttime);
 
 	output_goto(window.ws_row - 2, window.ws_col - 19);
-	printf("%sT%sime:\e[K %s%s",
-			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
-			COLOR_BRIGHT_PINK, displaytime);
+	output_label("Time");
+	printf("\e[K%s", displaytime);
 
 	printf("\e8"); /* Restore cursor */
 	fflush(NULL);
@@ -300,6 +289,14 @@ void output_status(void)
 void output_goto(int row, int col)
 {
 	printf("\e[%d;%df", row, col);
+}
+
+void output_label(char *label)
+{
+	printf("%s%c%s%s: %s",
+		COLOR_BRIGHT_WHITE, label[0],
+		COLOR_BRIGHT_GREEN, &label[1],
+		COLOR_BRIGHT_PINK);
 }
 
 void output_init(void)
