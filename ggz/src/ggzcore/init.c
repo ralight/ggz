@@ -24,6 +24,8 @@
  */
 
 #include <config.h>
+#include <conf.h>
+#include <confio.h>
 #include <ggzcore.h>
 #include <event.h>
 #include <user.h>
@@ -43,6 +45,7 @@ int ggzcore_init(GGZOptions options)
 			      options.user_conf);
 		ggzcore_debug(GGZ_DBG_CONF, "Parsing local conf file: %s", 
 			      options.local_conf);
+		_ggzcore_conf_initialize (options.global_conf, options.user_conf);
 	}
 
 
@@ -63,6 +66,7 @@ int ggzcore_init(GGZOptions options)
 
 void ggzcore_destroy(void)
 {
+	_ggzcore_confio_cleanup();
 	_ggzcore_event_destroy();
 	_ggzcore_state_destroy();
 	_ggzcore_debug_cleanup();
