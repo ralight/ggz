@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3380 2002-02-17 07:47:26Z jdorje $
+ * $Id: common.c 3399 2002-02-17 12:13:28Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -177,7 +177,9 @@ static int handle_cardlist_message(void)
 	for (p = 0; p < ggzcards.num_players; p++) {
 		if (ggz_read_int(game_internal.fd, &lengths[p]))
 			status = -1;
-		cardlist[p] = ggz_malloc(lengths[p] * sizeof(**cardlist));
+		if (lengths[p] > 0)
+			cardlist[p] = ggz_malloc(lengths[p]
+			                         * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
 			if (read_card(game_internal.fd, &cardlist[p][i]) < 0)
 				status = -1;
@@ -187,7 +189,8 @@ static int handle_cardlist_message(void)
 		game_set_cardlist_message(mark, lengths, cardlist);
 
 	for (p = 0; p < ggzcards.num_players; p++)
-		ggz_free(cardlist[p]);
+		if (lengths[p] > 0)
+			ggz_free(cardlist[p]);
 	ggz_free(cardlist);
 	ggz_free(lengths);
 	ggz_free(mark);		/* allocated by easysock */
