@@ -491,7 +491,7 @@ int game_update(int event, void *d1, void *d2)
 					game_send_options(seat);
 
 			/* Start the game if we are ready to */
-			if(!ggz_seats_open()) {
+			if(!ggz_seats_open() && dots_game.play_again != 1) {
 				dots_game.turn = 0;
 				dots_game.state = DOTS_STATE_PLAYING;
 				game_move();
@@ -572,6 +572,15 @@ static int game_handle_newgame(int seat)
 	}
 
 	dots_game.play_again++;
+
+	/* Issue the game start if second answer comes */
+	/* and options are already setup to go */
+	if(!ggz_seats_open() && dots_game.state == DOTS_STATE_WAIT
+	   && dots_game.play_again == 2) {
+		dots_game.turn = 0;
+		dots_game.state = DOTS_STATE_PLAYING;
+		game_move();
+	}
 
 	return status;
 }
