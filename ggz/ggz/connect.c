@@ -325,6 +325,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_LOGIN_NEW:
+	case RSP_MOTD:
+		if (dlg_motd == NULL)
+			dlg_motd = create_dlgMOTD();
+
+		es_read_int(source, &count);
+		connect_msg("[%s] MOTD line count %d\n", opcode_str[op], count);
+		for (i = 0; i < count; i++) {
+			es_read_string_alloc(source, &message);
+			connect_msg("[%s] %s",opcode_str[op], message);
+			motd_print_line(message);
+		}
+		gtk_widget_show(dlg_motd);
+		break;
 	case MSG_MOTD:
 		if (dlg_motd == NULL)
 			dlg_motd = create_dlgMOTD();
