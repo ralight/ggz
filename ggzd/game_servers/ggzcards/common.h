@@ -25,7 +25,7 @@
 #include "cards.h"
 #include "games.h"
 #include "protocol.h"
-#include "types.h"c
+#include "types.h"
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
