@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -e
-
-mv -f /etc/ggz.modules /etc/ggz.modules.installsave 2>/dev/null || true
-
-#DEBHELPER#
-
-exit 0
