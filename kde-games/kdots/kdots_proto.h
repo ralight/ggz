@@ -62,13 +62,30 @@ class KDotsProto
 			eventmovev = 4
 		};
 
+		/*enum Directions
+		{
+			horizontal = 0,
+			vertical = 1
+		};*/
+
+		void connect();
 		void getPlayers();
 		void getSeat();
+		void sendMove(int x, int y, int direction);
+		void sendOptions(int wantwidth, int wantheight);
+		void getOptions();
+		void getMove();
+		void getOppMove(int direction);
 		
 		int state;
 		int fd;
 		int num;
 		char players[2][32];
+		char width, height;
+		int turn;
+		int movex, movey;
+		int m_lastx, m_lasty;
+		int m_lastdir;
 };
 
 #endif

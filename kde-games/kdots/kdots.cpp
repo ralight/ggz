@@ -16,11 +16,14 @@
 
 #include <qmenubar.h>
 #include <qlayout.h>
+#include <qsocketnotifier.h>
 
 #include <iostream>
 #include <stdlib.h>
 
 #include "qdots.h"
+
+#include <stdio.h>
 
 KDotsAbout *kdots_about;
 KDotsOptions *kdots_options;
@@ -33,6 +36,7 @@ KDots::KDots(QWidget *parent, char *name)
 	QMenuBar *menubar;
 	QPopupMenu *menu_game, *menu_help;
 	QVBoxLayout *vbox;
+	QSocketNotifier *sn;
 
 cout << "fire up kdots" << endl;
 
@@ -71,9 +75,15 @@ cout << "kdots ready" << endl;
 	dots->resize(390, 390);
 	resize(400, 400);
 	show();
-	slotOptions();
+	//slotOptions();
 
 	proto = new KDotsProto();
+	proto->connect();
+	proto->turn = -1;
+	proto->num = -2;
+
+	sn = new QSocketNotifier(proto->fd, QSocketNotifier::Read, this);
+	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
 }
 
 KDots::~KDots()
@@ -107,8 +117,12 @@ void KDots::slotQuit()
 
 void KDots::slotStart(int horizontal, int vertical)
 {
+	/*
 	dots->resizeBoard(horizontal, vertical);
 	dots->refreshBoard();
+	*/
+
+	if(kdots_options) proto->sendOptions(horizontal, vertical);
 
 	m_running = 1;
 }
@@ -116,6 +130,12 @@ void KDots::slotStart(int horizontal, int vertical)
 void KDots::slotTurn(int x, int y, int direction)
 {
 	int sdotx, sdoty;
+
+	if(proto->turn != proto->num)
+	{
+		cout << "not your turn!" << endl;
+		return;
+	}
 
 	sdotx = x;
 	sdoty = y;
@@ -128,10 +148,12 @@ void KDots::slotTurn(int x, int y, int direction)
 	if((direction == QDots::up) || (direction == QDots::down))
 	{
 		cout << "VERTICAL " << sdotx << ", " << sdoty << endl;
+		proto->sendMove(sdotx, sdoty, proto->sndmovev);
 	}
 	else
 	{
 		cout << "HORIZONTAL " << sdotx << ", " << sdoty << endl;
+		proto->sendMove(sdotx, sdoty, proto->sndmoveh);
 	}
 }
 
@@ -144,31 +166,59 @@ void KDots::slotInput()
 	switch(op)
 	{
 		case proto->msgseat:
+printf("##### msgseat\n");
 			proto->getSeat();
 			break;
 		case proto->msgplayers:
+printf("##### msgplayers\n");
 			proto->getPlayers();
 			if(proto->state != proto->statechoose) proto->state = proto->statewait;
 			break;
 		case proto->msgoptions:
-//			if((status = get_options()) == 0)
-//                board_init(board_width, board_height);
+printf("##### msgoptions\n");
+			proto->getOptions();
+			//slotStart(proto->width, proto->height);
+			dots->resizeBoard(proto->width, proto->height);
+			dots->refreshBoard();
 			break;
 		case proto->reqmove:
+printf("##### reqmove\n");
 			proto->state = proto->statemove;
-// game.move = game.me, that is ;)
+			proto->turn = proto->num;
 			break;
 		case proto->msgmoveh:
+printf("##### msgmoveh\n");
+			proto->getOppMove(proto->sndmoveh);
+			dots->setBorderValue(proto->movex, proto->movey, proto->sndmoveh, proto->turn);
 			break;
 		case proto->msgmovev:
+printf("##### msgmovev\n");
+			proto->getOppMove(proto->sndmoveh);
+			dots->setBorderValue(proto->movex, proto->movey, proto->sndmovev, proto->turn);
 			break;
 		case proto->rspmove:
+printf("##### rspmove\n");
+			proto->getMove();
+			if(proto->m_lastx != -1)
+			{
+				printf("setBorderValue(%i, %i, %i, %i); ", proto->m_lasty, proto->m_lasty, proto->m_lastdir, proto->turn);
+				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn);
+				proto->turn = (proto->num + 1) % 2;
+			}
+			else
+			{
+				printf("INVALID MOVE!!! %i/%i\n", proto->movex, proto->movey);
+			}
 			break;
 		case proto->msggameover:
+printf("##### msggameover\n");
 			break;
 		case proto->sndsync:
+printf("##### sndsync\n");
 			break;
 		case proto->reqoptions:
+printf("##### reqoptions\n");
+			slotOptions();
 			break;
 	}
 }

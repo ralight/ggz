@@ -26,3 +26,13 @@ kdots_client_LDADD = $(all_libraries) -lqt -lkdeui -lkdecore -L Dot -ldot $(LIB_
 METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
+
+
+install-data-local:
+	@$(NORMAL_INSTALL)
+	#$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+ 
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
+

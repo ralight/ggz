@@ -24,8 +24,13 @@ METASOURCES = AUTO
 EXTRA_DIST = module.dsc.in
 
 install-data-local:
+	@$(NORMAL_INSTALL)
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/ktictactux
 	-cp -r *.png $(DESTDIR)$(ggzdatadir)/ktictactux/
 
 uninstall-local:
+	@$(NORMAL_UNINSTALL)
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
 	-rm -rf $(DESTDIR)$(ggzdatadir)/ktictactux
+
