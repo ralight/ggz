@@ -236,8 +236,9 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	char *hostname;
 	int port;
 	const char *text = "Hello World.\n";
+	ssize_t bytes;
 
-	log("Notify: peer=%s username=%s password=%s", uri, username, password);
+	logline("Notify: peer=%s username=%s password=%s", uri, username, password);
 
 	hostname = meta_uri_host_internal(uri);
 	port = meta_uri_port_internal(uri);
@@ -245,7 +246,7 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	fd = socket(AF_INET, SOCK_STREAM, 6);
 	if(fd < 0)
 	{
-		log("Notify: failed (socket)");
+		logline("Notify: failed (socket)");
 		return 0;
 	}
 
@@ -255,7 +256,7 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	name = gethostbyname(hostname);
 	if(!name)
 	{
-		log("Notify: failed (gethostbyname)");
+		logline("Notify: failed (gethostbyname)");
 		close(fd);
 		return 0;
 	}
@@ -264,22 +265,22 @@ static int metaserv_notify(const char *username, const char *password, const cha
 	ret = connect(fd, (const struct sockaddr*)&sa, sizeof(sa));
 	if(ret)
 	{
-		log("Notify: failed (connect)");
+		logline("Notify: failed (connect)");
 		close(fd);
 		return 0;
 	}
 
 	/* Text: Use ELE! */
 
-	ret = write(fd, text, strlen(text) + 1);
-	if(ret < strlen(text) + 1)
+	bytes = write(fd, text, strlen(text) + 1);
+	if(bytes < (int)(strlen(text) + 1))
 	{
-		log("Notify: failed (write)");
+		logline("Notify: failed (write)");
 		close(fd);
 		return 0;
 	}
 
-	log("Notify: succeeded");
+	logline("Notify: succeeded");
 	
 	close(fd);
 	return 1;
@@ -291,7 +292,7 @@ static void metaserv_peers(ELE *ele)
 	ELE *el2, *el;
 	char *username, *password, *uri;
 
-	log("Notify peers");
+	logline("Notify peers");
 
 #ifdef METASERV_OPTIMIZED
 	el2 = NULL;
@@ -356,17 +357,17 @@ static char *metaserv_update(const char *class, const char *category, const char
 	|| (!configuration->valid)
 	|| (!configuration->processed))
 	{
-		log("Update: Invalid XML");
+		logline("Update: Invalid XML");
 		return NULL;
 	}
 
 	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum) || (!mode))
 	{
-		log("Update: Missing arguments");
+		logline("Update: Missing arguments");
 		return NULL;
 	}
 
-	log("Update: class=%s, category=%s, username=%s, password=%s, uri=%s", class, category, username, password, uri);
+	logline("Update: class=%s, category=%s, username=%s, password=%s, uri=%s", class, category, username, password, uri);
 
 	ret = NULL;
 	ele2 = NULL;
@@ -448,7 +449,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 		}
 	}
 
-	log("Update: status=%s", status);
+	logline("Update: status=%s", status);
 
 	if(xmlret)
 	{
@@ -490,13 +491,13 @@ static char *metaserv_xml(const char *uri)
 	mode = NULL;
 	atnum = 0;
 
-	log("XML: uri=%s", uri);
+	logline("XML: uri=%s", uri);
 
 	query = minidom_parse(uri);
 
 	if((!query) || (!query->valid) || (!query->processed) || (!query->el) || (!query->el->name))
 	{
-		log("XML: Invalid XML");
+		logline("XML: Invalid XML");
 		minidom_free(query);
 		return NULL;
 	}
@@ -592,7 +593,7 @@ static char *metaserv_xml(const char *uri)
 	}
 	else
 	{
-		log("XML: Unknown type of operation: name=%s", query->el->name);
+		logline("XML: Unknown type of operation: name=%s", query->el->name);
 	}
 
 	minidom_free(query);
@@ -635,9 +636,9 @@ static char *metaserv_uri(char *requri)
 		{
 			ret = "<result><text>No help present yet.</text></result>";
 		}
-		else log("Unknown class type in %s", token);
+		else logline("Unknown class type in %s", token);
 	}
-	else log("Unknown query type in %s", requri);
+	else logline("Unknown query type in %s", requri);
 
 	while(token) token = strtok(NULL, ":/");
 
@@ -672,25 +673,25 @@ static char *metamagic(const char *rawuri)
 
 static void metaserv_init(const char *configfile)
 {
-	log("Initialization");
+	logline("Initialization");
 	if(cachefile)
 	{
 		configuration = minidom_load(cachefile);
-		if(configuration) log("Using cachefile: %s", cachefile);
-		else log("Cache not present, will be created");
+		if(configuration) logline("Using cachefile: %s", cachefile);
+		else logline("Cache not present, will be created");
 	}
 	if(!configuration)
 	{
 		if(!configfile) configfile = METASERV_DIR "/metaservconf.xml";
-		log("Using configuration: %s", configfile);
+		logline("Using configuration: %s", configfile);
 		configuration = minidom_load(configfile);
-		if(!configuration) log("Configuration invalid!");
+		if(!configuration) logline("Configuration invalid!");
 	}
 }
 
 static void metaserv_shutdown()
 {
-	log("Shutdown");
+	logline("Shutdown");
 	minidom_free(configuration);
 }
 
@@ -701,26 +702,26 @@ static int metaserv_work(int fd)
 	int ret;
 	FILE *stream;
 
-	log("Enter main loop");
+	logline("Enter main loop");
 	while(1)
 	{
 		ret = read(fd, buffer, sizeof(buffer));
 		if(ret > 0)
 		{
 			buffer[ret - 1] = 0;
-			log("Request: buffer=%s", buffer);
+			logline("Request: buffer=%s", buffer);
 			result = metamagic(buffer);
 
 			stream = fdopen(fd, "w");
 			if(result)
 			{
 				fprintf(stream, "%s\n", result);
-				log("Result: result=%s", result);
+				logline("Result: result=%s", result);
 			}
 			else
 			{
 				fprintf(stream, "\n");
-				log("No result");
+				logline("No result");
 			}
 			fflush(stream);
 		}
@@ -748,13 +749,13 @@ static void *metaserv_worker(void *arg)
 	ret = gethostbyaddr_r(&peername.sin_addr, sizeof(struct in_addr), AF_INET, &host, tmp, 1024, &hp, &herr);
 	if(!ret) snprintf(tmp, sizeof(tmp), host.h_name);
 	else snprintf(tmp, sizeof(tmp), "(unknown)");
-	log("Accepted connection from %s", tmp);
+	logline("Accepted connection from %s", tmp);
 	metaserv_work(fd);
-	log("Disconnection from %s", tmp);
+	logline("Disconnection from %s", tmp);
 
 	if(cachefile)
 	{
-		log("Caching configuration to %s", cachefile);
+		logline("Caching configuration to %s", cachefile);
 
 		snprintf(tmp, sizeof(tmp), "/tmp/metaservdump-%i-%li", fd, time(NULL));
 		unlink(tmp);
@@ -868,7 +869,7 @@ int main(int argc, char *argv[])
 	if(!daemonmode)
 	{
 		ret = metaserv_work(STDIN_FILENO);
-		log("Disconnection");
+		logline("Disconnection");
 	}
 	else metaserv_daemon();
 

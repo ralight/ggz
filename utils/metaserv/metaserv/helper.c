@@ -12,7 +12,7 @@
 
 extern char *logfile;
 
-void log(const char *fmt, ...)
+void logline(const char *fmt, ...)
 {
 	FILE *f;
 	time_t t;

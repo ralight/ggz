@@ -8,7 +8,7 @@
 #define METASERV_HELPER_H
 
 /* Log to the logfile if logging is enabled */
-void log(const char *fmt, ...);
+void logline(const char *fmt, ...);
 
 /* Return the host part of an URI */
 char *meta_uri_host_internal(const char *uri);
