@@ -32,19 +32,19 @@ AM_PATH_SDL(1.2.0)
 
 AC_CHECK_LIB(SDL_image, IMG_Load,
     [AC_CHECK_HEADER(SDL/SDL_image.h, ,
-        AC_MSG_ERROR(*** Cannot find SDL/SDL_image.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find SDL_image library ); exit)
+        AC_MSG_ERROR([*** Cannot find SDL/SDL_image.h header]))],
+    AC_MSG_ERROR([*** Cannot find SDL_image library]))
 
 AC_CHECK_LIB(SDL_ttf, TTF_Init,
     [AC_CHECK_HEADER(SDL/SDL_ttf.h, ,
-        AC_MSG_ERROR(*** Cannot find SDL/SDL_ttf.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find SDL_ttf library ); exit)
+        AC_MSG_ERROR([*** Cannot find SDL/SDL_ttf.h header]))],
+    AC_MSG_ERROR([*** Cannot find SDL_ttf library]))
 
 sdlmixer=no
 AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio,
     [AC_CHECK_HEADER(SDL/SDL_mixer.h, [sdlmixer=yes],
-        [AC_MSG_WARN(*** Cannot find SDL/SDL_mixer.h header)])],
-    [AC_MSG_WARN(*** Cannot find SDL_mixer library )])
+        [AC_MSG_WARN([*** Cannot find SDL/SDL_mixer.h header])])],
+    [AC_MSG_WARN([*** Cannot find SDL_mixer library])])
 if test "x$sdlmixer" = "xyes"; then
     LIB_SOUND="-lSDL_mixer"
     AC_SUBST(LIB_SOUND)
@@ -53,8 +53,8 @@ fi
 
 AC_CHECK_LIB(GL, glRotatef,
     [AC_CHECK_HEADER(GL/gl.h, ,
-        AC_MSG_ERROR(*** Cannot find GL/gl.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find GL library ); exit)
+        AC_MSG_ERROR([*** Cannot find GL/gl.h header]))],
+    AC_MSG_ERROR([*** Cannot find GL library]))
 
 xcursor=no
 AC_CHECK_LIB(Xcursor, XcursorLibraryLoadCursor,
