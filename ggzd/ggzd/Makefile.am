@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3664 2002-03-24 21:13:44Z dr_maux $
+# $Id: Makefile.am 3879 2002-04-10 13:37:12Z dr_maux $
 
 SUBDIRS = .
 
@@ -51,7 +51,8 @@ ggzd_SOURCES =	chat.c\
 		perms.c 
 
 
-INCLUDES = -I$(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
+
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) @LTLIBOBJS@ $(top_builddir)/ggzdmod/libggzdmod.la
 
 ggzduedit_SOURCES = ggzduedit.c \
