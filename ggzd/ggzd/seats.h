@@ -43,6 +43,7 @@ struct GGZTableSeat {
 	char name[MAX_USER_NAME_LEN + 1];
 };
 
+#define GGZ_SEATNUM_ANY -1
 
 
 /** @brief Count the number of seats of the given type at the table.
@@ -64,7 +65,7 @@ int seats_num(GGZTable* table);
  *
  *  @param table The table we are querying.
  *  @param seat The # of the seat we are querying.
- *  @return The type of the given seat.
+s *  @return The type of the given seat.
  */
 GGZSeatType seats_type(GGZTable* table, int seat);
 

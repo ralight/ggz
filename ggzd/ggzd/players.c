@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3499 2002-03-02 01:08:52Z bmh $
+ * $Id: players.c 3512 2002-03-02 17:16:48Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -716,6 +716,7 @@ int player_table_leave(GGZPlayer* player)
 
 static int player_transit(GGZPlayer* player, char opcode, int index)
 {
+	struct GGZTableSeat seat;
 	int status;
 
 	/* Do some quick sanity checking */
@@ -723,10 +724,29 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 		return E_NOT_IN_ROOM;
 	if (index == -1)
 		return E_NO_TABLE;
+
+	/* Implement LEAVE by setting my seat to open */
+	switch (opcode) {
+	case GGZ_TRANSIT_LEAVE:
+		seat.index = table_find_player(player->room, index, player->name);
+		seat.type = GGZ_SEAT_OPEN;
+		seat.name[0] = '\0';
+		
+		status = transit_seat_event(player->room, index, seat, player->name);
+		break;
+	case GGZ_TRANSIT_JOIN:
+		seat.index = GGZ_SEATNUM_ANY; /* Take first available seat */
+		seat.type = GGZ_SEAT_PLAYER;
+		strcpy(seat.name, player->name);
+		
+		status = transit_seat_event(player->room, index, seat, player->name);
+		break;
+	default:
+		/* Should never get here */
+		status = -1;
+		break;
+	}
 	
-	status = transit_table_event(player->room, index, opcode, 
-				     player->name);
-					     
 	/* If enqueue fails, it's because the table has been removed */
 	if (status < 0)
 		return E_NO_TABLE;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: table.h 3512 2002-03-02 17:16:48Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -105,6 +105,10 @@ void table_set_desc(GGZTable *table, char *desc);
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
 		 GGZTable** tables);
+
+/* Find a player at a table */
+int table_find_player(int room, int index, char *name);
+
 
 /*
  * table_lookup() looks up a table inside a room

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3499 2002-03-02 01:08:52Z bmh $
+ * $Id: transit.c 3512 2002-03-02 17:16:48Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -61,38 +61,11 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 static GGZEventFuncReturn transit_seat_event_callback(void* target,
 						      int size,
 						      void* data);
-static GGZEventFuncReturn transit_table_event_callback(void* target,
-                                                       int size,
-                                                       void* data);
 
 static int transit_send_join_to_game(GGZTable* table, char* name, int seat_num);
 static int transit_send_leave_to_game(GGZTable* table, char* name);
 static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event);
-
-int transit_table_event(int room, int index, char opcode, char* name)
-{
-	int size, status;
-	char* current;
-	void* data;
-	
-	size = sizeof(char) + strlen(name) + 1;
-
-	if ( (data = malloc(size)) == NULL)
-		err_sys_exit("malloc failed in transit_pack");
-	
-	current = (char*)data;
-	
-	*(char*)current = opcode;
-	current += sizeof(char);
-	
-	strcpy(current, name);
-	current += (strlen(name) + 1);
-
-	status = event_table_enqueue(room, index, transit_table_event_callback,
-				     size, data);
-	return status;
-}
-
+static int transit_find_seat(GGZTable *table, char *name);
 
 int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller)
 {
@@ -150,24 +123,29 @@ int transit_player_event(char* name, char opcode, int status, int index,
 
 
 /* Executed by table hander thread */
-static GGZEventFuncReturn transit_table_event_callback(void* target,
-                                                       int size,
-                                                       void* data)
+static GGZEventFuncReturn transit_seat_event_callback(void* target, 
+						      int size, 
+						      void* data)
 {
 	int status;
-	char opcode;
-	char *current, *name;
-	GGZTable* table = (GGZTable*)target;
+	GGZTable *table = target;
+	char action;
+	struct GGZSeatEvent *event = data;
+	struct GGZTableSeat *seat = &(event->seat);
 
-	/* Unpack event data */
-	current = (char*)data;
-	opcode = *(char*)current;
-	current += sizeof(char);
-	name = (char*)(current);
-	
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d transit callback for %s",
-		table->index, table->room, name);
-	
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s requested seat change on table %d: Seat %d to %s (%s)", 
+		event->caller, table->index, seat->index, 
+		ggz_seattype_to_string(seat->type), seat->name);
+
+	/* Figure out what kind of event this is */
+	if (seat->type == GGZ_SEAT_PLAYER)
+		action = GGZ_TRANSIT_JOIN;
+	else if (table->seat_types[seat->index] == GGZ_SEAT_PLAYER)
+		action = GGZ_TRANSIT_LEAVE;
+	else
+		action = GGZ_TRANSIT_SEAT;
+
 	/* If this table is already in transit, defer event until later */
 	if (table->transit) {
 		dbg_msg(GGZ_DBG_TABLE, 
@@ -176,109 +154,57 @@ static GGZEventFuncReturn transit_table_event_callback(void* target,
 		return GGZ_EVENT_DEFER;
 	}
 
-	/* First check to see if table is in process of being removed */
+	/* Make sure table is in an acceptable state */
 	switch (table->state) {
-
 	case GGZ_TABLE_ERROR:
 	case GGZ_TABLE_DONE:
+		/* Notify player that transit failed */
 		/* Don't care if this fails, we aren't transiting anyway */
-		transit_player_event(name, opcode, E_BAD_OPTIONS, 0, 0);
+		transit_player_event(event->caller, action, E_BAD_OPTIONS, 0, 0);
 		return GGZ_EVENT_OK;
 
 	case GGZ_TABLE_PLAYING:
 		/* Don't care about joins */
-		if (opcode != GGZ_TRANSIT_LEAVE)
+		if (action != GGZ_TRANSIT_LEAVE)
 			break;
 		
-		/* Only allow leave during gameplay if game type supports it */
+		/* Only allow seat assignment during gameplay if game type supports it */
 		pthread_rwlock_rdlock(&game_types[table->type].lock);
 		if (!game_types[table->type].allow_leave) {
 			pthread_rwlock_unlock(&game_types[table->type].lock);
-			transit_player_event(name, opcode, E_LEAVE_FORBIDDEN, 
+			transit_player_event(event->caller, action, E_LEAVE_FORBIDDEN, 
 					     0, 0);
 			return GGZ_EVENT_OK;
 		}
 		pthread_rwlock_unlock(&game_types[table->type].lock);
 		break;
-	case GGZ_TABLE_CREATED:
-	case GGZ_TABLE_WAITING:
+	default:
+		/* Other states are OK */
 		break;
 	}
-	
-	switch (opcode) {
-	case GGZ_TRANSIT_JOIN:	
-		{    	
-		/*
-		 * First we must pick a seat number for the player.  We
-		 * want to give them a reserved (for them) seat if
-		 * possible, otherwise any open seat will do.  If no
-		 * seat is available, we let the client know.  If one
-		 * is found, we pass that on to transit_send_join_to_game.
-		 */
-		int num_seats = seats_num(table), i;
-	
-		/* First look for my (reserved) seat. */
-		for (i = 0; i < num_seats; i++)
-			if (seats_type(table, i) == GGZ_SEAT_RESERVED
-			    && !strcasecmp(table->seat_names[i], name))
-				break;
-			
-		/* If that failed, look for any open seat. */
-		if (i == num_seats)
-			for (i = 0; i < num_seats; i++)
-				if (seats_type(table, i) == GGZ_SEAT_OPEN)
-					break;
-					
-		/* If _that_ failed, let the player know the table is full. */
-		if (i == num_seats) {
-			/* Don't care if this fails,
-			   we aren't transiting anyway */
-			transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
-			return GGZ_EVENT_OK;
+
+
+	switch (action) {
+	case GGZ_TRANSIT_JOIN:
+		
+		/* Try to find a seat if one isn't specified */
+		if (seat->index == GGZ_SEATNUM_ANY) {
+			if ( (seat->index = transit_find_seat(table, event->caller)) < 0) {
+				/* Don't care if this fails, we aren't transiting anyway */
+				transit_player_event(event->caller, action, E_TABLE_FULL, 0, 0);
+				return GGZ_EVENT_OK;
+			}
 		}
 		
-		/* Otherwise send the join to the game server. */
-		status = transit_send_join_to_game(table, name, i);
+		status = transit_send_join_to_game(table, event->caller, seat->index);
 		break;
-		}
 	case GGZ_TRANSIT_LEAVE:
-		status = transit_send_leave_to_game(table, name);
+		status = transit_send_leave_to_game(table, event->caller);
 		break;
 	default:
-		status = -1;
+		status = transit_send_seat_to_game(table, event);
+		break;
 	}
-	
-	/* If we sent it successfully, mark this table as in transit */
-	if (status == 0) {
-		table->transit = 1;
-		status = GGZ_EVENT_OK;
-	}
-	/* Otherwise send an error message back to the player */
-	else {
-		transit_player_event(name, opcode, E_JOIN_FAIL, 0, 0);
-		status = GGZ_EVENT_ERROR;
-	}
-
-	return status;
-}
-
-
-/* Executed by table hander thread */
-static GGZEventFuncReturn transit_seat_event_callback(void* target, 
-						      int size, 
-						      void* data)
-{
-	int status;
-	GGZTable *table = target;
-	struct GGZSeatEvent *event = data;
-
-	dbg_msg(GGZ_DBG_TABLE, 
-		"%s requested seat change on table %d: Seat %d to %s (%s)", 
-		event->caller, table->index, event->seat.index, 
-		ggz_seattype_to_string(event->seat.type),
-		event->seat.name);
-	
-	status = transit_send_seat_to_game(table, event);
 
 	/* If we sent it successfully, mark this table as in transit */
 	if (status == 0) {
@@ -287,7 +213,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	}
 	/* Otherwise send an error message back to the player */
 	else {
-		transit_player_event(event->caller, GGZ_TRANSIT_SEAT, 
+		transit_player_event(event->caller, action, 
 				     E_SEAT_ASSIGN_FAIL, 0, 0);
 		status = GGZ_EVENT_ERROR;
 	}
@@ -470,3 +396,21 @@ static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event
 	return 0;
 }
 
+
+static int transit_find_seat(GGZTable *table, char *name)
+{
+	int i, num_seats = seats_num(table);
+	
+	/* First look for my (reserved) seat. */
+	for (i = 0; i < num_seats; i++)
+		if (seats_type(table, i) == GGZ_SEAT_RESERVED
+		    && !strcasecmp(table->seat_names[i], name))
+			return i;
+			
+	/* If that failed, look for first open seat. */
+	for (i = 0; i < num_seats; i++)
+		if (seats_type(table, i) == GGZ_SEAT_OPEN)
+			return i;
+
+	return -1;
+}
