@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4432 2002-09-07 09:13:46Z dr_maux $
+ * $Id: table.c 4434 2002-09-07 09:52:24Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1314,7 +1314,20 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 			player->name, name, 
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
 			seat_num, info.index);
-		
+		break;
+
+	case GGZ_UPDATE_SPECTATOR_LEAVE:
+	case GGZ_UPDATE_SPECTATOR_JOIN:
+		name = (char*)current;
+		current += strlen(name) + 1;
+		seat_num = *(int*)current;
+		current += sizeof(int);
+		strcpy(info.spectators[seat_num], name);
+
+		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s spectator seat %d at table %d",
+			player->name, name,
+			(opcode == GGZ_UPDATE_SPECTATOR_JOIN ? "join" : "leave"),
+			seat_num, info.index);
 		break;
 	}
 
