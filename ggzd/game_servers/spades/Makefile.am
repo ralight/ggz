@@ -25,8 +25,3 @@ ggzd_spades_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.la
 
 AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
 
-test:
-	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
-	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
-	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
-

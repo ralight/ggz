@@ -13,5 +13,3 @@ noinst_PROGRAMS =       \
 basic_SOURCES = basic.c
 ggzdtest_SOURCES = ggzdtest.c
 logmod_SOURCES = logmod.c
-
-test: # nothing necessary

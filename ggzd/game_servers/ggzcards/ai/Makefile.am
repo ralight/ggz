@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = .
 
@@ -47,7 +47,4 @@ ggzd_ggzcards_ai_suaro_SOURCES = suaro.c
 ggzd_ggzcards_ai_suaro_LDADD = $(AILIB)
 ggzd_ggzcards_ai_suaro_CFLAGS = -DAI_CLIENT
 ggzd_ggzcards_ai_suaro_LDFLAGS = $(LIBGGZ_LDFLAGS)
-
-test:
-	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
 

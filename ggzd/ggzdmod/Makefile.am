@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = .
 
@@ -30,5 +30,3 @@ libggzdmod_la_SOURCES = ggzdmod.h ggzdmod-ggz.h \
 include_HEADERS = ggzdmod.h ggzdmod-ggz.h
 
 AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
-
-test: # nothing to be done

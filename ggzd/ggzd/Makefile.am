@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6697 2005-01-16 07:20:57Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = database
 
@@ -66,6 +66,3 @@ ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS) $(LIB_DATABASE) $(LIB_GGZ) $(top_builddi
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 
-test:
-	-cp -f ggzd.motd $(top_builddir)/test
-	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms

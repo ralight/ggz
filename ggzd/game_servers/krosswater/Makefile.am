@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = stackpath zoneserver
 
@@ -20,9 +20,4 @@ ggzdroom_DATA = krosswater.room
 ggzdgame_DATA = krosswater.dsc
 
 EXTRA_DIST = krosswater.dsc krosswater.room
-
-test:
-	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
-	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
-	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
 

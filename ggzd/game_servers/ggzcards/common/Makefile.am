@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = .
 
@@ -13,4 +13,3 @@ libcommon_a_SOURCES = \
 
 AM_CPPFLAGS = $(LIBGGZ_INCLUDES)
 
-test: # nothing to be done (ggz-server only)

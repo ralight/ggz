@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4113 2002-04-29 18:20:36Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = .
 
@@ -27,8 +27,4 @@ EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
 
 # JDS: is this necessary?
 #ggzd_ggzcards_LDADD = $(LDADD)
-
-test:
-	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
-	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
 

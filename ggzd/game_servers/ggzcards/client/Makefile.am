@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6258 2004-11-04 23:00:59Z jdorje $
+# $Id: Makefile.am 6959 2005-03-04 00:18:42Z josef $
 
 SUBDIRS = .
 
@@ -15,4 +15,3 @@ libclient_a_SOURCES = client.c client.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/game_servers/ggzcards/common $(LIBGGZ_INCLUDES)
 
-test: # nothing to be done (ggz-server only)
