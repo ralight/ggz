@@ -40,6 +40,8 @@
 static DOM *configuration = NULL;
 char *logfile = NULL;
 static char *cachefile = NULL;
+int daemonport = 0;
+int verbosity = 0;
 
 static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
@@ -495,7 +497,8 @@ static char *metaserv_xml(const char *uri)
 	mode = NULL;
 	atnum = 0;
 
-	logline("XML: uri=%s", uri);
+	if(verbosity)
+		logline("XML: uri=%s", uri);
 
 	query = minidom_parse(uri);
 
@@ -642,7 +645,11 @@ static char *metaserv_uri(char *requri)
 		}
 		else logline("Unknown class type in %s", token);
 	}
-	else logline("Unknown query type in %s", requri);
+	else
+	{
+		if(verbosity)
+			logline("Unknown query type in %s", requri);
+	}
 
 	while(token) token = strtok(NULL, ":/");
 
@@ -699,21 +706,24 @@ static void metaserv_shutdown()
 	minidom_free(configuration);
 }
 
-static int metaserv_work(int fd)
+static int metaserv_work(int fd, int session)
 {
 	char buffer[1024];
 	char *result;
 	int ret;
 	FILE *stream;
 
-	logline("Enter main loop");
+	logline("[%i] Enter main loop", session);
 	while(1)
 	{
 		ret = read(fd, buffer, sizeof(buffer));
 		if(ret > 0)
 		{
 			buffer[ret - 1] = 0;
-			logline("Request: buffer=%s", buffer);
+			if(verbosity)
+				logline("[%i] Request: buffer=%s", session, buffer);
+			else
+				logline("[%i] Got request", session);
 			result = metamagic(buffer);
 
 			stream = fdopen(fd, "w");
@@ -722,16 +732,19 @@ static int metaserv_work(int fd)
 				if(result)
 				{
 					fprintf(stream, "%s\n", result);
-					logline("Result: result=%s", result);
+					if(verbosity)
+						logline("[%i] Result: result=%s", session, result);
+					else
+						logline("[%i] Sent result", session);
 				}
 				else
 				{
 					fprintf(stream, "\n");
-					logline("No result");
+					logline("[%i] No result", session);
 				}
 				fflush(stream);
 			}
-			else logline("Broken pipe");
+			else logline("[%i] Broken pipe", session);
 		}
 		else return 0;
 	}
@@ -748,6 +761,9 @@ static void *metaserv_worker(void *arg)
 	struct hostent host, *hp;
 	int herr;
 	char tmp[1024];
+	const char *peer;
+	static long session = 0;
+	int tmpsession;
 
 	fd = *(int*)arg;
 	free(arg);
@@ -755,11 +771,13 @@ static void *metaserv_worker(void *arg)
 	namelen = sizeof(struct sockaddr_in);
 	getpeername(fd, (struct sockaddr*)&peername, &namelen);
 	ret = gethostbyaddr_r(&peername.sin_addr, sizeof(struct in_addr), AF_INET, &host, tmp, 1024, &hp, &herr);
-	if(!ret) snprintf(tmp, sizeof(tmp), host.h_name);
-	else snprintf(tmp, sizeof(tmp), "(unknown)");
-	logline("Accepted connection from %s", tmp);
-	metaserv_work(fd);
-	logline("Disconnection from %s", tmp);
+	if(!ret) peer = host.h_name;
+	else peer = "(unknown)";
+
+	tmpsession = session++;
+	logline("Accepted connection from %s as [%i]", peer, tmpsession);
+	metaserv_work(fd, tmpsession);
+	logline("Disconnection from %s as [%i]", peer, tmpsession);
 
 	if(cachefile)
 	{
@@ -790,14 +808,18 @@ static void metaserv_daemon()
 	if(sock < 0) return;
 
 	name.sin_family = AF_INET;
-	name.sin_port = htons(METASERV_PORT);
+	name.sin_port = htons(daemonport);
 	name.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	on = 1;
 	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on));
 
 	ret = bind(sock, (struct sockaddr*)&name, sizeof(name));
-	if(ret < 0) return;
+	if(ret < 0)
+	{
+		fprintf(stderr, "Couldn't bind to port, maybe already running?\n");
+		return;
+	}
 
 	ret = listen(sock, 1);
 	if(ret < 0) return;
@@ -828,12 +850,14 @@ int main(int argc, char *argv[])
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{"logfile", required_argument, 0, 'l'},
+		{"port", required_argument, 0, 'p'},
+		{"verbose", no_argument, 0, 'V'},
 		{0, 0, 0, 0}
 	};
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "c:C:dhl:v", options, &optindex);
+		opt = getopt_long(argc, argv, "c:C:dhl:p:vV", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -856,7 +880,9 @@ int main(int argc, char *argv[])
 				printf("[-C | --cache        ]: Use this cache file\n");
 				printf("[-d | --daemon       ]: Run in daemon mode\n");
 				printf("[-h | --help         ]: Show this help\n");
+				printf("[-p | --port         ]: Use this port instead of %i\n", METASERV_PORT);
 				printf("[-v | --version      ]: Display version number\n");
+				printf("[-V | --verbose      ]: More verbose log file\n");
 				printf("[-l | --logfile      ]: Log events into this file\n");
 				exit(0);
 				break;
@@ -864,8 +890,14 @@ int main(int argc, char *argv[])
 				printf("%s\n", METASERV_VERSION);
 				exit(0);
 				break;
+			case 'V':
+				verbosity = 1;
+				break;
 			case 'l':
 				logfile = optarg;
+				break;
+			case 'p':
+				daemonport = atoi(optarg);
 				break;
 			default:
 				printf("Unknown option, try --help.\n");
@@ -873,11 +905,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	if(!daemonport) daemonport = METASERV_PORT;
+
 	metaserv_init(config);
 
 	if(!daemonmode)
 	{
-		ret = metaserv_work(STDIN_FILENO);
+		ret = metaserv_work(STDIN_FILENO, 0);
 		logline("Disconnection");
 	}
 	else metaserv_daemon();
