@@ -183,20 +183,20 @@
       <listitem>
 	<para>
 	  To request a list of the players in the current room and
-	  what tables the are at, a client may send <link
-	  linkend="req.list.players">REQ_LIST_PLAYERS</link>.  The
-	  server will respond with <link
-	  linkend="rsp.list.players">RSP_LIST_PLAYERS</link>.
+	  what tables the are at, a client may send
+	  <link linkend="req.list">LIST</link> with type 'player'.
+	  The server will respond with a list of
+	  <link linkend="rsp.list.player">PLAYER</link> tags.
 	</para>
       </listitem>
 
       <listitem>
 	<para>
 	  Similarly, to request a list of the game tables in the room,
-	  the client should send <link
-	  linkend="req.list.tables">REQ_LIST_TABLES</link>.  The
-	  server will respond via <link
-	  linkend="rsp.list.tables">RSP_LIST_TABLES</link>.
+	  the client should send
+	  <link linkend="req.list">LIST</link> of type 'table'.
+	  The server will respond via a list of
+	  <link linkend="rsp.list.table">TABLE</link> tags.
 	</para>
       </listitem>
     </itemizedlist>
@@ -238,8 +238,8 @@
       <listitem>
 	<para>
 	  If another player enters or leaves the room, the server will
-	  send a <link
-	  linkend="msg.update.players">MSG_UPDATE_PLAYERS</link> to
+	  send an
+	  <link linkend="msg.update">UPDATE</link> of type 'player' to
 	  all of <emphasis>other</emphasis> players in that room.  A
 	  player will never receive a player update about himself.
 	</para>
@@ -260,9 +260,9 @@
       <listitem>
 	<para>
 	  Whenever the list of tables in a room changes, each player
-	  in the room will receive a <link
-	  linkend="msg.update.tables">MSG_UPDATE_TABLES</link>
-	  message.  This will occur whenever a table is launched or
+	  in the room will receive an
+	  <link linkend="msg.update">UPDATE</link> message of type
+	  'player'. This will occur whenever a table is launched or
 	  destroyed, a player joins or leaves, or the table's state
 	  has changed. 
 	</para>

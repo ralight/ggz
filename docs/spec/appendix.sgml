@@ -96,6 +96,64 @@
 
 <section id ="server-to-client"><title>Server to client messages</title>
 
+  <refentry id="msg.ping"><?dbhtml filename="msg_ping.html">
+    <refmeta>
+      <indexterm>
+	<primary>PING</primary>
+      </indexterm>
+      <refentrytitle>PING</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>PING</refname>
+      <refpurpose>Lag measurement challenge</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+	<tgroup cols="3">
+	  <colspec colnum="1" colname="C1" align="left">
+	  <colspec colnum="2" colname="C2">
+	  <colspec colnum="3" colname="C3">
+		<tbody>
+
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+		      &lt;PING/&gt;
+		    </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry><emphasis role="bold">Data</emphasis></entry>
+		    <entry><emphasis role="bold">Type</emphasis></entry>
+			<entry><emphasis role="bold">Example</emphasis></entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry namest="C1" nameend="C3">No data</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>Periodically sent request</para>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+	  The PING tag is sent periodically from the server to all clients
+	  in order to obtain their response (the
+	  <link linkend="rsp.pong">PONG</link> tag) for lag calculation.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+
   <refentry id="msg.room"><?dbhtml filename="msg_room.html">
     <refmeta>
       <indexterm>
@@ -634,20 +692,19 @@
     </refsect1>
   </refentry>
 
-  <refentry id="msg.update.players">
-    <?dbhtml filename="msg_update_players.html">
+  <refentry id="msg.update"><?dbhtml filename="msg_update.html">
     <refmeta>
       <indexterm>
-	<primary>MSG_UPDATE_PLAYERS</primary>
+	<primary>UPDATE</primary>
       </indexterm>
-      <refentrytitle>MSG_UPDATE_PLAYERS</refentrytitle>
+      <refentrytitle>UPDATE</refentrytitle>
     </refmeta>
 
     <refnamediv>
-      <refname>MSG_UPDATE_PLAYERS</refname>
+      <refname>UPDATE</refname>
       <refpurpose>
-	Notification that the list of players in a room has
-	changed
+	Notification that the list of players
+	or the list of tables in a room has changed
       </refpurpose>
     </refnamediv>
 
@@ -660,32 +717,33 @@
 		<tbody>
 
 		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>4</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">MSG_UPDATE_PLAYERS</entry>
+		    <entry namest="C1" nameend="C3">
+			  &lt;UPDATE TYPE="type" ACTION="action" ROOM="room"&gt;
+			</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry><emphasis role="bold">Data</emphasis></entry>
 		    <entry><emphasis role="bold">Type</emphasis></entry>
-		    <entry><emphasis role="bold">Sent</emphasis></entry>
+		    <entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry>sub-opcode</entry>
-		    <entry>char</entry>
-		    <entry>always</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry>player</entry>
+		    <entry>TYPE</entry>
 		    <entry>string</entry>
-		    <entry>always</entry>
+		    <entry>player</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>ACTION</entry>
+		    <entry>string</entry>
+		    <entry>add</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>ROOM</entry>
+			<entry>int</entry>
+			<entry>1</entry>
 		  </row>
 
 		</tbody>
@@ -697,40 +755,26 @@
       <title>Description</title>
       <para>
 	Notification from the server that the list of players in
-	the current room has been modified since the last update
+	the current room has been modified since the last update,
+	or that a table has been added, removed or changed its state
       </para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
 	  <varlistentry>
-	    <term><emphasis role="bold">sub-opcode</emphasis></term>
+	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Type of update:
-		<itemizedlist>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_DELETE (0) : The specified player
-		      has been deleted from the list (ie. that
-		      player has left the room)
-		    </para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_ADD (1) : The specified player
-		      has been added to the list (ie. that
-		      player has entered the room)
-		    </para>
-		  </listitem>
-		</itemizedlist>
+		Update type. Can be 'player' or 'table'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">player</emphasis></term>
+	    <term><emphasis role="bold">ACTION</emphasis></term>
 	    <listitem>
 	      <para>
-		Name of player who is entering or leaving the room
+		Action to do. Can be either 'add' or 'delete' for players,
+		and 'join' or 'status' for tables.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -740,19 +784,21 @@
       <refsect2>
 	<title>Usage</title>
 	<para>
-	  MSG_UPDATE_PLAYERS is sent from the server to the client
-	  if the list of players in the current room has changed
-	  since the last update.  It is <emphasis>not</emphasis>
-	  sent upon initial entry to a room.  To obtain a player
+	  An UPDATE tag is sent from the server to the client
+	  if the list of players or tables in the current room has changed
+	  since the last update. It is <emphasis>not</emphasis>
+	  sent upon initial entry to a room. To obtain a player or table
 	  list upon entering a room, the client must send a
-	  <link linkend="req.list.players">REQ_LIST_PLAYERS</link>.
+	  <link linkend="req.list">LIST</link> of type 'player' or 'table'.
+	  The UPDATE tag contains one or more tags of type
+	  <link linkend="rsp.list.player">PLAYER</link> or
+	  <link linkend="rsp.list.table">TABLE</link>, respectively.
 	</para>
       </refsect2>
     </refsect1>
   </refentry>
 
-  <refentry id="msg.update.types">
-    <?dbhtml filename="msg_update_types.html">
+  <refentry id="msg.update.types"><?dbhtml filename="msg_update_types.html">
     <refmeta>
       <indexterm>
 	<primary>MSG_UPDATE_TYPES</primary>
@@ -957,298 +1003,6 @@
     </refsect1>
   </refentry>
 
-  <refentry id="msg.update.tables">
-    <?dbhtml filename="msg_update_tables.html">
-    <refmeta>
-      <indexterm>
-	<primary>MSG_UPDATE_TABLES</primary>
-      </indexterm>
-      <refentrytitle>MSG_UPDATE_TABLES</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>MSG_UPDATE_TABLES</refname>
-      <refpurpose>
-	Notification that the list of tables in a room has changed
-      </refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	    <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-		<spanspec spanname="all" namest="C1" nameend="C3"
-			  align="left"> 	      
-		  <tbody>
-
-		    <row rowsep="0">
-		      <entry namest="C1" nameend="C2">
-			<emphasis role="bold">Opcode</emphasis>
-		      </entry>
-		      <entry>6</entry>
-		    </row>
-
-		    <row rowsep="0">
-		      <entry namest="C1" nameend="C3">MSG_UPDATE_TABLES</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry><emphasis role="bold">Data</emphasis></entry>
-		      <entry><emphasis role="bold">Type</emphasis></entry>
-		      <entry><emphasis role="bold">Sent</emphasis></entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>sub-opcode</entry>
-		      <entry>char</entry>
-		      <entry>always</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>ID</entry>
-		      <entry>int</entry>
-		      <entry>always</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>state</entry>
-		      <entry>char</entry>
-		      <entry>if state</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>seat</entry>
-		      <entry>int</entry>
-		      <entry>if join/leave</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>player</entry>
-		      <entry>string</entry>
-		      <entry>if join/leave</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>room</entry>
-		      <entry>int</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>type</entry>
-		      <entry>int</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>description</entry>
-		      <entry>string</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>state</entry>
-		      <entry>char</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>seats</entry>
-		      <entry>int</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry spanname="all">
-			<emphasis>sequence of</emphasis> seats:
-		      </entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>assignment</entry>
-		      <entry>int</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		    <row rowsep="1">
-		      <entry>name</entry>
-		      <entry>string</entry>
-		      <entry>if added</entry>
-		    </row>
-
-		  </tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para>Notification that the list of tables in the current
-	room has been modified since the last update</para>
-      <refsect2>
-	<title>Message Data</title>
-	<variablelist>
-	  <varlistentry>
-	    <term><emphasis role="bold">sub-opcode</emphasis></term>
-	    <listitem>
-	      <para>
-		Type of update:
-		<itemizedlist>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_DELETE (0) : The specified table
-		      has been deleted from the list (ie. the
-		      game session on that table has completed)
-		    </para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_ADD (1) : The specified table
-		      has been added to the list (ie. a new game
-		      session has been launched on that table in
-		      the room)
-		    </para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_LEAVE (2) : The specified player
-		      has left his or her seat at the table
-		    </para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_JOIN (3) : The specified player
-		      has joined the table in the designated seat
-		    </para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      GGZ_UPDATE_STATE (4) : The state of the
-		      table has changed to the designated state
-		    </para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">ID</emphasis></term>
-	    <listitem>
-	      <para>
-		Unique numeric ID for table
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">state</emphasis></term>
-	    <listitem>
-	      <para>
-		Current state of this table.  Only sent when
-		updating the table-state.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">seat</emphasis></term>
-	    <listitem>
-	      <para>
-		Seat number at table.  Only sent if a player is
-		joining/leaving the table.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">player</emphasis></term>
-	    <listitem>
-	      <para>
-		Name of player joining/leaving.  Only sent if a
-		player is joining/leaving the table.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">room</emphasis></term>
-	    <listitem>
-	      <para>
-		ID of room in which table resides.  This is only
-		sent if the table is being added to the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">type</emphasis></term>
-	    <listitem>
-	      <para>
-		ID of game type being played on this table.  This
-		is only sent if the table is being added to the
-		list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">description</emphasis></term>
-	    <listitem>
-	      <para>
-		Brief description of this table.  This is only
-		sent if the table is being added to the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">state</emphasis></term>
-	    <listitem>
-	      <para>
-		Current state of the table.  FIXME: Explain this.
-		This is only sent if the table is being added to
-		the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">seats</emphasis></term>
-	    <listitem>
-	      <para>
-		Number of seats at the table.  This is only sent
-		if the table is being added to the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">assignment</emphasis></term>
-	    <listitem>
-	      <para>
-		Seat assignment FIXME: Explain this.  This is only
-		sent if the table is being added to the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">name</emphasis></term>
-	    <listitem>
-	      <para>
-		Reserved seat name FIXME: Explain this.  This is
-		only sent if the table is being added to the list.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </refsect2>
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  MSG_UPDATE_TABLES is sent from the server to the client
-	  if the list of tables in the current room has changed
-	  since the last update.  It is <emphasis>not</emphasis>
-	  sent upon initial entry to a room.  To obtain a table
-	  list upon entering a room, the client must send a
-	  <link linkend="req.list.tables">REQ_LIST_TABLES</link>.
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
-
   <refentry id="msg.update.rooms">
     <?dbhtml filename="msg_update_rooms.html">
     <refmeta>
@@ -1407,18 +1161,18 @@
     </refsect1>
   </refentry>
 
-  <refentry id="rsp.list.players"><?dbhtml filename="rsp_list_players.html">
+  <refentry id="rsp.list.player"><?dbhtml filename="rsp_list_players.html">
     <refmeta>
       <indexterm>
-	<primary>RSP_LIST_PLAYERS</primary>
+	<primary>PLAYER</primary>
       </indexterm>
-      <refentrytitle>RSP_LIST_PLAYERS</refentrytitle>
+      <refentrytitle>PLAYER</refentrytitle>
     </refmeta>
 
     <refnamediv>
-      <refname>RSP_LIST_PLAYERS</refname>
+      <refname>PLAYER</refname>
       <refpurpose>
-	Server response to request for list of players in room.
+	List entry describing one player.
       </refpurpose>
     </refnamediv>
 
@@ -1431,44 +1185,39 @@
 		<tbody>
 
 		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>15</entry>
-		  </row>
-
-		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      RSP_LIST_PLAYERS
+		      &lt;PLAYER ID="id" TYPE="type" TABLE="table" LAG="lag"/&gt;
 		    </entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Data</emphasis>
-		    </entry>
+		    <entry><emphasis role="bold">Data</emphasis></entry>
 		    <entry><emphasis role="bold">Type</emphasis></entry>
+		    <entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">players</entry>
-		    <entry>int</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C3">
-		      <emphasis>sequence of</emphasis> players:
-		    </entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry align="right" namest="C1" nameend="C2">name</entry>
+		    <entry>ID</entry>
 		    <entry>string</entry>
+			<entry>Grubby</entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry align="right" namest="C1" nameend="C2">table</entry>
+		    <entry>TYPE</entry>
+		    <entry>string</entry>
+			<entry>guest</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>TABLE</entry>
 		    <entry>int</entry>
+			<entry>-1</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>LAG</entry>
+		    <entry>int</entry>
+			<entry>1</entry>
 		  </row>
 
 		</tbody>
@@ -1478,33 +1227,43 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Server response to request for list of players in
-	current room</para>
+        <para>
+	      List entry containing the description of one player
+	    </para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
 	  <varlistentry>
-	    <term><emphasis role="bold">players</emphasis></term>
+	    <term><emphasis role="bold">ID</emphasis></term>
 	    <listitem>
 	      <para>
-		Number of players in room, or -1 on error
+		Unique identifier of this player
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">name</emphasis></term>
+	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Player name
+		Player type (can be 'guest', 'normal' or 'admin')
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">table</emphasis></term>
+	    <term><emphasis role="bold">TABLE</emphasis></term>
 	    <listitem>
 	      <para>
 		ID number of table at which player is "sitting" or -1
 		if the player is not at a table.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">LAG</emphasis></term>
+	    <listitem>
+	      <para>
+		Lag value of the player, which ranges from zero (ideal
+		connection) to five (slow connection).
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1514,26 +1273,26 @@
       <refsect2>
 	<title>Usage</title>
 	<para>
-	  RSP_LIST_PLAYERS is sent from the server to the client
+	  The PLAYER is contained in a list sent from the server to the client
 	  in response to
-	  <link linkend="req.list.players">REQ_LIST_PLAYERS</link>
+	  <link linkend="req.list">LIST</link> request tag of type 'player'.
 	</para>
       </refsect2>
     </refsect1>
   </refentry>
 
-  <refentry id="rsp.list.tables"><?dbhtml filename="rsp_list_tables.html">
+  <refentry id="rsp.list.table"><?dbhtml filename="rsp_list_tables.html">
     <refmeta>
       <indexterm>
-	<primary>RSP_LIST_TABLES</primary>
+	<primary>TABLE</primary>
       </indexterm>
-      <refentrytitle>RSP_LIST_TABLES</refentrytitle>
+      <refentrytitle>TABLE</refentrytitle>
     </refmeta>
 
     <refnamediv>
-      <refname>RSP_LIST_TABLES</refname>
+      <refname>TABLE</refname>
       <refpurpose>
-	Server response to request for list of tables
+	List entry containing one table
       </refpurpose>
     </refnamediv>
 
@@ -1543,90 +1302,70 @@
 	  <colspec colnum="1" colname="C1" align="left">
 	    <colspec colnum="2" colname="C2">
 	      <colspec colnum="3" colname="C3">
-		<colspec colnum="4" colname="C4">
-		  <spanspec spanname="data.seq0" namest="C1" nameend="C3"
-			    align="left">
-		    <spanspec spanname="data.seq1" namest="C1" nameend="C3"
-			      align="center">
-		      <spanspec spanname="data.seq2" namest="C1" nameend="C3"
-				align="right">
-			<spanspec spanname="all" namest="C1" nameend="C4"
-				  align="left"> 
 			  <tbody>
 
 			    <row rowsep="0">
-			      <entry namest="C1" nameend="C3">
-				<emphasis role="bold">Opcode</emphasis>
-			      </entry>
-			      <entry>17</entry>
-			    </row>
-
-			    <row rowsep="0">
-			      <entry spanname="all">RSP_LIST_TABLES</entry>
+			      <entry>
+				    &lt;TABLE ID="id" GAME="game" STATUS="status" SEATS="seats"&gt;
+					  &lt;DESC&gt;desc&lt;/DESC&gt;
+					  &lt;SEAT NUM="num" TYPE="type"&gt;player&lt;/SEAT&gt;
+					  ...
+					&lt;/TABLE&gt;
+				  </entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq0">
-				<emphasis role="bold">Data</emphasis>
-			      </entry>
+			      <entry><emphasis role="bold">Data</emphasis></entry>
 			      <entry><emphasis role="bold">Type</emphasis></entry>
+			      <entry><emphasis role="bold">Example</emphasis></entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq0">tables</entry>
+			      <entry>ID</entry>
 			      <entry>int</entry>
+				  <entry>0</entry>
 			    </row>
 
-			    <row rowsep="1">
-			      <entry spanname="all">
-				<emphasis>sequence of</emphasis> tables:
-			      </entry>
-			    </row>
+				<row rowsep="1">
+				  <entry>GAME</entry>
+				  <entry>int</entry>
+				  <entry>0</entry>
+				</row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq1">ID</entry>
+			      <entry>STATUS</entry>
 			      <entry>int</entry>
+				  <entry>1</entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq1">room</entry>
+			      <entry>SEATS</entry>
 			      <entry>int</entry>
+				  <entry>2</entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq1">type</entry>
-			      <entry>int</entry>
-			    </row>
-
-			    <row rowsep="1">
-			      <entry spanname="data.seq1">description</entry>
+			      <entry>DESC</entry>
 			      <entry>string</entry>
+				  <entry>An empty table</entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="data.seq1">state</entry>
-			      <entry>char</entry>
-			    </row>
-
-			    <row rowsep="1">
-			      <entry spanname="data.seq1">seats</entry>
+			      <entry>NUM</entry>
 			      <entry>int</entry>
+				  <entry>0</entry>
 			    </row>
 
 			    <row rowsep="1">
-			      <entry spanname="all">
-				<emphasis>sequence of</emphasis> seats:
-			      </entry>
-			    </row>
-
-			    <row rowsep="1">
-			      <entry spanname="data.seq2">assignment</entry>
-			      <entry>int</entry>
-			    </row>
-
-			    <row rowsep="1">
-			      <entry spanname="data.seq2">name</entry>
+			      <entry>TYPE</entry>
 			      <entry>string</entry>
+				  <entry>player</entry>
+			    </row>
+
+			    <row rowsep="1">
+			      <entry>PLAYER</entry>
+			      <entry>string</entry>
+				  <entry>Grubby</entry>
 			    </row>
 
 			  </tbody>
@@ -1636,87 +1375,75 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Server response to request for list of tables</para>
+      <para>The TABLE tag describes one table with all its properties</para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
 	  <varlistentry>
-	    <term><emphasis role="bold">tables</emphasis></term>
-	    <listitem>
-	      <para>
-		Number of tables, or -1 on error
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">room</emphasis></term>
-	    <listitem>
-	      <para>
-		Room in which table resides
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
 	    <term><emphasis role="bold">ID</emphasis></term>
 	    <listitem>
 	      <para>
-		Unique numeric ID for table
+		Unique identifier of this table in this room
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">type</emphasis></term>
+	    <term><emphasis role="bold">GAME</emphasis></term>
 	    <listitem>
 	      <para>
-		ID of game type being played on this table.  This
-		is only sent if the table is being added to the
-		list.
+		Associated game. Only used in updates with action 'add'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">description</emphasis></term>
+	    <term><emphasis role="bold">STATUS</emphasis></term>
 	    <listitem>
 	      <para>
-		Brief description of this table.  This is only
-		sent if the table is being added to the list.
+		Current status of the table. Only used within updates with
+		action 'status' or 'add'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">state</emphasis></term>
+	    <term><emphasis role="bold">SEATS</emphasis></term>
 	    <listitem>
 	      <para>
-		Current state of the table.  FIXME: Explain this.
-		This is only sent if the table is being added to
-		the list.
+		Number of seats on this table.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">seats</emphasis></term>
+	    <term><emphasis role="bold">DESC</emphasis></term>
 	    <listitem>
 	      <para>
-		Number of seats at the table.  This is only sent
-		if the table is being added to the list.
+		Description of the table.
+		Only sent when table is being added to the list,
+		i.e. in updates with action 'add'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">assignment</emphasis></term>
+	    <term><emphasis role="bold">NUM</emphasis></term>
 	    <listitem>
 	      <para>
-		Seat assignment FIXME: Explain this.  This is only
-		sent if the table is being added to the list.
+		Number of a seat.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  <varlistentry>
-	    <term><emphasis role="bold">name</emphasis></term>
+	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Reserved seat name FIXME: Explain this.  This is
-		only sent if the table is being added to the list.
+		Type of a seat, which can be 'open', 'player',
+		'reserved' or 'bot'.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">PLAYER</emphasis></term>
+	    <listitem>
+	      <para>
+		Player name in case the type is either 'player' or 'reserved'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1725,9 +1452,11 @@
       <refsect2>
 	<title>Usage</title>
 	<para>
-	  RSP_LIST_TABLES is sent from the server to the client in
+	  TABLE tags are sent in a list from the server to the client in
 	  response to
-	  <link linkend="req.list.tables">REQ_LIST_TABLES</link>
+	  <link linkend="req.list">LIST</link> when LIST is of type 'table',
+	  and in
+	  <link linkend="msg.update">UPDATE</link> tags of type 'table'.
 	</para>
       </refsect2>
     </refsect1>
@@ -1852,7 +1581,7 @@
 
 			  <row rowsep="0">
 			    <entry namest="C1" nameend="C3">
-				  &lt;LIST TYPE="type"&gt;
+				  &lt;LIST TYPE="type" ROOM="room"&gt;
 				  &lt;/LIST&gt;
 				</entry>
 			  </row>
@@ -1867,6 +1596,12 @@
 			    <entry>TYPE</entry>
 			    <entry>string</entry>
 			    <entry>room</entry>
+			  </row>
+
+			  <row rowsep="1">
+			    <entry>ROOM</entry>
+				<entry>int</entry>
+				<entry>1</entry>
 			  </row>
 
 			</tbody>
@@ -1884,7 +1619,16 @@
 	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Type of list, either 'room' or 'game'
+		Type of list, either 'room', 'game', 'table' or 'player'
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">ROOM</emphasis></term>
+	    <listitem>
+	      <para>
+		The room to which this list belongs. Only used for 'table' and
+		'player'.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1897,6 +1641,8 @@
 	  The LIST is sent from the server to the client in
 	  response to the client request named
 	  <link linkend="req.list">LIST</link>, and may contain either
+	  <link linkend="rsp.list.table">TABLE</link> or
+	  <link linkend="rsp.list.player">PLAYER</link> or
 	  <link linkend="msg.game">GAME</link> or
 	  <link linkend="msg.room">ROOM</link> entries.
 	</para>
@@ -2259,7 +2005,7 @@
 		  <row rowsep="1">
 		    <entry>TYPE</entry>
 		    <entry>string</entry>
-			<entry>privmsg</entry>
+			<entry>private</entry>
 		  </row>
 
 		  <row rowsep="1">
@@ -2284,7 +2030,7 @@
 	    <listitem>
 	      <para>
 		Type of chat message, which can be one of "normal",
-		"beep" and "privmsg"
+		"beep" and "private"
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2313,6 +2059,63 @@
 </section>
 
 <section id ="client-to-server"><title>Client to server messages</title>
+
+  <refentry id="rsp.pong"><?dbhtml filename="msg_pong.html">
+    <refmeta>
+      <indexterm>
+	<primary>PONG</primary>
+      </indexterm>
+      <refentrytitle>PONG</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>PONG</refname>
+      <refpurpose>Lag measurement response</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+	<tgroup cols="3">
+	  <colspec colnum="1" colname="C1" align="left">
+	  <colspec colnum="2" colname="C2">
+	  <colspec colnum="3" colname="C3">
+		<tbody>
+
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+		      &lt;PONG/&gt;
+		    </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry><emphasis role="bold">Data</emphasis></entry>
+		    <entry><emphasis role="bold">Type</emphasis></entry>
+			<entry><emphasis role="bold">Example</emphasis></entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry namest="C1" nameend="C3">No data</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>Response to lag measurement challenge</para>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+	  The PONG tag is sent from the client in response to the
+	  <link linkend="msg.ping">PING</link> tag. The faster it responds,
+	  the lower (i.e. better) its lag value becomes.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
 
   <refentry id="req.login"><?dbhtml filename="req_login.html">
     <refmeta>
@@ -2420,166 +2223,7 @@
     </refsect1>
   </refentry>
 
-  <refentry id="req.list.players"><?dbhtml filename="req_list_players.html">
-    <refmeta>
-      <indexterm>
-	<primary>REQ_LIST_PLAYERS</primary>
-      </indexterm>
-      <refentrytitle>REQ_LIST_PLAYERS</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>REQ_LIST_PLAYERS</refname>
-      <refpurpose>
-	Client request for list of players in current room.
-      </refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	    <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-		<tbody>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>6</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">REQ_LIST_PLAYERS</entry>
-		  </row>
-
-		</tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para></para>
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  REQ_LIST_PLAYERS is sent from the client to the server
-	  to request a list of all players in the current room.
-	  The server will respond with
-	  <link linkend="rsp.list.players">RSP_LIST_PLAYERS</link>.
-	  This request is only valid once the player has
-	  successfully joined a room.  See
-	  <link linkend="req.enter">ENTER</link>.
-
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
-
-  <refentry id="req.list.tables"><?dbhtml filename="req_list_tables.html">
-    <refmeta>
-      <indexterm>
-	<primary>REQ_LIST_TABLES</primary>
-      </indexterm>
-      <refentrytitle>REQ_LIST_TABLES</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>REQ_LIST_TABLES</refname>
-      <refpurpose>
-	Client request for list of tables
-      </refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	    <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-		<tbody>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>8</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">REQ_LIST_TABLES</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Data</emphasis>
-		    </entry>
-		    <entry><emphasis role="bold">Type</emphasis></entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">type</entry>
-		    <entry>int</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">global</entry>
-		    <entry>char</entry>
-		  </row>
-
-		</tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para>Client request for list of tables</para>
-      <refsect2>
-	<title>Message Data</title>
-	<variablelist>
-	  <varlistentry>
-	    <term><emphasis role="bold">type</emphasis></term>
-	    <listitem>
-	      <para>
-		type ID of tables to list.  -1 for all types and
-		-3 for open tables of any type.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><emphasis role="bold">global</emphasis></term>
-	    <listitem>
-	      <para>
-		global search flag.  Set to 1 to list tables in
-		any room on the server.  Set to 0 to restrict
-		table list to current room.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </refsect2>
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  REQ_LIST_TABLES is sent from the client to the server to
-	  request a list of tables.  Clients may request lists to
-	  be confined to tables of a specific game type, tables
-	  with open seats, or any table.  Additionally the list
-	  can be global or restricted to the current room.  The
-	  server will respond with
-	  <link linkend="rsp.list.tables">RSP_LIST_TABLES</link>. 
-	  This request is only valid once the player has successfully
-	  joined a room.  See
-	  <link linkend="req.enter">ENTER</link>.
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
-
-  <refentry id="req.list"><?dbhtml filename="req_list_rooms.html">
+  <refentry id="req.list"><?dbhtml filename="req_list.html">
     <refmeta>
       <indexterm>
 	<primary>LIST</primary>
@@ -2590,7 +2234,8 @@
     <refnamediv>
       <refname>LIST</refname>
       <refpurpose>
-	Client request for list of rooms or list of tables on the server
+	Client request for list of rooms or games on the server,
+	or of tables or players in a room
       </refpurpose>
     </refnamediv>
 
@@ -2633,7 +2278,10 @@
 
     <refsect1>
       <title>Description</title>
-      <para>Client request for list of rooms or list of game types on the server</para>
+      <para>
+	    Client request for list of rooms or game types on the server,
+		or (when in a room) for list of tables or list of players
+	  </para>
       <refsect2>
 	<title>Message Data</title>
 	<variablelist>
@@ -2643,6 +2291,7 @@
 	      <para>
 		The type may be 'room' for the room list, and 'game' to receive
 		the game types list.
+		Likewise, 'player' and 'table' are used to retrieve room information.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2650,8 +2299,9 @@
 	    <term><emphasis role="bold">FULL</emphasis></term>
 	    <listitem>
 	      <para>
-		Verbosity flag.  Set to 'false' for short room
+		Verbosity flag. Set to 'false' for short room
 		descriptions, 'true' for full descriptions.
+		This is only used for the 'room' type.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2661,13 +2311,14 @@
 	<title>Usage</title>
 	<para>
 	  The &lt;LIST&gt; tag is sent from the client to the server to
-	  request a list of all rooms on the server.  The server
-	  will respond with the appropriate
+	  request a list of rooms, game types, tables or players.
+	  The server will respond with the appropriate
 	  <link linkend="rsp.result">RESULT</link> tag which contains
 	  a <link linkend="rsp.list">LIST</link>.
 	  This request is only valid once the player has successfully
-	  logged in. (ie. after the login
-	  <link linkend="rsp.result">RESULT</link>)
+	  logged in for 'room' and 'game' types (ie. after the login
+	  <link linkend="rsp.result">RESULT</link>), and only after
+	  the player has entered a room (for 'table' and 'player' types).
 	</para>
       </refsect2>
     </refsect1>
@@ -3049,7 +2700,7 @@
 	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Chat type. Can be one of "normal", "beep", "privmsg".
+		Chat type. Can be one of "normal", "beep", "private".
 	      </para>
 	    </listitem>
 	  </varlistentry>
