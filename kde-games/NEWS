@@ -1,4 +1,4 @@
-Announcing the release of The GGZ Gaming Zone v0.0.4!
+Announcing the release of The GGZ Gaming Zone v0.0.5!
 
 The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -7,16 +7,15 @@ GGZ supports multiple rooms with varying skill levels, and records your
 statistics so you can see how you match up against other players (at
 least it will someday!)
 
-This release of GGZ brings several exciting new features:
+Features in this release:
 
-- A new ggzcore library to handle core client services, independent of
-  frontend 
-- A KDE client!
-- A limited text/console client
-- A rewritten Gtk+ client
-- The first public release of the easysock library
-- Several new games, including chess, reversi, and more
+- New XML-based protocol
+- Support for player reservations
+- Player lag meters
+- New GGZCards engine plays Hearts, Spades, Bridge, and more
 - Many, many bugfixes
-- New packaging scheme, split out based on frontend
+- See http://ggz.sourceforge.net/docs/release.html for details
 
 See README.GGZ for an overview, or QuickStart.GGZ to get started.
+
+
