@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: main.c 2914 2001-12-17 06:25:38Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -96,12 +96,12 @@ static char *get_option(const char *option_name, char **argv, int *i,
 static void es_error(const char *msg, const EsOpType op,
 		     const EsDataType data)
 {
-	ggzdmod_log(game.ggz, "ERROR: " "Bad easysock operation: %s.", msg);
+	fprintf(stderr, "ERROR: " "Bad easysock operation: %s.\n", msg);
 }
 
 static void es_exit(int result)
 {
-	ggzdmod_log(game.ggz, "ERROR: " "exiting because of easysock error.");
+	fprintf(stderr, "ERROR: " "exiting because of easysock error.\n");
 	exit(result);
 }
 
@@ -156,7 +156,11 @@ int main(int argc, char **argv)
 
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0) {
-		fprintf(stderr, "Couldn't connect to GGZ!\n");
+		fprintf(stderr, "Couldn't connect to GGZ!\n\n"
+			"Most likely this occurred because you ran\n"
+			"the server from the command line.  Instead\n"
+			"you should connect to a GGZ server and\n"
+			"launch a game through the client.");
 		return -1;
 	}
 	(void) ggzdmod_loop(ggz);
