@@ -56,21 +56,23 @@ on_entLogin_changed			(GtkEntry       *widget,
 		val = 1;
 	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entServer")) {
 		val = 2;
-	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewProfileName")) {
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewProfileName")) {
 		val = 3;
-	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewUsername")) {
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewUsername")) {
 		val = 4;
-	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewServer")) {
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewServer")) {
 		val = 5;
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "btnGuest")) {
+		val = 6;
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "btnRegistered")) {
+		val = 6;
 	}
 	
 	/*Set the state of the entry*/
-	text = gtk_entry_get_text (GTK_ENTRY (widget));
-	if (strlen(text) > 0)
+	if (val !=6)
 	{
-		form[val] = TRUE;
-	} else if (strlen(text) == 0){
-		form[val] = FALSE;
+		text = gtk_entry_get_text (GTK_ENTRY (widget));
+		form[val] = (strlen(text) > 0);
 	}
 
 	/*Set the buttons sensitivity*/

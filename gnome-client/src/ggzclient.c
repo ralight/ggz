@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4905 2002-10-13 23:42:42Z jzaun $
+ * $Id: ggzclient.c 4906 2002-10-14 11:49:59Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -565,7 +565,7 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 	
 	ggz_debug("connection", "Server error.");
 	
-//	server_disconnect();
+	server_disconnect();
 	
 	/* SHould we clear the list of rooms/players/tables? */
 	msg = g_strdup_printf("Server error: %s", (char*)event_data);

@@ -60,6 +60,10 @@ void msgbox_error(gchar *msg)
 		"Please verify that the address and port "
 		"are correct and try again.");
 		login_connect_failed();
+	} else if(!strcmp(msg, "Server error: Bad XML from server")) {
+		gtk_label_set_text (GTK_LABEL (tmp), 
+		"A network error occured. The server "
+		"has disconnected you. ");
 	} else {	
 		g_print("%s\n", msg);
 	}

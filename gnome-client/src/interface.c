@@ -996,6 +996,12 @@ create_login (void)
   gtk_signal_connect (GTK_OBJECT (btnQuit), "clicked",
                       GTK_SIGNAL_FUNC (gtk_main_quit),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (btnGuest), "clicked",
+                      GTK_SIGNAL_FUNC (on_entLogin_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (btnRegistered), "clicked",
+                      GTK_SIGNAL_FUNC (on_entLogin_changed),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (entUsername), "changed",
 		      GTK_SIGNAL_FUNC (on_entLogin_changed),
 		      NULL);
