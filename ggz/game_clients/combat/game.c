@@ -99,6 +99,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
       game_init_board();
       game_draw_board();
       callback_widget_set_enabled("request_sync", 2);
+      callback_widget_set_enabled("save_map_menu", 2);
       break;
     case CBT_MSG_PLAYERS:
       game_get_players();
@@ -109,6 +110,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
     case CBT_MSG_OPTIONS:
       game_get_options();
       game_draw_board();
+      callback_widget_set_enabled("save_map_menu", 3);
       break;
     case CBT_REQ_SETUP:
       cbt_game.state = CBT_STATE_SETUP;

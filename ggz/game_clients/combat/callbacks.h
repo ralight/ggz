@@ -60,3 +60,7 @@ on_request_sync_activate              (GtkMenuItem     *menuitem,
 void
 on_hide_enemy_units1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_save_map_menu_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

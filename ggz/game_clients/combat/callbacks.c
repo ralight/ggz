@@ -148,3 +148,11 @@ on_hide_enemy_units1_activate          (GtkMenuItem     *menuitem,
 
 }
 
+
+void
+on_save_map_menu_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  if (cbt_game.army && cbt_game.map)
+    game_ask_save_map();
+}
