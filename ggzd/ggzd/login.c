@@ -163,7 +163,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		log_login_anon();
 	} else {
 		/* Setup initial registered player info */
-		player->uid = 0;
+		/* FIXME: give each registered player a unique UID */
+		player->uid = GGZ_UID_REGISTERED;
 		perms_init(player, &db_pe);
 		log_login_regd();
 	}

@@ -91,9 +91,14 @@ struct _GGZPlayer {
 	/*list_t *op_rooms;	Not yet */
 };
 
-/* Special UID values */
-#define GGZ_UID_NONE -1
-#define GGZ_UID_ANON -2
+/* Special UID values.  Eventually, every registered player
+   will have a unique UID, but for now they are all just
+   assigned a UID of 0. */
+enum {
+	GGZ_UID_REGISTERED = 0,
+	GGZ_UID_NONE = -1,
+	GGZ_UID_ANON = -2
+}
 
 typedef enum {
 	GGZ_PLAYER_NONE,
