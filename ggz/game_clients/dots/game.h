@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
- * Desc: Game functions
+ * Desc: Routines to manipulate the CtD board
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
