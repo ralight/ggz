@@ -392,7 +392,7 @@ on_win_main_realize                    (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	GdkFont* fixed;
-	GtkXText *tmp;
+	GtkXText *tmp, *tmp2;
 	char *buf;
 
 
@@ -415,6 +415,9 @@ on_win_main_realize                    (GtkWidget       *widget,
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
 	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
 	g_free(buf);
+
+	tmp2 = gtk_object_get_data(GTK_OBJECT(win_main), "chat_vscrollbar");
+	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
 
 #ifdef DEBUG
 	gtk_xtext_append_indent(tmp,"---",3,"Compiled with debugging.", 24);
