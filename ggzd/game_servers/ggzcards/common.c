@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: common.c 2773 2001-12-02 03:50:19Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -454,8 +454,13 @@ void handle_join_event(ggzd_event_t event, void *data)
 	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;
 
+	/* There's a big problem here since if the players join/leave before
+	   the game type is set, we won't know the seat number of the player
+	   - it'll be -1.  We thus have to special-case that entirely. */
+
 	ggzd_debug("Handling a join event for player %d (seat %d).", player,
 		   seat);
+
 	if (game.state != STATE_WAITFORPLAYERS) {
 		ggzd_debug("ERROR: SERVER BUG: "
 			   "someone joined while we weren't waiting.");
@@ -463,7 +468,7 @@ void handle_join_event(ggzd_event_t event, void *data)
 	}
 
 	/* get player's name */
-	if (seat >= 0) {
+	if (seat >= 0) {	/* see above comment about seat==-1 */
 		game.seats[seat].name = ggzd_get_player_name(player);
 		if (!game.seats[seat].name)
 			game.seats[seat].name = "[unknown]";
@@ -490,10 +495,11 @@ void handle_join_event(ggzd_event_t event, void *data)
 	(void) broadcast_player_list();
 
 	/* should this be in sync??? */
-	if (game.state != STATE_NOTPLAYING &&
+	if (seat >= 0 &&	/* see above comment about seat==-1 */
+	    game.state != STATE_NOTPLAYING &&
 	    !(game.state == STATE_WAITFORPLAYERS
 	      && game.saved_state == STATE_NOTPLAYING))
-		send_player_message_toall(game.players[player].seat);
+		send_player_message_toall(seat);
 
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
@@ -517,11 +523,17 @@ void handle_leave_event(ggzd_event_t event, void *data)
 	seat_t seat = game.players[player].seat;
 	char *name = "Empty Seat";
 
-	ggzd_debug("Handling a leave event.");
+	ggzd_debug("Handling a leave event for player %d (seat %d).", player,
+		   seat);
+
+	/* There's a big problem here since if the players join/leave before
+	   the game type is set, we won't know the seat number of the player
+	   - it'll be -1.  We thus have to special-case that entirely. */
 
 	/* seat name */
 	ggzd_set_player_name(player, name);
-	game.seats[seat].name = "Empty Seat";
+	if (seat >= 0)		/* see above comment about seat==-1 */
+		game.seats[seat].name = "Empty Seat";
 
 	/* send new seat data */
 	(void) broadcast_player_list();
