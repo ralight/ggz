@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5061 2002-10-27 12:44:22Z jdorje $
+ * $Id: io.c 5086 2002-10-28 07:29:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -151,7 +151,8 @@ int _io_send_log(int fd, char *msg)
 
 
 int _io_send_game_report(int fd, int num_players,
-			 char **names, int *teams, GGZGameResult *results)
+			 char **names, GGZSeatType *types,
+			 int *teams, GGZGameResult *results)
 {
 	int p;
 
@@ -169,6 +170,7 @@ int _io_send_game_report(int fd, int num_players,
 		int result = results[p];
 		char *name = names[p] ? names[p] : "";
 		if (ggz_write_string(fd, name) < 0
+		    || ggz_write_int(fd, types[p]) < 0
 		    || ggz_write_int(fd, team) < 0
 		    || ggz_write_int(fd, result) < 0)
 			return -1;
@@ -259,13 +261,16 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 		char *names[num_players];
 		int teams[num_players];
 		GGZGameResult results[num_players];
+		GGZSeatType types[num_players];
 		int p;
 
 		for (p = 0; p < num_players; p++) {
 			int result;
 			char *name;
+			int type;
 
 			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0
+			    || ggz_read_int(ggzdmod->fd, &type) < 0
 			    || ggz_read_int(ggzdmod->fd, &teams[p]) < 0
 			    || ggz_read_int(ggzdmod->fd, &result) < 0)
 				return -1; /* FIXME - mem leak */
@@ -277,10 +282,11 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 				names[p] = NULL; /* Bot */
 			}
 			results[p] = result;
+			types[p] = type;
 		}
 
 		_ggzdmod_handle_report(ggzdmod, num_players,
-				       names, teams, results);
+				       names, types, teams, results);
 
 		for (p = 0; p < num_players; p++)
 			if (names[p])

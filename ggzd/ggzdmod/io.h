@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 5061 2002-10-27 12:44:22Z jdorje $
+ * $Id: io.h 5086 2002-10-28 07:29:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -43,7 +43,8 @@ int _io_send_reseat(int fd,
 		    int new_seat, int is_spectator);
 int _io_send_log(int fd, char *msg);
 int _io_send_game_report(int fd, int num_players,
-			 char **names, int *teams, GGZGameResult *results);
+			 char **names, GGZSeatType *types,
+			 int *teams, GGZGameResult *results);
 
 /* Read and dispatch message */
 int _io_read_data(GGZdMod * ggzdmod);
