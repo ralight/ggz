@@ -130,7 +130,7 @@ void KGGZChat::slotSend()
 	int triggerevent;
 	char *inputtext;
 	char *inputargs;
-	char *player;
+	char *player = NULL;
 	char *timestring;
 	time_t curtime;
 	//float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;

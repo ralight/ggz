@@ -726,7 +726,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
 	const char *chatsender = NULL, *chatmessage = NULL;
-	int chattype;
+	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
 
 	switch(id)
@@ -1134,7 +1134,7 @@ void KGGZ::slotChat(const char *text, char *player, int mode)
 
 void KGGZ::attachRoomCallbacks()
 {
-	KGGZDEBUG("== attaching hooks to room at %i\n", kggzroom);
+	KGGZDEBUG("== attaching hooks to room at %p\n", kggzroom);
 	kggzroom->addHook(GGZCoreRoom::playerlist, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::tablelist, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::chatevent, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
@@ -1153,7 +1153,7 @@ void KGGZ::attachRoomCallbacks()
 
 void KGGZ::detachRoomCallbacks()
 {
-	KGGZDEBUG("== detaching hooks from room at %i\n", kggzroom);
+	KGGZDEBUG("== detaching hooks from room at %p\n", kggzroom);
 	kggzroom->removeHook(GGZCoreRoom::playerlist, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::tablelist, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::chatevent, &KGGZ::hookOpenCollector);
@@ -1553,7 +1553,7 @@ void KGGZ::menuGameInfo()
 
 	module = new GGZCoreModule();
 	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
-	for(int i = 0; i < module->count(); i++)
+	for(unsigned int i = 0; i < module->count(); i++)
 	{
 		module->setActive(i);
 		buffer.append(QString("<b>%1</b>").arg(i18n("Game client")));

@@ -197,7 +197,7 @@ void KGGZUsers::addTablePlayer(int i, const char *name)
 	tmp2 = table(i);
 	if(!tmp2)
 	{
-		KGGZDEBUG("Player %s should go to table %i; however, it's absent!\n");
+		KGGZDEBUG("Player %s should go to table %i; however, it's absent!\n", name, i);
 		return;
 	}
 	tmp = new QListViewItem(tmp2, name);

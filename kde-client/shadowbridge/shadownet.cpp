@@ -132,7 +132,7 @@ void ShadowNet::start()
 void ShadowNet::slotRead(int sock)
 {
 	QDataStream *s;
-	char transmit;
+	char transmit = '\0';
 
 	//cout << "game -> ggzcore: " << sock << endl;
 
@@ -153,7 +153,7 @@ void ShadowNet::slotRead(int sock)
 void ShadowNet::slotWrite(int sock)
 {
 	QDataStream *s;
-	char transmit;
+	char transmit = '\0';
 
 	//cout << "ggzcore -> game " << sock << endl;
 

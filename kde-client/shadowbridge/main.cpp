@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 {
 	ShadowApp *app;
 	KAboutData *aboutData;
-	KCmdLineArgs *args;
+	/*KCmdLineArgs *args;*/
 
 	aboutData = new KAboutData("shadowbridge",
 		I18N_NOOP("GGZ Shadow Bridge"),

@@ -65,7 +65,7 @@ class KGGZSplash : public QWidget
 		// List of images to show in the animation
 		QStringList m_list;
 		// Current animation frame
-		int m_current;
+		unsigned int m_current;
 };
 
 #endif

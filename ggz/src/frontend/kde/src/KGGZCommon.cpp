@@ -128,7 +128,7 @@ int KGGZCommon::findProcess(const char *process)
         f = fopen(dir, "r");
         if(f != NULL)
         {
-            fscanf(f, "%s %s", &pids, &stat);
+            fscanf(f, "%s %s", pids, stat);
             pid = atoi(pids);
             if((strcmp(stat, bprocess) == 0) && (pid != getpid())) ret = atoi(e->d_name);
             fclose(f);

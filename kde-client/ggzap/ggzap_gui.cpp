@@ -52,7 +52,7 @@ GGZapGui::~GGZapGui()
 
 void GGZapGui::mouseMoveEvent(QMouseEvent *e)
 {
-	int tmp;
+	/*int tmp;*/
 
 	if((m_x != -1) || (m_y != -1))
 		move(e->globalX() - m_x, e->globalY() - m_y);
