@@ -32,6 +32,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "connect.h"
 #include "dlg_error.h"
@@ -46,6 +47,7 @@
 extern Options opt;
 extern GtkWidget* detail_window;
 extern GtkWidget* main_win;
+static struct GameTypes game_types;
 
 /* Various local handles */
 static guint sock_handle;
@@ -177,11 +179,29 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  break;
 	  
   case RSP_GAME_TYPES:
-	  connect_msg("[RSP_GAME_TYPES] %d\n", byte);
+	  es_read_int(source, &ibyte );
+	  count=ibyte;
+	  game_types.count = count;
+	  connect_msg("[RSP_GAME_TYPES] List Count %d\n", count);
+	  for (i=1;i<=count;i++){
+		  es_read_int(source, &ibyte);
+
+		  es_read_string(source, game_types.info[ibyte].name);
+		  es_read_string(source, game_types.info[ibyte].version);
+		  es_read_string(source, game_types.info[ibyte].desc);
+		  es_read_string(source, game_types.info[ibyte].author);
+		  es_read_string(source, game_types.info[ibyte].homepage);
+
+		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].name);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].version);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].desc);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].author);
+		  connect_msg("[RSP_GAME_TYPES] %s\n", game_types.info[ibyte].homepage);
+	  }
 	  break;
 
   case RSP_TABLE_LIST:
-	  CheckReadInt(source, &ibyte );
+	  es_read_int(source, &ibyte );
 	  count=ibyte;
 	  connect_msg("[RSP_TABLE_LIST] Table List Count %d\n", count);
 	  for (i=1;i<=count;i++){
@@ -202,7 +222,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  connect_msg("[RSP_TABLE_LIST] Seats %d\n", Table.num_seats);
 		  connect_msg("[RSP_TABLE_LIST] Open %d\n", Table.open_seats);
 		  for (j=1;j<=Table.num_humans;j++){
-			  es_read_string(source, &name);
+			  CheckReadString(source, &message);
 		  }
 		  connect_msg("[RSP_TABLE_LIST] Names Count %d\n", Table.num_humans);
 		  add_table_list(i, Table);
@@ -320,7 +340,7 @@ void add_table_list( gint TableNum, TableInfo Table) {
     return;
 
   entry[0] = g_strdup_printf("%d",TableNum-1);
-  entry[1] = g_strdup_printf("%d",Table.type_index);
+  strncpy(entry[1], game_types.info[Table.type_index].name, MAX_GAME_NAME_LEN);
   entry[2] = g_strdup_printf("%d",Table.num_seats);
   entry[3] = g_strdup_printf("%d",Table.open_seats);
   entry[4] = g_strdup_printf("%d",Table.num_humans);
@@ -334,7 +354,6 @@ void add_table_list( gint TableNum, TableInfo Table) {
 
   gtk_clist_append (GTK_CLIST (tmpWidget), entry);
   g_free (entry[0]);
-  g_free (entry[1]);
   g_free (entry[2]);
   g_free (entry[3]);
   g_free (entry[4]);
@@ -357,9 +376,14 @@ static void server_sync()
         tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
 						   "player_list"));
 	gtk_clist_clear (GTK_CLIST (tmpWidget));
-	CheckWriteInt(opt.sock, REQ_USER_LIST);  
-	CheckWriteInt(opt.sock, REQ_TABLE_LIST);  
-	CheckWriteInt(opt.sock, -1);  
+	es_write_int(opt.sock, REQ_USER_LIST);  
+	es_write_int(opt.sock, REQ_GAME_TYPES);  
+	es_write_char(opt.sock, 1);  
+        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
+						   "table_tree"));
+	gtk_clist_clear (GTK_CLIST (tmpWidget));
+	es_write_int(opt.sock, REQ_TABLE_LIST);  
+	es_write_int(opt.sock, -1);  
 }
 
 
