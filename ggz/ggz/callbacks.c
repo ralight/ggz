@@ -45,8 +45,8 @@
 
 /* Global data */
 extern GtkWidget *detail_window;
+extern GtkWidget *main_win;
 extern struct ConnectInfo connection;
-
 
 void anon_toggled(GtkWidget* button, gpointer window) 
 {
@@ -159,11 +159,14 @@ void cancel_details(GtkButton * button, gpointer user_data)
 
 void join_game(GtkButton * button, gpointer user_data)
 {
+	GtkWidget *table_list;
+
+	table_list = gtk_object_get_data(GTK_OBJECT(main_win), "table_list");
+
 	/* FIXME: Don't hardcode table numnber! */
 	dbg_msg("joining game");
 	es_write_int(connection.sock, REQ_JOIN_GAME);
 	es_write_int(connection.sock, 0);
-	launch_game(0, 0);
 }
 
 

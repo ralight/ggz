@@ -41,6 +41,7 @@
 #include "err_func.h"
 #include "datatypes.h"
 #include "callbacks.h"
+#include "game.h"
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -174,12 +175,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_JOIN_GAME:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		if (status < 0) {
-			/* FIXME: Don't really need to disconnect */
-			disconnect(NULL, NULL);
-			return;
+		if (status >= 0) {
+			connection.playing = TRUE;
+			launch_game(0,0);
+		} else {
+			/* FIXME: Handle Error(s) */
 		}
-		connection.playing = TRUE;
 		break;
 
 	case RSP_LOGOUT:
