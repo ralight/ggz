@@ -12,6 +12,6 @@ BotsAllowed = 1
 AllowLeave = 1
 OptionsSize = 0
 # ExecutablePath is figured relative to GameDir unless starting with /
-ExecutablePath = tictactoe
+ExecutablePath = ggzd_tictactoe
 # GameDisabled is a quick way to turn off the game if necessary
 #GameDisabled
