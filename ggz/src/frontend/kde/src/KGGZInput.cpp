@@ -27,80 +27,61 @@
 
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-// KGGZConnect: Display a connection dialog which allows in-place server addition. //
+// KGGZInput: Pop up a little dialog which asks the user for a string or a number. //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef KGGZ_CONNECT_H
-#define KGGZ_CONNECT_H
-
-// KGGZ includes
+// Header file
 #include "KGGZInput.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qbuttongroup.h>
+#include <qlabel.h>
+#include <qlayout.h>
 
-// A comprehensive connection dialog
-class KGGZConnect : public QWidget
+KGGZInput::KGGZInput(QWidget *parent = NULL, char *name = NULL)
+: QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
-	Q_OBJECT
-	public:
-		// Constructor
-		KGGZConnect(QWidget *parent = NULL, char *name = NULL);
-		// Destructor
-		~KGGZConnect();
+	QVBoxLayout *vbox;
+	QHBoxLayout *hbox;
+	QLabel *label;
 
-	protected slots:
-		// Accept the current input
-		void slotAccept();
-		// Load a specified connection profile
-		void slotLoadProfile(int profile);
-		// Save current profile
-		void slotSaveProfile();
-		// Toggle between login modes
-		void slotModes(int loginmode);
-		// Invoke configuration window
-		void slotInvoke();
-		// Empty all fields and create new profile
-		void slotProfileNew();
-		// Delete the current profile
-		void slotProfileDelete();
-		// Process information about new profile
-		void slotProfileProcess(const char *identifier);
+	label = new QLabel(i18n("Identifier"), this);
 
-	signals:
-		// Emitted if connection is wanted
-		void signalConnect(const char *host, int port, const char *username, const char *password, int type, int server);
+	m_ok = new QPushButton("OK", this);
+	m_ok->setEnabled(FALSE);
 
-	private:
-		// add (1) or delete (2) a server from the configuration list
-		void modifyServerList(const char *server, int mode);
+	m_edit = new QLineEdit(this);
 
-		// The login mode (guest, with password, first time)
-		int m_loginmode;
-		// Whether to start server locally or not
-		QCheckBox *option_server;
-		// Lists all known connection profiles
-		QComboBox *profile_select;
-		// Allows in-place editing of profiles
-		QPushButton *profile_new, *profile_delete;
-		// Input fields
-		QLineEdit *input_host, *input_port, *input_name, *input_password;
-		// Holds connection state
-		int m_connected;
-		// Container widget for all modes
-		QButtonGroup *group_mode;
-		// Little dialog asking for server id
-		KGGZInput *m_input;
-		// Pointer to current profile (previous one on change)
-		QString m_current;
-		// Indicated whether to save current profile when loading new one or not
-		int m_nosafe;
-};
+	vbox = new QVBoxLayout(this, 5);
+	vbox->add(m_edit);
 
-#endif
+	hbox = new QHBoxLayout(vbox, 5);
+	vbox->add(m_edit);
+	vbox->add(m_ok);
+
+	connect(m_edit, SIGNAL(textChanged(const QString&)), SLOT(slotChanged()));
+	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccept()));
+
+	setFixedSize(200, 100);
+	setCaption("Input");
+	show();
+}
+
+KGGZInput::~KGGZInput()
+{
+}
+
+void KGGZInput::slotAccept()
+{
+	emit signalText(m_edit->text());
+	close();
+}
+
+void KGGZInput::slotChanged()
+{
+	if(m_edit->text().length() == 0) m_ok->setEnabled(FALSE);
+	else m_ok->setEnabled(TRUE);
+}
