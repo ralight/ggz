@@ -34,6 +34,8 @@
 #define ESCAPE_SND_SYNC     6
 #define ESCAPE_MSG_OPTIONS  7
 #define ESCAPE_REQ_OPTIONS  8
+#define ESCAPE_MSG_CHAT     9
+#define ESCAPE_RSP_CHAT    10
 
 /* Move errors */
 #define ESCAPE_ERR_STATE   -1
@@ -54,7 +56,7 @@
 #define ESCAPE_STATE_PLAYING     3
 #define ESCAPE_STATE_DONE        4
 
-/* Connect the Dots game events */
+/* Escape game events */
 #define ESCAPE_EVENT_LAUNCH      0
 #define ESCAPE_EVENT_JOIN        1
 #define ESCAPE_EVENT_LEAVE       2

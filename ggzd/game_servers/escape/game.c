@@ -111,6 +111,7 @@ int game_handle_player(int num)
 	unsigned char direction;
 
 	ggz_debug("game_handle_player(%d) called",num);
+	ggz_debug("\tnum = %d, escape_game.turn = %d",num, escape_game.turn");
 
 	fd = ggz_seats[num].fd;
 	
@@ -159,49 +160,46 @@ static int game_get_options(int seat)
 	   || es_read_char(fd, &escape_game.goalwidth) < 0)
 		return -1;
 
+	// FIXME - add bounds checking to ensure eg. escape_game.boardheight isn't larger than MAXBOARDHEIGHT
+
 	ggz_debug("\tOptions recieved ok\n\tboardheight=%d\n\twallwidth=%d\n\tgoalwidth=%d",escape_game.boardheight, escape_game.wallwidth, escape_game.goalwidth);
 
-	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
-		for(q = 0;q<escape_game.boardheight;q++){
+	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
+		for(q = 0;q<escape_game.boardheight+1;q++){
 			for(d = 0;d<10;d++){
 				escape_game.board[p][q][d] = dtEmpty;
             	}
 		}
 	}
     
-    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
+    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
       	escape_game.board[p][0][4] = dtBlocked;
         	escape_game.board[p][0][7] = dtBlocked;
         	escape_game.board[p][0][8] = dtBlocked;
         	escape_game.board[p][0][9] = dtBlocked;
         	escape_game.board[p][0][6] = dtBlocked;
         
-        	escape_game.board[p][escape_game.boardheight][4] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight][1] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight][2] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight][3] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight][6] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight+1][4] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight+1][1] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight+1][2] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight+1][3] = dtBlocked;
+        	escape_game.board[p][escape_game.boardheight+1][6] = dtBlocked;
 	}
     
-	for(q = 0;q<escape_game.boardheight;q++){
+	for(q = 0;q<escape_game.boardheight+1;q++){
         	escape_game.board[0][q][1] = dtBlocked;
         	escape_game.board[0][q][4] = dtBlocked;
         	escape_game.board[0][q][7] = dtBlocked;
         	escape_game.board[0][q][8] = dtBlocked;
         	escape_game.board[0][q][2] = dtBlocked;
         
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][8] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][9] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][6] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][3] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][2] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][8] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][9] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][6] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][3] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][2] = dtBlocked;
 	}
     
-	escape_game.board[1][1][7] = dtBlocked;
-    	escape_game.board[1][escape_game.boardheight - 1][1] = dtBlocked;
-    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtBlocked;
-    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtBlocked;
-
 	escape_game.x = (escape_game.goalwidth + 2 * escape_game.wallwidth - 1)/2 +1;
 	escape_game.y = escape_game.boardheight/2;
 	return game_update(ESCAPE_EVENT_OPTIONS, NULL);
@@ -409,8 +407,9 @@ int game_handle_move(int num, unsigned char *direction)
 
 
 	/* We make a note who our opponent is, easier on the update func */
-	escape_game.opponent = (num + 1) % 2;
+	escape_game.opponent = 1 - num;
 	ggz_debug("\tescape_game.opponent = %d", escape_game.opponent);
+	escape_game.repeatmove=0;
 
 	if(escape_game.board[escape_game.x][escape_game.y][*direction]!=dtEmpty)
 		status = ESCAPE_ERR_FULL;
@@ -452,7 +451,6 @@ int game_handle_move(int num, unsigned char *direction)
 		if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight))
 			status = ESCAPE_ERR_BOUND;
 		else {
-			escape_game.repeatmove=0;
 			for(i=1; i<10; i++)
 			{
 				if((escape_game.board[newx][newy][i]!=dtEmpty)&&
@@ -463,8 +461,6 @@ int game_handle_move(int num, unsigned char *direction)
 				{
 					// give new move
 					escape_game.repeatmove=1;
-//				}else{
-					// pass move on
 				}
 			}		
 			if(num%2){
@@ -497,7 +493,7 @@ int game_handle_move(int num, unsigned char *direction)
 	
 	if(!escape_game.repeatmove){ // move on to next player
 		ggz_debug("\tmove on to next player");
-		escape_game.turn = (escape_game.turn + 1) % 2;
+		escape_game.turn = 1 - escape_game.turn;
 	}else{
 		ggz_debug("\tdon't move on to next player");
 	}
