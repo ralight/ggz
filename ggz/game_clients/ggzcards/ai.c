@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: ai.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: ai.c 6663 2005-01-14 03:19:43Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -71,7 +71,7 @@ void alert_trick(int winner)
 /* this gets a bid or play from the ai */
 bid_t get_bid(bid_t * bid_choices, int bid_count)
 {
-	int choice = random() % bid_count;
+	int choice = rand() % bid_count;
 	return bid_choices[choice];
 }
 
@@ -81,7 +81,7 @@ card_t get_play(int play_hand, bool * valid_plays)
 	int choice;
 
 	do {
-		choice = random() % hand->hand_size;
+		choice = rand() % hand->hand_size;
 	} while (!valid_plays[choice]);
 
 	return hand->cards[choice];

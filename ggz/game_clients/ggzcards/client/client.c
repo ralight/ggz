@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: client.c 6663 2005-01-14 03:19:43Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -121,7 +121,7 @@ int client_initialize(void)
 	   there should be no confusion there. And all of the
 	   easysock-allocated variables are labelled. */
 
-	srandom((unsigned)time(NULL));
+	srand((unsigned)time(NULL));
 
 	game_internal.fd = -1;
 	game_internal.max_hand_size = 0;
@@ -733,7 +733,7 @@ static int match_card(card_t card, hand_t * hand)
 		   are equally good it will be a random pick. */
 		if (tc_matches > matches
 		    || (tc_matches == matches
-			&& (random() % (hand->hand_size + 1 - tc)) == 0)) {
+			&& (rand() % (hand->hand_size + 1 - tc)) == 0)) {
 			matches = tc_matches;
 			match = tc;
 		}

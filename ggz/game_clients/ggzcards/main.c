@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
+ * $Id: main.c 6663 2005-01-14 03:19:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,7 +30,6 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <sys/types.h>
-#include <sys/un.h>
 #include <stdlib.h>
 #include <unistd.h>
 

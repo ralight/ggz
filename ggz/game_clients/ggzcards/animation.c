@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: animation.c 6663 2005-01-14 03:19:43Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -73,7 +73,7 @@ static struct {
 	int dest_x, dest_y;
 
 	int cur_x, cur_y;
-	struct timeval start_time;
+	GTimeVal start_time;
 } anim[MAX_NUM_PLAYERS];
 
 static gint start_offtable_animation(gpointer winner);
@@ -237,7 +237,7 @@ int animation_start(int player, card_t card, int card_num, int destination)
 	anim[player].dest_y = dest_y;
 	anim[player].cur_x = start_x;
 	anim[player].cur_y = start_y;
-	gettimeofday(&anim[player].start_time, NULL);
+	g_get_current_time(&anim[player].start_time);
 
 	if (!animating) {
 		/* This sets up our timeout callback */
@@ -315,16 +315,16 @@ static gint animation_callback(gpointer ignored)
 	int player;
 	int min_x = get_table_width(), min_y = get_table_height();
 	int max_x = 0, max_y = 0;
-	struct timeval curr_time;
+	GTimeVal curr_time;
 
 	assert(animating);
-	gettimeofday(&curr_time, NULL);
+	g_get_current_time(&curr_time);
 
 	/* First determine the areas that need to be overwritten up. */
 	for (player = 0; player < ggzcards.num_players; player++) {
 		const double total_time = (double)DURATION / 1000.0;
 		double mytime;
-		struct timeval start_time;
+		GTimeVal start_time;
 
 		if (!anim[player].animating)
 			continue;
