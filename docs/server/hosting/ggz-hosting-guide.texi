@@ -381,10 +381,6 @@ the server start something went wrong.
 
 @section Overview on the games
 
-@subsection Kamikaze
-
-This game server is not part of GGZ yet, but will be from version 0.0.7 on.
-
 @subsection Chess
 
 This is the GGZ variant of the chessd server, which is developed using the
@@ -493,7 +489,7 @@ available at:
 
 @subsection Batalla Naval
 
-This is a graphical server using the Gnome libraries, so it is only of interest
+This is a graphical server using the GNOME libraries, so it is only of interest
 for people who run a GGZ server on a desktop system.
 It has GGZ support built-in.
 See @url{http://batnav.sourceforge.net}.
@@ -523,7 +519,7 @@ See @url{http://stalker.sourceforge.net}.
 
 @subsection T.E.G.
 
-T.E.G. is a Gnome game, which has GGZ support built-in. The server needs
+T.E.G. is a GNOME game, which has GGZ support built-in. The server needs
 libxml2 and libglib 1.2 installed.
 Be sure to alter the include paths if necessary when compiling from source.
 @url{http://teg.sourceforge.net}
@@ -535,6 +531,15 @@ However, it is not configured using GNU autotools, so you will have to adjust
 all the paths by yourself if necessary. This includes the directory src/ggz and
 src/server.
 @url{http://xtux.sourceforge.net}
+
+@subsection Kamikaze
+
+Similar to Bombermaze or Clanbomber, Kamikaze provides fast action for either
+KDE (on the desktop) or OPIE (on handhelds). The desktop version has support
+for GGZ so 1-8 players can join in a level, with up to each but one of them being
+bots.
+
+@url{http://mindx.dyndns.org/kde/kamikaze/}
 
 @node Other GGZ Servers, GGZ Server Tools, External Games, Top
 @chapter Other GGZ Servers
