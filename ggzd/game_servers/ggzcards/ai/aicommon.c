@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 2423 2001-09-09 09:47:59Z jdorje $
+ * $Id: aicommon.c 2457 2001-09-12 05:08:11Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -35,16 +35,18 @@
 #include "aicommon.h"
 
 static int played[4];		/* bitmask of played cards for each suit */
-static char suits[4][4];	/* information about what each of the 4
+static int playcount[4][4];	/* how many cards each player has played from each suit */
+static int suits[4][4];	/* information about what each of the 4
 				   players might hold in each of the 4 suits */
 
 void ailib_start_hand(void)
 {
 	/* reset cards played */
-	memset(played, 0, 4 * sizeof(*played));
+	memset(played, 0, 4 * sizeof(int));
+	memset(playcount, 0, 4 * 4 * sizeof(int));
 
 	/* anyone _could_ have any card */
-	memset(suits, 255, 4 * 4 * sizeof(*suits));
+	memset(suits, 255, 4 * 4 * sizeof(int));
 }
 
 void ailib_alert_bid(player_t p, bid_t bid)
@@ -60,6 +62,7 @@ void ailib_alert_play(player_t p, card_t play)
 
 	/* remember which cards have been played. */
 	played[(int) play.suit] |= 1 << play.face;
+	playcount[p][(int) play.suit]++;
 
 	/* if the player is void, remember it */
 	if (play.suit != lead.suit)
