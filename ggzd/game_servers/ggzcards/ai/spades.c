@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2388 2001-09-07 12:01:05Z jdorje $
+ * $Id: spades.c 2389 2001-09-07 12:04:29Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -64,22 +64,22 @@ struct ai_function_pointers spades_ai_funcs = {
 
 static char *get_name(player_t p)
 {
-	char buf[17] = "";
+	char *name = "[invalid]";
 	switch (p) {
 	case 0:
-		snprintf(buf, sizeof(buf), "(B) Yenne");
+		name = "Yenne-AI";
 		break;
 	case 1:
-		snprintf(buf, sizeof(buf), "(B) Crouton");
+		name = "Crouton-AI";
 		break;
 	case 2:
-		snprintf(buf, sizeof(buf), "(B) Britt");
+		name = "Britt-AI";
 		break;
 	case 3:
-		snprintf(buf, sizeof(buf), "(B) Brent");
+		name = "Brent-AI";
 		break;
 	}
-	return strdup(buf);
+	return strdup(name);
 }
 
 
