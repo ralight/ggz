@@ -1,9 +1,13 @@
 #!/usr/bin/perl
 
+use strict;
+
+my($body, $line, $oldline);
+
 open(TEXI, $ARGV[0]) || die;
 while(<TEXI>){
-	$i++;
-	next if $i < 20;
+	if(/^\@titlepage\n$/){$body = 1;}
+	next if not $body;
 
 	$line = "  $_";
 
@@ -34,10 +38,9 @@ while(<TEXI>){
 	$line =~ s/\ \ \@menu/Menu\:/g;
 	$line =~ s/\@end\ menu\n//g;
 	$line =~ s/\@title\ ([^\n]+)\n/\*\*\*\*\*\ $1 \*\*\*\*\*\n/g;
-	$line =~ s/\@subtitle\ ([^\n]+)\n/\*\*\*\ $1 \*\*\*\n/g;
+	$line =~ s/\@subtitle\ ([^\n]+)\n/\*\*\*\ $1 \*\*\*\n\n/g;
 	$line =~ s/\@author/Author\:/g;
 
-#print "LINE WILL BE '$line'\n";
 	$line =~ s/^\ \ $//g;
 
 	if($oldline ne $line){print $line;}

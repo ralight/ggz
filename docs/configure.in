@@ -19,6 +19,9 @@ AC_SUBST(GGZDOCDIR)
 dnl Apply options
 dnl =============
 
+ggzgamedevelopmentguide="ggz-game-development-guide.txt"
+ggzhostingguide="ggz-hosting-guide.txt"
+
 if test "$enable_guides" = yes; then
 	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide_toc.html"
 	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide_toc.html"
