@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #define SET(OPTION) (cbt_game.options & OPTION)
+#define SIG(NUMBER) (NUMBER >= 0 ? 1 : -1)
 
 // Global game variables
 combat_game cbt_game;
@@ -714,7 +715,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
     // Unknown victor is set and f_u is a victor
     // Silent offense is set
     if (f_s != a && (SET(OPT_SILENT_OFFENSE) || (SET(OPT_UNKNOWN_VICTOR) && f_u < 0)))
-      es_write_int(fd, U_UNKNOWN * (f_u/abs(f_u)));
+      es_write_int(fd, U_UNKNOWN * (SIG(f_u)));
     else
       es_write_int(fd, f_u);
     // Write public part
@@ -725,7 +726,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
     // Unknown victor is set and t_u < 0
     // Silent defense is set
     if (t_s != a && (SET(OPT_SILENT_DEFENSE) || (SET(OPT_UNKNOWN_VICTOR) && t_u < 0)))
-      es_write_int(fd, U_UNKNOWN * (t_u/abs(t_u)));
+      es_write_int(fd, U_UNKNOWN * (SIG(t_u)));
     else
       es_write_int(fd, t_u);
   }
