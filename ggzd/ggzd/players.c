@@ -50,10 +50,11 @@ extern struct Users players;
 
 
 /* Local functions for handling players */
-static void io_handler(int);
-static int handle_player(int, int, int *);
-static void *new_player(void *);
-static void remove_player(int p_index);
+static void* player_new(void *);
+static void  player_loop(int);
+static int   player_handle(int, int, int *);
+static void  player_remove(int p_index);
+
 static int new_login(int p_index);
 static int anon_login(int p_index);
 static int login(int p_index);
@@ -70,7 +71,7 @@ static int read_name(int, char[MAX_USER_NAME_LEN]);
  * launch_handler accepts the socket of a new player and launches
  * a new dedicated handler process/thread.
  */
-void launch_handler(int sock)
+void player_handler_launch(int sock)
 {
 
 	pthread_t thread;
@@ -81,7 +82,7 @@ void launch_handler(int sock)
 	if (FAIL(sock_ptr = malloc(sizeof(int))))
 		err_sys_exit("malloc error");
 	*sock_ptr = sock;
-	status = pthread_create(&thread, NULL, new_player, sock_ptr);
+	status = pthread_create(&thread, NULL, player_new, sock_ptr);
 	if (status != 0) {
 		errno = status;
 		err_sys_exit("pthread_create error");
@@ -94,7 +95,7 @@ void launch_handler(int sock)
  * If there is an open spot take it, otherwise send a "server full"
  * message.
  */
-static void *new_player(void *sock_ptr)
+static void* player_new(void *sock_ptr)
 {
 
 	int sock, status, i;
@@ -133,9 +134,9 @@ static void *new_player(void *sock_ptr)
 	pthread_rwlock_unlock(&players.lock);
 
 	dbg_msg("New player %d connected", i);
-	io_handler(i);
+	player_loop(i);
 	
-	remove_player(i);
+	player_remove(i);
 
 	return (NULL);
 }
@@ -146,7 +147,7 @@ static void *new_player(void *sock_ptr)
  * main loop for communicating with players and game tables
  * 
  */
-static void io_handler(int p_index)
+static void player_loop(int p_index)
 {
 
 	int op, status, fd_max;
@@ -166,7 +167,7 @@ static void io_handler(int p_index)
 		read_fd_set = active_fd_set;
 		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
 		
-		status = select(fd_max, &read_fds, NULL, NULL, NULL);
+		status = select(fd_max, &read_fd_set, NULL, NULL, NULL);
 		if (status < 0) {
 			if (errno == EINTR)
 				continue;
@@ -198,7 +199,7 @@ static void io_handler(int p_index)
 					break;
 				
 				fd = p_fd;
-				if (FAIL(status = handle_player(op, p_index,
+				if (FAIL(status = player_handle(op, p_index,
 								&fd))) 
 					break;
 				
@@ -251,7 +252,7 @@ static void io_handler(int p_index)
  * returns 0 if OK, -1 if error, and 1 if a table has been launched
  * If a table has been launched, returns the fd by reference
  */
-int handle_player(int request, int p_index, int *fd)
+int player_handle(int request, int p_index, int *fd)
 {
 
 	int status;
@@ -313,7 +314,7 @@ int handle_player(int request, int p_index, int *fd)
  * remove_player accepts a player index number and then proceeds to
  * remove that player from the list
  */
-static void remove_player(int p_index)
+static void player_remove(int p_index)
 {
 
 	int fd;
@@ -510,7 +511,7 @@ static int read_table_info(int p_index, int *fd)
 	}
 
 	/* Check validity of table info (not options) */
-	if (status == 0 && (check_table(p_index, table) < 0))
+	if (status == 0 && (table_check(p_index, table) < 0))
 		status = E_BAD_OPTIONS;
 
 	/* Find open table */
@@ -532,7 +533,7 @@ static int read_table_info(int p_index, int *fd)
 	}
 
 	/* Attempt to do launch of table-controller */
-	if (status == 0 && (launch_table(t_index) < 0))
+	if (status == 0 && (table_handler_launch(t_index) < 0))
 		status = E_LAUNCH_FAIL;
 
 	/* Return status */

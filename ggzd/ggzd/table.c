@@ -44,17 +44,17 @@ extern struct GameTables game_tables;
 extern struct Users players;
 
 /* Local functions for handling tables */
+static void* table_new(void *index_ptr);
+static void  table_fork(int t_index);
+static void  table_loop(int t_index);
+static int   table_handle(int op, int index, int fd);
+static void  table_remove(int t_index);
 static void run_game(int t_index, int fd, char *path);
-static void *new_table(void *index_ptr);
-static void do_table(int t_index);
-static void remove_table(int t_index);
 static int pass_options(int t_index);
-static void io_loop(int t_index);
-static int handle_game(int op, int index, int fd);
 static int game_over(int index, int fd);
 
 /* FIXME: This should actually do checking */
-int check_table(int p_index, TableInfo table)
+int table_check(int p_index, TableInfo table)
 {
 
 	int i;
@@ -85,7 +85,7 @@ int check_table(int p_index, TableInfo table)
  * cannot be created
  *
  */
-int launch_table(int t_index)
+int table_handler_launch(int t_index)
 {
 
 	pthread_t thread;
@@ -96,7 +96,7 @@ int launch_table(int t_index)
 	if (FAIL(index_ptr = malloc(sizeof(int))))
 		err_sys_exit("malloc error");
 	*index_ptr = t_index;
-	status = pthread_create(&thread, NULL, new_table, index_ptr);
+	status = pthread_create(&thread, NULL, table_new, index_ptr);
 	if (status != 0) {
 		free(index_ptr);
 	}
@@ -112,7 +112,7 @@ int launch_table(int t_index)
  * starting the game.  At the end of the game, it removes the table
  * 
  */
-static void *new_table(void *index_ptr)
+static void* table_new(void *index_ptr)
 {
 
 	int t_index, status;
@@ -137,9 +137,9 @@ static void *new_table(void *index_ptr)
 	}
 	pthread_mutex_unlock(&game_tables.info[t_index].seats_lock);
 
-	do_table(t_index);
+	table_fork(t_index);
 
-	remove_table(t_index);
+	table_remove(t_index);
 	return (NULL);
 }
 
@@ -149,7 +149,7 @@ static void *new_table(void *index_ptr)
  * It forks the child to play the game, and kills the child when the
  * game is over.
  */
-static void do_table(int t_index)
+static void table_fork(int t_index)
 {
 
 	pid_t pid;
@@ -170,7 +170,7 @@ static void do_table(int t_index)
 	pthread_rwlock_unlock(&game_types.lock);
 
 #ifdef DEBUG
-	check_table(-1, game_tables.info[t_index]);
+	table_check(-1, game_tables.info[t_index]);
 #endif
 
 	/* Fork table process */
@@ -190,7 +190,7 @@ static void do_table(int t_index)
 		pthread_rwlock_unlock(&game_tables.lock);
 
 		if (pass_options(t_index) == 0)
-			io_loop(t_index);
+			table_loop(t_index);
 
 		/* Make sure game server is dead */
 		kill(pid, SIGINT);
@@ -260,7 +260,7 @@ static int pass_options(int t_index)
 }
 
 
-static void io_loop(int t_index)
+static void table_loop(int t_index)
 {
 
 	int request, fd, status;
@@ -271,13 +271,13 @@ static void io_loop(int t_index)
 		if (FAIL(status = es_read_int(fd, (int *) &request)))
 			break;
 
-		if (FAIL(status = handle_game(request, t_index, fd)))
+		if (FAIL(status = table_handle(request, t_index, fd)))
 			break;
 	}
 }
 
 
-static int handle_game(int request, int index, int fd)
+static int table_handle(int request, int index, int fd)
 {
 
 	int status;
@@ -301,7 +301,7 @@ static int handle_game(int request, int index, int fd)
 }
 
 
-static void remove_table(int t_index)
+static void table_remove(int t_index)
 {
 
 	dbg_msg("Removing table %d", t_index);
@@ -315,20 +315,6 @@ static void remove_table(int t_index)
 
 	close(game_tables.info[t_index].fd_to_game);
 
-}
-
-
-int handle_table(int op, int index, int t_fd)
-{
-
-	return 0;
-}
-
-
-int join_table(void)
-{
-
-	return 0;
 }
 
 

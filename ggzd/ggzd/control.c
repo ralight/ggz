@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 {
 
 	int main_sock, new_sock;
-
+	
 	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
-
+	
 	/* Start accepting connections */
 	if (FAIL(listen(main_sock, MAX_USERS)))
 		err_sys_exit("Error listening to socket");
@@ -159,9 +159,9 @@ int main(int argc, char *argv[])
 			else
 				err_sys_exit("Error accepting connection");
 		} else
-			launch_handler(new_sock);
-
-	}			/* main loop */
+			player_handler_launch(new_sock);
+		
+	}		
 
 
 #if 0				/* FIXME: Not implemented yet */
