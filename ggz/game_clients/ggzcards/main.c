@@ -568,6 +568,7 @@ static int handle_msg_table(void)
 	/* TODO: verify that the table cards have been removed from the hands */
 
 	table_show_cards();
+	return status;
 }
 
 

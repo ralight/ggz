@@ -48,7 +48,6 @@ typedef struct card_t {
 #define UNKNOWN_DECK -1
 	char deck; /* -1: unknown, 0+: the deck number */
 } card_t;
-#define UNKNOWN_CARD (card_t){-1, -1, -1}
 
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
