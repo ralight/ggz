@@ -1,10 +1,16 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = lapocha.dsc
-
 SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
+
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config --install --fromfile=module.dsc --force
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.lapocha
 
