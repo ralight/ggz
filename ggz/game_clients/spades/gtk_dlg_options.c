@@ -72,7 +72,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_transient_for(GTK_WINDOW(window),
 				     GTK_WINDOW(playArea->window));
-	gtk_container_border_width(GTK_CONTAINER(window), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 	gtk_window_set_title(GTK_WINDOW(window), _("Options"));
 	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
@@ -209,9 +209,9 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	playerTable = gtk_table_new(3, 3, FALSE);
 	buttonBox = gtk_hbutton_box_new();
 
-	gtk_container_border_width(GTK_CONTAINER(gameOpt), 10);
-	gtk_container_border_width(GTK_CONTAINER(playerTable), 10);
-	gtk_container_border_width(GTK_CONTAINER(buttonBox), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(gameOpt), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(playerTable), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(buttonBox), 10);
 	gtk_table_set_row_spacings(GTK_TABLE(playerTable), 10);
 	gtk_table_set_col_spacings(GTK_TABLE(playerTable), 10);
 	gtk_table_set_row_spacings(GTK_TABLE(gameOpt), 10);
