@@ -27,6 +27,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
+#include <string.h>
+#include <sys/utsname.h>
 
 #include <datatypes.h>
 #include <err_func.h>
@@ -43,6 +46,9 @@ extern Options opt;
 
 /* Local functions */
 static char *motd_parse_motd_line(char *);
+static char *motd_get_uptime(void);
+static char *motd_get_date(void);
+static char *motd_get_time(void);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -51,6 +57,9 @@ void motd_read_file(void)
 	FILE *motd_file;
 	char line[128];
 	int lines;
+
+	/* Save the server startup time so we can calculate uptime later */
+	motd_info.startup_time = (unsigned int) time(NULL);
 
 	/* If it's an absolute path already, we don't need to add game_dir */
 	if(motd_info.motd_file[0] == '/')
@@ -70,9 +79,9 @@ void motd_read_file(void)
 		return;
 	}
 
-	/* Read the file one line at a time (up to 40) */
+	/* Read the file one line at a time (up to MAX_MOTD_LINES) */
 	lines = 0;
-	while(fgets(line, 128, motd_file) && (lines < 40)) {
+	while(fgets(line, 128, motd_file) && (lines < MAX_MOTD_LINES)) {
 		if((motd_info.motd_text[lines] = malloc(strlen(line)+1)) ==NULL)
 			err_sys_exit("malloc error in motd_read_file()");
 		strcpy(motd_info.motd_text[lines], line);
@@ -110,7 +119,9 @@ static char *motd_parse_motd_line(char *line)
 {
 	static char outline[1024];
 	static char hostname[128];
+	static char *sysname;
 	static int firsttime = 1;
+	static struct utsname unames;
 
 	char *in = line;
 	char *p;
@@ -120,30 +131,35 @@ static char *motd_parse_motd_line(char *line)
 	if(firsttime) {
 		if(gethostname(hostname, 127) != 0)
 			strcpy(hostname, "hostname.toolong.fixme");
+		if(uname(&unames))
+			err_sys_exit("uname error in motd_parse_motd()");
+		sysname = unames.sysname;
 		firsttime = 0;
 	}
 
+	/* Loop through the string, watching out for % specifiers */
 	while(*in && (outindex < 1023)) {
 		if(*in == '%') {
 			in++;
+			/* Set a pointer to a string to replace the %? with */
 			switch(*in) {
 				case 'h':
 					p = hostname;
-					while(*p && outindex < 1023) {
-						outline[outindex] = *p;
-						p++;
-						outindex++;
-					}
+					break;
+				case 'u':
+					p = motd_get_uptime();
+					break;
+				case 'd':
+					p = motd_get_date();
+					break;
+				case 't':
+					p = motd_get_time();
 					break;
 				case 'o':
-					p = hostname;
-					while(*p && outindex < 1023) {
-						outline[outindex] = *p;
-						p++;
-						outindex++;
-					}
+					p = sysname;
 					break;
 				default:
+					p = NULL;
 					outline[outindex] = '%';
 					outindex++;
 					if(outindex < 1023) {
@@ -152,9 +168,20 @@ static char *motd_parse_motd_line(char *line)
 					}
 					break;
 			}
+
+			/* Copy a string if we have one pointed to */
+			if(p) {
+				while(*p && outindex < 1023) {
+					outline[outindex] = *p;
+					p++;
+					outindex++;
+				}
+			}
+
 			in++;
 			continue;
 		}
+		/* Copy the string, byte by byte */
 		outline[outindex] = *in;
 		outindex++;
 		in++;
@@ -162,4 +189,64 @@ static char *motd_parse_motd_line(char *line)
 	outline[outindex] = '\0';
 
 	return outline;
+}
+
+
+/* Convert the curent uptime into a nice string format and return a pointer */
+char *motd_get_uptime(void)
+{
+	static char uptime_str[24];
+	unsigned long uptime;
+	int days;
+	int hours;
+
+	uptime = time(NULL) - motd_info.startup_time;
+
+	days = uptime / 86400;
+	hours = (uptime - days*86400) / 3600;
+
+	if(days == 0 && hours == 0)
+		return "less than 1 hour";
+	else if(days == 0)
+		snprintf(uptime_str, 24, "%d hour", hours);
+	else {
+		snprintf(uptime_str, 24, "%d day%sand %d hour",
+			days,
+			(days != 1) ? "s " : " ",
+			hours );
+	}
+	if(hours != 1 && strlen(uptime_str) < 24)
+		strcat(uptime_str, "s");
+
+	return uptime_str;
+}
+
+
+/* Setup a string to send the date */
+static char *motd_get_date(void)
+{
+	static char date_str[20];
+ 	time_t now;
+	struct tm *localtm;
+
+	time(&now);
+	localtm = localtime(&now);
+	strftime(date_str, 20, "%B %e, %Y", localtm);
+
+	return date_str;
+}
+
+
+/* Setup a string to send the time */
+static char *motd_get_time(void)
+{
+	static char time_str[16];
+ 	time_t now;
+	struct tm *localtm;
+
+	time(&now);
+	localtm = localtime(&now);
+	strftime(time_str, 16, "%H:%M %Z", localtm);
+
+	return time_str;
 }

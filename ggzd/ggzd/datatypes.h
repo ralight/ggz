@@ -43,6 +43,7 @@
 #define MAX_CHAT_LEN 512
 #define MAX_CHAT_BUFFER 32
 #define MAX_TABLE_SIZE 8
+#define MAX_MOTD_LINES 40
 
 /* Bitmasks for allowable player numbers */
 #define PLAY_ALLOW_ZERO    0
@@ -206,7 +207,7 @@ typedef struct {
 	char use_motd;
 	unsigned long startup_time;
 	int motd_lines;
-	char *motd_text[40];	/* 40 line maximum also hardcoded in motd.c */
+	char *motd_text[MAX_MOTD_LINES];
 } MOTDInfo;
 
 #endif
