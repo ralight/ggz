@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5083 2002-10-28 06:03:05Z jdorje $
+ * $Id: ggzcore.h 5087 2002-10-28 20:52:41Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -299,6 +299,12 @@ typedef struct {
 	const char *player;
 } GGZTableLeaveEventData;
 
+/** A GGZRoomEvent is an event associated with the room, that is triggered
+ *  by a communication from the server.  When a room event occurs, the
+ *  associated event handler will be called, and will be passed the event
+ *  data (a void*), along with the (optional) user data.
+ *  @see ggzcore_room_add_event_hook
+ */
 typedef enum {
 	/** The list of players in a room has arrived.
 	 *  @param data NULL
@@ -365,8 +371,12 @@ typedef enum {
 	 *  @param data The name of the player whose lag has changed. */
 	GGZ_PLAYER_LAG,
 
-	/** A player's stats have been updateed.
+	/** A player's stats have been updated.
+	 *  @see GGZ_PLAYER_LIST
 	 *  @see ggzcore_player_get_record
+	 *  @see  ggzcore_player_get_rating
+	 *  @see ggzcore_player_get_ranking
+	 *  @see ggzcore_player_get_highscore
 	 *  @param data The name of the player whose stats have changed. */
 	GGZ_PLAYER_STATS
 } GGZRoomEvent;
@@ -802,17 +812,67 @@ GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
 GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
 
 
-/* Functions for manipulating hooks to GGZRoom events */
+/** @brief Register a handler (hook) for the room event.
+ *
+ *  A room event will happen when data is received from the server.  To make
+ *  updates to the frontend, the client will need to register a hook function
+ *  to handle the event.  This hook function will be called each time the
+ *  room event occurrs.  More than one hook function may be specified, in
+ *  which case they will all be called (in FIFO order).
+ *  @param room The room object to associate the hook with.
+ *  @param event The event the handler is going to be "hooked" onto.
+ *  @param func The event handler itself.  This is called during the event.
+ *  @return The hook ID, or negative on error.
+ *  @see ggzcore_room_add_event_hook_full
+ *  @see ggzcore_room_remove_event_hook
+ *  @see ggzcore_room_remove_event_hook_id
+ */
 int ggzcore_room_add_event_hook(GGZRoom *room,
 				const GGZRoomEvent event, 
 				const GGZHookFunc func);
+
+/** @brief Register a handler (hook) for thee room event, with data.
+ *
+ *  This function is similar to ggzcore_room_add_event_hook, except that
+ *  user data will be associated with the hook.  This data will be passed
+ *  back to the function each time it is invoked on this event.
+ *  @param room The room object to associate the hook with.
+ *  @param event The event the handler is going to be "hooked" onto.
+ *  @param func The event handler itself.  This is called during the event.
+ *  @param data The user data associated with the hook.
+ *  @return The hook ID, or negative on error.
+ *  @see ggzcore_room_add_event_hook
+ */
 int ggzcore_room_add_event_hook_full(GGZRoom *room,
 				     const GGZRoomEvent event, 
 				     const GGZHookFunc func,
 				     void *data);
+
+/** @brief Remove a hook from an event.
+ *
+ *  Removes a specific hook function from the hook list for the given room
+ *  event.  If more than one copy of the function exists in the list, the
+ *  oldest one will be removed.
+ *  @param room The room object to associate the hook with.
+ *  @param event The event the handler is to be unhooked from.
+ *  @param func The event handler function to remove.
+ *  @return 0 on success, negative on failure.
+ *  @see ggzcore_room_add_event_hook
+ */
 int ggzcore_room_remove_event_hook(GGZRoom *room,
 				   const GGZRoomEvent event, 
 				   const GGZHookFunc func);
+
+/** @brief Remove a hook from an event, by ID.
+ *
+ *  Removes a specific hook from the hook list for the given room.  The "ID"
+ *  should be the same as that returned when the hook was added.
+ *  @param room The room object to associate the hook with.
+ *  @param event The event the handler is to be unhooked from.
+ *  @param id The ID of the hook to remove, as returned by the add function
+ *  return 0 on success, negative on failure
+ *  @see ggzcore_room_add_event_hook
+ */
 int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const unsigned int hook_id);
