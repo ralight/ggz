@@ -10,7 +10,7 @@
 #include "minidom.h"
 
 /* Remove all line breaks, spaces, tabs, and check/remove XML header */
-char *minidom_cleanstream(const char *stream)
+static char *minidom_cleanstream(const char *stream)
 {
 	static char *cs = NULL;
 	unsigned int i, j;
@@ -73,7 +73,7 @@ char *minidom_cleanstream(const char *stream)
 }
 
 /* Return position of c or -1 if not found */
-int strpos(const char *s, char c)
+static int strpos(const char *s, char c)
 {
 	unsigned int i;
 
@@ -84,7 +84,7 @@ int strpos(const char *s, char c)
 }
 
 /* Add a complete tag to an element, return the new child */
-ELE *minidom_makechild(ELE *parent, char *tag)
+static ELE *minidom_makechild(ELE *parent, char *tag)
 {
 	char *token;
 	int i, j, k, l, len, size, count;

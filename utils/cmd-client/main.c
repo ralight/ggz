@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4258 2002-06-16 12:26:45Z dr_maux $
+ * $Id: main.c 4493 2002-09-09 05:43:00Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -61,7 +61,7 @@ GGZServer *server = NULL;
 int server_fd = -1;
 int in_room = 0;
 
-void print_help(char *exec_name)
+static void print_help(char *exec_name)
 {
 	fprintf(stderr,
 		"Usage: %s <host>[:<port>] <login> <passwd> <command> "
@@ -79,7 +79,7 @@ void print_help(char *exec_name)
 
 /* Parses the command-line arguments into a GGZCommand
    structure.  Returns 0 on success, negative on failure. */
-int parse_arguments(int argc, char **argv, GGZCommand * cmd)
+static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 {
 	char *cmd_name, *port_num;
 
@@ -121,7 +121,7 @@ int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	return 0;
 }
 
-void wait_for_input(int fd)
+static void wait_for_input(int fd)
 {
 	fd_set my_fd_set;
 	int status;
@@ -181,7 +181,7 @@ static GGZHookReturn server_room_entered(GGZServerEvent id,
 	return GGZ_HOOK_OK;
 }
 
-void exec_command(GGZCommand * cmd)
+static void exec_command(GGZCommand * cmd)
 {
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, cmd->host, cmd->port);
