@@ -48,6 +48,8 @@ class TTTProto
 	public static final int sndsync = 6;
 	public static final int sndstats = 7;
 
+	public static final int sndmove = 0;
+
 	public static final int SEAT_PLAYER = 3;
 	public static final int SEAT_BOT = 2;
 
@@ -92,10 +94,10 @@ class TicTacToeEngine implements Runnable
 			{
 				x = -1;
 			}
-			for(int i = 0; i < x; i++)
-			{
-				System.err.println("Char: " + b[i]);
-			}
+//			for(int i = 0; i < x; i++)
+//			{
+//				System.err.println("Char: " + b[i]);
+//			}
 
 			int tmplength = 0;
 			byte[] tmp = null;
@@ -141,7 +143,7 @@ class TicTacToeEngine implements Runnable
 		readNetwork();
 		if(input.length >= 4)
 		{
-			int op = input[0] + (input[1] << 8) + (input[2] << 16) + (input[3] << 24);
+			int op = input[3] + (input[2] << 8) + (input[1] << 16) + (input[0] << 24);
 			cutArray(4);
 			return op;
 		}
@@ -170,8 +172,6 @@ class TicTacToeEngine implements Runnable
 		s = new FileInputStream(FileDescriptor.in);
 		proto = new TTTProto();
 		Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-
-		//mManager.sendMessage(this, b);
 
 		while(true)
 		{
@@ -223,6 +223,18 @@ class TicTacToeEngine implements Runnable
 	{
 		for(int i = 0; i < message.length; i++)
 			System.err.println("engine::message " + message[i]);
+		//System.out.print(message);
+		//System.out.flush();
+		OutputStream o = new FileOutputStream(FileDescriptor.out);
+		try
+		{
+			o.write(message, 0, message.length);
+			o.flush();
+			//o.close();
+		}
+		catch(IOException ex)
+		{
+		}
 	}
 }
 
@@ -303,8 +315,9 @@ class TicTacToeGui extends Frame implements ActionListener
 			for(int i = 0; i < 9; i++)
 				if(e.getSource() == buttons[i])
 				{
-					byte[] message = new byte[1];
-					message[0] = 42;
+					byte[] message = new byte[2];
+					message[0] = TTTProto.sndmove;
+					message[1] = (byte)i;
 					mManager.sendMessage(this, message);
 				}
 		}
