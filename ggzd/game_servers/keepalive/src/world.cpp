@@ -105,33 +105,6 @@ void World::addPlayer(const char *name, int fd)
 	{
 		p->revive(fd);
 	}
-
-	std::cout << "Transmit data to player " << name << std::endl;
-
-	// Transmit map data
-	ggz_write_char(p->fd(), op_map);
-	ggz_write_int(p->fd(), width());
-	ggz_write_int(p->fd(), height());
-
-	// Transmit initialization data
-	ggz_write_char(p->fd(), op_init);
-	ggz_write_int(p->fd(), p->x());
-	ggz_write_int(p->fd(), p->y());
-
-	// Transmit player list
-	ggz_write_char(p->fd(), op_player);
-	ggz_write_int(p->fd(), m_playerlist.size());
-	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
-	{
-		if(&(*it) == p) continue;
-std::cout << "Transmit: " << (*it).name() << " - " << (*it).type() << " - " << (*it).x() << ", " << (*it).y() << std::endl;
-		ggz_write_string(p->fd(), (*it).name());
-		ggz_write_int(p->fd(), (*it).type());
-		ggz_write_int(p->fd(), (*it).x());
-		ggz_write_int(p->fd(), (*it).y());
-	}
-
-	std::cout << "Ready with transmitting" << std::endl;
 }
 
 // Suspend a player's operation until he joins again
@@ -273,6 +246,33 @@ void World::receive(const char *name, void *data)
 					ggz_write_int((*it).fd(), p->x());
 					ggz_write_int((*it).fd(), p->y());
 				}
+
+				std::cout << "Transmit data to player " << name << std::endl;
+
+				// Transmit map data
+				ggz_write_char(p->fd(), op_map);
+				ggz_write_int(p->fd(), width());
+				ggz_write_int(p->fd(), height());
+
+				// Transmit initialization data
+				ggz_write_char(p->fd(), op_init);
+				ggz_write_int(p->fd(), p->x());
+				ggz_write_int(p->fd(), p->y());
+
+				// Transmit player list
+				ggz_write_char(p->fd(), op_player);
+				ggz_write_int(p->fd(), m_playerlist.size() - 1);
+				for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+				{
+					if(&(*it) == p) continue;
+std::cout << "Transmit: " << (*it).name() << " - " << (*it).type() << " - " << (*it).x() << ", " << (*it).y() << std::endl;
+					ggz_write_string(p->fd(), (*it).name());
+					ggz_write_int(p->fd(), (*it).type());
+					ggz_write_int(p->fd(), (*it).x());
+					ggz_write_int(p->fd(), (*it).y());
+				}
+
+				std::cout << "Ready with transmitting" << std::endl;
 			}
 			else
 			{
