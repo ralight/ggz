@@ -38,7 +38,11 @@
 #include <err_func.h>
 
 /* Logfile info */
-LogInfo log_info;
+LogInfo log_info = { 0, 0, NULL, NULL, -1, 1 
+#ifdef DEBUG
+		         , NULL, NULL, -1, 1
+#endif
+};
 
 
 static void err_doit(int flag, int priority, const char *fmt, va_list ap)
@@ -142,6 +146,35 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
+/* log_msg suggested log_levels:
+ *   0 - WARNING situations, these are always logged
+ *   1 - NOTICE situations, these are logged by default
+ *  >1 - INFO situations, the higher the number the more trivial
+ */
+void log_msg(const int log_level, const char *fmt, ...)
+{
+	va_list ap;
+	int priority;
+
+	va_start(ap, fmt);
+	if(log_level <= log_info.log_level) {
+		switch(log_level) {
+			case 0:
+				priority = LOG_WARNING;
+				break;
+			case 1:
+				priority = LOG_NOTICE;
+				break;
+			default:
+				priority = LOG_INFO;
+				break;
+		}
+		err_doit(0, priority, fmt, ap);
+	}
+	va_end(ap);
+}
+
+
 void err_sock(const char *err, const EsOpType op, const EsDataType type)
 {
 
@@ -184,7 +217,8 @@ int logfile_set_facility(char *facstr)
 void logfile_initialize(void)
 {
 	/* Setup the primary logfile */
-	log_info.log_use_syslog = 1;
+	if(log_info.log_level < 0)
+		log_info.log_level = 1;
 	if(log_info.log_fname) {
 		if(strcmp("syslogd", log_info.log_fname)) {
 			log_info.logfile = fopen(log_info.log_fname, "w");
@@ -203,7 +237,8 @@ void logfile_initialize(void)
 
 #ifdef DEBUG
 	/* Setup the debug logfile */
-	log_info.dbg_use_syslog = 1;
+	if(log_info.dbg_level < 0)
+		log_info.dbg_level = 0;
 	if(log_info.dbg_fname) {
 		if(strcmp("syslogd", log_info.dbg_fname)) {
 			log_info.dbgfile = fopen(log_info.dbg_fname, "w");

@@ -303,7 +303,7 @@ static void parse_file(FILE *configfile)
 				PARSE_ERR("Invalid LogLevel specified");
 				continue;
 			}
-			if(log_info.log_level == 0)
+			if(log_info.log_level == -1)
 				log_info.log_level = intval;
 			continue;
 		}
@@ -339,7 +339,7 @@ static void parse_file(FILE *configfile)
 				PARSE_ERR("Invalid DebugLevel specified");
 				continue;
 			}
-			if(log_info.dbg_level == 0)
+			if(log_info.dbg_level == -1)
 				log_info.dbg_level = intval;
 			continue;
 #endif

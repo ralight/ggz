@@ -34,6 +34,8 @@
 #include <string.h>
 #include <errno.h>
 #include <pthread.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -147,6 +149,8 @@ int main(int argc, char *argv[])
 {
 
 	int main_sock, new_sock;
+	struct sockaddr_in addr;
+	int addrlen;
 	
 	/* Parse options */
 	parse_args(argc, argv);
@@ -178,16 +182,24 @@ int main(int argc, char *argv[])
 	if (FAIL(listen(main_sock, MAX_USERS)))
 		err_sys_exit("Error listening to socket");
 
+	log_msg(NOTICE,
+		"GGZ server initialized and ready for player connections");
+
 	/* Main loop */
 	for (;;) {
 
-		if (FAIL(new_sock = accept(main_sock, NULL, NULL))) {
+		addrlen = sizeof(addr);
+		if (FAIL(new_sock = accept(main_sock, &addr, &addrlen))) {
 			if (errno == EINTR)
 				continue;
 			else
 				err_sys_exit("Error accepting connection");
-		} else
+		} else {
+			log_msg(CONNECTION_INFO,
+				"Accepting connection from %s",
+				inet_ntoa(addr.sin_addr));
 			player_handler_launch(new_sock);
+		}
 		
 	}		
 

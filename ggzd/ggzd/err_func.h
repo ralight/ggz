@@ -26,6 +26,11 @@
 
 #include <easysock.h>
 
+/* Log levels for log_msg */
+#define ALWAYS		0
+#define NOTICE		1
+#define CONNECTION_INFO	2
+
 /*
  * Quick macro for determining operation failures
  */
@@ -62,3 +67,6 @@ extern int logfile_set_facility(char *);
 
 /* Initialize the log files */
 extern void logfile_initialize(void);
+
+/* Log a normal message */
+extern void log_msg(const int, const char *, ...);
