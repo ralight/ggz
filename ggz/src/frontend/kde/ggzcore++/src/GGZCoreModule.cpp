@@ -31,26 +31,27 @@ unsigned int GGZCoreModule::countAll()
 	return ggzcore_module_get_num();
 }
 
-void GGZCoreModule::init(const char* game, const char* protocol)
+void GGZCoreModule::init(const char* game, const char* protocol, const char *engine)
 {
 	m_game = (char*)game;
 	m_protocol = (char*)protocol;
+	m_engine = (char*)engine;
 }
 
 void GGZCoreModule::setActive(const unsigned int number)
 {
-	m_module = ggzcore_module_get_nth_by_type(m_game, m_protocol, number);
+	m_module = ggzcore_module_get_nth_by_type(m_game, m_protocol, m_engine, number);
 }
 
 unsigned int GGZCoreModule::count()
 {
 	if((!m_game) || (!m_protocol)) return 0;
-	return ggzcore_module_get_num_by_type(m_game, m_protocol);
+	return ggzcore_module_get_num_by_type(m_game, m_protocol, m_engine);
 }
 
-int GGZCoreModule::add(const char* game, const char* version, const char* protocol, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path)
+int GGZCoreModule::add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path)
 {
-	return ggzcore_module_add(game, version, protocol, author, frontend, url, exe_path, icon_path, help_path);
+	return ggzcore_module_add(game, version, protocol, engine, author, frontend, url, exe_path, icon_path, help_path);
 }
 
 int GGZCoreModule::launch()
@@ -60,7 +61,9 @@ int GGZCoreModule::launch()
 
 char* GGZCoreModule::game()
 {
-	return ggzcore_module_get_game(m_module);
+	// inconsistency in ggzcore
+	//return ggzcore_module_get_game(m_module);
+	return NULL;
 }
 
 char* GGZCoreModule::version()
@@ -68,9 +71,14 @@ char* GGZCoreModule::version()
 	return ggzcore_module_get_version(m_module);
 }
 
-char* GGZCoreModule::protocol()
+char* GGZCoreModule::protocolVersion()
 {
-	return ggzcore_module_get_protocol(m_module);
+	return ggzcore_module_get_prot_version(m_module);
+}
+
+char *GGZCoreModule::protocolEngine()
+{
+	return ggzcore_module_get_prot_engine(m_module);
 }
 
 char* GGZCoreModule::author()

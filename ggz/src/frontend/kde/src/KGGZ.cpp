@@ -1214,7 +1214,7 @@ void KGGZ::slotGameFrontend()
 
 	KGGZDEBUG("Create module...\n");
 	m_module = new GGZCoreModule();
-	m_module->init(gametype->name(), gametype->protocol());
+	m_module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	modules = m_module->count();
 
 	KGGZDEBUG("Found: %i modules for this game\n", modules);
@@ -1393,7 +1393,8 @@ void KGGZ::menuGameInfo()
 	KGGZDEBUG("Version: %s\n", gametype->version());
 	KGGZDEBUG("URL: %s\n", gametype->url());
 	KGGZDEBUG("Description: %s\n", gametype->description());
-	KGGZDEBUG("Protocol: %s\n", gametype->protocol());
+	KGGZDEBUG("ProtocolVersion: %s\n", gametype->protocolVersion());
+	KGGZDEBUG("ProtocolEngine: %s\n", gametype->protocolEngine());
 	buffer.append(i18n("Name: "));
 	buffer.append(gametype->name());
 	buffer.append("\n");
@@ -1407,7 +1408,10 @@ void KGGZ::menuGameInfo()
 	buffer.append(gametype->version());
 	buffer.append("\n");
 	buffer.append(i18n("Protocol: "));
-	buffer.append(gametype->protocol());
+	buffer.append(gametype->protocolVersion());
+	buffer.append("\n");
+	buffer.append(i18n("Engine: "));
+	buffer.append(gametype->protocolEngine());
 	buffer.append("\n");
 	buffer.append(i18n("URL: "));
 	buffer.append(gametype->url());
@@ -1448,7 +1452,7 @@ void KGGZ::slotLoadLogo()
 	}
 
 	module = new GGZCoreModule();
-	module->init(gametype->name(), gametype->protocol());
+	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	if(module->count() == 0)
 	{
 		KGGZDEBUG("Critical! No modules found!\n");

@@ -38,7 +38,7 @@ class GGZCoreModule
 		unsigned int count();
 
 		/** Add a game. */
-		int add(const char* game, const char* version, const char* protocol, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path);
+		int add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path);
 
 		/** Launch this module. */
 		int launch();
@@ -48,7 +48,9 @@ class GGZCoreModule
 		/** Return the version of this game module. */
 		char* version();
 		/** Return the protocol version of this game module. */
-		char* protocol();
+		char* protocolVersion();
+		/** Return the associated protocol engine. */
+		char *protocolEngine();
 		/** Return the author of this game module. */
 		char* author();
 		/** Return the frontend type of this game module. */
@@ -62,7 +64,7 @@ class GGZCoreModule
 		/** Return the help path of this game module. */
 		char* pathHelp();
 
-		void init(const char* game, const char* protocol);
+		void init(const char* game, const char* protocol, const char *engine);
 		void setActive(const unsigned int number);
 
 		GGZModule *module();
@@ -71,6 +73,7 @@ class GGZCoreModule
 		GGZModule* m_module;
 		char *m_game;
 		char *m_protocol;
+		char *m_engine;
 };
 
 #endif

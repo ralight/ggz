@@ -265,7 +265,8 @@ void KGGZChat::slotSend()
 			if(player)
 			{
 				emit signalChat(inputargs, player, RECEIVE_PERSONAL);
-				receive(NULL, i18n("Sent message to %1.").arg(player), RECEIVE_ADMIN);
+				//receive(NULL, i18n("Sent message to %1.").arg(player), RECEIVE_ADMIN);
+				receive(i18n("--> %1").arg(player), inputargs, RECEIVE_PERSONAL);
 			}
 			break;
 		case EVENT_BEEP:

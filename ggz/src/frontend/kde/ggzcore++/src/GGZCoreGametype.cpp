@@ -33,9 +33,14 @@ char* GGZCoreGametype::name()
 	return ggzcore_gametype_get_name(m_gametype);
 }
 
-char* GGZCoreGametype::protocol()
+char* GGZCoreGametype::protocolVersion()
 {
-	return ggzcore_gametype_get_protocol(m_gametype);
+	return ggzcore_gametype_get_prot_version(m_gametype);
+}
+
+char *GGZCoreGametype::protocolEngine()
+{
+	return ggzcore_gametype_get_prot_engine(m_gametype);
 }
 
 char* GGZCoreGametype::version()

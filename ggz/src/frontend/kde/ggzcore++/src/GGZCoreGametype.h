@@ -34,7 +34,9 @@ class GGZCoreGametype
 		/** The unique name of this game type. */
 		char* name();
 		/** Protocol version */
-		char* protocol();
+		char* protocolVersion();
+		/** Protocol engine */
+		char *protocolEngine();
 		/** Game version */
 		char* version();
 		/** Author of this game. */
