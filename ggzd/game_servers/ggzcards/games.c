@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <easysock.h>
 
@@ -110,5 +111,7 @@ int games_req_gametype()
 		if (es_write_string(fd, game_names[game_types[i]]) < 0)
 			status = -1;
 
+	if (status != 0)
+		ggz_debug("ERROR: games_req_gametype: status is %d.", status);
 	return status;
 }

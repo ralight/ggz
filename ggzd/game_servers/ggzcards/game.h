@@ -43,7 +43,10 @@ typedef struct lapocha_game_t {
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
 typedef struct spades_game_t {
-	int nil_value; /* generally 50 or 100 */
+	/* options */
+	int nil_value;		/* generally 50 or 100 */
+	int minimum_team_bid;	/* the minimum bid by one team */
+
 	int bags[2];
 } spades_game_t;
 

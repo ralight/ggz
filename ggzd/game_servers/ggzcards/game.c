@@ -307,23 +307,31 @@ int game_get_options()
 				return -1;
 			break;
 		case GGZ_GAME_SPADES:
-			/* two options for now:
+			/* three options:
 			 *   target score: 100, 250, 500, 1000
 			 *   nil value: 50, 100
+			 *   minimum team bid: 0, 1, 2, 3, 4
 			 */
-			game.num_options = 2;
+			game.num_options = 3;
 			if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
 				es_write_int(fd, game.num_options) < 0 || /* number of options */
 				es_write_int(fd, 2) < 0 || /* first option: 2 choices */
 				es_write_int(fd, 1) < 0 || /* first option: default is 1 */
 				es_write_string(fd, "Nil is worth 50") < 0 ||
 				es_write_string(fd, "Nil is worth 100") < 0 ||
-				es_write_int(fd, 4) < 0 || /* second option: 2 choices */
+				es_write_int(fd, 4) < 0 || /* second option: 4 choices */
 				es_write_int(fd, 2) < 0 || /* second option: default is 2 */
 				es_write_string(fd, "Game to 100") < 0 ||
 				es_write_string(fd, "Game to 250") < 0 ||
 				es_write_string(fd, "Game to 500") < 0 ||
-				es_write_string(fd, "Game to 1000") < 0
+				es_write_string(fd, "Game to 1000") < 0 ||
+				es_write_int(fd, 5) < 0 || /* third option: 4 choices */
+				es_write_int(fd, 3) < 0 || /* third option: default is 3 */
+				es_write_string(fd, "Minimum bid 0") < 0 ||
+				es_write_string(fd, "Minimum bid 1") < 0 ||
+				es_write_string(fd, "Minimum bid 2") < 0 ||
+				es_write_string(fd, "Minimum bid 3") < 0 ||
+				es_write_string(fd, "Minimum bid 4") < 0
 			   )
 				return -1;
 			break;
@@ -372,6 +380,7 @@ void game_handle_options(int *options)
 				case 3: game.target_score = 1000; break;
 				default: break;
 			}
+			if (options[2] >= 0) GSPADES.minimum_team_bid = options[2];
 			game.options_initted = 1;
 			break;
 		default:
@@ -514,22 +523,29 @@ int game_get_bid()
 	switch (game.which_game) {
 		case GGZ_GAME_SPADES:
 			{
-			int i;
+			int i, index = 0;
+			bid_t partners_bid = game.players[ (game.next_bid + 2) % 4].bid;
 			for (i = 0; i <= game.hand_size; i++) {
+				/* the second bidder on each team must make sure the minimum bid count is met */
+				if (game.bid_count >= 2 &&
+				    partners_bid.sbid.val + i < GSPADES.minimum_team_bid)
+					continue;
 				bid.sbid.val = i;
-				game.bid_choices[i] = bid;
-				game_get_bid_text(game.bid_texts[i], game.max_bid_length, game.bid_choices[i]);
+				game.bid_choices[index] = bid;
+				game_get_bid_text(game.bid_texts[index], game.max_bid_length, game.bid_choices[index]);
+				index++;
 			}
 			
 			/* "Nil" bid */
 			bid.bid = 0;
 			bid.sbid.spec = SPADES_NIL;
-			game.bid_choices[i] = bid;
-			game_get_bid_text(game.bid_texts[i], game.max_bid_length, game.bid_choices[i]);
+			game.bid_choices[index] = bid;
+			game_get_bid_text(game.bid_texts[index], game.max_bid_length, game.bid_choices[index]);
+			index++;
 
 			/* TODO: other specialty bids */
 
-			status = req_bid(game.next_bid, game.hand_size+2, game.bid_texts);
+			status = req_bid(game.next_bid, index, game.bid_texts);
 			}
 			break;
 		case GGZ_GAME_LAPOCHA:
