@@ -335,7 +335,7 @@ should include all of them to give their players a better choice.
 
 @section Description of available external games
 
-@subsection Bathalla Naval
+@subsection Batalla Naval
 
 This is a graphical server using the Gnome libraries, so it is only of interest
 for people who run a GGZ server on a desktop system.
