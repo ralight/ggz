@@ -42,6 +42,7 @@
 GtkWidget *login_dialog;
 static GtkWidget *create_dlg_login(void);
 extern GGZServer *server;
+extern GtkWidget *win_main;
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget *widget, gpointer data);
@@ -174,6 +175,7 @@ login_edit_profiles                    (GtkButton       *button,
 }
 
 
+
 static void
 login_entry_changed                    (GtkEditable     *editable,
                                         gpointer         user_data)
@@ -230,14 +232,16 @@ login_start_session                    (GtkButton       *button,
 	int port;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
-	g_print("login_start_session\n");
+	/* Clearout the room, table and player lists */
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
 
 	if(ggzcore_server_is_logged_in(server)) {
-		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
-//		ggzcore_event_add_hook_full(GGZ_SERVER_LOGOUT,
-//						login_reconnect,
-//						profile);
-//		/* If currently online, disconnect */
+		/* If currently online, disconnect */
 		ggzcore_server_logout(server);
 	}
 
