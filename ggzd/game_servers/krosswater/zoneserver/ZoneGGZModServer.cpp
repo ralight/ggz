@@ -83,6 +83,7 @@ int ZoneGGZModServer::game_input(int zone_fd, int *p_fd)
 int ZoneGGZModServer::slotZoneInput(int fd, int i)
 {
 //printf("moo.\n");
+	return 0; /* silence compiler warning */
 }
 
 void ZoneGGZModServer::slotZoneAI()
