@@ -1465,34 +1465,31 @@ int _net_send_table_status(GGZNetIO *net, GGZTable *table)
 
 int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 {
-	int seat;
-	char *type = NULL;
+	int type = seats_type(table, num);
+	char *type_str = ggz_seattype_to_string(type);
 	char *name = NULL;
 
-	seat = seats_type(table, num);
-	switch (seat) {
-	case GGZ_SEAT_OPEN:
-		type = "open";
-		break;
-	case GGZ_SEAT_BOT:
-		type = "bot";
-		break;
+#if 0
+	/* We should do it this way, since the ggzdmod field doesn't
+	   get correctly initialized we can crash inside it. */
+	name = ggzdmod_get_seat(table->ggzdmod, num).name;
+#else /* #if 0 */
+	switch (type) {
 	case GGZ_SEAT_RESERVED:
-		type = "reserved";
 		name = table->reserve[num];
 		break;
 	case GGZ_SEAT_PLAYER:
-		type = "player";
 		name = table->seats[num];
 		break;
 	}
+#endif /* #if 0 */
 	
 	if (name)
-		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
-			       num, type, name);
+		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>",
+			       num, type_str, name);
 	else
 		_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-			       num, type);
+			       num, type_str);
 
 	return 0;
 }
