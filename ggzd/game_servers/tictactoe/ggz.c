@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>
 
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -69,10 +70,10 @@ int ggz_connect(void)
 	if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
 		return -1;
 
-	len = strlen(name) + 12;
+	len = strlen(name) + strlen(TMPDIR) + 7;
 	if ( (fd_name = malloc(len)) == NULL)
 		return -1;
-	sprintf(fd_name, "/tmp/%s.%d", name, getpid());
+	sprintf(fd_name, "%s/%s.%d", TMPDIR, name, getpid());
 	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_LOCAL;

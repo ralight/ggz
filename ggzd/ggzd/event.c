@@ -33,18 +33,21 @@
 #include <room.h>
 #include <datatypes.h>
 #include <protocols.h>
+#include <players.h>
+#include <hash.h>
 
 /* Server wide data structures */
 extern Options opt;
-extern struct Users players;
 
 
 /* Local support functions */
+static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event);
+static void event_table_do_enqueue(GGZTable* table, GGZEvent* event);
 #ifdef DEBUG
 static void event_room_spew(int room);
-static void event_player_spew(int p_index);
+static void event_player_spew(GGZPlayer* player);
+static void event_table_spew(GGZTable* table);
 #endif
-
 
 /* Place an event into the room-specific event queue */
 int event_room_enqueue(int room, GGZEventFunc func, unsigned int size, 
@@ -52,7 +55,8 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 		       
 {
 	GGZEvent *event;
-	int i, p_index;
+	GGZPlayer* player;
+	int i;
 
 	/* Allocate a new event item */
 	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
@@ -84,9 +88,9 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 
 	/* Put this event as first for anyone who doesn't have a list now */
 	for (i = 0; i < rooms[room].player_count; i++) {
-		p_index = rooms[room].player_index[i];
-		if(players.info[p_index].room_events == NULL)
-			players.info[p_index].room_events = event;
+		player = rooms[room].players[i];
+		if (player->room_events == NULL)
+			player->room_events = event;
 	}
 
 	/* Finally, add this event to the room list */
@@ -107,7 +111,7 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 
 
 /* Process queued-up room-specific events for player */
-int event_room_handle(int p_index)
+int event_room_handle(GGZPlayer* player)
 {
 	GGZEvent *event, *rm_list = NULL;
 	int room, status;
@@ -116,10 +120,10 @@ int event_room_handle(int p_index)
 	 * We don't need player lock here, since our room can't change 
 	 * unless we change it 
 	 */
-	room = players.info[p_index].room;
+	room = player->room;
 
 	pthread_rwlock_rdlock(&rooms[room].lock);
-	event = players.info[p_index].room_events;
+	event = player->room_events;
 	/* 
 	 * This player obviously has a reference to the event, so it
 	 * can't be removed out from under us.  We might as well
@@ -130,17 +134,18 @@ int event_room_handle(int p_index)
 	while (event) {
 		
 		/* Invoke callback for this event */
-		status = (*event->handle)(p_index, event->size, event->data);
+		status = (*event->handle)((void*)player, event->size, 
+					  event->data);
 
 		/* If there was a fatal error, return immedately */
-		if (status < 0)
+		if (status == GGZ_EVENT_ERROR)
 			return -1;
 
 		/* We need the lock now to alter the event list */
 		pthread_rwlock_wrlock(&rooms[room].lock);
 		
 		/* Update player pointer into list */
-		players.info[p_index].room_events = event->next;
+		player->room_events = event->next;
 		
 		/* And add the event to the remove list if necessary */
 		if (--(event->ref_count) == 0) {
@@ -161,7 +166,7 @@ int event_room_handle(int p_index)
 		 * Grab next event from player list in case event was 
 		 * added to remove list (and its next got overwritten)
 		 */
-		event = players.info[p_index].room_events;
+		event = player->room_events;
 		pthread_rwlock_unlock(&rooms[room].lock);
 	}
 	
@@ -178,16 +183,16 @@ int event_room_handle(int p_index)
 
 
 /* Flush queued up room-specific events for player */
-int event_room_flush(int p_index)
+int event_room_flush(GGZPlayer* player)
 {
 	GGZEvent *event;
-	int room = players.info[p_index].room;
+	int room = player->room;
 
-	dbg_msg(GGZ_DBG_LISTS, "Flushing all events for %d in room %d", 
-		p_index, room);
+	dbg_msg(GGZ_DBG_LISTS, "Flushing all events for %s in room %d", 
+		player->name, room);
 
-	while ( (event = players.info[p_index].room_events)) {
-		players.info[p_index].room_events = event->next;
+	while ( (event = player->room_events)) {
+		player->room_events = event->next;
 		if (--(event->ref_count) == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
 			if (rooms[room].event_tail == event)
@@ -211,17 +216,18 @@ int event_room_flush(int p_index)
 
 
 /* Place an event into the player-specific event queue */
-int event_player_enqueue(int p_index, GGZEventFunc func, unsigned int size, 
+int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size, 
 			 void* data)
 			 
 {
 	GGZEvent *event;
+	GGZPlayer *player;
 
 	/* Allocate a new event item */
 	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
 		if (data)
 			free(data);
-		err_sys_exit("malloc failed in event_room_enqueue()");
+		err_sys_exit("malloc failed in event_player_enqueue()");
 	}
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
 
@@ -232,77 +238,86 @@ int event_player_enqueue(int p_index, GGZEventFunc func, unsigned int size,
 	event->data = data;
 	event->handle = func;
 
-	/* Obtain player specific lock */
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-
-	/* Check to see if player is connected */
-	if (players.info[p_index].fd == -1 ) {
-		pthread_rwlock_unlock(&players.info[p_index].lock);
+	
+	/* Find target player.  Returns with player write-locked */
+	if ( (player = hash_player_lookup(name)) == NULL ) {
 		if (data)
 			free(data);
 		free(event);
-		dbg_msg(GGZ_DBG_LISTS, 
-			"Deallocated event %p (no user)", event);
+		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
+			event);		
+		return -1;
+	}
+
+	/* Check to see if player is connected */
+	if (player->fd == -1 ) {
+		pthread_rwlock_unlock(&player->lock);
+		if (data)
+			free(data);
+		free(event);
+		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
+			event);
 		return -1;
 	}
 
 	/* FIXME: Should we be doing more checking?  logged-in, etc? */
 
-	/* Add this event to end of the list */
-	if (players.info[p_index].my_events_tail)
-		players.info[p_index].my_events_tail->next = event;
-	players.info[p_index].my_events_tail = event;
-
-	if (players.info[p_index].my_events_head == NULL)
-		players.info[p_index].my_events_head = event;
-	
-#ifdef DEBUG
-	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(p_index);
-#endif
-	
-	pthread_rwlock_unlock(&players.info[p_index].lock);
+	event_player_do_enqueue(player, event);
+	pthread_rwlock_unlock(&player->lock);
 
 	return 0;
 }
 
 
 /* Process queued-up player-specific events */
-int event_player_handle(int p_index)
+int event_player_handle(GGZPlayer* player)
 {
 	int status;
 	GGZEvent *event, *next;
 	
 	/* Grab list of personal events to handle */
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-	event = players.info[p_index].my_events_head;
-	players.info[p_index].my_events_head = NULL;
-	players.info[p_index].my_events_tail = NULL;
-	pthread_rwlock_unlock(&players.info[p_index].lock);	
-
+	pthread_rwlock_wrlock(&player->lock);
+	event = player->my_events_head;
+	player->my_events_head = NULL;
+	player->my_events_tail = NULL;
+	pthread_rwlock_unlock(&player->lock);	
+	
 	while (event) {
 		next = event->next;
 		
 		/* Invoke callback for this event */
-		status = (*event->handle)(p_index, event->size, event->data);
+		status = (*event->handle)((void*)player, event->size, 
+					  event->data);
 
-		/* If there was a fatal error, return immedately */
-		if (status < 0)
+		switch (status) {
+		case GGZ_EVENT_ERROR:
+			/* If there was a fatal error, return immedately */
 			return -1;
-		
-		/* Remove event if necessary (always) */
-		if (--(event->ref_count) == 0) {
-			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
-			if (event->data)
-				free(event->data);
-			free(event);
+			break;
+		case GGZ_EVENT_OK:
+			/* Remove event if necessary (always) */
+			if (--(event->ref_count) == 0) {
+				dbg_msg(GGZ_DBG_LISTS, "Removing event %p", 
+					event);
+				if (event->data)
+					free(event->data);
+				free(event);
+			}
+			break;
+		case GGZ_EVENT_DEFER:
+			dbg_msg(GGZ_DBG_LISTS, "Deferring event %p", event);
+			pthread_rwlock_wrlock(&player->lock);
+			event_player_do_enqueue(player, event);
+			pthread_rwlock_unlock(&player->lock);
+			break;
 		}
+		
 		event = next;
 	}
 
 #ifdef DEBUG
 	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(p_index);
+		event_player_spew(player);
 #endif
 
 	return 0;
@@ -310,16 +325,16 @@ int event_player_handle(int p_index)
 
 
 /* Flush queued up room-specific events for player */
-int event_player_flush(int p_index)
+int event_player_flush(GGZPlayer* player)
 {
 	GGZEvent *event, *next;
 	
 	/* Grab list of personal events to flush */
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-	event = players.info[p_index].my_events_head;
-	players.info[p_index].my_events_head = NULL;
-	players.info[p_index].my_events_tail = NULL;
-	pthread_rwlock_unlock(&players.info[p_index].lock);	
+	pthread_rwlock_wrlock(&player->lock);
+	event = player->my_events_head;
+	player->my_events_head = NULL;
+	player->my_events_tail = NULL;
+	pthread_rwlock_unlock(&player->lock);	
 
 	while (event) {
 		next = event->next;
@@ -335,10 +350,194 @@ int event_player_flush(int p_index)
 
 #ifdef DEBUG
 	if (log_info.dbg_types & GGZ_DBG_LISTS)
-		event_player_spew(p_index);
+		event_player_spew(player);
 #endif
 
 	return 0;
+}
+
+
+/*
+ * event_player_do_enqueue() actually adds an event to a player's queue
+ *
+ * Receives:
+ * GGZPlayer *player : pointer to player we are adding event to
+ * GGZEvent  *event  : pointer to event we're adding
+ *
+ * Note: Should be called with player write lock acquired
+ */
+static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
+
+	/* Add this event to end of the list */
+	if (player->my_events_tail)
+		((GGZEvent*)(player->my_events_tail))->next = event;
+	player->my_events_tail = event;
+
+	if (player->my_events_head == NULL)
+		player->my_events_head = event;
+	
+#ifdef DEBUG
+	if (log_info.dbg_types & GGZ_DBG_LISTS)
+		event_player_spew(player);
+#endif
+
+}
+
+
+/* Place an event into the table-specific event queue */
+int event_table_enqueue(int room, int index, GGZEventFunc func, 
+			unsigned int size, void* data)
+{
+	GGZEvent *event;
+	GGZTable *table;
+	
+	/* Allocate a new event item */
+	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
+		if (data)
+			free(data);
+		err_sys_exit("malloc failed in event_table_enqueue()");
+	}
+	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
+
+	/* Fill in event structure */
+	event->ref_count = 1;
+	event->next = NULL;
+	event->size = size;
+	event->data = data;
+	event->handle = func;
+
+	/* Find target table.  Returns with table write-locked */
+	if ( (table = table_lookup(room, index)) == NULL) {
+		if (data)
+			free(data);
+		free(event);
+		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no table)", 
+			event);				
+		return E_NO_TABLE;
+	}
+
+	/* FIXME: Should we be doing more checking? state, etc? */
+
+	event_table_do_enqueue(table, event);
+	pthread_rwlock_unlock(&table->lock);
+
+	return 0;
+}
+
+
+/* Process queued-up table-specific events */
+int event_table_handle(GGZTable* table)
+{
+	int status;
+	GGZEvent *event, *next;
+	
+	/* Grab list of private events to handle */
+	pthread_rwlock_wrlock(&table->lock);
+	event = table->events_head;
+	table->events_head = NULL;
+	table->events_tail = NULL;
+	pthread_rwlock_unlock(&table->lock);	
+	
+	while (event) {
+		next = event->next;
+		
+		/* Invoke callback for this event */
+		status = (*event->handle)((void*)table, event->size, 
+					  event->data);
+		
+		switch (status) {
+		case GGZ_EVENT_ERROR:
+			/* If there was a fatal error, return immedately */
+			/* FIXME: should we flush the rest of the events? */
+			return -1;
+			break;
+		case GGZ_EVENT_OK:
+			/* Remove event if necessary (always) */
+			if (--(event->ref_count) == 0) {
+				dbg_msg(GGZ_DBG_LISTS, "Removing event %p", 
+					event);
+				if (event->data)
+					free(event->data);
+				free(event);
+			}
+			break;
+		case GGZ_EVENT_DEFER:
+			dbg_msg(GGZ_DBG_LISTS, "Deferring event %p", event);
+			pthread_rwlock_wrlock(&table->lock);
+			event_table_do_enqueue(table, event);
+			pthread_rwlock_unlock(&table->lock);
+			break;
+		}
+		
+		event = next;
+	}
+
+#ifdef DEBUG
+	if (log_info.dbg_types & GGZ_DBG_LISTS)
+		event_table_spew(table);
+#endif
+
+	return 0;
+}
+
+
+/* Flush queued up room-specific events for table */
+int event_table_flush(GGZTable* table)
+{
+	GGZEvent *event, *next;
+	
+	/* Grab list of personal events to flush */
+	pthread_rwlock_wrlock(&table->lock);
+	event = table->events_head;
+	table->events_head = NULL;
+	table->events_tail = NULL;
+	pthread_rwlock_unlock(&table->lock);	
+
+	while (event) {
+		next = event->next;
+		/* Remove event if necessary (always) */
+		if (--(event->ref_count) == 0) {
+			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
+			if (event->data)
+				free(event->data);
+			free(event);
+		}
+		event = next;
+	}
+
+#ifdef DEBUG
+	if (log_info.dbg_types & GGZ_DBG_LISTS)
+		event_table_spew(table);
+#endif
+
+	return 0;
+}
+
+
+/*
+ * event_table_do_enqueue() actually adds an event to a table's queue
+ *
+ * Receives:
+ * GGZTable *table : pointer to table we are adding event to
+ * GGZEvent  *event  : pointer to event we're adding
+ *
+ * Note: Should be called with table write lock acquired
+ */
+static void event_table_do_enqueue(GGZTable* table, GGZEvent* event) {
+
+	/* Add this event to end of the list */
+	if (table->events_tail)
+		((GGZEvent*)(table->events_tail))->next = event;
+	table->events_tail = event;
+
+	if (table->events_head == NULL)
+		table->events_head = event;
+	
+#ifdef DEBUG
+	if (log_info.dbg_types & GGZ_DBG_LISTS)
+		event_table_spew(table);
+#endif
+
 }
 
 
@@ -347,7 +546,7 @@ static void event_room_spew(int room)
 {
 	GGZEvent *event;
 
-	dbg_msg(GGZ_DBG_LISTS, "------ Event List ------");
+	dbg_msg(GGZ_DBG_LISTS, "------ Room %d Event List ------", room);
 	event = rooms[room].event_head;
 	dbg_msg(GGZ_DBG_LISTS, "Event head is %p", event);
 	while (event) {
@@ -359,12 +558,12 @@ static void event_room_spew(int room)
 	dbg_msg(GGZ_DBG_LISTS, "-----------------------");
 }
 
-static void event_player_spew(int p_index)
+static void event_player_spew(GGZPlayer* player)
 {
 	GGZEvent *event;
 
-	dbg_msg(GGZ_DBG_LISTS, "------ Event List ------");
-	event = players.info[p_index].my_events_head;
+	dbg_msg(GGZ_DBG_LISTS, "------ %s Event List ------", player->name);
+	event = player->my_events_head;
 	dbg_msg(GGZ_DBG_LISTS, "Event head is %p", event);
 	while (event) {
 		dbg_msg(GGZ_DBG_LISTS, "  Chain item %p (%d)",
@@ -372,9 +571,28 @@ static void event_player_spew(int p_index)
 		event = event->next;
 	}
 	dbg_msg(GGZ_DBG_LISTS, "Event tail is %p", 
-		players.info[p_index].my_events_tail);
+		player->my_events_tail);
 	dbg_msg(GGZ_DBG_LISTS, "-----------------------");
 }
+
+static void event_table_spew(GGZTable* table)
+{
+	GGZEvent *event;
+
+	dbg_msg(GGZ_DBG_LISTS, "------ Table %d room %d Event List ------",
+		table->index, table->room);
+	event = table->events_head;
+	dbg_msg(GGZ_DBG_LISTS, "Event head is %p", event);
+	while (event) {
+		dbg_msg(GGZ_DBG_LISTS, "  Chain item %p (%d)",
+			event, event->ref_count);
+		event = event->next;
+	}
+	dbg_msg(GGZ_DBG_LISTS, "Event tail is %p", 
+		table->events_tail);
+	dbg_msg(GGZ_DBG_LISTS, "-----------------------");
+}
+
 #endif /* DEBUG */
 
 

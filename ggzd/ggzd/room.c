@@ -40,30 +40,30 @@
 
 /* Server wide data structures */
 extern Options opt;
-extern struct Users players;
-extern struct GameTypes game_types;
+extern struct GGZState state;
+extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 /* Decl of server wide chat room structure */
 RoomStruct *rooms;
 RoomInfo room_info;
 
 /* Internal use only */
-static void room_notify_change(const int, const int, const int);
-static int room_list_send(const int p, const int p_fd);
-static int room_handle_join(const int, const int);
-static int room_event_callback(int p_index, int size, void* data);
+static void room_notify_change(char* name, const int, const int);
+static int room_list_send(GGZPlayer* player, const int p_fd);
+static int room_handle_join(GGZPlayer* player, const int);
+static int room_event_callback(GGZPlayer* player, int size, void* data);
 
 /* Handle opcodes from player_handle() */
-int room_handle_request(const int request, const int p, const int p_fd)
+int room_handle_request(const int request, GGZPlayer* player, const int p_fd)
 {
 	int status = GGZ_REQ_OK;
 
 	switch(request) {
 		case REQ_LIST_ROOMS:
-			status = room_list_send(p, p_fd);
+			status = room_list_send(player, p_fd);
 			break;
 		case REQ_ROOM_JOIN:
-			status = room_handle_join(p, p_fd);
+			status = room_handle_join(player, p_fd);
 			break;
 		default:
 			/* player_handle() sent us an invalid opcode	*/
@@ -84,11 +84,11 @@ int room_handle_request(const int request, const int p, const int p_fd)
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
-static int room_list_send(const int p, const int p_fd)
+static int room_list_send(GGZPlayer* player, const int p_fd)
 {
 	int req_game;
 	char verbose;
-	int i, count=0;
+	int i, max, count=0;
 
 	/* We don't need to lock anything because CURRENTLY the room count  */
 	/* and options can change ONLY before threads are in existence	    */
@@ -99,15 +99,18 @@ static int room_list_send(const int p, const int p_fd)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Don't send list if they're not logged in */
-	if (players.info[p].uid == GGZ_UID_NONE) {
+	if (player->uid == GGZ_UID_NONE) {
 		if (es_write_int(p_fd, RSP_LIST_ROOMS) < 0
 		    || es_write_int(p_fd, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 	
-	if((verbose != 0 && verbose != 1)
-	   || req_game < -1 || req_game >= game_types.count) {
+	pthread_rwlock_rdlock(&state.lock);
+	max = state.types;
+	pthread_rwlock_unlock(&state.lock);	
+
+	if((verbose != 0 && verbose != 1) || req_game < -1 || req_game >= max){
 		/* Invalid Options Sent */
 		if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
 		   || es_write_int(p_fd, E_BAD_OPTIONS) < 0)
@@ -190,7 +193,7 @@ void room_create_additional(void)
 
 
 /* Handle the REQ_ROOM_JOIN opcode */
-int room_handle_join(const int p_index, const int p_fd)
+int room_handle_join(GGZPlayer* player, const int p_fd)
 {
 	int room, result;
 	
@@ -199,6 +202,20 @@ int room_handle_join(const int p_index, const int p_fd)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Check for silliness from the user */
+	if (player->table != -1 || player->launching) {
+		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
+		   || es_write_char(p_fd, E_AT_TABLE) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	if (player->transit) {
+		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
+		   || es_write_char(p_fd, E_IN_TRANSIT) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+	
 	if(room > room_info.num_rooms || room < 0) {
 		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
@@ -208,7 +225,7 @@ int room_handle_join(const int p_index, const int p_fd)
 	}
 
 	/* Do the actual room change, and return results */
-	if((result = room_join(p_index, room, p_fd)) == GGZ_REQ_DISCONNECT)
+	if((result = room_join(player, room, p_fd)) == GGZ_REQ_DISCONNECT)
 		return result;
 	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 	   || es_write_char(p_fd, result) < 0)
@@ -219,14 +236,16 @@ int room_handle_join(const int p_index, const int p_fd)
 
 
 /* Join a player to a room, returns explanatory code on failure */
-int room_join(const int p_index, const int room, const int fd)
+int room_join(GGZPlayer* player, const int room, const int fd)
 {
 	int old_room;
-	int i, count, last;
+	int i, count;
+	GGZPlayer* last;
+	char name[MAX_USER_NAME_LEN+1];
 
 	/* No other thread could possibly be changing the room # */
 	/* so we can read it without a lock! */
-	old_room = players.info[p_index].room;
+	old_room = player->room;
 
 	/* Check for valid inputs */
 	if(old_room == room)
@@ -236,7 +255,7 @@ int room_join(const int p_index, const int room, const int fd)
 
 	/* Process queued messages unless they are connecting/disconnecting */
 	if (old_room != -1 && room != -1)
-		if(event_room_handle(p_index) < 0)
+		if(event_room_handle(player) < 0)
 			return GGZ_REQ_DISCONNECT;
 
 	/* We ALWAYS lock the lower ordered room first! */
@@ -261,13 +280,13 @@ int room_join(const int p_index, const int room, const int fd)
 
 	/* Yank them from this room */
 	if(old_room != -1) {
-		if (players.info[p_index].room_events)
-			event_room_flush(p_index);
+		if (player->room_events)
+			event_room_flush(player);
 		count = -- rooms[old_room].player_count;
-		last = rooms[old_room].player_index[count];
+		last = rooms[old_room].players[count];
 		for(i=0; i<=count; i++)
-			if(rooms[old_room].player_index[i] == p_index) {
-				rooms[old_room].player_index[i] = last;
+			if(rooms[old_room].players[i] == player) {
+				rooms[old_room].players[i] = last;
 				break;
 			}
 		dbg_msg(GGZ_DBG_ROOM,
@@ -275,14 +294,14 @@ int room_join(const int p_index, const int room, const int fd)
 	}
 
 	/* Put them in the new room, and free up the old room */
-	players.info[p_index].room = room;
+	player->room = room;
 	if(old_room != -1)
 		pthread_rwlock_unlock(&rooms[old_room].lock);
 
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
 		count = ++ rooms[room].player_count;
-		rooms[room].player_index[count-1] = p_index;
+		rooms[room].players[count-1] = player;
 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
 	}
 
@@ -290,65 +309,81 @@ int room_join(const int p_index, const int room, const int fd)
 	if(room != -1)
 		pthread_rwlock_unlock(&rooms[room].lock);
 
-	room_notify_change(p_index, old_room, room);
+	pthread_rwlock_rdlock(&player->lock);
+	strcpy(name, player->name);
+	pthread_rwlock_unlock(&player->lock);
+
+	room_notify_change(name, old_room, room);
 
 	return GGZ_REQ_OK;
 }
 
 
 /* Notify clients that someone has entered/left the room */
-static void room_notify_change(const int p, const int old, const int new)
+static void room_notify_change(char* name, const int old, const int new)
 {
 	void* data = NULL;
+	char* current;
 	int size;
 
-	dbg_msg(GGZ_DBG_ROOM,
-		"Player %d moved from room %d to %d", p, old, new);
-
-	size = sizeof(int) + sizeof(char);
-	
-	/* Send DELETE update to old room */
-	if (old != -1) {
-		data = malloc(size);
-		*(char*)data = GGZ_UPDATE_DELETE; 
-		*(int*)(data + sizeof(char)) = p; 
+	dbg_msg(GGZ_DBG_ROOM, "%s moved from room %d to %d", name, old, new);
 		
-		event_room_enqueue(old, room_event_callback, size, data);
+	size = sizeof(char) + strlen(name) + 1;
+	
+	if (old != -1) {
+	/* Send DELETE update to old room */
+		if ( (data = malloc(size)) == NULL)
+			err_sys_exit("malloc failed in room_notify_change");
+
+		current = (char*)data;
+
+		*(char*)current = GGZ_UPDATE_DELETE; 
+		current += sizeof(char);
+
+		strcpy(current, name);
+		current += (strlen(name) + 1);
+		
+		event_room_enqueue(old, (GGZEventFunc)room_event_callback, 
+				   size, data);
 	}
 
 	/* Send ADD update to new room */
 	if (new != -1) {
-		data = malloc(size);
-		*(char*)data = GGZ_UPDATE_ADD;
-		*(int*)(data + sizeof(char)) = p; 
+		if ( (data = malloc(size)) == NULL)
+			err_sys_exit("malloc failed in room_notify_change");
+
+		current = (char*)data;
+
+		*(char*)current = GGZ_UPDATE_ADD;
+		current += sizeof(char);
+
+		strcpy(current, name);
+		current += (strlen(name) + 1);
 		
-		event_room_enqueue(new, room_event_callback, size, data);
+		event_room_enqueue(new, (GGZEventFunc)room_event_callback, 
+				   size, data);
 	}
 }
 
 
 /* Event callback for delivering player list update to player */
-static int room_event_callback(int p_index, int size, void* data)
+static int room_event_callback(GGZPlayer* player, int size, void* data)
 {
 	unsigned char opcode;
-	char name[MAX_USER_NAME_LEN + 1];
-	int player, fd, room;
+	char* name;
+	int fd, room;
 
-	room = players.info[p_index].room;
-	fd = players.info[p_index].fd;
+	room = player->room;
+	fd = player->fd;
 
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
-	player = *(int*)(data + sizeof(char));
+	name = (char*)(data + sizeof(char));
 
 	/* Don't deliver updates about ourself! */
-	if (p_index == player)
+	if (strcmp(name, player->name) == 0)
 		return 0;
 	
-	pthread_rwlock_rdlock(&players.info[player].lock);
-	strcpy(name, players.info[player].name);
-	pthread_rwlock_unlock(&players.info[player].lock);
-
 	if (es_write_int(fd, MSG_UPDATE_PLAYERS) < 0
 	    || es_write_char(fd, opcode) < 0
 	    || es_write_string(fd, name) < 0)

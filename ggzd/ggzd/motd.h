@@ -23,6 +23,23 @@
  */
 
 
+#include <ggzd.h>
+
+
+/* MOTD info */
+typedef struct {
+	char *motd_file;			/* cleanup() */
+	char use_motd;
+	unsigned long startup_time;
+	int motd_lines;
+	char *motd_text[MAX_MOTD_LINES];	/* cleanup() */
+	char *hostname;				/* cleanup() */
+	char *sysname;				/* cleanup() */
+	char *cputype;				/* cleanup() */
+	char *port;				/* cleanup() */
+} MOTDInfo;
+
+
 /* MOTD info */
 extern MOTDInfo motd_info;
 

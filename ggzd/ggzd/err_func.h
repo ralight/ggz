@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>
+
 #include <stdarg.h>
 
 #include <easysock.h>
@@ -54,6 +56,24 @@
 #define GGZ_LOGOPT_THREAD_LOGS	(unsigned) 0x0008
 #define GGZ_LOGOPT_INC_GAMETYPE	(unsigned) 0x0010
 #define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0020
+
+
+/* Logfile info */
+typedef struct {
+	int log_initialized;
+	int syslog_facility;
+	unsigned options;
+	char *log_fname;			/* cleanup() */
+	FILE *logfile;
+	unsigned log_types;
+#ifdef DEBUG
+	char popt_dbg;
+	char *dbg_fname;			/* cleanup() */
+	FILE *dbgfile;
+	unsigned dbg_types;
+#endif
+} LogInfo;
+
 
 /*
  * Error printing functions based on those found in W. Richard Stevens book: 

@@ -26,11 +26,13 @@
 #ifndef _GGZ_TYPES
 #define _GGZ_TYPES
 
+#include <config.h>
+
 #include <stdio.h>
 #include <pthread.h>
 
 #include <ggzd.h>
-#include <event.h>
+
 
 /* Datatypes for server options*/
 typedef struct {
@@ -50,12 +52,19 @@ typedef struct {
 } Options;
 
 
-/* Init function type */
-typedef void (*GameLaunchFunc) (void);
+/* Data type for server state statistics */
+typedef struct GGZState {
+	pthread_rwlock_t lock;
+	unsigned int rooms;
+	unsigned int players;
+	unsigned int tables;
+	unsigned int types;
+} GGZState;
 
 
 /* Info about a particular type of game*/
-typedef struct {
+typedef struct GameInfo {
+	pthread_rwlock_t lock;
 	char name[MAX_GAME_NAME_LEN];
 	char version[MAX_GAME_VER_LEN];
 	char desc[MAX_GAME_DESC_LEN];
@@ -65,78 +74,8 @@ typedef struct {
 	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
 	unsigned char enabled;
-	GameLaunchFunc *launch;
 	char path[MAX_PATH_LEN];
 } GameInfo;
 
-
-/* Array of game-types and their mutex */
-struct GameTypes {
-	GameInfo info[MAX_GAME_TYPES];
-	int count;
-	pthread_rwlock_t lock;
-};
-
-
-/* Info about a logged-in user */
-typedef struct {
-	pthread_rwlock_t lock;
-	int uid;
-	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
-	int fd;
-	pthread_t pid;
-	int table_index;
-	char ip_addr[16];
-	char *hostname;				/* cleanup() */
-	int room;
-	GGZEvent *room_events;                  /* protected by room lock*/
-        GGZEvent *my_events_head;
-        GGZEvent *my_events_tail;
-} UserInfo;
-
-
-/* Array of logged-in users, their mutex, and a counter */
-struct Users {
-	UserInfo info[MAX_USERS];
-	int count;
-	pthread_rwlock_t mainlock;
-};
-
-
-/* Reservation info */
-typedef struct {
-	int game_index;
-	int uid;
-} ReserveInfo;
-
-
-/* MOTD info */
-typedef struct {
-	char *motd_file;			/* cleanup() */
-	char use_motd;
-	unsigned long startup_time;
-	int motd_lines;
-	char *motd_text[MAX_MOTD_LINES];	/* cleanup() */
-	char *hostname;				/* cleanup() */
-	char *sysname;				/* cleanup() */
-	char *cputype;				/* cleanup() */
-	char *port;				/* cleanup() */
-} MOTDInfo;
-
-/* Logfile info */
-typedef struct {
-	int log_initialized;
-	int syslog_facility;
-	unsigned options;
-	char *log_fname;			/* cleanup() */
-	FILE *logfile;
-	unsigned log_types;
-#ifdef DEBUG
-	char popt_dbg;
-	char *dbg_fname;			/* cleanup() */
-	FILE *dbgfile;
-	unsigned dbg_types;
-#endif
-} LogInfo;
 
 #endif

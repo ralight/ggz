@@ -40,7 +40,9 @@ ggzd_SOURCES =	chat.c\
 		hash.c \
 		hash.h \
 		ggzdb.c \
-		ggzdb.h
+		ggzdb.h \
+		login.c \
+		login.h
 
 
 ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la

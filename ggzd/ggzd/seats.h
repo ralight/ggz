@@ -24,9 +24,9 @@
 
 #include <table.h>
 
-int seats_open(TableInfo table);
-int seats_num(TableInfo table);
-int seats_bot(TableInfo table);
-int seats_reserved(TableInfo table);
-int seats_human(TableInfo table);
-int seats_type(TableInfo table, int seat);
+int seats_open(GGZTable* table);
+int seats_num(GGZTable* table);
+int seats_bot(GGZTable* table);
+int seats_reserved(GGZTable* table);
+int seats_human(GGZTable* table);
+int seats_type(GGZTable* table, int seat);

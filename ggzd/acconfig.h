@@ -16,7 +16,6 @@
 
 /* defined by automake */
 
-#undef WAIT_ANY
 #undef DEBUG
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
@@ -25,6 +24,7 @@
 #undef DATADIR
 #undef TMPDIR
 #undef PACKAGE_SOURCE_DIR
+#undef _BSD_SOURCE
 #undef _XOPEN_SOURCE
     
 

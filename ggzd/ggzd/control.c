@@ -30,12 +30,14 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 #include <signal.h>
+#include <string.h>
 
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include <dirent.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -54,9 +56,8 @@
 Options opt;
 
 /* Main data structures */
-struct GameTypes game_types;
-struct GameTables tables;
-struct Users players;
+struct GameInfo game_types[MAX_GAME_TYPES];
+struct GGZState state;
 
 /* Termination signal */
 sig_atomic_t term_signal;
@@ -68,26 +69,74 @@ void term_handle(int signum)
 }
 
 
+int make_path(char* full, mode_t mode)
+{
+	const char* slash = "/";
+	char* copy, *dir, *path;
+	struct stat stats;
+
+	copy = strdup(full);
+
+	/* FIXME: check validity */
+	if ( (path = calloc(sizeof(char), strlen(full)+1)) == NULL)
+		err_sys_exit("malloc failed in make_path");
+	
+	/* Skip preceding / */
+	if (copy[0] == '/')
+		copy++;
+
+	while ((dir = strsep(&copy, slash))) {
+		strcat(strcat(path, "/"), dir);
+		if (mkdir(path, mode) < 0
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			free(path);
+			free(copy);
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+
+void init_dirs(void)
+{
+	DIR* dir;
+	
+	if ( (dir = opendir(opt.tmp_dir)) == NULL) {
+		dbg_msg(GGZ_DBG_CONFIGURATION, 
+			"Couldn't open %s -- trying to create", opt.tmp_dir);
+		if (make_path(opt.tmp_dir, S_IRWXU) < 0)
+			err_sys_exit("Couldn't create %s", opt.tmp_dir);
+	}
+	else /* Everything eas OK, so close it */
+		closedir(dir);
+
+	if ( (dir = opendir(opt.data_dir)) == NULL) {
+		dbg_msg(GGZ_DBG_CONFIGURATION, 
+			"Couldn't open %s -- trying to create", opt.data_dir);
+		if (make_path(opt.data_dir, S_IRWXU) < 0)
+			err_sys_exit("Couldn't create %s", opt.data_dir);
+	}
+	else /* Everything eas OK, so close it */
+		closedir(dir);
+}
+
+
 /* Perhaps these should be put into their respective files? */
 void init_data(void)
 {
 	int i;
 
-	pthread_rwlock_init(&game_types.lock, NULL);
-	pthread_rwlock_init(&tables.lock, NULL);
-	pthread_rwlock_init(&players.mainlock, NULL);
+	pthread_rwlock_init(&state.lock, NULL);
 
-	for (i = 0; i < MAX_USERS; i++)
-		players.info[i].fd = -1;
+	for (i = 0; i < MAX_GAME_TYPES; i++) {
+		pthread_rwlock_init(&game_types[i].lock, NULL);
+		/* This is not necessary since game_types is in BSS */
+		game_types[i].enabled = 0;
+	}
 
-	for (i = 0; i < MAX_TABLES; i++)
-		tables.info[i].type_index = -1;
-	
-	/* This is not necessary since game_types is in BSS */
-	for (i = 0; i < MAX_GAME_TYPES; i++)
-		game_types.info[i].enabled = 0;
-
-	if(ggzdb_init() < 0)
+	if (ggzdb_init() < 0)
 		err_msg_exit("*** Database initialization failed");
 
 	/* Initialize random numbers for password generation */
@@ -109,6 +158,7 @@ int main(int argc, const char *argv[])
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
 	
+	init_dirs();
 	init_data();
 	parse_game_files();
 	parse_room_files();
@@ -120,15 +170,13 @@ int main(int argc, const char *argv[])
 
 #ifndef DEBUG
 	daemon_init();
-#endif
-
-#ifndef DEBUG
-	signal(SIGPIPE, SIG_IGN);
-#endif
 
 	/* FIXME: use sigaction() */
 	signal(SIGTERM, term_handle);
 	signal(SIGINT, term_handle);
+#endif
+	
+	signal(SIGPIPE, SIG_IGN);
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);

@@ -196,12 +196,12 @@ void GetGameInfo( void ) {
 	int i, j, op, status = 0;
 	int seat;
 	char ret;
-	char fd_name[21];
+	char fd_name[256];
 	char* name;
 	struct sockaddr_un addr;
 	
 	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/NetSpades.%d", getpid());
+	sprintf(fd_name, "/%s/NetSpades.%d", TMPDIR, getpid());
 
 	if ( (gameInfo.ggz_sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
 		err_sys_exit("socket failed");
@@ -843,7 +843,7 @@ void SendScores( int scores[2] ) {
 
 int QueryNewGame( void ) {
   
-  int i, again, status;
+  int again;
   
   /* Non-zero value for again means play again*/
   ReadIntOrDie( gameInfo.playerSock[0], &again );
@@ -851,26 +851,7 @@ int QueryNewGame( void ) {
       dbg_msg( "Play again: %d", again );
   WriteIntOrDie( gameInfo.playerSock[0], 0 );
   
-  
-  /* Send new game flag to everyone (including first player)*/
-  for( i=0; i<4; i++) {
-    if( gameInfo.playerSock[i] == SOCK_COMP ) continue;
-    WriteIntOrDie( gameInfo.playerSock[i], again);
-    ReadIntOrDie( gameInfo.playerSock[i], &status );
-    if( status == i ) {
-      if( log )
-	  dbg_msg( "%s received New Game Status", gameInfo.players[i] );
-    }
-    else {
-      if( log )
-	  dbg_msg( "Error: player %d returned %d", i, status);
-      svNetClose();
-      Quit(-1);
-    }
-  }
-
   return ( again !=0 );
-  
 }
 	
 
@@ -881,6 +862,29 @@ void SendGameOver(void)
 	WriteIntOrDie(gameInfo.ggz_sock, 0);
 	/* FIXME: Send player stats */
 	ReadIntOrDie(gameInfo.ggz_sock, &op);
+}
+
+
+void SendNewGame(int again)
+{
+	int i, status;
+
+	/* Send new game flag to everyone (including first player)*/
+	for (i = 0; i < 4; i++) {
+		if (gameInfo.playerSock[i] == SOCK_COMP ) continue;
+		WriteIntOrDie(gameInfo.playerSock[i], again);
+		ReadIntOrDie(gameInfo.playerSock[i], &status);
+		if (status == i) {
+			if (log)
+				dbg_msg("%s received New Game Status", 
+					gameInfo.players[i]);
+		}
+		else if (log) {
+			dbg_msg( "Error: player %d returned %d", i, status);
+			svNetClose();
+			Quit(-1);
+		}
+	}
 }
 
 

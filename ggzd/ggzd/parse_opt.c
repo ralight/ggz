@@ -24,6 +24,7 @@
 
 #include <config.h>
 
+#include <pthread.h>
 #include <popt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +40,8 @@
 
 /* Stuff from control.c we need access to */
 extern Options opt;
-extern struct GameTypes game_types;
+extern struct GGZState state;
+extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 /* Structure for Add/Ignore Games list */
 typedef struct AddIgnore {
@@ -184,20 +186,12 @@ void parse_conf_file(void)
 
 	/* Add any defaults which were not config'ed */
 
-	/* If no game_dir, default it to GGZDCONFDIR */
+	/* If no game_dir, default it to GAMEDIR */
 	if(!opt.game_dir) {
 		if((tempstr=malloc(strlen(GAMEDIR)+1)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
 		strcpy(tempstr, GAMEDIR);
 		opt.game_dir = tempstr;
-	}
-
-	/* If no tmp_dir, default it to TMPDIR */
-	if(!opt.tmp_dir) {
-		if((tempstr=malloc(strlen(TMPDIR)+1)) == NULL)
-			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, TMPDIR);
-		opt.tmp_dir = tempstr;
 	}
 
 	/* If no conf_dir, default it to GGZDCONFDIR */
@@ -208,13 +202,22 @@ void parse_conf_file(void)
 		opt.conf_dir = tempstr;
 	}
 
-	/* If no data_dir, default it to GAMEDIR */
+	/* If no data_dir, default it to DATADIR */
 	if(!opt.data_dir) {
-		if((tempstr=malloc(strlen(GAMEDIR)+1)) == NULL)
+		if((tempstr=malloc(strlen(DATADIR)+1)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, GAMEDIR);
+		strcpy(tempstr, DATADIR);
 		opt.data_dir = tempstr;
 	}
+
+	/* If no tmp_dir, default it to TMPDIR */
+	if(!opt.tmp_dir) {
+		if((tempstr=malloc(strlen(TMPDIR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, TMPDIR);
+		opt.tmp_dir = tempstr;
+	}
+
 
 	/* If no main_port, default it to 5688 */
 	if(!opt.main_port)
@@ -735,7 +738,7 @@ static void parse_game(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	memset(game_info, 0, sizeof(GameInfo));
 	game_info->enabled = 1;
-	game_info->launch = NULL;
+	pthread_rwlock_init(&game_info->lock, NULL);	
 
 	while(fgets(line, 256, gamefile)) {
 		linenum++;
@@ -811,7 +814,7 @@ static void parse_game(char *name, char *dir)
 				continue;
 			}
 			intval = atoi(varvalue);
-			if(intval < 1 || intval > 8) {
+			if(intval < 0 || intval > 8) {
 				PARSE_ERR("BotAllowed value invalid");
 				continue;
 			}
@@ -856,8 +859,8 @@ static void parse_game(char *name, char *dir)
 			game_info->enabled = 0;
 	}
 
-	game_types.info[game_types.count] = *game_info;
-	game_types.count++;
+	game_types[state.types] = *game_info;
+	state.types++;
 
 	fclose(gamefile);
 	free(game_info);
@@ -1030,10 +1033,10 @@ static void parse_room(char *name, char *dir)
 				PARSE_ERR("Syntax error");
 				continue;
 			}
-			for(i=0; i<game_types.count; i++)
-				if(!strcmp(varvalue, game_types.info[i].name))
+			for(i=0; i<state.types; i++)
+				if(!strcmp(varvalue, game_types[i].name))
 					break;
-			if(i != game_types.count)
+			if(i != state.types)
 				rooms[num].game_type = i;
 			else
 				PARSE_ERR("Invalid game type specified");
@@ -1067,13 +1070,12 @@ static void parse_room(char *name, char *dir)
 		rooms[num].game_type = 0;
 	}
 
-	rooms[num].player_index = calloc(rooms[num].max_players,
-					     sizeof(int));
-	if(rooms[num].player_index == NULL)
+	rooms[num].players = calloc(rooms[num].max_players, sizeof(GGZPlayer*));
+	if(rooms[num].players == NULL)
 		err_sys_exit("calloc failed in parse_room()");
-	rooms[num].table_index = calloc(rooms[num].max_tables, sizeof(int));
+	rooms[num].tables = calloc(rooms[num].max_tables, sizeof(GGZTable*));
 					
-	if(rooms[num].table_index == NULL)
+	if(rooms[num].tables == NULL)
 		err_sys_exit("calloc failed in parse_room()");
 
 	fclose(roomfile);

@@ -22,10 +22,60 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _GGZ_ROOM_H
+#define _GGZ_ROOM_H
+
+#include <config.h>
 
 #include <pthread.h>
 
 #include <event.h>
+#include <players.h>
+
+/* 
+ * The RoomStruct structure is meant to be a node in a linked list
+ * of rooms.
+ */
+/* A Room Structure */
+typedef struct {
+
+	/* Individual mutex lock */
+	pthread_rwlock_t lock;
+
+	/* Room name */
+	char *name;
+
+	/* Room description */
+	char *description;
+
+	/* Number of players curently in room */
+	int player_count;
+
+	/* Maximum number of allowed players */
+	int max_players;
+
+	/* Number of tables curently in room */
+	int table_count;
+
+	/* Maximum number of allowed tables */
+	int max_tables;
+
+	/* Type of game played in this room */
+	int game_type;
+
+	/* Array of pointers to players in this room (dynamcially allocated) */
+	GGZPlayer **players;
+
+	/* Array of pointers to tables in this room (dynamcially allocated) */
+	GGZTable **tables;
+
+	/* Linked lists of events */
+	GGZEvent *event_tail;
+#ifdef DEBUG
+	GGZEvent *event_head;
+#endif
+} RoomStruct;
+
 
 /* Information about all rooms */
 typedef struct {
@@ -34,36 +84,12 @@ typedef struct {
 } RoomInfo;
 
 
-/* 
- * The RoomStruct structure is meant to be a node in a linked list
- * of rooms.
- */
-/* A Room Structure */
-typedef struct {
-	pthread_rwlock_t lock;
-	char *name;
-	char *description;
-	int player_count;
-	int max_players;
-	int table_count;
-	int max_tables;
-	int game_type;
-	int *player_index;
-	int *table_index;
-	GGZEvent *event_tail;
-#ifdef DEBUG
-	GGZEvent *event_head;
-#endif
-} RoomStruct;
-
-
 extern RoomStruct *rooms;
 extern RoomInfo room_info;
 
 extern void room_initialize(void);
 extern void room_create_additional(void);
-extern int room_join(const int, const int, const int);
-extern int room_handle_request(const int, const int, const int);
+extern int room_join(GGZPlayer* player, const int, const int);
+extern int room_handle_request(const int, GGZPlayer*, const int);
 
-
-
+#endif

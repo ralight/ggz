@@ -22,6 +22,67 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+
+#ifndef _GGZ_PLAYER_H
+#define _GGZ_PLAYER_H
+
 #include <config.h>
 
+#include <pthread.h>
+
+#include <ggzd.h>
+#include <table.h>
+
+
+/* 
+ * The GGZPlayer structure contains information about a single
+ * logged-in player 
+ */
+typedef struct GGZPlayer {
+
+	/* Individual mutex lock */
+	pthread_rwlock_t lock;
+
+	/* Player name, leaving room for '\0' */
+	char name[MAX_USER_NAME_LEN + 1]; 
+
+	/* IP address from which player connected */
+	char addr[16];
+
+	/* File descriptor for communicating with player */
+	int fd;
+
+	/* Thread ID of the thread handling this player's requests */
+	pthread_t thread;
+
+	/* FIXME: need to replace with a "logged-in" flag */
+	int uid;
+
+	/* "Room" in which player currently resides (if any) */
+	int room;
+
+	/* Table at while player is "sitting" (if any) */
+	int table; 
+	
+	/* fd for communicating with game module */
+	int game_fd;
+	   
+	/* Launching flag */
+	char launching;
+
+	/* Transit flag */
+	char transit;
+
+	/* Linked lists of events */
+	void *room_events;        /* protected by room lock*/
+        void *my_events_head;
+        void *my_events_tail;
+	
+} GGZPlayer;
+
+
 void player_handler_launch(int sock);
+
+int player_launch_callback(void* target, int size, void* data);
+
+#endif

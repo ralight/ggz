@@ -3,9 +3,13 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 10/18/99
- * Desc: Functions for handling players
  *
- * Copyright (C) 1999,2000 Brent Hendricks.
+ * Desc: Functions for handling players.  These functions are all
+ * called by the player handler thread.  Since this thread is the only
+ * one which can write to the player structure we do not need to lock
+ * it when reading from it.
+ *
+ * Copyright (C) 1999, 2000 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +23,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- */
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA */
 
 
 #include <config.h>
@@ -50,7 +53,8 @@
 #include <room.h>
 #include <chat.h>
 #include <hash.h>
-#include <ggzdb.h>
+#include <login.h>
+#include <transit.h>
 
 
 /* Timeout for server resync */
@@ -59,44 +63,41 @@
 
 
 /* Server wide data structures*/
-extern struct GameTypes game_types;
-extern struct GameTables tables;
-extern struct Users players;
+extern struct GameInfo game_types[MAX_GAME_TYPES];
+extern struct GGZState state;
 extern Options opt;
 
 
 /* Local functions for handling players */
 static void* player_new(void * sock_ptr);
-static void  player_loop(int p_index, int p_fd);
-static int   player_handle(int op, int p_index, int p_fd, int * t_fd);
-static void  player_remove(int p_index);
-static int   player_updates(int p_index, int p_fd);
-static int   player_msg_to_sized(int fd_in, int fd_out);
-static int   player_msg_from_sized(int fd_in, int fd_out);
-static int   player_chat(int p_index, int p_fd);
-static int   player_login_anon(int p, int fd);
-static int   player_login_new(int p_index, int fd);
-static int   player_login_normal(int p_index, int fd);
-static int   player_logout(int p, int fd);
-static int   player_table_launch(int p_index, int p_fd, int *t_fd);
-static int   player_table_join(int p_index, int p_fd, int *t_fd);
-static int   player_table_leave(int p_index, int p_fd);
-static int   player_list_players(int p_index, int fd);
-static int   player_list_types(int p_index, int fd);
-static int   player_list_tables(int p_index, int fd);
-static int   player_send_error(int p_index, int fd);
-static int   player_motd(int p_index, int fd);
-static int player_list_tables_room(const int, const int, const int);
-static int player_list_tables_global(const int, const int);
-static void player_generate_password(char *);
+static void  player_loop(GGZPlayer* player, int p_fd);
+static int   player_handle(GGZPlayer* player, int p_fd);
+static void  player_remove(GGZPlayer* player);
+static int   player_updates(GGZPlayer* player);
+static int   player_msg_to_sized(GGZPlayer* player);
+static int   player_msg_from_sized(GGZPlayer* player);
+static int   player_chat(GGZPlayer* player, int p_fd);
+static int   player_table_launch(GGZPlayer* player, int p_fd);
+static int   player_table_join(GGZPlayer* player, int p_fd);
+static int   player_table_leave(GGZPlayer* player, int p_fd);
+static int   player_transit(GGZPlayer* player, char opcode, int index);
+static int   player_list_players(GGZPlayer* player, int fd);
+static int   player_list_types(GGZPlayer* player, int fd);
+static int   player_list_tables(GGZPlayer* player, int fd);
+static int   player_send_tables(int fd, int count, GGZTable* my_tables);
+static int   player_send_error(GGZPlayer* player, int fd);
+static int   player_motd(GGZPlayer* player, int fd);
+
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
-static int type_match_table(int type, int num);
+
 
 /*
- * launch_handler accepts the socket of a new player and launches
- * a new dedicated handler process/thread.
+ * player_launch_handler() launches a new dedicated handler thread.
+ *
+ * Receives:
+ * int sock : fd for communicating with the client
  */
 void player_handler_launch(int sock)
 {
@@ -118,15 +119,21 @@ void player_handler_launch(int sock)
 
 
 /*
- * new_player accepts a pointer to the socket of a new player.
- * If there is an open spot take it, otherwise send a "server full"
- * message.
+ * player_new() is the initial function executed by a new player
+ * handler thread .  It sends the initial server messages to the
+ * client, and creates the new player structure.
+ *
+ * Receives:
+ * void* arg_ptr : pointer to the client fd.
+ *
+ * Returns:
+ * void* : NULL
  */
 static void* player_new(void *arg_ptr)
 {
-	int sock, status, i;
-	char *hostname = NULL;
+	int sock, status;
 	struct sockaddr_in addr;
+	GGZPlayer *player;
 	int addrlen = sizeof(addr);
 	/*struct hostent *host;		Hostname lookups disabled */
 
@@ -144,19 +151,6 @@ static void* player_new(void *arg_ptr)
 	/* Get the client's IP address and store it */
 	getpeername(sock, &addr, &addrlen);
 
-#if 0
-	/* Lookup the hostname if enabled in ggzd.conf */
-	if (opt.perform_lookups) {
-		/* FIXME: Use threadsafe version */
-		host = gethostbyaddr( (char*)&(addr.sin_addr),
-				      sizeof(addr.sin_addr), AF_INET );
-		/* FIXME:  if we're going to malloc we have to free() */
-		if ((hostname = malloc(strlen(host->h_name)+1)) == NULL)
-			err_sys_exit("malloc error in player_new()");
-		strcpy(hostname, host->h_name);
-	}
-#endif
-
 	/* Send server ID */
 	if (es_write_int(sock, MSG_SERVER_ID) < 0 
 	    || es_va_write_string(sock, "GGZ-%s", VERSION) < 0
@@ -164,69 +158,92 @@ static void* player_new(void *arg_ptr)
 	    || es_write_int(sock, MAX_CHAT_LEN) < 0)
 		pthread_exit(NULL);
 
-	pthread_rwlock_wrlock(&players.mainlock);
-	if (players.count == MAX_USERS) {
-		pthread_rwlock_unlock(&players.mainlock);
+	pthread_rwlock_wrlock(&state.lock);
+	if (state.players == MAX_USERS) {
+		pthread_rwlock_unlock(&state.lock);
 		es_write_int(sock, MSG_SERVER_FULL);
 		close(sock);
 		pthread_exit(NULL);
 	}
+	state.players++;
+	pthread_rwlock_unlock(&state.lock);
 
-	/* Skip over occupied seats */
-	for (i = 0; i < MAX_USERS; i++)
-		if (players.info[i].fd < 0)
-			break;
+	/* Allocate new player structure */
+	if ( (player = malloc(sizeof(GGZPlayer))) == NULL)
+		err_sys_exit("malloc error in player_new()");
 	
 	/* Initialize player data */
-	pthread_rwlock_init(&players.info[i].lock, NULL);
-	players.info[i].fd = sock;
-	players.count++;
-	pthread_rwlock_unlock(&players.mainlock);
-	players.info[i].table_index = -1;
-	players.info[i].uid = GGZ_UID_NONE;
-	players.info[i].pid = pthread_self();
-	strcpy(players.info[i].name, "(none)");
-	inet_ntop(AF_INET, &addr.sin_addr, players.info[i].ip_addr,
-		  sizeof(players.info[i].ip_addr));
-	players.info[i].hostname = hostname;
-	players.info[i].room = -1;
-	players.info[i].room_events = NULL;
-	players.info[i].my_events_head = NULL;
-	players.info[i].my_events_tail = NULL;
+	pthread_rwlock_init(&player->lock, NULL);
+	player->thread = pthread_self();
+	player->fd = sock;
+	player->table = -1;
+	player->game_fd = -1;
+	player->launching = 0;
+	player->transit = 0;
+	player->room = -1;
+	player->uid = GGZ_UID_NONE;
+	strcpy(player->name, "<none>");
+	/*player->addr = addr.sin_addr;*/
+	inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
+		  
+	player->room_events = NULL;
+	player->my_events_head = NULL;
+	player->my_events_tail = NULL;
 
-	dbg_msg(GGZ_DBG_CONNECTION, "New player %d connected", i);
+	dbg_msg(GGZ_DBG_CONNECTION, "New player connected from %s", 
+		player->addr);
 	
-	player_loop(i, sock);
-	player_remove(i);
+	player_loop(player, sock);
+	player_remove(player);
+	free(player);
 
 	return (NULL);
 }
 
 
 /*
- * io_handler accepts a player index number.  It then performs the
- * main loop for communicating with players and game tables
- * 
+ * player_loop() is the main player event loop.  It handles GGZEvents,
+ * data from the client, and data for the client from the game module.
+ *
+ * Receives:
+ * GGZPlayer* player : pointer to player structure managed by this thread
+ * int p_fd : player's fd
  */
-static void player_loop(int p_index, int p_fd)
+static void player_loop(GGZPlayer* player, int p_fd)
 {
-	int op, status, fd_max, t_fd = -1;
-	char game_over = 0;
+	int status, fd_max;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
 
 	/* Start off listening only to player */
-	p_fd = players.info[p_index].fd;
 	FD_ZERO(&active_fd_set);
 	FD_SET(p_fd, &active_fd_set);
-
+	
 	for (;;) {
-		/* Send updated info if need be */
-		if (player_updates(p_index, p_fd) < 0)
+		/* Process private events */
+		if ( (status = player_updates(player)) < 0)
 			break;
 		
+		switch (status) {
+		case GGZ_REQ_TABLE_JOIN:
+			dbg_msg(GGZ_DBG_TABLE, "%s now at a table",
+				player->name);
+			FD_SET(player->game_fd, &active_fd_set);
+			break;
+		case GGZ_REQ_TABLE_LEAVE:
+			dbg_msg(GGZ_DBG_TABLE, "%s's game-over", player->name);
+			
+			close(player->game_fd);
+			FD_CLR(player->game_fd, &active_fd_set);
+
+			pthread_rwlock_wrlock(&player->lock);
+			player->game_fd = -1;			
+			pthread_rwlock_unlock(&player->lock);
+			break;
+		}
+
 		read_fd_set = active_fd_set;
-		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
+		fd_max = ((p_fd > player->game_fd)? p_fd : player->game_fd)+1;
 		
 		/* Setup timeout for select*/
 		timer.tv_sec = GGZ_RESYNC_SEC;
@@ -243,165 +260,106 @@ static void player_loop(int p_index, int p_fd)
 
 		/* Check for message from player */
 		if (FD_ISSET(p_fd, &read_fd_set)) {
-			
-			if (es_read_int(p_fd, (int *)&op) < 0)
+			if ( (status = player_handle(player, p_fd)) < 0)
 				break;
-			
-			status = player_handle(op, p_index, p_fd, &t_fd);
-			
-			if (status == GGZ_REQ_DISCONNECT) 
-				break;
-			
-			switch (status) {
-			case GGZ_REQ_TABLE_JOIN:
-				/* Player launched or joined a game */
-				dbg_msg(GGZ_DBG_TABLE, "Player %d now in game",
-					p_index);
-				FD_SET(t_fd, &active_fd_set);
-				break;
-			case GGZ_REQ_TABLE_LEAVE:
-				dbg_msg(GGZ_DBG_TABLE,
-					"Player %d game-over [user]", p_index);
-				/* Mark game over if we haven't already */
-				if (t_fd != -1)
-					game_over = 1;
-				break;
-			case GGZ_REQ_FAIL:
-			case GGZ_REQ_OK:
-				break;
-			}
 		}
 		
 		/* Check for data from table */
-		if (t_fd != -1  && FD_ISSET(t_fd, &read_fd_set)) {
-			if ( (status = player_msg_to_sized(t_fd, p_fd)) <= 0) {
-				dbg_msg(GGZ_DBG_TABLE,
-					"Player %d game-over [game]", p_index);
-				game_over = 1;
-			}
-			else 
-				dbg_msg(GGZ_DBG_GAME_MSG,
-					"Game to User: %d bytes", status);
-		}
+		if (player->game_fd != -1 
+		    && FD_ISSET(player->game_fd, &read_fd_set)) {
 
-		/* Clean up after either player or table ends game,
-		   but don't try to do both */
-		if (game_over && t_fd != -1) {
-			dbg_msg(GGZ_DBG_TABLE, "Cleaning up player %d's game",
-				p_index);
-			table_leave(p_index, players.info[p_index].table_index);
-			close(t_fd);
-			FD_CLR(t_fd, &active_fd_set);
-			t_fd = -1;
-			pthread_rwlock_wrlock(&players.info[p_index].lock);
-			players.info[p_index].table_index = -1;
-			pthread_rwlock_unlock(&players.info[p_index].lock);
-			/* FIXME: update time stamp in room */
-			game_over = 0;
+			if ( (status = player_msg_to_sized(player)) < 0)
+				break;
+			
+			/* Stop listening on error */
+			if (status == GGZ_REQ_FAIL)
+				FD_CLR(player->game_fd, &active_fd_set);
 		}
-
 	} /* for(;;) */
 
 	/* Clean up if there was an error during a game */
-	if (t_fd != -1) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Logout or error forcing player %d to leave table %d",
-			p_index, players.info[p_index].table_index);
-		table_leave(p_index, players.info[p_index].table_index);
-		close(t_fd);
+	if (player->game_fd != -1) {
+		dbg_msg(GGZ_DBG_TABLE, "%s logout during game", player->name);
+		player_transit(player, GGZ_TRANSIT_LEAVE, player->table);
+		close(player->game_fd);
 	}
 }
 
 
-
 /*
- * player_handle() receives the opcode of the incoming message, the
- * player's index and player's fd, and the table fd by reference.  It
- * then dispatches the correct function to read in the data and handle
- * any requests.
+ * player_handle() dispatches the correct function to read in the data
+ * from the client and handle the request.
  *
- * returns: 
+ * Receives:
+ * int request : request opcode from client
+ * GGZPlayer* player : pointer to player structure 
+ * int p_fd : player's fd
+ *
+ * Returns: 
+ * int : one of
  *  GGZ_REQ_TABLE_JOIN   : player is now in a game.  fd of the game 
- *                         is returned by reference.
+ *                         is now pointed to by t_fd.
  *  GGZ_REQ_TABLE_LEAVE  : player has completed game
  *  GGZ_REQ_DISCONNECT   : player is being logged out (possbily due to error)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : nothing special 
  */
-int player_handle(int request, int p_index, int p_fd, int *t_fd)
+static int player_handle(GGZPlayer* player, int p_fd)
 {
 	int status;
-	UserToControl op = (UserToControl)request;
+	UserToControl op;
 
+	if (es_read_int(p_fd, (int *)&op) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
 	switch (op) {
 
 	case REQ_LOGIN_NEW:
-		status = player_login_new(p_index, p_fd);
-		break;
-
 	case REQ_LOGIN:
-		status = player_login_normal(p_index, p_fd);
-		break;
-
 	case REQ_LOGIN_ANON:
-		status = player_login_anon(p_index, p_fd);
-		break;
-
 	case REQ_LOGOUT:
-		player_logout(p_index, p_fd);
-		status = GGZ_REQ_DISCONNECT;
+		status = login_handle_request(op, player, p_fd);
 		break;
 
 	case REQ_TABLE_LAUNCH:
-		status = player_table_launch(p_index, p_fd, t_fd);
-		if (status == GGZ_REQ_OK)
-			status = GGZ_REQ_TABLE_JOIN;
+		status = player_table_launch(player, p_fd);
 		break;
 
 	case REQ_TABLE_JOIN:
-		status = player_table_join(p_index, p_fd, t_fd);
-		if (status == GGZ_REQ_OK)
-			status = GGZ_REQ_TABLE_JOIN;
+		status = player_table_join(player, p_fd);
 		break;
 
 	case REQ_TABLE_LEAVE:
-		status = player_table_leave(p_index, p_fd);
-		if (status == GGZ_REQ_OK)
-			status = GGZ_REQ_TABLE_LEAVE;
+		status = player_table_leave(player, p_fd);
 		break;
 
 	case REQ_LIST_PLAYERS:
-		status = player_list_players(p_index, p_fd);
+		status = player_list_players(player, p_fd);
 		break;
 
 	case REQ_LIST_TYPES:
-		status = player_list_types(p_index, p_fd);
+		status = player_list_types(player, p_fd);
 		break;
 
 	case REQ_LIST_TABLES:
-		status = player_list_tables(p_index, p_fd);
+		status = player_list_tables(player, p_fd);
 		break;
 
 	case REQ_LIST_ROOMS:
 	case REQ_ROOM_JOIN:
-		status = room_handle_request(request, p_index, p_fd);
+		status = room_handle_request((int)op, player, p_fd);
 		break;
 
 	case REQ_GAME:
-		status = player_msg_from_sized(p_fd, *t_fd); 
-		if (status <= 0)
-			status = GGZ_REQ_TABLE_LEAVE;
-		else 
-			dbg_msg(GGZ_DBG_GAME_MSG, "User to Game: %d bytes", 
-				status);
+		status = player_msg_from_sized(player); 
 		break;
 			
 	case REQ_CHAT:
-		status = player_chat(p_index, p_fd);
+		status = player_chat(player, p_fd);
 		break;
 
 	case REQ_MOTD:
-		status = player_motd(p_index, p_fd);
+		status = player_motd(player, p_fd);
 		break;
 	  
 	case REQ_PREF_CHANGE:
@@ -409,10 +367,10 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	case REQ_TABLE_OPTIONS:
 	case REQ_USER_STAT:
 	default:
-		dbg_msg(GGZ_DBG_PROTOCOL,
-			"Player %d (uid: %d) requested unimplemented op %d",
-			p_index, players.info[p_index].uid, op);
-		status = player_send_error(p_index, p_fd);
+		dbg_msg(GGZ_DBG_PROTOCOL, "%s requested unimplemented op %d", 
+			player->name, op);
+		
+		status = player_send_error(player, p_fd);
 	}
 
 	return status;
@@ -420,474 +378,145 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 
 
 /*
- * player_remove accepts a player index number and then proceeds to
- * remove that player from the list
+ * player_remove() does various cleanups for logout
+ *
+ * Receives:
+ * GGZPlayer* player : pointer to player structure
  */
-static void player_remove(int p_index)
+static void player_remove(GGZPlayer* player)
 {
-	int fd;
+	int fd = player->fd;
 
 	/* Take their name off the hash list */
 	/* FIXME: Should use read lock eventually */
-	hash_player_delete(players.info[p_index].name);
+	hash_player_delete(player->name);
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
-		players.info[p_index].uid);
+	dbg_msg(GGZ_DBG_CONNECTION, "Removing %s", player->name);
 	log_msg(GGZ_LOG_CONNECTION_INFO, "%s disconnected from server",
-		players.info[p_index].name);
+		player->name);
 
-	fd = players.info[p_index].fd;
-	pthread_rwlock_wrlock(&players.mainlock);
-	players.info[p_index].fd = -1;
-	players.count--;
-	pthread_rwlock_unlock(&players.mainlock);
+	/* Remove us from room, so we get no new events */
+	if (player->room != -1)
+		room_join(player, -1, fd);
+	
+	/* FIXME: is this the right place for this? */
+	event_player_flush(player);
+	
+	pthread_rwlock_wrlock(&player->lock);
+	player->fd = -1;
+	pthread_rwlock_unlock(&player->lock);	
 
-	if (players.info[p_index].room != -1) {
-		room_join(p_index, -1, fd);
-		/*room_dequeue_personal(p_index);*/
-	}
+	pthread_rwlock_wrlock(&state.lock);
+	state.players--;
+	pthread_rwlock_unlock(&state.lock);
 
 	close(fd);
 }
 
 
 /*
- * player_updates checks any updates (player/table/type) lists
- * or chats which need to be sent to the player, and sends them
+ * player_updates() handles queued-up GGZEvents (both room-wide and
+ * private)
+ *
+ * Receives:
+ * GGZPlayer* player : pointer to player structure 
+ *
+ * Returns: 
+ * int : one of
+ *  GGZ_REQ_TABLE_JOIN   : player is now in a game. 
+ *  GGZ_REQ_TABLE_LEAVE  : player has completed game
+ *  GGZ_REQ_DISCONNECT   : player is being logged out (possbily due to error)
+ *  GGZ_REQ_FAIL         : request failed
+ *  GGZ_REQ_OK           : nothing special 
  */
-static int player_updates(int p, int fd)
+static int player_updates(GGZPlayer* player)
 {
+	int status = 0;
+	int old_table = player->table;
+	
 	/* Don't send updates to people who aren't logged in */
- 	if (players.info[p].uid == GGZ_UID_NONE)
+ 	if (player->uid == GGZ_UID_NONE)
  		return GGZ_REQ_FAIL;
 
 	/* Process events from queue */
-	if (players.info[p].room != -1 && event_room_handle(p) < 0)
-		return GGZ_REQ_DISCONNECT;
-	if (players.info[p].my_events_head && event_player_handle(p) < 0)
+	if (player->room != -1 && event_room_handle(player) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
-	return GGZ_REQ_OK;
-}
+	if (player->my_events_head)
+		status = event_player_handle(player);
 
-
-/*
- * player_login_normal implements the following exchange:
- * 
- * REQ_LOGIN
- *  str: login name
- *  str: password
- * RSP_NEW_LOGIN
- *  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
- *  int: game type checksum (if success)
- *  chr: reservation flag (if success)
- */
-static int player_login_normal(int p, int fd)
-{
-	char name[MAX_USER_NAME_LEN + 1];
-	char password[17];
-	ggzdbPlayerEntry db_pe;
-	char *ip_addr, *hostname;
-	int name_ok, rc;
-
-	dbg_msg(GGZ_DBG_CONNECTION, "Player %d attempting login", p);
-
-	if (read_name(fd, name) < 0)
-		return GGZ_REQ_DISCONNECT;
-	if(es_read_string(fd, password, 17) < 0)
+	if (status < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	/* Can't login twice */
-	if (players.info[p].uid != GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_CONNECTION, 
-			"Player %d attempted to log in again", p);
-		if (es_write_int(fd, RSP_LOGIN) < 0
-		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* Add the player name to the hash table */
-	name_ok = hash_player_add(name, p);
-	if (!name_ok) {
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful new login of %s", name);
-		if (es_write_int(fd, RSP_LOGIN) < 0
-		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* Lookup the player in the database so we can verify the password */
-	strcpy(db_pe.handle, name);
-	rc = ggzdb_player_get(&db_pe);
-
-	/* If they aren't found, return an error */
-	if(rc == GGZDB_ERR_NOTFOUND) {
-		hash_player_delete(name);
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful login of %s - no account", name);
-		if (es_write_int(fd, RSP_LOGIN) < 0
-		    || es_write_char(fd, E_USR_LOOKUP) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* They were found, so verify the password */
-	if(strcmp(db_pe.password, password)) {
-		hash_player_delete(name);
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful login of %s - bad password", name);
-		if (es_write_int(fd, RSP_LOGIN) < 0
-		    || es_write_char(fd, E_USR_LOOKUP) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* Password is verified, update their last login */
-	db_pe.last_login = time(NULL);
-	rc = ggzdb_player_update(&db_pe);
-	if(rc != 0)
-		err_msg("Player database update failed (%s)", name);
-
-	/* Setup the player's information */
-	pthread_rwlock_wrlock(&players.info[p].lock);
-	players.info[p].uid = p;
-	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
-	ip_addr = players.info[p].ip_addr;
-	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.info[p].lock);
-
-	/* Notify user of success */
-	if (es_write_int(fd, RSP_LOGIN) < 0 
-	    || es_write_char(fd, 0) < 0 
-	    || es_write_int(fd, 265) < 0
-	    || es_write_char(fd, 0) < 0) {
-		player_remove(p);
-		return GGZ_REQ_DISCONNECT;
-	}
-
-	/* Send off the Message Of The Day */
-	if (motd_info.use_motd
-	    && (es_write_int(fd, MSG_MOTD) < 0
-		|| motd_send_motd(fd) < 0)) {
-		player_remove(p);
-		return GGZ_REQ_DISCONNECT;
-	}
-
-	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
-
-	/* Log the connection */
-	if(hostname)
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"Player %s logged in from %s (%s)",
-			name, hostname, ip_addr);
-	else
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"Player %s logged in from %s", name, ip_addr);
+	if (old_table == -1 && player->table != -1)
+		return GGZ_REQ_TABLE_JOIN;
+	
+	if (player->table == -1 && old_table != -1)
+		return GGZ_REQ_TABLE_LEAVE;	
 
 	return GGZ_REQ_OK;
 }
 
 
 /*
- * player_login_new implements the following exchange:
- * 
- * REQ_NEW_LOGIN
- *  str: login name
- * RSP_NEW_LOGIN
- *  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
- *  str: initial password (if success)
- *  int: game type checksum (if success)
- */
-static int player_login_new(int p, int fd)
-{
-	char name[MAX_USER_NAME_LEN + 1];
-	ggzdbPlayerEntry db_pe;
-	char *ip_addr, *hostname;
-	int name_ok, rc;
-
-	dbg_msg(GGZ_DBG_CONNECTION, "Creating new login for player %d", p);
-
-	if (read_name(fd, name) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	/* Can't login twice */
-	if (players.info[p].uid != GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_CONNECTION, 
-			"Player %d attempted to log in again", p);
-		if (es_write_int(fd, RSP_LOGIN_NEW) < 0
-		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* Add the player name to the hash table */
-	name_ok = hash_player_add(name, p);
-	if (!name_ok) {
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful new login of %s", name);
-		if (es_write_int(fd, RSP_LOGIN_NEW) < 0
-		    || es_write_char(fd, E_USR_LOOKUP) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* At this point, we know the name is not currently in use, so */
-	/* try adding it to the database - first generate a password */
-	player_generate_password(db_pe.password);
-	strcpy(db_pe.handle, name);
-	strcpy(db_pe.name, "N/A");
-	strcpy(db_pe.email, "N/A");
-	db_pe.last_login = time(NULL);
-	rc = ggzdb_player_add(&db_pe);
-
-	/* If we tried to overwrite a value, then we know it existed */
-	if(rc == GGZDB_ERR_DUPKEY) {
-		hash_player_delete(name);
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful new login of %s", name);
-		if (es_write_int(fd, RSP_LOGIN_NEW) < 0
-		    || es_write_char(fd, E_USR_LOOKUP) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	/* Setup the player's information */
-	pthread_rwlock_wrlock(&players.info[p].lock);
-	players.info[p].uid = p;
-	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
-	ip_addr = players.info[p].ip_addr;
-	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.info[p].lock);
-
-	/* Notify user of success and give them their password */
-	if (es_write_int(fd, RSP_LOGIN_NEW) < 0 
-	    || es_write_char(fd, 0) < 0 
-	    || es_write_string(fd, db_pe.password) < 0
-	    || es_write_int(fd, 265) < 0) {
-		player_remove(p);
-		return GGZ_REQ_DISCONNECT;
-	}
-
-	/* Send off the Message Of The Day */
-	if (motd_info.use_motd
-	    && (es_write_int(fd, MSG_MOTD) < 0
-		|| motd_send_motd(fd) < 0)) {
-		player_remove(p);
-		return GGZ_REQ_DISCONNECT;
-	}
-
-	dbg_msg(GGZ_DBG_CONNECTION, "Successful new login of %s", name);
-
-	/* Log the connection */
-	if(hostname)
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"New player %s logged in from %s (%s)",
-			name, hostname, ip_addr);
-	else
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"New player %s logged in from %s", name, ip_addr);
-
-	return GGZ_REQ_OK;
-}
-
-
-static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",
-			    "carrot", "dingo", "gnu", "bunny", "wombat" };
-
-/* This generates a password for the user */
-static void player_generate_password(char *pw)
-{
-	int word, d1, d2;
-
-	word = random() % 10;
-	d1 = random() % 10;
-	d2 = random() % 10;
-	sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
-}
-
-
-/*
- * player_login_anon implements the following exchange:
- * 
- * REQ_LOGIN_ANON
- *  str: login name
- * RSP_LOGIN_ANON
- *  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
- *  int: game type checksum (if success)
- */
-static int player_login_anon(int p, int fd)
-{
-	char name[MAX_USER_NAME_LEN + 1];
-	char *ip_addr, *hostname;
-	int name_ok;
-	ggzdbPlayerEntry db_pe;
-	int rc;
-
-	/* Read this first to get it out of the socket */
-	if (read_name(fd, name) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	/* Can't login twice */
-	if (players.info[p].uid != GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_CONNECTION, 
-			"Player %d attempted to log in again", p);
-		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
-		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-	
-	dbg_msg(GGZ_DBG_CONNECTION, "Creating guest login for player %d", p);
-
-	/* Check the name vs. the database */
-	name_ok = 1;
-	strcpy(db_pe.handle, name);
-	rc = ggzdb_player_get(&db_pe);
-	if(rc != GGZDB_ERR_NOTFOUND)
-		name_ok = 0;
-
-	/* Add the player name to the hash table */
-	if(name_ok)
-		name_ok = hash_player_add(name, p);
-
-	if (!name_ok) {
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Unsuccessful anonymous login of %s", name);
-		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
-		    || es_write_char(fd, E_USR_LOOKUP) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
-	}
-
-	pthread_rwlock_wrlock(&players.info[p].lock);
-	players.info[p].uid = GGZ_UID_ANON;
-	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
-	ip_addr = players.info[p].ip_addr;
-	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.info[p].lock);
-
-	if (es_write_int(fd, RSP_LOGIN_ANON) < 0
-	    || es_write_char(fd, 0) < 0
-	    || es_write_int(fd, 265) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	/* Send off the Message Of The Day */
-	if (motd_info.use_motd
-	    && (es_write_int(fd, MSG_MOTD) < 0
-		|| motd_send_motd(fd) < 0)) {
-		player_remove(p);
-		return GGZ_REQ_DISCONNECT;
-	}
-	
-	dbg_msg(GGZ_DBG_CONNECTION, "Successful anonymous login of %s", name);
-
-	if(hostname)
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"Anonymous player %s logged in from %s (%s)",
-			name, hostname, ip_addr);
-	else
-		log_msg(GGZ_LOG_CONNECTION_INFO,
-			"Anonymous player %s logged in from %s", name, ip_addr);
-
-	return 0;
-}
-
-
-/*
- * player_logout implements the following exchange:
- * 
- * REQ_LOGOUT
- * RSP_LOGOUT
- *  chr: success flag (0 for success, -1 for error )
- */
-static int player_logout(int p, int fd)
-{
-	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for player %d", p);
-	
-	/* FIXME: Saving of stats and other things */
-	if (es_write_int(fd, RSP_LOGOUT) < 0 
-	    || es_write_char(fd, 0) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
-	return GGZ_REQ_OK;
-}
-
-
-/*
- * player_table_launch implements the following exchange:
+ * player_table_launch() handles REQ_TABLE_LAUNCH request from the
+ * client.  It reads in the table data and seat assigments from the
+ * client, does some sanity checking, and allocates a new GGZTable
+ * structure.
  *
- * REQ_TABLE_LAUNCH
- *  int: game type index
- *  str: table description
- *  int: number of seats
- *  sequence of
- *    int: seat assignment
- *    str: login name for reservation
- * RSP_TABLE_LAUNCH
- *  chr: success flag (0 for success, negative values for various failures)
- * 
- * returns 0 if successful, -1 on error.  If successful, returns table
- * fd by reference
+ * Receives:
+ * GGZPlayer* player : pointer to player structure 
+ * int p_fd : player's fd
+ * int *t_fd : pointer to fd for communication with game module
+ *
+ * Returns: 
+ * int : one of
+ *  GGZ_REQ_DISCONNECT   : i/o error
+ *  GGZ_REQ_FAIL         : request failed
+ *  GGZ_REQ_OK           : request succeeded.  t_fd points to new fd 
  */
-static int player_table_launch(int p_index, int p_fd, int *t_fd)
+static int player_table_launch(GGZPlayer* player, int p_fd)
 {
-	TableInfo table;
-	char name[MAX_USER_NAME_LEN + 1];
-	int t_index = -1;
-	int i, seats, seat, room, count, status = 0;
+	char desc[MAX_GAME_DESC_LEN + 1];
+	char names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
+	int seats[MAX_TABLE_SIZE], i, room, count, type, status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
+	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
-	if (es_read_int(p_fd, &table.type_index) < 0
-	    || es_read_string(p_fd, table.desc, (MAX_GAME_DESC_LEN + 1)) < 0
-	    || es_read_int(p_fd, &seats) < 0)
+	if (es_read_int(p_fd, &type) < 0
+	    || es_read_string(p_fd, desc, (MAX_GAME_DESC_LEN + 1)) < 0
+	    || es_read_int(p_fd, &count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Silly client. Tables are only so big*/
-	if (seats > MAX_TABLE_SIZE) {
+	if (count > MAX_TABLE_SIZE) {
 		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to launch a table with > %d seats",
-			p_index, MAX_TABLE_SIZE);
-		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
-		    || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
-			return GGZ_REQ_DISCONNECT;
+			"%s tried to launch a table with > %d seats",
+			player->name, MAX_TABLE_SIZE);
+
+		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) == 0)
+			es_write_char(p_fd, E_BAD_OPTIONS);
+		
 		return GGZ_REQ_DISCONNECT;
 	}
 		
 	/* Read in seat assignments */
-	for (i = 0; i < seats; i++) {
-		if (es_read_int(p_fd, &seat) < 0)
+	for (i = 0; i < count; i++) {
+		if (es_read_int(p_fd, &seats[i]) < 0)
 			return GGZ_REQ_DISCONNECT;
-		switch (seat) {
-		case GGZ_SEAT_OPEN:
-			table.seats[i] = strdup("<open>");
-			break;
-		case GGZ_SEAT_BOT:
-			table.seats[i] = strdup("<bot>");
-			break;
-		case GGZ_SEAT_NONE:
-			table.seats[i] = strdup("<none>");
-			break;
-		case GGZ_SEAT_RESV:
-			table.seats[i] = strdup("<reserved>");
-			if (read_name(p_fd, name) < 0)
-				return GGZ_REQ_DISCONNECT;
-			/*
-			 * FIXME: lookup reserve name to verify.
-			 * upon error, set status = E_USR_LOOKUP
-			 */
-			table.reserve[i] = strdup(name);
-			break;
-		}
+		if (seats[i] == GGZ_SEAT_RESV 
+		    && read_name(p_fd, names[i]) < 0)
+			return GGZ_REQ_DISCONNECT;
 	}
 
-	/* Now that we've cleared the socket, check if in a room */
-	if ( (room = players.info[p_index].room) == -1) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to launch a table from room -1",
-			p_index);
+	/* Blank out the other seats */
+	for (i = count; i < MAX_TABLE_SIZE; i++)
+		seats[i] = GGZ_SEAT_NONE;
+		
+	/* Now that we've cleared the channel, check if in a room */
+	if ( (room = player->room) == -1) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table in room -1", 
+			player->name);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -895,10 +524,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	}
 
 	/* Don't allow multiple table launches */
-	if (players.info[p_index].table_index != -1) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to launch a table while at one",
-			p_index);
+	if (player->table != -1 || player->launching) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch table while at one",
+			player->name);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_LAUNCH_FAIL) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -909,205 +537,199 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	/* FIXME: Do we need a room lock here? */
 	/* RG: Eventually we will need more room locks when we have dynamic */
 	/*     rooms, right now the room's game_type can't change           */
-	if (table.type_index != rooms[room].game_type) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to launch a table from wrong room",
-			p_index);
+	if (type != rooms[room].game_type) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to launch wrong table type",
+			player->name);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 
-	/* Fill remaining parameters */
-	table.room = players.info[p_index].room;
-	table.state = GGZ_TABLE_CREATED;
-	table.transit_flag = GGZ_TRANSIT_CLR;
-	table.pid = -1;
-	table.fd_to_game = -1;
-	for (i = seats; i < MAX_TABLE_SIZE; i++)
-		table.seats[i] = strdup("<none>");
-	pthread_mutex_init(&table.transit_lock, NULL);
-	pthread_mutex_init(&table.state_lock, NULL);
-	pthread_cond_init(&table.transit_cond, NULL);
-	pthread_cond_init(&table.state_cond, NULL);
-
 	/* Do actual launch of table */
-	status = table_launch(p_index, table, &t_index);
+	status = table_launch(player->name, type, room, desc, seats, names);
 	
-	if (status != 0) 
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d's table launch failed with err %d", p_index,
-			status);
-	else {
-		dbg_msg(GGZ_DBG_TABLE, "Player %d's table launch successful", 
-			p_index);
-
-		/* Setup an entry in the rooms */
-		pthread_rwlock_wrlock(&rooms[table.room].lock);
-		count = ++rooms[table.room].table_count;
-		rooms[table.room].table_index[count-1] = t_index;
-		dbg_msg(GGZ_DBG_ROOM,
-			"Room %d table count = %d", table.room, count);
-		pthread_rwlock_unlock(&rooms[table.room].lock);
-
-		/* Join newly created table */
-		status = table_join(p_index, t_index, t_fd);
-		if (status != 0) 
-			dbg_msg(GGZ_DBG_TABLE, 
-				"Player %d's table join failed with err %d",
-				p_index, status);
-		else
-			dbg_msg(GGZ_DBG_TABLE,
-				"Player %d's table join successful", p_index);
+	if (status == 0) {
+		/* Mark player as launching table so we can't launch more */
+		pthread_rwlock_wrlock(&player->lock);
+		player->launching = 1;
+		pthread_rwlock_unlock(&player->lock);
+	} else {
+		if (es_write_int(player->fd, RSP_TABLE_LAUNCH) < 0
+		    || es_write_char(player->fd, (char)status) < 0)
+			return GGZ_REQ_DISCONNECT;
+		status = GGZ_REQ_FAIL;
 	}
+	
+	return status;
+}
+
+
+int player_launch_callback(void* target, int size, void* data)
+{
+	int status, index = -1;
+	char *current;
+	GGZPlayer* player = (GGZPlayer*)target;
+
+	/* Unpack event data */
+	current = (char*)data;
+
+	status = *(int*)(current);
+	current += sizeof(int);
+
+	if (status == 0) {
+		index = *(int*)(current);
+		current += sizeof(int);
+	}
+
+	/* Launch compleyed */
+	pthread_rwlock_wrlock(&player->lock);
+	player->launching = 0;
+	pthread_rwlock_unlock(&player->lock);
+
+	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d", player->name, status);
+	
+	/* Automatically join newly created table */
+	if (status == 0)
+		player_transit(player, GGZ_TRANSIT_JOIN, index);
 
 	/* Return status to client */
-	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
-	    || es_write_char(p_fd, (char)status) < 0) {
-		if (status == 0)
-			table_leave(p_index, t_index);
-		return GGZ_REQ_DISCONNECT;
+	if (es_write_int(player->fd, RSP_TABLE_LAUNCH) < 0
+	    || es_write_char(player->fd, (char)status) < 0) {
+		return GGZ_EVENT_ERROR;
 	}
-
-	if (status != 0)
-		return GGZ_REQ_FAIL;
 	
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-	players.info[p_index].table_index = t_index;
-	pthread_rwlock_unlock(&players.info[p_index].lock);
-
-	return GGZ_REQ_OK;
+	return GGZ_EVENT_OK;
 }
 
 
-/*
- * player_table_join implements the following exchange:
+/* 
+ * player_table_join() handles REQ_TABLE_JOIN request from the client.
+ * It reads in the table number from the client, does some sanity
+ * checking.
  *
- * REQ_TABLE_JOIN
- *  int: game table index
- * RSP_TABLE_JOIN
- *  chr: success flag (0 for success, negative values for various failures)
- * 
- * returns 0 if successful, -1 on error.  If successful, returns table
- * fd by reference
+ * Receives:
+ * GGZPlayer* player : pointer to player structure
+ * int p_fd : player's fd
+ *
+ * Returns:
+ * int : one of
+ *  GGZ_REQ_DISCONNECT   : i/o error
+ *  GGZ_REQ_FAIL         : request failed
+ *  GGZ_REQ_OK           : request succeeded. 
  */
-static int player_table_join(int p_index, int p_fd, int *t_fd)
+static int player_table_join(GGZPlayer* player, int p_fd)
 {
-	int t_index;
-	int status = 0;
+	int index, status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table join for player %d", p_index);
-	if (es_read_int(p_fd, &t_index) < 0)
+	dbg_msg(GGZ_DBG_TABLE, "Handling table join for %s", player->name);
+
+	if (es_read_int(p_fd, &index) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
-	dbg_msg(GGZ_DBG_TABLE,
-		"Player %d attempting to join table %d", p_index, t_index);
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to join table %d in room %d", 
+		player->name, index, player->room);
 
-	/* Now that we've cleared the socket, check if in a room */
-	if (players.info[p_index].room == -1) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to join a table from room -1",
-			p_index);
-		if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
-		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
+	if (player->table != -1)
+		status = E_AT_TABLE;
+	else if (player->transit)
+		status = E_IN_TRANSIT;
+	else /* Send a join event to the table */
+		status = player_transit(player, GGZ_TRANSIT_JOIN, index);
+
+	/* Return any immediate failures to client*/
+	if (status < 0) {
+		if (es_write_int(player->fd, RSP_TABLE_JOIN) < 0
+		    || es_write_char(player->fd, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
+		status = GGZ_REQ_FAIL;
 	}
 	
-	status = table_join(p_index, t_index, t_fd);
-
-	if (status != 0) 
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d's table join failed with err %d", p_index, 
-			status);
-	else
-		dbg_msg(GGZ_DBG_TABLE, "Player %d's table join successful", 
-			p_index);
-
-	/* Return status to client*/
-	if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
-	    || es_write_char(p_fd, (char)status) < 0) {
-		if (status == 0)
-			table_leave(p_index, t_index);
-		return GGZ_REQ_DISCONNECT;
-	}
-	
-	if (status != 0)
-		return GGZ_REQ_FAIL;
-	
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-	players.info[p_index].table_index = t_index;
-	pthread_rwlock_unlock(&players.info[p_index].lock);
-
-	return GGZ_REQ_OK;
+	return status;
 }
 
 
-static int player_table_leave(int p_index, int p_fd)
+/* 
+ * player_table_leave() handles REQ_TABLE_LEAVE request from the
+ * client.
+ *
+ * Receives:
+ * GGZPlayer* player : pointer to player structure
+ * int p_fd : player's fd
+ *
+ * Returns:
+ * int : one of
+ *  GGZ_REQ_DISCONNECT   : i/o error
+ *  GGZ_REQ_FAIL         : request failed
+ *  GGZ_REQ_OK           : request succeeded.  
+ */
+static int player_table_leave(GGZPlayer* player, int p_fd)
 {
-	int t_index;
-	int status = 0;
+	int status;
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for player %d", p_index);
+	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for %s", player->name);
 
-	pthread_rwlock_rdlock(&players.info[p_index].lock);
-	t_index = players.info[p_index].table_index;
-	pthread_rwlock_unlock(&players.info[p_index].lock);
-
-	/* Now that we've cleared the socket, check if at table */
-	if (t_index < 0) {
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d tried to leave a table, but not at one",
-			p_index);
-		if (es_write_int(p_fd, RSP_TABLE_LEAVE) < 0
-		    || es_write_char(p_fd, E_NO_TABLE) < 0)
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d", player->name,
+		player->table);
+	
+	if (player->transit)
+		status = E_IN_TRANSIT;
+	else /* Send leave event to table */
+		status = player_transit(player, GGZ_TRANSIT_LEAVE, 
+					player->table);
+	
+	/* Return any immediate failures to client*/
+	if (status < 0) {
+		if (es_write_int(player->fd, RSP_TABLE_LEAVE) < 0
+		    || es_write_char(player->fd, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
+		status = GGZ_REQ_FAIL;
 	}
 
-	dbg_msg(GGZ_DBG_TABLE,
-		"Player %d attempting to leave table %d", p_index, t_index);
-
-	status = table_leave(p_index, t_index);
-
-	if (status != 0) 
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d's table leave failed with err %d", p_index, 
-			status);
-	else
-		dbg_msg(GGZ_DBG_TABLE, "Player %d's table leave successful", 
-			p_index);
-
-	/* Return status to client*/
-	if (es_write_int(p_fd, RSP_TABLE_LEAVE) < 0
-	    || es_write_char(p_fd, (char)status) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
-	if (status != 0)
-		return GGZ_REQ_FAIL;
-	
-	pthread_rwlock_wrlock(&players.info[p_index].lock);
-	players.info[p_index].table_index = -1;
-	pthread_rwlock_unlock(&players.info[p_index].lock);
-	
-	return GGZ_REQ_OK;
+	return status;
 }
 
 
-static int player_list_players(int p_index, int fd)
+static int player_transit(GGZPlayer* player, char opcode, int index)
 {
-	int i, count, room, p;
-	UserInfo* info;
+	int status;
 
-	dbg_msg(GGZ_DBG_UPDATE,
-		"Handling player list request for player %d", p_index);
+	/* Do some quick sanity checking */
+	if (player->room == -1) 
+		return E_NOT_IN_ROOM;
+	if (index == -1)
+		return E_NO_TABLE;
+	
+	status = transit_table_event(player->room, index, opcode, 
+				     player->name);
+					     
+	/* If enqueue fails, it's because the table has been removed */
+	if (status < 0)
+		return E_NO_TABLE;
 
+	/* Mark player as "in transit" */
+	pthread_rwlock_wrlock(&player->lock);
+	player->transit = 1;
+	pthread_rwlock_unlock(&player->lock);
+
+	return 0;
+}
+
+
+static int player_list_players(GGZPlayer* player, int fd)
+{
+	int i, count, room;
+	GGZPlayer* p;
+	GGZPlayer* data;
+
+
+	dbg_msg(GGZ_DBG_UPDATE, "Handling player list request for %s", 
+		player->name);
+		
 	/* Don't send list if they're not in a room */
-	if (players.info[p_index].room == -1) {
-		dbg_msg(GGZ_DBG_UPDATE, 
-			"Player %d requested player list from room -1",
-			p_index);
+	if (player->room == -1) {
+		dbg_msg(GGZ_DBG_UPDATE, "%s requested player list in room -1",
+			player->name);
 		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
 		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -1115,72 +737,77 @@ static int player_list_players(int p_index, int fd)
 	}
 
 	/* Grab room number */
-	pthread_rwlock_rdlock(&players.info[p_index].lock);
-	room = players.info[p_index].room;
-	pthread_rwlock_unlock(&players.info[p_index].lock);
+	pthread_rwlock_rdlock(&player->lock);
+	room = player->room;
+	pthread_rwlock_unlock(&player->lock);
 
 	pthread_rwlock_rdlock(&rooms[room].lock);
 	count = rooms[room].player_count;
-	if ( (info = calloc(count, sizeof(UserInfo))) == NULL) {
+	if ( (data = calloc(count, sizeof(GGZPlayer))) == NULL) {
 		pthread_rwlock_unlock(&rooms[room].lock);
 		err_sys_exit("calloc error in player_list_players()");
 	}
 	for (i = 0; i < count; i++) {
-		p = rooms[room].player_index[i];
-		pthread_rwlock_rdlock(&players.info[p].lock);
-		info[i] = players.info[p];
-		pthread_rwlock_unlock(&players.info[p].lock);
+		p = rooms[room].players[i];
+		pthread_rwlock_rdlock(&p->lock);
+		data[i] = *p;
+		pthread_rwlock_unlock(&p->lock);
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
 	    || es_write_int(fd, count) < 0) {
-		free(info);
+		free(data);
 		return GGZ_REQ_DISCONNECT;
 	}
 
 	for (i = 0; i < count; i++) {
-		if (es_write_string(fd, info[i].name) < 0
-		    || es_write_int(fd, info[i].table_index) < 0) {
-			free(info);
+		if (es_write_string(fd, data[i].name) < 0
+		    || es_write_int(fd, data[i].table) < 0) {
+			free(data);
 			return GGZ_REQ_DISCONNECT;
 		}
 	}
 
-	free(info);
+	free(data);
 	return GGZ_REQ_OK;
 }
 
 
-static int player_list_types(int p_index, int fd)
+static int player_list_types(GGZPlayer* player, int fd)
 {
 	char verbose;
-	int i, count = 0;
+	int i, max, count = 0;
 	GameInfo info[MAX_GAME_TYPES];
 
-	dbg_msg(GGZ_DBG_UPDATE,
-		"Handling type list request for player %d", p_index);
+	dbg_msg(GGZ_DBG_UPDATE, "Handling type list request for %s", 
+		player->name);
+		
 	
 	if (es_read_char(fd, &verbose) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Don't send list if they're not logged in */
- 	if (players.info[p_index].uid == GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_UPDATE, 
-			"Player %d requested type list before logging in",
-			p_index);
+ 	if (player->uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_UPDATE, "%s requested type list before login",
+			player->name);
  		if (es_write_int(fd, RSP_LIST_TYPES) < 0
  		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
 
-	pthread_rwlock_rdlock(&game_types.lock);
-	for (i = 0; (i < MAX_GAME_TYPES && count < game_types.count); i++)
-		if (game_types.info[i].enabled)
-			info[count++] = game_types.info[i];
-	pthread_rwlock_unlock(&game_types.lock);
-
+	pthread_rwlock_rdlock(&state.lock);
+	max = state.types;
+	pthread_rwlock_unlock(&state.lock);
+	
+	for (i = 0; (i < MAX_GAME_TYPES && count < max); i++) {
+		pthread_rwlock_rdlock(&game_types[i].lock);
+		if (game_types[i].enabled)
+			info[count++] = game_types[i];
+		pthread_rwlock_unlock(&game_types[i].lock);
+	}
+		
 	if (es_write_int(fd, RSP_LIST_TYPES) < 0
 	    || es_write_int(fd, count) < 0)
 		return GGZ_REQ_DISCONNECT;
@@ -1204,192 +831,76 @@ static int player_list_types(int p_index, int fd)
 }
 
 
-static int player_list_tables(int p_index, int fd)
+static int player_list_tables(GGZPlayer* player, int fd)
 {
-	int status, type, room;
+	GGZTable *my_tables;
+	int count, type, status;
 	char global;
-
-	dbg_msg(GGZ_DBG_UPDATE,
-		"Handling table list request for player %d", p_index);	
-
+	
+	dbg_msg(GGZ_DBG_UPDATE, "Handling table list request for %s", 
+		player->name);
+	
 	if (es_read_int(fd, &type) < 0
 	    || es_read_char(fd, &global) < 0)
 		return GGZ_REQ_DISCONNECT;
-
- 	/* Don't send list if they're not logged in */
- 	if (players.info[p_index].uid == GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_UPDATE, 
-			"Player %d requested table list before logging in",
-			p_index);
- 		if (es_write_int(fd, RSP_LIST_TABLES) < 0
- 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
- 			return GGZ_REQ_DISCONNECT;
- 		return GGZ_REQ_FAIL;
- 	}
-
-	if(global)
-		status = player_list_tables_global(fd, type);
-	else {
-		room = players.info[p_index].room;
-		status = player_list_tables_room(fd, room, type);
+	
+	/* Don`t send list if they`re not logged in */
+	if (player->uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_UPDATE, "%s requested table list before login",
+			player->name);
+		if (es_write_int(fd, RSP_LIST_TABLES) < 0
+		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
 	}
-
-	return status;
-}
-
-
-static int player_list_tables_room(const int fd, const int room, const int type)
-{
-	int *t_list, *indices;
-	TableInfo *my_tables;
-	int count=0, t_count, i, j, status, seat;
-	char *name = NULL;
-
+	
 	/* Don't send list if they're not in a room */
-	if (room == -1) {
+	if (player->room == -1) {
 		if (es_write_int(fd, RSP_LIST_TABLES) < 0
 		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 
-	/* Copy a list of tables we are interested in */
-	pthread_rwlock_rdlock(&rooms[room].lock);
-	t_count = rooms[room].table_count;
-
-	/* Take care of degenerate case, no tables */
-	if(t_count == 0) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		if(es_write_int(fd, RSP_LIST_TABLES) < 0
-		   || es_write_int(fd, 0) < 0)
-			return GGZ_REQ_DISCONNECT;
-		return 0;
-	}
-
-	/* Continue copying tables */
-	if ( (t_list = calloc(t_count, sizeof(int))) == NULL) {
-		pthread_rwlock_unlock(&rooms[room].lock);
-		err_sys_exit("calloc error in player_list_tables()");
-	}
-	memcpy(t_list, rooms[room].table_index, t_count*sizeof(int));
-	pthread_rwlock_unlock(&rooms[room].lock);
-
-	if((my_tables = calloc(t_count, sizeof(TableInfo))) == NULL) {
-		free(t_list);
-		err_sys_exit("calloc error in player_list_tables()");
-	}
-
-	/* Copy the tables we want */
-	pthread_rwlock_rdlock(&tables.lock);
-	if (type == -1) {
-		for(i=0; i<t_count; i++)
-			my_tables[i] = tables.info[t_list[i]];
-		count = t_count;
-		indices = t_list;
-	} else {
-		if((indices = calloc(t_count, sizeof(int))) == NULL) {
-			pthread_rwlock_unlock(&tables.lock);
-			free(t_list);
-			free(my_tables);
-			err_sys_exit("calloc error in player_list_tables()");
-		}
-		for(i=0; i<t_count; i++)
-	    		if(type_match_table(type, t_list[i])) {
-				my_tables[t_count] = tables.info[t_list[i]];
-				indices[count++] = i;
-			}
-	}
-	pthread_rwlock_unlock(&tables.lock);
-
+	count = table_search(player->name, player->room, type, global, 
+			     &my_tables);
+	
 	if (es_write_int(fd, RSP_LIST_TABLES) < 0
-	    || es_write_int(fd, count) < 0) {
+	    || es_write_int(fd, count) < 0)
 		return GGZ_REQ_DISCONNECT;
-	}
-
-	status = 0;
-	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, indices[i]) < 0
-		    || es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, my_tables[i].type_index) < 0
-		    || es_write_string(fd, my_tables[i].desc) < 0
-		    || es_write_char(fd, my_tables[i].state) < 0
-		    || es_write_int(fd, seats_num(my_tables[i])) < 0) {
-			status = GGZ_REQ_DISCONNECT;
-			goto pltr_common_exit;
-		}
-
-		for (j = 0; j < seats_num(my_tables[i]); j++) {
-			seat = seats_type(my_tables[i], j);
-			if (es_write_int(fd, seat) < 0) {
-				status = GGZ_REQ_DISCONNECT;
-				goto pltr_common_exit;
-			}
-
-			switch (seat) {
-			case GGZ_SEAT_OPEN:
-			case GGZ_SEAT_BOT:
-				continue;  /* no name for these */
-			case GGZ_SEAT_RESV:
-				name = my_tables[i].reserve[j];
-				break;
-			case GGZ_SEAT_PLAYER: 
-				name = my_tables[i].seats[j];
-				break;
-			}
-
-			if (es_write_string(fd, name) < 0) {
-				status = GGZ_REQ_DISCONNECT;
-				goto pltr_common_exit;
-			}
-		}
-	}
-
- pltr_common_exit:
-	free(t_list);
+	
+	/* Don`t proceed if there was an error, or no tables found*/
+	if (count <= 0)
+		return GGZ_REQ_FAIL;
+	
+	status = player_send_tables(fd, count, my_tables);
+	
 	free(my_tables);
-	if(indices != t_list)
-		free(indices);
+	
 	return status;
 }
 
 
-static int player_list_tables_global(const int fd, const int type)
+static int player_send_tables(int fd, int count, GGZTable* my_tables)
 {
-	int i, j, seat, count = 0;
+	int i, j, seat;
 	char* name = NULL;
-	TableInfo my_tables[MAX_TABLES];
-	int indices[MAX_TABLES];
-
-	/* Copy all tables of interest to local list */
-	pthread_rwlock_rdlock(&tables.lock);
-	for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
-		if (tables.info[i].type_index != -1 
-	    	&& type_match_table(type, i) ) {
-			my_tables[count] = tables.info[i];
-			indices[count++] = i;
-		}
-	}
-	pthread_rwlock_unlock(&tables.lock);
-
-	if (es_write_int(fd, RSP_LIST_TABLES) < 0
-	    || es_write_int(fd, count) < 0)
-		return GGZ_REQ_DISCONNECT;
-
+	
 	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, indices[i]) < 0
+		if (es_write_int(fd, my_tables[i].index) < 0
 		    || es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, my_tables[i].type_index) < 0
+		    || es_write_int(fd, my_tables[i].type) < 0
 		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].state) < 0
-		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
+		    || es_write_int(fd, seats_num(&my_tables[i])) < 0)
 			return GGZ_REQ_DISCONNECT;
-
-		for (j = 0; j < seats_num(my_tables[i]); j++) {
-			seat = seats_type(my_tables[i], j);
+		
+		for (j = 0; j < seats_num(&my_tables[i]); j++) {
+			seat = seats_type(&my_tables[i], j);
 			if (es_write_int(fd, seat) < 0)
 				return GGZ_REQ_DISCONNECT;
-
-			switch (seat) {
+			
+			switch(seat) {
 			case GGZ_SEAT_OPEN:
 			case GGZ_SEAT_BOT:
 				continue;  /* no name for these */
@@ -1399,48 +910,79 @@ static int player_list_tables_global(const int fd, const int type)
 			case GGZ_SEAT_PLAYER:
 				name = my_tables[i].seats[j];
 				break;
-			}
-
+			}  
+			
 			if (es_write_string(fd, name) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
 	}
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
-static int player_msg_to_sized(int in, int out) 
+static int player_msg_to_sized(GGZPlayer* p) 
 {
 	char buf[4096];
 	int size;
 	
-	if ( (size = read(in, buf, 4096)) <= 0)
-		return(-1);
+	if ( (size = read(p->game_fd, buf, 4096)) < 0) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Error reading from %s's game ", 
+			p->name);
+		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		return GGZ_REQ_FAIL;
+	}
+				     
+	if (size == 0) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Empty msg from %s's game ", 
+			p->name);
+		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		return GGZ_REQ_FAIL;
+	}
 	
-	if (es_write_int(out, RSP_GAME) < 0
-	    || es_write_int(out, size) < 0
-	    || es_writen(out, buf, size) < 0)
-		return(-1);
-
-	return size;
+	if (es_write_int(p->fd, RSP_GAME) < 0
+	    || es_write_int(p->fd, size) < 0
+	    || es_writen(p->fd, buf, size) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	dbg_msg(GGZ_DBG_GAME_MSG, "Game to User: %d bytes", size);
+		
+	return GGZ_REQ_OK;
 }
 
 
-static int player_msg_from_sized(int in, int out) 
+static int player_msg_from_sized(GGZPlayer* p) 
 {
 	char buf[4096];
 	int size;
 	
-	if (es_read_int(in, &size) < 0
-	    || es_readn(in, buf, size) < 0)
-		return (-1);
+	if (es_read_int(p->fd, &size) < 0
+	    || es_readn(p->fd, buf, size) < 0) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Game msg read error from %s",
+			p->name);
+		return GGZ_REQ_DISCONNECT;
+	}
 	
-	return (es_writen(out, buf, size));
+	if (size == 0) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Empty game msg from %s", p->name);
+		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		return GGZ_REQ_FAIL;
+	}
+	
+	if (es_writen(p->game_fd, buf, size) < 0) {
+		dbg_msg(GGZ_DBG_CONNECTION, "Error writing to %s's game ", 
+			p->name);
+		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		return GGZ_REQ_FAIL;
+	}
+
+	dbg_msg(GGZ_DBG_GAME_MSG, "User to Game: %d bytes", size);	
+
+	return GGZ_REQ_OK;
 }
 
 
-static int player_chat(int p_index, int p_fd) 
+static int player_chat(GGZPlayer* player, int p_fd) 
 {
 	unsigned char subop;
 	char *msg = NULL;
@@ -1450,7 +992,7 @@ static int player_chat(int p_index, int p_fd)
 	if (es_read_char(p_fd, &subop) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
+	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
 
 	/* Get arguments if they are used for this subop */
 	if (subop & GGZ_CHAT_M_PLAYER) {
@@ -1470,9 +1012,9 @@ static int player_chat(int p_index, int p_fd)
 
 	/* Verify that we are in a regular room */
 	/* No lock needed, no one can change our room but us */
-	if (players.info[p_index].room == -1) {
-		dbg_msg(GGZ_DBG_CHAT, 
-			"Player %d tried to chat from room -1", p_index);
+	if (player->room == -1) {
+		dbg_msg(GGZ_DBG_CHAT, "%s tried to chat from room -1", 
+			player->name);
 		if (msg)
 			free(msg);
 		
@@ -1486,18 +1028,16 @@ static int player_chat(int p_index, int p_fd)
 	/* Parse subop */
 	switch (subop) {
 	case GGZ_CHAT_NORMAL:
-		dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s", p_index, msg);
-		status = chat_room_enqueue(players.info[p_index].room, subop, 
-					   p_index, msg);
+		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
+		status = chat_room_enqueue(player->room, subop, player, msg);
 		break;
 	case GGZ_CHAT_BEEP:
 	case GGZ_CHAT_PERSONAL:
-		status = chat_player_enqueue(t_player, subop, p_index, msg);
+		status = chat_player_enqueue(t_player, subop, player, msg);
 		break;
 	default:
-		dbg_msg(GGZ_DBG_PROTOCOL,
-			"Player %d (uid %d) sent invalid chat subop %d",
-			p_index, players.info[p_index].uid, subop);
+		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat subop %d", 
+			player->name, subop);
 		status = E_BAD_OPTIONS;
 	}
 
@@ -1514,7 +1054,7 @@ static int player_chat(int p_index, int p_fd)
 }
 
 
-static int player_send_error(int p_index, int fd)
+static int player_send_error(GGZPlayer* player, int fd)
 {
 	return (es_write_int(fd, MSG_ERROR));
 }
@@ -1536,32 +1076,20 @@ static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 	/* Make sure names are null-terminated */
 	name[MAX_USER_NAME_LEN] = '\0';
 	
-	return 0;    ;
+	return 0;  
 }
 
 
-/* FIXME: move to type.c */
-int type_match_table(int type, int num)
+int player_motd(GGZPlayer* player, int fd)
 {
-	/* FIXME: Do reservation checking properly */
-	return ( type == GGZ_TYPE_ALL
-		 || (type >= 0 && type == tables.info[num].type_index)
-		 || (type == GGZ_TYPE_OPEN && seats_open(tables.info[num]))
-		 || type == GGZ_TYPE_RES);
-}
-		
-
-int player_motd(int p_index, int fd)
-{
-	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for player %d", p_index);
+	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for %s", player->name);
   	if (!motd_info.use_motd)
 		return GGZ_REQ_OK;
 
  	/* Don't send motd if they're not logged in */
- 	if (players.info[p_index].uid == GGZ_UID_NONE) {
-		dbg_msg(GGZ_DBG_CHAT, 
-			"Player %d requested motd before loggin in",
-			p_index);
+ 	if (player->uid == GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_CHAT, "%s requested motd before logging in",
+			player->name);
  		if (es_write_int(fd, RSP_MOTD) < 0
  		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
@@ -1574,3 +1102,5 @@ int player_motd(int p_index, int fd)
 
 	return GGZ_REQ_OK;
 }
+
+

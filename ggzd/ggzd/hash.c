@@ -28,17 +28,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "hash.h"
-#include "ggzd.h"
-#include "datatypes.h"
-#include "err_func.h"
+#include <hash.h>
+#include <ggzd.h>
+#include <datatypes.h>
+#include <err_func.h>
 
 
 /* Internal variables */
 typedef struct HashList {
 	struct HashList *next;
 	char *name;
-	int p_index;
+	GGZPlayer* player;
 } HashList;
 static HashList *hash_list[HASH_NUM_LISTS];
 static pthread_rwlock_t hash_list_lock[HASH_NUM_LISTS];
@@ -58,7 +58,7 @@ static pthread_rwlock_t hash_use_count_lock;
 
 
 /* Adds a player name to the appropriate hash list */
-int hash_player_add(char *name, int p_index)
+int hash_player_add(char *name, GGZPlayer* player)
 {
 	unsigned hash_num;
 	HashList *hl;
@@ -88,7 +88,7 @@ int hash_player_add(char *name, int p_index)
 
 		/* Set the data items */
 		strcpy(hl->name, name);
-		hl->p_index = p_index;
+		hl->player = player;
 		hl->next = hash_list[hash_num];
 
 		/* And put this at the head of the list */
@@ -116,12 +116,12 @@ int hash_player_add(char *name, int p_index)
 }
 
 
-/* Lookup a player name in the hash and return his p_index */
-int hash_player_lookup(char *name)
+/* Lookup a player name in the hash and return a pointer to him */
+GGZPlayer* hash_player_lookup(char *name)
 {
 	unsigned hash_num;
 	HashList *hl;
-	int p_index=-1;
+	GGZPlayer* player = NULL;
 
 	/* Pick a list */
 	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
@@ -131,14 +131,19 @@ int hash_player_lookup(char *name)
 	hl = hash_list[hash_num];
 	while(hl) {
 		if(!strcmp(name, hl->name)) {
-			p_index = hl->p_index;
+			player = hl->player;
 			break;
 		}
 		hl = hl->next;
 	}
+
+	/* Lock the player before we return */
+	if (player)
+		pthread_rwlock_wrlock(&player->lock);
+
 	pthread_rwlock_unlock(&hash_list_lock[hash_num]);
 
-	return p_index;
+	return player;
 }
 
 

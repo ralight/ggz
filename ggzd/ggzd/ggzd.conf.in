@@ -124,11 +124,11 @@ DebugTypes = All
 
 # Data directory
 #   Where all server tables are stored if SQL is not used
-#DataDir = @ggzddatadir@
+#DataDir = @ggzdstatedir@
 
 # Game Servers directory
 #   This is where the server can find the game server modules
-#GameDir = @ggzdmoddir@
+#GameDir = @ggzdexecmoddir@
 
 # MOTD File
 #   File in ConfDir containing MOTD to be sent to clients.  If the

@@ -38,14 +38,15 @@
 #include <easysock.h>
 #include <protocols.h>
 #include <table.h>
+#include <motd.h>
 
 /* MOTD info */
 MOTDInfo motd_info;
 
 /* Server wide data structures */
 extern Options opt;
-extern struct Users players;
-extern struct GameTables tables;
+extern struct GGZState state;
+
 
 /* Local functions */
 static char *motd_parse_motd_line(char *, char *, int);
@@ -292,9 +293,9 @@ static char *motd_get_time(char *time_str, int sz_time_str)
 /* Setup a string showing the number of users online */
 static char *motd_get_users(char *users_str, int sz_users_str)
 {
-	pthread_rwlock_rdlock(&players.mainlock);
-	snprintf(users_str, sz_users_str, "%d", players.count);
-	pthread_rwlock_unlock(&players.mainlock);
+	pthread_rwlock_rdlock(&state.lock);
+	snprintf(users_str, sz_users_str, "%d", state.players);
+	pthread_rwlock_unlock(&state.lock);
 
 	return users_str;
 }
@@ -307,17 +308,24 @@ static char *motd_get_tables(int option,
 {
 	int i, num_tables=0;
 
-	pthread_rwlock_rdlock(&tables.lock);
-	if(option == 0)
+	if(option == 0) {
 		/* Get total number of tables */
-		num_tables = tables.count;
+		pthread_rwlock_rdlock(&state.lock);
+		num_tables = state.tables;
+		pthread_rwlock_unlock(&state.lock);		
+	}
 	else
+		num_tables = 0;
+#if 0
 		/* Determine number of tables open */
-		for(i=0; i<MAX_TABLES; i++)
-			if(tables.info[i].type_index != -1 &&
-			   tables.info[i].state != GGZ_TABLE_PLAYING)
+		for(i=0; i<MAX_TABLES; i++) {
+			pthread_rwlock_rdlock(&tables[i].lock);
+			if(tables[i].type != -1 &&
+			   tables[i].state != GGZ_TABLE_PLAYING)
 				num_tables++;
-	pthread_rwlock_unlock(&tables.lock);
+			pthread_rwlock_unlock(&tables[i].lock);
+		}
+#endif
 
 	snprintf(tables_str, sz_tables_str, "%d", num_tables);
 	return tables_str;

@@ -22,4 +22,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-int transit_handle(int index, int fd);
+
+/* Table transit flag values */
+#define GGZ_TRANSIT_JOIN   0x01  /* %0000 0001 */
+#define GGZ_TRANSIT_LEAVE  0x02  /* %0000 0010 */
+
+
+int transit_table_event(int room, int index, char opcode, char* name);
+
+
+int transit_player_event(char* name, char opcode, int status, int index, 
+			 int fd);
+
+				

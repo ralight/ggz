@@ -25,88 +25,95 @@
 #ifndef _GGZ_TABLE_H
 #define _GGZ_TABLE_H
 
+#include <config.h>
+
 #include <pthread.h>
 
 #include <ggzd.h>
 
 /* 
- * The TableInfo structure contains information about a single game
+ * The GGZTable structure contains information about a single game
  * table 
  */
-typedef struct TableInfo {
+typedef struct GGZTable {
+
+	/* Individual mutex lock */
+	pthread_rwlock_t lock;
 
 	/* Type of game being played on table */
-	int type_index;
+	int type;
 
 	/* Room in which game exists */
 	int room;
 
+	/* Index of table in room */
+	int index;
+
 	/* State of game: One of GGZ_TABLE_XXXX */
 	char state;
 
+	/* Transit status flag */
+	char transit;
+
 	/* 
-	 * Condition variable and corresponding mutex for
-	 * signaling a change in state across threads
+	 * Variables to hold player name and data during transit to
+	 * and from table 
 	 */
-	pthread_cond_t state_cond;
-	pthread_mutex_t state_lock;
-	
-	/* 
-	 * Variables to hold player and related data during transit to
-	 * and from table
-	 */
-	int transit;
+	char* transit_name;
 	int transit_fd;
 	int transit_seat;
 
-	/* Transit status flags: Bitmak of GGZ_TRANSIT_XXX */
-	unsigned char transit_flag;
-
-	/* 
-	 * Condition variable and corresponding mutex for
-	 * signaling a change in transit state across threads
-	 */
-	pthread_cond_t transit_cond;
-	pthread_mutex_t transit_lock;
-
-	/* File descriptor for communicating withgame server module */
-	int fd_to_game;
+	/* File descriptor for communicating with game server module */
+	int fd;
 
 	/* Process ID of game server module running this game-table */
 	int pid;
 
 	/* Seat assignments */
-	char* seats[MAX_TABLE_SIZE];
+	char seats[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
 	/* Seat reservations */
-	char* reserve[MAX_TABLE_SIZE];
+	char reserve[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
 	/* Client-provided description of this table */
 	char desc[MAX_GAME_DESC_LEN + 1];
+
+	/* Name of player who launched (owns?) the table */
+	char owner[MAX_USER_NAME_LEN + 1];
+
+	/* Linked-list of private table-specific events */
+	void* events_head;
+	void* events_tail;
 	
-} TableInfo;
-
-
-/* Array of game-tables, their mutex, and a counter */
-struct GameTables {
-	TableInfo info[MAX_TABLES];
-	int count;
-	pthread_rwlock_t lock;
-};
+} GGZTable;
 
 
 /* Launch a table */
-int table_launch(int p, TableInfo table, int* t_index);
+int table_launch(char* name, int type, int room, char* desc, int seats[], 
+		 char* names[MAX_TABLE_SIZE]);
 
 /* Join a player to the table */
-int table_join(int p, int t_index, int* t_fd);
+int table_join(char* name, int room, int index, int* t_fd);
 
 /* Pull player from table */
-int table_leave(int p, int t_index);
+int table_leave(char* name, int room, int index);
+
+/* Search for tables */
+int table_search(char* name, int room, int type, char global, 
+		 GGZTable** tables);
+
+/*
+ * table_lookup() looks up a table inside a room
+ *
+ * Receives:
+ * int room        : index of room in which table resides
+ * int index       : index of table in room to lookup
+ *
+ * Returns:
+ * GGZTable *table : pointer to desired table
+ *
+ * Note: table is returned with write lock acquired
+ */
+GGZTable* table_lookup(int room, int index);
 
 #endif
-
-
-
-
-

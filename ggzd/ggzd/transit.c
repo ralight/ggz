@@ -28,6 +28,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <ggzd.h>
 #include <datatypes.h>
@@ -36,105 +38,262 @@
 #include <transit.h>
 #include <easysock.h>
 #include <seats.h>
+#include <event.h>
 
 /* Server wide data structures*/
-extern struct GameTypes game_types;
-extern struct GameTables tables;
-extern struct Users players;
+extern struct GameInfo game_types[MAX_GAME_TYPES];
+
 
 /* Local functions for handling transits */
-static int   transit_join(int index, int fd);
-static int   transit_leave(int index, int fd);
+static int transit_player_event_callback(void* target, int size, void* data);
+static int transit_table_event_callback(void* target, int size, void* data);
+static int transit_send_join_to_game(GGZTable* table, char* name);
+static int transit_send_leave_to_game(GGZTable* table, char* name);
 
 
-/*
- * transit_handle check for any impending transits.
- * Before calling, the transit must be *unlocked*
- * If it returns a 1, the transit is locked.
- * If it returns <= 0, the transit is unlocked.
- */
-int transit_handle(int index, int fd)
+int transit_table_event(int room, int index, char opcode, char* name)
 {
-	unsigned char flag;
-	char status;
+	int size, status;
+	char* current;
+	void* data;
 	
-	pthread_mutex_lock(&tables.info[index].transit_lock);
-	flag = tables.info[index].transit_flag;
+	size = sizeof(char) + strlen(name) + 1;
 
-	if (flag == GGZ_TRANSIT_JOIN)
-		status = transit_join(index, fd);
-	else if (flag == GGZ_TRANSIT_LEAVE)
-		status = transit_leave(index, fd);
+	if ( (data = malloc(size)) == NULL)
+		err_sys_exit("malloc failed in transit_pack");
+	
+	current = (char*)data;
+	
+	*(char*)current = opcode;
+	current += sizeof(char);
+	
+	strcpy(current, name);
+	current += (strlen(name) + 1);
+
+	status = event_table_enqueue(room, index, transit_table_event_callback,
+				     size, data);
+	return status;
+}
+
+    
+int transit_player_event(char* name, char opcode, int status, int index, 
+			 int fd)
+{
+	int size;
+	char* current;
+	void* data;
+
+	size = sizeof(char) + sizeof(int);
+	
+	/* We pass back the table index and fd if a join was successful */
+	if (opcode == GGZ_TRANSIT_JOIN && status == 0)
+		size += (2 * sizeof(int));
+
+	if ( (data = malloc(size)) == NULL)
+		err_sys_exit("malloc failed in transit_player_event");
+	
+	/* Start packing the data */
+	current = (char*)data;
+	
+	*(char*)current = opcode;
+	current += sizeof(char);
+	
+	*(int*)current = status;
+	current += sizeof(int);
+
+	if (opcode == GGZ_TRANSIT_JOIN && status == 0) {
+		*(int*)current = index;
+		current += sizeof(int);
+
+		*(int*)current = fd;
+		current += sizeof(int);
+	}
+
+	return event_player_enqueue(name, transit_player_event_callback, 
+				    size, data);
+}
+
+
+/* Executed by table hander thread */
+static int transit_table_event_callback(void* target, int size, void* data)
+{
+	int status;
+	char opcode;
+	char *current, *name;
+	GGZTable* table = (GGZTable*)target;
+
+	/* Unpack event data */
+	current = (char*)data;
+	opcode = *(char*)current;
+	current += sizeof(char);
+	name = (char*)(current);
+	
+	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d transit callback for %s",
+		table->index, table->room, name);
+	
+	/* If this table is already in transit, defer event until later */
+	if (table->transit) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Deferring transit for table %d in room %d",
+			table->index, table->room);
+		return GGZ_EVENT_DEFER;
+	}
+
+	/* First check to see if table is in process of being removed */
+	switch (table->state) {
+
+	case GGZ_TABLE_ERROR:
+	case GGZ_TABLE_DONE:
+		/* Don't care if this fails, we aren't transiting anyway */
+		transit_player_event(name, opcode, E_BAD_OPTIONS, 0, 0);
+		return GGZ_EVENT_OK;
+
+	case GGZ_TABLE_PLAYING:
+		/* Don't care about joins */
+		if (opcode != GGZ_TRANSIT_LEAVE)
+			break;
+		
+		/* Only allow leave during gameplay if game type supports it */
+		pthread_rwlock_rdlock(&game_types[table->type].lock);
+		if (!game_types[table->type].allow_leave) {
+			pthread_rwlock_unlock(&game_types[table->type].lock);
+			transit_player_event(name, opcode, E_LEAVE_FORBIDDEN, 
+					     0, 0);
+			return GGZ_EVENT_OK;
+		}
+		pthread_rwlock_unlock(&game_types[table->type].lock);
+		break;
+	}
+
+	if (opcode == GGZ_TRANSIT_JOIN && !seats_open(table)) {
+		/* Don't care if this fails, we aren't transiting anyway */
+		transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
+		return GGZ_EVENT_OK;
+	}
+	
+	switch (opcode) {
+	case GGZ_TRANSIT_JOIN:
+		status = transit_send_join_to_game(table, name);
+		break;
+	case GGZ_TRANSIT_LEAVE:
+		status = transit_send_leave_to_game(table, name);
+		break;
+	default:
+		status = -1;
+	}
+	
+	/* If we sent it successfully, mark this table as in transit */
+	if (status == 0) {
+		table->transit = 1;
+		status = GGZ_EVENT_OK;
+	}
+	/* Otherwise send an error message back to the player */
 	else {
-		pthread_mutex_unlock(&tables.info[index].transit_lock);
-		return 0;
+		transit_player_event(name, opcode, E_JOIN_FAIL, 0, 0);
+		status = GGZ_EVENT_ERROR;
 	}
 
-	dbg_msg(GGZ_DBG_TABLE, "Transit handled with result %d", status);
+	return status;
+}
+		
+
+static int transit_player_event_callback(void* target, int size, void* data)
+{
+	int status, index = -1, fd = 0;
+	char opcode;
+	char *current;
+	GGZPlayer* player = (GGZPlayer*)target;
+
+	/* Unpack event data */
+	current = (char*)data;
+
+	opcode = *(char*)current;
+	current += sizeof(char);
+
+	status = *(int*)(current);
+	current += sizeof(int);
+
+	if (opcode == GGZ_TRANSIT_JOIN && status == 0) {
+		index = *(int*)(current);
+		current += sizeof(int);
+
+		fd = *(int*)(current);
+		current += sizeof(int);
+	}
 	
-	/* Signal failure immediately */
-	if (status < 0) {
-		/* Mark ERR and clear JOIN and LEAVE in process flags */
-		tables.info[index].transit_flag |= GGZ_TRANSIT_ERR;
-		tables.info[index].transit_flag &= ~GGZ_TRANSIT_JOIN;
-		tables.info[index].transit_flag &= ~GGZ_TRANSIT_LEAVE;
-		pthread_cond_broadcast(&tables.info[index].transit_cond);
-		pthread_mutex_unlock(&tables.info[index].transit_lock);
-		return status;
+	dbg_msg(GGZ_DBG_TABLE, "%s transit result: %d", player->name, status);
+	
+	switch (opcode) {
+	case GGZ_TRANSIT_LEAVE:
+		pthread_rwlock_wrlock(&player->lock);
+		player->transit = 0;
+		if (status == 0)
+			player->table = -1;
+		pthread_rwlock_unlock(&player->lock);
+
+		if (es_write_int(player->fd, RSP_TABLE_LEAVE) < 0
+		    || es_write_char(player->fd, (char)status) < 0)
+			return GGZ_EVENT_ERROR;
+		break;
+
+	case GGZ_TRANSIT_JOIN:
+		pthread_rwlock_wrlock(&player->lock);
+		player->transit = 0;
+		if (status == 0) {
+			player->game_fd = fd;
+			player->table = index;
+		}
+		pthread_rwlock_unlock(&player->lock);		
+
+		if (es_write_int(player->fd, RSP_TABLE_JOIN) < 0
+		    || es_write_char(player->fd, (char)status) < 0)
+			return GGZ_EVENT_ERROR;
+		break;
 	}
 
-	/* Indicate that transit is now locked */
-	return 1;
+	return GGZ_EVENT_OK;
 }
 
 
 /*
  * transit_join sends REQ_GAME_JOIN to table
- * Must be called with transit locked
- * Returns with transit locked
  */
-static int transit_join(int index, int t_fd)
+static int transit_send_join_to_game(GGZTable* table, char* name)
 {
-	int seats, i, p, fd[2];
-	char name[MAX_USER_NAME_LEN + 1];
+	int seats, i, fd[2];
 
-	dbg_msg(GGZ_DBG_TABLE, "Handling transit join for table %d", index);
+	dbg_msg(GGZ_DBG_TABLE, "Sending join for table %d in room %d",
+		table->index, table->room);
 		
 	/* Find my seat or unoccupied one */
 	/* FIXME: look for reserved seat */
-	pthread_rwlock_rdlock(&tables.lock);
-	seats  = seats_num(tables.info[index]);
+	seats = seats_num(table);
 	for (i = 0; i < seats; i++)
-		if (strcmp(tables.info[index].seats[i], "<open>") == 0)
+		if (seats_type(table, i) == GGZ_SEAT_OPEN)
 			break;
-	pthread_rwlock_unlock(&tables.lock);
 	
-	/* If table already full */
+	/* Ack! Fatal error...this should never happen */
 	if (i == seats)
 		return -1;
 	
 	/* Create socket for communication with player thread */
 	if (socketpair(PF_UNIX, SOCK_STREAM, 0, fd) < 0)
-		err_sys_exit("socketpair failed");
+		err_sys_exit("socketpair failed in transit_join");
 	
-	tables.info[index].transit_seat = i;
-	tables.info[index].transit_fd = fd[1];
-	p = tables.info[index].transit;
-
-	pthread_rwlock_rdlock(&players.info[p].lock);
-	strcpy(name, players.info[p].name);
-	pthread_rwlock_unlock(&players.info[p].lock);
+	/* Save transit info so we have it when game module responds */
+	table->transit_name = strdup(name);
+	table->transit_seat = i;
+	table->transit_fd = fd[1];
 
 	/* Send MSG_TABLE_JOIN to table */
-	if (es_write_int(t_fd, REQ_GAME_JOIN) < 0
-	    || es_write_int(t_fd, i) < 0
-	    || es_write_string(t_fd, name) < 0
-	    || es_write_fd(t_fd, fd[0]) < 0)
+	if (es_write_int(table->fd, REQ_GAME_JOIN) < 0
+	    || es_write_int(table->fd, i) < 0
+	    || es_write_string(table->fd, name) < 0
+	    || es_write_fd(table->fd, fd[0]) < 0)
 		return -1;
 
-	/* Must close remote end of socketpair*/
+	/* Must close remote end of socketpair */
 	close(fd[0]);
-	tables.info[index].transit_flag |= GGZ_TRANSIT_SENT;
 	
 	return 0;
 }
@@ -142,45 +301,34 @@ static int transit_join(int index, int t_fd)
 	
 /*
  * transit_join sends REQ_GAME_LEAVE to table
- * Must be called with transit locked
- * Returns with transit locked
  */
-static int transit_leave(int index, int t_fd)
+static int transit_send_leave_to_game(GGZTable* table, char* name)
 {
-	int seats, i, p;
-	char name[MAX_USER_NAME_LEN + 1];
+	int seats, i;
 	
-	dbg_msg(GGZ_DBG_TABLE, "Handling transit leave for table %d", index);
+	dbg_msg(GGZ_DBG_TABLE, "Sending leave for table %d in room %d", 
+		table->index, table->room);
 	
-	p = tables.info[index].transit;
-
-	pthread_rwlock_rdlock(&players.info[p].lock);
-	strcpy(name, players.info[p].name);
-	pthread_rwlock_unlock(&players.info[p].lock);
-
-	pthread_rwlock_rdlock(&tables.lock);
-	seats  = seats_num(tables.info[index]);
+	/* Find seat player is in */
+	seats  = seats_num(table);
 	for (i = 0; i < seats; i++)
-		if (strcmp(tables.info[index].seats[i], name) == 0)
+		if (strcmp(table->seats[i], name) == 0)
 			break;
-	pthread_rwlock_unlock(&tables.lock);
 
-	/* If player not there, we have a problem! */
+	/* Ack! Fatal error...this should never happen */
 	if (i == seats)
 		return -1;
 
-	tables.info[index].transit_seat = i;
+	/* Save transit info so we have it when game module responds */
+	table->transit_name = strdup(name);
+	table->transit_seat = i;
 	
 	/* Send MSG_TABLE_LEAVE to table */
-	if (es_write_int(t_fd, REQ_GAME_LEAVE) < 0
-	    || es_write_string(t_fd, name) < 0)
+	if (es_write_int(table->fd, REQ_GAME_LEAVE) < 0
+	    || es_write_string(table->fd, name) < 0)
 		return -1;
 
-	tables.info[index].transit_flag |= GGZ_TRANSIT_SENT;
-		
 	return 0;
 }
-
-
 
 

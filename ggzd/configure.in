@@ -6,17 +6,6 @@ AM_INIT_AUTOMAKE(ggz_server, 0.0.3pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
-dnl Compiling Options
-dnl =====================
-AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server],, enable_server=yes)
-AC_ARG_ENABLE(games,  [  --disable-games         Don't build ggzd games],, enable_games=yes)
-AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
-AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
-AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
-AC_ARG_WITH(tmpdir,         [  --with-tempdir=PATH     directory to put pid and temporary socket files], tmpdir=$withval, tmpdir=/tmp/ggzd)
-AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2], database=$withval, database=db2)
-
 dnl Check for standard build environment
 dnl ====================================
 AC_PROG_CC
@@ -26,6 +15,19 @@ AC_PROG_CPP
 AM_PROG_CC_STDC
 AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
+
+
+dnl Compiling Options
+dnl =====================
+AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server],, enable_server=yes)
+AC_ARG_ENABLE(games,  [  --disable-games         Don't build ggzd games],, enable_games=yes)
+AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
+AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
+AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
+AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], datadir=$withval, tmpdir="/tmp/ggzd")
+AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2], database=$withval, database=db2)
+
 
 dnl Check for header files
 dnl ======================
@@ -40,10 +42,6 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 AC_HEADER_TIME
-AC_EGREP_CPP(WAIT_ANY, [ #include <sys/wait.h>
-		 WAIT_ANY ], AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
-	         AC_DEFINE(WAIT_ANY, (pid_t)-1))
-
 
 
 dnl Check for library functions
@@ -74,6 +72,10 @@ AC_CHECK_LIB(pthread, pthread_create,
          AC_DEFINE(_XOPEN_SOURCE, 500),
          AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
     AC_MSG_ERROR(*** Cannot find pthread library ); exit)
+
+AC_CHECK_FUNC(strsep,
+    AC_DEFINE(_BSD_SOURCE),
+    AC_MSG_ERROR(*** Cannot find strsep function); exit )
 
 
 dnl Check database libs
@@ -156,8 +158,17 @@ else
   ggzdexecmoddir="${libdir}/ggzd"
 fi
 AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}")
-ggzddatadir="${ggzdexecmoddir}/data"
-AC_DEFINE_UNQUOTED(DATADIR, "${ggzddatadir}")
+
+if test "x${localstatedir}" = 'x${prefix}/var'; then
+  if test "x${prefix}" = "xNONE"; then
+    ggzdstatedir="${ac_default_prefix}/var/ggzd"
+  else
+    ggzdstatedir="${prefix}/var/ggzd"
+  fi
+else
+  ggzdstatedir="${localstatedir}/ggzd"
+fi
+AC_DEFINE_UNQUOTED(DATADIR, "${ggzdstatedir}")
 
 AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
 
@@ -186,7 +197,7 @@ AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
 AC_SUBST(ggzdexecmoddir)
-AC_SUBST(ggzddatadir)
+AC_SUBST(ggzdstatedir)
 AC_SUBST(packagesrcdir)
 AC_SUBST(database)
 

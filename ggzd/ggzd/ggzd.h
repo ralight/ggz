@@ -78,17 +78,6 @@
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
 
-/* Table transit flag values */
-#define GGZ_TRANSIT_CLR   0x80
-#define GGZ_TRANSIT_JOIN  0x40
-#define GGZ_TRANSIT_LEAVE 0x20
-#define GGZ_TRANSIT_SENT  0x10
-#define GGZ_TRANSIT_DONE  0x08
-
-#define GGZ_TRANSIT_STATUS 0x07
-#define GGZ_TRANSIT_OK     0x00
-#define GGZ_TRANSIT_ERR    0x01
-
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1
 #define GGZ_SEAT_BOT    -2

@@ -93,11 +93,13 @@ int main( int argc, char* argv[] ) {
     
     } /* while (!gameOver) */
 
-    sessionOver=!(QueryNewGame());
-
+    if ( (sessionOver=!(QueryNewGame())))
+	    SendGameOver();
+    
+    SendNewGame(!sessionOver);
+  
   } /* while (!sessionOver) */
 
-  SendGameOver();
   svNetClose();
 
   return 0;

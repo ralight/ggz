@@ -1,9 +1,9 @@
 /*
- * File: chat.h
+ * File: login.h
  * Author: Brent Hendricks
  * Project: GGZ Server
- * Date: 5/10/00
- * Desc: Functions for handling/manipulating GGZ chat/messaging
+ * Date: 6/22/00
+ * Desc: Functions for handling player logins
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,15 +25,5 @@
 
 #include <players.h>
 
-
-/* Queue up chat message for room consumption */
-int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender, 
-		      char *msg);
-
-/* Queue up a chat to a specific player */
-int chat_player_enqueue(char* receiver, unsigned char opcode, 
-			GGZPlayer* sender, char *msg);
-
-			
-			
-
+int login_handle_request(const unsigned int request, GGZPlayer* player, 
+			 const int fd);

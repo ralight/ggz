@@ -114,6 +114,8 @@ void SendScores( int[2] );
 
 int QueryNewGame( void );
 
+void SendNewGame(int);
+
 void SendGameOver(void);
 
 void termination_handler( int );

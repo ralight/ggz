@@ -23,6 +23,7 @@
  */
 
 #include <config.h>		/* Site specific config */
+
 #include <string.h>
 
 #include <ggzd.h>
@@ -30,69 +31,69 @@
 #include <seats.h>
 
 
-int seats_open(TableInfo table)
+int seats_open(GGZTable* table)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (strcmp(table.seats[i], "<open>") == 0)
+		if (strcmp(table->seats[i], "<open>") == 0)
 			count++;
 	return count;
 }
 
 
-int seats_num(TableInfo table)
+int seats_num(GGZTable* table)
 {
 	int i;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (strcmp(table.seats[i], "<none>") == 0)
+		if (strcmp(table->seats[i], "<none>") == 0)
 			break;
 	return i;
 }
 
 
-int seats_bot(TableInfo table)
+int seats_bot(GGZTable* table)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (strcmp(table.seats[i], "<bot>") == 0)
+		if (strcmp(table->seats[i], "<bot>") == 0)
 			count++;
 	return count;
 }
 
 
-int seats_reserved(TableInfo table)
+int seats_reserved(GGZTable* table)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (strcmp(table.seats[i], "<reserved>") == 0)
+		if (strcmp(table->seats[i], "<reserved>") == 0)
 			count++;
 	return count;
 }
 
 
-int seats_human(TableInfo table)
+int seats_human(GGZTable* table)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (strcmp(table.seats[i], "<none>")
-		    && strcmp(table.seats[i], "<open>")
-		    && strcmp(table.seats[i], "<bot>")
-		    && strcmp(table.seats[i], "<reserved>"))
+		if (strcmp(table->seats[i], "<none>")
+		    && strcmp(table->seats[i], "<open>")
+		    && strcmp(table->seats[i], "<bot>")
+		    && strcmp(table->seats[i], "<reserved>"))
 			count++;
 	
 	return count;
 }
 
 
-int seats_type(TableInfo table, int seat)
+int seats_type(GGZTable* table, int seat)
 {
-	if (strcmp(table.seats[seat], "<none>") == 0)
+	if (strcmp(table->seats[seat], "<none>") == 0)
 		return GGZ_SEAT_NONE;
-	if (strcmp(table.seats[seat], "<open>") == 0)
+	if (strcmp(table->seats[seat], "<open>") == 0)
 		return GGZ_SEAT_OPEN;
-	if (strcmp(table.seats[seat], "<bot>") == 0)
+	if (strcmp(table->seats[seat], "<bot>") == 0)
 		return GGZ_SEAT_BOT;
-	if (strcmp(table.seats[seat], "<reserved>") == 0)
+	if (strcmp(table->seats[seat], "<reserved>") == 0)
 		return GGZ_SEAT_RESV;
 	else /* Some player */
 		return GGZ_SEAT_PLAYER;
