@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3070 2002-01-12 01:34:30Z jdorje $
+ * $Id: common.c 3187 2002-01-24 12:19:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -43,6 +43,18 @@
 
 /* Global game variables */
 struct game_t game = { 0 };
+
+/* FIXME:
+ *
+ * This function is a temporary measure so that reserved seats behave
+ * correctly.  This works as desired...the problem is that all other
+ * games will need identical changes too.
+ */
+static int seats_full(void)
+{
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
+		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
 
 static const char *get_state_name(server_state_t state)
 {
@@ -177,8 +189,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 				init_game();
 				(void) send_sync_all();
 
-				if (!ggzdmod_count_seats
-				    (game.ggz, GGZ_SEAT_OPEN))
+				if (seats_full())
 					next_play();
 			} else {
 				handle_options();
@@ -494,7 +505,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* if all seats are occupied, we restore the former state and
 	   continue playing (below).  The state is restored up here so that
 	   the sync will be handled correctly. */
-	if (!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN))
+	if (seats_full())
 		restore_game_state();
 
 	/* send all table info to joiner */
@@ -516,7 +527,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
 
-	if (!ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
+	if (seats_full()
 	    && game.which_game != GGZ_GAME_UNKNOWN) {
 		/* (Re)Start game play */
 		if (game.state != STATE_NONE
@@ -584,7 +595,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	set_player_message(player);
 
 	/* save old state and enter waiting phase */
-	assert(ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0);
+	assert(!seats_full());
 	save_game_state();
 	
 	ggzdmod_log(game.ggz, "Player leave successful.");
