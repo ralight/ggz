@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: net.c 3391 2002-02-17 09:17:14Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -49,7 +49,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
 
   switch (op) {
     case CHESS_MSG_SEAT:
-      printf("Received MSG_SEAT\n");
+      ggz_debug("main", "Received MSG_SEAT");
       /* args[0] holds the seat */
       ggz_read_char(fd, &args[0]);
       /* args[1] holds version */
@@ -58,7 +58,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       game_update(CHESS_EVENT_SEAT, args);
       break;
     case CHESS_MSG_PLAYERS:
-      printf("Got an MSG_PLAYERS\n");
+      ggz_debug("main", "Got an MSG_PLAYERS");
       names = (char *)malloc(40 * sizeof(char));
       bzero(names, 40);
       /* Get first code */
@@ -73,23 +73,23 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       game_update(CHESS_EVENT_PLAYERS, names);
       break;
     case CHESS_REQ_TIME:
-      printf("Got an REQ_TIME\n");
+      ggz_debug("main", "Got an REQ_TIME");
       /* The server is requesting my time option */
       game_update(CHESS_EVENT_TIME_REQUEST, NULL);
       break;
     case CHESS_RSP_TIME:
-      printf("Got an RSP_TIME\n");
+      ggz_debug("main", "Got an RSP_TIME");
       /* The server is sending the time option */
       ggz_read_int(fd, &a);
       game_update(CHESS_EVENT_TIME_OPTION, &a);
       break;
     case CHESS_MSG_START:
-      printf("Got an MSG_START\n");
+      ggz_debug("main", "Got an MSG_START");
       /* We should start the game now */
       game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_MSG_MOVE:
-      printf("Got an MSG_MOVE\n");
+      ggz_debug("main", "Got an MSG_MOVE");
       /* We got an move! */
       ggz_read_string(fd, args, 6);
       /* Should we worry about time ? */
@@ -99,25 +99,26 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       break;
     case CHESS_MSG_GAMEOVER:
       /* The game is over */
-      printf("Got a MSG_GAMEOVER\n");
+      ggz_debug("main", "Got a MSG_GAMEOVER");
       ggz_read_char(fd, &args[0]);
-      printf("Gameover msg: %d\n", args[0]);
+      ggz_debug("main", "Gameover msg: %d", args[0]);
       game_update(CHESS_EVENT_GAMEOVER, args);
       break;
     case CHESS_REQ_DRAW:
       /* Do you want to draw the game ? */
-      printf("Got a REQ_DRAW\n");
+      ggz_debug("main", "Got a REQ_DRAW");
       game_update(CHESS_EVENT_DRAW, NULL);
       break;
 		case CHESS_RSP_UPDATE:
 			/* We want to update the seconds */
-			printf("Got an RSP_UPDATE\n");
+			ggz_debug("main", "Got an RSP_UPDATE");
 			ggz_read_int(fd, (int*)args);
 			ggz_read_int(fd, (int*)args+1);
 			game_update(CHESS_EVENT_UPDATE_TIME, args);
 			break;
     default:
       game_message("Unknown opcode: %d\n", op);
+      ggz_error_msg("Unknown opcode: %d", op);
       break;
   }
 

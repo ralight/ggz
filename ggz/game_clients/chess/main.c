@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3391 2002-02-17 09:17:14Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -23,8 +23,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
 #include <ggz.h>
 #include <ggzmod.h>
@@ -42,8 +46,12 @@ GtkWidget *main_win;
 /* Game info */
 struct chess_info game_info;
 
+static void initialize_debugging();
+static void cleanup_debugging();
+
 int main(int argc, char *argv[]) {
 	
+	initialize_debugging();
 	gtk_init(&argc, &argv);
   add_pixmap_directory(".");
 
@@ -65,6 +73,41 @@ int main(int argc, char *argv[]) {
 	
 	if (ggzmod_disconnect() < 0)
 		return -2;
+	cleanup_debugging();
 
 	return 0;
+}
+
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/chess-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/chess-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting chess client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down chess client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: game.c 3391 2002-02-17 09:17:14Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -30,6 +30,7 @@
 #include <libcgc/cgc.h>
 
 #include <ggzmod.h>
+#include <ggz.h>	/* libggz, for ggz_debug */
 
 #include "support.h"
 #include "game.h"
@@ -218,7 +219,8 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_MOVE_END:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-			printf("Sending move... %s\n", (char *)arg);
+			ggz_debug("main", "Sending move... %s",
+			          (char *)arg);
 			if (game_info.clock_type != CHESS_CLOCK_CLIENT)
 				net_send_move(arg, -1);
 			else {
