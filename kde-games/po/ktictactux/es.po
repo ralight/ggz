@@ -1,0 +1,295 @@
+# translation of es.po to 
+# This file is distributed under the same license as the PACKAGE package.
+# Luis Pérez Meliá, 2005.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Luis Pérez Meliá, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: es\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2005-03-26 12:35+0100\n"
+"Last-Translator: Luis Pérez Meliá\n"
+"Language-Team:  <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: ../../ktictactux/ktictactux.cpp:371 ../../ktictactux/ktictactux.cpp:410
+#: ../../ktictactux/ktictactux.cpp:416
+msgid "*bounds*"
+msgstr "*límites*"
+
+#: ../../ktictactux/ktictactux.cpp:374 ../../ktictactux/ktictactux.cpp:413
+#: ../../ktictactux/ktictactux.cpp:419
+msgid "*occupied*"
+msgstr "*ocupado*"
+
+#: ../../ktictactux/ktictactux.cpp:365 ../../ktictactux/ktictactux.cpp:404
+#: ../../ktictactux/ktictactux.cpp:410
+msgid "*server*"
+msgstr "*servidor*"
+
+#: ../../ktictactux/ktictactux.cpp:368 ../../ktictactux/ktictactux.cpp:407
+#: ../../ktictactux/ktictactux.cpp:413
+msgid "*turn*"
+msgstr "*turno*"
+
+#: ../../ktictactux/ktictactux.cpp:114 ../../ktictactux/ktictactux.cpp:120
+msgid "AI's turn"
+msgstr "Turno de la IA"
+
+#: ../../ktictactux/ktictactuxwin.cpp:31 ../../ktictactux/ktictactuxwin.cpp:46
+#: ../../ktictactux/ktictactuxwin.cpp:52 ../../ktictactux/ktictactuxwin.cpp:59
+#: ../../ktictactux/ktictactuxwin.cpp:54
+msgid "Game"
+msgstr "Juego"
+
+#: ../../ktictactux/ktictactux.cpp:174 ../../ktictactux/ktictactux.cpp:191
+#: ../../ktictactux/ktictactux.cpp:181 ../../ktictactux/ktictactux.cpp:213
+#: ../../ktictactux/ktictactux.cpp:184 ../../ktictactux/ktictactux.cpp:214
+msgid "Game Over!"
+msgstr "Juego terminado!"
+
+#: ../../ktictactux/ktictactux.cpp:209 ../../ktictactux/ktictactux.cpp:232
+#: ../../ktictactux/ktictactux.cpp:236
+msgid "Game over"
+msgstr "Juego terminado"
+
+#: ../../ktictactux/ktictactuxwin.cpp:36 ../../ktictactux/ktictactuxwin.cpp:51
+#: ../../ktictactux/ktictactuxwin.cpp:57 ../../ktictactux/ktictactuxwin.cpp:64
+#: ../../ktictactux/ktictactuxwin.cpp:59
+msgid "Game with the AI"
+msgstr "Juego con la IA"
+
+#: ../../ktictactux/ktictactuxwin.cpp:47
+msgid "Get themes"
+msgstr "Obtener temas"
+
+#: ../../ktictactux/ktictactuxwin.cpp:33 ../../ktictactux/ktictactuxwin.cpp:48
+#: ../../ktictactux/ktictactuxwin.cpp:54 ../../ktictactux/ktictactuxwin.cpp:61
+#: ../../ktictactux/ktictactuxwin.cpp:56
+msgid "Help"
+msgstr "Ayuda"
+
+#: ../../ktictactux/ktictactuxwin.cpp:199
+#: ../../ktictactux/ktictactuxwin.cpp:205
+#: ../../ktictactux/ktictactuxwin.cpp:212
+msgid "Human players have been beaten %1 times by you, you lost %2 times. %3"
+msgstr "Has golpeado %1 jugadores humanos, Has perdido %2 veces. %3"
+
+#: ../../ktictactux/ktictactuxwin.cpp:217
+msgid ""
+"Human players have been beaten %1 times by you, you lost %2 times. %3 ties "
+"were achieved. %4"
+msgstr "Has golpeado %1 jugadores humanos, Has perdido %2 veces. %3 partidos fueron guardados. %4"
+
+#: ../../ktictactux/main.cpp:40 ../../ktictactux/main.cpp:37
+msgid "Inventor"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:27
+msgid "KDE/Gnome"
+msgstr ""
+
+#: ../../ktictactux/main.cpp:32 ../../ktictactux/main.cpp:29
+#: ../../ktictactux/ktictactuxwin.cpp:78
+msgid "KTicTacTux"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:201
+#: ../../ktictactux/ktictactuxwin.cpp:207
+#: ../../ktictactux/ktictactuxwin.cpp:214
+#: ../../ktictactux/ktictactuxwin.cpp:220
+msgid "KTicTacTux network score"
+msgstr "Calificación de red de KTicTacTux"
+
+#: ../../ktictactux/ktictactuxwin.cpp:184
+#: ../../ktictactux/ktictactuxwin.cpp:190
+#: ../../ktictactux/ktictactuxwin.cpp:197
+#: ../../ktictactux/ktictactuxwin.cpp:202
+msgid "KTicTacTux score"
+msgstr "Calificación de KTicTacTux"
+
+#: ../../ktictactux/ktictactux.cpp:377 ../../ktictactux/ktictactux.cpp:416
+#: ../../ktictactux/ktictactux.cpp:422
+msgid "Move OK"
+msgstr "Movimiento correcto"
+
+#: ../../ktictactux/ktictactux.cpp:328 ../../ktictactux/ktictactux.cpp:351
+#: ../../ktictactux/ktictactux.cpp:355
+msgid "Network game"
+msgstr "Juego de red"
+
+#: ../../ktictactux/ktictactux.cpp:354 ../../ktictactux/ktictactux.cpp:393
+#: ../../ktictactux/ktictactux.cpp:399
+#, c-format
+msgid "Network game with %1"
+msgstr "Juego de red con %1"
+
+#: ../../ktictactux/ktictactuxwin.cpp:251
+#: ../../ktictactux/ktictactuxwin.cpp:260
+#: ../../ktictactux/ktictactuxwin.cpp:274
+#: ../../ktictactux/ktictactuxwin.cpp:272
+msgid "No pixmap themes could be found"
+msgstr "No se han encontrado temas de mapas de pixels"
+
+#: ../../ktictactux/ktictactuxwin.cpp:175
+#: ../../ktictactux/ktictactuxwin.cpp:192
+#: ../../ktictactux/ktictactuxwin.cpp:181
+#: ../../ktictactux/ktictactuxwin.cpp:198
+#: ../../ktictactux/ktictactuxwin.cpp:188
+#: ../../ktictactux/ktictactuxwin.cpp:205
+#: ../../ktictactux/ktictactuxwin.cpp:193
+#: ../../ktictactux/ktictactuxwin.cpp:210
+msgid "Of course, because you didn't play yet."
+msgstr "Claro, porque tu no has jugado todavía."
+
+#: ../../ktictactux/ktictactux.cpp:115 ../../ktictactux/ktictactux.cpp:121
+msgid "Opponent's turn"
+msgstr "Turno del oponente"
+
+#: ../../ktictactux/ktictactux.cpp:209 ../../ktictactux/ktictactux.cpp:232
+#: ../../ktictactux/ktictactux.cpp:236
+msgid "Play another game?"
+msgstr "¿Jugamos de nuevo?"
+
+#: ../../ktictactux/ktictactuxwin.cpp:24 ../../ktictactux/ktictactuxwin.cpp:39
+#: ../../ktictactux/ktictactuxwin.cpp:45 ../../ktictactux/ktictactuxwin.cpp:52
+#: ../../ktictactux/ktictactuxwin.cpp:50
+msgid "Quit"
+msgstr "Salir"
+
+#: ../../ktictactux/main.cpp:21 ../../ktictactux/main.cpp:18
+msgid "Request GGZ game explicitely"
+msgstr "Petición explícita del juego GGZ"
+
+#: ../../ktictactux/ktictactux.cpp:207
+msgid "Score: you %1, opponent %2"
+msgstr "Puntuaciones: tu %1, oponente %2"
+
+#: ../../ktictactux/ktictactuxwin.cpp:35 ../../ktictactux/ktictactuxwin.cpp:50
+#: ../../ktictactux/ktictactuxwin.cpp:56 ../../ktictactux/ktictactuxwin.cpp:63
+#: ../../ktictactux/ktictactuxwin.cpp:58
+msgid "Status"
+msgstr "Estado"
+
+#: ../../ktictactux/ktictactuxwin.cpp:29
+msgid "Symbols"
+msgstr "Símbolos"
+
+#: ../../ktictactux/ktictactuxwin.cpp:23 ../../ktictactux/ktictactuxwin.cpp:36
+#: ../../ktictactux/ktictactuxwin.cpp:42 ../../ktictactux/ktictactuxwin.cpp:49
+#: ../../ktictactux/ktictactuxwin.cpp:43
+msgid "Synchronize"
+msgstr "Sincronización"
+
+#: ../../ktictactux/main.cpp:38
+msgid "TRANSLATOR-EMAIL"
+msgstr "luipeme@yahoo.es"
+
+#: ../../ktictactux/main.cpp:38
+msgid "TRANSLATOR-NAME"
+msgstr "Luis Pérez Meliá"
+
+#: ../../ktictactux/ktictactux.cpp:187 ../../ktictactux/ktictactux.cpp:188
+msgid "The game is over."
+msgstr "El juego ha terminado."
+
+#: ../../ktictactux/ktictactux.cpp:192 ../../ktictactux/ktictactux.cpp:214
+#: ../../ktictactux/ktictactux.cpp:218
+msgid "The game is over. There is no winner."
+msgstr "El juego ha terminado. No hay ganador."
+
+#: ../../ktictactux/ktictactuxwin.cpp:32 ../../ktictactux/ktictactuxwin.cpp:47
+#: ../../ktictactux/ktictactuxwin.cpp:53 ../../ktictactux/ktictactuxwin.cpp:60
+#: ../../ktictactux/ktictactuxwin.cpp:55
+msgid "Theme"
+msgstr "Tema"
+
+#: ../../ktictactux/ktictactuxwin.cpp:252
+#: ../../ktictactux/ktictactuxwin.cpp:261
+#: ../../ktictactux/ktictactuxwin.cpp:275
+#: ../../ktictactux/ktictactuxwin.cpp:273
+msgid "Themes error"
+msgstr "Error en los temas"
+
+#: ../../ktictactux/main.cpp:37 ../../ktictactux/main.cpp:34
+msgid "This game is part of the GGZ Gaming Zone."
+msgstr "Este juego es parte de GGZ Gaming Zone."
+
+#: ../../ktictactux/main.cpp:34 ../../ktictactux/main.cpp:31
+msgid "This is a TicTacToe game for KDE."
+msgstr "Este es el juego TicTacToe de KDE."
+
+#: ../../ktictactux/ktictactuxwin.cpp:28
+msgid "Tux/Kandalf (classic)"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:37 ../../ktictactux/ktictactuxwin.cpp:43
+#: ../../ktictactux/ktictactuxwin.cpp:50 ../../ktictactux/ktictactuxwin.cpp:44
+msgid "View score"
+msgstr "Ver puntuación."
+
+#: ../../ktictactux/ktictactux.cpp:329 ../../ktictactux/ktictactux.cpp:353
+#: ../../ktictactux/ktictactux.cpp:357
+msgid "Waiting for opponent!"
+msgstr "Esperando al oponente!"
+
+#: ../../ktictactux/ktictactux.cpp:422 ../../ktictactux/ktictactux.cpp:428
+msgid "Watching the game"
+msgstr "Viendo el juego"
+
+#: ../../ktictactux/ktictactuxwin.cpp:177
+#: ../../ktictactux/ktictactuxwin.cpp:194
+#: ../../ktictactux/ktictactuxwin.cpp:183
+#: ../../ktictactux/ktictactuxwin.cpp:200
+#: ../../ktictactux/ktictactuxwin.cpp:190
+#: ../../ktictactux/ktictactuxwin.cpp:207
+#: ../../ktictactux/ktictactuxwin.cpp:195
+#: ../../ktictactux/ktictactuxwin.cpp:212
+msgid "You are so bad."
+msgstr "Tu eres muy malo."
+
+#: ../../ktictactux/ktictactux.cpp:183 ../../ktictactux/ktictactux.cpp:203
+#: ../../ktictactux/ktictactux.cpp:204
+msgid "You are the winner!"
+msgstr "Eres el ganador!"
+
+#: ../../ktictactux/ktictactux.cpp:178 ../../ktictactux/ktictactux.cpp:196
+#: ../../ktictactux/ktictactux.cpp:197
+msgid "You lost the game."
+msgstr "Tu has perdido el juego."
+
+#: ../../ktictactux/ktictactuxwin.cpp:182
+#: ../../ktictactux/ktictactuxwin.cpp:188
+#: ../../ktictactux/ktictactuxwin.cpp:195
+msgid "You won %1 times and lost %2 times against the AI. %3"
+msgstr "Has ganado %1 veces y has perdido %2 veces en contra de la IA. %3"
+
+#: ../../ktictactux/ktictactuxwin.cpp:200
+msgid "You won %1 times, lost %2 times and tied %3 times against the AI. %4"
+msgstr "Has ganado %1 veces, has perdido %2 veces y empatado %3 veces en contra de la IA, %4"
+
+#: ../../ktictactux/ktictactuxwin.cpp:179
+#: ../../ktictactux/ktictactuxwin.cpp:196
+#: ../../ktictactux/ktictactuxwin.cpp:185
+#: ../../ktictactux/ktictactuxwin.cpp:202
+#: ../../ktictactux/ktictactuxwin.cpp:192
+#: ../../ktictactux/ktictactuxwin.cpp:209
+#: ../../ktictactux/ktictactuxwin.cpp:197
+#: ../../ktictactux/ktictactuxwin.cpp:214
+msgid "You're a TicTacTux expert!"
+msgstr "Eres un experto de TicTacTux!"
+
+#: ../../ktictactux/ktictactux.cpp:359 ../../ktictactux/ktictactux.cpp:398
+#: ../../ktictactux/ktictactux.cpp:404
+msgid "Your move"
+msgstr "Tu mueves"
+
+#: ../../ktictactux/ktictactux.cpp:107 ../../ktictactux/ktictactux.cpp:113
+msgid "Your turn"
+msgstr "Tu turno"
+
