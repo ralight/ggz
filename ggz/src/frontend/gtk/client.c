@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3752 2002-04-05 17:10:43Z jdorje $
+ * $Id: client.c 3842 2002-04-07 20:18:31Z jzaun $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -978,6 +978,10 @@ client_realize                    (GtkWidget       *widget,
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
+
+	/* Make the player list rows a bit taller */
+	tmp3 = lookup_widget(win_main, "player_clist");
+	gtk_clist_set_row_height(GTK_CLIST(tmp3), 25);
 
 #ifdef DEBUG
 	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Compiled with debugging."));
