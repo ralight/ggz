@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5083 2002-10-28 06:03:05Z jdorje $
+ * $Id: netxml.c 5102 2002-10-29 09:42:34Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1233,15 +1233,6 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 					&table_data->spectator_seats[i]);
 			}
 		}
-	} else if (strcasecmp(action, "joinspectator") == 0) {
-		/* This feature will eventually be phased out; spectator joins
-		   should be handled through "join" */
-		for (i = 0; i < table_data->num_spectator_seats; i++) {
-			if (table_data->spectator_seats[i].name) {
-				_ggzcore_table_set_spectator_seat(table,
-					&table_data->spectator_seats[i]);
-			}
-		}
 	}
 	else if (strcasecmp(action, "leave") == 0) {
 		for (i = 0; i < table_data->num_seats; i++) {
@@ -1254,20 +1245,6 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 				_ggzcore_table_set_seat(table, &seat);
 			}
 		}
-		for (i = 0; i < table_data->num_spectator_seats; i++) {
-			if (table_data->spectator_seats[i].name) {
-				/* Player is vacating seat */
-				struct _GGZSeat seat;
-				seat.index = i;
-				seat.name = NULL;
-				_ggzcore_table_set_spectator_seat(table,
-								  &seat);
-			}
-		}
-	}
-	else if (strcasecmp(action, "leavespectator") == 0) {
-		/* This feature will eventually be phased out; spectator leaves
-		   should be handled through "leave" */
 		for (i = 0; i < table_data->num_spectator_seats; i++) {
 			if (table_data->spectator_seats[i].name) {
 				/* Player is vacating seat */
