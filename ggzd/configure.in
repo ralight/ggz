@@ -295,6 +295,8 @@ AC_OUTPUT([Makefile
 		game_servers/krosswater/Makefile
 		game_servers/krosswater/stackpath/Makefile
 		game_servers/krosswater/zoneserver/Makefile
+		game_servers/muehle/Makefile
+		game_servers/muehle/ggz/Makefile
 		man/Makefile
 		tests/Makefile
 	   ])
