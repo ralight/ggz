@@ -1,14 +1,19 @@
-XTRA_DIST = Default/*.xpm
+## Process this file with automake to produce Makefile.in
+#  $Id: Makefile.am 5296 2002-12-17 08:53:47Z jdorje $
 
 SUBDIRS = .
 
-data = Default
+# $(DESTDIR) prepended automatically
+Default_DATA	=	Default/chatbackground.xpm	\
+			Default/chat.xpm		\
+			Default/Login.xpm		\
+			Default/msg.xpm			\
+			Default/New.xpm			\
+			Default/star1.xpm		\
+			Default/star2.xpm		\
+			Default/star3.xpm		\
+			Default/star4.xpm		\
+			Default/star5.xpm
+Defaultdir	=	$(ggzdatadir)/ggz-gnome/Default
 
-install-data-local:
-	for p in $(data); do \
-		$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/ggz-gnome/$$p ;\
-		$(INSTALL) -m 644 $$p/*.xpm $(DESTDIR)$(ggzdatadir)/ggz-gnome/$$p ;\
-	done
-	
-uninstall-local:
-	-rm -rv $(ggzdatadir)/ggz-gnome	
+EXTRA_DIST	=	$(Default_DATA)

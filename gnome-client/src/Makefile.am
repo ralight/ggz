@@ -18,7 +18,7 @@ ggz_gnome_SOURCES = \
 	msgboxc.c msgboxc.h \
 	xtext.c xtext.h \
 	login.c login.h \
-	ggzclient.c ggzient.h \
+	ggzclient.c ggzclient.h \
 	profilesi.c profilesi.h \
 	profilesc.c profilesc.h \
 	game.c game.h \
