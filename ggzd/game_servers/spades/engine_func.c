@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 2769 2001-12-01 06:53:01Z bmh $
+ * $Id: engine_func.c 2837 2001-12-09 22:45:36Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -198,7 +198,7 @@ void GetGameInfo( void ) {
 	gameInfo.ggz_sock = 3;
 
 	ReadIntOrDie(gameInfo.ggz_sock, &op);
-	if (op != REQ_GAME_LAUNCH) {
+	if (op != MSG_GAME_LAUNCH) {
 		state = GGZDMOD_STATE_DONE;
 		WriteIntOrDie(gameInfo.ggz_sock, REQ_GAME_STATE);
 		write(gameInfo.ggz_sock, &state, 1);
