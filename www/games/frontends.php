@@ -18,6 +18,9 @@ switch($uri)
 	case "koenig": $uri = "chess"; break;
 	case "kcc": $uri = "ccheckers"; break;
 	case "escape-sdl": $uri = "escape"; break;
+
+	case "chinese-checkers": $uri = "ccheckers"; break;
+	case "chinese-chess": $uri = "cchess"; break;
 }
 
 if ($origuri != $uri) :
