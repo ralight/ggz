@@ -28,7 +28,7 @@ include_HEADERS = \
 			GGZCoreTable.h \
 			GGZCoreCommon.h
 
-libggzcorepp_la_LDFLAGS = -version-info 1:0:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@
+libggzcorepp_la_LDFLAGS = -version-info 1:0:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@ -lggz
 
 CXXFLAGS = @COMPILEOPTIONS@ $(EASYSOCK_INCLUDES) $(GGZCORE_INCLUDES)
 
