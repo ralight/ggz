@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5397 2003-02-09 22:50:10Z jdorje $
+dnl $Id: configure.ac 5398 2003-02-09 22:57:46Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -23,9 +23,6 @@ dnl Compiling Options
 dnl =====================
 AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server],, enable_server=yes)
 AC_ARG_ENABLE(games,  [  --disable-games         Don't build ggzd games],, enable_games=yes)
-AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
-AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
 AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, db4, pgsql, mysql], database=$withval, database=yes)
 
@@ -306,25 +303,7 @@ changequote([,])dnl
 
 dnl Debug modes
 dnl ===========
-dnl This defines either DEBUG or NDEBUG.  We could provide a third option
-dnl where neither are defined.
-if test "$enable_debug" = yes; then
-    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
-    DFLAGS="DEBUG"
-else
-    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
-    DFLAGS="NDEBUG"
-fi
-
-if test "$enable_debug_mem" = yes; then
-    AC_DEFINE(DEBUG_MEM, 1, [Define to use dmalloc memory debugging])
-    DFLAGS="$DFLAGS DEBUG_MEM"
-    LDADD="$LDADD -ldmalloc"
-fi
-
-if test "$enable_debug_gdb" = yes; then
-    CFLAGS="$CFLAGS -ggdb"
-fi
+AC_GGZ_DEBUG
 
 
 dnl Various dirs
