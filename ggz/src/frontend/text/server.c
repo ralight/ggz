@@ -35,7 +35,6 @@
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
 	output_chat(2,"---", "Connected");
-	output_status();
 }
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
@@ -65,7 +64,6 @@ void server_logout(GGZEventID id, void* event_data, void* user_data)
 	free(Username);
 	Username = NULL;
 	free(Room);
-	output_status();
 	Room = NULL;
 }
 

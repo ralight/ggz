@@ -152,7 +152,6 @@ static void input_handle_join(char* line)
 	Room = strdup(arg);
 
 	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, room, free);
-	output_status();
 }
 
 
@@ -167,6 +166,5 @@ static void input_handle_chat(char *line)
 		msg = strdup(arg);
 		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
 	}
-	output_status();
 }
 

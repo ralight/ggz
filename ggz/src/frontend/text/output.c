@@ -28,7 +28,9 @@
 #include <ggzcore.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/ioctl.h>
+#include <time.h>
 #include "output.h"
 
 static struct winsize window;
@@ -60,7 +62,6 @@ void output_banner(void)
 void output_prompt(int status)
 {
 	fflush(NULL);
-	output_status();
 	printf("\e[%d;0f\e[2K",window.ws_row);
 	if (status == 1)
 		printf("\e[%d;0f\e[2K\e[1m\e[37mGGZ\e[30m>\e[0m\e[36m ",window.ws_row-1);
@@ -88,6 +89,10 @@ void output_chat(int type, char* player, char* message)
 void output_status()
 {
 	int num;
+	time_t now;		/* time */
+	char *currenttime;	/* String formatted time */
+
+	now = time(NULL);
 
 	num = window.ws_col - 8;
 	if(Server)
@@ -108,7 +113,12 @@ void output_status()
 	else
 		printf("\e[%d;0f\e[1m\e[37mR\e[32moom:\e[K ", window.ws_row-2);
 
+	currenttime = strdup(ctime(&now));
+	currenttime[strlen(currenttime)-1] = '\0';
+	printf("\e[%d;%df\e[1m\e[37mT\e[32mime:\e[K \e[36m%s", window.ws_row-2, window.ws_col-strlen(currenttime)-6, currenttime);
+
 	printf("\e8");
+	free(currenttime);
 	fflush(NULL);
 }
 

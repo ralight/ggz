@@ -77,6 +77,7 @@ int main(void)
 				output_prompt(0);
 		}
 		ggzcore_event_process_all();
+		output_status();
 	}
 
 	ggzcore_event_process_all();
