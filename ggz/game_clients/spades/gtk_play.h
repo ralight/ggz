@@ -45,5 +45,6 @@ typedef struct playArea_t {
 
 } playArea_t;
 
+extern playArea_t *playArea;
 
 void CreatePlayArea(void);

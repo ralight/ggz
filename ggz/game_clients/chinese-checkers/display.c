@@ -37,7 +37,7 @@
 #include "game.h"
 
 
-static GtkWidget *dlg_main = NULL;
+GtkWidget *dlg_main = NULL;
 static GtkWidget *draw_area = NULL;
 static GtkWidget *statusbar;
 static guint sb_context;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 5158 2002-11-03 03:07:10Z jdorje $
+ * $Id: cb_main.c 5165 2002-11-03 07:54:39Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -45,7 +45,7 @@ void game_exit(void)
 	/* Really, we shouldn't be checking game_started here.  We should
 	   happily leave between games too.  But for now, this is fine. */
 	if (game_started && preferences.confirm_exit) {
-		ggz_show_exit_dialog(TRUE);
+		ggz_show_exit_dialog(TRUE, dlg_main);
 	} else {
 		gtk_main_quit();
 	}

@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+extern GtkWidget *dlg_main;
 
 extern int display_init(void);
 extern void display_handle_expose_event(GdkEventExpose *event);

@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Desc: GTK Callback functions
- * $Id: callbacks.c 3710 2002-03-28 08:27:20Z jdorje $
+ * $Id: callbacks.c 5165 2002-11-03 07:54:39Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -55,7 +55,7 @@ extern GtkTargetEntry *target;
 static void try_to_quit(void)
 {
   if (game_info.state == CHESS_STATE_PLAYING)
-    ggz_show_exit_dialog(0);
+    ggz_show_exit_dialog(0, main_win);
   else
     gtk_main_quit();
 }

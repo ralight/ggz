@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 5047 2002-10-26 04:54:33Z jdorje $
+ * $Id: main_cb.c 5165 2002-11-03 07:54:39Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -50,14 +50,14 @@ on_dlg_main_delete_event               (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	ggz_show_exit_dialog(1);
+	game_exit();
 	return TRUE;
 }
 
 
 void game_exit(void)
 {
-	ggz_show_exit_dialog(1);
+	ggz_show_exit_dialog(1, dlg_main);
 }
 
 

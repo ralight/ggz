@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4923 2002-10-14 23:18:21Z jdorje $
+ * $Id: main_win.c 5165 2002-11-03 07:54:39Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -43,6 +43,7 @@
 /* Gtk-games files */
 #include "dlg_exit.h"
 #include "dlg_players.h"
+#include "menus.h"
 
 /* Hastings files */
 #include "main_win.h"
@@ -306,26 +307,20 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 static gboolean main_exit(GtkWidget *widget, GdkEvent *event,
 			  gpointer user_data)
 {
-	ggz_show_exit_dialog(1);
+	game_exit();
 	return TRUE;
 }
 
 /* Resyncing... */
-static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+void game_resync(void)
 {
 	request_sync();
 }
 
 /* Leave the game */
-static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+void game_exit(void)
 {
-	ggz_show_exit_dialog(1);
-}
-
-/* Display the about dialog, crediting me all over... */
-static void game_about(GtkMenuItem *menuitem, gpointer user_data)
-{
-	create_or_raise_dlg_about();
+	ggz_show_exit_dialog(1, main_win);
 }
 
 /* Draw the screen? Unsure */
@@ -432,7 +427,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
 	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
 	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+	  {_("/Help/_About"), "<ctrl>A", create_or_raise_dlg_about, 0, NULL}
 	};
 	const int num = sizeof(items) / sizeof(items[0]);
 
