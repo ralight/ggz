@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5899 2004-02-11 01:48:34Z jdorje $
+ * $Id: netxml.c 5910 2004-02-11 13:54:34Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1701,6 +1701,8 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *element)
 		type = GGZ_PLAYER_NORMAL;
 	else if (strcasecmp(str_type, "admin") == 0)
 		type = GGZ_PLAYER_ADMIN;
+	else if (strcasecmp(str_type, "bot") == 0)
+		type = GGZ_PLAYER_BOT;
 	else
 		type = GGZ_PLAYER_GUEST;
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5899 2004-02-11 01:48:34Z jdorje $
+ * $Id: ggzcore.h 5910 2004-02-11 13:54:34Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -171,7 +171,10 @@ typedef enum {
 	GGZ_PLAYER_GUEST,
 
 	/** Special case: Player has administrative privileges. */
-	GGZ_PLAYER_ADMIN
+	GGZ_PLAYER_ADMIN,
+
+	/** Special case: Player is a registered bot. */
+	GGZ_PLAYER_BOT
 } GGZPlayerType;
 
 /** @brief The data describing an error.
