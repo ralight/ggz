@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3301 2002-02-10 11:10:05Z jdorje $
+ * $Id: common.c 3311 2002-02-11 02:39:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -584,6 +584,16 @@ static int handle_msg_play(void)
 	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
+	
+	/* Place the card on the table.  Note, this contradicts what
+	   the table code does, since that runs animation that may
+	   assume the card has not yet been placed on the table.
+	   Nonetheless, this is the correct thing to do - it is the
+	   table code that needs to be fixed (to keep separate track
+	   of what cards are being _drawn_ on the table, as opposed
+	   to what cards are _supposed to be_ on the table which is
+	   what this is). */
+	ggzcards.players[p].table_card = card;
 
 	/* Find the hand the card is to be removed from. */
 	assert(ggzcards.players);
