@@ -70,6 +70,7 @@ App::App(QWidget *parent, const char *name)
 	m_networktype = new QComboBox(tab_general);
 	m_networktype->insertItem(i18n("GGZ Gaming Zone"));
 	m_networktype->insertItem(i18n("IRC"));
+	m_networktype->insertItem(i18n("SILC"));
 	m_networktype->insertItem(i18n("Console"));
 
 	m_namelabel = new QLabel(i18n("Name"), tab_general);
@@ -379,6 +380,8 @@ void App::saveProfile()
 			stream << coremoduledir << "libguru_netggz.so\n";
 		if(m_networktype->currentText() == i18n("IRC"))
 			stream << coremoduledir << "libguru_netirc.so\n";
+		if(m_networktype->currentText() == i18n("SILC"))
+			stream << coremoduledir << "libguru_netsilc.so\n";
 		if(m_networktype->currentText() == i18n("Console"))
 			stream << coremoduledir << "libguru_netconsole.so\n";
 		stream << "\n";
@@ -510,6 +513,7 @@ void App::loadProfile()
 	QString net = conf.readEntry("net");
 	if(net.contains("netggz")) m_networktype->setCurrentText(i18n("GGZ Gaming Zone"));
 	else if(net.contains("netirc")) m_networktype->setCurrentText(i18n("IRC"));
+	else if(net.contains("netsilc")) m_networktype->setCurrentText(i18n("SILC"));
 	else if(net.contains("netconsole")) m_networktype->setCurrentText(i18n("Console"));
 
 	home.setPath(home.path() + "/grubby");
