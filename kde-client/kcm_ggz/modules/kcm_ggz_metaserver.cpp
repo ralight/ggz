@@ -5,7 +5,7 @@
 #include "metaserver_add_server.h"
 
 #include <klistview.h>
-#include <kpushbutton.h>
+#include <qpushbutton.h>
 #include <klocale.h>
 
 #include <qlayout.h>
@@ -18,8 +18,8 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 {
 	QVBoxLayout *vbox, *vbox2, *vbox3, *vbox4;
 	QHBoxLayout *hbox, *hbox2;
-	KPushButton *add, *remove, *autoconfig;
-	KPushButton *add_servers, *remove_servers, *autoconfig_servers;
+	QPushButton *add, *remove, *autoconfig;
+	QPushButton *add_servers, *remove_servers, *autoconfig_servers;
 	QGroupBox *box, *box_servers;
 	QVBoxLayout *vboxroot;
 
@@ -34,13 +34,13 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	view->addColumn(i18n("URI"));
 	view->addColumn(i18n("Supported classes"));
 
-	add = new KPushButton(i18n("Add a metaserver"), box);
-	remove = new KPushButton(i18n("Remove server"), box);
-	autoconfig = new KPushButton(i18n("Autoconfigure"), box);
+	add = new QPushButton(i18n("Add a metaserver"), box);
+	remove = new QPushButton(i18n("Remove server"), box);
+	autoconfig = new QPushButton(i18n("Autoconfigure"), box);
 
-	add_servers = new KPushButton(i18n("Add a server"), box_servers);
-	remove_servers = new KPushButton(i18n("Remove server"), box_servers);
-	autoconfig_servers = new KPushButton(i18n("Autoconfigure"), box_servers);
+	add_servers = new QPushButton(i18n("Add a server"), box_servers);
+	remove_servers = new QPushButton(i18n("Remove server"), box_servers);
+	autoconfig_servers = new QPushButton(i18n("Autoconfigure"), box_servers);
 
 	view_servers = new KListView(box_servers);
 	view_servers->addColumn(i18n("URI"));

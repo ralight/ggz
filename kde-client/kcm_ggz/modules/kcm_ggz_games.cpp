@@ -2,7 +2,7 @@
 #include "kcm_ggz_games.moc"
 
 #include <klistview.h>
-#include <kpushbutton.h>
+#include <qpushbutton.h>
 #include <ksimpleconfig.h>
 #include <kapp.h>
 #include <klocale.h>
@@ -17,7 +17,7 @@ KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
 : KCMGGZPane(parent, name)
 {
 	QVBoxLayout *vbox;
-	KPushButton *look;
+	QPushButton *look;
 
 	popup = NULL;
 
@@ -31,7 +31,7 @@ KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
 
 	add(i18n("Local"), "KaBoom!!", "KDE", "Josef Spillner & Tobias König", "http://games.kde.org", "0.1", "1");
 
-	look = new KPushButton(i18n("Update local game information"), this);
+	look = new QPushButton(i18n("Update local game information"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(view);
