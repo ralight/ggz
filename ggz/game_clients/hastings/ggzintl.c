@@ -8,7 +8,7 @@ void ggz_intl_init(const char *modulename)
 	bindtextdomain(modulename, NULL);
 	textdomain(modulename);
 	setlocale(LC_ALL, "");
-	printf(_("nls enabled\n"), modulename);
+	printf(_("nls enabled: %s\n"), modulename);
 #endif
 }
 
