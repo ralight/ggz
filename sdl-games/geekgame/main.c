@@ -17,6 +17,7 @@
 #include <string.h>
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <fnmatch.h>
 
@@ -46,6 +47,8 @@ static int ggzmode = 0;
 static SDL_Surface *screen, *image;
 static TTF_Font *font = NULL;
 static char *fontpath = NULL;
+static char *musicpath = NULL;
+static char *soundpath = NULL;
 static int playmode = -1;
 static int players = 0;
 static char scores[MAX_PLAYERS];
@@ -62,12 +65,13 @@ int chunkchannel = -1;
 /* Prototypes */
 int startgame(void);
 void loadsettings(void);
+void savesettings(void);
 void addplayer(const char *picture);
 void musicdone(void);
 
 static const char *data_global()
 {
-	return GGZDATADIR "/geekgame/";
+	return GGZDATADIR "/geekgame";
 }
 
 static const char *data_local()
@@ -349,16 +353,48 @@ void loadsettings(void)
 	int conf;
 	char conffile[STRING_LENGTH];
 
+	snprintf(conffile, sizeof(conffile), "%s/config", data_local());
+	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
+	if(conf != -1)
+	{
+		fontpath = ggz_conf_read_string(conf, "Configuration", "fontpath", NULL);
+		musicpath = ggz_conf_read_string(conf, "Configuration", "musicpath", NULL);
+		soundpath = ggz_conf_read_string(conf, "Configuration", "soundpath", NULL);
+
+		ggz_conf_close(conf);
+	}
+
 	snprintf(conffile, sizeof(conffile), "%s/.ggz/personalization", getenv("HOME"));
 	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
 	if(conf != -1)
 	{
 		playerimage = ggz_conf_read_string(conf, "Personalization", "picture", NULL);
+
+		ggz_conf_close(conf);
 	}
+
 	if((conf == -1) || (!playerimage))
 	{
 		playerimage = (char*)malloc(STRING_LENGTH);
 		snprintf(playerimage, STRING_LENGTH, "%s/bot.png", data_global());
+	}
+}
+
+void savesettings(void)
+{
+	int conf;
+	char conffile[STRING_LENGTH];
+
+	snprintf(conffile, sizeof(conffile), "%s/config", data_local());
+	conf = ggz_conf_parse(conffile, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	if(conf != -1)
+	{
+		ggz_conf_write_string(conf, "Configuration", "fontpath", fontpath);
+		ggz_conf_write_string(conf, "Configuration", "musicpath", musicpath);
+		ggz_conf_write_string(conf, "Configuration", "soundpath", soundpath);
+
+		ggz_conf_commit(conf);
+		ggz_conf_close(conf);
 	}
 }
 
@@ -518,14 +554,36 @@ void screen_scanning(int display)
 	}
 	else
 	{
+		/* Blindly create local directory structure */
+		mkdir(data_local(), S_IRWXU);
+		snprintf(path, sizeof(path), "%s/music", data_local());
+		mkdir(path, S_IRWXU);
+		snprintf(path, sizeof(path), "%s/sounds", data_local());
+		mkdir(path, S_IRWXU);
+		snprintf(path, sizeof(path), "%s/fonts", data_local());
+		mkdir(path, S_IRWXU);
+
 		/* Scanning for fonts */
-		tmpfont = scan_dir("/usr/share/fonts/truetype", "*.ttf");
-		if(tmpfont)
+		if(!fontpath)
 		{
-			snprintf(path, sizeof(path), "/usr/share/fonts/truetype/%s", tmpfont);
-			fontpath = strdup(path);
+			snprintf(path, sizeof(path), "%s/fonts", data_local());
+			tmpfont = scan_dir(path, "*.ttf");
+			if(tmpfont)
+			{
+				snprintf(path, sizeof(path), "%s/fonts/%s", data_local(), tmpfont);
+				fontpath = strdup(path);
+			}
 		}
-		else
+		if(!fontpath)
+		{
+			tmpfont = scan_dir("/usr/share/fonts/truetype", "*.ttf");
+			if(tmpfont)
+			{
+				snprintf(path, sizeof(path), "/usr/share/fonts/truetype/%s", tmpfont);
+				fontpath = strdup(path);
+			}
+		}
+		if(!fontpath)
 		{
 			tmpfont = scan_dir("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
 			if(tmpfont)
@@ -533,7 +591,6 @@ void screen_scanning(int display)
 				snprintf(path, sizeof(path), "/usr/X11R6/lib/X11/fonts/TrueType/%s", tmpfont);
 				fontpath = strdup(path);
 			}
-			else fontpath = NULL;
 		}
 	}
 }
@@ -943,13 +1000,21 @@ int startgame(void)
 		}
 		else
 		{
-			snprintf(path, sizeof(path), "%s/music/song32.ogg", data_global());
-			music = Mix_LoadMUS(path);
+			if(!musicpath)
+			{
+				snprintf(path, sizeof(path), "%s/music/song32.ogg", data_global());
+				musicpath = strdup(path);
+			}
+			music = Mix_LoadMUS(musicpath);
 			Mix_PlayMusic(music, -1);
 			Mix_HookMusicFinished(musicdone);
 
-			snprintf(path, sizeof(path), "%s/sound/phaser.wav", data_global());
-			chunk = Mix_LoadWAV(path);
+			if(!soundpath)
+			{
+				snprintf(path, sizeof(path), "%s/sound/phaser.wav", data_global());
+				soundpath = strdup(path);
+			}
+			chunk = Mix_LoadWAV(soundpath);
 		}
 	}
 #endif
@@ -978,6 +1043,8 @@ int startgame(void)
 	drawturn(screen, players, -1);
 
 	screen_scanning(1);
+
+	savesettings();
 
 	while(1)
 	{
