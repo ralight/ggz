@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6749 2005-01-20 00:29:18Z jdorje $
+ * $Id: game.c 6775 2005-01-20 23:06:34Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -136,6 +136,7 @@ static int game_update(int event_id, void *data)
   int from, to;
   int ret;
   char botmove[6];
+  int color, seatnum;
 
   switch (event_id) {
     case CHESS_EVENT_LAUNCH:
@@ -148,10 +149,12 @@ static int game_update(int event_id, void *data)
       game_info.state = CHESS_STATE_WAIT;
 
       if (ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1) {
-        if (cgc_join_game(game, BLACK) < 0) /* FIXME: what if ai is host? allowed at all (clock)? */
+        seatnum = ((ggzdmod_get_seat(game_info.ggz, 0).type == GGZ_SEAT_BOT) ? 0 : 1);
+        color = ((seatnum == 0) ? WHITE : BLACK);
+        if (cgc_join_game(game, color) < 0)
           return -1;
-        chess_ai_init(C_BLACK, 2);
-	  }
+        chess_ai_init((color == BLACK ? C_BLACK : C_WHITE), 2);
+      }
       break;
     case CHESS_EVENT_JOIN:
       /* Check for current state */
@@ -216,6 +219,20 @@ static int game_update(int event_id, void *data)
         game_restart_chronometer();
       /* Update state */
       game_info.state = CHESS_STATE_PLAYING;
+      /* If bot is white (seat 1), start to move */
+      seatnum = ((ggzdmod_get_seat(game_info.ggz, 0).type == GGZ_SEAT_BOT) ? 0 : 1);
+      if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
+      && (game_info.turn % 2 == seatnum)) {
+        ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
+        botmove[0] = from % 8 + 'A';
+        botmove[1] = from / 8 + '1';
+        botmove[2] = to % 8 + 'A';
+        botmove[3] = to / 8 + '1';
+        botmove[4] = 0;
+        botmove[5] = 0;
+        data = &botmove;
+        game_update(CHESS_EVENT_MOVE, data);
+      }
       break;
     case CHESS_EVENT_MOVE:
       ggz_debug(DEBUG_GAME, "** got move!\n");
@@ -298,10 +315,11 @@ static int game_update(int event_id, void *data)
         ((char*)data)[2] - 65, ((char*)data)[3] - 49);
       ggz_debug(DEBUG_GAME, "** next turn!\n");
 
+      seatnum = ((ggzdmod_get_seat(game_info.ggz, 0).type == GGZ_SEAT_BOT) ? 0 : 1);
       if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
-      && (game_info.turn % 2)) {
+      && (game_info.turn % 2 == seatnum)) {
         ggz_debug(DEBUG_GAME, "** now move chess bot!\n");
-        ret = chess_ai_find(C_BLACK, &from, &to);
+        ret = chess_ai_find((seatnum == 0 ? C_WHITE : C_BLACK), &from, &to);
         ggz_debug(DEBUG_GAME, "** would move from %i to %i! (valid: %i)\n", from, to, ret);
         botmove[0] = from % 8 + 'A';
         botmove[1] = from / 8 + '1';
