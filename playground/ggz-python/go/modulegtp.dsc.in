@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @prefix@/bin/vai --ggz
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/games/vai/
+Name = Vai
+ProtocolEngine = GTP
+ProtocolVersion = 2
+Version = 0.1
+

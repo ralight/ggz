@@ -1,0 +1,18 @@
+[GameInfo]
+Author = Josef Spillner
+Description = GNU Go wrapper
+Homepage = http://www.ggzgamingzone.org/games/gnugo/
+Name = GNU Go GTP
+Version = 0.1
+
+[LaunchInfo]
+ExecutablePath = @prefix@/bin/goserver --ggz --gtp
+
+[Protocol]
+Engine = GTP
+Version = 2
+
+[TableOptions]
+BotsAllowed = 1
+PlayersAllowed = 2
+

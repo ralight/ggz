@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = GNU Go (Vai Client)
+Description = The Japanese Go game
+GameType = GNU Go GTP
+MaxPlayers = 500
+MaxTables = 100
+
