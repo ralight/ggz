@@ -1,0 +1,50 @@
+This document lists data or source attributions to GGZ which
+originate from other projects.
+It should be a goal to check for proper licences and encourage
+further data contributions at the same time.
+
+Specific contributions
+----------------------
+
+* Connect the Dots themes
+  Jonas Ström <noceur_metal@hotmail.com>
+  - gtk-games/chinese-checkers/pixmaps/Dragon/*.xpm
+  - gtk-games/chinese-checkers/pixmaps/Electric/*.xpm
+
+* KDots background images
+  Taken from drachenburg.de (only slightly confirmed)
+  - kde-games/kdots/*dragon.png
+
+* Chess figures
+  Taken from xboard
+  - gtk-games/chess/bitmaps/*.xpm
+  - kde-games/koenig/pixs/*.xpm
+
+* Combat figures
+  Grabbed from a clipart cd (perdig)
+  - gtk-games/combat/pixmaps/default/*.xpm
+
+* GGZCards?
+* LaPocha, NetSpades, ...?
+
+Imported from other projects
+----------------------------
+
+* Country flags
+  Taken from KDE (license ok)
+  - www/pics/site/flags/*.png
+
+* Kandalf, Tux, ... icons
+  Taken from KDE/GNOME (license ok)
+  - kde-games/ktictactux/themes/???.png
+
+Code reuse
+----------
+
+* XText (XChat text engine)
+  - gtk-client/ggz-gtk/xtext.*
+
+* Chessd libcgc
+  - ggzd/game_servers/chess/libcgc/*
+  - gtk-games/chess/libcgc/*
+
