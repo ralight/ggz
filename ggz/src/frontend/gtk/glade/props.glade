@@ -89,7 +89,6 @@
 	    <last_modification_time>Tue, 25 Jul 2000 00:40:01 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -103,7 +102,6 @@
 	    <last_modification_time>Tue, 25 Jul 2000 00:39:53 GMT</last_modification_time>
 	  </signal>
 	  <label>Apply</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -117,7 +115,6 @@
 	    <last_modification_time>Tue, 25 Jul 2000 00:39:47 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
@@ -596,7 +593,6 @@
 		  <last_modification_time>Tue, 25 Jul 2000 00:39:20 GMT</last_modification_time>
 		</signal>
 		<label>Add</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 	      </widget>
 
 	      <widget>
@@ -610,7 +606,6 @@
 		  <last_modification_time>Tue, 25 Jul 2000 00:39:26 GMT</last_modification_time>
 		</signal>
 		<label>Modify</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 	      </widget>
 
 	      <widget>
@@ -624,7 +619,6 @@
 		  <last_modification_time>Tue, 25 Jul 2000 00:39:31 GMT</last_modification_time>
 		</signal>
 		<label>Delete</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 	      </widget>
 	    </widget>
 	  </widget>
@@ -704,7 +698,6 @@
 		<last_modification_time>Sun, 23 Apr 2000 01:22:54 GMT</last_modification_time>
 	      </signal>
 	      <label>Change</label>
-	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -831,6 +824,29 @@
 		<right_attach>2</right_attach>
 		<top_attach>0</top_attach>
 		<bottom_attach>1</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>background_check</name>
+	      <can_focus>True</can_focus>
+	      <label>White Background</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>1</left_attach>
+		<right_attach>2</right_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
 		<xexpand>False</xexpand>
@@ -1488,7 +1504,6 @@
       <last_modification_time>Sat, 24 Jun 2000 18:59:52 GMT</last_modification_time>
     </signal>
     <label>OK</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -1503,7 +1518,6 @@
       <last_modification_time>Sat, 24 Jun 2000 19:00:17 GMT</last_modification_time>
     </signal>
     <label>Apply</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 
   <widget>
@@ -1518,7 +1532,6 @@
       <last_modification_time>Sat, 24 Jun 2000 19:00:33 GMT</last_modification_time>
     </signal>
     <label>Cancel</label>
-    <relief>GTK_RELIEF_NORMAL</relief>
   </widget>
 </widget>
 

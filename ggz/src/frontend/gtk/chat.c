@@ -68,10 +68,12 @@ GdkColor colors[] =
         {0, 0xFFFF, 0x6666, 0x9999},          /* 15  Pale Violet Red		*/
         {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3			*/
         {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2		*/
-        {0, 0x0000, 0x0000, 0x0000},          /* 18  foreground (Black)		*/
-        {0, 0xFFFF, 0xFFFF, 0xFFFF}           /* 19  background (White)		*/
+        {0, 0xFFFF, 0xFFFF, 0xFFFF},          /* 18  forebround (White)		*/
+        {0, 0x0000, 0x0000, 0x0000}           /* 19  background (Black)		*/
 };
 
+GdkColor ColorWhite = {0, 0xFFFF, 0xFFFF, 0xFFFF};
+GdkColor ColorBlack = {0, 0x0000, 0x0000, 0x0000};
 
 /* chat_allocate_colors() - Allocates the collors all at once so they
  *                          can be called without the need to allocate
@@ -98,6 +100,25 @@ void chat_allocate_colors(void)
                                 g_error("*** GGZ: Couldn't alloc color\n");
                 }
         }
+        ColorBlack.pixel = (gulong) ((ColorBlack.red & 0xff00) * 256 +
+        			(ColorBlack.green & 0xff00) +
+        			(ColorBlack.blue & 0xff00) / 256);
+        if (!gdk_color_alloc (gdk_colormap_get_system(),
+        	&ColorBlack))
+        	g_error("*** GGZ: Couldn't alloc color\n");
+        ColorWhite.pixel = (gulong) ((ColorWhite.red & 0xff00) * 256 +
+        			(ColorWhite.green & 0xff00) +
+        			(ColorWhite.blue & 0xff00) / 256);
+        if (!gdk_color_alloc (gdk_colormap_get_system(),
+        	&ColorWhite))
+        	g_error("*** GGZ: Couldn't alloc color\n");
+
+	/* Background */
+	if (ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE) == TRUE)
+	{
+		colors[18] = ColorBlack;
+		colors[19] = ColorWhite;
+	}
 }
 
 /* chat_display_message() - Adds text to the xtext widget wich is used to diaplying
@@ -125,12 +146,12 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 				name = g_strdup_printf("%s %s", player, message+4);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
 			} else {
-				name = g_strdup_printf("<\003%s%s\00300>", chat_get_color(player), player);
+				name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player), player);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			}
 			break;
 		case CHAT_PRVMSG:
-			name = g_strdup_printf(">\003%s%s\00300<", chat_get_color(player), player);
+			name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_BEEP:
@@ -138,7 +159,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_ANNOUNCE:
-			name = g_strdup_printf("[\003%s%s\00300]", chat_get_color(player), player);
+			name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_SEND_PRVMSG:
@@ -446,8 +467,8 @@ gchar *chat_get_color(gchar *name)
 				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
 		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
 			asc = (gint)name[0];
-			x = div(asc, 17);
-			return g_strdup_printf("%d", x.rem);
+			x = div(asc, 16); /* Don't use black as a color */
+			return g_strdup_printf("%d", x.rem + 1);
 		}
 	}
 

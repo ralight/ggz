@@ -39,6 +39,10 @@
 #include "support.h"
 #include "xtext.h"
 
+extern GdkColor colors[];
+extern GdkColor ColorBlack;
+extern GdkColor ColorWhite;
+
 static void props_update(void);
 static void dlg_props_realize(GtkWidget *widget, gpointer user_data);
 static void props_profile_box_realized(GtkWidget *widget, gpointer user_data);
@@ -114,6 +118,10 @@ static void props_update(void)
 	/* Join/Part Messages */
 	tmp = lookup_widget((props_dialog), "ignore_check");
 	ggzcore_conf_write_int("CHAT", "IGNORE", GTK_TOGGLE_BUTTON(tmp)->active);
+
+	/* Chat Background */
+	tmp = lookup_widget((props_dialog), "background_check");
+	ggzcore_conf_write_int("CHAT", "BACKGROUND", GTK_TOGGLE_BUTTON(tmp)->active);
 
 	/* Color */
 	tmp = lookup_widget((props_dialog), "color_check");
@@ -208,6 +216,19 @@ static void props_update(void)
 		GTK_XTEXT(tmp)->wordwrap = FALSE;
 	}
 
+	/* Background Color */
+	tmp = lookup_widget((props_dialog), "background_check");
+	if (GTK_TOGGLE_BUTTON(tmp)->active)
+	{
+		colors[18] = ColorBlack;
+		colors[19] = ColorWhite;
+	}else{
+		colors[18] = ColorWhite;
+		colors[19] = ColorBlack;
+	}
+	tmp = lookup_widget((win_main), "xtext_custom");
+	gtk_xtext_set_palette(GTK_XTEXT(tmp), colors);
+
 	/* Refresh XText to make changed take affect */
 	tmp = lookup_widget((win_main), "xtext_custom");
 	gtk_xtext_refresh(GTK_XTEXT(tmp), 0);
@@ -244,6 +265,10 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* Word Wrap */
 	tmp = lookup_widget((props_dialog), "wrap_check");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE));
+
+	/* Background */
+	tmp = lookup_widget((props_dialog), "background_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "BACKGROUND", TRUE));
 
 	/* Sound */
 	tmp = lookup_widget((props_dialog), "sound_check");
@@ -649,7 +674,8 @@ static void props_profiles_reload(void)
 }
 
 
-static GtkWidget*
+
+GtkWidget*
 create_dlg_props (void)
 {
   GtkWidget *dlg_props;
@@ -701,6 +727,7 @@ create_dlg_props (void)
   GtkWidget *indent_check;
   GtkWidget *timestamp_check;
   GtkWidget *sound_check;
+  GtkWidget *background_check;
   GtkWidget *frame1;
   GtkWidget *vbox9;
   GtkWidget *color_check;
@@ -1125,6 +1152,15 @@ create_dlg_props (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  background_check = gtk_check_button_new_with_label (_("White Background"));
+  gtk_widget_ref (background_check);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "background_check", background_check,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (background_check);
+  gtk_table_attach (GTK_TABLE (chat_table), background_check, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   frame1 = gtk_frame_new (_("Chat Color"));
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "frame1", frame1,
@@ -1508,7 +1544,7 @@ create_dlg_props (void)
   return dlg_props;
 }
 
-static GtkWidget*
+GtkWidget*
 create_dlg_props_font (void)
 {
   GtkWidget *dlg_props_font;
@@ -1551,6 +1587,4 @@ create_dlg_props_font (void)
 
   return dlg_props_font;
 }
-
-
 
