@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: loop.c 5997 2004-05-17 14:20:01Z josef $
+ * $Id: loop.c 6640 2005-01-13 01:01:18Z jdorje $
  *
  * Functions for handling main IO loop
  *
@@ -23,6 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "loop.h"
 #include "input.h"
