@@ -14,6 +14,11 @@ Content of GGZ-KDE-Games:
 		players.
 	- KDots:
 		Connect the Dots for KDE. Compatible with the Gtk+ version.
+	- KTicTacTux:
+		TicTacToe game which is compatible with the Gtk+ version but has
+		pictures instead of symbols. Can also run in stand-alone mode where
+		it has some extra functionality.
+
 Please read 'INSTALL' if you aren't experienced with the build yet.
 The file README.GGZ does give you additional information.
 
