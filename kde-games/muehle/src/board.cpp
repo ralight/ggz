@@ -71,7 +71,7 @@ Board::Board(QWidget *parent, const char *name)
 
 Board::~Board()
 {
-	delete web;
+	if(web) delete web;
 	delete bg;
 	delete net;
 }
@@ -134,6 +134,8 @@ void Board::paintEvent(QPaintEvent *e)
 	QExtPainter p;
 	QPixmap tmp;
 
+	if(!web) return;
+
 	//bg->resize(width(), height());
 	tmp.resize(width(), height());
 	p.begin(&tmp);
@@ -160,7 +162,7 @@ void Board::resizeEvent(QResizeEvent *e)
 		repaint();
 	}
 
-	web->setScale(width() / 100.0);
+	if(web) web->setScale(width() / 100.0);
 }
 
 void Board::mousePressEvent(QMouseEvent *e)
@@ -172,6 +174,8 @@ void Board::mousePressEvent(QMouseEvent *e)
 	QList<QWebPoint> pointlist;
 	QList<QPoint> peerlist;
 	QWebPoint *wp;
+
+	if(!web) return;
 
 	// Translate coordinates into qweb representation
 	x = (int)(e->x() / web->scale());
@@ -312,12 +316,21 @@ void Board::setVariant(QString variant)
 	int x1, y1, x2, y2;
 
 	stonelist.clear();
-	if(web) delete web;
-	web = new QWeb();
+	if(web)
+	{
+		delete web;
+		web = NULL;
+	}
 
 	s = d.findResource("data", QString("muehle/%1").arg(variant));
 	kdDebug(12101) << "Load variant: " << variant << endl;
+	if(s.isNull())
+	{
+		kdDebug(12101) << "Couldn't load variant!" << endl;
+		return;
+	}
 
+	web = new QWeb();
 	QFile f(s);
 	f.open(IO_ReadOnly);
 	QTextStream t(&f);
