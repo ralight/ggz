@@ -28,24 +28,64 @@
 #include "hand.h"
 #include "layout.h"
 
-static void bottom_box(int *x, int *y) {
+static void bottom_box4(int *x, int *y)
+{
 	*x = XWIDTH;
 	*y = 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 }
 
-static void left_box(int *x, int *y) {
+static void left_box4(int *x, int *y)
+{
 	*x = XWIDTH;
 	*y = XWIDTH;
 }
 
-static void top_box(int *x, int *y) {
+static void top_box4(int *x, int *y)
+{
 	*x = 2 * XWIDTH + TEXT_BOX_WIDTH;
 	*y = XWIDTH;
 }
 
-static void right_box(int *x, int *y) {
+static void right_box4(int *x, int *y)
+{
 	*x = 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 	*y = 2 * XWIDTH + TEXT_BOX_WIDTH;
+}
+
+static void bottom_box6(int *x, int *y)
+{
+	*x = 2*XWIDTH + TEXT_BOX_WIDTH;
+	*y = 2*XWIDTH + TEXT_BOX_WIDTH + 2*CARD_BOX_WIDTH;
+}
+
+static void bl_box6(int *x, int *y)
+{
+	*x = XWIDTH;
+	*y = 2*XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
+}
+
+static void tl_box6(int *x, int *y)
+{
+	*x = XWIDTH;
+	*y = XWIDTH;
+}
+
+static void top_box6(int *x, int *y)
+{
+	*x = 2*XWIDTH + TEXT_BOX_WIDTH;
+	*y = XWIDTH;
+}
+
+static void tr_box6(int *x, int *y)
+{
+	*x = 3*XWIDTH + CARD_BOX_WIDTH + 2*TEXT_BOX_WIDTH;
+	*y = XWIDTH;
+}
+
+static void br_box6(int *x, int *y)
+{
+	*x = 3*XWIDTH + CARD_BOX_WIDTH + 2*TEXT_BOX_WIDTH;
+	*y = 2*XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 }
 
 /*
@@ -63,20 +103,31 @@ typedef struct layout_t {
 
 layout_t layout_2 = {
 			{0, 2},
-			{ &bottom_box, &top_box }
+			{ &bottom_box4, &top_box4 }
 		    };
 
 layout_t layout_3 = {
 			{0, 1, 2},
-			{ &bottom_box, &left_box, &top_box }
+			{ &bottom_box4, &left_box4, &top_box4 }
 		    };
 
 layout_t layout_4 = {
 			{0, 1, 2, 3},
-			{ &bottom_box, &left_box, &top_box, &right_box }
+			{ &bottom_box4, &left_box4, &top_box4, &right_box4 }
 		    };
 
-layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layout_4 };
+
+layout_t layout_5 = {
+			{0, 1, 1, 2, 3},
+			{ &bottom_box6, &bl_box6, &tl_box6, &top_box6, &tr_box6 }
+		    };
+
+layout_t layout_6 = {
+			{0, 1, 1, 2, 3, 3},
+			{ &bottom_box6, &bl_box6, &tl_box6, &top_box6, &tr_box6, &br_box6 }
+		    };
+
+layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layout_4, &layout_5, &layout_6 };
 
 #define LAYOUT (layouts[game.num_players])
 #define BOX(p) (LAYOUT->player_boxes[p])
@@ -85,18 +136,45 @@ layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layo
 int get_table_width()
 {
 	if (game.num_players == 0) return 300;
-	return ( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH );
+	if (game.num_players <= 4)
+		return ( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH );
+	return 4*XWIDTH + 3*TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 }
 
 int get_table_height()
 {
-	return get_table_width();
+	if (game.num_players <= 4)
+		return get_table_width();
+	return 3*XWIDTH + 2*TEXT_BOX_WIDTH + 2*CARD_BOX_WIDTH;
 }
 
 int orientation(int p)
 {
 	assert (LAYOUT);
 	return LAYOUT->orientations[p];
+}
+
+void get_tablecard_pos(int p, int *x, int *y)
+{
+	int offset = CARDHEIGHT/12;
+	int mx = get_table_width() / 2, my = get_table_height() / 2;
+	if (game.num_players <= 4) {
+		int positions[4][2] = { {mx-CARDWIDTH/2, my+offset},
+					{mx-CARDWIDTH-offset, my-CARDHEIGHT/2},
+                          		{mx-CARDWIDTH/2, my-offset-CARDHEIGHT},
+					{mx+offset, my-CARDHEIGHT/2} };
+		*x = positions[p][0];
+		*y = positions[p][1];
+	} else {
+		int positions[6][2] = { {mx-CARDWIDTH/2, my+offset+CARDHEIGHT/2},
+					{mx-CARDWIDTH-offset, my-CARDHEIGHT/4},
+					{mx-CARDWIDTH-offset, my-3*CARDHEIGHT/4},
+					{mx-CARDWIDTH/2, my-offset-3*CARDHEIGHT/2},
+					{mx+offset, my-3*CARDHEIGHT/4},
+					{mx+offset, my-CARDHEIGHT/4} };
+		*x = positions[p][0];
+		*y = positions[p][1];
+	}
 }
 
 void get_text_box_pos(int p, int *x, int *y)

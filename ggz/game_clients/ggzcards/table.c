@@ -765,17 +765,10 @@ void table_clear_table(void)
 static void table_show_card(int p, card_t c)
 {
 	int x, y;
-	int offset = CARDHEIGHT/12;
-	int mx = get_table_width() / 2, my = get_table_height() / 2;
-	int positions[4][2] = { {mx-CARDWIDTH/2, my+offset},
-				{mx-CARDWIDTH-offset, my-CARDHEIGHT/2},
-                          	{mx-CARDWIDTH/2, my-offset-CARDHEIGHT},
-				{mx+offset, my-CARDHEIGHT/2} };
 
 	if (c.face == -1 || c.suit == -1) return;
 
-	x = positions[p][0];
-	y = positions[p][1];
+	get_tablecard_pos(p, &x, &y);
 
 	draw_card(c, 0, x, y);
 	table_show_table(x, y,

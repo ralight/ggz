@@ -22,8 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* no more than 4 players will work */
-#define MAX_NUM_PLAYERS 4
+/* no more than 6 players will work */
+#define MAX_NUM_PLAYERS 6
 
 /* The following would be hell to change */
 #define CARDWIDTH	71
@@ -44,6 +44,7 @@ extern int get_table_width();
 extern int get_table_height();
 
 extern int orientation(int p);
+extern void get_tablecard_pos(int p, int *x, int *y);
 extern void get_text_box_pos(int p, int *x, int *y);
 extern void get_card_box_pos(int p, int *x, int *y);
 extern void get_card_box_dim(int p, int *w, int *h);
