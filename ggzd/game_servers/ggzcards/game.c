@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: game.c 2196 2001-08-23 09:24:47Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -66,6 +66,7 @@ struct game_function_pointers game_funcs = {
 	game_send_hand
 };
 
+
 /* is_valid_game
  *   returns true if the game is valid under the current game conditions (i.e. number 
  *   of players); false otherwise
@@ -75,32 +76,6 @@ int game_is_valid_game()
 	return 0;
 }
 
-/* game.funcs->map_card
- *   newly implemented; it should cause one card to behave
- *   as another in just about all situations */
-card_t game_map_card(card_t c)
-{
-	return c;
-}
-
-
-/* game_compare_cards
- *   Returns -1, 0, or 1 if c1 is lower, equal, or higher than c2.
- *   This function is used for the automatic sorting of hands by
- *   cards_sort_hand.
- */
-int game_compare_cards(card_t card1, card_t card2)
-{
-	if (card1.suit < card2.suit)
-		return -1;
-	if (card1.suit > card2.suit)
-		return 1;
-	if (card1.face < card2.face)
-		return -1;
-	if (card1.face > card2.face)
-		return 1;
-	return 0;		/* ignore decks for now */
-}
 
 /* game_init_game
  *   This function initializes the game soon after GGZCards is launched.
@@ -112,9 +87,10 @@ int game_compare_cards(card_t card1, card_t card2)
 void game_init_game()
 {
 	ggzdmod_debug("ERROR: SERVER BUG: "
-		  "game_launch not implemented for game %d.",
-		  game.which_game);
+		      "game_launch not implemented for game %d.",
+		      game.which_game);
 }
+
 
 /* game_get_options
  *   This function manually requests options from the client; the response
@@ -125,6 +101,7 @@ void game_get_options()
 {
 	add_option("open_hands", 1, 0, "Play with open hands");
 }
+
 
 /* game_handle_options
  *   This handles options being sent from the client.  A value
@@ -141,6 +118,7 @@ int game_handle_option(char *option, int value)
 	return 0;
 }
 
+
 char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 {
 	if (!strcmp("open_hands", option))
@@ -153,47 +131,45 @@ char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 	return buf;
 }
 
-/* game_start_game
- *   Called at the beginning of a game, it initializes any necessary data.
- *   This is pretty empty right now, but we don't yet play multiple games
- *   so it's not necessary yet anyway.
- */
-void game_start_game(void)
-{
-	player_t p;
 
-	/* TODO: initialize the game; right now we just assume everything's
-	 * zero which won't be true the second time around. */
-	for (p = 0; p < game.num_players; p++)
-		game.players[p].score = 0;
+/* game_set_player_message
+ *   sets the player message for a given player.
+ */
+void game_set_player_message(player_t p)
+{
+	/* This function is tricky.  The problem is that we're trying to
+	   assemble a single player string out of multiple units of data -
+	   score, bid, tricks, etc.  The solution here is to integrate
+	   these all into one function (this one).  You have to check each
+	   unit of data to see if it should be shown - for instance, tricks
+	   should only be shown while the hand is being played.  Another
+	   solution would be to update things separately.  The disadvantage
+	   there is that the code is all spread out, and it's difficult to
+	   deal with multiple units of data */
+
+	/* Note that this way depends on this function being called at the proper
+	   times - every time the player is affected, and on some game state
+	   changes.  Much of this is handled by the game-independent code */
+
+	/* in this "example" function, we just put in several default pieces of
+	 * information.  See one of the games for a more lively example */
+
+	clear_player_message(game.players[p].seat);
+	add_player_score_message(p);
+	add_player_tricks_message(p);
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
-/* game_handle_gameover
- *   The game is over and we should send out game-over message.
- *   This function determines who has won and calls send_gameover.
+
+/* game_get_bid_text
+ *   places text for the bid into the buffer.  Returns the length of the text.
  */
-int game_handle_gameover(void)
+int game_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
-	player_t p;
-	int hi_score = -9999;
-	player_t winners[game.num_players];
-	int winner_cnt = 0;
-
-	/* in the default case, just take the highest score(s)
-	 * this should automatically handle the case of teams! */
-	for (p = 0; p < game.num_players; p++) {
-		if (game.players[p].score > hi_score) {
-			winner_cnt = 1;
-			winners[0] = p;
-			hi_score = game.players[p].score;
-		} else if (game.players[p].score == hi_score) {
-			winners[winner_cnt] = p;
-			winner_cnt++;
-		}
-	}
-
-	return send_gameover(winner_cnt, winners);
+	return snprintf(buf, buf_len, "%s", "");
 }
+
 
 /* game_start_bidding
  *   This is called at the start of bidding, shortly after
@@ -223,6 +199,7 @@ void game_start_bidding()
 	game.next_bid = (game.dealer + 1) % game.num_players;
 }
 
+
 /* game_get_bid()
  *   asks for bid from the client/AI.
  *   AI can be inserted here; just call handle_bid_event;
@@ -232,9 +209,10 @@ void game_start_bidding()
 int game_get_bid()
 {
 	ggzdmod_debug("ERROR: SERVER BUG: "
-		  "game_get_bid called for unimplemented game.");
+		      "game_get_bid called for unimplemented game.");
 	return -1;
 }
+
 
 /* game_handle_bid
  *   Handle incoming bid from player.  Note that the player's bid (game.players[p].bid)
@@ -246,6 +224,7 @@ void game_handle_bid(bid_t bid)
 	/* no special handling necessary */
 	/* the bid message is set automatically */
 }
+
 
 /* game_next_bid
  *   sets up for the next bid
@@ -262,6 +241,7 @@ void game_next_bid()
 		game.next_bid = (game.next_bid + 1) % game.num_players;
 }
 
+
 /* game_start_playing
  *   called between the bidding and playing sequences.  A lot of stuff is done
  *   automatically at this point, all we have to do is any game-specific stuff.
@@ -274,6 +254,7 @@ void game_start_playing(void)
 
 	game.leader = (game.dealer + 1) % game.num_players;
 }
+
 
 /* game_verify_play
  *   Here we verify that the play is legal; returning NULL if it is and an
@@ -348,6 +329,7 @@ char *game_verify_play(card_t card)
 	return NULL;
 }
 
+
 /* game_next_play
  *   sets up for the next play
  *   note that game.play_count has already been incremented.
@@ -360,6 +342,7 @@ void game_next_play()
 	game.next_play = (game.next_play + 1) % game.num_players;
 }
 
+
 /* game_get_play
  *   this gets a play.  It most likely just requests one from the player, but
  *   AI can be inserted to call handle_play_event.  We also handle
@@ -371,6 +354,7 @@ void game_get_play(player_t p)
 	req_play(p, game.players[p].seat);
 }
 
+
 /* game_handle_play
  *   this handles a play.  Just about everything is taken care of by the
  *   game-independent code; all that needs to be done here is anything
@@ -380,21 +364,6 @@ void game_get_play(player_t p)
 void game_handle_play(card_t c)
 {
 	/* nothing needs to be done... */
-}
-
-/* game_test_for_gameover
- *   called at the beginning of a new hand to determine if the game is over.
- *   Return 1 for gameover, 0 otherwise.
- */
-int game_test_for_gameover()
-{
-	player_t p;
-
-	/* in the default case, it's just a race toward a target score */
-	for (p = 0; p < game.num_players; p++)
-		if (game.players[p].score >= game.target_score)
-			return 1;
-	return 0;
 }
 
 
@@ -412,55 +381,6 @@ int game_deal_hand(void)
 	return 0;
 }
 
-
-/* game_send_hand
- *   Show a player a hand.  This has to determine whether the hand is going to
- *   be revealed to the player or not.  It's called automatically after dealing
- *   the hand, but may be called at other times as well.
- */
-int game_send_hand(player_t p, seat_t s)
-{
-	/* in most cases, we want to reveal the hand only to the player
-	 * who owns it. */
-	return send_hand(p, s, game.players[p].seat == s);
-}
-
-/* game_get_bid_text
- *   places text for the bid into the buffer.  Returns the length of the text.
- */
-int game_get_bid_text(char *buf, int buf_len, bid_t bid)
-{
-	return snprintf(buf, buf_len, "%s", "");
-}
-
-/* game_set_player_message
- *   sets the player message for a given player.
- */
-void game_set_player_message(player_t p)
-{
-	/* This function is tricky.  The problem is that we're trying to
-	   assemble a single player string out of multiple units of data -
-	   score, bid, tricks, etc.  The solution here is to integrate
-	   these all into one function (this one).  You have to check each
-	   unit of data to see if it should be shown - for instance, tricks
-	   should only be shown while the hand is being played.  Another
-	   solution would be to update things separately.  The disadvantage
-	   there is that the code is all spread out, and it's difficult to
-	   deal with multiple units of data */
-
-	/* Note that this way depends on this function being called at the proper
-	   times - every time the player is affected, and on some game state
-	   changes.  Much of this is handled by the game-independent code */
-
-	/* in this "example" function, we just put in several default pieces of
-	 * information.  See one of the games for a more lively example */
-
-	clear_player_message(game.players[p].seat);
-	add_player_score_message(p);
-	add_player_tricks_message(p);
-	add_player_bid_message(p);
-	add_player_action_message(p);
-}
 
 /* game_end_trick
  *   Figure who won the trick.
@@ -504,5 +424,105 @@ void game_end_trick(void)
 void game_end_hand(void)
 {
 	ggzdmod_debug("SERVER not implemented: game_end_hand for game %d.",
-		  game.which_game);
+		      game.which_game);
+}
+
+
+/* game_start_game
+ *   Called at the beginning of a game, it initializes any necessary data.
+ *   This is pretty empty right now, but we don't yet play multiple games
+ *   so it's not necessary yet anyway.
+ */
+void game_start_game(void)
+{
+	player_t p;
+
+	/* TODO: initialize the game; right now we just assume everything's
+	 * zero which won't be true the second time around. */
+	for (p = 0; p < game.num_players; p++)
+		game.players[p].score = 0;
+}
+
+
+/* game_test_for_gameover
+ *   called at the beginning of a new hand to determine if the game is over.
+ *   Return 1 for gameover, 0 otherwise.
+ */
+int game_test_for_gameover()
+{
+	player_t p;
+
+	/* in the default case, it's just a race toward a target score */
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].score >= game.target_score)
+			return 1;
+	return 0;
+}
+
+/* game.funcs->map_card
+ *   newly implemented; it should cause one card to behave
+ *   as another in just about all situations */
+card_t game_map_card(card_t c)
+{
+	return c;
+}
+
+
+/* game_handle_gameover
+ *   The game is over and we should send out game-over message.
+ *   This function determines who has won and calls send_gameover.
+ */
+int game_handle_gameover(void)
+{
+	player_t p;
+	int hi_score = -9999;
+	player_t winners[game.num_players];
+	int winner_cnt = 0;
+
+	/* in the default case, just take the highest score(s)
+	 * this should automatically handle the case of teams! */
+	for (p = 0; p < game.num_players; p++) {
+		if (game.players[p].score > hi_score) {
+			winner_cnt = 1;
+			winners[0] = p;
+			hi_score = game.players[p].score;
+		} else if (game.players[p].score == hi_score) {
+			winners[winner_cnt] = p;
+			winner_cnt++;
+		}
+	}
+
+	return send_gameover(winner_cnt, winners);
+}
+
+
+/* game_compare_cards
+ *   Returns -1, 0, or 1 if c1 is lower, equal, or higher than c2.
+ *   This function is used for the automatic sorting of hands by
+ *   cards_sort_hand.
+ */
+int game_compare_cards(card_t card1, card_t card2)
+{
+	if (card1.suit < card2.suit)
+		return -1;
+	if (card1.suit > card2.suit)
+		return 1;
+	if (card1.face < card2.face)
+		return -1;
+	if (card1.face > card2.face)
+		return 1;
+	return 0;		/* ignore decks for now */
+}
+
+
+/* game_send_hand
+ *   Show a player a hand.  This has to determine whether the hand is going to
+ *   be revealed to the player or not.  It's called automatically after dealing
+ *   the hand, but may be called at other times as well.
+ */
+int game_send_hand(player_t p, seat_t s)
+{
+	/* in most cases, we want to reveal the hand only to the player
+	 * who owns it. */
+	return send_hand(p, s, game.players[p].seat == s);
 }
