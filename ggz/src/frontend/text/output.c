@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 5124 2002-10-30 23:04:23Z jdorje $
+ * $Id: output.c 5378 2003-02-04 12:48:49Z dr_maux $
  *
  * Functions for display text/messages
  *
@@ -113,10 +113,16 @@ void output_prompt(void)
 	output_goto(window.ws_row, 0);
 	printf("\e[2K");
 	output_goto(window.ws_row - 1, 0);
+
+#ifndef HAVE_READLINE_READLINE_H
 	printf("\e[2K%sGGZ%s>%s ",
 		COLOR_BRIGHT_WHITE, COLOR_GREY,
 		COLOR_WHITE);
 	fflush(NULL);
+#else
+	printf("\e[2K");
+	fflush(NULL);
+#endif
 }
 
 void output_text(char* fmt, ...)
@@ -197,7 +203,7 @@ void output_rooms(void)
 	GGZGameType *type;
 
 	num = ggzcore_server_get_num_rooms(server);
-	
+
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
@@ -208,7 +214,6 @@ void output_rooms(void)
 		else
 			output_text("-- Room %d : %s", i, 
 				    ggzcore_room_get_name(room));
-				    
 	}
 }
 
@@ -219,7 +224,7 @@ void output_types(void)
 	GGZGameType *type;
 
 	num = ggzcore_server_get_num_gametypes(server);
-	
+
 	for (i = 0; i < num; i++) {
 		type = ggzcore_server_get_nth_gametype(server, i);
 		output_text("-- Gametype %d : %s", i, 

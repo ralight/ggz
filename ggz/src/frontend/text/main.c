@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5336 2003-01-18 00:39:53Z dr_maux $
+ * $Id: main.c 5378 2003-02-04 12:48:49Z dr_maux $
  *
  * Main loop
  *
@@ -39,7 +39,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
-
+#ifdef HAVE_READLINE_READLINE_H
+# include <readline/readline.h>
+# include <sys/types.h>
+# include <fcntl.h>
+#endif
+#ifdef HAVE_READLINE_HISTORY_H
+#include <readline/history.h>
+#endif
 
 /* Event loop timeout value */
 #define TIMEOUT 1
@@ -48,8 +55,8 @@
 /* Termination handler */
 static RETSIGTYPE term_handle(int signum)
 {
-        ggzcore_destroy(); 
-        output_shutdown(); 
+	ggzcore_destroy(); 
+	output_shutdown(); 
 	exit(1);
 }
 
@@ -156,10 +163,23 @@ int main(int argc, char *argv[])
 
 	/* Event loop */
 	loop_init(TIMEOUT);
+#ifdef HAVE_READLINE_READLINE_H
+# ifdef HAVE_READLINE_HISTORY_H
+	using_history();
+# endif
+	/*rl_callback_handler_install("\e[2K\e[1m\e[37mGGZ\e[1m\e[30m>\e[1m\e[37m ", input_commandline);*/
+	rl_callback_handler_install("GGZ>> ", input_commandline);
+	fcntl(0, F_SETFD, O_NONBLOCK);
+	loop_add_fd(STDIN_FILENO, rl_callback_read_char, NULL);
+#else
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
+#endif
 
 	/* Auto connection? */
 	if (autouri) {
+		if(strstr(autouri, "ggz://")) {
+			autouri += 6;
+		}
 		if(strchr(autouri, '@')) {
 			user = strsep(&autouri, "@");
 		} else user = NULL;

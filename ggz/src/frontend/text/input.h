@@ -25,4 +25,5 @@
 
 
 void input_command(void);
+void input_commandline(char *text);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5336 2003-01-18 00:39:53Z dr_maux $
+ * $Id: input.c 5378 2003-02-04 12:48:49Z dr_maux $
  *
  * Functions for inputing commands from the user
  *
@@ -36,7 +36,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#ifdef HAVE_READLINE_READLINE_H
+#include <readline/readline.h>
+#endif
+#ifdef HAVE_READLINE_HISTORY_H
+#include <readline/history.h>
+#endif
 
 #define LINE_LENGTH 160
 
@@ -58,12 +63,34 @@ static void input_handle_exit(void);
 static char delim[] = " \n";
 static char command_prefix = '/';
 
-void input_command(void)
+void input_command()
 {
+	input_commandline(NULL);
+}
+
+void input_commandline(char *text)
+{
+#ifndef HAVE_READLINE_READLINE_H
 	char line[LINE_LENGTH];
+#else
+	char *rline;
+#endif
 	char *current;
 	char *command;
 
+#ifdef HAVE_READLINE_READLINE_H
+	if(!text) rline = readline("GGZ>> ");
+	else rline = text;
+	if(!rline) {
+		game_quit();
+		loop_quit();
+		return;
+	}
+# ifdef HAVE_READLINE_HISTORY_H
+	add_history(rline);
+# endif
+	current = rline;
+#else
 	/* EOF means user closed session */
 	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
 		game_quit();
@@ -76,7 +103,8 @@ void input_command(void)
 		line[strlen(line)-1] = '\0';
 
 	current = line;
-	if (input_is_command(line)) {
+#endif
+	if (input_is_command(current)) {
 		
 		/* Point at command (minus the prefix char) */
 		command = strsep(&current, delim);
@@ -139,6 +167,10 @@ void input_command(void)
 		/* Its a chat */
 		input_handle_chat(current);
 	}
+
+#ifdef HAVE_READLINE_READLINE_H
+	free(rline);
+#endif
 
 	output_prompt();
 }
@@ -440,6 +472,9 @@ static void input_handle_join_table(char *line)
 
 static void input_handle_exit(void)
 {
-        loop_quit();
+#ifdef HAVE_READLINE_HISTORY_H
+	clear_history();
+#endif
+	loop_quit();
 }
 

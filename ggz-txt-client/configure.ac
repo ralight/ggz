@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5372 2003-02-04 09:24:26Z jdorje $
+dnl $Id: configure.ac 5378 2003-02-04 12:48:49Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -18,7 +18,7 @@ AC_PROG_MAKE_SET
 
 dnl Compiling Options
 dnl =================
-AC_ARG_ENABLE(debug,           [  --disable-debug          Enable debugging ],, enable_debug=yes)
+AC_ARG_ENABLE(debug,           [  --disable-debug          Disable debugging ],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 
 
@@ -79,6 +79,14 @@ fi
 if test "$enable_debug_gdb" = yes; then
     CFLAGS="$CFLAGS -ggdb"
 fi
+
+dnl Readline support
+dnl ================
+
+LIB_READLINE=""
+AC_CHECK_HEADERS(readline/readline.h, [LIB_READLINE="-lreadline"], [], [])
+AC_CHECK_HEADERS(readline/history.h, [], [], [])
+AC_SUBST(LIB_READLINE)
 
 dnl Various dirs
 dnl ============
