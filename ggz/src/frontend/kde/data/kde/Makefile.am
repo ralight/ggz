@@ -10,5 +10,4 @@ install-data-local:
 	-cp dist.directory $(kde_appsdir)/Games/ggz/.directory
 	$(mkinstalldirs) $(kde_appsdir)/Games/ggz/games
 	-cp games.directory $(kde_appsdir)/Games/ggz/games/.directory
-	#-cp modsniff.desktop $(kde_appsdir)/Games/ggz/games/
 
