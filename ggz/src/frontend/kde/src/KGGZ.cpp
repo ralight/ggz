@@ -216,7 +216,10 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 
 void KGGZ::menuDisconnect()
 {
-	KGGZDEBUGF("KGGZ::slotDisconnect()\n");
+	KGGZDEBUGF("KGGZ::menuDisconnect()\n");
+
+	eventLeaveGame();
+    eventLeaveRoom();
 
 	if(!kggzserver)
 	{
@@ -228,9 +231,6 @@ void KGGZ::menuDisconnect()
 		KGGZDEBUG("Critical: Not logged in or connected!\n");
 		return;
 	}
-
-	eventLeaveGame();
-	eventLeaveRoom();
 
 	kggzserver->logout();
 }
@@ -819,7 +819,8 @@ KGGZDEBUG("releasecritical: c2\n");
 			KGGZDEBUG("neterror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error detected!"), KGGZChat::RECEIVE_ADMIN);
 			//emit signalMenu(MENUSIG_DISCONNECT);
-			//menuDisconnect();
+//?
+			menuDisconnect();
 			// This is a quickhack, but for the user's sake
 			serverCollector(GGZCoreServer::loggedout, NULL);
 			break;

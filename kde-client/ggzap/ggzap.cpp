@@ -2,6 +2,7 @@
 #include "ggzap_tray.h"
 #include "ggzap_handler.h"
 
+#include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
@@ -54,8 +55,9 @@ GGZap::GGZap(QWidget *parent, const char *name)
 
 	startTimer(150);
 
-	resize(250, 100);
+	setFixedSize(250, 100);
 	setCaption(i18n("GGZ Quick Launcher"));
+	move(kapp->desktop()->width() / 2 - 125, kapp->desktop()->height() / 2 - 50);
 }
 
 GGZap::~GGZap()
@@ -81,14 +83,20 @@ void GGZap::setFrontend(const char *frontendtype)
 
 void GGZap::fat(QLabel *label)
 {
-	if(!label->text().contains("<b>"))
-		label->setText("<b>" + label->text() + "</b>");
+	//if(!label->text().contains("<b>"))
+		//label->setText("<b>" + label->text() + "</b>");
+	QFont font("helvetica", 11);
+	font.setBold(TRUE);
+	label->setFont(font, QFont::Black);
 }
 
 void GGZap::unfat(QLabel *label)
 {
-	if(label->text().contains("<b>"))
-		label->setText(label->text().mid(3, label->text().length() - 7));
+	//if(label->text().contains("<b>"))
+		//label->setText(label->text().mid(3, label->text().length() - 7));
+	QFont font("helvetica", 11);
+	font.setBold(FALSE);
+	label->setFont(font, QFont::Normal);
 }
 
 void GGZap::slotLaunch(char *name, char *frontend)
