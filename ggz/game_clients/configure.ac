@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5790 2004-02-05 10:46:53Z josef $
+dnl $Id: configure.ac 5811 2004-02-06 20:31:52Z josef $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -201,7 +201,6 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
-echo "    Gettext support....$enable_gettext"
 echo "    GTK library........$enable_gtk"
 echo ""
 echo "Paths"
