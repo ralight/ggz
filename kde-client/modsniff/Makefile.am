@@ -1,4 +1,4 @@
-SUBDIRS =
+SUBDIRS = .
 
 bin_PROGRAMS = ggzmodsniff
 

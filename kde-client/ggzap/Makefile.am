@@ -1,4 +1,4 @@
-SUBDIRS =
+SUBDIRS = .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
 ggz_libraries = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(GGZCORE_LDFLAGS) $(LIB_GGZCORE)
