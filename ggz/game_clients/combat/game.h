@@ -100,7 +100,7 @@ void game_message(const char *format, ... );
 void game_change_turn();
 
 // Player info widget
-GtkWidget *gtk_player_info_new(GtkWidget *, char *);
+GtkWidget *gtk_player_info_new(GtkWidget *, char *, int);
 
 // Saves maps
 void game_ask_save_map();

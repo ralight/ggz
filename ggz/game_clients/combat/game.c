@@ -192,8 +192,6 @@ int game_get_seat() {
   // Create the seats
   cbt_info.seats = (int *)malloc(cbt_game.number * sizeof(int));
 
-  game_add_player_info(cbt_game.number);
-
   return 0;
 }
 
@@ -315,6 +313,10 @@ void game_init_board() {
   tile_gc = gdk_gc_new(main_win->window);
   gdk_gc_ref(tile_gc);
   gdk_gc_set_fill(tile_gc, GDK_TILED);
+
+	/* Add the player info */
+  game_add_player_info(cbt_game.number);
+
 
 }
 
@@ -510,7 +512,7 @@ void game_add_player_info(int number) {
   // Creates and puts on the right place
   for (a = 0; a < number; a++) {
     sprintf(name_str, "player_list[%d]", a);
-    player_list[a] = (GtkWidget *)gtk_player_info_new(main_win, name_str);
+    player_list[a] = (GtkWidget *)gtk_player_info_new(main_win, name_str, a);
     unit_info[a] = gtk_object_get_data(GTK_OBJECT(player_list[a]), "unit_list");
     gtk_box_pack_start (GTK_BOX(box), player_list[a], TRUE, TRUE, 0);
     gtk_widget_show(player_list[a]);

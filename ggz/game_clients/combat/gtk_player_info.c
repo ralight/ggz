@@ -1,10 +1,12 @@
 #include <gtk/gtk.h>
 
+extern GdkColor *player_colors;
+
 void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 	 													GdkEventButton *event, gpointer user_data);
 
 
-GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
+GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name, int seat) {
 	GtkWidget *player_info;
 	GtkWidget *player_name;
 	GtkWidget *unit_view;
@@ -12,6 +14,8 @@ GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
 	GtkWidget *name_lbl;
 	GtkWidget *power_lbl;
 	GtkWidget *number_lbl;
+	GtkStyle *label_style;
+	int j;
 
 	// Create the initial vbox
   player_info = gtk_vbox_new (FALSE, 0);
@@ -27,6 +31,13 @@ GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
   gtk_widget_show (player_name);
   gtk_box_pack_start (GTK_BOX(player_info), player_name, FALSE, FALSE, 0);
   gtk_widget_set_usize (player_name, 70, -2);
+
+	/* Color of label */
+	label_style = gtk_style_new();
+	label_style->font = gdk_font_load("fixed");
+	for (j=0; j<5; j++)
+		label_style->fg[j] = player_colors[seat];
+	gtk_widget_set_style(player_name, label_style);
 
 	// List of units
   unit_view = gtk_scrolled_window_new (NULL, NULL);
