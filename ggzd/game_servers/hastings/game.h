@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 5231 2002-11-06 09:07:32Z dr_maux $
+ * $Id: game.h 5235 2002-11-06 22:12:47Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -39,6 +39,7 @@
 #define HASTINGS_REQ_MOVE     4
 #define HASTINGS_RSP_MOVE     5
 #define HASTINGS_SND_SYNC     6
+#define HASTINGS_MSG_MAPS     7
 
 /* Move errors */
 #define HASTINGS_ERR_STATE   -1
@@ -54,12 +55,15 @@
 #define HASTINGS_SND_MOVE     0
 #define HASTINGS_REQ_SYNC     1
 #define HASTINGS_REQ_INIT     2
+#define HASTINGS_SND_MAP      3
 
 /* Hastings game states */
 #define HASTINGS_STATE_INIT        0
 #define HASTINGS_STATE_WAIT        1
 #define HASTINGS_STATE_PLAYING     2
 #define HASTINGS_STATE_DONE        3
+#define HASTINGS_STATE_MAPS        4
+#define HASTINGS_STATE_WAITFORMAP  5
 
 /* Hastings game events */
 #define HASTINGS_EVENT_LAUNCH      0
@@ -70,8 +74,6 @@
 /* Data structure for Hastings1066 */
 struct hastings_game_t {
 	GGZdMod *ggz; /* GGZ state object */
-	char board[6][19]; /* the game board with units */
-	char boardmap[6][19]; /* game board with hexagons */
 	char state; /* current state */
 	int turn; /* who has to move? */
 	int move_src_x, move_src_y; /* used for moves: where a unit comes from */
@@ -91,6 +93,7 @@ struct hastings_map_t {
 	char *version;
 	char *title;
 	int height, width;
+	int players;
 };
 
 void game_init(GGZdMod *ggz);
@@ -113,6 +116,8 @@ char game_check_move(int num, int enemyallowed);
 char game_check_win(void);
 
 int game_update(int event, void* data);
+
+int game_setupmap(int seat);
 
 #endif
 

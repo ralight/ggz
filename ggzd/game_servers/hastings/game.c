@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5231 2002-11-06 09:07:32Z dr_maux $
+ * $Id: game.c 5235 2002-11-06 22:12:47Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -45,6 +45,9 @@
 static struct hastings_game_t hastings_game;
 static struct hastings_map_t *hastings_maps;
 static int mapcount;
+static int mymap;
+
+const int verbose = 1;
 
 void game_loadmap(const char *file)
 {
@@ -55,7 +58,6 @@ void game_loadmap(const char *file)
 	int state, quality, i, j;
 	int x, y, mapx, mapy;
 	struct hastings_map_t map;
-	const int verbose = 1;
 
 	if(verbose) printf("Load map: %s\n", file);
 	f = fopen(file, "r");
@@ -110,6 +112,13 @@ void game_loadmap(const char *file)
 						}
 						memcpy(map.board[y], buf + 1, strlen(buf + 1));
 						if(strlen(buf + 1) > x) x = strlen(buf + 1);
+						for(j = 0; j < 30; j++)
+						{
+							/* Humancode-to-computercode conversion */
+							if(map.board[y][j] == 32) map.board[y][j] = -1;
+							else map.board[y][j] -= 48;
+							if(map.board[y][j] + 1> map.players) map.players = map.board[y][j] + 1;
+						}
 						y++;
 					}
 					else quality = quality_bad;
@@ -136,6 +145,7 @@ void game_loadmap(const char *file)
 	{
 		printf("Try map: [%s] [%s] [%s]\n", map.title, map.author, map.version);
 		printf("State is %i, sizes are %i/%i, %i/%i\n", state, x, y, mapx, mapy);
+		printf("Detected %i different players\n", map.players);
 	}
 
 	/* More sanity checks */
@@ -162,41 +172,11 @@ void game_loadmap(const char *file)
 		mapcount++;
 		if(verbose) printf("Accepted map: [%s] [%s] [%s]\n", map.title, map.author, map.version);
 	}
-
-	/* FIXME!*/
-
-	/* set up some knights*/
-	memmove(hastings_game.board[0], "11            444  ", 19);
-	memmove(hastings_game.board[1], "113333         4 4 ", 19);
-	memmove(hastings_game.board[2], " 1 3 5      6 6 6  ", 19);
-	memmove(hastings_game.board[3], "77  55        66   ", 19);
-	memmove(hastings_game.board[4], "77   5   0002222   ", 19);
-	memmove(hastings_game.board[5], " 7   5   0 0 2     ", 19);
-
-	/* hexagon fields: this is difficult to understand */
-	/* but it works (one line is two columns, and flip it two times to fit) */
-	memmove(hastings_game.boardmap[0], "xxxxxxxxxxxx xxxx  ", 19);
-	memmove(hastings_game.boardmap[1], "xxxxxxxxxx     x x ", 19);
-	memmove(hastings_game.boardmap[2], "xx x xxxxxxxx x x  ", 19);
-	memmove(hastings_game.boardmap[3], "xx  xxxxxxxxxxxx   ", 19);
-	memmove(hastings_game.boardmap[4], "xx   xxxxxxxxxxx   ", 19);
-	memmove(hastings_game.boardmap[5], " x   x x x x x     ", 19);
-
-	/* Humancode-to-computercode conversion */
-	for (i = 0; i < 6; i++)
-	{
-	 	for (j = 0; j < 19; j++)
-		{
-			if(hastings_game.board[i][j] == 32) hastings_game.board[i][j] = -1;
-			else hastings_game.board[i][j] -= 48;
-		}
-	}
 }
 
 /* Setup game state and board */
 void game_init(GGZdMod *ggz)
 {
-	int i, j;
 	DIR *dp;
 	struct dirent *ep;
 	char filename[1024];
@@ -204,9 +184,10 @@ void game_init(GGZdMod *ggz)
 	/* Reset map list */
 	hastings_maps = NULL;
 	mapcount = 0;
+	mymap = -1;
 
 	/* Load maps */
-printf("Loading maps...\n");
+	if(verbose) printf("Loading maps...\n");
 	dp = opendir(GGZDDATADIR "/hastings1066");
 	if(dp)
 	{
@@ -290,6 +271,13 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 			if(game_handle_move(num) == 0)
 				game_update(HASTINGS_EVENT_MOVE, seat_data);
 			break;
+		case HASTINGS_SND_MAP:
+			if(hastings_game.state == HASTINGS_STATE_WAITFORMAP)
+			{
+				hastings_game.state = HASTINGS_STATE_WAIT;
+				game_setupmap(num);
+			}
+			break;
 		case HASTINGS_REQ_INIT:
 			/*game_init(hastings_game.ggz);*/
 			game_send_sync(num, fd);
@@ -300,7 +288,10 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 			}
 			break;
 		case HASTINGS_REQ_SYNC:
-			game_send_sync(num, fd);
+			if(hastings_game.state == HASTINGS_STATE_PLAYING)
+			{
+				game_send_sync(num, fd);
+			}
 			break;
 		default:
 			/* Unrecognized opcode */
@@ -349,6 +340,76 @@ int game_send_seat(int seat)
 	return 0;
 }
 
+
+/* Send out list of maps */
+int game_send_maps(int seat)
+{
+	int i, j;
+	int fd = ggzdmod_get_seat(hastings_game.ggz, seat).fd;
+
+	ggzdmod_log(hastings_game.ggz, "Sending maps to game host: player %d\n", seat);
+
+	if(ggz_write_int(fd, HASTINGS_MSG_MAPS) < 0) return -1;
+	if(ggz_write_int(fd, mapcount) < 0) return -1;
+	for(i = 0; i < mapcount; i++)
+	{
+		if((ggz_write_string(fd, hastings_maps[i].title) < 0)
+		|| (ggz_write_string(fd, hastings_maps[i].author) < 0)
+		|| (ggz_write_string(fd, hastings_maps[i].version) < 0)
+		|| (ggz_write_int(fd, hastings_maps[i].width) < 0)
+		|| (ggz_write_int(fd, hastings_maps[i].height) < 0))
+			return -1;
+		for(j = 0; j < hastings_maps[i].height; j++)
+			if(ggz_writen(fd, hastings_maps[i].board[j], 30) < 0) return -1;
+		for(j = 0; j < hastings_maps[i].height; j++)
+			if(ggz_writen(fd, hastings_maps[i].boardmap[j], 30) < 0) return -1;
+	}
+
+	return 0;
+}
+
+int game_setupmap(int seat)
+{
+	char *map;
+	int i;
+	int fd = ggzdmod_get_seat(hastings_game.ggz, seat).fd;
+
+	ggz_read_string_alloc(fd, &map);
+
+	/* FIXME: read map selection from client, setup map accordingly */
+
+	for(i = 0; i < mapcount; i++)
+	{
+		if(!strcmp(map, hastings_maps[i].title))
+		{
+			mymap = i;
+
+			/* set up some knights*/
+			/*memmove(hastings_game.board[0], "11            444  ", 19);
+			memmove(hastings_game.board[1], "113333         4 4 ", 19);
+			memmove(hastings_game.board[2], " 1 3 5      6 6 6  ", 19);
+			memmove(hastings_game.board[3], "77  55        66   ", 19);
+			memmove(hastings_game.board[4], "77   5   0002222   ", 19);
+			memmove(hastings_game.board[5], " 7   5   0 0 2     ", 19);*/
+
+			/* hexagon fields: this is difficult to understand */
+			/* but it works (one line is two columns, and flip it two times to fit) */
+			/*memmove(hastings_game.boardmap[0], "xxxxxxxxxxxx xxxx  ", 19);
+			memmove(hastings_game.boardmap[1], "xxxxxxxxxx     x x ", 19);
+			memmove(hastings_game.boardmap[2], "xx x xxxxxxxx x x  ", 19);
+			memmove(hastings_game.boardmap[3], "xx  xxxxxxxxxxxx   ", 19);
+			memmove(hastings_game.boardmap[4], "xx   xxxxxxxxxxx   ", 19);
+			memmove(hastings_game.boardmap[5], " x   x x x x x     ", 19);*/
+
+			ggz_free(map);
+			game_update(HASTINGS_EVENT_JOIN, &seat);
+			return 0;
+		}
+	}
+
+	ggz_free(map);
+	return -1;
+}
 
 /* Send out player list to everybody */
 int game_send_players(void)
@@ -482,7 +543,7 @@ int game_send_sync(int num, int fd)
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
 		{
-			knight = hastings_game.board[i][j];
+			knight = hastings_maps[mymap].board[i][j];
 			if(knight != -1)
 			{
 				seat = ggzdmod_get_seat(hastings_game.ggz, knight);
@@ -494,7 +555,7 @@ int game_send_sync(int num, int fd)
 	/* Syncing map */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (ggz_write_char(fd, hastings_game.boardmap[i][j]) < 0) return -1;
+			if (ggz_write_char(fd, hastings_maps[mymap].boardmap[i][j]) < 0) return -1;
 
 	return 0;
 }
@@ -638,30 +699,30 @@ char game_check_move(int num, int enemyallowed)
 		return HASTINGS_ERR_DIST;
 
 	/* Check for moving from empty field (should not be possible ?!) */
-	if (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
+	if (hastings_maps[mymap].board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
 		return HASTINGS_ERR_EMPTY;
 	/* Check for duplicated move */
-	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] == hastings_game.turn)
+	if (hastings_maps[mymap].board[hastings_game.move_dst_x][hastings_game.move_dst_y] == hastings_game.turn)
 		return HASTINGS_ERR_FULL;
 	/* Check for move onto water */
-	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
+	if (hastings_maps[mymap].boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
 		return HASTINGS_ERR_MAP;
 
 	/* Check for other knights whereever necessary */
-	knight = hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y];
+	knight = hastings_maps[mymap].board[hastings_game.move_dst_x][hastings_game.move_dst_y];
 	seat = ggzdmod_get_seat(hastings_game.ggz, knight);
 	if((seat.type != GGZ_SEAT_PLAYER) && (seat.type != GGZ_SEAT_BOT)) knight = -1;
 	if(knight != -1)
 	{
 		/* Check for team collegues */
-		if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
-		    hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
+		if (hastings_maps[mymap].board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
+		    hastings_maps[mymap].board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
 			return HASTINGS_ERR_FULL;
 		/* Check for enemies */
 		if(enemyallowed)
 		{
-			if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
-				!(hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
+			if (hastings_maps[mymap].board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
+				!(hastings_maps[mymap].board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
 				return HASTINGS_ERR_ENEMY;
 		}
 	}
@@ -732,7 +793,7 @@ void game_bot_move(int me)
 	{
 		for(j = 0; j < 19; j++)
 		{
-			if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j, -8);
+			if(hastings_maps[mymap].board[i][j] == me) moved = game_bot_set(me, i, j, -8);
 			if(moved) break;
 		}
 		if(moved) break;
@@ -745,7 +806,7 @@ void game_bot_move(int me)
 		{
 			for (j = 0; j < 19; j++)
 			{
-				if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j, 0);
+				if(hastings_maps[mymap].board[i][j] == me) moved = game_bot_set(me, i, j, 0);
 				if(moved) break;
 			}
 			if(moved) break;
@@ -785,15 +846,23 @@ int game_update(int event, void* data)
 
 	case HASTINGS_EVENT_LAUNCH:
 		if (hastings_game.state != HASTINGS_STATE_INIT) return -1;
-		hastings_game.state = HASTINGS_STATE_WAIT;
+		hastings_game.state = HASTINGS_STATE_MAPS;
 		break;
 
 	case HASTINGS_EVENT_JOIN:
-		if (hastings_game.state != HASTINGS_STATE_WAIT) return -1;
-
-		seat = *(int*)data;
-		game_send_seat(seat);
-		game_send_players();
+		if (hastings_game.state == HASTINGS_STATE_WAIT)
+		{
+			seat = *(int*)data;
+			game_send_seat(seat);
+			game_send_players();
+		}
+		else if(hastings_game.state == HASTINGS_STATE_MAPS)
+		{
+			seat = *(int*)data;
+			game_send_maps(seat);
+			hastings_game.state = HASTINGS_STATE_WAITFORMAP;
+		}
+		else return -1;
 		break;
 
 	case HASTINGS_EVENT_LEAVE:
@@ -814,11 +883,11 @@ int game_update(int event, void* data)
 
 		/* disallow dead bots to move (should not happen), and prevent foreign knights to be moved */
 		if((hastings_game.move_src_x > -1)
-		&& (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == hastings_game.turn)
+		&& (hastings_maps[mymap].board[hastings_game.move_src_x][hastings_game.move_src_y] == hastings_game.turn)
 		&& ((!data) || (*(int*)data == hastings_game.turn)))
 		{
-			hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] = -1;
-			hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] = hastings_game.turn;
+			hastings_maps[mymap].board[hastings_game.move_src_x][hastings_game.move_src_y] = -1;
+			hastings_maps[mymap].board[hastings_game.move_dst_x][hastings_game.move_dst_y] = hastings_game.turn;
 			game_send_move(hastings_game.turn);
 		}
 		else return -1;
