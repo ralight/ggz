@@ -88,7 +88,7 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   struct _ggzcore_list *list);
-void _ggzcore_room_add_player(struct _GGZRoom *room, char *name);
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type);
 void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
 
 void _ggzcore_room_set_table_list(struct _GGZRoom *room,

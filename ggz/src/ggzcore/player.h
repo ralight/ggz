@@ -39,6 +39,9 @@ struct _GGZPlayer {
 	/* Name of player */
 	char* name;	
 
+	/* Type of player */
+	GGZPlayerType type;
+
 	/* Pointer to room player is in */
 	struct _GGZRoom *room;
 
@@ -54,12 +57,15 @@ void _ggzcore_player_free(struct _GGZPlayer *player);
 void _ggzcore_player_init(struct _GGZPlayer *player, 
 			  const char *name, 
 			  struct _GGZRoom *room,
-			  const int table);
+			  const int table,
+			  const GGZPlayerType type);
 
 
 void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table);
 
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
+
+GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player);
 
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
 

@@ -423,7 +423,7 @@ struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room,
 	struct _GGZPlayer player, *found = NULL;
 
 	if (room->players) {
-		_ggzcore_player_init(&player, name, room, -1);
+		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE);
 		entry = _ggzcore_list_search(room->players, &player);
 
 		if (entry)
@@ -517,7 +517,7 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type)
 {
 	struct _GGZPlayer *player;
 
@@ -531,7 +531,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
 
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
-	_ggzcore_player_init(player, name, room, -1);
+	_ggzcore_player_init(player, name, room, -1, type);
 	_ggzcore_list_insert(room->players, player);
 	room->num_players++;
 	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
@@ -547,8 +547,8 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 
 	/* Only try to delete if the list exists */
 	if (room->players) {	
-		/* Default to no table (-1) */
-		_ggzcore_player_init(&player, name, room, -1);
+		/* Default to no table (-1) or type */
+		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE);
 		entry = _ggzcore_list_search(room->players, &player);
 		if (entry) {
 			_ggzcore_list_delete_entry(room->players, entry);

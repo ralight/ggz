@@ -45,6 +45,15 @@ char* ggzcore_player_get_name(GGZPlayer *player)
 }
 
 
+GGZPlayerType ggzcore_player_get_type(GGZPlayer *player)
+{
+	if (!player)
+		return -1;
+
+	return _ggzcore_player_get_type(player);
+}
+
+
 GGZTable* ggzcore_player_get_table(GGZPlayer *player)
 {
 	if (!player)
@@ -75,13 +84,15 @@ struct _GGZPlayer* _ggzcore_player_new(void)
 void _ggzcore_player_init(struct _GGZPlayer *player, 
 			  const char *name, 
 			  struct _GGZRoom *room,
-			  const int table)
+			  const int table,
+			  const GGZPlayerType type)
 {
 	if (name)
 		player->name = strdup(name);
 
 	player->room = room;
 	player->table = table;
+	player->type = type;
 }
 
 
@@ -106,6 +117,12 @@ char* _ggzcore_player_get_name(struct _GGZPlayer *player)
 }
 
 
+GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player)
+{
+	return player->type;
+}
+
+
 GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 {
 	if (player->table == -1)
@@ -127,7 +144,7 @@ void* _ggzcore_player_create(void* p)
 	struct _GGZPlayer *new, *src = p;
 
 	new = _ggzcore_player_new();
-	_ggzcore_player_init(new, src->name, src->room, src->table);
+	_ggzcore_player_init(new, src->name, src->room, src->table, src->type);
 
 	return (void*)new;
 }

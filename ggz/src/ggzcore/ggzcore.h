@@ -138,6 +138,14 @@ typedef enum {
 
 
 typedef enum {
+	GGZ_PLAYER_NONE,
+	GGZ_PLAYER_NORMAL,
+	GGZ_PLAYER_GUEST,
+	GGZ_PLAYER_ADMIN
+} GGZPlayerType;
+
+
+typedef enum {
 	GGZ_SEAT_OPEN     = -1,
 	GGZ_SEAT_BOT      = -2,
 	GGZ_SEAT_RESERVED = -3,
@@ -380,8 +388,9 @@ int ggzcore_room_send_game_data(GGZRoom *room, char *buffer);
 
 /* Functions for manipulating GGZPlayer objects */
 
-char*     ggzcore_player_get_name(GGZPlayer *player);
-GGZTable* ggzcore_player_get_table(GGZPlayer *player);
+char*         ggzcore_player_get_name(GGZPlayer *player);
+GGZPlayerType ggzcore_player_get_type(GGZPlayer *player);
+GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
 
 
 GGZTable* ggzcore_table_new(void);

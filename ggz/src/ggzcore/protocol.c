@@ -766,11 +766,11 @@ static void _ggzcore_protocol_update_process(GGZUpdateTag *update, GGZXMLElement
 		}
 		else if (strcmp(update->type, "player") == 0) {
 			GGZPlayer *player = update->data;
-
-			room = _ggzcore_server_get_room_by_id(server, update->room);
 			
+			room = _ggzcore_server_get_room_by_id(server, update->room);
 			if (strcmp(update->action, "add") == 0) {
-				_ggzcore_room_add_player(room, player->name);
+				_ggzcore_room_add_player(room, player->name, 
+							 player->type);
 			}
 			else if (strcmp(update->action, "delete") == 0) {
 				_ggzcore_room_remove_player(room, player->name);
@@ -1174,6 +1174,7 @@ static GGZPlayerTag* _ggzcore_protocol_player_new(char **attrs)
 static void _ggzcore_protocol_player_process(GGZPlayerTag *player, GGZXMLElement *parent, GGZNet *net)
 {
 	GGZPlayer *ggz_player;
+	GGZPlayerType type;
 	char *parent_tag;
 	GGZServer *server;
 	GGZRoom *room;
@@ -1181,10 +1182,19 @@ static void _ggzcore_protocol_player_process(GGZPlayerTag *player, GGZXMLElement
 	if (player && parent) {
 		server = _ggzcore_net_get_server(net);
 		room = ggzcore_server_get_cur_room(server);
+		if (strcmp(player->type, "normal") == 0)
+			type = GGZ_PLAYER_NORMAL;
+		else if (strcmp(player->type, "guest") == 0)
+			type = GGZ_PLAYER_GUEST;
+		else if (strcmp(player->type, "admin") == 0)
+			type = GGZ_PLAYER_ADMIN;
+		else
+			type = GGZ_PLAYER_NONE;
+		
 
 		ggz_player = _ggzcore_player_new();
 		_ggzcore_player_init(ggz_player,  player->id, room,
-				     player->table);
+				     player->table, type);
 		parent_tag = _ggzcore_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LIST") == 0)
