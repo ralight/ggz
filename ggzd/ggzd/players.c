@@ -649,6 +649,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 	case 0:		/* Everything OK */
 		pthread_rwlock_wrlock(&players.lock);
 		players.info[p_index].table_index = t_index;
+		players.timestamp = time(NULL);
 		pthread_rwlock_unlock(&players.lock);
 		break;
 	default:
@@ -722,6 +723,7 @@ static int join_table(int p_index, int p_fd, int *t_fd)
 	case 0:		/* Everything OK */
 		pthread_rwlock_wrlock(&players.lock);
 		players.info[p_index].table_index = t_index;
+		players.timestamp = time(NULL);
 		pthread_rwlock_unlock(&players.lock);
 		break;
 	default:
@@ -914,7 +916,7 @@ static int player_chat(int p_index, int p_fd)
 	msg[MAX_CHAT_LEN] = '\0';  /* Make sure strings are null-terminated */
 	status = chat_add(p_index, msg);
 
-	if (FAIL(es_write_int(p_fd, RSP_TABLE_LIST)) ||
+	if (FAIL(es_write_int(p_fd, RSP_CHAT)) ||
 	    FAIL(es_write_int(p_fd, status))) 
 		return (-1);
 
