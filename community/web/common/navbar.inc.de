@@ -21,11 +21,11 @@
 			</div>
 		</div>
 		<div class="menu">
-			<a href="/hotstuff/" class="menuitem" title="Aktive Mitarbeit">Mitmachen!</a>
+			<a href="/active/hotstuff/" class="menuitem" title="Aktive Mitarbeit">Mitmachen!</a>
 			<div class="menu">
-				<a href="/hotstuff/" class="menuitem">Spielinhalte</a>
-				<a href="/tournaments/" class="menuitem">Tournaments</a>
-				<a href="/teams/" class="menuitem">Teams/Clans</a>
+				<a href="/active/hotstuff/" class="menuitem">Spielinhalte</a>
+				<a href="/active/tournaments/" class="menuitem">Tournaments</a>
+				<a href="/active/teams/" class="menuitem">Teams/Clans</a>
 			</div>
 		</div>
 		<div class="menu">
