@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-20 17:11+0100\n"
+"POT-Creation-Date: 2003-05-09 23:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,15 +15,29 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../ggzap/main.cpp:30 ../../ggzap/main.cpp:50
+#: ../../ggzap/ggzap_tray.cpp:50
+msgid "About..."
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:175
+msgid "An unknown error occured."
+msgstr ""
+
+#: ../../ggzap/main.cpp:30 ../../ggzap/main.cpp:50 ../../ggzap/main.cpp:51
 msgid "Author"
 msgstr ""
 
+#: ../../ggzap/ggzap_config.cpp:54
+msgid "Blue rectangle"
+msgstr ""
+
 #: ../../ggzap/ggzap_tray.cpp:65 ../../ggzap/ggzap_tray.cpp:86
+#: ../../ggzap/ggzap_tray.cpp:95
 msgid "Cancel game"
 msgstr ""
 
 #: ../../ggzap/ggzap_tray.cpp:25 ../../ggzap/ggzap_tray.cpp:46
+#: ../../ggzap/ggzap_tray.cpp:49
 msgid "Configure"
 msgstr ""
 
@@ -30,23 +45,27 @@ msgstr ""
 msgid "Connect to server"
 msgstr ""
 
-#: ../../ggzap/ggzap.cpp:156
+#: ../../ggzap/ggzap_guialt.cpp:109 ../../ggzap/ggzap_gui.cpp:110
+msgid "Connecting to server"
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:156 ../../ggzap/ggzap.cpp:133
 msgid "Could not connect to server!"
 msgstr ""
 
-#: ../../ggzap/ggzap.cpp:174
+#: ../../ggzap/ggzap.cpp:174 ../../ggzap/ggzap.cpp:157
 msgid ""
 "Could not join the room!\n"
 "Maybe this game type isn't supported on the server?"
 msgstr ""
 
-#: ../../ggzap/ggzap.cpp:186
+#: ../../ggzap/ggzap.cpp:186 ../../ggzap/ggzap.cpp:170
 msgid ""
 "Could not start the game!\n"
 "Please make sure you have it installed."
 msgstr ""
 
-#: ../../ggzap/ggzap.cpp:165
+#: ../../ggzap/ggzap.cpp:165 ../../ggzap/ggzap.cpp:148
 msgid ""
 "Couldn't login!\n"
 "Please use your registered user name."
@@ -58,33 +77,72 @@ msgstr ""
 
 #: ../../ggzap/ggzap.cpp:156 ../../ggzap/ggzap.cpp:165
 #: ../../ggzap/ggzap.cpp:174 ../../ggzap/ggzap.cpp:186
+#: ../../ggzap/ggzap.cpp:110 ../../ggzap/ggzap.cpp:133
+#: ../../ggzap/ggzap.cpp:139 ../../ggzap/ggzap.cpp:148
+#: ../../ggzap/ggzap.cpp:157 ../../ggzap/ggzap.cpp:170
+#: ../../ggzap/ggzap.cpp:175
 msgid "Error!"
 msgstr ""
 
 #: ../../ggzap/ggzap.cpp:59 ../../ggzap/ggzap.cpp:78 ../../ggzap/main.cpp:20
-#: ../../ggzap/main.cpp:40
+#: ../../ggzap/main.cpp:40 ../../ggzap/main.cpp:41
 msgid "GGZ Quick Launcher"
 msgstr ""
 
-#: ../../ggzap/main.cpp:26 ../../ggzap/main.cpp:46
+#: ../../ggzap/main.cpp:26 ../../ggzap/main.cpp:46 ../../ggzap/main.cpp:47
 msgid "GGZap"
 msgstr ""
 
+#: ../../ggzap/ggzap_tray.cpp:57
+msgid "GGZap - Online Gaming Tool"
+msgstr ""
+
 #: ../../ggzap/ggzap_config.cpp:42 ../../ggzap/ggzap_config.cpp:64
+#: ../../ggzap/ggzap_config.cpp:72
 msgid "GGZap Configuration"
 msgstr ""
 
 #: ../../ggzap/ggzap_config.cpp:20 ../../ggzap/ggzap_config.cpp:42
+#: ../../ggzap/ggzap_config.cpp:46
 msgid "GGZap Reservation server"
+msgstr ""
+
+#: ../../ggzap/ggzap_config.cpp:48
+msgid "GUI to use"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:130
+msgid "Help"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:124
+msgid "Hide"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:113 ../../ggzap/ggzap_gui.cpp:114
+msgid "Joining room"
 msgstr ""
 
 #: ../../ggzap/ggzap_tray.cpp:27 ../../ggzap/ggzap_tray.cpp:48
 #: ../../ggzap/ggzap_tray.cpp:70 ../../ggzap/ggzap_tray.cpp:91
+#: ../../ggzap/ggzap_tray.cpp:47 ../../ggzap/ggzap_tray.cpp:106
 msgid "Launch a game"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:117 ../../ggzap/ggzap_gui.cpp:118
+msgid "Launch game"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:111 ../../ggzap/ggzap_gui.cpp:112
+msgid "Logging in"
 msgstr ""
 
 #: ../../ggzap/ggzap.cpp:35 ../../ggzap/ggzap.cpp:54
 msgid "Login"
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:109
+msgid "No module found for this game."
 msgstr ""
 
 #: ../../ggzap/ggzap_config.cpp:45
@@ -92,25 +150,46 @@ msgid "OK"
 msgstr ""
 
 #: ../../ggzap/ggzap_config.cpp:21 ../../ggzap/ggzap_config.cpp:43
+#: ../../ggzap/ggzap_config.cpp:47
 msgid "Player name (12 chars maximum)"
 msgstr ""
 
-#: ../../ggzap/main.cpp:15 ../../ggzap/main.cpp:35
+#: ../../ggzap/main.cpp:15 ../../ggzap/main.cpp:35 ../../ggzap/main.cpp:36
 msgid "Preferred frontend"
 msgstr ""
 
-#: ../../ggzap/main.cpp:14 ../../ggzap/main.cpp:34
+#: ../../ggzap/ggzap_config.cpp:55
+msgid "Red gear"
+msgstr ""
+
+#: ../../ggzap/main.cpp:14 ../../ggzap/main.cpp:34 ../../ggzap/main.cpp:35
 msgid "Specify module to launch"
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:115
+msgid "Start failed"
 msgstr ""
 
 #: ../../ggzap/ggzap.cpp:38 ../../ggzap/ggzap.cpp:57
 msgid "Start game"
 msgstr ""
 
-#: ../../ggzap/main.cpp:22 ../../ggzap/main.cpp:42
+#: ../../ggzap/main.cpp:22 ../../ggzap/main.cpp:42 ../../ggzap/main.cpp:43
 msgid "Tool to start GGZ games directly."
 msgstr ""
 
 #: ../../ggzap/ggzap.cpp:37 ../../ggzap/ggzap.cpp:56
 msgid "Waiting for other players"
+msgstr ""
+
+#: ../../ggzap/ggzap_guialt.cpp:115 ../../ggzap/ggzap_gui.cpp:116
+msgid "Waiting..."
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:139
+msgid "Wrong server version."
+msgstr ""
+
+#: ../../ggzap/ggzap.cpp:114
+msgid "You must configure a username first."
 msgstr ""
