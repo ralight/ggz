@@ -572,6 +572,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	QString tmp;
 	static QString lastplayer;
 	QString color;
+	QString msg;
 
 	switch(mode)
 	{
@@ -592,18 +593,20 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			break;
 	}
 
+	msg = msg.fromUtf8(message);
+
 	if((lastplayer == player) && (mode == RECEIVE_CHAT)) color = "ffffff";
 	else lastplayer = player;
 
 	if(m_speech)
 	{
 		KProcess *proc = new KProcess();
-		*proc << "say" << message;
+		*proc << "say" << msg.latin1();
 		proc->start();
-		KGGZDEBUG("TTS: said '%s'\n", message);
+		KGGZDEBUG("TTS: said '%s'\n", msg.latin1());
 	}
 
-	KGGZDEBUG("Receiving: %s (%i)\n", message, mode);
+	KGGZDEBUG("Receiving: %s (%i)\n", msg.latin1(), mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
@@ -612,29 +615,29 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			//output->append(tmp);
 			output->setText(output->text() + tmp);
 			logChat(tmp);
-			parse(plaintext(message));
+			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_OWN:
 			tmp = QString("<font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;&nbsp;</font>");
 			output->setText(output->text() + tmp);
 			logChat(tmp);
-			parse(plaintext(message));
+			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_ADMIN:
-			tmp = QString("<font color=#ff0000>") + QString(message) + QString("</font><br>");
+			tmp = QString("<font color=#ff0000>") + msg + QString("</font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<font color=#%s><i>* ").arg(color) + QString(player) + QString(message) + QString("</i></font><br>");
+			tmp = QString("<font color=#%s><i>* ").arg(color) + QString(player) + msg + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_ME:
-			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + QString(message + 3) + QString("</i></font><br>");
+			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
@@ -643,7 +646,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		case RECEIVE_PERSONAL:
 			tmp = QString("<font color=#%1><b><i>").arg(color);
 			if(player) tmp += QString(player) + ":&nbsp;&nbsp;</i></b></font><font color=#b0b000><b><i>";
-			tmp += QString(plaintext(message)) + QString("</i></b></font><br>");
+			tmp += QString(plaintext(msg.latin1())) + QString("</i></b></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
