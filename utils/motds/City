@@ -1,0 +1,22 @@
+
+         %c3.%c0        %c3.%c0            |       %c3.%c0
+              %c3*%c0        %c3.%c0       |   %c3.%c0
+        %c3.%c0                     /%c6-%c0\
+ %c3.%c0               %c3.%c0    %c3.%c0      /%c6"""%c0\
+         %c3.%c0                  /%c6"""""%c0\  %c3.%c0
+                           |%c6 # # # %c0|    %c3.%c0
+   ___      __   ___   %c3.%c0   |%c6# # # #%c0| ___
+  /%c6"""%c0|  __|%c6~~%c0| |%c6'''%c0|      |%c6# # # #%c0||%c6"""%c0|
+ /%c6""""%c0| |%c6::%c0|%c6''%c0|~~~~||_____ |%c6# # # #%c0||%c6"""%c0|
+ |%c6""""%c0| |%c6::%c0|%c6''%c0|""""|%c6:::::%c0| |%c6# # # #%c0||%c6"""%c0|
+ |%c6""""%c0|_|%c6::%c0|%c6''%c0|""""|%c6:::::%c0| |%c6# # # #%c0||%c6"""%c0|
+ |%c6""""%c0|%c6::::%c0|%c6''%c0|""""|%c6:::::%c0| |%c6# # # #%c0||%c6"""%c0|
+
+
+Welcome to %h on port %p. The current date is %d at  %t. If you have any proble problems please contact %a at
+%e.
+
+        Enjoy your stay,
+
+        GGZ-Dev Team
+
