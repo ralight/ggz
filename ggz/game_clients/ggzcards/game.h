@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: game.h 3313 2002-02-11 03:21:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,6 +35,7 @@ struct prefs {
 	int animation;
 	int autostart;
 	int cardlists;
+	int use_default_options;
 };
 
 /* Our set of preferences.  See above. */

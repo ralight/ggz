@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: dlg_prefs.c 3313 2002-02-11 03:21:07Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -45,7 +45,7 @@ static void on_autostart_toggled(GtkToggleButton * togglebutton,
 {
 	preferences.autostart = togglebutton->active;
 
-	ggz_debug("main", "Autostart set to %d.", preferences.animation);
+	ggz_debug("main", "Autostart set to %d.", preferences.autostart);
 }
 
 static void on_cardlists_toggled(GtkToggleButton * togglebutton,
@@ -54,7 +54,16 @@ static void on_cardlists_toggled(GtkToggleButton * togglebutton,
 	preferences.cardlists = togglebutton->active;
 
 	ggz_debug("main", "Graphical cardlists set to %d.",
-		  preferences.animation);
+		  preferences.cardlists);
+}
+
+static void on_defaultoptions_toggled(GtkToggleButton *togglebutton,
+				      gpointer user_data)
+{
+	preferences.use_default_options = togglebutton->active;
+	
+	ggz_debug("main", "Use-default-options set to %d.",
+		  preferences.use_default_options);
 }
 
 GtkWidget *create_dlg_prefs(void)
@@ -111,8 +120,8 @@ GtkWidget *create_dlg_prefs(void)
 	/* 
 	 * Make "autostart" button
 	 */
-	button = gtk_check_button_new_with_label(_
-						 ("Automatically start game"));
+	button = gtk_check_button_new_with_label(_("Automatically "
+						   "start game"));
 	gtk_widget_ref(button);
 	gtk_widget_show(button);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
@@ -120,6 +129,19 @@ GtkWidget *create_dlg_prefs(void)
 				     preferences.autostart);
 	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_autostart_toggled), NULL);
+			
+	/*
+	 * Make "use_default_options" button
+	 */
+	button = gtk_check_button_new_with_label(_("Always use "
+						   "default options"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+				     preferences.use_default_options);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(on_defaultoptions_toggled), NULL);
 
 	/* 
 	 * Get "action area"

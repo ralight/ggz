@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3312 2002-02-11 03:05:08Z jdorje $
+ * $Id: game.c 3313 2002-02-11 03:21:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -381,6 +381,10 @@ int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
 		     char ***option_choices)
 {
 	ggz_debug("main", "Handling option request.");
+
+	if (preferences.use_default_options) {
+		return -1;
+	}
 
 	dlg_option_display(option_cnt, choice_cnt, defaults, option_choices);
 
