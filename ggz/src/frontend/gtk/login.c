@@ -38,7 +38,11 @@
 
 GtkWidget *login_dialog;
 
-static GGZProfile *reconnect = NULL;
+static struct reconnect{
+	GGZProfile profile = NULL;
+	int id;
+};
+
 static GtkWidget *create_dlg_login(void);
 
 /* Callbacks login dialog box */
@@ -51,7 +55,7 @@ static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
-
+void login_reconnect(void);
 
 void
 login_create_or_raise(void)
@@ -197,7 +201,8 @@ login_start_session                    (GtkButton       *button,
 		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 
 		/* Set to connect after logout */
-		reconnect = profile;
+		reconnect.profile = profile;
+		reconnect.id = ggzcore_event_add(GGZ_SERVER_LOGOUT, login_reconnect);
 	} else {
 		/* FIXME: provide a destroy function that frees the appropriate mem */
 		ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
@@ -212,11 +217,12 @@ void login_reconnect(void)
 	 * a GGZ_USER_LOGIN right after a GGZ_USER_LOGOUT
 	 */
 
-	if(reconnect != NULL)
+	if(reconnect.profile != NULL)
 	{
 		/* FIXME: provide a destroy function that frees the appropriate mem */
-		ggzcore_event_trigger(GGZ_USER_LOGIN, reconnect, NULL);
-		reconnect = NULL;
+		ggzcore_event_trigger(GGZ_USER_LOGIN, reconnect.profile, NULL);
+		reconnect.profile = NULL;
+		ggzcore_event_remove(GGZ_SERVER_LOGOUT, reconnect.id);
 	}
 }
 

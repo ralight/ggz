@@ -107,8 +107,7 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	/* Check to see if we want to reconnect to a new server */
-	login_reconnect();
+
 }
 
 
