@@ -37,6 +37,31 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
 static void launch_resv_toggle(GtkWidget *widget, gpointer data);
 static void launch_start_game(GtkWidget *widget, gpointer data);
+static void launch_cancel_button_clicked(GtkWidget *widget, gpointer data);
+static GtkWidget* create_dlg_launch (void);
+
+GtkWidget *dlg_launch;
+
+void launch_create_or_raise(void)
+{
+        if (!dlg_launch) {
+                dlg_launch = create_dlg_launch();
+                gtk_widget_show(dlg_launch);
+        }
+        else {
+                gdk_window_show(dlg_launch->window);
+                gdk_window_raise(dlg_launch->window);
+        }
+}
+   
+
+void launch_destroy(void)
+{
+        if (dlg_launch) {
+                gtk_widget_destroy(dlg_launch);
+                dlg_launch = NULL;
+        }
+}
 
 
 static void launch_fill_defaults(GtkWidget *widget, gpointer data)
@@ -60,6 +85,12 @@ static void launch_resv_toggle(GtkWidget *widget, gpointer data)
 static void launch_start_game(GtkWidget *widget, gpointer data)
 {
 
+}
+
+
+static void launch_cancel_button_clicked(GtkWidget *widget, gpointer data)
+{
+	launch_destroy();
 }
 
 
@@ -726,9 +757,9 @@ create_dlg_launch (void)
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (launch_start_game),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_launch));
+  gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
+                      GTK_SIGNAL_FUNC (launch_cancel_button_clicked),
+                      NULL);
 
   return dlg_launch;
 }

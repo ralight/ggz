@@ -1,5 +1,5 @@
 /*
- * File: about.c
+ * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
  *
@@ -22,4 +22,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_dlg_launch (void);
+void launch_create_or_raise(void);
+void launch_destroy(void);

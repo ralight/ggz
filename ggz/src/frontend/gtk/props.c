@@ -56,6 +56,32 @@ static void props_cancel_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fok_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fcancel_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data);
+static GtkWidget* create_dlg_props (void);
+static GtkWidget* create_dlg_props_font (void);
+
+GtkWidget *dlg_props;
+GtkWidget *dlg_props_font;
+
+void props_create_or_raise(void)
+{
+        if (!dlg_props) {
+                dlg_props = create_dlg_props();
+                gtk_widget_show(dlg_props);
+        }
+        else {
+                gdk_window_show(dlg_props->window);
+                gdk_window_raise(dlg_props->window);
+        }
+}
+   
+
+void props_destroy(void)
+{
+        if (dlg_props) {
+                gtk_widget_destroy(dlg_props);
+                dlg_props = NULL;
+        }
+}
 
 
 void dlg_props_realize(GtkWidget *widget, gpointer user_data)
@@ -112,7 +138,14 @@ void props_delete_button_clicked(GtkWidget *widget, gpointer user_data)
 
 void props_Font_button_clicked(GtkWidget *widget, gpointer user_data)
 {
-
+        /* If it already exists, bring it to the front */
+        if (dlg_props_font) {
+                gdk_window_show(dlg_props_font->window);
+                gdk_window_raise(dlg_props_font->window);
+        } else {
+                dlg_props_font = create_dlg_props_font();
+                gtk_widget_show(dlg_props_font);
+        }
 }
 
 
@@ -130,7 +163,14 @@ void props_color_type_toggled(GtkWidget *widget, gpointer user_data)
 
 void props_ok_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+        /* Close font selector if open */
+        if (dlg_props_font)
+	{
+                gtk_widget_destroy(dlg_props_font);
+		dlg_props_font = NULL;
+	}
 
+	props_destroy();
 }
 
 
@@ -142,25 +182,54 @@ void props_apply_button_clicked(GtkWidget *widget, gpointer user_data)
 
 void props_cancel_button_clicked(GtkWidget *widget, gpointer user_data)
 {
-
+        /* Close font selector if open */
+        if (dlg_props_font)
+	{
+                gtk_widget_destroy(dlg_props_font);
+		dlg_props_font = NULL;
+	}
+	
+	props_destroy();
 }
 
 
 void props_fok_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
 
+	/* Set font */
+	tmp = lookup_widget(dlg_props, "chat_font");
+	if (gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)) != NULL )
+	{
+		gtk_entry_set_text(GTK_ENTRY(tmp),
+			gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
+	}
+
+	/* Close the font selector */
+	gtk_widget_destroy(dlg_props_font);
+	dlg_props_font = NULL;
 }
 
 
 void props_fcancel_button_clicked(GtkWidget *widget, gpointer user_data)
 {
-
+	/* Close the font selector */
+	gtk_widget_destroy(dlg_props_font);
+	dlg_props_font = NULL;
 }
 
 
 void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
 
+	/* Set font */
+	tmp = lookup_widget(dlg_props, "chat_font");
+	if (gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)) != NULL )
+	{
+		gtk_entry_set_text(GTK_ENTRY(tmp),
+			gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
+	}
 }
 
 

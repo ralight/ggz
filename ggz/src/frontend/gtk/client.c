@@ -34,9 +34,11 @@
 #include "about.h"
 #include "client.h"
 #include "chat.h"
+#include "ggz.h"
+#include "launch.h"
 #include "license.h"
 #include "login.h"
-#include "ggz.h"
+#include "props.h"
 #include "support.h"
 #include "xtext.h"
 
@@ -134,7 +136,7 @@ static void
 client_launch_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-
+	launch_create_or_raise();
 }
 
 
@@ -158,7 +160,7 @@ static void
 client_properties_activate                 (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-
+	props_create_or_raise();
 }
 
 
@@ -396,7 +398,7 @@ static void
 client_launch_button_clicked               (GtkButton         *button,
                                         gpointer         data)
 {
-
+	launch_create_or_raise();
 }
 
 
@@ -420,7 +422,7 @@ static void
 client_props_button_clicked                (GtkButton         *button,
                                         gpointer         data)
 {
-
+	props_create_or_raise();
 }
 
 
