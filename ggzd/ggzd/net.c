@@ -483,12 +483,13 @@ int net_send_table_list_count(GGZNetIO *net, int count)
 int net_send_table(GGZNetIO *net, GGZTable *table)
 {
 	int i;
+	char* desc = table->desc ? table->desc : "";
 
 	_net_send_line(net, "<TABLE ID='%d' GAME='%d' STATUS='%d' SEATS='%d'>",
 		       table->index, table->type, table->state, 
 		       seats_num(table));
 
-	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	_net_send_line(net, "<DESC>%s</DESC>", desc);
 	
 	for (i = 0; i < seats_num(table); i++)
 		_net_send_seat(net, table, i);
@@ -1200,8 +1201,14 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table = table_new();
 	table->type = type;
 	table->room = player_get_room(net->player);
-	if (desc)
-		snprintf(table->desc, sizeof(table->desc), "%s", desc);
+	
+	if (desc) {
+		/* FIXME: this does not limit the length of the table's
+		   description, and may be possible to abuse. */
+		table->desc = strdup(desc);
+		if (!table->desc)
+			err_sys_exit("strdup failed in _net_handle_table");
+	}
 	
 	/* Add seats */
 	entry = ggz_list_head(seats);

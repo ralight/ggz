@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3108 2002-01-14 00:06:53Z jdorje $
+ * $Id: table.c 3126 2002-01-16 22:49:16Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -111,6 +111,7 @@ GGZTable* table_new(void)
 	table->transit_seat = -1;
 	table->ggzdmod = NULL;
 	table->pid = -1;
+	table->desc = NULL;
 
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
 		strcpy(table->seats[i], "<none>");
@@ -1035,6 +1036,8 @@ static void table_free(GGZTable* table)
 		  free (table->reserve[i]);*/
 	}
 	ggzdmod_free(table->ggzdmod);
+	if (table->desc)
+		free(table->desc);
 	free(table);
 }
 
