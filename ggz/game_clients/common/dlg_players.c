@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 5166 2002-11-03 08:59:28Z jdorje $
+ * $Id: dlg_players.c 5186 2002-11-03 22:07:46Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -100,23 +100,23 @@ static void update_player_clist(GtkWidget * player_clist)
 		switch (seat.type) {
 		case GGZ_SEAT_PLAYER:
 			player[1] = _("Occupied");
-			player[2] = seat.name;
+			player[2] = ggz_strdup(seat.name);
 			break;
 		case GGZ_SEAT_OPEN:
 			player[1] = _("Empty");
-			player[2] = "-";
+			player[2] = ggz_strdup("-");
 			break;
 		case GGZ_SEAT_BOT:
 			player[1] = _("Bot");
-			player[2] = seat.name;
+			player[2] = ggz_strdup(seat.name);
 			break;
 		case GGZ_SEAT_RESERVED:
 			player[1] = _("Reserved");
-			player[2] = seat.name;
+			player[2] = ggz_strdup(seat.name);
 			break;
 		case GGZ_SEAT_NONE:
 			player[1] = _("-");
-			player[2] = seat.name;
+			player[2] = ggz_strdup(seat.name);
 			break;
 		}
 
@@ -124,6 +124,8 @@ static void update_player_clist(GtkWidget * player_clist)
 		num_entries++;
 
 		g_free(player[0]);
+		if (player[2])
+			ggz_free(player[2]);
 	}
 
 	/* Append any spectators to the list */
@@ -136,10 +138,11 @@ static void update_player_clist(GtkWidget * player_clist)
 
 		player[0] = "-";
 		player[1] = _("Spectator");
-		player[2] = seat.name;
+		player[2] = ggz_strdup(seat.name);
 
 		gtk_clist_append(GTK_CLIST(player_clist), player);
 		num_entries++;
+		ggz_free(player[2]);
 	}
 
 	gtk_clist_thaw(GTK_CLIST(player_clist));
@@ -346,7 +349,7 @@ static void player_info_activate(GtkMenuItem *menuitem, gpointer data)
 static void player_boot_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	int spectator, seat_num;
-	char *name;
+	const char *name;
 
 	decode_seat(data, &spectator, &seat_num);
 
