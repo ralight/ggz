@@ -3,6 +3,27 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		GGZ Gaming Zone 0.0.10 veröffentlicht
+		<span class="itemleader"> :: </span>
+		<a name="0010"></a>
+	</h1>
+	<div class="text">
+		Die Version 0.0.10 des GGZ-Projektes wurde heute Nacht (24.01.2005)
+		veröffentlicht. Informationen darüber gibt es auf der
+		<a href="http://www.de.ggzgamingzone.org/releases/0.0.10/release.php" title="GGZ 0.0.10 Release Announcement">Ankündigungsseite</a>.
+		Jede Menge neue Spiele wurden installiert und tauchen nach und nach
+		in der Datenbank der gespielten Partien auf
+		(<a href="/db/games/?lookup=Hnefatafl" title="Hnefatafl">Hnefatafl</a>,
+		<a href="/db/games/?lookup=Checkers" title="Dame">Dame</a>,
+		<a href="/db/games/?lookup=Krosswater" title="Krosswater">Krosswater</a>).
+		Vergesst nicht, eure Blogs zur
+		<a href="/blogs/" title="Planet GGZ Community">Blogsammlung</a>
+		hinzuzufügen.
+		Viel Spaß :)
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		Jubiläum: 5 Jahre GGZ Gaming Zone!
 		<span class="itemleader"> :: </span>
 		<a name="5years"></a>
