@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6683 2005-01-15 04:40:06Z jdorje $
+dnl $Id: configure.ac 6692 2005-01-16 03:43:54Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -32,6 +32,10 @@ AC_PROG_RANLIB
 # ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
+
+# popt requires gettext, and all ggz-client-libs users probably require it
+# too, so to make things easy we just check for it here.
+AC_GGZ_INTL
 
 
 # Check for header files
