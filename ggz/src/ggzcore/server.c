@@ -600,6 +600,19 @@ void _ggzcore_server_set_room(struct _GGZServer *server, struct _GGZRoom *room)
 }
 
 
+void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, int status)
+{
+	if (status == 0) {
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_OK);
+		_ggzcore_server_event(server, GGZ_NEGOTIATED, NULL);
+	}
+	else {
+		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
+		_ggzcore_server_event(server, GGZ_NEGOTIATE_FAIL, "Protocol mismatch");
+	}
+}
+
+
 void _ggzcore_server_reset(struct _GGZServer *server)
 {
 	int i;
