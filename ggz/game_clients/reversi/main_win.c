@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6335 2004-11-12 04:40:58Z jdorje $
+ * $Id: main_win.c 6336 2004-11-12 04:56:10Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -497,7 +497,6 @@ GtkWidget *create_main_win(void)
 			       again_button,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	//gtk_container_add(GTK_CONTAINER(main_win), again_button);
-	//gtk_widget_set_usize(again_button, 50, 50);
 
 
 	// Label box
@@ -506,7 +505,6 @@ GtkWidget *create_main_win(void)
 	g_object_set_data_full(G_OBJECT(main_win), "label_box", label_box,
 			       (GtkDestroyNotify) gtk_widget_unref);
 
-	gtk_widget_set_usize(label_box, PIXSIZE * 8, 20);
 	gtk_box_pack_start(GTK_BOX(label_box), black_label_frame, FALSE,
 			   TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(label_box), again_button, TRUE, TRUE,
@@ -524,7 +522,7 @@ GtkWidget *create_main_win(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(drawingarea);
 	gtk_box_pack_start(GTK_BOX(main_box), drawingarea, TRUE, TRUE, 0);
-	gtk_widget_set_usize(drawingarea, 48 * 8, 48 * 8);
+	gtk_widget_set_size_request(drawingarea, 48 * 8, 48 * 8);
 	gtk_widget_set_events(drawingarea,
 			      GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 

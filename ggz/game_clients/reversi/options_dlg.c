@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 2000
  * Desc: Options dialog code
- * $Id: options_dlg.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: options_dlg.c 6336 2004-11-12 04:56:10Z jdorje $
  *
  * Copyright (C) 2000-2004 GGZ Development Team
  *
@@ -154,7 +154,6 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(back_button);
 	gtk_box_pack_start(GTK_BOX(hbox4), back_button, FALSE, FALSE, 50);
-	gtk_widget_set_usize(back_button, 70, 35);
 
 	hbox7 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_set_name(hbox7, "hbox7");
@@ -198,7 +197,6 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(last_button);
 	gtk_box_pack_start(GTK_BOX(hbox6), last_button, FALSE, FALSE, 50);
-	gtk_widget_set_usize(last_button, 70, -2);
 
 	dialog_action_area1 = GTK_DIALOG(dialog1)->action_area;
 	gtk_widget_set_name(dialog_action_area1, "dialog_action_area1");
@@ -216,7 +214,6 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 	gtk_widget_show(ok_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), ok_button, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(ok_button, 70, -2);
 
 	cancel_button = gtk_button_new_with_label(("Cancel"));
 	gtk_widget_set_name(cancel_button, "cancel_button");
@@ -227,7 +224,6 @@ GtkWidget *create_options_dialog(GdkColor * _back_color,
 	gtk_widget_show(cancel_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), cancel_button,
 			   FALSE, FALSE, 0);
-	gtk_widget_set_usize(cancel_button, 70, -2);
 
 	g_signal_connect(GTK_OBJECT(back_button), "clicked",
 			 GTK_SIGNAL_FUNC(on_back_button_clicked), NULL);
