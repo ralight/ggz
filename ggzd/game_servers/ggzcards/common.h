@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2875 2001-12-11 06:29:21Z jdorje $
+ * $Id: common.h 2927 2001-12-18 00:33:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -48,6 +48,11 @@
 #include "options.h"
 #include "protocol.h"
 #include "types.h"
+
+/* If defined, we'll use GGZ's stat tracking
+   features.  These aren't fully implemented
+   yet, so it's probably best not to use it. */
+/* #define USE_GGZ_STATS */
 
 /* GGZCards server game states */
 typedef enum {

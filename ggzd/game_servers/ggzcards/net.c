@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2861 2001-12-10 20:28:44Z jdorje $
+ * $Id: net.c 2927 2001-12-18 00:33:36Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -33,9 +33,11 @@
 #include <assert.h>
 
 #include <easysock.h>
-#include "../../ggzdmod/ggz_stats.h"	/* FIXME */
 
 #include "common.h"
+#ifdef USE_GGZ_STATS		/* defined in common.h */
+# include "../../ggzdmod/ggz_stats.h"
+#endif /* USE_GGZ_STATS */
 
 
 /* Send out player ist to player p */
@@ -138,6 +140,8 @@ int send_gameover(int winner_cnt, player_t * winners)
 
 	ggzdmod_log(game.ggz, "Sending out game-over message.");
 
+
+#ifdef USE_GGZ_STATS		/* defined in common.h */
 	/* calculate new player ratings */
 	/* FIXME: this shouldn't be handled here.  It should be handled in
 	   the calling function. */
@@ -147,6 +151,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 	if (ggzd_recalculate_ratings(game.ggz) < 0) {
 		ggzdmod_log(game.ggz, "ERROR: couldn't recalculate ratings.");
 	}
+#endif /* USE_GGZ_STATS */
 
 	for (p = 0; p < game.num_players; p++) {
 		set_player_message(p);	/* some data could have changed */
