@@ -136,13 +136,13 @@ long KGGZChat::randomLag()
 void KGGZChat::slotSend()
 {
 	enum Events {EVENT_JOIN, EVENT_CHAT, EVENT_LIST, EVENT_WHO, EVENT_BEEP, EVENT_LAG, EVENT_ME, EVENT_HELP, EVENT_NOEVENT, EVENT_LOCAL};
-	char *commands;
+	char *commands = NULL;
 	char *op1 = NULL;
 	char *preop = NULL;
 	char *preop2 = NULL;
 	int triggerevent;
 	char *inputtext;
-	float fahrenheit, celsius, reaumour, kelvin;
+	float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;
 
 	if(strlen(input->text()) == 0) return;
 
@@ -500,7 +500,7 @@ void KGGZChat::checkLag(const char *text)
 			KGGZDEBUG("**tmpbuf is %s\n", tmpbuf);
 			ms = getLag(atoll(tmpbuf)); // transformed to store it somewhere
 			if(ms >= 0)
-				sprintf(tmpbuf, "/me does now know his lag (%i milliseconds)", ms);
+				sprintf(tmpbuf, "/me does now know his lag (%li milliseconds)", ms);
 			else
 				sprintf(tmpbuf, "/me has not issued this lag-id!");
 			//ggzcore_event_enqueue(GGZ_CHAT, strdup(tmpbuf), free);

@@ -70,12 +70,13 @@ int KGGZCommon::findProcess(char *process)
     int ret;
     char stat[128];
     char bprocess[256];
-    char pids[16];
+    char pids[32];
     int pid;
 
 	KGGZDEBUG("findProcess: %s\n", process); 
     d = opendir("/proc/");
     if(d == NULL) return -1;
+	KGGZDEBUG("let's go...\n");
     ret = 0;
     sprintf(bprocess, "(%s)", process);
     while((!ret) && (e = readdir(d)))
@@ -119,7 +120,7 @@ int KGGZCommon::launchProcess(char* process, char* processpath)
 	else if(result == 0)
 	{
 		result = execv(processpath, ggzdarg);
-		KGGZDEBUG("execv result: %s\n", result);
+		KGGZDEBUG("execv result: %i\n", result);
 	}
 	else
 	{

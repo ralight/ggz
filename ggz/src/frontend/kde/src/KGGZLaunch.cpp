@@ -108,7 +108,6 @@ void KGGZLaunch::slotAccepted()
 
 void KGGZLaunch::slotChanged(int value)
 {
-	QListViewItem *tmp;
 	QString str;
 
 	str.setNum(value);

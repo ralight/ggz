@@ -326,16 +326,38 @@ void KGGZ::listTables()
 		tableseatsopen = 0;
 		for(int j = 0; j < tableseats; j++)
 		{
+			KGGZDEBUG(" ** table %i, seat %i: player type is %i\n", i, j, table->playerType(j));
+			
+			switch(table->playerType(j))
+			{
+				case GGZ_SEAT_OPEN:
+					KGGZDEBUG("GGZ_SEAT_OPEN (%i)\n", GGZ_SEAT_OPEN);
+					break;
+				case GGZ_SEAT_BOT:
+					KGGZDEBUG("GGZ_SEAT_BOT (%i)\n", GGZ_SEAT_BOT);
+					break;
+				case GGZ_SEAT_NONE:
+					KGGZDEBUG("GGZ_SEAT_NONE (%i)\n", GGZ_SEAT_NONE);
+					break;
+				case GGZ_SEAT_RESERVED:
+					KGGZDEBUG("GGZ_SEAT_RESERVED (%i)\n", GGZ_SEAT_RESERVED);
+					break;
+				case GGZ_SEAT_PLAYER:
+					KGGZDEBUG("GGZ_SEAT_PLAYER (%i)\n", GGZ_SEAT_PLAYER);
+					break;
+				default:
+					KGGZDEBUG("UNKNOWN (%i)\n", table->playerType(i));
+			}
+
 			if(table->playerType(j) == GGZ_SEAT_OPEN) tableseatsopen++;
 			else
 			{
 				if(table->playerType(j) == GGZ_SEAT_PLAYER)
 				{
 					playername = table->playerName(j);
-					if(!playername) playername = "Bot";
 					if(strlen(playername) == 0)
 					{
-						playername = "(open)";
+						playername = "(unknown)";
 						tableseatsopen++;
 					}
 					KGGZDEBUG("Going to add: %s\n", playername);
@@ -425,7 +447,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
-	char *chatsender, *chatmessage;
+	char *chatsender = NULL, *chatmessage = NULL;
 
 	switch(id)
 	{
@@ -547,7 +569,6 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 void KGGZ::serverCollector(unsigned int id, void* data)
 {
 	int result;
-	GGZCoreServer *lock;
 	char buffer[1024];
 
 	switch(id)
@@ -727,6 +748,7 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* u
 			KGGZDEBUG("atom event: unknown\n");
 			break;
 	}
+	return GGZ_HOOK_OK;
 }
 
 void KGGZ::slotChat(char *text)
@@ -906,10 +928,8 @@ void KGGZ::slotLaunch()
 {
 	GGZCoreTable *table;
 	GGZCoreGametype *gametype;
-	GGZCoreModule *module;
 	int seats;
 	char *description;
-	int i;
 	int ret;
 
 	if(!kggzroom)
@@ -943,13 +963,13 @@ void KGGZ::slotLaunch()
 		{
 			case KGGZLaunch::seatplayer:
 				KGGZDEBUG("* %i: player\n", i);
-				table->addPlayer(m_save_username, i);
+				/*table->addPlayer(m_save_username, i);*/ // don't :-)
 				break;
 			case KGGZLaunch::seatopen:
 				KGGZDEBUG("* %i: open\n", i);
 				break;
 			case KGGZLaunch::seatbot:
-				KGGZDEBUG("* %i: bot\n");
+				KGGZDEBUG("* %i: bot\n", i);
 				table->addBot(NULL, i);
 				break;
 			case KGGZLaunch::seatreserved:

@@ -18,7 +18,7 @@ noinst_HEADERS = \
 	KGGZConnect.h \
 	KGGZLaunch.h
 
-INCLUDES = $(ggzcorepp_includes) -I widgets -I abstract $(all_includes) -ggdb3
+INCLUDES = $(ggzcorepp_includes) -I widgets -I abstract $(all_includes)
 
 kggz_METASOURCES = AUTO
 
