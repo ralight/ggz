@@ -151,7 +151,7 @@ int net_status()
 	int ret;
 
 	if(ggzcore_server_data_is_pending(server))
-		ggzcore_server_read_data(server);
+		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 
 	ret = status;
 	if(status == NET_GOTREADY) status = NET_NOOP;
@@ -207,7 +207,8 @@ printf("DEBUG: net_output(%s)\n", output->message);*/
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
 {
 	/*nasty ggzcore bug?*/
-	while((!ggzcore_server_is_online(server)) && (status == NET_NOOP)) ggzcore_server_read_data(server);
+	while((!ggzcore_server_is_online(server)) && (status == NET_NOOP))
+		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 
 	if(status == NET_NOOP)
 	{
