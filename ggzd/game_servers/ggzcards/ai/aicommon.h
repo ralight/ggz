@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 2423 2001-09-09 09:47:59Z jdorje $
+ * $Id: aicommon.h 2458 2001-09-12 07:39:48Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -60,6 +60,9 @@ int libai_is_highest_in_suit(card_t card);
 
 /** @brief How many cards remain out in this suit? */
 int libai_cards_left_in_suit(char suit);
+
+/** @brief How many cards has this player played in this suit? */
+int libai_cards_played_in_suit(seat_t s, char suit);
 
 /** @brief How many cards do we have in this suit? */
 int libai_count_suit(seat_t seat, char suit);
