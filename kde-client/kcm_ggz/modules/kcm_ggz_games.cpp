@@ -178,6 +178,8 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 void KCMGGZGames::slotSelected(QListViewItem *item, const QPoint& point, int column)
 {
 	if(!item) return;
+	if(item->text(1) == QString::null) return;
+
 	if(!popup)
 	{
 		popup = new QPopupMenu(this);
