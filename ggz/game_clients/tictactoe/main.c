@@ -25,10 +25,14 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include <easysock.h>
+#include <main_win.h>
+#include <x.xpm>
+#include <o.xpm>
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server */
@@ -54,85 +58,105 @@
 #define GGZ_SEAT_OPEN   -1
 
 
-int fd;
+GdkPixmap* x_pix;
+GdkPixmap* o_pix;
+extern GdkPixmap* ttt_buf;
+GtkWidget *main_win;
 char board[3][3];
 
+int fd;
 int num;
+int move;
 int seat[2];
 char name[2][9];
+char gameover;
 
 void ggz_connect(void);
+void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void init_board(void);
 void display_board(void);
 int get_seat(int* num);
 int get_players(void);
 int get_my_move(void);
-int send_my_move(int fd, int move);
+int send_my_move(int move);
 int make_my_move(int move);
-int get_opponent_move(int fd);
+int get_opponent_move(void);
 int get_sync(void);
 int get_gameover(void);
 
 
 int main(int argc, char* argv[])
 {
-	int move, op;
-	char game_over = 0;
-
+	gtk_init (&argc, &argv);
+		
 	ggz_connect();
-
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+	
 	/* Assume a second argument is the -o */
 	if (argc > 1) {
 		fprintf(stderr, "Sending NULL options\n");
 		es_write_int(fd, 0);
 	}
+	
+	
+	main_win = create_main_win ();
+	gtk_widget_show (main_win);
 
 	init_board();
 	display_board();
-	while(!game_over) {
 
-		if (es_read_int(fd, &op) < 0)
-			return -1;
-
-		switch(op) {
-
-		case TTT_MSG_SEAT:
-			get_seat(&num);
-			break;
-			
-		case TTT_MSG_PLAYERS:
-			get_players();
-			break;
-
-		case TTT_REQ_MOVE:
-			move = get_my_move();
-			send_my_move(fd, move);
-			break;
-
-		case TTT_RSP_MOVE:
-			make_my_move(move);
-			display_board();
-			break;
-
-		case TTT_MSG_MOVE:
-			get_opponent_move(fd);
-			display_board();
-			break;
-
-		case TTT_SND_SYNC:
-			get_sync();
-			display_board();
-			break;
-
-		case TTT_MSG_GAMEOVER:
-			get_gameover();
-			game_over = 1;
-			break;
-		}
-	}
+	gtk_main();
 	
 	return 0;
 }
+
+
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+{
+	int op;
+
+	if (es_read_int(fd, &op) < 0) {
+		/* FIXME: do something here...*/
+		return;
+	}
+	
+	switch(op) {
+		
+	case TTT_MSG_SEAT:
+		get_seat(&num);
+		break;
+		
+	case TTT_MSG_PLAYERS:
+		get_players();
+		break;
+		
+	case TTT_REQ_MOVE:
+		get_my_move();
+		/*send_my_move(fd, move);*/
+		break;
+		
+	case TTT_RSP_MOVE:
+		make_my_move(move);
+		display_board();
+		break;
+		
+	case TTT_MSG_MOVE:
+		get_opponent_move();
+		display_board();
+		break;
+		
+	case TTT_SND_SYNC:
+		get_sync();
+		display_board();
+		break;
+		
+	case TTT_MSG_GAMEOVER:
+		get_gameover();
+		gameover = 1;
+		break;
+	}
+
+}		
 
 
 int get_seat(int* num)
@@ -169,18 +193,16 @@ int get_players(void)
 
 int get_my_move(void)
 {
-	int move;
 	
-	printf("Your move [0-8]:\n");
-	scanf("%d", &move);
+	game_status("Your move");
+	/*scanf("%d", &move);*/
 	
-	return move;
+	return 0;
 }
 
 
-int get_opponent_move(int fd)
+int get_opponent_move(void)
 {
-	int move;
 	
 	fprintf(stderr, "Getting opponent's move\n");
 	
@@ -243,26 +265,80 @@ int get_gameover(void)
 
 void display_board(void)
 {
-	printf("  %c | %c | %c  \n", board[0][0], board[0][1], board[0][2]);
+	int i, j;
+	int x_co;
+	int y_co;
+	
+	GtkWidget* tmp;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	
+	printf("  %d | %d | %d  \n", board[0][0], board[0][1], board[0][2]);
 	printf("-------------\n");
-	printf("  %c | %c | %c  \n", board[1][0], board[1][1], board[1][2]);
+	printf("  %d | %d | %d  \n", board[1][0], board[1][1], board[1][2]);
 	printf("-------------\n");
-	printf("  %c | %c | %c  \n", board[2][0], board[2][1], board[2][2]);
+	printf("  %d | %d | %d  \n", board[2][0], board[2][1], board[2][2]);
 	printf("\n");
+	
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++) {
+			x_co = j*60 + 10 + 20;
+			y_co = i*60 + 10 + 20;
+			switch (board[i][j]) {
+				
+			case 120:
+				g_print("Drawing x at (%d, %d)\n", x_co, y_co);
+				gdk_draw_pixmap( ttt_buf,
+						 tmp->style->fg_gc[GTK_WIDGET_STATE(tmp)],
+						 x_pix,
+						 0, 0,
+						 x_co, y_co,
+						 18, 20);
+				break;
+				
+			case 111:
+				g_print("Drawing o at (%d, %d)\n", x_co, y_co);
+				gdk_draw_pixmap( ttt_buf,
+						 tmp->style->fg_gc[GTK_WIDGET_STATE(tmp)],
+						 o_pix,
+						 0, 0,
+						 x_co, y_co,
+						 18, 20);
+				break;
+			}
+		}
+	
+	gtk_widget_draw(tmp, NULL);
 }
 
 
 void init_board(void)
 {
 	int i,j;
+	GtkStyle* style;
+	GdkBitmap* mask;
+  
 
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
 			board[i][j] = ' ';
+
+	
+	/* now for the pixmap from gdk */
+	style = gtk_widget_get_style(main_win);
+	
+	x_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
+					      &style->bg[GTK_STATE_NORMAL], 
+					      (gchar**)x );
+	
+	o_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
+					      &style->bg[GTK_STATE_NORMAL], 
+					      (gchar**)o );
+	
 }
 
 
-int send_my_move(int fd, int move)
+int send_my_move(int move)
 {
 	if (es_write_int(fd, TTT_SND_MOVE) < 0
 	    || es_write_int(fd, move) < 0)
@@ -319,4 +395,5 @@ void ggz_connect(void)
 
 	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 		exit(-1);
+
 }
