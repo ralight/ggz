@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4465 2002-09-08 06:34:27Z jdorje $
+ * $Id: transit.c 4475 2002-09-09 00:51:25Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -394,7 +394,7 @@ static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event
 static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEvent *event)
 {
 	GGZSpectator spectator;
-	int status = 0;
+	int status = 0, result;
 
 	dbg_msg(GGZ_DBG_TABLE,
 		"Sending spectator for table %d in room %d, index %d",
@@ -413,8 +413,12 @@ static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEv
 	else
 		spectator.name = NULL;
 
-	if (ggzdmod_set_spectator(table->ggzdmod, &spectator) < 0) {
-		dbg_msg(GGZ_DBG_TABLE, "ERROR: transit_send_spectator_to_game: failed ggzdmod_set_spectator() call.");
+	result = ggzdmod_set_spectator(table->ggzdmod, &spectator);
+	if (result < 0) {
+		dbg_msg(GGZ_DBG_TABLE,
+			"ERROR: transit_send_spectator_to_game: "
+			"failed ggzdmod_set_spectator() call - error %d",
+			result);
 		status = -1;
 	}
 
