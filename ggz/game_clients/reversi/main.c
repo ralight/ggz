@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
+ * $Id: main.c 6666 2005-01-14 03:21:29Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -29,11 +29,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
-#include <sys/un.h>
-#include <gtk/gtk.h>
+#include <unistd.h>
 
+#include <gtk/gtk.h>
 #include <ggz.h>
 #include <ggzmod.h>
 #include <ggz_common.h>
