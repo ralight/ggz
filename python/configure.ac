@@ -29,7 +29,10 @@ if test "x$prefix" = "xNONE"; then
 	prefix="/usr/local"
 fi
 
-AC_CONFIG_FILES([escape-sdl/module.dsc])
+AC_CONFIG_FILES([
+	escape-sdl/module.dsc
+	xadrez-chines/module.dsc
+])
 AC_OUTPUT
 
 dnl Status output
