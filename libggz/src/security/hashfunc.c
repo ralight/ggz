@@ -12,7 +12,8 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 	GcryMDHd handle;
 	const unsigned int flags = (secret ? GCRY_MD_FLAG_HMAC : 0);
 	int unsigned algos[] = {GCRY_MD_MD5, 0};
-	int ret, i;
+	int ret;
+	unsigned int i;
 	hash_t hash;
 
 	hash.hash = NULL;
