@@ -35,6 +35,7 @@
 #include <room.h>
 #include <ggzd.h>
 #include <protocols.h>
+#include <hash.h>
 
 /* Server wide data structures */
 extern Options opt;
@@ -68,7 +69,7 @@ int chat_room_enqueue(int room, unsigned char opcode, int sender, char *msg)
 int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1], 
 			unsigned char opcode, int sender, char *msg)
 {
-	int size, room, i, status;
+	int size, status=0;
 	int rcv_id = 0;
 	void *data = NULL;
 
@@ -77,30 +78,10 @@ int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1],
 	if(players.info[sender].table_index != -1)
 		return E_AT_TABLE;
 
-	room = players.info[sender].room;
-
 	/* Find target player */
-	/* FIXME: needs to be a global hash */
-	
-	/* Search for player name in this room */
-	pthread_rwlock_rdlock(&rooms[room].lock);
-	for (i = 0; i < rooms[room].player_count; i++) {
-		/* FIXME: */
-		/* Technically we should lock the player in case the name */
-		/* is changing, realistically this can't happen right now */
-		/* anyway, but that could change in the future */
-		rcv_id = rooms[room].player_index[i];
-		if (!strcmp(receiver, players.info[rcv_id].name))
-			break;
-	}
-	
-	if (i == rooms[room].player_count) {
-		/* Player not in this room, can't send him the msg */
-		pthread_rwlock_unlock(&rooms[room].lock);
+	if((rcv_id = hash_player_lookup(receiver)) == -1 )
 		return E_USR_LOOKUP;
-	}
-	pthread_rwlock_unlock(&rooms[room].lock);
-
+	
 	/* Don't allow personal chat to a player at a table */
 	/* FIXME: This should probably be read locked */
 	if(players.info[rcv_id].table_index != -1)

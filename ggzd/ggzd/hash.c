@@ -116,6 +116,32 @@ int hash_player_add(char *name, int p_index)
 }
 
 
+/* Lookup a player name in the hash and return his p_index */
+int hash_player_lookup(char *name)
+{
+	unsigned hash_num;
+	HashList *hl;
+	int p_index=-1;
+
+	/* Pick a list */
+	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
+
+	/* Find the player name in this list */
+	pthread_rwlock_rdlock(&hash_list_lock[hash_num]);
+	hl = hash_list[hash_num];
+	while(hl) {
+		if(!strcmp(name, hl->name)) {
+			p_index = hl->p_index;
+			break;
+		}
+		hl = hl->next;
+	}
+	pthread_rwlock_unlock(&hash_list_lock[hash_num]);
+
+	return p_index;
+}
+
+
 /* Remove a player name from the hash tables */
 void hash_player_delete(char *name)
 {
