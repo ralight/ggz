@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5702 2003-12-04 23:59:31Z jdorje $
+dnl $Id: configure.ac 5703 2003-12-05 00:57:56Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -7,20 +7,21 @@ AM_INIT_AUTOMAKE(ggz-server, 0.0.7)
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
-dnl Check for standard build environment
-dnl ====================================
+# Check for standard build environment
+# ====================================
 AC_PROG_CC
 AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_CPP
 AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
 
 
-dnl Compiling Options
-dnl =====================
+# Compiling Options
+# =================
 AC_ARG_ENABLE([server],
 	      AC_HELP_STRING([--disable-server],[Don't build ggzd server]),
 	      [enable_server=no], [enable_server=yes])
@@ -37,50 +38,72 @@ AC_ARG_WITH([database],
 	    [database=$withval], [database=yes])
 
 
-dnl Check for GGZ Requirements
-dnl ==============
+# Check for GGZ Requirements
+# ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 
-dnl Check for header files
-dnl ======================
-AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([sys/time.h unistd.h])
-
-
-dnl Check for typedefs, structures, and compiler characteristics
-dnl ============================================================
-AC_C_CONST
-AC_TYPE_SIZE_T
-AC_TYPE_SIGNAL
+# Check for header files
+# ======================
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h netinet/in.h \
+                  sys/time.h syslog.h termios.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_HEADER_STDBOOL # FIXME: need header file support
 AC_HEADER_TIME
 
-dnl Check for PF_LOCAL/PF_UNIX
-dnl ==========================
+# Check for typedefs, structures, and compiler characteristics
+# ============================================================
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_TYPE_SIGNAL
+AC_TYPE_MODE_T
+AC_STRUCT_TM
+
+# Check for PF_LOCAL/PF_UNIX
+# ==========================
+# There should be an autoconf macro to check this???
 AC_MSG_CHECKING([for PF_LOCAL])
-AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
-                 PF_LOCAL ], AC_MSG_RESULT(no) 
-			     AC_MSG_CHECKING([for PF_UNIX])
-			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
-				          PF_UNIX ], AC_MSG_RESULT(no)
-				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
-                                          AC_MSG_RESULT(yes)
-					  AC_DEFINE([PF_LOCAL], PF_UNIX,
-						    [PF_UNIX is available])
-			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
-						    [AF_UNIX is available])), 
+AC_EGREP_CPP(PF_LOCAL,
+             [#include <sys/socket.h>
+              PF_LOCAL ],
+             [AC_MSG_RESULT(no)
+              AC_MSG_CHECKING([for PF_UNIX])
+              AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				      PF_UNIX ],
+                           [AC_MSG_RESULT(no)
+			    AC_MSG_ERROR([cannot find PF_LOCAL or PF_UNIX])],
+                           [AC_MSG_RESULT(yes)
+                            AC_DEFINE([PF_LOCAL], PF_UNIX,
+				      [PF_UNIX is available])
+			    AC_DEFINE([AF_LOCAL], AF_UNIX,
+				      [AF_UNIX is available])])], 
              AC_MSG_RESULT(yes))
 
 
-dnl Check for library functions
-dnl ===========================
-AC_CHECK_FUNCS([select scandir gethostname strcasecmp])
+# Check for library functions
+# ===========================
+AC_CHECK_FUNCS([strchr strdup strerror strtoul uname bzero dup2 \
+                gethostname gethostbyname gettimeofday localtime_r memset \
+                mkdir rmdir select socket strcasecmp \
+                closedir fork malloc realloc select stat strftime], [],
+               [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([sqrt]) # FIXME: for some reason this test fails !!!
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_SELECT_ARGTYPES
+AC_FUNC_STAT
+AC_FUNC_STRFTIME
 
-AC_CHECK_LIB([popt], [poptGetNextOpt],
-    [AC_CHECK_HEADER([popt.h], [ggzd_LIBS="$ggzd_LIBS -lpopt"],
-        AC_MSG_ERROR([*** Cannot find popt.h header]))],
-    AC_MSG_ERROR([*** Cannot find popt library]))
+
+# Check for popt
+# ==============
+AC_CHECK_LIB([popt], [poptGetNextOpt], [ggzd_LIBS="$ggzd_LIBS -lpopt"],
+             [AC_MSG_ERROR([cannot find popt library])])
+AC_CHECK_HEADER([popt.h], [],
+                [AC_MSG_ERROR([cannot find popt.h header])])
 
 # Strsep is implemented in ggzd/strsep.c, this is used if needed.
 AC_REPLACE_FUNCS([strsep])
@@ -99,16 +122,16 @@ AC_CHECK_HEADER(pthread.h,
     [AC_CHECK_LIB(c_r, pthread_create,
         [ggzd_LIBS="$ggzd_LIBS -pthread"
          CFLAGS="$CFLAGS -D_THREAD_SAFE"],
-            AC_MSG_ERROR([*** Cannot find pthread library]))])],
-    AC_MSG_ERROR([*** Cannot find pthread.h header]))
+            AC_MSG_ERROR([cannot find pthread library]))])],
+    AC_MSG_ERROR([cannot find pthread.h header]))
 
 
 dnl Check for expat
-dnl ==============
-AC_CHECK_LIB([expat], [XML_ParserCreate],
-    [AC_CHECK_HEADER([expat.h], [ggzd_LIBS="$ggzd_LIBS -lexpat"],
-        AC_MSG_ERROR([*** Cannot find expat.h header]))],
-    AC_MSG_ERROR([*** Cannot find expat library]))
+dnl ===============
+AC_CHECK_LIB([expat], [XML_ParserCreate], [ggzd_LIBS="$ggzd_LIBS -lexpat"],
+             [AC_MSG_ERROR([cannot find expat library])])
+AC_CHECK_HEADER([expat.h], [],
+                [AC_MSG_ERROR([cannot find expat.h header])]),
 
 dnl Check database libs
 dnl ===================
@@ -138,7 +161,7 @@ if test "$database" = db3 || test "$database" = yes; then
         ],
         [
           if test "$database" = db3; then
-            AC_MSG_ERROR([*** Cannot configure db3 (db3-dev needed)])
+            AC_MSG_ERROR([cannot configure db3 (db3-dev needed)])
           fi
         ])
     ],
@@ -154,13 +177,13 @@ if test "$database" = db3 || test "$database" = yes; then
             ],
             [
               if test "$database" = db3; then
-                AC_MSG_ERROR([*** Cannot configure db3 (db3-dev needed)])
+                AC_MSG_ERROR([cannot configure db3 (db3-dev needed)])
               fi
             ])
         ],
         [
           if test "$database" = db3; then
-            AC_MSG_ERROR([*** Cannot configure db3 (libdb3 needed)])
+            AC_MSG_ERROR([cannot configure db3 (libdb3 needed)])
           fi
         ])
     ])
@@ -189,7 +212,7 @@ if test "$database" = db4 || test "$database" = yes; then
             ],
             [
               if test "$database" = db4; then
-                AC_MSG_ERROR([*** Cannot configure db4 (libdb4 needed)])
+                AC_MSG_ERROR([cannot configure db4 (libdb4 needed)])
               fi
             ])
         ])
@@ -204,7 +227,7 @@ if test "$database" = db4 || test "$database" = yes; then
       ],
       [
         if test "$database" = db4; then
-          AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+          AC_MSG_ERROR([cannot configure db4 (db4-dev needed)])
         fi
       ])
   fi
@@ -215,7 +238,7 @@ if test "$database" = db4 || test "$database" = yes; then
     ],
     [
       if test "$database" = db4; then
-        AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+        AC_MSG_ERROR([cannot configure db4 (db4-dev needed)])
       fi
     ])
 
@@ -235,7 +258,7 @@ if test "$database" = db2 || test "$database" = yes; then
         ],
         [
           if test "$database" = db2; then
-            AC_MSG_ERROR([*** Cannot configure db2 (db2-dev needed)])
+            AC_MSG_ERROR([cannot configure db2 (db2-dev needed)])
           fi
         ])
     ],
@@ -251,13 +274,13 @@ if test "$database" = db2 || test "$database" = yes; then
             ],
             [
               if test "$database" = db2; then
-                AC_MSG_ERROR([*** Cannot configure db2 (db2-dev needed)])
+                AC_MSG_ERROR([cannot configure db2 (db2-dev needed)])
               fi
             ])
         ],
         [
           if test "$database" = db2; then
-            AC_MSG_ERROR([*** Cannot configure db2 (libdb2 needed)])
+            AC_MSG_ERROR([cannot configure db2 (libdb2 needed)])
           fi
         ])
     ])
@@ -274,13 +297,13 @@ if test "$database" = pgsql || test "$database" = yes; then
         ],
         [
           if test "$database" = pgsql; then
-            AC_MSG_ERROR([*** Cannot configure pgsql (pgsql-dev library needed)])
+            AC_MSG_ERROR([cannot configure pgsql (pgsql-dev library needed)])
           fi
         ])
     ],
     [
       if test "$database" = pgsql; then
-        AC_MSG_ERROR([*** Cannot configure pgsql (pgsql library needed)])
+        AC_MSG_ERROR([cannot configure pgsql (pgsql library needed)])
       fi
     ])
 fi
@@ -297,20 +320,20 @@ if test "$database" = mysql || test "$database" = yes; then
         ],
         [
           if test "$database" = mysql; then
-            AC_MSG_ERROR([*** Cannot configure mysql (mysql-dev library needed)])
+            AC_MSG_ERROR([cannot configure mysql (mysql-dev library needed)])
           fi
         ])
     ],
     [
       if test "$database" = mysql; then
-        AC_MSG_ERROR([*** Cannot configure mysql (mysql library needed)])
+        AC_MSG_ERROR([cannot configure mysql (mysql library needed)])
       fi
     ])
 fi
 
 # Make sure a database was configured
 if test "$database" = yes; then
-  AC_MSG_ERROR([*** No usable database library found.  See above messages for more.])
+  AC_MSG_ERROR([no usable database library found.  See above messages for more.])
 fi
 
 
