@@ -25,11 +25,7 @@
 #include <easysock.h>
 #include <stdlib.h>
 
-#include "bid.h"
 #include "common.h"
-#include "ggz.h"
-#include "message.h"
-#include "types.h"
 
 
 /* req_bid

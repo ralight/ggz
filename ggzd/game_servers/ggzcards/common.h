@@ -22,12 +22,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
 
+/* this will be replaced by ../libggzmod/whatever to use libggzdmod */
+#include "ggz.h"
+#include "protocols.h"
+
 #include "ai.h"
 #include "bid.h"
 #include "cards.h"
 #include "game.h"
 #include "games.h"
-#include "ggz.h"
 #include "message.h"
 #include "options.h"
 #include "protocol.h"

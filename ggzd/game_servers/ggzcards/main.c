@@ -141,12 +141,12 @@ int main(int argc, char **argv)
 	}
 
 	/* Initialize ggz */
-	if (ggz_init("GGZCards") < 0) {
+	if (ggz_server_init("GGZCards") < 0) {
 		ggz_debug("Failed ggz_init.");
 		return -1;
 	}
 
-	if ((ggz_sock = ggz_connect()) < 0) {
+	if ((ggz_sock = ggz_server_connect()) < 0) {
 		ggz_debug("Failed ggz_sock test.");
 		return -1;
 	}
@@ -209,6 +209,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	ggz_quit();
+	ggz_server_quit();
 	return 0;
 }

@@ -23,15 +23,11 @@
  */
 
 #include <ctype.h>
+#include <easysock.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <easysock.h>
-
 #include "common.h"
-#include "game.h"
-#include "games.h"
-#include "ggz.h"
 
 /* BEGINNING of game data.  To add a new game, you'll need to
  * add information about it here in the form of an extern

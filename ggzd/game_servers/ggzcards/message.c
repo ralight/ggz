@@ -29,9 +29,6 @@
 #include <string.h>
 
 #include "common.h"
-#include "game.h"
-#include "ggz.h"
-#include "message.h"
 
 /* NOTE ON "MESSAGES"
  *   - Each seat has a message.  The client should display this near to the player.

@@ -28,9 +28,6 @@
 #include <stdlib.h>
 
 #include "common.h"
-#include "ggz.h"
-#include "message.h"
-#include "options.h"
 
 static int options_initted = 0;
 

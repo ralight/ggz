@@ -1,3 +1,4 @@
+/*	$Id: ggz.h 2032 2001-07-16 01:20:31Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -22,8 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef __GGZ_H__
-#define __GGZ_H__
+
+#ifndef __GGZ_SERVER_GGZ_H
+#define __GGZ_SERVER_GGZ_H
 
 #define MAX_USER_NAME_LEN 16
 
@@ -48,50 +50,27 @@
 #define GGZ_DBG_GAME_MSG	(unsigned) 0x00000400
 #define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
 
-/* these two enumerations used to be in protocols.h */
-typedef enum
-{
-	RSP_GAME_LAUNCH,
-	RSP_GAME_JOIN,
-	RSP_GAME_LEAVE,
-	MSG_LOG,
-	MSG_DBG,
-	REQ_GAME_OVER
-}
-TableToControl;
-
-typedef enum
-{
-	REQ_GAME_LAUNCH,
-	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE,
-	RSP_GAME_OVER
-}
-ControlToTable;
-/* end of protocols.h section */
-
-struct ggz_seat_t
-{
+struct ggz_seat_t {
 	int assign;
-	char name[MAX_USER_NAME_LEN + 1];
+	char name[MAX_USER_NAME_LEN +1];
 	int fd;
 };
 
-extern struct ggz_seat_t *ggz_seats;
+extern struct ggz_seat_t* ggz_seats;
 
 /* Setup functions */
-int ggz_init(char *game_name);
-int ggz_connect(void);
-int ggz_done(void);
-void ggz_quit(void);
+int ggz_server_init(char* game_name);
+int ggz_server_connect(void);
+int ggz_server_done(void);
+void ggz_server_quit(void);
 
 /* Game functions */
 int ggz_game_launch(void);
 int ggz_game_over(void);
 
 /* Player functions */
-int ggz_player_join(int *seat, int *fd);
-int ggz_player_leave(int *seat, int *fd);
+int ggz_player_join(int* seat, int *fd);
+int ggz_player_leave(int* seat, int *fd);
 
 /* Useful functions */
 void ggz_debug(const char *fmt, ...);
@@ -104,4 +83,4 @@ int ggz_seats_human(void);
 
 int ggz_fd_max(void);
 
-#endif /* __GGZ_H__ */
+#endif /* __GGZ_SERVER_GGZ_H */

@@ -33,7 +33,6 @@
 
 #include "ai.h"
 #include "common.h"
-#include "ggz.h"
 
 extern struct ai_function_pointers random_ai_funcs;
 extern struct ai_function_pointers spades_ai_funcs;
