@@ -29,6 +29,7 @@
 
 int ggzfd;
 
+
 void client_initialize(void)
 {
 	ggz_client_init("GGZCards");
@@ -41,4 +42,20 @@ void client_initialize(void)
 void client_quit(void)
 {
 	ggz_client_quit();
+}
+
+
+void client_debug(const char *fmt, ...)
+{
+	/* Currently the output goes to stderr, but it could be sent elsewhere. */
+	/* TODO: having this within #ifdef's wouldn't work if it was an external lib */
+#ifdef DEBUG
+	char buf[512];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	fprintf(stderr, "DEBUG: %s\n", buf);
+	va_end(ap);
+#endif /* DEBUG */
 }

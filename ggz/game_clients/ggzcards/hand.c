@@ -31,6 +31,8 @@
 
 #include <easysock.h>
 
+#include "common.h"
+
 #include "game.h"
 #include "table.h"
 #include "hand.h"
@@ -47,12 +49,12 @@ int hand_read_hand(void)
 	assert(game.players);
 
 	/* first read the player whose hand it is */
-	if (es_read_int(game.fd, &player) < 0)
+	if (es_read_int(ggzfd, &player) < 0)
 		return -1;
 	assert(player >= 0 && player < game.num_players);
 	hand = &game.players[player].hand;
 
-	ggz_debug("     Reading the hand of player %d.", player);
+	client_debug("     Reading the hand of player %d.", player);
 
 	/* Zap our hand */
 	/* TODO: fixme */
@@ -61,12 +63,12 @@ int hand_read_hand(void)
 	hand->selected_card = -1; /* index into the array */
 
 	/* First find out how many cards in this hand */
-	if(es_read_int(game.fd, &hand->hand_size) < 0)
+	if(es_read_int(ggzfd, &hand->hand_size) < 0)
 		return -1;
 
 	if (hand->hand_size > game.max_hand_size) {
 		int p;
-		ggz_debug("Expanding max_hand_size to allow for %d cards (previously max was %d).", hand->hand_size, game.max_hand_size);
+		client_debug("Expanding max_hand_size to allow for %d cards (previously max was %d).", hand->hand_size, game.max_hand_size);
 		game.max_hand_size = hand->hand_size;
 		while (1) {
 			/* the inner table must be at least large enough.
@@ -76,7 +78,7 @@ int hand_read_hand(void)
 			get_fulltable_size(&w1, &h1);
 			if (w1 > w && h1 > h)
 				break;
-			ggz_debug("Increasing max hand size because the available table size (%d %d) isn't as big as what's required (%d %d).", w, h, w1, h1);
+			client_debug("Increasing max hand size because the available table size (%d %d) isn't as big as what's required (%d %d).", w, h, w1, h1);
 			game.max_hand_size++;
 		}
 		for (p = 0; p<game.num_players; p++) {
@@ -93,11 +95,11 @@ int hand_read_hand(void)
 		table_setup();
 	}
 
-	ggz_debug("     Read hand_size as %d.", game.players[player].hand.hand_size);
+	client_debug("     Read hand_size as %d.", game.players[player].hand.hand_size);
 
 	/* Read in all the card values */
 	for(i=0; i<hand->hand_size; i++)
-		if(es_read_card(game.fd, &hand->card[i]) < 0)
+		if(es_read_card(ggzfd, &hand->card[i]) < 0)
 			return -1;
 
 	table_display_hand(player);

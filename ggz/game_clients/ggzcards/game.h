@@ -56,7 +56,6 @@ struct seat_t {
 };
 
 struct game_t {
-	int fd;			/* the socket for the server connection */
 	client_state_t state;	/* the state the game is, i.e. LA_STATE_<something> */
 	int play_hand;		/* the hand we're playing from */
 	int num_players;	/* starts at 0 so we know once we've received them */
@@ -77,7 +76,6 @@ extern void set_game_state(client_state_t);
 /* substitutes for snprintf.
  * Returns the number of characters put into the buffer. */
 extern int ggz_snprintf(char*, int, char *, ...);
-void ggz_debug(const char *fmt, ...);
 
 /* preliminary internationalization macros */
 #define _(String) (String)

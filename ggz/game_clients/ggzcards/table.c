@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "common.h"
+
 #include "main.h"
 #include "game.h"
 #include "table.h"
@@ -161,7 +163,7 @@ void table_initialize(void)
 						    &f1_style->bg[GTK_STATE_NORMAL],
 						    (gchar **) xpm_backs[i]);
 		if (!card_fronts[i] || !card_backs[i])
-			ggz_debug("ERROR: couldn't load card pixmaps for orientation %d.", i);
+			client_debug("ERROR: couldn't load card pixmaps for orientation %d.", i);
 	}
 
 	
@@ -197,7 +199,7 @@ void table_setup()
 	if (game.num_players == 0 || game.max_hand_size == 0)
 		return;
 
-	ggz_debug("Setting up table.  Width and height are %d.  %d players.", get_table_width(), game.num_players);
+	client_debug("Setting up table.  Width and height are %d.  %d players.", get_table_width(), game.num_players);
 
 	gtk_widget_set_usize (f1, get_table_width(), get_table_height());
 
@@ -325,7 +327,7 @@ void table_handle_click_event(GdkEventButton *event)
 	float xdiff, ydiff;
 	int card_width, card_height;
 
-	ggz_debug("table_handle_click_event: click at %d %d.  State is %d.", event->x, event->y, game.state);
+	client_debug("table_handle_click_event: click at %d %d.  State is %d.", event->x, event->y, game.state);
 
 	/* Real quick, see if we even care */
 	if (game.state != WH_STATE_PLAY) return;
@@ -370,7 +372,7 @@ static void table_card_clicked(int card)
 {
 	int p = game.play_hand;
 
-	ggz_debug("table_card_clicked: Card %d clicked.", card);
+	client_debug("table_card_clicked: Card %d clicked.", card);
 
 	if(card == game.players[p].hand.selected_card) {
 		game.players[p].hand.selected_card = -1;
@@ -638,7 +640,7 @@ void table_display_hand(int p)
 	float ow, oh;
 	card_t table_card = game.players[p].table_card;
 
-	ggz_debug("     Displaying hand for player %d.", p); 		
+	client_debug("     Displaying hand for player %d.", p); 		
 
 	/* get layout information */
 	get_full_card_area(p, &x_outer, &y_outer, &cw, &ch, &cxo, &cyo);
@@ -675,7 +677,7 @@ void table_display_hand(int p)
 	table_show_table(x_outer, y_outer,
 			cw, ch);
 
-	ggz_debug("     Done displaying hand.");
+	client_debug("     Done displaying hand.");
 }
 
 /* table_display_all_hands

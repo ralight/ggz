@@ -36,6 +36,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "common.h"
+
 #include "cb_bid.h"
 #include "dlg_bid.h"
 #include "main.h"
@@ -70,10 +72,10 @@ void dlg_option_checked (GtkWidget *widget, gpointer data)
 	int choice = (int)data & 255;
 
 	if (GTK_TOGGLE_BUTTON (widget)->active) {
-		ggz_debug("Boolean option %d/%d selected.", option, choice);
+		client_debug("Boolean option %d/%d selected.", option, choice);
 		options_selected[option] = choice;
 	} else {
-		ggz_debug("Boolean option %d/%d deselected.", option, choice);
+		client_debug("Boolean option %d/%d deselected.", option, choice);
 		options_selected[option] = 0;
 	}	
 }
@@ -84,10 +86,10 @@ void dlg_option_toggled (GtkWidget *widget, gpointer data)
 	int choice = (int)data & 255;
 
 	if (GTK_TOGGLE_BUTTON (widget)->active) {
-		ggz_debug("Multiple-choice option %d/%d selected.", option, choice);
+		client_debug("Multiple-choice option %d/%d selected.", option, choice);
 		options_selected[option] = choice;
 	} else
-		ggz_debug("Multiple-choice option %d/%d deselected.", option, choice);
+		client_debug("Multiple-choice option %d/%d deselected.", option, choice);
 }
 
 void dlg_options_submit (GtkWidget *widget, gpointer data)
@@ -214,15 +216,15 @@ int handle_bid_request(void)
 		return -1;
 	set_game_state( WH_STATE_BID );
 
-	if (es_read_int(game.fd, &possible_bids) < 0)
+	if (es_read_int(ggzfd, &possible_bids) < 0)
 		return -1;
 
-	ggz_debug("     Handling bid request: %d possible bids.", possible_bids);
+	client_debug("     Handling bid request: %d possible bids.", possible_bids);
 	bid_choices = (char**)g_malloc(possible_bids * sizeof(char*));
 
 	for(i = 0; i < possible_bids; i++) {
-		if (es_read_string_alloc(game.fd, &bid_choices[i]) < 0) {
-			ggz_debug("Error reading string %d.", i);
+		if (es_read_string_alloc(ggzfd, &bid_choices[i]) < 0) {
+			client_debug("Error reading string %d.", i);
 			return -1;
 		}
 
@@ -246,24 +248,24 @@ int handle_option_request(void)
 	char*** option_choices; /* ugly! */
 	int* option_sizes;
 
-	if (es_read_int(game.fd, &option_cnt) < 0)
+	if (es_read_int(ggzfd, &option_cnt) < 0)
 		return -1;
-	ggz_debug("     Handling option request: %d possible options.", option_cnt);
+	client_debug("     Handling option request: %d possible options.", option_cnt);
 	option_choices = (char***)g_malloc(option_cnt * sizeof(char**));
 	option_sizes = (int*)g_malloc(option_cnt * sizeof(int));
 	options_selected = (int*)g_malloc(option_cnt * sizeof(int));
 
 	for (i = 0; i < option_cnt; i++) {
-		if (es_read_int(game.fd, &option_sizes[i]) < 0) return -1;
-		if (es_read_int(game.fd, &options_selected[i]) < 0) return -1; /* read the default */
+		if (es_read_int(ggzfd, &option_sizes[i]) < 0) return -1;
+		if (es_read_int(ggzfd, &options_selected[i]) < 0) return -1; /* read the default */
 		option_choices[i] = (char**)g_malloc(option_sizes[i] * sizeof(char*));
 		for (j = 0; j < option_sizes[i]; j++)
-			if (es_read_string_alloc(game.fd, &option_choices[i][j]) < 0)
+			if (es_read_string_alloc(ggzfd, &option_choices[i][j]) < 0)
 				return -1;
 	}
 
 	if (game.state == WH_STATE_OPTIONS) {
-		ggz_debug("Received second option request.  Ignoring it.");
+		client_debug("Received second option request.  Ignoring it.");
 	} else {
 		set_game_state( WH_STATE_OPTIONS );
 		dlg_option_display(option_cnt, option_sizes, option_choices);

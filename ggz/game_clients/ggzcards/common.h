@@ -24,7 +24,8 @@
  */
 
 /** This is the file descriptor that can be used for communication with the
- *  game server (via GGZ).
+ *  game server (via GGZ).  In theory, it should only be used internally
+ *  by the library - but that's still a work in progress.
  *  @see client_initialize
  */
 extern int ggzfd;
@@ -37,3 +38,9 @@ void client_initialize(void);
 
 /** This function should be called just before the client exits. */
 void client_quit(void);
+
+
+/** Handles the debug message appropriately.
+ *  @param fmt a printf-style format string.
+ *  @param ... printf-style arguments. */
+void client_debug(const char *fmt, ...);

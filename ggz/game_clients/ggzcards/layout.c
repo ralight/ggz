@@ -24,6 +24,8 @@
 
 #include <stdlib.h>
 
+#include "common.h"
+
 #include "game.h"
 #include "hand.h"
 #include "layout.h"
@@ -234,7 +236,7 @@ void get_card_box_dim(int p, int *w, int *h)
 			*h = CARD_BOX_WIDTH;	
 			break;
 		default:
-			ggz_debug("CLIENT BUG: get_card_box_dim");
+			client_debug("CLIENT BUG: get_card_box_dim");
 	}
 }
 
@@ -281,7 +283,7 @@ void get_full_card_area(int p,
 			*xo = -2*XWIDTH;
 			break;
 		default:
-			ggz_debug("CLIENT BUG: get_full_card_area");
+			client_debug("CLIENT BUG: get_full_card_area");
 	}
 }
 
@@ -306,7 +308,7 @@ void get_card_offset(int p, float *w, float *h)
 			*h = CARDWIDTH/4.0;
 			break;
 		default:
-			ggz_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation(p));
+			client_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation(p));
 	}
 }
 
@@ -324,7 +326,7 @@ void get_card_size(int orientation, int *w, int *h)
 			*h = CARDWIDTH;
 			break;
 		default:
-			ggz_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation);		
+			client_debug("CLIENT BUG: get_card_size: unknown orientation %d.", orientation);		
 	}
 }
 

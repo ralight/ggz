@@ -29,6 +29,8 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
+#include "common.h"
+
 #include "main.h"
 #include "game.h"
 #include "easysock.h"
@@ -42,9 +44,9 @@ struct game_t game = {0};
 void game_send_bid(int bid)
 {
 	int status = 0;
-	ggz_debug("Sending bid to server: index %i.", bid);
-	if (es_write_int(game.fd, WH_RSP_BID) < 0 ||
-	    es_write_int(game.fd, bid) < 0)
+	client_debug("Sending bid to server: index %i.", bid);
+	if (es_write_int(ggzfd, WH_RSP_BID) < 0 ||
+	    es_write_int(ggzfd, bid) < 0)
 		status = -1;
 	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
@@ -57,11 +59,11 @@ void game_send_bid(int bid)
 void game_send_options(int options_cnt, int* options)
 {
 	int i, status = 0;
-	ggz_debug("Sending options to server.");
+	client_debug("Sending options to server.");
 
-	es_write_int(game.fd, WH_RSP_OPTIONS);
+	es_write_int(ggzfd, WH_RSP_OPTIONS);
 	for (i=0; i<options_cnt; i++)
-		if (es_write_int(game.fd, options[i]) < 0)
+		if (es_write_int(ggzfd, options[i]) < 0)
 			status = -1;
 	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
@@ -75,9 +77,9 @@ void game_play_card(card_t card)
 {
 	int status = 0;
 
-	ggz_debug("Sending play to server: %i %i %i.", card.face, card.suit, card.deck);
-	if (es_write_int(game.fd, WH_RSP_PLAY) < 0 ||
-	    es_write_card(game.fd, card) < 0)
+	client_debug("Sending play to server: %i %i %i.", card.face, card.suit, card.deck);
+	if (es_write_int(ggzfd, WH_RSP_PLAY) < 0 ||
+	    es_write_card(ggzfd, card) < 0)
 		status = -1;
 
 	statusbar_message( _("Sending play to server") );
@@ -94,26 +96,13 @@ static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID",
 void set_game_state(client_state_t state)
 {
 	if (state == game.state)
-		ggz_debug("Staying in state %d.", game.state);
+		client_debug("Staying in state %d.", game.state);
 	else {
-		ggz_debug("Changing state from %s to %s.", game_states[(int)game.state], game_states[(int)state]);
+		client_debug("Changing state from %s to %s.", game_states[(int)game.state], game_states[(int)state]);
 		game.state = state;
 	}
 }
 
-
-void ggz_debug(const char *fmt, ...)
-{
-#ifdef DEBUG
-	char buf[512];
-	va_list ap;
-
-	va_start(ap, fmt);
-        vsnprintf(buf, sizeof(buf), fmt, ap);
-	fprintf(stderr, "DEBUG: %s\n", buf);
-	va_end(ap);
-#endif /* DEBUG */
-}
 
 int ggz_snprintf(char* buf, int buf_sz, char *fmt, ...)
 {
@@ -131,7 +120,7 @@ int ggz_snprintf(char* buf, int buf_sz, char *fmt, ...)
 	if (result == -1 || result >= buf_sz) {
 		/* on failure, snprintf will return either -1 or the number of
 		 * butes that would have been written */
-		ggz_debug("Buffer overrun in snprintf.  String is %s.", buf);
+		client_debug("Buffer overrun in snprintf.  String is %s.", buf);
 		return buf_sz-1;
 	}
 	return result;

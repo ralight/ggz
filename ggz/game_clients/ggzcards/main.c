@@ -65,9 +65,8 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 
 	client_initialize();
-	game.fd = ggzfd;
 
-	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
+	gdk_input_add(ggzfd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* this shouldn't go here, but I see no better place right now */
 	fixed_font_style = gtk_rc_style_new ();
@@ -92,13 +91,13 @@ static int handle_message_global()
  	char *mark;
 	char *message;
 
-	if (es_read_string_alloc(game.fd, &mark) < 0)
+	if (es_read_string_alloc(ggzfd, &mark) < 0)
 		return -1;
-	if (es_read_string_alloc(game.fd, &message) < 0)
+	if (es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
 	assert( message );
 
-	ggz_debug("     Global message received, marked as '%s':%s", mark, message);
+	client_debug("     Global message received, marked as '%s':%s", mark, message);
 	/* TODO: show in interface */
 
 	table_set_message(mark, message);
@@ -113,10 +112,10 @@ static int handle_message_player()
 {
 	int p;
 	char *message;
-	if (es_read_int(game.fd, &p) < 0)
+	if (es_read_int(ggzfd, &p) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
-	if (es_read_string_alloc(game.fd, &message) < 0)
+	if (es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
 
 	table_set_player_message(p, message);
@@ -128,7 +127,7 @@ static int handle_message_player()
 
 static int handle_req_play()
 {
-	if (es_read_int(game.fd, &game.play_hand) < 0)
+	if (es_read_int(ggzfd, &game.play_hand) < 0)
 		return -1;
 
 	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
@@ -159,7 +158,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
 
-	if(es_read_int(game.fd, &op) < 0) {
+	if(es_read_int(ggzfd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
@@ -167,16 +166,16 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	status = 0;
 
 	if (op >= WH_REQ_NEWGAME && op <= WH_REQ_OPTIONS)
-		ggz_debug("Received opcode: %s", opstr[op]);
+		client_debug("Received opcode: %s", opstr[op]);
 	else
-		ggz_debug("Received opcode %d", op);
+		client_debug("Received opcode %d", op);
 
 	switch(op) {
 		case WH_REQ_NEWGAME:
 			/* TODO: ask player about this */
 			sleep(1);
-			status = es_write_int(game.fd, WH_RSP_NEWGAME);
-			ggz_debug("     Handled WH_REQ_NEWGAME: status is %d.", status);
+			status = es_write_int(ggzfd, WH_RSP_NEWGAME);
+			client_debug("     Handled WH_REQ_NEWGAME: status is %d.", status);
 			break;
 		case WH_MSG_NEWGAME:
 			/* TODO: don't make "new game" until here */
@@ -192,7 +191,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case WH_REQ_BID:
 			if (handle_bid_request() < 0)
-				ggz_debug("Error or bug: -1 returned by handle_bid_request."); /* TODO */
+				client_debug("Error or bug: -1 returned by handle_bid_request."); /* TODO */
 			break;
 		case WH_REQ_PLAY:
 			status = handle_req_play();
@@ -219,14 +218,14 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = handle_option_request();
 			break;
 		default:
-			ggz_debug("SERVER/CLIENT bug: unknown opcode received %d", op);
+			client_debug("SERVER/CLIENT bug: unknown opcode received %d", op);
 			status = -1;
 			break;
 	}
 
 	if(status == -1) {
-		ggz_debug("Lost connection to server?!");
-		close(game.fd);
+		client_debug("Lost connection to server?!");
+		close(ggzfd);
 		exit(-1);
 	}
 }
@@ -234,7 +233,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 static void game_init(void)
 {
-	ggz_debug("Entering game_init().");
+	client_debug("Entering game_init().");
 	statusbar_message( _("Waiting for server") );
 	game.state = WH_STATE_INIT;
 }
@@ -245,7 +244,7 @@ static int get_players(void)
 	int i, left=0, p, numplayers, different;
 	char *temp, t_name[17];
 
-	if (es_read_int(game.fd, &numplayers) < 0)
+	if (es_read_int(ggzfd, &numplayers) < 0)
 		return -1;
 
 	/* TODO: support for changing the number of players */
@@ -259,16 +258,16 @@ static int get_players(void)
 					g_free(game.players[p].hand.card);
 			g_free(game.players);
 		}
-		ggz_debug("get_players: (re)allocating game.players.");
+		client_debug("get_players: (re)allocating game.players.");
   		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
 		bzero(game.players, numplayers * sizeof(struct seat_t));
 		game.max_hand_size = 0; /* this forces reallocating later */
 	}
 
 	for(i = 0; i < numplayers; i++) {
-		if (es_read_int(game.fd, &game.players[i].seat) < 0)
+		if (es_read_int(ggzfd, &game.players[i].seat) < 0)
 			return -1;
-		if (es_read_string(game.fd, (char*)&t_name, 17) < 0)
+		if (es_read_string(ggzfd, (char*)&t_name, 17) < 0)
 			return -1;
 		if (i != 0 && game.num_players
 				&& strcmp(t_name, game.players[i].name)) {
@@ -303,7 +302,7 @@ static int get_gameover_status(void)
 	char msg[100] = "";
 	int mlen = 0;
 
-	if (es_read_int(game.fd, &num_winners) < 0)
+	if (es_read_int(ggzfd, &num_winners) < 0)
 		return -1;
 	assert(num_winners >= 0 && num_winners <= game.num_players);
 
@@ -312,7 +311,7 @@ static int get_gameover_status(void)
 		ggz_snprintf(msg, sizeof(msg), _("There was no winner") );
 	else {
 		for(; num_winners; num_winners--) {
-			if (es_read_int(game.fd, &winner) < 0)
+			if (es_read_int(ggzfd, &winner) < 0)
 				return -1;
 			assert(winner >= 0 && winner < game.num_players);
 			/* TODO: better grammar */
@@ -339,7 +338,7 @@ void statusbar_message(char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	ggz_debug("     Put up statusbar message: '%s'", msg);
+	client_debug("     Put up statusbar message: '%s'", msg);
 }
 
 void messagebar_message(char *msg)
@@ -354,7 +353,7 @@ void messagebar_message(char *msg)
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
-	ggz_debug("     Put up messagebar message: '%s'", msg);
+	client_debug("     Put up messagebar message: '%s'", msg);
 }
 
 /* TODO: this stuff should go in its own file */
@@ -367,7 +366,7 @@ on_mnu_messages_activate            (GtkMenuItem     *menuitem,
 	char *mark = user_data;
 	GtkWidget *dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
 
-	ggz_debug("Activating dialog for mark %s.", mark);
+	client_debug("Activating dialog for mark %s.", mark);
 
 	assert( dlg );
 
@@ -394,7 +393,7 @@ void menubar_message(char *mark, char *msg)
 
 	menu_item = gtk_object_get_data(GTK_OBJECT(dlg_main), mark);
 	if (menu_item == NULL) {
-		ggz_debug("Making new thingy for mark %s.", mark);
+		client_debug("Making new thingy for mark %s.", mark);
 		menu_item = gtk_menu_item_new_with_label (mark);
 		gtk_widget_set_name (menu_item, mark);
 		gtk_widget_ref (menu_item);
@@ -458,7 +457,7 @@ static void handle_badplay(void)
 	char *err_msg;
 	int p = game.play_hand;
 
-	if(es_read_string_alloc(game.fd, &err_msg) < 0)
+	if(es_read_string_alloc(ggzfd, &err_msg) < 0)
 		ggz_snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
 
 	/* Restore the cards the way they should be */
@@ -486,12 +485,12 @@ static int handle_play(void)
 
 	/* TODO: handle plays by self */
 
-	if(es_read_int(game.fd, &p) < 0
-	   || es_read_card(game.fd, &card) < 0)
+	if(es_read_int(ggzfd, &p) < 0
+	   || es_read_card(ggzfd, &card) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
 
-	ggz_debug("     Received play from player %d: %i %i %i.", p, card.face, card.suit, card.deck);
+	client_debug("     Received play from player %d: %i %i %i.", p, card.face, card.suit, card.deck);
 
 #ifdef ANIMATION
 	if(game.state == WH_STATE_ANIM)
@@ -514,10 +513,10 @@ static int handle_play(void)
 		break;
 	}
 	if (tc == -1) {
-		ggz_debug("SERVER/CLIENT BUG: unknown card played.  Hand is:");
+		client_debug("SERVER/CLIENT BUG: unknown card played.  Hand is:");
 		for (tc = 0; tc < hand->hand_size; tc++) {
 			card_t hcard = hand->card[tc];
-			ggz_debug("     Card %d is (%d %d %d).", tc, hcard.face, hcard.suit, hcard.deck);
+			client_debug("     Card %d is (%d %d %d).", tc, hcard.face, hcard.suit, hcard.deck);
 		}
 		return -1;
 	}
@@ -541,7 +540,7 @@ static int handle_msg_table(void)
 
 	assert(game.players);
 	for (p=0; p<game.num_players; p++)
-		if (es_read_card(game.fd, &game.players[p].table_card) < 0)
+		if (es_read_card(ggzfd, &game.players[p].table_card) < 0)
 			status = -1;
 
 	/* TODO: verify that the table cards have been removed from the hands */
@@ -565,7 +564,7 @@ static int get_trick_winner(void)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	if(es_read_int(game.fd, &p) < 0)
+	if(es_read_int(ggzfd, &p) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
 
