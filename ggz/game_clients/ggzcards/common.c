@@ -1,4 +1,4 @@
-/* $Id: common.c 2084 2001-07-24 00:01:53Z jdorje $ */
+/* $Id: common.c 2212 2001-08-23 22:19:38Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -72,8 +72,7 @@ static int es_write_card(int fd, card_t card)
 
 int client_initialize(void)
 {
-	ggz_client_init("GGZCards");
-	ggzfd = ggz_client_connect();
+	ggzfd = ggzmod_connect();
 	if (ggzfd < 0)
 		exit(-1);
 	game.state = WH_STATE_INIT;
@@ -83,7 +82,7 @@ int client_initialize(void)
 
 void client_quit(void)
 {
-	ggz_client_quit();
+	ggzmod_disconnect();
 }
 
 

@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
+ * $Id: main.c 2212 2001-08-23 22:19:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,8 +70,7 @@ int main(int argc, char *argv[])
 {
 	gtk_init(&argc, &argv);
 
-	ggz_client_init("LaPocha");
-	game.fd = ggz_client_connect();
+	game.fd = ggzmod_connect();
 	if (game.fd < 0)
 		exit(-1);
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	ggz_client_quit();
+	ggzmod_disconnect();
 	return 0;
 }
 
