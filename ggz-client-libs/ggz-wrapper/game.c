@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6493 2004-12-15 21:16:47Z josef $
+ * $Id: game.c 6500 2004-12-16 00:20:36Z josef $
  *
  * Functions for handling game events
  *
@@ -45,16 +45,19 @@ static GGZGame *game = NULL;
 static GGZGameType *gametype = NULL;
 static int gameindex = -1;
 static int fd = -1;
-static char *user;
+static const char *user;
 static int readserver = 1;
+static int usebot = 0;
 
-void game_init(GGZModule *module, GGZGameType *type, int index, char *nick)
+void game_init(GGZModule *module, GGZGameType *type, int index, const char *nick, int bot)
 {
-	user = nick;
 	if (game) {
 		fprintf(stderr, "You're already playing a game!\n");
 		return;
 	}
+
+	user = nick;
+	usebot = bot;
 
 	gametype = type;
 	gameindex = index;
@@ -81,10 +84,8 @@ void game_destroy(void)
 
 static void game_process(void)
 {
-fprintf(stderr, "*game_process*\n");
 	if (game)
 		ggzcore_game_read_data(game);
-fprintf(stderr, "*game_process end*\n");
 }
 
 
@@ -165,21 +166,23 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 	GGZRoom *room;
 	GGZTable *table;
 
-
 	room = ggzcore_server_get_cur_room(server);
 
 	if(gameindex < 0) {
 		table = ggzcore_table_new();
 		ggzcore_table_init(table, gametype, "Fun with gaim-ggz", 2);
-		if(user!=NULL)
-			ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, user);
-		else
-			ggzcore_table_set_seat(table, 1, GGZ_SEAT_OPEN, NULL);
-
+		if(usebot) {
+			ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
+		} else {
+			if(user != NULL) {
+					ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, user);
+			} else {
+				ggzcore_table_set_seat(table, 1, GGZ_SEAT_OPEN, NULL);
+			}
+		}
 		ggzcore_room_launch_table(room, table);
 		ggzcore_table_free(table);
-	}
-	else {
+	} else {
 		ggzcore_room_join_table(room, gameindex, 0);
 	}
 

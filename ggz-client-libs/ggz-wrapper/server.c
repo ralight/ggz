@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6493 2004-12-15 21:16:47Z josef $
+ * $Id: server.c 6500 2004-12-16 00:20:36Z josef $
  *
  * Functions for handling server events
  *
@@ -278,12 +278,20 @@ static void checkplayer()
 	GGZGameType *gt;
 	GGZModule *module;
 	int i, table_id, found;
+	int bot;
 
 	if(playing) return;
 	alarm(15);
 
+	bot = 0;
 	room = ggzcore_server_get_cur_room(server);
-	if(dst_nick) {
+
+	if(!dst_nick) {
+		table_id = -1;
+	} else if(!strcmp(dst_nick, "")) {
+		table_id = -1;
+		bot = 1;
+	} else {
 		found = 0;
 		for(i = 0; i < ggzcore_room_get_num_players(room); i++) {
 				player = ggzcore_room_get_nth_player(room, i);
@@ -303,8 +311,6 @@ static void checkplayer()
 			return;
 		}
 		table_id = ggzcore_table_get_id(table);
-	} else {
-		table_id = -1;
 	}
 
 	gt = ggzcore_room_get_gametype(room);
@@ -319,7 +325,7 @@ static void checkplayer()
 	printf(_("checkplayer: We're playing...\n"));
 	alarm(0);
 	playing = 1;
-	game_init(module, gt, table_id, NULL);
+	game_init(module, gt, table_id, NULL, bot);
 	return;
 }
 
@@ -400,8 +406,10 @@ static GGZHookReturn server_list_types(GGZServerEvent id, void* event_data, void
 	GGZRoom *room;
 	GGZGameType *type;
 	const char *name;
+	int found;
 
 	num = ggzcore_server_get_num_rooms(server);
+	found = 0;
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
@@ -409,8 +417,14 @@ static GGZHookReturn server_list_types(GGZServerEvent id, void* event_data, void
 			name = ggzcore_gametype_get_name(type);
 			if (name && game_name && strcmp(name, game_name) == 0) {
 				ggzcore_server_join_room(server, i);
+				found = 1;
+				break;
 			}
 		}
+	}
+	if (!found) {
+		fprintf(stderr, _("Game type %s not found on the server\n"), game_name);
+		exit(0);
 	}
 	return GGZ_HOOK_OK;
 }
