@@ -825,6 +825,8 @@ static int player_list_types(GGZPlayer* player, int fd)
 		if (es_write_int(fd, i) < 0
 		    || es_write_string(fd, info[i].name) < 0
 		    || es_write_string(fd, info[i].version) < 0
+		    || es_write_string(fd, info[i].p_engine) < 0
+		    || es_write_string(fd, info[i].p_version) < 0
 		    || es_write_char(fd, info[i].player_allow_mask) < 0
 		    || es_write_char(fd, info[i].bot_allow_mask) < 0)
 			return GGZ_REQ_DISCONNECT;
