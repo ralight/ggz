@@ -1,4 +1,4 @@
-Announcing the release of The Gnu Gaming Zone v0.0.1!
+Announcing the release of The Gnu Gaming Zone v0.0.2!
 
 The Gnu Gaming Zone (GGZ) is a an open-sourced Internet gaming center.
 Similar to other online gaming sites, players login and sit at tables
@@ -6,25 +6,19 @@ where they can play their favorite games and chat with other players.
 GGZ support multiple rooms with varying skill levels, and records your
 statistics so you can see how you match up against other players.
 
-This is the first developers release of the code for GGZ.  It is meant
-solely for feedback and information purposes.  It probably won't run
-correctly, and may not even compile.  Most of the features are absent.
+This is the second developers release of the code for GGZ.  It is
+still meant mainly for feedback and information purposes.  Many of the
+features are still absent, but a few areas have had significant
+improvement.
 
-Then why release?  Because we're holding to the Free Software
-guideline of "Release Early.  Release Often." We'd like to get more
-eyeballs on the code than just our own. Also, since GGZ is designed to
-be an infrastructure for game developers to incorporate their games
-into, this gives them a chance to looks things over.
-
-For this first release, the important things to observe are in the main
-GGZ server.  The basic architecture for handling players and game
-tables is in place.  I have not done a large amount of client or game server
-coding. Therefore, in order to test the GGZ server, I hacked my spades
-client and server to work.  Please don't flame me too much for the messiness
-:)
-
-There is much more information about the server architecture in the
-doc/html directory (or doc/txt if you prefer a plaintext document).
-It is a lengthy document, but it should answer many questions about
-the way the GGZ server works (or will work).
-
+Changes since the last version:
+- Server now parses conf file 
+- Completely redone chat system
+- Now supports multiple "rooms"
+- New logging/debugging facility
+- New game type: Tic-Tac-Toe!
+- Now possible to leave and rejoin table
+- Server can send configurable MOTD
+- No longer requires game modules to give up stdin/stdout
+- Now possible to do 'make install'
+- Lots of bugfixes
