@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 6389 2004-11-16 06:42:10Z jdorje $
+ * $Id: msgbox.c 6637 2005-01-11 03:24:10Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -119,7 +119,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *vbox;
 	GtkWidget *buttonbox;
 	GtkWidget *hbox;
-	GtkWidget *icon;
+	GtkWidget *icon = NULL;
 	GtkWidget *dialogwidget;
 	GtkWidget *btnok;
 	GtkWidget *btncancel;
