@@ -68,6 +68,14 @@ function stats_players($id, $lookup)
 	endif;
 }
 
+function stats_gamesheader($id, $lookup)
+{
+	$game = $lookup;
+
+	echo "<img src='/db/ggzicons/games/$game.png' width=16 height=16>\n";
+	echo $lookup;
+}
+
 function stats_games($id, $lookup)
 {
 	global $ggzuser;
