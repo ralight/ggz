@@ -22,9 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 7
+#define PROTOCOL_VERSION 8
 
-/* Combat Protocol Version 0.0.5
+/* Combat Protocol Version 0.1
  *
  * g : ggz server (gserv)
  * s : combat server (cserv)
@@ -70,7 +70,10 @@
  * The options_string is written like this:
  * (++ is concatenation)
  *
- * map_width ++ map_height ++ map_data ++ army_data ++ \0
+ * map_width ++ map_height ++ map_data ++ army_data ++ game_options ++ \0
+ *
+ * To each value in the string is then added 1 (except to the closing \0), so
+ * that the result looks like a string, and then sent using es_write_string
  *
  * map_data: The terrain data. Composed of width*height bytes like:
  * 
@@ -109,6 +112,24 @@
  * 	9 -> Number of colonels
  * 	10 -> Number of generals
  * 	11 -> Number of marshalls
+ *
+ * 	game_options: To avoid problems between wrong versions of the protocol,
+ * 	all the game options are enclosed in packets, like this:
+ *
+ * 	(byte)OPTION_IDENTIFER ++ (string)OPTION_DATA ++ \0
+ *
+ * 	The client then receives each packet and reads the OPTION_IDENTIFIER. If it
+ * 	is a know one, then it reads the OPTION_DATA and does what is appropriated.
+ * 	If it isn't, then it should tell the user (probably with a msgbox), and try
+ * 	to run the game (for some options it should be able to run without problem)
+ *
+ * OPTIONS_IDENTIFIERS:
+ *
+ *  01h -> Map Name
+ *
+ *    It's the name of this map, so that the client may know which is the
+ *    default name when saving it. THe OPTION_DATA is a string (*including* a
+ *    closing \0) with the name of the map
  * 	 
  * The server then check for the validity of this options. Things to
  * check:
@@ -269,8 +290,10 @@
 #define U_GENERAL		 0x0A	// 1010
 #define U_MARSHALL	 0x0B	// 1011
 #define U_UNKNOWN    0x0C	// 1100
-#define U_EMPTY 		 0x0F // 1111 
+#define U_EMPTY      0x0F // 1111 
 
+// Options codes
+#define O_NAME       0x01 // Name of the map
 
 // Takes a OWNER number and returns a code to be added to U/T
 // Note that player 0 is stored as 0001 (as 0000 must be no player)
@@ -344,21 +367,22 @@
 
 // Tile struct
 typedef struct tile_struct {
-	unsigned char type;
-	unsigned char unit;
+  unsigned char type;
+  unsigned char unit;
 } tile;
 
 // Game struct
 typedef struct combat_game_struct {
-	tile *map;
-	char width;
-	char height;
-	char **army;
-	int state;
-	int turn;
+  tile *map;
+  char width;
+  char height;
+  char **army;
+  char *name;
+  int state;
+  int turn;
 } combat_game;
 
 // Commom functions
 char *combat_options_string_write(char *, combat_game *);
-void combat_options_string_read(char *, combat_game *, int);
+int combat_options_string_read(char *, combat_game *, int);
 int combat_check_move(combat_game *, int, int);

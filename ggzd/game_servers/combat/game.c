@@ -43,6 +43,7 @@ void game_init() {
 	cbt_game.height = 0;
 	cbt_game.state = CBT_STATE_INIT;
 	cbt_game.turn = 0;
+  cbt_game.name = NULL;
 }
 	
 int game_handle_ggz(int ggz_fd, int *p_fd) {
