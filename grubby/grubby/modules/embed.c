@@ -73,8 +73,8 @@ static Guru *gurumod_exec(Guru *message)
 {
 	char *script = NULL;
 	int i;
-	/* int status; */
 #ifdef EMBED_RUBY
+	int status;
 	VALUE answer, tmp;
 #endif
 
