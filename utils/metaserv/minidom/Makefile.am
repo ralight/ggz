@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3766 2002-04-06 07:43:25Z jdorje $
+# $Id: Makefile.am 3825 2002-04-07 10:47:10Z dr_maux $
 
 SUBDIRS = .
 
@@ -9,7 +9,7 @@ EXTRA_DIST = README.minidom metasrv.xml
 noinst_LIBRARIES = libminidom.a
 libminidom_a_SOURCES = minidom.c minidom.h
 
-bin_PROGRAMS = minidom
+noinst_PROGRAMS = minidom
 minidom_SOURCES = main.c
 minidom_LDADD = libminidom.a
 
