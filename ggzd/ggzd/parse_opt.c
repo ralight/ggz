@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3078 2002-01-12 06:19:00Z jdorje $
+ * $Id: parse_opt.c 3079 2002-01-12 06:26:11Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -445,24 +445,15 @@ static void parse_game(char *name, char *dir)
 	/* FIXME: this data is never free'd.  This isn't really a problem,
 	   but... */
 	game_info->name = ggz_conf_read_string(ch, "GameInfo",
-					      "Name", "<Unnamed Game>");
-
+					       "Name", "<Unnamed Game>");
 	game_info->version = ggz_conf_read_string(ch, "GameInfo",
 						  "Version", "");
-
 	game_info->desc = ggz_conf_read_string(ch, "GameInfo",
 					       "Description", "");
-	
-	strval = ggz_conf_read_string(ch, "GameInfo", "Author", NULL);
-	if(strval) {
-		strncpy(game_info->author, strval, MAX_GAME_AUTH_LEN);
-		free(strval);
-	}
-	strval = ggz_conf_read_string(ch, "GameInfo", "Homepage", NULL);
-	if(strval) {
-		strncpy(game_info->homepage, strval, MAX_GAME_WEB_LEN);
-		free(strval);
-	}
+	game_info->author = ggz_conf_read_string(ch, "GameInfo",
+						 "Author", "");
+	game_info->homepage = ggz_conf_read_string(ch, "GameInfo",
+						   "Homepage", "");
 
 	/* [LaunchInfo] */
 	strval = ggz_conf_read_string(ch, "LaunchInfo", "ExecutablePath", NULL);
@@ -489,11 +480,8 @@ static void parse_game(char *name, char *dir)
 		       &game_info->n_args, &game_info->args);
 
 	/* [Protocol] */
-	strval = ggz_conf_read_string(ch, "Protocol", "Engine", NULL);
-	if(strval) {
-		strncpy(game_info->p_engine, strval, MAX_GAME_PROTOCOL_LEN);
-		free(strval);
-	}
+	game_info->p_engine = ggz_conf_read_string(ch, "Protocol",
+						   "Engine", "");
 	game_info->p_version = ggz_conf_read_string(ch, "Protocol",
 						    "Version", "");
 

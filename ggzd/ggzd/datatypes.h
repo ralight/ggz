@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 3078 2002-01-12 06:19:00Z jdorje $
+ * $Id: datatypes.h 3079 2002-01-12 06:26:11Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -76,12 +76,12 @@ typedef struct GameInfo {
 	/* Protocol data - the protocol engine is the name of the
 	   protocol, and the version is the protocol version.  These
 	   need not match up with the gametype. */
-	char p_engine[MAX_GAME_PROTOCOL_LEN];
+	char *p_engine;
 	char *p_version;
 	
-	char *desc; /* Game description string. */
-	char author[MAX_GAME_AUTH_LEN];
-	char homepage[MAX_GAME_WEB_LEN];
+	char *desc;     /* Game description string. */
+	char *author;   /* String containing name(s) of author(s) */
+	char *homepage; /* Contains a web address for the game */
 	unsigned char player_allow_mask;
 	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
