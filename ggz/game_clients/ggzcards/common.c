@@ -1,4 +1,4 @@
-/* $Id: common.c 2076 2001-07-23 08:13:23Z jdorje $ */
+/* $Id: common.c 2078 2001-07-23 08:27:12Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -255,7 +255,6 @@ static int handle_msg_hand()
 	/* Zap our hand */
 	for (i = 0; i < game.max_hand_size; i++)
 		hand->card[i] = UNKNOWN_CARD;
-	hand->selected_card = -1;	/* index into the array */
 
 	/* First find out how many cards in this hand */
 	if (es_read_int(ggzfd, &hand->hand_size) < 0)

@@ -1,4 +1,4 @@
-/* $Id: common.h 2077 2001-07-23 08:20:56Z jdorje $ */
+/* $Id: common.h 2078 2001-07-23 08:27:12Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -75,7 +75,6 @@ struct hand_t
 {
 	int hand_size;		/**< the number of cards in the hand */
 	card_t *card;		/**< the list of cards */
-	char selected_card;	/**< the currently selected (highlighted) card (index) */
 };
 
 typedef struct seat_t

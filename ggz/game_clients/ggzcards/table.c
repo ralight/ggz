@@ -1,4 +1,4 @@
-/* $Id: table.c 2077 2001-07-23 08:20:56Z jdorje $ */
+/* $Id: table.c 2078 2001-07-23 08:27:12Z jdorje $ */
 /*
  * File: table.c
  * Author: Rich Gade, Jason Short
@@ -63,6 +63,8 @@ static GtkWidget *l_name[MAX_NUM_PLAYERS] = {NULL};
 static GtkWidget *label[MAX_NUM_PLAYERS] = {NULL}; /* player labels; put in place of old bid/tricks/score */
 /* static GtkWidget *msglabel = NULL; */ /* global label; put in place of old l_trump */
 static gboolean table_initialized = FALSE;
+
+static int selected_card = -1;	/* the card currently selected from the playing hand */
 
 #ifdef ANIMATION
 static struct {
@@ -241,6 +243,8 @@ void table_setup()
 	/* Display the buffer */
 	if (game.num_players >0 && game.max_hand_size > 0)
 		table_show_table(0, 0, get_table_width(), get_table_height());
+
+	selected_card = -1;
 }
 
 void table_set_player_message(int p, const char* message)
@@ -348,7 +352,7 @@ void table_handle_click_event(GdkEventButton *event)
 	for(target=0; target<game.players[p].hand.hand_size; target++) {
 		x1 = x + .5 + (target * xdiff);
 		y1 = y + .5 + (target * ydiff);
-		if (target == game.players[p].hand.selected_card) {
+		if (target == selected_card) {
 			/* account for the selected card being offset */
 			x1 += xo;
 			y1 += yo;
@@ -374,8 +378,8 @@ static void table_card_clicked(int card)
 
 	client_debug("table_card_clicked: Card %d clicked.", card);
 
-	if(card == game.players[p].hand.selected_card) {
-		game.players[p].hand.selected_card = -1;
+	if(card == selected_card) {
+		selected_card = -1;
 
 		/* Start the graphic animation */
 		table_card_play(p, card);
@@ -387,7 +391,7 @@ static void table_card_clicked(int card)
 		game_play_card(game.players[p].hand.card[card]);
 	} else {
 		/* Pop the card forward and select it */
-		game.players[p].hand.selected_card = card;
+		selected_card = card;
 		table_display_hand(p);
 	}
 }
@@ -664,7 +668,7 @@ void table_display_hand(int p)
 			continue;
 		x = cx + 0.5 + (i * ow);
 		y = cy + 0.5 + (i * oh);
-		if (i==game.players[p].hand.selected_card) {
+		if (i==selected_card) {
 			x += cxo;
 			y += cyo;
 		}
