@@ -18,6 +18,7 @@ written which checks for a proper environment for both GGZ programs and
 external programs using GGZ libraries.
 
 The following macros are relevant:
+----------------------------------
 
 AC_GGZ_INIT
   Initializes the build system. This is not strictly necessary, but includes
@@ -46,6 +47,32 @@ AC_GGZ_GGZDMOD
 AC_GGZ_INTL
   Sets up standard tools for internationalization.
   Takes no arguments.
+
+AC_GGZ_SERVER
+  Searches location where to install game server room and game files to.
+  Again, one argument is possible:
+  * ignore
+    Gives only a warning if no ggzd installation is found.
+
+AC_GGZ_CONFIG
+  Looks up the tool ggz-config which is used to install game client information
+  files. One argument is possible:
+  * ignore
+    Ignores missing ggz-config, in case GGZ support should be disabled at
+    compile time.
+
+How to use conditional macros:
+------------------------------
+
+When using the 'ignore' keyword, it is up to configure.in to act accordingly.
+At a minimum, the "lowercase" variables must be checked.
+Example for libggz:
+LIBGGZ_INCLUDES, LIBGGZ_LDFLAGS, LIB_GGZ
+  -> "uppercase" variables intended to be used in Makefile.am.
+     They are empty if the associated check failed.
+libggz_includes, libggz_libraries
+  -> "lowercase" variables intended to be used in configure.in.
+     They're also empty when a check failed, but can be catched thereafter.
 
 Josef, 25.09.2002
 
