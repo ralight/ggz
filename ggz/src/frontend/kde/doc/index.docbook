@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.1//EN"
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN"
 "dtd/kdex.dtd" [
   <!ENTITY kggz "<application>KGGZ</application>">
+  <!ENTITY ggz "GGZ Gaming Zone">
   <!ENTITY kappname "&kggz;">
   <!ENTITY package "ggz-kde-client">
   <!ENTITY % addindex "IGNORE">
@@ -18,7 +19,7 @@
 <firstname>Josef</firstname>
 <surname>Spillner</surname>
 <affiliation>
-<address><email>dr_maux@users.sourceforge.net</email></address>
+<address><email>josef@ggzgamingzone.org</email></address>
 </affiliation>
 </author>
 
@@ -27,25 +28,25 @@
 </authorgroup>
 
 <copyright>
-<year>2002</year>
+<year>2002-2005</year>
 <holder>Josef Spillner</holder>
 </copyright>
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2002-09-15</date>
-<releaseinfo>0.10.01</releaseinfo>
+<date>2005-03-11</date>
+<releaseinfo>0.20.00</releaseinfo>
 
 <abstract>
 <para>
-&kggz; is &kde;'s Core Client for the GGZ Gaming Zone.
+&kggz; is &kde;'s Core Client for the &ggz;.
 This handbook describes how to use it to satisfy everyone's gaming needs.
 </para>
 </abstract>
 
 <keywordset>
 <keyword>GGZ</keyword>
-<keyword>GGZ Gaming Zone</keyword>
+<keyword>&ggz;</keyword>
 <keyword>ggz-kde-client</keyword>
 <keyword>kggz</keyword>
 </keywordset>
@@ -55,20 +56,40 @@ This handbook describes how to use it to satisfy everyone's gaming needs.
 <title>Introduction</title>
 
 <para>
-&kggz; is &kde; Core Client for the GGZ Gaming Zone.
+&kggz; is &kde; Core Client for the &ggz;.
 It is a central place where people can play games, chat and have much fun.
 </para>
 
-<sect1 id="starting">
-<title>Launching &kggz;</title>
+<sect1 id="intro-overview">
+<title>&ggz; for &kde; users</title>
 
 <para>
-You will find the entry <guimenuitem>Games/GGZ Gaming Zone/KGGZ</guimenuitem>. This will
-launch &kggz;, and offer you a connection dialog.
-Alternatively, it can be launched with a connection URI such as ggz://username@ggz.snafu.de.
+There are several GGZ applications available for the gamer who is using
+the &kde; desktop. Beside &kggz;, which is the main chat-and-play application,
+there is also the game quick launcher <application>GGZap</application>,
+the tournament calendaring tool <application>Competition Calendar</application>,
+the graphical chatbot configuration dialog <application>kgrubby</application>,
+a configuration module for the control center, and much more. Have a look
+at the individual handbooks for each application to find out more.
 </para>
 
 </sect1>
+
+<sect1 id="intro-starting">
+<title>Launching &kggz;</title>
+
+<para>
+In the &kde; menu, you will find the entry
+<guimenuitem>Games/GGZ Gaming Zone/Internet Gaming Center (KGGZ)</guimenuitem>.
+This will launch &kggz;, and offer you a connection dialog, so you can log
+into a GGZ server.
+Alternatively, the program can be launched with a connection URI such as
+<replaceable>ggz://username@live.ggzgamingzone.org</replaceable> as command line
+argument.
+</para>
+
+</sect1>
+
 </chapter>
 
 <chapter id="connecting">
@@ -78,11 +99,45 @@ Alternatively, it can be launched with a connection URI such as ggz://username@g
 <title>The connection dialog</title>
 
 <para>
-This handy dialog manages user/server profiles.
-By default, a few connection profiles should be available, but more can be
-added of course.
-The name of the GGZ server (hostname), username and (when attempting to do a
-regular login) password must be given to &kggz;.
+In order to connect to a GGZ server, the connection dialog is invoked
+and offers several connection options as well as server profiles.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="connection.png"/></imageobject>
+<textobject>
+<phrase>The connection dialog with a custom profile</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+Connection options include the encryption of the connection (if supported
+by the server), and the ability to launch the server locally.
+Profiles on the other hand keep track of the GGZ server hostname,
+the username, the password (depending on the login type), and the
+login type which can be either of anonymous, regular or first time.
+Anonymous users can log in without password, but will not have any
+game scores or statistics recorded. First time users will be sent their
+password upon successful first login.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="profiles.png"/></imageobject>
+<textobject>
+<phrase>Connection profiles</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+A couple of profiles is preconfigured already, although more can always
+be added. Using the <guimenuitem>GGZ metaserver</guimenuitem> means that
+the hostname to connect to is determined automatically and randomly.
+It can also be used to view the list of known GGZ servers, and connect to one
+of them. The second profile, <guimenuitem>Default stable server</guimenuitem>,
+defaults to live.ggzgamingzone.org, and should always work.
+The third standard profile, <guimenuitem>LAN game</guimenuitem>, can be used
+to automatically detect a GGZ server which has been set up on the local
+network.
 </para>
 
 </sect1>
@@ -91,11 +146,34 @@ regular login) password must be given to &kggz;.
 <title>Login</title>
 
 <para>
-When the connection succeeds (i.e. GGZ client and server protocol versions
+When the connection succeeded (i.e. GGZ client and server protocol versions
 match), the login procedure takes place. If it succeeds as well, the first room
-is entered, which will almost always be the Lounge, which has no associated
-game. From there, a game-specific room might be searched.
+is entered automatically, which will almost always be the Lounge, which has no
+game associated with it and is thus a pure chat room. From there, a game-specific
+room might be looked up in the room list. In most cases, the GGZ server will
+also send a message of the day (MOTD), which is displayed first.
 </para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="motd.png"/></imageobject>
+<textobject>
+<phrase>Message of the day</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+The KGGZ room window consists of a chat display, a room list left to it
+and a list of active tables above it. The icon in the upper left corner
+is specific for the gametype associated with each room.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="chatview.png"/></imageobject>
+<textobject>
+<phrase>Chat window, player list and table list</phrase>
+</textobject>
+</mediaobject>
+
 </sect1>
 
 </chapter>
@@ -108,8 +186,16 @@ game. From there, a game-specific room might be searched.
 
 <para>
 Simply type some text into the input box and press enter to send it over the
-wire. For private messages, type /msg (playername) (text). A list of all chat
-commands can be fetched by typing /help.
+wire. For private messages, type <replaceable>/msg (playername) (text)</replaceable>.
+A list of all chat commands can be fetched by typing <replaceable>/help</replaceable>.
+</para>
+
+<para>
+Each player in the playerlist is displayed with a lag indicator, so you can find
+out about the connection quality, and a buddy icon which suggests whether the
+playertype is regular player, guest, administrator or chat bot. Additionally,
+users of &kggz; can mark each player as either friend or foe, and ignore chat
+messages from the foes.
 </para>
 </sect1>
 
@@ -117,10 +203,20 @@ commands can be fetched by typing /help.
 <title>Chat bots</title>
 
 <para>
-There are chat bots on most GGZ servers. You can speak with them using another
-set of commands, which might also be requested from the bot by typing:
-(botname) help.
+There are chat bots on most GGZ servers, often named grubby.
+You can speak with them using another set of commands, which might also be
+requested from the bot by typing: <replaceable>(botname) help</replaceable>.
+Most bot commands only work in private conversation mode. To make it
+easier to communicate, a visual frontend is available.
 </para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="grubby.png"/></imageobject>
+<textobject>
+<phrase>The visual grubby dialog</phrase>
+</textobject>
+</mediaobject>
+
 </sect1>
 
 </chapter>
@@ -133,17 +229,24 @@ set of commands, which might also be requested from the bot by typing:
 
 <para>
 When being in a game room, the game associated with this room can be played.
-Click Launch game in the game menu to launch a one at a new table.
-Alternatively, you can join an existing table if it allows this and if there's
-a free seat on it. Some games also support spectators, so feel free to watch
-the other players anonymously while they play.
+Click <guimenuitem>Launch game</guimenuitem> in the game menu to launch one at
+a new table. Alternatively, you can join an existing table if it allows this
+and if there is a free seat on it. Some games also support spectators, so feel
+free to watch the other players anonymously while they play.
 </para>
 
 <para>
 When launching a new game, a dialog pops up which can be used to control the
 maximum number of players and bots. Seat reservations for friend players or
-tournaments can also be handled here.
+tournaments can also be handled here by right-clicking on any seat.
 </para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="launch.png"/></imageobject>
+<textobject>
+<phrase>Table configuration during game launch</phrase>
+</textobject>
+</mediaobject>
 
 <para>
 When multiple game frontends are available, one can be chosen before the game
@@ -154,9 +257,32 @@ frontend is chosen.
 <para>
 Sometimes, games crash or fubar for some odd reason. Such a game can be
 cancelled then by clicking at the appropriate menu entry. Some games support
-leaving during gameplay, others will be stopped if leaving before they're
-finished.
+leaving during gameplay, others will be stopped if the player leaves before
+they are finished.
 </para>
+
+</sect1>
+</chapter>
+
+<chapter id="tipstricks">
+<title>Tips and Tricks</title>
+
+<sect1 id="tipstricks-watcher">
+<title>Panel watcher</title>
+
+<para>
+If there are not many players online, &kggz; can be minimized and a panel
+icon informs about new players or chat activity. With a simple click
+on the icon, the whole chat window can be restored again.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="panel.png"/></imageobject>
+<textobject>
+<phrase>Panel watcher</phrase>
+</textobject>
+</mediaobject>
+
 </sect1>
 </chapter>
 
@@ -175,14 +301,14 @@ Program copyright:
 <itemizedlist>
 <title>Developers</title>
 <listitem>
-<para>Josef Spillner <email>dr_maux@users.sourceforge.net</email></para>
+<para>Josef Spillner <email>josef@ggzgamingzone.org</email></para>
 </listitem>
 
 </itemizedlist>
 
 <para>
-Documentation copyright 2002 Josef Spillner
-<email>dr_maux@users.sourceforge.net</email>
+Documentation copyright 2002-2005 Josef Spillner
+<email>josef@ggzgamingzone.org</email>
 </para>
 <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
 
@@ -205,7 +331,14 @@ Documentation copyright 2002 Josef Spillner
 <title>Requirements</title>
 
 <para>
-In order to successfully use &kggz;, you need &kde; 3.x.
+In order to successfully use &kggz;, you need &kde; 3.3 or 3.4 installed.
+Additionally, the &ggz; libraries <quote>libggzcore</quote> installed,
+including its dependencies <quote>libggzmod</quote> and <quote>libggz</quote>.
+</para>
+
+<para>
+For LAN server detection, the <quote>howl</quote> library must be installed
+also.
 </para>
 
 </sect1>
@@ -223,3 +356,12 @@ In order to successfully use &kggz;, you need &kde; 3.x.
 
 </book>
 
+<!--
+chatview.png
+connection.png
+grubby.png
+launch.png
+motd.png
+panel.png
+profiles.png
+-->
