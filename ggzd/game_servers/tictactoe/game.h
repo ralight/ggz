@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "../libggzmod/ggz_server.h"
+
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server */
@@ -65,8 +67,8 @@ struct ttt_game_t {
 };
 
 void game_init(void);
-int game_handle_ggz(int ggz_fd, int* p_fd);
-int game_handle_player(int num);
+void game_handle_ggz(ggzd_event_t event, void *data);
+void game_handle_player(ggzd_event_t event, void *data);
 
 int game_send_seat(int seat);
 int game_send_players(void);

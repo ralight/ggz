@@ -8,15 +8,14 @@ ggzdexecmod_PROGRAMS = ggzd.tictactoe
 ggzdgame_DATA = tictactoe.dsc
 ggzdroom_DATA = tictactoe.room
 
-ggzd_tictactoe_SOURCES = ggz.c \
-		         ggz.h \
-		         main.c \
+ggzd_tictactoe_SOURCES = main.c \
 		         game.c \
-                         game.h \
-		         protocols.h
+                         game.h
 
 
-ggzd_tictactoe_LDADD = $(LDADD)
+ggzd_tictactoe_LDADD = $(LDADD) ../libggzmod/libggzdmod.a
+
+ggzd_reversi_DEPENDENCIES = ../libggzmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

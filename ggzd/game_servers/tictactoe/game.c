@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2264 2001-08-26 21:31:23Z jdorje $
+ * $Id: game.c 2284 2001-08-27 19:50:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,10 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ggz.h>
-#include <game.h>
-#include <protocols.h>
 #include <easysock.h>
+
+#include "game.h"
 
 /* Global game variables */
 struct ttt_game_t ttt_game;
@@ -52,85 +51,57 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-int game_handle_ggz(int ggz_fd, int* p_fd)
+void game_handle_ggz(ggzd_event_t event, void *data)
 {
-	int op, seat, status = -1;
-
-	if (es_read_int(ggz_fd, &op) < 0)
-		return -1;
-
-	switch (op) {
-
-	case REQ_GAME_LAUNCH:
-		if (ggz_game_launch() == 0)
-			status = game_update(TTT_EVENT_LAUNCH, NULL);
+	switch (event) {
+	case GGZ_EVENT_LAUNCH:
+		game_update(TTT_EVENT_LAUNCH, NULL);
 		break;
-		
-	case REQ_GAME_JOIN:
-		if (ggz_player_join(&seat, p_fd) == 0) {
-			status = game_update(TTT_EVENT_JOIN, &seat);
-			status = 1;
-		}
+	case GGZ_EVENT_JOIN:
+		game_update(TTT_EVENT_JOIN, (int*)data);
 		break;
-
-	case REQ_GAME_LEAVE:
-		if ( (status = ggz_player_leave(&seat, p_fd)) == 0) {
-			game_update(TTT_EVENT_LEAVE, &seat);
-			status = 2;
-		}
+	case GGZ_EVENT_LEAVE:
+		game_update(TTT_EVENT_LEAVE, (int*)data);
 		break;
-		
-	case RSP_GAME_OVER:
-		status = 3; /* Signal safe to exit */
-		break;
-
 	default:
-		/* Unrecognized opcode */
-		status = -1;
+		ggzd_debug("Unexpected GGZ event %d.", event);
 		break;
 	}
-
-	return status;
 }
 
 
 /* Handle message from player */
-int game_handle_player(int num)
+void game_handle_player(ggzd_event_t event, void *data)
 {
-	int fd, op, status, move;
+	int num = *(int*)data;
+	int fd, op, move;
 
-	fd = ggz_seats[num].fd;
+	fd = ggzd_get_player_socket(num);
 	
 	if (es_read_int(fd, &op) < 0)
-		return -1;
+		return;
 
 	switch (op) {
 
 	case TTT_SND_MOVE:
-		if ( (status = game_handle_move(num, &move)) == 0)
+		if (game_handle_move(num, &move) == 0)
 			game_update(TTT_EVENT_MOVE, &move);
 		break;
-		
 	case TTT_REQ_SYNC:
-		status = game_send_sync(num);
+		game_send_sync(num);
 		break;
-
 	default:
-		/* Unrecognized opcode */
-		status = -1;
-		break;
+		ggzd_debug("Unrecognized player opcode %d.", op);
 	}
-
-	return status;
 }
 
 
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
-	int fd = ggz_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
-	ggz_debug("Sending player %d's seat num", seat);
+	ggzd_debug("Sending player %d's seat num", seat);
 
 	if (es_write_int(fd, TTT_MSG_SEAT) < 0
 	    || es_write_int(fd, seat) < 0)
@@ -146,19 +117,19 @@ int game_send_players(void)
 	int i, j, fd;
 	
 	for (j = 0; j < 2; j++) {
-		if ( (fd = ggz_seats[j].fd) == -1)
+		if ( (fd = ggzd_get_player_socket(j)) == -1)
 			continue;
 
-		ggz_debug("Sending player list to player %d", j);
+		ggzd_debug("Sending player list to player %d", j);
 
 		if (es_write_int(fd, TTT_MSG_PLAYERS) < 0)
 			return -1;
 	
 		for (i = 0; i < 2; i++) {
-			if (es_write_int(fd, ggz_seats[i].assign) < 0)
+			if (es_write_int(fd, ggzd_get_seat_status(i)) < 0)
 				return -1;
-			if (ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0) 
+			if (ggzd_get_seat_status(i) != GGZ_SEAT_OPEN
+			    && es_write_string(fd, ggzd_get_player_name(i)) < 0)
 				return -1;
 		}
 	}
@@ -170,13 +141,13 @@ int game_send_players(void)
 int game_send_move(int num, int move)
 {
 	int opponent = (num + 1) % 2;
-	int fd = ggz_seats[opponent].fd;
+	int fd = ggzd_get_player_socket(opponent);
 	
 	/* If player is a computer, don't need to send */
 	if (fd == -1)
 		return 0;
 
-	ggz_debug("Sending player %d's move to player %d", num, opponent);
+	ggzd_debug("Sending player %d's move to player %d", num, opponent);
 
 	if (es_write_int(fd, TTT_MSG_MOVE) < 0
 	    || es_write_int(fd, move) < 0)
@@ -189,9 +160,9 @@ int game_send_move(int num, int move)
 /* Send out board layout */
 int game_send_sync(int num)
 {	
-	int i, fd = ggz_seats[num].fd;
+	int i, fd = ggzd_get_player_socket(num);
 
-	ggz_debug("Handling sync for player %d", num);
+	ggzd_debug("Handling sync for player %d", num);
 
 	if (es_write_int(fd, TTT_SND_SYNC) < 0
 	    || es_write_char(fd, ttt_game.turn) < 0)
@@ -211,10 +182,10 @@ int game_send_gameover(char winner)
 	int i, fd;
 	
 	for (i = 0; i < 2; i++) {
-		if ( (fd = ggz_seats[i].fd) == -1)
+		if ( (fd = ggzd_get_player_socket(i)) == -1)
 			continue;
 
-		ggz_debug("Sending game-over to player %d", i);
+		ggzd_debug("Sending game-over to player %d", i);
 
 		if (es_write_int(fd, TTT_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -230,7 +201,7 @@ int game_move(void)
 {
 	int move, num = ttt_game.turn;
 	
-	if (ggz_seats[num].assign == GGZ_SEAT_BOT) {
+	if (ggzd_get_seat_status(num) == GGZ_SEAT_BOT) {
 		move = game_bot_move(num);
 		game_update(TTT_EVENT_MOVE, &move);
 	}
@@ -244,7 +215,7 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggz_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 
 	if (es_write_int(fd, TTT_REQ_MOVE) < 0)
 		return -1;
@@ -256,10 +227,10 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num, int* move)
 {
-	int fd = ggz_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 	char status;
 	
-	ggz_debug("Handling move for player %d", num);
+	ggzd_debug("Handling move for player %d", num);
 	if (es_read_int(fd, move) < 0)
 		return -1;
 
@@ -547,10 +518,10 @@ int game_update(int event, void* data)
 		game_send_seat(seat);
 		game_send_players();
 
-		if (!ggz_seats_open()) {
+		if (!ggzd_seats_open()) {
 			if (ttt_game.turn == -1)
 				ttt_game.turn = 0;
-			else 
+			else
 				game_send_sync(seat);
 			
 			ttt_game.state = TTT_STATE_PLAYING;
@@ -571,7 +542,7 @@ int game_update(int event, void* data)
 		
 		move = *(int*)data;
 
-		ggz_debug("Player %d in square %d", ttt_game.turn, move);
+		ggzd_debug("Player %d in square %d", ttt_game.turn, move);
 		ttt_game.board[move] = ttt_game.turn;
 		ttt_game.move_count++;
 		game_send_move(ttt_game.turn, move);
@@ -584,7 +555,7 @@ int game_update(int event, void* data)
 			ttt_game.state = TTT_STATE_DONE;
 			game_send_gameover(victor);
 			/* Notify GGZ server of game over */
-			ggz_done();
+			return 1;
 		}
 		break;
 	}
