@@ -330,6 +330,7 @@ int ggzcore_net_get_fd(void);
 
 unsigned int ggzcore_room_get_num(void);
 char* ggzcore_room_get_name(const unsigned int);
+char* ggzcore_room_get_desc(const unsigned int);
 char** ggzcore_room_get_names(void);
 
 unsigned int ggzcore_player_get_num(void);

@@ -144,11 +144,12 @@ static void _ggzcore_user_login(GGZEventID id, void* event_data, void* user_data
  */
 static void _ggzcore_user_list_rooms(GGZEventID id, void* event_data, void* user_data)
 {
+
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_rooms");	
 	/* FIXME: get options from event_data */
 	/* -1 means request rooms of all types */
-	/* For now, always set verbose to FALSE */
-	_ggzcore_net_send_list_rooms(-1, 0);
+	/* For now, always set verbose to TRUE */
+	_ggzcore_net_send_list_rooms(-1, 1);
 }
 
 

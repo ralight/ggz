@@ -39,12 +39,15 @@ struct _GGZClientState {
 	/* Room to which we are transitioning */
 	int trans_room;
 
+	/* Verbosity level for rooms */
+	char room_verbose;
+	
 	/* Current table we're at */
 	int table;
 
 	/* Table to which we are transitioning */
 	int trans_table;
-
+	
 	/* Server/user profile */
 	GGZProfile profile;
 };

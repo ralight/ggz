@@ -31,6 +31,7 @@
 #include <easysock.h>
 #include <player.h>
 #include <room.h>
+#include <state.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -266,6 +267,9 @@ void _ggzcore_net_send_list_rooms(const int type, const char verbose)
 	if (es_write_int(ggz_server_sock, REQ_LIST_ROOMS) == 0
 	    && es_write_int(ggz_server_sock, type) == 0)
 		es_write_char(ggz_server_sock, verbose);
+
+	/* Save verbosity state for later */
+	_ggzcore_state.room_verbose = verbose;
 }
 
 
@@ -457,25 +461,35 @@ static void _ggzcore_net_handle_logout(void)
 static void _ggzcore_net_handle_list_rooms(void)
 {
 	int i, num, id, game;
-	char name[256];
+	char *name;
+	char *desc = NULL;
 	
 	if (es_read_int(ggz_server_sock, &num) < 0)
 		return;
-
+	
 	_ggzcore_room_list_clear();
 
 	for (i = 0; i < num; i++) {
 		if (es_read_int(ggz_server_sock, &id) < 0
-		    || es_read_string(ggz_server_sock, name, sizeof(name)) < 0
+		    || es_read_string_alloc(ggz_server_sock, &name) < 0
 		    || es_read_int(ggz_server_sock, &game) < 0)
 			return;
+		
+		if (_ggzcore_state.room_verbose &&
+		    es_read_string_alloc(ggz_server_sock, &desc) < 0)
+			return;
 
-		_ggzcore_room_list_add(id, name, game, NULL);
+		_ggzcore_room_list_add(id, name, game, desc);
 		ggzcore_debug(GGZ_DBG_NET, "Room: %d plays %d %s", id, game, 
 			      name);
+
+		/* Free allocated memory */
+		if (desc)
+			free(desc);
+		if (name)
+			free(name);
 	}
 	
-	/* FIXME: read in information and actually pass back to client */
 	ggzcore_event_enqueue(GGZ_SERVER_LIST_ROOMS, NULL, NULL);
 }
 
