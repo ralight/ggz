@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2679 2001-11-05 21:32:38Z jdorje $
+ * $Id: ggzdmod.c 2683 2001-11-07 03:37:23Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -146,6 +146,34 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	return ggzdmod;
 }
 
+/* I'm not sure when the seats should be freed.  Should it be done
+   in ggzdmod_disconnect, or just in ggzdmod_free?  --JDS */
+static void ggzdmod_free_seats(_GGZdMod * ggzdmod)
+{
+	int p;
+	/* FIXME: will this work for ggzd?  It uses a different thread to
+	   monitor each player FD, so it might be Bad to close them without
+	   checking with the other threads.  --JDS */
+
+	if (!ggzdmod->seats)
+		return;
+	
+	/* close all file descriptors */
+	for (p = 0; p < ggzdmod->num_seats; p++) {
+		if (ggzdmod->seats[p].fd != -1) {
+			close(ggzdmod->seats[p].fd);
+			ggzdmod->seats[p].fd = -1;
+		}
+		if (ggzdmod->seats[p].name) {
+			ggz_free(ggzdmod->seats[p].name);
+			ggzdmod->seats[p].name = NULL;
+		}
+	}
+	ggz_free(ggzdmod->seats);
+	ggzdmod->seats = NULL;
+	ggzdmod->num_seats = 0;
+}
+
 /* Frees (deletes) a ggzdmod object */
 void ggzdmod_free(GGZdMod * mod)
 {
@@ -158,6 +186,8 @@ void ggzdmod_free(GGZdMod * mod)
 	
 	if (ggzdmod->fd != -1)
 		(void)ggzdmod_disconnect(ggzdmod);
+	
+	ggzdmod_free_seats(ggzdmod);
 
 	ggzdmod->type = -1;
 	
@@ -412,18 +442,22 @@ static void game_launch(_GGZdMod * ggzdmod)
 		return;
 	}
 
-	ggzdmod->seats = calloc(ggzdmod->num_seats, sizeof(*ggzdmod->seats));
+	ggzdmod->seats = ggz_malloc(ggzdmod->num_seats * sizeof(*ggzdmod->seats));
 	if (ggzdmod->seats == NULL)
 		return;
 
 	for (i = 0; i < ggzdmod->num_seats; i++) {
+		char* name;
 		if (es_read_int(ggzdmod->fd, &ggzdmod->seats[i].type) < 0)
 			return;
 		ggzdmod->seats[i].fd = -1;
 		if (ggzdmod->seats[i].type == GGZ_SEAT_RESV
 		    && es_read_string_alloc(ggzdmod->fd,
-					    &ggzdmod->seats[i].name))
+					    &name))
 			return;
+		/* This is a hack so that we use libggz memory management for everything. */
+		ggzdmod->seats[i].name = ggz_strdup(name);
+		free(name);
 	}
 
 	for (i = 0; i < ggzdmod->num_seats; i++)
@@ -466,13 +500,18 @@ static void game_launch(_GGZdMod * ggzdmod)
 static void game_join(_GGZdMod * ggzdmod)
 {
 	int seat;
+	char *name;
 
 	if (es_read_int(ggzdmod->fd, &seat) < 0 ||
-	    es_read_string_alloc(ggzdmod->fd, &ggzdmod->seats[seat].name) < 0
+	    es_read_string_alloc(ggzdmod->fd, &name) < 0
 	    || es_read_fd(ggzdmod->fd, &ggzdmod->seats[seat].fd) < 0
 	    || es_write_int(ggzdmod->fd, RSP_GAME_JOIN) < 0
 	    || es_write_char(ggzdmod->fd, 0))
 		return;
+	
+	/* This is a hack so that we use libggz memory management for everything. */
+	ggzdmod->seats[seat].name = ggz_strdup(name);
+	free(name);
 
 	ggzdmod->seats[seat].type = GGZ_SEAT_PLAYER;
 	ggzdmod_log(ggzdmod, "%s on %d in seat %d", ggzdmod->seats[seat].name,
@@ -501,12 +540,13 @@ static void game_leave(_GGZdMod * ggzdmod)
 		status = -1;
 	else {
 		ggzdmod->seats[seat].fd = -1;
-		free(ggzdmod->seats[seat].name);
 		ggzdmod->seats[seat].name = NULL;
 		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
 		ggzdmod_log(ggzdmod, "Removed %s from seat %d",
 			    ggzdmod->seats[seat].name, seat);
 	}
+	
+	free(ggzdmod->seats[seat].name);
 
 	if (es_write_int(ggzdmod->fd, RSP_GAME_LEAVE) < 0 ||
 	    es_write_char(ggzdmod->fd, status) < 0 || status != 0)
@@ -844,12 +884,11 @@ int ggzdmod_connect(GGZdMod * mod)
 	}
 }
 
-
 int ggzdmod_disconnect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	int response, p;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd == -1) {
+	int response;
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd < 0 ) {
 		return -1;
 	}
 
@@ -886,24 +925,9 @@ int ggzdmod_disconnect(GGZdMod * mod)
 
 	}
 	
-	/* FIXME: will this work for ggzd?  It uses a different thread to
-	   monitor each player FD, so it might be Bad to close them without
-	   checking with the other threads.  --JDS */
-			
-	/* close all file descriptors */
-	for (p = 0; p < ggzdmod->num_seats; p++) {
-		if (ggzdmod->seats[p].fd != -1) {
-			close(ggzdmod->seats[p].fd);
-			ggzdmod->seats[p].fd = -1;
-		}
-		if (ggzdmod->seats[p].name) {
-			ggz_free(ggzdmod->seats[p].name);
-			ggzdmod->seats[p].name = NULL;
-		}
-	}
-	free(ggzdmod->seats);
-	ggzdmod->seats = NULL;
-		
+	/* We no longer free the seat data here.  It will stick around until
+	   ggzdmod_free is called or it is used again. */
+
 	/* Clean up the ggzdmod object.  In theory it could now reconnect for
 	   a new game. */
 	close(ggzdmod->fd);
