@@ -221,8 +221,7 @@ int _ggzcore_net_connect(struct _GGZNet *net)
 	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
 	
 	if (net->fd >= 0)
-		/* FIXME: return 0 once we're done transitioning */
-		return net->fd; /* success */
+		return 0;  /* success */
 	else
 		return -1; /* error */
 }
@@ -254,14 +253,15 @@ int _ggzcore_net_get_fd(struct _GGZNet *net)
 }
 
 
-void _ggzcore_net_disconnect(const unsigned int fd)
+void _ggzcore_net_disconnect(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
-	close(fd);
+	close(net->fd);
+	net->fd = -1;
 }
 
 
-int _ggzcore_net_send_login(const unsigned int fd, 
+int _ggzcore_net_send_login(struct _GGZNet *net, 
 			     GGZLoginType type, 
 			     const char* login, 
 			     const char* pass)
@@ -271,21 +271,21 @@ int _ggzcore_net_send_login(const unsigned int fd,
 	switch (type) {
 	case GGZ_LOGIN:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
-		if (es_write_int(fd, REQ_LOGIN) < 0
-		    || es_write_string(fd, login) < 0
-		    || es_write_string(fd, pass) < 0)
+		if (es_write_int(net->fd, REQ_LOGIN) < 0
+		    || es_write_string(net->fd, login) < 0
+		    || es_write_string(net->fd, pass) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_GUEST:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
-		if (es_write_int(fd, REQ_LOGIN_ANON) < 0
-		    || es_write_string(fd, login) < 0)
+		if (es_write_int(net->fd, REQ_LOGIN_ANON) < 0
+		    || es_write_string(net->fd, login) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_NEW:
 		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
-		if (es_write_int(fd, REQ_LOGIN_NEW) < 0
-		    || es_write_string(fd, login) < 0)
+		if (es_write_int(net->fd, REQ_LOGIN_NEW) < 0
+		    || es_write_string(net->fd, login) < 0)
 			status = -1;
 		break;
 	}
@@ -294,17 +294,17 @@ int _ggzcore_net_send_login(const unsigned int fd,
 }
 
 
-int _ggzcore_net_send_logout(const unsigned int fd)
+int _ggzcore_net_send_logout(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
-	return es_write_int(fd, REQ_LOGOUT);
+	return es_write_int(net->fd, REQ_LOGOUT);
 }
 
 
-int _ggzcore_net_send_motd(const unsigned int fd)
+int _ggzcore_net_send_motd(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
-	return es_write_int(fd, REQ_MOTD);
+	return es_write_int(net->fd, REQ_MOTD);
 }
 
 
@@ -358,93 +358,93 @@ int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int room_num
 }
 
 
-int _ggzcore_net_send_list_players(const unsigned int fd)
+int _ggzcore_net_send_list_players(struct _GGZNet *net)
 {	
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
-	return es_write_int(fd, REQ_LIST_PLAYERS);
+	return es_write_int(net->fd, REQ_LIST_PLAYERS);
 }
 
 
-int _ggzcore_net_send_list_tables(const unsigned int fd, const int type, const char global)
+int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const char global)
 {	
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TABLES");	
-	if (es_write_int(fd, REQ_LIST_TABLES) < 0
-	    || es_write_int(fd, type) < 0
-	    || es_write_char(fd, global) < 0)
+	if (es_write_int(net->fd, REQ_LIST_TABLES) < 0
+	    || es_write_int(net->fd, type) < 0
+	    || es_write_char(net->fd, global) < 0)
 		return -1;
 
 	return 0;
 }
 
 
-int _ggzcore_net_send_chat(const unsigned int fd, 
+int _ggzcore_net_send_chat(struct _GGZNet *net, 
 			   const GGZChatOp op, 
 			   const char* player, 
 			   const char* msg)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
-	if (es_write_int(fd, REQ_CHAT) < 0
-	    || es_write_char(fd, op) < 0)
+	if (es_write_int(net->fd, REQ_CHAT) < 0
+	    || es_write_char(net->fd, op) < 0)
 		return -1;
 	
 	if (op & GGZ_CHAT_M_PLAYER)
-		if (es_write_string(fd, player) < 0)
+		if (es_write_string(net->fd, player) < 0)
 			return -1;
 	
 	if (op & GGZ_CHAT_M_MESSAGE)
-		if (es_write_string(fd, msg) < 0)
+		if (es_write_string(net->fd, msg) < 0)
 			return -1;
 
 	return 0;
 }
 
 
-int _ggzcore_net_send_table_launch(const unsigned int fd,
+int _ggzcore_net_send_table_launch(struct _GGZNet *net,
 				   const int type,
 				   char *desc,
 				   const int num_seats)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LAUNCH");
-	if (es_write_int(fd, REQ_TABLE_LAUNCH) < 0
-	    || es_write_int(fd, type) < 0
-	    || es_write_string(fd, desc) < 0
-	    || es_write_int(fd, num_seats) < 0)
+	if (es_write_int(net->fd, REQ_TABLE_LAUNCH) < 0
+	    || es_write_int(net->fd, type) < 0
+	    || es_write_string(net->fd, desc) < 0
+	    || es_write_int(net->fd, num_seats) < 0)
 		return -1;
 
 	return 0;
 }
 
 
-int _ggzcore_net_send_table_join(const unsigned int fd, const unsigned int num)
+int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_JOIN");
-	if (es_write_int(fd, REQ_TABLE_JOIN) < 0
-	    || es_write_int(fd, num) < 0)
+	if (es_write_int(net->fd, REQ_TABLE_JOIN) < 0
+	    || es_write_int(net->fd, num) < 0)
 		return -1;
 
 	return 0;
 }
 
 
-int _ggzcore_net_send_table_leave(const unsigned int fd)
+int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LEAVE");
-	return es_write_int(fd, REQ_TABLE_LEAVE);
+	return es_write_int(net->fd, REQ_TABLE_LEAVE);
 }
 
 
-int _ggzcore_net_send_seat(const unsigned int fd, 
+int _ggzcore_net_send_seat(struct _GGZNet *net, 
 			   GGZSeatType seat, 
 			   char *name)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending seat");
-	if (es_write_int(fd, seat) < 0)
+	if (es_write_int(net->fd, seat) < 0)
 		return -1;
 
 	switch (seat) {
 	case GGZ_SEAT_PLAYER:
 	case GGZ_SEAT_RESERVED:
-		es_write_string(fd, name);
+		es_write_string(net->fd, name);
 		break;
 	case GGZ_SEAT_BOT:
 		break;
@@ -456,15 +456,38 @@ int _ggzcore_net_send_seat(const unsigned int fd,
 }
 
 
-int _ggzcore_net_send_game_data(const unsigned int fd, int size, char *buffer)
+int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_GAME: %d bytes from game", size);
-	if (es_write_int(fd, REQ_GAME) < 0
-	    || es_write_int(fd, size) < 0
-	    || es_writen(fd, buffer, size) < 0)
+	if (es_write_int(net->fd, REQ_GAME) < 0
+	    || es_write_int(net->fd, size) < 0
+	    || es_writen(net->fd, buffer, size) < 0)
 		return -1;
 
 	return 0;
+}
+
+
+int _ggzcore_net_data_is_pending(struct _GGZNet *net)
+{
+	int pending = 0;
+	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
+
+	if (net && net->fd != -1) {
+	
+	ggzcore_debug(GGZ_DBG_POLL, "Checking for net events");	
+	if ( (pending = poll(fd, 1, 0)) < 0) {
+		if (errno == EINTR) 
+			/* Ignore interruptions */
+			pending = 0;
+		else 
+			ggzcore_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
+	}
+	else if (pending)
+		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
+	}
+
+	return pending;
 }
 
 
@@ -972,7 +995,7 @@ static void _ggzcore_net_handle_logout(struct _GGZNet *net)
 		return;
 	}
 
-	_ggzcore_net_disconnect(net->fd);
+	_ggzcore_net_disconnect(net);
 	net->fd = -1;
 
 	_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGOUT_OK);

@@ -70,12 +70,6 @@ static unsigned int _ggzcore_num_events = sizeof(_ggzcore_server_events)/sizeof(
    GGZ server connection */
 struct _GGZServer {
 	
-	/* Host name of server */
-	char *host;
-
-	/* Port on which GGZ server in running */
-	unsigned int port;
-
 	/* Network object for doing net IO */
 	struct _GGZNet *net;
 
@@ -88,9 +82,6 @@ struct _GGZServer {
 	/* Password for this server (optional) */
 	char* password;
 
-	/* File descriptor for communication with server */
-	int fd;
-	
 	/* Current state */
 	GGZStateID state;
 	
@@ -455,7 +446,7 @@ int ggzcore_server_motd(GGZServer *server)
 	if (!server || server->state < GGZ_STATE_LOGGED_IN)
 		return -1;
 
-	status = _ggzcore_net_send_motd(server->fd);
+	status = _ggzcore_net_send_motd(server->net);
 
 	if (status < 0)
 		_ggzcore_server_net_error(server, NULL);
@@ -526,7 +517,7 @@ int ggzcore_server_logout(GGZServer *server)
 	    || server->state == GGZ_STATE_LOGGING_OUT)
 		return -1;
 
-	status = _ggzcore_net_send_logout(server->fd);
+	status = _ggzcore_net_send_logout(server->net);
 
 	if (status < 0)
 		_ggzcore_server_net_error(server, NULL);
@@ -539,27 +530,12 @@ int ggzcore_server_logout(GGZServer *server)
 
 int ggzcore_server_data_is_pending(GGZServer *server)
 {
-	int status = 0;
-	struct pollfd fd[1] = {{server->fd, POLLIN, 0}};
+	int pending = 0;
 	
-	if (!server)
-		return 0;
-
-	if (server->fd == -1)
-		return 0;
-
-	ggzcore_debug(GGZ_DBG_POLL, "Checking for net events");	
-	if ( (status = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR) 
-			/* Ignore interruptions */
-			status = 0;
-		else 
-			ggzcore_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
-	}
-	else if (status)
-		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
-
-	return status;
+	if (server && server->net && server->state != GGZ_STATE_OFFLINE)
+		pending = _ggzcore_net_data_is_pending(server->net);
+	
+	return pending;
 }
 
 
@@ -613,19 +589,20 @@ void _ggzcore_server_reset(struct _GGZServer *server)
 
 int _ggzcore_server_connect(struct _GGZServer *server)
 {
-	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
-	server->fd = _ggzcore_net_connect(server->net);
+	int status;
 	
-	if (server->fd < 0) {
+	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
+	status = _ggzcore_net_connect(server->net);
+	
+	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, 
 				      strerror(errno));
-		return -1;
 	}
-	else {
+	else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
-		return 0;
-	}
+	
+	return status;
 }
 
 			    
@@ -636,7 +613,7 @@ int _ggzcore_server_login(struct _GGZServer *server)
 	ggzcore_debug(GGZ_DBG_SERVER, "Login (%d), %s, %s", server->type, 
 		      server->handle, server->password);
 
-	status = _ggzcore_net_send_login(server->fd, server->type, 
+	status = _ggzcore_net_send_login(server->net, server->type, 
 					 server->handle, server->password);
 
 	if (status < 0)
@@ -652,7 +629,7 @@ int _ggzcore_server_list_players(GGZServer *server)
 {
 	int status;
 
-	status = _ggzcore_net_send_list_players(server->fd);
+	status = _ggzcore_net_send_list_players(server->net);
 	
 	if (status < 0)
 		_ggzcore_server_net_error(server, NULL);
@@ -665,7 +642,7 @@ int _ggzcore_server_list_tables(GGZServer *server, const int type, const char gl
 {
 	int status;
 
-	status = _ggzcore_net_send_list_tables(server->fd, type, global);
+	status = _ggzcore_net_send_list_tables(server->net, type, global);
 
 	if (status < 0)
 		_ggzcore_server_net_error(server, NULL);
@@ -744,7 +721,7 @@ int _ggzcore_server_chat(GGZServer *server,
 {
 	int status;
 
-	status = _ggzcore_net_send_chat(server->fd, opcode, player, msg);
+	status = _ggzcore_net_send_chat(server->net, opcode, player, msg);
 
 	if (status < 0)
 		_ggzcore_server_net_error(server, NULL);
@@ -762,7 +739,7 @@ int _ggzcore_server_send_game_data(struct _GGZServer *server, char *buffer)
 	size = *(int*)buffer;
 	buf_offset = buffer + sizeof(size);
 
-	return _ggzcore_net_send_game_data(server->fd, size, buf_offset);
+	return _ggzcore_net_send_game_data(server->net, size, buf_offset);
 }
 
 
@@ -775,12 +752,12 @@ int _ggzcore_server_launch_table(struct _GGZServer *server, struct _GGZTable *ta
 	type = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
 	desc = _ggzcore_table_get_desc(table);
 	num_seats = _ggzcore_table_get_num_seats(table);
-	_ggzcore_net_send_table_launch(server->fd, type, desc, num_seats);
+	_ggzcore_net_send_table_launch(server->net, type, desc, num_seats);
 	
 	for (i = 0; i < num_seats; i++) {
 		seat = _ggzcore_table_get_nth_player_type(table, i);
 		name = _ggzcore_table_get_nth_player_name(table, i);
-		_ggzcore_net_send_seat(server->fd, seat, name);
+		_ggzcore_net_send_seat(server->net, seat, name);
 	}
 	
 	return 0;
@@ -789,14 +766,14 @@ int _ggzcore_server_launch_table(struct _GGZServer *server, struct _GGZTable *ta
 
 int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num)
 {
-	return _ggzcore_net_send_table_join(server->fd, num);
+	return _ggzcore_net_send_table_join(server->net, num);
 
 }
 
 
 int _ggzcore_server_leave_table(struct _GGZServer *server)
 {
-	return _ggzcore_net_send_table_leave(server->fd);
+	return _ggzcore_net_send_table_leave(server->net);
 }
 
 
@@ -809,13 +786,6 @@ void _ggzcore_server_clear(struct _GGZServer *server)
 		_ggzcore_net_free(server->net);
 		server->net = NULL;
 	}
-
-	if (server->host) {
-		free(server->host);
-		server->host = NULL;
-	}
-	server->port = 0;
-	server->fd = -1;
 
 	if (server->handle) {
 		free(server->handle);
@@ -955,8 +925,7 @@ GGZHookReturn _ggzcore_server_event(GGZServer *server,
 void _ggzcore_server_net_error(GGZServer *server, char* message)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Network error: disconnecting");
-	_ggzcore_net_disconnect(server->fd);
-	server->fd = -1;
+	_ggzcore_net_disconnect(server->net);
 	_ggzcore_server_change_state(server, GGZ_TRANS_NET_ERROR);
 	_ggzcore_server_event(server, GGZ_NET_ERROR, message);
 }
@@ -965,8 +934,7 @@ void _ggzcore_server_net_error(GGZServer *server, char* message)
 void _ggzcore_server_protocol_error(GGZServer *server, char* message)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Protocol error: disconnecting");
-	_ggzcore_net_disconnect(server->fd);
-	server->fd = -1;
+	_ggzcore_net_disconnect(server->net);
 	_ggzcore_server_change_state(server, GGZ_TRANS_PROTO_ERROR);
 	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, message);
 }
