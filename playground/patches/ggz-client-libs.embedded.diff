@@ -4,7 +4,7 @@ RCS file: /cvs/ggz/src/ggzcore/game.c,v
 retrieving revision 1.33
 diff -u -r1.33 game.c
 --- ggzcore/game.c	22 Mar 2004 17:05:08 -0000	1.33
-+++ ggzcore/game.c	7 Jan 2005 22:13:24 -0000
++++ ggzcore/game.c	8 Jan 2005 14:57:25 -0000
 @@ -140,12 +140,15 @@
  int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module)
  {
@@ -65,7 +65,7 @@ RCS file: /cvs/ggz/src/ggzcore/ggzcore.h,v
 retrieving revision 1.131
 diff -u -r1.131 ggzcore.h
 --- ggzcore/ggzcore.h	15 Dec 2004 17:51:58 -0000	1.131
-+++ ggzcore/ggzcore.h	7 Jan 2005 22:13:24 -0000
++++ ggzcore/ggzcore.h	8 Jan 2005 14:57:25 -0000
 @@ -86,7 +86,8 @@
  typedef enum {
  	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */
@@ -82,7 +82,7 @@ RCS file: /cvs/ggz/src/ggzcore/init.c,v
 retrieving revision 1.26
 diff -u -r1.26 init.c
 --- ggzcore/init.c	27 Jan 2004 18:11:10 -0000	1.26
-+++ ggzcore/init.c	7 Jan 2005 22:13:24 -0000
++++ ggzcore/init.c	8 Jan 2005 14:57:25 -0000
 @@ -56,6 +56,9 @@
  	if (options.flags & GGZ_OPT_MODULES)
  		_ggzcore_module_setup();
@@ -99,7 +99,7 @@ RCS file: /cvs/ggz/src/ggzcore/module.c,v
 retrieving revision 1.26
 diff -u -r1.26 module.c
 --- ggzcore/module.c	22 Mar 2004 17:05:09 -0000	1.26
-+++ ggzcore/module.c	7 Jan 2005 22:13:24 -0000
++++ ggzcore/module.c	8 Jan 2005 14:57:25 -0000
 @@ -43,6 +43,7 @@
  static GGZList *module_list;
  static unsigned int num_modules;
@@ -133,7 +133,7 @@ RCS file: /cvs/ggz/src/ggzcore/module.h,v
 retrieving revision 1.6
 diff -u -r1.6 module.h
 --- ggzcore/module.h	22 Mar 2004 17:05:09 -0000	1.6
-+++ ggzcore/module.h	7 Jan 2005 22:13:24 -0000
++++ ggzcore/module.h	8 Jan 2005 14:57:25 -0000
 @@ -69,6 +69,9 @@
  int _ggzcore_module_setup(void);
  unsigned int _ggzcore_module_get_num(void);
@@ -150,7 +150,7 @@ RCS file: /cvs/ggz-client-libs/ggzmod/ggzmod.c,v
 retrieving revision 1.23
 diff -u -r1.23 ggzmod.c
 --- ggzmod/ggzmod.c	12 Nov 2004 00:14:36 -0000	1.23
-+++ ggzmod/ggzmod.c	7 Jan 2005 22:13:24 -0000
++++ ggzmod/ggzmod.c	8 Jan 2005 14:57:26 -0000
 @@ -74,6 +74,7 @@
  static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
  static int send_game_launch(GGZMod * ggzmod);
@@ -180,6 +180,30 @@ diff -u -r1.23 ggzmod.c
  		}
  		
  		if (send_game_launch(ggzmod) < 0) {
+@@ -686,7 +695,7 @@
+ 
+ 	} else {
+ #ifdef HAVE_SOCKETPAIR
+-		ggzmod->fd = 3;
++		ggzmod->fd = 103;
+ #else /* Winsock implementation: see game_fork(). */
+ 		char buf[100];
+ 		int port, sock;
+@@ -932,11 +941,11 @@
+ 
+ 		/* debugging message??? */
+ 
+-		/* Now we copy one end of the socketpair to fd 3 */
+-		if (fd_pair[1] != 3) {
++		/* Now we copy one end of the socketpair to fd 103 */
++		if (fd_pair[1] != 103) {
+ 			/* We'd like to send an error message if either of
+ 			   these fail, but we can't.  --JDS */
+-			if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
++			if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
+ 				ggz_error_sys_exit("dup failed");
+ 		}
+ 
 @@ -982,6 +991,62 @@
  	CloseHandle(pi.hThread);
  	ggzmod->process = pi.hProcess;
@@ -230,10 +254,10 @@ diff -u -r1.23 ggzmod.c
 +	}
 +#endif
 +
-+	if (fd_pair[1] != 3) {
++	if (fd_pair[1] != 103) {
 +		/* We'd like to send an error message if either of
 +		   these fail, but we can't.  --JDS */
-+		if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
++		if (dup2(fd_pair[1], 103) != 103 || close(fd_pair[1]) < 0)
 +			ggz_error_sys_exit("dup failed");
 +	}
 +
