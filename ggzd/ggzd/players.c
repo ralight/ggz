@@ -366,6 +366,18 @@ static int player_updates(GGZPlayer* player)
 }
 
 
+int player_get_room(GGZPlayer *player)
+{
+	int room;
+
+	pthread_rwlock_rdlock(&player->lock);
+	room = player->room;
+	pthread_rwlock_unlock(&player->lock);
+
+	return room;
+}
+
+
 /*
  * player_table_launch() handles REQ_TABLE_LAUNCH request from the
  * client.  It reads in the table data and seat assigments from the

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2473 2001-09-14 00:23:14Z bmh $
+ * $Id: net.c 2479 2001-09-14 21:10:19Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -372,8 +372,12 @@ int net_send_player_list_error(GGZNetIO *net, char status)
 
 int net_send_player_list_count(GGZNetIO *net, int count)
 {
+	int room;
+
+	room = player_get_room(net->player);
+	
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
-	_net_send_line(net, "<LIST TYPE='player' ROOM=''>");
+	_net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
 	return 0;
 }
 
@@ -402,8 +406,12 @@ int net_send_table_list_error(GGZNetIO *net, char status)
 
 int net_send_table_list_count(GGZNetIO *net, int count)
 {
+	int room;
+
+	room = player_get_room(net->player);
+
 	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
-	_net_send_line(net, "<LIST TYPE='table' ROOM=''>");
+	_net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
 	return 0;
 }
 
@@ -499,6 +507,9 @@ int net_send_table_leave(GGZNetIO *net, char status)
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 {
 	char *action = NULL;
+	int room;
+
+	room = player_get_room(net->player);
 	
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
@@ -508,8 +519,8 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 		action = "add";
 		break;
 	}
-	_net_send_line(net, "<UPDATE TYPE='player' ACTION='%s' ROOM=''>",
-		       action);
+	_net_send_line(net, "<UPDATE TYPE='player' ACTION='%s' ROOM='%d'>",
+		       action, room);
 	_net_send_line(net, "<PLAYER ID='%s' TYPE='guest' />", name);
 	_net_send_line(net, "</UPDATE>");
 	
@@ -520,6 +531,9 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, int seat)
 {
 	char *action = NULL;
+	int room;
+
+	room = player_get_room(net->player);
 
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
@@ -540,8 +554,8 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 	}
 
 	/* Always send opcode */
-	_net_send_line(net, "<UPDATE TYPE='table' ACTION='%s' ROOM=''>",
-		       action);
+	_net_send_line(net, "<UPDATE TYPE='table' ACTION='%s' ROOM='%d'>",
+		       action, room);
 
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:

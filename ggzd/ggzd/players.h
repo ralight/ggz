@@ -97,5 +97,6 @@ int   player_list_types(GGZPlayer* player, char verbose);
 int   player_list_tables(GGZPlayer* player, int type, char global);
 int   player_motd(GGZPlayer* player);
 
+int player_get_room(GGZPlayer *player);
 
 #endif
