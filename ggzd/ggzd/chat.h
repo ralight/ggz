@@ -29,8 +29,8 @@
 
 
 /* Queue up chat message for room consumption */
-GGZReturn chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender, 
-			    char *msg);
+GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
+				    GGZPlayer* sender, char *msg);
 
 /* Queue up a chat to a specific player */
 GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode, 
