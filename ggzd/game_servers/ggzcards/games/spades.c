@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 4110 2002-04-29 06:47:54Z jdorje $
+ * $Id: spades.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -409,7 +409,7 @@ static void spades_end_hand(void)
 			}
 		} else
 			score = -10 * bid;
-		ggzdmod_log(game.ggz, "Team %d bid %d, took %d, earned %d.",
+		ggz_debug(DBG_GAME, "Team %d bid %d, took %d, earned %d.",
 			    (int) p, bid, tricks, score);
 		game.players[p].score += score;
 		game.players[p + 2].score += score;
@@ -419,7 +419,7 @@ static void spades_end_hand(void)
 			int score =
 				(game.players[p].tricks ==
 				 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-			ggzdmod_log(game.ggz,
+			ggz_debug(DBG_GAME,
 				    "Player %d/%s earned %d for going nil.",
 				    p, get_player_name(p), score);
 			game.players[p].score += score;
@@ -430,7 +430,7 @@ static void spades_end_hand(void)
 				(game.players[p].tricks == 0 ?
 				 GSPADES.double_nil_value :
 				 -GSPADES.double_nil_value);
-			ggzdmod_log(game.ggz,
+			ggz_debug(DBG_GAME,
 				    "Player %d/%s earned %d for double nil.",
 				    p, get_player_name(p), score);
 			game.players[p].score += score;

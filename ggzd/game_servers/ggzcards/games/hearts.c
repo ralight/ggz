@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: hearts.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -252,8 +252,7 @@ static void hearts_start_playing(void)
 	}
 
 	if (game.leader == -1) {
-		ggzdmod_log(game.ggz,
-			    "ERROR: SERVER BUG: " "nobody has a club.");
+		ggz_error_msg("Hearts: nobody has a club.");
 		game.leader = (game.dealer + 1) % game.num_players;
 	}
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4132 2002-05-02 04:30:49Z jdorje $
+ * $Id: common.h 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -40,6 +40,15 @@
 #include "games.h"
 #include "protocol.h"
 #include "types.h"
+
+/* Debugging/logging types. */
+#define DBG_BID "bid"		/* bid system messages */
+#define DBG_PLAY "play"		/* play system messages */
+#define DBG_AI "ai"		/* AI messages */
+#define DBG_GAME "game"		/* game-specific messages */
+#define DBG_NET "net"		/* net-related messages */
+#define DBG_CLIENT "client"	/* client problems */
+#define DBG_MISC "misc"		/* everything else... */
 
 /* GGZCards server game states */
 typedef enum {

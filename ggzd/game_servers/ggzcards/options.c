@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 4112 2002-04-29 18:19:10Z jdorje $
+ * $Id: options.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -116,8 +116,7 @@ void add_option(char *key, char *desc, int num, int dflt, ...)
 	for (i = 0; i < num; i++) {
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
-			ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-				    "add_option: NULL option choice.");
+			ggz_error_msg("add_option: NULL option choice.");
 	}
 	va_end(ap);
 
@@ -128,7 +127,7 @@ void add_option(char *key, char *desc, int num, int dflt, ...)
 
 void request_client_options(void)
 {
-	ggzdmod_log(game.ggz, "Entering get_options.");
+	ggz_debug(DBG_MISC, "Entering get_options.");
 
 	if (pending_options == NULL) {
 		assert(FALSE);
@@ -166,8 +165,7 @@ void handle_client_options(player_t p, int num_options, int *options)
 
 	if (p != game.host) {
 		/* how could this happen? */
-		ggzdmod_log(game.ggz,
-			    "ERROR: received options from non-host player.");
+		ggz_debug(DBG_CLIENT, "received options from non-host player.");
 		return;
 	}
 
@@ -190,7 +188,7 @@ static void handle_options(int *options)
 	int op;
 	struct pending_option_t *po = pending_options;
 
-	ggzdmod_log(game.ggz, "Entering handle_options.");
+	ggz_debug(DBG_MISC, "Entering handle_options.");
 
 	for (op = 0; op < pending_option_count; op++) {
 		set_option(po->key, options[op]);
@@ -219,9 +217,9 @@ void finalize_options(void)
 		optext = game.data->get_option_text(opbuf, sizeof(opbuf),
 						     op->key, op->value);
 		if (optext == NULL) {
-			ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-				    "finalize_options: NULL optext returned for option (%s, %d).",
-				    op->key, op->value);
+			ggz_error_msg("finalize_options: NULL optext "
+			              "returned for option (%s, %d).",
+				      op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
 					"  %s : %d\n", op->key, op->value);
 			opcount++;

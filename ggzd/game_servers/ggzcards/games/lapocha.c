@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: lapocha.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -280,7 +280,7 @@ static void lapocha_end_hand(void)
 	player_t p;
 
 	for (p = 0; p < game.num_players; p++) {
-		ggzdmod_log(game.ggz,
+		ggz_debug(DBG_GAME,
 			    "Player %d/%s got %d tricks on a bid of %d", p,
 			    get_player_name(p), game.players[p].tricks,
 			    (int) game.players[p].bid.bid);

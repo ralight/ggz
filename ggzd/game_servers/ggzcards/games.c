@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 4056 2002-04-23 01:24:33Z jdorje $
+ * $Id: games.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -96,7 +96,7 @@ game_data_t * games_get_gametype(char *game_name)
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case 
 	   this won't work. */
-	ggzdmod_log(game.ggz, "Unknown game for '%s'.", game_name);
+	ggz_debug(DBG_MISC, "Unknown game for '%s'.", game_name);
 	return NULL;
 }
 
@@ -104,7 +104,7 @@ void games_handle_gametype(int choice)
 {
 	choice = game_types[choice];
 	if (choice < 0 || choice >= NUM_GAMES) {
-		ggzdmod_log(game.ggz,
+		ggz_debug(DBG_MISC,
 			    "SERVER/CLIENT error: bad game type %d selected.",
 			    choice);
 		choice = 0;
@@ -130,7 +130,7 @@ void request_client_gametype(void)
 	if (cnt <= 0)
 		fatal_error("BUG: games_req_gametype: no valid games.");
 	else if (cnt == 1) {
-		ggzdmod_log(game.ggz, "Just one valid game: choosing %d.",
+		ggz_debug(DBG_MISC, "Just one valid game: choosing %d.",
 			    game_types[0]);
 		game.data = game_data[game_types[0]];
 		init_game();

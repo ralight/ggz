@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: deck.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -112,7 +112,7 @@ deck_t *create_deck(deck_type_t which_deck)
 		cardset_type = CARDSET_DOMINOES;
 		break;
 	default:
-		ggzdmod_log(game.ggz, "Unknown deck %d.", which_deck);
+		ggz_debug(DBG_MISC, "Unknown deck %d.", which_deck);
 	}
 	
 	set_cardset_type(cardset_type);
@@ -138,7 +138,7 @@ deck_t *create_deck(deck_type_t which_deck)
 			
 	mydeck->size = cardnum;
 
-	ggzdmod_log(game.ggz, "Built a deck of size %d.", mydeck->size);
+	ggz_debug(DBG_MISC, "Built a deck of size %d.", mydeck->size);
 
 	return mydeck;
 }
@@ -161,7 +161,7 @@ void shuffle_deck(deck_t * deck)
 	card_t temp;
 	int i, j;
 
-	ggzdmod_log(game.ggz, "Shuffling deck.");
+	ggz_debug(DBG_MISC, "Shuffling deck.");
 
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
@@ -185,7 +185,7 @@ void deal_hand(deck_t * deck, int handsize, hand_t * hand)
 	int c;
 	card_t card;
 
-	ggzdmod_log(game.ggz, "\tDealing out a hand of size %d.", handsize);
+	ggz_debug(DBG_MISC, "\tDealing out a hand of size %d.", handsize);
 
 	assert(hand && deck && deck->cards);
 

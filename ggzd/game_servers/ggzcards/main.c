@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4130 2002-05-02 02:47:59Z jdorje $
+ * $Id: main.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -52,6 +52,8 @@ static void main_loop(GGZdMod * ggz);
 static void es_error(const char *msg, const GGZIOType op,
                      int fd, const GGZDataType data);
 static void es_exit(int result);
+static void handle_debug_message(int priority, const char *msg);
+static void initialize_debugging(void);
 
 /**************************************************************************
   This function was taken from FreeCiv.  See http://www.freeciv.org/ for
@@ -78,13 +80,13 @@ static char *get_option(const char *option_name, char **argv, int *i,
 				(*i)++;
 				opt = argv[*i];
 				if (strlen(opt) == 0) {
-					ggzdmod_log(game.ggz,
+					ggz_debug(DBG_MISC,
 						    "Empty argument for \"%s\".\n",
 						    option_name);
 					exit(1);
 				}
 			} else {
-				ggzdmod_log(game.ggz,
+				ggz_debug(DBG_MISC,
 					    "Missing argument for \"%s\".\n",
 					    option_name);
 				exit(1);
@@ -99,7 +101,7 @@ static char *get_option(const char *option_name, char **argv, int *i,
 
 /* perhaps these should be part of libggzdmod? */
 /* note that for both es_error and es_exit, easysock must be called again to
-   report the error! Therefore we instead just send it to stderr, which isn't 
+   report the error! Therefore we instead just send it to stderr, which isn't
    very useful. */
 static void es_error(const char *msg, const GGZIOType op,
                      int fd, const GGZDataType data)
@@ -117,16 +119,19 @@ int main(int argc, char **argv)
 {
 	int i;
 	game_data_t *game_data = NULL;
+	GGZdMod *ggz;
+	
+	initialize_debugging();
 
 	/* Initialize GGZ structures. */
-	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggz = ggzdmod_new(GGZDMOD_GAME);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_join_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
 #if 0
 	/* This is excluded because it's taken care of separately by the
 	   specialized main loop that ggzcards uses.  Normally we'd register
-	   this function so that ggzdmod could monitor the player sockets and 
+	   this function so that ggzdmod could monitor the player sockets and
 	   call it if necessary, but instead we do that manually. */
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
 			    &handle_player_event);
@@ -139,14 +144,14 @@ int main(int argc, char **argv)
 	ggz_set_io_error_func(es_error);
 	ggz_set_io_exit_func(es_exit);
 
-	/* read options.  see options.[ch] to find out how game options work. 
+	/* read options.  see options.[ch] to find out how game options work.
 	 */
 	for (i = 1; i < argc; i++) {
 		char *option;
-		ggzdmod_log(game.ggz, "Reading option %s.", argv[i]);
+		ggz_debug(DBG_MISC, "Reading option %s.", argv[i]);
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			game_data = games_get_gametype(option);
-			ggzdmod_log(game.ggz, "which_game set to %s.",
+			ggz_debug(DBG_MISC, "which_game set to %s.",
 				    game_data->name);
 		} else if ((option =
 			    get_option("--option", argv, &i, argc)) != NULL) {
@@ -160,17 +165,16 @@ int main(int argc, char **argv)
 			if (!*colon)
 				continue;
 			val = atoi(colon);
-			ggzdmod_log(game.ggz, "Set option '%s' to %d.",
+			ggz_debug(DBG_MISC, "Set option '%s' to %d.",
 				    option, val);
 			set_option(option, val);
 		} else {
 			/* bad option */
-			ggzdmod_log(game.ggz, "ERROR: bad options '%s'.",
-				    argv[i]);
+			ggz_error_msg("bad options '%s'.",  argv[i]);
 		}
 	}
 
-	/* pre-initialization of the program.  Although we may know what game 
+	/* pre-initialization of the program.  Although we may know what game
 	   we're playing at this point, we don't yet do any specific
 	   initializations. */
 	init_ggzcards(ggz, game_data);
@@ -210,7 +214,7 @@ static void main_loop(GGZdMod * ggz)
 
 		/* Assemble a list of file descriptors to monitor.  This list
 		   includes the main GGZ connection, a connection for each
-		   player (including bots), plus a stderr connection for bots. 
+		   player (including bots), plus a stderr connection for bots.
 		 */
 		for (p = 0; p < game.num_players; p++) {
 			int fd = get_player_socket(p);
@@ -248,7 +252,7 @@ static void main_loop(GGZdMod * ggz)
 			int fd = get_player_socket(p);
 
 			/* This is the player's communication socket.  Note
-			   that AI players will have such a socket too, since 
+			   that AI players will have such a socket too, since
 			   they are run as client-like programs. */
 			if (fd >= 0 && FD_ISSET(fd, &fd_set))
 				handle_player_event(ggz,
@@ -266,4 +270,27 @@ static void main_loop(GGZdMod * ggz)
 #endif /* DEBUG */
 		}
 	} while (ggzdmod_get_state(ggz) < GGZDMOD_STATE_DONE);
+}
+
+static void handle_debug_message(int priority, const char *msg)
+{
+	if (game.ggz)
+		ggzdmod_log(game.ggz, "%s", msg);
+	else {
+		fflush(stdout);
+		fputs(msg, stderr);
+		fputs("\n", stderr);
+		fflush(NULL);
+	}
+}
+
+static void initialize_debugging(void)
+{
+#ifdef DEBUG
+	const char *debug_types[] = {DBG_BID, DBG_PLAY, DBG_AI, DBG_GAME, DBG_CLIENT, DBG_NET, NULL};
+#else
+	const char *debug_types[] = {NULL};
+#endif
+	ggz_debug_init(debug_types, NULL);
+	ggz_debug_set_func(handle_debug_message);
 }

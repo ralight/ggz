@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4132 2002-05-02 04:30:49Z jdorje $
+ * $Id: net.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -199,7 +199,7 @@ void net_send_table(player_t p)
 	if (game.num_seats == 0) /* FIXME: don't check this here */
 		return;
 
-	ggzdmod_log(game.ggz, "Sending table to player %d/%s.", p,
+	ggz_debug(DBG_NET, "Sending table to player %d/%s.", p,
 		    get_player_name(p));
 
 	if (write_opcode(fd, MSG_TABLE) < 0)
@@ -219,7 +219,7 @@ void net_send_bid_request(player_t p, int bid_count, bid_t * bids)
 	int fd = get_player_socket(p);
 	GGZSeatType seat_type = get_player_status(p);
 
-	ggzdmod_log(game.ggz, "Sending bid request to player %d/%s.", p,
+	ggz_debug(DBG_NET, "Sending bid request to player %d/%s.", p,
 		    get_player_name(p));
 
 	/* request a bid from the client */
@@ -283,7 +283,7 @@ void net_send_play_request(player_t p, seat_t s)
 		}
 	}
 
-	ggzdmod_log(game.ggz, "Requesting player %d/%s "
+	ggz_debug(DBG_NET, "Requesting player %d/%s "
 		    "to play from seat %d/%s's hand.", p,
 		    get_player_name(p), s, get_seat_name(s));
 
@@ -312,7 +312,7 @@ void net_send_hand(const player_t p, const seat_t s, int reveal)
 	int fd = get_player_socket(p);
 	int i;
 
-	ggzdmod_log(game.ggz,
+	ggz_debug(DBG_NET,
 		    "Sending player %d/%d/%s hand %d/%s - %srevealing", p,
 		    game.players[p].seat, get_player_name(p), s,
 		    get_seat_name(s), reveal ? "" : "not ");
@@ -355,7 +355,7 @@ void net_send_newgame_request(player_t p)
 {
 	int fd = get_player_socket(p);
 
-	ggzdmod_log(game.ggz, "Sending out a REQ_NEWGAME to player %d/%s.", p,
+	ggz_debug(DBG_NET, "Sending out a REQ_NEWGAME to player %d/%s.", p,
 		    get_player_name(p));
 	if (write_opcode(fd, REQ_NEWGAME) < 0)
 		NET_ERROR(p);
@@ -374,7 +374,7 @@ void net_broadcast_newgame(void)
 {
 	player_t p;
 
-	ggzdmod_log(game.ggz, "Broadcasting a newgame message.");
+	ggz_debug(DBG_NET, "Broadcasting a newgame message.");
 
 	for (p = 0; p < game.num_players; p++)
 		if (is_broadcast_seat(p))
@@ -452,7 +452,7 @@ void net_send_global_cardlist_message(player_t p, const char *mark, int *lengths
 	seat_t s_rel;
 
 	assert(mark && cardlist && lengths);
-	ggzdmod_log(game.ggz, "Sending global cardlist message to player %d.",
+	ggz_debug(DBG_NET, "Sending global cardlist message to player %d.",
 		    p);
 		
 	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
@@ -564,7 +564,7 @@ void net_read_player_data(player_t p)
 		NET_ERROR(p);
 	op = opcode;
 
-	ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
+	ggz_debug(DBG_NET, "Received %d (%s) from player %d/%s.",
 	            op, get_client_opcode_name(op), p, get_player_name(p));
 
 	switch (op) {
@@ -590,9 +590,9 @@ void net_read_player_data(player_t p)
 		break;
 	default:
 		/* Unrecognized opcode */
-		ggzdmod_log(game.ggz, "SERVER/CLIENT BUG: "
-			    "game_handle_player: unrecognized opcode %d.",
-			    op);
+		ggz_debug(DBG_CLIENT,
+			  "game_handle_player: unrecognized opcode %d.",
+			  op);
 		status = -1;
 		break;
 	}

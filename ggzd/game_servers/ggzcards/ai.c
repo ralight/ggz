@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: ai.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -63,7 +63,7 @@ void start_ai(player_t p, const char* ai_type)
 	if (ai_type == NULL)
 		ai_type = "random";
 		
-	ggzdmod_log(game.ggz, "Starting AI for player %d as %s.", p, ai_type);
+	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, ai_type);
 		
 	assert(get_player_status(p) == GGZ_SEAT_BOT);
 	assert(game.players[p].fd == -1);
@@ -130,7 +130,7 @@ void stop_ai(player_t p)
 {
 	pid_t pid;
 	
-	ggzdmod_log(game.ggz, "Stopping AI for player %d.", p);
+	ggz_debug(DBG_AI, "Stopping AI for player %d.", p);
 	
 	/* Check to see if the AI has been spawned yet.  It's much easier to
 	   check here than elsewhere. */
@@ -175,7 +175,7 @@ void restart_ai(player_t p)
 	   table can still function appropriately. */
 	return;
 #endif
-	ggzdmod_log(game.ggz, "Restarting AI for player %d.", p);
+	ggz_debug(DBG_AI, "Restarting AI for player %d.", p);
 	start_ai(p, "random");
 	send_sync(p);
 }
@@ -203,7 +203,7 @@ void handle_ai_stderr(player_t ai)
 	while ( (next = strchr(this, '\n')) ) {
 		*next = '\0';
 		
-		ggzdmod_log(game.ggz, "AI %d: %s", ai, this);
+		ggz_debug(DBG_AI, "AI %d: %s", ai, this);
 		
 		this = next + 1;
 	}
@@ -211,7 +211,7 @@ void handle_ai_stderr(player_t ai)
 	/* Yes, this can fail if we get more than sizeof(buf) bytes at
 	   once.  Not likely! */
 	if (*this != '\0')
-		ggzdmod_log(game.ggz, "AI %d: %s", ai, this);
+		ggz_debug(DBG_AI, "AI %d: %s", ai, this);
 }
 #endif
 			

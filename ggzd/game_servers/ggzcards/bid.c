@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4138 2002-05-02 17:32:40Z jdorje $
+ * $Id: bid.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -87,7 +87,7 @@ void request_client_bid(player_t p)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
 
-	ggzdmod_log(game.ggz,
+	ggz_debug(DBG_BID,
 		    "Requesting a bid from player %d/%s; %d choices", p,
 		    get_player_name(p), bid_data->bid_count);
 
@@ -109,7 +109,7 @@ void request_all_client_bids(void)
 {
 	player_t p;
 
-	ggzdmod_log(game.ggz, "Requesting bids from some/all players.");
+	ggz_debug(DBG_BID, "Requesting bids from some/all players.");
 
 	/* Mark all players as bidding. */
 	for (p = 0; p < game.num_players; p++)
@@ -145,9 +145,9 @@ void handle_client_bid(player_t p, int bid_choice)
 	if (!game.players[p].bid_data.is_bidding) {
 		/* Most likely, the client sent a bid when it wasn't supposed
 		   to.  Of course, a smart client won't do this. */
-		ggzdmod_log(game.ggz,
-			    "Received out-of-turn bid from player %d/%s.", p,
-			    get_player_name(p));
+		ggz_debug(DBG_CLIENT,
+			  "Received out-of-turn bid from player %d/%s.",
+			  p, get_player_name(p));
 		return;
 	}
 	
@@ -160,7 +160,7 @@ void handle_client_bid(player_t p, int bid_choice)
 	bid = bid_data->bids[bid_choice];
 
 	/* Success! */
-	ggzdmod_log(game.ggz, "Received bid choice %d from player %d/%s",
+	ggz_debug(DBG_BID, "Received bid choice %d from player %d/%s",
 		    bid_choice, p, get_player_name(p));
 	handle_bid_event(p, bid);
 }
@@ -180,7 +180,7 @@ void handle_bid_event(player_t p, bid_t bid)
 	game.players[p].bid_data.is_bidding = FALSE;
 	clear_bids(p);
 
-	ggzdmod_log(game.ggz, "Handling a bid event for player %d.", p);
+	ggz_debug(DBG_BID, "Handling a bid event for player %d.", p);
 
 	assert(game.state == STATE_WAIT_FOR_BID);
 

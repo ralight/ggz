@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 4074 2002-04-24 09:53:59Z jdorje $
+ * $Id: suaro.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -312,12 +312,12 @@ static void suaro_next_bid(void)
 	if (SUARO.pass_count == 2) {
 		/* done bidding */
 		if (SUARO.contract == 0) {
-			ggzdmod_log(game.ggz, "Two passes; redealing hand.");
+			ggz_debug(DBG_GAME, "Two passes; redealing hand.");
 			set_global_message("", "Everyone passed; redealing.");
 			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {
-			ggzdmod_log(game.ggz, "A pass; bidding is over.");
+			ggz_debug(DBG_GAME, "A pass; bidding is over.");
 			game.bid_total = game.bid_count;
 			/* contract was determined in suaro_handle_bid */
 		}
@@ -434,7 +434,7 @@ static void suaro_end_hand(void)
 		/* you get the value of the contract MINUS the number of
 		   overtricks == 2 * contract - tricks */
 		points = (SUARO.contract - overtricks) * SUARO.bonus;
-		ggzdmod_log(game.ggz,
+		ggz_debug(DBG_GAME,
 			    "Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
 			    winner, get_player_name(winner),
 			    SUARO.contract, overtricks, points);
@@ -442,7 +442,7 @@ static void suaro_end_hand(void)
 		winner = 1 - SUARO.declarer;
 		/* for setting, you just get the value of the contract */
 		points = SUARO.contract * SUARO.bonus;
-		ggzdmod_log(game.ggz,
+		ggz_debug(DBG_GAME,
 			    "Player %d/%s set the bid of %d, earning %d points.",
 			    winner, get_player_name(winner),
 			    SUARO.contract, points);

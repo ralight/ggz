@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4126 2002-05-01 03:26:52Z jdorje $
+ * $Id: play.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -93,10 +93,9 @@ void handle_client_play(player_t p, card_t card)
 	if (!game.players[p].is_playing) {
 		/* better to just ignore it; a MSG_BADPLAY requests a new
 		   play */
-		ggzdmod_log(game.ggz,
-			    "SERVER/CLIENT BUG: player %d/%s played "
-			    "out of turn!?!?",
-			    p, get_player_name(p));
+		ggz_debug(DBG_CLIENT,
+			  "player %d/%s played out of turn!?!?",
+			  p, get_player_name(p));
 		return;
 	}
 
@@ -112,14 +111,14 @@ void handle_client_play(player_t p, card_t card)
 		   sending a sync will fix it (it will also re-request the
 		   play). */
 		send_sync(p);
-		ggzdmod_log(game.ggz, "CLIENT BUG: "
+		ggz_debug(DBG_PLAY, "CLIENT BUG: "
 			    "player %d/%s played a card that wasn't "
 			    "in their hand.",
 			    p, get_player_name(p));
 		return;
 	}
 
-	ggzdmod_log(game.ggz, "We received a play of card "
+	ggz_debug(DBG_PLAY, "We received a play of card "
 		    "(%d %d %d) from player %d/%s.", card.face, card.suit,
 		    card.deck, p, get_player_name(p));
 
@@ -153,7 +152,7 @@ void handle_play_event(player_t p, card_t card)
 	int i;
 	hand_t *hand = &game.seats[s].hand;
 	
-	ggzdmod_log(game.ggz, "%s played the %s of %s.",
+	ggz_debug(DBG_PLAY, "%s played the %s of %s.",
 	            get_player_name(p),
 	            get_face_name(card.face),
 	            get_suit_name(card.suit));
@@ -207,7 +206,7 @@ void handle_play_event(player_t p, card_t card)
 		set_game_state(STATE_NEXT_PLAY);
 	else {
 		/* end of trick */
-		ggzdmod_log(game.ggz, "End of trick; %d/%d.  Scoring it.",
+		ggz_debug(DBG_PLAY, "End of trick; %d/%d.  Scoring it.",
 			    game.trick_count, game.trick_total);
 		assert(game.play_count == game.play_total);
 		game.data->end_trick();
@@ -217,7 +216,7 @@ void handle_play_event(player_t p, card_t card)
 		set_game_state(STATE_NEXT_TRICK);
 		if (game.trick_count == game.trick_total) {
 			/* end of the hand */
-			ggzdmod_log(game.ggz, "End of hand number %d.",
+			ggz_debug(DBG_PLAY, "End of hand number %d.",
 				    game.hand_num);
 			send_last_hand();
 			game.data->end_hand();

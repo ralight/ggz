@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 4074 2002-04-24 09:53:59Z jdorje $
+ * $Id: euchre.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -247,7 +247,7 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 {
 	char bid_text[4096];
 	euchre_get_bid_text(bid_text, sizeof(bid_text), bid);
-	ggzdmod_log(game.ggz, "EUCHRE: handling bid %s.", bid_text);
+	ggz_debug(DBG_GAME, "EUCHRE: handling bid %s.", bid_text);
 	switch (bid.sbid.spec) {
 	case EUCHRE_TAKE:
 		EUCHRE.maker = p;
@@ -324,7 +324,7 @@ static void euchre_get_play(player_t p)
 {
 	while (EUCHRE.going_alone[(p + 2) % 4]) {
 		int p2 = (p + 1) % 4;
-		ggzdmod_log(game.ggz,
+		ggz_debug(DBG_GAME,
 			    "EUCHRE: skipping player %d/%s; going on to player %d/%s",
 			    p, get_player_name(p), p2, get_player_name(p2));
 		p = p2;

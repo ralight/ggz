@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 4126 2002-05-01 03:26:52Z jdorje $
+ * $Id: game.c 4146 2002-05-03 08:07:37Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -49,9 +49,8 @@
 static void bad_game(char *func)
 {
 	assert(FALSE);
-	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-	            "%s not implemented for game %s.",
-	            func, game.data ? game.data->full_name : "---");
+	ggz_error_msg("%s not implemented for game %s.",
+	              func, game.data ? game.data->full_name : "---");
 }
 
 
