@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5052 2002-10-26 20:19:25Z jdorje $
+ * $Id: server.c 5111 2002-10-30 06:51:30Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -245,7 +245,7 @@ int ggzcore_server_log_session(GGZServer *server, const char *filename)
 }
 
 
-char* ggzcore_server_get_host(GGZServer *server)
+const char* ggzcore_server_get_host(GGZServer *server)
 {
 	if (server && server->net)
 		return _ggzcore_net_get_host(server->net);
@@ -893,7 +893,7 @@ int _ggzcore_server_connect(GGZServer *server)
 int _ggzcore_server_create_channel(GGZServer *server)
 {
 	int status;
-	char *host;
+	const char *host;
 	unsigned int port;
 	
 	/* FIXME: make sure we don't already have a channel */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5098 2002-10-29 06:05:04Z jdorje $
+ * $Id: ggzcore.h 5111 2002-10-30 06:51:30Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -630,7 +630,7 @@ int ggzcore_server_log_session(GGZServer *server, const char *filename);
  *  @return A string containing the host name, or NULL on error.
  *  @see ggzcore_server_set_hostinfo
  */
-char*        ggzcore_server_get_host(GGZServer *server);
+const char* ggzcore_server_get_host(GGZServer *server);
 
 /** @brief Get the port of the server.
  *

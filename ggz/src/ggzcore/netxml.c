@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5110 2002-10-30 03:33:15Z jdorje $
+ * $Id: netxml.c 5111 2002-10-30 06:51:30Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -240,7 +240,7 @@ int _ggzcore_net_set_dump_file(GGZNet *net, const char* filename)
 }
 
 
-char* _ggzcore_net_get_host(GGZNet *net)
+const char* _ggzcore_net_get_host(GGZNet *net)
 {
 	return net->host;
 }
@@ -1294,14 +1294,14 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *element)
 	const char *parent_tag, *parent_type;
 	int id;
 	char *name, *version;
-	char *prot_engine = NULL;
-	char *prot_version = NULL;
+	const char *prot_engine = NULL;
+	const char *prot_version = NULL;
 	GGZNumberList player_allow_list = ggz_numberlist_new();
 	GGZNumberList bot_allow_list = ggz_numberlist_new();
 	int spectators_allow = 0;
-	char *desc = NULL;
-	char *author = NULL;
-	char *url = NULL;
+	const char *desc = NULL;
+	const char *author = NULL;
+	const char *url = NULL;
 
 	if (!element)
 		return;
@@ -1644,7 +1644,7 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *element)
 	GGZList *spectatorseats = NULL;
 	GGZListEntry *entry;
 	int id, game, status, num_seats, num_spectators, i;
-	char *desc = NULL;
+	const char *desc = NULL;
 	GGZXMLElement *parent;
 	const char *parent_tag, *parent_type;
 
