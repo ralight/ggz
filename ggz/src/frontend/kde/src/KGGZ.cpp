@@ -480,7 +480,8 @@ void KGGZ::listTables()
 					KGGZDEBUG("UNKNOWN (%i)\n", table->playerType(i));
 			}
 
-			if(table->playerType(j) == GGZ_SEAT_OPEN) tableseatsopen++;
+			if(table->playerType(j) == GGZ_SEAT_OPEN
+			   || table->playerType(j) == GGZ_SEAT_RESERVED) tableseatsopen++;
 			else
 			{
 				if(table->playerType(j) == GGZ_SEAT_PLAYER)
