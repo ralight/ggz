@@ -37,8 +37,8 @@ VERSION=0.0.2
 # List of sources
 SOURCES=kggz kggz_roomsmenu \
 	kggz_state kggz_chat kggz_startup kggz_tables kggz_users \
-	kggz_chatwidget kggz_motd \
-	kggz_preferences kggz_settings kggz_profiles kggz_connect kggz_launch \
+	kggz_chatwidget kggz_motd kggz_teams \
+	kggz_preferences kggz_games kggz_settings kggz_profiles kggz_connect kggz_launch \
 	kggz_server
 
 

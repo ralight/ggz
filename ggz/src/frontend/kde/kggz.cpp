@@ -9,6 +9,7 @@
 #include "kggz_connect.h"
 #include "kggz_launch.h"
 #include "kggz_profiles.h"
+#include "kggz_games.h"
 #include "kggz_server.h"
 #include "kggz_state.h"
 #include <kmenubar.h>
@@ -36,6 +37,10 @@ KGGZ::KGGZ()
  	menu_ggz = new KPopupMenu(this, "menu_ggz");
   	menu_ggz->insertItem("&Connect", MENU_GGZ_CONNECT);
   	menu_ggz->insertItem("&Disconnect", MENU_GGZ_DISCONNECT);
+	menu_ggz->insertSeparator();
+	menu_ggz->insertItem("Start server", MENU_GGZ_STARTSERVER);
+	menu_ggz->insertItem("Stop server", MENU_GGZ_STOPSERVER);
+	menu_ggz->insertSeparator();
 	menu_ggz->insertItem("&Quit", MENU_GGZ_QUIT);
 	menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
 
@@ -60,6 +65,7 @@ KGGZ::KGGZ()
 	menu_preferences = new KPopupMenu(this, "menu_preferences");
 	menu_preferences->insertItem("Se&ttings", MENU_PREFERENCES_SETTINGS);
 	menu_preferences->insertItem("&Profiles", MENU_PREFERENCES_PROFILES);
+	menu_preferences->insertItem("&Games", MENU_PREFERENCES_GAMES);
 	menu_preferences->insertSeparator();
 	menu_preferences->insertItem("&All Preferences", MENU_PREFERENCES_PREFERENCES);
 
@@ -145,6 +151,7 @@ void KGGZ::handleMenu(int id)
 	KGGZ_Launch *tmp3;
 	KGGZ_Preferences *tmp4;
 	KGGZ_Profiles *tmp5;
+	KGGZ_Games *tmp6;
 
 	cout << "kggz::handlemenu: got id: " << id << endl;
 
@@ -198,6 +205,10 @@ void KGGZ::handleMenu(int id)
 		case MENU_PREFERENCES_PROFILES:
 			tmp5 = new KGGZ_Profiles(NULL, "profiles");
 			tmp5->show();
+			break;
+		case MENU_PREFERENCES_GAMES:
+			tmp6 = new KGGZ_Games(NULL, "games");
+			tmp6->show();
 			break;
 		case MENU_PREFERENCES_PREFERENCES:
 			tmp4 = new KGGZ_Preferences(NULL, "preferences");

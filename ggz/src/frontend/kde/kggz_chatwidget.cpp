@@ -59,6 +59,7 @@ KGGZ_Chatwidget::~KGGZ_Chatwidget()
 // call takes lagid and returns it if valid, else -1 (e.g. buffer full)
 long setlag(long lagid)
 {
+	if(lagid <= 0) return -1;
 	printf("set %lu\n", lagid);
 	for(int i = 0; i < 10; i++)
 	{
@@ -68,7 +69,7 @@ long setlag(long lagid)
 			gettimeofday(&lag[i].lagtime, NULL);
 			return lagid;
 		}
-		printf("--SET %lu\n", lag[i].lagid);
+		printf("--SET %lu on %i\n", lag[i].lagid, i);
 	}
 	return -1;
 }
@@ -79,6 +80,7 @@ long getlag(long lagid)
 	struct timeval tmp;
 	long ret;
 
+	if(lagid <= 0) return -1;
 	printf("get %lu\n", lagid);
 	for(int i = 0; i < 10; i++)
 	{
@@ -90,7 +92,7 @@ long getlag(long lagid)
 			printf("--get FINAL %lu\n", ret);
 			return ret;
 		}
-		printf("--get %lu\n", lag[i].lagid);
+		printf("--get %lu on %i\n", lag[i].lagid, i);
 	}
 	return -1;
 }
