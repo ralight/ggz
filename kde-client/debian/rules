@@ -52,8 +52,8 @@ install: build
 
 	# No development library, only runtime
 	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libggzcorepp.so
-	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libggz.so
-	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libggzmeta.so
+	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggz.so
+	rm -f `pwd`/debian/ggz-kde-client/usr/lib/libkio_ggzmeta.so
 
 
 # Build architecture-independent files here.
