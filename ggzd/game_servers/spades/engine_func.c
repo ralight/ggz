@@ -201,7 +201,7 @@ void GetGameInfo( void ) {
 	struct sockaddr_un addr;
 	
 	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/%s/NetSpades.%d", TMPDIR, getpid());
+	snprintf(fd_name, sizeof(fd_name), "/%s/NetSpades.%d", TMPDIR, getpid());
 
 	if ( (gameInfo.ggz_sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
 		err_sys_exit("socket failed");

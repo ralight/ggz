@@ -716,6 +716,7 @@ static void parse_game(char *name, char *dir)
 	char line[256];
 	int linenum = 0;
 	int intval;
+	int len;
 	char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
 		GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
 		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
@@ -727,9 +728,10 @@ static void parse_game(char *name, char *dir)
 	}
 
 	/* Allocate space and setup a full pathname to description file */
-	if((fname = malloc(strlen(name)+strlen(dir)+6)) == NULL)
+	len = strlen(name)+strlen(dir)+6;
+	if((fname = malloc(len)) == NULL)
 		err_sys_exit("malloc error in parse_game()");
-	sprintf(fname, "%s/%s.dsc", dir, name);
+	snprintf(fname, len, "%s/%s.dsc", dir, name);
 
 	if((gamefile = fopen(fname, "r")) == NULL) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
@@ -951,11 +953,13 @@ static void parse_room(char *name, char *dir)
 	char *strval;
 	int num;
 	int i;
+	int len;
 
 	/* Allocate space and setup a full pathname to description file */
-	if((fname = malloc(strlen(name)+strlen(dir)+7)) == NULL)
+	len = strlen(name)+strlen(dir)+7;
+	if((fname = malloc(len)) == NULL)
 		err_sys_exit("malloc error in parse_game()");
-	sprintf(fname, "%s/%s.room", dir, name);
+	snprintf(fname, len, "%s/%s.room", dir, name);
 
 	if((roomfile = fopen(fname, "r")) == NULL) {
 		err_msg("Ignoring %s, could not open %s", name, fname);

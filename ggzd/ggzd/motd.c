@@ -63,6 +63,7 @@ void motd_read_file(void)
 	FILE *motd_file;
 	char line[128];
 	int lines;
+	int len;
 	struct utsname unames;
 
 	/* Save the server startup time so we can calculate uptime later */
@@ -72,10 +73,10 @@ void motd_read_file(void)
 	if(motd_info.motd_file[0] == '/')
 		fullpath = motd_info.motd_file;
 	else {
-		if((fullpath = malloc(strlen(motd_info.motd_file) +
-				      strlen(opt.conf_dir) + 2)) == NULL)
+		len = strlen(motd_info.motd_file) + strlen(opt.conf_dir) + 2;
+		if((fullpath = malloc(len)) == NULL)
 			err_sys_exit("malloc error in motd_read_file()");
-		sprintf(fullpath, "%s/%s", opt.conf_dir, motd_info.motd_file);
+		snprintf(fullpath, len, "%s/%s", opt.conf_dir, motd_info.motd_file);
 	}
 
 	/* Try to open the file */

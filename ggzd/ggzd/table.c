@@ -283,7 +283,7 @@ static void table_fork(GGZTable* table)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* Make sure the parent's socket is created before we go on */
-		sprintf(fd_name, "%s/%s.%d", opt.tmp_dir, game, getpid());
+		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, game, getpid());
 		while (stat(fd_name, &buf) < 0)
 			sleep(1);
 
@@ -293,7 +293,7 @@ static void table_fork(GGZTable* table)
 		err_sys_exit("exec of %s failed", path);
 	} else {
 		/* Create Unix domain socket for communication*/
-		sprintf(fd_name, "%s/%s.%d", opt.tmp_dir, game, pid);
+		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, game, pid);
 		sock = es_make_unix_socket(ES_SERVER, fd_name);
 		/* FIXME: need to check validity of fd */
 		

@@ -292,7 +292,7 @@ static void login_generate_password(char *pw)
 	word = random() % 10;
 	d1 = random() % 10;
 	d2 = random() % 10;
-	sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
+	snprintf(pw, 17, "%s%d%d", pw_words[word], d1, d2);
 }
 
 

@@ -78,10 +78,10 @@ int ggz_connect(void)
   if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
     return -1;
 
-  len = strlen(name) + strlen(TMPDIR) + 7;
+  len = strlen(name) + strlen(TMPDIR) + 8;
   if ( (fd_name = malloc(len)) == NULL)
     return -1;
-  sprintf(fd_name, "%s/%s.%d", TMPDIR, name, getpid());
+  snprintf(fd_name, len, "%s/%s.%d", TMPDIR, name, getpid());
   
   memset(&addr, 0, sizeof(addr));
   addr.sun_family = AF_LOCAL;
@@ -205,7 +205,7 @@ void ggz_debug(const char *fmt, ...)
   va_list ap;
 
   va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
   es_write_int(fd, MSG_DBG);
   es_write_int(fd, GGZ_DBG_TABLE);
   es_write_string(fd, buf);

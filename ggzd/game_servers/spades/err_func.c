@@ -41,10 +41,10 @@ static void err_doit(int flag, const char *fmt, va_list ap)
 {
 	char buf[4096];
 
-	/*sprintf(buf, "[%d]: ", getpid());*/
-        vsprintf(buf, fmt, ap);
+	/*snprintf(buf, sizeof(buf), "[%d]: ", getpid());*/
+        vsnprintf(buf, sizeof(buf), fmt, ap);
 	if (flag)
-		sprintf(buf + strlen(buf), ": %s", strerror(errno));
+		snprintf(buf + strlen(buf), sizeof(buf)-strlen(buf), ": %s", strerror(errno));
 	/*strcat(buf, "\n");
 	 fflush(stdout);*/
 	fputs(buf, stderr);
@@ -111,7 +111,7 @@ void dbg_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(gameInfo.ggz_sock, MSG_DBG);
 	es_write_int(gameInfo.ggz_sock, GGZ_DBG_TABLE);
 	es_write_string(gameInfo.ggz_sock, buf);
@@ -125,7 +125,7 @@ void log_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(gameInfo.ggz_sock, MSG_LOG);
 	es_write_int(gameInfo.ggz_sock, GGZ_LOG_NOTICE);
 	es_write_string(gameInfo.ggz_sock, buf);

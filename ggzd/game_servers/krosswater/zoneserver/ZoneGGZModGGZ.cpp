@@ -51,7 +51,7 @@ int ZoneGGZModGGZ::ggz_connect(void)
 	{
 		return -1;
 	}
-	sprintf(fd_name, "%s/%s.%d", TMPDIR, name, getpid());
+	snprintf(fd_name, len, "%s/%s.%d", TMPDIR, name, getpid());
 
 printf("Creating game: %s (%s)\n", name, fd_name);
 	memset(&addr, 0, sizeof(addr));
@@ -180,7 +180,7 @@ void ZoneGGZModGGZ::ggz_debug(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
 	es_write_int(fd, MSG_DBG);
 	es_write_int(fd, GGZ_DBG_TABLE);
 	es_write_string(fd, buf);
