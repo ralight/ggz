@@ -1,5 +1,5 @@
 # GGZ conf file for testing in builddir.  Do *not* use this file as a
-# system-wide configuration for ggz.  Use ggzd.conf instead 
+# system-wide configuration for ggz.  Use ggzd.conf instead.
 
 [General]
 ServerName = A Test Server
@@ -13,7 +13,7 @@ DataDir = @packagesrcdir@/test
 LogFile = @packagesrcdir@/ggzd.log
 LogTypes = All
 DebugFile = @packagesrcdir@/ggzd.debug
-DebugTypes = Process Connection Table Protocol Update Misc Room
+DebugTypes = All
 
 [Files]
 MOTD = ggzd.motd
