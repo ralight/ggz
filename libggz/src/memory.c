@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 4937 2002-10-17 21:01:01Z jdorje $
+ * $Id: memory.c 5355 2003-02-04 00:53:21Z jdorje $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -24,7 +24,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +35,7 @@
 #include "ggz.h"
 
 #include "misc.h" /* Internal data/functions */
+#include "support.h"
 
 
 /* This is used basically as a LIFO stack, on the basis that most malloc/free

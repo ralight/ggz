@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5332 2003-01-16 22:10:10Z dr_maux $
+# $Id: Makefile.am 5355 2003-02-04 00:53:21Z jdorje $
 
 SUBDIRS = security
 
@@ -20,7 +20,7 @@ libggz_la_SOURCES =	conf.c \
 			msg.c \
 			numberlist.c \
 		   	stack.c \
-			support.c \
+			support.h \
 		   	xmlelement.c \
 		   	\
 		   	ggz_common.h \

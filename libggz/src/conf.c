@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 4841 2002-10-10 12:40:29Z dr_maux $
+ * $Id: conf.c 5355 2003-02-04 00:53:21Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -25,7 +25,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <stdlib.h>
 #include <string.h>
@@ -38,7 +40,7 @@
 #include "ggz.h"
 
 #include "misc.h" /* Internal data/functions */
-
+#include "support.h"
 
 /* The majority of this code deals with maintaining a set of lists to
  * cache all the configuration variables in memory until they need to

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 4622 2002-09-18 18:41:06Z jdorje $
+ * $Id: easysock.c 5355 2003-02-04 00:53:21Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -25,12 +25,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifdef DEBUG_MEM
 # include <dmalloc.h>
 #endif
-
-#include <config.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -48,6 +49,8 @@
 #include <unistd.h>
 
 #include "ggz.h"
+
+#include "support.h"
 
 #define SA struct sockaddr  
 

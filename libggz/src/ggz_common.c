@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5274 2002-12-07 05:50:49Z jdorje $
+ * $Id: ggz_common.c 5355 2003-02-04 00:53:21Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -26,10 +26,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <string.h>
 
 #include "ggz.h"
 #include "ggz_common.h"
+
+#include "support.h"
 
 const char *ggz_seattype_to_string(GGZSeatType type)
 {

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 5077 2002-10-28 03:50:43Z jdorje $
+ * $Id: msg.c 5355 2003-02-04 00:53:21Z jdorje $
  *
  * Debug and error messages
  *
@@ -24,8 +24,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <errno.h>
 #include <stdarg.h>
@@ -40,6 +41,7 @@
 #include "ggz.h"
 
 #include "misc.h" /* Internal data/functions */
+#include "support.h"
 
 /* Workhorse function for actually outputting messages */
 static void err_doit(int priority, const char *prefix,
