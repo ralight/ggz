@@ -319,10 +319,7 @@ static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user
 	/* FIXME: provide a destroy function that frees profile */
 	ggzcore_event_enqueue(GGZ_USER_LOGIN, user_data, NULL);
 
-	/* Remove this function from the list of callbacks*/
-	ggzcore_event_remove_hook(GGZ_SERVER_LOGOUT, login_reconnect);
-
-	return GGZ_HOOK_OK;
+	return GGZ_HOOK_REMOVE;
 }
 
 
