@@ -49,11 +49,11 @@ void output_display_help(void)
 	output_text("--- GNU Gaming Zone -- Help");
 	output_text("--- -----------------------");
 	output_text("---");
-	output_text("--- /connect <server>    Connect to a GGZ server");
-	output_text("--- /disconnect          Disconnect from server");
-	output_text("--- /join <room>         Join room number <room>");
-	output_text("--- /beep <player>       Beep player <player>");
-	output_text("--- /msg <player> <msg>  Send a msg to a player");
+	output_text("--- /connect [<server>[:<port>]] [<nick>]   Connect to a GGZ server");
+	output_text("--- /disconnect                             Disconnect from server");
+	output_text("--- /join <room>                            Join room number <room>");
+	output_text("--- /beep <player>                          Beep player <player>");
+	output_text("--- /msg <player> <msg>                     Send a msg to a player");
 }
 
 void output_banner(void)
@@ -126,42 +126,42 @@ void output_status()
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
 	char *user = NULL, *server = NULL, *room = NULL;
-	char currentstatus[11];
-
+	char *currentstatus = NULL;
+	
 	switch((int)ggzcore_state_get_id())
 	{
 		case GGZ_STATE_OFFLINE:
-			strcpy(currentstatus, "Offline");
+			currentstatus = "Offline";
 			break;
 		case GGZ_STATE_CONNECTING:
-			strcpy(currentstatus, "Connecting");
+			currentstatus = "Connecting";
 			break;
 		case GGZ_STATE_ONLINE:
-			strcpy(currentstatus, "Online");
+			currentstatus = "Online";
 			break;
 		case GGZ_STATE_LOGGING_IN:
-			strcpy(currentstatus, "Logging In");
+			currentstatus = "Logging In";
 			break;
 		case GGZ_STATE_LOGGED_IN:
-			strcpy(currentstatus, "Logged In");
+			currentstatus = "Logged In";
 			break;
 		case GGZ_STATE_ENTERING_ROOM:
-			strcpy(currentstatus, "--> Room");
+			currentstatus = "--> Room";
 			break;
 		case GGZ_STATE_IN_ROOM:
-			strcpy(currentstatus, "Chatting");
+			currentstatus = "Chatting";
 			break;
 		case GGZ_STATE_JOINING_TABLE:
-			strcpy(currentstatus, "--> Table");
+			currentstatus = "--> Table";
 			break;
 		case GGZ_STATE_AT_TABLE:
-			strcpy(currentstatus, "Playing");
+			currentstatus = "Playing";
 			break;
 		case GGZ_STATE_LEAVING_TABLE:
-			strcpy(currentstatus, "<-- Table");
+			currentstatus = "<-- Table";
 			break;
 		case GGZ_STATE_LOGGING_OUT:
-			strcpy(currentstatus, "Logging Out");
+			currentstatus = "Logging Out";
 			break;
 	}
 	

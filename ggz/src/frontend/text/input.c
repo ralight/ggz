@@ -107,25 +107,35 @@ int input_command(short events)
 static void input_handle_connect(char* line)
 {
 	GGZProfile *profile;
-	char* arg;
+	char *arg, *server, *port;
 
 	if (!(profile = calloc(1, sizeof(GGZProfile))))
 		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
 
 	arg = strsep(&line, delim);
-	if (arg && strcmp(arg, "") != 0)
-		profile->host = strdup(arg);
-	else
+	server = strsep(&arg, ":\n");
+	if (server && strcmp(server, "") != 0)
+	{
+		profile->host = strdup(server);
+		/* Check for port */
+		port = strsep(&arg, ":\n");
+		if (port && strcmp(port, "") != 0)
+			profile->port = atoi(port);
+		else 
+			profile->port = 5688;
+	} else {
 		profile->host = strdup("localhost");
-	
-	/* Default to port 5688 if none specified */
-	if (!line || strcmp(line, "") != 0)
 		profile->port = 5688;
-	else 
-		profile->port = atoi(line);
+	}
 	
 	profile->type = GGZ_LOGIN_GUEST;
-	profile->login = strdup(getenv("LOGNAME"));
+
+	arg = strsep(&line, delim);
+	if (arg && strcmp(arg, "") != 0)
+		profile->login = strdup(arg);
+	else
+		profile->login = strdup(getenv("LOGNAME"));
+	
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
