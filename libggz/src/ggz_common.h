@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4507 2002-09-11 03:37:21Z jdorje $
+ * $Id: ggz_common.h 4550 2002-09-13 17:19:22Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -152,6 +152,7 @@ int ggz_numberlist_get_max(GGZNumberList *list);
 
 /* Error opcodes. */
 typedef enum {
+	E_OK = 0, /* No error */
 	E_USR_LOOKUP	    = -1,
 	E_BAD_OPTIONS	    = -2,
 	E_ROOM_FULL	    = -3,
