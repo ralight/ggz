@@ -44,13 +44,12 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %config /etc/ggzd/rooms/tictactoe.room
 
 /usr/bin/ggzd
-/usr/include/easysock.h
 /usr/lib/ggzd
-/usr/lib/libeasysock.a
-/usr/lib/libeasysock.la
-/usr/lib/libeasysock.so.0.0.0
 
 %changelog
+* Mon Apr 24 2000 Brent Hendricks <bmh@users.sourceforge.net>
+- Removed easysock files from list
+
 * Thu Apr 20 2000 Rich Gade <rgade@users.sourceforge.net>
 - Rewrote to use a BuildRoot in /var/tmp
 - Moved sysconfdir to /etc
