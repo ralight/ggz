@@ -1,6 +1,6 @@
 # GGZ Cards description file
 Name = GGZCards-LaPocha
-Version = 0.0.4
+#Version = 0.0.4
 ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ Cards game module for La Pocha
