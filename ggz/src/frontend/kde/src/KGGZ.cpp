@@ -729,6 +729,9 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
 
+	if(id != GGZCoreRoom::playerlag)
+		emit signalActivity(true);
+
 	switch(id)
 	{
 		case GGZCoreRoom::chatevent:
@@ -867,6 +870,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	int result;
 	QString buffer;
 	GGZCoreGametype *gametype;
+
+	emit signalActivity(true);
 
 	switch(id)
 	{
@@ -1750,5 +1755,10 @@ void KGGZ::menuGameTeam()
 {
 	if(!m_team) m_team = new KGGZTeam();
 	m_team->show();
+}
+
+void KGGZ::showEvent(QShowEvent *e)
+{
+	emit signalActivity(false);
 }
 

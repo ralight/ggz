@@ -129,6 +129,8 @@ class KGGZ : public QWidget
 		void signalState(int state);
 		// Emitted if room changes
 		void signalLocation(const char *location);
+		// Emitted on activity changes
+		void signalActivity(bool activity);
 
 	public slots:
 		// Connect to a game server
@@ -187,6 +189,8 @@ class KGGZ : public QWidget
 		void resizeEvent(QResizeEvent *e);
 		// Timer for slightly delayed input from sockets
 		void timerEvent(QTimerEvent *e);
+		// Window is raised
+		void showEvent(QShowEvent *e);
 
 		// catch server atoms
 		void serverCollector(unsigned int id, void* data);

@@ -45,12 +45,14 @@
 #include <kpopupmenu.h>
 #include <kmenubar.h>
 #include <kstatusbar.h>
+#include <ksystemtray.h>
 
 KGGZBase::KGGZBase()
 : KMainWindow()
 {
 	int x, y, width, height;
 
+	tray = NULL;
 	m_about = NULL;
 	m_rooms = 0;
 
@@ -73,6 +75,8 @@ KGGZBase::KGGZBase()
 	m_menu_ggz->insertSeparator();
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_MOTD), i18n("Message of the day"), MENU_GGZ_MOTD);
 	m_menu_ggz->insertSeparator();
+	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_WATCHER), i18n("Use panel watcher"), MENU_GGZ_WATCHER);
+	m_menu_ggz->insertSeparator();
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STARTSERVER), i18n("Start server"), MENU_GGZ_STARTSERVER);
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STOPSERVER), i18n("Stop server"), MENU_GGZ_STOPSERVER);
 	m_menu_ggz->insertSeparator();
@@ -82,6 +86,7 @@ KGGZBase::KGGZBase()
 	m_menu_ggz->setItemEnabled(MENU_GGZ_MOTD, FALSE);
 	if(KGGZCommon::findProcess("ggzd") > 0) m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, FALSE);
 	else m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, FALSE);
+	m_menu_ggz->setCheckable(true);
 
 	m_menu_client = new KPopupMenu(this, "menu_client");
 	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_STARTUP), i18n("&Startup Screen"), MENU_CLIENT_STARTUP);
@@ -140,6 +145,7 @@ KGGZBase::KGGZBase()
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
+	connect(kggz, SIGNAL(signalActivity(bool)), SLOT(slotActivity(bool)));
 
 	setCentralWidget(kggz);
 	setCaption(i18n("offline"));
@@ -267,6 +273,27 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GGZ_MOTD:
 			kggz->menuMotd();
+			break;
+		case MENU_GGZ_WATCHER:
+			if(m_menu_ggz->isItemChecked(MENU_GGZ_WATCHER))
+			{
+				if(tray)
+				{
+					m_menu_ggz->setItemChecked(MENU_GGZ_WATCHER, false);
+					delete tray;
+					tray = NULL;
+				}
+			}
+			else
+			{
+				if(!tray)
+				{
+					m_menu_ggz->setItemChecked(MENU_GGZ_WATCHER, true);
+					tray = new KSystemTray(this);
+					slotActivity(false);
+					tray->show();
+				}
+			}
 			break;
 		case MENU_GGZ_STARTSERVER:
 			kggz->menuServerLaunch();
@@ -422,5 +449,20 @@ void KGGZBase::slotState(int state)
 void KGGZBase::slotLocation(const char *location)
 {
 	statusBar()->changeItem(QString("  ") + location + "  ", 3);
+}
+
+void KGGZBase::slotActivity(bool activity)
+{
+	if(tray)
+	{
+		if(activity)
+		{
+			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_on.png"));
+		}
+		else
+		{
+			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_off.png"));
+		}
+	}
 }
 

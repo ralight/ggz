@@ -46,6 +46,7 @@
 
 // Forward declarations
 class KPopupMenu;
+class KSystemTray;
 
 // This class represents the visible main window of KGGZ.
 class KGGZBase : public KMainWindow
@@ -74,6 +75,8 @@ class KGGZBase : public KMainWindow
 		void slotState(int state);
 		// Show room or outside of room message
 		void slotLocation(const char *location);
+		// Activity
+		void slotActivity(bool activity);
 
 	private:
 		// assign an icon to a menu item
@@ -86,6 +89,7 @@ class KGGZBase : public KMainWindow
 			MENU_GGZ_CONNECT,
 			MENU_GGZ_DISCONNECT,
 			MENU_GGZ_MOTD,
+			MENU_GGZ_WATCHER,
 			MENU_GGZ_STARTSERVER,
 			MENU_GGZ_STOPSERVER,
 			MENU_GGZ_QUIT,
@@ -136,6 +140,8 @@ class KGGZBase : public KMainWindow
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
 		// The number of available rooms on a server
 		int m_rooms;
+		// System tray watcher
+		KSystemTray *tray;
 };
 
 #endif
