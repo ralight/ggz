@@ -317,6 +317,8 @@ class KGGZ : public QWidget
 		QSocketNotifier *m_sn_server;
 		// Room to room number mapping
 		QMap<QString, int> m_roommap;
+		// Connection dialog improvement
+		bool m_connfront;
 };
 
 #endif

@@ -1,7 +1,7 @@
 SUBDIRS = abstract widgets .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
-ggz_libraries = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(GGZCORE_LDFLAGS) $(LIB_GGZCORE) $(LIB_GGZ)
+ggz_libraries = $(top_builddir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(LIB_GGZCORE) $(LIB_GGZ)
 
 bin_PROGRAMS = kggz
 
@@ -31,7 +31,7 @@ kggz_METASOURCES = AUTO
 
 AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
-kggz_LDFLAGS = -ggdb3
+kggz_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLFAGS)
 kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
 	$(top_builddir)/ggz-kde/src/abstract/libkggzabstract.a \
 	@BROWSERLIB@ \

@@ -125,6 +125,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	}
 
 	m_config = NULL;
+	m_connfront = false;
 	
 	readConfiguration(true);
 	
@@ -405,6 +406,7 @@ void KGGZ::menuConnect()
 			SLOT(slotConnected(const char*, int, const char*, const char*, int)));
 	}
 	m_connect->show();
+	m_connfront = true;
 }
 
 void KGGZ::menuMotd()
@@ -434,6 +436,13 @@ void KGGZ::dispatcher()
 void KGGZ::timerEvent(QTimerEvent *e)
 {
 	//static int lag = 0;
+
+	if(m_connect)
+		if(m_connfront)
+		{
+			m_connect->raise();
+			m_connfront = false;
+		}
 
 	if(m_channelfd >= 0)
 	{
