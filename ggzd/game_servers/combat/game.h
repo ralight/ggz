@@ -45,7 +45,7 @@ int game_check_over();
 // Sends info to the player
 void game_send_seat(int);
 void game_send_options(int);
-void game_send_sync(int);
+void game_send_sync(int, int);
 void game_send_players();
 void game_send_move_error(int, int);
 

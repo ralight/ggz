@@ -22,9 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 6
+#define PROTOCOL_VERSION 7
 
-/* Combat Protocol Version 0.0.4
+/* Combat Protocol Version 0.0.5
  *
  * g : ggz server (gserv)
  * s : combat server (cserv)
@@ -226,8 +226,12 @@
  *  client wants to be in sync, he sends:
  *  	[ 1c --> s : CBT_REQ_SYNC ]
  *  And the server must answer with
- *  	[ s --> 1c : CBT_MSG_SYNC (int)TURN (str)SYNC_STR ]
+ *  	[ s --> 1c : CBT_MSG_SYNC (str)SYNC_STR ]
  *  Where SYNC_STR is the current map data, composed of:
+ *
+ * (char)CURRENT_TURN +
+ * (char)CURRENT_STATE +
+ * (str)MAP_DATA:
  *
  * 	00000000
  * 	----

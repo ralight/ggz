@@ -71,8 +71,11 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 				if (cbt_game.map) // Options already setup
 					game_send_options(seat);
 				game_send_players();
-				if (!ggz_seats_open() && cbt_game.map)
+				if (!ggz_seats_open() && cbt_game.map) { 
+					// Request setup!
+					cbt_game.state = CBT_STATE_SETUP;
 					game_request_setup(-1);
+				}
 			}
 			status = CBT_SERVER_JOIN;
 			break;
@@ -156,7 +159,8 @@ int game_handle_player(int seat) {
 			break;
 
 		case CBT_REQ_SYNC:
-			game_send_sync(seat);
+			ggz_debug("Got sync message");
+			game_send_sync(seat, 0);
 			break;
 
 		case CBT_REQ_OPTIONS:
@@ -173,29 +177,47 @@ int game_handle_player(int seat) {
 
 }
 
-void game_send_sync(int seat) {
-	int fd = ggz_seats[seat].assign;
-	int a;
+void game_send_sync(int seat, int cheated) {
+	int fd = ggz_seats[seat].fd;
+	char *syncstr;
+	int a, len;
 
-	if (fd <= 0)
+	ggz_debug("Sending sync to player %d (%d)", seat, cheated);
+
+	if (fd < 0)
 		return;
 
-	if (es_write_int(fd, CBT_MSG_SYNC) < 0 ||
-			es_write_int(fd, cbt_game.turn) < 0) {
-		ggz_debug("Can't send sync");
-		return;
-	}
+	len = 1+1+1+cbt_game.width*cbt_game.height;
 
-	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
-		// If I own it, send all the info to me
-		if (GET_OWNER(cbt_game.map[a].unit) == seat)
-			es_write_int(fd, cbt_game.map[a].unit);
+	syncstr = (char *)malloc(sizeof(char)*len);
+
+	syncstr[0] = cbt_game.turn;
+	syncstr[1] = cbt_game.state;
+
+	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+		// If I own it, or it is cheated send all the info to me
+		if (cheated || GET_OWNER(cbt_game.map[a].unit) == seat)
+			syncstr[a+2] = cbt_game.map[a].unit;
 		else if (LAST(cbt_game.map[a].unit) != U_EMPTY)
 			// It is a unit, although not mine
-			es_write_int(fd, FIRST(cbt_game.map[a].unit) + U_UNKNOWN);
+			syncstr[a+2] = FIRST(cbt_game.map[a].unit) + U_UNKNOWN;
 		else
 			// It is not a unit
-			es_write_int(fd, U_EMPTY);
+			syncstr[a+2] = U_EMPTY;
+	}
+
+	syncstr[len-1] = 0;
+
+	// Increase one of each character
+	for (a = 0; a < len-1; a++)
+		syncstr[a]++;
+
+	ggz_debug("Sent a sync string of size %d. Expected %d", strlen(syncstr), len-1);
+
+	// Send the string
+	if (es_write_int(fd, CBT_MSG_SYNC) || es_write_string(fd, syncstr) < 0) {
+		ggz_debug("Can't send sync string");
+		return;
 	}
 
 	return;
@@ -391,11 +413,13 @@ void game_start() {
 
 	for (a = 0; a < ggz_seats_num(); a++) {
 		fd = ggz_seats[a].fd;
-		if (fd <= 0)
+		if (fd < 0)
 			continue;
 		if (es_write_int(fd, CBT_MSG_START) < 0)
 			ggz_debug("Can't send start message to player %d", a);
 	}
+
+	cbt_game.state = CBT_STATE_PLAYING;
 }
 
 void game_send_move_error(int seat, int error) {
@@ -403,7 +427,7 @@ void game_send_move_error(int seat, int error) {
 
 	for (a = 0; a < ggz_seats_num(); a++) {
 		fd = ggz_seats[a].fd;
-		if (fd <= 0)
+		if (fd < 0)
 			continue;
 		if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
 				es_write_int(fd, error) < 0 ||
@@ -443,7 +467,7 @@ int game_handle_move(int seat, int from, int to) {
 	// Ok... now send it!
 	for (a = 0; a < ggz_seats_num(); a++) {
 		fd = ggz_seats[a].fd;
-		if (fd <= 0)
+		if (fd < 0)
 			continue;
 		if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
 				es_write_int(fd, from) < 0 ||
@@ -531,7 +555,7 @@ int game_handle_attack(int f_s, int from, int to) {
 	// Send messages
 	for (a = 0; a < ggz_seats_num(); a++) {
 		fd = ggz_seats[a].fd;
-		if (fd <= 0)
+		if (fd < 0)
 			continue;
 		if (es_write_int(fd, CBT_MSG_ATTACK) < 0 ||
 				es_write_int(fd, from) < 0 ||
@@ -583,11 +607,13 @@ void game_send_gameover(int winner) {
 
 	for (a = 0; a < ggz_seats_num(); a++) {
 		fd = ggz_seats[a].fd;
-		if (fd <= 0)
+		if (fd < 0)
 			continue;
 		if (es_write_int(fd, CBT_MSG_GAMEOVER) < 0 ||
 				es_write_int(fd, winner) < 0)
 			ggz_debug("Can't send ending message to player %d", a);
+		// Send all the map data
+		game_send_sync(a, 1);
 	}
 
 	cbt_game.state = CBT_STATE_DONE;
