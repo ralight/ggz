@@ -170,7 +170,7 @@ function stats_team($id, $lookup)
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Members of the team:<br>\n";
-		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup' ORDER BY entrydate ASC");
+		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup' AND role <> '' ORDER BY entrydate ASC");
 		for ($i = 0; $i < pg_numrows($res); $i++)
 		{
 			$handle = pg_result($res, $i, "handle");

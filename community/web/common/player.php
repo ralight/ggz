@@ -71,7 +71,7 @@ class Player
 
 		$res = pg_exec($id, "SELECT teams.teamname, teams.fullname " .
 			"FROM teammembers, teams " .
-			"WHERE teams.teamname = teammembers.teamname AND handle = '$ggzuser'");
+			"WHERE teams.teamname = teammembers.teamname AND handle = '$ggzuser' AND role <> ''");
 		if (($res) && (pg_numrows($res) > 0)) :
 			echo "<h2>Teams</h2>\n";
 			for ($i = 0; $i < pg_numrows($res); $i++)
