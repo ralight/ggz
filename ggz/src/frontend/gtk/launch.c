@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: launch.c 5222 2002-11-05 09:18:18Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -45,6 +45,7 @@
 #include "game.h"
 #include "ggzcore.h"
 #include "msgbox.h"
+#include "pick_module.h"
 #include "server.h"
 
 /* The maximum number of characters in the reserved seat name (not counting
@@ -310,6 +311,7 @@ static void launch_start_game(GtkWidget * widget, gpointer data)
 static void launch_cancel_button_clicked(GtkWidget * widget, gpointer data)
 {
 	/* Free up game we allocated but never launched */
+	cancel_module_picking();
 	game_destroy();
 
 	gtk_widget_destroy(launch_dialog);

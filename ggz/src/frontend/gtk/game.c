@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: game.c 5222 2002-11-05 09:18:18Z jdorje $
  *
  * Functions for handling game events
  *
@@ -39,6 +39,7 @@
 #include "client.h"
 #include "launch.h"
 #include "msgbox.h"
+#include "pick_module.h"
 #include "server.h"
 #include "support.h"
 
@@ -60,17 +61,86 @@ GGZGame *game;
 static int fd = -1;
 static gint game_handle;
 
+static GGZModule * pick_module(GGZGameType *gt)
+{
+	const char * name = ggzcore_gametype_get_name(gt);
+	const char * engine = ggzcore_gametype_get_prot_engine(gt);
+	const char * version = ggzcore_gametype_get_prot_version(gt);
+	int i, preserve;
+	GGZModule * module;
+	GGZModule **frontends;
+	char *preferred;
+
+	/* Check how many modules are registered for this game type */
+	const int num = ggzcore_module_get_num_by_type(name, engine, version);
+
+	if (num == 0) {
+		gchar *message;
+		message = g_strdup_printf(_("You don't have this game "
+					    "installed. You can download\n"
+					    "it from %s."),
+					  ggzcore_gametype_get_url(gt));
+		msgbox(message, _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, 
+		       MSGBOX_NORMAL);
+		g_free(message);
+
+		return NULL;
+	}
+
+	/* If there's only one choice, use it regardless of frontend */
+	if (num == 1)
+		return ggzcore_module_get_nth_by_type(name, engine,
+						      version, 0);
+
+	/* See if the user has a listed preference. */
+	preferred = ggzcore_conf_read_string("GAME", name, NULL);
+	if (preferred) {
+		for (i = 0; i < num; i++) {
+			char * frontend;
+			module = ggzcore_module_get_nth_by_type(name, engine,
+								version, i);
+			frontend = ggzcore_module_get_frontend(module);
+			if (strcasecmp(preferred, frontend) == 0) {
+				ggz_debug("modules",
+					  "User preferred %s frontend for %s",
+					  frontend, name);
+				return module;
+			}
+		}
+	}
+
+	/* More than one frontend: pop up a window and let the player
+	   choose. */
+	frontends = ggz_malloc((num + 1) * sizeof(*frontends));
+
+	for (i = 0; i < num; i++) {
+		frontends[i] = ggzcore_module_get_nth_by_type(name, engine,
+							      version, i);
+	}
+	frontends[num] = NULL;
+
+	i = ask_user_to_pick_module(frontends, &preserve);
+	if (i < 0)
+		return NULL;
+	module = ggzcore_module_get_nth_by_type(name, engine, version, i);
+
+	ggz_free(frontends);
+
+	if (preserve) {
+		char *frontend = ggzcore_module_get_frontend(module);
+		ggzcore_conf_write_string("GAME", name, frontend);
+		ggzcore_conf_commit();
+	}
+
+	return module;
+}
+
 /* Spectate is 1 if we're spectating; 0 if we're playing. */
 int game_init(int spectate)
 {
-	gchar *message;
-	const char *name, *engine, *version;
-	gchar *frontend;
-	guint num, i;
 	GGZRoom *room;
 	GGZGameType *gt;
 	GGZModule *module = NULL;
-	
 
 	/* Make sure we aren't already in a game */
 	if (game) {
@@ -109,54 +179,9 @@ int game_init(int spectate)
 		return -1;
 	}
 
-	name = ggzcore_gametype_get_name(gt);
-	engine = ggzcore_gametype_get_prot_engine(gt);
-	version = ggzcore_gametype_get_prot_version(gt);
-
-	/* Check how many modules are registered for this game type */
-	num = ggzcore_module_get_num_by_type(name, engine, version);
-	if (num == 0) {
-		message = g_strdup_printf(_("You don't have this game installed. You can download\nit from %s."), ggzcore_gametype_get_url(gt));
-	
-		msgbox(message, _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, 
-		       MSGBOX_NORMAL);
-		       
-		g_free(message);
+	module = pick_module(gt);
+	if (!module)
 		return -1;
-	}
-
-	/* If there's only one choice, use it regardless of frontend */
-	if (num == 1)
-		module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
-
-
-	/* FIXME: if num > 1, popup a dialog and let the user choose */
-	if (num > 1) {
-		ggz_debug("modules", "%s v %s %s had %d modules\n",
-		          name, engine, version, num);
-		for (i = 0; i < num; i++) {
-			module = ggzcore_module_get_nth_by_type(name, engine, version, i);
-			frontend = ggzcore_module_get_frontend(module);
-			ggz_debug("modules", "Module %d by %s frontend %s..",
-			          i, ggzcore_module_get_author(module),
-			          frontend);
-
-			if (strcmp("gtk", frontend) == 0) {
-				g_print("match\n");
-				break;
-			}
-			else {
-				g_print("not ours\n");
-				module = NULL;
-			}
-		}
-	}
-			
-
-	if (!module) {
-		msgbox(_("No modules defined for this game.\nLaunch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-		return -1;
-	}
 		
 	/* Create new game using this module */
 	game = ggzcore_game_new();
