@@ -38,7 +38,8 @@
 #include "datatypes.h"
 #include "server.h"
 #include "support.h"
-
+#include "xtext.h"
+#include "err_func.h"
 
 /* Globals neaded by this dialog */
 extern struct ConnectInfo client;
@@ -259,8 +260,48 @@ static void login_show_details(GtkWidget* button, gpointer user_data)
 
 void login_ok()
 {
+	GtkWidget* tmp;
+	gchar* buf;
+
+
 	if(dlg_login)
 		gtk_widget_destroy(dlg_login);	
+
+	/* Clear old lists */
+	tmp = lookup_widget(main_win, "table_tree");
+	gtk_clist_clear(GTK_CLIST(tmp));
+	
+	tmp = lookup_widget(main_win, "player_list");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
+	/* Clear chat box */
+	tmp = lookup_widget(main_win, "chat_text");
+	gtk_xtext_remove_lines(GTK_XTEXT(tmp), (GTK_XTEXT(tmp))->num_lines, 1);
+
+	/* Print some intro text in cha tbox */
+	buf = g_strdup_printf("Client Version:\00314 %s",VERSION);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3, buf, strlen(buf));
+	g_free(buf);
+
+	buf = g_strdup_printf("GTK+ Version:\00314 %d.%d.%d\n",
+			      gtk_major_version, gtk_minor_version, 
+			      gtk_micro_version);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,buf,strlen(buf));
+	g_free(buf);
+
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"Options:", 8);
+#ifndef DEBUG
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Debug: \00314No ", 15);
+#else
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Debug: \00314Yes", 15);
+#endif
+#ifndef SOCKET_DEBUG
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Socket Debug: \00314No ", 22);
+#else
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,"  Socket Debug: \00314Yes", 22);
+#endif
+	buf = g_strdup_printf("Connected to server: %s", client.server.host);
+	gtk_xtext_append_indent(GTK_XTEXT(tmp),"---",3,buf,strlen(buf));
 }
 
 
