@@ -1,12 +1,12 @@
 # RPM Spec file for GGZ client libraries
 
 Summary: GGZ Client for Gtk 1.2
-Name: ggz-gtk
+Name: ggz-gtk-client
 Version: 0.0.4pre
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-gtk-0.0.4pre.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-gtk-client-0.0.4pre.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -36,5 +36,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/ggz-gtk
 
 %changelog
+* Sun Apr 22 2001 Rich Gade <rgade@users.sourceforge.net>
+- Updated for new distro name ggz-gtk-client
+
 * Tue Mar 27 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file
