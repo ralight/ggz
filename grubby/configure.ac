@@ -57,7 +57,8 @@ dnl ===========
 if test "$enable_perl" = yes; then
 	echo -n "Extra check: perl... "
 
-	incs="/usr/lib/perl/5.8.0/CORE /usr/lib/perl/5.6.1/CORE /usr/lib/perl/5.6.0/CORE"
+	inc=`perl -MConfig -e 'print "$Config{archlibexp}/CORE"' 2>/dev/null`
+	incs="$inc /usr/lib/perl/5.8.0/CORE /usr/lib/perl/5.6.1/CORE /usr/lib/perl/5.6.0/CORE"
 	AC_GGZ_FIND_FILE("perl.h", $incs, perl_incdir)
 	perl_includes="$perl_incdir"
 
