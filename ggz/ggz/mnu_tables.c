@@ -98,7 +98,7 @@ create_mnu_tables (void)
 
 void on_launch1_activate(GtkButton * button, gpointer user_data)
 {
-	dlg_launch = create_dlgLaunch();
+	dlg_launch = create_dlg_launch();
 	gtk_widget_show(GTK_WIDGET(dlg_launch));
 }
 

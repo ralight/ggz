@@ -27,7 +27,8 @@
 
 #include <gtk/gtk.h>
 
-GtkWidget* create_dlgLaunch (void);
-gint launch_seat_type(gint i);
-void launch_get_reserve_name(gint seat, gchar *name);
+#include <datatypes.h>
+
+GtkWidget* create_dlg_launch (void);
+void launch_get_table(TableInfo* table);
 

@@ -42,6 +42,7 @@
 #include "datatypes.h"
 #include "protocols.h"
 #include "err_func.h"
+#include "seats.h"
 
 /* Global data structures */
 extern GtkWidget *dlg_launch;
@@ -50,6 +51,7 @@ extern struct Game game;
 extern struct GameTypes game_types;
 extern GtkWidget *main_win;
 extern GtkWidget *mnu_tables;
+extern struct Rooms room_info;
 
 /* Local data */
 static guint game_handle;
@@ -57,6 +59,7 @@ static guint game_handle;
 static void run_game(gint type, gchar flag, gint fd);
 static void handle_game(gpointer data, gint source, GdkInputCondition cond);
 static void handle_options(gpointer data, gint source, GdkInputCondition cond);
+
 
 void launch_game(gint type, gchar launch)
 {
@@ -89,7 +92,7 @@ void launch_game(gint type, gchar launch)
 			callback = handle_options;
 		else
 			callback = handle_game;
-
+		
 		game_handle = gdk_input_add(fd[1], GDK_INPUT_READ, 
 					    *callback, NULL);
 	}
@@ -116,88 +119,42 @@ static void run_game(gint type, gchar flag, gint fd)
 
 static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 {
-	gint size;
-	gchar ai;
+	gint i, size, seats;
 	void *options;
-	GtkWidget *temp_widget;
-	gint i,count;
-	gint launch_game_type=0;
-	gint launch_num_seats=0;
-	gchar *launch_game_desc;
+	TableInfo table;
 	gchar name[MAX_USER_NAME_LEN+1];
 
-	/* Get game type to play */
-	dbg_msg("handle_options: Get Game Type");
-	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo11");
-	for (i = 0; i < game_types.count; i++)
-	{
-		if(!strcmp(game_types.info[i].name,
-			   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
-			launch_game_type = i;
-	}
+	/* Get table launch info */
+	launch_get_table(&table);
 
 	/* Get number of seats */
-	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo12");
-        launch_num_seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry)));
-	dbg_msg("handle_options: Get Num Seats %d",launch_num_seats);
-
-	/* Get game description */
-	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "entry20");
-	launch_game_desc = g_strdup_printf("%s", gtk_entry_get_text(GTK_ENTRY(temp_widget)));
+	seats = seats_num(table);
 
 	dbg_msg("Getting options from game client");
-
 	es_read_int(source, &size);
 	if ( (options = malloc(size)) == NULL)
 		err_sys_exit("malloc falied");
 	es_readn(source, options, size);
-	es_read_char(source, &ai);
 
 	/* Send launch game request to server */
 	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
-	dbg_msg("Sending Launch Game");
-	/* Game type index */
-	es_write_int(connection.sock, launch_game_type);
-	dbg_msg("Sending Game Type %d",launch_game_type);
-	/* Sending game description */
-	es_write_string(connection.sock, launch_game_desc);
-	dbg_msg("Sending desc: %s\n",launch_game_desc);
-	g_free(launch_game_desc);
-	/* Number of seats */
-	es_write_int(connection.sock, launch_num_seats);
-	dbg_msg("Sending Num Seats %d",launch_num_seats);
-	/* Number Players */
-	for (count = 0; count < launch_num_seats; count++)
-	{
-		switch(launch_seat_type(count))
-		{
-		case 1:		/* Computer */
-			dbg_msg("Sending Seat GGZ_SEAT_COMP");
-			es_write_int(connection.sock, GGZ_SEAT_COMP);
-			break;
-		case 2:		/* Human */
-			dbg_msg("Sending Seat GGZ_SEAT_OPEN");
-			es_write_int(connection.sock, GGZ_SEAT_OPEN);
-			break;
-		case 3:		/* Reservation */
-			dbg_msg("Sending Seat GGZ_SEAT_RESV");
-			es_write_int(connection.sock, GGZ_SEAT_RESV);
-			launch_get_reserve_name(count,name);
+	es_write_int(connection.sock, table.type_index);
+	es_write_string(connection.sock, table.desc);
+	es_write_int(connection.sock, seats);
+	for (i = 0; i < seats; i++) {
+		es_write_int(connection.sock, table.seats[i]);
+		if (table.seats[i] == GGZ_SEAT_RESV)
 			es_write_string(connection.sock, name);
-			break;
-		default:
-			
-		}
 	}
-
-	dbg_msg("Sending Game Options");
 	es_write_int(connection.sock, size);
         es_writen(connection.sock, options, size);
         free(options);
 
+	/* Go ahead and destroy dlg_launch now (it's been hiding) */
         gtk_widget_destroy(dlg_launch);
         dlg_launch = NULL;
 
+	/* Remove ourself as data handler and install handle_game */
 	gdk_input_remove(game_handle);
 	game_handle = gdk_input_add(source, GDK_INPUT_READ, handle_game,
 				    NULL);

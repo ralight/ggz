@@ -125,7 +125,7 @@ typedef struct {
 	gint type_index;
 	guchar playing;
 	gint seats[MAX_TABLE_SIZE];
-	gchar names[MAX_USER_NAME_LEN + 1];
+	gchar names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 	gchar desc[1024];
 } TableInfo;
 

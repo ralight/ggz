@@ -71,9 +71,9 @@ static void ggz_table_select_row_callback(GtkWidget *widget, gint row,
 static void ggz_get_game_options(GtkButton * button, gpointer user_data);
 static gint ggz_event_tables( GtkWidget *widget, GdkEvent *event );
 static gint ggz_event_players( GtkWidget *widget, GdkEvent *event );
-static void ggz_disconnect();
-static void ggz_connect();
-static void ggz_motd();
+static void ggz_disconnect(void);
+static void ggz_connect(void);
+static void ggz_motd(void);
 static void ggz_realize(GtkWidget* widget, gpointer data);
 static void ggz_room_changed(GtkWidget* widget, gpointer data);
 
@@ -82,14 +82,14 @@ static void ggz_room_changed(GtkWidget* widget, gpointer data);
  *Main window callbacks 
  *
  */
-void ggz_join_game(GtkButton * button, gpointer user_data)
+static void ggz_join_game(GtkButton * button, gpointer user_data)
 {
         dbg_msg("joining game");
         es_write_int(connection.sock, REQ_TABLE_JOIN);
         es_write_int(connection.sock, selected_table);
 }
 
-void ggz_leave_game(GtkWidget* widget, gpointer data)
+static void ggz_leave_game(GtkWidget* widget, gpointer data)
 {
         dbg_msg("leaving game");
         es_write_int(connection.sock, REQ_TABLE_LEAVE);
@@ -117,7 +117,7 @@ void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data)
         es_write_int(connection.sock, -1);
 }
 
-void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
+static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 {
         if (!connection.connected) {
                 err_dlg("Not Connected");
@@ -133,7 +133,7 @@ void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
                         
-void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
+static void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
                                GdkEventButton *event, gpointer data)
 {
         gchar *text;
@@ -150,12 +150,12 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 }
 
 
-void ggz_get_game_options(GtkButton * button, gpointer user_data)
+static void ggz_get_game_options(GtkButton * button, gpointer user_data)
 {
         if (!connection.connected)
                 warn_dlg("Not connected!");
         else {
-                dlg_launch = create_dlgLaunch();
+                dlg_launch = create_dlg_launch();
                 gtk_widget_show(dlg_launch);
         }
 }
@@ -209,7 +209,7 @@ gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 	return 0;
 }
 
-void ggz_disconnect()
+static void ggz_disconnect(void)
 {
         dbg_msg("Logging out");
         es_write_int(connection.sock, REQ_LOGOUT);
@@ -222,14 +222,14 @@ void ggz_disconnect()
 	login_disconnect();
 }
 
-void ggz_connect()
+static void ggz_connect(void)
 {
 	disconnect(NULL,NULL);
 	dlg_login = create_dlg_login();
 	gtk_widget_show(dlg_login);
 }
 
-void ggz_motd(GtkButton * button, gpointer user_data)
+static void ggz_motd(void)
 {
         dbg_msg("Requestiong the MOTD");
         es_write_int(connection.sock, REQ_MOTD);

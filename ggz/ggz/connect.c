@@ -293,6 +293,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 				    game_types.info[i].name);
 			connect_msg("[%s] %s\n", opcode_str[op], 
 				    game_types.info[i].version);
+			connect_msg("[%s] %d\n", opcode_str[op], 
+				    game_types.info[i].num_play_allow);
 			connect_msg("[%s] %s\n", opcode_str[op], 
 				    game_types.info[i].desc);
 			connect_msg("[%s] %s\n", opcode_str[op], 
@@ -432,29 +434,29 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_TABLE_OPTIONS:
 	case RSP_USER_STAT:
 		break;
+
 	case RSP_ROOM_JOIN:
 		es_read_char(source, &status);
 		connect_msg("[%s] Room join %d\n", opcode_str[op], status);
-		switch (status){
-			case E_ROOM_FULL:
-	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
-				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
-				break;
-			case E_BAD_OPTIONS:
-	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
-				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
-				break;
-			case -1:
-	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
-				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
-				break;
-			case 0:
-				connection.cur_room=connection.new_room;
-				break;
+
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_entry");
+		
+		switch (status) {
+		case E_ROOM_FULL:
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			break;
+		case E_BAD_OPTIONS:
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			break;
+		case -1:
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			break;
+		case 0:
+			connection.cur_room = connection.new_room;
+			break;
 		}
 
 		break;
-
 	}
 }
 
