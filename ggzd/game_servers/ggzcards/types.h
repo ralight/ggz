@@ -1,11 +1,11 @@
 /*
- * File: game.h
- * Author: Rich Gade, Jason Short
+ * File: types.h
+ * Author: Jason Short
  * Project: GGZCards game module
  * Date: 06/29/2000
- * Desc: Game functions
+ * Desc: Special types for GGZ cards game data
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
