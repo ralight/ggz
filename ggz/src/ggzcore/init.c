@@ -26,7 +26,6 @@
 #include "config.h"
 #include "conf.h"
 #include "ggzcore.h"
-#include "msg.h"
 #include "net.h"
 #include "state.h"
 #include "gametype.h"
@@ -39,9 +38,9 @@ int ggzcore_init(GGZOptions options)
 {
 	/*
 	if (options.flags & GGZ_OPT_PARSER) {
-		ggzcore_debug(GGZ_DBG_CONF, "Parsing global conf file: %s", 
+		ggz_debug("GGZCORE:CONF", "Parsing global conf file: %s", 
 			      options.global_conf);
-		ggzcore_debug(GGZ_DBG_CONF, "Parsing user conf file: %s", 
+		ggz_debug("GGZCORE:CONF", "Parsing user conf file: %s", 
 			      options.user_conf);
 		ggzcore_conf_initialize(options.global_conf, options.user_conf);
 		}*/
@@ -49,8 +48,6 @@ int ggzcore_init(GGZOptions options)
 
 
 	/* Initialize various systems */
-	_ggzcore_debug_init(options.debug_levels, options.debug_file);
-
 	if (options.flags & GGZ_OPT_MODULES)
 		_ggzcore_module_setup();
 
@@ -62,8 +59,6 @@ void ggzcore_destroy(void)
 {
 	_ggzcore_module_cleanup();
 	ggz_conf_cleanup();
-	ggz_memory_check();
-	_ggzcore_debug_cleanup();
 }
 	
 

@@ -24,11 +24,11 @@
  */
 
 
-#include <config.h>
-#include <state.h>
-#include <hook.h>
-#include <msg.h>
+#include "config.h"
+#include "state.h"
+#include "hook.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 
 /* Structure to represent state transition pairs */
@@ -202,9 +202,9 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 	}
 
 	if (next != *cur && next != -1) {
-		ggzcore_debug(GGZ_DBG_STATE, "State transition %s -> %s", 
-			      _ggz_states[*cur].name, 
-			      _ggz_states[next].name);
+		ggz_debug("GGZCORE:STATE", "State transition %s -> %s", 
+			  _ggz_states[*cur].name, 
+			  _ggz_states[next].name);
 		*cur = next;
 	}
 }

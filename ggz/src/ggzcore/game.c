@@ -258,7 +258,7 @@ void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module)
 	game->fd = -1;
 	game->pid = -1;
 
-	ggzcore_debug(GGZ_DBG_GAME, "Initializing new game");
+	ggz_debug("GGZCORE:GAME", "Initializing new game");
 
 	/* Setup event hook list */
 	for (i = 0; i < _ggzcore_num_events; i++)
@@ -270,7 +270,7 @@ void _ggzcore_game_free(struct _GGZGame *game)
 {
 	int i;
 
-	ggzcore_debug(GGZ_DBG_GAME, "Destroying game object");
+	ggz_debug("GGZCORE:GAME", "Destroying game object");
 
 	if (game->fd != -1)
 		close(game->fd);
@@ -316,16 +316,16 @@ int _ggzcore_game_data_is_pending(struct _GGZGame *game)
 	int status = 0;
 	struct pollfd fd[1] = {{game->fd, POLLIN, 0}};
 	
-	ggzcore_debug(GGZ_DBG_POLL, "Checking for game events");	
+	ggz_debug("GGZCORE:POLL", "Checking for game events");	
 	if ( (status = poll(fd, 1, 0)) < 0) {
 		if (errno == EINTR) 
 			/* Ignore interruptions */
 			status = 0;
 		else 
-			ggzcore_error_sys_exit("poll failed in ggzcore_game_data_is_pending");
+			ggz_error_sys_exit("poll failed in ggzcore_game_data_is_pending");
 	}
 	else if (status)
-		ggzcore_debug(GGZ_DBG_POLL, "Found a game event!");
+		ggz_debug("GGZCORE:POLL", "Found a game event!");
 
 	return status;
 }
@@ -337,7 +337,7 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	char buf[4096];
 	char *buf_offset;
 
-	ggzcore_debug(GGZ_DBG_GAME, "Got game msg from game client");
+	ggz_debug("GGZCORE:GAME", "Got game msg from game client");
 
 	/* Leave room for storing 'size' in the first buf_offset bytes */
 	buf_offset = buf + sizeof(size);
@@ -394,26 +394,26 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	argv = _ggzcore_module_get_argv(game->module);
 	path = _ggzcore_game_get_path(argv);
 
-	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s",
+	ggz_debug("GGZCORE:GAME", "Launching game of %s",
 		      _ggzcore_module_get_name(game->module));
-	ggzcore_debug(GGZ_DBG_GAME, "Exec path is %s", path);
+	ggz_debug("GGZCORE:GAME", "Exec path is %s", path);
 
 	/* Check for existence of game module */
 	if (stat(path, &file_status) < 0) {
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
 				    strerror(errno));
-		ggzcore_debug(GGZ_DBG_GAME, "Bad path: %s", path);
+		ggz_debug("GGZCORE:GAME", "Bad path: %s", path);
 		ggz_free(path);
 		return -1;
 	}
 
 	/* Set up socket pair for ggz<->game communication */
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
-		ggzcore_error_sys_exit("socketpair failed"); 	
+		ggz_error_sys_exit("socketpair failed"); 	
 	
 	/* Fork table process */
 	if ( (pid = fork()) < 0) {
-		ggzcore_error_sys_exit("fork failed");
+		ggz_error_sys_exit("fork failed");
 	} else if (pid == 0) {
 		/* child */
 		close(sfd[0]);
@@ -448,7 +448,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		game->pid = pid;
 		game->fd = sfd[0];
 
-		ggzcore_debug(GGZ_DBG_GAME, "Successful launch");
+		ggz_debug("GGZCORE:GAME", "Successful launch");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
 		/* FIXME: for now, launch and negotiate are one and the same */
 		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
@@ -506,7 +506,7 @@ static char* _ggzcore_game_get_path(char **argv)
 	mod_path = argv[0];
 	
 	if (mod_path[0] != '/') {
-		ggzcore_debug(GGZ_DBG_GAME, "Module has relative path, prepending gamedir");
+		ggz_debug("GGZCORE:GAME", "Module has relative path, prepending gamedir");
 		/* Calcualate string length, leaving room for a slash 
 		   and the trailing null */
 		len = strlen(GAMEDIR) + strlen(mod_path) + 2;
@@ -529,9 +529,9 @@ RETSIGTYPE _ggzcore_game_dead(int sig)
   
 	pid = waitpid(WAIT_ANY, &status, WNOHANG);
 	if( pid > 0 )
-		ggzcore_debug(GGZ_DBG_GAME, "Game module is dead");
+		ggz_debug("GGZCORE:GAME", "Game module is dead");
 	else if( pid == 0 )
-		ggzcore_error_sys("No dead children found");
+		ggz_error_sys("No dead children found");
 	else 
-		ggzcore_error_sys("Waitpid failure");
+		ggz_error_sys("Waitpid failure");
 }

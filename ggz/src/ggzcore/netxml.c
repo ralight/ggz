@@ -27,7 +27,6 @@
 #include "config.h"
 #include "ggzcore.h"
 #include "net.h"
-#include "msg.h"
 #include "protocol.h"
 #include "player.h"
 #include "room.h"
@@ -195,7 +194,7 @@ void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const cha
 
 	/* Init parser */
 	if (!(net->parser = XML_ParserCreate("UTF-8")))
-		ggzcore_error_sys_exit("Couldn't allocate memory for XML parser");
+		ggz_error_sys_exit("Couldn't allocate memory for XML parser");
 
 	/* Setup handlers for tags */
 	XML_SetElementHandler(net->parser, 
@@ -274,7 +273,7 @@ void _ggzcore_net_free(struct _GGZNet *net)
 /* FIXME: set a timeout for connecting */
 int _ggzcore_net_connect(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
+	ggz_debug("GGZCORE:NET", "Connecting to %s:%d", net->host, net->port);
 	net->fd = ggz_make_socket(GGZ_SOCK_CLIENT, net->port, net->host);
 	
 	if (net->fd >= 0)
@@ -286,7 +285,7 @@ int _ggzcore_net_connect(struct _GGZNet *net)
 
 void _ggzcore_net_disconnect(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
+	ggz_debug("GGZCORE:NET", "Disconnecting");
 	close(net->fd);
 	net->fd = -1;
 }
@@ -334,7 +333,7 @@ int _ggzcore_net_send_motd(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending MOTD request");	
+	ggz_debug("GGZCORE:NET", "Sending MOTD request");	
 	_ggzcore_net_send_line(net, "<MOTD/>");
 
 	return status;
@@ -348,7 +347,7 @@ int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 
 	net->gametype_verbose = verbose;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending gametype list request");	
+	ggz_debug("GGZCORE:NET", "Sending gametype list request");	
 	if (verbose)
 		full = "true";
 	else
@@ -366,7 +365,7 @@ int _ggzcore_net_send_list_rooms(struct _GGZNet *net, const int type, const char
 	char *full;
 	
 	net->room_verbose = verbose;
-	ggzcore_debug(GGZ_DBG_NET, "Sending room list request");	
+	ggz_debug("GGZCORE:NET", "Sending room list request");	
 	if (verbose)
 		full = "true";
 	else
@@ -386,7 +385,7 @@ int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int id)
 	room = _ggzcore_server_get_room_by_id(net->server, id);
 	net->new_room = room;
 	
-	ggzcore_debug(GGZ_DBG_NET, "Sending room join request");	
+	ggz_debug("GGZCORE:NET", "Sending room join request");	
 
 	_ggzcore_net_send_line(net, "<ENTER ROOM='%d'/>", id);
 	
@@ -398,7 +397,7 @@ int _ggzcore_net_send_list_players(struct _GGZNet *net)
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending player list request");
+	ggz_debug("GGZCORE:NET", "Sending player list request");
 	_ggzcore_net_send_line(net, "<LIST TYPE='player'/>");
 
 	return status;
@@ -409,7 +408,7 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending table list request");
+	ggz_debug("GGZCORE:NET", "Sending table list request");
 	_ggzcore_net_send_line(net, "<LIST TYPE='table'/>");
 	
 	return status;
@@ -420,7 +419,7 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* 
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending chat");	
+	ggz_debug("GGZCORE:NET", "Sending chat");	
 
 
 	/* FIXME: We need to handle the case where the chat is longer than
@@ -450,7 +449,7 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 	int i, type, num_seats, status = 0;
 	char *desc;
 	
-	ggzcore_debug(GGZ_DBG_NET, "Sending table launch request");
+	ggz_debug("GGZCORE:NET", "Sending table launch request");
 		
 	type = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
 	desc = _ggzcore_table_get_desc(table);
@@ -476,7 +475,7 @@ static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *se
 	int status = 0;
 	char *type;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending seat info");
+	ggz_debug("GGZCORE:NET", "Sending seat info");
 	
 	type = ggz_seattype_to_string(seat->type);
 	
@@ -495,7 +494,7 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending table join request");
+	ggz_debug("GGZCORE:NET", "Sending table join request");
 	_ggzcore_net_send_line(net, "<JOIN TABLE='%d'/>", num);
 
 	return status;
@@ -506,7 +505,7 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending table leave request");
+	ggz_debug("GGZCORE:NET", "Sending table leave request");
 	_ggzcore_net_send_line(net, "<LEAVE FORCE='false'/>");
 
 	return status;
@@ -515,7 +514,7 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 
 int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Sending table seat update request");
+	ggz_debug("GGZCORE:NET", "Sending table seat update request");
 	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
 	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
 	_ggzcore_net_send_table_seat(net, seat);
@@ -529,7 +528,7 @@ int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *t
 
 int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table, const char *desc)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Sending table description update request");
+	ggz_debug("GGZCORE:NET", "Sending table description update request");
 	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
 	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
 	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
@@ -545,7 +544,7 @@ int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *data)
 	int i, status = 0;
 	char buf[5];
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending game data: %d bytes", size);
+	ggz_debug("GGZCORE:NET", "Sending game data: %d bytes", size);
 
 	_ggzcore_net_send_string(net, "<DATA SIZE='%d'><![CDATA[", size);
 	buf[0] = '\0';
@@ -563,7 +562,7 @@ int _ggzcore_net_send_logout(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending LOGOUT");	
+	ggz_debug("GGZCORE:NET", "Sending LOGOUT");	
 	_ggzcore_net_send_line(net, "</SESSION>");
 
 	if (status < 0)
@@ -581,16 +580,16 @@ int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 
 	if (net && net->fd != -1) {
 	
-	ggzcore_debug(GGZ_DBG_POLL, "Checking for net events");	
-	if ( (pending = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR) 
-			/* Ignore interruptions */
-			pending = 0;
-		else 
-			ggzcore_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
-	}
-	else if (pending)
-		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
+		ggz_debug("GGZCORE:POLL", "Checking for net events");	
+		if ( (pending = poll(fd, 1, 0)) < 0) {
+			if (errno == EINTR) 
+				/* Ignore interruptions */
+				pending = 0;
+			else 
+				ggz_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
+		}
+		else if (pending)
+			ggz_debug("GGZCORE:POLL", "Found a net event!");
 	}
 
 	return pending;
@@ -612,7 +611,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 
 	/* Get a buffer to hold the data */
 	if (!(buf = XML_GetBuffer(net->parser, XML_BUFFSIZE)))
-		ggzcore_error_sys_exit("Couldn't allocate buffer");
+		ggz_error_sys_exit("Couldn't allocate buffer");
 
 	/* Read in data from socket */
 	if ( (len = read(net->fd, buf, XML_BUFFSIZE)) < 0) {
@@ -636,10 +635,10 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		_ggzcore_server_set_logout_status(net->server, -1);
 	}
 	else if (!XML_ParseBuffer(net->parser, len, done)) {
-		ggzcore_debug(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
-			      XML_GetCurrentLineNumber(net->parser),
-			      XML_GetCurrentColumnNumber(net->parser),
-			      XML_ErrorString(XML_GetErrorCode(net->parser)));
+		ggz_debug("GGZCORE:XML", "Parse error at line %d, col %d:%s",
+			  XML_GetCurrentLineNumber(net->parser),
+			  XML_GetCurrentColumnNumber(net->parser),
+			  XML_ErrorString(XML_GetErrorCode(net->parser)));
 		_ggzcore_server_protocol_error(net->server, "Bad XML from server");
 	}
 	
@@ -656,7 +655,7 @@ static void _ggzcore_net_parse_start_tag(void *data, const char *el, const char 
 	GGZStack *stack = net->stack;
 	GGZXMLElement *element;
 
-	ggzcore_debug(GGZ_DBG_XML, "New %s element", el);
+	ggz_debug("GGZCORE:XML", "New %s element", el);
 	
 	/* Create new element object */
 	element = _ggzcore_net_new_element((char*)el, (char**)attr);
@@ -675,8 +674,9 @@ static void _ggzcore_net_parse_end_tag(void *data, const char *el)
 	element = ggz_stack_pop(net->stack);
 
 	/* Process tag */
-	ggzcore_debug(GGZ_DBG_XML, "Handling %s element", 
-		      ggz_xmlelement_get_tag(element));
+	ggz_debug("GGZCORE:XML", "Handling %s element", 
+		  ggz_xmlelement_get_tag(element));
+		  
 	
 	if (element->process)
 		element->process(net, element);
@@ -699,7 +699,7 @@ static void _ggzcore_net_parse_text(void *data, const char *text, int len)
 
 static void _ggzcore_net_error(struct _GGZNet *net, char* message)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Network error: %s", message);
+	ggz_debug("GGZCORE:NET", "Network error: %s", message);
 	_ggzcore_net_disconnect(net);
 	_ggzcore_server_net_error(net->server, message);
 }
@@ -776,7 +776,7 @@ static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 		version = safe_atoi(ggz_xmlelement_get_attr(server, "VERSION"));
 		chatlen = (int)ggz_xmlelement_get_data(server);
 
-		ggzcore_debug(GGZ_DBG_NET, 
+		ggz_debug("GGZCORE:NET", 
 			      "%s(%s) : status %s: protocol %d: chat size %d", 
 			      name, id, status, version, chatlen);
 
@@ -820,10 +820,10 @@ static void _ggzcore_net_handle_motd(GGZNet *net, GGZXMLElement *motd)
 	message = ggz_xmlelement_get_text(motd);
 	priority = ggz_xmlelement_get_attr(motd, "PRIORITY");
 	
-	ggzcore_debug(GGZ_DBG_NET, "Motd of priority %s", priority);
+	ggz_debug("GGZCORE:NET", "Motd of priority %s", priority);
 
 	if (!(buffer = calloc(2, sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in net_read_motd");
+		ggz_error_sys_exit("calloc() failed in net_read_motd");
 
 	buffer[0] = message;
 	_ggzcore_server_event(net->server, GGZ_MOTD_LOADED, buffer);
@@ -845,7 +845,7 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 		code = safe_atoi(ggz_xmlelement_get_attr(result, "CODE"));
 		data = ggz_xmlelement_get_data(result);
 		
-		ggzcore_debug(GGZ_DBG_NET, "Result of %s was %d", action, 
+		ggz_debug("GGZCORE:NET", "Result of %s was %d", action, 
 			      code);
 		
 		room = _ggzcore_server_get_cur_room(net->server);
@@ -1640,8 +1640,9 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 		from = ggz_xmlelement_get_attr(chat, "FROM");
 		msg = ggz_xmlelement_get_text(chat);
 
-		ggzcore_debug(GGZ_DBG_NET, "%s message from %s: '%s'", 
-			      type, from, msg);	
+		ggz_debug("GGZCORE:NET", "%s message from %s: '%s'", type, 
+			  from, msg);	
+			  
 
 		if (strcmp(type, "normal") == 0)
 			op = GGZ_CHAT_NORMAL;

@@ -26,7 +26,7 @@
 
 #include "config.h"
 #include "gametype.h"
-#include "msg.h"
+#include "ggzcore.h"
 
 #include <ggz.h>
 #include <stdlib.h>

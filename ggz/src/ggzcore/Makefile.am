@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3111 2002-01-14 05:53:06Z jdorje $
+# $Id: Makefile.am 3514 2002-03-02 21:15:00Z bmh $
 
 SUBDIRS = .
 
@@ -35,8 +35,6 @@ libggzcore_la_SOURCES =	conf.c \
 			hook.h \
 			module.c \
 			module.h \
-			msg.c \
-			msg.h \
 			net.h \
 			netxml.c \
 			player.c \

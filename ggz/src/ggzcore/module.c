@@ -25,7 +25,6 @@
 
 #include "config.h"
 #include "module.h"
-#include "msg.h"
 #include "game.h"
 
 #include <ggz.h>
@@ -250,7 +249,7 @@ int _ggzcore_module_setup(void)
 	struct _GGZModule *module;
 
 	if (mod_handle != -1) {
-		ggzcore_debug(GGZ_DBG_MODULE, "module_setup() called twice");
+		ggz_debug("GGZCORE:MODULE", "module_setup() called twice");
 		return -1;
 	}
 
@@ -260,13 +259,13 @@ int _ggzcore_module_setup(void)
 	num_modules = 0;
 
 	file = _ggzcore_module_conf_filename();
-	ggzcore_debug(GGZ_DBG_MODULE, "Reading %s", file);
+	ggz_debug("GGZCORE:MODULE", "Reading %s", file);
 	mod_handle = ggz_conf_parse(file, GGZ_CONF_RDONLY);
 	/* Free up space taken by name */
 	ggz_free(file);
 	
 	if (mod_handle == -1) {
-		ggzcore_debug(GGZ_DBG_MODULE, "Unable to load module conffile");
+		ggz_debug("GGZCORE:MODULE", "Unable to load module conffile");
 		return -1;
 	}
 	
@@ -274,24 +273,24 @@ int _ggzcore_module_setup(void)
 	status = ggz_conf_read_list(mod_handle, "Games", "*Engines*", 
 				    &count_types, &games);
 	if (status < 0) {
-		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't read engine list");
+		ggz_debug("GGZCORE:MODULE", "Couldn't read engine list");
 		return -1;
 	}	
-	ggzcore_debug(GGZ_DBG_MODULE, "%d game engines supported", count_types);
+	ggz_debug("GGZCORE:MODULE", "%d game engines supported", count_types);
 	
 	for (i = 0; i < count_types; i++) {
 		status = ggz_conf_read_list(mod_handle, "Games", games[i], 
 					    &count_modules, &ids);
 					    
 
-		ggzcore_debug(GGZ_DBG_MODULE, "%d modules for %s", count_modules,
+		ggz_debug("GGZCORE:MODULE", "%d modules for %s", count_modules,
 			      games[i]);
 
 		for (j = 0; j < count_modules; j++) {
 			module = _ggzcore_module_new();
 			_ggzcore_module_read(module, ids[j]);
 			_ggzcore_module_add(module);
-			ggzcore_debug(GGZ_DBG_MODULE, "Module %d: %s", j, 
+			ggz_debug("GGZCORE:MODULE", "Module %d: %s", j, 
 				      ids[j]);
 
 		}
@@ -361,7 +360,7 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 
 	status = ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
 	
-	ggzcore_debug(GGZ_DBG_MODULE, "Found %d modules matching %s", total,
+	ggz_debug("GGZCORE:MODULE", "Found %d modules matching %s", total,
 		      engine);
 	
 	if (status < 0)
@@ -460,7 +459,7 @@ char** _ggzcore_module_get_argv(struct _GGZModule *module)
 
 int _ggzcore_module_launch(struct _GGZModule *module)
 {
-	ggzcore_debug(GGZ_DBG_MODULE, "Launching module: ");
+	ggz_debug("GGZCORE:MODULE", "Launching module: ");
 	_ggzcore_module_print(module);
 
 	return -1;
@@ -599,25 +598,25 @@ static void _ggzcore_module_print(struct _GGZModule *module)
 {
 	int i=0;
 	
-	ggzcore_debug(GGZ_DBG_MODULE, "Name: %s", module->name);
-	ggzcore_debug(GGZ_DBG_MODULE, "Version: %s", module->version);
-	ggzcore_debug(GGZ_DBG_MODULE, "ProtocolEngine: %s", module->prot_engine);	
-	ggzcore_debug(GGZ_DBG_MODULE, "ProtocolVersion: %s", module->prot_version);
+	ggz_debug("GGZCORE:MODULE", "Name: %s", module->name);
+	ggz_debug("GGZCORE:MODULE", "Version: %s", module->version);
+	ggz_debug("GGZCORE:MODULE", "ProtocolEngine: %s", module->prot_engine);	
+	ggz_debug("GGZCORE:MODULE", "ProtocolVersion: %s", module->prot_version);
 	if (module->games)
 		while (module->games[i]) {
-			ggzcore_debug(GGZ_DBG_MODULE, "Game[%d]: %s", i, 
-				      module->games[i]);
+			ggz_debug("GGZCORE:MODULE", "Game[%d]: %s", i, 
+				  module->games[i]);
 			++i;
 		}
 
-	ggzcore_debug(GGZ_DBG_MODULE, "Author: %s", module->author);
-	ggzcore_debug(GGZ_DBG_MODULE, "Frontend: %s", module->frontend);
-	ggzcore_debug(GGZ_DBG_MODULE, "URL: %s", module->url);
-	ggzcore_debug(GGZ_DBG_MODULE, "Icon: %s", module->icon);
-	ggzcore_debug(GGZ_DBG_MODULE, "Help: %s", module->help);
+	ggz_debug("GGZCORE:MODULE", "Author: %s", module->author);
+	ggz_debug("GGZCORE:MODULE", "Frontend: %s", module->frontend);
+	ggz_debug("GGZCORE:MODULE", "URL: %s", module->url);
+	ggz_debug("GGZCORE:MODULE", "Icon: %s", module->icon);
+	ggz_debug("GGZCORE:MODULE", "Help: %s", module->help);
 	while (module->argv[i]) {
-		ggzcore_debug(GGZ_DBG_MODULE, "Argv[%d]: %s", i, 
-			      module->argv[i]);
+		ggz_debug("GGZCORE:MODULE", "Argv[%d]: %s", i, 
+			  module->argv[i]);
 		++i;
 	}
 }

@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 11/30/00
- * $Id: conf.c 3085 2002-01-12 09:37:34Z jdorje $
+ * $Id: conf.c 3514 2002-03-02 21:15:00Z bmh $
  *
  * External functions for handling configuration files
  *
@@ -36,17 +36,13 @@
 
 /* Convenience error macros */
 #define NULL_ARG(x) \
-	ggzcore_debug(GGZ_DBG_CONF, "NULL argument passed to %s()", x)
+	ggz_debug("GGZCORE:CONF", "NULL argument passed to %s()", x)
 
-#define NO_USER_FILE(x)							       \
-	ggzcore_debug(GGZ_DBG_CONF,					       \
-		      "Config file write failed - %s() - no user config file", \
-		      x)
+#define NO_USER_FILE(x)	\
+	ggz_debug("GGZCORE:CONF", "Config file write failed - %s() - no user config file", x)
 
-#define NO_FILES(x)							       \
-	ggzcore_debug(GGZ_DBG_CONF,					       \
-		      "Config file read failed - %s() - no config files open", \
-		      x)
+#define NO_FILES(x) \
+	ggz_debug("GGZCORE:CONF", "Config file read failed - %s() - no config files open", x)
 
 
 /* Private variables */
@@ -68,8 +64,7 @@ static int u_handle = -1;
 int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 {
 	if(g_handle != -1 || u_handle != -1) {
-		ggzcore_debug(GGZ_DBG_CONF,
-			      "ggzcore_conf_initialize() called twice");
+		ggz_debug("GGZCORE:CONF", "ggzcore_conf_initialize() called twice");
 		return -1;
 	}
 

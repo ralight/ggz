@@ -27,7 +27,6 @@
 #include "config.h"
 #include "ggzcore.h"
 #include "net.h"
-#include "msg.h"
 #include "protocol.h"
 #include "player.h"
 #include "room.h"
@@ -293,8 +292,8 @@ void _ggzcore_net_free(struct _GGZNet *net)
 /* FIXME: set a timeout for connecting */
 int _ggzcore_net_connect(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
-	net->fd = ggz_make_socket(GGZ_SOCK_CLIENT, net->port, net->host);
+	ggz_debug("GGZCORE:NET", "Connecting to %s:%d", net->host, net->port);
+	net->fd = ggz_make_socket(GGZ_CLIENT, net->port, net->host);
 	
 	if (net->fd >= 0)
 		return 0;  /* success */
@@ -305,7 +304,7 @@ int _ggzcore_net_connect(struct _GGZNet *net)
 
 void _ggzcore_net_disconnect(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
+	ggz_debug("GGZCORE:NET", "Disconnecting");
 	close(net->fd);
 	net->fd = -1;
 }
@@ -325,20 +324,20 @@ int _ggzcore_net_send_login(struct _GGZNet *net)
 	
 	switch (type) {
 	case GGZ_LOGIN:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
+		ggz_debug("GGZCORE:NET", "Executing net login: GGZ_LOGIN");
 		if (ggz_write_int(net->fd, REQ_LOGIN) < 0
 		    || ggz_write_string(net->fd, handle) < 0
 		    || ggz_write_string(net->fd, password) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_GUEST:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
+		ggz_debug("GGZCORE:NET", "Executing net login: GGZ_LOGIN_GUEST");
 		if (ggz_write_int(net->fd, REQ_LOGIN_ANON) < 0
 		    || ggz_write_string(net->fd, handle) < 0)
 			status = -1;
 		break;
 	case GGZ_LOGIN_NEW:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
+		ggz_debug("GGZCORE:NET", "Executing net login: GGZ_LOGIN_NEW");
 		if (ggz_write_int(net->fd, REQ_LOGIN_NEW) < 0
 		    || ggz_write_string(net->fd, handle) < 0)
 			status = -1;
@@ -356,7 +355,7 @@ int _ggzcore_net_send_motd(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_MOTD");	
 	status = ggz_write_int(net->fd, REQ_MOTD);
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending motd request");
@@ -371,7 +370,7 @@ int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 
 	net->gametype_verbose = verbose;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TYPES");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_LIST_TYPES");	
 	if (ggz_write_int(net->fd, REQ_LIST_TYPES) < 0
 	    || ggz_write_char(net->fd, verbose) < 0)
 		status = -1;
@@ -389,7 +388,7 @@ int _ggzcore_net_send_list_rooms(struct _GGZNet *net, const int type, const char
 	
 	net->room_verbose = verbose;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_LIST_ROOMS");	
 	if (ggz_write_int(net->fd, REQ_LIST_ROOMS) < 0
 	    || ggz_write_int(net->fd, type) < 0
 	    || ggz_write_char(net->fd, verbose) < 0)
@@ -409,7 +408,7 @@ int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int id)
 
 	room = _ggzcore_server_get_room_by_id(net->server, id);
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_ROOM_JOIN");	
 	if (ggz_write_int(net->fd, REQ_ROOM_JOIN) < 0
 	    || ggz_write_int(net->fd, id) < 0)
 		status = -1;
@@ -427,7 +426,7 @@ int _ggzcore_net_send_list_players(struct _GGZNet *net)
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_LIST_PLAYERS");	
 	status = ggz_write_int(net->fd, REQ_LIST_PLAYERS);
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending playerlist request");
@@ -440,7 +439,7 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TABLES");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_LIST_TABLES");	
 	if (ggz_write_int(net->fd, REQ_LIST_TABLES) < 0
 	    || ggz_write_int(net->fd, type) < 0
 	    || ggz_write_char(net->fd, global) < 0)
@@ -458,7 +457,7 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* 
 	int status = 0;
 	char msg_buf[net->chat_size];
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_CHAT");	
 	if (ggz_write_int(net->fd, REQ_CHAT) < 0
 	    || ggz_write_char(net->fd, op) < 0)
 		status = -1;
@@ -484,7 +483,7 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, const int type, char *de
 {
 	int status = 0;
 	
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LAUNCH");
+	ggz_debug("GGZCORE:NET", "Sending REQ_TABLE_LAUNCH");
 	if (ggz_write_int(net->fd, REQ_TABLE_LAUNCH) < 0
 	    || ggz_write_int(net->fd, type) < 0
 	    || ggz_write_string(net->fd, desc) < 0
@@ -502,7 +501,7 @@ int _ggzcore_net_send_seat(struct _GGZNet *net, GGZSeatType seat, char *name)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending seat info");
+	ggz_debug("GGZCORE:NET", "Sending seat info");
 	status = ggz_write_int(net->fd, seat);
 	
 	if (status > 0) {
@@ -529,7 +528,7 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_JOIN");
+	ggz_debug("GGZCORE:NET", "Sending REQ_TABLE_JOIN");
 	if (ggz_write_int(net->fd, REQ_TABLE_JOIN) < 0
 	    || ggz_write_int(net->fd, num) < 0)
 		status = -1;
@@ -545,7 +544,7 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LEAVE");
+	ggz_debug("GGZCORE:NET", "Sending REQ_TABLE_LEAVE");
 	status = ggz_write_int(net->fd, REQ_TABLE_LEAVE);
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending table leave");
@@ -558,7 +557,7 @@ int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_GAME: %d bytes from game", size);
+	ggz_debug("GGZCORE:NET", "Sending REQ_GAME: %d bytes from game", size);
 	if (ggz_write_int(net->fd, REQ_GAME) < 0
 	    || ggz_write_int(net->fd, size) < 0
 	    || ggz_writen(net->fd, buffer, size) < 0)
@@ -575,7 +574,7 @@ int _ggzcore_net_send_logout(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
+	ggz_debug("GGZCORE:NET", "Sending REQ_LOGOUT");	
 	status = ggz_write_int(net->fd, REQ_LOGOUT);
 
 	if (status < 0)
@@ -599,7 +598,7 @@ int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 			/* Ignore interruptions */
 			pending = 0;
 		else 
-			ggzcore_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
+			ggz_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
 	}
 	else if (pending)
 		ggzcore_debug(GGZ_DBG_POLL, "Found a net event!");
@@ -619,7 +618,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	if (!net)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "Processing network events");
+	ggz_debug("GGZCORE:NET", "Processing network events");
 	status = _ggzcore_net_read_opcode(net, &opcode);
 	
 	if (status < 0) {
@@ -628,7 +627,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	}
 	
 	if (opcode < 0 || opcode >= _ggzcore_num_messages) {
-		ggzcore_debug(GGZ_DBG_NET, "Bad opcode %d from server", 
+		ggz_debug("GGZCORE:NET", "Bad opcode %d from server", 
 			      opcode);
 		_ggzcore_server_protocol_error(net->server, "Bad opcode");
 		return -1;
@@ -636,10 +635,10 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	
 	/* Call handler function */
 	if (!(handler = _ggzcore_server_msgs[opcode].handler))
-		ggzcore_debug(GGZ_DBG_NET, "Server msg: %s not handled yet", 
+		ggz_debug("GGZCORE:NET", "Server msg: %s not handled yet", 
 			      _ggzcore_server_msgs[opcode].name);
 	else {
-		ggzcore_debug(GGZ_DBG_NET, "Handling %s", 
+		ggz_debug("GGZCORE:NET", "Handling %s", 
 			      _ggzcore_server_msgs[opcode].name);
 		handler(net);
 	}
@@ -665,7 +664,7 @@ static int _ggzcore_net_read_server_id(struct _GGZNet *net, int *protocol, unsig
 		status = -1;
 
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "%s : protocol %d: chat size %d", 
+		ggz_debug("GGZCORE:NET", "%s : protocol %d: chat size %d", 
 			      msg, *protocol, *size);
 	else
 		_ggzcore_net_error(net, "Reading server ID");
@@ -688,7 +687,7 @@ static int _ggzcore_net_read_login_new(struct _GGZNet *net, char *login_status, 
 			status = -1;
 	
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_NEW : %d, %d",
+		ggz_debug("GGZCORE:NET", "RSP_LOGIN_NEW : %d, %d",
 			      *login_status, checksum);
 	else
 		_ggzcore_net_error(net, "Reading new login");
@@ -711,7 +710,7 @@ static int _ggzcore_net_read_login(struct _GGZNet *net, char *login_status, char
 			status = -1;
 
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN : %d, %d, %d", 
+		ggz_debug("GGZCORE:NET", "RSP_LOGIN : %d, %d, %d", 
 			      *login_status, checksum, *res);
 	else
 		_ggzcore_net_error(net, "Reading login");
@@ -733,7 +732,7 @@ static int _ggzcore_net_read_login_anon(struct _GGZNet *net, char *login_status)
 			status = -1;
 	
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_ANON : %d, %d", 
+		ggz_debug("GGZCORE:NET", "RSP_LOGIN_ANON : %d, %d", 
 			      *login_status, checksum);
 	else
 		_ggzcore_net_error(net, "Reading guest login");
@@ -753,7 +752,7 @@ static int _ggzcore_net_read_motd(struct _GGZNet *net, int *lines, char ***buffe
 	if (status == 0) {
 		/* FIXME: use ggz_malloc */
 		if (!(*buffer = calloc((*lines + 1), sizeof(char*))))
-			ggzcore_error_sys_exit("calloc() failed in net_read_motd");
+			ggz_error_sys_exit("calloc() failed in net_read_motd");
 		motd = *buffer;
 		
 		for (i = 0; i < *lines; i++)
@@ -764,7 +763,7 @@ static int _ggzcore_net_read_motd(struct _GGZNet *net, int *lines, char ***buffe
 	}
 	
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD : %d lines", *lines);
+		ggz_debug("GGZCORE:NET", "MSG_MOTD : %d lines", *lines);
 	else
 		_ggzcore_net_error(net, "Reading motd");
 
@@ -780,7 +779,7 @@ static int _ggzcore_net_read_logout(struct _GGZNet *net, char *logout_status)
 		status = -1;
 
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGOUT : %d", *logout_status);
+		ggz_debug("GGZCORE:NET", "RSP_LOGOUT : %d", *logout_status);
 	else
 		_ggzcore_net_error(net, "Reading logout");
 	
@@ -812,7 +811,7 @@ static int _ggzcore_net_read_room(struct _GGZNet *net,
 	if (net->room_verbose && ggz_read_string_alloc(net->fd, desc) < 0)
 		return -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "Room: %d (%s) plays %d", *id, *name, 
+	ggz_debug("GGZCORE:NET", "Room: %d (%s) plays %d", *id, *name, 
 		      *game);
 
 	return 0;
@@ -843,7 +842,7 @@ static int _ggzcore_net_read_type(struct _GGZNet *net, struct _GGZGameType *type
 	    || ggz_read_string_alloc(net->fd, &url) < 0)
 		return -1;
 	    
-	ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s", id, name);
+	ggz_debug("GGZCORE:NET", "Read info for game %d: %s", id, name);
 
 	_ggzcore_gametype_init(type, id, name, version, engine, p_version,
 			       players, bots, desc, author, url);
@@ -858,7 +857,7 @@ static int _ggzcore_net_read_room_join(struct _GGZNet *net, char *status)
 	if (ggz_read_char(net->fd, status) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_ROOM_JOIN from server : %d", *status);
+	ggz_debug("GGZCORE:NET", "RSP_ROOM_JOIN from server : %d", *status);
 	
 	return 0;
 }
@@ -876,7 +875,7 @@ static int _ggzcore_net_read_player(struct _GGZNet *net, char **name, int *table
 	    || ggz_read_int(net->fd, table) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "Player %s at table %d", *name, *table);
+	ggz_debug("GGZCORE:NET", "Player %s at table %d", *name, *table);
 
 	return 0;
 }
@@ -898,7 +897,7 @@ static int _ggzcore_net_read_table(struct _GGZNet *net, int *id, int *room, int 
 	    || ggz_read_int(net->fd, seats) < 0)
 		return -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", *id);
+	ggz_debug("GGZCORE:NET", "Read info for table %d", *id);
 
 	return 0;
 }
@@ -933,7 +932,7 @@ static int _ggzcore_net_read_rsp_chat(struct _GGZNet *net, char *status)
 	if (ggz_read_char(net->fd, status) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_CHAT from server : %d",
+	ggz_debug("GGZCORE:NET", "RSP_CHAT from server : %d",
 		      *status);
 	
 	return 0;
@@ -959,7 +958,7 @@ static int _ggzcore_net_read_chat(struct _GGZNet *net, GGZChatOp *op, char **nam
 	}
 	
 	if (status == 0)
-		ggzcore_debug(GGZ_DBG_NET, "Chat opcode = %d", opcode);	
+		ggz_debug("GGZCORE:NET", "Chat opcode = %d", opcode);	
 	else
 		_ggzcore_net_error(net, "Reading chat");
 
@@ -976,7 +975,7 @@ static int _ggzcore_net_read_update_players(struct _GGZNet *net, GGZUpdateOp *op
 	    || ggz_read_string_alloc(net->fd, name) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	ggz_debug("GGZCORE:NET", "Update opcode = %d", opcode);
 	*op = opcode;
 
 	return 0;
@@ -990,7 +989,7 @@ static int _ggzcore_net_read_update_table_op(struct _GGZNet *net, GGZUpdateOp *o
 	if (ggz_read_char(net->fd, &opcode) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	ggz_debug("GGZCORE:NET", "Update opcode = %d", opcode);
 	*op = opcode;
 
 	return 0;
@@ -1033,7 +1032,7 @@ static int _ggzcore_net_read_update_tables(struct _GGZNet *net, GGZUpdateOp *op,
 	    || ggz_read_int(net->fd, table) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	ggz_debug("GGZCORE:NET", "Update opcode = %d", opcode);
 	*op = opcode;
 
 	return 0;
@@ -1045,7 +1044,7 @@ static int _ggzcore_net_read_table_launch(struct _GGZNet *net, char *status)
 	if (ggz_read_char(net->fd, status) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_LAUNCH from server : %d", *status);
+	ggz_debug("GGZCORE:NET", "RSP_TABLE_LAUNCH from server : %d", *status);
 	
 	return 0;
 }
@@ -1056,7 +1055,7 @@ static int _ggzcore_net_read_table_join(struct _GGZNet *net, char *status)
 	if (ggz_read_char(net->fd, status) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_JOIN from server : %d", *status);
+	ggz_debug("GGZCORE:NET", "RSP_TABLE_JOIN from server : %d", *status);
 	
 	return 0;
 }
@@ -1067,7 +1066,7 @@ static int _ggzcore_net_read_table_leave(struct _GGZNet *net, char *status)
 	if (ggz_read_char(net->fd, status) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_TABLE_LEAVE from server : %d", *status);
+	ggz_debug("GGZCORE:NET", "RSP_TABLE_LEAVE from server : %d", *status);
 	
 	return 0;
 }
@@ -1079,7 +1078,7 @@ static int _ggzcore_net_read_game_data(struct _GGZNet *net, int *size, char *buf
 	    || ggz_readn(net->fd, buffer, *size) < 0)
 		return -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_GAME: %d bytes from server", *size);
+	ggz_debug("GGZCORE:NET", "RSP_GAME: %d bytes from server", *size);
 
 	return 0;
 }
@@ -1173,7 +1172,7 @@ static void _ggzcore_net_handle_motd(struct _GGZNet *net)
 		return;
 
 	if (num < 0) {
-		ggzcore_debug(GGZ_DBG_NET, "Error loading rooms");
+		ggz_debug("GGZCORE:NET", "Error loading rooms");
 		_ggzcore_server_protocol_error(net->server, "Error loading rooms");
 		return;
 	}
@@ -1602,7 +1601,7 @@ static struct _GGZTable* _ggzcore_net_handle_table(struct _GGZNet *net)
 
 static void _ggzcore_net_error(struct _GGZNet *net, char* message)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Network error: %s", message);
+	ggz_debug("GGZCORE:NET", "Network error: %s", message);
 	_ggzcore_net_disconnect(net);
 	_ggzcore_server_net_error(net->server, message);
 }

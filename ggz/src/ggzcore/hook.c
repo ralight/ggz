@@ -26,11 +26,10 @@
  */
 
 #include <config.h>
-#include <ggzcore.h>
-#include <hook.h>
-#include <state.h>
-#include <net.h>
-#include <msg.h>
+#include "ggzcore.h"
+#include "hook.h"
+#include "state.h"
+#include "net.h"
 
 #include <errno.h>
 #include <ggz.h>
@@ -263,7 +262,7 @@ void _ggzcore_hook_list_dump(GGZHookList *list)
 	struct _GGZHook *cur;
 	
 	for (cur = list->hooks; cur != NULL; cur = cur->next)
-		ggzcore_debug(GGZ_DBG_HOOK, "  Hook id %d", cur->id);
+		ggz_debug("GGZCORE:HOOK", "  Hook id %d", cur->id);
 }
 
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3430 2002-02-21 02:25:31Z bmh $
+ * $Id: ggzcore.h 3514 2002-03-02 21:15:00Z bmh $
  *
  * Interface file to be included by client frontends
  *
@@ -49,40 +49,11 @@ typedef enum {
 } GGZOptionFlags;
 
 
-/** Debugging categories */
-typedef enum {
-	GGZ_DBG_EVENT     = 0x00000001,
-	GGZ_DBG_NET       = 0x00000002,
-	GGZ_DBG_USER      = 0x00000004,
-	GGZ_DBG_SERVER    = 0x00000008,
-	GGZ_DBG_CONF      = 0x00000010,
-	GGZ_DBG_POLL      = 0x00000020,
-	GGZ_DBG_STATE     = 0x00000040,
-	GGZ_DBG_PLAYER    = 0x00000080,
-	GGZ_DBG_ROOM      = 0x00000100,
-	GGZ_DBG_TABLE     = 0x00000200,
-	GGZ_DBG_GAMETYPE  = 0x00000400,
-	GGZ_DBG_HOOK      = 0x00000800,
-	GGZ_DBG_INIT      = 0x00001000,
-	GGZ_DBG_MEMORY    = 0x00002000,
-	GGZ_DBG_MEMDETAIL = 0x00004000,
-	GGZ_DBG_MODULE    = 0x00008000,
-	GGZ_DBG_GAME      = 0x00010000,
-	GGZ_DBG_XML       = 0x00020000,
-	GGZ_DBG_ALL       = 0xFFFFFFFF
-} GGZDebugLevel;
-
 /** Options structure for ggzcore library */
 typedef struct _GGZOptions {
 	
 	/** Option flags */
 	GGZOptionFlags flags;
-
-	/** Debugging file */
-	char* debug_file;
-
-	/** Debugging levels */
-	GGZDebugLevel debug_levels;
 
 } GGZOptions;
 
@@ -674,25 +645,6 @@ int ggzcore_gametype_get_max_bots(GGZGameType *type);
 /* Verify that a paticular number of players/bots is valid */
 int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
 int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num);
-
-
-/* ggzcore_error_sys()
- * ggzcore_error_sys_exit()
- * ggzcore_error_msg()
- * ggzcore_error_msg_exit()
- * 
- * Receives:
- * GGZEventID id        : ID code of event
- * unsigned int hook_id : ID of hook to remove
- *
- * Returns:
- * int : 0 if successful, -1 on error
- */
-void ggzcore_debug(const GGZDebugLevel level, const char *fmt, ...);
-void ggzcore_error_sys(const char *fmt, ...);
-void ggzcore_error_sys_exit(const char *fmt, ...);
-void ggzcore_error_msg(const char *fmt, ...);
-void ggzcore_error_msg_exit(const char *fmt, ...);
 
 
 /* ggzcore_conf_initialize()
