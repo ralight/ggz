@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(acinclude.ggz)
+AC_INIT(ggzd/control.c)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.5pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -64,10 +64,7 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
 
-AC_CHECK_FUNC(strsep,
-    AC_DEFINE(_BSD_SOURCE),
-    AC_MSG_ERROR(*** Cannot find strsep function); exit )
-
+AC_REPLACE_FUNCS([strsep])
 
 dnl Find pthread library
 dnl ====================   
@@ -257,7 +254,11 @@ if test "$enable_games" = yes; then
 fi
 
 
+LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
+
 AC_SUBST(LDADD)
+AC_SUBST(LIBOBJS)
+AC_SUBST(LTLIBOBJS)
 AC_SUBST(ggzd_LIBS)
 AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdconfdir)
@@ -268,6 +269,7 @@ AC_SUBST(ggzdexecmoddir)
 AC_SUBST(ggzdstatedir)
 AC_SUBST(packagesrcdir)
 AC_SUBST(database)
+
 
 AC_OUTPUT([Makefile
 	   ggzdmod/Makefile
