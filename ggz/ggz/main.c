@@ -50,6 +50,7 @@ GtkWidget *mnu_players;
 GtkWidget *dlg_launch;
 int selected_table;
 int selected_type;
+struct GameTables tables;
 
 /* Aray of GdkColors currently used for chat */
 GdkColor colors[] = 

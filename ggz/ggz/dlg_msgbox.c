@@ -45,7 +45,7 @@ create_msgbox (void)
   gtk_widget_show (scrolledwindow2);
   gtk_box_pack_start (GTK_BOX (vbox6), scrolledwindow2, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow2), 5);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   text2 = gtk_text_new (NULL, NULL);
   gtk_widget_ref (text2);

@@ -60,6 +60,7 @@ extern GtkWidget *dlg_motd;
 extern int selected_table;
 extern int selected_type;
 extern GdkColor colors[];
+extern struct GameTables tables;
 
 GtkWidget *detail_window = NULL;
 
@@ -538,38 +539,37 @@ void handle_list_tables(int op, int fd)
 {
 	int i, j,  count, num;
 	GtkObject* tmp;
-	TableInfo table;
-	
+
 	selected_table = -1;
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 	gtk_clist_clear(GTK_CLIST(tmp));
 	es_read_int(fd, &count);
 	connect_msg("[%s] Table List Count %d\n", opcode_str[op], count);
 	for (i = 0; i < count; i++) {
-		es_read_int(fd, &table.table_index);
-		es_read_int(fd, &table.type_index);
-		es_read_string(fd, table.desc);
-		es_read_char(fd, &table.playing);
+		es_read_int(fd, &tables.info[i].table_index);
+		es_read_int(fd, &tables.info[i].type_index);
+		es_read_string(fd, tables.info[i].desc);
+		es_read_char(fd, &tables.info[i].playing);
 		es_read_int(fd, &num);
 		
 		for (j = 0; j < num; j++) {
-			es_read_int(fd, &table.seats[j]);
-			if (table.seats[j] >= 0
-			    || table.seats[j] == GGZ_SEAT_RESV) 
-				es_read_string(fd, &table.names[j]);
+			es_read_int(fd, &tables.info[i].seats[j]);
+			if (tables.info[i].seats[j] >= 0
+			    || tables.info[i].seats[j] == GGZ_SEAT_RESV) 
+				es_read_string(fd, &tables.info[i].names[j]);
 		}
 		for (j = num; j < MAX_TABLE_SIZE; j++)
-			table.seats[j] = GGZ_SEAT_NONE;
+			tables.info[i].seats[j] = GGZ_SEAT_NONE;
 		
 
-		connect_msg("[%s] Type: %d\n", opcode_str[op],table.type_index);
-		connect_msg("[%s] Playing: %d\n",opcode_str[op], table.playing);
+		connect_msg("[%s] Type: %d\n", opcode_str[op],tables.info[i].type_index);
+		connect_msg("[%s] Playing: %d\n",opcode_str[op], tables.info[i].playing);
 		connect_msg("[%s] Seats: %d\n", opcode_str[op], num);
-		connect_msg("[%s] Desc: %s\n", opcode_str[op], table.desc);
-		
-		add_table_list(table);
-	}
+		connect_msg("[%s] Desc: %s\n", opcode_str[op], tables.info[i].desc);
 
+		add_table_list(tables.info[i]);
+	}
+	tables.count = count;
 }
 
 void motd_print_line(char *line)

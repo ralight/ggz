@@ -847,11 +847,31 @@ void ggz_get_game_options(GtkButton * button, gpointer user_data)
 
 int ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 {
+	GtkWidget *tmp;
+	int row, col;
+
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
-		GdkEventButton *bevent = (GdkEventButton *) event;
+		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+		gtk_widget_show(GTK_WIDGET(tmp));
+		tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+		gtk_widget_hide(GTK_WIDGET(tmp));
+
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+		if (gtk_clist_get_selection_info(GTK_CLIST(tmp), event->button.x, event->button.y, &row, &col) > 0)
+		{
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			gtk_widget_hide(GTK_WIDGET(tmp));
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			gtk_widget_show(GTK_WIDGET(tmp));
+
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+			gtk_clist_unselect_all (GTK_CLIST (tmp));
+			gtk_clist_select_row (GTK_CLIST (tmp), row, 0);
+		}
+
 		gtk_menu_popup (GTK_MENU (mnu_tables), NULL, NULL, NULL, NULL,
-			bevent->button, bevent->time);
+			event->button.button, event->button.time);
         }
 	if (event->type == GDK_2BUTTON_PRESS)
 	{

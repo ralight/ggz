@@ -5,14 +5,25 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-#include "mnu_tables.h"
+#include "connect.h"
+#include "datatypes.h"
+#include "dlg_error.h"
+#include "dlg_launch.h"
+#include "dlg_msgbox.h"
+#include "easysock.h"
+#include "err_func.h"
+#include "protocols.h"
 
-
-/* Global GtkWidget for this dialog */
-GtkWidget *mnu_table;
+/* Globals for this menu */
+GtkWidget *mnu_tables;
+extern GtkWidget *dlg_launch;
+extern struct ConnectInfo connection;
+extern int selected_table;
+extern struct GameTables tables;
 
 /* Local callbacks which no other file will call */
 void on_launch1_activate(GtkButton * button, gpointer user_data);
+void on_join1_activate(GtkButton * button, gpointer user_data);
 void on_options1_activate(GtkButton * button, gpointer user_data);
 void on_players1_activate(GtkButton * button, gpointer user_data);
 
@@ -23,6 +34,7 @@ create_mnu_tables (void)
   GtkWidget *mnu_table;
   GtkAccelGroup *mnu_table_accels;
   GtkWidget *launch1;
+  GtkWidget *join1;
   GtkWidget *separator5;
   GtkWidget *options1;
   GtkWidget *players1;
@@ -37,6 +49,13 @@ create_mnu_tables (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (launch1);
   gtk_container_add (GTK_CONTAINER (mnu_table), launch1);
+
+  join1 = gtk_menu_item_new_with_label ("Join");
+  gtk_widget_ref (join1);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_table), "join1", join1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (join1);
+  gtk_container_add (GTK_CONTAINER (mnu_table), join1);
 
   separator5 = gtk_menu_item_new ();
   gtk_widget_ref (separator5);
@@ -63,6 +82,9 @@ create_mnu_tables (void)
   gtk_signal_connect (GTK_OBJECT (launch1), "activate",
                       GTK_SIGNAL_FUNC (on_launch1_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (join1), "activate",
+                      GTK_SIGNAL_FUNC (on_join1_activate),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (options1), "activate",
                       GTK_SIGNAL_FUNC (on_options1_activate),
                       NULL);
@@ -75,15 +97,23 @@ create_mnu_tables (void)
 
 void on_launch1_activate(GtkButton * button, gpointer user_data)
 {
+	dlg_launch = create_dlgLaunch();
+	gtk_widget_show(GTK_WIDGET(dlg_launch));
+}
 
+void on_join1_activate(GtkButton * button, gpointer user_data)
+{
+	dbg_msg("joining game");
+	es_write_int(connection.sock, REQ_TABLE_JOIN);
+	es_write_int(connection.sock, selected_table);
 }
 
 void on_options1_activate(GtkButton * button, gpointer user_data)
 {
-
+	msg(0,"Table Players","Table options will go here.\n Network protocol has to be made to get the info from the server");
 }
 
 void on_players1_activate(GtkButton * button, gpointer user_data)
 {
-
+	msg(0,"Table Players","The players names will go here\nJohn Doe\nrgade\nbrentmh\njzaun\netc...\n This needs to come from the server");
 }

@@ -2467,7 +2467,7 @@
       <name>scrolledwindow2</name>
       <border_width>5</border_width>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
       <child>
@@ -2500,6 +2500,18 @@
       <last_modification_time>Sun, 19 Mar 2000 01:27:49 GMT</last_modification_time>
     </signal>
     <label>Launch</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>join1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_join1_activate</handler>
+      <last_modification_time>Sun, 19 Mar 2000 06:02:43 GMT</last_modification_time>
+    </signal>
+    <label>Join</label>
     <right_justify>False</right_justify>
   </widget>
 
