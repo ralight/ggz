@@ -29,10 +29,10 @@ $circle = array(
 );
 
 include("savegame.php");
-$game = new Savegame();
-$game->load($savegame);
+$savegame = new Savegame();
+$savegame->load($savegamefile);
 
-$im = imagecreatetruecolor($game->width * 50, $game->height * 50);
+$im = imagecreatetruecolor($savegame->width * 50, $savegame->height * 50);
 
 $background_color = imagecolorallocate($im, 233, 180, 91);
 $circle_color = imagecolorallocate($im, 200, 0, 0);
@@ -40,11 +40,11 @@ $cross_color = imagecolorallocate($im, 0, 0, 200);
 
 imagefill($im, 0, 0, $background_color);
 
-for ($j = 0; $j < $game->height; $j++)
+for ($j = 0; $j < $savegame->height; $j++)
 {
-	for ($i = 0; $i < $game->height; $i++)
+	for ($i = 0; $i < $savegame->width; $i++)
 	{
-		$cell = $game->game[$i][$j];
+		$cell = $savegame->game[$i][$j];
 		if ($cell) :
 			if ($cell == 1) :
 				$polygon = $cross;

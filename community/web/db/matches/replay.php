@@ -7,26 +7,61 @@
 		<span class="itemleader">:: </span>
 		GGZ Community Database: Matches
 		<span class="itemleader"> :: </span>
-		<a name="database"></a>
+		<a name="match"></a>
 	</h1>
+	<h2>
+		<span class="itemleader">:: </span>
+		Game board result
+		<span class="itemleader"> :: </span>
+		<a name="matchboard"></a>
+	</h2>
 	<div class="text">
 <?php
 
 $savegamedir = "/home/ggz/BUILD/var/ggzd/gamedata/";
-$savegame = "$savegamedir/TicTacToe/savegame.NFZl2v";
+//$savegame = "$savegamedir/TicTacToe/savegame.NFZl2v";
+$savegamefile = "$savegamedir/TicTacToe/savegame.0H3rkd";
+
+$lookup = 78;
+
+echo "<img src='image.php?savegamefile=$savegamefile'>\n";
+
+?>
+	</div>
+	<h2>
+		<span class="itemleader">:: </span>
+		Match history
+		<span class="itemleader"> :: </span>
+		<a name="matchhistory"></a>
+	</h2>
+	<div class="text">
+<?php
 
 include("savegame.php");
 
-$game = new Savegame();
-$game->load($savegame);
+$savegame = new Savegame();
+$savegame->load($savegamefile);
 
-echo "Board size: $game->width x $game->height<br>\n";
-echo "Started: $game->starttime<br>\n";
-echo "Finished: $game->endtime<br>\n";
-echo "Winner: $game->winner<br>\n";
+$starttime = date("d.m.Y H:i:s", $savegame->starttime);
+$endtime = date("d.m.Y H:i:s", $savegame->endtime);
+
+include("match.php");
+
+$match = new Match($lookup);
+
+if ($savegame->winner) :
+	$winner = $match->link($savegame->winner);
+else :
+	$winner = "no winner (tie game)";
+endif;
+
+echo "Board size: $savegame->width x $savegame->height<br>\n";
+echo "Started: $starttime<br>\n";
+echo "Finished: $endtime<br>\n";
+echo "Winner: $winner<br>\n";
 echo "<br>\n";
 
-echo "<img src='image.php?savegame=$savegame'>\n";
+echo $savegame->history;
 
 ?>
 	</div>
