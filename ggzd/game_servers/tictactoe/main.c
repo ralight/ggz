@@ -47,7 +47,7 @@ int main(void)
 	if (ggzdmod_connect(ttt_game.ggz) < 0) {
 		/* Error starting up game 
 		game_cleanup(); */
-		exit(-1);
+		return -1;
 	}
 	
 	ggzdmod_log(ttt_game.ggz, "Starting game of Tic-Tac-Toe");
