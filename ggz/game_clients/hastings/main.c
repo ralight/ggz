@@ -53,6 +53,8 @@ int main(int argc, char* argv[])
 
 	gtk_main();
 
+printf("** Game started.\n");
+
 	return 0;
 }
 
@@ -66,6 +68,8 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		/* FIXME: do something here...*/
 		return;
 	}
+
+printf("** Input arrived.\n");
 
 	/* Distinguish between different server responses */
 	switch(op)

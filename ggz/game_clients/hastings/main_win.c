@@ -187,7 +187,7 @@ void display_board(void)
 							man_pix[game.board[i][j] % 4], 0, 0, offsetx - 16, offsety - 16, 32, 32);*/
 
 				/* Black team */
-				if(game.board[i][j] % 4)
+				if(game.board[i][j] % 2)
 				{
 					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
 						frame_black_pix, 0, 0, offsetx + 10, offsety + 10, 5, 5);
