@@ -682,13 +682,37 @@ static int table_log(GGZTable* table, char debug)
 {
 	int level, type, len, pid;
 	char name[MAX_GAME_NAME_LEN];
-	char* msg;
-	char* buf;
+	char *prescan, *msg, *p, *m;
+	char *buf;
+	int  pcts=0;
 
 	if (es_read_int(table->fd, &level) < 0
-	    || es_read_string_alloc(table->fd, &msg) < 0)
+	    || es_read_string_alloc(table->fd, &prescan) < 0)
 		return -1;
-	
+
+	/* If the message has any %'s in it they must be escaped. */
+	/* We could eliminate them, but this would prevent games  */
+	/* from putting the percent sign into messages at all. :( */
+	for(p=prescan; *p!='\0'; p++)
+		if(*p == '%') {
+			p++;
+			if(*p == '%')
+				p++;
+			else
+				pcts++;
+		}
+	if((msg = malloc(strlen(prescan) + pcts + 1)) == NULL)
+		err_sys_exit("malloc failed");
+	for(p=prescan,m=msg; *p!='\0'; p++,m++) {
+		if(*p == '%') {
+			*m++ = '%';
+			if(*++p != '%')
+				*m++ = '%';
+		}
+		*m = *p;
+	}
+	*m = *p;
+
 	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
 		pthread_rwlock_rdlock(&table->lock);
 		type = table->type;
@@ -714,7 +738,7 @@ static int table_log(GGZTable* table, char debug)
 		else
 			snprintf(buf, (len - 1), "(%s) ", name);
 		
-		snprintf((buf + strlen(buf)), (len - strlen(buf) - 1), msg);
+		strncat(buf, msg, (len - 1));
 		free(msg);
 		msg = buf;
 	}
@@ -725,6 +749,7 @@ static int table_log(GGZTable* table, char debug)
 		log_msg(level, msg);
 
 	free(msg);
+	free(prescan);
 	
 	return 0;
 }
