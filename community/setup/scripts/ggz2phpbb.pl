@@ -33,11 +33,12 @@ my $groupid = -1;
 my $ggz_conn = DBI->connect("DBI:$ggz_type:host=$ggz_host;dbname=$ggz_name;user=$ggz_user;password=$ggz_pass");
 my $phpbb_conn = DBI->connect("DBI:$phpbb_type:host=$phpbb_host;dbname=$phpbb_name;user=$phpbb_user;password=$phpbb_pass");
 
-my ($id, $name, $password, $email);
+my ($id, $name, $fullname, $password, $email);
+my ($country);
 
-my $res = $ggz_conn->prepare("SELECT handle, password, email FROM users");
+my $res = $ggz_conn->prepare("SELECT handle, name, password, email FROM users");
 $res->execute();
-$res->bind_columns(undef, \$name, \$password, \$email);
+$res->bind_columns(undef, \$name, \$fullname, \$password, \$email);
 
 my $res2 = $phpbb_conn->prepare("SELECT MAX(user_id) FROM phpbb_users");
 $res2->execute();
@@ -50,7 +51,7 @@ if($res2->fetch()){
 $res2->finish();
 
 while($res->fetch()){
-	my $res2 = $phpbb_conn->prepare("SELECT username FROM phpbb_users WHERE username = '$name'");
+	$res2 = $phpbb_conn->prepare("SELECT username FROM phpbb_users WHERE username = '$name'");
 	$res2->execute();
 	if($res2->fetch()){
 		# already present
@@ -61,20 +62,34 @@ while($res->fetch()){
 		}
 		$id += 1;
 
-		$res2 = $phpbb_conn->prepare("INSERT INTO phpbb_users " .
-			"(user_id, username, user_password, user_email) VALUES " .
-			"($id, '$name', '$md5pass', '$email')");
-		$res2->execute();
+		my $res3 = $ggz_conn->prepare("SELECT country FROM userinfo " .
+			"WHERE handle = '$name'");
+		$res3->execute();
+		$res3->bind_columns(undef, \$country);
+		if($res3->fetch()){
+			# ok, user info found
+		}else{
+			$country = "";
+		}
+		$res3->finish();
+
+		$res3 = $phpbb_conn->prepare("INSERT INTO phpbb_users " .
+			"(user_id, username, user_password, user_email, user_from) VALUES " .
+			"($id, '$name', '$md5pass', '$email', '$country')");
+		$res3->execute();
+		$res3->finish();
 
 		if($groupid != -1){
-			$res2 = $phpbb_conn->prepare("INSERT INTO phpbb_user_group " .
+			$res3 = $phpbb_conn->prepare("INSERT INTO phpbb_user_group " .
 				"(group_id, user_id, user_pending) VALUES " .
 				"($groupid, $id, 0)");
-			$res2->execute();
+			$res3->execute();
+			$res3->finish();
 		}
 
-		print "=> $name ($email)\n";
+		print "=> $name ($email) [$country]\n";
 	}
+	$res2->finish();
 }
 
 $phpbb_conn->disconnect();
