@@ -138,6 +138,7 @@ if test "$enable_python" = yes; then
 			python_includes="-I $python_includes"
 			python_libraries="-L $python_libraries -lpython$ver"
 			usever=$ver
+			enable_python=yes
 		fi
 	done
 
