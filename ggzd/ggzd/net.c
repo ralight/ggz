@@ -715,10 +715,12 @@ int net_read_data(GGZNetIO *net)
 	else {
 		net->byte_count += len;
 		/* If we haven't seen a tag in a while, it's an error */
-		if (net->byte_count > MAX_CHAT_LEN)
+		if (net->byte_count > MAX_CHAT_LEN) {
 			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
-			/* FIXME: should send an error */
+			
+			/*_net_send_result(net, "protocol", -2);*/
 			done = 1;
+		}
 	}
 	   
 
