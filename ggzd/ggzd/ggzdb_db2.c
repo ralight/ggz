@@ -126,10 +126,10 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 		err_sys("get failed in _ggzdb_player_get()");
 
 	/* Copy it to the user data buffer */
-	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-
-	/* Free db2's copy */
-	free(data.data);
+	if(rc == 0) {
+		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+		free(data.data);
+	}
 
 	return rc;
 }
