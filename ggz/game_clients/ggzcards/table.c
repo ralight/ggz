@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4029 2002-04-21 01:58:31Z jdorje $
+ * $Id: table.c 4030 2002-04-21 02:56:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -186,8 +186,6 @@ void table_initialize(void)
 	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
 	table_style = gtk_widget_get_style(table);
 	gtk_widget_show(table);
-	
-	load_card_data();
 	
 	table_drawing_area = gtk_drawing_area_new();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),

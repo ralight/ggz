@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4029 2002-04-21 01:58:31Z jdorje $
+ * $Id: drawcard.c 4030 2002-04-21 02:56:53Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -32,9 +32,8 @@
 #include <ggz.h>
 
 #include "cards.h"
-#include "table.h" /* HACK: we need table_style */
-
 #include "drawcard.h"
+#include "table.h" /* HACK: we need table_style */
 
 #include "cards-1.xpm"
 #include "cards-2.xpm"
@@ -51,9 +50,11 @@
 GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 
+static enum card_type_enum client_card_type = -1;
+
 static void get_card_coordinates(card_t card, int orientation, int *x, int *y);
 
-void load_card_data(void)
+void load_card_data(enum card_type_enum card_type)
 {               	
 	int i;
 	GdkBitmap *mask;
@@ -62,6 +63,9 @@ void load_card_data(void)
 	gchar **xpm_backs[4] =
 		{ cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm };
 
+	/* Check and set the card type */
+	assert(client_card_type == -1);
+	client_card_type = card_type;
 
 	/* build pixmaps from the xpms */
 	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
@@ -170,6 +174,9 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 
 int get_card_width(int orientation)
 {
+	if (client_card_type < 0)
+		return 0;
+		
 	if (orientation % 2 == 0)
 		return MY_CARDWIDTH;
 	else
@@ -178,6 +185,9 @@ int get_card_width(int orientation)
 
 int get_card_height(int orientation)
 {
+	if (client_card_type < 0)
+		return 0;
+		
 	if (orientation % 2 == 0)
 		return MY_CARDHEIGHT;
 	else
@@ -186,5 +196,8 @@ int get_card_height(int orientation)
 
 float get_card_visibility(void)
 {
+	if (client_card_type < 0)
+		return 0.0;
+		
 	return ((float)MY_CARDWIDTH / 4.0);
 }
