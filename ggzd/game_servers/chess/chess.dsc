@@ -1,4 +1,4 @@
-# $Id: chess.dsc 4757 2002-09-29 11:53:43Z dr_maux $
+# $Id: chess.dsc 5408 2003-02-15 03:34:42Z jdorje $
 
 [GameInfo]
 Author = Ismael Orenstein
@@ -18,3 +18,7 @@ Version = 3
 AllowLeave = 0
 #BotsAllowed = 
 PlayersAllowed = 2
+
+[Statistics]
+Records = 1
+Ratings = 1
