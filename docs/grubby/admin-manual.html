@@ -8,6 +8,7 @@ The Grubby Admin Manual
 
 <FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
 <FONT SIZE=2>Josef Spillner, 2001-10-12</FONT>
+<FONT SIZE=2>Updated 2002-08-18</FONT>
 <BR><BR>
 
 <HR>
@@ -15,9 +16,11 @@ The Grubby Admin Manual
 <A HREF="#install">Installation</A><BR>
 <A HREF="#commands">Admin commands</A><BR>
 <A HREF="#modexec">Exec module</A><BR>
+<A HREF="#modembed">Embed module</A><BR>
 <A HREF="#modnews">News module (modexec)</A><BR>
 <A HREF="#moddict">Dictionary module (modexec)</A><BR>
 <A HREF="#modmeeting">Meeting module (modexec)</A><BR>
+<A HREF="#modtrans">Translation module (modexec)</A><BR>
 <HR>
 <BR><BR>
 
@@ -25,9 +28,14 @@ The Grubby Admin Manual
 <A NAME="install">
 <FONT SIZE=4>Installation</FONT>
 <BR><BR>
-Grubby consists of the binary "grubby", the perl script "grubby-config", lots of plugins (shared libraries), scripts for modexec and data and translation files.
-Everything should install fine. All you have to do then is to call grubby-config, which gives you a full default installation. You might want to cut the options down,
-just edit the configuration files under $HOME/.ggz. Then launch the bot while having a ggzd running somewhere. If it fails, make sure you didn't cut too much options.
+Grubby consists of the binary "grubby", the perl script "grubby-config", lots
+of plugins (shared libraries), scripts for modexec and modembed, and data and
+translation files. Everything should install fine.
+All you have to do then is to call grubby-config, which gives you a full
+default installation. You might want to cut the options down, just edit the
+configuration files under $HOME/.ggz.
+Then launch the bot while having a ggzd running somewhere.
+If it fails, make sure you didn't cut too much options.
 Read docs/Setup for a sample file.
 <BR><BR>
 
@@ -53,6 +61,16 @@ The owner of grubby, as specified in the configuration, may issue some more comm
 This plugin executes external scripts and programs, writes to their stdin and reads from their stdout. It should be noted that the more
 external processes are spawned in serial order, the more time it consumes, and grubby may not react fast enough. Whereever available, a native
 plugin (shared library) should be preferred.
+<BR><BR>
+
+<HR>
+<A NAME="modembed">
+<FONT SIZE=4>Embed Module</FONT>
+<BR><BR>
+Similar to modexec, save it embeds the scripts directly. This works for python
+and ruby so far and requires that support for those languages has been enabled
+at compile time.
+One advantage is that all commands are executed much faster.
 <BR><BR>
 
 <HR>
@@ -82,6 +100,15 @@ it found for the key word.
 This one needs Ruby installed, preferably version 1.6+. Its configurable database goes normally to /tmp/meetings, you might want to
 change that. It uses an interesting technique to store its data: Instead of writing key-value pairs, it dumps the whole object
 so one can transfer it from one host to another :)
+<BR><BR>
+
+<HR>
+<A NAME="modtrans">
+<FONT SIZE=4>Translation Module (modexec)</FONT>
+<BR><BR>
+In case common shell tools (cut, grep, ...) and wget are available, the script
+webtrans.sh can be used for translations. It stores translated pairs of
+sentences into its cache (~/.ggz/grubby/google).
 <BR><BR>
 
 <HR>
