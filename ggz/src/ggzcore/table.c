@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: table.c 6785 2005-01-21 18:48:01Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -668,7 +668,7 @@ void _ggzcore_table_set_spectator_seat(GGZTable *table,
 }
 
 
-int _ggzcore_table_compare(void* p, void* q)
+int _ggzcore_table_compare(const void* p, const void* q)
 {
 	const GGZTable *table1 = p, *table2 = q;
 

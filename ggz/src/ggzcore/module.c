@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 6614 2005-01-08 19:03:18Z josef $
+ * $Id: module.c 6785 2005-01-21 18:48:01Z jdorje $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -69,7 +69,7 @@ static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
 /* Utility functions used by ggz_list */
 static void _ggz_free_chars(char **argv);
-static int   _ggzcore_module_compare(void *p, void *q);
+static int _ggzcore_module_compare(const void *p, const void *q);
 #if 0
 static void* _ggzcore_module_create(void* p);
 #endif /* #if 0 */
@@ -691,12 +691,11 @@ static void _ggz_free_chars(char **argv)
 
 
 /* Match game module by 'name', 'prot_engine', 'prot_version' */
-static int _ggzcore_module_compare(void *p, void *q)
+static int _ggzcore_module_compare(const void *p, const void *q)
 {
 	int compare;
-
-	struct _GGZModule *pmod = (struct _GGZModule*)p;
-	struct _GGZModule *qmod = (struct _GGZModule*)q;
+	const struct _GGZModule *pmod = p;
+	const struct _GGZModule *qmod = q;
 
 	compare = strcmp(pmod->name, qmod->name);
 	if (compare != 0) return compare;

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 6116 2004-07-16 19:07:48Z jdorje $
+ * $Id: player.h 6785 2005-01-21 18:48:01Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -108,7 +108,7 @@ int _ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
 int _ggzcore_player_get_highscore(GGZPlayer *player, int *highscore);
 
 /* Utility functions used by _ggzcore_list */
-int   _ggzcore_player_compare(void* p, void* q);
+int _ggzcore_player_compare(const void* p, const void* q);
 void* _ggzcore_player_create(void* p);
 void  _ggzcore_player_destroy(void* p);
 

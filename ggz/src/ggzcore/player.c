@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: player.c 6785 2005-01-21 18:48:01Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -273,10 +273,12 @@ int _ggzcore_player_get_highscore(GGZPlayer *player, int *highscore)
 }
 
 
-int _ggzcore_player_compare(void* p, void* q)
+int _ggzcore_player_compare(const void *p, const void *q)
 {
-	return strcmp(((struct _GGZPlayer*)p)->name, 
-		      ((struct _GGZPlayer*)q)->name);
+	const GGZPlayer *s_p = p;
+	const GGZPlayer *s_q = q;
+
+	return strcmp(s_p->name, s_q->name);
 }
 
 

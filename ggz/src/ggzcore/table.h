@@ -88,7 +88,7 @@ GGZTableSeat _ggzcore_table_get_nth_seat(const GGZTable *table,
 GGZTableSeat _ggzcore_table_get_nth_spectator_seat(const GGZTable *table,
 						   unsigned int num);
 /* Utility functions used by _ggzcore_list */
-int   _ggzcore_table_compare(void* p, void* q);
+int _ggzcore_table_compare(const void* p, const void* q);
 void* _ggzcore_table_create(void* p);
 void  _ggzcore_table_destroy(void* p);
 
