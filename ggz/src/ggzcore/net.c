@@ -787,11 +787,13 @@ static int _ggzcore_net_read_type(struct _GGZNet *net, struct _GGZGameType *type
 {
 	int id;
 	char players, bots;
-	char *name, *version, *desc, *author, *url;
+	char *name, *version, *desc, *author, *url, *engine, *p_version;
 
 	if (es_read_int(net->fd, &id) < 0
 	    || es_read_string_alloc(net->fd, &name) < 0
 	    || es_read_string_alloc(net->fd, &version) < 0
+	    || es_read_string_alloc(net->fd, &engine) < 0
+	    || es_read_string_alloc(net->fd, &p_version) < 0
 	    || es_read_char(net->fd, &players) < 0
 	    || es_read_char(net->fd, &bots) < 0
 	    || es_read_string_alloc(net->fd, &desc) < 0
@@ -801,9 +803,7 @@ static int _ggzcore_net_read_type(struct _GGZNet *net, struct _GGZGameType *type
 	    
 	ggzcore_debug(GGZ_DBG_NET, "Read info for game %d: %s", id, name);
 
-	_ggzcore_gametype_init(type, id, name, version, 
-			       /* FIXME: replace with p_eng, and p_ver */
-			       name, version,  
+	_ggzcore_gametype_init(type, id, name, version, engine, p_version,
 			       players, bots, desc, author, url);
 			       
 	

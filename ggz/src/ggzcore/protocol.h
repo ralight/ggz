@@ -26,7 +26,7 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#define GGZ_CS_PROTO_VERSION  3
+#define GGZ_CS_PROTO_VERSION  4
 
 /* Chat subop bitmasks */
 
