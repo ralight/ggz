@@ -1,0 +1,6 @@
+This document is intended to describe the process of adding new games to
+the GGZCards module.
+
+--jason short
+jdorje@users.sourceforge.net
+June 26, 2001
