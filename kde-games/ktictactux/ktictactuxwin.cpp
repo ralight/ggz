@@ -35,7 +35,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 
 	m_networked = false;
 
-#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+#if (((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1)) || (KDE_VERSION_MAJOR > 3))
 	icontheme = "crystalsvg";
 #else
 	icontheme = "hicolor";
@@ -230,7 +230,7 @@ void KTicTacTuxWin::loadThemes()
 	int index = menuthemes;
 	QString icontheme;
 
-#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+#if (((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1)) || (KDE_VERSION_MAJOR > 3))
 	icontheme = "crystalsvg";
 #else
 	icontheme = "hicolor";
