@@ -1,0 +1,25 @@
+Installing the GGZ python packages
+==================================
+
+This is somewhat different from how C/C++ packages work.
+First of all, while autoconf is used, automake is not - the python
+distutils are used instead.
+
+A standard installation procedure would be:
+
+# Run autoconf if configure does not exist yet (i.e. CVS checkout)
+autoconf
+# Configure package, to be installed to where the other GGZ packages reside
+./configure --prefix=/home/ggz/build
+# Compilation of python wrapper modules
+make
+# Installation
+make install prefix=/home/ggz/build
+
+Afterwards, the variable PYTHONPATH must point to this directory
+unless it's already in Python's default search path.
+
+export PYTHONPATH=/home/ggz/build
+
+That's it, basically.
+
