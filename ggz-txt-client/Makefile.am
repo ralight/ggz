@@ -4,6 +4,4 @@ SUBDIRS = ggz-txt man
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ
 
-clean-local:
-	-rm -f config.status
 
