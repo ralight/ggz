@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6237 2004-11-03 06:54:59Z jdorje $
+ * $Id: board.c 6238 2004-11-03 07:04:59Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -64,7 +64,8 @@ GtkTargetEntry *target;
 
 static GdkPixbuf *load_pixmap(const char *name)
 {
-  char *fullpath = g_strdup_printf("%s/pixmaps/%s.png", GGZDATADIR, name);
+  char *fullpath = g_strdup_printf("%s/chess/pixmaps/%s.png",
+				   GGZDATADIR, name);
   GdkPixbuf *image;
   GError *error = NULL;
 

@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6237 2004-11-03 06:54:59Z jdorje $
+#  $Id: Makefile.am 6238 2004-11-03 07:04:59Z jdorje $
 
 SUBDIRS = .
 
-pixmapdir = $(ggzdatadir)/pixmaps
+pixmapdir = $(ggzdatadir)/chess/pixmaps
 dist_pixmap_DATA = 		\
 		bishop_b.png	\
 		bishop_w.png	\
