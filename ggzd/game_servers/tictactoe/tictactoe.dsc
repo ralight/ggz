@@ -3,7 +3,7 @@ Author = Brent Hendricks
 Description = Simple GGZ game module for playing Tic-Tac-Toe
 Homepage = http://ggz.sourceforge.net/games/tictactoe/
 Name = TicTacToe
-Version = 0.0.2
+Version = 0.0.3
 
 [LaunchInfo]
 ExecutablePath = ggzd.tictactoe
