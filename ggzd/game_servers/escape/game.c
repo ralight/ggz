@@ -24,10 +24,11 @@
 
 #include <stdlib.h>
 
-#include <ggz.h>
-#include <game.h>
-#include <protocols.h>
 #include <easysock.h>
+#include "../libggzmod/ggz_server.h"
+#include "../libggzmod/ggz_protocols.h"
+
+#include "game.h"
 
 /* Global game variables */
 struct escape_game_t escape_game;
