@@ -1,7 +1,7 @@
 
 SUBDIRS = 
 
-INCLUDES = -I$(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 #LDFLAGS = -static
 LDADD = $(top_builddir)/ggzdmod/libggzdmod.la
 

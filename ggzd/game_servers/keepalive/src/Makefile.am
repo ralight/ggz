@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
+# $Id: Makefile.am 5718 2003-12-18 11:16:43Z dr_maux $
 
 SUBDIRS = .
 
@@ -10,7 +10,7 @@ keepalivesrv_LDADD = $(top_builddir)/ggzdmod/libggzdmod.la
 
 noinst_HEADERS = keepalive.h player.h world.h protocol.h spectator.h
 
-INCLUDES = -I$(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

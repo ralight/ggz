@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5572 2003-05-11 11:24:59Z dr_maux $
+# $Id: Makefile.am 5718 2003-12-18 11:16:43Z dr_maux $
 
 SUBDIRS = .
 
@@ -31,17 +31,22 @@ AILIB = $(top_builddir)/game_servers/ggzcards/client/libclient.a \
 	libggzcardsai.a \
 	$(LDADD) $(LIB_GGZ)
 
+#LDFLAGS = $(LIBGGZ_LDFLAGS)
+
 ggzd_ggzcards_ai_random_SOURCES = random.c
 ggzd_ggzcards_ai_random_LDADD = $(AILIB)
 ggzd_ggzcards_ai_random_CFLAGS = -DAI_CLIENT
+ggzd_ggzcards_ai_random_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 ggzd_ggzcards_ai_spades_SOURCES = spades.c
 ggzd_ggzcards_ai_spades_LDADD = $(AILIB)
 ggzd_ggzcards_ai_spades_CFLAGS = -DAI_CLIENT
+ggzd_ggzcards_ai_spades_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 ggzd_ggzcards_ai_suaro_SOURCES = suaro.c
 ggzd_ggzcards_ai_suaro_LDADD = $(AILIB)
 ggzd_ggzcards_ai_suaro_CFLAGS = -DAI_CLIENT
+ggzd_ggzcards_ai_suaro_LDFLAGS = $(LIBGGZ_LDFLAGS)
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
