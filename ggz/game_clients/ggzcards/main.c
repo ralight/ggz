@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2384 2001-09-07 08:40:00Z jdorje $
+ * $Id: main.c 2385 2001-09-07 08:43:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
 void table_get_newgame()
 {
-	sleep(1);
+	/* FIXME: we should ask the player first! */
 	client_send_newgame();
 }
 
