@@ -1,8 +1,8 @@
-
 /*
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: msgbox.c 4378 2002-08-20 21:19:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -32,37 +32,37 @@
 
 static MBReturn mb_status;
 
-void CloseTheApp (GtkWidget *window, gpointer data)
+static void CloseTheApp (GtkWidget *window, gpointer data)
 {
 	gtk_main_quit();
 }
 
 
-void DialogOKClicked (GtkButton *button, gpointer data)
+static void DialogOKClicked (GtkButton *button, gpointer data)
 {
 	mb_status = MSGBOX_OK;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
-void DialogCancelClicked (GtkButton *button, gpointer data)
+static void DialogCancelClicked (GtkButton *button, gpointer data)
 {
 	mb_status = MSGBOX_CANCEL;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
-void DialogYesClicked (GtkButton *button, gpointer data)
+static void DialogYesClicked (GtkButton *button, gpointer data)
 {
 	mb_status = MSGBOX_YES;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
-void DialogNoClicked (GtkButton *button, gpointer data)
+static void DialogNoClicked (GtkButton *button, gpointer data)
 {
 	mb_status = MSGBOX_NO;
 	gtk_widget_destroy (GTK_WIDGET (data));
 }
 
-GtkWidget *AddWidget (GtkWidget *widget, GtkWidget *packingbox)
+static GtkWidget *AddWidget (GtkWidget *widget, GtkWidget *packingbox)
 {
 	gtk_box_pack_start (GTK_BOX (packingbox), widget, TRUE, TRUE, 2);
 	return widget;

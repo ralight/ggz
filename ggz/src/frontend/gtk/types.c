@@ -2,6 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: types.c 4378 2002-08-20 21:19:06Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -284,6 +285,7 @@ create_dlg_types (void)
   return dlg_types;
 }
 
+#if 0 /* currently unused */
 GtkWidget*
 create_menu1 (void)
 {
@@ -319,4 +321,4 @@ create_menu1 (void)
 
   return menu1;
 }
-
+#endif

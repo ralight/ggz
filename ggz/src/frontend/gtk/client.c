@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4267 2002-06-22 05:16:36Z bmh $
+ * $Id: client.c 4378 2002-08-20 21:19:06Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -337,7 +337,7 @@ client_goto_web1_activate		(GtkMenuItem	*menuitem,
 }
 
 
-GtkWidget*
+static GtkWidget*
 main_xtext_chat_create			(gchar		*widget_name,
 					 gchar		*string1,
 					 gchar		*string2,

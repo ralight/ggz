@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4267 2002-06-22 05:16:36Z bmh $
+ * $Id: ggzclient.c 4378 2002-08-20 21:19:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -35,6 +35,7 @@
 
 #include "chat.h"
 #include "client.h"
+#include "ggzclient.h"
 #include "login.h"
 #include "launch.h"
 #include "msgbox.h"
