@@ -43,7 +43,8 @@ class MainWindow : public KMainWindow
 		enum Statuscodes
 		{
 			status_state,
-			status_level
+			status_level,
+			status_task
 		};
 
 		KPopupMenu *gamemenu, *displaymenu, *optionmenu;
@@ -51,6 +52,7 @@ class MainWindow : public KMainWindow
 		Network *network;
 		QSocketNotifier *sn, *snc;
 		QPtrList<Level> m_levels;
+		int m_movex, m_movey, m_movex2, m_movey2;
 };
 
 #endif

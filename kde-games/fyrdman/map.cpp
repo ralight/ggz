@@ -37,13 +37,13 @@ void Map::paintEvent(QPaintEvent *e)
 void Map::mousePressEvent(QMouseEvent *e)
 {
 	const int fwidth = 60;
-	const int fheight = 60;
+	const int fheight = /*60*/50;
 	const int offx = 50;
-	const int offy = 50;
+	const int offy = 20/*50*/;
 	const int angle = 20;
 	int roffx;
 	const int xs = fwidth * 2 - angle * 2;
-	const int ys = fheight - (int)(angle * 1.5);
+	const int ys = fheight / 2; // == fheight - (int)(angle * /*1.5*/1.25);
 	int xpos, ypos;
 
 	if(e->button() == LeftButton)
@@ -52,7 +52,7 @@ void Map::mousePressEvent(QMouseEvent *e)
 			for(int i = 0; i < m_width; i++)
 			{
 				roffx = offx;
-				if(j % 2) roffx = offx + fwidth - angle;
+				if(j % 2) roffx = offx + fwidth - angle - xs;
 
 				xpos = i * xs + roffx;
 				ypos = j * ys + offy;
@@ -87,13 +87,13 @@ void Map::setupMap(Level *level)
 {
 	QPainter p;
 	const int fwidth = 60;
-	const int fheight = 60;
+	const int fheight = /*60*/50;
 	const int offx = 50;
-	const int offy = 50;
+	const int offy = 20/*50*/;
 	const int angle = 20;
 	int roffx, roffy;
 	const int xs = fwidth * 2 - angle * 2;
-	const int ys = fheight - (int)(angle * 1.5);
+	const int ys = fheight / 2; // == fheight - (int)(angle * /*1.5*/1.25);
 	//const int xs = fwidth - (int)(angle * 1.5);
 	//const int ys = fheight * 2 - angle * 2;
 	int xpos, ypos;
@@ -114,10 +114,10 @@ void Map::setupMap(Level *level)
 
 	pix = backgroundPixmap();
 	QImage im = pix->convertToImage();
-	QImage im2 = im.smoothScale((m_width + 1) * xs + offx * 2, (m_height + 1) * ys + offy * 2);
+	QImage im2 = im.smoothScale((m_width + 1) * xs - offx /*+ offx * 2*/, (m_height + 1) * ys + offy /** 2*/);
 	pix2.convertFromImage(im2);
 
-	pix3.resize((m_width + 1) * xs + offx * 2, (m_height + 1) * ys + offy * 2);
+	pix3.resize((m_width + 1) * xs - offx /*+ offx * 2*/, (m_height + 1) * ys + offy /** 2*/);
 	pix3.fill(QColor(0, 0, 0));
 
 	// Paint hex fields
@@ -132,14 +132,14 @@ void Map::setupMap(Level *level)
 			for(int i = 0; i < m_width; i++)
 			{
 				roffx = offx;
-				if(j % 2) roffx = offx + fwidth - angle;
+				if(j % 2) roffx = offx + fwidth - angle - xs;
 				roffy = offy;
 				//if(i % 2) roffy = offy + fheight - angle;
 
 				xpos = i * xs + roffx;
 				ypos = j * ys + roffy;
 
-				int x = level->cell(i, j);
+				int x = level->cellown(i, j);
 				if(x >= 0)
 				{
 					p.setBrush(QColor(x % 2 + 1, x % 2 + 1, x % 2 + 1));
@@ -160,7 +160,7 @@ void Map::setupMap(Level *level)
 		p.end();
 	}
 
-	setFixedSize((m_width + 1) * xs + offx * 2, (m_height + 1) * ys + offy * 2);
+	setFixedSize((m_width + 1) * xs - offx /*+ offx * 2*/, (m_height + 1) * ys + offy /** 2*/);
 
 	// Paint possessions
 
@@ -168,8 +168,8 @@ void Map::setupMap(Level *level)
 	{
 		QImage xim1 = pix3.convertToImage();
 		QImage xim2 = pix2.convertToImage();
-		for(int j = 0; j < (m_height + 1) * ys + offy * 2; j++)
-			for(int i = 0; i < (m_width + 1) * xs + offx * 2; i++)
+		for(int j = 0; j < (m_height + 1) * ys + offy /** 2*/; j++)
+			for(int i = 0; i < (m_width + 1) * xs - offx /*+ offx * 2*/; i++)
 			{
 				int r, g, b, a;
 				QRgb tripel, tripel2;
@@ -211,7 +211,7 @@ void Map::setupMap(Level *level)
 			for(int i = 0; i < m_width; i++)
 			{
 				roffx = offx;
-				if(j % 2) roffx = offx + fwidth - angle;
+				if(j % 2) roffx = offx + fwidth - angle - xs;
 				roffy = offy;
 				//if(i % 2) roffy = offy + fheight - angle;
 
@@ -244,7 +244,7 @@ void Map::setupMap(Level *level)
 			for(int i = 0; i < m_width; i++)
 			{
 				roffx = offx;
-				if(j % 2) roffx = offx + fwidth - angle;
+				if(j % 2) roffx = offx + fwidth - angle - xs;
 				roffy = offy;
 				//if(i % 2) roffy = offy + fheight - angle;
 
@@ -267,7 +267,18 @@ void Map::setupMap(Level *level)
 					if(x % 2) c = QColor(0, 0, 255);
 					else c = QColor(255, 0, 0);
 					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 1, fwidth - 2 * angle - 2, 2, QBrush(c));
-					c = QColor(x * 30, 255 - x * 10, x * 15 + 100);
+					if(x == 0) c = QColor(255, 0, 0);
+					else if(x == 1) c = QColor(0, 255, 0);
+					else if(x == 2) c = QColor(0, 0, 255);
+					else if(x == 3) c = QColor(0, 255, 255);
+					else if(x == 4) c = QColor(255, 255, 0);
+					else if(x == 5) c = QColor(255, 0, 255);
+					else if(x == 6) c = QColor(0, 128, 0);
+					else if(x == 7) c = QColor(255, 128, 255);
+					else if(x == 8) c = QColor(0, 128, 255);
+					else if(x == 9) c = QColor(255, 128, 0);
+					else if(x == 10) c = QColor(128, 128, 0);
+					else if(x == 11) c = QColor(0, 128, 128);
 					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 4, fwidth - 2 * angle - 2, 2, QBrush(c));
 				}
 			}
@@ -300,5 +311,16 @@ void Map::setAnimation(bool animation)
 {
 	m_animation = animation;
 	setupMap(m_level);
+}
+
+void Map::move(int x, int y, int x2, int y2)
+{
+	if(m_level)
+	{
+		int tmp = m_level->cell(x, y);
+		m_level->setCell(x, y, -1);
+		m_level->setCell(x2, y2, tmp);
+		setupMap(m_level);
+	}
 }
 

@@ -16,6 +16,7 @@ Level::Level()
 	m_players = 0;
 	m_cell = NULL;
 	m_cellboard = NULL;
+	m_cellown = NULL;
 }
 
 Level::~Level()
@@ -27,9 +28,11 @@ Level::~Level()
 	{
 		ggz_free(m_cell[i]);
 		ggz_free(m_cellboard[i]);
+		ggz_free(m_cellown[i]);
 	}
 	ggz_free(m_cellboard);
 	ggz_free(m_cell);
+	ggz_free(m_cellown);
 }
 
 void Level::loadFromNetwork(int fd)
@@ -42,11 +45,14 @@ void Level::loadFromNetwork(int fd)
 
 	m_cell = (char**)ggz_malloc(m_height * sizeof(char*));
 	m_cellboard = (char**)ggz_malloc(m_height * sizeof(char*));
+	m_cellown = (char**)ggz_malloc(m_height * sizeof(char*));
 
 	for(int j = 0; j < m_height; j++)
 	{
 		m_cell[j] = (char*)ggz_malloc(30);
+		m_cellown[j] = (char*)ggz_malloc(30);
 		ggz_readn(fd, m_cell[j], 30);
+		memcpy(m_cellown[j], m_cell[j], 30);
 	}
 	for(int j = 0; j < m_height; j++)
 	{
@@ -80,8 +86,9 @@ void Level::loadFromFile(const char *filename)
 
 	m_players = 0;
 
-	m_cell = (char**)ggz_malloc(11 * sizeof(char*));
-	m_cellboard = (char**)ggz_malloc(11 * sizeof(char*));
+	m_cell = (char**)ggz_malloc(10 * sizeof(char*));
+	m_cellboard = (char**)ggz_malloc(10 * sizeof(char*));
+	m_cellown = (char**)ggz_malloc(10 * sizeof(char*));
 
 	while(fgets(buf, sizeof(buf), f))
 	{
@@ -117,19 +124,24 @@ void Level::loadFromFile(const char *filename)
 					if(y < 10)
 					{
 						m_cell[y] = (char*)ggz_malloc(30);
+						m_cellown[y] = (char*)ggz_malloc(30);
 						bzero(m_cell[y], 30);
+						bzero(m_cellown[y], 30);
 						if(strlen(buf + 1) > 30)
 						{
 							buf[31] = 0;
 							quality = quality_bad;
 						}
 						memcpy(m_cell[y], buf + 1, strlen(buf + 1));
+						memcpy(m_cellown[y], buf + 1, strlen(buf + 1));
 						if(strlen(buf + 1) > x) x = strlen(buf + 1);
 						for(j = 0; j < 30; j++)
 						{
 							/* Humancode-to-computercode conversion */
 							if(m_cell[y][j] == 32) m_cell[y][j] = -1;
 							else m_cell[y][j] -= 48;
+							if(m_cellown[y][j] == 32) m_cellown[y][j] = -1;
+							else m_cellown[y][j] -= 48;
 							if(m_cell[y][j] + 1> m_players) m_players = m_cell[y][j] + 1;
 						}
 						y++;
@@ -218,5 +230,21 @@ char Level::cellboard(int i, int j)
 	if((i >= 0) && (i < m_height) && (j >= 0) && (j < m_width))
 		return m_cellboard[i][j];
 	return -1;
+}
+
+char Level::cellown(int i, int j)
+{
+	if((i >= 0) && (i < m_height) && (j >= 0) && (j < m_width))
+		return m_cellown[i][j];
+	return -1;
+}
+
+void Level::setCell(int i, int j, int value)
+{
+	if((i >= 0) && (i < m_height) && (j >= 0) && (j < m_width))
+	{
+		m_cell[i][j] = value;
+		if(value >= 0) m_cellown[i][j] = value;
+	}
 }
 

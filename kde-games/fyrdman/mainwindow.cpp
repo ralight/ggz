@@ -60,6 +60,7 @@ MainWindow::MainWindow()
 
 	statusBar()->insertItem(i18n("Not yet playing"), status_state, 0);
 	statusBar()->insertItem(i18n("No level selected"), status_level, 0);
+	statusBar()->insertItem(i18n("Wait..."), status_task, 0);
 
 	connect(gamemenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(displaymenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -214,13 +215,14 @@ void MainWindow::slotData()
 			ggz_write_int(network->fd(), Network::reqinit);
 			break;
 		case Network::reqmove:
-			statusBar()->changeItem(i18n("Select a knight"), status_state);
+			statusBar()->changeItem(i18n("Select a knight"), status_task);
 			break;
 		case Network::rspmove:
 			ggz_read_char(network->fd(), &status);
 			switch(status)
 			{
 				case 0:
+					map->move(m_movex, m_movey, m_movex2, m_movey2);
 					statusBar()->changeItem(i18n("Move accepted"), status_state);
 					break;
 				case Network::errstate:
@@ -249,12 +251,14 @@ void MainWindow::slotData()
 			}
 			break;
 		case Network::msgmove:
+			statusBar()->changeItem(i18n("Wait..."), status_task);
 			ggz_read_int(network->fd(), &seat);
 			ggz_read_int(network->fd(), &movesrcx);
 			ggz_read_int(network->fd(), &movesrcy);
 			ggz_read_int(network->fd(), &movedstx);
 			ggz_read_int(network->fd(), &movedsty);
 			kdDebug() << "* Move by: " << seat << endl;
+			map->move(movesrcx, movesrcy, movedstx, movedsty);
 			break;
 		case Network::sndsync:
 			statusBar()->changeItem(i18n("Performing sync..."), status_state);
@@ -272,12 +276,16 @@ void MainWindow::slotData()
 			statusBar()->changeItem(i18n("Sync successful"), status_state);
 			break;
 		case Network::msggameover:
+			statusBar()->changeItem(i18n("Game over"), status_state);
+			statusBar()->changeItem(i18n("No level selected"), status_level);
 			ggz_read_char(network->fd(), &winner);
 			KMessageBox::information(this,
 				i18n("Player %1 has won.").arg(winner),
 				i18n("Game over"));
 			break;
 		default:
+			statusBar()->changeItem(i18n("Game interrupted"), status_state);
+			statusBar()->changeItem(i18n("No level selected"), status_level);
 			network->shutdown();
 			KMessageBox::error(this,
 				i18n("Bogus network message received."),
@@ -288,6 +296,11 @@ void MainWindow::slotData()
 
 void MainWindow::slotMove(int x, int y, int x2, int y2)
 {
+	m_movex = x;
+	m_movey = y;
+	m_movex2 = x2;
+	m_movey2 = y2;
+
 	if(network)
 	{
 		statusBar()->changeItem(i18n("Sending move..."), status_state);

@@ -19,6 +19,8 @@ class Map : public QWidget
 
 		void setupMap(Level *level);
 
+		void move(int x, int y, int x2, int y2);
+
 	signals:
 		void signalMove(int x, int y, int x2, int y2);
 

@@ -18,12 +18,16 @@ class Level
 		int players();
 		char cell(int i, int j);
 		char cellboard(int i, int j);
+		char cellown(int i, int j);
+
+		void setCell(int i, int j, int value);
 
 	private:
 		char *m_title, *m_version, *m_author;
 		int m_width, m_height, m_players;
 		char **m_cell;
 		char **m_cellboard;
+		char **m_cellown;
 };
 
 #endif
