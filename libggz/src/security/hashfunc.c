@@ -36,9 +36,9 @@ static hash_t hash_create_private(const char *algo, const char *text, const char
 	}
 
 	error = gcry_md_open(&handle, 0, flags);
-	if(handle != GPG_ERR_NO_ERROR)
+	if(error != GPG_ERR_NO_ERROR)
 	{
-		fprintf(stderr, "Error: couldn't create handle.\n");
+		fprintf(stderr, "Error: couldn't create handle: %s.\n", gcry_strerror(error));
 		return hash;
 	}
 
