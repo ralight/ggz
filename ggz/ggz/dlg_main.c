@@ -744,7 +744,7 @@ create_main_win (void)
   			     GTK_OBJECT (mnu_tables));
 
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
-
+  gtk_text_set_word_wrap( GTK_TEXT(chat_text), TRUE);
   return main_win;
 }
  
