@@ -1,5 +1,7 @@
 Options +MultiViews
 
+AddCharset utf8 *
+
 ErrorDocument 406 /site/autonegotiate.php
 ErrorDocument 404 /site/error.php
 
