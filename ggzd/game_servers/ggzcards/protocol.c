@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: protocol.c 3300 2002-02-10 11:07:20Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -30,14 +30,13 @@
 
 /* NOTE: This file should only be changed in the server. */
 
-#ifdef HAVE_CONFIG
-#  include <config.h>		/* Site-specific config */
-#endif
-
 #include <assert.h>
-#include <ggz.h>
+
+#include <ggz.h>		/* for easysock */
 
 #include "protocol.h"
+
+const card_t UNKNOWN_CARD = {-1, -1, -1};
 
 int read_card(int fd, card_t * card)
 {

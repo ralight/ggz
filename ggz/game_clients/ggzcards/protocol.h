@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2862 2001-12-10 20:29:38Z jdorje $
+ * $Id: protocol.h 3300 2002-02-10 11:07:20Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -224,8 +224,7 @@ typedef struct card_t {
 } card_t;
 
 /** An entirely unknown card. */
-#define UNKNOWN_CARD (card_t){-1, -1, -1}
-
+extern const card_t UNKNOWN_CARD;
 
 /* 
  * Communication functions
