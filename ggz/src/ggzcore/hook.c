@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: hook.c 5942 2004-02-16 17:07:31Z jdorje $
  *
  * This is the code for handling hook functions
  *
@@ -31,7 +31,6 @@
 #endif
 
 #include <errno.h>
-#include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
 

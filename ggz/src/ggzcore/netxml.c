@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5930 2004-02-15 02:55:50Z jdorje $
+ * $Id: netxml.c 5942 2004-02-16 17:07:31Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -31,13 +31,16 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#ifdef HAVE_WINSOCK_H
+# include <winsock.h>
+#endif
 
 #include <expat.h>
 #include <ggz.h>
@@ -95,7 +98,7 @@ struct _GGZNet {
 	GGZStack *stack;
 
 	/* File to dump protocol session */
-	int dump_file;
+	FILE *dump_file;
 
 	/* Whether to use TLS or not */
 	int use_tls;
@@ -208,7 +211,7 @@ GGZNet* _ggzcore_net_new(void)
 	
 	/* Set fd to invalid value */
 	net->fd = -1;
-	net->dump_file = -1;
+	net->dump_file = NULL;
 	net->use_tls = -1;
 	
 	return net;
@@ -246,9 +249,9 @@ int _ggzcore_net_set_dump_file(GGZNet *net, const char* filename)
 		return 0;
 	
 	if (strcasecmp(filename, "stderr") == 0)
-		net->dump_file = STDERR_FILENO;
+		net->dump_file = stderr;
 	else
-		net->dump_file = open(filename, O_WRONLY|O_CREAT|O_TRUNC, S_IRWXU);
+		net->dump_file = fopen(filename, "w");
 	
 	if (net->dump_file < 0)
 		return -1;
@@ -328,7 +331,11 @@ int _ggzcore_net_connect(GGZNet *net)
 void _ggzcore_net_disconnect(GGZNet *net)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Disconnecting");
+#ifdef HAVE_CLOSE
 	close(net->fd);
+#else
+	closesocket(net->fd);
+#endif
 	net->fd = -1;
 }
 
@@ -699,24 +706,31 @@ int _ggzcore_net_send_logout(GGZNet *net)
 /* Check for incoming data */
 int _ggzcore_net_data_is_pending(GGZNet *net)
 {
-	int pending = 0;
-	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
-
 	if (net && net->fd >= 0) {
-	
-		ggz_debug(GGZCORE_DBG_POLL, "Checking for net events");	
-		if ( (pending = poll(fd, 1, 0)) < 0) {
+		fd_set read_fd_set;
+		int result;
+		struct timeval tv;
+
+		FD_ZERO(&read_fd_set);
+		FD_SET(net->fd, &read_fd_set);
+
+		tv.tv_sec = tv.tv_usec = 0;
+
+		ggz_debug(GGZCORE_DBG_POLL, "Checking for net events");
+		result = select(net->fd + 1, &read_fd_set, NULL, NULL, &tv);
+		if (result < 0) {
 			if (errno == EINTR) 
 				/* Ignore interruptions */
-				pending = 0;
+				return 0;
 			else 
-				ggz_error_sys_exit("poll failed in ggzcore_server_data_is_pending");
-		}
-		else if (pending)
+				ggz_error_sys_exit("select failed in ggzcore_server_data_is_pending");
+		} else if (result > 0) {
 			ggz_debug(GGZCORE_DBG_POLL, "Found a net event!");
+			return 1;
+		}
 	}
 
-	return pending;
+	return 0;
 }
 
 
@@ -831,8 +845,8 @@ static void _ggzcore_net_error(GGZNet *net, char* message)
 
 static void _ggzcore_net_dump_data(GGZNet *net, char *data, int size)
 {
-	if (net->dump_file > 0)
-		write(net->dump_file, data, size);
+	if (net->dump_file)
+		fwrite(data, 1, size, net->dump_file);
 }
 
 static GGZXMLElement* _ggzcore_net_new_element(const char *tag,

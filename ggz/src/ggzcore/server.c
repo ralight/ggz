@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5939 2004-02-16 06:40:41Z jdorje $
+ * $Id: server.c 5942 2004-02-16 17:07:31Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -916,7 +916,14 @@ int _ggzcore_server_connect(GGZServer *server)
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		if(status == -1) errmsg = strerror(errno);
-		else errmsg = (char*)hstrerror(h_errno);
+		else {
+#ifdef HAVE_HSTRERROR
+			errmsg = (char*)hstrerror(h_errno);
+#else
+			/* Not all systems have hstrerror. */
+			errmsg = "Unable to connect";
+#endif
+		}
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
 	}
 	else
@@ -943,7 +950,14 @@ int _ggzcore_server_create_channel(GGZServer *server)
 	if (status < 0) {
 		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
 		if(status == -1) errmsg = strerror(errno);
-		else errmsg = (char*)hstrerror(h_errno);
+		else {
+#ifdef HAVE_HSTRERROR
+			errmsg = (char*)hstrerror(h_errno);
+#else
+			/* Not all systems have hstrerror. */
+			errmsg = "Unable to connect";
+#endif
+		}
 		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
 	}
 	else {
