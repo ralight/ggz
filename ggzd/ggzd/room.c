@@ -161,7 +161,7 @@ int room_emit(const int room, const int sender, char *msg)
 	dbg_msg(GGZ_DBG_LISTS, "Allocated chat %p", new_chat);
 
 	/* We ALWAYS lock players before chat rooms */
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_rdlock(&players.lock);
 	pthread_rwlock_wrlock(&chat_room[room].lock);
 
 	/*Let's not assume anyone is here (might be player exiting empty room)*/
@@ -187,6 +187,10 @@ int room_emit(const int room, const int sender, char *msg)
 	strcpy(new_chat->chat_sender, players.info[sender].name);
 
 	/* If players in this room don't have a chat head, put this item */
+	/* Player is only read-locked, but this is safe as no one else   */
+	/* can be talking in this room as we have write lock on the room */
+	/* and when removing a chat_head, we get write lock which will   */
+	/* have failed since we currently have read lock.		 */
 	for(i=0; i<MAX_USERS; i++)
 		if((players.info[i].room == room)
 		   && (players.info[i].chat_head == NULL))
