@@ -178,15 +178,26 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	switch (op) {
 	case MSG_SERVER_ID:
 		es_read_string_alloc(source, &message);
+		es_read_int(source, &num);
+		es_read_int(source, &size);
 		connect_msg("[%s] %s\n", opcode_str[op], message);
-		switch (connection.login_type) {
-		case 0:	/*Normal login */
-		case 2:	/*First time login */
-		case 1:	/*Anonymous login */
-			anon_login();
+		connect_msg("[%s] Protocol version %d\n", opcode_str[op], num);
+		connect_msg("[%s] Max chat length %d\n", opcode_str[op], size);
+		if (num != GGZ_CS_PROTO_VERSION) {
+			err_dlg("Protocol version mistamch!");
+			login_disconnect();
+		}
+		else {
+			switch (connection.login_type) {
+			case 0:	/*Normal login */
+			case 2:	/*First time login */
+			case 1:	/*Anonymous login */
+				anon_login();
+			}
+			break;
 		}
 		break;
-
+		
 	case MSG_SERVER_FULL:
 		break;
 
