@@ -45,7 +45,7 @@ static char player_needs_init = 1;
 static int ggzdb_player_init(void);
 
 /* Back-end functions */
-extern int _ggzdb_init(char *datadir);
+extern int _ggzdb_init(char *datadir, int standalone);
 extern void _ggzdb_close(void);
 extern void _ggzdb_enter(void);
 extern void _ggzdb_exit(void);
@@ -88,7 +88,7 @@ int ggzdb_init(void)
 		err_msg_exit("Bad db version id, remove or convert db files");
 
 	/* Call backend's initialization */
-	rc = _ggzdb_init(opt.data_dir);
+	rc = _ggzdb_init(opt.data_dir, 0);
 	if(rc == 0)
 		db_needs_init = 0;
 

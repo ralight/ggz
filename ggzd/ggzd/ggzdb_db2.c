@@ -42,20 +42,26 @@
 static DB *db_p = NULL;
 static DB_ENV db_e;
 static DB_INFO db_i;
+static int standalone = 0;
 
 /* Internal functions */
 
 
 /* Function to initialize the db2 database system */
-int _ggzdb_init(char *datadir)
+int _ggzdb_init(char *datadir, int set_standalone)
 {
 	int rc;
+	u_int32_t flags;
 
 	memset(&db_i, 0, sizeof(db_i));
 	memset(&db_e, 0, sizeof(db_e));
 
-	rc = db_appinit(datadir, NULL, &db_e,
-			DB_CREATE | DB_INIT_LOCK | DB_THREAD);
+	if(set_standalone) {
+		flags = DB_INIT_LOCK;
+		standalone = 1;
+	} else
+		flags = DB_CREATE | DB_INIT_LOCK | DB_THREAD;
+	rc = db_appinit(datadir, NULL, &db_e, flags);
 	if(rc != 0)
 		err_sys("db_appinit() failed in _ggzdb_init()");
 
@@ -93,10 +99,14 @@ void _ggzdb_exit(void)
 int _ggzdb_init_player(char *datadir)
 {
 	int rc;
+	u_int32_t flags;
 
+	if(standalone)
+		flags = 0;
+	else
+		flags = DB_CREATE | DB_THREAD;
 	/* Open the database file */
-	rc = db_open("player.db", DB_BTREE, DB_CREATE | DB_THREAD, 0600,
-		     &db_e, &db_i, &db_p);
+	rc = db_open("player.db", DB_BTREE, flags, 0600, &db_e, &db_i, &db_p);
 
 	/* Check for errors */
 	if(rc != 0)
@@ -188,4 +198,77 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	db_p->sync(db_p, 0);
 
 	return rc;
+}
+
+
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+/* All functions below here are NOT THREADSAFE (at least yet) */
+
+static DBC *db_c = NULL;
+int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+{
+	int rc=0;
+	DBT key, data;
+
+	if(db_c == NULL)
+		if((rc = db_p->cursor(db_p, NULL, &db_c)) != 0) {
+			err_sys("Failed to create db2 cursor");
+			return rc;
+		}
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(DBT));
+	memset(&data, 0, sizeof(DBT));
+	key.data = pe->handle;
+	key.size = sizeof(pe->handle);
+	data.size = sizeof(ggzdbPlayerEntry);
+	data.flags = DB_DBT_MALLOC;
+	if((rc = db_c->c_get(db_c, &key, &data, DB_FIRST)) != 0)
+		err_sys("Failed to get DB_FIRST record");
+	else {
+		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+		free(data.data);
+	}
+
+	return rc;
+}
+
+
+int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+{
+	int rc=0;
+	DBT key, data;
+
+	if(db_c == NULL)
+		err_sys_exit("get_next called before get_first, dummy");
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(DBT));
+	memset(&data, 0, sizeof(DBT));
+	key.data = pe->handle;
+	key.size = sizeof(pe->handle);
+	data.size = sizeof(ggzdbPlayerEntry);
+	data.flags = DB_DBT_MALLOC;
+	if((rc = db_c->c_get(db_c, &key, &data, DB_NEXT)) != 0) {
+		if(rc != DB_NOTFOUND)
+			err_sys("Failed to get DB_NEXT record");
+		else
+			rc = GGZDB_ERR_NOTFOUND;
+	} else {
+		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+		free(data.data);
+	}
+
+	return rc;
+}
+
+
+void _ggzdb_player_drop_cursor(void)
+{
+	if(db_c == NULL)
+		err_sys_exit("drop_cursor called before get_first, dummy");
+	db_c->c_close(db_c);
+	db_c = NULL;
 }

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2507 2001-09-24 04:16:01Z rgade $
+# $Id: Makefile.am 2508 2001-09-25 05:04:59Z rgade $
 
 SUBDIRS = .
 
@@ -8,7 +8,7 @@ DB_SOURCES = ggzdb_@database@.c
 
 EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DB_ALL)
 
-bin_PROGRAMS = ggzd
+bin_PROGRAMS = ggzd ggzduedit
 
 ggzdroom_DATA = entry.room
 
@@ -59,8 +59,13 @@ ggzd_SOURCES =	chat.c\
 		xmlelement.c \
 		xmlelement.h
 
-
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS)
+
+ggzduedit_SOURCES = ggzduedit.c \
+		    $(DB_SOURCES) \
+		    perms.h
+
+ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS)
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 

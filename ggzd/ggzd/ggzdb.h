@@ -55,3 +55,18 @@ extern int ggzdb_player_update(ggzdbPlayerEntry *);
 extern int ggzdb_player_get(ggzdbPlayerEntry *);
 extern int ggzdb_player_delete(char *handle);
 
+
+#ifdef DB_STANDALONE
+/* For standalone programs */
+extern int _ggzdb_init(char *datadir, int standalone);
+extern void _ggzdb_close(void);
+extern void _ggzdb_enter(void);
+extern void _ggzdb_exit(void);
+extern int _ggzdb_init_player(char *datadir);
+extern int _ggzdb_player_add(ggzdbPlayerEntry *);
+extern int _ggzdb_player_get(ggzdbPlayerEntry *);
+extern int _ggzdb_player_update(ggzdbPlayerEntry *);
+extern int _ggzdb_player_get_first(ggzdbPlayerEntry *);
+extern int _ggzdb_player_get_next(ggzdbPlayerEntry *);
+extern void _ggzdb_player_drop_cursor(void);
+#endif
