@@ -278,12 +278,16 @@ void recursive_lock(void)
 		lock_owner = pthread_self();
 		firsttime = 0;
 	}
-	if(recursion_level == 0 ||
-	   pthread_equal(lock_owner, pthread_self())) {
-		recursion_level++;
-		lock_owner = pthread_self();
-	} else
+
+	/* If the recursion level is set and we are not the owner, wait */
+	if(recursion_level != 0 &&
+	   !pthread_equal(lock_owner, pthread_self()))
 		pthread_cond_wait(&cond, &mut);
+
+	/* Increase the recursion level and set ourselves as the owner */
+	recursion_level++;
+	lock_owner = pthread_self();
+
 	pthread_mutex_unlock(&mut);
 }
 
@@ -293,6 +297,7 @@ void recursive_unlock(void)
 	pthread_mutex_lock(&mut);
 	recursion_level--;
 	if(recursion_level == 0)
+		/* Signal one process that we are done with the mutex */
 		pthread_cond_signal(&cond);
 	pthread_mutex_unlock(&mut);
 }
