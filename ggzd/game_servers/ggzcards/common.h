@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2193 2001-08-23 08:57:10Z jdorje $
+ * $Id: common.h 2203 2001-08-23 20:45:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,7 +30,6 @@
 
 /* this will be replaced by ../libggzmod/whatever to use libggzdmod */
 #include "../libggzmod/ggz_server.h"
-#include "../libggzmod/ggz_protocols.h"
 
 #include "ai.h"
 #include "bid.h"
