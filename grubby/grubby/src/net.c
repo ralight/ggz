@@ -33,31 +33,30 @@ static int channelfd = -1;
 static time_t lasttick = 0;
 
 /* Prototypes */
-GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_typelist(unsigned int id, void *event_data, void *user_data);
+static GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_roomlist(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_fail(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_chatfail(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_typelist(unsigned int id, const void *event_data, const void *user_data);
 
-GGZHookReturn net_hook_table(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_launched(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_playing(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data);
+static GGZHookReturn net_hook_table(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_launched(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_negotiated(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_playing(unsigned int id, const void *event_data, const void *user_data);
 
-GGZHookReturn net_hook_channel(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_ready(unsigned int id, void *event_data, void *user_data);
+static GGZHookReturn net_hook_channel(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn net_hook_ready(unsigned int id, const void *event_data, const void *user_data);
 
-void net_internal_game(GGZPlayer *player);
-void net_internal_gameprepare(const char *playername);
+static void net_internal_game(GGZPlayer *player);
+static void net_internal_gameprepare(const char *playername);
 
 /* Initialize the net functions */
-static void net_internal_init()
+static void net_internal_init(void)
 {
 	GGZOptions opt;
 	int ret;
@@ -301,7 +300,7 @@ printf("DEBUG: net_output(%s)\n", output->message);*/
 }
 
 /* Callback for successful connection */
-GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_connect(unsigned int id, const void *event_data, const void *user_data)
 {
 	/*nasty ggzcore bug?*/
 	while((!ggzcore_server_is_online(server)) && (status == NET_NOOP))
@@ -319,7 +318,7 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 }
 
 /* Callback for login */
-GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_login(unsigned int id, const void *event_data, const void *user_data)
 {
 	ggzcore_server_list_rooms(server, -1, 0);
 	ggzcore_server_list_gametypes(server, 1);
@@ -327,20 +326,20 @@ GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 }
 
 /* Callback for rooms list */
-GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_roomlist(unsigned int id, const void *event_data, const void *user_data)
 {
 	status = NET_LOGIN;
 	return GGZ_HOOK_OK;
 }
 
 /* Callback for type list */
-GGZHookReturn net_hook_typelist(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_typelist(unsigned int id, const void *event_data, const void *user_data)
 {
 	return GGZ_HOOK_OK;
 }
 
 /* Callback for joining a room */
-GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_enter(unsigned int id, const void *event_data, const void *user_data)
 {
 	room = ggzcore_server_get_cur_room(server);
 
@@ -358,20 +357,21 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 }
 
 /* Common error callback */
-GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_fail(unsigned int id, const void *event_data, const void *user_data)
 {
-	printf(_("ERROR: %s\n"), (char*)event_data);
+	const char *msg = event_data;
+
+	printf(_("ERROR: %s\n"), msg);
 	status = NET_ERROR;
 	return GGZ_HOOK_OK;
 }
 
 /* Callback for new players coming in */
-GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_roomenter(unsigned int id, const void *event_data, const void *user_data)
 {
 	char *player;
-	GGZRoomChangeEventData *data;
+	const GGZRoomChangeEventData *data = event_data;
 
-	data = (GGZRoomChangeEventData*)event_data;
 	player = data->player_name;
 	/*printf(">> ENTER: %s\n", player);*/
 	net_internal_queueadd(player, NULL, GURU_ENTER);
@@ -380,12 +380,11 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 }
 
 /* Callback for players leaving the room */
-GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_roomleave(unsigned int id, const void *event_data, const void *user_data)
 {
 	char *player;
-	GGZRoomChangeEventData *data;
+	const GGZRoomChangeEventData *data = event_data;
 
-	data = (GGZRoomChangeEventData*)event_data;
 	player = data->player_name;
 	/*printf("<< LEAVE: %s\n", player);*/
 	net_internal_queueadd(player, NULL, GURU_LEAVE);
@@ -476,13 +475,13 @@ void net_internal_gameprepare(const char *playername)
 }
 
 /* Chat callback which passes message to grubby */
-GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_chat(unsigned int id, const void *event_data, const void *user_data)
 {
 	int type;
 	char *roomname;
 	time_t t;
 	char *ts;
-	GGZChatEventData *chat = event_data;
+	const GGZChatEventData *chat = event_data;
 
 	/* Ignore all self-generates messages */
 	if (strcmp(chat->sender, guruname))
@@ -509,13 +508,13 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_chatfail(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("Chat failed!\n");
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_table(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_table(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- joined table\n");
 
@@ -526,7 +525,7 @@ GGZHookReturn net_hook_table(unsigned int id, void *event_data, void *user_data)
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_launched(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_launched(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- launched; create gamefd\n");
 
@@ -535,7 +534,7 @@ GGZHookReturn net_hook_launched(unsigned int id, void *event_data, void *user_da
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_negotiated(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- negotiated\n");
 
@@ -544,7 +543,7 @@ GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_playing(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_playing(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- playing\n");
 
@@ -553,7 +552,8 @@ GGZHookReturn net_hook_playing(unsigned int id, void *event_data, void *user_dat
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data)
+#if 0 /* Unused. */
+GGZHookReturn net_hook_over(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- over; kill gamefd\n");
 
@@ -565,8 +565,9 @@ GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data)
 
 	return GGZ_HOOK_OK;
 }
+#endif
 
-GGZHookReturn net_hook_channel(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_channel(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- channelconnected; create channelfd\n");
 
@@ -575,7 +576,7 @@ GGZHookReturn net_hook_channel(unsigned int id, void *event_data, void *user_dat
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn net_hook_ready(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn net_hook_ready(unsigned int id, const void *event_data, const void *user_data)
 {
 	printf("-- channelready; pass channelfd\n");
 
