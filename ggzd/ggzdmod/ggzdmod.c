@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5012 2002-10-23 21:06:41Z jdorje $
+ * $Id: ggzdmod.c 5021 2002-10-24 05:48:52Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -638,12 +638,12 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 		return -1;
 
 	if (old_seat < 0 || new_seat < 0)
-		return -1;
+		return -2;
 
 	if (was_spectator) {
 		name = ggzdmod_get_spectator(ggzdmod, old_seat).name;
 		if (old_seat >= ggzdmod->max_num_spectators || !name)
-			return -1;
+			return -3;
 	} else {
 		GGZSeatType old_type = ggzdmod_get_seat(ggzdmod,
 							old_seat).type;
@@ -651,19 +651,19 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 		if (old_seat >= ggzdmod->num_seats
 		    || old_type != GGZ_SEAT_PLAYER
 		    || !name)
-			return -1;
+			return -4;
 	}
 
 	if (is_spectator) {
-		if (ggzdmod_get_spectator(ggzdmod, old_seat).name)
-			return -1;
+		if (ggzdmod_get_spectator(ggzdmod, new_seat).name)
+			return -5;
 	} else {
 		GGZSeatType new_type = ggzdmod_get_seat(ggzdmod,
 							new_seat).type;
-		if (old_seat >= ggzdmod->num_seats
+		if (new_seat >= ggzdmod->num_seats
 		    || !(new_type == GGZ_SEAT_OPEN
 			 || new_type == GGZ_SEAT_RESERVED))
-			return -1;
+			return -6;
 	}
 
 
@@ -671,7 +671,7 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 			    old_seat, was_spectator,
 			    new_seat, is_spectator) < 0) {
 		_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
-		return -1;
+		return -7;
 	}
 
 
