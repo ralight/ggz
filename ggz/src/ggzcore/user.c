@@ -136,12 +136,11 @@ static void _ggzcore_user_list_rooms(GGZEventID id, void* event_data, void* user
  */
 static void _ggzcore_user_join_room(GGZEventID id, void* event_data, void* user_data)
 {
-	int room;
+	int room = (int)event_data;
 
 	if (!(_ggzcore_state_event_isvalid(id)))
 		return;
 
-	room = *(int*)event_data;
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_join_room");	
 	_ggzcore_net_send_join_room(room);
 	

@@ -154,13 +154,12 @@ static void input_handle_list(char* line)
 
 static void input_handle_join(char* line)
 {
-	int* room;
+	int room;
 	
-	room = malloc(sizeof(int));
-	*room = atoi(line);
+	room = atoi(line);
 	Room = strdup(line);
 
-	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, room, free);
+	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
 }
 
 
