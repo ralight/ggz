@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4493 2002-09-09 05:43:00Z jdorje $
+ * $Id: main.c 4591 2002-09-16 23:59:31Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -24,13 +24,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 
+#include <ggz.h>
 #include <ggzcore.h>
+
+#define DBG_MAIN "main"
 
 /*
  * The implementation here is currently quite a bit of a hack.
@@ -106,7 +113,7 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	cmd->passwd = argv[3];
 
 	cmd_name = argv[4];
-	if (!strcmp(cmd_name, "announce")) {
+	if (!strcasecmp(cmd_name, "announce")) {
 		cmd->command = GGZ_CMD_ANNOUNCE;
 		if (argc < 6) {
 			print_help(argv[0]);
@@ -133,24 +140,23 @@ static void wait_for_input(int fd)
 		FD_SET(fd, &my_fd_set);
 
 		status = select(fd + 1, &my_fd_set, NULL, NULL, NULL);
-		if (status < 0) {
-			fprintf(stderr, "Select error while blocking.");
-			exit(-1);
-		}
+		if (status < 0)
+			ggz_error_sys_exit("Select error while blocking.");
 	} while (status < 0);
 }
 
 static GGZHookReturn server_failure(GGZServerEvent id,
 				    void *event_data, void *user_data)
 {
-	fprintf(stderr, "GGZ failure: event %d.\n", id);
+	ggz_debug(DBG_MAIN, "GGZ failure: event %d.\n", id);
+	fprintf(stderr, "Could not connect to server.\n");
 	exit(-1);
 }
 
 static GGZHookReturn server_connected(GGZServerEvent id,
 				      void *event_data, void *user_data)
 {
-	fprintf(stderr, "Connected to server.\n");
+	ggz_debug(DBG_MAIN, "Connected to server.\n");
 	server_fd = ggzcore_server_get_fd(server);
 	return GGZ_HOOK_OK;
 }
@@ -158,7 +164,7 @@ static GGZHookReturn server_connected(GGZServerEvent id,
 static GGZHookReturn server_negotiated(GGZServerEvent id,
 				       void *event_data, void *user_data)
 {
-	fprintf(stderr, "Server negotiated.\n");
+	ggz_debug(DBG_MAIN, "Server negotiated.\n");
 	ggzcore_server_login(server);
 	return GGZ_HOOK_OK;
 }
@@ -166,7 +172,7 @@ static GGZHookReturn server_negotiated(GGZServerEvent id,
 static GGZHookReturn server_logged_in(GGZServerEvent id,
 				      void *event_data, void *user_data)
 {
-	fprintf(stderr, "Logged in to server.\n");
+	ggz_debug(DBG_MAIN, "Logged in to server.\n");
 
 	ggzcore_server_list_rooms(server, 0, 0);
 
@@ -176,7 +182,7 @@ static GGZHookReturn server_logged_in(GGZServerEvent id,
 static GGZHookReturn server_room_entered(GGZServerEvent id,
 					 void *event_data, void *user_data)
 {
-	fprintf(stderr, "Entered room 0.\n");
+	ggz_debug(DBG_MAIN, "Entered room 0.\n");
 	in_room = 1;
 	return GGZ_HOOK_OK;
 }
@@ -221,9 +227,9 @@ static void exec_command(GGZCommand * cmd)
 				      server_room_entered);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, server_failure);
 	if (ggzcore_server_join_room(server, 0) < 0) {
-		fprintf(stderr, "Server join room failed.  "
-			"There are %d rooms.\n",
-			ggzcore_server_get_num_rooms(server));
+		ggz_debug(DBG_MAIN, "Server join room failed.  "
+			  "There are %d rooms.\n",
+			  ggzcore_server_get_num_rooms(server));
 		exit(-1);
 	}
 
@@ -235,14 +241,31 @@ static void exec_command(GGZCommand * cmd)
 	assert(command.data);
 	ggzcore_room_chat(ggzcore_server_get_cur_room(server),
 			  GGZ_CHAT_ANNOUNCE, NULL, command.data);
-	fprintf(stderr, "Sending announcement.\n");
+	ggz_debug(DBG_MAIN, "Sending announcement.\n");
 
 	/* FIXME: we don't officially disconnect, we just close
 	   the communication! */
 }
 
+static void initialize_debugging(void)
+{
+#ifdef DEBUG
+	const char* debug_types[] = {DBG_MAIN,
+				     GGZCORE_DBG_CONF, GGZCORE_DBG_GAME, 
+				     GGZCORE_DBG_HOOK, GGZCORE_DBG_MODULE,
+				     GGZCORE_DBG_NET, GGZCORE_DBG_POLL,
+				     GGZCORE_DBG_ROOM, GGZCORE_DBG_SERVER,
+				     GGZCORE_DBG_STATE, GGZCORE_DBG_TABLE,
+				     GGZCORE_DBG_XML, NULL};
+
+	ggz_debug_init(debug_types, NULL);
+#endif
+}
+
 int main(int argc, char **argv)
 {
+	initialize_debugging();
+
 	if (parse_arguments(argc, argv, &command) < 0) {
 		return -1;
 	}
