@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 7010 2005-03-18 10:20:41Z josef $
+ * $Id: server.c 7012 2005-03-18 10:40:40Z josef $
  *
  * Functions for handling server events
  *
@@ -234,6 +234,8 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id,
 				       const void *user_data)
 {
 	const char *msg = event_data;
+
+	server_workinprogress(COMMAND_JOIN, 0);
 
 	output_text(_("--- Enter failed: %s"), msg);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 7010 2005-03-18 10:20:41Z josef $
+ * $Id: input.c 7012 2005-03-18 10:40:40Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -63,6 +63,7 @@ static void input_handle_wall(char* line);
 static void input_handle_beep(char* line);
 static void input_handle_launch(char *line);
 static void input_handle_exit(void);
+static int input_roomnumber(const char *line);
 
 static char delim[] = " \n";
 static char command_prefix = '/';
@@ -312,10 +313,27 @@ static void input_handle_join(char* line)
 }
 
 
+static int input_roomnumber(const char *line)
+{
+	GGZRoom *room;
+	int i;
+
+	if(!line) return -1;
+	for(i = 0; i < ggzcore_server_get_num_rooms(server); i++)
+	{
+		room = ggzcore_server_get_nth_room(server, i);
+		if(!ggz_strcasecmp(ggzcore_room_get_name(room), line)) return i;
+	}
+
+	return atoi(line);
+}
+
+
 static void input_handle_join_room(char* line)
 {
-	int room;
+	int roomid;
 	GGZStateID state = ggzcore_server_get_state(server);
+	int ret;
 
 	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
 	{
@@ -324,10 +342,14 @@ static void input_handle_join_room(char* line)
 	}
 
 	if (line) {
-		room = atoi(line);
+		roomid = input_roomnumber(line);
 		server_progresswait();
 		server_workinprogress(COMMAND_JOIN, 1);
-		ggzcore_server_join_room(server, room);
+		ret = ggzcore_server_join_room(server, roomid);
+		if(ret < 0) {
+			server_workinprogress(COMMAND_JOIN, 0);
+			output_text(_("Room %s does not exist."), line);
+		}
 	} else {
 		output_text(_("Join which room?"));
 	}
@@ -336,12 +358,12 @@ static void input_handle_join_room(char* line)
 
 static void input_handle_desc(char* line)
 {
-	int room;
+	int roomid;
 	char* desc;
 
 	if (line) {
-		room = atoi(line);
-		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
+		roomid = input_roomnumber(line);
+		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, roomid));
 		output_text("%s", desc);
 	} else {
 		output_text(_("Describe which room?"));
