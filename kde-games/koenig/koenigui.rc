@@ -4,7 +4,16 @@
     <Menu name="file"><text>&amp;File</text>
       <Action name="gamequit"/>
     </Menu>
-    <Menu name="settings"><text>&amp;Windows</text>
+	<Menu name="game"><text>&amp;Game</text>
+	  <Action name="gamesync"/>
+	  <Action name="gameflag"/>
+	  <Action name="gamedraw"/>
+	</Menu>
+	<Menu name="settings"><text>&amp;Settings</text>
+	  <Action name="optionwarnmessages"/>
+	  <Action name="optionboardframe"/>
+	</Menu>
+    <Menu name="windows"><text>&amp;Windows</text>
       <Action name="showmovetable"/>
       <Action name="showchessboard"/>
     </Menu>

@@ -18,8 +18,6 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 {
 	kdDebug(12101) << "ChessBoard::ChessBoard()" << endl;
 
-	setMinimumSize(240, 240);
-
 	setAcceptDrops(true);
 
 	// load figure pixmaps
@@ -54,8 +52,6 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	mouseDrag = true;
 	
 	resetBoard(COLOR_BLACK); // FIXME: invent COLOR_INACTIVE !!!
-
-	setCaption("Chess Board - inactive");
 }
 
 ChessBoard::~ChessBoard(void)
@@ -65,8 +61,10 @@ ChessBoard::~ChessBoard(void)
 void ChessBoard::resetBoard(int color)
 {
 	// cleanup the virtual chessboard
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
 			board[i][j] = 0;
 		}
 	}
@@ -80,7 +78,8 @@ void ChessBoard::resetBoard(int color)
 	board[6][0] = KNIGHT_WHITE;
 	board[7][0] = ROOK_WHITE;
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++)
+	{
 		board[i][1] = PAWN_WHITE;
 		board[i][6] = PAWN_BLACK;
 	}
@@ -96,103 +95,116 @@ void ChessBoard::resetBoard(int color)
 
 	activeColor = color;
 	if(color == COLOR_WHITE)
-		setCaption("Chess Board - White");
+		parentWidget()->setCaption("Chess Board - White");
 	else
-		setCaption("Chess Board - Black");
+		parentWidget()->setCaption("Chess Board - Black");
 
 	update();
 }
 
-void ChessBoard::resizeEvent(QResizeEvent *event)
-{
-	int size = (event->size().width()+event->size().height())/2/8;
-
-	resize(size * 8, size * 8);
-}
-
-void ChessBoard::paintEvent(QPaintEvent *event)
+void ChessBoard::paintEvent(QPaintEvent *e)
 {
 	QPainter painter(this);
 	
-	painter.setClipRect(event->rect());
+	painter.setClipRect(e->rect());
 
-	int cellSize = width()/8;
+	int cellSize = width() / 8;
 
 	bool dark = true;
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (dark) {
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (dark)
 				painter.setBrush(QColor(0x67, 0x55, 0x3F));
-				dark = false;
-			} else {
+			else
 				painter.setBrush(QColor(0xC8, 0xB5, 0x72));
-				dark = true;
-			}			
-			painter.fillRect(i*cellSize, j*cellSize, i*cellSize + cellSize, j*cellSize + cellSize, painter.brush());
+			dark = !dark;
+			painter.fillRect(i * cellSize, j * cellSize, i * cellSize + cellSize, j * cellSize + cellSize, painter.brush());
 			if (board[i][j] != 0)
-				painter.drawPixmap(i*cellSize, j*cellSize, scalePixmap(pixmaps[board[i][j]]));
+				painter.drawPixmap(i * cellSize, j * cellSize, scalePixmap(pixmaps[board[i][j]]));
 		}
 		dark = !dark;
 	}
 }
 
-void ChessBoard::dragEnterEvent(QDragEnterEvent *event)
+void ChessBoard::dragEnterEvent(QDragEnterEvent *e)
 {
-
-	event->accept();
+	e->accept();
 }
 
-void ChessBoard::mouseMoveEvent(QMouseEvent *)
+void ChessBoard::mouseMoveEvent(QMouseEvent *e)
 {
-	if (mouseDrag) {
-		dragStart = mapFromGlobal(QCursor::pos())/(width()/8);
-		if (((board[dragStart.x()][dragStart.y()]%2) == (activeColor%2)) && (board[dragStart.x()][dragStart.y()] != 0)) {
-			dragPixmap = scalePixmap(pixmaps[board[dragStart.x()][dragStart.y()]]);
+	int x, y;
+
+	if (mouseDrag)
+	{
+		dragStart = mapFromGlobal(QCursor::pos()) / (width() / 8);
+		x = dragStart.x();
+		y = dragStart.y();
+		dragStart.setX(x);
+		dragStart.setY(y);
+		if (((board[x][y] % 2) == (activeColor % 2)) && (board[x][y] != 0))
+		{
+			dragPixmap = scalePixmap(pixmaps[board[x][y]]);
 			mouseDrag = false;
-		} else
-			return;
+		}
+		else return;
 	}
 
 	QImage image;
 	QDragObject *drag_img = new QImageDrag(image, this);
-	drag_img->setPixmap(dragPixmap, QPoint(32*(1.0/(64.0/(width()/8))), 32*(1.0/(64.0/(width()/8)))));
+	drag_img->setPixmap(dragPixmap, QPoint(32 * (1.0 / (64.0 / (width() / 8))),
+		32 * (1.0 / (64.0 / (width() / 8)))));
 	drag_img->dragMove();
 }
 
-void ChessBoard::dropEvent(QDropEvent *event)
+void ChessBoard::dropEvent(QDropEvent *e)
 {
-	QPoint point = mapFromGlobal(QCursor::pos())/(width()/8);
-	if ((((board[point.x()][point.y()])%2) != ((board[dragStart.x()][dragStart.y()])%2)) || (board[point.x()][point.y()] == 0)) {
-		board[point.x()][point.y()] = board[dragStart.x()][dragStart.y()];
+	int x, y;
+
+	QPoint point = mapFromGlobal(QCursor::pos()) / (width() / 8);
+	x = point.x();
+	y = point.y();
+
+	if ((((board[x][y]) % 2) != ((board[x][y]) % 2)) || (board[x][y] == 0))
+	{
+		board[x][y] = board[dragStart.x()][dragStart.y()];
 		board[dragStart.x()][dragStart.y()] = 0;
 
-		int cellSize = width()/8;
-		repaint(dragStart.x()*cellSize, dragStart.y()*cellSize, cellSize, cellSize, false);
-		repaint(point.x()*cellSize, point.y()*cellSize, cellSize, cellSize, false);
+		int cellSize = width() / 8;
+		repaint(dragStart.x() * cellSize, dragStart.y() * cellSize, cellSize, cellSize, false);
+		repaint(x * cellSize, y * cellSize, cellSize, cellSize, false);
 
 		kdDebug(12101) << "ChessBoard::dropEvent(); got move!" << endl;
-		emit figureMoved(dragStart.x(), dragStart.y(), point.x(), point.y());
+		emit figureMoved(dragStart.x(), dragStart.y(), x, y);
 	}
 	mouseDrag = true;
 }
 
 void ChessBoard::moveFigure(int xfrom, int yfrom, int xto, int yto)
 {
-	board[xto][yto] = board[xfrom][yfrom];
-	board[xfrom][yfrom] = 0;
+	kdDebug(12101) << "move figure: " << xfrom << "/" << yfrom << " -> " << xto << "/" << yto << endl;
+	if(board[xfrom][yfrom])
+	{
+		board[xto][yto] = board[xfrom][yfrom];
+		board[xfrom][yfrom] = 0;
+	}
+	// else it has already moved // FIXME!!! don't move until server says so,
+	// or prevent double moves otherwise (same for tabctl 'moves')
 
-	int cellSize = width()/8;
-	repaint(xfrom*cellSize, yfrom*cellSize, cellSize, cellSize, false);
-	repaint(xto*cellSize, yto*cellSize, cellSize, cellSize, false);
+	int cellSize = width() / 8;
+	repaint(xfrom * cellSize, yfrom * cellSize, cellSize, cellSize, false);
+	repaint(xto * cellSize, yto * cellSize, cellSize, cellSize, false);
 }
 
 QPixmap ChessBoard::scalePixmap(const QPixmap& pixmap)
 {
 	QWMatrix matrix;
 	QPixmap tmp = pixmap;
-	int cellSize = width()/8;
+	int cellSize = width() / 8;
 
-	matrix.scale(1.0/(64.0/cellSize), 1.0/(64.0/cellSize)); 
+	matrix.scale(1.0 / (64.0 / cellSize), 1.0 / (64.0 / cellSize));
 	return tmp.xForm(matrix);
 }
 

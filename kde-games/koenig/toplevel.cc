@@ -9,7 +9,7 @@
 #include "toplevel.h"
 #include "toplevel.moc"
 
-#include "board.h"
+#include "boardcontainer.h"
 #include "options.h"
 #include "game.h"
 #include "kexttabctl.h"
@@ -29,6 +29,10 @@ TopLevel::TopLevel(const char *name)
 	a = new KAction("Quit", "gamequit", 0, qApp, SLOT(quit()), actionCollection());
 	a = new KAction("Show moves", "showmovetable", 0, qApp, SLOT(quit()), actionCollection());
 
+	a = new KAction("Request sync", "gamesync", 0, this, SLOT(slotSync()), actionCollection());
+	a = new KAction("Call flag", "gameflag", 0, this, SLOT(slotFlag()), actionCollection());
+	a = new KAction("Request draw", "gamedraw", 0, this, SLOT(slotDraw()), actionCollection()); // HUH? how does this work?
+
 	createGUI();
 
 	//newGame(); // don't start yet
@@ -45,7 +49,7 @@ TopLevel::TopLevel(const char *name)
 	resize(400, 200);
 	setCaption("Control Panel");
 
-	chessBoard = new ChessBoard(NULL, "ChessBoard");
+	chessBoard = new ChessBoardContainer(NULL, "ChessBoardContainer");
 	chessBoard->show();
 }
 
@@ -73,7 +77,7 @@ void TopLevel::initGameData(void)
 	//if(game) connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 	options = new Options(NULL, "Options");
 	options->show();
-	connect(options, SIGNAL(signalTime(int)), SLOT(slotTime(int)));
+	connect(options, SIGNAL(signalTime(int, int)), SLOT(slotTime(int, int)));
 }
 
 void TopLevel::initGameSocket(void)
@@ -82,9 +86,11 @@ void TopLevel::initGameSocket(void)
 	connect(game, SIGNAL(signalNewGame()), SLOT(newGame()));
 	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
 	connect(game, SIGNAL(signalMove(QString)), SLOT(slotMove(QString)));
+	connect(game, SIGNAL(signalDoMove(int, int, int, int)), SLOT(slotDoMove(int, int, int, int)));
 	connect(game, SIGNAL(signalStart(int)), SLOT(slotStart(int)));
+	connect(game, SIGNAL(signalDraw()), SLOT(slotNetDraw()));
 
-	connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
+	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 }
 
 void TopLevel::closeGame(void)
@@ -94,13 +100,9 @@ void TopLevel::closeGame(void)
 	chessBoard = NULL;
 }
 
-//void TopLevel::handleNetInput(void)
-//{
-//}
-
-void TopLevel::slotTime(int time)
+void TopLevel::slotTime(int timeoption, int time)
 {
-	if(game) game->setTime(time);
+	if(game) game->setTime(timeoption, time);
 	options->hide();
 }
 
@@ -108,18 +110,47 @@ void TopLevel::slotMessage(QString msg)
 {
 	tab2->insertItem(msg);
 	//KMessageBox::information(this, QString("The server said:\n") + msg, "Message from chess server"); // FIXME: OPTIONAL!
-	ctl->showTab(0);
 	tab2->ensureCurrentVisible();
+	ctl->showTab(0);
 }
 
 void TopLevel::slotMove(QString msg)
 {
 	tab1->append(msg);
 	tab1->setCursorPosition(32000, 0); // FIXME!
+	ctl->showTab(1);
 }
 
 void TopLevel::slotStart(int seat)
 {
-	chessBoard->resetBoard((seat ? COLOR_BLACK : COLOR_WHITE));
+	chessBoard->root()->resetBoard((seat ? COLOR_BLACK : COLOR_WHITE));
+}
+
+void TopLevel::slotSync()
+{
+}
+
+void TopLevel::slotFlag()
+{
+}
+
+void TopLevel::slotDraw()
+{
+	// FIXME: merge with slotNetDraw
+	game->answerDraw(1); // LOL
+}
+
+void TopLevel::slotNetDraw()
+{
+	int answer;
+
+	answer = KMessageBox::questionYesNo(this,
+		"The other player requests a draw. Do you agree?", "Draw requested");
+	game->answerDraw(answer);
+}
+
+void TopLevel::slotDoMove(int x, int y, int x2, int y2)
+{
+	chessBoard->root()->moveFigure(x, y, x2, y2);
 }
 

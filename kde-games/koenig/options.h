@@ -15,7 +15,7 @@ class Options : public QWidget
 	public slots:
 		void slotTime();
 	signals:
-		void signalTime(int time);
+		void signalTime(int timeoption, int time);
 	private:
 		QRadioButton *noclock, *serverclock, *clientclock;
 		QSpinBox *minutes, *seconds;

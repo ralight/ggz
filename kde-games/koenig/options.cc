@@ -72,12 +72,11 @@ void Options::slotTime()
 
 	time = minutes->cleanText().toInt() + seconds->cleanText().toInt();
 
-	// FIXME ??
 	if(noclock->isChecked())
-		emit signalTime(0);
+		emit signalTime(0, 0);
 	else if(serverclock->isChecked()) // add lag option (gtk+ client too)!!!
-		emit signalTime((3 << 24) + time);
+		emit signalTime(3, time);
 	else
-		emit signalTime((1 << 24) + time);
+		emit signalTime(1, time);
 }
 

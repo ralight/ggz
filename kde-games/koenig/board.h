@@ -37,11 +37,10 @@ signals:
 	void figureMoved(int xfrom, int yfrom, int xto, int yto);
 
 protected:
-	virtual void paintEvent(QPaintEvent *);
-	virtual void resizeEvent(QResizeEvent *);
-	virtual void mouseMoveEvent(QMouseEvent *);
-	virtual void dragEnterEvent(QDragEnterEvent *);
-	virtual void dropEvent(QDropEvent *);
+	virtual void paintEvent(QPaintEvent *e);
+	virtual void mouseMoveEvent(QMouseEvent *e);
+	virtual void dragEnterEvent(QDragEnterEvent *e);
+	virtual void dropEvent(QDropEvent *e);
 
 private:
 	int board[8][8];

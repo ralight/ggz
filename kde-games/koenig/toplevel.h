@@ -4,7 +4,7 @@
 #include <kmainwindow.h>
 #include <qsocket.h>
 
-class ChessBoard;
+class ChessBoardContainer;
 class Options;
 class Game;
 class QMultiLineEdit;
@@ -23,16 +23,22 @@ public slots:
 	void newGame(void);
 	void closeGame(void);
 	//void handleNetInput(void);
-	void slotTime(int time);
+	void slotTime(int timeoption, int time);
 	void slotMessage(QString msg);
 	void slotMove(QString msg);
+	void slotDoMove(int x, int y, int x2, int y2);
 	void slotStart(int seat);
+
+	void slotSync();
+	void slotFlag();
+	void slotDraw();
+	void slotNetDraw();
 
 private:
 	void initGameData(void);
 	//void initGameSocket(void);
 
-	ChessBoard *chessBoard;
+	ChessBoardContainer *chessBoard;
 	Options *options;
 	Game *game;
 	QMultiLineEdit *tab1;

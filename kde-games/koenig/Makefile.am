@@ -8,6 +8,7 @@ koenig_SOURCES = \
 	main.cc \
 	game.cc \
 	board.cc \
+	boardcontainer.cc \
 	ggz.cc \
 	toplevel.cc \
 	options.cc \
@@ -16,6 +17,7 @@ koenig_SOURCES = \
 noinst_HEADERS = \
 	game.h \
 	board.h \
+	boardcontainer.h \
 	ggz.h \
 	toplevel.h \
 	options.h \

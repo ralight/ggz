@@ -31,7 +31,10 @@ public:
 	Game(void);
 	~Game(void);
 	//void handleGameUpdate();
-	void setTime(int time);
+	void setTime(int timeoption, int time); // FIXME: consistent naming like answerTime() !!!
+	void answerDraw(int draw);
+	void handleGameOver(int cval);
+	void handleClock(int cval);
 
 public slots:
 	void handleNetInput(void);
@@ -42,6 +45,8 @@ signals:
 	void signalNewGame();
 	void signalMessage(QString msg);
 	void signalMove(QString msg);
+	void signalDoMove(int x, int y, int x2, int y2);
+	void signalDraw();
 
 private:
 	GGZ *ggz;
@@ -60,7 +65,7 @@ private:
 #define CHESS_STATE_DONE 3
 
 /* Definition of events */
-#define CHESS_EVENT_SEAT 0
+/*#define CHESS_EVENT_SEAT 0
 #define CHESS_EVENT_PLAYERS 1
 #define CHESS_EVENT_QUIT 2
 #define CHESS_EVENT_INIT 3
@@ -73,7 +78,7 @@ private:
 #define CHESS_EVENT_UPDATE_TIME 10
 #define CHESS_EVENT_REQUEST_UPDATE 11
 #define CHESS_EVENT_FLAG 12
-#define CHESS_EVENT_DRAW 13
+#define CHESS_EVENT_DRAW 13*/
 
 /* Definition of messages */
 #define CHESS_MSG_SEAT 1
