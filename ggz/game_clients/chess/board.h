@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Header for board.c
- * $Id: board.h 4491 2002-09-09 04:51:32Z jdorje $
+ * $Id: board.h 6237 2004-11-03 06:54:59Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -37,11 +37,6 @@
 #define QUEEN_W 10
 #define ROOK_W 11
 #define PIXSIZE 64
-
-#define LOAD_BITMAP(bitmap, data) do {  \
-	pieces[bitmap] = gdk_pixmap_create_from_xpm_d(main_win->window, &pieces_mask[bitmap], NULL, data); \
-	gdk_pixmap_ref(pieces[bitmap]); \
-	gdk_bitmap_ref(pieces_mask[bitmap]); } while (0)
 
 /* Load the bitmaps */
 void board_init(void);

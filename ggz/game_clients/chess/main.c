@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
+ * $Id: main.c 6237 2004-11-03 06:54:59Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -83,12 +83,18 @@ int main(int argc, char *argv[]) {
 	add_pixmap_directory(".");
 
 	main_win = create_main_win();
-	gtk_widget_show(main_win);
+	gtk_widget_realize(main_win);
+	/* HACK: we have to call gtk_widget_realize (above) before calling
+	 * board_init because board_init needs to access main_win->window.
+	 * However we have to call board_init before gtk_widget_show (below)
+	 * because gtk_widget_show requires access to the graphics contexts
+	 * created in board_init. */
 
 	game_info.state = CHESS_STATE_INIT;
 	game_info.fd = -1;
 
 	board_init();
+	gtk_widget_show(main_win);
 	game_update(CHESS_EVENT_INIT, NULL);
 
 	mod = ggzmod_new(GGZMOD_GAME);

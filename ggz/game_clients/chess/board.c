@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6225 2004-10-28 05:48:01Z jdorje $
+ * $Id: board.c 6237 2004-11-03 06:54:59Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -31,7 +31,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include <gtk/gtk.h>
+#include <ggz.h>
+
 #include "board.h"
 #include "game.h"
 #include "net.h"
@@ -39,28 +42,13 @@
 #include "support.h"
 #include "chess.h"
 
-/* Include images */
-#include "bitmaps/bishop_b.xpm"
-#include "bitmaps/bishop_w.xpm"
-#include "bitmaps/king_b.xpm"
-#include "bitmaps/king_w.xpm"
-#include "bitmaps/knight_b.xpm"
-#include "bitmaps/knight_w.xpm"
-#include "bitmaps/pawn_b.xpm"
-#include "bitmaps/pawn_w.xpm"
-#include "bitmaps/queen_b.xpm"
-#include "bitmaps/queen_w.xpm"
-#include "bitmaps/rook_b.xpm"
-#include "bitmaps/rook_w.xpm"
-
 /* Graphics declarations */
-GdkPixmap **pieces = NULL;
-GdkBitmap **pieces_mask = NULL;
-GdkGC *piece_gc = NULL;
-GdkGC *light_gc = NULL;
-GdkGC *dark_gc = NULL;
-GdkGC *red_gc = NULL;
-GdkColor bg_color[3];
+static GdkPixbuf *pieces[12];
+static GdkGC *piece_gc = NULL;
+static GdkGC *light_gc = NULL;
+static GdkGC *dark_gc = NULL;
+static GdkGC *red_gc = NULL;
+static GdkColor bg_color[3];
 GdkPixmap *board_buf = NULL;
 
 /* Main window */
@@ -74,24 +62,40 @@ extern struct chess_info game_info;
 /* dnd stuff */
 GtkTargetEntry *target;
 
-void board_init(void) {
-  if (pieces)
+static GdkPixbuf *load_pixmap(const char *name)
+{
+  char *fullpath = g_strdup_printf("%s/pixmaps/%s.png", GGZDATADIR, name);
+  GdkPixbuf *image;
+  GError *error = NULL;
+
+  image = gdk_pixbuf_new_from_file(fullpath, &error);
+  if (image == NULL)
+    ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+  g_free(fullpath);
+
+  return image;
+}
+
+void board_init(void)
+{
+  if (pieces[0]) {
     return;
+  }
+
   /* Load images */
-  pieces = (GdkPixmap **)malloc(12 * sizeof(GdkPixmap *));
-  pieces_mask = (GdkBitmap **)malloc(12 * sizeof(GdkBitmap *));
-  LOAD_BITMAP(BISHOP_B, bishop_b_xpm);
-  LOAD_BITMAP(BISHOP_W, bishop_w_xpm);
-  LOAD_BITMAP(KING_B, king_b_xpm);
-  LOAD_BITMAP(KING_W, king_w_xpm);
-  LOAD_BITMAP(KNIGHT_B, knight_b_xpm);
-  LOAD_BITMAP(KNIGHT_W, knight_w_xpm);
-  LOAD_BITMAP(PAWN_B, pawn_b_xpm);
-  LOAD_BITMAP(PAWN_W, pawn_w_xpm);
-  LOAD_BITMAP(QUEEN_B, queen_b_xpm);
-  LOAD_BITMAP(QUEEN_W, queen_w_xpm);
-  LOAD_BITMAP(ROOK_B, rook_b_xpm);
-  LOAD_BITMAP(ROOK_W, rook_w_xpm);
+  pieces[BISHOP_B] = load_pixmap("bishop_b");
+  pieces[BISHOP_W] = load_pixmap("bishop_w");
+  pieces[KING_B] = load_pixmap("king_b");
+  pieces[KING_W] = load_pixmap("king_w");
+  pieces[KNIGHT_B] = load_pixmap("knight_b");
+  pieces[KNIGHT_W] = load_pixmap("knight_w");
+  pieces[PAWN_B] = load_pixmap("pawn_b");
+  pieces[PAWN_W] = load_pixmap("pawn_w");
+  pieces[QUEEN_B] = load_pixmap("queen_b");
+  pieces[QUEEN_W] = load_pixmap("queen_w");
+  pieces[ROOK_B] = load_pixmap("rook_b");
+  pieces[ROOK_W] = load_pixmap("rook_w");
+
   /* Init the GC */
   piece_gc = gdk_gc_new(main_win->window);
   gdk_gc_set_fill(piece_gc, GDK_TILED);
@@ -353,13 +357,10 @@ void board_draw_piece(int piece, int x, int y) {
   if (piece < 0)
     return;
 
-  gdk_gc_set_tile(piece_gc, pieces[piece]);
-  gdk_gc_set_ts_origin(piece_gc, x*PIXSIZE, y*PIXSIZE);
-  gdk_gc_set_clip_origin(piece_gc, x*PIXSIZE, y*PIXSIZE);
-  gdk_gc_set_clip_mask(piece_gc, pieces_mask[piece]);
-
-  gdk_draw_rectangle(board_buf, piece_gc, TRUE, x*PIXSIZE, y*PIXSIZE, 
-                     PIXSIZE, PIXSIZE);
+  gdk_pixbuf_render_to_drawable(pieces[piece], board_buf,
+				piece_gc, 0, 0, x * PIXSIZE, y * PIXSIZE,
+				PIXSIZE, PIXSIZE,
+				GDK_RGB_DITHER_NONE, 0, 0);
 }
 
 void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
@@ -367,8 +368,7 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
   int piece;	
 	cgc_getboard(output, game->board);
 	piece = board_translate(output[x+(y*9)]);
-  gtk_drag_set_icon_pixmap(drag_context, gtk_widget_get_colormap(main_win),
-      pieces[piece], pieces_mask[piece], 5, 5);
+  gtk_drag_set_icon_pixbuf(drag_context, pieces[piece], 5, 5);
   game_info.src_x = x;
   game_info.src_y = y;
 }
