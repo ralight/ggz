@@ -108,7 +108,7 @@ void check_testfile(void)
 	int list_items;
 
 	/* Check that we can open the config file */
-	if((handle = ggz_conf_parse("cfg_testfile", CONF_RDONLY)) < 0)
+	if((handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDONLY)) < 0)
 		crit_fail("ggz_conf_parse() failed");
 	else
 		pass();
@@ -153,7 +153,7 @@ void check_testfile(void)
 
 	/* Test that we cannot open a RO file as RW */
 	chmod("cfg_testfile", 0400);
-	if((handle = ggz_conf_parse("cfg_testfile", CONF_RDWR)) < 0)
+	if((handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDWR)) < 0)
 		pass();
 	else {
 		fail("ggz_conf_parse() thinks it can write to a RO file");
@@ -162,7 +162,7 @@ void check_testfile(void)
 	unlink("cfg_testfile");
 
 	/* Test that we cannot create a file in RO mode */
-	handle = ggz_conf_parse("cfg_testfile", CONF_CREATE | CONF_RDONLY);
+	handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_CREATE | GGZ_CONF_RDONLY);
 	if(handle < 0)
 		pass();
 	else {
@@ -171,17 +171,17 @@ void check_testfile(void)
 		unlink("cfg_testfile");
 	}
 
-	/* Test that we cannot open a non-existent file w/o CONF_CREATE */
-	if((handle = ggz_conf_parse("cfg_testfile", CONF_RDWR)) < 0)
+	/* Test that we cannot open a non-existent file w/o GGZ_CONF_CREATE */
+	if((handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDWR)) < 0)
 		pass();
 	else {
-		fail("ggz_conf_parse() created a file w/o CONF_CREATE");
+		fail("ggz_conf_parse() created a file w/o GGZ_CONF_CREATE");
 		ggz_conf_cleanup();
 		unlink("cfg_testfile");
 	}
 
 	/* Test that we can create a new file */
-	handle = ggz_conf_parse("cfg_testfile", CONF_RDWR | CONF_CREATE);
+	handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if(handle < 0)
 		crit_fail("ggz_conf_parse() failed to create 'cfg_testfile'");
 	pass();
@@ -219,7 +219,7 @@ void check_testfile(void)
 	else
 		pass();
 	ggz_conf_cleanup();
-	if((handle = ggz_conf_parse("cfg_testfile", CONF_RDWR)) < 0)
+	if((handle = ggz_conf_parse("cfg_testfile", GGZ_CONF_RDWR)) < 0)
 		crit_fail("ggz_conf_parse() after commit failed");
 	else
 		pass();
