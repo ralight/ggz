@@ -175,8 +175,9 @@ static void* player_new(void *arg_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
-	/* FIXME: inet_ntoa is not reentrant */
-	strcpy(players.info[i].ip_addr, inet_ntoa(addr.sin_addr));
+	strcpy(players.info[i].ip_addr, inet_ntop(AF_INET, &addr.sin_addr,
+					players.info[i].ip_addr,
+					sizeof(players.info[i].ip_addr)));
 	players.info[i].hostname = hostname;
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
