@@ -44,6 +44,7 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 void ggz_get_game_options(GtkButton * button, gpointer user_data);
 gint ggz_event_tables( GtkWidget *widget, GdkEvent *event );
 gint ggz_event_players( GtkWidget *widget, GdkEvent *event );
+void ggz_disconnect();
 
 GtkWidget*
 create_main_win (void)
@@ -744,6 +745,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (msg_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
+  gtk_signal_connect (GTK_OBJECT (disconnect1), "activate",
+                      GTK_SIGNAL_FUNC (ggz_disconnect),
+                      msg_entry);
   gtk_signal_connect_object (GTK_OBJECT (player_list), "event",
   		             GTK_SIGNAL_FUNC (ggz_event_players), GTK_OBJECT (mnu_players));
   gtk_signal_connect_object (GTK_OBJECT (table_tree), "event", GTK_SIGNAL_FUNC (ggz_event_tables),
@@ -768,16 +772,10 @@ void ggz_join_game(GtkButton * button, gpointer user_data)
                         
 void ggz_logout(GtkMenuItem * menuitem, gpointer user_data)
 {
-	GtkWidget *tmp;
-
         dbg_msg("Logging out");
         es_write_int(connection.sock, REQ_LOGOUT);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
-        gtk_clist_clear(GTK_CLIST(tmp));
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
-        gtk_clist_clear(GTK_CLIST(tmp));
-	display_chat("< <  > >","Disconnected from server.");
+	display_chat("< <  > >","Logged off from server.");
 }
         
                         
@@ -899,4 +897,17 @@ void ggz_login()
 	dlg_login = create_dlg_login();
 	login_bad_name();
 	gtk_widget_show(dlg_login);
+}
+
+void ggz_disconnect()
+{
+        dbg_msg("Logging out");
+        es_write_int(connection.sock, REQ_LOGOUT);
+	display_chat("< <  > >","Logged off of from server.");
+
+        dbg_msg("Disconnecting");
+	disconnect(NULL,NULL);
+	display_chat("< <  > >","Disconnected from server.");
+	
+	login_disconnect();
 }

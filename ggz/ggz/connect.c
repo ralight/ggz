@@ -115,6 +115,8 @@ gint connect_to_server(void)
 	sock_handle = gdk_input_add_full(connection.sock, GDK_INPUT_READ,
 					 handle_server_fd, NULL, NULL);
 
+	login_connect();
+
 	return 0;
 }
 
@@ -177,6 +179,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		es_read_int(source, &checksum);
 		login_ok();
+		login_online();
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 		/*server_sync();*/
 		break;
@@ -213,8 +216,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_LOGOUT:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
-		disconnect(NULL, NULL);
-		msg(0,"Bye-Bye Now","Thanks for trying out GNU-Gaming Zone");
+		login_connect();
 		break;
 
 	case RSP_LIST_TYPES:
@@ -522,6 +524,22 @@ void display_chat(gchar *name, gchar *msg)
 			gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
 			g_free(buf);
 		}
+	}else if (!strcmp(cmd,"/sjoins")){	/* Server message join room */
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		buf = g_strdup_printf("< < <  > > > ");
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[3], NULL, buf, -1);
+		g_free(buf);
+		buf = g_strdup_printf("%s entered the room.\n", name);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		g_free(buf);
+	}else if (!strcmp(cmd,"/sparts")){	/* Server message part room */
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+		buf = g_strdup_printf("< < <  > > > ");
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, &colors[3], NULL, buf, -1);
+		g_free(buf);
+		buf = g_strdup_printf("%s left the room.\n", name);
+		gtk_text_insert(GTK_TEXT(tmp), fixed_font, NULL, NULL, buf, -1);
+		g_free(buf);
 	}else{		/* No command given, display it all */
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 		buf = g_strdup_printf("< %s >%*s", name, MAX_USER_NAME_LEN+1-strlen(name), " ");

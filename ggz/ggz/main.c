@@ -83,6 +83,8 @@ gint main(gint argc, gchar *argv[])
 	gtk_widget_show(main_win);
 	dlg_login = create_dlg_login();
 	gtk_widget_show(dlg_login);
+	
+	login_disconnect();
 
 	gtk_main();
 	return 0;
