@@ -1,0 +1,88 @@
+#include "kggz_launch.h"
+#include <qlayout.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qslider.h>
+
+KGGZ_Launch::KGGZ_Launch(QWidget *parent, char *name)
+: QWidget(parent, name)
+{
+	QVBoxLayout *vbox1;
+	QHBoxLayout *hbox1, *hbox2, *hbox3, *hbox4, *hbox5, *hbox6;
+
+	QPushButton *button_ok, *button_cancel;
+	QLabel *label_description, *label_type;
+	QLineEdit *input_description, *input_type;
+	QLabel *label_open, *label_reserved, *label_ai;
+	QLabel *count_open, *count_reserved, *count_ai;
+	QSlider *slider_open, *slider_reserved, *slider_ai;
+
+	label_type = new QLabel("Game type:", this);
+	label_description = new QLabel("Description:", this);
+
+	input_type = new QLineEdit(this);
+	input_description = new QLineEdit(this);
+
+	label_open = new QLabel("Open seats:", this);
+	label_reserved = new QLabel("Reserved:", this);
+	label_ai = new QLabel("AI players:", this);
+
+	count_open = new QLabel("0", this);
+	count_reserved = new QLabel("0", this);
+	count_ai = new QLabel("0", this);
+
+	slider_open = new QSlider(this);
+	slider_reserved = new QSlider(this);
+	slider_ai = new QSlider(this);
+	slider_open->setOrientation(QSlider::Horizontal);
+	slider_reserved->setOrientation(QSlider::Horizontal);
+	slider_ai->setOrientation(QSlider::Horizontal);
+
+	button_ok = new QPushButton("OK", this);
+	button_cancel = new QPushButton("Cancel", this);
+
+	vbox1 = new QVBoxLayout(this, 5);
+
+	hbox2 = new QHBoxLayout(vbox1, 5);
+	hbox2->add(label_type);
+	hbox2->add(input_type);
+
+	hbox3 = new QHBoxLayout(vbox1, 5);
+	hbox3->add(label_description);
+	hbox3->add(input_description);
+
+	hbox4 = new QHBoxLayout(vbox1, 5);
+	hbox4->add(label_open);
+	hbox4->add(slider_open);
+	hbox4->add(count_open);
+
+	hbox5 = new QHBoxLayout(vbox1, 5);
+	hbox5->add(label_reserved);
+	hbox5->add(slider_reserved);
+	hbox5->add(count_reserved);
+
+	hbox6 = new QHBoxLayout(vbox1, 5);
+	hbox6->add(label_ai);
+	hbox6->add(slider_ai);
+	hbox6->add(count_ai);
+
+	hbox1 = new QHBoxLayout(vbox1, 5);
+	hbox1->add(button_ok);
+	hbox1->add(button_cancel);
+
+	connect(button_cancel, SIGNAL(clicked()), SLOT(close()));
+	connect(button_ok, SIGNAL(clicked()), SLOT(accept()));
+
+	setCaption("Launch new game");
+	resize(300, 200);
+}
+
+KGGZ_Launch::~KGGZ_Launch()
+{
+}
+
+void KGGZ_Launch::accept()
+{
+	close();
+}
