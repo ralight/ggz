@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: hash.h 5903 2004-02-11 03:27:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,13 +27,13 @@
 #include "players.h"
 
 /* Exported functions */
-extern void hash_initialize(void);
-extern int hash_player_add(char *name, GGZPlayer* player);
+void hash_initialize(void);
+int hash_player_add(char *name, GGZPlayer* player);
 
 /* Return a pointer to the player with name "name".  Note: Returns
    with the player's write-lock acquired */
-extern GGZPlayer* hash_player_lookup(const char *name);
-extern void hash_player_delete(const char *name);
+GGZPlayer* hash_player_lookup(const char *name);
+void hash_player_delete(const char *name);
 
 /* Tuning parameter - This should be a prime */
 #define HASH_NUM_LISTS	31

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
- * $Id: room.h 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: room.h 5903 2004-02-11 03:27:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -94,13 +94,13 @@ typedef struct {
 extern RoomStruct *rooms;		/* cleanup() */
 extern RoomInfo room_info;
 
-extern void room_initialize(void);
-extern void room_create_additional(void);
-extern GGZClientReqError room_join(GGZPlayer* player, const int);
-extern GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
+void room_initialize(void);
+void room_create_additional(void);
+GGZClientReqError room_join(GGZPlayer* player, const int);
+GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
                                              char verbose);
-extern GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room);
-extern int room_get_num_rooms(void);
+GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room);
+int room_get_num_rooms(void);
 
 GGZReturn room_update_event(const char *player,
 			    GGZPlayerUpdateType update,

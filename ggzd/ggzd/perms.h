@@ -44,9 +44,9 @@
 				 PERMS_LAUNCH_TABLE |  \
 				 PERMS_ROOMS_LOGIN  )
 
-extern int perms_check(GGZPlayer *player, unsigned int perm);
-extern void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
-extern int perms_is_admin(GGZPlayer *player);
+int perms_check(GGZPlayer *player, unsigned int perm);
+void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
+int perms_is_admin(GGZPlayer *player);
 
 #ifdef PERMS_DEFINE_STR_TABLE
 char perms_str_table[32][21] = {

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error function prototypes
- * $Id: err_func.h 5080 2002-10-28 04:56:55Z jdorje $
+ * $Id: err_func.h 5903 2004-02-11 03:27:12Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -92,19 +92,19 @@ typedef struct {
 extern LogInfo log_info;
 
 /* Set the syslogd facility */
-extern int logfile_set_facility(char *);
+int logfile_set_facility(char *);
 
 /* Initialize the log files */
-extern void logfile_initialize(void);
+void logfile_initialize(void);
 
 /* Log a normal message */
-extern void log_msg(const unsigned, const char *, ...);
+void log_msg(const unsigned, const char *, ...);
 
 /* Update log handlers */
-extern int log_next_update_sec(void);
-extern void log_generate_update(void);
-extern void log_login_anon(void);
-extern void log_login_regd(void);
-extern void log_logout_anon(void);
-extern void log_logout_regd(void);
-extern void log_update_set_interval(int);
+int log_next_update_sec(void);
+void log_generate_update(void);
+void log_login_anon(void);
+void log_login_regd(void);
+void log_logout_anon(void);
+void log_logout_regd(void);
+void log_update_set_interval(int);
