@@ -218,6 +218,7 @@ static int chess_ai_moveexceptions(int from, int to)
 	int allowed, newpos;
 	int k, l;
 	int figure;
+	int factor;
 
 	figure = chess_ai_table[from][C_FIGURE];
 	allowed = 1;
@@ -227,9 +228,19 @@ static int chess_ai_moveexceptions(int from, int to)
 		/* RULE exception: pawn moves forward, beats diagonally */
 		if((!(abs(from - to) % 8)) && (chess_ai_table[to][C_FIGURE] != C_EMPTY)) allowed = 0;
 		if((abs(from - to) % 8) && (chess_ai_table[to][C_FIGURE] == C_EMPTY)) allowed = 0;
+		if((!(abs(from - to) % 8)) && (from > 7) && (from < 56))
+		{
+			/* RULE exception: force pawn to beat if possible */
+			factor = 1;
+			if(chess_ai_table[from][C_COLOR] == C_BLACK) factor = -1;
+			if(((to % 8) > 0) && (chess_ai_table[to - 1][C_FIGURE] != C_EMPTY))
+				if(chess_ai_table[to - 1][C_COLOR] != chess_ai_table[from][C_COLOR]) allowed = 0;
+			if(((to % 8) < 7) && (chess_ai_table[to + 1][C_FIGURE] != C_EMPTY))
+				if(chess_ai_table[to + 1][C_COLOR] != chess_ai_table[from][C_COLOR]) allowed = 0;
+		}
 		/* RULE exception: pawn can move forward 2 fields only at the beginning */
 		if((abs(from - to) == 16) && (from > 15) && (chess_ai_table[from][C_COLOR] == C_WHITE)) allowed = 0;
-		if((abs(from - to) == 16) && (from < 46) && (chess_ai_table[from][C_COLOR] == C_BLACK)) allowed = 0;
+		if((abs(from - to) == 16) && (from < 48) && (chess_ai_table[from][C_COLOR] == C_BLACK)) allowed = 0;
 	}
 	if(figure == C_KING)
 	{
