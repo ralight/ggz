@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3455 2002-02-24 19:28:13Z jdorje $
+ * $Id: game.c 3457 2002-02-24 19:57:25Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -556,8 +556,8 @@ void game_set_player_message(int player, const char *message)
 	table_set_player_message(player, message);
 }
 
-int game_handle_game_message(int fd, int game, int size)
+int game_handle_game_message(int fd, const char *game, int size)
 {
-	ggz_debug("main", "Received game message for game %d.", game);
+	ggz_debug("main", "Received game message for game %s.", game);
 	return 0;
 }

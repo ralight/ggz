@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3432 2002-02-21 02:55:26Z jdorje $
+ * $Id: client.c 3457 2002-02-24 19:57:25Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -225,16 +225,16 @@ static int handle_player_message(void)
    think). */
 static int handle_game_message(void)
 {
-	int size, game, handled;
-	char *block;
+	int size, handled;
+	char *game;
 
-	if (ggz_read_int(game_internal.fd, &game) < 0
+	if (ggz_read_string_alloc(game_internal.fd, &game) < 0
 	    || ggz_read_int(game_internal.fd, &size) < 0)
 		return -1;
 
 	/* Note: "size" refers to the size of the data block, not including
 	   the headers above. */
-	ggz_debug("core", "Received game message of size %d for game %d.",
+	ggz_debug("core", "Received game message of size %d for game %s.",
 		  size, game);
 
 	handled = game_handle_game_message(game_internal.fd, game, size);
@@ -245,11 +245,13 @@ static int handle_game_message(void)
 
 	if (size > 0) {
 		/* We read the block just to get it out of the way. */
-		block = ggz_malloc(size);
+		char *block = ggz_malloc(size);
 		if (ggz_readn(game_internal.fd, block, size) < 0)
 			return -1;
 		ggz_free(block);
 	}
+	
+	ggz_free(game);		/* allocated by easysock */
 
 	return 0;
 }

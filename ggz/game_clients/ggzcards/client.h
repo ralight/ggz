@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: client.h 3457 2002-02-24 19:57:25Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -273,7 +273,7 @@ extern void game_set_player_message(int player, const char *msg);
  *  @param size The amount of data ready to be read.
  *  @return The number of bytes read, or negative for error.
  *  @note When in doubt, just use "return 0". */
-extern int game_handle_game_message(int fd, int game_num, int size);
+extern int game_handle_game_message(int fd, const char *game, int size);
 
 /** @} end of Callbacks */
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3455 2002-02-24 19:28:13Z jdorje $
+ * $Id: protocol.h 3457 2002-02-24 19:57:25Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -162,11 +162,11 @@ typedef enum {
 	   then (for each player) an integer n plus n cards for that player. */
 	GAME_MESSAGE_CARDLIST,
 
-	/* Block data that may be game-specific.  An integer representing the 
-	   game followed by an integer n followed by n bytes of data. It is
-	   up to the client frontend to determine what (if anything) to do
-	   with this data; it'll be build at the server end by the game
-	   module. */
+	/* Block data that may be game-specific.  It is followed by the
+	   (string) name of the game, followed by an integer n followed
+	   by n bytes of data. It is up to the client frontend to determine
+	   what (if anything) to do  with this data; it'll be build at the
+	   server end by the game module. */
 	GAME_MESSAGE_GAME,
 } game_message_t;
 

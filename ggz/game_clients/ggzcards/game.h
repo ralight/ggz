@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: game.h 3457 2002-02-24 19:57:25Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -134,7 +134,7 @@ void game_set_text_message(const char *mark, const char *message);
 void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist);
 void game_set_player_message(int player, const char *message);
-int game_handle_game_message(int fd, int game, int size);
+int game_handle_game_message(int fd, const char *game, int size);
 
 
 /* 
