@@ -58,6 +58,7 @@ extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern GtkWidget *mnu_tables;
+extern GtkWidget *dlg_login;
 extern GtkWidget *dlg_motd;
 extern gint selected_table;
 extern gint selected_type;
@@ -113,10 +114,15 @@ gchar *opcode_str[] = { 	"MSG_SERVER_ID",
  */
 gint connect_to_server(void)
 {
+	GtkWidget *tmp;
+
 	if (FAIL(connection.sock = es_make_socket(ES_CLIENT, connection.port,
 						  connection.server))) 
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "connect_button");
+        	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE); 
 		return -1;
-
+	}
 	sock_handle = gdk_input_add_full(connection.sock, GDK_INPUT_READ,
 					 handle_server_fd, NULL, NULL);
 
