@@ -109,7 +109,7 @@ typedef struct {
 	char playing;
 	pthread_t pid;
 	int table_index;
-	char *ip_addr;				/* cleanup() */
+	char ip_addr[16];
 	char *hostname;				/* cleanup() */
 } UserInfo;
 

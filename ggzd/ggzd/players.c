@@ -117,11 +117,10 @@ void player_handler_launch(int sock)
 static void* player_new(void *arg_ptr)
 {
 	int sock, status, i;
-#if 0
-	char *ip_addr, *hostname = NULL;
+	char *hostname = NULL;
+	struct sockaddr_in addr;
+	int addrlen = sizeof(addr);
 	struct hostent *host;
-	struct in_addr addr;
-#endif
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *) arg_ptr);
@@ -134,16 +133,17 @@ static void* player_new(void *arg_ptr)
 		err_sys_exit("pthread_detach error");
 	}
 
-#if 0
+	/* Get the client's IP address and store it */
+	getpeername(sock, &addr, &addrlen);
+
 	/* Lookup the hostname if enabled in ggzd.conf */
 	if(opt.perform_lookups) {
-		inet_aton(ip_addr, &addr);
-		host = gethostbyaddr((char*)&addr, sizeof(addr), AF_INET);
+		host = gethostbyaddr( (char*)&(addr.sin_addr),
+					sizeof(addr.sin_addr), AF_INET );
 		if((hostname = malloc(strlen(host->h_name)+1)) == NULL)
 			err_sys_exit("malloc error in player_new()");
 		strcpy(hostname, host->h_name);
 	}
-#endif
 
 	/* Send server ID */
 	if (FAIL(es_write_int(sock, MSG_SERVER_ID)) ||
@@ -169,10 +169,8 @@ static void* player_new(void *arg_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
-#if 0
-	players.info[i].ip_addr = ip_addr;
+	strcpy(players.info[i].ip_addr, inet_ntoa(addr.sin_addr));
 	players.info[i].hostname = hostname;
-#endif
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 	
