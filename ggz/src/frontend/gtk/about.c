@@ -47,7 +47,7 @@ static gint about_tag;
 static GdkFont *font1, *font2, *font3, *font4;
 static GdkColormap *colormap;
 static GdkPixmap *pixmap;
-static GdkBitmap *mask;
+static GdkPixmap *bg_img;
 
 GtkWidget*
 about_background_add                    (gchar          *widget_name,
@@ -668,11 +668,12 @@ static void about_realize(GtkWidget *widget, gpointer data)
 	font3 = gdk_font_load("-*-helvetica-bold-r-normal-*-*-130-*-*-p-*-iso8859-1");
 	font4 = gdk_font_load("-*-helvetica-medium-r-normal-*-*-110-*-*-p-*-iso8859-1");
 	colormap = gdk_colormap_get_system();
-	pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, about);
-	if (pixmap == NULL)
+	pixmap = gdk_pixmap_new( widget->window, 250, 300, -1);
+	bg_img = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, NULL, NULL, about);
+	if (bg_img == NULL)
 		g_error ("Couldn't create about background pixmap.");
 
-	about_tag = gtk_timeout_add(200, about_update, NULL);
+	about_tag = gtk_timeout_add(100, about_update, NULL);
 }
 
 
@@ -709,7 +710,7 @@ static gint about_update(gpointer data)
 	int status;
 
 	background = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
-	gdk_draw_pixmap (GTK_WIDGET(background)->window, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], pixmap, 0, 0, 0, 0,
+	gdk_draw_pixmap (pixmap, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], bg_img, 0, 0, 0, 0,
 			250, 300);
 	status = about_draw_text(background, "GGZ Gaming Zone",	font1, Yloc, TRUE);
 	status = about_draw_text(background, "(C) 1999, 2000, 2001", font2, Yloc, FALSE);
@@ -731,6 +732,8 @@ static gint about_update(gpointer data)
 	status = about_draw_text(background, " ",		font2, Yloc, FALSE);
 	status = about_draw_text(background, "Windows Client",	font2, Yloc, FALSE);
 	status = about_draw_text(background, "Doug Hudson",	font3, Yloc, FALSE);
+	gdk_draw_pixmap (GTK_WIDGET(background)->window, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], pixmap, 0, 0, 0, 0,
+			250, 300);
 
 	if (status == TRUE)
 		Yloc = 320;
@@ -753,7 +756,7 @@ static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *fo
 		l = l + gdk_string_height(font, text) + 10;
 	}
 
-	gdk_draw_text(GTK_WIDGET(background)->window, font, GTK_WIDGET(background)->style->black_gc,
+	gdk_draw_text(pixmap, font, GTK_WIDGET(background)->style->black_gc,
 			(250 / 2) - (gdk_string_width(font, text) / 2), Yloc + l,
 			text, strlen(text));
 
