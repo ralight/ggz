@@ -69,10 +69,10 @@ int map_save(combat_game *map) {
   int handle, a;
   hash = _generate_hash( combat_options_string_write(map, 1) );
   sprintf(filename, "%s/%s.%u", GLOBAL_MAPS, map->name, hash);
-  handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
+  handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR | GGZ_CONFIO_CREATE);
   if (handle < 0) {
     sprintf(filename, "%s/.ggz/combat/maps/%s.%u", getenv("HOME"), map->name, hash);
-    handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
+    handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR | GGZ_CONFIO_CREATE);
     if (handle < 0) {
       sprintf(filename, "%s/.ggz", getenv("HOME"));
       mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP );
@@ -81,7 +81,7 @@ int map_save(combat_game *map) {
       sprintf(filename, "%s/.ggz/combat/maps", getenv("HOME"));
       mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP );
       sprintf(filename, "%s/.ggz/combat/maps/%s.%u", getenv("HOME"), map->name, hash);
-      handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
+      handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR | GGZ_CONFIO_CREATE);
       if (handle < 0) {
         // Give up
         game_message("I couldn't write the map to disk");
