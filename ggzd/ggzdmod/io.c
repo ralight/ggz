@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 6893 2005-01-25 04:31:44Z jdorje $
+ * $Id: io.c 6896 2005-01-25 08:34:57Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -401,7 +401,7 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 	_ggzdmod_handle_launch_begin(ggzdmod, seats, spectators);
 
 	for (i = 0; i < seats; i++) {
-		char *name;
+		char *name = NULL;
 
 		/* Reset seat */
 		seat.num = i;
