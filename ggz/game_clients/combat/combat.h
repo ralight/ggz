@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 1
+#define PROTOCOL_VERSION 2
 
 /* Combat Protocol Version 0.0.1
  *
@@ -256,8 +256,9 @@
 #define U_COLONEL		 0x09	// 1001
 #define U_GENERAL		 0x0A	// 1010
 #define U_MARSHALL	 0x0B	// 1011
-#define U_EMPTY 		 0x0C // 1100 
-#define U_UNKNOWN    0x0F	// 1111
+#define U_UNKNOWN    0x0C	// 1100
+#define U_EMPTY 		 0x0F // 1111 
+
 
 // Takes a OWNER number and returns a code to be added to U/T
 // Note that player 0 is stored as 0001 (as 0000 must be no player)
@@ -281,8 +282,10 @@
 
 // Game protocol
 #define CBT_MSG_SEAT 0
+#define CBT_MSG_PLAYERS 1
 #define CBT_REQ_OPTIONS 2
 #define CBT_MSG_OPTIONS 3
+
 
 
 // Tile struct

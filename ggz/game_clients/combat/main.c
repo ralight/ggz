@@ -35,6 +35,7 @@
 #include "combat.h"
 #include "interface.h"
 #include "callbacks.h"
+#include "support.h"
 
 // GGZ connect
 void ggz_connect();
@@ -53,6 +54,9 @@ int main(int argc, char *argv[]) {
 	gtk_init(&argc, &argv);
 
 	game_init();
+
+	// TODO: Check for directory the user wants
+	add_pixmap_directory("tiles/default");
 
 	main_win = create_main_window();
 	gtk_widget_show(main_win);

@@ -19,11 +19,6 @@
   <class>GtkWindow</class>
   <name>main_window</name>
   <signal>
-    <name>configure_event</name>
-    <handler>on_main_window_configure_event</handler>
-    <last_modification_time>Fri, 13 Oct 2000 19:20:40 GMT</last_modification_time>
-  </signal>
-  <signal>
     <name>delete_event</name>
     <handler>main_window_exit</handler>
     <last_modification_time>Fri, 13 Oct 2000 19:31:02 GMT</last_modification_time>
@@ -98,10 +93,21 @@
 	<name>mainarea</name>
 	<width>491</width>
 	<height>491</height>
+	<events>GDK_BUTTON_PRESS_MASK</events>
 	<signal>
 	  <name>expose_event</name>
 	  <handler>on_mainarea_expose_event</handler>
 	  <last_modification_time>Fri, 13 Oct 2000 19:27:59 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>configure_event</name>
+	  <handler>on_mainarea_configure_event</handler>
+	  <last_modification_time>Sun, 15 Oct 2000 11:27:37 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>button_press_event</name>
+	  <handler>on_mainarea_button_press_event</handler>
+	  <last_modification_time>Sun, 15 Oct 2000 12:30:39 GMT</last_modification_time>
 	</signal>
 	<child>
 	  <padding>0</padding>
@@ -134,14 +140,23 @@
 	</child>
 
 	<widget>
-	  <class>Placeholder</class>
+	  <class>GtkButton</class>
+	  <name>send_setup</name>
+	  <sensitive>False</sensitive>
+	  <can_focus>True</can_focus>
+	  <label>_Send Setup</label>
+	  <child>
+	    <padding>3</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
 	</widget>
       </widget>
     </widget>
 
     <widget>
       <class>GtkStatusbar</class>
-      <name>statusbar1</name>
+      <name>statusbar</name>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>

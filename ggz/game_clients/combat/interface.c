@@ -33,7 +33,9 @@ create_main_window (void)
   GtkWidget *mainarea;
   GtkWidget *vseparator1;
   GtkWidget *player_box;
-  GtkWidget *statusbar1;
+  guint send_setup_key;
+  GtkWidget *send_setup;
+  GtkWidget *statusbar;
   GtkAccelGroup *accel_group;
 
   accel_group = gtk_accel_group_new ();
@@ -107,6 +109,7 @@ create_main_window (void)
   gtk_widget_show (mainarea);
   gtk_box_pack_start (GTK_BOX (hbox), mainarea, FALSE, FALSE, 0);
   gtk_widget_set_usize (mainarea, 491, 491);
+  gtk_widget_set_events (mainarea, GDK_BUTTON_PRESS_MASK);
 
   vseparator1 = gtk_vseparator_new ();
   gtk_widget_set_name (vseparator1, "vseparator1");
@@ -126,17 +129,27 @@ create_main_window (void)
   gtk_box_pack_start (GTK_BOX (hbox), player_box, TRUE, TRUE, 0);
   gtk_widget_set_usize (player_box, 180, -2);
 
-  statusbar1 = gtk_statusbar_new ();
-  gtk_widget_set_name (statusbar1, "statusbar1");
-  gtk_widget_ref (statusbar1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "statusbar1", statusbar1,
+  send_setup = gtk_button_new_with_label ("");
+  send_setup_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (send_setup)->child),
+                                   _("_Send Setup"));
+  gtk_widget_add_accelerator (send_setup, "clicked", accel_group,
+                              send_setup_key, GDK_MOD1_MASK, 0);
+  gtk_widget_set_name (send_setup, "send_setup");
+  gtk_widget_ref (send_setup);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "send_setup", send_setup,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (statusbar1);
-  gtk_box_pack_start (GTK_BOX (vbox), statusbar1, FALSE, FALSE, 0);
+  gtk_widget_show (send_setup);
+  gtk_box_pack_start (GTK_BOX (player_box), send_setup, FALSE, FALSE, 3);
+  gtk_widget_set_sensitive (send_setup, FALSE);
 
-  gtk_signal_connect (GTK_OBJECT (main_window), "configure_event",
-                      GTK_SIGNAL_FUNC (on_main_window_configure_event),
-                      NULL);
+  statusbar = gtk_statusbar_new ();
+  gtk_widget_set_name (statusbar, "statusbar");
+  gtk_widget_ref (statusbar);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "statusbar", statusbar,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (statusbar);
+  gtk_box_pack_start (GTK_BOX (vbox), statusbar, FALSE, FALSE, 0);
+
   gtk_signal_connect (GTK_OBJECT (main_window), "delete_event",
                       GTK_SIGNAL_FUNC (main_window_exit),
                       NULL);
@@ -148,6 +161,12 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "expose_event",
                       GTK_SIGNAL_FUNC (on_mainarea_expose_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (mainarea), "configure_event",
+                      GTK_SIGNAL_FUNC (on_mainarea_configure_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (mainarea), "button_press_event",
+                      GTK_SIGNAL_FUNC (on_mainarea_button_press_event),
                       NULL);
 
   gtk_window_add_accel_group (GTK_WINDOW (main_window), accel_group);

@@ -35,3 +35,14 @@ main_window_exit                       (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 
+
+gboolean
+on_mainarea_configure_event            (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data);
+
+gboolean
+on_mainarea_button_press_event         (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+

@@ -3,6 +3,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <stdio.h>
 
 #include "callbacks.h"
 #include "interface.h"
@@ -18,13 +19,6 @@ on_main_window_configure_event         (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-	if (!cbt_buf)
-		cbt_buf = gdk_pixmap_new( widget->window, cbt_game.width * (PIXSIZE+1)+1,
-														  cbt_game.height * (PIXSIZE+1)+1,
-															-1);
-	game_draw_bg();
-	game_draw_board();
-
   return FALSE;
 }
 
@@ -71,5 +65,47 @@ on_exit_menu_activate                  (GtkMenuItem     *menuitem,
 
 	main_window_exit(NULL, NULL, NULL);
 
+}
+
+
+gboolean
+on_mainarea_configure_event            (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data)
+{
+	if (!cbt_buf)
+		cbt_buf = gdk_pixmap_new( widget->window, cbt_game.width * (PIXSIZE+1)+1,
+														  cbt_game.height * (PIXSIZE+1)+1,
+															-1);
+	game_draw_bg();
+	game_draw_board();
+
+  return FALSE;
+}
+
+
+gboolean
+on_mainarea_button_press_event         (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+	int x = event->x/(PIXSIZE+1) + 1;
+	int y = event->y/(PIXSIZE+1) + 1;
+
+	printf("X: %d\tY: %d\n", x, y);
+
+	switch (cbt_game.state) {
+		case CBT_STATE_WAIT:
+			if (!cbt_game.map)
+				break;
+		case CBT_STATE_SETUP:
+			game_handle_setup(CART(x,y,cbt_game.width));
+			break;
+		case CBT_STATE_PLAYING:
+			game_handle_move(CART(x,y,cbt_game.width));
+			break;
+	}
+
+  return FALSE;
 }
 

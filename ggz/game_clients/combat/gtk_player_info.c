@@ -1,5 +1,8 @@
 #include <gtk/gtk.h>
 
+#include "game.h"
+
+
 GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
 	GtkWidget *player_info;
 	GtkWidget *player_name;
@@ -66,6 +69,16 @@ GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (power_lbl);
   gtk_clist_set_column_widget (GTK_CLIST (unit_list), 2, power_lbl);
+
+
+	// Connect signals
+	gtk_signal_connect (GTK_OBJECT(unit_list), "select-row",
+										  GTK_SIGNAL_FUNC (game_unit_list_handle),
+											GINT_TO_POINTER(1));
+	gtk_signal_connect (GTK_OBJECT(unit_list), "unselect-row",
+											GTK_SIGNAL_FUNC (game_unit_list_handle),
+											GINT_TO_POINTER(-1));
+	
 
 	return player_info;
 }

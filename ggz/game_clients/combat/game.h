@@ -22,14 +22,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-// FIXME: Do that on the status bar
-#define game_status(STR...) printf(STR);
-
 // Size of images
 #define PIXSIZE 48
 
 // Max number of players
 #define MAX_PLAYERS 2
+
+// GGZ define
+#define GGZ_SEAT_OPEN -1
+#define GGZ_SEAT_BOT -2
 
 
 // Game information
@@ -37,18 +38,26 @@ struct game_info_t {
 	int fd;
 	int seat;
 	int number;
+	char **names;
+	int *seats;
 	int version;
+	char current;
 };
 
 // Handle IO
 void game_handle_io(gpointer, gint, GdkInputCondition);
+void game_unit_list_handle (GtkCList *clist, gint row, gint column,
+	 													GdkEventButton *event, gpointer user_data);
 
 // Get info from the server
 int game_get_seat();
 int game_get_options();
+int game_get_players();
 
 // Get info from the player
 int game_ask_options();
+void game_handle_setup(int);
+void game_handle_move(int);
 
 // Init variables
 void game_init();
@@ -57,9 +66,12 @@ void game_init_board();
 // Draw stuff
 void game_draw_bg();
 void game_draw_board();
-void game_draw_tile(int, int, int, int);
+void game_draw_unit(int, int, int, int);
+void game_draw_terrain(int, int, int);
 void game_add_player_info(int);
 void game_update_unit_list(int);
+void game_update_player_name(int);
+void game_status(const char *format, ... );
 
 // Player info widget
 GtkWidget *gtk_player_info_new(GtkWidget *, char *);
