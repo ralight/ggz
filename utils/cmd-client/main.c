@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 5712 2003-12-09 14:11:35Z dr_maux $
+ * $Id: main.c 6648 2005-01-13 18:34:04Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -34,6 +34,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
 
 #include <ggz.h>
 #include <ggzcore.h>
