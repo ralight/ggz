@@ -51,8 +51,6 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	}
 	vbox2->addStretch(1);
 
-	emit signalStatus(i18n("Waiting for opponent!"));
-
 	//setFixedSize(210, 210);
 	setCaption("KTicTacTux");
 	show();
@@ -326,6 +324,9 @@ int KTicTacTux::trip(int value)
 void KTicTacTux::setOpponent(int type)
 {
 	m_opponent = type;
+	if(m_opponent == PLAYER_NETWORK)
+		emit signalScore(i18n("Network game"));
+	emit signalStatus(i18n("Waiting for opponent!"));
 }
 
 // Synchronization
@@ -349,7 +350,8 @@ void KTicTacTux::slotNetwork()
 		case proto->msgplayers:
 			proto->getPlayers();
 			proto->state = proto->statewait;
-			emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
+			if(proto->names[!proto->num][0])
+				emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
 			break;
 		case proto->reqmove:
 			proto->state = proto->statemove;

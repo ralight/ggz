@@ -9,6 +9,7 @@
 
 // GGZ includes
 #include <ggz.h>
+#include <ggz_common.h>
 
 // System includes
 #include <sys/types.h>
@@ -21,6 +22,8 @@
 // Empty constructor
 KTicTacTuxProto::KTicTacTuxProto()
 {
+	names[0][0] = 0;
+	names[1][0] = 0;
 }
 
 // Even more empty destructor
@@ -31,15 +34,6 @@ KTicTacTuxProto::~KTicTacTuxProto()
 // Connect to the local game socket
 void KTicTacTuxProto::connect()
 {
-	/*char fd_name[64];
-	struct sockaddr_un addr;
-
-	sprintf(fd_name, "/tmp/TicTacToe.%d", getpid());
-	if((fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) exit(-1);
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-	if(::connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);*/
 	fd = 3;
 }
 
@@ -73,7 +67,8 @@ int KTicTacTuxProto::getPlayers()
 	for(int i = 0; i < 2; i++)
 	{
 		ggz_read_int(fd, &seats[i]);
-		if(seats[i] != -1) ggz_read_string(fd, (char*)&names[i], 17);
+		if((seats[i] == GGZ_SEAT_PLAYER) || (seats[i] == GGZ_SEAT_BOT))
+			ggz_read_string(fd, (char*)&names[i], 17);
 	}
 }
 
