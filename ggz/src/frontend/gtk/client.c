@@ -1,3 +1,4 @@
+
 /*
  * File: client.c
  * Author: Justin Zaun
@@ -411,10 +412,65 @@ gboolean
 client_chat_entry_key_press_event	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data)
-{   
+{
+	GtkWidget *tmp;
+	gint currow, x, i, max, length, first = TRUE;
+	gchar *name = NULL, *text = NULL, *startname = NULL, *out = NULL;
+
+	if (event->keyval == GDK_Tab)
+	{
+		/* Get start of name */
+		tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+		text = gtk_entry_get_text(GTK_ENTRY(tmp));
+		length = strlen(text);
+
+		/* Get last word of entry (up to 16 chars) */
+		if (length < 16)
+			max = length;
+		else
+			max = 16;
+
+		/* Point to start of last 16 characters (or start) */
+		startname = text + (length - max);
+		for (i = 0; i < max; i++)
+		{
+			/* Check the ith char in from the right (skip \0) */
+			x = length - (i + 1);
+			if (text[x] == ' ')
+			{
+				startname = text + x + 1; /* skip the space */
+				first = FALSE;
+				break;
+			}
+		}
+		if (strlen(startname) == 0)
+			return TRUE;
+
+		/* Check for matching name */
+		tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
+		for (currow=0; currow<GTK_CLIST(tmp)->rows; currow++)
+		{
+			gtk_clist_get_text(GTK_CLIST(tmp), currow, 2, &name);
+
+			/* Compare startname with first part of name */
+			if (strncmp(startname, name, strlen(startname)) == 0)
+			{
+				/* If it matches, copy the rest of the name */
+				if (first == TRUE)
+					out = g_strdup_printf("%s%s: ", text, &name[strlen(startname)]);
+				else
+					out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
+				tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+				gtk_entry_set_text(GTK_ENTRY(tmp), out);
+				return TRUE;
+			}
+		}
+		if (out)
+			g_free(out);
+		return TRUE;
+	}
 	return TRUE;
-}
-                                        
+}                                        
 
 static void
 client_send_button_clicked		(GtkButton	*button,
