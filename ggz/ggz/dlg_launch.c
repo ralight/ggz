@@ -95,21 +95,21 @@ static void launch_fill_defaults(GtkWidget* widget, gpointer data)
 	g_free(buf);
 
 	/* Set allowable players */
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_ONE)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_ONE)
                 items = g_list_append(items, "1");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_TWO)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_TWO)
                 items = g_list_append(items, "2");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_THREE)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_THREE)
                 items = g_list_append(items, "3");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_FOUR)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_FOUR)
                 items = g_list_append(items, "4");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_FIVE)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_FIVE)
                 items = g_list_append(items, "5");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_SIX)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_SIX)
                 items = g_list_append(items, "6");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_SEVEN)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_SEVEN)
                 items = g_list_append(items, "7");
-	if(game_types.info[type].num_play_allow & PLAY_ALLOW_EIGHT)
+	if(game_types.info[type].num_play_allow & GGZ_ALLOW_EIGHT)
                 items = g_list_append(items, "8");
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "seats_combo");
         gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);

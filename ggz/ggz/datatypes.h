@@ -29,7 +29,7 @@
 
 /* Server limits */
 /* FIXME: Which of these do we really need ?*/
-#define MAX_USER_NAME_LEN 8
+#define MAX_USER_NAME_LEN 16
 #define MAX_GAME_NAME_LEN 16
 #define MAX_GAME_DESC_LEN 512
 #define MAX_GAME_VER_LEN  8
@@ -39,27 +39,16 @@
 #define MAX_GAME_TYPES 5
 
 
-/* Defines for allowable players */
-#define PLAY_ALLOW_ZERO    0
-#define PLAY_ALLOW_ONE     1
-#define PLAY_ALLOW_TWO     (1 << 1)
-#define PLAY_ALLOW_THREE   (1 << 2)
-#define PLAY_ALLOW_FOUR    (1 << 3)
-#define PLAY_ALLOW_FIVE    (1 << 4)
-#define PLAY_ALLOW_SIX     (1 << 5)
-#define PLAY_ALLOW_SEVEN   (1 << 6)
-#define PLAY_ALLOW_EIGHT   (1 << 7)
-
-/* Defines for allowable computer players*/
-#define COMP_ALLOW_ZERO    0
-#define COMP_ALLOW_ONE     1
-#define COMP_ALLOW_TWO     (1 << 1)
-#define COMP_ALLOW_THREE   (1 << 2)
-#define COMP_ALLOW_FOUR    (1 << 3)
-#define COMP_ALLOW_FIVE    (1 << 4)
-#define COMP_ALLOW_SIX     (1 << 5)
-#define COMP_ALLOW_SEVEN   (1 << 6)
-#define COMP_ALLOW_EIGHT   (1 << 7)
+/* Bitmasks for allowable player numbers */
+#define GGZ_ALLOW_ZERO    0
+#define GGZ_ALLOW_ONE     1
+#define GGZ_ALLOW_TWO     (1 << 1)
+#define GGZ_ALLOW_THREE   (1 << 2)
+#define GGZ_ALLOW_FOUR    (1 << 3)
+#define GGZ_ALLOW_FIVE    (1 << 4)
+#define GGZ_ALLOW_SIX     (1 << 5)
+#define GGZ_ALLOW_SEVEN   (1 << 6)
+#define GGZ_ALLOW_EIGHT   (1 << 7)
 
 /* Login types */
 #define GGZ_LOGIN      0
@@ -71,6 +60,7 @@
 #define GGZ_SEAT_COMP   -2
 #define GGZ_SEAT_RESV   -3
 #define GGZ_SEAT_NONE   -4
+#define GGZ_SEAT_PLAYER -5
 
 /* Info about a connection */
 struct ConnectInfo {
