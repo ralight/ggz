@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4784 2002-10-01 19:04:37Z dr_maux $
+dnl $Id: configure.in 4870 2002-10-12 00:47:07Z jdorje $
 
 AC_INIT(configure.in)
 #AC_INIT(acinclude.m4)
@@ -56,6 +56,10 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_WITH(gtk2,
+	    AC_HELP_STRING([--with-gtk2],
+                           [compile against GTK2 (experimental)]),
+            with_gtk="gtk2.0", with_gtk="gtk1.2")
 
 dnl Check for GGZ requirements
 dnl ==========================
@@ -94,8 +98,12 @@ AC_TYPE_SIGNAL
 
 dnl Check for libs
 dnl ==============
-AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
-
+if test "$with_gtk2" = gtk2; then
+    AM_PATH_GTK_2_0(2.0.0,,AC_MSG_ERROR(*** Can't build GTK games: GTK2 not found))
+    AC_DEFINE(GTK2)
+else
+    AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
+fi
 
 dnl Use -Wall if we have gcc.
 dnl =========================
@@ -173,6 +181,7 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Gettext support....$enable_gettext"
+echo "    GTK library........$with_gtk"
 echo ""
 echo "Paths"
 echo "    Installation prefix: $prefix"
