@@ -1,0 +1,11 @@
+Slurp
+-----
+
+This is not a game yet, but could become a space battle game or something.
+
+Controls:
+ left, right, up, down: cursor keys
+ acceleration: shift + up/down
+ turn around: ctrl + left/right
+ quit: escape
+
