@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -34,9 +34,7 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
-#include "dlg_about.h"
-#include "dlg_players.h"
-#include "ggzintl.h"
+#include "ggz_gtk.h"
 
 #include "main_win.h"
 #include "support.h"
@@ -104,6 +102,7 @@ int main(int argc, char *argv[])
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
 			   &handle_ggzmod_server);
 	init_player_list(mod);
+	ggz_game_main_window = GTK_WINDOW(main_win);	/* HACK */
 
 	ret = ggzmod_connect(mod);
 	if (ret != 0)

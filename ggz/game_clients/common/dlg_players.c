@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_players.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -35,6 +35,7 @@
 
 #include "dlg_players.h"
 #include "ggzintl.h"
+#include "ggz_gtk.h"
 
 typedef enum {
 	PLAYER_COLUMN_SEAT,
@@ -247,19 +248,21 @@ GtkWidget *create_playerlist_widget(void)
 	return list->this;
 }
 
-static GtkWidget *create_dlg_players(void)
+static GtkWidget *create_dlg_players(GtkWindow * parent)
 {
 #if 0
 	GtkWidget *label;
 #endif
-	GtkWidget *dialog, *vbox, *tree, *action_area, *close_button;
+	GtkWidget *dialog, *vbox, *tree;
 
 	/* 
 	 * Create outer window.
 	 */
-	dialog = gtk_dialog_new();
+	dialog = gtk_dialog_new_with_buttons(_("Player List"),
+					     parent, 0,
+					     GTK_STOCK_CLOSE,
+					     GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dialog), "dlg_players", dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Player List"));
 
 	/* 
 	 * Get vertical box packing widget.
@@ -284,27 +287,11 @@ static GtkWidget *create_dlg_players(void)
 	gtk_widget_show(tree);
 
 	/* 
-	 * Get "action area"
-	 */
-	action_area = GTK_DIALOG(dialog)->action_area;
-	gtk_widget_show(action_area);
-
-	/* 
-	 * Make "close" button
-	 */
-	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	gtk_widget_ref(close_button);
-	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
-			   FALSE, 0);
-	g_signal_connect_swapped(close_button, "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
-
-	/* 
 	 * Set up callbacks
 	 */
 	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
+	g_signal_connect(dialog, "response",
 			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	/* 
@@ -319,7 +306,7 @@ void create_or_raise_dlg_players(void)
 		gdk_window_show(dlg_players->window);
 		gdk_window_raise(dlg_players->window);
 	} else {
-		dlg_players = create_dlg_players();
+		dlg_players = create_dlg_players(ggz_game_main_window);
 		g_signal_connect(dlg_players, "destroy",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				 &dlg_players);

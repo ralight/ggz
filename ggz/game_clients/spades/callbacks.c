@@ -2,7 +2,7 @@
  * File: callbacks.c
  * Author: Brent Hendricks
  * Project: NetSpades
- * $Id: callbacks.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: callbacks.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * This file contains the functions which operate on the type card. See the
  * header file card.h for a better description of these functions.
@@ -66,5 +66,5 @@ void launch_game(GtkButton * button, gpointer user_data)
 
 void ExitDialog(GtkWidget * widget, gpointer user_data)
 {
-	ggz_show_exit_dialog(0, playArea->window);
+	ggz_show_exit_dialog(FALSE);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6354 2004-11-13 18:19:09Z jdorje $
+ * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #include "dlg_chat.h"
 #include "dlg_players.h"
 #include "ggzintl.h"
+#include "ggz_gtk.h"
 #include "menus.h"
 
 #include "client.h"
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
 	init_chat(client_get_ggzmod());
 	init_about_dialog();
 	dlg_main = create_dlg_main();
+	ggz_game_main_window = GTK_WINDOW(dlg_main);	/* HACK */
 	gtk_widget_show(dlg_main);
 	table_initialize();
 	game_init();

@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 6343 2004-11-13 01:44:11Z jdorje $
+ * $Id: callbacks.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -48,7 +48,7 @@ static void try_to_quit(void)
 {
 	/* FIXME: we don't need a dialog if we're not actively playing
 	   a game. */
-	ggz_show_exit_dialog(1, main_win);
+	ggz_show_exit_dialog(TRUE);
 }
 
 gboolean

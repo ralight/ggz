@@ -35,8 +35,7 @@
 
 #include <ggz.h>
 
-#include "dlg_exit.h"
-#include "ggzintl.h"
+#include "ggz_gtk.h"
 
 #include <card.h>
 #include <client.h>
@@ -75,7 +74,7 @@ void DisplayInit(void)
 
 	/* Main window and callbacks */
 	playArea->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-
+	ggz_game_main_window = GTK_WINDOW(playArea->window);	/* HACK */
 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
 
 	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -82,8 +82,6 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 	initialize_about_dialog();
 
-	mod = init_ggz_gtk(game_handle_io);
-
 	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
 	conf_handle = ggz_conf_parse(filename,
 				     GGZ_CONF_RDWR | GGZ_CONF_CREATE);
@@ -91,6 +89,8 @@ int main(int argc, char *argv[])
 
 	game.state = DOTS_STATE_INIT;
 	game_init();
+
+	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
 
 	gtk_main();
 
@@ -257,6 +257,7 @@ void game_init(void)
 	/* Setup the main board now */
 	if (main_win == NULL)
 		main_win = create_dlg_main();
+	ggz_game_main_window = GTK_WINDOW(main_win);	/* HACK */
 	l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
 	l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
 	gtk_label_set_text(GTK_LABEL(l1), _("No Score"));

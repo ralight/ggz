@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_chat.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * This file implements a chat widget.  Much of the code is taken from
  * Freeciv's chat widget, written by Vasco Alexandre da Silva Costa.
@@ -37,7 +37,7 @@
 
 #include "dlg_chat.h"
 #include "ggzintl.h"
-
+#include "ggz_gtk.h"
 
 typedef struct chatwidgets {
 	GtkWidget *container;
@@ -147,20 +147,19 @@ GtkWidget *create_chat_widget(void)
 	return vbox;
 }
 
-static GtkWidget *create_dlg_chat(void)
+static GtkWidget *create_dlg_chat(GtkWindow * parent)
 {
 	GtkWidget *dialog;
 	GtkWidget *vbox;
 	GtkWidget *chat_widget;
-	GtkWidget *action_area;
-	GtkWidget *close_button;
 
 	/* 
 	 * Create outer window.
 	 */
-	dialog = gtk_dialog_new();
+	dialog = gtk_dialog_new_with_buttons(_("Player Chat"), parent, 0,
+					     GTK_STOCK_CLOSE,
+					     GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dialog), "dlg_players", dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Player List"));
 
 	/* 
 	 * Get vertical box packing widget.
@@ -176,31 +175,13 @@ static GtkWidget *create_dlg_chat(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_box_pack_start(GTK_BOX(vbox), chat_widget, FALSE, FALSE, 0);
 
-
-	/* 
-	 * Get "action area"
-	 */
-	action_area = GTK_DIALOG(dialog)->action_area;
-	gtk_widget_show(action_area);
-
-	/* 
-	 * Make "close" button
-	 */
-	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	gtk_widget_ref(close_button);
-	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
-			   FALSE, 0);
-	g_signal_connect_swapped(close_button, "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
-
 	/* 
 	 * Set up callbacks
 	 */
-	g_signal_connect_swapped(dialog, "delete_event",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
+	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
+	g_signal_connect(dialog, "response",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	/* 
 	 * Done!
@@ -214,7 +195,7 @@ void create_or_raise_dlg_chat(void)
 		gdk_window_show(dlg_chat->window);
 		gdk_window_raise(dlg_chat->window);
 	} else {
-		dlg_chat = create_dlg_chat();
+		dlg_chat = create_dlg_chat(ggz_game_main_window);
 		g_signal_connect(dlg_chat, "destroy",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				 &dlg_chat);

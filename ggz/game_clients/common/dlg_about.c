@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_about.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -32,26 +32,26 @@
 
 #include "dlg_about.h"
 #include "ggzintl.h"
+#include "ggz_gtk.h"
 
 static const char *dlg_title = NULL;
 static const char *dlg_header = NULL;
 static const char *dlg_content = NULL;
 
-static GtkWidget *create_dlg_about(void)
+static GtkWidget *create_dlg_about(GtkWindow * parent)
 {
 	GtkWidget *dialog;
 	GtkWidget *vbox;
 	GtkWidget *title_label;
 	GtkWidget *body_label;
-	GtkWidget *action_area;
-	GtkWidget *close_button;
 
 	/* 
 	 * Create outer window.
 	 */
-	dialog = gtk_dialog_new();
+	dialog = gtk_dialog_new_with_buttons(dlg_title, parent, 0,
+					     GTK_STOCK_CLOSE,
+					     GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dialog), "dlg_about", dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), dlg_title);
 
 	/* 
 	 * Get vertical box packing widget.
@@ -84,34 +84,12 @@ static GtkWidget *create_dlg_about(void)
 	gtk_label_set_justify(GTK_LABEL(body_label), GTK_JUSTIFY_LEFT);
 
 	/* 
-	 * Get "action area"
-	 */
-	action_area = GTK_DIALOG(dialog)->action_area;
-	g_object_set_data(G_OBJECT(dialog), "dialog_action_area1",
-			  action_area);
-	gtk_widget_show(action_area);
-
-	/* 
-	 * Make "close" button
-	 */
-	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	gtk_widget_ref(close_button);
-	g_object_set_data_full(G_OBJECT(dialog), "close_button",
-			       close_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
-			   FALSE, 0);
-	g_signal_connect_swapped(close_button, "clicked",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
-
-	/* 
 	 * Set up callbacks
 	 */
-	g_signal_connect_swapped(dialog, "delete_event",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
+	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
+	g_signal_connect(dialog, "response",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	/* 
 	 * Done!
@@ -136,7 +114,7 @@ void create_or_raise_dlg_about(void)
 		gdk_window_show(dlg_about->window);
 		gdk_window_raise(dlg_about->window);
 	} else {
-		dlg_about = create_dlg_about();
+		dlg_about = create_dlg_about(ggz_game_main_window);
 		g_signal_connect(dlg_about, "destroy",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				 &dlg_about);

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6353 2004-11-13 18:05:57Z jdorje $
+ * $Id: main_win.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -308,7 +308,7 @@ void game_exit(void)
 	    game.state == RVR_STATE_WAIT || game.state == RVR_STATE_DONE)
 		gtk_main_quit();
 	else
-		ggz_show_exit_dialog(1, main_win);
+		ggz_show_exit_dialog(TRUE);
 }
 
 static gboolean configure_handle(GtkWidget * widget,

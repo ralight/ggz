@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6354 2004-11-13 18:19:09Z jdorje $
+ * $Id: main_win.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -310,7 +310,7 @@ void game_resync(void)
 /* Leave the game */
 void game_exit(void)
 {
-	ggz_show_exit_dialog(1, main_win);
+	ggz_show_exit_dialog(TRUE);
 }
 
 /* Draw the screen? Unsure */

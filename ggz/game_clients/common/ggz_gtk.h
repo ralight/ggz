@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 11/11/2004
  * Desc: GGZ Handlers for GTK games
- * $Id: ggz_gtk.h 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: ggz_gtk.h 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -28,4 +28,7 @@
 #include "ggzintl.h"
 #include "dlg_players.h"
 
-GGZMod *init_ggz_gtk(gboolean(*game_handler) (GGZMod * mod));
+extern GtkWindow *ggz_game_main_window;
+
+GGZMod *init_ggz_gtk(GtkWindow * main_window,
+		     gboolean(*game_handler) (GGZMod * mod));

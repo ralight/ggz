@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
- * $Id: cb_main.c 6338 2004-11-12 17:21:26Z jdorje $
+ * $Id: cb_main.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -56,7 +56,7 @@ static void try_to_quit(void)
 	    game.state == DOTS_STATE_INIT || game.state == DOTS_STATE_WAIT)
 		gtk_main_quit();
 	else
-		ggz_show_exit_dialog(1, main_win);
+		ggz_show_exit_dialog(TRUE);
 }
 
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)

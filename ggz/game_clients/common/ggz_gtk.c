@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 11/11/2004
  * Desc: GGZ Handlers for GTK games
- * $Id: ggz_gtk.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: ggz_gtk.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -32,6 +32,8 @@
 
 #include "dlg_players.h"
 #include "ggz_gtk.h"
+
+GtkWindow *ggz_game_main_window;
 
 static gboolean(*game_server_handler) (GGZMod * mod);
 
@@ -61,10 +63,13 @@ static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 	g_io_add_watch(channel, G_IO_IN, handle_game_server, mod);
 }
 
-GGZMod *init_ggz_gtk(gboolean(*game_handler) (GGZMod * mod))
+GGZMod *init_ggz_gtk(GtkWindow * main_window,
+		     gboolean(*game_handler) (GGZMod * mod))
 {
 	GIOChannel *channel;
 	GGZMod *mod;
+
+	ggz_game_main_window = main_window;
 
 	/* Connect to GGZ */
 	mod = ggzmod_new(GGZMOD_GAME);

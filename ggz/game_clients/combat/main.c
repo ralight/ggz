@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
 
-	mod = init_ggz_gtk(game_handle_io);
+	mod = init_ggz_gtk(GTK_WINDOW(main_win), game_handle_io);
 
 	gtk_main();
 
