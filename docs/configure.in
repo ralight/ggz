@@ -22,7 +22,8 @@ AC_OUTPUT(Makefile
 	ggz-project/Makefile
 	coreclients/Makefile
 	grubby/Makefile
-	spec/Makefile)
+	spec/Makefile
+	overview/Makefile)
 
 dnl Report success
 dnl ==============
