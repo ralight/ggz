@@ -34,13 +34,13 @@ struct serverggz_t
 typedef struct serverggz_t ServerGGZ;
 
 /* Initialize the meta server configuration */
-void meta_init();
+void meta_init(void);
 
 /* Get a list of GGZ servers */
 ServerGGZ **meta_query(const char *version);
 
 /* Update internal list of meta servers */
-void meta_sync();
+void meta_sync(void);
 
 /* Free a ServerGGZ list */
 void meta_free(ServerGGZ **server);

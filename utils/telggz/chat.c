@@ -18,6 +18,7 @@
  */
 
 /* Header files */
+#include "chat.h"
 #include "net.h"
 
 /* System includes */
@@ -40,7 +41,7 @@ void chat_connect(const char *host, int port, const char *username, const char *
 	net_login(username, password);
 }
 
-char *chat_input()
+static char *chat_input()
 {
 	char *s;
 	int ret;
@@ -71,7 +72,7 @@ char *chat_getpassword()
 	return chat_input();
 }
 
-char **chat_list(char *buffer)
+static char **chat_list(char *buffer)
 {
 	static char **list = NULL;
 	int i;

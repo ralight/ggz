@@ -21,16 +21,16 @@
 #define CHAT_H
 
 /* Enter the main loop */
-void chat_loop();
+void chat_loop(void);
 
 /* Request server id from player */
-int chat_getserver();
+int chat_getserver(void);
 
 /* Request username from player */
-char *chat_getusername();
+char *chat_getusername(void);
 
 /* Request password from player */
-char *chat_getpassword();
+char *chat_getpassword(void);
 
 /* Attempt to connect to a GGZ server */
 void chat_connect(const char *host, int port, const char *username, const char *password);

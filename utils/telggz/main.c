@@ -31,7 +31,7 @@
 #include <stdlib.h>
 
 /* TelGGZ version number */
-#define VERSION "0.1"
+#define TELGGZ_VERSION "0.1"
 
 /* Configuration */
 #include "config.h"
@@ -40,7 +40,7 @@
 ServerGGZ **preflist;
 
 /* Print out all servers to play wrapper for */
-void pref_listservers()
+static void pref_listservers()
 {
 	ServerGGZ *iterator;
 	int i;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	/* Meta server stuff */
 	meta_init();
 	meta_sync();
-	preflist = meta_query(VERSION);
+	preflist = meta_query(TELGGZ_VERSION);
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
 
 	/* We just announce us the the world. */
 	if(gethostname(hostname, sizeof(hostname))) strcpy(hostname, "[unknown]");
-	printf("[TelGGZ: GGZ Gaming Zone Telnet Wrapper v%s]\n", VERSION);
+	printf("[TelGGZ: GGZ Gaming Zone Telnet Wrapper v%s]\n",
+	       TELGGZ_VERSION);
 	printf("You're connected to %s.\n", hostname);
 	fflush(NULL);
 

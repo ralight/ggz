@@ -24,13 +24,13 @@
 #include <ggzcore.h>
 
 /* Initialize the network structures */
-void net_init();
+void net_init(void);
 
 /* Login with the specified parameters */
 void net_login(const char *username, const char *password);
 
 /* Main server loop */
-void net_process();
+void net_process(void);
 
 /* Send a string to the GGZ server */
 void net_send(char *buffer);
@@ -45,10 +45,10 @@ void net_join(int roomnum);
 void net_host(const char *hostname);
 
 /* List all available rooms */
-void net_list();
+void net_list(void);
 
 /* List all players in a room */
-void net_who();
+void net_who(void);
 
 /* Hooks for ggzcore */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
