@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2249 2001-08-25 21:30:32Z jdorje $
+ * $Id: ggz_client.h 2250 2001-08-25 21:34:55Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -40,7 +40,7 @@
  *     }
  *
  *     int main(int argc, char** argv) {
- *         fd = ggz_connect();      // connect to GGZ
+ *         fd = ggz_connect();          // connect to GGZ
  *         if (fd < 0) return -1;
  *         gtk_init(&argc, &argv);
  *         gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
@@ -51,8 +51,6 @@
  * @endcode
  *
  * For more information, see the documentation at http://ggz.sf.net/.
- *
- * @todo There should be some example code showing how to use ggzmod.
  */
 
 #ifndef __GGZ_CLIENT_GGZ_H
