@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: games.c 2405 2001-09-08 23:03:15Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -34,14 +34,12 @@
 
 #include "common.h"
 
-/* BEGINNING of game data.  To add a new game, you'll need to
- * add information about it here in the form of an extern
- * declaration of its function pointer set, and an entry
- * into the game_data array
- */
+/* BEGINNING of game data.  To add a new game, you'll need to add information 
+   about it here in the form of an extern declaration of its function pointer 
+   set, and an entry into the game_data array */
 
-/* an extern should be listed here for each game function set you create
- * this is preferable to including the whole <game>.h file. */
+/* an extern should be listed here for each game function set you create this 
+   is preferable to including the whole <game>.h file. */
 extern struct game_function_pointers suaro_funcs;
 extern struct game_function_pointers spades_funcs;
 extern struct game_function_pointers hearts_funcs;
@@ -50,10 +48,11 @@ extern struct game_function_pointers lapocha_funcs;
 extern struct game_function_pointers euchre_funcs;
 extern struct game_function_pointers sueca_funcs;
 
-/* These names are sent to the client when options are requested.  They're different
- * from what's sent to the client as the game name later.  They MUST
- * correspond in ordering to the enumeration defined in games.h.  Finally, the
- * text name should be all lower-case and without any whitespace. */
+/* These names are sent to the client when options are requested.  They're
+   different from what's sent to the client as the game name later.  They
+   MUST correspond in ordering to the enumeration defined in games.h.
+   Finally, the text name should be all lower-case and without any
+   whitespace. */
 struct game_info game_data[] = {
 	{"suaro", "Suaro", &suaro_funcs},
 	{"spades", "Spades", &spades_funcs},
@@ -72,12 +71,19 @@ const int num_games = sizeof(game_data) / sizeof(struct game_info);
 
 /* these aren't *quite* worthy of being in the game struct */
 /* static int game_type_cnt; */
-static int game_types[sizeof(game_data) / sizeof(struct game_info)];	/* possible types of games; used for option requests */
+static int game_types[sizeof(game_data) / sizeof(struct game_info)];	/* possible 
+									   types 
+									   of 
+									   games; 
+									   used 
+									   for 
+									   option 
+									   requests 
+									 */
 
-/* games_get_gametype
- *   determines which game the text corresponds to.  If the --game=<game> parameter
- *   is passed to the server on startup, <game> is passed here to determine the
- *   type of game. */
+/* games_get_gametype determines which game the text corresponds to.  If the
+   --game=<game> parameter is passed to the server on startup, <game> is
+   passed here to determine the type of game. */
 int games_get_gametype(char *text)
 {
 	int i;
@@ -89,7 +95,8 @@ int games_get_gametype(char *text)
 		if (!strcmp(text, game_data[i].name))
 			return i;
 
-	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
+	/* NOTE: we may not yet be connected to the ggz server, in which case 
+	   this won't work. */
 	ggzd_debug("Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;
 }
@@ -108,18 +115,17 @@ void games_handle_gametype(int option)
 
 
 
-/* game_valid_game
- *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
- */
+/* game_valid_game returns a boolean, TRUE if the game is valid in the
+   current setup and false otherwise. */
 int games_valid_game(int which_game)
 {
 	return game_data[which_game].funcs->is_valid_game();
 }
 
-/* games_req_gametype
- *   this function requests the game type from the host client.  It's only called if
- *   this information isn't determined automatically (i.e. via --game=spades parameter).
- *   the reply is sent to games_handle_gametype, below. */
+/* games_req_gametype this function requests the game type from the host
+   client.  It's only called if this information isn't determined
+   automatically (i.e. via --game=spades parameter).  the reply is sent to
+   games_handle_gametype, below. */
 int games_req_gametype()
 {
 	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1;
@@ -139,19 +145,22 @@ int games_req_gametype()
 
 	if (cnt == 0) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			  "no valid games in games_req_gametype.");
+			   "no valid games in games_req_gametype.");
 		exit(-1);
 	}
 
 	if (cnt == 1) {
-		ggzd_debug("Just one valid game: choosing %d.", game_types[0]);
+		ggzd_debug("Just one valid game: choosing %d.",
+			   game_types[0]);
 		game.which_game = game_types[0];
 		init_game();
 		send_sync_all();
 		return 0;
 	}
 
-	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 || es_write_int(fd, 1) < 0 ||	/* 1 option */
+	if (write_opcode(fd, WH_REQ_OPTIONS) < 0 || es_write_int(fd, 1) < 0 ||	/* 1 
+										   option 
+										 */
 	    es_write_int(fd, cnt) < 0 ||	/* cnt choices */
 	    es_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
@@ -161,6 +170,7 @@ int games_req_gametype()
 			status = -1;
 
 	if (status != 0)
-		ggzd_debug("ERROR: games_req_gametype: status is %d.", status);
+		ggzd_debug("ERROR: games_req_gametype: status is %d.",
+			   status);
 	return status;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2403 2001-09-08 22:47:40Z jdorje $
+ * $Id: common.c 2405 2001-09-08 23:03:15Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -106,7 +106,7 @@ int send_player_list(player_t p)
 	ggzd_debug("Sending seat list to player %d/%s (%d seats)", p,
 		   ggzd_get_player_name(p), game.num_seats);
 
-	if (es_write_int(fd, WH_MSG_PLAYERS) < 0 ||
+	if (write_opcode(fd, WH_MSG_PLAYERS) < 0 ||
 	    es_write_int(fd, game.num_seats) < 0)
 		status = -1;
 
@@ -142,7 +142,7 @@ int send_play(card_t card, seat_t seat)
 		fd = ggzd_get_player_socket(p);
 		if (fd == -1)
 			continue;
-		if (es_write_int(fd, WH_MSG_PLAY) < 0
+		if (write_opcode(fd, WH_MSG_PLAY) < 0
 		    || es_write_int(fd, CONVERT_SEAT(seat, p)) < 0
 		    || write_card(fd, card) < 0)
 			status = -1;
@@ -179,7 +179,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 		if (fd == -1)
 			continue;
 
-		if (es_write_int(fd, WH_MSG_GAMEOVER) < 0 ||
+		if (write_opcode(fd, WH_MSG_GAMEOVER) < 0 ||
 		    es_write_int(fd, winner_cnt) < 0)
 			status = -1;
 		for (i = 0; i < winner_cnt; i++) {
@@ -210,7 +210,7 @@ int send_table(player_t p)
 		return -1;
 	}
 
-	if (es_write_int(fd, WH_MSG_TABLE) < 0)
+	if (write_opcode(fd, WH_MSG_TABLE) < 0)
 		status = -1;
 	for (s_r = 0; s_r < game.num_seats; s_r++) {
 		s_abs = (game.players[p].seat + s_r) % game.num_seats;
@@ -301,7 +301,7 @@ int req_play(player_t p, seat_t s)
 	} else {
 		if (fd == -1)
 			ggzd_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
-		if (es_write_int(fd, WH_REQ_PLAY) < 0
+		if (write_opcode(fd, WH_REQ_PLAY) < 0
 		    || es_write_int(fd, s_r) < 0)
 			return -1;
 	}
@@ -385,7 +385,7 @@ void send_badplay(player_t p, char *msg)
 		return;
 	ggzd_debug("Sending a bad play to player %d/%s - %s.",
 		   p, ggzd_get_player_name(p), msg);
-	es_write_int(fd, WH_MSG_BADPLAY);
+	write_opcode(fd, WH_MSG_BADPLAY);
 	es_write_string(fd, msg);
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 }
@@ -411,7 +411,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 		   p, ggzd_get_player_name(p), s, get_seat_name(s),
 		   reveal ? "" : "not ");
 
-	if (es_write_int(fd, WH_MSG_HAND) < 0
+	if (write_opcode(fd, WH_MSG_HAND) < 0
 	    || es_write_int(fd, CONVERT_SEAT(s, p)) < 0
 	    || es_write_int(fd, game.seats[s].hand.hand_size) < 0)
 		status = -1;
@@ -449,7 +449,7 @@ void send_trick(player_t winner)
 		if (fd == -1)
 			continue;
 
-		es_write_int(fd, WH_MSG_TRICK);
+		write_opcode(fd, WH_MSG_TRICK);
 		es_write_int(fd, CONVERT_SEAT(game.players[winner].seat, p));
 	}
 }
@@ -467,7 +467,7 @@ int req_newgame(player_t p)
 
 	ggzd_debug("Sending out a WH_REQ_NEWGAME to player %d/%s.", p,
 		   ggzd_get_player_name(p));
-	status = es_write_int(fd, WH_REQ_NEWGAME);
+	status = write_opcode(fd, WH_REQ_NEWGAME);
 
 	if (status != 0)
 		ggzd_debug("ERROR: "
@@ -487,7 +487,7 @@ int send_newgame()
 		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
 			continue;
 		fd = ggzd_get_player_socket(p);
-		if (fd == -1 || es_write_int(fd, WH_MSG_NEWGAME) < 0) {
+		if (fd == -1 || write_opcode(fd, WH_MSG_NEWGAME) < 0) {
 			ggzd_debug
 				("ERROR: send_newgame: couldn't send newgame.");
 			return -1;
@@ -512,7 +512,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 
 	fd = ggzd_get_player_socket(p);
 
-	if (es_read_int(fd, &op) < 0)
+	if (read_opcode(fd, &op) < 0)
 		return;
 
 	if (op >= 0 && op <= WH_REQ_SYNC)
@@ -1204,7 +1204,8 @@ ggzd_assign_t get_seat_status(seat_t s)
 }
 
 
-/* JDS: these are just helper functions which should be moved to another file */
+/* JDS: these are just helper functions which should be moved to another file 
+ */
 
 /* this helper function checks to see if allocation fails, and also zeroes
    all the memory */

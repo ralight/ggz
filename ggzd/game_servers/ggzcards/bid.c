@@ -1,10 +1,10 @@
-/*
+/* 
  * File: bid.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: bid.c 2405 2001-09-08 23:03:15Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -28,23 +28,20 @@
 
 #include "common.h"
 
-/* TODO: declaring these static is OK for now, but eventually they'll have to be
- * a part of the game struct */
+/* TODO: declaring these static is OK for now, but eventually they'll have to 
+   be a part of the game struct */
 static bid_t *bids = NULL;
 static int bid_size = 0;
 static int bid_count = 0;
 
-/* clear_bids
- *   clears the list of bids
- */
+/* clear_bids clears the list of bids */
 void clear_bids()
 {
 	bid_count = 0;
 }
 
-/* add_bid
- *   adds the bid to the list of bid choices we're going to give the client
- */
+/* add_bid adds the bid to the list of bid choices we're going to give the
+   client */
 void add_bid(bid_t bid)
 {
 	bid_count++;
@@ -65,19 +62,17 @@ void add_sbid(char val, char suit, char spec)
 	add_bid(bid);
 }
 
-/* req_bid
- *   Request bid from current bidder
- *   parameters are: player to get bid from, number of possible bids, text entry for each bid
- */
+/* req_bid Request bid from current bidder parameters are: player to get bid
+   from, number of possible bids, text entry for each bid */
 int req_bid(player_t p)
 {
 	int i, fd = ggzd_get_player_socket(p), status = 0;
 
 	ggzd_debug("Requesting a bid from player %d/%s; %d choices", p,
-		  ggzd_get_player_name(p), bid_count);
+		   ggzd_get_player_name(p), bid_count);
 
-	/* although the game_* functions probably track this data
-	   themselves, we track it here as well just in case. */
+	/* although the game_* functions probably track this data themselves, 
+	   we track it here as well just in case. */
 	game.next_bid = p;
 
 	set_game_state(WH_STATE_WAIT_FOR_BID);
@@ -89,7 +84,7 @@ int req_bid(player_t p)
 	} else {
 		/* request a bid from the client */
 		if (fd == -1 ||
-		    es_write_int(fd, WH_REQ_BID) < 0 ||
+		    write_opcode(fd, WH_REQ_BID) < 0 ||
 		    es_write_int(fd, bid_count) < 0)
 			status = -1;
 		for (i = 0; i < bid_count; i++) {
@@ -106,11 +101,9 @@ int req_bid(player_t p)
 	return status;
 }
 
-/* rec_bid
- *   Receive a bid from an arbitrary player.  Test to make sure it's not out-of-turn.
- *   Note that a return of -1 here indicates a GGZ error, which will disconnect the
- *   player.
- */
+/* rec_bid Receive a bid from an arbitrary player.  Test to make sure it's
+   not out-of-turn.  Note that a return of -1 here indicates a GGZ error,
+   which will disconnect the player. */
 int rec_bid(player_t p, bid_t * bid)
 {
 	int fd = ggzd_get_player_socket(p), index;
@@ -126,8 +119,8 @@ int rec_bid(player_t p, bid_t * bid)
 	if (p != game.next_bid) {
 		ggzd_debug
 			("It's player %d/%s's turn to bid, not player %d/%s's.",
-			 game.next_bid, ggzd_get_player_name(game.next_bid), p,
-			 ggzd_get_player_name(p));
+			 game.next_bid, ggzd_get_player_name(game.next_bid),
+			 p, ggzd_get_player_name(p));
 		return -1;
 	} else if (!(game.state == WH_STATE_WAIT_FOR_BID ||
 		     (game.state == WH_STATE_WAITFORPLAYERS
@@ -139,6 +132,6 @@ int rec_bid(player_t p, bid_t * bid)
 	*bid = bids[index];
 
 	ggzd_debug("Received bid choice %d from player %d/%s",
-		  index, p, ggzd_get_player_name(p));
+		   index, p, ggzd_get_player_name(p));
 	return 0;
 }

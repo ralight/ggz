@@ -1,10 +1,10 @@
-/*
+/* 
  * File: options.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: options.c 2405 2001-09-08 23:03:15Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -43,24 +43,20 @@
 
 static int options_initted = 0;
 
-static struct option_t
-{
+static struct option_t {
 	char *key;
 	int value;
 	struct option_t *next;	/* linked list */
-}
- *optionlist = NULL;
+} *optionlist = NULL;
 
-static struct pending_option_t
-{
+static struct pending_option_t {
 	char *key;
 	/* char* text; */
 	int num;
 	int dflt;
 	char **choices;
 	struct pending_option_t *next;	/* linked list */
-}
- *pending_options = NULL;
+} *pending_options = NULL;
 
 static int option_count = 0;
 static int pending_option_count = 0;
@@ -105,7 +101,7 @@ void add_option(char *key, int num, int dflt, ...)
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
 			ggzd_debug("ERROR: SERVER BUG: "
-				      "add_option: NULL option choice.");
+				   "add_option: NULL option choice.");
 	}
 	va_end(ap);
 
@@ -130,7 +126,7 @@ void get_options()
 		ggzd_debug("ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
-		es_write_int(fd, WH_REQ_OPTIONS);
+		write_opcode(fd, WH_REQ_OPTIONS);
 		es_write_int(fd, pending_option_count);
 		for (op = 0; op < pending_option_count; op++) {
 			es_write_int(fd, po->num);
@@ -144,7 +140,8 @@ void get_options()
 
 int rec_options(int num_options, int *options)
 {
-	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1, status = 0, i;
+	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1,
+		status = 0, i;
 	if (fd == -1) {
 		ggzd_debug("SERVER bug: unknown host in rec_options.");
 		exit(-1);
@@ -194,8 +191,8 @@ void finalize_options()
 						     op->key, op->value);
 		if (optext == NULL) {
 			ggzd_debug("ERROR: SERVER BUG: "
-				      "finalize_options: NULL optext returned for option (%s, %d).",
-				      op->key, op->value);
+				   "finalize_options: NULL optext returned for option (%s, %d).",
+				   op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
 					"  %s : %d\n", op->key, op->value);
 			opcount++;
@@ -208,7 +205,8 @@ void finalize_options()
 		opcount++;
 	}
 	if (!opcount)
-		/* there's absolutely no reason for this to be a server string! */
+		/* there's absolutely no reason for this to be a server
+		   string! */
 		snprintf(buf + len, sizeof(buf) - len,
 			 "  No special options have been selected.\n");
 	set_global_message("Options", "%s", buf);
