@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4424 2002-09-06 22:22:19Z jdorje $
+ * $Id: ggzclient.c 4425 2002-09-06 22:34:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -1158,8 +1158,18 @@ int ggz_connection_query(void)
 /* Handle the ggz-gtk end of disconnecting. */
 void server_disconnect(void)
 {
-	if (server_handle == -1)
+	assert(server);
+
+	/* This can happen if we get disconnected from a server that we never
+	   actually connected to (for instance if there's no server listening
+	   on the host/port we connected to).  We still have to free the
+	   server variable, but not remove the input handler.  This is ugly.
+	   See ggz_input_removed(). */
+	if (server_handle == -1 && server) {
+		ggzcore_server_free(server);
+		server = NULL;
 		return;
+	}
 
 	/* Removing the input handler prompts the calling of 
 	   ggz_input_removed, which frees the server data.   This is
