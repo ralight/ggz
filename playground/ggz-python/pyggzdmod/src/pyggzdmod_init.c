@@ -158,7 +158,7 @@ static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 		case GGZDMOD_EVENT_SPECTATOR_DATA:
 			Py_XDECREF(pyggzdmod_cb_spectatordata);
 			pyggzdmod_cb_spectatordata = temp;
-			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, pyggzdmod_cb_spectatordata_hook);
+			ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, pyggzdmod_cb_spectatordata_hook);
 			break;
 		case GGZDMOD_EVENT_ERROR:
 			Py_XDECREF(pyggzdmod_cb_error);
