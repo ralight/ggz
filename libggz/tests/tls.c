@@ -18,7 +18,7 @@
 static char buffer[1024], buffer2[1024];
 static int shmid;
 
-void *reader(void *arg)
+static void *reader(void *arg)
 {
 	int fd = *(int*)arg;
 	int ret;
@@ -37,7 +37,7 @@ void *reader(void *arg)
 	return NULL;
 }
 
-void *writer(void *arg)
+static void *writer(void *arg)
 {
 	int fd = *(int*)arg;
 	int ret;
@@ -51,7 +51,7 @@ void *writer(void *arg)
 	return NULL;
 }
 
-void timeout(int signal)
+static void timeout(int signal)
 {
 	exit(-1);
 }
