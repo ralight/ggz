@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 4025 2002-04-20 09:10:07Z jdorje $
+ * $Id: game.c 4053 2002-04-22 23:43:27Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -237,9 +237,8 @@ void game_start_playing(void)
    game.must_break_trump), no changes should be necessary. */
 char *game_verify_play(player_t p, card_t card)
 {
-	card_t c;
 	seat_t s = game.players[p].play_seat;
-	int cnt;
+	char lead_suit = game.data->map_card(game.lead_card).suit;
 
 	card = game.data->map_card(card);
 
@@ -263,12 +262,11 @@ char *game_verify_play(player_t p, card_t card)
 	}
 
 	/* following suit is always okay */
-	if (card.suit == game.lead_card.suit)
+	if (card.suit == lead_suit)
 		return NULL;
 
 	/* not following suit is never allowed */
-	c = game.data->map_card(game.lead_card);
-	if ((cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)))
+	if (cards_suit_in_hand(&game.seats[s].hand, lead_suit) > 0)
 		return "You must follow suit.";
 
 	/* if must_overtrump is set, then you must overtrump to win if you
@@ -282,7 +280,7 @@ char *game_verify_play(player_t p, card_t card)
 						 game.trump);
 		hi_trump_played = 0;
 		for (p2 = 0; p2 < game.num_players; p2++) {
-			c = game.seats[game.players[p2].seat].table;
+			card_t c = game.seats[game.players[p2].seat].table;
 			c = game.data->map_card(c);
 			if (c.suit == game.trump && c.face > hi_trump_played)
 				hi_trump_played = c.face;
