@@ -32,10 +32,14 @@
 #include "games.h"
 #include "ggz.h"
 
+/* an extern should be listed here for each game function set you create
+ * this is preferable to including the whole <game>.h file. */
+extern struct game_function_pointers suaro_funcs;
+
 /* These names are sent to the client when options are requested.  They're different
  * from what's sent to the client as the game name later */
 struct game_info game_data[7] = {
-		{"Suaro", &game_funcs},
+		{"Suaro", &suaro_funcs},
 		{"Spades", &game_funcs},
 		{"Hearts", &game_funcs},
 		{"Bridge", &game_funcs},
@@ -53,23 +57,11 @@ int game_types[GGZ_NUM_GAMES];	/* possible types of games; used for option reque
  *   type of game. */
 int games_get_gametype(char* text)
 {
-	if (!strcmp(text, "bridge"))
-		return GGZ_GAME_BRIDGE;
+	int i;
 
-	if (!strcmp(text, "suaro"))
-		return GGZ_GAME_SUARO;
-
-	if (!strcmp(text, "lapocha"))
-		return GGZ_GAME_LAPOCHA;
-
-	if (!strcmp(text, "spades"))
-		return GGZ_GAME_SPADES;
-
-	if (!strcmp(text, "hearts"))
-		return GGZ_GAME_HEARTS;
-
-	if (!strcmp(text, "euchre"))
-		return GGZ_GAME_EUCHRE;
+	for (i=0; i<GGZ_NUM_GAMES; i++)
+		if (!strcmp(text, game_data[i].name))
+			return i;
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
 	ggz_debug("Unknown game for '%s'.", text);

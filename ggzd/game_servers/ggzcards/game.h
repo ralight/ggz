@@ -87,38 +87,6 @@ typedef struct bridge_game_t {
 	int dummy_revealed;
 } bridge_game_t;
 
-/* ---------- SUARO ---------- */
-
-/* special bids */
-#define SUARO_PASS	1
-#define SUARO_DOUBLE	2
-#define SUARO_REDOUBLE	3
-#define SUARO_KITTY	4
-
-/* special suits */
-#define SUARO_LOW 0
-	/* clubs-spades = 1-4 = regular values + 1 */
-#define SUARO_HIGH 5
-
-#define SUARO ( *(suaro_game_t *)(game.specific) )
-typedef struct suaro_game_t {
-	/* options */
-	int shotgun;		/* are we playing shotgun suaro? */
-	int unlimited_redoubling;	/* can doubling continue indefinitely? */
-	int persistent_doubles;	/* a double isn't negated by another bid */
-
-	int pass_count;		/* number of passes in a row */
-
-	/* contract information */
-	int contract;		/* value of the contract */
-	int kitty;		/* 0=>no kitty; 1=>kitty.  Only applicable in shotgun suaro. */
-	int contract_suit;	/* 0=>low, 5=>high, as above */
-	int bonus;		/* 1 = regular; 2 = doubled; 4 = redoubled; etc. */
-	player_t declarer;	/* player with the contract */
-
-	int kitty_revealed;
-} suaro_game_t;
-
 /* ---------- EUCHRE ---------- */
 
 /* special bids */
@@ -149,5 +117,35 @@ typedef struct skat_game_t {
 
 extern struct game_function_pointers game_funcs;
 
+
+extern void game_init_game();			
+extern int game_get_options();			
+extern void game_handle_options();	
+
+extern void game_set_player_message(player_t);
+
+extern int game_get_bid_text(char*, int, bid_t);
+extern void game_start_bidding();		
+extern int game_get_bid();		
+extern int game_handle_bid(bid_t);		
+extern void game_next_bid();		
+
+extern void game_start_playing();		
+extern char* game_verify_play(card_t);	
+extern void game_next_play();			
+extern void game_get_play(player_t);	
+extern void game_handle_play(card_t);	
+
+extern int game_deal_hand(void);	
+extern void game_end_trick(void);	
+extern void game_end_hand(void);	
+
+extern void game_start_game();		
+extern int game_test_for_gameover();		
+extern int game_handle_gameover();		
+
+extern card_t game_map_card(card_t);
+extern int game_compare_cards(const void *, const void *);
+extern int game_send_hand(player_t, seat_t);
 
 

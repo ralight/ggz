@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = config .
+SUBDIRS = config games .
 
-EXTRA_DIST = #config/ggzcards.dsc config/ggzcards.room
+EXTRA_DIST =
 
 ggzdexecmod_PROGRAMS = ggzd.ggzcards
 ggzdgame_DATA =
@@ -18,14 +18,13 @@ ggzd_ggzcards_SOURCES = ggz.c ggz.h \
 			protocols.h \
 			protocol.h \
 			types.h
+ggzd_ggzcards_DEPENENCIES = games/libgames.a
 
 
-ggzd_ggzcards_LDADD = $(LDADD)
+ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
-#	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
-#	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
 
 test-recursive:
 	@set fnord $(MAKEFLAGS); amf=$$2; \

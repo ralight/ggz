@@ -36,37 +36,6 @@
 #include "games.h"
 #include "message.h"
 
-
-static void game_init_game();			
-static int game_get_options();			
-static void game_handle_options();	
-
-static void game_set_player_message(player_t);
-
-static int game_get_bid_text(char*, int, bid_t);
-static void game_start_bidding();		
-static int game_get_bid();		
-static int game_handle_bid(bid_t);		
-static void game_next_bid();		
-
-static void game_start_playing();		
-static char* game_verify_play(card_t);	
-static void game_next_play();			
-static void game_get_play(player_t);	
-static void game_handle_play(card_t);	
-
-static int game_deal_hand(void);	
-static void game_end_trick(void);	
-static void game_end_hand(void);	
-
-static void game_start_game();		
-static int game_test_for_gameover();		
-static int game_handle_gameover();		
-
-static card_t game_map_card(card_t);
-static int game_compare_cards(const void *, const void *);
-static int game_send_hand(player_t, seat_t);	
-
 struct game_function_pointers game_funcs = {
 	game_init_game,
 	game_get_options,
@@ -94,15 +63,13 @@ struct game_function_pointers game_funcs = {
 };
 
 /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
-static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
-static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "spades", "high"};
 static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
 
 /* game.funcs->map_card
  *   newly implemented; it should cause one card to behave
  *   as another in just about all situations */
-static card_t game_map_card(card_t c)
+card_t game_map_card(card_t c)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -125,7 +92,7 @@ static card_t game_map_card(card_t c)
  *   This function is used for the automatic sorting of hands by
  *   cards_sort_hand.
  */
-static int game_compare_cards(const void *c1, const void *c2)
+int game_compare_cards(const void *c1, const void *c2)
 {
 	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
 	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
@@ -153,7 +120,7 @@ static int game_compare_cards(const void *c1, const void *c2)
  *   global options, and setting up all of the GGZ information so that
  *   seats and players can both be used intelligently.
  */
-static void game_init_game()
+void game_init_game()
 {
 	player_t p;
 	seat_t s;
@@ -190,34 +157,6 @@ static void game_init_game()
 			game.max_bid_length = 10;
 			game.target_score = 100;
 			game.name = "Skat";
-			break;
-		case GGZ_GAME_SUARO:
-			{
-			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
-							    {GGZ_SEAT_NONE, "Up-Card", -1} };
-			game.specific = alloc(sizeof(suaro_game_t));
-			set_num_seats(4);
-			game.seats[0].ggz = &ggz_seats[0];
-			game.players[0].seat = 0;
-			game.seats[2].ggz = &ggz_seats[1];
-			game.players[1].seat = 2;
-			game.seats[1].ggz = &ggz[0];
-			game.seats[3].ggz = &ggz[1];
-			/* most possible bids for suaro: 6 suits * 5 numbers + pass + double = 32
-			 * for shotgun suaro, that becomes 62 possible bids
-			 * longest possible bid: 9 diamonds = 11
-			 * for shotgun suaro that becomes K 9 diamonds = 13 */
-			game.deck_type = GGZ_DECK_SUARO;
-			game.max_bid_choices = 62;
-			game.max_bid_length = 13;
-			game.max_hand_length = 9;
-			game.name = "Suaro";
-			game.rules_url = "http://suaro.dhs.org/";
-			game.target_score = 50;
-			SUARO.shotgun = 1;	/* shotgun suaro */
-			SUARO.declarer = -1;
-			game.last_trick = 1;	/* show "last trick" */
-			}
 			break;
 		case GGZ_GAME_LAPOCHA:
 			game.specific = alloc(sizeof(lapocha_game_t));
@@ -295,7 +234,7 @@ static void game_init_game()
  *   is handled by game_handle_options.  Options are optional; it can
  *   be left as-is for a game that has no options.
  */
-static int game_get_options()
+int game_get_options()
 {
 	int fd;
 	fd = ggz_seats[game.host].fd;
@@ -304,36 +243,6 @@ static int game_get_options()
 		return -1;
 	}
 	switch (game.which_game) {
-		case GGZ_GAME_SUARO:
-			/* four options for now:
-			 *   shotgun -> boolean
-			 *   unlimited redoubling -> boolean
-			 *   persistent doubles -> boolean
-			 *   target score -> 25, 50, 100, 200, 500, 1000
-			 */
-			game.num_options = 4;
-			if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-				es_write_int(fd, game.num_options) < 0 || /* number of options */
-				es_write_int(fd, 1) < 0 || /* first option: 1 choice */
-				es_write_int(fd, 1) < 0 || /* first option: default is 1 */
-				es_write_string(fd, "shotgun") < 0 || /* the first option is "shotgun" */
-				es_write_int(fd, 1) < 0 || /* second option: 1 choice */
-				es_write_int(fd, 0) < 0 || /* second option: default is 0 */
-				es_write_string(fd, "unlimited redoubling") < 0 ||
-				es_write_int(fd, 1) < 0 || /* third option: 1 choice */
-				es_write_int(fd, 0) < 0 || /* third option: default is 0 */
-				es_write_string(fd, "persistent doubles") < 0 ||
-				es_write_int(fd, 6) < 0 || /* fourth option: 6 choices */
-				es_write_int(fd, 1) < 0 || /* fourth option: default is 1 (on a scale from 0-2) */
-				es_write_string(fd, "Game to 25") < 0 ||
-				es_write_string(fd, "Game to 50") < 0 ||
-				es_write_string(fd, "Game to 100") < 0 ||
-				es_write_string(fd, "Game to 200") < 0 ||
-				es_write_string(fd, "Game to 500") < 0 ||
-				es_write_string(fd, "Game to 1000") < 0
-			   )
-				return -1;
-			break;
 		case GGZ_GAME_SPADES:
 			/* three options:
 			 *   target score: 100, 250, 500, 1000
@@ -376,32 +285,9 @@ static int game_get_options()
  *   It corresponds very closely to game_get_options, above;
  *   and can be left as-is for games that have no options.
  */
-static void game_handle_options(int *options)
+void game_handle_options(int *options)
 {
 	switch (game.which_game) {
-		case GGZ_GAME_SUARO:
-			if (options[0] >= 0) SUARO.shotgun = options[0];
-			if (options[1] >= 0) SUARO.unlimited_redoubling = options[1];
-			if (options[2] >= 0) SUARO.persistent_doubles = options[2];
-			switch (options[3]) {
-				/* this highlights a problem with this protocol.  Only discrete entries are possible.
-				 * it would be better if the client could just enter a number */
-				case 0: game.target_score = 25; break;
-				case 1: game.target_score = 50; break;
-				case 2: game.target_score = 100; break;
-				case 3: game.target_score = 200; break;
-				case 4: game.target_score = 500; break;
-				case 5: game.target_score = 1000; break;
-				default: break;
-			}
-			set_global_message("Options",
-				"%s%s%sFirst player to %d points wins.",
-				SUARO.shotgun ? "Shotgun rules are in effect.\n" : "",
-				SUARO.unlimited_redoubling ? "Unlimited redoubling is allowed.\n" : "",
-				SUARO.persistent_doubles ? "Doubles are persistent.\n" : "",
-				game.target_score);
-			game.options_initted = 1; /* we could do another round of option requests, if we wanted */
-			break;
 		case GGZ_GAME_SPADES:
 			switch (options[0]) {
 				case 0: GSPADES.nil_value = 50;  break;
@@ -432,7 +318,7 @@ static void game_handle_options(int *options)
  *   This is pretty empty right now, but we don't yet play multiple games
  *   so it's not necessary yet anyway.
  */
-static void game_start_game(void)
+void game_start_game(void)
 {
 	player_t p;
 
@@ -452,7 +338,7 @@ static void game_start_game(void)
  *   The game is over and we should send out game-over message.
  *   This function determines who has won and calls send_gameover.
  */
-static int game_handle_gameover(void)
+int game_handle_gameover(void)
 {
 	player_t p;
 	int hi_score = -9999;
@@ -487,7 +373,6 @@ static int game_handle_gameover(void)
 			if (winner_cnt > 0) break;
 			/* else fall through */
 		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_SUARO:
 		case GGZ_GAME_SPADES:
 		case GGZ_GAME_EUCHRE:
 		default:
@@ -528,9 +413,8 @@ static int game_handle_gameover(void)
  *     - Aside from this, your own game data should be used to
  *       track what's going on with the bidding.
  */
-static void game_start_bidding()
+void game_start_bidding()
 {
-	char suit;
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
 			/* all 4 players bid once, but the first bid determines the trump */
@@ -540,16 +424,6 @@ static void game_start_bidding()
 		case GGZ_GAME_EUCHRE:
 			game.bid_total = 8; /* twice around, at most */
 			game.next_bid = (game.dealer + 1) % game.num_players;
-			break;
-		case GGZ_GAME_SUARO:
-			game.bid_total = -1; /* no set total */
-
-			/* key card determines first bidder */
-			suit = game.seats[3].hand.cards[0].suit;
-			game.next_bid = (suit == CLUBS || suit == SPADES) ? 0 : 1;
-
-			SUARO.pass_count = 0;
-			SUARO.bonus = 1;
 			break;
 		case GGZ_GAME_BRIDGE:
 			game.next_bid = game.dealer; /* dealer bids first */
@@ -576,7 +450,7 @@ static void game_start_bidding()
  *   closely with the other bidding functions.
  */
 /* TODO: verify that it will work with and without bots */
-static int game_get_bid()
+int game_get_bid()
 {
 	int status = 0, index=0;
 	bid_t bid;
@@ -694,50 +568,6 @@ static int game_get_bid()
 
 			status = req_bid(game.next_bid, index, NULL);
 			break;
-		case GGZ_GAME_SUARO:
-			/* in suaro, a bid consists of a number and a suit. */
-
-			/* make a list of regular bids */
-			for(bid.sbid.val = 5; bid.sbid.val <= 9; bid.sbid.val++) {
-				for(bid.sbid.suit = SUARO_LOW; bid.sbid.suit <= SUARO_HIGH; bid.sbid.suit++) {
-					if (bid.sbid.val < SUARO.contract) continue;
-					if (bid.sbid.val == SUARO.contract && bid.sbid.suit <= SUARO.contract_suit) continue;
-					game.bid_choices[index] = bid;
-					index++;
-					if (SUARO.shotgun) {
-						/* in "shotgun" suaro, you are allowed to bid on the kitty just like on your hand! */
-						bid_t kbid = bid;
-						kbid.sbid.spec = SUARO_KITTY;
-						game.bid_choices[index] = kbid;
-						index++;
-					}
-				}
-			}
-
-			/* make "double" or "redouble" bid */
-			if ( SUARO.contract > 0 && SUARO.bonus == 1) {
-				/* unless unlimited doubling is specifically allowed,
-				 * only double and redouble are possible */
-				bid.bid = 0;
-				bid.sbid.spec = SUARO_DOUBLE;
-				game.bid_choices[index] = bid;
-				index++;
-			} else if (SUARO.contract > 0 &&
-			           (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
-				bid.bid = 0;
-				bid.sbid.spec = SUARO_REDOUBLE;
-				game.bid_choices[index] = bid;
-				index++;
-			}
-
-			/* make "pass" bid */
-			bid.bid = 0;
-			bid.sbid.spec = SUARO_PASS;
-			game.bid_choices[index] = bid;
-			index++;
-
-			status = req_bid(game.next_bid, index, NULL);
-			break;
 		default:
 			ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
 			status = -1;
@@ -751,7 +581,7 @@ static int game_get_bid()
  *   will already have been set automatically; all we need to do is any additional
  *   game-specific stuff.
  */
-static int game_handle_bid(bid_t bid)
+int game_handle_bid(bid_t bid)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -786,27 +616,6 @@ static int game_handle_bid(bid_t bid)
 					game.trump = -1;
 			}
 			break;
-		case GGZ_GAME_SUARO:
-			if (bid.sbid.spec == SUARO_PASS) {
-				SUARO.pass_count++;
-			} else if (bid.sbid.spec == SUARO_DOUBLE ||
-				   bid.sbid.spec == SUARO_REDOUBLE) {
-				SUARO.pass_count = 1; /* one more pass will end it */
-				SUARO.bonus *= 2;
-			} else {
-				SUARO.declarer = game.next_bid;
-				SUARO.pass_count = 1; /* one more pass will end it */
-				if (!SUARO.persistent_doubles)
-					SUARO.bonus = 1; /* reset any doubles */
-				SUARO.contract = bid.sbid.val;
-				SUARO.kitty = (bid.sbid.spec == SUARO_KITTY);
-				SUARO.contract_suit = bid.sbid.suit;
-				if (bid.sbid.suit > SUARO_LOW && bid.sbid.suit < SUARO_HIGH)
-					game.trump = bid.sbid.suit - 1; /* a minor hack */
-				else
-					game.trump = -1;
-			}
-			break;
 		case GGZ_GAME_SPADES:
 			break; /* no special handling necessary */
 		case GGZ_GAME_LAPOCHA:
@@ -833,7 +642,7 @@ static int game_handle_bid(bid_t bid)
  *   should equal the player who just bid, and should be changed to
  *   the player who bids next.
  */
-static void game_next_bid()
+void game_next_bid()
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -865,21 +674,6 @@ static void game_next_bid()
 					game.next_bid = (game.next_bid + 1) % game.num_players;
 			}
 			break;
-		case GGZ_GAME_SUARO:
-			if (SUARO.pass_count == 2) {
-				/* done bidding */
-				if (SUARO.contract == 0) {
-					ggz_debug("Two passes; redealing hand.");
-					set_global_message("", "%s", "Everyone passed; redealing.");
-					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
-				} else {
-					ggz_debug("A pass; bidding is over.");
-					game.bid_total = game.bid_count;
-					/* contract was determined in game_handle_bid */
-				}
-			} else
-				goto normal_order;
-			break;
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 1) {
 				game.next_bid = (game.dealer + 1) % game.num_players;
@@ -902,7 +696,7 @@ normal_order:
  *   automatically at this point, all we have to do is any game-specific stuff.
  *   This means figuring out who leads, writing out any contract messages, etc.
  */
-static void game_start_playing(void)
+void game_start_playing(void)
 {
 	player_t p;
 	seat_t s;
@@ -932,34 +726,6 @@ static void game_start_playing(void)
 				BRIDGE.contract, long_bridge_suit_names[(int)BRIDGE.contract_suit],
 				BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
 			game.leader = (BRIDGE.declarer + 1) % game.num_players;
-			break;
-		case GGZ_GAME_SUARO:
-			/* declarer is set in game_handle_bid */
-			set_global_message("", "%s has the contract at %s%d %s%s.",
-				ggz_seats[SUARO.declarer].name,
-				SUARO.kitty ? "kitty " : "",
-				SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
-				SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");
-			game.leader = 1 - SUARO.declarer;
-			if (SUARO.kitty) {
-				/* if it's a kitty bid, the declarer takes up the kitty and
-				 * lays their own hand down (face up) in its place */
-				card_t* temp;
-				seat_t s1, s2;
-				s1 = 1; /* kitty hand */
-				s2 = game.players[SUARO.declarer].seat;
-				/* this "swapping" only works because the cards in the hands
-				 * are specifically allocated by malloc.  Also note that there
-				 * are always 9 cards in both hands. */
-				temp = game.seats[s1].hand.cards;
-				game.seats[s1].hand.cards = game.seats[s2].hand.cards;
-				game.seats[s2].hand.cards = temp;
-				send_hand(SUARO.declarer, s2, 1); /* reveal the new hand to the player */
-				SUARO.kitty_revealed = 1;
-				for(p = 0; p<game.num_players; p++)
-					/* reveal the kitty to everyone */
-					send_hand(p, s1, 1);
-			}
 			break;
 		case GGZ_GAME_HEARTS:
 			/* we track the points that will be earned this hand. */
@@ -1004,7 +770,7 @@ static void game_start_playing(void)
  *   special rules (outside of those covered by game.must_overtrump and
  *   game.must_break_trump), no changes should be necessary.
  */
-static char* game_verify_play(card_t card)
+char* game_verify_play(card_t card)
 {
 	card_t c;
 	seat_t s = game.play_seat;
@@ -1091,7 +857,7 @@ static char* game_verify_play(card_t card)
  *   most games, you can just say game.play_total = 4 up above
  *   so that we'll automatically get 4 plays on each hand.
  */
-static void game_next_play()
+void game_next_play()
 {
 	game.next_play = (game.next_play + 1) % game.num_players;
 }
@@ -1101,7 +867,7 @@ static void game_next_play()
  *   AI can be inserted to call handle_play_event.  We also handle
  *   game-specific stuff here (e.g. playing from the dummy hand in Bridge).
  */
-static void game_get_play(player_t p)
+void game_get_play(player_t p)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
@@ -1124,7 +890,7 @@ static void game_get_play(player_t p)
  *   game-specific (e.g. revealing the dummy hand after the first lead in
  *   Bridge).
  */
-static void game_handle_play(card_t c)
+void game_handle_play(card_t c)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
@@ -1151,7 +917,7 @@ static void game_handle_play(card_t c)
  *   called at the beginning of a new hand to determine if the game is over.
  *   Return 1 for gameover, 0 otherwise.
  */
-static int game_test_for_gameover()
+int game_test_for_gameover()
 {
 	player_t p;
 	switch (game.which_game) {
@@ -1162,7 +928,6 @@ static int game_test_for_gameover()
 			return 0;
 		case GGZ_GAME_SPADES:
 		case GGZ_GAME_HEARTS:
-		case GGZ_GAME_SUARO:
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, it's just a race toward a target score */
@@ -1179,7 +944,7 @@ static int game_test_for_gameover()
 /* game_deal_hand
  *   Deal a new hand.
  */
-static int game_deal_hand(void)
+int game_deal_hand(void)
 {
 	seat_t s;
 	int result=0;
@@ -1200,15 +965,6 @@ static int game_deal_hand(void)
 			game.trump = -1; /* must be determined later */ /* TODO: shouldn't go here */
 			}
 			goto regular_deal;
-		case GGZ_GAME_SUARO:
-			/* in suaro, players 0 and 1 (seats 0 and 2) get 9 cards each.
-			 * the kitty (seat 1) also gets 9 cards, and the face card
-			 * (seat 3) is just one card. */
-			game.hand_size = 9;
-			for(s = 0; s < 3; s++)
-				cards_deal_hand(game.hand_size, &game.seats[s].hand);
-			cards_deal_hand(1, &game.seats[3].hand);
-			break;
 		case GGZ_GAME_EUCHRE:
 			/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
 			 * the up-card (seat 5) gets one card, and the kitty (seat 2)
@@ -1239,20 +995,12 @@ regular_deal:
  *   be revealed to the player or not.  It's called automatically after dealing
  *   the hand, but may be called at other times as well.
  */
-static int game_send_hand(player_t p, seat_t s)
+int game_send_hand(player_t p, seat_t s)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
 			/* reveal the up-card */
 			return send_hand(p, s, game.players[p].seat == s || s == 5);
-		case GGZ_GAME_SUARO:
-			/* reveal the kitty after it's been turned up */
-			if (s == 1 && SUARO.kitty_revealed)
-				return send_hand(p, s, 1);
-			/* each player can see their own hand plus the
-			 * key card */
-			return send_hand(p, s,
-				game.players[p].seat == s || s == 3);
 		case GGZ_GAME_BRIDGE:
 			/* TODO: we explicitly send out the dummy hand, but a player who
 			 * joins late won't see it.  We have the same problem with Suaro. */
@@ -1272,7 +1020,7 @@ static int game_send_hand(player_t p, seat_t s)
 /* game_get_bid_text
  *   places text for the bid into the buffer.  Returns the length of the text (from snprintf).
  */
-static int game_get_bid_text(char* buf, int buf_len, bid_t bid)
+int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
 	/* TODO: in case of an overflow, the result from snprintf probably isn't what we want to return. */
 	switch (game.which_game) {
@@ -1280,12 +1028,6 @@ static int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			if (bid.sbid.spec == EUCHRE_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
 			if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
-			break;
-		case GGZ_GAME_SUARO:
-			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
-			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double");
-			if (bid.sbid.spec == SUARO_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
-			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, short_suaro_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_BRIDGE:
 			if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
@@ -1308,7 +1050,7 @@ static int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 /* game_set_player_message
  *   sets the player message for a given player.
  */
-static void game_set_player_message(player_t p)
+void game_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 	char* message = game.seats[s].message;
@@ -1333,7 +1075,7 @@ static void game_set_player_message(player_t p)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks)
 #define REGULAR_BID_MESSAGE	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) { \
 					char bid_text[game.max_bid_length]; \
-					game_get_bid_text(bid_text, game.max_bid_length, game.players[p].bid); \
+					game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid); \
 					if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text); \
 				}
 #define REGULAR_BIDDING_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid) \
@@ -1370,18 +1112,6 @@ static void game_set_player_message(player_t p)
 			REGULAR_BID_MESSAGE;
 			REGULAR_ACTION_MESSAGES;
 			break;
-		case GGZ_GAME_SUARO:
-			REGULAR_SCORE_MESSAGE;
-			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
-			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
-				if (p == SUARO.declarer)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-				if (p == 1-SUARO.declarer)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "defender\n");
-			}
-			REGULAR_BID_MESSAGE;
-			break;
 		case GGZ_GAME_LAPOCHA:
 			REGULAR_SCORE_MESSAGE;
 			if (p == game.dealer)
@@ -1399,7 +1129,7 @@ static void game_set_player_message(player_t p)
 				/* we show both the individual and team contract */
 				char bid_text[game.max_bid_length];
 				int contract = game.players[p].bid.sbid.val + game.players[(p+2)%4].bid.sbid.val;
-				game_get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+				game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
 				if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s (%d)\n", bid_text, contract);
 			}
 			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) {
@@ -1437,7 +1167,7 @@ static void game_set_player_message(player_t p)
  *   for most games just setting game.trick_total = game.hand_size up above will
  *   result in all the cards being played out.
  */
-static void game_end_trick(void)
+void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p, lo_player = game.leader;
 	card_t hi_card = game.lead_card, lo_card = game.lead_card;
@@ -1462,13 +1192,6 @@ static void game_end_trick(void)
 
 
 	switch (game.which_game) {
-		case GGZ_GAME_SUARO:
-			if (SUARO.contract_suit == SUARO_LOW) {
-				/* low card wins */
-				hi_player = lo_player;
-				hi_card = lo_card;
-			}			
-			break;
 		case GGZ_GAME_HEARTS:
 			for(p=0; p<game.num_players; p++) {
 				card_t card = game.seats[ game.players[p].seat ].table;
@@ -1528,7 +1251,6 @@ static void game_end_trick(void)
 			/* update teammate's info as well */
 			game_set_player_message((hi_player+2)%4);
 			break;
-		case GGZ_GAME_SUARO:
 		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_LAPOCHA:
 		default:
@@ -1540,7 +1262,7 @@ static void game_end_trick(void)
 /* game_end_hand
  *   Calculate scores for this hand and announce.
  */
-static void game_end_hand(void)
+void game_end_hand(void)
 {
 	player_t p;
 
@@ -1640,37 +1362,6 @@ static void game_end_hand(void)
 			game.players[winning_team+2].score += 1;
 			EUCHRE.maker = -1;
 			game.trump = -1;
-			}
-			break;
-		case GGZ_GAME_SUARO:
-			{
-			int points, tricks;
-			player_t winner;
-			tricks = game.players[SUARO.declarer].tricks;
-			if (tricks >= SUARO.contract) {
-				int overtricks = tricks - SUARO.contract;
-				winner = SUARO.declarer;
-				/* you get the value of the contract MINUS
-				 * the number of overtricks == 2 * contract - tricks */
-				points = (SUARO.contract - overtricks) * SUARO.bonus;
-				ggz_debug("Player %d/%s made their bid of %d, plus %d overtricks for %d points.",
-					  winner, ggz_seats[winner].name, SUARO.contract, overtricks, points);
-			} else {
-				winner = 1-SUARO.declarer;
-				/* for setting, you just get the value of the contract */
-				points = SUARO.contract * SUARO.bonus;
-				ggz_debug("Player %d/%s set the bid of %d, earning %d points.",
-					  winner, ggz_seats[winner].name, SUARO.contract, points);
-			}
-			set_global_message("", "%s %s the bid and earned %d point%s.",
-					ggz_seats[winner].name,
-					winner == SUARO.declarer ? "made" : "set",
-					points,
-					points == 1 ? "" : "s");
-			game.players[winner].score += points;
-			SUARO.declarer = -1;
-			SUARO.kitty_revealed = 0;
-			SUARO.contract = 0;
 			}
 			break;
 		case GGZ_GAME_SPADES:

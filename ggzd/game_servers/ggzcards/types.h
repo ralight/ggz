@@ -25,6 +25,8 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
+#include "cards.h"
+
 /* in different games, bids may have different meanings.
  *   we'll just use this arbitrary data structure for it */
 typedef union bid_t {

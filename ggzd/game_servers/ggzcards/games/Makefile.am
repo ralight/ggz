@@ -1,0 +1,13 @@
+## Process this file with automake to produce Makefile.in
+
+SUBDIRS = .
+
+EXTRA_DIST =
+
+noinst_LIBRARIES = libgames.a
+ggzdexecmod_PROGRAMS =
+ggzdgame_DATA =
+ggzdroom_DATA =
+
+libgames_a_DEPENDENCIES = ../common.h ../games.h
+libgames_a_SOURCES = suaro.c suaro.h
