@@ -142,7 +142,7 @@ void game_update(int event_id, void *data) {
           game_send_move((char *)data, 0);
       else {
         /* Worry about time */
-        time = *(int *)(data + (5/sizeof(int)) + 1);
+        time = *((int *)data + (5/sizeof(int)) + 1);
         /* Update the structures */
         game_info.seconds[game_info.turn % 2] -= time;
         /* If server, stop the cronometer */
@@ -233,6 +233,7 @@ void game_handle_player(int id, int *seat) {
         *(char *)(data+1) = 56 - (move[0]/8);
         *(char *)(data+2) = (move[1]%8) + 65;
         *(char *)(data+3) = 56 - (move[1]/8);
+        *(char *)(data+4) = 0;
       } else {
         data = malloc(sizeof(int) * (2 + (5/sizeof(int))));
         es_read_char(fd, &move[0]);
@@ -241,6 +242,7 @@ void game_handle_player(int id, int *seat) {
         *(char *)(data+1) = 56 - (move[0]/8);
         *(char *)(data+2) = (move[1]%8) + 65;
         *(char *)(data+3) = 56 - (move[1]/8);
+        *(char *)(data+4) = 0;
         if (game_info.clock_type == CHESS_CLOCK_CLIENT) {
           /* Get the time */
           es_read_int(fd, &time);
@@ -250,7 +252,8 @@ void game_handle_player(int id, int *seat) {
           gettimeofday(&now, NULL);
           time = now.tv_sec - cronometer.tv_sec;
         }
-        *(int *)(data + (5/sizeof(int)) + 1) = time;
+        ggz_debug("Move: %s\tTime: %d", data, time);
+        *((int *)data + (5/sizeof(int)) + 1) = time;
       }
       /* Check if correct turn */
       if (*seat == game_info.turn % 2)
