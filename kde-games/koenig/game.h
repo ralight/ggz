@@ -24,7 +24,6 @@
 #include "board.h"
 #include "ggz.h"
 #include "cgc.h"
-#include "chess.h"
 
 typedef struct {
 	char clock_type;
@@ -71,7 +70,6 @@ private:
 	//ChessBoard *board;
 	GameInfo chessInfo;
 	game_t *chessGame;
-	struct chess_info chess;
 };
 
 #define PROTOCOL_VERSION 6
