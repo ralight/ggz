@@ -326,8 +326,10 @@ int room_emit(const int room, const int sender, char *msg)
 	int i, t_p;
 
 	/* Allocate a new chat item */
-	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL)
+	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL) {
+		free(msg);
 		err_sys_exit("malloc failed in room_emit()");
+	}
 	dbg_msg(GGZ_DBG_LISTS, "Allocated chat %p", new_chat);
 
 	pthread_rwlock_wrlock(&chat_room[room].lock);
