@@ -1,4 +1,5 @@
 prefix = /usr/local
+version = 0.0.10
 
 all:
 	@echo Building library PyGGZMod
@@ -50,9 +51,13 @@ install:
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/vibora/
 	cp vibora/*.png $(DESTDIR)$(prefix)/share/ggz/vibora
 
+	@echo Installing SDL newstuff dialog
+	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
+	cp lib/sdlnewstuff.py $(DESTDIR)$(prefix)/lib/site-python
+
 dist:
-	rm -rf ../ggz-python-0.0.9
-	cp -r ../python ../ggz-python-0.0.9
-	find ../ggz-python-0.0.9 -name CVS | xargs rm -rf
-	cd .. && tar cvzf ggz-python-0.0.9.tar.gz ggz-python-0.0.9
+	rm -rf ../ggz-python-$(version)
+	cp -r ../python ../ggz-python-$(version)
+	find ../ggz-python-$(version) -name CVS | xargs rm -rf
+	cd .. && tar cvzf ggz-python-$(version).tar.gz ggz-python-$(version)
 
