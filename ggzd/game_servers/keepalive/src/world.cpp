@@ -203,7 +203,6 @@ void World::receive(const char *name, void *data)
 	int x, y;
 	char username[32], password[32];
 	char *pname, *message;
-	int seat;
 	Player *p;
 	Spectator *s;
 	int fd;
