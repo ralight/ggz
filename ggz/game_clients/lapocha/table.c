@@ -39,6 +39,7 @@ static void table_card_select(int);
 static void table_card_play(int);
 static gint table_animation_callback(gpointer);
 static void table_animation_trigger(int, int, int, int, int);
+static void table_handle_table_click(int, int);
 
 
 /* table_initialize()
@@ -265,6 +266,10 @@ void table_handle_click_event(GdkEventButton *event)
 	int x;
 
 	/* Real quick, see if we even care */
+	if(game.state == LP_STATE_TRUMP) {
+		table_handle_table_click(event->x, event->y);
+		return;
+	}
 	if(event->x < 116 || event->x > 400
 	   || event->y < 363 || event->y > 512
 	   || game.state != LP_STATE_PLAY)
@@ -700,9 +705,12 @@ void table_set_trump(void)
 	char *t_str;
 	char *suits[] = { "Clubs", "Diamonds", "Hearts", "Spades" };
 
-	t_str = g_strdup_printf("Trump is %s", suits[game.trump_suit]);
-	gtk_label_set_text(GTK_LABEL(l_trump), t_str);
-	g_free(t_str);
+	if(game.trump_suit != -1) {
+		t_str = g_strdup_printf("Trump is %s", suits[game.trump_suit]);
+		gtk_label_set_text(GTK_LABEL(l_trump), t_str);
+		g_free(t_str);
+	} else
+		gtk_label_set_text(GTK_LABEL(l_trump), "Trump is not set");
 }
 
 
@@ -953,4 +961,109 @@ void table_clear_table(void)
 			120, 130,
 			120, 130,
 			231, 208);
+}
+
+
+/* table_show_cards()
+ *   Exposed function to show four cards on the table area
+ */
+void table_show_cards(char c1, char c2, char c3, char c4)
+{
+	int xc, yc, x, y;
+
+	/* Pos 0 (bottom) */
+	xc = (c1 / 13) * CARDWIDTH;
+	yc = (c1 % 13) * CARDHEIGHT;
+	x = 199;
+	y = 242;
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			cards,
+			xc, yc,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			x, y,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+
+	/* Left player */
+	xc = (c2 / 13) * CARDWIDTH;
+	yc = (c2 % 13) * CARDHEIGHT;
+	x = 120;
+	y = 186;
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			cards,
+			xc, yc,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			x, y,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+
+	/* Across player */
+	xc = (c3 / 13) * CARDWIDTH;
+	yc = (c3 % 13) * CARDHEIGHT;
+	x = 199;
+	y = 130;
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			cards,
+			xc, yc,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			x, y,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+
+	/* Right player */
+	xc = (c4 / 13) * CARDWIDTH;
+	yc = (c4 % 13) * CARDHEIGHT;
+	x = 280;
+	y = 186;
+	gdk_draw_pixmap(table_buf,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			cards,
+			xc, yc,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			x, y,
+			x, y,
+			CARDWIDTH, CARDHEIGHT);
+}
+
+
+/* table_handle_table_click()
+ *   Handles a click on the table area
+ */
+static void table_handle_table_click(int x, int y)
+{
+	/* Decide which card was clicked, and call game_handle_table_click */
+	if(x >= 199 && x < 199+CARDWIDTH
+	   && y >= 242 && y < 242+CARDHEIGHT)
+		game_handle_table_click(0);
+
+	if(x >= 120 && x < 120+CARDWIDTH
+	   && y >= 186 && y < 186+CARDHEIGHT)
+		game_handle_table_click(1);
+
+	if(x >= 199 && x < 199+CARDWIDTH
+	   && y >= 130 && y < 130+CARDHEIGHT)
+		game_handle_table_click(2);
+
+	if(x >= 280 && x < 280+CARDWIDTH
+	   && y >= 186 && y < 186+CARDHEIGHT)
+		game_handle_table_click(3);
 }

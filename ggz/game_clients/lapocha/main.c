@@ -42,6 +42,7 @@ static int get_play_status(void);
 static int get_opponent_play(void);
 static int get_trick_winner(void);
 static int get_current_scores(void);
+static int get_trump_status(void);
 
 
 int main(int argc, char *argv[])
@@ -88,7 +89,8 @@ char *opstr[] = { "LP_MSG_SEAT",    "LP_MSG_PLAYERS",    "LP_MSG_GAMEOVER",
 		  "LP_MSG_HAND",    "LP_REQ_BID",        "LP_RSP_BID",
                   "LP_MSG_BID",     "LP_REQ_PLAY",       "LP_RSP_PLAY",
                   "LP_MSG_PLAY",    "LP_SND_SYNC",       "LP_MSG_TRUMP",
-		  "LP_REQ_TRUMP",   "LP_MSG_TRICK",      "LP_MSG_SCORES" };
+		  "LP_REQ_TRUMP",   "LP_MSG_TRICK",      "LP_MSG_SCORES",
+		  "LP_RSP_TRUMP" };
 #endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
@@ -118,6 +120,8 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = get_gameover_status();
 			break;
 		case LP_MSG_HAND:
+			game.trump_suit = -1;
+			table_set_trump();
 			status = hand_read_hand();
 			break;
 		case LP_REQ_BID:
@@ -149,11 +153,20 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		case LP_MSG_TRUMP:
 			status = get_trump_suit();
 			break;
+		case LP_REQ_TRUMP:
+			status = 0;
+			table_show_cards(0, 13, 39, 26);
+			game.state = LP_STATE_TRUMP;
+			statusbar_message("Please choose the trump suit");
+			break;
 		case LP_MSG_TRICK:
 			status = get_trick_winner();
 			break;
 		case LP_MSG_SCORES:
 			status = get_current_scores();
+			break;
+		case LP_RSP_TRUMP:
+			status = get_trump_status();
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
@@ -272,6 +285,24 @@ static int get_bid_status(void)
 		dlg_bid_display(hand.hand_size);
 		statusbar_message("Invalid bid, please resubmit");
 	}
+
+	return status;
+}
+
+
+static int get_trump_status(void)
+{
+	char status;
+
+	if(es_read_char(game.fd, &status) < 0)
+		return -1;
+
+	if(status == 0) {
+		statusbar_message("Your trump was accepted");
+		game.state = LP_STATE_WAIT;
+		table_clear_table();
+	} else if(status == LP_ERR_INVALID)
+		statusbar_message("Invalid trump, this shouldn't happen");
 
 	return status;
 }

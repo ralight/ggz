@@ -29,3 +29,26 @@ void game_play_card(int card)
 
 	statusbar_message("Sending play to server");
 }
+
+
+void game_handle_table_click(char card)
+{
+	char trump;
+
+	/* Do we care if they clicked a card? */
+	if(game.state != LP_STATE_TRUMP)
+		return;
+
+	/* Since we drew the cards out of order to make them look
+	 * better on the screen, switch 2 and 3 */
+	if((trump = card) == 3)
+		trump = 2;
+	else if(trump == 2)
+		trump = 3;
+
+	/* Send out our choice of trump */
+	es_write_int(game.fd, LP_SND_TRUMP);
+	es_write_char(game.fd, trump);
+
+	statusbar_message("Sending trump selection to server");
+}

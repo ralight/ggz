@@ -16,6 +16,7 @@ extern struct game_t game;
 
 extern void game_send_bid(int);
 extern void game_play_card(int);
+extern void game_handle_table_click(char);
 
 /* LaPocha protocol */
 /* Messages from server */
@@ -34,6 +35,7 @@ extern void game_play_card(int);
 #define LP_REQ_TRUMP	12
 #define LP_MSG_TRICK	13
 #define LP_MSG_SCORES	14
+#define LP_RSP_TRUMP    15
 
 /* Play errors */
 #define LP_ERR_STATE       -2
@@ -47,7 +49,7 @@ extern void game_play_card(int);
 #define LP_SND_BID      1
 #define LP_REQ_SYNC     2
 #define LP_REQ_NEWGAME  3
-#define LP_SET_TRUMP	4
+#define LP_SND_TRUMP	4
 
 /* LaPocha game states */
 #define LP_STATE_INIT		0
@@ -58,6 +60,7 @@ extern void game_play_card(int);
 #define LP_STATE_DONE		5
 #define LP_STATE_OPPONENT	6
 #define LP_STATE_CHOOSE		7
+#define LP_STATE_TRUMP		8
 
 /* LaPocha game events */
 #define LP_EVENT_LAUNCH      0
