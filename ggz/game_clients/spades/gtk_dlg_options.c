@@ -50,14 +50,14 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	static input_t inputs;
 	GtkWidget *mainBox, *serverBox, *portBox, *buttonBox;
 	GtkWidget *playerOpt, *gameOpt;
-	GtkWidget *serverLabel, *portLabel, *tauntLabel;
+	/*GtkWidget *serverLabel, *portLabel, *tauntLabel;*/
 	GtkWidget *playerTable;
 	GtkObject *minBid_adj, *endGame_adj;
 	GtkWidget *nilBidsLabel, *endGameLabel, *minBidLabel;
 	GtkWidget *playerTab, *gameTab;
-	GtkWidget *progressBar;
+	/*GtkWidget *progressBar;*/
 	GtkWidget *cancelButton;
-	GtkWidget *menuItem;
+	/*GtkWidget *menuItem;*/
 	GtkTooltips *tooltips;
 	GtkWidget *name_label;
 

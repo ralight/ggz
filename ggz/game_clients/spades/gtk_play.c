@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <gtk_io.h>
 #include <gtk_play.h>
@@ -61,7 +62,7 @@ void CreatePlayArea(void)
 	    *hBar2,
 	    *hBar3,
 	    *hBar4,
-	    *hBar5, *hand, *hBox, *ioBox, *bid, *bidLabel, *bidTable;
+	    *hBar5, /**hand,*/ *hBox, *ioBox, *bid, *bidLabel, *bidTable;
 
 	GdkFont *fixedFont;
 	GtkStyle *style;

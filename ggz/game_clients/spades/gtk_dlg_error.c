@@ -41,7 +41,7 @@ void DisplayMessage(char *message, gboolean quit)
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
 
-	char *buf;
+	/*char *buf;*/
 
 	window = gtk_dialog_new();
 	if (quit) {

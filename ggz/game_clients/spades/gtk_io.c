@@ -61,7 +61,7 @@ guint id;
  */
 void DisplayInit(void)
 {
-	GtkWidget *mainBox, *splitBox, *vLine, *tauntArea, *menuBar, *tmp;
+	GtkWidget *mainBox, *splitBox, *vLine, *tauntArea, *menuBar/*, *tmp*/;
 
 	/* Allocate playArea */
 	playArea = (playArea_t *) malloc(sizeof(playArea_t));
@@ -287,7 +287,7 @@ void DisplayPlayedCard(Card card, int player, int id)
 {
 
 	int localX, localY, index = card_suit_num(card);
-	int x, y, tablePos = (player - id + 4) % 4;
+	int x = 0, y = 0, tablePos = (player - id + 4) % 4;
 
 	if (index < 3)
 		index = (index + 2) % 3;

@@ -55,7 +55,7 @@ extern GtkWidget *tauntBox;
 extern GtkWidget *detail_window;
 
 /* Various local handles */
-static guint tauntHandle = 0;
+/*static guint tauntHandle = 0;*/
 guint spadesHandle = 0;
 
 static gint TableClearTimer(gpointer);
