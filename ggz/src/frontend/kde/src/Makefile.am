@@ -1,7 +1,7 @@
 SUBDIRS = abstract widgets .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
-ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(GGZCORE_LDFLAGS) $(LIB_GGZCORE) -lggz
+ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la $(GGZCORE_LDFLAGS) $(LIB_GGZCORE) $(LIB_GGZ)
 
 bin_PROGRAMS = kggz
 
@@ -38,4 +38,4 @@ DISTCLEANFILES = $(kggz_METASOURCES)
 
 messages:
 	$(XGETTEXT) $(kggz_SOURCES) -C -ki18n -kI18N_NOOP -s -j -o $(top_srcdir)/ggz-kde/po/kggz.pot
-	
+
