@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5001 2002-10-22 20:23:12Z jdorje $
+ * $Id: table.c 5009 2002-10-23 18:10:38Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -105,7 +105,7 @@ static GGZReturn table_update_event_enqueue(GGZTable* table,
 					    GGZTableUpdateType opcode,
 					    const char* name,
 					    unsigned int seat);
-			      
+
 static void table_event_data_free(void* data);
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 					       void* data);
@@ -549,7 +549,8 @@ void table_game_join(GGZTable *table, char *name, int num)
 					    fd: -1};
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join", name);
-		transit_seat_event(table->room, table->index, seat, name);
+		transit_seat_event(table->room, table->index,
+				   GGZ_TRANSIT_LEAVE, seat, name);
 		return;
 	}
 
@@ -602,9 +603,9 @@ void table_game_leave(GGZTable *table, char *name, int num)
 		
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[num] = GGZ_SEAT_OPEN;
-	empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
 	pthread_rwlock_unlock(&table->lock);
 
+	empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
 	if (empty)
 		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 			table->index, table->room);
@@ -622,6 +623,92 @@ void table_game_leave(GGZTable *table, char *name, int num)
 	   to halt itself. */
 	if (empty && game_types[table->type].kill_when_empty)
 		(void)ggzdmod_disconnect(table->ggzdmod);
+}
+
+
+void table_game_reseat(GGZTable *table,
+		       GGZReseatType op,
+		       char *name,
+		       int old_seat, int new_seat)
+{
+	int empty = 0;
+	GGZTransitType transit = GGZ_TRANSIT_SIT;
+
+	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d reseat %d: %d->%d",
+		table->index, table->room, op, old_seat, new_seat);
+
+	switch (op) {
+	case GGZ_RESEAT_SIT:
+		pthread_rwlock_wrlock(&table->lock);
+		table->spectators[old_seat][0] = '\0';
+		table->seat_types[new_seat] = GGZ_SEAT_PLAYER;
+		strcpy(table->seat_names[new_seat], name);
+		pthread_rwlock_unlock(&table->lock);
+		transit = GGZ_TRANSIT_SIT;
+		break;
+	case GGZ_RESEAT_STAND:
+		pthread_rwlock_wrlock(&table->lock);
+		table->seat_types[old_seat] = GGZ_SEAT_OPEN;
+		strcpy(table->spectators[new_seat], name);
+		pthread_rwlock_unlock(&table->lock);	
+		empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
+		transit = GGZ_TRANSIT_STAND;
+		break;
+	case GGZ_RESEAT_MOVE:
+		pthread_rwlock_wrlock(&table->lock);
+		table->seat_types[old_seat] = GGZ_SEAT_OPEN;
+		table->seat_types[new_seat] = GGZ_SEAT_PLAYER;
+		strcpy(table->seat_names[new_seat], name);
+		pthread_rwlock_unlock(&table->lock);
+		transit = GGZ_TRANSIT_MOVE;	
+		break;
+	}
+
+	if (empty)
+		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
+			table->index, table->room);
+
+	if (transit_player_event(name, transit,
+				 0, table->index) != GGZ_OK) {
+		/* If player notification failed, they must've logged out.
+		   We have to get them out of the table, but since they've
+		   already joined we have to do this the long way. */
+		struct GGZTableSeat seat = {index: new_seat,
+					    type: GGZ_SEAT_OPEN,
+					    name: "",
+					    fd: -1};
+
+		if (op == GGZ_RESEAT_STAND)
+			transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
+		else
+			transit = GGZ_TRANSIT_LEAVE;
+
+		dbg_msg(GGZ_DBG_TABLE, "%s logged out during reseat", name);
+		transit_seat_event(table->room, table->index,
+				   transit, seat, name);
+		return;
+	}
+
+	/* FIXME: send RESEAT update instead */
+	if (op == GGZ_RESEAT_SIT) {
+		table_update_event_enqueue(table,
+					   GGZ_TABLE_UPDATE_SPECTATOR_LEAVE,
+					   name, old_seat);
+	} else {
+		table_update_event_enqueue(table,
+					   GGZ_TABLE_UPDATE_LEAVE,
+					   name, old_seat);
+	}
+
+	if (op == GGZ_RESEAT_STAND) {
+		table_update_event_enqueue(table,
+					   GGZ_TABLE_UPDATE_SPECTATOR_JOIN,
+					   name, new_seat);
+	} else {
+		table_update_event_enqueue(table,
+					   GGZ_TABLE_UPDATE_JOIN,
+					   name, new_seat);
+	}
 }
 
 
@@ -660,15 +747,16 @@ void table_game_spectator_join(GGZTable *table, char *name, int num)
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
-		struct GGZTableSpectator spectator = {index: num,
-						      name: "",
-						      fd: -1};
+		struct GGZTableSeat seat = {index: num,
+					    name: "",
+					    fd: -1};
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during spectator join",
 			name);
 
-		transit_spectator_event(table->room, table->index,
-					spectator, name);
+		transit_seat_event(table->room, table->index,
+				   GGZ_TRANSIT_LEAVE_SPECTATOR,
+				   seat, name);
 		return;
 	}
 
@@ -1094,6 +1182,7 @@ static GGZReturn table_update_event_enqueue(GGZTable* table,
 	pthread_rwlock_rdlock(&table->lock);
 	data->table = table_copy(table);
 	pthread_rwlock_unlock(&table->lock);
+
 	strcpy(data->player, name);
 	data->seat = seat;
 

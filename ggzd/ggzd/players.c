@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5001 2002-10-22 20:23:12Z jdorje $
+ * $Id: players.c 5009 2002-10-23 18:10:38Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -75,7 +75,9 @@ pthread_key_t player_key;
 
 /* Local functions for handling players */
 static GGZClientReqError player_transit(GGZPlayer* player,
-					GGZTransitType opcode, int index);
+					GGZTransitType opcode,
+					const int table_index,
+					const int seat_index);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 static int player_get_time_since_ping(GGZPlayer *player);
 
@@ -167,7 +169,7 @@ void player_logout(GGZPlayer* player)
 	/* FIXME: is this the correct way to do it? */
 	/* Note: GGZ_TRANSIT_LEAVE should work for spectators too. */
 	if (player->room >= 0 && player->table >= 0)
-		player_transit(player, GGZ_TRANSIT_LEAVE, player->table);
+		player_transit(player, GGZ_TRANSIT_LEAVE, player->table, -1);
 
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)
@@ -375,7 +377,8 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 	
 	/* Automatically join newly created table */
 	if (event->status == 0)
-		player_transit(player, GGZ_TRANSIT_JOIN, event->table_index);
+		player_transit(player, GGZ_TRANSIT_JOIN,
+			       event->table_index, -1);
 
 	/* Return status to client */
 	if (net_send_table_launch(player->client->net, event->status) < 0)
@@ -473,6 +476,7 @@ GGZPlayerHandlerStatus player_table_seat_update(GGZPlayer *player,
 	/* This function is buggy, just like player_table_desc_update */
 
 	if (transit_seat_event(table->room, table->index,
+			       GGZ_TRANSIT_SEAT,
 			       *seat, player->name) != GGZ_OK) {
 		if(net_send_update_result(player->client->net,
 					  E_NO_TABLE) < 0)
@@ -530,7 +534,7 @@ GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
 	}
 	pthread_rwlock_unlock(&them->lock);
 	/* FIXME: player lock is lost... */
-	status = player_transit(them, GGZ_TRANSIT_LEAVE, table_id);
+	status = player_transit(them, GGZ_TRANSIT_LEAVE, table_id, -1);
 
 	if (status != E_OK) {
 		if (net_send_update_result(player->client->net, status) < 0)
@@ -559,14 +563,16 @@ GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded. 
  */
-GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
+GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
+					 int table_index,
+					 int seat_num)
 {
 	GGZClientReqError status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join for %s", player->name);
 
 	dbg_msg(GGZ_DBG_TABLE, "%s attempting to join table %d in room %d", 
-		player->name, index, player->room);
+		player->name, table_index, player->room);
 
 	if (player->table != -1)
 		status = E_AT_TABLE;
@@ -575,7 +581,8 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 	else if (perms_check(player, PERMS_JOIN_TABLE) == PERMS_DENY)
 		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
-		status = player_transit(player, GGZ_TRANSIT_JOIN, index);
+		status = player_transit(player, GGZ_TRANSIT_JOIN,
+					table_index, seat_num);
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
@@ -603,7 +610,8 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 	else if (perms_check(player, PERMS_JOIN_TABLE) == PERMS_DENY)
 		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
-		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR, index);
+		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR,
+					index, -1);
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
@@ -697,12 +705,80 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 			status = E_LEAVE_FORBIDDEN;
 	} else { 
 		/* All clear: send leave event to table */
-		status = player_transit(player, transit, player->table);
+		status = player_transit(player, transit, player->table, -1);
 	}
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
 		if (net_send_table_leave(player->client->net, status) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	return GGZ_REQ_OK;
+}
+
+
+GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
+					   GGZReseatType opcode,
+					   int seat_num)
+{
+	GGZTable *table;
+	int gametype, allow;
+	GGZClientReqError status;
+	GGZTransitType action;
+
+	switch (opcode) {
+	case GGZ_RESEAT_SIT:
+		action = GGZ_TRANSIT_SIT;
+		break;
+	case GGZ_RESEAT_STAND:
+		action = GGZ_TRANSIT_STAND;
+		break;
+	case GGZ_RESEAT_MOVE:
+		action = GGZ_TRANSIT_MOVE;
+		break;
+	default:
+		err_msg("player_table_reseat: bad opcode %d.", opcode);
+		return GGZ_REQ_OK;
+	}
+
+	table = table_lookup(player->room, player->table);
+	if (!table) {
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tried to reseat at nonexistent table %d:%d.",
+			player->name, player->room, player->table);
+		if (player->room >= 0 && player->table >= 0) {
+			err_msg("Couldn't find %s's table %d (room %d)!",
+				player->name, player->table, player->room);
+			player->table = -1; /* What else can we do? */
+		}
+		/* This is probably an error on the client's part.  But
+		   to avoid confusion, the best bet is probably to
+		   claim success. */
+		if (net_send_table_leave(player->client->net, 0) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_OK;
+	}
+
+	gametype = table->type;
+	pthread_rwlock_unlock(&table->lock);
+
+	pthread_rwlock_rdlock(&game_types[gametype].lock);
+	allow = game_types[gametype].allow_leave;
+	pthread_rwlock_unlock(&game_types[gametype].lock);
+
+	if (player->transit)
+		status = E_IN_TRANSIT;
+	else if (!allow)
+		status = E_LEAVE_FORBIDDEN;
+	else
+		status = player_transit(player, action,
+					player->table, seat_num);
+
+	/* Return any immediate failures to client*/
+	if (status != E_OK) {
+		if (net_send_reseat_result(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -760,7 +836,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	else 
 		/* All clear: send leave event to table */
 		status = player_transit(player, GGZ_TRANSIT_LEAVE_SPECTATOR,
-					player->table);
+					player->table, -1);
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
@@ -774,42 +850,58 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 #endif
 
 
+static void find_player_at_table(GGZPlayer *player,
+				 int table_index,
+				 int *spectating,
+				 int *seat_num)
+{
+	int num;
+
+	num = table_find_player(player->room, table_index, player->name);
+	if (num >= 0) {
+		*spectating = 0;
+		*seat_num = num;
+		return;
+	}
+
+	num = table_find_spectator(player->room, table_index, player->name);
+	if (num >= 0) {
+		*spectating = 1;
+		*seat_num = num;
+		return;
+	}
+
+	*seat_num = -1;
+}
+
+
 static GGZClientReqError player_transit(GGZPlayer* player,
-					GGZTransitType opcode, int index)
+					GGZTransitType opcode,
+					const int table_index,
+					const int seat_index)
 {
 	struct GGZTableSeat seat;
-	struct GGZTableSpectator spectator;
-	GGZReturn status;
-	int spectating, seat_num, try;
+	GGZReturn status = GGZ_ERROR;
+	int spectating, seat_num;
 
 	/* Do some quick sanity checking */
 	if (player->room == -1) 
 		return E_NOT_IN_ROOM;
-	if (index == -1)
+	if (table_index == -1)
 		return E_NO_TABLE;
 
 	dbg_msg(GGZ_DBG_UPDATE, "player_transit(%s, %d, %d)",
-		player->name, opcode, index);
+		player->name, opcode, table_index);
 
 	/* Implement LEAVE by setting my seat to open */
 	switch (opcode) {
 	case GGZ_TRANSIT_LEAVE: 
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
-		spectating = (opcode == GGZ_TRANSIT_LEAVE_SPECTATOR);
 		/* At this point, whether we're spectating or not is
 		   determined by what the client told us.  But we can't
 		   trust the client, so we double-check. */
-		for (try = 0, seat_num = -1; try < 2 && seat_num < 0; try++) {
-			if (spectating)
-				seat_num = table_find_spectator(player->room,
-								index,
-								player->name);
-			else
-				seat_num = table_find_player(player->room,
-							     index,
-							     player->name);
-			if (seat_num < 0) spectating = !spectating;
-		}
+		find_player_at_table(player, table_index,
+				     &spectating, &seat_num);
 
 		if (seat_num < 0) {
 			/* Uh oh.  A ggzd bug.  But it doesn't have
@@ -826,32 +918,31 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 			return E_OK;
 		}
 
-		if (spectating) {
-			spectator.index = seat_num;
-			spectator.name[0] = '\0';
-			spectator.fd = -1;
+		if (spectating)
+			opcode = GGZ_TRANSIT_LEAVE_SPECTATOR;
+		else
+			opcode = GGZ_TRANSIT_LEAVE;
 
-			status = transit_spectator_event(player->room, index,
-							 spectator,
-							 player->name);
-		} else {
-			seat.index = seat_num;
-			seat.type = GGZ_SEAT_OPEN;
-			seat.name[0] = '\0';
-			seat.fd = -1;
-		
-			status = transit_seat_event(player->room, index, seat,
-						    player->name);
-		}
+		seat.index = seat_num;
+		seat.type = GGZ_SEAT_OPEN;
+		seat.name[0] = '\0';
+		seat.fd = -1;
+
+		status = transit_seat_event(player->room, table_index,
+					    opcode, seat, player->name);
 		break;
 	case GGZ_TRANSIT_JOIN:
-		seat.index = GGZ_SEATNUM_ANY; /* Take first available seat */
+		seat.index = seat_index;
+		if (seat.index < 0) {
+			/* Take first available seat */
+			seat.index = GGZ_SEATNUM_ANY;
+		}
 		seat.type = GGZ_SEAT_PLAYER;
 		seat.fd = player->game_fd;
 		strcpy(seat.name, player->name);
 		
-		status = transit_seat_event(player->room, index, seat,
-					    player->name);
+		status = transit_seat_event(player->room, table_index,
+					    opcode, seat, player->name);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
 		player->game_fd = -1;
@@ -859,24 +950,65 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 
 		break;
 	case GGZ_TRANSIT_JOIN_SPECTATOR:
-		spectator.index = GGZ_SEATNUM_ANY;
-		spectator.fd = player->game_fd;
-		strcpy(spectator.name, player->name);
+		seat.index = GGZ_SEATNUM_ANY;
+		seat.fd = player->game_fd;
+		strcpy(seat.name, player->name);
 
-		status = transit_spectator_event(player->room, index,
-						 spectator, player->name);
+		status = transit_seat_event(player->room, table_index,
+					    opcode, seat, player->name);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
 		player->game_fd = -1;
 		pthread_rwlock_unlock(&player->lock);
 
 		break;
-	default:
-		/* Should never get here */
-		status = GGZ_ERROR;
+	case GGZ_TRANSIT_STAND:
+	case GGZ_TRANSIT_SIT:
+	case GGZ_TRANSIT_MOVE:
+		find_player_at_table(player, table_index,
+				     &spectating, &seat_num);
+
+		if (seat_num < 0) {
+			/* Uh oh.  A ggzd bug.  But it doesn't have
+			   to be fatal. */
+			err_msg("%s couldn't be found at table %d (room %d).",
+				player->name, player->table, player->room);
+			/* Fake success, so that the client doesn't get
+			   confused. */
+			(void) net_send_table_leave(player->client->net, 0);
+			/* Remove the player from the table.  Perhaps we
+			   should see if they're actually at a different
+			   table?  Or perhaps we should send a full update? */
+			player->table = -1;
+			return E_OK;
+		}
+
+		if (spectating && opcode != GGZ_TRANSIT_SIT)
+			return E_BAD_OPTIONS;
+		if (!spectating && opcode == GGZ_TRANSIT_SIT)
+			return E_BAD_OPTIONS;
+		if (opcode == GGZ_TRANSIT_MOVE && seat_index < 0)
+			return E_BAD_OPTIONS;
+		if (opcode == GGZ_TRANSIT_STAND && seat_index >= 0)
+			return E_BAD_OPTIONS;
+
+		seat.index = seat_index;
+		if (seat.index < 0) {
+			/* Take first available seat */
+			seat.index = GGZ_SEATNUM_ANY;
+		}
+		seat.type = GGZ_SEAT_PLAYER;
+		seat.fd = -1;
+		strcpy(seat.name, player->name);
+
+		status = transit_seat_event(player->room, table_index,
+					    opcode, seat, player->name);
+		break;
+	case GGZ_TRANSIT_SEAT:
+		err_msg("player_transit: shouldn't have TRANSIT_SEAT.");
 		break;
 	}
-	
+
 	/* If enqueue fails, it's because the table has been removed */
 	if (status != GGZ_OK)
 		return E_NO_TABLE;

@@ -31,18 +31,19 @@ typedef enum {
 	GGZ_TRANSIT_LEAVE,
 	GGZ_TRANSIT_SEAT,
 	GGZ_TRANSIT_JOIN_SPECTATOR,
-	GGZ_TRANSIT_LEAVE_SPECTATOR
+	GGZ_TRANSIT_LEAVE_SPECTATOR,
+	GGZ_TRANSIT_SIT,
+	GGZ_TRANSIT_STAND,
+	GGZ_TRANSIT_MOVE
 } GGZTransitType;
 
 #if 0
 GGZReturn transit_table_event(int room, int index, char opcode, char* name);
 #endif
 
-GGZReturn transit_seat_event(int room, int index,
+GGZReturn transit_seat_event(int room_index, int table_index,
+			     GGZTransitType transit,
 			     struct GGZTableSeat seat, char *caller);
-GGZReturn transit_spectator_event(int room, int index,
-				  struct GGZTableSpectator spectator,
-				  char *caller);
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
 			       GGZClientReqError status, int index);

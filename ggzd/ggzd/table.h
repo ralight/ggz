@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 5001 2002-10-22 20:23:12Z jdorje $
+ * $Id: table.h 5009 2002-10-23 18:10:38Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -32,6 +32,7 @@
 #include "ggzdmod.h"
 
 #include "ggzd.h"
+#include "protocols.h"
 
 /*
  * The GGZTable structure contains information about a single game
@@ -120,6 +121,12 @@ void table_game_join(GGZTable *table, char *name, int num);
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
 void table_game_leave(GGZTable *table, char *name, int num);
+
+/* Call to have a player change seats at a table.  Only the table thread
+   can call this function. */
+void table_game_reseat(GGZTable *table, GGZReseatType op,
+		       char *name,
+		       int old_seat, int new_seat);
 
 /* Call this function to change a non-player seat to a new type.  Only
    the table thread can call this function. */

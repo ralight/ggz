@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5003 2002-10-22 23:58:53Z jdorje $
+ * $Id: net.c 5009 2002-10-23 18:10:38Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -125,6 +125,7 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_reseat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
@@ -602,6 +603,12 @@ GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status)
 }
 
 
+GGZReturn net_send_reseat_result(GGZNetIO *net, GGZClientReqError status)
+{
+	return _net_send_result(net, "reseat", status);
+}
+
+
 GGZReturn net_send_player_update(GGZNetIO *net,
 				 GGZPlayerUpdateType opcode, const char *name)
 {
@@ -919,6 +926,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_join;
 	else if (strcasecmp(tag, "LEAVE") == 0)
 		process_func = _net_handle_leave;
+	else if (strcasecmp(tag, "RESEAT") == 0)
+		process_func = _net_handle_reseat;
 	else if (strcasecmp(tag, "LAUNCH") == 0)
 		process_func = _net_handle_launch;
 	else if (strcasecmp(tag, "TABLE") == 0)
@@ -1301,7 +1310,7 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <JOIN> tag */
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 {
-	int table, spectator;
+	int table, spectator, seat_num;
 
 	if (!element) return;
 	if (!check_playerconn(net, "join")) return;
@@ -1309,11 +1318,12 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 	table = str_to_int(ggz_xmlelement_get_attr(element, "TABLE"), -1);
 	spectator = str_to_bool(ggz_xmlelement_get_attr(element,
 							"SPECTATOR"), 0);
+	seat_num = str_to_int(ggz_xmlelement_get_attr(element, "SEAT"), -1);
 
 	if (spectator)
 		player_table_join_spectator(net->client->data, table);
 	else
-		player_table_join(net->client->data, table);
+		player_table_join(net->client->data, table, seat_num);
 }
 
 
@@ -1330,6 +1340,38 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 							"SPECTATOR"), 0);
 
 	player_table_leave(net->client->data, spectator, force);
+}
+
+
+/* Functions for <RESEAT> tag */
+static void _net_handle_reseat(GGZNetIO *net, GGZXMLElement *element)
+{
+	char *action;
+	int seat_num;
+	GGZReseatType type;
+
+	if (!element) return;
+	if (!check_playerconn(net, "reseat")) return;
+
+	action = ggz_xmlelement_get_attr(element, "ACTION");
+	if (!action) {
+		_net_send_result(net, "reseat", E_BAD_OPTIONS);
+		return;
+	}
+	if (!strcasecmp(action, "sit"))
+		type = GGZ_RESEAT_SIT;
+	else if (!strcasecmp(action, "stand"))
+		type = GGZ_RESEAT_STAND;
+	else if (!strcasecmp(action, "move"))
+		type = GGZ_RESEAT_MOVE;
+	else {
+		_net_send_result(net, "reseat", E_BAD_OPTIONS);
+		return;
+	}
+
+	seat_num = str_to_int(ggz_xmlelement_get_attr(element, "SEAT"), -1);
+
+	player_table_reseat(net->client->data, type, seat_num);
 }
 
 

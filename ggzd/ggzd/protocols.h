@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: protocols.h 5009 2002-10-23 18:10:38Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -50,5 +50,11 @@ typedef enum {
 	GGZ_TABLE_UPDATE_STATE, /* table state changes */
 	GGZ_TABLE_UPDATE_DESC /* table desc changes */
 } GGZTableUpdateType;
+
+typedef enum {
+	GGZ_RESEAT_SIT,
+	GGZ_RESEAT_STAND,
+	GGZ_RESEAT_MOVE
+} GGZReseatType;
 
 #endif /*_GGZ_PROTOCOL_H*/

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 5001 2002-10-22 20:23:12Z jdorje $
+ * $Id: players.h 5009 2002-10-23 18:10:38Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #include <ggz_common.h>
 
 #include "ggzd.h"
+#include "protocols.h"
 #include "seats.h"
 
 
@@ -102,10 +103,15 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 				   char *target, char *msg);
 GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
-GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index);
+GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
+					 int table_index,
+					 int seat_num);
 GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index);
 GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 					  int spectator, int force);
+GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
+					   GGZReseatType opcode,
+					   int seat_num);
 
 GGZPlayerHandlerStatus player_table_desc_update(GGZPlayer* player,
 						int room_id, int table_id,
