@@ -1,0 +1,95 @@
+- Allow the player to choose between multiple AI's, if available.  This 
+  should just be a matter of adding a new option or option selection.
+
+
+- Allow players to pass cards (for instance, in Hearts and/or Euchre).  There
+  are several problems here:
+  1.  More than one person plays at a time (in Hearts, not Euchre).  This
+      should be allowed by the server already, although it's largely untested.
+  2.  More than one card should be played at a time (in Hearts, not Euchre).
+      To play 4 cards at a time, it would be far better to play them *all at
+      once* rather than one at a time.  Currently, only the latter is possible.
+  3.  The played cards do not go to the table.  They should be held onto by
+      the server until everyone has played, then passed on to the next person.
+      This may end up being the hardest part, since playing cards is currently
+      handled by the core code: the cards are automatically placed onto
+      the table and all players are informed.
+
+  I thought about the introduction of a new packet set, REQ_MULTIPLAY,
+  RSP_MULTIPLAY, and MSG_MULTIPLAY.  This would allow a different set of
+  handler functions by the server, so cards that were multiplayed wouldn't
+  get sent to the table.  There are other issues, though...what if we do play
+  multiple cards to the table?  Currently each player can have only one card
+  on the table.  And why should there be a different set of handlers for what
+  is just a generalization of the specific case of one-card playing?
+
+  Perhaps the solution is just to wait.  Then I'll get to see what other games
+  turn up, and hopefully think of a better idea.
+
+
+- Implement "duplicate" play.
+
+  The idea of duplicate play is simple, in real life.  Instead of one table of
+  a game, with two teams playing against each other, there are two tables.
+  Each meta-team is composed of two teams, one at each table.  The two tables
+  play, and the deal at each table is the inverse of the other.  It is most
+  common in bridge.
+
+  In GGZCards, things are far more complicated.  The central problem is that
+  the idea of duplicate conflicts with GGZ's idea of a "table".  I assume that
+  one duplicate game must use a single GGZCards server (which is by far the
+  easiest way to implement it), and without implementing and taking advantage
+  of forward-looking ideas for one server providing multiple GGZ tables.  Thus
+  a duplicate game must run 2 GGCards "tables" under one server with one GGZ
+  "table".
+
+  Once that's decided, then the next step is to separate out the GGZCards
+  elements (mostly the data stored in the game struct) into those that are
+  associated with the whole server (i.e. GGZ table, or "match") and those that
+  relate to just one table of the duplicate match (i.e. GGZCards table, or
+  "table").  This is a big step, as the relevant code is very deep.
+
+  A central problem here is how the table is represented to players.  If we
+  have a duplicate match of bridge, we will have 8 players with 4 at each
+  table.  The server therefore needs to tell each player that they are at a
+  table with 4 players, and communications to that player need to translate
+  this information.  In essence we need to introduce yet another numbering
+  system for both players and seats.  This problem at first seems to be very
+  ugly - I think the underlying system will need to change to get it to work
+  properly.
+
+  Another problem is that duplicate matches are generally in games that have
+  two teams.  GGZCards, however, supports other games as well.  Could we have
+  a duplicate match of hearts, with 4 games of 4 players at each table?
+
+  A design issue is how synchronized the different tables at a duplicate
+  match need to be.  In real life, a common scenario is to have 8 "boards",
+  each of which contains a deal.  Each table plays out 4 of the boards, then
+  the tables exchange boards.  For GGZCards, such trickery is unnecessary, as
+  the server can do the work to make sure each table gets an identical
+  (inverted) deal on each hand.  But do we allow one table to play ahead of
+  the other, or do we force both tables to finish the hand before either can
+  proceed to the next hand?  The latter would probably be easier.
+
+  A minor issue is that some games need rules changes to play duplicate.  For
+  instance, non-duplicate bridge is usually played as "rubber" bridge, whereas
+  duplicate bridge is played as "contract" bridge.  Most games would require
+  changes to the scoring system to be adequately adapted to duplicate.
+
+  There is another conflict with GGZ, over the number of players.  Say a player
+  launches a GGZ table with 8 players.  Is this a duplicate match of bridge,
+  or a single 8-player hearts game?  In the bridge room, do we allow games of
+  either 4 or 8 players?  Or do we create a separate "Duplicate Bridge" room
+  with 8-player tables?  Perhaps duplicate games should be introduced as
+  separate GGZCards games entirely - this duplicates code, but forces the
+  rules issues to be addressed and removes the possibility for a player to be
+  confused when he sees an 8-player game of bridge.
+
+
+- Better AI support for game options.  There is currently no good way for the
+  client to digitally find out what the game options are - they are passed as
+  a text string, but not in a computer-interpretable format.  This is a problem
+  for game-specific clients, since it forces them to use the text message
+  instead of their own GUI format.  It is also a problem for AI programs that
+  want to support different available game options.  It should be easily
+  solvable (although writing the AI to support the options is much harder...).
