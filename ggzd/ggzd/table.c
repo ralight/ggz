@@ -1119,6 +1119,7 @@ static int table_event_callback(void* target, int size, void* data)
 	case GGZ_UPDATE_STATE:
 		table_state = *(unsigned char*)current;
 		current += sizeof(char);
+		info.index = index;
 		info.state = table_state;
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
@@ -1131,7 +1132,7 @@ static int table_event_callback(void* target, int size, void* data)
 		current += (strlen(name) + 1);
 		seat = *(int*)current;
 		current += sizeof(int);
-
+		info.index = index;
 		strcpy(info.seats[seat], name);
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
