@@ -2,7 +2,7 @@
 
 function stats_players($id, $lookup)
 {
-	$res = pg_exec($id, "SELECT * FROM stats WHERE handle = '$lookup'");
+	$res = pg_exec($id, "SELECT * FROM stats WHERE lower(handle) = '$lookup'");
 	for ($i = 0; $i < pg_numrows($res); $i++)
 	{
 		$game = pg_result($res, $i, "game");

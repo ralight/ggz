@@ -1,10 +1,11 @@
 <table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>
 <table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>
-<a href='index.php'><img src='ggzlogogreen.png' valign='middle' border=0></a>
+<a href='index.php'><img src='ggzlogogreen.png' align='middle' border=0 alt="ggzlogo"></a>
 &nbsp;&nbsp;
 <font color='#000000' size=5>
 GGZ Gaming Zone Ranking System
 </font>
+<!-- <br><font size=2>Attention: Statistics are not realtime yet!</font> -->
 </td></tr></table>
 
 </td></tr>
@@ -13,18 +14,20 @@ GGZ Gaming Zone Ranking System
 <table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>
 <font color='#000000' size=2>
 
-Statistics for GGZ version 0.0.7pre running on bizarre.mindx -
+Statistics for GGZ version 0.0.7 running on GGZ Europe One (live.ggzgamingzone.org) -
 <?php
 if ($ggzuser) :
 	echo "Logged in as <b>$ggzuser</b>.\n";
 else :
-	echo "Not logged in\n";
+	echo "Not logged in";
 	if (!$register) :
-		echo "- <a href='index.php?register=1'>Register</a>\n";
+		echo " - <a href='index.php?register=1'>Register</a>";
 	endif;
 	echo ".\n";
 endif;
+echo "<br>\n";
 
+echo "<map name='mymap'>";
 echo "<table border=0 cellspacing=0 cellpadding=2><tr>\n";
 if (!$register) :
 	echo "<td bgcolor='#00c000'>\n";
@@ -55,6 +58,8 @@ endif;
 echo "</font>\n";
 echo "</form>\n";
 echo "</td></tr></table>\n";
+
+echo "</map>";
 
 ?>
 

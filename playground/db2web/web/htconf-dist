@@ -1,0 +1,11 @@
+<?php
+
+// Fill out the values, and
+// rename this file to .htconf!
+
+$dbhost = "";
+$dbname = "";
+$dbuser = "";
+$dbpass = "";
+
+?>

@@ -1,6 +1,8 @@
 <?php
 
-$id = pg_connect("host=localhost dbname=ggz user=ggzd password=ggzd");
+require_once(".htconf");
+
+$id = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 
 $input_user = $_POST["input_user"];
 $input_pass = $_POST["input_pass"];
@@ -19,9 +21,7 @@ function hex_decode($s)
 }
 
 if (($input_user) && ($input_pass)) :
-	$md5pass = md5($input_pass);
-	$md5pass = hex_decode($md5pass);
-	$md5pass = base64_encode($md5pass);
+	$md5pass = $input_pass;
 
 	$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$input_user' AND password = '$md5pass'");
 	if (($res) && (pg_numrows($res) == 1)) :
