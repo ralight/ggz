@@ -5,6 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
+ * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -31,6 +32,8 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <ggz_client.h>
+
 #include <game.h>
 #include <main_win.h>
 
@@ -52,7 +55,9 @@ int main(int argc, char* argv[])
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
-	ggz_connect();
+	game.fd = ggzmod_connect();
+	if (game.fd < 0) return -1;
+
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	gtk_main();
@@ -314,22 +319,3 @@ int get_move_status(void)
 
 	return 0;
 }
-
-/* Connect the the Hastings server */
-void ggz_connect(void)
-{
-	char fd_name[30];
-        struct sockaddr_un addr;
-
-	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/Hastings.%d", getpid());
-
-	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) exit(-1);
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-
-	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);
-}
-

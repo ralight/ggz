@@ -4,6 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
+ * $Id: game.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -35,12 +36,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <easysock.h>
+#include <ggz_client.h>
+
 #include "ggzcore.h"
 #include "game.h"
-#include "ggz.h"
 #include "display.h"
 #include "main.h"
-#include "easysock.h"
 #include "protocol.h"
 
 
@@ -68,7 +70,8 @@ void game_init(void)
 	char *filename;
 
 	/* Connect to GGZ */
-	ggz_connect();
+	game.fd = ggzmod_connect();
+	if (game.fd < 0) exit(-1);
 
 	/* Trap our input from the socket */
 	gdk_input_add(game.fd, GDK_INPUT_READ, main_io_handler, NULL);

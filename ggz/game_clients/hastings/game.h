@@ -5,6 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
+ * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -83,7 +84,6 @@ struct game_state_t {
 
 
 /* Setup functions */
-void ggz_connect(void);
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void game_init(void);
 

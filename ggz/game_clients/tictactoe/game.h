@@ -4,6 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
+ * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,7 +70,6 @@ struct game_state_t {
 
 
 /* Setup functions */
-void ggz_connect(void);
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void game_init(void);
 

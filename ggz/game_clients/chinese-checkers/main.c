@@ -4,6 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
+ * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -35,7 +36,6 @@
 #include "game.h"
 #include "easysock.h"
 #include "protocol.h"
-#include "ggz.h"
 #include "display.h"
 
 

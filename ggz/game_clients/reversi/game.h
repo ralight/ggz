@@ -4,6 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
+ * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -197,8 +198,7 @@ struct game_state_t {
 
 // Setup functions
 void game_init();
-void ggz_connect();
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);   
+void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 
 // Get stuff from server
 int get_seat();

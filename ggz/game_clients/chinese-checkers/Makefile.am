@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2246 2001-08-25 15:42:06Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -18,7 +19,6 @@ ggzexecmod_PROGRAMS = ggz.ccheckers
 
 ggz_ccheckers_SOURCES = display.c	display.h	\
 			game.c		game.h		\
-			ggz.c		ggz.h		\
 			main.c		main.h		\
 			support.c	support.h	\
 			protocol.h			\

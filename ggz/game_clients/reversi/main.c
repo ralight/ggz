@@ -4,6 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
+ * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -28,9 +29,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <easysock.h>
 #include <gtk/gtk.h>
-#include <ggzcore.h>
+
+#include <easysock.h>
+#include <ggz_client.h>
 
 #include "game.h"
 #include "support.h"
@@ -56,7 +58,8 @@ int main(int argc, char *argv[]) {
 
 	display_board();
 
-	ggz_connect();
+	game.fd = ggzmod_connect();
+	if (game.fd < 0) return -1;
 
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
@@ -129,25 +132,6 @@ void game_init() {
 
 }
 
-void ggz_connect(void) {
-	char fd_name[30];
-	struct sockaddr_un addr;
-						 
-	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/Reversi.%d", getpid());
-		 
-	if ( (game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-		exit(-1);
-		 
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-					 
-	if (connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-		exit(-1);
-
-}    
-
 int get_seat() {
 
 	if (es_read_int(game.fd, &game.num) < 0) 
@@ -166,7 +150,8 @@ int get_players() {
 	for (i = 0; i < 2; i++) {
 		if (es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
-	 
+
+#define GGZ_SEAT_OPEN -1 /* FIXME */	
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
 			if (es_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 2212 2001-08-23 22:19:38Z jdorje $
+ * $Id: client_func.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -47,13 +47,13 @@
 
 #include <string.h>		/* For strcpy */
 
+#include <ggz_client.h>
+
 #include <card.h>
 #include <display.h>
 #include <client.h>
 #include <options.h>
 #include <socketfunc.h>
-
-#include <ggz_client.h>
 
 #include "gtk_connect.h"
 #include "gtk_dlg_options.h"
@@ -173,6 +173,7 @@ void AppInit(void)
 
 	/* use libggzmod to connect to GGZ.  --JDS */
 	gameState.spadesSock = ggzmod_connect();
+	if (gameState.spadesSock < 0) exit(-1);
 
 	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ,
 				     ReadServerSocket, NULL);

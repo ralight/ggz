@@ -4,6 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
+ * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -35,6 +36,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <easysock.h>
+#include <ggz_client.h>
+
 #include "ggzcore.h"
 #include "dlg_main.h"
 #include "dlg_opt.h"
@@ -42,7 +46,6 @@
 #include "support.h"
 #include "main.h"
 #include "game.h"
-#include "easysock.h"
 
 GtkWidget *main_win = NULL;
 GtkWidget *opt_dialog;
@@ -50,7 +53,6 @@ GtkWidget *new_dialog;
 struct game_t game;
 int conf_handle;
 
-static void ggz_connect(void);
 static void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
 static int get_players(void);
@@ -65,7 +67,9 @@ int main(int argc, char *argv[])
 
 	gtk_init(&argc, &argv);
 
-	ggz_connect();
+	game.fd = ggzmod_connect();
+	if (game.fd < 0) return -1;
+
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
@@ -203,26 +207,6 @@ static int get_options(void)
 	   || es_read_char(game.fd, &board_height) < 0)
 		return -1;
 	return 0;
-}
-
-
-static void ggz_connect(void)
-{
-	char fd_name[30];
-	struct sockaddr_un addr;
-
-	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/Dots.%d", getpid());
-
-	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-		exit(-1);
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-
-	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-		exit(-1);
 }
 
 

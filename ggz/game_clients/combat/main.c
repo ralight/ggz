@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
+ * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -31,6 +32,8 @@
 #include <easysock.h>
 #include <gtk/gtk.h>
 
+#include <ggz_client.h>
+
 #include "combat.h"
 #include "game.h"
 #include "interface.h"
@@ -40,9 +43,6 @@
 
 #define DEFAULTINSTALLEDDIR GGZDATADIR "/combat/pixmaps/default/"
 #define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/combat/pixmaps/default"
-
-// GGZ connect
-void ggz_connect();
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -67,7 +67,8 @@ int main(int argc, char *argv[]) {
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
 
-	ggz_connect();
+	cbt_info.fd = ggzmod_connect();
+	if (cbt_info.fd < 0) return -1;
 
 	gdk_input_add(cbt_info.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
@@ -75,22 +76,3 @@ int main(int argc, char *argv[]) {
 	
 	return 0;
 }
-
-// Connect to ggz server
-void ggz_connect(void) {
-	  char fd_name[30];
-		struct sockaddr_un addr;
-			             
-		/* Connect to Unix domain socket */
-		sprintf(fd_name, "/tmp/Combat.%d", getpid());
-				     
-		if ( (cbt_info.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-			exit(-1);
-						 
-		bzero(&addr, sizeof(addr));
-		addr.sun_family = AF_LOCAL;
-		strcpy(addr.sun_path, fd_name);
-								           
-		if (connect(cbt_info.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-			exit(-1);
-} 
