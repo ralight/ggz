@@ -120,21 +120,21 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 
 	/* Default to computer players for everyone else solong as game permitts, else open */
-	for (x = 2; x <= maxplayers; x++)
+	for (x = 1; x <= maxplayers; x++)
 	{
-		if (ggzcore_gametype_num_bots_is_valid(gt, x-1) == TRUE)
+		if (ggzcore_gametype_num_bots_is_valid(gt, x) == TRUE)
 		{
-			text = g_strdup_printf("seat%d_bot", x);
+			text = g_strdup_printf("seat%d_bot",maxplayers - x + 1);
 			tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
 			g_free(text);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 		} else {
-			text = g_strdup_printf("seat%d_bot", x);
+			text = g_strdup_printf("seat%d_bot", maxplayers - x + 1);
 			tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
 			g_free(text);
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
 
-			text = g_strdup_printf("seat%d_open", x);
+			text = g_strdup_printf("seat%d_open", maxplayers - x + 1);
 			tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
 			g_free(text);
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
