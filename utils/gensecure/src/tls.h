@@ -19,7 +19,9 @@ void tls_error(const char *error, const char *file, int line);
 /* Internal: initialize the environment */
 void tls_certkey();
 /* Internal: give out TLS errors */
-char *tls_exterror(int ret);
+char *tls_exterror(SSL *_tls, int ret);
+/* Internal: initialize context */
+void tls_init(int verify);
 
 #define TLSERROR(x) tls_error(x, __FILE__, __LINE__)
 
