@@ -234,31 +234,37 @@ static void props_add_button_clicked (GtkButton *button, gpointer user_data)
 
 	tmp = lookup_widget(dlg_props, "profile_entry");
 	new_server->name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	tmp = lookup_widget(dlg_props, "server_entry");
 	new_server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	tmp = lookup_widget(dlg_props, "port_entry");
 	new_server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	tmp = lookup_widget(dlg_props, "username_entry");
 	new_server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 
 	tmp = lookup_widget(dlg_props, "normal_radio");
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
 		new_server->type = GGZ_LOGIN;
 		tmp = lookup_widget(dlg_props, "password_entry");
 		new_server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
 	}
 	else
 		new_server->type = GGZ_LOGIN_GUEST;
 	
 	/* FIXME: check confirm password entry */
-	server_list_add(new_server );
+	server_list_add(new_server);
 
 	/* Add profile to list */
 	tmp = lookup_widget(dlg_props, "profile_list");
 	gtk_clist_append(GTK_CLIST(tmp), (char**)&(new_server->name));
+
 }
 
 
@@ -299,6 +305,22 @@ static void props_delete_button_clicked (GtkButton *button, gpointer user_data)
 
 	tmp = lookup_widget(dlg_props, "profile_entry");
 	server_list_remove(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "server_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "port_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "username_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		tmp = lookup_widget(dlg_props, "password_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
 
 	props_profiles_reload();
 }

@@ -125,7 +125,7 @@ gint main(gint argc, gchar *argv[])
 
 	init_client();
 	/* Setup Rooms */
-	
+
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
 

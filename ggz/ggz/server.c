@@ -33,6 +33,7 @@
 
 /* List of server profiles */
 static GList* servers;
+static GList* deleted;
 
 /* Local functions for manipulating server profile list */
 static void server_list_print(void);
@@ -52,6 +53,13 @@ void server_profiles_load(void)
 		g_list_foreach(servers, server_free_node, NULL); 	
 		g_list_free(servers);
 		servers = NULL;
+	}
+
+	/* Clear list of deleted servers */
+	if (deleted) {
+		g_list_foreach(deleted, server_free_node, NULL); 	
+		g_list_free(deleted);
+		deleted = NULL;
 	}
 
 	ggzrc_read_list("Servers", "ProfileList", &count, &profiles);
@@ -98,6 +106,19 @@ void server_profiles_save(void)
 		if (server->type == GGZ_LOGIN)
 			ggzrc_write_string(server->name, "Password", 
 					   server->password);
+	}
+
+	for (node = deleted; node != NULL; node = node->next) {
+		server = (Server*)(node->data);
+		dbg_msg("Profile %s about to be deleted", server->name);
+		ggzrc_remove_section(server->name);
+	}
+	
+	/* Clear list of deleted servers */
+	if (deleted) {
+		g_list_foreach(deleted, server_free_node, NULL); 	
+		g_list_free(deleted);
+		deleted = NULL;
 	}
 }
 
@@ -155,6 +176,7 @@ Server* server_get(gchar* name)
 void server_list_remove(gchar* name)
 {
 	GList* node;
+	Server* server;
 
 	dbg_msg("Removing %s from server list", name);
 	
@@ -163,9 +185,12 @@ void server_list_remove(gchar* name)
 	if (!node)
 		return;
 
+	server = (Server*)(node->data);
 	servers = g_list_remove_link(servers, node);
-	g_list_foreach(node, server_free_node, NULL); 
-	g_list_free(node);
+	g_list_free_1(node);
+
+	dbg_msg("Adding profile %s to deleted list", server->name);
+	deleted = g_list_append(deleted, (gpointer)server);
 	server_list_print();
 }
 
