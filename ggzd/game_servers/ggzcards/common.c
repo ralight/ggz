@@ -36,6 +36,10 @@
 #include "ggz.h"
 #include "protocols.h"
 
+/* Global game variables */
+struct wh_game_t game = {0};
+
+
 /* NOTE ON "MESSAGES"
  *   - Each seat has a message.  The client should display this near to the player.
  *     It may contain information such as bid, etc.

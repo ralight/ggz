@@ -36,10 +36,6 @@
 #include "games.h"
 #include "protocols.h"
 
-/* Global game variables */
-struct wh_game_t game = {0};
-
-/* suaro-specific */
 /* TODO: these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 char* suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
 char* bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
