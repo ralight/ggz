@@ -37,6 +37,7 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data);
 
+#if 0
 /* Initialize the net functions */
 static void net_internal_init(const char *logfile)
 {
@@ -46,6 +47,7 @@ static void net_internal_init(const char *logfile)
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
 	ret = ggzcore_init(opt);
 }
+#endif
 
 /* Set up the logfile or close it again */
 void net_logfile(const char *logfile)

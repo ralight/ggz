@@ -47,7 +47,7 @@ PyObject *pxDict;
 #define TYPE_UNKNOWN 4
 
 /* Determine mime type of a file */
-int mimetype(const char *file)
+static int mimetype(const char *file)
 {
 	FILE *f;
 	char buffer[128];
