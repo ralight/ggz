@@ -1,12 +1,12 @@
 /*
- * File: connect.h
- * Author: Brent Hendricks
+ * File: chat.h
+ * Author: Justin Zaun
  * Project: GGZ Client
- * Date: 1/23/99
+ * Date: 04/26/2000
  *
  * This fils contains function declarations for connecting with the server
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 2000 Justin Zaun.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 #include<gtk/gtk.h>
 
-gint anon_login(void);
-gint connect_to_server(void);
-void disconnect(GtkWidget *, gpointer);
+#define CHAT_COLOR_NONE 0
+#define CHAT_COLOR_SOME 1
+#define CHAT_COLOR_ALL  2
+
+void display_chat(gchar *name, gchar *msg);

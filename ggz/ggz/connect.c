@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include "chat.h"
 #include "connect.h"
 #include "datatypes.h"
 #include "ggzrc.h"
@@ -597,76 +598,6 @@ gint anon_login(void)
 
 	return 0;
 }
-
-
-void display_chat(gchar *name, gchar *msg)
-{
-	gchar *buf;
-	gpointer tmp;			/* chat widget */
-	gint color_index;		/* color for chat */
-	gchar cmd[1024];		/* command used in chat */
-	gchar out[1024];		/* text following command */
-	gchar *line;			/* line to parse */
-	gint cmd_index=0, out_index=0;	/* indexes */
-
-	line=g_strdup(msg);
-	strcpy(line,msg);
-
-	/* Get color for user */
-	color_index=1;
-	if (!strcmp(connection.username, name))
-		color_index=0;
-
-        
-        /* Skip until we find the end of the command, converting */
-        /* everything (for convenience) to lowercase as we go */
-        while(*line != ' ' && *line != '\n' && *line != '\0'){
-                *line = tolower(*line);
-		cmd[cmd_index]=*line;
-                line++;
-		cmd_index++;
-        }
-	cmd[cmd_index]='\0';
-        line++;
-
-	/* get all remaining text */
-        while(*line != '\0'){
-		out[out_index]=*line;
-                line++;
-		out_index++;
-        }
-	out[out_index]='\0';
-
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-
-	if (!strcmp(cmd,"/me")){		/* Action, like in IRC */
-		buf = g_strdup_printf("%s %s", name, out);
-		gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, buf, strlen(buf));
-		g_free(buf);
-	}else if (!strcmp(cmd,"/beep")){	/* Beep a person threw chat */
-		if (!strcmp(out,connection.username)){
-			if(ggzrc_read_int("CHAT","Beep",TRUE) == TRUE)
-				gdk_beep();
-			buf = g_strdup_printf("You've been beeped by %s", name);
-			gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, buf, strlen(buf));
-			g_free(buf);
-		}else{
-			buf = g_strdup_printf("%s was been beeped by %s", out, name);
-			gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, buf, strlen(buf));
-			g_free(buf);
-		}
-	}else if (!strcmp(cmd,"/sjoins")){	/* Server message join room */
-		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
-			gtk_xtext_append_indent(GTK_XTEXT(tmp), "-->", 3, name, strlen(name));
-	}else if (!strcmp(cmd,"/sparts")){	/* Server message part room */
-		if(ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE) == FALSE)
-			gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, name, strlen(name));
-	}else{		/* No command given, display it all */
-		gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), msg, strlen(msg));
-	}
-	gtk_xtext_refresh(tmp);
-}
-
 
 void handle_list_tables(gint op, gint fd)
 {

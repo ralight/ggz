@@ -237,11 +237,9 @@ static void ggz_disconnect(void)
 	GtkWidget *tmp;
         dbg_msg("Logging out");
         es_write_int(connection.sock, REQ_LOGOUT);
-	display_chat("< <  > >","Logged off of from server.");
 
         dbg_msg("Disconnecting");
 	disconnect(NULL,NULL);
-	display_chat("< <  > >","Disconnected from server.");
 	
 	login_disconnect();
 
