@@ -28,6 +28,7 @@
 // KDE includes
 #include <kstddirs.h>
 #include <kdebug.h>
+#include <klocale.h>
 
 // Qt includes
 #include <qfile.h>
@@ -45,7 +46,7 @@ Board::Board(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	net = new Net();
-	net->output("KDE Muehle Game");
+	net->output(i18n("KDE Muehle Game"));
 
 	bg = NULL;
 	black = NULL;
@@ -69,6 +70,8 @@ Board::~Board()
 // Initialize to a null-board
 void Board::init()
 {
+	emit signalStatus(i18n("Starting new game."));
+
 	stonelist.clear();
 	repaint();
 }
@@ -140,7 +143,8 @@ void Board::paintEvent(QPaintEvent *e)
 	float x = web->scale();
 	for(Stone *s = stonelist.first(); s; s = stonelist.next())
 		//p.drawPixmap(x * s->x() - 32, x * s->y() - 32, (s->owner() ? black : white));
-		paintStone(&tmp, &p, (int)(x * s->x() - 32), (int)(x * s->y() - 32), s->owner());
+		paintStone(&tmp, &p, (int)(x * s->x() - white->width() / 2),
+			(int)(x * s->y() - white->height() / 2), s->owner());
 
 	p.end();
 
@@ -150,13 +154,20 @@ void Board::paintEvent(QPaintEvent *e)
 // Resize the board properly
 void Board::resizeEvent(QResizeEvent *e)
 {
-	if(width() != height()) resize(width(), width());
+	int smaller;
+
+	if(width() != height())
+	{
+		smaller = width();
+		if(height() < smaller) smaller = height();
+		resize(smaller, smaller);
+	}
 	else
 	{
+		move((parentWidget()->width() - width()) / 2, (parentWidget()->height() - height()) / 2);
 		repaint();
+		if(web) web->setScale(width() / 100.0);
 	}
-
-	if(web) web->setScale(width() / 100.0);
 }
 
 // Handle a mouse click
@@ -294,7 +305,7 @@ void Board::loose()
 }
 
 // Change the active theme
-void Board::setTheme(QString theme)
+void Board::setTheme(const QString &theme)
 {
 	KStandardDirs d;
 
@@ -306,11 +317,13 @@ void Board::setTheme(QString theme)
 	black = new QPixmap(d.findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
 	white = new QPixmap(d.findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
 
+	parentWidget()->setBackgroundPixmap(*bg);
+
 	repaint();
 }
 
 // Change the active variant
-void Board::setVariant(QString variant)
+void Board::setVariant(const QString &variant)
 {
 	KStandardDirs d;
 	QString s;

@@ -39,8 +39,12 @@ class Board : public QWidget
 		void init();
 		void remis();
 		void loose();
-		void setTheme(QString theme);
-		void setVariant(QString variant);
+		void setTheme(const QString &theme);
+		void setVariant(const QString &variant);
+
+	signals:
+		void signalStatus(const QString &message);
+		void signalScore(const QString &player, int num, int score);
 
 	protected:
 		void paintEvent(QPaintEvent *e);

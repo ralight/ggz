@@ -43,9 +43,17 @@ class Toplevel : public KMainWindow
 			menuthemes = 100,
 			menuvariants = 200
 		};
+		enum StatusItems
+		{
+			statusplayer = 1,
+			statusopponent = 2,
+			statushint = 3
+		};
 
 	public slots:
 		void slotMenu(int id);
+		void slotStatus(const QString &message);
+		void slotScore(const QString &player, int num, int score);
 
 	private:
 		Board *board;

@@ -26,6 +26,8 @@
 #include <kmenubar.h>
 #include <ksimpleconfig.h>
 #include <kstddirs.h>
+#include <kdebug.h>
+#include <klocale.h>
 
 // Configuration includes
 #include "config.h"
@@ -40,10 +42,11 @@ Toplevel::Toplevel()
 	QString s;
 
 	menu_game = new KPopupMenu(this);
-	menu_game->insertItem("New", menugamenew);
+	menu_game->insertItem(i18n("New"), menugamenew);
 	menu_game->insertSeparator();
-	menu_game->insertItem("Quit", menugamequit);
+	menu_game->insertItem(i18n("Quit"), menugamequit);
 
+	counter = 0;
 	menu_variants = new KPopupMenu(this);
 	d.addResourceDir("data", GGZDATADIR);
 	s = d.findResource("data", "muehle/rc");
@@ -74,18 +77,18 @@ Toplevel::Toplevel()
 	}
 
 	menu_player = new KPopupMenu(this);
-	menu_player->insertItem("Offer remis", menuplayerremis);
-	menu_player->insertItem("Give up", menuplayerloose);
+	menu_player->insertItem(i18n("Offer remis"), menuplayerremis);
+	menu_player->insertItem(i18n("Give up"), menuplayerloose);
 
-	menuBar()->insertItem("Game", menu_game);
-	menuBar()->insertItem("Variants", menu_variants);
-	menuBar()->insertItem("Player", menu_player);
-	menuBar()->insertItem("Theme", menu_theme);
-	menuBar()->insertItem("Help", helpMenu());
+	menuBar()->insertItem(i18n("Game"), menu_game);
+	menuBar()->insertItem(i18n("Variants"), menu_variants);
+	menuBar()->insertItem(i18n("Player"), menu_player);
+	menuBar()->insertItem(i18n("Theme"), menu_theme);
+	menuBar()->insertItem(i18n("Help"), helpMenu());
 
-	statusBar()->insertItem("josef: 2", 0, 2);
-	statusBar()->insertItem("pHr3ak: 3", 1, 2);
-	statusBar()->insertItem("Place a stone onto the board.", 2, 2);
+	statusBar()->insertItem("nobody: 0", statusplayer, 2);
+	statusBar()->insertItem("nobody: 0", statusopponent, 2);
+	statusBar()->insertItem(i18n("Welcome to Muehle."), statushint, 2);
 
 	board = new Board(this);
 	setCentralWidget(board);
@@ -95,6 +98,9 @@ Toplevel::Toplevel()
 	connect(menu_player, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(menu_theme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(menu_variants, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+
+	connect(board, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
+	connect(board, SIGNAL(signalScore(const QString &, int, int)), SLOT(slotScore(const QString &, int, int)));
 
 	resize(600, 620);
 }
@@ -131,5 +137,17 @@ void Toplevel::slotMenu(int id)
 				board->setVariant(variantslist[id - menuvariants]);
 			}
 	}
+}
+
+// Update the status bar
+void Toplevel::slotStatus(const QString &message)
+{
+	statusBar()->changeItem(message, statushint);
+}
+
+// Update the scores in the status bar
+void Toplevel::slotScore(const QString &player, int num, int score)
+{
+	statusBar()->changeItem(QString("%1: %1").arg(player).arg(score), num);
 }
 
