@@ -28,3 +28,6 @@ extern MOTDInfo motd_info;
 
 /* Read the MOTD file */
 extern void motd_read_file(void);
+
+/* Send out the message of the day, return TRUE on success */
+extern int motd_send_motd(int);

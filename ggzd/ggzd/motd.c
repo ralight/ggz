@@ -29,6 +29,8 @@
 
 #include <datatypes.h>
 #include <err_func.h>
+#include <easysock.h>
+#include <protocols.h>
 
 /* MOTD info */
 MOTDInfo motd_info;
@@ -76,4 +78,21 @@ void motd_read_file(void)
 
 	fclose(motd_file);
 	dbg_msg("Read MOTD file, %d lines", lines);
+}
+
+
+/* Send out the message of the day, return TRUE on success */
+int motd_send_motd(int sock)
+{
+	int i;
+
+	if(FAIL(es_write_int(sock, MSG_MOTD)) ||
+	   FAIL(es_write_int(sock, motd_info.motd_lines)))
+		return 0;
+	
+	for(i=0; i<motd_info.motd_lines; i++)
+		if(FAIL(es_write_string(sock, motd_info.motd_text[i])))
+			return 0;
+
+	return 1;
 }
