@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5945 2004-02-16 22:19:52Z jdorje $
+ * $Id: ggzmod.c 5947 2004-02-21 05:07:03Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -819,8 +819,6 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys_exit("socketpair failed");
 
 #ifdef HAVE_FORK
-	pid = fork();
-
 	if ((pid = fork()) < 0)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
