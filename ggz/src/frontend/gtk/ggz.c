@@ -194,6 +194,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 	GGZRoom *room;
 	gint i;
 	gchar *name;
+	static gint firstlist;
 
 	/* Clear current list of rooms */
 	tmp = lookup_widget(win_main, "room_clist");
@@ -225,6 +226,12 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
+	}
+
+	if(firstlist == 0)
+	{
+		firstlist = 1;
+		ggzcore_server_join_room(server, 0);
 	}
 
 	return GGZ_HOOK_OK;
