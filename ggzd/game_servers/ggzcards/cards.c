@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: cards.c 3469 2002-02-25 14:42:22Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -114,6 +114,7 @@ deck_t *cards_create_deck(deck_type_t which_deck)
 	for (deck = 0; deck < deck_deck_cnt; deck++)
 		for (suit = 0; suit < deck_suit_cnt; suit++)
 			for (face = 0; face < deck_face_cnt; face++) {
+				card.type = CARDSET_FRENCH;
 				card.face = deck_faces[face];
 				card.suit = deck_suits[suit];
 				card.deck = deck_decks[deck];

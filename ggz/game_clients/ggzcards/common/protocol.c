@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3461 2002-02-25 09:12:02Z jdorje $
+ * $Id: protocol.c 3469 2002-02-25 14:42:22Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -90,7 +90,8 @@ const char* get_client_opcode_name(client_msg_t opcode)
 	return "[unknown]";
 }
 
-const card_t UNKNOWN_CARD = {-1, -1, -1};
+const card_t UNKNOWN_CARD = {UNKNOWN_FACE, UNKNOWN_SUIT,
+                             UNKNOWN_DECK, CARDSET_FRENCH};
 
 /* Umm, these must be defined in some header file somewhere... */
 #define TRUE 1
@@ -98,15 +99,16 @@ const card_t UNKNOWN_CARD = {-1, -1, -1};
 
 static int is_valid_card(card_t card)
 {
-	if (   (card.face == -1
+	if (card.type == CARDSET_FRENCH
+	    && (card.face == -1
 	        || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
 	    && (card.suit == -1
 	       || (card.suit >= CLUBS && card.suit <= SPADES))
 	    && (card.deck == -1
 	       || (card.deck >= 0 && card.deck <= 1 /* ? */)))
 		return TRUE;
-	else
-		return FALSE;
+	
+	return FALSE;
 }
 
 
@@ -114,7 +116,8 @@ int are_cards_equal(card_t card1, card_t card2)
 {
 	return card1.suit == card2.suit
 	       && card1.face == card2.face
-	       && card1.deck == card2.deck;
+	       && card1.deck == card2.deck
+	       /* && card1.type == card2.type */;
 }
 
 char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
@@ -130,7 +133,8 @@ char *short_face_names[15] =
 
 int read_card(int fd, card_t * card)
 {
-	if (ggz_read_char(fd, &card->face) < 0 ||
+	if (ggz_read_char(fd, &card->type) < 0 ||
+	    ggz_read_char(fd, &card->face) < 0 ||
 	    ggz_read_char(fd, &card->suit) < 0 ||
 	    ggz_read_char(fd, &card->deck) < 0)
 		return -1;
@@ -156,7 +160,12 @@ int write_card(int fd, card_t card)
 	/* Check for validity. */
 	assert(is_valid_card(card));
 	
-	if (ggz_write_char(fd, card.face) < 0 ||
+	/* Note - the "type" should theoretically come first (and does, here),
+	   but we list it last in the struct definition for
+	   backwards-compatibility. */
+	
+	if (ggz_write_char(fd, card.type) < 0 ||
+	    ggz_write_char(fd, card.face) < 0 ||
 	    ggz_write_char(fd, card.suit) < 0 ||
 	    ggz_write_char(fd, card.deck) < 0)
 		return -1;

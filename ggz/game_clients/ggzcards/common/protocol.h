@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3461 2002-02-25 09:12:02Z jdorje $
+ * $Id: protocol.h 3469 2002-02-25 14:42:22Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -204,10 +204,21 @@ const char* get_client_opcode_name(client_msg_t opcode);
  * Card structure - must be the same between server and client
  */
 
+/** @brief The type of deck.
+ *
+ *  In theory, many different types of decks are possible.  Currently
+ *  only the standard French deck (A/K/Q/J/10..2) is used.
+ */
+enum card_type_enum {
+	CARDSET_FRENCH		/**< A standard (French) card deck. */
+};
+
 /** Regular values for card faces.
  *  @note If a player does not know the card face, UNKNOWN will be sent.
  *  @note Values 2-10 have their face value.
- *  @see card_t::face */
+ *  @see card_t::face
+ *  @note This only applies for French (standard) decks.
+ */
 enum card_face_enum {
 	UNKNOWN_FACE = -1,	/**< An unknown face on a card */
 	JACK = 11,		/**< A "jack" card face */
@@ -250,6 +261,9 @@ typedef struct card_t {
 	/** The deck number of the card.
 	 *  @see card_deck_enum */
 	char deck;
+	/** The deck type.
+	 *  @see card_type_enum */
+	char type;
 } card_t;
 
 int are_cards_equal(card_t card1, card_t card2);
