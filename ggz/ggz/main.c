@@ -46,7 +46,6 @@
 /* Main global data structures */
 struct ConnectInfo connection;
 struct Game game;
-struct Users users;
 struct GameTypes game_types;
 extern GtkWidget *main_win;
 extern GtkWidget *dlg_login;

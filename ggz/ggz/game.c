@@ -68,7 +68,6 @@ void launch_game(gint type, gchar launch)
 	gchar* game_name;
 	gchar* path;
 	gchar* full_path;
-	GdkInputFunction callback;
 
 	if (launch)
 		dbg_msg("Launching game");

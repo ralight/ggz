@@ -36,13 +36,14 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <chat.h>
+#include <connect.h>
 #include <dlg_main.h>
 #include <datatypes.h>
 #include <err_func.h>
 #include <easysock.h>
-#include <chat.h>
-#include <connect.h>
 #include <ggzrc.h>
+#include <player.h>
 #include <protocols.h>
 #include <dlg_about.h>
 #include <dlg_error.h>
@@ -89,6 +90,43 @@ static void ggz_realize(GtkWidget* widget, gpointer data);
 static void ggz_room_changed(GtkWidget* widget, gpointer data);
 static void ggz_about(GtkWidget* widget, gpointer data);
 GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2);
+static void ggz_players_clist_append(Player* player, gpointer data);
+
+
+void ggz_players_display(void)
+{
+	GtkWidget* list;
+
+	if (main_win == NULL)
+		return;
+	
+	/* Clear old list */
+	list = lookup_widget(main_win, "player_list");
+	gtk_clist_clear(GTK_CLIST(list));
+	
+	player_list_iterate((GFunc)ggz_players_clist_append);
+}
+
+
+static void ggz_players_clist_append(Player* player, gpointer data)
+{
+	GtkWidget* list;	
+	gchar* entry[2];
+	
+	list = lookup_widget(main_win, "player_list");
+
+	entry[0] = player->name;
+	if (player->table == -1)
+		entry[1] = "none";
+	else 
+		entry[1] = g_strdup_printf("%d", player->table);
+	
+	gtk_clist_append(GTK_CLIST(list), entry);
+
+	if (player->table != -1)
+		g_free(entry[1]);
+}
+
 
 
 /*

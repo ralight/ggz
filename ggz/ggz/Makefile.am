@@ -46,6 +46,8 @@ ggz_SOURCES = 	main.c \
 		mnu_tables.h\
 		parse_opt.c \
 		parse_opt.h \
+		player.c \
+		player.h \
 		protocols.h \
 		seats.c \
 		seats.h \

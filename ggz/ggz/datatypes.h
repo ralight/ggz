@@ -139,22 +139,6 @@ struct GameTables {
 };
 
 
-/* Info about a logged-in user */
-typedef struct {
-	gint uid;
-	gchar name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
-	gint fd;
-	gint table_index;
-	gint chat_color;
-} UserInfo;
-
-
-/* Array of logged-in users, their mutex, and a counter */
-struct Users {
-	UserInfo info[MAX_USERS];
-	gint count;
-};
-
 typedef struct {
 	char *name;
 	char *desc;

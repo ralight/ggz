@@ -48,6 +48,7 @@
 #include "easysock.h"
 #include "err_func.h"
 #include "game.h"
+#include "player.h"
 #include "protocols.h"
 #include "seats.h"
 #include "xtext.h"
@@ -56,7 +57,6 @@
 /* Global state of game variable */
 extern struct ConnectInfo connection;
 extern struct Game game;
-extern struct Users users;
 extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
@@ -75,10 +75,11 @@ GtkWidget *detail_window = NULL;
 /* Various local handles */
 static guint sock_handle;
 static void connect_msg(const gchar *, ...);
-static void add_user_list(gchar * name, gint table);
 static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void handle_list_tables(gint op, gint fd);
+static void handle_list_players(gint op, gint fd);
+static void handle_update_players(gint op, gint fd);
 static void motd_print_line(gchar *line);
 void display_rooms();
 
@@ -171,7 +172,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gint num, op, size, checksum, count, i, seat;
 	gchar buf[4096];
 	gchar *tmpstr;
-	static gint color_index=0;
 
         if (FAIL(es_read_int(source, &op))) {
 	        disconnect(NULL, NULL);
@@ -406,24 +406,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_LIST_PLAYERS:
-		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
-		gtk_clist_clear(GTK_CLIST(tmp));
-		es_read_int(source, &count);
-		connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
-		for (i = 0; i < count; i++) {
-			color_index++;
-			if ((color_index > 9) || (color_index<0))
-				color_index = 0;
-			es_read_string(source, name, MAX_USER_NAME_LEN+1);
-			connect_msg("[%s] User %s\n", opcode_str[op], name);
-			es_read_int(source, &num);
-			connect_msg("[%s] Table %d\n", opcode_str[op], num);
-			add_user_list(name, num);
-			users.count++;
-			strcpy(users.info[i].name, name);
-			users.info[i].chat_color=color_index;
-		}
-		users.count=count;
+		handle_list_players(op, source);
 		break;
 
 	case RSP_GAME:
@@ -482,20 +465,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case MSG_UPDATE_PLAYERS:
-		es_read_char(source, &subop);
-		es_read_string(source, name, MAX_USER_NAME_LEN+1);
-		switch (subop) {
-		case GGZ_UPDATE_ADD:
-			connect_msg("[%s] %s entered room\n", opcode_str[op], 
-				    name);
-			break;
-		case GGZ_UPDATE_DELETE:
-			connect_msg("[%s] %s left room\n", opcode_str[op], 
-				    name);
-			break;
-		}			
-		/* FIXME: Should update list, not ask for new one*/
-		ggz_get_players(NULL, NULL);
+		handle_update_players(op, source);
 		break;
 
 	case MSG_UPDATE_TABLES:
@@ -643,29 +613,6 @@ void connect_msg(const gchar *format, ...)
 }
 
 
-void add_user_list(gchar * name, gint table)
-{
-	gpointer tmp;
-	gchar* entry[2];
-	
-	if (main_win == NULL)
-		return;
-	
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
-
-	entry[0] = name;
-	if (table == -1)
-		entry[1] = "none";
-	else 
-		entry[1] = g_strdup_printf("%d", table);
-
-	gtk_clist_append(GTK_CLIST(tmp), entry);
-
-	if (table != -1)
-		g_free(entry[1]);
-}
-
-
 void add_table_list(TableInfo table)
 {
 	gpointer tmp;
@@ -698,7 +645,6 @@ void add_table_list(TableInfo table)
 
 gint anon_login(void)
 {
-
 	es_write_int(connection.sock, REQ_LOGIN_ANON);
 	es_write_string(connection.sock, connection.username);
 
@@ -706,7 +652,7 @@ gint anon_login(void)
 }
 
 
-void handle_list_tables(gint op, gint fd)
+static void handle_list_tables(gint op, gint fd)
 {
 	gint i, j,  count, num;
 	GtkObject* tmp;
@@ -745,6 +691,57 @@ void handle_list_tables(gint op, gint fd)
 		add_table_list(tables.info[i]);
 	}
 	tables.count = count;
+}
+
+
+static void handle_list_players(gint op, gint fd)
+{
+	gint i, count, table;
+	gchar name[MAX_USER_NAME_LEN + 1];
+
+	/* Clear list of users since we're getting a new list */
+	player_list_clear();
+	
+	/* Read in number of players in list */
+	es_read_int(fd, &count);
+	connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
+	
+	for (i = 0; i < count; i++) {
+		es_read_string(fd, name, MAX_USER_NAME_LEN+1);
+		es_read_int(fd, &table);
+		connect_msg("[%s] User %s\n", opcode_str[op], name);
+		connect_msg("[%s] Table %d\n", opcode_str[op], table);
+		player_list_add(name, table, 0);
+	}
+	
+	/* Display new list */
+	ggz_players_display();
+}
+
+
+static void handle_update_players(gint op, gint fd)
+{
+	guchar subop;
+	gchar name[MAX_USER_NAME_LEN + 1];
+		
+	es_read_char(fd, &subop);
+	es_read_string(fd, name, MAX_USER_NAME_LEN+1);
+	switch (subop) {
+	case GGZ_UPDATE_ADD:
+		connect_msg("[%s] %s entered room\n", opcode_str[op], 
+			    name);
+		/* Add player to list with no table */
+		player_list_add(name, -1, 0);
+		break;
+	case GGZ_UPDATE_DELETE:
+		connect_msg("[%s] %s left room\n", opcode_str[op], 
+			    name);
+		player_list_remove(name);
+		break;
+	}			
+
+	/* Display updated list */
+	ggz_players_display();
 }
 
 

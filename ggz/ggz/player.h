@@ -1,10 +1,10 @@
 /*
- * File: dlg_main.h
- * Project: GGZ
- * Date: 03/06/2000
+ * File: player.h
+ * Author: Brent Hendricks
+ * Project: GGZ Client
+ * Date: 6/5/00
  *
- * This fils contains functions for creating and handling the 
- * exit dialog box
+ * This fils contains functions for handling players
  *
  * Copyright (C) 1998 Brent Hendricks.
  *
@@ -24,10 +24,44 @@
  */
 
 
-#include <gtk/gtk.h>
+#include <glib.h>
 
-GtkWidget* create_main_win (void);
-void ggz_players_display(void);
-void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data);
-void ggz_get_players(GtkMenuItem * menuitem, gpointer user_data);
-void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data);
+/* 
+ * The Player structure is meant to be a node in a linked list of
+ * the players in the current room .
+ */
+typedef struct Player {
+	
+	/* Name of player */
+	gchar* name;	
+
+	/* Index of table at which this player is "sitting" */
+	gint table;
+
+	/* Color to use when display chat messages from this player */
+	gint chat_color;
+} Player;
+
+
+void player_list_clear(void);
+
+void player_list_add(gchar* name, gint table, gint color);
+
+void player_list_remove(gchar* name);
+
+void player_list_iterate(GFunc func);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
