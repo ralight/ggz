@@ -6,5 +6,5 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = GGZCards
 ProtocolEngine = GGZCards
-ProtocolVersion = 0.0.4
+ProtocolVersion = 1
 Version = 0.0.4

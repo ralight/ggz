@@ -6,5 +6,5 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = Dots
 ProtocolEngine = Dots
-ProtocolVersion = 0.0.1
+ProtocolVersion = 1
 Version = 0.0.1

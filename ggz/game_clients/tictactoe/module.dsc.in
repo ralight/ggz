@@ -8,6 +8,6 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 0.0.2
+ProtocolVersion = 1
 Version = 0.0.2
 

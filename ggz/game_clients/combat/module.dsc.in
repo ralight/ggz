@@ -2,7 +2,7 @@
 Name = Combat
 Author = Ismael Orenstein
 ProtocolEngine = Combat
-ProtocolVersion = 1.0
+ProtocolVersion = 1
 Version = 1.0
 CommandLine = @ggzexecmoddir@/ggz.combat
 Frontend = gtk

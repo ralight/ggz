@@ -6,5 +6,5 @@ CommandLine = @ggzexecmoddir@/ggz.reversi
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=7
 ProtocolEngine = Reversi
-ProtocolVersion = 0.0.5
+ProtocolVersion = 1
 Version = 0.0.5
