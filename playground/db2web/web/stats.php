@@ -51,7 +51,9 @@ function stats_players($id, $lookup)
 		if ($method == "highscore") :
 			echo "achieved a highscore of <b>$highscore</b>.<br>\n";
 		endif;
-		echo "<img src='ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
+		if ($icon) :
+			echo "<img src='ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
+		endif;
 		echo "This is ranking him/her <b>$rank</b>$rankstr place.<br>\n";
 		echo "<br>\n";
 	}
@@ -119,7 +121,9 @@ function stats_games($id, $lookup)
 		if ($method == "highscore") :
 			echo "achieved a highscore of <b>$highscore</b>.<br>\n";
 		endif;
-		echo "<img src='ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
+		if ($icon) :
+			echo "<img src='ggzicons/rankings/$icon' title='Rank $rank' width='16' height='16'>\n";
+		endif;
 		echo "This is ranking him/her <b>$rank</b>$rankstr place.<br>\n";
 		echo "<br>\n";
 	}
