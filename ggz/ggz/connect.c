@@ -69,7 +69,6 @@ GtkWidget *detail_window = NULL;
 
 /* Various local handles */
 static guint sock_handle;
-static void server_sync();
 static void connect_msg(const gchar *, ...);
 static void add_user_list(gchar * name, gint table);
 static void add_table_list(TableInfo table);

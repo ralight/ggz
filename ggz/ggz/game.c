@@ -136,7 +136,7 @@ static void run_game(gint type, gchar flag, gchar* path)
 static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 {
 	gint i, size, seats;
-	void *options;
+	void *options = NULL;
 	TableInfo table;
 
 	/* Get table launch info */
