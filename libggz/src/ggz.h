@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4701 2002-09-25 19:17:21Z jdorje $
+ * $Id: ggz.h 4841 2002-10-10 12:40:29Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -248,6 +248,12 @@ typedef enum {
  * values written will be lost.
  */
 void ggz_conf_cleanup (void);
+
+/**
+ * Closes one configuration file.
+ * @note The same warning as for ggz_conf_cleanup applies here.
+ */
+void ggz_conf_close (int handle);
 
 /**
  * Opens a configuration file and parses the variables so they can

@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 4701 2002-09-25 19:17:21Z jdorje $
+ * $Id: conf.c 4841 2002-10-10 12:40:29Z dr_maux $
  *
  * Internal functions for handling configuration files
  *
@@ -540,6 +540,33 @@ void ggz_conf_cleanup(void)
 	file_list = NULL;
 }
 
+/* conf_close(handle)
+ * Closes one configuration handle.
+ */
+void ggz_conf_close(int handle)
+{
+	conf_file_t *f_data = NULL;
+	GGZListEntry *f_entry;
+
+	if(!file_list) return;
+
+	/* Find file entry and list entry in our file list */
+	f_entry = ggz_list_head(file_list);
+	while(f_entry) {
+		f_data = ggz_list_get_data(f_entry);
+		if(f_data->handle == handle)
+			break;
+		f_entry = ggz_list_next(f_entry);
+	}
+	if(f_entry) {
+		ggz_list_delete_entry(file_list, f_entry);
+
+		/* No automatic destroy function defined */
+		ggz_list_free(f_data->section_list);
+		ggz_free(f_data->path);
+		ggz_free(f_data);
+	}
+}
 
 /* conf_parse(path)
  *	Load up and parse a configuration file into a set of linked lists.
