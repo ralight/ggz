@@ -30,7 +30,7 @@ KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
 	m_repaint = 0;
 	m_highlight = 0;
 
-	ok = new QPushButton("OK", this);
+	ok = new QPushButton(i18n("OK"), this);
 	ok->move(150, 250);
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
@@ -69,7 +69,7 @@ void KDotsAbout::mousePressEvent(QMouseEvent *e)
 {
 	if(m_highlight)
 	{
-		kapp->invokeBrowser("http://ggz.sourceforge.net/games/kdots/");
+		kapp->invokeBrowser("http://www.ggzgamingzone.org/games/kdots/");
 	}
 }
 
@@ -80,12 +80,14 @@ void KDotsAbout::mouseMoveEvent(QMouseEvent *e)
 		if(!m_highlight)
 		{
 			m_highlight = 1;
+			m_repaint = 0;
 			repaint();
 		}
 	}
 	else if(m_highlight)
 	{
 		m_highlight = 0;
+		m_repaint = 0;
 		repaint();
 	}
 }
@@ -96,6 +98,8 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 	QPen pen;
 	const QPixmap *pix;
 
+	if(m_repaint == -1) return;
+
 	pix = new QPixmap(*m_bg);
 	p.begin(pix);
 	m_font.setBold(true);
@@ -103,20 +107,21 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 	p.drawText(100, 40, measure(i18n("Connect The Dots for KDE")));
 	m_font.setBold(false);
 	p.setFont(m_font);
-	p.drawText(20, 80, measure("Copyright (C) 2001, 2002 Josef Spillner"));
-	p.drawText(20, 100, measure("dr_maux@users.sourceforge.net"));
+	p.drawText(20, 80, measure("Copyright (C) 2001 - 2004 Josef Spillner"));
+	p.drawText(20, 100, measure("josef@ggzgamingzone.org"));
 	p.drawText(20, 140, measure(i18n("This game is part of the GGZ Gaming Zone.")));
 	if(m_highlight)
 	{
 		pen = p.pen();
 		p.setPen(QColor(255, 0, 0));
 	}
-	p.drawText(20, 160, measure("http://ggz.sourceforge.net/games/kdots/"));
+	p.drawText(20, 160, measure("http://www.ggzgamingzone.org/games/kdots/"));
 	if(m_highlight) p.setPen(pen);
 	p.drawText(20, 200, measure(i18n("Thanks to www.drachenburg.de")));
 	p.drawText(20, 220, measure(i18n("for their dragon images!")));
 	p.end();
 	setErasePixmap(*pix);
+
 	delete pix;
 
 	if(m_repaint)
@@ -124,6 +129,10 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 		m_repaint = 0;
 		repaint();
 	}
-	else show();
+	else
+	{
+		m_repaint = -1;
+		show();
+	}
 }
 

@@ -28,14 +28,14 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("kdots",
 		I18N_NOOP("KDots"),
-		"0.0.6",
+		"0.0.8",
 		I18N_NOOP("Connect The Dots for KDE"),
 		KAboutData::License_GPL,
-		"Copyright (C) 2001, 2002 Josef Spillner",
+		"Copyright (C) 2001 - 2004 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://ggz.sourceforge.net/games/kdots/",
-		"dr_maux@users.sourceforge.net");
-	about->addAuthor("Josef Spillner", I18N_NOOP("Author."), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+		"http://www.ggzgamingzone.org/games/kdots/",
+		"josef@ggzgamingzone.org");
+	about->addAuthor("Josef Spillner", I18N_NOOP("Author."), "josef@ggzgamingzone.org");
 	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, about);

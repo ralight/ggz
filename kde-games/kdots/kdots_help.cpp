@@ -27,7 +27,7 @@ KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
 	m_font = QFont("courier", 16);
 	m_repaint = 0;
 
-	ok = new QPushButton("OK", this);
+	ok = new QPushButton(i18n("OK"), this);
 	ok->move(200, 340);
 
 	setErasePixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
