@@ -11,6 +11,7 @@ Published under GNU GPL conditions
 #include <stdio.h>
 #include <string.h>
 #include <openssl/err.h>
+#include <unistd.h>
 
 /* The control structure for TLS */
 SSL_CTX *_tlsctx = NULL;
@@ -250,14 +251,14 @@ int tls_read(int fd, char *buffer, int size)
 	SSL *handler;
 	int ret;
 
+	printf("<< %s\n", buffer);
 	handler = tls_list_get(fd);
 	if(!handler)
 	{
-		TLSERROR("Given fd is not secure.");
-		return -1;
+		/*TLSERROR("Given fd is not secure.");*/
+		return read(fd, buffer, size);
 	}
 	ret = SSL_read(handler, buffer, size);
-	printf("<< %s\n", buffer);
 	if(ret <= 0) printf("SSL read error (%i) on fd %i!\n", ret, fd);
 	return ret;
 }
@@ -267,13 +268,13 @@ int tls_write(int fd, const char *s, int size)
 	SSL *handler;
 	int ret;
 
+	printf(">> %s\n", s);
 	handler = tls_list_get(fd);
 	if(!handler)
 	{
-		TLSERROR("Given fd is not secure.");
-		return -1;
+		/*TLSERROR("Given fd is not secure.");*/
+		return write(fd, s, size);
 	}
-	printf(">> %s\n", s);
 	ret = SSL_write(handler, s, size);
 	if(ret <= 0) printf("SSL write error (%i) on fd %i!\n", ret, fd);
 	return ret;

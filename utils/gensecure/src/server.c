@@ -15,8 +15,10 @@ Published under GNU GPL conditions
 #include "configuration.h"
 
 /* Macros to be used as BIO emulation */
-#define INPUT(x, y) (tls_active(socket_fd()) ? tls_read(socket_fd(), x, y) : input(x, y))
-#define OUTPUT(x) (tls_active(socket_fd()) ? tls_write(socket_fd(), x, strlen(x)) : output(x))
+/*#define INPUT(x, y) (tls_active(socket_fd()) ? tls_read(socket_fd(), x, y) : input(x, y))
+#define OUTPUT(x) (tls_active(socket_fd()) ? tls_write(socket_fd(), x, strlen(x)) : output(x))*/
+#define INPUT(x, y) tls_read(socket_fd(), x, y)
+#define OUTPUT(x) tls_write(socket_fd(), x, strlen(x))
 
 int passwordcallback(char *buf, int size, int rwflag, void *userdata)
 {
