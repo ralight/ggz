@@ -56,12 +56,12 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 
 	m_again = NULL;
 
-	qcw = new QCw(this, "qcw");
-
 	dummy = new QWidget(this);
-	dummy->setFixedHeight(20);
+	setCentralWidget(dummy);
 
-	m_statusframe = new QFrame(this);
+	qcw = new QCw(dummy, "qcw");
+
+	m_statusframe = new QFrame(dummy);
 	m_statusframe->setFixedHeight(25);
 	m_statusframe->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	showStatus(i18n("Uninitialized"));
@@ -77,8 +77,7 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	menuBar()->insertSeparator();
 	menuBar()->insertItem(i18n("Help"), menu_help);
 
-	vbox = new QVBoxLayout(this, 5);
-	vbox->add(dummy);
+	vbox = new QVBoxLayout(dummy, 0);
 	vbox->add(qcw);
 	vbox->add(m_statusframe);
 
@@ -116,10 +115,6 @@ void Krosswater::protoError()
 void Krosswater::slotSelected(int person)
 {
 	m_selectedperson = person;
-	//cout << "zonePlayers: " << zonePlayers() << endl;
-	//cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
-	//cout << "ZoneGameplayers: " << ZoneGamePlayers << endl;
-	//cout << "Person: " << person << endl;
 	if(zonePlayers() == ZoneGamePlayers) showStatus(i18n("Game started"));
 	else showStatus(i18n("Waiting for other players..."));
 
@@ -169,7 +164,6 @@ void Krosswater::slotZoneInput(int op)
 			protoError();
 			return;
 		}
-		//cout << "Size: " << x << ", " << y << endl;
 		qcw->setSize(x, y);
 		for(int j = 0; j < y; j++)
 			for(int i = 0; i < x; i++)
@@ -186,7 +180,6 @@ void Krosswater::slotZoneInput(int op)
 			protoError();
 			return;
 		}
-		//cout << "players: " << maxplayers << endl;
 		qcw->resetPlayers();
 		for(int i = 0; i < maxplayers; i++)
 		{
@@ -198,7 +191,6 @@ void Krosswater::slotZoneInput(int op)
 			}
 			if(i < ZoneGamePlayers)
 			{
-				//cout << "Player found: " << x << ", " << y << endl;
 				qcw->addPlayer(x, y);
 
 				if(i == zoneMe()) person = m_selectedperson;
@@ -233,7 +225,6 @@ void Krosswater::slotZoneInput(int op)
 					protoError();
 					return;
 				}
-				//cout << "backtrace: << " << x << " << " << y << endl;
 				qcw->setStone(x, y, 3);
 			}
 		}
@@ -269,7 +260,8 @@ void Krosswater::slotZoneOver()
 {
 	showStatus(i18n("Game over"));
 
-	KMessageBox::information(this, i18n("The game is over!"), i18n("Server message"));
+	qcw->disable();
+	//KMessageBox::information(this, i18n("The game is over!"), i18n("Server message"));
 }
 
 // Indicate an invalid move
@@ -353,7 +345,6 @@ void Krosswater::slotZoneBroadcast()
 	sleep(1);
 	qcw->setStone(fromx, fromy, 0);
 	qcw->repaint();
-	//sleep(1);
 	qcw->setStone(tox, toy, 1);
 	qcw->setStoneState(tox, toy, 0);
 	qcw->setStoneState(fromx, fromy, 0);
@@ -364,6 +355,5 @@ void Krosswater::slotZoneBroadcast()
 void Krosswater::slotAgain()
 {
 	m_again->close();
-	//cout << "Requested another game!" << endl;
 }
 

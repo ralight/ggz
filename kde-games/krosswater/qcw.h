@@ -23,6 +23,9 @@
 #include <qevent.h>
 #include <qtimer.h>
 
+// Forward declarations
+class QPixmap;
+
 // Generic Krosswater game board
 class QCw : public QWidget
 {
@@ -36,6 +39,7 @@ class QCw : public QWidget
 		void resetPlayers();		
 		void addPlayer(int x, int y);
 		void setPlayerPixmap(int player, int pixmap);
+		void disable();
 
 	signals:
 		void signalMove(int xfrom, int yfrom, int xto, int yto);
@@ -57,6 +61,9 @@ class QCw : public QWidget
 		int m_state;
 		int m_players[4][3];
 		int m_numplayers;
+		QPixmap *m_pix;
+		int m_update;
+		int m_enabled;
 };
 
 #endif

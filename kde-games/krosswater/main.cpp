@@ -25,7 +25,7 @@
 #include <klocale.h>
 
 // System includes
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 
 using namespace std;

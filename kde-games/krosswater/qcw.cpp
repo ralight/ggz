@@ -43,7 +43,10 @@ QCw::QCw(QWidget* parent, const char* name)
 	m_x = -1;
 	m_y = -1;
 	m_state = normal;
-	startTimer(1000);
+	m_pix = NULL;
+	startTimer(500);
+	m_update = 0;
+	m_enabled = 0;
 
 	resetPlayers();
 }
@@ -54,7 +57,6 @@ QCw::~QCw()
 
 void QCw::resetPlayers()
 {
-	//cout << "QCW:: Remove all players" << endl;
 	m_numplayers = 0;
 	for(int i = 0; i < 4; i++)
 		m_players[i][2] = -1;
@@ -65,9 +67,16 @@ void QCw::paintEvent(QPaintEvent *e)
 	QPainter p;
 	char *playerpixmap;
 
+	if(!m_update) return;
 	if((m_width < 0) || (m_height < 0)) return;
+	m_update = 0;
 
-	p.begin(this);
+	if(!m_pix)
+	{
+		m_pix = new QPixmap(width(), height());
+		m_pix->fill(QColor(0, 0, 150));
+	}
+	p.begin(m_pix);
 
 	p.setPen(QColor(0, 0, 255));
 	for(int j = 0; j < m_height; j++)
@@ -137,6 +146,7 @@ void QCw::paintEvent(QPaintEvent *e)
 	}
 
 	p.end();
+	setBackgroundPixmap(*m_pix);
 }
 
 void QCw::setSize(int width, int height)
@@ -166,10 +176,11 @@ void QCw::setSize(int width, int height)
 			m_board[i][j] = (int*)malloc(2);
 	}
 
-	/*srandom(time(NULL));*/
 	for(int j = 0; j < height; j++)
 		for(int i = 0; i < width; i++)
 			m_board[i][j][1] = 0;
+
+	m_enabled = 1;
 }
 
 void QCw::mousePressEvent(QMouseEvent *e)
@@ -178,9 +189,9 @@ void QCw::mousePressEvent(QMouseEvent *e)
 
 	x = e->x() / 20;
 	y = e->y() / 20;
-	//cout << "Clicked on " << x << ", " << y << endl;
 
 	if(!m_board) return;
+	if(!m_enabled) return;
 
 	if(m_state == normal)
 	{
@@ -198,11 +209,13 @@ void QCw::mousePressEvent(QMouseEvent *e)
 			emit signalMove(m_x, m_y, x, y);
 	}
 
+	m_update = 1;
 	repaint();
 }
 
 void QCw::timerEvent(QTimerEvent *e)
 {
+	m_update = 1;
 	repaint();
 }
 
@@ -211,6 +224,8 @@ void QCw::setStone(int x, int y, int value)
 	if((x < 0) || (y < 0) || (x >= m_width) || (y >= m_height)) return;
 
 	m_board[x][y][0] = value;
+	m_update = 1;
+	repaint();
 }
 
 void QCw::setStoneState(int x, int y, int state)
@@ -218,6 +233,8 @@ void QCw::setStoneState(int x, int y, int state)
 	if((x < 0) || (y < 0) || (x >= m_width) || (y >= m_height)) return;
 
 	m_board[x][y][1] = state;
+	m_update = 1;
+	repaint();
 }
 
 void QCw::addPlayer(int x, int y)
@@ -226,13 +243,16 @@ void QCw::addPlayer(int x, int y)
 	m_players[m_numplayers][0] = x;
 	m_players[m_numplayers][1] = y;
 	m_numplayers++;
-	//cout << "QCW: setPlayer at " << x << ", " << y << endl;
 }
 
 void QCw::setPlayerPixmap(int player, int pixmap)
 {
 	if((player < 0) || (player > m_numplayers)) return;
 	m_players[player][2] = pixmap;
-	//cout << "QCW: setPlayerPixmap for " << player << endl;
+}
+
+void QCw::disable()
+{
+	m_enabled = 0;
 }
 
