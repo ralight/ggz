@@ -86,7 +86,14 @@ int main(int argc, char *argv[])
 	/*pthread_create(&id_read, NULL, reader, &fd[1]);*/
 
 	signal(SIGALRM, timeout);
+#ifdef HAVE_ALARM
 	alarm(1);
+#else
+	/* Alarm isn't present on all platforms.  FIXME: implement without
+	 * using it. */
+	printf("This test cannot be completed on this platform.");
+	timeout();
+#endif
 
 	pid = fork();
 	switch(pid)
