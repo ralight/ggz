@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6425 2004-11-25 23:15:42Z jdorje $
+ * $Id: ggzclient.c 6447 2004-12-11 20:47:08Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -64,6 +64,9 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
+					     void* event_data,
+					     void* user_data);
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data);
@@ -114,6 +117,8 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED, ggz_motd_loaded);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, ggz_room_list);
 	/* Unused: GGZ_TYPE_LIST */
+	ggzcore_server_add_event_hook(server, GGZ_SERVER_PLAYERS_CHANGED,
+				      ggz_num_players_changed);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, ggz_entered);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, ggz_entered_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, ggz_logout);
@@ -295,6 +300,24 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LAG, ggz_list_players);
 		ggzcore_room_add_event_hook(room, GGZ_PLAYER_STATS, ggz_list_players);
 	}
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_num_players_changed(GGZServerEvent id,
+					     void* event_data,
+					     void* user_data)
+{
+	GtkWidget *serverbar = lookup_widget(win_main, "serverbar");
+	guint context;
+	int players = ggzcore_server_get_num_players(server);
+	char buf[128];
+
+	snprintf(buf, sizeof(buf), _("Players on server: %d"), players);
+	context = gtk_statusbar_get_context_id(GTK_STATUSBAR(serverbar),
+					       "players");
+	gtk_statusbar_pop(GTK_STATUSBAR(serverbar), context);
+	gtk_statusbar_push(GTK_STATUSBAR(serverbar), context, buf);
 
 	return GGZ_HOOK_OK;
 }
@@ -518,9 +541,9 @@ static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* 
 
 static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data)
 {
-	int context;
+	guint context;
 	GtkWidget* statebar;
-	char *state;
+	char *state = _("**none**");
 	GGZStateID state_id;
 
 	state_id = ggzcore_server_get_state(server);
@@ -561,9 +584,6 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void*
 	case GGZ_STATE_LOGGING_OUT:
 		state = _("Logging Out");
 		break;
-	default:
-		state = _("**none**");
-		
 	}
 
 	statebar = lookup_widget(win_main, "statebar");
@@ -826,9 +846,6 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		tmp = lookup_widget(win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 		break;
-	default:
-		break;
-		
 	}
 
 	return GGZ_HOOK_OK;

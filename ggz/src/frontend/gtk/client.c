@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6443 2004-12-11 13:52:20Z oojah $
+ * $Id: client.c 6447 2004-12-11 20:47:08Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -801,7 +801,7 @@ create_win_main (void)
   GtkWidget *chat_hbuttonbox;
   GtkWidget *send_button;
   GtkWidget *status_box;
-  GtkWidget *messagebar;
+  GtkWidget *serverbar;
   GtkWidget *statusbar;
   GtkWidget *statebar;
   GtkAccelGroup *accel_group;
@@ -1398,13 +1398,13 @@ create_win_main (void)
   gtk_widget_show (status_box);
   gtk_box_pack_start (GTK_BOX (main_vbox), status_box, FALSE, FALSE, 0);
 
-  messagebar = gtk_statusbar_new ();
-  gtk_widget_ref (messagebar);
-  g_object_set_data_full(G_OBJECT (win_main), "messagebar", messagebar,
+  serverbar = gtk_statusbar_new ();
+  gtk_widget_ref(serverbar);
+  g_object_set_data_full(G_OBJECT (win_main), "serverbar", serverbar,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (messagebar), FALSE);
-  gtk_widget_show (messagebar);
-  gtk_box_pack_start (GTK_BOX (status_box), messagebar, TRUE, TRUE, 0);
+  gtk_statusbar_set_has_resize_grip(GTK_STATUSBAR (serverbar), FALSE);
+  gtk_widget_show(serverbar);
+  gtk_box_pack_start(GTK_BOX (status_box), serverbar, TRUE, TRUE, 0);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
