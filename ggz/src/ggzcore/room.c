@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5435 2003-02-22 06:41:41Z jdorje $
+ * $Id: room.c 5436 2003-02-22 06:46:20Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -717,7 +717,7 @@ int _ggzcore_room_chat(struct _GGZRoom *room,
 
 	net = _ggzcore_server_get_net(room->server);
 
-	if (strchr(msg, '\n')) {
+	if (msg && strchr(msg, '\n')) {
 		/* If the chat includes multiple lines, then we send each
 		 * line as a separate chat item.  The implementation of
 		 * this is a little inefficient, but I can't see a better way
