@@ -132,7 +132,6 @@ static char *color[6] = { "red", "blue", "green", "yellow", "cyan", "purple" };
 static void game_zap_board(void)
 {
 	int i, j;
-	char *msg;
 
 	for(i=0; i<17; i++)
 		for(j=0; j<25; j++)
@@ -142,11 +141,6 @@ static void game_zap_board(void)
 				game.board[i][j] = 0;
 
 	display_refresh_board();
-
-	msg = g_strdup_printf("You are playing the %s marbles",
-			      color[homes[game.players][game.me]]);
-	display_statusbar(msg);
-	g_free(msg);
 }
 
 
@@ -154,6 +148,7 @@ static void game_zap_board(void)
 void game_init_board(void)
 {
 	int i, j, home, x, y;
+	char *msg;
 
 	for(i=0; i<game.players; i++) {
 		home = homes[game.players-1][i];
@@ -166,6 +161,11 @@ void game_init_board(void)
 
 	game_print_board();
 	display_refresh_board();
+
+	msg = g_strdup_printf("You are playing the %s marbles",
+			      color[game.me]);
+	display_statusbar(msg);
+	g_free(msg);
 }
 
 
