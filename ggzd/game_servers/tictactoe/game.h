@@ -45,10 +45,9 @@
 
 /* Tic-Tac-Toe game states */
 #define TTT_STATE_INIT        0
-#define TTT_STATE_WAIT_INIT   1
+#define TTT_STATE_WAIT        1
 #define TTT_STATE_PLAYING     2
-#define TTT_STATE_WAIT_MID    3
-#define TTT_STATE_DONE        4
+#define TTT_STATE_DONE        3
 
 /* Tic-Tac-Toe game events */
 #define TTT_EVENT_LAUNCH      0
@@ -75,11 +74,13 @@ int game_send_move(int num, int move);
 int game_send_sync(int num);
 int game_send_gameover(char winner);
 
-int game_req_move(void);
+int game_move(void);
+int game_req_move(int num);
 int game_handle_move(int num, int* move);
+int game_bot_move(void);
 
 char game_check_move(int num, int move);
 char game_check_win(void);
 
-int game_update(int event);
+int game_update(int event, void* data);
 

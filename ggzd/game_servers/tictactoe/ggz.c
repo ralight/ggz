@@ -133,6 +133,7 @@ int ggz_game_launch(void)
 			break;
 		case GGZ_SEAT_BOT:
 			ggz_debug("Seat %d is a bot", i);
+			strcpy(ggz_seats[i].name, "bot");
 			break;
 		case GGZ_SEAT_RESV:
 			ggz_debug("Seat %d reserved for %s", i,

@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+
 #include <ggz.h>
 #include <game.h>
 #include <protocols.h>
@@ -36,7 +38,7 @@ void game_init(void)
 {
 	int i;
 	
-	ttt_game.turn = 0;
+	ttt_game.turn = -1;
 	ttt_game.move_count = 0;
 	ttt_game.state = TTT_STATE_INIT;
 	for (i = 0; i < 9; i++)
@@ -47,7 +49,7 @@ void game_init(void)
 /* Handle message from GGZ server */
 int game_handle_ggz(int ggz_fd, int* p_fd)
 {
-	int op, status, seat;
+	int op, seat, status = -1;
 
 	if (es_read_int(ggz_fd, &op) < 0)
 		return -1;
@@ -55,26 +57,20 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 	switch (op) {
 
 	case REQ_GAME_LAUNCH:
-		status = ggz_game_launch();
-		game_update(TTT_EVENT_LAUNCH);
+		if (ggz_game_launch() == 0)
+			status = game_update(TTT_EVENT_LAUNCH, NULL);
 		break;
-
+		
 	case REQ_GAME_JOIN:
-		if ( (status = ggz_player_join(&seat, p_fd)) == 0) {
-			game_send_seat(seat);
-			game_send_players();
-			/* Force a sync if joining mid game */
-			if (ttt_game.state == TTT_STATE_WAIT_MID)
-				game_send_sync(seat);
-			game_update(TTT_EVENT_JOIN);
+		if (ggz_player_join(&seat, p_fd) == 0) {
+			status = game_update(TTT_EVENT_JOIN, &seat);
 			status = 1;
 		}
 		break;
 
 	case REQ_GAME_LEAVE:
 		if ( (status = ggz_player_leave(&seat, p_fd)) == 0) {
-			game_send_players();
-			game_update(TTT_EVENT_LEAVE);
+			game_update(TTT_EVENT_LEAVE, &seat);
 			status = 2;
 		}
 		break;
@@ -102,9 +98,8 @@ int game_handle_player(int num)
 	switch (op) {
 
 	case TTT_SND_MOVE:
-		if ( (status = game_handle_move(num, &move)) == 0
-		     && (status = game_send_move(num, move)) == 0)
-			game_update(TTT_EVENT_MOVE);
+		if ( (status = game_handle_move(num, &move)) == 0)
+			game_update(TTT_EVENT_MOVE, &move);
 		break;
 		
 	case TTT_REQ_SYNC:
@@ -140,7 +135,7 @@ int game_send_seat(int seat)
 int game_send_players(void)
 {
 	int i, j, fd;
-
+	
 	for (j = 0; j < 2; j++) {
 		if ( (fd = ggz_seats[j].fd) == -1)
 			continue;
@@ -154,7 +149,6 @@ int game_send_players(void)
 			if (es_write_int(fd, ggz_seats[i].assign) < 0)
 				return -1;
 			if (ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && ggz_seats[i].assign != GGZ_SEAT_BOT
 			    && es_write_string(fd, ggz_seats[i].name) < 0) 
 				return -1;
 		}
@@ -222,15 +216,27 @@ int game_send_gameover(char winner)
 }
 
 
-/* Request move from current player */
-int game_req_move(void)
+/* Do the next move*/
+int game_move(void)
 {
-	int fd = ggz_seats[(int)ttt_game.turn].fd;
+	int move, num = ttt_game.turn;
+	
+	if (ggz_seats[num].assign == GGZ_SEAT_BOT) {
+		move = game_bot_move();
+		game_update(TTT_EVENT_MOVE, &move);
+	}
+	else
+		game_req_move(num);
 
-	/* Don't handle bot yet */
-	if (fd == -1)
-		return -1; 
-		
+	return 0;
+}
+
+
+/* Request move from current player */
+int game_req_move(int num)
+{
+	int fd = ggz_seats[num].fd;
+
 	if (es_write_int(fd, TTT_REQ_MOVE) < 0)
 		return -1;
 
@@ -249,10 +255,7 @@ int game_handle_move(int num, int* move)
 		return -1;
 
 	/* Check validity of move */
-	if ( (status = game_check_move(num, *move)) == 0) {
-		ttt_game.board[*move] = (char)num;
-		ttt_game.move_count++;
-	}
+	status = game_check_move(num, *move);
 
 	/* Send back move status */
 	if (es_write_int(fd, TTT_RSP_MOVE) < 0
@@ -261,13 +264,26 @@ int game_handle_move(int num, int* move)
 
 	/* If move simply invalid, ask for resubmit */
 	if ( (status == -3 || status == -4)
-	     && game_req_move() < 0)
+	     && game_req_move(num) < 0)
 		return -1;
 
 	if (status != 0)
 		return 1;
 	
 	return 0;
+}
+
+
+/* Do bot moves */
+int game_bot_move(void)
+{
+	int i;
+	
+	for (i = 0; i < 9; i++)
+		if (ttt_game.board[i] == -1)
+			return i;
+
+	return -1;
 }
 
 
@@ -349,51 +365,65 @@ char game_check_win(void)
 
 
 /* Update game state */
-int game_update(int event)
+int game_update(int event, void* data)
 {
+	int seat, move;
 	char victor;
 	
-	switch(ttt_game.state) {
+	switch(event) {
 
-	case TTT_STATE_INIT:
-		if (event != TTT_EVENT_LAUNCH)
+	case TTT_EVENT_LAUNCH:
+		if (ttt_game.state != TTT_STATE_INIT)
 			return -1;
-		ttt_game.state = TTT_STATE_WAIT_INIT;
+		ttt_game.state = TTT_STATE_WAIT;
 		break;
+
+	case TTT_EVENT_JOIN:
+		if (ttt_game.state != TTT_STATE_WAIT)
+			return -1;
 		
-	case TTT_STATE_WAIT_INIT:
-		if (event == TTT_EVENT_JOIN) {
-			if (!ggz_seats_open()) {
-				ttt_game.state = TTT_STATE_PLAYING;
-				game_req_move();
-			}
+		seat = *(int*)data;
+		game_send_seat(seat);
+		game_send_players();
+
+		if (!ggz_seats_open()) {
+			if (ttt_game.turn == -1)
+				ttt_game.turn = 0;
+			else 
+				game_send_sync(seat);
+			
+			ttt_game.state = TTT_STATE_PLAYING;
+			game_move();
 		}
 		break;
 
-	case TTT_STATE_PLAYING:
-		if (event == TTT_EVENT_LEAVE)
-			ttt_game.state = TTT_STATE_WAIT_MID;
-		else if (event == TTT_EVENT_MOVE) {
-			if ( (victor = game_check_win()) < 0) {
-				ttt_game.turn = (ttt_game.turn + 1) % 2;
-				game_req_move();
-			}
-			else {
-				ttt_game.state = TTT_STATE_DONE;
-				game_send_gameover(victor);
-			}
-		}
-		break;
-		
-	case TTT_STATE_WAIT_MID:
-		if (event == TTT_EVENT_JOIN) {
-			if (!ggz_seats_open()) {
-				ttt_game.state = TTT_STATE_PLAYING;
-				game_req_move();
-			}
+	case TTT_EVENT_LEAVE:
+		if (ttt_game.state == TTT_STATE_PLAYING) {
+			ttt_game.state = TTT_STATE_WAIT;
+			game_send_players();
 		}
 		break;
 
+	case TTT_EVENT_MOVE:
+		if (ttt_game.state != TTT_STATE_PLAYING)
+			return -1;
+		
+		move = *(int*)data;
+
+		ggz_debug("Player %d in square %d", ttt_game.turn, move);
+		ttt_game.board[move] = ttt_game.turn;
+		ttt_game.move_count++;
+		game_send_move(ttt_game.turn, move);
+		
+		if ( (victor = game_check_win()) < 0) {
+			ttt_game.turn = (ttt_game.turn + 1) % 2;
+			game_move();
+		}
+		else {
+			ttt_game.state = TTT_STATE_DONE;
+			game_send_gameover(victor);
+		}
+		break;
 	}
 	
 	return 0;
