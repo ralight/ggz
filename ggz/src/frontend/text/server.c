@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 4682 2002-09-24 08:09:52Z dr_maux $
+ * $Id: server.c 4833 2002-10-10 00:53:29Z jdorje $
  *
  * Functions for handling server events
  *
@@ -61,10 +61,7 @@ static GGZHookReturn server_channel_ready(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_protocol_error(GGZServerEvent id, void*, void*);
 
-static GGZHookReturn room_chat_msg(GGZRoomEvent id, void*, void*);
-static GGZHookReturn room_chat_prvmsg(GGZRoomEvent id, void*, void*);
-static GGZHookReturn room_chat_beep(GGZRoomEvent id, void*, void*);
-static GGZHookReturn room_chat_announce(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_chat(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_list_players(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_list_tables(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_enter(GGZRoomEvent id, void*, void*);
@@ -178,10 +175,7 @@ static void server_register(GGZServer *server)
 
 static void room_register(GGZRoom *room)
 {
-	ggzcore_room_add_event_hook(room, GGZ_CHAT, room_chat_msg);
-	ggzcore_room_add_event_hook(room, GGZ_ANNOUNCE, room_chat_announce);
-	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, room_chat_prvmsg);
-	ggzcore_room_add_event_hook(room, GGZ_BEEP, room_chat_beep);
+	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, room_chat);
 	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, room_list_players);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, room_list_tables);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, room_enter);
@@ -345,51 +339,13 @@ static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
 }
 
 
-static GGZHookReturn room_chat_msg(GGZRoomEvent id, void* event_data, 
-				   void* user_data)
+static GGZHookReturn room_chat(GGZRoomEvent id, void* event_data, 
+			       void* user_data)
 {
-	char* player;
-	char* message;
+	GGZChatEventData *chat = event_data;
 
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-	output_chat(CHAT_MSG, player, message);
-	return GGZ_HOOK_OK;
-}
+	output_chat(chat->type, chat->sender, chat->message);
 
-
-static GGZHookReturn room_chat_announce(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	char* player;
-	char* message;
-
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-	output_chat(CHAT_ANNOUNCE, player, message);
-	return GGZ_HOOK_OK;
-}
-
-
-static GGZHookReturn room_chat_prvmsg(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	char* player;
-	char* message;
-
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-	output_chat(CHAT_PRVMSG, player, message);
-	return GGZ_HOOK_OK;
-}
-
-
-static GGZHookReturn room_chat_beep(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	char* player;
-
-	player = ((char**)(event_data))[0];
-
-	output_text("--- You've been beeped by %s.", player);
-	printf("\007");
 	return GGZ_HOOK_OK;
 }
 

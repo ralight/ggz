@@ -124,7 +124,7 @@ void output_text(char* fmt, ...)
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(message, fmt, ap);
+	vsprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
 
 	/* Shift everything in the buffer up */
@@ -164,19 +164,25 @@ void output_draw_text(void)
 	printf("\e8");
 }
 
-void output_chat(ChatTypes type, char *player, char *message)
+void output_chat(GGZChatType type, const char *player, const char *message)
 {
-	switch(type)
-	{
-		case CHAT_MSG:
-			output_text("<%s> %s", player, message);
-			break;
-		case CHAT_PRVMSG:
-			output_text(">%s< %s", player, message);
-			break;
-		case CHAT_ANNOUNCE:
-			output_text("[%s] %s", player, message);
-			break;
+	switch(type) {
+	case GGZ_CHAT_NONE:
+		break;
+	case GGZ_CHAT_BEEP:
+		output_text("--- You've been beeped by %s.", player);
+		printf("\007");
+		break;
+	case GGZ_CHAT_PERSONAL:
+		output_text(">%s< %s", player, message);
+		break;
+	case GGZ_CHAT_ANNOUNCE:
+		output_text("[%s] %s", player, message);
+		break;
+	case GGZ_CHAT_NORMAL:
+	default:
+		output_text("<%s> %s", player, message);
+		break;
 	}
 }
 

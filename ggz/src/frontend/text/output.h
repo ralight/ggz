@@ -27,14 +27,7 @@
 #ifndef __OUTPUT_H__
 #define __OUTPUT_H__
 
-
-/* Chat types */
-typedef enum {
-	CHAT_MSG,
-	CHAT_PRVMSG,
-	CHAT_ANNOUNCE
-} ChatTypes;
-
+#include <ggzcore.h>
 
 void output_banner(void);
 
@@ -42,7 +35,7 @@ void output_prompt(void);
 
 void output_text(char* fmt, ...);
 
-void output_chat(ChatTypes type, char *player, char *message);
+void output_chat(GGZChatType type, const char *player, const char *message);
 
 void output_players(void);
 
