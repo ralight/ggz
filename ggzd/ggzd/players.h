@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4571 2002-09-16 04:09:39Z jdorje $
+ * $Id: players.h 4590 2002-09-16 22:46:10Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -70,9 +70,9 @@ struct _GGZPlayer {
 	char transit;
 
 	/* Linked lists of events */
-	void *room_events;        /* protected by room lock*/
-        void *my_events_head;
-        void *my_events_tail;
+	GGZEvent *room_events;        /* protected by room lock*/
+	GGZEvent *my_events_head;
+	GGZEvent *my_events_tail;
 
 	/* Lag tracking */
 	time_t next_ping;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4589 2002-09-16 22:33:35Z jdorje $
+ * $Id: event.h 4590 2002-09-16 22:46:10Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,9 +55,6 @@ typedef GGZEventFuncReturn (*GGZEventFunc)(void* target,
  * NULL is specified as the function, ggz_free will be used instead.
  */
 typedef void (*GGZEventDataFree)(void* data);
-
-
-typedef struct GGZEvent GGZEvent;
 
 
 /*

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4583 2002-09-16 06:08:32Z jdorje $
+ * $Id: ggzd.h 4590 2002-09-16 22:46:10Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -74,9 +74,9 @@ typedef enum {
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
 
-typedef struct _GGZPlayer GGZPlayer; 
-
+typedef struct _GGZPlayer GGZPlayer;
 typedef struct GGZTable GGZTable;
+typedef struct GGZEvent GGZEvent;
 
 
 /* Specical game type values */
