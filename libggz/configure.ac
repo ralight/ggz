@@ -19,9 +19,9 @@ AC_PROG_MAKE_SET
 
 dnl Compiling Options
 dnl =================
-AC_ARG_ENABLE(debug,        [  --enable-debug          Enable debugging ],, enable_debug=no)
-AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      Enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_WITH(gcrypt,       [  --with-gcrypt           Add encryption support], enable_gcrypt=yes, enable_gcrypt=no)
+AC_ARG_WITH([gcrypt],
+	    AC_HELP_STRING([--with-gcrypt], [Add encryption support](,
+	    [enable_gcrypt=yes], [enable_gcrypt=no])
 
 
 dnl Check for header files
@@ -173,19 +173,7 @@ changequote([,])dnl
 
 dnl Debug modes
 dnl ===========
-dnl This defines either DEBUG or NDEBUG.  We could provide a third option
-dnl where neither are defined.
-if test "$enable_debug" = yes; then
-    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
-    DFLAGS="DEBUG"
-else
-    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
-    DFLAGS="NDEBUG"
-fi
-
-if test "$enable_debug_gdb" = yes; then
-    CFLAGS="$CFLAGS -ggdb"
-fi
+AC_GGZ_DEBUG
 
 AC_SUBST(LDADD)
 

@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = Doxyfile README.GGZ QuickStart.GGZ m4
+EXTRA_DIST = Doxyfile README.GGZ QuickStart.GGZ \
+		m4/ggz-debug.m4 m4/tls.m4
 
 SUBDIRS = src tests man
 
