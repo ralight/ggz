@@ -136,6 +136,6 @@ void GGZapGui::setProgress(int progress)
 void GGZapGui::setGame(QString game)
 {
 	m_game = game;
-	m_icon = game.lower() + ".png";
+	m_icon = QString("%1/images/icons/games/%2.png").arg(KGGZ_DIRECTORY).arg(game);
 }
 

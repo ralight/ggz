@@ -90,6 +90,7 @@ void GGZapTray::slotMenu(int id)
 		case menucancel:
 			emit signalCancel();
 			setPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/tray.png"));
+			contextMenu()->removeItem(menulaunch);
 			contextMenu()->removeItem(menucancel);
 			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
 			break;
