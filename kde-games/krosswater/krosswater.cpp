@@ -1,27 +1,52 @@
+// Krosswater - Cross The Water for KDE
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Header file
 #include "krosswater.h"
 
+// KDE includes
 #include <kmessagebox.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
 #include <klocale.h>
 
+// Krosswater includes
 #include "dlg_person.h"
 #include "dlg_about.h"
 #include "dlg_help.h"
 
+// Qt includes
 #include <qlayout.h>
 #include <qpainter.h>
 
+// System includes
 #include <iostream>
 #include <unistd.h>
 
+// Easysock includes
 #include <easysock.h>
 
+// Configuration includes
 #include "config.h"
 
 using namespace std;
 
-Krosswater::Krosswater(QWidget *parent, char *name)
+// Constructor
+Krosswater::Krosswater(QWidget *parent, const char *name)
 : ZoneGGZModUI(parent, name)
 {
 	QVBoxLayout *vbox; //, *vbox2;
@@ -85,10 +110,12 @@ Krosswater::Krosswater(QWidget *parent, char *name)
 	cout << "Krosswater: ready!" << endl;
 }
 
+// Destructor
 Krosswater::~Krosswater()
 {
 }
 
+// Initialization after character selection
 void Krosswater::slotSelected(int person)
 {
 	m_selectedperson = person;
@@ -110,6 +137,7 @@ void Krosswater::slotSelected(int person)
 	show();
 }
 
+// Send a move
 void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 {
 	cout << "Move from " << fromx << ", " << fromy << endl;
@@ -138,6 +166,7 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 	}
 }
 
+// Receive data from the server
 void Krosswater::slotZoneInput(int op)
 {
 	int x, y, value;
@@ -238,6 +267,7 @@ void Krosswater::slotZoneInput(int op)
 	}
 }
 
+// Send ready status over the network
 void Krosswater::slotZoneReady()
 {
 	printf("CHILD: slotZoneReady()\n");
@@ -259,12 +289,14 @@ void Krosswater::slotZoneReady()
 	printf("CHILD: sent thingies...\n");
 }
 
+// Inidicate that it's the player's turn
 void Krosswater::slotZoneTurn()
 {
 	cout << "SLOT: Turn!" << endl;
 	showStatus(i18n("Your turn"));
 }
 
+// Display game over status
 void Krosswater::slotZoneOver()
 {
 	showStatus(i18n("Game over"));
@@ -273,11 +305,13 @@ void Krosswater::slotZoneOver()
 	// fooo
 }
 
+// Indicate an invalid move
 void Krosswater::slotZoneInvalid()
 {
 	KMessageBox::information(this, "Invalid move!", "Server message");
 }
 
+// Finish a turn
 void Krosswater::slotZoneTurnOver()
 {
 	cout << "Apply move from " << m_fromx << ", " << m_fromy << endl;
@@ -286,12 +320,13 @@ void Krosswater::slotZoneTurnOver()
 	qcw->setStone(m_tox, m_toy, 1);
 }
 
-
+// Quit the game
 void Krosswater::slotMenuQuit()
 {
 	close();
 }
 
+// Display the about dialog
 void Krosswater::slotMenuAbout()
 {
 	DlgAbout *dlgabout;
@@ -299,6 +334,7 @@ void Krosswater::slotMenuAbout()
 	dlgabout = new DlgAbout(NULL, "DlgAbout");
 }
 
+// Display the help dialog
 void Krosswater::slotMenuHelp()
 {
 	DlgHelp *dlghelp;
@@ -306,6 +342,7 @@ void Krosswater::slotMenuHelp()
 	dlghelp = new DlgHelp(NULL, "DlgHelp");
 }
 
+// Show the game status
 void Krosswater::showStatus(QString state)
 {
 	QPainter p;
@@ -324,11 +361,13 @@ void Krosswater::showStatus(QString state)
 	//printf("State: %s\n", state);
 }
 
+// Draw the map
 void Krosswater::paintEvent(QPaintEvent *e)
 {
 	showStatus(m_currentstate);
 }
 
+// Receive a move
 void Krosswater::slotZoneBroadcast()
 {
 	int fromx, tox, fromy, toy;
@@ -360,6 +399,7 @@ void Krosswater::slotZoneBroadcast()
 	qcw->repaint();
 }
 
+// Ask for another game
 void Krosswater::slotAgain()
 {
 	m_again->close();

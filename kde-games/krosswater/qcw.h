@@ -1,29 +1,50 @@
+// Krosswater - Cross The Water for KDE
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 #ifndef QCW_H
 #define QCW_H
 
+// Qt includes
 #include <qwidget.h>
 #include <qevent.h>
 #include <qtimer.h>
 
+// Generic Krosswater game board
 class QCw : public QWidget
 {
 	Q_OBJECT
 	public:
-		QCw(QWidget* parent = 0, char* name = 0);
+		QCw(QWidget* parent = NULL, const char* name = NULL);
 		~QCw();
 		void setSize(int width, int height);
 		void setStone(int x, int y, int value);
 		void setStoneState(int x, int y, int state);
-
 		void resetPlayers();		
 		void addPlayer(int x, int y);
 		void setPlayerPixmap(int player, int pixmap);
+
 	signals:
 		void signalMove(int xfrom, int yfrom, int xto, int yto);
+
 	protected:
 		void paintEvent(QPaintEvent *e);
 		void mousePressEvent(QMouseEvent *e);
 		void timerEvent(QTimerEvent *e);
+
 	private:
 		enum states
 		{
@@ -39,3 +60,4 @@ class QCw : public QWidget
 };
 
 #endif
+

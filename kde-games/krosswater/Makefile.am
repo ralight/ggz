@@ -1,40 +1,34 @@
-#dist-hook:
-#	-perl am_edit
-
 SUBDIRS = zoneclient gfx
 
-bin_PROGRAMS = krosswater_client
+ggzexecmod_PROGRAMS = krosswater_client
 
-bindir = $(ggzexecmoddir)
+krosswater_client_SOURCES = \
+	main.cpp \
+	krosswater.cpp \
+	dlg_person.cpp \
+	dlg_about.cpp \
+	dlg_help.cpp \
+	dlg_again.cpp \
+	qcw.cpp
 
-INCLUDES = -Izoneclient -I$(qt_includes) -I$(kde_includes) $(all_includes) $(EASYSOCK_INCLUDES)
+krosswater_client_LDFLAGS = $(all_libraries) $(EASYSOCK_LDFLAGS)
+krosswater_client_LDADD = -lqt $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_EASYSOCK) zoneclient/libzoneclient.la
 
-noinst_HEADERS = krosswater.h \
-		dlg_person.h \
-		dlg_about.h \
-		dlg_help.h \
-		dlg_again.h \
-		qcw.h
+INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES) -Izoneclient
 
-krosswater_client_SOURCES = main.cpp \
-			krosswater.cpp \
-			dlg_person.cpp \
-			dlg_about.cpp \
-			dlg_help.cpp \
-			dlg_again.cpp \
-			qcw.cpp
+noinst_HEADERS = \
+	krosswater.h \
+	dlg_person.h \
+	dlg_about.h \
+	dlg_help.h \
+	dlg_again.h \
+	qcw.h
 
-krosswater_client_METASOURCES = AUTO
-#krosswater_client_METASOURCES = krosswater.moc.cpp dlg_person.moc.cpp qcw.moc.cpp
+METASOURCES = AUTO
 
-EXTRA_DIST =
+EXTRA_DIST = module.dsc.in
 
-UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-krosswater_client_LDADD = zoneclient/libzoneclient.la $(UI) $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
-
-DISTCLEANFILES = $(krosswater_client_METASOURCES)
-
-# AUTOMAKE_OPTIONS = foreign
+DISTCLEANFILES = $(METASOURCES)
 
 install-data-local:
 	@$(NORMAL_INSTALL)

@@ -1,12 +1,33 @@
+// Krosswater - Cross The Water for KDE
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Header file
 #include "dlg_about.h"
 
+// Configuration includes
 #include "config.h"
 
+// Qt includes
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qpushbutton.h>
 
-DlgAbout::DlgAbout(QWidget *parent, char *name)
+// Constructor
+DlgAbout::DlgAbout(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QPushButton *ok;
@@ -20,10 +41,12 @@ DlgAbout::DlgAbout(QWidget *parent, char *name)
 	show();
 }
 
+// Desctructor
 DlgAbout::~DlgAbout()
 {
 }
 
+// Draw the dialog
 void DlgAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
@@ -41,13 +64,6 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 	p.drawText(15, 161, "The MindX Open Source Project");
 	p.drawText(15, 174, "http://mindx.sourceforge.net");
 	p.drawPixmap(15, 190, QPixmap(GGZDATADIR "/krosswater/gfx/mindx.png"));
-	//p.drawPixmap(122, 250, QPixmap(GGZDATADIR "/krosswater/gfx/ok.png"));
 	p.end();
-}
-
-void DlgAbout::mousePressEvent(QMouseEvent *e)
-{
-	if(!e) return;
-	//if((e->x() > 122) && (e->x() < 177) && (e->y() > 250) && (e->y() < 270)) close();
 }
 
