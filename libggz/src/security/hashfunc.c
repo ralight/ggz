@@ -7,6 +7,10 @@
 
 #ifdef USE_GCRYPT
 
+#ifndef GcryMDHd
+#define GcryMDHd GCRY_MD_HD
+#endif
+
 static hash_t hash_create_private(const char *algo, const char *text, const char *secret)
 {
 	GcryMDHd handle;
