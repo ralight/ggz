@@ -176,7 +176,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 {
 	GtkWidget *dialogwindow;
 	GtkWidget *packingbox;
-	GtkWidget *packingbox2;
+	GtkWidget *buttonbox;
 	GtkWidget *packingbox3;
 	GtkWidget *icon = NULL;
 	GdkColormap *colormap;
@@ -225,23 +225,30 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 
 	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox3);
 	dialogwidget = AddWidget (gtk_hseparator_new(), packingbox);
-	packingbox2 = gtk_hbox_new (TRUE, 2);
-	dialogwidget = AddWidget (packingbox2, packingbox);
+	buttonbox = gtk_hbutton_box_new();
+	dialogwidget = AddWidget (buttonbox, packingbox);
 
 	btnok = gtk_button_new_with_label ("OK");
+	GTK_WIDGET_SET_FLAGS (btnok, GTK_CAN_DEFAULT);
 	btncancel = gtk_button_new_with_label ("Cancel");
+	GTK_WIDGET_SET_FLAGS (btncancel, GTK_CAN_DEFAULT);
 	btnyes = gtk_button_new_with_label ("Yes");
+	GTK_WIDGET_SET_FLAGS (btnyes, GTK_CAN_DEFAULT);
 	btnno = gtk_button_new_with_label ("No");
+	GTK_WIDGET_SET_FLAGS (btnno, GTK_CAN_DEFAULT);
 
 	if (type == MSGBOX_OKCANCEL)
 	{
-		dialogwidget = AddWidget (btnok, packingbox2);
-		dialogwidget = AddWidget (btncancel, packingbox2);
+		dialogwidget = AddWidget (btnok, buttonbox);
+		dialogwidget = AddWidget (btncancel, buttonbox);
+		gtk_widget_grab_default (btnok);
 	} else if (type == MSGBOX_YESNO) {
-		dialogwidget = AddWidget (btnyes, packingbox2);
-		dialogwidget = AddWidget (btnno, packingbox2);
+		dialogwidget = AddWidget (btnyes, buttonbox);
+		dialogwidget = AddWidget (btnno, buttonbox);
+		gtk_widget_grab_default (btnno);
 	} else if (type == MSGBOX_OKONLY) {
-		dialogwidget = AddWidget (btnok, packingbox2);
+		dialogwidget = AddWidget (btnok, buttonbox);
+		gtk_widget_grab_default (btnok);
 	}
 
 	gtk_signal_connect (GTK_OBJECT (btnok),
