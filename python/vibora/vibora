@@ -8,6 +8,7 @@ Pygame core client for GGZ
 
 import ggzcore
 import pygame, pygame.transform, pygame.image
+import pygame.surfarray
 from random import *
 from math import *
 from pygame.locals import *
@@ -26,30 +27,47 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
+DATAPATH = "./"
+
 def vibora_background(resolution):
 	granularity = 16
 	counter = 27
 
-	overlay = pygame.Surface((resolution[0] / granularity, resolution[1] / granularity))
+	try:
+		bg = pygame.image.load(DATAPATH + "background.png")
+	except:
+		overlay = pygame.Surface((resolution[0] / granularity, resolution[1] / granularity))
 
-	for j in range(resolution[1] / granularity):
-		for i in range(resolution[0] / granularity):
-			blue = ((sin(i / 2.0 - counter / 2.0) +  cos(j / 2.0 + counter / 2.0)) * 80.0)
-			if blue < 0:
-				blue = 0
-			if blue > 50:
-				blue = 50
-			green = 0 
-			red = 0
-			overlay.fill((red, green, blue), ((i, j), (1, 1)))
+		for j in range(resolution[1] / granularity):
+			for i in range(resolution[0] / granularity):
+				blue = ((sin(i / 2.0 - counter / 2.0) +  cos(j / 2.0 + counter / 2.0)) * 80.0)
+				if blue < 0:
+					blue = 0
+				if blue > 50:
+					blue = 50
+				green = 0 
+				red = 0
+				overlay.fill((red, green, blue), ((i, j), (1, 1)))
 
-	bg = pygame.transform.scale(overlay, resolution)
+		bg = pygame.transform.scale(overlay, resolution)
+
 	return bg
 
 def vibora_frame(surface, rect):
 	((x, y), (x2, y2)) = rect
 	w = x2 - x
 	h = y2 - y
+
+	if 0 == 1:
+		array = pygame.surfarray.pixels2d(surface)
+		for j in range(y, y2, 2):
+			for i in range(x, x2, 2):
+				pixel = array[i, j]
+				pixel = pixel & 0xFF1F
+				array[i, j] = pixel
+				array[i + 1, j] = pixel
+				array[i, j + 1] = pixel
+				array[i + 1, j + 1] = pixel
 
 	if 1 == 1:
 		surface.lock()
@@ -196,6 +214,10 @@ def background_chat():
 
 	vibora_caption(bg, "Chat", chatrect, CAPTION_ALL, WHITE, 0)
 
+	bigfont = pygame.font.Font(None, 48)
+	roomname = ggzcore.room.get_name()
+	screen_caption = bigfont.render("GGZ Gaming Zone: " + roomname, 1, (255, 255, 255))
+
 	bg.blit(screen_caption, (100, 10))
 	bg.blit(screen_logo, (10, 15))
 
@@ -222,6 +244,8 @@ def ggz_server_event(id, data):
 	global bg
 	global ggzready
 	global roomlist
+	global bg_dirty
+	global chatoutput
 
 	if id == ggzcore.SERVER_CONNECTED:
 		vibora_caption(bg, "* Connected!", progressrect, CAPTION_ALL, GREEN, 2)
@@ -238,8 +262,11 @@ def ggz_server_event(id, data):
 		vibora_caption(bg, "* Entering the lounge", progressrect, CAPTION_ALL, YELLOW, 5)
 		ggzcore.server.join_room("Lounge")
 	elif id == ggzcore.SERVER_ENTERED:
-		vibora_caption(bg, "* Entered!", progressrect, CAPTION_ALL, GREEN, 6)
-		ggzready = 1
+		if ggzready == 0:
+			vibora_caption(bg, "* Entered!", progressrect, CAPTION_ALL, GREEN, 6)
+			ggzready = 1
+		else:
+			chatoutput.append("* Entered!")
 	elif id == ggzcore.SERVER_ENTER_FAIL:
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 6)
 		ggzready = -1
@@ -247,8 +274,13 @@ def ggz_server_event(id, data):
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 4)
 		ggzready = -1
 
-	screen.blit(bg, (0, 0))
-	pygame.display.flip()
+	if ggzready < 2:
+		screen.blit(bg, (0, 0))
+		pygame.display.flip()
+		if ggzready == 1:
+			ggzready = 2
+	else:
+		bg_dirty = 1
 
 def readenterkey():
 	while 1:
@@ -261,8 +293,10 @@ def readenterkey():
 
 			if key == K_RETURN:
 				return
+			if key == K_ESCAPE:
+				return
 
-def ggz_progress():
+def ggz_progress(host):
 	global progressrect
 	global bg
 	global ggzready
@@ -272,10 +306,10 @@ def ggz_progress():
 	ggzcore.setHandler(ggzcore.EVENT_SERVER, ggz_server_event)
 	ggzcore.setHandler(ggzcore.EVENT_ROOM, ggz_room_event)
 
-	ggzcore.server.set_hostinfo("localhost", 5688, 1)
+	ggzcore.server.set_hostinfo(host, 5688, 1)
 	ggzcore.server.set_logininfo(ggzcore.LOGIN_GUEST, "player", "")
 
-	vibora_caption(bg, "* Connecting to live.ggzgamingzone.org", progressrect, CAPTION_ALL, YELLOW, 1)
+	vibora_caption(bg, "* Connecting to " + host, progressrect, CAPTION_ALL, YELLOW, 1)
 	screen.blit(bg, (0, 0))
 	pygame.display.flip()
 
@@ -302,7 +336,7 @@ def ggz_progress():
 		readenterkey()
 	return ggzready
 
-def main():
+def main(host):
 	global screen_resolution
 	global screen_problem
 	global screen_caption
@@ -349,11 +383,12 @@ def main():
 
 	chatoutput = []
 	roomlist = []
+	startroom = 0
 
 	""" Progress """
 
 	bg = background_progress()
-	ret = ggz_progress()
+	ret = ggz_progress(host)
 	if ret < 0:
 		return
 
@@ -410,10 +445,21 @@ def main():
 						return
 					if line > 0 and line < maxline - 1:
 						if current_room == 0:
-							switchto_room = line
+							switchto_room = line + startroom - 1
 					if line == maxline - 1:
 						if current_room != 0:
 							switchto_room = 0
+
+				((rx, ry), (rx2, ry2)) = roomscrolluprect
+				if x > rx and x < rx2 and y > ry and y < ry2:
+					if startroom > 0:
+						startroom -= 1
+						bg_dirty = 1
+				((rx, ry), (rx2, ry2)) = roomscrolldownrect
+				if x > rx and x < rx2 and y > ry and y < ry2:
+					if startroom < len(roomlist) - 1:
+						startroom += 1
+						bg_dirty = 1
 
 			if event.type == KEYDOWN:
 				key = event.key
@@ -446,10 +492,11 @@ def main():
 				bg_dirty = 1
 
 		if switchto_room >= 0:
-			chatoutput.append("Entering room " + str(switchto_room))
+			chatoutput.append("* Entering room " + roomlist[switchto_room])
+			ggzcore.server.join_room(roomlist[switchto_room])
 			current_room = switchto_room
 			switchto_room = -1
-			bg_dirty = 1
+			#bg_dirty = 1
 
 		if bg_dirty:
 			bgshadow.blit(bg, (0, 0))
@@ -497,10 +544,13 @@ def main():
 				i = i + 1
 
 			if current_room == 0:
-				i = 1
+				i = 0
 				for line in roomlist:
-					vibora_caption(bgshadow, line, roomrect, CAPTION_ALL, RED, i)
+					if i >= startroom:
+						vibora_caption(bgshadow, line, roomrect, CAPTION_ALL, RED, i - startroom + 1)
 					i = i + 1
+					if i == 27 + startroom:
+						break
 			else:
 				base = 150
 				rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 20))
@@ -568,5 +618,14 @@ def main():
 		pygame.display.flip()
 		clock.tick()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+	host = None
+
+	if len(sys.argv) == 2:
+		host = sys.argv[1]
+	
+	if not host:
+		host = "live.ggzgamingzone.org"
+
+	main(host)
 
