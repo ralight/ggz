@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+dnl Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -30,7 +30,7 @@ dnl ------------------------------------------------------------------------
 dnl Find a single file
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_FIND_FILE,
+AC_DEFUN([AC_GGZ_FIND_FILE],
 [
 $3=NO
 for i in $2;
@@ -53,7 +53,7 @@ dnl $(SSL_LDFLAGS) will be -Lsslliblocation (if needed)
 dnl and $(SSL_INCLUDES) will be -Isslhdrlocation (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_PATH_SSL,
+AC_DEFUN([AC_PATH_SSL],
 [
 LIBSSL="-lssl -lcrypto"
 
@@ -235,7 +235,7 @@ dnl $(GNUTLS_LDFLAGS) will be -L ... (if needed)
 dnl and $(GNUTLS_INCLUDES) will be -I ... (if needed)
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_GNUTLS,
+AC_DEFUN([AC_GGZ_GNUTLS],
 [
 dnl AC_MSG_CHECKING([for GNUTLS])
 
@@ -329,7 +329,7 @@ dnl $(GGZTLS_SOURCES) is the dynamic list of source files, depending on the
 dnl used implementation
 dnl ------------------------------------------------------------------------
 dnl
-AC_DEFUN(AC_GGZ_TLS,
+AC_DEFUN([AC_GGZ_TLS],
 [
 AC_MSG_CHECKING([for GGZ TLS implementation])
 
