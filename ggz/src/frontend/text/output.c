@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: output.c 4834 2002-10-10 00:55:04Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -124,7 +125,7 @@ void output_text(char* fmt, ...)
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsprintf(message, sizeof(message), fmt, ap);
+	vsnprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
 
 	/* Shift everything in the buffer up */
