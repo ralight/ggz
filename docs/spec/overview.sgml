@@ -62,7 +62,7 @@
   sort of run-time configuration utilities for GGZ, so the main
   server will not have to be restarted (or worse.. recompiled!) in
   order for various options to be changed.
-  The first such utily is ggzduedit, with which the user database
+  The first such utility is ggzduedit, with which the user database
   can be edited.
 </para>
 
@@ -248,7 +248,7 @@
 	  player from the database), or explicitely (e.g. when changing
 	  some configuration parameters and sending a hangup signal
 	  to ggzd).
-	  The latter one will be steered by a configuration utily as well
+	  The latter one will be steered by a configuration utility as well
 	  at some point.
     </para>
 
