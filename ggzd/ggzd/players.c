@@ -5,7 +5,7 @@
  * Date: 10/18/99
  * Desc: Functions for handling players
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 1999,2000 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -517,13 +517,27 @@ static int player_login_anon(int p, int fd)
 {
 	char name[MAX_USER_NAME_LEN + 1];
 	char *ip_addr, *hostname;
+	int i;
 
 	dbg_msg("Creating anonymous login for player %d", p);
 	
 	if (FAIL(read_name(fd, name)))
 		return (-1);
 
-	/* FIXME: Check validity/uniqueness of name */
+	/* Check name for uniqueness */
+	pthread_rwlock_rdlock(&players.lock);
+	for(i=0; i<MAX_USERS; i++)
+		if(!strcmp(name, players.info[i].name))
+			break;
+	pthread_rwlock_unlock(&players.lock);
+	/* FIXME: need to check vs. database too */
+	if(i != MAX_USERS) {
+		dbg_msg("Unsuccessful anonymous login of %s", name);
+		if(!FAIL(es_write_int(fd, RSP_LOGIN_ANON)))
+			(void) es_write_char(fd, -1);
+		return -1;
+	}
+
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p].uid = NG_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);

@@ -5,7 +5,7 @@
  * Date: 10/18/99
  * Desc: Functions for handling players
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 1999,2000 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
