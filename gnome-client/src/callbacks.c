@@ -40,6 +40,60 @@ on_window_delete_event                (GtkWidget       *widget,
 
 
 void
+on_entLogin_changed			(GtkEntry       *widget,
+					 gpointer       *user_data)
+{
+
+	static gint form[6] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
+	gint val;
+	gchar *text;
+	GtkWidget *tmp;
+	
+	/*What widget we dealin with?*/
+	if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entUsername"))
+	{
+		val = 0;
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entPassword")) {
+		val = 1;
+	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entServer")) {
+		val = 2;
+	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewProfileName")) {
+		val = 3;
+	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewUsername")) {
+		val = 4;
+	}  else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entNewServer")) {
+		val = 5;
+	}
+	
+	/*Set the state of the entry*/
+	text = gtk_entry_get_text (GTK_ENTRY (widget));
+	if (strlen(text) > 0)
+	{
+		form[val] = TRUE;;
+	} else if (strlen(text) == 0){
+		form[val] = FALSE;
+	}
+
+	/*Set the buttons sensitivity*/
+	tmp = lookup_widget (interface, "btnLogin");
+	if (form[0] == TRUE && form[1] == TRUE && form[2] == TRUE)
+	{
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
+	}
+	tmp = lookup_widget (interface, "btnNewCreate");
+	if (form[3] == TRUE && form[4] == TRUE && form[5] == TRUE)
+	{
+		gtk_widget_set_sensitive (GTK_WIDGET (tmp), TRUE);
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
+	}
+	
+}
+
+
+void
 on_btnLogin_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -153,9 +207,10 @@ on_tree_selection_changed 		(GtkTreeSelection *selection,
 				gtk_entry_set_text (GTK_ENTRY (tmp), g_slist_nth_data (slProfilePWDs, count));
 				tmp = lookup_widget (interface, "entServer");
 				gtk_entry_set_text (GTK_ENTRY (tmp), g_slist_nth_data (slProfileServers, count));
-				
+
 				tmp = lookup_widget (interface, "btnRegistered");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tmp), TRUE);
+				
 			}
 			g_free(strTmp);
 		}
@@ -407,52 +462,6 @@ on_pmStar_timeout                 (gpointer         user_data)
 	return TRUE;
 }
 
-gint
-on_general_timeout                 (gpointer         user_data)
-{
-	GtkWidget *ent1, *ent2, *ent3, *btn1, *btn2;
-	
-	/* Check the sensitivity of buttons */
-	ent1 = lookup_widget (interface, "entUsername");
-	ent2 = lookup_widget (interface, "entPassword");
-	ent3 = lookup_widget (interface, "entServer");
-	btn1 = lookup_widget (interface, "btnGuest");
-	btn2 = lookup_widget (interface, "btnLogin");
-		
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON (btn1)) == FALSE)
-	{
-		if (strcmp (gtk_entry_get_text (GTK_ENTRY (ent1)), "") &&
-		    strcmp (gtk_entry_get_text (GTK_ENTRY (ent2)), "") &&
-		    strcmp (gtk_entry_get_text (GTK_ENTRY (ent3)), ""))
-		{
-			gtk_widget_set_sensitive (btn2, TRUE);
-		} else {
-			gtk_widget_set_sensitive (btn2, FALSE);
-		}
-	} else {
-		if (strcmp (gtk_entry_get_text (GTK_ENTRY (ent1)), "") &&
-		    strcmp (gtk_entry_get_text (GTK_ENTRY (ent3)), ""))
-		{
-			gtk_widget_set_sensitive (btn2, TRUE);
-		} else {
-			gtk_widget_set_sensitive (btn2, FALSE);
-		}
-	}
-
-	ent1 = lookup_widget (interface, "entNewProfileName");
-	ent2 = lookup_widget (interface, "entNewUsername");
-	ent3 = lookup_widget (interface, "entNewServer");
-	btn1 = lookup_widget (interface, "btnNewCreate");
-
-	if (strcmp (gtk_entry_get_text (GTK_ENTRY (ent1)), "") &&
-	    strcmp (gtk_entry_get_text (GTK_ENTRY (ent2)), "") &&
-	    strcmp (gtk_entry_get_text (GTK_ENTRY (ent3)), ""))
-	{
-		gtk_widget_set_sensitive (btn1, TRUE);
-	} else {
-		gtk_widget_set_sensitive (btn1, FALSE);
-	}
-}
 
 void
 on_pmBackground_draw                   (GtkWidget       *widget,
@@ -461,7 +470,6 @@ on_pmBackground_draw                   (GtkWidget       *widget,
 {
 
 }
-
 
 
 gboolean

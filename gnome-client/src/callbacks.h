@@ -11,6 +11,10 @@ on_window_delete_event                (GtkWidget       *widget,
                                        gpointer         user_data);
 
 void
+on_entLogin_changed			(GtkEntry	*widget,
+					 gpointer	*user_data);
+
+void
 on_btnLogin_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 

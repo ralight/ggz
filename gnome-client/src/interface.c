@@ -408,7 +408,8 @@ create_login (void)
   GtkWidget *swRooms;
   GtkWidget *vpRooms;
   GtkWidget *vbRooms;
-
+  gint user_data;
+  
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (window, "window");
   gtk_object_set_data (GTK_OBJECT (window), "window", window);
@@ -463,6 +464,7 @@ create_login (void)
   gtk_fixed_put (GTK_FIXED (fixMain), btnLogin, 280, 208);
   gtk_widget_set_uposition (btnLogin, 280, 208);
   gtk_widget_set_usize (btnLogin, 81, 25);
+  gtk_widget_set_sensitive (btnLogin, FALSE);
 
   btnNew = gtk_button_new_with_mnemonic (_("_NEW"));
   gtk_widget_set_name (btnNew, "btnNew");
@@ -683,6 +685,7 @@ create_login (void)
   gtk_widget_show (btnNewCreate);
   gtk_box_pack_start (GTK_BOX (hbNewLogin), btnNewCreate, FALSE, FALSE, 0);
   gtk_widget_set_usize (btnNewCreate, 80, -2);
+  gtk_widget_set_sensitive (btnNewCreate, FALSE);
 
   btnNewCancel = gtk_button_new_with_mnemonic (_("C_ANCEL"));
   gtk_widget_set_name (btnNewCancel, "btnNewCancel");
@@ -929,6 +932,15 @@ create_login (void)
   gtk_signal_connect (GTK_OBJECT (btnQuit), "clicked",
                       GTK_SIGNAL_FUNC (gtk_main_quit),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (entUsername), "changed",
+		      GTK_SIGNAL_FUNC (on_entLogin_changed),
+		      NULL);
+  gtk_signal_connect (GTK_OBJECT (entPassword), "changed",
+		      GTK_SIGNAL_FUNC (on_entLogin_changed),
+		      NULL);
+  gtk_signal_connect (GTK_OBJECT (entServer), "changed",
+		      GTK_SIGNAL_FUNC (on_entLogin_changed),
+		      NULL);
   gtk_signal_connect (GTK_OBJECT (pmBackground), "draw",
                       GTK_SIGNAL_FUNC (on_pmBackground_draw),
                       NULL);
@@ -953,6 +965,15 @@ create_login (void)
   gtk_signal_connect (GTK_OBJECT (btnNewCancel), "clicked",
                       GTK_SIGNAL_FUNC (on_btnNewCancel_clicked),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (entNewProfileName), "changed",
+		      GTK_SIGNAL_FUNC (on_entLogin_changed),
+		      NULL);
+  gtk_signal_connect (GTK_OBJECT (entNewUsername), "changed",
+                      GTK_SIGNAL_FUNC (on_entLogin_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (entNewServer), "changed",
+                      GTK_SIGNAL_FUNC (on_entLogin_changed),
+                      NULL); 
   g_signal_connect (G_OBJECT (selProfiles), "changed",
 		      G_CALLBACK (on_tree_selection_changed),
 		      NULL);
