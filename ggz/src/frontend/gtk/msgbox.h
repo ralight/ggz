@@ -24,6 +24,7 @@
 
 /* Creates a button with a stock icon and custom text. */
 GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text);
+void stockbutton_set_text(GtkWidget *button, const gchar *label_text);
 
 /*
  * A very easily cusomisible message box. This message box can be used to 

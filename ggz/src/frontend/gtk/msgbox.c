@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: msgbox.c 6305 2004-11-09 00:11:51Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -59,7 +59,19 @@ GtkWidget *stockbutton_new(const gchar *stock, const gchar *label_text)
 	gtk_container_add(GTK_CONTAINER(button), align);
 	gtk_container_add(GTK_CONTAINER(align), hbox);
 	gtk_widget_show_all(align);
+
+	g_object_set_data(G_OBJECT(button), "label", label);
+	g_object_set_data(G_OBJECT(button), "image", image);
+
 	return button;
+}
+
+void stockbutton_set_text(GtkWidget *button, const gchar *label_text)
+{
+	GtkWidget *label;
+
+	label = g_object_get_data(G_OBJECT(button), "label");
+	gtk_label_set_text(GTK_LABEL(label), label_text);
 }
 
 static MBReturn mb_status;

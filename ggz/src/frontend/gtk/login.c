@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6278 2004-11-06 00:16:45Z jdorje $
+ * $Id: login.c 6305 2004-11-09 00:11:51Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -105,7 +105,7 @@ void login_failed(GGZErrorEventData *error)
 
 	/* Re-enable the "connect" button and change it say "Login" */
 	tmp = lookup_widget(login_dialog, "connect_button");
-	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
+	stockbutton_set_text(tmp, _("Login"));
 	gtk_widget_set_sensitive(tmp, TRUE);
 
 	tmp = lookup_widget(login_dialog, "top_panel");
