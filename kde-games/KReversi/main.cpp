@@ -52,7 +52,8 @@ int main(int argc, char *argv[])
   KAboutData aboutData( "ggz.kreversi", I18N_NOOP("KGGZReversi"),
     REV_VERSION, description, KAboutData::License_GPL,
     "(c) 2001, Ismael Orenstein", 0, 0, "perdig@linuxbr.com.br");
-  aboutData.addAuthor("Ismael Orenstein",0, "perdig@linuxbr.com.br");
+  aboutData.addAuthor("Ismael Orenstein", 0, "perdig@linuxbr.com.br");
+  aboutData.setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

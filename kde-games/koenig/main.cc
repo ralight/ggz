@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 
 	aboutData.addAuthor("Tobias König", "Creator", "tokoe@kde.org");
 	aboutData.addAuthor("Josef Spillner", "Maintainer", "josef@ggzgamingzone.org");
+	aboutData.setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(op);

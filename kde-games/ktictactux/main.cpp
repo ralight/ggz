@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, josef@ggzgamingzone.org
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -32,9 +32,9 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://ggz.sourceforge.net/games/ktictactux/",
-		"dr_maux@users.sourceforge.net");
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+		"http://www.ggzgamingzone.org/games/ktictactux/",
+		"josef@ggzgamingzone.org");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "josef@ggzgamingzone.org");
 	aboutData->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, aboutData);

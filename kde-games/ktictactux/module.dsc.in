@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/ktictactux_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/ktictactux.png
 Frontend = kde
-Homepage = http://ggz.sourceforge.net/games/ktictactux/
+Homepage = http://www.ggzgamingzone.org/games/ktictactux/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
 ProtocolVersion = 3

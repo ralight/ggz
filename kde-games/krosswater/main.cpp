@@ -1,5 +1,5 @@
 // Krosswater - Cross The Water for KDE
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -46,8 +46,11 @@ int main(int argc, char **argv)
 		KAboutData::License_GPL,
 		"(C) 2001, 2002 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
-		"http://ggz.sourceforge.net/games/krosswater/",
-		"dr_maux@users.sourceforge.net");
+		"http://www.ggzgamingzone.org/games/krosswater/",
+		"josef@ggzgamingzone.org");
+
+	about->addAuthor("Josef Spillner", I18N_NOOP("Initial developer"), "josef@ggzgamingzone.org");
+	about->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
 	KCmdLineArgs::init(argc, argv, about);
 	KCmdLineArgs::addCmdLineOptions(op);

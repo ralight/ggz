@@ -1,5 +1,5 @@
 // Krosswater - Cross The Water for KDE
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, josef@ggzgamingzone.org
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -61,9 +61,9 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, i18n("Try to cross the water the most efficient way!"));
 	p.drawText(15, 105, i18n("This game is part of the GGZ Gaming Zone."));
-	p.drawText(15, 120, "http://ggz.sourceforge.net/games/krosswater");
+	p.drawText(15, 120, "http://www.ggzgamingzone.org/games/krosswater/");
 	p.drawText(15, 140, "Copyright (C) 2001, 2002 Josef Spillner");
-	p.drawText(15, 155, "dr_maux@users.sourceforge.net");
+	p.drawText(15, 155, "josef@ggzgamingzone.org");
 	p.drawText(15, 170, "The MindX Open Source Project");
 	p.drawText(15, 185, "http://mindx.sourceforge.net");
 	p.drawPixmap(140, 210, QPixmap(GGZDATADIR "/krosswater/gfx/mindx.png"));
