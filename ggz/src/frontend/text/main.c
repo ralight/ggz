@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5316 2003-01-12 11:41:37Z dr_maux $
+ * $Id: main.c 5336 2003-01-18 00:39:53Z dr_maux $
  *
  * Main loop
  *
@@ -90,6 +90,8 @@ static void init_debug(void)
 int main(int argc, char *argv[])
 {
 	char *u_path;
+	char *autouri = NULL;
+	char *host, *port, *user;
 	GGZOptions opt;
 	struct option options[] =
 	{
@@ -97,7 +99,7 @@ int main(int argc, char *argv[])
 		{"version", no_argument, 0, 'v'},
 		{"reverse", no_argument, 0, 'r'}
 	};
-	int optindex;
+	int optindex = 0;
 	int option;
 	int opt_reverse = 0;
 
@@ -109,7 +111,11 @@ int main(int argc, char *argv[])
 		{
 			case 'h':
 				printf("The GGZ Gaming Zone Text Client\n");
-				printf("http://ggz.sourceforge.net/\n");
+				printf("http://ggz.sourceforge.net/\n\n");
+				printf("Call: ggz-txt [options] [uri]:\n");
+				printf("-r / --reverse: Use reverse colours\n");
+				printf("-h / --help: Display this help\n");
+				printf("-v / --version: Display version information\n");
 				exit(0);
 				break;
 			case 'v':
@@ -122,6 +128,10 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	if(optindex < argc) {
+		autouri = argv[argc - 1];
+	}
+
 	output_init(opt_reverse);
 	signal(SIGTERM, term_handle);
 	signal(SIGINT, term_handle);
@@ -129,7 +139,7 @@ int main(int argc, char *argv[])
 
 	/* Use local config file */
 	/*g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");*/
-        u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
+	u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
 	ggzcore_conf_initialize(NULL, u_path);
 	ggz_free(u_path);
 
@@ -147,6 +157,22 @@ int main(int argc, char *argv[])
 	/* Event loop */
 	loop_init(TIMEOUT);
 	loop_add_fd(STDIN_FILENO, input_command, NULL);
+
+	/* Auto connection? */
+	if (autouri) {
+		if(strchr(autouri, '@')) {
+			user = strsep(&autouri, "@");
+		} else user = NULL;
+		if(strchr(autouri, ':')) {
+			host = strsep(&autouri, ":");
+			port = strsep(&autouri, ":");
+		} else {
+			host = autouri;
+			port = NULL;
+		}
+		server_init(host, (port ? atoi(port) : 5688), GGZ_LOGIN_GUEST, (user ? user : getenv("LOGNAME")), NULL);
+	}
+
 	loop();
 
 	if (server) {

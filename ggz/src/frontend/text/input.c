@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5187 2002-11-03 22:09:43Z jdorje $
+ * $Id: input.c 5336 2003-01-18 00:39:53Z dr_maux $
  *
  * Functions for inputing commands from the user
  *
@@ -125,7 +125,8 @@ void input_command(void)
 		else if (strcmp(command, "launch") == 0) {
 			input_handle_launch(current);
 		}
-		else if (strcmp(command, "exit") == 0) {
+		else if ((strcmp(command, "exit") == 0)
+		|| (strcmp(command, "quit") == 0)) {
 			input_handle_exit();
 		}
 		else if (strcmp(command, "version") == 0) {
