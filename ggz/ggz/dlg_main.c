@@ -40,6 +40,7 @@
 #include <datatypes.h>
 #include <err_func.h>
 #include <easysock.h>
+#include <chat.h>
 #include <connect.h>
 #include <ggzrc.h>
 #include <protocols.h>
@@ -147,26 +148,47 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
                 return;
         }
                         
-        if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-	  && es_write_int(connection.sock, REQ_CHAT) == 0)
+	if(strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/help", 5))
 	{
-		if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg ", 5))
+	        if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
+		  && es_write_int(connection.sock, REQ_CHAT) == 0)
 		{
-			if (es_write_char(connection.sock, GGZ_CHAT_PERSONAL) == 0)
-	        	        es_write_string(connection.sock,
-                        	        gtk_entry_get_text(GTK_ENTRY(user_data))+5);
-		} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep ", 6))
-		{
-			if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
-	        	        es_write_string(connection.sock,
-                        	        gtk_entry_get_text(GTK_ENTRY(user_data))+6);
-		}else{
-			if (es_write_char(connection.sock, GGZ_CHAT_NORMAL) == 0)
-	        	        es_write_string(connection.sock,
-                        	        gtk_entry_get_text(GTK_ENTRY(user_data)));
+			if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg ", 5))
+			{
+				if (es_write_char(connection.sock, GGZ_CHAT_PERSONAL) == 0)
+	        	        	es_write_string(connection.sock,
+                        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+5);
+			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep ", 6))
+			{
+				if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
+	        		        es_write_string(connection.sock,
+                        		        gtk_entry_get_text(GTK_ENTRY(user_data))+6);
+			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/announce ", 10))
+			{
+				if (es_write_char(connection.sock, GGZ_CHAT_ANNOUNCE) == 0)
+	        		        es_write_string(connection.sock,
+                        		        gtk_entry_get_text(GTK_ENTRY(user_data))+10);
+			}else{
+				if (es_write_char(connection.sock, GGZ_CHAT_NORMAL) == 0)
+	        		        es_write_string(connection.sock,
+                        		        gtk_entry_get_text(GTK_ENTRY(user_data)));
+			}
 		}
+        }else{
+		chat_print(CHAT_COLOR_SERVER, "---", "GNU Gaming Zone");
+		chat_print(CHAT_COLOR_SERVER, "---", "   Chat Help");
+		chat_print(CHAT_COLOR_SERVER, "---", " ");
+		chat_print(CHAT_COLOR_SERVER, "---", "/help");
+		chat_print(CHAT_COLOR_SERVER, "---", "   Display help on a given commad.");
+		chat_print(CHAT_COLOR_SERVER, "---", "/me <action>");
+		chat_print(CHAT_COLOR_SERVER, "---", "   Displays an action.");
+		chat_print(CHAT_COLOR_SERVER, "---", "/beep <user>");
+		chat_print(CHAT_COLOR_SERVER, "---", "   Makes <user>'s computer beep.");
+		chat_print(CHAT_COLOR_SERVER, "---", "/anounce");
+		chat_print(CHAT_COLOR_SERVER, "---", "   Reserved for server operators,");
+		chat_print(CHAT_COLOR_SERVER, "---", "   this command sends a message to");
+		chat_print(CHAT_COLOR_SERVER, "---", "   all rooms on the server");
 	}
-        
         gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
                         

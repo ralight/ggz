@@ -433,7 +433,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		else
 			message = g_strdup_printf("");		
 		connect_msg("[%s] Message: %s\n", opcode_str[op], message);
-		display_chat(&subop, name, message);
+		display_chat(subop, name, message);
 		g_free(message);
 		break;
 

@@ -31,4 +31,5 @@
 #define CHAT_COLOR_FULL   2
 #define CHAT_COLOR_SERVER 3
 
-void display_chat(guchar *op, gchar *name, gchar *msg);
+void display_chat(guchar op, gchar *name, gchar *msg);
+void chat_print(int color, char* left, char* right);
