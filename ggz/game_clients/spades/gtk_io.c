@@ -129,19 +129,33 @@ void DisplayInit(void)
 }
 
 
-static GdkPixmap *load_pixmap(GdkWindow *window, GdkBitmap **mask,
-			      GdkColor *trans, const char *name)
+#ifndef GTK2
+static GdkPixmap *
+#else
+static GdkPixbuf *
+#endif /* GTK2 */
+load_pixmap(GdkWindow *window, GdkBitmap **mask,
+	    GdkColor *trans, const char *name)
 {
 	char *fullpath;
-	GdkPixmap *pixmap;
+#ifndef GTK2
+	GdkPixmap *image;
+#else
+	GdkPixbuf *image;
+	GError *error = NULL;
+#endif /* GTK2 */
 
 	fullpath = g_strdup_printf("%s/pixmaps/%s", GGZDATADIR, name);
-	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
-	if(pixmap == NULL)
+#ifndef GTK2
+	image = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
+#else
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+#endif /* GTK2 */
+	if(image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
 
-	return pixmap;
+	return image;
 }
 
 
@@ -289,11 +303,20 @@ void DisplayCard(Card card, int y, int x)
 	localX = CARDWIDTH * index;
 	localY = CARDHEIGHT * (card_face(card) - 1);
 
+#ifdef GTK2
+	gdk_pixbuf_render_to_drawable(playArea->cards, playArea->handBuf,
+				      playArea->hand->style->
+				      fg_gc[GTK_WIDGET_STATE(playArea->hand)],
+				      localX, localY, x, y,
+				      CARDWIDTH, CARDHEIGHT,
+				      GDK_RGB_DITHER_NONE, 0, 0);
+#else
 	gdk_draw_pixmap(playArea->handBuf,
 			playArea->hand->style->
 			fg_gc[GTK_WIDGET_STATE(playArea->hand)],
 			playArea->cards, localX, localY, x, y, CARDWIDTH,
 			CARDHEIGHT);
+#endif
 
 #ifdef DEBUG
 	g_printerr("%s\n", card_name(card, LONG_NAME));
@@ -336,11 +359,21 @@ void DisplayPlayedCard(Card card, int player, int id)
 		break;
 	}
 
+#ifdef GTK2
+	gdk_pixbuf_render_to_drawable(playArea->cards, playArea->tableBuf,
+				      playArea->table->style->
+				      fg_gc[GTK_WIDGET_STATE(playArea->
+							     table)],
+				      localX, localY, x, y,
+				      CARDWIDTH, CARDHEIGHT,
+				      GDK_RGB_DITHER_NONE, 0, 0);
+#else
 	gdk_draw_pixmap(playArea->tableBuf,
 			playArea->table->style->
 			fg_gc[GTK_WIDGET_STATE(playArea->table)],
 			playArea->cards, localX, localY, x, y, CARDWIDTH,
 			CARDHEIGHT);
+#endif
 
 	gtk_widget_draw(playArea->table, NULL);
 
