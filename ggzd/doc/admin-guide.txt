@@ -27,6 +27,36 @@ as that information can be found in the INSTALL file located in the
 top level of the source tree.
 
 
+Pre-Installation
+----------------
+
+Before installing ggzd, run ./configure with appropriate pathname
+overrides where necessary.  Some pathnames you may wish to override
+are as follows:
+    --prefix		The overall prefix for the installation,
+			usually /usr, defaults to /usr/local
+    --sysconfdir	The system config directory.  Defaults to
+			$(prefix)/etc.  If you set prefix to /usr
+			you will usually want to set sysconfdir
+			to strictly /etc.
+    --with-tmpdir	This is where temporary UNIX sockets will
+			be created for game communications.  It
+			defaults to /tmp/ggzd and this is usually
+			a very good choice.
+
+You will also need to choose which database type is appropriate for
+your system.  Currently the libdb2 and libdb3 interfaces are supported
+by the server.  The default support is for db2, db3 support can be
+specified with the '--with-database=db3' configuration option.
+
+Your UNIX distribution may include support for both db2 and db3 - however
+I've found that usually only one or the other will work in practice.
+If you find that you cannot reliably login to your ggzd server after
+setup, then you are probably using the wrong database type!  For instance
+my RedHat 7 setup supports both db2 and db3, however if I compile ggzd
+with the default db2 support, I cannot login to my own server!
+
+
 Post-Installation
 -----------------
 
