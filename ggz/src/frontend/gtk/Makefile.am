@@ -1,5 +1,5 @@
 
-SUBDIRS = .
+SUBDIRS =
 #SUBDIRS = intl po
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/intl
