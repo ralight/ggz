@@ -35,6 +35,7 @@ struct player_t
 typedef struct player_t Player;
 
 /* Player interface functions */
+void guru_player_init(const char *datadir);
 void guru_player_policy(int duplication);
 Player *guru_player_lookup(const char *name);
 void guru_player_save(Player *p);

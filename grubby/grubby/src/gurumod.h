@@ -26,6 +26,7 @@ struct guru_t
 	char **list;
 	int priority;
 	char *guru;
+	char *datadir;
 };
 
 typedef struct guru_t Guru;

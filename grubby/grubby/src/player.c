@@ -15,12 +15,20 @@
 
 /* Memory issues: specify a maximum */
 #define MAXPLAYERS 1024
+#define PLAYERDB "/grubby/playerdb"
 
 /* Globals */
 int handle = -1;
 Player **list = NULL;
 int listsize = 0;
 int dup = 0;
+const char *playerdatadir = NULL;
+
+/* Stores the data directory */
+void guru_player_init(const char *datadir)
+{
+	playerdatadir = datadir;
+}
 
 /* Clone a player structure */
 Player *duplicate(Player *p)
@@ -93,7 +101,7 @@ Player *guru_player_lookup(const char *name)
 	int i;
 	Player *p;
 	int exist;
-	char path[1024];
+	char *path;
 
 	if(!name) return NULL;
 
@@ -110,9 +118,11 @@ Player *guru_player_lookup(const char *name)
 	/* If not found, try to look him up */
 	if(handle == -1)
 	{
-		strcpy(path, getenv("HOME"));
-		strcat(path, "/.ggz/grubby/playerdb");
+		path = (char*)malloc(strlen(playerdatadir) + strlen(PLAYERDB) + 1);
+		strcpy(path, playerdatadir);
+		strcat(path, PLAYERDB);
 		handle = ggz_conf_parse(path, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
+		free(path);
 		if(handle < 0) return NULL;
 	}
 

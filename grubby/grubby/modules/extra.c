@@ -122,7 +122,7 @@ Guru *gurumod_exec(Guru *message)
 }
 
 /* Empty init */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
 }
 

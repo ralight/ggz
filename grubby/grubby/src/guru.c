@@ -11,9 +11,9 @@
 #include "module.h"
 
 /* Initialize grubby */
-Gurucore *guru_init()
+Gurucore *guru_init(const char *datadir)
 {
-	return guru_module_init();
+	return guru_module_init(datadir);
 }
 
 /* Pass a message to the bot */
@@ -23,9 +23,9 @@ Guru *guru_work(Guru *message)
 }
 
 /* Shutdown properly */
-int guru_close()
+int guru_close(Gurucore *guru)
 {
-	return 1;
+	return guru_module_shutdown(guru);
 }
 
 

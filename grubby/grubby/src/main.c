@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 {
 	Gurucore *core;
 	Guru *guru;
-	char *opthost = NULL, *optname = NULL;
+	char *opthost = NULL, *optname = NULL, *optdatadir = NULL;
 
 	/* Recognize command line arguments */
 	struct option options[] =
@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
 		{"version", no_argument, 0, 'v'},
 		{"name", required_argument, 0, 'n'},
 		{"host", required_argument, 0, 'H'},
+		{"datadir", required_argument, 0, 'd'},
 		{0, 0, 0, 0}
 	};
 	int optindex;
@@ -90,7 +91,7 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "hvH:n:", options, &optindex);
+		opt = getopt_long(argc, argv, "hvH:n:d:", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -101,7 +102,8 @@ int main(int argc, char *argv[])
 				printf("Recognized options:\n");
 				printf("[-h | --help]:    Show this help screen\n");
 				printf("[-H | --host]:    Connect to this host\n");
-				printf("{-n | --name]:    Use this name\n");
+				printf("[-n | --name]:    Use this name\n");
+				printf("[-d | --datadir]: Use this data directory (default: ~/.ggz)\n");
 				printf("[-v | --version]: Display version number\n");
 				exit(0);
 				break;
@@ -115,6 +117,9 @@ int main(int argc, char *argv[])
 				printf("Grubby version 0.2\n");
 				exit(0);
 				break;
+			case 'd':
+				optdatadir = optarg;
+				break;
 			default:
 				printf("Unknown command line option, try --help.\n");
 				exit(-1);
@@ -124,7 +129,7 @@ int main(int argc, char *argv[])
 
 	/* Bring grubby to life */
 	printf("Grubby: initializing...\n");
-	core = guru_init();
+	core = guru_init(optdatadir);
 	if(!core)
 	{
 		printf("Grubby initialization failed!\n");
@@ -135,6 +140,7 @@ int main(int argc, char *argv[])
 	/* Apply command line options */
 	if(opthost) core->host = opthost;
 	if(optname) core->name = optname;
+	if(optdatadir) core->datadir = optdatadir;
 
 	/* Start connection procedure */
 	printf("Grubby: connect to %s...\n", core->host);
@@ -160,6 +166,7 @@ int main(int argc, char *argv[])
 			case NET_INPUT:
 				guru = (core->net_input)();
 				guru->guru = core->name;
+				guru->datadir = core->datadir;
 				if(!admin(guru, core))
 				{
 					/* If message is valid, try to translate it first */
@@ -176,6 +183,6 @@ int main(int argc, char *argv[])
 	}
 
 	/* Shutdown the bot properly */
-	return guru_close();
+	return guru_close(core);
 }
 

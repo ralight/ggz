@@ -17,7 +17,7 @@
 #define mode_teach 1
 #define mode_learn 2
 /* Grubby's knowledge base */
-#define db_file "/.ggz/grubby/learning.db"
+#define db_file "/grubby/learning.db"
 
 /* Globals */
 char *database;
@@ -131,13 +131,10 @@ Guru *gurumod_exec(Guru *message)
 }
 
 /* Initialization */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
-	char *home;
-
-	home = getenv("HOME");
-	database = (char*)malloc(strlen(home) + strlen(db_file) + 1);
-	strcpy(database, home);
+	database = (char*)malloc(strlen(datadir) + strlen(db_file) + 1);
+	strcpy(database, datadir);
 	strcat(database, db_file);
 }
 

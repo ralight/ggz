@@ -19,7 +19,7 @@
 #include "exec.h"
 
 /* Configuration with list of external programs */
-#define EXECCONF "/.ggz/grubby/modexec.rc"
+#define EXECCONF "/grubby/modexec.rc"
 /* Don't wait more than this for external programs to return*/
 #define MAXDELAY 8
 /* Maximum size of one line */
@@ -162,19 +162,18 @@ Guru *gurumod_exec(Guru *message)
 }
 
 /* Initialize this plugin */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
 	int handle;
-	char *path, *home;
+	char *path;
 	int count;
 	int ret;
 	int i;
 	char *program;
 	int num;
 
-	home = getenv("HOME");
-	path = (char*)malloc(strlen(home) + strlen(EXECCONF) + 1);
-	strcpy(path, home);
+	path = (char*)malloc(strlen(datadir) + strlen(EXECCONF) + 1);
+	strcpy(path, datadir);
 	strcat(path, EXECCONF);
 	handle = ggz_conf_parse(path, GGZ_CONF_RDONLY);
 	free(path);

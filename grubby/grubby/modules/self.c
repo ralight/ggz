@@ -13,7 +13,7 @@
 #include "i18n.h"
 
 /* Empty init */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
 }
 

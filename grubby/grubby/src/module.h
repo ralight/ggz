@@ -20,6 +20,9 @@ typedef Guru* (*netinputfunc)();
 typedef void (*netoutputfunc)(Guru *output);
 typedef void (*netlogfunc)(const char *logfile);
 
+/* Player function handlers */
+typedef void (*playerinitfunc)(const char *datadir);
+
 /* I18n function handlers */
 typedef void (*i18ninitfunc)();
 typedef char* (*i18ntransfunc)(char *player, char *messageset);
@@ -32,9 +35,11 @@ struct gurucore_t
 	char *owner;
 	char *name;
 	char *guestname;
+	char *datadir;
 	char *logfile;
 	void *nethandle;
 	void *i18nhandle;
+	void *playerhandle;
 	int autojoin;
 	netconnectfunc net_connect;
 	netjoinfunc net_join;
@@ -50,7 +55,8 @@ struct gurucore_t
 typedef struct gurucore_t Gurucore;
 
 /* Module/plugin functions */
-Gurucore *guru_module_init();
+Gurucore *guru_module_init(const char *datadir);
+int guru_module_shutdown(Gurucore *guru);
 int guru_module_add(const char *modulealias);
 int guru_module_remove(const char *modulealias);
 Guru *guru_module_work(Guru *message, int priority);

@@ -18,11 +18,11 @@
 #include <ggz.h>
 
 /* Defines */
-#define GRUBBYCONF "/.ggz/grubby.rc"
+#define GRUBBYCONF "/grubby.rc"
 
 /* Plugin call functions */
 typedef Guru* (*modulefunc)(Guru *message);
-typedef void (*initfunc)();
+typedef void (*initfunc)(const char *datadir);
 
 /* Global variables */
 char **modulenamelist = NULL;
@@ -31,9 +31,10 @@ modulefunc *functionlist = NULL;
 int modulecount = 0;
 Gurucore *core;
 int handler;
+char *datadir2;
 
 /* Load the module list and activate the initial modules */
-Gurucore *guru_module_init()
+Gurucore *guru_module_init(const char *datadir)
 {
 	int ret;
 	char *path;
@@ -41,18 +42,34 @@ Gurucore *guru_module_init()
 	int count, i;
 	char *module;
 	char *home;
+	playerinitfunc playerinit;
+
+	/* Find out grubby's data directory first */
+	if(datadir) datadir2 = strdup(datadir);
+	else
+	{
+		home = getenv("HOME");
+		datadir2 = (char*)malloc(strlen(home) + 10);
+		strcpy(datadir2, home);
+		strcat(datadir2, "/.ggz");
+	}
 
 	/* Open configuration file */
-	home = getenv("HOME");
-	path = (char*)malloc(strlen(home) + strlen(GRUBBYCONF) + 1);
-	strcpy(path, home);
+	path = (char*)malloc(strlen(datadir2) + strlen(GRUBBYCONF) + 1);
+	strcpy(path, datadir2);
 	strcat(path, GRUBBYCONF);
 	handler = ggz_conf_parse(path, GGZ_CONF_RDONLY);
 	free(path);
-	if(handler < 0) return NULL;
+	if(handler < 0)
+	{
+		free(datadir2);
+		return NULL;
+	}
 
 	/* Load main option into grubby's core */
 	core = (Gurucore*)malloc(sizeof(Gurucore));
+	core->datadir = datadir2;
+
 	core->host = ggz_conf_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggz_conf_read_string(handler, "preferences", "name", "grubby/unnamed");
 	core->guestname = (char*)malloc(strlen(core->name) + 4);
@@ -68,12 +85,17 @@ Gurucore *guru_module_init()
 	{
 		printf("Loading core module PLAYER: %s... ", module);
 		fflush(NULL);
-		if(dlopen(module, RTLD_NOW | RTLD_GLOBAL)) printf("OK\n");
+		if((core->playerhandle = dlopen(module, RTLD_NOW | RTLD_GLOBAL)) != NULL) printf("OK\n");
 		else
 		{
 			printf("ERROR: Not a shared library\n");
 			exit(-1);
 		}
+		if((playerinit = dlsym(core->playerhandle, "guru_player_init")) == NULL){
+			printf("ERROR: Couldn't find player functions\n");
+			exit(-1);
+		}
+		(playerinit)(datadir2);
 	}
 
 	/* Load net plugin */
@@ -132,6 +154,14 @@ Gurucore *guru_module_init()
 	return core;
 }
 
+int guru_module_shutdown(Gurucore *guru)
+{
+	if(!guru) return 0;
+	if(guru->datadir) free(guru->datadir);
+	free(guru);
+	return 1;
+}
+
 /* Insert a plugin dynamically */
 int guru_module_add(const char *modulealias)
 {
@@ -175,7 +205,7 @@ int guru_module_add(const char *modulealias)
 	}
 
 	/* Initialize the plugin */
-	(init)();
+	(init)(datadir2);
 
 	/* Insert it into the plugin list for later reference */
 	modulecount++;

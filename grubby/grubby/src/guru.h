@@ -14,9 +14,9 @@
 #include "gurumod.h"
 
 /* Abstract overall functionality */
-Gurucore *guru_init();
+Gurucore *guru_init(const char *datadir);
 Guru *guru_work(Guru *message);
-int guru_close();
+int guru_close(Gurucore *guru);
 
 #endif
 
