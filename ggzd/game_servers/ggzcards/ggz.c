@@ -42,7 +42,7 @@ struct ggz_seat_t* ggz_seats;
 
 /* Local copies of necessary data */
 static char* name;
-static int fd;
+static int fd = -1;
 static int seats;
 
 
@@ -54,6 +54,7 @@ int ggz_init(char* game_name)
 	len = strlen(game_name);
 	if ( (name = malloc(len+1)) == NULL)
 		return -1;
+	/* TODO: don't use strcpy */
 	strcpy(name, game_name);
 	
 	return 0;
@@ -77,6 +78,7 @@ int ggz_connect(void)
 	
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
+	/* TODO: don't use strcpy */
 	strcpy(addr.sun_path, fd_name);
 	free(fd_name);
 
@@ -120,6 +122,7 @@ int ggz_game_launch(void)
 			break;
 		case GGZ_SEAT_BOT:
 			ggz_debug("Seat %d is a bot", i);
+			/* TODO: don't use strcpy */
 			strcpy(ggz_seats[i].name, "bot");
 			break;
 		case GGZ_SEAT_RESV:
@@ -196,14 +199,19 @@ void ggz_debug(const char *fmt, ...)
 	/* TODO: verify that we're connected to GGZ server;
 	 * handle it intelligently if we're not. */
 	char buf[4096];
-	va_list ap;
 
+	va_list ap;
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
-	es_write_int(fd, MSG_DBG);
-	es_write_int(fd, GGZ_DBG_TABLE);
-	es_write_string(fd, buf);
 	va_end(ap);
+
+	if (fd == -1) {
+		/* TODO */
+	} else {
+		es_write_int(fd, MSG_DBG);
+		es_write_int(fd, GGZ_DBG_TABLE);
+		es_write_string(fd, buf);
+	}
 }
 
 

@@ -171,8 +171,7 @@ struct wh_game_t {
 	seat_t num_seats;		/* the number of "seats" in the table (which includes fake non-players */
 	struct game_seat_t *seats;	/* data for each seat, allocated in game_init */
 
-	char* messages[256];	/* global messages */
-				/* TODO: this should be a hash instead */		
+	char* messages[256];	/* global messages */		
 
 	void* specific;		/* any extra game-specific data */
 		

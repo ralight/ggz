@@ -72,9 +72,6 @@ void cards_create_deck(int which_game)
 			deck_faces = suaro_deck_faces;
 			deck_face_cnt = 7;
 			break;
-		case GGZ_GAME_EUCHRE:
-			/* TODO */
-			break;
 		default:
 			/* in the default case, use a full deck */
 			break;

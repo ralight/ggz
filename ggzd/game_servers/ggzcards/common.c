@@ -171,7 +171,6 @@ void set_global_message(char* mark, char* message, ...)
 	if (different) {
 		game.messages[hash] = strdup(buf);
 		if (game.messages[hash] == NULL) {
-			/* TODO */
 			ggz_debug("strdup returned NULL");
 			/* it's NULL, so we should just be able to keep going... */
 		}
@@ -261,7 +260,7 @@ int send_player_list(player_t p)
 		seat_t s_abs = (s_rel + s) % game.num_seats;
 		struct ggz_seat_t * ggzseat = game.seats[s_abs].ggz;
 		if (ggzseat == NULL) {
-			/* TODO: we have a problem here, since seats may be sent out BEFORE the
+			/* We have a problem here, since seats may be sent out BEFORE the
 			 * game is determined, in which case GGZ info for the seats wouldn't be
 			 * known yet.  Here I fudge it by sending GGZ_SEAT_NONE instead. */
 			ggz_debug("SERVER BUG: NULL ggz found for seat %d.", s_abs);
@@ -471,7 +470,6 @@ int rec_play(player_t p, int *card_index)
 		}
 
 	if (index == -1) {
-		/* TODO: bug: somehow after this happens, we stop waiting for a play??? */
 		send_badplay(p, "That card isn't even in your hand.  This must be a bug.");
 		ggz_debug("CLIENT BUG: player %d played a card that wasn't in their hand (%i %i %i)!?!?",
 			  p, card.face, card.suit, card.deck);
@@ -591,7 +589,7 @@ int send_hand(const player_t p, const seat_t s, const int reveal)
 
 	for(i=0; i<game.seats[s].hand.hand_size; i++) {
 		if (reveal) card = game.seats[s].hand.cards[i];
-		else card = UNKNOWN_CARD; /* TODO: la pocha specific */
+		else card = UNKNOWN_CARD;
 		if (es_write_card(fd, card) < 0)
 			status = -1;
 	}
@@ -731,8 +729,10 @@ int handle_player(player_t p)
 					ggz_debug("Entering game_handle_options.");
 					game_handle_options(options);
 					if (game.options_initted)
-						/* TODO: what if options aren't initted? */
 						next_play();
+					else
+						/* eventually we may be able to do multiple rounds of options. */
+						ggz_debug("SERVER BUG: handle_player: options not initted after game_handle_options called.");
 				}
 			}
 			break;
@@ -786,8 +786,6 @@ int newgame()
 
 	/* should be entered only when we're ready for a new game */
 	for (p=0; p<game.num_players; p++) game.players[p].ready = 0;
-		/* TODO: for now these two are together, but they
-		 * could/should be spread out */
 	if (!game.initted) game_init_game();
 	game_start_game();
 	send_newgame();
@@ -823,7 +821,6 @@ void next_play(void)
 				game_handle_gameover();
 				cards_destroy_deck();
 				if (game.specific != NULL) free(game.specific);
-				/* TODO: fix memory leaks */
 				set_game_state( WH_STATE_NOTPLAYING );
 				return;
 			}

@@ -39,7 +39,6 @@ typedef struct lapocha_game_t {
 
 /* special bids */
 #define SPADES_NIL 1
-#define SPADES_BLINDNIL 2 /* TODO */
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
 typedef struct spades_game_t {

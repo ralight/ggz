@@ -36,7 +36,7 @@
 #include "games.h"
 #include "protocols.h"
 
-/* TODO: these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
+/* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 static char* suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
 static char* bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 
@@ -56,7 +56,7 @@ void* alloc(int size)
 {
 	void* ret = malloc(size);
 	if (ret == NULL) {
-		/* TODO... */
+		/* TODO: handle failure more intelligently. */
 		ggz_debug("SERVER error: failed malloc.");
 		exit (-1);
 	}
@@ -99,13 +99,17 @@ static void free_string_array(char** bids)
  *   as soon as the game type is determined, the game should be initialized.  This is called
  *   by game-independent code, but may be called in one of several places (e.g. launch, connection, newgame)
  */
-/* TODO: it may be necessary to uninitialize a game before initializing a new one, but currently
+/* It may be necessary to uninitialize a game before initializing a new one, but currently
  * we can't "switch" games after choosing one. */
 void game_init_game()
 {
 	player_t p;
 	seat_t s;
-	int proper_players = 4; /* the correct number of players */
+
+	if (!game_valid_game(game.which_game)) {
+		ggz_debug("SERVER BUG: game_init_game: invalid game %d chosen.", game.which_game);
+		exit(-1);
+	}
 
 	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
 		ggz_debug("SERVER BUG: game_init_game called on unknown or previously initialized game.");
@@ -148,7 +152,6 @@ void game_init_game()
 			{
 			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
 							    {GGZ_SEAT_NONE, "Key Card", -1} };
-			proper_players = 2;
 			game.seats[0].ggz = &ggz_seats[0];
 			game.players[0].seat = 0;
 			game.seats[2].ggz = &ggz_seats[1];
@@ -169,7 +172,6 @@ void game_init_game()
 			}
 			break;
 		case GGZ_GAME_LAPOCHA:
-			proper_players = 4;
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -182,7 +184,6 @@ void game_init_game()
 			game.name = "La Pocha";
 			break;
 		case GGZ_GAME_BRIDGE:
-			proper_players = 4;
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -199,7 +200,6 @@ void game_init_game()
 			BRIDGE.declarer = -1;
 			break;
 		case GGZ_GAME_SPADES:
-			proper_players = 4;
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -211,14 +211,13 @@ void game_init_game()
 			game.max_bid_length = 4;
 			game.max_hand_length = 13;
 			game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
-			game.target_score = 500;	/* TODO: override with options */
+			game.target_score = 500;	
 			GSPADES.nil_value = 100;
 			game.trump = SPADES;
 			game.name = "Spades";
 			break;
 		case GGZ_GAME_HEARTS:
 			game.trump = -1; /* no trump in hearts */
-			proper_players = 4; /* TODO: doesn't have to be 4 */
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -253,10 +252,6 @@ void game_init_game()
 		game.seats[s].message[0] = 0;
 	if (game.bid_texts == NULL || game.bid_choices == NULL) {
 		ggz_debug("SERVER BUG: game.bid_texts not allocated.");
-		exit(-1);
-	}
-	if (game.num_players != proper_players) {
-		ggz_debug("SERVER BUG: wrong number of players for game %d: %d instead of %d.", game.which_game, game.num_players, proper_players);
 		exit(-1);
 	}
 
@@ -447,7 +442,7 @@ int game_handle_gameover(void)
 			}
 			if (winner_cnt > 0) break;
 			/* else fall through */
-		case GGZ_GAME_BRIDGE: /* TODO */
+		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_SUARO:
 		case GGZ_GAME_SPADES:
 		default:
@@ -1154,7 +1149,9 @@ void game_set_player_message(player_t p)
 		case GGZ_GAME_BRIDGE:
 			if (p == BRIDGE.declarer)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-			/* TODO */
+			if (p == BRIDGE.dummy)
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
+			/* TODO: declarer and dummy really shouldn't be at the top */
 			goto normal_message;
 		case GGZ_GAME_SUARO:
 			if (p == SUARO.declarer)
@@ -1400,7 +1397,7 @@ void game_end_hand(void)
 				int points = GHEARTS.points_on_hand[p];
 				int score = (points == 26 ? -26 : points);
 				/* if you take all 26 points you "shoot the moon" and earn -26 instead.
-				 * TODO: option of giving everyone else 26. */
+				 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
 				game.players[p].score += score;
 			}
 			break;
