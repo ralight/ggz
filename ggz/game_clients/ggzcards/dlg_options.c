@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2854 2001-12-10 05:46:45Z jdorje $
+ * $Id: dlg_options.c 2855 2001-12-10 06:34:27Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -50,7 +50,7 @@ static int *options_selected;
 static gpointer encode_option_selection(gint option, gint choice)
 {
 	gint selection = (option << 8) | choice;
-	assert(selection < 256 && option < 256);
+	assert(option < 256 && choice < 256);
 	return GINT_TO_POINTER(selection);
 }
 
