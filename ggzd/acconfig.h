@@ -16,6 +16,7 @@
 
 /* defined by automake */
 
+#undef AF_LOCAL
 #undef DEBUG
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
@@ -25,6 +26,7 @@
 #undef DATADIR
 #undef TMPDIR
 #undef PACKAGE_SOURCE_DIR
+#undef PF_LOCAL
 #undef _BSD_SOURCE
 #undef _XOPEN_SOURCE
 #undef DB2_IN_DIR

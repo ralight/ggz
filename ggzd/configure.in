@@ -54,6 +54,20 @@ AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 AC_HEADER_TIME
 
+dnl Check for PF_LOCAL/PF_UNIX
+dnl ==========================
+AC_MSG_CHECKING([for PF_LOCAL])
+AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
+                 PF_LOCAL ], AC_MSG_RESULT(no) 
+			     AC_MSG_CHECKING([for PF_UNIX])
+			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				          PF_UNIX ], AC_MSG_RESULT(no)
+				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
+                                          AC_MSG_RESULT(yes)
+					  AC_DEFINE(PF_LOCAL, PF_UNIX)
+			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+             AC_MSG_RESULT(yes))
+
 
 dnl Check for library functions
 dnl ===========================
@@ -71,8 +85,7 @@ dnl ====================
 AC_CHECK_HEADER(pthread.h, 
     AC_CHECK_LIB(pthread, pthread_create, 
         ggzd_LIBS="$ggzd_LIBS -lpthread" 
-	CFLAGS="$CFLAGS -D_REENTRANT"
-	AC_DEFINE(_XOPEN_SOURCE, 500),
+	CFLAGS="$CFLAGS -D_REENTRANT",
 	AC_CHECK_LIB(c_r, pthread_create, 
 	    ggzd_LIBS="$ggzd_LIBS -pthread"
 	    CFLAGS="$CFLAGS -D_THREAD_SAFE",
