@@ -55,12 +55,12 @@ need_libtool=0
 
 (grep "\bAM_PROG_LIBTOOL" $srcdir/configure.ac >/dev/null) && need_libtool=1
 
-version_check "autoconf" "2.5"
+version_check "autoconf" "2.50"
 version_check "automake" "1.5"
 if test "x$need_libtool" = "x1"; then
-	version_check "libtool" "1.4.3"
+	version_check "libtool" "1.4.2"
 fi
-version_check "gettext" "0.11"
+version_check "gettext" "0.10.40"
 
 if test "x$bailout" = "x1"; then
   echo
