@@ -1,5 +1,8 @@
 #!/bin/sh
 
 autoconf
-./configure $@
+
+if test x$NOCONFIGURE = x; then
+	./configure $@
+fi
 
