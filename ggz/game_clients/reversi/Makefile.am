@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6243 2004-11-03 20:46:06Z jdorje $
+#  $Id: Makefile.am 6250 2004-11-04 01:40:38Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
-		@GTK_CFLAGS@
+		@GTK_CFLAGS@ @RSVG_CFLAGS@
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
@@ -23,10 +23,10 @@ ggz_reversi_SOURCES = \
 	options_dlg.c	options_dlg.h \
 	support.c	support.h
 
-ggz_reversi_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
+ggz_reversi_LDADD =	@GTK_LIBS@ @RSVG_LIBS@ @INTLLIBS@ $(LDADD)	\
 			$(top_builddir)/common/libgtk-games.a		\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 pixmapdir = $(ggzdatadir)/reversi/pixmaps
-dist_pixmap_DATA = white.png black.png dot.png
+dist_pixmap_DATA = white.svg black.svg dot.svg

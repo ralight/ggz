@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6243 2004-11-03 20:46:06Z jdorje $
+ * $Id: main_win.c 6250 2004-11-04 01:40:38Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -36,7 +36,7 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-
+#include <librsvg/rsvg.h>
 #include <ggz.h>
 
 #include "dlg_about.h"
@@ -50,7 +50,7 @@
 
 
 /* Pixmaps */
-#define PIXSIZE 48
+static int PIXSIZE;
 GdkPixbuf *pix[3];
 GdkGC* pix_gc;
 GdkGC* bg_gc;
@@ -175,14 +175,43 @@ static GdkPixbuf *load_pixmap(const char *name)
 	GdkPixbuf *image;
 	GError *error = NULL;
 
-	fullpath = g_strdup_printf("%s/reversi/pixmaps/%s.png",
+	fullpath = g_strdup_printf("%s/reversi/pixmaps/%s.svg",
 				   GGZDATADIR, name);
-	image = gdk_pixbuf_new_from_file(fullpath, &error);
+	image = rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE,
+					      &error);
 	if(image == NULL)
 		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
 	g_free(fullpath);
 
 	return image;
+}
+
+static void board_resized(void)
+{
+	GtkWidget *widget = gtk_object_get_data(GTK_OBJECT(main_win),
+						"drawingarea");
+	int w = widget->allocation.width, h = widget->allocation.height;
+	int i;
+
+	if (rvr_buf) {
+		g_object_unref(rvr_buf);
+		for (i = 0; i < 3; i++) {
+			g_object_unref(pix[i]);
+		}
+	}
+
+	gtk_widget_realize(widget);
+	rvr_buf = gdk_pixmap_new(widget->window, w, h, -1);
+
+	PIXSIZE = MIN(w, h) / 8;
+
+	/* Create the white piece, black piece, and dot images. */
+	pix[PLAYER2SEAT(BLACK)] = load_pixmap("black");
+	pix[PLAYER2SEAT(WHITE)] = load_pixmap("white");
+	pix[2] = load_pixmap("dot");
+
+	draw_bg(widget);
+	display_board();
 }
 
 static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
@@ -216,11 +245,7 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	gdk_gc_set_foreground(bg_gc, back_color);
 	gdk_gc_set_foreground(last_gc, last_color);
 
-
-	/* Create the white piece, black piece, and dot images. */
-	pix[PLAYER2SEAT(BLACK)] = load_pixmap("black");
-	pix[PLAYER2SEAT(WHITE)] = load_pixmap("white");
-	pix[2] = load_pixmap("dot");
+	board_resized();
 }
 
 
@@ -283,19 +308,10 @@ void game_exit(void)
 		ggz_show_exit_dialog(1, main_win);
 }
 
-
 static gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
 				 gpointer user_data)
 {
-	if (!rvr_buf)
-		rvr_buf = gdk_pixmap_new( widget->window,
-					  PIXSIZE*8,
-					  PIXSIZE*8,
-					  -1);
-		
-	draw_bg(widget);
-	display_board();
-
+	board_resized();
 	return TRUE;
 }
 
@@ -427,7 +443,6 @@ create_main_win (void)
   accel_group = gtk_accel_group_new ();
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_policy(GTK_WINDOW (main_win), 0, 0, 1);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
   gtk_window_set_title (GTK_WINDOW (main_win), _("Reversi"));
 
@@ -502,7 +517,7 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (drawingarea);
   gtk_box_pack_start (GTK_BOX (main_box), drawingarea, TRUE, TRUE, 0);
-  gtk_widget_set_usize (drawingarea, PIXSIZE*8, PIXSIZE*8);
+  gtk_widget_set_usize (drawingarea, 48*8, 48*8);
   gtk_widget_set_events (drawingarea, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 
 	// Status bar
