@@ -65,19 +65,26 @@ void fill_defaults(GtkWidget * win, gpointer user_data)
 	gpointer *tmp;
 	char port[5];
 
-	if (connection.username) {
-		tmp = gtk_object_get_data(GTK_OBJECT(win), "name_entry");
+	tmp = gtk_object_get_data(GTK_OBJECT(win), "name_entry");
+	if (connection.username)
 		gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
-	}
+	else 
+		gtk_entry_set_text(GTK_ENTRY(tmp), getenv("LOGNAME"));
+		
 
-	if (connection.server) {
-		tmp = gtk_object_get_data(GTK_OBJECT(win), "host_entry");
+	tmp = gtk_object_get_data(GTK_OBJECT(win), "host_entry");
+	if (connection.server)
 		gtk_entry_set_text(GTK_ENTRY(tmp), connection.server);
-	}
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "localhost");
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win), "port_entry");
-	snprintf(port, 5, "%d", connection.port);
-	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	if (connection.port) {
+		snprintf(port, 5, "%d", connection.port);
+		gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	}
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "7626");
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win), "anon_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
