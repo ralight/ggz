@@ -40,7 +40,8 @@ struct ai_function_pointers {
 
 typedef enum {
 	GGZ_AI_NONE = -1,
-	GGZ_AI_RANDOM = 0
+	GGZ_AI_RANDOM = 0,
+	GGZ_AI_SPADES = 1
 	/* others can be defined */
 } ai_type_t;
 

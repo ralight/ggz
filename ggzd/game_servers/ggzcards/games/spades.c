@@ -88,6 +88,7 @@ static void spades_init_game()
 	game.target_score = 500;	/* adjustable by options */	
 	GSPADES.nil_value = 100;
 	game.trump = SPADES;
+	game.ai_type = GGZ_AI_SPADES;
 	game.name = "Spades";
 }
 

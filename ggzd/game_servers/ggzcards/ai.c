@@ -30,9 +30,11 @@
 #include "ggz.h"
 
 extern struct ai_function_pointers random_ai_funcs;
+extern struct ai_function_pointers spades_ai_funcs;
 
 struct ai_function_pointers *ai_funcs[] =
-	{&random_ai_funcs};
+	{&random_ai_funcs,
+	 &spades_ai_funcs};
 
 /* this inits AI static data at the start of a hand */
 void ai_start_hand()
