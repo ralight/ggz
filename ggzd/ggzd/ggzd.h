@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3409 2002-02-18 07:55:49Z jdorje $
+ * $Id: ggzd.h 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -54,6 +54,15 @@ typedef enum {
 	GGZ_REQ_TABLE_JOIN	= 2,
 	GGZ_REQ_TABLE_LEAVE	= 3,
 } GGZPlayerHandlerStatus;
+
+
+/* GGZEventFunc return values */
+/* Fixme: it's called "Return" here, but "Status" up above. */
+typedef enum {
+	GGZ_EVENT_ERROR	= -1,
+	GGZ_EVENT_OK	= 0,
+	GGZ_EVENT_DEFER	= 1
+} GGZEventFuncReturn;
 
 
 /*

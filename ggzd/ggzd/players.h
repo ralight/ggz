@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
+ * $Id: players.h 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -111,7 +112,7 @@ typedef struct _GGZPlayer GGZPlayer;
 
 void player_handler_launch(int sock);
 
-int player_launch_callback(void* target, int size, void* data);
+GGZEventFuncReturn player_launch_callback(void* target, int size, void* data);
 
 int player_msg_from_sized(GGZPlayer* p, int size, char *buf);
 int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg);

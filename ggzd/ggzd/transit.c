@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3418 2002-02-19 06:57:46Z jdorje $
+ * $Id: transit.c 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,8 +48,12 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
 /* Local functions for handling transits */
-static int transit_player_event_callback(void* target, int size, void* data);
-static int transit_table_event_callback(void* target, int size, void* data);
+static GGZEventFuncReturn transit_player_event_callback(void* target,
+                                                        int size,
+                                                        void* data);
+static GGZEventFuncReturn transit_table_event_callback(void* target,
+                                                       int size,
+                                                       void* data);
 static int transit_send_join_to_game(GGZTable* table, char* name,
 				     int seat_num);
 static int transit_send_leave_to_game(GGZTable* table, char* name);
@@ -119,7 +123,9 @@ int transit_player_event(char* name, char opcode, int status, int index,
 
 
 /* Executed by table hander thread */
-static int transit_table_event_callback(void* target, int size, void* data)
+static GGZEventFuncReturn transit_table_event_callback(void* target,
+                                                       int size,
+                                                       void* data)
 {
 	int status;
 	char opcode;
@@ -230,7 +236,9 @@ static int transit_table_event_callback(void* target, int size, void* data)
 }
 		
 
-static int transit_player_event_callback(void* target, int size, void* data)
+static GGZEventFuncReturn transit_player_event_callback(void* target,
+                                                        int size,
+                                                        void* data)
 {
 	int status, index = -1, fd = 0;
 	char opcode;

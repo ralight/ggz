@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3409 2002-02-18 07:55:49Z jdorje $
+ * $Id: table.c 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -84,7 +84,8 @@ static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
 static int   table_transit_pack(void** data, unsigned char opcode, 
 				GGZTable* table, char* name, 
 				unsigned int seat);
-static int   table_event_callback(void* target, int size, void* data);
+static GGZEventFuncReturn   table_event_callback(void* target, int size,
+                                                 void* data);
 static int   table_launch_event(char* name, int status, int index);
 static void  table_free(GGZTable* table);
 
@@ -926,7 +927,8 @@ static int table_transit_pack(void** data, unsigned char opcode,
 
 
 /* Event callback for delivering table list update to a player */
-static int table_event_callback(void* target, int size, void* data)
+static GGZEventFuncReturn table_event_callback(void* target, int size,
+                                               void* data)
 {
 	unsigned char opcode, table_state;
 	char* name = NULL;

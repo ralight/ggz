@@ -3,6 +3,8 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 10/18/99
+ * Desc: Functions for handling players
+ * $Id: players.c 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -543,7 +545,7 @@ int player_table_launch(GGZPlayer* player, GGZTable *table)
 }
 
 
-int player_launch_callback(void* target, int size, void* data)
+GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
 {
 	int status, index = -1;
 	char *current;

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
+ * $Id: event.h 3419 2002-02-19 07:18:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,12 +27,8 @@
 #ifndef _GGZ_EVENT_H
 #define _GGZ_EVENT_H
 
+#include <ggzd.h>
 #include <players.h>
-
-/* Valid return values for GGZEventFunc */
-#define GGZ_EVENT_ERROR -1
-#define GGZ_EVENT_OK     0
-#define GGZ_EVENT_DEFER  1
 
 /* 
  * Event callback function type 
@@ -46,7 +43,7 @@
  * GGZ_EVENT_OK     : event processed successfully
  * GGZ_EVENT_DEFER  : postpone event for later (no effect for room events)
  */
-typedef int (*GGZEventFunc)(void* target, int size, void* data);
+typedef GGZEventFuncReturn (*GGZEventFunc)(void* target, int size, void* data);
 
 
 /* 
