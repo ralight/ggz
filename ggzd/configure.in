@@ -206,6 +206,8 @@ AC_OUTPUT([Makefile
 	   ggzd/ggzd.conf
 	   ggzd/ggzd.test
 	   doc/Makefile
+	   doc/C/Makefile
+	   doc/C/design/Makefile
 	   game_servers/Makefile
 	   game_servers/spades/Makefile
 	   game_servers/tictactoe/Makefile
