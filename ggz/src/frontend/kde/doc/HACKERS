@@ -5,11 +5,25 @@ for the more general functions, please refer to the GGZ style guide.
 * Use static member functions (or replace them as a whole) for inter-object communication.
 * Reuse existing code as much as possible (e.g. use subclasses).
 * Always think of users who run it on small systems (how's the look without pixmaps and themes?).
+  There are useful compiler switches for scalability.
 * Integrate the libggzcore functions properly.
 * Use KDE classes if they are available, else use Qt classes. Don't use Qt's non-widget functionality
   too much if it is avoidable (e.g. QString...).
 * Write documented, human-readable code.
-* Slot functions should start with slotSomething...
+* Slot functions should start with slotSomething, signals with signalSomething...
 * Help me remember the above phrases.
 
 Josef
+
+This is the structure of the KGGZ classes (more recent than the HTML docs):
+
+                                                           KGGZ
+===========================================================================================================================================
+|        |        |       |       |                                        |                                 |        |        |
+Update   Connect  Server  Launch  Preferences                              Chat                              Startup  Browser  Roomsmenu
+|        |                |       =======================================  ================================
+Install  Motd             Teams   |      |         |           |           |           |      |      |
+				  Games  Settings  Profiles    Playerinfo  Chatwidget  State  Users  Tables
+				                   ==========
+						   |      |
+						   Hosts  FTP
