@@ -310,7 +310,7 @@ void chat_send_prvmsg(GGZServer *server, gchar *message)
 	gchar *name = NULL;
 	gint i;
 
-	name = g_strdup(message+5);
+	name = g_strstrip(g_strdup(message+5));
 	for(i = 0; i < strlen(name); i++)
 	{
 		if(name[i] == ' ')
