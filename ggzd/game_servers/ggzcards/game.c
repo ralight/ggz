@@ -858,6 +858,7 @@ void game_start_playing(void)
 				game.seats[s1].hand.cards = game.seats[s2].hand.cards;
 				game.seats[s2].hand.cards = temp;
 				send_hand(SUARO.declarer, s2, 1); /* reveal the new hand to the player */
+				SUARO.kitty_revealed = 1;
 				for(p = 0; p<game.num_players; p++)
 					/* reveal the kitty to everyone */
 					send_hand(p, s1, 1);
@@ -987,9 +988,10 @@ void game_handle_play(card_t c)
 				 * the dummy's hand to everyone */
 				player_t p;
 				seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
+				BRIDGE.dummy_revealed = 1;
 				for (p=0; p<game.num_players; p++) {
 					if (p == BRIDGE.dummy) continue;
-					send_hand(p, dummy_seat, 1);
+					game_send_hand(p, dummy_seat);
 				}
 			}
 			break;
@@ -1081,6 +1083,9 @@ int game_send_hand(player_t p, seat_t s)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
+			/* reveal the kitty after it's been turned up */
+			if (s == 1 && SUARO.kitty_revealed)
+				return send_hand(p, s, 1);
 			/* each player can see their own hand plus the
 			 * key card */
 			return send_hand(p, s,
@@ -1089,6 +1094,10 @@ int game_send_hand(player_t p, seat_t s)
 			/* TODO: we explicitly send out the dummy hand, but a player who
 			 * joins late won't see it.  We have the same problem with Suaro. */
 			/* fall through */
+			if (s == BRIDGE.dummy /* player/seat crossover; ok because it's bridge */
+			    && BRIDGE.dummy_revealed)
+				return send_hand(p, s, 1);
+			/* else fall through */
 		default:
 			/* in most cases, we want to reveal the hand only to the player
 			 * who owns it. */
@@ -1354,6 +1363,7 @@ void game_end_hand(void)
 			}
 
 			BRIDGE.declarer = BRIDGE.dummy = -1;
+			BRIDGE.dummy_revealed = 0;
 			BRIDGE.contract = 0;
 			break;
 		case GGZ_GAME_SUARO:
@@ -1378,6 +1388,7 @@ void game_end_hand(void)
 			}
 			game.players[winner].score += points;
 			SUARO.declarer = -1;
+			SUARO.kitty_revealed = 0;
 			SUARO.contract = 0;
 			}
 			break;

@@ -80,6 +80,8 @@ typedef struct bridge_game_t {
 	int bonus;		/* 1=regular; 2=doubled; 4=redoubled */
 	player_t declarer;	/* player with the contract */
 	player_t dummy;		/* dummy player; the declarer's partner */
+
+	int dummy_revealed;
 } bridge_game_t;
 
 /* ---------- SUARO ---------- */
@@ -109,6 +111,8 @@ typedef struct suaro_game_t {
 	int contract_suit;	/* 0=>low, 5=>high, as above */
 	int bonus;		/* 1 = regular; 2 = doubled; 4 = redoubled; etc. */
 	player_t declarer;	/* player with the contract */
+
+	int kitty_revealed;
 } suaro_game_t;
 
 /* TODO: make a more generalized macro instead of LAPOCHA, etc. */
