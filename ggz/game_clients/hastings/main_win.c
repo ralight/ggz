@@ -59,6 +59,9 @@
 #include <frame_black.xpm>
 #include <map.xpm>
 
+/* GGZ includes */
+#include <ggz.h>	/* libggz */
+
 /* Unit pictures */
 /* Red is 0, green is 1, blue is 2, yellow is 3 */
 GdkPixmap* man_pix[4];
@@ -104,7 +107,7 @@ void game_status( const char* format, ... )
 	gtk_statusbar_pop(GTK_STATUSBAR(tmp), id);
 	gtk_statusbar_push(GTK_STATUSBAR(tmp), id, message);
 
-	/*printf("STATUS: %s\n", message);*/
+	ggz_debug("debug", "STATUS: %s", message);
 
 	g_free(message);
 

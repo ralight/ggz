@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3394 2002-02-17 09:42:10Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -30,6 +30,7 @@
 #include <sys/un.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>	/* for getenv */
 #include <unistd.h>
 
 /* GGZ includes */
@@ -47,9 +48,13 @@ extern GtkWidget *main_win;
 /* Global game variables */
 struct game_state_t game;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
+
 /* Main function: connect and set up everything */
 int main(int argc, char* argv[])
 {
+	initialize_debugging();
 	ggz_intl_init("hastings");
 		
 	gtk_init (&argc, &argv);
@@ -66,8 +71,41 @@ int main(int argc, char* argv[])
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+	cleanup_debugging();
 
 	return 0;
+}
+
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", "debug", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/hastings-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/hastings-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting hastings client.");	
+}
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down hastings client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }
 
 /* Handle input from Hastings game server */
@@ -139,7 +177,7 @@ int get_players(void)
 
 	/* Number unknown; this will change now: */
 	if (ggz_read_int(game.fd, &game.playernum) < 0) return -1;
-	printf("Detected %i players!!\n", game.playernum);
+	ggz_debug("main", "Detected %i players!!", game.playernum);
 
 	/* Receive 8 players as a maximum, or less */
 	for (i = 0; i < game.playernum; i++)
@@ -175,8 +213,8 @@ int get_opponent_move(void)
 	game.board[game.move_src_x][game.move_src_y] = -1;
 	game.board[game.move_dst_x][game.move_dst_y] = game.num;
 
-	/*printf("Opponent %i: From %i/%i to %i/%i!\n", game.num,
-		game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);*/
+	ggz_debug("debug", "Opponent %i: From %i/%i to %i/%i!", game.num,
+		game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
 
 	return 0;
 }
