@@ -75,11 +75,14 @@ struct _GGZRoom {
 
 
 /* Create a new room object for a given server */
-struct _GGZRoom* _ggzcore_room_new(const struct _GGZServer *server,
-				   const unsigned int id, 
-				   const char* name, 
-				   const unsigned int game, 
-				   const char* desc);
+struct _GGZRoom* _ggzcore_room_new(void);
+
+void _ggzcore_room_init(struct _GGZRoom *room,
+			const struct _GGZServer *server,
+			const unsigned int id, 
+			const char* name, 
+			const unsigned int game, 
+			const char* desc);
 
 /* Utility functions for room lists */
 int   _ggzcore_room_compare(void* p, void* q);

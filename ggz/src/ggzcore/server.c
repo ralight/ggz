@@ -917,7 +917,8 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 		
 		ggzcore_debug(GGZ_DBG_ROOM, "Adding room %d to room list", id);
 		
-		room = _ggzcore_room_new(server, id, name, game, desc);
+		room = _ggzcore_room_new();
+		_ggzcore_room_init(room, server, id, name, game, desc);
 		_ggzcore_server_add_room(server, room);
 		
 		/* Free allocated memory */

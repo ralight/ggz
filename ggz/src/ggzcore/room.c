@@ -211,22 +211,29 @@ void ggzcore_room_chat(struct _GGZRoom *room,
 
 
 /* Create a new room object for a given server*/
-struct _GGZRoom* _ggzcore_room_new(const struct _GGZServer *server,
-				   const unsigned int id, 
-				   const char* name, 
-				   const unsigned int game, 
-				   const char* desc)
+struct _GGZRoom* _ggzcore_room_new(void)
 {
-	int i;
 	struct _GGZRoom *room;
 
-	/* Allocate and zero space for GGZRoom object */
-	if (!(room = calloc(1, sizeof(GGZRoom))))
-		ggzcore_error_sys_exit("malloc() failed in ggzcore_room_new");
+	room = ggzcore_malloc(sizeof(struct _GGZRoom));
 
+	return room;
+}
+
+
+void _ggzcore_room_init(struct _GGZRoom *room,
+			const struct _GGZServer *server,
+			const unsigned int id, 
+			const char* name, 
+			const unsigned int game, 
+			const char* desc)
+{
+	int i;
+	
 	room->server = (struct _GGZServer*)server;
 	room->id = id;
-	room->name = strdup(name);
+	if (name)
+		room->name = strdup(name);
 	room->game = game;
 
 	/* Descriptions are optional */
@@ -239,8 +246,6 @@ struct _GGZRoom* _ggzcore_room_new(const struct _GGZServer *server,
 	/* Setup event hook list */
 	for (i = 0; i < GGZ_NUM_ROOM_EVENTS; i++)
 		room->event_hooks[i] = _ggzcore_hook_list_init(i);
-
-	return room;
 }
 
 
@@ -259,8 +264,9 @@ void* _ggzcore_room_copy(void* p)
 {
 	struct _GGZRoom *new, *src = p;
 
-	new = _ggzcore_room_new(src->server, src->id, src->name, src->game,
-				src->desc);
+	new = _ggzcore_room_new();
+	_ggzcore_room_init(new, src->server, src->id, src->name, src->game,
+			   src->desc);
 	
 	return (void*)new;
 }
@@ -542,7 +548,7 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 	for (i = 0; i < GGZ_NUM_ROOM_EVENTS; i++)
 		_ggzcore_hook_list_destroy(room->event_hooks[i]);
 	
-	free(room);
+	ggzcore_free(room);
 }
 
 /* Static functions internal to this file */
