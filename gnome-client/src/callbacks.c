@@ -64,8 +64,12 @@ on_entLogin_changed			(GtkEntry       *widget,
 		val = 5;
 	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "btnGuest")) {
 		val = 6;
+		tmp = lookup_widget (interface, "entPassword");
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
 	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "btnRegistered")) {
 		val = 6;
+		tmp = lookup_widget (interface, "entPassword");
+		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
 	}
 	
 	/*Set the state of the entry*/

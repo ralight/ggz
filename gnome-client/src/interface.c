@@ -481,19 +481,19 @@ create_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnLogin);
   gtk_fixed_put (GTK_FIXED (fixMain), btnLogin, 280, 208);
-  gtk_widget_set_uposition (btnLogin, 280, 208);
-  gtk_widget_set_usize (btnLogin, 81, 25);
+  gtk_widget_set_uposition (btnLogin, 272, 208);
+  gtk_widget_set_usize (btnLogin, 95, 25);
   gtk_widget_set_sensitive (btnLogin, FALSE);
 
-  btnNew = gtk_button_new_with_mnemonic (_("_NEW"));
+  btnNew = gtk_button_new_with_mnemonic (_("_PROFILES"));
   gtk_widget_set_name (btnNew, "btnNew");
   gtk_widget_ref (btnNew);
   gtk_object_set_data_full (GTK_OBJECT (window), "btnNew", btnNew,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnNew);
   gtk_fixed_put (GTK_FIXED (fixMain), btnNew, 280, 288);
-  gtk_widget_set_uposition (btnNew, 280, 288);
-  gtk_widget_set_usize (btnNew, 81, 25);
+  gtk_widget_set_uposition (btnNew, 272, 288);
+  gtk_widget_set_usize (btnNew, 95, 25);
 
   btnQuit = gtk_button_new_with_mnemonic (_("_QUIT"));
   gtk_widget_set_name (btnQuit, "btnQuit");
@@ -502,8 +502,8 @@ create_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnQuit);
   gtk_fixed_put (GTK_FIXED (fixMain), btnQuit, 280, 368);
-  gtk_widget_set_uposition (btnQuit, 280, 368);
-  gtk_widget_set_usize (btnQuit, 81, 25);
+  gtk_widget_set_uposition (btnQuit, 272, 368);
+  gtk_widget_set_usize (btnQuit, 95, 25);
 
   stoProfiles = gtk_list_store_new (1, G_TYPE_STRING);
   treProfiles = gtk_tree_view_new_with_model (GTK_TREE_MODEL (stoProfiles));
@@ -582,6 +582,7 @@ create_login (void)
   gtk_widget_ref (entPassword);
   gtk_object_set_data_full (GTK_OBJECT (window), "entPassword", entPassword,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_sensitive (entPassword, FALSE);
   gtk_widget_show (entPassword);
   gtk_box_pack_start (GTK_BOX (vbLogin), entPassword, FALSE, FALSE, 0);
 
@@ -617,7 +618,7 @@ create_login (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "btnGuest", btnGuest,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnGuest);
-  gtk_box_pack_start (GTK_BOX (hbLogin), btnGuest, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbLogin), btnGuest, TRUE, TRUE, 0);
 
   btnRegistered = gtk_radio_button_new_with_mnemonic (hbLogin_group, _("_REGISTERED"));
   hbLogin_group = gtk_radio_button_group (GTK_RADIO_BUTTON (btnRegistered));
@@ -626,7 +627,7 @@ create_login (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "btnRegistered", btnRegistered,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (btnRegistered);
-  gtk_box_pack_start (GTK_BOX (hbLogin), btnRegistered, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbLogin), btnRegistered, TRUE, TRUE, 0);
 
   vbNewLogin = gtk_vbox_new (TRUE, 0);
   gtk_widget_set_name (vbNewLogin, "vbNewLogin");
