@@ -34,10 +34,12 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 #include "cb_opt.h"
 #include "dlg_opt.h"
+#include "main.h"
 #include "support.h"
-#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_opt (void)
@@ -56,6 +58,7 @@ create_dlg_opt (void)
   GtkWidget *opt_btn_ok;
 
   dlg_opt = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_opt), GTK_WINDOW(main_win));
   gtk_object_set_data (GTK_OBJECT (dlg_opt), "dlg_opt", dlg_opt);
   gtk_window_set_title (GTK_WINDOW (dlg_opt), _("Game Options"));
 

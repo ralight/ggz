@@ -34,10 +34,12 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 #include "cb_new.h"
 #include "dlg_new.h"
+#include "main.h"
 #include "support.h"
-#include "ggzintl.h"
 
 GtkWidget*
 create_dlg_new (void)
@@ -54,6 +56,7 @@ create_dlg_new (void)
   GtkWidget *new_btn_no;
 
   dlg_new = gtk_dialog_new ();
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_new), GTK_WINDOW(main_win));
   gtk_object_set_data (GTK_OBJECT (dlg_new), "dlg_new", dlg_new);
   gtk_window_set_title (GTK_WINDOW (dlg_new), _("Game Over"));
   gtk_window_set_policy (GTK_WINDOW (dlg_new), TRUE, TRUE, FALSE);
