@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4961 2002-10-20 05:16:58Z jdorje $
+ * $Id: dlg_players.c 4969 2002-10-21 04:29:08Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -337,10 +337,17 @@ static void player_info_activate(GtkMenuItem *menuitem, gpointer data)
 static void player_boot_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	int spectator, seat_num;
+	char *name;
 
 	decode_seat(data, &spectator, &seat_num);
 
-	/* Not implemented */
+	if (spectator)
+		name = ggzmod_get_spectator_seat(ggz, seat_num).name;
+	else
+		name = ggzmod_get_seat(ggz, seat_num).name;
+
+	assert(name);
+	ggzmod_request_boot(ggz, name);
 }
 
 /* We (a spectator) will sit here. */
@@ -350,7 +357,8 @@ static void player_sit_activate(GtkMenuItem *menuitem, gpointer data)
 
 	decode_seat(data, &spectator, &seat_num);
 
-	/* Not implemented */
+	assert(!spectator);
+	ggzmod_request_sit(ggz, seat_num);
 }
 
 /* Replace the open seat with a bot */
@@ -360,7 +368,8 @@ static void player_bot_activate(GtkMenuItem *menuitem, gpointer data)
 
 	decode_seat(data, &spectator, &seat_num);
 
-	/* Not implemented */
+	assert(!spectator);
+	ggzmod_request_bot(ggz, seat_num);
 }
 
 /* Replace the bot or reserved seat with an open one */
@@ -370,7 +379,8 @@ static void player_open_activate(GtkMenuItem *menuitem, gpointer data)
 
 	decode_seat(data, &spectator, &seat_num);
 
-	/* Not implemented */
+	assert(!spectator);
+	ggzmod_request_open(ggz, seat_num);
 }
 
 void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
@@ -413,7 +423,9 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), boot);
+#ifndef DEBUG
 		gtk_widget_set_sensitive(boot, FALSE);
+#endif
 		gtk_signal_connect(GTK_OBJECT(boot), "activate",
 				   GTK_SIGNAL_FUNC(player_boot_activate),
 				   which);
@@ -430,7 +442,9 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "sit", sit,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), sit);
+#ifndef DEBUG
 		gtk_widget_set_sensitive(sit, FALSE);
+#endif
 		gtk_signal_connect(GTK_OBJECT(sit), "activate",
 				   GTK_SIGNAL_FUNC(player_sit_activate),
 				   which);
@@ -445,7 +459,9 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "bot", bot,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), bot);
+#ifndef DEBUG
 		gtk_widget_set_sensitive(bot, FALSE);
+#endif
 		gtk_signal_connect(GTK_OBJECT(bot), "activate",
 				   GTK_SIGNAL_FUNC(player_bot_activate),
 				   which);
@@ -466,7 +482,9 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "open", open,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), open);
+#ifndef DEBUG
 		gtk_widget_set_sensitive(open, FALSE);
+#endif
 		gtk_signal_connect(GTK_OBJECT(open), "activate",
 				   GTK_SIGNAL_FUNC(player_open_activate),
 				   which);
