@@ -21,7 +21,6 @@ AM_PROG_LIBTOOL
 
 dnl GGZ checks
 dnl ==========
-AC_GGZ_EASYSOCK(0.3)
 AC_GGZ_GGZCORE
 
 dnl Use -Wall if we have gcc.
@@ -49,7 +48,7 @@ fi
 dnl Create files
 dnl ============
 
-if test "$prefix" = "NONE"; then
+if test "x$prefix" = "xNONE"; then
 	prefix="/usr/local"
 fi
 
