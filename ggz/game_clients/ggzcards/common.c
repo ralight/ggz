@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2545 2001-10-08 23:09:23Z jdorje $
+ * $Id: common.c 2618 2001-10-28 07:54:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -117,24 +117,91 @@ static void set_game_state(client_state_t state)
 	}
 }
 
+static int handle_global_message_text(char *mark)
+{
+	char *message;
+	if (es_read_string_alloc(ggzfd, &message) < 0)
+		return -1;
+	table_set_global_message(mark, message);
+	return 0;
+}
+
+static int handle_global_message_cardgroup(char *mark)
+{
+	int p;
+	card_t card;
+	for (p = 0; p < game.num_players; p++)
+		if (read_card(ggzfd, &card) < 0)
+			return -1;
+
+	/* do nothing...yet */
+	return 0;
+}
+
+static int handle_global_message_cardlist(char *mark)
+{
+	int p, len;
+	card_t card;
+	if (es_read_int(ggzfd, &len) < 0)
+		return -1;
+	for (p = 0; p < game.num_players * len; p++)
+		if (read_card(ggzfd, &card) < 0)
+			return -1;
+
+	/* do nothing...yet */
+	return 0;
+}
+
+static int handle_global_message_block(char *mark)
+{
+	int size;
+	char *block;
+
+	if (es_read_int(ggzfd, &size) < 0)
+		return -1;
+
+	block = malloc(size);
+	if (!block || es_readn(ggzfd, block, size) < 0)
+		return -1;
+
+	/* do nothing...yet */
+	return 0;
+}
 
 /* a message_global message tells you one "global message", which is
    displayed by the client. */
 static int handle_message_global()
 {
+	int opcode, status = 0;
+	message_type_t op;
 	char *mark;
-	char *message;
 
 	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
-	    es_read_string_alloc(ggzfd, &message) < 0)
+	    read_opcode(ggzfd, &opcode) < 0)
 		return -1;
 
-	table_set_global_message(mark, message);
+	op = opcode;
 
-	free(message);
+	client_debug("Received opcode of type %d.", op);
+
+	switch (op) {
+	case GL_MESSAGE_TEXT:
+		status = handle_global_message_text(mark);
+		break;
+	case GL_MESSAGE_CARDGROUP:
+		status = handle_global_message_cardgroup(mark);
+		break;
+	case GL_MESSAGE_CARDLIST:
+		status = handle_global_message_cardlist(mark);
+		break;
+	case GL_MESSAGE_BLOCK:
+		status = handle_global_message_block(mark);
+		break;
+	}
+
 	free(mark);
 
-	return 0;
+	return status;
 }
 
 
