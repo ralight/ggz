@@ -73,6 +73,16 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
     AC_MSG_ERROR(*** Cannot find popt library ))
 
 
+dnl Check for expat
+dnl ==============
+AC_CHECK_LIB(expat, XML_ParserCreate,
+    AC_CHECK_HEADER(expat.h, LDADD="$LDADD -lexpat",
+        AC_MSG_ERROR(*** Cannot find expat.h header)),
+    AC_MSG_ERROR(*** Cannot find expat library ))
+
+
+
+
 dnl Use -Wall if we have gcc.
 dnl =========================
 changequote(,)dnl
