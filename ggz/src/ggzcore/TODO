@@ -2,8 +2,6 @@
 
 - Finish GGZGame and table launching functionality
 
-- Remove the ggzcore_server_get_XXX_names() function
-
 - Fix the player/table pointing problem
 
 - Convert to ggzcore_strdup()
