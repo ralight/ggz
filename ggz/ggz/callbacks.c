@@ -202,3 +202,34 @@ input_chat_msg                         (GtkWidget        *widget,
 	
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
+
+void
+NormalOption                           (GtkWidget       *widget,
+                                        gpointer         user_data) 
+{
+	GtkWidget* tmpWidget;
+	tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(dlg_login),"pass_box"));
+	gtk_widget_show (tmpWidget);
+}
+
+void
+AnonOption                             (GtkWidget       *widget,
+                                        gpointer         user_data) 
+{
+	GtkWidget* tmpWidget;
+	tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(dlg_login),"pass_box"));
+	gtk_widget_hide (tmpWidget);
+}
+
+void
+FirstOption                            (GtkWidget       *Widget,
+                                        gpointer         user_data) 
+{
+	GtkWidget* tmpWidget;
+	tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(dlg_login),"pass_box"));
+	gtk_widget_show (tmpWidget);
+}
+
+
+
+

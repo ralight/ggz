@@ -50,3 +50,17 @@ fill_defaults                          (GtkWidget       *widget,
 void
 input_chat_msg                         (GtkWidget       *editable,
                                         gpointer         user_data);
+
+void
+NormalOption                           (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+void
+AnonOption                             (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+void
+FirstOption                            (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+

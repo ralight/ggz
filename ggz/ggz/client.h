@@ -43,5 +43,6 @@ void NetClose(void);
 RETSIGTYPE die(int sig);
 
 GtkWidget *main_win;
+GtkWidget *dlg_login;
 
 #endif

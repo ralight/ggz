@@ -127,7 +127,7 @@ create_dlg_login (void)
   gtk_widget_ref (pass_box);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "pass_box", pass_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pass_box);
+//  gtk_widget_show (pass_box);
   gtk_box_pack_start (GTK_BOX (info_box), pass_box, TRUE, TRUE, 0);
 
   pass_label = gtk_label_new ("Password : ");
@@ -139,9 +139,9 @@ create_dlg_login (void)
 
   pass_entry = gtk_entry_new ();
   gtk_widget_ref (pass_entry);
+  gtk_widget_show (pass_entry);
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "pass_entry", pass_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pass_entry);
   gtk_box_pack_start (GTK_BOX (pass_box), pass_entry, TRUE, TRUE, 0);
   gtk_widget_set_usize (pass_entry, 96, -2);
   gtk_tooltips_set_tip (tooltips, pass_entry, "Enter your password here", NULL);
@@ -294,6 +294,15 @@ create_dlg_login (void)
                              GTK_OBJECT (dlg_login));
   gtk_signal_connect (GTK_OBJECT (details_button), "clicked",
                       GTK_SIGNAL_FUNC (show_details),
+                      dlg_login);
+  gtk_signal_connect (GTK_OBJECT (normal_radio), "clicked",
+                      GTK_SIGNAL_FUNC (NormalOption),
+                      dlg_login);
+  gtk_signal_connect (GTK_OBJECT (anon_radio), "clicked",
+                      GTK_SIGNAL_FUNC (AnonOption),
+                      dlg_login);
+  gtk_signal_connect (GTK_OBJECT (first_radio), "clicked",
+                      GTK_SIGNAL_FUNC (FirstOption),
                       dlg_login);
 
   gtk_widget_grab_default (connect_button);

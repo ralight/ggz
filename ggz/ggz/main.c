@@ -18,12 +18,11 @@
 
 Options opt;
 GtkWidget *main_win;
+GtkWidget *dlg_login;
 
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *dlg_login;
-
   parse_args(argc, argv);
 
   gtk_set_locale ();
