@@ -8,6 +8,8 @@ Homepage = http://ggz.sourceforge.net
 # necessary to specify the valid distinct options which can appear
 PlayersAllowed = 2
 #BotsAllowed = 1
+# Set AllowLeave to 1 if game supports players leaving during gameplay
+AllowLeave = 1
 OptionsSize = 0
 # ExecutablePath is figured relative to GameDir unless starting with /
 ExecutablePath = tictactoe/tictactoe

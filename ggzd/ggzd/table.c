@@ -401,12 +401,17 @@ static int table_game_join(int index, int fd)
 	else {
 		/* Assign seat */
 		seat = tables.info[index].transit_seat;
-		pthread_rwlock_wrlock(&tables.lock);
-		tables.info[index].seats[seat] = p;
-		tables.timestamp = time(NULL);
-		pthread_rwlock_unlock(&tables.lock);
 		dbg_msg(GGZ_DBG_TABLE, "Player %d at table %d, seat %d ", p,
 			index, seat);
+		
+		pthread_rwlock_wrlock(&tables.lock);
+		tables.info[index].seats[seat] = p;
+		if (!seats_open(tables.info[index])) {
+			dbg_msg(GGZ_DBG_TABLE, "Table %d full now", index);
+			tables.info[index].state = GGZ_TABLE_PLAYING;
+		}
+		tables.timestamp = time(NULL);
+		pthread_rwlock_unlock(&tables.lock);
 	}
 
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
@@ -679,11 +684,29 @@ int table_join(int p, int index, int* t_fd)
 
 int table_leave(int p, int index)
 {
-	int flag;
+	int flag, type;
+	char state;
 	
 	if (index == -1)
 		return E_NO_TABLE;
 
+	pthread_rwlock_rdlock(&tables.lock);
+	type = tables.info[index].type_index;
+	state = tables.info[index].state;
+	pthread_rwlock_unlock(&tables.lock);
+
+	/* Make sure table is valid */
+	if (type < 0)
+		return E_NO_TABLE;
+
+	/* Only allow leave during gameplay if game type supports it */
+	pthread_rwlock_rdlock(&game_types.lock);
+	if (state == GGZ_TABLE_PLAYING && !game_types.info[type].allow_leave) {
+		pthread_rwlock_unlock(&game_types.lock);
+		return E_LEAVE_FORBIDDEN;
+	}
+	pthread_rwlock_unlock(&game_types.lock);
+	
 	pthread_mutex_lock(&tables.info[index].transit_lock);
 	while (tables.info[index].transit_flag != GGZ_TRANSIT_CLR) {
 		dbg_msg(GGZ_DBG_TABLE,

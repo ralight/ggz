@@ -107,3 +107,4 @@ typedef enum {
 #define E_JOIN_FAIL    -7
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
+#define E_LEAVE_FORBIDDEN -10
