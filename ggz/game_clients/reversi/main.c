@@ -30,6 +30,7 @@
 #include <sys/un.h>
 #include <easysock.h>
 #include <gtk/gtk.h>
+#include <ggzcore.h>
 
 #include "game.h"
 #include "support.h"

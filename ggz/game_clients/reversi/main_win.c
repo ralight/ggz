@@ -44,7 +44,7 @@
 #include <white.xpm>
 #include <easysock.h>
 
-#include "confio.h"
+#include <ggzcore.h>
 #include "about_dlg.h"
 
 
@@ -197,13 +197,13 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 
   // Loads configuration options
 	user_conf_path = g_strdup_printf("%s/.ggz/reversi-gtk.rc", getenv("HOME"));;
-  config_file = _ggzcore_confio_parse(user_conf_path, 1);
-  back_color_str[0] = _ggzcore_confio_read_string(config_file, "background color", "red", "29695");
-  back_color_str[1] = _ggzcore_confio_read_string(config_file, "background color", "green", "27391");
-  back_color_str[2] = _ggzcore_confio_read_string(config_file, "background color", "blue", "44031");
-  last_color_str[0] = _ggzcore_confio_read_string(config_file, "last played color", "red", "36863");
-  last_color_str[1] = _ggzcore_confio_read_string(config_file, "last played color", "green", "34047");
-  last_color_str[2] = _ggzcore_confio_read_string(config_file, "last played color", "blue", "54783");
+  config_file = ggzcore_confio_parse(user_conf_path, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
+  back_color_str[0] = ggzcore_confio_read_string(config_file, "background color", "red", "29695");
+  back_color_str[1] = ggzcore_confio_read_string(config_file, "background color", "green", "27391");
+  back_color_str[2] = ggzcore_confio_read_string(config_file, "background color", "blue", "44031");
+  last_color_str[0] = ggzcore_confio_read_string(config_file, "last played color", "red", "36863");
+  last_color_str[1] = ggzcore_confio_read_string(config_file, "last played color", "green", "34047");
+  last_color_str[2] = ggzcore_confio_read_string(config_file, "last played color", "blue", "54783");
   sscanf(back_color_str[0], "%hu", &back_color->red);
   sscanf(back_color_str[1], "%hu", &back_color->green);
   sscanf(back_color_str[2], "%hu", &back_color->blue);
@@ -250,18 +250,18 @@ gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
   back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
   last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
   sprintf(temp, "%hu", back_color->red);
-  _ggzcore_confio_write_string(config_file, "background color", "red", temp);
+  ggzcore_confio_write_string(config_file, "background color", "red", temp);
   sprintf(temp, "%hu", back_color->green);
-  _ggzcore_confio_write_string(config_file, "background color", "green", temp);
+  ggzcore_confio_write_string(config_file, "background color", "green", temp);
   sprintf(temp, "%hu", back_color->blue);
-  _ggzcore_confio_write_string(config_file, "background color", "blue", temp);
+  ggzcore_confio_write_string(config_file, "background color", "blue", temp);
   sprintf(temp, "%hu", last_color->red);
-  _ggzcore_confio_write_string(config_file, "last played color", "red", temp);
+  ggzcore_confio_write_string(config_file, "last played color", "red", temp);
   sprintf(temp, "%hu", last_color->green);
-  _ggzcore_confio_write_string(config_file, "last played color", "green", temp);
+  ggzcore_confio_write_string(config_file, "last played color", "green", temp);
   sprintf(temp, "%hu", last_color->blue);
-  _ggzcore_confio_write_string(config_file, "last played color", "blue", temp);
-  _ggzcore_confio_commit(config_file);
+  ggzcore_confio_write_string(config_file, "last played color", "blue", temp);
+  ggzcore_confio_commit(config_file);
 
 	
 	return FALSE;

@@ -146,9 +146,6 @@
 #define RVR_STATE_PLAYING 2
 #define RVR_STATE_DONE 3
 
-// GGZ define
-#define GGZ_SEAT_OPEN -1
-
 // Responses from server
 #define RVR_SERVER_ERROR -1
 #define RVR_SERVER_OK 0
