@@ -94,12 +94,12 @@ char** server_get_names(void);
  * Return a pointer to the server profile whose name matches 'name'
  * Do *not* free()!
  */
-Server* server_get(gchar* name);
+Server* server_get(const gchar* name);
 
 
 /*
  * Remove the server profile whose name matches 'name'
  */
-void server_list_remove(gchar* name);
+void server_list_remove(const gchar* name);
 
 #endif

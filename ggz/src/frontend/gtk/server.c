@@ -173,7 +173,7 @@ char** server_get_names(void)
 }
 
 
-Server* server_get(gchar* name)
+Server* server_get(const gchar* name)
 {
 	GList* node;
 	
@@ -186,7 +186,7 @@ Server* server_get(gchar* name)
 }
 
 
-void server_list_remove(gchar* name)
+void server_list_remove(const gchar* name)
 {
 	GList* node;
 	Server* server;

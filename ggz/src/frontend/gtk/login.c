@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 4424 2002-09-06 22:22:19Z jdorje $
+ * $Id: login.c 5179 2002-11-03 20:09:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -298,7 +298,7 @@ static void login_cancel_button_clicked(GtkButton *button, gpointer data)
 static void login_start_session(void)
 {
 	GtkWidget *tmp;
-	char *host = NULL, *login = NULL, *password = NULL;
+	const char *host = NULL, *login = NULL, *password = NULL;
 	char *sessiondump;
 	int port;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
@@ -369,7 +369,7 @@ static void login_start_session(void)
 static void login_relogin(void)
 {
 	GtkWidget *tmp;
-	char *login = NULL, *password = NULL;
+	const char *login = NULL, *password = NULL;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	/* FIXME: perhaps this should be done elsewhere? 
