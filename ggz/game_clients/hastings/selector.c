@@ -4,8 +4,10 @@
 
 #include <ggz.h>
 
-#include "game.h"
 #include "ggzintl.h"
+
+#include "game.h"
+#include "selector.h"
 
 /* Global game variables */
 extern struct game_state_t game;

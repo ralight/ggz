@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 5233 2002-11-06 22:11:22Z dr_maux $
+ * $Id: game.h 5269 2002-12-02 00:29:39Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -104,7 +104,6 @@ int get_move_status(void);
 int get_opponent_move(void);
 int get_sync(void);
 int get_gameover(void);
-int get_maps(void);
 
 /* Functions to send data to server */
 int send_options(void);

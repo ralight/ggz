@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 5233 2002-11-06 22:11:22Z dr_maux $
+ * $Id: main.c 5269 2002-12-02 00:29:39Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -61,6 +61,8 @@ struct game_state_t game;
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
 static void initialize_about_dialog(void);
+
+static void get_maps(void);
 
 static GGZMod *mod;
 
@@ -212,11 +214,9 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	}
 }
 
-int get_maps(void)
+static void get_maps(void)
 {
-	GtkWidget *w;
-
-	w = selector();
+	(void) selector();
 }
 
 /* Read in own data: seat number */
