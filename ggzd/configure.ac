@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
+dnl $Id: configure.ac 5388 2003-02-04 17:55:14Z jdorje $
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-server, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
@@ -58,8 +59,10 @@ AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
 				          PF_UNIX ], AC_MSG_RESULT(no)
 				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
                                           AC_MSG_RESULT(yes)
-					  AC_DEFINE(PF_LOCAL, PF_UNIX)
-			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+					  AC_DEFINE([PF_LOCAL], PF_UNIX,
+						    [PF_UNIX is available])
+			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
+						    [AF_UNIX is available])), 
              AC_MSG_RESULT(yes))
 
 
@@ -134,7 +137,8 @@ if test "$database" = db3 || test "$database" = yes; then
             [
               database=db3
               ggzd_LIBS="$ggzd_LIBS -ldb3"
-              AC_DEFINE(DB4_IN_DIR)
+              AC_DEFINE([DB3_IN_DIR], 1,
+			[Define if the db3 libs and headers are under db3/])
             ],
             [
               if test "$database" = db3; then
@@ -173,7 +177,8 @@ if test "$database" = db4 || test "$database" = yes; then
             [
               database=db4
               ggzd_LIBS="$ggzd_LIBS -ldb-4.0"
-              AC_DEFINE(DB4_IN_DIR)
+              AC_DEFINE([DB4_IN_DIR], 1,
+			[Define if the db4 libs and headers are under db4/])
             ],
             [
               if test "$database" = db4; then
@@ -213,7 +218,8 @@ if test "$database" = db2 || test "$database" = yes; then
             [
               database=db2
               ggzd_LIBS="$ggzd_LIBS -ldb2"
-              AC_DEFINE(DB2_IN_DIR)
+              AC_DEFINE([DB2_IN_DIR], 1,
+			[Define if the db2 libs and headers are under db2/])
             ],
             [
               if test "$database" = db2; then
@@ -297,15 +303,15 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
 if test "$enable_debug_mem" = yes; then
-    AC_DEFINE(DEBUG_MEM)
+    AC_DEFINE(DEBUG_MEM, 1, [Define to use dmalloc memory debugging])
     DFLAGS="$DFLAGS DEBUG_MEM"
     LDADD="$LDADD -ldmalloc"
 fi
@@ -327,7 +333,8 @@ if test "x${sysconfdir}" = 'x${prefix}/etc'; then
 else
   ggzdconfdir="${sysconfdir}/ggzd"
 fi
-AC_DEFINE_UNQUOTED(GGZDCONFDIR, "${ggzdconfdir}")
+AC_DEFINE_UNQUOTED([GGZDCONFDIR], "${ggzdconfdir}",
+		   [Directory containing GGZd configuration files])
 ggzdroomdir="${ggzdconfdir}/rooms"
 ggzdgamedir="${ggzdconfdir}/games"
 
@@ -345,7 +352,8 @@ if test "x${libdir}" = 'x${exec_prefix}/lib'; then
 else
   ggzdexecmoddir="${libdir}/ggzd"
 fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}")
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}",
+		   [Directory containing GGZd game module executables])
 
 if test "x${localstatedir}" = 'x${prefix}/var'; then
   if test "x${prefix}" = "xNONE"; then
@@ -356,19 +364,23 @@ if test "x${localstatedir}" = 'x${prefix}/var'; then
 else
   ggzdstatedir="${localstatedir}/ggzd"
 fi
-AC_DEFINE_UNQUOTED(DATADIR, "${ggzdstatedir}")
+AC_DEFINE_UNQUOTED([DATADIR], "${ggzdstatedir}",
+		   [Directory containing GGZ shared data])
 
-AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
+AC_DEFINE_UNQUOTED([TMPDIR], "${tmpdir}",
+		   [Directory used for temporary storage])
 
 if test "x${prefix}" = "xNONE"; then
   ggzddatadir="${ac_default_prefix}/share/ggzd"
 else
   ggzddatadir="${prefix}/share/ggzd"
 fi
-AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}")
+AC_DEFINE_UNQUOTED([GGZDDATADIR], "${ggzddatadir}",
+		   [Location of GGZd module data])
 
 packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
+AC_DEFINE_UNQUOTED([PACKAGE_SOURCE_DIR], "${packagesrcdir}",
+		   [The top-level source directory])
 
 
 dnl Which progs to compile
@@ -404,9 +416,10 @@ AC_SUBST(packagesrcdir)
 AC_SUBST(database)
 
 dnl Attempt to use as much as we can on systems with glibc
-AC_DEFINE(_GNU_SOURCE)
+AC_DEFINE([_GNU_SOURCE], 1,
+	  [Attempt to use as much as we can on systems with glibc])
 
-AC_OUTPUT([Makefile
+AC_CONFIG_FILES([Makefile
 	ggzdmod/Makefile
 	ggzd/Makefile 
 	ggzd/database/Makefile
@@ -445,6 +458,7 @@ AC_OUTPUT([Makefile
 	man/Makefile
 	tests/Makefile
 ])
+AC_OUTPUT
 
 
 dnl Status Output
