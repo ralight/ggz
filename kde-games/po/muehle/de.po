@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../muehle/src/board.cpp:577
 msgid "AI"
-msgstr ""
+msgstr "xxx"
 
 #: ../../muehle/src/board.cpp:745
 msgid "Aborting game due to unhandled network input."

@@ -23,10 +23,10 @@ noinst_HEADERS = \
 	options.h \
 	kexttabctl.h
 
-INCLUDES = $(LIBGGZ_INCLUDES) $(all_includes) -I libcgc
+INCLUDES = -I$(top_srcdir)/koenig/libcgc $(LIBGGZ_INCLUDES) $(all_includes)
 
 UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-koenig_LDADD = libcgc/libcgc.a $(all_libraries) $(UI) 
+koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a $(all_libraries) $(UI) 
 
 METASOURCES = AUTO
 

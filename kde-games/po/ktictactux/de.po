@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../ktictactux/ktictactux.cpp:371
 msgid "*bounds*"
-msgstr ""
+msgstr "xxx"
 
 #: ../../ktictactux/ktictactux.cpp:374
 msgid "*occupied*"

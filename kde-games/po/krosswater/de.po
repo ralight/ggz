@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../krosswater/dlg_again.cpp:44
 msgid "(result unknown)"
-msgstr ""
+msgstr "xx"
 
 #: ../../krosswater/krosswater.cpp:110 ../../krosswater/krosswater.cpp:112
 msgid "A protocol error has been detected. Aborting the game."

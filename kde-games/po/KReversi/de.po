@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../KReversi/kreversi.cpp:128
 msgid " ! Check your installation!"
-msgstr ""
+msgstr "xxx"
 
 #: ../../KReversi/reversiview.cpp:100
 msgid "! Check your installation!"

@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../koenig/game.cc:224
 msgid "%1: from %2/%3 to %4/%5"
-msgstr ""
+msgstr "xxx"
 
 #: ../../koenig/toplevel.cc:70
 msgid "(Koenig launched)"

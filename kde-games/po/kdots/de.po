@@ -16,7 +16,7 @@ msgstr ""
 
 #: ../../kdots/kdots.cpp:209
 msgid "A protocol error has been detected. Aborting the game."
-msgstr ""
+msgstr "xxx"
 
 #: ../../kdots/kdots_win.cpp:40
 msgid "About"
