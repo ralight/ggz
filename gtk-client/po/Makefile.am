@@ -1,0 +1,23 @@
+SUBDIRS=
+
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+MSGFMT = msgfmt
+
+all:
+	$(XGETTEXT) -k_ -kN_ ../ggz-gtk/*.c -o ggz-gtk.pot
+	@for j in `ls -1 *.po`; do \
+		echo "process $$j"; \
+		$(MSGMERGE) $$j ggz-gtk.pot > .$$j 2>/dev/null; \
+		mv .$$j $$j; \
+	done
+
+install-data-local:
+	for j in `ls -1 *.po`; do \
+		country=`echo $$j | cut -d "." -f 1`; \
+		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		echo "installing $$dir/ggz-gtk.mo ($$j)"; \
+		install -d $$dir; \
+		$(MSGFMT) -o $$dir/ggz-gtk.mo $$j; \
+	done
+

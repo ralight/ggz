@@ -45,6 +45,7 @@
 #include "ggzcore.h"
 #include "login.h"
 #include "server.h"
+#define gettext_noop
 #include "support.h"
 
 extern GtkWidget *win_main;
@@ -55,10 +56,10 @@ static void first_button_yes_activate(GtkButton *button, gpointer data);
 static void first_button_no_activate(GtkButton *button, gpointer data);
 static void first_generate_password(char *pw);
 
-static char *pw_words[] = { _("(G) Wizard"),  _("(G) Deity"),      _("(G) Sentinel"), _("(G) Captain"), _("(G) Knight"),
-                            _("(G) Angel"),   _("(G) Silverlord"), _("(G) Eagle"),    _("(G) Vampire"), _("(G) Chief"),
-                            _("(G) Colonel"), _("(G) General"),    _("(G) Major"),    _("(G) Scout"),   _("(G) Lieutenant"),
-                            _("(G) Stalker"), _("(G) Scientist"),  _("(G) Scholar"),  _("(G) Entity"),  _("(G) Creator")};
+static char *pw_words[] = { N_("(G) Wizard"),  N_("(G) Deity"),      N_("(G) Sentinel"), N_("(G) Captain"), N_("(G) Knight"),
+                            N_("(G) Angel"),   N_("(G) Silverlord"), N_("(G) Eagle"),    N_("(G) Vampire"), N_("(G) Chief"),
+                            N_("(G) Colonel"), N_("(G) General"),    N_("(G) Major"),    N_("(G) Scout"),   N_("(G) Lieutenant"),
+                            N_("(G) Stalker"), N_("(G) Scientist"),  N_("(G) Scholar"),  N_("(G) Entity"),  N_("(G) Creator")};
 
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog

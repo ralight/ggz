@@ -1,0 +1,1223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2001-06-02 01:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+
+#: ../ggz-gtk/about.c:104
+msgid "About"
+msgstr "‹ber"
+
+#: ../ggz-gtk/about.c:134 ../ggz-gtk/info.c:259 ../ggz-gtk/motd.c:190
+#: ../ggz-gtk/props.c:1507
+msgid "OK"
+msgstr "OK"
+
+#: ../ggz-gtk/chat.c:255
+msgid "Beep sent"
+msgstr ""
+
+#: ../ggz-gtk/chat.c:310
+#, fuzzy
+msgid "Chat Commands"
+msgstr "Chat-Farbe"
+
+#: ../ggz-gtk/chat.c:311
+msgid "-------------"
+msgstr ""
+
+#: ../ggz-gtk/chat.c:312
+msgid "/me <action>"
+msgstr "/me <Aktion>"
+
+#: ../ggz-gtk/chat.c:313
+msgid "/msg <username> <message>"
+msgstr ""
+
+#: ../ggz-gtk/chat.c:314
+#, fuzzy
+msgid "/beep <username>"
+msgstr "/beep <Benutzer>"
+
+#: ../ggz-gtk/client.c:150 ../ggz-gtk/client.c:529
+msgid "Are you sure you want to quit?"
+msgstr ""
+
+#: ../ggz-gtk/client.c:150 ../ggz-gtk/client.c:529
+msgid "Quit?"
+msgstr ""
+
+#: ../ggz-gtk/client.c:377
+msgid "/msg"
+msgstr ""
+
+#: ../ggz-gtk/client.c:379
+#, fuzzy
+msgid "/beep"
+msgstr "/help"
+
+#: ../ggz-gtk/client.c:381
+msgid "/help"
+msgstr "/help"
+
+#: ../ggz-gtk/client.c:660
+msgid "You can't join a room, you're not logged int"
+msgstr ""
+
+#: ../ggz-gtk/client.c:664
+msgid "You're already in between rooms"
+msgstr ""
+
+#: ../ggz-gtk/client.c:669
+msgid "You can't switch rooms while playing a game"
+msgstr ""
+
+#: ../ggz-gtk/client.c:676
+msgid "Unknown error"
+msgstr ""
+
+#: ../ggz-gtk/client.c:696 ../ggz-gtk/client.c:701
+msgid "Error joining room"
+msgstr ""
+
+#: ../ggz-gtk/client.c:736
+msgid ""
+"Failed to join table.\n"
+" Join aborted."
+msgstr ""
+
+#: ../ggz-gtk/client.c:736
+msgid "Join Error"
+msgstr ""
+
+#: ../ggz-gtk/client.c:778
+#, c-format
+msgid "Client Version:14 %s"
+msgstr "Client Version: ^C14 %s"
+
+#: ../ggz-gtk/client.c:781
+#, fuzzy, c-format
+msgid "GTK+ Version:14 %d.%d.%d\n"
+msgstr "GTK+ Version:14 %d.%d.%d\n"
+
+#: ../ggz-gtk/client.c:787
+msgid "Compiled with debugging."
+msgstr "Kompiliert mit Debug-Information"
+
+#: ../ggz-gtk/client.c:890
+#, fuzzy
+msgid "GGZ Gaming Zone"
+msgstr "GNU Gaming Zone"
+
+#: ../ggz-gtk/client.c:909
+msgid "_GGZ"
+msgstr "_GGZ"
+
+#: ../ggz-gtk/client.c:927
+msgid "_Connect"
+msgstr "_Verbinden"
+
+#: ../ggz-gtk/client.c:941
+msgid "_Disconnect"
+msgstr "Verbindung _trennen"
+
+#: ../ggz-gtk/client.c:964
+msgid "E_xit"
+msgstr "B_eenden"
+
+#: ../ggz-gtk/client.c:978
+msgid "G_ame"
+msgstr "_Spiel"
+
+#: ../ggz-gtk/client.c:997
+#, fuzzy
+msgid "_Launch"
+msgstr "Starten"
+
+#: ../ggz-gtk/client.c:1011
+#, fuzzy
+msgid "_Join"
+msgstr "Teilnehmen"
+
+#: ../ggz-gtk/client.c:1033
+#, fuzzy
+msgid "Lea_ve"
+msgstr "Spiel ve_rlassen"
+
+#: ../ggz-gtk/client.c:1047
+msgid "_Edit"
+msgstr "_Bearbeiten"
+
+#: ../ggz-gtk/client.c:1065
+#, fuzzy
+msgid "_Properties"
+msgstr "Eigenschaften"
+
+#: ../ggz-gtk/client.c:1079
+msgid "_View"
+msgstr "Ansi_cht"
+
+#: ../ggz-gtk/client.c:1098
+msgid "_Room List"
+msgstr "Liste der R‰ume"
+
+#: ../ggz-gtk/client.c:1111
+#, fuzzy
+msgid "P_layer List"
+msgstr "Spieler"
+
+#: ../ggz-gtk/client.c:1132
+#, fuzzy
+msgid "_Server Stats"
+msgstr "Servers"
+
+#: ../ggz-gtk/client.c:1143
+#, fuzzy
+msgid "_Player Stats"
+msgstr "Spieler"
+
+#: ../ggz-gtk/client.c:1157
+#, fuzzy
+msgid "_Game Types"
+msgstr "S_pielart"
+
+#: ../ggz-gtk/client.c:1176
+msgid "_MOTD"
+msgstr "Tages_meldung"
+
+#: ../ggz-gtk/client.c:1190
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: ../ggz-gtk/client.c:1208
+msgid "_About"
+msgstr "_‹ber"
+
+#: ../ggz-gtk/client.c:1222
+msgid "_Copyright"
+msgstr ""
+
+#: ../ggz-gtk/client.c:1241
+#, fuzzy
+msgid "_GGZ Help"
+msgstr "_Hilfe"
+
+#: ../ggz-gtk/client.c:1255
+#, fuzzy
+msgid "G_ame Help"
+msgstr "_Spiel"
+
+#: ../ggz-gtk/client.c:1274
+msgid "Goto _Web"
+msgstr "Gehe zu _Web"
+
+#: ../ggz-gtk/client.c:1300 ../ggz-gtk/login.c:706
+msgid "Connect"
+msgstr "Verbinden"
+
+#: ../ggz-gtk/client.c:1311
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: ../ggz-gtk/client.c:1323 ../ggz-gtk/launch.c:889
+msgid "Launch"
+msgstr "Starten"
+
+#: ../ggz-gtk/client.c:1335 ../ggz-gtk/client.c:1784 ../ggz-gtk/client.c:1851
+msgid "Join"
+msgstr "Teilnehmen"
+
+#: ../ggz-gtk/client.c:1347 ../ggz-gtk/client.c:1791
+#, fuzzy
+msgid "Leave"
+msgstr "Spiel ve_rlassen"
+
+#: ../ggz-gtk/client.c:1359
+#, fuzzy
+msgid "Props"
+msgstr "Eigenschaften"
+
+#: ../ggz-gtk/client.c:1370
+msgid "Stats"
+msgstr "Statistiken"
+
+#: ../ggz-gtk/client.c:1382
+msgid "Exit"
+msgstr "Beenden"
+
+#: ../ggz-gtk/client.c:1390
+#, fuzzy
+msgid "Current Room:"
+msgstr "Aktueller Raum"
+
+#: ../ggz-gtk/client.c:1445
+msgid "Rooms"
+msgstr "R‰ume"
+
+#: ../ggz-gtk/client.c:1473
+msgid "L"
+msgstr "L"
+
+#: ../ggz-gtk/client.c:1480
+msgid "T"
+msgstr "T"
+
+#: ../ggz-gtk/client.c:1487
+#, fuzzy
+msgid "Player"
+msgstr "Spieler"
+
+#: ../ggz-gtk/client.c:1525
+msgid "No."
+msgstr "Nr."
+
+#: ../ggz-gtk/client.c:1532
+msgid "Seats"
+msgstr "Sitze"
+
+#: ../ggz-gtk/client.c:1539 ../ggz-gtk/types.c:225
+msgid "Description"
+msgstr "Beschreibung"
+
+#: ../ggz-gtk/client.c:1591
+#, fuzzy
+msgid "Message:"
+msgstr "Meldung: "
+
+#: ../ggz-gtk/client.c:1615
+msgid "Send"
+msgstr "Senden"
+
+#: ../ggz-gtk/client.c:1806 ../ggz-gtk/client.c:1841
+msgid "Info"
+msgstr "Information"
+
+#: ../ggz-gtk/first.c:59
+msgid "(G) Wizard"
+msgstr ""
+
+#: ../ggz-gtk/first.c:59
+msgid "(G) Deity"
+msgstr ""
+
+#: ../ggz-gtk/first.c:59
+msgid "(G) Sentinel"
+msgstr ""
+
+#: ../ggz-gtk/first.c:59
+msgid "(G) Captain"
+msgstr "(G) Meister"
+
+#: ../ggz-gtk/first.c:59
+msgid "(G) Knight"
+msgstr ""
+
+#: ../ggz-gtk/first.c:60
+msgid "(G) Angel"
+msgstr ""
+
+#: ../ggz-gtk/first.c:60
+msgid "(G) Silverlord"
+msgstr ""
+
+#: ../ggz-gtk/first.c:60
+msgid "(G) Eagle"
+msgstr ""
+
+#: ../ggz-gtk/first.c:60
+msgid "(G) Vampire"
+msgstr ""
+
+#: ../ggz-gtk/first.c:60
+msgid "(G) Chief"
+msgstr ""
+
+#: ../ggz-gtk/first.c:61
+msgid "(G) Colonel"
+msgstr ""
+
+#: ../ggz-gtk/first.c:61
+msgid "(G) General"
+msgstr ""
+
+#: ../ggz-gtk/first.c:61
+msgid "(G) Major"
+msgstr ""
+
+#: ../ggz-gtk/first.c:61
+msgid "(G) Scout"
+msgstr ""
+
+#: ../ggz-gtk/first.c:61
+msgid "(G) Lieutenant"
+msgstr ""
+
+#: ../ggz-gtk/first.c:62
+msgid "(G) Stalker"
+msgstr ""
+
+#: ../ggz-gtk/first.c:62
+msgid "(G) Scientist"
+msgstr ""
+
+#: ../ggz-gtk/first.c:62
+msgid "(G) Scholar"
+msgstr ""
+
+#: ../ggz-gtk/first.c:62
+msgid "(G) Entity"
+msgstr ""
+
+#: ../ggz-gtk/first.c:62
+msgid "(G) Creator"
+msgstr ""
+
+#: ../ggz-gtk/first.c:186
+#, fuzzy
+msgid "First Time Configuration"
+msgstr "Erstmaliges Login"
+
+#: ../ggz-gtk/first.c:197
+msgid ""
+"This is the first time you are running the GTK+ GGZ Gaming Zone client. "
+"Would you like to create some default server profiles?"
+msgstr ""
+
+#: ../ggz-gtk/first.c:212
+msgid "Yes"
+msgstr ""
+
+#: ../ggz-gtk/first.c:220
+#, fuzzy
+msgid "No"
+msgstr "Nr."
+
+#: ../ggz-gtk/game.c:70
+msgid "You can only play one game at a time."
+msgstr ""
+
+#: ../ggz-gtk/game.c:71 ../ggz-gtk/game.c:78 ../ggz-gtk/game.c:278
+#: ../ggz-gtk/game.c:296
+msgid "Game Error"
+msgstr ""
+
+#: ../ggz-gtk/game.c:77
+#, fuzzy
+msgid "You're still at a table."
+msgstr "Du muﬂt ein Spiel zum teilnehmen ausw‰hlen."
+
+#: ../ggz-gtk/game.c:85
+#, fuzzy
+msgid ""
+"You must be in a room to launch a game.\n"
+"Launch aborted"
+msgstr "Du muﬂt erst einen Raum betreten um am Spiel teilnehmen zu kˆnnen."
+
+#: ../ggz-gtk/game.c:85 ../ggz-gtk/game.c:92 ../ggz-gtk/game.c:104
+#: ../ggz-gtk/game.c:139 ../ggz-gtk/game.c:162 ../ggz-gtk/launch.c:246
+#, fuzzy
+msgid "Launch Error"
+msgstr "Starten"
+
+#: ../ggz-gtk/game.c:92
+msgid ""
+"No game types defined for this server.\n"
+"Launch aborted."
+msgstr ""
+
+#: ../ggz-gtk/game.c:102
+#, fuzzy, c-format
+msgid ""
+"You don't have this game installed. You can download\n"
+"it from %s."
+msgstr ""
+"Sorry, aber du scheinst %s nicht installiert zu haben.\n"
+"Du kannst es von %s bekommen."
+
+#: ../ggz-gtk/game.c:139
+msgid ""
+"No modules defined for this game.\n"
+"Launch aborted."
+msgstr ""
+
+#: ../ggz-gtk/game.c:162
+msgid ""
+"Failed to execute game module.\n"
+" Launch aborted."
+msgstr ""
+
+#: ../ggz-gtk/game.c:277 ../ggz-gtk/game.c:296
+#, fuzzy
+msgid "Error leaving table"
+msgstr "Fehler beim Laden folgender Pixmap: %s"
+
+#: ../ggz-gtk/ggz.c:251
+#, fuzzy, c-format
+msgid "Current Room: %s"
+msgstr "Aktueller Raum"
+
+#: ../ggz-gtk/ggz.c:256
+#, c-format
+msgid "You've joined room \"%s\"."
+msgstr "Du bist Raum \"%s\" beigetreten."
+
+#: ../ggz-gtk/ggz.c:282 ../ggz-gtk/ggz.c:723
+#, fuzzy
+msgid "Disconnected from Server."
+msgstr "Verbunden mit Server: %s"
+
+#: ../ggz-gtk/ggz.c:322
+#, c-format
+msgid "You've been beeped by %s."
+msgstr "Du wirdest von %s angebeept."
+
+#: ../ggz-gtk/ggz.c:402
+msgid "Offline"
+msgstr "Offline"
+
+#: ../ggz-gtk/ggz.c:405
+#, fuzzy
+msgid "Connecting"
+msgstr "Verbinden"
+
+#: ../ggz-gtk/ggz.c:408
+msgid "Online"
+msgstr "Online"
+
+#: ../ggz-gtk/ggz.c:411
+msgid "Logging In"
+msgstr "Logge ein"
+
+#: ../ggz-gtk/ggz.c:414
+msgid "Logged In"
+msgstr "Eingeloggt"
+
+#: ../ggz-gtk/ggz.c:418
+msgid "--> Room"
+msgstr "--> Raum"
+
+#: ../ggz-gtk/ggz.c:421
+#, fuzzy
+msgid "Chatting"
+msgstr "Wechseln"
+
+#: ../ggz-gtk/ggz.c:425
+#, fuzzy
+msgid "--> Table"
+msgstr "Tisch"
+
+#: ../ggz-gtk/ggz.c:428
+msgid "Playing"
+msgstr "Spiele"
+
+#: ../ggz-gtk/ggz.c:431
+#, fuzzy
+msgid "<-- Table"
+msgstr "Tisch"
+
+#: ../ggz-gtk/ggz.c:434
+msgid "Logging Out"
+msgstr "Logge aus"
+
+#: ../ggz-gtk/ggz.c:437
+msgid "**none**"
+msgstr "**nix**"
+
+#: ../ggz-gtk/info.c:118
+#, fuzzy
+msgid "Room Information"
+msgstr "Information ¸ber Benutzer"
+
+#: ../ggz-gtk/info.c:157
+#, fuzzy
+msgid "Game Name:"
+msgstr "Spielart:"
+
+#: ../ggz-gtk/info.c:166
+msgid "Black Jack"
+msgstr "Black Jack"
+
+#: ../ggz-gtk/info.c:181 ../ggz-gtk/launch.c:435
+msgid "Author:"
+msgstr "Autor:"
+
+#: ../ggz-gtk/info.c:190
+msgid "John Doe"
+msgstr "John Doe"
+
+#: ../ggz-gtk/info.c:205 ../ggz-gtk/launch.c:465
+msgid "Homepage:"
+msgstr "Homepage:"
+
+#: ../ggz-gtk/info.c:214
+msgid "http://ggz.sourceforge.net"
+msgstr "http://ggz.sourceforge.net"
+
+#: ../ggz-gtk/info.c:229
+#, fuzzy
+msgid "Room Description:"
+msgstr "Beschreibung:"
+
+#: ../ggz-gtk/info.c:238
+msgid ""
+"This is an example room description that people can view. This gets wrpped "
+"around to accomodate larger room descriptions. Overall this can be as large "
+"as is needed."
+msgstr ""
+"Dies ist eine Beispielbeschreibung eines Raumes welche sich Leute "
+"anschauenkˆnnen. Dieser wurde eingewickelt um sich an grˆﬂere Beschreibungen "
+"anzupassen. Insgesamt kann dies hier so groﬂ sein wie's gebraucht wird."
+
+#: ../ggz-gtk/launch.c:85
+#, fuzzy, c-format
+msgid "Game Type:  %s"
+msgstr "Spielart:"
+
+#: ../ggz-gtk/launch.c:90
+#, fuzzy, c-format
+msgid "Author:  %s"
+msgstr "Autor:"
+
+#: ../ggz-gtk/launch.c:95
+#, fuzzy, c-format
+msgid "Description:  %s"
+msgstr "Beschreibung:"
+
+#: ../ggz-gtk/launch.c:100
+#, fuzzy, c-format
+msgid "Home Page:  %s"
+msgstr "Homepage: %s"
+
+#: ../ggz-gtk/launch.c:216
+msgid "Invalid number of bots specified"
+msgstr ""
+
+#: ../ggz-gtk/launch.c:216
+msgid "Error"
+msgstr ""
+
+#: ../ggz-gtk/launch.c:246
+msgid ""
+"Failed to launch table.\n"
+" Launch aborted."
+msgstr ""
+
+#: ../ggz-gtk/launch.c:366
+msgid "Seat Assignments"
+msgstr "Sitzzuweisungen"
+
+#: ../ggz-gtk/launch.c:389
+msgid "Game Type:"
+msgstr "Spielart:"
+
+#: ../ggz-gtk/launch.c:421
+msgid "Number of seats"
+msgstr "Anzahl der Sitze"
+
+#: ../ggz-gtk/launch.c:450
+msgid "Description:"
+msgstr "Beschreibung:"
+
+#: ../ggz-gtk/launch.c:487
+msgid "Seat 1:"
+msgstr "Sitz 1:"
+
+#: ../ggz-gtk/launch.c:494 ../ggz-gtk/launch.c:541 ../ggz-gtk/launch.c:588
+#: ../ggz-gtk/launch.c:635 ../ggz-gtk/launch.c:682 ../ggz-gtk/launch.c:729
+#: ../ggz-gtk/launch.c:776 ../ggz-gtk/launch.c:823
+msgid "Computer"
+msgstr "Computer"
+
+#: ../ggz-gtk/launch.c:502 ../ggz-gtk/launch.c:549 ../ggz-gtk/launch.c:596
+#: ../ggz-gtk/launch.c:643 ../ggz-gtk/launch.c:690 ../ggz-gtk/launch.c:737
+#: ../ggz-gtk/launch.c:784 ../ggz-gtk/launch.c:831
+msgid "Open"
+msgstr "÷ffnen"
+
+#: ../ggz-gtk/launch.c:510 ../ggz-gtk/launch.c:557 ../ggz-gtk/launch.c:604
+#: ../ggz-gtk/launch.c:651 ../ggz-gtk/launch.c:698 ../ggz-gtk/launch.c:745
+#: ../ggz-gtk/launch.c:792 ../ggz-gtk/launch.c:839
+msgid "Reserved for"
+msgstr "Reserviert f¸r"
+
+#: ../ggz-gtk/launch.c:534
+msgid "Seat 2:"
+msgstr "Sitz 2:"
+
+#: ../ggz-gtk/launch.c:581
+msgid "Seat 3:"
+msgstr "Sitz 3:"
+
+#: ../ggz-gtk/launch.c:628
+msgid "Seat 4:"
+msgstr "Sitz 4:"
+
+#: ../ggz-gtk/launch.c:675
+msgid "Seat 5:"
+msgstr "Sitz 5:"
+
+#: ../ggz-gtk/launch.c:722
+msgid "Seat 6:"
+msgstr "Sitz 6:"
+
+#: ../ggz-gtk/launch.c:769
+msgid "Seat 7:"
+msgstr "Sitz 7:"
+
+#: ../ggz-gtk/launch.c:816
+msgid "Seat 8:"
+msgstr "Sitz 8:"
+
+#: ../ggz-gtk/launch.c:863
+msgid "Game Description   "
+msgstr "Spielbeschreibung  "
+
+#: ../ggz-gtk/launch.c:897 ../ggz-gtk/login.c:714 ../ggz-gtk/props.c:1523
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../ggz-gtk/login.c:99
+msgid "Sorry!"
+msgstr "Sorry!"
+
+#: ../ggz-gtk/login.c:103
+msgid ""
+"That username is already in usage,\n"
+"or not permitted on this server.\n"
+"\n"
+"Please choose a different name"
+msgstr ""
+"Dieser Benutzername ist schon in Benutzung,\n"
+"oder wird auf dem Server nicht erlaubt.\n"
+"\n"
+"Bitte nutze einen anderen Namen"
+
+#: ../ggz-gtk/login.c:452
+msgid "Connect and Login"
+msgstr "Verbindung und Login"
+
+#: ../ggz-gtk/login.c:459
+msgid "Server Profile"
+msgstr "Server-Profil "
+
+#: ../ggz-gtk/login.c:500
+msgid "Profile: "
+msgstr "Profilname:"
+
+#: ../ggz-gtk/login.c:532
+msgid "Edit Profiles..."
+msgstr "Profile bearbeiten..."
+
+#: ../ggz-gtk/login.c:547
+msgid "Server: "
+msgstr "Server: "
+
+#: ../ggz-gtk/login.c:563
+msgid "localhost"
+msgstr "localhost"
+
+#: ../ggz-gtk/login.c:565
+msgid "Port: "
+msgstr "Port:"
+
+#: ../ggz-gtk/login.c:581
+msgid "5688"
+msgstr "5688"
+
+#: ../ggz-gtk/login.c:619
+msgid "Username: "
+msgstr "Benutzername: "
+
+#: ../ggz-gtk/login.c:643
+msgid "Password: "
+msgstr "Kennwort: "
+
+#: ../ggz-gtk/login.c:668 ../ggz-gtk/props.c:1022
+msgid "Normal Login"
+msgstr "Normales Login"
+
+#: ../ggz-gtk/login.c:677 ../ggz-gtk/props.c:1031
+msgid "Guest Login"
+msgstr "Login als Gast"
+
+#: ../ggz-gtk/login.c:685
+msgid "First-time Login"
+msgstr "Erstmaliges Login"
+
+#: ../ggz-gtk/motd.c:147
+msgid "MOTD"
+msgstr "Tagesmeldung"
+
+#: ../ggz-gtk/props.c:241
+#, fuzzy
+msgid "Properties Updated"
+msgstr "Eigenschaften"
+
+#: ../ggz-gtk/props.c:790
+msgid "Properties"
+msgstr "Eigenschaften"
+
+#: ../ggz-gtk/props.c:838
+msgid "Profiles"
+msgstr "Eigenschaften"
+
+#: ../ggz-gtk/props.c:866
+msgid "Profile:"
+msgstr "Profil: "
+
+#: ../ggz-gtk/props.c:890
+msgid "Server:"
+msgstr "Server:"
+
+#: ../ggz-gtk/props.c:907
+msgid "Port:"
+msgstr "Port:"
+
+#: ../ggz-gtk/props.c:944
+msgid "Username:"
+msgstr "Nutzername:"
+
+#: ../ggz-gtk/props.c:969
+msgid "Password:"
+msgstr "Kennwort:"
+
+#: ../ggz-gtk/props.c:995
+msgid "Confirm:"
+msgstr "Best‰tigung:"
+
+#: ../ggz-gtk/props.c:1046
+msgid "Add"
+msgstr "Anf¸gen"
+
+#: ../ggz-gtk/props.c:1054
+msgid "Modify"
+msgstr "ƒndern"
+
+#: ../ggz-gtk/props.c:1062
+msgid "Delete"
+msgstr "Lˆschen"
+
+#: ../ggz-gtk/props.c:1070
+msgid "Servers"
+msgstr "Servers"
+
+#: ../ggz-gtk/props.c:1092
+msgid "Chat Font: "
+msgstr "Chat-Schrift:"
+
+#: ../ggz-gtk/props.c:1107
+msgid "Change"
+msgstr "Wechseln"
+
+#: ../ggz-gtk/props.c:1122
+msgid "Ignore Join/Part Messages"
+msgstr "Ignoriere Verbindungsnachrichten"
+
+#: ../ggz-gtk/props.c:1131
+msgid "Word Wrap"
+msgstr "Zeilenumbruch"
+
+#: ../ggz-gtk/props.c:1140
+msgid "Auto Indent"
+msgstr "Automatisch einr¸cken"
+
+#: ../ggz-gtk/props.c:1149
+msgid "Timestamp Chats"
+msgstr "Zeitmarken"
+
+#: ../ggz-gtk/props.c:1158
+msgid "Play Sounds"
+msgstr "Kl‰nge abspielen"
+
+#: ../ggz-gtk/props.c:1167
+msgid "White Background"
+msgstr ""
+
+#: ../ggz-gtk/props.c:1176
+msgid "Chat Color"
+msgstr "Chat-Farbe"
+
+#: ../ggz-gtk/props.c:1190
+msgid "Color In Chat"
+msgstr "Farbe im Chat"
+
+#: ../ggz-gtk/props.c:1204
+msgid "Some"
+msgstr "Einige"
+
+#: ../ggz-gtk/props.c:1214
+msgid "Full"
+msgstr "Alle"
+
+#: ../ggz-gtk/props.c:1224
+msgid "Other's Color"
+msgstr "Farbe der anderen"
+
+#: ../ggz-gtk/props.c:1235
+msgid "Friend's Color"
+msgstr "Farbe von Freunden"
+
+#: ../ggz-gtk/props.c:1246
+msgid "Your Color"
+msgstr "Deine Farbe"
+
+#: ../ggz-gtk/props.c:1293
+msgid "  "
+msgstr " "
+
+#: ../ggz-gtk/props.c:1303
+msgid "Chat"
+msgstr "Chat"
+
+#: ../ggz-gtk/props.c:1317
+msgid "All of the following information is optional."
+msgstr "Alle folgenden Informationen sind optional."
+
+#: ../ggz-gtk/props.c:1338
+msgid "Name:"
+msgstr "Name:"
+
+#: ../ggz-gtk/props.c:1370
+msgid "City:"
+msgstr "Stadt:"
+
+#: ../ggz-gtk/props.c:1395
+msgid "State:"
+msgstr "Bundesland:"
+
+#: ../ggz-gtk/props.c:1420
+msgid "Country:"
+msgstr "Land:"
+
+#: ../ggz-gtk/props.c:1438
+msgid "Comments, Hobies, Etc."
+msgstr "Kommentare, Hobbies, usw."
+
+#: ../ggz-gtk/props.c:1464
+msgid "User Information"
+msgstr "Information ¸ber Benutzer"
+
+#: ../ggz-gtk/props.c:1479
+msgid "Single click to enter room"
+msgstr ""
+
+#: ../ggz-gtk/props.c:1488
+msgid "Options"
+msgstr "Optionen"
+
+#: ../ggz-gtk/props.c:1515
+msgid "Apply"
+msgstr "Anwenden"
+
+#: ../ggz-gtk/props.c:1591
+msgid "Select Font"
+msgstr "Schrift ausw‰hlen"
+
+#: ../ggz-gtk/support.c:242
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr "Konnte folgende Pixmp nicht finden: %s"
+
+#: ../ggz-gtk/support.c:251
+#, c-format
+msgid "Error loading pixmap file: %s"
+msgstr "Fehler beim Laden folgender Pixmap: %s"
+
+#: ../ggz-gtk/types.c:160
+#, fuzzy
+msgid "Game Types"
+msgstr "S_pielart"
+
+#: ../ggz-gtk/types.c:204
+msgid "Name"
+msgstr "Name"
+
+#: ../ggz-gtk/types.c:211
+#, fuzzy
+msgid "Author"
+msgstr "Autor:"
+
+#: ../ggz-gtk/types.c:218
+msgid "Web Address"
+msgstr ""
+
+#: ../ggz-gtk/types.c:240
+#, fuzzy
+msgid "Room List Filter:"
+msgstr "Liste der R‰ume"
+
+#: ../ggz-gtk/types.c:263
+#, fuzzy
+msgid "Set"
+msgstr "Sitze"
+
+#: ../ggz-gtk/types.c:294
+#, fuzzy
+msgid "Upgrage Game"
+msgstr "Spiel ve_rlassen"
+
+#: ../ggz-gtk/types.c:301
+#, fuzzy
+msgid "Goto Web Site"
+msgstr "Gehe zu _Web"
+
+#, fuzzy
+#~ msgid "GGZ Gaming Zone Client version %s"
+#~ msgstr "GNU Gaming Zone Client (Version %s)"
+
+#~ msgid "(C) 1999, 2000"
+#~ msgstr "(C) 1999, 2000"
+
+#~ msgid ""
+#~ "Authors:\n"
+#~ "\t\tGTK+ Version\n"
+#~ "\t\t\t\t\t\t\t\tBrian Cox          (bcox@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tBrent Hendricks\t (bmh@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n"
+#~ "\n"
+#~ "\t\tWindows Version\n"
+#~ "\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(djh@users.sourceforge.net)\n"
+#~ "\n"
+#~ "Website:\n"
+#~ "\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"
+#~ msgstr ""
+#~ "Autoren:\n"
+#~ "\t\tGTK+ Version\n"
+#~ "\t\t\t\t\t\t\t\tBrian Cox          (bcox@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tBrent Hendricks\t\t(bmh@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n"
+#~ "\n"
+#~ "\t\tWindows Version\n"
+#~ "\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(djh@users.sourceforge.net)\n"
+#~ "\n"
+#~ "Webseite:\n"
+#~ "\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"
+
+#~ msgid "Connection Messages"
+#~ msgstr "Verbindungsmeldungen"
+
+#~ msgid "Really Exit?"
+#~ msgstr "Wirklich beenden?"
+
+#~ msgid "Exit: Are you sure?"
+#~ msgstr "Beenden: Bist Du sicher?"
+
+#, fuzzy
+#~ msgid "Author: %s"
+#~ msgstr "Autor:"
+
+#~ msgid "Desc: %s"
+#~ msgstr "Beschr: %s"
+
+#~ msgid "Homepage: %s"
+#~ msgstr "Homepage: %s"
+
+#~ msgid "Could not connect"
+#~ msgstr "Konnte nicht verbinden!"
+
+#~ msgid "Options:"
+#~ msgstr "Optionen:"
+
+#, fuzzy
+#~ msgid "  Debug: 14No "
+#~ msgstr "  Debug: 14Nein "
+
+#, fuzzy
+#~ msgid "  Debug: 14Yes"
+#~ msgstr "  Debug: 14Ja"
+
+#, fuzzy
+#~ msgid "  Socket Debug: 14No "
+#~ msgstr "  Socket Debug: 14Nein"
+
+#, fuzzy
+#~ msgid "  Socket Debug: 14Yes"
+#~ msgstr "  Socket Debug: 14Ja"
+
+#~ msgid "Connected to server: %s"
+#~ msgstr "Verbunden mit Server: %s"
+
+#~ msgid "Details..."
+#~ msgstr "Einzelheiten..."
+
+#, fuzzy
+#~ msgid "GGZ Gaming Zone - [%s]"
+#~ msgstr "GNU Gaming Zone - [%s]"
+
+#~ msgid "You are not connected to a server!"
+#~ msgstr "Du bist nicht mit einem Server verbunden!"
+
+#~ msgid "Not Connected"
+#~ msgstr "Nicht verbunden"
+
+#~ msgid "Personal message sent"
+#~ msgstr "Persˆnliche Nachricht gesendet"
+
+#~ msgid "GNU Gaming Zone"
+#~ msgstr "GNU Gaming Zone"
+
+#~ msgid "   Chat Help"
+#~ msgstr "    Chat-Hilfe"
+
+#~ msgid "   Display help on a given commad."
+#~ msgstr "   Hilfe f¸r ein bestimmtes Kommando anzeigen."
+
+#~ msgid "   Displays an action."
+#~ msgstr "    Zeigt eine Aktion an."
+
+#~ msgid "/beep <user>"
+#~ msgstr "/beep <Benutzer>"
+
+#~ msgid "   Makes <user>'s computer beep."
+#~ msgstr "    L‰ﬂt den Computer von <Benutzer> piepen."
+
+#~ msgid "Not connected!"
+#~ msgstr "Nicht verbunden!"
+
+#~ msgid "_Launch Game"
+#~ msgstr "Spiel beg_innen"
+
+#~ msgid "_Join Game"
+#~ msgstr "_An Spiel teilnehmen"
+
+#~ msgid "Launch Game"
+#~ msgstr "Spiel beginnen"
+
+#~ msgid "Join Game"
+#~ msgstr "An Spiel teilnehmen"
+
+#~ msgid "Change Props"
+#~ msgstr "Eigenschaften wechseln"
+
+#~ msgid "Game Tables"
+#~ msgstr "Spieltische"
+
+#~ msgid " "
+#~ msgstr " "
+
+#~ msgid "Table No."
+#~ msgstr "Tisch-Nr."
+
+#~ msgid "Game Type"
+#~ msgstr "Spielart"
+
+#~ msgid "Open Seats"
+#~ msgstr "Freie Sitze"
+
+#~ msgid "Humans"
+#~ msgstr "Menschen"
+
+#~ msgid "Players"
+#~ msgstr "Spieler"
+
+#~ msgid "Table"
+#~ msgstr "Tisch"
+
+#~ msgid "Current Room  "
+#~ msgstr "Aktueller Raum"
+
+#~ msgid "Message: "
+#~ msgstr "Meldung: "
+
+#~ msgid "Message Box"
+#~ msgstr "Meldungsfenster"
+
+#~ msgid "Close"
+#~ msgstr "Schlieﬂen"
+
+#~ msgid "Table Players"
+#~ msgstr "Tisch-Spieler"
+
+#~ msgid ""
+#~ "Table options will go here.\n"
+#~ " Network protocol has to be made to get the info from the server"
+#~ msgstr ""
+#~ "Tischoptionen gehen hierher.\n"
+#~ " Das Netzwerkprotokoll muﬂ erstellt werden, um die Informationen vom Server "
+#~ "zu erhalten."
+
+#~ msgid ""
+#~ "The selected table's players are as follows:\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Die Spieler vom ausgew‰hlten Tisch sind folgende:\n"
+#~ "\n"
+
+#~ msgid "\t<Open>\n"
+#~ msgstr "\t<Offen>\n"
+
+#~ msgid "\t<Computer>\n"
+#~ msgstr "\t<Rechner>\n"
+
+#, fuzzy
+#~ msgid ""
+#~ "GGZ Gaming Zone\n"
+#~ "GTK+ Client"
+#~ msgstr "GNU Gaming Zone Client (Version %s)"
+
+#, fuzzy
+#~ msgid "(C) 1999, 2000, 2001"
+#~ msgstr "(C) 1999, 2000"
+
+#, fuzzy
+#~ msgid ""
+#~ "Authors:\n"
+#~ "     GTK+ Version\n"
+#~ "          Brian Cox             (bcox@users.sourceforge.net)\n"
+#~ "          Rich Gade             (rgade@users.sourceforge.net)\n"
+#~ "          Brent Hendricks   (bmh@users.sourceforge.net)\n"
+#~ "          Justin Zaun\t           (jzaun@users.sourceforge.net)\n"
+#~ "\n"
+#~ "     Windows Version\n"
+#~ "          Doug Hudson        (djh@users.sourceforge.net)\n"
+#~ "\n"
+#~ "     KDE2 Version\n"
+#~ "          Josef Spillner\n"
+#~ "\n"
+#~ "Website:\n"
+#~ "     http://ggz.sourceforge.net\n"
+#~ msgstr ""
+#~ "Autoren:\n"
+#~ "\t\tGTK+ Version\n"
+#~ "\t\t\t\t\t\t\t\tBrian Cox          (bcox@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tBrent Hendricks\t\t(bmh@users.sourceforge.net)\n"
+#~ "\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n"
+#~ "\n"
+#~ "\t\tWindows Version\n"
+#~ "\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(djh@users.sourceforge.net)\n"
+#~ "\n"
+#~ "Webseite:\n"
+#~ "\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"
+
+#~ msgid "Gnu Gaming Zone"
+#~ msgstr "GNU Gaming Zone"
+
+#~ msgid "Enter your login name here"
+#~ msgstr "Gib deinen Benutzernamen hier an"
+
+#~ msgid "Enter your password here"
+#~ msgstr "Gib dein Kennwort hier an"
+
+#~ msgid "Anonymous Login"
+#~ msgstr "Anonymes Login"
+
+#~ msgid " Port:  "
+#~ msgstr " Port:"
+
+#~ msgid "Username:  "
+#~ msgstr "Benutzername:"
+
+#~ msgid "Password:  "
+#~ msgstr "Kennwort:"

@@ -11,6 +11,7 @@
 /*
  * Standard gettext macros.
  */
+/*
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _
@@ -28,6 +29,15 @@
 #  define bindtextdomain(Domain,Directory) (Domain)
 #  define _(String) (String)
 #  define N_(String) (String)
+#endif
+*/
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#define N_(x) gettext_noop(x)
+#define _(x) gettext(x)
+#else
+#define N_(x) x
+#define _(x) x
 #endif
 
 

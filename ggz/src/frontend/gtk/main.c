@@ -27,6 +27,9 @@
 #include <ggzcore.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#endif
 
 #include "about.h"
 #include "chat.h"
@@ -36,15 +39,24 @@
 #include "license.h"
 #include "login.h"
 #include "server.h"
+#include "support.h"
 
 extern GtkWidget *win_main;
 GGZServer *server = NULL;
+
+
 
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf, *debugfile;
 
+#ifdef ENABLE_NLS
+	bindtextdomain("ggz-gtk", NULL);
+	textdomain("ggz-gtk");
+	setlocale(LC_ALL, "");
+#endif
+	
 	/*global_conf = "/etc/ggz/ggz.conf";*/
 	/* We don't support this quite yet */
 	global_conf = NULL;
