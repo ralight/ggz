@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5157 2002-11-03 02:06:42Z jdorje $
+ * $Id: dlg_main.c 5159 2002-11-03 03:18:15Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -114,6 +114,9 @@ GtkWidget *create_dlg_main(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), menubar, FALSE, FALSE, 0);
 
 	fixed1 = gtk_fixed_new();
+#ifdef GTK2
+	gtk_fixed_set_has_window(GTK_FIXED(fixed1), TRUE);
+#endif
 	gtk_widget_set_name(fixed1, "fixed1");
 	gtk_widget_ref(fixed1);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "fixed1", fixed1,
