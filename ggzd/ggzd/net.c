@@ -131,6 +131,7 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int safe_atoi(char *string);
+static char* safe_strdup(char *str);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
 static int _net_send_result(GGZNetIO *net, char *action, char code);
 static int _net_send_login_normal_status(GGZNetIO *net, char status);
@@ -944,12 +945,14 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 		
 		data = xmlelement_get_data(login);
 		
-		/* If there's no data, then they must not have sent a name */
-		if (!data || !data[0]) {
+		/* It's an error if they didn't send the right data */
+		if (!data 
+		    || !data[0] 
+		    || (!data[1] && login_type == GGZ_LOGIN)) {
 			_net_send_result(net, "login", E_BAD_OPTIONS);
 			return;
 		}
-		
+
 		login_player(login_type, net->player, data[0], data[1]);
 
 		/* Free up any resources we allocated */
@@ -1011,7 +1014,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		name = strdup(xmlelement_get_text(element));
+		name = safe_strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
@@ -1039,7 +1042,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		password = strdup(xmlelement_get_text(element));
+		password = safe_strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
@@ -1352,10 +1355,8 @@ static void* _net_seat_copy(void *data)
 	seat2 = calloc(1, sizeof(struct _GGZSeatData));
 
 	seat2->index = seat1->index;
-	if (seat1->type)
-		seat2->type = strdup(seat1->type);
-	if (seat1->name)
-		seat2->name = strdup(seat1->name);
+	seat2->type = safe_strdup(seat1->type);
+	seat2->name = safe_strdup(seat1->name);
 
 	return seat2;
 }
@@ -1390,7 +1391,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 
 	if (element) {
 		if (xmlelement_get_text(element))
-			desc = strdup(xmlelement_get_text(element));
+			desc = safe_strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "TABLE") == 0)
@@ -1453,6 +1454,12 @@ static int safe_atoi(char *string)
 		return 0;
 	else
 		return atoi(string);
+}
+
+
+static char* safe_strdup(char *str)
+{
+	return str ? strdup(str) : NULL;
 }
 
 
