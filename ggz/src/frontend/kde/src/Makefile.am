@@ -25,7 +25,8 @@ noinst_HEADERS = \
 INCLUDES = -I $(top_srcdir)/ggz-kde/src/abstract \
 	-I $(top_srcdir)/ggz-kde/src/widgets \
 	-I $(top_srcdir)/ggz-kde/src/widgets/more \
-	$(ggzcorepp_includes) $(all_includes)
+	$(ggzcorepp_includes) $(all_includes) \
+	$(HOWL_INCLUDES)
 
 kggz_METASOURCES = AUTO
 
@@ -36,7 +37,7 @@ kggz_LDADD = $(top_builddir)/ggz-kde/src/widgets/libkggzui.a \
 	$(top_builddir)/ggz-kde/src/abstract/libkggzabstract.a \
 	@BROWSERLIB@ \
 	$(all_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT) \
-	$(ggz_libraries)
+	$(ggz_libraries) $(LIB_HOWL)
 
 DISTCLEANFILES = $(kggz_METASOURCES)
 

@@ -42,6 +42,8 @@
 // KDE classes
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kapplication.h>
+#include <kurl.h>
 
 // Qt classes
 #include <qlayout.h>
@@ -54,14 +56,23 @@
 #include <qcheckbox.h>
 #include <qbuttongroup.h>
 #include <qsocket.h>
+#include <qeventloop.h>
 
 // System includes
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
+#ifdef WITH_HOWL
+#include <sys/types.h>
+#include <howl.h>
+#endif
+
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
+
+static KGGZConnect *connectobj = NULL;
+static QString connectstr = QString::null;
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
 KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
@@ -257,22 +268,30 @@ void KGGZConnect::slotLoadProfile(int profile)
 		listentry = config->read("Session", "Defaultserver", (char*)NULL);
 		if(listentry)
 		{
-			if(strcmp(listentry, i18n("GGZ Meta Server").latin1()))
+			if((strcmp(listentry, i18n("GGZ Meta Server").latin1()))
+			&& (strcmp(listentry, i18n("LAN Game").latin1())))
+			{
 				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
-			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
-			profile_select->setCurrentItem(0);
+				profile_select->setCurrentItem(0);
+			}
 		}
-		else
-		{
-			profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
+		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
+		if((listentry) && (!strcmp(listentry, i18n("GGZ Meta Server").latin1())))
 			profile_select->setCurrentItem(0);
-			modifyServerList(i18n("Default CVS Developer Server"), 1);
+#ifdef WITH_HOWL
+		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/langame.png"), i18n("LAN Game"));
+		if((listentry) && (!strcmp(listentry, i18n("LAN Game").latin1())))
+			profile_select->setCurrentItem(1);
+#endif
+		if(!listentry)
+		{
+			modifyServerList(i18n("Default Stable Server"), 1);
 		}
 		
 		config->read("Servers", "Servers", &i, &list);
 		for(int j = 0; j < i; j++)
 		{
-			if((listentry) && (strcmp(list[j], listentry)))
+			if((!listentry) || (strcmp(list[j], listentry)))
 				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
 			GGZCoreConfio::free(list[j]);
 		}
@@ -290,9 +309,18 @@ void KGGZConnect::slotLoadProfile(int profile)
 		button_select->setEnabled(false);
 		profile_delete->setEnabled(false);
 	}
+	else if(profile_select->currentText() == i18n("LAN Game"))
+	{
+		host = strdup(i18n("Autodetect"));
+		port = strdup("5688");
+		input_host->setEnabled(false);
+		input_port->setEnabled(false);
+		button_select->setEnabled(false);
+		profile_delete->setEnabled(false);
+	}
 	else
 	{
-		host = config->read(listentry, "Host", "jzaun.com");
+		host = config->read(listentry, "Host", "live.ggzgamingzone.org");
 		port = config->read(listentry, "Port", "5688");
 		input_host->setEnabled(true);
 		input_port->setEnabled(true);
@@ -334,18 +362,22 @@ void KGGZConnect::slotAccept()
 
 	button_ok->setEnabled(false);
 
-	if(input_host->text() != i18n("Automatic"))
-	{
-		close();
-		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()),
-			input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
-	}
-	else
+	if(input_host->text() == i18n("Automatic"))
 	{
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 		m_sock->connectToHost("live.ggzgamingzone.org", 15689);
+	}
+	else if(input_host->text() == i18n("Autodetect"))
+	{
+		zeroconfQuery();
+	}
+	else
+	{
+		close();
+		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()),
+			input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
 	}
 }
 
@@ -551,5 +583,75 @@ void KGGZConnect::slotWrite()
 void KGGZConnect::showEvent(QShowEvent *e)
 {
 	button_ok->setEnabled(true);
+}
+
+#ifdef WITH_HOWL
+static sw_result reply(sw_discovery session, sw_discovery_oid oid,
+	sw_uint32 interface,
+	sw_const_string name, sw_const_string type, sw_const_string domain,
+	sw_ipv4_address address, sw_port port, sw_octets tx, sw_ulong txl,
+	sw_opaque extra)
+{
+	sw_string str;
+
+	str = (char*)malloc(100);
+	str = sw_ipv4_address_name(address, str, 100);
+
+	connectstr = QString("ggz://%1:%2").arg(str).arg(port);
+	return SW_OKAY;
+}
+
+static sw_result breply(sw_discovery session, sw_discovery_oid oid,
+	sw_discovery_browse_status status, sw_uint32 interface,
+	sw_const_string name, sw_const_string type, sw_const_string domain,
+	sw_opaque extra)
+{
+	int ret;
+
+	if(status == SW_DISCOVERY_BROWSE_ADD_SERVICE)
+	{
+		ret = sw_discovery_resolve(session, interface, name, type, domain, reply, NULL, &oid);
+		if(ret)
+		{
+			KMessageBox::error(connectobj, i18n("Resolving failed."), i18n("Zeroconf error"));
+			return -1;
+		}
+	}
+
+	return SW_OKAY;
+}
+#endif
+
+void KGGZConnect::zeroconfQuery()
+{
+#ifdef WITH_HOWL
+	int ret;
+	sw_discovery session;
+	sw_discovery_oid oid;
+
+	connectobj = this;
+	connectstr = QString::null;
+
+	ret = sw_discovery_init(&session);
+	if(ret != SW_OKAY)
+	{
+		KMessageBox::error(this, i18n("Zeroconf could not be initialized."), i18n("Zeroconf error"));
+		return;
+	}
+
+	ret = sw_discovery_browse(session, 0, "_ggz._tcp", NULL, breply, NULL, &oid);
+
+	while(connectstr.isNull())
+	{
+		sw_discovery_read_socket(session);
+		kapp->eventLoop()->processEvents(QEventLoop::AllEvents);
+	}
+
+	KURL url(connectstr);
+
+	close();
+	KMessageBox::information(this, i18n("A GGZ server was found on %1.").arg(connectstr), i18n("Zeroconf success"));
+	emit signalConnect(url.host(), url.port(), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+#endif
 }
 

@@ -103,6 +103,8 @@ class KGGZConnect : public QWidget
 	private:
 		// add (1) or delete (2) a server from the configuration list
 		void modifyServerList(const char *server, int mode);
+		// start a zeroconf query
+		void zeroconfQuery();
 
 		// The login mode (guest, with password, first time)
 		int m_loginmode;
