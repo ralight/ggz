@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6304 2004-11-08 23:03:21Z jdorje $
+ * $Id: netxml.c 6721 2005-01-17 23:35:49Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -380,13 +380,10 @@ int _ggzcore_net_send_login(GGZNet *net)
 }
 
 
-int _ggzcore_net_send_channel(GGZNet *net)
+int _ggzcore_net_send_channel(GGZNet *net, const char *id)
 {
-	char *id;
 	int status = 0;
 
-	id = _ggzcore_server_get_handle(net->server);
-	
 	status = _ggzcore_net_send_line(net, "<CHANNEL ID='%s' />", id);
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending channel");

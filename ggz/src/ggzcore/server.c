@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6718 2005-01-17 03:36:17Z jdorje $
+ * $Id: server.c 6721 2005-01-17 23:35:49Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -1167,7 +1167,7 @@ static void _ggzcore_server_channel_negotiate_status(GGZServer *server,
 	
 	if (status == E_OK) {
 		fd = _ggzcore_net_get_fd(server->channel);
-		_ggzcore_net_send_channel(server->channel);
+		_ggzcore_net_send_channel(server->channel, server->handle);
 		_ggzcore_net_send_logout(server->channel);
 	}
 	else {
