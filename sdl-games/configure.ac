@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-SDL-Games
 dnl ===============================
 
-AC_INIT([GGZ SDL games], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-sdl-games])
+AC_INIT([GGZ SDL games], [0.0.11pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-sdl-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -83,7 +83,7 @@ AC_GGZ_INIT(defaults)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
-AC_GGZ_CONFIG
+AC_GGZ_CONFIG("true", ignore)
 
 dnl Create Makefiles
 dnl ================
@@ -111,4 +111,9 @@ echo "Compilation support:"
 echo "Sound (via SDL_mixer)..................$sdlmixer"
 echo "Coloured mouse cursors (via XCursor)...$xcursor"
 echo ""
-
+if test "x$GGZ_CONFIG" = "x/bin/true"; then
+	echo "Warning: game information files will not be installed."
+	echo "This should only happen during binary package creation."
+	echo "Packages must install the .dsc files upon installation."
+	echo ""
+fi

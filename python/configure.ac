@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([GGZ python package], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [0.0.11pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE
@@ -26,7 +26,7 @@ AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD("true", ignore)
 AC_GGZ_GGZDMOD("true", ignore)
 AC_GGZ_GGZCORE("true", ignore)
-AC_GGZ_CONFIG
+AC_GGZ_CONFIG("true", ignore)
 AC_GGZ_INTL
 
 dnl Other checks
@@ -106,6 +106,12 @@ if test "$pygame_found" = "no"; then
 	echo "WARNING:"
 	echo "Pygame has not been found."
 	echo "The wrappers will be compiled, but no game can be run."
+	echo ""
+fi
+if test "x$GGZ_CONFIG" = "x/bin/true"; then
+	echo "Warning: game information files will not be installed."
+	echo "This should only happen during binary package creation."
+	echo "Packages must install the .dsc files upon installation."
 	echo ""
 fi
 

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6838 2005-01-23 11:46:41Z josef $
+dnl $Id: configure.ac 6920 2005-02-04 16:13:04Z josef $
 
-AC_INIT([GGZ GTK games], [0.0.10], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
+AC_INIT([GGZ GTK games], [0.0.11pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
 
 if test -r $srcdir/package; then
@@ -74,7 +74,7 @@ dnl ==========================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
-AC_GGZ_CONFIG
+AC_GGZ_CONFIG("true", ignore)
 AC_GGZ_INTL
 
 dnl Check for header files
@@ -221,3 +221,9 @@ echo "At the prompt type \"make\" to compile the game modules and"
 echo "When complete, su to root and type \"make install\" to"
 echo "install the client software."
 echo ""
+if test "x$GGZ_CONFIG" = "x/bin/true"; then
+	echo "Warning: game information files will not be installed."
+	echo "This should only happen during binary package creation."
+	echo "Packages must install the .dsc files upon installation."
+	echo ""
+fi
