@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3185 2002-01-24 10:59:56Z jdorje $
+ * $Id: table.c 3192 2002-01-24 23:31:20Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -413,7 +413,7 @@ static void table_loop(GGZTable* table)
 			if (status == 0 || errno == EINTR)
 				continue;
 			else
-				err_sys_exit("select error");
+				err_sys_exit("select error in table_loop()");
 		}
 
 		if (ggzdmod_dispatch(table->ggzdmod) < 0)

@@ -253,7 +253,7 @@ static void player_loop(GGZPlayer* player)
 			if (status == 0 || errno == EINTR)
 				continue;
 			else
-				err_sys_exit("select error");
+				err_sys_exit("select error in player_loop()");
 		}
 
 		/* Check for message from player */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 3139 2002-01-19 08:07:46Z bmh $
+ * $Id: control.c 3192 2002-01-24 23:31:20Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -216,7 +216,7 @@ int main(int argc, const char *argv[])
 			if (errno == EINTR)
 				continue;
 			else
-				err_sys_exit("select error");
+				err_sys_exit("select error in main()");
 		} else if(status == 0) {
 			log_generate_update();
 			continue;
