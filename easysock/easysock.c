@@ -456,7 +456,7 @@ int es_read_string_alloc(const int sock, char **message)
 	} 
 
 	/* Guarantee string is NULL terminated */
-	message[size] = '\0';
+	(*message)[size] = '\0';
 
 	_debug("Received \"%s\" : string\n", *message);
 	return 0;
