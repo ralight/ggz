@@ -7,5 +7,5 @@ Environment = console
 Homepage = http://www.ggzgamingzone.org/games/tttxt/
 Name = TTTXT
 ProtocolEngine = TicTacToe
-ProtocolVersion = 3
+ProtocolVersion = 4
 Version = 0.0.1
