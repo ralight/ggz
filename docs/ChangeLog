@@ -1,3 +1,186 @@
+2003-05-16 20:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 11:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/Versioning: - add library interface versioning to
+	this document
+
+2003-05-11 01:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh, configure.ac,
+	games/game-development/features.html,
+	games/game-development/games.html,
+	games/game-development/ggz-game-development-guide.texi,
+	server/hosting/ggz-hosting-guide.texi: - update documentation for
+	0.0.7
+
+2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 11:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, games/game-development/Makefile.am,
+	server/hosting/Makefile.am: - make 'make dist' work again, using
+	the dist_data_DATA feature
+
+2003-05-10 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/Versioning: - add versioning documentation
+	
+	This is a suggestion, modifications can be done of course.
+
+2003-04-28 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/features.html: - add a new column to the
+	features document: single player mode
+
+2003-04-28 09:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/: Internationalization, release-procedure: - add
+	translation table to i18n document - add Mandrake to the list of
+	distros (even though we're only in contrib yet)
+
+2003-03-29 11:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/.cvsignore: - add HTML output directory to
+	cvsignore
+
+2003-03-29 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-02-26 14:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* spec/overview.sgml: - fix typos (this word has been a curse)
+
+2003-02-16 21:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/ggz-game-development-guide.texi: - update
+	gamedev guide:	* include small code snippets for easysock, minidom
+	and ggz_conf  * update games in frontend toolkits descriptions	*
+	add [Statistics] in .dsc files
+
+2003-02-16 21:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/: features.html, games.html: - prepare
+	games overview documentation for 0.0.7:  * add column 'statistics
+	support' to features list  * add column for 0.0.7 to games list  *
+	add new game servers and game clients to both lists
+
+2003-02-16 13:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh with versioned autotools checks -
+	improved handling of both m4 directory and am_edit presence - works
+	with {bash, dash, omsh, zsh} but not yet with {csh, tcsh}
+
+2003-02-15 01:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/release-procedure: - add SourceMage to linux
+	distributors shipping GGZ
+	
+	If this continues we'll end up having 200 commits to this file. 
+	But in the end it ain't bad at all...
+
+2003-02-04 15:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - many smaller updates to
+	the server documentation:  * mention DatabaseHashing  * mention
+	EncryptionXXX  * mention DumpFile  * new parameters for ggzduedit
+	and ggz-cmd
+
+2003-02-04 03:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-23 18:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/release-procedure: - add note about version
+	information in header files to release checklist
+
+2003-01-03 22:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - move kamikaze from
+	planned internal games section to the external games   section -
+	also, fix typos: s/Gnome/GNOME/   (This should be done elsewhere
+	too)
+
+2003-01-03 22:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/ggz-game-development-guide.texi: - mention
+	Net and MNet in the server networking section
+
+2002-12-06 07:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Fix two broken links.
+
+2002-12-06 07:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Document the JOIN and LEAVE server tags.
+
+2002-11-06 08:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Document the client-sent PING.
+
+2002-11-06 08:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Document the ID attribute of the PING and
+	PONG tags.
+
+2002-11-04 17:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/admin-manual.html: - update the grubby admin manual
+
+2002-11-04 16:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - update cvsignore
+
+2002-11-04 16:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - add AC_CONFIG_HEADER(config.h) - bump version to
+	0.0.7pre
+
+2002-10-30 02:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Change the entry for <RESULT>:   - CODE is a
+	string now, not an int.    - List the possible error codes.
+
+2002-10-29 10:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* spec/appendix.sgml: Update some information about the XML
+	protocol.
+	
+	It is a virtual certainty that this is incomplete.  Perhaps we
+	should think about a more formal definition?
+
+2002-10-22 19:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/release-procedure: - update release procedure docs
+	with knowledge recently gained - this is mostly a merge with
+	playground/docs/release-guide.txt
+	
+	Also, all asterisks have turned into checkboxes, so it can be
+	printed out as a checklist.
+
+2002-10-10 13:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - another autom4te.cache case
+
+2002-10-08 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/games.html: - include release date
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-09-29 17:58  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* .cvsignore: - put config.h.in into cvsignore
