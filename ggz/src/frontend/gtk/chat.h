@@ -27,7 +27,11 @@
 
 #include <ggzcore.h>
 
-#include "xtext.h"
+#ifdef GTK2
+#  include "xtext-gtk2.h"
+#else
+#  include "xtext.h"
+#endif
 
 /* Local chat types */
 typedef enum {

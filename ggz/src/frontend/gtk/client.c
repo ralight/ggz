@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5184 2002-11-03 21:18:27Z jdorje $
+ * $Id: client.c 5185 2002-11-03 21:50:54Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -351,6 +351,35 @@ client_goto_web1_activate		(GtkMenuItem	*menuitem,
 	support_goto_url("http://ggz.sourceforge.net");
 }
 
+#ifdef GTK2
+/* Aray of GdkColors currently used for chat and MOTD
+ * They are all non-ditherable and as such should look the same everywhere
+ */
+static GdkColor colors[] =
+{
+        {0, 0x0000, 0x0000, 0x0000},          /* 0 Black */
+        {0, 0xFFFF, 0xFFFF, 0x3333},          /* 1 Dark Goldenrod */
+        {0, 0xCCCC, 0x0000, 0x0000},          /* 2 Orange Red 3 */
+        {0, 0x6666, 0x9999, 0x0000},          /* 3 Olive Drab */
+        {0, 0xCCCC, 0x3333, 0xCCCC},          /* 4 Medium Orchid */
+        {0, 0x9999, 0x3333, 0x3333},          /* 5 Indian Red 4 */
+        {0, 0x0000, 0x6666, 0xFFFF},          /* 6 Royal Blue 2 */
+        {0, 0xFFFF, 0x9999, 0x3333},          /* 7 Tan 1 */
+        {0, 0x6666, 0xCCCC, 0xCCCC},          /* 8 Dark Slate Grey 3 */
+        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 9 Cadet Blue */
+        {0, 0x9999, 0x3333, 0xFFFF},          /* 10 Purple 2 */
+        {0, 0x9999, 0x0000, 0x6666},          /* 11 Violet Red 4 */
+        {0, 0x3333, 0x0000, 0x6666},          /* 12 Dark Blue */
+        {0, 0x9999, 0x3333, 0x3333},          /* 13  Indian Red */
+        {0, 0x3333, 0x6666, 0xFFFF},          /* 14  Blue */
+        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 15  Pale Violet Red */
+        {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3 */
+        {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2 */
+        {0, 0xFFFF, 0xFFFF, 0xFFFF},          /* 19  foreground (White) */
+        {0, 0x0000, 0x0000, 0x0000}           /* 18  background (Black) */
+};
+#endif
+
 
 static GtkWidget*
 main_xtext_chat_create			(gchar		*widget_name,
@@ -360,7 +389,11 @@ main_xtext_chat_create			(gchar		*widget_name,
 					 gint		 int2)
 {
         GtkWidget *chat_text;
+#ifdef GTK2
+        chat_text = gtk_xtext_new (colors, TRUE);
+#else
         chat_text = gtk_xtext_new (TRUE, TRUE);
+#endif
         return chat_text;
 }
 
@@ -951,7 +984,9 @@ client_realize                    (GtkWidget       *widget,
 				   gpointer         data)
 {
 	GtkTooltips *client_window_tips;
+#ifndef GTK2
 	GdkFont* font;
+#endif
 	GtkXText *tmp, *tmp2;
 	GtkWidget *tmp3;
 	char *buf;
@@ -986,20 +1021,31 @@ client_realize                    (GtkWidget       *widget,
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_vpaned");
 	gtk_object_set(GTK_OBJECT(tmp), "user_data", 125, NULL);
 	font_str = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
-	font = gdk_font_load(font_str);
-	ggz_free(font_str);
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+#ifdef GTK2
+	gtk_xtext_set_font(GTK_XTEXT(tmp), font_str);
+#else
+	font = gdk_font_load(font_str);
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+#endif
+	ggz_free(font_str);
 
 	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors); 
 	tmp->auto_indent = ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE);
 	tmp->wordwrap = ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE);
 	tmp->max_auto_indent = 200;
+#ifdef GTK2
+	gtk_xtext_set_time_stamp(tmp->buffer, TRUE);
+#else
 	tmp->time_stamp = ggzcore_conf_read_int("CHAT", "TIMESTAMP", FALSE);
-
+#endif
 
 	/* URL Handiler */
+#ifdef GTK2
+	tmp->urlcheck_function = (void*)chat_checkurl;
+#else
 	tmp->urlcheck_function = chat_checkurl;
+#endif
 	gtk_signal_connect (GTK_OBJECT (tmp), "word_click",
 		GTK_SIGNAL_FUNC (chat_word_clicked), NULL);
 

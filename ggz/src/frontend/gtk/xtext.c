@@ -26,6 +26,10 @@
  *
  */
 
+#include <config.h>
+
+#ifndef GTK2 /* JDS: use this version when compiling for GTK 1.2 */
+
 #define REFRESH_TIMEOUT 20
 #define WORDWRAP_LIMIT 24
 #define TINT_VALUE 195			  /* 195/255 of the brightness. */
@@ -35,7 +39,6 @@
 					     plus it doesn't seem to be a
 					     performance advantage */
 
-#include <config.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -2945,3 +2948,5 @@ gtk_xtext_append (GtkXText * xtext, char *text, int len)
 
 	gtk_xtext_append_entry (xtext, ent);
 }
+
+#endif /* GTK2 */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5176 2002-11-03 19:46:25Z jdorje $
+ * $Id: game.c 5185 2002-11-03 21:50:54Z jdorje $
  *
  * Functions for handling game events
  *
@@ -28,6 +28,12 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <gtk/gtk.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <ggzcore.h>
+
 #include "game.h"
 #include "chat.h"
 #include "client.h"
@@ -36,11 +42,6 @@
 #include "support.h"
 
 #include <ggz.h>		/* libggz */
-
-#include <gtk/gtk.h>
-#include <ggzcore.h>
-#include <stdlib.h>
-#include <string.h>
 
 /* Hooks for game events */
 static void game_register(GGZGame *game);

@@ -1,3 +1,5 @@
+#ifndef GTK2 /* JDS: use this version when compiling for GTK 1.2 */
+
 #ifndef __XTEXT_H__
 #define __XTEXT_H__
 
@@ -195,3 +197,5 @@ char *gtk_xtext_strip_color (unsigned const char *text, int len,
 			     char *outbuf, int *newlen);
 
 #endif
+
+#endif /* GTK2 */

@@ -91,7 +91,9 @@ void props_create_or_raise(void)
 static void props_update(void)
 {
 	GtkWidget *tmp;
+#ifndef GTK2
 	GdkFont *font;
+#endif
 	GList *items;
 	const char *text;
 
@@ -202,9 +204,14 @@ static void props_update(void)
 
 	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
-	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	tmp = lookup_widget((win_main), "xtext_custom");
+#ifdef GTK2
+	gtk_xtext_set_font(GTK_XTEXT(tmp),
+			   (char*)gtk_entry_get_text(GTK_ENTRY(tmp)));
+#else
+	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+#endif
 
 	/* Auto-Indent */
 	tmp = lookup_widget((props_dialog), "indent_check");
@@ -215,7 +222,9 @@ static void props_update(void)
 	}else{
 		tmp = lookup_widget((win_main), "xtext_custom");
 		GTK_XTEXT(tmp)->auto_indent = FALSE;
+#ifndef GTK2 /* ??? */
 		GTK_XTEXT(tmp)->indent = 0;
+#endif
 	}
 
 	/* Timestamp */
@@ -223,11 +232,19 @@ static void props_update(void)
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
 		tmp = lookup_widget((win_main), "xtext_custom");
+#ifdef GTK2
+		gtk_xtext_set_time_stamp(GTK_XTEXT(tmp)->buffer, TRUE);
+#else
 		GTK_XTEXT(tmp)->time_stamp = TRUE;
+#endif
 		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent + GTK_XTEXT(tmp)->stamp_width; */
 	}else{
 		tmp = lookup_widget((win_main), "xtext_custom");
+#ifdef GTK2
+		gtk_xtext_set_time_stamp(GTK_XTEXT(tmp)->buffer, FALSE);
+#else
 		GTK_XTEXT(tmp)->time_stamp = FALSE;
+#endif
 		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent - GTK_XTEXT(tmp)->stamp_width; */
 	}
 
