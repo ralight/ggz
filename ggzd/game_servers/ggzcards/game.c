@@ -39,7 +39,7 @@
 static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
 static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "spades", "high"};
 static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
-static char* long_bridge_suit_names[5] = {"clibs", "diamonds", "hearts", "spades", "notrump"};
+static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
 
 /* helper functions */
 static char** alloc_string_array(int, int);
@@ -562,6 +562,7 @@ void game_start_bidding()
 			break;
 		case GGZ_GAME_EUCHRE:
 			game.bid_total = 8; /* twice around, at most */
+			game.next_bid = (game.dealer + 1) % game.num_players;
 			break;
 		case GGZ_GAME_SUARO:
 			game.bid_total = -1; /* no set total */
@@ -690,11 +691,18 @@ int game_get_bid()
 			}
 
 			/* make "double" or "redouble" bid */
-			if (BRIDGE.contract != 0
-				/* TODO: one double *per team* */
-			    && BRIDGE.bonus < 4) {
+			if (BRIDGE.contract != 0 &&
+			    BRIDGE.bonus == 1 &&
+			    (game.next_bid == (BRIDGE.declarer+1) % 4 || game.next_bid == (BRIDGE.declarer+3) % 4)) {
 				bid.bid = 0;
 				bid.sbid.spec = BRIDGE_DOUBLE;
+				game.bid_choices[index] = bid;
+				index++;
+			} else if (BRIDGE.contract != 0 &&
+				   BRIDGE.bonus == 2 &&
+				   (game.next_bid == BRIDGE.declarer || game.next_bid == (BRIDGE.declarer+2) % 4)) {
+				bid.bid = 0;
+				bid.sbid.spec = BRIDGE_REDOUBLE;
 				game.bid_choices[index] = bid;
 				index++;
 			}
@@ -728,12 +736,17 @@ int game_get_bid()
 			}
 
 			/* make "double" or "redouble" bid */
-			if ( SUARO.contract > 0
-			     && (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
+			if ( SUARO.contract > 0 && SUARO.bonus == 1) {
 				/* unless unlimited doubling is specifically allowed,
 				 * only double and redouble are possible */
 				bid.bid = 0;
 				bid.sbid.spec = SUARO_DOUBLE;
+				game.bid_choices[index] = bid;
+				index++;
+			} else if (SUARO.contract > 0 &&
+			           (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
+				bid.bid = 0;
+				bid.sbid.spec = SUARO_REDOUBLE;
 				game.bid_choices[index] = bid;
 				index++;
 			}
@@ -784,7 +797,7 @@ int game_handle_bid(int bid_index)
 			
 			if (bid.sbid.spec == BRIDGE_PASS) {
 				BRIDGE.pass_count++;
-			} else if (bid.sbid.spec == BRIDGE_DOUBLE) {
+			} else if (bid.sbid.spec == BRIDGE_DOUBLE || bid.sbid.spec == BRIDGE_REDOUBLE) {
 				BRIDGE.pass_count = 1;
 				BRIDGE.bonus *= 2;
 			} else {
@@ -799,20 +812,14 @@ int game_handle_bid(int bid_index)
 				else
 					game.trump = -1;
 			}
-/*
-			if (BRIDGE.contract)
-				set_global_message("", "%d %s x%d", BRIDGE.contract,
-					long_bridge_suit_names[(int)BRIDGE.contract_suit], BRIDGE.bonus);
-			else
-				set_global_message("", "no contract");
-*/
 			break;
 		case GGZ_GAME_SUARO:
 			bid = game.bid_choices[bid_index];
 
 			if (bid.sbid.spec == SUARO_PASS) {
 				SUARO.pass_count++;
-			} else if (bid.sbid.spec == SUARO_DOUBLE) {
+			} else if (bid.sbid.spec == SUARO_DOUBLE ||
+				   bid.sbid.spec == SUARO_REDOUBLE) {
 				SUARO.pass_count = 1; /* one more pass will end it */
 				SUARO.bonus *= 2;
 			} else {
@@ -828,15 +835,6 @@ int game_handle_bid(int bid_index)
 				else
 					game.trump = -1;
 			}
-/*
-			if (SUARO.contract) {
-				set_global_message("", "%s%d %s x%d",
-					SUARO.kitty ? "K " : "",
-					SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit], SUARO.bonus);
-			} else {
-				set_global_message("", "no contract");
-			}
-*/
 			break;
 		case GGZ_GAME_SPADES:
 			break; /* no special handling necessary */
@@ -960,8 +958,8 @@ void game_start_playing(void)
 			break;
 		case GGZ_GAME_SUARO:
 			/* declarer is set in game_handle_bid */
-			set_global_message("", "Contract: %s%d %s%s.",
-				/* ggz_seats[SUARO.declarer].name, */
+			set_global_message("", "%s has the contract at %s%d %s%s.",
+				ggz_seats[SUARO.declarer].name,
 				SUARO.kitty ? "kitty " : "",
 				SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
 				SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");
@@ -1294,12 +1292,14 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			break;
 		case GGZ_GAME_SUARO:
 			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
-			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
+			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double");
+			if (bid.sbid.spec == SUARO_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
 			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%s%d %s", (bid.sbid.spec == SUARO_KITTY) ? "K " : "", bid.sbid.val, short_suaro_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_BRIDGE:
 			if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
-			if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
+			if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double");
+			if (bid.sbid.spec == BRIDGE_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
 			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_SPADES:
@@ -1601,6 +1601,11 @@ void game_end_hand(void)
 				ggz_debug("Player %d set the bid of %d, earning %d points.",
 					  winner, SUARO.contract, points);
 			}
+			set_global_message("", "%s %s the bid and earned %d point%s.",
+					ggz_seats[winner].name,
+					winner == SUARO.declarer ? "made" : "set",
+					points,
+					points == 1 ? "" : "s");
 			game.players[winner].score += points;
 			SUARO.declarer = -1;
 			SUARO.kitty_revealed = 0;

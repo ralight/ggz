@@ -901,8 +901,10 @@ void next_play(void)
 			ggz_debug("Next play: starting the bidding.");
 			set_game_state( WH_STATE_NEXT_BID );
 
-			for (p = 0; p < game.num_players; p++)
+			for (p = 0; p < game.num_players; p++) {
 				game.players[p].bid.bid = 0;
+				game_set_player_message(p); /* TODO: are all these player messages really necessary? */
+			}
 			game.bid_count = 0;
 
 			game_start_bidding();

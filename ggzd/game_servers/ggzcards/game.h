@@ -60,8 +60,9 @@ typedef struct hearts_game_t {
 /* ---------- BRIDGE ---------- */
 
 /* special bids */
-#define BRIDGE_PASS 1
-#define BRIDGE_DOUBLE 2
+#define BRIDGE_PASS	1
+#define BRIDGE_DOUBLE	2
+#define BRIDGE_REDOUBLE	3
 
 /* special suits */
 	/* clubs-spades = 0-3 = regular values */
@@ -88,9 +89,10 @@ typedef struct bridge_game_t {
 /* ---------- SUARO ---------- */
 
 /* special bids */
-#define SUARO_PASS 1
-#define SUARO_DOUBLE 2
-#define SUARO_KITTY 3
+#define SUARO_PASS	1
+#define SUARO_DOUBLE	2
+#define SUARO_REDOUBLE	3
+#define SUARO_KITTY	4
 
 /* special suits */
 #define SUARO_LOW 0
