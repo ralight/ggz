@@ -201,7 +201,7 @@ static void input_handle_chat(char *line)
 
 	if (strcmp(line, "") != 0) {
 		msg = strdup(line);
-		ggzcore_event_enqueue(GGZ_USER_CHAT, msg, free);
+		ggzcore_server_chat(server, GGZ_CHAT_NORMAL, NULL, msg);
 	}
 }
 
@@ -212,27 +212,22 @@ static void input_handle_beep(char* line)
 
 	if (strcmp(line, "") != 0) {
 		player = strdup(line);
-		ggzcore_event_enqueue(GGZ_USER_CHAT_BEEP, player, free);
+		ggzcore_server_chat(server, GGZ_CHAT_BEEP, player, NULL);
 	}
 }
 
 
 static void input_handle_msg(char* line)
 {
-	char **data;
-	char *arg;
+	char *player;
+	char *msg;
 
-	if (!(data = calloc(2, sizeof(char*))))
-		ggzcore_error_sys_exit("calloc() failed in input_handle_msg");
-
-	if (!(arg = strsep(&line, delim)))
+	if (!(player = strsep(&line, delim)))
 		return;
 	
-	data[0] = strdup(arg);
-	
 	if (line && strcmp(line, "") != 0) {
-		data[1] = strdup(line);
-		ggzcore_event_enqueue(GGZ_USER_CHAT_PRVMSG, data, free);
+		msg = strdup(line);
+		ggzcore_server_chat(server, GGZ_CHAT_PERSONAL, player, msg);
 	}
 }
 
