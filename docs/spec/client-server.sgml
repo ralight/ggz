@@ -226,8 +226,8 @@
       <listitem>
 	<para>
 	  If the the room list changes in any way, the server will
-	  send out a <link
-	  linkend="msg.update.rooms">MSG_UPDATE_ROOMS</link> to each
+	  send out a room
+	  <link linkend="msg.update">UPDATE</link> to each
 	  of the clients.  Note that currently there is no mechanism
 	  to change the rooms on the fly, so this message will never
 	  occur.  However, it is probable that this functionality will
@@ -248,8 +248,8 @@
       <listitem>
 	<para>
 	  If the server's list of supported games types changes, it
-	  will send a <link
-	  linkend="msg.update.types">MSG_UPDATE_TYPES</link> to each
+	  will send a game type
+	  <link linkend="msg.update">UPDATE</link> to each
 	  of the clients.  Note that currently there is no mechanism
 	  to change game types on the fly, so this message will never
 	  occur.  However, it is probable that this functionality will
@@ -300,10 +300,10 @@
 
       <listitem>
 	<para>
-	  To launch a new table, clients must send <link
-	  linkend="req.table.launch">REQ_TABLE_LAUNCH</link>.  The server
-	  will respond with <link
-	  linkend="rsp.table.launch">RSP_TABLE_LAUNCH</link>,
+	  To launch a new table, clients must send the
+	  <link linkend="req.table.launch">LAUNCH</link> tag.
+	  The server will respond with
+	  <link linkend="msg.update">UPDATE</link>,
 	  notifying the client of the status of the table launch.
 	</para>
       </listitem>
@@ -404,22 +404,8 @@
 
 <section id="game-messages"><title>Game Interactions</title>
   <para>
-    In order to allow the GGZ server to identify control messages
-    during the course of a game, it is necessary that interactions
-    with a game module have an identifiable header.  Therefore, all
-    data destined for a game module should use the <link
-    linkend="req.game">REQ_GAME</link> message.  This header will
-    be stripped off before the data is sent to the game itself.
-    Similarly, any messages from the game to the client will be sent
-    via a <link linkend="rsp.game">RSP_GAME</link> message.
-
-    <note>
-      <para>
-	In the future, the game module client and server may
-	communicate directly via a separate socket connection.  When
-	this happens, these opcodes will be eliminated.
-      </para>
-    </note>
+    Since protocol version 7, direct connections have been in place.
+	Therefore, no separate tags to embed them are needed anymore.
   </para>
 </section>
 
