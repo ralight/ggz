@@ -181,7 +181,14 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			connection.playing = TRUE;
 			launch_game(0,0);
 		} else {
-			/* FIXME: Handle Error(s) */
+			switch (status){
+				case -5: 
+					warn_dlg("No table selected to join.");
+					break;
+				case -4:
+					warn_dlg("Sorry, The table is full.");
+					break;
+			}
 		}
 		break;
 
