@@ -34,6 +34,7 @@ class GGZCoreGame
 			launchfail,
 			negotiated,
 			negotiatefail,
+			playing,
 			over,
 			ioerror,
 			protoerror

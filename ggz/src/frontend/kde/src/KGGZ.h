@@ -200,7 +200,9 @@ class KGGZ : public QWidget
 		void detachGameCallbacks();
 
 		// cancel a game
-		void eventLeaveGame(int force);
+		void eventLeaveGame();
+		// exit a table
+		void eventLeaveTable(int force);
 		// leave a room
 		void eventLeaveRoom();
 
@@ -271,6 +273,8 @@ class KGGZ : public QWidget
 		QDns *m_dns;
 		// File descriptor of current channel
 		int m_channelfd;
+		// Current game fd
+		int m_gamefd;
 };
 
 #endif
