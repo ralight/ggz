@@ -1,4 +1,4 @@
-/* $Id: cb_main.h 2740 2001-11-13 22:19:42Z jdorje $ */
+/* $Id: cb_main.h 2841 2001-12-10 00:16:21Z jdorje $ */
 /* 
  * File: cb_main.h
  * Author: Rich Gade
@@ -26,11 +26,11 @@
 #include <gtk/gtk.h>
 
 
-void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data);
 
+void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data);
-
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data);
+void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data);
 

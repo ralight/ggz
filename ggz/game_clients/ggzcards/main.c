@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2838 2001-12-09 23:23:58Z jdorje $
+ * $Id: main.c 2841 2001-12-10 00:16:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,9 +50,6 @@
 
 GtkWidget *dlg_main = NULL;
 
-static int want_newgame = 0;
-
-
 int main(int argc, char *argv[])
 {
 	int fd;
@@ -63,8 +60,8 @@ int main(int argc, char *argv[])
 
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
-	/* This shouldn't go here, but I see no better place right now.
-	   The message windows are supposed to use a fixed-width font. */
+	/* This shouldn't go here, but I see no better place right now. The
+	   message windows are supposed to use a fixed-width font. */
 	fixed_font_style = gtk_rc_style_new();
 	fixed_font_style->fontset_name =
 		"-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
@@ -83,12 +80,21 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void table_get_newgame()
+void table_get_newgame(void)
 {
-	want_newgame = 1;
-	statusbar_message(_("Select \"start game\" from the \"Game\" menu to begin the game."));
-	/* FIXME: we should ask the player first! */
+	GtkWidget *menu =
+		gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
+	statusbar_message(_("Select \"Start Game\" to begin the game."));
+	gtk_widget_set_sensitive(menu, TRUE);
+}
+
+void table_send_newgame(void)
+{
+	GtkWidget *menu =
+		gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
 	client_send_newgame();
+	statusbar_message(_("Waiting for the other players..."));
+	gtk_widget_set_sensitive(menu, FALSE);
 }
 
 void table_get_play(int hand)
@@ -240,7 +246,8 @@ static GtkWidget *new_message_dialog(const char *mark)
 	dlg = gtk_dialog_new();
 	gtk_widget_ref(dlg);
 	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dlg);
-	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); */
+	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); 
+	 */
 	gtk_window_set_title(GTK_WINDOW(dlg), mark);
 	GTK_WINDOW(dlg)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dlg), TRUE, TRUE, FALSE);

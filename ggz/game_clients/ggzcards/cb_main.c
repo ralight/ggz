@@ -1,4 +1,4 @@
-/* $Id: cb_main.c 2740 2001-11-13 22:19:42Z jdorje $ */
+/* $Id: cb_main.c 2841 2001-12-10 00:16:21Z jdorje $ */
 /* 
  * File: cb_main.c
  * Author: Rich Gade
@@ -32,26 +32,29 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
+#include "main.h"
 #include "table.h"
 
 
-void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
+void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
-	gtk_main_quit();
+	table_send_newgame();
 }
-
 
 void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	(void) client_send_sync_request();
 }
 
-
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 
 }
 
+void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
+{
+	gtk_main_quit();
+}
 
 void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
 {

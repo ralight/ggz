@@ -1,4 +1,4 @@
-/* $Id: dlg_main.c 2838 2001-12-09 23:23:58Z jdorje $ */
+/* $Id: dlg_main.c 2841 2001-12-10 00:16:21Z jdorje $ */
 /* 
  * File: dlg_main.c
  * Author: Rich Gade
@@ -48,6 +48,7 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *mnu_game;
 	GtkWidget *mnu_game_menu;
 	GtkAccelGroup *mnu_game_menu_accels;
+	GtkWidget *mnu_startgame;
 	GtkWidget *mnu_sync;
 	GtkWidget *mnu_preferences;
 	GtkWidget *mnu_exit;
@@ -103,6 +104,17 @@ GtkWidget *create_dlg_main(void)
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_game), mnu_game_menu);
 	mnu_game_menu_accels =
 		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_game_menu));
+
+	/* Add "start game" selection to "game" menu. */
+	mnu_startgame = gtk_menu_item_new_with_label(_("Start Game"));
+	gtk_widget_set_name(mnu_startgame, "mnu_startgame");
+	gtk_widget_ref(mnu_startgame);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_startgame",
+				 mnu_startgame,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(mnu_startgame);
+	gtk_widget_set_sensitive(mnu_startgame, FALSE);
+	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_startgame);
 
 	/* Add "Sync" selection to "Game" menu. */
 	mnu_sync = gtk_menu_item_new_with_label(_("Sync"));
@@ -208,13 +220,15 @@ GtkWidget *create_dlg_main(void)
 
 	gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
 			   GTK_SIGNAL_FUNC(on_dlg_main_delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
+	gtk_signal_connect(GTK_OBJECT(mnu_startgame), "activate",
+			   GTK_SIGNAL_FUNC(on_mnu_startgame_activate), NULL);
 	gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_sync_activate), NULL);
 	gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_preferences_activate),
 			   NULL);
+	gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
+			   GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
 	gtk_signal_connect(GTK_OBJECT(mnu_about), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_about_activate), NULL);
 	gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",

@@ -1,4 +1,4 @@
-/* $Id: main.h 2695 2001-11-08 09:41:54Z jdorje $ */
+/* $Id: main.h 2841 2001-12-10 00:16:21Z jdorje $ */
 /* 
  * File: main.h
  * Author: Rich Gade
@@ -23,7 +23,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "common.h"
+
 extern GtkWidget *dlg_main;
+
+/** @brief Called when we get a newgame request from the server.
+ *
+ *  When the server sends a newgame request, this method will be
+ *  called by the client-common code.  We must later send a
+ *  newgame response when we're ready to start the game.
+ *  @see table_send_newgame
+ */
+void table_get_newgame(void);
+
+/** @brief Called when we're ready to start a new game.
+ *
+ *  When we're ready to start a new game, this function should
+ *  be called to tell the server.
+ *  @see table_get_newgame
+ */
+void table_send_newgame(void);
 
 void statusbar_message(char *msg);
 void messagebar_message(const char *msg);
