@@ -14,13 +14,35 @@ Information about developers resources and processes.
 <td valign="top" colspan="2">
 
 <i>Resources</i><br>
-This is work in progress. Please see below for some quick links.
+GGZ developers use mailing lists, a bug tracker and a CVS repository for their
+work. If there are any questions, the ggz-dev mailing list is the right place
+to ask.
+<br>
+Please see below for some quick links.
 
 </td></tr>
 <tr><td valign="top">
 
 <i>Documents</i><br>
-Not available yet.
+The developer section of the
+<a href="http://www.ggzgamingzone.org/docs.php">main documentation page</a>
+lists all important documentation, which is again listed here (HTML only):
+<br>
+
+<a href="http://www.ggzgamingzone.org/docs/design/html/">GGZ Design Document and Protocol Reference</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/guides/gamedev/ggz-game-development-guide.html">Game Development Guide</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/games.html">Game Protocol Comparison</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/api/libggz/">Library API for libggz</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/api/ggzcore/">Library API for ggzcore</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/api/ggzmod/">Library API for ggzmod</a>
+<br>
+<a href="http://www.ggzgamingzone.org/docs/api/ggzdmod/">Library API for ggzdmod</a>
+<br><br>
 
 </td>
 </tr>
@@ -28,6 +50,9 @@ Not available yet.
 
 <b>Developers</b><br>
 <i>Gallery of GGZ developers</i><br>
+The gallery is not available yet. Please refer to the
+<a href="http://www.ggzgamingzone.org/docs/credits.php">release credits page</a>
+in the meantime.
 <br>
 
 </font>
