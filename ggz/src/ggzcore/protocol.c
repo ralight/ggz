@@ -692,12 +692,12 @@ static void _ggzcore_protocol_list_process(GGZListTag *list, GGZXMLElement *pare
 			_ggzcore_server_event(server, GGZ_TYPE_LIST, NULL);
 		}
 		else if (strcmp(list->type, "player") == 0) {
-			room = ggzcore_server_get_cur_room(server);
+			room = _ggzcore_server_get_room_by_id(server, list->room);
 			_ggzcore_room_set_player_list(room, count, list->list);
 			list->list = NULL;
 		}
 		else if (strcmp(list->type, "table") == 0) {
-			room = ggzcore_server_get_cur_room(server);
+			room = _ggzcore_server_get_room_by_id(server, list->room);
 			_ggzcore_room_set_table_list(room, count, list->list);
 			list->list = NULL;
 		}
@@ -757,7 +757,6 @@ static void _ggzcore_protocol_update_process(GGZUpdateTag *update, GGZXMLElement
 	
 	if (update) {
 		server = _ggzcore_net_get_server(net);
-		room = ggzcore_server_get_cur_room(server);
 
 		if (strcmp(update->type, "room") == 0) {
 			/* FIXME: implement this */
@@ -767,6 +766,8 @@ static void _ggzcore_protocol_update_process(GGZUpdateTag *update, GGZXMLElement
 		}
 		else if (strcmp(update->type, "player") == 0) {
 			GGZPlayer *player = update->data;
+
+			room = _ggzcore_server_get_room_by_id(server, update->room);
 			
 			if (strcmp(update->action, "add") == 0) {
 				_ggzcore_room_add_player(room, player->name);
@@ -777,6 +778,8 @@ static void _ggzcore_protocol_update_process(GGZUpdateTag *update, GGZXMLElement
 		}
 		else if (strcmp(update->type, "table") == 0) {
 			GGZTable *table = update->data;
+
+			room = _ggzcore_server_get_room_by_id(server, update->room);
 			if (strcmp(update->action, "add") == 0) {
 				_ggzcore_room_add_table(room, table);
 				update->data = NULL;
