@@ -29,7 +29,7 @@ KDotsHelp::KDotsHelp(QWidget *parent, char *name)
 	ok = new QPushButton("OK", this);
 
 	m_pane = new QWidget(this);
-	m_pane->setBackgroundColor(QColor(150.0, 0.0, 0.0));
+	m_pane->setBackgroundColor(QColor(150, 0, 0));
 	m_pane->setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
 
 	vbox = new QVBoxLayout(this, 5);
@@ -57,7 +57,7 @@ void KDotsHelp::paintEvent(QPaintEvent *e)
 	QPainter p;
 
 	p.begin(m_pane);
-	p.setPen(QColor(255.0, 255.0, 255.0));
+	p.setPen(QColor(255, 255, 255));
 	p.setFont(QFont("courier", 16, QFont::Normal));
 	p.drawText(10, 40, i18n("Game help for KDots"));
 	p.setFont(QFont("courier", 12, QFont::Normal));
