@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6312 2004-11-09 14:18:56Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -116,7 +116,7 @@ int game_update(int event_id, void *data) {
       if (ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1) {
         if (cgc_join_game(game, BLACK) < 0) /* FIXME: what if ai is host? allowed at all (clock)? */
           return -1;
-        chess_ai_init(C_BLACK, 3);
+        chess_ai_init(C_BLACK, 2);
 	  }
       break;
     case CHESS_EVENT_JOIN:
