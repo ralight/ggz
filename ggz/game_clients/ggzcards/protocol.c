@@ -4,14 +4,18 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: protocol.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This just contains the communications protocol information.
+ *
+ * OK, I lied.  It's continuously expanded to contain _all_
+ * common server-client code.  This will eventually be split up
+ * into different files.
  *
  * It should be identical between the server and all clients, and
  * the server contains the master copy.
  *
- * Copyright (C) 2001-2002 GGZ Development Team.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +58,9 @@ const char* get_server_opcode_name(server_msg_t opcode)
 	case MSG_PLAY:     return "MSG_PLAY";
 	case MSG_TRICK:    return "MSG_TRICK";
 	case REQ_BID:      return "REQ_BID";
+	case MSG_BID:      return "MSG_BID"; 	
 	case MSG_TABLE:    return "MSG_TABLE";
-	case MESSAGE_GAME: return "MESSAGE_GAME"; 	
+	case MESSAGE_GAME: return "MESSAGE_GAME";
 	}
 	return "[unknown]";
 }
@@ -133,6 +138,30 @@ int write_card(int fd, card_t card)
 	if (ggz_write_char(fd, card.face) < 0 ||
 	    ggz_write_char(fd, card.suit) < 0 ||
 	    ggz_write_char(fd, card.deck) < 0)
+		return -1;
+	return 0;
+}
+
+int read_bid(int fd, bid_t * bid)
+{
+	if (ggz_read_char(fd, &bid->sbid.val) < 0 ||
+	    ggz_read_char(fd, &bid->sbid.suit) < 0 ||
+	    ggz_read_char(fd, &bid->sbid.spec) < 0 ||
+	    ggz_read_char(fd, &bid->sbid.spec2) < 0)
+		return -1;
+	return 0;
+}
+
+/** @brief Writes a bid to the socket.
+ *  @param fd The file descriptor to which to read.
+ *  @param bid A pointer to the bid data.
+ *  @return 0 on success, -1 on failure. */
+int write_bid(int fd, bid_t bid)
+{
+	if (ggz_write_char(fd, bid.sbid.val) < 0 ||
+	    ggz_write_char(fd, bid.sbid.suit) < 0 ||
+	    ggz_write_char(fd, bid.sbid.spec) < 0 ||
+	    ggz_write_char(fd, bid.sbid.spec2) < 0)
 		return -1;
 	return 0;
 }

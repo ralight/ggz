@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3412 2002-02-18 09:02:33Z jdorje $
+ * $Id: main.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -118,6 +118,9 @@ int main(int argc, char **argv)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
 			    &handle_player_event);
+	
+	/* See bid union in types.h */
+	assert(sizeof(int) == 4 && sizeof(char) == 1);
 
 	/* set up easysock functions to be called on error/exit */
 	ggz_set_io_error_func(es_error);

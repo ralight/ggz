@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3356 2002-02-14 09:38:48Z jdorje $
+ * $Id: net.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -50,15 +50,11 @@
  *        - An integer that is the GGZ status of the seat
  *        - A string that is the name of the player at the seat
  */
-int send_player_list(player_t p)
+static int send_player_list(player_t p)
 {
-	int fd;
+	int fd = get_player_socket(p);
 	seat_t s_rel;
 	int status = 0;
-
-	fd = get_player_socket(p);
-	if (fd == -1)
-		return 0;
 
 	ggzdmod_log(game.ggz, "Sending seat list to player %d/%s (%d seats)",
 		    p, get_player_name(p), game.num_seats);
@@ -86,14 +82,13 @@ int send_player_list(player_t p)
 	return status;
 }
 
-int broadcast_player_list(void)
+void broadcast_player_list(void)
 {
 	player_t p;
-	int status = 0;
+	
 	for (p = 0; p < game.num_players; p++)
-		if (send_player_list(p) < 0)
-			status = -1;
-	return status;
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_player_list(p);
 }
 
 /* Send out play for player to _all_ players. Also symbolizes that this play
@@ -103,26 +98,24 @@ int broadcast_player_list(void)
  *    - A seat that is the relative seat of the player playing
  *    - A card that is the card being played
  */
-int send_play(card_t card, seat_t seat)
+static int send_play(player_t p, seat_t player, card_t card)
+{
+	int fd = get_player_socket(p);
+	
+	if (write_opcode(fd, MSG_PLAY) < 0 ||
+	    write_seat(fd, CONVERT_SEAT(player, p)) < 0 ||
+	    write_card(fd, card) < 0)
+		return -1;
+	return 0;
+}
+
+void broadcast_play(seat_t player, card_t card)
 {
 	player_t p;
-	int fd;
-	int status = 0;
-
-	for (p = 0; p < game.num_players; p++) {
-		fd = get_player_socket(p);
-		if (fd == -1)	/* don't send to bots */
-			continue;
-		if (write_opcode(fd, MSG_PLAY) < 0
-		    || write_seat(fd, CONVERT_SEAT(seat, p)) < 0
-		    || write_card(fd, card) < 0)
-			status = -1;
-	}
-
-	if (status != 0)
-		ggzdmod_log(game.ggz, "ERROR: send_play: status is %d.",
-			    status);
-	return status;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_play(p, player, card);
 }
 
 /* Send a gameover to all players. cnt is the number of winners, plist is the
@@ -254,17 +247,13 @@ int send_sync(player_t p)
 	return status;
 }
 
-int send_sync_all(void)
+void broadcast_sync(void)
 {
 	player_t p;
-	int status = 0;
 
 	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_PLAYER)
-			if (send_sync(p) < 0)
-				status = -1;
-
-	return status;
+			(void) send_sync(p);
 }
 
 /* Request a bid from player p.  bid_count is the number of bids; bids is an
@@ -288,6 +277,28 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 			status = -1;
 	}
 	return status;
+}
+
+static int send_bid(player_t p, player_t bidder, bid_t bid)
+{
+	seat_t seat = game.players[bidder].seat;
+	int fd = get_player_socket(p);
+	
+	if (write_opcode(fd, MSG_BID) < 0 ||
+	    write_seat(fd, CONVERT_SEAT(seat, p)) < 0 ||
+	    write_bid(fd, bid) < 0)
+		return -1;
+	return 0;
+	    	
+}
+
+void broadcast_bid(player_t bidder, bid_t bid)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_bid(p, bidder, bid);
 }
 
 /* Request a player p to make a play from a specific seat s's hand */
@@ -440,14 +451,14 @@ int send_newgame(player_t p)
 	return write_opcode(fd, MSG_NEWGAME);
 }
 
-void send_newgame_all(void)
+void broadcast_newgame(void)
 {
 	player_t p;
 
-	ggzdmod_log(game.ggz, "Sending out a newgame message to everyone.");
+	ggzdmod_log(game.ggz, "Broadcasting a newgame message.");
 
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) != GGZ_SEAT_BOT)
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
 			(void) send_newgame(p);
 }
 
@@ -520,57 +531,60 @@ int rec_play(player_t p)
 	return 0;
 }
 
-void send_global_text_message(player_t p, const char *mark,
-			      const char *message)
+int send_global_text_message(player_t p, const char *mark,
+                             const char *message)
 {
 	int fd = get_player_socket(p);
-	if (get_player_status(p) == GGZ_SEAT_BOT
-	    || get_player_status(p) == GGZ_SEAT_OPEN)
-		return;
+	
 	assert(mark);
+	
 	if (message == NULL)
 		message = "";	/* this happens sometimes (hmmm, really?
 				   how?) */
-	if (fd < 0
-	    || write_opcode(fd, MESSAGE_GAME) < 0
-	    || write_opcode(fd, GAME_MESSAGE_TEXT) < 0
-	    || ggz_write_string(fd, mark) < 0
-	    || ggz_write_string(fd, message) < 0)
-		ggzdmod_log(game.ggz,
-			    "ERROR: " "send_global_text_message: es error.");
-
+	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+	    write_opcode(fd, GAME_MESSAGE_TEXT) < 0 ||
+	    ggz_write_string(fd, mark) < 0 ||
+	    ggz_write_string(fd, message) < 0)
+		return -1;
+	return 0;
 }
 
-void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
-				  card_t ** cardlist)
+/* send_global_message_toall sends the truly global message to all players */
+void broadcast_global_text_message(const char *mark, const char* message)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_global_text_message(p, mark, message);
+}
+
+int send_global_cardlist_message(player_t p, const char *mark, int *lengths,
+                                 card_t ** cardlist)
 {
 	int fd = get_player_socket(p);
-	int error = 0, i;
+	int status = 0, i;
 	seat_t s_rel;
 
-	if (get_player_status(p) == GGZ_SEAT_BOT
-	    || get_player_status(p) == GGZ_SEAT_OPEN)
-		return;
 	assert(mark && cardlist && lengths);
 	ggzdmod_log(game.ggz, "Sending global cardlist message to player %d.",
 		    p);
-	if (fd < 0 || write_opcode(fd, MESSAGE_GAME) < 0
-	    || write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0
-	    || ggz_write_string(fd, mark) < 0)
-		error++;
+		
+	if (write_opcode(fd, MESSAGE_GAME) < 0 ||
+	    write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0 ||
+	    ggz_write_string(fd, mark) < 0)
+		status = -1;
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s = UNCONVERT_SEAT(s_rel, p);
 		if (ggz_write_int(fd, lengths[s]) < 0)
-			error++;
+			status = -1;
 		for (i = 0; i < lengths[s]; i++)
 			if (write_card(fd, cardlist[s][i]) < 0)
-				error++;
+				status = -1;
 	}
 
-	if (error)
-		ggzdmod_log(game.ggz, "ERROR: "
-			    "send_global_cardlist_message: es error.");
+	return status;
 }
 
 void broadcast_global_cardlist_message(const char *mark, int *lengths,
@@ -578,5 +592,6 @@ void broadcast_global_cardlist_message(const char *mark, int *lengths,
 {
 	player_t p;
 	for (p = 0; p < game.num_players; p++)
-		send_global_cardlist_message(p, mark, lengths, cardlist);
+		if (get_seat_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_global_cardlist_message(p, mark, lengths, cardlist);
 }

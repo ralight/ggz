@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3405 2002-02-17 16:51:28Z jdorje $
+ * $Id: game.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -320,6 +320,11 @@ void game_get_bid(int possible_bids, char **bid_choices)
 #endif
 
 	statusbar_message(_("Your turn to bid"));
+}
+
+void game_alert_bid(int bidder, bid_t bid)
+{
+	/* nothing */
 }
 
 void game_get_play(int hand)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 3356 2002-02-14 09:38:48Z jdorje $
+ * $Id: net.h 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -32,21 +32,20 @@
 
 /* Functions to send packets to the client. */
 
-int send_player_list(player_t p);
+void broadcast_player_list(void);
 
-int broadcast_player_list(void);
-
-int send_play(card_t card, seat_t);
+void broadcast_play(seat_t player, card_t card);
 
 int send_gameover(int winner_cnt, player_t * winners);
 
 int send_table(player_t p);
 
 int send_sync(player_t p);
-
-int send_sync_all(void);
+void broadcast_sync(void);
 
 int send_bid_request(player_t p, int bid_count, bid_t * bids);
+
+void broadcast_bid(player_t bidder, bid_t bid);
 
 int send_play_request(player_t p, seat_t s);
 
@@ -60,14 +59,13 @@ int send_newgame_request(player_t p);
 
 /* Send a newgame to one person. */
 int send_newgame(player_t p);
+void broadcast_newgame(void);
 
-/* Send a newgame to everyone. */
-void send_newgame_all(void);
-
-void send_global_text_message(player_t p, const char *mark,
+int send_global_text_message(player_t p, const char *mark,
 			      const char *message);
+void broadcast_global_text_message(const char *mark, const char* message);
 
-void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
+int send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 				  card_t ** cardlist);
 void broadcast_global_cardlist_message(const char *mark, int *lengths,
 				       card_t ** cardlist);

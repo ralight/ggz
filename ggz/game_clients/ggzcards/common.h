@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3357 2002-02-14 10:51:54Z jdorje $
+ * $Id: common.h 3421 2002-02-19 10:59:53Z jdorje $
  *
  * Copyright (C) 2001--2002 Brent Hendricks.
  *
@@ -184,6 +184,13 @@ extern void game_get_bid(int possible_bids, char **bid_choices);
  *  at any point afterwards to send the response.
  *  @param hand The player number of the hand to play from. */
 extern void game_get_play(int hand);
+
+/** Called when we're informed of a bid.  This data is not tracked
+ *  internally and is of little use to the GUI (but would be crucial
+ *  for a client-side AI).
+ *  @param bidder The player who bid.
+ *  @param bid The bid. */
+extern void game_alert_bid(int bidder, bid_t bid);
 
 /** Called when there's a bad play.  The frontend should display the
  *  error message, and call client_send_play again.  It may be necessary

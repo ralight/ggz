@@ -4,9 +4,13 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: protocol.h 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This just contains the communications protocol information.
+ *
+ * OK, I lied.  It's continuously expanded to contain _all_
+ * common server-client code.  This will eventually be split up
+ * into different files.
  *
  * It should be identical between the server and all clients, and
  * the server contains the master copy.
@@ -113,6 +117,10 @@ typedef enum {
 	   n, then n strings.  The client must choose one of these strings
 	   and send a RSP_BID in response. */
 	REQ_BID,
+	
+	/* Tells the client of a player's bid.  It is followed by a seat # for
+	   the seat from which the bid comes, then the bid itself. */
+	MSG_BID,
 
 	/* Sends out the current table to the client.  It is followed by a
 	   card for each player, in order.  Note that only one card per
@@ -232,6 +240,23 @@ typedef struct card_t {
 	char deck;
 } card_t;
 
+
+/* in different games, bids may have different meanings.  we'll just use this
+   arbitrary data structure for it */
+typedef union bid_t {
+	int bid;	/* DO NOT USE */
+	struct special_bid_struct {
+		/* this can be used for many different games that have
+		   unusual but similar bidding. Different games may use it
+		   differently. */
+		char val;	/* the value of the bid */
+		char suit;	/* the suit of the bid (generally trump) */
+		char spec;	/* specialty bids (defined per-game) */
+		char spec2;	/* More specialty bids (just to round things out) */
+	} sbid;
+} bid_t;
+
+
 /** An entirely unknown card. */
 extern const card_t UNKNOWN_CARD;
 
@@ -250,6 +275,18 @@ int read_card(int fd, card_t * card);
  *  @param card The card to be written.
  *  @return 0 on success, -1 on failure. */
 int write_card(int fd, card_t card);
+
+/** @brief Reads a bid from the socket.
+ *  @param fd The file descriptor from which to read.
+ *  @param bid A pointer to the bid data.
+ *  @return 0 on success, -1 on failure. */
+int read_bid(int fd, bid_t * bid);
+
+/** @brief Writes a bid to the socket.
+ *  @param fd The file descriptor to which to read.
+ *  @param bid A pointer to the bid data.
+ *  @return 0 on success, -1 on failure. */
+int write_bid(int fd, bid_t bid);
 
 /** @brief Reads an opcode from the socket.
  *  @param fd The file descriptor from which to read.

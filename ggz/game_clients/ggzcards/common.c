@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3399 2002-02-17 12:13:28Z jdorje $
+ * $Id: common.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -507,6 +507,21 @@ static int handle_req_bid(void)
 }
 
 
+static int handle_msg_bid(void)
+{
+	bid_t bid;
+	int bidder;
+	
+	if (read_seat(game_internal.fd, &bidder) < 0 ||
+	    read_bid(game_internal.fd, &bid) < 0)
+		return -1;
+	
+	game_alert_bid(bidder, bid);
+		
+	return 0;
+}
+
+
 /* A play request asks you to play a card from any hand (most likely your
    own). */
 static int handle_req_play(void)
@@ -880,6 +895,9 @@ int client_handle_server(void)
 		break;
 	case REQ_BID:
 		status = handle_req_bid();
+		break;
+	case MSG_BID:
+		status = handle_msg_bid();
 		break;
 	case REQ_PLAY:
 		status = handle_req_play();

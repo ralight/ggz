@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3415 2002-02-18 15:27:50Z jdorje $
+ * $Id: common.c 3421 2002-02-19 10:59:53Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -189,7 +189,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 				games_handle_gametype(option);
 
 				init_game();
-				(void) send_sync_all();
+				broadcast_sync();
 
 				if (seats_full())
 					next_play();
@@ -286,7 +286,7 @@ static void newgame(void)
 	init_cumulative_scores();
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
-	send_newgame_all();
+	broadcast_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state(STATE_NEXT_HAND);
 
@@ -544,7 +544,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   player joining.  I think it only did that because the player list
 	   is also sent out in the sync, but there could be a better reason
 	   as well. */
-	(void) broadcast_player_list();
+	broadcast_player_list();
 
 	/* should this be in sync??? */
 	if (seat >= 0 &&	/* see above comment about seat==-1 */
@@ -610,7 +610,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	set_player_name(player, "Empty Seat");
 
 	/* send new seat data */
-	(void) broadcast_player_list();
+	broadcast_player_list();
 
 	/* reset player's age; find new host */
 	game.players[player].age = -1;
@@ -657,7 +657,9 @@ int handle_play_event(card_t card)
 	hand = &game.seats[game.play_seat].hand;
 
 	/* send the play */
-	(void) send_play(card, game.play_seat);
+	(void) broadcast_play(game.play_seat, card);
+	
+	/* FIXME: what happens if someone sends a card not even in their hand?? */
 
 	/* remove the card from the player's hand by sliding it to the end. */
 	/* TODO: this is quite inefficient */
@@ -720,6 +722,8 @@ int handle_play_event(card_t card)
 int handle_bid_event(player_t p, bid_t bid)
 {
 	int was_waiting = 0;
+	
+	broadcast_bid(p, bid);
 
 	game.players[p].bid_data.is_bidding = 0;
 	clear_bids(p);

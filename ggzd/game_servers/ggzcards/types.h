@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: types.h 3421 2002-02-19 10:59:53Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -31,21 +31,6 @@
 #include <config.h>		/* Site-specific config */
 
 #include "cards.h"
-
-/* in different games, bids may have different meanings.  we'll just use this 
-   arbitrary data structure for it */
-typedef union bid_t {
-	/* this assumes a "long" is at least 32-bit. */
-	long bid;
-	struct special_bid_struct {
-		/* this can be used for many different games that have
-		   unusual but similar bidding. Different games may use it
-		   differently. */
-		char val;	/* the value of the bid */
-		char suit;	/* the suit of the bid (generally trump) */
-		char spec;	/* specialty bids (defined per-game) */
-	} sbid;
-} bid_t;
 
 
 /* This struct holds all data about a player's bidding status. */
