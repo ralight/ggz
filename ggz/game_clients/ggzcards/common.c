@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2862 2001-12-10 20:29:38Z jdorje $
+ * $Id: common.c 2866 2001-12-10 22:07:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,7 +49,7 @@ static int handle_game_message();
 static int ggzfd = -1;
 static int game_max_hand_size = 0;
 
-struct game_t game = { 0 };
+struct ggzcards_game_t ggzcards = { 0 };
 
 
 int client_initialize(void)
@@ -71,7 +71,7 @@ int client_initialize(void)
 	if (ggzfd < 0) {
 		ggz_error_msg_exit("Couldn't connect to ggz.");
 	}
-	game.state = STATE_INIT;
+	ggzcards.state = STATE_INIT;
 	ggz_debug("core", "Client initialized.");
 	return ggzfd;
 }
@@ -82,8 +82,8 @@ void client_quit(void)
 	/* FIXME: is this the desired behavior? */
 	if (ggz_disconnect() < 0)
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
-	if (game.players)
-		ggz_free(game.players);
+	if (ggzcards.players)
+		ggz_free(ggzcards.players);
 	ggz_debug("core", "Client disconnected.");
 }
 
@@ -112,13 +112,14 @@ static const char *get_state_name(client_state_t state)
 
 static void set_game_state(client_state_t state)
 {
-	if (state == game.state) {
+	if (state == ggzcards.state) {
 		ggz_debug("core-error", "ERROR: Staying in state %d.",
-			  game.state);
+			  ggzcards.state);
 	} else {
 		ggz_debug("core", "Changing state from %s to %s.",
-			  get_state_name(game.state), get_state_name(state));
-		game.state = state;
+			  get_state_name(ggzcards.state),
+			  get_state_name(state));
+		ggzcards.state = state;
 	}
 }
 
@@ -137,8 +138,9 @@ static int handle_text_message(void)
 static int handle_cardlist_message(void)
 {
 	int status = 0, p, i;
-	card_t **cardlist = ggz_malloc(game.num_players * sizeof(*cardlist));
-	int *lengths = ggz_malloc(game.num_players * sizeof(*lengths));
+	card_t **cardlist =
+		ggz_malloc(ggzcards.num_players * sizeof(*cardlist));
+	int *lengths = ggz_malloc(ggzcards.num_players * sizeof(*lengths));
 	char *mark;
 
 	if (!cardlist || !lengths)
@@ -147,7 +149,7 @@ static int handle_cardlist_message(void)
 	if (es_read_string_alloc(ggzfd, &mark) < 0)
 		status = -1;
 
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		if (es_read_int(ggzfd, &lengths[p]))
 			status = -1;
 		cardlist[p] = ggz_malloc(lengths[p] * sizeof(**cardlist));
@@ -159,7 +161,7 @@ static int handle_cardlist_message(void)
 	if (status == 0)
 		table_set_global_cardlist_message(mark, lengths, cardlist);
 
-	for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < ggzcards.num_players; p++)
 		ggz_free(cardlist[p]);
 	ggz_free(cardlist);
 	ggz_free(lengths);
@@ -178,7 +180,7 @@ static int handle_player_message(void)
 	if (read_seat(ggzfd, &p) < 0 ||
 	    es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
-	assert(p >= 0 && p < game.num_players);
+	assert(p >= 0 && p < ggzcards.num_players);
 
 	table_set_player_message(p, message);
 
@@ -265,7 +267,7 @@ static int handle_msg_gameover(void)
 
 	if (es_read_int(ggzfd, &num_winners) < 0)
 		return -1;
-	assert(num_winners >= 0 && num_winners <= game.num_players);
+	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
 
 	if (num_winners > 0)
 		winners = ggz_malloc(num_winners * sizeof(*winners));
@@ -300,19 +302,21 @@ static int handle_msg_players(void)
 	assert(numplayers >= 0);
 
 	/* we may need to allocate memory for the players */
-	different = (game.num_players != numplayers);
+	different = (ggzcards.num_players != numplayers);
 
 	/* reallocate the players, if necessary */
 	if (different) {
-		if (game.players) {
-			for (p = 0; p < game.num_players; p++)
-				if (game.players[p].hand.card)
-					ggz_free(game.players[p].hand.card);
-			ggz_free(game.players);
+		if (ggzcards.players) {
+			for (p = 0; p < ggzcards.num_players; p++)
+				if (ggzcards.players[p].hand.card)
+					ggz_free(ggzcards.players[p].hand.
+						 card);
+			ggz_free(ggzcards.players);
 		}
 		ggz_debug("core",
-			  "get_players: (re)allocating game.players.");
-		game.players = ggz_malloc(numplayers * sizeof(*game.players));
+			  "get_players: (re)allocating ggzcards.players.");
+		ggzcards.players =
+			ggz_malloc(numplayers * sizeof(*ggzcards.players));
 		game_max_hand_size = 0;	/* this forces reallocating later */
 	}
 
@@ -320,20 +324,20 @@ static int handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		if (es_read_int(ggzfd, &game.players[i].assign) < 0 ||
+		if (es_read_int(ggzfd, &ggzcards.players[i].assign) < 0 ||
 		    es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;
 
 		table_alert_player_name(i, t_name);
 
 		/* this causes unnecessary memory fragmentation */
-		if (game.players[i].name)
-			free(game.players[i].name);	/* allocated by
+		if (ggzcards.players[i].name)
+			free(ggzcards.players[i].name);	/* allocated by
 							   easysock */
-		game.players[i].name = t_name;
+		ggzcards.players[i].name = t_name;
 	}
 
-	game.num_players = numplayers;
+	ggzcards.num_players = numplayers;
 
 	/* Redesign the table, if necessary. */
 	if (different)
@@ -361,21 +365,21 @@ static void increase_max_hand_size(int max_hand_size)
 	/* Let the table know how big a hand might be. */
 	table_alert_hand_size(game_max_hand_size);
 
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 #if 1
 		/* TODO: figure out how this code could even fail at all. In
 		   the meantime, I've disabled the call to free (realloc),
 		   conceding the memory leak so that we don't have an
 		   unexplained seg fault (which we would have if the realloc
 		   method were used instead!!). */
-		game.players[p].hand.card =
-			ggz_realloc(game.players[p].hand.card,
+		ggzcards.players[p].hand.card =
+			ggz_realloc(ggzcards.players[p].hand.card,
 				    game_max_hand_size *
-				    sizeof(*game.players[p].hand.card));
+				    sizeof(*ggzcards.players[p].hand.card));
 #else
-		game.players[p].hand.card =
+		ggzcards.players[p].hand.card =
 			ggz_malloc(game_max_hand_size *
-				   sizeof(*game.players[p].hand.card));
+				   sizeof(*ggzcards.players[p].hand.card));
 #endif
 	}
 
@@ -388,12 +392,12 @@ static int handle_msg_hand(void)
 	int player, hand_size, i;
 	struct hand_t *hand;
 
-	assert(game.players);
+	assert(ggzcards.players);
 
 	/* first read the player whose hand it is */
 	if (read_seat(ggzfd, &player) < 0)
 		return -1;
-	assert(player >= 0 && player < game.num_players);
+	assert(player >= 0 && player < ggzcards.num_players);
 
 	/* Find out how many cards in this hand */
 	if (es_read_int(ggzfd, &hand_size) < 0)
@@ -405,7 +409,7 @@ static int handle_msg_hand(void)
 	/* Read in all the card values.  It's important that we don't change
 	   anything before here so that any functions we call from
 	   increase_max_hand_size won't have inconsistent data. */
-	hand = &game.players[player].hand;
+	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++)
 		if (read_card(ggzfd, &hand->card[i]) < 0)
@@ -425,8 +429,8 @@ static int handle_req_bid(void)
 	int possible_bids;
 	char **bid_choices;
 
-	if (game.state == STATE_BID) {
-		/* The new bid request overrides the old one.  But this means 
+	if (ggzcards.state == STATE_BID) {
+		/* The new bid request overrides the old one.  But this means
 		   some messy cleanup is necessary. */
 		ggz_debug("core",
 			  "WARNING: new bid message overriding old one.");
@@ -461,13 +465,14 @@ static int handle_req_bid(void)
 static int handle_req_play(void)
 {
 	/* Determine which hand we're supposed to be playing from. */
-	if (read_seat(ggzfd, &game.play_hand) < 0)
+	if (read_seat(ggzfd, &ggzcards.play_hand) < 0)
 		return -1;
-	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
+	assert(ggzcards.play_hand >= 0
+	       && ggzcards.play_hand < ggzcards.num_players);
 
 	/* Get the play. */
 	set_game_state(STATE_PLAY);
-	table_get_play(game.play_hand);
+	table_get_play(ggzcards.play_hand);
 
 	return 0;
 }
@@ -483,7 +488,7 @@ static int handle_msg_badplay(void)
 		return -1;
 
 	/* Restore the cards the way they should be. */
-	game.players[game.play_hand].table_card = UNKNOWN_CARD;
+	ggzcards.players[ggzcards.play_hand].table_card = UNKNOWN_CARD;
 
 	/* Get a new play. */
 	set_game_state(STATE_PLAY);
@@ -552,11 +557,11 @@ static int handle_msg_play(void)
 	/* Read the card being played. */
 	if (read_seat(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
 		return -1;
-	assert(p >= 0 && p < game.num_players);
+	assert(p >= 0 && p < ggzcards.num_players);
 
 	/* Find the hand the card is to be removed from. */
-	assert(game.players);
-	hand = &game.players[p].hand;
+	assert(ggzcards.players);
+	hand = &ggzcards.players[p].hand;
 	assert(hand->card);
 
 	/* Find a matching card to remove. */
@@ -595,13 +600,12 @@ static int handle_msg_table(void)
 
 	ggz_debug("core", "Handling table message.");
 
-	assert(game.players);
-	for (p = 0; p < game.num_players; p++)
-		if (read_card(ggzfd, &game.players[p].table_card) < 0)
+	assert(ggzcards.players);
+	for (p = 0; p < ggzcards.num_players; p++)
+		if (read_card(ggzfd, &ggzcards.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands 
-	 */
+	/* TODO: verify that the table cards have been removed from the hands */
 
 	table_alert_table();
 
@@ -617,7 +621,7 @@ static int handle_msg_trick(void)
 	/* Read the trick winner */
 	if (read_seat(ggzfd, &p) < 0)
 		return -1;
-	assert(p >= 0 && p < game.num_players);
+	assert(p >= 0 && p < ggzcards.num_players);
 
 	/* Update the graphics. */
 	table_alert_trick(p);
@@ -639,7 +643,7 @@ static int handle_req_options(void)
 	char ***option_choices;	/* The texts for each option choice of each
 				   option */
 
-	if (game.state == STATE_OPTIONS) {
+	if (ggzcards.state == STATE_OPTIONS) {
 		/* The new options request overrides the old one.  But this
 		   means some messy cleanup is necessary. */
 		ggz_debug("core",

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2860 2001-12-10 17:17:29Z jdorje $
+ * $Id: table.c 2866 2001-12-10 22:07:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -136,7 +136,7 @@ static void draw_card_areas()
 			   TRUE, 0, 0, get_table_width(), get_table_height());
 
 	/* Draw card areas */
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		draw_text_box(p);
 		draw_card_box(p);
 	}
@@ -197,7 +197,7 @@ void table_initialize(void)
 	}
 
 
-	if (game.num_players > 0)
+	if (ggzcards.num_players > 0)
 		table_setup();
 	else
 		draw_splash_screen();
@@ -217,11 +217,11 @@ void table_setup(void)
 	   work.  The problem is that before you choose what game you're
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
-	if (game.num_players == 0 || table_max_hand_size == 0)
+	if (ggzcards.num_players == 0 || table_max_hand_size == 0)
 		return;
 
 	ggz_debug("table", "Setting up table." "  Width and height are %d."
-		  "  %d players.", get_table_width(), game.num_players);
+		  "  %d players.", get_table_width(), ggzcards.num_players);
 
 	/* We may need to resize the table */
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
@@ -233,7 +233,7 @@ void table_setup(void)
 	selected_card = -1;
 
 	/* Add text labels to display */
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		get_text_box_pos(p, &x, &y);
 
 		/* Name entries */
@@ -241,7 +241,7 @@ void table_setup(void)
 			gtk_widget_hide(l_name[p]);
 			gtk_widget_destroy(l_name[p]);
 		}
-		l_name[p] = gtk_label_new(game.players[p].name);
+		l_name[p] = gtk_label_new(ggzcards.players[p].name);
 		gtk_fixed_put(GTK_FIXED(table), l_name[p], x + 3, y + 1);
 		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_widget_show(l_name[p]);
@@ -257,7 +257,7 @@ void table_setup(void)
 		gtk_label_set_justify(GTK_LABEL(label[p]), GTK_JUSTIFY_LEFT);
 		gtk_widget_show(label[p]);
 
-		if (game.players[p].hand.hand_size > 0)
+		if (ggzcards.players[p].hand.hand_size > 0)
 			table_display_hand(p);
 	}
 
@@ -265,7 +265,7 @@ void table_setup(void)
 	draw_card_areas();
 
 	/* Display the buffer */
-	if (game.num_players > 0 && table_max_hand_size > 0)
+	if (ggzcards.num_players > 0 && table_max_hand_size > 0)
 		table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
@@ -327,20 +327,20 @@ void table_set_global_cardlist_message(const char *mark, int *lengths,
 		"J", "Q", "K", "A"
 	};
 
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		if (lengths[p] > maxlen)
 			maxlen = lengths[p];
-		assert(game.players[p].name);
-		if (strlen(game.players[p].name) > namewidth)
-			namewidth = strlen(game.players[p].name);
+		assert(ggzcards.players[p].name);
+		if (strlen(ggzcards.players[p].name) > namewidth)
+			namewidth = strlen(ggzcards.players[p].name);
 	}
 
 	assert(maxlen > 0);
 	assert(namewidth > 0);
 
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-			 "%*s: ", namewidth, game.players[p].name);
+			 "%*s: ", namewidth, ggzcards.players[p].name);
 		if (maxlen == 1) {
 			if (lengths[p]) {
 				card_t card = cardlist[p][0];
@@ -383,7 +383,7 @@ void table_redraw(void)
 
 #ifdef ANIMATION
 	/* If there's an animation in progress, zip it */
-	if (game.state == STATE_ANIM)
+	if (ggzcards.state == STATE_ANIM)
 		table_animation_zip(FALSE);
 #endif /* ANIMATION */
 
@@ -420,12 +420,12 @@ void table_handle_click_event(GdkEventButton * event)
 	int which = -1;
 	int x_outer, y_outer, w_outer, h_outer, xo, yo;
 	int x, y, x1, y1;
-	int p = game.play_hand;	/* player whose hand it is */
+	int p = ggzcards.play_hand;	/* player whose hand it is */
 	float xdiff, ydiff;
 	int card_width, card_height;
 
 	/* If it's not our turn to play, we don't care. */
-	if (game.state != STATE_PLAY)
+	if (ggzcards.state != STATE_PLAY)
 		return;
 
 	ggz_debug("table", "table_handle_click_event: " "click at %d %d.",
@@ -445,7 +445,8 @@ void table_handle_click_event(GdkEventButton * event)
 		return;
 
 	/* Calculate our card target */
-	for (target = 0; target < game.players[p].hand.hand_size; target++) {
+	for (target = 0; target < ggzcards.players[p].hand.hand_size;
+	     target++) {
 		x1 = x + .5 + (target * xdiff);
 		y1 = y + .5 + (target * ydiff);
 		if (target == selected_card) {
@@ -472,7 +473,7 @@ void table_handle_click_event(GdkEventButton * event)
    if it is already selected. */
 static void table_card_clicked(int card)
 {
-	int p = game.play_hand;
+	int p = ggzcards.play_hand;
 
 	ggz_debug("table", "table_card_clicked: Card %d clicked.", card);
 
@@ -489,7 +490,7 @@ static void table_card_clicked(int card)
 		   table_card is skipped over when drawing the hand. */
 
 		/* Call the game function to notify server of play */
-		game_play_card(game.players[p].hand.card[card]);
+		game_play_card(ggzcards.players[p].hand.card[card]);
 	} else {
 		/* Pop the card forward and select it */
 		selected_card = card;
@@ -577,7 +578,7 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
    is valid. */
 static void table_card_play(int p, int card)
 {
-	game.players[p].table_card = game.players[p].hand.card[card];
+	ggzcards.players[p].table_card = ggzcards.players[p].hand.card[card];
 
 	/* Draw the cards, eliminating the card in play */
 	table_display_hand(p);
@@ -589,8 +590,8 @@ static void table_card_play(int p, int card)
 
 #ifdef ANIMATION
 	/* Setup and trigger the card animation */
-	table_animation_trigger(game.players[p].hand.card[card], x, y, 199,
-				242);
+	table_animation_trigger(ggzcards.players[p].hand.card[card], x, y,
+				199, 242);
 #endif /* ANIMATION */
 }
 
@@ -677,7 +678,7 @@ gint table_animation_callback(gpointer ignored)
 void table_animation_abort(void)
 {
 	/* First, kill off the animation callback */
-	if (game.state == STATE_ANIM) {
+	if (ggzcards.state == STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
 		set_game_state(STATE_WAIT);
 	}
@@ -693,7 +694,7 @@ void table_animation_abort(void)
 void table_animation_zip(gboolean restore)
 {
 	/* First, kill off the animation callback */
-	if (game.state == STATE_ANIM) {
+	if (ggzcards.state == STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
 		set_game_state(STATE_WAIT);
 	}
@@ -728,7 +729,7 @@ void table_display_hand(int p)
 	int x_outer, y_outer;
 	int cx, cy, cw, ch, cxo, cyo;
 	float ow, oh;
-	card_t table_card = game.players[p].table_card;
+	card_t table_card = ggzcards.players[p].table_card;
 
 	ggz_debug("table", "Displaying hand for player %d.", p);
 
@@ -746,8 +747,8 @@ void table_display_hand(int p)
 	draw_card_box(p);
 
 	/* Draw the cards */
-	for (i = 0; i < game.players[p].hand.hand_size; i++) {
-		card_t card = game.players[p].hand.card[i];
+	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
+		card_t card = ggzcards.players[p].hand.card[i];
 		if (table_card.face != -1 &&	/* is this an adequate check? 
 						 */
 		    !memcmp(&card, &table_card, sizeof(card_t)))
@@ -771,7 +772,7 @@ void table_display_hand(int p)
 void table_display_all_hands(void)
 {
 	int p;
-	for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < ggzcards.num_players; p++)
 		table_display_hand(p);
 }
 
@@ -798,8 +799,8 @@ void table_clear_table(void)
 
 	table_show_table(x, y, w, h);
 
-	for (i = 0; i < game.num_players; i++) {
-		game.players[i].table_card = UNKNOWN_CARD;
+	for (i = 0; i < ggzcards.num_players; i++) {
+		ggzcards.players[i].table_card = UNKNOWN_CARD;
 	}
 }
 
@@ -822,6 +823,6 @@ static void table_show_card(int player, card_t card)
 void table_show_cards()
 {
 	int p;
-	for (p = 0; p < game.num_players; p++)
-		table_show_card(p, game.players[p].table_card);
+	for (p = 0; p < ggzcards.num_players; p++)
+		table_show_card(p, ggzcards.players[p].table_card);
 }

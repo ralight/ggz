@@ -1,4 +1,4 @@
-/* $Id: layout.c 2843 2001-12-10 02:19:53Z jdorje $ */
+/* $Id: layout.c 2866 2001-12-10 22:07:26Z jdorje $ */
 /* 
  * File: layout.c
  * Author: Jason Short, Rich Gade
@@ -134,22 +134,22 @@ layout_t layout_6 = {
 layout_t *layouts[MAX_NUM_PLAYERS + 1] =
 	{ NULL, NULL, &layout_2, &layout_3, &layout_4, &layout_5, &layout_6 };
 
-#define LAYOUT (layouts[game.num_players])
+#define LAYOUT (layouts[ggzcards.num_players])
 #define BOX(p) (LAYOUT->player_boxes[p])
 
 
 int get_table_width()
 {
-	if (game.num_players == 0)
+	if (ggzcards.num_players == 0)
 		return 300;
-	if (game.num_players <= 4)
+	if (ggzcards.num_players <= 4)
 		return (3 * XWIDTH + 2 * TEXT_BOX_WIDTH + CARD_BOX_WIDTH);
 	return 4 * XWIDTH + 3 * TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 }
 
 int get_table_height()
 {
-	if (game.num_players <= 4)
+	if (ggzcards.num_players <= 4)
 		return get_table_width();
 	return 3 * XWIDTH + 2 * TEXT_BOX_WIDTH + 2 * CARD_BOX_WIDTH;
 }
@@ -165,7 +165,7 @@ void get_tablecard_pos(int p, int *x, int *y)
 {
 	int offset = CARDHEIGHT / 12;
 	int mx = get_table_width() / 2, my = get_table_height() / 2;
-	if (game.num_players <= 4) {
+	if (ggzcards.num_players <= 4) {
 		int positions[4][2] = { {mx - CARDWIDTH / 2, my + offset},
 		{mx - CARDWIDTH - offset, my - CARDHEIGHT / 2},
 		{mx - CARDWIDTH / 2, my - offset - CARDHEIGHT},
@@ -189,7 +189,7 @@ void get_tablecard_pos(int p, int *x, int *y)
 
 void get_table_dim(int *x, int *y, int *w, int *h)
 {
-	if (game.num_players <= 4) {
+	if (ggzcards.num_players <= 4) {
 		*w = 2 * CARDWIDTH + CARDHEIGHT / 6;
 		*h = 2 * CARDHEIGHT + CARDHEIGHT / 6;
 	} else {

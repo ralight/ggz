@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2862 2001-12-10 20:29:38Z jdorje $
+ * $Id: main.c 2866 2001-12-10 22:07:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -112,7 +112,7 @@ void table_send_newgame(void)
 void table_get_play(int hand)
 {
 #ifdef ANIMATION
-	if (game.state == STATE_ANIM)
+	if (ggzcards.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
@@ -122,7 +122,7 @@ void table_get_play(int hand)
 		char buf[100];
 		snprintf(buf, sizeof(buf),
 			 _("Your turn to play a card from %s's hand."),
-			 game.players[hand].name);
+			 ggzcards.players[hand].name);
 		statusbar_message(buf);
 	}
 }
@@ -130,8 +130,8 @@ void table_get_play(int hand)
 
 void table_alert_player_name(int player, const char *name)
 {
-	if (player != 0 && game.num_players &&
-	    strcmp(name, game.players[player].name)) {
+	if (player != 0 && ggzcards.num_players &&
+	    strcmp(name, ggzcards.players[player].name)) {
 		char *temp = g_strdup_printf(_("%s joined the table"), name);
 		statusbar_message(temp);
 		g_free(temp);
@@ -159,7 +159,7 @@ void table_handle_gameover(int num_winners, int *winners)
 			else
 				fmt = "%s, ";
 			snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-				 fmt, game.players[winners[i]].name);
+				 fmt, ggzcards.players[winners[i]].name);
 		}
 		snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
 			 _("won the game."));
@@ -341,10 +341,10 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	extern GtkStyle *table_style;	/* And I do it twice!! */
 
 	/* determine dimensions */
-	for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < ggzcards.num_players; p++)
 		if (lengths[p] > max_len)
 			max_len = lengths[p];
-	height = CARDHEIGHT * game.num_players;
+	height = CARDHEIGHT * ggzcards.num_players;
 	width = CARDWIDTH + (max_len - 1) * CARDWIDTH / 4;
 
 	verify_msg_menu();
@@ -363,15 +363,16 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 		gtk_object_set_data(GTK_OBJECT(dlg), "canvas", canvas);
 
 #if 1
-		layout = gtk_table_new(game.num_players, 2, FALSE);
+		layout = gtk_table_new(ggzcards.num_players, 2, FALSE);
 		gtk_table_attach(GTK_TABLE(layout), canvas, 1, 2, 0,
-				 game.num_players, 0, 0, 0, 0);
+				 ggzcards.num_players, 0, 0, 0, 0);
 
 		name_labels =
-			g_malloc(game.num_players * sizeof(*name_labels));
+			g_malloc(ggzcards.num_players * sizeof(*name_labels));
 		gtk_object_set_data(GTK_OBJECT(dlg), "names", name_labels);
-		for (p = 0; p < game.num_players; p++) {
-			name_labels[p] = gtk_label_new(game.players[p].name);
+		for (p = 0; p < ggzcards.num_players; p++) {
+			name_labels[p] =
+				gtk_label_new(ggzcards.players[p].name);
 			gtk_table_attach(GTK_TABLE(layout), name_labels[p], 0,
 					 1, p, p + 1, 0, 0, 0, 0);
 		}
@@ -406,13 +407,13 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	gdk_draw_rectangle(image,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
 			   TRUE, 0, 0, width, height);
-	for (p = 0; p < game.num_players; p++) {
+	for (p = 0; p < ggzcards.num_players; p++) {
 		for (i = 0; i < lengths[p]; i++) {
 			draw_card(cardlist[p][i], 0, i * CARDWIDTH / 4,
 				  p * CARDHEIGHT, image);
 		}
 		gtk_label_set_text(GTK_LABEL(name_labels[p]),
-				   game.players[p].name);
+				   ggzcards.players[p].name);
 	}
 
 
@@ -430,7 +431,7 @@ void table_alert_badplay(char *err_msg)
 #endif /* ANIMATION */
 
 	/* redraw cards */
-	table_display_hand(game.play_hand);
+	table_display_hand(ggzcards.play_hand);
 
 	statusbar_message(err_msg);
 	sleep(1);		/* just a delay? */
@@ -439,7 +440,7 @@ void table_alert_badplay(char *err_msg)
 void table_alert_play(int player, card_t card)
 {
 #ifdef ANIMATION
-	if (game.state == STATE_ANIM)
+	if (ggzcards.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
@@ -459,12 +460,12 @@ void table_alert_trick(int player)
 	char *t_str;
 
 #ifdef ANIMATION
-	if (game.state == STATE_ANIM)
+	if (ggzcards.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
 	t_str = g_strdup_printf(_("%s won the trick"),
-				game.players[player].name);
+				ggzcards.players[player].name);
 	statusbar_message(t_str);
 	g_free(t_str);
 

@@ -1,4 +1,4 @@
-/* $Id: common.h 2862 2001-12-10 20:29:38Z jdorje $ */
+/* $Id: common.h 2866 2001-12-10 22:07:26Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -72,7 +72,7 @@ typedef enum {
 } client_state_t;
 
 /** The game_t structure contains all global game data. */
-struct game_t {
+struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
@@ -81,7 +81,7 @@ struct game_t {
 
 /** This is the game structure that contains all the common information
  *  about the ongoing game */
-extern struct game_t game;
+extern struct ggzcards_game_t ggzcards;
 
 /** @} end of Game group */
 
