@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: main.h 3286 2002-02-10 01:00:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,7 +27,7 @@
 
 extern GtkWidget *dlg_main;
 
-void statusbar_message(char *msg);
+void statusbar_message(const char *msg);
 void messagebar_message(const char *msg);
 void menubar_text_message(const char *mark, const char *msg);
 void menubar_cardlist_message(const char *mark, int *lengths,
