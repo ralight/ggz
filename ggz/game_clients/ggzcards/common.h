@@ -1,4 +1,4 @@
-/* $Id: common.h 2866 2001-12-10 22:07:26Z jdorje $ */
+/* $Id: common.h 2868 2001-12-10 23:03:45Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggz_client.h>
 #include "protocol.h"
 
 #ifndef __COMMON_H__
@@ -47,7 +48,7 @@ struct hand_t {
 
 /** Contains all information about a seat at the table. */
 typedef struct seat_t {
-	int assign;		/**< ggz seating assignment info; unused */
+	GGZdModSeat status;	/**< ggz seating assignment info */
 	char *name;		/**< player's name */
 	card_t table_card;	/**< card on table */
 	struct hand_t hand;	/**< player's hand */
@@ -123,10 +124,12 @@ extern void table_get_newgame(void);
   * @param winners An array with the player numbers of the winners. */
 extern void table_handle_gameover(int num_winners, int *winners);
 
-/** Alerts the table of a player's name, before changing that name in the game structure.
+/** Alerts the table of a player's name and status, before changing that
+  * name in the game structure.
   * @param player The number of the player whose name we're talking about.
   * @param name The (possibly new) name of the player. */
-extern void table_alert_player_name(int player, const char *name);
+extern void table_alert_player(int player, GGZdModSeat status,
+			       const char *name);
 
 /** Currently this "sets up the table".  It's called when the number
  *  of players or the max hand size changes.

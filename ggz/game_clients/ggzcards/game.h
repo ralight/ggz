@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2384 2001-09-07 08:40:00Z jdorje $
+ * $Id: game.h 2868 2001-12-10 23:03:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -54,9 +54,6 @@ void game_init(void);
 /* 
  * Extra support functions
  */
-
-/* GGZ define */
-#define GGZ_SEAT_OPEN		-1
 
 /* preliminary internationalization macros */
 #define _(String) (String)

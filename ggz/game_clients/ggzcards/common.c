@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2866 2001-12-10 22:07:26Z jdorje $
+ * $Id: common.c 2868 2001-12-10 23:03:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,7 +33,6 @@
 #include <config.h>
 #include <easysock.h>
 #include <ggz.h>
-#include <ggz_client.h>
 
 #include "common.h"
 #include "protocol.h"
@@ -324,16 +323,20 @@ static int handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		if (es_read_int(ggzfd, &ggzcards.players[i].assign) < 0 ||
+		/* FIXME: "assign" is the ggz status.  It should be of type
+		   GGZdModSeat. */
+		int assign;
+		if (es_read_int(ggzfd, &assign) < 0 ||
 		    es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;
 
-		table_alert_player_name(i, t_name);
+		table_alert_player(i, assign, t_name);
 
 		/* this causes unnecessary memory fragmentation */
 		if (ggzcards.players[i].name)
 			free(ggzcards.players[i].name);	/* allocated by
 							   easysock */
+		ggzcards.players[i].status = assign;
 		ggzcards.players[i].name = t_name;
 	}
 
@@ -605,7 +608,8 @@ static int handle_msg_table(void)
 		if (read_card(ggzfd, &ggzcards.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands */
+	/* TODO: verify that the table cards have been removed from the hands 
+	 */
 
 	table_alert_table();
 

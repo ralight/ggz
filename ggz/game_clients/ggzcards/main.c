@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2866 2001-12-10 22:07:26Z jdorje $
+ * $Id: main.c 2868 2001-12-10 23:03:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,7 +38,6 @@
 
 #include <easysock.h>
 #include <ggz.h>		/* libggz */
-#include <ggz_client.h>
 #include "common.h"
 
 #include "main.h"
@@ -128,14 +127,28 @@ void table_get_play(int hand)
 }
 
 
-void table_alert_player_name(int player, const char *name)
+void table_alert_player(int player, GGZdModSeat status, const char *name)
 {
-	if (player != 0 && ggzcards.num_players &&
-	    strcmp(name, ggzcards.players[player].name)) {
-		char *temp = g_strdup_printf(_("%s joined the table"), name);
+	char *temp = NULL;
+	switch (status) {
+	case GGZ_SEAT_PLAYER:
+		temp = g_strdup_printf(_("%s joined the table"), name);
+		break;
+	case GGZ_SEAT_OPEN:
+		name = _("Empty Seat");
+		if (ggzcards.players[player].name)
+			temp = g_strdup_printf(_("%s left the table"),
+					       ggzcards.players[player].name);
+		break;
+	default:
+		/* any other handling? */
+		break;
+	}
+	if (temp) {
 		statusbar_message(temp);
 		g_free(temp);
 	}
+
 	table_set_name(player, name);
 }
 
