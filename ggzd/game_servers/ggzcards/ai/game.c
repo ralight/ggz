@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: game.c 4154 2002-05-05 01:02:23Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -83,14 +83,19 @@ void game_get_bid(int possible_bids,
 	/* We ignore bid_texts and bid_descs */
 	bid_t bid = get_bid(bid_choices, possible_bids);
 	int i;
+
+	ggz_debug(DBG_BID, "Making bid %d (%d/%d/%d).",
+	          bid.bid, bid.sbid.val,
+	          bid.sbid.suit, bid.sbid.spec);
 	
 	for (i = 0; i < possible_bids; i++) {
 		if (bid.bid == bid_choices[i].bid) {
 			client_send_bid(i);
 			return;
 		}
-	}
-	
+	}	
+
+	ggz_debug(DBG_BID, "Uh oh; invalid bid!");
 	assert(FALSE);
 	client_send_bid(random() % possible_bids);	
 }
@@ -128,6 +133,7 @@ void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
 	int play_num, hand_num;
 	hand_t *hand = &ggzcards.players[play_hand].hand;
 	bool valid_plays[hand->hand_size];
+	card_t play;
 	
 	assert(play_hand == ggzcards.play_hand);
 
@@ -144,8 +150,14 @@ void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
 		}
 		assert(hand_num < hand->hand_size);
 	}
+
+	play = get_play(ggzcards.play_hand, valid_plays);
+
+	ggz_debug(DBG_PLAY, "We're playing the %s of %s.",
+	          get_face_name(play.face),
+	          get_suit_name(play.suit));
 	
-	make_play(get_play(ggzcards.play_hand, valid_plays));
+	make_play(play);
 }
 
 void game_alert_badplay(char *err_msg)
