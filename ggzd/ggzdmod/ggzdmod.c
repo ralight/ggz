@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3221 2002-02-03 05:16:32Z bmh $
+ * $Id: ggzdmod.c 3248 2002-02-05 02:39:35Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1037,7 +1037,12 @@ void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod)
 /* game-side event: player join event received from ggzd */
 void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 {
-	_ggzdmod_set_seat(ggzdmod, &seat);
+	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
+		/* Fatal error. */
+		ggzdmod_log(ggzdmod, "GGZDMOD: _ggzdmod_handle_join: "
+				     "_ggzdmod_set_seat unsuccessful.");
+		_ggzdmod_error(ggzdmod, "Failed join.");
+	}
 	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
 		    seat.name, seat.fd, seat.num);
 	
