@@ -1,10 +1,7 @@
 SUBDIRS = .
 
-install-data-local:
-	$(mkinstalldirs) $(prefix)/share/doc/ggzcore++/html
-	$(INSTALL_DATA) *.html $(prefix)/share/doc/ggzcore++/html/
-
-EXTRA_DIST = \
+ggzcoreppdocdir = $(prefix)/share/doc/ggzcore++/html
+ggzcoreppdoc_DATA = \
 GGZCore.html \
 GGZCoreCommon_h.html \
 GGZCoreConf.html \
@@ -41,3 +38,4 @@ header-list.html \
 hier.html \
 index-long.html \
 index.html
+
