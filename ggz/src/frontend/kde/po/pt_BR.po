@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2001-06-02 01:06+0200\n"
-"PO-Revision-Date: 2001-06-01 17:00BRT\n"
+"PO-Revision-Date: 2001-06-02 21:25BRT\n"
 "Last-Translator: Ismael Orenstein <perdig@linuxbr.com.br>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,9 +23,8 @@ msgid "  Loading...  "
 msgstr "  Carregando...  "
 
 #: KGGZ.cpp:1437 KGGZBase.cpp:68
-#, fuzzy
 msgid "  No room selected  "
-msgstr "  Desconectado  "
+msgstr "  Nenhuma sala selecionada  "
 
 #: KGGZBase.cpp:66
 msgid "  Not connected  "
@@ -37,7 +36,7 @@ msgstr "  Pronto para conexão  "
 
 #: KGGZ.cpp:754
 msgid "  Room: "
-msgstr ""
+msgstr "  Sala: "
 
 #: KGGZBase.cpp:414
 msgid "  State: "
@@ -57,16 +56,15 @@ msgstr "  saiu da sala  "
 
 #: KGGZChat.cpp:280
 msgid "%1 -- MARK --"
-msgstr ""
+msgstr "%1 -- MARCA --"
 
 #: KGGZBase.cpp:87
 msgid "&Available tables"
 msgstr "Mesas &disponíveis  "
 
 #: KGGZBase.cpp:105
-#, fuzzy
 msgid "&Cancel game"
-msgstr "Iniciou jogo"
+msgstr "&Cancelar jogo"
 
 #: KGGZBase.cpp:86
 msgid "&Chat"
@@ -142,41 +140,36 @@ msgid "(unused)"
 msgstr "(não usado)"
 
 #: KGGZChat.cpp:250
-#, fuzzy
 msgid "/away &lt;message&gt; - show a goodbye message."
-msgstr "/me &lt;msg&gt; - Mensagens especiais"
+msgstr "/away &lt;mensagem&gt - Mostra uma mensagem de despedida"
 
 #: KGGZChat.cpp:247
-#, fuzzy
 msgid "/beep &lt;player&gt; - send player a beep."
-msgstr "/beep &lt;nome&gt; - Faz o computador dessa pessoa bipar"
+msgstr "/beep &lt;nome&gt; - Envia um beep ao computador desse jogador"
 
 #: KGGZChat.cpp:248
-#, fuzzy
 msgid "/help - this screen."
-msgstr "/help - Essa tela de ajuda (também /?)"
+msgstr "/help - Essa tela de ajuda"
 
 #: KGGZChat.cpp:249
 msgid "/mark - mark a time stamp."
-msgstr ""
+msgstr "/mark - marca a hora"
 
 #: KGGZChat.cpp:245
-#, fuzzy
 msgid "/me &lt;msg&gt; - sends an emphasized phrase."
-msgstr "/me &lt;msg&gt; - Mensagens especiais"
+msgstr "/me &lt;msg&gt; - Envia uma ação"
 
 #: KGGZChat.cpp:283
 msgid "/me is going to leave (%1)"
-msgstr ""
+msgstr "/me is going to leave (%1)"
 
 #: KGGZChat.cpp:246
-#, fuzzy
 msgid "/msg &lt;player&gt; &lt;message&gt; - sends a private message."
-msgstr "/me &lt;msg&gt; - Mensagens especiais"
+msgstr "/msg &lt;jogador&gtk; &lt;mensagem&gt; - Envia uma mensagem pessoal"
 
 #: KGGZPrefEnv.cpp:64
 msgid "<b>Global Settings</b>"
-msgstr ""
+msgstr "<b>Configurações globais</b>"
 
 #: KGGZAbout.cpp:69 KGGZBase.cpp:125
 msgid "About the GGZ Gaming Zone"
@@ -184,7 +177,7 @@ msgstr "Sobre a GGZ Gaming Zone"
 
 #: KGGZGrubby.cpp:75
 msgid "Add this to the alert words:"
-msgstr ""
+msgstr "Adiciona isso às palavras de alerta:"
 
 #: KGGZ.cpp:272
 msgid "An error occured! Sure it runs? Sure you don't need to be root?"
@@ -207,7 +200,7 @@ msgstr "Autor: "
 #: KGGZChat.cpp:269
 #, c-format
 msgid "Beeped Player %1."
-msgstr ""
+msgstr "Enviu um beep ao jogador %1"
 
 #: KGGZLaunch.cpp:304
 msgid "Bot"
@@ -239,7 +232,7 @@ msgstr "Não foi possível iniciar o jogo"
 
 #: KGGZPrefEnv.cpp:68
 msgid "Default ggzd host for GGZap"
-msgstr ""
+msgstr "Servidor padrão para o GGZap"
 
 #: KGGZConnect.cpp:220 KGGZConnect.cpp:245
 msgid "Default server"
@@ -255,7 +248,7 @@ msgstr "Descrição:"
 
 #: KGGZGrubby.cpp:74
 msgid "Do you have any messages for me?"
-msgstr ""
+msgstr "Você tem algum mensagem de mim?"
 
 #: KGGZ.cpp:788
 msgid "ERROR: Chat error detected!"
@@ -312,11 +305,11 @@ msgstr "Impossível iniciar a mesa requisitada"
 
 #: KGGZAbout.cpp:101
 msgid "Free Software shall dominate all Online Games!"
-msgstr ""
+msgstr "Os programas livres irãm dominar todos os jogos em rede!"
 
 #: KGGZSelector.cpp:66
 msgid "Frontend Selection"
-msgstr ""
+msgstr "Selecione a interface"
 
 #: KGGZBase.cpp:129
 msgid "GG&Z"
@@ -347,29 +340,28 @@ msgid "Game over"
 msgstr "Jogo terminou"
 
 #: KGGZPrefEnv.cpp:87
-#, fuzzy
 msgid "Global Settings"
-msgstr "&Configurações"
+msgstr "Configurações globais"
 
 #: KGGZGrubby.cpp:63
 msgid "Go!"
-msgstr ""
+msgstr "Ir!"
 
 #: KGGZGrubby.cpp:73
 msgid "Have you seen ..."
-msgstr ""
+msgstr "Você viu ..."
 
 #: KGGZAbout.cpp:106
 msgid "Homepage: http://ggz.sourceforge.net"
-msgstr ""
+msgstr "Página: http://ggz.sourceforge.net"
 
 #: KGGZ.cpp:1387
 msgid "I don't know that command, sorry."
-msgstr ""
+msgstr "Eu não conheço esse comando, sinto muito."
 
 #: KGGZGrubby.cpp:76
 msgid "I need help!"
-msgstr ""
+msgstr "Eu preciso de ajuda!"
 
 #: KGGZInput.cpp:51
 msgid "Identifier"
@@ -471,7 +463,7 @@ msgstr "Abrir"
 
 #: KGGZPrefEnv.cpp:67
 msgid "Path to ggzd"
-msgstr ""
+msgstr "Caminho para o ggzd"
 
 #: KGGZLaunch.cpp:72
 msgid "Player"
@@ -499,11 +491,11 @@ msgstr "Por favor selecione uma mesa para entrar"
 
 #: KGGZGrubby.cpp:101
 msgid "Please select who is grubby, and start a query!"
-msgstr ""
+msgstr "Por favor selecione quem é o grubby, e comece uma busca!"
 
 #: KGGZPrefEnv.cpp:65
 msgid "Please specify some environment variables here."
-msgstr ""
+msgstr "Por favor selecione algumas váriaveis do ambiente"
 
 #: KGGZConnect.cpp:79
 msgid "Port:"
@@ -514,9 +506,8 @@ msgid "Protocol: "
 msgstr "Protocolo:"
 
 #: KGGZGrubby.cpp:64
-#, fuzzy
 msgid "Quit"
-msgstr "Sa&ir"
+msgstr "Sair"
 
 #: KGGZChat.cpp:86
 msgid "Ready for connection..."
@@ -549,7 +540,7 @@ msgstr "Selecionando de mais de 15 jogos"
 #: KGGZChat.cpp:262
 #, c-format
 msgid "Sent message to %1."
-msgstr ""
+msgstr "Enviou mensagem para %1"
 
 #: KGGZConnect.cpp:78
 msgid "Server host:"
@@ -581,15 +572,15 @@ msgstr "Mesa"
 
 #: KGGZGrubby.cpp:77
 msgid "Tell me something about you"
-msgstr ""
+msgstr "Me conte algo sobre você"
 
 #: KGGZGrubby.cpp:78
 msgid "Thanks for taking the time!"
-msgstr ""
+msgstr "Muito obrigado pela atenção!"
 
 #: KGGZAbout.cpp:102
 msgid "The GGZ Gaming Zone is a collaboration between several people who"
-msgstr ""
+msgstr "A GGZ Gaming Zone é uma colaboração entre várias pessoas que"
 
 #: KGGZ.cpp:256
 msgid "The ggzd server is already running!"
@@ -597,17 +588,19 @@ msgstr "O servidor ggzd já está rodando!"
 
 #: KGGZ.cpp:1384
 msgid "The pleasure has been on my side :)"
-msgstr ""
+msgstr "O prazer foi todo meu :)"
 
 #: KGGZSelector.cpp:53
 msgid ""
 "This game has multiple frontends.\n"
 "Select your favorite one."
 msgstr ""
+"Esse jogo tem várias interfaces \n"
+"Selecione a sua favorita"
 
 #: KGGZGrubby.cpp:80
 msgid "This is grubby:"
-msgstr ""
+msgstr "Esse é grubby (bot):"
 
 #: KGGZ.cpp:1297
 msgid "URL: "
@@ -637,7 +630,7 @@ msgstr "Você não pode iniciar um jogo fora de uma sala!"
 #: KGGZ.cpp:569
 #, c-format
 msgid "You have been beeped by %1."
-msgstr ""
+msgstr "Você foi beepado por %1"
 
 #: main.cpp:55
 msgid "Your most desired KDE network games launcher and chat system."
@@ -645,7 +638,7 @@ msgstr "Seu gerenciador de jogos de rede a sistema de chat do KDE favorito"
 
 #: KGGZAbout.cpp:105
 msgid "game developers. GGZ is available for many platforms and toolkits."
-msgstr ""
+msgstr "desenvolvedores de jogos. GGZ está disponível para várias plataformas e bibliotecas"
 
 #: KGGZConnect.cpp:100
 msgid "guest"
@@ -653,7 +646,7 @@ msgstr "convidado"
 
 #: KGGZAbout.cpp:104
 msgid "including source code and professional help for both gamers and"
-msgstr ""
+msgstr "inclunindo código fonte e ajuda profissional de ambos os jogadores e"
 
 #: KGGZConnect.cpp:99
 msgid "normal"
@@ -665,42 +658,9 @@ msgstr "iniciante"
 
 #: KGGZAbout.cpp:103
 msgid "try to make public online game services available for free -"
-msgstr ""
+msgstr "tentando fazer serviços de jogos em rede disponíveis gratuitamente -"
 
 #: KGGZLaunch.cpp:310
 msgid "unknown"
 msgstr "desconhecido"
 
-#~ msgid "&Games"
-#~ msgstr "&Jogos"
-
-#~ msgid "&Player information"
-#~ msgstr "&Informação sobre o jogador"
-
-#~ msgid "/join &lt;room no&gt; - Join a room"
-#~ msgstr "/join &lt;número da sala&gt; - Entra numa sala"
-
-#~ msgid "/lag - Test connection speed"
-#~ msgstr "/lag - Testa a velocidade da conexão"
-
-#~ msgid "/list - List room names"
-#~ msgstr "/list - Lista o nome das salas"
-
-#~ msgid "/local &lt;information&gt; - l10n operation"
-#~ msgstr "/local &lt;informação&gt; - Operação de localização"
-
-#~ msgid "/who - List player names in room"
-#~ msgstr "/who - Lista o nome das pessoas na sala"
-
-#~ msgid "Additional:"
-#~ msgstr "Adicional:"
-
-#~ msgid "Temperature: %3.1fF, %3.1fC, %3.1fR %3.1fK"
-#~ msgstr "Temperatura: %3.1fF, %3.1fC, %3.1fR %3.1fK"
-
-#~ msgid ""
-#~ "Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of "
-#~ "C, R, K, F"
-#~ msgstr ""
-#~ "Uso de localização: /local &lt;número&gt; &lt;unidade&gt; com unidade "
-#~ "sendo um de C, R, K, F"
