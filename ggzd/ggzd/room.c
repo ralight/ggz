@@ -186,10 +186,6 @@ int room_handle_join(const int p_index, const int p_fd)
 	if(es_read_int(p_fd, &room) < 0)
 		return -1;
 
-	/* Send a RSP_ROOM_JOIN */
-	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0)
-		return -1;
-
 	/* Check for silliness from the user */
 	if(room > opt.num_rooms || room < 0)
 		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0

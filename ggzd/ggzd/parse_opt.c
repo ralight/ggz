@@ -638,6 +638,7 @@ static void parse_game(char *name)
 	/* Allocate a game_info struct for this game and default to enabled */
 	if((game_info = malloc(sizeof(GameInfo))) == NULL)
 		err_sys_exit("malloc error in parse_game()");
+	memset(game_info, 0, sizeof(GameInfo));
 	game_info->enabled = 1;
 	game_info->launch = NULL;
 
