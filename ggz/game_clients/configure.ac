@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6231 2004-10-29 03:42:50Z jdorje $
+dnl $Id: configure.ac 6239 2004-11-03 19:00:41Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -108,9 +108,14 @@ dnl Check for libs
 dnl ==============
 
 # Check for GTK linkage
-
 AM_PATH_GTK_2_0([2.0.0], [],
     [AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])])
+
+# Check for librsvg (SVG image loader)
+RSVG_CFLAGS=`$PKG_CONFIG librsvg-2.0 --cflags`
+AC_SUBST(RSVG_CFLAGS)
+RSVG_LIBS=`$PKG_CONFIG librsvg-2.0 --libs`
+AC_SUBST(RSVG_LIBS)
 
 dnl Debug modes
 dnl ===========

@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 6238 2004-11-03 07:04:59Z jdorje $
+ * $Id: board.c 6239 2004-11-03 19:00:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
 #include <ggz.h>
 
 #include "board.h"
@@ -64,12 +65,12 @@ GtkTargetEntry *target;
 
 static GdkPixbuf *load_pixmap(const char *name)
 {
-  char *fullpath = g_strdup_printf("%s/chess/pixmaps/%s.png",
+  char *fullpath = g_strdup_printf("%s/chess/pixmaps/%s.svg",
 				   GGZDATADIR, name);
   GdkPixbuf *image;
   GError *error = NULL;
 
-  image = gdk_pixbuf_new_from_file(fullpath, &error);
+  image = rsvg_pixbuf_from_file_at_size(fullpath, PIXSIZE, PIXSIZE, &error);
   if (image == NULL)
     ggz_error_msg_exit("Can't load pixmap %s", fullpath);
   g_free(fullpath);
