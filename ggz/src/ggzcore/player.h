@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 6880 2005-01-24 08:36:55Z jdorje $
+ * $Id: player.h 6881 2005-01-24 08:47:59Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -38,7 +38,7 @@ void _ggzcore_player_free(GGZPlayer * player);
 
 void _ggzcore_player_init(GGZPlayer * player,
 			  const char *name,
-			  struct _GGZRoom *room,
+			  GGZRoom * room,
 			  const int table,
 			  const GGZPlayerType type, const int lag);
 void _ggzcore_player_init_stats(GGZPlayer * player,

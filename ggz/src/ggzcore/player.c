@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 6880 2005-01-24 08:36:55Z jdorje $
+ * $Id: player.c 6881 2005-01-24 08:47:59Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -176,7 +176,7 @@ GGZPlayer *_ggzcore_player_new(void)
 
 void _ggzcore_player_init(GGZPlayer * player,
 			  const char *name,
-			  struct _GGZRoom *room,
+			  GGZRoom * room,
 			  const int table,
 			  const GGZPlayerType type, const int lag)
 {
@@ -357,12 +357,10 @@ void _ggzcore_room_set_player_lag(GGZRoom * room, const char *name,
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Setting lag to %d for %s", lag, name);
 
-	if (room->players) {
-		player = _ggzcore_room_get_player_by_name(room, name);
-		if (player) {	/* make sure they're still in room */
-			_ggzcore_player_set_lag(player, lag);
-			_ggzcore_room_event(room, GGZ_PLAYER_LAG, name);
-		}
+	player = _ggzcore_room_get_player_by_name(room, name);
+	if (player) {	/* make sure they're still in room */
+		_ggzcore_player_set_lag(player, lag);
+		_ggzcore_room_event(room, GGZ_PLAYER_LAG, name);
 	}
 }
 
@@ -375,9 +373,6 @@ void _ggzcore_room_set_player_stats(GGZRoom * room, GGZPlayer * pdata)
 	ggz_debug(GGZCORE_DBG_ROOM, "Setting stats for %s: %d-%d-%d",
 		  ggzcore_player_get_name(pdata), pdata->wins,
 		  pdata->losses, pdata->ties);
-
-	if (!room->players)
-		return;
 
 	player = _ggzcore_room_get_player_by_name(room, pdata->name);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6880 2005-01-24 08:36:55Z jdorje $
+ * $Id: room.c 6881 2005-01-24 08:47:59Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -43,6 +43,70 @@
 #include "room.h"
 #include "server.h"
 #include "table.h"
+
+/* Array of GGZRoom messages */
+static char *_ggzcore_room_events[] = {
+	"GGZ_PLAYER_LIST",
+	"GGZ_TABLE_LIST",
+	"GGZ_CHAT_EVENT",
+	"GGZ_ROOM_ENTER",
+	"GGZ_ROOM_LEAVE",
+	"GGZ_TABLE_UPDATE",
+	"GGZ_TABLE_LAUNCHED",
+	"GGZ_TABLE_LAUNCH_FAIL",
+	"GGZ_TABLE_JOINED",
+	"GGZ_TABLE_JOIN_FAIL",
+	"GGZ_TABLE_LEFT",
+	"GGZ_TABLE_LEAVE_FAIL",
+	"GGZ_PLAYER_LAG",
+	"GGZ_PLAYER_STATS",
+	"GGZ_PLAYER_COUNT"
+};
+
+/*
+ * The GGZRoom struct manages information about a particular room
+ */
+struct _GGZRoom {
+
+	/* Server which this room is on */
+	struct _GGZServer *server;
+
+	/* Monitoring flag */
+	char monitor;
+
+	/* Room ID on the server */
+	unsigned int id;
+
+	/* Name of room */
+	char *name;
+
+	/* Supported game type (ID on server) */
+	unsigned int game;
+
+	/* Room description */
+	char *desc;
+
+	/* Number of players in list room (current room only) */
+	unsigned int num_players;
+
+	/* List of players in the room (current room only) */
+	GGZList *players;
+
+	/* Number of players we suspect are in the room */
+	int player_count;
+
+	/* Number of tables (current room only) */
+	unsigned int num_tables;
+
+	/* List of tables in the room (current room only) */
+	GGZList *tables;
+
+	/* Room events */
+	GGZHookList *event_hooks[sizeof(_ggzcore_room_events) /
+				 sizeof(_ggzcore_room_events[0])];
+
+};
+
 
 /* Local functions */
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6880 2005-01-24 08:36:55Z jdorje $
+ * $Id: netxml.c 6881 2005-01-24 08:47:59Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1276,16 +1276,18 @@ static void _ggzcore_net_room_update(GGZNet * net, GGZXMLElement * update,
 				     const char *action)
 {
 	GGZRoom *roomdata, *room;
+	int id, players;
 
 	roomdata = ggz_xmlelement_get_data(update);
 	if (!roomdata)
 		return;
-	room = _ggzcore_server_get_room_by_id(net->server, roomdata->id);
+	id = ggzcore_room_get_id(roomdata);
+	room = _ggzcore_server_get_room_by_id(net->server, id);
 
 	if (room) {
 		if (strcasecmp(action, "players") == 0) {
-			_ggzcore_room_set_players(room,
-						  roomdata->player_count);
+			players = ggzcore_room_get_num_players(roomdata);
+			_ggzcore_room_set_players(room, players);
 		}
 	}
 

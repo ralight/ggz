@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: server.c 6881 2005-01-24 08:47:59Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -25,7 +25,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>		/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -52,7 +52,7 @@
 #if 0
 /* Array of GGZServerEvent messages.  This is now unused, but could be used
  * in the future. */
-static char* _ggzcore_server_events[] = {
+static char *_ggzcore_server_events[] = {
 	"GGZ_CONNECTED",
 	"GGZ_CONNECT_FAIL",
 	"GGZ_NEGOTIATED",
@@ -79,7 +79,7 @@ static char* _ggzcore_server_events[] = {
 /* The GGZServer structure manages information about a particular
    GGZ server connection */
 struct _GGZServer {
-	
+
 	/* Network object for doing net IO */
 	GGZNet *net;
 
@@ -87,14 +87,14 @@ struct _GGZServer {
 	GGZLoginType type;
 
 	/* User handle on this server */
-	char* handle;
+	char *handle;
 
 	/* Password for this server (optional) */
-	char* password;
+	char *password;
 
 	/* Current state */
 	GGZStateID state;
-	
+
 	/* Number of gametypes */
 	int num_gametypes;
 
@@ -103,10 +103,10 @@ struct _GGZServer {
 
 	/* Number of rooms */
 	int num_rooms;
-	
+
 	/* List of rooms in this server */
 	GGZRoom **rooms;
-	
+
 	/* Current room on game server */
 	GGZRoom *room;
 
@@ -122,7 +122,7 @@ struct _GGZServer {
 	int channel_complete;
 	int channel_failed;
 
-       	/* Callbacks for server events.  Every time an event happens all the
+	/* Callbacks for server events.  Every time an event happens all the
 	 * hooks in the list for that event are called. */
 	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
 
@@ -134,55 +134,59 @@ struct _GGZServer {
 	} queued_events;
 };
 
-static void _ggzcore_server_main_negotiate_status(GGZServer *server,
-						  GGZClientReqError status);
-static void _ggzcore_server_channel_negotiate_status(GGZServer *server,
-						     GGZClientReqError status);
+static void _ggzcore_server_main_negotiate_status(GGZServer * server,
+						  GGZClientReqError
+						  status);
+static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
+						     GGZClientReqError
+						     status);
 
 /* Publicly exported functions */
 
-GGZServer* ggzcore_server_new(void)
+GGZServer *ggzcore_server_new(void)
 {
 	return _ggzcore_server_new();
 }
 
 
-int ggzcore_server_reset(GGZServer *server)
+int ggzcore_server_reset(GGZServer * server)
 {
 	if (!server)
 		return -1;
 
 	_ggzcore_server_reset(server);
-	
+
 	return 0;
 }
 
 
-int ggzcore_server_add_event_hook(GGZServer *server,
-				  const GGZServerEvent event, 
+int ggzcore_server_add_event_hook(GGZServer * server,
+				  const GGZServerEvent event,
 				  const GGZHookFunc func)
 {
 	if (!server)
 		return -1;
 
-	return ggzcore_server_add_event_hook_full(server, event, func, NULL);
+	return ggzcore_server_add_event_hook_full(server, event, func,
+						  NULL);
 }
 
 
-int ggzcore_server_add_event_hook_full(GGZServer *server,
-				       const GGZServerEvent event, 
+int ggzcore_server_add_event_hook_full(GGZServer * server,
+				       const GGZServerEvent event,
 				       const GGZHookFunc func,
 				       const void *data)
 {
 	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;
 
-	return _ggzcore_hook_add_full(server->event_hooks[event], func, data);
+	return _ggzcore_hook_add_full(server->event_hooks[event], func,
+				      data);
 }
 
 
-int ggzcore_server_remove_event_hook(GGZServer *server,
-				     const GGZServerEvent event, 
+int ggzcore_server_remove_event_hook(GGZServer * server,
+				     const GGZServerEvent event,
 				     const GGZHookFunc func)
 {
 	if (!server || !_ggzcore_server_event_is_valid(event))
@@ -192,18 +196,19 @@ int ggzcore_server_remove_event_hook(GGZServer *server,
 }
 
 
-int ggzcore_server_remove_event_hook_id(GGZServer *server,
-					const GGZServerEvent event, 
+int ggzcore_server_remove_event_hook_id(GGZServer * server,
+					const GGZServerEvent event,
 					const unsigned int hook_id)
 {
 	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;
 
-	return _ggzcore_hook_remove_id(server->event_hooks[event], hook_id);
+	return _ggzcore_hook_remove_id(server->event_hooks[event],
+				       hook_id);
 }
 
 
-void ggzcore_server_free(GGZServer *server)
+void ggzcore_server_free(GGZServer * server)
 {
 	if (!server)
 		return;
@@ -212,20 +217,22 @@ void ggzcore_server_free(GGZServer *server)
 }
 
 
-int ggzcore_server_set_hostinfo(GGZServer *server, const char *host,
-				const unsigned int port, const unsigned int use_tls)
+int ggzcore_server_set_hostinfo(GGZServer * server, const char *host,
+				const unsigned int port,
+				const unsigned int use_tls)
 {
 	/* Check for valid arguments */
 	if (server && host && server->state == GGZ_STATE_OFFLINE) {
-		_ggzcore_net_init(server->net, server, host, port, use_tls);
+		_ggzcore_net_init(server->net, server, host, port,
+				  use_tls);
 		return 0;
-	}
-	else
+	} else
 		return -1;
 }
 
 
-int ggzcore_server_set_logininfo(GGZServer *server, const GGZLoginType type,
+int ggzcore_server_set_logininfo(GGZServer * server,
+				 const GGZLoginType type,
 				 const char *handle, const char *password)
 {
 	int status;
@@ -254,7 +261,7 @@ int ggzcore_server_set_logininfo(GGZServer *server, const GGZLoginType type,
 }
 
 
-int ggzcore_server_log_session(GGZServer *server, const char *filename)
+int ggzcore_server_log_session(GGZServer * server, const char *filename)
 {
 	if (!server)
 		return -1;
@@ -263,7 +270,7 @@ int ggzcore_server_log_session(GGZServer *server, const char *filename)
 }
 
 
-const char* ggzcore_server_get_host(GGZServer *server)
+const char *ggzcore_server_get_host(GGZServer * server)
 {
 	if (server && server->net)
 		return _ggzcore_net_get_host(server->net);
@@ -272,7 +279,7 @@ const char* ggzcore_server_get_host(GGZServer *server)
 }
 
 
-int ggzcore_server_get_port(GGZServer *server)
+int ggzcore_server_get_port(GGZServer * server)
 {
 	if (server && server->net)
 		return _ggzcore_net_get_port(server->net);
@@ -281,7 +288,7 @@ int ggzcore_server_get_port(GGZServer *server)
 }
 
 
-GGZLoginType ggzcore_server_get_type(GGZServer *server)
+GGZLoginType ggzcore_server_get_type(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_type(server);
@@ -290,7 +297,7 @@ GGZLoginType ggzcore_server_get_type(GGZServer *server)
 }
 
 
-char* ggzcore_server_get_handle(GGZServer *server)
+char *ggzcore_server_get_handle(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_handle(server);
@@ -299,7 +306,7 @@ char* ggzcore_server_get_handle(GGZServer *server)
 }
 
 
-char* ggzcore_server_get_password(GGZServer *server)
+char *ggzcore_server_get_password(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_password(server);
@@ -317,7 +324,7 @@ char* ggzcore_server_get_password(GGZServer *server)
  * Note: this is for detecting network data arrival only.  Do *NOT* attempt
  * to write to this fd.
  */
-int ggzcore_server_get_fd(GGZServer *server)
+int ggzcore_server_get_fd(GGZServer * server)
 {
 	if (server && server->net)
 		return _ggzcore_net_get_fd(server->net);
@@ -326,7 +333,7 @@ int ggzcore_server_get_fd(GGZServer *server)
 }
 
 
-GGZStateID ggzcore_server_get_state(GGZServer *server)
+GGZStateID ggzcore_server_get_state(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_state(server);
@@ -335,7 +342,7 @@ GGZStateID ggzcore_server_get_state(GGZServer *server)
 }
 
 
-int ggzcore_server_get_num_players(GGZServer *server)
+int ggzcore_server_get_num_players(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_num_players(server);
@@ -344,7 +351,7 @@ int ggzcore_server_get_num_players(GGZServer *server)
 }
 
 
-GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
+GGZRoom *ggzcore_server_get_cur_room(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_cur_room(server);
@@ -353,7 +360,8 @@ GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 }
 
 
-GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
+GGZRoom *ggzcore_server_get_nth_room(GGZServer * server,
+				     const unsigned int num)
 {
 	if (server && num < _ggzcore_server_get_num_rooms(server))
 		return _ggzcore_server_get_nth_room(server, num);
@@ -362,7 +370,7 @@ GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
 }
 
 
-int ggzcore_server_get_num_rooms(GGZServer *server)
+int ggzcore_server_get_num_rooms(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_num_rooms(server);
@@ -371,7 +379,7 @@ int ggzcore_server_get_num_rooms(GGZServer *server)
 }
 
 
-int ggzcore_server_get_num_gametypes(GGZServer *server)
+int ggzcore_server_get_num_gametypes(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_num_gametypes(server);
@@ -380,7 +388,7 @@ int ggzcore_server_get_num_gametypes(GGZServer *server)
 }
 
 
-GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
+GGZGameType *ggzcore_server_get_nth_gametype(GGZServer * server,
 					     const unsigned int num)
 {
 	if (server && num < _ggzcore_server_get_num_gametypes(server))
@@ -390,7 +398,7 @@ GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server,
 }
 
 
-GGZGame* ggzcore_server_get_cur_game(GGZServer *server)
+GGZGame *ggzcore_server_get_cur_game(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_cur_game(server);
@@ -399,7 +407,7 @@ GGZGame* ggzcore_server_get_cur_game(GGZServer *server)
 }
 
 
-int ggzcore_server_get_tls(GGZServer *server)
+int ggzcore_server_get_tls(GGZServer * server)
 {
 	if (server)
 		return _ggzcore_server_get_tls(server);
@@ -408,7 +416,7 @@ int ggzcore_server_get_tls(GGZServer *server)
 }
 
 
-int ggzcore_server_is_online(GGZServer *server)
+int ggzcore_server_is_online(GGZServer * server)
 {
 	if (!server)
 		return 0;
@@ -417,7 +425,7 @@ int ggzcore_server_is_online(GGZServer *server)
 }
 
 
-int ggzcore_server_is_logged_in(GGZServer *server)
+int ggzcore_server_is_logged_in(GGZServer * server)
 {
 	if (!server)
 		return 0;
@@ -426,7 +434,7 @@ int ggzcore_server_is_logged_in(GGZServer *server)
 }
 
 
-int ggzcore_server_is_in_room(GGZServer *server)
+int ggzcore_server_is_in_room(GGZServer * server)
 {
 	if (!server)
 		return 0;
@@ -436,7 +444,7 @@ int ggzcore_server_is_in_room(GGZServer *server)
 }
 
 
-int ggzcore_server_is_at_table(GGZServer *server)
+int ggzcore_server_is_at_table(GGZServer * server)
 {
 	if (!server)
 		return 0;
@@ -446,20 +454,20 @@ int ggzcore_server_is_at_table(GGZServer *server)
 }
 
 
-int ggzcore_server_connect(GGZServer *server)
+int ggzcore_server_connect(GGZServer * server)
 {
 	if (server && server->net && server->state == GGZ_STATE_OFFLINE) {
 		return _ggzcore_server_connect(server);
-	}
-	else
+	} else
 		return -1;
 }
 
 
-int ggzcore_server_login(GGZServer *server)
+int ggzcore_server_login(GGZServer * server)
 {
 	/* Return nothing if we didn't get the necessary info */
-	if (!server || !server->handle || server->state != GGZ_STATE_ONLINE)
+	if (!server || !server->handle
+	    || server->state != GGZ_STATE_ONLINE)
 		return -1;
 
 	if (server->type == GGZ_LOGIN && !server->password)
@@ -469,7 +477,7 @@ int ggzcore_server_login(GGZServer *server)
 }
 
 
-int ggzcore_server_motd(GGZServer *server)
+int ggzcore_server_motd(GGZServer * server)
 {
 	if (server && server->state >= GGZ_STATE_LOGGED_IN)
 		return _ggzcore_server_load_motd(server);
@@ -478,41 +486,43 @@ int ggzcore_server_motd(GGZServer *server)
 }
 
 
-int ggzcore_server_list_rooms(GGZServer *server, 
-			      const int type, 
-			      const char verbose)
+int ggzcore_server_list_rooms(GGZServer * server,
+			      const int type, const char verbose)
 {
 	if (server && server->state >= GGZ_STATE_LOGGED_IN)
-		return _ggzcore_server_load_roomlist(server, type, verbose);
+		return _ggzcore_server_load_roomlist(server, type,
+						     verbose);
 	else
 		return -1;
 }
 
 
-int ggzcore_server_list_gametypes(GGZServer *server, const char verbose)
+int ggzcore_server_list_gametypes(GGZServer * server, const char verbose)
 {
 	if (server && server->state >= GGZ_STATE_LOGGED_IN)
 		return _ggzcore_server_load_typelist(server, verbose);
-	else 
+	else
 		return -1;
 }
 
 
-int ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
+int ggzcore_server_join_room(GGZServer * server,
+			     const unsigned int room_num)
 {
 	/* FIXME: check validity of this action */
-	if (server && (room_num < server->num_rooms) 
-	    && (server->state == GGZ_STATE_IN_ROOM || server->state == GGZ_STATE_LOGGED_IN))
+	if (server && (room_num < server->num_rooms)
+	    && (server->state == GGZ_STATE_IN_ROOM
+		|| server->state == GGZ_STATE_LOGGED_IN))
 		return _ggzcore_server_join_room(server, room_num);
 	else
 		return -1;
 }
 
 
-int ggzcore_server_logout(GGZServer *server)
+int ggzcore_server_logout(GGZServer * server)
 {
-	if (server 
-	    && server->state != GGZ_STATE_OFFLINE 
+	if (server
+	    && server->state != GGZ_STATE_OFFLINE
 	    && server->state != GGZ_STATE_LOGGING_OUT)
 		return _ggzcore_server_logout(server);
 	else
@@ -520,7 +530,7 @@ int ggzcore_server_logout(GGZServer *server)
 }
 
 
-int ggzcore_server_disconnect(GGZServer *server)
+int ggzcore_server_disconnect(GGZServer * server)
 {
 	if (server && server->state != GGZ_STATE_OFFLINE)
 		return _ggzcore_server_disconnect(server);
@@ -529,7 +539,7 @@ int ggzcore_server_disconnect(GGZServer *server)
 }
 
 
-int ggzcore_server_data_is_pending(GGZServer *server)
+int ggzcore_server_data_is_pending(GGZServer * server)
 {
 	int pending = 0;
 
@@ -541,7 +551,7 @@ int ggzcore_server_data_is_pending(GGZServer *server)
 }
 
 
-int ggzcore_server_read_data(GGZServer *server, int fd)
+int ggzcore_server_read_data(GGZServer * server, int fd)
 {
 	int status = -1;
 
@@ -556,7 +566,8 @@ int ggzcore_server_read_data(GGZServer *server, int fd)
 		 * ggzcore_server_queue_players_changed. */
 		if (server->queued_events.players_changed) {
 			_ggzcore_server_event(server,
-				GGZ_SERVER_PLAYERS_CHANGED, NULL);
+					      GGZ_SERVER_PLAYERS_CHANGED,
+					      NULL);
 			server->queued_events.players_changed = 0;
 		}
 	} else {
@@ -572,42 +583,42 @@ int ggzcore_server_read_data(GGZServer *server, int fd)
 
 /* Internal library functions (prototypes in server.h) */
 
-GGZServer* _ggzcore_server_new(void)
+GGZServer *_ggzcore_server_new(void)
 {
 	GGZServer *server;
 
 	server = ggz_malloc(sizeof(GGZServer));
 	_ggzcore_server_reset(server);
-	
+
 	return server;
 }
 
 
-GGZNet* _ggzcore_server_get_net(GGZServer *server)
+GGZNet *_ggzcore_server_get_net(GGZServer * server)
 {
 	return server->net;
 }
 
 
-GGZLoginType _ggzcore_server_get_type(GGZServer *server)
+GGZLoginType _ggzcore_server_get_type(GGZServer * server)
 {
 	return server->type;
 }
 
 
-char* _ggzcore_server_get_handle(GGZServer *server)
+char *_ggzcore_server_get_handle(GGZServer * server)
 {
 	return server->handle;
 }
 
 
-char* _ggzcore_server_get_password(GGZServer *server)
+char *_ggzcore_server_get_password(GGZServer * server)
 {
 	return server->password;
 }
 
 
-GGZStateID _ggzcore_server_get_state(GGZServer *server)
+GGZStateID _ggzcore_server_get_state(GGZServer * server)
 {
 	return server->state;
 }
@@ -624,7 +635,7 @@ int _ggzcore_server_get_tls(struct _GGZServer *server)
 }
 
 
-int _ggzcore_server_get_num_players(GGZServer *server)
+int _ggzcore_server_get_num_players(GGZServer * server)
 {
 	int rooms = ggzcore_server_get_num_rooms(server), i, total = 0;
 
@@ -641,19 +652,19 @@ int _ggzcore_server_get_num_players(GGZServer *server)
 }
 
 
-int _ggzcore_server_get_num_rooms(GGZServer *server)
+int _ggzcore_server_get_num_rooms(GGZServer * server)
 {
 	return server->num_rooms;
 }
 
 
-GGZRoom* _ggzcore_server_get_cur_room(GGZServer *server)
+GGZRoom *_ggzcore_server_get_cur_room(GGZServer * server)
 {
 	return server->room;
 }
 
 
-GGZRoom* _ggzcore_server_get_room_by_id(GGZServer *server,
+GGZRoom *_ggzcore_server_get_room_by_id(GGZServer * server,
 					const unsigned int id)
 {
 	int i;
@@ -666,20 +677,20 @@ GGZRoom* _ggzcore_server_get_room_by_id(GGZServer *server,
 }
 
 
-GGZRoom* _ggzcore_server_get_nth_room(GGZServer *server,
+GGZRoom *_ggzcore_server_get_nth_room(GGZServer * server,
 				      const unsigned int num)
 {
 	return server->rooms[num];
 }
 
 
-int _ggzcore_server_get_num_gametypes(GGZServer *server)
+int _ggzcore_server_get_num_gametypes(GGZServer * server)
 {
 	return server->num_gametypes;
 }
 
 
-GGZGameType* _ggzcore_server_get_type_by_id(GGZServer *server,
+GGZGameType *_ggzcore_server_get_type_by_id(GGZServer * server,
 					    const unsigned int id)
 {
 	int i;
@@ -692,19 +703,18 @@ GGZGameType* _ggzcore_server_get_type_by_id(GGZServer *server,
 }
 
 
-GGZGameType* _ggzcore_server_get_nth_gametype(GGZServer *server, 
+GGZGameType *_ggzcore_server_get_nth_gametype(GGZServer * server,
 					      const unsigned int num)
 {
 	return server->gametypes[num];
 }
 
-GGZGame* _ggzcore_server_get_cur_game(GGZServer *server)
+GGZGame *_ggzcore_server_get_cur_game(GGZServer * server)
 {
 	return server->game;
 }
 
-void _ggzcore_server_set_cur_game(GGZServer *server,
-				  GGZGame *game)
+void _ggzcore_server_set_cur_game(GGZServer * server, GGZGame * game)
 {
 #define XOR(a, b) (((a) || (b)) && !((a) && (b)))
 	assert(XOR(server->game == NULL, game == NULL));
@@ -712,45 +722,46 @@ void _ggzcore_server_set_cur_game(GGZServer *server,
 }
 
 
-void _ggzcore_server_set_logintype(GGZServer *server, const GGZLoginType type)
+void _ggzcore_server_set_logintype(GGZServer * server,
+				   const GGZLoginType type)
 {
 	server->type = type;
 }
 
 
-void _ggzcore_server_set_handle(GGZServer *server, const char *handle)
+void _ggzcore_server_set_handle(GGZServer * server, const char *handle)
 {
 	/* Free old handle if one existed */
 	if (server->handle)
 		ggz_free(server->handle);
-	
+
 	server->handle = ggz_strdup(handle);
 }
 
 
-void _ggzcore_server_set_password(GGZServer *server, const char *password)
+void _ggzcore_server_set_password(GGZServer * server, const char *password)
 {
 	/* Free old password if one existed */
 	if (server->password)
 		ggz_free(server->password);
-	
+
 	server->password = ggz_strdup(password);
 }
 
 
-void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room)
+void _ggzcore_server_set_room(GGZServer * server, GGZRoom * room)
 {
 	GGZRoom *old = _ggzcore_server_get_cur_room(server);
 	int num_players = 0;
-	
+
 	/* Stop monitoring old room/start monitoring new one */
 	if (old) {
-		num_players = old->num_players;
+		num_players = ggzcore_room_get_num_players(old);
 		_ggzcore_room_set_monitor(old, 0);
 	}
 
 	server->room = room;
-	
+
 	_ggzcore_room_set_monitor(room, 1);
 	/* No need to update the player_count in the new room. */
 
@@ -762,7 +773,7 @@ void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room)
 }
 
 
-void _ggzcore_server_set_negotiate_status(GGZServer *server, GGZNet *net,
+void _ggzcore_server_set_negotiate_status(GGZServer * server, GGZNet * net,
 					  GGZClientReqError status)
 {
 	if (net != server->net) {
@@ -775,7 +786,7 @@ void _ggzcore_server_set_negotiate_status(GGZServer *server, GGZNet *net,
 }
 
 
-void _ggzcore_server_set_login_status(GGZServer *server,
+void _ggzcore_server_set_login_status(GGZServer * server,
 				      GGZClientReqError status)
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Status of login: %d", status);
@@ -784,9 +795,9 @@ void _ggzcore_server_set_login_status(GGZServer *server,
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_OK);
 		_ggzcore_server_event(server, GGZ_LOGGED_IN, NULL);
 	} else {
-		GGZErrorEventData error = {status: status};
+	      GGZErrorEventData error = { status:status };
 
-		switch(status) {
+		switch (status) {
 		case E_ALREADY_LOGGED_IN:
 			snprintf(error.message, sizeof(error.message),
 				 "Already logged in");
@@ -811,7 +822,7 @@ void _ggzcore_server_set_login_status(GGZServer *server,
 }
 
 
-void _ggzcore_server_set_room_join_status(GGZServer *server,
+void _ggzcore_server_set_room_join_status(GGZServer * server,
 					  GGZClientReqError status)
 {
 	if (status == E_OK) {
@@ -819,7 +830,7 @@ void _ggzcore_server_set_room_join_status(GGZServer *server,
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
 	} else {
-		GGZErrorEventData error = {status: status};
+	      GGZErrorEventData error = { status:status };
 
 		switch (status) {
 		case E_ROOM_FULL:
@@ -851,35 +862,36 @@ void _ggzcore_server_set_room_join_status(GGZServer *server,
 }
 
 
-void _ggzcore_server_set_table_launching(GGZServer *server)
+void _ggzcore_server_set_table_launching(GGZServer * server)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_TRY);
 }
 
 
-void _ggzcore_server_set_table_joining(GGZServer *server)
+void _ggzcore_server_set_table_joining(GGZServer * server)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_JOIN_TRY);
 }
 
 
-void _ggzcore_server_set_table_leaving(GGZServer *server)
+void _ggzcore_server_set_table_leaving(GGZServer * server)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_LEAVE_TRY);
 }
 
 
-void _ggzcore_server_set_table_launch_status(GGZServer *server,
+void _ggzcore_server_set_table_launch_status(GGZServer * server,
 					     GGZClientReqError status)
 {
 	if (status == E_OK)
 		_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_OK);
 	else
-		_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_FAIL);
+		_ggzcore_server_change_state(server,
+					     GGZ_TRANS_LAUNCH_FAIL);
 }
 
-					     
-void _ggzcore_server_set_table_join_status(GGZServer *server,
+
+void _ggzcore_server_set_table_join_status(GGZServer * server,
 					   GGZClientReqError status)
 {
 	if (status == E_OK)
@@ -887,10 +899,10 @@ void _ggzcore_server_set_table_join_status(GGZServer *server,
 	else
 		_ggzcore_server_change_state(server, GGZ_TRANS_JOIN_FAIL);
 
-}					   
+}
 
 
-void _ggzcore_server_set_table_leave_status(GGZServer *server,
+void _ggzcore_server_set_table_leave_status(GGZServer * server,
 					    GGZClientReqError status)
 {
 	if (status == E_OK)
@@ -901,9 +913,10 @@ void _ggzcore_server_set_table_leave_status(GGZServer *server,
 }
 
 
-void _ggzcore_server_session_over(GGZServer *server, GGZNet *net)
+void _ggzcore_server_session_over(GGZServer * server, GGZNet * net)
 {
-	if (net != server->net) return;
+	if (net != server->net)
+		return;
 	if (server->is_channel == 0) {
 		/* Server is ending session */
 		_ggzcore_net_disconnect(net);
@@ -917,14 +930,13 @@ void _ggzcore_server_session_over(GGZServer *server, GGZNet *net)
 }
 
 
-int _ggzcore_server_log_session(GGZServer *server, 
-				const char *filename)
+int _ggzcore_server_log_session(GGZServer * server, const char *filename)
 {
 	return _ggzcore_net_set_dump_file(server->net, filename);
 }
-	
-				    
-void _ggzcore_server_reset(GGZServer *server)
+
+
+void _ggzcore_server_reset(GGZServer * server)
 {
 	int i;
 
@@ -944,30 +956,30 @@ void _ggzcore_server_reset(GGZServer *server)
 }
 
 
-int _ggzcore_server_connect(GGZServer *server)
+int _ggzcore_server_connect(GGZServer * server)
 {
 	int status;
 	char *errmsg;
-	
+
 	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
 	status = _ggzcore_net_connect(server->net);
-	
+
 	if (status < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
-		if(status == -1) errmsg = strerror(errno);
+		if (status == -1)
+			errmsg = strerror(errno);
 		else {
 #ifdef HAVE_HSTRERROR
-			errmsg = (char*)hstrerror(h_errno);
+			errmsg = (char *)hstrerror(h_errno);
 #else
 			/* Not all systems have hstrerror. */
 			errmsg = "Unable to connect";
 #endif
 		}
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, errmsg);
-	}
-	else
+	} else
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
-	
+
 	return status;
 }
 
@@ -1001,14 +1013,16 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 	while (1) {
 		fd_set active_fd_set;
 		int status;
-		struct timeval timeout = {.tv_sec = 30, .tv_usec = 0};
+		struct timeval timeout = {.tv_sec = 30,.tv_usec = 0 };
 
 		FD_ZERO(&active_fd_set);
 		FD_SET(fd, &active_fd_set);
 
-		status = select(fd + 1, &active_fd_set, NULL, NULL, &timeout);
+		status =
+		    select(fd + 1, &active_fd_set, NULL, NULL, &timeout);
 		if (status < 0) {
-			if (errno == EINTR) continue;
+			if (errno == EINTR)
+				continue;
 			ggzcore_server_free(server);
 			return -1;
 		} else if (status == 0) {
@@ -1032,13 +1046,13 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 		}
 	}
 }
-			    
-int _ggzcore_server_login(GGZServer *server)
+
+int _ggzcore_server_login(GGZServer * server)
 {
 	int status;
 
-	ggz_debug(GGZCORE_DBG_SERVER, "Login (%d), %s, %s", server->type, 
-		      server->handle, server->password);
+	ggz_debug(GGZCORE_DBG_SERVER, "Login (%d), %s, %s", server->type,
+		  server->handle, server->password);
 
 	status = _ggzcore_net_send_login(server->net, server->type,
 					 server->handle, server->password,
@@ -1051,26 +1065,27 @@ int _ggzcore_server_login(GGZServer *server)
 }
 
 
-int _ggzcore_server_load_motd(GGZServer *server)
+int _ggzcore_server_load_motd(GGZServer * server)
 {
-	 return _ggzcore_net_send_motd(server->net);
+	return _ggzcore_net_send_motd(server->net);
 }
 
 
-int _ggzcore_server_load_typelist(GGZServer *server, const char verbose)
+int _ggzcore_server_load_typelist(GGZServer * server, const char verbose)
 {
 	return _ggzcore_net_send_list_types(server->net, verbose);
 }
 
 
-int _ggzcore_server_load_roomlist(GGZServer *server, const int type,
+int _ggzcore_server_load_roomlist(GGZServer * server, const int type,
 				  const char verbose)
 {
 	return _ggzcore_net_send_list_rooms(server->net, type, verbose);
 }
 
 
-int _ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
+int _ggzcore_server_join_room(GGZServer * server,
+			      const unsigned int room_num)
 {
 	int status;
 	int room_id;
@@ -1081,18 +1096,18 @@ int _ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
 	room_id = ggzcore_room_get_id(room);
 
 	ggz_debug(GGZCORE_DBG_SERVER, "Moving to room %d", room_num);
-	
+
 	status = _ggzcore_net_send_join_room(server->net, room_id);
 	server->new_room = room;
 
 	if (status == 0)
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
-	
+
 	return status;
 }
 
 
-int _ggzcore_server_logout(GGZServer *server)
+int _ggzcore_server_logout(GGZServer * server)
 {
 	int status;
 
@@ -1105,7 +1120,7 @@ int _ggzcore_server_logout(GGZServer *server)
 }
 
 
-int _ggzcore_server_disconnect(GGZServer *server)
+int _ggzcore_server_disconnect(GGZServer * server)
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Disconnecting");
 	_ggzcore_net_disconnect(server->net);
@@ -1118,7 +1133,7 @@ int _ggzcore_server_disconnect(GGZServer *server)
 }
 
 
-void _ggzcore_server_clear(GGZServer *server)
+void _ggzcore_server_clear(GGZServer * server)
 {
 	int i;
 
@@ -1160,7 +1175,7 @@ void _ggzcore_server_clear(GGZServer *server)
 }
 
 
-void _ggzcore_server_free(GGZServer *server)
+void _ggzcore_server_free(GGZServer * server)
 {
 	if (server->game)
 		ggzcore_game_free(server->game);
@@ -1171,52 +1186,52 @@ void _ggzcore_server_free(GGZServer *server)
 
 /* Static functions internal to this file */
 
-static void _ggzcore_server_main_negotiate_status(GGZServer *server,
+static void _ggzcore_server_main_negotiate_status(GGZServer * server,
 						  GGZClientReqError status)
 {
 	if (status == E_OK) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_OK);
 		_ggzcore_server_event(server, GGZ_NEGOTIATED, NULL);
-	}
-	else {
+	} else {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
-		_ggzcore_server_event(server, GGZ_NEGOTIATE_FAIL, "Protocol mismatch");
+		_ggzcore_server_event(server, GGZ_NEGOTIATE_FAIL,
+				      "Protocol mismatch");
 	}
 }
 
-static void _ggzcore_server_channel_negotiate_status(GGZServer *server,
-						     GGZClientReqError status)
+static void _ggzcore_server_channel_negotiate_status(GGZServer * server,
+						     GGZClientReqError
+						     status)
 {
 	int fd;
-	
+
 	if (status == E_OK) {
 		fd = _ggzcore_net_get_fd(server->net);
 		_ggzcore_net_send_channel(server->net, server->handle);
 		_ggzcore_net_send_logout(server->net);
-	}
-	else {
+	} else {
 		server->channel_failed = 1;
 	}
 }
 
 
-void _ggzcore_server_init_roomlist(GGZServer *server, const int num)
+void _ggzcore_server_init_roomlist(GGZServer * server, const int num)
 {
 	int i;
 
 	server->num_rooms = num;
-	server->rooms = ggz_malloc(num * sizeof(GGZRoom*));
-	for(i = 0; i < num; i++)
+	server->rooms = ggz_malloc(num * sizeof(GGZRoom *));
+	for (i = 0; i < num; i++)
 		server->rooms[i] = NULL;
 }
 
 
-void _ggzcore_server_free_roomlist(GGZServer *server)
+void _ggzcore_server_free_roomlist(GGZServer * server)
 {
 	int i;
 
 	for (i = 0; i < server->num_rooms; i++) {
-		if(server->rooms[i])
+		if (server->rooms[i])
 			_ggzcore_room_free(server->rooms[i]);
 	}
 
@@ -1225,8 +1240,7 @@ void _ggzcore_server_free_roomlist(GGZServer *server)
 }
 
 
-void _ggzcore_server_add_room(GGZServer *server, 
-			      GGZRoom *room)
+void _ggzcore_server_add_room(GGZServer * server, GGZRoom * room)
 {
 	int i = 0;
 
@@ -1241,15 +1255,14 @@ void _ggzcore_server_add_room(GGZServer *server,
 }
 
 
-void _ggzcore_server_init_typelist(GGZServer *server, 
-				   const int num)
+void _ggzcore_server_init_typelist(GGZServer * server, const int num)
 {
 	server->num_gametypes = num;
-	server->gametypes = ggz_malloc(num * sizeof(GGZGameType*));
+	server->gametypes = ggz_malloc(num * sizeof(GGZGameType *));
 }
 
 
-void _ggzcore_server_free_typelist(GGZServer *server)
+void _ggzcore_server_free_typelist(GGZServer * server)
 {
 	int i;
 
@@ -1262,8 +1275,7 @@ void _ggzcore_server_free_typelist(GGZServer *server)
 }
 
 
-void _ggzcore_server_add_type(GGZServer *server, 
-			      GGZGameType *type)
+void _ggzcore_server_add_type(GGZServer * server, GGZGameType * type)
 {
 	int i = 0;
 
@@ -1277,7 +1289,7 @@ void _ggzcore_server_add_type(GGZServer *server,
 	}
 }
 
-void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans)
+void _ggzcore_server_change_state(GGZServer * server, GGZTransID trans)
 {
 	_ggzcore_state_transition(trans, &server->state);
 	_ggzcore_server_event(server, GGZ_STATE_CHANGE, NULL);
@@ -1288,17 +1300,16 @@ int _ggzcore_server_event_is_valid(GGZServerEvent event)
 {
 	return (event >= 0 && event < GGZ_NUM_SERVER_EVENTS);
 }
-	
 
-GGZHookReturn _ggzcore_server_event(GGZServer *server, 
-					   GGZServerEvent id, 
-					   void *data)
+
+GGZHookReturn _ggzcore_server_event(GGZServer * server,
+				    GGZServerEvent id, void *data)
 {
 	return _ggzcore_hook_list_invoke(server->event_hooks[id], data);
 }
 
 
-void _ggzcore_server_queue_players_changed(GGZServer *server)
+void _ggzcore_server_queue_players_changed(GGZServer * server)
 {
 	/* This queues a GGZ_SERVER_PLAYERS_CHANGED event.  The event is
 	 * activated when the network code is exited so that it's not
@@ -1308,7 +1319,7 @@ void _ggzcore_server_queue_players_changed(GGZServer *server)
 }
 
 
-void _ggzcore_server_net_error(GGZServer *server, char* message)
+void _ggzcore_server_net_error(GGZServer * server, char *message)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_NET_ERROR);
 	_ggzcore_server_event(server, GGZ_NET_ERROR, message);
@@ -1318,7 +1329,7 @@ void _ggzcore_server_net_error(GGZServer *server, char* message)
 }
 
 
-void _ggzcore_server_protocol_error(GGZServer *server, char* message)
+void _ggzcore_server_protocol_error(GGZServer * server, char *message)
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Protocol error: disconnecting");
 	_ggzcore_net_disconnect(server->net);
@@ -1328,13 +1339,3 @@ void _ggzcore_server_protocol_error(GGZServer *server, char* message)
 		server->channel_failed = 1;
 	}
 }
-
-
-
-
-
-
-
-
-
-
