@@ -22,6 +22,9 @@
 #include "loader.h"
 #include "net.h"
 
+// GGZ includes
+#include <ggz.h>
+
 // System includes
 #include <iostream>
 
@@ -72,12 +75,25 @@ void MuehleServer::leaveEvent ( int player ) {
 }
 
 // Game data event
-void MuehleServer::dataEvent ( int player, void* data ) {
+void MuehleServer::dataEvent ( int player ) {
+	char data[1024];
+	int ret;
+
 	std::cout << "Muehle: dataEvent" << std::endl;
-	std::cout << "DEBUG: " << ( const char* ) data << std::endl;
+
+	ret = ggz_read_string( fd ( player ), data, 1024 );
+	if ( ret )
+		delete this;
+
+	if ( data[strlen ( data ) - 1 ] == '\n')
+		data[strlen ( data ) - 1] = 0;
+
+	std::cout << "DEBUG: " << data << std::endl;
 
 	if ( m_players == 2 )
-		m_net->write ( fd ( !player ), ( const char* ) data);
+		m_net->write ( fd ( !player ), data);
+	else
+		m_net->write ( fd (player), "invalid.\n");
 }
 
 // Error handling event

@@ -33,7 +33,7 @@ class MuehleServer : public GGZGameServer {
 		void stateEvent ();
 		void joinEvent ( int player );
 		void leaveEvent ( int player );
-		void dataEvent ( int player, void* data );
+		void dataEvent ( int player );
 		void errorEvent ();
 	private:
 		QWeb* m_web;
