@@ -3,10 +3,11 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 11/30/00
+ * $Id: conf.c 3085 2002-01-12 09:37:34Z jdorje $
  *
  * External functions for handling configuration files
  *
- * Copyright (C) 2000, 2001 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,13 +184,9 @@ char * ggzcore_conf_read_string(const char *section, const char *key, const char
 
 	/* Check the user file first, then the global */
 	if(u_handle != -1)
-		s = ggz_conf_read_string(u_handle, section, key, NULL);
+		s = ggz_conf_read_string(u_handle, section, key, def);
 	if(!s && g_handle != -1)
-		s = ggz_conf_read_string(g_handle, section, key, NULL);
-
-	/* If nothing in either file, give them a copy of their default */
-	if(!s && def)
-		return strdup(def);
+		s = ggz_conf_read_string(g_handle, section, key, def);
 
 	return s;
 }
@@ -233,7 +230,7 @@ int ggzcore_conf_read_int(const char *section, const char *key, int def)
 
 	/* Convert the string and free up the returned string var */
 	val = atoi(s);
-	free(s);
+	ggz_free(s);
 
 	return val;
 }
