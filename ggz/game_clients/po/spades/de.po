@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-15 12:54+0200\n"
+"POT-Creation-Date: 2002-09-23 12:30-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -165,6 +165,38 @@ msgstr "Dein Angebot: "
 msgid "Please play a card"
 msgstr "Bitte spiele eine Karte"
 
+#: ../spades/gtk_menu.c:55
+msgid "/_Game"
+msgstr "/_Spiel"
+
+#: ../spades/gtk_menu.c:56
+msgid "/Game/_New"
+msgstr "/Spiel/_Neu"
+
+#: ../spades/gtk_menu.c:57
+msgid "/Game/_End"
+msgstr "/Spiel/_Ende"
+
+#: ../spades/gtk_menu.c:58
+msgid "/Game/_Statistics"
+msgstr "/Spiel/_Statistiken"
+
+#: ../spades/gtk_menu.c:59
+msgid "/Game/sep1"
+msgstr "/Spiel/sep1"
+
+#: ../spades/gtk_menu.c:60
+msgid "/Game/_Quit"
+msgstr "/Spiel/_Beenden"
+
+#: ../spades/gtk_menu.c:61
+msgid "/_Help"
+msgstr "/_Hilfe"
+
+#: ../spades/gtk_menu.c:63
+msgid "/Help/_About"
+msgstr "/Hilfe/_ber"
+
 #: ../spades/gtk_menu.c:84
 msgid "<main>/Game/End"
 msgstr "<main>/Spiel/Ende"
@@ -217,27 +249,3 @@ msgstr "Beenden"
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
-
-#~ msgid "/_Game"
-#~ msgstr "/_Spiel"
-
-#~ msgid "/Game/_New"
-#~ msgstr "/Spiel/_Neu"
-
-#~ msgid "/Game/_End"
-#~ msgstr "/Spiel/_Ende"
-
-#~ msgid "/Game/_Statistics"
-#~ msgstr "/Spiel/_Statistiken"
-
-#~ msgid "/Game/sep1"
-#~ msgstr "/Spiel/sep1"
-
-#~ msgid "/Game/_Quit"
-#~ msgstr "/Spiel/_Beenden"
-
-#~ msgid "/_Help"
-#~ msgstr "/_Hilfe"
-
-#~ msgid "/Help/_About"
-#~ msgstr "/Hilfe/_ber"

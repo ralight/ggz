@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-15 12:54+0200\n"
+"POT-Creation-Date: 2002-09-23 12:30-0500\n"
 "PO-Revision-Date: 2001-06-01 18:59BRT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -152,48 +152,72 @@ msgstr "Argh!! Deberas jugar al Batalla Naval para ese proposito!"
 msgid "Moved knight from %i/%i to %i/%i"
 msgstr "Cavallero movido de %i/%i hacia %i/%i"
 
-#: ../hastings/main_win.c:377
+#: ../hastings/main_win.c:101
+msgid "red"
+msgstr ""
+
+#: ../hastings/main_win.c:101
+msgid "blue"
+msgstr ""
+
+#: ../hastings/main_win.c:102
+msgid "green"
+msgstr ""
+
+#: ../hastings/main_win.c:102
+msgid "yellow"
+msgstr ""
+
+#: ../hastings/main_win.c:103
+msgid "white"
+msgstr ""
+
+#: ../hastings/main_win.c:103
+msgid "black"
+msgstr ""
+
+#: ../hastings/main_win.c:383
 msgid "Not my turn yet"
 msgstr "Todavia no es mi turno"
 
-#: ../hastings/main_win.c:401
+#: ../hastings/main_win.c:407
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
 msgstr "Buscando submarinos? Todavia no estan inventados (Es el anio 1066)"
 
-#: ../hastings/main_win.c:406
+#: ../hastings/main_win.c:412
 msgid "I can't see anyone here. Can you?"
 msgstr "No puedo ver ms aca. Vos podes?"
 
-#: ../hastings/main_win.c:411
+#: ../hastings/main_win.c:417
 #, c-format
 msgid "Don't cheat! That's not yours! You are %s on the %s team."
 msgstr "No hagas trampa! Eso no es tuyo. Vos sos %s en el equito %s."
 
-#: ../hastings/main_win.c:419
+#: ../hastings/main_win.c:425
 msgid "Where shall I go?"
 msgstr "A dnde debo ir?"
 
-#: ../hastings/main_win.c:456
+#: ../hastings/main_win.c:462
 msgid "Hastings1066"
 msgstr "Hastings1066"
 
-#: ../hastings/main_win.c:475
+#: ../hastings/main_win.c:481
 msgid "_Game"
 msgstr "_Juego"
 
-#: ../hastings/main_win.c:493
+#: ../hastings/main_win.c:499
 msgid "Re_sync"
 msgstr "Re_sincronizar"
 
-#: ../hastings/main_win.c:504
+#: ../hastings/main_win.c:510
 msgid "E_xit"
 msgstr "Sal_ir"
 
-#: ../hastings/main_win.c:515
+#: ../hastings/main_win.c:521
 msgid "_Help"
 msgstr "A_yuda"
 
-#: ../hastings/main_win.c:534
+#: ../hastings/main_win.c:540
 msgid "_About"
 msgstr "_Acerca"
 

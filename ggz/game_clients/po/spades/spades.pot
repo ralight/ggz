@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-15 12:54+0200\n"
+"POT-Creation-Date: 2002-09-23 12:30-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,6 +164,38 @@ msgstr ""
 
 #: ../spades/gtk_io.c:441
 msgid "Please play a card"
+msgstr ""
+
+#: ../spades/gtk_menu.c:55
+msgid "/_Game"
+msgstr ""
+
+#: ../spades/gtk_menu.c:56
+msgid "/Game/_New"
+msgstr ""
+
+#: ../spades/gtk_menu.c:57
+msgid "/Game/_End"
+msgstr ""
+
+#: ../spades/gtk_menu.c:58
+msgid "/Game/_Statistics"
+msgstr ""
+
+#: ../spades/gtk_menu.c:59
+msgid "/Game/sep1"
+msgstr ""
+
+#: ../spades/gtk_menu.c:60
+msgid "/Game/_Quit"
+msgstr ""
+
+#: ../spades/gtk_menu.c:61
+msgid "/_Help"
+msgstr ""
+
+#: ../spades/gtk_menu.c:63
+msgid "/Help/_About"
 msgstr ""
 
 #: ../spades/gtk_menu.c:84
