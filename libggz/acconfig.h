@@ -18,7 +18,6 @@
 
 #undef AF_LOCAL
 #undef DEBUG
-#undef DEBUG_SOCKET
 #undef HAVE_CMSG_ALIGN
 #undef HAVE_CMSG_LEN
 #undef HAVE_CMSG_SPACE

@@ -33,7 +33,6 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,        [  --enable-debug          Enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      Enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   Enable socket debugging ],, enable_debug_socket=no)
 
 
 dnl Check for header files
@@ -142,11 +141,6 @@ if test "$enable_debug_gdb" = yes; then
     CFLAGS="$CFLAGS -ggdb"
 fi
 
-if test "$enable_debug_socket" = yes; then
-    AC_DEFINE(DEBUG_SOCKET)
-    DFLAGS="$DFLAGS DEBUG_SOCKET"
-fi
-
 LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 AC_SUBST(LDADD)
 AC_SUBST(LIBOBJS)
@@ -164,7 +158,6 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
-echo "    Socket Debugging...$enable_debug_socket"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to"
