@@ -139,7 +139,6 @@ AC_CONFIG_FILES([Makefile
 		metaserv/Makefile
 		metaserv/minidom/Makefile
 		metaserv/metaserv/Makefile
-		motd-editor/Makefile
 		ggzcomm/Makefile
 		man/Makefile])
 AC_OUTPUT
