@@ -50,7 +50,7 @@ KCMGGZGames::~KCMGGZGames()
 void KCMGGZGames::load()
 {
 	QStringList enginelist, gameslist;
-	KSimpleConfig conf(PREFIX "/etc/ggz.modules");
+	KSimpleConfig conf(GGZMODULECONFDIR "/ggz.modules");
 
 	view->clear();
 
