@@ -573,11 +573,11 @@ static int player_login_anon(int p, int fd)
 	dbg_msg("Successful anonymous login of %s", name);
 
 	if(hostname)
-		log_msg(CONNECTION_INFO,
+		log_msg(GGZ_LOG_CONNECTION_INFO,
 			"Anonymous player %s logged in from %s (%s)",
 			name, hostname, ip_addr);
 	else
-		log_msg(CONNECTION_INFO,
+		log_msg(GGZ_LOG_CONNECTION_INFO,
 			"Anonymous player %s logged in from %s", name, ip_addr);
 	
 	return 0;

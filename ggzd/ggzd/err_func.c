@@ -39,9 +39,13 @@
 #include <err_func.h>
 
 /* Logfile info */
-LogInfo log_info = { 0, 0, 1, 0, NULL, NULL, -1, 1 
+LogInfo log_info = { 0, 0,
+		     ( GGZ_LOGOPT_INC_PID
+		       | GGZ_LOGOPT_USE_SYSLOG
+		       | GGZ_DBGOPT_USE_SYSLOG ),
+		     NULL, NULL, -1
 #ifdef DEBUG
-		               , NULL, NULL, -1, 1
+		   , NULL, NULL, -1
 #endif
 };
 
@@ -60,13 +64,13 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 	bsize = sizeof(buf) - 1;
 
 	/* Include the PID if PIDInLogs is on */
-	if(log_info.include_pid || priority == LOG_DEBUG)
+	if((log_info.options & GGZ_LOGOPT_INC_PID) || priority == LOG_DEBUG)
 		snprintf(buf, bsize-1, "[%d]: ", getpid());
 	else
 		buf[0] = '\0';
 
 	/* Include the timestamp if TimeInLogs is on */
-	if(log_info.include_timestamp) {
+	if(log_info.options & GGZ_LOGOPT_INC_TIME) {
 		time(&now);
 		if(localtime_r(&now, &localtm) == NULL)
 			/* Can't err_sys_exit, might cause a loop */
@@ -93,7 +97,7 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		fputs(buf, stderr);
 		fflush(NULL);
 	} else if(priority != LOG_DEBUG) {
-		if(log_info.log_use_syslog) {
+		if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
 			fputs(buf, log_info.logfile);
@@ -102,7 +106,7 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 	}
 #ifdef DEBUG
 	  else {
-		if(log_info.dbg_use_syslog) {
+		if(log_info.options & GGZ_DBGOPT_USE_SYSLOG) {
 			syslog(priority, "%s", buf);
 		} else {
 			fputs(buf, log_info.dbgfile);
@@ -261,11 +265,11 @@ void logfile_initialize(void)
 			if(log_info.logfile == NULL)
 				err_msg("Cannot open logfile for writing");
 			else
-				log_info.log_use_syslog = 0;
+				log_info.options &= ~GGZ_LOGOPT_USE_SYSLOG;
 		}
 	}
 
-	if(log_info.log_use_syslog) {
+	if(log_info.options & GGZ_LOGOPT_USE_SYSLOG) {
 		if(log_info.syslog_facility == 0)
 			log_info.syslog_facility = LOG_LOCAL0;
 		openlog("ggzd", 0, log_info.syslog_facility);
@@ -281,11 +285,11 @@ void logfile_initialize(void)
 			if(log_info.dbgfile == NULL)
 				err_msg("Cannot open dbgfile for writing");
 			else
-				log_info.dbg_use_syslog = 0;
+				log_info.options &= ~GGZ_DBGOPT_USE_SYSLOG;
 		}
 	}
 
-	if(log_info.dbg_use_syslog) {
+	if(log_info.options & GGZ_DBGOPT_USE_SYSLOG) {
 		if(log_info.syslog_facility == 0)
 			log_info.syslog_facility = LOG_LOCAL0;
 		openlog("ggzd", 0, log_info.syslog_facility);

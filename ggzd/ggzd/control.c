@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 	if (listen(main_sock, MAX_USERS) < 0)
 		err_sys_exit("Error listening to socket");
 
-	log_msg(NOTICE,
+	log_msg(GGZ_LOG_NOTICE,
 		"GGZ server initialized and ready for player connections");
 
 	/* Main loop */

@@ -166,17 +166,14 @@ typedef struct {
 typedef struct {
 	int log_initialized;
 	int syslog_facility;
-	int include_pid;
-	int include_timestamp;
+	unsigned options;
 	char *log_fname;			/* cleanup() */
 	FILE *logfile;
 	int log_level;
-	int log_use_syslog;
 #ifdef DEBUG
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
 	int dbg_level;
-	int dbg_use_syslog;
 #endif
 } LogInfo;
 

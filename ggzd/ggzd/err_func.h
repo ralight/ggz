@@ -27,9 +27,16 @@
 #include <easysock.h>
 
 /* Log levels for log_msg */
-#define ALWAYS		0
-#define NOTICE		1
-#define CONNECTION_INFO	2
+#define GGZ_LOG_ALWAYS		(unsigned) 0x0000
+#define GGZ_LOG_NOTICE		(unsigned) 0x0001
+#define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x0002
+
+/* Logging options */
+#define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001
+#define GGZ_LOGOPT_INC_TIME	(unsigned) 0x0002
+#define GGZ_LOGOPT_USE_SYSLOG	(unsigned) 0x0004
+#define GGZ_LOGOPT_THREAD_LOGS	(unsigned) 0x0008
+#define GGZ_DBGOPT_USE_SYSLOG	(unsigned) 0x0010
 
 /*
  * Error printing functions based on those found in W. Richard Stevens book: 

@@ -363,11 +363,28 @@ static void parse_file(FILE *configfile)
 				continue;
 			}
 			intval = atoi(varvalue);
-			if(intval < 0 || intval > 1) {
+			if(intval == 0)
+				log_info.options &= ~GGZ_LOGOPT_INC_PID;
+			else if(intval == 1)
+				log_info.options |= GGZ_LOGOPT_INC_PID;
+			else
 				PARSE_ERR("Invalid value for PIDInLogs");
+			continue;
+		}
+
+		/*** APPENDPID = 0,1 ***/
+		if(!strcmp(varname, "threadlogs")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
 				continue;
 			}
-			log_info.include_pid = intval;
+			intval = atoi(varvalue);
+			if(intval == 0)
+				log_info.options &= ~GGZ_LOGOPT_THREAD_LOGS;
+			else if(intval == 1)
+				log_info.options |= GGZ_LOGOPT_THREAD_LOGS;
+			else
+				PARSE_ERR("Invalid value for ThreadLogs");
 			continue;
 		}
 
@@ -398,11 +415,12 @@ static void parse_file(FILE *configfile)
 				continue;
 			}
 			intval = atoi(varvalue);
-			if(intval < 0 || intval > 1) {
+			if(intval == 0)
+				log_info.options &= ~GGZ_LOGOPT_INC_TIME;
+			else if(intval == 1)
+				log_info.options |= GGZ_LOGOPT_INC_TIME;
+			else
 				PARSE_ERR("Invalid value for TimeInLogs");
-				continue;
-			}
-			log_info.include_timestamp = intval;
 			continue;
 		}
 
