@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Muehle
+Description = Digital Muehle (Nine men's morris) game
+GameType = Muehle
+MaxPlayers = 100
+MaxTables = 20
+

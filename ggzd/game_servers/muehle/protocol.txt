@@ -1,0 +1,16 @@
+The Muehle Protocol
+-------------------
+
+The whole protocol is text-based (strings).
+
+C: $name [1]
+S: (white | black)
+C: $move [2]
+C1: remis -> C2: (reject | remis)
+C: loose | gameover
+
+
+[1] $name is the identifier of the client, like the application name.
+[2] Format: [x, y], [x, y, x, y] or [x, y, x, y, x, y]
+
+
