@@ -55,7 +55,8 @@ int ggzcore_table_init(GGZTable *table,
 		       const unsigned int num_seats)
 {
 	if (table && gametype) {
-		_ggzcore_table_init(table, gametype, desc, num_seats, 
+		_ggzcore_table_init(table, gametype, desc,
+				    num_seats,
 				    GGZ_TABLE_CREATED, -1);
 		return 0;
 	}
@@ -282,11 +283,22 @@ void _ggzcore_table_init(struct _GGZTable *table,
 	ggz_debug(GGZCORE_DBG_TABLE, "Allocating %d seats", num_seats);
 	if (num_seats)
 		table->seats = ggz_malloc(num_seats * sizeof(struct _GGZSeat));
-
 	for (i = 0; i < num_seats; i++) {
 		table->seats[i].index = i;
 		table->seats[i].type = GGZ_SEAT_OPEN;
 		table->seats[i].name =  NULL;
+	}
+
+	table->num_spectator_seats = gametype->spectators_allowed ? 8 : 0;
+	ggz_debug(GGZCORE_DBG_TABLE, "Allocating %d spectator seats",
+		  table->num_spectator_seats);
+	if (table->num_spectator_seats)
+		table->spectator_seats =
+			ggz_malloc(table->num_spectator_seats * 
+				   sizeof(struct _GGZSeat));
+	for (i = 0; i < table->num_spectator_seats; i++) {
+		table->spectator_seats[i].index = i;
+		table->spectator_seats[i].name = NULL;
 	}
 }
 
@@ -303,6 +315,13 @@ void _ggzcore_table_free(struct _GGZTable *table)
 			if (table->seats[i].name)
 				ggz_free(table->seats[i].name);
 		ggz_free(table->seats);
+	}
+
+	if (table->spectator_seats) {
+		for (i = 0; i < table->num_spectator_seats; i++)
+			if (table->spectator_seats[i].name)
+				ggz_free(table->spectator_seats[i].name);
+		ggz_free(table->spectator_seats);
 	}
 	
 	ggz_free(table);
@@ -383,6 +402,46 @@ void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat)
 			_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 	}
 	
+	/* Get rid of the old seat. */
+	if (oldseat.name)
+		ggz_free(oldseat.name);
+}
+
+
+void _ggzcore_table_set_spectator_seat(struct _GGZTable *table,
+				       struct _GGZSeat *seat)
+{
+	struct _GGZSeat oldseat;
+
+	if (seat->index >= table->num_spectator_seats) {
+		ggz_debug(GGZCORE_DBG_TABLE,
+			  "Attempt to set spectator seat %d on table with only"
+			  "%d seats.", seat->index, table->num_seats);
+	}
+
+	oldseat = table->spectator_seats[seat->index];
+	table->spectator_seats[seat->index].index = seat->index;
+	table->spectator_seats[seat->index].name = ggz_strdup(seat->name);
+
+	/* Check for specific seat changes */
+	if (seat->name) {
+		ggz_debug(GGZCORE_DBG_TABLE,
+			  "%s spectating seat %d at table %d",
+			  seat->name, seat->index, table->id);
+		if (table->room)
+			_ggzcore_room_player_set_table(table->room, seat->name,
+						      table->id);
+	}
+
+	if (oldseat.name) {
+		ggz_debug(GGZCORE_DBG_TABLE,
+			  "%s stopped spectating seat %d at table %d",
+			  oldseat.name, oldseat.index, table->id);
+		if (table->room)
+			_ggzcore_room_player_set_table(table->room,
+						       oldseat.name, -1);
+	}
+
 	/* Get rid of the old seat. */
 	if (oldseat.name)
 		ggz_free(oldseat.name);
@@ -473,7 +532,8 @@ void* _ggzcore_table_create(void* p)
 	struct _GGZTable *new, *src = p;
 
 	new = _ggzcore_table_new();
-	_ggzcore_table_init(new, src->gametype, src->desc, src->num_seats,
+	_ggzcore_table_init(new, src->gametype, src->desc,
+			    src->num_seats,
 			    src->state, src->id);
 
 	/* FIXME: copy players as well */

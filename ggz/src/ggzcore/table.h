@@ -68,6 +68,13 @@ struct _GGZTable {
 
 	/* Seats */
 	struct _GGZSeat *seats;
+
+	/* Total spectator seats */
+	unsigned int num_spectator_seats;
+
+	/* Spectator seats - "type" is unused; player name is
+	   NULL for empty seat. */
+	struct _GGZSeat *spectator_seats;
 };
 
 
@@ -95,6 +102,13 @@ void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc);
  */
 void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat);
 
+
+/** @brief Change a spectator seat value.
+ *
+ *  This changes the seat status for any spectator seat at the table.
+ */
+void _ggzcore_table_set_spectator_seat(struct _GGZTable *table,
+				       struct _GGZSeat *seat);
 
 struct _GGZRoom*      _ggzcore_table_get_room(struct _GGZTable *table);
 int                   _ggzcore_table_get_id(struct _GGZTable *table);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4465 2002-09-08 06:34:27Z jdorje $
+ * $Id: netxml.c 4466 2002-09-08 08:49:39Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -751,6 +751,8 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 		process_func = _ggzcore_net_handle_table;
 	else if (strcmp(tag, "SEAT") == 0)
 		process_func = _ggzcore_net_handle_seat;
+	else if (strcmp(tag, "SPECTATOR") == 0)
+		process_func = _ggzcore_net_handle_seat;
 	else if (strcmp(tag, "CHAT") == 0)
 		process_func = _ggzcore_net_handle_chat;
 	else if (strcmp(tag, "DESC") == 0)
@@ -1101,7 +1103,6 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 	int i, room_num;
 	GGZTable *table, *table_data;
 	GGZRoom *room;
-	struct _GGZSeat seat;
 
 	/* Sanity check: we can't proceed without a room number */
 	if (!ggz_xmlelement_get_attr(update, "ROOM")) {
@@ -1140,15 +1141,35 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 		for (i = 0; i < table_data->num_seats; i++)
 			if (table_data->seats[i].type != GGZ_SEAT_NONE)
 				_ggzcore_table_set_seat(table, &table_data->seats[i]);
+	} else if (strcmp(action, "joinspectator") == 0) {
+		for (i = 0; i < table_data->num_spectator_seats; i++) {
+			if (table_data->spectator_seats[i].name) {
+				_ggzcore_table_set_spectator_seat(table,
+					&table_data->spectator_seats[i]);
+			}
+		}
 	}
 	else if (strcmp(action, "leave") == 0) {
 		for (i = 0; i < table_data->num_seats; i++) {
 			if (table_data->seats[i].type != GGZ_SEAT_NONE) {
 				/* Player is vacating seat */
+				struct _GGZSeat seat;
 				seat.index = i;
 				seat.type = GGZ_SEAT_OPEN;
 				seat.name = NULL;
 				_ggzcore_table_set_seat(table, &seat);
+			}
+		}
+	}
+	else if (strcmp(action, "leavespectator") == 0) {
+		for (i = 0; i < table_data->num_spectator_seats; i++) {
+			if (table_data->spectator_seats[i].name) {
+				/* Player is vacating seat */
+				struct _GGZSeat seat;
+				seat.index = i;
+				seat.name = NULL;
+				_ggzcore_table_set_spectator_seat(table,
+								  &seat);
 			}
 		}
 	}
@@ -1475,10 +1496,9 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 	GGZGameType *type;
 	GGZTableData *data;
 	GGZTable *table_obj;
-	struct _GGZSeat *seat;
 	GGZList *seats = NULL;
 	GGZListEntry *entry;
-	int id, game, status, num_seats, i;
+	int id, game, status, num_seats, num_spectators, i;
 	char *desc = NULL;
 	GGZXMLElement *parent;
 
@@ -1494,6 +1514,8 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		game = safe_atoi(ggz_xmlelement_get_attr(table, "GAME"));
 		status = safe_atoi(ggz_xmlelement_get_attr(table, "STATUS"));
 		num_seats = safe_atoi(ggz_xmlelement_get_attr(table, "SEATS"));
+		num_spectators = safe_atoi(ggz_xmlelement_get_attr(table,
+					   "SPECTATORS"));
 		data = ggz_xmlelement_get_data(table);
 		if (data) {
 			desc = data->desc;
@@ -1503,8 +1525,8 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		/* Create new table structure */
 		table_obj = _ggzcore_table_new();
 		type = _ggzcore_server_get_type_by_id(net->server, game);
-		_ggzcore_table_init(table_obj, type, desc, num_seats, status, 
-				    id);
+		_ggzcore_table_init(table_obj, type, desc, num_seats,
+				    status, id);
 
 		/* Initialize seats to none */
 		/* FIXME: perhaps tables should come this way? */
@@ -1514,8 +1536,12 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		/* Add seats */
 		entry = ggz_list_head(seats);
 		while (entry) {
-			seat = ggz_list_get_data(entry);
-			_ggzcore_table_set_seat(table_obj, seat);
+			void* seat = ggz_list_get_data(entry);
+			if (num_seats > 0)
+				_ggzcore_table_set_seat(table_obj, seat);
+			else if (num_spectators > 0)
+				_ggzcore_table_set_spectator_seat(table_obj,
+								  seat);
 			entry = ggz_list_next(entry);
 		}
 		
@@ -1590,7 +1616,7 @@ static void _ggzcore_net_tabledata_free(GGZTableData *data)
 }
 
 
-/* Functions for <SEAT> tag */
+/* Functions for <SEAT> and <SPECTATOR> tags */
 static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 {
 	struct _GGZSeat seat_obj;
@@ -1608,7 +1634,6 @@ static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 		_ggzcore_net_table_add_seat(parent, &seat_obj);
 	}
 }
-
 
 static struct _GGZSeat* _ggzcore_net_seat_copy(struct _GGZSeat *orig)
 {
