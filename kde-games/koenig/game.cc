@@ -227,8 +227,7 @@ void Game::slotMove(int x, int y, int x2, int y2)
 
 void Game::answerDraw(int draw)
 {
-	// FIXME: am I blind or is this actually the same as slotDraw()????
-	ggz->putChar(CHESS_REQ_DRAW);
+	if(draw) ggz->putChar(CHESS_REQ_DRAW);
 }
 
 void Game::handleGameOver(int cval)

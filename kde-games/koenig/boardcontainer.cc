@@ -31,6 +31,7 @@ ChessBoardContainer::ChessBoardContainer(QWidget *parent, const char *name)
 	kdDebug(12101) << "ChessBoardContainer::ChessBoardContainer()" << endl;
 
 	setMinimumSize(240, 240);
+	resize(400, 400);
 
 	m_root = new ChessBoard(this);
 	vbox = new QVBoxLayout(this, 10);

@@ -168,8 +168,7 @@ void TopLevel::slotFlag()
 
 void TopLevel::slotDraw()
 {
-	// FIXME: merge with slotNetDraw
-	game->answerDraw(1); // LOL
+	game->answerDraw(1);
 }
 
 void TopLevel::slotNetDraw()
@@ -178,7 +177,10 @@ void TopLevel::slotNetDraw()
 
 	answer = KMessageBox::questionYesNo(this,
 		i18n("The other player requests a draw. Do you agree?"), i18n("Draw requested"));
-	game->answerDraw(answer);
+	if(answer == KMessageBox::Yes)
+		game->answerDraw(1);
+	else
+		game->answerDraw(0);
 }
 
 void TopLevel::slotDoMove(int x, int y, int x2, int y2)
