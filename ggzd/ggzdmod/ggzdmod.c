@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5011 2002-10-23 20:26:32Z jdorje $
+ * $Id: ggzdmod.c 5012 2002-10-23 21:06:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -76,13 +76,11 @@ static int game_fork(GGZdMod * ggzdmod);
 /* Functions for manipulating seats */
 static GGZSeat* seat_copy(GGZSeat *orig);
 static int seat_compare(GGZSeat *a, GGZSeat *b);
-static int seat_find_player(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
 
 /* Functions for manipulating spectators */
 static GGZSpectator* spectator_copy(GGZSpectator *orig);
 static int spectator_compare(GGZSpectator *a, GGZSpectator *b);
-static int spectator_find_player(GGZSpectator *a, GGZSpectator *b);
 static void spectator_free(GGZSpectator *spectator);
 
 /* Debugging function (see also ggzdmod_check) */
@@ -1503,23 +1501,6 @@ static int seat_compare(GGZSeat *a, GGZSeat *b)
 }
 
 
-/* Because of the way ggz_list is set up, this function
-   is supposed to return 0 if seats a and b match,
-   1 otherwise. */
-static int seat_find_player(GGZSeat *a, GGZSeat *b)
-{
-	/* It is possible that one of the seats will have a
-	   NULL name.  In this case, we do _not_ want to
-	   return a match.  This wouldn't be an issue if we
-	   handled things the "right" way and earched only
-	   by seat number or player UID.  --JDS */
-	if (!a->name || !b->name)
-		return 1;
-
-	return strcmp(a->name, b->name);
-}
-
-
 static void seat_free(GGZSeat *seat)
 {
 	if (seat->fd != -1)
@@ -1558,16 +1539,6 @@ static GGZSpectator* spectator_copy(GGZSpectator *orig)
 static int spectator_compare(GGZSpectator *a, GGZSpectator *b)
 {
 	return a->num - b->num;
-}
-
-
-/* See the appropriate seat function */
-static int spectator_find_player(GGZSpectator *a, GGZSpectator *b)
-{
-	if (!a->name || !b->name)
-		return 1;
-
-	return strcmp(a->name, b->name);
 }
 
 
