@@ -22,11 +22,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef TTT_GAME_H
+#define TTT_GAME_H
 
+/* Server-side GGZ game support library */
 #include "ggzdmod.h"
 
+/* Initialization function */
 void game_init(GGZdMod *ggzdmod);
 
-
-
+#endif
 

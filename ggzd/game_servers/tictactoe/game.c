@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6109 2004-07-16 15:22:29Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,17 +23,37 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/*
+ * The Tic-Tac-Toe game server has been designed to let starters easily
+ * get to know the features that GGZ provides to game authors.
+ * Thus, a lot of #ifdefs are used which are not intended to be undefined,
+ * but rather to localize the special features.
+ * A simple game can do without them, but their usage is strongly encouraged.
+ */
+
+/* Site-specific configuration */
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>
 #endif
 
+/* System header files */
 #include <stdlib.h>
 #include <string.h>
+
+/* GGZ utility functions */
 #include <ggz.h>
 
+/* Header including ggzdmod.h */
 #include "game.h"
 
-#define GGZSPECTATORS
+/* The game supports people not on the table watching the game */
+#define GGZSPECTATORS /* do not undefine! */
+/* The game supports statistics (e.g. records, ratings, highscores) */
+#define GGZSTATISTICS /* do not undefine! */
+/* The game supports leave/rejoin of players */
+#define GGZGAMERESUME /* do not undefine */
+/* The game supports AI players */
+#define GGZBOTPLAYERS /* do not undefine */
 
 /* Data structure for Tic-Tac-Toe-Game */
 struct ttt_game_t {
@@ -94,7 +114,9 @@ static int game_read_move(int num, int* move);
 /* TTT-move functions */
 static int game_next_move(void);
 static int game_req_move(int num);
+#ifdef GGZBOTPLAYERS
 static int game_bot_move(int num);
+#endif
 static int game_do_move(int move);
 
 /* Local utility functions */
@@ -216,14 +238,20 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
 	else if (seats_empty())
 		new_state = GGZDMOD_STATE_DONE;
 	else
+#ifdef GGZGAMERESUME
 		new_state = GGZDMOD_STATE_WAITING;
+#else
+		new_state = GGZDMOD_STATE_DONE;
+#endif
 
 	game_send_players();
 	if (new_seat.type == GGZ_SEAT_PLAYER) {
 		game_send_seat(new_seat.num);
+#ifdef GGZGAMERESUME
 		/* If we're continuing a game, send sync to new player */
 		if (ttt_game.turn != -1)
 			game_send_sync(new_seat.fd);
+#endif
 	}
 
 	ggzdmod_set_state(ttt_game.ggz, new_state);
@@ -376,18 +404,17 @@ static int game_send_gameover(int winner)
 	GGZSpectator spectator;
 #endif
 
-
-	{
-		GGZGameResult results[2];
-		if (winner < 2) {
-			results[winner] = GGZ_GAME_WIN;
-			results[1 - winner] = GGZ_GAME_LOSS;
-		} else {
-			results[0] = results[1] = GGZ_GAME_TIE;
-		}
-
-		ggzdmod_report_game(ttt_game.ggz, NULL, results, NULL);
+#ifdef GGZSTATISTICS
+	GGZGameResult results[2];
+	if (winner < 2) {
+		results[winner] = GGZ_GAME_WIN;
+		results[1 - winner] = GGZ_GAME_LOSS;
+	} else {
+		results[0] = results[1] = GGZ_GAME_TIE;
 	}
+
+	ggzdmod_report_game(ttt_game.ggz, NULL, results, NULL);
+#endif
 	
 	for (i = 0; i < 2; i++) {
 		seat = ggzdmod_get_seat(ttt_game.ggz, i);
@@ -450,11 +477,13 @@ static int game_next_move(void)
 	int move, num = ttt_game.turn;
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 	
+#ifdef GGZBOTPLAYERS
 	if (seat.type == GGZ_SEAT_BOT) {
 		move = game_bot_move(num);
 		game_do_move(move);
 	}
 	else
+#endif
 		game_req_move(num);
 
 	return 0;
@@ -522,7 +551,7 @@ static int game_do_move(int move)
 }
 
 
-
+#ifdef GGZBOTPLAYERS
 /* Do bot moves */
 static int game_bot_move(int me)
 {
@@ -706,6 +735,7 @@ static int game_bot_move(int me)
 
 	return move;
 }
+#endif
 
 
 /* Check for valid move */
