@@ -53,6 +53,7 @@ extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern int selected_table;
+extern int selected_type;
 extern GdkColor colors[];
 
 GtkWidget *detail_window = NULL;
@@ -186,7 +187,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status >= 0) {
 			connection.playing = TRUE;
-			launch_game(0,0);
+			launch_game(selected_type,0);
 		} else {
 			switch (status){
 			case -5: 

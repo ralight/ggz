@@ -43,6 +43,7 @@ GtkWidget *main_win;
 GtkWidget *dlg_login;
 GtkWidget *dlg_launch;
 int selected_table;
+int selected_type;
 
 /* Aray of GdkColors currently used for chat */
 GdkColor colors[] = 

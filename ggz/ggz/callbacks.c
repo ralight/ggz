@@ -49,6 +49,7 @@ extern GtkWidget *main_win;
 extern GtkWidget *dlg_launch;
 extern struct ConnectInfo connection;
 extern int selected_table;
+extern int selected_type;
 extern struct GameTypes game_types;
 
 
@@ -632,9 +633,16 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 			       GdkEventButton *event, gpointer data)
 {
 	gchar *text;
+	int i;
 
 	gtk_clist_get_text(GTK_CLIST(widget), row, 1, &text);
 	selected_table = atoi(text);
+	gtk_clist_get_text(GTK_CLIST(widget), row, 2, &text);
+	for(i=0;i<game_types.count;i++)
+	{
+		if(!strcmp(text,game_types.info[i].name))
+			selected_type=i;
+	}
 }
 
 
