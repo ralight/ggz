@@ -137,3 +137,11 @@ on_request_sync_activate              (GtkMenuItem     *menuitem,
 	game_request_sync();
 
 }
+
+void
+on_hide_enemy_units1_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
+}
+

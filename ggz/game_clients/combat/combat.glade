@@ -89,6 +89,7 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>request_sync</name>
+	    <tooltip>Requests the current game state from the game server</tooltip>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_request_sync_activate</handler>
@@ -96,6 +97,20 @@
 	    </signal>
 	    <label>_Request Sync</label>
 	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckMenuItem</class>
+	    <name>hide_enemy_units1</name>
+	    <tooltip>Shows/Hide the enemies units that you shouldn't see</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_hide_enemy_units1_activate</handler>
+	      <last_modification_time>Sat, 28 Oct 2000 16:36:19 GMT</last_modification_time>
+	    </signal>
+	    <label>_Hide enemy units</label>
+	    <active>True</active>
+	    <always_show_toggle>False</always_show_toggle>
 	  </widget>
 	</widget>
       </widget>

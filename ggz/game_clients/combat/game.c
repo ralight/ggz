@@ -41,6 +41,7 @@ combat_game cbt_game;
 // Images
 GtkPixmap *tiles[12];
 GdkColor *player_colors;
+GdkColor last_color;
 GdkColor lake_color;
 GdkColor open_color;
 GdkGC *solid_gc;
@@ -136,7 +137,6 @@ void game_start() {
 
 	cbt_game.state = CBT_STATE_PLAYING;
 	cbt_info.current = -1;
-	game_draw_bg();
 	game_draw_board();
 
 	game_status("Game has started!");
@@ -298,6 +298,10 @@ void game_init() {
 	cbt_game.state = CBT_STATE_INIT;
 	cbt_game.turn = 0;
 	cbt_info.current = U_EMPTY;
+	cbt_info.show_enemy = FALSE;
+	cbt_info.last_unit = U_UNKNOWN;
+	cbt_info.last_from = -1;
+	cbt_info.last_to = -1;
 }
 
 void game_init_board() {
@@ -315,6 +319,9 @@ void game_init_board() {
 		gdk_color_parse(colorname[a], &player_colors[a]);
 		gdk_colormap_alloc_color(sys_colormap, &player_colors[a], FALSE, TRUE);
 	}
+
+	gdk_color_parse("RGB:FF/FF/00", &last_color);
+	gdk_colormap_alloc_color(sys_colormap, &last_color, FALSE, TRUE);
 
 	gdk_color_parse(lakename, &lake_color);
 	gdk_colormap_alloc_color(sys_colormap, &lake_color, FALSE, TRUE);
@@ -390,18 +397,16 @@ void game_draw_unit(int x, int y, int tile, int player) {
 		x = x*(PIXSIZE+1)+1;
 		y = y*(PIXSIZE+1)+1;
 
-		// If its no player, doesnt draw
-		if (player < 0)
-			return;
-
 		// Draws owning player rectangle
 		// TODO: A pixmap would look _MUCH_ better
-		gdk_gc_set_foreground(solid_gc, &player_colors[player]);
-		gdk_draw_rectangle( cbt_buf,
-				solid_gc,
-				TRUE,
-				x, y,
-				PIXSIZE, PIXSIZE);
+		if (player >= 0) {
+			gdk_gc_set_foreground(solid_gc, &player_colors[player]);
+			gdk_draw_rectangle( cbt_buf,
+					solid_gc,
+					TRUE,
+					x, y,
+					PIXSIZE, PIXSIZE);
+		}
 
 		// Draws the image, if it is known
 		if (tile >= 0 && tile < 12) {
@@ -427,6 +432,9 @@ void game_draw_board() {
 	if (!cbt_game.map || !cbt_buf)
 		return;
 
+	// Draw bg
+	game_draw_bg();
+
 	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
 		// Draw the terrain
 		game_draw_terrain(a%cbt_game.width, a/cbt_game.width,
@@ -442,6 +450,29 @@ void game_draw_board() {
 			game_draw_unit(a%cbt_game.width, a/cbt_game.width,
 				 LAST(cbt_game.map[a].unit), GET_OWNER(cbt_game.map[a].unit));
 	}
+
+	// Draw lasts
+	game_draw_unit(cbt_info.last_to%cbt_game.width, 
+			cbt_info.last_to/cbt_game.width,
+			cbt_info.last_unit, -1);
+
+	// Draw borders
+	gdk_gc_set_foreground(solid_gc, &last_color);
+	if (cbt_info.last_from >= 0)
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_from%cbt_game.width*(PIXSIZE+1),
+			 	cbt_info.last_from/cbt_game.width*(PIXSIZE+1),
+				PIXSIZE, PIXSIZE);
+	if (cbt_info.last_to >= 0)
+		gdk_draw_rectangle( cbt_buf,
+				solid_gc,
+				FALSE,
+				cbt_info.last_to%cbt_game.width*(PIXSIZE+1),
+			 	cbt_info.last_to/cbt_game.width*(PIXSIZE+1),
+				PIXSIZE, PIXSIZE);
+	
 
 	// Update the widget
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "mainarea");
@@ -795,6 +826,11 @@ void game_get_move() {
 	cbt_game.map[to].unit = cbt_game.map[from].unit;
 	cbt_game.map[from].unit = U_EMPTY;
 
+	// Update lasts
+	cbt_info.last_unit = LAST(cbt_game.map[to].unit);
+	cbt_info.last_from = from;
+	cbt_info.last_to = to;
+
 	// Change turn
 	game_change_turn();
 }
@@ -816,17 +852,36 @@ void game_get_attack() {
 	if (f_u < 0 && t_u >= 0) {
 		// The from unit won!
 		cbt_game.map[from].unit = U_EMPTY;
-		cbt_game.map[to].unit = OWNER(cbt_game.turn) - f_u;
+		if (cbt_info.show_enemy || cbt_game.turn == cbt_info.seat) {
+			// It`s my turn or I'm cheating
+			cbt_game.map[to].unit = OWNER(cbt_game.turn) - f_u;
+		} else {
+			// I'm not cheating
+			cbt_game.map[to].unit = OWNER(cbt_game.turn) + U_UNKNOWN;
+		}
 		cbt_game.army[seat2][t_u]--;
 		game_update_unit_list(seat2);
 		game_status("A %s attacked a %s and won", unitname[-f_u], unitname[t_u]);
+		// Update lasts
+		cbt_info.last_unit = -f_u;
+		cbt_info.last_from = from;
+		cbt_info.last_to = to;
 	} else if (f_u >= 0 && t_u < 0) {
 		// The to unit won!
 		cbt_game.map[from].unit = U_EMPTY;
-		cbt_game.map[to].unit = OWNER(seat2) - t_u;
+		if (cbt_info.show_enemy || seat2 == cbt_info.seat) {
+			// My turn or cheating
+			cbt_game.map[to].unit = OWNER(seat2) - t_u;
+		} else {
+			cbt_game.map[to].unit = OWNER(seat2) + U_UNKNOWN;
+		}
 		cbt_game.army[cbt_game.turn][f_u]--;
 		game_update_unit_list(cbt_game.turn);
 		game_status("A %s tried to attack a %s and lost", unitname[f_u], unitname[-t_u]);
+		// Update lasts
+		cbt_info.last_unit = -t_u;
+		cbt_info.last_from = from;
+		cbt_info.last_to = to;
 	} else if (f_u < 0 && t_u < 0) {
 		// Both won (or lost, whatever!)
 		cbt_game.map[from].unit = U_EMPTY;
@@ -836,6 +891,10 @@ void game_get_attack() {
 		game_update_unit_list(cbt_game.turn);
 		game_update_unit_list(seat2);
 		game_status("Two %s died", unitname[-f_u]);
+		// Update lasts
+		cbt_info.last_unit = -f_u;
+		cbt_info.last_from = from;
+		cbt_info.last_to = to;
 	} else {
 		game_status("Problems in the attack logic!");
 	}

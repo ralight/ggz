@@ -56,3 +56,7 @@ on_send_setup_clicked                  (GtkButton       *button,
 void
 on_request_sync_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
+
+void
+on_hide_enemy_units1_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
