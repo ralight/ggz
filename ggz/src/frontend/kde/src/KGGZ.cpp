@@ -971,6 +971,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			buffer.sprintf(i18n("Entered room %s"), kggzroom->name());
 			m_workspace->widgetChat()->init();
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
+			if(kggzroom->description())
+				m_workspace->widgetChat()->receive(NULL, i18n("(Description: %1)").arg(kggzroom->description()), KGGZChat::RECEIVE_ADMIN);
 			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
 			emit signalMenu(MENUSIG_ROOMENTER);
 			gametype = kggzroom->gametype();

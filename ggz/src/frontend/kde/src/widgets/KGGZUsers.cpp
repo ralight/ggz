@@ -345,14 +345,16 @@ void KGGZUsers::slotInformation(int id)
 {
 	QListViewItem *tmp;
 	int wins, losses, ties, forfeits;
+	QString player;
 
 	tmp = selectedItem();
 	if(!tmp) return;
 
+	player = tmp->text(0);
 	ggzcore_player_get_record(NULL, &wins, &losses, &ties, &forfeits);
 
 	KMessageBox::information(this,
-		i18n("Wins: %1\nLosses:%2\nTies:%3\nForfeits:%4").arg(wins).arg(losses).arg(ties).arg(forfeits),
+		i18n("Information about %1:\nWins: %2\nLosses:%3\nTies:%4\nForfeits:%5").arg(player).arg(wins).arg(losses).arg(ties).arg(forfeits),
 		i18n("Player information"));
 }
 
