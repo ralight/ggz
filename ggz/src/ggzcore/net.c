@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
+#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 
@@ -413,6 +414,7 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* player, const char* msg)
 {
 	int status = 0;
+	char msg_buf[net->chat_size];
 
 	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
 	if (es_write_int(net->fd, REQ_CHAT) < 0
@@ -421,9 +423,13 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* 
 	
 	if (status == 0 && (op & GGZ_CHAT_M_PLAYER))
 		status = es_write_string(net->fd, player);
+
+	/* We don't want to send messages longer than the server will accept.
+	 * TODO: We may want to split it up into segments to send?  -- JDS */
+	snprintf(msg_buf, sizeof(msg_buf), "%s", msg);
 	
 	if (status == 0 && (op & GGZ_CHAT_M_MESSAGE))
-		status = es_write_string(net->fd, msg);
+		status = es_write_string(net->fd, msg_buf);
 	
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending chat");
