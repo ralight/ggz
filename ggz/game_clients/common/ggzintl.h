@@ -2,7 +2,7 @@
  * File: ggzintl.h
  * Author: GGZ Development Team
  * Project: GGZ Gtk Games
- * $Id: ggzintl.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: ggzintl.h 6544 2004-12-21 17:16:04Z josef $
  *
  * This file contains common functions and data for i18n of the
  * gtk-games package.
@@ -33,7 +33,7 @@
 #ifdef ENABLE_NLS
 #  include <locale.h>
 #  include <libintl.h>
-#  define _(x) gettext(x)
+#  define _(x) ggz_intl_gettext(x)
 #else
 #  define _(x) x
 #endif
@@ -41,5 +41,6 @@
 #define N_(x) x
 
 void ggz_intl_init(const char *modulename);
+char *ggz_intl_gettext(const char *s);
 
 #endif /* GGZ_INTL_H */
