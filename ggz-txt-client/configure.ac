@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5727 2003-12-31 17:02:57Z dr_maux $
+dnl $Id: configure.ac 5757 2004-01-27 18:27:09Z josef $
 
-AC_INIT([GGZ text client], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-txt-client])
+AC_INIT([GGZ text client], [0.0.8pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -27,6 +27,7 @@ dnl ===================
 AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
+AC_GGZ_GGZMOD
 AC_GGZ_GGZCORE
 
 dnl Check for header files
