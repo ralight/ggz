@@ -40,7 +40,7 @@
 #include <protocols.h>
 
 static void login_generate_password(char *);
-static int login_check_password(char *name, char *password);
+static int login_check_password(ggzdbPlayerEntry *,char *name, char *password);
 static int login_add_user(char *name, char *password);
 static int  validate_username(char *);
 
@@ -63,6 +63,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	char lc_name[MAX_USER_NAME_LEN + 1], new_pw[17];
 	ggzdbPlayerEntry db_pe;
 	char *login_type=NULL;
+
+	new_pw[0] = '\0';
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login", player);
 
@@ -129,7 +131,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	if (type == GGZ_LOGIN) {
 
 		/* Check password */
-		if (login_check_password(lc_name, password) < 0) {
+		if (login_check_password(&db_pe, lc_name, password) < 0) {
 			hash_player_delete(lc_name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
@@ -223,22 +225,20 @@ static void login_generate_password(char *pw)
 }
 
 
-static int login_check_password(char *name, char *password)
+static int login_check_password(ggzdbPlayerEntry *db_pe, char *name, char *password)
 {
-	ggzdbPlayerEntry db_entry;
-
 	/* Lookup the player in the database so we can verify the password */
-	strcpy(db_entry.handle, name);
+	strcpy(db_pe->handle, name);
 
 	/* If they aren't found, return an error */
-	if (ggzdb_player_get(&db_entry) == GGZDB_ERR_NOTFOUND) {
+	if (ggzdb_player_get(db_pe) == GGZDB_ERR_NOTFOUND) {
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful login of %s - no account", name);
 		return -1;
 	}
 
 	/* They were found, so verify the password */
-	if(strcmp(db_entry.password, password)) {
+	if(strcmp(db_pe->password, password)) {
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful login of %s - bad password", name);
 		return -1;
