@@ -68,7 +68,7 @@ struct ttt_game_t {
 	char move_count;
 };
 
-void game_init(void);
+void game_init(GGZdMod *ggzdmod);
 void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
 

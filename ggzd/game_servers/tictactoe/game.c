@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2780 2001-12-06 00:07:00Z jdorje $
+ * $Id: game.c 2785 2001-12-06 02:33:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,7 +38,7 @@ static void game_rotate_board(char b[9]);
 static int game_seats_open(void);
 
 /* Setup game state and board */
-void game_init(void)
+void game_init(GGZdMod *ggzdmod)
 {
 	int i;
 	
@@ -48,31 +48,31 @@ void game_init(void)
 	for (i = 0; i < 9; i++)
 		ttt_game.board[i] = -1;
 		
-	/* GGZ initializations - we first make a GGZ object then set
-	   up the callbacks for event handlers. */
-	ttt_game.ggz = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
-	ggzdmod_set_handler(ttt_game.ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
+	ttt_game.ggz = ggzdmod;
 }
 
 
 /* Handle message from GGZ server */
 void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
+	GGZdModState old_state;
+	int player;
+	
 	switch (event) {
 	case GGZDMOD_EVENT_STATE:
 		/* If we are moving out of the CREATED state, it's
 		   a launch event (data points to the old state). */
-		if (*(GGZdModState*)data == GGZDMOD_STATE_CREATED)
+		old_state = *(GGZdModState*)data;
+		if (old_state == GGZDMOD_STATE_CREATED)
 			game_update(TTT_EVENT_LAUNCH, NULL);
 		break;
 	case GGZDMOD_EVENT_JOIN:
-		game_update(TTT_EVENT_JOIN, (int*)data);
+		player = *(int*)data;
+		game_update(TTT_EVENT_JOIN, &player);
 		break;
 	case GGZDMOD_EVENT_LEAVE:
-		game_update(TTT_EVENT_LEAVE, (int*)data);
+		player = *(int*)data;
+		game_update(TTT_EVENT_LEAVE, &player);
 		break;
 	default:
 		ggzdmod_log(ggz, "Unexpected GGZ event %d.", event);

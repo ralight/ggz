@@ -37,21 +37,27 @@ extern struct ttt_game_t ttt_game;
 
 int main(void)
 {
-	game_init();
+	/* ggzdmod initializations */
+	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_ggz);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 	
-	if (ggzdmod_connect(ttt_game.ggz) < 0) {
+	game_init(ggzdmod);
+	
+	if (ggzdmod_connect(ggzdmod) < 0) {
 		/* Error starting up game 
 		game_cleanup(); */
 		fprintf(stderr, "Could not connect to ggz.\n");
 		return -1;
 	}
 	
-	ggzdmod_log(ttt_game.ggz, "Starting game of Tic-Tac-Toe");
-	ggzdmod_loop(ttt_game.ggz);
+	(void)ggzdmod_log(ggzdmod, "Starting game of Tic-Tac-Toe");
+	(void)ggzdmod_loop(ggzdmod);
 	
-	ggzdmod_disconnect(ttt_game.ggz);
-
-	ggzdmod_free(ttt_game.ggz);
+	(void)ggzdmod_disconnect(ggzdmod);
+	ggzdmod_free(ggzdmod);
 	
 	return 0;
 }
