@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 6875 2005-01-24 06:03:21Z jdorje $
+ * $Id: ggz_common.c 6977 2005-03-11 07:08:53Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -31,6 +31,7 @@
 #endif
 
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 
 #include "ggz.h"
 #include "ggz_common.h"

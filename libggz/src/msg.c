@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 6784 2005-01-21 18:38:38Z jdorje $
+ * $Id: msg.c 6977 2005-03-11 07:08:53Z jdorje $
  *
  * Debug and error messages
  *
@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 #include <sys/types.h>
 #include <unistd.h>
 

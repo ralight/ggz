@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 #include <unistd.h>
 
 #include "ggz.h"
