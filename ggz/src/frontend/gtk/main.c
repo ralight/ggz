@@ -33,9 +33,8 @@
 #include "license.h"
 #include "login.h"
 
-GtkWidget *win_main;
-GtkWidget *dlg_about;
-GtkWidget *dlg_license;
+
+extern GtkWidget *win_main;
 
 
 int main (int argc, char *argv[])
@@ -54,9 +53,7 @@ int main (int argc, char *argv[])
 	chat_allocate_colors();
 	g_main_set_poll_func((GPollFunc)ggzcore_event_poll);
 
-	dlg_about = create_dlg_about();
 	win_main = create_win_main();
-	dlg_license = create_dlg_license();
 	login_create_or_raise();
 
 	ggz_sensitivity_init();

@@ -22,4 +22,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-GtkWidget* create_dlg_license (void);
+void license_create_or_raise(void);
+void license_destroy(void);

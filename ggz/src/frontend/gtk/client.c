@@ -40,11 +40,9 @@
 #include "support.h"
 #include "xtext.h"
 
-extern GdkColor colors[];
-extern GtkWidget *win_main;
-extern GtkWidget *dlg_about;
-extern GtkWidget *dlg_license;
 
+extern GdkColor colors[];
+GtkWidget *win_main;
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -236,11 +234,9 @@ client_motd_activate                       (GtkMenuItem     *menuitem,
 
 static void
 client_about_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         data)
+					    gpointer         data)
 {
-        if(dlg_about != NULL)
-                dlg_about = create_dlg_about();
-        gtk_widget_show(dlg_about);
+	about_create_or_raise();
 }
 
 
@@ -248,9 +244,7 @@ static void
 client_license_activate                (GtkMenuItem     *menuitem,
                                         gpointer         data)
 {
-        if(dlg_license != NULL)
-                dlg_about = create_dlg_license();
-        gtk_widget_show(dlg_license);
+	license_create_or_raise();
 }
 
 

@@ -20,7 +20,7 @@ Current
 	  descriptors so we can just add them to the
 	  gtk/KDE event loop directly
 	* rename callbacks to filename_ rather than on_
-	- statically declare callbacks and local function in .c files
+	* statically declare callbacks and local function in .c files
 	* sensitivity within ggzcore event callbacks
 
 To Add

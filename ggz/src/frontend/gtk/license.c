@@ -32,21 +32,54 @@
 #include <gtk/gtk.h>
 
 #include "license.h"
+#include "support.h"
 
-extern GtkWidget *dlg_license;
+static GtkWidget *dlg_license;
+static GtkWidget* create_dlg_license (void);
 
+
+/* Callbacks for License dialog box */
 static void license_realize(GtkWidget * widget, gpointer user_data);
+static void license_ok_button_clicked(GtkWidget* widget, gpointer data);
+
+
+void license_create_or_raise(void)
+{
+	if (!dlg_license) {
+		dlg_license = create_dlg_license();
+		gtk_widget_show(dlg_license);
+	}
+	else {
+		gdk_window_show(dlg_license->window);
+		gdk_window_raise(dlg_license->window);
+	}
+}
+
+
+void license_destroy(void)
+{
+	if (dlg_license) {
+		gtk_widget_destroy(dlg_license);
+		dlg_license = NULL;
+	}
+}
+
+
+static void license_ok_button_clicked(GtkWidget* widget, gpointer data)
+{
+	license_destroy();
+}
+
 
 static void license_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *tmp;
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_license), "license_text");
+	tmp = lookup_widget(dlg_license, "license_text");
 	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
 }
 
 
-
-GtkWidget*
+static GtkWidget*
 create_dlg_license (void)
 {
   GtkWidget *dlg_license;
@@ -120,9 +153,9 @@ create_dlg_license (void)
   gtk_signal_connect (GTK_OBJECT (dlg_license), "realize",
                       GTK_SIGNAL_FUNC (license_realize),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_license));
+  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
+                      GTK_SIGNAL_FUNC (license_ok_button_clicked),
+                      NULL);
 
   gtk_widget_grab_focus (ok_button);
   gtk_widget_grab_default (ok_button);

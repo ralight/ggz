@@ -84,11 +84,11 @@
 	  <has_focus>True</has_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_license</object>
-	    <last_modification_time>Fri, 28 Jul 2000 03:21:35 GMT</last_modification_time>
+	    <handler>license_ok_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 03:10:50 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
