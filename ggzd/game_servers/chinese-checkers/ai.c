@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers AI module
  * Date: 01/01/2001
  * Desc: Artificial Intelligence for Chinese Checkers
- * $Id: ai.c 2300 2001-08-28 05:35:33Z jdorje $
+ * $Id: ai.c 2807 2001-12-08 21:14:29Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -64,7 +64,7 @@ void ai_move(unsigned char *ro, unsigned char *co,
 	int max_rd=0, max_cd=0, max_ro=0, max_co=0, t_rd, t_cd;
 
 	/* Calculate the point we want to move to */
-	dest = (homes[ggzd_seats_num()-1][(int)game.turn]+3) % 6;
+	dest = (homes[ggzdmod_get_num_seats(game.ggz)-1][(int)game.turn]+3) % 6;
 	dest_r = homexy[dest][0];
 	dest_c = homexy[dest][1];
 

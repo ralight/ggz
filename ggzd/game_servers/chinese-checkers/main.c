@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2807 2001-12-08 21:14:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,16 +34,20 @@
 
 int main(void)
 {
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
+	
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
+	game_init(ggz);
 
-	game_init();
-
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
-	(void)ggzd_main_loop();
+	(void)ggzdmod_connect(ggz);
+	(void)ggzdmod_loop(ggz);
+	(void)ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }
