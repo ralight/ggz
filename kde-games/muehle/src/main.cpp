@@ -46,6 +46,7 @@ int main(int argc, char **argv)
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
 		"http://ggz.sourceforge.net/games/muehle/",
 		"dr_maux@users.sourceforge.net");
+	about->addAuthor("Josef Spillner", "Programming", "dr_maux@users.sourceforge.net");
 
 	KCmdLineArgs::init(argc, argv, about);
 	KCmdLineArgs::addCmdLineOptions(op);

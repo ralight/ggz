@@ -549,6 +549,9 @@ void Board::setVariant(const QString &variant)
 	}
 	f.close();
 	web->setScale(width() / 100.0);
+
+	m_repaint = 1;
+	repaint();
 }
 
 // Enable network mode
@@ -560,6 +563,9 @@ void Board::enableNetwork(bool enabled)
 
 	if(!enabled)
 	{
+		m_blackstones = 9;
+		m_whitestones = 9;
+
 		emit signalScore(i18n("You"), Toplevel::statusplayer, 0, 9);
 		emit signalScore(i18n("AI"), Toplevel::statusopponent, 0, 9);
 		emit signalStatus(i18n("Good luck."));
