@@ -42,28 +42,33 @@ void QCw::paintEvent(QPaintEvent *e)
 	for(int j = 0; j < m_height; j++)
 		for(int i = 0; i < m_width; i++)
 		{
-			switch(m_board[i][j])
+			switch(m_board[i][j][0])
 			{
 				case 0:
 					p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0.0, 0.0, 160.0)));
 					for(int n = 0; n < 10; n++)
 						p.drawPoint(rand() % 20 + i * 20, rand() % 20 + j * 20);
 					break;
+				case 1:
+				case 2:
+					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
+					break;
+				case 3:
+					p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200.0, 200.0, 0.0)));
+					break;
+				default:
+					cout << "huh? " << m_board[i][j][0] << endl;
+			}
+
+			switch(m_board[i][j][1])
+			{
 				case -1:
-					//p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
 					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(200.0, 200.0, 0.0)));
 					break;
 				case -2:
-					//p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
 					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(250.0, 250.0, 0.0)));
 					break;
-				case 1:
-					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
-				default:
-					cout << "huh? " << m_board[i][j] << endl;
 			}
-
-			if(m_board[i][j] == 3) p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200.0, 200.0, 0.0)));
 		}
 
 	for(int i = 0; i < m_numplayers; i++)
@@ -114,20 +119,26 @@ void QCw::setSize(int width, int height)
 	if(m_board)
 	{
 		for(int i = 0; i < m_width; i++)
+		{
+			for(int j = 0; j < m_height; j++)
+				free(m_board[i][j]);
 			free(m_board[i]);
+		}
 		free(m_board);
 	}
 
-	m_board = (int**)malloc(width * sizeof(int));
+	m_board = (int***)malloc(width * sizeof(int));
 	for(int i = 0; i < width; i++)
-		m_board[i] = (int*)malloc(height * sizeof(int));
+	{
+		m_board[i] = (int**)malloc(height * sizeof(int));
+		for(int j = 0; j < height; j++)
+			m_board[i][j] = (int*)malloc(2);
+	}
 
-	/*
-	srandom(time(NULL));
+	/*srandom(time(NULL));*/
 	for(int j = 0; j < height; j++)
 		for(int i = 0; i < width; i++)
-			m_board[i][j] = rand() % 2;
-	*/
+			m_board[i][j][1] = 0;
 }
 
 void QCw::mousePressEvent(QMouseEvent *e)
@@ -142,7 +153,7 @@ void QCw::mousePressEvent(QMouseEvent *e)
 
 	if(m_state == normal)
 	{
-		if(m_board[x][y] == 1)
+		if(m_board[x][y][0] == 1)
 		{
 			m_x = x;
 			m_y = y;
@@ -152,7 +163,7 @@ void QCw::mousePressEvent(QMouseEvent *e)
 	else
 	{
 		m_state = normal;
-		if(m_board[x][y] == 0)
+		if(m_board[x][y][0] == 0)
 			emit signalMove(m_x, m_y, x, y);
 	}
 
@@ -168,7 +179,14 @@ void QCw::setStone(int x, int y, int value)
 {
 	if((x < 0) || (y < 0) || (x >= m_width) || (y >= m_height)) return;
 
-	m_board[x][y] = value;
+	m_board[x][y][0] = value;
+}
+
+void QCw::setStoneState(int x, int y, int state)
+{
+	if((x < 0) || (y < 0) || (x >= m_width) || (y >= m_height)) return;
+
+	m_board[x][y][1] = state;
 }
 
 void QCw::addPlayer(int x, int y)
@@ -184,3 +202,4 @@ void QCw::setPlayerPixmap(int player, int pixmap)
 	if((player < 0) || (player > m_numplayers)) return;
 	m_players[player][2] = pixmap;
 }
+

@@ -13,6 +13,7 @@ class QCw : public QWidget
 		~QCw();
 		void setSize(int width, int height);
 		void setStone(int x, int y, int value);
+		void setStoneState(int x, int y, int state);
 		
 		void addPlayer(int x, int y);
 		void setPlayerPixmap(int player, int pixmap);
@@ -29,7 +30,7 @@ class QCw : public QWidget
 			selected
 		};
 		int m_width, m_height;
-		int **m_board;
+		int ***m_board;
 		int m_x, m_y;
 		int m_state;
 		int m_players[4][3];

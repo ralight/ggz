@@ -313,15 +313,17 @@ void Krosswater::slotZoneBroadcast()
 	}
 
 	cout << "Got move: " << fromx << ", " << fromy << " -> " << tox << ", " << toy << endl;
-	qcw->setStone(fromx, fromy, -1);
+	qcw->setStoneState(fromx, fromy, -1);
 	qcw->repaint();
 	sleep(1);
-	qcw->setStone(tox, toy, -2);
+	qcw->setStoneState(tox, toy, -2);
 	qcw->repaint();
 	sleep(1);
 	qcw->setStone(fromx, fromy, 0);
 	qcw->repaint();
 	//sleep(1);
 	qcw->setStone(tox, toy, 1);
+	qcw->setStoneState(tox, toy, 0);
+	qcw->setStoneState(fromx, fromy, 0);
 	qcw->repaint();
 }
