@@ -1,49 +1,65 @@
 This is a summary of common tasks when rolling out a release.
 It should be understood as advice, which is backed by previous experience.
+Printed out it comes handy with all those checkboxes :)
 
 Quite some time before release
 ------------------------------
-* update documentation.
-  This includes both the docs/ module in all its glory, as well as manpages and
-  individual program documentation.
-* check TODO files
-* regression tests: anything gotten worse since last release?
-* update translations (i18n), see separate document 'Internationalization'
-* inform 3rd party game authors
-* hunt bugs, keep the number of new ones low
-* organize game blitzes
+[] update documentation.
+   This includes both the docs/ module in all its glory, as well as manpages and
+   individual program documentation, and also generated docs (doxygen).
+[] check TODO files
+[] regression tests: anything gotten worse since last release?
+[] update translations (i18n), see separate document 'Internationalization'
+[] inform 3rd party game authors
+[] hunt bugs, keep the number of new ones low
+[] organize game blitzes
 
 Directly before release
 -----------------------
-* update build instruction.
-  Affected files are README.GGZ and QuickStart.GGZ.
-  Does 'make distcheck' work?
-* update NEWS and README
-* bump version numbers
-  Protocol version numbers should be controlled by
-  /docs/games/game-development/games.html
-* update toplevel ChangeLog files with CVS history
-* inform distributors
-* update permanent stable game servers
-  Currently, this is ggz.snafu.de.
-  Also, the metaserver should contain an entry for the previous version,
-  pointing to a convenience host.
+[] update build instruction.
+   Affected files are README.GGZ and QuickStart.GGZ.
+   Does 'make distcheck' work?
+   (For gtk-games and kde-games you'll need "make DESTDIR=~/ggz distcheck".)
+[] update RPM and Debian scripts if possible
+[] update NEWS and README
+[] bump version numbers
+   This includes configure.in, man pages, Doxygen files, and hard-coded values.
+   Protocol version numbers should be controlled by
+   /docs/games/game-development/games.html
+[] decide which library interface versions must be bumped
+   (libtool only - see info libtool for the concept)
+[] update toplevel ChangeLog files with CVS history
+   cvs2cl --accum --usermap usertable-for-changelog
+[] inform distributors
+   (currently: Debian, Gentoo)
+[] update permanent stable game servers
+   Currently, this is ggz.snafu.de.
+   Also, the metaserver should contain an entry for the previous version,
+   pointing to a convenience host.
+   Announce on ggz-servers.
 
 During release
 --------------
-* tag CVS with symbolic tag 'ggz-x-y-z'
-* create and upload source tarballs
-* web site synchronization
-  The release announcement as well as several common files should be updated.
-  This includes the QuickStart and README.GGZ files, and everything under
-  docs/.
-* announce on various game-related websites
-  Examples are happypenguin.org, linuxgames.com, SF games foundry, holarse.net,
-  freshmeat.
-* find some time to actually play one of our games once, celebrating the release
+[] tag CVS with symbolic tag 'ggz-x-y-z'
+[] create source tarballs, and upload them to the SF release manager section
+[] web site synchronization - test success with md5 hash sums.
+   The release announcement as well as several common files should be updated.
+   This includes the QuickStart.GGZ and README.GGZ files, and everything under
+   docs/:
+    - API documentation
+    - games.html and features.html
+    - guides
+    - user docs, grubby docs
+   The download page (dl.php) must be updated manually.
+[] announce on various game-related websites
+   Examples are happypenguin.org, linuxgames.com, SF games foundry, holarse.net,
+   freshmeat, linuxgaming.co.uk.
+   Announce on ggz-dev.
+[] find some time to actually play one of our games once, celebrating the
+   release, help first-time users
 
 After release
 -------------
-* Check each and every problem
-* Update roadmap, decide which playground stuff goes gold next time
+[] Check each and every problem
+[] Update roadmap, decide which playground stuff goes gold next time
 
