@@ -30,7 +30,7 @@
 struct game_function_pointers {
 	/* initializing */
 	void	(*init_game)();			/* initialize the game data */
-	int	(*get_options)();		/* determine/request options */
+	int	(*get_options)(int);		/* determine/request options from given player fd */
 	void	(*handle_options)();		/* handle options from player */
 
 	/* messaging */

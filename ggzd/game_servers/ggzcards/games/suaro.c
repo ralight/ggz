@@ -32,7 +32,7 @@
 #include "suaro.h"
 
 static void suaro_init_game();
-static int suaro_get_options();
+static int suaro_get_options(int fd);
 static void suaro_handle_options(int *options);
 static void suaro_start_bidding();
 static int suaro_get_bid();
@@ -105,15 +105,8 @@ static void suaro_init_game()
 	game.last_trick = 1;	/* show "last trick" */
 }
 
-static int suaro_get_options()
-{
-        int fd;
-	fd = ggz_seats[game.host].fd;
-	if (fd == -1) {
-		ggz_debug("SERVER BUG: nonexistent host.");
-		return -1;
-	}
-  		
+static int suaro_get_options(int fd)
+{  		
 	/* four options for now:
 	 *   shotgun -> boolean
 	 *   unlimited redoubling -> boolean

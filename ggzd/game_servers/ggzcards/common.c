@@ -908,6 +908,7 @@ int handle_join_event(player_t player)
 int handle_newgame_event(player_t player)
 {
 	int ready = 0;
+	int fd;
 	player_t p;
 
 	ggz_debug("Handling a newgame event for player %d/%s.", player, ggz_seats[player].name);
@@ -915,7 +916,8 @@ int handle_newgame_event(player_t player)
 	ready = 1;
 	ggz_debug("Determining options.");
 	if (player == game.host && !game.options_initted &&
-	    game.funcs->get_options() < 0) {
+	    (fd = ggz_seats[game.host].fd) != 0 &&
+	    game.funcs->get_options(fd) < 0) {
 		ggz_debug("Error in game_get_options.  Using defaults.");
 		game.options_initted = 1;
 	}

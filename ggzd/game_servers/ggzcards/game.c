@@ -216,19 +216,9 @@ void game_init_game()
  *   is handled by game_handle_options.  Options are optional; it can
  *   be left as-is for a game that has no options.
  */
-int game_get_options()
+int game_get_options(int fd)
 {
-	int fd;
-	fd = ggz_seats[game.host].fd;
-	if (fd == -1) {
-		ggz_debug("SERVER BUG: nonexistent host.");
-		return -1;
-	}
-	switch (game.which_game) {
-		default:
-			game.options_initted = 1; /* no options */
-			break;
-	}	
+	game.options_initted = 1; /* no options */
 	return 0;
 }
 

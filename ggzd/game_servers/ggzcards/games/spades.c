@@ -33,7 +33,7 @@
 #include "spades.h"
 
 static void spades_init_game();
-static int spades_get_options();
+static int spades_get_options(int fd);
 static void spades_handle_options(int* options);
 static int spades_get_bid();
 static int spades_deal_hand();
@@ -91,14 +91,8 @@ static void spades_init_game()
 	game.name = "Spades";
 }
 
-static int spades_get_options()
+static int spades_get_options(int fd)
 {
-	int fd;
-	fd = ggz_seats[game.host].fd;
-	if (fd == -1) {
-		ggz_debug("SERVER BUG: nonexistent host.");
-		return -1;
-	}
 	/* three options:
 	 *   target score: 100, 250, 500, 1000
 	 *   nil value: 50, 100
