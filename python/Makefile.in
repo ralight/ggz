@@ -99,6 +99,8 @@ install-rest:
 	mkdir -p $(DESTDIR)$(prefix)/bin/
 	cp escape-sdl/escape-sdl $(DESTDIR)$(prefix)/bin
 	$(ggz-config) --install --force --modfile=escape-sdl/module.dsc
+	mkdir -p $(DESTDIR)$(prefix)/share/applications/
+	cp escape-sdl/escape-sdl.desktop $(DESTDIR)$(prefix)/share/applications
 
 	@echo Installing game Xadrez Chines
 	mkdir -p $(DESTDIR)$(prefix)/bin/
@@ -115,6 +117,8 @@ install-rest:
 	$(ggz-config) --install --force --modfile=xadrez-chines/module.dsc
 	cp xadrez-chines/xadrez-chines-server.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
 	cp xadrez-chines/xadrez-chines-server.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
+	mkdir -p $(DESTDIR)$(prefix)/share/applications/
+	cp xadrez-chines/xadrez-chines.desktop $(DESTDIR)$(prefix)/share/applications
 
 	@echo Installing external game GNU Go support files
 	mkdir -p $(DESTDIR)$(prefix)/bin/
@@ -144,6 +148,8 @@ install-ggzboard:
 	cp ggzboard/*.jpg $(DESTDIR)$(prefix)/share/ggz/ggzboard
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/common/
 	cp ggzboard/common/*.png $(DESTDIR)$(prefix)/share/ggz/ggzboard/common
+	mkdir -p $(DESTDIR)$(prefix)/share/applications/
+	cp ggzboard/ggzboard.desktop $(DESTDIR)$(prefix)/share/applications
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/chess
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/go

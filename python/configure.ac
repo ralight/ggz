@@ -74,7 +74,9 @@ AC_SUBST(enable_rsvgsdl)
 
 AC_CONFIG_FILES([
 	Makefile
+	escape-sdl/escape-sdl.desktop
 	escape-sdl/module.dsc
+	xadrez-chines/xadrez-chines.desktop
 	xadrez-chines/module.dsc
 	xadrez-chines/xadrez-chines-server.dsc
 	go/module.dsc
@@ -82,6 +84,7 @@ AC_CONFIG_FILES([
 	pyggzmod/setup.py
 	pyggzdmod/setup.py
 	pyggzcore/setup.py
+	ggzboard/ggzboard.desktop
 	ggzboard/module_go.dsc
 	ggzboard/module_chess.dsc
 	ggzboard/module_checkers.dsc

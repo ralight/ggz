@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=GGZBoard
+GenericName=SDL board games collection
+GenericName[de]=SDL-Brettspielesammlung
+GenericName[fr]=Jeux de société
+Comment=GGZ games: Chess, Checkers, Go, ...
+Comment[de]=GGZ-Spiele: Schach, Dame, Go, ...
+Comment[fr]=Jeux GGZ: L'échecs, Dame, Go, ...
+
+Type=Application
+Exec=@prefix@/bin/ggzboard
+Icon=@prefix@/share/ggz/ggzboard/common/icon.png
+Terminal=false
+Categories=X-GGZ-Games;BoardGame;Game;

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=Xadrez Chinês
+GenericName=Chinese Chess game
+GenericName[de]=Chinesisches Schach
+Comment=GGZ game
+Comment[de]=GGZ-Spiel
+
+Type=Application
+Exec=@prefix@/bin/xadrez-chines
+Icon=
+Terminal=false
+Categories=X-GGZ-Games;BoardGame;Game;

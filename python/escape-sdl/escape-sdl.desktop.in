@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=Escape/SDL
+GenericName=Board game
+GenericName[de]=Brettspiel
+Comment=GGZ game
+Comment[de]=GGZ-Spiel
+
+Type=Application
+Exec=@prefix@/bin/escape-sdl
+Icon=
+Terminal=false
+Categories=X-GGZ-Games;BoardGame;Game;
