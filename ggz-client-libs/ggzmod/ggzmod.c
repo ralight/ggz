@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4926 2002-10-15 01:39:35Z jdorje $
+ * $Id: ggzmod.c 4927 2002-10-15 01:57:43Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -281,20 +281,27 @@ int ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
 	return 0;
 }
 
+static void _ggzmod_set_player(GGZMod *ggzmod,
+			       const char *name,
+			       int is_spectator, int seat_num)
+{
+	if (ggzmod->my_name)
+		ggz_free(ggzmod->my_name);
+	ggzmod->my_name = ggz_strdup(name);
+
+	ggzmod->i_am_spectator = is_spectator;
+	ggzmod->my_seat_num = seat_num;
+}
+
 void _ggzmod_handle_player(GGZMod *ggzmod,
 			   const char *name,
 			   int is_spectator, int seat_num)
 {
+	/* FIXME: better event data */
 	int old[2] = {ggzmod->i_am_spectator, ggzmod->my_seat_num};
 
 	assert(ggzmod->type == GGZMOD_GAME);
-
-	if (ggzmod->my_name)
-		ggz_free(ggzmod->my_name);
-	ggzmod->my_name = name;
-
-	ggzmod->i_am_spectator = is_spectator;
-	ggzmod->my_seat_num = seat_num;
+	_ggzmod_set_player(ggzmod, name, is_spectator, seat_num);
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED)
 		call_handler(ggzmod, GGZMOD_EVENT_PLAYER, old);
@@ -320,11 +327,7 @@ int ggzmod_set_player(GGZMod *ggzmod, const char *name,
 	    || ggzmod->type != GGZMOD_GGZ)
 		return -1;
 
-	if (ggzmod->my_name)
-		ggz_free(ggzmod->my_name);
-	ggzmod->my_name = ggz_strdup(name);
-	ggzmod->i_am_spectator = is_spectator;
-	ggzmod->my_seat_num = seat_num;
+	_ggzmod_set_player(ggzmod, name, is_spectator, seat_num);
 
 	if (ggzmod->state != GGZMOD_STATE_CREATED)
 		_io_send_player(ggzmod->fd, name, is_spectator, seat_num);

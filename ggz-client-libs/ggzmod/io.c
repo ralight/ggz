@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4926 2002-10-15 01:39:35Z jdorje $
+ * $Id: io.c 4927 2002-10-15 01:57:43Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -82,9 +82,8 @@ int _io_send_state(int fd, GGZModState state)
 
 int _io_send_player(int fd, const char *name, int is_spectator, int seat_num)
 {
-	assert(name);
 	if (ggz_write_int(fd, MSG_GAME_PLAYER) < 0
-	    || ggz_write_string(fd, name) < 0
+	    || ggz_write_string(fd, name ? name : "") < 0
 	    || ggz_write_int(fd, is_spectator) < 0
 	    || ggz_write_int(fd, seat_num) < 0)
 		return -1;
@@ -96,13 +95,9 @@ int _io_send_seat(int fd, GGZSeat *seat)
 {
 	if (ggz_write_int(fd, MSG_GAME_SEAT) < 0
 	    || ggz_write_int(fd, seat->num) < 0
-	    || ggz_write_int(fd, seat->type) < 0)
+	    || ggz_write_int(fd, seat->type) < 0
+	    || ggz_write_string(fd, seat->name ? seat->name : "") < 0)
 		return -1;
-
-	if (seat->type == GGZ_SEAT_PLAYER
-	    || seat->type == GGZ_SEAT_RESERVED)
-		if (ggz_write_string(fd, seat->name) < 0)
-			return -1;
 
 	return 0;
 }
@@ -197,8 +192,11 @@ static int _io_read_msg_player(GGZMod *ggzmod)
 	    || ggz_read_int(ggzmod->fd, &seat_num) < 0)
 		return -1;
 
-	_ggzmod_handle_player(ggzmod, name, is_spectator, seat_num);
+	_ggzmod_handle_player(ggzmod,
+			      name[0] == '\0' ? NULL : name,
+			      is_spectator, seat_num);
 
+	ggz_free(name);
 	return 0;
 }
 
@@ -207,13 +205,14 @@ static int _io_read_msg_seat(GGZMod *ggzmod)
 	GGZSeat seat = {name: NULL};
 
 	if (ggz_read_int(ggzmod->fd, &seat.num) < 0
-	    || ggz_read_int(ggzmod->fd, (int*)&seat.type) < 0)
-		return -1;
-
-	if (seat.type == GGZ_SEAT_PLAYER
-	    || seat.type == GGZ_SEAT_RESERVED) {
-		if (ggz_read_string_alloc(ggzmod->fd, &seat.name) < 0)
+	    || ggz_read_int(ggzmod->fd, (int*)&seat.type) < 0
+	    || ggz_read_string_alloc(ggzmod->fd, &seat.name) < 0)
 		  return -1;
+
+	/* Detect no-name case */
+	if (seat.name[0] == '\0') {
+		ggz_free(seat.name);
+		seat.name = NULL;
 	}
 
 	_ggzmod_handle_seat(ggzmod, &seat);
