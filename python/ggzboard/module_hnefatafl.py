@@ -11,6 +11,7 @@ class Game:
 		self.width = 9
 		self.height = 9
 		self.swaptiles = 0
+		self.autoscaletiles = 0
 		self.setonly = 0
 
 		self.board = (None)

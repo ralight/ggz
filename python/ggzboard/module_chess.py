@@ -1,63 +1,70 @@
 #!/usr/bin/env python
-# GGZBoard Checkers: Checkers game module for the GGZBoard container
+# GGZBoard Chess: Chess game module for the GGZBoard container
 # Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
 from Numeric import *
 import random
 
+import ggzchess
+
 class Game:
 	def __init__(self):
 		self.width = 8
 		self.height = 8
 		self.swaptiles = 1
+		self.autoscaletiles = 1
 		self.setonly = 0
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
 
-		self.board[0][1] = ("piece", "w")
-		self.board[0][3] = ("piece", "w")
-		self.board[0][5] = ("piece", "w")
-		self.board[0][7] = ("piece", "w")
-		self.board[1][0] = ("piece", "w")
-		self.board[1][2] = ("piece", "w")
-		self.board[1][4] = ("piece", "w")
-		self.board[1][6] = ("piece", "w")
-		self.board[2][1] = ("piece", "w")
-		self.board[2][3] = ("piece", "w")
-		self.board[2][5] = ("piece", "w")
-		self.board[2][7] = ("piece", "w")
+		self.board[0][0] = ("rook", "w")
+		self.board[0][1] = ("knight", "w")
+		self.board[0][2] = ("bishop", "w")
+		self.board[0][3] = ("queen", "w")
+		self.board[0][4] = ("king", "w")
+		self.board[0][5] = ("bishop", "w")
+		self.board[0][6] = ("knight", "w")
+		self.board[0][7] = ("rook", "w")
+		self.board[1][0] = ("pawn", "w")
+		self.board[1][1] = ("pawn", "w")
+		self.board[1][2] = ("pawn", "w")
+		self.board[1][3] = ("pawn", "w")
+		self.board[1][4] = ("pawn", "w")
+		self.board[1][5] = ("pawn", "w")
+		self.board[1][6] = ("pawn", "w")
+		self.board[1][7] = ("pawn", "w")
 
-		self.board[5][0] = ("piece", "b")
-		self.board[5][2] = ("piece", "b")
-		self.board[5][4] = ("piece", "b")
-		self.board[5][6] = ("piece", "b")
-		self.board[6][1] = ("piece", "b")
-		self.board[6][3] = ("piece", "b")
-		self.board[6][5] = ("piece", "b")
-		self.board[6][7] = ("piece", "b")
-		self.board[7][0] = ("piece", "b")
-		self.board[7][2] = ("piece", "b")
-		self.board[7][4] = ("piece", "b")
-		self.board[7][6] = ("piece", "b")
+		self.board[7][0] = ("rook", "b")
+		self.board[7][1] = ("knight", "b")
+		self.board[7][2] = ("bishop", "b")
+		self.board[7][3] = ("queen", "b")
+		self.board[7][4] = ("king", "b")
+		self.board[7][5] = ("bishop", "b")
+		self.board[7][6] = ("knight", "b")
+		self.board[7][7] = ("rook", "b")
+		self.board[6][0] = ("pawn", "b")
+		self.board[6][1] = ("pawn", "b")
+		self.board[6][2] = ("pawn", "b")
+		self.board[6][3] = ("pawn", "b")
+		self.board[6][4] = ("pawn", "b")
+		self.board[6][5] = ("pawn", "b")
+		self.board[6][6] = ("pawn", "b")
+		self.board[6][7] = ("pawn", "b")
 
 		self.isover = 0
+
+		ggzchess.init(ggzchess.WHITE, 2)
 
 	def name(self):
 		return "Chess"
 
 	def figure(self, piece):
 		(gfx, color) = piece
-		if color == "w":
-			colorstr = "white"
-		else:
-			colorstr = "black"
-		if gfx == "piece":
-			piecestr = "piece"
-		else:
-			piecestr = "king"
-		return "checkers/" + piecestr + "-" + colorstr + ".svg"
+		colorstr = color
+		piecestr = gfx
+		return "chess/" + piecestr + "_" + colorstr + ".svg"
 
 	def validatemove(self, fromcolor, frompos, topos):
 		(oldx, oldy) = frompos
@@ -75,9 +82,6 @@ class Game:
 		elif self.board[oldy][oldx] is None:
 			valid = 0
 			reason = "no piece selected"
-		elif self.board[y][x] is not None:
-			valid = 0
-			reason = "cannot move to occupied square"
 		else:
 			f = self.board[oldy][oldx]
 			(gfx, color) = f
@@ -86,55 +90,10 @@ class Game:
 			if color != fromcolor:
 				valid = 0
 				reason = "not your piece"
-			elif not (x + y) % 2:
-				valid = 0
-				reason = "moves only allowed on dark squares"
 			else:
-				if gfx == "piece":
-					moves = (0, 1)
-					jumps = (0, 2)
-				elif gfx == "king":
-					moves = (-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7)
-					jumps = (-2, 0, 2)
-				if fromcolor == "w":
-					factor = 1
-				else:
-					factor = -1
-				move = (y - oldy) * factor
-				if abs(y - oldy) != abs(x - oldx):
-					valid = 0
-					reason = "move only allowed diagonally"
-				elif move not in moves:
-					if move not in jumps:
-						valid = 0
-						reason = "move too long"
-					else:
-						f2 = self.board[(oldy + y) / 2][(oldx + x) / 2]
-						if f2:
-							(gfx2, color2) = f2
-							if color2 == fromcolor:
-								valid = 0
-								reason = "must jump over opponent (black) piece"
-						else:
-							valid = 0
-							reason = "must jump over a piece"
-				else:
-					xfactor = 1
-					yfactor = 1
-					if oldy > y:
-						yfactor = -1
-					if oldx > x:
-						xfactor = -1
-					for p in range(abs(y - oldy)):
-						if p == 0 or p == 1:
-							continue
-						tmpx = oldx + p * xfactor
-						tmpy = oldy + p * yfactor
-						print "move-empty-check", p, tmpx, tmpy
-						f = self.board[tmpy][tmpx]
-						if f:
-							valid = 0
-							reason = "far jump is not allowed"
+				valid = ggzchess.move(oldy * 8 + oldx, y * 8 + x, 0)
+				if not valid:
+					reason = "(ggzchess engine said so)"
 
 		if valid == 0:
 			print reason
@@ -154,60 +113,24 @@ class Game:
 		return ret
 
 	def aimove(self):
-		ret = 0
-		frompos = -1
-		topos = -1
-		value = 0
-		for j in range(8):
-			for i in range(8):
-				f = self.board[j][i]
-				if f:
-					(gfx, color) = f
-					if color == "b":
-						frompostmp = (i, j)
-						if value < 2:
-							jumpmoves = ((i - 2, j - 2), (i + 2, j - 2))
-							if gfx == "king":
-								jumpmoves = ((i - 2, j - 2), (i + 2, j - 2), (i - 2, j + 2), (i + 2, j + 2))
-							for topostmp in jumpmoves:
-								valid = self.validatemove(color, frompostmp, topostmp)
-								if valid:
-									frompos = frompostmp
-									topos = topostmp
-									print "AIMOVE(2)", frompos, topos
-									ret = 1
-									value = 2
-						if value < 1:
-							movemoves = ((i - 1, j - 1), (i + 1, j - 1))
-							for topostmp in movemoves:
-								valid = self.validatemove(color, frompostmp, topostmp)
-								if valid:
-									frompos = frompostmp
-									topos = topostmp
-									print "AIMOVE(1)", frompos, topos
-									ret = 1
-									value = 1
+		(ret, (fromval, toval)) = ggzchess.find(ggzchess.BLACK)
+		frompos = (fromval % 8, fromval / 8)
+		topos = (toval % 8, toval / 8)
 		if ret == 0:
 			self.isover = 1
+		else:
+			ggzchess.move(fromval, toval, 0)
 		return (ret, frompos, topos) 
 
 	def domove(self, frompos, topos):
-		if self.validatemove("", frompos, topos):
-			(oldx, oldy) = frompos
-			(x, y) = topos
-			self.board[y][x] = self.board[oldy][oldx]
-			self.board[oldy][oldx] = None
+		#if self.validatemove("", frompos, topos):
+		(oldx, oldy) = frompos
+		(x, y) = topos
+		self.board[y][x] = self.board[oldy][oldx]
+		self.board[oldy][oldx] = None
 
-			if y == 0 or y == 7:
-				f = self.board[y][x]
-				(gfx, color) = f
-				gfx = "king"
-				self.board[y][x] = (gfx, color)
-				print "move-executor: kingification"
-			if abs(y - oldy) == 2:
-				if self.board[(y + oldy) / 2][(x + oldx) / 2]:
-					self.board[(y + oldy) / 2][(x + oldx) / 2] = None
-					print "move-executor: remove-jumped-piece"
+		if ggzchess.checkmate():
+			self.isover = 1
 
 	def over(self):
 		return self.isover

@@ -35,11 +35,57 @@ class Conf:
 		self.fullscreen = 0
 
 class GGZBoardUI:
-	def __init__(self):
+	def __init__(self, resolution):
+		self.origsurface = None
 		self.surface = None
-		self.font = None
-		self.smallfone = None
+		self.backgroundarea = pygame.Surface(resolution)
+
 		self.screen = None
+		self.origres = resolution
+		self.currentres = resolution
+		self.isfullscreen = 0
+
+		self.font = None
+		self.smallfont = None
+
+	def initfonts(self):
+		self.font = pygame.font.SysFont("vera", 48)
+		self.smallfont = pygame.font.SysFont("vera", 24)
+
+	def togglefullscreen(self):
+		self.isfullscreen = not self.isfullscreen
+		if self.isfullscreen:
+			modes = pygame.display.list_modes(0, FULLSCREEN)
+			if modes != -1:
+				self.currentres = modes[0]
+				self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF)
+				pygame.display.toggle_fullscreen()
+			else:
+				pygame.display.toggle_fullscreen()
+		else:
+			self.currentres = self.origres
+			self.screen = pygame.display.set_mode(self.currentres, DOUBLEBUF)
+
+		if self.origsurface.get_size() == self.currentres:
+			self.surface = self.deepcopy(self.origsurface)
+		else:
+			self.surface = pygame.transform.scale(self.origsurface, self.currentres)
+		self.backgroundarea = self.deepcopy(self.surface)
+
+	def deepcopy(self, surface):
+		s = pygame.Surface(surface.get_size())
+		s.blit(surface, (0, 0))
+		return s
+
+	def setsurface(self, surface):
+			if surface:
+				self.origsurface = pygame.image.load(surface)
+				self.surface = pygame.transform.scale(self.origsurface, self.currentres)
+				self.backgroundarea = self.deepcopy(self.surface)
+			else:
+				self.origsurface = pygame.Surface(self.currentres)
+				self.surface = self.deepcopy(self.origsurface)
+				self.backgroundarea = self.deepcopy(self.surface)
 
 class GGZBoard:
 	def __init__(self):
@@ -54,10 +100,11 @@ class GGZBoard:
 		tmp.fill(bgcolor)
 		tmp.set_alpha(self.conf.alpha)
 		surface.blit(tmp, (x1, y1))
-		surface.fill(color, ((x1, y1), (1, h)))
-		surface.fill(color, ((x1, y1), (w, 1)))
-		surface.fill(color, ((x1, y1 + h), (w, 1)))
-		surface.fill(color, ((x1 + w, y1), (1, h)))
+		if color:
+			surface.fill(color, ((x1, y1), (1, h)))
+			surface.fill(color, ((x1, y1), (w, 1)))
+			surface.fill(color, ((x1, y1 + h), (w, 1)))
+			surface.fill(color, ((x1 + w, y1), (1, h)))
 
 	def svgsurface(self, filename, width, height):
 		rawdata = rsvgsdl.render(filename, width, height)
@@ -89,28 +136,23 @@ class GGZBoard:
 
 	def main(self, ggzmode):
 		self.conf = Conf()
-		self.ui = GGZBoardUI()
+		self.ui = GGZBoardUI(self.conf.resolution)
 
 		pygame.init()
 		pygame.display.set_caption("GGZBoard")
 
-		self.ui.screen = pygame.display.set_mode(self.conf.resolution, DOUBLEBUF)
+		self.ui.initfonts()
+
+		self.ui.screen = pygame.display.set_mode(self.ui.currentres, DOUBLEBUF)
 		if self.conf.fullscreen:
-			pygame.display.toggle_fullscreen()
+			self.ui.toggle_fullscreen()
 
-		if self.conf.background:
-			self.ui.surface = pygame.image.load(self.conf.background)
-		else:
-			self.ui.surface = pygame.Surface(self.conf.resolution)
-
-		self.ui.font = pygame.font.SysFont("vera", 48)
-		self.ui.smallfont = pygame.font.SysFont("vera", 24)
+		self.ui.setsurface(self.conf.background)
 
 		if not self.game:
 			self.intro()
-			if self.conf.background:
-				self.ui.surface = pygame.image.load(self.conf.background)
-		self.rungame()
+		if self.game:
+			self.rungame()
 
 	def intro(self):
 		ui = self.ui
@@ -118,8 +160,7 @@ class GGZBoard:
 
 		pygame.display.set_caption("GGZBoard: game selection")
 
-		img = ui.font.render("GGZBoard: game selection", 1, (255, 200, 0))
-		ui.surface.blit(img, (20, 30))
+		title = ui.font.render("GGZBoard: game selection", 1, (255, 200, 0))
 
 		pygame.event.clear()
 
@@ -130,17 +171,22 @@ class GGZBoard:
 		selected = -1
 		gamename = None
 
-		background = pygame.Surface((ui.surface.get_width(), ui.surface.get_height()))
-		background.blit(ui.surface, (0, 0))
+		(posx, posy) = pygame.mouse.get_pos()
 
 		while not gamename:
 			pygame.event.pump()
-			event = pygame.event.poll()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
 
 			if event.type == KEYDOWN:
 				key = event.key
 				if key == K_ESCAPE or pygame.event.peek(QUIT):
 					break
+				if key == K_f:
+					self.ui.togglefullscreen()
+					updatescreen = 1
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos
@@ -155,7 +201,8 @@ class GGZBoard:
 						gamename = self.modulelist[selected]
 
 			if updatescreen:
-				ui.surface.blit(background, (0, 0))
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
 
 				i = 0
 				for module in self.modulelist:
@@ -163,32 +210,35 @@ class GGZBoard:
 					if i == selected:
 						(r, g, b) = color
 						color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
-					self.rect(ui.surface, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
+					self.rect(ui.backgroundarea, (255, 255, 255), 20, i * 50 + 100, 300, 40, color)
 
 					img = ui.smallfont.render(module, 1, (255, 200, 0))
-					ui.surface.blit(img, (30, i * 50 + 100 + 10))
+					ui.backgroundarea.blit(img, (30, i * 50 + 100 + 10))
 					i += 1
 
-				ui.screen.blit(ui.surface, (0, 0))
+				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
-			pygame.display.flip()
+				pygame.display.flip()
 
-		self.loadgame(gamename)
+		if gamename:
+			self.loadgame(gamename)
 
 	def rungame(self):
 		conf = self.conf
 		game = self.game
 		ui = self.ui
 
-		pygame.display.set_caption("GGZBoard: " + self.game.name())
+		self.ui.backgroundarea = self.ui.deepcopy(self.ui.surface)
 
-		img = ui.font.render("GGZBoard: " + game.name(), 1, (255, 200, 0))
-		ui.surface.blit(img, (20, 30))
+		pygame.display.set_caption("GGZBoard: " + game.name())
+
+		title = ui.font.render("GGZBoard: " + game.name(), 1, (255, 200, 0))
 
 		pygame.event.clear()
 
 		updatescreen = 1
+		rescalescreen = 1
 
 		board = game.board
 
@@ -198,20 +248,35 @@ class GGZBoard:
 		shift = 0
 		inputallowed = 1
 
-		width = (conf.cellwidth + conf.cellspace)
-		height = (conf.cellheight + conf.cellspace)
-
-		game.background = pygame.Surface((ui.surface.get_width(), ui.surface.get_height()))
-		game.background.blit(ui.surface, (0, 0))
+		(posx, posy) = pygame.mouse.get_pos()
 
 		while 1:
 			pygame.event.pump()
-			event = pygame.event.poll()
+			if updatescreen:
+				event = pygame.event.poll()
+			else:
+				event = pygame.event.wait()
+
+			if rescalescreen:
+				if game.autoscaletiles:
+					conf.cellwidth = (ui.currentres[1] - 150) / game.width
+					conf.cellheight = (ui.currentres[1] - 150) / game.height
+
+				width = (conf.cellwidth + conf.cellspace)
+				height = (conf.cellheight + conf.cellspace)
+
+				rescalescreen = 0
+				updatescreen = 1
 
 			if event.type == KEYDOWN:
 				key = event.key
 				if key == K_ESCAPE or pygame.event.peek(QUIT):
 					break
+				if key == K_f:
+					self.ui.togglefullscreen()
+					rescalescreen = 1
+				if key == K_r:
+					updatescreen = 1
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos
@@ -250,7 +315,13 @@ class GGZBoard:
 						oldy = -1
 
 			if updatescreen:
-				ui.surface.blit(game.background, (0, 0))
+				ui.backgroundarea = ui.deepcopy(ui.surface)
+				ui.backgroundarea.blit(title, (20, 30))
+
+				if not inputallowed:
+					w = ui.backgroundarea.get_width()
+					h = ui.backgroundarea.get_height()
+					self.rect(ui.backgroundarea, None, 0, 0, w, h, (0, 0, 0))
 
 				for j in range(0, game.height):
 					for i in range(0, game.width):
@@ -262,19 +333,20 @@ class GGZBoard:
 							color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
 						sx = i * width + conf.marginwidth
 						sy = j * height + conf.marginheight
-						self.rect(ui.surface, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
+						self.rect(ui.backgroundarea, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
 						if board[j][i]:
 							img = self.svgsurface(game.figure(board[j][i]), conf.cellwidth, conf.cellheight)
-							ui.surface.blit(img, (sx, sy))
+							ui.backgroundarea.blit(img, (sx, sy))
 
-				ui.screen.blit(ui.surface, (0, 0))
+				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0
 
-			pygame.display.flip()
+				pygame.display.flip()
 
 			if inputallowed and game.over():
 				aiturn = 0
 				inputallowed = 0
+				updatescreen = 1
 
 			if aiturn:
 				aiturn = 0
@@ -290,16 +362,35 @@ class GGZBoard:
 
 if __name__ == "__main__":
 	ggzmode = 0
+	help = 0
 	gamename = None
+	param = 0
 
-	for i in range(len(sys.argv)):
+	for i in range(1, len(sys.argv)):
 		#print sys.argv[i]
-		if sys.argv[i] == "--ggz":
+		if sys.argv[i] == "-g" or sys.argv[i] == "--ggz":
 			ggzmode = 1
-		elif sys.argv[i] == "--game":
+		elif sys.argv[i] == "-h" or sys.argv[i] == "--help":
+			help = 1
+		elif sys.argv[i] == "-G" or sys.argv[i] == "--game":
 			gamename = sys.argv[i + 1]
+			param = 1
 		else:
-			pass
+			if param:
+				param = 0
+			else:
+				print "Unknown option:", sys.argv[i]
+
+	if help:
+		print "GGZBoard - common board game client for GGZ"
+		print "Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>"
+		print "Published under GNU GPL conditions"
+		print ""
+		print "Options:"
+		print "[-h | --help           ] Display this game help"
+		print "[-g | --ggz            ] Request game in GGZ mode"
+		print "[-G | --game <gamename>] Skip intro screen and launch game directly"
+		sys.exit(0)
 
 	core = GGZBoard()
 	core.load(gamename)
