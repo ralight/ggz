@@ -2,11 +2,11 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 6645 2005-01-13 06:42:30Z jdorje $
+ * $Id: chat.c 6884 2005-01-24 17:51:16Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
- * Copyright (C) 2000 Justin Zaun.
+ * Copyright (C) 2000-2005 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -712,7 +712,7 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 static const gchar *chat_get_color(const gchar *name, const gchar *msg)
 {
 	unsigned int pos;
-	char *srv_handle;
+	const char *srv_handle;
 	int c;
 	static gchar color[16];
 

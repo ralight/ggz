@@ -2,11 +2,11 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: ggzclient.c 6884 2005-01-24 17:51:16Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
- * Copyright (C) 2000-2002 Justin Zaun.
+ * Copyright (C) 2000-2005 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,7 +169,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id,
 				   const void *event_data,
 				   const void *user_data)
 {
-	gchar *password;
+	const gchar *password;
 	gchar *message;
 	gchar *title;
 
