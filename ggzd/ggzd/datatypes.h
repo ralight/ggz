@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 3076 2002-01-12 06:02:51Z jdorje $
+ * $Id: datatypes.h 3077 2002-01-12 06:12:25Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -71,9 +71,13 @@ typedef struct GGZState {
 typedef struct GameInfo {
 	pthread_rwlock_t lock;
 	char *name;
-	char version[MAX_GAME_VER_LEN];
+	char *version;
+	
+	/* Protocol data - the protocol engine is the name of the
+	   protocol, and the version is the protocol version.  These
+	   need not match up with the gametype. */
 	char p_engine[MAX_GAME_PROTOCOL_LEN];
-	char p_version[MAX_GAME_VER_LEN];
+	char *p_version;
 	char desc[MAX_GAME_DESC_LEN];
 	char author[MAX_GAME_AUTH_LEN];
 	char homepage[MAX_GAME_WEB_LEN];

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3076 2002-01-12 06:02:51Z jdorje $
+ * $Id: parse_opt.c 3077 2002-01-12 06:12:25Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -447,11 +447,9 @@ static void parse_game(char *name, char *dir)
 	game_info->name = ggz_conf_read_string(ch, "GameInfo",
 					      "Name", "<Unnamed Game>");
 
-	strval = ggz_conf_read_string(ch, "GameInfo", "Version", NULL);
-	if(strval) {
-		strncpy(game_info->version, strval, MAX_GAME_VER_LEN);
-		free(strval);
-	}
+	game_info->version = ggz_conf_read_string(ch, "GameInfo",
+						  "Version", "");
+
 	strval = ggz_conf_read_string(ch, "GameInfo", "Description", NULL);
 	if(strval) {
 		strncpy(game_info->desc, strval, MAX_GAME_DESC_LEN);
@@ -498,11 +496,8 @@ static void parse_game(char *name, char *dir)
 		strncpy(game_info->p_engine, strval, MAX_GAME_PROTOCOL_LEN);
 		free(strval);
 	}
-	strval = ggz_conf_read_string(ch, "Protocol", "Version", NULL);
-	if(strval) {
-		strncpy(game_info->p_version, strval, MAX_GAME_VER_LEN);
-		free(strval);
-	}
+	game_info->p_version = ggz_conf_read_string(ch, "Protocol",
+						    "Version", "");
 
 	/* [TableOptions] */
 	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
