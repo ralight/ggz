@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 4378 2002-08-20 21:19:06Z jdorje $
+ * $Id: main.c 4566 2002-09-15 09:57:47Z dr_maux $
  *
  * This is the main program body for the GGZ client
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <ggz.h>   /* libggz */
 
@@ -78,7 +78,7 @@ int main (int argc, char *argv[])
 	char *global_conf, *user_conf, *init_version;
 	
 #ifdef ENABLE_NLS
-	bindtextdomain("ggz-gtk", NULL);
+	bindtextdomain("ggz-gtk", PACKAGE_LOCALE_DIR);
 	textdomain("ggz-gtk");
 	setlocale(LC_ALL, "");
 #endif
