@@ -1,0 +1,8 @@
+[Desktop Entry]
+Comment=Zone abcde
+Exec=zone
+Icon=zone
+Name=Zone
+ServiceTypes=Application
+Type=Service
+X-KDE-Library=libzone

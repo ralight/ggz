@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment[de]=GGZ-Client für Entwickler
+Comment[en]=GGZ client for developers
+Comment[fr]=GGZ client pour developpeurs
+Exec=ggz-txt
+Icon=ggz-txt
+MimeType=application/zone;Application
+Name[de]=GGZ (text client)
+Name[en]=GGZ (text client)
+Name[fr]=GGZ (text client)
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=true
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

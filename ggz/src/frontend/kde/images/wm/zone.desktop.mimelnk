@@ -1,0 +1,8 @@
+[Desktop Entry]
+Comment[de]=Open Source Internet-Spiele
+Comment[en]=Open Source Internet games
+Hidden=false
+Icon=zone
+MimeType=application/zone
+Patterns=*.zone
+Type=MimeType

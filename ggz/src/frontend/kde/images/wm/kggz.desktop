@@ -1,9 +1,13 @@
 [Desktop Entry]
+Comment[en]=The GNU Gaming Zone for KDE 2
 Comment[de]=Die GNU Gaming Zone für KDE 2
+Comment[fr]=La GNU Gaming Zone pour KDE 2
 Exec=kggz
 Icon=kggz
-MimeType=
+MimeType=application/zone;Application
+Name[en]=KGGZ
 Name[de]=KGGZ
+Name[fr]=KGGZ
 Path=
 ServiceTypes=
 SwallowExec=

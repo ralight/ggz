@@ -1,0 +1,12 @@
+important:
+-games launching/configuring
+
+features i'd like to see in kggz:
+-when player clicks on link in the chat, optionally switch to browser
+-kggz_embedded (resizeable widgets like chat, player list, rooms list + in-client scalable games (e.g. 3d))
+-provide hyperlinks (URLs and email) in games list
+-game updates via FTP work properly (in combination with ggz-config)
+-some more KDE games for GGZ (like GGZilla, hehe)
+-smaller icons
+-grubby dialog functionality
+-edit servers (kggz_profiles)

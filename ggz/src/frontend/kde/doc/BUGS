@@ -1,0 +1,7 @@
+known bugs:
+-connection state color not shown properly (together with lag-meter)
+-ioc
+-player list not updated correctly if s.o. leaves a room
+-incorporation of some kggz_settings values
+-players list (double!), tables list
+-connecting and disconnecting lets game menus disappear
