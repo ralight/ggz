@@ -9,7 +9,7 @@ noinst_HEADERS = display.h
 INCLUDES = $(GGZMOD_INCLUDES) $(SDL_CFLAGS)
 
 ttt3ddir = $(ggzdatadir)/ttt3d
-ttt3d_DATA = board.bmp cursor.bmp figure.bmp lines.bmp
+dist_ttt3d_DATA = board.bmp cursor.bmp figure.bmp lines.bmp
 
 EXTRA_DIST = HOWTOPLAY
 
