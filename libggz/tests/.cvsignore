@@ -9,6 +9,7 @@ testfile
 read_line
 cfgtest
 cfg_testfile
+ggzcommon
 misc
 strcmp
 debug.log

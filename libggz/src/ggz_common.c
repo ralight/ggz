@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 4185 2002-05-11 05:43:27Z bmh $
+ * $Id: ggz_common.c 4506 2002-09-11 03:25:20Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -62,4 +62,29 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 		return GGZ_SEAT_PLAYER;
 	else
 		return GGZ_SEAT_NONE;
+}
+
+char *bool_to_str(int bool_val)
+{
+	if (bool_val)
+		return "true";
+	else
+		return "false";
+}
+
+/* Convert a possibly-null string that should contain "true" or "false"
+   to a boolean (int) value.  The default value is returned if an invalid
+   or empty value is sent. */
+int str_to_bool(const char *str, int dflt)
+{
+	if (!str)
+		return dflt;
+  
+	if (strcasecmp(str, "true") == 0)
+		return 1;
+
+	if (strcasecmp(str, "false") == 0)
+		return 0;
+
+	return dflt;
 }

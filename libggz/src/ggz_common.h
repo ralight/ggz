@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4187 2002-05-11 16:02:38Z bmh $
+ * $Id: ggz_common.h 4506 2002-09-11 03:25:20Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -82,6 +82,57 @@ char *ggz_seattype_to_string(GGZSeatType type);
  *  @note This is the inverse of ggz_seattype_to_string.
  */
 GGZSeatType ggz_string_to_seattype(const char *type_str);
+
+
+/** @brief Convert a string to a boolean.
+ * 
+ *  The string should contain "true" or "false".
+ *  @param str The string in question.
+ *  @param dflt The default, if the string is unreadible or NULL.
+ *  @return The boolean value.
+ */
+int str_to_bool(const char *str, int dflt);
+
+/** @brief Convert a boolean value to a string.
+ *
+ *  @param bool_value A boolean value.
+ *  @return "true" or "false", as appropriate.
+ */
+char *bool_to_str(int bool_val);
+
+/**
+ * @defgroup numberlist Number lists
+ *
+ * These functions provide a method for storing and retrieving a simple list
+ * of positive integers.  The list must follow a very restrictive form:
+ * each value within [1..32] may be included explicitly in the list.  Higher
+ * values may only be included as the part of a single given range [x..y].
+ */
+
+/** @brief The number list type. */
+typedef struct {
+	int values;
+	int min, max;
+} GGZNumberList;
+
+/** @brief Return an empty number list. */
+GGZNumberList ggz_numberlist_new(void);
+
+/** @brief Read a number list from a text string.
+ *
+ *  The string is comprised of a list of values (in the range 1..32)
+ *  separated by spaces, followed by an optional range (separated by "..").
+ *  Examples: "2 3 4", "2..4", "1..1000", "2, 3, 10 15-50"
+ */
+GGZNumberList ggz_numberlist_read(char* text);
+
+/** @brief Write a number list to a ggz-malloc'd text string. */
+char *ggz_numberlist_write(GGZNumberList *list);
+
+/** @brief Check to see if the given value is set in the number list. */
+int ggz_numberlist_isset(GGZNumberList *list, int value);
+
+/** }@ */
 
 
 /*
