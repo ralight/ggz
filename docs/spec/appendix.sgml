@@ -1388,7 +1388,7 @@
             client and each player can only be at one table at a time.  The
             join will be initiated when the client sends either a 
             <link linkend="req.table.join">JOIN</link> request to join an
-            existing table or a <link linkend="req.launch">LAUNCH</link>
+            existing table or a <link linkend="req.table.launch">LAUNCH</link>
             request to launch a new table (and subsequently join it).
       </para>
       <refsect2>
@@ -1400,7 +1400,7 @@
 	      <para>
                 The index of the table that has been joined.  This will be
                 a non-negative integer corresponding to the index sent in
-                the <link linkend="rsp.table">TABLE</link> tag.
+                the <link linkend="rsp.list.table">TABLE</link> tag.
 	      </para>
 	    </listitem>
 	  </varlistentry>
