@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4885 2002-10-12 19:53:38Z jdorje $
 
 SUBDIRS = . pixmaps maps
 
@@ -19,7 +19,6 @@ ggzexecmod_PROGRAMS = ggz.combat
 ggz_combat_SOURCES =					\
 			callbacks.c	callbacks.h	\
 			combat.h	combat.c	\
-			dlg_about.c	dlg_about.h	\
 			dlg_options.c	dlg_options.h	\
 			game.c		game.h		\
 			gtk_player_info.c		\

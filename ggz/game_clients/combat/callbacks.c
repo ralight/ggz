@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 3709 2002-03-28 08:22:02Z jdorje $
+ * $Id: callbacks.c 4885 2002-10-12 19:53:38Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -29,6 +29,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
+#include "dlg_about.h"
 #include "dlg_exit.h"
 
 #include "callbacks.h"
@@ -37,7 +38,6 @@
 #include "combat.h"
 #include "game.h"
 #include "dlg_options.h"
-#include "dlg_about.h"
 
 extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;
@@ -239,7 +239,5 @@ void
 on_about_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  GtkWidget *about;
-  about = create_about_dlg();
-  gtk_widget_show(about);
+	create_or_raise_dlg_about();
 }

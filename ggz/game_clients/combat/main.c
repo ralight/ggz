@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4885 2002-10-12 19:53:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -39,6 +39,8 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+#include "dlg_about.h"
+
 #include "combat.h"
 #include "game.h"
 #include "interface.h"
@@ -59,6 +61,7 @@ combat_game cbt_game;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void init_about_dialog(void);
 
 static GGZMod *mod;
 
@@ -83,6 +86,7 @@ int main(int argc, char *argv[]) {
 	ggz_intl_init("combat");
 
 	gtk_init(&argc, &argv);
+	init_about_dialog();
 
 	game_init();
 
@@ -144,4 +148,21 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void init_about_dialog(void)
+{
+	init_dlg_about(_("About Combat"),
+		       _("Combat, a stratego (tm) game for GGZ"),
+		       _("Author:\n"
+			 "Ismael Orenstein\n"
+			 "<perdig@linuxbr.com.br>\n"
+			 "\n"
+			 "Special thanks to:\n"
+			 "Justin G. Zaun\n"
+			 "Rich Gade\n"
+			 "And all the GGZ team\n"
+			 "\n"
+			 "For more information on Stratego, visit:\n"
+			 "http://www.inficad.com/~ecollins/stratego/"));
 }
