@@ -24,6 +24,7 @@ AC_PROG_CPP
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
 AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 
 dnl Check for GGZ libraries
 dnl =======================
@@ -34,7 +35,9 @@ dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(sys/time.h unistd.h)
+AC_HEADER_TIME
+AC_CHECK_HEADERS([sys/time.h unistd.h socket.h winsock.h arpa/inet.h fcntl.h \
+		  netdb.h netinet/in.h pthread.h])
 
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -42,25 +45,17 @@ dnl ============================================================
 AC_C_CONST
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
-AC_HEADER_TIME
 
 
 dnl Check for library functions
 dnl ===========================
-AC_CHECK_FUNC(select)
-AC_CHECK_FUNC(socket, ,
-    [AC_CHECK_LIB(socket, socket,
-	[AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
-	    AC_MSG_ERROR(*** Cannot find socket headers ); exit )],
-	AC_MSG_ERROR(*** Cannot find socket library ); exit )])
+AC_CHECK_LIB(socket, socket, LDADD="$LDADD -lsocket")
+AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl")
+AC_FUNC_VPRINTF
+AC_FUNC_SELECT_ARGTYPES
+AC_CHECK_FUNCS([select socket gethostbyname inet_ntoa memmove strcasecmp \
+		strchr strdup malloc realloc gethostname])
 
-AC_CHECK_FUNC(gethostbyname, ,
-    [AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
-
-AC_CHECK_FUNC(inet_ntoa, ,
-    [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
 dnl Use -Wall if we have gcc.
 dnl ========================
