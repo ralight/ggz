@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	}
 	printf("Grubby: connect...\n");
 
-	(core->net_connect)(core->host, 5688, core->name, core->guestname);
+	(core->net_connect)(core->host, 5688, core->name, core->guestname, core->logfile);
 	while(1)
 	{
 		switch((core->net_status)())

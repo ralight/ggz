@@ -21,7 +21,7 @@ Guru **queue = NULL;
 int queuelen = 1;
 char *guruname = NULL;
 char *guruguestname = NULL;
-FILE *logfile;
+FILE *logstream = NULL;
 
 /* Prototypes */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
@@ -33,7 +33,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
 
-void net_internal_init()
+void net_internal_init(const char *logfile)
 {
 	GGZOptions opt;
 	int ret;
@@ -42,8 +42,7 @@ void net_internal_init()
 	opt.debug_file = "/tmp/doobadoo"; /* In ggzcore 0.0.5 this can be NULL, but we want to be save */
 	opt.debug_levels = 0;
 	ret = ggzcore_init(opt);
-	/* Improve this! (configurable log file) */
-	logfile = fopen("/tmp/guruchatlog", "a");
+	if(logfile) logstream = fopen(logfile, "a");
 }
 
 void net_internal_queueadd(const char *player, const char *message, int type)
@@ -95,9 +94,9 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	queue[queuelen - 1] = NULL;
 }
 
-void net_connect(const char *host, int port, const char *name, const char *guestname)
+void net_connect(const char *host, int port, const char *name, const char *guestname, const char *logfile)
 {
-	net_internal_init();
+	net_internal_init(logfile);
 
 	guruname = (char*)name;
 	guruguestname = (char*)guestname;
@@ -233,10 +232,10 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	}
 
 	/* Logging here? */
-	if(logfile)
+	if(logstream)
 	{
-		fprintf(logfile, "[%s]: %s\n", player, message);
-		fflush(logfile);
+		fprintf(logstream, "[%s]: %s\n", player, message);
+		fflush(logstream);
 	}
 	
 	return GGZ_HOOK_OK;

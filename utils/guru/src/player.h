@@ -24,6 +24,7 @@ struct player_t
 	char *realname;
 	int firstseen, lastseen, lastactive;
 	char *language;
+	char *contact;
 	char *publicinfo;
 	int status;
 	struct player_t *origin;

@@ -1,3 +1,11 @@
+/*
+
+IMPORTANT:
+This is only a copy of guru/src/player.c!!!!!!
+It's here because of automake restrictions
+
+*/
+
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby

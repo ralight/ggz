@@ -8,10 +8,12 @@ This is my setup for the current version of grubby:
 name = Grubby
 autojoin = 0
 owner = josef
+host = localhost
+logfile = /tmp/guruchatlog
  
 [guru]
 net = /usr/local/lib/libguru_netggz.so
-modules = self badword programming exec simplereturn
+modules = self people badword programming exec simplereturn
   
 [modules]
 simplereturn = /usr/local/lib/libgurumod_simplereturn.so
@@ -19,6 +21,7 @@ exec = /usr/local/lib/libgurumod_exec.so
 programming = /usr/local/lib/libgurumod_programming.so
 badword = /usr/local/lib/libgurumod_badword.so
 self = /usr/local/lib/libgurumod_self.so
+people = /usr/local/lib/libgurumod_people.so
 
 ================================
 /home/josef/.ggz/guru/modexec.rc

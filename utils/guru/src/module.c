@@ -46,6 +46,7 @@ Gurucore *guru_module_init()
 	strcat(core->guestname, "(G)");
 	core->owner = ggzcore_confio_read_string(handler, "preferences", "owner", NULL);
 	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
+	core->logfile = ggzcore_confio_read_string(handler, "preferences", "logfile", NULL);
 
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);

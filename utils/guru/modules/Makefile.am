@@ -5,7 +5,8 @@ lib_LTLIBRARIES = \
 	libgurumod_programming.la \
 	libgurumod_exec.la \
 	libgurumod_badword.la \
-	libgurumod_self.la
+	libgurumod_self.la \
+	libgurumod_people.la
 
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
 
@@ -18,6 +19,9 @@ libgurumod_badword_la_SOURCES = badword.c
 libgurumod_badword_la_LIBADD = -lggzcore
 
 libgurumod_self_la_SOURCES = self.c
+
+libgurumod_people_la_SOURCES = people.c player.c
+#libgurumod_people_la_SOURCES = people.c ../src/player.o <-- new automake supports that!
 
 INCLUDES = -I../src
 
