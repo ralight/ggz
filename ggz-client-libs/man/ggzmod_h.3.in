@@ -1,4 +1,4 @@
-.TH "ggzmod.h" 3 "7 Aug 2002" "GGZMod" \" -*- nroff -*-
+.TH "ggzmod.h" 3 "1 Oct 2002" "GGZMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -104,8 +104,6 @@ ggzmod.h \- Common functions for interfacing a game server and GGZ.
 .PP 
 Common functions for interfacing a game server and GGZ.
 .PP
- 
-.PP
  This file contains all libggzmod functions used by game servers to interface with GGZ (and vice versa). Just include \fBggzmod.h\fP and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
 .PP
 GGZmod currently provides an event-driven interface. Data from communication sockets is read in by the library, and a handler function (registered as a callback) is invoked to handle any events. The calling program should not read/write data from/to the GGZ socket unless it really knows what it is doing.
@@ -127,7 +125,7 @@ Event handler prototype.
 .PP
 A function of this type will be called to handle a ggzmod event. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fImod\fP\fP
@@ -157,7 +155,7 @@ Each of these is a possible GGZmod event. For each event, the table may register
 .in +1c
 \fBGGZModHandler\fP , \fBggzmod_set_handler\fP 
 .PP
-\fBEnumeration values:\fP
+\fBEnumeration values: \fP
 .in +1c
 .TP
 \fB\fI\fIGGZMOD_EVENT_STATE\fP \fP\fP
@@ -182,7 +180,7 @@ More specifically, the game is in the CREATED state when it is first executed. I
 .PP
 Each time the game state changes, a GGZMOD_EVENT_STATE event will be propogated to the game server. 
 .PP
-\fBEnumeration values:\fP
+\fBEnumeration values: \fP
 .in +1c
 .TP
 \fB\fI\fIGGZMOD_STATE_CREATED\fP \fP\fP
@@ -202,7 +200,7 @@ The 'type' of ggzmod.
 .PP
 The 'flavor' of GGZmod object this is. Affects what operations are allowed. 
 .PP
-\fBEnumeration values:\fP
+\fBEnumeration values: \fP
 .in +1c
 .TP
 \fB\fI\fIGGZMOD_GGZ\fP \fP\fP
@@ -222,7 +220,7 @@ When called by the game server, this function makes the physical connection to g
 .TP
 When called by ggz, it will launch a table and connect to it. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -240,7 +238,7 @@ When called by the game server, this function stops the connection to GGZ. It sh
 .TP
 When called by the GGZ server, this function will kill and clean up after the table. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -263,7 +261,7 @@ It will monitor input from player sockets only if a handler is registered for th
 .TP
 It will call an event handler as necessary. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -278,7 +276,7 @@ Destroy a finished ggzmod object.
 .PP
 After the connection is through, the object may be freed. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -287,7 +285,7 @@ The GGZMod object.
 .PP
 Get the file descriptor for the GGZMod socket.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -302,7 +300,7 @@ Return gamedata pointer.
 .PP
 Each GGZMod object can be given a 'gamedata' pointer that is returned by this function. This is useful for when a single process serves multiple GGZmod's. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -319,7 +317,7 @@ A pointer to the gamedata block (or NULL if none).
 .PP
 Get the fd of the game server connection.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -332,7 +330,7 @@ The server connection fd
 .PP
 Get the current state of the table.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -345,7 +343,7 @@ The state of the table.
 .PP
 Get the type of the ggzmod object.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -360,7 +358,7 @@ Create a new ggzmod object.
 .PP
 Before connecting through ggzmod, a new ggzmod object is needed. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fItype\fP\fP
@@ -373,7 +371,7 @@ The type of ggzmod. Should be GGZMOD_GAME for game servers.
 .PP
 Set gamedata pointer.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -391,7 +389,7 @@ Set a handler for the given event.
 .PP
 As described above, GGZmod uses an event-driven structure. Each time an event is called, the event handler (there can be only one) for that event will be called. This function registers such an event handler. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fImod\fP\fP
@@ -416,7 +414,7 @@ GGZmod must execute and launch the game to start a table; this function allows g
 .in +1c
 This should not be called by the table, only ggz. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -435,7 +433,7 @@ The pwd directory must already exist.
 .PP
 Set the fd of the game server connection.
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
@@ -450,7 +448,7 @@ Change the table's state.
 .PP
 This function should be called to change the state of a table. A game can use this function to change state between WAITING and PLAYING, or to set it to DONE. 
 .PP
-Parameters: \fP
+\fBParameters: \fP
 .in +1c
 .TP
 \fB\fIggzmod\fP\fP
