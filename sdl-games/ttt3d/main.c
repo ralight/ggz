@@ -74,7 +74,7 @@ static void game_handle_io(void)
 			break;
 		case TTT_REQ_MOVE:
 			cursor = 0;
-			cursormove = 1;
+			cursormove = 2;
 			break;
 		case TTT_RSP_MOVE:
 			ggz_read_char(gamefd, &status);
