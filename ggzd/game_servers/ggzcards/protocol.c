@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 2405 2001-09-08 23:03:15Z jdorje $
+ * $Id: protocol.c 2409 2001-09-08 23:58:40Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -60,4 +60,14 @@ int read_opcode(int fd, int *opcode)
 int write_opcode(int fd, int opcode)
 {
 	return es_write_int(fd, opcode);
+}
+
+int read_seat(int fd, int *seat)
+{
+	return es_read_int(fd, seat);
+}
+
+int write_seat(int fd, int seat)
+{
+	return es_write_int(fd, seat);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2405 2001-09-08 23:03:15Z jdorje $
+ * $Id: common.c 2409 2001-09-08 23:58:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -116,7 +116,7 @@ int send_player_list(player_t p)
 		/* FIXME: is this the correct way to handle things when we
 		   send out seats before the game has been determined? */
 
-		if (es_write_int(fd, get_seat_status(s_abs)) < 0 ||
+		if (write_int(fd, get_seat_status(s_abs)) < 0 ||
 		    es_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
 	}
@@ -143,7 +143,7 @@ int send_play(card_t card, seat_t seat)
 		if (fd == -1)
 			continue;
 		if (write_opcode(fd, WH_MSG_PLAY) < 0
-		    || es_write_int(fd, CONVERT_SEAT(seat, p)) < 0
+		    || write_seat(fd, CONVERT_SEAT(seat, p)) < 0
 		    || write_card(fd, card) < 0)
 			status = -1;
 	}
@@ -184,7 +184,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 			status = -1;
 		for (i = 0; i < winner_cnt; i++) {
 			seat_t ws = game.players[winners[i]].seat;
-			if (es_write_int(fd, CONVERT_SEAT(ws, p)) < 0)
+			if (write_seat(fd, CONVERT_SEAT(ws, p)) < 0)
 				status = -1;
 		}
 	}
@@ -302,7 +302,7 @@ int req_play(player_t p, seat_t s)
 		if (fd == -1)
 			ggzd_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
 		if (write_opcode(fd, WH_REQ_PLAY) < 0
-		    || es_write_int(fd, s_r) < 0)
+		    || write_seat(fd, s_r) < 0)
 			return -1;
 	}
 
@@ -412,7 +412,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 		   reveal ? "" : "not ");
 
 	if (write_opcode(fd, WH_MSG_HAND) < 0
-	    || es_write_int(fd, CONVERT_SEAT(s, p)) < 0
+	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
 	    || es_write_int(fd, game.seats[s].hand.hand_size) < 0)
 		status = -1;
 
@@ -450,7 +450,7 @@ void send_trick(player_t winner)
 			continue;
 
 		write_opcode(fd, WH_MSG_TRICK);
-		es_write_int(fd, CONVERT_SEAT(game.players[winner].seat, p));
+		write_seat(fd, CONVERT_SEAT(game.players[winner].seat, p));
 	}
 }
 
