@@ -30,7 +30,7 @@ function random_array($size)
 	return $y;
 }
 
-$conn = pg_connect("host=localhost dbname=ggz user=ggzd password=ggzd");
+$conn = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 
 $datestamp = strtotime($form_date);
 $datestring = date("d.m.Y", $datestamp);

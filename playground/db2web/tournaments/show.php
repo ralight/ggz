@@ -8,7 +8,7 @@
 
 <?php
 
-$conn = pg_connect("host=localhost dbname=ggz user=ggzd password=ggzd");
+$conn = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 
 $res = pg_exec($conn, "SELECT * FROM tournaments");
 

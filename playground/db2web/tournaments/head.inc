@@ -21,3 +21,7 @@ GGZ Gaming Zone Tournaments
 
 <table border=0 width='100%'><tr><td valign=top>
 
+<?php
+include('.htconf');
+?>
+
