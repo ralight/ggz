@@ -145,9 +145,12 @@ void send_global_message_toall(char* mark)
 
 void send_all_global_messages(player_t p)
 {
-	/* TODO: this isn't game-independent */
+	/* TODO: this isn't game-independent;
+	 * I _really_ need to make the messaging system
+	 * more powerful server-side */
 	send_global_message("", p);
 	send_global_message("game", p);
+	send_global_message("Rules", p);
 	send_global_message("Options", p);
 	if (game.last_trick)
 		send_global_message("Last Trick", p);
@@ -1226,7 +1229,15 @@ void init_game()
 
 	cards_create_deck(game.deck_type);
 
+	/* set the game message */
+	if (game.name == NULL)
+		game.name = "Unknown Game";
 	set_global_message("game", "%s", game.name);
+
+	/* set the Rules message */
+	if (game.rules_url == NULL)
+		game.rules_url = "http://pagat.com/"; /* Could we just refer people to ggz.sf.net? */
+	set_global_message("Rules", "You can read the rules of this game at\n%s.", game.rules_url);
 
 	/* allocate hands */
 	for (s=0; s<game.num_seats; s++) {

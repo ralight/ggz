@@ -157,6 +157,7 @@ void game_init_game()
 			game.max_bid_length = 13;
 			game.max_hand_length = 9;
 			game.name = "Suaro";
+			game.rules_url = "http://suaro.dhs.org/";
 			game.target_score = 50;
 			SUARO.shotgun = 1;	/* shotgun suaro */
 			SUARO.declarer = -1;

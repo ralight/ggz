@@ -87,6 +87,7 @@ struct wh_game_t {
 	game_type_t which_game;	/* the game; currently defined in cards.h */
 	deck_type_t deck_type;	/* the type of deck used, as defined in cards.h */
 	char* name;		/* the name of the game */
+	char* rules_url;	/* the URL of where to read the game's rules */
 
 	int initted;		/* has the game been initialized? */
 	int num_options;	/* the number of options the game has */
