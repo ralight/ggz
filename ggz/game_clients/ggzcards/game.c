@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4064 2002-04-23 19:58:44Z jdorje $
+ * $Id: game.c 4086 2002-04-26 19:37:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -105,7 +105,14 @@ void game_send_options(int option_count, int *options_selection)
 void game_play_card(int card_num)
 {
 	int player = ggzcards.play_hand, status;
-	card_t card = ggzcards.players[player].hand.cards[card_num];
+	card_t card;
+	
+	if (preferences.collapse_hand)
+		card = ggzcards.players[player].hand.cards[card_num];
+	else {
+		assert(ggzcards.players[player].u_hand[card_num].is_valid);
+		card = ggzcards.players[player].u_hand[card_num].card;
+	}
 	
 	assert(player >= 0 && player < ggzcards.num_players);
 
@@ -137,14 +144,28 @@ void game_play_card(int card_num)
 #ifdef DEBUG
 static void game_play_card2(card_t card)
 {
-	int i;
-	hand_t *hand = &ggzcards.players[ggzcards.play_hand].hand;
+	int i, hand_size;
+	int p = ggzcards.play_hand;
 	
-	for (i = 0; i < hand->hand_size; i++)
-		if (are_cards_equal(card, hand->cards[i])) {
+	if (preferences.collapse_hand)
+		hand_size = ggzcards.players[p].hand.hand_size;
+	else
+		hand_size = ggzcards.players[p].u_hand_size;
+	
+	for (i = 0; i < hand_size; i++) {
+		card_t hand_card;
+		if (preferences.collapse_hand)
+			hand_card = ggzcards.players[p].hand.cards[i];
+		else {
+			if (!ggzcards.players[p].u_hand[i].is_valid)
+				continue;
+			hand_card = ggzcards.players[p].u_hand[i].card;
+		}
+		if (are_cards_equal(card, hand_card)) {
 			game_play_card(i);
 			return;
 		}
+	}
 	assert(0);
 	game_play_card(0);
 }

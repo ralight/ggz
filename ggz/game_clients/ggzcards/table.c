@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4083 2002-04-26 06:18:29Z jdorje $
+ * $Id: table.c 4086 2002-04-26 19:37:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -62,7 +62,9 @@ static const char* player_messages[MAX_NUM_PLAYERS] = {NULL};
 
 static gboolean table_ready = FALSE;
 
-/* the card currently selected from the playing hand */
+/* The card currently selected from the playing hand.  Note that this
+   has a slightly different meaning depending on whether
+   preferences.collapse_hand is set or not. */
 static int selected_card = -1;
 
 void table_show_table(int x, int y, int w, int h);
@@ -520,6 +522,7 @@ void table_handle_click_event(GdkEventButton * event)
 	int x, y;
 	int p = ggzcards.play_hand;	/* player whose hand it is */
 	int card_width, card_height;
+	int hand_size;
 
 	/* If it's not our turn to play, we don't care. */
 	if (ggzcards.state != STATE_PLAY)
@@ -544,11 +547,14 @@ void table_handle_click_event(GdkEventButton * event)
 		return;
 
 	/* Calculate our card target */
-	for (target = 0; target < ggzcards.players[p].hand.hand_size;
-	     target++) {
+	hand_size = preferences.collapse_hand
+	            ? ggzcards.players[p].hand.hand_size
+	            : ggzcards.players[p].u_hand_size;
+	for (target = 0; target < hand_size; target++) {
 		int x1, y1;
 		
-		if (!ggzcards.players[p].hand.cards[target].meta)
+		if (!preferences.collapse_hand &&
+		    !ggzcards.players[p].u_hand[target].is_valid)
 			continue;
 		
 		get_card_pos(p, target, &x1, &y1);
@@ -599,6 +605,7 @@ void table_display_hand(int p, int write_to_screen)
 	int x_outer, y_outer;
 	int cx, cy, cw, ch, cxo, cyo;
 	card_t table_card = table_cards[p];
+	int hand_size;
 
 #if 0
 	/* It looks like the server violates this, although it's probably a
@@ -626,13 +633,20 @@ void table_display_hand(int p, int write_to_screen)
 	draw_card_box(p);
 
 	/* Draw the cards */
-	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
-		card_t card = ggzcards.players[p].hand.cards[i];
+	hand_size = preferences.collapse_hand
+	            ? ggzcards.players[p].hand.hand_size
+	            : ggzcards.players[p].u_hand_size;
+	for (i = 0; i < hand_size; i++) {
+		card_t card;
 		int x, y;
 		
-		/* If this is set, then the card is out-of-play. */
-		if (!card.meta)
-			continue;
+		if (preferences.collapse_hand)
+			card = ggzcards.players[p].hand.cards[i];
+		else {
+			if (!ggzcards.players[p].u_hand[i].is_valid)
+				continue;
+			card = ggzcards.players[p].u_hand[i].card;
+		}
 		
 		if (card.face >= 0 && card.face == table_card.face &&
 		    card.suit >= 0 && card.suit == table_card.suit &&

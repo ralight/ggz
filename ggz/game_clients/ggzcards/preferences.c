@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4083 2002-04-26 06:18:29Z jdorje $
+ * $Id: preferences.c 4086 2002-04-26 19:37:51Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -98,8 +98,9 @@ PrefType pref_types[] = {
 	 N_("If this is unset, then when a card is played none of "
 	    "the other cards change position, but an empty spot is "
 	    "left in the hand.  If set, then the hand will be collapsed "
-	    "so that the empty spot is filled."),
-	 &collapse_hand,
+	    "so that the empty spot is filled.  Changing this will take "
+	    "effect immediately, but the transition may not be smooth."),
+	 &preferences.collapse_hand,
 	 TRUE},
 	
 	{"cardlists",
