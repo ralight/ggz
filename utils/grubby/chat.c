@@ -36,7 +36,6 @@ void chat_parse( char *from, char *message )
 
 	old = 0;
 	size = strlen(message);
-	printf("%s\n", message);
 	for( i=0; i<size; i++)
 	{
 		if( message[i] == ':' || message[i] == ',' )
@@ -47,7 +46,6 @@ void chat_parse( char *from, char *message )
 			}
 		}
 	}
-	printf("%s\n", message);
 
 	strncpy(out, message, 1024);
 
