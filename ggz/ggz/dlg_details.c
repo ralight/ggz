@@ -10,16 +10,12 @@
 
 
 /* Global GtkWidget for this dialog */
-GtkWidget *detail_window;
-
-/* Local callbacks which no other file will call */
-void details_cancel_details(GtkButton * button, gpointer user_data);
+GtkWidget *dlg_details;
 
 
 GtkWidget*
 create_dlg_details (void)
 {
-  GtkWidget *dlg_details;
   GtkWidget *dialog_vbox1;
   GtkWidget *scrolled_window;
   GtkWidget *text;
@@ -74,21 +70,13 @@ create_dlg_details (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), cancel_button);
   GTK_WIDGET_SET_FLAGS (cancel_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
-                      GTK_SIGNAL_FUNC (details_cancel_details),
-                      NULL);
+  gtk_signal_connect (GTK_OBJECT (dlg_details), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &dlg_details);
+  gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (dlg_details));
 
   return dlg_details;
-}
-
-
-/*                              *
- *           Callbacks          *
- *                              */
-        
-void details_cancel_details(GtkButton * button, gpointer user_data)
-{
-        gtk_widget_destroy(detail_window);
-        detail_window = NULL;
 }
 

@@ -22,10 +22,15 @@
   <class>GtkDialog</class>
   <name>dlg_about</name>
   <signal>
-    <name>delete_event</name>
-    <handler>about_close</handler>
-    <object>dlg_about</object>
-    <last_modification_time>Thu, 13 Apr 2000 23:21:02 GMT</last_modification_time>
+    <name>realize</name>
+    <handler>dlg_about_realize</handler>
+    <last_modification_time>Fri, 28 Jul 2000 01:51:51 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;dlg_about</data>
+    <last_modification_time>Fri, 28 Jul 2000 03:55:01 GMT</last_modification_time>
   </signal>
   <title>About</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
@@ -39,8 +44,6 @@
     <class>GtkVBox</class>
     <child_name>Dialog:vbox</child_name>
     <name>dialog-vbox1</name>
-    <width>310</width>
-    <height>277</height>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
 
@@ -80,9 +83,9 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>about_close</handler>
+	    <handler>gtk_widget_destroy</handler>
 	    <object>dlg_about</object>
-	    <last_modification_time>Thu, 13 Apr 2000 19:56:06 GMT</last_modification_time>
+	    <last_modification_time>Fri, 28 Jul 2000 03:21:35 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
 	</widget>
@@ -92,6 +95,7 @@
     <widget>
       <class>GtkVBox</class>
       <name>vbox1</name>
+      <border_width>10</border_width>
       <homogeneous>False</homogeneous>
       <spacing>0</spacing>
       <child>
@@ -102,17 +106,33 @@
 
       <widget>
 	<class>GtkLabel</class>
-	<name>label1</name>
-	<label>GNU Gaming Zone</label>
+	<name>title_label</name>
+	<label></label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
 	<yalign>0.5</yalign>
 	<xpad>0</xpad>
 	<ypad>0</ypad>
-	<focus_target>ok_button</focus_target>
 	<child>
 	  <padding>8</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>label4</name>
+	<label>(C) 1999, 2000</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
 	  <expand>False</expand>
 	  <fill>False</fill>
 	</child>
@@ -123,8 +143,9 @@
 	<name>label2</name>
 	<label>Authors:
 		GTK+ Version
+								Brian Cox          (bcox@users.sourceforge.net)
 								Rich Gade									(rgade@users.sourceforge.net)
-								Brent Hendricks		(bmh@users.sourceforge.net)
+								Brent Hendricks	 (bmh@users.sourceforge.net)
 								Justin Zaun							(jzaun@users.sourceforge.net)
 
 		Windows Version

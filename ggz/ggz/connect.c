@@ -59,7 +59,7 @@
 extern struct ConnectInfo client;
 extern struct Game game;
 extern struct GameTypes game_types;
-extern GtkWidget *detail_window;
+extern GtkWidget *dlg_details;
 extern GtkWidget *main_win;
 extern GtkWidget *mnu_tables;
 extern GtkWidget *dlg_login;
@@ -69,8 +69,6 @@ extern gint selected_type;
 extern GdkColor colors[];
 extern struct Rooms room_info;
 extern gint new_type;
-
-GtkWidget *detail_window = NULL;
 
 /* Various local handles */
 static guint sock_handle;
@@ -575,7 +573,7 @@ void connect_msg(const gchar *format, ...)
 	gpointer tmp;
 
 	/* If we're not displaying details then don't bother */
-	if (detail_window == NULL)
+	if (dlg_details == NULL)
 		return;
 	
 	va_start(ap, format);
@@ -583,7 +581,7 @@ void connect_msg(const gchar *format, ...)
 	va_end(ap);
 
 
-	tmp = gtk_object_get_data(GTK_OBJECT(detail_window), "text");
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_details), "text");
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, message, -1);
 	
 	g_free(message);

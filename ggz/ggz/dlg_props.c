@@ -65,7 +65,7 @@ static void props_color_type_toggled (GtkButton *button, gpointer user_data);
 static void props_fok_button_clicked (GtkButton *button, gpointer user_data);
 static void props_fapply_button_clicked (GtkButton *button, gpointer user_data);
 static void props_fcancel_button_clicked (GtkButton *button, gpointer user_data);
-static GtkWidget *create_fontselect (void);
+static GtkWidget *create_dlg_props_font (void);
 static void props_update(void);
 
 
@@ -306,9 +306,12 @@ static void props_delete_button_clicked (GtkButton *button, gpointer user_data)
 
 static void props_Font_button_clicked (GtkButton *button, gpointer user_data)
 {
-	if( dlg_props_font == NULL )
-	{
-		dlg_props_font = create_fontselect();
+	/* If it already exists, bring it to the front */
+	if (dlg_props_font) {
+		gdk_window_show(dlg_props_font->window);
+		gdk_window_raise(dlg_props_font->window);
+	} else {
+		dlg_props_font = create_dlg_props_font();
 		gtk_widget_show(dlg_props_font);
 	}
 }
@@ -317,22 +320,14 @@ static void props_Font_button_clicked (GtkButton *button, gpointer user_data)
 static void props_ok_button_clicked (GtkButton *button, gpointer user_data)
 {
 	/* Save changes, and close the dialog */
-	GtkWidget *tmp;
 	props_update();
 
 	/* Close font selector if open */
-	if (dlg_props_font) {
+	if (dlg_props_font)
 	        gtk_widget_destroy(dlg_props_font);
-        	dlg_props_font = NULL;
-	}
 
 	/* Close the dialog */
         gtk_widget_destroy(dlg_props);
-        dlg_props = NULL;
-        tmp = lookup_widget(main_win, "props_button");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = lookup_widget(main_win, "properties");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 }
 
 
@@ -346,7 +341,6 @@ static void props_apply_button_clicked (GtkButton *button, gpointer user_data)
 static void props_cancel_button_clicked (GtkButton *button, gpointer user_data)
 {
 	/* Close dialog and don't save any changes */
-	GtkWidget *tmp;
 
 	/* 
 	 * Reload profiles to what they were before we messed with
@@ -355,18 +349,11 @@ static void props_cancel_button_clicked (GtkButton *button, gpointer user_data)
 	server_profiles_load();
 
 	/* Close font selector if open */
-	if (dlg_props_font) {
+	if (dlg_props_font)
 	        gtk_widget_destroy(dlg_props_font);
-        	dlg_props_font = NULL;
-	}
 
 	/* Close the dialog */
         gtk_widget_destroy(dlg_props);
-        dlg_props = NULL;
-        tmp = lookup_widget(main_win, "props_button");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = lookup_widget(main_win, "properties");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 }
 
 
@@ -1365,6 +1352,9 @@ create_dlg_props (void)
   gtk_signal_connect (GTK_OBJECT (dlg_props), "realize",
                       GTK_SIGNAL_FUNC (dlg_props_realize),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (dlg_props), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &dlg_props);
   gtk_signal_connect (GTK_OBJECT (props_profile_box), "realize",
                       GTK_SIGNAL_FUNC (props_profile_box_realized),
                       NULL);
@@ -1412,33 +1402,35 @@ create_dlg_props (void)
 }
 
 GtkWidget*
-create_fontselect (void)
+create_dlg_props_font (void)
 {
-  GtkWidget *fontselect;
   GtkWidget *ok_button1;
   GtkWidget *cancel_button1;
   GtkWidget *apply_button1;
 
-  fontselect = gtk_font_selection_dialog_new (_("Select Font"));
-  gtk_object_set_data (GTK_OBJECT (fontselect), "fontselect", fontselect);
-  gtk_container_set_border_width (GTK_CONTAINER (fontselect), 4);
-  gtk_window_set_policy (GTK_WINDOW (fontselect), FALSE, TRUE, TRUE);
+  dlg_props_font = gtk_font_selection_dialog_new (_("Select Font"));
+  gtk_object_set_data (GTK_OBJECT (dlg_props_font), "dlg_props_font", dlg_props_font);
+  gtk_container_set_border_width (GTK_CONTAINER (dlg_props_font), 4);
+  gtk_window_set_policy (GTK_WINDOW (dlg_props_font), FALSE, TRUE, TRUE);
 
-  ok_button1 = GTK_FONT_SELECTION_DIALOG (fontselect)->ok_button;
-  gtk_object_set_data (GTK_OBJECT (fontselect), "ok_button1", ok_button1);
+  ok_button1 = GTK_FONT_SELECTION_DIALOG (dlg_props_font)->ok_button;
+  gtk_object_set_data (GTK_OBJECT (dlg_props_font), "ok_button1", ok_button1);
   gtk_widget_show (ok_button1);
   GTK_WIDGET_SET_FLAGS (ok_button1, GTK_CAN_DEFAULT);
 
-  cancel_button1 = GTK_FONT_SELECTION_DIALOG (fontselect)->cancel_button;
-  gtk_object_set_data (GTK_OBJECT (fontselect), "cancel_button1", cancel_button1);
+  cancel_button1 = GTK_FONT_SELECTION_DIALOG (dlg_props_font)->cancel_button;
+  gtk_object_set_data (GTK_OBJECT (dlg_props_font), "cancel_button1", cancel_button1);
   gtk_widget_show (cancel_button1);
   GTK_WIDGET_SET_FLAGS (cancel_button1, GTK_CAN_DEFAULT);
 
-  apply_button1 = GTK_FONT_SELECTION_DIALOG (fontselect)->apply_button;
-  gtk_object_set_data (GTK_OBJECT (fontselect), "apply_button1", apply_button1);
+  apply_button1 = GTK_FONT_SELECTION_DIALOG (dlg_props_font)->apply_button;
+  gtk_object_set_data (GTK_OBJECT (dlg_props_font), "apply_button1", apply_button1);
   gtk_widget_show (apply_button1);
   GTK_WIDGET_SET_FLAGS (apply_button1, GTK_CAN_DEFAULT);
 
+  gtk_signal_connect (GTK_OBJECT (dlg_props_font), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &dlg_props_font);
   gtk_signal_connect (GTK_OBJECT (ok_button1), "clicked",
                       GTK_SIGNAL_FUNC (props_fok_button_clicked),
                       NULL);
@@ -1449,6 +1441,6 @@ create_fontselect (void)
                       GTK_SIGNAL_FUNC (props_fapply_button_clicked),
                       NULL);
 
-  return fontselect;
+  return dlg_props_font;
 }
 

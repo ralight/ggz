@@ -412,13 +412,20 @@ static void ggz_connect(void)
 {
 	GtkWidget *tmp;
 
-	disconnect(NULL,NULL);
-	dlg_login = create_dlg_login();
-	gtk_widget_show(dlg_login);
+	/* If it already exists, bring it to the front */
+	if (dlg_login) {
+		gdk_window_show(dlg_login->window);
+		gdk_window_raise(dlg_login->window);
+	} else {
+		disconnect(NULL,NULL);
+		dlg_login = create_dlg_login();
+		gtk_widget_show(dlg_login);
+	}
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
 }
+
 
 static void ggz_motd(void)
 {
@@ -502,30 +509,32 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	gtk_widget_grab_focus(tmp);
 }
 
+
 void ggz_about(GtkWidget* widget, gpointer data)
 {
-	GtkWidget *dlg_about;
-	GtkWidget *tmp;
-	
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "about");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-
-	dlg_about = create_dlg_about();
-	gtk_widget_show(dlg_about);
+	/* If it already exists, bring it to the front */
+	if (dlg_about) {
+		gdk_window_show(dlg_about->window);
+		gdk_window_raise(dlg_about->window);
+	} else {
+		dlg_about = create_dlg_about();
+		gtk_widget_show(dlg_about);
+	}
 }
+
 
 static void ggz_props_clicked(GtkWidget * widget, gpointer user_data)
 {
-	GtkWidget *tmp;
-
-	dlg_props = create_dlg_props();
-	gtk_widget_show(dlg_props);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "props_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	/* If it already exists, bring it to the front */
+	if (dlg_props) {
+		gdk_window_show(dlg_props->window);
+		gdk_window_raise(dlg_props->window);
+	} else {
+		dlg_props = create_dlg_props();
+		gtk_widget_show(dlg_props);
+	}
 }
+
 
 GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gint int1, gint int2)
 {

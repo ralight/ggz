@@ -22,10 +22,10 @@
   <class>GtkDialog</class>
   <name>dlg_launch</name>
   <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <object>dlg_launch</object>
-    <last_modification_time>Wed, 29 Mar 2000 19:47:13 GMT</last_modification_time>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;dlg_launch</data>
+    <last_modification_time>Fri, 28 Jul 2000 04:17:08 GMT</last_modification_time>
   </signal>
   <signal>
     <name>realize</name>

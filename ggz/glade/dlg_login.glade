@@ -26,14 +26,10 @@
     <last_modification_time>Sat, 29 Apr 2000 18:27:57 GMT</last_modification_time>
   </signal>
   <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Sat, 29 Apr 2000 18:28:23 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>destroy_event</name>
-    <handler>gtk_widget_destroy</handler>
-    <last_modification_time>Sat, 29 Apr 2000 18:28:32 GMT</last_modification_time>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;dlg_login</data>
+    <last_modification_time>Fri, 28 Jul 2000 04:08:51 GMT</last_modification_time>
   </signal>
   <title>Connect and Login</title>
   <type>GTK_WINDOW_TOPLEVEL</type>

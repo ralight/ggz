@@ -27,7 +27,6 @@
 #  include <config.h>
 #endif
 
-#include <stdio.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -43,7 +42,7 @@
 
 /* Globals neaded by this dialog */
 extern struct ConnectInfo client;
-extern GtkWidget *detail_window;
+extern GtkWidget *dlg_details;
 extern GtkWidget *dlg_props;
 extern GtkWidget *main_win;
 
@@ -118,9 +117,14 @@ static void login_profile_changed(GtkWidget* entry, gpointer data)
 
 static void login_edit_profiles(GtkWidget* button, gpointer window)
 {
-	dlg_props = create_dlg_props();
-	gtk_widget_show(dlg_props);
-
+	/* If it already exists, bring it to the front */
+	if (dlg_props) {
+		gdk_window_show(dlg_props->window);
+		gdk_window_raise(dlg_props->window);
+	} else {
+		dlg_props = create_dlg_props();
+		gtk_widget_show(dlg_props);
+	}
 }
 
 
@@ -242,11 +246,14 @@ static void login_start_session(GtkWidget* button, gpointer window)
 /* Show detail windows */
 static void login_show_details(GtkWidget* button, gpointer user_data)
 {
-	/* Don't allow for multiple detail windows */
-	gtk_widget_set_sensitive(button, FALSE);
-	
-        detail_window = create_dlg_details();
-        gtk_widget_show(detail_window);
+	/* If it already exists, bring it to the front */
+	if (dlg_details) {
+		gdk_window_show(dlg_details->window);
+		gdk_window_raise(dlg_details->window);
+	} else {
+		dlg_details = create_dlg_details();
+		gtk_widget_show(dlg_details);
+	}
 }
 
 
@@ -286,8 +293,6 @@ void login_disconnect()
 
         tmp = lookup_widget((main_win), "game_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = lookup_widget((main_win), "edit");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = lookup_widget((main_win), "view_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
@@ -301,8 +306,6 @@ void login_disconnect()
         tmp = lookup_widget((main_win), "launch_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = lookup_widget((main_win), "join_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-        tmp = lookup_widget((main_win), "props_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
         tmp = lookup_widget((main_win), "stats_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
@@ -337,8 +340,6 @@ void login_online()
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = lookup_widget((main_win), "game_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = lookup_widget((main_win), "edit");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = lookup_widget((main_win), "view_menu");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
@@ -352,8 +353,6 @@ void login_online()
         tmp = lookup_widget((main_win), "launch_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = lookup_widget((main_win), "join_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = lookup_widget((main_win), "props_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = lookup_widget((main_win), "stats_button");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
@@ -688,12 +687,9 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (dlg_login), "realize",
                       GTK_SIGNAL_FUNC (login_fill_defaults),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (dlg_login), "delete_event",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (dlg_login), "destroy_event",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      NULL);
+  gtk_signal_connect (GTK_OBJECT (dlg_login), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &dlg_login);
   gtk_signal_connect (GTK_OBJECT (profile_entry), "changed",
                       GTK_SIGNAL_FUNC (login_profile_changed),
                       dlg_login);

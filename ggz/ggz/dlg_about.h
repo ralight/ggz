@@ -1,4 +1,3 @@
-
 /*
  * File: dlg_about.h
  * Project: GGZ

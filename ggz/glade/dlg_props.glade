@@ -28,6 +28,12 @@
     <handler>dlg_props_realize</handler>
     <last_modification_time>Sun, 23 Apr 2000 01:24:37 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;dlg_props</data>
+    <last_modification_time>Fri, 28 Jul 2000 04:18:22 GMT</last_modification_time>
+  </signal>
   <title>Properties</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -1447,8 +1453,14 @@
 
 <widget>
   <class>GtkFontSelectionDialog</class>
-  <name>fontselect</name>
+  <name>dlg_props_font</name>
   <border_width>4</border_width>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;dlg_props_font</data>
+    <last_modification_time>Fri, 28 Jul 2000 04:58:55 GMT</last_modification_time>
+  </signal>
   <title>Select Font</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
