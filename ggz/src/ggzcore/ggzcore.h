@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6614 2005-01-08 19:03:18Z josef $
+ * $Id: ggzcore.h 6718 2005-01-17 03:36:17Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -316,7 +316,10 @@ typedef enum {
 	 *  instead of GGZ_CHANNEL_READY or GGZ_CHANNEL_CONNECTED event.  At
 	 *  this point the channel is no longer useful (I think).
 	 *  @param data An unhelpful error string */
-	GGZ_CHANNEL_FAIL
+	GGZ_CHANNEL_FAIL,
+
+	/** Terminator.  Do not use. */
+	GGZ_NUM_SERVER_EVENTS
 } GGZServerEvent;
 
 /** @brief The data associated with a GGZ_CHAT_EVENT room event. */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6446 2004-12-11 20:45:05Z jdorje $
+ * $Id: server.c 6718 2005-01-17 03:36:17Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -47,8 +47,9 @@
 #include "state.h"
 #include "server.h"
 
-
-/* Array of GGZServerEvent messages */
+#if 0
+/* Array of GGZServerEvent messages.  This is now unused, but could be used
+ * in the future. */
 static char* _ggzcore_server_events[] = {
 	"GGZ_CONNECTED",
 	"GGZ_CONNECT_FAIL",
@@ -59,6 +60,7 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_MOTD_LOADED",
 	"GGZ_ROOM_LIST",
 	"GGZ_TYPE_LIST",
+	"GGZ_SERVER_PLAYERS_CHANGED",
 	"GGZ_ENTERED",
 	"GGZ_ENTER_FAIL",
 	"GGZ_LOGOUT",
@@ -70,10 +72,7 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_CHANNEL_READY",
 	"GGZ_CHANNEL_FAIL"
 };
-
-/* Total number of server events messages */
-static unsigned int _ggzcore_num_events = sizeof(_ggzcore_server_events)/sizeof(char*);
-
+#endif
 
 /* The GGZServer structure manages information about a particular
    GGZ server connection */
@@ -115,8 +114,9 @@ struct _GGZServer {
 	/* Game communications channel */
 	GGZNet *channel;	
 
-       	/* Server events */
-	GGZHookList *event_hooks[sizeof(_ggzcore_server_events)/sizeof(char*)];
+       	/* Callbacks for server events.  Every time an event happens all the
+	 * hooks in the list for that event are called. */
+	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
 
 	/* This struct is used when queueing events.  Events that may happen
 	 * many times during a single network read may instead be queued and
@@ -943,7 +943,7 @@ void _ggzcore_server_reset(GGZServer *server)
 	server->net = _ggzcore_net_new();
 
 	/* Setup event hook lists */
-	for (i = 0; i < _ggzcore_num_events; i++)
+	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
 		server->event_hooks[i] = _ggzcore_hook_list_init(i);
 }
 
@@ -1127,7 +1127,7 @@ void _ggzcore_server_clear(GGZServer *server)
 		server->num_gametypes = 0;
 	}
 
-	for (i = 0; i < _ggzcore_num_events; i++) {
+	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++) {
 		if (server->event_hooks[i]) {
 			_ggzcore_hook_list_destroy(server->event_hooks[i]);
 			server->event_hooks[i] = NULL;
@@ -1262,7 +1262,7 @@ void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans)
 
 int _ggzcore_server_event_is_valid(GGZServerEvent event)
 {
-	return (event >= 0 && event < _ggzcore_num_events);
+	return (event >= 0 && event < GGZ_NUM_SERVER_EVENTS);
 }
 	
 
