@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2857 2001-12-10 07:29:52Z jdorje $
+ * $Id: main.c 2862 2001-12-10 20:29:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -472,4 +472,9 @@ void table_alert_trick(int player)
 	sleep(1);
 
 	table_clear_table();
+}
+
+int table_handle_game_message(int fd, int game, int size)
+{
+	return 0;
 }

@@ -1,4 +1,4 @@
-/* $Id: common.h 2843 2001-12-10 02:19:53Z jdorje $ */
+/* $Id: common.h 2862 2001-12-10 20:29:38Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -215,6 +215,18 @@ extern void table_set_global_cardlist_message(const char *mark, int *lengths,
  *  @param player The player number for which the message is intended.
  *  @param msg The message itself. */
 extern void table_set_player_message(int player, const char *msg);
+
+/** A gui-dependent, game-dependent function called to set a game message.
+ *  This game message will comprise of "size" bytes of unread data that
+ *  may be read in from the given socket so that the table can use
+ *  game-specific extensions (which may allow for a better UI).
+ *  @param fd The socket from which data may be read.
+ *  @param game The type of game (which may or may not be useful).
+ *  @param mark The "mark" of the message (which may or may not be useful).
+ *  @param size The amount of data ready to be read.
+ *  @return The number of bytes read, or negative for error.
+ *  @note When in doubt, just use "return 0". */
+extern int table_handle_game_message(int fd, int game, int size);
 
 /** @} end of Callbacks */
 

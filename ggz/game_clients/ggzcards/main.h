@@ -1,4 +1,4 @@
-/* $Id: main.h 2841 2001-12-10 00:16:21Z jdorje $ */
+/* $Id: main.h 2862 2001-12-10 20:29:38Z jdorje $ */
 /* 
  * File: main.h
  * Author: Rich Gade
@@ -49,3 +49,6 @@ void messagebar_message(const char *msg);
 void menubar_text_message(const char *mark, const char *msg);
 void menubar_cardlist_message(const char *mark, int *lengths,
 			      card_t ** cardlist);
+
+/** @brief Client-common table function to handle a game message. */
+int table_handle_game_message(int fd, int game, int size);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2858 2001-12-10 17:02:23Z jdorje $
+ * $Id: common.c 2862 2001-12-10 20:29:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,7 +40,11 @@
 
 
 static int handle_message_global();
-static int handle_message_player();
+
+static int handle_text_message();
+static int handle_player_message();
+static int handle_cardlist_message();
+static int handle_game_message();
 
 static int ggzfd = -1;
 static int game_max_hand_size = 0;
@@ -118,24 +122,30 @@ static void set_game_state(client_state_t state)
 	}
 }
 
-static int handle_global_message_text(char *mark)
+static int handle_text_message(void)
 {
-	char *message;
-	if (es_read_string_alloc(ggzfd, &message) < 0)
+	char *message, *mark;
+	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
+	    es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
 	table_set_global_text_message(mark, message);
 	free(message);		/* allocated by easysock */
+	free(mark);		/* allocated by easysock */
 	return 0;
 }
 
-static int handle_global_message_cardlist(char *mark)
+static int handle_cardlist_message(void)
 {
 	int status = 0, p, i;
 	card_t **cardlist = ggz_malloc(game.num_players * sizeof(*cardlist));
 	int *lengths = ggz_malloc(game.num_players * sizeof(*lengths));
+	char *mark;
 
 	if (!cardlist || !lengths)
 		abort();
+
+	if (es_read_string_alloc(ggzfd, &mark) < 0)
+		status = -1;
 
 	for (p = 0; p < game.num_players; p++) {
 		if (es_read_int(ggzfd, &lengths[p]))
@@ -153,66 +163,14 @@ static int handle_global_message_cardlist(char *mark)
 		ggz_free(cardlist[p]);
 	ggz_free(cardlist);
 	ggz_free(lengths);
-
-	return status;
-}
-
-static int handle_global_message_block(char *mark)
-{
-	int size;
-	char *block;
-
-	if (es_read_int(ggzfd, &size) < 0)
-		return -1;
-
-	/* This system won't work because of network byte order. */
-
-	block = ggz_malloc(size);
-	if (!block || es_readn(ggzfd, block, size) < 0)
-		return -1;
-
-	/* do nothing...yet */
-	ggz_free(block);
-	return 0;
-}
-
-/* a message_global message tells you one "global message", which is
-   displayed by the client. */
-static int handle_message_global(void)
-{
-	int opcode, status = 0;
-	message_type_t op;
-	char *mark;
-
-	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
-	    read_opcode(ggzfd, &opcode) < 0)
-		return -1;
-
-	op = opcode;
-
-	ggz_debug("core", "Received global message opcode of type %d.", op);
-
-	switch (op) {
-	case GL_MESSAGE_TEXT:
-		status = handle_global_message_text(mark);
-		break;
-	case GL_MESSAGE_CARDLIST:
-		status = handle_global_message_cardlist(mark);
-		break;
-	case GL_MESSAGE_BLOCK:
-		status = handle_global_message_block(mark);
-		break;
-	}
-
 	free(mark);		/* allocated by easysock */
 
 	return status;
 }
 
-
 /* A message_player message tells you one "player message", which is
    displayed by the client. */
-static int handle_message_player(void)
+static int handle_player_message(void)
 {
 	int p;
 	char *message;
@@ -227,6 +185,76 @@ static int handle_message_player(void)
 	free(message);		/* allocated by easysock */
 
 	return 0;
+}
+
+/* This handles a game-specific message.  We pass the game all the
+   information about the message and let them read it in from the server
+   themselves.  If they don't we do it manually just to get it out of the
+   way. */
+/* One alternative would be to read the data in ourselves (the server would
+   have to send the data format, etc) and allow the game to query us about
+   what data we read.  This would be safer but a lot more work.  Or, if we
+   used an XML protocol, things could just sort-of take care of themselves
+   because we'd just skip over the tag automatically if it wasn't handled (I
+   think). */
+static int handle_game_message(void)
+{
+	int size, game, handled;
+	char *block;
+
+	if (es_read_int(ggzfd, &game) < 0 || es_read_int(ggzfd, &size) < 0)
+		return -1;
+
+	/* Note: "size" refers to the size of the data block, not including
+	   the headers above. */
+
+	handled = table_handle_game_message(ggzfd, game, size);
+	if (handled < 0)
+		return -1;
+	assert(handled <= size);
+	size -= handled;	/* this is how much was unread */
+
+	if (size > 0) {
+		/* We read the block just to get it out of the way. */
+		block = ggz_malloc(size);
+		if (es_readn(ggzfd, block, size) < 0)
+			return -1;
+		ggz_free(block);
+	}
+
+	return 0;
+}
+
+/* a message_global message tells you one "global message", which is
+   displayed by the client. */
+static int handle_message_global(void)
+{
+	int opcode, status = 0;
+	game_message_t op;
+
+	if (read_opcode(ggzfd, &opcode) < 0)
+		return -1;
+
+	op = opcode;
+
+	ggz_debug("core", "Received global message opcode of type %d.", op);
+
+	switch (op) {
+	case GAME_MESSAGE_TEXT:
+		status = handle_text_message();
+		break;
+	case GAME_MESSAGE_CARDLIST:
+		status = handle_cardlist_message();
+		break;
+	case GAME_MESSAGE_GAME:
+		status = handle_game_message();
+		break;
+	case GAME_MESSAGE_PLAYER:
+		status = handle_player_message();
+		break;
+	}
+
+	return status;
 }
 
 
@@ -334,7 +362,7 @@ static void increase_max_hand_size(int max_hand_size)
 	table_alert_hand_size(game_max_hand_size);
 
 	for (p = 0; p < game.num_players; p++) {
-#if 0
+#if 1
 		/* TODO: figure out how this code could even fail at all. In
 		   the meantime, I've disabled the call to free (realloc),
 		   conceding the memory leak so that we don't have an
@@ -775,11 +803,8 @@ int client_handle_server(void)
 	case MSG_TRICK:
 		status = handle_msg_trick();
 		break;
-	case MESSAGE_GLOBAL:
+	case MESSAGE_GAME:
 		status = handle_message_global();
-		break;
-	case MESSAGE_PLAYER:
-		status = handle_message_player();
 		break;
 	case REQ_OPTIONS:
 		status = handle_req_options();
