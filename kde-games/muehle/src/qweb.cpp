@@ -1,7 +1,27 @@
+// Muehle - KDE Muehle (Nine Men's Morris) game for GGZ
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Header file
 #include "qweb.h"
+
+// System includes
 #include <iostream>
 #include <math.h>
-#include <stdlib.h> /* needed for abs() */
+#include <cstdlib>
 
 QWebPoint::QWebPoint(QPoint p)
 {
@@ -84,8 +104,8 @@ QPoint QWeb::getPoint(QPoint p)
 	dist = 5;
 	for(tmp = m_pointlist.first(); tmp; tmp = m_pointlist.next())
 	{
-		disttmp = abs(tmp->point().x() - p.x()) * abs(tmp->point().x() - p.x());
-		disttmp += abs(tmp->point().y() - p.y()) * abs(tmp->point().y() - p.y());
+		disttmp = std::abs(tmp->point().x() - p.x()) * std::abs(tmp->point().x() - p.x());
+		disttmp += std::abs(tmp->point().y() - p.y()) * std::abs(tmp->point().y() - p.y());
 		disttmp = (unsigned int)sqrt(disttmp);
 		//cout << "Evaluate: " << disttmp << endl;
 		if(disttmp < dist)

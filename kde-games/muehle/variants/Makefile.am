@@ -1,3 +1,3 @@
-muehledir = $(kde_datadir)/muehle
+muehledir = $(ggzdatadir)/muehle
 muehle_DATA = rc roman classic twelvemensmorris
 

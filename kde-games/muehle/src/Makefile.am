@@ -1,4 +1,4 @@
-bin_PROGRAMS = muehle
+ggzexecmod_PROGRAMS = muehle
 
 muehle_SOURCES = main.cpp toplevel.cpp board.cpp stone.cpp qweb.cpp qextpainter.cpp net.cpp qwebpath.cpp
 muehle_LDFLAGS = $(all_libraries)

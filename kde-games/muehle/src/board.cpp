@@ -1,26 +1,52 @@
+// Muehle - KDE Muehle (Nine Men's Morris) game for GGZ
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// Header file
 #include "board.h"
-#include <qpixmap.h>
+
+// Muehle includes
 #include "qextpainter.h"
-#include <qpen.h>
-#include <kdebug.h>
 #include "stone.h"
 #include "qweb.h"
 #include "net.h"
-#include <qimage.h>
 #include "qwebpath.h"
+
+// KDE includes
 #include <kstddirs.h>
+#include <kdebug.h>
+
+// Qt includes
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtextstream.h>
+#include <qpen.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
+// Configuration includes
+#include "config.h"
+
+// Constructor: load 'default' theme with 'classic' variant
 Board::Board(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	net = new Net();
 	net->output("KDE Muehle Game");
 
-	//setBackgroundPixmap(QPixmap("../pics/bg.png"));
-	//bg = new QPixmap("../pics/bg.png");
 	bg = NULL;
 	black = NULL;
 	white = NULL;
@@ -29,46 +55,10 @@ Board::Board(QWidget *parent, const char *name)
 	web = NULL;
 	setVariant("classic");
 
-	// connections outer ring
-	/*web->addPeer(QPoint(10, 10), QPoint(50, 10));
-	web->addPeer(QPoint(50, 10), QPoint(90, 10));
-	web->addPeer(QPoint(90, 10), QPoint(90, 50));
-	web->addPeer(QPoint(90, 50), QPoint(90, 90));
-	web->addPeer(QPoint(90, 90), QPoint(50, 90));
-	web->addPeer(QPoint(50, 90), QPoint(10, 90));
-	web->addPeer(QPoint(10, 90), QPoint(10, 50));
-	web->addPeer(QPoint(10, 50), QPoint(10, 10));*/
-	// connections middle ring
-	/*web->addPeer(QPoint(20, 20), QPoint(50, 20));
-	web->addPeer(QPoint(50, 20), QPoint(80, 20));
-	web->addPeer(QPoint(80, 20), QPoint(80, 50));
-	web->addPeer(QPoint(80, 50), QPoint(80, 80));
-	web->addPeer(QPoint(80, 80), QPoint(50, 80));
-	web->addPeer(QPoint(50, 80), QPoint(20, 80));
-	web->addPeer(QPoint(20, 80), QPoint(20, 50));
-	web->addPeer(QPoint(20, 50), QPoint(20, 20));*/
-	// connections inner ring
-	/*web->addPeer(QPoint(30, 30), QPoint(50, 30));
-	web->addPeer(QPoint(50, 30), QPoint(70, 30));
-	web->addPeer(QPoint(70, 30), QPoint(70, 50));
-	web->addPeer(QPoint(70, 50), QPoint(70, 70));
-	web->addPeer(QPoint(70, 70), QPoint(50, 70));
-	web->addPeer(QPoint(50, 70), QPoint(30, 70));
-	web->addPeer(QPoint(30, 70), QPoint(30, 50));
-	web->addPeer(QPoint(30, 50), QPoint(30, 30));*/
-	// connections transring
-	/*web->addPeer(QPoint(10, 50), QPoint(20, 50));
-	web->addPeer(QPoint(20, 50), QPoint(30, 50));
-	web->addPeer(QPoint(70, 50), QPoint(80, 50));
-	web->addPeer(QPoint(80, 50), QPoint(90, 50));
-	web->addPeer(QPoint(50, 10), QPoint(50, 20));
-	web->addPeer(QPoint(50, 20), QPoint(50, 30));
-	web->addPeer(QPoint(50, 70), QPoint(50, 80));
-	web->addPeer(QPoint(50, 80), QPoint(50, 90));*/
-
 	stonelist.setAutoDelete(true);
 }
 
+// Destructor
 Board::~Board()
 {
 	if(web) delete web;
@@ -76,12 +66,14 @@ Board::~Board()
 	delete net;
 }
 
+// Initialize to a null-board
 void Board::init()
 {
 	stonelist.clear();
 	repaint();
 }
 
+// draw one Muehle stone
 void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 {
 	QPixmap pix;
@@ -129,6 +121,7 @@ void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 	p->drawPixmap(x, y, pix);
 }
 
+// draw board with all stones
 void Board::paintEvent(QPaintEvent *e)
 {
 	QExtPainter p;
@@ -154,6 +147,7 @@ void Board::paintEvent(QPaintEvent *e)
 	setBackgroundPixmap(tmp);
 }
 
+// Resize the board properly
 void Board::resizeEvent(QResizeEvent *e)
 {
 	if(width() != height()) resize(width(), width());
@@ -165,6 +159,7 @@ void Board::resizeEvent(QResizeEvent *e)
 	if(web) web->setScale(width() / 100.0);
 }
 
+// Handle a mouse click
 void Board::mousePressEvent(QMouseEvent *e)
 {
 	int x, y, xrow, yrow, xrows, yrows;
@@ -286,22 +281,27 @@ void Board::mousePressEvent(QMouseEvent *e)
 	}
 }
 
+// Send remis to the server
 void Board::remis()
 {
 	net->output("remis.");
 }
 
+// Send wish to loose to the server
 void Board::loose()
 {
 	net->output("loose.");
 }
 
+// Change the active theme
 void Board::setTheme(QString theme)
 {
 	KStandardDirs d;
+
 	if(bg) delete bg;
 	if(black) delete black;
 	if(white) delete white;
+	d.addResourceDir("data", GGZDATADIR);
 	bg = new QPixmap(d.findResource("data", QString("muehle/themes/%1/bg.png").arg(theme)));
 	black = new QPixmap(d.findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
 	white = new QPixmap(d.findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
@@ -309,6 +309,7 @@ void Board::setTheme(QString theme)
 	repaint();
 }
 
+// Change the active variant
 void Board::setVariant(QString variant)
 {
 	KStandardDirs d;
@@ -322,6 +323,7 @@ void Board::setVariant(QString variant)
 		web = NULL;
 	}
 
+	d.addResourceDir("data", GGZDATADIR);
 	s = d.findResource("data", QString("muehle/%1").arg(variant));
 	kdDebug(12101) << "Load variant: " << variant << endl;
 	if(s.isNull())
