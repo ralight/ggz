@@ -4,9 +4,9 @@ sgml_dir = /net/rimshot2/local/share
 SUBDIRS = .
 
 SGML_FILES = design.sgml
-TXT_FILES = design.txt
-HTML_FILES = design.html
-PS_FILES = design.ps
+TXT_FILES = txt/design.txt 
+HTML_FILES = html/design/index.html
+PS_FILES = ps/design.ps
 
 FIG_FILES  = images/server_arch.fig
 
@@ -19,11 +19,12 @@ all-docs: html-docs txt-docs
 
 txt-docs: txtdir $(TXT_FILES) 
 
-html-docs: htmldir gif-files $(HTML_FILES) 
-	-cp images/*.gif html
+html-docs: htmldir $(HTML_FILES)
 
-ps-docs: psdir eps-files $(PS_FILES) 
+ps-docs: psdir $(PS_FILES) eps-files
 
+
+# Directories to hold the docs
 htmldir:
 	(cd $(srcdir); mkdir -p html;)
 
@@ -33,19 +34,22 @@ txtdir:
 psdir:
 	(cd $(srcdir); mkdir -p ps;)
 
-%.txt: %.sgml
-	-cd $(srcdir) && jade -t sgml -dascii-lynx.dsl $^ > tmp.html
-	-lynx -dump tmp.html -nolist > txt/$@
+
+# Files for the design-doc
+html/design/index.html: design.sgml gif-files
+	-cd $(srcdir) && db2html -d ../ggz.dsl design.sgml
+	-mv design html
+	-mv images/server_arch.gif html/design
+
+txt/design.txt: design.sgml
+	-cd $(srcdir) && jade -tsgml -ilynx -dggz.dsl\#lynx design.sgml > tmp.html
+	-lynx -dump tmp.html -nolist > txt/design.txt
 	-rm tmp.html
 
-%.html: %.sgml
-	-cd $(srcdir) && db2html $^
-	-mv $* html
-
-%.ps: %.sgml
-	-cd $(srcdir) && db2ps $^
-	-mv *.ps ps
-	-rm -f *.tex *.aux *.dvi *.log *.html
+ps/design.ps: design.sgml
+	-cd $(srcdir) && db2ps design.sgml
+	-mv design.ps ps
+	-rm -f *.tex *.aux *.dvi *.log
 
 
 gif-files: $(FIG_FILES)
