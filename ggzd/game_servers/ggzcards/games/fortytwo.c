@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4069 2002-04-23 22:43:51Z jdorje $
+ * $Id: fortytwo.c 4070 2002-04-24 08:46:27Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -214,8 +214,10 @@ static void fortytwo_get_bid(void)
 		if (has_doubles)
 			add_sbid(0, DOUBLES_VALUE, FORTYTWO_TRUMP);
 	} else {
-		char minbid = 30;
-		char val;
+		/* These two must be ints to avoid overflow,
+		   although they are safely cast to chars later. */
+		int minbid = 30;
+		int val;
 	
 		/* Bids up to (and including) 42 */
 		if (FORTYTWO.declarer >= 0)
