@@ -16,7 +16,7 @@
 // Main function: parse arguments and start server
 int main(int argc, char** argv)
 {
-	char option;
+	int option;
 	struct option opt [] =
 	{
 		{"help", no_argument, NULL, 'h'},
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	mode = MODE_NORMAL;
 
 	while((option = getopt_long(argc, argv, "hvg", opt, &optindex)) != EOF)
-		switch ( option )
+		switch(option)
 		{
 			case 'h':
 				std::cout << "The GGZ Gaming Zone Geekgame Server" << std::endl
