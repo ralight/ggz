@@ -6,3 +6,5 @@ AddCharset UTF-8 php
 ErrorDocument 406 /site/autonegotiate.php
 ErrorDocument 404 /site/error.php
 
+DirectoryIndex index.php index.html
+
