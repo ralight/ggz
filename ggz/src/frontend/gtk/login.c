@@ -323,7 +323,6 @@ create_dlg_login (void)
 
   dlg_login = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_login), "dlg_login", dlg_login);
-  gtk_widget_set_usize (dlg_login, 400, 250);
   gtk_window_set_title (GTK_WINDOW (dlg_login), _("Connect and Login"));
   gtk_window_set_policy (GTK_WINDOW (dlg_login), FALSE, FALSE, TRUE);
 
@@ -636,5 +635,4 @@ create_dlg_login (void)
   gtk_widget_grab_default (connect_button);
   return dlg_login;
 }
-
 

@@ -21,8 +21,6 @@
 <widget>
   <class>GtkDialog</class>
   <name>dlg_login</name>
-  <width>400</width>
-  <height>250</height>
   <signal>
     <name>realize</name>
     <handler>login_fill_defaults</handler>
