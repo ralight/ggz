@@ -456,7 +456,7 @@ msgstr "Sprachsynthese mit rsynth ermöglichen"
 
 #: ../../ggz-kde/src/KGGZ.cpp:1379 ../../ggz-kde/src/KGGZ.cpp:1506
 msgid "Engine: "
-msgstr "Engine_ "
+msgstr "Engine: "
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:68 KGGZChat.cpp:71
 msgid "Enter your message here:"
@@ -891,7 +891,7 @@ msgstr "Eigenschaften der hier gespielten Spiele."
 #: ../../ggz-kde/src/KGGZ.cpp:1376 KGGZ.cpp:1294
 #: ../../ggz-kde/src/KGGZ.cpp:1503
 msgid "Protocol: "
-msgstr "Protokoll_ "
+msgstr "Protokoll: "
 
 #: ../../ggz-kde/src/widgets/KGGZGrubby.cpp:74 KGGZGrubby.cpp:64
 msgid "Quit"
