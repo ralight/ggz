@@ -35,7 +35,6 @@
 #include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
-#include <easysock.h>
 
 
 /* Array of GGZServerEvent messages */
