@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: common.h 2849 2001-12-10 03:53:27Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -162,8 +162,12 @@ struct game_t {
 
 /** convert an "absolute" seat number s to the
  * "relative" seat number used by player p */
-#define CONVERT_SEAT(s, p) (((s) - game.players[(p)].seat + game.num_seats) % game.num_seats)
-#define UNCONVERT_SEAT(s, p) ((game.players[(p)].seat + (s)) % game.num_seats)
+#define CONVERT_SEAT(s, p)					\
+	(assert(game.players[(p)].seat >= 0),			\
+	 ((s) - game.players[(p)].seat + game.num_seats) % game.num_seats)
+#define UNCONVERT_SEAT(s_rel, p)				\
+	(assert(game.players[(p)].seat >= 0),			\
+	 (game.players[(p)].seat + (s_rel)) % game.num_seats)
 
 
 /* Game-independent functions */
