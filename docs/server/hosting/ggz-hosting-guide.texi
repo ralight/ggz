@@ -49,7 +49,7 @@ See http://ggz.sourceforge.net/docs/ for the latest edition.
 * External Games:: Additional games for GGZ
 * Other GGZ Servers:: How to install the Meta Server and TelGGZ
 * GGZ Server Tools:: Make an admin's life easier
-* Server Maintaining:: Help for administrators
+* Server Maintainance:: Help for administrators
 @end menu
 
 @node Foreword, Game Servers, Top, Top
@@ -104,10 +104,12 @@ according to the requirements given in the release information; at present,
 this is:
 
 @itemize
-@item libdb 2 or 3, optionally mysql or postgresql
+@item libdb 2 or 3 or 4, optionally mysql or postgresql
 @item libpopt
 @item libexpat
 @item perl
+@item libgcrypt (optional)
+@item libgnutls or libopenssl (optional)
 @end itemize
 @end itemize
 
@@ -129,7 +131,7 @@ tools will follow later.
 
 Before the main server (ggzd) can be installed, its dependencies must be
 resolved. The GGZ package 'libggz' is currently the questioned
-package; this replaces the 'easysock' package which was used in version 0.0.4.
+package; this replaces the 'easysock' package which was used up to version 0.0.4.
 After libggz is installed, the server packages 'ggzd', which is the main
 server, and 'ggz-game-servers' including many game servers, should follow.
 Both need the library package 'libggzdmod' as well.
@@ -165,6 +167,16 @@ support package.
 For the time being, it is present in Appendix A.
 
 The database type can also be chosen freely. See the next chapter for details.
+
+@subsection Building the GGZ library
+
+If libggz is built from sources, the features it provides can be customized.
+Running @command{configure --with-gcrypt} allows for cryptographics hash
+functions to be used, so that e.g. the server doesn't need to store its
+passwords in plain text format.
+Likewise, @command{configure --with-tls=MODE} includes TLS/SSL functionality,
+which can be one of none (dummy support), GnuTLS or OpenSSL.
+The part about setting up the server covers this topic in depth.
 
 @subsection Message of the day
 
@@ -273,7 +285,11 @@ within the [General] section:
 @item DatabaseName
 @item DatabaseUsername
 @item DatabasePassword
+@item DatabaseHashing
 @end itemize
+
+The hashing can be one of plain, md5, sha1 or ripemd160. If encryption support
+is missing in libggz, it automatically falls back to plain text.
 
 @section MySQL setup
 
@@ -579,15 +595,15 @@ While grubby can also run client-side (as it is in fact a GGZ client), it makes
 much more sense to have it running permanently on the server side to take
 advantage of its facilities like logging or memorizing things.
 
-@node GGZ Server Tools, Server Maintaining, Other GGZ Servers, Top
+@node GGZ Server Tools, Server Maintainance, Other GGZ Servers, Top
 @chapter GGZ Server Tools
 @c @cindex Index entry for Seventh Chapter
 
-@section The ggz-cmd command line utily
+@section The ggz-cmd command line utility
 
 Admins are allowed to broadcast messages to all rooms via the /wall command.
 To do that from the command line, for example to announce that a server will go
-down in a few minutes, the utily ggz-cmd can be used.
+down in a few minutes, the utility ggz-cmd can be used.
 It is available from the utils/cmd-client directory.
 
 An example on how to use ggz-cmd on a server (the specified user must be
@@ -595,7 +611,12 @@ registered as administrator, using ggzduedit, see below):
 
 @command{ggz-cmd localhost admin adminpassword announce Attention, server reboot in five minutes}
 
-@section The ggzduedit command line utily
+Also, when running via cron, it can be used to report the status of the server.
+The 'checkonline' command has been invented for this task.
+
+@command{ggz-cmd localhost admin adminpassword checkonline}
+
+@section The ggzduedit command line utility
 
 If you want to lookup the registered players, you can do so very easily using
 the ggzduedit tool. This allows you to retrieve the passwords of the registered
@@ -603,6 +624,12 @@ players, and to add or delete them manually.
 It is also very helpful for debugging.
 If any user should get admin privileges on the server, then this can be
 adjusted using ggzduedit as well.
+Note that this tool expects the same database that ggzd uses. Connection
+parameters for remote SQL servers equal those of popular SQL command line
+tools.
+An example session to such a server is initiated by calling:
+
+@command{ggzduedit -H localhost -D ggz -u ggzd -p}
 
 @section Network traffic tool: colorsniff
 
@@ -616,8 +643,8 @@ The tool 'ngrep' must be installed to make it work:
 The @command{--noping} option tells the program to ignore the permanent
 PING/PONG command which are used to measure the player lag.
 
-@node Server Maintaining, (dir), GGZ Server Tools, Top
-@chapter Server Maintaining
+@node Server Maintainance, (dir), GGZ Server Tools, Top
+@chapter Server Maintainance
 @c @cindex Index entry for Eighth Chapter
 
 @section Security
@@ -636,7 +663,25 @@ servers are very often the target of people trying to break into the system,
 and be it because they're frustrated by having lost a game.
 @item At a maximum, a full GGZ server needs to have the ports 5688, 15688 and
 15689 open.
+@item Use server-side encryption (hashing) of user passwords if possible.
+@item Configure the server so that it support TLS.
 @end itemize
+
+@subsection Configuration of Transport Layer Security
+
+To enable TLS, the following entries are available in ggzd.conf:
+
+@itemize @bullet
+@item EncryptionUse
+@item EncryptionPassword
+@item EncryptionKey
+@item EncryptionCert
+@end itemize
+
+For anonymous TLS, as done by the GnuTLS variant, setting EncryptionUse to 1 is
+already sufficient. However, when dealing with certificates, the key and
+certificate file must be specified (both might be inside the same PEM file),
+and the password for the key must be given in the clear.
 
 @section Privacy
 
@@ -696,7 +741,7 @@ the server module in the appropriate directory (usually (prefix)/lib/ggzd).
 @c verbatim quote from admin-guide.txt
 You will no doubt want to log your GGZ server's activity.  Setting up
 logging, and the details to log, to a file is almost completely
-self-explanatory in the ggzd.conf file.  Setting up loggining via the
+self-explanatory in the ggzd.conf file.  Setting up logging via the
 syslog facility may be less than obvious.
 
 Logging via syslogd is the default unless you specify a log file
@@ -721,6 +766,9 @@ local0.=debug·  /var/log/ggzd.debug
 Put those two lines into your syslog.conf, restart syslogd and your log
 nightmares are over.
 @c end quote
+
+To test a server's communication with a single client, the DumpFile variable
+can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
