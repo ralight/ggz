@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-GAME_DSC = module.dsc
+GAME_DSC = module.dsc.in
 
 EXTRA_DIST = $(GAME_DSC)
 

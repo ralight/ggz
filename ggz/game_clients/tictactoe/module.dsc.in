@@ -3,7 +3,7 @@
 Game = TicTacToe
 Author = Brent Hendricks
 # CommandLine path is figured relative to GameDir unless starting with /
-CommandLine = ggz.ttt
+CommandLine = @ggzexecmoddir@/ggz.ttt
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net
 Name = TicTacToe

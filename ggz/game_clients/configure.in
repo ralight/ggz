@@ -161,17 +161,26 @@ AC_SUBST(packagesrcdir)
 AC_OUTPUT([Makefile 
 	   package
 	   spades/Makefile
+	   spades/module.dsc
 	   tictactoe/Makefile	
+	   tictactoe/module.dsc
 	   dots/Makefile
+	   dots/module.dsc
 	   lapocha/Makefile
+	   lapocha/module.dsc
 	   reversi/Makefile
+	   reversi/module.dsc
 	   combat/Makefile
+	   combat/module.dsc
 	   combat/pixmaps/Makefile
 	   combat/maps/Makefile
 	   hastings/Makefile
+	   hastings/module.dsc
 	   chinese-checkers/Makefile
+	   chinese-checkers/module.dsc
 	   chinese-checkers/pixmaps/Makefile
 	   chess/Makefile
+	   chess/module.dsc
 	   chess/libcgc/Makefile
 	   ])
 

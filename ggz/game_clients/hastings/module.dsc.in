@@ -1,7 +1,7 @@
 # La Pocha description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = ggz.hastings
+CommandLine = @ggzexecmoddir@/ggz.hastings
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = Hastings

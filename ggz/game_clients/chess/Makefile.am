@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = module.dsc bitmaps/*.xpm
+EXTRA_DIST = module.dsc.in bitmaps/*.xpm
 
 SUBDIRS = libcgc .
 

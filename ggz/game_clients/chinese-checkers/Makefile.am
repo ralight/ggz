@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = module.dsc
+EXTRA_DIST = module.dsc.in
 
 SUBDIRS = . pixmaps
 
