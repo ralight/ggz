@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: game.c 4239 2002-06-09 18:58:47Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -108,12 +108,17 @@ int game_handle_option(char *option, int value)
  */
 char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 {
-	if (!strcmp("open_hands", option))
+	if (!strcmp("open_hands", option)) {
 		if (value)
 			snprintf(buf, bufsz, "Playing with open hands.");
 		else
 			*buf = 0;
-	else
+	} else if (!strcmp("rated_game", option)) {
+		if (value)
+			snprintf(buf, bufsz, "This is a rated game.");
+		else
+			*buf = 0;
+	} else
 		return NULL;
 	return buf;
 }
