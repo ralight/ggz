@@ -7,20 +7,24 @@ The Grubby Admin Manual
 <BODY BGCOLOR=#DDDDDD TEXT=#000000 LINK=#0000FF ALINK=#0000FF VLINK=#000050>
 
 <FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
-<FONT SIZE=2>Josef Spillner, 2001-10-12</FONT>
-<FONT SIZE=2>Updated 2002-08-18</FONT>
+<FONT SIZE=2>Josef Spillner, 2001-10-12</FONT><BR>
+<FONT SIZE=2>Updated 2002-08-18</FONT><BR>
+<FONT SIZE=2>Updated 2002-11-04</FONT>
 <BR><BR>
 
 <HR>
 <B>Table Of Contents:</B><BR>
 <A HREF="#install">Installation</A><BR>
+<A HREF="#network">Network setup</A><BR>
 <A HREF="#commands">Admin commands</A><BR>
-<A HREF="#modexec">Exec module</A><BR>
-<A HREF="#modembed">Embed module</A><BR>
-<A HREF="#modnews">News module (modexec)</A><BR>
-<A HREF="#moddict">Dictionary module (modexec)</A><BR>
-<A HREF="#modmeeting">Meeting module (modexec)</A><BR>
-<A HREF="#modtrans">Translation module (modexec)</A><BR>
+<A HREF="#logfiles">Log files</A><BR>
+<A HREF="#modules">Modules</A><BR>
+<A HREF="#modexec">* Exec module</A><BR>
+<A HREF="#modembed">* Embed module</A><BR>
+<A HREF="#modnews">* News module (modexec)</A><BR>
+<A HREF="#moddict">* Dictionary module (modexec)</A><BR>
+<A HREF="#modmeeting">* Meeting module (modexec)</A><BR>
+<A HREF="#modtrans">* Translation module (modexec)</A><BR>
 <HR>
 <BR><BR>
 
@@ -34,9 +38,26 @@ translation files. Everything should install fine.
 All you have to do then is to call grubby-config, which gives you a full
 default installation. You might want to cut the options down, just edit the
 configuration files under $HOME/.ggz.
-Then launch the bot while having a ggzd running somewhere.
+Then launch the bot while having a ggzd or IRC server running somewhere.
 If it fails, make sure you didn't cut too much options.
 Read docs/Setup for a sample file.
+<BR><BR>
+
+<HR>
+<A NAME="network">
+<FONT SIZE=4>Network Setup</FONT>
+<BR><BR>
+Grubby can communicate with users either locally (for debugging) or being
+logged into a GGZ or IRC server.
+The core module 'net' can be setup appropriately:
+<BR>
+<UL>
+<LI>netggz.so
+<LI>netirc.so
+<LI>netconsole.so
+</UL>
+For autojoining a room upon login, a number must be given for GGZ (e.g. 0),
+while IRC expects a channel (e.g. #ggz).
 <BR><BR>
 
 <HR>
@@ -55,8 +76,25 @@ The owner of grubby, as specified in the configuration, may issue some more comm
 <BR><BR>
 
 <HR>
+<A NAME="logfiles">
+<FONT SIZE=4>Log files</FONT>
+<BR><BR>
+Grubby can be requested to log all communication to a log file.
+Also, the player database at ~/.ggz/grubby/playerdb is filled with entries when
+players join the room Grubby is in. These entries can be enhanced by the
+players with additional information.
+<BR><BR>
+
+<HR>
+<A NAME="modules">
+<FONT SIZE=4>Modules</FONT>
+<BR><BR>
+Some of the available modules are documented here.
+<BR><BR>
+
+<HR>
 <A NAME="modexec">
-<FONT SIZE=4>Exec Module</FONT>
+<FONT SIZE=3>Exec Module</FONT>
 <BR><BR>
 This plugin executes external scripts and programs, writes to their stdin and reads from their stdout. It should be noted that the more
 external processes are spawned in serial order, the more time it consumes, and grubby may not react fast enough. Whereever available, a native
@@ -65,26 +103,26 @@ plugin (shared library) should be preferred.
 
 <HR>
 <A NAME="modembed">
-<FONT SIZE=4>Embed Module</FONT>
+<FONT SIZE=3>Embed Module</FONT>
 <BR><BR>
-Similar to modexec, save it embeds the scripts directly. This works for python
-and ruby so far and requires that support for those languages has been enabled
+Similar to modexec, save it embeds the scripts directly. This works for python,
+perl and ruby so far and requires that support for those languages has been enabled
 at compile time.
 One advantage is that all commands are executed much faster.
 <BR><BR>
 
 <HR>
 <A NAME="modnews">
-<FONT SIZE=4>News Module (modexec)</FONT>
+<FONT SIZE=3>News Module (via modexec)</FONT>
 <BR><BR>
-Several news sites offer RDF files which contain all headlines and links to the articles in XML format. Now  when the user
+Several news sites offer RDF files which contain all headlines and links to the articles in XML format. Now when the user
 requests news from one of those sites, the module first fetches the latest RDF file from the target host (needs the perl module
 Net::Telnet installed), and randomly seeks one of the headlines which is to be returned.
 <BR><BR>
 
 <HR>
 <A NAME="moddict">
-<FONT SIZE=4>Dictionary Module (modexec)</FONT>
+<FONT SIZE=3>Dictionary Module (via modexec)</FONT>
 <BR><BR>
 This module is presentated by the perl script "dict.pl", which in turn needs several dictionaries installed, or at least one of them.
 Under Unix, those are mostly under /usr/share/trans/X-Y, where X and Y are lowercase language letters, like "en" for English. The
@@ -95,7 +133,7 @@ it found for the key word.
 
 <HR>
 <A NAME="modmeeting">
-<FONT SIZE=4>Meeting Module (modexec)</FONT>
+<FONT SIZE=3>Meeting Module (via modexec)</FONT>
 <BR><BR>
 This one needs Ruby installed, preferably version 1.6+. Its configurable database goes normally to /tmp/meetings, you might want to
 change that. It uses an interesting technique to store its data: Instead of writing key-value pairs, it dumps the whole object
@@ -104,7 +142,7 @@ so one can transfer it from one host to another :)
 
 <HR>
 <A NAME="modtrans">
-<FONT SIZE=4>Translation Module (modexec)</FONT>
+<FONT SIZE=3>Translation Module (via modexec)</FONT>
 <BR><BR>
 In case common shell tools (cut, grep, ...) and wget are available, the script
 webtrans.sh can be used for translations. It stores translated pairs of
@@ -113,7 +151,7 @@ sentences into its cache (~/.ggz/grubby/google).
 
 <HR>
 <FONT SIZE=2>
-This documentation is Copyright (C) 2001 Josef Spillner.<BR>
+This documentation is Copyright (C) 2001, 2002 Josef Spillner.<BR>
 Published under the GNU Free Documentation License.<BR>
 </FONT>
 
