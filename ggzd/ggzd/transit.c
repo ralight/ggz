@@ -48,8 +48,10 @@ static int   transit_leave(int index, int fd);
 
 
 /*
- * transit_handle()
- *
+ * transit_handle check for any impending transits.
+ * Before calling, the transit must be *unlocked*
+ * If it returns a 1, the transit is locked.
+ * If it returns <= 0, the transit is unlocked.
  */
 int transit_handle(int index, int fd)
 {
@@ -59,7 +61,7 @@ int transit_handle(int index, int fd)
 	pthread_mutex_lock(&tables.info[index].transit_lock);
 	flag = tables.info[index].transit_flag;
 
-	if (flag == GGZ_TRANSIT_JOIN )
+	if (flag == GGZ_TRANSIT_JOIN)
 		status = transit_join(index, fd);
 	else if (flag == GGZ_TRANSIT_LEAVE)
 		status = transit_leave(index, fd);
@@ -72,19 +74,25 @@ int transit_handle(int index, int fd)
 	
 	/* Signal failure immediately */
 	if (status < 0) {
-		/* It's not ever going to get recevied so we mark flag*/
-		tables.info[index].transit_flag |= GGZ_TRANSIT_RECV;
+		/* Mark ERR and clear JOIN and LEAVE in process flags */
 		tables.info[index].transit_flag |= GGZ_TRANSIT_ERR;
+		tables.info[index].transit_flag &= ~GGZ_TRANSIT_JOIN;
+		tables.info[index].transit_flag &= ~GGZ_TRANSIT_LEAVE;
 		pthread_cond_broadcast(&tables.info[index].transit_cond);
 		pthread_mutex_unlock(&tables.info[index].transit_lock);
 		return status;
 	}
 
-	/* Return sign that we're in transit now */
+	/* Indicate that transit is now locked */
 	return 1;
 }
 
 
+/*
+ * transit_join sends REQ_GAME_JOIN to table
+ * Must be called with transit locked
+ * Returns with transit locked
+ */
 static int transit_join(int index, int t_fd)
 {
 	int seats, i, p, fd[2];
@@ -132,15 +140,32 @@ static int transit_join(int index, int t_fd)
 }
 
 	
+/*
+ * transit_join sends REQ_GAME_LEAVE to table
+ * Must be called with transit locked
+ * Returns with transit locked
+ */
 static int transit_leave(int index, int t_fd)
 {
-	int p;
+	int seats, i, p;
 	char name[MAX_USER_NAME_LEN + 1];
 	
-	p = tables.info[index].transit;
-
 	dbg_msg(GGZ_DBG_TABLE, "Handling transit leave for table %d", index);
 	
+	p = tables.info[index].transit;
+	pthread_rwlock_rdlock(&tables.lock);
+	seats  = seats_num(tables.info[index]);
+	for (i = 0; i < seats; i++)
+		if (tables.info[index].seats[i] == p)
+			break;
+	pthread_rwlock_unlock(&tables.lock);
+
+	/* If player not there, we have a problem! */
+	if (i == seats)
+		return -1;
+
+	tables.info[index].transit_seat = i;
+
 	pthread_rwlock_rdlock(&players.lock);
 	strcpy(name, players.info[p].name);
 	pthread_rwlock_unlock(&players.lock);
