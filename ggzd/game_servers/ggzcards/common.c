@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4473 2002-09-09 00:49:32Z jdorje $
+ * $Id: common.c 4498 2002-09-09 17:44:45Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -55,16 +55,30 @@ game_t game = {
 	rated: TRUE
 };
 
-/* FIXME:
- *
- * This function is a temporary measure so that reserved seats behave
- * correctly.  This works as desired...the problem is that all other
- * games will need identical changes too.
- */
 bool seats_full(void)
 {
 	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
 		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+bool seats_empty(void)
+{
+	int i;
+
+	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) > 0) {
+	  printf("There are player seats.\n");
+		return FALSE;
+	}
+
+	for (i = 0; i < ggzdmod_get_max_num_spectators(game.ggz); i++)
+		if (ggzdmod_get_spectator(game.ggz, i).name) 
+		  {
+		    printf("Spectator %d - named %s.\n",
+			   i, ggzdmod_get_spectator(game.ggz, i).name);
+			return FALSE;
+		  }
+
+	return TRUE;
 }
 
 const char *get_state_name(server_state_t state)
@@ -508,7 +522,7 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 		/* If all seats are full, start playing. */
 		new_state = GGZDMOD_STATE_PLAYING;
 	} else {
-		if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0) {
+		if (seats_empty()) {
 			/* If all seats are empty, the table is done. */
 			new_state = GGZDMOD_STATE_DONE;
 		} else {
@@ -572,7 +586,10 @@ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 		assert(!new.name && new.fd < 0);
 		assert(old.name && old.fd >= 0);
 
-		/* Nothing (?) */
+		if (seats_empty())
+			if (ggzdmod_set_state(game.ggz,
+					      GGZDMOD_STATE_DONE) < 0)
+				assert(FALSE);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4471 2002-09-08 21:18:54Z jdorje $
+ * $Id: common.h 4498 2002-09-09 17:44:45Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -215,6 +215,7 @@ GGZSeatType get_player_status(player_t p);
 int get_player_socket(int p);
 
 bool seats_full(void);
+bool seats_empty(void);
 
 #define SPECTATOR_TO_PLAYER(spectator) (-1 - (spectator))
 #define PLAYER_TO_SPECTATOR(player) (-1 - (player))
