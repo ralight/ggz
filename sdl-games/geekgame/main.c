@@ -274,9 +274,11 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 	if(autocrop)
 	{
 		if(x < 20) x = 20;
-		if(x + w > ARRAY_WIDTH * 32 + 20) w = ARRAY_WIDTH * 32 + 20 - x;
+		if(x + w > ARRAY_WIDTH * 32 + 18)
+			x = ARRAY_WIDTH * 32 + 18 - w;
 		if(y < 20) y = 20;
-		if(y + h > ARRAY_HEIGHT * 32 + 20) h = ARRAY_HEIGHT * 32 + 20 - y;
+		if(y + h > ARRAY_HEIGHT * 32 + 18)
+			y = ARRAY_HEIGHT * 32 + 18 - h;
 	}
 	else
 	{
@@ -286,7 +288,7 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 
 	rect.x = x;
 	rect.y = y;
-	rect.w = 1;
+	rect.w = 2;
 	rect.h = h + 3;
 
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, green, 0));
@@ -297,7 +299,7 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 
 	rect.x = x;
 	rect.w = w + 3;
-	rect.h = 1;
+	rect.h = 2;
 
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, green, 0));
 
@@ -305,7 +307,7 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, green, 0));
 
-	SDL_UpdateRect(screen, x, y, w + 3, h + 3);
+	SDL_UpdateRect(screen, x, y, w + 3 + 1, h + 3 + 1);
 }
 
 /* Draw an image representing a number */
@@ -871,9 +873,9 @@ void screen_intro(int firsttime)
 		if(oldy)
 		{
 			desc1 = "The sum of any row or column\nmust be zero.";
-			desc2 = "The sum of any row or column,\nmultiplied by 2, must be 42.";
+			desc2 = "The sum of any row and column,\nmultiplied by 2, must be 42.";
 			desc3 = "Numbers encompassed by cursor\nmust divide by 4\nin binary coded format.";
-			desc4 = "Both cursor bars\nmust contain the same number\nof ones and zeroes";
+			desc4 = "One cursor bar must\ncontain the same number\nof ones as the other one zeroes.";
 
 			if(oldmodemenu == 0)
 			{
@@ -933,7 +935,9 @@ int gameinput(int *ox, int *oy, int userinput)
 	int dimminc;
 	enum Directions {right, left, up, down, none, done};
 	int march;
-	int tries, i, j, zeroes, minzeroes;
+	int tries, i, j, k, l, zeroes, minzeroes;
+	int sum, sum2, bestsum;
+	int sx, sy;
 
 	x = *ox;
 	y = *oy;
@@ -1031,6 +1035,91 @@ int gameinput(int *ox, int *oy, int userinput)
 						}
 					}
 				}
+				else if(playmode == MODE_MATRIX)
+				{
+					bestsum = 0;
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+					{
+						for(i = 0; i < ARRAY_WIDTH; i++)
+						{
+							sum = 0;
+							for(l = 0; l < ARRAY_HEIGHT; l++)
+								sum += array[i][l];
+							for(k = 0; k < ARRAY_WIDTH; k++)
+								sum += array[k][j];
+							sum = sum - array[i][j] * 2 + (!array[i][j]) * 2;
+							sum *= 2;
+							if(abs(sum - 42) < abs(bestsum - 42))
+							{
+								if(!((sum + 2) % 4))
+								{
+									printf("bestsum is %i\n", sum);
+									bestsum = sum;
+									wantx = i;
+									wanty = j;
+								}
+							}
+						}
+					}
+				}
+				else if(playmode == MODE_HAVOC)
+				{
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+					{
+						for(i = 0; i < ARRAY_WIDTH; i++)
+						{
+							sum = 0;
+							sx = i - 3;
+							sy = j - 3;
+							if(sx < 0) sx = 0;
+							if(sy < 0) sy = 0;
+							if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
+							if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+							for(l = sy; l <= sy + 6; l++)
+								sum += array[i][l];
+							for(k = sx; k <= sx + 6; k++)
+								sum += array[k][j];
+							sum = sum - array[i][j] * 2 + (!array[i][j]);
+							if(sum == (sum & ~0x03))
+							{
+								wantx = i;
+								wanty = j;
+							}
+						}
+					}
+				}
+				else if(playmode == MODE_HAX0R)
+				{
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+					{
+						if((wantx != -1) && (wanty != -1) && (!(rand() % 6)))
+							break;
+						for(i = 0; i < ARRAY_WIDTH; i++)
+						{
+							sum = 0;
+							sum2 = 0;
+							sx = i - 3;
+							sy = j - 3;
+							if(sx < 0) sx = 0;
+							if(sy < 0) sy = 0;
+							if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
+							if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+							for(l = sy; l <= sy + 6; l++)
+								sum += array[i][l];
+							for(k = sx; k <= sx + 6; k++)
+								sum2 += !array[k][j];
+							sum = sum - array[i][j] + !array[i][j];
+							sum2 = sum2 - !array[i][j] + array[i][j];
+							if(sum == sum2)
+							{
+								wantx = i;
+								wanty = j;
+								if(!(rand() % 3)) break;
+							}
+						}
+					}
+				}
+
 				if((wantx == -1) || (wanty == -1))
 				{
 					wantx = (rand() % ARRAY_WIDTH) * 32 + 18;
@@ -1107,7 +1196,7 @@ void screen_game()
 {
 	int escape;
 	int i, j;
-	int x, y;
+	int x, y, sx, sy;
 	int turn;
 	int sum, sum2;
 	int calc;
@@ -1181,40 +1270,43 @@ void screen_game()
 						sum += array[i][j];
 					renderscore(x + 10, 360, sum * 2);
 
+					sum2 = 0;
 					j = y / 32;
 					for(i = 0; i < ARRAY_WIDTH; i++)
-						sum += array[i][j];
-					renderscore(680, y + 10, sum * 2);
+						sum2 += array[i][j];
+					renderscore(680, y + 10, sum2 * 2);
 
-					if(sum * 2 == 42) makescore = 1;
+					if((sum + sum2) * 2 == 42) makescore = 1;
 					break;
 				case MODE_HAVOC:
 					sum = 0;
-					for(j = y / 32 - 3; j <= y / 32 + 3; j++)
-						for(i = x / 32 - 3; i <= x / 32 + 3; i++)
-						{
-							if((i < 0) || (i >= ARRAY_WIDTH)) continue;
-							if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
-							if((i == x / 32) || (j == y / 32))
-							{
-								sum += array[i][j];
-							}
-						}
+					sx = x / 32 - 3;
+					sy = y / 32 - 3;
+					if(sx < 0) sx = 0;
+					if(sy < 0) sy = 0;
+					if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
+					if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+					for(j = sy; j <= sy + 6; j++)
+						sum += array[x / 32][j];
+					for(i = sx; i <= sx + 6; i++)
+						sum += array[i][y / 32];
+					sum -= array[x / 32][y / 32];
 					if(sum == (sum & ~0x03)) makescore = 1;
 					break;
 				case MODE_HAX0R:
 					sum = 0;
 					sum2 = 0;
-					for(j = y / 32 - 3; j <= y / 32 + 3; j++)
-					{
-						if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
+					sx = x / 32 - 3;
+					sy = y / 32 - 3;
+					if(sx < 0) sx = 0;
+					if(sy < 0) sy = 0;
+					if(sx + 6 >= ARRAY_WIDTH) sx = ARRAY_WIDTH - 6 - 1;
+					if(sy + 6 >= ARRAY_HEIGHT) sy = ARRAY_HEIGHT - 6 - 1;
+
+					for(j = sy; j <= sy + 6; j++)
 						sum += array[x / 32][j];
-					}
-					for(i = x / 32 - 3; i <= x / 32 + 3; i++)
-					{
-						if((i < 0) || (i >= ARRAY_WIDTH)) continue;
-						sum2 += array[i][y / 32];
-					}
+					for(i = sx; i <= sx + 6; i++)
+						sum2 += !array[i][y / 32];
 					if(sum == sum2) makescore = 1;
 					break;
 			}
