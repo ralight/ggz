@@ -54,7 +54,7 @@ int player_greet = 0;
 int last_used = 0;
 int sig_logout = 0;
 FILE *log_file;
-
+int stay_still = 0;
 
 #define MAX_KNOWN 50
 #define MAX_MESSAGES 4
@@ -315,8 +315,8 @@ int main(const int argc, const char *argv[])
 				req_login();
 			else if(rooms != 0 && cur_room == -1)
 				change_room();
-			else if(rooms != 0 && last_used > 240) {
-				if(log_file == NULL)
+			else if(rooms != 0 && last_used > 480) {
+				if(log_file == NULL && stay_still == 1)
 					change_room();
 				last_used = 0;
 			}
@@ -566,6 +566,28 @@ void handle_command(char *sender, char *command)
 		if(!strcmp(sender, owner)) {
 			save_known();
 			send_chat("My memory is saved!");
+		} else {
+			send_chat("Sorry, only my owner can tell me to do that.");
+		}
+	} else if(!strncasecmp(command, "stay", 4)) {
+		if(!strcmp(sender, owner)) {
+			if(stay_still == 0){
+				stay_still = 1;
+				send_chat("Yes Master, I wont move again!");
+			} else {
+				send_chat("I'm already staying put");
+			}
+		} else {
+			send_chat("Sorry, only my owner can tell me to do that.");
+		}
+	} else if(!strncasecmp(command, "move", 4)) {
+		if(!strcmp(sender, owner)) {
+			if(stay_still == 1){
+				stay_still = 0;
+				send_chat("Yes Master, I'll wonder around now.");
+			} else {
+				send_chat("I'm already moving about!");
+			}
 		} else {
 			send_chat("Sorry, only my owner can tell me to do that.");
 		}
