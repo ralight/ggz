@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 4585 2002-09-16 06:53:40Z jdorje $
+ * $Id: net.h 4604 2002-09-17 15:01:54Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -40,7 +40,7 @@
 GGZNetIO* net_new(int fd, GGZClient *client);
 
 /* Set dump file for session */
-int net_set_dump_file(GGZNetIO *net, const char* filename);
+GGZReturn net_set_dump_file(GGZNetIO *net, const char* filename);
 
 /* Get filedescriptor for communication */
 int net_get_fd(GGZNetIO* net);
@@ -55,46 +55,50 @@ void net_disconnect(GGZNetIO* net);
 void net_free(GGZNetIO* net);
 
 /* Functions to send data to the client */
-int net_send_serverid(GGZNetIO *net, char *srv_name);
-int net_send_server_full(GGZNetIO *net, char *srv_name);
-int net_send_login(GGZNetIO *net, GGZLoginType type, GGZClientReqError status,
-		   char *password);
-int net_send_motd(GGZNetIO *net);
-int net_send_motd_error(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name);
+GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name);
+GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
+			 GGZClientReqError status, char *password);
+GGZReturn net_send_motd(GGZNetIO *net);
+GGZReturn net_send_motd_error(GGZNetIO *net, GGZClientReqError status);
 
-int net_send_room_list_error(GGZNetIO *net, GGZClientReqError status);
-int net_send_room_list_count(GGZNetIO *net, int count);
-int net_send_room(GGZNetIO *net, int index, RoomStruct *room, char verbose);
-int net_send_room_list_end(GGZNetIO *net);
+GGZReturn net_send_room_list_error(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_room_list_count(GGZNetIO *net, int count);
+GGZReturn net_send_room(GGZNetIO *net, int index,
+			RoomStruct *room, char verbose);
+GGZReturn net_send_room_list_end(GGZNetIO *net);
 
-int net_send_type_list_error(GGZNetIO *net, GGZClientReqError status);
-int net_send_type_list_count(GGZNetIO *net, int count);
-int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose);
-int net_send_type_list_end(GGZNetIO *net);
+GGZReturn net_send_type_list_error(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_type_list_count(GGZNetIO *net, int count);
+GGZReturn net_send_type(GGZNetIO *net, int index,
+			GameInfo *type, char verbose);
+GGZReturn net_send_type_list_end(GGZNetIO *net);
 
-int net_send_player_list_error(GGZNetIO *net, GGZClientReqError status);
-int net_send_player_list_count(GGZNetIO *net, int count);
-int net_send_player(GGZNetIO *net, GGZPlayer *p2);
-int net_send_player_list_end(GGZNetIO *net);
+GGZReturn net_send_player_list_error(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_player_list_count(GGZNetIO *net, int count);
+GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *p2);
+GGZReturn net_send_player_list_end(GGZNetIO *net);
 
-int net_send_table_list_error(GGZNetIO *net, GGZClientReqError status);
-int net_send_table_list_count(GGZNetIO *net, int count);
-int net_send_table(GGZNetIO *net, GGZTable *table);
-int net_send_table_list_end(GGZNetIO *net);
+GGZReturn net_send_table_list_error(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_table_list_count(GGZNetIO *net, int count);
+GGZReturn net_send_table(GGZNetIO *net, GGZTable *table);
+GGZReturn net_send_table_list_end(GGZNetIO *net);
 
-int net_send_room_join(GGZNetIO *net, GGZClientReqError status);
-int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg);
-int net_send_chat_result(GGZNetIO *net, GGZClientReqError status);
-int net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
-int net_send_table_join(GGZNetIO *net, GGZClientReqError status);
-int net_send_table_leave(GGZNetIO *net, GGZClientReqError status);
-int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name);
-int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
+GGZReturn net_send_room_join(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_chat(GGZNetIO *net, unsigned char opcode,
+			char *name, char *msg);
+GGZReturn net_send_chat_result(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_table_join(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_player_update(GGZNetIO *net,
+				 unsigned char opcode, char *name);
+GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 			  GGZTable *table, void *seat_data);
-int net_send_update_result(GGZNetIO *net, GGZClientReqError status);
-int net_send_logout(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_update_result(GGZNetIO *net, GGZClientReqError status);
+GGZReturn net_send_logout(GGZNetIO *net, GGZClientReqError status);
 
-int net_send_ping(GGZNetIO *net);
+GGZReturn net_send_ping(GGZNetIO *net);
 
 
 #endif /* _GGZ_NET_H */
