@@ -304,6 +304,8 @@ AC_OUTPUT([Makefile
 	   game_servers/ggzcards/games/Makefile
 	   game_servers/ggzcards/ai/Makefile
 	   game_servers/ggzcards/config/Makefile
+	   game_servers/ggzcards/common/Makefile
+	   game_servers/ggzcards/client/Makefile
 	   game_servers/reversi/Makefile
 	   game_servers/combat/Makefile
 	   game_servers/hastings/Makefile
