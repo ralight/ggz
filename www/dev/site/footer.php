@@ -11,6 +11,6 @@ foreach ($ar as $l)
 	endif;
 }
 
-include("footer.php.$lang");
+include($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php.$lang");
 
 ?>

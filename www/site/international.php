@@ -5,6 +5,7 @@ function country($lang)
 	switch($lang)
 	{
 		case "en": return "gb"; break;
+		case "pt-br": return "br"; break;
 		default: return $lang;
 	}
 }

@@ -19,6 +19,6 @@ if ($ar[sizeof($ar) - 2] == "php") :
 	endif;
 endif;
 
-include("header.php.$lang");
+include($_SERVER['DOCUMENT_ROOT'] . "/site/header.php.$lang");
 
 ?>
