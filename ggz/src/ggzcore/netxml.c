@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5082 2002-10-28 05:08:00Z jdorje $
+ * $Id: netxml.c 5083 2002-10-28 06:03:05Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1164,7 +1164,7 @@ static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char 
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
 	
 	if (strcasecmp(action, "add") == 0)
-		_ggzcore_room_add_player(room, player->name, player->type, player->lag);
+		_ggzcore_room_add_player(room, player);
 	
 	else if (strcasecmp(action, "delete") == 0)
 		_ggzcore_room_remove_player(room, player->name);
@@ -1596,9 +1596,16 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 	_ggzcore_player_init(ggz_player,  name, room, table, type, lag);
 
 	/* FIXME: should these be initialized through an accessor function? */
-	ggz_player->wins = str_to_int(ATTR(player, "WINS"), -1);
-	ggz_player->ties = str_to_int(ATTR(player, "TIES"), -1);
-	ggz_player->losses = str_to_int(ATTR(player, "LOSSES"), -1);
+	ggz_player->wins = str_to_int(ATTR(player, "WINS"), NO_RECORD);
+	ggz_player->ties = str_to_int(ATTR(player, "TIES"), NO_RECORD);
+	ggz_player->losses = str_to_int(ATTR(player, "LOSSES"), NO_RECORD);
+	ggz_player->forfeits = str_to_int(ATTR(player, "FORFEITS"), NO_RECORD);
+	ggz_player->rating = str_to_int(ATTR(player, "RATING"), NO_RATING);
+	ggz_player->ranking = str_to_int(ATTR(player, "RANKING"), NO_RANKING);
+
+	/* FIXME: highscore is a long... */
+	ggz_player->highscore = str_to_int(ATTR(player, "HIGHSCORE"),
+					   NO_HIGHSCORE);
 
 	parent_tag = ggz_xmlelement_get_tag(parent);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5062 2002-10-27 12:46:20Z jdorje $
+ * $Id: ggzcore.h 5083 2002-10-28 06:03:05Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -886,10 +886,26 @@ GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
 int	      ggzcore_player_get_lag(GGZPlayer *player);
 
 /** @brief Get the player's win-loss record.
- *  A value of -1 means there is no known record.
+ *  @return TRUE if there is a record; FALSE if not or on error.
  */
-void ggzcore_player_get_record(GGZPlayer *player,
-			       int *wins, int *losses, int *ties);
+int ggzcore_player_get_record(GGZPlayer *player,
+			      int *wins, int *losses,
+			      int *ties, int *forfeits);
+
+/** @brief Get the player's rating.
+ *  @return TRUE if there is a rating; FALSE if not or on error.
+ */
+int ggzcore_player_get_rating(GGZPlayer *player, int *rating);
+
+/** @brief Get the player's ranking.
+ *  @return TRUE if there is a ranking; FALSE if not or on error.
+ */
+int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
+
+/** @brief Get the player's highscore.
+ *  @return TRUE if there is a highscore; FALSE if not or on error.
+ */
+int ggzcore_player_get_highscore(GGZPlayer *player, long *highscore);
 
 
 GGZTable* ggzcore_table_new(void);

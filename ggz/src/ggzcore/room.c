@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5062 2002-10-27 12:46:20Z jdorje $
+ * $Id: room.c 5083 2002-10-28 06:03:05Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -536,11 +536,11 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type, int lag)
+void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata)
 {
 	struct _GGZPlayer *player;
 
-	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", name);
+	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", pdata->name);
 
 	/* Create the list if it doesn't exist yet */
 	if (!room->players)
@@ -550,10 +550,20 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType t
 
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
-	_ggzcore_player_init(player, name, room, -1, type, lag);
+	_ggzcore_player_init(player, pdata->name, pdata->room,
+			     -1, pdata->type, pdata->lag);
+	_ggzcore_player_init_stats(player,
+				   pdata->wins,
+				   pdata->losses,
+				   pdata->ties,
+				   pdata->forfeits,
+				   pdata->rating,
+				   pdata->ranking,
+				   pdata->highscore);
+
 	ggz_list_insert(room->players, player);
 	room->num_players++;
-	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
+	_ggzcore_room_event(room, GGZ_ROOM_ENTER, pdata->name);
 }
 			      
 
@@ -612,11 +622,14 @@ void _ggzcore_room_set_player_stats(GGZRoom *room, GGZPlayer *pdata)
 	if (!player)
 		return;
 
-	/* FIXME: should we use accessor functions? */
-	player->wins = pdata->wins;
-	player->losses = pdata->losses;
-	player->ties = pdata->ties;
-	player->rating = pdata->rating;
+	_ggzcore_player_init_stats(player,
+				   pdata->wins,
+				   pdata->losses,
+				   pdata->ties,
+				   pdata->forfeits,
+				   pdata->rating,
+				   pdata->ranking,
+				   pdata->highscore);
 	_ggzcore_room_event(room, GGZ_PLAYER_STATS, player->name);
 }
 

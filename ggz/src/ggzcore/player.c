@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 5062 2002-10-27 12:46:20Z jdorje $
+ * $Id: player.c 5083 2002-10-28 06:03:05Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -75,13 +75,35 @@ int ggzcore_player_get_lag(GGZPlayer *player)
 
 
 
-void ggzcore_player_get_record(GGZPlayer *player,
-			       int *wins, int *losses, int *ties)
+int ggzcore_player_get_record(GGZPlayer *player,
+			      int *wins, int *losses,
+			      int *ties, int *forfeits)
 {
-	if (!player)
-		return;
+	if (!player || !wins || !losses || !ties || !forfeits)
+		return 0;
+	return _ggzcore_player_get_record(player, wins, losses,
+					  ties, forfeits);
+}
 
-	_ggzcore_player_get_record(player, wins, losses, ties);
+int ggzcore_player_get_rating(GGZPlayer *player, int *rating)
+{
+	if (!player || !rating)
+		return 0;
+	return _ggzcore_player_get_rating(player, rating);
+}
+
+int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking)
+{
+	if (!player || !ranking)
+		return 0;
+	return _ggzcore_player_get_ranking(player, ranking);
+}
+
+int ggzcore_player_get_highscore(GGZPlayer *player, long *highscore)
+{
+	if (!player || !highscore)
+		return 0;
+	return _ggzcore_player_get_highscore(player, highscore);
 }
 
 
@@ -102,10 +124,13 @@ struct _GGZPlayer* _ggzcore_player_new(void)
 	/* Assume no lag */
 	player->lag = -1;
 
-	player->wins = -1;
-	player->losses = -1;
-	player->ties = -1;
-	player->rating = -1;
+	player->wins = NO_RECORD;
+	player->losses = NO_RECORD;
+	player->ties = NO_RECORD;
+	player->forfeits = NO_RECORD;
+	player->rating = NO_RATING;
+	player->ranking = NO_RANKING;
+	player->highscore = NO_HIGHSCORE;
 
 	return player;
 }
@@ -123,6 +148,25 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 	player->table = table;
 	player->type = type;
 	player->lag = lag;
+}
+
+
+void _ggzcore_player_init_stats(GGZPlayer *player,
+				const int wins,
+				const int losses,
+				const int ties,
+				const int forfeits,
+				const int rating,
+				const int ranking,
+				const long highscore)
+{
+	player->wins = wins;
+	player->losses = losses;
+	player->ties = ties;
+	player->forfeits = forfeits;
+	player->rating = rating;
+	player->ranking = ranking;
+	player->highscore = highscore;
 }
 
 
@@ -174,15 +218,59 @@ int _ggzcore_player_get_lag(struct _GGZPlayer *player)
 }
 
 
-void _ggzcore_player_get_record(GGZPlayer *player,
-				int *wins, int *losses, int *ties)
+int _ggzcore_player_get_record(GGZPlayer *player,
+				int *wins, int *losses,
+				int *ties, int *forfeits)
 {
-	if (wins)
-		*wins = player->wins;
-	if (losses)
-		*losses = player->losses;
-	if (ties)
-		*ties = player->ties;
+	if (player->wins == NO_RECORD
+	    && player->losses == NO_RECORD
+	    && player->ties == NO_RECORD
+	    && player->forfeits == NO_RECORD)
+		return 0;
+
+#ifndef MAX
+#  define MAX(a, b) ((a) > (b) ? (a) : (b))
+#endif
+
+	/* NO_RECORD is -1.  If we have a stat for anything, we should
+	   return all stats and assume 0 for any we don't know. */
+
+	*wins = MAX(player->wins, 0);
+	*losses = MAX(player->losses, 0);
+	*ties = MAX(player->ties, 0);
+	*forfeits = MAX(player->forfeits, 0);
+
+	return 1;
+}
+
+
+int _ggzcore_player_get_rating(GGZPlayer *player,
+				int *rating)
+{
+	if (player->rating == NO_RATING)
+		return 0;
+	*rating = player->rating;
+	return 1;
+}
+
+
+int _ggzcore_player_get_ranking(GGZPlayer *player,
+				int *ranking)
+{
+	if (player->ranking == NO_RANKING)
+		return 0;
+	*ranking = player->ranking;
+	return 1;
+}
+
+
+int _ggzcore_player_get_highscore(GGZPlayer *player,
+				  long *highscore)
+{
+	if (player->highscore == NO_HIGHSCORE)
+		return 0;
+	*highscore = player->highscore;
+	return 1;
 }
 
 

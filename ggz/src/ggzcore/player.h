@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 5062 2002-10-27 12:46:20Z jdorje $
+ * $Id: player.h 5083 2002-10-28 06:03:05Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -52,10 +52,20 @@ struct _GGZPlayer {
 	int lag;
 
 	/* Record of the player */
-	int wins, losses, ties;
+#define NO_RECORD -1
+	int wins, losses, ties, forfeits;
 
 	/* Rating of the player */
+#define NO_RATING 0
 	int rating;
+
+	/* Ranking of the player */
+#define NO_RANKING 0
+	int ranking;
+
+	/* Player's highest score */
+#define NO_HIGHSCORE 0
+	long highscore;
 };
 
 
@@ -69,6 +79,14 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  const int table,
 			  const GGZPlayerType type,
 			  const int lag);
+void _ggzcore_player_init_stats(GGZPlayer *player,
+				const int wins,
+				const int losses,
+				const int ties,
+				const int forfeits,
+				const int rating,
+				const int ranking,
+				const long highscore);
 
 
 void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table);
@@ -82,8 +100,12 @@ GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player);
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
 
 int _ggzcore_player_get_lag(struct _GGZPlayer *player);
-void _ggzcore_player_get_record(GGZPlayer *player,
-				int *wins, int *losses, int *ties);
+int _ggzcore_player_get_record(GGZPlayer *player,
+			       int *wins, int *losses,
+			       int *ties, int *forfeits);
+int _ggzcore_player_get_rating(GGZPlayer *player, int *rating);
+int _ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
+int _ggzcore_player_get_highscore(GGZPlayer *player, long *highscore);
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_player_compare(void* p, void* q);
