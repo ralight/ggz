@@ -70,5 +70,60 @@ function stats_statistics($id)
 
 }
 
+function stats_live($host)
+{
+
+	$f = fsockopen($host, "8080", $errno, $errstr, 10);
+	if ($f) :
+		echo "The following people are currently playing games on $host:<br>\n";
+
+		do
+		{
+			$tmp = fgets($f, 1024);
+			$result .= $tmp;
+		}
+		while ($tmp);
+		fclose($f);
+
+		$xmlparser = xml_parser_create();
+		xml_set_element_handler($xmlparser, "xmlStart", "xmlEnd");
+		xml_set_character_data_handler($xmlparser, "xmlData");
+		xml_parse($xmlparser, $result);
+		xml_parser_free($xmlparser);
+	else :
+		echo "List of running games could not be determined.<br>\n";
+	endif;
+}
+
+function xmlStart($parser, $name, $attributes)
+{
+	global $context;
+
+	$context = $name;
+
+	if ($context == "GAME") :
+		echo "Game of ", $attributes['NAME'], ":<br>\n";
+	elseif ($context == "TABLE") :
+		echo "* Table ", $attributes['ID'], ":<br>\n";
+	endif;
+}
+
+function xmlEnd($parser, $name)
+{
+	global $context;
+
+	$context = "";
+}
+
+function xmlData($parser, $data)
+{
+	global $context;
+
+	if ($context == "SEAT") :
+		echo "&nbsp;&nbsp;&nbsp;";
+		echo "Seat: $data<br>\n";
+	endif;
+}
+
 ?>
 

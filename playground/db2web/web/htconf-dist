@@ -8,4 +8,8 @@ $dbname = "";
 $dbuser = "";
 $dbpass = "";
 
+$ggzhost = "*.ggzgamingzone.org";
+$ggzname = "GGZ Whatever";
+$ggzversion = "0.0.x";
+
 ?>

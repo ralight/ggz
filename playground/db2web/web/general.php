@@ -5,6 +5,17 @@ include("stats.php");
 echo "<table border=0 cellspacing=0 cellpadding=1><tr><td bgcolor='#000000'>\n";
 echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
 
+echo "<b>Live games:</b><br>\n";
+echo "<a href='index.php?type=live'>View games</a>\n";
+echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+
+echo "</td></tr>\n";
+echo "<tr><td bgcolor='#000000'>";
+
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
+
 echo "<b>Players:</b><br>\n";
 for ($i = 65; $i < 91; $i++)
 {
@@ -70,13 +81,15 @@ echo "</td></tr></table>\n";
 
 <?php
 
-if ($lookup) :
+if (($lookup) || ($type)) :
 
 echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
 if ($type == "player") :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#ff9050'>\n";
 elseif ($type == "game") :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#ffff00'>\n";
+elseif ($type == "live") :
+	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#9f4ff0'>\n";
 else :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
 endif;
@@ -90,12 +103,19 @@ if ($type == "player") :
 elseif ($type == "game") :
 	echo "<img src='ggzicons/games/$lookup.png' width=32 height=32 alt='$lookup'>\n";
 endif;
-echo "<b>Statistics for '$lookup'</b><br><br>\n";
+if ($lookup) :
+	echo "<b>Statistics for '$lookup'</b><br><br>\n";
+endif;
+if ($type == "live") :
+	echo "<b>Live game overview</b><br><br>\n";
+endif;
 
 if ($type == "player") :
 	stats_players($id, $lookup);
 elseif ($type == "game") :
 	stats_games($id, $lookup);
+elseif ($type == "live") :
+	stats_live($ggzhost);
 endif;
 
 echo "<br><br>\n";

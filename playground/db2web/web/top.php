@@ -14,8 +14,8 @@ GGZ Gaming Zone Ranking System
 <table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>
 <font color='#000000' size=2>
 
-Statistics for GGZ version 0.0.7 running on GGZ Europe One (live.ggzgamingzone.org) -
 <?php
+echo "Statistics for GGZ version $ggzversion running on $ggzname ($ggzhost) -\n";
 if ($ggzuser) :
 	echo "Logged in as <b>$ggzuser</b>.\n";
 else :

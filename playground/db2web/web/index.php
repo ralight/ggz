@@ -9,8 +9,8 @@ GGZ Gaming Zone Ranking System
 
 <?php
 
-include("top.php");
 require_once(".htconf");
+include("top.php");
 
 $id = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 

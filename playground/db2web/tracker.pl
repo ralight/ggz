@@ -9,9 +9,11 @@ my $addr = sockaddr_in($port, INADDR_ANY);
 socket(SERVER, PF_INET, SOCK_STREAM, $proto);
 bind(SERVER, $addr);
 listen(SERVER, SOMAXCONN);
+setsockopt(SERVER, SOL_SOCKET, SO_REUSEADDR, 1);
 
 my %server;
 my %gamehost;
+my $loading;
 
 sub network{
 	my $sockaddr = accept(HANDLER, SERVER);
@@ -23,14 +25,17 @@ sub network{
 		foreach my $game(keys(%{$server{$room}})){
 			print HANDLER "<game name=\"$game\">\n";
 			foreach my $table(keys(%{$server{$room}{$game}})){
-				print HANDLER "<table id=\"$table\">\n";
-				foreach my $seat(keys(%{$server{$room}{$game}{$table}})){
-					print HANDLER "<seat id=\"$seat\">";
-					my $player = $server{$room}{$game}{$table}{$seat};
-					print HANDLER "$player";
-					print HANDLER "</seat>\n";
+				my @seatlist = keys(%{$server{$room}{$game}{$table}});
+				if($#seatlist != -1){
+					print HANDLER "<table id=\"$table\">\n";
+					foreach my $seat(@seatlist){
+						print HANDLER "<seat id=\"$seat\">";
+						my $player = $server{$room}{$game}{$table}{$seat};
+						print HANDLER "$player";
+						print HANDLER "</seat>\n";
+					}
+					print HANDLER "</table>\n";
 				}
-				print HANDLER "</table>\n";
 			}
 			print HANDLER "</game>\n";
 		}
@@ -41,7 +46,11 @@ sub network{
 	close(HANDLER);
 }
 
-open(X, $ARGV[0]);
+STDOUT->autoflush(1);
+$loading = 1;
+print "Loading... ";
+
+open(X, $ARGV[0]) or die;
 while(1){
 	while(<X>){
 		chomp;
@@ -68,6 +77,10 @@ while(1){
 			my $room = $gamehost{"$name:room"};
 			$server{$room}{$game}{$table} = {};
 		}
+	}
+	if($loading){
+		$loading = 0;
+		print "done\n";
 	}
 	sleep(1);
 	network();
