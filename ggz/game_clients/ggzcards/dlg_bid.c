@@ -43,10 +43,6 @@
 
 #include "easysock.h"
 
-/* currently, this is hard-coded.
- * Each bid can be no longer than length 30 */
-#define MAX_BID_LENGTH  30
-
 static GtkWidget *window = NULL; /* bid/option dialog window */
 
 int option_cnt;
@@ -225,8 +221,7 @@ int handle_bid_request(void)
 	bid_choices = (char**)g_malloc(possible_bids * sizeof(char*));
 
 	for(i = 0; i < possible_bids; i++) {
-		bid_choices[i] = (char*)g_malloc(MAX_BID_LENGTH * sizeof(char));
-		if (es_read_string(game.fd, bid_choices[i], MAX_BID_LENGTH) < 0) {
+		if (es_read_string_alloc(game.fd, &bid_choices[i]) < 0) {
 			ggz_debug("Error reading string %d.", i);
 			return -1;
 		}
@@ -262,10 +257,9 @@ int handle_option_request(void)
 		if (es_read_int(game.fd, &option_sizes[i]) < 0) return -1;
 		if (es_read_int(game.fd, &options_selected[i]) < 0) return -1; /* read the default */
 		option_choices[i] = (char**)g_malloc(option_sizes[i] * sizeof(char*));
-		for (j = 0; j < option_sizes[i]; j++) {
-			option_choices[i][j] = (char*)g_malloc(MAX_BID_LENGTH * sizeof(char));
-			if (es_read_string(game.fd, option_choices[i][j], MAX_BID_LENGTH) < 0) return -1;
-		}
+		for (j = 0; j < option_sizes[i]; j++)
+			if (es_read_string_alloc(game.fd, &option_choices[i][j]) < 0)
+				return -1;
 	}
 
 	if (game.state == WH_STATE_OPTIONS) {
