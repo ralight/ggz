@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4959 2002-10-19 23:09:30Z jdorje $
+ * $Id: dlg_players.c 4961 2002-10-20 05:16:58Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -309,43 +309,172 @@ void create_or_raise_dlg_players(void)
 	}
 }
 
-static GtkWidget *create_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat)
+static gpointer encode_seat(int spectator, int seat_num)
+{
+	int which = ((!!spectator) << 31) & seat_num;
+	assert((seat_num & (1 << 31)) == 0);
+	return GINT_TO_POINTER(which);
+}
+
+static void decode_seat(gpointer data, int *spectator, int *seat_num)
+{
+	int which = GPOINTER_TO_INT(data);
+	*spectator = which >> 31;
+	*seat_num = which & ~(1 << 31);
+}
+
+/* Get info on the player (pop up a window) */
+static void player_info_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	int spectator, seat_num;
+
+	decode_seat(data, &spectator, &seat_num);
+
+	/* Not implemented */
+}
+
+/* Boot the player from the table */
+static void player_boot_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	int spectator, seat_num;
+
+	decode_seat(data, &spectator, &seat_num);
+
+	/* Not implemented */
+}
+
+/* We (a spectator) will sit here. */
+static void player_sit_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	int spectator, seat_num;
+
+	decode_seat(data, &spectator, &seat_num);
+
+	/* Not implemented */
+}
+
+/* Replace the open seat with a bot */
+static void player_bot_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	int spectator, seat_num;
+
+	decode_seat(data, &spectator, &seat_num);
+
+	/* Not implemented */
+}
+
+/* Replace the bot or reserved seat with an open one */
+static void player_open_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	int spectator, seat_num;
+
+	decode_seat(data, &spectator, &seat_num);
+
+	/* Not implemented */
+}
+
+void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 {
 	GtkWidget *menu;
-	GtkWidget *info;
-	GtkWidget *boot;
-#if 0 /* FIXME: need a better way */
-	int which = ((!!spectator) << 31) + seat.num;
-#endif
+	gpointer which = encode_seat(sseat ? 1 : 0,
+				     seat ? seat->num : sseat->num);
+	int is_spectator, my_seat_num;
+	const char *my_name;
+
+	my_name = ggzmod_get_player(ggz, &is_spectator, &my_seat_num);
+
+	assert((seat || sseat) && !(seat && sseat));
 
 	menu = gtk_menu_new();
 
-	info = gtk_menu_item_new_with_label(_("Info"));
-	gtk_widget_ref(info);
-	gtk_object_set_data_full(GTK_OBJECT(menu), "info", info,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_container_add(GTK_CONTAINER(menu), info);
-	gtk_widget_set_sensitive(info, FALSE);
+	if (sseat || seat->type == GGZ_SEAT_PLAYER) {
+		GtkWidget *info;
 
-	boot = gtk_menu_item_new_with_label(_("Boot from table"));
-	gtk_widget_ref(boot);
-	gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_container_add(GTK_CONTAINER(menu), boot);
-	gtk_widget_set_sensitive(boot, FALSE);
+		/* FIXME: what about bot/reservation seats? */
+		info = gtk_menu_item_new_with_label(_("Info"));
+		gtk_widget_ref(info);
+		gtk_object_set_data_full(GTK_OBJECT(menu), "info", info,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_container_add(GTK_CONTAINER(menu), info);
+		gtk_widget_set_sensitive(info, FALSE);
+		gtk_signal_connect(GTK_OBJECT(info), "activate",
+				   GTK_SIGNAL_FUNC(player_info_activate),
+				   which);
+	}
 
-#if 0
-	gtk_signal_connect(GTK_OBJECT(info), "activate",
-			   GTK_SIGNAL_FUNC(player_info_activate),
-			   GINT_TO_POINTER(which));
-	gtk_signal_connect(GTK_OBJECT(boot), "activate",
-			   GTK_SIGNAL_FUNC(player_boot_activate),
-			   GINT_TO_POINTER(which));
-#endif
+	if ((sseat && strcasecmp(sseat->name, my_name))
+	     || (seat && seat->type == GGZ_SEAT_PLAYER
+		 && strcasecmp(seat->name, my_name))) {
+		GtkWidget *boot;
+
+		/* FIXME: you shouldn't be able to boot yourself */
+		boot = gtk_menu_item_new_with_label(_("Boot player"));
+		gtk_widget_ref(boot);
+		gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_container_add(GTK_CONTAINER(menu), boot);
+		gtk_widget_set_sensitive(boot, FALSE);
+		gtk_signal_connect(GTK_OBJECT(boot), "activate",
+				   GTK_SIGNAL_FUNC(player_boot_activate),
+				   which);
+	}
+
+	if (seat && is_spectator
+	    && (seat->type == GGZ_SEAT_OPEN
+		|| (seat->type == GGZ_SEAT_RESERVED
+		    && !strcasecmp(my_name, seat->name)))) {
+		GtkWidget *sit;
+
+		sit = gtk_menu_item_new_with_label(_("Sit here"));
+		gtk_widget_ref(sit);
+		gtk_object_set_data_full(GTK_OBJECT(menu), "sit", sit,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_container_add(GTK_CONTAINER(menu), sit);
+		gtk_widget_set_sensitive(sit, FALSE);
+		gtk_signal_connect(GTK_OBJECT(sit), "activate",
+				   GTK_SIGNAL_FUNC(player_sit_activate),
+				   which);
+	}
+
+	if (seat && (seat->type == GGZ_SEAT_OPEN
+		     || seat->type == GGZ_SEAT_RESERVED)) {
+		GtkWidget *bot;
+
+		bot = gtk_menu_item_new_with_label(_("Play with bot"));
+		gtk_widget_ref(bot);
+		gtk_object_set_data_full(GTK_OBJECT(menu), "bot", bot,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_container_add(GTK_CONTAINER(menu), bot);
+		gtk_widget_set_sensitive(bot, FALSE);
+		gtk_signal_connect(GTK_OBJECT(bot), "activate",
+				   GTK_SIGNAL_FUNC(player_bot_activate),
+				   which);
+	}
+
+	if (seat && (seat->type == GGZ_SEAT_BOT
+		     || seat->type == GGZ_SEAT_RESERVED)) {
+		GtkWidget *open;
+		const char *label;
+
+		if (seat->type == GGZ_SEAT_RESERVED)
+			label = _("Drop reservation");
+		else
+			label = _("Remove bot");
+
+		open = gtk_menu_item_new_with_label(label);
+		gtk_widget_ref(open);
+		gtk_object_set_data_full(GTK_OBJECT(menu), "open", open,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_container_add(GTK_CONTAINER(menu), open);
+		gtk_widget_set_sensitive(open, FALSE);
+		gtk_signal_connect(GTK_OBJECT(open), "activate",
+				   GTK_SIGNAL_FUNC(player_open_activate),
+				   which);
+	}
 
 	gtk_widget_show_all(menu);
 
-	return menu;
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, 0);
 }
 
 static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
@@ -357,7 +486,6 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 	if (event->type == GDK_BUTTON_PRESS
 	    && buttonevent->button == 3) {
 		/* Right mouse button; create drop-down menu */
-		GtkWidget *menu;
 		gint row, col;
 		int spectator;
 		GGZSeat seat;
@@ -370,7 +498,7 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 		gtk_clist_select_row(GTK_CLIST(player_clist), row, 0);
 
 		assert(row >= 0);
-		if (row <= ggzmod_get_num_seats(ggz)) {
+		if (row < ggzmod_get_num_seats(ggz)) {
 			spectator = 0;
 			seat = ggzmod_get_seat(ggz, row);
 		} else {
@@ -390,11 +518,9 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 			spectator = 1;
 		}
 
-		menu = create_player_menu(spectator ? NULL : &seat,
-					  spectator ? &sseat : NULL);
-
-		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
-			       buttonevent->button, 0);
+		popup_player_menu(spectator ? NULL : &seat,
+				  spectator ? &sseat : NULL,
+				  buttonevent->button);
 	}
 
 	return FALSE;

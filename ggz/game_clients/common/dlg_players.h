@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.h 4917 2002-10-14 22:27:43Z jdorje $
+ * $Id: dlg_players.h 4961 2002-10-20 05:16:58Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -45,3 +45,12 @@ GtkWidget *create_playerlist_widget(void);
 
 /* Creates or raises the main player list dialog window. */
 void create_or_raise_dlg_players(void);
+
+/* A tangentially-related function: this one will pop up a menu to give
+   you some options on what you can do to the given seat or spectator
+   seat.  Either seat or sseat must be defined (but not both).  button
+   is the number of the button pressed to open the menu
+   (see GdkEventButton::button) */
+void popup_player_menu(GGZSeat *seat,
+		       GGZSpectatorSeat *sseat,
+		       guint button);
