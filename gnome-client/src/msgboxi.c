@@ -22,9 +22,6 @@ void msgbox_error(gchar *msg)
 {
 	GtkWidget *msgbox;
 	GtkWidget *tmp;
-	GdkPixmap *bg;
-	GdkBitmap *mask;
-	PangoLayout *out;
 	
 	msgbox = create_msgbox();
 	gtk_widget_realize(msgbox);

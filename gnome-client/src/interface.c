@@ -24,7 +24,6 @@ void login_set_login (GtkWidget *login)
 	GtkTreeIter iter;
 	gint intProfiles;
 	GSList *slProfiles = NULL;
-	gint curItem;
 	gint x;
 	
 	/*Hide the "new" widgets*/
@@ -374,7 +373,6 @@ create_login (void)
   GtkCellRenderer *rndProfiles;
   GtkTreeViewColumn *colProfiles;
   GtkTreeSelection *selProfiles;
-  GtkWidget *label4;
   GtkWidget *vbLogin;
   GtkWidget *lblUsername;
   GtkWidget *entUsername;
@@ -436,7 +434,6 @@ create_login (void)
   GtkWidget *btnLaunch;
   GtkWidget *btnJoin;
   GtkWidget *btnWatch;
-  gint user_data;
   
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (window, "window");

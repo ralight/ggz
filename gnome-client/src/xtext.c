@@ -129,7 +129,6 @@ static char *gtk_xtext_conv_color (unsigned char *text, int len, char *outbuf, i
 static unsigned char *
 gtk_xtext_strip_color (unsigned char *text, int len, unsigned char *outbuf,
 							  int *newlen, int fonttype, int *mb_ret);
-GtkType gtk_xtext_get_type (void);
 
 /* some utility functions first */
 
@@ -3997,7 +3996,6 @@ gtk_xtext_append_indent (xtext_buffer *buf,
 	{
 		const char *name = NULL;
 		g_get_charset (&name);
-		printf ("locale/utf-8 conversion failed (%s)\n", name);
 		return;
 	}
 #endif

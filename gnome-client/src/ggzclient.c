@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4953 2002-10-19 21:03:17Z jzaun $
+ * $Id: ggzclient.c 4954 2002-10-19 22:02:49Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -315,16 +315,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-	gchar *name;
 	gchar *message;
-	GGZRoom *room;
-	GGZGameType *gt;
-	GtkArg arg[1];
-
-	/* Clear the player list */
-
-	/* Clear table list */
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
@@ -357,8 +348,6 @@ static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-
 	ggz_debug("connection", "Logged out.");
 
 	server_disconnect();
@@ -376,6 +365,7 @@ static GGZHookReturn ggz_chat_event(GGZRoomEvent id, void* event_data, void* use
 	msg = (GGZChatEventData*)event_data;
 	switch(msg->type)
 	{
+		case GGZ_CHAT_TABLE:
 		case GGZ_CHAT_NORMAL:
 			chat_display_message(CHAT_MSG, (char*)msg->sender, (char*)msg->message);
 			break;
@@ -390,6 +380,8 @@ static GGZHookReturn ggz_chat_event(GGZRoomEvent id, void* event_data, void* use
 			break;
 		case GGZ_CHAT_ANNOUNCE:
 			chat_display_message(CHAT_ANNOUNCE, (char*)msg->sender, (char*)msg->message);
+			break;
+		case GGZ_CHAT_NONE:
 			break;
 	}
 
@@ -444,8 +436,6 @@ static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* 
 
 static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data)
 {
-	int context;
-	GtkWidget* statebar;
 	char *state;
 	GGZStateID state_id;
 
@@ -576,8 +566,6 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-	
 	ggz_debug("connection", "Net error.");
 
 	server_disconnect();
@@ -757,8 +745,6 @@ void display_players(void)
 
 static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-
 	ggzcore_server_join_room(server, 0);
 	
 	return GGZ_HOOK_REMOVE;

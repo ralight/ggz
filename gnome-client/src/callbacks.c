@@ -205,7 +205,6 @@ on_btnNewAdvanced_clicked                      (GtkButton       *button,
 	GtkTreeIter iter;
 	gint intProfiles;
 	GSList *slProfiles = NULL;
-	gint curItem;
 	gint x;
 
 	winProfile = create_winProfiles ();
@@ -378,8 +377,6 @@ on_btnJoin_clicked                 (GtkButton       *button,
 	GGZModule *module;
 	GGZGame *game;
 
-	int status;
-
 	/* Get current row */
 	tmp = lookup_widget (interface, "treTables");
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(tmp));
@@ -419,8 +416,6 @@ on_btnWatch_clicked                 (GtkButton       *button,
 	gchar *name, *engine, *version;
 	GGZModule *module;
 	GGZGame *game;
-
-	int status;
 
 	/* Get current row */
 	tmp = lookup_widget (interface, "treTables");

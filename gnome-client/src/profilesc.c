@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gnome.h>
 #include <string.h>
 #include <gconf/gconf-client.h>
@@ -33,6 +34,9 @@ on_entries_changed                     (GtkWidget     *widget,
 		val = 2;
 	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entProfileName")) {
 		val = 3;
+	} else {
+		assert(0);
+		val = 0;
 	}
 
 	/*Set the state of the entry*/
@@ -89,7 +93,6 @@ on_btnNew_clicked                      (GtkButton       *button,
 	GtkTreeModel *stoProfiles;
 	GtkTreeIter iter;
 	GSList *slProfiles = NULL;
-	gint curItem;
 	GtkWidget *tmp;
 	GtkWidget *winProfile = GTK_WIDGET(user_data);
 

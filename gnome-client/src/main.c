@@ -28,7 +28,6 @@ void init_debug(void);
 int
 main (int argc, char *argv[])
 {
-	GError* err = NULL;
 	GGZOptions opt;
 	gchar *global_conf, *user_conf, *themedir;
 
