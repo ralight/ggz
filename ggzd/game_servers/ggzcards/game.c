@@ -574,7 +574,6 @@ int game_get_bid()
 					continue;
 				bid.sbid.val = i;
 				game.bid_choices[index] = bid;
-				game_get_bid_text(game.bid_texts[index], game.max_bid_length, game.bid_choices[index]);
 				index++;
 			}
 			
@@ -582,12 +581,11 @@ int game_get_bid()
 			bid.bid = 0;
 			bid.sbid.spec = SPADES_NIL;
 			game.bid_choices[index] = bid;
-			game_get_bid_text(game.bid_texts[index], game.max_bid_length, game.bid_choices[index]);
 			index++;
 
 			/* TODO: other specialty bids */
 
-			status = req_bid(game.next_bid, index, game.bid_texts);
+			status = req_bid(game.next_bid, index, NULL);
 			}
 			break;
 		case GGZ_GAME_EUCHRE:
@@ -595,24 +593,20 @@ int game_get_bid()
 				/* first four bids: either "pass" or "take" */
 				bid.sbid.spec = EUCHRE_TAKE;
 				game.bid_choices[0] = bid;
-				game_get_bid_text(game.bid_texts[0], game.max_bid_length, game.bid_choices[0]);
 				bid.sbid.spec = EUCHRE_PASS;
 				game.bid_choices[1] = bid;
-				game_get_bid_text(game.bid_texts[1], game.max_bid_length, game.bid_choices[1]);
-				status = req_bid(game.next_bid, 2, game.bid_texts);
+				status = req_bid(game.next_bid, 2, NULL);
 			} else {
 				char suit;
 				bid.sbid.spec = EUCHRE_TAKE_SUIT;
 				for (suit=0; suit<4; suit++) {
 					bid.sbid.suit = suit;
 					game.bid_choices[(int)suit] = bid;
-					game_get_bid_text(game.bid_texts[(int)suit], game.max_bid_length, game.bid_choices[(int)suit]);
 				}
 				bid.bid = 0;
 				bid.sbid.spec = EUCHRE_PASS;
 				game.bid_choices[4] = bid;
-				game_get_bid_text(game.bid_texts[4], game.max_bid_length, game.bid_choices[4]);
-				status = req_bid(game.next_bid, 5, game.bid_texts);
+				status = req_bid(game.next_bid, 5, NULL);
 			}
 			/* TODO: dealer's last bid */
 			break;
@@ -636,11 +630,10 @@ int game_get_bid()
 						continue;
 					}
 					game.bid_choices[num].bid = i;
-					game_get_bid_text(game.bid_texts[num], game.max_bid_length, game.bid_choices[num]);
 					num++;
 				}
 
-				status = req_bid(game.next_bid, num, game.bid_texts);
+				status = req_bid(game.next_bid, num, NULL);
 			}
 			break;
 		case GGZ_GAME_BRIDGE:
@@ -651,8 +644,6 @@ int game_get_bid()
 				for (bid.sbid.suit = CLUBS; bid.sbid.suit <= BRIDGE_NOTRUMP; bid.sbid.suit++) {
 					if (bid.sbid.val < BRIDGE.contract) continue;
 					if (bid.sbid.val == BRIDGE.contract && bid.sbid.suit <= BRIDGE.contract_suit) continue;
-					snprintf(game.bid_texts[index], game.max_bid_length,
-					"%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 					game.bid_choices[index] = bid;
 					index++;
 				}
@@ -665,8 +656,6 @@ int game_get_bid()
 				bid.bid = 0;
 				bid.sbid.spec = BRIDGE_DOUBLE;
 				game.bid_choices[index] = bid;
-				snprintf(game.bid_texts[index], game.max_bid_length,
-					BRIDGE.bonus == 1 ? "double" : "redouble");
 				index++;
 			}
 
@@ -674,10 +663,9 @@ int game_get_bid()
 			bid.bid = 0;
 			bid.sbid.spec = BRIDGE_PASS;
 			game.bid_choices[index] = bid;
-			snprintf(game.bid_texts[index], game.max_bid_length, "pass");
 			index++;
 
-			status = req_bid(game.next_bid, index, game.bid_texts);
+			status = req_bid(game.next_bid, index, NULL);
 			break;
 		case GGZ_GAME_SUARO:
 			/* in suaro, a bid consists of a number and a suit. */
@@ -687,16 +675,12 @@ int game_get_bid()
 				for(bid.sbid.suit = SUARO_LOW; bid.sbid.suit <= SUARO_HIGH; bid.sbid.suit++) {
 					if (bid.sbid.val < SUARO.contract) continue;
 					if (bid.sbid.val == SUARO.contract && bid.sbid.suit <= SUARO.contract_suit) continue;
-					snprintf(game.bid_texts[index], game.max_bid_length,
-						"%d %s", bid.sbid.val, short_suaro_suit_names[(int)bid.sbid.suit]);
 					game.bid_choices[index] = bid;
 					index++;
 					if (SUARO.shotgun) {
 						/* in "shotgun" suaro, you are allowed to bid on the kitty just like on your hand! */
 						bid_t kbid = bid;
 						kbid.sbid.spec = SUARO_KITTY;
-						snprintf(game.bid_texts[index], game.max_bid_length,
-							"K %d %s", kbid.sbid.val, short_suaro_suit_names[(int)kbid.sbid.suit]);
 						game.bid_choices[index] = kbid;
 						index++;
 					}
@@ -711,8 +695,6 @@ int game_get_bid()
 				bid.bid = 0;
 				bid.sbid.spec = SUARO_DOUBLE;
 				game.bid_choices[index] = bid;
-				snprintf(game.bid_texts[index], game.max_bid_length,
-					 SUARO.bonus == 1 ? "double" : "redouble");
 				index++;
 			}
 
@@ -720,10 +702,9 @@ int game_get_bid()
 			bid.bid = 0;
 			bid.sbid.spec = SUARO_PASS;
 			game.bid_choices[index] = bid;
-			snprintf(game.bid_texts[index], game.max_bid_length, "pass");
 			index++;
 
-			status = req_bid(game.next_bid, index, game.bid_texts);
+			status = req_bid(game.next_bid, index, NULL);
 			break;
 		default:
 			ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");

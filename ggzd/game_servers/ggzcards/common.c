@@ -538,6 +538,13 @@ int req_bid(player_t p, int num, char** bid_choices)
 
 	ggz_debug("Requesting a bid from player %d (%s); %d choices", p, ggz_seats[p].name, num);
 
+
+	if (bid_choices == NULL) {
+		bid_choices = game.bid_texts;
+		for (i=0; i<num; i++)
+			game_get_bid_text(bid_choices[i], game.max_bid_length, game.bid_choices[i]);
+	}
+
 	if(fd == -1 ||
 	   es_write_int(fd, WH_REQ_BID) < 0 ||
 	   es_write_int(fd, num) < 0)
