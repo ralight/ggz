@@ -12,6 +12,7 @@
 
 // System includes
 #include <stdio.h>
+#include <stdlib.h>
 
 KTicTacTux::KTicTacTux(QWidget *parent = NULL, char *name = NULL)
 : KMainWindow(parent, name)

@@ -27,6 +27,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <config.h>
+#include <stdlib.h>
 
 #include "kreversi.h"
 
