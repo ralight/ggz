@@ -6,6 +6,10 @@ SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config --install --modname=ccheckers --fromfile=ccheckers.dsc
+
 ggzexecmod_PROGRAMS = ggz.ccheckers
 
 ggz_ccheckers_SOURCES = display.c	display.h	\

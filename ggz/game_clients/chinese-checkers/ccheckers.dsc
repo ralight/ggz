@@ -1,5 +1,8 @@
-# Connect the Dots description file
+# Chinese Checkers description file
 [ccheckers]
+Author = Rich Gade
+ExecPath = ggz.ccheckers
+Frontend = gtk
+Homepage = http://ggz.sourceforge.net/
+Protocol = 0.0.1
 Version = 0.0.1
-# ExecutablePath is figured relative to GameDir unless starting with /
-Path = ggz.ccheckers
