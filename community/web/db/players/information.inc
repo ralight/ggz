@@ -15,6 +15,42 @@ $player->display();
 	</div>
 	<h2>
 		<span class="itemleader">:: </span>
+		Player Karma
+		<span class="itemleader"> :: </span>
+		<a name="database"></a>
+	</h2>
+	<div class="text">
+<?php
+include_once("auth.php");
+$ggzuser = $lookup;
+//$res = $database->exec("SELECT id FROM users WHERE handle = '$lookup'");
+//if ($database->numrows($res) == 1) :
+//	$playerid = database->result($res, 0, "id");
+//endif;
+$res = $database->exec("SELECT * FROM karma WHERE fromhandle = '$ggzuser'");
+for ($i = 0; $i < $database->numrows($res); $i++)
+{
+	$name = $database->result($res, $i, "tohandle");
+	$karma = $database->result($res, $i, "karma");
+
+	echo "<a href='/db/players/?lookup=$name'>$name</a> received $karma points from $ggzuser.<br>\n";
+}
+?>
+	</div>
+	<div class="text">
+<?php
+$res = $database->exec("SELECT * FROM karma WHERE tohandle = '$ggzuser'");
+for ($i = 0; $i < $database->numrows($res); $i++)
+{
+	$name = $database->result($res, $i, "fromhandle");
+	$karma = $database->result($res, $i, "karma");
+
+	echo "<a href='/db/players/?lookup=$name'>$name</a> gave $karma points to $ggzuser.<br>\n";
+}
+?>
+	</div>
+	<h2>
+		<span class="itemleader">:: </span>
 		Statistics by game
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
@@ -30,8 +66,8 @@ $player->display();
 	</h2>
 	<div class="text">
 <?php
-include_once("auth.php");
-$ggzuser = $lookup;
+//include_once("auth.php");
+//$ggzuser = $lookup;
 $res = $database->exec("SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
 for ($i = 0; $i < $database->numrows($res); $i++)
 {

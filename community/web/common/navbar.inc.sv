@@ -26,6 +26,7 @@
 				<a href="/active/hotstuff/" class="menuitem">Spel-innehåll</a>
 				<a href="/active/tournaments/" class="menuitem">Turneringar</a>
 				<a href="/active/teams/" class="menuitem">Teams/Klaner</a>
+				<a href="/active/karma/" class="menuitem">Karma</a>
 			</div>
 		</div>
 		<div class="menu">

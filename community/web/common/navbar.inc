@@ -26,6 +26,7 @@
 				<a href="/active/hotstuff/" class="menuitem">Game contents</a>
 				<a href="/active/tournaments/" class="menuitem">Tournaments</a>
 				<a href="/active/teams/" class="menuitem">Teams</a>
+				<a href="/active/karma/" class="menuitem">Karma</a>
 			</div>
 		</div>
 		<div class="menu">
