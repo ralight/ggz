@@ -1,5 +1,5 @@
 // Muehle - KDE Muehle (Nine Men's Morris) game for GGZ
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,12 +29,18 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kstatusbar.h>
+#include <kiconloader.h>
 
 // Qt includes
 #include <qlayout.h>
+#include <qdir.h>
 
 // Configuration includes
 #include "config.h"
+
+#ifdef HAVE_KNEWSTUFF
+#include <knewstuff/downloaddialog.h>
+#endif
 
 // Constructor: create main Muehle window including menus
 Toplevel::Toplevel()
@@ -46,25 +52,15 @@ Toplevel::Toplevel()
 	QString s;
 	QWidget *root;
 	QVBoxLayout *vbox;
-	QString icontheme;
-
-#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
-	icontheme = "crystalsvg";
-#else
-	icontheme = "hicolor";
-#endif
-
-	QString pixnew = d.findResource("icon", icontheme + "/16x16/mimetypes/Mime.png");
-	QString pixexit = d.findResource("icon", icontheme + "/16x16/actions/exit.png");
-	QString pixvariant = d.findResource("icon", icontheme + "/16x16/actions/gear.png");
-	QString pixtheme = d.findResource("icon", icontheme + "/16x16/actions/imagegallery.png");
-	QString pixaction = d.findResource("icon", icontheme + "/16x16/actions/wizard.png");
-
 
 	menu_game = new KPopupMenu(this);
-	menu_game->insertItem(QIconSet(QPixmap(pixnew)), i18n("Start new game"), menugamenew);
+	menu_game->insertItem(KGlobal::iconLoader()->loadIcon("Mime", KIcon::Small), i18n("Start new game"), menugamenew);
 	menu_game->insertSeparator();
-	menu_game->insertItem(QIconSet(QPixmap(pixexit)), i18n("Quit"), menugamequit);
+#ifdef HAVE_KNEWSTUFF
+	menu_game->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get levels"), menugamelevels);
+	menu_game->insertSeparator();
+#endif
+	menu_game->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menugamequit);
 
 	counter = 0;
 	menu_variants = new KPopupMenu(this);
@@ -80,7 +76,7 @@ Toplevel::Toplevel()
 		QString description = conf.readEntry("description");
 		/*int width = conf.readNumEntry("width");
 		int height = conf.readNumEntry("height");*/
-		menu_variants->insertItem(QIconSet(QPixmap(pixvariant)), description, menuvariants + counter++);
+		menu_variants->insertItem(KGlobal::iconLoader()->loadIcon("gear", KIcon::Small), description, menuvariants + counter++);
 	}
 
 	counter = 0;
@@ -93,12 +89,12 @@ Toplevel::Toplevel()
 	{
 		tconf.setGroup((*it));
 		QString name = tconf.readEntry("Name");
-		menu_theme->insertItem(QIconSet(QPixmap(pixtheme)), name, menuthemes + counter++);
+		menu_theme->insertItem(KGlobal::iconLoader()->loadIcon("imagegallery", KIcon::Small), name, menuthemes + counter++);
 	}
 
 	menu_player = new KPopupMenu(this);
-	menu_player->insertItem(QIconSet(QPixmap(pixaction)), i18n("Offer remis"), menuplayerremis);
-	menu_player->insertItem(QIconSet(QPixmap(pixaction)), i18n("Give up"), menuplayerloose);
+	menu_player->insertItem(KGlobal::iconLoader()->loadIcon("wizard", KIcon::Small), i18n("Offer remis"), menuplayerremis);
+	menu_player->insertItem(KGlobal::iconLoader()->loadIcon("wizard", KIcon::Small), i18n("Give up"), menuplayerloose);
 
 	menuBar()->insertItem(i18n("Game"), menu_game, 1);
 	menuBar()->insertItem(i18n("Variants"), menu_variants, 2);
@@ -139,6 +135,8 @@ Toplevel::~Toplevel()
 // Process a click on a menu item
 void Toplevel::slotMenu(int id)
 {
+	QDir d;
+
 	switch(id)
 	{
 		case menugamenew:
@@ -147,6 +145,14 @@ void Toplevel::slotMenu(int id)
 		case menugamequit:
 			close();
 			break;
+#ifdef HAVE_KNEWSTUFF
+		case menugamelevels:
+			d.mkdir(QDir::home().path() + "/.ggz");
+			d.mkdir(QDir::home().path() + "/.ggz/games");
+			d.mkdir(QDir::home().path() + "/.ggz/games/muehle");
+			KNS::DownloadDialog::open("muehle/level");
+			break;
+#endif
 		case menuplayerremis:
 			board->remis();
 			break;

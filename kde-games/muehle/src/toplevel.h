@@ -1,5 +1,5 @@
 // Muehle - KDE Muehle (Nine Men's Morris) game for GGZ
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001 - 2004 Josef Spillner <josef@ggzgamingzone.org>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,9 +39,10 @@ class Toplevel : public KMainWindow
 		enum MenuItems
 		{
 			menugamenew = 1,
-			menugamequit = 2,
-			menuplayerremis = 3,
-			menuplayerloose = 4,
+			menugamelevels = 2,
+			menugamequit = 3,
+			menuplayerremis = 4,
+			menuplayerloose = 5,
 			menuthemes = 100,
 			menuvariants = 200
 		};
