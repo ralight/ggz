@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.h 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: drawcard.h 4028 2002-04-21 01:41:23Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -29,7 +29,6 @@
 #include <gtk/gtk.h>
 
 void load_card_data(void);
-void get_card_coordinates(card_t card, int orientation, int *x, int *y);
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 void get_card_size(int orientation, int *w, int *h);
 

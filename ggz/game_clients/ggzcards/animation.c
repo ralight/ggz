@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: animation.c 4028 2002-04-21 01:41:23Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -68,8 +68,6 @@ static struct {
 	int start_x, start_y;
 	int dest_x, dest_y;
 	
-	int card_x, card_y;	/* Position of the card in the XPM */
-	
 	int cur_x, cur_y;
 	int cur_frame;		/* 0..FRAMES */
 } anim[MAX_NUM_PLAYERS];
@@ -93,7 +91,7 @@ void anim_setup(void)
 /* Function to setup and trigger a card animation */
 int animation_start(int player, card_t card, int card_num, int destination)
 {
-	int start_x, start_y, dest_x, dest_y, card_x, card_y;
+	int start_x, start_y, dest_x, dest_y;
 	
 	ggz_debug("animation", "Setting up animation for player %d", player);
 	
@@ -222,14 +220,9 @@ int animation_start(int player, card_t card, int card_num, int destination)
 		dest_y -= CARDHEIGHT / 2;
 	}
 	
-	/* Find the coordinates of the card itself in the cards1 pixmap */
-	get_card_coordinates(card, 0, &card_x, &card_y);
-	
 	anim[player].animating = TRUE;
 	anim[player].destination = destination;
 	anim[player].card = card;
-	anim[player].card_x = card_x;
-	anim[player].card_y = card_y;
 	anim[player].start_x = start_x;
 	anim[player].start_y = start_y;
 	anim[player].dest_x = dest_x;
@@ -376,12 +369,8 @@ static gint animation_callback(gpointer ignored)
 			continuations++;
 
 		/* Draw our new card position to the animation buffer */
-		gdk_draw_pixmap(anim_buf,
-		                table_style->fg_gc[GTK_WIDGET_STATE(table)],
-		                card_fronts[0],
-		                anim[player].card_x, anim[player].card_y,
-		                anim[player].cur_x, anim[player].cur_y,
-		                CARDWIDTH, CARDHEIGHT);
+		draw_card(anim[player].card, 0,
+		          anim[player].cur_x, anim[player].cur_y, anim_buf);
 	}
 	
 	

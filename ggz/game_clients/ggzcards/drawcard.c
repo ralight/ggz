@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: drawcard.c 4028 2002-04-21 01:41:23Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -51,6 +51,8 @@
 GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 
+static void get_card_coordinates(card_t card, int orientation, int *x, int *y);
+
 void load_card_data(void)
 {               	
 	int i;
@@ -83,7 +85,7 @@ void load_card_data(void)
 }
 
 /* Returns the coordinates of the card out of the XPM file. */
-void get_card_coordinates(card_t card, int orientation, int *x, int *y)
+static void get_card_coordinates(card_t card, int orientation, int *x, int *y)
 {
 	int xc = 0, yc = 0;
 	int xp, yp;
