@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4057 2002-04-23 05:38:53Z jdorje $
+ * $Id: preferences.c 4059 2002-04-23 07:36:00Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -119,6 +119,15 @@ PrefType pref_types[] = {
 	    "time you bid."),
 	 &preferences.bidding_tooltips,
 	 TRUE},
+	
+	{"large_dominoes",
+	 N_("Draw dominoes much larger"),
+	 N_("Some games use dominoes as the card set.  You may choose "
+	    "to have the dominoes drawn normal size or in a much "
+	    "larger size.  The change may not happen correctly until "
+	    "you restart the client."),
+	 &preferences.large_dominoes,
+	 FALSE},
 	
 	{"autostart",
 	 N_("Automatically start game"),

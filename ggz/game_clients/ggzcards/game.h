@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4058 2002-04-23 07:13:12Z jdorje $
+ * $Id: game.h 4059 2002-04-23 07:36:00Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -50,6 +50,7 @@ typedef struct {
 	bool cardlists;
 	bool bid_on_table;
 	bool bidding_tooltips;
+	bool large_dominoes;
 	
 	/* Meta-game interface prefs */
 	bool autostart;

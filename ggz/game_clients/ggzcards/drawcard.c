@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4058 2002-04-23 07:13:12Z jdorje $
+ * $Id: drawcard.c 4059 2002-04-23 07:36:00Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -33,7 +33,8 @@
 
 #include "cards.h"
 #include "drawcard.h"
-#include "table.h" /* HACK: we need table_style */
+#include "game.h"	/* For preferences information */
+#include "table.h"	/* HACK: we need table_style */
 
 #include "cards-1.xpm"
 #include "cards-2.xpm"
@@ -298,7 +299,10 @@ static int get_card_width0(void)
 	case CARDSET_FRENCH:
 		return MY_CARDWIDTH;
 	case CARDSET_DOMINOES:
-		return 97;
+		if (preferences.large_dominoes)
+			return 97;
+		else
+			return 65;
 	default:
 		return 0;	
 	}
@@ -310,7 +314,7 @@ static int get_card_height0(void)
 	case CARDSET_FRENCH:
 		return MY_CARDHEIGHT;
 	case CARDSET_DOMINOES:
-		return 49;
+		return get_card_width0() / 2 + 1;
 	default:
 		return 0;	
 	}
