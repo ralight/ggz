@@ -2,7 +2,7 @@
 
 EXTRA_DIST = combat.dsc
 
-SUBDIRS = . pixmaps
+SUBDIRS = . pixmaps maps
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
 
@@ -22,6 +22,8 @@ ggz_combat_SOURCES = combat.h \
 				dlg_options.h \
         lists.c \
         lists.h \
+        map.c \
+        map.h \
         confio.c \
         confio.h \
 				game.h \

@@ -28,9 +28,14 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <dirent.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 #include "game.h"
 #include "combat.h"
+#include "map.h"
 #include "dlg_options.h"
 
 #include "callbacks.h"
@@ -72,16 +77,9 @@ char filename[12][36] = {"flag.xpm", "bomb.xpm", "spy.xpm", "scout.xpm", "miner.
 char colorname[2][36] = {"RGB:FF/00/00", "RGB:00/00/FF"};
 char lakename[] = {"RGB:00/55/00"};
 char openname[] = {"RGB:DC/DC/A0"};
-// Universal name of units (for file format)
-char file_unit_name[12][36] = {"flag", "bomb", "spy", "scout", "miner", "sergeant", 
-                               "lieutenant", "captain", "major", "colonel", "general", "marshall"};
 
 // Graphics stuff
 GdkPixmap* cbt_buf;
-
-// Function declarations
-void game_save_map(combat_game *);
-unsigned int generate_hash(char *);
 
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
   int op = -1;
@@ -207,20 +205,6 @@ void game_ask_options() {
   gtk_widget_show_all(options_dialog);
 }
 
-unsigned int generate_hash(char *p) {
-  unsigned int sum = 0;
-  unsigned char bitsave;
-  // Use Rich's ROL algorithm
-  while (*p != 0) {
-    bitsave = (sum & 0x80000000L);
-    sum *= 2;
-    sum = sum ^ *p;
-    sum = sum + bitsave;
-    p++;
-  }
-  return sum;
-}
-
 int game_get_options() {
   char *optstr = NULL;
   int a;
@@ -231,7 +215,6 @@ int game_get_options() {
   if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
     return -1;
 
-  printf("Hash: %u\n", generate_hash(optstr));
   a = combat_options_string_read(optstr, &cbt_game);
   if (a > 0)
     game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
@@ -927,40 +910,8 @@ void game_get_gameover() {
   cbt_game.state = CBT_STATE_DONE;
 
   // Now searches for the game and saves it
-  if (game_search_map() == 0)
+  if (map_search(&cbt_game) == 0)
     game_ask_save_map();
-}
-
-int maps_only(const struct dirent *entry) {
-  if (*entry->d_name == '.')
-    return 0;
-  if (strcmp(entry->d_name, "CVS") == 0)
-    return 0;
-  return 1;
-}
-
-
-int game_search_map() {
-  unsigned int hash = 0;
-  char hash_str[32];
-  char *optstr;
-  struct dirent **namelist;
-  int n;
-  // Generate the hash
-  optstr = combat_options_string_write(&cbt_game, 1);
-  hash = generate_hash( optstr );
-  sprintf(hash_str, ".%u", hash);
-  n = scandir("maps", &namelist, maps_only, alphasort); 
-  printf("N: %d\n", n);
-  // Empty dir -> nothing found
-  if (n <= 0)
-    return 0;
-  while (n-- > 0) {
-    printf("N: %d\nB: %s\nS: %s\n\n", n, namelist[n]->d_name, hash_str);
-    if (strstr(namelist[n]->d_name, hash_str) != NULL)
-      return 1;
-  }
-  return 0;
 }
 
 void game_ask_save_map() {
@@ -976,58 +927,8 @@ void game_confirm_save_map(GtkButton *button, gpointer user_data) {
   char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
   cbt_game.name = (char *)malloc(strlen(name) + 1);
   strcpy(cbt_game.name, name);
-  game_save_map(&cbt_game);
+  map_save(&cbt_game);
 }
-
-void game_save_map(combat_game *map) {
-  unsigned int hash;
-  char *map_name;
-  char *map_data;
-  int handle;
-  int a;
-  // Generate the hash
-  hash = generate_hash( combat_options_string_write(map, 1) );
-  // Generate the filename
-  map_name = (char *)malloc(strlen("maps/") + strlen(map->name) + 34);
-  sprintf(map_name, "maps/%s.%u", map->name, hash);
-  handle = _ggzcore_confio_parse(map_name, 1);
-  if (handle < 0)
-    return;
-  // Write width/height
-  _ggzcore_confio_write_int(handle, "map", "width", map->width);
-  _ggzcore_confio_write_int(handle, "map", "height", map->height);
-  // Write army data
-  for (a = 0; a < 12; a++)
-    _ggzcore_confio_write_int(handle, "army", file_unit_name[a], map->army[cbt_game.number][a]);
-  // Write map data
-  map_data = (char *)malloc(map->width * map->height + 1);
-  for (a = 0; a < map->width*map->height; a++) {
-    if (GET_OWNER(map->map[a].type) >= 0) {
-      // Intial position!
-      map_data[a] = GET_OWNER(map->map[a].type) + 49;
-    }
-    else {
-      // Get's terrain
-      switch (LAST(map->map[a].type)) {
-        case T_OPEN:
-          map_data[a] = 'O';
-          break;
-        case T_NULL:
-          map_data[a] = 'N';
-          break;
-        case T_LAKE:
-          map_data[a] = 'L';
-          break;
-      }
-    }
-  }
-  map_data[map->width * map->height] = 0;
-  _ggzcore_confio_write_string(handle, "map", "data", map_data);
-  _ggzcore_confio_commit(handle);
-}
-
-
-
 
 
 /* Function to open a dialog box displaying the message provided. */

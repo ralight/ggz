@@ -32,6 +32,10 @@
 #define GGZ_SEAT_OPEN -1
 #define GGZ_SEAT_BOT -2
 
+// Where to save the global maps
+
+#define GLOBAL_MAPS GAMEDIR "/combat/maps"
+
 
 // Game information
 struct game_info_t {
@@ -96,6 +100,5 @@ void game_change_turn();
 GtkWidget *gtk_player_info_new(GtkWidget *, char *);
 
 // Saves maps
-int game_search_map();
 void game_ask_save_map();
 void game_confirm_save_map(GtkButton *, gpointer );

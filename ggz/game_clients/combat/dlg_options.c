@@ -16,7 +16,7 @@
 #include "dlg_options.h"
 #include <stdio.h>
 #include "game.h"
-#include "confio.h"
+#include "map.h"
 
 GdkPixmap *mini_buf;
 extern GdkColor lake_color;
@@ -25,8 +25,6 @@ extern GdkColor *player_colors;
 
 extern int unitdefault[12];
 extern char unitname[12][36];
-
-extern char file_unit_name[12][36];
 
 static const char spin_name[12][8] = {"spin_F", "spin_B", "spin_1", "spin_2", "spin_3", "spin_4", "spin_5", "spin_6", "spin_7", "spin_8", "spin_9", "spin_10"};
 
@@ -479,25 +477,13 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
 	 											 GdkEventButton *event, gpointer user_data) {
   combat_game *preview_game;
   char **filenames;
-  unsigned int hash;
-  char hash_str[32];
-  char *new_filename;
+  int changed = -1;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
-  preview_game = quick_load_map_on_struct(filenames[row]);
-  /* TODO: Show preview */
-  // Well, now that we have loaded the map, let's check it's hash!
-  hash = generate_hash( combat_options_string_write(preview_game, 1) );
-  sprintf(hash_str, ".%u", hash);
-  if (strstr(filenames[row], hash_str) == NULL) {
-    // Hash don't match!!
-    printf("Filename for map %s should be %s.%u, and not %s\n", preview_game->name, preview_game->name, hash, filenames[row]);
-    // Let's rename it!
-    new_filename = (char *)malloc(strlen("maps/") + strlen(preview_game->name) + 1 + strlen(hash_str) + 1);
-    sprintf(new_filename, "maps/%s.%u", preview_game->name, hash);
-    rename(filenames[row], new_filename);
+  preview_game = map_load(filenames[row], &changed);
+  if (changed == 0)
     dlg_options_list_maps(GTK_WIDGET(clist));
-  }
+  /* TODO: Show preview */
 
 }
 
@@ -512,128 +498,55 @@ void load_button_clicked(GtkButton *button, gpointer dialog) {
 }
 
 void load_map(char *filename, GtkWidget *dialog) {
-  int handle;
   GtkWidget *width, *height;
   GtkWidget *unit_spin;
   int a;
   char *terrain_data;
-  handle = _ggzcore_confio_parse(filename, 0);
-  if (handle < 0) {
-    printf("Can't find the map?\n");
-    return;
-  }
+  combat_game *map;
+  map = map_load(filename, NULL);
   /* Get the widgets */
   width = lookup_widget(dialog, "width");
   height = lookup_widget(dialog, "height");
   /* Get the data from the file */
   // Width / Height
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(width), 
-           _ggzcore_confio_read_int(handle, "map", "width", 10));
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(height),
-           _ggzcore_confio_read_int(handle, "map", "height", 10));
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(width), map->width);
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(height), map->height);
   // Army
   for (a = 0; a < 12; a++) {
     unit_spin = lookup_widget(dialog, spin_name[a]);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin),
-        _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0));
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), map->army[0][a]);
   }
   // Terrain data
-  terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
-  if (terrain_data) {
-    a = strlen(terrain_data);
-    while (--a>=0) {
-      switch(terrain_data[a]) {
-        case 'O':
-          terrain_data[a] = OPEN;
-          break;
-        case 'L':
-          terrain_data[a] = LAKE;
-          break;
-        case 'N':
-          terrain_data[a] = BLACK;
-          break;
-        case '1':
-          terrain_data[a] = PLAYER_1;
-          break;
-        case '2':
-          terrain_data[a] = PLAYER_2;
-          break;
-        default:
-          terrain_data[a] = OPEN;
-          break;
-      }
+  terrain_data = (char *)malloc(map->width * map->height);
+  a = map->width*map->height;
+  while (--a>=0) {
+    switch(map->map[a].type) {
+      case T_OPEN:
+        terrain_data[a] = OPEN;
+        break;
+      case T_LAKE:
+        terrain_data[a] = LAKE;
+        break;
+      case T_NULL:
+        terrain_data[a] = BLACK;
+        break;
+      case OWNER(0)+T_OPEN:
+        terrain_data[a] = PLAYER_1;
+        break;
+      case OWNER(1)+T_OPEN:
+        terrain_data[a] = PLAYER_2;
+        break;
+      default:
+        terrain_data[a] = OPEN;
+        break;
     }
-    gtk_object_set_data(GTK_OBJECT(dialog), "map_data", terrain_data);
-    draw_mini_board(dialog);
   }
+  gtk_object_set_data(GTK_OBJECT(dialog), "map_data", terrain_data);
+  draw_mini_board(dialog);
 
   dlg_options_update(dialog);
 
 }
-
-combat_game *quick_load_map_on_struct(char *filename) {
-  int handle;
-  int a, b;
-  combat_game *_game = (combat_game *)malloc(sizeof(combat_game));
-  char *terrain_data;
-  handle = _ggzcore_confio_parse(filename, 0);
-  if (handle < 0)
-    return NULL;
-  /* Get the data from the file */
-  // Width / Height
-  _game->width = _ggzcore_confio_read_int(handle, "map", "width", 10);
-  _game->height = _ggzcore_confio_read_int(handle, "map", "height", 10);
-  // Army -> Quick load, like if there is only no player
-  _game->number = 0;
-  _game->army = (char **)calloc(1, sizeof(char *));
-  _game->army[0] = (char *)calloc(12, sizeof(char));
-  for (a = 0; a < 12; a++) {
-    _game->army[0][a] = _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
-  }
-  // Terrain data
-  terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
-  _game->map = (tile *)malloc(_game->width * _game->height * sizeof(tile));
-  if (terrain_data) {
-    a = strlen(terrain_data);
-    while (--a>=0) {
-      switch(terrain_data[a]) {
-        case 'O':
-          _game->map[a].type = T_OPEN;
-          break;
-        case 'L':
-          _game->map[a].type = T_LAKE;
-          break;
-        case 'N':
-          _game->map[a].type = T_NULL;
-          break;
-        case '1':
-          _game->map[a].type = OWNER(0) + T_OPEN;
-          break;
-        case '2':
-          _game->map[a].type = OWNER(1) + T_OPEN;
-          break;
-        default:
-          _game->map[a].type = T_OPEN;
-          break;
-      }
-    }
-  }
-  a = strlen(filename) - 1;
-  while (a >= 0 && filename[a] != '/')
-    a--;
-  b = a + 1;
-  while (b < strlen(filename) && filename[b]!='.')
-    b++;
-  _game->name = (char *)malloc( b - a );
-  strncpy(_game->name, filename+a+1, b - a - 1 );
-  _game->name[b - a - 1] = 0;
-
-  return _game;
-}
-
-
-
-
 
 GtkWidget*
 create_dlg_save (void)
@@ -758,30 +671,30 @@ void dlg_options_update(GtkWidget *dlg_options) {
 
 }
 
-int maps_only(const struct dirent *entry);
-
 void dlg_options_list_maps(GtkWidget *dlg) {
-  int n, len;
-  struct dirent **dirlist;
-  char **clist_names;
   char **names;
-
-  n = scandir("maps", &dirlist, maps_only, alphasort);
-  clist_names = (char **)calloc(1, sizeof(char *));
-  names = (char **)calloc(n, sizeof(char *));
-  printf("Number of maps: %d\n", n);
+  char *char_match[2];
+  char **clist_name;
+  int a, len, current = -1;
+  names = map_list();
+  current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dlg), "row"));
+  clist_name = (char **)calloc(1, sizeof(char *));
+  clist_name[0] = (char *)malloc(64 * sizeof(char));
   gtk_clist_clear(GTK_CLIST(dlg));
-  while (n-- > 0) {
-    len = strlen(dirlist[n]->d_name)-strlen(strchr(dirlist[n]->d_name,'.'))+1;
-    clist_names[0] = (char *)malloc(len);
-    strncpy(clist_names[0], dirlist[n]->d_name, len-1);
-    clist_names[0][len-1] = 0;
-    names[n] = (char *)malloc(15 + strlen(dirlist[n]->d_name));
-    strcpy(names[n], "maps/");
-    strcat(names[n], dirlist[n]->d_name);
-    gtk_clist_prepend(GTK_CLIST(dlg), clist_names);
-  }
   gtk_object_set_data(GTK_OBJECT(dlg), "maps", names);
+  for (a = 0; names[a]; a++) {
+    char_match[0] = strrchr(names[a], '/');
+    char_match[1] = strrchr(char_match[0], '.');
+    len = strlen(char_match[0]) + 1;
+    if (char_match[1])
+      len -= strlen(char_match[1]);
+    len-=2;
+    strncpy(clist_name[0], char_match[0]+1, len);
+    clist_name[0][len] = 0;
+    gtk_clist_append(GTK_CLIST(dlg), clist_name);
+  }
+  if (current >= 0)
+    gtk_clist_select_row(GTK_CLIST(dlg), current, 0);
 }
 
 gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpose  *event, gpointer         user_data) {

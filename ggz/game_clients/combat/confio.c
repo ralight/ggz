@@ -502,9 +502,12 @@ int	_ggzcore_confio_parse(char *path, int autocreate)
 	if(!file_list)
 		file_list = _ggzcore_list_create(NULL, NULL, NULL,
 						 _GGZCORE_LIST_ALLOW_DUPS);
-
+  
 	/* Go do the dirty work and give us a section_list */
 	section_list = file_parser(path, autocreate);
+
+  if (!section_list)
+    return -1;
 
 	/* Build our file list data entry */
 	file_data = malloc(sizeof(_ggzcore_confio_file));
@@ -559,7 +562,7 @@ static _ggzcore_list * file_parser(char *path, int autocreate)
     /* File 'path' couldn't be opened to reading
      * try opening it for writing (create a new file) */
     if (!autocreate || (c_file = fopen(path, "w+")) == NULL) {
-      printf("Unable to read file %s", path);
+      printf("Unable to read file %s\n", path);
       return NULL;
     }
   }
