@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 3297 2002-02-10 07:34:26Z rgade $
+ * $Id: motd.c 3762 2002-04-06 06:00:40Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -120,7 +120,7 @@ void motd_read_file(void)
 		strcpy(motd_info.hostname, "hostname.toolong.fixme");
 
 	/* Get the OS and CPU Type */
-	if(uname(&unames))
+	if(uname(&unames) < 0)
 		err_sys_exit("uname error in motd_parse_motd()");
 	if((motd_info.sysname = malloc(strlen(unames.sysname)+1)) == NULL)
 		err_sys_exit("malloc error in motd_read_file()");
