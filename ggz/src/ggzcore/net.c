@@ -687,7 +687,7 @@ static void _ggzcore_net_handle_update_tables(void)
 		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
 			return;
 		_ggzcore_table_list_leave(table);
-		_ggzcore_player_list_replace(player, table);
+		_ggzcore_player_list_replace(player, -1);
 		break;
 		
 	case GGZ_UPDATE_ADD:
