@@ -57,6 +57,9 @@
 static int g_handle = -1;
 static int u_handle = -1;
 
+/* Private functions */
+int make_path(char *full, mode_t mode);
+
 
 /* _ggzcore_conf_initialize()
  *	Opens the global and/or user configuration files for the frontend.
@@ -85,6 +88,7 @@ int _ggzcore_conf_initialize(char *g_path, char *u_path)
 		if(u_handle < 0) {
 			/* It might have failed due to not existing yet, */
 			/* so create it */
+			make_path(u_path, 0700);
 			t_file = open(u_path, O_RDWR | O_CREAT | O_EXCL,
 					      S_IRUSR | S_IWUSR);
 			if(t_file != -1) {
@@ -357,4 +361,36 @@ int ggzcore_conf_commit(void)
 	}
 
 	return _ggzcore_confio_commit(u_handle);
+}
+
+
+/* make_path()
+ *	Routine to create all directories needed to build 'path'
+ */
+int make_path(char *full, mode_t mode)
+{
+	char		*copy, *dir, *path;
+	struct stat	stats;
+
+	copy = strdup(full);
+
+	/* FIXME: check validity */
+	if((path = malloc(strlen(full)+1)) == NULL)
+		ggzcore_error_sys_exit("malloc failed in make_path");
+
+	/* Skip preceding / */
+	if (copy[0] == '/')
+		copy++;
+
+	while ((dir = strsep(&copy, "/"))) {
+		strcat(strcat(path, "/"), dir);
+		if (mkdir(path, mode) < 0
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			free(path);
+			free(copy);
+			return -1;
+		}
+	}
+
+	return 0;
 }
