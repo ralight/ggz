@@ -64,8 +64,7 @@ static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
 /* Utility functions used by ggz_list */
 static void _ggz_free_chars(char **argv);
-static int   _ggzcore_module_compare(void* p, void* q);
-static int   _ggzcore_module_match_version(void *p, void *q);
+static int   _ggzcore_module_compare(void *p, void *q);
 #if 0
 static void* _ggzcore_module_create(void* p);
 #endif /* #if 0 */
@@ -255,7 +254,7 @@ int _ggzcore_module_setup(void)
 	}
 
 	
-	module_list = ggz_list_create(_ggzcore_module_match_version, NULL,
+	module_list = ggz_list_create(_ggzcore_module_compare, NULL,
 				      _ggzcore_module_destroy, 0);
 	num_modules = 0;
 
@@ -646,14 +645,8 @@ static void _ggz_free_chars(char **argv)
 }
 
 
-static int _ggzcore_module_compare(void* p, void* q)
-{
-	return 1;
-}
-
-
 /* Match game module by 'name', 'prot_engine', 'prot_version' */
-static int _ggzcore_module_match_version(void *p, void *q)
+static int _ggzcore_module_compare(void *p, void *q)
 {
 	int compare;
 
@@ -661,13 +654,15 @@ static int _ggzcore_module_match_version(void *p, void *q)
 	struct _GGZModule *qmod = (struct _GGZModule*)q;
 
 	compare = strcmp(pmod->name, qmod->name);
+	if (compare != 0) return compare;
 
-	if (compare == 0) {
-		compare = strcmp(pmod->prot_engine, qmod->prot_engine);
-		if (compare == 0) {
-			compare = strcmp(pmod->prot_version, qmod->prot_version);
-		}
-	}
+	compare = strcmp(pmod->prot_engine, qmod->prot_engine);
+	if (compare != 0) return compare;
+	
+	compare = strcmp(pmod->prot_version, qmod->prot_version);
+	if (compare != 0) return compare;
+	
+	compare = strcmp(pmod->frontend, qmod->frontend);
 	
 	return compare; 
 }
