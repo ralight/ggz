@@ -36,7 +36,7 @@
 #include "login.h"
 #include "support.h"
 
-GtkWidget *dlg_login;
+GtkWidget *login_dialog;
 
 
 static GtkWidget* create_dlg_login(void);
@@ -51,20 +51,18 @@ static void login_guest_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
-static void login_cancel_button_clicked(GtkButton *button, gpointer data);
-						    
 
 
 void
 login_create_or_raise(void)
 {
-	if (!dlg_login) {
-		dlg_login = create_dlg_login();
-		gtk_widget_show(dlg_login);
+	if (!login_dialog) {
+		login_dialog = create_dlg_login();
+		gtk_widget_show(login_dialog);
 	}
 	else {
-		gdk_window_show(dlg_login->window);
-		gdk_window_raise(dlg_login->window);
+		gdk_window_show(login_dialog->window);
+		gdk_window_raise(login_dialog->window);
 	}
 }
 
@@ -72,9 +70,9 @@ login_create_or_raise(void)
 void
 login_destroy(void)
 {
-	if (dlg_login) {
-		gtk_widget_destroy(dlg_login);
-		dlg_login = NULL;
+	if (login_dialog) {
+		gtk_widget_destroy(login_dialog);
+		login_dialog = NULL;
 	}
 }
 
@@ -84,16 +82,16 @@ void login_goto_server(gchar *server)
 	GtkWidget *tmp;
 
 	login_create_or_raise();
-	tmp = lookup_widget(GTK_WIDGET(dlg_login), "host_entry");
+	tmp = lookup_widget(GTK_WIDGET(login_dialog), "host_entry");
 	if (!strncasecmp (server, "ggz://", 6))
 		gtk_entry_set_text(GTK_ENTRY(tmp), server+6);
 	else
 		gtk_entry_set_text(GTK_ENTRY(tmp), server);
 
-	tmp = lookup_widget(GTK_WIDGET(dlg_login), "name_entry");
+	tmp = lookup_widget(GTK_WIDGET(login_dialog), "name_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_state_get_profile_login());
 
-	tmp = lookup_widget(GTK_WIDGET(dlg_login), "guest_radio");
+	tmp = lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 }
 
@@ -178,13 +176,13 @@ login_start_session                    (GtkButton       *button,
 	if (!(profile = calloc(1, sizeof(GGZProfile))))
 		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "host_entry");
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "host_entry");
 	profile->host = gtk_entry_get_text(tmp);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "port_entry");
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "port_entry");
 	profile->port = atoi(gtk_entry_get_text(tmp));
 
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "name_entry");
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "name_entry");
 	profile->login = gtk_entry_get_text(tmp);
 
 	/* FIXME: handle other login types */
@@ -197,14 +195,6 @@ login_start_session                    (GtkButton       *button,
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
 
-}
-
-
-static void
-login_cancel_button_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	login_destroy();
 }
 
 
@@ -525,7 +515,7 @@ create_dlg_login (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (dlg_login), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-                      &dlg_login);
+                      &login_dialog);
   gtk_signal_connect (GTK_OBJECT (profile_entry), "changed",
                       GTK_SIGNAL_FUNC (login_profile_changed),
                       dlg_login);
@@ -556,11 +546,12 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (login_start_session),
                       dlg_login);
-  gtk_signal_connect (GTK_OBJECT (cancel_button), "clicked",
-                      GTK_SIGNAL_FUNC (login_cancel_button_clicked),
-                      NULL);
+  gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (dlg_login));
 
   gtk_widget_grab_default (connect_button);
   return dlg_login;
 }
+
 

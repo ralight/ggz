@@ -33,7 +33,7 @@
 #include "support.h"
 #include "xtext.h"
 
-extern GtkWidget *dlg_login;
+extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
 
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data);
@@ -293,17 +293,17 @@ void ggz_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
 
-	tmp = lookup_widget(dlg_login, "connect_button");
+	tmp = lookup_widget(login_dialog, "connect_button");
 	gtk_label_set_text(GTK_LABEL(GTK_BIN(tmp)->child),"Login");
 	gtk_widget_set_sensitive(tmp, TRUE);
 
-	tmp = lookup_widget(dlg_login, "top_panel");
+	tmp = lookup_widget(login_dialog, "top_panel");
 	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
 
-	tmp = lookup_widget(dlg_login, "profile_frame");
+	tmp = lookup_widget(login_dialog, "profile_frame");
 	gtk_frame_set_label(GTK_FRAME(tmp), "Sorry!");
 
-	tmp = lookup_widget(dlg_login, "msg_label");
+	tmp = lookup_widget(login_dialog, "msg_label");
 	gtk_label_set_text(GTK_LABEL(tmp),
 		"That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
 }
