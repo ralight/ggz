@@ -143,8 +143,8 @@ void ChessBoard::mouseMoveEvent(QMouseEvent *e)
 
 	QImage image;
 	QDragObject *drag_img = new QImageDrag(image, this);
-	drag_img->setPixmap(dragPixmap, QPoint(32 * (1.0 / (64.0 / (width() / 8))),
-		32 * (1.0 / (64.0 / (width() / 8)))));
+	drag_img->setPixmap(dragPixmap, QPoint((int)(32.0 / (64.0 / (width() / 8))),
+		(int)(32.0 / (64.0 / (width() / 8)))));
 	drag_img->dragMove();
 }
 
