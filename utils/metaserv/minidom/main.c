@@ -19,11 +19,16 @@ int main(int argc, char *argv[])
 	dom = minidom_load(file);
 	minidom_dump(dom);
 
-	printf("Query resultset/result[0]/host:\n");
-	ele = MD_query(MD_query(dom->el, "result"), "host");
-	if(ele) printf("Found: %s\n", ele->value);
+	if(dom)
+	{
+		printf("Is the DOM valid? %i\n", dom->valid);
 
-	minidom_free(dom);
+		printf("Query resultset/result[0]/host:\n");
+		ele = MD_query(MD_query(dom->el, "result"), "host");
+		if(ele) printf("Found: %s\n", ele->value);
+
+		minidom_free(dom);
+	}
 
 	return 0;
 }

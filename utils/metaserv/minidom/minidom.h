@@ -7,6 +7,10 @@
 #ifndef MINIDOM_H
 #define MINIDOM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct att_t
 {
 	char *name;				/* name of the attribute */
@@ -42,6 +46,10 @@ void minidom_free(DOM *dom);
 
 ELE *MD_query(ELE *parent, const char *name);
 ELE **MD_querylist(ELE *parent, const char *name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

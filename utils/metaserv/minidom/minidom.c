@@ -16,6 +16,7 @@ char *minidom_cleanstream(const char *stream)
 	int i, j;
 	int inside;
 	int spaceprotect;
+	int spacesonly;
 
 	if(!stream) return NULL;
 	if(cs)
@@ -28,6 +29,7 @@ char *minidom_cleanstream(const char *stream)
 	j = 0;
 	inside = 0;
 	spaceprotect = 0;
+	spacesonly = 0;
 	for(i = 0; i < strlen(stream); i++)
 	{
 		if(stream[i] == '\t') continue;
@@ -41,8 +43,11 @@ char *minidom_cleanstream(const char *stream)
 			continue;
 		}
 		if((!inside) && (!spaceprotect) && (stream[i] == ' ')) continue;
+		if((stream[i] != ' ') && (stream[i] != '<') && (spacesonly)) spacesonly = 0;
 		if(stream[i] == '<')
 		{
+			if(spacesonly) j = spacesonly;
+			spacesonly = 0;
 			inside = 1;
 			if(stream[i + 1] == '?') inside = 2;
 			spaceprotect = 0;
@@ -58,6 +63,7 @@ char *minidom_cleanstream(const char *stream)
 			inside = 0;
 			spaceprotect++;			/* 1 on opening tag, 0 on closing tag */
 			if(stream[i - 1] == '/') spaceprotect = 0;
+			spacesonly = j;
 		}
 	}
 	cs[j] = 0;
@@ -81,7 +87,7 @@ int strpos(const char *s, char c)
 ELE *minidom_makechild(ELE *parent, char *tag)
 {
 	char *token;
-	int i;
+	int i, j, k, l, len, size, count;
 	ELE *ele;
 	ATT *att;
 	int pos;
@@ -105,41 +111,58 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 		parent->el[parent->elnum] = NULL;
 	}
 
-	token = strtok(tag, " ");
+	/*printf("TAG: %s\n", tag);*/
 	i = 0;
-	while(token)
+	k = 0;
+	l = 0;
+	count = 0;
+	token = strdup(tag);
+	len = strlen(tag);
+	for(j = 0; j < len; j++)
 	{
-		if(i == 0)
+		if(tag[j] == '\"') k++;
+		if(tag[j] == '\'') k++;
+		if(tag[j] == '=') l++;
+		if(((tag[j] == ' ') && ((k == 2) || (l == 0))) || (j == len - 1))
 		{
-			/* name */
-			/*printf(" ** %s\n", token);*/
-			ele->name = (char*)malloc(strlen(token) + 1);
-			strcpy(ele->name, token);
-		}
-		else
-		{
-			/* attribute */
-			/*printf(" ++ %s\n", token);*/
-			att = (ATT*)malloc(sizeof(ATT));
-			pos = strpos(token, '=');
-			if(pos == -1) att->name = strdup(token);
+			size = j - i;
+			if(j == len - 1) size++;
+			strncpy(token, tag + i, size);
+			token[size] = 0;
+			/*printf("ATTRIBUTE: %s\n", token);*/
+			if(count == 0)
+			{
+				/* name */
+				/*printf(" ** %s\n", token);*/
+				ele->name = (char*)malloc(strlen(token) + 1);
+				strcpy(ele->name, token);
+			}
 			else
 			{
-				att->name = (char*)malloc(pos + 1);
-				att->value = (char*)malloc(strlen(token) - pos + 1);
-				memcpy(att->name, token, pos);
-				memcpy(att->value, token + pos + 1 + 1, strlen(token) - pos - 1 - 2); /* exclude "" marks */
-				att->name[pos] = 0;
-				att->value[strlen(token) - pos - 1 - 2] = 0;
+				att = (ATT*)malloc(sizeof(ATT));
+				pos = strpos(token, '=');
+				if(pos == -1) att->name = strdup(token);
+				else
+				{
+					att->name = (char*)malloc(pos + 1);
+					att->value = (char*)malloc(strlen(token) - pos + 1);
+					memcpy(att->name, token, pos);
+					memcpy(att->value, token + pos + 1 + 1, strlen(token) - pos - 1 - 2); /* exclude "" marks */
+					att->name[pos] = 0;
+					att->value[strlen(token) - pos - 1 - 2] = 0;
+				}
+				ele->atnum++;
+				ele->at = realloc(ele->at, ele->atnum + 1);
+				ele->at[ele->atnum - 1] = att;
+				ele->at[ele->atnum] = NULL;
 			}
-			ele->atnum++;
-			ele->at = realloc(ele->at, ele->atnum + 1);
-			ele->at[ele->atnum - 1] = att;
-			ele->at[ele->atnum] = NULL;
+			i = j + 1;
+			k = 0;
+			l = 0;
+			count++;
 		}
-		token = strtok(NULL, " ");
-		i++;
 	}
+	free(token);
 
 	return ele;
 }
@@ -347,8 +370,9 @@ void minidom_internal_dump(ELE *ele)
 /* Clean up after all operations */
 void minidom_free(DOM *dom)
 {
+	if(!dom) return;
 	free(dom);
-	dom = 0;
+	dom = NULL;
 }
 
 /* Query a list of elements */
