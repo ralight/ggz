@@ -1,2 +1,2 @@
 ?package(ggz-kde-client):command="/usr/bin/kggz" icon="/usr/share/apps/kggz/images/kggz.xpm" \
- needs="X11" section="Games/GGZ" title="KGGZ"
+ needs="X11" section="Apps/Net" title="KGGZ"
