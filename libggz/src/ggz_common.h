@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 5918 2004-02-13 07:31:26Z jdorje $
+ * $Id: ggz_common.h 5929 2004-02-15 02:44:04Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -255,7 +255,7 @@ GGZNumberList ggz_numberlist_new(void);
  *  separated by spaces, followed by an optional range (separated by "..").
  *  Examples: "2 3 4", "2..4", "1..1000", "2, 3, 10 15-50"
  */
-GGZNumberList ggz_numberlist_read(char* text);
+GGZNumberList ggz_numberlist_read(const char* text);
 
 /** @brief Write a number list to a ggz-malloc'd text string. */
 char *ggz_numberlist_write(GGZNumberList *list);

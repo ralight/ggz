@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: numberlist.c 5929 2004-02-15 02:44:04Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -46,7 +46,7 @@ GGZNumberList ggz_numberlist_new(void)
 	return list;
 }
 
-GGZNumberList ggz_numberlist_read(char* text)
+GGZNumberList ggz_numberlist_read(const char *text)
 {
 	GGZNumberList list = ggz_numberlist_new();
 	char copy[strlen(text) + 1];
