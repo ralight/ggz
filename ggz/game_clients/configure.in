@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 3395 2002-02-17 09:54:19Z jdorje $
+dnl $Id: configure.in 3463 2002-02-25 09:16:34Z jdorje $
 
 dnl AC_INIT(configure.in)
 AC_INIT(acinclude.m4)
@@ -167,6 +167,8 @@ AC_OUTPUT([Makefile
 	   lapocha/Makefile
 	   lapocha/module.dsc
 	   ggzcards/Makefile
+	   ggzcards/client/Makefile
+	   ggzcards/common/Makefile
 	   ggzcards/module.dsc
 	   reversi/Makefile
 	   reversi/module.dsc
