@@ -12,6 +12,8 @@ libggzcore_a_SOURCES =	conf.c \
 			event.c \
 		      	event.h \
 		      	init.c \
+		      	gametype.c \
+		      	gametype.h \
 			ggzcore.h \
 			hook.c \
 			hook.h \

@@ -187,7 +187,7 @@ static void _ggzcore_server_room_join(GGZEventID id, void* event_data,
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing room_join");
 	_ggzcore_state.room = _ggzcore_state.trans_room;
 	_ggzcore_player_list_clear();
-//	_ggzcore_table_list_clear();
+	_ggzcore_table_list_clear();
 }
 
 

@@ -33,6 +33,7 @@
 #include <room.h>
 #include <state.h>
 #include <table.h>
+#include <gametype.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,6 +55,7 @@ static void _ggzcore_net_handle_chat(void);
 static void _ggzcore_net_handle_update_players(void);
 static void _ggzcore_net_handle_update_tables(void);
 static void _ggzcore_net_handle_list_tables(void);
+static void _ggzcore_net_handle_list_types(void);
 
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
@@ -95,7 +97,7 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{RSP_PREF_CHANGE,    "rsp_pref_change", NULL},
 	{RSP_REMOVE_USER,    "rsp_remove_user", NULL},
 	{RSP_LIST_PLAYERS,   "rsp_list_players", _ggzcore_net_handle_list_players},
-	{RSP_LIST_TYPES,     "rsp_list_types", NULL},
+	{RSP_LIST_TYPES,     "rsp_list_types", _ggzcore_net_handle_list_types},
 	{RSP_LIST_TABLES,    "rsp_list_tables", _ggzcore_net_handle_list_tables},
 	{RSP_LIST_ROOMS,     "rsp_list_rooms", _ggzcore_net_handle_list_rooms},
 	{RSP_TABLE_OPTIONS,  "rsp_table_options", NULL},
@@ -389,6 +391,11 @@ static void _ggzcore_net_handle_login(void)
 				      "Name taken", NULL);
 		break;
 	}
+
+	/* FIXME: Add to its own function */
+	/* Get list of game types */
+	es_write_int(ggz_server_sock, REQ_LIST_TYPES);
+	es_write_char(ggz_server_sock, 1);
 }
 
 static void _ggzcore_net_handle_login_anon(void)
@@ -418,6 +425,11 @@ static void _ggzcore_net_handle_login_anon(void)
 				      "Name taken", NULL);
 		break;
 	}
+
+	/* FIXME: Add to its own function */
+	/* Get list of game types */
+	es_write_int(ggz_server_sock, REQ_LIST_TYPES);
+	es_write_char(ggz_server_sock, 1);
 }
 
 
@@ -659,7 +671,6 @@ static void _ggzcore_net_handle_update_tables(void)
 	    || es_read_int(ggz_server_sock, &table) < 0)
 		return;
 
-	/* FIXME: Do something with data */
 	
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
@@ -714,7 +725,6 @@ static void _ggzcore_net_handle_update_tables(void)
 		break;
 	}
 
-	/* FIXME: Should we have the client redisplay the full list of players? */
 	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
 	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
 }
@@ -758,3 +768,28 @@ static void _ggzcore_net_handle_list_tables(void)
 	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
 }
 
+
+static void _ggzcore_net_handle_list_types(void)
+{
+	int count, i;
+	int id;
+	char players, bots;
+	char *name, *version, *desc, *author, *url;
+
+
+	es_read_int(ggz_server_sock, &count);
+
+	for(i = 0; i < count; i++)
+	{
+		es_read_int(ggz_server_sock, &id);
+		es_read_string_alloc(ggz_server_sock, &name);
+		es_read_string_alloc(ggz_server_sock, &version);
+		es_read_char(ggz_server_sock, &players);
+		es_read_char(ggz_server_sock, &bots);
+		es_read_string_alloc(ggz_server_sock, &desc);
+		es_read_string_alloc(ggz_server_sock, &author);
+		es_read_string_alloc(ggz_server_sock, &url);
+		_ggzcore_gametype_list_add(id, name, version, players,
+					bots, desc, author, url);
+	}
+}

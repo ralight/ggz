@@ -95,7 +95,7 @@ int _ggzcore_table_list_add(const int table, const int type, const char* desc, c
 	int status;
 	struct _GGZTable new_table;
 
-	ggzcore_debug(GGZ_DBG_PLAYER, "Adding table number %d to table list", table);
+	ggzcore_debug(GGZ_DBG_TABLE, "Adding table number %d to table list", table);
 
 	new_table.number = table;
 	new_table.type = type;
@@ -119,7 +119,7 @@ int _ggzcore_table_list_remove(const int number)
 	struct _ggzcore_list_entry *entry;
 	struct _GGZTable table;
 
-	ggzcore_debug(GGZ_DBG_PLAYER, "Removing table number %d.", number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Removing table number %d.", number);
 
 	table.number = number;
 	if (!(entry = _ggzcore_list_search(table_list, &table)))
@@ -138,7 +138,7 @@ int _ggzcore_table_list_join(const int number)
 	struct _ggzcore_list_entry *entry;
 	struct _GGZTable data, *table;
 
-	ggzcore_debug(GGZ_DBG_PLAYER, "Player joined table %d", number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Player joined table %d", number);
 
 	data.number = number;
 	if (!(entry = _ggzcore_list_search(table_list, &data)))
@@ -159,7 +159,7 @@ int _ggzcore_table_list_leave(const int number)
 	struct _ggzcore_list_entry *entry;
 	struct _GGZTable data, *table;
 
-	ggzcore_debug(GGZ_DBG_PLAYER, "Player left table %d", number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Player left table %d", number);
 
 	data.number = number;
 	if (!(entry = _ggzcore_list_search(table_list, &data)))
@@ -180,9 +180,9 @@ static int _ggzcore_table_compare(void* p, void* q)
 	if(((struct _GGZTable*)p)->number == ((struct _GGZTable*)q)->number)
 		return 0;
 	if(((struct _GGZTable*)p)->number > ((struct _GGZTable*)q)->number)
-		return -1;
-	if(((struct _GGZTable*)p)->number < ((struct _GGZTable*)q)->number)
 		return 1;
+	if(((struct _GGZTable*)p)->number < ((struct _GGZTable*)q)->number)
+		return -1;
 
 	return 0;
 }
@@ -228,13 +228,13 @@ static void _ggzcore_table_list_print(void)
 
 static void _ggzcore_table_print(struct _GGZTable *table)
 {
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table number: %d", table->number);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table type: %d\n", table->number);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table seats: %d\n", table->seats);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table open: %d\n", table->open);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table computers: %d\n", table->computers);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table state: %d\n", table->state);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Table desc: %s\n", table->desc);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table number: %d", table->number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table type: %d\n", table->number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table seats: %d\n", table->seats);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table open: %d\n", table->open);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table computers: %d\n", table->computers);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table state: %d\n", table->state);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table desc: %s\n", table->desc);
 }
 
 
