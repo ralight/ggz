@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4678 2002-09-24 05:20:35Z jdorje $
+dnl $Id: configure.in 4720 2002-09-26 10:57:49Z dr_maux $
 
 dnl AC_INIT(configure.in)
 AC_INIT(acinclude.m4)
@@ -43,16 +43,6 @@ AM_MAINTAINER_MODE
 dnl Check for standard build environment
 dnl ====================================
 
-dnl Make sure ${prefix}/include is on include path
-dnl ==============================================
-if test "x${prefix}" = "xNONE"; then
-   CPPFLAGS="$CPPFLAGS -isystem${ac_default_prefix}/include"
-   LDFLAGS="$LDFLAGS -L${ac_default_prefix}/lib"
-else
-   CPPFLAGS="$CPPFLAGS -isystem${prefix}/include"
-   LDFLAGS="$LDFLAGS -L${prefix}/lib"
-fi
-
 AC_PROG_CC
 AC_PROG_CPP
 AC_ISC_POSIX
@@ -66,7 +56,14 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(gettext,         [  --disable-gettext       disable gettext  ],, enable_gettext=yes)
+
+dnl Check for GGZ requirements
+dnl ==========================
+AC_GGZ_INIT(defaults, export)
+AC_GGZ_LIBGGZ
+AC_GGZ_GGZMOD
+AC_GGZ_CONFIG
+AC_GGZ_INTL(ignore)
 
 dnl Check for header files
 dnl ======================
@@ -74,17 +71,18 @@ AC_HEADER_STDC
 
 dnl Check for gettext support
 dnl =========================
-dnl ALL_LINGUAS="de pt_BR"
-dnl AM_GNU_GETTEXT
-if test "x${prefix}" = "xNONE"; then
- AC_DEFINE_UNQUOTED(LOCALEDIR, "${ac_default_prefix}/share/locale")
-else
- AC_DEFINE_UNQUOTED(LOCALEDIR, "${prefix}/share/locale")
-fi
-
-if test "$enable_gettext" = yes; then
+if test "x$MSGFMT" != "x"; then
 	AC_DEFINE(ENABLE_NLS)
 	allsubdirs="$allsubdirs po"
+	enable_gettext="yes"
+
+	if test "x${prefix}" = "xNONE"; then
+	 AC_DEFINE_UNQUOTED(LOCALEDIR, "${ac_default_prefix}/share/locale")
+	else
+	 AC_DEFINE_UNQUOTED(LOCALEDIR, "${prefix}/share/locale")
+	fi
+else
+	enable_gettext="no"
 fi
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -98,15 +96,6 @@ dnl Check for libs
 dnl ==============
 AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
 
-
-dnl Check for GGZ requirements
-dnl ==========================
-
-AC_GGZ_LIBGGZ
-AC_GGZ_GGZMOD
-AC_GGZ_CONFIG
-
-LDADD="$LDADD $LIB_GGZMOD $LIB_GGZ"
 
 dnl Use -Wall if we have gcc.
 dnl =========================
