@@ -1,0 +1,63 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.8 Screenshots</b><br>
+
+Diese Screenshots sind für Version 0.0.8 erstellt worden.
+Die vorherigen für Version 0.0.7 sind ebenfalls noch auf
+<a href="/screenshots/0.0.7/">dieser Seite</a> verfügbar.
+Noch ältere Screenshots findet man
+<a href="http://ggz.sourceforge.net/OLD/screenshots.php">hier</a>.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="pykamikaze.png"><img src="pykamikaze.small.png" alt="PyKamikaze" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="gtk-cygwin.png"><img src="gtk-cygwin.small.png" alt="Gtk+ client under Cygwin" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Die Python-Version des Spiels Kamikaze
+</td><td bgcolor="#ffffa0">
+Der Gtk+-Client läuft unter Windows (unter Cygwin)
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="keepalive.png"><img src="keepalive.small.png" alt="Keepalive" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="db2web.png"><img src="db2web.small.png" alt="Rankings" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Einführungs-Szene des KDE-Spiels Keepalive
+</td><td bgcolor="#ffffa0">
+Verbesserte Spielstand-Seiten
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="escape-sdl.png"><img src="escape-sdl.small.png" alt="Escape/SDL" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="motd-editor.png"><img src="motd-editor.small.png" alt="MOTD Editor" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Escape/SDL, die Pygame-Portierung von Escape
+</td><td bgcolor="#ffffa0">
+Der Editor für die Meldungen des Tages (MOTD)
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="compcal.png"><img src="compcal.small.png" alt="Competition Calendar" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="geekgame.png"><img src="geekgame.small.png" alt="Geekgame" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Competition Calendar hält GGZ-Spieler informiert
+</td><td bgcolor="#ffffa0">
+Das ultimative Geek-Spiel: Geek Game
+</td></tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>

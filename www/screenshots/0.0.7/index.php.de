@@ -1,0 +1,61 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+
+<b>GGZ 0.0.7 Screenshots</b><br>
+
+Diese Screenshots wurden mit der Version 0.0.7 erstellt.
+Um ältere Versionen anzuschauen, bitte
+<a href="http://ggz.sourceforge.net/OLD/screenshots.php"><u>diese Seite</u></a> besuchen.
+<br><br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="ggzcards-stats.png"><img src="ggzcards-stats.thumb.jpg" alt="GGZCards" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="gtk-client-with-ttt3d-1024x768.png"><img src="gtk-client-with-ttt3d-1024x768.thumb.jpg" alt="Gtk+ client with TTT3D" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+GGZCards unter GNOME 2.x mit Unterstützung für Statistiken
+</td><td bgcolor="#ffffa0">
+Der Gtk+-Client startet ein TicTacToe3D-Spiel
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="txt-client-under-gnome-1024x768.png"><img src="txt-client-under-gnome-1024x768.thumb.jpg" alt="Text client" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="telggz-under-blackbox-1024x768.png"><img src="telggz-under-blackbox-1024x768.thumb.jpg" alt="Telnet client" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Nutzung des reinen Text-Clients unter GNOME 2.x
+</td><td bgcolor="#ffffa0">
+Nutzung von TelGGZ (der Pseudo-Telnet-Client) unter BlackBox
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="geekgame-under-blackbox-1024x768.png"><img src="geekgame-under-blackbox-1024x768.thumb.jpg" alt="Geekgame" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="kggz-with-fyrdman-1024x768.png"><img src="kggz-with-fyrdman-1024x768.thumb.jpg" alt="KGGZ with Fyrdman" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Geekgame im Einzelspieler-Modus gegen die KI
+</td><td bgcolor="#ffffa0">
+Fyrdman, der neue KDE-Client für das Spiel Hastings1066
+</td></tr>
+
+<tr><td bgcolor="#ffd000"><center>
+<a href="gnome-client-and-db2web-1024x768.png"><img src="gnome-client-and-db2web-1024x768.thumb.jpg" alt="GNOME client and DB2Web" border=0></a>
+</center></td><td bgcolor="#ffd000"><center>
+<a href="ggzap-under-xfce-1024x768.png"><img src="ggzap-under-xfce-1024x768.thumb.jpg" alt="GGZap and KCMGGZ" border=0></a>
+</center></td></tr>
+<tr><td bgcolor="#ffffa0">
+Der GNOME 2.x-Client und die Webschnittstelle zu den Spielerbewertungen
+</td><td bgcolor="#ffffa0">
+Die Konfiguration des Metaservers im KDE-Kontrollzentrum, und GGZap
+</td></tr>
+</table>
+
+<? include_once("../../site/footer.php"); ?>
