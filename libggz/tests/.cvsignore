@@ -8,3 +8,5 @@ debugmsg
 testfile
 cfgtest
 cfg_testfile
+misc
+debug.log
