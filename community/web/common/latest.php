@@ -45,9 +45,12 @@ function latest_forumposts()
 	for ($i = 0; $i < $phpbb->numrows($res); $i++)
 	{
 		$subject = $phpbb->result($res, $i, "post_subject");
+		$id = $phpbb->result($res, $i, "post_id");
+
+		$tag = htmlspecialchars($subject, ENT_QUOTES);
 
 		echo "<div class='menu'>\n";
-		echo "<a href='/forums/' class='menuitem' title='$subject'>$subject</a>\n";
+		echo "<a href='/forums/phpBB2/viewtopic.php?t=$id' class='menuitem' title='$tag' target='_BLANK'>$subject</a>\n";
 		echo "</div>\n";
 	}
 }
