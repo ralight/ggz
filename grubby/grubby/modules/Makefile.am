@@ -1,6 +1,7 @@
 SUBDIRS = .
 
-lib_LTLIBRARIES = \
+grubbydir = $(libdir)/grubby/modules
+grubby_LTLIBRARIES = \
 	libgurumod_simplereturn.la \
 	libgurumod_programming.la \
 	libgurumod_exec.la \

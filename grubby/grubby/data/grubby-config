@@ -11,7 +11,7 @@ $grubbydir = "$ggzdir/grubby";
 print "====================\n";
 print "Grubby configuration\n";
 print "--------------------\n\n";
-print "This script does help you in setting up grubby, the GGZ chat bot. Do you want to continue (y/n)?\n";
+print "This script does help you in setting up grubby, the GGZ chat bot. Do you want to continue (y/n)? ";
 $cont = <STDIN>;
 chomp($cont);
 if($cont ne "y"){exit;}
@@ -20,7 +20,9 @@ if($cont ne "y"){exit;}
 $pid = getppid();
 mkdir $ggzdir, 0700 || die "Cannot start setup! Your system is severely broken.\n";
 mkdir $grubbydir, 0700 || print "Warning: grubby directory already exists.\n";
-rename "$ggzdir/grubby.rc", "$ggzdir/grubby.rc.backup.$pid" && print "Warning: saved old grubby.rc file.\n";
+if(-f "$ggzdir/grubby.rc"){
+	system("mv -f $ggzdir/grubby.rc $ggzdir/grubby.rc.backup.$pid") || print "Warning: saved old grubby.rc file.\n";
+}
 print "\n";
 
 # MAIN SETUP ##########################################################################################
@@ -28,12 +30,13 @@ print "\n";
 print "Main configuration: This one is essential.\n";
 print "Grubby's name: "; $name = <STDIN>; chomp($name);
 print "The owner of $name: "; $owner = <STDIN>; chomp($owner);
-print "Which room should $name join first? "; $room = <STDIN>; chomp($room);
+print "Which room should $name join first (default: 0)? "; $room = <STDIN>; chomp($room);
 print "What is $names\'s default host (default: localhost)? "; $host = <STDIN>; chomp($host);
 print "Where should $name log to (default: no log file)? "; $logfile = <STDIN>; chomp($logfile);
 print "\n";
 
 if(!$host){$host = "localhost";}
+if(!$room){$room = 0;}
 
 # Write grubby.rc
 open(FILE, ">$ggzdir/grubby.rc");
@@ -49,8 +52,8 @@ close(FILE);
 
 print "Plugins: They are the ones which make $name unique.\n";
 %EXEC = ();
-scan("/usr/lib", 1);
-scan("/usr/local/lib", 1);
+scan("/usr/lib/grubby/modules", 1);
+scan("/usr/local/lib/grubby/modules", 1);
 print "\n";
 
 # Append to grubby.rc
@@ -68,8 +71,8 @@ close(FILE);
 
 print "Core plugins: They are needed for $name to operate properly.\n";
 %EXEC = ();
-scan("/usr/lib", 2);
-scan("/usr/local/lib", 2);
+scan("/usr/lib/grubby/coremodules", 2);
+scan("/usr/local/lib/grubby/coremodules", 2);
 print "\n";
 
 # Append to grubby.rc
@@ -137,6 +140,7 @@ sub scan
 	@files = readdir(D);
 	foreach $f(@files){
 		if(($f eq ".") || ($f eq "..")){next;}
+		if(-d "$dir/$f"){next;}
 		if(($mod) && (!($f =~ /^libguru$xmod\_[A-za-z0-9]+\.so$/))){next;}
 		if($mod){
 			$n = $f;
@@ -145,6 +149,9 @@ sub scan
 		}else{
 			@m = split(/\./, $f);
 			$n = $m[0];
+		}
+		if($n eq "netggz"){
+			$n = "net";
 		}
 		print "Found $dir/$f; register as [$n (default)] or [n]: ";
 		$x = <STDIN>;

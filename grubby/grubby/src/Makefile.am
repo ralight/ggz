@@ -6,7 +6,8 @@ grubby_SOURCES = guru.c main.c module.c
 grubby_LDADD = -ldl $(LIB_GGZCORE)
 grubby_LDFLAGS = $(GGZCORE_LDFLAGS)
 
-lib_LTLIBRARIES = libguru_netggz.la libguru_i18n.la libguru_player.la
+grubbydir = $(libdir)/grubby/coremodules
+grubby_LTLIBRARIES = libguru_netggz.la libguru_i18n.la libguru_player.la
 
 libguru_netggz_la_SOURCES = net.c
 libguru_netggz_la_LIBADD = $(LIB_GGZCORE)
