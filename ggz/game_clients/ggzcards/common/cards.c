@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 3989 2002-04-15 05:29:20Z jdorje $
+ * $Id: cards.c 3999 2002-04-16 19:09:47Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.

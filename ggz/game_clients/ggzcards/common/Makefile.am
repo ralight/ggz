@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3491 2002-02-27 09:42:22Z jdorje $
+# $Id: Makefile.am 3999 2002-04-16 19:09:47Z jdorje $
 
 SUBDIRS = .
 
@@ -7,6 +7,7 @@ noinst_LIBRARIES = libcommon.a
 
 libcommon_a_SOURCES = \
 	cards.c cards.h \
+	net_common.c net_common.h \
 	protocol.c protocol.h \
 	shared.h
 

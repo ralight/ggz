@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: protocol.c 3999 2002-04-16 19:09:47Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -38,8 +38,6 @@
 
 #include <assert.h>
 #include <stdlib.h>
-
-#include <ggz.h>		/* for easysock */
 
 #include "protocol.h"
 
@@ -87,103 +85,4 @@ const char* get_client_opcode_name(client_msg_t opcode)
 	case REQ_SYNC:     return "REQ_SYNC"; 	
 	}
 	return "[unknown]";
-}
-
-
-
-int read_card(int fd, card_t * card)
-{
-	if (ggz_read_char(fd, &card->type) < 0 ||
-	    ggz_read_char(fd, &card->face) < 0 ||
-	    ggz_read_char(fd, &card->suit) < 0 ||
-	    ggz_read_char(fd, &card->deck) < 0)
-		return -1;
-		
-	/* We go ahead and check the card for validity. */
-	if (is_valid_card(*card))
-		return 0;
-	
-#if 0 /* This could be dangerous - anyone could crash us! */
-	assert(FALSE);
-#endif
-
-#if 0 /* This probably makes the most sense, but... */
-	return -1;
-#endif
-
-	*card = UNKNOWN_CARD;
-	return 0;
-}
-
-int write_card(int fd, card_t card)
-{
-	/* Check for validity. */
-	assert(is_valid_card(card));
-	
-	/* Note - the "type" should theoretically come first (and does, here),
-	   but we list it last in the struct definition for
-	   backwards-compatibility. */
-	
-	if (ggz_write_char(fd, card.type) < 0 ||
-	    ggz_write_char(fd, card.face) < 0 ||
-	    ggz_write_char(fd, card.suit) < 0 ||
-	    ggz_write_char(fd, card.deck) < 0)
-		return -1;
-	return 0;
-}
-
-int read_bid(int fd, bid_t * bid)
-{
-	if (ggz_read_char(fd, &bid->sbid.val) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.suit) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.spec) < 0 ||
-	    ggz_read_char(fd, &bid->sbid.spec2) < 0)
-		return -1;
-	return 0;
-}
-
-/** @brief Writes a bid to the socket.
- *  @param fd The file descriptor to which to read.
- *  @param bid A pointer to the bid data.
- *  @return 0 on success, -1 on failure. */
-int write_bid(int fd, bid_t bid)
-{
-	if (ggz_write_char(fd, bid.sbid.val) < 0 ||
-	    ggz_write_char(fd, bid.sbid.suit) < 0 ||
-	    ggz_write_char(fd, bid.sbid.spec) < 0 ||
-	    ggz_write_char(fd, bid.sbid.spec2) < 0)
-		return -1;
-	return 0;
-}
-
-int read_opcode(int fd, int *opcode)
-{
-	char op;
-	if (ggz_read_char(fd, &op) < 0)
-		return -1;
-	*opcode = op;
-	return 0;
-}
-
-int write_opcode(int fd, int opcode)
-{
-	char op = opcode;
-	assert(opcode >= 0 && opcode < 128);
-	return ggz_write_char(fd, op);
-}
-
-int read_seat(int fd, int *seat)
-{
-	char s;
-	if (ggz_read_char(fd, &s) < 0)
-		return -1;
-	*seat = s;
-	return 0;
-}
-
-int write_seat(int fd, int seat)
-{
-	char s = seat;
-	assert(seat >= 0 && seat < 127);
-	return ggz_write_char(fd, s);
 }
