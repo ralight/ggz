@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5972 2004-03-22 17:05:09Z josef $
+ * $Id: ggz-config.c 6031 2004-06-13 17:20:42Z josef $
  *
  * Configuration query and module install program.
  *
@@ -425,8 +425,9 @@ static int install_module(void)
 					    "CommandLine", modexec);
 		ggz_conf_write_string(global, engine_id,
 					    "Homepage", modurl);
-		ggz_conf_write_string(global, engine_id,
-					    "Environment", modenvironment);
+		if(modenvironment)
+			ggz_conf_write_string(global, engine_id,
+						    "Environment", modenvironment);
 		if(modicon)
 			ggz_conf_write_string(global, engine_id,
 						    "IconPath", modicon);
