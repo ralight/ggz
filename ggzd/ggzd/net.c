@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include "err_func.h"
+#include "hash.h"
 #include "motd.h"
 #include "net.h"
 #include "protocols.h"
@@ -540,23 +541,30 @@ int net_send_table_leave(GGZNetIO *net, char status)
 
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 {
-	char *action = NULL;
+	GGZPlayer *player;
 	int room;
 
 	room = player_get_room(net->player);
 	
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
-		action = "delete";
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d'>", room);
+		_net_send_line(net, "<PLAYER ID='%s'/>", name);
+		_net_send_line(net, "</UPDATE>");
 		break;
 	case GGZ_UPDATE_ADD:
-		action = "add";
+		/* This returns with player's write lock held, so drop it  */
+		player = hash_player_lookup(name);
+		if (!player) {
+			err_msg("Player lookup failed!");
+			return 0;
+		}
+		pthread_rwlock_unlock(&player->lock);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
+		net_send_player(net, player);
+		_net_send_line(net, "</UPDATE>");
 		break;
 	}
-	_net_send_line(net, "<UPDATE TYPE='player' ACTION='%s' ROOM='%d'>",
-		       action, room);
-	_net_send_line(net, "<PLAYER ID='%s' TYPE='guest' />", name);
-	_net_send_line(net, "</UPDATE>");
 	
 	return 0;
 }
@@ -718,7 +726,7 @@ int net_read_data(GGZNetIO *net)
 		if (net->byte_count > MAX_CHAT_LEN) {
 			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
 			
-			/*_net_send_result(net, "protocol", -2);*/
+			_net_send_result(net, "protocol", -2);
 			done = 1;
 		}
 	}

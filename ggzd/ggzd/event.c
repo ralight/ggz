@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 2317 2001-08-29 05:39:53Z bmh $
+ * $Id: event.c 2516 2001-09-29 03:13:58Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -225,8 +225,6 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 {
 	GGZEvent *event;
 	GGZPlayer *player;
-	char lc_name[MAX_USER_NAME_LEN + 1];
-	char *src, *dest;
 
 	/* Allocate a new event item */
 	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
@@ -243,13 +241,8 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	event->data = data;
 	event->handle = func;
 
-	/* Convert receiver name to lowercase for comparisons */
-	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
-		*dest = tolower(*src);
-	*dest = '\0';
-	
 	/* Find target player.  Returns with player write-locked */
-	if ( (player = hash_player_lookup(lc_name)) == NULL ) {
+	if ( (player = hash_player_lookup(name)) == NULL ) {
 		if (data)
 			free(data);
 		free(event);

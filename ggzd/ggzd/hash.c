@@ -135,17 +135,24 @@ int hash_player_add(char *name, GGZPlayer* player)
 GGZPlayer* hash_player_lookup(char *name)
 {
 	unsigned hash_num;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 	HashList *hl;
 	GGZPlayer* player = NULL;
 
+	/* Convert name to lowercase for comparisons */
+	for(src = name, dest = lc_name; *src != '\0'; src++, dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+
 	/* Pick a list */
-	hash_num = hash_pjw(name) % HASH_NUM_LISTS;
+	hash_num = hash_pjw(lc_name) % HASH_NUM_LISTS;
 
 	/* Find the player name in this list */
 	pthread_rwlock_rdlock(&hash_list_lock[hash_num]);
 	hl = hash_list[hash_num];
 	while(hl) {
-		if(!strcmp(name, hl->name)) {
+		if(!strcmp(lc_name, hl->name)) {
 			player = hl->player;
 			break;
 		}
