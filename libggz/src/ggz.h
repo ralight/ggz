@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4128 2002-05-01 06:35:14Z jdorje $
+ * $Id: ggz.h 4137 2002-05-02 17:07:51Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -844,6 +844,19 @@ typedef enum {
 	GGZ_CHECK_MEM = 0x01   /**< Memory (leak) checks. */
 } GGZCheckType;
 
+/** @brief A callback function to handle debugging output.
+ *
+ *  A function of this type can be registered as a callback handler to handle
+ *  debugging output, rather than having the output go to stderr or to a file.
+ *  If this is done, each line of output will be sent directly to this function
+ *  (no trailing newline will be appended).
+ *
+ *  @see ggz_debug_set_func
+ *  @param msg The debugging output message.
+ *  @note If your program is threaded, this function must be threadsafe.
+ */
+typedef void (*GGZDebugHandlerFunc)(char* msg);
+
 /**
  * @brief Initialize and configure debugging for the program.
  * 
@@ -853,6 +866,19 @@ typedef enum {
  * @see ggz_debug
  */
 void ggz_debug_init(const char **types, const char* file);
+
+/** @brief Set the debug handler function.
+ *
+ *  Call this function to register a debug handler function.  NULL can
+ *  be passed to disable the debug handler.  If set, the debug handler
+ *  function will be called to handle debugging output, overriding any
+ *  file that had previously been specified.
+ *
+ *  @param func The new debug handler function.
+ *  @return The previous debug handler function.
+ *  @note This function is not threadsafe (re-entrant).
+ */
+GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func);
 
 /**
  * @brief Enable a specific type of debugging.

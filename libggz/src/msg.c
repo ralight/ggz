@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 3714 2002-03-28 20:42:04Z jdorje $
+ * $Id: msg.c 4137 2002-05-02 17:07:51Z jdorje $
  *
  * Debug and error messages
  *
@@ -51,6 +51,8 @@ static GGZList *debug_types;
 /* Flag for whether debugging output is enabled */
 static char debug_enabled;
 
+static GGZDebugHandlerFunc handler_func = NULL;
+
 
 void ggz_debug_init(const char **types, const char* file)
 {
@@ -69,6 +71,14 @@ void ggz_debug_init(const char **types, const char* file)
 	/* We do the actual enabling last, so none of the steps up to
            this point will generate debugging messages */
 	debug_enabled = 1;
+}
+
+
+GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func)
+{
+	GGZDebugHandlerFunc old_handler = handler_func;
+	handler_func = func;
+	return old_handler;
 }
 
 
@@ -218,33 +228,33 @@ void ggz_debug_cleanup(GGZCheckType check)
 static void err_doit(const char* prefix, const char *fmt, va_list ap, char err)
 {
 	char buf[4096];
-	unsigned int size;
-
-	/* Subtract one to leave room for newline */
-	size = sizeof(buf) -1;
 
 #if 0
-	sprintf(buf, "[%d]: ", getpid());
+	snprintf(buf, sizeof(buf), "[%d]: ", getpid());
 #else
 	buf[0] = '\0';
 #endif
 
 	if (prefix)
-		sprintf(buf + strlen(buf), "(%s) ", prefix);
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+		         "(%s) ", prefix);
 	
 
-	vsnprintf(buf + strlen(buf), (size - strlen(buf)), fmt, ap);
+	vsnprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), fmt, ap);
 	if (err)
-		snprintf(buf + strlen(buf), (size - strlen(buf)), ": %s", 
-			 strerror(errno));
-	strcat(buf, "\n");
-
-	if (debug_file)
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+		         ": %s", strerror(errno));
+			
+	if (handler_func) {
+		(*handler_func)(buf);
+	} else if (debug_file) {
 		fputs(buf, debug_file);
-	else {
+		fputs("\n", debug_file);
+	} else {
 		/* Use stderr if no file is given */
 		fflush(stdout);
 		fputs(buf, stderr);
+		fputs("\n", stderr);
 	}
 	
 	fflush(NULL);
