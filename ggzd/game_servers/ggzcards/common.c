@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2647 2001-11-04 03:50:54Z jdorje $
+ * $Id: common.c 2705 2001-11-09 02:03:54Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -676,13 +676,16 @@ int handle_bid_event(bid_t bid)
 	/* set up next move */
 	game.bid_count++;
 	game.funcs->next_bid();
-	if (game.bid_count == game.bid_total)
-		set_game_state(WH_STATE_FIRST_TRICK);
-	else if (game.state == WH_STATE_WAIT_FOR_BID)
-		set_game_state(WH_STATE_NEXT_BID);
-	else
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
+
+	/* This is a minor hack.  The game's next_bid function might have
+	   changed the game's state.  If that happened, we don't want to
+	   change it back! */
+	if (game.state == WH_STATE_WAIT_FOR_BID) {
+		if (game.bid_count == game.bid_total)
+			set_game_state(WH_STATE_FIRST_TRICK);
+		else
+			set_game_state(WH_STATE_NEXT_BID);
+	}
 
 	/* this is the player that just finished bidding */
 	set_player_message(p);
