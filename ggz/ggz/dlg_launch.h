@@ -28,4 +28,4 @@
 #include <gtk/gtk.h>
 
 GtkWidget* create_dlgLaunch (void);
-
+int launch_seat_type(int i);

@@ -140,7 +140,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	char status;
 	int num, op, size, checksum, count, i;
 	char buf[4096];
-	int color_index;
+	static int color_index=0;
 
         if (FAIL(es_read_int(source, &op))) {
 	        disconnect(NULL, NULL);
