@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4523 2002-09-12 03:27:25Z jdorje $
+ * $Id: players.c 4527 2002-09-12 18:24:27Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -662,7 +662,7 @@ static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 {
 	struct GGZTableSeat seat;
 	struct GGZTableSpectator spectator;
-	int status;
+	int status, spectating, seat_num, try;
 
 	/* Do some quick sanity checking */
 	if (player->room == -1) 
@@ -673,16 +673,55 @@ static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 	/* Implement LEAVE by setting my seat to open */
 	switch (opcode) {
 	case GGZ_TRANSIT_LEAVE: 
-		seat.index = table_find_player(player->room, index,
-					       player->name);
-		if(seat.index == -1)
-			return E_NO_TABLE;
-		seat.type = GGZ_SEAT_OPEN;
-		seat.name[0] = '\0';
-		seat.fd = -1;
+	case GGZ_TRANSIT_LEAVE_SPECTATOR:
+		spectating = (opcode == GGZ_TRANSIT_LEAVE_SPECTATOR);
+		/* At this point, whether we're spectating or not is
+		   determined by what the client told us.  But we can't
+		   trust the client, so we double-check. */
+		for (try = 0, seat_num = -1; try < 2 && seat_num < 0; try++) {
+			if (spectating)
+				seat_num = table_find_spectator(player->room,
+								index,
+								player->name);
+			else
+				seat_num = table_find_player(player->room,
+							     index,
+							     player->name);
+			if (seat_num < 0) spectating = !spectating;
+		}
+
+		if (seat_num < 0) {
+			/* Uh oh.  A ggzd bug.  But it doesn't have
+			   to be fatal. */
+			err_msg("%s couldn't be found at table %d (room %d).",
+				player->name, player->table, player->room);
+			/* Fake success, so that the client doesn't get
+			   confused. */
+			(void) net_send_table_leave(player->client->net, 0);
+			/* Remove the player from the table.  Perhaps we
+			   should see if they're actually at a different
+			   table?  Or perhaps we should send a full update? */
+			player->table = -1;
+			return 0;
+		}
+
+		if (spectating) {
+			spectator.index = seat_num;
+			spectator.name[0] = '\0';
+			spectator.fd = -1;
+
+			status = transit_spectator_event(player->room, index,
+							 spectator,
+							 player->name);
+		} else {
+			seat.index = seat_num;
+			seat.type = GGZ_SEAT_OPEN;
+			seat.name[0] = '\0';
+			seat.fd = -1;
 		
-		status = transit_seat_event(player->room, index, seat,
-					    player->name);
+			status = transit_seat_event(player->room, index, seat,
+						    player->name);
+		}
 		break;
 	case GGZ_TRANSIT_JOIN:
 		seat.index = GGZ_SEATNUM_ANY; /* Take first available seat */
@@ -710,17 +749,6 @@ static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 		player->game_fd = -1;
 		pthread_rwlock_unlock(&player->lock);
 
-		break;
-	case GGZ_TRANSIT_LEAVE_SPECTATOR:
-		spectator.index = table_find_spectator(player->room, index,
-						       player->name);
-		if(spectator.index == -1)
-			return E_NO_TABLE;
-		spectator.name[0] = '\0';
-		spectator.fd = -1;
-
-		status = transit_spectator_event(player->room, index,
-						 spectator, player->name);
 		break;
 	default:
 		/* Should never get here */
