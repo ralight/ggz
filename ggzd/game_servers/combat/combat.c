@@ -55,7 +55,7 @@ void combat_options_string_read(char *optstr, combat_game *_game, int num_player
 	_game->width = optstr[0];
 	_game->height = optstr[1];
 	optstr+=2;
-	_game->map = calloc(_game->width*_game->height, sizeof(tile));
+	_game->map = malloc(_game->width*_game->height * sizeof(tile));
 	for (a = 0; a < _game->width*_game->height; a++) {
 			_game->map[a].type = optstr[a];
 			_game->map[a].unit = U_EMPTY;

@@ -100,26 +100,38 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 
 int game_handle_player(int seat) {
 	int fd, op, a, status = CBT_SERVER_OK;
-	
-	ggz_debug("Got message from player %d\n", seat);
 
 	fd = ggz_seats[seat].fd;
 
 	if (es_read_int(fd, &op) < 0)
 		return -1;
 
+	ggz_debug("Got message %d from player %d\n", op, seat);
+
 	switch (op) {
 
 		case CBT_MSG_OPTIONS:
-			game_get_options(seat);
-			// Sends options to everyone
-			for (a = 0; a < ggz_seats_num(); a++) {
-				if (ggz_seats[a].fd >= 0)
-					game_send_options(a);
+			if (game_get_options(seat)) {
+				// Sends options to everyone
+				for (a = 0; a < ggz_seats_num(); a++) {
+					if (ggz_seats[a].fd >= 0)
+						game_send_options(a);
+				}
+				// Check if must start the game
+				if (!ggz_seats_open() && cbt_game.map)
+					game_request_setup(-1);
+			} else {
+				// Free memory
+				free(cbt_game.map);
+				for (a = 0; a < ggz_seats_num(); a++)
+					free(cbt_game.army[a]);
+				free(cbt_game.army);
+				// Init them again
+				game_init();
+				// We are at the WAIT turn
+				cbt_game.state = CBT_STATE_WAIT;
+				game_request_options(seat);
 			}
-			// Check if must start the game
-			if (!ggz_seats_open() && cbt_game.map)
-				game_request_setup(-1);
 			break;
 
 		case CBT_MSG_SETUP:
@@ -143,6 +155,14 @@ int game_handle_player(int seat) {
 				game_send_gameover(-a);
 			break;
 
+		case CBT_REQ_SYNC:
+			game_send_sync(seat);
+			break;
+
+		case CBT_REQ_OPTIONS:
+			game_send_options(seat);
+			break;
+
 		default:
 			status = CBT_SERVER_ERROR;
 			break;
@@ -154,7 +174,30 @@ int game_handle_player(int seat) {
 }
 
 void game_send_sync(int seat) {
-	// FIXME: Must add this!
+	int fd = ggz_seats[seat].assign;
+	int a;
+
+	if (fd <= 0)
+		return;
+
+	if (es_write_int(fd, CBT_MSG_SYNC) < 0 ||
+			es_write_int(fd, cbt_game.turn) < 0) {
+		ggz_debug("Can't send sync");
+		return;
+	}
+
+	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
+		// If I own it, send all the info to me
+		if (GET_OWNER(cbt_game.map[a].unit) == seat)
+			es_write_int(fd, cbt_game.map[a].unit);
+		else if (LAST(cbt_game.map[a].unit) != U_EMPTY)
+			// It is a unit, although not mine
+			es_write_int(fd, FIRST(cbt_game.map[a].unit) + U_UNKNOWN);
+		else
+			// It is not a unit
+			es_write_int(fd, U_EMPTY);
+	}
+
 	return;
 }
 
@@ -183,6 +226,7 @@ void game_request_options(int seat) {
 int game_get_options(int seat) {
 	int fd = ggz_seats[seat].fd;
 	char *optstr = NULL;
+	int a, b, size = 0, cur_size = 0;
 
 	ggz_debug("Getting options");
 
@@ -191,10 +235,37 @@ int game_get_options(int seat) {
 
 	ggz_debug("Len: %d", strlen(optstr));
 
-	// FIXME: Check for validity
 	combat_options_string_read(optstr, &cbt_game, ggz_seats_num());
 
-	
+	if (cbt_game.army[ggz_seats_num()][U_FLAG] <= 0) {
+		ggz_debug("Not enough flags");
+		return 0;
+	}
+
+	for (a = 2; a < 13; a++) {
+		if (a == 12) {
+			ggz_debug("No moving units");
+			return 0;
+		}
+		if (cbt_game.army[ggz_seats_num()][a] > 0)
+			break;
+	}
+
+	for (a = 0; a < 12; a++)
+		size+=cbt_game.army[ggz_seats_num()][a];
+
+	// Checks for number of starting positions
+	for (a = 0; a < ggz_seats_num(); a++) {	
+		for (b = 0; b < cbt_game.width * cbt_game.height; b++) {
+			if (GET_OWNER(cbt_game.map[b].type) == a)
+				cur_size++;
+		}
+		if (cur_size < size) {
+			ggz_debug("Not enough space");
+			return 0;
+		}
+		cur_size = 0;
+	}
 
 	return 1;
 }
@@ -263,8 +334,8 @@ void game_request_setup(int seat) {
 
 int game_get_setup(int seat) {
 	int a, b = 0;
+	int used[12];
 	static int done_setup = 0;
-	int setup_size = 0;
 	int msg_size;
 	int fd = ggz_seats[seat].fd;
 	char *setup;
@@ -279,38 +350,27 @@ int game_get_setup(int seat) {
 	b = 0;
 	
 
-	// TODO: Check for validity!!
-	
-	// Check if he has already sent a setup and get the number of setup tiles
+	// Check if he has already sent a setup
 	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
-		if (GET_OWNER(cbt_game.map[a].type) == seat)
-			setup_size++;
 		if (GET_OWNER(cbt_game.map[a].unit) == seat && LAST(cbt_game.map[a].unit) != U_EMPTY) {
 			ggz_debug("Setup error: Already sent setup");
 			return 0;
 		}
 	}
 
-	// Check if he sent the right number of tiles
-	if (setup_size != msg_size) {
-		ggz_debug("Setup error: Wrong message size");
-		return 0;
-	}
-
-	// Now checks if he hasn't sent less than the expected
-	setup_size = 0;
+	// Check if player used the correct number of units
 	for (a = 0; a < 12; a++)
-		setup_size+=cbt_game.army[seat][a];
-	ggz_debug("Setup size: %d", setup_size);
-	for (a = 0; a < msg_size; a++) {
-		if (LAST(setup[a]) != U_EMPTY)
-			setup_size--;
-	}
-	if (setup_size != 0) {
-		ggz_debug("Setup error: setup_size = %d", setup_size);
-		return 0;
+		used[a] = 0;
+
+	for (a = 0; a < msg_size; a++) 
+		used[LAST(setup[a])]++;
+
+	for (a = 0; a < 12; a++) {
+		if (used[a] != cbt_game.army[ggz_seats_num()][a])
+			return 0;
 	}
 
+	// Update game data
 	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
 		if (GET_OWNER(cbt_game.map[a].type) == seat) {
 			cbt_game.map[a].unit = setup[b];
@@ -597,7 +657,7 @@ int game_check_over() {
 		}
 		// Checks if the player has no moving units
 		alive[b] = 0;
-		for (a = U_SCOUT; a < 12; a++) {
+		for (a = U_SPY; a < 12; a++) {
 			if (cbt_game.army[b][a] > 0)
 				alive[b] = 1;
 		}
