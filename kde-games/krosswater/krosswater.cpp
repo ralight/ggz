@@ -114,7 +114,9 @@ Krosswater::~Krosswater()
 void Krosswater::protoError()
 {
 	m_broken = 1;
-	KMessageBox::error(this, i18n("A protocol error has been detected. Aborting the game."), i18n("Client message"));
+	KMessageBox::error(this,
+		i18n("A protocol error has been detected. Aborting the game."),
+		i18n("Client message"));
 	close();
 }
 
@@ -122,7 +124,11 @@ void Krosswater::protoError()
 void Krosswater::slotSelected(int person)
 {
 	m_selectedperson = person;
-	if(zonePlayers() == ZoneGamePlayers) showStatus(i18n("Game started"));
+	if(zonePlayers() == ZoneGamePlayers)
+	{
+		if((m_turn % ZoneGamePlayers) != zoneMe())
+			showStatus(i18n("Game started"));
+	}
 	else showStatus(i18n("Waiting for other players..."));
 
 	qcw->setPlayerPixmap(zoneMe(), person);
@@ -370,6 +376,7 @@ void Krosswater::timerEvent(QTimerEvent *e)
 	showStatus(m_currentstate);
 
 	if(m_movelist.count()) m = m_movelist.at(0);
+	else m = NULL;
 
 	switch(m_sleep)
 	{
