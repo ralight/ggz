@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5118 2002-10-30 20:24:39Z jdorje $
+#  $Id: Makefile.am 5205 2002-11-04 05:57:51Z jdorje $
 
 SUBDIRS = .
 
@@ -34,8 +34,8 @@ ggz_spades_SOURCES = \
 		gtk_taunt.c		gtk_taunt.h	\
 		gtkspinbutton.c		gtkspinbutton.h	\
 		options.h				\
-		socketfunc.c	socketfunc.h		\
-		all-cards.xpm
+		socketfunc.c	socketfunc.h
+
 
 ggz_spades_LDFLAGS = $(GGZMOD_LDFLAGS)
 ggz_spades_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a $(LIB_GGZMOD)

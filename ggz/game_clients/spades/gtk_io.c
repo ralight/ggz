@@ -45,7 +45,10 @@
 #include <gtk_menu.h>
 #include <gtk_taunt.h>
 #include <gtk_play.h>
-#include <all-cards.xpm>
+#include "../ggzcards/cards-1.xpm"
+#if 0 /* Card backs aren't used */
+#  include "../ggzcards/cards-b1.xpm"
+#endif
 
 #include "ggzintl.h"
 
@@ -142,8 +145,13 @@ void InitPixmaps(GtkWidget * window)
 	playArea->cards =
 	    gdk_pixmap_create_from_xpm_d(window->window, &mask,
 					 &style->bg[GTK_STATE_NORMAL],
-					 (gchar **) allCards);
-
+					 (gchar **) cards_xpm);
+#if 0 /* Card backs aren't used */
+	playArea->cardbacks =
+	    gdk_pixmap_create_from_xpm_d(window->window, &mask,
+					 &style->bg[GTK_STATE_NORMAL],
+					 (gchar **) cards_b1_xpm);
+#endif
 }
 
 
