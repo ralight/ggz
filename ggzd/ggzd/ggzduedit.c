@@ -33,6 +33,8 @@
 
 #define DB_STANDALONE 1
 #include <ggzdb.h>
+#define PERMS_DEFINE_STR_TABLE
+#include <perms.h>
 
 
 char *datadir = DATADIR;
@@ -83,6 +85,38 @@ void list_players(void)
 }
 
 
+void show_perms(unsigned int perms, int add_spaces)
+{
+	int i;
+	unsigned int testbit=1;
+	int first=1;
+	int col=1;
+
+	for(i=0; i<32; i++) {
+		if((perms & testbit) == testbit) {
+			if(first) {
+				printf("%s", perms_str_table[i]);
+				first = 0;
+			} else if(col) {
+				printf("      %s\n", perms_str_table[i]);
+				col = 0;
+			} else {
+				if(add_spaces)
+					printf("%*c", add_spaces, ' ');
+				printf("               %s", perms_str_table[i]);
+				col = 1;
+			}
+		}
+		testbit <<= 1;
+	}
+
+	if(first)
+		printf("no permissions set\n");
+	else if(col)
+		printf("\n");
+}
+
+
 void add_player(void)
 {
 	int i, rc;
@@ -125,7 +159,8 @@ void add_player(void)
 	printf("Real name:     [%s]\n", pe.name);
 	printf("Email address: [%s]\n", pe.email);
 	printf("Password:      [%s]\n", pe.password);
-	printf("Permissions:   0x%08X\n", pe.perms);
+	printf("Permissions:   ");
+	show_perms(pe.perms, 0);
 	printf("Last login:    %s\n", time_asc);
 
 	lb[0] = '\0';
@@ -180,7 +215,8 @@ void edit_player(int edit)
 		printf("Real name:     [%s]\n", pe.name);
 		printf("Email address: [%s]\n", pe.email);
 		printf("Password:      [%s]\n", pe.password);
-		printf("Permissions:   0x%08X\n", pe.perms);
+		printf("Permissions:   ");
+		show_perms(pe.perms, 0);
 		printf("Last login:    %s\n\n", time_asc);
 		return;
 	}
@@ -189,7 +225,8 @@ void edit_player(int edit)
 	printf("1) Real name:     [%s]\n", pe.name);
 	printf("2) Email address: [%s]\n", pe.email);
 	printf("3) Password:      [%s]\n", pe.password);
-	printf("4) Permissions:   0x%08X\n", pe.perms);
+	printf("4) Permissions:   ");
+	show_perms(pe.perms, 3);
 	printf("   Last login:    %s\n", time_asc);
 	printf("   A) Accepts     C) Cancels\n");
 	while(!accept) {
@@ -245,7 +282,8 @@ void edit_player(int edit)
 				printf("1) Real name:     [%s]\n", pe.name);
 				printf("2) Email address: [%s]\n", pe.email);
 				printf("3) Password:      [%s]\n", pe.password);
-				printf("4) Permissions:   0x%08X\n", pe.perms);
+				printf("4) Permissions:   ");
+				show_perms(pe.perms, 3);
 				printf("   Last login:    %s\n", time_asc);
 				printf("   A) Accepts     C) Cancels\n");
 				printf("Huh?\007 ");
