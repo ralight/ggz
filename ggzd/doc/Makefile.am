@@ -1,7 +1,7 @@
 
 sgml_dir = /net/rimshot2/local/share
 
-SUBDIRS =
+SUBDIRS = .
 
 SGML_FILES = design.sgml
 TXT_FILES = design.txt
@@ -59,12 +59,12 @@ eps-files: $(FIG_FILES)
 	done
 
 
-#dist-hook: html-docs
-#	mkdir $(distdir)/html
-#	-cp $(srcdir)/html/* $(distdir)/html
-#	-cp $(srcdir)/txt $(distdir)
-#	mkdir $(distdir)/images
-#	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
+dist-hook: html-docs
+	mkdir -p $(distdir)/html
+	-cp -a $(srcdir)/html/* $(distdir)/html
+	-cp $(srcdir)/txt $(distdir)
+	mkdir -p $(distdir)/images
+	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 
 #install-data-local: 
 #	$(mkinstalldirs) $(DESTDIR)$(gnumeric_helpdir)/images
