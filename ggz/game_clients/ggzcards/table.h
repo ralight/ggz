@@ -1,4 +1,4 @@
-/* $Id: table.h 2940 2001-12-18 22:17:50Z jdorje $ */
+/* $Id: table.h 2945 2001-12-18 23:33:44Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -22,8 +22,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
-#include "hand.h"
 
 extern GtkRcStyle *fixed_font_style;
 extern GtkWidget *table;	/* widget containing the whole table */

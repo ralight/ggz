@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2943 2001-12-18 23:10:24Z jdorje $
+ * $Id: main.c 2945 2001-12-18 23:33:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,7 +46,6 @@
 #include "dlg_bid.h"
 #include "table.h"
 #include "game.h"
-#include "hand.h"
 #include "layout.h"
 
 GtkWidget *dlg_main = NULL;

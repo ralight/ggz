@@ -1,4 +1,4 @@
-/* $Id: layout.c 2931 2001-12-18 07:27:02Z jdorje $ */
+/* $Id: layout.c 2945 2001-12-18 23:33:44Z jdorje $ */
 /* 
  * File: layout.c
  * Author: Jason Short, Rich Gade
@@ -30,7 +30,6 @@
 #include "common.h"
 
 #include "game.h"
-#include "hand.h"
 #include "layout.h"
 
 static void bottom_box4(int *x, int *y)
