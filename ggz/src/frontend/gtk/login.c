@@ -40,6 +40,7 @@
 #include "ggz.h"
 
 GtkWidget *login_dialog;
+gint entries_update;
 static GtkWidget *create_dlg_login(void);
 extern GGZServer *server;
 extern GtkWidget *win_main;
@@ -189,7 +190,13 @@ static void
 login_entry_changed                    (GtkEditable     *editable,
                                         gpointer         user_data)
 {
+	GtkWidget *tmp = NULL;
 
+	if(!entries_update)
+	{
+		tmp = lookup_widget(login_dialog, "profile_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
 }
 
 
@@ -205,6 +212,11 @@ login_normal_toggled                   (GtkToggleButton *togglebutton,
         else
                 gtk_widget_hide(tmp);
 
+	if(!entries_update)
+	{
+		tmp = lookup_widget(login_dialog, "profile_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
 }
 
 
@@ -212,7 +224,13 @@ static void
 login_guest_toggled                    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+	GtkWidget *tmp;
 
+	if(!entries_update)
+	{
+		tmp = lookup_widget(login_dialog, "profile_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
 }
 
 
@@ -220,7 +238,13 @@ static void
 login_first_toggled                    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
+	GtkWidget *tmp;
 
+	if(!entries_update)
+	{
+		tmp = lookup_widget(login_dialog, "profile_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
 }
 
 
@@ -373,6 +397,8 @@ static void login_set_entries(Server server)
 	GtkWidget *tmp;
 	gchar *port;
 	
+	entries_update = TRUE;
+
 	/*
 	tmp = lookup_widget(login_dialog, "profile_entry");
 	if (server.name)
@@ -409,6 +435,8 @@ static void login_set_entries(Server server)
 		tmp = lookup_widget(login_dialog, "pass_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
 	}
+
+	entries_update = FALSE;
 }
 
 
