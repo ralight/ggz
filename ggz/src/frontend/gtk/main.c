@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: main.c 5326 2003-01-12 12:27:43Z dr_maux $
  *
  * This is the main program body for the GGZ client
  *
@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <string.h>
 #ifdef ENABLE_NLS
+#include <locale.h>
 #include <libintl.h>
 #endif
 
