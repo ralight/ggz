@@ -160,7 +160,7 @@ int ZoneGGZModServer::game_send_players()
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		fd = seat.fd;
-		if(seat.type == GGZ_SEAT_PLAYER)
+		if((seat.type == ZONE_SEAT_PLAYER) || (seat.type == ZONE_SEAT_BOT))
 		{
 			m_numplayers++;
 			ZONEDEBUG("seat number: %i (step %i) => %i\n", fd, i, m_numplayers);
@@ -176,7 +176,7 @@ int ZoneGGZModServer::game_send_players()
 		m_players[j] = 1;
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, j);
 		fd = seat.fd;
-		if(fd == -1)
+		if(seat.type != ZONE_SEAT_PLAYER)
 		{
 			ZONEDEBUG("Player %i is a un/bot-assigned (%i).\n", j, seat.type);
 			continue;
@@ -206,7 +206,7 @@ int ZoneGGZModServer::game_send_players()
 			}
 			ZONEDEBUG("RAW OUTPUT: %i (ggz_seats[i].assign)\n", seat2.type);
 
-			if(seat2.type == GGZ_SEAT_OPEN) m_ready = 0;
+			if(seat2.type == ZONE_SEAT_OPEN) m_ready = 0;
 			else
 			{
 				if(ggz_write_string(fd, seat2.name) < 0)
@@ -275,7 +275,7 @@ void ZoneGGZModServer::zoneNextTurn()
 	if((m_gamemode == ZoneGGZ::turnbased) && (m_turn != -1))
 	{
 		seat = ggzdmod_get_seat(ggzdmod, m_turn);
-		if(seat.type == GGZ_SEAT_PLAYER)
+		if(seat.type == ZONE_SEAT_PLAYER)
 		{
 			fd = seat.fd;
 			if(ggz_write_int(fd, ZoneGGZ::turnover) < 0)
@@ -292,11 +292,12 @@ void ZoneGGZModServer::zoneNextTurn()
 		m_turn++;
 		if(m_turn == m_numplayers) m_turn = 0;
 		seat = ggzdmod_get_seat(ggzdmod, m_turn);
-		ZONEDEBUG("Next player: %i (%i)\n", m_turn, seat.type);
-		if(seat.type == GGZ_SEAT_BOT)
+		ZONEDEBUG("Next player: %i (%i) [%i]\n", m_turn, seat.type, counter);
+		if(seat.type == ZONE_SEAT_BOT)
 		{
 			ZONEDEBUG("== AI!\n");
 			slotZoneAI();
+			return;
 		}
 		counter++;
 		if(counter == m_numplayers + 1)
@@ -305,9 +306,9 @@ void ZoneGGZModServer::zoneNextTurn()
 			return;
 		}
 	}
-	while(seat.type != GGZ_SEAT_PLAYER);
+	while(seat.type != ZONE_SEAT_PLAYER);
 
-	if((m_gamemode == ZoneGGZ::turnbased) && (seat.type == GGZ_SEAT_PLAYER))
+	if((m_gamemode == ZoneGGZ::turnbased) && (seat.type == ZONE_SEAT_PLAYER))
 	{
 		fd = seat.fd;
 		if(ggz_write_int(fd, ZoneGGZ::turn) < 0)
