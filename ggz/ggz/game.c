@@ -47,7 +47,7 @@
 
 /* Global data structures */
 extern GtkWidget *dlg_launch;
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern struct Game game;
 extern struct GameTypes game_types;
 extern GtkWidget *main_win;
@@ -144,9 +144,9 @@ static void handle_game(gpointer data, gint source, GdkInputCondition cond)
 
 	size = read(source, buf, 4096);
 	dbg_msg("Client sent %d bytes", size);
-	es_write_int(connection.sock, REQ_GAME);
-	es_write_int(connection.sock, size);
-	status = es_writen(connection.sock, buf, size);
+	es_write_int(client.sock, REQ_GAME);
+	es_write_int(client.sock, size);
+	status = es_writen(client.sock, buf, size);
 
 	if (status <= 0) {	/* Game over */
 		game_over();
@@ -159,7 +159,7 @@ int game_over(void)
 	GtkWidget *tmp;
 
 	dbg_msg("Game is over (msg from client)");
-	connection.playing = FALSE;
+	client.playing = FALSE;
 	close(game.fd);
 	if (game_handle) {
 		gdk_input_remove(game_handle);

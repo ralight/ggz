@@ -40,7 +40,7 @@
 void chat_print(int color, char* left, char* right);
 
 extern GtkWidget *main_win;
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 
 gint color_index;	/* color for chat */
 
@@ -98,7 +98,7 @@ void chat_print(int color, char* left, char* right)
 		gtk_xtext_refresh(tmp);
 	} else if(color == CHAT_COLOR_SOME) {
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-		buf = g_strdup_printf("<%s>",connection.username); 
+		buf = g_strdup_printf("<%s>",client.server.login); 
 		if (!strcmp(buf, left))
 		{
 			buf = g_strdup_printf("\003%d%s\00300", 

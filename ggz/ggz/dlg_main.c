@@ -67,7 +67,7 @@ extern GtkWidget *mnu_players;
 extern GtkWidget *mnu_tables;
 extern gint selected_table;
 extern gint selected_type;
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern struct GameTypes game_types;
 extern struct Rooms room_info;
 
@@ -181,18 +181,18 @@ static void ggz_join_game(GtkButton * button, gpointer user_data)
 	gchar* game_name;
 	gint type;
 
-	type = room_info.info[connection.cur_room].game_type;
+	type = room_info.info[client.cur_room].game_type;
 	game_name = g_strdup(game_types.info[type].name);
 
         if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
                 warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
 			 game_name, game_types.info[type].web);
-        else if (!connection.connected)
+        else if (!client.connected)
                 warn_dlg(_("Not connected!"));
         else {
 	        dbg_msg("joining game");
-	        es_write_int(connection.sock, REQ_TABLE_JOIN);
-	        es_write_int(connection.sock, selected_table);
+	        es_write_int(client.sock, REQ_TABLE_JOIN);
+	        es_write_int(client.sock, selected_table);
         }
 
 	g_free(game_name);
@@ -204,7 +204,7 @@ static void ggz_leave_game(GtkWidget* widget, gpointer data)
 	GtkWidget *tmp;
 
         dbg_msg("leaving game");
-        es_write_int(connection.sock, REQ_TABLE_LEAVE);
+        es_write_int(client.sock, REQ_TABLE_LEAVE);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
@@ -215,8 +215,8 @@ void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
 	GtkWidget *tmp;
         gchar verbose = 1;
                  
-        es_write_int(connection.sock, REQ_LIST_TYPES);
-        write(connection.sock, &verbose, 1);
+        es_write_int(client.sock, REQ_LIST_TYPES);
+        write(client.sock, &verbose, 1);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
@@ -225,15 +225,15 @@ void ggz_get_types(GtkMenuItem * menuitem, gpointer user_data)
  
 void ggz_get_players(GtkMenuItem * menuitem, gpointer user_data)
 {
-        es_write_int(connection.sock, REQ_LIST_PLAYERS);
+        es_write_int(client.sock, REQ_LIST_PLAYERS);
 }
 
         
 void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data)
 {       
-        es_write_int(connection.sock, REQ_LIST_TABLES);
-        es_write_int(connection.sock, -1);
-	es_write_char(connection.sock, 0);
+        es_write_int(client.sock, REQ_LIST_TABLES);
+        es_write_int(client.sock, -1);
+	es_write_char(client.sock, 0);
 }
 
 static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
@@ -241,7 +241,7 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 	gchar *name = NULL;
 	gint i;
 
-        if (!connection.connected) {
+        if (!client.connected) {
                 err_dlg(_("Not Connected"));
                 return;
         }
@@ -249,7 +249,7 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 	if(strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/help", 5))
 	{
 	        if (strcmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "") != 0
-		  && es_write_int(connection.sock, REQ_CHAT) == 0)
+		  && es_write_int(client.sock, REQ_CHAT) == 0)
 		{
 			if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg ", 5))
 			{
@@ -259,9 +259,9 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 						if(name[i]==' ')
 						{
 							name[i]='\0';
-							es_write_char(connection.sock, GGZ_CHAT_PERSONAL);
-			        	        	es_write_string(connection.sock, name);
-			        	        	es_write_string(connection.sock,
+							es_write_char(client.sock, GGZ_CHAT_PERSONAL);
+			        	        	es_write_string(client.sock, name);
+			        	        	es_write_string(client.sock,
         	        	        	        	gtk_entry_get_text(GTK_ENTRY(user_data))+6+i);
 
 							chat_print(CHAT_COLOR_SERVER, "---", "Personal message sent");
@@ -270,18 +270,18 @@ static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
 					}
 			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep ", 6))
 			{
-				if (es_write_char(connection.sock, GGZ_CHAT_BEEP) == 0)
-	        		        es_write_string(connection.sock,
+				if (es_write_char(client.sock, GGZ_CHAT_BEEP) == 0)
+	        		        es_write_string(client.sock,
                         		        gtk_entry_get_text(GTK_ENTRY(user_data))+6);
 				chat_print(CHAT_COLOR_SERVER, "---", "Beep sent");
 			} else if (!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/announce ", 10))
 			{
-				if (es_write_char(connection.sock, GGZ_CHAT_ANNOUNCE) == 0)
-	        		        es_write_string(connection.sock,
+				if (es_write_char(client.sock, GGZ_CHAT_ANNOUNCE) == 0)
+	        		        es_write_string(client.sock,
                         		        gtk_entry_get_text(GTK_ENTRY(user_data))+10);
 			}else{
-				if (es_write_char(connection.sock, GGZ_CHAT_NORMAL) == 0)
-	        		        es_write_string(connection.sock,
+				if (es_write_char(client.sock, GGZ_CHAT_NORMAL) == 0)
+	        		        es_write_string(client.sock,
                         		        gtk_entry_get_text(GTK_ENTRY(user_data)));
 			}
 		}
@@ -321,13 +321,13 @@ static void ggz_get_game_options(GtkButton * button, gpointer user_data)
 	gchar* game_name;
 	gint type;
 
-	type = room_info.info[connection.cur_room].game_type;
+	type = room_info.info[client.cur_room].game_type;
 	game_name = g_strdup(game_types.info[type].name);
 
         if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
                 warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
 			 game_name, game_types.info[type].web);
-        else if (!connection.connected)
+        else if (!client.connected)
                 warn_dlg(_("Not connected!"));
         else {
                 dlg_launch = create_dlg_launch();
@@ -368,18 +368,18 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
         }
 	if (event->type == GDK_2BUTTON_PRESS)
 	{
-		type = room_info.info[connection.cur_room].game_type;
+		type = room_info.info[client.cur_room].game_type;
 		game_name = g_strdup(game_types.info[type].name);
 
 	        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
         	        warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
 				 game_name, game_types.info[type].web);
-	        else if (!connection.connected)
+	        else if (!client.connected)
         	        warn_dlg(_("Not connected!"));
         	else {
 	        	dbg_msg("joining game");
-		        es_write_int(connection.sock, REQ_TABLE_JOIN);
-		        es_write_int(connection.sock, selected_table);
+		        es_write_int(client.sock, REQ_TABLE_JOIN);
+		        es_write_int(client.sock, selected_table);
         	}
 
 		g_free(game_name);
@@ -405,7 +405,7 @@ static void ggz_disconnect(void)
 {
 	GtkWidget *tmp;
         dbg_msg("Logging out");
-        es_write_int(connection.sock, REQ_LOGOUT);
+        es_write_int(client.sock, REQ_LOGOUT);
 
         dbg_msg("Disconnecting");
 	disconnect(NULL,NULL);
@@ -433,7 +433,7 @@ static void ggz_motd(void)
 	GtkWidget *tmp;
 
         dbg_msg("Requestiong the MOTD");
-        es_write_int(connection.sock, REQ_MOTD);
+        es_write_int(client.sock, REQ_MOTD);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
@@ -480,24 +480,24 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	gint i;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_entry");
-	if (connection.cur_room == connection.new_room)
+	if (client.cur_room == client.new_room)
 	{
-		connection.new_room=1;
+		client.new_room=1;
 		for(i=0;i<room_info.count;i++)
 		{
 			if(!strcmp(room_info.info[i].name, gtk_entry_get_text(GTK_ENTRY(tmp))))
-				connection.new_room=i;
+				client.new_room=i;
 		}
-		es_write_int(connection.sock, REQ_ROOM_JOIN);
-		es_write_int(connection.sock, connection.new_room);
-	}else if (connection.cur_room == -3){
+		es_write_int(client.sock, REQ_ROOM_JOIN);
+		es_write_int(client.sock, client.new_room);
+	}else if (client.cur_room == -3){
 		/* Insert Rooms From Server */
-		connection.cur_room++;
-	}else if (connection.cur_room == -2){
+		client.cur_room++;
+	}else if (client.cur_room == -2){
 		/* Blank out room to start */
-		connection.cur_room++;
+		client.cur_room++;
 	}else{
-		connection.new_room=connection.cur_room;
+		client.new_room=client.cur_room;
 	}	
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");

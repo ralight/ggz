@@ -51,6 +51,8 @@ ggz_SOURCES = 	main.c \
 		protocols.h \
 		seats.c \
 		seats.h \
+		server.c \
+		server.h \
 		support.c \
 	 	support.h \
 		table.c \

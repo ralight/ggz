@@ -27,6 +27,8 @@
 
 #include <stdlib.h>
 
+#include <server.h>
+
 /* Server limits */
 /* FIXME: Which of these do we really need ?*/
 #define MAX_USER_NAME_LEN 16
@@ -51,9 +53,9 @@
 #define GGZ_ALLOW_EIGHT   (1 << 7)
 
 /* Login types */
-#define GGZ_LOGIN      0
-#define GGZ_LOGIN_ANON 1
-#define GGZ_LOGIN_NEW  2
+#define GGZ_LOGIN       0
+#define GGZ_LOGIN_GUEST 1
+#define GGZ_LOGIN_NEW   2
 
 /* special seat assignment values */
 #define GGZ_SEAT_OPEN   -1
@@ -64,11 +66,7 @@
 
 /* Info about a connection */
 struct ConnectInfo {
-	gchar *server;
-	guint port;
-	gchar *username;
-	gchar *password;
-	guchar login_type;
+	Server server;
 	gint sock;
 	guchar connected;
 	guchar playing;

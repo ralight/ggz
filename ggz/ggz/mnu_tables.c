@@ -19,7 +19,7 @@
 /* Globals for this menu */
 GtkWidget *mnu_tables;
 extern GtkWidget *dlg_launch;
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern gint selected_table;
 extern struct GameTables tables;
 
@@ -106,8 +106,8 @@ void on_launch1_activate(GtkButton * button, gpointer user_data)
 void on_join1_activate(GtkButton * button, gpointer user_data)
 {
 	dbg_msg("joining game");
-	es_write_int(connection.sock, REQ_TABLE_JOIN);
-	es_write_int(connection.sock, selected_table);
+	es_write_int(client.sock, REQ_TABLE_JOIN);
+	es_write_int(client.sock, selected_table);
 }
 
 void on_options1_activate(GtkButton * button, gpointer user_data)

@@ -200,6 +200,12 @@
 	      <child_name>GtkCombo:entry</child_name>
 	      <name>profile_entry</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>changed</name>
+		<handler>login_profile_changed</handler>
+		<data>dlg_login</data>
+		<last_modification_time>Tue, 20 Jun 2000 22:41:21 GMT</last_modification_time>
+	      </signal>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>
 	      <text_max_length>0</text_max_length>

@@ -36,11 +36,12 @@
 #include "dlg_error.h"
 #include "dlg_login.h"
 #include "datatypes.h"
+#include "server.h"
 #include "support.h"
 
 
 /* Globals neaded by this dialog */
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 
@@ -54,43 +55,28 @@ static void login_edit_profiles(GtkWidget* button, gpointer window);
 static void login_input_options(GtkWidget* button, gpointer window);
 static void login_start_session(GtkWidget* button, gpointer window);
 static void login_show_details(GtkWidget* button, gpointer data);
+static void login_profile_changed(GtkWidget* entry, gpointer data);
+static void login_set_entries(Server server);
 
 
 /*                              *
  *           Callbacks          *
  *                              */
 
-
 /* Put default entries into dialog upon realization */
 static void login_fill_defaults(GtkWidget* win, gpointer data)
 {
         GtkWidget* tmp;
-        gchar* port;
-	
-        tmp = lookup_widget(win, "name_entry");
-        if (connection.username)
-                gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
-        else
-                gtk_entry_set_text(GTK_ENTRY(tmp), g_get_user_name());
+	GList *items;
 
-
-        tmp = lookup_widget(win, "host_entry");
-        if (connection.server)
-                gtk_entry_set_text(GTK_ENTRY(tmp), connection.server);
-        else
-                gtk_entry_set_text(GTK_ENTRY(tmp), "localhost");
-
-        tmp = lookup_widget(win, "port_entry");
-        if (connection.port) {
-                port = g_strdup_printf("%d", connection.port);
-                gtk_entry_set_text(GTK_ENTRY(tmp), port);
-		g_free(port);
-        }
-        else
-                gtk_entry_set_text(GTK_ENTRY(tmp), "5688");
-
-        tmp = lookup_widget(win, "guest_radio");
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	/* Fill profile combo box if there are any profiles*/
+	if ( (items = server_get_names())) {
+		tmp = lookup_widget(win, "profile_combo");
+		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	}
+	else {
+		login_set_entries(client.server);
+	}
 }
 
 
@@ -106,40 +92,94 @@ static void login_normal_toggled(GtkWidget* button, gpointer window)
 }
 
 
+static void login_profile_changed(GtkWidget* entry, gpointer data)
+{
+	Server* server = NULL;
+
+	server = server_get(gtk_entry_get_text(GTK_ENTRY(entry)));
+	if (!server) {
+		dbg_msg("Profile not found");
+		return;
+	}
+
+	dbg_msg("Profile changed to %s", server->name);
+	login_set_entries(*server);
+}
+
+
 static void login_edit_profiles(GtkWidget* button, gpointer window)
 {
 
 }
 
 
+static void login_set_entries(Server server)
+{
+	GtkWidget* tmp;
+	gchar* port;
+
+        tmp = lookup_widget(dlg_login, "host_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), server.host);
+
+        tmp = lookup_widget(dlg_login, "port_entry");
+	port = g_strdup_printf("%d", server.port);
+	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	g_free(port);
+
+	switch (server.type) {
+	case GGZ_LOGIN:
+		tmp = lookup_widget(dlg_login, "normal_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;
+	case GGZ_LOGIN_GUEST:
+		tmp = lookup_widget(dlg_login, "guest_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;
+	case GGZ_LOGIN_NEW:
+		tmp = lookup_widget(dlg_login, "first_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		break;
+	}
+
+        tmp = lookup_widget(dlg_login, "name_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), server.login);
+
+	if (server.type == GGZ_LOGIN && server.password != NULL) {
+		tmp = lookup_widget(dlg_login, "pass_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
+	}
+}
+
+
 /* Grab and store options from entires*/
+/* FIXME: rename to login_get_entries */
 static void login_input_options(GtkWidget* button, gpointer window)
 {
         gpointer tmp;
 
         tmp = lookup_widget(window, "name_entry");
-        connection.username = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+        client.server.login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
         tmp = lookup_widget(window, "pass_entry");
-        connection.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+        client.server.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
         tmp = lookup_widget(window, "host_entry");
-        connection.server = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+        client.server.host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
         tmp = lookup_widget(window, "port_entry");
-        connection.port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+        client.server.port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
         tmp = lookup_widget(window, "normal_radio");
         if (GTK_TOGGLE_BUTTON(tmp)->active)
-                connection.login_type = GGZ_LOGIN;
+                client.server.type = GGZ_LOGIN;
 
         tmp = lookup_widget(window, "guest_radio");
         if (GTK_TOGGLE_BUTTON(tmp)->active)
-                connection.login_type = GGZ_LOGIN_ANON;
+		client.server.type = GGZ_LOGIN_GUEST;
 
         tmp = lookup_widget(window, "first_radio");
         if (GTK_TOGGLE_BUTTON(tmp)->active)
-                connection.login_type = GGZ_LOGIN_NEW;
+                client.server.type = GGZ_LOGIN_NEW;
 }
 
 
@@ -148,25 +188,25 @@ static void login_start_session(GtkWidget* button, gpointer window)
 {
 	GtkWidget *tmp;
 
-	/* Desensitive connect button to prevent multiple connection attempts*/
+	/* Desensitive connect button to prevent multiple client attempts*/
 	gtk_widget_set_sensitive(button, FALSE);
 	
 	/* 
 	 * FIXME: Do we need to get these again? 
 	 * login_input_options should have already grabbed these 
 	 */
-        if (connection.connected) {
+        if (client.connected) {
         	tmp = lookup_widget((window), "name_entry");
-	        connection.username = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	        client.server.login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
                 
         	tmp = lookup_widget((window), "pass_entry");
-	        connection.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	        client.server.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
-                switch (connection.login_type) {
+                switch (client.server.type) {
                 case GGZ_LOGIN: /*Normal login */  
 			normal_login();
 			break;
-                case GGZ_LOGIN_ANON: /*Anonymous login */
+                case GGZ_LOGIN_GUEST: /*Anonymous login */
                         anon_login();
 			break;
                 case GGZ_LOGIN_NEW: /*First time login */
@@ -183,7 +223,7 @@ static void login_start_session(GtkWidget* button, gpointer window)
 		return;
 	}
 	
-        connection.connected = TRUE;
+        client.connected = TRUE;
 
         /*FIXME: Other session starting things ? */
 }
@@ -602,6 +642,9 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (dlg_login), "destroy_event",
                       GTK_SIGNAL_FUNC (gtk_widget_destroy),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (profile_entry), "changed",
+                      GTK_SIGNAL_FUNC (login_profile_changed),
+                      dlg_login);
   gtk_signal_connect (GTK_OBJECT (edit_profiles_button), "clicked",
                       GTK_SIGNAL_FUNC (login_edit_profiles),
                       dlg_login);

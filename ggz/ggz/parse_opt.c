@@ -30,18 +30,18 @@
 
 #include "datatypes.h"
 
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern char *local_conf_fname;
 
 static const struct poptOption args[] = {
 	
-	{"server", 's', POPT_ARG_STRING, &connection.server, 0,
+	{"server", 's', POPT_ARG_STRING, &client.server.host, 0,
 	 "GGZ server name", "SERVER"},
 
-	{"port", 'p', POPT_ARG_INT, &connection.port, 0, "GGZ server port",
+	{"port", 'p', POPT_ARG_INT, &client.server.port, 0, "GGZ server port",
 	 "PORT"},
 	
-	{"name", 'n', POPT_ARG_STRING, &connection.username, 0,
+	{"name", 'n', POPT_ARG_STRING, &client.server.login, 0,
 	 "Player name", "PORT"},
 
 	{"file", 'f', POPT_ARG_STRING, &local_conf_fname, 0,

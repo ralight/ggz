@@ -407,7 +407,10 @@ gint ggzrc_strcmp(gconstpointer a, gconstpointer b)
 /* separated by an (optional) equals sign                         */
 static void ggzrc_parse_line(char *p)
 {
-	char csave;
+	char csave, *psave, *sol;
+	
+	/* Save start-of-line in sol */
+	sol = p;
 
 	varname = NULL;
 	/* Skip over whitespace */
@@ -419,12 +422,27 @@ static void ggzrc_parse_line(char *p)
 	varname = p;
 
 	varvalue = NULL;
-	/* Skip until we find the end of the variable name */
-	while(*p != ' ' && *p != '\t' && *p != '\n' && *p != '=' && *p != '\0')
+	/* Skip until we find an equals sign */
+	while(*p != '=' && *p != '\n' && *p != '\0')
 		p++;
 	csave = *p;
+	psave = p;
+
+	if (*p == '=') {
+		/* Found '=', now backspace to remove trailing space */
+		do {
+			p--;
+		} while(p >= sol && (*p == ' ' || *p == '\t' || *p == '\n'));
+		p++;
+	}
 	*p = '\0';
+	p = psave;
 	p++;
+	
+	if(*varname == '\0' || p == sol) {
+		varname = NULL;
+		return;
+	}
 
 	if(csave == '\n' || csave == '\0')
 		return;	/* There is no argument */

@@ -56,7 +56,7 @@
 #include "table.h"
 
 /* Global state of game variable */
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern struct Game game;
 extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
@@ -123,20 +123,20 @@ gchar *opcode_str[] = {
 
 
 /**
- * Begin connection to server.  
+ * Begin client to server.  
  */
 gint connect_to_server(void)
 {
 	GtkWidget *tmp;
 
-	if (FAIL(connection.sock = es_make_socket(ES_CLIENT, connection.port,
-						  connection.server))) 
+	if (FAIL(client.sock = es_make_socket(ES_CLIENT, client.server.port,
+						  client.server.host))) 
 	{
 		tmp = gtk_object_get_data(GTK_OBJECT(dlg_login), "connect_button");
         	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE); 
 		return -1;
 	}
-	sock_handle = gdk_input_add_full(connection.sock, GDK_INPUT_READ,
+	sock_handle = gdk_input_add_full(client.sock, GDK_INPUT_READ,
 					 handle_server_fd, NULL, NULL);
 
 	return 0;
@@ -152,10 +152,10 @@ void disconnect(GtkWidget * widget, gpointer data)
 		gdk_input_remove(sock_handle);
 	sock_handle = 0;
 
-	close(connection.sock);
-	connection.connected = FALSE;
-	connection.cur_room=-3;
-	connection.new_room=-1;
+	close(client.sock);
+	client.connected = FALSE;
+	client.cur_room=-3;
+	client.new_room=-1;
 }
 
 
@@ -194,11 +194,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			login_disconnect();
 		}
 		else {
-			switch (connection.login_type) {
+			switch (client.server.type) {
 			case GGZ_LOGIN:	/*Normal login */
 				normal_login();
 				break;
-			case GGZ_LOGIN_ANON:	/*Anonymous login */
+			case GGZ_LOGIN_GUEST:	/*Guest login */
 				anon_login();
 				break;
 			case GGZ_LOGIN_NEW:	/*First time login */
@@ -230,11 +230,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 
 		/* Get Room and type lists */
-                es_write_int(connection.sock, REQ_LIST_ROOMS);
-                es_write_int(connection.sock, -1);
-                es_write_char(connection.sock, 1);
-		es_write_int(connection.sock, REQ_LIST_TYPES);
-		es_write_char(connection.sock, 1);
+                es_write_int(client.sock, REQ_LIST_ROOMS);
+                es_write_int(client.sock, -1);
+                es_write_char(client.sock, 1);
+		es_write_int(client.sock, REQ_LIST_TYPES);
+		es_write_char(client.sock, 1);
 		break;
 			
 	case RSP_LOGIN:
@@ -255,11 +255,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			    reservation_flag);
 
 		/* Get Room and type lists */
-                es_write_int(connection.sock, REQ_LIST_ROOMS);
-                es_write_int(connection.sock, -1);
-                es_write_char(connection.sock, 1);
-		es_write_int(connection.sock, REQ_LIST_TYPES);
-		es_write_char(connection.sock, 1);
+                es_write_int(client.sock, REQ_LIST_ROOMS);
+                es_write_int(client.sock, -1);
+                es_write_char(client.sock, 1);
+		es_write_int(client.sock, REQ_LIST_TYPES);
+		es_write_char(client.sock, 1);
 		break;
 
 	case RSP_LOGIN_ANON:
@@ -277,11 +277,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 
 		/* Get Room and type lists */
-                es_write_int(connection.sock, REQ_LIST_ROOMS);
-                es_write_int(connection.sock, -1);
-                es_write_char(connection.sock, 1);
-		es_write_int(connection.sock, REQ_LIST_TYPES);
-		es_write_char(connection.sock, 1);
+                es_write_int(client.sock, REQ_LIST_ROOMS);
+                es_write_int(client.sock, -1);
+                es_write_char(client.sock, 1);
+		es_write_int(client.sock, REQ_LIST_TYPES);
+		es_write_char(client.sock, 1);
 		break;
 
 	case RSP_TABLE_LAUNCH:
@@ -312,7 +312,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			tmp = lookup_widget(main_win, "room_combo");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			
-			connection.playing = TRUE;
+			client.playing = TRUE;
 			launch_game(new_type, TRUE);
 			break;
 		}
@@ -340,7 +340,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
-			connection.playing = TRUE;
+			client.playing = TRUE;
  			launch_game(selected_type, FALSE);
 			break;
 		case E_NOT_IN_ROOM:
@@ -442,7 +442,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		i_status = es_writen(game.fd, buf, size);
 		if (i_status <= 0) {	/* Game over */
 			dbg_msg("Game is over");
-			connection.playing = 0;
+			client.playing = 0;
 			close(game.fd);
 		}
 		break;
@@ -547,18 +547,18 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		
 		switch (status) {
 		case E_ROOM_FULL:
-			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[client.cur_room].name);
 			break;
 		case E_BAD_OPTIONS:
-			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[client.cur_room].name);
 			break;
 		case -1:
-			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[connection.cur_room].name);
+			gtk_entry_set_text(GTK_ENTRY(tmp), room_info.info[client.cur_room].name);
 			break;
 		case 0:
-			connection.cur_room = connection.new_room;
+			client.cur_room = client.new_room;
 			tmpstr = g_strdup_printf("Joined room: %s",
-				      room_info.info[connection.cur_room].name);
+				      room_info.info[client.cur_room].name);
 			chat_print(CHAT_COLOR_SERVER, "---", tmpstr);
 			g_free(tmpstr);
 			ggz_get_players(NULL, NULL);
@@ -595,9 +595,9 @@ void connect_msg(const gchar *format, ...)
 
 gint normal_login(void)
 {
-	es_write_int(connection.sock, REQ_LOGIN);
-	es_write_string(connection.sock, connection.username);
-	es_write_string(connection.sock, connection.password);
+	es_write_int(client.sock, REQ_LOGIN);
+	es_write_string(client.sock, client.server.login);
+	es_write_string(client.sock, client.server.password);
 
 	return 0;
 }
@@ -605,8 +605,8 @@ gint normal_login(void)
 
 gint anon_login(void)
 {
-	es_write_int(connection.sock, REQ_LOGIN_ANON);
-	es_write_string(connection.sock, connection.username);
+	es_write_int(client.sock, REQ_LOGIN_ANON);
+	es_write_string(client.sock, client.server.login);
 
 	return 0;
 }
@@ -614,8 +614,8 @@ gint anon_login(void)
 
 gint new_login(void)
 {
-	es_write_int(connection.sock, REQ_LOGIN_NEW);
-	es_write_string(connection.sock, connection.username);
+	es_write_int(client.sock, REQ_LOGIN_NEW);
+	es_write_string(client.sock, client.server.login);
 
 	return 0;
 }

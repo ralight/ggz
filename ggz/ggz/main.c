@@ -42,9 +42,10 @@
 #include "mnu_players.h"
 #include "game.h"
 #include "support.h"
+#include "server.h"
 
 /* Main global data structures */
-struct ConnectInfo connection;
+struct ConnectInfo client;
 struct Game game;
 struct GameTypes game_types;
 extern GtkWidget *main_win;
@@ -83,6 +84,26 @@ GdkColor colors[] =
 };
 
 
+void init_client(void)
+{
+	if (!client.server.host)
+		client.server.host = g_strdup("localhost");
+	
+	if (client.server.port == 0)
+		client.server.port = 5688;
+
+	/* FIXME: should allow override somehow */
+	client.server.type = GGZ_LOGIN_GUEST;
+	
+	if (!client.server.login)
+		client.server.login = g_strdup(g_get_user_name());
+	
+	
+	client.new_room = -1;
+	client.cur_room = -3;
+}
+
+
 gint main(gint argc, gchar *argv[])
 {
 	gint i;
@@ -92,7 +113,6 @@ gint main(gint argc, gchar *argv[])
 	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
 	textdomain (PACKAGE);
 
-	
 	/* Read configuration values */
 	parse_args(argc, argv);
 	if(ggzrc_initialize(local_conf_fname) != 0) {
@@ -100,7 +120,12 @@ gint main(gint argc, gchar *argv[])
 		fprintf(stderr, _("Gnu Gaming Zone can not continue\n"));
 		exit(1);
 	}
+	
+	server_profiles_load();
 
+	init_client();
+	/* Setup Rooms */
+	
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
 
@@ -132,17 +157,15 @@ gint main(gint argc, gchar *argv[])
 	dlg_login = create_dlg_login();
 	gtk_widget_show(dlg_login);
 	
-	/* Setup Rooms */
-	connection.new_room = -1;
-	connection.cur_room = -3;
-
 	/* Initilize GUI */
 	login_disconnect();
 
 	gtk_main();
 
+	/* Write back to conf file */
 	ggzrc_commit_changes();
 	ggzrc_cleanup();
 
 	return 0;
 }
+

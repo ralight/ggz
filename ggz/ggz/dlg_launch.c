@@ -41,7 +41,7 @@
 
 
 /* Globals neaded by this dialog */
-extern struct ConnectInfo connection;
+extern struct ConnectInfo client;
 extern struct GameTypes game_types;
 extern struct Rooms room_info;
 
@@ -73,7 +73,7 @@ static void launch_fill_defaults(GtkWidget* widget, gpointer data)
 	gchar* buf;
 
 	/* Set game type information */
-	type = room_info.info[connection.cur_room].game_type;
+	type = room_info.info[client.cur_room].game_type;
 	
 	/* Display game type info */
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "game_label");
@@ -124,7 +124,7 @@ static void launch_fill_defaults(GtkWidget* widget, gpointer data)
 
 	/* Default to reserving us a seat */
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "seat1_name");
-        gtk_entry_set_text(GTK_ENTRY(tmp), connection.username);
+        gtk_entry_set_text(GTK_ENTRY(tmp), client.server.login);
 	/* FIXME: once reservations work, default to resv*/
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_launch), "seat1_open");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
@@ -146,7 +146,7 @@ static void launch_seats_changed(GtkWidget* widget, gpointer data)
 	gchar* buf;
 
 	seats = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
-	type = room_info.info[connection.cur_room].game_type;
+	type = room_info.info[client.cur_room].game_type;
 	max = max_allowed_players(game_types.info[type].num_play_allow);
 	
         /* Desensitize seats with numbers bigger than what we want  
@@ -171,7 +171,7 @@ static void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
         gint i, num, seats[8];
 	GtkEntry* entry;
 		
-	if (!connection.connected) {
+	if (!client.connected) {
                 warn_dlg("Not connected!");
 		gtk_widget_destroy(dlg_launch);
 		return;
@@ -182,7 +182,7 @@ static void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
         gtk_widget_hide(GTK_WIDGET(dlg_launch));
 	
 	/* Set game type information */
-	new_type = room_info.info[connection.cur_room].game_type;
+	new_type = room_info.info[client.cur_room].game_type;
         
 	/* Get table launch info */
 	
@@ -197,14 +197,14 @@ static void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
 	num = i;
 	
 	/* Send launch game request to server */
-	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
-	es_write_int(connection.sock, new_type);
-	es_write_string(connection.sock, gtk_entry_get_text(entry));
-	es_write_int(connection.sock, num);
+	es_write_int(client.sock, REQ_TABLE_LAUNCH);
+	es_write_int(client.sock, new_type);
+	es_write_string(client.sock, gtk_entry_get_text(entry));
+	es_write_int(client.sock, num);
 	for (i = 0; i < num; i++) {
-		es_write_int(connection.sock, seats[i]);
+		es_write_int(client.sock, seats[i]);
 		if (seats[i] == GGZ_SEAT_RESV)
-			es_write_string(connection.sock, 
+			es_write_string(client.sock, 
 					launch_get_reserve_name(i));
 	}
 	
