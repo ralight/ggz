@@ -34,6 +34,9 @@ GREEN = (0, 255, 0)
 
 DATAPATH = "./"
 
+def _(x):
+	return unicode(x, "utf-8")
+
 def vibora_background(resolution):
 	granularity = 16
 	counter = 27
@@ -285,6 +288,7 @@ def firsttime():
 	f = file(os.getenv("HOME") + "/.ggz/vibora.rc", "w")
 	f.write("username=" + username + "\n")
 	f.write("password=" + password + "\n")
+	f.write("firstlogin=" + "false" + "\n")
 	f.close()
 
 	return 1
@@ -517,7 +521,7 @@ def main(host):
 	#resolution = (640, 480)
 
 	pygame.init()
-	pygame.display.set_caption("GGZ Gaming Zone (Vibora Client)")
+	pygame.display.set_caption(_("GGZ Gaming Zone (Vibora Client)"))
 
 	screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF | FULLSCREEN)
 
@@ -525,9 +529,9 @@ def main(host):
 	font = pygame.font.Font(None, 20)
 	smallfont = pygame.font.Font(None, 14)
 
-	screen_loading = bigfont.render(unicode("Loading Víbora 0.0.1 (GGZ 0.0.9)...", "utf-8"), 1, (255, 255, 255))
-	screen_problem = bigfont.render("Problem!", 1, (255, 255, 255))
-	screen_caption = bigfont.render("GGZ Gaming Zone: Lounge", 1, (255, 255, 255))
+	screen_loading = bigfont.render(_("Loading Víbora 0.0.2 (GGZ 0.0.10)..."), 1, (255, 255, 255))
+	screen_problem = bigfont.render(_("Problem!"), 1, (255, 255, 255))
+	screen_caption = bigfont.render(_("GGZ Gaming Zone: Lounge"), 1, (255, 255, 255))
 
 	screen_logo = pygame.image.load(DATAPATH + "logo.png")
 
@@ -825,6 +829,10 @@ if __name__ == '__main__':
 
 	if len(sys.argv) == 2:
 		host = sys.argv[1]
+
+	if host == "--help":
+		print "vibora [hostname]"
+		sys.exit(0)
 	
 	if not host:
 		host = "live.ggzgamingzone.org"
