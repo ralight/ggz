@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 2620 2001-10-28 09:47:24Z jdorje $
+ * $Id: net.h 2628 2001-10-29 05:31:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -44,7 +44,9 @@ int send_sync(player_t p);
 
 int send_sync_all(void);
 
-int req_play(player_t p, seat_t s);
+int send_bid_request(player_t p, int bid_count, bid_t * bids);
+
+int send_play_request(player_t p, seat_t s);
 
 int send_badplay(player_t p, char *msg);
 
@@ -52,7 +54,7 @@ int send_hand(player_t p, seat_t s, int reveal);
 
 int send_trick(player_t winner);
 
-int req_newgame(player_t p);
+int send_newgame_request(player_t p);
 
 int send_newgame(void);
 

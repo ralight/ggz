@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: games.h 2628 2001-10-29 05:31:50Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -111,8 +111,6 @@ typedef enum game_type_t {
 } game_type_t;
 
 extern struct game_info game_data[];
-
-extern const int num_games;	/* the _number_ of valid games */
 
 int games_get_gametype(char *);	/* which game is this? */
 void games_handle_gametype(int);	/* set the game */

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/bridge.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: bridge.c 2628 2001-10-29 05:31:50Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -41,7 +41,7 @@ static void bridge_get_play(player_t p);
 static void bridge_handle_play(card_t card);
 static int bridge_test_for_gameover();
 static int bridge_send_hand(player_t p, seat_t s);
-static int bridge_get_bid_text(char* buf, int buf_len, bid_t bid);
+static int bridge_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
 static void bridge_end_trick();
 static void bridge_end_hand();
@@ -78,9 +78,11 @@ struct game_function_pointers bridge_funcs = {
 };
 
 
-/* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
-static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
-static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
+/* these should be low, clubs, diamonds, ..., high, but that won't fit in the 
+   client window */
+static char *short_bridge_suit_names[5] = { "C", "D", "H", "S", "NT" };
+static char *long_bridge_suit_names[5] =
+	{ "clubs", "diamonds", "hearts", "spades", "notrump" };
 
 
 static int bridge_is_valid_game()
@@ -91,7 +93,8 @@ static int bridge_is_valid_game()
 
 static int bridge_compare_cards(card_t card1, card_t card2)
 {
-	/* in Bridge, the trump suit is always supposed to be shown on the left */
+	/* in Bridge, the trump suit is always supposed to be shown on the
+	   left */
 	if (card1.suit == game.trump && card2.suit != game.trump)
 		return -1;
 	if (card2.suit == game.trump && card1.suit != game.trump)
@@ -106,8 +109,8 @@ static void bridge_init_game()
 
 	game.specific = alloc(sizeof(bridge_game_t));
 	set_num_seats(4);
-	for(s = 0; s < game.num_seats; s++)
-		assign_seat(s, s); /* one player per seat */
+	for (s = 0; s < game.num_seats; s++)
+		assign_seat(s, s);	/* one player per seat */
 
 	game.cumulative_scores = 0;
 
@@ -118,12 +121,12 @@ static void bridge_init_game()
 static void bridge_start_bidding()
 {
 	int i, j;
-	game.next_bid = game.dealer; /* dealer bids first */
-	game.bid_total = -1; /* no set total */
+	game.next_bid = game.dealer;	/* dealer bids first */
+	game.bid_total = -1;	/* no set total */
 	BRIDGE.pass_count = 0;
 	BRIDGE.bonus = 1;
-	for(i=0; i<2; i++)
-		for(j=0; j<5; j++)
+	for (i = 0; i < 2; i++)
+		for (j = 0; j < 5; j++)
 			BRIDGE.opener[i][j] = -1;
 }
 
@@ -136,8 +139,11 @@ static int bridge_get_bid()
 	/* make a list of regular bids */
 	for (val = 1; val <= 7; val++) {
 		for (suit = CLUBS; suit <= BRIDGE_NOTRUMP; suit++) {
-			if (val < BRIDGE.contract) continue;
-			if (val == BRIDGE.contract && suit <= BRIDGE.contract_suit) continue;
+			if (val < BRIDGE.contract)
+				continue;
+			if (val == BRIDGE.contract
+			    && suit <= BRIDGE.contract_suit)
+				continue;
 
 			add_sbid(val, suit, 0);
 		}
@@ -146,11 +152,13 @@ static int bridge_get_bid()
 	/* make "double" or "redouble" bid */
 	if (BRIDGE.contract != 0 &&
 	    BRIDGE.bonus == 1 &&
-	    (game.next_bid == (BRIDGE.declarer+1) % 4 || game.next_bid == (BRIDGE.declarer+3) % 4))
+	    (game.next_bid == (BRIDGE.declarer + 1) % 4
+	     || game.next_bid == (BRIDGE.declarer + 3) % 4))
 		add_sbid(0, 0, BRIDGE_DOUBLE);
 	else if (BRIDGE.contract != 0 &&
 		 BRIDGE.bonus == 2 &&
-		 (game.next_bid == BRIDGE.declarer || game.next_bid == (BRIDGE.declarer+2) % 4))
+		 (game.next_bid == BRIDGE.declarer
+		  || game.next_bid == (BRIDGE.declarer + 2) % 4))
 		add_sbid(0, 0, BRIDGE_REDOUBLE);
 
 	/* make "pass" bid */
@@ -161,12 +169,15 @@ static int bridge_get_bid()
 
 static void bridge_handle_bid(bid_t bid)
 {
-	/* closely based on the Suaro code*/
-	ggzd_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
-	
+	/* closely based on the Suaro code */
+	ggzd_debug("The bid chosen is %d %s %d.", bid.sbid.val,
+		   short_bridge_suit_names[(int) bid.sbid.suit],
+		   bid.sbid.spec);
+
 	if (bid.sbid.spec == BRIDGE_PASS) {
 		BRIDGE.pass_count++;
-	} else if (bid.sbid.spec == BRIDGE_DOUBLE || bid.sbid.spec == BRIDGE_REDOUBLE) {
+	} else if (bid.sbid.spec == BRIDGE_DOUBLE
+		   || bid.sbid.spec == BRIDGE_REDOUBLE) {
 		BRIDGE.pass_count = 1;
 		BRIDGE.bonus *= 2;
 	} else {
@@ -175,12 +186,19 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.bonus = 1;
 		BRIDGE.pass_count = 1;
 
-		if (BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] == -1)
-			BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] = game.next_bid;
-		BRIDGE.declarer = BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit];
+		if (BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit] ==
+		    -1)
+			BRIDGE.opener[game.next_bid %
+				      2][BRIDGE.contract_suit] =
+				game.next_bid;
+		BRIDGE.declarer =
+			BRIDGE.opener[game.next_bid %
+				      2][BRIDGE.contract_suit];
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 
-		ggzd_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
+		ggzd_debug("Setting bridge contract to %d %s.",
+			   BRIDGE.contract,
+			   long_bridge_suit_names[BRIDGE.contract_suit]);
 		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;
 		else
@@ -195,8 +213,10 @@ static void bridge_next_bid()
 		/* done bidding */
 		if (BRIDGE.contract == 0) {
 			ggzd_debug("Four passes; redealing hand.");
-			set_global_message("", "%s", "Everyone passed; redealing.");
-			set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
+			set_global_message("", "%s",
+					   "Everyone passed; redealing.");
+			set_game_state(WH_STATE_NEXT_HAND);	/* redeal
+								   hand */
 		} else {
 			ggzd_debug("Three passes; bidding is over.");
 			game.bid_total = game.bid_count;
@@ -206,7 +226,8 @@ static void bridge_next_bid()
 		if (game.bid_count == 0)
 			game.next_bid = game.dealer;
 		else
-			game.next_bid = (game.next_bid + 1) % game.num_players;
+			game.next_bid =
+				(game.next_bid + 1) % game.num_players;
 	}
 }
 
@@ -217,8 +238,10 @@ static void bridge_start_playing()
 
 	/* declarer is set in game_handle_bid */
 	set_global_message("", "Contract: %d %s%s.",
-		BRIDGE.contract, long_bridge_suit_names[(int)BRIDGE.contract_suit],
-		BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
+			   BRIDGE.contract,
+			   long_bridge_suit_names[(int) BRIDGE.contract_suit],
+			   BRIDGE.bonus == 1 ? "" : BRIDGE.bonus ==
+			   2 ? ", doubled" : ", redoubled");
 	game.leader = (BRIDGE.declarer + 1) % game.num_players;
 }
 
@@ -226,7 +249,7 @@ static void bridge_get_play(player_t p)
 {
 	if (p == BRIDGE.dummy)
 		/* the declarer plays the dummy's hand */
-		req_play(BRIDGE.declarer, game.players[p].seat);
+		send_play_request(BRIDGE.declarer, game.players[p].seat);
 	else
 		game_get_play(p);
 }
@@ -234,13 +257,13 @@ static void bridge_get_play(player_t p)
 static void bridge_handle_play(card_t card)
 {
 	if (game.play_count == 0 && game.trick_count == 0) {
-		/* after the first play of the hand, we reveal
-		 * the dummy's hand to everyone */
+		/* after the first play of the hand, we reveal the dummy's
+		   hand to everyone */
 		player_t p;
 		seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
 		cards_sort_hand(&game.seats[dummy_seat].hand);
 		BRIDGE.dummy_revealed = 1;
-		for (p=0; p<game.num_players; p++) {
+		for (p = 0; p < game.num_players; p++) {
 			/* if (p == BRIDGE.dummy) continue; */
 			game.funcs->send_hand(p, dummy_seat);
 		}
@@ -255,22 +278,28 @@ static int bridge_test_for_gameover()
 
 static int bridge_send_hand(player_t p, seat_t s)
 {
-	/* we explicitly send out the dummy hand, but a player who
-	 * joins late won't see it.  We have the same problem with Suaro. */
-	if (s == BRIDGE.dummy /* player/seat crossover; ok because it's bridge */
+	/* we explicitly send out the dummy hand, but a player who joins late 
+	   won't see it.  We have the same problem with Suaro. */
+	if (s == BRIDGE.dummy	/* player/seat crossover; ok because it's
+				   bridge */
 	    && BRIDGE.dummy_revealed)
 		return send_hand(p, s, 1);
 
 	return game_send_hand(p, s);
 }
 
-static int bridge_get_bid_text(char* buf, int buf_len, bid_t bid)
+static int bridge_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
 
-	if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
-	if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double");
-	if (bid.sbid.spec == BRIDGE_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
-	if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
+	if (bid.sbid.spec == BRIDGE_PASS)
+		return snprintf(buf, buf_len, "Pass");
+	if (bid.sbid.spec == BRIDGE_DOUBLE)
+		return snprintf(buf, buf_len, "Double");
+	if (bid.sbid.spec == BRIDGE_REDOUBLE)
+		return snprintf(buf, buf_len, "Redouble");
+	if (bid.sbid.val > 0)
+		return snprintf(buf, buf_len, "%d %s", bid.sbid.val,
+				short_bridge_suit_names[(int) bid.sbid.suit]);
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -278,18 +307,24 @@ static void bridge_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-/*
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d|%d\n", BRIDGE.points_above_line[p%2], BRIDGE.points_below_line[p%2]);
-*/
+	/* 
+	   len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score:
+	   %d|%d\n", BRIDGE.points_above_line[p%2],
+	   BRIDGE.points_below_line[p%2]); */
 	put_player_message(s, "");
-	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+	if (game.state != WH_STATE_NEXT_BID
+	    && game.state != WH_STATE_WAIT_FOR_BID) {
 		if (p == BRIDGE.declarer)
 			add_player_message(s, "declarer\n");
 		if (p == BRIDGE.dummy)
 			add_player_message(s, "dummy\n");
 	}
-	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			add_player_message(s, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
+	if (game.state == WH_STATE_WAIT_FOR_PLAY
+	    || game.state == WH_STATE_NEXT_TRICK
+	    || game.state == WH_STATE_NEXT_PLAY)
+		add_player_message(s, "Tricks: %d\n",
+				   game.players[p].tricks +
+				   game.players[(p + 2) % 4].tricks);
 	add_player_bid_message(p);
 	add_player_action_message(p);
 }
@@ -299,14 +334,14 @@ static void bridge_end_trick()
 	game_end_trick();
 
 	/* update teammate's info as well */
-	set_player_message((game.winner+2)%4);
-	
+	set_player_message((game.winner + 2) % 4);
+
 }
 
 static void bridge_set_score_message()
 {
 	player_t team;
-	int widths[2], len=0, i, g;
+	int widths[2], len = 0, i, g;
 	char buf[4096] = "";
 
 #define HORIZONTAL_LINE for (i=0; i<widths[0]+widths[1]+3; i++) \
@@ -315,21 +350,27 @@ static void bridge_set_score_message()
 #define BLANK_LINE len += snprintf(buf+len, sizeof(buf)-len, "%*s | %*s\n", widths[0], "", widths[1], "")
 
 	len = snprintf(buf, sizeof(buf), "%s/%s | %s/%s\n",
-		 ggzd_get_player_name(0), ggzd_get_player_name(2),
-		 ggzd_get_player_name(1), ggzd_get_player_name(3));
-	for(team=0; team<2; team++)
-		widths[team] = strlen(ggzd_get_player_name(team)) + strlen(ggzd_get_player_name(team+2)) + 1;
+		       ggzd_get_player_name(0), ggzd_get_player_name(2),
+		       ggzd_get_player_name(1), ggzd_get_player_name(3));
+	for (team = 0; team < 2; team++)
+		widths[team] =
+			strlen(ggzd_get_player_name(team)) +
+			strlen(ggzd_get_player_name(team + 2)) + 1;
 
 	HORIZONTAL_LINE;
 	BLANK_LINE;
 
-	len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_above_line[0], widths[1], BRIDGE.points_above_line[1]);
+	len += snprintf(buf + len, sizeof(buf) - len, "%*d | %-*d\n",
+			widths[0], BRIDGE.points_above_line[0], widths[1],
+			BRIDGE.points_above_line[1]);
 
 	BLANK_LINE;
 
-	for (g=0; g<=BRIDGE.game_count; g++) {
+	for (g = 0; g <= BRIDGE.game_count; g++) {
 		HORIZONTAL_LINE;
-		len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_below_line[g][0], widths[1], BRIDGE.points_below_line[g][1]);
+		len += snprintf(buf + len, sizeof(buf) - len, "%*d | %-*d\n",
+				widths[0], BRIDGE.points_below_line[g][0],
+				widths[1], BRIDGE.points_below_line[g][1]);
 	}
 
 	set_global_message("Scores", "%s", buf);
@@ -343,53 +384,71 @@ static void bridge_end_hand()
 	int vulnerable = BRIDGE.vulnerable[BRIDGE.declarer % 2];
 	char buf[512];
 	char buf2[512] = "";
-	char* bonus_text = BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled";
+	char *bonus_text =
+		BRIDGE.bonus == 1 ? "" : BRIDGE.bonus ==
+		2 ? ", doubled" : ", redoubled";
 
 	/* calculate tricks over book */
-	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks - 6;
+	tricks = game.players[BRIDGE.declarer].tricks +
+		game.players[BRIDGE.dummy].tricks - 6;
 
-	ggzd_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
+	ggzd_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract,
+		   tricks);
 
-	winning_team = (tricks >= BRIDGE.contract) ? BRIDGE.declarer % 2 : (BRIDGE.declarer+1) % 2;
+	winning_team =
+		(tricks >=
+		 BRIDGE.contract) ? BRIDGE.declarer % 2 : (BRIDGE.declarer +
+							   1) % 2;
 
 	snprintf(buf2, sizeof(buf2), "%s and %s get:\n",
-		 ggzd_get_player_name(winning_team), ggzd_get_player_name(winning_team+2));
+		 ggzd_get_player_name(winning_team),
+		 ggzd_get_player_name(winning_team + 2));
 
 	if (tricks >= BRIDGE.contract) {
 		tricks_below = BRIDGE.contract;
 		tricks_above = tricks - BRIDGE.contract;
 		switch (BRIDGE.contract_suit) {
-			case CLUBS:
-			case DIAMONDS:
-				points_below = 20 * tricks_below;
-				points_above = 20 * tricks_above;
-				break;
-			case HEARTS:
-			case SPADES:
-				points_below = 30 * tricks_below;
-				points_above = 30 * tricks_above;
-				break;
-			case BRIDGE_NOTRUMP:
-			default:
-				points_below = 30 * tricks_below + (tricks_below > 0) ? 10 : 0;
-				points_above = 30 * tricks_above;
-				break;
-		}		
+		case CLUBS:
+		case DIAMONDS:
+			points_below = 20 * tricks_below;
+			points_above = 20 * tricks_above;
+			break;
+		case HEARTS:
+		case SPADES:
+			points_below = 30 * tricks_below;
+			points_above = 30 * tricks_above;
+			break;
+		case BRIDGE_NOTRUMP:
+		default:
+			points_below =
+				30 * tricks_below + (tricks_below >
+						     0) ? 10 : 0;
+			points_above = 30 * tricks_above;
+			break;
+		}
 
 		points_below *= BRIDGE.bonus;
 		points_above *= BRIDGE.bonus;
 
-		snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2), "  %d points below the line for %d %s%s.",
-			 points_below, BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit], bonus_text);
+		snprintf(buf2 + strlen(buf2), sizeof(buf2) - strlen(buf2),
+			 "  %d points below the line for %d %s%s.",
+			 points_below, BRIDGE.contract,
+			 long_bridge_suit_names[BRIDGE.contract_suit],
+			 bonus_text);
 		if (points_above)
-			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2), " %d points above the line for %d overtricks%s.",
+			snprintf(buf2 + strlen(buf2),
+				 sizeof(buf2) - strlen(buf2),
+				 " %d points above the line for %d overtricks%s.",
 				 points_above, tricks_above, bonus_text);
 
-		/* you get a bonus just for making a doubled/redoubled contract */
+		/* you get a bonus just for making a doubled/redoubled
+		   contract */
 		if (BRIDGE.bonus > 1) {
 			int insult_bonus = BRIDGE.bonus > 2 ? 100 : 50;
-			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
-				 "  %d points above the line for the insult.", insult_bonus);
+			snprintf(buf2 + strlen(buf2),
+				 sizeof(buf2) - strlen(buf2),
+				 "  %d points above the line for the insult.",
+				 insult_bonus);
 			points_above += insult_bonus;
 		}
 
@@ -399,74 +458,87 @@ static void bridge_end_hand()
 				slam_bonus = vulnerable ? 1000 : 500;
 			else
 				slam_bonus = vulnerable ? 1500 : 750;
-			snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
-				 "  %d points for a %s slam%s.",
-				 slam_bonus, BRIDGE.contract == 7 ? "grand" : "small",
+			snprintf(buf2 + strlen(buf2),
+				 sizeof(buf2) - strlen(buf2),
+				 "  %d points for a %s slam%s.", slam_bonus,
+				 BRIDGE.contract == 7 ? "grand" : "small",
 				 vulnerable ? " while vulnerable" : "");
 			points_above += slam_bonus;
 		}
 	} else {
 		tricks_above = BRIDGE.contract - tricks;
 
-		/* Penalty:          not vulnerable        vulnerable
-		 * not doubled            50                  100
-		 * doubled - 1st          100                 200
-		 * doubled - 2nd,3rd      200 ea              300 ea
-		 * doubled - 4th+         300 ea              300 ea
-		 * redoubled           2x doubled          2x doubled
-		 */
+		/* Penalty: not vulnerable vulnerable not doubled 50 100
+		   doubled - 1st 100 200 doubled - 2nd,3rd 200 ea 300 ea
+		   doubled - 4th+ 300 ea 300 ea redoubled 2x doubled 2x
+		   doubled */
 
 		if (BRIDGE.bonus == 1)
 			points_above = tricks_above * (vulnerable ? 100 : 50);
 		else {
-			points_above = tricks_above * (vulnerable ? 200 : 100);
+			points_above =
+				tricks_above * (vulnerable ? 200 : 100);
 			if (tricks_above > 1)
-				points_above += (tricks_above-1) * 100;
+				points_above += (tricks_above - 1) * 100;
 			if (tricks_above > 3)
-				points_above += (tricks_above-3) * (vulnerable ? 0 : 100);
+				points_above +=
+					(tricks_above -
+					 3) * (vulnerable ? 0 : 100);
 			if (BRIDGE.bonus == 4)
-				points_above *= 2;        	
+				points_above *= 2;
 		}
-		snprintf(buf2+strlen(buf2), sizeof(buf2)-strlen(buf2),
+		snprintf(buf2 + strlen(buf2), sizeof(buf2) - strlen(buf2),
 			 "  %d points above for setting by %d tricks%s%s.",
 			 points_above, tricks_above,
-			 bonus_text,
-			 vulnerable ? ", vulnerable" : "");
+			 bonus_text, vulnerable ? ", vulnerable" : "");
 
 	}
 
 	BRIDGE.points_above_line[winning_team] += points_above;
-	BRIDGE.points_below_line[BRIDGE.game_count][winning_team] += points_below;
+	BRIDGE.points_below_line[BRIDGE.game_count][winning_team] +=
+		points_below;
 
 	if (tricks >= BRIDGE.contract)
-		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.",
-			ggzd_get_player_name(BRIDGE.declarer), points_above, points_below);
+		snprintf(buf, sizeof(buf),
+			 "%s made the bid and earned %d|%d points.",
+			 ggzd_get_player_name(BRIDGE.declarer), points_above,
+			 points_below);
 	else
-		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.",
-			ggzd_get_player_name(BRIDGE.declarer), points_above);
+		snprintf(buf, sizeof(buf),
+			 "%s went set, giving up %d points.",
+			 ggzd_get_player_name(BRIDGE.declarer), points_above);
 
 	/* TODO: points for honors */
 
 	if (BRIDGE.points_below_line[BRIDGE.game_count][winning_team] >= 100) {
 		if (BRIDGE.vulnerable[winning_team]) {
 			/* they've won a rubber */
-			int rubber_bonus = BRIDGE.vulnerable[1-winning_team] ? 500 : 700;
-			BRIDGE.points_above_line[winning_team] += rubber_bonus;
-			for (team=0; team<2; team++) {
-				for (g=0; g<=BRIDGE.game_count; g++) {
-					BRIDGE.points_above_line[team] += BRIDGE.points_below_line[g][team];
+			int rubber_bonus =
+				BRIDGE.vulnerable[1 -
+						  winning_team] ? 500 : 700;
+			BRIDGE.points_above_line[winning_team] +=
+				rubber_bonus;
+			for (team = 0; team < 2; team++) {
+				for (g = 0; g <= BRIDGE.game_count; g++) {
+					BRIDGE.points_above_line[team] +=
+						BRIDGE.
+						points_below_line[g][team];
 					BRIDGE.points_below_line[g][team] = 0;
 				}
 			}
 			BRIDGE.game_count = 0;
-			snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a %d-point rubber.", rubber_bonus);
-			/* right now, we jsut go right on into the next rubber with a running score.  Instead, this
-			 * should be the end of a game */
+			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+				 "  They won a %d-point rubber.",
+				 rubber_bonus);
+			/* right now, we jsut go right on into the next
+			   rubber with a running score.  Instead, this should 
+			   be the end of a game */
 		} else {
 			/* they've won their first game of the rubber */
 			BRIDGE.game_count++;
 			BRIDGE.vulnerable[winning_team] = 1;
-			snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a game.");
+			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+				 "  They won a game.");
 		}
 	}
 	/* TODO: vulnerable, etc. */

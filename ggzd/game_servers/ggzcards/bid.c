@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: bid.c 2628 2001-10-29 05:31:50Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -65,12 +65,10 @@ void add_sbid(char val, char suit, char spec)
 	add_bid(bid);
 }
 
-/* req_bid Request bid from current bidder parameters are: player to get bid
-   from, number of possible bids, text entry for each bid */
+/* Request bid from current bidder parameters are: player to get bid from,
+   number of possible bids, text entry for each bid */
 int req_bid(player_t p)
 {
-	int i, fd = ggzd_get_player_socket(p), status = 0;
-
 	ggzd_debug("Requesting a bid from player %d/%s; %d choices", p,
 		   ggzd_get_player_name(p), bid_count);
 
@@ -84,29 +82,14 @@ int req_bid(player_t p)
 	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
 		/* request a bid from the ai */
 		handle_bid_event(ai_get_bid(p, bids, bid_count));
-	} else {
-		/* request a bid from the client */
-		if (fd == -1 ||
-		    write_opcode(fd, WH_REQ_BID) < 0 ||
-		    es_write_int(fd, bid_count) < 0)
-			status = -1;
-		for (i = 0; i < bid_count; i++) {
-			char bid_text[4096];
-			game.funcs->get_bid_text(bid_text, sizeof(bid_text),
-						 bids[i]);
-			if (es_write_string(fd, bid_text) < 0)
-				status = -1;
-		}
-	}
-
-	if (status != 0)
-		ggzd_debug("ERROR: req_bid: status is %d.", status);
-	return status;
+		return 0;
+	} else
+		return send_bid_request(p, bid_count, bids);
 }
 
-/* rec_bid Receive a bid from an arbitrary player.  Test to make sure it's
-   not out-of-turn.  Note that a return of -1 here indicates a GGZ error,
-   which will disconnect the player. */
+/* Receive a bid from an arbitrary player.  Test to make sure it's not
+   out-of-turn.  Note that a return of -1 here indicates a GGZ error, which
+   will disconnect the player. */
 int rec_bid(player_t p, bid_t * bid)
 {
 	int fd = ggzd_get_player_socket(p), index;

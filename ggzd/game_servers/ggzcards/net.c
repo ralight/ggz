@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2620 2001-10-28 09:47:24Z jdorje $
+ * $Id: net.c 2628 2001-10-29 05:31:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -219,7 +219,7 @@ int send_sync(player_t p)
 		if (req_bid(game.next_bid) < 0)
 			status = -1;
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && game.curr_play == p)
-		if (req_play(game.curr_play, game.play_seat) < 0)
+		if (send_play_request(game.curr_play, game.play_seat) < 0)
 			status = -1;
 
 	if (status != 0)
@@ -240,8 +240,29 @@ int send_sync_all(void)
 	return status;
 }
 
+/* Request a bid from player p.  bid_count is the number of bids; bids is an
+   array listing the possible bids. */
+int send_bid_request(player_t p, int bid_count, bid_t * bids)
+{
+	int i, status = 0;
+
+	int fd = ggzd_get_player_socket(p);
+	/* request a bid from the client */
+	if (fd == -1 ||
+	    write_opcode(fd, WH_REQ_BID) < 0 ||
+	    es_write_int(fd, bid_count) < 0)
+		status = -1;
+	for (i = 0; i < bid_count; i++) {
+		char bid_text[4096];
+		game.funcs->get_bid_text(bid_text, sizeof(bid_text), bids[i]);
+		if (es_write_string(fd, bid_text) < 0)
+			status = -1;
+	}
+	return status;
+}
+
 /* Request a player p to make a play from a specific seat s's hand */
-int req_play(player_t p, seat_t s)
+int send_play_request(player_t p, seat_t s)
 {
 	int fd = ggzd_get_player_socket(p);
 	seat_t s_r = CONVERT_SEAT(s, p);
@@ -355,7 +376,7 @@ int send_trick(player_t winner)
 	return 0;
 }
 
-int req_newgame(player_t p)
+int send_newgame_request(player_t p)
 {
 	int fd, status;
 	fd = ggzd_get_player_socket(p);

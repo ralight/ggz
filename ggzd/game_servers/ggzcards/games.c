@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2451 2001-09-11 08:35:40Z jdorje $
+ * $Id: games.c 2628 2001-10-29 05:31:50Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -70,19 +70,12 @@ struct game_info game_data[] = {
 /* END of game data */
 
 
-const int num_games = sizeof(game_data) / sizeof(struct game_info);
+#define NUM_GAMES (sizeof(game_data) / sizeof(struct game_info))
 
 /* these aren't *quite* worthy of being in the game struct */
 /* static int game_type_cnt; */
-static int game_types[sizeof(game_data) / sizeof(struct game_info)];	/* possible 
-									   types 
-									   of 
-									   games; 
-									   used 
-									   for 
-									   option 
-									   requests 
-									 */
+static int game_types[NUM_GAMES];	/* possible types of games; used for
+					   option requests */
 
 /* games_get_gametype determines which game the text corresponds to.  If the
    --game=<game> parameter is passed to the server on startup, <game> is
@@ -94,7 +87,7 @@ int games_get_gametype(char *text)
 	for (i = 0; i < strlen(text); i++)
 		text[i] = tolower(text[i]);
 
-	for (i = 0; i < num_games; i++)
+	for (i = 0; i < NUM_GAMES; i++)
 		if (!strcmp(text, game_data[i].name))
 			return i;
 
@@ -108,7 +101,7 @@ void games_handle_gametype(int option)
 {
 	game.which_game = game_types[option];
 
-	if (game.which_game < 0 || game.which_game >= num_games) {
+	if (game.which_game < 0 || game.which_game >= NUM_GAMES) {
 		ggzd_debug
 			("SERVER/CLIENT error: bad game type %d selected; using %d instead.",
 			 game.which_game, game_types[0]);
@@ -125,21 +118,22 @@ int games_valid_game(int which_game)
 	return game_data[which_game].funcs->is_valid_game();
 }
 
-/* games_req_gametype this function requests the game type from the host
-   client.  It's only called if this information isn't determined
-   automatically (i.e. via --game=spades parameter).  the reply is sent to
-   games_handle_gametype, below. */
+/* This function requests the game type from the host client.  It's only
+   called if this information isn't determined automatically (i.e. via
+   --game=spades parameter).  the reply is sent to games_handle_gametype,
+   below. */
 int games_req_gametype()
 {
 	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1;
 	int cnt = 0, i;
 	int status = 0;
+
 	if (fd == -1) {
 		ggzd_debug("ERROR: SERVER BUG: " "nonexistent host.");
 		return -1;
 	}
 
-	for (i = 0; i < num_games; i++) {
+	for (i = 0; i < NUM_GAMES; i++) {
 		if (games_valid_game(i)) {
 			game_types[cnt] = i;
 			cnt++;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2620 2001-10-28 09:47:24Z jdorje $
+ * $Id: common.c 2628 2001-10-29 05:31:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -294,7 +294,7 @@ void next_play(void)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
 			if (ggzd_get_seat_status(p) != GGZ_SEAT_BOT)
-				(void) req_newgame(p);
+				(void) send_newgame_request(p);
 		break;
 	case WH_STATE_NEXT_HAND:
 		ggzd_debug("Next play: dealing a new hand.");
