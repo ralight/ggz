@@ -1,0 +1,57 @@
+AC_INIT(easysock.h)
+AM_INIT_AUTOMAKE(libeasysock, 0.0.0)
+AM_CONFIG_HEADER(config.h)
+AM_MAINTAINER_MODE
+
+dnl Compiling Options
+dnl =====================
+AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
+
+
+dnl Check for programs
+dnl ==================
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AM_PROG_LIBTOOL
+
+
+dnl Check for header files
+dnl ======================
+AC_HEADER_STDC
+
+
+dnl Check for library functions
+dnl ===========================
+AC_CHECK_FUNC(socket, ,
+    AC_CHECK_LIB(socket, socket,
+	AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
+	    AC_MSG_ERROR(*** Cannot find socket headers ); exit ),
+	AC_MSG_ERROR(*** Cannot find socket library ); exit ))
+
+AC_CHECK_FUNC(gethostbyname, ,
+    AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+
+AC_CHECK_FUNC(inet_ntoa, ,
+    AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+
+
+dnl Debug modes
+dnl ===========
+if test "$enable_debug_socket" = yes; then
+    AC_DEFINE(DEBUG_SOCKET)
+    DFLAGS="$DFLAGS DEBUG_SOCKET"
+fi
+
+
+AC_SUBST(LDADD)
+AC_OUTPUT(Makefile)
+
+dnl Status Output
+dnl =============
+echo ""
+echo "*** libeasysock will be built with the"
+echo "*** following debugging flags: $DFLAGS"
+echo ""
