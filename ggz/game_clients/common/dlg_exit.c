@@ -1,9 +1,9 @@
 /*
- * File: gtk_dlg_exit.c
+ * File: dlg_exit.c
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 3656 2002-03-24 17:24:55Z dr_maux $
+ * $Id: dlg_exit.c 3718 2002-04-03 17:15:41Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
