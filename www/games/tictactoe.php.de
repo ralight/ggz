@@ -1,0 +1,53 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>TicTacToe</b><br>
+Brettspiel für 2 Spieler.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Merkmale von TicTacToe</i><br>
+<ul>
+<li>3 Spiele-Clients verfügbar: Gtk+, KDE, SDL/OpenGL
+<li>unterstützt Statistiken
+<li>unterstützt Spielzuschauer
+<li>KI-Gegner verfügbar
+</ul>
+<br>
+
+<i>Spielregeln TicTacToe</i><br>
+Ein Spieler entscheidet sich für ein Kreuz als Symbol, der andere für
+einen Kreis (oder ähnliche Symbole).
+Dann versuchen die beiden Spieler abwechselnd, 3 ihrer Symbole in eine Reihe
+zu bekommen, entweder horizontal, vertical oder diagonal,
+indem in jeder Runde ein Symbol auf ein freies Feld gesetzt wird.
+
+</td><td valign="top">
+
+<i>Gtk+-Client:</i><br>
+<img src="pics/tictactoe.png"><br>
+
+<i>KDE-Client:</i><br>
+<img src="pics/ktictactux.png"><br>
+
+<i>SDL/OpenGL-Client:</i><br>
+<img src="pics/ttt3d.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
