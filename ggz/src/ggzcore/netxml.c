@@ -486,19 +486,7 @@ static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *t
 	seat = _ggzcore_table_get_nth_player_type(table, num);
 	name = _ggzcore_table_get_nth_player_name(table, num);
 
-	switch (seat) {
-	case GGZ_SEAT_OPEN:
-		type = "open";
-		break;
-	case GGZ_SEAT_BOT:
-		type = "bot";
-		break;
-	case GGZ_SEAT_RESERVED:
-		type = "reserved";
-		break;
-	default:
-		type = "none";
-	}
+	type = ggz_seattype_to_string(seat);
 	
 	if (name)
 		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
@@ -1448,17 +1436,22 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 		entry = ggz_list_head(seats);
 		while (entry) {
 			seat = ggz_list_get_data(entry);
-			if (strcmp(seat->type, "open") == 0) {
+			switch (ggz_string_to_seattype(seat->type)) {
+			case GGZ_SEAT_OPEN:
 				/* Nothing to do: seats default to open */
-			}
-			else if (strcmp(seat->type, "bot") == 0) {
+				break;
+			case GGZ_SEAT_BOT:
 				_ggzcore_table_add_bot(table_obj, seat->name, seat->index);
-			}
-			else if (strcmp(seat->type, "player") == 0) {
+				break;
+			case GGZ_SEAT_PLAYER:
 				_ggzcore_table_add_player(table_obj, seat->name, seat->index);
-			}
-			else if (strcmp(seat->type, "reserved") == 0) {
+				break;
+			case GGZ_SEAT_RESERVED:
 				_ggzcore_table_add_reserved(table_obj, seat->name, seat->index);
+				break;
+			case GGZ_SEAT_NONE:
+				/* Is this an error? */
+				break;
 			}
 			entry = ggz_list_next(entry);
 		}
