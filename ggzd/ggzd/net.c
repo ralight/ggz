@@ -113,17 +113,9 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_data(GGZNetIO *net, GGZXMLElement *element);
 
-/* Trigger network error event */
-static void _net_error(struct _GGZNetIO *net, char* message);
-
-/* Dump network data to debugging file */
-static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
-
-static void _net_login_set_name(GGZXMLElement *login, char *name);
-static void _net_login_set_password(GGZXMLElement *login, char *password);
-
 /* Utility functions */
 static int safe_atoi(char *string);
+static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
 static int _net_send_result(GGZNetIO *net, char *action, char code);
 static int _net_send_login_normal_status(GGZNetIO *net, char status);
 static int _net_send_login_anon_status(GGZNetIO *net, char status);
@@ -134,6 +126,8 @@ static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_line(GGZNetIO *net, char *line, ...);
 static int _net_send_string(GGZNetIO *net, char *fmt, ...);
 
+static void _net_login_set_name(GGZXMLElement *login, char *name);
+static void _net_login_set_password(GGZXMLElement *login, char *password);
 static void _net_table_add_seat(GGZXMLElement*, GGZSeatData*);
 static void _net_table_set_desc(GGZXMLElement*, char*);
 static GGZTableData* _net_tabledata_new(void);
@@ -215,6 +209,7 @@ void net_disconnect(GGZNetIO* net)
 		net->fd = -1;
 	}
 }
+
 
 /* Free up resources used by net object */
 void net_free(GGZNetIO *net)
@@ -690,7 +685,8 @@ int net_read_data(GGZNetIO *net)
 			return GGZ_REQ_OK;
 		}
 
-		_net_error(net, "Reading data from server");
+		dbg_msg(GGZ_DBG_CONNECTION, "Network error reading data");
+		return GGZ_REQ_DISCONNECT;
 	}
 
 	_net_dump_data(net, buf, len);
@@ -716,11 +712,10 @@ int net_read_data(GGZNetIO *net)
 }
 
 
-/********** Callback for XML parser **********/
+/********** Callbacks for XML parser **********/
 static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 {
 	GGZNetIO *net = (GGZNetIO*)data;
-	GGZStack *stack = net->stack;
 	GGZXMLElement *element;
 
 	dbg_msg(GGZ_DBG_XML, "New %s element", el);
@@ -729,22 +724,20 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 	element = _net_new_element((char*)el, (char**)attr);
 
 	/* Put element on stack so we can process its children */
-	stack_push(stack, element);
+	stack_push(net->stack, element);
 }
 
 
 static void _net_parse_end_tag(void *data, const char *el)
 {
-	GGZXMLElement *element;
 	GGZNetIO *net = (GGZNetIO*)data;
+	GGZXMLElement *element;
 	
 	/* Pop element off stack */
 	element = stack_pop(net->stack);
 
 	/* Process tag */
-	dbg_msg(GGZ_DBG_XML, "Handling %s element", 
-		      xmlelement_get_tag(element));
-	
+	dbg_msg(GGZ_DBG_XML, "Handling %s element", element->tag);
 	if (element->process)
 		element->process(net, element);
 
@@ -756,20 +749,10 @@ static void _net_parse_end_tag(void *data, const char *el)
 static void _net_parse_text(void *data, const char *text, int len) 
 {
 	GGZNetIO *net = (GGZNetIO*)data;
-	GGZStack *stack = net->stack;
 	GGZXMLElement *top;
 
-	top = stack_top(stack);
+	top = stack_top(net->stack);
 	xmlelement_add_text(top, text, len);
-}
-
-
-static void _net_error(GGZNetIO *net, char* message)
-{
-	dbg_msg(GGZ_DBG_CONNECTION, "Network error: %s", message);
-/*	net_disconnect(net);
-	server_net_error(net->server, message); 
-*/
 }
 
 
@@ -851,7 +834,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 		data = xmlelement_get_data(login);
 		
 		/* If there's no data, then they must not have sent a name */
-		if (!data) {
+		if (!data || !data[0]) {
 			_net_send_result(net, "login", -2);
 			return;
 		}
@@ -916,6 +899,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
 			_net_login_set_name(parent, name);
+		/* FIXME: do something if we got something else */
 	}
 }
 
