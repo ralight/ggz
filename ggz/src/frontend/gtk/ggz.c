@@ -30,6 +30,7 @@
 #include "chat.h"
 #include "ggz.h"
 #include "login.h"
+#include "msgbox.h"
 #include "motd.h"
 #include "support.h"
 #include "xtext.h"
@@ -135,7 +136,10 @@ static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* u
 
 static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* user_data)
 {
+	gchar *password;
+	gchar *message;
 	GtkWidget *tmp;
+
 
 	g_print("ggz_logged_in\n");
 
@@ -181,6 +185,16 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 	gtk_widget_set_sensitive(tmp, FALSE);
 	tmp = lookup_widget(win_main, "send_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
+
+	/* If this was a first-time login, get the password from the server */
+	if (ggzcore_server_get_type(server) == GGZ_LOGIN_NEW) {
+		password = ggzcore_server_get_password(server);
+		message = g_strdup_printf("Your new password is %s", password);
+		msgbox(message, "New password", MSGBOX_OKONLY, MSGBOX_INFO, 
+		       MSGBOX_NORMAL);
+		free(message);
+	}
+		
 
 	return GGZ_HOOK_OK;
 }
