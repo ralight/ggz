@@ -52,42 +52,36 @@ KGGZLogo::~KGGZLogo()
 {
 }
 
-void KGGZLogo::setLogo(char *logo, char *name)
+void KGGZLogo::setLogo(const char *logo, const char *name)
 {
-	//char buffer[1024];
-	QString *buffer;
+	QString buffer;
 	struct stat st;
 	const char *uselogo;
 
-	buffer = NULL;
 	KGGZDEBUG("Found module icon: %s\n", logo);
-	if(!logo)
+	uselogo = logo;
+
+	if(!uselogo)
 	{
-		//strcpy(buffer, KGGZ_DIRECTORY "/images/icons/games/");
-		//strcat(buffer, name);
-		//strcat(buffer, ".png");
-		buffer = new QString(KGGZ_DIRECTORY "/images/icons/games/");
-		buffer->append(name);
-		buffer->append(".png");
-		logo = (char*)buffer->latin1();
-		KGGZDEBUG("Retrieve Icon from: %s\n", logo);
-		if((stat(logo, &st) < 0) || (!S_ISREG(st.st_mode))) logo = NULL;
+		buffer = KGGZ_DIRECTORY "/images/icons/games/";
+		buffer.append(name);
+		buffer.append(".png");
+		uselogo = buffer.latin1();
+		KGGZDEBUG("Retrieve Icon from: %s\n", uselogo);
+		if((stat(uselogo, &st) < 0) || (!S_ISREG(st.st_mode))) uselogo = NULL;
 	}
-	if(!logo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
-	else uselogo = logo;
+	if(!uselogo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
 	setBackgroundPixmap(QPixmap(uselogo));
-	if(buffer) delete buffer;
 }
 
 void KGGZLogo::mousePressEvent(QMouseEvent *e)
 {
-	KGGZDEBUG("emit signalInfo()");
 	emit signalInfo();
 }
 
 void KGGZLogo::shutdown()
 {
-	KGGZDEBUGF("KGGZLogo::shutdown()\n");
 	erase();
 	setBackgroundPixmap(NULL);
 }
+

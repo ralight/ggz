@@ -60,10 +60,9 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 
 	m_edit = new QTextView(this);
 	m_edit->setGeometry(5, 5, 310, 360);
-	m_edit->setFont(QFont("Courier", 10/*, QFont::Bold*/));
+	m_edit->setFont(QFont("Courier", 10));
 
 	button = new QPushButton("OK", this);
-	//button->setGeometry(100, 370, 120, 20);
 
 	caption = new KGGZCaption("MOTD", "GGZ Gaming Zone message of the day", this);
 
@@ -75,7 +74,7 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 	connect(button, SIGNAL(clicked()), SLOT(close()));
 
 	setCaption(i18n("Message Of The Day (MOTD)"));
-	setFixedSize(320, 400);
+	resize(400, 400);
 
 	show();
 

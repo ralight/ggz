@@ -1443,35 +1443,21 @@ void KGGZ::slotGameStart()
 void KGGZ::menuGameInfo()
 {
 	GGZCoreGametype *gametype;
-	//char buffer[2048];
 	QString buffer;
 
 	if(!kggzserver)
-	{
-		KGGZDEBUG("Critical! No server found.\n");
 		return;
-	}
 	if(!kggzroom)
 	{
-		//KGGZDEBUG("Critical! No room found.\n");
 		KMessageBox::information(this, i18n("Please join a room first."), "Info:");
 		return;
 	}
 	gametype = kggzroom->gametype();
 	if(!gametype)
-	{
-		KGGZDEBUG("Critical! No game type found.\n");
 		return;
-	}
-	KGGZDEBUG("Name: %s\n", gametype->name());
-	KGGZDEBUG("Author: %s\n", gametype->author());
-	KGGZDEBUG("Version: %s\n", gametype->version());
-	KGGZDEBUG("URL: %s\n", gametype->url());
-	KGGZDEBUG("Description: %s\n", gametype->description());
-	KGGZDEBUG("ProtocolVersion: %s\n", gametype->protocolVersion());
-	KGGZDEBUG("ProtocolEngine: %s\n", gametype->protocolEngine());
-	KGGZDEBUG("Category: %s\n", gametype->category());
-	KGGZDEBUG("Rating: %s\n", gametype->rating());
+	if(!gametype->name())
+		return;
+
 	buffer.append(i18n("Name: "));
 	buffer.append(gametype->name());
 	buffer.append("\n");
@@ -1498,8 +1484,6 @@ void KGGZ::menuGameInfo()
 	buffer.append("\n");
 	buffer.append(i18n("Rating: "));
 	buffer.append(gametype->rating());
-	//sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
-	//	gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
 	KMessageBox::information(this, buffer, i18n("Game Type Information"));
 }
 
@@ -1529,22 +1513,19 @@ void KGGZ::slotLoadLogo()
 
 	KGGZDEBUG("__ loading logo __\n");
 	if((!kggzroom) || (!(gametype = kggzroom->gametype())))
-	{
-		KGGZDEBUG("Critical! slotLoadLogo is broken!\n");
 		return;
-	}
 
 	module = new GGZCoreModule();
 	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	if(module->count() == 0)
 	{
-		KGGZDEBUG("Critical! No modules found!\n");
+		m_workspace->widgetLogo()->setLogo(NULL, "notinstalled");
 		return;
 	}
 	module->setActive(0);
 
 	icon = module->pathIcon();
-	m_workspace->widgetLogo()->setLogo(icon, gametype->name());
+	m_workspace->widgetLogo()->setLogo(icon, gametype->protocolEngine());
 
 	delete module;
 }

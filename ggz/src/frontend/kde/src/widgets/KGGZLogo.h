@@ -48,7 +48,7 @@ class KGGZLogo : public QFrame
 		// Destructor
 		~KGGZLogo();
 		// Sets the logo. On failure use alternative. On failure use fallback.
-		void setLogo(char *logo, char *name);
+		void setLogo(const char *logo, const char *name);
 		// Clear the widget
 		void shutdown();
 
