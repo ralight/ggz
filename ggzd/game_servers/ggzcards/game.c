@@ -290,11 +290,8 @@ char* game_verify_play(card_t card)
 
 	/* not following suit is never allowed */
 	c = game.funcs->map_card( game.lead_card );
-	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)) ) {
-		ggz_debug("Player %d/%s, playing from seat %d/%s, played %s when they have %d of %s.",
-			  game.next_play, ggz_seats[game.next_play].name, s, game.seats[s].ggz->name, suit_names[(int)card.suit], cnt, suit_names[(int)game.lead_card.suit]);
+	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)) )
 		return "You must follow suit.";
-	}
 
 	/* if must_overtrump is set, then you must overtrump to win if you can */
 	if (game.must_overtrump && game.trump >= 0 && game.trump < 4) {
