@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: transit.c 3607 2002-03-21 05:53:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -126,7 +126,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 						      void* data)
 {
 	int status;
-	char allow, action;
+	char action;
 	GGZTable *table = target;
 	struct GGZSeatEvent *event = data;
 	struct GGZTableSeat *seat = &(event->seat);
