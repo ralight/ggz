@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3568 2002-03-16 05:56:24Z jdorje $
+ * $Id: net.c 3595 2002-03-17 00:14:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -444,21 +444,6 @@ void broadcast_newhand(void)
 		(void) send_newhand(p);
 }
 
-
-/* receives a play from the client, and calls update if necessary.  */
-int rec_play(player_t p)
-{
-	int fd = get_player_socket(p);
-	card_t card;
-
-	/* read the card played */
-	if (read_card(fd, &card) < 0)
-		return -1;
-		
-	handle_client_play(p, card);
-	return 0;
-}
-
 int send_global_text_message(player_t p, const char *mark,
                              const char *message)
 {
@@ -521,4 +506,35 @@ void broadcast_global_cardlist_message(const char *mark, int *lengths,
 	player_t p;
 	for (p = 0; p < game.num_players; p++)
 		(void) send_global_cardlist_message(p, mark, lengths, cardlist);
+}
+
+
+int rec_language(player_t p)
+{
+	char *lang;
+	int fd = get_player_socket(p);
+	
+	if (ggz_read_string_alloc(fd, &lang) < 0)
+		return -1;
+		
+	handle_player_language(p, lang);
+	
+	ggz_free(lang);
+	
+	return 0;
+}
+
+
+/* receives a play from the client, and calls update if necessary.  */
+int rec_play(player_t p)
+{
+	int fd = get_player_socket(p);
+	card_t card;
+
+	/* read the card played */
+	if (read_card(fd, &card) < 0)
+		return -1;
+		
+	handle_client_play(p, card);
+	return 0;
 }

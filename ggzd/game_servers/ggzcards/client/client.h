@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: client.h 3595 2002-03-17 00:14:56Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -274,6 +274,9 @@ extern int game_handle_game_message(int fd, const char *game, int size);
  *  The frontend must call these functions to send the appropriate
  *  responses to the server.
  *  @{ */
+
+/** Sends the language to the server. */
+int client_send_language(const char *lang);
 
 /** Sends a simple newgame response.
  *  @return 0 on success, -1 on failure.

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: client.c 3595 2002-03-17 00:14:56Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -80,6 +80,10 @@ int client_initialize(void)
 	}
 	ggzcards.state = STATE_INIT;
 	ggz_debug("core", "Client initialized.");
+	
+	if (client_send_language(getenv("LANG")) < 0)
+		return -1;
+	
 	return game_internal.fd;
 }
 
@@ -786,6 +790,19 @@ static int handle_req_options(void)
 	ggz_free(option_choices);
 	ggz_free(choice_cnt);
 
+	return 0;
+}
+
+
+/* The language lets the server translate messages for us. */
+int client_send_language(const char *lang)
+{
+	ggz_debug("core", "Sending language %s to the server.", lang);
+	
+	if (write_opcode(game_internal.fd, MSG_LANGUAGE) < 0 ||
+	    ggz_write_string(game_internal.fd, lang) < 0)
+		return -1;
+		
 	return 0;
 }
 

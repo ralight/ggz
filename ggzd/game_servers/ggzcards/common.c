@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3577 2002-03-16 16:13:37Z jdorje $
+ * $Id: common.c 3595 2002-03-17 00:14:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -155,12 +155,13 @@ static char *player_messages[] =
 void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
 	player_t p = *(int *) data;
-	int fd, op, status = 0;
+	int fd, status = 0;
 	bid_t bid;
+	client_msg_t op;
 
 	fd = get_player_socket(p);
 
-	if (read_opcode(fd, &op) < 0)
+	if (read_opcode(fd, (int*)&op) < 0)
 		return;
 
 	if (op >= 0 && op <= REQ_SYNC)
@@ -172,6 +173,9 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 			    op, p, get_player_name(p));
 
 	switch (op) {
+	case MSG_LANGUAGE:
+		status = rec_language(p);
+		break;
 	case RSP_NEWGAME:
 		if (game.state == STATE_NOTPLAYING) {
 			status = 0;
@@ -819,6 +823,14 @@ int handle_bid_event(player_t p, bid_t bid)
 		next_play();
 	return 0;
 }
+
+
+void handle_player_language(player_t p, const char* lang)
+{
+	/* FIXME: store the language and use it to translate messages */
+	ggzdmod_log(game.ggz, "Player %d set their language to %s.", p, lang);
+}
+
 
 void set_num_seats(int num_seats)
 {

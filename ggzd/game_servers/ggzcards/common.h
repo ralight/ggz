@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: common.h 3595 2002-03-17 00:14:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -187,6 +187,8 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 int handle_newgame_event(player_t p);
 int handle_play_event(player_t p, card_t card);
 int handle_bid_event(player_t p, bid_t bid);
+
+void handle_player_language(player_t p, const char* lang);
 
 /* Initialize the program, passing in the name of the game (if known) */
 void init_ggzcards(GGZdMod * ggz, char* which_game);

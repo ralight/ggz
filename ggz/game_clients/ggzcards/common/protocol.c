@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3491 2002-02-27 09:42:22Z jdorje $
+ * $Id: protocol.c 3595 2002-03-17 00:14:56Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -79,11 +79,12 @@ const char* get_game_message_name(game_message_t opcode)
 const char* get_client_opcode_name(client_msg_t opcode)
 {
 	switch (opcode) {
-	case RSP_NEWGAME: return "RSP_NEWGAME";
-	case RSP_OPTIONS: return "RSP_OPTIONS";
-	case RSP_PLAY:    return "RSP_PLAY";
-	case RSP_BID:     return "RSP_BID";
-	case REQ_SYNC:    return "REQ_SYNC"; 	
+	case MSG_LANGUAGE: return "MSG_LANGUAGE";
+	case RSP_NEWGAME:  return "RSP_NEWGAME";
+	case RSP_OPTIONS:  return "RSP_OPTIONS";
+	case RSP_PLAY:     return "RSP_PLAY";
+	case RSP_BID:      return "RSP_BID";
+	case REQ_SYNC:     return "REQ_SYNC"; 	
 	}
 	return "[unknown]";
 }

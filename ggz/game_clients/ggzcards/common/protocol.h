@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3491 2002-02-27 09:42:22Z jdorje $
+ * $Id: protocol.h 3595 2002-03-17 00:14:56Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -164,6 +164,10 @@ const char* get_game_message_name(game_message_t opcode);
 
 /* Messages from client */
 typedef enum {
+	/* Notifies the server of the client's language.  Followed by a
+	   string including the language. */
+	MSG_LANGUAGE,
+
 	/* A newgame response, sent in response to a REQ_NEWGAME.  No data. */
 	RSP_NEWGAME,
 

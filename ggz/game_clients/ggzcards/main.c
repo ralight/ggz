@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3470 2002-02-26 00:35:54Z jdorje $
+ * $Id: main.c 3595 2002-03-17 00:14:56Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -98,7 +98,7 @@ static void initialize_debugging(void)
 	   just initialize the _types_ of debugging we want. */
 #ifdef DEBUG
 	const char *debugging_types[] =
-		{ "main", "table", "animation", NULL };
+		{ "main", "table", "animation", "core", NULL };
 #else
 	const char *debugging_types[] = { NULL };
 #endif
