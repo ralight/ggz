@@ -1,20 +1,34 @@
-There are three utility programs currently available for developers/testers:
+===============================================================
+The GGZ Gaming Zone - Various Tools and Utilies - Version 0.0.5
+===============================================================
 
-AGRUE - A Ggz Random User Emulator
-  Used to simulate load on the server.  You must edit the defines PORT
-  and HOSTNAME to setup the server you want to test load on.  This program
-  will simply spawn random bots that login and move around chatting
-  occasionally.
+This is a convenience package which contains lots of nice applications
+which don't fit into another package.
 
-AGRUB - A Ggz Really Useful Bot (Grubby)
-  Grubby is a prototype program to provide a service bot on a GGZ server.
-  The code is fairly rough-and-ready, but should be expandable.  The default
-  defines at the beginning of agrub.c can be overriden at run time.  Type
-  'agrub --help' for a full listing of command line arguments.
+Content of GGZ-Utils:
+	- Cmd-Client:
+	  Utily to broadcast messages across all rooms at a GGZ server.
+	- Metaserv:
+	  The first prototype of a GGZ meta server. It is completely XML-based
+	  but understands URI queries as well.
+	- Motd-Editor:
+	  A Gnome-based editor for creating MOTDs.
+	- Motds:
+	  Collection of nice MOTDs.
+	- TelGGZ:
+	  A Telnet wrapper for GGZ. Using telggz you can chat from
+	  everywhere in the world, provided you get a telnet terminal.
 
-pygenclient - Python Generic Client
-  pygenclient is a generic game client, ie, a program that connects to the
-  game server and allows you to get everything that is sent by it, and allow
-  you to send whatever you want. Used mainly for testing game servers that
-  don`t have game clients yet. (Take a look at the pygenclient/README file for
-  further information)
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
+Have a look at QuickStart.GGZ to learn about the installation process.
+
+If you encounter any bugs, please send them to
+	Josef Spillner <dr_maux@users.sourceforge.net>,
+or to the mailing list,
+	<ggz-dev@lists.sourceforge.net>.
+
+Have fun!
+	The GGZ Gaming Zone Development Team
+
