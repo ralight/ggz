@@ -1,19 +1,12 @@
-
-Before 0.0.1 release
-====================
-- Fix bug in table index passing to client
-- Check for valid table index when joining
-- Simple MSG_XXX_UPDATE scheme
-- change MOTD to MSG
-
 For 0.0.2
 =========
+- change MOTD to MSG
 - redo table launch so that game server is forked immediately and then
   players join later (pass fd's using sendmsg() )
 - better handing of end-of-game
 - implement REQ_LEAVE_TABLE
 - if everyone leaves a table, remove it
-- handle SIGCHLD
+- handle SIGCHLD for when game_servrs die
 - implement player database (at least API)
 - implement tic-tac-toe as simple game example
 
@@ -24,7 +17,6 @@ Medium run
 - implement rooms
 - re-write spades
 - reservations
-
 
 Long run
 ========
