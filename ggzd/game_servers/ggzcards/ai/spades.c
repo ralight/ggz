@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: spades.c 3374 2002-02-16 10:28:52Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -12,9 +12,6 @@
  *
  * Later, they were stolen from NetSpades and integrated directly into
  * GGZCards for use with the spades game here.  Thanks Brent!
- *
- * Unfortunately, many of the routines follow pretty bad spades
- * strategies.  I'm in the process of implementing better ones.
  *
  * For some good advice on Spades strategy, see:
  *               http://www.masterspades.com/
@@ -263,6 +260,10 @@ static int count_spade_strength_winners(player_t p)
 			ai_debug("Counted %s of spades as 1 trick.",
 				 face_names[(int) card.face]);
 			points += 100;
+
+			/* A special case tweak. */
+			if (card.face == QUEEN && count <= 2)
+				points -= 20;
 		}
 	}
 
@@ -272,8 +273,8 @@ static int count_spade_strength_winners(player_t p)
 		ai_debug("Counted 4th spade 1 trick.");
 		points += 100;
 #else
-		ai_debug("Counted 4th spade as 1/2 trick.");
-		points += 50;
+		ai_debug("Counted 4th spade as 3/4 trick.");
+		points += 75;
 #endif
 	}
 
@@ -281,8 +282,8 @@ static int count_spade_strength_winners(player_t p)
 	if (count >= 5) {
 #ifndef AGGRESSIVE_BIDDING
 		/* also count the fourth spade as a full trick */
-		ai_debug("Counted 4th spade as another 1/2 trick.");
-		points += 50;
+		ai_debug("Counted 4th spade as another 1/4 trick.");
+		points += 25;
 #endif
 		ai_debug("Counted extra %d spades as %d tricks.", count - 4,
 			 count - 4);
@@ -332,25 +333,122 @@ static int count_nonspade_tricks(player_t num, char suit)
 	int has_king = libai_is_card_in_hand(num, king);
 	int has_queen = libai_is_card_in_hand(num, queen);
 	int count = libai_count_suit(num, suit);
+	int spades = libai_count_suit(num, SPADES);
 
-	/* This is a pretty "expert" system to count probable tricks in a
-	   non-spade suit.  It can easily be refined further. */
+	/* This is an extremely "expert" system to count probable tricks in a 
+	   non-spade suit.  It really needs to be tweaked; perhaps by
+	   studying master spades players or by testing it head-to-head.
+	   Another idea is to make a 3D array: countcards x count x spades,
+	   to count how many tricks we expect to win for any given set of
+	   count cards, quantity of cards in the suit, and quantity of
+	   spades.  But as it is, it shouldn't be too scrappy. */
 
 	if (has_ace) {
-		if (has_king)
-			return 200;
-		if (has_queen)
-			return 150;
-		return 100;
+		if (has_king) {
+			if (spades > 3)
+				return 200;
 
+			switch (count) {
+			case 2:
+			case 3:
+				return 200;
+			case 4:
+				return 180;
+			case 5:
+				return 140;
+			case 6:
+				return 100;
+			case 7:
+				return 80;
+			case 8:
+				return 50;
+			default:
+				assert(count > 8);
+				return 0;
+			}
+		}
+
+		if (has_queen) {
+			if (spades > 3)
+				return 150;
+
+			switch (count) {
+			case 2:
+			case 3:
+				return 150;
+			case 4:
+				return 140;
+			case 5:
+				return 120;
+			case 6:
+				return 95;
+			case 7:
+				return 80;
+			case 8:
+				return 50;
+			default:
+				assert(count > 8);
+				return 0;
+			}
+		}
+
+		if (spades > 3)
+			return 100;
+
+		switch (count) {
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			return 100;
+		case 5:
+			return 95;
+		case 6:
+			return 85;
+		case 7:
+			return 70;
+		case 8:
+			return 50;
+		default:
+			assert(count > 8);
+			return 0;
+		}
 	}
 
 	if (has_king) {
-		if (has_queen)
-			return 100;
-		if (count > 1)
-			return 75;
-		return 50;
+		if (has_queen) {
+			switch (count) {
+			case 2:
+				return 110;
+			case 3:
+				return 165;
+			case 4:
+				return (spades > 3) ? 170 : 110;
+			case 5:
+				return (spades > 3) ? 150 : 70;
+			case 6:
+				return (spades > 3) ? 130 : 30;
+			default:
+				assert(count > 6);
+				return (spades > 3) ? 100 : 0;
+			}
+		}
+
+		switch (count) {
+		case 1:
+			return 30;
+		case 2:
+			return 80;
+		case 3:
+			return 90;
+		case 4:
+			return 70;
+		case 5:
+			return 30;
+		default:
+			assert(count > 5);
+			return 0;
+		}
 	}
 
 	return 0;
@@ -364,16 +462,26 @@ static char find_final_bid(player_t num, int points)
 
 	/* --------------- NORMAL BIDS ----------------- */
 	/* Okay, divide points by 100 and that's our bid. */
-	if (game.bid_count < 2) {
-		prob = 70;
-		ai_debug("Adding 70 because partner hasn't bid");
-	} else {
+	switch (game.bid_count) {
+	case 0:
+		prob = 40;
+		break;
+	case 1:
 		prob = 30;
-		ai_debug("Adding 30 because partner has bidn");
+		break;
+	case 2:
+		prob = 20;
+		break;
+	case 3:
+		/* FIXME: we should take other players bids into account. */
+		prob = 50;
+		break;
+	default:
+		assert(0);
+		prob = 0;
+		break;
 	}
-
-	/* FIXME: we should take other players bids into account, especially
-	   if we're in the last seat. */
+	ai_debug("Adding %d points for rounding.", prob);
 
 	bid_val = (points + prob) / 100;
 	ai_debug("Subtotal bid: %d", bid_val);
@@ -504,14 +612,19 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 {
 	int points;
 	bid_t bid;
+	char suit;
 
 	bid.bid = 0;		/* reset bid */
 
 	/* Count winners in all suits. */
 	points = count_spade_tricks(num);
-	points += count_nonspade_tricks(num, HEARTS);
-	points += count_nonspade_tricks(num, DIAMONDS);
-	points += count_nonspade_tricks(num, CLUBS);
+
+	for (suit = CLUBS; suit <= HEARTS; suit++) {
+		int suit_points = count_nonspade_tricks(num, suit);
+		ai_debug("Counting %d points in %s.", suit_points,
+			 suit_names[(int) suit]);
+		points += suit_points;
+	}
 
 	/* Figure out how risky it would be to bid nil. */
 	if (consider_bidding_nil(num, points)) {
@@ -682,7 +795,8 @@ static void Calculate(int num, struct play *play, int agg)
 	/**
 	 * The scale for all likelihoods runs as follows:
 	 *
-	 * -1      Guaranteed not to take trick
+	 * -x      May lose future tricks
+	 * 0       Guaranteed not to take trick
 	 * 0..13   Unlikely to take trick (based on rank)
 	 * 50..63  Likely to take trick (based on rank)
 	 * 100     Guaranteed to take trick
@@ -694,20 +808,6 @@ static void Calculate(int num, struct play *play, int agg)
 	mask = 0;
 	for (r = play->card.face + 1; r <= ACE_HIGH; r++)
 		mask |= (1 << r);
-
-#if 0				/* no longer needed? */
-	/* If this is the highest trump then its future is just as bright as
-	   its present. */
-	if (play->card.suit == SPADES && libai_is_highest_in_suit(play->card)) {
-		play->future = 100;
-		if (high >= 0 && high_card.suit == SPADES
-		    && high_card.face > play->card.face)
-			play->trick = -1;
-		else
-			play->trick = 100;
-		return;
-	}
-#endif
 
 	/* Card's rank is its likelihood of taking this trick if the card is
 	   higher than the highest current card. */
@@ -861,22 +961,39 @@ static void Calculate(int num, struct play *play, int agg)
 		}
 	}
 
-	/* This is a quick hack so that we're likely to pull spades when we
-	   have a lot of them.  Otherwise the bot fails miserably in this
-	   regard. */
-	/* If we have two more spades than the average AND there are spades
-	   out, we should always pull. */
-	/* FIXME: this still isn't perfect; if your partner has no spades it
-	   may fail. */
-	if (game.leader == num && play->card.suit == SPADES
-	    && libai_count_suit(num, SPADES) >
-	    (13 - libai_cards_played_in_suit(SPADES) -
-	     libai_count_suit(num, SPADES) + 5) / 3
-	    && libai_get_suit_map((num + 1) % 4, SPADES)
-	    && libai_get_suit_map((num + 3) % 4, SPADES)) {
-		ai_debug("Increasing value of long spade.");
-		play->trick += 100;
+	/* This is a hack to tweak the AI into figuring out spades leads
+	   correctly. */
+	if (game.leader == num && play->card.suit == SPADES) {
+		int opp_with_spades = 0;
+		int pard_with_spades = libai_get_suit_map(pard, SPADES);
+
+		if (libai_get_suit_map((num + 1) % 4, SPADES))
+			opp_with_spades++;
+		if (libai_get_suit_map((num + 3) % 4, SPADES))
+			opp_with_spades++;
+
+		if (!opp_with_spades) {
+			/* Well, our partner could beat it but... */
+			play->future = 100;
+
+			/* Playing this card could _cost_ us a trick. */
+			play->trick = -50;
+		} else if (libai_count_suit(num, SPADES) >
+			   (13 - libai_cards_played_in_suit(SPADES) -
+			    libai_count_suit(num,
+					     SPADES) +
+			    5) / (pard_with_spades + opp_with_spades)) {
+			/* If we have two more spades than the average AND
+			   there are spades out, we should most likely pull
+			   pull. */
+			/* FIXME: if our partner doesn't have any spades
+			   things might be different... */
+			ai_debug("Increasing value of long spade.");
+			play->trick += 80;
+		}
 	}
+
+
 }
 
 
