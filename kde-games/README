@@ -15,6 +15,7 @@ Content of GGZ-KDE-Games:
 	- KDots:
 		Connect the Dots for KDE. Compatible with the Gtk+ version.
 Please read 'INSTALL' if you aren't experienced with the build yet.
+The file README.GGZ does give you additional information.
 
 If you encounter any bugs, please send them to
 	Josef Spillner, <dr_maux@users.sourceforge.net>,
