@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: room.c 6276 2004-11-05 23:36:58Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -81,6 +81,14 @@ void ggzcore_room_free(GGZRoom *room)
 		_ggzcore_room_free(room);
 }
 
+
+int ggzcore_room_get_id(GGZRoom *room)
+{
+	if (room)
+		return _ggzcore_room_get_id(room);
+	else
+		return -1;
+}
 
 char* ggzcore_room_get_name(GGZRoom *room)
 {
@@ -330,7 +338,6 @@ unsigned int _ggzcore_room_get_id(struct _GGZRoom *room)
 {
 	return room->id;
 }
-
 
 char* _ggzcore_room_get_name(struct _GGZRoom *room)
 {

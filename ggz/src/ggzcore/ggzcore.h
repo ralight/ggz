@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6124 2004-07-17 00:44:02Z josef $
+ * $Id: ggzcore.h 6276 2004-11-05 23:36:58Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -894,28 +894,31 @@ int ggzcore_room_init(GGZRoom *room,
 void ggzcore_room_free(GGZRoom *room);
 
 
-/** @brief Return the name of the room. */
-char*        ggzcore_room_get_name(GGZRoom *room);
+/** @brief Return the ID number of the room (or negative on error). */
+int ggzcore_room_get_id(GGZRoom *room);
 
-/** @brief Return the description of the room. */
-char*        ggzcore_room_get_desc(GGZRoom *room);
+/** @brief Return the name of the room (or NULL on error). */
+char* ggzcore_room_get_name(GGZRoom *room);
 
-/** @brief Return the type of game played in this room. */
+/** @brief Return the description of the room (or NULL on error). */
+char* ggzcore_room_get_desc(GGZRoom *room);
+
+/** @brief Return the type of game played in this room (or NULL on error). */
 GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
 
-/** @brief Return the number of players in the room. */
-int        ggzcore_room_get_num_players(GGZRoom *room);
+/** @brief Return the number of players in the room (or negative on error). */
+int ggzcore_room_get_num_players(GGZRoom *room);
 
-/** @brief Return the nth player in the room. */
+/** @brief Return the nth player in the room (or NULL on error). */
 GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
 
-/** @brief Return the number of tables in the room. */
-int       ggzcore_room_get_num_tables(GGZRoom *room);
+/** @brief Return the number of tables in the room (or negative on error). */
+int ggzcore_room_get_num_tables(GGZRoom *room);
 
-/** @brief Return the nth table in the room. */
+/** @brief Return the nth table in the room (or NULL on error). */
 GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
 
-/** @brief Return the table in this room with matching ID. */
+/** @brief Return the table in this room with matching ID (NULL on error). */
 GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
 
 
