@@ -15,46 +15,36 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifndef KEEPALIVE_CANVAS_H
-#define KEEPALIVE_CANVAS_H
+#ifndef KEEPALIVE_NETWORK_H
+#define KEEPALIVE_NETWORK_H
+
+// GGZ includes
+#include <ggzmod.h>
 
 // Qt includes
-#include <qcanvas.h>
+#include <qobject.h>
 
-// Class declarations
-class QDataStream;
-class QSocketDevice;
-class QCanvasSprite;
-class Network;
-
-// The main game canvas
-class Canvas : public QCanvas
+// Network resource class
+class Network : public QObject
 {
 	Q_OBJECT
 	public:
-		Canvas(QWidget *parent = NULL, const char *name = NULL);
-		~Canvas();
-		void move(int x, int y);
-		void login(QString username, QString password);
-		void chat(QString message);
+		Network();
+		~Network();
+		int fd();
 
 	signals:
-		void signalLoggedin(QString name);
+		void signalData();
 
 	public slots:
-		void slotInput();
-
-	protected slots:
-		void keyPressEvent(QKeyEvent *e);
+		void slotControl();
 
 	private:
-		void init();
-
-		QCanvasSprite *m_player;
-		QSocketDevice *m_dev;
-		QDataStream *m_net;
-		int m_spectator;
-		Network *m_network;
+		static Network *self;
+		void callback(GGZMod *mod, void *data);
+		static void callbackwrap(GGZMod *mod, GGZModEvent e, void *data);
+		GGZMod *mod;
+		int m_fd, m_controlfd;
 };
 
 #endif

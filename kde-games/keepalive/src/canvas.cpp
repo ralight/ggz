@@ -20,6 +20,7 @@
 
 // Keepalive includes
 #include "protocol.h"
+#include "network.h"
 #include "config.h"
 
 // KDE includes
@@ -56,19 +57,14 @@ Canvas::Canvas(QWidget *parent, const char *name)
 // Destructor
 Canvas::~Canvas()
 {
+	if(m_network) delete m_network;
 }
 
 // Initialize the network
 void Canvas::init()
 {
-	QSocketNotifier *sn;
-	int socket;
-
-	socket = 3;
-	sn = new QSocketNotifier(socket, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
-	m_dev = new QSocketDevice(socket, QSocketDevice::Stream);
-	m_net = new QDataStream(m_dev);
+	m_network = new Network();
+	connect(m_network, SIGNAL(signalData()), SLOT(slotInput()));
 }
 
 // Receive game data from server
@@ -80,6 +76,12 @@ void Canvas::slotInput()
 	int count;
 	char *name, *message;
 	QCanvasSprite *sprite;
+
+	if(!m_net)
+	{
+		m_dev = new QSocketDevice(m_network->fd(), QSocketDevice::Stream);
+		m_net = new QDataStream(m_dev);
+	}
 
 	*m_net >> c;
 
@@ -189,10 +191,14 @@ void Canvas::move(int x, int y)
 // Log into the game server
 void Canvas::login(QString username, QString password)
 {
+std::cout << "login-0" << std::endl;
+
 	if(m_spectator) return;
+std::cout << "login-1" << std::endl;
 
 	if(!m_net) init();
 
+std::cout << "login-2" << std::endl;
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
 }
 
