@@ -17,10 +17,13 @@
 #include <easysock.h>
 #include <protocols.h>
 
+/* ~/.agrub version */
+#define FILE_VERSION "0.0.1"
+
 #define DEFAULT_PORT 5687
 #define DEFAULT_HOSTNAME "localhost"
 #define DEFAULT_NAME "Grubby"
-#define DEFAULT_OWNER "rgade"
+#define DEFAULT_OWNER "(none)"
 
 void handle_read(void);
 void req_login(void);
@@ -93,11 +96,14 @@ struct poptOption args[] = {
 
 int main(const int argc, const char *argv[])
 {
-	int opcode, i;
+	int opcode, i, j;
 	fd_set select_mux;
 	struct timeval timeout;
 	poptContext context;
 	int rc;
+	char *tmp, *home;
+	char file[1024];
+	FILE *grub_file;
 
 	for(i=0; i<MAX_KNOWN; i++)
 		known[i].name
@@ -133,6 +139,29 @@ int main(const int argc, const char *argv[])
 		owner = DEFAULT_OWNER;
 
 	srandom((unsigned)time(NULL));
+
+	/* Read in known informaion */
+	home = getenv("HOME");
+	if (home == NULL)
+	{
+		printf("$HOME environment variable not defined!\n\n");
+	}
+	
+	strcpy(file, home);
+	strcat(file,"/.agrub");
+
+	grub_file = fopen(file, "w");
+	if (grub_file == NULL)
+	{
+		printf("Error Loading known information\n\n");
+		return;
+	} else {
+		/* Load up known information */
+
+
+	}
+
+	/* Connect up to GGZ server */
 	my_socket = es_make_socket(ES_CLIENT, port, host);
 	if(my_socket < 0) {
 		printf("Unable to connect to %s:%d\n", host, port);
@@ -153,7 +182,7 @@ int main(const int argc, const char *argv[])
 				req_login();
 			else if(rooms != 0 && cur_room == -1)
 				change_room();
-			else if(rooms != 0 && last_used > 120) {
+			else if(rooms != 0 && last_used > 240) {
 				change_room();
 				last_used = 0;
 			}
@@ -408,7 +437,64 @@ void send_chat_insert_name(char *msg)
 
 void do_logout(void)
 {
+	FILE *grub_file;
+	char *home;
+	char file[1024];
+	int i;
+
+	/* Logout of GGZ server */
 	es_write_int(my_socket, REQ_LOGOUT);
+	
+	/* Save current information */
+	home = getenv("HOME");
+	if (home == NULL)
+	{
+		printf("$HOME environment variable not defined!\n\n");
+		return;
+	}
+	
+	strcpy(file, home);
+	strcat(file,"/.agrub");
+
+	grub_file = fopen(file, "w");
+	if (grub_file == NULL)
+	{
+		printf("Error saveing known information\n\n");
+		return;
+	}
+
+	/* Write out information */
+	fprintf(grub_file, "%s\n", FILE_VERSION);
+	fprintf(grub_file, "%d\n", num_known);
+	
+	for(i=0;i<num_known;i++)
+	{
+		if(known[i].name != NULL)
+			fprintf(grub_file, "%s\n", known[i].name);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].aka != NULL)
+			fprintf(grub_file, "%s\n", known[i].aka);
+		else
+			fprintf(grub_file, "NULL\n");
+
+		fprintf(grub_file, "%d\n", known[i].last_seen);
+
+		if(known[i].last_room != NULL)
+			fprintf(grub_file, "%s\n", known[i].last_room);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].msg_from != NULL)
+			fprintf(grub_file, "%s\n", known[i].msg_from);
+		else
+			fprintf(grub_file, "NULL\n");
+		if(known[i].msg != NULL)
+			fprintf(grub_file, "%s\n", known[i].msg);
+		else
+			fprintf(grub_file, "NULL\n");
+	}
+
+	fclose(grub_file);
 }
 
 
