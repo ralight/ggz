@@ -9,29 +9,9 @@ Published under GNU GPL conditions
 #ifndef TLS_H
 #define TLS_H
 
-#include <openssl/ssl.h>
+#include "gensecure.h"
 
-/* Mode of connection (for tls_start) */
-#define TLS_SERVER 1
-#define TLS_CLIENT 2
-
-/* Verification modes */
-#define TLS_NOVERIFY 1
-#define TLS_VERIFY 2
-
-/* Server only: prepare the environment */
-void tls_prepare(const char *cert, const char *key, pem_password_cb *callback);
-/* Secure an already existing connection */
-void tls_start(int fd, int mode, int verify);
-/* Bring connection in an insecure state again */
-void tls_finish();
-/* Return whether TLS is active or not */
-int tls_active();
-/* Read some bytes (secure) */
-int tls_input(char *buffer, int size);
-/* Write some bytes (secure) */
-int tls_output(const char *s);
-/* Verify a received certificate */
+/* Internal: verify a received certificate */
 int tls_verify(int preverify_ok, X509_STORE_CTX *ctx);
 
 /* Internal: display an error */

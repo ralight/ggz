@@ -8,6 +8,8 @@ Published under GNU GPL conditions
 
 #include "tls.h"
 #include <stdio.h>
+#include <string.h>
+#include <openssl/err.h>
 
 /* The control structure for TLS */
 SSL_CTX *_tlsctx;
@@ -62,6 +64,7 @@ char *tls_exterror(int ret)
 			return "SSL_ERROR_SSL";
 			break;
 	}
+	return NULL;
 }
 
 void tls_prepare(const char *cert, const char *key, pem_password_cb *callback)
@@ -85,7 +88,7 @@ void tls_start(int fd, int mode, int verify)
 	SSL_CIPHER *cipher;
 	int bits;
 	char *cipherlist;
-	
+
 	_state = 1;
 	SSL_load_error_strings();
 	SSL_library_init();
@@ -113,7 +116,7 @@ void tls_start(int fd, int mode, int verify)
 			/*cipherlist = strdup(SSL_get_cipher_list(_tls, 0));*/
 			cipherlist = NULL;
 			stack = SSL_get_ciphers(_tls);
-			while(cipher = (SSL_CIPHER*)sk_pop(stack))
+			while((cipher = (SSL_CIPHER*)sk_pop(stack)) != NULL)
 			{
 				printf("* Cipher: %s\n", SSL_CIPHER_get_name(cipher));
 				printf("  Bits: %i\n", SSL_CIPHER_get_bits(cipher, &bits));
@@ -157,8 +160,8 @@ void tls_start(int fd, int mode, int verify)
 				}
 				if((ret != 1) || (!_state))
 				{
-					TLSERROR("Handshake failed.");
 					printf("Ret: %i, State: %i\n", ret, _state);
+					TLSERROR("Handshake failed.");
 					ret2 = ERR_get_error();
 					printf("EXT: %s\n%s\n%s\n%s\n%s\n", tls_exterror(ret), ERR_error_string(ret2, NULL),
 						ERR_lib_error_string(ret2), ERR_func_error_string(ret2), ERR_reason_error_string(ret2));
@@ -180,7 +183,7 @@ void tls_start(int fd, int mode, int verify)
 							}
 							else
 							{
-								printf("Error code: %i\n", SSL_get_verify_result(_tls));
+								printf("Error code: %li\n", SSL_get_verify_result(_tls));
 								TLSERROR("Invalid certificate, or certificate is not self-signed.");
 							}
 						}
@@ -202,6 +205,12 @@ void tls_certkey()
 		return;
 	}
 
+	if((!_key) || (!_cert) || (!_callback))
+	{
+		printf("WARNING: certificates are disabled!\n");
+		return;
+	}
+
 	/*PEM_set_getkey_callback(tls_keycallback);*/
 	SSL_CTX_set_default_passwd_cb(_tlsctx, _callback);
 
@@ -214,28 +223,53 @@ void tls_certkey()
 	printf("*** certificate loaded ***\n");
 }
 
-void tls_finish()
+void tls_finish(int fd)
 {
-	if(_tls) SSL_shutdown(_tls);
-	if(_tls) SSL_free(_tls);
+	SSL *handler;
+
+	handler = _tls;
+	if(handler)
+	{
+		SSL_shutdown(handler);
+		SSL_free(handler);
+	}
 	if(_tlsctx) SSL_CTX_free(_tlsctx);
 	ERR_free_strings();
 	_tls_active = 0;
 	_state = 1;
 }
 
-int tls_input(char *buffer, int size)
+int tls_read(int fd, char *buffer, int size)
 {
-	return SSL_read(_tls, buffer, size);
+	SSL *handler;
+	int ret;
+
+	handler = _tls;
+	ret = SSL_read(handler, buffer, size);
+printf("#%s#\n", buffer);
+if(ret <= 0) printf("SSL read error (%i)!\n", ret);
+	return ret;
 }
 
-int tls_output(const char *s)
+int tls_write(int fd, const char *s, int size)
 {
-	return SSL_write(_tls, s, sizeof(s));
+	SSL *handler;
+	int ret;
+
+	handler = _tls;
+printf("#%s#\n", s);
+	ret = SSL_write(handler, s, size);
+if(ret <= 0) printf("SSL write error (%i)!\n", ret);
+	return ret;
 }
 
-int tls_active()
+int tls_active(int fd)
 {
 	return _tls_active;
+}
+
+SSL *tls_object()
+{
+	return _tls;
 }
 

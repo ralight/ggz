@@ -16,6 +16,7 @@ Published under GNU GPL conditions
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 /* The socket used by server and client */
 int _socket;
@@ -139,8 +140,9 @@ int socket_read_arg(int sock)
 			printf("Accept invoked error!\n");
 			GENSOCKERROR(1);
 		}
+		return in_accept;
 	}
-	return in_accept;
+	return -1;
 }
 
 void socket_close()

@@ -9,13 +9,14 @@ Published under GNU GPL conditions
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include "gensocket.h"
 #include "tls.h"
 #include "configuration.h"
 
 /* Macros to be used as BIO emulation */
-#define INPUT(x, y) (tls_active() ? tls_input(x, y) : input(x, y))
-#define OUTPUT(x) (tls_active() ? tls_output(x) : output(x))
+#define INPUT(x, y) (tls_active(socket_fd()) ? tls_read(socket_fd(), x, y) : input(x, y))
+#define OUTPUT(x) (tls_active(socket_fd()) ? tls_write(socket_fd(), x, strlen(x)) : output(x))
 
 int passwordcallback(char *buf, int size, int rwflag, void *userdata)
 {
@@ -43,11 +44,12 @@ int main(int argc, char *argv[])
 		{
 			printf("> Securing connection...\n");
 			tls_prepare(GENSECURE_CERTIFICATE, GENSECURE_KEY, passwordcallback);
+			/*tls_prepare(NULL, NULL, NULL);*/
 			tls_start(socket_fd(), TLS_SERVER, TLS_NOVERIFY);
 		}
 
 		printf("> Server in working state.\n");
-		if(tls_active()) printf("> TLS IN USE.\n");
+		if(tls_active(socket_fd())) printf("> TLS IN USE.\n");
 
 		fcntl(socket_fd(), F_SETFL, O_NONBLOCK);
 
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
 				if(!strcmp(tmpbuf, "quit"))
 				{
 					OUTPUT("Bye.");
-					tls_finish();
+					tls_finish(socket_fd());
 					/*socket_close();*/
 					break;
 				}
