@@ -330,7 +330,7 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* Browser */
 	tmp = lookup_widget((props_dialog), "browser_entry");
 	gtk_entry_set_editable(GTK_ENTRY(tmp), TRUE);
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "BROWSER", "Netscape - New"));
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"));
 	gtk_entry_set_editable(GTK_ENTRY(tmp), FALSE);
 
 	/* MOTD */
@@ -1544,12 +1544,18 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browser_combo);
   gtk_box_pack_start (GTK_BOX (hbox16), browser_combo, TRUE, TRUE, 0);
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - Existing"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - New"));
-  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Galeon - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Gnome URL Handler"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - New"));
   browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Konqueror - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Lynx"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Mozilla - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Netscape - Existing"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - New"));
+  browser_combo_items = g_list_append (browser_combo_items, (gpointer) _("Opera - Existing"));
   gtk_combo_set_popdown_strings (GTK_COMBO (browser_combo), browser_combo_items);
   g_list_free (browser_combo_items);
 
@@ -1559,7 +1565,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browser_entry);
   gtk_entry_set_editable (GTK_ENTRY (browser_entry), FALSE);
-  gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Netscape - New"));
+  gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Galeon - New"));
 
   vbox11 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox11);

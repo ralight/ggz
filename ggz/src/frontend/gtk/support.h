@@ -62,7 +62,12 @@ char *nocasestrstr (char *text, char *tofind);
 /*
  * Use this function to load a URL in netscape
  */
-void goto_url(gchar *url);
+void support_goto_url(gchar *url);
+
+/*
+ * Use this function to fork a command
+ */
+void support_exec(char *cmd);
 
 /* get_widget() is deprecated. Use lookup_widget instead. */
 #define get_widget lookup_widget

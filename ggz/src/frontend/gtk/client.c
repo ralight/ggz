@@ -305,7 +305,7 @@ static void
 client_goto_web1_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	goto_url("http://ggz.sourceforge.net");
+	support_goto_url("http://ggz.sourceforge.net");
 }
 
 

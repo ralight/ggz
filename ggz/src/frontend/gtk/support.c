@@ -14,7 +14,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <gtk/gtk.h>
+#include <stdlib.h>
 
+#include <ggzcore.h>
+#include "props.h"
 #include "support.h"
 
 /* This is an internally used function to check if a pixmap file exists. */
@@ -23,6 +26,9 @@ static gchar* check_file_exists        (const gchar     *directory,
 
 /* This is an internally used function to create pixmaps. */
 static GtkWidget* create_dummy_pixmap  (GtkWidget       *widget);
+
+/* This is an internally used parse commands */
+static int my_poptParseArgvString(const char * s, int * argcPtr, char *** argvPtr);
 
 GtkWidget*
 lookup_widget                          (GtkWidget       *widget,
@@ -301,19 +307,192 @@ char *nocasestrstr (char *text, char *tofind)
    }
 }
 
-void goto_url(gchar *url)
+void support_goto_url(gchar *url)
+{
+	char *command = NULL;
+
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "None"))
+	{
+		command = g_strdup(" ");
+		props_create_or_raise();
+	}
+
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Galeon - New"))
+	{
+		command = g_strdup_printf("galeon %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Galeon - Existing"))
+	{
+		command = g_strdup_printf("galeon -w %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Gnome URL Handler"))
+	{
+		command = g_strdup_printf("gnome-moz-remote %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Konqueror - New"))
+	{
+		command = g_strdup_printf("konqueror %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Konqueror - Existing"))
+	{
+		command = g_strdup_printf("konqueror %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Lynx"))
+	{
+		command = g_strdup_printf("%s -e lynx %s", ggzcore_conf_read_string("OPTIONS", "LYNX", "xterm"), url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Mozilla - New"))
+	{
+		command = g_strdup_printf("mozilla %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Mozilla - Existing"))
+	{
+		command = g_strdup_printf("mozilla -remote 'openURL(%s,new-window)'", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - New"))
+	{
+		command = g_strdup_printf("netscape %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - Existing"))
+	{
+		command = g_strdup_printf("netscape -remote 'openURL(%s,new-window)'", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Opera - New"))
+	{
+		command = g_strdup_printf("opera %s", url);
+		support_exec(command);
+	}
+        if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Opera - Existing"))
+	{
+		command = g_strdup_printf("opera -remote 'openURL(%s,new-window)'", url);
+		support_exec(command);
+	}
+
+	g_free(command);
+}
+
+
+void support_exec (char *cmd)
 {
 	int pid;
-	char *path;
+	char **argv;
+	int argc;
 
-	path = g_strdup_printf("/usr/bin/netscape");
+	if (my_poptParseArgvString (cmd, &argc, &argv) != 0)
+		return;
+
         if ( (pid = fork()) < 0) {
                 return;
         } else if(pid == 0) {
-		execl(path, g_basename(path), url, NULL);
+		execvp (argv[0], argv);
                 _exit(0);
 	} 
-	g_free(path);
+	free (argv);
 }
 
+/* Taken from XChat */
+
+/* I think gnome1.0.x isn't necessarily linked against popt, ah well! */
+/* !!! For now use this inlined function, or it would break fe-text building */
+/* .... will find a better solution later. */
+/*#ifndef USE_GNOME*/
+
+/* this is taken from gnome-libs 1.2.4 */
+#define POPT_ARGV_ARRAY_GROW_DELTA 5
+
+static int my_poptParseArgvString(const char * s, int * argcPtr, char *** argvPtr) {
+    char * buf, * bufStart, * dst;
+    const char * src;
+    char quote = '\0';
+    int argvAlloced = POPT_ARGV_ARRAY_GROW_DELTA;
+    char ** argv = malloc(sizeof(*argv) * argvAlloced);
+    const char ** argv2;
+    int argc = 0;
+    int i, buflen;
+
+    buflen = strlen(s) + 1;
+/*    bufStart = buf = alloca(buflen);*/
+	 bufStart = buf = malloc (buflen);
+    memset(buf, '\0', buflen);
+
+    src = s;
+    argv[argc] = buf;
+
+    while (*src) {
+	if (quote == *src) {
+	    quote = '\0';
+	} else if (quote) {
+	    if (*src == '\\') {
+		src++;
+		if (!*src) {
+		    free(argv);
+			 free(bufStart);
+		    return 1;
+		}
+		if (*src != quote) *buf++ = '\\';
+	    }
+	    *buf++ = *src;
+	} else if (isspace(*src)) {
+	    if (*argv[argc]) {
+		buf++, argc++;
+		if (argc == argvAlloced) {
+		    argvAlloced += POPT_ARGV_ARRAY_GROW_DELTA;
+		    argv = realloc(argv, sizeof(*argv) * argvAlloced);
+		}
+		argv[argc] = buf;
+	    }
+	} else switch (*src) {
+	  case '"':
+	  case '\'':
+	    quote = *src;
+	    break;
+	  case '\\':
+	    src++;
+	    if (!*src) {
+		free(argv);
+		free(bufStart);
+		return 1;
+	    }
+	    /* fallthrough */
+	  default:
+	    *buf++ = *src;
+	}
+
+	src++;
+    }
+
+    if (strlen(argv[argc])) {
+	argc++, buf++;
+    }
+
+    dst = malloc((argc + 1) * sizeof(*argv) + (buf - bufStart));
+    argv2 = (void *) dst;
+    dst += (argc + 1) * sizeof(*argv);
+    memcpy(argv2, argv, argc * sizeof(*argv));
+    argv2[argc] = NULL;
+    memcpy(dst, bufStart, buf - bufStart);
+
+    for (i = 0; i < argc; i++) {
+	argv2[i] = dst + (argv[i] - bufStart);
+    }
+
+    free(argv);
+
+    *argvPtr = (char **)argv2;	/* XXX don't change the API */
+    *argcPtr = argc;
+
+	 free (bufStart);
+
+    return 0;
+}
 

@@ -444,7 +444,7 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 			break;
 		case WORD_HOST:
 		case WORD_URL:
-			goto_url(word);
+			support_goto_url(word);
 			break;
 		default:
 			break;
