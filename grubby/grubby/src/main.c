@@ -128,6 +128,7 @@ int main(int argc, char *argv[])
 	if(!core)
 	{
 		printf("Grubby initialization failed!\n");
+		printf("Check if the bot is configured properly using grubby-config.\n");
 		exit(-1);
 	}
 
