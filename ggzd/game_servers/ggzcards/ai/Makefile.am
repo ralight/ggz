@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3491 2002-02-27 09:42:22Z jdorje $
+# $Id: Makefile.am 3636 2002-03-23 21:02:40Z dr_maux $
 
 SUBDIRS = .
 
@@ -9,7 +9,7 @@ ggzdexecmod_PROGRAMS = ggzd.ggzcards.ai-random \
                        ggzd.ggzcards.ai-spades \
                        ggzd.ggzcards.ai-suaro
 
-INCLUDES = -I../games -I../client -I../common
+INCLUDES = -I$(top_srcdir)/game_servers/ggzcards/games -I$(top_srcdir)/game_servers/ggzcards/client -I$(top_srcdir)/game_servers/ggzcards/common
 
 EXTRA_SOURCES = aicommon.c aicommon.h \
                 game.c game.h \
@@ -17,8 +17,8 @@ EXTRA_SOURCES = aicommon.c aicommon.h \
 
 # NOTE: for some reason it's necessary to include the libraries
 # twice to get things to work...
-EXTRA_LDADD = ../common/libcommon.a ../client/libclient.a $(LDADD) \
-              ../common/libcommon.a ../client/libclient.a
+EXTRA_LDADD = $(top_srcdir)/game_servers/ggzcards/common/libcommon.a $(top_srcdir)/game_servers/ggzcards/client/libclient.a $(LDADD) \
+              $(top_srcdir)/game_servers/ggzcards/common/libcommon.a $(top_srcdir)/game_servers/ggzcards/client/libclient.a
 
 #EXTRA_DEPENDENCIES = ../common/libcommon.a ../client/libclient.a
 
