@@ -28,35 +28,42 @@
 #include "types.h"
 
 struct game_function_pointers {
-	void	(*init_game)();
-	int	(*get_options)();
-	void	(*handle_options)();
+	/* initializing */
+	void	(*init_game)();			/* initialize the game data */
+	int	(*get_options)();		/* determine/request options */
+	void	(*handle_options)();		/* handle options from player */
 
-	void	(*set_player_message)(player_t);
+	/* messaging */
+	void	(*set_player_message)(player_t); /* determine and send the player message */
 
-	int	(*get_bid_text)(char*, int, bid_t);
-	void	(*start_bidding)();
-	int	(*get_bid)();
-	int	(*handle_bid)(bid_t);
-	void	(*next_bid)();
+	/* bidding */
+	int	(*get_bid_text)(char*, int, bid_t);  /* determines the textual string for the bid */
+	void	(*start_bidding)();		/* updates data for the first bid */
+	int	(*get_bid)();			/* gets a bid from next player */
+	int	(*handle_bid)(bid_t);		/* handles a bid from current bidder */
+	void	(*next_bid)();			/* updates data for the next bid */
 
-	void	(*start_playing)();
-	char*	(*verify_play)(card_t);
-	void	(*next_play)();
-	void	(*get_play)();
-	void	(*handle_play)(card_t);
+	/* playing */
+	void	(*start_playing)();		/* updates data after the last bid/before the playing starts */
+	char*	(*verify_play)(card_t);		/* verifies the play is legal */
+	void	(*next_play)();			/* sets up for next play */
+	void	(*get_play)();			/* retreives a play */
+	void	(*handle_play)(card_t);		/* handle a play */
 
-	int	(*deal_hand)();
-	void	(*end_trick)();
-	void	(*end_hand)();
+	/* each hand */
+	int	(*deal_hand)();			/* deal next hand */
+	void	(*end_trick)();			/* end-of-trick calculations */
+	void	(*end_hand)();			 /* end-of-hand calculations */
 
-	void	(*start_game)();
-	int	(*test_for_gameover)();
-	int	(*handle_gameover)();
+	/* starting/ending games */
+	void	(*start_game)();		/* start a game */
+	int	(*test_for_gameover)();		/* returns TRUE iff gameover */
+	int	(*handle_gameover)();		/* handle a gameover */ 	
 
+	/* miscellaneous */
 	card_t	(*map_card)(card_t);
 	int	(*compare_cards)(const void *, const void *);
-	int	(*send_hand)(player_t, seat_t);
+	int	(*send_hand)(player_t, seat_t);	 /* sends a hand to a player */
 };
 
 struct game_info {

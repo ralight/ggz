@@ -37,42 +37,35 @@
 #include "message.h"
 
 
-/* initializing */
-void game_init_game();			/* initialize the game data */
-int game_get_options();			/* determine/request options */
-void game_handle_options();		/* handle options from player */
+static void game_init_game();			
+static int game_get_options();			
+static void game_handle_options();	
 
-/* messaging */
-void game_set_player_message(player_t); /* determine and send the player message */
+static void game_set_player_message(player_t);
 
-/* bidding */
-int game_get_bid_text(char*, int, bid_t);/* determines the textual string for the bid */
-void game_start_bidding();		/* updates data for the first bid */
-int game_get_bid();			/* gets a bid from next player */
-int game_handle_bid(bid_t);		/* handles a bid from current bidder */
-void game_next_bid();			/* updates data for the next bid */
+static int game_get_bid_text(char*, int, bid_t);
+static void game_start_bidding();		
+static int game_get_bid();		
+static int game_handle_bid(bid_t);		
+static void game_next_bid();		
 
-/* playing */
-void game_start_playing();		/* updates data after the last bid/before the playing starts */
-char* game_verify_play(card_t);		/* verifies the play is legal */
-void game_next_play();			/* sets up for next play */
-void game_get_play(player_t);		/* retreives a play */
-void game_handle_play(card_t);		/* handle a play */
+static void game_start_playing();		
+static char* game_verify_play(card_t);	
+static void game_next_play();			
+static void game_get_play(player_t);	
+static void game_handle_play(card_t);	
 
-/* each hand */
-int game_deal_hand(void);		/* deal next hand */
-void game_end_trick(void);		/* end-of-trick calculations */
-void game_end_hand(void);		/* end-of-hand calculations */
+static int game_deal_hand(void);	
+static void game_end_trick(void);	
+static void game_end_hand(void);	
 
-/* starting/ending games */
-void game_start_game();			/* start a game */
-int game_test_for_gameover();		/* returns TRUE iff gameover */
-int game_handle_gameover();		/* handle a gameover */
+static void game_start_game();		
+static int game_test_for_gameover();		
+static int game_handle_gameover();		
 
-/* miscellaneous */
-card_t game_map_card(card_t);
-int game_compare_cards(const void *, const void *);
-int game_send_hand(player_t, seat_t);	/* sends a hand to a player */
+static card_t game_map_card(card_t);
+static int game_compare_cards(const void *, const void *);
+static int game_send_hand(player_t, seat_t);	
 
 struct game_function_pointers game_funcs = {
 	game_init_game,
@@ -109,7 +102,7 @@ static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades
 /* game.funcs->map_card
  *   newly implemented; it should cause one card to behave
  *   as another in just about all situations */
-card_t game_map_card(card_t c)
+static card_t game_map_card(card_t c)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -132,7 +125,7 @@ card_t game_map_card(card_t c)
  *   This function is used for the automatic sorting of hands by
  *   cards_sort_hand.
  */
-int game_compare_cards(const void *c1, const void *c2)
+static int game_compare_cards(const void *c1, const void *c2)
 {
 	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
 	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
@@ -160,7 +153,7 @@ int game_compare_cards(const void *c1, const void *c2)
  *   global options, and setting up all of the GGZ information so that
  *   seats and players can both be used intelligently.
  */
-void game_init_game()
+static void game_init_game()
 {
 	player_t p;
 	seat_t s;
@@ -302,7 +295,7 @@ void game_init_game()
  *   is handled by game_handle_options.  Options are optional; it can
  *   be left as-is for a game that has no options.
  */
-int game_get_options()
+static int game_get_options()
 {
 	int fd;
 	fd = ggz_seats[game.host].fd;
@@ -383,7 +376,7 @@ int game_get_options()
  *   It corresponds very closely to game_get_options, above;
  *   and can be left as-is for games that have no options.
  */
-void game_handle_options(int *options)
+static void game_handle_options(int *options)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
@@ -439,7 +432,7 @@ void game_handle_options(int *options)
  *   This is pretty empty right now, but we don't yet play multiple games
  *   so it's not necessary yet anyway.
  */
-void game_start_game(void)
+static void game_start_game(void)
 {
 	player_t p;
 
@@ -459,7 +452,7 @@ void game_start_game(void)
  *   The game is over and we should send out game-over message.
  *   This function determines who has won and calls send_gameover.
  */
-int game_handle_gameover(void)
+static int game_handle_gameover(void)
 {
 	player_t p;
 	int hi_score = -9999;
@@ -535,7 +528,7 @@ int game_handle_gameover(void)
  *     - Aside from this, your own game data should be used to
  *       track what's going on with the bidding.
  */
-void game_start_bidding()
+static void game_start_bidding()
 {
 	char suit;
 	switch (game.which_game) {
@@ -583,7 +576,7 @@ void game_start_bidding()
  *   closely with the other bidding functions.
  */
 /* TODO: verify that it will work with and without bots */
-int game_get_bid()
+static int game_get_bid()
 {
 	int status = 0, index=0;
 	bid_t bid;
@@ -758,7 +751,7 @@ int game_get_bid()
  *   will already have been set automatically; all we need to do is any additional
  *   game-specific stuff.
  */
-int game_handle_bid(bid_t bid)
+static int game_handle_bid(bid_t bid)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -840,7 +833,7 @@ int game_handle_bid(bid_t bid)
  *   should equal the player who just bid, and should be changed to
  *   the player who bids next.
  */
-void game_next_bid()
+static void game_next_bid()
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -909,7 +902,7 @@ normal_order:
  *   automatically at this point, all we have to do is any game-specific stuff.
  *   This means figuring out who leads, writing out any contract messages, etc.
  */
-void game_start_playing(void)
+static void game_start_playing(void)
 {
 	player_t p;
 	seat_t s;
@@ -1011,7 +1004,7 @@ void game_start_playing(void)
  *   special rules (outside of those covered by game.must_overtrump and
  *   game.must_break_trump), no changes should be necessary.
  */
-char* game_verify_play(card_t card)
+static char* game_verify_play(card_t card)
 {
 	card_t c;
 	seat_t s = game.play_seat;
@@ -1098,7 +1091,7 @@ char* game_verify_play(card_t card)
  *   most games, you can just say game.play_total = 4 up above
  *   so that we'll automatically get 4 plays on each hand.
  */
-void game_next_play()
+static void game_next_play()
 {
 	game.next_play = (game.next_play + 1) % game.num_players;
 }
@@ -1108,7 +1101,7 @@ void game_next_play()
  *   AI can be inserted to call handle_play_event.  We also handle
  *   game-specific stuff here (e.g. playing from the dummy hand in Bridge).
  */
-void game_get_play(player_t p)
+static void game_get_play(player_t p)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
@@ -1131,7 +1124,7 @@ void game_get_play(player_t p)
  *   game-specific (e.g. revealing the dummy hand after the first lead in
  *   Bridge).
  */
-void game_handle_play(card_t c)
+static void game_handle_play(card_t c)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
@@ -1158,7 +1151,7 @@ void game_handle_play(card_t c)
  *   called at the beginning of a new hand to determine if the game is over.
  *   Return 1 for gameover, 0 otherwise.
  */
-int game_test_for_gameover()
+static int game_test_for_gameover()
 {
 	player_t p;
 	switch (game.which_game) {
@@ -1186,7 +1179,7 @@ int game_test_for_gameover()
 /* game_deal_hand
  *   Deal a new hand.
  */
-int game_deal_hand(void)
+static int game_deal_hand(void)
 {
 	seat_t s;
 	int result=0;
@@ -1246,7 +1239,7 @@ regular_deal:
  *   be revealed to the player or not.  It's called automatically after dealing
  *   the hand, but may be called at other times as well.
  */
-int game_send_hand(player_t p, seat_t s)
+static int game_send_hand(player_t p, seat_t s)
 {
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
@@ -1279,7 +1272,7 @@ int game_send_hand(player_t p, seat_t s)
 /* game_get_bid_text
  *   places text for the bid into the buffer.  Returns the length of the text (from snprintf).
  */
-int game_get_bid_text(char* buf, int buf_len, bid_t bid)
+static int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
 	/* TODO: in case of an overflow, the result from snprintf probably isn't what we want to return. */
 	switch (game.which_game) {
@@ -1315,7 +1308,7 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 /* game_set_player_message
  *   sets the player message for a given player.
  */
-void game_set_player_message(player_t p)
+static void game_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 	char* message = game.seats[s].message;
@@ -1444,7 +1437,7 @@ void game_set_player_message(player_t p)
  *   for most games just setting game.trick_total = game.hand_size up above will
  *   result in all the cards being played out.
  */
-void game_end_trick(void)
+static void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p, lo_player = game.leader;
 	card_t hi_card = game.lead_card, lo_card = game.lead_card;
@@ -1547,7 +1540,7 @@ void game_end_trick(void)
 /* game_end_hand
  *   Calculate scores for this hand and announce.
  */
-void game_end_hand(void)
+static void game_end_hand(void)
 {
 	player_t p;
 
