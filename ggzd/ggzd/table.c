@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4582 2002-09-16 06:07:30Z jdorje $
+ * $Id: table.c 4584 2002-09-16 06:51:32Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -129,7 +129,8 @@ static GGZEventFuncReturn table_spectator_event_callback(void* target,
 #endif
 static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 					      void* data);
-static GGZReturn table_launch_event(char* name, int status, int index);
+static GGZReturn table_launch_event(char* name,
+				    GGZClientReqError status, int index);
 
 static int   type_match_table(int type, GGZTable* table);
 
@@ -621,14 +622,15 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char* name;
-	char status, empty = 0;
+	char empty = 0;
+	GGZClientReqError status;
+	char *name;
 	int seat;
+
+	status = (*(char*)data == 0) ? E_OK : E_SEAT_ASSIGN_FAIL;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to leave", 
 		table->index, table->room);
-
-	status = *(char*)data;
 
 	/* Error: we didn't request a leave! */
 	if (!table->transit)
@@ -638,7 +640,7 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	name = table->transit_name;
 	seat = table->transit_seat;
 
-	if (status == 0) {
+	if (status == E_OK) {
 		/* Vacate seat */
 		dbg_msg(GGZ_DBG_TABLE, 
 			"%s left seat %d at table %d of room %d", name, seat,
@@ -807,14 +809,14 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod,
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
-	char status;
+	GGZClientReqError status;
 	int spectator;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to spectator leave", 
 		table->index, table->room);
 
-	if(data) status = *(char*)data;
-	else status = 0;
+	if(data) status = (*(char*)data == 0 ? E_OK : E_SEAT_ASSIGN_FAIL);
+	else status = E_OK;
 
 	/* Error: we didn't request a leave! */
 	if (!table->transit)
@@ -872,7 +874,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 		pthread_rwlock_unlock(&table->lock);
 		
 		/* Signal owner that all is good */
-		table_launch_event(table->owner, 0, table->index);
+		table_launch_event(table->owner, E_OK, table->index);
 	
 		/* Trigger a table update in this room */
 		table_event_enqueue(table, GGZ_UPDATE_ADD);
@@ -1407,7 +1409,8 @@ static GGZEventFuncReturn table_spectator_event_callback(void* target,
 }
 #endif
 
-static GGZReturn table_launch_event(char* name, int status, int index)
+static GGZReturn table_launch_event(char* name,
+				    GGZClientReqError status, int index)
 {
 	GGZLaunchEventData *data = ggz_malloc(sizeof(*data));
 
