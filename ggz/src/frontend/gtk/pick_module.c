@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 5222 2002-11-05 09:18:18Z jdorje $
+ * $Id: pick_module.c 5224 2002-11-05 10:28:24Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -95,8 +95,8 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules)
 	gtk_box_pack_start(GTK_BOX(vbox1), header_label, FALSE, FALSE, 10);
 
 	for (i = 0; modules[i]; i++) {
-		char *fe = ggzcore_module_get_frontend(modules[i]);
-		char *name = ggzcore_module_get_name(modules[i]);
+		const char *fe = ggzcore_module_get_frontend(modules[i]);
+		const char *name = ggzcore_module_get_name(modules[i]);
 		char text[512];
 		snprintf(text, sizeof(text), "%s (%s)", name, fe);
 

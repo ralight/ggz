@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5222 2002-11-05 09:18:18Z jdorje $
+ * $Id: game.c 5224 2002-11-05 10:28:24Z jdorje $
  *
  * Functions for handling game events
  *
@@ -96,7 +96,7 @@ static GGZModule * pick_module(GGZGameType *gt)
 	preferred = ggzcore_conf_read_string("GAME", name, NULL);
 	if (preferred) {
 		for (i = 0; i < num; i++) {
-			char * frontend;
+			const char * frontend;
 			module = ggzcore_module_get_nth_by_type(name, engine,
 								version, i);
 			frontend = ggzcore_module_get_frontend(module);
@@ -127,7 +127,7 @@ static GGZModule * pick_module(GGZGameType *gt)
 	ggz_free(frontends);
 
 	if (preserve) {
-		char *frontend = ggzcore_module_get_frontend(module);
+		const char *frontend = ggzcore_module_get_frontend(module);
 		ggzcore_conf_write_string("GAME", name, frontend);
 		ggzcore_conf_commit();
 	}
