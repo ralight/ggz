@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: dlg_bid.c 6386 2004-11-16 05:47:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -164,10 +164,9 @@ void dlg_bid_display(int possible_bids,
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 		gtk_container_add(GTK_CONTAINER(window), table_box);
 
-		/* If you close the window, it pops right back up again. */
-		g_signal_connect_swapped(window, "delete_event",
-					 GTK_SIGNAL_FUNC(dlg_bid_delete),
-					 window);
+		/* Ignore delete events. */
+		g_signal_connect(window, "delete_event",
+				 GTK_SIGNAL_FUNC(dlg_bid_delete), NULL);
 	}
 
 	gtk_widget_show_all(window);

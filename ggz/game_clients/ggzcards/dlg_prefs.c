@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 6339 2004-11-12 17:26:54Z jdorje $
+ * $Id: dlg_prefs.c 6386 2004-11-16 05:47:51Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -53,8 +53,6 @@ GtkWidget *create_dlg_prefs(void)
 	GtkWidget *dialog;
 	GtkWidget *vbox;
 	GtkWidget *button;
-	GtkWidget *action_area;
-	GtkWidget *close_button;
 	GtkTooltips *tooltips;
 
 	PrefType *pref;
@@ -62,11 +60,11 @@ GtkWidget *create_dlg_prefs(void)
 	/* 
 	 * Create outer window.
 	 */
-	dialog = gtk_dialog_new();
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),
-				     GTK_WINDOW(dlg_main));
+	dialog = gtk_dialog_new_with_buttons(_("Preferences"),
+					     GTK_WINDOW(dlg_main), 0,
+					     GTK_STOCK_CLOSE,
+					     GTK_RESPONSE_CLOSE, NULL);
 	g_object_set_data(G_OBJECT(dialog), "dlg_prefs", dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
 
 	/* 
 	 * Set up tooltips.
@@ -99,29 +97,12 @@ GtkWidget *create_dlg_prefs(void)
 	}
 
 	/* 
-	 * Get "action area"
-	 */
-	action_area = GTK_DIALOG(dialog)->action_area;
-	gtk_widget_show(action_area);
-
-	/* 
-	 * Make "close" button
-	 */
-	close_button = gtk_button_new_with_label(_("Close"));
-	gtk_widget_ref(close_button);
-	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE,
-			   FALSE, 0);
-	g_signal_connect_swapped(close_button, "clicked",
-				 GTK_SIGNAL_FUNC(dlg_prefs_closed),
-				 dialog);
-
-	/* 
 	 * Set up callbacks
 	 */
-	g_signal_connect_swapped(dialog, "delete_event",
-				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				 dialog);
+	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(dlg_prefs_closed), NULL);
+	g_signal_connect(dialog, "response",
+			 GTK_SIGNAL_FUNC(dlg_prefs_closed), NULL);
 
 	/* 
 	 * Done!

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main.c 6386 2004-11-16 05:47:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -287,7 +287,7 @@ static GtkWidget *get_message_dialog(const char *mark)
 
 static GtkWidget *new_message_dialog(const char *mark)
 {
-	GtkWidget *menu_item, *dialog, *close_button, *vbox;
+	GtkWidget *menu_item, *dialog, *vbox;
 
 	ggz_debug(DBG_TABLE, "Making new thingy for mark %s.", mark);
 
@@ -309,16 +309,14 @@ static GtkWidget *new_message_dialog(const char *mark)
 	/* 
 	 * Make the dialog window
 	 */
-	dialog = gtk_dialog_new();
-	gtk_window_set_transient_for(GTK_WINDOW(dialog),
-				     GTK_WINDOW(dlg_main));
+	dialog = gtk_dialog_new_with_buttons(mark, GTK_WINDOW(dlg_main), 0,
+					     GTK_STOCK_CLOSE,
+					     GTK_RESPONSE_CLOSE, NULL);
 	gtk_widget_ref(dialog);
 	g_object_set_data(G_OBJECT(msg_menu), mark, dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), mark);
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
-	(void)g_signal_connect_swapped(GTK_OBJECT(dialog), "delete_event",
-				       GTK_SIGNAL_FUNC(gtk_widget_hide),
-				       GTK_OBJECT(dialog));
+	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(gtk_widget_hide), NULL);
 
 	/* dialog->vbox is used for placing the message data in; however, this 
 	   data depends on the _type_ of message so we leave that for later. */
@@ -329,17 +327,8 @@ static GtkWidget *new_message_dialog(const char *mark)
 	/* 
 	 * Make the "close" button
 	 */
-	close_button = gtk_button_new_with_label("Close");
-	gtk_widget_ref(close_button);
-	g_object_set_data_full(G_OBJECT(dialog), "close_button",
-			       close_button,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(close_button);
-	(void)g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
-				       GTK_SIGNAL_FUNC(gtk_widget_hide),
-				       GTK_OBJECT(dialog));
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
-			  close_button);
+	g_signal_connect(dialog, "response",
+			 GTK_SIGNAL_FUNC(gtk_widget_hide), NULL);
 
 	return dialog;
 }

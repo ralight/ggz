@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 6339 2004-11-12 17:26:54Z jdorje $
+ * $Id: dlg_options.c 6386 2004-11-16 05:47:51Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -128,7 +128,6 @@ void dlg_option_display(int option_cnt,
 			int *option_sizes, int *defaults, char ***options)
 {
 	GtkWidget *box;
-	GtkWidget *button;
 	gint i, j;
 	GtkTooltips *tooltips;
 
@@ -142,14 +141,12 @@ void dlg_option_display(int option_cnt,
 	options_selected = g_malloc(option_cnt * sizeof(*defaults));
 	memcpy(options_selected, defaults, option_cnt * sizeof(*defaults));
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_transient_for(GTK_WINDOW(window),
-				     GTK_WINDOW(dlg_main));
-	gtk_window_set_title(GTK_WINDOW(window), _("Select Options"));
-	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
+	window = gtk_dialog_new_with_buttons(_("Select Options"),
+					     GTK_WINDOW(dlg_main), 0,
+					     GTK_STOCK_OK, GTK_RESPONSE_OK,
+					     NULL);
 
-	box = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(window), box);
+	box = GTK_DIALOG(window)->vbox;
 
 	for (i = 0; i < option_cnt; i++) {
 		GtkWidget *subbox = NULL;
@@ -210,16 +207,12 @@ void dlg_option_display(int option_cnt,
 		gtk_widget_show(subbox);
 	}
 
-	button = gtk_button_new_with_label(_("Send options"));
-	g_signal_connect(button, "clicked",
+	g_signal_connect(window, "response",
 			 GTK_SIGNAL_FUNC(dlg_options_submit), NULL);
 
 	/* If you close the window, it pops right back up again. */
-	g_signal_connect_swapped(window, "delete_event",
-				 GTK_SIGNAL_FUNC(dlg_opt_delete), window);
-
-	gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
-	gtk_widget_show(button);
+	g_signal_connect(window, "delete_event",
+			 GTK_SIGNAL_FUNC(dlg_opt_delete), NULL);
 
 	gtk_widget_show(box);
 	gtk_widget_show(window);
