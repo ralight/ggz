@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5378 2003-02-04 12:48:49Z dr_maux $
+ * $Id: main.c 5393 2003-02-04 19:42:17Z dr_maux $
  *
  * Main loop
  *
@@ -55,8 +55,16 @@
 /* Termination handler */
 static RETSIGTYPE term_handle(int signum)
 {
+#ifdef HAVE_READLINE_HISTORY_H
+	clear_history();
+#endif
+#ifdef HAVE_READLINE_READLINE_H
+	rl_cleanup_after_signal();
+	rl_reset_terminal(NULL);
+#endif
 	ggzcore_destroy(); 
 	output_shutdown(); 
+
 	exit(1);
 }
 
@@ -201,6 +209,14 @@ int main(int argc, char *argv[])
 	}
 	ggzcore_destroy();
 	output_shutdown();
+
+#ifdef HAVE_READLINE_HISTORY_H
+	clear_history();
+#endif
+#ifdef HAVE_READLINE_READLINE_H
+	rl_cleanup_after_signal();
+	rl_reset_terminal(NULL);
+#endif
 
 #ifdef DEBUG
 	ggz_debug_cleanup(GGZ_CHECK_MEM);

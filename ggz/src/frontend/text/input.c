@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5378 2003-02-04 12:48:49Z dr_maux $
+ * $Id: input.c 5393 2003-02-04 19:42:17Z dr_maux $
  *
  * Functions for inputing commands from the user
  *
@@ -472,9 +472,6 @@ static void input_handle_join_table(char *line)
 
 static void input_handle_exit(void)
 {
-#ifdef HAVE_READLINE_HISTORY_H
-	clear_history();
-#endif
 	loop_quit();
 }
 
