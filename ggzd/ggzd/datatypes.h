@@ -64,7 +64,6 @@ typedef struct {
 	unsigned char player_allow_mask;
 	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
-	int options_size;
 	unsigned char enabled;
 	GameLaunchFunc *launch;
 	char path[MAX_PATH_LEN];

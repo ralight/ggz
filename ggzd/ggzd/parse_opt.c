@@ -820,16 +820,7 @@ static void parse_game(char *name, char *dir)
 
 		/*** OptionsSize = # ***/
 		if(!strcmp(varname, "optionssize")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 0) {
-				PARSE_ERR("OptionsSize value invalid");
-				continue;
-			}
-			game_info->options_size = intval;
+			PARSE_ERR("Obsolete reference to OptionsSize ignored");
 		}
 
 		/*** ExecutablePath = String ***/
