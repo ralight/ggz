@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5208 2002-11-04 07:45:38Z jdorje $
+dnl $Id: configure.in 5284 2002-12-15 10:05:12Z jdorje $
 
 AC_INIT(configure.in)
 #AC_INIT(acinclude.m4)
@@ -56,10 +56,8 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_WITH(gtk2,
-	    AC_HELP_STRING([--with-gtk2],
-                           [compile against GTK2 (experimental)]),
-            with_gtk="gtk2", with_gtk="gtk1.2")
+AC_ARG_ENABLE(gtk, AC_HELP_STRING([--enable-gtk=[gtk1.2/gtk2]],
+                                  [Specify GTK+-1.2 or GTK+-2.0 linkage]))
 
 dnl Check for GGZ requirements
 dnl ==========================
@@ -98,11 +96,40 @@ AC_TYPE_SIGNAL
 
 dnl Check for libs
 dnl ==============
-if test "$with_gtk" = gtk2; then
-    AM_PATH_GTK_2_0(2.0.0,,AC_MSG_ERROR(*** Can't build GTK games: GTK2 not found))
+
+# Check for GTK linkage
+
+case "$enable_gtk" in
+  gtk)    enable_gtk="gtk" ;;
+  gtk1)   enable_gtk="gtk" ;;
+  gtk1.2) enable_gtk="gtk" ;;
+  gtk2)   enable_gtk="gtk2" ;;
+  gtk2.0) enable_gtk="gtk2" ;;
+  gtk20)  enable_gtk="gtk2" ;;
+  *)      enable_gtk="yes" ;;
+esac
+
+if test "$enable_gtk" = "gtk" || test "$enable_gtk" = "yes"; then
+  AM_PATH_GTK([1.2.0], [found_gtk="yes"], [found_gtk="no"])
+  if test "$found_gtk" = "yes"; then
+    enable_gtk=gtk
+  elif test "$enable_gtk" = "gtk"; then
+    AC_MSG_ERROR([*** Can't build GTK+-1.2 frontend: GTK+-1.2 not found])
+  fi
+fi
+
+if test "$enable_gtk" = "gtk2" || test "$enable_gtk" = "yes"; then
+  AM_PATH_GTK_2_0([2.0.0], [found_gtk2="yes"], [found_gtk2="no"])
+  if test "$found_gtk2" = "yes"; then
+    enable_gtk=gtk2
     AC_DEFINE(GTK2)
-else
-    AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
+  elif test "$enable_gtk" = "gtk2"; then
+    AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])
+  fi
+fi
+
+if test "$enable_gtk" = "yes"; then
+  AC_MSG_ERROR([*** Can't build GTK frontend: GTK not found])
 fi
 
 dnl Use -Wall if we have gcc.
@@ -182,7 +209,7 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Gettext support....$enable_gettext"
-echo "    GTK library........$with_gtk"
+echo "    GTK library........$enable_gtk"
 echo ""
 echo "Paths"
 echo "    Installation prefix: $prefix"
