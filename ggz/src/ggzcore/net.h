@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: net.h 5972 2004-03-22 17:05:09Z josef $
  *
  * Code for performing network I/O
  *
@@ -31,6 +31,8 @@
 #include "ggzcore.h"
 #include "protocol.h"
 #include "table.h"
+
+typedef struct _GGZNet GGZNet;
 
 struct _GGZNet* _ggzcore_net_new(void);
 void _ggzcore_net_init(struct _GGZNet *net, 
@@ -80,14 +82,14 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num,
 				 int spectator);
 int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force,
 				  int spectator);
-int _ggzcore_net_send_table_reseat(GGZNet *net,
+int _ggzcore_net_send_table_reseat(struct _GGZNet *net,
 				   GGZReseatType opcode,
 				   int seat_num);
-int _ggzcore_net_send_table_seat_update(GGZNet *net, GGZTable *table,
+int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, GGZTable *table,
 					struct _GGZSeat *seat);
-int _ggzcore_net_send_table_desc_update(GGZNet *net, GGZTable *table,
+int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, GGZTable *table,
 					const char *desc);
-int _ggzcore_net_send_table_boot_update(GGZNet *net, GGZTable *table,
+int _ggzcore_net_send_table_boot_update(struct _GGZNet *net, GGZTable *table,
 					struct _GGZSeat *seat);
 
 int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer);

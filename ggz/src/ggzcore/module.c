@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 5754 2004-01-27 18:11:10Z josef $
+ * $Id: module.c 5972 2004-03-22 17:05:09Z josef $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -115,15 +115,16 @@ GGZModule* ggzcore_module_get_nth_by_type(const char *game,
 /* This adds a local module to the list.  It returns 0 if successful or
    -1 on failure. */
 int ggzcore_module_add(const char *name,
-	               const char *version,
-	               const char *prot_engine,
-	               const char *prot_version,
-                       const char *author,
-		       const char *frontend,
-		       const char *url,
-		       const char *exe_path,
-		       const char *icon_path,
-		       const char *help_path)
+				const char *version,
+				const char *prot_engine,
+				const char *prot_version,
+				const char *author,
+				const char *frontend,
+				const char *url,
+				const char *exe_path,
+				const char *icon_path,
+				const char *help_path,
+				GGZModuleEnvironment environment)
 {
 	return -1;
 }
@@ -233,6 +234,14 @@ char** ggzcore_module_get_argv(GGZModule *module)
 	return _ggzcore_module_get_argv(module);
 }
 
+
+GGZModuleEnvironment ggzcore_module_get_environment(GGZModule *module)
+{	
+	if (!module)
+		return GGZ_ENVIRONMENT_PASSIVE;
+
+	return _ggzcore_module_get_environment(module);
+}
 
 /* Internal library functions (prototypes in module.h) */
 
@@ -462,6 +471,12 @@ char** _ggzcore_module_get_argv(struct _GGZModule *module)
 }
 
 
+GGZModuleEnvironment _ggzcore_module_get_environment(struct _GGZModule *module)
+{
+	return module->environment;
+}
+
+
 int _ggzcore_module_launch(struct _GGZModule *module)
 {
 	ggz_debug(GGZCORE_DBG_MODULE, "Launching module: ");
@@ -581,6 +596,7 @@ static char* _ggzcore_module_conf_filename(void)
 static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 {
 	int argc;
+	char *environment;
 	/* FIXME: check for errors on all of these */
 
 	/* Note: the memory allocated here is freed in _ggzcore_module_free */
@@ -598,6 +614,15 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
      	ggz_conf_read_list(mod_handle, id, "CommandLine", &argc, &mod->argv);
 	mod->icon = ggz_conf_read_string(mod_handle, id, "IconPath", NULL);
 	mod->help = ggz_conf_read_string(mod_handle, id, "HelpPath",  NULL);
+
+	environment = ggz_conf_read_string(mod_handle, id, "Environment", NULL);
+	if(!environment) mod->environment = GGZ_ENVIRONMENT_XWINDOW;
+	else if(!ggz_strcmp(environment, "xwindow")) mod->environment = GGZ_ENVIRONMENT_XWINDOW;
+	else if(!ggz_strcmp(environment, "xfullscreen")) mod->environment = GGZ_ENVIRONMENT_XFULLSCREEN;
+	else if(!ggz_strcmp(environment, "passive")) mod->environment = GGZ_ENVIRONMENT_PASSIVE;
+	else if(!ggz_strcmp(environment, "console")) mod->environment = GGZ_ENVIRONMENT_CONSOLE;
+	else mod->environment = GGZ_ENVIRONMENT_XWINDOW;
+	if(environment) ggz_free(environment);
 }
 
 

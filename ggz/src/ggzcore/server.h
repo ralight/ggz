@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: server.h 5972 2004-03-22 17:05:09Z josef $
  *
  * Code for handling server connection state and properties
  *
@@ -35,7 +35,7 @@
 GGZServer* _ggzcore_server_new(void);
 
 /* functions to get a GGZServer attribute */
-GGZNet*         _ggzcore_server_get_net(GGZServer *server);
+struct _GGZNet* _ggzcore_server_get_net(GGZServer *server);
 GGZLoginType    _ggzcore_server_get_type(GGZServer *server);
 char*           _ggzcore_server_get_handle(GGZServer *server);
 char*           _ggzcore_server_get_password(GGZServer *server);
@@ -66,7 +66,7 @@ void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room);
 
 /* functions to pass status of other information to server object */
 void _ggzcore_server_set_negotiate_status(GGZServer *server,
-					  GGZNet *net,
+					  struct _GGZNet *net,
 					  GGZClientReqError status);
 void _ggzcore_server_set_login_status(GGZServer *server, 
 				      GGZClientReqError status);
@@ -81,7 +81,7 @@ void _ggzcore_server_set_table_join_status(GGZServer *server,
 					   GGZClientReqError status);
 void _ggzcore_server_set_table_leave_status(GGZServer *server, 
 					    GGZClientReqError status);
-void _ggzcore_server_session_over(GGZServer *server, GGZNet *net);
+void _ggzcore_server_session_over(GGZServer *server, struct _GGZNet *net);
 
 /* functions to perform an action */
 int _ggzcore_server_log_session(GGZServer *server, const char *filename);

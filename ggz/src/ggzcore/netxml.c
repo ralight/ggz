@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5945 2004-02-16 22:19:52Z jdorje $
+ * $Id: netxml.c 5972 2004-03-22 17:05:09Z josef $
  *
  * Code for parsing XML streamed from the server
  *
@@ -103,7 +103,6 @@ struct _GGZNet {
 	/* Whether to use TLS or not */
 	int use_tls;
 };
-
 
 /* Game data structure */
 typedef struct {

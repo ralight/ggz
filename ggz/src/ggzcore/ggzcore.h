@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5942 2004-02-16 17:07:31Z jdorje $
+ * $Id: ggzcore.h 5972 2004-03-22 17:05:09Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -485,10 +485,21 @@ typedef enum {
 	GGZ_STATE_LOGGING_OUT, /**< In the process of logging out. */
 } GGZStateID;
 
+
+/** @brief The environment a game frontend expects.
+ *
+ *  Core clients should offer those game modules which fit their
+ *  own environment.
+ */
+typedef enum {
+	GGZ_ENVIRONMENT_PASSIVE, /**< No GUI, no interaction with user */
+	GGZ_ENVIRONMENT_CONSOLE, /**< Text console */
+	GGZ_ENVIRONMENT_FRAMEBUFFER, /**< VESA or framebuffer */
+	GGZ_ENVIRONMENT_XWINDOW, /**< X11 windowed mode (default) */
+	GGZ_ENVIRONMENT_XFULLSCREEN /**< X11 fullscreen mode */
+} GGZModuleEnvironment;
+
 /* Definitions for all internal ggzcore structures. */
-/** @brief GGZ network structure; do not use.
- *  @todo Remove from interface */
-typedef struct _GGZNet      GGZNet;
 
 /** @brief A server object containing all information about a connection */
 typedef struct _GGZServer   GGZServer;
@@ -1331,7 +1342,8 @@ int ggzcore_module_add(const char *name,
 		       const char *url,
 		       const char *exe_path,
 		       const char *icon_path,
-		       const char *help_path);		       
+		       const char *help_path,
+			   GGZModuleEnvironment environment);		       
 
 
 /** @brief Returns how many modules support this game and protocol */
@@ -1382,6 +1394,8 @@ const char* ggzcore_module_get_help_path(GGZModule *module);
 /** @brief Return the executable arguments for the module.  See exec(). */
 char** ggzcore_module_get_argv(GGZModule *module);
 
+/** @brief Return the preferred environment type. */
+GGZModuleEnvironment ggzcore_module_get_environment(GGZModule *module);
 
 /* Functions related to game clients */
 /* --------------------------------- */

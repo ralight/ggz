@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 5949 2004-02-21 05:42:37Z jdorje $
+ * $Id: game.c 5972 2004-03-22 17:05:09Z josef $
  *
  * This fils contains functions for handling games being played
  *
@@ -357,7 +357,7 @@ static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
 				     void *data)
 {
 	GGZGame* game = ggzmod_get_gamedata(mod);
-	GGZNet *net = _ggzcore_server_get_net(game->server);
+	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 	int seat_num = *(int*)data;
 	GGZReseatType op;
 
@@ -374,7 +374,7 @@ static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
 				       void *data)
 {
 	GGZGame* game = ggzmod_get_gamedata(mod);
-	GGZNet *net = _ggzcore_server_get_net(game->server);
+	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 
 	_ggzcore_net_send_table_reseat(net, GGZ_RESEAT_STAND, -1);
 }
@@ -383,7 +383,7 @@ static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 				      void *data)
 {
 	GGZGame* game = ggzmod_get_gamedata(mod);
-	GGZNet *net = _ggzcore_server_get_net(game->server);
+	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
 						     game->room_id);
 	GGZTable *table = _ggzcore_room_get_table_by_id(room, game->table_id);
@@ -416,7 +416,7 @@ static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
 					    void *data)
 {
 	GGZGame* game = ggzmod_get_gamedata(mod);
-	GGZNet *net = _ggzcore_server_get_net(game->server);
+	struct _GGZNet *net = _ggzcore_server_get_net(game->server);
 	int seat_num = *(int*)data;
 	struct _GGZSeat seat = {index: seat_num, name: NULL};
 	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,

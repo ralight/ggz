@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5946 2004-02-16 22:39:15Z jdorje $
+ * $Id: ggz-config.c 5972 2004-03-22 17:05:09Z josef $
  *
  * Configuration query and module install program.
  *
@@ -55,6 +55,7 @@ static char *modexec = NULL;
 static char *modui = NULL;
 static char *modauthor = NULL;
 static char *modurl = NULL;
+static char *modenvironment = NULL;
 static char *modicon = NULL;
 static char *modhelp = NULL;
 static char *modfile = NULL;
@@ -161,6 +162,11 @@ static int load_modfile(void)
 					    "Homepage", NULL);
 	if(modurl == NULL)
 		fprintf(stderr, "Warning: Module homepage not specified.\n");
+
+	modenvironment = ggz_conf_read_string(from, "ModuleInfo",
+					    "Environment", NULL);
+	/*if(modenvironment == NULL)
+		fprintf(stderr, "Warning: Module environment not specified.\n");*/
 
 	modicon = ggz_conf_read_string(from, "ModuleInfo",
 					     "IconPath", NULL);
@@ -419,6 +425,8 @@ static int install_module(void)
 					    "CommandLine", modexec);
 		ggz_conf_write_string(global, engine_id,
 					    "Homepage", modurl);
+		ggz_conf_write_string(global, engine_id,
+					    "Environment", modenvironment);
 		if(modicon)
 			ggz_conf_write_string(global, engine_id,
 						    "IconPath", modicon);
