@@ -1,4 +1,4 @@
-/* $Id: table.c 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: table.c 2077 2001-07-23 08:20:56Z jdorje $ */
 /*
  * File: table.c
  * Author: Rich Gade, Jason Short
@@ -226,13 +226,12 @@ void table_setup()
 		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_widget_show(l_name[p]);
 
-		/* TODO: hack: inserted 4 players here since we haven't gotten
-		 * the actual data yet */
+		/* TODO: get the old label before we update */
 		if (label[p]) {
 			gtk_widget_hide(label[p]);
 			gtk_widget_destroy(label[p]);
 		}
-		label[p] = gtk_label_new(game.players[p].message);
+		label[p] = gtk_label_new(NULL);
 		gtk_fixed_put(GTK_FIXED(f1), label[p], x+3, y+20);
 		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_label_set_justify(GTK_LABEL(label[p]),  GTK_JUSTIFY_LEFT);
