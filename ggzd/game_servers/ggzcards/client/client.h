@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: client.h 4120 2002-04-30 05:04:43Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -162,16 +162,18 @@ extern void game_alert_newgame(cardset_type_t cardset_type);
 extern void game_alert_newhand(void);
 
 /** Handles a gameover message.
-  * @param num_winners The number of players who won the game (0 or more)
-  * @param winners An array with the player numbers of the winners. */
+ *  @param num_winners The number of players who won the game (0 or more)
+ *  @param winners An array with the player numbers of the winners. */
 extern void game_handle_gameover(int num_winners, int *winners);
 
-/** Alerts the table of a player's name and status, before changing that
-  * name in the game structure.
-  * @param player The number of the player whose name we're talking about.
-  * @param name The (possibly new) name of the player. */
-extern void game_alert_player(int player, GGZSeatType status,
-			      const char *name);
+/** Alerts the table of an update to the player data.  So that the
+ *  table can tell what's changed, the old data is passed along.
+ *  @param player The number of the player whose name we're talking about.
+ *  @param old_status The previous type of the seat.
+ *  @param old_name The previous name of the player (seat). */
+extern void game_alert_player(int player,
+                              GGZSeatType old_status,
+                              const char *old_name);
 
 /** Alert the table that the number of players has changed.  The
  *  table will probably want to redesign itself.
