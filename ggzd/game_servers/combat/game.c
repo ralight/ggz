@@ -30,7 +30,7 @@
 
 #include <stdlib.h>
 
-// Global game variable
+// Global game variables
 combat_game cbt_game;
 
 // Who is the host?
@@ -71,7 +71,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 					game_send_options(seat);
 				game_send_players();
 				if (!ggz_seats_open() && cbt_game.map)
-					game_start();
+					game_request_setup(-1);
 			}
 			status = CBT_SERVER_JOIN;
 			break;
@@ -98,7 +98,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 }
 
 int game_handle_player(int seat) {
-	int fd, op, a, status;
+	int fd, op, a, status = CBT_SERVER_OK;
 	
 	ggz_debug("Got message from player %d\n", seat);
 
@@ -118,7 +118,14 @@ int game_handle_player(int seat) {
 			}
 			// Check if must start the game
 			if (!ggz_seats_open() && cbt_game.map)
-				game_start();
+				game_request_setup(-1);
+			break;
+
+		case CBT_MSG_SETUP:
+			// Get what the player sent
+			// (if it is invalid, request if for him again)
+			if (!game_get_setup(seat))
+				game_request_setup(seat);
 			break;
 
 		default:
@@ -127,7 +134,7 @@ int game_handle_player(int seat) {
 
 	}
 
-	return 0;
+	return status;
 
 }
 
@@ -158,14 +165,14 @@ void game_request_options(int seat) {
 	return;
 }
 
-void game_get_options(int seat) {
+int game_get_options(int seat) {
 	int fd = ggz_seats[seat].fd;
 	char *optstr = NULL;
 
 	ggz_debug("Getting options");
 
 	if (es_read_string_alloc(fd, &optstr) < 0)
-		return;
+		return 0;
 
 	ggz_debug("Len: %d", strlen(optstr));
 
@@ -174,7 +181,7 @@ void game_get_options(int seat) {
 
 	
 
-	return;
+	return 1;
 }
 
 void game_send_options(int seat) {
@@ -219,7 +226,99 @@ void game_send_players() {
 	return;
 }
 
-void game_start() {
-	// FIXME: Must add this!
+void game_request_setup(int seat) {
+	int a, fd;
+	if (seat < 0) {
+		for (a = 0; a < ggz_seats_num(); a++) {
+			fd = ggz_seats[a].fd;
+			if (fd < 0)
+				continue;
+			if (es_write_int(fd, CBT_REQ_SETUP) < 0)
+				ggz_debug("Can't send request for setup to player %d", a);
+		}
+	} else {
+		fd = ggz_seats[seat].fd;
+		if (fd >= 0) {
+			if (es_write_int(fd, CBT_REQ_SETUP) < 0)
+				ggz_debug("Can't send request for setup to player %d", seat);
+		}
+	}
 	return;
+}
+
+int game_get_setup(int seat) {
+	int a, b = 0;
+	static int done_setup = 0;
+	int setup_size = 0;
+	int msg_size;
+	int fd = ggz_seats[seat].fd;
+	char *setup;
+
+	if (es_read_string_alloc(fd, &setup) < 0)
+		return 0;
+
+	// Reduce one from the string
+	msg_size = strlen(setup);
+	for (b = 0; b < msg_size; b++)
+		setup[b]--;
+	b = 0;
+	
+
+	// TODO: Check for validity!!
+	
+	// Check if he has already sent a setup and get the number of setup tiles
+	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+		if (GET_OWNER(cbt_game.map[a].type) == seat)
+			setup_size++;
+		if (GET_OWNER(cbt_game.map[a].unit) == seat && LAST(cbt_game.map[a].unit) != U_EMPTY) {
+			ggz_debug("Setup error: Already sent setup");
+			return 0;
+		}
+	}
+
+	// Check if he sent the right number of tiles
+	if (setup_size != msg_size) {
+		ggz_debug("Setup error: Wrong message size");
+		return 0;
+	}
+
+	// Now checks if he hasn't sent less than the expected
+	setup_size = 0;
+	for (a = 0; a < 12; a++)
+		setup_size+=cbt_game.army[seat][a];
+	ggz_debug("Setup size: %d", setup_size);
+	for (a = 0; a < msg_size; a++) {
+		if (LAST(setup[a]) != U_EMPTY)
+			setup_size--;
+	}
+	if (setup_size != 0) {
+		ggz_debug("Setup error: setup_size = %d", setup_size);
+		return 0;
+	}
+
+	for (a = 0; a < cbt_game.width * cbt_game.height; a++) {
+		if (GET_OWNER(cbt_game.map[a].type) == seat) {
+			cbt_game.map[a].unit = setup[b];
+			b++;
+		}
+	}
+
+	done_setup++;
+
+	if (done_setup == ggz_seats_num())
+		game_start();
+
+	return 1;
+}
+
+void game_start() {
+	int a, fd;
+
+	for (a = 0; a < ggz_seats_num(); a++) {
+		fd = ggz_seats[a].fd;
+		if (fd <= 0)
+			continue;
+		if (es_write_int(fd, CBT_MSG_START) < 0)
+			ggz_debug("Can't send start message to player %d", a);
+	}
 }

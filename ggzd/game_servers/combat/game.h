@@ -42,8 +42,10 @@ void game_send_sync(int);
 void game_send_players();
 
 // Gets info from the player
-void game_get_options(int);
+int game_get_options(int);
+int game_get_setup(int);
 
 // Tells the player to do stuff
 void game_request_options(int);
+void game_request_setup(int);
 void game_start();

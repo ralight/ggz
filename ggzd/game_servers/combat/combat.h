@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 2
+#define PROTOCOL_VERSION 3
 
 /* Combat Protocol Version 0.0.1
  *
@@ -142,7 +142,7 @@
  *     ----
  *    Unit code (the definitions are later on this header file)
  * If this player has more tiles than the number of starting positiions,
- * then he can have some with a unit code of NULL.
+ * then he can have some with a unit code of EMPTY.
  *
  * The owner code isn't really necessary for the protocol, but it
  * makes easier to just copy the values to the server variables... :) 
@@ -285,6 +285,16 @@
 #define CBT_MSG_PLAYERS 1
 #define CBT_REQ_OPTIONS 2
 #define CBT_MSG_OPTIONS 3
+#define CBT_REQ_SETUP 4
+#define CBT_MSG_SETUP 5
+#define CBT_MSG_START 6
+#define CBT_REQ_MOVE 7
+#define CBT_MSG_MOVE 8
+#define CBT_MSG_ATTACK 9
+#define CBT_MSG_GAMEOVER 10
+#define CBT_REQ_SYNC 11
+#define CBT_MSG_SYNC 12
+
 
 
 
