@@ -16,6 +16,8 @@ function stats_players($id, $lookup)
 		$rank = pg_result($res, $i, "ranking");
 		$highscore = pg_result($res, $i, "highscore");
 
+		$rating = (int)($rating);
+
 		$res2 = pg_exec($id, "SELECT * FROM rankings WHERE game = '$game'");
 		if (($res2) && (pg_numrows($res2) == 1)) :
 			$method = pg_result($res2, 0, "method");
@@ -27,6 +29,8 @@ function stats_players($id, $lookup)
 			$rankstr = "st";
 		elseif ($rank == 2) :
 			$rankstr = "nd";
+		elseif ($rank == 3) :
+			$rankstr = "rd";
 		else :
 			$rankstr = "th";
 		endif;
@@ -89,6 +93,8 @@ function stats_games($id, $lookup)
 		$rank = pg_result($res, $i, "ranking");
 		$highscore = pg_result($res, $i, "highscore");
 
+		$rating = (int)($rating);
+
 		$handlecaption = $handle;
 		$pic = "player.png";
 		if ($handle == $ggzuser) :
@@ -100,6 +106,8 @@ function stats_games($id, $lookup)
 			$rankstr = "st";
 		elseif ($rank == 2) :
 			$rankstr = "nd";
+		elseif ($rank == 3) :
+			$rankstr = "rd";
 		else :
 			$rankstr = "th";
 		endif;
