@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-grubby, 0.0.7)
+AM_INIT_AUTOMAKE(ggz-grubby, 0.0.8pre)
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
@@ -73,25 +73,21 @@ fi
 if test "$enable_ruby" = yes; then
 	echo -n "Extra check: ruby... "
 
-	incs=""
-	for i in 1.7 1.6; do
-		for j in i686 i586 i486 i386 powerpc; do
-			incs="$incs /usr/local/lib/ruby/$i/$j-linux";
-			incs="$incs /usr/lib/ruby/$i/$j-linux";
-		done;
-	done
+	incs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"archdir"@:>@)'`
+	libs=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"libdir"@:>@)'`
+	rver=`ruby -r rbconfig -e 'printf("%s", Config::CONFIG@<:@"ruby_install_name"@:>@)'`
 
 	AC_GGZ_FIND_FILE("ruby.h", $incs, ruby_incdir)
 	ruby_includes="$ruby_incdir"
 
-	libs="/usr/local/lib /usr/lib"
 	AC_GGZ_FIND_FILE("libruby.so", $libs, ruby_libdir)
-	rubystyle=old
-	if test "x$ruby_libdir" = "xNO"; then
-		AC_GGZ_FIND_FILE("libruby1.7.so", $libs, ruby_libdir)
-		rubystyle=new
-	fi
 	ruby_libraries="$ruby_libdir"
+	if test "x$ruby_libraries" = "xNO"; then
+		AC_GGZ_FIND_FILE("lib$rver.so", $libs, ruby_libdir)
+		ruby_libraries="$ruby_libdir"
+	else
+		rver="ruby"
+	fi
 
 	if test "x$ruby_includes" = "xNO" || test "x$ruby_libraries" = "xNO"; then
 		AC_MSG_RESULT(no.)
@@ -100,11 +96,7 @@ if test "$enable_ruby" = yes; then
 		enable_ruby=no
 	else
 		ruby_includes="-I $ruby_includes"
-		if test "$rubystyle" = "old"; then
-			ruby_libraries="-L $ruby_libraries -lruby"
-		else
-			ruby_libraries="-L $ruby_libraries -lruby1.7"
-		fi
+		ruby_libraries="-L $ruby_libraries -l$rver"
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(ruby_includes)
 		AC_SUBST(ruby_libraries)
