@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5480 2003-03-29 10:40:34Z dr_maux $
+ * $Id: game.c 5512 2003-05-09 22:57:43Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -56,7 +56,8 @@ static void game_loadmap(const char *file)
 	enum states {state_title, state_author, state_version, state_anywhere, state_knights, state_nowhere, state_map};
 	enum qualities {quality_ok, quality_bad, quality_error};
 	int state, quality, i, j;
-	int x, y, mapx, mapy;
+	unsigned int mapx, mapy;
+	unsigned int x, y;
 	struct hastings_map_t map;
 
 	if(verbose) printf("Load map: %s\n", file);
