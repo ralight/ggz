@@ -170,21 +170,11 @@ AC_GGZ_TLS
 LDADD="$LDADD $GGZTLS_LDFLAGS $GGZTLS_LIB"
 CFLAGS="$CFLAGS $GGZTLS_INCLUDES"
 
-dnl Use -Wall if we have gcc.
-dnl =========================
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
-
 
 dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
+
 
 AC_SUBST(LDADD)
 
