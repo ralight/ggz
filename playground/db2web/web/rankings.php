@@ -7,7 +7,7 @@ function rankings_players($id, $lookup)
 
 	echo "<b>Rankings</b><br>\n";
 
-	$res = pg_exec($id, "SELECT * FROM stats WHERE handle = '$lookup' AND ranking < 4");
+	$res = pg_exec($id, "SELECT * FROM stats WHERE handle = '$lookup' AND ranking > 0 AND ranking < 4");
 
 	for ($i = 0; $i < pg_numrows($res); $i++)
 	{

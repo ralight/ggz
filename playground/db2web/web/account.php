@@ -31,12 +31,14 @@ endif;
 
 if (($input_user) && ($input_pass)) :
 	$md5pass = $input_pass;
+	$md5user = $input_user;
 
 	$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$input_user' AND password = '$md5pass'");
 	if (($res) && (pg_numrows($res) == 1)) :
 		if (!$register) :
 			// login success
-			setcookie("ggzuser", "$md5pass");
+			setcookie("ggzuser", "$md5user");
+			setcookie("ggzpass", "$md5pass");
 		else :
 			// registration failed
 		endif;
@@ -51,6 +53,7 @@ if (($input_user) && ($input_pass)) :
 	endif;
 else :
 	setcookie("ggzuser");
+	setcookie("ggzpass");
 endif;
 
 header("Location: index.php");
