@@ -1,0 +1,70 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>How to contribute</b><br>
+Due to the nature of GGZ, many small and sometimes completely unrelated tasks are 
+waiting to be worked on.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Play</i><br>
+One clear advantage of game project is that having fun can already help a lot,
+if bugs or bogus game situations are reported to the GGZ bug tracker.
+
+<br><br>
+
+<i>Translate</i><br>
+Most of our applications and games are internationalized, as are the web pages.
+Maintenance and new translations are always needed.
+
+<br><br>
+
+<i>Add multimedia</i><br>
+Graphically, most of our games need improvements. Sounds are currently not used
+at all. Levels and storylines could be added to some games as well.
+
+<br><br>
+
+<i>Develop plugins</i><br>
+Our chatbot can load plugins dynamically for all sorts of communication.
+Details can be found in grubby's doc/ directory.
+The GGZ server uses a well-defined interface for database access,
+backends for it exist for various formats.
+
+<br><br>
+
+<i>Develop games</i><br>
+The GGZ Game Development Guide and other documents help in how to create new
+game servers and clients in C, C++ and Python, using toolkits such as
+SDL, KDE/Qt or Gtk+.
+
+<br><br>
+
+<i>Hack GGZ</i><br>
+Since the entire GGZ system is open, everything from server enhancements to
+new programming languages can be discussed on the ggz-dev mailing list.
+
+<br><br>
+
+<i>Administration</i><br>
+Running GGZ servers or mirroring web pages and FTP contents are helping the
+project as well.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
