@@ -419,15 +419,12 @@ static void display_chat(char *name, char *msg)
 	char *buf;
 	gpointer tmp;
 	GdkColormap *cmap;
-	int count, color_index;
+	int color_index;
 
 	/* Get color for user */
-	color_index=0;
-	for(count=0;count<=users.count-1;count++)
-	{
-		if(!strcmp(users.info[count].name, name))
-			color_index=users.info[count].chat_color;
-	}
+	color_index=1;
+	if (!strcmp(connection.username, name))
+		color_index=0;
 		
 	/* Get the system color map and allocate the color. */
 	cmap = gdk_colormap_get_system();

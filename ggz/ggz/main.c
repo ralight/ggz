@@ -48,16 +48,16 @@ int selected_type;
 /* Aray of GdkColors currently used for chat */
 GdkColor colors[] = 
 {
-	{0, 0, 0, 0xcccc},		/* 0   bule		*/
-	{0, 0, 0xcccc, 0},		/* 1   green		*/
-	{0, 0xcccc, 0, 0},		/* 2   red		*/
-	{0, 0xbbbb, 0xbbbb, 0},		/* 3   yellow/brown	*/
-	{0, 0xbbbb, 0, 0xbbbb},		/* 4   purple		*/
-	{0, 0xffff, 0xaaaa, 0},		/* 5   orange		*/
-	{0, 0x7777, 0x7777, 0x7777},	/* 6   grey		*/
-	{0, 0, 0xcccc, 0xcccc},		/* 7   aqua		*/
-	{0, 0, 0, 0xcccc},		/* 8   blue markBack	*/
-	{0, 0xffff, 0, 0xffff},		/* 9   pink		*/
+	{0, 0, 0xcccc, 0},		/* 0   green		Self	*/
+	{0, 0, 0, 0xcccc},		/* 1   bule		Others	*/
+	{0, 0xcccc, 0, 0},		/* 2   red		Buddies	*/
+	{0, 0xbbbb, 0xbbbb, 0},		/* 3   yellow/brown		*/
+	{0, 0xbbbb, 0, 0xbbbb},		/* 4   purple			*/
+	{0, 0xffff, 0xaaaa, 0},		/* 5   orange			*/
+	{0, 0x7777, 0x7777, 0x7777},	/* 6   grey			*/
+	{0, 0, 0xcccc, 0xcccc},		/* 7   aqua			*/
+	{0, 0, 0, 0xcccc},		/* 8   blue markBack		*/
+	{0, 0xffff, 0, 0xffff},		/* 9   pink			*/
 };
 
 
