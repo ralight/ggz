@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6825 2005-01-23 08:54:26Z jdorje $
+ * $Id: ggzmod.c 6866 2005-01-24 01:39:48Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -56,6 +56,8 @@
 #include <unistd.h>
 
 #include <ggz.h>
+
+#include "ggzcore-ggz.h"
 
 #include "ggzmod.h"
 #include "ggzmod-ggz.h"
@@ -149,6 +151,9 @@ GGZMod *ggzmod_new(GGZModType type)
 	ggzmod->state = GGZMOD_STATE_CREATED;
 	ggzmod->fd = -1;
 	ggzmod->server_fd = -1;
+	ggzmod->server_host = NULL;
+	ggzmod->server_port = 0;
+	ggzmod->server_handle = NULL;
 	for (i = 0; i < GGZMOD_NUM_HANDLERS; i++)
 		ggzmod->handlers[i] = NULL;
 	ggzmod->gamedata = NULL;
@@ -195,6 +200,9 @@ void ggzmod_free(GGZMod * ggzmod)
 	if (ggzmod->fd != -1)
 		(void)ggzmod_disconnect(ggzmod);
 	
+	if (ggzmod->server_host) ggz_free(ggzmod->server_host);
+	if (ggzmod->server_handle) ggz_free(ggzmod->server_handle);
+
 	ggzmod->type = -1;
 
 	if (ggzmod->my_name)
@@ -305,14 +313,17 @@ void ggzmod_set_gamedata(GGZMod * ggzmod, void * data)
 }
 
 
-void ggzmod_set_server_fd(GGZMod * ggzmod, int fd)
+void ggzmod_set_server_host(GGZMod * ggzmod,
+			    const char *host, unsigned int port,
+			    const char *handle)
 {
 	if (ggzmod && ggzmod->type == GGZMOD_GGZ) {
-		ggzmod->server_fd = fd;
-
 		/* If we're already connected, send the fd */
 		if (ggzmod->state == GGZMOD_STATE_CONNECTED)
-			_io_send_server(ggzmod->fd, fd);
+			_io_send_server(ggzmod->fd, host, port, handle);
+		ggzmod->server_host = ggz_strdup(host);
+		ggzmod->server_port = port;
+		ggzmod->server_handle = ggz_strdup(handle);
 	}
 }
 
@@ -940,8 +951,10 @@ static int send_game_launch(GGZMod * ggzmod)
 		return -1;
 
 	/* If the server fd has already been set, send that too */
-	if (ggzmod->server_fd != -1)
-		if (_io_send_server(ggzmod->fd, ggzmod->server_fd) < 0)
+	if (ggzmod->server_host)
+		if (_io_send_server(ggzmod->fd, ggzmod->server_host,
+				    ggzmod->server_port,
+				    ggzmod->server_handle) < 0)
 			return -5;
 
 	return 0;
@@ -1290,14 +1303,19 @@ void _ggzmod_handle_launch(GGZMod * ggzmod)
 }
 
 
-void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
+void _ggzmod_handle_server(GGZMod * ggzmod, const char *host,
+			   unsigned int port, const char *handle)
 {
-	ggzmod->server_fd = fd;
-
-	/* Everything's done now, so we move into the waiting state. */
+	ggzmod->server_host = ggz_strdup(host);
+	ggzmod->server_port = port;
+	ggzmod->server_handle = ggz_strdup(handle);
+	ggzmod->server_fd = ggzcore_channel_connect(host, port, handle);
+	if (ggzmod->server_fd < 0) {
+		_ggzmod_error(ggzmod, "Could not create channel.");
+		return;
+	}
 	_ggzmod_set_state(ggzmod, GGZMOD_STATE_WAITING);
-
-	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
+	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &ggzmod->server_fd);
 }
   
 int ggzmod_set_stats(GGZMod *ggzmod, GGZStat *player_stats,

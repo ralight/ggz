@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/20/02
  * Desc: GGZ game module functions, GGZ side
- * $Id: ggzmod-ggz.h 6151 2004-07-17 22:45:57Z josef $
+ * $Id: ggzmod-ggz.h 6866 2005-01-24 01:39:48Z jdorje $
  *
  * This file contains the GGZ-only interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -77,11 +77,15 @@ void ggzmod_set_transaction_handler(GGZMod * ggzmod, GGZModTransaction t,
 void ggzmod_set_module(GGZMod * ggzmod, const char *pwd, char **args);
 		       
 
-/** @brief Set the fd of the game server connection
+/** @brief Set the host and port for the game server connection
  *  @param ggzmod The GGZMod object.
- *  @return The server connection fd
+ *  @param host The hostname.
+ *  @param port The port to connect to.
+ *  @param handle The ID to use to connect (currently the player handle).
  */
-void ggzmod_set_server_fd(GGZMod * ggzmod, int fd);
+void ggzmod_set_server_host(GGZMod * ggzmod,
+			    const char *host, unsigned int port,
+			    const char *handle);
 
 /** @brief Set data about which seat at which this ggzmod is sitting.
  *

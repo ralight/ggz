@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 6112 2004-07-16 17:31:15Z jdorje $
+ * $Id: io.c 6866 2005-01-24 01:39:48Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -69,11 +69,13 @@ int _io_send_launch(int fd)
 	return 0;
 }
 
-
-int _io_send_server(int fd, int server_fd)
+int _io_send_server(int fd, const char *host, unsigned int port,
+		    const char *handle)
 {
 	if (ggz_write_int(fd, MSG_GAME_SERVER) < 0
-	    || ggz_write_fd(fd, server_fd) < 0)
+	    || ggz_write_string(fd, host) < 0
+	    || ggz_write_int(fd, port) < 0
+	    || ggz_write_string(fd, handle) < 0)
 		return -1;
 	else
 		return 0;
@@ -343,13 +345,20 @@ static int _io_read_msg_launch(GGZMod *ggzmod)
 
 static int _io_read_msg_server(GGZMod *ggzmod)
 {
-	int fd;
+	char *host = NULL, *handle = NULL;
+	int port;
 
-	if (ggz_read_fd(ggzmod->fd, &fd) < 0)
+	if (ggz_read_string_alloc(ggzmod->fd, &host) < 0
+	    || ggz_read_int(ggzmod->fd, &port) < 0
+	    || ggz_read_string_alloc(ggzmod->fd, &handle) < 0) {
+		if (host) ggz_free(host);
+		if (handle) ggz_free(handle);
 		return -1;
-	else
-		_ggzmod_handle_server(ggzmod, fd);
-	
+	}
+
+	_ggzmod_handle_server(ggzmod, host, port, handle);
+	ggz_free(host);
+	ggz_free(handle);
 	return 0;
 }
 

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6815 2005-01-22 16:00:24Z josef $
+ * $Id: ggzcore.h 6866 2005-01-24 01:39:48Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -760,19 +760,8 @@ char*        ggzcore_server_get_password(GGZServer *server);
  */
 int          ggzcore_server_get_fd(GGZServer *server);
 
-
-/** @brief Get the socket used for direct gane connections
- *
- *  This returns the file descriptor of the socket for
- *  the TCP game connection.  This will be handed off to a game module 
- *  when it is ready.
- *
- *  @param server The GGZ server object.
- *  @return The file descriptor of the connection socket.
- *  @see ggzcore_server_create_channel
- */
-int ggzcore_server_get_channel(GGZServer *server);
-
+/** @brief Deprecated function.  Do not use. */
+#define ggzcore_server_get_channel(server) (-1)
 
 /** @brief Get the state of the server connection.
  *
@@ -855,16 +844,8 @@ int ggzcore_server_is_at_table(GGZServer *server);
  */
 int ggzcore_server_connect(GGZServer *server);
 
-/** @brief Establish a direct connection.
- *
- *  Direct connections are requested for games. They are similar to
- *  connections, instead of that no login takes place, but a channel for
- *  arbitrary game data is created.
- *
- *  @param server The GGZ server object.
- *  @return 0 on success, -1 on failure.
- */
-int ggzcore_server_create_channel(GGZServer *server);
+/** @brief Deprecated function.  Do not use. */
+#define ggzcore_server_create_channel(server) (void)0
 
 /** @brief Log in to the server.
  *
@@ -1518,8 +1499,8 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 /** @brief Return the control (ggzmod) socket for the game. */
 int  ggzcore_game_get_control_fd(GGZGame *game);
 
-/** @brief Return the game's server socket. */
-void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
+/** @brief Deprecated function.  Do not use. */
+#define ggzcore_game_set_server_fd(game, fd) (void)0
 
 /** @brief Return the module set for the game. */
 GGZModule* ggzcore_game_get_module(GGZGame *game);

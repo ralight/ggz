@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: server.c 6866 2005-01-24 01:39:48Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -40,6 +40,8 @@
 #include <ggz.h>
 
 #include "ggzcore.h"
+#include "ggzcore-ggz.h"
+
 #include "hook.h"
 #include "net.h"
 #include "player.h"
@@ -114,8 +116,11 @@ struct _GGZServer {
 	/* Current game on game server */
 	GGZGame *game;
 
-	/* Game communications channel */
-	GGZNet *channel;	
+	/* Whether this is a primary ggzcore server connection or a
+	 * channel. */
+	int is_channel;
+	int channel_complete;
+	int channel_failed;
 
        	/* Callbacks for server events.  Every time an event happens all the
 	 * hooks in the list for that event are called. */
@@ -321,15 +326,6 @@ int ggzcore_server_get_fd(GGZServer *server)
 }
 
 
-int ggzcore_server_get_channel(GGZServer *server)
-{
-	if (server && server->channel)
-		return _ggzcore_net_get_fd(server->channel);
-	else
-		return -1;
-}
-
-
 GGZStateID ggzcore_server_get_state(GGZServer *server)
 {
 	if (server)
@@ -460,16 +456,6 @@ int ggzcore_server_connect(GGZServer *server)
 }
 
 
-int ggzcore_server_create_channel(GGZServer *server)
-{
-	if (server && server->net && server->state == GGZ_STATE_IN_ROOM) {
-		return _ggzcore_server_create_channel(server);
-	}
-	else
-		return -1;
-}
-
-
 int ggzcore_server_login(GGZServer *server)
 {
 	/* Return nothing if we didn't get the necessary info */
@@ -559,24 +545,25 @@ int ggzcore_server_read_data(GGZServer *server, int fd)
 {
 	int status = -1;
 
-	if (!server)
+	if (!server || !server->net
+	    || (fd = _ggzcore_net_get_fd(server->net)) < 0)
 		return -1;
 
-	if (server->net && fd == _ggzcore_net_get_fd(server->net)) {
-		if (server->state != GGZ_STATE_OFFLINE) {
-			status = _ggzcore_net_read_data(server->net);
+	if (server->state != GGZ_STATE_OFFLINE) {
+		status = _ggzcore_net_read_data(server->net);
 
-			/* See comment in
-			 * ggzcore_server_queue_players_changed. */
-			if (server->queued_events.players_changed) {
-				_ggzcore_server_event(server,
-					GGZ_SERVER_PLAYERS_CHANGED, NULL);
-				server->queued_events.players_changed = 0;
-			}
+		/* See comment in
+		 * ggzcore_server_queue_players_changed. */
+		if (server->queued_events.players_changed) {
+			_ggzcore_server_event(server,
+				GGZ_SERVER_PLAYERS_CHANGED, NULL);
+			server->queued_events.players_changed = 0;
 		}
-	} else if (server->channel
-		   && fd == _ggzcore_net_get_fd(server->channel)) {
-		status = _ggzcore_net_read_data(server->channel);
+	} else {
+		/* If we *don't* return an error here, the caller is likely
+		 * to just keep calling this function again and again
+		 * because no data will ever be read. */
+		return -1;
 	}
 
 	return 0;
@@ -778,12 +765,13 @@ void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room)
 void _ggzcore_server_set_negotiate_status(GGZServer *server, GGZNet *net,
 					  GGZClientReqError status)
 {
-	if (net == server->net)
-		_ggzcore_server_main_negotiate_status(server, status);
-	else if (net == server->channel)
-		_ggzcore_server_channel_negotiate_status(server, status);
-	else
+	if (net != server->net) {
 		_ggzcore_server_net_error(server, "Unknown negotation");
+	} else if (server->is_channel == 0) {
+		_ggzcore_server_main_negotiate_status(server, status);
+	} else {
+		_ggzcore_server_channel_negotiate_status(server, status);
+	}
 }
 
 
@@ -915,14 +903,16 @@ void _ggzcore_server_set_table_leave_status(GGZServer *server,
 
 void _ggzcore_server_session_over(GGZServer *server, GGZNet *net)
 {
-	if (net == server->net) {
+	if (net != server->net) return;
+	if (server->is_channel == 0) {
 		/* Server is ending session */
 		_ggzcore_net_disconnect(net);
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
 		_ggzcore_server_event(server, GGZ_LOGOUT, NULL);
-	}
-	else if (net == server->channel) {
-		_ggzcore_server_event(server, GGZ_CHANNEL_READY, NULL);
+	} else {
+		/* Channel is ready! */
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_OK);
+		server->channel_complete = 1;
 	}
 }
 
@@ -945,6 +935,8 @@ void _ggzcore_server_reset(GGZServer *server)
 
 	/* Allocate network object */
 	server->net = _ggzcore_net_new();
+
+	server->is_channel = 0;
 
 	/* Setup event hook lists */
 	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
@@ -980,41 +972,66 @@ int _ggzcore_server_connect(GGZServer *server)
 }
 
 
-int _ggzcore_server_create_channel(GGZServer *server)
+int ggzcore_channel_connect(const char *host, unsigned int port,
+			    const char *handle)
 {
-	int status;
-	const char *host;
-	unsigned int port;
-	char *errmsg;
-	
-	/* FIXME: make sure we don't already have a channel */
-	server->channel = _ggzcore_net_new();
-	host = _ggzcore_net_get_host(server->net);
-	port = _ggzcore_net_get_port(server->net);
-	_ggzcore_net_init(server->channel, server, host, port, 0);
-	status = _ggzcore_net_connect(server->channel);
-	
-	if (status < 0) {
-		ggz_debug(GGZCORE_DBG_SERVER, "Channel creation failed");
-		if(status == -1) errmsg = strerror(errno);
-		else {
-#ifdef HAVE_HSTRERROR
-			errmsg = (char*)hstrerror(h_errno);
-#else
-			/* Not all systems have hstrerror. */
-			errmsg = "Unable to connect";
-#endif
+	GGZServer *server;
+	int fd;
+
+	/* Hack, hack, hack.  The below really needs to be fixed up with some
+	 * error handling.  There's also a major problem that it blocks the
+	 * whole time while the connection is being made. */
+	server = ggzcore_server_new();
+	ggzcore_server_log_session(server, "channel.xml");
+	server->is_channel = 1;
+	server->channel_complete = server->channel_failed = 0;
+	if (ggzcore_server_set_hostinfo(server, host, port, 0) < 0
+	    || ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST,
+					    handle, NULL) < 0) {
+		ggzcore_server_free(server);
+		return -1;
+	}
+
+	if (_ggzcore_server_connect(server) < 0) {
+		ggzcore_server_free(server);
+		return -1;
+	}
+	fd = _ggzcore_net_get_fd(server->net);
+
+	while (1) {
+		fd_set active_fd_set;
+		int status;
+		struct timeval timeout = {.tv_sec = 30, .tv_usec = 0};
+
+		FD_ZERO(&active_fd_set);
+		FD_SET(fd, &active_fd_set);
+
+		status = select(fd + 1, &active_fd_set, NULL, NULL, &timeout);
+		if (status < 0) {
+			if (errno == EINTR) continue;
+			ggzcore_server_free(server);
+			return -1;
+		} else if (status == 0) {
+			/* Timed out. */
+			return -1;
+		} else if (status > 0 && FD_ISSET(fd, &active_fd_set)) {
+			if (ggzcore_server_read_data(server, fd) < 0) {
+				return -1;
+			}
 		}
-		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, errmsg);
-	}
-	else {
-		ggz_debug(GGZCORE_DBG_SERVER, "Channel created");
-		_ggzcore_server_event(server, GGZ_CHANNEL_CONNECTED, NULL);
-	}
 
-	return status;
+		if (server->channel_complete != 0) {
+			/* Set the socket to -1 so we don't
+			 * accidentally close it. */
+			_ggzcore_net_set_fd(server->net, -1);
+			ggzcore_server_free(server);
+			return fd;
+		} else if (server->channel_failed != 0) {
+			ggzcore_server_free(server);
+			return -1;
+		}
+	}
 }
-
 			    
 int _ggzcore_server_login(GGZServer *server)
 {
@@ -1173,12 +1190,12 @@ static void _ggzcore_server_channel_negotiate_status(GGZServer *server,
 	int fd;
 	
 	if (status == E_OK) {
-		fd = _ggzcore_net_get_fd(server->channel);
-		_ggzcore_net_send_channel(server->channel, server->handle);
-		_ggzcore_net_send_logout(server->channel);
+		fd = _ggzcore_net_get_fd(server->net);
+		_ggzcore_net_send_channel(server->net, server->handle);
+		_ggzcore_net_send_logout(server->net);
 	}
 	else {
-		_ggzcore_server_event(server, GGZ_CHANNEL_FAIL, "Protocol mismatch");
+		server->channel_failed = 1;
 	}
 }
 
@@ -1295,6 +1312,9 @@ void _ggzcore_server_net_error(GGZServer *server, char* message)
 {
 	_ggzcore_server_change_state(server, GGZ_TRANS_NET_ERROR);
 	_ggzcore_server_event(server, GGZ_NET_ERROR, message);
+	if (server->is_channel) {
+		server->channel_failed = 1;
+	}
 }
 
 
@@ -1304,6 +1324,9 @@ void _ggzcore_server_protocol_error(GGZServer *server, char* message)
 	_ggzcore_net_disconnect(server->net);
 	_ggzcore_server_change_state(server, GGZ_TRANS_PROTO_ERROR);
 	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, message);
+	if (server->is_channel) {
+		server->channel_failed = 1;
+	}
 }
 
 

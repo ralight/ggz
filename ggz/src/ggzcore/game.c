@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6826 2005-01-23 08:55:06Z jdorje $
+ * $Id: game.c 6866 2005-01-24 01:39:48Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -232,13 +232,6 @@ int ggzcore_game_read_data(GGZGame *game)
 }   
 
 
-void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd)
-{
-	if (game)
-		return _ggzcore_game_set_server_fd(game, fd);
-}
-
-
 GGZModule* ggzcore_game_get_module(GGZGame *game)
 {
 	if (game)
@@ -297,6 +290,10 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	/* Setup client module connection */
 	game->client = ggzmod_new(GGZMOD_GGZ);
 	ggzmod_set_gamedata(game->client, game);
+	ggzmod_set_server_host(game->client,
+			       ggzcore_server_get_host(server),
+			       ggzcore_server_get_port(server),
+			       ggzcore_server_get_handle(server));
 	ggzmod_set_handler(game->client, GGZMOD_EVENT_STATE,
 			   &_ggzcore_game_handle_state);
 	ggzmod_set_transaction_handler(game->client,
@@ -661,12 +658,6 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 	}
 
 	return status;
-}
-
-
-void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd)
-{
-	ggzmod_set_server_fd(game->client, fd);
 }
 
 
