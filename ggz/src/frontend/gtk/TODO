@@ -9,6 +9,13 @@ Current
 	* Padding around the room label
 	* Left align the room label
 	* More padding around the edges of client_hbox
+	* About
+	* Game Types
+	* Launch
+	* Licence
+	* MOTD
+	* Preferances
+		- Click or double-click to enter room
 
 	Interaction
 	-----------
@@ -28,12 +35,6 @@ To Add
 
 	GUI
 	---
-	* About
-	* Game Types
-	* Launch
-	* Licence
-	* MOTD
-	* Preferances
 	- Player Stats
 		- Session time
 		- Total online time

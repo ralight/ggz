@@ -522,6 +522,27 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data)
 {
+	GtkWidget *tmp;
+
+	gdk_input_remove(server_handle);
+	server_handle = -1;
+	/*ggzcore_server_free(server);*/
+	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
+
+        /* Clear current list of rooms */
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+        gtk_clist_clear(GTK_CLIST(tmp));
+ 
+        /* Clear current list of players */
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
+        gtk_clist_clear(GTK_CLIST(tmp));
+
+        /* Clear current list of tables */
+        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
+        gtk_clist_clear(GTK_CLIST(tmp));
+
+        ggz_sensitivity_init();
+
 	return GGZ_HOOK_OK;
 }
 
