@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4829 2002-10-09 23:12:15Z jdorje $
+ * $Id: game.c 4916 2002-10-14 22:13:38Z jdorje $
  *
  * Functions for handling game events
  *
@@ -162,7 +162,7 @@ int game_init(int spectate)
 		
 	/* Create new game using this module */
 	game = ggzcore_game_new();
-	ggzcore_game_init(game, module);
+	ggzcore_game_init(game, server, module);
 
 	/* Register callbacks */
 	game_register(game);
