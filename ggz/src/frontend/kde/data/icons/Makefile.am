@@ -12,6 +12,7 @@ pix_DATA = \
 	info.png \
 	join.png \
 	launch.png \
+	langame.png \
 	module.png \
 	players.png \
 	pref.png \

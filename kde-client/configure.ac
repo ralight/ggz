@@ -1,7 +1,7 @@
 dnl Configuration for KGGZ
 dnl ======================
 
-AC_INIT([GGZ KDE client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-client])
+AC_INIT([GGZ KDE client], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -80,6 +80,27 @@ echo "checking for GGZ patch 'Encryption' (Encryption): $patch_encryption"
 
 echo "checking for GGZ patch 'Spectators' (Spectators): permanent"
 AC_DEFINE_UNQUOTED([KGGZ_PATCH_SPECTATORS], 1, [Spectators patch to ggzcore])
+
+dnl Check for zeroconf implementation Howl
+dnl ======================================
+AC_CHECK_LIB(howl, sw_discovery_init,
+[
+	AC_CHECK_HEADERS([howl/howl_config.h],
+	[
+		AC_DEFINE(WITH_HOWL, 1, [Use howl for zeroconf mechanism])
+		HOWL_INCLUDES="-I/usr/include/howl"
+		LIB_HOWL="-lhowl -lpthread"
+		AC_SUBST(HOWL_INCLUDES)
+		AC_SUBST(LIB_HOWL)
+	],
+	[
+		AC_MSG_WARN([Zeroconf diabled, libhowl (headers) not found.])
+	])
+],
+[
+	AC_MSG_WARN([Zeroconf disabled, libhowl (libs) not found.])
+],
+[-lpthread])
 
 dnl Set up variables for KGGZ
 dnl =========================
