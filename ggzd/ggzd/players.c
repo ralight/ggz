@@ -1179,7 +1179,8 @@ static int player_list_types(int p_index, int fd)
 		if (es_write_int(fd, i) < 0
 		    || es_write_string(fd, info[i].name) < 0
 		    || es_write_string(fd, info[i].version) < 0
-		    || es_write_char(fd, info[i].player_allow_mask) < 0)
+		    || es_write_char(fd, info[i].player_allow_mask) < 0
+		    || es_write_char(fd, info[i].bot_allow_mask) < 0)
 			return GGZ_REQ_DISCONNECT;
 		if (!verbose)
 			continue;
@@ -1297,8 +1298,8 @@ static int player_list_tables_room(const int fd, const int room, const int type)
 
 	status = 0;
 	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, indices[i]) < 0
+		if (es_write_int(fd, indices[i]) < 0
+		    || es_write_int(fd, my_tables[i].room) < 0
 		    || es_write_int(fd, my_tables[i].type_index) < 0
 		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].state) < 0
@@ -1372,8 +1373,8 @@ static int player_list_tables_global(const int fd, const int type)
 		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, indices[i]) < 0
+		if (es_write_int(fd, indices[i]) < 0
+		    || es_write_int(fd, my_tables[i].room) < 0
 		    || es_write_int(fd, my_tables[i].type_index) < 0
 		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].state) < 0

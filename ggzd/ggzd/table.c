@@ -75,6 +75,8 @@ static int   table_transit_event_enqueue(unsigned int table,
 					 unsigned int player,
 					 unsigned int seat);
 static int   table_pack(void** data, unsigned char opcode, unsigned int table);
+static int table_state_pack(void** data, unsigned char opcode, 
+			    unsigned int table, unsigned char state);
 static int   table_transit_pack(void** data, unsigned char opcode, 
 				unsigned int table, unsigned int player, 
 				unsigned int seat);
@@ -118,7 +120,7 @@ static int table_check(int p_index, TableInfo table)
 
 	dbg_msg(GGZ_DBG_TABLE, "Open_seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Num_reserve: %d", seats_reserved(table));
-	dbg_msg(GGZ_DBG_TABLE, "State    : %d", table.state);
+	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table.state);
 	dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table.fd_to_game);
 	for (i = 0; i < seat_total; i++)
 		switch (table.seats[i]) {
@@ -466,9 +468,16 @@ static int table_game_join(int index, int fd, char* transit)
 		if (!seats_open(tables.info[index])) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d full now", index);
 			tables.info[index].state = GGZ_TABLE_PLAYING;
+			pthread_rwlock_unlock(&tables.lock);
+			table_transit_event_enqueue(index, GGZ_UPDATE_JOIN, p,
+						    seat);
+			table_event_enqueue(index, GGZ_UPDATE_STATE);
+			
+		} else {
+			pthread_rwlock_unlock(&tables.lock);
+			table_transit_event_enqueue(index, GGZ_UPDATE_JOIN, p,
+						    seat);
 		}
-		pthread_rwlock_unlock(&tables.lock);
-		table_transit_event_enqueue(index, GGZ_UPDATE_JOIN, p, seat);
 	}
 
 	/* Mark transit as done and signal player*/
@@ -564,7 +573,8 @@ static int table_game_over(int index, int fd)
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[index].state = GGZ_TABLE_DONE;
 	pthread_rwlock_unlock(&tables.lock);
-	
+	table_event_enqueue(index, GGZ_UPDATE_STATE);
+
 	/* Send response back to game server, allowing termination */
 	if (es_write_int(fd, RSP_GAME_OVER) < 0)
 		return -1;
@@ -867,11 +877,19 @@ static int table_event_enqueue(unsigned int table, unsigned char opcode)
 {
 	void* data = NULL;
 	int size, status, room;
+	unsigned char state;
 
 	room = tables.info[table].room;
 	
 	/* Pack up table update data */
-	size = table_pack(&data, opcode, table);
+	if (opcode == GGZ_UPDATE_STATE) {
+		pthread_rwlock_rdlock(&tables.lock);
+		state = tables.info[table].state;
+		pthread_rwlock_unlock(&tables.lock);
+		size = table_state_pack(&data, opcode, table, state);
+	}
+	else
+		size = table_pack(&data, opcode, table);
 
 	/* Queue table event for whole room */
 	status = event_room_enqueue(room, table_event_callback, size, data);
@@ -921,6 +939,32 @@ static int table_pack(void** data, unsigned char opcode, unsigned int table)
 }
 
 
+static int table_state_pack(void** data, unsigned char opcode, 
+			    unsigned int table, unsigned char state)
+{
+	int size;
+	char* current;
+
+	size = 2 * sizeof(char) + sizeof(int);
+	
+	if ( (*data = malloc(size)) == NULL)
+		err_sys_exit("malloc failed in table_transit_pack");
+	
+	current = (char*)*data;
+	
+	*(unsigned char*)current = opcode;
+	current += sizeof(char);
+
+	*(unsigned int*)current = table;
+	current += sizeof(int);
+
+	*(unsigned char*)current = state;
+	current += sizeof(char);
+
+	return size;
+}
+
+
 static int table_transit_pack(void** data, unsigned char opcode, 
 			      unsigned int table, unsigned int player,
 			      unsigned int seat)
@@ -956,7 +1000,7 @@ static int table_transit_pack(void** data, unsigned char opcode,
 /* Event callback for delivering table list update to a player */
 static int table_event_callback(int p_index, int size, void* data)
 {
-	unsigned char opcode;
+	unsigned char opcode, state;
 	char player[MAX_USER_NAME_LEN + 1];
 	int table, fd, seat, p, i;
 	char* current;
@@ -1041,6 +1085,15 @@ static int table_event_callback(int p_index, int size, void* data)
 			seat, table);
 		if (es_write_int(fd, seat) < 0
 		    || es_write_string(fd, player) < 0)
+			return -1;
+		break;
+	case GGZ_UPDATE_STATE:
+		state = *(unsigned char*)current;
+		current += sizeof(char);
+
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees table %d new state %d",
+			p_index, table, state);
+		if (es_write_char(fd, state) < 0)
 			return -1;
 		break;
 	}
