@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
+ * $Id: ggzdb_mysql.c 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,9 +32,10 @@
 #include <mysql/mysql.h>
 #include <pthread.h>
 
+#include "err_func.h"
 #include "ggzd.h"
 #include "ggzdb.h"
-#include "err_func.h"
+#include "ggzdb_proto.h"
 
 /* Internal variables */
 static MYSQL *conn = NULL;

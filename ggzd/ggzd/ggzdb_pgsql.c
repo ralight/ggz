@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
+ * $Id: ggzdb_pgsql.c 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,9 +34,10 @@
 
 #include <postgresql/libpq-fe.h>
 
+#include "err_func.h"
 #include "ggzd.h"
 #include "ggzdb.h"
-#include "err_func.h"
+#include "ggzdb_proto.h"
 
 #define SQL_MAXCONNECTIONS 10
 #define SQL_TIMEOUT 3

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
+ * $Id: ggzdb.h 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -71,21 +72,5 @@ extern int ggzdb_player_update(ggzdbPlayerEntry *);
 extern int ggzdb_player_get(ggzdbPlayerEntry *);
 extern int ggzdb_player_delete(char *handle);
 extern unsigned int ggzdb_player_next_uid(void);
-
-
-#ifdef DB_STANDALONE
-/* For standalone programs */
-extern int _ggzdb_init(ggzdbConnection connection, int standalone);
-extern void _ggzdb_close(void);
-extern void _ggzdb_enter(void);
-extern void _ggzdb_exit(void);
-extern int _ggzdb_init_player(char *datadir);
-extern int _ggzdb_player_add(ggzdbPlayerEntry *);
-extern int _ggzdb_player_get(ggzdbPlayerEntry *);
-extern int _ggzdb_player_update(ggzdbPlayerEntry *);
-extern int _ggzdb_player_get_first(ggzdbPlayerEntry *);
-extern int _ggzdb_player_get_next(ggzdbPlayerEntry *);
-extern void _ggzdb_player_drop_cursor(void);
-#endif
 
 #endif

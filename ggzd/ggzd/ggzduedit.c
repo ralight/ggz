@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
+ * $Id: ggzduedit.c 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -31,8 +32,8 @@
 #include <ctype.h>
 #include <time.h>
 
-#define DB_STANDALONE 1
-#include <ggzdb.h>
+#include "ggzdb.h"
+#include "ggzdb_proto.h"
 #define PERMS_DEFINE_STR_TABLE
 #include <perms.h>
 
@@ -41,7 +42,21 @@ char *datadir = DATADIR;
 char lb[1024];
 ggzdbPlayerEntry pe;
 
-void getnextline(void)
+
+static void getnextline(void);
+static void list_players(void);
+static void show_perms(unsigned int perms, int add_spaces);
+static void add_player(void);
+static void edit_player(int edit);
+static int main_menu(void);
+
+#if 0 /* Not used */
+static void err_sys(const char *fmt, ...);
+static void err_sys_exit(const char *fmt, ...);
+#endif
+
+
+static void getnextline(void)
 {
 	char *p;
 
@@ -51,7 +66,7 @@ void getnextline(void)
 }
 
 
-void list_players(void)
+static void list_players(void)
 {
 	int rc;
 	int count=0;
@@ -85,7 +100,7 @@ void list_players(void)
 }
 
 
-void show_perms(unsigned int perms, int add_spaces)
+static void show_perms(unsigned int perms, int add_spaces)
 {
 	int i;
 	unsigned int testbit=1;
@@ -117,7 +132,7 @@ void show_perms(unsigned int perms, int add_spaces)
 }
 
 
-void add_player(void)
+static void add_player(void)
 {
 	int i, rc;
 	char time_asc[128];
@@ -187,7 +202,7 @@ void add_player(void)
 }
 
 
-void edit_player(int edit)
+static void edit_player(int edit)
 {
 	int i, rc;
 	char time_asc[128];
@@ -313,7 +328,7 @@ void edit_player(int edit)
 }
 
 
-int main_menu(void)
+static int main_menu(void)
 {
 	printf("*** MAIN MENU ***\n");
 	printf("1) List all known player handles\n");
@@ -381,9 +396,9 @@ int main(int argc, char **argv)
 }
 
 
-
+#if 0
 /* err_sys functionalities */
-void err_sys(const char *fmt, ...)
+static void err_sys(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -393,7 +408,7 @@ void err_sys(const char *fmt, ...)
 	va_end(ap);
 }
 
-void err_sys_exit(const char *fmt, ...)
+static void err_sys_exit(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -404,3 +419,4 @@ void err_sys_exit(const char *fmt, ...)
 
 	exit(1);
 }
+#endif

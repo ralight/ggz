@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4150 2002-05-04 23:46:47Z jdorje $
+# $Id: Makefile.am 4480 2002-09-09 03:24:42Z jdorje $
 
 SUBDIRS = .
 
@@ -46,6 +46,7 @@ ggzd_SOURCES =	chat.c\
 		hash.h \
 		ggzdb.c \
 		ggzdb.h \
+		ggzdb_proto.h \
 		$(DBSOURCES) \
 		login.c \
 		login.h \

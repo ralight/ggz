@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Back-end functions for handling the db2 sytle database
+ * $Id: ggzdb_db2.c 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,9 +35,10 @@
 #include <db.h>
 #endif
 
+#include "err_func.h"
 #include "ggzd.h"
 #include "ggzdb.h"
-#include "err_func.h"
+#include "ggzdb_proto.h"
 
 /* Internal variables */
 static DB *db_p = NULL;

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
+ * $Id: ggzdb.c 4480 2002-09-09 03:24:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,11 +31,11 @@
 #include <ctype.h>
 
 
-#include "ggzd.h"
 #include "datatypes.h"
-#include "ggzdb.h"
 #include "err_func.h"
-
+#include "ggzd.h"
+#include "ggzdb.h"
+#include "ggzdb_proto.h"
 
 /* Server-wide variables */
 extern Options opt;
@@ -46,18 +47,6 @@ static char player_needs_init = 1;
 /* Internal functions */
 static int ggzdb_player_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
-
-/* Back-end functions */
-extern int _ggzdb_init(ggzdbConnection connection, int standalone);
-extern void _ggzdb_close(void);
-extern void _ggzdb_enter(void);
-extern void _ggzdb_exit(void);
-extern int _ggzdb_init_player(char *datadir);
-extern int _ggzdb_player_add(ggzdbPlayerEntry *);
-extern int _ggzdb_player_get(ggzdbPlayerEntry *);
-extern int _ggzdb_player_update(ggzdbPlayerEntry *);
-extern unsigned int _ggzdb_player_next_uid(void);
-
 
 /* Function to initialize the database system */
 int ggzdb_init(void)
