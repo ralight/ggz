@@ -1,8 +1,8 @@
-EXTRA_DIST = default/*.xpm templates/*.xpm templates/README
+EXTRA_DIST = default/*.xpm templates/*.xpm templates/README Dragon/*.xpm Electric/*.xpm
 
 SUBDIRS = .
 
-data = default templates
+data = default templates Dragon Electric
 
 install-data-local:
 	for p in $(data); do \
