@@ -50,6 +50,7 @@ ggzgnome	ggzgnome &macros &intl
 # Libs
 ggzcore         -s INTERNAL ggz/src/ggzcore
 ggz-client-libs ggz-client-libs &ggzcore
+libggz		libggz
 
 # Meta-module for pulling gtk client together
 ggz-gtk-all     ggz-gtk-all &easysock &ggzcore &ggz-gtk &gtk-games
