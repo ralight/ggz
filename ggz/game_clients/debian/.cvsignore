@@ -2,6 +2,6 @@
 files
 dirs
 tmp
-*substvars
-ggz-gtk-client
+*.substvars
+ggz-gtk-games
 
