@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.9 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.10 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -9,19 +9,19 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002 - 2004 Josef Spillner
+Copyright (C) 2002 - 2005 Josef Spillner
 @end ifinfo
 
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.9
+@subtitle Development of games for the GGZ Gaming Zone 0.0.10
 @author GGZ Development Team
 
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 - 2004 Josef Spillner
+Copyright @copyright{} 2002 - 2005 Josef Spillner
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -85,6 +85,17 @@ a GGZ mode, and are thus more complex in design.
 In the future, some GGZ game servers and clients will most likely also provide
 a standalone mode, just like some clients already do for local games,
 namely Muehle, KTicTacTux, Geekgame, Escape/SDL and Xadrez Chines.
+
+@section Embedded games
+
+Some games already come with a connection dialog, running in fullscreen and
+displaying chat messages of other players.
+In these cases it might be advisable to "embed" the ggzcore library into the game
+client, letting it perform all the work which traditionally would be done by a GGZ
+core client.
+Right now, only one external game runs in embedded mode, namely Widelands.
+In order to do so, ggzcore must be initialized with the OPT_EMBEDDED flag
+switched on.
 
 @node Game Clients, Game Servers, The GGZ System, Top
 @chapter Game Clients
@@ -547,6 +558,39 @@ if((conf) && (conf->valid) && (conf->processed))
 }
 minidom_free(conf);
 @end verbatim
+
+@section Game development frameworks
+
+@subsection Developing card game servers with GGZCards
+
+The GGZ game servers for Hearts, LaPocha, Whist, Euchre, Bridge, Spades, Suaro and Sueca all share
+one common property: their games are displayed on a GGZCards client, and their messages are transmitted
+using the same protocol.
+Other card games can be added quite easily. There's a separate GGZCards documentation available for consultation.
+
+@subsection GGZBoard, the board game client container
+
+Consolidating the different interfaces of the already available games of Chess, Go and Reversi,
+GGZBoard does now already support 5 games, including Hnefatafl and Checkers.
+Each game consists of a game module (including client-side AI, optional), a network module (optional)
+and a server module, if no server exists yet.
+All the games and the GGZBoard container can exchange messages such as moves, player names, game
+characteristics or error codes.
+
+@section Special libraries
+
+@subsection GGZChess, an artificial intelligence for chess
+
+Validating board moves, finding opponent moves, and keeping track about the game status is the task of
+GGZChess, a small library to be used in chess games.
+Currently, GGZChess is used by the chess game server, the grubby game client, the GGZBoard chess module and
+a special client for DROPS (L4-based operating system) dubbed Xadrez.
+
+@subsection Data updates with SDLNewStuff
+
+Levels, graphics files and other kind of data can be shared using the Get Hot New Stuff framework.
+In GGZ, the KDE game clients provide support for KNewStuff, whereas the Python/SDL games can use SDLNewStuff.
+For SDL games written in C, a special implementation written for Widelands (but not integrated) exists.
 
 @c @printindex cp
 
