@@ -63,6 +63,7 @@ class KGGZSplash;
 class KGGZBrowser;
 #endif
 class KGGZGrubby;
+class KGGZPrefEnv;
 
 // Here comes KGGZ.
 class KGGZ : public QWidget
@@ -100,7 +101,9 @@ class KGGZ : public QWidget
 			MENUSIG_LOGIN,
 			MENUSIG_SERVERSTART,
 			MENUSIG_SERVERSTOP,
-			MENUSIG_ROOMENTER
+			MENUSIG_ROOMENTER,
+			MENUSIG_GAMESTART,
+			MENUSIG_GAMEOVER
 		};
 
 	signals:
@@ -136,6 +139,10 @@ class KGGZ : public QWidget
 		void menuRoom(int room);
 		// Display the grubby dialog
 		void menuGrubby();
+		// Raise a configuration window
+		void menuPreferencesSettings();
+		// Cancel a running game
+		void menuGameCancel();
 
 		// Receive connection parameters
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
@@ -181,6 +188,11 @@ class KGGZ : public QWidget
 		void attachGameCallbacks();
 		// remove game callbacks
 		void detachGameCallbacks();
+
+		// cancel a game
+		void eventLeaveGame();
+		// leave a room
+		void eventLeaveRoom();
 
 		// attempt to list all players
 		void listPlayers();
@@ -228,6 +240,8 @@ class KGGZ : public QWidget
 		KGGZMotd *m_motd;
 		// Grubby dialog
 		KGGZGrubby *m_grubby;
+		// Configuration
+		KGGZPrefEnv *m_prefenv;
 };
 
 #endif

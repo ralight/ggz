@@ -2,6 +2,7 @@ SUBDIRS = . games
 
 pix_DATA = \
 	browser.png \
+	cancel.png \
 	chat.png \
 	connect.png \
 	disconnect.png \

@@ -111,7 +111,10 @@ KGGZGrubby::~KGGZGrubby()
 
 void KGGZGrubby::slotInvoke()
 {
-	KGGZDEBUG("Perform action: %i on %s\n", m_lastaction, m_player->currentItem());
+	KGGZDEBUG("current item: %i\n", m_player->currentItem());
+	KGGZDEBUG("current text: %s\n", m_player->currentText().latin1());
+
+	KGGZDEBUG("Perform action: %i on %i\n", m_lastaction, m_player->currentItem());
 	emit signalAction(m_player->currentText().latin1(), m_ed->text().latin1(), m_lastaction);
 }
 

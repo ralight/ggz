@@ -44,6 +44,7 @@
 #include "KGGZBrowser.h"
 #endif
 #include "KGGZGrubby.h"
+#include "KGGZPrefEnv.h"
 
 // KDE includes
 #include <kmessagebox.h>
@@ -85,6 +86,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 #endif
 	m_motd = NULL;
 	m_grubby = NULL;
+	m_prefenv = NULL;
 
 	setBackgroundColor(QColor(0, 0, 0));
 
@@ -304,6 +306,7 @@ void KGGZ::dispatch_delete(void *object, const char *description)
 	}
 }
 
+// fake: need base class to do destruction
 void KGGZ::dispatcher()
 {
 	KGGZDEBUGF("KGGZ::Dispatcher()\n");
@@ -483,22 +486,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreGame::over:
 			KGGZDEBUG("over\n");
-			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
-			if(!kggzgame)
-			{
-				KGGZDEBUG("Now I'm confused: What do they want from me?\n");
-				return;
-			}
-			detachGameCallbacks();
-			delete kggzgame;
-			kggzgame = NULL;
-			if(kggzserver->state() == GGZ_STATE_AT_TABLE)
-			{
-				KGGZDEBUG("**** Still at table-> leaving now!\n");
-				kggzroom->leaveTable();
-			}
-			listPlayers();
-			listTables();
+			eventLeaveGame();
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");
@@ -632,16 +620,8 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
 			//m_workspace->widgetUsers()->removeall();
-			if(kggzgame)
-			{
-				KGGZDEBUG("SHALL I QUIT THE GAME HERE??? Yes!\n");
-				detachGameCallbacks();
-				delete kggzgame;
-				kggzgame = NULL;
-				m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
-			}
-			listPlayers();
-			listTables();
+			KGGZDEBUG("SHALL I QUIT THE GAME HERE???\n");
+			eventLeaveGame();
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreRoom::tableleavefail:
@@ -757,15 +737,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("entered\n");
 			KGGZDEBUG("==> creating room object\n");
 			m_lock = 1;
-			if(kggzroom)
-			{
-				detachRoomCallbacks();
-				delete kggzroom;
-				kggzroom = NULL;
-				//kggzserver->resetRoom(); // This is damned required!!!! -> update: no :-) does now work automatically
-				m_workspace->widgetUsers()->removeall();
-				m_workspace->widgetChat()->chatline()->removeAll();
-			}
+			eventLeaveRoom();
 			kggzroom = kggzserver->room();
 			//kggzroom = new GGZCoreRoom(ggzcore_server_get_cur_room(kggzserver->server()));
 			attachRoomCallbacks();
@@ -786,24 +758,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("loggedout\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("Logged out"), KGGZChat::RECEIVE_ADMIN);
 			m_lock = 1;
-			if(kggzgame)
-			{
-				detachGameCallbacks();
-				delete kggzgame;
-				kggzgame = NULL;
-			}
-			if(kggzroom)
-			{
-				detachRoomCallbacks();
-				delete kggzroom;
-				kggzroom = NULL;
-				m_workspace->widgetChat()->chatline()->removeAll();
-				m_workspace->widgetUsers()->removeall();
-				m_workspace->widgetTables()->reset();
-				m_workspace->widgetChat()->shutdown();
-				m_workspace->widgetLogo()->shutdown();
-				emit signalLocation(i18n("  No room selected  "));
-			}
+			eventLeaveGame();
+			eventLeaveRoom();
 			detachServerCallbacks();
 			delete kggzserver;
 			kggzserver = NULL;
@@ -1063,26 +1019,15 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 	if(ret < 0)
 	{
 		KGGZDEBUG("Red Alert! Game launching failed immedeately!\n");
-		detachGameCallbacks();
-		if(!kggzgame) KGGZDEBUG("Hrmpf, it delete kggzgame...\n");
-		else KGGZDEBUG("Ah, still here :)\n");
-		// FIXME: Don't delete kggzgame here! It will terminate KGGZ!!!!!
-		//delete kggzgame;
-		kggzgame = NULL;
-		KGGZDEBUG("Leave table?\n");
-		if(kggzserver->state() == GGZ_STATE_AT_TABLE)
-		{
-			KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
-			kggzroom->leaveTable();
-		}
-		listPlayers();
-		listTables();
+		eventLeaveGame();
 		KMessageBox::information(this, i18n("Couldn't launch game!"), "Error!");
 		KGGZDEBUG("Phew.. the crisis is over, let's continue with normal work.\n");
 		return;
 	}
 
 	slotLoadLogo();
+
+	emit signalMenu(MENUSIG_GAMESTART);
 
 	//delete module;
 }
@@ -1409,5 +1354,60 @@ void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
 		default:
 			KMessageBox::information(m_grubby, i18n("I don't know that command, sorry."), "Error!");
 	}
+}
+
+void KGGZ::menuPreferencesSettings()
+{
+	KGGZDEBUGF("showing preferences dialog\n");
+	if(m_prefenv) delete m_prefenv;
+	m_prefenv = new KGGZPrefEnv(NULL, "KGGZPrefEnv");
+	m_prefenv->show();
+}
+
+void KGGZ::eventLeaveGame()
+{
+	if(!kggzgame)
+	{
+		KGGZDEBUG("Hrmpf, someone deleted kggzgame...\n");
+		return;
+	}
+	detachGameCallbacks();
+	// FIXME: Don't delete kggzgame here! It will terminate KGGZ!!!!!
+	//delete kggzgame;
+	kggzgame = NULL;
+	KGGZDEBUG("Leave table?\n");
+	if(kggzserver->state() == GGZ_STATE_AT_TABLE)
+	{
+		KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
+		kggzroom->leaveTable();
+	}
+	listPlayers();
+	listTables();
+	m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
+	emit signalMenu(MENUSIG_GAMEOVER);
+}
+
+void KGGZ::eventLeaveRoom()
+{
+	if(!kggzroom)
+	{
+		KGGZDEBUG("Pffft... no room here.\n");
+		return;
+	}
+	detachRoomCallbacks();
+	delete kggzroom;
+	kggzroom = NULL;
+	m_workspace->widgetChat()->chatline()->removeAll();
+	m_workspace->widgetUsers()->removeall();
+	m_workspace->widgetTables()->reset();
+	m_workspace->widgetChat()->shutdown();
+	m_workspace->widgetLogo()->shutdown();
+	emit signalLocation(i18n("  No room selected  "));
+}
+
+void KGGZ::menuGameCancel()
+{
+	KGGZDEBUGF("KGGZ::menuGameCancel()\n");
+	eventLeaveGame();
 }
 

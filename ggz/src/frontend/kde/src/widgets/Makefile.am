@@ -17,7 +17,8 @@ libkggzui_a_SOURCES = \
 	KGGZMotd.cpp \
 	KGGZSplashScreen.cpp \
 	KGGZChatLine.cpp \
-	KGGZGrubby.cpp
+	KGGZGrubby.cpp \
+	KGGZPrefEnv.cpp
 
 noinst_HEADERS = \
 	KGGZBase.h \
@@ -31,7 +32,8 @@ noinst_HEADERS = \
 	KGGZMotd.h \
 	KGGZSplashScreen.h \
 	KGGZChatLine.h \
-	KGGZGrubby.h
+	KGGZGrubby.h \
+	KGGZPrefEnv.h
 
 EXTRA_HEADERS = 
 
@@ -45,3 +47,4 @@ DISTCLEANFILES = $(libkggzui_a_METASOURCES)
 
 messages:
 	$(XGETTEXT) $(libkggzui_a_SOURCES) -C -ki18n -kI18N_NOOP -o $(top_srcdir)/ggz-kde/po/kggz.pot
+
