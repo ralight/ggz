@@ -409,10 +409,6 @@ create_main_win (void)
   GtkWidget *label11;
   GtkWidget *label12;
   GtkWidget *label13;
-  GtkWidget *label14;
-  GtkWidget *label15;
-  GtkWidget *label16;
-  GtkWidget *label17;
   GtkWidget *h_pane;
   GtkWidget *player_box;
   GtkWidget *player_label;
@@ -687,10 +683,6 @@ create_main_win (void)
   gtk_clist_set_column_width (GTK_CLIST (table_tree), 3, 80);
   gtk_clist_set_column_width (GTK_CLIST (table_tree), 4, 80);
   gtk_clist_set_column_width (GTK_CLIST (table_tree), 5, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 6, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 7, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 8, 68);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 9, 80);
   gtk_clist_column_titles_show (GTK_CLIST (table_tree));
 
   label8 = gtk_label_new ("Table No.");
@@ -728,40 +720,12 @@ create_main_win (void)
   gtk_widget_show (label12);
   gtk_clist_set_column_widget (GTK_CLIST (table_tree), 4, label12);
 
-  label13 = gtk_label_new ("label13");
+  label13 = gtk_label_new (" ");
   gtk_widget_ref (label13);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label13", label13,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label13);
   gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label13);
-
-  label14 = gtk_label_new ("label14");
-  gtk_widget_ref (label14);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label14", label14,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label14);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 6, label14);
-
-  label15 = gtk_label_new ("label15");
-  gtk_widget_ref (label15);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label15", label15,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label15);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 7, label15);
-
-  label16 = gtk_label_new ("label16");
-  gtk_widget_ref (label16);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label16", label16,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label16);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 8, label16);
-
-  label17 = gtk_label_new ("label17");
-  gtk_widget_ref (label17);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label17", label17,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label17);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 9, label17);
 
   h_pane = gtk_hpaned_new ();
   gtk_widget_ref (h_pane);

@@ -369,7 +369,7 @@ void add_user_list(gchar * name, gint table)
 void add_table_list(TableInfo table)
 {
 	gpointer tmp;
-	gchar *entry[10];
+	gchar *entry[6];
 
 	if (main_win == NULL)
 		return;
@@ -381,10 +381,6 @@ void add_table_list(TableInfo table)
 	entry[3] = g_strdup_printf("%d", table.open_seats);
 	entry[4] = g_strdup_printf("%d", table.num_humans);
 	entry[5] = "";
-	entry[6] = "";
-	entry[7] = "";
-	entry[8] = "";
-	entry[9] = "";
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 
