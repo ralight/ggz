@@ -193,9 +193,11 @@
  * CHESS_REQ_UPDATE
  * CHESS_RSP_UPDATE (int)PLAYER_1_TIME (int)PLAYER_2_TIME
  *
- * Updates the time structure of the client. It will return the current value
- * of the server's time structure, but it won't take the current move in
- * account. (ie, the TIME part for the next move isn't going to be changed)
+ * Asks the server to update his time structure, and then sends it to both
+ * players. If we are using SERVER_CLOCK, the server will see how much time it
+ * take until now to make the move and will decrease the player's clock as
+ * well. In the next move, the TIME part will be relative to the times that
+ * were sent now.
  *
  * CHESS_REQ_FLAG
  *

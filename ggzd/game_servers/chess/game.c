@@ -60,6 +60,7 @@ struct timeval cronometer;
  *  CHESS_EVENT_START: NULL */
 void game_update(int event_id, void *data) {
   int time, st;
+  struct timeval now;
   switch (event_id) {
     case CHESS_EVENT_LAUNCH:
       /* Check for current state */
@@ -213,12 +214,19 @@ void game_update(int event_id, void *data) {
     case CHESS_EVENT_REQUEST_UPDATE:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
+      /* If we have server clock, then update the time */
+      if (game_info.clock_type == CHESS_CLOCK_SERVER) {
+        gettimeofday(&now, NULL);
+        time = now.tv_sec - cronometer.tv_sec;
+        game_stop_cronometer();
+        game_info.seconds[game_info.turn%2] -= time;
+      }
       if (OUT_OF_TIME(0))
         game_info.seconds[0] = 0;
       if (OUT_OF_TIME(1))
         game_info.seconds[1] = 0;
-      /* Send the info to the player */
-      game_send_update(*(int*)data);
+      /* Send the info to both players */
+      game_send_update();
       break;
     case CHESS_EVENT_FLAG:
       if (game_info.state != CHESS_STATE_PLAYING)
@@ -528,15 +536,18 @@ void game_send_move(char *move, int time) {
 
 }
 
-void game_send_update(int seat) {
-  int fd = ggz_seats[seat].fd;
-  if (fd < 0)
-    return;
-  ggz_debug("To player %d: %d and %d sec", seat, game_info.seconds[0], game_info.seconds[1]);
-  if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
-      es_write_int(fd, game_info.seconds[0]) < 0 ||
-      es_write_int(fd, game_info.seconds[1]) < 0)
-    return;
+void game_send_update() {
+  int fd, a;
+  for (a = 0; a < 2; a++) {
+    fd = ggz_seats[a].fd;
+    if (fd < 0)
+      return;
+    ggz_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
+    if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
+        es_write_int(fd, game_info.seconds[0]) < 0 ||
+        es_write_int(fd, game_info.seconds[1]) < 0)
+      return;
+  }
 }
 
 void game_send_gameover(char code) {
