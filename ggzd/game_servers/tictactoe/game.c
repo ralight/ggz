@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4282 2002-06-29 15:52:06Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,6 +33,8 @@
 
 #include "game.h"
 
+#define GGZSTATISTICS 1
+
 /* Data structure for Tic-Tac-Toe-Game */
 struct ttt_game_t {
 	GGZdMod *ggz;
@@ -51,10 +53,16 @@ struct ttt_game_t {
 #define TTT_REQ_MOVE     4
 #define TTT_RSP_MOVE     5
 #define TTT_SND_SYNC     6
+#ifdef GGZSTATISTICS
+# define TTT_SND_STATS   7
+#endif
 
 /* Messages from client */
 #define TTT_SND_MOVE     0
 #define TTT_REQ_SYNC     1
+#ifdef GGZSTATISTICS
+# define TTT_REQ_STATS   2
+#endif
 
 /* Move errors */
 #define TTT_ERR_STATE   -1
@@ -81,6 +89,9 @@ static int game_send_seat(int seat);
 static int game_send_players(void);
 static int game_send_move(int num, int move);
 static int game_send_sync(int num);
+#ifdef GGZSTATISTICS
+static int game_send_stats(int num);
+#endif
 static int game_send_gameover(char winner);
 static int game_read_move(int num, int* move);
 
@@ -203,6 +214,11 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 	case TTT_REQ_SYNC:
 		game_send_sync(num);
 		break;
+#ifdef GGZSTATISTICS
+	case TTT_REQ_STATS:
+		game_send_stats(num);
+		break;
+#endif
 	default:
 		ggzdmod_log(ggz, "Unrecognized player opcode %d.", op);
 	}
@@ -273,6 +289,28 @@ static int game_send_move(int num, int move)
 	}
 	return 0;
 }
+
+
+#ifdef GGZSTATISTICS
+/* Send game statistics */
+static int game_send_stats(int num)
+{	
+	int wins, losses;
+	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
+
+	ggzdmod_log(ttt_game.ggz, "Handling statistics for player %d", num);
+
+	wins = 42;
+	losses = 23;
+
+	if (ggz_write_int(seat.fd, TTT_SND_STATS) < 0
+	    || ggz_write_int(seat.fd, wins) < 0
+		|| ggz_write_int(seat.fd, losses) < 0)
+		return -1;
+	
+	return 0;
+}
+#endif
 
 
 /* Send out board layout */
