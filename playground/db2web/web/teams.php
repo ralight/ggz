@@ -14,6 +14,8 @@ if (($id) && ($ggzuser)) :
 endif;
 
 $team_name = $_POST["team_name"];
+$team_full = $_POST["team_full"];
+$team_homepage = $_POST["team_homepage"];
 $player_name = $_POST["player_name"];
 $player_approval = $_POST["player_approval"];
 $player_role = $_POST["player_role"];
@@ -32,7 +34,7 @@ if ($ggzuser) :
 			$stamp = time();
 			$res = pg_exec($id, "INSERT INTO teams " .
 				"(teamname, fullname, icon, foundingdate, homepage) VALUES " .
-				"('$team_name', '', '', $stamp, '')");
+				"('$team_name', '$team_full', '', $stamp, '$team_homepage')");
 			$res = pg_exec($id, "INSERT INTO teammembers " .
 				"(teamname, handle, role) VALUES " .
 				"('$team_name', '$ggzuser', 'leader,founder,member')");

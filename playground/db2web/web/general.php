@@ -1,6 +1,7 @@
 <?php
 
 include("stats.php");
+include("rankings.php");
 
 echo "<table border=0 cellspacing=0 cellpadding=1><tr><td bgcolor='#000000'>\n";
 echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
@@ -115,15 +116,24 @@ else :
 endif;
 
 if ($type == "player") :
-	if ($lookup == $ggzuser) :
-		echo "<img src='ggzicons/players/you.png' width=32 height=32 alt='you'>\n";
+	$res = pg_exec($id, "SELECT photo FROM userinfo WHERE handle = '$lookup'");
+	if (pg_numrows($res) == 1) :
+		$photourl = pg_result($res, 0, "photo");
+	endif;
+
+	if ($photourl) :
+		echo "<img src='$photourl' width=32 height=32 alt='$handle'>\n";
 	else :
-		echo "<img src='ggzicons/players/player.png' width=32 height=32 alt='player'>\n";
+		if ($lookup == $ggzuser) :
+			echo "<img src='ggzicons/players/you.png' width=32 height=32 alt='you'>\n";
+		else :
+			echo "<img src='ggzicons/players/player.png' width=32 height=32 alt='player'>\n";
+		endif;
 	endif;
 elseif ($type == "game") :
 	echo "<img src='ggzicons/games/$lookup.png' width=32 height=32 alt='$lookup'>\n";
 elseif ($type == "team") :
-	echo "<img src='ggzicons/teams/$lookup.png' width=32 height=32 alt='$lookup'>\n";
+	//echo "<img src='ggzicons/teams/$lookup.png' width=32 height=32 alt='$lookup'>\n";
 endif;
 if ($lookup) :
 	echo "<b>Statistics for '$lookup'</b><br><br>\n";
@@ -146,6 +156,12 @@ echo "<br><br>\n";
 
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
+
+if ($type == "player") :
+	echo "<br><br>\n";
+
+	rankings_players($id, $lookup);
+endif;
 
 else :
 
@@ -273,6 +289,8 @@ echo "<table><tr><td bgcolor='#00a0a0'>\n";
 echo "<form action='teams.php?create=1' method='POST'>\n";
 echo "<table>\n";
 echo "<tr><td>Team name:</td><td><input type='input' name='team_name' value=''></td></tr>\n";
+echo "<tr><td>Full name:</td><td><input type='input' name='team_full' value=''></td></tr>\n";
+echo "<tr><td>Homepage:</td><td><input type='input' name='team_homepage' value=''></td></tr>\n";
 echo "<tr><td></td><td><input type='submit' value='Create'></td></tr>\n";
 echo "</table>\n";
 echo "</form>\n";
@@ -389,32 +407,37 @@ for ($j = 0; $j < sizeof($teams); $j++)
 
 	echo "<b>Team applications for $teamname</b><br>\n";
 
-	echo "<table><tr><td bgcolor='#00a0a0'>\n";
-
-	echo "<form action='teams.php?approve=1' method='POST'>\n";
-	echo "<table>\n";
-	echo "<tr><td>Player:</td><td>\n";
-	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
-	echo "<select name='player_name'>\n";
 	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role = ''");
-	for ($i = 0; $i < pg_numrows($res); $i++)
-	{
-		$playername = pg_result($res, $i, "handle");
-		echo "<option>$playername</option>\n";
-	}
-	echo "</select>\n";
-	echo "</td></tr>\n";
-	echo "<tr><td>Approval:</td><td>\n";
-	echo "<select name='player_approval'>\n";
-	echo "<option>approved</option>\n";
-	echo "<option>declined</option>\n";
-	echo "</select>\n";
-	echo "</td></tr>\n";
-	echo "<tr><td></td><td><input type='submit' value='Approve'></td></tr>\n";
-	echo "</table>\n";
-	echo "</form>\n";
 
-	echo "</td></tr></table>\n";
+	if (pg_numrows($res) > 0) :
+		echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+		echo "<form action='teams.php?approve=1' method='POST'>\n";
+		echo "<table>\n";
+		echo "<tr><td>Player:</td><td>\n";
+		echo "<input type='hidden' name='team_name' value='$teamname'>\n";
+		echo "<select name='player_name'>\n";
+		for ($i = 0; $i < pg_numrows($res); $i++)
+		{
+			$playername = pg_result($res, $i, "handle");
+			echo "<option>$playername</option>\n";
+		}
+		echo "</select>\n";
+		echo "</td></tr>\n";
+		echo "<tr><td>Approval:</td><td>\n";
+		echo "<select name='player_approval'>\n";
+		echo "<option>approved</option>\n";
+		echo "<option>declined</option>\n";
+		echo "</select>\n";
+		echo "</td></tr>\n";
+		echo "<tr><td></td><td><input type='submit' value='Approve'></td></tr>\n";
+		echo "</table>\n";
+		echo "</form>\n";
+
+		echo "</td></tr></table>\n";
+	else :
+		echo "No applications pending.\n";
+	endif;
 
 	echo "<br><br>\n";
 
@@ -470,33 +493,7 @@ for ($j = 0; $j < sizeof($teams); $j++)
 	echo "<br><br>\n";
 }
 
-echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
-echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
-
-echo "<b>Rankings</b><br>\n";
-
-echo "Global:\n";
-echo "<img src='ggzicons/rankings/cupgolda.png' title='Rank 1'>\n";
-echo "<img src='ggzicons/rankings/cupsilvera.png' title='Rank 2'>\n";
-echo "<img src='ggzicons/rankings/cupbronzea.png' title='Rank 3'>\n";
-echo "<br>\n";
-echo "TicTacToe:\n";
-echo "<img src='ggzicons/rankings/cupgoldg.png' title='Rank 1'>\n";
-echo "<img src='ggzicons/rankings/cupsilverg.png' title='Rank 2'>\n";
-echo "<img src='ggzicons/rankings/cupbronzeg.png' title='Rank 3'>\n";
-echo "<br>\n";
-echo "Tournament class Bar:\n";
-echo "<img src='ggzicons/rankings/cupsilvert.png' title='Rank 2'>\n";
-echo "<br>\n";
-echo "Tournament Foo of class Bar:\n";
-echo "<img src='ggzicons/rankings/cupgold.png' title='1st place'>\n";
-echo "<br>\n";
-echo "Game of gametype TicTacToe:\n";
-echo "<img src='ggzicons/rankings/coingold.png' title='winner'>\n";
-echo "<br>\n";
-
-echo "</td></tr></table>\n";
-echo "</td></tr></table>\n";
+rankings_players($id, $ggzuser);
 
 endif;
 

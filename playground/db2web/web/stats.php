@@ -68,6 +68,13 @@ function stats_statistics($id)
 	$count = pg_result($res, 0, "count");
 	echo "<b>$count</b> records are available in the ranking database.<br>\n";
 
+	$res = pg_exec($id, "SELECT COUNT(*) FROM tournaments");
+	$count = pg_result($res, 0, "count");
+	echo "<b>$count</b> tournaments have been organized.<br>\n";
+
+	$res = pg_exec($id, "SELECT COUNT(*) FROM matches");
+	$count = pg_result($res, 0, "count");
+	echo "<b>$count</b> individual games have been played.<br>\n";
 }
 
 function stats_live($host)
@@ -147,10 +154,36 @@ function stats_team($id, $lookup)
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Members of the team:<br>\n";
-		$res = pg_exec($id, "SELECT handle FROM teammembers WHERE teamname = '$lookup'");
+		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup'");
 		for ($i = 0; $i < pg_numrows($res); $i++)
 		{
 			$handle = pg_result($res, $i, "handle");
+			$role = pg_result($res, $i, "role");
+
+			$color = "silver";
+			$number = 1;
+			$attribute = "";
+			$title = "";
+
+			if (strstr($role, "founder")) :
+				$title .= "Founder & ";
+				$attribute = "s";
+			endif;
+			if (strstr($role, "leader")) :
+				$title .= "Leader & ";
+				$color = "gold";
+				if ($attribute != "s") :
+					$attribute = "d";
+				endif;
+			endif;
+			if (strstr($role, "vice")) :
+				$title .= "Vice Leader & ";
+				$color = "gold";
+			endif;
+
+			$title = substr($title, 0, strlen($title) - 2);
+
+			echo "<img src='ggzicons/rankings/$color$attribute.png' title='$title'>\n";
 			echo "<a href='index.php?lookup=$handle&amp;type=player'>$handle</a><br>\n";
 		}
 	endif;
