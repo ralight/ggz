@@ -120,6 +120,7 @@ typedef struct ChatItem {
 typedef struct {
 	pthread_rwlock_t lock;
 	int player_count;
+	int player_index[MAX_ROOM_USERS];
 	ChatItemStruct *chat_tail;
 #ifdef DEBUG
 	ChatItemStruct *chat_head;

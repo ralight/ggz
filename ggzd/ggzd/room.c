@@ -74,6 +74,7 @@ void room_initialize_lists(void)
 int room_join(const int p_index, const int room)
 {
 	int old_room;
+	int i, count, last;
 
 	/* No other thread could possibly be changing the room # */
 	/* so we can read it without a lock! */
@@ -91,6 +92,11 @@ int room_join(const int p_index, const int room)
 	/* Yank them from this room */
 	if(old_room != -1) {
 		room_dequeue_chat(p_index);
+		count = chat_room[old_room].player_count;
+		last = chat_room[old_room].player_index[count-1];
+		for(i=0; i<count; i++)
+			if(chat_room[old_room].player_index[i] == p_index)
+				chat_room[old_room].player_index[i] = last;
 		chat_room[old_room].player_count --;
 		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", old_room,
 			chat_room[old_room].player_count);
@@ -103,7 +109,8 @@ int room_join(const int p_index, const int room)
 
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
-		chat_room[room].player_count ++;
+		count = ++ chat_room[room].player_count;
+		chat_room[room].player_index[count-1] = p_index;
 		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", room,
 			chat_room[room].player_count);
 	}
@@ -146,7 +153,7 @@ static void room_notify_change(const int p, const int old, const int new)
 int room_emit(const int room, const int sender, char *msg)
 {
 	ChatItemStruct *new_chat;
-	int i;
+	int i, t_p;
 
 	/* Allocate a new chat item */
 	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL)
@@ -177,11 +184,11 @@ int room_emit(const int room, const int sender, char *msg)
 	strcpy(new_chat->chat_sender, players.info[sender].name);
 
 	/* If players in this room don't have a chat head, put this item */
-	for(i=0; i<MAX_USERS; i++)
-		/* Looking only at players in our write locked room */
-		if((players.info[i].room == room)
-		   && (players.info[i].chat_head == NULL))
-			players.info[i].chat_head = new_chat;
+	for(i=0; i<chat_room[room].player_count; i++) {
+		t_p = chat_room[room].player_index[i];
+		if(players.info[t_p].chat_head == NULL)
+			players.info[t_p].chat_head = new_chat;
+	}
 
 	/* Now we can finish setting up the chat list item */
 	new_chat->chat_msg = msg;
