@@ -1,25 +1,17 @@
 For 0.0.2
 =========
-- change MOTD to MSG
-- redo table launch so that game server is forked immediately and then
-  players join later (pass fd's using sendmsg() )
-- better handing of end-of-game
-- implement REQ_LEAVE_TABLE
-- if everyone leaves a table, remove it
-- handle SIGCHLD for when game_servrs die
-- implement player database (at least API)
-- implement tic-tac-toe as simple game example
+- Add new dialog for specifying number of seats at table, computer players,
+and reservations.  Something with rows where each row represents a seat, and
+then have radio buttons for: open, reserved, or computer.  This should be
+part of the ggz client, not the game_client.  The game_client should only
+worry about options for itself.
 
-Medium run
+medium run
 ==========
-- multiple implementations of user database (SQL/libdb)
-- config file handling
-- implement rooms
-- re-write spades
-- reservations
-
-Long run
-========
-- user statistics
-- observers
-
+- Implement a standalone or offline client.  This could actually be very
+simple.  It would have to have access to both the game_server and
+game_client programs.  Then it could create a socketpair() and fork
+processes for those two, dup'ing as necessary so that the game_client and
+game_server talk directly to each other without an intermediary.  The main
+client would still have to relay options via stdin/stdout the way ggzd does
+now.

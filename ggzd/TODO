@@ -1,25 +1,35 @@
 For 0.0.2
 =========
-- change MOTD to MSG
+- Update code to new opcode names
+- Rename functions to match file and opcode names where appropriate
+- Check mutex's. Expecially table.mutex
+- Redo way table structure stores info about whos playing: this should be
+simple and not have lots of redundant data like we do now: the array of fd's
+and the array of names.  We need a few special (negative) fd values like
+FD_OPEN, FD_COMP_PLAY, FD_RESERVED, and FD_NOSEAT. Then we can get rid of
+num_players, num_humans, num_openseats, comp_mask, etc. and replace them
+with functions (or macros) operating on this array.  (maybe num_players gets
+to stay since it's important.  not sure)
 - redo table launch so that game server is forked immediately and then
   players join later (pass fd's using sendmsg() )
-- better handing of end-of-game
 - implement REQ_LEAVE_TABLE
+- better handing of end-of-game
 - if everyone leaves a table, remove it
 - handle SIGCHLD for when game_servrs die
 - implement player database (at least API)
 - implement tic-tac-toe as simple game example
+- config file handling
 
 Medium run
 ==========
+- rooms?
 - multiple implementations of user database (SQL/libdb)
-- config file handling
 - implement rooms
-- re-write spades
 - reservations
 
 Long run
 ========
 - user statistics
 - observers
+- re-write spades
 
