@@ -10,4 +10,5 @@ read_line
 cfgtest
 cfg_testfile
 misc
+strcmp
 debug.log

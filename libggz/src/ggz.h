@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4145 2002-05-03 07:54:20Z jdorje $
+ * $Id: ggz.h 4184 2002-05-11 05:20:57Z bmh $
  * 
  * Header file for ggz components lib
  *
@@ -1033,6 +1033,17 @@ char * ggz_read_line(GGZFile *file);
  */
 void ggz_free_file_struct(GGZFile *file);
 
+
+/**
+ * String comparison function that is safe with NULLs
+ * @param s1 First string to compare
+ * @param s2 Second string to compare
+ * @return An integer less than, equal to, or greater than zero if s1
+ * is found, respectively, to be less than, to match, or be greater
+ * than s2.  NULL in considered to be less than any non-NULL string
+ * and equal to itself */
+int ggz_strcmp(const char *s1, const char *s2);
+ 
 /** @} */
 
 

@@ -5,12 +5,14 @@ noinst_PROGRAMS =	\
 	debugmsg	\
 	cfgtest		\
 	read_line	\
-	misc
+	misc		\
+	strcmp
 
 debugmsg_SOURCES = debugmsg.c
 cfgtest_SOURCES = cfgtest.c
 misc_SOURCES = misc.c
 read_line_SOURCES = read_line.c
+strcmp_SOURCES = strcmp.c
 
 TESTS = debugmsg cfgtest misc read_line
 

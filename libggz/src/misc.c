@@ -247,3 +247,21 @@ void ggz_free_file_struct(GGZFile *file)
 	ggz_free(file->buf);
 	ggz_free(file);
 }
+
+
+int ggz_strcmp(const char *s1, const char *s2)
+{
+	
+	if (s1 == NULL) {
+		if (s2 == NULL) /* If they're both NULL, consider them equal */
+			return 0;
+		else
+			return -1;
+	}
+
+	if (s2 == NULL)
+		return 1;
+	
+	/* If both strings are non-NULL, do normal string compare */
+	return strcmp(s1, s2);
+}
