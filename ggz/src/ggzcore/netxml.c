@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5876 2004-02-10 02:04:22Z jdorje $
+ * $Id: netxml.c 5899 2004-02-11 01:48:34Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -163,6 +163,8 @@ static void _ggzcore_net_game_set_info(GGZXMLElement*, char*, char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
 static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*,
 					int spectator);
+static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
+				     char *action);
 static void _ggzcore_net_player_update(GGZNet *net, GGZXMLElement *update, char *action);
 static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *action);
 static GGZTableData *_ggzcore_net_table_get_data(GGZXMLElement *table);
@@ -1209,13 +1211,34 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *element)
 	action = ATTR(element, "ACTION");
 
 	if (strcasecmp(type, "room") == 0) {
-		/* FIXME: implement this */
+		_ggzcore_net_room_update(net, element, action);
 	} else if (strcasecmp(type, "game") == 0) {
 		/* FIXME: implement this */
 	} else if (strcasecmp(type, "player") == 0)
 		_ggzcore_net_player_update(net, element, action);
 	else if (strcasecmp(type, "table") == 0)
 		_ggzcore_net_table_update(net, element, action);
+}
+
+
+/* Handle room update. */
+static void _ggzcore_net_room_update(GGZNet *net, GGZXMLElement *update,
+				     char *action)
+{
+	GGZRoom *roomdata, *room;
+
+	roomdata = ggz_xmlelement_get_data(update);
+	if (!roomdata) return;
+	room = _ggzcore_server_get_room_by_id(net->server, roomdata->id);
+
+	if (room) {
+		if (strcasecmp(action, "players") == 0) {
+			_ggzcore_room_set_players(room,
+						  roomdata->player_count);
+		}
+	}
+
+	_ggzcore_room_free(roomdata);
 }
 
 
@@ -1604,39 +1627,48 @@ static void _ggzcore_net_handle_desc(GGZNet *net, GGZXMLElement *element)
 static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *element)
 {
 	GGZRoom *ggz_room;
-	int id, game;
+	int id, game, players;
 	char *name, *desc;
-	GGZXMLElement *parent;
+	GGZXMLElement *parent = ggz_stack_top(net->stack);
 	const char *parent_tag, *parent_type;
 
 	if (!element)
 		return;
+
+	if (!parent) {
+		return;
+	}
 
 	/* Grab data from tag */
 	id = str_to_int(ATTR(element, "ID"), -1);
 	name = ATTR(element, "NAME");
 	game = str_to_int(ATTR(element, "GAME"), -1);
 	desc = ggz_xmlelement_get_data(element);
+	players = str_to_int(ATTR(element, "PLAYERS"), -1);
 
 	/* Set up GGZRoom object */
 	ggz_room = _ggzcore_room_new();
-	_ggzcore_room_init(ggz_room, net->server, id, name, game, desc);
+	_ggzcore_room_init(ggz_room, net->server, id,
+			   name, game, desc, players);
 
 	/* Free description if present */
 	if (desc)
 		ggz_free(desc);
 
 	/* Get parent off top of stack */
-	parent = ggz_stack_top(net->stack);
 	parent_tag = ggz_xmlelement_get_tag(parent);
 	parent_type = ATTR(parent, "TYPE");
 
-	if (parent
-	    && strcasecmp(parent_tag, "LIST") == 0
-	    && strcasecmp(parent_type, "room") == 0)
+	if (strcasecmp(parent_tag, "LIST") == 0
+	    && strcasecmp(parent_type, "room") == 0) {
 		_ggzcore_net_list_insert(parent, ggz_room);
-	else
+	} else if (strcasecmp(parent_tag, "UPDATE") == 0
+		   && strcasecmp(parent_type, "room") == 0
+		   && ggz_xmlelement_get_data(parent) == NULL) {
+		ggz_xmlelement_set_data(parent, ggz_room);
+	} else {
 		_ggzcore_room_free(ggz_room);
+	}
 }
 
 

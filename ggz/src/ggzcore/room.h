@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 5872 2004-02-09 22:10:30Z jdorje $
+ * $Id: room.h 5899 2004-02-11 01:48:34Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -30,11 +30,75 @@
 
 #include <ggz.h>
 
-#include "ggzcore.h"
-#include "server.h"
-#include "player.h"
-#include "table.h"
 #include "gametype.h"
+#include "ggzcore.h"
+#include "hook.h"
+#include "player.h"
+#include "server.h"
+#include "table.h"
+
+/* Array of GGZRoom messages */
+static char* _ggzcore_room_events[] = {
+	"GGZ_PLAYER_LIST",
+	"GGZ_TABLE_LIST",
+	"GGZ_CHAT_EVENT",
+	"GGZ_ROOM_ENTER",
+	"GGZ_ROOM_LEAVE",
+	"GGZ_TABLE_UPDATE",
+	"GGZ_TABLE_LAUNCHED",
+	"GGZ_TABLE_LAUNCH_FAIL",
+	"GGZ_TABLE_JOINED",
+	"GGZ_TABLE_JOIN_FAIL",
+	"GGZ_TABLE_LEFT",
+	"GGZ_TABLE_LEAVE_FAIL",
+	"GGZ_PLAYER_LAG",
+	"GGZ_PLAYER_STATS",
+	"GGZ_PLAYER_COUNT"
+};
+
+/*
+ * The GGZRoom struct manages information about a particular room
+ */
+struct _GGZRoom {
+
+	/* Server which this room is on */
+	struct _GGZServer *server;
+
+	/* Monitoring flag */
+	char monitor;
+
+	/* Room ID on the server */
+	unsigned int id;
+
+	/* Name of room */
+	char *name;	
+	
+	/* Supported game type (ID on server) */
+	unsigned int game;
+
+	/* Room description */
+	char *desc;
+
+	/* Number of players in list room (current room only) */
+	unsigned int num_players;
+
+	/* List of players in the room (current room only) */
+	GGZList *players;
+
+	/* Number of players we suspect are in the room */
+	int player_count;
+
+	/* Number of tables (current room only) */
+	unsigned int num_tables;
+
+	/* List of tables in the room (current room only) */
+	GGZList *tables;
+
+	/* Room events */
+	GGZHookList *event_hooks[sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0])];
+
+};
+
 
 /* Allocate space for a new room object */
 struct _GGZRoom* _ggzcore_room_new(void);
@@ -45,7 +109,8 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 			const unsigned int id, 
 			const char *name, 
 			const unsigned int game, 
-			const char *desc);
+			const char *desc,
+			int player_count);
 
 /* De-allocate room object and its children */
 void _ggzcore_room_free(struct _GGZRoom *room);
@@ -90,6 +155,8 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   GGZList *list);
+void _ggzcore_room_set_players(struct _GGZRoom *room,
+			       int players);
 void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
 			      int from_room);
 void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name,

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5860 2004-02-09 01:54:41Z jdorje $
+ * $Id: server.c 5899 2004-02-11 01:48:34Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -707,15 +707,25 @@ void _ggzcore_server_set_password(GGZServer *server, const char *password)
 
 void _ggzcore_server_set_room(GGZServer *server, GGZRoom *room)
 {
-	GGZRoom *old;
+	GGZRoom *old = _ggzcore_server_get_cur_room(server);
+	int num_players = 0;
 	
 	/* Stop monitoring old room/start monitoring new one */
-	if ( (old = _ggzcore_server_get_cur_room(server)))
+	if (old) {
+		num_players = old->num_players;
 		_ggzcore_room_set_monitor(old, 0);
+	}
 
 	server->room = room;
 	
 	_ggzcore_room_set_monitor(room, 1);
+	/* No need to update the player_count in the new room. */
+
+	if (old) {
+		/* This is done last so this room will no longer be the
+		 * current one. */
+		_ggzcore_room_set_players(old, num_players - 1);
+	}
 }
 
 

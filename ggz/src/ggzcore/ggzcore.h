@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5872 2004-02-09 22:10:30Z jdorje $
+ * $Id: ggzcore.h 5899 2004-02-11 01:48:34Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -369,12 +369,14 @@ typedef struct {
 /** A GGZRoomEvent is an event associated with the room, that is triggered
  *  by a communication from the server.  When a room event occurs, the
  *  associated event handler will be called, and will be passed the event
- *  data (a void*), along with the (optional) user data.
+ *  data (a void*), along with the (optional) user data.  All room events
+ *  apply to the current room unless a room number is given.
  *  @see ggzcore_room_add_event_hook
  */
 typedef enum {
 	/** The list of players in a room has arrived.
-	 *  @param data NULL
+	 *  @param data The room id (int *)
+	 *  @note This will only be issued for the current room.
 	 *  @see ggzcore_room_list_players */
 	GGZ_PLAYER_LIST,
 
@@ -445,7 +447,11 @@ typedef enum {
 	 *  @see ggzcore_player_get_ranking
 	 *  @see ggzcore_player_get_highscore
 	 *  @param data The name of the player whose stats have changed. */
-	GGZ_PLAYER_STATS
+	GGZ_PLAYER_STATS,
+
+	/** The number of players in a room has arrived.
+	 *  @param data The room id (int *) */
+	GGZ_PLAYER_COUNT
 } GGZRoomEvent;
 
 
