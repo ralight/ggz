@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 6266 2004-11-05 07:29:49Z jdorje $
+ * $Id: main_cb.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -82,7 +82,7 @@ on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
 		text = calloc(1, sizeof(char *));
 
 		dlg_prefs = create_dlg_prefs();
-		gtk_signal_connect(GTK_OBJECT(dlg_prefs),
+		g_signal_connect(GTK_OBJECT(dlg_prefs),
 				   "destroy",
 				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				   &dlg_prefs);

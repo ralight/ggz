@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6226 2004-10-28 05:54:14Z jdorje $
+ * $Id: main.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -289,12 +289,12 @@ static GtkWidget *new_message_dialog(const char *mark)
 	menu_item = gtk_menu_item_new_with_label(mark);
 	gtk_widget_set_name(menu_item, mark);
 	gtk_widget_ref(menu_item);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), mark,
+	g_object_set_data_full(G_OBJECT(dlg_main), mark,
 				 menu_item,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menu_item);
 	gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
-	(void) gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+	(void) g_signal_connect(GTK_OBJECT(menu_item), "activate",
 				  GTK_SIGNAL_FUNC(on_mnu_messages_activate),
 				  (gpointer) g_strdup(mark));
 
@@ -303,10 +303,10 @@ static GtkWidget *new_message_dialog(const char *mark)
 	 */
 	dialog = gtk_dialog_new();
 	gtk_widget_ref(dialog);
-	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dialog);
+	g_object_set_data(G_OBJECT(msg_menu), mark, dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
-	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
+	(void) g_signal_connect_swapped(GTK_OBJECT(dialog), "delete_event",
 					 GTK_SIGNAL_FUNC(gtk_widget_hide),
 					 GTK_OBJECT(dialog));
 
@@ -321,12 +321,12 @@ static GtkWidget *new_message_dialog(const char *mark)
 	 */
 	close_button = gtk_button_new_with_label("Close");
 	gtk_widget_ref(close_button);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "close_button",
+	g_object_set_data_full(G_OBJECT(dialog), "close_button",
 				 close_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
 	gtk_widget_set_usize(close_button, 64, -2);
-	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
+	(void) g_signal_connect_swapped(GTK_OBJECT(close_button), "clicked",
 					 GTK_SIGNAL_FUNC(gtk_widget_hide),
 					 GTK_OBJECT(dialog));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
@@ -356,7 +356,7 @@ void menubar_text_message(const char *mark, const char *msg)
 		label = gtk_label_new(msg);
 		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 		gtk_widget_ref(label);
-		gtk_object_set_data_full(GTK_OBJECT(dlg), "label", label,
+		g_object_set_data_full(G_OBJECT(dlg), "label", label,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(label);
 
@@ -399,11 +399,11 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 		dlg = new_message_dialog(mark);
 
 		image = gdk_pixmap_new(table->window, width, height, -1);
-		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
+		g_object_set_data(G_OBJECT(dlg), "image", image);
 
 		canvas = gtk_pixmap_new(image, NULL);
 		gtk_widget_ref(canvas);
-		gtk_object_set_data(GTK_OBJECT(dlg), "canvas", canvas);
+		g_object_set_data(G_OBJECT(dlg), "canvas", canvas);
 
 #if 1
 		layout = gtk_table_new(ggzcards.num_players, 2, FALSE);
@@ -412,7 +412,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 
 		name_labels =
 			g_malloc(ggzcards.num_players * sizeof(*name_labels));
-		gtk_object_set_data(GTK_OBJECT(dlg), "names", name_labels);
+		g_object_set_data(G_OBJECT(dlg), "names", name_labels);
 		for (p = 0; p < ggzcards.num_players; p++) {
 			name_labels[p] =
 				gtk_label_new(ggzcards.players[p].name);
@@ -441,7 +441,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	if (w != width || h != height) {
 		GdkPixmap *old_image = image;
 		image = gdk_pixmap_new(table->window, width, height, -1);
-		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
+		g_object_set_data(G_OBJECT(dlg), "image", image);
 
 		gdk_pixmap_unref(old_image);
 	}

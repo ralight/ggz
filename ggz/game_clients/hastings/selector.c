@@ -136,9 +136,9 @@ GtkWidget *selector()
 	gtk_combo_set_popdown_strings(GTK_COMBO(list), maps);
 	g_list_free(maps);
 
-	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(list)->entry), "changed", GTK_SIGNAL_FUNC(activated), NULL);
-	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(selected), window);
-	/*gtk_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(destroyed), G_OBJECT(window));*/
+	g_signal_connect(GTK_OBJECT(GTK_COMBO(list)->entry), "changed", GTK_SIGNAL_FUNC(activated), NULL);
+	g_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(selected), window);
+	/*g_signal_connect_swapped(G_OBJECT(button), "clicked", G_CALLBACK(destroyed), G_OBJECT(window));*/
 	activated(NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(box), label, TRUE, TRUE, 0);

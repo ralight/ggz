@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6244 2004-11-03 21:09:24Z jdorje $
+ * $Id: game.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -215,7 +215,7 @@ void game_ask_options(void) {
   GtkWidget *ok_button;
   options_dialog = create_dlg_options(cbt_game.number); 
   ok_button = lookup_widget(options_dialog, "ok_button"); 
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+  g_signal_connect_swapped (GTK_OBJECT (ok_button), "clicked",
                              GTK_SIGNAL_FUNC (game_send_options), 
                              GTK_OBJECT (options_dialog));
   gtk_widget_show_all(options_dialog);
@@ -265,7 +265,7 @@ int game_get_options(void) {
 
   if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS) {
     cbt_info.show_enemy = TRUE;
-    gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
+    g_object_set_data(G_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(checkmenuitem), TRUE);
   }
 
@@ -957,7 +957,7 @@ void game_ask_save_map(void) {
   GtkWidget *save_dlg = create_dlg_save();
   GtkWidget *yes = lookup_widget(save_dlg, "yes");
   GtkWidget *map_name = lookup_widget(save_dlg, "map_name");
-  gtk_signal_connect(GTK_OBJECT(yes), "clicked",
+  g_signal_connect(GTK_OBJECT(yes), "clicked",
                      GTK_SIGNAL_FUNC (game_confirm_save_map), save_dlg); 
   if (cbt_game.name)
     gtk_entry_set_text(GTK_ENTRY(map_name), cbt_game.name);
@@ -996,7 +996,7 @@ void game_message( const char *format, ... ) {
   /* Ensure that the dialog box is destroyed when
    * the user clicks ok. */
  
-  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+  g_signal_connect_swapped (GTK_OBJECT (ok_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dialog));
 
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),

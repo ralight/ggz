@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 6226 2004-10-28 05:54:14Z jdorje $
+ * $Id: dlg_main.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -87,7 +87,7 @@ GtkWidget *create_dlg_main(void)
 
 	dlg_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(dlg_main, "dlg_main");
-	gtk_object_set_data(GTK_OBJECT(dlg_main), "dlg_main", dlg_main);
+	g_object_set_data(G_OBJECT(dlg_main), "dlg_main", dlg_main);
 	gtk_window_set_title(GTK_WINDOW(dlg_main),
 			     _("GGZ Gaming Zone - GGZ Cards"));
 
@@ -99,7 +99,7 @@ GtkWidget *create_dlg_main(void)
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(vbox1, "vbox1");
 	gtk_widget_ref(vbox1);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "vbox1", vbox1,
+	g_object_set_data_full(G_OBJECT(dlg_main), "vbox1", vbox1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(dlg_main), vbox1);
@@ -107,7 +107,7 @@ GtkWidget *create_dlg_main(void)
 	menubar = create_menus(dlg_main);
 	gtk_widget_set_name(menubar, "menubar");
 	gtk_widget_ref(menubar);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "menubar", menubar,
+	g_object_set_data_full(G_OBJECT(dlg_main), "menubar", menubar,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox1), menubar, FALSE, FALSE, 0);
@@ -116,7 +116,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_fixed_set_has_window(GTK_FIXED(fixed1), TRUE);
 	gtk_widget_set_name(fixed1, "fixed1");
 	gtk_widget_ref(fixed1);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "fixed1", fixed1,
+	g_object_set_data_full(G_OBJECT(dlg_main), "fixed1", fixed1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(fixed1);
 	gtk_box_pack_start(GTK_BOX(vbox1), fixed1, TRUE, TRUE, 0);
@@ -125,7 +125,7 @@ GtkWidget *create_dlg_main(void)
 	messagebar = gtk_statusbar_new();
 	gtk_widget_set_name(messagebar, "messagebar");
 	gtk_widget_ref(messagebar);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "messagebar",
+	g_object_set_data_full(G_OBJECT(dlg_main), "messagebar",
 				 messagebar,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(messagebar);
@@ -134,7 +134,7 @@ GtkWidget *create_dlg_main(void)
 	statusbar1 = gtk_statusbar_new();
 	gtk_widget_set_name(statusbar1, "statusbar1");
 	gtk_widget_ref(statusbar1);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "statusbar1",
+	g_object_set_data_full(G_OBJECT(dlg_main), "statusbar1",
 				 statusbar1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(statusbar1);
@@ -143,24 +143,24 @@ GtkWidget *create_dlg_main(void)
 	chatline = create_chat_widget();
 	gtk_widget_set_name(chatline, "chat");
 	gtk_widget_ref(chatline);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "chat",
+	g_object_set_data_full(G_OBJECT(dlg_main), "chat",
 				 chatline,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show_all(chatline);
 	gtk_box_pack_start(GTK_BOX(vbox1), chatline, FALSE, FALSE, 0);
 
-	(void) gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
+	(void) g_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
 				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
 				  NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
+	(void) g_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
 				  GTK_SIGNAL_FUNC
 				  (on_fixed1_button_press_event), NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
+	(void) g_signal_connect(GTK_OBJECT(fixed1), "style_set",
 				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
 				  NULL);
 #if 0				/* We need some kind of redraw, I think, but
 				   this doesn't draw correctly. */
-	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
+	(void) g_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
 				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
 				  NULL);
 #endif

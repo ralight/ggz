@@ -71,7 +71,7 @@ GtkWidget *CreateTauntArea(void)
 
 	/* Taunt entry */
 	tauntBox = gtk_entry_new_with_max_length(256);
-	gtk_signal_connect_object(GTK_OBJECT(tauntBox), "activate",
+	g_signal_connect_swapped(GTK_OBJECT(tauntBox), "activate",
 				  GTK_SIGNAL_FUNC(ReadTaunt),
 				  GTK_OBJECT(tauntBox));
 	gtk_widget_set_sensitive(tauntBox, FALSE);
@@ -80,7 +80,7 @@ GtkWidget *CreateTauntArea(void)
 
 	/* Taunt submit button */
 	button = gtk_button_new_with_label("Send");
-	gtk_signal_connect_object(GTK_OBJECT(button), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(button), "clicked",
 				  GTK_SIGNAL_FUNC(ReadTaunt),
 				  GTK_OBJECT(tauntBox));
 	gtk_widget_show(button);

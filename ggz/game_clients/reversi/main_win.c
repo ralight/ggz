@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6267 2004-11-05 07:31:58Z jdorje $
+ * $Id: main_win.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -242,8 +242,8 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	   loaded. */
 	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), last_color, TRUE, TRUE);
 	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), back_color, TRUE, TRUE);
-	gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
-	gtk_object_set_data(GTK_OBJECT(main_win), "back_color", back_color);
+	g_object_set_data(G_OBJECT(main_win), "last_color", last_color);
+	g_object_set_data(G_OBJECT(main_win), "back_color", back_color);
 	gdk_gc_set_foreground(bg_gc, back_color);
 	gdk_gc_set_foreground(last_gc, last_color);
 
@@ -275,12 +275,13 @@ static void game_get_options(GtkMenuItem *menuitem, gpointer user_data)
   dialog = create_options_dialog(back_color, last_color);
   gtk_widget_show_all(dialog);
   ok = lookup_widget(dialog, "ok_button");
-  gtk_signal_connect (GTK_OBJECT(ok), "clicked",
+  g_signal_connect (GTK_OBJECT(ok), "clicked",
                       GTK_SIGNAL_FUNC (update_options),
                       dialog);
-  gtk_signal_connect_object_after (GTK_OBJECT(ok), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      GTK_OBJECT(dialog));
+  g_signal_connect_data(ok, "clicked",
+			GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			dialog, NULL,
+			G_CONNECT_SWAPPED | G_CONNECT_AFTER);
 }
 
 void update_options(GtkButton *button, gpointer user_data)
@@ -290,8 +291,8 @@ void update_options(GtkButton *button, gpointer user_data)
   GtkWidget *back = lookup_widget(user_data, "back_button");
   bg_color = gtk_object_get_data(GTK_OBJECT(back), "color");
   last_color = gtk_object_get_data(GTK_OBJECT(last), "color");
-  gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
-  gtk_object_set_data(GTK_OBJECT(main_win), "back_color", bg_color);
+  g_object_set_data(G_OBJECT(main_win), "last_color", last_color);
+  g_object_set_data(G_OBJECT(main_win), "back_color", bg_color);
   gdk_gc_set_foreground(bg_gc, bg_color);
   gdk_gc_set_foreground(last_gc, last_color);
 
@@ -445,19 +446,19 @@ create_main_win (void)
   accel_group = gtk_accel_group_new ();
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
+  g_object_set_data(G_OBJECT (main_win), "main_win", main_win);
   gtk_window_set_title (GTK_WINDOW (main_win), _("Reversi"));
 
   main_box = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (main_box);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "main_box", main_box,
+  g_object_set_data_full(G_OBJECT (main_win), "main_box", main_box,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (main_box);
   gtk_container_add (GTK_CONTAINER (main_win), main_box);
 
   menubar = create_menus(main_win);
   gtk_widget_ref (menubar);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "menubar", menubar,
+  g_object_set_data_full(G_OBJECT (main_win), "menubar", menubar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (main_box), menubar, FALSE, FALSE, 0);
@@ -465,24 +466,24 @@ create_main_win (void)
 	// Create labels frames
 	white_label_frame = gtk_frame_new(NULL);
 	gtk_widget_ref(white_label_frame);
-	gtk_object_set_data_full (GTK_OBJECT(main_win), "white_label_frame", white_label_frame, (GtkDestroyNotify)gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(main_win), "white_label_frame", white_label_frame, (GtkDestroyNotify)gtk_widget_unref);
 	gtk_widget_show(white_label_frame);
 	
 	black_label_frame = gtk_frame_new(NULL);
 	gtk_widget_ref(black_label_frame);
-	gtk_object_set_data_full (GTK_OBJECT(main_win), "black_label_frame", black_label_frame, (GtkDestroyNotify)gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(main_win), "black_label_frame", black_label_frame, (GtkDestroyNotify)gtk_widget_unref);
 	gtk_widget_show(black_label_frame);
 
 	// Create labels
 	white_label = gtk_label_new("White: 0");
 	// Why is that? Really don't know, but all the other scripts have it!
   gtk_widget_ref (white_label);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "white_label", white_label,
+  g_object_set_data_full(G_OBJECT (main_win), "white_label", white_label,
                             (GtkDestroyNotify) gtk_widget_unref);
 
 	black_label = gtk_label_new("Black: 0");
   gtk_widget_ref (black_label);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "black_label", black_label,
+  g_object_set_data_full(G_OBJECT (main_win), "black_label", black_label,
                             (GtkDestroyNotify) gtk_widget_unref);
 
 	gtk_container_add( GTK_CONTAINER(white_label_frame), white_label);
@@ -493,7 +494,7 @@ create_main_win (void)
 	// Play again button
 	again_button = gtk_button_new_with_label("Play again");
 	gtk_widget_ref(again_button);
-	gtk_object_set_data_full(GTK_OBJECT(main_win), "again_button", again_button, 
+	g_object_set_data_full(G_OBJECT(main_win), "again_button", again_button, 
 													 (GtkDestroyNotify)gtk_widget_unref);
 	//gtk_container_add(GTK_CONTAINER(main_win), again_button);
 	//gtk_widget_set_usize(again_button, 50, 50);
@@ -502,7 +503,7 @@ create_main_win (void)
 	// Label box
 	label_box = gtk_hbox_new(TRUE, 5);
   gtk_widget_ref (label_box);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label_box", label_box,
+  g_object_set_data_full(G_OBJECT (main_win), "label_box", label_box,
                             (GtkDestroyNotify) gtk_widget_unref);
 
 	gtk_widget_set_usize(label_box, PIXSIZE*8, 20);
@@ -515,7 +516,7 @@ create_main_win (void)
 	// Drawing area
   drawingarea = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "drawingarea", drawingarea,
+  g_object_set_data_full(G_OBJECT (main_win), "drawingarea", drawingarea,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (drawingarea);
   gtk_box_pack_start (GTK_BOX (main_box), drawingarea, TRUE, TRUE, 0);
@@ -525,27 +526,27 @@ create_main_win (void)
 	// Status bar
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "statusbar", statusbar,
+  g_object_set_data_full(G_OBJECT (main_win), "statusbar", statusbar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (statusbar);
   gtk_box_pack_start (GTK_BOX (main_box), statusbar, FALSE, FALSE, 0);
 
-  gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
+  g_signal_connect (GTK_OBJECT (main_win), "delete_event",
                       GTK_SIGNAL_FUNC (main_exit),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (main_win), "realize",
+  g_signal_connect (GTK_OBJECT (main_win), "realize",
                       GTK_SIGNAL_FUNC (on_main_win_realize),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (drawingarea), "configure_event",
+  g_signal_connect (GTK_OBJECT (drawingarea), "configure_event",
                       GTK_SIGNAL_FUNC (configure_handle),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (drawingarea), "expose_event",
+  g_signal_connect (GTK_OBJECT (drawingarea), "expose_event",
                       GTK_SIGNAL_FUNC (expose_handle),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (drawingarea), "button_press_event",
+  g_signal_connect (GTK_OBJECT (drawingarea), "button_press_event",
                       GTK_SIGNAL_FUNC (handle_move),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (again_button), "clicked",
+  g_signal_connect (GTK_OBJECT (again_button), "clicked",
 				  	  GTK_SIGNAL_FUNC (play_again),
 					  NULL);
 

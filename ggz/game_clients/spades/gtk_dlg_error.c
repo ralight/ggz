@@ -75,10 +75,10 @@ void DisplayMessage(char *message, gboolean quit)
 	okButton = gtk_button_new_with_label(_("OK"));
 
 	if (quit) {
-		gtk_signal_connect(GTK_OBJECT(okButton), "clicked",
+		g_signal_connect(GTK_OBJECT(okButton), "clicked",
 				   GTK_SIGNAL_FUNC(Disconnect), NULL);
 	}
-	gtk_signal_connect_object(GTK_OBJECT(okButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(okButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 	gtk_widget_show(okButton);

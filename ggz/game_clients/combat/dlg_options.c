@@ -1,3 +1,28 @@
+/*
+ * File: dlg_options.c
+ * Author: GGZ Development Team
+ * Project: GGZ Combat Client
+ * Date: 2001?
+ * Desc: Options dialog
+ * $Id: dlg_options.c 6284 2004-11-06 06:21:54Z jdorje $
+ *
+ * Copyright (C) 2001-2004 GGZ Development Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -115,20 +140,20 @@ create_dlg_options (int number)
 
   dlg_options = gtk_dialog_new ();
   gtk_widget_set_name (dlg_options, "dlg_options");
-  gtk_object_set_data (GTK_OBJECT (dlg_options), "dlg_options", dlg_options);
+  g_object_set_data(G_OBJECT (dlg_options), "dlg_options", dlg_options);
   gtk_window_set_title (GTK_WINDOW (dlg_options), _("Game options"));
   gtk_window_set_modal (GTK_WINDOW (dlg_options), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dlg_options), TRUE, TRUE, FALSE);
 
   dialog_vbox2 = GTK_DIALOG (dlg_options)->vbox;
   gtk_widget_set_name (dialog_vbox2, "dialog_vbox2");
-  gtk_object_set_data (GTK_OBJECT (dlg_options), "dialog_vbox2", dialog_vbox2);
+  g_object_set_data(G_OBJECT (dlg_options), "dialog_vbox2", dialog_vbox2);
   gtk_widget_show (dialog_vbox2);
 
   notebook1 = gtk_notebook_new ();
   gtk_widget_set_name (notebook1, "notebook1");
   gtk_widget_ref (notebook1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "notebook1", notebook1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "notebook1", notebook1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (notebook1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox2), notebook1, TRUE, TRUE, 0);
@@ -136,7 +161,7 @@ create_dlg_options (int number)
   hbox3 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox3, "hbox3");
   gtk_widget_ref (hbox3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbox3", hbox3,
+  g_object_set_data_full(G_OBJECT (dlg_options), "hbox3", hbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox3);
   gtk_container_add (GTK_CONTAINER (notebook1), hbox3);
@@ -144,7 +169,7 @@ create_dlg_options (int number)
   mini_board = gtk_drawing_area_new ();
   gtk_widget_set_name (mini_board, "mini_board");
   gtk_widget_ref (mini_board);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "mini_board", mini_board,
+  g_object_set_data_full(G_OBJECT (dlg_options), "mini_board", mini_board,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mini_board);
   gtk_box_pack_start (GTK_BOX (hbox3), mini_board, TRUE, TRUE, 0);
@@ -154,7 +179,7 @@ create_dlg_options (int number)
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox1, "vbox1");
   gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "vbox1", vbox1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (hbox3), vbox1, FALSE, FALSE, 5);
@@ -162,7 +187,7 @@ create_dlg_options (int number)
   table1 = gtk_table_new (2, 2, FALSE);
   gtk_widget_set_name (table1, "table1");
   gtk_widget_ref (table1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "table1", table1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
   gtk_box_pack_start (GTK_BOX (vbox1), table1, FALSE, TRUE, 0);
@@ -170,7 +195,7 @@ create_dlg_options (int number)
   label7 = gtk_label_new (_("Height: "));
   gtk_widget_set_name (label7, "label7");
   gtk_widget_ref (label7);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label7", label7,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label7);
   gtk_table_attach (GTK_TABLE (table1), label7, 0, 1, 1, 2,
@@ -181,7 +206,7 @@ create_dlg_options (int number)
   width = gtk_spin_button_new (GTK_ADJUSTMENT (width_adj), 1, 0);
   gtk_widget_set_name (width, "width");
   gtk_widget_ref (width);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "width", width,
+  g_object_set_data_full(G_OBJECT (dlg_options), "width", width,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (width);
   gtk_table_attach (GTK_TABLE (table1), width, 1, 2, 0, 1,
@@ -192,7 +217,7 @@ create_dlg_options (int number)
   height = gtk_spin_button_new (GTK_ADJUSTMENT (height_adj), 1, 0);
   gtk_widget_set_name (height, "height");
   gtk_widget_ref (height);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "height", height,
+  g_object_set_data_full(G_OBJECT (dlg_options), "height", height,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (height);
   gtk_table_attach (GTK_TABLE (table1), height, 1, 2, 1, 2,
@@ -202,7 +227,7 @@ create_dlg_options (int number)
   label6 = gtk_label_new (_("Width: "));
   gtk_widget_set_name (label6, "label6");
   gtk_widget_ref (label6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label6", label6,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label6);
   gtk_table_attach (GTK_TABLE (table1), label6, 0, 1, 0, 1,
@@ -212,7 +237,7 @@ create_dlg_options (int number)
   hseparator1 = gtk_hseparator_new ();
   gtk_widget_set_name (hseparator1, "hseparator1");
   gtk_widget_ref (hseparator1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hseparator1", hseparator1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "hseparator1", hseparator1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator1);
   gtk_box_pack_start (GTK_BOX (vbox1), hseparator1, FALSE, TRUE, 7);
@@ -220,9 +245,9 @@ create_dlg_options (int number)
   open = gtk_radio_button_new_with_label (terrain_types_group, _("Open"));
   terrain_types_group = gtk_radio_button_group (GTK_RADIO_BUTTON (open));
   gtk_widget_set_name (open, "open");
-	gtk_object_set_data (GTK_OBJECT(open), "type", GINT_TO_POINTER(OPEN));
+	g_object_set_data(G_OBJECT(open), "type", GINT_TO_POINTER(OPEN));
   gtk_widget_ref (open);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "open", open,
+  g_object_set_data_full(G_OBJECT (dlg_options), "open", open,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (open);
   gtk_box_pack_start (GTK_BOX (vbox1), open, FALSE, FALSE, 0);
@@ -231,9 +256,9 @@ create_dlg_options (int number)
   lake = gtk_radio_button_new_with_label (terrain_types_group, _("Lake"));
   terrain_types_group = gtk_radio_button_group (GTK_RADIO_BUTTON (lake));
   gtk_widget_set_name (lake, "lake");
-	gtk_object_set_data (GTK_OBJECT(lake), "type", GINT_TO_POINTER(LAKE));
+	g_object_set_data(G_OBJECT(lake), "type", GINT_TO_POINTER(LAKE));
   gtk_widget_ref (lake);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "lake", lake,
+  g_object_set_data_full(G_OBJECT (dlg_options), "lake", lake,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lake);
   gtk_box_pack_start (GTK_BOX (vbox1), lake, FALSE, FALSE, 0);
@@ -241,9 +266,9 @@ create_dlg_options (int number)
   black = gtk_radio_button_new_with_label (terrain_types_group, _("Black"));
   terrain_types_group = gtk_radio_button_group (GTK_RADIO_BUTTON (black));
   gtk_widget_set_name (black, "black");
-	gtk_object_set_data (GTK_OBJECT(black), "type", GINT_TO_POINTER(BLACK));
+	g_object_set_data(G_OBJECT(black), "type", GINT_TO_POINTER(BLACK));
   gtk_widget_ref (black);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "black", black,
+  g_object_set_data_full(G_OBJECT (dlg_options), "black", black,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (black);
   gtk_box_pack_start (GTK_BOX (vbox1), black, FALSE, FALSE, 0);
@@ -251,9 +276,9 @@ create_dlg_options (int number)
   player_1 = gtk_radio_button_new_with_label (terrain_types_group, _("Player 1"));
   terrain_types_group = gtk_radio_button_group (GTK_RADIO_BUTTON (player_1));
   gtk_widget_set_name (player_1, "player_1");
-	gtk_object_set_data (GTK_OBJECT(player_1), "type", GINT_TO_POINTER(PLAYER_1));
+	g_object_set_data(G_OBJECT(player_1), "type", GINT_TO_POINTER(PLAYER_1));
   gtk_widget_ref (player_1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "player_1", player_1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "player_1", player_1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (player_1);
   gtk_box_pack_start (GTK_BOX (vbox1), player_1, FALSE, FALSE, 0);
@@ -261,9 +286,9 @@ create_dlg_options (int number)
   player_2 = gtk_radio_button_new_with_label (terrain_types_group, _("Player 2"));
   terrain_types_group = gtk_radio_button_group (GTK_RADIO_BUTTON (player_2));
   gtk_widget_set_name (player_2, "player_2");
-	gtk_object_set_data (GTK_OBJECT(player_2), "type", GINT_TO_POINTER(PLAYER_2));
+	g_object_set_data(G_OBJECT(player_2), "type", GINT_TO_POINTER(PLAYER_2));
   gtk_widget_ref (player_2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "player_2", player_2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "player_2", player_2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (player_2);
   gtk_box_pack_start (GTK_BOX (vbox1), player_2, FALSE, FALSE, 0);
@@ -271,7 +296,7 @@ create_dlg_options (int number)
   label3 = gtk_label_new (_("Terrain"));
   gtk_widget_set_name (label3, "label3");
   gtk_widget_ref (label3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label3", label3,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label3);
@@ -279,7 +304,7 @@ create_dlg_options (int number)
   army_hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (army_hbox, "army_hbox");
   gtk_widget_ref (army_hbox);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_hbox", army_hbox,
+  g_object_set_data_full(G_OBJECT (dlg_options), "army_hbox", army_hbox,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (army_hbox);
   gtk_container_add (GTK_CONTAINER (notebook1), army_hbox);
@@ -287,7 +312,7 @@ create_dlg_options (int number)
   label4 = gtk_label_new (_("Army"));
   gtk_widget_set_name (label4, "label4");
   gtk_widget_ref (label4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label4", label4,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label4);
@@ -297,7 +322,7 @@ create_dlg_options (int number)
   options_table = gtk_table_new (8, 2, FALSE);
   gtk_widget_set_name (options_table, "options_table");
   gtk_widget_ref (options_table);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "options_table", options_table,
+  g_object_set_data_full(G_OBJECT (dlg_options), "options_table", options_table,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (options_table);
   gtk_container_add (GTK_CONTAINER (notebook1), options_table);
@@ -305,7 +330,7 @@ create_dlg_options (int number)
   eventbox2 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox2, "eventbox2");
   gtk_widget_ref (eventbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox2", eventbox2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox2", eventbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox2);
   gtk_table_attach (GTK_TABLE (options_table), eventbox2, 0, 1, 1, 2,
@@ -316,7 +341,7 @@ create_dlg_options (int number)
   opt_bin1[1] = gtk_check_button_new_with_label (_("One Time Bomb"));
   gtk_widget_set_name (opt_bin1[1], "opt_bin1[1]");
   gtk_widget_ref (opt_bin1[1]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[1]", opt_bin1[1],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[1]", opt_bin1[1],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[1]);
   gtk_container_add (GTK_CONTAINER (eventbox2), opt_bin1[1]);
@@ -325,7 +350,7 @@ create_dlg_options (int number)
   eventbox3 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox3, "eventbox3");
   gtk_widget_ref (eventbox3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox3", eventbox3,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox3", eventbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox3);
   gtk_table_attach (GTK_TABLE (options_table), eventbox3, 0, 1, 2, 3,
@@ -336,7 +361,7 @@ create_dlg_options (int number)
   opt_bin1[2] = gtk_check_button_new_with_label (_("Terrorist Spy"));
   gtk_widget_set_name (opt_bin1[2], "opt_bin1[2]");
   gtk_widget_ref (opt_bin1[2]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[2]", opt_bin1[2],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[2]", opt_bin1[2],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[2]);
   gtk_container_add (GTK_CONTAINER (eventbox3), opt_bin1[2]);
@@ -345,7 +370,7 @@ create_dlg_options (int number)
   eventbox4 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox4, "eventbox4");
   gtk_widget_ref (eventbox4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox4", eventbox4,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox4", eventbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox4);
   gtk_table_attach (GTK_TABLE (options_table), eventbox4, 0, 1, 3, 4,
@@ -356,7 +381,7 @@ create_dlg_options (int number)
   opt_bin1[3] = gtk_check_button_new_with_label (_("Moving Bombs"));
   gtk_widget_set_name (opt_bin1[3], "opt_bin1[3]");
   gtk_widget_ref (opt_bin1[3]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[3]", opt_bin1[3],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[3]", opt_bin1[3],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[3]);
   gtk_container_add (GTK_CONTAINER (eventbox4), opt_bin1[3]);
@@ -365,7 +390,7 @@ create_dlg_options (int number)
   eventbox5 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox5, "eventbox5");
   gtk_widget_ref (eventbox5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox5", eventbox5,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox5", eventbox5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox5);
   gtk_table_attach (GTK_TABLE (options_table), eventbox5, 0, 1, 4, 5,
@@ -376,7 +401,7 @@ create_dlg_options (int number)
   opt_bin1[4] = gtk_check_button_new_with_label (_("Super Scout"));
   gtk_widget_set_name (opt_bin1[4], "opt_bin1[4]");
   gtk_widget_ref (opt_bin1[4]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[4]", opt_bin1[4],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[4]", opt_bin1[4],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[4]);
   gtk_container_add (GTK_CONTAINER (eventbox5), opt_bin1[4]);
@@ -385,7 +410,7 @@ create_dlg_options (int number)
   eventbox6 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox6, "eventbox6");
   gtk_widget_ref (eventbox6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox6", eventbox6,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox6", eventbox6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox6);
   gtk_table_attach (GTK_TABLE (options_table), eventbox6, 0, 1, 5, 6,
@@ -396,7 +421,7 @@ create_dlg_options (int number)
   opt_bin1[5] = gtk_check_button_new_with_label (_("Moving Flags"));
   gtk_widget_set_name (opt_bin1[5], "opt_bin1[5]");
   gtk_widget_ref (opt_bin1[5]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[5]", opt_bin1[5],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[5]", opt_bin1[5],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[5]);
   gtk_container_add (GTK_CONTAINER (eventbox6), opt_bin1[5]);
@@ -405,7 +430,7 @@ create_dlg_options (int number)
   eventbox7 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox7, "eventbox7");
   gtk_widget_ref (eventbox7);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox7", eventbox7,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox7", eventbox7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox7);
   gtk_table_attach (GTK_TABLE (options_table), eventbox7, 0, 1, 6, 7,
@@ -416,7 +441,7 @@ create_dlg_options (int number)
   opt_bin1[6] = gtk_check_button_new_with_label (_("Random outcome of attacks"));
   gtk_widget_set_name (opt_bin1[6], "opt_bin1[6]");
   gtk_widget_ref (opt_bin1[6]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[6]", opt_bin1[6],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[6]", opt_bin1[6],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[6]);
   gtk_container_add (GTK_CONTAINER (eventbox7), opt_bin1[6]);
@@ -425,7 +450,7 @@ create_dlg_options (int number)
   eventbox8 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox8, "eventbox8");
   gtk_widget_ref (eventbox8);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox8", eventbox8,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox8", eventbox8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox8);
   gtk_table_attach (GTK_TABLE (options_table), eventbox8, 0, 1, 7, 8,
@@ -436,7 +461,7 @@ create_dlg_options (int number)
   opt_bin1[7] = gtk_check_button_new_with_label (_("Allow diagonal moves"));
   gtk_widget_set_name (opt_bin1[7], "opt_bin1[7]");
   gtk_widget_ref (opt_bin1[7]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[7]", opt_bin1[7],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[7]", opt_bin1[7],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[7]);
   gtk_container_add (GTK_CONTAINER (eventbox8), opt_bin1[7]);
@@ -445,7 +470,7 @@ create_dlg_options (int number)
   eventbox9 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox9, "eventbox9");
   gtk_widget_ref (eventbox9);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox9", eventbox9,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox9", eventbox9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox9);
   gtk_table_attach (GTK_TABLE (options_table), eventbox9, 1, 2, 0, 1,
@@ -456,7 +481,7 @@ create_dlg_options (int number)
   opt_bin1[8] = gtk_check_button_new_with_label (_("Unknow Victor"));
   gtk_widget_set_name (opt_bin1[8], "opt_bin1[8]");
   gtk_widget_ref (opt_bin1[8]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[8]", opt_bin1[8],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[8]", opt_bin1[8],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[8]);
   gtk_container_add (GTK_CONTAINER (eventbox9), opt_bin1[8]);
@@ -465,7 +490,7 @@ create_dlg_options (int number)
   eventbox10 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox10, "eventbox10");
   gtk_widget_ref (eventbox10);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox10", eventbox10,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox10", eventbox10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox10);
   gtk_table_attach (GTK_TABLE (options_table), eventbox10, 1, 2, 1, 2,
@@ -476,7 +501,7 @@ create_dlg_options (int number)
   opt_bin1[9] = gtk_check_button_new_with_label (_("Silent Defense"));
   gtk_widget_set_name (opt_bin1[9], "opt_bin1[9]");
   gtk_widget_ref (opt_bin1[9]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[9]", opt_bin1[9],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[9]", opt_bin1[9],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[9]);
   gtk_container_add (GTK_CONTAINER (eventbox10), opt_bin1[9]);
@@ -485,7 +510,7 @@ create_dlg_options (int number)
   eventbox11 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox11, "eventbox11");
   gtk_widget_ref (eventbox11);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox11", eventbox11,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox11", eventbox11,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox11);
   gtk_table_attach (GTK_TABLE (options_table), eventbox11, 1, 2, 2, 3,
@@ -496,7 +521,7 @@ create_dlg_options (int number)
   opt_bin1[10] = gtk_check_button_new_with_label (_("Silent Offense"));
   gtk_widget_set_name (opt_bin1[10], "opt_bin1[10]");
   gtk_widget_ref (opt_bin1[10]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[10]", opt_bin1[10],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[10]", opt_bin1[10],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[10]);
   gtk_container_add (GTK_CONTAINER (eventbox11), opt_bin1[10]);
@@ -505,7 +530,7 @@ create_dlg_options (int number)
   eventbox12 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox12, "eventbox12");
   gtk_widget_ref (eventbox12);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox12", eventbox12,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox12", eventbox12,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox12);
   gtk_table_attach (GTK_TABLE (options_table), eventbox12, 1, 2, 3, 4,
@@ -516,7 +541,7 @@ create_dlg_options (int number)
   opt_bin1[11] = gtk_check_button_new_with_label (_("Random Setup"));
   gtk_widget_set_name (opt_bin1[11], "opt_bin1[11]");
   gtk_widget_ref (opt_bin1[11]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[11]", opt_bin1[11],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[11]", opt_bin1[11],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[11]);
   gtk_container_add (GTK_CONTAINER (eventbox12), opt_bin1[11]);
@@ -525,7 +550,7 @@ create_dlg_options (int number)
   eventbox13 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox13, "eventbox13");
   gtk_widget_ref (eventbox13);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox13", eventbox13,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox13", eventbox13,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox13);
   gtk_table_attach (GTK_TABLE (options_table), eventbox13, 1, 2, 4, 5,
@@ -536,7 +561,7 @@ create_dlg_options (int number)
   opt_bin1[12] = gtk_check_button_new_with_label (_("Special Forces Sergeant"));
   gtk_widget_set_name (opt_bin1[12], "opt_bin1[12]");
   gtk_widget_ref (opt_bin1[12]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[12]", opt_bin1[12],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[12]", opt_bin1[12],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[12]);
   gtk_container_add (GTK_CONTAINER (eventbox13), opt_bin1[12]);
@@ -545,7 +570,7 @@ create_dlg_options (int number)
   eventbox14 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox14, "eventbox14");
   gtk_widget_ref (eventbox14);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox14", eventbox14,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox14", eventbox14,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox14);
   gtk_table_attach (GTK_TABLE (options_table), eventbox14, 1, 2, 5, 6,
@@ -556,7 +581,7 @@ create_dlg_options (int number)
   opt_bin1[13] = gtk_check_button_new_with_label (_("Rush Attack"));
   gtk_widget_set_name (opt_bin1[13], "opt_bin1[13]");
   gtk_widget_ref (opt_bin1[13]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[13]", opt_bin1[13],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[13]", opt_bin1[13],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[13]);
   gtk_container_add (GTK_CONTAINER (eventbox14), opt_bin1[13]);
@@ -565,7 +590,7 @@ create_dlg_options (int number)
   eventbox15 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox15, "eventbox15");
   gtk_widget_ref (eventbox15);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox15", eventbox15,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox15", eventbox15,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox15);
   gtk_table_attach (GTK_TABLE (options_table), eventbox15, 1, 2, 6, 7,
@@ -576,7 +601,7 @@ create_dlg_options (int number)
   opt_bin1[14] = gtk_check_button_new_with_label (_("Hide enemy's unit list"));
   gtk_widget_set_name (opt_bin1[14], "opt_bin1[14]");
   gtk_widget_ref (opt_bin1[14]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[14]", opt_bin1[14],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[14]", opt_bin1[14],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[14]);
   gtk_container_add (GTK_CONTAINER (eventbox15), opt_bin1[14]);
@@ -585,7 +610,7 @@ create_dlg_options (int number)
   eventbox16 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox16, "eventbox16");
   gtk_widget_ref (eventbox16);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "eventbox16", eventbox16,
+  g_object_set_data_full(G_OBJECT (dlg_options), "eventbox16", eventbox16,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (eventbox16);
   gtk_table_attach (GTK_TABLE (options_table), eventbox16, 1, 2, 7, 8,
@@ -596,7 +621,7 @@ create_dlg_options (int number)
   opt_bin1[15] = gtk_check_button_new_with_label (_("Forget enemy units"));
   gtk_widget_set_name (opt_bin1[15], "opt_bin1[15]");
   gtk_widget_ref (opt_bin1[15]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[15]", opt_bin1[15],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[15]", opt_bin1[15],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[15]);
   gtk_container_add (GTK_CONTAINER (eventbox16), opt_bin1[15]);
@@ -606,7 +631,7 @@ create_dlg_options (int number)
   opt_box_open_map = gtk_event_box_new ();
   gtk_widget_set_name (opt_box_open_map, "opt_box_open_map");
   gtk_widget_ref (opt_box_open_map);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_box_open_map", opt_box_open_map,
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_box_open_map", opt_box_open_map,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_box_open_map);
   gtk_table_attach (GTK_TABLE (options_table), opt_box_open_map, 0, 1, 0, 1,
@@ -617,7 +642,7 @@ create_dlg_options (int number)
   opt_bin1[0] = gtk_check_button_new_with_label (_("Open Map"));
   gtk_widget_set_name (opt_bin1[0], "opt_bin1[0]");
   gtk_widget_ref (opt_bin1[0]);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[0]", opt_bin1[0],
+  g_object_set_data_full(G_OBJECT (dlg_options), "opt_bin1[0]", opt_bin1[0],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[0]);
   gtk_container_add (GTK_CONTAINER (opt_box_open_map), opt_bin1[0]);
@@ -628,7 +653,7 @@ create_dlg_options (int number)
   label5 = gtk_label_new (_("Options"));
   gtk_widget_set_name (label5, "label5");
   gtk_widget_ref (label5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label5", label5,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label5", label5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label5);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label5);
@@ -636,7 +661,7 @@ create_dlg_options (int number)
   hbox5 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox5, "hbox5");
   gtk_widget_ref (hbox5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbox5", hbox5,
+  g_object_set_data_full(G_OBJECT (dlg_options), "hbox5", hbox5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox5);
   gtk_container_add (GTK_CONTAINER (notebook1), hbox5);
@@ -644,7 +669,7 @@ create_dlg_options (int number)
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_set_name (scrolledwindow1, "scrolledwindow1");
   gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "scrolledwindow1", scrolledwindow1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (hbox5), scrolledwindow1, FALSE, FALSE, 0);
@@ -654,7 +679,7 @@ create_dlg_options (int number)
   maps_list = gtk_clist_new (1);
   gtk_widget_set_name (maps_list, "maps_list");
   gtk_widget_ref (maps_list);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "maps_list", maps_list,
+  g_object_set_data_full(G_OBJECT (dlg_options), "maps_list", maps_list,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (maps_list);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), maps_list);
@@ -665,7 +690,7 @@ create_dlg_options (int number)
   label10 = gtk_label_new (_("Stored Maps"));
   gtk_widget_set_name (label10, "label10");
   gtk_widget_ref (label10);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label10", label10,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label10", label10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label10);
   gtk_clist_set_column_widget (GTK_CLIST (maps_list), 0, label10);
@@ -673,7 +698,7 @@ create_dlg_options (int number)
   vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox2, "vbox2");
   gtk_widget_ref (vbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "vbox2", vbox2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
   gtk_box_pack_start (GTK_BOX (hbox5), vbox2, TRUE, TRUE, 0);
@@ -681,7 +706,7 @@ create_dlg_options (int number)
   table2 = gtk_table_new (3, 3, FALSE);
   gtk_widget_set_name (table2, "table2");
   gtk_widget_ref (table2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "table2", table2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
   gtk_box_pack_start (GTK_BOX (vbox2), table2, TRUE, TRUE, 0);
@@ -689,7 +714,7 @@ create_dlg_options (int number)
   preview_board = gtk_drawing_area_new ();
   gtk_widget_set_name (preview_board, "preview_board");
   gtk_widget_ref (preview_board);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "preview_board", preview_board,
+  g_object_set_data_full(G_OBJECT (dlg_options), "preview_board", preview_board,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (preview_board);
   gtk_table_attach (GTK_TABLE (table2), preview_board, 1, 2, 1, 2,
@@ -701,7 +726,7 @@ create_dlg_options (int number)
   gtk_label_set_line_wrap(GTK_LABEL(preview_label), TRUE);
   gtk_widget_set_name (preview_label, "preview_label");
   gtk_widget_ref (preview_label);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "preview_label", preview_label,
+  g_object_set_data_full(G_OBJECT (dlg_options), "preview_label", preview_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (preview_label);
   gtk_table_attach (GTK_TABLE (table2), preview_label, 0, 1, 1, 2,
@@ -709,7 +734,7 @@ create_dlg_options (int number)
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
   preview_options_scroll = gtk_scrolled_window_new(NULL, NULL);
-  gtk_object_set_data(GTK_OBJECT(dlg_options), "preview_options_scroll", preview_options_scroll);
+  g_object_set_data(G_OBJECT(dlg_options), "preview_options_scroll", preview_options_scroll);
   gtk_widget_show(preview_options_scroll);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(preview_options_scroll),
                                  GTK_POLICY_NEVER,
@@ -722,7 +747,7 @@ create_dlg_options (int number)
   gtk_text_view_set_editable(GTK_TEXT_VIEW(preview_options), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(preview_options), FALSE);
   gtk_widget_set_name(preview_options, "preview_options");
-  gtk_object_set_data(GTK_OBJECT(dlg_options), "preview_options", preview_options);
+  g_object_set_data(G_OBJECT(dlg_options), "preview_options", preview_options);
   gtk_widget_show(preview_options);
   gtk_container_add(GTK_CONTAINER(preview_options_scroll), preview_options);
   //gtk_table_attach(GTK_TABLE(table2), preview_options, 0, 2, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions)(GTK_SHRINK|GTK_FILL), 0, 0);
@@ -731,7 +756,7 @@ create_dlg_options (int number)
   label11 = gtk_label_new (_("Map Preview"));
   gtk_widget_set_name (label11, "label11");
   gtk_widget_ref (label11);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label11", label11,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label11", label11,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label11);
   gtk_table_attach (GTK_TABLE (table2), label11, 1, 2, 0, 1,
@@ -740,7 +765,7 @@ create_dlg_options (int number)
   hbuttonbox3 = gtk_hbutton_box_new ();
   gtk_widget_set_name (hbuttonbox3, "hbuttonbox3");
   gtk_widget_ref (hbuttonbox3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbuttonbox3", hbuttonbox3,
+  g_object_set_data_full(G_OBJECT (dlg_options), "hbuttonbox3", hbuttonbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox3);
   gtk_box_pack_start (GTK_BOX (vbox2), hbuttonbox3, FALSE, FALSE, 0);
@@ -750,7 +775,7 @@ create_dlg_options (int number)
   load = gtk_button_new_with_label (_("Load"));
   gtk_widget_set_name (load, "load");
   gtk_widget_ref (load);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "load", load,
+  g_object_set_data_full(G_OBJECT (dlg_options), "load", load,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (load);
   gtk_container_add (GTK_CONTAINER (hbuttonbox3), load);
@@ -759,7 +784,7 @@ create_dlg_options (int number)
   save = gtk_button_new_with_label (_("Save"));
   gtk_widget_set_name (save, "save");
   gtk_widget_ref (save);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "save", save,
+  g_object_set_data_full(G_OBJECT (dlg_options), "save", save,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save);
   gtk_container_add (GTK_CONTAINER (hbuttonbox3), save);
@@ -768,7 +793,7 @@ create_dlg_options (int number)
   delete = gtk_button_new_with_label (_("Delete"));
   gtk_widget_set_name (delete, "delete");
   gtk_widget_ref (delete);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "delete", delete,
+  g_object_set_data_full(G_OBJECT (dlg_options), "delete", delete,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (delete);
   gtk_container_add (GTK_CONTAINER (hbuttonbox3), delete);
@@ -777,7 +802,7 @@ create_dlg_options (int number)
   label9 = gtk_label_new (_("Maps"));
   gtk_widget_set_name (label9, "label9");
   gtk_widget_ref (label9);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label9", label9,
+  g_object_set_data_full(G_OBJECT (dlg_options), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 3), label9);
@@ -785,14 +810,14 @@ create_dlg_options (int number)
 
   dialog_action_area2 = GTK_DIALOG (dlg_options)->action_area;
   gtk_widget_set_name (dialog_action_area2, "dialog_action_area2");
-  gtk_object_set_data (GTK_OBJECT (dlg_options), "dialog_action_area2", dialog_action_area2);
+  g_object_set_data(G_OBJECT (dlg_options), "dialog_action_area2", dialog_action_area2);
   gtk_widget_show (dialog_action_area2);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area2), 10);
 
   hbuttonbox2 = gtk_hbutton_box_new ();
   gtk_widget_set_name (hbuttonbox2, "hbuttonbox2");
   gtk_widget_ref (hbuttonbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbuttonbox2", hbuttonbox2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "hbuttonbox2", hbuttonbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox2);
   gtk_box_pack_start (GTK_BOX (dialog_action_area2), hbuttonbox2, TRUE, TRUE, 0);
@@ -800,7 +825,7 @@ create_dlg_options (int number)
   ok_button = gtk_button_new_with_label (_("Start Game"));
   gtk_widget_set_name (ok_button, "ok_button");
   gtk_widget_ref (ok_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "ok_button", ok_button,
+  g_object_set_data_full(G_OBJECT (dlg_options), "ok_button", ok_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (ok_button);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), ok_button);
@@ -809,7 +834,7 @@ create_dlg_options (int number)
   cancel_button = gtk_button_new_with_label (_("Cancel"));
   gtk_widget_set_name (cancel_button, "cancel_button");
   gtk_widget_ref (cancel_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "cancel_button", cancel_button,
+  g_object_set_data_full(G_OBJECT (dlg_options), "cancel_button", cancel_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (cancel_button);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), cancel_button);
@@ -835,12 +860,13 @@ create_dlg_options (int number)
   	unit_spin[i] = gtk_spin_button_new (GTK_ADJUSTMENT (unit_spin_adj[i]), 1, 0);
 		gtk_widget_set_name (unit_spin[i], spin_name[i]);
 		gtk_widget_ref(unit_spin[i]);
-		gtk_object_set_data_full (GTK_OBJECT (dlg_options), spin_name[i], unit_spin[i],
+		g_object_set_data_full(G_OBJECT (dlg_options), spin_name[i], unit_spin[i],
 															(GtkDestroyNotify) gtk_widget_unref);
 		gtk_box_pack_start (GTK_BOX (unit_spin_box), unit_spin[i], TRUE, FALSE, 0);
 		gtk_widget_show (unit_spin[i]);
-		gtk_signal_connect_object(GTK_OBJECT (unit_spin[i]), "changed",
-											 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
+		g_signal_connect_swapped(unit_spin[i], "changed",
+					 GTK_SIGNAL_FUNC(dlg_options_update),
+					 dlg_options);
 	}
   // Add the stats
   army_total = gtk_label_new("Total:");
@@ -852,63 +878,69 @@ create_dlg_options (int number)
   gtk_widget_ref(army_total);
   gtk_widget_ref(army_player_1);
   gtk_widget_ref(army_player_2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_total", army_total,
+  g_object_set_data_full(G_OBJECT (dlg_options), "army_total", army_total,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_player_1", army_player_1,
+  g_object_set_data_full(G_OBJECT (dlg_options), "army_player_1", army_player_1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_player_2", army_player_2,
+  g_object_set_data_full(G_OBJECT (dlg_options), "army_player_2", army_player_2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_box_pack_start(GTK_BOX(unit_stats_box), army_total, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_1, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE, FALSE, 2);
 
-  gtk_signal_connect(GTK_OBJECT(dlg_options), "delete_event",
+  g_signal_connect(GTK_OBJECT(dlg_options), "delete_event",
                      GTK_SIGNAL_FUNC (game_refuse_options),
                      NULL);
-  gtk_signal_connect(GTK_OBJECT(dlg_options), "destroy_event",
+  g_signal_connect(GTK_OBJECT(dlg_options), "destroy_event",
                      GTK_SIGNAL_FUNC (game_refuse_options),
                      NULL);
-	gtk_signal_connect(GTK_OBJECT (cancel_button), "clicked",
+	g_signal_connect(GTK_OBJECT (cancel_button), "clicked",
 									   GTK_SIGNAL_FUNC (cancel_button_clicked), 
                      dlg_options);
-	gtk_signal_connect_object_after(GTK_OBJECT (cancel_button), "clicked",
-									   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
-                     GTK_OBJECT(dlg_options));
-	gtk_signal_connect(GTK_OBJECT (mini_board), "expose_event",
+	g_signal_connect_data(cancel_button, "clicked",
+			      GTK_SIGNAL_FUNC(gtk_widget_destroy),
+			      dlg_options, NULL,
+			      G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+	g_signal_connect(GTK_OBJECT (mini_board), "expose_event",
 										 GTK_SIGNAL_FUNC (mini_board_expose), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (mini_board), "configure_event",
+	g_signal_connect(GTK_OBJECT (mini_board), "configure_event",
 										 GTK_SIGNAL_FUNC (mini_board_configure), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (mini_board), "button_press_event",
+	g_signal_connect(GTK_OBJECT (mini_board), "button_press_event",
 									   GTK_SIGNAL_FUNC (mini_board_click), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (load), "clicked",
+	g_signal_connect(GTK_OBJECT (load), "clicked",
 									   GTK_SIGNAL_FUNC (load_button_clicked), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (save), "clicked",
+	g_signal_connect(GTK_OBJECT (save), "clicked",
 									   GTK_SIGNAL_FUNC (save_button_clicked), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (delete), "clicked",
+	g_signal_connect(GTK_OBJECT (delete), "clicked",
 									   GTK_SIGNAL_FUNC (delete_button_clicked), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (preview_board), "expose_event",
+	g_signal_connect(GTK_OBJECT (preview_board), "expose_event",
 										 GTK_SIGNAL_FUNC (preview_expose), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (preview_board), "configure_event",
+	g_signal_connect(GTK_OBJECT (preview_board), "configure_event",
 										 GTK_SIGNAL_FUNC (init_preview), dlg_options);
-	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
+	g_signal_connect(GTK_OBJECT (maps_list), "select-row",
 									   GTK_SIGNAL_FUNC (maps_list_selected), dlg_options);
-	gtk_signal_connect_object(GTK_OBJECT (width), "changed",
+	g_signal_connect_swapped(GTK_OBJECT (width), "changed",
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
-	gtk_signal_connect_object_after(GTK_OBJECT (width), "changed",
-										 GTK_SIGNAL_FUNC (init_map_data), GTK_OBJECT (dlg_options));
-	gtk_signal_connect_object(GTK_OBJECT (height), "changed",
+	g_signal_connect_data(width, "changed",
+			      GTK_SIGNAL_FUNC(init_map_data),
+			      dlg_options, NULL,
+			      G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+	g_signal_connect_swapped(GTK_OBJECT (height), "changed",
 										 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
-	gtk_signal_connect_object_after(GTK_OBJECT (height), "changed",
-										 GTK_SIGNAL_FUNC (init_map_data), GTK_OBJECT (dlg_options));
+	g_signal_connect_data(height, "changed",
+			      GTK_SIGNAL_FUNC(init_map_data),
+			      dlg_options, NULL,
+			      G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+
   for (i = 0; i < 16; i++) {
-    gtk_signal_connect_object (GTK_OBJECT (opt_bin1[i]), "toggled",
+    g_signal_connect_swapped (GTK_OBJECT (opt_bin1[i]), "toggled",
                                GTK_SIGNAL_FUNC (dlg_options_update),
                                GTK_OBJECT (dlg_options));
   }
 
   mini_buf = NULL;
 
-  gtk_object_set_data(GTK_OBJECT(dlg_options), "number", GINT_TO_POINTER(number));
+  g_object_set_data(G_OBJECT(dlg_options), "number", GINT_TO_POINTER(number));
 
 	dlg_options_update(dlg_options);
 
@@ -940,7 +972,7 @@ void init_map_data(GtkWidget *dlg_options) {
 	for (a = 0; a < options->width * options->height; a++)
 	  options->map[a].type = OPEN;
 
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
+	g_object_set_data(G_OBJECT(dlg_options), "options", options);
   if (mini_buf)
     draw_mini_board(dlg_options);
 
@@ -958,7 +990,7 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   char *preview_options_string;
   int changed = -1;
   int tot = 0, other = 0, a, pos = 0;
-  gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
+  g_object_set_data(G_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
   preview_game = (combat_game *)ggz_malloc(sizeof(combat_game));
   preview_game->number = GPOINTER_TO_INT(
@@ -971,7 +1003,7 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   map_load(preview_game, filenames[row], &changed);
   if (changed == 0)
     dlg_options_list_maps(GTK_WIDGET(clist));
-  gtk_object_set_data(GTK_OBJECT(user_data), "preview", preview_game);
+  g_object_set_data(G_OBJECT(user_data), "preview", preview_game);
   /* TODO: Show preview */
   draw_preview(user_data);
   for (a = U_FLAG; a < U_SERGEANT; a++)
@@ -1014,13 +1046,15 @@ GtkWidget *create_yes_no_dlg(char *text, GtkSignalFunc function, gpointer user_d
   label = gtk_label_new(text);
   yes = gtk_button_new_with_label("Yes");
   no = gtk_button_new_with_label("No");
-  gtk_object_set_data(GTK_OBJECT(dlg), "yes", yes);
-  gtk_object_set_data(GTK_OBJECT(yes), "dlg", dlg);
-  gtk_signal_connect_object(GTK_OBJECT(no), "clicked",
+  g_object_set_data(G_OBJECT(dlg), "yes", yes);
+  g_object_set_data(G_OBJECT(yes), "dlg", dlg);
+  g_signal_connect_swapped(GTK_OBJECT(no), "clicked",
                       GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
-  gtk_signal_connect_object_after(GTK_OBJECT(yes), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dlg));
-  gtk_signal_connect(GTK_OBJECT(yes), "clicked",
+  g_signal_connect_data(yes, "clicked",
+			GTK_SIGNAL_FUNC(gtk_widget_destroy),
+			dlg, NULL,
+			G_CONNECT_SWAPPED | G_CONNECT_AFTER);
+  g_signal_connect(GTK_OBJECT(yes), "clicked",
                      GTK_SIGNAL_FUNC (function), user_data); 
 	gtk_container_set_border_width(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), 5);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), yes);
@@ -1037,7 +1071,7 @@ void delete_button_clicked(GtkButton *button, gpointer dialog) {
   char **namelist;
   selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
   namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
-  gtk_object_set_data(GTK_OBJECT(yes), "filename", namelist[selection]);
+  g_object_set_data(G_OBJECT(yes), "filename", namelist[selection]);
   gtk_widget_show_all(dlg);
 }
 
@@ -1052,9 +1086,9 @@ void save_button_clicked(GtkButton *button, gpointer dialog) {
   GtkWidget *yes;
   save_dlg = create_dlg_save();
   yes = lookup_widget(save_dlg, "yes");
-  gtk_signal_connect(GTK_OBJECT(yes), "clicked",
+  g_signal_connect(GTK_OBJECT(yes), "clicked",
                      GTK_SIGNAL_FUNC (save_map), save_dlg); 
-  gtk_object_set_data(GTK_OBJECT(save_dlg), "dlg_options", dialog);
+  g_object_set_data(G_OBJECT(save_dlg), "dlg_options", dialog);
   gtk_widget_show_all(save_dlg);
 }
 
@@ -1117,7 +1151,7 @@ void load_map(char *filename, GtkWidget *dialog) {
   options_widget = lookup_widget(dialog, "opt_bin1[15]");
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(options_widget), !(map->options&OPT_SHOW_ENEMY_UNITS));
   // Terrain data
-  gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
+  g_object_set_data(G_OBJECT(dialog), "options", map);
   draw_mini_board(dialog);
 }
 
@@ -1136,20 +1170,20 @@ create_dlg_save (void)
 
   dlg_save = gtk_dialog_new ();
   gtk_widget_set_name (dlg_save, "dlg_save");
-  gtk_object_set_data (GTK_OBJECT (dlg_save), "dlg_save", dlg_save);
+  g_object_set_data(G_OBJECT (dlg_save), "dlg_save", dlg_save);
   gtk_window_set_title (GTK_WINDOW (dlg_save), _("Save Map?"));
   gtk_window_set_modal (GTK_WINDOW (dlg_save), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dlg_save), TRUE, TRUE, FALSE);
 
   dialog_vbox3 = GTK_DIALOG (dlg_save)->vbox;
   gtk_widget_set_name (dialog_vbox3, "dialog_vbox3");
-  gtk_object_set_data (GTK_OBJECT (dlg_save), "dialog_vbox3", dialog_vbox3);
+  g_object_set_data(G_OBJECT (dlg_save), "dialog_vbox3", dialog_vbox3);
   gtk_widget_show (dialog_vbox3);
 
   hbox6 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox6, "hbox6");
   gtk_widget_ref (hbox6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "hbox6", hbox6,
+  g_object_set_data_full(G_OBJECT (dlg_save), "hbox6", hbox6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox6);
   gtk_box_pack_start (GTK_BOX (dialog_vbox3), hbox6, TRUE, TRUE, 0);
@@ -1157,7 +1191,7 @@ create_dlg_save (void)
   label12 = gtk_label_new (_("Save map as:"));
   gtk_widget_set_name (label12, "label12");
   gtk_widget_ref (label12);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "label12", label12,
+  g_object_set_data_full(G_OBJECT (dlg_save), "label12", label12,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label12);
   gtk_box_pack_start (GTK_BOX (hbox6), label12, FALSE, FALSE, 0);
@@ -1166,7 +1200,7 @@ create_dlg_save (void)
   map_name = gtk_entry_new ();
   gtk_widget_set_name (map_name, "map_name");
   gtk_widget_ref (map_name);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "map_name", map_name,
+  g_object_set_data_full(G_OBJECT (dlg_save), "map_name", map_name,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (map_name);
   gtk_box_pack_start (GTK_BOX (hbox6), map_name, TRUE, TRUE, 5);
@@ -1174,14 +1208,14 @@ create_dlg_save (void)
 
   dialog_action_area3 = GTK_DIALOG (dlg_save)->action_area;
   gtk_widget_set_name (dialog_action_area3, "dialog_action_area3");
-  gtk_object_set_data (GTK_OBJECT (dlg_save), "dialog_action_area3", dialog_action_area3);
+  g_object_set_data(G_OBJECT (dlg_save), "dialog_action_area3", dialog_action_area3);
   gtk_widget_show (dialog_action_area3);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area3), 10);
 
   hbuttonbox4 = gtk_hbutton_box_new ();
   gtk_widget_set_name (hbuttonbox4, "hbuttonbox4");
   gtk_widget_ref (hbuttonbox4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "hbuttonbox4", hbuttonbox4,
+  g_object_set_data_full(G_OBJECT (dlg_save), "hbuttonbox4", hbuttonbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox4);
   gtk_box_pack_start (GTK_BOX (dialog_action_area3), hbuttonbox4, TRUE, TRUE, 0);
@@ -1189,7 +1223,7 @@ create_dlg_save (void)
   yes = gtk_button_new_with_label (_("Yep"));
   gtk_widget_set_name (yes, "button3");
   gtk_widget_ref (yes);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "yes", yes,
+  g_object_set_data_full(G_OBJECT (dlg_save), "yes", yes,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (yes);
   gtk_container_add (GTK_CONTAINER (hbuttonbox4), yes);
@@ -1198,18 +1232,19 @@ create_dlg_save (void)
   no = gtk_button_new_with_label (_("Nope"));
   gtk_widget_set_name (no, "button4");
   gtk_widget_ref (no);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_save), "no", no,
+  g_object_set_data_full(G_OBJECT (dlg_save), "no", no,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (no);
   gtk_container_add (GTK_CONTAINER (hbuttonbox4), no);
   GTK_WIDGET_SET_FLAGS (no, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect_object (GTK_OBJECT (no), "clicked",
+  g_signal_connect_swapped (GTK_OBJECT (no), "clicked",
                       GTK_SIGNAL_FUNC (gtk_widget_destroy),
                       GTK_OBJECT(dlg_save));
-  gtk_signal_connect_object_after (GTK_OBJECT (yes), "clicked",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                      GTK_OBJECT(dlg_save));
+  g_signal_connect_data(yes, "clicked",
+			GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			GTK_OBJECT(dlg_save), NULL,
+			G_CONNECT_SWAPPED | G_CONNECT_AFTER);
 
   return dlg_save;
 }
@@ -1234,7 +1269,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
     options->name = NULL;
     options->options = 0;
   }
-  gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
+  g_object_set_data(G_OBJECT(dlg_options), "options", options);
 
 	// Gets width / height
 	width = lookup_widget(dlg_options, "width");
@@ -1268,7 +1303,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
   }
 	
 	// Sets data
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
+	g_object_set_data(G_OBJECT(dlg_options), "options", options);
 
   if (options->map)
     update_counters(dlg_options);
@@ -1378,7 +1413,7 @@ int dlg_options_list_maps(GtkWidget *dlg) {
   clist_name = (char **)calloc(1, sizeof(char *));
   clist_name[0] = (char *)ggz_malloc(64 * sizeof(char));
   gtk_clist_clear(GTK_CLIST(dlg));
-  gtk_object_set_data(GTK_OBJECT(dlg), "maps", names);
+  g_object_set_data(G_OBJECT(dlg), "maps", names);
   for (a = 0; names[a]; a++) {
     char_match[0] = strrchr(names[a], '/');
     char_match[1] = strrchr(char_match[0], '.');
@@ -1410,7 +1445,7 @@ gboolean mini_board_configure            (GtkWidget       *widget, GdkEventConfi
     dlg_options_update(user_data);
   }
   init_mini_board(user_data);
-	gtk_object_set_data(GTK_OBJECT(user_data), "options", options);
+	g_object_set_data(G_OBJECT(user_data), "options", options);
 	return 1;
 }
 
@@ -1464,7 +1499,7 @@ gboolean init_preview (GtkWidget *widget, GdkEventConfigure *event,
 	if (preview_buf)
 		gdk_pixmap_unref(preview_buf);
 	preview_buf = gdk_pixmap_new( widget->window, width, height, -1 );
-  gtk_object_set_data(GTK_OBJECT(widget), "clean", GINT_TO_POINTER(FALSE));
+  g_object_set_data(G_OBJECT(widget), "clean", GINT_TO_POINTER(FALSE));
 
   draw_preview(GTK_WIDGET(user_data));
 
@@ -1550,7 +1585,7 @@ gboolean draw_preview (GtkWidget *dlg_options) {
 				0, y*t_height, preview->width*t_width, y*t_height);
 	}
 
-  gtk_object_set_data(GTK_OBJECT(widget), "clean", GINT_TO_POINTER(TRUE));
+  g_object_set_data(G_OBJECT(widget), "clean", GINT_TO_POINTER(TRUE));
 
   gtk_widget_draw(widget, NULL);
 

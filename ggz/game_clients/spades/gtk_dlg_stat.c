@@ -75,14 +75,14 @@ void StatDialog(GtkWidget * widget, gpointer data)
 	if (gameState.gameOver & GAME_QUERY) {
 		yesButton = gtk_button_new_with_label(_("Yes"));
 		noButton = gtk_button_new_with_label(_("No"));
-		gtk_signal_connect(GTK_OBJECT(yesButton), "clicked",
+		g_signal_connect(GTK_OBJECT(yesButton), "clicked",
 				   GTK_SIGNAL_FUNC(ReadQuery),
 				   GINT_TO_POINTER(1));
 
-		gtk_signal_connect(GTK_OBJECT(noButton), "clicked",
+		g_signal_connect(GTK_OBJECT(noButton), "clicked",
 				   GTK_SIGNAL_FUNC(ReadQuery),
 				   GINT_TO_POINTER(0));
-		gtk_signal_connect_object(GTK_OBJECT(noButton), "clicked",
+		g_signal_connect_swapped(GTK_OBJECT(noButton), "clicked",
 					  GTK_SIGNAL_FUNC
 					  (gtk_widget_destroy),
 					  GTK_OBJECT(window));
@@ -93,7 +93,7 @@ void StatDialog(GtkWidget * widget, gpointer data)
 		yesButton = gtk_button_new_with_label(_("OK"));
 		noButton = NULL; /* avoid compiler warning */
 	}
-	gtk_signal_connect_object(GTK_OBJECT(yesButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(yesButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 	gtk_widget_show(yesButton);

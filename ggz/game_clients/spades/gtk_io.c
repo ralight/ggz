@@ -77,7 +77,7 @@ void DisplayInit(void)
 
 	gtk_window_set_title(GTK_WINDOW(playArea->window), "GtkSpades");
 
-	gtk_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
+	g_signal_connect(GTK_OBJECT(playArea->window), "delete_event",
 			   GTK_SIGNAL_FUNC(ExitDialog), NULL);
 
 

@@ -132,13 +132,13 @@ on_bg_colorspot_button_press_event     (GtkWidget       *widget,
 		color[2] = (gdouble)new_bg.blue / 65535.0;
 		gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel),
 					      color);
-		gtk_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
+		g_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_delete_event),
 				   NULL);
-		gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
+		g_signal_connect(GTK_OBJECT(ok_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_ok_clicked),
 				   colorsel);
-		gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+		g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_cancel_clicked),
 				   colorsel);
 		gtk_widget_show(dlg_colorsel);
@@ -167,13 +167,13 @@ on_p2_colorspot_button_press_event     (GtkWidget       *widget,
 		color[2] = (gdouble)new_p2.blue / 65535.0;
 		gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel),
 					      color);
-		gtk_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
+		g_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_delete_event),
 				   NULL);
-		gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
+		g_signal_connect(GTK_OBJECT(ok_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_ok_clicked),
 				   colorsel);
-		gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+		g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_cancel_clicked),
 				   colorsel);
 		gtk_widget_show(dlg_colorsel);
@@ -202,13 +202,13 @@ on_p1_colorspot_button_press_event     (GtkWidget       *widget,
 		color[2] = (gdouble)new_p1.blue / 65535.0;
 		gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel),
 					      color);
-		gtk_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
+		g_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_delete_event),
 				   NULL);
-		gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
+		g_signal_connect(GTK_OBJECT(ok_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_ok_clicked),
 				   colorsel);
-		gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+		g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_cancel_clicked),
 				   colorsel);
 		gtk_widget_show(dlg_colorsel);
@@ -237,13 +237,13 @@ on_fg_colorspot_button_press_event     (GtkWidget       *widget,
 		color[2] = (gdouble)new_fg.blue / 65535.0;
 		gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel),
 					      color);
-		gtk_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
+		g_signal_connect(GTK_OBJECT(dlg_colorsel), "delete_event",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_delete_event),
 				   NULL);
-		gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
+		g_signal_connect(GTK_OBJECT(ok_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_ok_clicked),
 				   colorsel);
-		gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+		g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 				   GTK_SIGNAL_FUNC(on_dlg_colorsel_cancel_clicked),
 				   colorsel);
 		gtk_widget_show(dlg_colorsel);

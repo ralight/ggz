@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 6223 2004-10-28 05:24:17Z jdorje $
+ * $Id: callbacks.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -173,7 +173,7 @@ on_send_setup_clicked                  (GtkButton       *button,
 
 void change_show_enemy(GtkWidget *button, gpointer user_data) {
   GtkWidget *checkmenuitem = gtk_object_get_data(GTK_OBJECT(button), "checkmenu");
-  gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
+  g_object_set_data(G_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(checkmenuitem), GPOINTER_TO_INT(user_data));
   cbt_info.show_enemy = GPOINTER_TO_INT(user_data);
 }
@@ -199,7 +199,7 @@ void on_remember_enemy_units_toggled(void)
   GtkWidget *item = get_menu_item(_("<main>/Game/Remember enemy units"));
   gboolean dirty = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(item), "dirty"));
   if (dirty) {
-    gtk_object_set_data(GTK_OBJECT(item), "dirty", GINT_TO_POINTER(FALSE));
+    g_object_set_data(G_OBJECT(item), "dirty", GINT_TO_POINTER(FALSE));
     return;
   }
   // Let's see the current state
@@ -219,7 +219,7 @@ void on_remember_enemy_units_toggled(void)
 			    GTK_SIGNAL_FUNC(change_show_enemy),
 			    GINT_TO_POINTER(TRUE));
     yes = lookup_widget(dlg, "yes");
-    gtk_object_set_data(GTK_OBJECT(yes), "checkmenu", item);
+    g_object_set_data(G_OBJECT(yes), "checkmenu", item);
     gtk_widget_show_all(dlg);
     // Let's keep it not active until the user selects
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);

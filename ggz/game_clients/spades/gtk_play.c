@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6227 2004-10-28 06:12:03Z jdorje $
+ * $Id: gtk_play.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -170,9 +170,9 @@ void CreatePlayArea(void)
 	gtk_widget_show(playArea->table);
 
 	/* Signals used to handle backing pixmap */
-	gtk_signal_connect(GTK_OBJECT(playArea->table), "expose_event",
+	g_signal_connect(GTK_OBJECT(playArea->table), "expose_event",
 			   GTK_SIGNAL_FUNC(exposeTable), NULL);
-	gtk_signal_connect(GTK_OBJECT(playArea->table), "configure_event",
+	g_signal_connect(GTK_OBJECT(playArea->table), "configure_event",
 			   GTK_SIGNAL_FUNC(configTable), NULL);
 
 
@@ -189,11 +189,11 @@ void CreatePlayArea(void)
 	gtk_widget_show(playArea->hand);
 
 	/* Signals used to handle backing pixmap */
-	gtk_signal_connect(GTK_OBJECT(playArea->hand), "expose_event",
+	g_signal_connect(GTK_OBJECT(playArea->hand), "expose_event",
 			   GTK_SIGNAL_FUNC(exposeHand), NULL);
-	gtk_signal_connect(GTK_OBJECT(playArea->hand), "configure_event",
+	g_signal_connect(GTK_OBJECT(playArea->hand), "configure_event",
 			   GTK_SIGNAL_FUNC(configHand), NULL);
-	gtk_signal_connect(GTK_OBJECT(playArea->hand),
+	g_signal_connect(GTK_OBJECT(playArea->hand),
 			   "button_press_event", GTK_SIGNAL_FUNC(ReadCard),
 			   NULL);
 
@@ -209,17 +209,17 @@ void CreatePlayArea(void)
 					  GTK_UPDATE_IF_VALID);
 
 	gtk_widget_show(bid);
-	gtk_signal_connect(GTK_OBJECT(bid), "input",
+	g_signal_connect(GTK_OBJECT(bid), "input",
 			   GTK_SIGNAL_FUNC(SpinInput), NULL);
 
-	gtk_signal_connect(GTK_OBJECT(bid), "output",
+	g_signal_connect(GTK_OBJECT(bid), "output",
 			   GTK_SIGNAL_FUNC(SpinOutput), NULL);
 
 
 	/* Make bid button */
 	playArea->bidButton = gtk_button_new_with_label(_("Send Bid"));
 	gtk_widget_set_sensitive(playArea->bidButton, FALSE);
-	gtk_signal_connect_object(GTK_OBJECT(playArea->bidButton),
+	g_signal_connect_swapped(GTK_OBJECT(playArea->bidButton),
 				  "clicked", GTK_SIGNAL_FUNC(ReadBid),
 				  GTK_OBJECT(bid));
 	gtk_widget_show(playArea->bidButton);

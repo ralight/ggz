@@ -77,17 +77,17 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+	g_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "destroy",
+	g_signal_connect(GTK_OBJECT(window), "destroy",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 #if 0
 	/* Show main window when dialog closes (broken) */
-	gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
+	g_signal_connect_swapped(GTK_OBJECT(window), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_show_now),
 				  GTK_OBJECT(playArea->window));
-	gtk_signal_connect_object(GTK_OBJECT(window), "destroy",
+	g_signal_connect_swapped(GTK_OBJECT(window), "destroy",
 				  GTK_SIGNAL_FUNC(gtk_widget_show_now),
 				  GTK_OBJECT(playArea->window));
 #endif
@@ -112,13 +112,13 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	inputs.playerTog2 = gtk_toggle_button_new_with_label(_("Human"));
 	inputs.playerTog3 = gtk_toggle_button_new_with_label(_("Human"));
 
-	gtk_signal_connect(GTK_OBJECT(inputs.playerTog1), "toggled",
+	g_signal_connect(GTK_OBJECT(inputs.playerTog1), "toggled",
 			   GTK_SIGNAL_FUNC(PlayerToggled),
 			   GINT_TO_POINTER(1));
-	gtk_signal_connect(GTK_OBJECT(inputs.playerTog2), "toggled",
+	g_signal_connect(GTK_OBJECT(inputs.playerTog2), "toggled",
 			   GTK_SIGNAL_FUNC(PlayerToggled),
 			   GINT_TO_POINTER(2));
-	gtk_signal_connect(GTK_OBJECT(inputs.playerTog3), "toggled",
+	g_signal_connect(GTK_OBJECT(inputs.playerTog3), "toggled",
 			   GTK_SIGNAL_FUNC(PlayerToggled),
 			   GINT_TO_POINTER(3));
 
@@ -165,7 +165,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	inputs.nilBids = 
 		gtk_toggle_button_new_with_label((options.bitOpt & MSK_NILS) ?
 						 _("Yes") : _("No"));
-	gtk_signal_connect(GTK_OBJECT(inputs.nilBids), "toggled",
+	g_signal_connect(GTK_OBJECT(inputs.nilBids), "toggled",
 			   GTK_SIGNAL_FUNC(NilToggled), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inputs.nilBids),
 				     (options.bitOpt & MSK_NILS));
@@ -193,13 +193,13 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_show(connectButton);
 	gtk_widget_show(cancelButton);
 	
-	gtk_signal_connect(GTK_OBJECT(connectButton), "clicked",
+	g_signal_connect(GTK_OBJECT(connectButton), "clicked",
 			   GTK_SIGNAL_FUNC(launch_game), &inputs);
-	gtk_signal_connect_object(GTK_OBJECT(connectButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(connectButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 
-	gtk_signal_connect_object(GTK_OBJECT(cancelButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(cancelButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 

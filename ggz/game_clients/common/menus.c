@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.c 5954 2004-02-21 08:17:22Z jdorje $
+ * $Id: menus.c 6284 2004-11-06 06:21:54Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -52,7 +52,7 @@ GtkWidget *ggz_create_menus(GtkWidget *window,
 	gtk_item_factory_create_items(menu, num_items, items, NULL);
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
-	gtk_object_set_data(GTK_OBJECT(window), "mbar", menu);
+	g_object_set_data(G_OBJECT(window), "mbar", menu);
 
 	/* Set default values. */
 	set_menu_active(TABLE_CHAT_WINDOW, TRUE);

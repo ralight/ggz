@@ -66,13 +66,13 @@ void DisconnectDialog(GtkWidget * widget, gpointer data)
 	noButton = gtk_button_new_with_label(_("No"));
 	yesButton = gtk_button_new_with_label(_("Yes"));
 
-	gtk_signal_connect(GTK_OBJECT(yesButton), "clicked",
+	g_signal_connect(GTK_OBJECT(yesButton), "clicked",
 			   GTK_SIGNAL_FUNC(Disconnect), NULL);
-	gtk_signal_connect_object(GTK_OBJECT(yesButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(yesButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 
-	gtk_signal_connect_object(GTK_OBJECT(noButton), "clicked",
+	g_signal_connect_swapped(GTK_OBJECT(noButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
 

@@ -57,51 +57,51 @@ create_dlg_new (void)
 
   dlg_new = gtk_dialog_new ();
   gtk_window_set_transient_for(GTK_WINDOW(dlg_new), GTK_WINDOW(main_win));
-  gtk_object_set_data (GTK_OBJECT (dlg_new), "dlg_new", dlg_new);
+  g_object_set_data(G_OBJECT (dlg_new), "dlg_new", dlg_new);
   gtk_window_set_title (GTK_WINDOW (dlg_new), _("Game Over"));
   gtk_window_set_policy (GTK_WINDOW (dlg_new), TRUE, TRUE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_new)->vbox;
-  gtk_object_set_data (GTK_OBJECT (dlg_new), "dialog_vbox1", dialog_vbox1);
+  g_object_set_data(G_OBJECT (dlg_new), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "vbox1", vbox1,
+  g_object_set_data_full(G_OBJECT (dlg_new), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, FALSE, FALSE, 0);
 
   lbl_winner = gtk_label_new (_("You beat NAME"));
   gtk_widget_ref (lbl_winner);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "lbl_winner", lbl_winner,
+  g_object_set_data_full(G_OBJECT (dlg_new), "lbl_winner", lbl_winner,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lbl_winner);
   gtk_box_pack_start (GTK_BOX (vbox1), lbl_winner, FALSE, FALSE, 0);
 
   lbl_score = gtk_label_new (_("SCR to SCR"));
   gtk_widget_ref (lbl_score);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "lbl_score", lbl_score,
+  g_object_set_data_full(G_OBJECT (dlg_new), "lbl_score", lbl_score,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lbl_score);
   gtk_box_pack_start (GTK_BOX (vbox1), lbl_score, FALSE, FALSE, 0);
 
   label3 = gtk_label_new (_("Play another game?"));
   gtk_widget_ref (label3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "label3", label3,
+  g_object_set_data_full(G_OBJECT (dlg_new), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (vbox1), label3, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label3), 0, 6);
 
   dialog_action_area1 = GTK_DIALOG (dlg_new)->action_area;
-  gtk_object_set_data (GTK_OBJECT (dlg_new), "dialog_action_area1", dialog_action_area1);
+  g_object_set_data(G_OBJECT (dlg_new), "dialog_action_area1", dialog_action_area1);
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
   hbox1 = gtk_hbox_new (TRUE, 35);
   gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "hbox1", hbox1,
+  g_object_set_data_full(G_OBJECT (dlg_new), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox1, TRUE, FALSE, 0);
@@ -109,31 +109,31 @@ create_dlg_new (void)
 
   new_btn_yes = gtk_button_new_with_label (_("     Yes     "));
   gtk_widget_ref (new_btn_yes);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "new_btn_yes", new_btn_yes,
+  g_object_set_data_full(G_OBJECT (dlg_new), "new_btn_yes", new_btn_yes,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_btn_yes);
   gtk_box_pack_start (GTK_BOX (hbox1), new_btn_yes, FALSE, FALSE, 0);
 
   new_btn_no = gtk_button_new_with_label (_("     No     "));
   gtk_widget_ref (new_btn_no);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_new), "new_btn_no", new_btn_no,
+  g_object_set_data_full(G_OBJECT (dlg_new), "new_btn_no", new_btn_no,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_btn_no);
   gtk_box_pack_start (GTK_BOX (hbox1), new_btn_no, FALSE, FALSE, 0);
 
-  gtk_signal_connect (GTK_OBJECT (dlg_new), "delete_event",
+  g_signal_connect (GTK_OBJECT (dlg_new), "delete_event",
                       GTK_SIGNAL_FUNC (on_dlg_new_delete_event),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (new_btn_yes), "clicked",
+  g_signal_connect (GTK_OBJECT (new_btn_yes), "clicked",
                       GTK_SIGNAL_FUNC (on_new_btn_yes_clicked),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (new_btn_yes), "clicked",
+  g_signal_connect_swapped (GTK_OBJECT (new_btn_yes), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_new));
-  gtk_signal_connect (GTK_OBJECT (new_btn_no), "clicked",
+  g_signal_connect (GTK_OBJECT (new_btn_no), "clicked",
                       GTK_SIGNAL_FUNC (on_new_btn_no_clicked),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (new_btn_no), "clicked",
+  g_signal_connect_swapped (GTK_OBJECT (new_btn_no), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_new));
 
