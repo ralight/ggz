@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4917 2002-10-14 22:27:43Z jdorje $
+ * $Id: dlg_players.c 4944 2002-10-18 03:46:04Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -66,13 +66,15 @@ void init_player_list(GGZMod *ggzmod)
 	ggz = ggzmod;
 	assert(ggz);
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SEAT, handle_ggz_seat_event);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SPECTATOR_SEAT,
+			   handle_ggz_seat_event);
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_STATE, handle_ggz_seat_event);
 }
 
 static void update_player_clist(GtkWidget * player_clist)
 {
 	int p;
-	int num = ggzmod_get_num_seats(ggz);
+	int num;
 	gchar *player[4] = { NULL, NULL, NULL, NULL };
 
 	assert(ggz);
@@ -81,6 +83,8 @@ static void update_player_clist(GtkWidget * player_clist)
 
 	gtk_clist_clear(GTK_CLIST(player_clist));
 
+	/* Put all players on the list. */
+	num = ggzmod_get_num_seats(ggz);
 	for (p = 0; p < num; p++) {
 		GGZSeat seat = ggzmod_get_seat(ggz, p);
 
@@ -112,6 +116,21 @@ static void update_player_clist(GtkWidget * player_clist)
 		gtk_clist_append(GTK_CLIST(player_clist), player);
 
 		g_free(player[0]);
+	}
+
+	/* Append any spectators to the list */
+	num = ggzmod_get_num_spectator_seats(ggz);
+	for (p = 0; p < num; p++) {
+		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(ggz, p);
+
+		if (!seat.name)
+			continue;
+
+		player[0] = "-";
+		player[1] = _("Spectator");
+		player[2] = seat.name;
+
+		gtk_clist_append(GTK_CLIST(player_clist), player);
 	}
 
 	gtk_clist_thaw(GTK_CLIST(player_clist));
