@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5912 2004-02-11 15:54:18Z jdorje $
+ * $Id: client.c 6407 2004-11-17 14:22:41Z josef $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -241,6 +241,9 @@ static void client_loop(GGZClient* client)
 			timer.tv_sec = wait_time - time(NULL);
 			timer.tv_usec = 0;
 			select_tv = &timer;
+
+			/* Process might have been halted, e.g. laptop sleep mode */
+			if (timer.tv_sec < 0) timer.tv_sec = 0;
 		} else {
 			select_tv = NULL;
 		}
