@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
+#include <signal.h>
 
 #include <pthread.h>
 #include <errno.h>
@@ -121,6 +122,7 @@ int main(int argc, const char *argv[])
 #endif
 
 	/* FIXME: Need to set signal handlers */	
+	signal(SIGPIPE, SIG_IGN);
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
