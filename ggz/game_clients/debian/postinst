@@ -7,7 +7,7 @@ case "$1" in
 	# Install modules
 	for i in /usr/share/ggz/ggz-config/gtk-*; do \
 		echo register $i; \
-		ggz-config --install --fromfile=$i --force; \
+		ggz-config --install --modfile=$i --force; \
 	done
 	;;
 	*)
