@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2606 2001-10-24 05:01:20Z jdorje $
+ * $Id: ggzdmod.c 2608 2001-10-24 06:28:43Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -351,7 +351,8 @@ static void game_join(_GGZdMod * ggzdmod)
 	if (es_read_int(ggzdmod->fd, &seat) < 0 ||
 	    es_read_string_alloc(ggzdmod->fd, &ggzdmod->seats[seat].name) < 0
 	    || es_read_fd(ggzdmod->fd, &ggzdmod->seats[seat].fd) < 0
-	    || es_write_int(ggzdmod->fd, RSP_GAME_JOIN) < 0)
+	    || es_write_int(ggzdmod->fd, RSP_GAME_JOIN) < 0
+	    || es_write_char(ggzdmod->fd, 0))
 		return;
 
 	ggzdmod->seats[seat].type = GGZ_SEAT_PLAYER;
