@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2409 2001-09-08 23:58:40Z jdorje $
+ * $Id: common.c 2410 2001-09-09 00:01:47Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -116,7 +116,7 @@ int send_player_list(player_t p)
 		/* FIXME: is this the correct way to handle things when we
 		   send out seats before the game has been determined? */
 
-		if (write_int(fd, get_seat_status(s_abs)) < 0 ||
+		if (es_write_int(fd, get_seat_status(s_abs)) < 0 ||
 		    es_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
 	}
