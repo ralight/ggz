@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4592 2002-09-17 00:15:20Z jdorje $
+ * $Id: main.c 4593 2002-09-17 00:44:14Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -239,7 +239,7 @@ static void exec_command(GGZCommand * cmd)
 
 	do {
 		wait_for_input(server_fd);
-		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
+		ggzcore_server_read_data(server, server_fd);
 	} while (!in_room);
 
 	assert(command.data);
