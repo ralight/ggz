@@ -69,7 +69,7 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	tooltips = gtk_tooltips_new();
 
 	/* Dialog window */
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_border_width(GTK_CONTAINER(window), 10);
 	gtk_window_set_title(GTK_WINDOW(window), _("Options"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
