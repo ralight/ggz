@@ -5,11 +5,11 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: KGGZ 0.0.7\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-07 15:52+0100\n"
-"PO-Revision-Date: 2003-05-10 10:07+0200\n"
-"Last-Translator: Sebastian Roth <sebbi@claranet.de>\n"
+"POT-Creation-Date: 2004-12-15 02:38+0100\n"
+"PO-Revision-Date: 2004-12-15 02:22+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -97,7 +97,7 @@ msgstr "&Verfügbare Plätze"
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:114
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:116
 msgid "&Cancel game"
-msgstr "Spiel abbrechen"
+msgstr "&Spiel abbrechen"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:83 KGGZBase.cpp:86
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:88
@@ -256,13 +256,13 @@ msgstr "/away &lt;Nachricht&gt; - eine AWAY-Nachricht anzeigen."
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:244
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:243
 msgid "/beep &lt;player&gt; - send player a beep."
-msgstr "/beep &lt;Spieler&gt; - Erzeugt einen Computer-Beep"
+msgstr "/beep &lt;Spieler&gt; - Erzeugt einen Computer-Beep."
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:214 KGGZChat.cpp:248
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:245
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:244
 msgid "/help - this screen."
-msgstr "/help - Dieser Hilfebildschirm (auch /?)"
+msgstr "/help - Dieser Hilfebildschirm (auch /?)."
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:215 KGGZChat.cpp:249
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:246
@@ -274,7 +274,7 @@ msgstr "/mark - Füge einen Zeitstempel ein."
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:240
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:239
 msgid "/me &lt;msg&gt; - sends an emphasized phrase."
-msgstr "/me &lt;msg&gt; - ME-Nachrichten"
+msgstr "/me &lt;msg&gt; - ME-Nachrichten."
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:256
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:290
@@ -741,6 +741,7 @@ msgid "Free Software shall dominate all Online Games!"
 msgstr "Freie Software soll alle Online-Spiel dominieren!"
 
 #: ../../ggz-kde/src/widgets/KGGZSelector.cpp:66 KGGZSelector.cpp:66
+#: ../../ggz-kde/src/widgets/KGGZSelector.cpp:69
 msgid "Frontend Selection"
 msgstr "Oberflächenauswahl"
 
@@ -786,6 +787,10 @@ msgid ""
 "Make sure to add its path to kggz.rc!\n"
 "See help for details.\n"
 msgstr ""
+"GGZ Gaming Zone-Server nicht gefunden.\n"
+"Bitte von http://www.ggzgamingzone.org/ holen.\n"
+"Anschließend zu kggz.rc hinzufügen!\n"
+"Details stehen in der Hilfe beschrieben.\n"
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:255 ../../ggz-kde/src/KGGZConnect.cpp:257
 #: ../../ggz-kde/src/KGGZConnect.cpp:262 ../../ggz-kde/src/KGGZConnect.cpp:279
@@ -1110,7 +1115,7 @@ msgstr "Metaserver-basierte GGZ Server-Auswahl."
 
 #: ../../ggz-kde/src/widgets/KGGZTeam.cpp:120
 msgid "Name of the player who joins the team."
-msgstr "Name des Spielers der dem Team beitritt"
+msgstr "Name des Spielers der dem Team beitritt."
 
 #: ../../ggz-kde/src/KGGZLaunch.cpp:297 ../../ggz-kde/src/KGGZLaunch.cpp:302
 msgid "Name of the player whom the seat is reserved for"
@@ -1381,7 +1386,7 @@ msgstr "Sitz"
 #: ../../ggz-kde/src/KGGZLaunch.cpp:77 KGGZLaunch.cpp:77
 #: ../../ggz-kde/src/KGGZLaunch.cpp:87
 msgid "Seat assignments:"
-msgstr "Sitzzuweisungen"
+msgstr "Sitzzuweisungen:"
 
 #: ../../ggz-kde/src/KGGZ.cpp:173 ../../ggz-kde/src/KGGZ.cpp:209
 #: ../../ggz-kde/src/KGGZ.cpp:226 ../../ggz-kde/src/KGGZ.cpp:258
@@ -1595,6 +1600,7 @@ msgid "The wallet could not be opened."
 msgstr "Die Brieftasche konnte nicht geöffnet werden."
 
 #: ../../ggz-kde/src/widgets/KGGZSelector.cpp:53 KGGZSelector.cpp:53
+#: ../../ggz-kde/src/widgets/KGGZSelector.cpp:56
 msgid ""
 "This game has multiple frontends.\n"
 "Select your favorite one."
@@ -1729,7 +1735,7 @@ msgstr "Du mußt in einem Raum sein, um an einem Tisch teilnehmen zu können."
 
 #: ../../ggz-kde/src/main.cpp:54 main.cpp:55 ../../ggz-kde/src/main.cpp:60
 msgid "Your most desired KDE network games launcher and chat system."
-msgstr "Dein bester KDE Netzwerk-Spiele Starter mit Chat-System"
+msgstr "Dein bester KDE Netzwerk-Spiele Starter mit Chat-System."
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:638
 msgid "Zeroconf could not be initialized."
