@@ -1,9 +1,9 @@
-/*
+/* 
  * File: ggz_client.h
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2867 2001-12-10 22:30:06Z jdorje $
+ * $Id: ggz_client.h 2873 2001-12-11 06:23:29Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -113,7 +113,7 @@ typedef enum {
 	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
-} GGZdModSeat;
+} GGZSeatType;
 
 /**
  * @brief Connects to GGZ.

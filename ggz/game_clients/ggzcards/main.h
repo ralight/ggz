@@ -1,4 +1,4 @@
-/* $Id: main.h 2872 2001-12-11 06:15:35Z jdorje $ */
+/* $Id: main.h 2873 2001-12-11 06:23:29Z jdorje $ */
 /* 
  * File: main.h
  * Author: Rich Gade
@@ -52,5 +52,5 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 
 /* Client-common table functions. */
 int table_handle_game_message(int fd, int game, int size);
-void table_alert_player(int player, GGZdModSeat status, const char *name);
+void table_alert_player(int player, GGZSeatType status, const char *name);
 void table_alert_newgame(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2872 2001-12-11 06:15:35Z jdorje $
+ * $Id: common.c 2873 2001-12-11 06:23:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -325,9 +325,7 @@ static int handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		/* FIXME: "assign" is the ggz status.  It should be of type
-		   GGZdModSeat. */
-		int assign;
+		GGZSeatType assign;
 		if (es_read_int(ggzfd, &assign) < 0 ||
 		    es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;

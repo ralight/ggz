@@ -1,4 +1,4 @@
-/* $Id: common.h 2872 2001-12-11 06:15:35Z jdorje $ */
+/* $Id: common.h 2873 2001-12-11 06:23:29Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -48,7 +48,7 @@ typedef struct {
 
 /** Contains all information about a seat at the table. */
 typedef struct seat_t {
-	GGZdModSeat status;	/**< ggz seating assignment info */
+	GGZSeatType status;	/**< ggz seating assignment info */
 	char *name;		/**< player's name */
 	card_t table_card;	/**< card on table */
 	hand_t hand;		/**< player's hand */
@@ -131,7 +131,7 @@ extern void table_handle_gameover(int num_winners, int *winners);
   * name in the game structure.
   * @param player The number of the player whose name we're talking about.
   * @param name The (possibly new) name of the player. */
-extern void table_alert_player(int player, GGZdModSeat status,
+extern void table_alert_player(int player, GGZSeatType status,
 			       const char *name);
 
 /** Currently this "sets up the table".  It's called when the number
