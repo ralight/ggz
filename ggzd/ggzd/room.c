@@ -28,10 +28,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <easysock.h>
 #include <ggzd.h>
 #include <datatypes.h>
 #include <room.h>
 #include <err_func.h>
+#include <protocols.h>
 
 
 /* Server wide data structures */
@@ -74,6 +76,13 @@ int room_join(const int p_index, const int room)
 	/* We ALWAYS lock players before chat rooms */
 	pthread_rwlock_wrlock(&players.lock);
 	old_room = players.info[p_index].room;
+
+	/* The luser asked to stay in the same room! */
+	if(old_room == room) {
+		pthread_rwlock_unlock(&players.lock);
+		return 0;
+	}
+
 	if(old_room != -1)
 		pthread_rwlock_wrlock(&chat_room[old_room].lock);
 	if(room != -1)
@@ -180,6 +189,74 @@ int room_pemit(const int room, const int sender, char *stmt)
 }
 
 
+/* Send out all chat to a player from his current room */
+int room_send_chat(const int p)
+{
+	ChatItemStruct *cur_chat;
+	int room;
+	int fd;
+
+	pthread_rwlock_rdlock(&players.lock);
+	fd = players.info[p].fd;
+	room = players.info[p].room;
+	cur_chat = players.info[p].chat_head;
+	pthread_rwlock_unlock(&players.lock);
+
+	/* We carefully sequence our locks so that:             */
+	/* 1) Other threads can be in room_send_chat at the     */
+	/*    same time as us, even in the same room            */
+	/* 2) Chats can be added to the room, and the player    */
+	/*    while we are dumping the chat.                    */
+	/* This is safe assuming these (currently true) facts:  */
+	/* 1) No one can remove a chat from our queue except us */
+	/* 2) Anyone can alter our chat_head ONLY if it is NULL */
+	/* 3) No one can alter or remove the chat strings while */
+	/*    we still have a reference_count to it             */
+	while(cur_chat) {
+		if (es_write_int(fd, MSG_CHAT) < 0
+		    || es_write_string(fd, cur_chat->chat_sender) < 0
+		    || es_write_string(fd, cur_chat->chat_msg) < 0)
+			return(-1);
+		/* Now we gotta do strict locks */
+		/* We ALWAYS lock players before chat rooms */
+		pthread_rwlock_wrlock(&players.lock);
+		pthread_rwlock_wrlock(&chat_room[room].lock);
+
+		/* Update the player's chat_head */
+		players.info[p].chat_head = cur_chat->next;
+		pthread_rwlock_unlock(&players.lock);
+
+		/* Update the chat_item, possibly removing it */
+		cur_chat->reference_count --;
+		if(cur_chat->reference_count == 0) {
+			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", cur_chat);
+			if(chat_room[room].chat_tail == cur_chat) {
+				chat_room[room].chat_tail = NULL;
+				free(cur_chat->chat_sender);
+				free(cur_chat->chat_msg);
+			}
+#ifdef DEBUG
+			chat_room[room].chat_head = cur_chat->next;
+#endif DEBUG
+			free(cur_chat);
+		}
+#ifdef DEBUG
+		if(chat_room[room].chat_tail == NULL)
+			chat_room[room].chat_head = NULL;
+		room_spew_chat_room(room);
+#endif
+		pthread_rwlock_unlock(&chat_room[room].lock);
+
+		/* Update cur_chat */
+		pthread_rwlock_rdlock(&players.lock);
+		cur_chat = players.info[p].chat_head;
+		pthread_rwlock_unlock(&players.lock);
+	}
+
+	return 0;
+}
+
+
 /* Zap all chats to this player in the current room */
 /* Note: this function MUST be called with the player structs and */
 /*       the proper chat room already locked!!                    */
@@ -195,8 +272,11 @@ void room_dequeue_chat(const int p)
 		chat_item->reference_count --;
 		if(chat_item->reference_count == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", chat_item);
-			if(chat_room[room].chat_tail == chat_item)
+			if(chat_room[room].chat_tail == chat_item) {
 				chat_room[room].chat_tail = NULL;
+				free(chat_item->chat_sender);
+				free(chat_item->chat_msg);
+			}
 #ifdef DEBUG
 			chat_room[room].chat_head = chat_item->next;
 #endif DEBUG

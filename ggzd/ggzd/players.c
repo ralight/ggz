@@ -494,8 +494,11 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 					return(-1);
 				count--;
 			}
-	} else
+	} else {
 		pthread_rwlock_unlock(&players.lock);
+		if(room_send_chat(p) < 0)
+			return -1;
+	}
 	
 	return GGZ_REQ_OK;
 }
