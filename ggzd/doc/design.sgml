@@ -1,5 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
-<!ENTITY protonum "0">
+<!ENTITY protonum "1">
 ]>
  
 <book id="index">
@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 526 $</revnumber>
-	<date>$Date: 2000-05-19 14:08:54 -0700 (Fri, 19 May 2000) $</date>
+	<revnumber>$Revision: 527 $</revnumber>
+	<date>$Date: 2000-05-19 14:15:17 -0700 (Fri, 19 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -3962,18 +3962,6 @@
 		  <entry spanname="data.seq1">name</entry>
 		  <entry>string</entry>
 		  <entry>if reserved</entry>
-		</row>
-		
-		<row rowsep="1">
-		  <entry spanname="data.seq0">size</entry>
-		  <entry>int</entry>
-		  <entry>always</entry>
-		</row>
-
-		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C3">(raw data)</entry>
-		  <entry>if size != 0</entry>
 		</row>
 		
 	      </tbody>
