@@ -381,9 +381,10 @@ class GGZBoard:
 						oldx = -1
 						oldy = -1
 
-			if net.modified:
-				updatescreen = 1
-				net.modified = 0
+			if self.ggzsuccess:
+				if net.modified:
+					updatescreen = 1
+					net.modified = 0
 
 			if updatescreen:
 				ui.backgroundarea = ui.deepcopy(ui.surface)
@@ -399,6 +400,12 @@ class GGZBoard:
 						color = conf.tilecolor
 						if game.swaptiles and (i + j) % 2:
 							color = conf.darktilecolor
+						if game.boardstyle:
+							style = game.boardstyle[j][i]
+							if style:
+								(r, g, b) = color
+								(rd, gd, bd) = style
+								color = (min(r + rd, 255), min(g + gd, 255), min(b + bd, 255))
 						if j == oldy and i == oldx:
 							(r, g, b) = color
 							color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))

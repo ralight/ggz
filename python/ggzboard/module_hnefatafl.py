@@ -46,6 +46,16 @@ class Game:
 		self.board[5][8] = ("piece", "b")
 		self.board[4][7] = ("piece", "b")
 
+		self.boardstyle = (None)
+		self.boardstyle = resize(self.boardstyle, (self.width, self.height))
+
+		self.boardstyle[4][4] = (50, 0, 50)
+
+		self.boardstyle[0][0] = (50, 50, 0)
+		self.boardstyle[0][8] = (50, 50, 0)
+		self.boardstyle[8][0] = (50, 50, 0)
+		self.boardstyle[8][8] = (50, 50, 0)
+
 		self.isover = 0
 		self.lastmove = ""
 
@@ -84,17 +94,13 @@ class Game:
 			valid = 0
 			reason = "cannot move to occupied square"
 		else:
-			valid = 1
-			if oldx == x or oldy == y:
-				i = oldx
-				j = oldy
-				while i != x or j != y:
-					if x - oldx:
-						i += (x - oldx) / abs(x - oldx)
-					if y - oldy:
-						j += (y - oldy) / abs(y - oldy)
-					if self.board[j][i]:
-						valid = 0
+			if (oldx == x and oldy != y) or (oldx != x and oldy == y):
+				if abs(oldx - x) > 1:
+					valid = 0
+				if abs(oldy - y) > 1:
+					valid = 0
+			else:
+				valid = 0
 			if valid == 0:
 				reason = "movement must adhere to rules (rook-like)"
 
@@ -108,7 +114,6 @@ class Game:
 		valid = self.validatemove("w", frompos, topos)
 
 		if valid:
-			print "TRYMOVE", frompos, topos
 			ret = 1
 			self.lastmove = "w"
 		return ret
@@ -119,22 +124,25 @@ class Game:
 		topos = -1
 		value = 0
 		for j in range(self.height):
+			if value > 0:
+				break
 			for i in range(self.width):
+				if value > 0:
+					break
 				f = self.board[j][i]
 				if f:
-					if value < 1:
-						frompos = (i, j)
-						for pos in (-8, 8, -7, 7, -6, 6, -5, 5, -4, 4, -3, 3, -2, 2, -1, 1):
+					frompos = (i, j)
+					for pos in (-1, 1):
+						if value < 1:
 							topos = (i + pos, j)
 							if self.validatemove("b", frompos, topos):
-								print "AIMOVE(1,h)", frompos, topos
 								ret = 1
 								value = 1
-							topos = (i, j + pos)
-							if self.validatemove("b", frompos, topos):
-								print "AIMOVE(1,v)", frompos, topos
-								ret = 1
-								value = 1
+							else:
+								topos = (i, j + pos)
+								if self.validatemove("b", frompos, topos):
+									ret = 1
+									value = 1
 		if ret == 0:
 			self.isover = 1
 		else:
@@ -147,6 +155,47 @@ class Game:
 			(x, y) = topos
 			self.board[y][x] = self.board[oldy][oldx]
 			self.board[oldy][oldx] = None
+
+			figure = self.board[y][x]
+			(gfx, color) = figure
+
+			if (x == 0 or x == 8) and (y == 0 or y == 8):
+				if gfx == "king":
+					self.isover = 1
+
+			if color == "b":
+				for pos in ((x + 2, y), (x - 2, y), (x, y - 2), (x, y + 2)):
+						(x2, y2) = pos
+						if x2 >= 0 and x2 < self.width and y2 >= 0 and y2 < self.height:
+							figure2 = self.board[y2][x2]
+							if figure2:
+								(gfx2, color2) = figure2
+								if color2 == "b":
+									print "CASE:", x, y, x2, y2
+									x3 = (x2 + x) / 2
+									y3 = (y2 + y) / 2
+									figure3 = self.board[y3][x3]
+									if figure3:
+										(gfx3, color3) = figure3
+										if color3 == "w":
+											print "ERASE HIM :)"
+											if gfx3 == "king":
+												print "KING :("
+												x4 = x3 + (y2 - y) / 2
+												y4 = y3 + (x2 - x) / 2
+												x5 = x3 - (y2 - y) / 2
+												y5 = y3 - (x2 - x) / 2
+												figure4 = self.board[y4][x4]
+												figure5 = self.board[y5][x5]
+												if figure4 and figure5:
+													(gfx4, color4) = figure4
+													(gfx5, color5) = figure5
+													if color4 == "b" and color5 == "b":
+														print "BUT NOW HE's DEAD"
+														self.board[y3][x3] = None
+														self.isover = 1
+											else:
+												self.board[y3][x3] = None
 
 	def over(self):
 		return self.isover
