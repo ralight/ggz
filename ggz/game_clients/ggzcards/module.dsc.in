@@ -5,5 +5,5 @@ CommandLine = @ggzexecmoddir@/ggz.ggzcards
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = GGZCards
-Protocol = 0.0.1
-Version = 0.0.1
+Protocol = 0.0.4
+Version = 0.0.4
