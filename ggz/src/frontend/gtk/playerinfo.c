@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 5094 2002-10-29 00:13:04Z jdorje $
+ * $Id: playerinfo.c 5096 2002-10-29 00:25:37Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -210,6 +210,8 @@ void player_info_create_or_raise(GGZPlayer * player)
 					  "highscore_hbox");
 		gtk_widget_hide(tmp);
 	}
+
+	gtk_widget_set_usize(dlg_info, 424, -2);
 }
 
 
@@ -382,7 +384,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record_hbox",
 				 record_hbox,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(record_hbox);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(info_vbox), record_hbox, TRUE, TRUE, 0);
 
 	record_label = gtk_label_new(_("Record:"));
@@ -390,7 +392,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record_label",
 				 record_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(record_label);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(record_hbox), record_label, FALSE, FALSE,
 			   0);
 	gtk_widget_set_usize(record_label, 150, -2);
@@ -400,7 +402,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_ref(record);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record", record,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(record);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(record_hbox), record, TRUE, TRUE, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(record), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(record), 0, 0.5);
@@ -412,7 +414,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating_hbox",
 				 rating_hbox,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(rating_hbox);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(info_vbox), rating_hbox, TRUE, TRUE, 0);
 
 	rating_label = gtk_label_new(_("Rating:"));
@@ -420,7 +422,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating_label",
 				 rating_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(rating_label);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(rating_hbox), rating_label, FALSE, FALSE,
 			   0);
 	gtk_widget_set_usize(rating_label, 150, -2);
@@ -430,7 +432,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_ref(rating);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating", rating,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(rating);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(rating_hbox), rating, TRUE, TRUE, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(rating), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(rating), 0, 0.5);
@@ -442,7 +444,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking_hbox",
 				 ranking_hbox,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ranking_hbox);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(info_vbox), ranking_hbox, TRUE, TRUE, 0);
 
 	ranking_label = gtk_label_new(_("Rank:"));
@@ -450,7 +452,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking_label",
 				 ranking_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ranking_label);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking_label, FALSE, FALSE,
 			   0);
 	gtk_widget_set_usize(ranking_label, 150, -2);
@@ -460,7 +462,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_ref(ranking);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking", ranking,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ranking);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking, TRUE, TRUE, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(ranking), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(ranking), 0, 0.5);
@@ -472,7 +474,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore_hbox",
 				 highscore_hbox,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(highscore_hbox);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(info_vbox), highscore_hbox, TRUE, TRUE, 0);
 
 	highscore_label = gtk_label_new(_("Score:"));
@@ -480,7 +482,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore_label",
 				 highscore_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(highscore_label);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore_label, FALSE,
 			   FALSE, 0);
 	gtk_widget_set_usize(highscore_label, 150, -2);
@@ -490,7 +492,7 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_ref(highscore);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore", highscore,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(highscore);
+	/* Widget shown later */
 	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore, TRUE, TRUE, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(highscore), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(highscore), 0, 0.5);
