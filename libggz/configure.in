@@ -148,10 +148,10 @@ if test "$enable_debug_gdb" = yes; then
     CFLAGS="$CFLAGS -ggdb"
 fi
 
-LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
+#LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 AC_SUBST(LDADD)
-AC_SUBST(LIBOBJS)
-AC_SUBST(LTLIBOBJS)
+#AC_SUBST(LIBOBJS)
+#AC_SUBST(LTLIBOBJS)
 
 
 AC_OUTPUT([Makefile 

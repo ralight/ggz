@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4750 2002-09-27 15:42:09Z dr_maux $
+# $Id: Makefile.am 4767 2002-09-29 13:08:19Z dr_maux $
 
 SUBDIRS = .
 
@@ -7,7 +7,7 @@ lib_LTLIBRARIES = libggz.la
 
 include_HEADERS = ggz.h ggz_common.h
 
-libggz_la_LIBADD = @LDADD@ @LTLIBOBJS@
+libggz_la_LIBADD = @LDADD@
 
 libggz_la_LDFLAGS = -version-info 1:0:0
 
