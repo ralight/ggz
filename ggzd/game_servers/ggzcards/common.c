@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4101 2002-04-29 01:48:31Z jdorje $
+ * $Id: common.c 4102 2002-04-29 02:07:35Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -831,7 +831,9 @@ void send_sync(player_t p)
 		send_player_message(s, p);
 
 	/* Send out hands */
-	if (game.state != STATE_NOTPLAYING)
+	if (!(game.state == STATE_WAITFORPLAYERS
+	      && game.saved_state == STATE_NOTPLAYING)
+	    && game.state != STATE_NOTPLAYING)
 		for (s = 0; s < game.num_seats; s++)
 			game.data->send_hand(p, s);
 
