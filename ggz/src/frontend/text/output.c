@@ -127,11 +127,12 @@ void output_text(char* fmt, ...)
 
 	fflush(NULL);
 	printf("\e7");
-	printf("\e[2J");
 	output_goto(0, 0);
 	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
-		printf("%s\n", chat[x]);
-
+	{
+		printf("\e[K%s\n", chat[x]);
+		fflush(NULL);
+	}
 	printf("\e8");
 	
 
