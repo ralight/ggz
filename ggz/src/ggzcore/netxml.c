@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4945 2002-10-18 06:23:14Z jdorje $
+ * $Id: netxml.c 4956 2002-10-19 22:29:41Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -439,11 +439,9 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatType type,
 			   const char* player, const char* msg)
 {
-	int status = -1;
 	const char *type_str;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending chat");	
-
 
 	/* FIXME: We need to handle the case where the chat is longer than
 	   the server's allowed chat size */
@@ -454,25 +452,27 @@ int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatType type,
 	case GGZ_CHAT_NORMAL:
 	case GGZ_CHAT_ANNOUNCE:
 	case GGZ_CHAT_TABLE:
-		status = _ggzcore_net_send_line(net,
+		return _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s'><![CDATA[%s]]></CHAT>",
 			type_str, msg);
-		break;
 	case GGZ_CHAT_BEEP:
-		status = _ggzcore_net_send_line(net,
+		return _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s' TO='%s'/>",
 			type_str, player);
-		break;
 	case GGZ_CHAT_PERSONAL:
-		status = _ggzcore_net_send_line(net,
+		return _ggzcore_net_send_line(net,
 			"<CHAT TYPE='%s' TO='%s'><![CDATA[%s]]></CHAT>",
 			type_str, player, msg);
-		break;
-	case GGZ_CHAT_NONE:
+	case GGZ_CHAT_UNKNOWN:
 		break;
 	}
 
-	return status;
+	ggz_error_msg("ggzcore_net_send_chat: "
+		      "unknown chat type given.");
+
+	/* Returning an error would mean a *network* error,
+	   which isn't the case. */
+	return 0;
 }
 
 
@@ -1732,18 +1732,14 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 
 		type = ggz_string_to_chattype(type_str);
 
-		if (type == GGZ_CHAT_NONE) {
-			/* Hopefully this will handle future chat ops
-			   gracefully. */
-			type = GGZ_CHAT_NORMAL;
-		}
-
-		if (!from) {
+		if (!from && type != GGZ_CHAT_UNKNOWN) {
 			/* Ignore any message that has no sender. */
 			return;
 		}
 
-		if (!msg && type != GGZ_CHAT_BEEP) {
+		if (!msg
+		    && type != GGZ_CHAT_BEEP
+		    && type != GGZ_CHAT_UNKNOWN) {
 			/* Ignore an empty message, except for the
 			   appropriate chat types. */
 			return;

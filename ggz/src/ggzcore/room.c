@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: room.c 4956 2002-10-19 22:29:41Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -681,9 +681,6 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatType type,
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Chat (%s) from %s",
 		  ggz_chattype_to_string(type), name);
-
-	if (type == GGZ_CHAT_NONE)
-		ggz_error_msg("_ggzcore_room_add_chat: invalid chat type.");
 
 	_ggzcore_room_event(room, GGZ_CHAT_EVENT, &data);
 }
