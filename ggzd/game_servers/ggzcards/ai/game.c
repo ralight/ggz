@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4067 2002-04-23 21:39:56Z jdorje $
+ * $Id: game.c 4095 2002-04-27 23:01:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -91,7 +91,7 @@ void game_get_bid(int possible_bids,
 		}
 	}
 	
-	assert(0);
+	assert(FALSE);
 	client_send_bid(random() % possible_bids);	
 }
 
@@ -111,7 +111,7 @@ static int find_card(hand_t *hand, card_t card)
 	for (i = 0; i < hand->hand_size; i++)
 		if (are_cards_equal(hand->cards[i], card))
 			return i;
-	assert(0);
+	assert(FALSE);
 	return -1;
 }
 
