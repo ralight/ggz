@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/lapocha.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: lapocha.h 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

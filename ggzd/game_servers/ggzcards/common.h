@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: common.h 2733 2001-11-13 09:56:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -51,17 +51,17 @@
 
 /* GGZCards server game states */
 typedef enum {
-	WH_STATE_PRELAUNCH,	/**< before the launch happens */
-	WH_STATE_NOTPLAYING,	/**< no game started */
-	WH_STATE_WAITFORPLAYERS,	/**< waiting for players; saved state */
-	WH_STATE_NEXT_HAND,	/**< ready to create a new hand */
-	WH_STATE_FIRST_BID,	/**< about to have the first bid */
-	WH_STATE_NEXT_BID,	/**< asking for new bid */
-	WH_STATE_WAIT_FOR_BID,	/**< waiting for a bid */
-	WH_STATE_FIRST_TRICK,	/**< about to have the first trick of a hand */
-	WH_STATE_NEXT_TRICK,	/**< time for the next trick */
-	WH_STATE_NEXT_PLAY,	/**< asking for a new play */
-	WH_STATE_WAIT_FOR_PLAY	/**< waiting for a play */
+	STATE_PRELAUNCH,	/**< before the launch happens */
+	STATE_NOTPLAYING,	/**< no game started */
+	STATE_WAITFORPLAYERS,	/**< waiting for players; saved state */
+	STATE_NEXT_HAND,	/**< ready to create a new hand */
+	STATE_FIRST_BID,	/**< about to have the first bid */
+	STATE_NEXT_BID,	/**< asking for new bid */
+	STATE_WAIT_FOR_BID,	/**< waiting for a bid */
+	STATE_FIRST_TRICK,	/**< about to have the first trick of a hand */
+	STATE_NEXT_TRICK,	/**< time for the next trick */
+	STATE_NEXT_PLAY,	/**< asking for a new play */
+	STATE_WAIT_FOR_PLAY	/**< waiting for a play */
 } server_state_t;
 
 /* Data structure for generic trick-taking card game */

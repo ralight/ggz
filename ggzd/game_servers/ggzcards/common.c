@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: common.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -45,27 +45,27 @@ struct wh_game_t game = { 0 };
 static const char *get_state_name(server_state_t state)
 {
 	switch (state) {
-	case WH_STATE_PRELAUNCH:
+	case STATE_PRELAUNCH:
 		return "PRELAUNCH";
-	case WH_STATE_NOTPLAYING:
+	case STATE_NOTPLAYING:
 		return "NOTPLAYING";
-	case WH_STATE_WAITFORPLAYERS:
+	case STATE_WAITFORPLAYERS:
 		return "WAITFORPLAYERS";
-	case WH_STATE_NEXT_HAND:
+	case STATE_NEXT_HAND:
 		return "NEXT_HAND";
-	case WH_STATE_FIRST_BID:
+	case STATE_FIRST_BID:
 		return "FIRST_BID";
-	case WH_STATE_NEXT_BID:
+	case STATE_NEXT_BID:
 		return "NEXT_BID";
-	case WH_STATE_WAIT_FOR_BID:
+	case STATE_WAIT_FOR_BID:
 		return "WAIT_FOR_BID";
-	case WH_STATE_FIRST_TRICK:
+	case STATE_FIRST_TRICK:
 		return "FIRST_TRICK";
-	case WH_STATE_NEXT_TRICK:
+	case STATE_NEXT_TRICK:
 		return "NEXT_TRICK";
-	case WH_STATE_NEXT_PLAY:
+	case STATE_NEXT_PLAY:
 		return "NEXT_PLAY";
-	case WH_STATE_WAIT_FOR_PLAY:
+	case STATE_WAIT_FOR_PLAY:
 		return "WAIT_FOR_PLAY";
 	}
 	return "[unknown state]";
@@ -78,7 +78,7 @@ static int determine_host(void);
 /* Changes the state of the game, printing a debugging message. */
 void set_game_state(server_state_t state)
 {
-	if (game.state == WH_STATE_WAITFORPLAYERS) {
+	if (game.state == STATE_WAITFORPLAYERS) {
 		/* sometimes an event can happen that changes the state while 
 		   we're waiting for players, for instance a player finishing 
 		   their bid even though someone's left the game.  In this
@@ -104,12 +104,12 @@ void set_game_state(server_state_t state)
    don't have enough players which can happen at pretty much any time. */
 void save_game_state()
 {
-	if (game.state == WH_STATE_WAITFORPLAYERS)
+	if (game.state == STATE_WAITFORPLAYERS)
 		return;
 	ggzd_debug("Entering waiting state; old state was %d - %s.",
 		   game.state, get_state_name(game.state));
 	game.saved_state = game.state;
-	game.state = WH_STATE_WAITFORPLAYERS;
+	game.state = STATE_WAITFORPLAYERS;
 }
 
 /* Restore the state of the game once we're ready to leave waiting mode. */
@@ -147,7 +147,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 
 	switch (op) {
 	case WH_RSP_NEWGAME:
-		if (game.state == WH_STATE_NOTPLAYING) {
+		if (game.state == STATE_NOTPLAYING) {
 			status = 0;
 			handle_newgame_event(p);
 		} else {
@@ -216,7 +216,7 @@ void init_ggzcards(int which)
 	/* JDS: Note: the game type must have been initialized by here */
 	game.which_game = which;
 
-	game.state = WH_STATE_PRELAUNCH;
+	game.state = STATE_PRELAUNCH;
 
 	ggzd_debug("Game initialized as game %d.", game.which_game);
 }
@@ -269,7 +269,7 @@ static void newgame(void)
 		set_player_message(p);
 	(void) send_newgame();
 	game.dealer = random() % game.num_players;
-	set_game_state(WH_STATE_NEXT_HAND);
+	set_game_state(STATE_NEXT_HAND);
 
 	ggzd_debug("Game start completed successfully.");
 
@@ -288,7 +288,7 @@ void next_play(void)
 		   get_state_name(game.state));
 
 	switch (game.state) {
-	case WH_STATE_NOTPLAYING:
+	case STATE_NOTPLAYING:
 		ggzd_debug("Next play: trying to start a game.");
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
@@ -296,11 +296,11 @@ void next_play(void)
 			if (ggzd_get_seat_status(p) != GGZ_SEAT_BOT)
 				(void) send_newgame_request(p);
 		break;
-	case WH_STATE_NEXT_HAND:
+	case STATE_NEXT_HAND:
 		ggzd_debug("Next play: dealing a new hand.");
 		if (game.funcs->test_for_gameover()) {
 			game.funcs->handle_gameover();
-			set_game_state(WH_STATE_NOTPLAYING);
+			set_game_state(STATE_NOTPLAYING);
 			next_play();	/* start a new game */
 			return;
 		}
@@ -329,14 +329,14 @@ void next_play(void)
 					ggzd_debug
 						("Error: game_send_hand returned -1.");
 
-		set_game_state(WH_STATE_FIRST_BID);
+		set_game_state(STATE_FIRST_BID);
 		ggzd_debug
 			("Done generating the next hand; entering bidding phase.");
 		next_play();	/* recursion */
 		break;
-	case WH_STATE_FIRST_BID:
+	case STATE_FIRST_BID:
 		ggzd_debug("Next play: starting the bidding.");
-		set_game_state(WH_STATE_NEXT_BID);
+		set_game_state(STATE_NEXT_BID);
 
 		for (p = 0; p < game.num_players; p++) {
 			game.players[p].bid.bid = 0;
@@ -349,22 +349,22 @@ void next_play(void)
 		game.funcs->start_bidding();
 		next_play();	/* recursion */
 		break;
-	case WH_STATE_NEXT_BID:
+	case STATE_NEXT_BID:
 		ggzd_debug("Next play: bid %d/%d - player %d/%s.",
 			   game.bid_count, game.bid_total, game.next_bid,
 			   ggzd_get_player_name(game.next_bid));
 		game.funcs->get_bid();
 		break;
-	case WH_STATE_NEXT_PLAY:
+	case STATE_NEXT_PLAY:
 		ggzd_debug("Next play: playing %d/%d - player %d/%s.",
 			   game.play_count, game.play_total,
 			   game.next_play,
 			   ggzd_get_player_name(game.next_play));
 		game.funcs->get_play(game.next_play);
 		break;
-	case WH_STATE_FIRST_TRICK:
+	case STATE_FIRST_TRICK:
 		ggzd_debug("Next play: first trick of the hand.");
-		set_game_state(WH_STATE_NEXT_TRICK);
+		set_game_state(STATE_NEXT_TRICK);
 
 		game.trick_total = game.hand_size;
 		game.play_total = game.num_players;
@@ -379,14 +379,14 @@ void next_play(void)
 		game.play_count = game.trick_count = 0;
 		next_play();
 		break;
-	case WH_STATE_NEXT_TRICK:
+	case STATE_NEXT_TRICK:
 		ggzd_debug
 			("Next play: next trick %d/%d - leader is %d/%s.",
 			 game.trick_count, game.trick_total, game.leader,
 			 ggzd_get_player_name(game.leader));
 		game.play_count = 0;
 		game.next_play = game.leader;
-		set_game_state(WH_STATE_NEXT_PLAY);
+		set_game_state(STATE_NEXT_PLAY);
 		next_play();	/* minor recursion */
 		break;
 	default:
@@ -399,7 +399,7 @@ void next_play(void)
 	return;
 }
 
-/* The oldest player becomes the host.  The oldest player is the one with the 
+/* The oldest player becomes the host.  The oldest player is the one with the
    youngest "age". */
 static int determine_host(void)
 {
@@ -415,14 +415,14 @@ static int determine_host(void)
 	return host;
 }
 
-/* This handles a launch event, when ggz connects to our server for the first 
+/* This handles a launch event, when ggz connects to our server for the first
    time. */
 void handle_launch_event(ggzd_event_t event, void *data)
 {
 	player_t p;
 
 	ggzd_debug("Handling a launch event.");
-	if (game.state != WH_STATE_PRELAUNCH) {
+	if (game.state != STATE_PRELAUNCH) {
 		ggzd_debug("ERROR: "
 			   "state wasn't prelaunch when handling a launch.");
 		return;
@@ -445,7 +445,7 @@ void handle_launch_event(ggzd_event_t event, void *data)
 	if (game.which_game != GGZ_GAME_UNKNOWN)
 		init_game();
 
-	set_game_state(WH_STATE_NOTPLAYING);
+	set_game_state(STATE_NOTPLAYING);
 	save_game_state();	/* no players are connected yet, so we enter
 				   waiting phase */
 	return;
@@ -459,7 +459,7 @@ void handle_join_event(ggzd_event_t event, void *data)
 
 	ggzd_debug("Handling a join event for player %d (seat %d).", player,
 		   seat);
-	if (game.state != WH_STATE_WAITFORPLAYERS) {
+	if (game.state != STATE_WAITFORPLAYERS) {
 		ggzd_debug("ERROR: SERVER BUG: "
 			   "someone joined while we weren't waiting.");
 		return;
@@ -493,9 +493,9 @@ void handle_join_event(ggzd_event_t event, void *data)
 	(void) broadcast_player_list();
 
 	/* should this be in sync??? */
-	if (game.state != WH_STATE_NOTPLAYING &&
-	    !(game.state == WH_STATE_WAITFORPLAYERS
-	      && game.saved_state == WH_STATE_NOTPLAYING))
+	if (game.state != STATE_NOTPLAYING &&
+	    !(game.state == STATE_WAITFORPLAYERS
+	      && game.saved_state == STATE_NOTPLAYING))
 		send_player_message_toall(game.players[player].seat);
 
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
@@ -503,8 +503,8 @@ void handle_join_event(ggzd_event_t event, void *data)
 
 	if (!ggzd_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
 		/* (Re)Start game play */
-		if (game.state != WH_STATE_WAIT_FOR_BID
-		    && game.state != WH_STATE_WAIT_FOR_PLAY)
+		if (game.state != STATE_WAIT_FOR_BID
+		    && game.state != STATE_WAIT_FOR_PLAY)
 			/* if we're in one of these two states, we have to
 			   wait for a response anyway */
 			next_play();
@@ -595,7 +595,7 @@ int handle_play_event(card_t card)
 	game.play_count++;
 	game.funcs->next_play();
 	if (game.play_count != game.play_total)
-		set_game_state(WH_STATE_NEXT_PLAY);
+		set_game_state(STATE_NEXT_PLAY);
 	else {
 		/* end of trick */
 		ggzd_debug("End of trick; %d/%d.  Scoring it.",
@@ -605,7 +605,7 @@ int handle_play_event(card_t card)
 		send_last_trick();
 		(void) send_trick(game.winner);
 		game.trick_count++;
-		set_game_state(WH_STATE_NEXT_TRICK);
+		set_game_state(STATE_NEXT_TRICK);
 		if (game.trick_count == game.trick_total) {
 			/* end of the hand */
 			ggzd_debug("End of hand number %d.", game.hand_num);
@@ -616,7 +616,7 @@ int handle_play_event(card_t card)
 			update_cumulative_scores();
 			game.dealer = (game.dealer + 1) % game.num_players;
 			game.hand_num++;
-			set_game_state(WH_STATE_NEXT_HAND);
+			set_game_state(STATE_NEXT_HAND);
 		}
 	}
 
@@ -637,7 +637,7 @@ int handle_bid_event(player_t p, bid_t bid)
 	clear_bids(p);
 
 	ggzd_debug("Handling a bid event.");
-	if (game.state == WH_STATE_WAITFORPLAYERS) {
+	if (game.state == STATE_WAITFORPLAYERS) {
 		/* if a player left while another player was in the middle of
 		   bidding, this can happen.  The solution is to temporarily
 		   return to playing, handle the bid, and then (below) return
@@ -681,11 +681,11 @@ int handle_bid_event(player_t p, bid_t bid)
 	/* This is a minor hack.  The game's next_bid function might have
 	   changed the game's state.  If that happened, we don't want to
 	   change it back! */
-	if (game.state == WH_STATE_WAIT_FOR_BID) {
+	if (game.state == STATE_WAIT_FOR_BID) {
 		if (game.bid_count == game.bid_total)
-			set_game_state(WH_STATE_FIRST_TRICK);
+			set_game_state(STATE_FIRST_TRICK);
 		else
-			set_game_state(WH_STATE_NEXT_BID);
+			set_game_state(STATE_NEXT_BID);
 	}
 
 	/* this is the player that just finished bidding */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: hearts.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -173,7 +173,7 @@ static int hearts_handle_gameover(void)
 static void hearts_start_bidding(void)
 {
 	/* there is no bidding phase */
-	set_game_state(WH_STATE_FIRST_TRICK);
+	set_game_state(STATE_FIRST_TRICK);
 }
 
 static void hearts_start_playing(void)

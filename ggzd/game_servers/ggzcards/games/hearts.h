@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/hearts.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: hearts.h 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,14 +26,16 @@
 
 #define GHEARTS ( *(hearts_game_t *)(game.specific) )
 typedef struct hearts_game_t {
-	int points_on_hand[10];	/* the points each player has taken this hand.  Works for up to 10 players. */
+	int points_on_hand[10];	/* the points each player has taken this
+				   hand.  Works for up to 10 players. */
 
 	/* options */
 	int jack_diamonds;	/* is the jack-of-diamonds rule in effect? */
 	int no_blood;		/* no blood on the first trick */
 	int num_decks;		/* the number of decks to use */
 
-	int jack_winner;	/* who has won the jack of diamonds this hand? */
-	char lead_card_face;	/* the card that leads first.  It's a club.  Two-deck issues aren't dealt with. */
+	int jack_winner;	/* who has won the jack of diamonds this
+				   hand? */
+	char lead_card_face;	/* the card that leads first.  It's a club.
+				   Two-deck issues aren't dealt with. */
 } hearts_game_t;
-

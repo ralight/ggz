@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2731 2001-11-13 06:50:06Z jdorje $
+ * $Id: bid.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -74,7 +74,7 @@ int req_bid(player_t p)
 	ggzd_debug("Requesting a bid from player %d/%s; %d choices", p,
 		   ggzd_get_player_name(p), bid_data->bid_count);
 
-	set_game_state(WH_STATE_WAIT_FOR_BID);
+	set_game_state(STATE_WAIT_FOR_BID);
 	if (bid_data->is_bidding)
 		ggzd_debug("ERROR: req_bid: "
 			   "requesting a bid from a player who's already bidding!");

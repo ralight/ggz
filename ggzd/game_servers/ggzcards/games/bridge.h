@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/bridge.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: bridge.h 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,7 +44,8 @@ typedef struct bridge_game_t {
 	int vulnerable[2];	/* also represents # of games won */
 
 	/* contract information */
-	player_t opener[2][5];	/* records which player on each team first opened in each suit */
+	player_t opener[2][5];	/* records which player on each team first
+				   opened in each suit */
 	int contract;		/* value of the contract */
 	int contract_suit;	/* suit of the contract; 0-4 */
 	int bonus;		/* 1=regular; 2=doubled; 4=redoubled */

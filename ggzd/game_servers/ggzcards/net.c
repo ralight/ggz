@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: net.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -228,7 +228,7 @@ int send_sync(player_t p)
 	if (game.players[p].bid_data.is_bidding)
 		if (req_bid(p) < 0)
 			status = -1;
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && game.curr_play == p)
+	if (game.state == STATE_WAIT_FOR_PLAY && game.curr_play == p)
 		if (send_play_request(game.curr_play, game.play_seat) < 0)
 			status = -1;
 
@@ -286,7 +286,7 @@ int send_play_request(player_t p, seat_t s)
 	game.curr_play = p;
 	game.play_seat = s;
 
-	set_game_state(WH_STATE_WAIT_FOR_PLAY);
+	set_game_state(STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
 
 	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
@@ -308,7 +308,7 @@ int send_badplay(player_t p, char *msg)
 	int fd = ggzd_get_player_socket(p);
 	if (fd == -1)		/* don't send to bots */
 		return 0;
-	set_game_state(WH_STATE_WAIT_FOR_PLAY);
+	set_game_state(STATE_WAIT_FOR_PLAY);
 	if (write_opcode(fd, WH_MSG_BADPLAY) < 0 ||
 	    es_write_string(fd, msg) < 0)
 		return -1;
@@ -444,7 +444,7 @@ int rec_play(player_t p)
 		return -1;
 
 	/* are we waiting for a play? */
-	if (game.state != WH_STATE_WAIT_FOR_PLAY) {
+	if (game.state != STATE_WAIT_FOR_PLAY) {
 		ggzd_debug
 			("SERVER/CLIENT BUG: we received a play (player %d/%s) when we weren't waiting for one.",
 			 p, ggzd_get_player_name(p));

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: lapocha.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -226,8 +226,8 @@ static void lapocha_set_player_message(player_t p)
 	add_player_score_message(p);
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");
-	if (game.state >= WH_STATE_FIRST_TRICK
-	    && game.state <= WH_STATE_WAIT_FOR_PLAY) {
+	if (game.state >= STATE_FIRST_TRICK
+	    && game.state <= STATE_WAIT_FOR_PLAY) {
 		add_player_message(s, "Contract: %d\n",
 				   (int) game.players[p].bid.bid);
 	}

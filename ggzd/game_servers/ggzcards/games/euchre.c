@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: euchre.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -157,7 +157,7 @@ static void euchre_next_bid(void)
 		/* This should only happen if we aren't playing "screw the
 		   dealer". */
 		set_global_message("", "s", "Everyone passed; redealing.");
-		set_game_state(WH_STATE_NEXT_HAND);
+		set_game_state(STATE_NEXT_HAND);
 	} else
 		game_next_bid();
 }
@@ -223,16 +223,16 @@ static void euchre_set_player_message(player_t p)
 	clear_player_message(s);
 	add_player_rating_message(p);
 	add_player_score_message(p);
-	if (game.state == WH_STATE_FIRST_BID
-	    || game.state == WH_STATE_NEXT_BID
-	    || game.state == WH_STATE_WAIT_FOR_BID) {
+	if (game.state == STATE_FIRST_BID
+	    || game.state == STATE_NEXT_BID
+	    || game.state == STATE_WAIT_FOR_BID) {
 		if (p == game.dealer)
 			add_player_message(s, "dealer\n");
 	} else if (p == EUCHRE.maker)
 		add_player_message(s, "maker\n");
-	if (game.state == WH_STATE_WAIT_FOR_PLAY
-	    || game.state == WH_STATE_NEXT_TRICK
-	    || game.state == WH_STATE_NEXT_PLAY)
+	if (game.state == STATE_WAIT_FOR_PLAY
+	    || game.state == STATE_NEXT_TRICK
+	    || game.state == STATE_NEXT_PLAY)
 		add_player_message(s, "Tricks: %d\n",
 				   game.players[p].tricks +
 				   game.players[(p + 2) % 4].tricks);

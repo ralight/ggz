@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: bridge.c 2733 2001-11-13 09:56:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -211,7 +211,7 @@ static void bridge_next_bid(void)
 			ggzd_debug("Four passes; redealing hand.");
 			set_global_message("", "%s",
 					   "Everyone passed; redealing.");
-			set_game_state(WH_STATE_NEXT_HAND);	/* redeal
+			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {
 			ggzd_debug("Three passes; bidding is over.");
@@ -274,7 +274,7 @@ static int bridge_test_for_gameover(void)
 
 static int bridge_send_hand(player_t p, seat_t s)
 {
-	/* we explicitly send out the dummy hand, but a player who joins late 
+	/* we explicitly send out the dummy hand, but a player who joins late
 	   won't see it.  We have the same problem with Suaro. */
 	if (s == BRIDGE.dummy	/* player/seat crossover; ok because it's
 				   bridge */
@@ -308,16 +308,15 @@ static void bridge_set_player_message(player_t p)
 	   %d|%d\n", BRIDGE.points_above_line[p%2],
 	   BRIDGE.points_below_line[p%2]); */
 	put_player_message(s, "");
-	if (game.state != WH_STATE_NEXT_BID
-	    && game.state != WH_STATE_WAIT_FOR_BID) {
+	if (game.state != STATE_NEXT_BID && game.state != STATE_WAIT_FOR_BID) {
 		if (p == BRIDGE.declarer)
 			add_player_message(s, "declarer\n");
 		if (p == BRIDGE.dummy)
 			add_player_message(s, "dummy\n");
 	}
-	if (game.state == WH_STATE_WAIT_FOR_PLAY
-	    || game.state == WH_STATE_NEXT_TRICK
-	    || game.state == WH_STATE_NEXT_PLAY)
+	if (game.state == STATE_WAIT_FOR_PLAY
+	    || game.state == STATE_NEXT_TRICK
+	    || game.state == STATE_NEXT_PLAY)
 		add_player_message(s, "Tricks: %d\n",
 				   game.players[p].tricks +
 				   game.players[(p + 2) % 4].tricks);
