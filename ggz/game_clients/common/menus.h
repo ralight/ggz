@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.h 5040 2002-10-26 03:58:33Z jdorje $
+ * $Id: menus.h 5043 2002-10-26 04:43:10Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -60,3 +60,11 @@ void game_exit(void);
 
 #define HELP _("/Help")
 #define HELP_ABOUT _("/Help/About")
+
+/* This function can be easily used (perhaps in conjunction with the
+   above macros) to sensitize or desensitize a menu item. */
+GtkWidget *ggz_create_menus(GtkWidget *window,
+			    GtkItemFactoryEntry *items,
+			    const unsigned int num_items);
+GtkWidget *get_menu_item(const char *item);
+void set_menu_sensitive(const char *menu, gboolean sensitive);
