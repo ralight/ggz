@@ -250,7 +250,7 @@ static void player_loop(int p_index, int p_fd)
 			
 			status = player_handle(op, p_index, p_fd, &t_fd);
 			
-			if (status == GGZ_REQ_DISCONNECT)
+			if (status == GGZ_REQ_DISCONNECT) 
 				break;
 			
 			switch (status) {
@@ -305,8 +305,13 @@ static void player_loop(int p_index, int p_fd)
 	} /* for(;;) */
 
 	/* Clean up if there was an error during a game */
-	if (t_fd != -1)
+	if (t_fd != -1) {
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Logout or error forcing player %d to leave table %d",
+			p_index, players.info[p_index].table_index);
+		table_leave(p_index, players.info[p_index].table_index);
 		close(t_fd);
+	}
 }
 
 
@@ -429,7 +434,8 @@ static void player_remove(int p_index)
 	players.info[p_index].fd = -1;
 	players.count--;
 	players.timestamp = time(NULL);
-	if(players.info[p_index].room == -1) {
+
+	if (players.info[p_index].room == -1) {
 		chat_mark_all_read(p_index);
 		pthread_rwlock_unlock(&players.lock);
 	} else {
@@ -577,7 +583,8 @@ static int player_login_anon(int p, int fd)
 	char *ip_addr, *hostname;
 	int i;
 
-	dbg_msg(GGZ_DBG_CONNECTION,"Creating anonymous login for player %d", p);
+	dbg_msg(GGZ_DBG_CONNECTION, "Creating anonymous login for player %d", 
+		p);
 	
 	if (read_name(fd, name) < 0)
 		return GGZ_REQ_DISCONNECT;
@@ -641,7 +648,6 @@ static int player_login_anon(int p, int fd)
  * player_logout implements the following exchange:
  * 
  * REQ_LOGOUT
- *  str: login name
  * RSP_LOGOUT
  *  chr: success flag (0 for success, -1 for error )
  */
