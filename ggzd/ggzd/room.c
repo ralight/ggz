@@ -416,8 +416,10 @@ int room_send_chat(const int p)
 		pthread_rwlock_rdlock(&chat_room[room].lock);
 		if (es_write_int(fd, MSG_CHAT) < 0
 		    || es_write_string(fd, cur_chat->chat_sender) < 0
-		    || es_write_string(fd, cur_chat->chat_msg) < 0)
+		    || es_write_string(fd, cur_chat->chat_msg) < 0) {
+			pthread_rwlock_unlock(&chat_room[room].lock);
 			return(-1);
+		}
 		pthread_rwlock_unlock(&chat_room[room].lock);
 
 		/* Need write lock to update player chat head and ref count */
