@@ -1,0 +1,34 @@
+dnl Configuration for the GGZ Documentation
+dnl =======================================
+
+AC_INIT(configure.in)
+AC_CANONICAL_SYSTEM
+#AC_ARG_PROGRAM
+AM_INIT_AUTOMAKE(ggz-docs,0.0.4)
+
+dnl Use GGZDOCDIR as the top-level installation directory
+dnl =====================================================
+
+GGZDOCDIR="$datadir/doc/ggz-docs"
+AC_SUBST(GGZDOCDIR)
+
+dnl Create the Makefiles
+dnl ====================
+
+AC_OUTPUT(Makefile
+	games/Makefile
+	games/hastings/Makefile
+	games/external-games/Makefile
+	spec/Makefile)
+
+dnl Report success
+dnl ==============
+
+echo ""
+echo "This package is now configured. Please type 'make' in order to compile."
+echo "The following installation layout is used:"
+echo ""
+echo "Installation prefix: $prefix"
+echo "Documentation goes to: $GGZDOCDIR"
+echo ""
+

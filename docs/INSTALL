@@ -1,0 +1,10 @@
+Installation of the GGZ documentation
+=====================================
+
+There are currently only simply files in it, so all you have to do is running
+./configure (./autogen from CVS), and 'make install'.
+There will be a reason for calling 'make' soon, by docbook and kdoc and doxygen
+files.
+
+All files are normally installed under /usr/share/doc/ggz-doc/.
+
