@@ -141,7 +141,7 @@ fi
 AC_SUBST(libggz_libraries)
 AC_SUBST(libggz_includes)
 
-LIBGGZ_INCLUDES="-isystem$libggz_includes"
+LIBGGZ_INCLUDES="-isystem $libggz_includes"
 LIBGGZ_LDFLAGS="-L$libggz_libraries"
 
 AC_SUBST(LIBGGZ_INCLUDES)
@@ -226,7 +226,7 @@ fi
 AC_SUBST(ggzcore_libraries)
 AC_SUBST(ggzcore_includes)
 
-GGZCORE_INCLUDES="-isystem$ggzcore_includes"
+GGZCORE_INCLUDES="-isystem $ggzcore_includes"
 GGZCORE_LDFLAGS="-L$ggzcore_libraries"
 
 AC_SUBST(GGZCORE_INCLUDES)
@@ -379,7 +379,7 @@ fi
 AC_SUBST(ggzmod_libraries)
 AC_SUBST(ggzmod_includes)
 
-GGZMOD_INCLUDES="-isystem$ggzmod_includes"
+GGZMOD_INCLUDES="-isystem $ggzmod_includes"
 GGZMOD_LDFLAGS="-L$ggzmod_libraries"
 
 AC_SUBST(GGZMOD_INCLUDES)
@@ -463,7 +463,7 @@ fi
 AC_SUBST(ggzdmod_libraries)
 AC_SUBST(ggzdmod_includes)
 
-GGZDMOD_INCLUDES="-isystem$ggzdmod_includes"
+GGZDMOD_INCLUDES="-isystem $ggzdmod_includes"
 GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
 
 AC_SUBST(GGZDMOD_INCLUDES)
