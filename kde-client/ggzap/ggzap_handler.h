@@ -40,7 +40,7 @@ class GGZapHandler : public QObject
 		void init();
 		void setModule(const char *modulename);
 		void setFrontend(const char *frontendtype);
-		void process();
+		/*void process();*/
 		void shutdown();
 
 		enum States
@@ -92,7 +92,7 @@ class GGZapHandler : public QObject
 		const char *m_frontendtype;
 		const char *m_confserver, *m_confusername;
 		char *m_zapuser;
-		int m_killserver, m_activetable;
+		int /*m_killserver,*/ m_activetable;
 		QSocketNotifier *m_sn_server, *m_sn_game;
 };
 

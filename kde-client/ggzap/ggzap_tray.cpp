@@ -51,7 +51,7 @@ GGZapTray::GGZapTray(QWidget *parent, const char *name)
 	connect(contextMenu(), SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu, SIGNAL(activated(int)), SLOT(slotLaunch(int)));
 
-	m_launched = 0;
+	m_state = stateidle;
 
 	QToolTip::add(this, i18n("GGZap - Online Gaming Tool"));
 
@@ -85,17 +85,23 @@ void GGZapTray::slotMenu(int id)
 	switch(id)
 	{
 		case menulaunch:
-			contextMenu()->removeItem(menulaunch);
-			contextMenu()->removeItem(menucancel);
-			contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
+			if(m_state == stateidle)
+			{
+				contextMenu()->removeItem(menulaunch);
+				contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
+			}
+			m_state = stateactive;
 			setMovie(QMovie(KGGZ_DIRECTORY "/ggzap/trayradar.mng"));
 			break;
 		case menucancel:
 			emit signalCancel();
 			setPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/tray.png"));
-			contextMenu()->removeItem(menulaunch);
-			contextMenu()->removeItem(menucancel);
-			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
+			if(m_state == stateactive)
+			{
+				contextMenu()->removeItem(menucancel);
+				contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
+			}
+			m_state = stateidle;
 			break;
 		case menuconfigure:
 			if(!m_config) m_config = new GGZapConfig(NULL, "GGZapConfig");

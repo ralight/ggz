@@ -45,6 +45,12 @@ class GGZapTray : public KSystemTray
 			menuconfigure
 		};
 
+		enum States
+		{
+			stateidle,
+			stateactive
+		};
+
 	signals:
 		void signalLaunch(char *name, char *frontend);
 		void signalCancel();
@@ -59,7 +65,7 @@ class GGZapTray : public KSystemTray
 		QPopupMenu *m_menu;
 		GGZapGame *m_game;
 		GGZapConfig *m_config;
-		int m_launched;
+		int m_state;
 };
 
 #endif

@@ -50,8 +50,8 @@ class GGZap : public QObject
 		void slotLaunch(char *name, char *frontend);
 		void slotCancel();
 
-	protected:
-		void timerEvent(QTimerEvent *e);
+/*	protected:
+		void timerEvent(QTimerEvent *e);*/
 
 	private:
 		GGZapHandler *m_handler;

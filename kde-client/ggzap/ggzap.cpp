@@ -46,7 +46,7 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
 	connect(this, SIGNAL(signalMenu(int)), tray, SLOT(slotMenu(int)));
 
-	startTimer(200);
+/*	startTimer(200);*/
 
 	m_gui->move(kapp->desktop()->width() / 2 - 125, kapp->desktop()->height() / 2 - 50);
 }
@@ -56,10 +56,10 @@ GGZap::~GGZap()
 	delete m_handler;
 }
 
-void GGZap::timerEvent(QTimerEvent *e)
+/*void GGZap::timerEvent(QTimerEvent *e)
 {
 	m_handler->process();
-}
+}*/
 
 void GGZap::setModule(const char *modulename)
 {
@@ -90,7 +90,8 @@ void GGZap::launch()
 {
 	if(!m_autolaunch)
 	{
-		m_gui->showMinimized();
+		m_gui->hide();
+		//m_gui->showMinimized();
 		return;
 	}
 

@@ -48,8 +48,11 @@ GGZapHandler::GGZapHandler()
 	m_confserver = NULL;
 	m_confusername = NULL;
 	m_zapuser = NULL;
-	m_killserver = 0;
+/*	m_killserver = 0;*/
 	m_activetable = -1;
+
+	m_sn_game = NULL;
+	m_sn_server = NULL;
 
 	core = new GGZCore();
 	core->init(GGZCore::parser | GGZCore::modules);
@@ -91,6 +94,17 @@ void GGZapHandler::init()
 
 void GGZapHandler::shutdown()
 {
+	if(m_sn_game)
+	{
+		delete m_sn_game;
+		m_sn_game = NULL;
+	}
+	if(m_sn_server)
+	{
+		delete m_sn_server;
+		m_sn_server = NULL;
+	}
+
 	if(m_game)
 	{
 		detachGameCallbacks();
@@ -109,10 +123,15 @@ void GGZapHandler::shutdown()
 	{
 		m_server->logout();
 		m_server->disconnect();
+
+		detachServerCallbacks();
+		delete m_server;
+		m_server = NULL;
+
 		//process();
 	}
 
-	m_killserver = 1;
+	/*m_killserver = 1;*/
 
 	if(m_zapuser)
 	{
@@ -134,7 +153,7 @@ void GGZapHandler::setFrontend(const char *frontendtype)
 	m_frontendtype = frontendtype;
 }
 
-void GGZapHandler::process()
+/*void GGZapHandler::process()
 {
 	if((m_killserver) && (m_server))
 	{
@@ -143,7 +162,7 @@ void GGZapHandler::process()
 		m_server = NULL;
 		m_killserver = 0;
 	}
-}
+}*/
 
 GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *user_data)
 {
