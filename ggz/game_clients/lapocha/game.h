@@ -4,6 +4,7 @@ struct game_t {
 	int seats[4];
 	int score[4];
 	int bid[4];
+	int num_cards[4];
 	char names[4][17];
 	char state;
 	char move;

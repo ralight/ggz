@@ -47,7 +47,6 @@ static gint table_animation_callback(gpointer);
 void table_initialize(void)
 {
 	GdkBitmap *mask;
-	int i, x, y;
 	GtkWidget *label;
 
 	/* This starts our drawing code */
@@ -125,47 +124,6 @@ void table_initialize(void)
 			   FALSE,
 			   116, 5,
 			   241, 106);
-
-	for(i=9; i>=0; i--) {
-		x = 116.5 + (i * CARDWIDTH/4.0);
-		y = 363;
-		gdk_draw_pixmap(table_buf,
-			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards,
-				1248, 71,
-				x, y,
-				CARDWIDTH, CARDHEIGHT);
-	}
-	for(i=0; i<10; i++) {
-		x = 10;
-		y = 116.5 + (i * CARDWIDTH/4.0);
-		gdk_draw_pixmap(table_buf,
-			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards_b2,
-				0, 142,
-				x, y,
-				CARDHEIGHT, CARDWIDTH);
-	}
-	for(i=9; i>=0; i--) {
-		x = 121.5 + (i * CARDWIDTH/4.0);
-		y = 10;
-		gdk_draw_pixmap(table_buf,
-			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards_b3,
-				71, 0,
-				x, y,
-				CARDWIDTH, CARDHEIGHT);
-	}
-	for(i=9; i>=0; i--) {
-		x = 363;
-		y = 121.5 + (i * CARDWIDTH/4.0);
-		gdk_draw_pixmap(table_buf,
-			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-				cards_b4,
-				0, 71,
-				x, y,
-				CARDHEIGHT, CARDWIDTH);
-	}
 
 	/* Display the buffer */
 	gdk_draw_pixmap(f1->window,
@@ -384,7 +342,7 @@ static void table_card_select(int card)
 		   	239, 104);
 
 	/* Draw the cards, with our selected card popped forward */
-	for(i=0; i<10; i++) {
+	for(i=0; i<hand.hand_size; i++) {
 		if(hand.card[i] < 0)
 			continue;
 		x1 = (hand.card[i] / 13) * CARDWIDTH;
@@ -434,7 +392,7 @@ static void table_card_play(int card)
 		   	239, 104);
 
 	/* Draw the cards, eliminating the card in play */
-	for(i=0; i<10; i++) {
+	for(i=0; i<hand.hand_size; i++) {
 		if(hand.card[i] < 0)
 			continue;
 		x1 = (hand.card[i] / 13) * CARDWIDTH;
@@ -583,6 +541,8 @@ gint table_animation_callback(gpointer ignored)
 
 /* Convenience macro, wraps a player number to a visual seat position */
 #define SEAT_POS(x)	((4 + x - game.me) % 4)
+/* Vice versa, maps position to seat number */
+#define POS_SEAT(x)	((x + game.me) % 4)
 
 /* table_set_name()
  *   Exposed function to set name on display
@@ -621,20 +581,35 @@ void table_set_trump(void)
 
 
 /* table_display_hand()
- *   Exposed function to show the player's hand
+ *   Exposed function to show the players' hands
  */
 void table_display_hand(void)
 {
 	int i, x1, y1, x2, y2;
 
-	/* Clean the card area */
+	/* Clean the card areas */
 	gdk_draw_rectangle(table_buf,
-		   	f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
-		   	TRUE,
-		   	112, 358,
-		   	239, 104);
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   6, 112,
+			   104, 239);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   112, 358,
+			   239, 104);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   358, 117,
+			   104, 239);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   117, 6,
+			   239, 104);
 
-	/* Draw the cards, skipping any missing cards (syncing player) */
+	/* Draw my cards, skipping any missing cards (syncing player) */
 	for(i=0; i<hand.hand_size; i++) {
 		if(hand.card[i] < 0)
 			continue;
@@ -650,11 +625,63 @@ void table_display_hand(void)
 				CARDWIDTH, CARDHEIGHT);
 	}
 
-	/* And refresh the on-screen image */
+	/* Left Player card backs */
+	for(i=0; i<game.num_cards[POS_SEAT(1)]; i++) {
+		x1 = 10;
+		y1 = 116.5 + (i * CARDWIDTH/4.0);
+		gdk_draw_pixmap(table_buf,
+			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards_b2,
+				0, 142,
+				x1, y1,
+				CARDHEIGHT, CARDWIDTH);
+	}
+	/* Across Player */
+	for(i=9; i>(9-game.num_cards[POS_SEAT(2)]); i--) {
+		x1 = 121.5 + (i * CARDWIDTH/4.0);
+		y1 = 10;
+		gdk_draw_pixmap(table_buf,
+			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards_b3,
+				71, 0,
+				x1, y1,
+				CARDWIDTH, CARDHEIGHT);
+	}
+	/* Right Player */
+	for(i=9; i>(9-game.num_cards[POS_SEAT(3)]); i--) {
+		x1 = 363;
+		y1 = 121.5 + (i * CARDWIDTH/4.0);
+		gdk_draw_pixmap(table_buf,
+			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards_b4,
+				0, 71,
+				x1, y1,
+				CARDHEIGHT, CARDWIDTH);
+	}
+
+	/* And refresh the on-screen image for card areas */
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			6, 112,
+			6, 112,
+			104, 239);
 	gdk_draw_pixmap(f1->window,
 			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 			table_buf,
 			112, 358,
 			112, 358,
+			239, 104);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			358, 117,
+			358, 117,
+			104, 239);
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			117, 6,
+			117, 6,
 			239, 104);
 }
