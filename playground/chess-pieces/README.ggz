@@ -1,0 +1,7 @@
+These are the metafont sources for the chess pieces used by Xboard.  Since
+GGZ uses theses same graphics we include them here.
+
+It would be nice to render them into SVG.  See the README files lying around
+as well as the bitmaps README in the xboard source tarball.
+
+-Jason Short
