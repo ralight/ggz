@@ -216,4 +216,6 @@ int game_check_over();
 void game_skip_move();
 // Game is over! Send gameover message and stop everything
 void game_gameover();
+// Update scores
+void game_update_scores();
 	

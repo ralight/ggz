@@ -36,8 +36,8 @@ struct rvr_game_t rvr_game;
 // Initializes everything
 void game_init() {
 	int i;
-	rvr_game.black = 0;
-	rvr_game.white = 0;
+	rvr_game.black = 2;
+	rvr_game.white = 2;
 	rvr_game.state = RVR_STATE_INIT;
 	rvr_game.turn = EMPTY;
 	for (i = 0; i < 64; i++) {
@@ -366,6 +366,8 @@ int game_make_move(int player, int move) {
 	// Change turn
 	rvr_game.turn*=-1;
 
+	game_update_scores();
+
 	// Check if game is over
 	if (!game_check_over()) {
 
@@ -426,10 +428,6 @@ int game_mark_board(int player, int vx, int vy, int x, int y) {
 		return 0;
 	for (i = x+vx, j = y+vy; GET(i,j) == -player; i+=vx, j+=vy) {
 		rvr_game.board[CART(i,j)]*=-1;
-		if (player == BLACK)
-			rvr_game.black++;
-		else
-			rvr_game.white++;
 	}
 	return 1;
 }
@@ -479,4 +477,14 @@ void game_gameover() {
 
 }
 
-	
+void game_update_scores() {
+	int i;
+	rvr_game.white = 0;
+	rvr_game.black = 0;
+	for (i = 0; i < 64; i++) {
+		if (rvr_game.board[i] == WHITE)
+			rvr_game.white++;
+		if (rvr_game.board[i] == BLACK)
+			rvr_game.black++;
+	}
+}
