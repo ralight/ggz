@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 3
+#define PROTOCOL_VERSION 4
 /* Chess module design
  *
  * We should have 4 game states:
@@ -42,6 +42,7 @@
  * CHESS_EVENT_START
  * CHESS_EVENT_UPDATE_TIME
  * CHESS_EVENT_REQUEST_UPDATE
+ * CHESS_EVENT_FLAG
  *
  * Besides the GGZ events
  * GGZ_EVENT_LAUNCH
@@ -62,6 +63,9 @@
  * in one of the other events.
  * GGZ_EVENT_PLAYER --> CHESS_EVENT_MOVE
  *                      CHESS_EVENT_TIME
+ *                      CHESS_EVENT_UPDATE_TIME
+ *                      CHESS_EVENT_REQUEST_UPDATE
+ *                      CHESS_EVENT_FLAG
  *
  * Thats the way the states and events should work
  * CHESS_STATE_INIT:
@@ -119,8 +123,12 @@
  *      Next move, the time must be sent relative to this new time
  *      Also triggers a CHESS_EVENT_REQUEST_UPDATE to the other player
  *
- *    CHESS_EVENT_REQUEST_UPDATE
+ *    CHESS_EVENT_REQUEST_UPDATE:
  *      Send a CHESS_RSP_UPDATE
+ *
+ *    CHESS_EVENT_FLAG:
+ *      Check if time is over.
+ *      If it is, triggers EVENT_GAMEOVER
  *
  *    CHESS_EVENT_GAMEOVER:
  *      Go to DONE state
@@ -178,6 +186,11 @@
  * of the server's time structure, but it won't take the current move in
  * account. (ie, the TIME part for the next move isn't going to be changed)
  *
+ * CHESS_REQ_FLAG
+ *
+ * Triggers EVENT_FLAG. Used by the clients to tell the server that the game
+ * must end because of time (flag falling)
+ *
  * CHESS_MSG_UPDATE (int)TIME
  *
  * Used by the client when using CLOCK_CLIENT, to send how much time it already
@@ -187,8 +200,7 @@
  *
  * CHESS_MSG_GAMEOVER (char)WINNER
  *
- * The game is over. The WINNER is the seat number of the winner of some code
- * for draw (TODO: Refine this) */
+ * The game is over. The WINNER is one of the winning codes below */
 
 /* Definition of states */
 #define CHESS_STATE_INIT 0
@@ -207,6 +219,7 @@
 #define CHESS_EVENT_START 7
 #define CHESS_EVENT_UPDATE_TIME 8
 #define CHESS_EVENT_REQUEST_UPDATE 9
+#define CHESS_EVENT_FLAG 10
 
 /* Definition of messages */
 #define CHESS_MSG_SEAT 1
@@ -220,12 +233,27 @@
 #define CHESS_REQ_UPDATE 9
 #define CHESS_RSP_UPDATE 10
 #define CHESS_MSG_UPDATE 11
+#define CHESS_REQ_FLAG 12
 
 /* Clock types */
 #define CHESS_CLOCK_NOCLOCK 0
 #define CHESS_CLOCK_CLIENT 1
 #define CHESS_CLOCK_SERVERLAG 2
 #define CHESS_CLOCK_SERVER 3
+
+/* Game over types */
+#define CHESS_GAMEOVER_DRAW_AGREEMENT 1
+#define CHESS_GAMEOVER_DRAW_STALEMATE 2
+#define CHESS_GAMEOVER_DRAW_POSREP 3
+#define CHESS_GAMEOVER_DRAW_MATERIAL 4
+#define CHESS_GAMEOVER_DRAW_MOVECOUNT 5
+#define CHESS_GAMEOVER_DRAW_TIMEMATERIAL 6
+#define CHESS_GAMEOVER_WIN_1_MATE 7
+#define CHESS_GAMEOVER_WIN_1_RESIGN 8
+#define CHESS_GAMEOVER_WIN_1_FLAG 9
+#define CHESS_GAMEOVER_WIN_2_MATE 10
+#define CHESS_GAMEOVER_WIN_2_RESIGN 11
+#define CHESS_GAMEOVER_WIN_2_FLAG 12
 
 /* Game info structure */
 struct chess_info {
@@ -243,4 +271,7 @@ struct chess_info {
   char host;
   /* Current turn */
   int turn;
+  /* For keeping care of draws */
+  char movecount;
+  char posrep;
 };
