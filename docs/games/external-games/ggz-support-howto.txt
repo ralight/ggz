@@ -385,6 +385,16 @@ However, you can change the code in game_servers/chess/ggz.c to add more.
 More information, just take a look at the chess server source code.
 
 
+step 4.1.3: libggzmod/libggzdmod
+-----------------------
+GGZMod and GGZDMod are GGZ C libraries that do most of the work of connecting
+to GGZ (client and server).  They should be able to support either of the 
+methods above, making interfacing with GGZ a breeze.
+
+Both are usable, but under heavy development as of Aug-2001.  They should
+stabilize in the near future.
+
+
 step 4.2 - modifing the players names
 =====================================
 
