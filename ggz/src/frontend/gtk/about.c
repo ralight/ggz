@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 5958 2004-02-21 19:15:00Z jdorje $
+ * $Id: about.c 6255 2004-11-04 22:38:30Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -39,7 +39,6 @@
 #include <gtk/gtk.h>
 
 #include "about.h"
-#include "about_bg.xpm"
 #include "chat.h"
 #include "support.h"
 
@@ -49,7 +48,7 @@ static gint about_tag;
 static GdkFont *font1, *font2, *font3, *font4;
 static GdkColormap *colormap;
 static GdkPixmap *pixmap;
-static GdkPixmap *bg_img;
+static GdkPixbuf *bg_img;
 static gint Yloc = 320;
 
 static void about_realize(GtkWidget * widget, gpointer data);
@@ -165,8 +164,7 @@ static void about_realize(GtkWidget * widget, gpointer data)
 		("-*-helvetica-medium-r-normal-*-*-110-*-*-p-*-iso8859-1");
 	colormap = gdk_colormap_get_system();
 	pixmap = gdk_pixmap_new(widget->window, 250, 300, -1);
-	bg_img = gdk_pixmap_colormap_create_from_xpm_d(NULL, colormap, NULL,
-						       NULL, about);
+	bg_img = load_pixbuf("about_bg");
 	if (bg_img == NULL)
 		g_error("Couldn't create about background pixmap.");
 
@@ -191,10 +189,11 @@ static gint about_update(gpointer data)
 
 	background =
 		gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
-	gdk_draw_pixmap(pixmap,
-			GTK_WIDGET(background)->style->
-			fg_gc[GTK_WIDGET_STATE(background)], bg_img, 0, 0, 0,
-			0, 250, 300);
+	gdk_pixbuf_render_to_drawable(bg_img, pixmap,
+				      GTK_WIDGET(background)->style->
+				      fg_gc[GTK_WIDGET_STATE(background)],
+				      0, 0, 0, 0, 250, 300,
+				      GDK_RGB_DITHER_NONE, 0, 0);
 
 	/* FIXME: we ignore all status checks but the last?? */
 	status = about_draw_text(background, "GGZ Gaming Zone", font1, Yloc,

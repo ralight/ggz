@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: msgbox.c 6255 2004-11-04 22:38:30Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -31,9 +31,7 @@
 
 #include "client.h"
 #include "msgbox.h"
-#include "msg_help.xpm"
-#include "msg_info.xpm"
-#include "msg_stop.xpm"
+#include "support.h"
 
 /* Creates a button with a stock icon and custom text.  Code stolen
    from FreeCiv.  Thanks Vasco (or glade; who knows?). */
@@ -134,7 +132,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	if (itype == MSGBOX_STOP)
 	{
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, stop);
+		pixmap = load_pixmap("msg_stop", &mask);
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);
@@ -142,7 +140,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	if (itype == MSGBOX_INFO)
 	{
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, info);
+		pixmap = load_pixmap("msg_info", &mask);
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);
@@ -150,7 +148,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	if (itype == MSGBOX_QUESTION)
 	{
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask, NULL, help);
+		pixmap = load_pixmap("msg_help", &mask);
 		if (pixmap == NULL)
 			g_error ("Couldn't create replacement pixmap.");
 		icon = gtk_pixmap_new (pixmap, mask);

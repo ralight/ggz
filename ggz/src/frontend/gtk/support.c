@@ -266,6 +266,39 @@ create_pixmap                          (GtkWidget       *widget,
   return pixmap;
 }
 
+GdkPixbuf *load_pixbuf(const char *name)
+{
+	char *fullpath;
+	GdkPixbuf *image;
+	GError *error = NULL;
+
+	fullpath = g_strdup_printf("%s/%s.png", GGZDATADIR, name);
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+	if(image == NULL) {
+		ggz_error_msg("Can't load pixmap %s", fullpath);
+		printf("Can't load pixmap %s.\n", fullpath);
+	}
+	g_free(fullpath);
+
+	return image;
+}
+
+GdkPixmap *load_pixmap(const char *name, GdkBitmap **mask)
+{
+	GdkPixbuf *image = load_pixbuf(name);
+	GdkPixmap *pixmap;
+
+	*mask = NULL;
+	if (!image) {
+		return NULL;
+	}
+
+	gdk_pixbuf_render_pixmap_and_mask(image, &pixmap, mask, 1);
+	g_object_unref(image);
+
+	return pixmap;
+}
+
 /* This is an internally used function to check if a pixmap file exists. */
 gchar*
 check_file_exists                      (const gchar     *directory,

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6118 2004-07-16 19:08:50Z jdorje $
+ * $Id: playerlist.c 6255 2004-11-04 22:38:30Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -214,11 +214,17 @@ static GtkWidget *create_mnu_player(int player_num, gboolean is_friend,
 	return mnu_player;
 }
 
+#define LAG_CATEGORIES 6
+gboolean pixmaps_initted = FALSE;
+struct {
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+} lag[LAG_CATEGORIES], guest, registered, admin;
 
 void display_players(void)
 {
 	GtkWidget *tmp;
-	gint i, num;
+	gint i, num, l;
 	/* Some of the fields of the clist receive pixmaps
 	 * instead, and are therefore set to NULL. */
 	gchar *player[5] = { NULL, NULL, NULL, NULL, NULL };
@@ -226,8 +232,8 @@ void display_players(void)
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
-	GdkBitmap *mask1, *mask2;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	int wins, losses, ties, forfeits, rating, ranking, highscore;
 	char stats[512];
 
@@ -243,6 +249,21 @@ void display_players(void)
 
 	/* Display current list of players */
 	num = ggzcore_room_get_num_players(room);
+
+	/* Ensure the lag graphics are loaded. */
+	if (!pixmaps_initted) {
+		for (i = 0; i < LAG_CATEGORIES; i++) {
+			gchar *name = g_strdup_printf("ggz_gtk_lag%d", i);
+
+			lag[i].pixmap = load_pixmap(name, &lag[i].mask);
+			g_free(name);
+		}
+		guest.pixmap = load_pixmap("ggz_gtk_guest", &guest.mask);
+		registered.pixmap = load_pixmap("ggz_gtk_guest",
+						&registered.mask);
+		admin.pixmap = load_pixmap("ggz_gtk_guest", &admin.mask);
+		pixmaps_initted = TRUE;
+	}
 
 	for (i = 0; i < num; i++) {
 		p = ggzcore_room_get_nth_player(room, i);
@@ -286,63 +307,44 @@ void display_players(void)
 
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
-		path = NULL;
-		if (ggzcore_player_get_lag(p) == -1
-		    || ggzcore_player_get_lag(p) == 0)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag0.xpm", NULL);
-		else if (ggzcore_player_get_lag(p) == 1)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag1.xpm", NULL);
-		else if (ggzcore_player_get_lag(p) == 2)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag2.xpm", NULL);
-		else if (ggzcore_player_get_lag(p) == 3)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag3.xpm", NULL);
-		else if (ggzcore_player_get_lag(p) == 4)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag4.xpm", NULL);
-		else if (ggzcore_player_get_lag(p) == 5)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_lag5.xpm", NULL);
+		l = ggzcore_player_get_lag(p);
 
-		if (path) {
-			pixmap1 =
-				gdk_pixmap_create_from_xpm(tmp->window,
-							   &mask1, NULL,
-							   path);
-			if (pixmap1)
-				gtk_clist_set_pixmap(GTK_CLIST(tmp), i,
-						     PLAYER_LIST_COL_LAG,
-						     pixmap1, mask1);
-			g_free(path);
+		printf("Looking at player %d, lag %d.\n", i, l);
+		if (l >= 0 && l < LAG_CATEGORIES
+		    && lag[l].pixmap) {
+			gtk_clist_set_pixmap(GTK_CLIST(tmp), i,
+					     PLAYER_LIST_COL_LAG,
+					     lag[l].pixmap,
+					     lag[l].mask);
+		} else {
+		  printf("No lag value.\n");
 		}
 
-
 		path = NULL;
-		if (ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_guest.xpm", NULL);
-		else if (ggzcore_player_get_type(p) == GGZ_PLAYER_NORMAL)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_registered.xpm", NULL);
-		else if (ggzcore_player_get_type(p) == GGZ_PLAYER_ADMIN)
-			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR,
-					 "ggz_gtk_admin.xpm", NULL);
+		switch (ggzcore_player_get_type(p)) {
+		case GGZ_PLAYER_GUEST:
+			pixmap = guest.pixmap;
+			mask = guest.mask;
+			break;
+		case GGZ_PLAYER_NORMAL:
+			pixmap = registered.pixmap;
+			mask = registered.mask;
+			break;
+		case GGZ_PLAYER_ADMIN:
+			pixmap = admin.pixmap;
+			mask = admin.mask;
+			break;
+		case GGZ_PLAYER_BOT:
+		case GGZ_PLAYER_UNKNOWN:
+			pixmap = mask = NULL;
+			break;
+		}
 
-		if (path) {
-			pixmap2 =
-				gdk_pixmap_create_from_xpm(tmp->window,
-							   &mask2, NULL,
-							   path);
-			if (pixmap2)
-				gtk_clist_set_pixtext
-					(GTK_CLIST(tmp), i,
-					 PLAYER_LIST_COL_NAME,
-					 player[PLAYER_LIST_COL_NAME],
-					 5, pixmap2, mask2);
-			g_free(path);
+		if (pixmap) {
+			gtk_clist_set_pixtext(GTK_CLIST(tmp), i,
+					      PLAYER_LIST_COL_NAME,
+					      player[PLAYER_LIST_COL_NAME],
+					      5, pixmap, mask);
 		}
 
 		/* Note the name is used right above, so these calls

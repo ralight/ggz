@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6117 2004-07-16 19:08:39Z josef $
+dnl $Id: configure.ac 6255 2004-11-04 22:38:30Z jdorje $
 
 AC_INIT([GGZ Gtk+ client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -81,9 +81,9 @@ dnl ============
 
 if test "x${datadir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    ggzdatadir="${ac_default_prefix}/share/pixmaps/ggz"
+    ggzdatadir="${ac_default_prefix}/share/ggz/ggz-gtk"
   else
-    ggzdatadir="${prefix}/share/pixmaps/ggz"
+    ggzdatadir="${prefix}/share/ggz/ggz-gtk"
   fi
 else
   ggzdatadir=${datadir}

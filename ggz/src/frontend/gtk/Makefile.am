@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5963 2004-02-28 05:05:41Z jdorje $
+#  $Id: Makefile.am 6255 2004-11-04 22:38:30Z jdorje $
 
 SUBDIRS = .
 
@@ -8,14 +8,23 @@ INCLUDES = -I$(top_srcdir)/intl \
 
 bin_PROGRAMS = ggz-gtk
 
-ggzdata_DATA = ggz_gtk_admin.xpm ggz_gtk_guest.xpm ggz_gtk_registered.xpm \
-	       ggz_gtk_lag0.xpm ggz_gtk_lag1.xpm ggz_gtk_lag2.xpm ggz_gtk_lag3.xpm \
-	       ggz_gtk_lag4.xpm ggz_gtk_lag5.xpm
+ggzdata_DATA =		about_bg.png		\
+			ggz_gtk_admin.png 	\
+			ggz_gtk_guest.png 	\
+			ggz_gtk_registered.png	\
+			ggz_gtk_lag0.png 	\
+			ggz_gtk_lag1.png 	\
+			ggz_gtk_lag2.png	\
+			ggz_gtk_lag3.png	\
+			ggz_gtk_lag4.png	\
+			ggz_gtk_lag5.png	\
+			msg_help.png		\
+			msg_info.png		\
+			msg_stop.png
 
 ggz_gtk_SOURCES =	main.c \
 			about.c \
 			about.h \
-			about_bg.xpm \
 			chat.c \
 			chat.h \
 			client.c \
@@ -36,9 +45,6 @@ ggz_gtk_SOURCES =	main.c \
 			motd.h \
 			msgbox.c \
 			msgbox.h \
-			msg_help.xpm \
-			msg_info.xpm \
-			msg_stop.xpm \
 			pick_module.c \
 			pick_module.h \
 			playerinfo.c \
