@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 4105 2002-04-29 03:31:43Z jdorje $
+ * $Id: options.c 4112 2002-04-29 18:19:10Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -50,9 +50,6 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
-
-static bool options_initted = FALSE;
-
 static struct option_t {
 	char *key;
 	int value;
@@ -81,7 +78,7 @@ static void handle_options(int *options);
 
 bool are_options_set(void)
 {
-	return options_initted;
+	return pending_option_count == 0;
 }
 
 void set_option(char *key, int value)
@@ -133,12 +130,9 @@ void request_client_options(void)
 {
 	ggzdmod_log(game.ggz, "Entering get_options.");
 
-	game.data->get_options();
-
 	if (pending_options == NULL) {
-		options_initted = TRUE;
-		ggzdmod_log(game.ggz, "request_client_options: "
-		            "no options to get.");
+		assert(FALSE);
+		try_to_start_game();
 	} else {
 		struct pending_option_t *po = pending_options;
 		char *option_descs[pending_option_count];
@@ -207,8 +201,7 @@ static void handle_options(int *options)
 
 		option_count++;
 	}
-
-	options_initted = TRUE;
+	pending_option_count = 0;
 	
 	(void) try_to_start_game();
 }
