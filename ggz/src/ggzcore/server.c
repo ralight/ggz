@@ -861,10 +861,11 @@ static void _ggzcore_server_handle_chat(GGZServer *server)
 
 static void _ggzcore_server_handle_list_players(GGZServer *server)
 {
-	int i, num, table, status;
+	int i, num, t_index, status;
 	char *name;
 	struct _ggzcore_list *players;
 	struct _GGZPlayer player;
+	struct _GGZTable *table;
 
 	/* FIXME: Clear existing list (if any) 
 	   _ggzcore_player_list_clear();*/
@@ -876,7 +877,8 @@ static void _ggzcore_server_handle_list_players(GGZServer *server)
 
 
 	for (i = 0; i < num; i++) {
-		status = _ggzcore_net_read_player(server->fd, &name, &table);
+		status = _ggzcore_net_read_player(server->fd, &name, &t_index);
+		table = _ggzcore_room_get_nth_table(server->room, t_index);
 		_ggzcore_player_init(&player, name, table);
 		_ggzcore_list_insert(players, &player);
 		

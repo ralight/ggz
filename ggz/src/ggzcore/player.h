@@ -38,16 +38,16 @@ struct _GGZPlayer {
 	/* Name of player */
 	char* name;	
 
-	/* Index of table at which this player is "sitting" */
-	int table;
+	/* Pointer to table at whoch player is sitting */
+	struct _GGZTable *table;
 };
 
 
 struct _ggzcore_list* _ggzcore_player_list_new(void);
 
 void _ggzcore_player_init(struct _GGZPlayer *player, 
-			  const char* name, 
-			  const int table);
+			  const char *name, 
+			  struct _GGZTable *table);
 
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);

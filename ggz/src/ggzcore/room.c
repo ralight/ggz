@@ -356,7 +356,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
 	struct _GGZPlayer player;
 	
 	/* Default new people in room to no table (-1) */
-	_ggzcore_player_init(&player, name, -1);
+	_ggzcore_player_init(&player, name, NULL);
 	_ggzcore_list_insert(room->players, &player);
 	room->num_players++;
 	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
@@ -368,8 +368,8 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 	struct _GGZPlayer player;
 	struct _ggzcore_list_entry *entry;
 	
-	/* Default new people in room to no table (-1) */
-	_ggzcore_player_init(&player, name, -1);
+	/* Default new people in room to no table (NULL) */
+	_ggzcore_player_init(&player, name, NULL);
 	if (!(entry = _ggzcore_list_search(room->players, &player)))
 		return;
 	_ggzcore_list_delete_entry(room->players, entry);

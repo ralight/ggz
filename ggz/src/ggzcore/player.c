@@ -78,8 +78,8 @@ struct _ggzcore_list* _ggzcore_player_list_new(void)
 				    0);
 }
 
-void _ggzcore_player_init(struct _GGZPlayer *player, const char* name, 
-			  const int table)
+void _ggzcore_player_init(struct _GGZPlayer *player, const char *name, 
+			  struct _GGZTable *table)
 {
 	player->name = strdup(name);
 	player->table = table;
@@ -94,7 +94,7 @@ char* _ggzcore_player_get_name(struct _GGZPlayer *player)
 
 GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 {
-	return NULL;
+	return player->table;
 }
 
 #if 0
