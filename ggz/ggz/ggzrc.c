@@ -215,15 +215,17 @@ void ggzrc_remove_section(const char *section)
 {
 	int section_length = strlen(section);
 	GSList *iter_list = rc_list;
+	gpointer *hashkey;
 
 	while(iter_list) {
-		if (strncmp(section, &((char *)iter_list->data)[1],
-			    section_length) == 0) {
-			g_hash_table_remove(rc_hash, iter_list->data);
-			g_slist_remove(rc_list, iter_list->data);
-		}
-
+		hashkey = iter_list->data;
 		iter_list = g_slist_next(iter_list);
+		
+		if (strncmp(section, &((char *)hashkey)[1],
+			    section_length) == 0) {
+			g_hash_table_remove(rc_hash, hashkey);
+			g_slist_remove(rc_list, hashkey);
+		}
 	}
 }
 
