@@ -66,6 +66,9 @@ on_room_click                             (GtkWidget       *widget,
 gint
 on_pmStar_timeout                  (gpointer         user_data);
 
+gint
+on_general_timeout                  (gpointer         user_data);
+
 void
 on_pmBackground_draw                   (GtkWidget       *widget,
                                         GdkRectangle    *area,

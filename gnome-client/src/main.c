@@ -73,6 +73,7 @@ main (int argc, char *argv[])
 	gtk_widget_show(interface);
 
 	gtk_timeout_add(40, on_pmStar_timeout, NULL);
+	gtk_timeout_add(40, on_general_timeout, NULL);
 	
 	gtk_main();
 
