@@ -1,2 +1,2 @@
-SUBDIRS = src modules data .
+SUBDIRS = src modules data po
 
