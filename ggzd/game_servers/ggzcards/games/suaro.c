@@ -54,6 +54,7 @@ struct game_function_pointers suaro_funcs = {
 	suaro_init_game,
 	suaro_get_options,
 	suaro_handle_option,
+	game_get_option_text,
 	suaro_set_player_message,
 	suaro_get_bid_text,
 	suaro_start_bidding,

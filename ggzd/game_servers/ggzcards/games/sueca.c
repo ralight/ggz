@@ -48,6 +48,7 @@ struct game_function_pointers sueca_funcs = {
 	sueca_init_game,
 	game_get_options,
 	game_handle_option,
+	game_get_option_text,
 	sueca_set_player_message,
 	game_get_bid_text,
 	sueca_start_bidding,

@@ -48,6 +48,7 @@ struct game_function_pointers hearts_funcs = {
 	hearts_init_game,
 	hearts_get_options,
 	hearts_handle_option,
+	game_get_option_text,
 	game_set_player_message,
 	game_get_bid_text,
 	hearts_start_bidding,

@@ -32,8 +32,11 @@ struct game_function_pointers
 	/* initializing */
 	int (*is_valid_game) ();	/* is the game valid under the current conditions? */
 	void (*init_game) ();	/* initialize the game data */
+
+	/* options */
 	void (*get_options) ();	/* determine/request options from given player fd */
 	int (*handle_option) (char *, int);	/* handle an option => 0 on success, -1 on failure */
+	char *(*get_option_text) (char *, int, char *, int);	/* return a descriptive string for the option chosen */
 
 	/* messaging */
 	void (*set_player_message) (player_t);	/* determine and send the player message */

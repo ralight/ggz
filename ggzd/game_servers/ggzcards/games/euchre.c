@@ -51,6 +51,7 @@ struct game_function_pointers euchre_funcs = {
 	euchre_init_game,
 	game_get_options,
 	game_handle_option,
+	game_get_option_text,
 	euchre_set_player_message,
 	euchre_get_bid_text,
 	euchre_start_bidding,

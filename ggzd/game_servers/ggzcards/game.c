@@ -42,6 +42,7 @@ struct game_function_pointers game_funcs = {
 	game_init_game,
 	game_get_options,
 	game_handle_option,
+	game_get_option_text,
 	game_set_player_message,
 	game_get_bid_text,
 	game_start_bidding,
@@ -137,6 +138,18 @@ int game_handle_option(char *option, int value)
 	else
 		return -1;
 	return 0;
+}
+
+char *game_get_option_text(char *buf, int bufsz, char *option, int value)
+{
+	if (!strcmp("open_hands", option))
+		if (value)
+			snprintf(buf, bufsz, "Playing with open hands.");
+		else
+			*buf = 0;
+	else
+		return NULL;
+	return buf;
 }
 
 /* game_start_game

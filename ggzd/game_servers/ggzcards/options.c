@@ -176,13 +176,31 @@ void handle_options()
 void finalize_options()
 {
 	struct option_t *op;
-	char buf[1024];
-	int len = 0;
+	char *optext;
+	char opbuf[128];
+	char buf[4096] = "Options:\n";
+	int len = strlen(buf);
 
 	for (op = optionlist; op != NULL; op = op->next) {
 		game.funcs->handle_option(op->key, op->value);
-		len += snprintf(buf + len, sizeof(buf) - len, "%s : %d\n",
-				op->key, op->value);
+		optext = game.funcs->get_option_text(opbuf, sizeof(opbuf),
+						     op->key, op->value);
+		if (optext == NULL) {
+			ggz_debug("ERROR: SERVER BUG: "
+				  "finalize_options: NULL optext returned for option (%s, %d).",
+				  op->key, op->value);
+			len += snprintf(buf + len, sizeof(buf) - len,
+					"  %s : %d\n", op->key, op->value);
+			continue;
+		}
+		if (!*optext)
+			continue;
+		len += snprintf(buf + len, sizeof(buf) - len, "  %s\n",
+				optext);
 	}
+	if (optionlist == NULL)
+		/* there's absolutely no reason for this to be a server string! */
+		snprintf(buf, sizeof(buf),
+			 "  No special options have been selected.\n");
 	set_global_message("Options", "%s", buf);
 }

@@ -50,6 +50,7 @@ struct game_function_pointers spades_funcs = {
 	spades_init_game,
 	spades_get_options,
 	spades_handle_option,
+	game_get_option_text,
 	spades_set_player_message,
 	spades_get_bid_text,
 	game_start_bidding,
