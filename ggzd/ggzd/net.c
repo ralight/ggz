@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4517 2002-09-11 19:40:32Z jdorje $
+ * $Id: net.c 4520 2002-09-12 01:26:20Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -131,7 +131,6 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int safe_atoi(char *string);
-static char* safe_strdup(char *str);
 static int check_playerconn(GGZNetIO *net, const char *type);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
 static int _net_send_result(GGZNetIO *net, const char *action, char code);
@@ -1098,7 +1097,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		name = safe_strdup(ggz_xmlelement_get_text(element));
+		name = ggz_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcasecmp(parent_tag, "LOGIN") == 0)
@@ -1126,7 +1125,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		password = safe_strdup(ggz_xmlelement_get_text(element));
+		password = ggz_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcasecmp(parent_tag, "LOGIN") == 0)
@@ -1464,7 +1463,7 @@ static void _net_table_set_desc(GGZXMLElement *table, char *desc)
 	}
 
 	if (data->desc) ggz_free(data->desc);
-	data->desc = safe_strdup(desc);
+	data->desc = ggz_strdup(desc);
 }
 
 
@@ -1535,8 +1534,8 @@ static void* _net_seat_copy(void *data)
 	seat2 = ggz_malloc(sizeof(struct _GGZSeatData));
 
 	seat2->index = seat1->index;
-	seat2->type = safe_strdup(seat1->type);
-	seat2->name = safe_strdup(seat1->name);
+	seat2->type = ggz_strdup(seat1->type);
+	seat2->name = ggz_strdup(seat1->name);
 
 	return seat2;
 }
@@ -1605,12 +1604,6 @@ static int safe_atoi(char *string)
 		return 0;
 	else
 		return atoi(string);
-}
-
-
-static char* safe_strdup(char *str)
-{
-	return str ? ggz_strdup(str) : NULL;
 }
 
 
