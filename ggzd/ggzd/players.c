@@ -227,8 +227,7 @@ static void player_loop(int p_index, int p_fd)
 		
 		/* Check for data from table */
 		if (t_fd != -1  && FD_ISSET(t_fd, &read_fd_set)) {
-			if (FAIL(es_write_int(p_fd, RSP_GAME)) ||
-			    (status = player_msg_to_sized(t_fd, p_fd)) <= 0) {
+			if ( (status = player_msg_to_sized(t_fd, p_fd)) <= 0) {
 				dbg_msg("Player %d game-over [game]", p_index);
 				game_over = 1;
 			}
@@ -236,8 +235,9 @@ static void player_loop(int p_index, int p_fd)
 				dbg_msg("Game to User: %d bytes", status);
 		}
 
-		/* Clean up after either player or table ends game */
-		if (game_over) {
+		/* Clean up after either player or table ends game,
+		   but don't try to do both */
+		if (game_over && players.info[p_index].playing) {
 			dbg_msg("Cleaning up player %d's game", p_index);
 			players.info[p_index].playing = 0;
 			close(t_fd);
@@ -865,8 +865,9 @@ static int player_msg_to_sized(int in, int out)
 	if ( (size = read(in, buf, 4096)) <= 0)
 		return(-1);
 	
-	if (FAIL(es_write_int(out, size)) ||
-	    FAIL(es_writen(out, buf, size)))
+	if (FAIL(es_write_int(out, RSP_GAME))
+	    || FAIL(es_write_int(out, size))
+	    || FAIL(es_writen(out, buf, size)))
 		return(-1);
 
 	return size;

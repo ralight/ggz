@@ -113,9 +113,9 @@ void daemon_init(const char *pname, int facility)
 		exit(0);
 
 	setsid();
-	chdir("/");
+        /*chdir("/");*/
 	umask(0);
-	close(STDIN_FILENO);
+        close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
 
