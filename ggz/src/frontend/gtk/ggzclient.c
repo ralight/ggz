@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3195 2002-01-30 07:20:32Z jdorje $
+ * $Id: ggzclient.c 3196 2002-01-30 07:35:39Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -904,22 +904,26 @@ static void ggz_input_removed(gpointer data)
 void display_tables(void)
 {
 	GtkWidget *tmp;
-	gchar *table[4], *desc;
+	gchar *table[4] = {NULL, NULL, NULL, NULL}, *desc;
 	gint i, num, open, seats;
 	GGZRoom *room;
 	GGZTable *t = NULL;
 
-	/* clear the list */
+	/* Retrieve the list. */
 	tmp = lookup_widget(win_main, "table_clist");
+	
+	/* "Freeze" the clist.  This prevents any graphical updating
+	 * until we "thaw" it later. */
+	gtk_clist_freeze(GTK_CLIST(tmp));
+	
+	/* clear the list */
 	gtk_clist_clear(GTK_CLIST(tmp));
-
 
 	room = ggzcore_server_get_cur_room(server);
 
-	/* Display current list of players 
+	/* Display current list of players
 	if (!(numbers = ggzcore_room_get_numbers()))
 		return GGZ_HOOK_OK;*/
-
 	
 	numtables = ggzcore_room_get_num_tables(room);
 	for (i = 0; i < numtables; i++) {
@@ -938,6 +942,9 @@ void display_tables(void)
 		g_free(table[1]);
 		g_free(table[2]);
 	}
+	
+	/* "Thaw" the clist (it was "frozen" up above). */
+	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 
