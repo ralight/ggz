@@ -79,10 +79,32 @@ it from the core client. Additional tools such as Competition Calendar
 improve the level of GGZ integration on the desktop.
 </p>
 
+<h3>Communication protocols</h3>
+
+<p>
+The protocols between game servers and game clients are very specific and
+not subject of this document. The other connections however are using
+well-defined protocols, and together with their reference implementation
+the schema looks like the following:
+</p>
+
+<p style="text-align:center">
+<img src="communication.png" alt="Communication protocols">
+</p>
+
+<p>
+Of interesting note is that both the ggzmod and the ggzdmod library contain
+the code for the game as well as the core client/server, and can be initialized
+to work in either game or GGZ mode.
+All libraries involved in the above schema provide a callback-based abstraction
+to the underlying protocols, and although their usage is strongly recommended,
+it is in no way required.
+</p>
+
 <h3>Dependencies (compile-time structure)</h3>
 
 <p>
-More interesting to the develop is the implementation side. This is
+More interesting to the developer is the implementation side. This is
 displayed in the following illustration.
 </p>
 
@@ -99,14 +121,26 @@ programmes or games which depend on the libraries can be seen.
 <h3>Detailed view</h3>
 
 <p>
-There is more information available on the following topics:
-Chatbot (grubby) architecture (in the grubby admin manual and in its
-source tree), server (ggzd) architecture (in its design specification),
-as well as ggzboard and ggzcards architecture documents.
+The abovementioned protocols between server and core client, server and
+game server as well as core client and game client are all formalized in
+the respective protocol specifications.
 </p>
 
 <p>
-All the libraries come with API documentation is several formats.
+There is also more information available on the following topics:
+Chatbot (grubby) architecture, server (ggzd) architecture and
+server database documentation, and core clients architecture.
+</p>
+
+<p>
+Game developers should refer to the GGZ Game Development Guide,
+as well as to the game feature matrix page.
+Individual games like ggzboard and ggzcards come with proper design documents.
+</p>
+
+<p>
+All of the base libraries (libggz, ggzmod, ggzdmod, ggzcore) come with API
+documentation is several formats.
 </p>
 
 </div>

@@ -3,7 +3,8 @@ SUBDIRS = .
 docdir = $(GGZDOCDIR)/overview/architecture
 doc_DATA = index.html \
 	client-server.png \
-	dependencies.png
+	dependencies.png \
+	communication.png
 
-EXTRA_DIST = $(doc_DATA) client-server.flw dependencies.flw
+EXTRA_DIST = $(doc_DATA) client-server.flw dependencies.flw communication.flw
 
