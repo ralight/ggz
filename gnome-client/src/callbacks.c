@@ -50,8 +50,7 @@ on_entLogin_changed			(GtkEntry       *widget,
 	GtkWidget *tmp;
 	
 	/*What widget we dealin with?*/
-	if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entUsername"))
-	{
+	if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entUsername")) {
 		val = 0;
 	} else if (!strcmp (gtk_widget_get_name (GTK_WIDGET (widget)), "entPassword")) {
 		val = 1;
@@ -79,6 +78,7 @@ on_entLogin_changed			(GtkEntry       *widget,
 	{
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
+		return;
 	} else {
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
@@ -89,13 +89,16 @@ on_entLogin_changed			(GtkEntry       *widget,
 	{
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), TRUE);
+		return;
 	} else {
 		tmp = lookup_widget (interface, "btnLogin");
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
-	}tmp = lookup_widget (interface, "btnNewCreate");
+	}
+	tmp = lookup_widget (interface, "btnNewCreate");
 	if (form[3] && form[4] && form[5])
 	{
 		gtk_widget_set_sensitive (GTK_WIDGET (tmp), TRUE);
+		return;
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET(tmp), FALSE);
 	}
