@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5111 2002-10-30 06:51:30Z jdorje $
+ * $Id: server.c 5130 2002-11-01 05:15:57Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -30,6 +30,7 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -717,67 +718,68 @@ void _ggzcore_server_set_login_status(GGZServer *server,
 {
 	ggz_debug(GGZCORE_DBG_SERVER, "Status of login: %d", status);
 
-	switch (status) {
-	case E_OK:
+	if (status == E_OK) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_OK);
 		_ggzcore_server_event(server, GGZ_LOGGED_IN, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Already logged in");
-		break;
-	case E_USR_LOOKUP:
-		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Name taken");
-		break;
+	} else {
+		GGZErrorEventData error = {status: status};
 
-	default:
+		switch(status) {
+		case E_ALREADY_LOGGED_IN:
+			snprintf(error.message, sizeof(error.message),
+				 "Already logged in");
+			break;
+		case E_USR_LOOKUP:
+			snprintf(error.message, sizeof(error.message),
+				 "Name taken");
+			break;
+		default:
+			snprintf(error.message, sizeof(error.message),
+				 "Unknown login error");
+			break;
+		}
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Unknown login error");
-				      
-		break;
+		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, &error);
 	}
+
 }
 
 
 void _ggzcore_server_set_room_join_status(GGZServer *server,
 					  GGZClientReqError status)
 {
-	switch (status) {
-	case E_OK:
+	if (status == E_OK) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
-		break;
+	} else {
+		GGZErrorEventData error = {status: status};
 
-	case E_ROOM_FULL:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
-				      "Room full");
-		break;
+		switch (status) {
+		case E_ROOM_FULL:
+			snprintf(error.message, sizeof(error.message),
+				 "Room full");
+			break;
+		case E_AT_TABLE:
+			snprintf(error.message, sizeof(error.message),
+				 "Can't change rooms while at a table");
+			break;
+		case E_IN_TRANSIT:
+			snprintf(error.message, sizeof(error.message),
+				 "Can't change rooms while "
+				 "joining/leaving a table");
+			break;
+		case E_BAD_OPTIONS:
+			snprintf(error.message, sizeof(error.message),
+				 "Bad room number");
+			break;
+		default:
+			snprintf(error.message, sizeof(error.message),
+				 "Unknown room-joining error");
+			break;
+		}
 
-	case E_AT_TABLE:
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
-				      "Can't change rooms while at a table");
-		break;
-		
-	case E_IN_TRANSIT:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
-				      "Can't change rooms while joining/leaving a table");
-		break;
-		
-	case E_BAD_OPTIONS:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
-				      "Bad room number");
-		break;
-
-	default:
-		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
-		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
-				      "Unknown room-joining error");
-		break;
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL, &error);
 	}
 }
 

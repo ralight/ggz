@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5111 2002-10-30 06:51:30Z jdorje $
+ * $Id: ggzcore.h 5130 2002-11-01 05:15:57Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -165,6 +165,23 @@ typedef enum {
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
 
+/** @brief The data describing an error.
+ *
+ *  When an error occurrs, a pointer to a struct of this type will be
+ *  passed as the event data.
+ */
+typedef struct {
+	/** @brief A default error message.
+	 *  @note This also provides backward-compatability.
+	 */
+	char message[128];
+
+	/** @brief The type of error that occurred.
+	 *  @note Not all errors are possible with all events.
+	 */
+	GGZClientReqError status;
+} GGZErrorEventData;
+
 /**
  * A GGZServerEvent is an event triggered by a communication from the
  * server.  Each time an event occurs, the associated event handler
@@ -210,7 +227,8 @@ typedef enum {
 	/** Error: login failure.  This will happen in place of GGZ_LOGGED_IN
 	 *  if the login failed.  The server object will be otherwise
 	 *  unaffected.
-	 *  @param data A mildly helpful error string. */
+	 *  @param data A pointer to a GGZErrorEventData.
+	 *  @see GGZErrorEventData */
 	GGZ_LOGIN_FAIL,
 
 	/** The MOTD has been read from the server and can be displayed.
@@ -247,8 +265,9 @@ typedef enum {
 	
 	/** Error: we have tried to enter a room and failed.  This will be
 	 *  issued to tell us a room join has failed.
-	 *  @param data A mildly helpful error string.
-	 *  @see ggzcore_server_join_room*/
+	 *  @param data A pointer to a GGZErrorEventData.
+	 *  @see GGZErrorEventData
+	 *  @see ggzcore_server_join_room */
 	GGZ_ENTER_FAIL,
 
 	/** Logged out of the server.  This will happen when the server
@@ -270,7 +289,8 @@ typedef enum {
 
 	/** Error: A chat message could not be sent.  This will happen when
 	 *  we try to send a chat and the server rejects it.
-	 *  @param data A fairly helpful error string. */
+	 *  @param data A pointer to a GGZErrorEventData.
+	 *  @see GGZErrorEventData */
 	GGZ_CHAT_FAIL,
 
 	/** The internal state of ggzcore has changed. */
@@ -362,7 +382,7 @@ typedef enum {
 
 	/** The table you tried to launch couldn't be launched
 	 *  @see GGZ_TABLE_LAUNCHED
-	 *  @param data A helpful error string. */
+	 *  @param data A pointer to a GGZErrorEventData */
 	GGZ_TABLE_LAUNCH_FAIL,
 
 	/** Your table join attempt has succeeded.

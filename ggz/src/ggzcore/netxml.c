@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5127 2002-10-31 02:18:57Z jdorje $
+ * $Id: netxml.c 5130 2002-11-01 05:15:57Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -956,27 +956,29 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *element)
 	else if  (strcasecmp(action, "leave") == 0)
 		_ggzcore_room_set_table_leave_status(room, code);
 	else if  (strcasecmp(action, "chat") == 0) {
-		switch (code) {
-		case E_OK:
-			/* Do nothing if successful */
-			break;
-		case E_NOT_IN_ROOM:
-			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
-					      "Not in a room");
-			break;
+		if (code != E_OK) {
+			GGZErrorEventData error = {status: code};
 
-		case E_BAD_OPTIONS:
+			switch (code) {
+			case E_NOT_IN_ROOM:
+				snprintf(error.message, sizeof(error.message),
+					 "Not in a room");
+				break;
+			case E_BAD_OPTIONS:
+				snprintf(error.message, sizeof(error.message),
+					 "Bad options");
+				break;
+			case E_NO_PERMISSION:
+				snprintf(error.message, sizeof(error.message),
+					 "Prohibited");
+				break;
+			default:
+				snprintf(error.message, sizeof(error.message),
+					 "Unknown error");
+				break;
+			}
 			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
-					      "Bad options");
-			break;
-		case E_NO_PERMISSION:
-			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
-					      "Prohibited");
-			break;
-		default:
-			_ggzcore_server_event(net->server, GGZ_CHAT_FAIL,
-					      "Unknown error");
-			break;
+					      &error);
 		}
 	} else if (strcasecmp(action, "protocol") == 0) {
 		/* These are always errors */
