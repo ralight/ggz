@@ -244,7 +244,7 @@
 	    </signal>
 	    <label>_Room List</label>
 	    <active>True</active>
-	    <always_show_toggle>False</always_show_toggle>
+	    <always_show_toggle>True</always_show_toggle>
 	  </widget>
 
 	  <widget>
@@ -257,7 +257,7 @@
 	    </signal>
 	    <label>P_layer List</label>
 	    <active>True</active>
-	    <always_show_toggle>False</always_show_toggle>
+	    <always_show_toggle>True</always_show_toggle>
 	  </widget>
 
 	  <widget>
@@ -615,6 +615,7 @@
 	    <widget>
 	      <class>GtkCList</class>
 	      <name>room_clist</name>
+	      <events>GDK_BUTTON_PRESS_MASK</events>
 	      <signal>
 		<name>select_row</name>
 		<handler>client_room_clist_select_row</handler>
@@ -939,6 +940,7 @@
 		    <last_modification_time>Sun, 15 Oct 2000 00:08:57 GMT</last_modification_time>
 		  </signal>
 		  <label>Send</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>

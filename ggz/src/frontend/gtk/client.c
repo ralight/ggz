@@ -601,64 +601,55 @@ client_room_clist_event			(GtkWidget	*widget,
 					 GdkEvent	*event,
 					 gpointer	 data)
 {
-	GtkWidget *menu, *tmp;
+	gboolean single_join, do_join = 0;
 	gint row, column;
+	GtkWidget *menu, *tmp;
+	GdkEventButton* buttonevent;
 
-	/* Check to see if the event was a mouse button press */
-	if( event->type == GDK_BUTTON_PRESS )
-	{
-		GdkEventButton *buttonevent = (GdkEventButton*)event;
-		/* Check the button which was pressed */
-		if(buttonevent->button == 3)
+	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
+	buttonevent = (GdkEventButton*)event;
+
+	switch(event->type) { 
+	case GDK_2BUTTON_PRESS:
+		/* Double click */
+		if (buttonevent->button == 1 && !single_join)
+			do_join = TRUE;
+		break;
+	case GDK_BUTTON_PRESS:
+		/* Single click */
+		if (buttonevent->button == 1 && single_join)
+			do_join = TRUE;
+		if (buttonevent->button == 3)
 		{
 			/* Right mouse button */
 			/* Create and display the menu */
 			menu = create_mnu_room();
-			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
+			tmp =  lookup_widget(win_main, "room_clist");
+			gtk_clist_get_selection_info(GTK_CLIST(tmp), 
+						     buttonevent->x, 
+						     buttonevent->y,
 						     &row, &column);
 
-			/* FIXME: There has got to be a better way to pass this info */
+			/* FIXME: There has to be a better way to pass */
 			popup_row=row;
-
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
-			return TRUE; 
 		}
-
-		if( buttonevent->button == 1 && ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE) == TRUE)
-		{
-			GdkEventButton *buttonevent = (GdkEventButton*)event;
-			/* Check the button which was pressed */
-			if(buttonevent->button == 1)
-			{
-				/* Single-Click, join room */
-				tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-				gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
-							     &row, &column);
-				gtk_clist_select_row(GTK_CLIST(tmp), row, column);
-
-				client_join_room(row);
-				return TRUE; 
-			}
-		}
+		break;
+	default:
+		/* Some Other event */
+		break;
 	}
-	if( event->type == GDK_2BUTTON_PRESS && ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE) == FALSE)
-	{
-		GdkEventButton *buttonevent = (GdkEventButton*)event;
-		/* Check the button which was pressed */
-		if(buttonevent->button == 1)
-		{
-			/* Double-Click, join room */
-			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
-			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
-						     &row, &column);
-			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
 
-			client_join_room(row);
-			return FALSE; 
-		}
+	if (do_join) {
+		tmp =  lookup_widget(win_main, "room_clist");
+		gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, 
+					     buttonevent->y, &row, &column);
+		gtk_clist_select_row(GTK_CLIST(tmp), row, column);
+		client_join_room(row);
+		return TRUE;
 	}
+
 	return FALSE;
 }
 
@@ -712,7 +703,6 @@ client_room_clist_select_row		(GtkCList       *clist,
                                          GdkEvent       *event,
                                          gpointer        data)
 {
-	/*g_print("Selected row: %d\n", row);*/
 }
 
 
@@ -1164,6 +1154,7 @@ create_win_main (void)
   gtk_widget_show (room_list);
   gtk_container_add (GTK_CONTAINER (view_menu), room_list);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_list), TRUE);
+  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (room_list), TRUE);
 
   player_list = gtk_check_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (player_list)->child),
@@ -1176,6 +1167,7 @@ create_win_main (void)
   gtk_widget_show (player_list);
   gtk_container_add (GTK_CONTAINER (view_menu), player_list);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (player_list), TRUE);
+  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (player_list), TRUE);
 
   separator8 = gtk_menu_item_new ();
   gtk_widget_ref (separator8);
@@ -1490,6 +1482,7 @@ create_win_main (void)
   gtk_widget_show (room_clist);
   gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_clist);
   GTK_WIDGET_UNSET_FLAGS (room_clist, GTK_CAN_FOCUS);
+  gtk_widget_set_events (room_clist, GDK_BUTTON_PRESS_MASK);
   gtk_clist_set_column_width (GTK_CLIST (room_clist), 0, 80);
   gtk_clist_column_titles_show (GTK_CLIST (room_clist));
 
