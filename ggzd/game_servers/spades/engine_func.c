@@ -222,7 +222,7 @@ void GetGameInfo( void ) {
 		exit(-1);
 	}
   
-	ReadOptions();
+	ggz_init();
 
 	/* Should check for validity here , but who cares? */
 	WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LAUNCH);
@@ -268,6 +268,9 @@ void GetGameInfo( void ) {
 		}
 	}
 	
+	/* Everyone has joined now, read options from player 0 */	
+	ReadOptions();
+	
 	for (i=0; i<4; i++) {
 		if( gameInfo.playerSock[i] == SOCK_COMP ) {
 			continue;
@@ -302,19 +305,44 @@ void GetGameInfo( void ) {
 }
 
 
-int ReadOptions(void)
+void ReadOptions(void)
 {
-  	int size, assign, i, seats, status = -1;
+	int size;
+
+	if (es_read_int(gameInfo.playerSock[0], &size) < 0)
+		err_msg_exit("Error reading option size");
+
+	if (es_readn(gameInfo.playerSock[0], &gameInfo.opt, size) < size)
+		err_msg_exit("Error reading options");
+
+#ifdef DEBUG
+	dbg_msg("bitOpt: %d, endGame: %d, minBid: %d", gameInfo.opt.bitOpt,
+		 gameInfo.opt.endGame, 
+		 gameInfo.opt.minBid);
+#endif
+	if (log) {
+		dbg_msg("Game ends at %d points", gameInfo.opt.endGame);
+		dbg_msg("Minimum bid of %d", gameInfo.opt.minBid);
+		if (gameInfo.opt.bitOpt & MSK_NILS)
+			dbg_msg("Nil bids allowed");
+		else
+			dbg_msg("Nil bids prohibited");
+		
+		if (gameInfo.opt.bitOpt & MSK_BAGS)
+			dbg_msg("Penalty imposed for 10 bags" );
+		else
+			dbg_msg("No penalty for bags");
+	}
+}
+
+
+int ggz_init(void)
+{
+  	int assign, i, seats, status = -1;
 	
 	open_seats = 4;
   
-	dbg_msg("Reading options from server");
-
-	if (es_read_int(gameInfo.ggz_sock, &size) < 0)
-		err_msg_exit("Error reading option size");
-
-	if (es_readn(gameInfo.ggz_sock, &gameInfo.opt, size) < size)
-		err_msg_exit("Error reading options");
+	dbg_msg("Reading seats from server");
 
 	if (es_read_int(gameInfo.ggz_sock, &seats) < 0) 
 		err_msg_exit( "Error reading number of slots" );
@@ -346,25 +374,6 @@ int ReadOptions(void)
 	}
 
 	status = 0;
-
-#ifdef DEBUG
-	dbg_msg("bitOpt: %d, endGame: %d, minBid: %d", gameInfo.opt.bitOpt,
-		 gameInfo.opt.endGame, 
-		 gameInfo.opt.minBid);
-#endif
-	if (log) {
-		dbg_msg("Game ends at %d points", gameInfo.opt.endGame);
-		dbg_msg("Minimum bid of %d", gameInfo.opt.minBid);
-		if (gameInfo.opt.bitOpt & MSK_NILS)
-			dbg_msg("Nil bids allowed");
-		else
-			dbg_msg("Nil bids prohibited");
-		
-		if (gameInfo.opt.bitOpt & MSK_BAGS)
-			dbg_msg("Penalty imposed for 10 bags" );
-		else
-			dbg_msg("No penalty for bags");
-	}
 
 	return status;
 }

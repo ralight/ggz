@@ -55,7 +55,7 @@ struct ggz_seat_t {
 extern struct ggz_seat_t* ggz_seats;
 
 /* Setup functions */
-int ggz_init(char* game_name, void* options);
+int ggz_init(char* game_name);
 int ggz_connect(void);
 int ggz_done(void);
 void ggz_quit(void);

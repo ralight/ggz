@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 527 $</revnumber>
-	<date>$Date: 2000-05-19 14:15:17 -0700 (Fri, 19 May 2000) $</date>
+	<revnumber>$Revision: 528 $</revnumber>
+	<date>$Date: 2000-05-19 22:19:57 -0700 (Fri, 19 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -521,8 +521,6 @@
 
           <programlisting role="pseudocode">
 	    REQ_GAME_LAUNCH
-              int: size of options data in bytes
-              (options data)
               int: number of seats at table
   	      sequence of
 	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV)

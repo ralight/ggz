@@ -684,8 +684,6 @@ static int player_logout(int p, int fd)
  *  sequence of
  *    int: seat assignment
  *    str: login name for reservation
- *  int: size of options struct in bytes
- *  (option data)
  * RSP_TABLE_LAUNCH
  *  chr: success flag (0 for success, negative values for various failures)
  * 
@@ -696,11 +694,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
 	TableInfo table;
 	int i, t_index = -1;
-	unsigned int size;
 	int status = 0;
 	int seats;
 	int room;
-	void *options = NULL;
 	char name[MAX_USER_NAME_LEN + 1];
 	int count;
 
@@ -736,23 +732,11 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		 */
 	}
 
-	/* Read in game specific options */
-	if (es_read_int(p_fd, &size) < 0)
-		return GGZ_REQ_DISCONNECT;
-	if (size > 0 && (options = malloc(size)) == NULL)
-		err_sys_exit("malloc error");
-	if (size > 0 && es_readn(p_fd, options, size) < size) {
-		free(options);
-		return GGZ_REQ_DISCONNECT;
-	}
-
 	/* Now that we've cleared the socket, check if in a room */
 	if ( (room = players.info[p_index].room) == -1) {
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Player %d tried to launch a table from room -1",
 			p_index);
-		if (options)
-			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -764,8 +748,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Player %d tried to launch a table while at one",
 			p_index);
-		if (options)
-			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_LAUNCH_FAIL) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -780,8 +762,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Player %d tried to launch a table from wrong room",
 			p_index);
-		if (options)
-			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -796,7 +776,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	table.fd_to_game = -1;
 	for (i = seats; i < MAX_TABLE_SIZE; i++)
 		table.seats[i] = GGZ_SEAT_NONE;
-	table.options = options;
 	pthread_mutex_init(&table.transit_lock, NULL);
 	pthread_mutex_init(&table.state_lock, NULL);
 	pthread_cond_init(&table.transit_cond, NULL);
@@ -814,7 +793,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 			p_index);
 		/* Setup an entry in the chat_room */
 		pthread_rwlock_wrlock(&chat_room[table.room].lock);
-		count = ++ chat_room[table.room].table_count;
+		count = ++chat_room[table.room].table_count;
 		chat_room[table.room].table_index[count-1] = t_index;
 		dbg_msg(GGZ_DBG_ROOM,
 			"Room %d table count = %d", table.room, count);

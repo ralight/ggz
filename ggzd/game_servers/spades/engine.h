@@ -66,7 +66,9 @@ void ReadIntOrDie( int, int* );
 
 void WriteIntOrDie( int, int );
 
-int ReadOptions(void);
+int ggz_init(void);
+
+void ReadOptions(void);
 
 void svNetClose( void );
 

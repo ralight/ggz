@@ -267,7 +267,7 @@ static void table_run_game(int t_index, char *path)
  */
 static int table_send_opt(int t_index)
 {
-	int i, fd, size, type, uid;
+	int i, fd, uid;
 	char status = 0;
 	char name[MAX_USER_NAME_LEN];
 	TableInfo table;
@@ -277,23 +277,10 @@ static int table_send_opt(int t_index)
 	pthread_rwlock_unlock(&tables.lock);
 
 	fd = table.fd_to_game;
-	type = table.type_index;
 	
-	pthread_rwlock_rdlock(&game_types.lock);
-	size = game_types.info[type].options_size;
-	pthread_rwlock_unlock(&game_types.lock);
-
-	/* Pass size of options data */
-	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0
-	    || es_write_int(fd, size) < 0)
-		return -1;
-
-	/* Pass option data (if any) */
-	if (size && es_writen(fd, table.options, size) < 0)
-		return -1;
-
 	/* Send number of seats */
-	if (es_write_int(fd, seats_num(table)) < 0)
+	if (es_write_int(fd, REQ_GAME_LAUNCH) < 0
+	    || es_write_int(fd, seats_num(table)) < 0)
 		return -1;
 
 	/* Send seat assignments, names, and fd's */
@@ -648,8 +635,6 @@ static void table_remove(int t_index)
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[t_index].type_index = -1;
-	free(tables.info[t_index].options);
-	tables.info[t_index].options = NULL;
 	tables.info[t_index].state = GGZ_TABLE_ERROR;
 	tables.count--;
 	tables.timestamp = time(NULL);
@@ -676,18 +661,14 @@ int table_launch(int p, TableInfo table, int* t_index)
 	int i, index;
 	char state;
 	
-	/* Check validity of table info (not options) */
-	if (table_check(p, table) < 0) {
-		if (table.options)
-			free(table.options);
+	/* Check validity of table info */
+	if (table_check(p, table) < 0)
 		return E_BAD_OPTIONS;
-	}
 		
 	/* Find open table */
 	pthread_rwlock_wrlock(&tables.lock);
 	if (tables.count == MAX_TABLES) {
 		pthread_rwlock_unlock(&tables.lock);
-		free(table.options);
 		return E_ROOM_FULL;
 	}
 
