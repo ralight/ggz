@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request Gtk fixed dialog
- * $Id: dlg_bid.c 2544 2001-10-08 19:22:30Z jdorje $
+ * $Id: dlg_bid.c 2700 2001-11-08 21:20:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -60,6 +60,11 @@ static void dlg_bid_clicked(GtkWidget * widget, gpointer data)
 	gtk_widget_hide(window);
 	window = NULL;
 	/* TODO: destroy window ?? */
+}
+
+static void dlg_bid_delete(GtkWidget * widget, gpointer data)
+{
+	gtk_widget_show_all(window);
 }
 
 
@@ -137,20 +142,11 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
 		button = gtk_button_new_with_label(bid_choices[i]);
-		gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(dlg_bid_clicked), GINT_TO_POINTER(i)	/* trickery 
-															   - 
-															   it's 
-															   not 
-															   a 
-															   pointer 
-															   to 
-															   the 
-															   data 
-															   but 
-															   the 
-															   data 
-															   itself 
-															 */ );
+
+		/* trickery - we don't pass a pointer to the data but the data itself */
+		gtk_signal_connect(GTK_OBJECT(button), "clicked",
+				   GTK_SIGNAL_FUNC(dlg_bid_clicked),
+				   GINT_TO_POINTER(i));
 
 		x = i % xw;
 		y = i / xw;
@@ -160,6 +156,11 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 		gtk_widget_show(button);
 
 	}
+
+	/* If you close the window, it pops right back up again. */
+	gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
+				  GTK_SIGNAL_FUNC(dlg_bid_delete),
+				  (gpointer) window);
 
 	gtk_widget_show(table);
 	gtk_widget_show(window);
@@ -226,6 +227,12 @@ static void dlg_option_display(int option_cnt, int *option_sizes,
 	button = gtk_button_new_with_label(_("Send options"));
 	gtk_signal_connect(GTK_OBJECT(button), "clicked",
 			   GTK_SIGNAL_FUNC(dlg_options_submit), (gpointer) 0);
+
+	/* If you close the window, it pops right back up again. */
+	gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
+				  GTK_SIGNAL_FUNC(dlg_bid_delete),
+				  (gpointer) window);
+
 	gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);
 
