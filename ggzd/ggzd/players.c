@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4559 2002-09-13 18:26:37Z jdorje $
+ * $Id: players.c 4571 2002-09-16 04:09:39Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -74,7 +74,8 @@ extern Options opt;
 
 
 /* Local functions for handling players */
-static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index);
+static GGZClientReqError player_transit(GGZPlayer* player,
+					GGZTransitType opcode, int index);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 static int player_get_time_since_ping(GGZPlayer *player);
 
@@ -181,23 +182,23 @@ void player_logout(GGZPlayer* player)
  * Returns: 
  * int : 0 on sucess.  -1 on error
  */
-int player_updates(GGZPlayer* player)
+GGZReturn player_updates(GGZPlayer* player)
 {
 	int changed = 0;
 
 	/* Process room events */
 	if (player->room != -1 && event_room_handle(player) < 0)
-		return -1;
+		return GGZ_ERROR;
 	
 	/* Process personal events */
 	if (player->my_events_head)
 		if (event_player_handle(player) < 0)
-			return -1;
+			return GGZ_ERROR;
 
 	/* Lowest priority update - send a PING / check lag */
 	if(player->next_ping && time(NULL) >= player->next_ping) {
 		if(player_send_ping(player) < 0)
-			return -1;
+			return GGZ_ERROR;
 	} else if (player->next_ping == 0) {
 		/* We're waiting for a PONG, but if we wait too long
 		   we should increase the lag class without waiting */
@@ -213,7 +214,7 @@ int player_updates(GGZPlayer* player)
 			room_notify_lag(player->name, player->room);
 	}
 
-	return 0;
+	return GGZ_OK;
 }
 
 
@@ -658,7 +659,8 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 #endif
 
 
-static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
+static GGZClientReqError player_transit(GGZPlayer* player,
+					GGZTransitType opcode, int index)
 {
 	struct GGZTableSeat seat;
 	struct GGZTableSpectator spectator;
@@ -702,7 +704,7 @@ static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 			   should see if they're actually at a different
 			   table?  Or perhaps we should send a full update? */
 			player->table = -1;
-			return 0;
+			return E_OK;
 		}
 
 		if (spectating) {
@@ -765,7 +767,7 @@ static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 	player->transit = 1;
 	pthread_rwlock_unlock(&player->lock);
 
-	return 0;
+	return E_OK;
 }
 
 
@@ -924,7 +926,8 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 }
 
 
-int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
+GGZPlayerHandlerStatus player_chat(GGZPlayer* player, unsigned char subop,
+				   char *target, char *msg)
 {
 	int target_room=-1;	/* FIXME - this should come from net.c if we */
 				/* are going to support per-room announce... */
@@ -966,7 +969,7 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don't return the chat error code */
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
