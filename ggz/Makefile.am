@@ -1,15 +1,15 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = @SUBDIRS@
+SUBDIRS = @SUBDIRS@ po intl
 
 EXTRA_DIST = HACKING
 
-ggzconf_DATA = ggz.rc
-
-ggz.rc:	Makefile
-	rm -f ggz.rc
-	touch ggz.rc
-	find game_clients -name \*.dsc -exec cat {} > ggz.rc \;
+#ggzconf_DATA = ggz.rc
+#
+#ggz.rc:	Makefile
+#	rm -f ggz.rc
+#	touch ggz.rc
+#	find game_clients -name \*.dsc -exec cat {} > ggz.rc \;
 
 install-data-local:
 	@$(NORMAL_INSTALL)

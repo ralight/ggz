@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = combat.dsc
+EXTRA_DIST = module.dsc
 
 SUBDIRS = . pixmaps maps
 

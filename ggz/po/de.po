@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-02-20 19:57+0100\n"
+"POT-Creation-Date: 2001-03-14 12:24-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,8 +56,8 @@ msgstr ""
 
 #: ggz/dlg_about.c:120 ggz/dlg_motd.c:77 ggz/dlg_msgbox.c:70
 #: ggz/dlg_props.c:1361 src/frontend/gtk/about.c:135
-#: src/frontend/gtk/info.c:259 src/frontend/gtk/motd.c:187
-#: src/frontend/gtk/props.c:1435
+#: src/frontend/gtk/info.c:259 src/frontend/gtk/motd.c:190
+#: src/frontend/gtk/props.c:1471
 msgid "OK"
 msgstr "OK"
 
@@ -66,8 +66,8 @@ msgid "Connection Messages"
 msgstr "Verbindungsmeldungen"
 
 #: ggz/dlg_details.c:65 ggz/dlg_exit.c:71 ggz/dlg_launch.c:912
-#: ggz/dlg_login.c:801 ggz/dlg_props.c:1377 src/frontend/gtk/launch.c:747
-#: src/frontend/gtk/login.c:677 src/frontend/gtk/props.c:1451
+#: ggz/dlg_login.c:801 ggz/dlg_props.c:1377 src/frontend/gtk/launch.c:887
+#: src/frontend/gtk/login.c:681 src/frontend/gtk/props.c:1487
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -81,7 +81,7 @@ msgid "Exit: Are you sure?"
 msgstr "Beenden: Bist Du sicher?"
 
 #. Button widgets
-#: ggz/dlg_exit.c:70 ggz/dlg_main.c:1016 src/frontend/gtk/client.c:1136
+#: ggz/dlg_exit.c:70 ggz/dlg_main.c:1016 src/frontend/gtk/client.c:1243
 msgid "Exit"
 msgstr "Beenden"
 
@@ -100,100 +100,100 @@ msgstr "Beschr: %s"
 msgid "Homepage: %s"
 msgstr "Homepage: %s"
 
-#: ggz/dlg_launch.c:382 src/frontend/gtk/launch.c:216
+#: ggz/dlg_launch.c:382 src/frontend/gtk/launch.c:356
 msgid "Seat Assignments"
 msgstr "Sitzzuweisungen"
 
-#: ggz/dlg_launch.c:404 src/frontend/gtk/launch.c:239
+#: ggz/dlg_launch.c:404 src/frontend/gtk/launch.c:379
 msgid "Game Type:"
 msgstr "Spielart:"
 
-#: ggz/dlg_launch.c:436 src/frontend/gtk/launch.c:271
+#: ggz/dlg_launch.c:436 src/frontend/gtk/launch.c:411
 msgid "Number of seats"
 msgstr "Anzahl der Sitze"
 
 #: ggz/dlg_launch.c:450 src/frontend/gtk/info.c:181
-#: src/frontend/gtk/launch.c:285
+#: src/frontend/gtk/launch.c:425
 msgid "Author:"
 msgstr "Autor:"
 
-#: ggz/dlg_launch.c:465 src/frontend/gtk/launch.c:300
+#: ggz/dlg_launch.c:465 src/frontend/gtk/launch.c:440
 msgid "Description:"
 msgstr "Beschreibung:"
 
 #: ggz/dlg_launch.c:480 src/frontend/gtk/info.c:205
-#: src/frontend/gtk/launch.c:315
+#: src/frontend/gtk/launch.c:455
 msgid "Homepage:"
 msgstr "Homepage:"
 
-#: ggz/dlg_launch.c:502 src/frontend/gtk/launch.c:337
+#: ggz/dlg_launch.c:502 src/frontend/gtk/launch.c:477
 msgid "Seat 1:"
 msgstr "Sitz 1:"
 
 #: ggz/dlg_launch.c:509 ggz/dlg_launch.c:556 ggz/dlg_launch.c:603
 #: ggz/dlg_launch.c:650 ggz/dlg_launch.c:697 ggz/dlg_launch.c:744
-#: ggz/dlg_launch.c:791 ggz/dlg_launch.c:838 src/frontend/gtk/launch.c:344
-#: src/frontend/gtk/launch.c:391 src/frontend/gtk/launch.c:438
-#: src/frontend/gtk/launch.c:485 src/frontend/gtk/launch.c:532
-#: src/frontend/gtk/launch.c:579 src/frontend/gtk/launch.c:626
-#: src/frontend/gtk/launch.c:673
+#: ggz/dlg_launch.c:791 ggz/dlg_launch.c:838 src/frontend/gtk/launch.c:484
+#: src/frontend/gtk/launch.c:531 src/frontend/gtk/launch.c:578
+#: src/frontend/gtk/launch.c:625 src/frontend/gtk/launch.c:672
+#: src/frontend/gtk/launch.c:719 src/frontend/gtk/launch.c:766
+#: src/frontend/gtk/launch.c:813
 msgid "Computer"
 msgstr "Computer"
 
 #: ggz/dlg_launch.c:517 ggz/dlg_launch.c:564 ggz/dlg_launch.c:611
 #: ggz/dlg_launch.c:658 ggz/dlg_launch.c:705 ggz/dlg_launch.c:752
-#: ggz/dlg_launch.c:799 ggz/dlg_launch.c:846 src/frontend/gtk/launch.c:352
-#: src/frontend/gtk/launch.c:399 src/frontend/gtk/launch.c:446
-#: src/frontend/gtk/launch.c:493 src/frontend/gtk/launch.c:540
-#: src/frontend/gtk/launch.c:587 src/frontend/gtk/launch.c:634
-#: src/frontend/gtk/launch.c:681
+#: ggz/dlg_launch.c:799 ggz/dlg_launch.c:846 src/frontend/gtk/launch.c:492
+#: src/frontend/gtk/launch.c:539 src/frontend/gtk/launch.c:586
+#: src/frontend/gtk/launch.c:633 src/frontend/gtk/launch.c:680
+#: src/frontend/gtk/launch.c:727 src/frontend/gtk/launch.c:774
+#: src/frontend/gtk/launch.c:821
 msgid "Open"
 msgstr "Öffnen"
 
 #: ggz/dlg_launch.c:525 ggz/dlg_launch.c:572 ggz/dlg_launch.c:619
 #: ggz/dlg_launch.c:666 ggz/dlg_launch.c:713 ggz/dlg_launch.c:760
-#: ggz/dlg_launch.c:807 ggz/dlg_launch.c:854 src/frontend/gtk/launch.c:360
-#: src/frontend/gtk/launch.c:407 src/frontend/gtk/launch.c:454
-#: src/frontend/gtk/launch.c:501 src/frontend/gtk/launch.c:548
-#: src/frontend/gtk/launch.c:595 src/frontend/gtk/launch.c:642
-#: src/frontend/gtk/launch.c:689
+#: ggz/dlg_launch.c:807 ggz/dlg_launch.c:854 src/frontend/gtk/launch.c:500
+#: src/frontend/gtk/launch.c:547 src/frontend/gtk/launch.c:594
+#: src/frontend/gtk/launch.c:641 src/frontend/gtk/launch.c:688
+#: src/frontend/gtk/launch.c:735 src/frontend/gtk/launch.c:782
+#: src/frontend/gtk/launch.c:829
 msgid "Reserved for"
 msgstr "Reserviert für"
 
-#: ggz/dlg_launch.c:549 src/frontend/gtk/launch.c:384
+#: ggz/dlg_launch.c:549 src/frontend/gtk/launch.c:524
 msgid "Seat 2:"
 msgstr "Sitz 2:"
 
-#: ggz/dlg_launch.c:596 src/frontend/gtk/launch.c:431
+#: ggz/dlg_launch.c:596 src/frontend/gtk/launch.c:571
 msgid "Seat 3:"
 msgstr "Sitz 3:"
 
-#: ggz/dlg_launch.c:643 src/frontend/gtk/launch.c:478
+#: ggz/dlg_launch.c:643 src/frontend/gtk/launch.c:618
 msgid "Seat 4:"
 msgstr "Sitz 4:"
 
-#: ggz/dlg_launch.c:690 src/frontend/gtk/launch.c:525
+#: ggz/dlg_launch.c:690 src/frontend/gtk/launch.c:665
 msgid "Seat 5:"
 msgstr "Sitz 5:"
 
-#: ggz/dlg_launch.c:737 src/frontend/gtk/launch.c:572
+#: ggz/dlg_launch.c:737 src/frontend/gtk/launch.c:712
 msgid "Seat 6:"
 msgstr "Sitz 6:"
 
-#: ggz/dlg_launch.c:784 src/frontend/gtk/launch.c:619
+#: ggz/dlg_launch.c:784 src/frontend/gtk/launch.c:759
 msgid "Seat 7:"
 msgstr "Sitz 7:"
 
-#: ggz/dlg_launch.c:831 src/frontend/gtk/launch.c:666
+#: ggz/dlg_launch.c:831 src/frontend/gtk/launch.c:806
 msgid "Seat 8:"
 msgstr "Sitz 8:"
 
-#: ggz/dlg_launch.c:878 src/frontend/gtk/launch.c:713
+#: ggz/dlg_launch.c:878 src/frontend/gtk/launch.c:853
 msgid "Game Description   "
 msgstr "Spielbeschreibung  "
 
-#: ggz/dlg_launch.c:904 ggz/mnu_tables.c:48 src/frontend/gtk/client.c:1081
-#: src/frontend/gtk/launch.c:739
+#: ggz/dlg_launch.c:904 ggz/mnu_tables.c:48 src/frontend/gtk/client.c:1188
+#: src/frontend/gtk/launch.c:879
 msgid "Launch"
 msgstr "Starten"
 
@@ -201,7 +201,7 @@ msgstr "Starten"
 msgid "Could not connect"
 msgstr "Konnte nicht verbinden!"
 
-#: ggz/dlg_login.c:374 src/frontend/gtk/client.c:545
+#: ggz/dlg_login.c:374 src/frontend/gtk/client.c:652
 #, fuzzy, c-format
 msgid "GTK+ Version:14 %d.%d.%d\n"
 msgstr "GTK+ Version:14 %d.%d.%d\n"
@@ -235,54 +235,54 @@ msgstr "  Socket Debug: 14Ja"
 msgid "Connected to server: %s"
 msgstr "Verbunden mit Server: %s"
 
-#: ggz/dlg_login.c:541 src/frontend/gtk/login.c:415
+#: ggz/dlg_login.c:541 src/frontend/gtk/login.c:419
 msgid "Connect and Login"
 msgstr "Verbindung und Login"
 
-#: ggz/dlg_login.c:548 src/frontend/gtk/login.c:422
+#: ggz/dlg_login.c:548 src/frontend/gtk/login.c:426
 msgid "Server Profile"
 msgstr "Server-Profil "
 
-#: ggz/dlg_login.c:589 src/frontend/gtk/login.c:463
+#: ggz/dlg_login.c:589 src/frontend/gtk/login.c:467
 msgid "Profile: "
 msgstr "Profilname:"
 
-#: ggz/dlg_login.c:620 src/frontend/gtk/login.c:495
+#: ggz/dlg_login.c:620 src/frontend/gtk/login.c:499
 msgid "Edit Profiles..."
 msgstr "Profile bearbeiten..."
 
-#: ggz/dlg_login.c:635 src/frontend/gtk/login.c:510
+#: ggz/dlg_login.c:635 src/frontend/gtk/login.c:514
 msgid "Server: "
 msgstr "Server: "
 
-#: ggz/dlg_login.c:652 src/frontend/gtk/login.c:528
+#: ggz/dlg_login.c:652 src/frontend/gtk/login.c:532
 msgid "Port: "
 msgstr "Port:"
 
-#: ggz/dlg_login.c:706 src/frontend/gtk/login.c:582
+#: ggz/dlg_login.c:706 src/frontend/gtk/login.c:586
 msgid "Username: "
 msgstr "Benutzername: "
 
-#: ggz/dlg_login.c:730 src/frontend/gtk/login.c:606
+#: ggz/dlg_login.c:730 src/frontend/gtk/login.c:610
 msgid "Password: "
 msgstr "Kennwort: "
 
-#: ggz/dlg_login.c:755 ggz/dlg_props.c:909 src/frontend/gtk/login.c:631
-#: src/frontend/gtk/props.c:983
+#: ggz/dlg_login.c:755 ggz/dlg_props.c:909 src/frontend/gtk/login.c:635
+#: src/frontend/gtk/props.c:1010
 msgid "Normal Login"
 msgstr "Normales Login"
 
-#: ggz/dlg_login.c:764 ggz/dlg_props.c:918 src/frontend/gtk/login.c:640
-#: src/frontend/gtk/props.c:992
+#: ggz/dlg_login.c:764 ggz/dlg_props.c:918 src/frontend/gtk/login.c:644
+#: src/frontend/gtk/props.c:1019
 msgid "Guest Login"
 msgstr "Login als Gast"
 
-#: ggz/dlg_login.c:772 src/frontend/gtk/login.c:648
+#: ggz/dlg_login.c:772 src/frontend/gtk/login.c:652
 msgid "First-time Login"
 msgstr "Erstmaliges Login"
 
-#: ggz/dlg_login.c:793 ggz/dlg_main.c:950 src/frontend/gtk/client.c:1059
-#: src/frontend/gtk/login.c:669
+#: ggz/dlg_login.c:793 ggz/dlg_main.c:950 src/frontend/gtk/client.c:1166
+#: src/frontend/gtk/login.c:673
 msgid "Connect"
 msgstr "Verbinden"
 
@@ -332,7 +332,7 @@ msgstr "GNU Gaming Zone"
 msgid "   Chat Help"
 msgstr "    Chat-Hilfe"
 
-#: ggz/dlg_main.c:325 src/frontend/gtk/client.c:354
+#: ggz/dlg_main.c:325 src/frontend/gtk/client.c:399
 msgid "/help"
 msgstr "/help"
 
@@ -340,7 +340,7 @@ msgstr "/help"
 msgid "   Display help on a given commad."
 msgstr "   Hilfe für ein bestimmtes Kommando anzeigen."
 
-#: ggz/dlg_main.c:327 src/frontend/gtk/chat.c:294
+#: ggz/dlg_main.c:327 src/frontend/gtk/chat.c:312
 msgid "/me <action>"
 msgstr "/me <Aktion>"
 
@@ -360,28 +360,28 @@ msgstr "    Läßt den Computer von <Benutzer> piepen."
 msgid "Not connected!"
 msgstr "Nicht verbunden!"
 
-#: ggz/dlg_main.c:706 src/frontend/gtk/client.c:654
+#: ggz/dlg_main.c:706 src/frontend/gtk/client.c:761
 #, fuzzy
 msgid "GGZ Gaming Zone"
 msgstr "GNU Gaming Zone"
 
-#: ggz/dlg_main.c:725 src/frontend/gtk/client.c:673
+#: ggz/dlg_main.c:725 src/frontend/gtk/client.c:780
 msgid "_GGZ"
 msgstr "_GGZ"
 
-#: ggz/dlg_main.c:743 src/frontend/gtk/client.c:691
+#: ggz/dlg_main.c:743 src/frontend/gtk/client.c:798
 msgid "_Connect"
 msgstr "_Verbinden"
 
-#: ggz/dlg_main.c:757 src/frontend/gtk/client.c:705
+#: ggz/dlg_main.c:757 src/frontend/gtk/client.c:812
 msgid "_Disconnect"
 msgstr "Verbindung _trennen"
 
-#: ggz/dlg_main.c:779 src/frontend/gtk/client.c:727
+#: ggz/dlg_main.c:779 src/frontend/gtk/client.c:834
 msgid "E_xit"
 msgstr "B_eenden"
 
-#: ggz/dlg_main.c:793 src/frontend/gtk/client.c:741
+#: ggz/dlg_main.c:793 src/frontend/gtk/client.c:848
 msgid "G_ame"
 msgstr "_Spiel"
 
@@ -397,15 +397,15 @@ msgstr "_An Spiel teilnehmen"
 msgid "Lea_ve Game"
 msgstr "Spiel ve_rlassen"
 
-#: ggz/dlg_main.c:847 src/frontend/gtk/client.c:809
+#: ggz/dlg_main.c:847 src/frontend/gtk/client.c:916
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
-#: ggz/dlg_main.c:863 ggz/dlg_props.c:677 src/frontend/gtk/props.c:751
+#: ggz/dlg_main.c:863 ggz/dlg_props.c:677 src/frontend/gtk/props.c:778
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: ggz/dlg_main.c:872 src/frontend/gtk/client.c:841
+#: ggz/dlg_main.c:872 src/frontend/gtk/client.c:948
 msgid "_View"
 msgstr "Ansi_cht"
 
@@ -413,19 +413,19 @@ msgstr "Ansi_cht"
 msgid "Game _Types"
 msgstr "S_pielart"
 
-#: ggz/dlg_main.c:901 src/frontend/gtk/client.c:935
+#: ggz/dlg_main.c:901 src/frontend/gtk/client.c:1042
 msgid "_MOTD"
 msgstr "Tages_meldung"
 
-#: ggz/dlg_main.c:912 src/frontend/gtk/client.c:949
+#: ggz/dlg_main.c:912 src/frontend/gtk/client.c:1056
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ggz/dlg_main.c:931 src/frontend/gtk/client.c:967
+#: ggz/dlg_main.c:931 src/frontend/gtk/client.c:1074
 msgid "_About"
 msgstr "_Über"
 
-#: ggz/dlg_main.c:961 src/frontend/gtk/client.c:1070
+#: ggz/dlg_main.c:961 src/frontend/gtk/client.c:1177
 msgid "Disconnect"
 msgstr "Trennen"
 
@@ -441,7 +441,7 @@ msgstr "An Spiel teilnehmen"
 msgid "Change Props"
 msgstr "Eigenschaften wechseln"
 
-#: ggz/dlg_main.c:1005 ggz/mnu_players.c:38 src/frontend/gtk/client.c:1125
+#: ggz/dlg_main.c:1005 ggz/mnu_players.c:38 src/frontend/gtk/client.c:1232
 msgid "Stats"
 msgstr "Statistiken"
 
@@ -461,7 +461,7 @@ msgstr "Tisch-Nr."
 msgid "Game Type"
 msgstr "Spielart"
 
-#: ggz/dlg_main.c:1092 src/frontend/gtk/client.c:1282
+#: ggz/dlg_main.c:1092 src/frontend/gtk/client.c:1389
 msgid "Seats"
 msgstr "Sitze"
 
@@ -473,7 +473,7 @@ msgstr "Freie Sitze"
 msgid "Humans"
 msgstr "Menschen"
 
-#: ggz/dlg_main.c:1113 src/frontend/gtk/client.c:1289
+#: ggz/dlg_main.c:1113 src/frontend/gtk/client.c:1396
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -497,11 +497,11 @@ msgstr "Aktueller Raum"
 msgid "Message: "
 msgstr "Meldung: "
 
-#: ggz/dlg_main.c:1264 src/frontend/gtk/client.c:1364
+#: ggz/dlg_main.c:1264 src/frontend/gtk/client.c:1471
 msgid "Send"
 msgstr "Senden"
 
-#: ggz/dlg_motd.c:51 src/frontend/gtk/motd.c:144
+#: ggz/dlg_motd.c:51 src/frontend/gtk/motd.c:147
 msgid "MOTD"
 msgstr "Tagesmeldung"
 
@@ -513,157 +513,157 @@ msgstr "Meldungsfenster"
 msgid "Close"
 msgstr "Schließen"
 
-#: ggz/dlg_props.c:725 src/frontend/gtk/props.c:799
+#: ggz/dlg_props.c:725 src/frontend/gtk/props.c:826
 msgid "Profiles"
 msgstr "Eigenschaften"
 
-#: ggz/dlg_props.c:753 src/frontend/gtk/props.c:827
+#: ggz/dlg_props.c:753 src/frontend/gtk/props.c:854
 msgid "Profile:"
 msgstr "Profil: "
 
-#: ggz/dlg_props.c:777 src/frontend/gtk/props.c:851
+#: ggz/dlg_props.c:777 src/frontend/gtk/props.c:878
 msgid "Server:"
 msgstr "Server:"
 
-#: ggz/dlg_props.c:794 src/frontend/gtk/props.c:868
+#: ggz/dlg_props.c:794 src/frontend/gtk/props.c:895
 msgid "Port:"
 msgstr "Port:"
 
-#: ggz/dlg_props.c:831 src/frontend/gtk/props.c:905
+#: ggz/dlg_props.c:831 src/frontend/gtk/props.c:932
 msgid "Username:"
 msgstr "Nutzername:"
 
-#: ggz/dlg_props.c:856 src/frontend/gtk/props.c:930
+#: ggz/dlg_props.c:856 src/frontend/gtk/props.c:957
 msgid "Password:"
 msgstr "Kennwort:"
 
-#: ggz/dlg_props.c:882 src/frontend/gtk/props.c:956
+#: ggz/dlg_props.c:882 src/frontend/gtk/props.c:983
 msgid "Confirm:"
 msgstr "Bestätigung:"
 
-#: ggz/dlg_props.c:933 src/frontend/gtk/props.c:1007
+#: ggz/dlg_props.c:933 src/frontend/gtk/props.c:1034
 msgid "Add"
 msgstr "Anfügen"
 
-#: ggz/dlg_props.c:941 src/frontend/gtk/props.c:1015
+#: ggz/dlg_props.c:941 src/frontend/gtk/props.c:1042
 msgid "Modify"
 msgstr "Ändern"
 
-#: ggz/dlg_props.c:949 src/frontend/gtk/props.c:1023
+#: ggz/dlg_props.c:949 src/frontend/gtk/props.c:1050
 msgid "Delete"
 msgstr "Löschen"
 
-#: ggz/dlg_props.c:957 src/frontend/gtk/props.c:1031
+#: ggz/dlg_props.c:957 src/frontend/gtk/props.c:1058
 msgid "Servers"
 msgstr "Servers"
 
-#: ggz/dlg_props.c:979 src/frontend/gtk/props.c:1053
+#: ggz/dlg_props.c:979 src/frontend/gtk/props.c:1080
 msgid "Chat Font: "
 msgstr "Chat-Schrift:"
 
-#: ggz/dlg_props.c:994 src/frontend/gtk/props.c:1068
+#: ggz/dlg_props.c:994 src/frontend/gtk/props.c:1095
 msgid "Change"
 msgstr "Wechseln"
 
-#: ggz/dlg_props.c:1009 src/frontend/gtk/props.c:1083
+#: ggz/dlg_props.c:1009 src/frontend/gtk/props.c:1110
 msgid "Ignore Join/Part Messages"
 msgstr "Ignoriere Verbindungsnachrichten"
 
-#: ggz/dlg_props.c:1018 src/frontend/gtk/props.c:1092
+#: ggz/dlg_props.c:1018 src/frontend/gtk/props.c:1119
 msgid "Word Wrap"
 msgstr "Zeilenumbruch"
 
-#: ggz/dlg_props.c:1027 src/frontend/gtk/props.c:1101
+#: ggz/dlg_props.c:1027 src/frontend/gtk/props.c:1128
 msgid "Auto Indent"
 msgstr "Automatisch einrücken"
 
-#: ggz/dlg_props.c:1036 src/frontend/gtk/props.c:1110
+#: ggz/dlg_props.c:1036 src/frontend/gtk/props.c:1137
 msgid "Timestamp Chats"
 msgstr "Zeitmarken"
 
-#: ggz/dlg_props.c:1045 src/frontend/gtk/props.c:1119
+#: ggz/dlg_props.c:1045 src/frontend/gtk/props.c:1146
 msgid "Play Sounds"
 msgstr "Klänge abspielen"
 
-#: ggz/dlg_props.c:1054 src/frontend/gtk/props.c:1128
+#: ggz/dlg_props.c:1054 src/frontend/gtk/props.c:1164
 msgid "Chat Color"
 msgstr "Chat-Farbe"
 
-#: ggz/dlg_props.c:1068 src/frontend/gtk/props.c:1142
+#: ggz/dlg_props.c:1068 src/frontend/gtk/props.c:1178
 msgid "Color In Chat"
 msgstr "Farbe im Chat"
 
-#: ggz/dlg_props.c:1082 src/frontend/gtk/props.c:1156
+#: ggz/dlg_props.c:1082 src/frontend/gtk/props.c:1192
 msgid "Some"
 msgstr "Einige"
 
-#: ggz/dlg_props.c:1092 src/frontend/gtk/props.c:1166
+#: ggz/dlg_props.c:1092 src/frontend/gtk/props.c:1202
 msgid "Full"
 msgstr "Alle"
 
-#: ggz/dlg_props.c:1102 src/frontend/gtk/props.c:1176
+#: ggz/dlg_props.c:1102 src/frontend/gtk/props.c:1212
 msgid "Other's Color"
 msgstr "Farbe der anderen"
 
-#: ggz/dlg_props.c:1113 src/frontend/gtk/props.c:1187
+#: ggz/dlg_props.c:1113 src/frontend/gtk/props.c:1223
 msgid "Friend's Color"
 msgstr "Farbe von Freunden"
 
-#: ggz/dlg_props.c:1124 src/frontend/gtk/props.c:1198
+#: ggz/dlg_props.c:1124 src/frontend/gtk/props.c:1234
 msgid "Your Color"
 msgstr "Deine Farbe"
 
-#: ggz/dlg_props.c:1171 src/frontend/gtk/props.c:1245
+#: ggz/dlg_props.c:1171 src/frontend/gtk/props.c:1281
 msgid "  "
 msgstr " "
 
-#: ggz/dlg_props.c:1181 src/frontend/gtk/props.c:1255
+#: ggz/dlg_props.c:1181 src/frontend/gtk/props.c:1291
 msgid "Chat"
 msgstr "Chat"
 
-#: ggz/dlg_props.c:1195 src/frontend/gtk/props.c:1269
+#: ggz/dlg_props.c:1195 src/frontend/gtk/props.c:1305
 msgid "All of the following information is optional."
 msgstr "Alle folgenden Informationen sind optional."
 
-#: ggz/dlg_props.c:1216 src/frontend/gtk/props.c:1290
+#: ggz/dlg_props.c:1216 src/frontend/gtk/props.c:1326
 msgid "Name:"
 msgstr "Name:"
 
-#: ggz/dlg_props.c:1248 src/frontend/gtk/props.c:1322
+#: ggz/dlg_props.c:1248 src/frontend/gtk/props.c:1358
 msgid "City:"
 msgstr "Stadt:"
 
-#: ggz/dlg_props.c:1273 src/frontend/gtk/props.c:1347
+#: ggz/dlg_props.c:1273 src/frontend/gtk/props.c:1383
 msgid "State:"
 msgstr "Bundesland:"
 
-#: ggz/dlg_props.c:1298 src/frontend/gtk/props.c:1372
+#: ggz/dlg_props.c:1298 src/frontend/gtk/props.c:1408
 msgid "Country:"
 msgstr "Land:"
 
-#: ggz/dlg_props.c:1316 src/frontend/gtk/props.c:1390
+#: ggz/dlg_props.c:1316 src/frontend/gtk/props.c:1426
 msgid "Comments, Hobies, Etc."
 msgstr "Kommentare, Hobbies, usw."
 
-#: ggz/dlg_props.c:1342 src/frontend/gtk/props.c:1416
+#: ggz/dlg_props.c:1342 src/frontend/gtk/props.c:1452
 msgid "User Information"
 msgstr "Information über Benutzer"
 
-#: ggz/dlg_props.c:1369 src/frontend/gtk/props.c:1443
+#: ggz/dlg_props.c:1369 src/frontend/gtk/props.c:1479
 msgid "Apply"
 msgstr "Anwenden"
 
-#: ggz/dlg_props.c:1444 src/frontend/gtk/props.c:1519
+#: ggz/dlg_props.c:1444 src/frontend/gtk/props.c:1555
 msgid "Select Font"
 msgstr "Schrift auswählen"
 
-#: ggz/mnu_players.c:31 src/frontend/gtk/client.c:1551
-#: src/frontend/gtk/client.c:1586
+#: ggz/mnu_players.c:31 src/frontend/gtk/client.c:1661
+#: src/frontend/gtk/client.c:1696
 msgid "Info"
 msgstr "Information"
 
-#: ggz/mnu_tables.c:55 src/frontend/gtk/client.c:1092
-#: src/frontend/gtk/client.c:1529 src/frontend/gtk/client.c:1596
+#: ggz/mnu_tables.c:55 src/frontend/gtk/client.c:1199
+#: src/frontend/gtk/client.c:1639 src/frontend/gtk/client.c:1706
 msgid "Join"
 msgstr "Teilnehmen"
 
@@ -744,220 +744,229 @@ msgstr ""
 "Webseite:\n"
 "\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"
 
-#: src/frontend/gtk/chat.c:237
+#: src/frontend/gtk/chat.c:255
 msgid "Beep sent"
 msgstr ""
 
-#: src/frontend/gtk/chat.c:292
+#: src/frontend/gtk/chat.c:310
 #, fuzzy
 msgid "Chat Commands"
 msgstr "Chat-Farbe"
 
-#: src/frontend/gtk/chat.c:293
+#: src/frontend/gtk/chat.c:311
 msgid "-------------"
 msgstr ""
 
-#: src/frontend/gtk/chat.c:295
+#: src/frontend/gtk/chat.c:313
 msgid "/msg <username> <message>"
 msgstr ""
 
-#: src/frontend/gtk/chat.c:296
+#: src/frontend/gtk/chat.c:314
 #, fuzzy
 msgid "/beep <username>"
 msgstr "/beep <Benutzer>"
 
-#: src/frontend/gtk/client.c:350
+#: src/frontend/gtk/client.c:145 src/frontend/gtk/client.c:516
+msgid "Are you sure you want to quit?"
+msgstr ""
+
+#: src/frontend/gtk/client.c:145 src/frontend/gtk/client.c:516
+msgid "Quit?"
+msgstr ""
+
+#: src/frontend/gtk/client.c:395
 msgid "/msg"
 msgstr ""
 
-#: src/frontend/gtk/client.c:352
+#: src/frontend/gtk/client.c:397
 #, fuzzy
 msgid "/beep"
 msgstr "/help"
 
 #. Print out client information
-#: src/frontend/gtk/client.c:542
+#: src/frontend/gtk/client.c:649
 #, c-format
 msgid "Client Version:14 %s"
 msgstr "Client Version: ^C14 %s"
 
-#: src/frontend/gtk/client.c:551
+#: src/frontend/gtk/client.c:658
 msgid "Compiled with debugging."
 msgstr "Kompiliert mit Debug-Information"
 
-#: src/frontend/gtk/client.c:759
+#: src/frontend/gtk/client.c:866
 #, fuzzy
 msgid "_Launch"
 msgstr "Starten"
 
-#: src/frontend/gtk/client.c:773
+#: src/frontend/gtk/client.c:880
 #, fuzzy
 msgid "_Join"
 msgstr "Teilnehmen"
 
-#: src/frontend/gtk/client.c:795
+#: src/frontend/gtk/client.c:902
 #, fuzzy
 msgid "Lea_ve"
 msgstr "Spiel ve_rlassen"
 
-#: src/frontend/gtk/client.c:827
+#: src/frontend/gtk/client.c:934
 #, fuzzy
 msgid "_Properties"
 msgstr "Eigenschaften"
 
-#: src/frontend/gtk/client.c:859
+#: src/frontend/gtk/client.c:966
 msgid "_Room List"
 msgstr "Liste der Räume"
 
-#: src/frontend/gtk/client.c:871
+#: src/frontend/gtk/client.c:978
 #, fuzzy
 msgid "P_layer List"
 msgstr "Spieler"
 
-#: src/frontend/gtk/client.c:891
+#: src/frontend/gtk/client.c:998
 #, fuzzy
 msgid "_Server Stats"
 msgstr "Servers"
 
-#: src/frontend/gtk/client.c:902
+#: src/frontend/gtk/client.c:1009
 #, fuzzy
 msgid "_Player Stats"
 msgstr "Spieler"
 
-#: src/frontend/gtk/client.c:916
+#: src/frontend/gtk/client.c:1023
 #, fuzzy
 msgid "_Game Types"
 msgstr "S_pielart"
 
-#: src/frontend/gtk/client.c:981
+#: src/frontend/gtk/client.c:1088
 msgid "_Copyright"
 msgstr ""
 
-#: src/frontend/gtk/client.c:1000
+#: src/frontend/gtk/client.c:1107
 #, fuzzy
 msgid "_GGZ Help"
 msgstr "_Hilfe"
 
-#: src/frontend/gtk/client.c:1014
+#: src/frontend/gtk/client.c:1121
 #, fuzzy
 msgid "G_ame Help"
 msgstr "_Spiel"
 
-#: src/frontend/gtk/client.c:1033
+#: src/frontend/gtk/client.c:1140
 msgid "Goto _Web"
 msgstr "Gehe zu _Web"
 
-#: src/frontend/gtk/client.c:1103 src/frontend/gtk/client.c:1536
+#: src/frontend/gtk/client.c:1210 src/frontend/gtk/client.c:1646
 #, fuzzy
 msgid "Leave"
 msgstr "Spiel ve_rlassen"
 
-#: src/frontend/gtk/client.c:1114
+#: src/frontend/gtk/client.c:1221
 #, fuzzy
 msgid "Props"
 msgstr "Eigenschaften"
 
-#: src/frontend/gtk/client.c:1144
+#: src/frontend/gtk/client.c:1251
 #, fuzzy
 msgid "Current Room:"
 msgstr "Aktueller Raum"
 
-#: src/frontend/gtk/client.c:1197
+#: src/frontend/gtk/client.c:1304
 msgid "Rooms"
 msgstr "Räume"
 
-#: src/frontend/gtk/client.c:1224
+#: src/frontend/gtk/client.c:1331
 msgid "L"
 msgstr "L"
 
-#: src/frontend/gtk/client.c:1231
+#: src/frontend/gtk/client.c:1338
 msgid "T"
 msgstr "T"
 
-#: src/frontend/gtk/client.c:1238
+#: src/frontend/gtk/client.c:1345
 #, fuzzy
 msgid "Player"
 msgstr "Spieler"
 
-#: src/frontend/gtk/client.c:1275
+#: src/frontend/gtk/client.c:1382
 msgid "No."
 msgstr "Nr."
 
-#: src/frontend/gtk/client.c:1341
+#: src/frontend/gtk/client.c:1448
 #, fuzzy
 msgid "Message:"
 msgstr "Meldung: "
 
-#: src/frontend/gtk/ggz.c:231
+#: src/frontend/gtk/ggz.c:259
 #, fuzzy, c-format
 msgid "Current Room: %s"
 msgstr "Aktueller Raum"
 
 #. Display message in chat area
-#: src/frontend/gtk/ggz.c:236
+#: src/frontend/gtk/ggz.c:264
 #, c-format
 msgid "You've joined room \"%s\"."
 msgstr "Du bist Raum \"%s\" beigetreten."
 
-#: src/frontend/gtk/ggz.c:287
+#. ggzcore_server_free(server);
+#: src/frontend/gtk/ggz.c:317
 #, fuzzy
 msgid "Disconnected from Server."
 msgstr "Verbunden mit Server: %s"
 
-#: src/frontend/gtk/ggz.c:346
+#: src/frontend/gtk/ggz.c:353
 #, c-format
 msgid "You've been beeped by %s."
 msgstr "Du wirdest von %s angebeept."
 
-#: src/frontend/gtk/ggz.c:495
+#: src/frontend/gtk/ggz.c:471
 msgid "Offline"
 msgstr "Offline"
 
-#: src/frontend/gtk/ggz.c:498
+#: src/frontend/gtk/ggz.c:474
 #, fuzzy
 msgid "Connecting"
 msgstr "Verbinden"
 
-#: src/frontend/gtk/ggz.c:501
+#: src/frontend/gtk/ggz.c:477
 msgid "Online"
 msgstr "Online"
 
-#: src/frontend/gtk/ggz.c:504
+#: src/frontend/gtk/ggz.c:480
 msgid "Logging In"
 msgstr "Logge ein"
 
-#: src/frontend/gtk/ggz.c:507
+#: src/frontend/gtk/ggz.c:483
 msgid "Logged In"
 msgstr "Eingeloggt"
 
-#: src/frontend/gtk/ggz.c:511
+#: src/frontend/gtk/ggz.c:487
 msgid "--> Room"
 msgstr "--> Raum"
 
-#: src/frontend/gtk/ggz.c:514
+#: src/frontend/gtk/ggz.c:490
 #, fuzzy
 msgid "Chatting"
 msgstr "Wechseln"
 
-#: src/frontend/gtk/ggz.c:517
+#: src/frontend/gtk/ggz.c:493
 #, fuzzy
 msgid "--> Table"
 msgstr "Tisch"
 
-#: src/frontend/gtk/ggz.c:520
+#: src/frontend/gtk/ggz.c:496
 msgid "Playing"
 msgstr "Spiele"
 
-#: src/frontend/gtk/ggz.c:523
+#: src/frontend/gtk/ggz.c:499
 #, fuzzy
 msgid "<-- Table"
 msgstr "Tisch"
 
-#: src/frontend/gtk/ggz.c:526
+#: src/frontend/gtk/ggz.c:502
 msgid "Logging Out"
 msgstr "Logge aus"
 
-#: src/frontend/gtk/ggz.c:529
+#: src/frontend/gtk/ggz.c:505
 msgid "**none**"
 msgstr "**nix**"
 
@@ -994,35 +1003,35 @@ msgid ""
 "around to accomodate larger room descriptions. Overall this can be as large "
 "as is needed."
 msgstr ""
-"Dies ist eine Beispielbeschreibung eines Raumes welche sich Leute anschauen"
-"können. Dieser wurde eingewickelt um sich an größere Beschreibungen anzupassen"
-". Insgesamt kann dies hier so groß sein wie's gebraucht wird."
+"Dies ist eine Beispielbeschreibung eines Raumes welche sich Leute "
+"anschauenkönnen. Dieser wurde eingewickelt um sich an größere Beschreibungen "
+"anzupassen. Insgesamt kann dies hier so groß sein wie's gebraucht wird."
 
-#: src/frontend/gtk/launch.c:58 src/frontend/gtk/launch.c:82
+#: src/frontend/gtk/launch.c:80
 #, fuzzy, c-format
 msgid "Game Type:  %s"
 msgstr "Spielart:"
 
-#: src/frontend/gtk/launch.c:63 src/frontend/gtk/launch.c:87
+#: src/frontend/gtk/launch.c:85
 #, fuzzy, c-format
 msgid "Author:  %s"
 msgstr "Autor:"
 
-#: src/frontend/gtk/launch.c:68 src/frontend/gtk/launch.c:92
+#: src/frontend/gtk/launch.c:90
 #, fuzzy, c-format
 msgid "Description:  %s"
 msgstr "Beschreibung:"
 
-#: src/frontend/gtk/launch.c:73 src/frontend/gtk/launch.c:97
+#: src/frontend/gtk/launch.c:95
 #, fuzzy, c-format
 msgid "Home Page:  %s"
 msgstr "Homepage: %s"
 
-#: src/frontend/gtk/login.c:95
+#: src/frontend/gtk/login.c:96
 msgid "Sorry!"
 msgstr "Sorry!"
 
-#: src/frontend/gtk/login.c:99
+#: src/frontend/gtk/login.c:100
 msgid ""
 "That username is already in usage,\n"
 "or not permitted on this server.\n"
@@ -1034,19 +1043,23 @@ msgstr ""
 "\n"
 "Bitte nutze einen anderen Namen"
 
-#: src/frontend/gtk/login.c:526
+#: src/frontend/gtk/login.c:530
 msgid "localhost"
 msgstr "localhost"
 
-#: src/frontend/gtk/login.c:544
+#: src/frontend/gtk/login.c:548
 msgid "5688"
 msgstr "5688"
 
 #. Display a status Message
-#: src/frontend/gtk/props.c:216
+#: src/frontend/gtk/props.c:237
 #, fuzzy
 msgid "Properties Updated"
 msgstr "Eigenschaften"
+
+#: src/frontend/gtk/props.c:1155
+msgid "White Background"
+msgstr ""
 
 #: src/frontend/gtk/support.c:242
 #, c-format

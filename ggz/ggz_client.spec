@@ -2,11 +2,11 @@
 
 Summary: Client software for the Gnu Gaming Zone
 Name: ggz_client
-Version: 0.0.3
+Version: 0.0.4pre
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz_client-0.0.3.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz_client-0.0.4pre.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -16,8 +16,9 @@ BuildRoot: /var/tmp/%{name}-buildroot
 The Gnu Gaming Zone client allows you to connect to a GGZ server via the
 Internet and play network games.  Currently the following games are included
 with GGZ:
-  - Spades		- Connect the Dots
-  - Tic-Tac-Toe		- La Pocha
+  - Spades		- Connect the Dots	- Hastings
+  - Tic-Tac-Toe		- La Pocha		- Chinese Checkers
+  - Reversi		- Combat		- Chess
 
 %prep
 %setup
@@ -37,14 +38,18 @@ cp po/de.gmo $RPM_BUILD_ROOT/usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README TODO
 
-%config /etc/ggz.rc
+%config /etc/ggz.modules
 
 /usr/bin/ggz
+/usr/bin/ggz-config
 /usr/lib/ggz
 /usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 
 %changelog
 %changelog
+* Thu Mar 15 2001 Rich Gade <rgade@users.sourceforge.net>
+- Updated for 0.0.4pre
+
 * Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>
 - Updated for release 0.0.3
 

@@ -20,10 +20,10 @@ ggz_hastings_SOURCES = game.h \
 	      frame_lr.xpm \
 	      frame_ul.xpm \
 	      frame_ur.xpm \
-	      mangreen.xpm \
-	      manyellow.xpm \
-	      manbue.xpm \
-	      manred.xpm
+	      newmanblue.xpm \
+	      newmanyellow.xpm \
+	      newmangreen.xpm \
+	      newmanred.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@

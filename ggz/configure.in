@@ -170,7 +170,7 @@ if test "$enable_games" = yes; then
     SUBDIRS="$SUBDIRS game_clients"
 fi
     
-SUBDIRS="$SUBDIRS po intl"
+dnl SUBDIRS="$SUBDIRS po intl"
 
 dnl Use -Wall if we have gcc.
 dnl =========================
