@@ -630,7 +630,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<font color=#%s><i>* ").arg(color) + QString(player) + msg + QString("</i></font><br>");
+			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + msg + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
