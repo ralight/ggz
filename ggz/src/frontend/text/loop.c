@@ -132,6 +132,7 @@ void loop(void)
 		_loop_process_remove();
 
 		/* FIXME: make this an "idle" type func? */
+		output_resize();
 		output_status();
 	}
 

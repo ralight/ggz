@@ -60,5 +60,6 @@ void output_shutdown(void);
 
 void output_display_help(void);
 
+void output_resize(void);
 
 #endif /*__OUTPUT_H__*/

@@ -68,6 +68,7 @@ static int chat_offset = 0;
 static void output_table_info(GGZTable *table);
 
 
+void output_draw_text(void);		/* Draws the chat que to screen		*/
 void output_label(char *label);		/* Display the color label in the	*/
 					/* Status line.				*/
 void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
@@ -129,6 +130,22 @@ void output_text(char* fmt, ...)
 		chat[x] = chat[x-1];
 	chat[0] = strdup(message);
 
+	output_draw_text();
+
+#if 0
+	fflush(NULL);
+	printf("\e7");
+	output_goto(window.ws_row - 4, 0);
+	printf("\eD%s%s", message, COLOR_BLUE);
+	printf("\e8");
+	fflush(NULL);
+#endif
+}
+
+void output_draw_text(void)
+{
+	int x;
+
 	fflush(NULL);
 	printf("\e7");
 	output_goto(0, 0);
@@ -141,15 +158,6 @@ void output_text(char* fmt, ...)
 		fflush(NULL);
 	}
 	printf("\e8");
-
-#if 0
-	fflush(NULL);
-	printf("\e7");
-	output_goto(window.ws_row - 4, 0);
-	printf("\eD%s%s", message, COLOR_BLUE);
-	printf("\e8");
-	fflush(NULL);
-#endif
 }
 
 void output_chat(ChatTypes type, char *player, char *message)
@@ -365,6 +373,27 @@ void output_init(void)
 
 	/* Initilize and zero chat memmory */
 	chat = calloc((MAX_LINES+1), sizeof(char*));
+}
+
+void output_resize(void)
+{
+	struct winsize window2;
+
+	fflush(NULL);
+	ioctl(tty_des, TIOCGWINSZ, &window2);
+	fflush(NULL);
+
+	if(window2.ws_row != window.ws_row ||
+	   window2.ws_col != window.ws_col)
+	{
+		output_goto(0, 0);
+		printf("\e[2J");
+		window = window2;
+		printf("\e[0;%dr", window.ws_row-4);
+		output_prompt();
+		output_status();
+		output_draw_text();
+	}
 }
 
 
