@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
 *.o
+ggzmetaserv
 metaserv
 .deps
 .libs
