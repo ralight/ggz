@@ -92,12 +92,6 @@
     </refsect1>
   </refentry>
 
-
-
-</section>
-
-<section id ="server-to-client"><title>Server to client messages</title>
-
   <refentry id="msg.ping"><?dbhtml filename="msg_ping.html">
     <refmeta>
       <indexterm>
@@ -128,7 +122,7 @@
 		  <row rowsep="1">
 		    <entry><emphasis role="bold">Data</emphasis></entry>
 		    <entry><emphasis role="bold">Type</emphasis></entry>
-			<entry><emphasis role="bold">Example</emphasis></entry>
+	            <entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
@@ -165,12 +159,98 @@
 	<para>
 	  The PING tag is sent periodically from the server to all clients
 	  in order to obtain their response (the
-	  <link linkend="rsp.pong">PONG</link> tag) for lag calculation.
+	  <link linkend="msg.pong">PONG</link> tag) for lag calculation.  It
+          may also be sent by the client to the server at any time to
+          determine the client's own lag time.
 	</para>
       </refsect2>
     </refsect1>
   </refentry>
 
+
+  <refentry id="msg.pong"><?dbhtml filename="msg_pong.html">
+    <refmeta>
+      <indexterm>
+	<primary>PONG</primary>
+      </indexterm>
+      <refentrytitle>PONG</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>PONG</refname>
+      <refpurpose>Lag measurement response</refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+	<tgroup cols="3">
+	  <colspec colnum="1" colname="C1" align="left">
+	  <colspec colnum="2" colname="C2">
+	  <colspec colnum="3" colname="C3">
+		<tbody>
+
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+		      &lt;PONG/&gt;
+		    </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry><emphasis role="bold">Data</emphasis></entry>
+		    <entry><emphasis role="bold">Type</emphasis></entry>
+			<entry><emphasis role="bold">Example</emphasis></entry>
+		  </row>
+
+		  <row rowsep="1">
+                    <entry>ID</entry>
+                    <entry>string</entry>
+                    <entry>1h3k5lmfs</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>Response to lag measurement challenge</para>
+
+      <refsect2>
+        <title>Message Data</title>
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="bold">ID</emphasis></term>
+            <listitem>
+              <para>
+                Unique identifier for this pong - the same string that was
+                sent in the ping.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect2>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+	  The PONG should be sent immediately in response to the
+	  <link linkend="msg.ping">PING</link> tag.  The resulting
+          round-trip time can be measured to determine the player's lag.
+          When the server sends the ping, the lag measurement is tracked and
+          reported to all players in the room (including that player).  But
+          for a lagging client - or one that is not in a room - this is not
+          helpful.  Thus the client can also send a ping to determine its own
+          latency.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+</section>
+
+
+<section id ="server-to-client"><title>Server to client messages</title>
 
   <refentry id="msg.room"><?dbhtml filename="msg_room.html">
     <refmeta>
@@ -1548,80 +1628,6 @@
 </section>
 
 <section id ="client-to-server"><title>Client to server messages</title>
-
-  <refentry id="rsp.pong"><?dbhtml filename="msg_pong.html">
-    <refmeta>
-      <indexterm>
-	<primary>PONG</primary>
-      </indexterm>
-      <refentrytitle>PONG</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>PONG</refname>
-      <refpurpose>Lag measurement response</refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	  <colspec colnum="2" colname="C2">
-	  <colspec colnum="3" colname="C3">
-		<tbody>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">
-		      &lt;PONG/&gt;
-		    </entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry><emphasis role="bold">Data</emphasis></entry>
-		    <entry><emphasis role="bold">Type</emphasis></entry>
-			<entry><emphasis role="bold">Example</emphasis></entry>
-		  </row>
-
-		  <row rowsep="1">
-                    <entry>ID</entry>
-                    <entry>string</entry>
-                    <entry>1h3k5lmfs</entry>
-		  </row>
-
-		</tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para>Response to lag measurement challenge</para>
-
-      <refsect2>
-        <title>Message Data</title>
-        <variablelist>
-          <varlistentry>
-            <term><emphasis role="bold">ID</emphasis></term>
-            <listitem>
-              <para>
-                Unique identifier for this pong - the same string that was
-                sent in the ping.
-              </para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-      </refsect2>
-
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  The PONG tag is sent from the client in response to the
-	  <link linkend="msg.ping">PING</link> tag. The faster it responds,
-	  the lower (i.e. better) its lag value becomes.
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
 
   <refentry id="req.login"><?dbhtml filename="req_login.html">
     <refmeta>
