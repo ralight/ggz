@@ -196,8 +196,8 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 {
 	GtkWidget *tmp;
 	GGZRoom *room;
-	gint i;
-	gchar **names;
+	gint i, numrooms;
+	gchar *name;
 
 	g_print("ggz_room_list\n");
 
@@ -206,13 +206,15 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 	gtk_clist_clear(GTK_CLIST(tmp));
 
 	/* Display current list of rooms */
-	if (!(names = ggzcore_server_get_room_names(server)))
+	numrooms = ggzcore_server_get_num_rooms(server);
+	if (numrooms == 0)
 		return GGZ_HOOK_OK;
 
-	for (i = 0; names[i]; i++)
+	for (i = 0; i < numrooms; i++)
 	{
-		gtk_clist_insert(GTK_CLIST(tmp), i, &names[i]);
 		room = ggzcore_server_get_nth_room(server, i);
+		name = ggzcore_room_get_name(room);
+		gtk_clist_insert(GTK_CLIST(tmp), i, &name);
 		/* Hookup the chat functions to the new room */
 		ggzcore_room_add_event_hook(room, GGZ_CHAT, ggz_chat_msg);
 		ggzcore_room_add_event_hook(room, GGZ_PRVMSG, ggz_chat_prvmsg);
@@ -222,10 +224,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, ggz_room_enter);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, ggz_room_leave);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
-
 	}
-
-	free(names);
 
 	return GGZ_HOOK_OK;
 }
