@@ -1,4 +1,4 @@
-/* $Id: common.h 2075 2001-07-23 08:00:49Z jdorje $ */
+/* $Id: common.h 2076 2001-07-23 08:13:23Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -81,7 +81,7 @@ struct hand_t
 typedef struct seat_t
 {
 	int seat;		/**< ggz seating info */
-	char name[17];		/**< player's name */
+	char *name;		/**< player's name */
 	char message[100];	/**< message info */
 	card_t table_card;	/**< card on table, index into hand */
 	struct hand_t hand;	/**< player's hand */

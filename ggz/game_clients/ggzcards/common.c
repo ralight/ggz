@@ -1,4 +1,4 @@
-/* $Id: common.c 2074 2001-07-23 07:56:35Z jdorje $ */
+/* $Id: common.c 2076 2001-07-23 08:13:23Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -184,7 +184,7 @@ static int handle_msg_gameover()
 static int handle_msg_players()
 {
 	int i, left = 0, p, numplayers, different;
-	char t_name[17];
+	char *t_name;
 
 	if (es_read_int(ggzfd, &numplayers) < 0)
 		return -1;
@@ -210,12 +210,16 @@ static int handle_msg_players()
 	for (i = 0; i < numplayers; i++) {
 		if (es_read_int(ggzfd, &game.players[i].seat) < 0)
 			return -1;
-		if (es_read_string(ggzfd, (char *) &t_name, sizeof(t_name)) <
-		    0)
+		if (es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;
+
 		table_alert_player_name(i, t_name);
-		strncpy(game.players[i].name, t_name, sizeof(t_name));
-		/* TODO: check for leaving the table, etc. */
+
+		/* Note: this approach promotes hard-core memory
+		 * fragmentation! */
+		if (game.players[i].name)
+			free(game.players[i].name);
+		game.players[i].name = t_name;
 	}
 
 	game.num_players = numplayers;
