@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 6870 2005-01-24 03:23:21Z jdorje $
+ * $Id: main.c 6984 2005-03-11 07:58:18Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 #include <sys/types.h>
 #include <sys/time.h>
 #ifdef HAVE_WINSOCK_H
@@ -150,16 +151,16 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 				while(fgets(line, sizeof(line), f) != NULL)
 				{
 					myargc = 1;
-					myargv = (char**)malloc(2 * sizeof(char*));
-					myargv[0] = strdup(argv[0]);
+					myargv = ggz_malloc(2 * sizeof(char*));
+					myargv[0] = ggz_strdup(argv[0]);
 					myargv[1] = NULL;
 					line[strlen(line) - 1] = 0;
 					token = strtok(line, " ");
 					if(!token) break;
 					while(token)
 					{
-						myargv = (char**)realloc(myargv, (myargc + 2) * sizeof(char*));
-						myargv[myargc] = strdup(token);
+						myargv = ggz_realloc(myargv, (myargc + 2) * sizeof(char*));
+						myargv[myargc] = ggz_strdup(token);
 						myargv[myargc + 1] = NULL;
 						myargc++;
 						token = strtok(NULL, " ");
@@ -174,8 +175,8 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 					if(myret == 0) exec_command(cmd);
 					ret += myret;
 					for(i = 0; i < myargc; i++)
-						free(myargv[i]);
-					free(myargv);
+						ggz_free(myargv[i]);
+					ggz_free(myargv);
 				}
 				fclose(f);
 			}
