@@ -1,11 +1,11 @@
 /*
- * File: ggz.c
+ * File: ggzmod.c
  * Author: GGZ Development Team
  * Project: GGZMod library
- * Desc: GGZ game module functions
- * $Id: ggz.c 2247 2001-08-25 19:57:49Z jdorje $
+ * Desc: GGZ game client module functions
+ * $Id: ggzmod.c 2916 2001-12-17 07:25:59Z jdorje $
  *
- * Copyright (C) 2000 GGZ devel team
+ * Copyright (C) 2000 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,32 +23,33 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif /* HAVE_CONFIG */
 
-#include <sys/socket.h>
+/* #include <sys/socket.h> */
 
-#include "ggz_client.h"
+#include "ggzmod.h"
 
-int ggz_connect(void)
+int ggzmod_connect(void)
 {
 	return 3;
 }
 
-int ggz_disconnect(void)
+int ggzmod_disconnect(void)
 {
 	/* FIXME: we should close the connection(s).  This actually is
-	 * important since it will flush the buffer and make sure
-	 * everything went through.  --JDS */
+	   important since it will flush the buffer and make sure
+	   everything went through.  --JDS */
 	return 0;
 }
 
-int ggz_get_sock(void)
+int ggzmod_get_fd(void)
 {
 	return 3;
 }
 
-int ggz_get_udp_sock(void)
+int ggzmod_get_udp_fd(void)
 {
-	return -1; /* udp socket not implemented */
+	/* udp socket not implemented */
+	return -1;
 }

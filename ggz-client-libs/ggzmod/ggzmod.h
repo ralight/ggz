@@ -1,11 +1,11 @@
 /* 
- * File: ggz_client.h
+ * File: ggzmod.h
  * Author: GGZ Development Team
  * Project: GGZMod library
- * Desc: GGZ game module functions
- * $Id: ggz_client.h 2876 2001-12-11 07:16:40Z jdorje $
+ * Desc: GGZ game client module functions
+ * $Id: ggzmod.h 2916 2001-12-17 07:25:59Z jdorje $
  *
- * Copyright (C) 2000 GGZ devel team
+ * Copyright (C) 2000 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,23 @@
  */
 
 /**
- * @file ggz_client.h
+ * @file ggzmod.h
  * @brief The interface for the ggzmod library used by game clients.
  *
  * This file contains all libggzmod functions used by game clients to
- * interface with GGZ.  Just include ggz_client.h and make sure your program
+ * interface with GGZ.  Just include ggzmod.h and make sure your program
  * is linked with libggzmod.  Then use the functions below as appropriate.
  *
  * Under the GGZ model, instead of connecting directly to the game server a
- * game will connect to the GGZ client using a similar socket.  The GGZ client
- * and server will then relay packets between the game client and server.  To
- * the client, everything should look the same except that the method used to
- * connect is different.
+ * game will be connected by GGZ.  To the client, everything should look the
+ * same except that the method used to connect is different.
  *
  * @verbatim
  *                                 connect()
  *                          +--------...-->--------+
  *                          |                      |
  *                          |                      V
- *    ggz_connect()   +-----+------+         +-----+------+   ggzd_connect()
+ *   ggzmod_connect() +-----+------+         +-----+------+ ggzdmod_connect()
  *              +---->+ GGZ client |         | GGZ server +<----+
  *              |     +------------+         +------------+     |
  *              |              ^                |               |
@@ -68,7 +66,7 @@
  *         int fd;
  *
  *         if (with_ggz) // typically determined by command-line option
- *             fd = ggz_connect();
+ *             fd = ggzmod_connect();
  *         else          // if not using GGZ, use the old method
  *             fd = connect_to_server();
  *         ...
@@ -85,12 +83,12 @@
  *     }
  *
  *     int main(int argc, char** argv) {
- *         fd = ggz_connect();          // connect to GGZ
+ *         fd = ggzmod_connect();       // connect to GGZ
  *         if (fd < 0) return -1;
  *         gtk_init(&argc, &argv);
  *         gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
  *         gtk_main();
- *         ggz_disconnect();            // disconnect from GGZ
+ *         ggzmod_disconnect();         // disconnect from GGZ
  *         return 0;
  *     }
  * @endcode
@@ -127,10 +125,9 @@ typedef enum {
  * by the game client upon startup.
  *
  * @return The file descriptor for the TCP communications socket (or -1 on failure).
- * @see ggz_get_sock
- * @todo Should it just return 0 on success, -1 on failure?
+ * @see ggzmod_get_fd
  */
-int ggz_connect(void);
+int ggzmod_connect(void);
 
 /**
  * @brief Disconnects from GGZ.
@@ -140,7 +137,7 @@ int ggz_connect(void);
  *
  * @return 0 on success, -1 on failure.
  */
-int ggz_disconnect(void);
+int ggzmod_disconnect(void);
 
 /**
  * @brief Returns the GGZ TCP communications socket.
@@ -151,7 +148,7 @@ int ggz_disconnect(void);
  *
  * @return The FD integer, or -1 on no connection.
  */
-int ggz_get_sock(void);
+int ggzmod_get_fd(void);
 
 /**
  * @brief Returns the GGZ UDP communications socket.
@@ -164,6 +161,6 @@ int ggz_get_sock(void);
  * @todo Is this a good way to access the UDP socket?
  * @todo This functionality is not yet implemented; it will return -1.
  */
-int ggz_get_udp_sock(void);
+int ggzmod_get_udp_fd(void);
 
 #endif /* __GGZ_CLIENT_GGZ_H */
