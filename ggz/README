@@ -21,8 +21,8 @@ http://ggz.sourceforge.net, or for the absolute bleeding edge you can
 check out the sources via anonymous CVS.  Instructions are at our
 aforementioned homepage.  You should be aware that the client and the
 server are distributed separately.  The server is distributed as
-ggzd-X.X.X.tar.gz and the client as ggz-X.X.X.tar.gz (note the 'd' for
-daemon) where X.X.X is the version number.  
+ggz_server-X.X.X.tar.gz and the client as ggz_client-X.X.X.tar.gz
+where X.X.X is the version number.
 
 
 Compiling
@@ -33,11 +33,13 @@ installing these.  We will probably not make a binary release unless
 people really press for them.  Assuming you are unpacking the sources
 in a directory named ~/sources, you can compile the server with the following:
 
-cd ~/sources/ggzd; configure; make
+cd ~/sources/ggz_server-X.X.X; configure; make
 
 and similarly for the client:
 
-cd ~/sources/ggz; configure; make
+cd ~/sources/ggz_client-X.X.X; configure; make
+
+where X.X.X is the version number.
 
 
 Running
@@ -48,19 +50,20 @@ but we expect that until someone volunteers to run a production server
 full-time, you'll probably be running both the client and ther server
 locally.
 
-The server is named ggzd and will be created in ~/sources/ggzd/ggzd.  You
-*must* run it from that dir since the path to the spades server is hardcoded.
-When you run it, you *must* specify a port number with the -p option.
-For example:
+The server is named ggzd and will be created in
+~/sources/ggz_server-X.X.X/ggzd.  You *must* run it from that dir
+since the path to the spades server is hardcoded.  When you run it,
+you *must* specify a port number with the -p option.  For example:
 
-cd ~/sources/ggzd/ggzd; ./ggzd -p7626
+cd ~/sources/ggz_server-X.X.X/ggzd; ./ggzd -p7626
 
 will start the server listening on port 7626.  
 
-The client is named ggz and will be in ~/sources/ggz/ggz.  Again, you
-must run it from that directory (otherwise bad things will happen)
+The client is named ggz and will be in ~/sources/ggz_client-X.X.X/ggz.
+Again, you must run it from that directory (otherwise bad things will
+happen)
 
-cd ~/sources/ggz/ggz; ./ggz
+cd ~/sources/ggz_client-X.X.X/ggz; ./ggz
 
 Remember that only anonymous logins work, and the only game operations
 which work are launching and joining.
