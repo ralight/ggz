@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2793 2001-12-06 22:51:25Z jdorje $
+ * $Id: ggzdmod.h 2796 2001-12-07 02:28:03Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -146,8 +146,12 @@
  *
  *         // ... do other player un-initializations ...
  *
- *         // this particular game will only play when all seats are full.
- *         ggzdmod_set_state(mod, GGZDMOD_STATE_WAITING);
+ *         if (ggzdmod_count_seats(mod, GGZ_SEAT_PLAYER) == 0)
+ *             // the game will exit when all human players are gone
+ *             ggzdmod_set_state(mod, GGZDMOD_STATE_DONE);
+ *         else
+ *             // this particular game will only play when all seats are full.
+ *             ggzdmod_set_state(mod, GGZDMOD_STATE_WAITING);
  *     }
  *
  *     void handle_player_data(GGZdModEvent event, GGZdMod* mod, void* data)
