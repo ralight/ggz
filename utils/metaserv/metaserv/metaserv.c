@@ -8,7 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
 #include "minidom.h"
+#include <getopt.h>
+#include <stdarg.h>
 
 /* The directory where metaservconf.xml resides */
 #define METASERV_DIR "/usr/local/share/metaserv"
@@ -29,6 +36,32 @@
 */
 
 DOM *configuration = NULL;
+char *logfile = NULL;
+
+void log(const char *fmt, ...)
+{
+	FILE *f;
+	time_t t;
+	char *ct;
+	va_list ap;
+
+	if(!logfile) return;
+
+	f = fopen(logfile, "a");
+	if(f)
+	{
+		t = time(NULL);
+		ct = ctime(&t);
+		if(ct) ct[strlen(ct) - 1] = 0;
+		else ct = "*";
+		fprintf(f, "%s: ", ct);
+		va_start(ap, fmt);
+		vfprintf(f, fmt, ap);
+		va_end(ap);
+		fprintf(f, "\n");
+		fclose(f);
+	}
+}
 
 char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
@@ -196,13 +229,102 @@ int metaserv_auth(const char *username, const char *password, const char *capabi
 	return 0;
 }
 
-void metaserv_peers()
+char *meta_uri_host_internal(const char *uri)
+{
+	char *s;
+
+	s = strdup(uri);
+	s = strtok(s, ":");
+	if(s)
+	{
+		s = strtok(NULL, ":");
+		if(s) return s + 2;
+	}
+	return NULL;
+}
+
+int meta_uri_port_internal(const char *uri)
+{
+	char *s;
+
+	s = strdup(uri);
+	s = strtok(s, ":");
+	if(s)
+	{
+		s = strtok(NULL, ":");
+		if(s)
+		{
+			s = strtok(NULL, ":");
+			if(s) return atoi(s);
+		}
+	}
+	return 0;
+}
+
+int metaserv_notify(const char *username, const char *password, const char *uri, ELE *ele)
+{
+	int fd, ret;
+	struct sockaddr_in sa;
+	struct hostent *name;
+	char *hostname;
+	int port;
+	const char *text = "Hello World.\n";
+
+	log("Notify: peer=%s username=%s password=%s", uri, username, password);
+
+	hostname = meta_uri_host_internal(uri);
+	port = meta_uri_port_internal(uri);
+
+	fd = socket(AF_INET, SOCK_STREAM, /*PROTO_TCP*/6);
+	if(fd < 0)
+	{
+		log("Notify: failed (socket)");
+		return 0;
+	}
+
+	sa.sin_family = AF_INET;
+	sa.sin_port = htons(port);
+
+	name = gethostbyname(hostname);
+	if(!name)
+	{
+		log("Notify: failed (gethostbyname)");
+		close(fd);
+		return 0;
+	}
+
+	memcpy(&sa.sin_addr, name->h_addr, name->h_length);
+	ret = connect(fd, (const struct sockaddr*)&sa, sizeof(sa));
+	if(ret)
+	{
+		log("Notify: failed (connect)");
+		close(fd);
+		return 0;
+	}
+
+	/* Text: Use ELE! */
+
+	ret = write(fd, text, strlen(text) + 1);
+	if(ret < strlen(text) + 1)
+	{
+		log("Notify: failed (write)");
+		close(fd);
+		return 0;
+	}
+
+	log("Notify: succeeded");
+	
+	close(fd);
+	return 1;
+}
+
+void metaserv_peers(ELE *ele)
 {
 	int i, j;
 	ELE *el2, *el;
 	char *username, *password, *uri;
 
-	/*printf("Notify peers...\n");*/
+	log("Notify peers");
 
 #ifdef METASERV_OPTIMIZED
 	el2 = NULL;
@@ -240,6 +362,7 @@ void metaserv_peers()
 		if((uri) && (username) && (password))
 		{
 			/*printf("==> notify: %s:%s@%s\n", username, password, uri);*/
+			metaserv_notify(username, password, uri, ele);
 		}
 
 		i++;
@@ -264,9 +387,19 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 	if((!configuration)
 	|| (!configuration->el)
 	|| (!configuration->valid)
-	|| (!configuration->processed)) return NULL;
+	|| (!configuration->processed))
+	{
+		log("Update: Invalid XML");
+		return NULL;
+	}
 
-	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum) || (!mode)) return NULL;
+	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum) || (!mode))
+	{
+		log("Update: Missing arguments");
+		return NULL;
+	}
+
+	log("Update: class=%s, category=%s, username=%s, password=%s, uri=%s", class, category, username, password, uri);
 
 	ret = NULL;
 	ele2 = NULL;
@@ -321,6 +454,8 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 				ele2->el[ele2->elnum - 1] = ele;
 				ele2->el[ele2->elnum] = NULL;
 
+				metaserv_peers(ele);
+
 				/* dump new configuration */
 				/*minidom_dump(configuration);*/
 			}
@@ -333,6 +468,8 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 				free(ele2);
 				ele2 = NULL;
 
+				metaserv_peers(NULL);
+
 				/* dump new configuration */
 				/*minidom_dump(configuration);*/
 			}
@@ -343,6 +480,8 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 			status = "wrong";
 		}
 	}
+
+	log("Update: status=%s", status);
 
 	if(xmlret)
 	{
@@ -360,7 +499,7 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 	strcat(xmlret, footer);
 	ret = xmlret;
 
-	metaserv_peers();
+	/*metaserv_peers();*/
 
 	return ret;
 }
@@ -384,10 +523,13 @@ char *metaserv_xml(const char *uri)
 	mode = NULL;
 	atnum = 0;
 
+	log("XML: uri=%s", uri);
+
 	query = minidom_parse(uri);
 
 	if((!query) || (!query->valid) || (!query->processed) || (!query->el) || (!query->el->name))
 	{
+		log("XML: Invalid XML");
 		minidom_free(query);
 		return NULL;
 	}
@@ -410,8 +552,7 @@ char *metaserv_xml(const char *uri)
 #endif
 		ret = metaserv_lookup(class, category, query->el->value, 1);
 	}
-
-	if(!strcmp(query->el->name, "update"))
+	else if(!strcmp(query->el->name, "update"))
 	{
 #ifdef METASERV_OPTIMIZED
 		class = NULL;
@@ -478,19 +619,26 @@ char *metaserv_xml(const char *uri)
 		}
 		ret = metaserv_update(class, category, username, password, uri2, att, atnum, mode);
 	}
+	else
+	{
+		log("XML: Unknown type of operation: name=%s", query->el->name);
+	}
 
 	minidom_free(query);
 
 	return ret;
 }
 
-char *metamagic(char *uri)
+char *metamagic(const char *rawuri)
 {
 	char *ret;
 	char *token;
 	char *category, *class;
+	char *uri;
 
-	if(!uri) return NULL;
+	if(!rawuri) return NULL;
+
+	uri = strdup(rawuri);
 
 	if((strlen(uri) > 5) && (!strncmp(uri, "<?xml ", 5)))
 	{
@@ -531,6 +679,7 @@ char *metamagic(char *uri)
 
 void metaserv_init()
 {
+	log("Initialization");
 	configuration = minidom_load(METASERV_DIR "/metaservconf.xml");
 	/*minidom_dump(configuration);*/
 	/*fflush(NULL);*/
@@ -538,26 +687,82 @@ void metaserv_init()
 
 void metaserv_shutdown()
 {
+	log("Shutdown");
 	minidom_free(configuration);
 }
 
-int main(int argc, char *argv[])
+int metaserv_work()
 {
 	char buffer[1024];
 	char *result;
 
-	metaserv_init();
-
+	log("Enter main loop");
 	while(1)
 	{
 		fgets(buffer, sizeof(buffer), stdin);
-		result = metamagic(strdup(buffer));
+		log("Request: buffer=%s", buffer);
+		result = metamagic(buffer);
 
-		if(result) printf("%s\n", result);
-		else printf("\n");
+		if(result)
+		{
+			printf("%s\n", result);
+			log("Result: result=%s", result);
+		}
+		else
+		{
+			printf("\n");
+			log("No result");
+		}
 		fflush(NULL);
 	}
 
+	return 1;
+}
+
+int main(int argc, char *argv[])
+{
+	int ret;
+	int optindex;
+	char opt;
+	struct option options[] =
+	{
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
+		{"logfile", required_argument, 0, 'l'},
+		{0, 0, 0, 0}
+	};
+
+	while(1)
+	{
+		opt = getopt_long(argc, argv, "hvl:", options, &optindex);
+		if(opt == -1) break;
+		switch(opt)
+		{
+			case 'h':
+				printf("The GGZ Gaming Zone Meta Server\n");
+				printf("Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
+				printf("Published under GNU GPL conditions\n\n");
+				printf("Available options:\n");
+				printf("[-h | --help]:    Show this help\n");
+				printf("[-v | --version]: Display version number\n");
+				printf("[-l | --logfile]: Log events into this file\n");
+				exit(0);
+				break;
+			case 'v':
+				printf("0.1\n");
+				exit(0);
+				break;
+			case 'l':
+				logfile = optarg;
+				break;
+			default:
+				printf("Unknown option, try --help.\n");
+				exit(-1);
+		}
+	}
+
+	metaserv_init();
+	ret = metaserv_work();
 	metaserv_shutdown();
 
 	return 0;
