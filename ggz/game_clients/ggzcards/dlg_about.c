@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_about.c 3908 2002-04-12 07:10:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 
 #include "dlg_about.h"
 #include "game.h"		/* for _( macro only */
+
+#define VERSION "0.0.5"
 
 GtkWidget *create_dlg_about(void)
 {
@@ -64,7 +66,7 @@ GtkWidget *create_dlg_about(void)
 	title_label =
 		gtk_label_new(_
 			      ("GGZ Gaming Zone\n"
-			       "GGZ Cards Version 0.0.5pre"));
+			       "GGZ Cards Version " VERSION));
 	gtk_widget_ref(title_label);
 	gtk_object_set_data_full(GTK_OBJECT(dialog), "title_label",
 				 title_label,
