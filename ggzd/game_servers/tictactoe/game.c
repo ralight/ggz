@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4284 2002-06-30 07:57:47Z dr_maux $
+ * $Id: game.c 4333 2002-08-02 04:53:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -351,8 +351,14 @@ static int game_send_gameover(char winner)
 	GGZStats *stats;
 
 	stats = ggzstats_new(ttt_game.ggz);
-	ggzstats_set_game_winner(stats, winner, 1.0);
-	ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
+        if (winner < 2) {
+		ggzstats_set_game_winner(stats, winner, 1.0);
+		ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
+	} else {
+		/* Draw */
+		ggzstats_set_game_winner(stats, 0, 0.5);
+		ggzstats_set_game_winner(stats, 1, 0.5);
+	}
 	ggzstats_recalculate_ratings(stats);
 	ggzstats_free(stats);
 #endif
