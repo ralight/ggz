@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:26+0200\n"
+"POT-Creation-Date: 2002-09-26 03:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,10 +39,12 @@ msgid "Client message"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:83 ../../muehle/src/toplevel.cpp:89
+#: ../../muehle/src/toplevel.cpp:96
 msgid "Game"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:175 ../../muehle/src/toplevel.cpp:185
+#: ../../muehle/src/toplevel.cpp:192
 msgid "Game over"
 msgstr ""
 
@@ -51,6 +53,7 @@ msgid "Game spectator"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:81 ../../muehle/src/toplevel.cpp:87
+#: ../../muehle/src/toplevel.cpp:94
 msgid "Give up"
 msgstr ""
 
@@ -59,6 +62,7 @@ msgid "Good luck."
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:87 ../../muehle/src/toplevel.cpp:93
+#: ../../muehle/src/toplevel.cpp:100
 msgid "Help"
 msgstr ""
 
@@ -84,10 +88,12 @@ msgid "Network error"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:166 ../../muehle/src/toplevel.cpp:176
+#: ../../muehle/src/toplevel.cpp:183
 msgid "Network game"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:80 ../../muehle/src/toplevel.cpp:86
+#: ../../muehle/src/toplevel.cpp:93
 msgid "Offer remis"
 msgstr ""
 
@@ -104,6 +110,7 @@ msgid "Opponent's turn"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:85 ../../muehle/src/toplevel.cpp:91
+#: ../../muehle/src/toplevel.cpp:98
 msgid "Player"
 msgstr ""
 
@@ -112,6 +119,7 @@ msgid "Please take one of your opponent's stones"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:47 ../../muehle/src/toplevel.cpp:53
+#: ../../muehle/src/toplevel.cpp:60
 msgid "Quit"
 msgstr ""
 
@@ -127,11 +135,20 @@ msgid "Server message"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:45 ../../muehle/src/toplevel.cpp:51
+#: ../../muehle/src/toplevel.cpp:58
 msgid "Start new game"
 msgstr ""
 
 #: ../../muehle/src/board.cpp:82 ../../muehle/src/board.cpp:84
 msgid "Starting new game."
+msgstr ""
+
+#: ../../muehle/src/main.cpp:47
+msgid "TRANSLATOR-EMAIL"
+msgstr ""
+
+#: ../../muehle/src/main.cpp:47
+msgid "TRANSLATOR-NAME"
 msgstr ""
 
 #: ../../muehle/src/board.cpp:435 ../../muehle/src/board.cpp:441
@@ -143,6 +160,7 @@ msgid "The server doesn't have assigned a color to you yet."
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:86 ../../muehle/src/toplevel.cpp:92
+#: ../../muehle/src/toplevel.cpp:99
 msgid "Theme"
 msgstr ""
 
@@ -155,6 +173,7 @@ msgid "This game is part of the GGZ Gaming Zone."
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:84 ../../muehle/src/toplevel.cpp:90
+#: ../../muehle/src/toplevel.cpp:97
 msgid "Variants"
 msgstr ""
 
@@ -163,6 +182,7 @@ msgid "Waiting for opponent's action"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:91 ../../muehle/src/toplevel.cpp:97
+#: ../../muehle/src/toplevel.cpp:104
 msgid "Welcome to Muehle."
 msgstr ""
 

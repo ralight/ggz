@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:29+0200\n"
+"POT-Creation-Date: 2002-09-26 03:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,6 +142,14 @@ msgstr ""
 
 #: ../../kdots/kdots.cpp:253 ../../kdots/kdots.cpp:263
 msgid "Syncing successful"
+msgstr ""
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-EMAIL"
+msgstr ""
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-NAME"
 msgstr ""
 
 #: ../../kdots/kdots_about.cpp:116

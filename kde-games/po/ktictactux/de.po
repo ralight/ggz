@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:16+0200\n"
+"POT-Creation-Date: 2002-09-26 03:20+0200\n"
 "PO-Revision-Date: 2002-04-10 18:02GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
 "Language-Team:  <de@li.org>\n"
@@ -35,6 +35,7 @@ msgid "AI's turn"
 msgstr "AI ist dran"
 
 #: ../../ktictactux/ktictactuxwin.cpp:31 ../../ktictactux/ktictactuxwin.cpp:46
+#: ../../ktictactux/ktictactuxwin.cpp:52
 msgid "Game"
 msgstr "Spiel"
 
@@ -48,18 +49,21 @@ msgid "Game over"
 msgstr "Spiel vorbei"
 
 #: ../../ktictactux/ktictactuxwin.cpp:36 ../../ktictactux/ktictactuxwin.cpp:51
+#: ../../ktictactux/ktictactuxwin.cpp:57
 msgid "Game with the AI"
 msgstr "Spiel mit dem Computer"
 
 #: ../../ktictactux/ktictactuxwin.cpp:33 ../../ktictactux/ktictactuxwin.cpp:48
+#: ../../ktictactux/ktictactuxwin.cpp:54
 msgid "Help"
 msgstr "Hilfe"
 
 #: ../../ktictactux/ktictactuxwin.cpp:199
+#: ../../ktictactux/ktictactuxwin.cpp:205
 msgid "Human players have been beaten %1 times by you, you lost %2 times. %3"
 msgstr ""
-"Menschen wurden %1 mal von dir geschlagen, während du %2 mal verloren "
-"hast. %3"
+"Menschen wurden %1 mal von dir geschlagen, während du %2 mal verloren hast. %"
+"3"
 
 #: ../../ktictactux/main.cpp:40 ../../ktictactux/main.cpp:37
 msgid "Inventor"
@@ -74,10 +78,12 @@ msgid "KTicTacTux"
 msgstr "KTicTacTux"
 
 #: ../../ktictactux/ktictactuxwin.cpp:201
+#: ../../ktictactux/ktictactuxwin.cpp:207
 msgid "KTicTacTux network score"
 msgstr "KTicTacTux Netzwerk-Punktestand"
 
 #: ../../ktictactux/ktictactuxwin.cpp:184
+#: ../../ktictactux/ktictactuxwin.cpp:190
 #, fuzzy
 msgid "KTicTacTux score"
 msgstr "KTicTacTux"
@@ -96,11 +102,14 @@ msgid "Network game with %1"
 msgstr "Netzwerkspiel mit %1"
 
 #: ../../ktictactux/ktictactuxwin.cpp:251
+#: ../../ktictactux/ktictactuxwin.cpp:260
 msgid "No pixmap themes could be found"
 msgstr "Es konnten kein Pixmap-Themes gefunden werden."
 
 #: ../../ktictactux/ktictactuxwin.cpp:175
 #: ../../ktictactux/ktictactuxwin.cpp:192
+#: ../../ktictactux/ktictactuxwin.cpp:181
+#: ../../ktictactux/ktictactuxwin.cpp:198
 msgid "Of course, because you didn't play yet."
 msgstr "Natürlich, denn du hast noch nie gespielt."
 
@@ -113,6 +122,7 @@ msgid "Play another game?"
 msgstr "Ein weiteres Spiel spielen?"
 
 #: ../../ktictactux/ktictactuxwin.cpp:24 ../../ktictactux/ktictactuxwin.cpp:39
+#: ../../ktictactux/ktictactuxwin.cpp:45
 msgid "Quit"
 msgstr "Beenden"
 
@@ -125,6 +135,7 @@ msgid "Score: you %1, opponent %2"
 msgstr "Punkte: du: %1, Gegner: %2"
 
 #: ../../ktictactux/ktictactuxwin.cpp:35 ../../ktictactux/ktictactuxwin.cpp:50
+#: ../../ktictactux/ktictactuxwin.cpp:56
 msgid "Status"
 msgstr "Status"
 
@@ -133,23 +144,33 @@ msgid "Symbols"
 msgstr "Symbole"
 
 #: ../../ktictactux/ktictactuxwin.cpp:23 ../../ktictactux/ktictactuxwin.cpp:36
+#: ../../ktictactux/ktictactuxwin.cpp:42
 msgid "Synchronize"
 msgstr "Synchronisiere"
 
+#: ../../ktictactux/main.cpp:38
+msgid "TRANSLATOR-EMAIL"
+msgstr "xsebbi@gmx.de"
+
+#: ../../ktictactux/main.cpp:38
+msgid "TRANSLATOR-NAME"
+msgstr "Sebastian Roth"
+
 #: ../../ktictactux/ktictactux.cpp:187
-#, fuzzy
 msgid "The game is over."
-msgstr "Das Spiel ist beendet. Es gibt keinen Gewinner."
+msgstr "Das Spiel ist beendet."
 
 #: ../../ktictactux/ktictactux.cpp:192 ../../ktictactux/ktictactux.cpp:214
 msgid "The game is over. There is no winner."
 msgstr "Das Spiel ist beendet. Es gibt keinen Gewinner."
 
 #: ../../ktictactux/ktictactuxwin.cpp:32 ../../ktictactux/ktictactuxwin.cpp:47
+#: ../../ktictactux/ktictactuxwin.cpp:53
 msgid "Theme"
 msgstr "Thema"
 
 #: ../../ktictactux/ktictactuxwin.cpp:252
+#: ../../ktictactux/ktictactuxwin.cpp:261
 msgid "Themes error"
 msgstr "Theme-Fehler"
 
@@ -165,7 +186,7 @@ msgstr "Dies ist ein TicTacToe-Spiel fuer KDE."
 msgid "Tux/Kandalf (classic)"
 msgstr "Tux/Kandalf (klassisch)"
 
-#: ../../ktictactux/ktictactuxwin.cpp:37
+#: ../../ktictactux/ktictactuxwin.cpp:37 ../../ktictactux/ktictactuxwin.cpp:43
 msgid "View score"
 msgstr "Punktestand ansehen"
 
@@ -179,6 +200,8 @@ msgstr "Zuschauer"
 
 #: ../../ktictactux/ktictactuxwin.cpp:177
 #: ../../ktictactux/ktictactuxwin.cpp:194
+#: ../../ktictactux/ktictactuxwin.cpp:183
+#: ../../ktictactux/ktictactuxwin.cpp:200
 msgid "You are so bad."
 msgstr "Du bist sooo schlecht."
 
@@ -191,11 +214,14 @@ msgid "You lost the game."
 msgstr "Du hast das Spiel verloren."
 
 #: ../../ktictactux/ktictactuxwin.cpp:182
+#: ../../ktictactux/ktictactuxwin.cpp:188
 msgid "You won %1 times and lost %2 times against the AI. %3"
 msgstr "Du hast %1 mal gegen die KI gewonnen und %2 mal verloren. %3"
 
 #: ../../ktictactux/ktictactuxwin.cpp:179
 #: ../../ktictactux/ktictactuxwin.cpp:196
+#: ../../ktictactux/ktictactuxwin.cpp:185
+#: ../../ktictactux/ktictactuxwin.cpp:202
 msgid "You're a TicTacTux expert!"
 msgstr "Du bist ein TicTacTux-Experte!"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:29+0200\n"
+"POT-Creation-Date: 2002-09-26 03:23+0200\n"
 "PO-Revision-Date: 2002-04-10 17:20GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
 "Language-Team:  <de@li.org>\n"
@@ -142,6 +142,14 @@ msgstr "Synchronisiere"
 #: ../../kdots/kdots.cpp:253 ../../kdots/kdots.cpp:263
 msgid "Syncing successful"
 msgstr "Synchronisation erfolgreich"
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-EMAIL"
+msgstr "xsebbi@gmx.de"
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-NAME"
+msgstr "Sebastian Roth"
 
 #: ../../kdots/kdots_about.cpp:116
 msgid "Thanks to www.drachenburg.de"
