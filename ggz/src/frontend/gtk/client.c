@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5092 2002-10-28 23:26:35Z jdorje $
+ * $Id: client.c 5094 2002-10-29 00:13:04Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -45,6 +45,7 @@
 #include "chat.h"
 #include "game.h"
 #include "ggzclient.h"
+#include "playerinfo.h"
 #include "roominfo.h"
 #include "launch.h"
 #include "license.h"
@@ -1049,13 +1050,11 @@ client_realize                    (GtkWidget       *widget,
 
 static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
-	/* TODO */
-	/* This should pop up a dialog window about the player.  It should
-	   show information about the player (whatever we have, especially
-	   statistics) and allow you to send a private dialog to the player
-	   (with a text entry similar to the chat line). */
-	/* int player_num = GPOINTER_TO_INT(data); */
-	assert(0);
+	/* Pop up an info dialog about the player */
+	int player_num = GPOINTER_TO_INT(data);
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	GGZPlayer *player = ggzcore_room_get_nth_player(room, player_num);
+	player_info_create_or_raise(player);
 }
 
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
@@ -1246,7 +1245,7 @@ void display_players(void)
 					 " (%d)", forfeits);
 			}
 		} else
-			snprintf(stats, sizeof(stats), "%s", "");;
+			snprintf(stats, sizeof(stats), "%s", "");
 		player[PLAYER_LIST_COL_STATS] = stats;
 
 		player[PLAYER_LIST_COL_NAME]
@@ -2477,7 +2476,6 @@ static GtkWidget* create_mnu_player(int player_num, gboolean is_friend,
   gtk_widget_ref(info);
   gtk_object_set_data_full(GTK_OBJECT(mnu_player), "info", info,
 			   (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_sensitive(info, FALSE);
   gtk_widget_show(info);
   gtk_container_add(GTK_CONTAINER(mnu_player), info);
 

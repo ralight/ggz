@@ -1,0 +1,532 @@
+/*
+ * File: playerinfo.c
+ * Author: Justin Zaun
+ * Project: GGZ GTK Client
+ * $Id: playerinfo.c 5094 2002-10-29 00:13:04Z jdorje $
+ *
+ * This dialog is used to display information about a selected player to
+ * the user. 
+ *
+ * Copyright (C) 2002 GGZ Development Team.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+#include <config.h>
+
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <ggzcore.h>
+
+#include "playerinfo.h"
+#include "support.h"
+
+
+static GtkWidget *info_dialog;
+static GtkWidget *create_dlg_info(void);
+extern GGZServer *server;
+
+
+
+/* player_info_create_or_raise() - Displays the dialog or updates current
+ *                          dialog with new room's information
+ *
+ * Recieves:
+ * GGZPlayer*	: Player to display info about
+ *
+ * Returns:
+ */
+
+void player_info_create_or_raise(GGZPlayer * player)
+{
+	GtkWidget *tmp;
+	GGZTable *table = ggzcore_player_get_table(player);
+	char text[128];
+	char *ptype = _("Unknown");
+	int wins, losses, ties, forfeits;
+	int rating, ranking;
+	long highscore;
+
+	if (!info_dialog) {
+		info_dialog = create_dlg_info();
+		gtk_widget_show(info_dialog);
+	} else {
+		gdk_window_show(info_dialog->window);
+		gdk_window_raise(info_dialog->window);
+	}
+
+	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "handle");
+	gtk_label_set_text(GTK_LABEL(tmp), ggzcore_player_get_name(player));
+
+	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "table");
+	if (table)
+		snprintf(text, sizeof(text), "%d",
+			 ggzcore_table_get_id(table));
+	else
+		snprintf(text, sizeof(text), "-");
+	gtk_label_set_text(GTK_LABEL(tmp), text);
+
+
+	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "type");
+	switch (ggzcore_player_get_type(player)) {
+	case GGZ_PLAYER_NONE:
+		break;
+	case GGZ_PLAYER_NORMAL:
+		ptype = _("Registered");
+		break;
+	case GGZ_PLAYER_GUEST:
+		ptype = _("Guest");
+		break;
+	case GGZ_PLAYER_ADMIN:
+		ptype = _("Administrator");
+		break;
+	}
+	gtk_label_set_text(GTK_LABEL(tmp), ptype);
+
+	/* The only thing we don't show is lag. */
+
+	if (ggzcore_player_get_record(player, &wins,
+				      &losses, &ties, &forfeits)) {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "record_label");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "record_hbox");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "record");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%d-%d", wins, losses);
+		if (ties > 0) {
+			snprintf(text + strlen(text),
+				 sizeof(text) - strlen(text), "-%d", ties);
+		}
+		if (forfeits > 0) {
+			snprintf(text + strlen(text),
+				 sizeof(text) - strlen(text),
+				 " (%d)", forfeits);
+		}
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "record_label");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "record");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "record_hbox");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_rating(player, &rating)) {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "rating_label");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "rating_hbox");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "rating");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%d", rating);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "rating_label");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "rating");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "rating_hbox");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_ranking(player, &ranking)) {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "ranking_label");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "ranking_hbox");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "ranking");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "#%d", ranking);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "ranking_label");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "ranking");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "ranking_hbox");
+		gtk_widget_hide(tmp);
+	}
+
+	if (ggzcore_player_get_highscore(player, &highscore)) {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore_label");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore_hbox");
+		gtk_widget_show(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore");
+		gtk_widget_show(tmp);
+
+		snprintf(text, sizeof(text), "%ld", highscore);
+
+		gtk_label_set_text(GTK_LABEL(tmp), text);
+	} else {
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore_label");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore");
+		gtk_widget_hide(tmp);
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+					  "highscore_hbox");
+		gtk_widget_hide(tmp);
+	}
+}
+
+
+
+GtkWidget *create_dlg_info(void)
+{
+	GtkWidget *dlg_info;
+	GtkWidget *dialog_vbox;
+	GtkWidget *display_hbox;
+	GtkWidget *game_pixmap;
+	GtkWidget *info_vbox;
+	GtkWidget *handle_hbox;
+	GtkWidget *handle_label;
+	GtkWidget *handle;
+	GtkWidget *table_hbox;
+	GtkWidget *table_label;
+	GtkWidget *table;
+	GtkWidget *type_hbox;
+	GtkWidget *type_label;
+	GtkWidget *type;
+	GtkWidget *record_hbox;
+	GtkWidget *record_label;
+	GtkWidget *record;
+	GtkWidget *rating_hbox;
+	GtkWidget *rating_label;
+	GtkWidget *rating;
+	GtkWidget *ranking_hbox;
+	GtkWidget *ranking_label;
+	GtkWidget *ranking;
+	GtkWidget *highscore_hbox;
+	GtkWidget *highscore_label;
+	GtkWidget *highscore;
+	GtkWidget *dialog_action_area1;
+	GtkWidget *button_box;
+	GtkWidget *ok_button;
+
+	dlg_info = gtk_dialog_new();
+	gtk_object_set_data(GTK_OBJECT(dlg_info), "dlg_info", dlg_info);
+	gtk_widget_set_usize(dlg_info, 424, -2);
+	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Player Information"));
+
+	dialog_vbox = GTK_DIALOG(dlg_info)->vbox;
+	gtk_object_set_data(GTK_OBJECT(dlg_info), "dialog_vbox", dialog_vbox);
+	gtk_widget_show(dialog_vbox);
+
+	display_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(display_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "display_hbox",
+				 display_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(display_hbox);
+	gtk_box_pack_start(GTK_BOX(dialog_vbox), display_hbox, FALSE, TRUE,
+			   0);
+	gtk_container_set_border_width(GTK_CONTAINER(display_hbox), 5);
+
+	game_pixmap = create_pixmap(dlg_info, NULL);
+	gtk_widget_ref(game_pixmap);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "game_pixmap",
+				 game_pixmap,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(game_pixmap);
+	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
+			   0);
+	gtk_widget_set_usize(game_pixmap, 64, 64);
+	gtk_misc_set_alignment(GTK_MISC(game_pixmap), 0.5, 0);
+
+	info_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_ref(info_vbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "info_vbox", info_vbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(info_vbox);
+	gtk_box_pack_start(GTK_BOX(display_hbox), info_vbox, TRUE, TRUE, 0);
+
+
+	/* Add 'handle' label */
+	handle_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(handle_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "handle_hbox",
+				 handle_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(handle_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), handle_hbox, TRUE, TRUE, 0);
+
+	handle_label = gtk_label_new(_("Player Handle:"));
+	gtk_widget_ref(handle_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "handle_label",
+				 handle_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(handle_label);
+	gtk_box_pack_start(GTK_BOX(handle_hbox), handle_label, FALSE, FALSE,
+			   0);
+	gtk_widget_set_usize(handle_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(handle_label), 0.02, 0.5);
+
+	handle = gtk_label_new("");
+	gtk_widget_ref(handle);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "handle", handle,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(handle);
+	gtk_box_pack_start(GTK_BOX(handle_hbox), handle, TRUE, TRUE, 0);
+	gtk_misc_set_alignment(GTK_MISC(handle), 0, 0.5);
+
+
+	/* Add "table" label */
+	table_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(table_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "table_hbox",
+				 table_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(table_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), table_hbox, TRUE, TRUE, 0);
+
+	table_label = gtk_label_new(_("Table:"));
+	gtk_widget_ref(table_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "table_label",
+				 table_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(table_label);
+	gtk_box_pack_start(GTK_BOX(table_hbox), table_label, FALSE, FALSE, 0);
+	gtk_widget_set_usize(table_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(table_label), 0.02, 0.5);
+
+	table = gtk_label_new("-");
+	gtk_widget_ref(table);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "table", table,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(table);
+	gtk_box_pack_start(GTK_BOX(table_hbox), table, TRUE, TRUE, 0);
+	gtk_misc_set_alignment(GTK_MISC(table), 0, 0.5);
+
+
+	/* Add "type" label */
+	type_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(type_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "type_hbox", type_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(type_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), type_hbox, TRUE, TRUE, 0);
+
+	type_label = gtk_label_new(_("Account:"));
+	gtk_widget_ref(type_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "type_label",
+				 type_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(type_label);
+	gtk_box_pack_start(GTK_BOX(type_hbox), type_label, FALSE, FALSE, 0);
+	gtk_widget_set_usize(type_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(type_label), 0.02, 0);
+
+	type = gtk_label_new("");
+	gtk_widget_ref(type);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "type", type,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(type);
+	gtk_box_pack_start(GTK_BOX(type_hbox), type, TRUE, TRUE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(type), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(type), 0, 0.5);
+
+	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
+	gtk_object_set_data(GTK_OBJECT(dlg_info), "dialog_action_area1",
+			    dialog_action_area1);
+	gtk_widget_show(dialog_action_area1);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
+				       10);
+
+
+	/* Add "Record" label */
+	record_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(record_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record_hbox",
+				 record_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(record_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), record_hbox, TRUE, TRUE, 0);
+
+	record_label = gtk_label_new(_("Record:"));
+	gtk_widget_ref(record_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record_label",
+				 record_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(record_label);
+	gtk_box_pack_start(GTK_BOX(record_hbox), record_label, FALSE, FALSE,
+			   0);
+	gtk_widget_set_usize(record_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(record_label), 0.02, 0);
+
+	record = gtk_label_new("");
+	gtk_widget_ref(record);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "record", record,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(record);
+	gtk_box_pack_start(GTK_BOX(record_hbox), record, TRUE, TRUE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(record), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(record), 0, 0.5);
+
+
+	/* Add "Rating" label */
+	rating_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(rating_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating_hbox",
+				 rating_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(rating_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), rating_hbox, TRUE, TRUE, 0);
+
+	rating_label = gtk_label_new(_("Rating:"));
+	gtk_widget_ref(rating_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating_label",
+				 rating_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(rating_label);
+	gtk_box_pack_start(GTK_BOX(rating_hbox), rating_label, FALSE, FALSE,
+			   0);
+	gtk_widget_set_usize(rating_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(rating_label), 0.02, 0);
+
+	rating = gtk_label_new("");
+	gtk_widget_ref(rating);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "rating", rating,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(rating);
+	gtk_box_pack_start(GTK_BOX(rating_hbox), rating, TRUE, TRUE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(rating), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(rating), 0, 0.5);
+
+
+	/* Add "Ranking" label */
+	ranking_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(ranking_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking_hbox",
+				 ranking_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(ranking_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), ranking_hbox, TRUE, TRUE, 0);
+
+	ranking_label = gtk_label_new(_("Rank:"));
+	gtk_widget_ref(ranking_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking_label",
+				 ranking_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(ranking_label);
+	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking_label, FALSE, FALSE,
+			   0);
+	gtk_widget_set_usize(ranking_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(ranking_label), 0.02, 0);
+
+	ranking = gtk_label_new("");
+	gtk_widget_ref(ranking);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ranking", ranking,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(ranking);
+	gtk_box_pack_start(GTK_BOX(ranking_hbox), ranking, TRUE, TRUE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(ranking), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(ranking), 0, 0.5);
+
+
+	/* Add "Highscore" label */
+	highscore_hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_ref(highscore_hbox);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore_hbox",
+				 highscore_hbox,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(highscore_hbox);
+	gtk_box_pack_start(GTK_BOX(info_vbox), highscore_hbox, TRUE, TRUE, 0);
+
+	highscore_label = gtk_label_new(_("Score:"));
+	gtk_widget_ref(highscore_label);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore_label",
+				 highscore_label,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(highscore_label);
+	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore_label, FALSE,
+			   FALSE, 0);
+	gtk_widget_set_usize(highscore_label, 150, -2);
+	gtk_misc_set_alignment(GTK_MISC(highscore_label), 0.02, 0);
+
+	highscore = gtk_label_new("");
+	gtk_widget_ref(highscore);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "highscore", highscore,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(highscore);
+	gtk_box_pack_start(GTK_BOX(highscore_hbox), highscore, TRUE, TRUE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(highscore), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(highscore), 0, 0.5);
+
+
+	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;
+	gtk_object_set_data(GTK_OBJECT(dlg_info), "dialog_action_area1",
+			    dialog_action_area1);
+	gtk_widget_show(dialog_action_area1);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
+				       10);
+
+
+	button_box = gtk_hbutton_box_new();
+	gtk_widget_ref(button_box);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "button_box",
+				 button_box,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(button_box);
+	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
+			   TRUE, 0);
+
+	ok_button = gtk_button_new_with_label(_("OK"));
+	gtk_widget_ref(ok_button);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_info), "ok_button", ok_button,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(ok_button);
+	gtk_container_add(GTK_CONTAINER(button_box), ok_button);
+	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
+
+	gtk_signal_connect(GTK_OBJECT(dlg_info), "destroy",
+			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			   &info_dialog);
+	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
+				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				  GTK_OBJECT(dlg_info));
+
+	return dlg_info;
+}
