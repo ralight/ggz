@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 3108 2002-01-14 00:06:53Z jdorje $
+ * $Id: protocol.h 3498 2002-03-02 01:06:32Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -54,6 +54,17 @@ typedef enum {
 	 *  indicates that the game server has handled the leave event.
 	 */
 	RSP_GAME_LEAVE,
+
+	/** @brief Signals the start of a RSP_GAME_SEAT packet.
+	 *
+	 *  The packet is composed of:
+	 *    - An integer containing RSP_GAME_SEAT.
+	 *    - A single byte (char) containing the status;
+	 *      a negative status indicates an error.
+	 *  The packet is sent in response to a REQ_GAME_SEAT, and
+	 *  indicates that the game server has handled the seat event.
+	 */
+	RSP_GAME_SEAT,
 
 	/** @brief Signals the start of a MSG_LOG packet.
 	 *
@@ -123,6 +134,23 @@ typedef enum {
 	 *  in response.
 	 */
 	REQ_GAME_LEAVE,
+
+	/** @brief Signals the start of a REQ_GAME_SEAT packet.
+	 *
+	 *  The packet is composed of:
+	 *    - An integer containing REQ_GAME_SEAT.
+	 *    - An integer containing the seat number of the joining
+	 *      player.
+	 *    - An easysock-formatted string contining the player's name
+	 *      if the seat is a player or a reservation
+	 *    - An easysock-formatted FD containing the FD for the
+	 *      player's client socket if the seat is a player
+	 *  This packet is sent any time a seat is modified.  It gives
+	 *  the table all of the information it needs about the new
+	 *  seat.  The table should send a RSP_GAME_SEAT packet in
+	 *  response.  
+	 */
+	REQ_GAME_SEAT,
 
 	/** @brief Signals the start of a RSP_GAME_STATE packet.
 	 *

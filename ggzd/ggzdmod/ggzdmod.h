@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3365 2002-02-15 07:00:20Z jdorje $
+ * $Id: ggzdmod.h 3498 2002-03-02 01:06:32Z bmh $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -216,6 +216,7 @@ typedef enum {
 	GGZDMOD_EVENT_STATE,		/**< Module status changed */
 	GGZDMOD_EVENT_JOIN,		/**< Player joined */
 	GGZDMOD_EVENT_LEAVE,		/**< Player left */
+	GGZDMOD_EVENT_SEAT,		/**< Seat change */
 	GGZDMOD_EVENT_LOG,		/**< Module log request */
 	GGZDMOD_EVENT_PLAYER_DATA,	/**< Data avilable from player */
 	GGZDMOD_EVENT_ERROR		/**< Error (not used yet) */

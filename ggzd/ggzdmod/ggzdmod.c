@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3251 2002-02-05 08:56:52Z jdorje $
+ * $Id: ggzdmod.c 3498 2002-03-02 01:06:32Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -394,10 +394,13 @@ static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
 	GGZSeat oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
 	
+	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)", seat->num, seat->type, seat->name);
+
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
 		
+		/* Detect join case */
 		if ( (oldseat.type == GGZ_SEAT_OPEN
 		      || oldseat.type == GGZ_SEAT_RESERVED)
 		    && seat->type == GGZ_SEAT_PLAYER) {
@@ -410,9 +413,18 @@ static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 			/* We (GGZ) don't need the fd now */
 			seat->fd = -1;
 		}
+
+		/* Detect leave case */
 		else if (oldseat.type == GGZ_SEAT_PLAYER 
 			 && seat->type == GGZ_SEAT_OPEN) {
 			if (_io_send_leave(ggzdmod->fd, &oldseat) < 0)
+				_ggzdmod_error(ggzdmod,
+					       "Error writing to game");
+		}
+		
+		/* All other seat changes */
+		else {
+			if (_io_send_seat_change(ggzdmod->fd, seat) < 0)
 				_ggzdmod_error(ggzdmod,
 					       "Error writing to game");
 		}
@@ -920,6 +932,16 @@ void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status)
 }
 
 
+void _ggzdmod_handle_seat_response(GGZdMod * ggzdmod, char status)
+{
+	ggz_debug("GGZDMOD", "Handling RSP_GAME_SEAT");
+	if (status == 0)
+		call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, NULL);
+	else
+		_ggzdmod_error(ggzdmod, "Seat change failed");
+}
+
+
 void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 {
 	_io_respond_state(ggzdmod->fd);
@@ -1097,6 +1119,28 @@ void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 	if (_io_respond_leave(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 
+}
+
+
+/* game-side event: seat change event received from ggzd */
+void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat)
+{
+	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
+		/* Fatal error. */
+		ggzdmod_log(ggzdmod, "GGZDMOD: _ggzdmod_handle_seat: "
+			    "_ggzdmod_set_seat unsuccessful.");
+		_ggzdmod_error(ggzdmod, "Failed join.");
+	}
+	
+	ggzdmod_log(ggzdmod, "Seat %d is now %s (%s)", seat.num, 
+		    ggz_seattype_to_string(seat.type), seat.name);
+
+	call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, &seat.num);
+ 
+	if (_io_respond_seat(ggzdmod->fd, 0) < 0) {
+		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
+		return;
+	}
 }
 
 
