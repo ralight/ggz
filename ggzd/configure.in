@@ -85,10 +85,24 @@ if test "$database" = mysql; then
    AC_MSG_WARN(*** MySQL not supprted yet, defaulting to libdb2)
 else 
     database=db2
+    db2_style=-1
     AC_CHECK_LIB(db, db_appinit,
-        AC_CHECK_HEADER(db.h, ggzd_LIBS="$ggzd_LIBS -ldb",
+        AC_CHECK_HEADER(db.h, db2_style=0,
             AC_MSG_ERROR(*** Cannot find db.h header); exit),
-        AC_MSG_ERROR(*** Cannot find db library ); exit)
+        AC_MSG_WARN(*** Cannot find db library, trying -ldb2 ))
+     if test "$db2_style" = -1; then
+         AC_CHECK_LIB(db2, db_appinit,
+             AC_CHECK_HEADER(db2/db.h, db2_style=1,
+                 AC_MSG_ERROR(*** Cannot find db2/db.h header); exit),
+             AC_MSG_ERROR(*** Cannot find db2 library ); exit)
+     fi
+ 
+     if test "$db2_style" = 0; then
+         ggzd_LIBS="$ggzd_LIBS -ldb"
+     else
+         ggzd_LIBS="$ggzd_LIBS -ldb2"
+         AC_DEFINE(DB2_IN_DIR)
+     fi
 fi
 
 

@@ -27,7 +27,12 @@
 #include <string.h>
 #include <sys/types.h>
 #include <limits.h>
+
+#ifdef DB2_IN_DIR
+#include <db2/db.h>
+#else
 #include <db.h>
+#endif
 
 #include "ggzd.h"
 #include "ggzdb.h"
