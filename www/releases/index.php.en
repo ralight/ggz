@@ -1,0 +1,22 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ Gaming Zone Release Information</b><br>
+<br>
+Information about the current and all past releases can be found here.
+<br><br>
+<a href="/releases/0.0.9/">Version 0.0.9</a><br>
+<a href="/releases/0.0.8/">Version 0.0.8</a><br>
+<a href="/releases/release-0.0.7.html">Version 0.0.7</a> (old-style)<br>
+<a href="/releases/release-0.0.6.html">Version 0.0.6</a> (old-style)<br>
+<a href="/releases/release-0.0.5.html">Version 0.0.5</a> (old-style)<br>
+<br>
+Previous GGZ releases did not have dedicated version information.
+</td></tr>
+
+</table>
+
+<? include_once("../site/footer.php"); ?>

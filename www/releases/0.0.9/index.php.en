@@ -1,0 +1,21 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.9 Release Information</b><br>
+<br>
+The GGZ 0.0.9 release comes with the following information.
+<br><br>
+<a href="release.php">Release announcement</a><br>
+<a href="download.php">Download instructions</a><br>
+<a href="installation.php">Installation manual</a><br>
+<a href="credits.php">Credits</a><br>
+<br>
+<a href="/screenshots/0.0.9/">New screenshots</a><br>
+</td></tr>
+
+</table>
+
+<? include_once("../../site/footer.php"); ?>
