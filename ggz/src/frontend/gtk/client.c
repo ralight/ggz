@@ -606,10 +606,7 @@ client_table_event			(GtkWidget	*widget,
 {
 	/* Check to see if the event was a mouse button press */
 	if( event->type == GDK_2BUTTON_PRESS )
-	{
-		g_print("Table double click\n");
 		client_join_table();
-	}
 	return FALSE;
 }
 
@@ -719,8 +716,6 @@ static void client_join_table(void)
         GGZGameType *type;
         GGZModule *module;
         int table_index;
-
-	g_print("Joining table\n");
 
 	/* FIXME: Check for game type */
 
