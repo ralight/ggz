@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3249 2002-02-05 03:24:59Z jdorje $
+ * $Id: transit.c 3411 2002-02-18 08:22:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -167,15 +167,6 @@ static int transit_table_event_callback(void* target, int size, void* data)
 		}
 		pthread_rwlock_unlock(&game_types[table->type].lock);
 		break;
-	}
-
-	/* If it's a TRANSIT_JOIN, we check to see if there's a spot
-	 * available (either open or reserved).  We have to check
-	 * now (before doing the transit), since if we wait there
-	 * will be no good way to handle the error.  --JDS */
-	if (opcode == GGZ_TRANSIT_JOIN
-	    && !seats_count(table, GGZ_SEAT_OPEN)) {
-
 	}
 	
 	switch (opcode) {
