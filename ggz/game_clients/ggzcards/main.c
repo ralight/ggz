@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: main.c 4879 2002-10-12 17:20:16Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -56,7 +56,7 @@ GtkWidget *dlg_main = NULL;
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
 
-static const char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+static char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
 
 int main(int argc, char *argv[])
 {
