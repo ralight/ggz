@@ -12,6 +12,7 @@
 
 #include "gurumod.h"
 
+/* Net function handlers */
 typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
 typedef void (*netjoinfunc)(int room);
 typedef int (*netstatusfunc)();
@@ -19,10 +20,12 @@ typedef Guru* (*netinputfunc)();
 typedef void (*netoutputfunc)(Guru *output);
 typedef void (*netlogfunc)(const char *logfile);
 
+/* I18n function handlers */
 typedef void (*i18ninitfunc)();
 typedef char* (*i18ntransfunc)(char *player, char *messageset);
 typedef void (*i18ncheckfunc)(char *player, char *message);
 
+/* Grubby's structure */
 struct gurucore_t
 {
 	char *host;
@@ -46,6 +49,7 @@ struct gurucore_t
 
 typedef struct gurucore_t Gurucore;
 
+/* Module/plugin functions */
 Gurucore *guru_module_init();
 int guru_module_add(const char *modulealias);
 int guru_module_remove(const char *modulealias);

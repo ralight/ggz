@@ -11,13 +11,17 @@
 #include <stdlib.h>
 #include "gurumod.h"
 
+/* Learning modes */
 #define mode_none  0
 #define mode_teach 1
 #define mode_learn 2
+/* Grubby's knowledge base */
 #define db_file "/.ggz/grubby/learning.db"
 
+/* Globals */
 char *database;
 
+/* Learn a word and its meaning */
 void learn(char **wordlist)
 {
 	FILE *f;
@@ -36,6 +40,7 @@ void learn(char **wordlist)
 	fclose(f);
 }
 
+/* Teach a learned word to a player if known */
 char *teach(const char *word)
 {
 	FILE *f;
@@ -64,6 +69,7 @@ char *teach(const char *word)
 	return NULL;
 }
 
+/* Get message and decide what to do with it */
 Guru *gurumod_exec(Guru *message)
 {
 	int i, mode;
@@ -109,6 +115,7 @@ Guru *gurumod_exec(Guru *message)
 	return message;
 }
 
+/* Initialization */
 void gurumod_init()
 {
 	char *home;

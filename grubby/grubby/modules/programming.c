@@ -11,10 +11,12 @@
 #include <stdlib.h>
 #include "gurumod.h"
 
+/* Empty init */
 void gurumod_init()
 {
 }
 
+/* Participate in any programming discussion */
 Guru *gurumod_exec(Guru *message)
 {
 	int i;

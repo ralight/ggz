@@ -9,6 +9,7 @@
 
 #include "module.h"
 #include "gurumod.h"
+#include "i18n.h"
 
 #include <dlfcn.h>
 #include <stdio.h>
@@ -16,8 +17,13 @@
 #include <string.h>
 #include <ggzcore.h>
 
+/* Defines */
+#define GRUBBYCONF "/.ggz/grubby.rc"
+
+/* Plugin call function */
 typedef Guru* (*modulefunc)(Guru *message);
 
+/* Global variables */
 char **modulenamelist = NULL;
 void **modulelist = NULL;
 modulefunc *functionlist = NULL;
@@ -25,20 +31,27 @@ int modulecount = 0;
 Gurucore *core;
 int handler;
 
+/* Load the module list and activate the initial modules */
 Gurucore *guru_module_init()
 {
 	int ret;
-	char path[1024];
+	char *path;
 	char **list;
 	int count, i;
 	char *module;
+	char *home;
 
-	sprintf(path, "%s/.ggz/grubby.rc", getenv("HOME"));
+	/* Open configuration file */
+	home = getenv("HOME");
+	path = (char*)malloc(strlen(home) + strlen(GRUBBYCONF) + 1);
+	strcpy(path, home);
+	strcat(path, GRUBBYCONF);
 	handler = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	free(path);
 	if(handler < 0) return NULL;
 
+	/* Load main option into grubby's core */
 	core = (Gurucore*)malloc(sizeof(Gurucore));
-
 	core->host = ggzcore_confio_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "grubby/unnamed");
 	core->guestname = (char*)malloc(strlen(core->name) + 4);
@@ -48,6 +61,7 @@ Gurucore *guru_module_init()
 	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
 	core->logfile = ggzcore_confio_read_string(handler, "preferences", "logfile", NULL);
 
+	/* Preload libraries shared among multiple plugins */
 	module = ggzcore_confio_read_string(handler, "guru", "player", NULL);
 	if(module)
 	{
@@ -61,6 +75,7 @@ Gurucore *guru_module_init()
 		}
 	}
 
+	/* Load net plugin */
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
 	fflush(NULL);
@@ -81,6 +96,7 @@ Gurucore *guru_module_init()
 	}
 	printf("OK\n");
 
+	/* Load i18n plugin */
 	core->i18n_init = NULL;
 	core->i18n_translate = NULL;
 	module = ggzcore_confio_read_string(handler, "guru", "i18n", NULL);
@@ -103,6 +119,7 @@ Gurucore *guru_module_init()
 		printf("OK\n");
 	}
 
+	/* Add all specified generic plugins */
 	ret = ggzcore_confio_read_list(handler, "guru", "modules", &count, &list);
 	if(ret >= 0)
 	{
@@ -113,6 +130,7 @@ Gurucore *guru_module_init()
 	return core;
 }
 
+/* Insert a plugin dynamically */
 int guru_module_add(const char *modulealias)
 {
 	void *handle, *init;
@@ -120,11 +138,13 @@ int guru_module_add(const char *modulealias)
 	char *modulename;
 	int i;
 
+	/* Find appropriate shared library first */
 	if(!modulealias) return 0;
 	modulename = ggzcore_confio_read_string(handler, "modules", modulealias, NULL);
 	printf("Loading module: %s... ", modulename);
 	fflush(NULL);
 
+	/* Avoid duplicates */
 	for(i = 0; i < modulecount; i++)
 		if((modulelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
@@ -132,6 +152,7 @@ int guru_module_add(const char *modulealias)
 			return 0;
 		}
 
+	/* Check plugin consistency */
 	if((handle = dlopen(modulename, RTLD_NOW)) == NULL)
 	{
 		printf("ERROR: Not a shared library!\n");
@@ -150,8 +171,10 @@ int guru_module_add(const char *modulealias)
 		return 0;
 	}
 
+	/* Initialize the plugin */
 	((void*(*)(void))init)();
 
+	/* Insert it into the plugin list for later reference */
 	modulecount++;
 	modulelist = (void**)realloc(modulelist, (modulecount + 1) * sizeof(void*));
 	functionlist = (modulefunc*)realloc(functionlist, (modulecount + 1) * sizeof(modulefunc));
@@ -169,6 +192,8 @@ int guru_module_add(const char *modulealias)
 	return 1;
 }
 
+/* Deactivate a plugin and unload it */
+/* FIXME: look at free, and dlclose() module */
 int guru_module_remove(const char *modulealias)
 {
 	int i;
@@ -177,7 +202,6 @@ int guru_module_remove(const char *modulealias)
 	{
 		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
 		{
-/*printf("DEBUG: FOUND IT at %i!!!\n", i);*/
 			modulelist[i] = NULL;
 			/*free(modulenamelist[i]);*/ /* HUH? */
 			modulenamelist[i] = NULL;
@@ -187,16 +211,18 @@ int guru_module_remove(const char *modulealias)
 		}
 	}
 
-/*printf("DEBUG: DIDN'T FIND!\n");*/
 	return 0;
 }
 
+/* List all plugins currently loaded */
 char *guru_modules_list()
 {
 	static char *list = NULL;
-	const char *prepend = "List of available modules:";
+	const char *prepend;
 	int i;
 
+	/* Build up list dynamically */
+	prepend = _("List of available modules:");
 	if(list) free(list);
 	list = (char*)malloc(strlen(prepend) + 1);
 	strcpy(list, prepend);
@@ -212,6 +238,7 @@ char *guru_modules_list()
 	return list;
 }
 
+/* Evaluate administrativia (admins only) */
 Guru *guru_module_internal(Guru *message)
 {
 	char *token;
@@ -224,13 +251,11 @@ Guru *guru_module_internal(Guru *message)
 	modadd = 0;
 	modremove = 0;
 	mod = NULL;
+	
+	/* Find all commands */
 	while((message->list) && (message->list[i]))
 	{
 		token = message->list[i];
-/*if(i == 0)
-{
-	printf("COMPARE: %s -> %s, %s\n", token, core->name, core->guestname);
-}*/
 		if((i == 0) && (!strcasecmp(token, core->name))) modules++;
 		if((i == 0) && (!strcasecmp(token, core->guestname))) modules++;
 		if((i == 1) && (!strcmp(token, "modules"))) modules++;
@@ -241,6 +266,7 @@ Guru *guru_module_internal(Guru *message)
 	}
 	if(message->type == GURU_PRIVMSG) modules++;
 
+	/* Process given commands */
 	if(modules == 2)
 	{
 		free(message->message);
@@ -250,7 +276,6 @@ Guru *guru_module_internal(Guru *message)
 	}
 	if((modules == 1) && ((modadd) || (modremove)) && (mod))
 	{
-/*printf("DEBUG: add or remove\n");*/
 		free(message->message);
 		message->type = GURU_PRIVMSG;
 		if((core->owner) && (!strcmp(core->owner, message->player)))
@@ -262,7 +287,6 @@ Guru *guru_module_internal(Guru *message)
 			}
 			if(modremove)
 			{
-/*printf("DEBUG: remove %s\n", mod);*/
 				if(guru_module_remove(mod)) message->message = "Module removed.";
 				else message->message = "Error: Could not remove module.";
 			}
@@ -275,6 +299,8 @@ Guru *guru_module_internal(Guru *message)
 	return NULL;
 }
 
+/* Main function: Iterate over all loaded plugins */
+/* FIXME: memory issues, and make sleep() a plugin issue */
 Guru *guru_module_work(Guru *message, int priority)
 {
 	int i, j;
@@ -283,9 +309,11 @@ Guru *guru_module_work(Guru *message, int priority)
 	char *savemsg;
 	char *moresave;
 
+	/* Check admin commands first */
 	ret = guru_module_internal(message);
 	if(ret) return ret;
 
+	/* Now try plugins, with decreasing priority */
 	if(!modulelist) return NULL;
 	savemsg = message->message;
 	for(j = 10; j >= 0; j-=11)
@@ -301,12 +329,10 @@ Guru *guru_module_work(Guru *message, int priority)
 			if(savemsg) free(moresave); /* EH?! */
 			if((ret) && (ret->message))
 			{
-				/*printf("Debug: got %s\n", ret->message);*/
 				/*sleep(strlen(g.message) / 7);*/
 				free(savemsg);
 				return ret;
 			}
-			/*else printf("No answer :(\n");*/
 		}
 	}
 	free(savemsg);

@@ -12,17 +12,26 @@
 #include "gurumod.h"
 #include <ggzcore.h>
 
+/* Configuration file for bad words */
+#define BADWORDCONF "/.ggz/grubby/modbadword.rc"
+
+/* Plugin-global list of bad words */
 char **badwordlist;
 
+/* Load all bad words from the configuration */
 void gurumod_init()
 {
-	char path[1024];
+	char *path, *home;
 	int handle;
 	int ret, i;
 	int count;
 
-	sprintf(path, "%s/.ggz/guru/modbadword.rc", getenv("HOME"));
+	home = getenv("HOME");
+	path = (char*)malloc(strlen(home) + strlen(BADWORDCONF) + 1);
+	strcpy(path, home);
+	strcat(path, BADWORDCONF);
 	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	free(path);
 	if(handle < 0) return;
 	ret = ggzcore_confio_read_list(handle, "badwords", "badwords", &count, &badwordlist);
 
@@ -33,6 +42,7 @@ void gurumod_init()
 	if(ret < 0) badwordlist = NULL;
 }
 
+/* Check whether a message contains such a bad word */
 Guru *gurumod_exec(Guru *message)
 {
 	int i, j;
@@ -54,5 +64,4 @@ Guru *gurumod_exec(Guru *message)
 	}
 	return NULL;
 }
-
 

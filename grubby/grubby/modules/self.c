@@ -12,10 +12,12 @@
 #include "gurumod.h"
 #include "i18n.h"
 
+/* Empty init */
 void gurumod_init()
 {
 }
 
+/* Grubby's non-visual about dialog */
 Guru *gurumod_exec(Guru *message)
 {
 	int i;
@@ -24,6 +26,7 @@ Guru *gurumod_exec(Guru *message)
 	i = 0;
 	while((message->list) && (message->list[i]))
 	{
+		/* Let grubby tell about himself */
 		if((i == 1) && (!strcasecmp(message->list[i], "about")))
 		{
 			sprintf(buffer, _("I'm %s, your favorite chat bot!\n"
@@ -34,6 +37,8 @@ Guru *gurumod_exec(Guru *message)
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
+
+		/* Show all available commands, independent of active plugins */
 		if((i == 1) && (!strcasecmp(message->list[i], "help")))
 		{
 			message->message = _("This is the list of public commands I understand:\n"

@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Execute administrative commands */
+/* FIXME: Log admin commands */
 int admin(Guru *guru, Gurucore *core)
 {
 	int i;
@@ -26,14 +28,12 @@ int admin(Guru *guru, Gurucore *core)
 	i = 0;
 	while((guru->list) && (guru->list[i])) i++;
 
-	/*printf("*** Admin: got request: %i words\n", i);*/
 	switch(i)
 	{
 		case 3:
 			if(!strcmp(guru->list[1], "goto"))
 			{
 				room = atoi(guru->list[2]);
-				/*printf("*** Admin: Goto room %i\n", room);*/
 				guru->message = strdup("Yes, I follow, my master.");
 				(core->net_output)(guru);
 				sleep(2);
@@ -42,7 +42,6 @@ int admin(Guru *guru, Gurucore *core)
 			}
 			if(!strcmp(guru->list[1], "logging"))
 			{
-				/*printf("*** Admin: Logging %s\n", guru->list[2]);*/
 				if(!strcmp(guru->list[2], "off")) (core->net_log)(NULL);
 				else (core->net_log)(core->logfile);
 				guru->message = strdup("Toggled logging.");
@@ -55,11 +54,13 @@ int admin(Guru *guru, Gurucore *core)
 	return 0;
 }
 
+/* Main: startup until working state, loop */
 int main(int argc, char *argv[])
 {
 	Gurucore *core;
 	Guru *guru;
 
+	/* Bring grubby to life */
 	printf("Grubby: initializing...\n");
 	core = guru_init();
 	if(!core)
@@ -69,11 +70,13 @@ int main(int argc, char *argv[])
 	}
 	printf("Grubby: connect...\n");
 
+	/* Start connection procedure */
 	(core->net_log)(core->logfile);
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
 	if(core->i18n_init) (core->i18n_init)();
 	while(1)
 	{
+		/* Permanently check states */
 		switch((core->net_status)())
 		{
 			case NET_ERROR:
@@ -90,16 +93,14 @@ int main(int argc, char *argv[])
 			case NET_INPUT:
 				guru = (core->net_input)();
 				guru->guru = core->name;
-				/*printf("Received: %s\n", guru->message);*/
 				if(!admin(guru, core))
 				{
+					/* If message is valid, try to translate it first */
 					if(core->i18n_check) (core->i18n_check)(guru->player, guru->message);
 					guru = guru_work(guru);
 					if(guru)
 					{
-						/*printf("Answer is: %s\n", guru->message);*/
 						if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);
-						/*printf("Translated-Answer is: %s\n", guru->message);*/
 						(core->net_output)(guru);
 					}
 				}
@@ -107,6 +108,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	guru_close();
+	/* Shutdown the bot properly */
+	return guru_close();
 }
 

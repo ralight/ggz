@@ -34,6 +34,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
 
+/* Initialize the net functions */
 void net_internal_init(const char *logfile)
 {
 	GGZOptions opt;
@@ -45,6 +46,7 @@ void net_internal_init(const char *logfile)
 	ret = ggzcore_init(opt);
 }
 
+/* Set up the logfile or close it again */
 void net_logfile(const char *logfile)
 {
 	if(logfile)
@@ -61,6 +63,8 @@ void net_logfile(const char *logfile)
 	}
 }
 
+/* Add a message to the incoming queue */
+/* FIXME: Provide real queue */
 void net_internal_queueadd(const char *player, const char *message, int type)
 {
 	Guru *guru;
@@ -69,13 +73,14 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	int i;
 	char realmessage[1024];
 
-	/* add dummy field */
+	/* Add dummy field on dummy messages */
 	if((message) && (type == GURU_PRIVMSG))
 	{
 		sprintf(realmessage, "grubbydummy %s", message);
 		message = realmessage;
 	}
 
+	/* Insert new grubby structure */
 	guru = (Guru*)malloc(sizeof(Guru));
 	guru->type = type;
 	if(player) guru->player = strdup(player);
@@ -104,12 +109,14 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 		guru->list = NULL;
 	}
 
+	/* Insert structure into queue */
 	queuelen++;
 	queue = (Guru**)realloc(queue, sizeof(Guru*) * queuelen);
 	queue[queuelen - 2] = guru;
 	queue[queuelen - 1] = NULL;
 }
 
+/* Transparently connect to any host */
 void net_connect(const char *host, int port, const char *name, const char *guestname)
 {
 	guruname = (char*)name;
@@ -132,11 +139,13 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 	ggzcore_server_connect(server);
 }
 
+/* Change the current room */
 void net_join(int room)
 {
 	ggzcore_server_join_room(server, room);
 }
 
+/* Loop function */
 int net_status()
 {
 	int ret;
@@ -151,6 +160,7 @@ int net_status()
 	return ret;
 }
 
+/* Get an entry from the queue */
 Guru *net_input()
 {
 	if(queue)
@@ -160,12 +170,14 @@ Guru *net_input()
 	return NULL;
 }
 
+/* Let grubby speak */
 void net_output(Guru *output)
 {
 	char *token;
 
 	if(!room) return;
 
+	/* Handle multi-line answers */
 	token = strtok(output->message, "\n");
 	while(token)
 	{
@@ -182,6 +194,7 @@ void net_output(Guru *output)
 	}
 }
 
+/* Callback for successful connection */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
 {
 	/*nasty ggzcore bug?*/
@@ -195,18 +208,21 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for login */
 GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 {
-	ggzcore_server_list_rooms(server, -1, 1);
+	ggzcore_server_list_rooms(server, -1, 0);
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for rooms list */
 GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data)
 {
 	status = NET_LOGIN;
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for joining a room */
 GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 {
 	room = ggzcore_server_get_cur_room(server);
@@ -220,13 +236,15 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 	return GGZ_HOOK_OK;
 }
 
+/* Common error callback */
 GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
 {
-printf("!! FAIL: %s\n", (char*)event_data);
+	printf("ERROR: %s\n", (char*)event_data);
 	status = NET_ERROR;
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for new players coming in */
 GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data)
 {
 	char *player;
@@ -238,6 +256,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for players leaving the room */
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data)
 {
 	char *player;
@@ -249,6 +268,7 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 	return GGZ_HOOK_OK;
 }
 
+/* Chat callback which passes message to grubby */
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 {
 	char *player, *message;
@@ -269,11 +289,11 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 		status = NET_INPUT;
 	}
 
-	/* Logging here? */
+	/* Log all messages to the logfile if enabled */
 	if(logstream)
 	{
-		roomname = "-";
 		if(room) roomname = ggzcore_room_get_name(room);
+		else roomname = "-";
 		t = time(NULL);
 		ts = ctime(&t);
 		ts[strlen(ts) - 1] = 0;

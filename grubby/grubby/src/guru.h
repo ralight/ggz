@@ -13,6 +13,7 @@
 #include "module.h"
 #include "gurumod.h"
 
+/* Abstract overall functionality */
 Gurucore *guru_init();
 Guru *guru_work(Guru *message);
 int guru_close();

@@ -19,10 +19,13 @@ grubby have you seen someone
 #include "player.h"
 #include <time.h>
 
+/* Dummy init function */
 void gurumod_init()
 {
 }
 
+/* Handle all requests related to known people */
+/* FIXME: problem with whois */
 Guru *gurumod_exec(Guru *message)
 {
 	int i, j;
@@ -51,6 +54,7 @@ Guru *gurumod_exec(Guru *message)
 
 	if(!message->message)
 	{
+		/* Send random greeting to joining players */
 		if(message->type == GURU_ENTER)
 		{
 			if(!firsttime)
@@ -84,6 +88,7 @@ Guru *gurumod_exec(Guru *message)
 		}
 		if(message->type == GURU_LEAVE)
 		{
+			/* Send best wishes to leaving players */
 			switch(rand() % 10)
 			{
 				case 0:
@@ -115,6 +120,7 @@ Guru *gurumod_exec(Guru *message)
 
 	if(i > 4)
 	{
+		/* Register information about a player */
 		if((!strcmp(message->list[1], "my"))
 		&& (!strcmp(message->list[3], "is")))
 		{
@@ -148,6 +154,7 @@ Guru *gurumod_exec(Guru *message)
 	}
 	if(i == 4)
 	{
+		/* Show information about a player */
 		if((!strcmp(message->list[1], "who"))
 		&& (!strcmp(message->list[2], "is")))
 		{

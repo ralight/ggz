@@ -12,6 +12,7 @@
 
 #include "module.h"
 
+/* Available generic states of the net module */
 enum States
 {
 	NET_NOOP,
@@ -21,6 +22,7 @@ enum States
 	NET_INPUT
 };
 
+/* Interface */
 void net_connect(const char *host, int port, const char *name, const char *guestname);
 void net_join(int room);
 int net_status();

@@ -7,8 +7,6 @@
 *
 ********************************************************************/
 
-/* Guru i18n functions */
-
 #include "i18n.h"
 #include <locale.h>
 #include <stdlib.h>
@@ -34,6 +32,7 @@ void guru_i18n_setlanguage(const char *language)
 	++_nl_msg_cat_cntr;
 }
 
+/* Saves the language dependend on the player's origin */
 void setlanguage(char *player, char *language)
 {
 	Player *p;
@@ -71,6 +70,7 @@ void guru_i18n_check(char *player, char *message)
 }
 
 /* Translate a message or set of messages */
+/* FIXME: memory issues (as always) and better interface needed */
 char *guru_i18n_translate(char *player, char *messageset)
 {
 	char *token;

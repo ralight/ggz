@@ -15,7 +15,7 @@ logfile = /tmp/guruchatlog
 player = /usr/local/lib/libguru_player.so
 net = /usr/local/lib/libguru_netggz.so
 i18n = /usr/local/lib/libguru_i18n.so
-modules = self people badword programming exec simplereturn
+modules = self people badword programming exec simplereturn learning
   
 [modules]
 simplereturn = /usr/local/lib/libgurumod_simplereturn.so
@@ -24,6 +24,7 @@ programming = /usr/local/lib/libgurumod_programming.so
 badword = /usr/local/lib/libgurumod_badword.so
 self = /usr/local/lib/libgurumod_self.so
 people = /usr/local/lib/libgurumod_people.so
+learning = /usr/local/lib/libgurumod_learning.so
 
 ================================
 /home/josef/.ggz/grubby/modexec.rc

@@ -18,11 +18,18 @@
 #include <time.h>
 #include "exec.h"
 
+/* Configuration with list of external programs */
+#define EXECCONF "/.ggz/grubby/modexec.rc"
+/* Don't wait more than this for external programs to return*/
 #define MAXDELAY 8
+/* Maximum size of one line */
+#define MAXSIZE 1024
 
+/* Plugin-global lists of program names */
 char **aliaslist = NULL;
 char **programlist = NULL;
 
+/* Build up an option list for the simpleexec function */
 char *const *optlist(char *cmdline, char *options)
 {
 	static char **list = NULL;
@@ -30,6 +37,7 @@ char *const *optlist(char *cmdline, char *options)
 	char *token;
 	int listsize;
 
+	/* Free list first if already initialized*/
 	if(list)
 	{
 		i = 0;
@@ -41,6 +49,7 @@ char *const *optlist(char *cmdline, char *options)
 		free(list);
 	}
 
+	/* Create list from words in the option string */
 	list = (char**)malloc(2 * sizeof(char*));
 	list[0] = (char*)malloc(strlen(cmdline) + 1);
 	strcpy(list[0], cmdline);
@@ -60,6 +69,7 @@ char *const *optlist(char *cmdline, char *options)
 	return list;
 }
 
+/* Just execute a program without any checking */
 void simpleexec(const char *cmdline, const char *player)
 {
 	char *const *opts = optlist((char*)cmdline, (char*)player);
@@ -67,6 +77,8 @@ void simpleexec(const char *cmdline, const char *player)
 	execvp(cmdline, opts);
 }
 
+/* Try given program with given message */
+/* FIXME: Check further for errors and interrupts */
 char *process(const char *program, Guru *message)
 {
 	int fd[2];
@@ -76,20 +88,22 @@ char *process(const char *program, Guru *message)
 	static char *writebuffer = NULL;
 	time_t start;
 
+	/* Create socketpair first for communication */
 	result = socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
 	if(result == -1)
 	{
 		return NULL;
 	}
 
-	/* prepare buffers */
-	if(!readbuffer) readbuffer = (char*)malloc(1024);
-	if(!writebuffer) writebuffer = (char*)malloc(1024);
-	for(i = 0; i < 1024; i++)
+	/* Prepare buffers */
+	if(!readbuffer) readbuffer = (char*)malloc(MAXSIZE);
+	if(!writebuffer) writebuffer = (char*)malloc(MAXSIZE);
+	for(i = 0; i < MAXSIZE; i++)
 		readbuffer[i] = 0;
 	sprintf(writebuffer, "%s\n", message->message);
 	start = time(NULL);
 
+	/* Create child process and watch it */
 	pid = fork();
 	switch(pid)
 	{
@@ -105,13 +119,12 @@ char *process(const char *program, Guru *message)
 			fcntl(fd[1], F_SETFL, O_NONBLOCK);
 			write(fd[1], writebuffer, strlen(writebuffer));
 			printf("==> (%s)\n", message->message);
-			/*fcntl(fd[1], F_SETFL, O_NONBLOCK);*/
-			i = read(fd[1], readbuffer, 1024);
+			i = read(fd[1], readbuffer, MAXSIZE);
 if(i != -1) printf("FIRST: %i\n", i);
 else i = -2;
 			while((waitpid(pid, NULL, WNOHANG) == 0) && (time(NULL) - start < MAXDELAY) && (i <= 1))
 			{
-				i = read(fd[1], readbuffer, 1024);
+				i = read(fd[1], readbuffer, MAXSIZE);
 if(i != -1) printf("NOW: %i\n", i);
 			}
 			printf("<== (%i)\n", i);
@@ -125,6 +138,7 @@ if(i != -1) printf("NOW: %i\n", i);
 	return NULL;
 }
 
+/* Reveive message and pass it to all external programs */
 Guru *gurumod_exec(Guru *message)
 {
 	char *answer;
@@ -147,18 +161,23 @@ Guru *gurumod_exec(Guru *message)
 	return NULL;
 }
 
+/* Initialize this plugin */
 void gurumod_init()
 {
 	int handle;
-	char path[1024];
+	char *path, *home;
 	int count;
 	int ret;
 	int i;
 	char *program;
 	int num;
 
-	sprintf(path, "%s/.ggz/grubby/modexec.rc", getenv("HOME"));
+	home = getenv("HOME");
+	path = (char*)malloc(strlen(home) + strlen(EXECCONF) + 1);
+	strcpy(path, home);
+	strcat(path, EXECCONF);
 	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	free(path);
 	if(handle < 0) return;
 	ret = ggzcore_confio_read_list(handle, "programs", "programs", &count, &aliaslist);
 	printf("[ ");

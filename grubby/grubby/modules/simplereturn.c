@@ -11,11 +11,13 @@
 #include <stdlib.h>
 #include "gurumod.h"
 
+/* Just return any message without modification */
 Guru *gurumod_exec(Guru *message)
 {
 	return message;
 }
 
+/* Empty init */
 void gurumod_init()
 {
 }
