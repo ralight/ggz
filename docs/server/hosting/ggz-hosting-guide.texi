@@ -48,6 +48,7 @@ See http://ggz.sourceforge.net for the latest edition.
 * Internal Games:: Description of available games
 * External Games:: Additional games for GGZ
 * Other GGZ Servers:: How to install the Meta Server and TelGGZ
+* GGZ Server Tools:: Make an admin's life easier
 * Server Maintaining:: Help for administrators
 @end menu
 
@@ -265,7 +266,7 @@ Stalker is an SDL realtime game which uses UDP communication.
 
 @subsection T.E.G.
 
-@node Other GGZ Servers, Server Maintaining, External Games, Top
+@node Other GGZ Servers, GGZ Server Tools, External Games, Top
 @chapter Other GGZ Servers
 @c @cindex Index entry for Fifth Chapter
 
@@ -296,9 +297,20 @@ any GGZ server from all over the world, whereever one finds a telnet client.
 Grubby comes with its own manuals, including an administrator's manual and a
 user's manual.
 
-@node Server Maintaining, (dir), Other GGZ Servers, Top
-@chapter Server Maintaining
+@node GGZ Server Tools, Server Maintaining, Other GGZ Servers, Top
+@chapter GGZ Server Tools
 @c @cindex Index entry for Sixth Chapter
+
+@section The ggz-cmd command line utily
+
+Admins are allowed to broadcast messages to all rooms via the /wall command.
+To do that from the command line, for example to announce that a server will go
+down in a few minutes, the utily ggz-cmd can be used.
+It is available from the utils/cmd-client directory.
+
+@node Server Maintaining, (dir), GGZ Server Tools, Top
+@chapter Server Maintaining
+@c @cindex Index entry for Seventh Chapter
 
 @section Security
 
