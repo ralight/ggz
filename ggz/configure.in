@@ -312,3 +312,20 @@ echo ""
 echo "When compleate su to root"
 echo "and type \"make install\" to"
 echo "install the client software."
+
+dnl Show "deprecated" message
+dnl =========================
+
+echo ""
+echo ""
+echo ""
+echo " * ATTENTION!!! *"
+echo ""
+echo "   This CVS module is deprecated. It won't compile right now."
+echo "   The correct way to install the GGZ Gaming Zone is:"
+echo ""
+echo "   cvs -d:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz login"
+echo "   ... -z3 co easysock ggz-client-libs txt-client gtk-client kde-client"
+echo "              gtk-games kde-games ggzd utils docs"
+echo ""
+echo ""
