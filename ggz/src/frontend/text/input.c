@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: input.c 4975 2002-10-22 01:09:31Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -425,6 +425,11 @@ static void input_handle_join_table(char *line)
 	}
 
 	table_index = atoi(line);
+	if (!ggzcore_room_get_table_by_id(room, table_index)) {
+		output_text("That table doesn't exist! "
+			    "Maybe try '/list tables'?");
+		return;
+	}
 
 	game_init(module, type, table_index);
 }
