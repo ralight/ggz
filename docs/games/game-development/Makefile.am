@@ -1,6 +1,3 @@
-## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4646 2002-09-21 10:11:00Z dr_maux $
-
 SUBDIRS = .
 
 info_TEXINFOS = ggz-game-development-guide.texi
@@ -9,9 +6,7 @@ guidedir = $(GGZDOCDIR)/guides
 guide_DATA = $(ggzgamedevelopmentguide)
 
 docdir = $(GGZDOCDIR)/games
-doc_DATA = games.html features.html
-
-EXTRA_DIST = $(doc_DATA)
+dist_doc_DATA = games.html features.html
 
 %_toc.html: %.texi
 	texi2html -split_node $<
@@ -21,6 +16,9 @@ EXTRA_DIST = $(doc_DATA)
 
 clean-local:
 	-rm -f ggz-*.html
+	-rm -f $(ggzgamedevelopmentguide)
+	-rm -f ggz-game-development-guide.info
 
 install-data-local:
 	-cp ggz-*.html $(guidedir)
+
