@@ -32,22 +32,23 @@ class GGZCoreRoom
 		 * Possible events which can occur when entering rooms and staying in them. */
 		enum GGZCoreRoomEvent
 		{
-			playerlist,
-			tablelist,
-			chatnormal,
-			chatannounce,
-			chatprivate,
-			chatbeep,
-			enter,
-			leave,
-			tableupdate,
-			tablelaunched,
-			tablelaunchfail,
-			tablejoined,
-			tablejoinfail,
-			tableleft,
-			tableleavefail,
-			tabledata
+			/* Note, these events are linked to the real ggzcore values since they MUST match. */
+			playerlist = GGZ_PLAYER_LIST,
+			tablelist = GGZ_TABLE_LIST,
+			chatnormal = GGZ_CHAT,
+			chatannounce = GGZ_ANNOUNCE,
+			chatprivate = GGZ_PRVMSG,
+			chatbeep = GGZ_BEEP,
+			enter = GGZ_ROOM_ENTER,
+			leave = GGZ_ROOM_LEAVE,
+			tableupdate = GGZ_TABLE_UPDATE,
+			tablelaunched = GGZ_TABLE_LAUNCHED,
+			tablelaunchfail = GGZ_TABLE_LAUNCH_FAIL,
+			tablejoined = GGZ_TABLE_JOINED,
+			tablejoinfail = GGZ_TABLE_JOIN_FAIL,
+			tableleft = GGZ_TABLE_LEFT,
+			tableleavefail = GGZ_TABLE_LEAVE_FAIL,
+			playerlag = GGZ_PLAYER_LAG
 		};
 
 		/**
