@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <ggzd.h>
 #include <datatypes.h>
@@ -52,7 +53,7 @@ static void  table_fork(int t_index);
 static void  table_loop(int t_index);
 static int   table_handle(int op, int index, int fd);
 static void  table_remove(int t_index);
-static void  table_run_game(int t_index, int fd, char *path);
+static void  table_run_game(int t_index, char *path);
 static int   table_send_opt(int t_index);
 static int   table_game_over(int index, int fd);
 
@@ -166,19 +167,16 @@ static void table_fork(int t_index)
 
 	pid_t pid;
 	char path[MAX_PATH_LEN];
-	int type_index, i, fd[2];
-
-	/* Create socketpair for communication */
-	socketpair(PF_UNIX, SOCK_STREAM, 0, fd);
-	pthread_rwlock_wrlock(&tables.lock);
-	tables.info[t_index].fd_to_game = fd[1];
-	tables.info[t_index].playing = 1;
-	pthread_rwlock_unlock(&tables.lock);
-
+	char game[MAX_GAME_NAME_LEN + 1];
+	char fd_name[MAX_GAME_NAME_LEN + 12];
+	int type_index, i, sock, fd;
+	
 	/* Get path for game server */
 	type_index = tables.info[t_index].type_index;
+
 	pthread_rwlock_rdlock(&game_types.lock);
 	strncpy(path, game_types.info[type_index].path, MAX_PATH_LEN);
+	strncpy(game, game_types.info[type_index].name, MAX_GAME_NAME_LEN);
 	pthread_rwlock_unlock(&game_types.lock);
 
 #ifdef DEBUG
@@ -191,19 +189,31 @@ static void table_fork(int t_index)
 	if ((pid = fork()) < 0)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
-		table_run_game(t_index, fd[0], path);
+		table_run_game(t_index, path);
 		err_sys_exit("exec failed");
 	} else {
+		/* Create Unix doamin socket for communication*/
+		sprintf(fd_name, "/tmp/%s.%d", game, pid);
+		/* FIXME: need to check validity of fd */
+		sock = es_make_unix_socket(ES_SERVER, fd_name);
+				
+		if (listen(sock, 1) < 0) 
+			err_sys_exit("listen falied");
+
+		if ( (fd = accept(sock, NULL, NULL)) < 0)
+			err_sys_exit("accpet failed");
+		
+		pthread_rwlock_wrlock(&tables.lock);
+		tables.info[t_index].pid = pid;
+		tables.info[t_index].fd_to_game = fd;
+		tables.info[t_index].playing = 1;
+		pthread_rwlock_unlock(&tables.lock);
+		
 		/* Close the remote ends of the socket pairs */
-		close(fd[0]);
 		pthread_rwlock_rdlock(&tables.lock);
 		for (i = 0; i < seats_num(tables.info[t_index]); i++)
 			if (tables.info[t_index].seats[i] >= 0)
 				close(tables.info[t_index].player_fd[i]);
-		pthread_rwlock_unlock(&tables.lock);
-
-		pthread_rwlock_wrlock(&tables.lock);
-		tables.info[t_index].pid = pid;
 		pthread_rwlock_unlock(&tables.lock);
 
 		if (table_send_opt(t_index) == 0)
@@ -211,22 +221,18 @@ static void table_fork(int t_index)
 
 		/* Make sure game server is dead */
 		kill(pid, SIGINT);
+		close(tables.info[t_index].fd_to_game);
+		unlink(fd_name);
 	}
 }
 
 
-static void table_run_game(int t_index, int fd, char *path)
+static void table_run_game(int t_index, char *path)
 {
-
 	dbg_msg("Process forked.  Game running");
 
 	/* FIXME: Close all other fd's and kill threads? */
-	dup2(fd, STDIN_FILENO);
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
-
 	execv(path, NULL);
-
 }
 
 
@@ -351,7 +357,6 @@ static void table_remove(int t_index)
 	tables.timestamp = time(NULL);
 	pthread_rwlock_unlock(&tables.lock);
 
-	close(tables.info[t_index].fd_to_game);
 }
 
 
