@@ -47,6 +47,7 @@
 // Forward declarations
 class KPopupMenu;
 class KSystemTray;
+class KStatusBarLabel;
 
 // This class represents the visible main window of KGGZ.
 class KGGZBase : public KMainWindow
@@ -72,11 +73,11 @@ class KGGZBase : public KMainWindow
 		// The number of players in a room has changed
 		void slotRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Receive the caption dynamically from KGGZ
-		void slotCaption(const char *caption);
+		void slotCaption(QString caption, bool encrypted);
 		// Display the state in the status bar
 		void slotState(int state);
 		// Show room or outside of room message
-		void slotLocation(const char *location);
+		void slotLocation(QString location);
 		// Number of players on the server
 		void slotPlayers(int players);
 		// Activity
@@ -122,6 +123,8 @@ class KGGZBase : public KMainWindow
 			MENU_PREFERENCES_THEMES,
 			MENU_PREFERENCES_PREFERENCES,
 
+			MENU_HELP_GGZ,
+
 			MENU_ROOMS_SLOTS // MENU_ROOMS_SLOTS _must_ be the last element
 		};
 
@@ -143,7 +146,8 @@ class KGGZBase : public KMainWindow
 			STATUS_CONNECTION,
 			STATUS_STATE,
 			STATUS_ROOM,
-			STATUS_PLAYERS
+			STATUS_PLAYERS,
+			STATUS_ENCRYPTION
 		};
 
 		// The KGGZ object
@@ -160,6 +164,8 @@ class KGGZBase : public KMainWindow
 		int m_activity;
 		// Temporary variable for menu icon
 		QString m_lastgame;
+		// Encryption status
+		KStatusBarLabel *m_lock;
 };
 
 #endif

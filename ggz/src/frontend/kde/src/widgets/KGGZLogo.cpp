@@ -37,8 +37,14 @@
 // KGGZ includes
 #include "KGGZCommon.h"
 
+// KDE includes
+#include <kpixmap.h>
+#include <kpixmapeffect.h>
+#include <kimageeffect.h>
+
 // Qt includes
 #include <qpixmap.h>
+#include <qimage.h>
 #include <qlayout.h>
 
 // System includes
@@ -69,7 +75,7 @@ KGGZLogo::~KGGZLogo()
 {
 }
 
-void KGGZLogo::setLogo(const char *logo, const char *name)
+void KGGZLogo::setLogo(const char *logo, const char *name, bool enabled)
 {
 	QPixmap pix;
 	QString buffer;
@@ -78,6 +84,8 @@ void KGGZLogo::setLogo(const char *logo, const char *name)
 
 	KGGZDEBUG("Found module icon: %s\n", logo);
 	uselogo = logo;
+
+	//if(!enabled) name = "notinstalled";
 
 	if(!uselogo)
 	{
@@ -91,6 +99,18 @@ void KGGZLogo::setLogo(const char *logo, const char *name)
 	if(!uselogo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
 
 	pix = QPixmap(uselogo);
+	if(!enabled)
+	{
+		KPixmap graypix = KPixmap(pix);
+		pix = KPixmapEffect::toGray(graypix, false);
+
+		QPixmap overlaypix(KGGZ_DIRECTORY "/images/icons/games/notinstalled.png");
+		QImage im = pix.convertToImage();
+		QImage overlayim = overlaypix.convertToImage();
+		overlayim = overlayim.smoothScale(im.width(), im.height());
+		QImage result = KImageEffect::blend(im, overlayim, 0.5);
+		pix.convertFromImage(result);
+	}
 	m_logo->setErasePixmap(pix);
 	m_logo->setFixedSize(pix.width(), pix.height());
 }

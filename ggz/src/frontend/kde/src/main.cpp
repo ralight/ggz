@@ -59,13 +59,13 @@ int main(int argc, char **argv)
 		KGGZVERSION,
 		I18N_NOOP("Your most desired KDE network games launcher and chat system."),
 		KAboutData::License_GPL,
-		"Copyright (C) 2000 - 2003 Josef Spillner",
+		"Copyright (C) 2000 - 2005 Josef Spillner",
 		I18N_NOOP("KGGZ is a frontend for the GGZ Gaming Zone"),
-		"http://ggz.sourceforge.net/clients/kggz",
+		"http://www.ggzgamingzone.org/clients/kggz",
 		"josef@ggzgamingzone.org");
 
 	// forgotten anybody? tell me.
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("KDE port of the client"), "josef@ggzgamingzone.org", "http://mindx.dyndns.org");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("KDE port of the client"), "josef@ggzgamingzone.org");
 	aboutData->addCredit("Brian Cox", I18N_NOOP("(GGZ team)"), "bcox@users.sourceforge.net", "http://ggz.sourceforge.net");
 	aboutData->addCredit("Rich Gade", I18N_NOOP("(GGZ team)"), "rgade@users.sourceforge.net", "http://ggz.sourceforge.net");
 	aboutData->addCredit("Brent Hendricks", I18N_NOOP("(GGZ team)"), "bmh@users.sourceforge.net", "http://ggz.sourceforge.net");

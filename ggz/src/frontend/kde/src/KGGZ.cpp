@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
 //    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
 //    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
@@ -1004,8 +1004,8 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			buffer.sprintf(i18n("logged in as %s@%s:%i (using TLS: %i)"), m_save_username, m_save_hostname, m_save_port, m_save_encryption);
-			emit signalCaption(buffer);
+			buffer.sprintf(i18n("logged in as %s@%s:%i"), m_save_username, m_save_hostname, m_save_port);
+			emit signalCaption(buffer, m_save_encryption);
 			menuView(VIEW_CHAT);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
 			{
@@ -1089,7 +1089,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			if(kggzroom->description())
 				m_workspace->widgetChat()->receive(NULL, i18n("(Description: %1)").arg(kggzroom->description()), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->setRoom(kggzroom);
-			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
+			emit signalLocation(i18n("Room: ") + kggzroom->name());
 			emit signalMenu(MENUSIG_ROOMENTER);
 			gametype = kggzroom->gametype();
 			KGGZDEBUG("Spectators allowed here? %i\n", gametype->maxSpectators());
@@ -1723,7 +1723,7 @@ void KGGZ::slotLoadLogo()
 	gametype = kggzroom->gametype();
 	if((!gametype) || (!gametype->name()))
 	{
-		m_workspace->widgetLogo()->setLogo(NULL, "lounge");
+		m_workspace->widgetLogo()->setLogo(NULL, "lounge", true);
 		return;
 	}
 	KGGZDEBUG("__ more loading: %s %s %s\n", gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
@@ -1734,14 +1734,14 @@ void KGGZ::slotLoadLogo()
 	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
 	if(module->count() == 0)
 	{
-		m_workspace->widgetLogo()->setLogo(NULL, "notinstalled");
+		m_workspace->widgetLogo()->setLogo(NULL, gametype->protocolEngine(), false);
 		delete module;
 		return;
 	}
 	module->setActive(0);
 
 	icon = module->pathIcon();
-	m_workspace->widgetLogo()->setLogo(icon, gametype->protocolEngine());
+	m_workspace->widgetLogo()->setLogo(icon, gametype->protocolEngine(), true);
 
 	delete module;
 }
@@ -1850,7 +1850,7 @@ void KGGZ::eventLeaveRoom()
 	m_workspace->widgetChat()->shutdown();
 	m_workspace->widgetLogo()->shutdown();
 	m_workspace->widgetUsers()->setRoom(NULL);
-	emit signalLocation(i18n("  No room selected  "));
+	emit signalLocation(i18n("No room selected"));
 }
 
 void KGGZ::menuGameCancel()

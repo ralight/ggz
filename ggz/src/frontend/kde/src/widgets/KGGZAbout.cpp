@@ -154,7 +154,7 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	p.drawText(10, 35 + h * 3, measure(i18n("try to make public online game services available for free -")));
 	p.drawText(10, 35 + h * 4, measure(i18n("including source code and professional help for both gamers and")));
 	p.drawText(10, 35 + h * 5, measure(i18n("game developers. GGZ is available for many platforms and toolkits.")));
-	p.drawText(10, m_frame->height() - m_font.pointSize() - 10, measure(i18n("Homepage: http://ggz.sourceforge.net")));
+	p.drawText(10, m_frame->height() - m_font.pointSize() - 10, measure(i18n("Homepage: http://www.ggzgamingzone.org")));
 
 	p.end();
 

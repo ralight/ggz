@@ -134,11 +134,11 @@ class KGGZ : public QWidget
 		// Emitted to announce room player changes
 		void signalRoomChanged(const char *roomname, const char *protocolname, int roomnumber, int numplayers);
 		// Emitted to change window caption
-		void signalCaption(const char *caption);
+		void signalCaption(QString caption, bool encrypted);
 		// Emitted if connection state changes
 		void signalState(int state);
 		// Emitted if room changes
-		void signalLocation(const char *location);
+		void signalLocation(QString location);
 		// Emitted on activity changes
 		void signalActivity(int activity);
 		// Emitted on player count change

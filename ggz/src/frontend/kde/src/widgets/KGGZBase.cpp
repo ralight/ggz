@@ -46,6 +46,10 @@
 #include <kmenubar.h>
 #include <kstatusbar.h>
 #include <ksystemtray.h>
+#include <kiconloader.h>
+
+// Qt includes
+#include <qtooltip.h>
 
 KGGZBase::KGGZBase()
 : KMainWindow()
@@ -65,10 +69,13 @@ KGGZBase::KGGZBase()
 	height = konfig.readNumEntry("height");
 	watcher = konfig.readNumEntry("watcher");
 
-	statusBar()->insertItem(i18n("  Not connected  "), STATUS_CONNECTION);
-	statusBar()->insertItem(i18n("  Loading...  "), STATUS_STATE);
-	statusBar()->insertItem(i18n("  No room selected  "), STATUS_ROOM);
-	statusBar()->insertItem(i18n("  "), STATUS_PLAYERS);
+	statusBar()->insertItem(i18n("Not connected"), STATUS_CONNECTION);
+	statusBar()->insertItem(i18n("Loading..."), STATUS_STATE);
+	statusBar()->insertItem(i18n("No room selected"), STATUS_ROOM);
+	statusBar()->insertItem(QString::null, STATUS_PLAYERS);
+	//statusBar()->insertItem(QString::null, STATUS_ENCRYPTION);
+	m_lock = new KStatusBarLabel(QString::null, STATUS_ENCRYPTION, statusBar());
+	statusBar()->addWidget(m_lock);
 
 	kggz = new KGGZ(this, "kggz");
 
@@ -125,7 +132,7 @@ KGGZBase::KGGZBase()
 	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_SETTINGS), i18n("Se&ttings"), MENU_PREFERENCES_SETTINGS);
 
-	helpMenu()->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"), i18n("About the GGZ Gaming Zone"), 99, 5);
+	helpMenu()->insertItem(kggzGetIcon(MENU_HELP_GGZ), i18n("About the GGZ Gaming Zone"), 99, 5);
 	helpMenu()->connectItem(99, this, SLOT(slotAboutGGZ()));
 
 	menuBar()->insertItem(i18n("GG&Z"), m_menu_ggz, MENU_GGZ);
@@ -146,9 +153,9 @@ KGGZBase::KGGZBase()
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
 	connect(kggz, SIGNAL(signalRoom(const char*, const char*, const char*, int)), SLOT(slotRoom(const char*, const char*, const char*, int)));
 	connect(kggz, SIGNAL(signalRoomChanged(const char*, const char*, int, int)), SLOT(slotRoomChanged(const char*, const char*, int, int)));
-	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
+	connect(kggz, SIGNAL(signalCaption(QString, bool)), SLOT(slotCaption(QString, bool)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
-	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
+	connect(kggz, SIGNAL(signalLocation(QString)), SLOT(slotLocation(QString)));
 	connect(kggz, SIGNAL(signalPlayers(int)), SLOT(slotPlayers(int)));
 	connect(kggz, SIGNAL(signalActivity(int)), SLOT(slotActivity(int)));
 
@@ -162,7 +169,7 @@ KGGZBase::KGGZBase()
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 
-	statusBar()->changeItem(i18n("  Ready for connection.  "), STATUS_STATE);
+	statusBar()->changeItem(i18n("Ready for connection."), STATUS_STATE);
 }
 
 KGGZBase::~KGGZBase()
@@ -190,20 +197,58 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 	switch(menuid)
 	{
 		case MENU_GGZ_CONNECT:
-			icon = "connect.png";
+			return KGlobal::iconLoader()->loadIcon("connect_creating", KIcon::Small);
 			break;
 		case MENU_GGZ_DISCONNECT:
-			icon = "disconnect.png";
+			return KGlobal::iconLoader()->loadIcon("connect_no", KIcon::Small);
 			break;
+		case MENU_GGZ_MOTD:
+			return KGlobal::iconLoader()->loadIcon("news", KIcon::Small);
+			break;
+		case MENU_GGZ_WATCHER:
+			return KGlobal::iconLoader()->loadIcon("idea", KIcon::Small);
+			break;
+		case MENU_GGZ_QUIT:
+			return KGlobal::iconLoader()->loadIcon("exit", KIcon::Small);
+			break;
+		case MENU_PREFERENCES_SETTINGS:
+			return KGlobal::iconLoader()->loadIcon("configure", KIcon::Small);
+			break;
+		case MENU_GAME_INFO:
+			return KGlobal::iconLoader()->loadIcon("info", KIcon::Small);
+			break;
+		case MENU_GAME_CANCEL:
+			return KGlobal::iconLoader()->loadIcon("cancel", KIcon::Small);
+			break;
+		case MENU_GAME_LAUNCH:
+			return KGlobal::iconLoader()->loadIcon("1uparrow", KIcon::Small);
+			break;
+		case MENU_GAME_JOIN:
+			return KGlobal::iconLoader()->loadIcon("1rightarrow", KIcon::Small);
+			break;
+		case MENU_HELP_GGZ:
+			return KGlobal::iconLoader()->loadIcon("ggz", KIcon::Small);
+			break;
+	}
+
+//(KGGZ_DIRECTORY "/images/icons/ggz.png")
+	switch(menuid)
+	{
+//		case MENU_GGZ_CONNECT:
+//			icon = "connect.png";
+//			break;
+//		case MENU_GGZ_DISCONNECT:
+//			icon = "disconnect.png";
+//			break;
 		case MENU_GGZ_STARTSERVER:
 			icon = "startserver.png";
 			break;
 		case MENU_GGZ_STOPSERVER:
 			icon = "stopserver.png";
 			break;
-		case MENU_GGZ_QUIT:
-			icon = "quit.png";
-			break;
+//		case MENU_GGZ_QUIT:
+//			icon = "quit.png";
+//			break;
 		case MENU_CLIENT_STARTUP:
 			icon = "startup.png";
 			break;
@@ -219,35 +264,35 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 		case MENU_CLIENT_HELP:
 			icon = "browser.png";
 			break;
-		case MENU_GAME_INFO:
-			icon = "info.png";
-			break;
-		case MENU_GAME_LAUNCH:
-			icon = "launch.png";
-			break;
-		case MENU_GAME_JOIN:
-			icon = "join.png";
-			break;
-		case MENU_GAME_CANCEL:
-			icon = "cancel.png";
-			break;
+//		case MENU_GAME_INFO:
+//			icon = "info.png";
+//			break;
+//		case MENU_GAME_LAUNCH:
+//			icon = "launch.png";
+//			break;
+//		case MENU_GAME_JOIN:
+//			icon = "join.png";
+//			break;
+//		case MENU_GAME_CANCEL:
+//			icon = "cancel.png";
+//			break;
 		case MENU_GAME_UPDATE:
 			icon = "update.png";
 			break;
 		case MENU_GAME_GRUBBY:
 			icon = "grubby.png";
 			break;
-		case MENU_PREFERENCES_SETTINGS:
-		case MENU_PREFERENCES_PLAYERINFO:
-		case MENU_PREFERENCES_HOSTS:
-		case MENU_PREFERENCES_FTP:
-		case MENU_PREFERENCES_GAMES:
-		case MENU_PREFERENCES_THEMES:
-			icon = "pref.png";
-			break;
-		case MENU_PREFERENCES_PREFERENCES:
-			icon = "preferences.png";
-			break;
+//		case MENU_PREFERENCES_SETTINGS:
+//		case MENU_PREFERENCES_PLAYERINFO:
+//		case MENU_PREFERENCES_HOSTS:
+//		case MENU_PREFERENCES_FTP:
+//		case MENU_PREFERENCES_GAMES:
+//		case MENU_PREFERENCES_THEMES:
+//			icon = "pref.png";
+//			break;
+//		case MENU_PREFERENCES_PREFERENCES:
+//			icon = "preferences.png";
+//			break;
 		default:
 			icon = "unknown.png";
 			break;
@@ -281,7 +326,8 @@ void KGGZBase::slotMenu(int id)
 		case MENU_GGZ_DISCONNECT:
 			kggz->menuDisconnect();
 			statusBar()->changeItem(i18n("Not connected"), STATUS_CONNECTION);
-			statusBar()->changeItem(i18n("  "), STATUS_PLAYERS);
+			statusBar()->changeItem(QString::null, STATUS_PLAYERS);
+			m_lock->setFixedWidth(0);
 			break;
 		case MENU_GGZ_MOTD:
 			kggz->menuMotd();
@@ -461,25 +507,41 @@ void KGGZBase::slotRoomChanged(const char *roomname, const char *protocolname, i
 	KGGZDEBUG("***** ROOMS CHANGED: %s(%i)=%i", roomname, roomnumber, numplayers);
 }
 
-void KGGZBase::slotCaption(const char *caption)
+void KGGZBase::slotCaption(QString caption, bool encrypted)
 {
 	setCaption(caption);
-	statusBar()->changeItem(i18n("  Connected  "), STATUS_CONNECTION);
+	statusBar()->changeItem(i18n("Connected"), STATUS_CONNECTION);
+
+	m_lock->setFixedSize(KIcon::SizeSmall, KIcon::SizeSmall);
+	if(encrypted)
+	{
+		//m_lock->setBackgroundColor(QColor(0, 255, 0));
+		QPixmap lock = KGlobal::iconLoader()->loadIcon("encrypted", KIcon::Small);
+		m_lock->setBackgroundPixmap(lock);
+		QToolTip::add(m_lock, i18n("Connection secured with TLS"));
+	}
+	else
+	{
+		//m_lock->setBackgroundColor(QColor(255, 0, 0));
+		QPixmap lock = KGlobal::iconLoader()->loadIcon("decrypted", KIcon::Small);
+		m_lock->setBackgroundPixmap(lock);
+		QToolTip::add(m_lock, i18n("Insecure connection"));
+	}
 }
 
 void KGGZBase::slotState(int state)
 {
-	statusBar()->changeItem(i18n("  State: ") + KGGZCommon::state((GGZStateID)state) + "  ", STATUS_STATE);
+	statusBar()->changeItem(i18n("State: ") + KGGZCommon::state((GGZStateID)state), STATUS_STATE);
 }
 
-void KGGZBase::slotLocation(const char *location)
+void KGGZBase::slotLocation(QString location)
 {
-	statusBar()->changeItem(QString("  ") + location + "  ", STATUS_ROOM);
+	statusBar()->changeItem(location, STATUS_ROOM);
 }
 
 void KGGZBase::slotPlayers(int players)
 {
-	statusBar()->changeItem(QString("  Players on server: %1").arg(players), STATUS_PLAYERS);
+	statusBar()->changeItem(QString("Players on server: %1").arg(players), STATUS_PLAYERS);
 }
 
 void KGGZBase::slotActivity(int activity)
