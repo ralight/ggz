@@ -187,7 +187,7 @@ static void lapocha_next_bid()
 
 static int lapocha_test_for_gameover()
 {
-	return (game.hand_num == 29);
+	return (game.hand_num >= 28);
 }
 
 static int lapocha_deal_hand()
