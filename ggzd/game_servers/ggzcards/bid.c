@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: bid.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 #include <ggz.h>
 
 #include "common.h"
+#include "message.h"
+#include "net.h"
 
 /* clear_bids clears the list of bids */
 void clear_bids(player_t p)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: options.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -41,9 +41,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ggz.h>
 
 #include "common.h"
+#include "message.h"
 
 static int options_initted = 0;
 

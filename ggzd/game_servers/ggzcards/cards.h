@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: cards.h 3483 2002-02-27 05:00:13Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -26,8 +26,6 @@
  */
 
 #ifndef GGZ_CARDS_INCLUDED
-
-#include <config.h>		/* Site-specific config */
 
 #include "protocol.h"		/* contains actual card structures */
 

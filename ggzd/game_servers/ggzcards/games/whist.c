@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 3439 2002-02-22 23:33:47Z jdorje $
+ * $Id: whist.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 #include <string.h>
 
 #include "common.h"
+#include "game.h"
+#include "message.h"
 
 #include "whist.h"
 

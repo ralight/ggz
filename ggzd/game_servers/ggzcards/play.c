@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3482 2002-02-27 04:36:02Z jdorje $
+ * $Id: play.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -27,7 +27,10 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <stdlib.h>
+
 #include "common.h"
+#include "message.h"
 #include "net.h"
 #include "play.h"
 

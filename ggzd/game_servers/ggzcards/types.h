@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: types.h 3483 2002-02-27 05:00:13Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -27,8 +27,6 @@
 
 #ifndef __TYPES_H__
 #define __TYPES_H__
-
-#include <config.h>		/* Site-specific config */
 
 #include "cards.h"
 
@@ -88,5 +86,8 @@ struct game_player_t {
 	   is_playing set, with the dummy as the play_seat). */
 	seat_t play_seat;	/* what seat are we playing from? */
 };
+
+/* Used in message-sending in message.c. */
+typedef struct global_message_list_t global_message_list_t;
 
 #endif /* __TYPES_H__ */

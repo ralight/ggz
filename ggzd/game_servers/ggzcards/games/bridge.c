@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: bridge.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -27,9 +27,14 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <stdio.h>
 #include <string.h>
 
+#include "bid.h"
 #include "common.h"
+#include "game.h"
+#include "message.h"
+#include "net.h"
 #include "play.h"
 
 #include "bridge.h"

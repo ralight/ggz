@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: options.h 3483 2002-02-27 05:00:13Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -33,8 +33,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
-
-#include <config.h>		/* Site-specific config */
 
 #include <string.h>
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3459 2002-02-24 20:05:07Z jdorje $
+ * $Id: games.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -37,6 +37,7 @@
 #include <ggz.h>
 
 #include "common.h"
+#include "net.h"
 
 /* BEGINNING of game data.  To add a new game, you'll need to add information 
    about it here in the form of an extern declaration of its function pointer 

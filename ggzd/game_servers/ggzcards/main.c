@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3459 2002-02-24 20:05:07Z jdorje $
+ * $Id: main.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -31,6 +31,7 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <ggz.h>
 
@@ -40,7 +41,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "ai.h"
 #include "common.h"
+#include "options.h"
 
 /* Both of these functions are taken from FreeCiv. */
 /* static int is_option(const char *option_name,char *option); */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3482 2002-02-27 04:36:02Z jdorje $
+ * $Id: net.c 3483 2002-02-27 05:00:13Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -33,10 +33,15 @@
 #endif
 
 #include <assert.h>
+#include <stdlib.h>
+
 #include <ggz.h>
 
 #include "common.h"
+#include "message.h"
+#include "net.h"
 #include "play.h"
+
 #ifdef USE_GGZ_STATS		/* defined in common.h */
 # include "../../ggzdmod/ggz_stats.h"
 #endif /* USE_GGZ_STATS */
