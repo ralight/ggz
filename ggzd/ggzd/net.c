@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3606 2002-03-21 02:52:30Z bmh $
+ * $Id: net.c 3985 2002-04-14 19:56:00Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1501,6 +1501,21 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 		msg = ggz_xmlelement_get_text(data);
 
 		if (!msg) {
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+			return;
+		}
+		
+		/* check for possible buffer overflows */
+		/* FIXME: this is a difficult issue.  Limiting buffer length to
+		   4096 characters will break any games that send packets longer
+		   than this (unless they are broken up at the client end).  It
+		   is tempting just to malloc a buffer of appropriate size so
+		   that the data will always fit...but that's not a reasonable
+		   solution either, since it can be very easily abused.  In any
+		   case, once direct connections are used this won't be an
+		   issue.  --JDS */
+		if (size >= sizeof(buffer) ) {
+			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 			return;
 		}
