@@ -7,7 +7,8 @@ lib_LTLIBRARIES = \
 	libgurumod_badword.la \
 	libgurumod_self.la \
 	libgurumod_people.la \
-	libgurumod_learning.la
+	libgurumod_learning.la \
+	libgurumod_extra.la
 
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
 
@@ -22,6 +23,8 @@ libgurumod_badword_la_LIBADD = $(LIB_GGZCORE)
 libgurumod_badword_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 
 libgurumod_self_la_SOURCES = self.c
+
+libgurumod_extra_la_SOURCES = extra.c
 
 libgurumod_people_la_SOURCES = people.c
 libgurumod_people_la_LDFLAGS = $(GGZCORE_LDFLAGS)
