@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2932 2001-12-18 07:48:57Z jdorje $
+ * $Id: ggzdmod.h 2991 2001-12-28 20:19:10Z dr_maux $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -177,6 +177,10 @@
 
 #ifndef __GGZDMOD_H__
 #define __GGZDMOD_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 /** @brief Seat status values.
@@ -456,5 +460,8 @@ int ggzdmod_disconnect(GGZdMod * mod);
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 		ggz__attribute((format(printf, 2, 3)));
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GGZDMOD_H__ */
