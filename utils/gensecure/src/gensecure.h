@@ -7,6 +7,10 @@ Published under GNU GPL conditions
 #ifndef GENSECURE_H
 #define GENSECURE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <openssl/ssl.h>
 
 /* Mode of connection (for tls_start) */
@@ -34,6 +38,10 @@ int tls_active(int fd);
 int tls_read(int fd, char *buffer, int size);
 /* Write some bytes (secure) */
 int tls_write(int fd, const char *s, int size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 			bytes = INPUT(tmpbuf, sizeof(tmpbuf));
 			if(bytes > 0)
 			{
+				tmpbuf[bytes] = 0;
 				if(!strcmp(tmpbuf, "quit"))
 				{
 					OUTPUT("Bye.");

@@ -251,7 +251,7 @@ int tls_read(int fd, char *buffer, int size)
 	SSL *handler;
 	int ret;
 
-	printf("<< %s\n", buffer);
+	//printf("<< %s\n", buffer);
 	handler = tls_list_get(fd);
 	if(!handler)
 	{
@@ -259,7 +259,30 @@ int tls_read(int fd, char *buffer, int size)
 		return read(fd, buffer, size);
 	}
 	ret = SSL_read(handler, buffer, size);
-	if(ret <= 0) printf("SSL read error (%i) on fd %i!\n", ret, fd);
+	if(ret <= 0)
+	{
+		switch(SSL_get_error(handler, ret))
+		{
+			case SSL_ERROR_WANT_READ:
+			case SSL_ERROR_WANT_WRITE:
+				break;
+			case SSL_ERROR_SYSCALL:
+				ret = ERR_get_error();
+				if(!ret)
+				{
+					printf("Protocol violation: EOF\n");
+				}
+				else
+				{
+					printf("Unix IO error: %i\n", errno);
+				}
+				break;
+			default:
+				printf("SSL read error (%i) on fd %i!\n", ret, fd);
+				printf("SSL: %s\n", tls_exterror(handler, ret));
+		}
+	}
+	//else buffer[ret] = 0;
 	return ret;
 }
 
@@ -276,12 +299,34 @@ int tls_write(int fd, const char *s, int size)
 		return write(fd, s, size);
 	}
 	ret = SSL_write(handler, s, size);
-	if(ret <= 0) printf("SSL write error (%i) on fd %i!\n", ret, fd);
+	if(ret <= 0)
+	{
+		switch(SSL_get_error(handler, ret))
+		{
+			case SSL_ERROR_WANT_READ:
+			case SSL_ERROR_WANT_WRITE:
+				break;
+			case SSL_ERROR_SYSCALL:
+				ret = ERR_get_error();
+				if(!ret)
+				{
+					printf("Protocol violation: EOF\n");
+				}
+				else
+				{
+					printf("Unix IO error: %i\n", errno);
+				}
+				break;
+			default:
+				printf("SSL write error (%i) on fd %i!\n", ret, fd);
+				printf("SSL: %s\n", tls_exterror(handler, ret));
+		}
+	}
 	return ret;
 }
 
 int tls_active(int fd)
 {
-	return tls_list_active(fd);
+	return (tls_list_active(fd) > 0);
 }
 
