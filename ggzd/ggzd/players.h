@@ -77,6 +77,8 @@ struct _GGZPlayer {
         void *my_events_head;
         void *my_events_tail;
 	
+	/* Connection info */
+	long login_time;
 };
 
 typedef struct _GGZPlayer GGZPlayer; 

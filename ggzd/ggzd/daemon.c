@@ -87,8 +87,6 @@ void daemon_init(void)
 	strcat(pid_file, "/");
 	strcat(pid_file, pid_filename);
 
-	log_msg(GGZ_LOG_NOTICE, "Opening lockfile %s", pid_file);
-
 	if ( (fd = open(pid_file, O_RDWR | O_CREAT | O_EXCL, 
 			S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH)) == -1) {
 		

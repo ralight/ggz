@@ -283,6 +283,8 @@ static void player_remove(GGZPlayer* player)
 {
 	char lc_name[MAX_USER_NAME_LEN + 1];
 	char *src, *dest;
+	long connect_time;
+	int hours, mins, secs;
 
 	/* Take their name off the hash list */
 	/* Convert name to lowercase for comparisons */
@@ -290,13 +292,18 @@ static void player_remove(GGZPlayer* player)
 	for(src=player->name,dest=lc_name; *src!='\0'; src++,dest++)
 		*dest = tolower(*src);
 	*dest = '\0';
+	connect_time = (long)time(NULL) - player->login_time;
 	pthread_rwlock_unlock(&player->lock);
 
 	hash_player_delete(lc_name);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing %s", player->name);
-	log_msg(GGZ_LOG_CONNECTION_INFO, "%s disconnected from server",
-		player->name);
+
+	hours = connect_time / 3600;
+	mins = (connect_time % 3600) / 60;
+	secs = connect_time % 60;
+	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGOUT %s connected for %d:%02d:%02d seconds",
+		player->name, hours, mins, secs);
 
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)

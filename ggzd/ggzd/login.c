@@ -62,6 +62,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	int name_ok;
 	char lc_name[MAX_USER_NAME_LEN + 1], new_pw[17];
 	ggzdbPlayerEntry db_pe;
+	char *login_type=NULL;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login", player);
 
@@ -140,6 +141,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
 			err_msg("Player database update failed (%s)", name);
+		login_type = " registered player";
 
 	}
 	else if (type == GGZ_LOGIN_NEW) {
@@ -151,7 +153,9 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
-	}
+		login_type = " newly registered player";
+	} else
+		login_type = "n anonymous player";
 	
 	/* Setup the player's information */
 	pthread_rwlock_wrlock(&player->lock);
@@ -161,6 +165,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		player->uid = 0;
 	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = player->addr;
+	player->login_time = (long) time(NULL);
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */
@@ -174,8 +179,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
 
 	/* Log the connection */
-	log_msg(GGZ_LOG_CONNECTION_INFO, "Player %s logged in from %s", name,
-		ip_addr);
+	log_msg(GGZ_LOG_CONNECTION_INFO, "LOGIN %s from %s as a%s", name,
+		ip_addr, login_type);
 	
 	
 	return GGZ_REQ_OK;
