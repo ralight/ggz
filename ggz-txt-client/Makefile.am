@@ -2,6 +2,5 @@
 
 SUBDIRS = ggz-txt man
 
-EXTRA_DIST = README.GGZ QuickStart.GGZ
-
-
+EXTRA_DIST = README.GGZ QuickStart.GGZ \
+	m4/ggz.m4
