@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4966 2002-10-21 01:21:56Z jdorje $
+ * $Id: netxml.c 4981 2002-10-22 04:24:17Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -553,8 +553,10 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net,
 int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Sending table seat update request");
-	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
-	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
+	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>",
+			       _ggzcore_room_get_id(table->room));
+	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>",
+			       table->id, table->num_seats);
 	_ggzcore_net_send_table_seat(net, seat);
 	_ggzcore_net_send_line(net, "</TABLE>");
 	_ggzcore_net_send_line(net, "</UPDATE>");	
