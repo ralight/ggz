@@ -32,11 +32,10 @@ rm -rf $RPM_BUILD_ROOT
 
 # After installing or uninstalling, run ldconfig
 %post
-ldconfig
+PATH="$PATH:/sbin" ldconfig
 
 %postun
-ldconfig
-rm -f /usr/lib/libggzcore.so.0
+PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
@@ -47,9 +46,14 @@ rm -f /usr/lib/libggzcore.so.0
 /usr/bin/ggz-config
 /usr/lib/libggzcore.a
 /usr/lib/libggzcore.la
+/usr/lib/libggzcore.so
+/usr/lib/libggzcore.so.0
 /usr/lib/libggzcore.so.0.0.0
 /usr/include/ggzcore.h
 
 %changelog
+* Wed Mar 28 2001 Rich Gade <rgade@users.sourceforge.net>
+- Corrected spec file to properly install libggzcore as shared
+
 * Tue Mar 27 2001 Rich Gade <rgade@users.sourceforge.net>
 - Initial specification file

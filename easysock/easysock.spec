@@ -32,11 +32,10 @@ rm -rf $RPM_BUILD_ROOT
 
 # After installing or uninstalling, run ldconfig
 %post
-ldconfig
+PATH="$PATH:/sbin" ldconfig
 
 %postun
-ldconfig
-rm -f /usr/lib/libeasysock.so.0
+PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
@@ -44,10 +43,15 @@ rm -f /usr/lib/libeasysock.so.0
 
 /usr/lib/libeasysock.a
 /usr/lib/libeasysock.la
+/usr/lib/libeasysock.so
+/usr/lib/libeasysock.so.0
 /usr/lib/libeasysock.so.0.2.0
 /usr/include/easysock.h
 
 %changelog
+* Wed Mar 28 2001 Rich Gade <rgade@users.sourceforge.net>
+- Corrected spec file to properly install libeasysock as shared
+
 * Tue Mar 27 2001 Rich Gade <rgade@users.sourceforge.net>
 - Modified for version bump to 0.2.0
 - Modified for name change (libeasysock -> easysock)
