@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: ggzdb.c 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -199,16 +199,6 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 
 	if (rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_stats_lookup(stats);
-
-	if (rc == GGZDB_ERR_NOTFOUND) {
-		stats->wins = 0;
-		stats->losses = 0;
-		stats->ties = 0;
-		stats->rating = 1500;
-		stats->ranking = 1; /* ? */
-		stats->highest_score = 0; /* ? */
-		rc = GGZDB_NO_ERROR;
-	}
 
 	_ggzdb_exit();
 

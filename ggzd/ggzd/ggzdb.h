@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: ggzdb.h 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -63,9 +63,10 @@ typedef struct {
 	int wins;
 	int losses;
 	int ties;
-	int rating;
-	int ranking;
-	int highest_score;
+	int forfeits;
+	float rating;
+	unsigned int ranking;
+	long highest_score;
 } ggzdbPlayerGameStats;
 
 
@@ -89,7 +90,11 @@ GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *);
 /* GGZDBResult ggzdb_player_delete(const char *handle); */
 unsigned int ggzdb_player_next_uid(void);
 
+/* Look up a player's stats entry.  Note, you should probably use
+ * stats_lookup() instead. */
 GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
+
+/* Update a stats entry in the DB, adding it if necessary. */
 GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 
 #endif

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5072 2002-10-27 23:16:47Z jdorje $
+ * $Id: stats.c 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -46,6 +46,33 @@
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 
+
+GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
+{
+	GGZDBResult status;
+
+	status = ggzdb_stats_lookup(stats);
+
+	if (status == GGZDB_ERR_NOTFOUND) {
+		stats->wins = 0;
+		stats->losses = 0;
+		stats->ties = 0;
+		stats->forfeits = 0;
+
+		stats->rating = 1500.0;
+
+		stats->ranking = 1; /* ? */
+		stats->highest_score = 0; /* ? */
+
+		return GGZ_OK;
+	} else if (status != GGZDB_NO_ERROR) {
+		err_msg("DB error %d in table_game_report", status);
+		return GGZ_ERROR;
+	}
+
+	return GGZ_OK;
+}
+
 static void calculate_records(ggzdbPlayerGameStats *stats,
 			      GGZdModGameReportData *report)
 {
@@ -66,37 +93,37 @@ static void calculate_records(ggzdbPlayerGameStats *stats,
 	}
 }
 
+static void calculate_ratings(ggzdbPlayerGameStats *stats,
+			      GGZdModGameReportData *report)
+{
+	err_msg("Ratings not implemented!");
+}
+
 void report_statistics(int room, int gametype,
 		       GGZdModGameReportData *report)
 {
 	int i;
 	char game_name[MAX_GAME_NAME_LEN + 1];
-	unsigned char records;
+	unsigned char records, ratings;
 	ggzdbPlayerGameStats stats[report->num_players];
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
 	strcpy(game_name, game_types[gametype].name);
 	records = game_types[gametype].stats_records;
+	ratings = game_types[gametype].stats_ratings;
 	pthread_rwlock_unlock(&game_types[gametype].lock);
 
 	/* First, check if we use *any* stats. */
-	if (!records)
+	if (!records && !ratings)
 		return;
 
 	/* Retrieve the old stats. */
 	for (i = 0; i < report->num_players; i++) {
-		GGZDBResult status;
-
 		strcpy(stats[i].player, report->names[i]);
 		strcpy(stats[i].game, game_name);
 
-		status = ggzdb_stats_lookup(&stats[i]);
-
-		/* NOT_FOUND case is handled in lookup */
-		if (status != GGZDB_NO_ERROR) {
-			err_msg("DB error %d in table_game_report", status);
+		if (stats_lookup(&stats[i]) != GGZ_OK)
 			return;
-		}
 	}
 
 	/* There's a potential threading problem here, but in
@@ -110,6 +137,8 @@ void report_statistics(int room, int gametype,
 	/* Calculate stats */
 	if (records)
 		calculate_records(stats, report);
+	if (ratings)
+		calculate_ratings(stats, report);
 
 	/* Rewrite the stats to the database. */
 	for (i = 0; i < report->num_players; i++) {
@@ -137,6 +166,9 @@ void report_statistics(int room, int gametype,
 			player->wins = stats[i].wins;
 			player->losses = stats[i].losses;
 			player->ties = stats[i].ties;
+		}
+		if (ratings) {
+			player->rating = stats[i].rating;
 		}
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: room.c 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #include "perms.h"
 #include "protocols.h"
 #include "room.h"
+#include "stats.h"
 
 
 /* Server wide data structures */
@@ -213,34 +214,37 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 /* Read the player's stats for this room. */
 static void update_room_stats(GGZPlayer *player, int game_type)
 {
-	int wins, losses, ties;
 	ggzdbPlayerGameStats stats;
-	int records;
+	int records, ratings;
 
-	pthread_rwlock_rdlock(&game_types[game_type].lock);
-	strcpy(stats.game, game_types[game_type].name);
-	records = game_types[game_type].stats_records;
-	pthread_rwlock_unlock(&game_types[game_type].lock);
-
-	if (records) {
-		strcpy(stats.player, player->name);
-		ggzdb_stats_lookup(&stats);
-	}
-
-	if (records) {
-		wins = stats.wins;
-		losses = stats.losses;
-		ties = stats.ties;
+	if (game_type >= 0) {
+		pthread_rwlock_rdlock(&game_types[game_type].lock);
+		strcpy(stats.game, game_types[game_type].name);
+		records = game_types[game_type].stats_records;
+		ratings = game_types[game_type].stats_ratings;
+		pthread_rwlock_unlock(&game_types[game_type].lock);
 	} else {
-		wins = -1;
-		losses = -1;
-		ties = -1;
+		records = ratings = 0;
+	}
+	
+	if (records || ratings) {
+		strcpy(stats.player, player->name);
+		if (stats_lookup(&stats) != GGZ_OK) {
+			records = ratings = 0;
+		}
 	}
 
 	pthread_rwlock_wrlock(&player->stats_lock);
-	player->wins = wins;
-	player->losses = losses;
-	player->ties = ties;
+	player->have_record = records;
+	if (records) {
+		player->wins = stats.wins;
+		player->losses = stats.losses;
+		player->ties = stats.ties;
+		player->forfeits = stats.forfeits;
+	}
+	player->have_rating = ratings;
+	if (ratings) 
+		player->rating = stats.rating;
 	pthread_rwlock_unlock(&player->stats_lock);
 }
 
@@ -316,7 +320,9 @@ GGZClientReqError room_join(GGZPlayer* player, const int room)
 	if(old_room != -1)
 		pthread_rwlock_unlock(&rooms[old_room].lock);
 
-	/* Update their game stats for this room */
+	/* Update their game stats for this room.  Note, this is a major
+	   bottleneck since it means we're doing a DB access while we have
+	   a write-lock on the room!  But doing it differently is tricky. */
 	if (room != -1)
 		update_room_stats(player, rooms[room].game_type);
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.h 5071 2002-10-27 23:04:44Z jdorje $
+ * $Id: stats.h 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -23,5 +23,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _GGZ_STATS_H
+#define _GGZ_STATS_H
+
+#include "ggzdmod-ggz.h"
+
+/* Perform a lookup on the stats.  stats->player and stats->game should
+ * already have been set.  Returns GGZ_ERROR on fatal DB error. */
+GGZReturn stats_lookup(ggzdbPlayerGameStats *stats);
+
 void report_statistics(int room, int gametype,
 		       GGZdModGameReportData *report);
+
+#endif /* _GGZ_STATS_H */

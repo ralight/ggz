@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: net.c 5073 2002-10-28 00:09:53Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -445,11 +445,34 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 }
 
 
+static void _net_get_player_stats_string(GGZPlayer *player,
+					 char *buf, size_t bufsz)
+{
+	char record[256] = "", rating[64] = "";
+
+	/* The caller should ensure that these values are safe to access... */
+	/* FIXME: do this more elegantly */
+
+	if (player->have_record) {
+		snprintf(record, sizeof(record),
+			 " WINS='%d' LOSSES='%d' TIES='%d' FORFEITS='%d'",
+			 player->wins, player->losses, player->ties,
+			 player->forfeits);
+	}
+
+	if (player->have_rating)
+		snprintf(rating, sizeof(rating),
+			 " RATING='%d'", player->rating);
+
+	snprintf(buf, bufsz, "%s%s", record, rating);
+}
+
+
 GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 {
 	GGZPlayerType type;
 	char *type_desc = "**none**";
-	char wins[32] = "", losses[32] = "", ties[32] = "";
+	char stats[512];
 	
 	type = player_get_type(player);
 
@@ -467,21 +490,14 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 		break;
 	}
 
-	if (player->wins >= 0)
-		snprintf(wins, sizeof(wins), " WINS='%d'", player->wins);
-	if (player->losses >= 0)
-		snprintf(losses, sizeof(losses),
-			 " LOSSES='%d'", player->losses);
-	if (player->ties >= 0)
-		snprintf(ties, sizeof(ties),
-			 " TIES='%d'", player->ties);
+	_net_get_player_stats_string(player, stats, sizeof(stats));
 
 	/* The caller should ensure that these values are safe to access... */
 	return _net_send_line(net, 
 			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' "
-			      "LAG='%d'%s%s%s/>",
+			      "LAG='%d'%s/>",
 			      player->name, type_desc, player->table,
-			      player->lag_class, wins, losses, ties);
+			      player->lag_class, stats);
 }
 
 
@@ -496,21 +512,13 @@ static GGZReturn _net_send_player_lag(GGZNetIO *net, GGZPlayer *player)
 
 static GGZReturn _net_send_player_stats(GGZNetIO *net, GGZPlayer *player)
 {
-	char wins[32] = "", losses[32] = "", ties[32] = "";
+	char stats[512];
 
-	/* The caller should ensure that these values are safe to access... */
-	if (player->wins >= 0)
-		snprintf(wins, sizeof(wins), " WINS='%d'", player->wins);
-	if (player->losses >= 0)
-		snprintf(losses, sizeof(losses),
-			 " LOSSES='%d'", player->losses);
-	if (player->ties >= 0)
-		snprintf(ties, sizeof(ties),
-			 " TIES='%d'", player->ties);
+	_net_get_player_stats_string(player, stats, sizeof(stats));
 
 	return _net_send_line(net,
-			      "<PLAYER ID='%s'%s%s%s/>",
-			      player->name, wins, losses, ties);
+			      "<PLAYER ID='%s'%s/>",
+			      player->name, stats);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: datatypes.h 5073 2002-10-28 00:09:53Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -106,8 +106,8 @@ typedef struct GameInfo {
 
 	/* Types of stats to keep */
 	unsigned char stats_records;
-#if 0
 	unsigned char stats_ratings;
+#if 0
 	unsigned char stats_rankings;
 	unsigned char stats_highscores;
 #endif
