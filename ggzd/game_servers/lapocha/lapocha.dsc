@@ -1,6 +1,7 @@
 # La Pocha description file
 Name = LaPocha
 Version = 0.0.1
+ProtocolEngine = LaPocha:1
 Description = GGZ Game Module for La Pocha
 Author = Rich Gade
 Homepage = http://ggz.sourceforge.net

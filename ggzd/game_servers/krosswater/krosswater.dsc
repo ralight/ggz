@@ -1,6 +1,7 @@
 # Krosswater description file
 Name = Krosswater
 Version = 0.0.4
+ProtocolEngine = Krosswater:1
 Description = Try to cross the water first.
 Author = Josef Spillner
 Homepage = http://mindx.sourceforge.net

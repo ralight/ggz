@@ -1,6 +1,7 @@
 # NetSpades description file
 Name = Reversi
 Version = 0.0.5
+ProtocolEngine = Reversi:1
 Description = Simple GGZ game module for playing Reversi
 Author = Ismael Orenstein
 Homepage = http://ggz.sourceforge.net

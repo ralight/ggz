@@ -1,6 +1,7 @@
 # GGZ Cards description file
 Name = GGZCards-Suaro
 Version = 0.0.4
+ProtocolEngine = GGZCards:1
 Description = GGZ Cards game module for Suaro
 Author = Jason Short, Rich Gade
 Homepage = http://ggz.sourceforge.net

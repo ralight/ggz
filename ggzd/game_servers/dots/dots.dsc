@@ -1,7 +1,7 @@
 # Connect the Dots description file
 Name = Dots
 Version = 0.0.1
-# Protocol = 1
+ProtocolEngine = Dots:1
 Description = Simple GGZ game module for playing Connect The Dots
 Author = Rich Gade
 Homepage = http://ggz.sourceforge.net

@@ -1,6 +1,7 @@
 # GGZ Cards description file
 Name = GGZCards-Bridge
 Version = 0.0.4
+ProtocolEngine = GGZCards:1
 Description = GGZ Cards game module for Bridge
 Author = Jason Short, Rich Gade
 Homepage = http://ggz.sourceforge.net

@@ -1,6 +1,7 @@
 # Chinese Checkers description file
 Name = ccheckers
 Version = 0.0.1
+ProtocolEngine = CCheckers:1
 Description = GGZ game module for playing Chinese Checkers
 Author = Rich Gade
 Homepage = http://ggz.sourceforge.net

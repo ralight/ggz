@@ -1,6 +1,7 @@
 # NetSpades description file
 Name = NetSpades
 Version = 0.0.3
+ProtocolEngine = NetSpades:1
 Description = NetSpades is a multiuser networked spades game
 Author = Brent Hendricks
 Homepage = http://www.ece.rice.edu/~brentmh/spades
