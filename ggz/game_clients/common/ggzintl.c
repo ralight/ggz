@@ -2,7 +2,7 @@
  * File: ggzintl.c
  * Author: GGZ Development Team
  * Project: GGZ Gtk Games
- * $Id: ggzintl.c 6544 2004-12-21 17:16:04Z josef $
+ * $Id: ggzintl.c 6921 2005-02-05 13:24:19Z josef $
  *
  * This file contains common functions and data for i18n of the
  * gtk-games package.
@@ -52,8 +52,9 @@ void ggz_intl_init(const char *modulename)
 char *ggz_intl_gettext(const char *s)
 {
 #ifdef ENABLE_NLS
+	char *ret;
 	if(!s) return NULL;
-	char *ret = gettext(s);
+	ret = gettext(s);
 	if(!ggz_strcmp(s, ret)) ret = dgettext(COMMON_DOMAIN, s);
 	return ret;
 #else
