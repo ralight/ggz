@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
 Description = Experimental GGZ game: permanent games and server-side storage
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/keepalive/
 Name = Keepalive
 Version = 0.1
 

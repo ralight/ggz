@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Rich Gade
 Description = GGZ Game Module for La Pocha
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/lapocha/
 Name = LaPocha
 Version = 0.0.1
 

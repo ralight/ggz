@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Ismael Orenstein
 Description = Simple GGZ game module for playing Reversi
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/reversi/
 Name = Reversi
 Version = 0.0.5
 

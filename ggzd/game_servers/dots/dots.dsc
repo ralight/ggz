@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Rich Gade
 Description = Simple GGZ game module for playing Connect The Dots
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/dots/
 Name = Dots
 Version = 0.0.1
 

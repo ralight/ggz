@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Rich Gade
 Description = GGZ game module for playing Chinese Checkers
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/chinese-checkers/
 Name = ccheckers
 Version = 0.0.1
 

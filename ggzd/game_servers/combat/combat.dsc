@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Ismael Orenstein
 Description = Stratego(tm) like game for GGZ
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/combat/
 Name = Combat
 Version = 1.0
 

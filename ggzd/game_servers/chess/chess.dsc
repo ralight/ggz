@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Ismael Orenstein
 Description = GGZ game module for playing Chess
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/chess/
 Name = Chess
 Version = 0.0.6
 
