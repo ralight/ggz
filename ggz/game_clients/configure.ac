@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6344 2004-11-13 03:39:09Z jdorje $
+dnl $Id: configure.ac 6345 2004-11-13 08:32:59Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -125,6 +125,7 @@ dnl ===========
 AC_GGZ_DEBUG
 if test "$enable_debug" = yes; then
   EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-errors"
+  EXTRA_GAME_PARAMETERS="$EXTRA_GAME_PARAMETERS --g-fatal-warnings"
 fi
 AC_SUBST(EXTRA_GAME_PARAMETERS)
 
