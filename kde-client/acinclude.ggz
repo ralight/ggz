@@ -2,7 +2,7 @@ dnl ======================================
 dnl GGZ Gaming Zone - Configuration Macros
 dnl ======================================
 dnl
-dnl Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+dnl Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 dnl This file has heavily been inspired by KDE's acinclude :)
 dnl It is published under the conditions of the GNU General Public License.
 dnl
@@ -10,7 +10,7 @@ dnl ======================================
 dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
 dnl between them all.  Currently the following modules use it:
-dnl kde-games, kde-client, grubby, gtk-games, gtk-client.
+dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby.
 dnl
 dnl ======================================
 dnl
