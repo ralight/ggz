@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3080 2002-01-12 08:06:23Z jdorje $
+ * $Id: parse_opt.c 3084 2002-01-12 09:26:34Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -300,7 +300,7 @@ static void get_config_options(int ch)
 	if(strval) {
 		if(logfile_set_facility(strval) < 0)
 			err_msg("Configuration: Invalid syslogd facility");
-		free(strval);
+		ggz_free(strval);
 	}
 	intval = ggz_conf_read_int(ch, "Logs", "PIDInLogs", 1);
 	if(intval == 0)
@@ -466,7 +466,7 @@ static void parse_game(char *name, char *dir)
 	}
 	/* We must realloc to NULL-terminate the list.  It's too bad libggz
 	   can't do this for us. */
-	game_info->exec_args = realloc(game_info->exec_args,
+	game_info->exec_args = ggz_realloc(game_info->exec_args,
 				(num_args+1)*sizeof(*game_info->exec_args));
 	game_info->exec_args[num_args] = NULL;
 	/* If there's no absolute path given, we prepend the game_dir. */
@@ -476,7 +476,7 @@ static void parse_game(char *name, char *dir)
 		char *new_exec = ggz_malloc(len);
 		snprintf(new_exec, len, "%s/%s",
 			 opt.game_dir, game_info->exec_args[0]);
-		free(game_info->exec_args[0]);
+		ggz_free(game_info->exec_args[0]);
 		game_info->exec_args[0] = new_exec;
 	}
 
@@ -500,9 +500,9 @@ static void parse_game(char *name, char *dir)
 				continue;
 			}
 			game_info->bot_allow_mask |= allow_bits[intval];
-			free(b_list[i]);
+			ggz_free(b_list[i]);
 		}
-		free(b_list);
+		ggz_free(b_list);
 		b_list = NULL;
 		b_count = 0;
 	}
@@ -515,9 +515,9 @@ static void parse_game(char *name, char *dir)
 				continue;
 			}
 			game_info->player_allow_mask |= allow_bits[intval];
-			free(b_list[i]);
+			ggz_free(b_list[i]);
 		}
-		free(b_list);
+		ggz_free(b_list);
 	}
 
 	game_types[state.types] = *game_info;
@@ -653,7 +653,7 @@ static void parse_room(char *name, char *dir)
 			rooms[num].game_type = -1;
 		else
 			err_msg("Invalid GameType specified in room %s", name);
-		free(strval);
+		ggz_free(strval);
 	}
 	strval = ggz_conf_read_string(ch, "RoomInfo", "EntryRestriction", NULL);
 	if(strval) {
@@ -665,7 +665,7 @@ static void parse_room(char *name, char *dir)
 			rooms[num].perms = 0;
 		else
 			err_msg("Invalid EntryRestriction in room %s", name);
-		free(strval);
+		ggz_free(strval);
 	}
 
 	if(rooms[num].name == NULL) {
@@ -742,10 +742,10 @@ static unsigned parse_log_types(int num, char **entry)
 			types |= log_types[j].type;
 		}
 
-		free(entry[i]);
+		ggz_free(entry[i]);
 	}
 
-	free(entry);
+	ggz_free(entry);
 	return types;
 }
 
@@ -769,9 +769,9 @@ static unsigned parse_dbg_types(int num, char **entry)
 			types |= dbg_types[j].type;
 		}
 
-		free(entry[i]);
+		ggz_free(entry[i]);
 	}
 
-	free(entry);
+	ggz_free(entry);
 	return types;
 }
