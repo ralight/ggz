@@ -82,6 +82,27 @@ void player_list_remove(gchar* name)
 }
 
 
+void player_list_update(gchar* name, gint table, gint color)
+{
+	GList* node;
+	Player* player;
+
+	dbg_msg("Updating player list info for %s", name);
+
+	node = g_list_find_custom(players, (gpointer)name, player_match_name);
+	/* name not found */
+	if (!node)
+		return;
+
+	/* Update information */
+	player = (Player*)node->data;
+	player->table = table;
+	player->chat_color = color;
+
+	player_list_print();
+}
+
+
 void player_list_iterate(GFunc func)
 {
 	g_list_foreach(players, func, NULL);

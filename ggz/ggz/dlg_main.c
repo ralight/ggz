@@ -128,7 +128,6 @@ static void ggz_players_clist_append(Player* player, gpointer data)
 }
 
 
-
 /*
  *Main window callbacks 
  *

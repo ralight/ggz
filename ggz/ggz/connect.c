@@ -79,6 +79,7 @@ static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void handle_list_tables(gint op, gint fd);
 static void handle_list_players(gint op, gint fd);
+static void handle_update_tables(gint op, gint fd);
 static void handle_update_players(gint op, gint fd);
 static void motd_print_line(gchar *line);
 void display_rooms();
@@ -169,7 +170,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gchar status;
 	gint i_status;
 	guchar subop;
-	gint num, op, size, checksum, count, i, seat;
+	gint num, op, size, checksum, count, i;
 	gchar buf[4096];
 	gchar *tmpstr;
 
@@ -469,51 +470,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case MSG_UPDATE_TABLES:
-		es_read_char(source, &subop);
-		es_read_int(source, &num);
-		switch (subop) {
-		case GGZ_UPDATE_DELETE:
-			connect_msg("[%s] Table %d deleted\n", opcode_str[op],
-				    num);
-			break;
-		case GGZ_UPDATE_JOIN:
-		case GGZ_UPDATE_LEAVE:
-			es_read_int(source, &seat);
-			es_read_string(source, name, MAX_USER_NAME_LEN + 1);
-			connect_msg("[%s] %s %s table %d in seat %d\n", 
-				    opcode_str[op], name, (subop == GGZ_UPDATE_JOIN ? "joined" : "left"), num, seat);
-			break;
-		case GGZ_UPDATE_ADD:
-			count = tables.count;
-			es_read_int(source, &tables.info[count].room);
-			es_read_int(source, &tables.info[count].type_index);
-			es_read_string(source, tables.info[count].desc, 
-				       MAX_GAME_DESC_LEN);
-			es_read_char(source, &tables.info[count].playing);
-			es_read_int(source, &seat);
-			
-			for (i = 0; i < seat; i++) {
-				es_read_int(source, 
-					    &tables.info[count].seats[i]);
-				if (tables.info[count].seats[i] >= 0
-				    || tables.info[count].seats[i] == GGZ_SEAT_RESV) 
-					es_read_string(source, (char*)&tables.info[count].names[i], MAX_USER_NAME_LEN+1);
-			}
-			for (i = seat; i < MAX_TABLE_SIZE; i++)
-			tables.info[count].seats[i] = GGZ_SEAT_NONE;
-
-			connect_msg("[%s] New table %d added\n", opcode_str[op], num);			
-			connect_msg("[%s] Room: %d\n", opcode_str[op],tables.info[i].room);
-			connect_msg("[%s] Type: %d\n", opcode_str[op],tables.info[i].type_index);
-			connect_msg("[%s] Playing: %d\n",opcode_str[op], tables.info[i].playing);
-			connect_msg("[%s] Seats: %d\n", opcode_str[op], seat);
-			connect_msg("[%s] Desc: %s\n", opcode_str[op], tables.info[i].desc);
-			break;
-		}
-		
-		/* FIXME: Should update lists, not ask for new ones*/
-		ggz_get_tables(NULL, NULL);
-		ggz_get_players(NULL, NULL);
+		handle_update_tables(op, source);
 		break;
 
 	case MSG_UPDATE_TYPES:
@@ -727,7 +684,7 @@ static void handle_update_players(gint op, gint fd)
 {
 	guchar subop;
 	gchar name[MAX_USER_NAME_LEN + 1];
-		
+	
 	es_read_char(fd, &subop);
 	es_read_string(fd, name, MAX_USER_NAME_LEN+1);
 	switch (subop) {
@@ -746,6 +703,77 @@ static void handle_update_players(gint op, gint fd)
 
 	/* Display updated list */
 	ggz_players_display();
+}
+
+
+static void handle_update_tables(gint op, gint fd)
+{
+	guchar subop;
+	guint table, seat, count, i;
+	gchar name[MAX_USER_NAME_LEN + 1];		
+	
+	es_read_char(fd, &subop);
+	es_read_int(fd, &table);
+	switch (subop) {
+
+	case GGZ_UPDATE_DELETE:
+		connect_msg("[%s] Table %d deleted\n", opcode_str[op], table);
+		break;
+
+	case GGZ_UPDATE_JOIN:
+		es_read_int(fd, &seat);
+		es_read_string(fd, name, MAX_USER_NAME_LEN + 1);
+		connect_msg("[%s] %s joined table %d in seat %d\n", 
+			    opcode_str[op], name, table, seat);
+		player_list_update(name, table, 0);
+		/* Display new list */
+		ggz_players_display();
+		break;
+			
+	case GGZ_UPDATE_LEAVE:
+		es_read_int(fd, &seat);
+		es_read_string(fd, name, MAX_USER_NAME_LEN + 1);
+		connect_msg("[%s] %s left table %d in seat %d\n", 
+			    opcode_str[op], name, table, seat);
+		player_list_update(name, -1, 0);
+		/* Display new list */
+		ggz_players_display();
+		break;
+
+	case GGZ_UPDATE_ADD:
+		count = tables.count;
+		es_read_int(fd, &tables.info[count].room);
+		es_read_int(fd, &tables.info[count].type_index);
+		es_read_string(fd, tables.info[count].desc, MAX_GAME_DESC_LEN);
+		es_read_char(fd, &tables.info[count].playing);
+		es_read_int(fd, &seat);
+		
+		for (i = 0; i < seat; i++) {
+			es_read_int(fd, &tables.info[count].seats[i]);
+			if (tables.info[count].seats[i] >= 0
+			    || tables.info[count].seats[i] == GGZ_SEAT_RESV) 
+				es_read_string(fd, (char*)&tables.info[count].names[i], MAX_USER_NAME_LEN+1);
+		}
+
+		for (i = seat; i < MAX_TABLE_SIZE; i++)
+			tables.info[count].seats[i] = GGZ_SEAT_NONE;
+		
+		connect_msg("[%s] New table %d added\n", opcode_str[op], 
+			    table);
+		connect_msg("[%s] Room: %d\n", opcode_str[op],
+			    tables.info[i].room);
+		connect_msg("[%s] Type: %d\n", opcode_str[op],
+			    tables.info[i].type_index);
+		connect_msg("[%s] Playing: %d\n",opcode_str[op], 
+			    tables.info[i].playing);
+		connect_msg("[%s] Seats: %d\n", opcode_str[op], seat);
+		connect_msg("[%s] Desc: %s\n", opcode_str[op], 
+			    tables.info[i].desc);
+		break;
+	}
+	
+	/* FIXME: Should update lists, not ask for new ones*/
+	ggz_get_tables(NULL, NULL);
 }
 
 

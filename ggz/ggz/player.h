@@ -49,6 +49,8 @@ void player_list_add(gchar* name, gint table, gint color);
 
 void player_list_remove(gchar* name);
 
+void player_list_update(gchar* name, gint table, gint color);
+
 void player_list_iterate(GFunc func);
 
 
