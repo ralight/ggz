@@ -1,0 +1,39 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Gaming Zone News</b><br>
+News archive.
+<br><br>
+
+<i>16.07.2004: GGZ 0.0.9</i> (by josef)<br>
+GGZ 0.0.9 has officially been released today. See the above links for
+further version specific information.
+<br><br>
+
+<i>07.04.2004: Server move</i> (by josef)<br>
+The GGZ project has switched hosting of its main server from User-Mode-Linux
+(UML) to Linux-VServer. Sorry for the downtime during the last days.
+<br><br>
+
+<i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
+The new version is out now. The old website is officially replaced with this
+one. Have fun :)
+<br><br>
+
+<i>27.07.2003: Announcing beta.ggzgamingzone.org</i> (by josef)<br>
+The GGZ Gaming Zone homepage will get a new look and feel.
+All pages will be maintained in CVS, and will feature modern HTML
+and translation/content negotiation.
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

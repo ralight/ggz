@@ -21,39 +21,36 @@ and a chat bot are part of this effort.
 </td></tr>
 <tr><td valign="top">
 
-<a href="docs.php">Read some documentation</a><br>
+<a href="/docs.php">Read some documentation</a><br>
 <a href="/screenshots/">Have a look at some screenshots</a>
 <br><br>
 
 <i>Download the current version</i><br>
-The GGZ Gaming Zone 0.0.8 has been released on Feb 07 2004.<br>
-<a href="/docs/release.php">Release announcement</a><br>
-<a href="/docs/download.php">Go to the download page</a><br>
-<a href="http://web.mountain.net/ld94/ggz_installation_howto.html">New Installation Howto</a>
+The GGZ Gaming Zone 0.0.9 has been released on Jul 15 2004.<br>
+<a href="/releases/0.0.9/release.php">Release announcement</a><br>
+<a href="/releases/0.0.9/download.php">Go to the download page</a><br>
+<a href="/releases/0.0.9/installation.php">Installation notes</a>
 
 </td><td valign="top">
 
-<img src="/pics/splash/newhosting.png">
+<a href="/releases/0.0.9/"><img src="/pics/splash/splash-0.0.9.png" border="0"></a>
 
 </td>
 </tr>
 </table>
 
 <b>News</b><br>
+<i>16.07.2004: GGZ 0.0.9</i> (by josef)<br>
+GGZ 0.0.9 has officially been released today. See the above links for
+further version specific information.
+<br><br>
+
 <i>24.04.2004: Server move</i> (by josef)<br>
 The GGZ project has switched hosting of its main server, running on
 User-Mode-Linux (UML), to another provider. Sorry for the downtime during the last days.
 <br><br>
 
-<i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
-The new version is out now. The old website is officially replaced with this
-one. Have fun :)
-<br><br>
-
-<i>27.07.2003: Announcing beta.ggzgamingzone.org</i> (by josef)<br>
-The GGZ Gaming Zone homepage will get a new look and feel.
-All pages will be maintained in CVS, and will feature modern HTML
-and translation/content negotiation.
+Read older news in the <a href="news.php">archive</a>.
 <br>
 
 </font>

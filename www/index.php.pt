@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>O projeto GGZ Gaming Zone</b><br>
-Jogos ao internet para todos.
+Jogos na internet para todos.
 <br>
 
 <table class="inner">
@@ -28,21 +28,26 @@ jogadores artifiçais e um chatbot são peças do projeto.
 <br><br>
 
 <i>Baixe a versão a mais novo</i><br>
-O GGZ Gaming Zone 0.0.8 é disponível desde 07/Fev/2004.<br>
-<a href="/docs/release.php">Release announcement</a><br>
-<a href="/docs/download.php">Vai para a página de baixa</a><br>
-<a href="http://web.mountain.net/ld94/ggz_installation_howto.html">Howto novo para instalar</a>
+O GGZ Gaming Zone 0.0.9 é disponível desde 15/Jul/2004.<br>
+<a href="/releases/0.0.9/release.php">Declaração do release</a><br>
+<a href="/releases/0.0.9/download.php">Vai para a página de baixar</a><br>
+<a href="/releases/0.0.9/installation.php">Como instalar</a>
 
 </td><td valign="top">
 
-<img src="/pics/splash/newhosting.png">
+<a href="/releases/0.0.9/"><img src="/pics/splash/splash-0.0.9.png" border="0"></a>
 
 </td>
 </tr>
 </table>
 
 <b>Notícias</b><br>
-<i>07.04.2004: Versão portuguêsa</i> (de josef)<br>
+<i>16/07/2004: GGZ 0.0.9</i> (por josef)<br>
+GGZ 0.0.9 foi lançeado oficialmente hoje. Veja as links em cima para
+mais informações sobre esta versão.
+<br><br>
+
+<i>07.04.2004: Versão portuguêsa</i> (por josef)<br>
 Eu tentei traduzir a primeira página. Se você gosta, posso
 traduzir mais no futuro.
 <br>
@@ -52,5 +57,5 @@ traduzir mais no futuro.
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 
