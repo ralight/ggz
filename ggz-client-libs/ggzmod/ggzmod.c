@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6795 2005-01-21 22:11:45Z jdorje $
+ * $Id: ggzmod.c 6796 2005-01-22 01:06:07Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -165,7 +165,6 @@ GGZMod *ggzmod_new(GGZModType type)
 				GGZ_LIST_REPLACE_DUPS);
 	ggzmod->num_seats = ggzmod->num_spectator_seats = 0;
 
-	printf("Creating lists.\n");
 	ggzmod->stats = ggz_list_create(stats_compare, NULL, NULL,
 					GGZ_LIST_ALLOW_DUPS);
 	ggzmod->spectator_stats = ggz_list_create(stats_compare, NULL, NULL,
