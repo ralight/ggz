@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: net.c 4177 2002-05-07 02:34:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -307,15 +307,16 @@ void net_send_badplay(player_t p, char *msg)
 
 /* Show a player a hand.  This will reveal the cards in the hand iff reveal
    is true. */
-void net_send_hand(const player_t p, const seat_t s, int reveal)
+void net_send_hand(const player_t p, const seat_t s,
+                   bool show_fronts, bool show_backs)
 {
 	int fd = get_player_socket(p);
 	int i;
 
 	ggz_debug(DBG_NET,
-		    "Sending player %d/%d/%s hand %d/%s - %srevealing", p,
+		    "Sending player %d/%d/%s hand %d/%s - revealing(%d,%d)", p,
 		    game.players[p].seat, get_player_name(p), s,
-		    get_seat_name(s), reveal ? "" : "not ");
+		    get_seat_name(s), show_fronts, show_backs);
 
 	if (write_opcode(fd, MSG_HAND) < 0
 	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
@@ -324,10 +325,13 @@ void net_send_hand(const player_t p, const seat_t s, int reveal)
 
 	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
 		card_t card = game.seats[s].hand.cards[i];
-		if (!reveal) {
+		if (!show_fronts) {
 			card.suit = UNKNOWN_SUIT;
 			card.face = UNKNOWN_FACE;
 		}
+		if (!show_backs)
+			card.deck = UNKNOWN_DECK;
+
 		if (write_card(fd, card) < 0)
 			NET_ERROR(p);
 	}

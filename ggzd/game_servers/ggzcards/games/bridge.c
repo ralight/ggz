@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: bridge.c 4177 2002-05-07 02:34:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -321,7 +321,7 @@ static void bridge_send_hand(player_t p, seat_t s)
 	if (s == BRIDGE.dummy	/* player/seat crossover; ok because it's
 				   bridge */
 	    && BRIDGE.dummy_revealed)
-		send_hand(p, s, 1);
+		send_hand(p, s, TRUE, TRUE);
 	else
 		game_send_hand(p, s);
 }

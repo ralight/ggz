@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: suaro.c 4177 2002-05-07 02:34:50Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -379,13 +379,15 @@ static void suaro_deal_hand(void)
 
 static void suaro_send_hand(player_t p, seat_t s)
 {
+	bool show_fronts;
 	if (s == 1 && SUARO.kitty_revealed) {
 		/* reveal the kitty after it's been turned up */
-		send_hand(p, s, 1);
+		show_fronts = TRUE;
 	} else {
 		/* each player can see their own hand plus the key card */
-		send_hand(p, s, game.players[p].seat == s || s == 3);
+		show_fronts = (game.players[p].seat == s || s == 3);
 	}
+	send_hand(p, s, show_fronts, TRUE);
 }
 
 static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid)

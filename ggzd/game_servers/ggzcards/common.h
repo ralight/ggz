@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4153 2002-05-05 00:42:40Z jdorje $
+ * $Id: common.h 4177 2002-05-07 02:34:50Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -182,7 +182,8 @@ void init_game(void);
 void next_move(void);		/* make the next move, if all seats are full */
 void send_sync(player_t p);
 void broadcast_sync(void);
-void send_hand(const player_t p, const seat_t s, int reveal);
+void send_hand(const player_t p, const seat_t s,
+               bool show_fronts, bool show_backs);
 
 /* Seat manipulation functions */
 void set_num_seats(int num_seats);
