@@ -72,11 +72,9 @@ int main(void) {
 				case CBT_SERVER_OK:
 					break;
 				case CBT_SERVER_JOIN: // A player joined
-					ggz_debug("Adding a player to the fd_set\n");
 					FD_SET(fd, &active_fd_set);
 					break;
 				case CBT_SERVER_LEFT: // A player left
-					ggz_debug("Removing a player from the fd_set\n");
 					FD_CLR(fd, &active_fd_set);
 					break;
 				case CBT_SERVER_QUIT: // Quit
@@ -92,7 +90,6 @@ int main(void) {
 				status = game_handle_player(i);
 				if (status < 0) {
 					ggz_debug("This player is crazy! Status: %d", status);
-					//game_send_sync(i);
 				}
 			}
 		}

@@ -24,7 +24,7 @@
 
 #define PROTOCOL_VERSION 10
 
-/* Combat Protocol Version 0.1
+/* Combat Protocol Version 1.0
  *
  * g : ggz server (gserv)
  * s : combat server (cserv)
@@ -236,9 +236,6 @@
  * 	tell the player why he is seeing the options dialog _again_
  * 		[ s --> 1c : CBT_REQ_OPTIONS ]
  *
- * 	// Until here up, I have thought a lot... from now on, I'm not 
- *  sure if this is the right direction //
- *
  * The client should allow the player to set his units up right from
  * the moment he received the game options, but can't allow him to
  * send them until he received a CBT_REQ_SETUP
@@ -331,7 +328,6 @@
  *
  *  If it is over, it sends
  *  	[ s --> nc : CBT_MSG_GAMEOVER (int)WINNER ]
- *  	TODO: Must see what needs to be sent: The winners? The losers?
  *
  *  If the game is not over, it changes to the next turn and waits
  *  until a REQ_MOVE is sent.
@@ -365,6 +361,8 @@
  *
  * I guess this is all... at least for now...
  * TODO: Add PLAY_AGAIN feature
+ * TODO: More options are always good
+ * TODO: Multiplayer considerations
 */
 
 // Terrain codes

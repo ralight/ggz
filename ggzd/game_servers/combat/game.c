@@ -118,6 +118,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
       break;
     case REQ_GAME_LEAVE:
       // User left
+      ggz_debug("Leaving player %d at state %d", seat, cbt_game.state);
       if (ggz_player_leave(&seat, p_fd) != 0) {
         status = CBT_SERVER_LEFT;
         break;
@@ -229,7 +230,6 @@ int game_handle_player(int seat) {
       break;
 
     case CBT_REQ_SYNC:
-      ggz_debug("Got sync message");
       game_send_sync(seat, 0);
       break;
 
@@ -282,8 +282,6 @@ void game_send_sync(int seat, int cheated) {
   for (a = 0; a < len-1; a++)
     syncstr[a]++;
 
-  ggz_debug("Sent a sync string of size %d. Expected %d", strlen(syncstr), len-1);
-
   // Send the string
   if (es_write_int(fd, CBT_MSG_SYNC) || es_write_string(fd, syncstr) < 0) {
     ggz_debug("Can't send sync string");
@@ -295,9 +293,6 @@ void game_send_sync(int seat, int cheated) {
 
 void game_send_seat(int seat) {
   int fd = ggz_seats[seat].fd;
-
-  ggz_debug("Sending player %d his seat numnber\n", seat);
-  ggz_debug("Number of players: %d\n", cbt_game.number);
 
   if (es_write_int(fd, CBT_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0 || es_write_int(fd, cbt_game.number) < 0 || es_write_int(fd, PROTOCOL_VERSION) < 0) {
     ggz_debug("Couldn't send seat!\n");
@@ -332,19 +327,15 @@ int game_get_options(int seat) {
   if (seat != host)
     return -2;
 
-  ggz_debug("Option string len: %d", strlen(optstr));
-
   if (*optstr == 0) {
     ggz_debug("changing host");
     for (a = 0; a < ggz_seats_num(); a++) {
       if (ggz_seats[a].fd >= 0 && a != seat) {
-        ggz_debug("host is now %d", a);
         host = a;
         break;
       }
     }
     if (a == ggz_seats_num()) {
-      ggz_debug("I give up. Host is now %d", seat);
       host = seat;
     }
     return -1;
@@ -374,12 +365,12 @@ void game_send_options(int seat) {
 void game_send_players() {
   int i, j, fd;
 
+  ggz_debug("Sending player list");
+
   for (j = 0; j < cbt_game.number; j++) {
     if ( (fd = ggz_seats[j].fd) <= -1 ) {
-      ggz_debug("No one here\n");
       continue;
     }
-    ggz_debug("Sending player list to player %d", j);
 
     if (es_write_int(fd, CBT_MSG_PLAYERS) < 0) {
       ggz_debug("Can't send player list!\n");

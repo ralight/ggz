@@ -75,8 +75,6 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
   }
   /* Close */
   *(++ptr) = 0;
-  if (*ptr != optstr[len])
-    printf("Error in write option string function!");
 	// Adds one to all the string, to avoid having zeros between them
 	for (a = 0; a < len; a++)
 		optstr[a]++;
@@ -123,7 +121,6 @@ int combat_options_string_read(unsigned char *_optstr, combat_game *_game) {
         _game->name = (char *)malloc(strlen(optstr) + 1);
         if (_game->name)
           strcpy(_game->name, optstr);
-        printf("Map name: %s\n", _game->name);
         // Go until the last character in the string
         while (*optstr != 0)
           optstr++;
@@ -140,7 +137,6 @@ int combat_options_string_read(unsigned char *_optstr, combat_game *_game) {
         _game->options += (*(optstr++) ^ 255)<<8; // Second byte
         break;
       default:
-		    printf("Unsuported option! (%d)\n", *optstr);
         retval++;
         break;
     }

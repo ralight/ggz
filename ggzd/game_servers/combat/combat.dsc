@@ -1,6 +1,6 @@
 # Combat description file
 Name = Combat
-Version = 0.0.1
+Version = 1.0
 Description = Stratego(tm) like game for GGZ
 Author = Ismael Orenstein
 Homepage = http://ggz.sourceforge.net
