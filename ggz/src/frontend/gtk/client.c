@@ -152,7 +152,7 @@ static void
 client_join_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-//	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)popup_row, NULL); 
+	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
 }
 
 

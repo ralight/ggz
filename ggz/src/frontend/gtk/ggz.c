@@ -54,7 +54,7 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* u
 
 static GGZHookReturn ggz_motd(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_room_part(GGZRoomEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_state_change(GGZStateID id, void* event_data, void* user_data);
 
@@ -75,10 +75,7 @@ void ggz_event_init(GGZServer *Server)
 //	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL,		ggz_entered_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT,		ggz_logout);
 
-//	ggzcore_server_add_event_hook(server, GGZ_SERVER_LOGOUT,	 ggz_logout);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_ERROR,		 NULL);
-//	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOM_ENTER,	 ggz_room_enter);
-//	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOM_LEAVE,	 ggz_room_part);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_TABLE_UPDATE,	 ggz_table_update);
 //	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR,		 NULL);
 }
@@ -200,7 +197,16 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		return GGZ_HOOK_OK;
 
 	for (i = 0; names[i]; i++)
+	{
 		gtk_clist_insert(GTK_CLIST(tmp), i, &names[i]);
+		/* Hookup the chat functions to the new room */
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_CHAT,		ggz_chat_msg);
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_PRVMSG,		ggz_chat_prvmsg);
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_BEEP,		ggz_chat_beep);
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_PLAYER_LIST,	ggz_list_players);
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_ROOM_ENTER,		ggz_room_enter);
+		ggzcore_room_add_event_hook(ggzcore_server_get_room(server, i), GGZ_ROOM_LEAVE,		ggz_room_leave);
+	}
 
 	free(names);
 
@@ -219,12 +225,6 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	/* FIXME: Player list should use the ggz update system*/
 	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
 
-
-	/* Hookup the chat functions to the new room */
-	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_CHAT,		ggz_chat_msg);
-	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_PRVMSG,		ggz_chat_prvmsg);
-	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_BEEP,		ggz_chat_beep);
-	ggzcore_room_add_event_hook(ggzcore_server_get_cur_room(server), GGZ_PLAYER_LIST,	ggz_list_players);
 
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
@@ -394,20 +394,24 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* use
 {
 	gchar *player;
 
+	g_print("ggz_room_enter\n");
+
 	player = g_strdup(event_data);
 	chat_enter(event_data);
 	g_free(player);
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-//	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
 
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_room_part(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	gchar *player;
+
+	g_print("ggz_room_leave\n");
 
 	player = g_strdup(event_data);
 	chat_part(event_data);
@@ -415,7 +419,7 @@ static GGZHookReturn ggz_room_part(GGZRoomEvent id, void* event_data, void* user
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-//	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_room_list_players(ggzcore_server_get_cur_room(server));
 
 	return GGZ_HOOK_OK;
 }
@@ -423,6 +427,8 @@ static GGZHookReturn ggz_room_part(GGZRoomEvent id, void* event_data, void* user
 void ggz_sensitivity_init(void)
 {
 	GtkWidget *tmp;
+
+	g_print("ggz_sensitivity_init\n");
 
 	/* set senditivity */
 	/* Menu bar */
