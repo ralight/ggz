@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([GGZ python package], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
+AC_INIT([GGZ python package], [0.0.9pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-python])
 AC_CONFIG_SRCDIR([configure.ac])
 #AC_CONFIG_HEADERS([config.h])
 #AM_INIT_AUTOMAKE
@@ -32,6 +32,7 @@ fi
 AC_CONFIG_FILES([
 	escape-sdl/module.dsc
 	xadrez-chines/module.dsc
+	xadrez-chines/xadrez-chines-server.dsc
 ])
 AC_OUTPUT
 
