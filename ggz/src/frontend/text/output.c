@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 6944 2005-02-27 18:18:07Z josef $
+ * $Id: output.c 7010 2005-03-18 10:20:41Z josef $
  *
  * Functions for display text/messages
  *
@@ -62,6 +62,11 @@
 #define COLOR_PINK		"\e[0m\e[35m"
 #define COLOR_PURPLE		"\e[0m\e[36m"
 #define COLOR_WHITE		"\e[0m\e[37m"
+
+/* Escape sequences */
+#define SEQUENCE_BEEP    "\007" /* Output a beep signal */
+#define SEQUENCE_SAVE    "\e7"  /* Save cursor */
+#define SEQUENCE_RESTORE "\e8"  /* Restore cursor */
 
 /* Highest line number in the message buffer */
 #define MAX_LINES 100
@@ -129,7 +134,6 @@ void output_prompt(void)
 {
 	if(!output_enabled) return;
 
-	fflush(NULL);
 	output_goto(window.ws_row, 0);
 	printf("\e[2K");
 	output_goto(window.ws_row - 1, 0);
@@ -138,10 +142,8 @@ void output_prompt(void)
 	printf("\e[2K%sGGZ%s>%s ",
 		COLOR_BRIGHT_WHITE, COLOR_GREY,
 		COLOR_WHITE);
-	fflush(NULL);
 #else
 	printf("\e[2K");
-	fflush(NULL);
 #endif
 }
 
@@ -178,13 +180,23 @@ void output_text(char* fmt, ...)
 	ggz_free(orig);
 
 #if 0
-	fflush(NULL);
-	printf("\e7");
+	printf(SEQUENCE_SAVE);
 	output_goto(window.ws_row - 4, 0);
 	printf("\eD%s%s", message, COLOR_BLUE);
-	printf("\e8");
-	fflush(NULL);
+	printf(SEQUENCE_RESTORE);
 #endif
+}
+
+void output_debug(char* fmt, ...)
+{
+	char message[1024];	/* FIXME: Make me dynamic */
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsnprintf(message, sizeof(message), fmt, ap);
+	va_end(ap);
+
+	output_text("%s%s%s", COLOR_ORANGE, message, COLOR_GREY);
 }
 
 void output_draw_text(void)
@@ -193,8 +205,7 @@ void output_draw_text(void)
 
 	if(!output_enabled) return;
 
-	fflush(NULL);
-	printf("\e7");
+	printf(SEQUENCE_SAVE);
 	output_goto(0, 0);
 	for (x = window.ws_row - 4 - chat_offset; x >= 0 + chat_offset; x--)
 	{
@@ -202,9 +213,8 @@ void output_draw_text(void)
 			printf("\e[K%s\n", chat[x]);
 		else
 			printf("\e[K\n");
-		fflush(NULL);
 	}
-	printf("\e8");
+	printf(SEQUENCE_RESTORE);
 }
 
 void output_chat(GGZChatType type, const char *player, const char *message)
@@ -224,7 +234,7 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	switch(type) {
 	case GGZ_CHAT_BEEP:
 		output_text(_("%s--- You've been beeped by %s."), timestamp, player);
-		printf("\007");
+		printf(SEQUENCE_BEEP);
 		break;
 	case GGZ_CHAT_PERSONAL:
 		output_text("%s>%s< %s", timestamp, player, message);
@@ -367,8 +377,7 @@ void output_status(void)
 	if(host)
 		num=num-strlen(host);
 	
-	fflush(NULL);
-	printf("\e7"); /* Save cursor */
+	printf(SEQUENCE_SAVE);
 	if(user)
 	{
 		output_goto(window.ws_row - 3, 0);
@@ -429,8 +438,7 @@ void output_status(void)
 	output_label(_("Time"));
 	printf("\e[K%s", displaytime);
 
-	printf("\e8"); /* Restore cursor */
-	fflush(NULL);
+	printf(SEQUENCE_RESTORE);
 }
 
 void output_goto(int row, int col)
@@ -466,11 +474,11 @@ void output_init(int reverse)
 
 	reverse_display = reverse;
 
-	fflush(NULL);
+	setbuf(stdout, NULL);
+
 	printf("\e[2J");
 	ioctl(tty_des, TIOCGWINSZ, &window);
 	printf("\e[0;%dr", window.ws_row-4);
-	fflush(NULL);
 
 	/* Initilize and zero chat memmory */
 	chat = ggz_malloc((MAX_LINES + 1) * sizeof(char*));
@@ -482,9 +490,7 @@ void output_resize(void)
 
 	if(!output_enabled) return;
 
-	fflush(NULL);
 	ioctl(tty_des, TIOCGWINSZ, &window2);
-	fflush(NULL);
 
 	if(window2.ws_row != window.ws_row ||
 	   window2.ws_col != window.ws_col)
@@ -506,10 +512,8 @@ void output_shutdown(void)
 
 	if(!output_enabled) return;
 
-	fflush(NULL);
 	printf("\e[0;%dr",window.ws_row);
 	printf("\ec\e[2J");
-	fflush(NULL);
 
 	for (i = 0; chat[i]; i++)
 		ggz_free(chat[i]);

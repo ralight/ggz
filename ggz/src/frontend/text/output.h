@@ -37,6 +37,9 @@ void output_prompt(void);
 void output_text(char* fmt, ...)
      ggz__attribute((format(printf, 1, 2)));
 
+void output_debug(char* fmt, ...)
+     ggz__attribute((format(printf, 1, 2)));
+
 void output_chat(GGZChatType type, const char *player, const char *message);
 
 void output_players(void);

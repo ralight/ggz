@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6869 2005-01-24 03:08:12Z jdorje $
+ * $Id: game.c 7010 2005-03-18 10:20:41Z josef $
  *
  * Functions for handling game events
  *
@@ -88,9 +88,7 @@ static void channel_process(void)
 {
 	if (server) {
 		int fd = ggzcore_server_get_channel(server);
-#ifdef DEBUG
-		output_text("channel_process(%d)", fd);
-#endif
+		output_debug("channel_process(%d)", fd);
 		ggzcore_server_read_data(server, fd);
 	}
 }

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 6642 2005-01-13 01:55:40Z jdorje $
+ * $Id: input.c 7010 2005-03-18 10:20:41Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -82,9 +82,7 @@ void input_commandhandler(char *current)
 		command = strsep(&current, delim);
 		command++;
 		
-#ifdef DEBUG
-		output_text("--- Command is %s", command);
-#endif
+		output_debug("--- Command is %s", command);
 
 		if (strcmp(command, "connect") == 0) {
 			input_handle_connect(current);
@@ -164,7 +162,7 @@ void input_commandline(char *text)
 	current = rline;
 #else
 	/* EOF means user closed session */
-	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
+	if (!fgets(line, sizeof(line) / sizeof(char), stdin)) {
 		game_quit();
 		loop_quit();
 		return;
@@ -297,8 +295,10 @@ static void input_handle_join(char* line)
 	char *arg;
 
 	arg = strsep(&line, delim);
-	if (!arg || strcmp(arg, "") == 0)
+	if (!arg || strcmp(arg, "") == 0) {
+		output_text(_("Join what?"));
 		return;
+	}
 
 	output_text(_("Joining a %s"), arg);
 
