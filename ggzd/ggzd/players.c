@@ -431,7 +431,7 @@ static void player_remove(int p_index)
 
 	pthread_rwlock_unlock(&players.lock);
 	if (players.info[p_index].room != -1) {
-		room_join(p_index, -1);
+		room_join(p_index, -1, fd);
 		/*room_dequeue_personal(p_index);*/
 	}
 
@@ -502,7 +502,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	
 	/* Send any unread chats */
 	if (players.info[p].room != -1
-	    && (room_send_chat(p) < 0))
+	    && (room_send_chat(p, fd) < 0))
 		return GGZ_REQ_DISCONNECT;
 	
 	return GGZ_REQ_OK;
