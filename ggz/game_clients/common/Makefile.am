@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5208 2002-11-04 07:45:38Z jdorje $
+#  $Id: Makefile.am 5835 2004-02-07 23:33:34Z josef $
 
 SUBDIRS = . cardsets
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ $(GGZMOD_INCLUDES)
 
 noinst_LIBRARIES = libgtk-games.a
 
