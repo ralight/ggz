@@ -251,7 +251,6 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, ggz_table_join_fail);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, ggz_table_left);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
-		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
 	}
