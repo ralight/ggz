@@ -112,6 +112,7 @@ QPixmap ChessBoard::svgPixmap(QString filename)
 	GError *error = NULL;
 	const int width = 128;
 	const int height = 128;
+	bool bigendian = false;
 
 	g_type_init();
 	GdkPixbuf *buf = rsvg_pixbuf_from_file_at_size(filename.latin1(), width, height, &error);
@@ -119,18 +120,23 @@ QPixmap ChessBoard::svgPixmap(QString filename)
 	if(buf)
 	{
 		guchar *foo = gdk_pixbuf_get_pixels(buf);
-		for(int i = 0; i < width; i++)
-			for(int j = 0; j < height; j++)
-			{
-				unsigned int pixel = *(unsigned int*)(foo + (j * width + i) * 4);
-				int a, r, g, b;
-				r = (pixel >> 24) & 0xFF;
-				g = (pixel >> 16) & 0xFF;
-				b = (pixel >> 8) & 0xFF;
-				a = (pixel >> 0) & 0xFF;
-				pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
-				*(unsigned int*)(foo + (j * width + i) * 4) = pixel;
-			}
+		int test = 1;
+		if(!(*(char*)&test & 0xFF)) bigendian = true;
+		if(bigendian)
+		{
+			for(int i = 0; i < width; i++)
+				for(int j = 0; j < height; j++)
+				{
+					unsigned int pixel = *(unsigned int*)(foo + (j * width + i) * 4);
+					int a, r, g, b;
+					r = (pixel >> 24) & 0xFF;
+					g = (pixel >> 16) & 0xFF;
+					b = (pixel >> 8) & 0xFF;
+					a = (pixel >> 0) & 0xFF;
+					pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
+					*(unsigned int*)(foo + (j * width + i) * 4) = pixel;
+				}
+		}
 
 		QImage im(gdk_pixbuf_get_pixels(buf), gdk_pixbuf_get_width(buf), gdk_pixbuf_get_height(buf),
 			gdk_pixbuf_get_bits_per_sample(buf) * 4, 0, 0, QImage::IgnoreEndian);

@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6774 2005-01-20 21:55:33Z josef $
 
 SUBDIRS = libcgc pics pieces
 
-bin_PROGRAMS = koenig
+ggzexecmod_PROGRAMS = koenig
 
 koenig_SOURCES = \
 	main.cc \
