@@ -341,7 +341,8 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 
 	/* Leave room for storing 'size' in the first buf_offset bytes */
 	buf_offset = buf + sizeof(size);
-	size = read(game->fd, buf_offset, 4096); /* FIXME: check for error */
+	size = read(game->fd, buf_offset,
+		    sizeof(buf) - sizeof(size)); /* FIXME: check for error */
 
 
 	/* If there's actual data */
