@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6710 2005-01-16 17:13:52Z oojah $
+dnl $Id: configure.ac 6716 2005-01-17 00:16:27Z oojah $
 
 AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -17,6 +17,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_CPP
 AM_PROG_CC_STDC
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_PROG_RANLIB
 AC_PROG_MAKE_SET
@@ -170,6 +171,12 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 				[AC_MSG_RESULT(no)])
 )
 
+# Add DLL build support
+# =====================
+
+if test "$MINGW32" = "yes"; then
+	LDFLAGS="$LDFLAGS -no-undefined"
+fi
 
 # Check for library functions
 # ===========================
@@ -252,9 +259,7 @@ AC_CONFIG_FILES([Makefile
 	   src/Makefile
 	   src/security/Makefile
 	   tests/Makefile
-	   man/Makefile
-	   Makefile.msys
-	   src/Makefile.msys])
+	   man/Makefile])
 AC_OUTPUT
 
 
