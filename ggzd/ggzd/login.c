@@ -370,6 +370,15 @@ static int login_player_anon(GGZPlayer* player, int fd)
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating guest login for player %p", 
 		player);
 
+	if(strlen(name) <= MAX_USER_NAME_LEN - 4)
+		strcat(name, "(G)");
+	else {
+		name[MAX_USER_NAME_LEN-3] = '(';
+		name[MAX_USER_NAME_LEN-2] = 'G';
+		name[MAX_USER_NAME_LEN-1] = ')';
+		name[MAX_USER_NAME_LEN] = '\0';
+	}
+
 	/* Convert name to lowercase for comparisons */
 	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
 		*dest = tolower(*src);
