@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
+ * $Id: game.c 3910 2002-04-12 09:17:47Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -400,10 +400,11 @@ static int game_bot_move(int me)
 	int i, move = -1;
 	int him = 1 - me;
 	char board[9];
+	int c;
 
 	/* Local copy of the boaard to rotate*/
 	memcpy(board, ttt_game.board, 9);
-	
+
 	/* Checking for win */
 	/* Four possible board rotations to check */
 	for (i = 3; i >= 0; i--) {
@@ -447,7 +448,7 @@ static int game_bot_move(int me)
 			move = 2 + 3 * (move % 3) - move / 3;
 		return move;
 	}
-		
+
 	/* Checking for immediate block */
 	for (i = 3; i >= 0; i--) {
 
@@ -491,7 +492,26 @@ static int game_bot_move(int me)
 			move = 2 + 3 * (move % 3) - move / 3;
 		return move;
 	}
-	
+
+	/* Avoid 'holy cow' weakness */
+	c = board[4];
+	if(c != -1)
+	{
+		for (i = 0; i < 9; i += 2) {
+			if (i == 4) continue;
+			if ((board[i] == c)
+			&& (board[8 - i] != c)
+			&& (board[8 - i] != -1)) {
+				/*printf("holy cow! at: %i\n", i);*/
+				if (board[abs(i - 6)] == -1) {
+					return abs(i - 6);
+				} else if (board[abs(i - 2)] == -1) {
+					return abs(i - 2);
+				}
+			}
+		}
+	}
+
 	/* Checking for future block */
 	for (i = 3; i >= 0; i--) {
 
