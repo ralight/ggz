@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5756 2004-01-27 18:24:56Z josef $
+ * $Id: game.c 5834 2004-02-07 23:18:02Z jdorje $
  *
  * Functions for handling game events
  *
@@ -70,10 +70,11 @@ static GGZModule * pick_module(GGZGameType *gt)
 	GGZModule * module;
 	GGZModule **frontends;
 	char *preferred;
+	int num;
 
 	/* Check how many modules are registered for this game type */
 	ggzcore_reload();
-	const int num = ggzcore_module_get_num_by_type(name, engine, version);
+	num = ggzcore_module_get_num_by_type(name, engine, version);
 
 	if (num == 0) {
 		gchar *message;
