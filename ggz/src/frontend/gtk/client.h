@@ -2,6 +2,7 @@
  * File: client.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: client.h 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,3 +34,5 @@ GtkWidget* create_mnu_table (void);
 
 /* Default font */
 #define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
+
+extern GtkWidget *win_main;

@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 4657 2002-09-23 02:10:12Z jdorje $
+ * $Id: first.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -46,8 +46,6 @@
 #include "server.h"
 #define gettext_noop
 #include "support.h"
-
-extern GtkWidget *win_main;
 
 static GtkWidget *first_dialog;
 static GtkWidget* create_dlg_first(void);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5185 2002-11-03 21:50:54Z jdorje $
+ * $Id: game.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * Functions for handling game events
  *
@@ -39,6 +39,7 @@
 #include "client.h"
 #include "launch.h"
 #include "msgbox.h"
+#include "server.h"
 #include "support.h"
 
 #include <ggz.h>		/* libggz */
@@ -58,9 +59,6 @@ static void game_input_removed(gpointer data);
 GGZGame *game;
 static int fd = -1;
 static gint game_handle;
-
-extern GGZServer *server;
-extern GtkWidget *win_main;
 
 /* Spectate is 1 if we're spectating; 0 if we're playing. */
 int game_init(int spectate)

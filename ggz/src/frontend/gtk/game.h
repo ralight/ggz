@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
+ * $Id: game.h 5197 2002-11-04 00:31:34Z jdorje $
  *
  * Functions for handling game events
  *
@@ -42,3 +43,4 @@ void game_destroy(void);
 
 int game_play(void);
 
+extern GGZGame *game;

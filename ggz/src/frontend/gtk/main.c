@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 4566 2002-09-15 09:57:47Z dr_maux $
+ * $Id: main.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -48,8 +48,6 @@
 #include "server.h"
 #include "support.h"
 
-extern GtkWidget *win_main;
-GGZServer *server = NULL;
 
 static void init_debug(void)
 {

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5190 2002-11-03 22:22:51Z jdorje $
+ * $Id: client.c 5197 2002-11-04 00:31:34Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -52,14 +52,14 @@
 #include "login.h"
 #include "msgbox.h"
 #include "props.h"
+#include "server.h"
 #include "support.h"
 #include "types.h"
 #include "xtext.h"
 
 
-extern GdkColor colors[];
 GtkWidget *win_main;
-extern GGZServer *server;
+
 static gint table_selection_id = -1;
 static gint spectating = -1;
 

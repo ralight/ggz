@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 4877 2002-10-12 05:49:45Z jdorje $
+ * $Id: types.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -39,9 +39,8 @@
 #include <ggzcore.h>
 #include "types.h"
 #include "msgbox.h"
+#include "server.h"
 #include "support.h"
-
-extern GGZServer *server;
 
 static GtkWidget *types_dialog;
 static GtkWidget* create_dlg_types(void);

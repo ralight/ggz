@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 5192 2002-11-03 23:28:51Z jdorje $
+ * $Id: about.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -40,9 +40,8 @@
 
 #include "about.h"
 #include "about_bg.xpm"
+#include "chat.h"
 #include "support.h"
-
-extern GdkColor colors[];
 
 static GtkWidget *about_dialog;
 static GtkWidget *create_dlg_about(void);

@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5185 2002-11-03 21:50:54Z jdorje $
+ * $Id: chat.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -39,17 +39,17 @@
 #include <glib.h>
 
 #include "chat.h"
+#include "client.h"
 #include "ggz.h"
 #include "ggzcore.h"
 #include "login.h"
+#include "server.h"
 #include "xtext.h"
 #define gettext_noop			/* FIXME: why is this necessary? */
 #include "support.h"
 
 static void chat_allocate_colors(void);
 static const gchar *chat_get_color(const gchar *name, const gchar *msg);
-extern GtkWidget *win_main;
-extern GGZServer *server;
 static void chat_load_lists(void);
 
 static int friend_count;

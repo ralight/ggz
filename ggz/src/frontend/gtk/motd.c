@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- *
+ * $Id: motd.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -31,11 +31,12 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "chat.h"
+#include "client.h"
 #include "motd.h"
 #include "support.h"
 #include "ggz.h"
 
-extern GdkColor colors[];
 static GtkWidget *motd_dialog;
 static GtkWidget* create_dlg_motd (void);
 

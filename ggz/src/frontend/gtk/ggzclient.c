@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5132 2002-11-01 07:01:07Z jdorje $
+ * $Id: ggzclient.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -51,11 +51,6 @@
 
 static gint server_handle = -1;
 static gint channel_handle = -1;
-
-extern GtkWidget *login_dialog;
-extern GtkWidget *win_main;
-extern GGZServer *server;
-extern GGZGame *game;
 
 gint numrooms;
 gint numtables;

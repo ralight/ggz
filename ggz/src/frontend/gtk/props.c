@@ -2,6 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: props.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,17 +34,15 @@
 #include <gtk/gtk.h>
 
 #include <ggz.h>
+
 #include "chat.h"
 #include "ggzcore.h"
+#include "login.h"
 #include "props.h"
 #include "server.h"
 #include "support.h"
 #include "xtext.h"
 #include "client.h"
-
-extern GdkColor colors[];
-extern GdkColor ColorBlack;
-extern GdkColor ColorWhite;
 
 static void props_update(void);
 static void dlg_props_realize(GtkWidget *widget, gpointer user_data);
@@ -71,8 +70,6 @@ static void props_profiles_reload(void);
 static GtkWidget* create_dlg_props (void);
 static GtkWidget* create_dlg_props_font (void);
 
-extern GtkWidget *win_main;
-extern GtkWidget *login_dialog;
 GtkWidget *props_dialog;
 GtkWidget *props_font_dialog;
 

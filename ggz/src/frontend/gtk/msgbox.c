@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 5196 2002-11-04 00:07:45Z jdorje $
+ * $Id: msgbox.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -29,6 +29,7 @@
 
 #include <gtk/gtk.h>
 
+#include "client.h"
 #include "msgbox.h"
 #include "msg_help.xpm"
 #include "msg_info.xpm"
@@ -72,8 +73,6 @@ static GtkWidget *AddWidget (GtkWidget *widget, GtkWidget *packingbox)
 	return widget;
 }
 
-
-extern GtkWidget *win_main;
 
 MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MBModal modal)
 {

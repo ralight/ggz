@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 5175 2002-11-03 19:43:26Z jdorje $
+ * $Id: launch.c 5197 2002-11-04 00:31:34Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -45,12 +45,11 @@
 #include "game.h"
 #include "ggzcore.h"
 #include "msgbox.h"
+#include "server.h"
 
 /* The maximum number of characters in the reserved seat name (not counting
    termination) */
 #define MAX_RESERVED_NAME_LEN 16
-
-extern GGZServer *server;
 
 static void launch_fill_defaults(GtkWidget * widget, gpointer data);
 static void launch_seats_changed(GtkWidget * widget, gpointer data);

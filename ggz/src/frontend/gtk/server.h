@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
+ * $Id: server.h 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This file contains functions for handling server connection profiles
  *
@@ -101,5 +102,7 @@ Server* server_get(const gchar* name);
  * Remove the server profile whose name matches 'name'
  */
 void server_list_remove(const gchar* name);
+
+extern GGZServer *server;
 
 #endif

@@ -2,6 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: chat.h 5197 2002-11-04 00:31:34Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -60,5 +61,10 @@ gchar *chat_complete_name(const gchar *name, int *perfect);
 gint chat_is_friend(const gchar *name);
 gint chat_is_ignore(const gchar *name);
 void chat_lists_cleanup(void);
+
+/* Array of colors used for chat, motd, 'about' dialog, etc. */
+extern GdkColor colors[];
+extern GdkColor ColorWhite;
+extern GdkColor ColorBlack;
 
 #endif
