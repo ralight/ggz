@@ -108,6 +108,8 @@ create_draw_dialog (void)
   return draw_dialog;
 }
 
+extern GtkWidget *main_win; /* FIXME */
+
 GtkWidget*
 create_clock_dialog (void)
 {
@@ -137,6 +139,8 @@ create_clock_dialog (void)
   tooltips = gtk_tooltips_new ();
 
   clock_dialog = gtk_dialog_new ();
+  gtk_window_set_transient_for(GTK_WINDOW(clock_dialog),
+			       GTK_WINDOW(main_win));
   gtk_object_set_data (GTK_OBJECT (clock_dialog), "clock_dialog", clock_dialog);
   gtk_window_set_title (GTK_WINDOW (clock_dialog), _("Select your clock option"));
   gtk_window_set_policy (GTK_WINDOW (clock_dialog), TRUE, TRUE, FALSE);

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4492 2002-09-09 05:23:55Z jdorje $
+ * $Id: game.c 5201 2002-11-04 02:47:56Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -87,6 +87,8 @@ void game_popup(const char *format, ...) {
 
 	/* Create the widgets */
 	dialog = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dialog),
+				     GTK_WINDOW(main_win));
 	label = gtk_label_new(message);
 	ok = gtk_button_new_with_label("OK");
 	gtk_label_set_line_wrap( GTK_LABEL(label), TRUE );
