@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: game.c 3385 2002-02-17 08:36:07Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -250,7 +250,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		if(ggz_write_int(game.fd, DOTS_SND_MOVE_V) < 0
 		   || ggz_write_char(game.fd, line_x) < 0
 		   || ggz_write_char(game.fd, top) < 0) {
-			fprintf(stderr, "Lost server connection\n");
+			ggz_error_msg("Lost server connection");
 			exit(1);
 		}
 	} else {
@@ -277,7 +277,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		if(ggz_write_int(game.fd, DOTS_SND_MOVE_H) < 0
 		   || ggz_write_char(game.fd, left) < 0
 		   || ggz_write_char(game.fd, line_y) < 0) {
-			fprintf(stderr, "Lost server connection\n");
+			ggz_error_msg("Lost server connection");
 			exit(1);
 		}
 	}

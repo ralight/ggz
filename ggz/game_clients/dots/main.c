@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: main.c 3385 2002-02-17 08:36:07Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -52,6 +52,9 @@ GtkWidget *new_dialog;
 struct game_t game;
 int conf_handle;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
+
 static void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
 static int get_players(void);
@@ -63,6 +66,8 @@ static int get_sync_info(void);
 int main(int argc, char *argv[])
 {
 	char *filename;
+	
+	initialize_debugging();
 
 	gtk_init(&argc, &argv);
 
@@ -84,16 +89,50 @@ int main(int argc, char *argv[])
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
+		
+	cleanup_debugging();
 
 	return 0;
 }
 
 
+static void initialize_debugging(void)
+{
+	/* Our debugging code uses libggz's ggz_debug() function, so we
+	   just initialize the _types_ of debugging we want. */
 #ifdef DEBUG
+	const char *debugging_types[] = { "main", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	/* Debugging goes to ~/.ggz/dots-gtk.debug */
+	char *file_name =
+		g_strdup_printf("%s/.ggz/dots-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting dots client.");	
+}
+
+
+/* This function should be called at the end of the program to clean up
+ * debugging, as necessary. */
+static void cleanup_debugging(void)
+{
+	/* ggz_cleanup_debug writes the data out to the file and does a
+	   memory check at the same time. */
+	ggz_debug("main", "Shutting down dots client.");
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
+}
+
+
 char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
 		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
 		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_MSG_OPTIONS" };
-#endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -105,9 +144,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	}
 
 	status = 0;
-#ifdef DEBUG
-	fprintf(stderr, "%s\n", opstr[op]);
-#endif
+	
+	ggz_debug("main", "Received opcode %s", opstr[op]);
+	
 	switch(op) {
 		case DOTS_MSG_SEAT:
 			status = get_seat();
@@ -149,13 +188,13 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_show(opt_dialog);
 			break;
 		default:
-			fprintf(stderr, "Unknown opcode received %d\n", op);
+			ggz_error_msg("Unknown opcode received %d", op);
 			status = -1;
 			break;
 	}
 
 	if(status < 0) {
-		fprintf(stderr, "Ouch!\n");
+		ggz_error_msg("Ouch!");
 		close(game.fd);
 		exit(-1);
 	}
@@ -280,7 +319,7 @@ static int get_move_status(void)
 	}
 
 	if(status < 0)
-		fprintf(stderr, "Client cheater!\n");
+		ggz_error_msg("Client cheater!");
 
 	return (int)status;
 }
