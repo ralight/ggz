@@ -1,4 +1,4 @@
-.TH "ggz.h" 3 "7 Feb 2004" "LibGGZ" \" -*- nroff -*-
+.TH "ggz.h" 3 "17 Jul 2004" "Version 0.0.9" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -40,10 +40,10 @@ ggz.h \-
 .RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   8"
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   9"
 .br
 .ti -1c
-.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '2:0:1'"
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '2:1:1'"
 .br
 .ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
@@ -52,6 +52,10 @@ ggz.h \-
 .ti -1c
 .RI "#define \fB_GGZFUNCTION_\fP   __FUNCTION__"
 .br
+.ti -1c
+.RI "#define \fBGGZ_MEM_DEBUG\fP   'ggz_mem'"
+.br
+.RI "\fIDebugging type for memory debugging. \fP"
 .ti -1c
 .RI "#define \fBggz_malloc\fP(size)   _ggz_malloc(size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
 .br
@@ -69,11 +73,15 @@ ggz.h \-
 .br
 .RI "\fIMacro for duplicating string. \fP"
 .ti -1c
-.RI "#define \fBGGZ_LIST_REPLACE_DUPS\fP   0x00"
+.RI "#define \fBGGZ_CONF_DEBUG\fP   'ggz_conf'"
+.br
+.RI "\fIDebugging type for config-file debugging. \fP"
+.ti -1c
+.RI "#define \fBGGZ_LIST_REPLACE_DUPS\fP   0x00 /**< Overwrite duplicate values on insert */"
 .br
 .RI "\fIOverwrite duplicate values on insert. \fP"
 .ti -1c
-.RI "#define \fBGGZ_LIST_ALLOW_DUPS\fP   0x01"
+.RI "#define \fBGGZ_LIST_ALLOW_DUPS\fP   0x01 /**< Allow duplicate data entries to exist in the list */"
 .br
 .RI "\fIAllow duplicate data entries to exist in the list. \fP"
 .ti -1c
@@ -321,11 +329,11 @@ ggz.h \-
 .br
 .RI "\fIFree the stack. \fP"
 .ti -1c
-.RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (char *tag, char **attrs, void(*process)(), void(*free)())"
+.RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (const char *tag, const char *const *attrs, void(*process)(), void(*free)())"
 .br
 .RI "\fICreate a new \fBGGZXMLElement\fP element. \fP"
 .ti -1c
-.RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, char *tag, char **attrs, void(*process)(), void(*free)())"
+.RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, const char *tag, const char *const *attrs, void(*process)(), void(*free)())"
 .br
 .RI "\fIInitialize a \fBGGZXMLElement\fP. \fP"
 .ti -1c
@@ -333,11 +341,11 @@ ggz.h \-
 .br
 .RI "\fISet ancillary data on a \fBGGZXMLElement\fP object. \fP"
 .ti -1c
-.RI "char * \fBggz_xmlelement_get_tag\fP (\fBGGZXMLElement\fP *element)"
+.RI "const char * \fBggz_xmlelement_get_tag\fP (\fBGGZXMLElement\fP *element)"
 .br
 .RI "\fIGet an XML element's name. \fP"
 .ti -1c
-.RI "char * \fBggz_xmlelement_get_attr\fP (\fBGGZXMLElement\fP *element, char *attr)"
+.RI "const char * \fBggz_xmlelement_get_attr\fP (\fBGGZXMLElement\fP *element, const char *attr)"
 .br
 .RI "\fIGet the value of an attribute on XML element. \fP"
 .ti -1c
@@ -404,11 +412,11 @@ ggz.h \-
 .br
 .RI "\fICleans up debugging state and prepares for exit. \fP"
 .ti -1c
-.RI "char * \fBggz_xml_escape\fP (char *str)"
+.RI "char * \fBggz_xml_escape\fP (const char *str)"
 .br
 .RI "\fIEscape XML characters in a text string. \fP"
 .ti -1c
-.RI "char * \fBggz_xml_unescape\fP (char *str)"
+.RI "char * \fBggz_xml_unescape\fP (const char *str)"
 .br
 .RI "\fIRestore escaped XML characters into a text string. \fP"
 .ti -1c
@@ -604,7 +612,7 @@ Brent M. Hendricks
 Fri Nov 2 23:32:17 2001 
 .PP
 \fBId\fP.RS 4
-\fBggz.h\fP,v 1.49 2004/02/07 09:48:18 josef Exp 
+\fBggz.h\fP,v 1.51 2004/07/17 00:58:43 josef Exp 
 .RE
 .PP
 .RE

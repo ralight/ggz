@@ -1,4 +1,4 @@
-.TH "ggzdmod.h" 3 "7 Feb 2004" "GGZdMod" \" -*- nroff -*-
+.TH "ggzdmod.h" 3 "17 Jul 2004" "Version 0.0.9" "GGZdMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -34,10 +34,10 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .RI "#define \fBGGZDMOD_VERSION_MINOR\fP   0"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   8"
+.RI "#define \fBGGZDMOD_VERSION_MICRO\fP   9"
 .br
 .ti -1c
-.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '2:1:0'"
+.RI "#define \fBGGZDMOD_VERSION_IFACE\fP   '3:0:0'"
 .br
 .in -1c
 .SS "Typedefs"
@@ -159,7 +159,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fILog all information about the ggzdmod. \fP"
 .ti -1c
-.RI "void \fBggzdmod_report_game\fP (\fBGGZdMod\fP *ggzdmod, int *teams, \fBGGZGameResult\fP *results)"
+.RI "void \fBggzdmod_report_game\fP (\fBGGZdMod\fP *ggzdmod, int *teams, \fBGGZGameResult\fP *results, int *scores)"
 .br
 .RI "\fIReport the results of a game to GGZ. \fP"
 .ti -1c
@@ -320,7 +320,7 @@ For more information, see the documentation at http://ggz.sf.net/.
 .SS "typedef struct \fBGGZdMod\fP \fBGGZdMod\fP"
 .PP
 A GGZdmod object, used for tracking a ggzd<->table connection. A game server should track a pointer to a GGZdMod object; it contains all the state information for communicating with GGZ. The GGZ server will track one such object for every game table that is running. 
-.SS "typedef void(* \fBGGZdModHandler\fP)(\fBGGZdMod\fP * mod, \fBGGZdModEvent\fP e, void *data)"
+.SS "typedef void(* \fBGGZdModHandler\fP)(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
 .PP
 Event handler prototype. A function of this type will be called to handle a ggzdmod event. 
 .PP
@@ -732,7 +732,7 @@ The type of the GGZdMod object (GGZ or GAME).
 .RE
 .PP
 
-.SS "int ggzdmod_log (\fBGGZdMod\fP * ggzdmod, char * fmt, ...)"
+.SS "int ggzdmod_log (\fBGGZdMod\fP * ggzdmod, char * fmt,  ...)"
 .PP
 Log data. This function sends the specified string (printf-style) to the GGZ server to be logged. 
 .PP
@@ -786,7 +786,7 @@ Create a new ggzdmod object. Before connecting through ggzdmod, a new ggzdmod ob
 .RE
 .PP
 
-.SS "void ggzdmod_report_game (\fBGGZdMod\fP * ggzdmod, int * teams, \fBGGZGameResult\fP * results)"
+.SS "void ggzdmod_report_game (\fBGGZdMod\fP * ggzdmod, int * teams, \fBGGZGameResult\fP * results, int * scores)"
 .PP
 Report the results of a game to GGZ. After a game has completed, the game server should call this function to report the results to GGZ. GGZ can then use the information to track player statistics - including an ELO-style rating, win-loss records, etc.
 .PP
@@ -797,6 +797,8 @@ Report the results of a game to GGZ. After a game has completed, the game server
 \fIteams\fP An array listing a team number for each player, or NULL. 
 .br
 \fIresults\fP An array listing the result of the game for each player. 
+.br
+\fIscores\fP The scores for all players (may be NULL) 
 .RE
 .PP
 
