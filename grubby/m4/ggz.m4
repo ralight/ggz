@@ -143,7 +143,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdinc="$ac_ggz_stdinc /usr/local/include /usr/include"
   ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/lib"
   ac_ggz_stdbin="$ac_ggz_stdbin /usr/local/bin /usr/bin"
-  ac_ggz_stdetc="$ac_ggz_stdetc /usr/local/etc /etc"
+  ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
   CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
@@ -636,7 +636,15 @@ AC_ARG_WITH(ggzd-confdir,
 
 AC_CACHE_VAL(ac_cv_have_ggzdconf,
 [
-	ggzdconfdirs="$ac_ggzd_confdir $ac_ggz_stdetc"
+	if test "x$1" = "xforce"; then
+		if test "x$ac_ggzd_confdir" = "x"; then
+			ggzdconfdirs="$ac_ggz_stdetc"
+		else
+			ggzdconfdirs="$ac_ggzd_confdir"
+		fi
+	else
+		ggzdconfdirs="$ac_ggzd_confdir $ac_ggz_stdetc"
+	fi
 
 	ggzdconfdir=NONE
 	for dir in $ggzdconfdirs; do
@@ -663,23 +671,61 @@ eval "$ac_cv_have_ggzdconf"
 if test "$have_ggzdconf" != yes; then
 	if test "x$2" = "xignore"; then
 	  AC_MSG_RESULT([$have_ggzdconf (intentionally ignored)])
+	elif test "x$2" = "xforce"; then
+	  if test "x$ac_ggzd_confdir" = "x"; then
+	    ggzdconfdir="\${prefix}/etc/ggzd"
+	  else
+	    ggzdconfdir=$ac_ggzd_confdir
+	  fi
+	  AC_MSG_RESULT([$have_ggzdconf (but forced to ${ggzdconfdir})])
 	else
 	  AC_MSG_RESULT([$have_ggzdconf])
-          if test "x$2" = "x"; then
+      if test "x$2" = "x"; then
 	    AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
-          fi
+      fi
 
 	  # Perform actions given by argument 2.
 	  $2
 	fi
 else
-	AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir)])
+	prefixed=0
+	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
+		prefixed=1
+	fi
+	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
+		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
+		ggzdconfdir="\${prefix}/etc/ggzd"
+	else
+		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir)])
+	fi
+fi
 
+if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
 	AC_SUBST(ggzdconfdir)
 
 	ggzddatadir=${prefix}/share/${PACKAGE}
 	AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}", [Game server data directory])
 	AC_SUBST(ggzddatadir)
+
+	if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+	  if test "x${exec_prefix}" = "xNONE"; then
+	    if test "x${prefix}" = "xNONE"; then
+	      ggzdexecmoddir="\${ac_default_prefix}/lib/ggzd"
+		  ggzdexecmodpath="${ac_default_prefix}/lib/ggzd"
+	    else
+	      ggzdexecmoddir="\${prefix}/lib/ggzd"
+		  ggzdexecmodpath="${prefix}/lib/ggzd"
+	    fi
+	  else
+	    ggzdexecmoddir="\${exec_prefix}/lib/ggzd"
+		ggzdexecmodpath="${exec_prefix}/lib/ggzd"
+	  fi
+	else
+	  ggzdexecmoddir="\${libdir}/ggzd"
+	  ggzdexecmodpath="${libdir}/ggzd"
+	fi
+	AC_SUBST(ggzdexecmoddir)
+	AC_SUBST(ggzdexecmodpath)
 
 	# Perform actions given by argument 1.
 	$1

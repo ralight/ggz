@@ -28,17 +28,23 @@ dnl 2002-08-20: change -I<directory> to -isystem<directory> to avoid
 dnl             warnings in gcc3
 dnl 2002-09-25: added AC_GGZ_ERROR, AC_GGZ_REMOVEDUPS, AC_GGZ_INIT, allowing
 dnl             for more control over what is going to happen
+dnl 2002-10-12: added action-if-found and action-if-not-found parameters to
+dnl             all primary macros
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
+dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
 dnl AC_GGZ_GGZMOD - find the ggzmod library
 dnl AC_GGZ_GGZDMOD - find the ggzdmod library
 dnl AC_GGZ_SERVER - set up game and room path for ggzd game servers
-dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
 dnl AC_GGZ_INTL - ensure proper i18n tools installation
+dnl
+dnl Each macro takes two arguments:
+dnl   1.  Action-if-found (or empty for no action).
+dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
 dnl ------------------------------------------------------------------------
 dnl Internal functions:
 dnl ------------------------------------------------------------------------
@@ -137,7 +143,7 @@ if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
   ac_ggz_stdinc="$ac_ggz_stdinc /usr/local/include /usr/include"
   ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/lib"
   ac_ggz_stdbin="$ac_ggz_stdbin /usr/local/bin /usr/bin"
-  ac_ggz_stdetc="$ac_ggz_stdetc /usr/local/etc /etc"
+  ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
 fi
 if test "x$1" = "xexport" || test "x$2" = "xexport"; then
   CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
@@ -205,31 +211,40 @@ fi
 eval "$ac_cv_have_libggz"
 
 if test "$have_libggz" != yes; then
-  if test "x$1" = "xignore"; then
-    AC_MSG_RESULT([$have_libggz (intentionally ignored)])
+  if test "x$2" = "xignore"; then
+    AC_MSG_RESULT([$have_libggz (ignored)])
   else
-    AC_GGZ_ERROR(libggz, $libggz_incdirs, $libggz_libdirs)
+    AC_MSG_RESULT([$have_libggz])
+    if test "x$2" = "x"; then
+      AC_GGZ_ERROR(libggz, $libggz_incdirs, $libggz_libdirs)
+    fi
+
+    # perform actions given by argument 2.
+    $2
   fi
 else
   ac_cv_have_libggz="have_libggz=yes \
     ac_libggz_includes=$ac_libggz_includes ac_libggz_libraries=$ac_libggz_libraries"
-  AC_MSG_RESULT([libraries $ac_libggz_libraries, headers $ac_libggz_includes])
+  AC_MSG_RESULT([$have_libggz (libraries $ac_libggz_libraries, headers $ac_libggz_includes)])
 
   libggz_libraries="$ac_libggz_libraries"
   libggz_includes="$ac_libggz_includes"
+
+  AC_SUBST(libggz_libraries)
+  AC_SUBST(libggz_includes)
+
+  LIBGGZ_INCLUDES="-isystem $libggz_includes"
+  LIBGGZ_LDFLAGS="-L$libggz_libraries"
+
+  AC_SUBST(LIBGGZ_INCLUDES)
+  AC_SUBST(LIBGGZ_LDFLAGS)
+
+  LIB_GGZ='-lggz'
+  AC_SUBST(LIB_GGZ)
+
+  # perform actions given by argument 1.
+  $1
 fi
-
-AC_SUBST(libggz_libraries)
-AC_SUBST(libggz_includes)
-
-LIBGGZ_INCLUDES="-isystem $libggz_includes"
-LIBGGZ_LDFLAGS="-L$libggz_libraries"
-
-AC_SUBST(LIBGGZ_INCLUDES)
-AC_SUBST(LIBGGZ_LDFLAGS)
-
-LIB_GGZ='-lggz'
-AC_SUBST(LIB_GGZ)
 
 ])
 
@@ -294,31 +309,40 @@ fi
 eval "$ac_cv_have_ggzcore"
 
 if test "$have_ggzcore" != yes; then
-  if test "x$1" = "xignore"; then
+  if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggzcore (intentionally ignored)])
   else
-    AC_GGZ_ERROR(ggzcore, $ggzcore_incdirs, $ggzcore_libdirs)
+    AC_MSG_RESULT([$have_ggzcore])
+    if test "x$2" = "x"; then
+      AC_GGZ_ERROR(ggzcore, $ggzcore_incdirs, $ggzcore_libdirs)
+    fi
+
+    # Perform actions given by argument 2.
+    $2
   fi
 else
   ac_cv_have_ggzcore="have_ggzcore=yes \
     ac_ggzcore_includes=$ac_ggzcore_includes ac_ggzcore_libraries=$ac_ggzcore_libraries"
-  AC_MSG_RESULT([libraries $ac_ggzcore_libraries, headers $ac_ggzcore_includes])
+  AC_MSG_RESULT([$have_ggzcore (libraries $ac_ggzcore_libraries, headers $ac_ggzcore_includes)])
 
   ggzcore_libraries="$ac_ggzcore_libraries"
   ggzcore_includes="$ac_ggzcore_includes"
+
+  AC_SUBST(ggzcore_libraries)
+  AC_SUBST(ggzcore_includes)
+
+  GGZCORE_INCLUDES="-isystem $ggzcore_includes"
+  GGZCORE_LDFLAGS="-L$ggzcore_libraries"
+
+  AC_SUBST(GGZCORE_INCLUDES)
+  AC_SUBST(GGZCORE_LDFLAGS)
+
+  LIB_GGZCORE='-lggzcore'
+  AC_SUBST(LIB_GGZCORE)
+
+  # Perform actions given by argument 1.
+  $1
 fi
-
-AC_SUBST(ggzcore_libraries)
-AC_SUBST(ggzcore_includes)
-
-GGZCORE_INCLUDES="-isystem $ggzcore_includes"
-GGZCORE_LDFLAGS="-L$ggzcore_libraries"
-
-AC_SUBST(GGZCORE_INCLUDES)
-AC_SUBST(GGZCORE_LDFLAGS)
-
-LIB_GGZCORE='-lggzcore'
-AC_SUBST(LIB_GGZCORE)
 
 ])
 
@@ -359,10 +383,16 @@ fi
 eval "$ac_cv_have_ggz_config"
 
 if test "$have_ggz_config" != yes; then
-  if test "x$1" = "xignore"; then
+  if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
   else
-    AC_MSG_ERROR([ggz-config not found. Please check your installation! ])
+    AC_MSG_RESULT([$have_ggz_config])
+    if test "x$2" = "x"; then
+      AC_MSG_ERROR([ggz-config not found. Please check your installation! ])
+    fi
+
+    # Perform actions given by argument 2.
+    $2
   fi
 else
   ac_cv_have_ggz_config="have_ggz_config=yes \
@@ -370,28 +400,29 @@ else
   AC_MSG_RESULT([$ac_ggz_config/ggz-config])
 
   ggz_config="$ac_ggz_config"
+
+  AC_SUBST(ggz_config)
+
+  GGZ_CONFIG="${ggz_config}/ggz-config"
+  AC_SUBST(GGZ_CONFIG)
+
+  ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+  AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
+  ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+  AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+  ggzdatadir=`$GGZ_CONFIG --datadir`
+  AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+  packagesrcdir=`cd $srcdir && pwd`
+  AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+
+  AC_SUBST(ggzmoduleconfdir)
+  AC_SUBST(ggzexecmoddir)
+  AC_SUBST(ggzdatadir)
+  AC_SUBST(packagesrcdir)
+
+  # Perform actions given by argument 1.
+  $1
 fi
-
-AC_SUBST(ggz_config)
-
-if test "$have_ggz_config" = yes; then
-	GGZ_CONFIG="${ggz_config}/ggz-config"
-	AC_SUBST(GGZ_CONFIG)
-
-	ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
-	AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
-	ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-	AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
-	ggzdatadir=`$GGZ_CONFIG --datadir`
-	AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
-	packagesrcdir=`cd $srcdir && pwd`
-	AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
-fi
-
-AC_SUBST(ggzmoduleconfdir)
-AC_SUBST(ggzexecmoddir)
-AC_SUBST(ggzdatadir)
-AC_SUBST(packagesrcdir)
 
 ])
 
@@ -455,31 +486,40 @@ fi
 eval "$ac_cv_have_ggzmod"
 
 if test "$have_ggzmod" != yes; then
-  if test "x$1" = "xignore"; then
+  if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggzmod (intentionally ignored)])
   else
-    AC_GGZ_ERROR(ggzmod, $ggzmod_incdirs, $ggzmod_libdirs)
+    AC_MSG_RESULT([$have_ggzmod])
+    if test "x$2" = "x"; then
+      AC_GGZ_ERROR(ggzmod, $ggzmod_incdirs, $ggzmod_libdirs)
+    fi
+
+    # Perform actions given by argument 2.
+    $2
   fi
 else
   ac_cv_have_ggzmod="have_ggzmod=yes \
     ac_ggzmod_includes=$ac_ggzmod_includes ac_ggzmod_libraries=$ac_ggzmod_libraries"
-  AC_MSG_RESULT([libraries $ac_ggzmod_libraries, headers $ac_ggzmod_includes])
+  AC_MSG_RESULT([$have_ggzmod (libraries $ac_ggzmod_libraries, headers $ac_ggzmod_includes)])
 
   ggzmod_libraries="$ac_ggzmod_libraries"
   ggzmod_includes="$ac_ggzmod_includes"
+
+  AC_SUBST(ggzmod_libraries)
+  AC_SUBST(ggzmod_includes)
+
+  GGZMOD_INCLUDES="-isystem $ggzmod_includes"
+  GGZMOD_LDFLAGS="-L$ggzmod_libraries"
+
+  AC_SUBST(GGZMOD_INCLUDES)
+  AC_SUBST(GGZMOD_LDFLAGS)
+
+  LIB_GGZMOD='-lggzmod'
+  AC_SUBST(LIB_GGZMOD)
+
+  # Perform actions given by argument 1.
+  $1
 fi
-
-AC_SUBST(ggzmod_libraries)
-AC_SUBST(ggzmod_includes)
-
-GGZMOD_INCLUDES="-isystem $ggzmod_includes"
-GGZMOD_LDFLAGS="-L$ggzmod_libraries"
-
-AC_SUBST(GGZMOD_INCLUDES)
-AC_SUBST(GGZMOD_LDFLAGS)
-
-LIB_GGZMOD='-lggzmod'
-AC_SUBST(LIB_GGZMOD)
 
 ])
 
@@ -543,31 +583,40 @@ fi
 eval "$ac_cv_have_ggzdmod"
 
 if test "$have_ggzdmod" != yes; then
-  if test "x$1" = "xignore"; then
+  if test "x$2" = "xignore"; then
     AC_MSG_RESULT([$have_ggzdmod (intentionally ignored)])
   else
-    AC_GGZ_ERROR(ggzdmod, $ggzdmod_incdirs, $ggzdmod_libdirs)
+    AC_MSG_RESULT([$have_ggzdmod])
+    if test "x$2" = "x"; then
+      AC_GGZ_ERROR(ggzdmod, $ggzdmod_incdirs, $ggzdmod_libdirs)
+    fi
+
+    # Perform actions given by argument 2.
+    $2
   fi
 else
   ac_cv_have_ggzdmod="have_ggzdmod=yes \
     ac_ggzdmod_includes=$ac_ggzdmod_includes ac_ggzdmod_libraries=$ac_ggzdmod_libraries"
-  AC_MSG_RESULT([libraries $ac_ggzdmod_libraries, headers $ac_ggzdmod_includes])
+  AC_MSG_RESULT([$have_ggzdmod (libraries $ac_ggzdmod_libraries, headers $ac_ggzdmod_includes)])
 
   ggzdmod_libraries="$ac_ggzdmod_libraries"
   ggzdmod_includes="$ac_ggzdmod_includes"
+
+  AC_SUBST(ggzdmod_libraries)
+  AC_SUBST(ggzdmod_includes)
+
+  GGZDMOD_INCLUDES="-isystem $ggzdmod_includes"
+  GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
+
+  AC_SUBST(GGZDMOD_INCLUDES)
+  AC_SUBST(GGZDMOD_LDFLAGS)
+
+  LIB_GGZDMOD='-lggzdmod'
+  AC_SUBST(LIB_GGZDMOD)
+
+  # Perform actions given by argument 1.
+  $1
 fi
-
-AC_SUBST(ggzdmod_libraries)
-AC_SUBST(ggzdmod_includes)
-
-GGZDMOD_INCLUDES="-isystem $ggzdmod_includes"
-GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
-
-AC_SUBST(GGZDMOD_INCLUDES)
-AC_SUBST(GGZDMOD_LDFLAGS)
-
-LIB_GGZDMOD='-lggzdmod'
-AC_SUBST(LIB_GGZDMOD)
 
 ])
 
@@ -587,7 +636,15 @@ AC_ARG_WITH(ggzd-confdir,
 
 AC_CACHE_VAL(ac_cv_have_ggzdconf,
 [
-	ggzdconfdirs="$ac_ggzd_confdir $ac_ggz_stdetc"
+	if test "x$1" = "xforce"; then
+		if test "x$ac_ggzd_confdir" = "x"; then
+			ggzdconfdirs="$ac_ggz_stdetc"
+		else
+			ggzdconfdirs="$ac_ggzd_confdir"
+		fi
+	else
+		ggzdconfdirs="$ac_ggzd_confdir $ac_ggz_stdetc"
+	fi
 
 	ggzdconfdir=NONE
 	for dir in $ggzdconfdirs; do
@@ -612,20 +669,68 @@ AC_CACHE_VAL(ac_cv_have_ggzdconf,
 eval "$ac_cv_have_ggzdconf"
 
 if test "$have_ggzdconf" != yes; then
-	if test "x$1" = "xignore"; then
+	if test "x$2" = "xignore"; then
 	  AC_MSG_RESULT([$have_ggzdconf (intentionally ignored)])
+	elif test "x$2" = "xforce"; then
+	  if test "x$ac_ggzd_confdir" = "x"; then
+	    ggzdconfdir="\${prefix}/etc/ggzd"
+	  else
+	    ggzdconfdir=$ac_ggzd_confdir
+	  fi
+	  AC_MSG_RESULT([$have_ggzdconf (but forced to ${ggzdconfdir})])
 	else
-	  AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
+	  AC_MSG_RESULT([$have_ggzdconf])
+      if test "x$2" = "x"; then
+	    AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
+      fi
+
+	  # Perform actions given by argument 2.
+	  $2
 	fi
 else
-	AC_MSG_RESULT([$ggzdconfdir])
+	prefixed=0
+	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
+		prefixed=1
+	fi
+	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
+		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
+		ggzdconfdir="\${prefix}/etc/ggzd"
+	else
+		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir)])
+	fi
 fi
 
-AC_SUBST(ggzdconfdir)
+if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
+	AC_SUBST(ggzdconfdir)
 
-ggzddatadir=${prefix}/share/${PACKAGE}
-AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}", [Game server data directory])
-AC_SUBST(ggzddatadir)
+	ggzddatadir=${prefix}/share/${PACKAGE}
+	AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}", [Game server data directory])
+	AC_SUBST(ggzddatadir)
+
+	if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+	  if test "x${exec_prefix}" = "xNONE"; then
+	    if test "x${prefix}" = "xNONE"; then
+	      ggzdexecmoddir="\${ac_default_prefix}/lib/ggzd"
+		  ggzdexecmodpath="${ac_default_prefix}/lib/ggzd"
+	    else
+	      ggzdexecmoddir="\${prefix}/lib/ggzd"
+		  ggzdexecmodpath="${prefix}/lib/ggzd"
+	    fi
+	  else
+	    ggzdexecmoddir="\${exec_prefix}/lib/ggzd"
+		ggzdexecmodpath="${exec_prefix}/lib/ggzd"
+	  fi
+	else
+	  ggzdexecmoddir="\${libdir}/ggzd"
+	  ggzdexecmodpath="${libdir}/ggzd"
+	fi
+	AC_SUBST(ggzdexecmoddir)
+	AC_SUBST(ggzdexecmodpath)
+
+	# Perform actions given by argument 1.
+	$1
+fi
+
 ])
 
 dnl ------------------------------------------------------------------------
@@ -643,20 +748,31 @@ if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
 if test "$intl" = 0; then
-  if test "x$1" = "xignore"; then
+  if test "x$2" = "xignore"; then
     AC_MSG_WARN([Internationalization tools missing. (ignored)])
   else
-    AC_MSG_ERROR([Internationalization tools missing.])
+    AC_MSG_RESULT([Internationalization tools missing.])
+    if test "x$2" = "x"; then
+      AC_MSG_ERROR([Internationalization tools missing.])
+    fi
+
+    # Perform actions given by argument 2.
+    $2
   fi
+else
+  AC_MSG_RESULT([Internationalization tools found.])
+
+  XGETTEXT=$GETTEXT
+  GMSGFMT=$MSGFMT
+
+  AC_SUBST(XGETTEXT)
+  AC_SUBST(GETTEXT)
+  AC_SUBST(GMSGFMT)
+  AC_SUBST(MSGFMT)
+  AC_SUBST(MSGMERGE)
+
+  # Perform actions given by argument 1.
+  $1
 fi
 
-XGETTEXT=$GETTEXT
-GMSGFMT=$MSGFMT
-
-AC_SUBST(XGETTEXT)
-AC_SUBST(GETTEXT)
-AC_SUBST(GMSGFMT)
-AC_SUBST(MSGFMT)
-AC_SUBST(MSGMERGE)
 ])
-
