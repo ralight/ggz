@@ -170,7 +170,9 @@ static void table_fork(int t_index)
 	pthread_rwlock_unlock(&game_types.lock);
 
 #ifdef DEBUG
+	pthread_rwlock_rdlock(&tables.lock);
 	table_check(-1, tables.info[t_index]);
+	pthread_rwlock_unlock(&tables.lock);
 #endif
 
 	/* Fork table process */
@@ -182,8 +184,10 @@ static void table_fork(int t_index)
 	} else {
 		/* Close the remote ends of the socket pairs */
 		close(fd[0]);
+		pthread_rwlock_rdlock(&tables.lock);
 		for (i = 0; i < tables.info[t_index].num_humans; i++)
 			close(tables.info[t_index].player_fd[i]);
+		pthread_rwlock_unlock(&tables.lock);
 
 		pthread_rwlock_wrlock(&tables.lock);
 		tables.info[t_index].pid = pid;
@@ -213,9 +217,15 @@ static void table_run_game(int t_index, int fd, char *path)
 }
 
 
+/* 
+ * FIXME: Fix this function like this:
+ * 1) acquire locks
+ * 2) copy all necessary info to local vars
+ * 3) release locks
+ * 4) pass local copy of info to table
+ */
 static int table_send_opt(int t_index)
 {
-
 	int i, fd, size, type, p_index, op;
 	char status = 0;
 	char name[MAX_USER_NAME_LEN];
@@ -228,23 +238,21 @@ static int table_send_opt(int t_index)
 	pthread_rwlock_unlock(&game_types.lock);
 
 	/* Pass options struct and other seat info */
-	if (FAIL(es_write_int(fd, REQ_GAME_LAUNCH)) ||
-	    FAIL(es_writen(fd, tables.info[t_index].options, size)) ||
-	    FAIL(es_write_int(fd, tables.info[t_index].num_seats)) ||
-	    FAIL(es_write_char
-		 (fd,
-		  tables.info[t_index].comp_players))) return (-1);
+	if (FAIL(es_write_int(fd, REQ_GAME_LAUNCH)) 
+	    || FAIL(es_writen(fd, tables.info[t_index].options, size)) 
+	    || FAIL(es_write_int(fd, tables.info[t_index].num_seats)) 
+	    || FAIL(es_write_char(fd, tables.info[t_index].comp_players)))
+		return (-1);
 
 	/* Send player names and file descriptors */
 	for (i = 0; i < tables.info[t_index].num_humans; i++) {
 		p_index = tables.info[t_index].players[i];
 		pthread_rwlock_rdlock(&players.lock);
-		strncpy(name, players.info[p_index].name,
-			MAX_USER_NAME_LEN);
+		strncpy(name, players.info[p_index].name, MAX_USER_NAME_LEN);
 		pthread_rwlock_unlock(&players.lock);
-		if (FAIL(es_write_string(fd, name)) ||
-		    FAIL(es_write_int
-			 (fd, tables.info[t_index].player_fd[i])))
+		if (FAIL(es_write_string(fd, name)) 
+		    || FAIL(es_write_int(fd, 
+					 tables.info[t_index].player_fd[i])))
 			return (-1);
 	}
 
@@ -303,7 +311,6 @@ static int table_handle(int request, int index, int fd)
 
 static void table_remove(int t_index)
 {
-
 	dbg_msg("Removing table %d", t_index);
 
 	pthread_rwlock_wrlock(&tables.lock);
@@ -315,7 +322,6 @@ static void table_remove(int t_index)
 	pthread_rwlock_unlock(&tables.lock);
 
 	close(tables.info[t_index].fd_to_game);
-
 }
 
 

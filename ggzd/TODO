@@ -1,6 +1,7 @@
 For 0.0.2
 =========
-- Check mutex's. Expecially table.mutex
+- Check table.mutex
+- Plot out mutex nesting and make sure deadlock is impossible
 - Redo way table structure stores info about whos playing: this should be
 simple and not have lots of redundant data like we do now: the array of fd's
 and the array of names.  We need a few special (negative) fd values like
@@ -17,6 +18,7 @@ to stay since it's important.  not sure)
 - implement player database (at least API)
 - implement tic-tac-toe as simple game example
 - config file handling
+- Do we really need player.info[].playing?  Nothing uses it!
 
 Medium run
 ==========
