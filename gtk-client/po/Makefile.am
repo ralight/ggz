@@ -4,7 +4,7 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-all:
+messages:
 	$(XGETTEXT) -k_ -kN_ ../ggz-gtk/*.c -o ggz-gtk.pot
 	@for j in `ls -1 *.po`; do \
 		echo "process $$j"; \

@@ -6,7 +6,7 @@ MSGFMT = msgfmt
 
 MODULES = hastings tictactoe
 
-all:
+messages:
 	@for i in $(MODULES); do \
 		$(XGETTEXT) -k_ ../$$i/*.c -o $$i/$$i.pot; \
 		for j in `cd $$i; ls -1 *.po`; do \
