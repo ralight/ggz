@@ -10,7 +10,7 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 noinst_HEADERS = kio_ggz.h helper.h
 
-INCLUDES = -I $(top_srcdir)/ggz-kde/ggzcore++/src -I $(qt_includes) -I $(kde_includes)
+INCLUDES = $(GGZCORE_INCLUDES) -I $(top_srcdir)/ggz-kde/ggzcore++/src -I $(qt_includes) -I $(kde_includes)
 
 METASOURCES = AUTO
 
