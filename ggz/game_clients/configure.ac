@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6224 2004-10-28 05:37:56Z jdorje $
+dnl $Id: configure.ac 6229 2004-10-28 06:25:43Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -111,8 +111,6 @@ dnl ==============
 
 AM_PATH_GTK_2_0([2.0.0], [],
     [AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])])
-
-AC_DEFINE(GTK2, 1, [Define to link against GTK+-2.0 libraries])
 
 dnl Debug modes
 dnl ===========
