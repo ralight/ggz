@@ -83,6 +83,7 @@ char *opcode_str[] = { 	"MSG_SERVER_ID",
 			"MSG_UPDATE_PLAYERS",
 			"MSG_UPDATE_TYPES",
 			"MSG_UPDATE_TABLES",
+			"MSG_ERROR",
 			"RSP_LOGIN_NEW",
 			"RSP_LOGIN",
 			"RSP_LOGIN_ANON",
@@ -169,7 +170,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
-			disconnect(NULL, NULL);
+			warn_dlg("Invalid name!");
 			return;
 		}
 		es_read_int(source, &checksum);
