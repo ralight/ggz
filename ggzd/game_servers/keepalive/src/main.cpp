@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	Keepalive *k;
 	int ggzmode;
 	int optindex;
-	char opt;
+	int opt;
 	struct option options[] =
 	{
 		{"ggz", no_argument, 0, 'g'},

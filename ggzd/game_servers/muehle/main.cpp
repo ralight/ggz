@@ -33,7 +33,7 @@
 // Main function: parse arguments and start server
 int
 main ( int argc, char** argv) {
-	char option;
+	int option;
 	struct option opt [] = {
 		{ "help", no_argument, NULL, 'h' },
 		{ "version", no_argument, NULL, 'v' },
