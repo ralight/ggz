@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 6448 2004-12-11 21:14:29Z jdorje $
+ * $Id: room.c 6729 2005-01-18 18:23:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -424,7 +424,8 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 		return GGZ_EVENT_OK;
 
 	if (net_send_player_update(player->client->net, event->opcode,
-				   event->player, event->other_room) < 0)
+				   event->player, player_get_room(player),
+				   event->other_room) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;

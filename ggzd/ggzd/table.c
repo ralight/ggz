@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: table.c 6729 2005-01-18 18:23:46Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1532,7 +1532,8 @@ static GGZEventFuncReturn table_event_callback(void* target, size_t size,
 	}
 
 	if (net_send_table_update(player->client->net, event->opcode,
-				  event->table, update_data) < 0)
+				  event->table, update_data,
+				  player_get_room(player)) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;

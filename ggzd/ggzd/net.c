@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: net.c 6729 2005-01-18 18:23:46Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -449,15 +449,12 @@ GGZReturn net_send_player_list_error(GGZNetIO *net, GGZClientReqError status)
 }
 
 
-GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
+GGZReturn net_send_player_list_count(GGZNetIO *net, int room_id, int count)
 {
-	int room;
-
-	room = player_get_room(net->client->data);
-	
 	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
 		       ggz_error_to_string(E_OK));
-	return _net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
+	return _net_send_line(net, "<LIST TYPE='player' ROOM='%d'>",
+			      room_id);
 }
 
 
@@ -546,15 +543,11 @@ GGZReturn net_send_table_list_error(GGZNetIO *net, GGZClientReqError status)
 }
 
 
-GGZReturn net_send_table_list_count(GGZNetIO *net, int count)
+GGZReturn net_send_table_list_count(GGZNetIO *net, int room_id, int count)
 {
-	int room;
-
-	room = player_get_room(net->client->data);
-
 	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
 		       ggz_error_to_string(E_OK));
-	return _net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
+	return _net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room_id);
 }
 
 
@@ -685,17 +678,17 @@ GGZReturn net_send_reseat_result(GGZNetIO *net, GGZClientReqError status)
 
 
 GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
-				 const char *name, int other_room)
+				 const char *name,
+				 int room_id, int other_room_id)
 {
 	GGZPlayer *player;
 	GGZPlayer p2;
-	int room;
-
-	room = player_get_room(net->client->data);
 	
 	switch (opcode) {
 	case GGZ_PLAYER_UPDATE_DELETE:
-	  _net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d' TOROOM='%d'>", room, other_room);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' "
+			       "ROOM='%d' TOROOM='%d'>",
+			       room_id, other_room_id);
 		_net_send_line(net, "<PLAYER ID='%s'/>", name);
 		return _net_send_line(net, "</UPDATE>");
 
@@ -710,7 +703,9 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		p2 = *player;
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d' FROMROOM='%d'>", room, other_room);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' "
+			       "ROOM='%d' FROMROOM='%d'>",
+			       room_id, other_room_id);
 		net_send_player(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 
@@ -723,7 +718,8 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		}
 		p2 = *player;
 		pthread_rwlock_unlock(&player->lock);
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' "
+			       "ROOM='%d'>", room_id);
 		_net_send_player_lag(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 	case GGZ_PLAYER_UPDATE_STATS:
@@ -737,7 +733,8 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 		p2 = *player;
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' ROOM='%d'>", room);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='stats' "
+			       "ROOM='%d'>", room_id);
 		_net_send_player_stats(net, player);
 		return _net_send_line(net, "</UPDATE>");
 	}
@@ -748,12 +745,10 @@ GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
 
 
 GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
-				GGZTable *table, void* seat_data)
+				GGZTable *table, void* seat_data,
+				int room_id)
 {
 	char *action = NULL;
-	int room;
-
-	room = player_get_room(net->client->data);
 
 	switch (opcode) {
 	case GGZ_TABLE_UPDATE_DELETE:
@@ -786,7 +781,7 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 
 	/* Always send opcode */
 	_net_send_line(net, "<UPDATE TYPE='table' ACTION='%s' ROOM='%d'>",
-		       action, room);
+		       action, room_id);
 
 	switch (opcode) {
 	case GGZ_TABLE_UPDATE_DELETE:

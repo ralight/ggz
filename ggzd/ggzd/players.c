@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: players.c 6729 2005-01-18 18:23:46Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -1135,7 +1135,8 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
-	if (net_send_player_list_count(player->client->net, count) < 0) {
+	if (net_send_player_list_count(player->client->net,
+				       player_get_room(player), count) < 0) {
 		ggz_free(data);
 		return GGZ_REQ_DISCONNECT;
 	}
@@ -1229,7 +1230,8 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 	count = table_search(player->name, player->room, type, global, 
 			     &my_tables);
 	
-	if (net_send_table_list_count(player->client->net, count) < 0)
+	if (net_send_table_list_count(player->client->net,
+				      player_get_room(player), count) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don`t proceed if there was an error, or no tables found*/
