@@ -420,6 +420,12 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 	if(ret)
 	{
+		GGZGameResult results[m_maxplayers];
+		for(int i = 0; i < m_maxplayers; i++)
+			results[i] = GGZ_GAME_LOSS;
+		results[zoneTurn()] = GGZ_GAME_WIN;
+		ggzdmod_report_game(ggzdmod, NULL, results, NULL);
+
 		for(int i = 0; i < m_maxplayers; i++)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);

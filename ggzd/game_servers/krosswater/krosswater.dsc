@@ -1,4 +1,4 @@
-# $Id: krosswater.dsc 5779 2004-02-01 14:53:22Z josef $
+# $Id: krosswater.dsc 6773 2005-01-20 19:09:45Z josef $
 
 [GameInfo]
 Author = Josef Spillner
@@ -18,3 +18,6 @@ Version = 3
 AllowLeave = 1
 BotsAllowed = 1..3
 PlayersAllowed = 2..4
+
+[Statistics]
+Records = 1
