@@ -246,7 +246,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man ggzdmod"
+SUBDIRS="man tests ggzdmod"
 
 if test "$enable_server" = yes; then
     SUBDIRS="$SUBDIRS ggzd"
@@ -296,6 +296,7 @@ AC_OUTPUT([Makefile
 		game_servers/krosswater/stackpath/Makefile
 		game_servers/krosswater/zoneserver/Makefile
 		man/Makefile
+		tests/Makefile
 	   ])
 
 
