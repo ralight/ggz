@@ -1,8 +1,8 @@
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 // KCC
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2003, 2004 Josef Spillner, josef@ggzgamingzone.org
 // Published under GNU GPL conditions
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 
 // Header file
 #include "kcc.h"
@@ -32,6 +32,7 @@ KCC::KCC(QWidget *parent, const char *name)
 	m_fx = -1;
 	m_turn = 0;
 	m_opponent = PLAYER_NONE;
+	m_winner = false;
 
 	m_score_opp = 0;
 	m_score_you = 0;
@@ -56,14 +57,47 @@ void KCC::slotSelected(QWidget *widget)
 // Prepare your turn
 void KCC::yourTurn()
 {
-	if(proto->state == KCCProto::statemove) emit signalStatus(i18n("Your turn"));
+	emit signalStatus(i18n("Your turn"));
 	proto->state = KCCProto::statemove;
 }
 
 // Handle the opponent's turn
 void KCC::opponentTurn()
 {
+	bool result;
+	QPoint p;
+	int tmp;
+
 	emit signalStatus(i18n("Opponent's turn"));
+	proto->state = KCCProto::statewait;
+
+	if(m_opponent == PLAYER_AI)
+	{
+		kdDebug() << "check ai player " << m_turn << endl;
+		result = false;
+		for(int j = 0; j < 17; j++)
+		{
+			for(int i = 0; i < 15; i++)
+			{
+				if(proto->board[i][j] == m_turn + 2)
+				{
+					result = findTarget(QPoint(i, j), QPoint(), false);
+					if(result)
+					{
+						kdDebug() << "ai moved from " << i << "/" << j <<
+							" to " << m_fx << "/" << m_fy << endl;
+						tmp = proto->board[m_fx][m_fy];
+						proto->board[m_fx][m_fy] = m_turn + 2;
+						proto->board[i][j] = tmp;
+						break;
+					}
+				}
+			}
+			if(result) break;
+		}
+
+		getNextTurn();
+	}
 
 	if(gameOver()) return;
 }
@@ -84,10 +118,11 @@ int KCC::getPlayer(int seat)
 	return PLAYER_NONE;
 }
 
-// Turn switch (not soooo difficult for 2 players)
+// Turn switch
 void KCC::getNextTurn()
 {
-	m_turn = (++m_turn) % 2;
+	if(proto->max)
+		m_turn = (++m_turn) % proto->max;
 
 	if(m_turn == proto->num) yourTurn();
 	else opponentTurn();
@@ -192,9 +227,12 @@ void KCC::init()
 		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
 		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
 	}
-	else
+	else if(m_opponent == PLAYER_AI)
 	{
+		proto->max = 6;
+		proto->num = 0;
 		m_turn = proto->num;
+		yourTurn();
 	}
 }
 
@@ -339,6 +377,96 @@ void KCC::slotDispatch()
 	proto->dispatch();
 }
 
+QPoint KCC::newPoint(const QPoint& current, int direction)
+{
+	QPoint p;
+	int offset;
+
+	offset = current.y() % 2;
+
+	switch(direction)
+	{
+		case left:
+			p = QPoint(current.x() - 1, current.y());
+			break;
+		case right:
+			p = QPoint(current.x() + 1, current.y());
+			break;
+		case leftup:
+			p = QPoint(current.x() + offset - 1, current.y() - 1);
+			break;
+		case leftdown:
+			p = QPoint(current.x() + offset - 1, current.y() + 1);
+			break;
+		case rightup:
+			p = QPoint(current.x() + offset, current.y() - 1);
+			break;
+		case rightdown:
+			p = QPoint(current.x() + offset, current.y() + 1);
+			break;
+		default:
+			p = QPoint(current.x(), current.y());
+	}
+	return p;
+}
+
+bool KCC::findTarget(const QPoint& current, const QPoint& target, bool jumps)
+{
+	QPoint p;
+	bool found = false;
+	//int self = 2; // XXX todo!
+
+	if((current.x() < 0) || (current.x() >= 17)) return false;
+	if((current.y() < 0) || (current.y() >= 17)) return false;
+	if((target.x() < 0) || (target.x() >= 17)) return false;
+	if((target.y() < 0) || (target.y() >= 17)) return false;
+
+	if(!jumps) m_waypoints.clear();
+	if(m_waypoints.count() > 0)
+		if(proto->board[current.x()][current.y()] != 1) return false;
+	if(current == target) return true;
+
+	m_waypoints.append(current);
+
+/*kdDebug() << "INSERT " << current.x() << "/" << current.y() << endl;
+QValueList<QPoint>::iterator it;
+for (it = m_waypoints.begin(); it != m_waypoints.end(); ++it)
+kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
+
+	for(int i = left; i <= leftdown; i++)
+	{
+		p = newPoint(current, i);
+		if((!jumps) && (p == target))
+		{
+			found = true;
+			break;
+		}
+		/*kdDebug() << "<: "<< i << " :> " << p.x() << "/" << p.y() << " = " <<
+			(int)proto->board[p.x()][p.y()] << endl;*/
+		if(!m_waypoints.contains(newPoint(p, i)))
+		{
+			//if(proto->board[p.x()][p.y()] == 1)
+			//	findTarget(p, target);
+			if(proto->board[p.x()][p.y()] > 1)
+				found = findTarget(newPoint(p, i), target, true);
+		}
+		if(target.isNull())
+		{
+			if(proto->board[p.x()][p.y()] == 1)
+			{
+				m_fx = p.x();
+				m_fy = p.y();
+				found = 1; // auto-ai
+			}
+		}
+		if(found) break;
+	}
+
+	if(found) kdDebug() << ":: found" << endl;
+	else kdDebug() << ":: not found" << endl;
+	return found;
+}
+
 void KCC::mousePressEvent(QMouseEvent *e)
 {
 	int x, y;
@@ -381,6 +509,7 @@ void KCC::mousePressEvent(QMouseEvent *e)
 			{
 				if(proto->board[m_fx][m_fy] != 2) error = 1;
 				if(proto->board[x][y] != 1) error = 1;
+				if(!findTarget(QPoint(m_fx, m_fy), QPoint(x, y), false)) error = 1;
 			}
 			else
 			{
@@ -390,16 +519,24 @@ void KCC::mousePressEvent(QMouseEvent *e)
 			}
 			if(!error)
 			{
+				kdDebug() << "move from " << m_fx << "/" << m_fy <<
+					" to " << x << "/" << y << endl;
+				//findTarget(QPoint(m_fx, m_fy), QPoint(x, y));
 				tmp = proto->board[m_fx][m_fy];
 				proto->board[m_fx][m_fy] = 1;
 				proto->board[x][y] = tmp;
 				drawBoard();
+
+				getNextTurn();
 			}
 			else
 			{
-				KMessageBox::information(this,
-					i18n("Source or target invalid."),
-					i18n("Move invalid"));
+				if((m_fx != x) || (m_fy != y))
+				{
+					KMessageBox::information(this,
+						i18n("Source or target invalid."),
+						i18n("Move invalid"));
+				}
 			}
 		}
 		m_fx = -1;

@@ -1,16 +1,16 @@
-//////////////////////////////////////////////////////////////////////
-// KTicTacTux
-// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+///////////////////////////////////////////////////////////////////
+// KCC
+// Copyright (C) 2003, 2004 Josef Spillner, josef@ggzgamingzone.org
 // Published under GNU GPL conditions
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 
-#ifndef KTICTACTUX_H
-#define KTICTACTUX_H
+#ifndef KCC_H
+#define KCC_H
 
 // KDE includes
 #include <qwidget.h>
 
-// KTicTacTux includes
+// KCC includes
 #include "config.h"
 #include "kccproto.h"
 
@@ -23,7 +23,7 @@
 #define PLAYER_AI      2
 #define PLAYER_NETWORK 3
 
-// TicTacToe GUI for KDE
+// KCC GUI for KDE
 class KCC : public QWidget
 {
 	Q_OBJECT
@@ -83,6 +83,20 @@ class KCC : public QWidget
 		// Show all assigned fields
 		void drawBoard();
 
+		// Movement helper methods
+		QPoint newPoint(const QPoint& current, int direction);
+		bool findTarget(const QPoint& current, const QPoint& target, bool jumps);
+
+		enum Directions
+		{
+			left,
+			leftup,
+			rightup,
+			right,
+			rightdown,
+			leftdown
+		};
+
 		// The player who does the next move
 		int m_turn;
 		// Coordinates of any field
@@ -102,6 +116,8 @@ class KCC : public QWidget
 
 		// Move source and destination
 		int m_fx, m_fy, m_tx, m_ty;
+		// Move steps
+		QValueList<QPoint> m_waypoints;
 };
 
 #endif
