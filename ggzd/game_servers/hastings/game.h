@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 5235 2002-11-06 22:12:47Z dr_maux $
+ * $Id: game.h 6193 2004-10-16 15:59:57Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -71,6 +71,9 @@
 #define HASTINGS_EVENT_LEAVE       2
 #define HASTINGS_EVENT_MOVE        3
 
+/* Map format*/
+#define HASTINGS_MAP_FORMAT "0.0.9"
+
 /* Data structure for Hastings1066 */
 struct hastings_game_t {
 	GGZdMod *ggz; /* GGZ state object */
@@ -92,6 +95,7 @@ struct hastings_map_t {
 	char *author;
 	char *version;
 	char *title;
+	char *graphics;
 	int height, width;
 	int players;
 };

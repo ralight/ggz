@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5512 2003-05-09 22:57:43Z dr_maux $
+ * $Id: game.c 6193 2004-10-16 15:59:57Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -53,7 +53,7 @@ static void game_loadmap(const char *file)
 {
 	FILE *f;
 	char buf[128];
-	enum states {state_title, state_author, state_version, state_anywhere, state_knights, state_nowhere, state_map};
+	enum states {state_title, state_author, state_version, state_graphics, state_anywhere, state_knights, state_nowhere, state_map};
 	enum qualities {quality_ok, quality_bad, quality_error};
 	int state, quality, i, j;
 	unsigned int mapx, mapy;
@@ -102,6 +102,10 @@ static void game_loadmap(const char *file)
 					break;
 				case state_version:
 					map.version = strdup(buf + 1);
+					state = state_graphics;
+					break;
+				case state_graphics:
+					map.graphics = strdup(buf + 1);
 					state = state_anywhere;
 					break;
 				case state_knights:
@@ -146,7 +150,7 @@ static void game_loadmap(const char *file)
 	}
 	if(verbose)
 	{
-		printf("Try map: [%s] [%s] [%s]\n", map.title, map.author, map.version);
+		printf("Try map: [%s] [%s] [%s] <%s>\n", map.title, map.author, map.version, map.graphics);
 		printf("State is %i, sizes are %i/%i, %i/%i\n", state, x, y, mapx, mapy);
 		printf("Detected %i different players\n", map.players);
 	}
@@ -154,6 +158,7 @@ static void game_loadmap(const char *file)
 	/* More sanity checks */
 	if(state != state_map) quality = quality_error;
 	if((x != mapx) || (y != mapy)) quality = quality_error;
+	if(strcmp(map.version, HASTINGS_MAP_FORMAT)) quality = quality_error;
 	map.height = y;
 	map.width = x;
 
@@ -359,6 +364,7 @@ static int game_send_maps(int seat)
 		if((ggz_write_string(fd, hastings_maps[i].title) < 0)
 		|| (ggz_write_string(fd, hastings_maps[i].author) < 0)
 		|| (ggz_write_string(fd, hastings_maps[i].version) < 0)
+		|| (ggz_write_string(fd, hastings_maps[i].graphics) < 0)
 		|| (ggz_write_int(fd, hastings_maps[i].width) < 0)
 		|| (ggz_write_int(fd, hastings_maps[i].height) < 0))
 			return -1;
