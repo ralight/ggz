@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
+ * $Id: server.c 4915 2002-10-14 22:08:49Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -23,6 +24,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <ggz.h>
+
 #include "ggzcore.h"
 #include "hook.h"
 #include "state.h"
@@ -31,10 +42,6 @@
 #include "errno.h"
 #include "player.h"
 #include "protocol.h"
-
-#include <ggz.h>
-#include <stdlib.h>
-#include <string.h>
 
 
 /* Array of GGZServerEvent messages */
@@ -97,6 +104,9 @@ struct _GGZServer {
 	
 	/* Current room on game server */
 	struct _GGZRoom *room;
+
+	/* Current game on game server */
+	GGZGame *game;
 
 	/* Game communications channel */
 	struct _GGZNet *channel;	
@@ -353,6 +363,15 @@ GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server,
 {
 	if (server && num < _ggzcore_server_get_num_gametypes(server))
 		return _ggzcore_server_get_nth_gametype(server, num);
+	else
+		return NULL;
+}
+
+
+GGZGame* ggzcore_server_get_cur_game(GGZServer *server)
+{
+	if (server)
+		return _ggzcore_server_get_cur_game(server);
 	else
 		return NULL;
 }
@@ -621,6 +640,18 @@ struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server,
 						      const unsigned int num)
 {
 	return server->gametypes[num];
+}
+
+struct _GGZGame* _ggzcore_server_get_cur_game(struct _GGZServer *server)
+{
+	return server->game;
+}
+
+void _ggzcore_server_set_cur_game(struct _GGZServer *server,
+				  struct _GGZGame *game)
+{
+	assert(server->game == NULL ^^ game == NULL);
+	server->game = game;
 }
 
 
@@ -1000,6 +1031,8 @@ void _ggzcore_server_clear(struct _GGZServer *server)
 
 void _ggzcore_server_free(struct _GGZServer *server)
 {
+	if (server->game)
+		ggzcore_game_free(server->game);
 	_ggzcore_server_clear(server);
 	ggz_free(server);
 }

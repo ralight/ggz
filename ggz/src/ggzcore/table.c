@@ -3,6 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
+ * $Id: table.c 4915 2002-10-14 22:08:49Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -25,6 +26,8 @@
 
 
 #include "config.h"
+
+#include "game.h"
 #include "table.h"
 #include "ggzcore.h"
 #include "room.h"
@@ -358,11 +361,12 @@ void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc)
 		_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 }
 
-
 void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat)
 {
 	/* Set up the new seat. */
 	struct _GGZSeat oldseat;
+	GGZServer *server;
+	GGZGame *game;
 
 	/* Sanity check */
 	if (seat->index >= table->num_seats) {
@@ -397,6 +401,28 @@ void _ggzcore_table_set_seat(struct _GGZTable *table, struct _GGZSeat *seat)
 	/* Get rid of the old seat. */
 	if (oldseat.name)
 		ggz_free(oldseat.name);
+
+	/* If this is our table, alert the game module. */
+	if (table->room
+	    && (server = _ggzcore_room_get_server(table->room))
+	    && (game = _ggzcore_server_get_cur_game(server))
+	    && (_ggzcore_room_get_id(table->room)
+		== _ggzcore_game_get_room_num(game))) {
+		const char *me = _ggzcore_server_get_handle(server);
+		int game_table = _ggzcore_game_get_table_num(game);
+
+		if (table->id == game_table)
+			_ggzcore_game_set_seat(game, seat);
+		if (seat->type == GGZ_SEAT_PLAYER
+		    && !ggz_strcmp(seat->name, me)) {
+			_ggzcore_game_set_player(game, 0, seat->index);
+			if (game_table < 0) {
+				_ggzcore_game_set_table(game,
+					_ggzcore_game_get_room_num(game),
+					table->id);
+			}
+		}
+	}
 }
 
 

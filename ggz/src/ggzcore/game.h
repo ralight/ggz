@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
+ * $Id: game.h 4915 2002-10-14 22:08:49Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -27,16 +28,28 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-
 #include "config.h"
+
 #include "ggzcore.h"
 #include "module.h"
+#include "table.h"
 
 
 struct _GGZGame* _ggzcore_game_new(void);
 
-void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module);
+void _ggzcore_game_init(struct _GGZGame *game, GGZServer *server,
+			struct _GGZModule *module);
 void _ggzcore_game_free(struct _GGZGame *game);
+
+void _ggzcore_game_set_table(GGZGame *game, int room_num, int table_num);
+void _ggzcore_game_set_seat(GGZGame *game, struct _GGZSeat *seat);
+void _ggzcore_game_set_spectator_seat(GGZGame *game, struct _GGZSeat *seat);
+void _ggzcore_game_set_player(GGZGame *game, int is_spectator, int seat_num);
+
+int _ggzcore_game_is_spectator(GGZGame *game);
+int _ggzcore_game_get_seat_num(GGZGame *game);
+int _ggzcore_game_get_room_num(GGZGame *game);
+int _ggzcore_game_get_table_num(GGZGame *game);
 
 /* Functions for attaching hooks to struct _GGZGame events */
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,
@@ -63,7 +76,6 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
 void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd);
 
 int _ggzcore_game_launch(struct _GGZGame *game);
-int _ggzcore_game_join(struct _GGZGame *game);
 RETSIGTYPE _ggzcore_game_dead(int sig);			    
 
 #endif /* __GAME_H_ */

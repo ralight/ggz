@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4827 2002-10-09 22:56:43Z jdorje $
+ * $Id: ggzcore.h 4915 2002-10-14 22:08:49Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -543,6 +543,9 @@ int          ggzcore_server_get_num_gametypes(GGZServer *server);
 GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
 					const unsigned int num);
 
+/** @brief Return the player's current game. */
+GGZGame* ggzcore_server_get_cur_game(GGZServer *server);
+
 /* ggzcore_server_is_XXXX()
  *
  * These functions return 1 if the server connection is in the
@@ -989,7 +992,7 @@ char** ggzcore_module_get_argv(GGZModule *module);
 /* --------------------------------- */
 
 GGZGame* ggzcore_game_new(void);
-int ggzcore_game_init(GGZGame *game, GGZModule *module);
+int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module);
 void ggzcore_game_free(GGZGame *game);
 
 /* Functions for attaching hooks to GGZGame events */
@@ -1016,7 +1019,6 @@ void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
 GGZModule* ggzcore_game_get_module(GGZGame *game);
 
 int ggzcore_game_launch(GGZGame *game);
-int ggzcore_game_join(GGZGame *game);
 int ggzcore_game_read_data(GGZGame *game);
 
 #ifdef __cplusplus

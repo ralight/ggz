@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
+ * $Id: server.h 4915 2002-10-14 22:08:49Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -51,6 +52,9 @@ int          _ggzcore_server_get_num_gametypes(struct _GGZServer *server);
 struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server, const unsigned int num);
 struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 						    const unsigned int id);
+struct _GGZGame* _ggzcore_server_get_cur_game(struct _GGZServer *server);
+void _ggzcore_server_set_cur_game(struct _GGZServer *server,
+				  struct _GGZGame *game);
 						      
 /* functions to set a GGZServer attribute */
 void _ggzcore_server_set_logintype(struct _GGZServer *server, 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4827 2002-10-09 22:56:43Z jdorje $
+ * $Id: room.c 4915 2002-10-14 22:08:49Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -25,6 +25,7 @@
  */
 
 
+#include "game.h"
 #include "ggzcore.h"
 #include "room.h"
 #include "server.h"
@@ -104,12 +105,6 @@ struct _GGZRoom {
 	/* List of tables in the room */
 	GGZList *tables;
 
-	/* Are we playing or watching at our table? */
-	/* FIXME: this should be tracked in the game struct, but the room
-	   doesn't have access to that!  --JDS */
-	/* FIXME: this is tracked very poorly. */
-	int spectating;
-	
 	/* Room events */
 	GGZHookList *event_hooks[sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0])];
 
@@ -286,10 +281,12 @@ int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table)
 int ggzcore_room_join_table(GGZRoom *room, const unsigned int num,
 			    int spectator)
 {
-	if (room && room->server) {
-		return _ggzcore_room_join_table(room, num, spectator);
-	} else
+	if (!room
+	    || !room->server
+	    || !_ggzcore_server_get_cur_game(room->server))
 		return -1;
+
+	return _ggzcore_room_join_table(room, num, spectator);
 }
 
 
@@ -849,19 +846,22 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
 	struct _GGZNet *net;
 	int status;
+	GGZGame *game = ggzcore_server_get_cur_game(room->server);
 
 	/* Make sure we're actually in a room (FIXME: should probably
            make sure we're in *this* room) and not already playing a
            game */
-	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM)
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM
+	    || !game)
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_launch(net, table);
 	
 	if (status == 0) {
+		_ggzcore_game_set_player(game, 0, -1);
+
 		_ggzcore_server_set_table_launching(room->server);
-		room->spectating = 0;
 	}
 	
 	return status;
@@ -874,19 +874,22 @@ int _ggzcore_room_join_table(struct _GGZRoom *room,
 {
 	int status;
 	struct _GGZNet *net;
+	GGZGame *game = ggzcore_server_get_cur_game(room->server);
 
 	/* Make sure we're actually in a room (FIXME: should probably
            make sure we're in *this* room) and not already playing a
            game */
-	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM)
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM
+	    || !game)
 		return -1;
-
 
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_join(net, num, spectator);
 
 	if (status == 0) {
-		room->spectating = spectator;
+		_ggzcore_game_set_table(game, room->id, num);
+		_ggzcore_game_set_player(game, spectator, -1);
+
 		_ggzcore_server_set_table_joining(room->server);
 	}
 
@@ -898,14 +901,18 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 {
 	int status;
 	struct _GGZNet *net;
+	GGZGame *game = ggzcore_server_get_cur_game(room->server);
+	int spectating;
 
 	/* Make sure we're at a table (FIXME: should probably make
            sure we're in *this* room) */
-	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE)
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE
+	    || !game)
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
-	status = _ggzcore_net_send_table_leave(net, force, room->spectating);
+	spectating = _ggzcore_game_is_spectator(game);
+	status = _ggzcore_net_send_table_leave(net, force, spectating);
 
 	if (status == 0)
 		_ggzcore_server_set_table_leaving(room->server);
