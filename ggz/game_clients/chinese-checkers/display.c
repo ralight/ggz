@@ -53,12 +53,14 @@ static GdkPixbuf *marble_img[6];
 static GdkGC *gc_line;
 static GtkWidget *label[6];
 static char *label_color[6] = {
-	"RGB:FF/00/00",
-	"RGB:00/00/FF",
-	"RGB:00/FF/00",
-	"RGB:FF/FF/00",
-	"RGB:00/FF/FF",
-	"RGB:FF/00/FF"
+	/* Labels are in the color of their piece, but 50% darker so they'll be
+	   legible. */
+	"#800000",
+	"#000080",
+	"#008000",
+	"#808000",
+	"#008080",
+	"#800080"
 };
 
 static gchar *colors[6] = { "red", "blue", "green",
