@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3513 2002-03-02 18:42:05Z bmh $
+ * $Id: players.c 3596 2002-03-17 06:29:49Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -76,6 +76,7 @@ extern Options opt;
 static uint32_t *banned_nets_a;
 static uint32_t *banned_nets_m;
 static int banned_nets_c;
+static int player_get_time_since_ping(GGZPlayer *player);
 static int player_check_ip_ban_list(struct in_addr *sin);
 
 
@@ -414,10 +415,25 @@ static GGZPlayerHandlerStatus player_updates(GGZPlayer* player)
 	if (player->table == -1 && old_table != -1)
 		return GGZ_REQ_TABLE_LEAVE;	
 
-	/* Lowest priority update - send a PING */
-	if(player->next_ping && time(NULL) >= player->next_ping)
+	/* Lowest priority update - send a PING / check lag */
+	if(player->next_ping && time(NULL) >= player->next_ping) {
 		if(player_send_ping(player) < 0)
 			return GGZ_REQ_DISCONNECT;
+	} else if (player->next_ping == 0) {
+		/* We're waiting for a PONG, but if we wait too long
+		   we should increase the lag class without waiting */
+		int changed = 0;
+		
+		while (player->lag_class < 5
+		       && player_get_time_since_ping(player) >=
+		             opt.lag_class[player->lag_class - 1]) {
+			player->lag_class++;
+			changed = 1;
+		}
+		
+		if (changed)
+			room_notify_lag(player->name, player->room);
+	}
 
 	return GGZ_REQ_OK;
 }
@@ -1044,16 +1060,23 @@ GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player)
 }
 
 
-void player_handle_pong(GGZPlayer *player)
+/* Determine time from sent_ping to now, in msec */
+static int player_get_time_since_ping(GGZPlayer *player)
 {
 	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec - player->sent_ping.tv_sec) * 1000)
+	       + ((tv.tv_usec - player->sent_ping.tv_usec) / 1000);
+}
+
+
+void player_handle_pong(GGZPlayer *player)
+{
 	int msec, lag_class;
 	int i;
-
-	/* Determine time from sent_ping to now */
-	gettimeofday(&tv, NULL);
-	msec = ((tv.tv_sec - player->sent_ping.tv_sec) * 1000)
-	       + ((tv.tv_usec - player->sent_ping.tv_usec) / 1000);
+	
+	msec = player_get_time_since_ping(player);
 
 	lag_class = 1;
 	for(i=0; i<4; i++) {
