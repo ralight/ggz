@@ -651,6 +651,8 @@ int send_newgame()
 	ggz_debug("Sending out a newgame message.");
 
 	for (p = 0; p < game.num_players; p++) {
+		if (ggz_seats[p].assign == GGZ_SEAT_BOT)
+			continue;
 		fd = ggz_seats[p].fd;
 		if (fd == -1 || es_write_int(fd, WH_MSG_NEWGAME) < 0) {
 			ggz_debug
@@ -839,7 +841,8 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
-			req_newgame(p);
+			if (ggz_seats[p].assign != GGZ_SEAT_BOT)
+				req_newgame(p);
 		break;
 	case WH_STATE_NEXT_HAND:
 		ggz_debug("Next play: dealing a new hand.");
