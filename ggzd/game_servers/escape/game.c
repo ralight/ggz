@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4487 2002-09-09 04:13:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -173,7 +173,7 @@ int game_send_options(int seat)
 
 
 /* Send a request for client to set options */
-int game_send_options_request(int seat)
+static int game_send_options_request(int seat)
 {
 	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
 	
