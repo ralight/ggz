@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4156 2002-05-05 06:56:47Z jdorje $
+ * $Id: ggz_stats.c 4159 2002-05-05 07:04:37Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -445,7 +445,7 @@ int read_ratings(GGZdMod * ggz)
 	/* FIXME: use database */
 		
 	while (mkdir(lock_name, S_IRWXU) < 0) {
-		fprintf(stderr, "Couldn't access stats lock.");
+		ggz_error_sys("ggzd_read_ratings: couldn't access stats lock.");
 		sleep(1);
 	}
 	
@@ -492,7 +492,7 @@ int write_ratings(GGZdMod * ggz)
 	/* FIXME: use database */
 		
 	while (mkdir(lock_name, S_IRWXU) < 0) {
-		fprintf(stderr, "Couldn't access stats lock.");
+		ggz_error_sys("ggzd_write_ratings: couldn't access stats lock.");
 		sleep(1);
 	}	
 	
