@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: game.c 4936 2002-10-17 06:26:53Z jdorje $
  *
  * Functions for handling game events
  *
@@ -57,7 +57,7 @@ void game_init(GGZModule *module, GGZGameType *type, int index)
 	gameindex = index;
 
 	game = ggzcore_game_new();
-	ggzcore_game_init(game, module);
+	ggzcore_game_init(game, server, module);
 	game_register(game);
 	ggzcore_game_launch(game);
 }
