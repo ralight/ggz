@@ -45,16 +45,13 @@ extern Options opt;
 extern struct Users players;
 extern struct GameTables tables;
 
-#define MOTD_MAX 1024		/* Warning: changing this may break clients! */
-
 /* Local functions */
-static char *motd_parse_motd_line(char *);
-static char *motd_get_uptime(void);
-static char *motd_get_date(void);
-static char *motd_get_time(void);
-static char *motd_get_users(void);
-static char *motd_get_tables(int);
-static char *motd_get_port(void);
+static char *motd_parse_motd_line(char *, char *, int);
+static char *motd_get_uptime(char *, int);
+static char *motd_get_date(char *, int);
+static char *motd_get_time(char *, int);
+static char *motd_get_users(char *, int);
+static char *motd_get_tables(int, char *, int);
 
 /* Read the motd file */
 void motd_read_file(void)
@@ -63,6 +60,7 @@ void motd_read_file(void)
 	FILE *motd_file;
 	char line[128];
 	int lines;
+	struct utsname unames;
 
 	/* Save the server startup time so we can calculate uptime later */
 	motd_info.startup_time = (unsigned int) time(NULL);
@@ -97,6 +95,26 @@ void motd_read_file(void)
 
 	fclose(motd_file);
 	dbg_msg("Read MOTD file, %d lines", lines);
+
+	/* Initialize stuff that is constant as long as the server is up */
+
+	/* Get the hostname */
+	if((motd_info.hostname = malloc(128)) == NULL)
+		err_sys_exit("malloc error in motd_read_file()");
+	if(gethostname(motd_info.hostname, 127) != 0)
+		strcpy(motd_info.hostname, "hostname.toolong.fixme");
+
+	/* Get the OS Type */
+	if(uname(&unames))
+		err_sys_exit("uname error in motd_parse_motd()");
+	if((motd_info.sysname = malloc(strlen(unames.sysname)+1)) == NULL)
+		err_sys_exit("malloc error in motd_read_file()");
+	strcpy(motd_info.sysname, unames.sysname);
+
+	/* Get our port number */
+	if((motd_info.port = malloc(6)) == NULL)
+		err_sys_exit("malloc error in motd_read_file()");
+	snprintf(motd_info.port, 6, "%d", opt.main_port);
 }
 
 
@@ -104,14 +122,15 @@ void motd_read_file(void)
 int motd_send_motd(int sock)
 {
 	int i;
-	char *pline;
+	char pline[1024];
 
 	if(FAIL(es_write_int(sock, MSG_MOTD)) ||
 	   FAIL(es_write_int(sock, motd_info.motd_lines)))
 		return -1;
 	
 	for(i=0; i<motd_info.motd_lines; i++) {
-		pline = motd_parse_motd_line(motd_info.motd_text[i]);
+		motd_parse_motd_line(motd_info.motd_text[i],
+					 pline, sizeof(pline));
 		if(FAIL(es_write_string(sock, pline)))
 			return -1;
 	}
@@ -121,60 +140,45 @@ int motd_send_motd(int sock)
 
 
 /* Parse a motd line and return a pointer to a string */
-static char *motd_parse_motd_line(char *line)
+static char *motd_parse_motd_line(char *line, char *outline, int sz_outline)
 {
-	static char outline[1024];
-	static char hostname[128];
-	static char *sysname;
-	static int firsttime = 1;
-	static struct utsname unames;
-
 	char *in = line;
 	char *p;
 	int outindex = 0;
-
-	/* Initialize statics that should remain as long as the server is up */
-	if(firsttime) {
-		if(gethostname(hostname, 127) != 0)
-			strcpy(hostname, "hostname.toolong.fixme");
-		if(uname(&unames))
-			err_sys_exit("uname error in motd_parse_motd()");
-		sysname = unames.sysname;
-		firsttime = 0;
-	}
+	char str[32];
 
 	/* Loop through the string, watching out for % specifiers */
-	while(*in && (outindex < 1023)) {
+	while(*in && (outindex < (sz_outline-1))) {
 		if(*in == '%') {
 			in++;
 			/* Set a pointer to a string to replace the %? with */
 			switch(*in) {
 				case 'd':
-					p = motd_get_date();
+					p = motd_get_date(str, sizeof(str));
 					break;
 				case 'g':
-					p = motd_get_tables(0);
+					p = motd_get_tables(0, str,sizeof(str));
 					break;
 				case 'G':
-					p = motd_get_tables(1);
+					p = motd_get_tables(1, str,sizeof(str));
 					break;
 				case 'h':
-					p = hostname;
+					p = motd_info.hostname;
 					break;
 				case 'o':
-					p = sysname;
+					p = motd_info.sysname;
 					break;
 				case 'p':
-					p = motd_get_port();
+					p = motd_info.port;
 					break;
 				case 't':
-					p = motd_get_time();
+					p = motd_get_time(str, sizeof(str));
 					break;
 				case 'u':
-					p = motd_get_uptime();
+					p = motd_get_uptime(str, sizeof(str));
 					break;
 				case 'U':
-					p = motd_get_users();
+					p = motd_get_users(str, sizeof(str));
 					break;
 				case 'v':
 					p = VERSION;
@@ -183,7 +187,7 @@ static char *motd_parse_motd_line(char *line)
 					p = NULL;
 					outline[outindex] = '%';
 					outindex++;
-					if(outindex < 1023) {
+					if(outindex < (sz_outline-1)) {
 						outline[outindex] = *in;
 						outindex++;
 					}
@@ -192,7 +196,7 @@ static char *motd_parse_motd_line(char *line)
 
 			/* Copy a string if we have one pointed to */
 			if(p) {
-				while(*p && outindex < 1023) {
+				while(*p && outindex < (sz_outline-1)) {
 					outline[outindex] = *p;
 					p++;
 					outindex++;
@@ -214,9 +218,8 @@ static char *motd_parse_motd_line(char *line)
 
 
 /* Convert the curent uptime into a nice string format and return a pointer */
-char *motd_get_uptime(void)
+char *motd_get_uptime(char *uptime_str, int sz_uptime_str)
 {
-	static char uptime_str[24];
 	unsigned long uptime;
 	int days;
 	int hours;
@@ -226,17 +229,18 @@ char *motd_get_uptime(void)
 	days = uptime / 86400;
 	hours = (uptime - days*86400) / 3600;
 
-	if(days == 0 && hours == 0)
-		return "less than 1 hour";
-	else if(days == 0)
-		snprintf(uptime_str, 24, "%d hour", hours);
-	else {
-		snprintf(uptime_str, 24, "%d day%sand %d hour",
+	if(days == 0 && hours == 0) {
+		strcpy(uptime_str, "less than 1 hour");
+		return uptime_str;
+	} else if(days == 0) {
+		snprintf(uptime_str, sz_uptime_str, "%d hour", hours);
+	} else {
+		snprintf(uptime_str, sz_uptime_str, "%d day%sand %d hour",
 			days,
 			(days != 1) ? "s " : " ",
 			hours );
 	}
-	if(hours != 1 && strlen(uptime_str) < 24)
+	if(hours != 1 && strlen(uptime_str) < sz_uptime_str)
 		strcat(uptime_str, "s");
 
 	return uptime_str;
@@ -244,42 +248,38 @@ char *motd_get_uptime(void)
 
 
 /* Setup a string to send the date */
-static char *motd_get_date(void)
+static char *motd_get_date(char *date_str, int sz_date_str)
 {
-	static char date_str[20];
  	time_t now;
 	struct tm *localtm;
 
 	time(&now);
 	localtm = localtime(&now);
-	strftime(date_str, 20, "%B %e, %Y", localtm);
+	strftime(date_str, sz_date_str, "%B %e, %Y", localtm);
 
 	return date_str;
 }
 
 
 /* Setup a string to send the time */
-static char *motd_get_time(void)
+static char *motd_get_time(char *time_str, int sz_time_str)
 {
-	static char time_str[16];
  	time_t now;
 	struct tm *localtm;
 
 	time(&now);
 	localtm = localtime(&now);
-	strftime(time_str, 16, "%H:%M %Z", localtm);
+	strftime(time_str, sz_time_str, "%H:%M %Z", localtm);
 
 	return time_str;
 }
 
 
 /* Setup a string showing the number of users online */
-static char *motd_get_users(void)
+static char *motd_get_users(char *users_str, int sz_users_str)
 {
-	static char users_str[6];
-
 	pthread_rwlock_rdlock(&players.lock);
-	snprintf(users_str, 6, "%d", players.count);
+	snprintf(users_str, sz_users_str, "%d", players.count);
 	pthread_rwlock_unlock(&players.lock);
 
 	return users_str;
@@ -287,9 +287,10 @@ static char *motd_get_users(void)
 
 
 /* Get the number of tables based on option */
-static char *motd_get_tables(int option)
+static char *motd_get_tables(int option,
+			     char *tables_str,
+			     int sz_tables_str)
 {
-	char tables_str[6];
 	int i, num_tables=0;
 
 	pthread_rwlock_rdlock(&tables.lock);
@@ -304,16 +305,6 @@ static char *motd_get_tables(int option)
 				num_tables++;
 	pthread_rwlock_unlock(&tables.lock);
 
-	snprintf(tables_str, 6, "%d", num_tables);
+	snprintf(tables_str, sz_tables_str, "%d", num_tables);
 	return tables_str;
-}
-
-/* Get the port */
-static char *motd_get_port(void)
-{
-	static char port[6];
-
-	snprintf(port, 6, "%d", opt.main_port);
-
-	return port;
 }

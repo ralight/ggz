@@ -208,6 +208,9 @@ typedef struct {
 	unsigned long startup_time;
 	int motd_lines;
 	char *motd_text[MAX_MOTD_LINES];
+	char *hostname;
+	char *sysname;
+	char *port;
 } MOTDInfo;
 
 #endif
