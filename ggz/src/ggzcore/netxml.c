@@ -607,9 +607,10 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
-		if (errno == EAGAIN)
+		if (errno == EAGAIN) {
+			net->parsing = 0;
 			return 0;
-
+		}
 		_ggzcore_net_error(net, "Reading data from server");
 	}
 
@@ -619,7 +620,6 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	done = (len == 0);
 	if (done) {
 		_ggzcore_net_disconnect(net);
-		net->fd = -1;
 		_ggzcore_server_set_logout_status(net->server, 1);
 	}
 	if (!XML_ParseBuffer(net->parser, len, done)) {
