@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2594 2001-10-23 04:12:02Z bmh $
+ * $Id: msg.c 2710 2001-11-09 15:46:29Z bmh $
  *
  * Debug and error messages
  *
@@ -36,9 +36,10 @@
 #include <unistd.h>
 
 #include "ggz.h"
+#include "msg.h"
 
 /* Workhorse function for actually outputting messages */
-static void err_doit(int flag, const char *prefix, const char *fmt, va_list ap);
+static void err_doit(const char *prefix, const char *fmt, va_list ap, char err);
 
 /* Debug file pointer */
 static FILE * debug_file;
@@ -46,17 +47,13 @@ static FILE * debug_file;
 /* List of registered types */
 static GGZList *debug_types;
 
+/* Flag for whether debugging output is enabled */
+static char debug_enabled;
+
 
 void ggz_debug_init(const char **types, const char* file)
 {
 	int i;
-	
-	/* Setup list of debugging types */
-	debug_types = ggz_list_create(ggz_list_compare_str,
-				      ggz_list_create_str,
-				      ggz_list_destroy_str,
-				      0);
-				      
 	
 	if (file && (debug_file = fopen(file, "a")) == NULL)
 		ggz_error_sys_exit("fopen() to open %s", file);
@@ -67,16 +64,30 @@ void ggz_debug_init(const char **types, const char* file)
 		for (i = 0; types[i]; i++)
 			ggz_debug_enable(types[i]);
 	}
+	
+	/* We do the actual enabling last, so none of the steps up to
+           this point will generate debugging messages */
+	debug_enabled = 1;
 }
 
 
-/* FIXME: allow specifying NULL to designate enabling all */
+/* FIXME: allow specifying NULL to designate enabling all? */
 void ggz_debug_enable(const char *type)
 {
-	if (!debug_types || !type)
-		return;
-
-	ggz_list_insert(debug_types, (char*)type);
+	/* Make sure type exists and debugging is enabled */
+	if (type && debug_enabled) {
+		
+		/* if the list doesn't exist, create it */
+		if (!debug_types) {
+			/* Setup list of debugging types */
+			debug_types = ggz_list_create(ggz_list_compare_str,
+						      ggz_list_create_str,
+						      ggz_list_destroy_str,
+						      0);
+		}
+		
+		ggz_list_insert(debug_types, (char*)type);
+	}
 }
 
 
@@ -84,38 +95,52 @@ void ggz_debug_disable(const char *type)
 {
 	GGZListEntry *entry;
 
-	if (!debug_types || !type)
-		return;
-	
-	entry = ggz_list_search(debug_types, (char*)type);
-
-	if (entry)
-		ggz_list_delete_entry(debug_types, entry);
+	if (type && debug_enabled && debug_types) {
+		if ( (entry = ggz_list_search(debug_types, (char*)type)))
+			ggz_list_delete_entry(debug_types, entry);
+	}
 }
 
 
 void ggz_debug(const char *type, const char *fmt, ...)
 {
+	va_list ap;
+	const char *prefix;
+  
+	if (debug_enabled) {
+		/* If type list exists, see if type was enabled...*/
+		if (debug_types && ggz_list_search(debug_types, (char*)type)) {
+			prefix = type;
+			
+			va_start(ap, fmt);
+			err_doit(prefix, fmt, ap, 0);
+			va_end(ap);
+		}
+	}
+}
+
+
+void _ggz_debug(const char *type, const char *fmt, ...)
+{
 #ifdef DEBUG
 	va_list ap;
-	const char *prefix = NULL;
+	const char *prefix = "LIBGGZ";
   
-	/* If type list exists, see if type was enabled...*/
-	if (debug_types) {
-		if (ggz_list_search(debug_types, (char*)type))
-			prefix = type;
-	}
-	/* ... otherwise just do generic debugging output*/
-	else
-		prefix = "GGZ";
-	
-	if (prefix) {
-		va_start(ap, fmt);
-		err_doit(0, prefix, fmt, ap);
-		va_end(ap);
-	}
-	
+	va_start(ap, fmt);
+	err_doit(prefix, fmt, ap, 0);
+	va_end(ap);
 #endif
+}
+
+
+void _ggz_msg(const char *fmt, ...)
+{
+	va_list ap;
+	const char *prefix = "LIBGGZ";
+  
+	va_start(ap, fmt);
+	err_doit(prefix, fmt, ap, 0);
+	va_end(ap);
 }
 
 
@@ -124,7 +149,7 @@ void ggz_error_sys(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, "GGZ", fmt, ap);
+	err_doit(NULL, fmt, ap, 1);
 	va_end(ap);
 }
 
@@ -134,7 +159,7 @@ void ggz_error_sys_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, "GGZ", fmt, ap);
+	err_doit(NULL, fmt, ap, 1);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
@@ -146,7 +171,7 @@ void ggz_error_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(0, "GGZ", fmt, ap);
+	err_doit(NULL, fmt, ap, 0);
 	va_end(ap);
 }
 
@@ -156,30 +181,40 @@ void ggz_error_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, "GGZ", fmt, ap);
+	err_doit(NULL, fmt, ap, 1);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
 }
 
 
-void ggz_debug_cleanup(void)
+void ggz_debug_cleanup(GGZCheckType check)
 {
 	GGZList *list;
 	
-	if (debug_file) {
-		fclose(debug_file);
-		debug_file = NULL;
-	}
+	/* Turn off debug handling first so nothing after this
+           generates a message */
+	debug_enabled = 0;
+	
 	if (debug_types) {
 		/* Turn off debug handling by setting types to NULL */
 		list = debug_types;
 		debug_types = NULL;
 		ggz_list_free(list);
 	}
+
+	/* Perform any checks specified */
+	if (check & GGZ_CHECK_MEM)
+		ggz_memory_check();
+
+	if (debug_file) {
+		fclose(debug_file);
+		debug_file = NULL;
+	}
 }
 
-static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
+
+static void err_doit(const char* prefix, const char *fmt, va_list ap, char err)
 {
 	char buf[4096];
 	unsigned int size;
@@ -187,7 +222,7 @@ static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 	/* Subtract one to leave room for newline */
 	size = sizeof(buf) -1;
 
-#ifdef DEBUG
+#if 0
 	sprintf(buf, "[%d]: ", getpid());
 #else
 	buf[0] = '\0';
@@ -198,7 +233,7 @@ static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 	
 
 	vsnprintf(buf + strlen(buf), (size - strlen(buf)), fmt, ap);
-	if (flag)
+	if (err)
 		snprintf(buf + strlen(buf), (size - strlen(buf)), ": %s", 
 			 strerror(errno));
 	strcat(buf, "\n");
@@ -234,3 +269,5 @@ void ggz_debug_debug(void)
 	else 
 		printf("No debugging types list\n");
 }
+
+

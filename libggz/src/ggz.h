@@ -477,12 +477,19 @@ void ggz_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
 void ggz_xmlelement_free(GGZXMLElement*);
 /** @} */
 
+
 /**
  * @defgroup debug Debug/error logging
  * 
- * (currently used on client and server)
+ * Functions for debugging and error messages
  * @{
  */
+typedef enum {
+	GGZ_CHECK_NONE = 0x00,
+	GGZ_CHECK_MEM = 0x01
+} GGZCheckType;
+
+
 void ggz_debug_init(const char **types, const char* file);
 void ggz_debug_enable(const char *type);
 void ggz_debug_disable(const char *type);
@@ -491,7 +498,7 @@ void ggz_error_sys(const char *fmt, ...);
 void ggz_error_sys_exit(const char *fmt, ...);
 void ggz_error_msg(const char *fmt, ...);
 void ggz_error_msg_exit(const char *fmt, ...);
-void ggz_debug_cleanup(void);
+void ggz_debug_cleanup(GGZCheckType check);
 /** @} */
 
 /**

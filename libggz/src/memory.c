@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include "ggz.h"
+#include "msg.h"
 
 
 /* This is used basically as a LIFO stack, on the basis that most malloc/free
@@ -65,7 +66,7 @@ static void * _ggz_allocate(const unsigned int size, char *tag, int line)
 	/* Put this at the head of the list */
 	alloc = newmem;
 
-	ggz_debug("MEMDETAIL", "%d bytes allocated at %p from %s/%d",
+	_ggz_debug("MEMDETAIL", "%d bytes allocated at %p from %s/%d",
 		   size, newmem->ptr, tag, line);
 
 	return newmem->ptr;
@@ -109,7 +110,7 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 	}
 
 	/* Try to allocate our memory */
-	ggz_debug("MEMDETAIL",
+	_ggz_debug("MEMDETAIL",
 		   "Reallocating %d bytes at %p to %d bytes from %s/%d",
 		   targetmem->size, targetmem->ptr, size, tag, line);
 	new = _ggz_allocate(size, tag, line);
@@ -155,7 +156,7 @@ int _ggz_free(const void *ptr, char *tag, int line)
 	else
 		prev->next = targetmem->next;
 
-	ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
+	_ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
 		   targetmem->size, ptr, tag, line);
 
 	free(targetmem);
@@ -166,27 +167,27 @@ int _ggz_free(const void *ptr, char *tag, int line)
 
 int ggz_memory_check(void)
 {
+	int flag = 0;
 	struct _memptr *memptr;
 
-	ggz_debug("MEMCHECK", "*** Memory Leak Check ***");
+	_ggz_msg("*** Memory Leak Check ***");
 	if(alloc != NULL) {
 		memptr = alloc;
 		while(memptr != NULL) {
-			ggz_debug("MEMCHECK",
-				   "%d bytes left allocated at %p by %s/%d",
-				   memptr->size, memptr->ptr,
-				   memptr->tag, memptr->line);
+			_ggz_msg("%d bytes left allocated at %p by %s/%d",
+				 memptr->size, memptr->ptr,
+				 memptr->tag, memptr->line);
 			memptr = memptr->next;
 		}
-		ggz_debug("MEMCHECK", "*** End Memory Leak Check ***");
-
-		return -1;
+		
+		flag = -1;
 	}
+	else
+		_ggz_msg("All clean!");
+	
+	_ggz_msg("*** End Memory Leak Check ***");
 
-	ggz_debug("MEMCHECK", "All clean!");
-	ggz_debug("MEMCHECK", "*** End Memory Leak Check ***");
-
-	return 0;
+	return flag;
 }
 
 
@@ -203,7 +204,7 @@ char * _ggz_strdup(const char *src, char *tag, int line)
 
 	len = strlen(src);
 
-	ggz_debug("MEMDETAIL",
+	_ggz_debug("MEMDETAIL",
 		   "Allocating memory for length %d string from %s/%d",
 		   len+1, tag, line);
 

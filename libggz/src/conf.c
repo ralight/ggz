@@ -35,6 +35,7 @@
 #include <fcntl.h>
 
 #include "ggz.h"
+#include "msg.h"
 
 
 /* The majority of this code deals with maintaining a set of lists to
@@ -263,7 +264,7 @@ int ggz_conf_write_string(int handle, const char *section,
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		ggz_debug("CONF", "ggz_conf_write_string: file is read-only");
+		_ggz_debug("CONF", "ggz_conf_write_string: file is read-only");
 		return -1;
 	}
 
@@ -272,7 +273,7 @@ int ggz_conf_write_string(int handle, const char *section,
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
 		if(ggz_list_insert(f_data->section_list, (void*)section) < 0) {
-			ggz_debug("CONF",
+			_ggz_debug("CONF",
 				  "ggz_conf_write_string: insertion error");
 			return -1;
 		}
@@ -284,7 +285,7 @@ int ggz_conf_write_string(int handle, const char *section,
 	e_data.key = (char*)key;
 	e_data.value = (char*)value;
 	if(ggz_list_insert(s_data->entry_list, &e_data) < 0) {
-		ggz_debug("CONF", "ggz_conf_write_string: insertion error");
+		_ggz_debug("CONF", "ggz_conf_write_string: insertion error");
 			  
 		return -1;
 	}
@@ -376,7 +377,7 @@ int ggz_conf_remove_section(int handle, const char *section)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		ggz_debug("CONF", "ggz_conf_remove_section: file is read-only");
+		_ggz_debug("CONF", "ggz_conf_remove_section: file is read-only");
 			  
 		return -1;
 	}
@@ -416,7 +417,7 @@ int ggz_conf_remove_key(int handle, const char *section, const char *key)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		ggz_debug("CONF",
+		_ggz_debug("CONF",
 		      "ggzcore_confio_remove_key: file is read-only");
 		return -1;
 	}
@@ -464,14 +465,14 @@ int ggz_conf_commit(int handle)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		ggz_debug("CONF",
+		_ggz_debug("CONF",
 		      "ggzcore_confio_commit: file is read-only");
 		return -1;
 	}
 
 	/* Open our configuration file for writing */
 	if((c_file = fopen(f_data->path, "w")) == NULL) {
-		ggz_debug("CONF", "Unable to write config file %s",
+		_ggz_debug("CONF", "Unable to write config file %s",
 			      f_data->path);
 		return -1;
 	}
@@ -567,12 +568,12 @@ int ggz_conf_parse(const char *path, const unsigned char options)
 	opt_rdwr = ((options & CONF_RDWR) == CONF_RDWR);
 
 	if(opt_rdonly && (opt_rdwr || opt_create)) {
-		ggz_debug("CONF",
+		_ggz_debug("CONF",
 			      "ggzcore_confio_parse: Invalid options");
 		return -1;
 	}
 	if(!opt_rdonly && !opt_rdwr) {
-		ggz_debug("CONF",
+		_ggz_debug("CONF",
 			      "ggzcore_confio_parse: Invalid options");
 		return -1;
 	}
@@ -819,7 +820,7 @@ static conf_file_t * get_file_data(int handle)
 		f_entry = ggz_list_next(f_entry);
 	}
 	if(f_entry == NULL) {
-		ggz_debug("CONF",
+		_ggz_debug("CONF",
 			      "get_file_data:  Invalid conf handle requested");
 		f_data = NULL;
 	}
