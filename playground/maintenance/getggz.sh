@@ -3,7 +3,7 @@
 # Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
-version=0.0.9
+version=0.0.10
 tmp=$HOME/.ggz/getggz-$version
 prefix=$HOME/ggz
 
@@ -20,7 +20,7 @@ case $method in
 	pkg="libggz ggz-client-libs"
 	;;
 	s)
-	pkg="libggz ggzd ggz-client-libs ggz-utils ggz-grubby"
+	pkg="libggz ggz-server ggz-client-libs ggz-utils ggz-grubby"
 	;;
 	*)
 	echo "Invalid method!"
@@ -124,7 +124,7 @@ echo $pkg
 mkdir -p $tmp
 cd $tmp
 for p in $pkg; do
-	wget http://ftp.ggzgamingzone.org/pub/$version/$p-$version.tar.gz
+	wget http://ftp.ggzgamingzone.org/pub/ggz/$version/$p-$version.tar.gz
 done
 
 echo "Unpacking of all packages"
@@ -137,12 +137,6 @@ for p in $pkg; do
 	cd $p-$version
 	./configure --prefix=$prefix
 	make
-	cd $tmp
-done
-
-echo "Installation into $prefix"
-for p in $pkg; do
-	cd $p-$version
 	make install
 	cd $tmp
 done
