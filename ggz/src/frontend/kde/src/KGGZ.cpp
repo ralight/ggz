@@ -90,6 +90,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_module = NULL;
 	m_table = NULL;
 	m_gameinfo = NULL;
+	m_connect = NULL;
 
 	setBackgroundColor(QColor(0, 0, 0));
 
@@ -128,7 +129,6 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 			KGGZDEBUG("- load connection dialog");
 			menuConnect();
 		}
-		else m_connect = NULL;
 	}
 
 	kggzroomcallback = new KGGZCallback(this, COLLECTOR_ROOM);
@@ -1131,6 +1131,9 @@ void KGGZ::menuView(int viewtype)
 	KGGZDEBUG("resize from menuView()...\n");
 	m_workspace->resize(width() - 1, height() - 1);
 	m_workspace->resize(width(), height());
+
+	// Don't hide connection dialog
+	if(m_connect) m_connect->raise();
 }
 
 void KGGZ::menuGameLaunch()

@@ -37,6 +37,7 @@
 // Qt includes
 #include <qwidget.h>
 #include <qlineedit.h>
+#include <qcheckbox.h>
 
 // KGGZPrefEnv: Global configuration
 class KGGZPrefEnv : public QWidget
@@ -58,8 +59,8 @@ class KGGZPrefEnv : public QWidget
 
 			// The local ggzd binary
 			QLineEdit *m_server;
-			// GGZap's preferred host
-			QLineEdit *m_host;
+			// Whether to show connection dialog or not
+			QCheckBox *m_startup;
 };
 
 #endif

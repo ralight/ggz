@@ -59,16 +59,15 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	QLabel *description;
 	QVBoxLayout *vbox;
 	QPushButton *ok;
-	QLabel *server, *host;
+	QLabel *server;
 
 	title = new QLabel(i18n("<b>Global Settings</b>"), this);
 	description = new QLabel(i18n("Please specify some environment variables here."), this);
 
 	server = new QLabel(i18n("Path to ggzd"), this);
-	host = new QLabel(i18n("Default ggzd host for GGZap"), this);
+	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), this);
 
 	m_server = new QLineEdit(this);
-	m_host = new QLineEdit(this);
 
 	ok = new QPushButton("OK", this);
 
@@ -77,13 +76,12 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	vbox->add(description);
 	vbox->add(server);
 	vbox->add(m_server);
-	vbox->add(host);
-	vbox->add(m_host);
+	vbox->add(m_startup);
 	vbox->add(ok);
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 
-	setFixedSize(400, 200);
+	setFixedSize(300, 150);
 	setCaption(i18n("Global Settings"));
 	show();
 
@@ -103,7 +101,7 @@ void KGGZPrefEnv::slotAccept()
 	KGGZCommon::clear();
 
 	config->write("Environment", "Server", m_server->text().latin1());
-	config->write("Environment", "Host", m_host->text().latin1());
+	config->write("Preferences", "Showdialog", m_startup->isChecked());
 	config->commit();
 
 	delete config;
@@ -114,16 +112,17 @@ void KGGZPrefEnv::slotAccept()
 void KGGZPrefEnv::loadSettings()
 {
 	GGZCoreConfio *config;
-	char *host, *server;
+	char *server;
+	int startup;
 
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 	KGGZCommon::clear();
 
 	server = config->read("Environment", "Server", "/usr/bin/ggzd");
-	host = config->read("Environment", "Host", "jzaun.com");
+	startup = config->read("Preferences", "Showdialog", 0);
 
 	m_server->setText(server);
-	m_host->setText(host);
+	m_startup->setChecked(startup);
 
 	delete config;
 }
