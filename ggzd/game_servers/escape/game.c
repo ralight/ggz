@@ -395,6 +395,7 @@ int game_handle_move(int num, unsigned char *direction)
 	int newx, newy;
 	char status=0;
 	int count=0;
+	int givenewmove=1;
 	
 	ggz_debug("Handling move for player %d", num);
 	if(es_read_char(fd, direction) < 0)
@@ -455,9 +456,12 @@ int game_handle_move(int num, unsigned char *direction)
 					// give new move
 				}else{
 					// pass move on
-					escape_game.turn = (escape_game.turn + 1) % 2;
+					givenewmove = 0;
 				}
 			}		
+			if(!givenewmove){
+				escape_game.turn = (escape_game.turn + 1) % 2;
+			}
 			if(num%2){
 				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer1;
 				escape_game.board[newx][newy][revdir(*direction)]=dtPlayer1;
