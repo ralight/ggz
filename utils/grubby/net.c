@@ -108,6 +108,24 @@ void get_op_code( void )
 			free (string);
 			break;
 		case MSG_UPDATE_TABLES:
+			es_read_char( grubby.socket, &chr );
+			es_read_int( grubby.socket, &num );
+			es_read_char( grubby.socket, &chr );
+			es_read_int( grubby.socket, &num );
+			es_read_string_alloc (grubby.socket, &string);
+			free(string);
+			es_read_int( grubby.socket, &num );
+			es_read_int( grubby.socket, &num );
+			es_read_string_alloc (grubby.socket, &string);
+			free(string);
+			es_read_char( grubby.socket, &chr );
+			es_read_int( grubby.socket, &num );
+			for( num2=0; num2<num; num2++ )
+			{
+				es_read_int( grubby.socket, &num3 );
+				es_read_string_alloc (grubby.socket, &string);
+				free(string);
+			}
 			break;
 		case RSP_LOGOUT:
 			sig = SIG_CLEANUP;
