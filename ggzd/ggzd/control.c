@@ -75,9 +75,12 @@ void init_data(void)
 	 * or something
 	 */
 	strncpy(spades.name, "NetSpades", MAX_GAME_NAME_LEN);
+	strncpy(spades.version, "Version", MAX_GAME_VER_LEN);
 	strncpy(spades.desc,
 		"NetSpades is a multiuser networked spades game written by Brent Hendricks.",
 		MAX_GAME_DESC_LEN);
+	strncpy(spades.author, "Brent", MAX_GAME_AUTH_LEN);
+	strncpy(spades.homepage, "Web Site", MAX_GAME_WEB_LEN);
 	spades.num_play_allow = (char) (PLAY_ALLOW_FOUR);
 	spades.comp_allow =
 	    (char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
