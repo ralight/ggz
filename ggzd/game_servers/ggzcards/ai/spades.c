@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2460 2001-09-12 08:35:12Z jdorje $
+ * $Id: spades.c 2461 2001-09-12 08:39:11Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -357,31 +357,11 @@ static char find_final_bid(player_t num, int points)
 		ai_debug("Adding 30 because partner has bidn");
 	}
 
+	/* FIXME: we should take other players bids into account, especially
+	   if we're in the last seat. */
+
 	bid_val = (points + prob) / 100;
 	ai_debug("Subtotal bid: %d", bid_val);
-
-#if 0
-	/* Consider ramifications of others' bids if everyone else has bid. */
-	/* not taken into account yet */
-	count = bid;
-	for (i = 0; i < 4; i++) {
-		if (i == p)
-			continue;
-		if (S.p[i].bid < 0)
-			break;	/* hasn't bid yet -- break */
-		count += S.p[i].bid;
-	}
-	if (i >= 4) {		/* everyone has bid */
-		/* If the count is real high, reconsider potential tricks. If
-		   the count is high and they bid nil, consider bidding less. */
-		if (count >= 11) {
-			if (count >= 13)
-				bid = points / 100;
-			else if (p1 == 0 || p2 == 0)
-				bid = points / 100;
-		}
-	}
-#endif
 
 	/* don't forget the minimum bid!!! */
 	if (game.bid_count >= 2
