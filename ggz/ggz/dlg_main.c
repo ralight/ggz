@@ -446,8 +446,9 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	char *buf;
 
 	
-	fixed = gdk_font_load("-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8");
-		
+	fixed = gdk_font_load(ggzrc_read_string("CHAT","Font",
+		"-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8"));
+
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 	gtk_xtext_set_font(GTK_XTEXT(tmp), fixed, 0);
 
