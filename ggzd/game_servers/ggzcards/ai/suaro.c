@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4098 2002-04-28 00:15:26Z jdorje $
+ * $Id: suaro.c 4155 2002-05-05 05:39:17Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -210,11 +210,23 @@ static char find_best_suit(bool lo)
 /* this gets a bid or play from the ai */
 bid_t get_bid(bid_t * bid_choices, int bid_count)
 {
-	bid_t min_bid = bid_choices[0];	/* FIXME: assumes correct ordering */
+	bid_t min_bid;
 	bid_t my_bid;
 	int tricks = 0;		/* number of tricks; x100 */
+	int i;
 	card_t c;
 	char bidsuit;
+	
+	min_bid.sbid.val = 10;
+	for (i = 0; i < bid_count; i++) {
+		bid_t bid = bid_choices[i];
+		if (bid.sbid.spec == SUARO_BID)
+			if (bid.sbid.val < min_bid.sbid.val
+			    || (bid.sbid.val == min_bid.sbid.val
+			        && bid.sbid.suit < min_bid.sbid.suit))
+				min_bid = bid;
+			
+	}
 
 	/* Our strategy is fairly simple: we figure out what we should bid
 	   and we bid it.  If the opponent has already bid higher, we pass. */
