@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4944 2002-10-18 03:46:04Z jdorje $
+ * $Id: dlg_players.c 4959 2002-10-19 23:09:30Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -29,6 +29,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
+#include <string.h>
 
 #include "dlg_players.h"
 #include "ggzintl.h"
@@ -45,6 +46,9 @@ static GtkWidget *dlg_players = NULL;
 
 static void update_player_clist(GtkWidget * player_clist);
 static void update_player_dialog(void);
+
+static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
+				   gpointer data);
 
 void update_player_lists(void)
 {
@@ -191,6 +195,11 @@ static GtkWidget *create_player_clist(void)
 	gtk_widget_show(label);
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 2, label);
 
+	/* Set up callbacks */
+	gtk_signal_connect(GTK_OBJECT(player_clist), "event",
+			    GTK_SIGNAL_FUNC(player_clist_event),
+			   player_clist);
+
 	update_player_clist(player_clist);
 
 	return player_clist;
@@ -298,4 +307,95 @@ void create_or_raise_dlg_players(void)
 					  &dlg_players);
 		gtk_widget_show(dlg_players);
 	}
+}
+
+static GtkWidget *create_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat)
+{
+	GtkWidget *menu;
+	GtkWidget *info;
+	GtkWidget *boot;
+#if 0 /* FIXME: need a better way */
+	int which = ((!!spectator) << 31) + seat.num;
+#endif
+
+	menu = gtk_menu_new();
+
+	info = gtk_menu_item_new_with_label(_("Info"));
+	gtk_widget_ref(info);
+	gtk_object_set_data_full(GTK_OBJECT(menu), "info", info,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_container_add(GTK_CONTAINER(menu), info);
+	gtk_widget_set_sensitive(info, FALSE);
+
+	boot = gtk_menu_item_new_with_label(_("Boot from table"));
+	gtk_widget_ref(boot);
+	gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_container_add(GTK_CONTAINER(menu), boot);
+	gtk_widget_set_sensitive(boot, FALSE);
+
+#if 0
+	gtk_signal_connect(GTK_OBJECT(info), "activate",
+			   GTK_SIGNAL_FUNC(player_info_activate),
+			   GINT_TO_POINTER(which));
+	gtk_signal_connect(GTK_OBJECT(boot), "activate",
+			   GTK_SIGNAL_FUNC(player_boot_activate),
+			   GINT_TO_POINTER(which));
+#endif
+
+	gtk_widget_show_all(menu);
+
+	return menu;
+}
+
+static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
+				   gpointer data)
+{
+	GdkEventButton *buttonevent = (GdkEventButton*)event;
+	GtkWidget *player_clist = data;
+
+	if (event->type == GDK_BUTTON_PRESS
+	    && buttonevent->button == 3) {
+		/* Right mouse button; create drop-down menu */
+		GtkWidget *menu;
+		gint row, col;
+		int spectator;
+		GGZSeat seat;
+		GGZSpectatorSeat sseat;
+
+		gtk_clist_get_selection_info(GTK_CLIST(player_clist),
+					     buttonevent->x,
+					     buttonevent->y,
+					     &row, &col);
+		gtk_clist_select_row(GTK_CLIST(player_clist), row, 0);
+
+		assert(row >= 0);
+		if (row <= ggzmod_get_num_seats(ggz)) {
+			spectator = 0;
+			seat = ggzmod_get_seat(ggz, row);
+		} else {
+			gchar *name;
+			int i, num;
+			if (!gtk_clist_get_text(GTK_CLIST(player_clist),
+						row, 2, &name))
+				assert(0);
+			num = ggzmod_get_num_spectator_seats(ggz);
+			for (i = 0; i < num; i++) {
+				sseat = ggzmod_get_spectator_seat(ggz, i);
+				if (!strcasecmp(name, sseat.name))
+					break;
+			}
+			assert(i < num);
+
+			spectator = 1;
+		}
+
+		menu = create_player_menu(spectator ? NULL : &seat,
+					  spectator ? &sseat : NULL);
+
+		gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+			       buttonevent->button, 0);
+	}
+
+	return FALSE;
 }
