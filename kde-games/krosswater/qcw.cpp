@@ -42,14 +42,26 @@ void QCw::paintEvent(QPaintEvent *e)
 	for(int j = 0; j < m_height; j++)
 		for(int i = 0; i < m_width; i++)
 		{
-			if(m_board[i][j] == 0)
+			switch(m_board[i][j])
 			{
-				p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0.0, 0.0, 160.0)));
-				for(int n = 0; n < 10; n++)
-					p.drawPoint(rand() % 20 + i * 20, rand() % 20 + j * 20);
+				case 0:
+					p.fillRect(i * 20, j * 20, 20, 20, QBrush(QColor(0.0, 0.0, 160.0)));
+					for(int n = 0; n < 10; n++)
+						p.drawPoint(rand() % 20 + i * 20, rand() % 20 + j * 20);
+					break;
+				case -1:
+					//p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
+					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(200.0, 200.0, 0.0)));
+					break;
+				case -2:
+					//p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
+					p.fillRect(i * 20 + 5, j * 20 + 5, 10, 10, QBrush(QColor(250.0, 250.0, 0.0)));
+					break;
+				case 1:
+					p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
+				default:
+					cout << "huh? " << m_board[i][j] << endl;
 			}
-			else
-				p.fillRect(i * 20 + 2, j * 20 + 2, 16, 16, QBrush(QColor(180.0, 70.0, 0.0)));
 
 			if(m_board[i][j] == 3) p.fillRect(i * 20 + 3, j * 20 + 3, 14, 14, QBrush(QColor(200.0, 200.0, 0.0)));
 		}
@@ -159,11 +171,16 @@ void QCw::setStone(int x, int y, int value)
 	m_board[x][y] = value;
 }
 
-void QCw::setPlayer(int x, int y, int pixmap)
+void QCw::addPlayer(int x, int y)
 {
 	if(m_numplayers == 4) return;
 	m_players[m_numplayers][0] = x;
 	m_players[m_numplayers][1] = y;
-	m_players[m_numplayers][2] = pixmap;
 	m_numplayers++;
+}
+
+void QCw::setPlayerPixmap(int player, int pixmap)
+{
+	if((player < 0) || (player > m_numplayers)) return;
+	m_players[player][2] = pixmap;
 }

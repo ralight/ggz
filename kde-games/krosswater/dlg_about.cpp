@@ -4,10 +4,17 @@
 
 #include <qpixmap.h>
 #include <qpainter.h>
+#include <qpushbutton.h>
 
 DlgAbout::DlgAbout(QWidget *parent, char *name)
 : QWidget(parent, name)
 {
+	QPushButton *ok;
+
+	ok = new QPushButton("OK", this);
+	connect(ok, SIGNAL(clicked()), SLOT(close()));
+	ok->setGeometry(100, 270, 100, 20);
+
 	setCaption("About Krosswater");
 	setFixedSize(300, 300);
 	show();
@@ -34,12 +41,13 @@ void DlgAbout::paintEvent(QPaintEvent *e)
 	p.drawText(15, 161, "The MindX Open Source Project");
 	p.drawText(15, 174, "http://mindx.sourceforge.net");
 	p.drawPixmap(15, 190, QPixmap(GGZDATADIR "/krosswater/gfx/mindx.png"));
-	p.drawPixmap(122, 250, QPixmap(GGZDATADIR "/krosswater/gfx/ok.png"));
+	//p.drawPixmap(122, 250, QPixmap(GGZDATADIR "/krosswater/gfx/ok.png"));
 	p.end();
 }
 
 void DlgAbout::mousePressEvent(QMouseEvent *e)
 {
 	if(!e) return;
-	if((e->x() > 122) && (e->x() < 177) && (e->y() > 250) && (e->y() < 270)) close();
+	//if((e->x() > 122) && (e->x() < 177) && (e->y() > 250) && (e->y() < 270)) close();
 }
+

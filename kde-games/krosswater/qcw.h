@@ -13,7 +13,9 @@ class QCw : public QWidget
 		~QCw();
 		void setSize(int width, int height);
 		void setStone(int x, int y, int value);
-		void setPlayer(int x, int y, int pixmap);
+		
+		void addPlayer(int x, int y);
+		void setPlayerPixmap(int player, int pixmap);
 	signals:
 		void signalMove(int xfrom, int yfrom, int xto, int yto);
 	protected:

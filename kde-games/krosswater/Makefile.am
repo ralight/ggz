@@ -10,17 +10,19 @@ bindir = $(ggzexecmoddir)
 INCLUDES = -Izoneclient -I$(qt_includes) -I$(kde_includes) $(all_includes)
 
 noinst_HEADERS = krosswater.h \
-		 dlg_person.h \
-		 dlg_about.h \
-		 dlg_again.h \
-		 qcw.h
+		dlg_person.h \
+		dlg_about.h \
+		dlg_help.h \
+		dlg_again.h \
+		qcw.h
 
 krosswater_client_SOURCES = main.cpp \
-			    krosswater.cpp \
-			    dlg_person.cpp \
-			    dlg_about.cpp \
-			    dlg_again.cpp \
-			    qcw.cpp
+			krosswater.cpp \
+			dlg_person.cpp \
+			dlg_about.cpp \
+			dlg_help.cpp \
+			dlg_again.cpp \
+			qcw.cpp
 
 krosswater_client_METASOURCES = AUTO
 #krosswater_client_METASOURCES = krosswater.moc.cpp dlg_person.moc.cpp qcw.moc.cpp

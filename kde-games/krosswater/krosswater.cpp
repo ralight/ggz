@@ -6,12 +6,14 @@
 
 #include "dlg_person.h"
 #include "dlg_about.h"
+#include "dlg_help.h"
 #include "dlg_again.h"
 
 #include <qlayout.h>
 #include <qpainter.h>
 
 #include <iostream>
+#include <unistd.h>
 
 #include <easysock.h>
 
@@ -32,7 +34,7 @@ Krosswater::Krosswater(QWidget *parent, char *name)
 	dummy->setFixedHeight(20);
 
 	m_statusframe = new QFrame(this);
-	m_statusframe->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	//m_statusframe->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	m_statusframe->setFixedHeight(25);
 	m_statusframe->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	//m_status = new QLabel("", statusframe);
@@ -88,8 +90,18 @@ void Krosswater::slotSelected(int person)
 	m_selectedperson = person;
 	cout << "zonePlayers: " << zonePlayers() << endl;
 	cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
+	cout << "Person: " << person << endl;
 	if(zonePlayers() == ZoneMaxplayers) showStatus("Game started");
 	else showStatus("Waiting for other players...");
+
+	for(int i = 0; i < zonePlayers(); i++)
+	{
+		if(i == zoneMe()) person = m_selectedperson;
+		else person = (m_selectedperson + 1) % 3;
+		if(qcw) qcw->setPlayerPixmap(i, person);
+		cout << "qcw->setPlayer " << person << " - " << m_selectedperson<< endl;
+	}
+
 	show();
 }
 
@@ -166,9 +178,7 @@ void Krosswater::slotZoneInput(int op)
 				return;
 			}
 			cout << "Player found: " << x << ", " << y << endl;
-			if(i == zoneMe()) person = m_selectedperson;
-			else person = (m_selectedperson + 1) % 3;
-			if(qcw) qcw->setPlayer(x, y, person);
+			if(qcw) qcw->addPlayer(x, y);
 		}
 	}
 
@@ -259,6 +269,9 @@ void Krosswater::slotMenuAbout()
 
 void Krosswater::slotMenuHelp()
 {
+	DlgHelp *dlghelp;
+
+	dlghelp = new DlgHelp(NULL, "DlgHelp");
 }
 
 void Krosswater::showStatus(char *state)
@@ -266,6 +279,9 @@ void Krosswater::showStatus(char *state)
 	QPainter p;
 
 	//m_status->clear();
+
+	m_statusframe->erase();
+
 	p.begin(m_statusframe);
 	p.setFont(QFont("arial", 10));
 	p.setPen(QPen(QColor(255.0, 255.0, 0.0)));
@@ -296,6 +312,16 @@ void Krosswater::slotZoneBroadcast()
 		return;
 	}
 
+	cout << "Got move: " << fromx << ", " << fromy << " -> " << tox << ", " << toy << endl;
+	qcw->setStone(fromx, fromy, -1);
+	qcw->repaint();
+	sleep(1);
+	qcw->setStone(tox, toy, -2);
+	qcw->repaint();
+	sleep(1);
 	qcw->setStone(fromx, fromy, 0);
+	qcw->repaint();
+	//sleep(1);
 	qcw->setStone(tox, toy, 1);
+	qcw->repaint();
 }
