@@ -192,5 +192,17 @@ echo ""
 echo "*** The following programs will be built: $PROGS"
 echo "*** with the following debugging flags: $DFLAGS"
 echo ""
+echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
+echo ""
+echo "You may now compile ggzd with 'make', but do *NOT* attempt to 'make install'"
+echo "You *MUST* run ggzd from the directory in which it was compiled, like this:"
+echo ""
+echo "cd ggzd; ./ggzd -p7626"
+echo ""
+echo "This will start the ggzd server listening on port 7626"
+echo "Future versions will be able to be run from any directory"
+echo ""
+echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
+
 
 

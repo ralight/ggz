@@ -3,6 +3,8 @@
 DIST_SUBDIRS = easysock ggzd game_servers doc
 SUBDIRS = @SUBDIRS@
 
+EXTRA_DIST = HACKING
+
 #install-data-local:
 #	@$(NORMAL_INSTALL)
 #	if test -d $(srcdir)/pixmaps; then \

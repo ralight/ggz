@@ -1,3 +1,150 @@
+Tue Feb 29 18:42:39 2000  bmh  <bmh@users.sourceforce.net>
+
+	* HACKING:
+	- First go at a HACKING file to describe GGZ coding style
+
+	* game_servers/spades/Makefile.am, game_servers/spades/err_func.c, game_servers/spades/err_func.h:
+	- Remove easysock dependent portion since we don't use it here
+
+	* doc/Makefile.am:
+	- Fixed up rules so that text and html docs get distributed
+
+	* Makefile.am, doc/Makefile.am, game_servers/spades/Makefile.am, ggzd/Makefile.am:
+	- make dist chokes when SUBDIRS is empty, so put SUBDIRS = .
+
+	* AUTHORS, TODO:
+	- Documentation updates
+
+	* ggzd/control.c, ggzd/players.c:
+	- Don't chdir to / when daemonizing (we still have hardcoded paths)
+	- Don't send RSP_GAME header if "message" from game is a closed socket
+
+	* game_servers/spades/Makefile.am, game_servers/spades/engine_func.c, game_servers/spades/engine_main.c, game_servers/spades/err_func.c, game_servers/spades/err_func.h, game_servers/spades/socketfunc.c:
+	- Use dbg_msg() rather than fprintf()
+
+	* doc/Makefile.am, doc/design.sgml, doc/game-modules.txt:
+	- Documentation updates
+
+Tue Feb 29 03:24:57 2000  rgade  <rgade@users.sourceforce.net>
+
+	* autogen.sh, configure.in:
+	- Fixed a few remaining 'NetGames' instances in configure scripts
+
+Sun Feb 27 07:44:39 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Send RSP_CHAT status as a char, not an int.  This fixes the "can't
+	  see my own chats" bug which I uncovered when I fixed the "my table list
+	  blanks when I receive my chat" bug.  Sheesh.
+	- Send MSG_SERVER_FULL as int, not char.  Apparently nobody has tested this
+	  functionality yet otherwise it would be a bug.  Anyway, it's fixed now.
+
+	* ggzd/players.c:
+	- Oops!  After REQ_CHAT we should respond with a RSP_CHAT, not
+	  RSP_TABLE_LIST.  This fixes the "vanishing table list" bug
+	- Update player timestamps when they launch or join a table.  This fixes
+	  the bug that the player table numbers were not getting updated.
+
+Wed Feb 23 00:25:16 2000  jzaun  <jzaun@users.sourceforce.net>
+
+	* AUTHORS:
+
+	- Updated AUTHORS file.
+
+Mon Feb 21 23:31:10 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/chat.c, ggzd/chat.h, ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/parse_opt.c, ggzd/parse_opt.h, ggzd/players.c, ggzd/players.h, ggzd/protocols.h, ggzd/table.c, ggzd/table.h:
+	- Replaced occurances of 'NetGames' with 'GGZ' (ok, so it breaks the
+	  freeze, but I figured for our first release the server at least
+	  ought to know it's own name!)
+
+	* ggzd/datatypes.h, ggzd/parse_opt.c, ggzd/players.c, ggzd/table.c:
+	- First stab at MSG_XXX_UPDATE functionality:
+	- Added timestamp member to players, game_types, and game_tables
+	  structures.
+	- Each player thread send MSG_XXX_UPDATE if timestamp is newer than
+	  local copy
+	- Update appropriate timestamp when making changes to global lists
+	  (table handling needs updating after 0.0.2 re-write)
+
+Sun Feb 20 07:05:23 2000  bmh  <bmh@users.sourceforce.net>
+
+	* TODO:
+	- Added reservations to TODO list
+
+	* ggzd/players.c:
+	- New function type_match_table() to match game table types including
+	  ALL, OPEN, and RES (will need player number for RES...)
+	- Fixed up table_list() so that we send tables of interest, not just
+	  the first game_tables.count tables regardless of status
+
+	* doc/Makefile.am:
+	- Made targets for htmldir, txtdir, and psdir.
+	- Made XXX-docs depend on XXXdir
+	- Uncommented ps-docs stuff (it works here)
+
+	* doc/design.sgml:
+	- Updated interactions to reflect reality
+	- Removed title tag from programlisting (docbook complains invalid)
+
+	* ggzd/players.c, ggzd/protocols.h:
+	- When handling REQ_JOIN_GAME, return error if table is empty, and
+	  only create socketpair if table is valid
+	- Redefined some error constants
+
+	* TODO:
+	- Specified TODO elements for 0.0.1 and 0.0.2
+
+Sat Feb 19 19:01:00 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/protocols.h:
+	- Added MSG_USERS_UPDATE, MSG_TYPES_UPDATE, and MSG_TABLES_UPDATE
+
+	* doc/.cvsignore:
+	- Added html, txt, and ps dirs
+
+	* doc/ascii-lynx.dsl:
+	- Added ascii-lynx.dsl (we use lynx to create our plaintext)
+
+	* doc/Makefile.am:
+	- Made more machine-indpendent.
+	- Made general rules for sgml->html,txt,ps
+
+Sat Feb 19 05:23:51 2000  rgade  <rgade@users.sourceforce.net>
+
+	* doc/Makefile.am, doc/design.sgml: Makefile.am
+	  - Remove directory html so that the following mv command will work
+	    on updates.
+
+	design.sgml
+	  - Added tables to sections 2.1/2.2
+
+Fri Feb 18 14:04:12 2000  bmh  <bmh@users.sourceforce.net>
+
+	* doc/Attic/README.Design, doc/images/.cvsignore, doc/images/server_arch.fig:
+	- Removed old READEME.Design
+	- Added images directory
+
+	* configure.in, Makefile.am:
+	- Added doc subdir to build
+
+Thu Feb 17 05:33:52 2000  bmh  <bmh@users.sourceforce.net>
+
+	* doc/.cvsignore, doc/Makefile.am, doc/design.sgml:
+	- Added DocBook format design.sgml
+	- Begin writing Makefile.am to make docs
+
+Thu Feb 10 17:56:46 2000  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	- in es_make_socket(), stop trying to connect if gethostbyname() has
+	  an error.  (Fixes segfaults when host doesn't exist)
+
+Thu Feb 10 00:43:08 2000  jzaun  <jzaun@users.sourceforce.net>
+
+	* ggzd/control.c:
+	- Updated the *hack* for game_types to fill in all the descriptions
+
 Tue Feb  8 13:52:18 2000  bmh  <bmh@users.sourceforce.net>
 
 	* ggzd/datatypes.h, ggzd/players.c, ggzd/protocols.h:

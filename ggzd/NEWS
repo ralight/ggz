@@ -1,29 +1,30 @@
-Announcing the release of NetGames-0.0.1!
+Announcing the release of The Gnu Gaming Zone v0.0.1!
 
-This is the first developers release of the code for NetGames.  It is meant
+The Gnu Gaming Zone (GGZ) is a an open-sourced Internet gaming center.
+Similar to other online gaming sites, players login and sit at tables
+where they can play their favorite games and chat with other players.
+GGZ support multiple rooms with varying skill levels, and records your
+statistics so you can see how you match up against other players.
+
+This is the first developers release of the code for GGZ.  It is meant
 solely for feedback and information purposes.  It probably won't run
 correctly, and may not even compile.  Most of the features are absent.
 
-Then why release?  Because I'm holding to the Free Software guidline of
-"Release Early.  Release Often." I'd like to get more eyeballs on the code
-than just my own. Also, since NetGames is designed to be an infrastructure
-for game developers to incorporate their games into, this gives them a
-chance to looks things over.
+Then why release?  Because we're holding to the Free Software
+guideline of "Release Early.  Release Often." We'd like to get more
+eyeballs on the code than just our own. Also, since GGZ is designed to
+be an infrastructure for game developers to incorporate their games
+into, this gives them a chance to looks things over.
 
-For this first release, the important things to observer are in the main
-NetGames server.  The basic architecture for handling players and game
+For this first release, the important things to observe are in the main
+GGZ server.  The basic architecture for handling players and game
 tables is in place.  I have not done a large amount of client or game server
-coding. Therefore, in order to test the NetGames server, I hacked my spades
+coding. Therefore, in order to test the GGZ server, I hacked my spades
 client and server to work.  Please don't flame me too much for the messiness
 :)
 
-There is much more information about the server architecture in
-README.Design.  It is a lengthy document, but it should answer many
-questions about the way the NetGames server works (or will work).  There is
-also an xfig sketch in server_arch.fig.  If you don't have xfig, a copy in
-GIF format is available at my website.
-
-So what can I do with it?  Other than looking at the code, you can play
-spades with 1-4 players.  See the README file for more details.
-
+There is much more information about the server architecture in the
+doc/html directory (or doc/txt if you prefer a plaintext document).
+It is a lengthy document, but it should answer many questions about
+the way the GGZ server works (or will work).
 

@@ -11,7 +11,9 @@ PS_FILES = design.ps
 FIG_FILES  = images/server_arch.fig
 
 EXTRA_DIST = $(SGML_FILES) \
-	     $(FIG_FILES)
+	     $(FIG_FILES) \
+	     game-modules.txt
+
 
 all-docs: html-docs txt-docs
 

@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 93 $</revnumber>
-	<date>$Date: 2000-02-29 07:18:47 -0800 (Tue, 29 Feb 2000) $</date>
+	<revnumber>$Revision: 103 $</revnumber>
+	<date>$Date: 2000-02-29 13:13:42 -0800 (Tue, 29 Feb 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -387,7 +387,7 @@
 	    <imagedata fileref="images/server_arch.eps" format="eps">
 	  </imageobject>
 	  <imageobject>
-	    <imagedata fileref="server_arch.gif" format="gif">
+	    <imagedata fileref="../server_arch.gif" format="gif">
 	  </imageobject>
 	  <textobject>
 	    <para>Server Architecture</para>

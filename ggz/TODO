@@ -1,25 +1,22 @@
-Everything!
-
-Seriously though.  Here is my first go at a todo list.  As people suggest
-ideas I will try to put them on the list.  As the code progresess I will
-nail down more specific time frames.
-
-Short run
+For 0.0.2
 =========
-- chat facility
+- change MOTD to MSG
+- redo table launch so that game server is forked immediately and then
+  players join later (pass fd's using sendmsg() )
 - better handing of end-of-game
-- handle SIGCHLD
-- list of currently playing games
-- list of available game types
-
+- implement REQ_LEAVE_TABLE
+- if everyone leaves a table, remove it
+- handle SIGCHLD for when game_servrs die
+- implement player database (at least API)
+- implement tic-tac-toe as simple game example
 
 Medium run
 ==========
-- list of logged in users
-- user database
-- another game type
+- multiple implementations of user database (SQL/libdb)
 - config file handling
-
+- implement rooms
+- re-write spades
+- reservations
 
 Long run
 ========

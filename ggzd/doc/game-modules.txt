@@ -1,0 +1,46 @@
+Writing Game modules for GGZ
+============================
+
+GGZ is written in a modular fashion to allow games to written by third
+party developers.  We obviously cannot possibly write modules for
+every game people might be interested in playing, so if GGZ doesn't
+have your favorite game, please consider writing a module and
+submitting it for integration in GGZ.  Many existing network games
+could probably be integrated into GGZ with a small amount of effort.
+
+
+Each game "module" is really a program which the GGZ server will
+execute after forking a table on which to play the game.  Since it
+runs in its own process game modules don't have to worry about
+clashing with GGZ global variables or functions.  Further, game modules
+don't even have to be written in the same language as GGZ!  We use C
+for our development, but maybe you'd like to use C++ or Tcl or Python.
+As log as it adheres to the protocol for communicating with the GGZ
+server, it doesn't matter.  A specification of the protocol can be
+found in section 3.1.1 of the GGZ design document.
+
+Individual GGZ modules don't have to worry about about making network
+connections to users or maintaining player statistics.  The GGZ server
+handles all of that.  The only thing a module has to do is listen for
+player data from the GGZ server, play its game, notify the GGZ server
+when it's done and then die gracefully.
+
+In order to communicate with its game modules, GGZ hijacks their stdin
+and stdout file streams similar to the way the inetd server works.  So
+to communicate with the GGZ server, the module simply reads and writes
+from stdin and stdout.  This does mean that any error or debug
+messages should be sent to stderr so the GGZ server doesn't get
+confused.
+
+
+Example game module
+==================
+In the future we will provide a simple tic-tac-toe game module as an
+example.  Currently the only module available is NetSpades, but the
+code is not really suitable as an example as it was hacked in from a
+prior project just so we would have something to play.
+
+
+
+
+
