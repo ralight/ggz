@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "chat.h"
 #include "ggz.h"
@@ -35,12 +36,17 @@
 
 extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
+extern GGZServer *server;
 
+static GGZHookReturn ggz_connected(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_connect_fail(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_negotiated(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_logged_in(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_login_fail(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_room_list(GGZEventID id, void* event_data, void* user_data);
+
 static GGZHookReturn ggz_motd(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_login_ok(GGZEventID id, void* event_data, void* user_data);
-static GGZHookReturn ggz_login_fail(GGZEventID id, void* event_data, void* user_data);
-static GGZHookReturn ggz_list_rooms(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_join(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_msg(GGZEventID id, void* event_data, void* user_data);
@@ -52,41 +58,131 @@ static GGZHookReturn ggz_room_part(GGZEventID id, void* event_data, void* user_d
 static GGZHookReturn ggz_table_update(GGZEventID id, void* event_data, void* user_data);
 static GGZHookReturn ggz_state_change(GGZStateID id, void* event_data, void* user_data);
 
-void ggz_event_init(void)
+GtkFunction ggz_check_fd(GGZServer *server, gint fd, GdkInputCondition cond);
+
+void ggz_event_init(GGZServer *Server)
 {
-	ggzcore_event_add_hook(GGZ_SERVER_CONNECT_FAIL,	ggz_connect_fail);
-	ggzcore_event_add_hook(GGZ_SERVER_MOTD,		ggz_motd);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGIN,	ggz_login_ok);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGIN_FAIL,	ggz_login_fail);
-	ggzcore_event_add_hook(GGZ_SERVER_LIST_ROOMS,	ggz_list_rooms);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_JOIN,	ggz_room_join);
-	ggzcore_event_add_hook(GGZ_SERVER_LIST_PLAYERS,	ggz_list_players);
-	ggzcore_event_add_hook(GGZ_SERVER_CHAT_MSG,	ggz_chat_msg);
-	ggzcore_event_add_hook(GGZ_SERVER_CHAT_PRVMSG,	ggz_chat_prvmsg);
-	ggzcore_event_add_hook(GGZ_SERVER_CHAT_BEEP,	ggz_chat_beep);
-	ggzcore_event_add_hook(GGZ_SERVER_LOGOUT,	ggz_logout);
-	ggzcore_event_add_hook(GGZ_SERVER_ERROR,	NULL);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_ENTER,	ggz_room_enter);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_LEAVE,	ggz_room_part);
-	ggzcore_event_add_hook(GGZ_SERVER_TABLE_UPDATE,	ggz_table_update);
-	ggzcore_event_add_hook(GGZ_NET_ERROR,		NULL);
+	g_print("ggz_event_init\n");
+
+	ggzcore_server_add_event_hook(Server, GGZ_CONNECTED,		ggz_connected);
+	ggzcore_server_add_event_hook(Server, GGZ_CONNECT_FAIL,		ggz_connect_fail);
+	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATED,		ggz_negotiated);
+	ggzcore_server_add_event_hook(Server, GGZ_NEGOTIATE_FAIL,	ggz_connect_fail);
+	ggzcore_server_add_event_hook(Server, GGZ_LOGGED_IN,		ggz_logged_in);
+	ggzcore_server_add_event_hook(Server, GGZ_LOGIN_FAIL,		ggz_login_fail);
+	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST,		ggz_room_list);
+//	ggzcore_server_add_event_hook(server, GGZ_ENTERED,		ggz_entered);
+//	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL,		ggz_entered_fail);
+//	ggzcore_server_add_event_hook(server, GGZ_LOGOUT,		ggz_logout);
+
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_CHAT_PRVMSG,	 ggz_chat_prvmsg);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_CHAT_BEEP,	 ggz_chat_beep);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_LOGOUT,	 ggz_logout);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_ERROR,		 NULL);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOM_ENTER,	 ggz_room_enter);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_ROOM_LEAVE,	 ggz_room_part);
+//	ggzcore_server_add_event_hook(server, GGZ_SERVER_TABLE_UPDATE,	 ggz_table_update);
+//	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR,		 NULL);
+}
+
+static GGZHookReturn ggz_connected(GGZEventID id, void* event_data, void* user_data)
+{
+	GtkWidget *tmp;
+	int fd;
+
+	g_print("ggz_connected\n");
+
+	/* Desensitize the connect button */
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+
+	/* Add the fd to the ggtk main loop */
+	fd = ggzcore_server_get_fd(server);
+	gdk_input_add(fd, GDK_INPUT_READ, ggz_check_fd, (gpointer)server);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_connect_fail(GGZEventID id, void* event_data, void* user_data)
+{
+	GtkWidget *tmp;
+
+	g_print("ggz_connect_fail\n");
+
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_negotiated(GGZEventID id, void* event_data, void* user_data)
+{
+	g_print("ggz_negotiated\n");
+
+	ggzcore_server_login(server);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_logged_in(GGZEventID id, void* event_data, void* user_data)
+{
+	g_print("ggz_logged_in\n");
+
+	login_destroy();
+	ggzcore_server_list_rooms(server, -1, 1);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_login_fail(GGZEventID id, void* event_data, void* user_data)
+{
+	g_print("ggz_login_fail\n");
+
+	login_failed();
+	ggzcore_server_logout(server);
+
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_room_list(GGZEventID id, void* event_data, void* user_data)
+{
+	GtkWidget *tmp;
+	gint i;
+	gchar **names;
+
+	g_print("ggz_room_list\n");
+
+	/* Clear current list of rooms */
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
+	/* Display current list of rooms */
+	if (!(names = ggzcore_server_get_room_names(server)))
+		return GGZ_HOOK_OK;
+
+	for (i = 0; names[i]; i++)
+		gtk_clist_insert(GTK_CLIST(tmp), i, &names[i]);
+
+	free(names);
+
+	return GGZ_HOOK_OK;
 }
 
 
 void ggz_state_init(void)
 {
-	ggzcore_state_add_hook(GGZ_STATE_OFFLINE, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_CONNECTING, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_ONLINE, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGING_IN, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGED_IN, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_BETWEEN_ROOMS, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_ENTERING_ROOM, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_IN_ROOM, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_JOINING_TABLE, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_AT_TABLE, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LEAVING_TABLE, ggz_state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGING_OUT, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_OFFLINE, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_CONNECTING, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_ONLINE, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_LOGGING_IN, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_LOGGED_IN, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_BETWEEN_ROOMS, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_ENTERING_ROOM, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_IN_ROOM, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_JOINING_TABLE, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_AT_TABLE, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_LEAVING_TABLE, ggz_state_change);
+//	ggzcore_state_add_hook(GGZ_STATE_LOGGING_OUT, ggz_state_change);
 }
 
 
@@ -174,28 +270,6 @@ static GGZHookReturn ggz_list_players(GGZEventID id, void* event_data, void* use
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_list_rooms(GGZEventID id, void* event_data, void* user_data)
-{
-	GtkWidget *tmp;
-	gint i;
-	gchar **names;
-
-	/* Clear current list of rooms */
-	tmp = lookup_widget(win_main, "room_clist");
-	gtk_clist_clear(GTK_CLIST(tmp));
-
-	/* Display current list of rooms */
-	if (!(names = ggzcore_room_get_names()))
-		return GGZ_HOOK_OK;
-
-	for (i = 0; names[i]; i++)
-		gtk_clist_insert(GTK_CLIST(tmp), i, &names[i]);
-
-	free(names);
-
-	return GGZ_HOOK_OK;
-}
-
 static GGZHookReturn ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
@@ -208,15 +282,15 @@ static GGZHookReturn ggz_room_join(GGZEventID id, void* event_data, void* user_d
 
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
-	name = g_strdup_printf(_("Current Room: %s"), ggzcore_room_get_name(ggzcore_state_get_room()));
-	gtk_label_set_text(GTK_LABEL(tmp), name);
-	g_free(name);
+//	name = g_strdup_printf(_("Current Room: %s"), ggzcore_room_get_name(ggzcore_state_get_room()));
+//	gtk_label_set_text(GTK_LABEL(tmp), name);
+//	g_free(name);
 
 	/* Display message in chat area */
-	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_state_get_room()));
-	chat_display_message(CHAT_BEEP, "---", message);
-	g_free(message);
-	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_state_get_room()));
+//	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_state_get_room()));
+//	chat_display_message(CHAT_BEEP, "---", message);
+//	g_free(message);
+//	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_state_get_room()));
 
 	/* set senditivity */
 	/* Menu bar */
@@ -298,7 +372,7 @@ static GGZHookReturn ggz_login_ok(GGZEventID id, void* event_data, void* user_da
 	login_destroy();
 
 	/* Get list of rooms */
-	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
+//	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
 
 	/* set senditivity */
 	/* Menu bar */
@@ -342,22 +416,6 @@ static GGZHookReturn ggz_login_ok(GGZEventID id, void* event_data, void* user_da
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_connect_fail(GGZEventID id, void* event_data, void* user_data)
-{
-	GtkWidget *tmp;
-
-	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
-	gtk_widget_set_sensitive(tmp, TRUE);
-
-	return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn ggz_login_fail(GGZEventID id, void* event_data, void* user_data)
-{
-	login_failed();
-
-	return GGZ_HOOK_OK;
-}
 
 void ggz_sensitivity_init(void)
 {
@@ -509,4 +567,20 @@ static GGZHookReturn ggz_table_update(GGZEventID id, void* event_data, void* use
 	free(numbers);
 
 	return GGZ_HOOK_OK;
+}
+
+
+
+
+
+/* The below function are used to
+ * add and remove servers to the 
+ * main loop
+ */
+
+GtkFunction ggz_check_fd(GGZServer *server, gint fd, GdkInputCondition cond)
+{
+	g_print("ggz_check_fd\n");
+	ggzcore_server_read_data(server);
+	return TRUE;
 }

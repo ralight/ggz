@@ -40,6 +40,7 @@
 
 GtkWidget *login_dialog;
 static GtkWidget *create_dlg_login(void);
+extern GGZServer *server;
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget *widget, gpointer data);
@@ -120,7 +121,7 @@ void login_goto_server(gchar *server)
 		gtk_entry_set_text(GTK_ENTRY(tmp), server);
 
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "name_entry");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_state_get_profile_login());
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_server_get_handle(server));
 
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
@@ -224,49 +225,51 @@ login_start_session                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *tmp;
-	GGZProfile *profile;
+	char *host = NULL, *login = NULL, *password = NULL;
+	int port;
+	GGZLoginType type;
 
-	if (!(profile = calloc(1, sizeof(GGZProfile))))
-		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
+	g_print("login_start_session\n");
+
+	if(ggzcore_server_is_logged_in(server)) {
+		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
+//		ggzcore_event_add_hook_full(GGZ_SERVER_LOGOUT,
+//						login_reconnect,
+//						profile);
+//		/* If currently online, disconnect */
+		ggzcore_server_logout(server);
+	}
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "host_entry");
-	profile->host = gtk_entry_get_text(GTK_ENTRY(tmp));
+	host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "port_entry");
-	profile->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "name_entry");
-	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
+	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
 	{
-		profile->type = GGZ_LOGIN;
+		type = GGZ_LOGIN;
 		tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "pass_entry");
-		profile->password = gtk_entry_get_text(GTK_ENTRY(tmp));
+		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "guest_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
-		profile->type = GGZ_LOGIN_GUEST;
+		type = GGZ_LOGIN_GUEST;
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "first_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
-		profile->type = GGZ_LOGIN_NEW;
+		type = GGZ_LOGIN_NEW;
 
-	if(ggzcore_state_is_online()) {
-		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
-		ggzcore_event_add_hook_full(GGZ_SERVER_LOGOUT,
-						login_reconnect,
-						profile);
-		/* If currently online, disconnect */
-		ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
-		
-	} else {
-		/* FIXME: provide a destroy function that frees the appropriate mem */
-		ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
-	}
+	server = ggzcore_server_new(host, port, type, login, password);
+
+	ggz_event_init(server);
+	ggzcore_server_connect(server);
 }
 
 
@@ -275,40 +278,40 @@ login_relogin                          (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *tmp;
-	GGZProfile *profile;
-
-	if (!(profile = calloc(1, sizeof(GGZProfile))))
-		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
+	char *host = NULL, *login = NULL, *password = NULL;
+	int port;
+	GGZLoginType type;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* FIXME: grab this info from existing profile */
 	tmp = lookup_widget(login_dialog, "host_entry");
-	profile->host = gtk_entry_get_text(GTK_ENTRY(tmp));
+	host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = lookup_widget(login_dialog, "port_entry");
-	profile->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	tmp = lookup_widget(login_dialog, "name_entry");
-	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
+	login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
 	{
-		profile->type = GGZ_LOGIN;
+		type = GGZ_LOGIN;
 		tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "pass_entry");
-		profile->password = gtk_entry_get_text(GTK_ENTRY(tmp));
+		password = gtk_entry_get_text(GTK_ENTRY(tmp));
 	}
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "guest_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
-		profile->type = GGZ_LOGIN_GUEST;
+		type = GGZ_LOGIN_GUEST;
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "first_radio");
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
-		profile->type = GGZ_LOGIN_NEW;
+		type = GGZ_LOGIN_NEW;
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
-	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
+	server = ggzcore_server_new(host, port, type, login, password);
+	ggzcore_server_connect(server);
 
 }
 
@@ -317,7 +320,6 @@ static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user
 {
 	/* Now that we're disconnected, login to new server */
 	/* FIXME: provide a destroy function that frees profile */
-	ggzcore_event_enqueue(GGZ_USER_LOGIN, user_data, NULL);
 
 	return GGZ_HOOK_REMOVE;
 }

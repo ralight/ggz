@@ -26,7 +26,7 @@
 #define _GGZ_
 
 
-void ggz_event_init(void);
+void ggz_event_init(GGZServer *Server);
 void ggz_state_init(void);
 void ggz_sensitivity_init(void);
 

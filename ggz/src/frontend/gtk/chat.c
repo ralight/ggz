@@ -43,6 +43,7 @@
 
 static gchar *chat_get_color(gchar *name);
 extern GtkWidget *win_main;
+extern GGZServer *server;
 
 /* Aray of GdkColors currently used for chat and MOTD */
 GdkColor colors[] =
@@ -424,7 +425,7 @@ gchar *chat_get_color(gchar *name)
 	} else {
 		if(ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE))
 		{
-			if(!strcmp(name,  ggzcore_state_get_profile_login()))
+			if(!strcmp(name, ggzcore_server_get_handle(server)))
 			{
 				if(ggzcore_conf_read_int("CHAT", "Y_COLOR", 8) > 9)
 					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
