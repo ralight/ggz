@@ -706,4 +706,7 @@ static void _ggzcore_net_handle_update_tables(void)
 			      table);
 		break;
 	}
+
+	/* FIXME: Should we have the client redisplay the full list of players? */
+	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
 }

@@ -159,6 +159,26 @@ char** ggzcore_player_get_names(void)
 }
 
 
+int ggzcore_player_get_table(char *name)
+{
+	struct _ggzcore_list_entry *cur;
+	struct _GGZPlayer *player;
+
+	if (num_players >= 0) {
+		cur = _ggzcore_list_head(player_list);
+		while (cur) {
+			player = _ggzcore_list_get_data(cur);
+			if(!strcmp(player->name, name))
+				return player->table;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+
+	/* This *should* never happen */
+	return -2;
+}
+
+
 static int _ggzcore_player_compare(void* p, void* q)
 {
 	return strcmp(((struct _GGZPlayer*)p)->name, 

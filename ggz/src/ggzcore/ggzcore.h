@@ -332,6 +332,7 @@ char** ggzcore_room_get_names(void);
 
 unsigned int ggzcore_player_get_num(void);
 char** ggzcore_player_get_names(void);
+int ggzcore_player_get_table(char *name);
 
 
 /* Debugging categories */
