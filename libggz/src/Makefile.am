@@ -14,4 +14,5 @@ libggz_la_SOURCES =	conf.c \
 		   	memory.c \
 			msg.c \
 		   	stack.c \
-		   	xmlelement.c
+		   	xmlelement.c \
+			misc.c

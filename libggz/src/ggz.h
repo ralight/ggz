@@ -494,4 +494,34 @@ void ggz_error_msg_exit(const char *fmt, ...);
 void ggz_debug_cleanup(void);
 /** @} */
 
+/**
+ * @defgroup misc Miscellaneous convenience functions
+ *
+ * @{
+ */
+
+/**
+ * Escape XML characters in a text string.
+ * @param str The string to encode
+ * @return A pointer to a dynamically allocated string with XML characters
+ * replaced with ampersand tags, or NULL.
+ * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * expected to later free this memory using ggz_free().  If the original string
+ * did not contain any characters which required escaping, a NULL value is
+ * returned and no memory is allocated.
+ */
+char * ggz_xml_escape(char *str);
+/**
+ * Restore escaped XML characters into a text string.
+ * @param str The string to decode
+ * @return A pointer to a dynamically allocated string with XML ampersand tags
+ * replaced with their normal ASCII characters, or NULL.
+ * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * expected to later free this memory using ggz_free().  If the original string
+ * did not contain any characters which required decoding, a NULL value is
+ * returned and no memory is allocated.
+ */
+char * ggz_xml_unescape(char *str);
+/** @} */
+
 #endif  /* __GGZCORE_H__ */

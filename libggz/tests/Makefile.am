@@ -4,7 +4,9 @@ LDADD = $(top_builddir)/src/libggz.la
 
 noinst_PROGRAMS =       \
         debugmsg	\
-	cfgtest
+	cfgtest		\
+	misc
 
 debugmsg_SOURCES = debugmsg.c
 cfgtest_SOURCES = cfgtest.c
+misc_SOURCES = misc.c
