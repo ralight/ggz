@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: game.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -63,7 +63,6 @@ void board_init(guint8 width, guint8 height)
 	guint16 x, y;
 	GdkColormap *sys_colormap;
 	GtkWidget *p1b, *p2b;
-	GdkRectangle update_rect;
 
 	board = g_object_get_data(G_OBJECT(main_win), "board");
 	p1b = g_object_get_data(G_OBJECT(main_win), "p1b");
@@ -153,11 +152,7 @@ void board_init(guint8 width, guint8 height)
 			gdk_draw_point(board_pixmap, gc_fg, x, y);
 		}
 
-	update_rect.x = 0;
-	update_rect.y = 0;
-	update_rect.width = board->allocation.width;
-	update_rect.height = board->allocation.height;
-	gtk_widget_draw(board, &update_rect);
+	gtk_widget_queue_draw(board);
 
 	game.move = -1;
 
@@ -183,7 +178,6 @@ void board_handle_click(GtkWidget * widget, GdkEventButton * event)
 	gint8 left, top;
 	gint8 result;
 	guint16 x1, y1, x2, y2;
-	GdkRectangle update_rect;
 	gchar *tstr;
 
 	if (game.state != DOTS_STATE_MOVE) {
@@ -220,10 +214,8 @@ void board_handle_click(GtkWidget * widget, GdkEventButton * event)
 		x1 = x2 = (line_x + 1) * dot_width;
 		y1 = (top + 1) * dot_height;
 		y2 = (top + 2) * dot_height;
-		update_rect.x = x1;
-		update_rect.y = y1;
-		update_rect.width = 1;
-		update_rect.height = dot_height + 1;
+		gtk_widget_queue_draw_area(widget, x1, y1, 1,
+					   dot_height + 1);
 		if (ggz_write_int(game.fd, DOTS_SND_MOVE_V) < 0
 		    || ggz_write_char(game.fd, line_x) < 0
 		    || ggz_write_char(game.fd, top) < 0) {
@@ -247,10 +239,8 @@ void board_handle_click(GtkWidget * widget, GdkEventButton * event)
 		y1 = y2 = (line_y + 1) * dot_height;
 		x1 = (left + 1) * dot_width;
 		x2 = (left + 2) * dot_width;
-		update_rect.x = x1;
-		update_rect.y = y1;
-		update_rect.width = dot_width + 1;
-		update_rect.height = 1;
+		gtk_widget_queue_draw_area(widget, x1, y1, dot_width + 1,
+					   1);
 		if (ggz_write_int(game.fd, DOTS_SND_MOVE_H) < 0
 		    || ggz_write_char(game.fd, left) < 0
 		    || ggz_write_char(game.fd, line_y) < 0) {
@@ -260,7 +250,6 @@ void board_handle_click(GtkWidget * widget, GdkEventButton * event)
 	}
 
 	gdk_draw_line(board_pixmap, gc_fg, x1, y1, x2, y2);
-	gtk_widget_draw(widget, &update_rect);
 
 	if (result <= 0) {
 		tstr = g_strconcat(_("Waiting for "),
@@ -350,7 +339,6 @@ gint8 board_opponent_move(guint8 dir)
 	gint8 result = 0;
 	guchar x, y;
 	guint16 x1, y1, x2, y2;
-	GdkRectangle update_rect;
 	GtkWidget *l1, *l2;
 	char *text;
 	char t_s, t_x, t_y;
@@ -375,12 +363,9 @@ gint8 board_opponent_move(guint8 dir)
 		x1 = x2 = (x + 1) * dot_width;
 		y1 = (y + 1) * dot_height;
 		y2 = (y + 2) * dot_height;
-		update_rect.x = x1;
-		update_rect.y = y1;
-		update_rect.width = 1;
-		update_rect.height = dot_height + 1;
 		gdk_draw_line(board_pixmap, gc_fg, x1, y1, x2, y2);
-		gtk_widget_draw(board, &update_rect);
+		gtk_widget_queue_draw_area(board, x1, y1, 1,
+					   dot_height + 1);
 
 		vert_board[x][y] = 1;
 		if (x != 0)
@@ -405,12 +390,9 @@ gint8 board_opponent_move(guint8 dir)
 		y1 = y2 = (y + 1) * dot_height;
 		x1 = (x + 1) * dot_width;
 		x2 = (x + 2) * dot_width;
-		update_rect.x = x1;
-		update_rect.y = y1;
-		update_rect.width = dot_width + 1;
-		update_rect.height = 1;
 		gdk_draw_line(board_pixmap, gc_fg, x1, y1, x2, y2);
-		gtk_widget_draw(board, &update_rect);
+		gtk_widget_queue_draw_area(board, x1, y1, dot_width + 1,
+					   1);
 
 		horz_board[x][y] = 1;
 		if (y != 0)
@@ -452,14 +434,9 @@ gint8 board_opponent_move(guint8 dir)
 void board_fill_square(guint8 x, guint8 y)
 {
 	guint16 x1, y1;
-	GdkRectangle update_rect;
 
 	x1 = (x + 1) * dot_width + 1;
 	y1 = (y + 1) * dot_height + 1;
-	update_rect.x = x1;
-	update_rect.y = y1;
-	update_rect.width = dot_width - 1;
-	update_rect.height = dot_height - 1;
 
 	if (game.move == 0)
 		gdk_draw_rectangle(board_pixmap,
@@ -472,7 +449,8 @@ void board_fill_square(guint8 x, guint8 y)
 				   TRUE,
 				   x1, y1, dot_width - 1, dot_height - 1);
 
-	gtk_widget_draw(board, &update_rect);
+	gtk_widget_queue_draw_area(board, x1, y1,
+				   dot_width - 1, dot_height - 1);
 }
 
 
@@ -516,7 +494,6 @@ void board_redraw(void)
 {
 	guint8 i, j;
 	guint16 x1, y1, x2, y2;
-	GdkRectangle update_rect;
 	GdkGC *gc_ptr;
 
 	gdk_draw_rectangle(board_pixmap,
@@ -582,11 +559,7 @@ void board_redraw(void)
 		}
 
 	/* Finally, update the on-screen pixmap */
-	update_rect.x = 0;
-	update_rect.y = 0;
-	update_rect.width = board->allocation.width;
-	update_rect.height = board->allocation.height;
-	gtk_widget_draw(board, &update_rect);
+	gtk_widget_queue_draw(board);
 }
 
 

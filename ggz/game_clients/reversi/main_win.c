@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: main_win.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -168,7 +168,7 @@ void display_board(void)
 	gtk_label_set_text(GTK_LABEL(black_label), score);
 
 
-	gtk_widget_draw(tmp, NULL);
+	gtk_widget_queue_draw(tmp);
 }
 
 static GdkPixbuf *load_pixmap(const char *name)

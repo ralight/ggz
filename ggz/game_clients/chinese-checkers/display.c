@@ -302,7 +302,6 @@ void display_statusbar(char *msg)
 /* Not really animation, just draws a line from src to dest */
 void display_show_path(GSList * path_list)
 {
-	GdkRectangle update_rect;
 	struct node_t *node;
 	int x1, y1, x2, y2;
 	GSList *tmp;
@@ -318,21 +317,12 @@ void display_show_path(GSList * path_list)
 			y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 			g_free(node);
 
-			if (x1 <= x2)
-				update_rect.x = x1 - 1;
-			else
-				update_rect.x = x2 - 1;
-			if (y1 <= y2)
-				update_rect.y = y1 - 1;
-			else
-				update_rect.y = y2 - 1;
-
-			update_rect.height = abs(y1 - y2) + 2;
-			update_rect.width = abs(x1 - x2) + 2;
-
 			gdk_draw_line(board_buf, gc_line, x1, y1, x2, y2);
-
-			gtk_widget_draw(draw_area, &update_rect);
+			gtk_widget_queue_draw_area(draw_area,
+						   MIN(x1, x2) - 1,
+						   MIN(y1, y2) - 1,
+						   abs(x1 - x2) + 2,
+						   abs(y1 - y2) + 1);
 
 			tmp = g_slist_next(tmp);
 		}
@@ -348,21 +338,12 @@ void display_show_path(GSList * path_list)
 		x2 = GET_X(node->cd) + HOLE_SIZE / 2;
 		y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 
-		if (x1 <= x2)
-			update_rect.x = x1;
-		else
-			update_rect.x = x2;
-		if (y1 <= y2)
-			update_rect.y = y1;
-		else
-			update_rect.y = y2;
-
-		update_rect.height = abs(y1 - y2) + 1;
-		update_rect.width = abs(x1 - x2) + 1;
-
 		gdk_draw_line(board_buf, gc_line, x1, y1, x2, y2);
-
-		gtk_widget_draw(draw_area, &update_rect);
+		gtk_widget_queue_draw_area(draw_area,
+					   MIN(x1, x2),
+					   MIN(y1, y2),
+					   abs(x1 - x2) + 1,
+					   abs(y1 - y2) + 1);
 
 		tmp = g_slist_next(tmp);
 	}

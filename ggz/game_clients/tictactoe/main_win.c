@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: main_win.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -151,7 +151,7 @@ void display_board(void)
 				GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
-	gtk_widget_draw(tmp, NULL);
+	gtk_widget_queue_draw(tmp);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: dlg_options.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -1843,7 +1843,7 @@ gboolean draw_preview(GtkWidget * dlg_options)
 	g_object_set_data(G_OBJECT(widget), "clean",
 			  GINT_TO_POINTER(TRUE));
 
-	gtk_widget_draw(widget, NULL);
+	gtk_widget_queue_draw(widget);
 
 	return TRUE;
 
@@ -1944,7 +1944,7 @@ void draw_mini_board(GtkWidget * dlg_options)
 			      options->width * pix_width, i * pix_height);
 	}
 
-	gtk_widget_draw(widget, NULL);
+	gtk_widget_queue_draw(widget);
 
 	update_counters(dlg_options);
 

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: game.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -481,7 +481,7 @@ void game_draw_board(void)
 
 	// Update the widget
 	tmp = g_object_get_data(G_OBJECT(main_win), "mainarea");
-	gtk_widget_draw(tmp, NULL);
+	gtk_widget_queue_draw(tmp);
 
 }
 

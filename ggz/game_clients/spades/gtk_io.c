@@ -238,7 +238,7 @@ void DisplayHand(void)
 		}
 	}
 
-	gtk_widget_draw(playArea->hand, NULL);
+	gtk_widget_queue_draw(playArea->hand);
 }
 
 
@@ -272,7 +272,7 @@ void DisplayTable(void)
 			   gameState.players[(gameState.playerId + 3) %
 					     4]);
 
-	gtk_widget_draw(playArea->table, NULL);
+	gtk_widget_queue_draw(playArea->table);
 }
 
 
@@ -347,7 +347,7 @@ void DisplayPlayedCard(Card card, int player, int id)
 			localX, localY, x, y,
 			CARDWIDTH, CARDHEIGHT, GDK_RGB_DITHER_NONE, 0, 0);
 
-	gtk_widget_draw(playArea->table, NULL);
+	gtk_widget_queue_draw(playArea->table);
 
 #ifdef DEBUG
 	g_printerr("%s\n", card_name(card, LONG_NAME));

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: main_win.c 6335 2004-11-12 04:40:58Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -249,7 +249,7 @@ void display_board(void)
 	/*gdk_draw_drawable(main_win->window, tmp->style->black_gc, hastings_buf, 0, 0, 0, 0, 510, 510); */
 
 	/* finally, draw it */
-	gtk_widget_draw(tmp, NULL);
+	gtk_widget_queue_draw(tmp);
 }
 
 static GdkPixbuf *load_pixmap(const char *name)
