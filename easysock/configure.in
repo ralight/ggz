@@ -1,5 +1,5 @@
-AC_INIT(easysock.h)
-AM_INIT_AUTOMAKE(libeasysock, 0.0.1)
+AC_INIT(easysock.c)
+AM_INIT_AUTOMAKE(libeasysock, 0.0.2pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -47,7 +47,7 @@ fi
 
 
 AC_SUBST(LDADD)
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile easysock.h)
 
 dnl Status Output
 dnl =============
@@ -55,3 +55,5 @@ echo ""
 echo "*** libeasysock will be built with the"
 echo "*** following debugging flags: $DFLAGS"
 echo ""
+
+

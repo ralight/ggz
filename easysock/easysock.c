@@ -53,6 +53,7 @@
 
 static es_err_func _err_func = NULL;
 static es_exit_func _exit_func = exit;
+static es_alloc_limit = 32768;
 
 static void _debug(const char *fmt, ...)
 {
@@ -96,6 +97,20 @@ es_exit_func es_exit_func_rem(void)
 {
 	es_exit_func old = _exit_func;
 	_exit_func = exit;
+	return old;
+}
+
+
+unsigned int es_alloc_limit_get(void)
+{
+	return es_alloc_limit;
+}
+
+
+unsigned int es_alloc_limit_set(const unsigned int limit)
+{
+	unsigned int old = es_alloc_limit;
+	es_alloc_limit = limit;
 	return old;
 }
 
@@ -441,15 +456,20 @@ int es_read_string_alloc(const int sock, char **message)
 
 	if (es_read_int(sock, &size) < 0)
 		return -1;
+
+	if (size > es_alloc_limit) {
+		_debug("Error: Easysock allocation limit exceeded\n");
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_ALLOCATE, ES_STRING);
+		return -1;
+	}
 	
-	if ( (*message = (char *)malloc((size+1) * sizeof(char))) == NULL) {
+	if ( (*message = calloc((size+1), sizeof(char))) == NULL) {
 		_debug("Error: Not enough memory\n");
 		if (_err_func)
 			(*_err_func) (strerror(errno), ES_ALLOCATE, ES_STRING);
 		return -1;
 	}
-
-	memset(*message, 0, (size+1));
 
 	if ( (status = es_readn(sock, *message, size)) < 0) {
 		_debug("Error receiving string\n");

@@ -30,6 +30,16 @@
 #include <sys/types.h>
 
 /****************************************************************************
+ * Version Numbers
+ *
+ * MAJOR.MINOR.PATCH
+ *
+ * Note: do not confuse this with the library soname
+ *
+ ***************************************************************************/
+#define EASYSOCK_VERSION @VERSION@
+
+/****************************************************************************
  * Error function
  *
  * Any error encountered in an easysock function will cause the error 
