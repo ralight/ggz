@@ -519,6 +519,28 @@ void _ggzcore_confio_cleanup(void)
 }
 
 
+void ggzcore_confio_close(int handle)
+{
+	_ggzcore_list_entry	*f_entry;
+	_ggzcore_confio_file	*f_data;
+
+	f_entry = _ggzcore_list_head(file_list);
+	while(f_entry) {
+		f_data = _ggzcore_list_get_data(f_entry);
+		if(f_data->handle == handle)
+			break;
+		f_entry = _ggzcore_list_next(f_entry);
+	}
+
+	if(f_entry) {
+		_ggzcore_list_destroy(f_data->section_list);
+		ggzcore_free(f_data->path);
+		ggzcore_free(f_data);
+		_ggzcore_list_delete_entry(file_list, f_entry);
+	}
+}
+
+
 /* ggzcore_confio_parse(path)
  *	Load up and parse a configuration file into a set of linked lists.
  *
@@ -532,6 +554,7 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 
 	_ggzcore_confio_file	*file_data;
 	_ggzcore_list		*section_list;
+	_ggzcore_list_entry	*file_entry;
 
 	int			opt_create, opt_rdonly, opt_rdwr;
 	int			t_file;
@@ -582,6 +605,25 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 	if(opt_rdwr && access(path, R_OK | W_OK)) {
 		ggzcore_error_sys("Unable to read or write file %s", path);
 		return -1;
+	}
+
+	/* See if this path is already opened */
+	/* Note this code can easily be fooled by using different */
+	/* relative paths to the same file. */
+	file_entry = _ggzcore_list_head(file_list);
+	while(file_entry) {
+		file_data = _ggzcore_list_get_data(file_entry);
+		if(!strcmp(file_data->path, path))
+			break;
+		file_entry = _ggzcore_list_next(file_entry);
+	}
+	if(file_entry) {
+		/* Check if we need to enable writing */
+		if(opt_rdwr && !file_data->writeable)
+			file_data->writeable = opt_rdwr;
+
+		/* Return existing handle */
+		return file_data->handle;
 	}
 
 	/* Go do the dirty work and give us a section_list */

@@ -610,6 +610,7 @@ int ggzcore_conf_commit(void);
 /* CONFIO Functions */
 int ggzcore_confio_parse		(const char *path,
 					 const unsigned char options);
+void ggzcore_confio_close		(int handle);
 int ggzcore_confio_commit		(int handle);
 int ggzcore_confio_write_string		(int	handle,
 					 const char	*section,
