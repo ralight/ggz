@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5754 2004-01-27 18:11:10Z josef $
+ * $Id: ggzcore.h 5818 2004-02-07 09:52:52Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -30,8 +30,8 @@
 
 #define GGZCORE_VERSION_MAJOR 0
 #define GGZCORE_VERSION_MINOR 0
-#define GGZCORE_VERSION_MICRO 7
-#define GGZCORE_VERSION_IFACE "3:0:0"
+#define GGZCORE_VERSION_MICRO 8
+#define GGZCORE_VERSION_IFACE "4:0:1"
 
 #include <poll.h>
 #include <stdarg.h>
