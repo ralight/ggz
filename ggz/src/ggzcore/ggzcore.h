@@ -54,9 +54,6 @@ typedef struct _GGZOptions {
 	/* User config file */
 	char* user_conf;
 
-	/* Local Override conf file */
-	char* local_conf;
-
 } GGZOptions;
 
 
@@ -478,6 +475,55 @@ int ggzcore_conf_remove_key(char *section, char *key);
  * int : 0 if successful, -1 on error
  */
 int ggzcore_conf_commit(void);
+
+
+/* This returns the number of registered modules */
+unsigned int ggzcore_module_get_num(void);
+
+
+/* This adds a local module to the list.  It returns 0 if successful or
+   -1 on failure. */
+int ggzcore_module_add(const char *game,
+	               const char *version,
+	               const char *protocol,
+                       const char *author,
+		       const char *frontend,
+		       const char *url,
+		       const char *exe_path,
+		       const char *icon_path,
+		       const char *help_path);
+		       
+
+
+/*This returns a dynamically allocated array of module IDs for the
+  version of the game specified, or NULL if there are no modules
+  registered for that game/version.  The last element in the array is
+  the flag value -1.*/
+int* ggzcore_module_get_by_type(const char *game, const char *version);
+
+
+/* This attempts to launch the specified module and returns 0 is
+   successful or -1 on error. */
+int ggzcore_module_launch(const unsigned int id);
+
+
+/* These functions lookup a particular property of a module.  I've added
+   icon to the list we discussed at the meeting.  This is an optional xpm
+   file that the module can provide to use for representing the game
+   graphically.*/
+char* ggzcore_module_get_game(const unsigned int id);
+char* ggzcore_module_get_version(const unsigned int id);
+char* ggzcore_module_get_protocol(const unsigned int id);
+char* ggzcore_module_get_author(const unsigned int id);
+char* ggzcore_module_get_frontend(const unsigned int id);
+char* ggzcore_module_get_url(const unsigned int id);
+char* ggzcore_module_get_path(const unsigned int id);
+char* ggzcore_module_get_icon_path(const unsigned int id);
+char* ggzcore_module_get_help_path(const unsigned int id);
+
+
+
+
 
 
 #ifdef __cplusplus

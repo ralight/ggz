@@ -43,9 +43,7 @@ int ggzcore_init(GGZOptions options)
 			      options.global_conf);
 		ggzcore_debug(GGZ_DBG_CONF, "Parsing user conf file: %s", 
 			      options.user_conf);
-		ggzcore_debug(GGZ_DBG_CONF, "Parsing local conf file: %s", 
-			      options.local_conf);
-		_ggzcore_conf_initialize (options.global_conf, options.user_conf);
+		_ggzcore_conf_initialize(options.global_conf, options.user_conf);
 	}
 
 
