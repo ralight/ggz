@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4945 2002-10-18 06:23:14Z jdorje $
+ * $Id: ggzcore.h 4974 2002-10-22 01:03:23Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -681,6 +681,7 @@ GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
 
 int       ggzcore_room_get_num_tables(GGZRoom *room);
 GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
 
 
 /* Functions for manipulating hooks to GGZRoom events */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4973 2002-10-22 00:39:54Z jdorje $
+ * $Id: room.c 4974 2002-10-22 01:03:23Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -201,6 +201,16 @@ GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num)
 		return _ggzcore_room_get_nth_table(room, num);
 	else
 		return NULL;
+}
+
+
+
+GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id)
+{
+	if (!room)
+		return NULL;
+
+	return _ggzcore_room_get_table_by_id(room, id);
 }
 
 
