@@ -36,9 +36,6 @@ static int deck_ptr = -1; /* a pointer into the deck used for dealing */
 
 char* suit_names[4] = {"clubs", "diamonds", "hearts", "spades"};
 
-/* TODO: make this into game_get_name. */
-char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchre", "Rook"};
-
 /* cards_create_deck()
  *   set up the deck of the given type
  *

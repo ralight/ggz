@@ -22,9 +22,62 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "games.h"
+#include <stdlib.h>
 
+#include <easysock.h>
+
+#include "common.h"
+#include "game.h"
+#include "games.h"
+#include "ggz.h"
+
+/* TODO: make this into game_get_name. */
+char* game_names[7] = {"Suaro", "Spades", "Hearts", "Bridge", "La Pocha", "Euchre", "Rook"};
 
 /* these aren't *quite* worthy of being in the game struct */
-int game_type_cnt;
+/* static int game_type_cnt; */
 int game_types[GGZ_NUM_GAMES];	/* possible types of games; used for option requests */
+
+
+
+int games_req_gametype()
+{
+	int fd = ggz_seats[game.host].fd;
+	int cnt = 0, i;
+	int status = 0;
+	if (fd == -1) {
+		ggz_debug("SERVER BUG: nonexistent host.");
+		return -1;
+	}
+
+	for (i=0; i < GGZ_NUM_GAMES; i++) {
+		if (game_valid_game(i)) {
+			game_types[cnt] = i;
+			cnt++;
+		}
+	}
+
+	if (cnt == 0) {
+		ggz_debug("SERVER BUG: no valid games in games_req_gametype.");
+		exit(-1);
+	}
+
+	if (cnt == 1) {
+		ggz_debug("Just one valid game: choosing %d.", game_types[0]);
+		game.which_game = game_types[0];
+		game_init_game();
+		send_sync_all();
+		return 0;
+	}
+
+	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
+	    es_write_int(fd, 1) < 0 || /* 1 option */
+	    es_write_int(fd, cnt) < 0 || /* cnt choices */
+	    es_write_int(fd, 0) < 0) /* default is 0 */
+		status = -1;
+	for (i=0; i<cnt; i++)
+		if (es_write_string(fd, game_names[game_types[i]]) < 0)
+			status = -1;
+
+	return status;
+}

@@ -24,6 +24,8 @@
 
 #include "cards.h"
 
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
 /* GGZCards protocol */
 /* Messages from server */
@@ -220,4 +222,5 @@ extern int handle_player(player_t);
 /* the game structure */
 extern struct wh_game_t game;
 
+#endif /* __COMMON_H__ */
 

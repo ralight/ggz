@@ -24,10 +24,10 @@
 
 
 
-/* Game types.  Shouldn't really go here, but... */
+/* Game types. */
 /* NOTE: because of the way options are handled, these must start at 0 and
- * count up directly.   See game_req_gametype. */
-/* They also must match with game_names, below. */
+ * count up directly.   See games_req_gametype. */
+/* They also must match with game_names, below */
 #define GGZ_GAME_SUARO		0 /* http://suaro.dhs.org */
 	/* these others aren't supported yet... */
 #define GGZ_GAME_SPADES		1
@@ -46,3 +46,4 @@ extern char* game_names[];
 #define GGZ_NUM_GAMES		7	/* the _number_ of valid games */
 
 extern int game_types[];
+extern int games_req_gametype();

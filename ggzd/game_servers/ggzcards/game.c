@@ -288,48 +288,6 @@ void game_init_game()
 	game.initted = 1;
 }
 
-int game_req_gametype()
-{
-	int fd = ggz_seats[game.host].fd;
-	int cnt = 0, i;
-	int status = 0;
-	if (fd == -1) {
-		ggz_debug("SERVER BUG: nonexistent host.");
-		return -1;
-	}
-
-	for (i=0; i < GGZ_NUM_GAMES; i++) {
-		if (game_valid_game(i)) {
-			game_types[cnt] = i;
-			cnt++;
-		}
-	}
-
-	if (cnt == 0) {
-		ggz_debug("SERVER BUG: no valid games in game_req_gametype.");
-		exit(-1);
-	}
-
-	if (cnt == 1) {
-		ggz_debug("Just one valid game: choosing %d.", game_types[0]);
-		game.which_game = game_types[0];
-		game_init_game();
-		send_sync_all();
-		return 0;
-	}
-
-	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-	    es_write_int(fd, 1) < 0 || /* 1 option */
-	    es_write_int(fd, cnt) < 0 || /* cnt choices */
-	    es_write_int(fd, 0) < 0) /* default is 0 */
-		status = -1;
-	for (i=0; i<cnt; i++)
-		if (es_write_string(fd, game_names[game_types[i]]) < 0)
-			status = -1;
-
-	return status;
-}
-
 /* game_get_options
  *   this is very clunky; this must request options from the client
  *   also, everything in it is closely tied to game_handle_options()

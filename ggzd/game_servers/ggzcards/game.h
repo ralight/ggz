@@ -139,7 +139,6 @@ extern void game_end_trick(void);		/* end-of-trick calculations */
 extern void game_end_hand(void);		/* end-of-hand calculations */
 
 extern void game_init_game();			/* initialize the game data */
-extern int game_req_gametype();                 /* request the type of game (as an option) */
 extern int game_get_options();			/* determine/request options */
 extern void game_handle_options();		/* handle options from player */
 extern void game_start_game();			/* start a game */

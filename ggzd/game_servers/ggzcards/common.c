@@ -917,7 +917,7 @@ int update(int event, void *data)
 				game_set_player_message(player); /* should this be in sync??? */
 
 			if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
-				game_req_gametype();
+				games_req_gametype();
 
 			if (!ggz_seats_open() && game.which_game != GGZ_GAME_UNKNOWN)
 				/* (Re)Start game play */
