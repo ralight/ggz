@@ -72,6 +72,8 @@ class KGGZConnect : public QWidget
 		void slotProfileDelete();
 		// Process information about new profile
 		void slotProfileProcess(const char *identifier);
+		// Show pane or not
+		void slotPane();
 
 	signals:
 		// Emitted if connection is wanted
@@ -88,7 +90,7 @@ class KGGZConnect : public QWidget
 		// Lists all known connection profiles
 		QComboBox *profile_select;
 		// Allows in-place editing of profiles
-		QPushButton *profile_new, *profile_delete;
+		QPushButton *profile_new, *profile_delete, *profile_edit;
 		// Input fields
 		QLineEdit *input_host, *input_port, *input_name, *input_password;
 		// Holds connection state
@@ -101,6 +103,8 @@ class KGGZConnect : public QWidget
 		QString m_current;
 		// Indicated whether to save current profile when loading new one or not
 		int m_nosafe;
+		// Pane holding server settings
+		QWidget *m_pane;
 };
 
 #endif

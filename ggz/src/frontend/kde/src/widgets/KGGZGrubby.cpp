@@ -35,7 +35,9 @@
 #include "KGGZGrubby.h"
 
 // KGGZ includes
-#include <KGGZCommon.h>
+#include "KGGZCommon.h"
+#include "KGGZCaption.h"
+#include "KGGZLineSeparator.h"
 
 // KDE includes
 #include <klocale.h>
@@ -56,9 +58,17 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 	QComboBox *combo;
 	QPushButton *go, *quit;
 	QFrame *image;
-	QLabel *label;
+	QLabel *label, *label2, *label3;
+	KGGZCaption *caption;
+	KGGZLineSeparator *sep;
 
 	m_lastaction = 0;
+
+	caption = new KGGZCaption(i18n("Grubby dialog"),
+		i18n("If you want to talk with grubbies (the GGZ\n"
+		"chat bots), you can do so using this dialog."), this);
+
+	sep = new KGGZLineSeparator(this);
 
 	go = new QPushButton(i18n("Go!"), this);
 	quit = new QPushButton(i18n("Quit"), this);
@@ -78,20 +88,26 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 	combo->insertItem(i18n("Thanks for taking the time!"));
 
 	label = new QLabel(i18n("This is grubby:"), this);
+	label2 = new QLabel(i18n("Select a command:"), this);
+	label3 = new QLabel(i18n("Specify a command option:"), this);
 	m_player = new QComboBox(this);
 
 	vbox = new QVBoxLayout(this, 5);
+	vbox->add(caption);
 	hbox = new QHBoxLayout(vbox, 5);
 	hbox->add(image);
 	vbox2 = new QVBoxLayout(hbox, 5);
 	hbox3 = new QHBoxLayout(vbox2, 5);
 	hbox3->add(label);
 	hbox3->add(m_player);
+	vbox2->add(label2);
 	vbox2->add(combo);
+	vbox2->add(label3);
+	vbox2->add(m_ed);
 	hbox2 = new QHBoxLayout(vbox2, 5);
-	hbox2->add(m_ed);
 	hbox2->add(go);
 	hbox2->add(quit);
+	vbox->add(sep);
 	vbox->add(mle);
 
 	connect(quit, SIGNAL(clicked()), SLOT(close()));
@@ -100,7 +116,7 @@ KGGZGrubby::KGGZGrubby(QWidget *parent, const char *name)
 
 	mle->setText(i18n("Please select who is grubby, and start a query!"));
 
-	setFixedSize(330, 190);
+	setFixedSize(330, 290);
 	setCaption("GGZ Grubby");
 	show();
 }

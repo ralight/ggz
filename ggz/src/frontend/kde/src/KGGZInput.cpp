@@ -33,12 +33,12 @@
 
 // Header file
 #include "KGGZInput.h"
+#include "KGGZCaption.h"
 
 // KDE includes
 #include <klocale.h>
 
 // Qt includes
-#include <qlabel.h>
 #include <qlayout.h>
 
 KGGZInput::KGGZInput(QWidget *parent, const char *name)
@@ -46,27 +46,31 @@ KGGZInput::KGGZInput(QWidget *parent, const char *name)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
-	QLabel *label;
+	QPushButton *cancel;
+	KGGZCaption *caption;
 
-	label = new QLabel(i18n("Identifier"), this);
+	caption = new KGGZCaption(i18n("Profile identifier"), i18n("Chose a name for the new profile."), this);
 
 	m_ok = new QPushButton("OK", this);
 	m_ok->setEnabled(FALSE);
+	cancel = new QPushButton(i18n("Cancel"), this);
 
 	m_edit = new QLineEdit(this);
 
 	vbox = new QVBoxLayout(this, 5);
-	vbox->add(label);
+	vbox->add(caption);
+	vbox->add(m_edit);
 
 	hbox = new QHBoxLayout(vbox, 5);
-	vbox->add(m_edit);
-	vbox->add(m_ok);
+	hbox->add(m_ok);
+	hbox->add(cancel);
 
 	connect(m_edit, SIGNAL(textChanged(const QString&)), SLOT(slotChanged()));
 	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccept()));
+	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
 	setFixedSize(200, 100);
-	setCaption("Input");
+	setCaption(i18n("New Profile"));
 	show();
 }
 
@@ -85,3 +89,4 @@ void KGGZInput::slotChanged()
 	if(m_edit->text().length() == 0) m_ok->setEnabled(FALSE);
 	else m_ok->setEnabled(TRUE);
 }
+

@@ -36,6 +36,8 @@
 
 // KGGZ includes
 #include "KGGZCommon.h"
+#include "KGGZLineSeparator.h"
+#include "KGGZCaption.h"
 
 // KDE classes
 #include <kmessagebox.h>
@@ -59,75 +61,97 @@
 KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
-	QVBoxLayout *vbox1;
-	QHBoxLayout *hbox1, *hbox2, *hbox3;
+	QVBoxLayout *vbox1, *vbox2;
+	QHBoxLayout *hbox1, *hbox2, *hbox3, *hbox4;
 	QPushButton *button_ok, *button_cancel;
 	QLabel *label_host, *label_port, *label_name, *label_password;
 	QRadioButton *mode_normal, *mode_guest, *mode_firsttime;
 	QLabel *label_mode;
 	QIntValidator *valid;
+	KGGZLineSeparator *sep1, *sep2;
+	KGGZCaption *caption;
 
 	KGGZDEBUGF("KGGZConnect::KGGZConnect()\n");
 
 	m_input = NULL;
 
 	profile_select = new QComboBox(this);
-	profile_new = new QPushButton(i18n("New Profiles"), this);
-	profile_delete = new QPushButton(i18n("Delete"), this);
+	profile_new = new QPushButton(i18n("Create new profile"), this);
+	profile_delete = new QPushButton(i18n("Delete profile"), this);
+	profile_edit = new QPushButton(i18n("<< Edit"), this);
 
-	label_host = new QLabel(i18n("Server host:"), this);
-	label_port = new QLabel(i18n("Port:"), this);
-	label_name = new QLabel(i18n("Log in as user:"), this);
-	label_password = new QLabel(i18n("Use password:"), this);
+	m_pane = new QWidget(this);
+
+	caption = new KGGZCaption(i18n("Connection"),
+		i18n("Select your favorite connection profile\n"
+		"and connect to a game server."), this);
+
+	label_host = new QLabel(i18n("Server host:"), m_pane);
+	label_port = new QLabel(i18n("Server port:"), m_pane);
+	label_name = new QLabel(i18n("Log in as user/nickname:"), m_pane);
+	label_password = new QLabel(i18n("Use password:"), m_pane);
 
 	valid = new QIntValidator(this);
 	valid->setRange(1024, 32767);
 
-	input_host = new QLineEdit(this);
-	input_port = new QLineEdit(this);
+	input_host = new QLineEdit(m_pane);
+	input_port = new QLineEdit(m_pane);
 	input_port->setValidator(valid);
-	input_name = new QLineEdit(this);
-	input_password = new QLineEdit(this);
+	input_name = new QLineEdit(m_pane);
+	input_password = new QLineEdit(m_pane);
 	input_password->setEchoMode(QLineEdit::Password);
 
-	button_ok = new QPushButton("OK", this);
+	button_ok = new QPushButton(i18n("Connect"), this);
 	button_cancel = new QPushButton(i18n("Cancel"), this);
 
-	label_mode = new QLabel(i18n("Log in as:"), this);
-	group_mode = new QButtonGroup(this);
+	label_mode = new QLabel(i18n("Log in as:"), m_pane);
+	group_mode = new QButtonGroup(m_pane);
 	group_mode->hide();
-	mode_normal = new QRadioButton(i18n("normal"), this);
-	mode_guest = new QRadioButton(i18n("guest"), this);
-	mode_firsttime = new QRadioButton(i18n("starter"), this);
+	mode_normal = new QRadioButton(i18n("normal"), m_pane);
+	mode_guest = new QRadioButton(i18n("guest"), m_pane);
+	mode_firsttime = new QRadioButton(i18n("starter"), m_pane);
 	group_mode->insert(mode_normal);
 	group_mode->insert(mode_guest);
 	group_mode->insert(mode_firsttime);
-
 	mode_normal->setChecked(TRUE);
 
 	option_server = new QCheckBox(i18n("Start ggzd server locally"), this);
 
+	sep1 = new KGGZLineSeparator(this);
+	sep2 = new KGGZLineSeparator(m_pane);
+
 	vbox1 = new QVBoxLayout(this, 5);
+	vbox1->add(caption);
 
 	hbox2 = new QHBoxLayout(vbox1, 5);
 	hbox2->add(profile_select);
-	hbox2->add(profile_new);
-	hbox2->add(profile_delete);
 
-	vbox1->add(label_host);
-	vbox1->add(input_host);
-	vbox1->add(label_port);
-	vbox1->add(input_port);
-	vbox1->add(label_name);
-	vbox1->add(input_name);
-	vbox1->add(label_password);
-	vbox1->add(input_password);
+	hbox4 = new QHBoxLayout(vbox1, 5);
+	hbox4->add(profile_new);
+	hbox4->add(profile_delete);
+	hbox4->add(profile_edit);
 
-	hbox3 = new QHBoxLayout(vbox1, 5);
+	vbox1->add(sep1);
+
+	vbox2 = new QVBoxLayout(m_pane, 5);
+	vbox2->add(label_host);
+	vbox2->add(input_host);
+	vbox2->add(label_port);
+	vbox2->add(input_port);
+	vbox2->add(label_name);
+	vbox2->add(input_name);
+	vbox2->add(label_password);
+	vbox2->add(input_password);
+
+	hbox3 = new QHBoxLayout(vbox2, 5);
 	hbox3->add(label_mode);
 	hbox3->add(mode_normal);
 	hbox3->add(mode_guest);
 	hbox3->add(mode_firsttime);
+
+	vbox2->add(sep2);
+
+	vbox1->add(m_pane);
 
 	vbox1->add(option_server);
 
@@ -143,13 +167,14 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	connect(profile_select, SIGNAL(activated(int)), SLOT(slotLoadProfile(int)));
 	connect(profile_new, SIGNAL(clicked()), SLOT(slotProfileNew()));
 	connect(profile_delete, SIGNAL(clicked()), SLOT(slotProfileDelete()));
+	connect(profile_edit, SIGNAL(clicked()), SLOT(slotPane()));
 
 	m_connected = -1;
 	m_loginmode = 0;
 	m_nosafe = 0;
 
 	setCaption(i18n("Connect to server"));
-	resize(300, 260);
+	//resize(300, 260);
 
 	KGGZDEBUGF("KGGZConnect::KGGZConnect() ready\n");
 
@@ -218,7 +243,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 	{
 		profile_select->clear();
 		listentry = config->read("Session", "Defaultserver", i18n("Default server"));
-		profile_select->insertItem(listentry);
+		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
 		KGGZDEBUG("Cleared profile_select. Rereading entries.\n");
 		config->read("Servers", "Servers", &i, &list);
 		KGGZDEBUG("Done. Now putting them in place. Found %i entries.\n", i);
@@ -229,7 +254,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 				if(strcmp(list[j], "") != 0)
 				{
 					KGGZDEBUG("* insert item %s (%i)\n", list[j], j);
-					profile_select->insertItem(list[j]);
+					profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
 				}
 			}
 			free(list[j]);
@@ -349,7 +374,7 @@ void KGGZConnect::slotProfileProcess(const char *identifier)
 	slotSaveProfile();
 
 	// Add new profile
-	profile_select->insertItem(identifier, 0);
+	profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), identifier, 0);
 	profile_select->setCurrentItem(0);
 	modifyServerList(identifier, 1);
 	m_current = QString(identifier);
@@ -441,3 +466,23 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	if(list2) free(list2);
 	KGGZDEBUG("** update server list - 5\n");
 }
+
+void KGGZConnect::slotPane()
+{
+	if(m_pane->isVisible())
+	{
+		m_pane->hide();
+		profile_edit->setText(i18n("Edit >>"));
+		//setFixedHeight(minimumSizeHint().height());
+		//resize(50, 50);
+		//adjustSize();
+		setFixedHeight(100);
+	}
+	else
+	{
+		m_pane->show();
+		profile_edit->setText(i18n("<< Edit"));
+		setFixedHeight(minimumSizeHint().height());
+	}
+}
+

@@ -70,6 +70,7 @@ int main(int argc, char **argv)
 	aboutData->addCredit("Ismael Orenstein", I18N_NOOP("(GGZ team)"), "perdig@users.sourceforge.net", "http://ggz.sourceforge.net");
 	aboutData->addCredit("Dan Papasian", I18N_NOOP("(GGZ team)"), "bugg@users.sourceforge.net", "http://ggz.sourceforge.net");
 	aboutData->addCredit("Ricardo Quesada", I18N_NOOP("(GGZ team)"), "riq@core-sdi.com", "http://teg.sourceforge.net");
+	aboutData->addCredit("Jason Short", I18N_NOOP("(GGZ team)"), "jshort@devon.dhs.org", "http://ggz.sourceforge.net");
 
 	// process command line options
 	KCmdLineArgs::init(argc, argv, aboutData);

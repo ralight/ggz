@@ -60,9 +60,10 @@ class KGGZInput : public QWidget
 		void signalText(const char *text);
 
 	private:
-		// OK button to close dialog box
-		QPushButton *m_ok;
+		// editable field
 		QLineEdit *m_edit;
+		// Dynamic button
+		QPushButton *m_ok;
 };
 
 #endif

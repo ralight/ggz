@@ -36,6 +36,7 @@
 
 // KGGZ includes
 #include "KGGZCommon.h"
+#include "KGGZCaption.h"
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
@@ -55,14 +56,13 @@
 KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
-	QLabel *title;
-	QLabel *description;
+	KGGZCaption *title;
 	QVBoxLayout *vbox;
-	QPushButton *ok;
+	QHBoxLayout *hbox;
+	QPushButton *ok, *cancel;
 	QLabel *server;
 
-	title = new QLabel(i18n("<b>Global Settings</b>"), this);
-	description = new QLabel(i18n("Please specify some environment variables here."), this);
+	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify some environment variables here."), this);
 
 	server = new QLabel(i18n("Path to ggzd"), this);
 	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), this);
@@ -70,18 +70,22 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 
 	m_server = new QLineEdit(this);
 
-	ok = new QPushButton("OK", this);
+	ok = new QPushButton(i18n("Save configuration"), this);
+	cancel = new QPushButton(i18n("Cancel"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(title);
-	vbox->add(description);
 	vbox->add(server);
 	vbox->add(m_server);
 	vbox->add(m_startup);
 	vbox->add(m_chatlog);
-	vbox->add(ok);
+
+	hbox = new QHBoxLayout(vbox, 5);
+	hbox->add(ok);
+	hbox->add(cancel);
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
+	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
 	setFixedSize(300, 180);
 	setCaption(i18n("Global Settings"));

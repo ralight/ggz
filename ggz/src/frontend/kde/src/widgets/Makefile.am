@@ -19,7 +19,9 @@ libkggzui_a_SOURCES = \
 	KGGZChatLine.cpp \
 	KGGZGrubby.cpp \
 	KGGZPrefEnv.cpp \
-	KGGZSelector.cpp
+	KGGZSelector.cpp \
+	KGGZLineSeparator.cpp \
+	KGGZCaption.cpp
 
 noinst_HEADERS = \
 	KGGZBase.h \
@@ -35,7 +37,9 @@ noinst_HEADERS = \
 	KGGZChatLine.h \
 	KGGZGrubby.h \
 	KGGZPrefEnv.h \
-	KGGZSelector.h
+	KGGZSelector.h \
+	KGGZLineSeparator.h \
+	KGGZCaption.h
 
 EXTRA_HEADERS = 
 
