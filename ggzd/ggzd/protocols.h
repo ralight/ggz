@@ -23,6 +23,9 @@
  */
 
 
+/* libggzdmod includes the ggzd <-> game server protocols */
+#include "../game_servers/libggzmod/ggz_protocols.h"
+
 #define GGZ_CS_PROTO_VERSION  4
 
 typedef enum {
@@ -103,22 +106,6 @@ typedef enum {
 #define GGZ_UPDATE_LEAVE  2
 #define GGZ_UPDATE_JOIN   3
 #define GGZ_UPDATE_STATE  4
-
-typedef enum {
-	RSP_GAME_LAUNCH,
-	RSP_GAME_JOIN,
-	RSP_GAME_LEAVE,
-        MSG_LOG,
-        MSG_DBG,
-	REQ_GAME_OVER
-} TableToControl;
-
-typedef enum {
-	REQ_GAME_LAUNCH,
-	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE,
-	RSP_GAME_OVER
-} ControlToTable;
 
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
