@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: deck.c 4035 2002-04-21 07:03:47Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -48,8 +48,8 @@ deck_t *create_deck(deck_type_t which_deck)
 	int face, suit, deck;
 	int cardnum;
 	char *deck_faces, *deck_suits, *deck_decks;
+	char deck_type = CARDSET_FRENCH;
 	int deck_face_cnt = 13, deck_suit_cnt = 4, deck_deck_cnt = 1;
-	card_t card;
 
 	char std_deck_faces[] =
 		{ 2, 3, 4, 5, 6, 7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH };
@@ -64,6 +64,7 @@ deck_t *create_deck(deck_type_t which_deck)
 		{ 2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char sueca_deck_faces[] =
 		{ 2, 3, 4, 5, 6, 7, JACK, QUEEN, KING, ACE_HIGH };
+	char domino_deck_faces[] = {0, 1, 2, 3, 4, 5, 6};
 
 	deck_t *mydeck = ggz_malloc(sizeof(*mydeck));
 	mydeck->ptr = -1;
@@ -103,6 +104,13 @@ deck_t *create_deck(deck_type_t which_deck)
 	case GGZ_DECK_FULL:
 		/* use a full 52-card deck */
 		break;
+	case GGZ_DECK_DOMINOES:
+		deck_faces = domino_deck_faces;
+		deck_face_cnt = 7;
+		deck_suits = domino_deck_faces;
+		deck_suit_cnt = 7;
+		deck_type = CARDSET_DOMINOES;
+		break;
 	default:
 		ggzdmod_log(game.ggz, "Unknown deck %d.", which_deck);
 	}
@@ -115,13 +123,19 @@ deck_t *create_deck(deck_type_t which_deck)
 	for (deck = 0; deck < deck_deck_cnt; deck++)
 		for (suit = 0; suit < deck_suit_cnt; suit++)
 			for (face = 0; face < deck_face_cnt; face++) {
-				card.type = CARDSET_FRENCH;
-				card.face = deck_faces[face];
-				card.suit = deck_suits[suit];
-				card.deck = deck_decks[deck];
-				mydeck->cards[cardnum] = card;
-				cardnum++;
+				card_t card = {type: deck_type,
+				               face: deck_faces[face],
+				               suit: deck_suits[suit],
+				               deck: deck_decks[deck]};
+				if (is_valid_card(card)) {
+					/* HACK: for instance, in dominoes
+					   we wish to exclude certain cards. */
+					mydeck->cards[cardnum] = card;
+					cardnum++;
+				}
 			}
+			
+	mydeck->size = cardnum;
 
 	ggzdmod_log(game.ggz, "Built a deck of size %d.", mydeck->size);
 
@@ -130,9 +144,7 @@ deck_t *create_deck(deck_type_t which_deck)
 
 void destroy_deck(deck_t * deck)
 {
-	if (deck == NULL || deck->cards == NULL)
-		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-			    "cards_destroy_deck called on a NULL deck.");
+	assert(deck && deck->cards);
 	ggz_free(deck->cards);
 	ggz_free(deck);
 }
@@ -153,10 +165,9 @@ void shuffle_deck(deck_t * deck)
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
 	for (i = 0; i < deck->size; i++) {
-		/* Pick any OTHER card */
-		do {
-			j = random() % deck->size;
-		} while (j == i);
+		/* Pick any position */
+		j = random() % deck->size;
+		
 		/* And swap positions */
 		temp = deck->cards[i];
 		deck->cards[i] = deck->cards[j];

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.h)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.h 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: deck.h 4035 2002-04-21 07:03:47Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -43,6 +43,7 @@ typedef enum deck_type_t {
 	GGZ_DECK_EUCHRE,	/* A-9 in each suit */
 	GGZ_DECK_LAPOCHA,	/* missing 9, 8, 7 */
 	GGZ_DECK_SUECA,		/* missing 10, 9, 8 */
+	GGZ_DECK_DOMINOES,	/* A standard double-sixes dominoes deck */
 } deck_type_t;
 
 /** Create a deck of the given type. */
