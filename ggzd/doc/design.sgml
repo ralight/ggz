@@ -1,5 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
-<!ENTITY protonum "1">
+<!ENTITY protonum "2">
 ]>
  
 <book id="index">
@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 528 $</revnumber>
-	<date>$Date: 2000-05-19 22:19:57 -0700 (Fri, 19 May 2000) $</date>
+	<revnumber>$Revision: 534 $</revnumber>
+	<date>$Date: 2000-06-04 19:51:35 -0700 (Sun, 04 Jun 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -1439,7 +1439,8 @@
 	</refsect1>
       </refentry>
 
-      <refentry id="msg.update.players"><?dbhtml filename="msg_update_players.html">
+      <refentry id="msg.update.players">
+	<?dbhtml filename="msg_update_players.html">
 	<refmeta>
 	  <indexterm>
 	    <primary>MSG_UPDATE_PLAYERS</primary>
@@ -1449,7 +1450,10 @@
 
 	<refnamediv>
 	  <refname>MSG_UPDATE_PLAYERS</refname>
-	  <refpurpose>Notification that player list has changed</refpurpose>
+	  <refpurpose>
+	    Notification that the list of players in a room has
+	    changed
+	  </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -1470,6 +1474,24 @@
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_PLAYERS</entry>
 		</row>
+
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>sub-opcode</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>player</entry>
+		  <entry>string</entry>
+		  <entry>always</entry>
+		</row>
 		
 	      </tbody>
 	    </tgroup>
@@ -1478,25 +1500,64 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Notification that the list of players in the current
-	  room has been modified since the last update</para>
+	  <para>
+	    Notification from the server that the list of players in
+	    the current room has been modified since the last update
+	  </para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">sub-opcode</emphasis></term>
+		<listitem>
+		  <para>
+		    Type of update:
+		    <itemizedlist>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_DELETE (0) : The specified player
+			  has been deleted from the list (ie. that
+			  player has left the room)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_ADD (1) : The specified player
+			  has been added to the list (ie. that
+			  player has entered the room)
+			</para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">player</emphasis></term>
+		<listitem>
+		  <para>
+		    Name of player who is entering or leaving the room
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
 	      MSG_UPDATE_PLAYERS is sent from the server to the client
 	      if the list of players in the current room has changed
-	      since the last update.  It is also sent immediately upon
-	      entering a room (ie. after <link
-	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>). It is
-	      expected that the client will then send a <link
-	      linkend="req.list.players">REQ_LIST_PLAYERS</link> to
-	      obtain the updated list.
+	      since the last update.  It is <emphasis>not</emphasis>
+	      sent upon initial entry to a room.  To obtain a player
+	      list upon entering a room, the client must send a <link
+	      linkend="req.list.players">REQ_LIST_PLAYERS</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
 
-      <refentry id="msg.update.types"><?dbhtml filename="msg_update_types.html">
+      <refentry id="msg.update.types">
+	<?dbhtml filename="msg_update_types.html">
 	<refmeta>
 	  <indexterm>
 	    <primary>MSG_UPDATE_TYPES</primary>
@@ -1506,7 +1567,9 @@
 
 	<refnamediv>
 	  <refname>MSG_UPDATE_TYPES</refname>
-	  <refpurpose>Notification that game type list has changed</refpurpose>
+	  <refpurpose>
+	    Notification that list of supported game types has changed
+	  </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -1528,6 +1591,60 @@
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_TYPES</entry>
 		</row>
 		
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>sub-opcode</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>ID</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>name</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>version</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>player_mask</entry>
+		  <entry>char</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>description</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>author</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>homepage</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1535,27 +1652,117 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Notification that the list of supported game types has
-	  been modified since the last update</para>
+	  <para>
+	    Notification from the server that the list of game types
+	    that it supports has been modified since the last update.
+	  </para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">sub-opcode</emphasis></term>
+		<listitem>
+		  <para>
+		    Type of update:
+		    <itemizedlist>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_DELETE (0) : The specified game
+			  type has been deleted from the list
+			  (ie. that game type is no longer supported)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_ADD (1) : The specified game type
+			  has been added to the list (ie. that game
+			  type is now supported)
+			</para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>Unique numeric ID for this game type</para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Name of game.  This is only sent if the game type
+		    is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">version</emphasis></term>
+		<listitem>
+		  <para>
+		    Version string for this game type.  This is only
+		    sent if the game type is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">player_mask</emphasis></term>
+		<listitem>
+		  <para>
+		    Bit mask of allowable player numbers FIXME: Needs
+		    explained.  This is only sent if the game type is
+		    being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Longer decription of this game.  This is only sent
+		    if the game type is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">author</emphasis></term>
+		<listitem>
+		  <para>
+		    Author of this game module.  This is only sent if
+		    the game type is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">homepage</emphasis></term>
+		<listitem>
+		  <para>
+		    URL for obtaining this game module.  This is only
+		    sent if the game type is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
 	      MSG_UPDATE_TYPES is sent from the server to the client
-	      if the list of game types which the server supports has
-	      changed since the last update.  It is also sent upon
-	      successful login (ie. after <link
-	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
-	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
-	      linkend="rsp.login">RSP_LOGIN</link>).  It is expected
-	      that the client will then send a <link
-	      linkend="req.list.types">REQ_LIST_TYPES</link> to obtain
-	      the updated list.
+	      if the list of game types that the server supports has
+	      changed since the last update.  It is
+	      <emphasis>not</emphasis> sent upon initial login.  To
+	      obtain a list of supported game types upon logging in,
+	      the client must send a <link
+	      linkend="req.list.types">REQ_LIST_TYPES</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
 
-      <refentry id="msg.update.tables"><?dbhtml filename="msg_update_tables.html">
+      <refentry id="msg.update.tables">
+	<?dbhtml filename="msg_update_tables.html">
 	<refmeta>
 	  <indexterm>
 	    <primary>MSG_UPDATE_TABLES</primary>
@@ -1565,7 +1772,9 @@
 
 	<refnamediv>
 	  <refname>MSG_UPDATE_TABLES</refname>
-	  <refpurpose>Notification that the table list has changed</refpurpose>
+	  <refpurpose>
+	    Notification that the list of tables in a room has changed
+	  </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -1574,6 +1783,8 @@
 	      <colspec colnum="1" colname="C1" align="left">
 	      <colspec colnum="2" colname="C2">
 	      <colspec colnum="3" colname="C3">
+	      <spanspec spanname="all" namest="C1" nameend="C3"
+			align="left"> 	      
 	      <tbody>
 
 		<row rowsep="0">
@@ -1587,6 +1798,84 @@
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_TABLES</entry>
 		</row>
 		
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>sub-opcode</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>ID</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>seat</entry>
+		  <entry>int</entry>
+		  <entry>if join/leave</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>player</entry>
+		  <entry>string</entry>
+		  <entry>if join/leave</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>room</entry>
+		  <entry>int</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>type</entry>
+		  <entry>int</entry>
+		  <entry>if added</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>description</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>state</entry>
+		  <entry>char</entry>
+		  <entry>if added</entry>		  
+		</row>
+
+		<row rowsep="1">
+		  <entry>seats</entry>
+		  <entry>int</entry>
+		  <entry>if added</entry>		  		  
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> seats:
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>assignment</entry>
+		  <entry>int</entry>
+		  <entry>if added</entry>		  		  
+		</row>
+
+		<row rowsep="1">
+		  <entry>name</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>		  		  
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1597,22 +1886,154 @@
 	  <para>Notification that the list of tables in the current
 	  room has been modified since the last update</para>
 	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">sub-opcode</emphasis></term>
+		<listitem>
+		  <para>
+		    Type of update:
+		    <itemizedlist>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_DELETE (0) : The specified table
+			  has been deleted from the list (ie. the
+			  game session on that table has completed)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_ADD (1) : The specified table
+			  has been added to the list (ie. a new game
+			  session has been launched on that table in
+			  the room)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_LEAVE (2) : The specified player
+			  has left his or her seat at the table
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_JOIN (3) : The specified player
+			  has joined the table in the designated seat
+			</para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>
+		    Unique numeric ID for table
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">seat</emphasis></term>
+		<listitem>
+		  <para>
+		    Seat number at table.  Only sent if a player is
+		    joining/leaving the table.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">player</emphasis></term>
+		<listitem>
+		  <para>
+		    Name of player joining/leaving.  Only sent if a
+		    player is joining/leaving the table.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">room</emphasis></term>
+		<listitem>
+		  <para>
+		    ID of room in which table resides.  This is only
+		    sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">type</emphasis></term>
+		<listitem>
+		  <para>
+		    ID of game type being played on this table.  This
+		    is only sent if the table is being added to the
+		    list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Brief description of this table.  This is only
+		    sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">state</emphasis></term>
+		<listitem>
+		  <para>
+		    Current state of the table.  FIXME: Explain this.
+		    This is only sent if the table is being added to
+		    the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">seats</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of seats at the table.  This is only sent
+		    if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">assignment</emphasis></term>
+		<listitem>
+		  <para>
+		    Seat assignment FIXME: Explain this.  This is only
+		    sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Reserved seat name FIXME: Explain this.  This is
+		    only sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  <refsect2>
 	    <title>Usage</title>
 	    <para>
 	      MSG_UPDATE_TABLES is sent from the server to the client
 	      if the list of tables in the current room has changed
-	      since the last update.  It is also sent upon entry to a
-	      new room (ie. after <link
-	      linkend="rsp.room.join">RSP_ROOM_JOIN</link>).  It is
-	      expected that the client will then send a <link
-	      linkend="req.list.tables">REQ_LIST_TABLES</link> to
-	      obtain the updated list.
+	      since the last update.  It is <emphasis>not</emphasis>
+	      sent upon initial entry to a room.  To obtain a table
+	      list upon entering a room, the client must send a <link
+	      linkend="req.list.tables">REQ_LIST_TABLES</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
       </refentry>
 
-      <refentry id="msg.update.rooms"><?dbhtml filename="msg_update_rooms.html">
+      <refentry id="msg.update.rooms">
+	<?dbhtml filename="msg_update_rooms.html">
 	<refmeta>
 	  <indexterm>
 	    <primary>MSG_UPDATE_ROOMS</primary>
@@ -1622,7 +2043,10 @@
 
 	<refnamediv>
 	  <refname>MSG_UPDATE_ROOMS</refname>
-	  <refpurpose>Notificatiion that the room listing has been changed</refpurpose>
+	  <refpurpose>
+	    Notificatiion that the list of rooms on the server has
+	    changed
+	  </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -1644,6 +2068,42 @@
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_ROOMS</entry>
 		</row>
 		
+		<row rowsep="1">
+		  <entry><emphasis role="bold">Data</emphasis></entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>sub-opcode</entry>
+		  <entry>char</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>ID</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>name</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry>game</entry>
+		  <entry>int</entry>
+		  <entry>if added</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>description</entry>
+		  <entry>string</entry>
+		  <entry>if added</entry>
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1651,20 +2111,79 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Notification that the room list has changed since the
-	  last update</para>
+	  <para>
+	    Notification that the list of rooms has been modified
+	    since the last update
+	  </para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">sub-opcode</emphasis></term>
+		<listitem>
+		  <para>
+		    Type of update:
+		    <itemizedlist>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_DELETE (0) : The specified room
+			  has been deleted from the list
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_UPDATE_ADD (1) : The specified room
+			  has been added to the list
+			</para>
+		      </listitem>
+		    </itemizedlist>
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">ID</emphasis></term>
+		<listitem>
+		  <para>Unique numeric room ID</para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Name of the room.  This is only sent if the room
+		    is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">game</emphasis></term>
+		<listitem>
+		  <para>
+		    ID of game type played in this room.  This is only
+		    sent if the room is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Longer description of room.  This is only sent if
+		    the room is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
 	      MSG_UPDATE_ROOMS is sent from the server to the client
-	      if the room list has changed since the last update.  It
-	      is also sent after a successful login (ie. after <link
-	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
-	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
-	      linkend="rsp.login">RSP_LOGIN</link>).  It is expected
-	      that the client will then send a <link
-	      linkend="req.list.rooms">REQ_LIST_ROOMS</link> to obtain
-	      the updated list.
+	      if the list of game rooms on the server has changed
+	      since the last update.  It is <emphasis>not</emphasis>
+	      sent upon initial login.  To obtain a list of game rooms
+	      upon logging in, the client must send a <link
+	      linkend="req.list.rooms">REQ_LIST_ROOMS</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -2499,15 +3018,70 @@
 		  </para>
 		</listitem>
 	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">type</emphasis></term>
+		<listitem>
+		  <para>
+		    ID of game type being played on this table.  This
+		    is only sent if the table is being added to the
+		    list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">description</emphasis></term>
+		<listitem>
+		  <para>
+		    Brief description of this table.  This is only
+		    sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">state</emphasis></term>
+		<listitem>
+		  <para>
+		    Current state of the table.  FIXME: Explain this.
+		    This is only sent if the table is being added to
+		    the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">seats</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of seats at the table.  This is only sent
+		    if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">assignment</emphasis></term>
+		<listitem>
+		  <para>
+		    Seat assignment FIXME: Explain this.  This is only
+		    sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Reserved seat name FIXME: Explain this.  This is
+		    only sent if the table is being added to the list.
+		  </para>
+		</listitem>
+	      </varlistentry>	      
 	    </variablelist>
-	  </refsect2>
-	  
+	  </refsect2>	  
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      RSP_LIST_TABLES is sent from the server to the client
-	      in response to
-	      <link linkend="req.list.tables">REQ_LIST_TABLES</link>
+	      RSP_LIST_TABLES is sent from the server to the client in
+	      response to <link
+	      linkend="req.list.tables">REQ_LIST_TABLES</link>
 	    </para>
 	  </refsect2>
 	</refsect1>
