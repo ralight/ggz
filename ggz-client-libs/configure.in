@@ -65,6 +65,13 @@ AC_CHECK_LIB(easysock, es_make_socket,
 	    AC_MSG_ERROR(*** Cannot find easysock.h))],
     AC_MSG_ERROR(**** Cannot find easysock library))
 
+dnl Check for libggz
+dnl ================
+AC_CHECK_LIB(ggz, ggz_memory_check,
+    AC_CHECK_HEADER(ggz.h, LDADD="$LDADD -lggz",
+        AC_MSG_ERROR(*** Cannot find ggz.h header)),
+    AC_MSG_ERROR(*** Cannot find libggz ))
+
 dnl Check for popt
 dnl ==============
 AC_CHECK_LIB(popt, poptGetNextOpt,
