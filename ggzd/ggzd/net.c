@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
+ * $Id: net.c 3185 2002-01-24 10:59:56Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1213,24 +1214,32 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	/* Add seats */
 	entry = ggz_list_head(seats);
 	while (entry) {
+		GGZSeatType seat_type;
+		
 		seat = ggz_list_get_data(entry);
-		if (strcmp(seat->type, "open") == 0) {
-			strcpy(table->seats[seat->index], "<open>");
-		}
-		else if (strcmp(seat->type, "bot") == 0) {
-			strcpy(table->seats[seat->index], "<bot>");
-		}
-		else if (strcmp(seat->type, "reserved") == 0) {
-			strcpy(table->seats[seat->index], "<reserved>");
+		seat_type = ggz_string_to_seattype(seat->type);
+
+		switch (seat_type) {
+		case GGZ_SEAT_OPEN:		
+		case GGZ_SEAT_BOT:
+		case GGZ_SEAT_NONE:
+			break;
+		case GGZ_SEAT_RESERVED:
 			/*
 			 * FIXME: lookup reserve name to verify.
 			 * upon error, send E_USR_LOOKUP
 			 */
-			strcpy(table->reserve[seat->index], seat->name);
+			strcpy(table->seat_names[seat->index], seat->name);
+			break;
+		case GGZ_SEAT_PLAYER:
+			/* A bad client might send this...how should
+			   we deal with it? */
+			err_msg("Client launched table with GGZ_SEAT_PLAYER seat.");
+			seat_type = GGZ_SEAT_NONE;
+			break;
 		}
-		else {
-			strcpy(table->seats[seat->index], "<none>");
-		}
+		table->seat_types[seat->index] = seat_type;
+		
 		entry = ggz_list_next(entry);
 	}
 
@@ -1485,10 +1494,8 @@ int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 #else /* #if 0 */
 	switch (type) {
 	case GGZ_SEAT_RESERVED:
-		name = table->reserve[num];
-		break;
 	case GGZ_SEAT_PLAYER:
-		name = table->seats[num];
+		name = table->seat_names[num];
 		break;
 	case GGZ_SEAT_OPEN:
 	case GGZ_SEAT_BOT:

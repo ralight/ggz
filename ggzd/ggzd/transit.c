@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3139 2002-01-19 08:07:46Z bmh $
+ * $Id: transit.c 3185 2002-01-24 10:59:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -316,7 +316,8 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	/* Find seat player is in */
 	seats  = seats_num(table);
 	for (i = 0; i < seats; i++)
-		if (strcmp(table->seats[i], name) == 0)
+		if (table->seat_types[i] == GGZ_SEAT_PLAYER
+		    && strcmp(table->seat_names[i], name) == 0)
 			break;
 
 	/* Ack! Fatal error...this should never happen */

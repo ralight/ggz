@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3183 2002-01-24 04:17:22Z jdorje $
+ * $Id: table.c 3185 2002-01-24 10:59:56Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -113,7 +113,7 @@ GGZTable* table_new(void)
 	table->desc = NULL;
 
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		strcpy(table->seats[i], "<none>");
+		table->seat_types[i] = GGZ_SEAT_NONE;
 
 	return table;
 }
@@ -188,11 +188,11 @@ static int table_check(GGZTable* table)
 			break;
 		case GGZ_SEAT_RESERVED:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: reserved for %s", i,
-				table->reserve[i]);
+				table->seat_names[i]);
 			break;
 		case GGZ_SEAT_PLAYER:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
-				table->seats[i]);
+				table->seat_names[i]);
 			break;
 		default:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
@@ -370,7 +370,7 @@ static int table_start_game(GGZTable *table)
 		seat.num = i;
 		seat.type = seats_type(table, i);
 		if (seat.type == GGZ_SEAT_RESERVED)
-			seat.name = table->reserve[i];
+			seat.name = table->seat_names[i];
 		else
 			seat.name = NULL;
 		seat.fd = -1;
@@ -457,7 +457,8 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 	/* Transit successful: Assign seat */
 	pthread_rwlock_wrlock(&table->lock);
-	strcpy(table->seats[seat], name);
+	table->seat_types[seat] = GGZ_SEAT_PLAYER;
+	strcpy(table->seat_names[seat], name);
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* If player notification failed, they must've logged out */
@@ -514,8 +515,8 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 			table->index, table->room);
 		
 		pthread_rwlock_wrlock(&table->lock);
-		/*free(table->seats[seat]);*/
-		strcpy(table->seats[seat], "<open>");
+		table->seat_types[seat] = GGZ_SEAT_OPEN;
+		
 		if (!seats_human(table)) {
 			dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 				table->index, table->room);
@@ -680,8 +681,8 @@ static void table_remove(GGZTable* table)
 	for (i = 0; i < seats_num(table); i++) {
 		if (seats_type(table, i) == GGZ_SEAT_PLAYER) {
 			table_update_event_enqueue(table, GGZ_UPDATE_LEAVE, 
-						   table->seats[i], i);
-			transit_player_event(table->seats[i], 
+						   table->seat_names[i], i);
+			transit_player_event(table->seat_names[i],
 					     GGZ_TRANSIT_LEAVE, 0, 0, 0);
 		}
 	}
@@ -975,7 +976,8 @@ static int table_event_callback(void* target, int size, void* data)
 		seat = *(int*)current;
 		current += sizeof(int);
 		info.index = index;
-		strcpy(info.seats[seat], name);
+		info.seat_types[seat] = GGZ_SEAT_PLAYER;
+		strcpy(info.seat_names[seat], name);
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, name, 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3183 2002-01-24 04:17:22Z jdorje $
+ * $Id: table.h 3185 2002-01-24 10:59:56Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -67,11 +67,13 @@ typedef struct GGZTable {
 	/* Data for communicating with game server module */
 	GGZdMod *ggzdmod;
 
-	/* Seat assignments */
-	char seats[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
-
-	/* Seat reservations */
-	char reserve[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
+	/*
+	 * Seat assignments.  We track these separately
+	 * from ggzdmod because we have to worry about locking
+	 * them before we change them.
+	 */
+	GGZSeatType seat_types[MAX_TABLE_SIZE];
+	char seat_names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
 	/* Client-provided description of this table */
 	char *desc;
