@@ -92,8 +92,8 @@ int _ggzdb_init_player(char *datadir)
 	int rc;
 
 	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(handle varchar(255), password varchar(255), name varchar(255), "
-		"email varchar(255), lastlogin int8, permissions int8)");
+		"(id int4 AUTO_INCREMENT PRIMARY KEY, handle varchar(255), password varchar(255), "
+		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
 	rc = mysql_query(conn, query);
 
 	/* Hack. */
@@ -128,9 +128,9 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, permissions FROM users WHERE "
-		"handle = '%s'",
-		pe->handle);
+		"password, name, email, lastlogin, permissions, handle FROM users WHERE "
+		"id = %i",
+		pe->user_id);
 	rc = mysql_query(conn, query);
 
 	if(!rc)
@@ -144,6 +144,7 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, row[2], sizeof(pe->email));
 			pe->last_login = atol(row[3]);
 			pe->perms = atol(row[4]);
+			strncpy(pe->handle, row[5], sizeof(pe->handle));
 		}
 		else
 		{
@@ -167,9 +168,9 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
-		"handle = '%s'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u, handle = '%s' WHERE "
+		"id = %i",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle, pe->user_id);
 	rc = mysql_query(conn, query);
 
 	if(rc)
@@ -196,7 +197,7 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	}
 
 	snprintf(query, sizeof(query), "SELECT "
-		"handle, password, name, email, lastlogin, permissions FROM users");
+		"id, handle, password, name, email, lastlogin, permissions FROM users");
 	rc = mysql_query(conn, query);
 
 	if(!rc)
@@ -205,12 +206,13 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 		if(mysql_num_rows(iterres) > 0)
 		{
 			row = mysql_fetch_row(iterres);
-			strncpy(pe->handle, row[0], sizeof(pe->handle));
-			strncpy(pe->password, row[1], sizeof(pe->password));
-			strncpy(pe->name, row[2], sizeof(pe->name));
-			strncpy(pe->email, row[3], sizeof(pe->email));
-			pe->last_login = atol(row[4]);
-			pe->perms = atol(row[5]);
+			pe->user_id = atoi(row[0]);
+			strncpy(pe->handle, row[1], sizeof(pe->handle));
+			strncpy(pe->password, row[2], sizeof(pe->password));
+			strncpy(pe->name, row[3], sizeof(pe->name));
+			strncpy(pe->email, row[4], sizeof(pe->email));
+			pe->last_login = atol(row[5]);
+			pe->perms = atol(row[6]);
 		}
 		else
 		{
@@ -246,12 +248,13 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	{
 		itercount++;
 		row = mysql_fetch_row(iterres);
-		strncpy(pe->handle, row[0], sizeof(pe->handle));
-		strncpy(pe->password, row[1], sizeof(pe->password));
-		strncpy(pe->name, row[2], sizeof(pe->name));
-		strncpy(pe->email, row[3], sizeof(pe->email));
-		pe->last_login = atol(row[4]);
-		pe->perms = atol(row[5]);
+		pe->user_id = atoi(row[0]);
+		strncpy(pe->handle, row[1], sizeof(pe->handle));
+		strncpy(pe->password, row[2], sizeof(pe->password));
+		strncpy(pe->name, row[3], sizeof(pe->name));
+		strncpy(pe->email, row[4], sizeof(pe->email));
+		pe->last_login = atol(row[5]);
+		pe->perms = atol(row[6]);
 	}
 	else
 	{
@@ -274,5 +277,11 @@ void _ggzdb_player_drop_cursor(void)
 
 	mysql_free_result(iterres);
 	iterres = 0;
+}
+
+unsigned int _ggzdb_player_next_uid(void)
+{
+	/* SQL handles id's automatically */
+	return 0;
 }
 

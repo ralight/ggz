@@ -89,7 +89,7 @@ int _ggzdb_init_player(char *datadir)
 	/* Hack: Fire-and-forget table initialization. It might already be
 	 * present, or the database user doesn't have the privileges. */
 	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
+		"(id int4, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
 		"lastlogin int8, permissions int8)");
 	res = PQexec(conn, query);
 
@@ -107,6 +107,7 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
 
+	/* FIXME: use auto_increment SEQUENCE here */
 	snprintf(query, sizeof(query), "INSERT INTO users "
 		"(handle, password, name, email, lastlogin, permissions) VALUES "
 		"('%s', '%s', '%s', '%s', %li, %u)",
@@ -130,9 +131,9 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "SELECT "
-		"password, name, email, lastlogin, permissions FROM users WHERE "
-		"handle = '%s'",
-		pe->handle);
+		"handle, password, name, email, lastlogin, permissions FROM users WHERE "
+		"id = %i",
+		pe->user_id);
 	res = PQexec(conn, query);
 
 	rc = !(PQresultStatus(res) == PGRES_TUPLES_OK);
@@ -140,11 +141,12 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	{
 		if(PQntuples(res) == 1)
 		{
-			strncpy(pe->password, PQgetvalue(res, 0, 0), sizeof(pe->password));
-			strncpy(pe->name, PQgetvalue(res, 0, 1), sizeof(pe->name));
-			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
-			pe->last_login = atol(PQgetvalue(res, 0, 3));
-			pe->perms = atol(PQgetvalue(res, 0, 4));
+			strncpy(pe->handle, PQgetvalue(res, 0, 0), sizeof(pe->handle));
+			strncpy(pe->password, PQgetvalue(res, 0, 1), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(res, 0, 2), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(res, 0, 3), sizeof(pe->email));
+			pe->last_login = atol(PQgetvalue(res, 0, 4));
+			pe->perms = atol(PQgetvalue(res, 0, 5));
 		}
 		else
 		{
@@ -168,9 +170,9 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	int rc;
 
 	snprintf(query, sizeof(query), "UPDATE users SET "
-		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
-		"handle = '%s'",
-		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
+		"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u, handle = '%s' WHERE "
+		"id = %i",
+		pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle, pe->user_id);
 	res = PQexec(conn, query);
 
 	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
@@ -199,7 +201,7 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	}
 
 	snprintf(query, sizeof(query), "SELECT "
-		"handle, password, name, email, lastlogin, permissions FROM users");
+		"id, handle, password, name, email, lastlogin, permissions FROM users");
 	iterres = PQexec(conn, query);
 
 	rc = !(PQresultStatus(iterres) == PGRES_TUPLES_OK);
@@ -207,12 +209,13 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	{
 		if(PQntuples(iterres) > 0)
 		{
-			strncpy(pe->handle, PQgetvalue(iterres, 0, 0), sizeof(pe->handle));
-			strncpy(pe->password, PQgetvalue(iterres, 0, 1), sizeof(pe->password));
-			strncpy(pe->name, PQgetvalue(iterres, 0, 2), sizeof(pe->name));
-			strncpy(pe->email, PQgetvalue(iterres, 0, 3), sizeof(pe->email));
-			pe->last_login = atol(PQgetvalue(iterres, 0, 4));
-			pe->perms = atol(PQgetvalue(iterres, 0, 5));
+			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
+			strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
+			strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
+			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
+			pe->perms = atol(PQgetvalue(iterres, 0, 6));
 		}
 		else
 		{
@@ -248,12 +251,13 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	if(itercount < PQntuples(iterres) - 1)
 	{
 		itercount++;
-		strncpy(pe->handle, PQgetvalue(iterres, itercount, 0), sizeof(pe->handle));
-		strncpy(pe->password, PQgetvalue(iterres, itercount, 1), sizeof(pe->password));
-		strncpy(pe->name, PQgetvalue(iterres, itercount, 2), sizeof(pe->name));
-		strncpy(pe->email, PQgetvalue(iterres, itercount, 3), sizeof(pe->email));
-		pe->last_login = atol(PQgetvalue(iterres, itercount, 4));
-		pe->perms = atol(PQgetvalue(iterres, itercount, 5));
+		pe->user_id = atoi(PQgetvalue(iterres, itercount, 0));
+		strncpy(pe->handle, PQgetvalue(iterres, itercount, 1), sizeof(pe->handle));
+		strncpy(pe->password, PQgetvalue(iterres, itercount, 2), sizeof(pe->password));
+		strncpy(pe->name, PQgetvalue(iterres, itercount, 3), sizeof(pe->name));
+		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
+		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
+		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
 	}
 	else
 	{
@@ -277,4 +281,11 @@ void _ggzdb_player_drop_cursor(void)
 	PQclear(iterres);
 	iterres = 0;
 }
+
+unsigned int _ggzdb_player_next_uid(void)
+{
+	/* SQL handles id's automatically */
+	return 0;
+}
+
 
