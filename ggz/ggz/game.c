@@ -42,8 +42,10 @@
 
 
 /* Global data structures */
+extern GtkWidget *dlg_launch;
 extern struct ConnectInfo connection;
 extern struct Game game;
+extern struct GameTypes game_types;
 
 /* Local data */
 static guint game_handle;
@@ -113,6 +115,58 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	int size;
 	char ai;
 	void *options;
+	GtkWidget *temp_widget;
+	int i;
+	int launch_game_type=0;
+	int launch_num_seats=1;		/* There will always be 1 seet, the player launching */
+
+	/* Get game type to play */
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo1");
+	for(i=0;i<game_types.count;i++)
+	{
+		if(!strcmp(game_types.info[i].name,
+		   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+			launch_game_type= i;
+	}
+
+	/* Get number of seats */
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+	if(strcmp("Closed",
+           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo3");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		launch_num_seats++;
+        
 
 	dbg_msg("Getting options from game client");
 
@@ -124,14 +178,124 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 
 	/* Send launch game request to server */
 	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
-	es_write_int(connection.sock, 0);	/* Game type index */
-	es_write_int(connection.sock, 4);	/* Number of seats */
-	es_write_int(connection.sock, GGZ_SEAT_COMP);
-	es_write_int(connection.sock, GGZ_SEAT_COMP);
-	es_write_int(connection.sock, GGZ_SEAT_COMP);
+	/* Game type index */
+	es_write_int(connection.sock, launch_game_type);
+	/* Number of seats */
+	es_write_int(connection.sock, launch_num_seats);
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+	if(strcmp("Closed",
+           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo3");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+	if(strcmp("Closed",
+	   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+	{
+		if(!strcmp("Computer",
+	           gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+		{
+			es_write_int(connection.sock, GGZ_SEAT_COMP);
+		}else{
+			es_write_int(connection.sock, GGZ_SEAT_OPEN);
+		}
+	}
 	es_write_int(connection.sock, size);
 	es_writen(connection.sock, options, size);
 	free(options);
+
+        gtk_widget_destroy(dlg_launch);
+        dlg_launch = NULL;
 
 	gdk_input_remove(game_handle);
 	game_handle = gdk_input_add(source, GDK_INPUT_READ, handle_game,

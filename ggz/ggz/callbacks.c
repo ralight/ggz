@@ -201,106 +201,150 @@ void get_game_options(GtkButton * button, gpointer user_data)
 		if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_EIGHT)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_SEVEN)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_SIX)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_FIVE)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_FOUR)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_THREE)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_TWO)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}else if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_ONE)
 		{
 		        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	        	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo1");
+			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 			gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		}
 
@@ -352,130 +396,177 @@ void launch_change_type(GtkCombo *type_combo, gpointer user_data)
 	if (game_types.info[0].num_play_allow == (char) PLAY_ALLOW_EIGHT)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 		temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_SEVEN)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_SIX)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_FIVE)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	       	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_FOUR)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_THREE)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_TWO)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}else if (game_types.info[type_index].num_play_allow == (char) PLAY_ALLOW_ONE)
 	{
 	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo10");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo9");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo8");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo7");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo6");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo5");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo4");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo2");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
         	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo1");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry),"Closed");
 		gtk_widget_set_sensitive (GTK_WIDGET (temp_widget), 0);
 	}
 }
 
 void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
 {
-	/*
-		BIG FIXME: Currently this just launches like
-			it has in the past, but the dialog is
-			in place. Things that will happen here are
-			1) Get the right game type
-			2) Get player settings
-			3) Launch the game with right options
-	*/
+	GtkWidget *temp_widget;
+	int i;
+        int launch_game_type=0;
+        
+	/* Hide it at this point, we still nead 
+	   it there to get the information from */
+	gtk_widget_hide(GTK_OBJECT(dlg_launch));
 
-	int type = 0;
-
-	gtk_widget_destroy(dlg_launch);
-	dlg_launch = NULL;
+        /* Get game type to play */
+        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo1");
+        for(i=0;i<game_types.count;i++)
+        {
+                if(!strcmp(game_types.info[i].name,
+                   gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry))))
+                        launch_game_type= i;
+        }
 
 	if (!connection.connected)
 		warn_dlg("Not connected!");
 	else {
-		launch_game(type, 1);
+		launch_game(launch_game_type,1);
 	}
 
 }
