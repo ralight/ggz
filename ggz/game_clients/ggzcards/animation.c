@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3301 2002-02-10 11:10:05Z jdorje $
+ * $Id: animation.c 3308 2002-02-11 01:19:31Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -133,7 +133,7 @@ gint animation_callback(gpointer ignored)
 	   real".  Otherwise, we just draw the next step in the animation and 
 	   then continue. */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
-		table_show_card(anim.player, anim.card);
+		table_show_card(anim.player, anim.card, TRUE);
 		animating = 0;
 		return FALSE;
 	} else {
@@ -169,15 +169,15 @@ void animation_stop(int success)
 
 	if (success) {
 		/* And move the card to it's final resting place */
-		table_show_card(anim.player, anim.card);
+		table_show_card(anim.player, anim.card, TRUE);
 	} else {
 		/* The caller is assumed to have restored the card to the
 		   hand so we can redraw the full hand and should be done.
 		   However, if the animation was completed then the card will 
 		   be drawn on the table as well, so we'll need to clean that 
 		   up. */
-		table_display_hand(anim.player);
-		table_show_cards();
+		table_display_hand(anim.player, TRUE);
+		table_show_cards(TRUE);
 	}
 
 	animating = 0;

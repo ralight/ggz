@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 3303 2002-02-10 12:00:00Z jdorje $
+ * $Id: table.h 3308 2002-02-11 01:19:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,12 +34,12 @@ void table_handle_expose_event(GdkEventExpose *);
 void table_handle_click_event(GdkEventButton *);
 
 /* These functions draw cards in a player's hand. */
-void table_display_hand(int);
-void table_display_all_hands(void);
+void table_display_hand(int p, int write_to_screen);
+void table_display_all_hands(int write_to_screen);
 
 /* These 3 functions draw the cards that are on the table. */
-void table_show_card(int player, card_t card);
-void table_show_cards(void);
+void table_show_card(int player, card_t card, int write_to_screen);
+void table_show_cards(int write_to_screen);
 
 void table_redraw(void);
 

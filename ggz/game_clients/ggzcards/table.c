@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3306 2002-02-10 13:00:48Z jdorje $
+ * $Id: table.c 3308 2002-02-11 01:19:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -74,7 +74,11 @@ static gboolean table_ready = FALSE;
 static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
 
-static void table_clear_table(void);
+void table_show_table(int x, int y, int w, int h);
+static void draw_text_box(int p);
+static void draw_card_box(int p);
+static void draw_card_areas(int write_to_screen);
+static void table_clear_table(int write_to_screen);
 static void table_card_clicked(int);
 
 void table_show_table(int x, int y, int w, int h)
@@ -107,11 +111,12 @@ static void draw_card_box(int p)
 			   FALSE, x, y, w, h);
 }
 
-static void draw_card_areas(void)
+static void draw_card_areas(int write_to_screen)
 {
 	int p;
 	
 	assert(table_ready && game_started);
+	assert(!write_to_screen);
 
 	/* Draw card areas */
 	for (p = 0; p < ggzcards.num_players; p++) {
@@ -120,13 +125,21 @@ static void draw_card_areas(void)
 	}
 }
 
-static void table_clear_table(void)
+static void table_clear_table(int write_to_screen)
 {
 	assert(table_buf && table_style);
+	
+	/* There's no real reason why write_to_screen shouldn't be used, but
+	   it's probably not a good idea. */
+	assert(!write_to_screen);
+	
 	/* Clear the buffer to the style's background color */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
 			   TRUE, 0, 0, get_table_width(), get_table_height());
+	
+	if (write_to_screen)
+		table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
 /* Draws a "splash screen" that is shown before the game is initialized. */
@@ -140,10 +153,11 @@ static void draw_splash_screen(void)
 	assert(table_buf);
 	assert(ggzcards.num_players == 0);
 
-	table_clear_table();
+	table_clear_table(FALSE);
 	draw_card(card, 0,
 		  (get_table_width() - CARDWIDTH) / 2,
 		  (get_table_height() - CARDHEIGHT) / 2, table_buf);
+		
 	table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
@@ -194,7 +208,9 @@ void table_initialize(void)
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
 	assert(table_buf);
-	draw_splash_screen();
+	
+	/* Redraw and display the table. */
+	table_redraw();
 }
 
 /* Setup all table data that's not initialized by table_initialize.  This may
@@ -288,19 +304,30 @@ void table_redraw(void)
 {
 	ggz_debug("table", "Redrawing table. ");
 	if (table_ready) {
+		int p;
 		animation_stop(TRUE);
 
 		gtk_widget_grab_focus(dlg_main);
 
 		table_style = gtk_widget_get_style(table);
 		
-		table_clear_table();
-		draw_card_areas();
+		table_clear_table(FALSE);
+		draw_card_areas(FALSE);
 
 		/* Redisplay any cards on table and in hands */
-		table_display_all_hands();
-		table_show_cards();
+		table_display_all_hands(FALSE);
+		table_show_cards(FALSE);
 
+		table_show_table(0, 0, get_table_width(), get_table_height());
+
+#if 0
+		/* These sometimes get overwritten by the redraw above. */		
+		for (p = 0; p < ggzcards.num_players; p++) {
+			gtk_widget_queue_draw(l_name[p]);
+			gtk_widget_queue_draw(label[p]);
+		}
+#endif
+		
 		/* There has GOT to be a better way to force the redraw! */
 		gdk_window_hide(table->window);
 		gdk_window_show(table->window);
@@ -396,7 +423,7 @@ static void table_card_clicked(int card_num)
 	} else {
 		/* Pop the card forward and select it */
 		selected_card = card_num;
-		table_display_hand(ggzcards.play_hand);
+		table_display_hand(ggzcards.play_hand, TRUE);
 	}
 }
 
@@ -475,7 +502,7 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 }
 
 /* Exposed function to show one player's hand. */
-void table_display_hand(int p)
+void table_display_hand(int p, int write_to_screen)
 {
 	int i, x, y;
 	int x_outer, y_outer;
@@ -527,20 +554,21 @@ void table_display_hand(int p)
 	}
 
 	/* And refresh the on-screen image for card areas */
-	table_show_table(x_outer, y_outer, cw, ch);
+	if (write_to_screen)
+		table_show_table(x_outer, y_outer, cw, ch);
 }
 
 /* table_display_all_hands exposed function to show all players' hands */
-void table_display_all_hands(void)
+void table_display_all_hands(int write_to_screen)
 {
 	int p;
 	for (p = 0; p < ggzcards.num_players; p++)
-		table_display_hand(p);
+		table_display_hand(p, write_to_screen);
 }
 
 
 /* Exposed function to show one player's cards on the table area. */
-void table_show_card(int player, card_t card)
+void table_show_card(int player, card_t card, int write_to_screen)
 {
 	int x, y;
 
@@ -550,11 +578,12 @@ void table_show_card(int player, card_t card)
 	get_tablecard_pos(player, &x, &y);
 	draw_card(card, 0, x, y, table_buf);
 
-	table_show_table(x, y, CARDWIDTH, CARDHEIGHT);
+	if (write_to_screen)
+		table_show_table(x, y, CARDWIDTH, CARDHEIGHT);
 }
 
 /* Exposed function to show all four cards on the table area. */
-void table_show_cards(void)
+void table_show_cards(int write_to_screen)
 {
 	int table_x, table_y, table_w, table_h, p;
 
@@ -574,5 +603,6 @@ void table_show_cards(void)
 		}
 	}
 
-	table_show_table(table_x, table_y, table_w, table_h);
+	if (write_to_screen)
+		table_show_table(table_x, table_y, table_w, table_h);
 }

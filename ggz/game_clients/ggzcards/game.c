@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3306 2002-02-10 13:00:48Z jdorje $
+ * $Id: game.c 3308 2002-02-11 01:19:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -109,7 +109,7 @@ void game_play_card(int card_num)
 	ggzcards.players[player].table_card = card;
 
 	/* Draw the cards, eliminating the card in play */
-	table_display_hand(player);
+	table_display_hand(player, TRUE);
 
 	/* We don't remove the card from our hand until we have validation
 	   that it's been played. Graphically, the table_card is skipped over 
@@ -283,7 +283,7 @@ void game_display_hand(int player)
 {
 	ggz_debug("main", "Hand display for player %d needed.", player);
 
-	table_display_hand(player);
+	table_display_hand(player, TRUE);
 }
 
 void game_get_bid(int possible_bids, char **bid_choices)
@@ -323,7 +323,7 @@ void game_alert_badplay(char *err_msg)
 	animation_stop(FALSE);
 
 	/* redraw cards */
-	table_display_hand(ggzcards.play_hand);
+	table_display_hand(ggzcards.play_hand, TRUE);
 
 	statusbar_message(err_msg);
 }
@@ -341,20 +341,20 @@ void game_alert_play(int player, card_t card, int pos)
 		/* We only show the card on the table if we're not animating
 		   - if we're animating then we wait for it to get there
 		   naturally. */
-		table_show_card(player, card);
+		table_show_card(player, card, TRUE);
 	}			/* if (pref_animation) */
 
 	/* Note, even for cards we played we don't actually remove the card
 	   from our hand until we hear confirmation.  So we need to redraw
 	   the hand in any case. */
-	table_display_hand(player);
+	table_display_hand(player, TRUE);
 }
 
 void game_alert_table(void)
 {
 	if (game_started) {
 		ggz_debug("main", "Handling table update alert.");
-		table_show_cards();
+		table_show_cards(TRUE);
 	}
 }
 
@@ -371,7 +371,7 @@ void game_alert_trick(int player)
 	statusbar_message(t_str);
 	g_free(t_str);
 
-	table_show_cards();
+	table_show_cards(TRUE);
 }
 
 int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
