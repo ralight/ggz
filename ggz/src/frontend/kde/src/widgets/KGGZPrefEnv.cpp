@@ -66,21 +66,23 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	KGGZCaption *title;
-	QVBoxLayout *vbox, *vbox1, *vbox2;
+	QVBoxLayout *vbox, *vbox1, *vbox2, *vbox3;
 	QHBoxLayout *hbox, *hbox2, *hbox3, *hbox4, *hbox5;
 	QPushButton *ok, *cancel;
 	QLabel *server, *country, *playername, *email, *homepage;
 	KGGZLineSeparator *sep;
 	QTabWidget *tabwidget;
-	QWidget *tab1, *tab2;
+	QWidget *tab1, *tab2, *tab3;
 
 	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify some environment variables here."), this);
 
 	tabwidget = new QTabWidget(this);
 	tab1 = new QWidget(tabwidget);
 	tab2 = new QWidget(tabwidget);
+	tab3 = new QWidget(tabwidget);
 	tabwidget->addTab(tab1, i18n("General"));
 	tabwidget->addTab(tab2, i18n("Personal"));
+	tabwidget->addTab(tab3, i18n("Chat"));
 
 	server = new QLabel(i18n("Path to ggzd"), tab1);
 	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), tab1);
@@ -100,6 +102,8 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	m_email = new QLineEdit(tab2);
 
 	countrybox = new QComboBox(tab2);
+
+	m_timestamps = new QCheckBox(i18n("Time stamps in chat"), tab3);
 
 	sep = new KGGZLineSeparator(this);
 
@@ -126,6 +130,8 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	hbox2 = new QHBoxLayout(vbox2, 5);
 	hbox2->add(country);
 	hbox2->add(countrybox);
+	vbox3 = new QVBoxLayout(tab3, 5);
+	vbox3->add(m_timestamps);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(title);
@@ -161,6 +167,7 @@ void KGGZPrefEnv::slotAccept()
 	config->write("Environment", "Server", m_server->text().latin1());
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
 	config->write("Preferences", "Chatlog", m_chatlog->isChecked());
+	config->write("Preferences", "Timestamps", m_timestamps->isChecked());
 	config->write("Preferences", "Speech", m_speech->isChecked());
 	config->write("Preferences", "MOTD", m_motd->isChecked());
 	config->write("Personal", "Country", countrybox->currentText().latin1());
@@ -179,7 +186,7 @@ void KGGZPrefEnv::loadSettings()
 {
 	GGZCoreConfio *config;
 	char *server;
-	int startup, chatlog, speech, motd;
+	int startup, chatlog, speech, motd, timestamps;
 	char *homepage, *email, *name, *country;
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
@@ -189,6 +196,7 @@ void KGGZPrefEnv::loadSettings()
 	chatlog = config->read("Preferences", "Chatlog", 0);
 	speech = config->read("Preferences", "Speech", 0);
 	motd = config->read("Preferences", "MOTD", 1);
+	timestamps = config->read("Preferences", "Timestamps", 0);
 
 	country = config->read("Personal", "Country", "");
 	name = config->read("Personal", "Name", "");
@@ -200,6 +208,7 @@ void KGGZPrefEnv::loadSettings()
 	m_chatlog->setChecked(chatlog);
 	m_speech->setChecked(speech);
 	m_motd->setChecked(motd);
+	m_timestamps->setChecked(timestamps);
 
 	m_playername->setText(name);
 	m_email->setText(email);

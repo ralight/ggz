@@ -61,6 +61,11 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	QVBoxLayout *vbox1;
 	QLabel *label;
 
+	m_listusers = 0;
+	m_log = 0;
+	m_speech = 0;
+	m_timestamp = 0;
+
 	input = new KGGZChatLine(this);
 	input->setFixedHeight(20);
 	input->setEnabled(FALSE);
@@ -80,10 +85,6 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_INFO);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_INFO);
 
-	m_listusers = 0;
-	m_log = 0;
-	m_speech = 0;
-
 	input->setFocus();
 }
 
@@ -101,6 +102,11 @@ void KGGZChat::setLogging(int log)
 void KGGZChat::setSpeech(int speech)
 {
 	m_speech = speech;
+}
+
+void KGGZChat::setTimestamp(int timestamp)
+{
+	m_timestamp = timestamp;
 }
 
 // Send out a message or execute command
@@ -514,6 +520,9 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	static QString lastplayer;
 	QString color;
 	QString msg;
+	char timestring[32];
+	int ret;
+	time_t curtime;
 
 	switch(mode)
 	{
@@ -551,11 +560,20 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		proc->start();
 	}
 
+	if(m_timestamp)
+	{
+		curtime = time(NULL);
+		ret = strftime(timestring, sizeof(timestring), "%H:%M:%S &nbsp; ", localtime(&curtime));
+		if(!ret) timestring[0] = 0;
+	}
+	else timestring[0] = 0;
+
+
 	KGGZDEBUG("Receiving: %s (%i)\n", msg.latin1(), mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
-			tmp = QString("<tr><td><font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
 			// Oh oh, Qt: that's your fault again (I'm happy with bug reports, eh)
 			//output->append(tmp);
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
@@ -563,45 +581,45 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_TABLE:
-			tmp = QString("<tr><td><font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
 			logChat(tmp);
 			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_OWN:
-			tmp = QString("<tr><td><font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2><b>").arg(timestring).arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
 			logChat(tmp);
 			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_ADMIN:
-			tmp = QString("<tr><td colspan=2><font color=#ff0000>") + msg + QString("</font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#ff0000>").arg(timestring) + msg + QString("</font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			break;
 		case RECEIVE_INFO:
-			tmp = QString("<tr><td colspan=2><font color=#802020>") + msg + QString("</font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#802020>").arg(timestring) + msg + QString("</font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<tr><td colspan=2><font color=#%1><i>* ").arg(color) + QString(player) + msg + QString("</i></font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg + QString("</i></font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_ME:
-			tmp = QString("<tr><td colspan=2><font color=#%1><i>* ").arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_PERSONAL:
-			tmp = QString("<tr><td><font color=#%1><b><i>").arg(color);
+			tmp = QString("<tr><td>%1<font color=#%2><b><i>").arg(timestring).arg(color);
 			if(player) tmp += QString(player) + ":&nbsp;</i></b></font><font color=#b0b000><b><i>";
 			tmp += QString("</td><td>") + QString(plaintext(msg.latin1())) + QString("</i></b></font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");

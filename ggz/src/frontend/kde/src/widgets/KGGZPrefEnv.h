@@ -72,6 +72,8 @@ class KGGZPrefEnv : public QWidget
 			QCheckBox *m_startup;
 			// Enable chat logging
 			QCheckBox *m_chatlog;
+			// Time stamps in chat window
+			QCheckBox *m_timestamps;
 			// Enable text-to-speech synth of chat
 			QCheckBox *m_speech;
 			// Display MOTD upon login

@@ -79,6 +79,7 @@ class KGGZChat : public QWidget
 
 		void setLogging(int log);
 		void setSpeech(int speech);
+		void setTimestamp(int timestamp);
 
 	signals:
 		void signalChat(const char *text, char *player, int mode);
@@ -97,6 +98,7 @@ class KGGZChat : public QWidget
 		KGGZChatLine *input;
 		int m_log;
 		int m_speech;
+		int m_timestamp;
 };
 
 #endif
