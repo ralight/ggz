@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 5292 2002-12-16 10:38:53Z oojah $
+ * $Id: main.c 5298 2002-12-18 11:46:17Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -53,7 +53,7 @@ int main(void)
 #endif
 
 	/* Seed the random number generator */
-//	srandom((unsigned)time(NULL));
+	srandom((unsigned)time(NULL));
 	game_init(ggz);
 
 	/* Connect to GGZ server; main loop */

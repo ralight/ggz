@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 5292 2002-12-16 10:38:53Z oojah $
+ * $Id: game.c 5298 2002-12-18 11:46:17Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

@@ -1,4 +1,4 @@
-# $Id: escape.dsc 5292 2002-12-16 10:38:53Z oojah $
+# $Id: escape.dsc 5298 2002-12-18 11:46:17Z oojah $
 
 [GameInfo]
 Author = Roger Light
