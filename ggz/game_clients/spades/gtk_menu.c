@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_menu.c 4892 2002-10-12 20:55:46Z jdorje $
+ * $Id: gtk_menu.c 4894 2002-10-12 21:54:36Z jdorje $
  *
  * This file contains functions for creating and handling menus
  *
@@ -81,7 +81,7 @@ GtkWidget *CreateMenus(GtkWidget * window)
 	    gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accelGroup);
 	gtk_item_factory_create_items(playArea->menu, nItems, menuItems,
 				      NULL);
-	gtk_accel_group_attach(accelGroup, GTK_OBJECT(window));
+	gtk_window_add_accel_group(GTK_WINDOW(window), accelGroup);
 	menuBar = gtk_item_factory_get_widget(playArea->menu, "<main>");
 
 	menuItem =
