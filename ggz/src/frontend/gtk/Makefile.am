@@ -18,6 +18,8 @@ ggz_gtk_SOURCES =	main.c \
 			license.h \
 			login.c \
 			login.h \
+			motd.c \
+			motd.h \
 			support.c \
 			support.h \
 			xtext.c \

@@ -29,6 +29,7 @@
 #include "chat.h"
 #include "ggz.h"
 #include "login.h"
+#include "motd.h"
 #include "support.h"
 #include "xtext.h"
 
@@ -46,6 +47,7 @@ void ggz_room_part(GGZEventID id, void* event_data, void* user_data);
 void ggz_login_ok(GGZEventID id, void* event_data, void* user_data);
 void ggz_login_fail(GGZEventID id, void* event_data, void* user_data);
 void ggz_connect_fail(GGZEventID id, void* event_data, void* user_data);
+void ggz_motd(GGZEventID id, void* event_data, void* user_data);
 
 
 void ggz_event_init(void)
@@ -61,7 +63,7 @@ void ggz_event_init(void)
 	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, ggz_login_fail);
 	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, ggz_list_rooms);
 	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
-	
+	ggzcore_event_connect(GGZ_SERVER_MOTD, ggz_motd);
 }
 
 
@@ -356,3 +358,7 @@ void ggz_sensitivity_init(void)
 	gtk_label_set_text(GTK_LABEL(tmp), "Current Room:");
 }
 
+void ggz_motd(GGZEventID id, void* event_data, void* user_data)
+{
+	motd_create_or_raise();
+}

@@ -22,7 +22,7 @@
   <class>GtkDialog</class>
   <name>dlg_motd</name>
   <width>300</width>
-  <height>400</height>
+  <height>455</height>
   <title>MOTD</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
