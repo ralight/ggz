@@ -8,4 +8,5 @@ kcm_ggz_test
 .libs
 *.moc.cpp
 *meta_unload.cpp
+libkcm_ggz.la.closure
 
