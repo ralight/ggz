@@ -415,7 +415,9 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		/* Create Unix domain socket for communication*/
 
 		/* Leave room for "/tmp/" + PID + '\0' */
-		game->file_name = ggzcore_malloc(strlen(name + 12));
+		/* FIXME: should use more secure way of getting filename */
+		/* FIXME: actually, this will go away once we pass fd using env */
+		game->file_name = ggzcore_malloc(strlen(name) + 12);
 		sprintf(game->file_name, "/tmp/%s.%d", name, pid);
 		
 		sock_accept = es_make_unix_socket(ES_SERVER, game->file_name);
