@@ -181,15 +181,15 @@ int game_send_players(void)
 /* Send out move for player: num */
 int game_send_move(int num, int event, char x, char y)
 {
-	int opponent = (num + 1) % 2;
-	int fd = ggz_seats[opponent].fd;
+	int fd = ggz_seats[dots_game.opponent].fd;
 	int msg;
 	
 	/* If player is a computer, don't need to send */
 	if(fd == -1)
 		return 0;
 
-	ggz_debug("Sending player %d's move to player %d", num, opponent);
+	ggz_debug("Sending player %d's move to player %d",
+		   num, dots_game.opponent);
 
 	if(event == DOTS_EVENT_MOVE_H)
 		msg = DOTS_MSG_MOVE_H;
@@ -346,6 +346,8 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 	if(status < 0)
 		return 1;
 	
+	/* We make a note who our opponent is, easier on the update func */
+	dots_game.opponent = (num + 1) % 2;
 	if(status > 0)
 		/* They scored, go again */
 		dots_game.score[num] += status;

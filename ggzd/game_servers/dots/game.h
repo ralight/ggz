@@ -73,6 +73,7 @@ struct dots_game_t {
 	char state;
 	char turn;
 	int score[2];
+	int opponent;
 	unsigned char options[2];
 };
 

@@ -8,6 +8,7 @@
 
 #include "interface.h"
 #include "support.h"
+#include "easysock.h"
 #include "main.h"
 #include "game.h"
 
@@ -109,7 +110,7 @@ void board_init(guint8 width, guint8 height)
 						  "Game Messages");
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar),
 			   sb_context,
-			   "Your Turn To Move");
+			   "Waiting for server");
 }
 
 
@@ -131,6 +132,11 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	gint8 result;
 	guint16 x1, y1, x2, y2;
 	GdkRectangle update_rect;
+
+	if(game.state != DOTS_STATE_MOVE) {
+		statusbar_message("Wait for your turn to move");
+		return;
+	}
 
 	/* Figure out what lines we are closest to horiz and vert */
 	line_x = (int) (event->x / dot_width +.5) - 1;
@@ -165,6 +171,12 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		update_rect.y = y1;
 		update_rect.width = 1;
 		update_rect.height = dot_height+1;
+		if(es_write_int(game.fd, DOTS_SND_MOVE_V) < 0
+		   || es_write_char(game.fd, line_x) < 0
+		   || es_write_char(game.fd, top) < 0) {
+			fprintf(stderr, "Lost server connection\n");
+			exit(1);
+		}
 	} else {
 		/* Horizontal Line */
 		if(dist_x < 0)
@@ -186,6 +198,12 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		update_rect.y = y1;
 		update_rect.width = dot_width+1;
 		update_rect.height = 1;
+		if(es_write_int(game.fd, DOTS_SND_MOVE_H) < 0
+		   || es_write_char(game.fd, left) < 0
+		   || es_write_char(game.fd, line_y) < 0) {
+			fprintf(stderr, "Lost server connection\n");
+			exit(1);
+		}
 	}
 
 	gdk_draw_line(board_pixmap,
@@ -198,6 +216,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		if(game.move == 1) {
 			game.move = 2;
 			statusbar_message("Waiting For Opponent");
+			game.state = DOTS_STATE_WAIT;
 		} else {
 			game.move = 1;
 			statusbar_message("Your Turn To Move");
@@ -260,6 +279,86 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 	}
 
 	return result;
+}
+
+
+gint8 board_opponent_move(guint8 dir)
+{
+	gint8 result=0;
+	guchar x, y;
+	guint16 x1, y1, x2, y2;
+	GdkRectangle update_rect;
+
+	if(es_read_char(game.fd, &x) < 0
+	   || es_read_char(game.fd, &y) < 0)
+		return -1;
+
+	if(dir == 0) {
+		/* A vertical move */
+		x1 = x2 = (x+1) * dot_width;
+		y1 = (y+1) * dot_height;
+		y2 = (y+2) * dot_height;
+		update_rect.x = x1;
+		update_rect.y = y1;
+		update_rect.width = 1;
+		update_rect.height = dot_height+1;
+		gdk_draw_line(board_pixmap,
+			      gc_fg,
+			      x1, y1,
+			      x2, y2);
+		gtk_widget_draw(board, &update_rect);
+
+		vert_board[x][y] = 1;
+		if(x != 0)
+			if(vert_board[x-1][y]
+			   && horz_board[x-1][y]
+			   && horz_board[x-1][y+1]) {
+				/* Winning square */
+				board_fill_square(x-1, y);
+				result++;
+			}
+		if(x != board_width-1)
+			if(vert_board[x+1][y]
+			   && horz_board[x][y]
+			   && horz_board[x][y+1]) {
+				/* Winning square */
+				board_fill_square(x, y);
+				result++;
+			}
+	} else {
+		y1 = y2 = (y+1) * dot_height;
+		x1 = (x+1) * dot_width;
+		x2 = (x+2) * dot_width;
+		update_rect.x = x1;
+		update_rect.y = y1;
+		update_rect.width = dot_width+1;
+		update_rect.height = 1;
+		gdk_draw_line(board_pixmap,
+			      gc_fg,
+			      x1, y1,
+			      x2, y2);
+		gtk_widget_draw(board, &update_rect);
+
+		horz_board[x][y] = 1;
+		if(y != 0)
+			if(horz_board[x][y-1]
+			   && vert_board[x][y-1]
+			   && vert_board[x+1][y-1]) {
+				/* Winning square */
+				board_fill_square(x, y-1);
+				result++;
+			}
+		if(y != board_height-1)
+			if(horz_board[x][y+1]
+			   && vert_board[x][y]
+			   && vert_board[x+1][y]) {
+				/* Winning square */
+				board_fill_square(x, y);
+				result++;
+			}
+	}
+
+	return 0;
 }
 
 

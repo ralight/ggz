@@ -74,3 +74,4 @@ extern void board_handle_expose_event(GtkWidget *, GdkEventExpose *);
 extern void board_handle_click(GtkWidget *, GdkEventButton *);
 extern void board_handle_pxb_expose(void);
 extern void statusbar_message(gchar *);
+extern gint8 board_opponent_move(guint8);

@@ -22,7 +22,6 @@
 #include "easysock.h"
 
 GtkWidget *main_win;
-char game_state;
 struct game_t game;
 
 static void game_init(void);
@@ -32,6 +31,8 @@ static void ggz_connect(void);
 void game_handle_io(gpointer, gint, GdkInputCondition);
 static int get_seat(void);
 static int get_players(void);
+static int get_options(void);
+static int get_move_status(void);
 
 int main(int argc, char *argv[])
 {
@@ -63,25 +64,49 @@ int main(int argc, char *argv[])
 
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
-	int op;
+	int op, status;
 
 	if(es_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
 
+	status = 0;
 	switch(op) {
 		case DOTS_MSG_SEAT:
-			get_seat();
+			status = get_seat();
 			break;
 		case DOTS_MSG_PLAYERS:
-			get_players();
-			game_state = DOTS_STATE_WAIT;
+			status = get_players();
+			game.state = DOTS_STATE_WAIT;
+			break;
+		case DOTS_RSP_OPTIONS:
+			if((status = get_options()) == 0)
+				board_init(board_width, board_height);
 			break;
 		case DOTS_REQ_MOVE:
-			game_state = DOTS_STATE_MOVE;
-			statusbar_message("Your move");
+			game.state = DOTS_STATE_MOVE;
+			statusbar_message("Your turn to move");
 			break;
+		case DOTS_MSG_MOVE_H:
+			status = board_opponent_move(1);
+			break;
+		case DOTS_MSG_MOVE_V:
+			status = board_opponent_move(0);
+			break;
+		case DOTS_RSP_MOVE:
+			status = get_move_status();
+			break;
+		default:
+			fprintf(stderr, "Unknown opcode received %d\n", op);
+			status = -1;
+			break;
+	}
+
+	if(status < 0) {
+		fprintf(stderr, "Ouch!\n");
+		close(game.fd);
+		exit(-1);
 	}
 }
 
@@ -96,12 +121,14 @@ void game_init(void)
 	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
 		for(j=0; j<MAX_BOARD_HEIGHT; j++)
 			horz_board[i][j] = 0;
-	game_state = DOTS_STATE_INIT;
+	game.state = DOTS_STATE_INIT;
 }
 
 
 int send_options(void)
 {
+	fprintf(stderr, "Sending options\n");
+
 	if(es_write_int(game.fd, 2) < 0
 	   || es_write_char(game.fd, board_width) < 0
 	   || es_write_char(game.fd, board_height) < 0)
@@ -110,8 +137,21 @@ int send_options(void)
 }
 
 
+int get_options(void)
+{
+	fprintf(stderr, "Getting options\n");
+
+	if(es_read_char(game.fd, &board_width) < 0
+	   || es_read_char(game.fd, &board_height) < 0)
+		return -1;
+	return 0;
+}
+
+
 int request_options(void)
 {
+	fprintf(stderr, "Requesting options\n");
+
 	if(es_write_int(game.fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
 	return 0;
@@ -140,6 +180,8 @@ void ggz_connect(void)
 
 int get_seat(void)
 {
+	fprintf(stderr, "Getting seat number\n");
+
 	if(es_read_int(game.fd, &game.num) < 0)
 		return -1;
 	return 0;
@@ -150,6 +192,8 @@ int get_players(void)
 {
 	int i;
 
+	fprintf(stderr, "Getting player names\n");
+
 	for(i=0; i<2; i++) {
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
@@ -158,4 +202,17 @@ int get_players(void)
 				return -1;
 	}
 	return 0;
+}
+
+
+int get_move_status(void)
+{
+	char status;
+
+	if(es_read_char(game.fd, &status) < 0)
+		return -1;
+	if(status != 0)
+		fprintf(stderr, "Move status = %d, client broken!\n", status);
+
+	return (int)status;
 }
