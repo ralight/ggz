@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 noinst_LTLIBRARIES = libggzcorepp.la
@@ -33,7 +36,7 @@ libggzcorepp_la_LIBADD = $(LIB_GGZCORE) $(LIB_GGZ)
 
 AM_CXXFLAGS = @COMPILEOPTIONS@
 
-INCLUDES = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 api-docs:
 	-kdoc -d ../doc/html -n GGZCore++ *.cpp *.h

@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = graphics
 
 ggzexecmod_PROGRAMS = geekgame
@@ -8,7 +11,7 @@ geekgame_LDFLAGS = $(LIBGGZ_LDFLAGS) $(GGZMOD_LDFLAGS) $(XCURSOR_LDFLAGS)
 
 noinst_HEADERS = intro.h wwwget.h proto.h
 
-INCLUDES = $(SDL_CFLAGS) $(GGZ_INCLUDES) $(GGZMOD_INCLUDES)
+AM_CPPFLAGS = $(SDL_CFLAGS) $(GGZ_INCLUDES) $(GGZMOD_INCLUDES)
 
 EXTRA_DIST = protocol-description module.dsc
 

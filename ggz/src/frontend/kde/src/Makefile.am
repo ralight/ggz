@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = abstract widgets .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
@@ -22,7 +25,7 @@ noinst_HEADERS = \
 	KGGZInput.h \
 	KGGZMeta.h
 
-INCLUDES = -I $(top_srcdir)/ggz-kde/src/abstract \
+AM_CPPFLAGS = -I $(top_srcdir)/ggz-kde/src/abstract \
 	-I $(top_srcdir)/ggz-kde/src/widgets \
 	-I $(top_srcdir)/ggz-kde/src/widgets/more \
 	$(ggzcorepp_includes) $(all_includes) \

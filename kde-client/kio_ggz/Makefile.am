@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = kioslave .
 
 kde_module_LTLIBRARIES = libkio_ggz.la
@@ -10,7 +13,7 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 noinst_HEADERS = kio_ggz.h helper.h
 
-INCLUDES = $(GGZCORE_INCLUDES) -I $(top_srcdir)/ggz-kde/ggzcore++/src -I $(qt_includes) -I $(kde_includes)
+AM_CPPFLAGS = $(GGZCORE_INCLUDES) -I $(top_srcdir)/ggz-kde/ggzcore++/src -I $(qt_includes) -I $(kde_includes)
 
 METASOURCES = AUTO
 

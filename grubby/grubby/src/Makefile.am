@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 bin_PROGRAMS = grubby
@@ -25,5 +28,5 @@ libguru_player_la_LIBADD = $(LIB_GGZCORE)
 
 noinst_HEADERS = guru.h module.h i18n.h gurumod.h net.h player.h
 
-INCLUDES = $(GGZCORE_INCLUDES)
+AM_CPPFLAGS = $(GGZCORE_INCLUDES)
 

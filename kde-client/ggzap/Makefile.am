@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
@@ -33,7 +36,7 @@ ggzap_LDADD = $(ggzcorepp_libraries) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT) $(LIB
 
 METASOURCES = AUTO
 
-INCLUDES = $(ggzcorepp_includes) $(all_includes)
+AM_CPPFLAGS = $(ggzcorepp_includes) $(all_includes)
 
 EXTRA_DIST = README
 

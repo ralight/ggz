@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = . modules
 
 kde_module_LTLIBRARIES = libkcm_ggz.la
@@ -10,7 +13,7 @@ kcm_ggz_test_SOURCES = main.cpp
 kcm_ggz_test_LDFLAGS = $(all_libraries) $(KDE_PLUGIN)
 kcm_ggz_test_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT) libkcm_ggz.la
 
-INCLUDES = $(all_includes)
+AM_CPPFLAGS = $(all_includes)
 
 noinst_HEADERS = kcm_ggz.h kcm_ggz_pane.h
 

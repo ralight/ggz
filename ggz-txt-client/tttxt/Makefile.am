@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 ggzexecmod_PROGRAMS = tttxt
@@ -7,7 +10,7 @@ tttxt_SOURCES = main.c
 tttxt_LDADD = $(LIB_GGZMOD) $(LIB_GGZ)
 tttxt_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
-INCLUDES = $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES)
 
 EXTRA_DIST = module.dsc.in
 

@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 noinst_LIBRARIES = libdot.a
@@ -7,7 +10,7 @@ libdot_a_SOURCES = \
 	vdots.cpp \
 	qdots.cpp
 
-INCLUDES = -I$(qt_includes) -I$(kde_includes)
+AM_CPPFLAGS = -I$(qt_includes) -I$(kde_includes)
 
 libdot_a_METASOURCES = AUTO
 

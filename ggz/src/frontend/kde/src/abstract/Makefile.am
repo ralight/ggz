@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
@@ -15,5 +18,5 @@ noinst_HEADERS = \
 
 AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
-INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src -I $(kde_includes)
+AM_CPPFLAGS = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src -I $(kde_includes)
 

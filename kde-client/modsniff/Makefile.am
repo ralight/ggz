@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 bin_PROGRAMS = ggzmodsniff
@@ -15,7 +18,7 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 METASOURCES = AUTO
 
-INCLUDES = $(all_includes)
+AM_CPPFLAGS = $(all_includes)
 
 EXTRA_DIST = README
 

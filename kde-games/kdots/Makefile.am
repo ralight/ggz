@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = Dot .
 
 ggzexecmod_PROGRAMS = kdots_client
@@ -21,7 +24,7 @@ noinst_HEADERS = \
 	kdots_replay.h \
 	kdots_win.h
 
-INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) -I $(top_srcdir)/kdots/Dot
+AM_CPPFLAGS = $(all_includes) $(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) -I $(top_srcdir)/kdots/Dot
 
 kdots_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD) Dot/libdot.a

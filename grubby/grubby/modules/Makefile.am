@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 grubbydir = $(libdir)/grubby/modules
@@ -13,7 +16,7 @@ grubby_LTLIBRARIES = \
 	libgurumod_embed.la \
 	libgurumod_game.la
 
-INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
+AM_CPPFLAGS = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
 
 noinst_HEADERS = game.h
 

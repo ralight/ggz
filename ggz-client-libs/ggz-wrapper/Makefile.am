@@ -1,8 +1,11 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 bin_PROGRAMS = ggz-wrapper
 
 noinst_HEADERS = server.h loop.h game.h
 
-INCLUDES = -I$(top_srcdir)/ggzcore/ $(LIBGGZ_INCLUDES)
+AM_CPPFLAGS = -I$(top_srcdir)/ggzcore/ $(LIBGGZ_INCLUDES)
 
 ggz_wrapper_SOURCES = ggz-wrapper.c server.c loop.c game.c
 ggz_wrapper_LDFLAGS = $(LIBGGZ_LDFLAGS)

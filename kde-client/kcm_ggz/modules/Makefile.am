@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 KSTUFF = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
@@ -27,7 +30,7 @@ libkcm_ggz_games_la_SOURCES = kcm_ggz_games.cpp
 libkcm_ggz_games_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 libkcm_ggz_games_la_METASOURCES = kcm_ggz_games.moc
 
-INCLUDES = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
+AM_CPPFLAGS = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
 AM_LDFLAGS = $(KSTUFF)
 
 noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h

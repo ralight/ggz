@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = @BROWSERSUBDIR@ .
 
 ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
@@ -47,7 +50,7 @@ EXTRA_HEADERS =
 
 AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
-INCLUDES = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
+AM_CPPFLAGS = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I $(top_srcdir)/ggz-kde/src/abstract
 
 libkggzui_a_METASOURCES = AUTO
 

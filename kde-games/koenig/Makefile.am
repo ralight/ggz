@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = libcgc pics pieces
 
 bin_PROGRAMS = koenig
@@ -23,7 +26,7 @@ noinst_HEADERS = \
 	kexttabctl.h \
 	themes.cc
 
-INCLUDES = -I$(top_srcdir)/koenig/libcgc \
+AM_CPPFLAGS = -I$(top_srcdir)/koenig/libcgc \
 	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)
 
 koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries) $(RSVG_LDFLAGS)

@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = zoneclient gfx
 
 ggzexecmod_PROGRAMS = krosswater_client
@@ -15,7 +18,7 @@ krosswater_client_SOURCES = \
 krosswater_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 krosswater_client_LDADD = $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_GGZ) zoneclient/libzoneclient.la
 
-INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/krosswater/zoneclient
+AM_CPPFLAGS = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/krosswater/zoneclient
 
 noinst_HEADERS = \
 	krosswater.h \

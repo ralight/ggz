@@ -1,3 +1,6 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+
 SUBDIRS = .
 
 ggzexecmod_PROGRAMS = guru-chess
@@ -10,7 +13,7 @@ noinst_HEADERS = proto.h ai.h
 
 EXTRA_DIST = module.dsc.in
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I $(top_srcdir)/grubby/modules \
 	-I $(top_srcdir)/grubby/src \
 	-I $(top_srcdir)/games/lib \
