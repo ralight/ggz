@@ -14,10 +14,10 @@ Background</h3>
 
 <p><br>The idea is to create a generalized protocol for a multi-player
 client-server game setup to play a variety of whist-like games.; Whist-like
-games are those based on Whist, the predecessor of Bridge.; They all
-follow a generalized setup of bidding and playing the hand.; (However,
-in devising this protocol it seems likely that it could easily be used
-to play many non-whist-like games as well.)
+games are those based on Whist, the predecessor of Bridge.; They all follow
+a generalized setup of bidding and playing the hand.; (However, in devising
+this protocol it seems likely that it could easily be used to play many
+non-whist-like games as well.)
 <p>Some examples of whist-like games:
 <ul>
 <li>
@@ -46,8 +46,8 @@ Et cetera, dozens or hundreds more.</li>
 </ul>
 The idea is to have a protocol that enables a single "dumb" client to play
 all of these games, and have a server that is either option-controlled
-or easily modified to play different ones.; Oh, yeah: and it will
-use ggz (<a href="http://ggz.sf.net">http://ggz.sf.net</a>).
+or easily modified to play different ones.; Oh, yeah: and it will use ggz
+(<a href="http://ggz.sf.net">http://ggz.sf.net</a>).
 <h3>
 Representations to be agreed upon in the communications</h3>
 
@@ -57,11 +57,10 @@ Card</h4>
 <ul>
 <li>
 The server and client must, of course, agree on a representation for a
-single card.; We will assume that the same standard deck of cards
-is used for all games, although individual games may use a different selection
-of these cards.; Games that use "specialized" decks will not work,
-but there are always modifications of these games that use the standard
-deck.</li>
+single card.; We will assume that the same standard deck of cards is used
+for all games, although individual games may use a different selection
+of these cards.; Games that use "specialized" decks will not work, but
+there are always modifications of these games that use the standard deck.</li>
 
 <li>
 Some games may use multiple decks.; The client may wish to give different
@@ -77,35 +76,34 @@ Thus, the following is the representation: the card will be passed as an
 sequence of three single-byte characters (char's).</li>
 
 <li>
-The first value will be the face value of the card.; 1-13 will be
-A-2-..-Q-K.; Value 14 will represent the ace as well.; -1 will
-represent an unknown card.; All other values will be reserved.</li>
+The first value will be the face value of the card.; 1-13 will be A-2-..-Q-K.;
+Value 14 will represent the ace as well.; -1 will represent an unknown
+card.; All other values will be reserved.</li>
 
 <li>
-The second value will be the suit.; The suit order will be clubs (0),
-diamonds, hearts, spades (3).;; Suit -1 will be reserved for
-an "unknown" suit and suit 4 for a no suit (such as jokers and other cards
-may use).</li>
+The second value will be the suit.; The suit order will be clubs (0), diamonds,
+hearts, spades (3).;; Suit -1 will be reserved for an "unknown" suit and
+suit 4 for a no suit (such as jokers and other cards may use).</li>
 
 <li>
-The third value will be the deck number.; Decks will count upwards
-from 0; -1 will represent an unknown deck.</li>
+The third value will be the deck number.; Decks will count upwards from
+0; -1 will represent an unknown deck.</li>
 
 <li>
 Within the empty suit, jokers will hold values 0 and 1, and -1 will be
-unknown.; All other values will be reserved.; This may change
-later, since it is unlikely to be implemented in the beginning anyway.</li>
+unknown.; All other values will be reserved.; This may change later, since
+it is unlikely to be implemented in the beginning anyway.</li>
 
 <li>
 <i>No two cards in a game will ever have the same triplet of values.</i></li>
 
 <li>
 Most cards will have either the front and back _or_ just the back passed
-to the client.; Thus, the typical client should be able to show the
-front of a card (suit and face, if it is given) or the back of a card (deck,
+to the client.; Thus, the typical client should be able to show the front
+of a card (suit and face, if it is given) or the back of a card (deck,
 if it is given).; (The back of the card may be shown through different
-deck backs.); (Note: this may be made a requirement of the protocol
-in the future.)</li>
+deck backs.); (Note: this may be made a requirement of the protocol in
+the future.)</li>
 </ul>
 
 <h4>
@@ -142,10 +140,10 @@ It will be an integer, as will the number of players.</li>
 
 <li>
 Dummy hands will be treated exactly like players as far as the client is
-concerned.; For instance, in Euchre there are four hands of 5 cards
-and a kitty of 12 cards, one face-up.; This kitty will be considered
-as an extra player, and handled entirely by the server.; (Note: this
-is a major reason why WH_MSG_HAND is handled as it is.)</li>
+concerned.; For instance, in Euchre there are four hands of 5 cards and
+a kitty of 12 cards, one face-up.; This kitty will be considered as an
+extra player, and handled entirely by the server.; (Note: this is a major
+reason why WH_MSG_HAND is handled as it is.)</li>
 </ul>
 
 <h3>
@@ -225,20 +223,20 @@ The intent is to request information about options in a game-independent
 manner.</li>
 
 <li>
-For one-choice options, the choice is boolean: yes or no.; The client
-can represent these options as check boxes.</li>
+For one-choice options, the choice is boolean: yes or no.; The client can
+represent these options as check boxes.</li>
 
 <li>
-For multi-choice options, the choice is multiple choice.; The client
-can represent these option using radial buttons.; Note that boolean
-options could be handled in this way (with two choices), but doing it separately
+For multi-choice options, the choice is multiple choice.; The client can
+represent these option using radial buttons.; Note that boolean options
+could be handled in this way (with two choices), but doing it separately
 gives the client more information.</li>
 
 <li>
 Deficiency: this does not allow for the selection of a continuous range.;
 For instance, when choosing the number of points to which a game should
-be played, it would be good to just request an integer amount.; The
-only way that could be accomplished here is by sending a huge list of integers.;
+be played, it would be good to just request an integer amount.; The only
+way that could be accomplished here is by sending a huge list of integers.;
 (Note also that this would require checking of the options server-side,
 whereas if it's always multiple-choice the server can guarantee that no
 invalid choices are given).</li>
@@ -259,9 +257,9 @@ followed by a list of option choices, one for each option the server has
 asked about.</li>
 
 <li>
-Each option choice is an integer index.; In the case of a 2-choice
-option, it should be either 0 or 1.; In the case of a n-choice option,
-it should be in the range [0..n-1].</li>
+Each option choice is an integer index.; In the case of a 2-choice option,
+it should be either 0 or 1.; In the case of a n-choice option, it should
+be in the range [0..n-1].</li>
 
 <li>
 See WH_REQ_OPTIONS for more.</li>
@@ -285,8 +283,8 @@ ordering is used.</li>
 
 <li>
 in the case of empty seats, the client may wish to override the seat name
-with their own "empty seat" name.; However, the server should provide
-intelligent names for empty seats.</li>
+with their own "empty seat" name.; However, the server should provide intelligent
+names for empty seats.</li>
 </ul>
 
 <h4>
@@ -297,18 +295,17 @@ WH_MSG_HAND</h4>
 sent server->client</li>
 
 <li>
-followed by an integer representing the player whose hand it is.;
-(This is a tricky topic.; First of all, the client has no good way
-to know how many cards another player may have, and the most elegant solution
-may just be to pass them a list of unknown cards.; Second, we have
-the possibility of dummy hands like in bridge.; If we implement things
-this way, then this problem halfway solves itself - we just send out the
-hand information again once the dummy hand becomes known - and the other
-half is handled by WH_REQ_PLAY below.; Thirdly, we have the possibility
-for a "kitty" of cards that belong to no player (known or unknown).;
-If we implement things this way, then the kitty can easily be simulated
-as an extra player and the client need know nothing about it; see representations::players
-for more.)</li>
+followed by an integer representing the player whose hand it is.; (This
+is a tricky topic.; First of all, the client has no good way to know how
+many cards another player may have, and the most elegant solution may just
+be to pass them a list of unknown cards.; Second, we have the possibility
+of dummy hands like in bridge.; If we implement things this way, then this
+problem halfway solves itself - we just send out the hand information again
+once the dummy hand becomes known - and the other half is handled by WH_REQ_PLAY
+below.; Thirdly, we have the possibility for a "kitty" of cards that belong
+to no player (known or unknown).; If we implement things this way, then
+the kitty can easily be simulated as an extra player and the client need
+know nothing about it; see representations::players for more.)</li>
 
 <li>
 followed by an integer containing the hand's size</li>
@@ -317,16 +314,16 @@ followed by an integer containing the hand's size</li>
 followed by an sequence of that many cards</li>
 
 <li>
-This alerts the player to the contents of some player's hand.; It
-replaces any information already known.</li>
+This alerts the player to the contents of some player's hand.; It replaces
+any information already known.</li>
 
 <li>
 The server will pre-sort the hand, and if a different sorting become desired
-the MSG_HAND be resent.; This is the best way to deal with games like
-Euchre (where cards essentially change suit depending on what trump is)
-and bridge (where the trump suit is always supposed to be on the left).;
-The client may wish to provide additional sorting options (no sort, sort
-by suit, sort by number, ...).</li>
+the MSG_HAND be resent.; This is the best way to deal with games like Euchre
+(where cards essentially change suit depending on what trump is) and bridge
+(where the trump suit is always supposed to be on the left).; The client
+may wish to provide additional sorting options (no sort, sort by suit,
+sort by number, ...).</li>
 </ul>
 
 <h4>
@@ -352,13 +349,13 @@ Example: 'WH_REQ_BID 15 "nil" "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"
 
 <li>
 If the client recieves a second bid request while a previous one was still
-pending, it should override the first one.; (This is another topic
-of trickiness.; In most/all cases, the server will just wait until
-the client responds to the bid before proceeding.; However, in some
-games we may have real-time or disjointed bidding, in which case the player's
-possible bids may change before they actually bid.; More generally,
-a sync sent from the server may include a new WH_REQ_BID, if appropriate.;
-This is a pretty rare case, though.)</li>
+pending, it should override the first one.; (This is another topic of trickiness.;
+In most/all cases, the server will just wait until the client responds
+to the bid before proceeding.; However, in some games we may have real-time
+or disjointed bidding, in which case the player's possible bids may change
+before they actually bid.; More generally, a sync sent from the server
+may include a new WH_REQ_BID, if appropriate.; This is a pretty rare case,
+though.)</li>
 </ul>
 
 <h4>
@@ -439,25 +436,24 @@ prominently, and have pop-up windows for the others.</li>
 followed by a string that is the message.</li>
 
 <li>
-This is a general-purpose protocol.; In La Pocha, it can alert the
-players to trump.; In spades, it can contain the scores and contracts.</li>
+This is a general-purpose protocol.; In La Pocha, it can alert the players
+to trump.; In spades, it can contain the scores and contracts.</li>
 
 <li>
 This will be painful to implement, but I think we can use it to avoid any
-and all thought on the client's part.; The biggest problem, though,
-is that the "message" won't have much formatting in it, so it will be a
-problem for the client to display formatted data (for instance, the score
-and bidding in bridge, last trick last hand, etc.).; This could be
-dealt with by using HTML-formatted data (or XML...), but that would make
-things even more painful.</li>
+and all thought on the client's part.; The biggest problem, though, is
+that the "message" won't have much formatting in it, so it will be a problem
+for the client to display formatted data (for instance, the score and bidding
+in bridge, last trick last hand, etc.).; This could be dealt with by using
+HTML-formatted data (or XML...), but that would make things even more painful.</li>
 
 <li>
-Another question is "how is this information accessed?"; The global
-message should be right in front of the player, but for specific keyed
-messages it won't be that simple.; I think the client should make
-these as popup windows accessed through menus, but that may mean that information
-about possible keys must be sent first (so that the menus can be made).;
-However, for now we'll assume that that isn't the case.</li>
+Another question is "how is this information accessed?"; The global message
+should be right in front of the player, but for specific keyed messages
+it won't be that simple.; I think the client should make these as popup
+windows accessed through menus, but that may mean that information about
+possible keys must be sent first (so that the menus can be made).; However,
+for now we'll assume that that isn't the case.</li>
 
 <li>
 Again, i18n will be a problem; however, most of this information will not
@@ -491,11 +487,11 @@ sent server->client</li>
 
 <li>
 followed by the player whose hand to play from (most likely just the player's).;
-(This is another tricky part.; Most of the time, we just want to pick
-a card from our own hand to play.; However, in bridge one player becomes
-the dummy and their partner plays for them.; Telling the client which
-hand to play from handles half of this - the other half, displaying the
-dummy hand, is handled by WH_MSG_HAND, above.)</li>
+(This is another tricky part.; Most of the time, we just want to pick a
+card from our own hand to play.; However, in bridge one player becomes
+the dummy and their partner plays for them.; Telling the client which hand
+to play from handles half of this - the other half, displaying the dummy
+hand, is handled by WH_MSG_HAND, above.)</li>
 
 <li>
 requests a play from the client; a WH_RSP_PLAY should be sent in response</li>
@@ -543,8 +539,8 @@ sent out simultaneously to all players</li>
 
 <li>
 After a play from hand X, the server will not send out player X's hand
-again to anyone.; Rather, it will be up to each client to deduce a
-card from player X's hand that was played, and remove that card.</li>
+again to anyone.; Rather, it will be up to each client to deduce a card
+from player X's hand that was played, and remove that card.</li>
 
 <li>
 Nothing is really done with the "player" data...</li>
@@ -614,6 +610,23 @@ out again by the server, using their standard protocols</li>
 </ul>
 
 <h4>
+WH_MSG_TABLE</h4>
+
+<ul>
+<li>
+sent server->client</li>
+
+<li>
+tells the client what cards are currently on the table</li>
+
+<li>
+followed by a list of cards on the table, in relative ordering</li>
+
+<li>
+this protocol is only used for syncs; normally WH_MSG_PLAY will suffice.</li>
+</ul>
+
+<h4>
 WH_REQ_GAMEOVER</h4>
 
 <ul>
@@ -642,8 +655,8 @@ Followed by the list of winning players</li>
 
 <li>
 Note: some games, like lapocha, may generally have a single winner while
-others, like spades, may have multiple winners (i.e. a team).; In
-some game ties may be possible so multiple players could win.</li>
+others, like spades, may have multiple winners (i.e. a team).; In some
+game ties may be possible so multiple players could win.</li>
 
 <li>
 Informs the client that the game is over</li>
@@ -673,14 +686,6 @@ How about undoing a play?</li>
 How about skipping a hand?</li>
 </ul>
 
-<h3>
-Client Implementation</h3>
-(Problem: is it possible to change the number of players mid-game?)
-<p>The actual graphical interface will, of course, require some work.
-<h3>
-Server implementation</h3>
-...
-<p>document by Jason Short, <a href="jshort@devon.dhs.org">jshort@devon.dhs.org</a>.
-<br>;
+<p><br>document by Jason Short, <a href="jshort@devon.dhs.org">jshort@devon.dhs.org</a>.
 </body>
 </html>
