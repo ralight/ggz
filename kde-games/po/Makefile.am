@@ -1,2 +1,2 @@
-SUBDIRS = KReversi kdots koenig krosswater ktictactux muehle
+SUBDIRS = KReversi kdots koenig krosswater ktictactux muehle fyrdman
 

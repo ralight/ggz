@@ -93,6 +93,7 @@ AC_CONFIG_FILES([Makefile
 	po/krosswater/Makefile
 	po/muehle/Makefile
 	po/koenig/Makefile
+	po/fyrdman/Makefile
 	fyrdman/Makefile
 	fyrdman/module.dsc
 	fyrdman/data/Makefile
