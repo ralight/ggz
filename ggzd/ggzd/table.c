@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3499 2002-03-02 01:08:52Z bmh $
+ * $Id: table.c 3511 2002-03-02 17:05:43Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -946,61 +946,28 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 
 static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 {
-	int size, index;
+	int size;
 	char* current;
-	unsigned char table_state;
 	GGZTable info;
 
-	/* Always allocate space for opcode and table index*/
-	size = sizeof(char) + sizeof(int);
+	/* Allocate space for opcode and table */
+	size = sizeof(char) + sizeof(GGZTable);
 
-	pthread_rwlock_rdlock(&table->lock);
-	index = table->index;
-	pthread_rwlock_unlock(&table->lock);
-	
-	switch (opcode) {
-	case GGZ_UPDATE_ADD:
-	case GGZ_UPDATE_DESC:
-		/* Pack entire table for ADD or DESC */
-		size += sizeof(GGZTable);
-		break;
-	case GGZ_UPDATE_STATE:
-		/* Pack table state for STATE */
-		size += sizeof(char);
-		break;
-	}
-		
 	if ( (*data = malloc(size)) == NULL)
 		err_sys_exit("malloc failed in table_pack");
+	
+	pthread_rwlock_rdlock(&table->lock);
+	info = *table;
+	pthread_rwlock_unlock(&table->lock);
 	
 	current = (char*)*data;
 	
 	*(unsigned char*)current = opcode;
 	current += sizeof(char);
-
-	*(int*)current = index;
-	current += sizeof(int);
-
-	switch (opcode) {
-	case GGZ_UPDATE_ADD:
-	case GGZ_UPDATE_DESC:
-		pthread_rwlock_rdlock(&table->lock);
-		info = *table;
-		pthread_rwlock_unlock(&table->lock);
-		
-		*(GGZTable*)current = info;
-		current += sizeof(GGZTable);
-		break;
-	case GGZ_UPDATE_STATE:
-		pthread_rwlock_rdlock(&table->lock);
-		table_state = table->state;
-		pthread_rwlock_unlock(&table->lock);
-
-		*(unsigned char*)current = table_state;
-		current += sizeof(char);
-		break;
-	}
-
+	
+	*(GGZTable*)current = info;
+	current += sizeof(GGZTable);
+	
 	return size;
 }
 
@@ -1008,13 +975,15 @@ static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 static int table_transit_pack(void** data, unsigned char opcode,
 			      GGZTable* table, char* name, unsigned int seat)
 {
-	int size, index;
+	int size;
 	char* current;
+	GGZTable info;
 
-	size = sizeof(char) + 2*sizeof(int) + strlen(name)+1;
+	/* Allocate space for opcode, table, player name, and seat number */
+	size = sizeof(char) + sizeof(GGZTable) + strlen(name)+1 + sizeof(int);
 
 	pthread_rwlock_rdlock(&table->lock);
-	index = table->index;
+	info = *table;
 	pthread_rwlock_unlock(&table->lock);
 	
 	if ( (*data = malloc(size)) == NULL)
@@ -1025,8 +994,8 @@ static int table_transit_pack(void** data, unsigned char opcode,
 	*(unsigned char*)current = opcode;
 	current += sizeof(char);
 
-	*(int*)current = index;
-	current += sizeof(int);
+	*(GGZTable*)current = info;
+	current += sizeof(GGZTable);
 
 	strcpy(current, name);
 	current += (strlen(name) + 1);
@@ -1042,11 +1011,11 @@ static int table_transit_pack(void** data, unsigned char opcode,
 static GGZEventFuncReturn table_event_callback(void* target, int size,
                                                void* data)
 {
-	unsigned char opcode, table_state;
+	unsigned char opcode;
 	char* name = NULL;
 	char* current;
 	GGZTable info;
-	int seat_num = -1, index;
+	int seat_num = -1;
 	GGZPlayer* player;
 
 	player = (GGZPlayer*)target;
@@ -1057,41 +1026,29 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 	opcode = *(unsigned char*)current;
 	current += sizeof(char);
 	
-	index = *(int*)current;
-	current += sizeof(int);
+	info = *(GGZTable*)current;
+	current += sizeof(GGZTable);
 
 	
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
-		info.index = index;
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d deleted",
-			player->name, index);
+			player->name, info.index);
 		break;
 
 	case GGZ_UPDATE_ADD:
-		info = *(GGZTable*)current;
-		current += sizeof(GGZTable);
-		info.index = index;
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
-			player->name, index);
+			player->name, info.index);
 		break;
 
 	case GGZ_UPDATE_DESC:
-		info = *(GGZTable*)current;
-		current += sizeof(GGZTable);
-		info.index = index;
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
-			player->name, index, info.desc);
+			player->name, info.index, info.desc);
 		break;		
 		
 	case GGZ_UPDATE_STATE:
-		table_state = *(unsigned char*)current;
-		current += sizeof(char);
-		info.index = index;
-		info.state = table_state;
-
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
-			player->name, index, table_state);
+			player->name, info.index, info.state);
 		break;
 
 	case GGZ_UPDATE_LEAVE:
@@ -1100,15 +1057,14 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 		current += (strlen(name) + 1);
 		seat_num = *(int*)current;
 		current += sizeof(int);
-		info.index = index;
 		info.seat_types[seat_num] = GGZ_SEAT_PLAYER;
 		strcpy(info.seat_names[seat_num], name);
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, name, 
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
-			seat_num, index);
-
+			seat_num, info.index);
+		
 		break;
 	}
 
