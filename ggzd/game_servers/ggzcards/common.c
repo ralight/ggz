@@ -761,8 +761,8 @@ int handle_player(player_t p)
 					game.which_game = game_types[option];
 
 					if (game.which_game < 0 || game.which_game >= GGZ_NUM_GAMES) {
-						ggz_debug("SERVER/CLIENT error: bad game type %d selected; using %d instead.", game.which_game, GGZ_DEFAULT_GAME);
-						game.which_game = GGZ_DEFAULT_GAME;
+						ggz_debug("SERVER/CLIENT error: bad game type %d selected; using %d instead.", game.which_game, game_types[0]);
+						game.which_game = game_types[0];
 					}
 
 					game_init_game();

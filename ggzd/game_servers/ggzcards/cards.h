@@ -58,14 +58,16 @@ typedef struct hand_t {
 
 /* there should be an entry here for every kind of deck,
  * and cards.c should be able to handle them. */
-#define GGZ_DECK_FULL		1 /* all 52 cards */
-#define GGZ_DECK_LAPOCHA	2 /* missing 10, 9, 8 */
-#define GGZ_DECK_SUARO		3 /* A-8 in each suit */
-#define GGZ_DECK_EUCHRE		4 /* A-9 in each suit */
-#define GGZ_DECK_SKAT		5 /* A-7 in each suit */
+typedef enum deck_type_t {
+	GGZ_DECK_FULL,		/* all 52 cards */
+	GGZ_DECK_LAPOCHA,	/* missing 10, 9, 8 */
+	GGZ_DECK_SUARO,		/* A-8 in each suit */
+	GGZ_DECK_EUCHRE,	/* A-9 in each suit */
+	GGZ_DECK_SKAT,		/* A-7 in each suit */
+} deck_type_t;
 
 /* Exported functions */
-extern void cards_create_deck(int which_deck);
+extern void cards_create_deck(deck_type_t which_deck);
 extern void cards_destroy_deck();
 extern void cards_shuffle_deck(void);
 extern void cards_deal_hand(int handsize, hand_t *hand);

@@ -42,7 +42,7 @@ char* short_suit_names[4] = {"C", "D", "H", "S"};
  *   This is more complex than might seem necessary, but allows a game-designer
  *   to very easily invent new card deck types by merely setting the params
  */
-void cards_create_deck(int which_deck)
+void cards_create_deck(deck_type_t which_deck)
 {
 	int face, suit, deck;
 	int cardnum;
