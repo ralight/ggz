@@ -10,7 +10,11 @@
 #include <time.h>
 #include "minidom.h"
 
-#define METASERVDIR "/usr/local/share/metaserv"
+/* The directory where metaservconf.xml resides */
+#define METASERV_DIR "/usr/local/share/metaserv"
+
+/* Optimized code is much faster, but not so readable */
+#define METASERV_OPTIMIZED 1
 
 /*
  URI:
@@ -45,11 +49,12 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 
 	if((!class) || (!category) || (!key)) return NULL;
 
-	att = configuration->el->at;
+	/*att = configuration->el->at;*/
 	valid = 0;
 	preference = 0;
 	ret = NULL;
 	r = NULL;
+	ele = NULL;
 
 	srand(time(NULL));
 
@@ -64,19 +69,30 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 		strcpy(xmlret, header);
 	}
 
-	i = 0;
-	while((att) && (att[i]))
+	j = 0;
+	while((configuration->el->el) && (configuration->el->el[j]) && (!valid))
 	{
-		if((!strcmp(att[i]->name, "class"))
-		&& (!strcmp(att[i]->value, class)))
+#ifdef METASERV_OPTIMIZED
+		i = 0;
+		while((configuration->el->el[j]->at) && (configuration->el->el[j]->at[i]))
 		{
-			valid = 1;
+			if((!strcmp(configuration->el->el[j]->at[i]->name, "class"))
+			&& (!strcmp(configuration->el->el[j]->at[i]->value, class)))
+			{
+				valid = 1;
+				ele = configuration->el->el[j]->el;
+			}
+			i++;
 		}
-		i++;
+#else
+		valid = !strcmp(MD_att(configuration->el->el[j], "class"), class);
+		if(valid) ele = configuration->el->el[j]->el;
+#endif
+		j++;
 	}
 	if(!valid) return NULL;
 
-	ele = configuration->el->el;
+	/*ele = configuration->el->el;*/
 	i = 0;
 	while((ele) && (ele[i]))
 	{
@@ -125,36 +141,50 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 	return ret;
 }
 
-int metaserv_auth(const char *username, const char *password, const char *capability)
+int metaserv_auth(const char *username, const char *password, const char *capability, const char *realm)
 {
 	ELE *ele;
+#ifdef METASERV_OPTIMIZED
 	ATT **att;
-	int i, j;
-	char *username2, *password2, *capability2;
+	int j;
+#endif
+	int i;
+	char *username2, *password2, *capability2, *realm2;
 
-	ele = configuration->el;
+	/*ele = configuration->el;*/
+	ele = MD_query(configuration->el, "configuration");
 	i = 0;
 	while((ele) && (ele->el) && (ele->el[i]))
 	{
 		if(!strcmp(ele->el[i]->name, "authorization"))
 		{
+#ifdef METASERV_OPTIMIZED
 			att = ele->el[i]->at;
-			j = 0;
 			username2 = NULL;
 			password2 = NULL;
 			capability2 = NULL;
+			realm2 = NULL;
+			j = 0;
 			while((att) && (att[j]))
 			{
 				if(!strcmp(att[j]->name, "username")) username2 = att[j]->value;
 				if(!strcmp(att[j]->name, "password")) password2 = att[j]->value;
-				if(!strcmp(att[j]->name, "update")) capability2 = att[j]->value;
+				if(!strcmp(att[j]->name, capability)) capability2 = att[j]->value;
+				if(!strcmp(att[j]->name, "realm")) realm2 = att[j]->value;
 				j++;
 			}
-			if((username2) && (password2) && (capability2))
+#else
+			username2 = MD_att(ele->el[i], "username");
+			password2 = MD_att(ele->el[i], "password");
+			capability2 = MD_att(ele->el[i], capability);
+			realm2 = MD_att(ele->el[i], "realm");
+#endif
+			if((username2) && (password2) && (capability2) && (realm2))
 			{
 				if((!strcmp(username, username2))
 				&& (!strcmp(password, password2))
-				&& (!strcmp("1", capability2)))
+				&& (!strcmp("1", capability2))
+				&& (!strcmp(realm, realm2)))
 				{
 					return 1;
 				}
@@ -169,35 +199,54 @@ int metaserv_auth(const char *username, const char *password, const char *capabi
 void metaserv_peers()
 {
 	int i, j;
-	ELE *el;
+	ELE *el2, *el;
 	char *username, *password, *uri;
 
+printf("Notify peers...\n");
+
+#ifdef METASERV_OPTIMIZED
+	el2 = NULL;
 	i = 0;
 	while((configuration->el) && (configuration->el->el) && (configuration->el->el[i]))
 	{
-		el = configuration->el->el[i];
-		if(!strcmp(el->name, "peer"))
+		if(!strcmp(configuration->el->el[i]->name, "configuration")) el2 = configuration->el->el[i];
+		i++;
+	}
+#else
+	el2 = MD_query(configuration->el, "configuration");
+#endif
+
+	i = 0;
+	while((el2) && (el2->el) && (el2->el[i]))
+	{
+		el = el2->el[i];
+		uri = el->value;
+
+printf("Got peer: %s\n", uri);
+#ifdef METASERV_OPTIMIZED
+		username = NULL;
+		password = NULL;
+		j = 0;
+		while((el->at) && (el->at[j]))
 		{
-			uri = el->value;
-			j = 0;
-			username = NULL;
-			password = NULL;
-			while((el->at) && (el->at[j]))
-			{
-				if(!strcmp(el->at[j]->name, "username")) username = el->at[j]->value;
-				if(!strcmp(el->at[j]->name, "password")) password = el->at[j]->value;
-				j++;
-			}
-			if((uri) && (username) && (password))
-			{
-				printf("==> notify: %s:%s@%s\n", username, password, uri);
-			}
+			if(!strcmp(el->at[j]->name, "username")) username = el->at[j]->value;
+			if(!strcmp(el->at[j]->name, "password")) password = el->at[j]->value;
+			j++;
 		}
+#else
+		username = MD_att(el, "username");
+		password = MD_att(el, "password");
+#endif
+		if((uri) && (username) && (password))
+		{
+			printf("==> notify: %s:%s@%s\n", username, password, uri);
+		}
+
 		i++;
 	}
 }
 
-char *metaserv_update(const char *class, const char *category, const char *username, const char *password, const char *uri, ATT **att, int atnum)
+char *metaserv_update(const char *class, const char *category, const char *username, const char *password, const char *uri, ATT **att, int atnum, const char *mode)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"update\">";
 	const char *footer = "</resultset>";
@@ -205,42 +254,94 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 	char *ret;
 	char tmp[1024];
 	char *status;
-	ELE *ele;
+	ELE *ele, *ele2;
+	char *att2;
+	int i;
+#ifdef METASERV_OPTIMIZED
+	int j;
+#endif
 
 	if((!configuration)
 	|| (!configuration->el)
 	|| (!configuration->valid)
 	|| (!configuration->processed)) return NULL;
 
-	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum)) return NULL;
+	if((!class) || (!category) || (!username) || (!password) || (!uri) || (!att) || (!atnum) || (!mode)) return NULL;
 
 	ret = NULL;
+	ele2 = NULL;
+	att2 = NULL;
 
 	status = "accepted";
-	if(!metaserv_auth(username, password, "update"))
+	if(!metaserv_auth(username, password, "update", class))
 	{
 		status = "rejected";
 	}
 	else
 	{
-		/* create XML element from update data */
-		ele = (ELE*)malloc(sizeof(ELE));
-		ele->name = strdup(category);
-		ele->el = NULL;
-		ele->parent = configuration->el;
-		ele->at = att;
-		ele->elnum = 0;
-		ele->atnum = atnum;
-		ele->value = strdup(uri);
+		i = 0;
+		while((configuration->el->el) && (configuration->el->el[i]) && (!att2))
+		{
+			if(!strcmp(configuration->el->el[i]->name, "entrylist"))
+			{
+				ele2 = configuration->el->el[i];
+#ifdef METASERV_OPTIMIZED
+				att2 = NULL;
+				j = 0;
+				while((ele2->at) && (ele2->at[j]))
+				{
+					if(!strcmp(ele2->at[j]->name, "class") && (!strcmp(ele2->at[j]->value, class)))
+						att2 = ele2->at[j]->value;
+					j++;
+				}
+#else
+			att2 = MD_att(ele2, "class");
+#endif
+			}
+			i++;
+		}
 
-		/* add updated data to the meta server */
-		configuration->el->elnum++;
-		configuration->el->el = (ELE**)realloc(configuration->el->el, (configuration->el->elnum + 1) * sizeof(ELE*));
-		configuration->el->el[configuration->el->elnum - 1] = ele;
-		configuration->el->el[configuration->el->elnum] = NULL;
+		if(att2)
+		{
+			if(!strcmp(mode, "add"))
+			{
+				/* create XML element from update data */
+				ele = (ELE*)malloc(sizeof(ELE));
+				ele->name = strdup(category);
+				ele->el = NULL;
+				ele->parent = ele2;
+				ele->at = att;
+				ele->elnum = 0;
+				ele->atnum = atnum;
+				ele->value = strdup(uri);
 
-		/* dump new configuration */
-		minidom_dump(configuration);
+				/* add updated data to the meta server */
+				ele2->elnum++;
+				ele2->el = (ELE**)realloc(ele2->el, (ele2->elnum + 1) * sizeof(ELE*));
+				ele2->el[ele2->elnum - 1] = ele;
+				ele2->el[ele2->elnum] = NULL;
+
+				/* dump new configuration */
+				minidom_dump(configuration);
+			}
+			else if(!strcmp(mode, "modify"))
+			{
+			}
+			else if(!strcmp(mode, "delete"))
+			{
+				/* remove XML element */
+				free(ele2);
+				ele2 = NULL;
+
+				/* dump new configuration */
+				minidom_dump(configuration);
+			}
+			else status = "wrong";
+		}
+		else
+		{
+			status = "wrong";
+		}
 	}
 
 	if(xmlret)
@@ -272,15 +373,15 @@ char *metaserv_xml(const char *uri)
 	char *class, *category;
 	char *username, *password;
 	char *uri2, *name;
-	int i, j, atnum;
+	char *mode;
+	int i, atnum;
+#ifdef METASERV_OPTIMIZED
+	int j;
+#endif
 
 	ret = NULL;
-	class = NULL;
-	category = NULL;
-	username = NULL;
-	password = NULL;
 	uri2 = NULL;
-	i = 0;
+	mode = NULL;
 	atnum = 0;
 
 	query = minidom_parse(uri);
@@ -293,17 +394,31 @@ char *metaserv_xml(const char *uri)
 
 	if((!strcmp(query->el->name, "query")) && (query->el->value))
 	{
+#ifdef METASERV_OPTIMIZED
+		class = NULL;
+		category = NULL;
+		i = 0;
 		while((query->el->at) && (query->el->at[i]))
 		{
 			if(!strcmp(query->el->at[i]->name, "class")) class = query->el->at[i]->value;
 			if(!strcmp(query->el->at[i]->name, "type")) category = query->el->at[i]->value;
 			i++;
 		}
+#else
+		class = MD_att(query->el, "class");
+		category = MD_att(query->el, "type");
+#endif
 		ret = metaserv_lookup(class, category, query->el->value, 1);
 	}
 
 	if(!strcmp(query->el->name, "update"))
 	{
+#ifdef METASERV_OPTIMIZED
+		class = NULL;
+		category = NULL;
+		username = NULL;
+		password = NULL;
+		i = 0;
 		while((query->el->at) && (query->el->at[i]))
 		{
 			if(!strcmp(query->el->at[i]->name, "class")) class = query->el->at[i]->value;
@@ -313,11 +428,19 @@ char *metaserv_xml(const char *uri)
 			i++;
 		}
 		i = 0;
+#else
+		class = MD_att(query->el, "class");
+		category = MD_att(query->el, "type");
+		username = MD_att(query->el, "username");
+		password = MD_att(query->el, "password");
+#endif
 		att = NULL;
+		i = 0;
 		while((query->el->el) && (query->el->el[i]) && (query->el->el[i]->value))
 		{
 			if(!strcmp(query->el->el[i]->name, "option"))
 			{
+#ifdef METASERV_OPTIMIZED
 				name = NULL;
 				j = 0;
 				while((query->el->el[i]->at) && (query->el->el[i]->at[j]))
@@ -325,21 +448,35 @@ char *metaserv_xml(const char *uri)
 					if(!strcmp(query->el->el[i]->at[j]->name, "name")) name = query->el->el[i]->at[j]->value;
 					j++;
 				}
+#else
+				name = MD_att(query->el->el[i], "name");
+#endif
 				if(name)
 				{
-					atnum++;
-					att = (ATT**)realloc(att, (atnum + 1) * sizeof(ATT*));
-					att[atnum - 1] = (ATT*)malloc(sizeof(ATT));
-					att[atnum - 1]->name = strdup(name);
-					att[atnum - 1]->value = strdup(query->el->el[i]->value);
-					att[atnum] = NULL;
-					printf("Got: %s/%s\n", name, query->el->el[i]->value);
+					if(!strcmp(name, "uri"))
+					{
+						uri2 = query->el->el[i]->value;
+					}
+					else if(!strcmp(name, "mode"))
+					{
+						mode = query->el->el[i]->value;
+					}
+					else
+					{
+						atnum++;
+						att = (ATT**)realloc(att, (atnum + 1) * sizeof(ATT*));
+						att[atnum - 1] = (ATT*)malloc(sizeof(ATT));
+						att[atnum - 1]->name = strdup(name);
+						att[atnum - 1]->value = strdup(query->el->el[i]->value);
+						att[atnum] = NULL;
+						printf("Got: %s/%s\n", name, query->el->el[i]->value);
+					}
 				}
 			}
-			if(!strcmp(query->el->el[i]->name, "uri")) uri2 = query->el->el[i]->value;
+			/*if(!strcmp(query->el->el[i]->name, "uri")) uri2 = query->el->el[i]->value;*/
 			i++;
 		}
-		ret = metaserv_update(class, category, username, password, uri2, att, atnum);
+		ret = metaserv_update(class, category, username, password, uri2, att, atnum, mode);
 	}
 
 	minidom_free(query);
@@ -394,7 +531,7 @@ char *metamagic(char *uri)
 
 void metaserv_init()
 {
-	configuration = minidom_load(METASERVDIR "/metaservconf.xml");
+	configuration = minidom_load(METASERV_DIR "/metaservconf.xml");
 	minidom_dump(configuration);
 	/*fflush(NULL);*/
 }

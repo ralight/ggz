@@ -1,0 +1,23 @@
+!! IMPORTANT !!
+Only 'add' works currently, 'delete' and 'modify' are not implemented yet!!!
+
+Add an entry to GGZ:
+
+<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks"><option name="mode">add</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">ggz://somehost.org:5688</option></update>
+
+Remove an entry from GGZ:
+
+<?xml version="1.0"?><update class="ggz" type="connection" username="josef" password="ggzrocks"><option name="mode">delete</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">ggz://somehost.org:5688</option></update>
+
+Add an entry to Atlantik:
+
+<?xml version="1.0"?><update class="atlantik" type="connection" username="capsi" password="whatever"><option name="mode">add</option><option name="version">0.0.5pre</option><option name="preference">50</option><option name="uri">atlantik://someotherhost.org:9999</option></update>
+
+Query GGZ:
+
+<?xml version="1.0"?><query class="ggz" type="connection">0.0.5pre</query>
+
+Query Altantik:
+
+<?xml version="1.0"?><query class="atlantik" type="connection">0.1</query>
+

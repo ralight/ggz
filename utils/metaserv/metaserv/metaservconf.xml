@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
-<configuration class="ggz">
-	<connection version="0.0.5pre" preference="50">ggz://jzaun.com:5688</connection>
-	<connection version="0.0.4" preference="100">ggz://ggz.snafu.de:5688</connection>
-	<connection version="0.0.4" preference="100">ggz://ggz.morat.net:5688</connection>
-	<authorization username="josef" password="ggzrocks" update="1"/>
-	<peer username="node02" password="ggzrocks">ggz://jzaun.com:5688</peer>
-</configuration>
+<metaserver>
+	<entrylist class="ggz">
+		<connection version="0.0.5pre" preference="50">ggz://jzaun.com:5688</connection>
+		<connection version="0.0.4" preference="100">ggz://ggz.snafu.de:5688</connection>
+		<connection version="0.0.4" preference="100">ggz://ggz.morat.net:5688</connection>
+	</entrylist>
+	<entrylist class="atlantik">
+		<connection version="0.1" preference="100">atlantik://capsi.com:9999</connection>
+	</entrylist>
+	<configuration>
+		<authorization username="josef" password="ggzrocks" realm="ggz" update="1"/>
+		<authorization username="capsi" password="whatever" realm="atlantik" update="1"/>
+		<peer username="node02" password="ggzrocks">ggz://jzaun.com:5688</peer>
+	</configuration>
+</metaserver>
 

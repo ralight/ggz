@@ -11,12 +11,15 @@ Every meta server maintains (in metaserverconf.xml) a list of authorizations,
 beside the actual URIs. All people listed with the 'update' capability can
 submit updates. This does of course apply to servers as well once they're able
 to do so.
+Each autorization belongs to one realm (like 'ggz' or 'atlantik'), and only the
+configuration section containing this realm can be updated.
 
 	c->s:	<?xml version="1.0"?>
 			<update class="ggz" type="connection" username="heinz" password="*******">
+				<option name="mode">add</option>
 				<option name="version">0.0.5pre</option>
 				<option name="preference">50</option>
-				<uri>ggz://jzaun.com:5688</uri>
+				<option name="uri">ggz://jzaun.com:5688</option>
 			</update>
 	s->c:	<?xml version="1.0"?>
 			<resultset referer="update">
@@ -24,6 +27,11 @@ to do so.
 					<status>accepted</status>
 				</result>
 			</resultset>
+
+The following modes can be used:
+add: add this entry to the list
+modify: if such an entry exists, change some parts like the preference or version
+delete: if such an entry exists, delete it
 
 The following status codes can occur:
 
@@ -37,6 +45,8 @@ data is lost when multiple requests arrive at the same time. For testing
 purpose we leave it at port 15689 spawned by inetd, however.
 
 Only queries should be done using the URI method, updates require XML format.
+It is _strongly_ recommended to use TLS encryption for the transmission of data
+like usernames or passwords.
 
 Josef
 

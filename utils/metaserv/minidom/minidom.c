@@ -421,3 +421,18 @@ ELE *MD_query(ELE *parent, const char *name)
 	return NULL;
 }
 
+/* Get an attribute's value */
+char *MD_att(ELE *element, const char *name)
+{
+	int i;
+
+	if((!element) || (!element->at)) return NULL;
+	i = 0;
+	while((element->at[i]))
+	{
+		if(!strcmp(element->at[i]->name, name)) return element->at[i]->value;
+		i++;
+	}
+	return NULL;
+}
+
