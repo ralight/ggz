@@ -70,15 +70,17 @@ void game_message(char *msg) {
  * CHESS_EVENT_TIME_REQUEST -> NULL
  * CHESS_EVENT_TIME_OPTION -> time option
  * CHESS_EVENT_START -> NULL
- * CHESS_EVENT_MOVE_START -> arg[0] = (int)FROM_X
- *                           arg[1] = (int)FROM_Y
- *                           arg[2] = drag_context
  * CHESS_EVENT_MOVE_END -> arg[0] = (int)FROM_X
  *                         arg[1] = (int)FROM_Y
  *                         arg[2] = (int)TO_X
  *                         arg[3] = (int)TO_Y
+ * CHESS_EVENT_MOVE -> arg[0] = (char)FROM
+ *                     arg[1] = (char)TO
+ * CHESS_EVENT_GAMEOVER -> arg[0] = (char)OVER_CODE
+ *
  */
 void game_update(int event, void *arg) {
+  char move[5];
   switch (event) {
     case CHESS_EVENT_INIT:
       if (game_info.state != CHESS_STATE_INIT)
@@ -132,6 +134,67 @@ void game_update(int event, void *arg) {
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
       printf("Move from %d/%d to %d/%d\n", *(int*)arg, *((int*)arg+1), *((int*)arg+2), *((int*)arg+3));
+      net_send_move( *(int*)arg+(8**((int*)arg+1)), *((int*)arg+2)+(8**((int*)arg+3)));
+      break;
+    case CHESS_EVENT_MOVE:
+      if (game_info.state != CHESS_STATE_PLAYING)
+        break;
+      if (!arg) {
+        game_message("Invalid move!\n");
+        break;
+      }
+      move[0] = 65 + ((*(char*)arg)%8);
+      move[1] = 49 + ( (*(char*)arg)/8 );
+      move[2] = 65 + ((*((char*)arg+1))%8);
+      move[3] = 49 + ((*((char*)arg+1))/8);
+      move[4] = 0;
+      cgc_make_move(game, move);
+      /* FIXME: game_message */
+      printf("Making move %s\n", move);
+      board_draw();
+      break;
+    case CHESS_EVENT_GAMEOVER:
+      switch ( *(char*)arg ) {
+        case CHESS_GAMEOVER_DRAW_AGREEMENT:
+          game_message("Game is over! Both players agred on a draw\n");
+          break;
+        case CHESS_GAMEOVER_DRAW_STALEMATE:
+          game_message("Game is over! We have a stalemate\n");
+          break;
+        case CHESS_GAMEOVER_DRAW_POSREP:
+          game_message("Game is over! Too much repetition of positions\n");
+          break;
+        case CHESS_GAMEOVER_DRAW_MATERIAL:
+          game_message("Game is over! Neither of the players has material for a mate\n");
+          break;
+        case CHESS_GAMEOVER_DRAW_MOVECOUNT:
+          game_message("Game is over! The maximum movecount was reached\n");
+          break;
+        case CHESS_GAMEOVER_DRAW_TIMEMATERIAL:
+          game_message("Gams is over! Time is out and the remaining player doesn't have enough material for a mate\n");
+          break;
+        case CHESS_GAMEOVER_WIN_1_MATE:
+          game_message("Game is over! Player 1 wins by a mate\n");
+          break;
+        case CHESS_GAMEOVER_WIN_1_RESIGN:
+          game_message("Game is over! Player 1 wins, Player 2 has resigned\n");
+          break;
+        case CHESS_GAMEOVER_WIN_1_FLAG:
+          game_message("Game is over! Player 1 wins, Player 2 has run out of time\n");
+          break;
+        case CHESS_GAMEOVER_WIN_2_MATE:
+          game_message("Game is over! Player 2 wins by a mate\n");
+          break;
+        case CHESS_GAMEOVER_WIN_2_RESIGN:
+          game_message("Game is over! Player 2 wins, Player 1 has resigned\n");
+          break;
+        case CHESS_GAMEOVER_WIN_2_FLAG:
+          game_message("Game is over! Player 2 wins, Player 1 has run out of time\n");
+          break;
+        default:
+          game_message("The game should be over, I don't know why\n");
+      }
+      game_info.state = CHESS_STATE_DONE;
       break;
     default:
       /* FIXME: Should be game_message */

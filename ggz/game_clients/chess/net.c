@@ -86,6 +86,23 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       game_update(CHESS_EVENT_START, NULL);
       printf("Got an MSG_START\n");
       break;
+    case CHESS_MSG_MOVE:
+      /* We got an move! */
+      es_read_char(fd, &args[0]);
+      if (args[0] == -1) 
+        /* Invalid move */
+        game_update(CHESS_EVENT_MOVE, NULL);
+      else {
+        es_read_char(fd, &args[1]);
+        game_update(CHESS_EVENT_MOVE, args);
+      }
+      printf("Got an MSG_MOVE\n");
+      break;
+    case CHESS_MSG_GAMEOVER:
+      /* The game is over */
+      es_read_char(fd, &args[0]);
+      game_update(CHESS_EVENT_GAMEOVER, args);
+      break;
     default:
       printf("Unknown opcode: %d\n", op);
       break;
@@ -96,4 +113,11 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
 void net_send_time(int time_option) {
   es_write_char(game_info.fd, CHESS_RSP_TIME);
   es_write_int(game_info.fd, time_option);
+}
+
+void net_send_move(char from, char to) {
+  es_write_char(game_info.fd, CHESS_REQ_MOVE);
+  es_write_char(game_info.fd, from);
+  es_write_char(game_info.fd, to);
+  printf("Sending move %d %d\n", from, to);
 }

@@ -25,6 +25,9 @@
 /* Send time option to server */
 void net_send_time(int time_option);
 
+/* Send move to server */
+void net_send_move(char from, char to);
+
 /* All server input will pass through here
  * Then we will filter it and send to game_update */
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond);
