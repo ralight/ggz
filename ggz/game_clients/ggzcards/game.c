@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3325 2002-02-11 09:12:57Z jdorje $
+ * $Id: game.c 3341 2002-02-12 23:23:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -509,8 +509,19 @@ static void text_cardlist_message(const char *mark, int *lengths,
 void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist)
 {
+	static int use_cardlists = -1;
+	
 	ggz_debug("main", "Received cardlist message for '%s'.", mark);
-	if (preferences.cardlists) {
+	
+	/* We can't change the cardlists from graphical to text once
+	   they've been created, so instead we just don't have the
+	   preference take effect until the _first_ cardlist appears.
+	   The user should still be able to change the pref after this
+	   point, but it won't take effect until they restart. */
+	if (use_cardlists == -1)
+		use_cardlists = preferences.cardlists;
+	
+	if (use_cardlists) {
 		/* if pref_cardlists is set, then we make a graphical
 		   cardlist popup dialog. */
 		menubar_cardlist_message(mark, lengths, cardlist);
