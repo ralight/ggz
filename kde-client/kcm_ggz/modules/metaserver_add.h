@@ -1,10 +1,10 @@
 #ifndef METASERVER_ADD_H
 #define METASERVER_ADD_H
 
-#include <qwidget.h>
+#include <kdialogbase.h>
 #include <qlineedit.h>
 
-class MetaserverAdd : public QWidget
+class MetaserverAdd : public KDialogBase
 {
 	Q_OBJECT
 	public:

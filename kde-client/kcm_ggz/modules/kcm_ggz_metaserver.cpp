@@ -28,8 +28,6 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	QGroupBox *box, *box_servers;
 	QVBoxLayout *vboxroot;
 
-	dialog = NULL;
-	dialog_servers = NULL;
 	m_query = query_invalid;
 
 	box = new QGroupBox(i18n("Available meta servers"), this);
@@ -51,6 +49,8 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	view_servers->addColumn(i18n("URI"));
 	view_servers->addColumn(i18n("Type"));
 	view_servers->addColumn(i18n("Priority"));
+	view_servers->addColumn(i18n("Location"));
+	view_servers->addColumn(i18n("Speed"));
 	view_servers->addColumn(i18n("Description"));
 
 	vboxroot = new QVBoxLayout(this, 5);
@@ -79,12 +79,17 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	connect(add_servers, SIGNAL(clicked()), SLOT(slotAddServer()));
 	connect(autoconfig, SIGNAL(clicked()), SLOT(slotAuto()));
 	connect(autoconfig_servers, SIGNAL(clicked()), SLOT(slotAutoServer()));
+
+	connect(remove, SIGNAL(clicked()), SIGNAL(signalChanged()));
+	connect(remove_servers, SIGNAL(clicked()), SIGNAL(signalChanged()));
+	connect(add, SIGNAL(clicked()), SIGNAL(signalChanged()));
+	connect(add_servers, SIGNAL(clicked()), SIGNAL(signalChanged()));
+	connect(autoconfig, SIGNAL(clicked()), SIGNAL(signalChanged()));
+	connect(autoconfig_servers, SIGNAL(clicked()), SIGNAL(signalChanged()));
 }
 
 KCMGGZMetaserver::~KCMGGZMetaserver()
 {
-	if(dialog) delete dialog;
-	if(dialog_servers) delete dialog_servers;
 }
 
 void KCMGGZMetaserver::slotDelete()
@@ -99,22 +104,17 @@ void KCMGGZMetaserver::slotDeleteServer()
 
 void KCMGGZMetaserver::slotAdd()
 {
-	if(!dialog)
-	{
-		dialog = new MetaserverAdd();
-		connect(dialog, SIGNAL(signalAdd(QString, QString)), SLOT(slotAdded(QString, QString)));
-	}
-	dialog->show();
+	MetaserverAdd dialog;
+	connect(&dialog, SIGNAL(signalAdd(QString, QString)), SLOT(slotAdded(QString, QString)));
+	dialog.exec();
 }
 
 void KCMGGZMetaserver::slotAddServer()
 {
-	if(!dialog_servers)
-	{
-		dialog_servers = new MetaserverAddServer();
-		connect(dialog_servers, SIGNAL(signalAdd(QString, QString, QString)), SLOT(slotAddedServer(QString, QString, QString)));
-	}
-	dialog_servers->show();
+	MetaserverAddServer dialog_servers;
+	connect(&dialog_servers, SIGNAL(signalAdd(QString, QString, QString, QString, QString)),
+		SLOT(slotAddedServer(QString, QString, QString, QString, QString)));
+	dialog_servers.exec();
 }
 
 void KCMGGZMetaserver::slotAuto()
@@ -193,7 +193,7 @@ void KCMGGZMetaserver::slotAutoRead()
 			else
 			{
 				pref = element.attribute("preference", "20");
-				addServerURI(element.text(), "GGZ Gaming Zone", pref, "(none)");
+				addServerURI(element.text(), "GGZ Gaming Zone", pref, QString::null, QString::null, QString::null);
 			}
 		}
 		node = node.nextSibling();
@@ -207,9 +207,9 @@ void KCMGGZMetaserver::slotAdded(QString uri, QString proto)
 	addURI(uri, proto);
 }
 
-void KCMGGZMetaserver::slotAddedServer(QString uri, QString type, QString comment)
+void KCMGGZMetaserver::slotAddedServer(QString uri, QString type, QString location, QString speed, QString comment)
 {
-	addServerURI(uri, type, "100", comment);
+	addServerURI(uri, type, "100", QString::null, QString::null, comment);
 }
 
 void KCMGGZMetaserver::addURI(QString uri, QString proto)
@@ -223,7 +223,7 @@ void KCMGGZMetaserver::addURI(QString uri, QString proto)
 	(void)new KListViewItem(view, uri, proto);
 }
 
-void KCMGGZMetaserver::addServerURI(QString uri, QString type, QString preference, QString comment)
+void KCMGGZMetaserver::addServerURI(QString uri, QString type, QString preference, QString location, QString speed, QString comment)
 {
 	for(QListViewItem *item = view_servers->firstChild(); item; item = item->nextSibling())
 		if(item->text(0) == uri)
@@ -231,23 +231,33 @@ void KCMGGZMetaserver::addServerURI(QString uri, QString type, QString preferenc
 			delete item;
 			break;
 		}
-	(void)new KListViewItem(view_servers, uri, type, preference, comment);
+
+	if(!location) location = i18n("(unknown)");
+	if(!comment) comment = i18n("(none)");
+	if(!speed) speed = i18n("(unknown)");
+	if(!preference) preference = "100";
+
+	(void)new KListViewItem(view_servers, uri, type, preference, location, speed, comment);
+}
+
+void KCMGGZMetaserver::slotSelected(QListViewItem *item, const QPoint& point, int column)
+{
+	if(!item) return;
+	/*if(!popup)
+	{
+		popup = new QPopupMenu(this);
+		popup->insertItem(i18n("Visit the project home page"), menuhomepage);
+		popup->insertItem(i18n("Show all information"), menuinformation);
+		connect(popup, SIGNAL(activated(int)), SLOT(slotActivated(int)));
+	}
+
+	popup->popup(point);*/
 }
 
 void KCMGGZMetaserver::load()
 {
+	int found;
 	QStringList servers, metaservers;
-
-	// Load default game servers
-	addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Justin's Developer server");
-	addServerURI("ggz://ggz.snafu.de", "GGZ Gaming Zone", "10", "GGZ Europe One server");
-	addServerURI("kmonop://somewhere.org", "Atlantik", "10", "Yet another host");
-	addServerURI("freeciv://civserver.freeciv.org", "FreeCiv", "10", "SmallPox is cool");
-
-	// Load default meta servers
-	addURI("ggzmeta://mindx.dyndns.org", "ggz");
-	addURI("ggzmeta://ggz.snafu.de", "ggz");
-	addURI("http://www.freeciv.org/metaserver.html", "freeciv");
 
 	// Read directory;
 	KConfig conf("ggzmetaserverrc");
@@ -256,21 +266,46 @@ void KCMGGZMetaserver::load()
 	metaservers = conf.readListEntry("metaservers");
 
 	// Load local meta servers
+	found = 0;
 	conf.setGroup("Meta servers");
 	for(QStringList::iterator s = metaservers.begin(); s != metaservers.end(); s++)
 	{
 		addURI((*s), conf.readEntry((*s)));
+		found++;
+	}
+
+	// Load default meta servers
+	if(!found)
+	{
+		addURI("ggzmeta://mindx.dyndns.org", "ggz");
+		addURI("ggzmeta://ggz.snafu.de", "ggz");
+		addURI("http://www.freeciv.org/metaserver.html", "freeciv");
 	}
 
 	// Load local game servers
+	found = 0;
 	conf.setGroup("Game servers");
 	for(QStringList::iterator s = servers.begin(); s != servers.end(); s++)
 	{
 		QStringList list;
 		list = conf.readListEntry((*s));
-		if(list.count() == 3)
-			addServerURI((*s), *(list.at(0)), *(list.at(1)), *(list.at(2)));
+		if(list.count() == 5)
+		{
+			found++;
+			addServerURI((*s), *(list.at(0)), *(list.at(1)), *(list.at(2)), *(list.at(3)), *(list.at(4)));
+		}
 	}
+
+	// Load default game servers
+	if(!found)
+	{
+		addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Pennsylvania/USA", QString::null, "Justin's Developer server");
+		addServerURI("ggz://ggz.snafu.de", "GGZ Gaming Zone", "10", "Berlin/Germany", QString::null, "GGZ Europe One server");
+		addServerURI("kmonop://somewhere.org", "Atlantik", "10", "Whereever", QString::null, "Yet another host");
+		addServerURI("freeciv://civserver.freeciv.org", "FreeCiv", "10", "Anywhere", QString::null, "SmallPox is cool");
+	}
+
+
 }
 
 void KCMGGZMetaserver::save()
@@ -291,7 +326,7 @@ void KCMGGZMetaserver::save()
 	for(QListViewItem *item = view_servers->firstChild(); item; item = item->nextSibling())
 	{
 		QStringList list;
-		list << item->text(1) << item->text(2) << item->text(3);
+		list << item->text(1) << item->text(2) << item->text(3) << item->text(4) << item->text(5);
 		conf.writeEntry(item->text(0), list);
 		servers << item->text(0);
 	}

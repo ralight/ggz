@@ -1,45 +1,51 @@
 #include "metaserver_add_server.h"
 #include "metaserver_add_server.moc"
+
+#include <klocale.h>
+
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 
 MetaserverAddServer::MetaserverAddServer(QWidget *parent, const char *name)
-: QWidget(parent, name)
+: KDialogBase(parent, name, true, QString::null, KDialogBase::Ok | KDialogBase::Cancel)
 {
 	QVBoxLayout *vbox;
-	QHBoxLayout *hbox;
-	QPushButton *ok, *cancel;
-	QLabel *lauri, *latype, *lacomment;
+	QLabel *lauri, *latype, *laspeed, *lalocation, *lacomment;
+	QFrame *root;
 
-	ok = new QPushButton("OK", this);
-	cancel = new QPushButton("Cancel", this);
+	root = makeMainWidget();
 
-	lauri = new QLabel("URI:", this);
-	latype = new QLabel("Type of server:", this);
-	lacomment = new QLabel("Comment:", this);
+	lauri = new QLabel(i18n("URI:"), root);
+	latype = new QLabel(i18n("Type of server:"), root);
+	lacomment = new QLabel(i18n("Comment:"), root);
+	laspeed = new QLabel(i18n("Speed:"), root);
+	lalocation = new QLabel(i18n("Location:"), root);
 
-	eduri = new QLineEdit(this);
-	edtype = new QLineEdit(this);
-	edcomment = new QLineEdit(this);
+	eduri = new QLineEdit(root);
+	edtype = new QLineEdit(root);
+	edcomment = new QLineEdit(root);
+	edspeed = new QLineEdit(root);
+	edlocation = new QLineEdit(root);
 
-	vbox = new QVBoxLayout(this, 5);
+	vbox = new QVBoxLayout(root, 5);
 	vbox->add(lauri);
 	vbox->add(eduri);
 	vbox->add(latype);
 	vbox->add(edtype);
+	vbox->add(lalocation);
+	vbox->add(edlocation);
+	vbox->add(laspeed);
+	vbox->add(edspeed);
 	vbox->add(lacomment);
 	vbox->add(edcomment);
-	hbox = new QHBoxLayout(vbox, 5);
-	hbox->add(ok);
-	hbox->add(cancel);
 
-	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
-	connect(cancel, SIGNAL(clicked()), SLOT(close()));
+	connect(this, SIGNAL(okClicked()), SLOT(slotAccept()));
+	connect(this, SIGNAL(cancelClicked()), SLOT(close()));
 
-	resize(300, 200);
-	setCaption("Add a server");
+	//resize(300, 200);
+	setCaption(i18n("Add a server"));
 	show();
 }
 
@@ -49,7 +55,7 @@ MetaserverAddServer::~MetaserverAddServer()
 
 void MetaserverAddServer::slotAccept()
 {
-	emit signalAdd(eduri->text(), edtype->text(), edcomment->text());
+	emit signalAdd(eduri->text(), edtype->text(), edlocation->text(), edspeed->text(), edcomment->text());
 	close();
 }
 

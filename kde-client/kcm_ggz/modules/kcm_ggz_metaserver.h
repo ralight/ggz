@@ -4,9 +4,8 @@
 #include "kcm_ggz_pane.h"
 
 class KListView;
-class MetaserverAdd;
-class MetaserverAddServer;
 class QSocket;
+class QListViewItem;
 
 class KCMGGZMetaserver : public KCMGGZPane
 {
@@ -28,19 +27,18 @@ class KCMGGZMetaserver : public KCMGGZPane
 		void slotAutoConnected();
 		void slotAutoRead();
 		void slotAdded(QString uri, QString proto);
-		void slotAddedServer(QString uri, QString type, QString comment);
+		void slotAddedServer(QString uri, QString type, QString location, QString speed, QString comment);
 		void slotAutoError(int error);
+		void slotSelected(QListViewItem *item, const QPoint& point, int column);
 
 	signals:
 		void signalChanged();
 
 	private:
 		void addURI(QString uri, QString proto);
-		void addServerURI(QString uri, QString type, QString pref, QString comment);
+		void addServerURI(QString uri, QString type, QString pref, QString location, QString speed, QString comment);
 
 		KListView *view, *view_servers;
-		MetaserverAdd *dialog;
-		MetaserverAddServer *dialog_servers;
 		QSocket *sock;
 		enum QueryTypes
 		{

@@ -1,41 +1,39 @@
 #include "metaserver_add.h"
 #include "metaserver_add.moc"
+
+#include <klocale.h>
+
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 
 MetaserverAdd::MetaserverAdd(QWidget *parent, const char *name)
-: QWidget(parent, name)
+: KDialogBase(parent, name, true, QString::null, KDialogBase::Ok | KDialogBase::Cancel)
 {
 	QVBoxLayout *vbox;
-	QHBoxLayout *hbox;
-	QPushButton *ok, *cancel;
 	QLabel *lauri, *laproto;
+	QFrame *root;
+	
+	root = makeMainWidget();
 
-	ok = new QPushButton("OK", this);
-	cancel = new QPushButton("Cancel", this);
+	lauri = new QLabel(i18n("URI:"), root);
+	laproto = new QLabel(i18n("Supported classes:"), root);
 
-	lauri = new QLabel("URI:", this);
-	laproto = new QLabel("Supported classes:", this);
+	eduri = new QLineEdit(root);
+	edproto = new QLineEdit(root);
 
-	eduri = new QLineEdit(this);
-	edproto = new QLineEdit(this);
-
-	vbox = new QVBoxLayout(this, 5);
+	vbox = new QVBoxLayout(root, 5);
 	vbox->add(lauri);
 	vbox->add(eduri);
 	vbox->add(laproto);
 	vbox->add(edproto);
-	hbox = new QHBoxLayout(vbox, 5);
-	hbox->add(ok);
-	hbox->add(cancel);
 
-	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
-	connect(cancel, SIGNAL(clicked()), SLOT(close()));
+	connect(this, SIGNAL(okClicked()), SLOT(slotAccept()));
+	connect(this, SIGNAL(cancelClicked()), SLOT(close()));
 
-	resize(300, 150);
-	setCaption("Add a metaserver");
+	//resize(300, 150);
+	setCaption(i18n("Add a metaserver"));
 	show();
 }
 
@@ -46,6 +44,6 @@ MetaserverAdd::~MetaserverAdd()
 void MetaserverAdd::slotAccept()
 {
 	emit signalAdd(eduri->text(), edproto->text());
-	close();
+	accept();
 }
 
