@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2453 2001-09-11 19:20:55Z jdorje $
+ * $Id: common.c 2619 2001-10-28 09:10:27Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -843,22 +843,20 @@ void *alloc(int size)
 	return ret;
 }
 
-/* This allocates an array of strings. */
-char **alloc_string_array(int num, int len)
+/* This allocates an array of num blocks of size len. */
+void **alloc2(int num, int len)
 {
 	int i;
-	char **bids;
-	char *bids2;
-	i = num * sizeof(char *);
-	bids = alloc(i);
+	void **bids, *bids2;
 
-	i = len * num * sizeof(char);
-	bids2 = alloc(i);
+	/* We do some magical math to just use one malloc. */
 
-	for (i = 0; i < num; i++) {
-		bids[i] = bids2;
-		bids2 += len;
-	}
+	bids = bids2 = alloc(num * sizeof(void *) + num * len);
+	memset(bids, 0, num * sizeof(void *) + num * len);
+
+	for (i = 0; i < num; i++)
+		bids[i] = bids2 + num * sizeof(void *) + i * len;	/* magic!!! 
+									 */
 
 	return bids;
 }

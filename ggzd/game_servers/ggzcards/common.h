@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2453 2001-09-11 19:20:55Z jdorje $
+ * $Id: common.h 2619 2001-10-28 09:10:27Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -202,7 +202,8 @@ ggzd_assign_t get_seat_status(seat_t s);
 
 
 /* random helper functions */
-void *alloc(int);
-char **alloc_string_array(int, int);
+void *alloc(int size);
+void **alloc2(int num, int len);	/* A double array, all linked up as
+					   desired */
 
 #endif /* __COMMON_H__ */
