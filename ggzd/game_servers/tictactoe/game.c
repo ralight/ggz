@@ -4,6 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
+ * $Id: game.c 2264 2001-08-26 21:31:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,6 +24,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <ggz.h>
 #include <game.h>

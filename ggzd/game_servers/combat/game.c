@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
+ * $Id: game.c 2264 2001-08-26 21:31:23Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -28,6 +29,7 @@
 #include "protocols.h"
 #include <easysock.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
