@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5087 2002-10-28 20:52:41Z jdorje $
+ * $Id: ggzcore.h 5098 2002-10-29 06:05:04Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -45,17 +45,37 @@ extern "C" {
 /* Definitions and enumerations */
 /* ---------------------------- */
 
-/* GGZCore debugging codes.  Use with ggz_debug and friends. */
+/** @brief ggz_debug debugging type for configuration system. */
 #define GGZCORE_DBG_CONF   "GGZCORE:CONF"
+
+/** @brief ggz_debug debugging type for game communication. */
 #define GGZCORE_DBG_GAME   "GGZCORE:GAME"
+
+/** @brief ggz_debug debugging type for hook system. */
 #define GGZCORE_DBG_HOOK   "GGZCORE:HOOK"
+
+/** @brief ggz_debug debugging type for accessing modules. */
 #define GGZCORE_DBG_MODULE "GGZCORE:MODULE"
+
+/** @brief ggz_debug debugging type for network interaction. */
 #define GGZCORE_DBG_NET    "GGZCORE:NET"
+
+/** @brief ggz_debug debugging type for debugging while polling. */
 #define GGZCORE_DBG_POLL   "GGZCORE:POLL"
+
+/** @brief ggz_debug debugging type for room events and data. */
 #define GGZCORE_DBG_ROOM   "GGZCORE:ROOM"
+
+/** @brief ggz_debug debugging type for server events and data. */
 #define GGZCORE_DBG_SERVER "GGZCORE:SERVER"
+
+/** @brief ggz_debug debugging type for state changes. */
 #define GGZCORE_DBG_STATE  "GGZCORE:STATE"
+
+/** @brief ggz_debug debugging type for table data. */
 #define GGZCORE_DBG_TABLE  "GGZCORE:TABLE"
+
+/** @brief ggz_debug debugging type for XML processing. */
 #define GGZCORE_DBG_XML    "GGZCORE:XML"
 
 /* GGZCore library features */
@@ -91,10 +111,10 @@ void ggzcore_destroy(void);
 
 /** GGZ Hook function return types */
 typedef enum {
-      GGZ_HOOK_OK,
-      GGZ_HOOK_REMOVE,
-      GGZ_HOOK_ERROR,
-      GGZ_HOOK_CRISIS
+	GGZ_HOOK_OK, /**< Success! */
+	GGZ_HOOK_REMOVE, /**< Remove this hook immediately. */
+	GGZ_HOOK_ERROR, /**< A localized error. */
+	GGZ_HOOK_CRISIS /**< A major error; stop processing the event. */
 } GGZHookReturn;
 
 /** GGZ Event hook function type, used as a vallback for events */
@@ -284,9 +304,9 @@ typedef enum {
 
 /** @brief The data associated with a GGZ_CHAT_EVENT room event. */
 typedef struct {
-	GGZChatType type;
-	const char *sender;
-	const char *message;
+	GGZChatType type; /**< The type of chat. */
+	const char *sender; /**< The person who sent the message, or NULL */
+	const char *message; /**< The message itself, or NULL */
 } GGZChatEventData;
 
 /** @brief The data associated with a GGZ_TABLE_LEFT room event. */
@@ -422,30 +442,60 @@ typedef enum {
 } GGZGameEvent;
 
 
+/** @brief The states a server connection may be in.
+ *
+ *  On the client side, a simplistic state maching is used to tell what's
+ *  going on.  A game client should usually consult the current state when
+ *  determining what actions are possible.
+ */
 typedef enum {
-	GGZ_STATE_OFFLINE,
-	GGZ_STATE_CONNECTING,
-	GGZ_STATE_ONLINE,
-	GGZ_STATE_LOGGING_IN,
-	GGZ_STATE_LOGGED_IN,
-	GGZ_STATE_ENTERING_ROOM,
-	GGZ_STATE_IN_ROOM,
-	GGZ_STATE_BETWEEN_ROOMS,
-	GGZ_STATE_LAUNCHING_TABLE,
-	GGZ_STATE_JOINING_TABLE,
-	GGZ_STATE_AT_TABLE,
-	GGZ_STATE_LEAVING_TABLE,
-	GGZ_STATE_LOGGING_OUT,
+	GGZ_STATE_OFFLINE, /**< Not connected (at all) */
+	GGZ_STATE_CONNECTING, /**< In the process of connecting. */
+	GGZ_STATE_ONLINE, /**< Connected, but not doing anything. */
+	GGZ_STATE_LOGGING_IN, /**< In the process of logging in. */
+	GGZ_STATE_LOGGED_IN, /**< Online and logged in! */
+	GGZ_STATE_ENTERING_ROOM, /**< Moving into a room. */ 
+	GGZ_STATE_IN_ROOM, /**< Online, logged in, and in a room. */
+	GGZ_STATE_BETWEEN_ROOMS, /**< Moving between rooms. */
+	GGZ_STATE_LAUNCHING_TABLE, /**< Trying to launch a table. */
+	GGZ_STATE_JOINING_TABLE, /**< Trying to join a table. */
+	GGZ_STATE_AT_TABLE, /**< Online, loggied in, in a room, at a table. */
+	GGZ_STATE_LEAVING_TABLE, /**< Waiting to leave a table. */
+	GGZ_STATE_LOGGING_OUT, /**< In the process of logging out. */
 } GGZStateID;
 
 /* Definitions for all internal ggzcore structures. */
+/** @brief GGZ network structure; do not use.
+ *  @todo Remove from interface */
 typedef struct _GGZNet      GGZNet;
+
+/** @brief A server object containing all information about a connection */
 typedef struct _GGZServer   GGZServer;
+
+/** @brief Contains information about a single room on a server. */
 typedef struct _GGZRoom     GGZRoom;
+
+/** @brief Contains information about a single player. */
 typedef struct _GGZPlayer   GGZPlayer;
+
+/** @brief Contains information about a single table. */
 typedef struct _GGZTable    GGZTable;
+
+/** @brief Contains information about a _game type_.
+ *  @note Each room has one game type; a game may be used in multiple rooms.
+ */
 typedef struct _GGZGameType GGZGameType;
+
+/** @brief Contains information about a single module.
+ *  A game module, on the client, is an executable designed to play a game.
+ *  Each game type may have many modules that play it.
+ */
 typedef struct _GGZModule   GGZModule;
+
+/** @brief Contains information about a single game table.
+ *  This contains information about a table we are present at or are about
+ *  to launch.  It is thus associated with both a GGZTable and a GGZModule.
+ */
 typedef struct _GGZGame     GGZGame;
 
 /* Server object related functions */
@@ -674,14 +724,16 @@ GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server,
 /** @brief Return the player's current game. */
 GGZGame* ggzcore_server_get_cur_game(GGZServer *server);
 
-/* ggzcore_server_is_XXXX()
- *
- * These functions return 1 if the server connection is in the
- * specified state, and 0 otherwise.
-*/
+/** @brief Return TRUE iff the server is online (connected?) */
 int ggzcore_server_is_online(GGZServer *server);
+
+/** @brief Return TRUE iff we are logged into the server. */
 int ggzcore_server_is_logged_in(GGZServer *server);
+
+/** @brief Return TRUE iff we are in a room on the server. */
 int ggzcore_server_is_in_room(GGZServer *server);
+
+/** @brief Return TRUE iff we are at a table on the server. */
 int ggzcore_server_is_at_table(GGZServer *server);
 
 /* GGZ Server Actions */
@@ -773,21 +825,26 @@ int ggzcore_server_disconnect(GGZServer *server);
 
 
 /* Functions for data processing */
+/** @brief Check for data pending from the server socket.*/
 int ggzcore_server_data_is_pending(GGZServer *server);
+
+/** @brief Read data for the server on the specified FD. */
 int ggzcore_server_read_data(GGZServer *server, int fd);
+
+/** @brief Deprecated; does nothing. */
 int ggzcore_server_write_data(GGZServer *server);
 
-/* Free GGZServer object and accompanying data */
+/** @brief Free GGZServer object and accompanying data */
 void ggzcore_server_free(GGZServer *server);
 
 
 /* Functions for manipulating GGZRoom objects */
 /* ------------------------------------------ */
 
-/** Allocate space for a new room object */
+/** @brief Allocate space for a new room object */
 GGZRoom* ggzcore_room_new(void);
 
-/** Initialize room object */
+/** @brief Initialize room object */
 int ggzcore_room_init(GGZRoom *room, 
 		      const GGZServer *server, 
 		      const unsigned int id, 
@@ -795,20 +852,32 @@ int ggzcore_room_init(GGZRoom *room,
 		      const unsigned int game, 
 		      const char *desc);
 
-/** De-allocate room object and its children */
+/** @brief De-allocate room object and its children */
 void ggzcore_room_free(GGZRoom *room);
 
 
-/* Functions for querying a GGZRoom object for information */
+/** @brief Return the name of the room. */
 char*        ggzcore_room_get_name(GGZRoom *room);
+
+/** @brief Return the description of the room. */
 char*        ggzcore_room_get_desc(GGZRoom *room);
+
+/** @brief Return the type of game played in this room. */
 GGZGameType* ggzcore_room_get_gametype(GGZRoom *room);
 
+/** @brief Return the number of players in the room. */
 int        ggzcore_room_get_num_players(GGZRoom *room);
+
+/** @brief Return the nth player in the room. */
 GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
 
+/** @brief Return the number of tables in the room. */
 int       ggzcore_room_get_num_tables(GGZRoom *room);
+
+/** @brief Return the nth table in the room. */
 GGZTable* ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+
+/** @brief Return the table in this room with matching ID. */
 GGZTable* ggzcore_room_get_table_by_id(GGZRoom *room, const unsigned int id);
 
 
@@ -968,12 +1037,18 @@ int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
 int ggzcore_player_get_highscore(GGZPlayer *player, long *highscore);
 
 
+/** @brief Create a new table object.
+ *  @note Useful when launching a game. */
 GGZTable* ggzcore_table_new(void);
+
+/** @brief Set data on a table object.
+ *  @note Useful when launching a game. */
 int ggzcore_table_init(GGZTable *table,
 		       GGZGameType *gametype,
 		       char *desc,
 		       const unsigned int num_seats);
-			 
+
+/** @brief Free the table object. */
 void ggzcore_table_free(GGZTable *table);
 
 /** @brief Set a seat type at a table, pre-launch.
@@ -993,16 +1068,26 @@ int ggzcore_table_set_seat(GGZTable *table,
 			   const unsigned int seat,
 			   GGZSeatType type,
 			   char *name);
+
+/** @brief Find and remove the player from the table. */
 int ggzcore_table_remove_player(GGZTable *table, char *name);
 
-/* Functions to get information about a table. */
+/** @brief Return the ID of the table. */
 int           ggzcore_table_get_id(GGZTable *table);
+
+/** @brief Return the game type of the table. */
 GGZGameType*  ggzcore_table_get_type(GGZTable *table);
+
+/** @brief Return the table's description (or NULL). */
 char*         ggzcore_table_get_desc(GGZTable *table);
+
+/** @brief Return the state of the table. */
 GGZTableState ggzcore_table_get_state(GGZTable *table);
+
+/** @brief Return the number of seats at the table. */
 int           ggzcore_table_get_num_seats(GGZTable *table);
 
-/* Set the table description. */
+/** @brief Set the table description. */
 int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
 
 /** @brief Count the seats of the given type.
@@ -1033,38 +1118,54 @@ GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table,
 					       const unsigned int num);
 
 
-/* These function are lookups to gametype information. */
+/** @brief Get the name of the game type. */
 char* ggzcore_gametype_get_name(GGZGameType *type);
+
+/** @brief Get the protocol "engine" used by the game type. */
 char* ggzcore_gametype_get_prot_engine(GGZGameType *type);
+
+/** @brief Get the version of the protocol the game uses. */
 char* ggzcore_gametype_get_prot_version(GGZGameType *type);
+
+/** @brief Get the version of the game itself. */
 char* ggzcore_gametype_get_version(GGZGameType *type);
+
+/** @brief Get the author of the game. */
 char* ggzcore_gametype_get_author(GGZGameType *type);
+
+/** @brief Get a URL for more info about the game. */
 char* ggzcore_gametype_get_url(GGZGameType *type);
+
+/** @brief Get a description of the game. */
 char* ggzcore_gametype_get_desc(GGZGameType *type);
 
-/* Return the maximum number of allowed players/bots */
+/** @brief Get the maximum number of players the game can support.
+ *  @see ggzcore_gametype_num_players_is_valid */
 int ggzcore_gametype_get_max_players(GGZGameType *type);
+
+/** @brief Get the maximum number of bots the game can support.
+ *  @see ggzcore_gametype_bots_is_valid */
 int ggzcore_gametype_get_max_bots(GGZGameType *type);
 
-/* Return whether spectators are allowed or not for this game type. */
+/** @brief Return TRUE iff spectators are allowed for this game type. */
 int ggzcore_gametype_get_spectators_allowed(GGZGameType *type);
 
-/* Verify that a paticular number of players/bots is valid */
+/** @brief Return TRUE iff the given number of players is valid. */
 int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
+
+/** @brief Return TRUE iff the given number of bots is valid. */
 int ggzcore_gametype_num_bots_is_valid(GGZGameType *type, unsigned int num);
 
 
 /* Group of configuration functions */
 /* -------------------------------- */
 
-/* ggzcore_conf_initialize()
+/** ggzcore_conf_initialize()
  *	Opens the global and/or user configuration files for the frontend.
  *	Either g_path or u_path can be NULL if the file is not to be used.
  *	The user config file will be created if it does not exist.
  *
- *	@return:
- *	  -1 on error
- *	  0 on success
+ *	@return: 0 on success, negative on failure
  */
 int ggzcore_conf_initialize	(const char	*g_path,
 				 const char	*u_path);
@@ -1187,12 +1288,12 @@ int ggzcore_conf_commit(void);
 /* Game module related functions */
 /* ----------------------------- */
 
-/* This returns the number of registered modules */
+/** @brief This returns the number of registered modules */
 unsigned int ggzcore_module_get_num(void);
 
 
-/* This adds a local module to the list.  It returns 0 if successful or
-   -1 on failure. */
+/** This adds a local module to the list.  It returns 0 if successful or
+    -1 on failure. */
 int ggzcore_module_add(const char *name,
 	               const char *version,
 	               const char *prot_engine,
@@ -1205,70 +1306,115 @@ int ggzcore_module_add(const char *name,
 		       const char *help_path);		       
 
 
-/* Returns how many modules support this game and protocol */
+/** @brief Returns how many modules support this game and protocol */
 int ggzcore_module_get_num_by_type(const char *game, 
 				   const char *engine,
 				   const char *version);
 
-/* Returns n-th module that supports this game and protocol */
+/** @brief Returns n-th module that supports this game and protocol */
 GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
 					  const char *engine,
 					  const char *version,
 					  const unsigned int num);
 
 
-/* This attempts to launch the specified module and returns 0 is
-   successful or -1 on error. */
+/** This attempts to launch the specified module and returns 0 if
+    successful or -1 on error. */
 int ggzcore_module_launch(GGZModule *module);
 
 
-/* These functions lookup a particular property of a module.  I've added
-   icon to the list we discussed at the meeting.  This is an optional xpm
-   file that the module can provide to use for representing the game
-   graphically.*/
+/** @brief Return the name of the module. */
 char* ggzcore_module_get_name(GGZModule *module);
+
+/** @brief Return the (game?) version of the module. */
 char* ggzcore_module_get_version(GGZModule *module);
+
+/** @brief Return the name of the module's protocol engine. */
 char* ggzcore_module_get_prot_engine(GGZModule *module);
+
+/** @brief Return the version of the module's protocol engine. */
 char* ggzcore_module_get_prot_version(GGZModule *module);
+
+/** @brief Return the author of the module. */
 char* ggzcore_module_get_author(GGZModule *module);
+
+/** @brief Return the module's frontend type. */
 char* ggzcore_module_get_frontend(GGZModule *module);
+
+/** @brief Return the URL associated with the module. */
 char* ggzcore_module_get_url(GGZModule *module);
+
+/** This is (intended to be) an optional xpm file that the module can provide
+ *  to use for representing the game graphically. */
 char* ggzcore_module_get_icon_path(GGZModule *module);
+
+/** @brief Return the help path of the module (?). */
 char* ggzcore_module_get_help_path(GGZModule *module);
+
+/** @brief Return the executable arguments for the module.  See exec(). */
 char** ggzcore_module_get_argv(GGZModule *module);
 
 
 /* Functions related to game clients */
 /* --------------------------------- */
 
+/** @brief Make a new game object */
 GGZGame* ggzcore_game_new(void);
+
+/** @brief Initialize the game object. */
 int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module);
+
+/** @brief Free the game object. */
 void ggzcore_game_free(GGZGame *game);
 
-/* Functions for attaching hooks to GGZGame events */
+/** @brief Register a hook for a game event.
+ *  @see ggzcore_server_add_event_hook
+ *  @see ggzcore_room_add_event_hook
+ */
 int ggzcore_game_add_event_hook(GGZGame *game,
 				const GGZGameEvent event, 
 				const GGZHookFunc func);
 
+/** @brief Register a hook for a game event.
+ *  @see ggzcore_server_add_event_hook_full
+ *  @see ggzcore_room_add_event_hook_full
+ */
 int ggzcore_game_add_event_hook_full(GGZGame *game,
 				     const GGZGameEvent event, 
 				     const GGZHookFunc func,
 				     void *data);
 
-/* Functions for removing hooks from GGZGame events */
+/** @brief Remove a hook from a game event.
+ *  @see ggzcore_server_remove_event_hook
+ *  @see ggzcore_room_remove_event_hook
+ */
 int ggzcore_game_remove_event_hook(GGZGame *game,
 				   const GGZGameEvent event, 
 				   const GGZHookFunc func);
 
+/** @brief Remove a specified hook from a game event.
+ *  @see ggzcore_server_remove_event_hook_id
+ *  @see ggzcore_room_remove_event_hook_id
+ */
 int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const GGZGameEvent event, 
 				      const unsigned int hook_id);
 
+/** @brief Return the control (ggzmod) socket for the game. */
 int  ggzcore_game_get_control_fd(GGZGame *game);
+
+/** @brief Return the game's server socket. */
 void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
+
+/** @brief Return the module set for the game. */
 GGZModule* ggzcore_game_get_module(GGZGame *game);
 
+/** @brief Launch thee game! */
 int ggzcore_game_launch(GGZGame *game);
+
+/** @brief Read data from the game.
+ *  When data is pending on the control socket, call this function.
+ *  @see ggzcore_game_get_control_fd */
 int ggzcore_game_read_data(GGZGame *game);
 
 #ifdef __cplusplus
