@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: ggzmod.c 5024 2002-10-25 08:11:17Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -43,6 +43,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <ggz.h>
@@ -653,12 +654,16 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 		/* For the ggz side, we kill the game server and close the socket */
 		
 		/* Make sure game server is dead */
-		if (ggzmod->pid > 0)
+		if (ggzmod->pid > 0) {
 			kill(ggzmod->pid, SIGINT);
+			/* This will block waiting for the child to exit.
+			   This could be a problem if there is an error
+			   (or if the child refuses to exit...). */
+			(void) waitpid(ggzmod->pid, NULL, 0);
+		}
 		ggzmod->pid = -1;
 		
 		_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
-		/* FIXME: should we wait() to get an exit status?? */
 		/* FIXME: what other cleanups should we do? */
 	} else {
 		/* For client the game side we send a game over message */
