@@ -1,0 +1,210 @@
+Administrator's Guide to the Gnu Gaming Zone (GGZ)
+--------------------------------------------------
+
+Webpage:  http://ggz.sourceforge.net/
+Authors:  Brent Hendricks <bmh@users.sourceforge.net>
+	  Justin Zaun <jzaun@telerama.com>
+	  Rich Gade <rgade@users.sourceforge.net>
+	  Doug Hudson <djh@users.sourceforge.net>
+	  
+
+Welcome
+-------
+
+Welcome to the exciting new world of (no that sounds entirely too silly.......
+
+[take two]
+
+This document is not a complete guide to running a GGZ server.  It is
+assumed that you are a competent system administrator and can figure any
+number of things out for yourself!  However, it does attempt to point you
+in the directions you need to be pointed in order to configure a useful
+game server.
+
+There are many decisions you will want to make when you setup a GGZ server.
+They can be summed up as follows:
+
+1)  Pre installation
+2)  Post installation
+
+
+Pre-Installation
+----------------
+
+Where shall I put all this stuff?  Here's some pointers:
+
+The server is designed to install easily using the following directories:
+
+(prefix)/etc/ggzd/	(configuration files)
+(prefix)/bin/		(main executable)
+(prefix)/lib/ggzd/	(game executables)
+
+This is probably not the best way to install the server.  You will want to
+fine-tune things just a bit.  We strongly suggest using the setup that we
+use for our RPM files:
+
+/etc/ggzd/
+/usr/bin/
+/usr/lib/ggzd/
+
+This set of directories can easily be chosen by running configure as:
+
+./configure --prefix=/usr --sysconfdir=/etc
+
+Most importantly, you can fine tune this however YOU like, simply type
+
+./configure --help
+
+for a list of configuration options which you can use before building
+the server.
+
+Once you have the directories setup the way you prefer, simply type
+'make' to build the executable files.  Assuming you are using Linux on
+an Intel architecture PC the program should build without any difficulties.
+If you have problems, please report them to one of our web forums, or to the
+ggz-dev mailing list.
+
+Once make has finished, you will probably want to run 'make -n install' to
+see what will happen when you actually do type 'make install'  Once you are
+satisfied that all is well, login to root (you didn't build this as root did
+you?) and perform the installation using 'make install'
+
+
+Post-Installation
+-----------------
+
+The GGZ server will install with several sample configuration files that will
+enable you to run a basic server with two rooms and two games.  How dull...
+
+You want more rooms (easy) and more games (wait for the next version or
+you are more than welcome to write one please!).  Both require a bit of setting
+up.
+
+Remember that SYSCONFDIR that you specified to configure?  If you didn't
+specify it, then it defaulted to (PREFIX)/etc/  In any event, your primary
+configuration file, ggzd.conf is stored there.
+
+Open up ggzd.conf in your favorite text editor.  It is heavily commented and
+entirely self-explanatory!  You use this file to specify all the
+extra features and such that you wish to use.
+
+
+How to Configure the Message Of The Day
+---------------------------------------
+
+The default message of the day file is stored in the configuration directory
+with the ggzd.conf file.  It is called ggzd.motd.  It is simply a series of
+text lines which you can create with any text editor.  The system is
+pre-compiled to specify a maximum of 80 lines for this file.  You can
+override this in the ggzd.h file (MAX_MOTD_LINES).
+
+There are many % specifiers you can place in the motd file.  These will
+be automatically replaced when sent to a client by:
+
+	%a - Server administrator's name
+	%C - Server CPU type
+	%d - Current server date
+	%e - Server administrator's email address
+	%g - Current number of game tables
+	%G - Current number of game tables with free seats
+	%h - Server's hostname
+	%o - Server's OS name
+	%p - Port number server is listening on
+	%t - Server's local time
+	%u - Current GGZ server uptime
+	%U - Current number of user's on GGZ
+	%v - GGZ server version number
+
+Using these, you can create a highly sophisticated message of the day.
+
+
+How To Add A Room
+-----------------
+
+Adding a room couldn't be easier.  By default, the ggzd.conf file will
+specify that the server should _all_ available rooms.  So now the question
+becomes, how do I make a room available?
+
+In the configuration directory (where you found ggzd.conf and ggzd.motd) you
+will find a subdirectory named 'rooms'.  Inside this subdirectory are a
+number of '*.room' files.  Each .room file specifies a different room, and
+by default each one of them will be loaded.
+
+Again, the sample files are self-explanatory.  To create a new room, simply
+copy one of the existing room files to a new file and edit the values
+as you see fit.
+
+
+How To Add A Game-Type
+----------------------
+
+Currently there are no user-installable game types.  All the games that are
+compliant with GGZ are included with GGZ at this time.  However, in the
+configuration directory, there is a 'games' subdirectory which contains the
+configuraitons of the game servers.  This is where you would put a new game
+type if you had (ahem: wrote) one.
+
+
+Moving Things Around
+--------------------
+
+After installation, you may find it necessary (though God only knows why)
+to move pieces of the installation around.  For instance, say you had installed
+the game and room descriptions in the default locations
+(/usr/local/etc/ggzd/games and /usr/local/etc/ggzd/rooms for the source
+distribution).  Both of these subdirectories must exist under a specific
+directory, but that directory can be chosen at run time by altering
+the ggzd.conf file's ConfDir specification.
+
+The GameDir in ggzd.conf specifies where the game servers can
+be located by the GGZ server.  However, if you had a new game that was
+installed in a separate directory, you could specify the path to that
+server by altering that game description file.
+
+You can put the MOTD file wherever you like, simply override the MOTD entry
+in the ggzd.conf file.
+
+Most entries in the configuration file have a default directory.  However, if
+you start your entry with a / then it will override that default.  You can,
+for instance, put the MOTD file in /var/share/ggzd/motd by specifying
+
+MOTD=/var/share/ggzd/motd
+
+in the ggzd.conf file.
+
+Setting Up Logs
+---------------
+
+You will want to log your server's activity.  Setting up logging, and
+the details to log, to a file is almost completely self-explanatory in
+the ggzd.conf file.  Setting up syslogging is less than obvious.
+
+Syslogd is the default log style unless you specify a log file.  By
+default, log entries from the GGZ server will go to the facility
+local0.  This too can be specified in the ggzd.conf file.
+
+You will however, need to setup your /etc/syslog.conf file to log those
+messages from facility local0 (or whatever you choose) into a specific
+file.
+
+GGZ typically uses two log files, a debug file and a standard log file. 
+The debug file is really only used if you downloaded the tarball
+distribution of the server and specified --enable-debug as an option to
+the ./configure script.  Assuming, however, that you have debug enabled,
+here is a convenient set of syslog.conf entries to separate debug
+messages from standard log messages:
+
+local0.info	/var/log/ggzd.log
+local0.=debug	/var/log/ggzd.debug
+
+Put those two lines into your syslog.conf, restart syslogd and your log
+nightmares are over!
+
+
+Conclusion
+----------
+
+Hopefully this document will get you started exploring on your own the many
+ways that you can configure your GGZ server.  Please give us your comments,
+enhancement suggestions and general gripes through a forum on our web page,
+the ggz-dev mailing list, or by sending an email to one of the authors.
