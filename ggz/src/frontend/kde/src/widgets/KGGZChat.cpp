@@ -41,17 +41,18 @@
 #include <kapplication.h>
 #include <klocale.h>
 #include <kprocess.h>
+#include <kdebug.h>
 
 // Qt includes
 #include <qlayout.h>
 #include <qlabel.h>
+#include <qregexp.h>
 
 // System includes
 //#include <X11/Xlib.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <fnmatch.h>
 #include <time.h>
 
 // Constructor
@@ -81,7 +82,7 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 
 	connect(input, SIGNAL(returnPressed()), SLOT(slotSend()));
 
-	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_INFO);
+	receive(NULL, i18n("GGZ Gaming Zone %1").arg(KGGZVERSION), RECEIVE_INFO);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_INFO);
 
 	input->setFocus();
@@ -260,7 +261,6 @@ void KGGZChat::slotSend()
 			if(player)
 			{
 				emit signalChat(inputargs, player, RECEIVE_PERSONAL);
-				//receive(NULL, i18n("Sent message to %1.").arg(player), RECEIVE_ADMIN);
 				receive(i18n("--> %1").arg(player), inputargs, RECEIVE_PERSONAL);
 			}
 			break;
@@ -276,9 +276,6 @@ void KGGZChat::slotSend()
 			timestring = ctime(&curtime);
 			timestring[strlen(timestring) - 1] = 0;
 			KGGZDEBUG("timestring: %s\n", timestring);
-			//strcat(inputargs, timestring);
-			//strcat(inputargs, i18n(" -- MARK --"));
-			//KGGZDEBUG("send out: %s\n", inputargs);
 			receive(NULL, i18n("%1 -- MARK --").arg(timestring), RECEIVE_ADMIN);
 			break;
 		case EVENT_AWAY:
@@ -304,179 +301,23 @@ int KGGZChat::separator(const char *c)
 	return 0;
 }
 
-// Returns the plain text of the HTML input
-char *KGGZChat::plaintext(const char *text)
+// Receives text queue, URL highlighting and HTMLifying
+QString KGGZChat::parse(QString text)
 {
-	static char *ret = NULL;
-	int j = 0;
-
-	if(ret) free(ret);
-	ret = (char*)malloc(strlen(text) * 7); // erm... :-)
-	strcpy(ret, "");
-	for(int i = 0; i < (int)strlen(text); i++)
-	{
-		if(text[i] == '<')
-		{
-			strcat(ret, "&lt;");
-			j += 4;
-		}
-		else if(text[i] == '>')
-		{
-			strcat(ret, "&gt;");
-			j += 4;
-		}
-		else if((text[i] == ' ') && (i < 60))
-		{
-			// quick hack
-			strcat(ret, "&nbsp;");
-			j += 6;
-		}
-		else
-		{
-			ret[j] = text[i];
-			ret[j + 1] = 0;
-			j++;
-		}
-	}
-	ret[j] = 0;
-	return ret;
-}
-
-// Receives text queue, URL highlighting
-QString KGGZChat::parse(char *text)
-{
-	int i, j, k, kiv, flag, n;
-	char localbuf[16384];
-	char tmpbuf[1024];
-	char tmpbufiv[1024]; // invisible
-	char *c;
 	QString ret;
+	
+	ret = text;
 
-	i = 0;
-	j = 0;
-	k = 0;
-	kiv = 0;
-	n = 0;
-	//KGGZ_Server::loop(); not necessary anymore here.
+	ret.replace("<", "&lt;");
+	ret.replace(">", "&gt;");
 
-	KGGZDEBUG("Parse-pre: %s\n", text);
-	if(!text) return QString::null;
+	QRegExp x("([^\\s]+://[^\\s]+)");
+	x.search(text);
+	ret.replace(x, QString("<A HREF=\"%1\">%2</A>").arg(x.cap(1)).arg(x.cap(1)));
+	QRegExp x2("([^\\s]+@[^\\s]+)");
+	x2.search(text);
+	ret.replace(x2, QString("<A HREF=\"mailto:%1\">%2</A>").arg(x2.cap(1)).arg(x2.cap(1)));
 
-	KGGZDEBUG("Parse: %s\n", text);
-	strcpy(localbuf, "");
-	for(i = 0; i < (int)strlen(text); i++)
-	{
-		flag = 0;
-		c = text + i;
-		if(c[0] == '@')
-		{
-			k = i;
-			while((text[k] != ' ') && (k < (int)strlen(text)))
-			{
-				if((text[k] == '.') && (k - i > 2))
-				{
-					if((separator(&text[k + 3])) || (separator(&text[k + 4]))) flag = 1;
-				}
-				k++;
-			}
-			if(flag)
-			{
-				while((text[i] != ' ') && (i > 0))
-				{
-					i--;
-					j--;
-				}
-				i++;
-				j++;
-				strcpy(tmpbuf, "");
-				strcpy(tmpbufiv, "mailto:");
-				k = strlen(tmpbuf);
-				kiv = strlen(tmpbufiv);
-				localbuf[j] = 0;
-				strcat(localbuf, "<A HREF=\"");
-				n = 0;
-				while(i < (int)strlen(text))
-				{
-					if(separator(&text[i])) n++;
-					if(n == 1) break;
-					tmpbuf[k] = text[i];
-					tmpbufiv[kiv] = text[i];
-					i++;
-					k++;
-					kiv++;
-				}
-				tmpbuf[k] = 0;
-				tmpbufiv[kiv] = 0;
-				strcat(localbuf, tmpbufiv);
-				strcat(localbuf, "\">");
-				strcat(localbuf, tmpbuf);
-				strcat(localbuf, "</A>");
-				j += strlen(tmpbuf) + strlen(tmpbufiv) + 15;
-				KGGZDEBUG("eDebug(1): |%s|\n", tmpbuf);
-				KGGZDEBUG("eDebug(2): |%s|\n", tmpbufiv);
-				KGGZDEBUG("eDebug(3): |%s|\n", localbuf);
-				flag = 0;
-			}
-		}
-		if((c[0] == 'h') && (c[1] == 't') && (c[2] == 't') && (c[3] == 'p') && (c[4] == ':')) flag = 5;
-		if((c[0] == 'w') && (c[1] == 'w') && (c[2] == 'w') && (c[3] == '.')) flag = 4;
-		if((c[0] == 'g') && (c[1] == 'g') && (c[2] == 'z') && (c[3] == ':')) flag = 14;
-		if((c[0] == 'm') && (c[1] == 'a') && (c[2] == 'i') && (c[3] == 'l') && (c[4] == 't') && (c[5] == 'o') && (c[6] == ':')) flag = 7;
-		if(flag)
-		{
-			localbuf[j] = 0;
-			strcat(localbuf, "<A HREF=\"");
-			i += flag % 10;
-			switch(flag)
-			{
-				case 4:
-					strcpy(tmpbuf, "www.");
-					strcpy(tmpbufiv, "http://www.");
-					break;
-				case 5:
-					sprintf(tmpbuf, "http:");
-					strcpy(tmpbufiv, tmpbuf);
-					break;
-				case 7:
-					strcpy(tmpbuf, "mailto:");
-					strcpy(tmpbufiv, tmpbuf);
-					break;
-				case 14:
-					strcpy(tmpbuf, "ggz:");
-					strcpy(tmpbufiv, tmpbuf);
-					break;
-			}
-			k = strlen(tmpbuf);
-			kiv = strlen(tmpbufiv);
-			while((!separator(&text[i])) && (i < (int)strlen(text)))
-			{
-				tmpbuf[k] = text[i];
-				tmpbufiv[kiv] = text[i];
-				k++;
-				kiv++;
-				i++;
-			}
-			tmpbuf[k] = 0;
-			tmpbufiv[kiv] = 0;
-			strcat(localbuf, tmpbufiv);
-			strcat(localbuf, "\">");
-			strcat(localbuf, tmpbuf);
-			strcat(localbuf, "</A>");
-			j += strlen(tmpbuf) + strlen(tmpbufiv) + 16;
-			localbuf[j - 1] = text[i]; // oh this may cause real damage :-)
-			KGGZDEBUG("Debug(1): |%s|\n", tmpbuf);
-			KGGZDEBUG("Debug(2): |%s|\n", tmpbufiv);
-			KGGZDEBUG("Debug(3): |%s|\n", localbuf);
-		}
-		else
-		{
-			localbuf[j] = text[i];
-			j++;
-		}
-	}
-	localbuf[j] = 0;
-	KGGZDEBUG("Debug(4): |%s|\n", localbuf);
-	ret = QString("%1</td></tr>").arg(localbuf);
 	return ret;
 }
 
@@ -494,13 +335,13 @@ void KGGZChat::logChat(QString text)
 	f = fopen(s.latin1(), "a");
 	if(f)
 	{
-		fprintf(f, "%s\n", text.latin1());
+		fprintf(f, "%s\n", text.ascii());
 		fclose(f);
 	}
 }
 
 // receive chat and admin messages
-void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode)
+void KGGZChat::receive(const char *player, QString message, ReceiveMode mode)
 {
 	QString tmp;
 	static QString lastplayer;
@@ -530,11 +371,20 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		case RECEIVE_PERSONAL:
 			color = "b0b000";
 			break;
+		case RECEIVE_ADMIN:
+			color = "ff0000";
+			break;
+		case RECEIVE_INFO:
+			color = "802020";
+			break;
 		default:
 			break;
 	}
 
-	msg = msg.fromUtf8(message);
+	if((mode != RECEIVE_ADMIN) && (mode != RECEIVE_INFO))
+		msg = msg.fromUtf8(message);
+	else
+		msg = message;
 
 	if((lastplayer == player) && (mode == RECEIVE_CHAT)) color = "ffffff";
 	else lastplayer = player;
@@ -554,35 +404,34 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	}
 	else timestring[0] = 0;
 
-
-	KGGZDEBUG("Receiving: %s (%i)\n", msg.latin1(), mode);
+	KGGZDEBUG("Receiving: %s (%i)\n", msg.ascii(), mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
 			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
-			tmp += parse(plaintext(msg.latin1()));
+			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_TABLE:
 			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
-			tmp += parse(plaintext(msg.latin1()));
+			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_OWN:
 			tmp = QString("<tr><td>%1<font color=#%2><b>").arg(timestring).arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
-			tmp += parse(plaintext(msg.latin1()));
+			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_ADMIN:
-			tmp = QString("<tr><td colspan=2>%1<font color=#ff0000>").arg(timestring) + msg + QString("</font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2>").arg(timestring).arg(color) + msg + QString("</font></td></tr>");
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_INFO:
-			tmp = QString("<tr><td colspan=2>%1<font color=#802020>").arg(timestring) + msg + QString("</font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2>").arg(timestring).arg(color) + msg + QString("</font></td></tr>");
 			output->append(tmp);
 			logChat(tmp);
 			break;
@@ -599,7 +448,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		case RECEIVE_PERSONAL:
 			tmp = QString("<tr><td>%1<font color=#%2><b><i>").arg(timestring).arg(color);
 			if(player) tmp += QString(player) + ":&nbsp;</i></b></font><font color=#b0b000><b><i>";
-			tmp += QString("</td><td>") + QString(plaintext(msg.latin1())) + QString("</i></b></font></td></tr>");
+			tmp += QString("</td><td>") + QString(msg) + QString("</i></b></font></td></tr>");
 			output->append(tmp);
 			logChat(tmp);
 			break;

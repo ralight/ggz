@@ -69,7 +69,7 @@ class KGGZChat : public QWidget
 		~KGGZChat();
 		void init();
 		void shutdown();
-		void receive(const char *player, const char *message, ReceiveMode mode);
+		void receive(const char *player, QString message, ReceiveMode mode);
 		void beep();
 
 		// whether or not display a players listing in the chat
@@ -90,8 +90,7 @@ class KGGZChat : public QWidget
 	private:
 		void logChat(QString text);
 		int separator(const char *c);
-		char *plaintext(const char *text);
-		QString parse(char *text);
+		QString parse(QString text);
 
 		KTextBrowser *output;
 		//QLineEdit *input;

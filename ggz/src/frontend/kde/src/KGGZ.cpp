@@ -827,7 +827,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("enter\n");
 			buffer.append((char*)data);
 			buffer.append(i18n(" enters the room."));
-			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add((char*)data);
 			m_workspace->widgetChat()->chatline()->addPlayer((char*)data);
 			if(m_grubby) m_grubby->addPlayer((char*)data);
@@ -836,7 +836,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("leave\n");
 			buffer.append((char*)data);
 			buffer.append(i18n(" has left the room."));
-			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove((char*)data);
 			KGGZDEBUG("remove from chatline\n");
 			m_workspace->widgetChat()->chatline()->removePlayer((char*)data);
