@@ -1,0 +1,58 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ web pages sitemap</b><br>
+The number of web pages is permanently increasing. This page helps
+to find the right page more easily.
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<a href="/software.php">Software Overview</a>
+<u>
+<li><a href="/games/">Games</a>
+<li><a href="/clients/">Clients</a>
+<li><a href="/utils/">Utilities</a>
+<li><a href="/backend/">Backend</a>
+</u>
+
+<br>
+
+<a href="/docs.php">Documentation Overview</a>
+<u>
+<li><a href="/docs/spec/">GGZ protocol specification</a>
+<li><a href="/docs/api/">Developer API documentation</a>
+<li><a href="/docs/grubby/">Grubby</a>
+<li><a href="/docs/guides/">Development and Hosting Guides</a>
+</u>
+
+<br>
+
+<a href="/releases/">Release Information Overview</a>
+<u>
+<li><a href="/releases/0.0.9/">Current release</a>
+</u>
+
+<br>
+
+<a href="/screenshots/">Screenshots Overview</a>
+<u>
+<li><a href="/screenshots/0.0.9/">Current screenshots</a>
+</u>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

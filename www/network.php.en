@@ -1,0 +1,95 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="3">
+<b>GGZ Gaming Zone Servers</b><br>
+Server, network and mirrors information.
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Name server</i><br>
+The name server for ggzgamingzone.org is hosted in Berlin/Germany.
+<br><br>
+<i>Main GGZ Server</i><br>
+The server ggzgamingzone.org is located in Atlanta/USA. It hosts www, dev, ftp,
+live, rankings, mail, bugs and cvs.
+<br><br>
+<i>Mirror Germany</i><br>
+The server de.ggzgamingzone.org is located in Berlin/Germany. It mirrors www and
+ftp services.
+</td>
+</tr>
+</table>
+
+Please contact the <a href="mailto:hostmaster@ggzgamingzone.org">GGZ Hostmaster</a>
+if you want to help hosting.
+</td>
+</tr>
+
+<tr>
+<td colspan="3">
+<i>Webpage history</i><br>
+</td>
+</tr>
+
+<tr>
+<td>
+<center>
+<a href="/pics/network/ggz.jzaun.com"><img src="/pics/network/thumb.ggz.jzaun.com" border="0"></a><br clear="all">
+</center>
+</td>
+<td>
+<center>
+<a href="/pics/network/ggz.sf.net"><img src="/pics/network/thumb.ggz.sf.net" border="0"></a><br clear="all">
+</center>
+</td>
+<td>
+<center>
+<a href="/pics/network/www.ggzgamingzone.org"><img src="/pics/network/thumb.www.ggzgamingzone.org" border="0"></a><br clear="all">
+</center>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+The first site on ggz.jzaun.com (and later ggz.sourceforge.net) lasted from
+the beginning to June 2001. Dynamic news were already included.
+</td>
+<td valign="top">
+The second site on ggz.sourceforge.net went from June 2001 to February 2004.
+It used the j00k CMS. Most of the content was read from a database.
+</td>
+<td valign="top">
+The current site on www.ggzgamingzone.org went online in February 2004.
+It provides i18n capabilities and reflects the grown project structure much better.
+Maintained using CVS, it will last for quite a while...
+</td>
+</tr>
+
+<tr>
+<td colspan="3">
+<i>Former servers</i><br>
+Formerly, a couple of game servers were used which are not active
+any more. Those were:
+<br>
+<table class="inner">
+<tr>
+<td valign="top">
+ggz.jzaun.com<br>
+ggz.morat.net<br>
+ggz.snafu.de<br>
+mindx.dyndns.org<br>
+</td>
+</tr>
+</table>
+We would however be glad to hear that somebody is again running a permanent
+GGZ server.
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
