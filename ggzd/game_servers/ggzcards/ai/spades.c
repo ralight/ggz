@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4063 2002-04-23 19:55:51Z jdorje $
+ * $Id: spades.c 4068 2002-04-23 21:46:49Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -201,7 +201,7 @@ void alert_play(int p, card_t play)
 
 void alert_trick(int winner)
 {
-	/* nothing */
+	ailib_alert_trick(winner);
 }
 
 

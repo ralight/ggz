@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4066 2002-04-23 21:37:53Z jdorje $
+ * $Id: suaro.c 4068 2002-04-23 21:46:49Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -152,7 +152,7 @@ void alert_play(int p, card_t card)
 
 void alert_trick(int winner)
 {
-	/* nothing */
+	ailib_alert_trick(winner);
 }
 
 /* This just gives an arbitrary impression of suit strength, sort-of
