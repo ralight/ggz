@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4963 2002-10-20 08:07:35Z jdorje $
+ * $Id: net.c 4964 2002-10-20 08:24:21Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -604,7 +604,7 @@ GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status)
 
 
 GGZReturn net_send_player_update(GGZNetIO *net,
-				 GGZUpdateOpcode opcode, const char *name)
+				 GGZPlayerUpdateType opcode, const char *name)
 {
 	GGZPlayer *player;
 	int room;
@@ -612,12 +612,12 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 	room = player_get_room(net->client->data);
 	
 	switch (opcode) {
-	case GGZ_UPDATE_DELETE:
+	case GGZ_PLAYER_UPDATE_DELETE:
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d'>", room);
 		_net_send_line(net, "<PLAYER ID='%s'/>", name);
 		return _net_send_line(net, "</UPDATE>");
 
-	case GGZ_UPDATE_ADD:
+	case GGZ_PLAYER_UPDATE_ADD:
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
 		if (!player) {
@@ -629,7 +629,7 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		net_send_player(net, player);
 		return _net_send_line(net, "</UPDATE>");
 
-	case GGZ_UPDATE_LAG:
+	case GGZ_PLAYER_UPDATE_LAG:
 		/* This returns with player's write lock held, so drop it  */
 		player = hash_player_lookup(name);
 		if (!player) {
@@ -640,22 +640,14 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
 		_net_send_player_lag(net, player);
 		return _net_send_line(net, "</UPDATE>");
-	case GGZ_UPDATE_JOIN:
-	case GGZ_UPDATE_LEAVE:
-	case GGZ_UPDATE_SEAT:
-	case GGZ_UPDATE_STATE:
-	case GGZ_UPDATE_DESC:
-	case GGZ_UPDATE_SPECTATOR_JOIN:
-	case GGZ_UPDATE_SPECTATOR_LEAVE:
-		err_msg("net_send_player: bad opcode");
-		break;
 	}
-	
+
+	err_msg("net_send_player_update: unknown opcode %d.", opcode);
 	return GGZ_ERROR;
 }
 
 
-GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
+GGZReturn net_send_table_update(GGZNetIO *net, GGZTableUpdateType opcode,
 				GGZTable *table, void* seat_data)
 {
 	char *action = NULL;
@@ -664,36 +656,33 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 	room = player_get_room(net->client->data);
 
 	switch (opcode) {
-	case GGZ_UPDATE_DELETE:
+	case GGZ_TABLE_UPDATE_DELETE:
 		action = "delete";
 		break;
-	case GGZ_UPDATE_ADD:
+	case GGZ_TABLE_UPDATE_ADD:
 		action = "add";
 		break;
-	case GGZ_UPDATE_LEAVE:
+	case GGZ_TABLE_UPDATE_LEAVE:
 		action = "leave";
 		break;
-	case GGZ_UPDATE_JOIN:
+	case GGZ_TABLE_UPDATE_JOIN:
 		action = "join";
 		break;
-	case GGZ_UPDATE_STATE:
+	case GGZ_TABLE_UPDATE_STATE:
 		action = "status";
 		break;
-	case GGZ_UPDATE_DESC:
+	case GGZ_TABLE_UPDATE_DESC:
 		action = "desc";
 		break;
-	case GGZ_UPDATE_SEAT:
+	case GGZ_TABLE_UPDATE_SEAT:
 		action = "seat";
 		break;
-	case GGZ_UPDATE_SPECTATOR_JOIN:
+	case GGZ_TABLE_UPDATE_SPECTATOR_JOIN:
 		action = "joinspectator";
 		break;
-	case GGZ_UPDATE_SPECTATOR_LEAVE:
+	case GGZ_TABLE_UPDATE_SPECTATOR_LEAVE:
 		action = "leavespectator";
 		break;
-	default:
-		/* We should never get any other update types */
-		return GGZ_ERROR;
 	}
 
 	/* Always send opcode */
@@ -701,30 +690,27 @@ GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 		       action, room);
 
 	switch (opcode) {
-	case GGZ_UPDATE_DELETE:
+	case GGZ_TABLE_UPDATE_DELETE:
 		_net_send_table_status(net, table);
 		break;
-	case GGZ_UPDATE_ADD:
+	case GGZ_TABLE_UPDATE_ADD:
 		net_send_table(net, table);
 		break;
-	case GGZ_UPDATE_LEAVE:
-	case GGZ_UPDATE_JOIN:
-	case GGZ_UPDATE_SEAT:
+	case GGZ_TABLE_UPDATE_LEAVE:
+	case GGZ_TABLE_UPDATE_JOIN:
+	case GGZ_TABLE_UPDATE_SEAT:
 		_net_send_table_seat(net, table, seat_data);
 		break;
-	case GGZ_UPDATE_SPECTATOR_JOIN:
-	case GGZ_UPDATE_SPECTATOR_LEAVE:
+	case GGZ_TABLE_UPDATE_SPECTATOR_JOIN:
+	case GGZ_TABLE_UPDATE_SPECTATOR_LEAVE:
 		_net_send_table_spectator(net, table, seat_data);
 		break;
-	case GGZ_UPDATE_STATE:
+	case GGZ_TABLE_UPDATE_STATE:
 		_net_send_table_status(net, table);
 		break;
-	case GGZ_UPDATE_DESC:
+	case GGZ_TABLE_UPDATE_DESC:
 		_net_send_table_desc(net, table);
 		break;
-	default:
-		/* We should never get any other update types */
-		return GGZ_ERROR;
 	}
 	
 	return _net_send_line(net, "</UPDATE>");

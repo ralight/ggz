@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4962 2002-10-20 07:50:34Z jdorje $
+ * $Id: protocols.h 4964 2002-10-20 08:24:21Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -35,16 +35,22 @@
 
 /* Update opcodes */
 typedef enum {
-	GGZ_UPDATE_DELETE, /* table is deleted from room */
-	GGZ_UPDATE_ADD, /* table is added to room */
-	GGZ_UPDATE_JOIN, /* player joins table */
-	GGZ_UPDATE_LEAVE, /* player leaves table */
-	GGZ_UPDATE_SEAT, /* misc. table seat change */
-	GGZ_UPDATE_STATE, /* table state changes */
-	GGZ_UPDATE_LAG, /* ??? */
-	GGZ_UPDATE_DESC, /* table desc changes */
-	GGZ_UPDATE_SPECTATOR_LEAVE, /* spectator leaves table */
-	GGZ_UPDATE_SPECTATOR_JOIN /* spectator joins table */
-} GGZUpdateOpcode;
+	GGZ_PLAYER_UPDATE_ADD, /* player enters room */
+	GGZ_PLAYER_UPDATE_DELETE, /* player leaves room */
+	GGZ_PLAYER_UPDATE_LAG /* player's lag status changed */
+} GGZPlayerUpdateType;
+
+/* Update opcodes */
+typedef enum {
+	GGZ_TABLE_UPDATE_ADD, /* table is added to room */
+	GGZ_TABLE_UPDATE_DELETE, /* table is deleted from room */
+	GGZ_TABLE_UPDATE_JOIN, /* player joins table */
+	GGZ_TABLE_UPDATE_LEAVE, /* player leaves table */
+	GGZ_TABLE_UPDATE_SEAT, /* misc. table seat change */
+	GGZ_TABLE_UPDATE_SPECTATOR_LEAVE, /* spectator leaves table */
+	GGZ_TABLE_UPDATE_SPECTATOR_JOIN, /* spectator joins table */
+	GGZ_TABLE_UPDATE_STATE, /* table state changes */
+	GGZ_TABLE_UPDATE_DESC /* table desc changes */
+} GGZTableUpdateType;
 
 #endif /*_GGZ_PROTOCOL_H*/
