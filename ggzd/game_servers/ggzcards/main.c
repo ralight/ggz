@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: main.c 4158 2002-05-05 07:03:31Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -33,7 +33,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <ggz.h>
+
+#include "ggz_stats.h"
 
 /* Needed for "select" loop only */
 #include <errno.h>
@@ -287,7 +290,8 @@ static void handle_debug_message(int priority, const char *msg)
 static void initialize_debugging(void)
 {
 #ifdef DEBUG
-	const char *debug_types[] = {DBG_BID, DBG_PLAY, DBG_AI, DBG_GAME, DBG_CLIENT, DBG_NET, NULL};
+	const char *debug_types[] = {DBG_GGZSTATS, DBG_BID, DBG_PLAY, DBG_AI,
+	                             DBG_GAME, DBG_CLIENT, DBG_NET, NULL};
 #else
 	const char *debug_types[] = {NULL};
 #endif
