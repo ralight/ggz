@@ -599,6 +599,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			m_gamefd = -1;
 			eventLeaveTable(1);
 			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
+			emit signalMenu(MENUSIG_GAMEOVER); // for spectators
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");

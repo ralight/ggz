@@ -367,11 +367,17 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_game->setItemEnabled(MENU_GAME_CANCEL, TRUE);
 			m_menu_game->setItemEnabled(MENU_GAME_LAUNCH, FALSE);
 			m_menu_game->setItemEnabled(MENU_GAME_JOIN, FALSE);
+#ifdef KGGZ_PATCH_SPECTATORS
+			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, FALSE);
+#endif
 			break;
 		case KGGZ::MENUSIG_GAMEOVER:
 			m_menu_game->setItemEnabled(MENU_GAME_CANCEL, FALSE);
 			m_menu_game->setItemEnabled(MENU_GAME_LAUNCH, TRUE);
 			m_menu_game->setItemEnabled(MENU_GAME_JOIN, TRUE);
+#ifdef KGGZ_PATCH_SPECTATORS
+			m_menu_game->setItemEnabled(MENU_GAME_SPECTATOR, TRUE);
+#endif
 			break;
 		default:
 			KGGZDEBUG("Unknown signal for menu handling: %i!\n", signal);
