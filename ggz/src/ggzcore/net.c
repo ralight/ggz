@@ -85,6 +85,7 @@ struct _GGZServerMsg {
 
 /* Handlers for various server commands */
 static void _ggzcore_net_handle_server_id(struct _GGZNet *net);
+static void _ggzcore_net_handle_login_new(struct _GGZNet *net);
 static void _ggzcore_net_handle_login(struct _GGZNet *net);
 static void _ggzcore_net_handle_login_anon(struct _GGZNet *net);
 static void _ggzcore_net_handle_motd(struct _GGZNet *net);
@@ -108,6 +109,8 @@ static struct _GGZTable* _ggzcore_net_handle_table(struct _GGZNet *net);
 /* Useful(?) functions to do the data reading */
 static int _ggzcore_net_read_opcode(const unsigned int fd, GGZServerOp *op);
 static int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol);
+static int _ggzcore_net_read_login_new(const unsigned int fd, char *status, char **password);
+static int _ggzcore_net_read_login(const unsigned int fd, char *status, char *res);
 static int _ggzcore_net_read_login_anon(const unsigned int fd, char *status);
 static int _ggzcore_net_read_motd(const unsigned int fd, int *lines, char ***buffer);
 static int _ggzcore_net_read_logout(const unsigned int fd, char *status);
@@ -165,7 +168,7 @@ static struct _GGZServerMsg _ggzcore_server_msgs[] = {
 	{MSG_UPDATE_TABLES,  "msg_update_tables", _ggzcore_net_handle_update_tables},
 	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
 	{MSG_ERROR,          "msg_error", NULL},
-	{RSP_LOGIN_NEW,      "rsp_login_new", NULL},
+	{RSP_LOGIN_NEW,      "rsp_login_new", _ggzcore_net_handle_login_new},
 	{RSP_LOGIN,          "rsp_login", _ggzcore_net_handle_login},
 	{RSP_LOGIN_ANON,     "rsp_login_anon", _ggzcore_net_handle_login_anon},
 	{RSP_LOGOUT,         "rsp_logout", _ggzcore_net_handle_logout},
@@ -261,6 +264,8 @@ void _ggzcore_net_disconnect(struct _GGZNet *net)
 	net->fd = -1;
 }
 
+
+/* ggzcore_net_send_XXX() functions for sending messages to the server */
 
 int _ggzcore_net_send_login(struct _GGZNet *net)
 {
@@ -529,7 +534,7 @@ int _ggzcore_net_send_logout(struct _GGZNet *net)
 }
 
 
-
+/* Check for incoming data */
 int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 {
 	int pending = 0;
@@ -553,6 +558,7 @@ int _ggzcore_net_data_is_pending(struct _GGZNet *net)
 }
 
 
+/* Read in an opcode and dispatch the correct handler for that message */
 int _ggzcore_net_read_data(struct _GGZNet *net)
 {
 	GGZServerOp opcode;
@@ -566,7 +572,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	status = _ggzcore_net_read_opcode(net->fd, &opcode);
 	
 	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
+		_ggzcore_net_error(net, "Reading opcode");
 		return -1;
 	}
 	
@@ -615,22 +621,41 @@ static int _ggzcore_net_read_server_id(const unsigned int fd, int *protocol)
 }
 
 
-static int _ggzcore_net_read_login(const unsigned int fd)
+static int _ggzcore_net_read_login_new(const unsigned int fd, char *status, char **password)
 {
-	char status, res;
-	int checksum;
+	int checksum = 0;
 
-	if (es_read_char(fd, &status) < 0)
+	if (es_read_char(fd, status) < 0)
 		return -1;
 	
-	if (status == 0 && es_read_int(fd, &checksum) < 0)
+	if (*status == 0 && es_read_string_alloc(fd, password) < 0)
+		return -1;
+
+	if (*status == 0 && es_read_int(fd, &checksum) < 0)
 		return -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d", 
-		      status, checksum);
+	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_NEW from server : %d, %d", 
+		      *status, checksum);
 
-	if (status == 0 && es_read_char(fd, &res) < 0)
+	return 0;
+}
+
+
+static int _ggzcore_net_read_login(const unsigned int fd, char *status, char *res)
+{
+	int checksum = 0;
+
+	if (es_read_char(fd, status) < 0)
 		return -1;
+	
+	if (*status == 0 && es_read_int(fd, &checksum) < 0)
+		return -1;
+	
+	if (*status == 0 && es_read_char(fd, res) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d, %d", 
+		      *status, checksum, *res);
 
 	return 0;
 }
@@ -993,26 +1018,70 @@ static void _ggzcore_net_handle_server_id(struct _GGZNet *net)
 }
 
 
-static void _ggzcore_net_handle_login(struct _GGZNet *net)
+static void _ggzcore_net_handle_login_new(struct _GGZNet *net)
 {
-#if 0	
-	switch (status) {
+	char ok, *password;
+	int status;
+
+	status = _ggzcore_net_read_login_new(net->fd, &ok, &password);
+
+	if (status < 0) {
+		_ggzcore_server_net_error(net->server, NULL);
+		return;
+	}
+	
+	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
+	ggzcore_debug(GGZ_DBG_SERVER, "New password: %s", password);
+
+	switch (ok) {
 	case 0:
-		reservations = (int)res;
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, (void*)reservations, NULL);
+		_ggzcore_server_set_password(net->server, password);
+		free(password);
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_OK);
+		_ggzcore_server_event(net->server, GGZ_LOGGED_IN, NULL);
 		break;
 	case E_ALREADY_LOGGED_IN:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Already logged in", NULL);
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Already logged in");
 		break;
 	case E_USR_LOOKUP:
-		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
-				      "Name taken", NULL);
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Name taken");
 		break;
 	}
-
-#endif
 }
+
+
+static void _ggzcore_net_handle_login(struct _GGZNet *net)
+{
+	char ok, reservations;
+	int status;
+
+	status = _ggzcore_net_read_login(net->fd, &ok, &reservations);
+
+	if (status < 0) {
+		_ggzcore_server_net_error(net->server, NULL);
+		return;
+	}
+	
+	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
+
+	switch (ok) {
+	case 0:
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_OK);
+		_ggzcore_server_event(net->server, GGZ_LOGGED_IN, NULL);
+		break;
+	case E_ALREADY_LOGGED_IN:
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Already logged in");
+		break;
+	case E_USR_LOOKUP:
+		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Name taken");
+		break;
+	}
+}
+
 
 static void _ggzcore_net_handle_login_anon(struct _GGZNet *net)
 {
