@@ -311,7 +311,6 @@ void props_fcancel_button_clicked (GtkButton *button, gpointer user_data)
 GtkWidget*
 create_dlg_props (void)
 {
-  GtkWidget *dlg_props;
   GtkWidget *dialog_vbox1;
   GtkWidget *vbox1;
   GtkWidget *notebook1;
