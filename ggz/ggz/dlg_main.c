@@ -274,8 +274,8 @@ create_main_win (void)
   GtkAccelGroup *help_menu_accels;
   GtkWidget *about;
   GtkWidget *toolbar;
-  GtkWidget *disconnect_button;
   GtkWidget *connect_button;
+  GtkWidget *disconnect_button;
   GtkWidget *launch_button;
   GtkWidget *join_button;
   GtkWidget *prefs_button;
@@ -561,17 +561,6 @@ create_main_win (void)
   gtk_widget_show (toolbar);
   gtk_box_pack_start (GTK_BOX (main_box), toolbar, FALSE, FALSE, 0);
 
-  disconnect_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-                                GTK_TOOLBAR_CHILD_BUTTON,
-                                NULL,
-                                "Disconnect",
-                                NULL, NULL,
-                                NULL, NULL, NULL);
-  gtk_widget_ref (disconnect_button);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "disconnect_button", disconnect_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (disconnect_button);
-
   connect_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -582,6 +571,17 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "connect_button", connect_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (connect_button);
+
+  disconnect_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
+                                GTK_TOOLBAR_CHILD_BUTTON,
+                                NULL,
+                                "Disconnect",
+                                NULL, NULL,
+                                NULL, NULL, NULL);
+  gtk_widget_ref (disconnect_button);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "disconnect_button", disconnect_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (disconnect_button);
 
   launch_button = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
                                 GTK_TOOLBAR_CHILD_BUTTON,
@@ -919,11 +919,11 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (motd), "activate",
                       GTK_SIGNAL_FUNC (ggz_motd),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
-                      GTK_SIGNAL_FUNC (ggz_disconnect),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_connect),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (disconnect_button), "clicked",
+                      GTK_SIGNAL_FUNC (ggz_disconnect),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_get_game_options),

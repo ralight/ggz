@@ -278,25 +278,25 @@
       <widget>
 	<class>GtkButton</class>
 	<child_name>Toolbar:button</child_name>
-	<name>disconnect_button</name>
+	<name>connect_button</name>
 	<signal>
 	  <name>clicked</name>
-	  <handler>ggz_disconnect</handler>
-	  <last_modification_time>Tue, 28 Mar 2000 02:19:55 GMT</last_modification_time>
+	  <handler>ggz_connect</handler>
+	  <last_modification_time>Tue, 28 Mar 2000 02:56:22 GMT</last_modification_time>
 	</signal>
-	<label>Disconnect</label>
+	<label>Connect</label>
       </widget>
 
       <widget>
 	<class>GtkButton</class>
 	<child_name>Toolbar:button</child_name>
-	<name>connect_button</name>
+	<name>disconnect_button</name>
 	<signal>
 	  <name>clicked</name>
-	  <handler>ggz_connect</handler>
-	  <last_modification_time>Tue, 28 Mar 2000 02:19:44 GMT</last_modification_time>
+	  <handler>ggz_disconnect</handler>
+	  <last_modification_time>Tue, 28 Mar 2000 02:56:28 GMT</last_modification_time>
 	</signal>
-	<label>Connect</label>
+	<label>Disconnect</label>
       </widget>
 
       <widget>
