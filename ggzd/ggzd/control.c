@@ -151,7 +151,6 @@ int main(int argc, char *argv[])
 	int main_sock, new_sock;
 	struct sockaddr_in addr;
 	int addrlen;
-	char *ip_addr;
 	
 	/* Parse options */
 	parse_args(argc, argv);
@@ -196,15 +195,8 @@ int main(int argc, char *argv[])
 			else
 				err_sys_exit("Error accepting connection");
 		} else {
-			/* Store the incoming IP address */
-			if((ip_addr = malloc(16)) == NULL)
-				err_sys_exit("malloc error in main()");
-			strncpy(ip_addr, inet_ntoa(addr.sin_addr), 16);
-			ip_addr[15] = '\0';	/* Just in case */
-
-			log_msg(CONNECTION_INFO,
-				"Accepting connection from %s", ip_addr);
-			player_handler_launch(new_sock, ip_addr);
+			/* This is where to test for ignored IP addresses */
+			player_handler_launch(new_sock);
 		}
 		
 	}		

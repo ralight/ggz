@@ -89,20 +89,17 @@ static int type_match_table(int type, int num);
  * launch_handler accepts the socket of a new player and launches
  * a new dedicated handler process/thread.
  */
-void player_handler_launch(int sock, char *ip_addr)
+void player_handler_launch(int sock)
 {
 
 	pthread_t thread;
 	char *arg_ptr;
 	int status;
 
-	/* Temporary storage to pass fd and ip_addr */
-	/* This stuff an int then a string into a single char buffer */
-	if (FAIL(arg_ptr = malloc(sizeof(int)+strlen(ip_addr)+1)))
+	/* Temporary storage to pass fd */
+	if ((arg_ptr = malloc(sizeof(int))) == NULL)
 		err_sys_exit("malloc error in player_handler_launch()");
 	*((int *) arg_ptr) = sock;
-	strcpy(arg_ptr+sizeof(int), ip_addr);
-	free(ip_addr);
 
 	status = pthread_create(&thread, NULL, player_new, arg_ptr);
 	if (status != 0) {
@@ -120,19 +117,15 @@ void player_handler_launch(int sock, char *ip_addr)
 static void* player_new(void *arg_ptr)
 {
 	int sock, status, i;
+#if 0
 	char *ip_addr, *hostname = NULL;
 	struct hostent *host;
 	struct in_addr addr;
+#endif
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *) arg_ptr);
-	if((ip_addr = malloc(strlen((char *)arg_ptr+sizeof(int)) + 1)) == NULL)
-		err_sys_exit("malloc error in player_new()");
-	strcpy(ip_addr, (char *)arg_ptr+sizeof(int));
 	free(arg_ptr);
-
-	/* Just to make sure things got packed/unpacked right from arg_ptr */
-	dbg_msg("fd %d attached to ip address %s", sock, ip_addr);
 
 	/* Detach thread since no one needs to join us */
 	status = pthread_detach(pthread_self());
@@ -141,6 +134,7 @@ static void* player_new(void *arg_ptr)
 		err_sys_exit("pthread_detach error");
 	}
 
+#if 0
 	/* Lookup the hostname if enabled in ggzd.conf */
 	if(opt.perform_lookups) {
 		inet_aton(ip_addr, &addr);
@@ -149,6 +143,7 @@ static void* player_new(void *arg_ptr)
 			err_sys_exit("malloc error in player_new()");
 		strcpy(hostname, host->h_name);
 	}
+#endif
 
 	/* Send server ID */
 	if (FAIL(es_write_int(sock, MSG_SERVER_ID)) ||
@@ -174,8 +169,10 @@ static void* player_new(void *arg_ptr)
 	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
 	strcpy(players.info[i].name, "(none)");
+#if 0
 	players.info[i].ip_addr = ip_addr;
 	players.info[i].hostname = hostname;
+#endif
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 	

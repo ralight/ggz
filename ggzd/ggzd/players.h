@@ -24,5 +24,5 @@
 
 #include <config.h>
 
-void player_handler_launch(int sock, char *ip_addr);
+void player_handler_launch(int sock);
 int num_comp_play(unsigned char mask);
