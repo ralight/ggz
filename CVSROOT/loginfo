@@ -25,4 +25,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-DEFAULT         /usr/lib/cvs/contrib/log -s -m ggz-cvs-list@lists.sourceforge.net -f /dev/null %s
+DEFAULT         /usr/lib/cvs/contrib/log -s -m ggz-cvs@mail.ggzgamingzone.org -f /dev/null %s
