@@ -217,7 +217,7 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
 #ifdef KGGZ_WALLET
-	QString p;
+	QString p, entry;
 	KWallet::Wallet *w = NULL;
 
 	if(mode == GGZCoreServer::normal)
@@ -225,14 +225,15 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 		w = KWallet::Wallet::openWallet("kggz");
 		if(w)
 		{
+			entry = QString("%1@%2").arg(username).arg(host);
 			w->setFolder("passwords");
-			w->readPassword(host, p);
+			w->readPassword(entry, p);
 
 			if(p.isEmpty())
 			{
 				p = KLineEditDlg::getText(i18n("Password"),
 					i18n("Password not found, please input:"), NULL, NULL);
-				if(p) w->writePassword(host, p);
+				if(p) w->writePassword(entry, p);
 			}
 			password = p.latin1();
 
@@ -593,9 +594,13 @@ void KGGZ::listPlayers()
 			case GGZCorePlayer::admin:
 				type = KGGZUsers::assignadmin;
 				break;
+			case GGZCorePlayer::bot:
+KGGZDEBUG("assign bot!!!!\n");
+				type = KGGZUsers::assignbot;
+				break;
 			case GGZCorePlayer::none:
 			default:
-				type = KGGZUsers::assignbot;
+				type = KGGZUsers::assignbanned;
 				break;
 		}
 		m_workspace->widgetUsers()->assignRole(playername, type);
@@ -892,6 +897,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	GGZCoreGametype *gametype;
 #ifdef KGGZ_WALLET
 	KWallet::Wallet *w = NULL;
+	QString entry;
 #endif
 
 	emit signalActivity(1);
@@ -956,10 +962,11 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				w = KWallet::Wallet::openWallet("kggz");
 				if(w)
 				{
+					entry = QString("%1@%2").arg(m_save_username).arg(m_save_hostname);
 					if(!w->hasFolder("passwords"))
 						w->createFolder("passwords");
 					w->setFolder("passwords");
-					w->writePassword(m_save_hostname, kggzserver->password());
+					w->writePassword(entry, kggzserver->password());
 				}
 				else KMessageBox::error(this,
 					i18n("The wallet could not be opened to insert the password (%1).").arg(

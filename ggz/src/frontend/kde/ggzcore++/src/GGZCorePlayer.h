@@ -38,7 +38,8 @@ class GGZCorePlayer
 			none = GGZ_PLAYER_NONE,
 			normal = GGZ_PLAYER_NORMAL,
 			guest = GGZ_PLAYER_GUEST,
-			admin = GGZ_PLAYER_ADMIN
+			admin = GGZ_PLAYER_ADMIN,
+			bot = GGZ_PLAYER_BOT
 		};
 
 		/**

@@ -318,6 +318,7 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 			pixmap = "admin.png";
 			break;
 	}
+KGGZDEBUG("setpixmap: %s\n", pixmap.latin1());
 	item->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap));
 
 	if(save)
