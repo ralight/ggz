@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-PACKAGE = kcm_ggz
+PACKAGE = kcmggz
 POTFILE = kcm_ggz.pot
 POFILES = de.po
 LOCATIONS = $(top_srcdir)/kcm_ggz/*.cpp $(top_srcdir)/kcm_ggz/modules/*.cpp
