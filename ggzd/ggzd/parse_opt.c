@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2296 2001-08-28 04:33:14Z rgade $
+ * $Id: parse_opt.c 2348 2001-09-04 02:07:51Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -48,7 +48,6 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 /* Private file parsing functions */
 static void get_config_options(int);
-static void parse_line(char *);
 static void parse_game(char *, char *);
 static void parse_room(char *, char *);
 static int parse_gselect(const struct dirent *);
@@ -82,10 +81,6 @@ static struct LogTypes dbg_types[] = {
 	{ "game_msg",           GGZ_DBG_GAME_MSG}
 };
 static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
-
-/* Module local variables for parsing */
-static char *varname;
-static char *varvalue;
 
 /* Game and room lists */
 static int g_count = 0;
@@ -580,10 +575,7 @@ void parse_room_files(void)
 static void parse_room(char *name, char *dir)
 {
 	char *fname;
-	FILE *roomfile;
-	char line[256];
-	int linenum = 0;
-	int intval;
+	int ch;
 	char *strval;
 	int num;
 	int i;
@@ -595,7 +587,7 @@ static void parse_room(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.room", dir, name);
 
-	if((roomfile = fopen(fname, "r")) == NULL) {
+	if((ch = conf_parse(fname, CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
@@ -610,85 +602,24 @@ static void parse_room(char *name, char *dir)
 		room_create_additional();
 	num = room_info.num_rooms - 1;
 	rooms[num].game_type = -2;
-	rooms[num].max_tables = -1;
 
-	while(fgets(line, 256, roomfile)) {
-		linenum++;
-		parse_line(line);
-		if(varname == NULL)
-			continue; /* Blank line or comment */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
-			varname, varvalue);
-
-		/*** Name = String ***/
-		if(!strcmp(varname, "name")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("malloc failed in parse_room()");
-			strcpy(strval, varvalue);
-			rooms[num].name = strval;
-		}
-
-		/*** Description = String ***/
-		if(!strcmp(varname, "description")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("malloc failed in parse_room()");
-			strcpy(strval, varvalue);
-			rooms[num].description = strval;
-		}
-
-		/*** MaxPlayers = # ***/
-		if(!strcmp(varname, "maxplayers")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 1) {
-				PARSE_ERR("MaxPlayers value invalid");
-				continue;
-			}
-			rooms[num].max_players = intval;
-		}
-
-		/*** MaxTables = # ***/
-		if(!strcmp(varname, "maxtables")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 0) {
-				PARSE_ERR("MaxTables value invalid");
-				continue;
-			}
-			rooms[num].max_tables = intval;
-		}
-
-		/*** GameType = String ***/
-		if(!strcmp(varname, "gametype")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			for(i=0; i<state.types; i++)
-				if(!strcmp(varvalue, game_types[i].name))
-					break;
-			if(i != state.types)
-				rooms[num].game_type = i;
-			else if(!strcasecmp(varvalue, "none"))
-				rooms[num].game_type = -1;
-			else
-				PARSE_ERR("Invalid game type specified");
-		}
-	}
+	/* [RoomInfo] */
+	rooms[num].name = conf_read_string(ch, "RoomInfo", "Name", NULL);
+	rooms[num].description = conf_read_string(ch, "RoomInfo", "Description",
+						  NULL);
+	rooms[num].max_players = conf_read_int(ch, "RoomInfo", "MaxPlayers", 0);
+	rooms[num].max_tables = conf_read_int(ch, "RoomInfo", "MaxTables", -1);
+	strval = conf_read_string(ch, "RoomInfo", "GameType", NULL);
+	for(i=0; i<state.types; i++)
+		if(!strcmp(strval, game_types[i].name))
+			break;
+	if(i != state.types)
+		rooms[num].game_type = i;
+	else if(!strcasecmp(strval, "none"))
+		rooms[num].game_type = -1;
+	else
+		err_msg("Invalid GameType specified in room %s", name);
+	free(strval);
 
 	if(rooms[num].name == NULL) {
 		err_msg("No Name given for room %s", name);
@@ -704,12 +635,14 @@ static void parse_room(char *name, char *dir)
 		strcpy(strval, "none");
 		rooms[num].description = strval;
 	}
-	if(rooms[num].max_players == 0) {
-		err_msg("No MaxPlayers given for room %s", name);
+	if(rooms[num].max_players <= 0) {
+		if(rooms[num].max_players < 0)
+			err_msg("Invalid MaxPlayers given for room %s", name);
 		rooms[num].max_players = DEFAULT_MAX_ROOM_USERS;
 	}
 	if(rooms[num].max_tables < 0) {
-		err_msg("No MaxTables given for room %s", name);
+		if(rooms[num].max_tables < -1)
+			err_msg("Invalid MaxTables given for room %s", name);
 		rooms[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
 	}
 	if(rooms[num].game_type == -2) {
@@ -725,59 +658,7 @@ static void parse_room(char *name, char *dir)
 	if(rooms[num].tables == NULL)
 		err_sys_exit("calloc failed in parse_room()");
 
-	fclose(roomfile);
 	free(fname);
-}
-
-
-/* Parse a single line of input into a left half and a right half */
-/* separated by an (optional) equals sign                         */
-static void parse_line(char *p)
-{
-	char csave;
-
-	varname = NULL;
-	/* Skip over whitespace */
-	while((*p == ' ' || *p == '\t' || *p == '\n') && *p != '\0')
-		p++;
-	if(*p == '\0' || *p == '#')
-		return;	/* The line is a comment */
-
-	varname = p;
-
-	varvalue = NULL;
-	/* Skip until we find the end of the variable name, converting */
-	/* everything (for convenience) to lowercase as we go */
-	while(*p != ' ' && *p != '\t' && *p != '\n' && *p != '=' && *p != '\0'){
-		*p = tolower(*p);
-		p++;
-	}
-	csave = *p;
-	*p = '\0';
-	p++;
-
-	if(csave == '\n' || csave == '\0')
-		return;	/* There is no argument */
-
-	/* There appears to be an argument, skip to the start of it */
-	while((*p == ' ' || *p == '\t' || *p == '\n' || *p == '=')&& *p != '\0')
-		p++;
-	if(*p == '\0')
-		return; /* Argument is missing */
-
-	/* There is an argument ... */
-	varvalue = p;
-
-	/* Terminate it ... */
-	while(*p != '\n' && *p != '\0')
-		p++;
-	/* Found EOL, now backspace over whitespace to remove trailing space */
-	p--;
-	while(*p == ' ' || *p == '\t' || *p == '\n')
-		p--;
-	p++;
-	/* Finally terminate it with a NUL */
-	*p = '\0'; /* Might have already been the NUL, but who cares? */
 }
 
 
