@@ -57,7 +57,7 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* use
 static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_state_change(GGZStateID id, void* event_data, void* user_data);
+static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data);
 
 GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
@@ -76,6 +76,7 @@ void ggz_event_init(GGZServer *Server)
 //	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL,		ggz_entered_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT,		ggz_logout);
 	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,		ggz_motd_loaded);
+	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE,         ggz_state_change);
 
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_ERROR,		 NULL);
 //	ggzcore_server_add_event_hook(server, GGZ_SERVER_TABLE_UPDATE,	 ggz_table_update);
@@ -294,23 +295,6 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_
 }
 
 
-void ggz_state_init(void)
-{
-//	ggzcore_state_add_hook(GGZ_STATE_OFFLINE, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_CONNECTING, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_ONLINE, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_LOGGING_IN, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_LOGGED_IN, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_BETWEEN_ROOMS, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_ENTERING_ROOM, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_IN_ROOM, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_JOINING_TABLE, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_AT_TABLE, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_LEAVING_TABLE, ggz_state_change);
-//	ggzcore_state_add_hook(GGZ_STATE_LOGGING_OUT, ggz_state_change);
-}
-
-
 static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	gchar *player;
@@ -502,12 +486,16 @@ static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* 
 }
 
 
-static GGZHookReturn ggz_state_change(GGZStateID id, void* event_data, void* user_data)
+static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void* user_data)
 {
+	int context;
 	GtkWidget* statebar;
 	char *state;
+	GGZStateID state_id;
 
-	switch (id) {
+	state_id = ggzcore_server_get_state(server);
+	
+	switch (state_id) {
 	case GGZ_STATE_OFFLINE:
 		state = _("Offline");
 		break;
@@ -548,10 +536,9 @@ static GGZHookReturn ggz_state_change(GGZStateID id, void* event_data, void* use
 	}
 
 	statebar = lookup_widget(win_main, "statebar");
-	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statebar), "state");
-	gtk_statusbar_pop(GTK_STATUSBAR(statebar), id);
-	gtk_statusbar_push(GTK_STATUSBAR(statebar), id, state);
-
+	context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statebar), "state");
+	gtk_statusbar_pop(GTK_STATUSBAR(statebar), context);
+	gtk_statusbar_push(GTK_STATUSBAR(statebar), context, state);
 
 	return GGZ_HOOK_OK;
 }

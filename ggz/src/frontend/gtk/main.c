@@ -50,7 +50,7 @@ int main (int argc, char *argv[])
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
-	opt.flags = GGZ_OPT_PARSER;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
 	if (!strcmp(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"), "/tmp/ggz-gtk.debug"))
 	{
 		opt.debug_file = g_strdup_printf("%s%d", "/tmp/ggz-gtk.debug", getpid());

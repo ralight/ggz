@@ -28,7 +28,6 @@
 #include "ggzcore.h"
 
 void ggz_event_init(GGZServer *Server);
-void ggz_state_init(void);
 void ggz_sensitivity_init(void);
 
 #endif
