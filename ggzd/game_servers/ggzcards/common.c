@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2325 2001-08-29 17:46:27Z jdorje $
+ * $Id: common.c 2361 2001-09-05 04:56:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -1134,8 +1134,6 @@ void init_game()
 	}
 
 	game.funcs = game_data[game.which_game].funcs;
-
-	init_messages();
 
 	/* default values */
 	game.deck_type = GGZ_DECK_FULL;
