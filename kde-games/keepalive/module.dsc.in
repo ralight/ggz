@@ -1,6 +1,6 @@
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/keepalive
+CommandLine = @ggzexecmoddir@/keepalive --ggz
 Frontend = qt
 Homepage = http://ggz.sourceforge.net/games/keepalive/
 Name = Keepalive
