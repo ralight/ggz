@@ -177,7 +177,7 @@ Server* server_get(const gchar* name)
 {
 	GList* node;
 	
-	node = g_list_find_custom(servers, name, server_match_name);
+	node = g_list_find_custom(servers, (gpointer)name, server_match_name);
 	
 	if (!node)
 		return NULL;
