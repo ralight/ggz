@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3708 2002-03-28 08:14:12Z jdorje $
+# $Id: Makefile.am 3785 2002-04-06 18:45:58Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -27,9 +27,7 @@ ggz_lapocha_SOURCES = \
 	game.c game.h \
 	dlg_bid.c dlg_bid.h \
 	cb_bid.c cb_bid.h \
-	dlg_about.c dlg_about.h \
-	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
-	cards.xpm
+	dlg_about.c dlg_about.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_lapocha_LDADD = @GTK_LIBS@ $(top_builddir)/common/libgtk-games.a $(LDADD)

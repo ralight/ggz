@@ -36,11 +36,12 @@
 #include "hand.h"
 #include "dlg_bid.h"
 
-#include "cards.xpm"
-#include "cards-b1.xpm"
-#include "cards-b2.xpm"
-#include "cards-b3.xpm"
-#include "cards-b4.xpm"
+#include "../ggzcards/cards-1.xpm"
+#include "../ggzcards/cards-b1.xpm"
+#include "../ggzcards/cards-b2.xpm"
+#include "../ggzcards/cards-b3.xpm"
+#include "../ggzcards/cards-b4.xpm"
+
 /* The following would be hell to change */
 #define CARDWIDTH	71
 #define CARDHEIGHT	96
