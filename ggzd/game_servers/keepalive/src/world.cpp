@@ -177,6 +177,17 @@ Player *World::getPlayer(const char *name)
 	return NULL;
 }
 
+// Return a spectator
+Spectator *World::getSpectator(const char *name)
+{
+	if(!name) return NULL;
+
+	for(std::list<Spectator>::iterator it = m_spectatorlist.begin(); it != m_spectatorlist.end(); it++)
+		if(!strcmp((*it).name(), name)) return &(*it);
+
+	return NULL;
+}
+
 // Return the width of this world
 int World::width()
 {
@@ -219,25 +230,39 @@ void World::receive(const char *name, void *data)
 	char *pname, *message;
 	int seat;
 	Player *p;
+	Spectator *s;
+	int fd;
 
 	p = getPlayer(name);
-	if(!p) return;
-	ggz_read_char(p->fd(), &c);
+	if(!p)
+	{
+		s = getSpectator(name);
+		if(!s) return;
+		fd = s->fd();
+	}
+	else
+	{
+		s = NULL;
+		fd = p->fd();
+	}
+
+	ggz_read_char(fd, &c);
 
 	std::cout << "Got data from client: " << (int)c << std::endl;
 
 	switch(c)
 	{
 		case op_login:
+			if(s) return;
 			std::cout << "op_login" << std::endl;
-			ggz_read_string(p->fd(), username, 32);
-			ggz_read_string(p->fd(), password, 32);
+			ggz_read_string(fd, username, 32);
+			ggz_read_string(fd, password, 32);
 			pname = p->morph(username, password);
 			if(pname)
 			{
 				// Send login confirmation
-				ggz_write_char(p->fd(), op_name);
-				ggz_write_string(p->fd(), pname);
+				ggz_write_char(fd, op_name);
+				ggz_write_string(fd, pname);
 
 				// Broadcast avatar name and position
 				for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
@@ -252,15 +277,18 @@ void World::receive(const char *name, void *data)
 			else
 			{
 				// Send login failure
-				ggz_write_char(p->fd(), op_loginfailed);
+				ggz_write_char(fd, op_loginfailed);
 				std::cout << "sent login failed" << std::endl;
 			}
 			break;
 		case op_move:
+			if(s) return;
 			std::cout << "op_move" << std::endl;
-			ggz_read_int(p->fd(), &x);
-			ggz_read_int(p->fd(), &y);
+			ggz_read_int(fd, &x);
+			ggz_read_int(fd, &y);
 			p->move(x, y);
+
+			// Broadcast again
 			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
@@ -272,8 +300,11 @@ void World::receive(const char *name, void *data)
 			}
 			break;
 		case op_chat:
+			if(s) return;
 			std::cout << "op_chat" << std::endl;
-			ggz_read_string_alloc(p->fd(), &message);
+			ggz_read_string_alloc(fd, &message);
+
+			// Chat with all players alive
 			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;

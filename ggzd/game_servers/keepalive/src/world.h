@@ -39,6 +39,7 @@ class World
 		// FIXME: Is the spectator's name that important? Transitions?
 		void addSpectator(const char *name, int fd);
 		void removeSpectator(const char *name);
+		Spectator *getSpectator(const char *name);
 
 		int width();
 		int height();

@@ -51,6 +51,7 @@ Keepalive::Keepalive()
 #ifdef GGZSPECTATORS
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, hook_events);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA, hook_data);
 #endif
 }
 
@@ -109,6 +110,15 @@ void Keepalive::hookSpectatorLeave(void *data)
 {
 	GGZSpectator spectator = *(GGZSpectator*)data;
 	m_world->removeSpectator(spectator.name);
+}
+
+// Handler for spectator data
+void Keepalive::hookSpectatorData(void *data)
+{
+	char *name;
+
+	name = ggzdmod_get_spectator(ggzdmod, *(int*)data).name;
+	m_world->receive(name, data);
 }
 #endif
 
@@ -174,6 +184,17 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 // Callback for game data
 void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
-	me->hookData(data);
+	switch(event)
+	{
+		case GGZDMOD_EVENT_PLAYER_DATA:
+			me->hookData(data);
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_DATA:
+			me->hookSpectatorData(data);
+			break;
+		default:
+			// FIXME: error
+			break;
+	}
 }
 
