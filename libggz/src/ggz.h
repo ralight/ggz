@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3931 2002-04-13 01:32:57Z jdorje $
+ * $Id: ggz.h 4128 2002-05-01 06:35:14Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1056,9 +1056,12 @@ typedef enum {
  *
  *  @param msg The strerror message associated with the error.
  *  @param type The type of error that occurred.
+ *  @param fd The socket on which the error occurred, or -1 if not applicable.
  *  @param data Extra data associated with the error.
  */
-typedef void (*ggzIOError) (const char * msg, const GGZIOType type,
+typedef void (*ggzIOError) (const char * msg,
+                            const GGZIOType type,
+                            const int fd,
 			    const GGZDataType data);
 			      
 /** @brief Set the ggz/easysock error handling function.
