@@ -27,9 +27,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// Easysock includes
-#include "easysock.h"
-
 // Global singleton Zone object
 ZoneGGZModServer *self;
 
@@ -144,7 +141,7 @@ int ZoneGGZModServer::game_send_seat(int seat)
 
 	ZONEDEBUG("Sending player %d's seat num.\n", seat);
 
-	if (es_write_int(fd, ZoneGGZ::seat) < 0 || es_write_int(fd, seat) < 0) return -1;
+	if (ggz_write_int(fd, ZoneGGZ::seat) < 0 || ggz_write_int(fd, seat) < 0) return -1;
 
 	ZONEDEBUG("RAW OUTPUT: %i (seat)\n", ZoneGGZ::seat);
 	ZONEDEBUG("RAW OUTPUT: %i (seatnumber)\n", seat);
@@ -187,12 +184,12 @@ int ZoneGGZModServer::game_send_players()
 
 		ZONEDEBUG("Sending player list to player %d (%i)\n", j, fd);
 
-		if(es_write_int(fd, ZoneGGZ::players) < 0)
+		if(ggz_write_int(fd, ZoneGGZ::players) < 0)
 		{
 			ZONEERROR("couldn't send ZoneGGZ::players\n");
 			return -1;
 		}
-		if(es_write_int(fd, m_numplayers) < 0)
+		if(ggz_write_int(fd, m_numplayers) < 0)
 		{
 			ZONEERROR("couldn't send player number\n");
 			return -1;
@@ -202,7 +199,7 @@ int ZoneGGZModServer::game_send_players()
 		for(i = 0; i < m_numplayers; i++)
 		{
 			GGZSeat seat2;
-			if(es_write_int(fd, seat2.type) < 0)
+			if(ggz_write_int(fd, seat2.type) < 0)
 			{
 				ZONEERROR("couldn't send seat assignments\n");
 				return -1;
@@ -212,7 +209,7 @@ int ZoneGGZModServer::game_send_players()
 			if(seat2.type == GGZ_SEAT_OPEN) m_ready = 0;
 			else
 			{
-				if(es_write_string(fd, seat2.name) < 0)
+				if(ggz_write_string(fd, seat2.name) < 0)
 				{
 					ZONEERROR("couldn't send player names\n");
 					return -1;
@@ -239,12 +236,12 @@ void ZoneGGZModServer::game_send_rules()
 			ZONEDEBUG("Skipping %i\n", i);
 			continue;
 		}
-		if(es_write_int(fd, ZoneGGZ::rules) < 0)
+		if(ggz_write_int(fd, ZoneGGZ::rules) < 0)
 		{
 			ZONEERROR("couldn't send ZoneGGZ::rules\n");
 			return;
 		}
-		if((es_write_int(fd, m_gamemode) < 0) || (es_write_int(fd, m_maxplayers) < 0))
+		if((ggz_write_int(fd, m_gamemode) < 0) || (ggz_write_int(fd, m_maxplayers) < 0))
 		{
 			ZONEERROR("couldn't send gamemode, maxplayers\n");
 			return;
@@ -281,7 +278,7 @@ void ZoneGGZModServer::zoneNextTurn()
 		if(seat.type == GGZ_SEAT_PLAYER)
 		{
 			fd = seat.fd;
-			if(es_write_int(fd, ZoneGGZ::turnover) < 0)
+			if(ggz_write_int(fd, ZoneGGZ::turnover) < 0)
 			{
 				ZONEERROR("Couldn't send ZoneGGZ::turnover\n");
 				return;
@@ -313,7 +310,7 @@ void ZoneGGZModServer::zoneNextTurn()
 	if((m_gamemode == ZoneGGZ::turnbased) && (seat.type == GGZ_SEAT_PLAYER))
 	{
 		fd = seat.fd;
-		if(es_write_int(fd, ZoneGGZ::turn) < 0)
+		if(ggz_write_int(fd, ZoneGGZ::turn) < 0)
 		{
 			ZONEERROR("Couldn't send ZoneGGZ::turn\n");
 			return;

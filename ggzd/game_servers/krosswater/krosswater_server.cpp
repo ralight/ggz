@@ -31,9 +31,6 @@
 #include "ZoneGGZ.h"
 #include <ggzdmod.h>
 
-// Easysock includes
-#include <easysock.h>
-
 // Gives a console output of the map
 void printpath(int width, int height, int **field)
 {
@@ -84,7 +81,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	int op;
 	int status;
 
-	if(es_read_int(fd, &op) < 0)
+	if(ggz_read_int(fd, &op) < 0)
 	{
 		ZONEERROR("error in protocol (3)\n");
 		return -1;
@@ -96,7 +93,7 @@ int KrosswaterServer::slotZoneInput(int fd, int i)
 	if(op == proto_helloworld)
 	{
 		ZONEDEBUG("Hiya!\n");
-		es_read_string(fd, (char*)&string, 256);
+		ggz_read_string(fd, (char*)&string, 256);
 		ZONEDEBUG(":: %s ::\n", string);
 		status = 0;
 	}
@@ -126,10 +123,10 @@ void KrosswaterServer::getMove()
 	int ret;
 
 	// Read move coordinates
-	if((es_read_int(m_fd, &fromx) < 0)
-	|| (es_read_int(m_fd, &fromy) < 0)
-	|| (es_read_int(m_fd, &tox) < 0)
-	|| (es_read_int(m_fd, &toy) < 0))
+	if((ggz_read_int(m_fd, &fromx) < 0)
+	|| (ggz_read_int(m_fd, &fromy) < 0)
+	|| (ggz_read_int(m_fd, &tox) < 0)
+	|| (ggz_read_int(m_fd, &toy) < 0))
 	{
 		ZONEERROR("Move corrupted!\n");
 		return;
@@ -162,7 +159,7 @@ void KrosswaterServer::getMove()
 	}
 	else
 	{
-  		if(es_write_int(m_fd, ZoneGGZ::invalid) < 0)
+  		if(ggz_write_int(m_fd, ZoneGGZ::invalid) < 0)
 		{
 			ZONEERROR("couldn't send ZoneGGZ::invalid\n");
 			return;
@@ -207,9 +204,9 @@ void KrosswaterServer::sendMap()
 	}
 
 	// Send map information to the client who joined
-	if((es_write_int(m_fd, proto_map_respond) < 0)
-	|| (es_write_int(m_fd, map_x) < 0)
-	|| (es_write_int(m_fd, map_y) < 0))
+	if((ggz_write_int(m_fd, proto_map_respond) < 0)
+	|| (ggz_write_int(m_fd, map_x) < 0)
+	|| (ggz_write_int(m_fd, map_y) < 0))
 	{
 		ZONEERROR("Map control transmission corrupted!\n");
 		return;
@@ -218,21 +215,21 @@ void KrosswaterServer::sendMap()
 	// Send map data
 	for(int j = 0; j < map_y; j++)
 		for(int i = 0; i < map_x; i++)
-			if(es_write_int(m_fd, map[i][j]) < 0)
+			if(ggz_write_int(m_fd, map[i][j]) < 0)
 			{
 				ZONEERROR("Map transmission corrupted!\n");
 				return;
 			}
 
 	// Send player data
-	if(es_write_int(m_fd, m_maxplayers) < 0)
+	if(ggz_write_int(m_fd, m_maxplayers) < 0)
 	{
 		ZONEERROR("Player control transmission corrupted!\n");
 		return;
 	}
 	for(int i = 0; i < m_maxplayers; i++)
-		if((es_write_int(m_fd, players[i].x) < 0)
-		|| (es_write_int(m_fd, players[i].y) < 0))
+		if((ggz_write_int(m_fd, players[i].x) < 0)
+		|| (ggz_write_int(m_fd, players[i].y) < 0))
 		{
 			ZONEERROR("Player transmission corrupted!\n");
 			return;
@@ -282,11 +279,11 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 		if((seat.type == GGZ_SEAT_PLAYER) && (i != zoneTurn()))
-	  		if((es_write_int(seat.fd, proto_move_broadcast) < 0)
-			|| (es_write_int(seat.fd, fromx) < 0)
-			|| (es_write_int(seat.fd, fromy) < 0)
-			|| (es_write_int(seat.fd, tox) < 0)
-			|| (es_write_int(seat.fd, toy) < 0))
+	  		if((ggz_write_int(seat.fd, proto_move_broadcast) < 0)
+			|| (ggz_write_int(seat.fd, fromx) < 0)
+			|| (ggz_write_int(seat.fd, fromy) < 0)
+			|| (ggz_write_int(seat.fd, tox) < 0)
+			|| (ggz_write_int(seat.fd, toy) < 0))
 				ZONEERROR("couldn't send move broadcast!\n");
 	}
 
@@ -313,8 +310,8 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)
-	  			if((es_write_int(seat.fd, proto_map_backtrace) < 0)
-				|| (es_write_int(seat.fd, zoneTurn()) < 0))
+	  			if((ggz_write_int(seat.fd, proto_map_backtrace) < 0)
+				|| (ggz_write_int(seat.fd, zoneTurn()) < 0))
 					ZONEERROR("couldn't send backtrace control\n");
 		}
 
@@ -327,8 +324,8 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 				GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 				if(seat.type == GGZ_SEAT_PLAYER)
 				{
-	  				if((es_write_int(seat.fd, backtrace->x()) < 0)
-	  				|| (es_write_int(seat.fd, backtrace->y()) < 0))
+	  				if((ggz_write_int(seat.fd, backtrace->x()) < 0)
+	  				|| (ggz_write_int(seat.fd, backtrace->y()) < 0))
 						ZONEERROR("couldn't send part of backtrace\n");
 				}
 			}
@@ -341,7 +338,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)
-	  			if(es_write_int(seat.fd, -1) < 0)
+	  			if(ggz_write_int(seat.fd, -1) < 0)
 					ZONEERROR("couldn't send backtrace control\n");
 		}
 		ret = 1;
@@ -361,7 +358,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		{
 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
 			if(seat.type == GGZ_SEAT_PLAYER)
-	  			if(es_write_int(seat.fd, ZoneGGZ::over) < 0)
+	  			if(ggz_write_int(seat.fd, ZoneGGZ::over) < 0)
 					ZONEERROR("couldn't send ZoneGGZ::over\n");
 		}
 	}
