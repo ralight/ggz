@@ -23,6 +23,7 @@
 #undef HAVE_CMSG_SPACE
 #undef HAVE_MSGHDR_MSG_CONTROL
 #undef HAVE_SUN_LEN
+#undef NDEBUG
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
     
