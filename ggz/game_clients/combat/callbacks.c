@@ -11,6 +11,7 @@
 #include "combat.h"
 #include "game.h"
 #include "dlg_options.h"
+#include "dlg_about.h"
 
 extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;
@@ -203,3 +204,12 @@ on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
   }
 }
 
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  GtkWidget *about;
+  about = create_about_dlg();
+  gtk_widget_show(about);
+}

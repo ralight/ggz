@@ -36,6 +36,10 @@ create_main_window (void)
   GtkWidget *request_sync;
   GtkWidget *remember_enemy_units;
   GtkWidget *show_game_options;
+  GtkWidget *help;
+  GtkWidget *help_menu;
+  GtkAccelGroup *help_menu_accels;
+  GtkWidget *about;
   GtkWidget *hbox;
   GtkWidget *mainarea;
   GtkWidget *vseparator1;
@@ -177,6 +181,40 @@ create_main_window (void)
   gtk_container_add (GTK_CONTAINER (game_menu), show_game_options);
   gtk_tooltips_set_tip (tooltips, show_game_options, _("Displays the current game options"), NULL);
 
+  help = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (help)->child),
+                                   _("_Help"));
+  gtk_widget_add_accelerator (help, "activate_item", accel_group,
+                              tmp_key, GDK_MOD1_MASK, 0);
+  gtk_widget_set_name (help, "help");
+  gtk_widget_ref (help);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "help", help,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (help);
+  gtk_container_add (GTK_CONTAINER (menubar), help);
+  gtk_menu_item_right_justify (GTK_MENU_ITEM (help));
+
+  help_menu = gtk_menu_new ();
+  gtk_widget_set_name (help_menu, "help_menu");
+  gtk_widget_ref (help_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "help_menu", help_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (help), help_menu);
+  help_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (help_menu));
+
+  about = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (about)->child),
+                                   _("A_bout"));
+  gtk_widget_add_accelerator (about, "activate_item", help_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_set_name (about, "about");
+  gtk_widget_ref (about);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "about", about,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (about);
+  gtk_container_add (GTK_CONTAINER (help_menu), about);
+  gtk_menu_item_right_justify (GTK_MENU_ITEM (about));
+
   hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox, "hbox");
   gtk_widget_ref (hbox);
@@ -270,6 +308,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (show_game_options), "activate",
                       GTK_SIGNAL_FUNC (on_show_game_options_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (about), "activate",
+                      GTK_SIGNAL_FUNC (on_about_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "expose_event",
                       GTK_SIGNAL_FUNC (on_mainarea_expose_event),

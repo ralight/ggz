@@ -65,3 +65,7 @@ void change_show_enemy(GtkWidget *button, gpointer user_data);
 void
 on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
                                         gpointer         user_data);
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
