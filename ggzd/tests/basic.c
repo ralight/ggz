@@ -159,8 +159,7 @@ int main (void) {
 	/* FIXME: test all functions with a NULL object */
 	/* FIXME: generally test functions with bad parameter values */
 
-	ggz_debug_cleanup();
-	ggz_memory_check();
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
 	
 	printf(" -- All tests complete -- \n");
 
