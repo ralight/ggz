@@ -43,6 +43,7 @@
 #define LP_REQ_TRUMP	12
 #define LP_MSG_TRICK	13
 #define LP_MSG_SCORES	14
+#define LP_RSP_TRUMP    15
 
 /* Play errors */
 #define LP_ERR_STATE       -2
@@ -56,15 +57,16 @@
 #define LP_SND_BID      1
 #define LP_REQ_SYNC     2
 #define LP_REQ_NEWGAME  3
-#define LP_SET_TRUMP	4
+#define LP_SND_TRUMP	4
 
 /* La Pocha game states */
 #define LP_STATE_INIT        0
 #define LP_STATE_WAIT        1
 #define LP_STATE_NEW_HAND    2
-#define LP_STATE_BIDDING     3
-#define LP_STATE_PLAYING     4
-#define LP_STATE_DONE        5
+#define LP_STATE_GET_TRUMP   3
+#define LP_STATE_BIDDING     4
+#define LP_STATE_PLAYING     5
+#define LP_STATE_DONE        6
 
 /* La Pocha game events */
 #define LP_EVENT_LAUNCH      0
@@ -72,6 +74,7 @@
 #define LP_EVENT_LEAVE       2
 #define LP_EVENT_BID	     3
 #define LP_EVENT_PLAY        4
+#define LP_EVENT_TRUMP	     5
 
 /* Data structure for La Pocha game */
 struct lp_game_t {

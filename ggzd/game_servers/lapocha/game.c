@@ -45,12 +45,14 @@ static int game_send_gameover(char winner);
 static void game_play(void);
 static int game_req_bid(void);
 static int game_req_play(void);
+static int game_req_trump(void);
 static int game_handle_bid(int num, char *bid);
 static int game_handle_play(int num, char *card);
 static int game_update(int event, void *data);
 static int game_generate_next_hand(void);
 static int game_send_hand(int);
 static int game_send_trump(int);
+static int game_receive_trump(int);
 static void game_score_trick(void);
 static void game_score_hand(void);
 
@@ -126,6 +128,10 @@ int game_handle_player(int num)
 			break;
 		case LP_REQ_SYNC:
 			status = game_send_sync(num);
+			break;
+		case LP_SND_TRUMP:
+			if((status = game_receive_trump(num)) == 0)
+				game_update(LP_EVENT_TRUMP, NULL);
 			break;
 		default:
 			/* Unrecognized opcode */
@@ -272,13 +278,13 @@ static void game_play(void)
 		case LP_STATE_NEW_HAND:
 			if(game_generate_next_hand() < 0)
 				return;
-			game.state = LP_STATE_BIDDING;
 			game.bid_now = (game.dealer + 1) % 4;
 			game.bid_count = 0;
 			game.bid_total = 0;
 			for(i=0; i<4; i++)
 				game.tricks[i] = 0;
-			game_req_bid();
+			if(game.state == LP_STATE_BIDDING)
+				game_req_bid();
 			break;
 		case LP_STATE_BIDDING:
 			if(game.bid_count < 4)
@@ -339,6 +345,18 @@ static int game_req_play()
 	int fd = ggz_seats[game.turn].fd;
 
 	if(es_write_int(fd, LP_REQ_PLAY) < 0)
+		return -1;
+
+	return 0;
+}
+
+
+/* Request trump from the dealer */
+static int game_req_trump()
+{
+	int fd = ggz_seats[game.dealer].fd;
+
+	if(es_write_int(fd, LP_REQ_TRUMP) < 0)
 		return -1;
 
 	return 0;
@@ -448,12 +466,37 @@ static int game_handle_play(int num, char *card)
 }
 
 
+/* Get the trump suit from the dealer */
+static int game_receive_trump(int num)
+{
+	int fd = ggz_seats[num].fd;
+	char status;
+
+	/* If it ain't the dealer, just ignore */
+	if(num != game.dealer)
+		return -1;
+
+	if(es_read_char(fd, &game.trump) < 0)
+		return -1;
+
+	if(game.trump >= 0 && game.trump < 4)
+		status = 0;
+	else
+		status = LP_ERR_INVALID;
+
+	if(es_write_int(fd, LP_RSP_TRUMP) < 0
+	   || es_write_char(fd, status) < 0)
+		return -1;
+
+	return (int)status;
+}
+
+
 /* Update game state */
 static int game_update(int event, void *data)
 {
-	int seat;
-	char card;
-	char bid;
+	int seat, i;
+	char card, bid;
 	
 	switch(event) {
 		case LP_EVENT_LAUNCH:
@@ -508,6 +551,13 @@ static int game_update(int event, void *data)
 			/* Request next move */
 			game_play();
 			break;
+		case LP_EVENT_TRUMP:
+			for(i=0; i<4; i++)
+				game_send_trump(i);
+			game.state = LP_STATE_BIDDING;
+
+			game_play();
+			break;
 	}
 	
 	return 0;
@@ -541,12 +591,16 @@ static int game_generate_next_hand(void)
 
 	/* Select our trump, use a card cut if hand size != 10 */
 	if(card_count[game.hand_num-1] != 10) {
+		game.state = LP_STATE_BIDDING;
 		game.trump = cards_cut_for_trump();
 		for(p=0; p<4; p++) {
 			if(game_send_trump(p) < 0)
 				result = -1;
 		}
-	} /* else LP_REQ_TRUMP */
+	} else {
+		game.state = LP_STATE_GET_TRUMP;
+		game_req_trump();
+	}
 
 	return result;
 }
@@ -576,7 +630,7 @@ static int game_send_hand(int seat)
 }
 
 
-/* Send trump to all players */
+/* Send trump to a player */
 static int game_send_trump(int seat)
 {
 	int fd = ggz_seats[seat].fd;
