@@ -58,17 +58,16 @@ Canvas::~Canvas()
 // Receive game data from server
 void Canvas::slotInput()
 {
-	char c;
+	signed char c;
 	int width, height;
 	int x, y;
 	int count;
 	char *name;
 	QCanvasSprite *sprite;
 
-	*m_net >> (Q_INT8)c;
+	*m_net >> c;
 
 	std::cout << "Got input: " << (int)c << std::endl;
-	std::cout << "Normal: " << c << endl;
 
 	switch(c)
 	{
@@ -114,7 +113,8 @@ void Canvas::slotInput()
 			QMessageBox::information(NULL, "Notice", "Login failed");
 			break;
 		default:
-			QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
+			//QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
+			std::cout << "Unknown opcode: " << (int)c << endl;
 	}
 }
 
