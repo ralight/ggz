@@ -8,7 +8,8 @@ CREATE TABLE "users" (
 	"name" character varying(256),
 	"email" character varying(256),
 	"lastlogin" bigint,
-	"permissions" bigint
+	"permissions" bigint,
+	"photo" character varying(256)
 );
 
 CREATE TABLE "stats" (
@@ -27,5 +28,18 @@ CREATE TABLE "stats" (
 CREATE TABLE "control" (
 	"key" character varying(256),
 	"value" character varying(256)
+);
+
+CREATE TABLE "teams" (
+	"teamname" character varying(256),
+	"fullname" character varying(256),
+	"icon" character varying(256),
+	"foundingdate" integer,
+	"homepage" character varying(256)
+);
+
+CREATE TABLE "teammembers" (
+	"teamname" character varying(256),
+	"handle" character varying(256)
 );
 
