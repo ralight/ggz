@@ -40,7 +40,7 @@ struct chess_info game_info;
 struct timeval cronometer;
 
 /* Lazy way of doing things */
-#define OUT_OF_TIME (game_info.seconds[0] <= 0 || game_info.seconds[1] <= 0)
+#define OUT_OF_TIME(a) (game_info.seconds[a] <= 0)
 
 /* game_update(int event_id, void *data) 
  * event_id is a id of the CHESS_EVENT_* family
@@ -55,7 +55,7 @@ struct timeval cronometer;
  *  CHESS_EVENT_GAMEOVER: An char with the WINNER code
  *  CHESS_EVENT_UPDATE_TIME: Two ints: the seat number and the time
  *  CHESS_EVENT_REQUES_UPDATE: (int)seat of the requesting player
- *  CHESS_EVENT_FLAG: NULL
+ *  CHESS_EVENT_FLAG: (int)time until now for move
  *  CHESS_EVENT_DRAW: (int)What to add to the draw char
  *  CHESS_EVENT_START: NULL */
 void game_update(int event_id, void *data) {
@@ -150,8 +150,10 @@ void game_update(int event_id, void *data) {
         /* Worry about time */
         time = *((int *)data + (5/sizeof(int)) + 1);
         /* Update the structures */
-        if (!OUT_OF_TIME)
+        if (!OUT_OF_TIME(game_info.turn %2))
           game_info.seconds[game_info.turn % 2] -= time;
+        else
+          game_info.seconds[game_info.turn % 2] = 0;
         /* If server, stop the cronometer */
         if (game_info.clock_type != CHESS_CLOCK_CLIENT)
           game_stop_cronometer();
@@ -200,8 +202,10 @@ void game_update(int event_id, void *data) {
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
       /* Change time struct, if we aren't out of time */
-      if (!OUT_OF_TIME)
+      if (!OUT_OF_TIME(*(int*)data))
         game_info.seconds[*(int*)data] -= *((unsigned int*)data+1);
+      else
+        game_info.seconds[*(int*)data] = 0;
       /* Trigger a REQUEST_UPDATE event */
       *(int*)data = (*(int*)data + 1) % 2;
       game_update(CHESS_EVENT_REQUEST_UPDATE, data);
@@ -209,29 +213,27 @@ void game_update(int event_id, void *data) {
     case CHESS_EVENT_REQUEST_UPDATE:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
+      if (OUT_OF_TIME(0))
+        game_info.seconds[0] = 0;
+      if (OUT_OF_TIME(1))
+        game_info.seconds[1] = 0;
       /* Send the info to the player */
       game_send_update(*(int*)data);
       break;
     case CHESS_EVENT_FLAG:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      /* Check if player 1 and 2 are out of time */
-      if (game_info.seconds[0] <= 0 && game_info.seconds[1] <= 0) {
-        /* The one with more time wins */
-        if (game_info.seconds[0] > game_info.seconds[1])
-          st = CHESS_GAMEOVER_WIN_1_FLAG;
-        else if (game_info.seconds[1] > game_info.seconds[0])
-          st = CHESS_GAMEOVER_WIN_2_FLAG;
-        game_update(CHESS_EVENT_GAMEOVER, &st);
-      } else if (game_info.seconds[0] <= 0) {
-        /* Only player 1 is out of time */
+      /* I now that the claiming player isn't out of time
+       * ie, there is only one player out of time */
+      if (game_info.seconds[0] - *(int*)data <= 0)
         st = CHESS_GAMEOVER_WIN_2_FLAG;
-        game_update(CHESS_EVENT_GAMEOVER, &st);
-      } else if (game_info.seconds[1] <= 0) {
-        /* Only player 2 is out of time */
+      else if (game_info.seconds[1] - *(int*)data <= 0)
         st = CHESS_GAMEOVER_WIN_1_FLAG;
-        game_update(CHESS_EVENT_GAMEOVER, &st);
+      else {
+        ggz_debug("This should never happen!");
+        break;
       }
+      game_update(CHESS_EVENT_GAMEOVER, &st);
       break;
     case CHESS_EVENT_DRAW:
       /* Check state */
@@ -362,6 +364,9 @@ void game_handle_player(int id, int *seat) {
           gettimeofday(&now, NULL);
           time = now.tv_sec - cronometer.tv_sec;
         }
+        /* If first turn, there is no time! */
+        if (!game_info.turn)
+          time = 0;
         ggz_debug("Move: %s\tTime: %d", data, time);
         *((int *)data + (5/sizeof(int)) + 1) = time;
       }
@@ -390,7 +395,18 @@ void game_handle_player(int id, int *seat) {
       /* Check for the right clock */
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK)
         break;
-      game_update(CHESS_EVENT_FLAG, NULL);
+      time = 0;
+      /* If server clock, geth the time until now*/
+      if (game_info.clock_type == CHESS_CLOCK_SERVER ||
+          game_info.clock_type == CHESS_CLOCK_SERVERLAG) {
+        gettimeofday(&now, NULL);
+        time = now.tv_sec - cronometer.tv_sec;
+      }
+      /* Check if this player can claim */
+      if (game_info.turn % 2 == *seat && game_info.seconds[*seat] - time <= 0)
+        break;
+      /* Ok, so update it */
+      game_update(CHESS_EVENT_FLAG, &time);
       break;
     case CHESS_REQ_DRAW:
       if (*seat == 0 && game_info.draw == 3)
@@ -492,8 +508,8 @@ void game_send_move(char *move, int time) {
     else
       es_write_char(fd, -1);
     
-    /* Send time */
-    if (time)
+    /* Send time, if not error */
+    if (game_info.clock_type && move)
       es_write_int(fd, time);
 
   }
