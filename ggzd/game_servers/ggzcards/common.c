@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: common.c 3492 2002-02-27 10:12:56Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -51,7 +51,7 @@
 
 
 /* Global game variables */
-struct game_t game = { 0 };
+game_t game = { 0 };
 
 /* FIXME:
  *
@@ -238,7 +238,7 @@ void init_ggzcards(GGZdMod * ggz, char* which_game)
 	srandom((unsigned) time(NULL));
 
 	/* TODO: we should manually initialize pointers to NULL */
-	memset(&game, 0, sizeof(struct game_t));
+	memset(&game, 0, sizeof(game_t));
 
 	/* JDS: Note: the game type must have been initialized by here */
 	game.which_game = which_game;
