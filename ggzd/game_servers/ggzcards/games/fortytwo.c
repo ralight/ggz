@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4049 2002-04-22 17:40:30Z jdorje $
+ * $Id: fortytwo.c 4054 2002-04-23 00:52:21Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -41,7 +41,7 @@
 #define FORTYTWO ( *(fortytwo_game_t *)(game.specific) )
 typedef struct {
 	player_t declarer;
-	char contract;
+	int contract;
 	
 	char count[4];
 } fortytwo_game_t;
@@ -112,7 +112,7 @@ static void fortytwo_init_game(void)
 	}
 	
 	game.deck_type = GGZ_DECK_DOMINOES;
-	game.target_score = 250;
+	game.target_score = 7;
 	game.cumulative_scores = TRUE;
 	game.rules_url = "---";
 	
@@ -143,6 +143,8 @@ static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == FORTYTWO_PASS)
 		return snprintf(buf, buf_len, "Pass");
+	if (bid.sbid.spec == FORTYTWO_DOUBLE)
+		return snprintf(buf, buf_len, "%d", 42 * bid.sbid.val);
 	return snprintf(buf, buf_len, "%d", bid.sbid.val);
 }
 
@@ -150,21 +152,31 @@ static int fortytwo_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == FORTYTWO_PASS)
 		return snprintf(buf, buf_len, "Pass - do not bid");
+	if (bid.sbid.spec == FORTYTWO_DOUBLE)
+		return snprintf(buf, buf_len,
+		                "Contract to take all 42 points "
+		                "at x%d value.", bid.sbid.val);
 	return snprintf(buf, buf_len, "Contract to take %d points", bid.sbid.val);
 }
 
 static void fortytwo_get_bid(void)
 {
-	char minval = 30;
+	char minbid = 30;
 	char val;
 	
+	/* Bids up to (and including) 42 */
 	if (FORTYTWO.declarer >= 0)
-		minval = FORTYTWO.contract + 1;
-	
-	for (val = minval; val <= 42; val++)
+		minbid = FORTYTWO.contract + 1;
+	for (val = minbid; val <= 42; val++)
 		add_sbid(val, 0, FORTYTWO_BID);
-	/* FIXME: higher bids */
 	
+	/* A higher bid: 84/126/168/210 */
+	val = 2;
+	while (val * 42 <= minbid)
+		val++;
+	add_sbid(val, 0, FORTYTWO_DOUBLE);
+	
+	/* Or pass */
 	if (FORTYTWO.declarer >= 0 ||
 	    game.next_bid != game.dealer)
 		add_sbid(0, 0, FORTYTWO_PASS);
@@ -175,12 +187,19 @@ static void fortytwo_get_bid(void)
 
 static void fortytwo_handle_bid(player_t p, bid_t bid)
 {
+	int bid_contract;
+	
 	if (bid.sbid.spec == FORTYTWO_PASS)
 		return;
-
-	assert(FORTYTWO.declarer <= 0 || FORTYTWO.contract < bid.sbid.val);
+	
+	if (bid.sbid.spec == FORTYTWO_DOUBLE)
+		bid_contract = 42 * bid.sbid.val;
+	else
+		bid_contract = bid.sbid.val;
+	assert(FORTYTWO.declarer <= 0 || FORTYTWO.contract < bid_contract);
+	
 	FORTYTWO.declarer = p;
-	FORTYTWO.contract = bid.sbid.val;
+	FORTYTWO.contract = bid_contract;
 }
 
 static void fortytwo_start_playing(void)
@@ -197,14 +216,21 @@ static void fortytwo_start_playing(void)
 static void fortytwo_handle_play(player_t p, seat_t s, card_t c)
 {
 	if (game.play_count == 0 && game.trick_count == 0) {
-		player_t p;
+		seat_t s;
 		/* After the first play we know trump. */
 		/* FIXME: this is wrong, wrong, wrong! */
 		card_t card = game.seats[game.leader].table;
 		game.trump = card.suit;
-		set_global_message("Trump", "%d's are trump.", game.trump);
-		for (p = 0; p < game.num_players; p++)
-			(void) game.data->send_hand(p, p);
+		set_global_message("Trump", "%s are trump.",
+		                   get_suit_name(game.trump));
+		set_global_message("", "Trump is %s.",
+		                   get_suit_name(game.trump));
+		for (s = 0; s < game.num_seats; s++) {
+			player_t p;
+			cards_sort_hand(&game.seats[s].hand);
+			for (p = 0; p < game.num_players; p++)
+				(void) game.data->send_hand(p, s);
+		}
 	}
 }
 
@@ -230,15 +256,16 @@ static void fortytwo_end_trick(void)
 static void fortytwo_end_hand(void)
 {
 	int points = 0;
-	int score = FORTYTWO.contract;
 	team_t declarer_team = FORTYTWO.declarer % 2;
 	team_t opp_team = (declarer_team + 1) % 2;
 	team_t winning_team;
+	int target_points = FORTYTWO.contract > 42 ? 42 : FORTYTWO.contract;
+	int score = (FORTYTWO.contract + 41) / 42;
 	
 	points += get_team_tricks(declarer_team);
 	points += FORTYTWO.count[FORTYTWO.declarer];
 	
-	if (points >= FORTYTWO.contract) {
+	if (points >= target_points) {
 		/* They made the bid! */
 		winning_team = declarer_team;
 		set_global_message("", "%s made the bid and earned %d points.",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game data for Forty-Two (for use by AI)
- * $Id: fortytwo.h 4041 2002-04-21 21:22:18Z jdorje $
+ * $Id: fortytwo.h 4054 2002-04-23 00:52:21Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -24,7 +24,15 @@
  */
 
 
+/* Special bid values for fortytwo (i.e. bid.sbid.spec) */
 enum {
+	/* A bid in the range 30-42; this value is stored in the val. */
 	FORTYTWO_BID,
+
+	/* A bid in the range 84/126/168/210; the value of the double
+	   (i.e. 2 for "84") is stored in the val. */
+	FORTYTWO_DOUBLE,
+
+	/* A pass. */
 	FORTYTWO_PASS
 };
