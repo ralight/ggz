@@ -1,4 +1,4 @@
-#! /usr/local/bin/python1.5
+#! /usr/bin/env python
 
 from gtk import *
 from types import *
