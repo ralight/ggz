@@ -1001,9 +1001,9 @@ void game_start_playing(void)
  *   special rules (outside of those covered by game.must_overtrump and
  *   game.must_break_trump), no changes should be necessary.
  */
-char* game_verify_play(int card_index)
+char* game_verify_play(card_t card)
 {
-	card_t card = game.seats[game.play_seat].hand.cards[card_index], c;
+	card_t c;
 	seat_t s = game.play_seat;
 	int cnt;
 

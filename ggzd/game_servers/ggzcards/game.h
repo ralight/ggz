@@ -162,7 +162,7 @@ extern void game_next_bid();			/* updates data for the next bid */
 
 /* playing */
 extern void game_start_playing();		/* updates data after the last bid/before the playing starts */
-extern char* game_verify_play(int card_index);	/* verifies the play is legal */
+extern char* game_verify_play(card_t);		/* verifies the play is legal */
 extern void game_next_play();			/* sets up for next play */
 extern void game_get_play(player_t);		/* retreives a play */
 extern void game_handle_play(card_t);		/* handle a play */

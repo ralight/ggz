@@ -483,11 +483,12 @@ int req_play(player_t p, seat_t s)
  * receives a play from the client, and calls update if necessary.
  * NOTE that a return of -1 here indicates a GGZ error, which will disconnect the player
  */
-int rec_play(player_t p, int *card_index)
+int rec_play( player_t p )
 {
-	int fd = ggz_seats[p].fd, i, index = -1;
+	int fd = ggz_seats[p].fd, i;
 	card_t card;
 	seat_t s = game.play_seat;
+	hand_t *hand = &game.seats[s].hand;
 	char* err;
 
 	/* read the card played */
@@ -510,15 +511,11 @@ int rec_play(player_t p, int *card_index)
 	}
 
 	/* find the card played */	
-	for (i = 0; i < game.seats[s].hand.hand_size; i++)
-		if (game.seats[s].hand.cards[i].face == card.face &&
-		    game.seats[s].hand.cards[i].suit == card.suit &&
-		    game.seats[s].hand.cards[i].deck == card.deck) {
-			index = i;
+	for (i = 0; i < hand->hand_size; i++)
+		if ( cards_equal(hand->cards[i], card) )
 			break;
-		}
 
-	if (index == -1) {
+	if (i == hand->hand_size) {
 		send_badplay(p, "That card isn't even in your hand.  This must be a bug.");
 		ggz_debug("CLIENT BUG: player %d/%s played a card that wasn't in their hand (%i %i %i)!?!?",
 			  p, ggz_seats[p].name, card.face, card.suit, card.deck);
@@ -531,13 +528,14 @@ int rec_play(player_t p, int *card_index)
 	 * need to check if it's a legal play */
 	/* Note, however, that we don't return -1 on an error here.  An error returned indicates a GGZ
 	 * error, which is not what happened.  This is just a player mistake */
-	err = game_verify_play(index);
+	err = game_verify_play(card);
 	if (err == NULL)
-		handle_play_event(index);
+		/* any AI routine would also call handle_play_event, so the ai
+		 * must also check the validity as above.  This could be changed... */
+		handle_play_event(card);
 	else
 		send_badplay(p, err);
 
-	*card_index = index;
 	return 0;
 }
 
@@ -801,7 +799,7 @@ int handle_player(player_t p)
 				handle_bid_event(game.bid_choices[index]);
 			break;
 		case WH_RSP_PLAY:
-			status = rec_play(p, &index);
+			status = rec_play(p);
 			break;
 		case WH_REQ_SYNC:
 			status = send_sync(p);
@@ -1074,36 +1072,37 @@ int handle_leave_event()
 /* handle_play_event
  *   this handles the event of someone playing a card
  */
-int handle_play_event(int card_index)
+int handle_play_event(card_t card)
 {
 	int i;
-	card_t c;
 	hand_t* hand;
 
 	ggz_debug("Handling a play event.");
 	/* determine the play */
 	hand = &game.seats[game.play_seat].hand;
-	c = hand->cards[card_index];
 
 	/* send the play */
-	send_play(c, game.play_seat);
+	send_play(card, game.play_seat);
 
 	/* remove the card from the player's hand
 	 * by sliding it to the end. */
 	/* TODO: this is quite ineffecient */
-	for (i=card_index; i<hand->hand_size; i++)
+	for (i=0; i<hand->hand_size; i++)
+		if (cards_equal(hand->cards[i], card))
+			break;
+	for ( ; i<hand->hand_size; i++)
 		hand->cards[i] = hand->cards[i+1];
-	hand->cards[hand->hand_size-1] = c;
+	hand->cards[hand->hand_size-1] = card;
 	hand->hand_size--;
 
 	/* Move the card onto the table */
-	game.seats[ game.play_seat ].table = c;
+	game.seats[ game.play_seat ].table = card;
 	if(game.next_play == game.leader)
-		game.lead_card = c;
+		game.lead_card = card;
 
 	/* do extra handling */
-	if (c.suit == game.trump) game.trump_broken = 1;
-	game_handle_play(c);
+	if (card.suit == game.trump) game.trump_broken = 1;
+	game_handle_play(card);
 
 	/* set up next move */
 	game.play_count++;

@@ -179,7 +179,7 @@ extern int send_sync_all();
 extern int send_gameover(int, player_t*);
 extern int req_bid(player_t, int, char**);
 extern int req_play(player_t, seat_t);
-extern int rec_play(player_t, int *);
+extern int rec_play(player_t);
 extern void send_badplay(player_t, char*);
 extern int send_hand(player_t, seat_t, int);
 extern int req_newgame(player_t);
@@ -194,7 +194,7 @@ extern int handle_launch_event();
 extern int handle_join_event(player_t);
 extern int handle_leave_event();
 extern int handle_newgame_event(player_t);
-extern int handle_play_event(int);
+extern int handle_play_event(card_t);
 extern int handle_bid_event(bid_t);
 
 extern void init_game(int which); /* pass in the name of the game */
