@@ -52,8 +52,7 @@ close(FILE);
 
 print "Plugins: They are the ones which make $name unique.\n";
 %EXEC = ();
-scan("/usr/lib/grubby/modules", 1);
-scan("/usr/local/lib/grubby/modules", 1);
+scan("@grubbymoddir@/modules", 1);
 print "\n";
 
 # Append to grubby.rc
@@ -71,8 +70,7 @@ close(FILE);
 
 print "Core plugins: They are needed for $name to operate properly.\n";
 %EXEC = ();
-scan("/usr/lib/grubby/coremodules", 2);
-scan("/usr/local/lib/grubby/coremodules", 2);
+scan("@grubbymoddir@/coremodules", 2);
 print "\n";
 
 # Append to grubby.rc
@@ -90,8 +88,7 @@ close(FILE);
 
 print "Exec plugin: This one enhances grubby with external programs. Specify which ones you want:\n";
 %EXEC = ();
-scan("/usr/share/grubby", 0);
-scan("/usr/local/share/grubby", 0);
+scan("@grubbydir@", 0);
 print "\n";
 
 # Write grubby/modexec.rc

@@ -10,7 +10,7 @@
 ********************************************************************/
 
 #include "player.h"
-#include <ggzcore.h>
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -114,24 +114,24 @@ Player *guru_player_lookup(const char *name)
 	{
 		strcpy(path, getenv("HOME"));
 		strcat(path, "/.ggz/grubby/playerdb");
-		handle = ggzcore_confio_parse(path, GGZ_CONFIO_CREATE | GGZ_CONFIO_RDWR);
+		handle = ggz_conf_parse(path, GGZ_CONF_CREATE | GGZ_CONF_RDWR);
 		if(handle < 0) return NULL;
 	}
 
-	exist = ggzcore_confio_read_int(handle, name, "SEEN", 0);
+	exist = ggz_conf_read_int(handle, name, "SEEN", 0);
 	if(!exist) return NULL;
 
 	/* Get him into the list */
 	p = (Player*)malloc(sizeof(Player));
 	p->name = strdup(name);
 	p->firstseen = exist;
-	p->lastseen = ggzcore_confio_read_int(handle, name, "LASTSEEN", 0);
-	p->lastactive = ggzcore_confio_read_int(handle, name, "LASTACTIVE", 0);
-	p->status = ggzcore_confio_read_int(handle, name, "STATUS", STATUS_GUEST);
-	p->realname = ggzcore_confio_read_string(handle, name, "REALNAME", NULL);
-	p->language = ggzcore_confio_read_string(handle, name, "LANGUAGE", NULL);
-	p->publicinfo = ggzcore_confio_read_string(handle, name, "PUBLICINFO", NULL);
-	p->contact = ggzcore_confio_read_string(handle, name, "CONTACT", NULL);
+	p->lastseen = ggz_conf_read_int(handle, name, "LASTSEEN", 0);
+	p->lastactive = ggz_conf_read_int(handle, name, "LASTACTIVE", 0);
+	p->status = ggz_conf_read_int(handle, name, "STATUS", STATUS_GUEST);
+	p->realname = ggz_conf_read_string(handle, name, "REALNAME", NULL);
+	p->language = ggz_conf_read_string(handle, name, "LANGUAGE", NULL);
+	p->publicinfo = ggz_conf_read_string(handle, name, "PUBLICINFO", NULL);
+	p->contact = ggz_conf_read_string(handle, name, "CONTACT", NULL);
 	p->origin = NULL;
 
 	/* FIXME: cache is disabled until a shared memory instance is possible among the plugins */
@@ -161,15 +161,15 @@ void guru_player_save(Player *p)
 	}
 
 	/* Save changes on disk */
-	ggzcore_confio_write_int(handle, p->name, "SEEN", p->firstseen);
-	ggzcore_confio_write_int(handle, p->name, "LASTSEEN", p->lastseen);
-	ggzcore_confio_write_int(handle, p->name, "LASTACTIVE", p->lastactive);
-	ggzcore_confio_write_int(handle, p->name, "STATUS", p->status);
-	if(p->realname) ggzcore_confio_write_string(handle, p->name, "REALNAME", p->realname);
-	if(p->language) ggzcore_confio_write_string(handle, p->name, "LANGUAGE", p->language);
-	if(p->publicinfo) ggzcore_confio_write_string(handle, p->name, "PUBLICINFO", p->publicinfo);
-	if(p->contact) ggzcore_confio_write_string(handle, p->name, "CONTACT", p->contact);
-	ggzcore_confio_commit(handle);
+	ggz_conf_write_int(handle, p->name, "SEEN", p->firstseen);
+	ggz_conf_write_int(handle, p->name, "LASTSEEN", p->lastseen);
+	ggz_conf_write_int(handle, p->name, "LASTACTIVE", p->lastactive);
+	ggz_conf_write_int(handle, p->name, "STATUS", p->status);
+	if(p->realname) ggz_conf_write_string(handle, p->name, "REALNAME", p->realname);
+	if(p->language) ggz_conf_write_string(handle, p->name, "LANGUAGE", p->language);
+	if(p->publicinfo) ggz_conf_write_string(handle, p->name, "PUBLICINFO", p->publicinfo);
+	if(p->contact) ggz_conf_write_string(handle, p->name, "CONTACT", p->contact);
+	ggz_conf_commit(handle);
 }
 
 /* Manage to cleanup all associated memory */
