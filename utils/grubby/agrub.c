@@ -86,10 +86,6 @@ char *about_strings[] = {
 	"remember all sorts of things, and as time",
 	"goes on I will be able to learn even more!",
 	" ",
-	"Right now I forget everything everytime I get",
-	"shutdown, but one day I'll remember things from",
-	"past lifetimes.",
-	" ",
 	"I was coded by Rich Gade, and if you have",
 	"problems with me, be sure to inform him!"
 } ;
