@@ -3,7 +3,7 @@ Author = Josef Spillner
 Description = Xadrez Chines Server
 Homepage = http://www.ggzgamingzone.org/games/xadrezchines/
 Name = Chinese Chess
-Version = 0.1
+Version = 0.0.1
 
 [LaunchInfo]
 ExecutablePath = @prefix@/bin/xadrez-chines-server --ggz

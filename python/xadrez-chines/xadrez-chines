@@ -26,6 +26,9 @@ elif path.startswith("/usr"):
 else:
 	DATAPATH = "./"
 
+DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/xadrez-chines/"
+print "Xadrez Chines: Using data path", DATAPATH
+
 def networkprocess(line):
 	global madeturn
 	global humanerror
