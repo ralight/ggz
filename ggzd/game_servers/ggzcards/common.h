@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: common.h 2190 2001-08-23 08:06:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -143,40 +143,40 @@ struct wh_game_t
 
 
 /* Game-independent functions */
-extern void set_game_state(server_state_t state);
-extern void save_game_state();
-extern void restore_game_state();
+void set_game_state(server_state_t state);
+void save_game_state();
+void restore_game_state();
 
-extern int send_player_list(player_t);
-extern int send_play(card_t card, seat_t);
-extern int send_table(player_t);
-extern int send_sync(player_t);
-extern int send_sync_all();
-extern int send_gameover(int, player_t *);
-extern int req_play(player_t, seat_t);
-extern int rec_play(player_t);
-extern void send_badplay(player_t, char *);
-extern int send_hand(player_t, seat_t, int);
-extern int req_newgame(player_t);
-extern int send_newgame();
-extern void init_game();
+int send_player_list(player_t);
+int send_play(card_t card, seat_t);
+int send_table(player_t);
+int send_sync(player_t);
+int send_sync_all();
+int send_gameover(int, player_t *);
+int req_play(player_t, seat_t);
+int rec_play(player_t);
+void send_badplay(player_t, char *);
+int send_hand(player_t, seat_t, int);
+int req_newgame(player_t);
+int send_newgame();
+void init_game();
 
 
-extern void next_play(void);	/* make the next move */
+void next_play(void);	/* make the next move */
 
 /* handle player events -- used to all just be "update" */
-extern int handle_launch_event();
-extern int handle_join_event(player_t);
-extern int handle_leave_event(player_t);
-extern int handle_newgame_event(player_t);
-extern int handle_play_event(card_t);
-extern int handle_bid_event(bid_t);
+int handle_launch_event();
+int handle_join_event(player_t);
+int handle_leave_event(player_t);
+int handle_newgame_event(player_t);
+int handle_play_event(card_t);
+int handle_bid_event(bid_t);
 
-extern void init_ggzcards(int which);	/* pass in the name of the game */
-extern int handle_ggz(int, int *);
-extern int handle_player(player_t);
+void init_ggzcards(int which);	/* pass in the name of the game */
+int handle_ggz(int, int *);
+int handle_player(player_t);
 
-extern void set_num_seats(int num_seats);
+void set_num_seats(int num_seats);
 
 /* the game structure */
 extern struct wh_game_t game;
@@ -184,8 +184,8 @@ extern struct wh_game_t game;
 
 
 
-/* random helper function */
-extern void *alloc(int);
-extern char **alloc_string_array(int, int);
+/* random helper functions */
+void *alloc(int);
+char **alloc_string_array(int, int);
 
 #endif /* __COMMON_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: bid.h 2190 2001-08-23 08:06:05Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -27,15 +27,15 @@
 
 /* clear_bids clears the list of possible bids.
  * It's called automatically by handle_bid_event(). */
-extern void clear_bids();
+void clear_bids();
 
 /* add_bid and add_sbid add another bid to the list of
  * possible bids.  add_sbid is just a convenience. */
-extern void add_bid(bid_t bid);
-extern void add_sbid(char val, char suit, char spec);
+void add_bid(bid_t bid);
+void add_sbid(char val, char suit, char spec);
 
 /* req_bid requests a bid from the client _or_ AI. */
-extern int req_bid(player_t);
+int req_bid(player_t);
 
 /* rec_bid receives a bid from the client */
-extern int rec_bid(player_t, bid_t *);
+int rec_bid(player_t, bid_t *);

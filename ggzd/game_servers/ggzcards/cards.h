@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: cards.h 2190 2001-08-23 08:06:05Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -82,21 +82,21 @@ typedef enum deck_type_t
 deck_type_t;
 
 /* Exported functions */
-extern void cards_create_deck(deck_type_t which_deck);
-extern int cards_deck_size();
-extern void cards_destroy_deck();
-extern void cards_shuffle_deck(void);
-extern void cards_deal_hand(int handsize, hand_t * hand);
-extern void cards_sort_hand(hand_t * hand);
-extern card_t cards_deal_card();	/* deals one card */
-extern char cards_cut_for_trump(void);
-extern int cards_suit_in_hand(hand_t *, char);
-extern char cards_highest_in_suit(hand_t *, char);
+void cards_create_deck(deck_type_t which_deck);
+int cards_deck_size();
+void cards_destroy_deck();
+void cards_shuffle_deck(void);
+void cards_deal_hand(int handsize, hand_t * hand);
+void cards_sort_hand(hand_t * hand);
+card_t cards_deal_card();	/* deals one card */
+char cards_cut_for_trump(void);
+int cards_suit_in_hand(hand_t *, char);
+char cards_highest_in_suit(hand_t *, char);
 
-extern int cards_equal(card_t, card_t);
+int cards_equal(card_t, card_t);
 
-extern int es_read_card(int, card_t *);
-extern int es_write_card(int, card_t);
+int es_read_card(int, card_t *);
+int es_write_card(int, card_t);
 
 #define GGZ_CARDS_INCLUDED
 #endif /*GGZ_CARDS_INCLUDED */

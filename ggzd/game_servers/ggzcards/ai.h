@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: ai.h 2190 2001-08-23 08:06:05Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -52,17 +52,17 @@ typedef enum
 ai_type_t;
 
 /* get a name for an ai player sitting at the given spot */
-extern char *ai_get_name(player_t);
+char *ai_get_name(player_t);
 
 /* this inits AI static data at the start of a hand */
-extern void ai_start_hand();
+void ai_start_hand();
 
 /* this alerts the ai to someone else's bid/play */
-extern void ai_alert_bid(player_t, bid_t);
-extern void ai_alert_play(player_t, card_t);
+void ai_alert_bid(player_t, bid_t);
+void ai_alert_play(player_t, card_t);
 
 /* this gets a bid or play from the ai */
-extern bid_t ai_get_bid(player_t, bid_t *, int);
-extern card_t ai_get_play(player_t, seat_t);
+bid_t ai_get_bid(player_t, bid_t *, int);
+card_t ai_get_play(player_t, seat_t);
 
 #endif /* __AI_H__ */

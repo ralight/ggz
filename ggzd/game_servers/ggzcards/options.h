@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: options.h 2190 2001-08-23 08:06:05Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -36,12 +36,12 @@
 
 #include <string.h>
 
-extern int options_set();
-extern int rec_options(int, int *);
+int options_set();
+int rec_options(int, int *);
 
-extern void add_option(char *key, int num, int dflt, ...);
-extern void set_option(char *key, int value);
-extern void get_options();
-extern void handle_options();
+void add_option(char *key, int num, int dflt, ...);
+void set_option(char *key, int value);
+void get_options();
+void handle_options();
 
-extern void finalize_options();
+void finalize_options();
