@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4829 2002-10-09 23:12:15Z jdorje $
+ * $Id: ggzclient.c 4873 2002-10-12 02:16:09Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -283,7 +283,6 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	gchar *message;
 	GGZRoom *room;
 	GGZGameType *gt;
-	GtkArg arg[1];
 
 	/* Clear the player list */
 	/* We do this here so that on slower links people
@@ -331,10 +330,13 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 		tmp = lookup_widget(win_main, "watch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}else{
+#ifndef GTK2 /* ??? What does this do?  --JDS */
+		GtkArg arg[1];
 		arg[0].name = "user_data";
 		tmp = lookup_widget(win_main, "table_vpaned");
 		gtk_object_getv(GTK_OBJECT(tmp), 1, arg);
 		gtk_paned_set_position(GTK_PANED(tmp), GTK_VALUE_UINT(arg[0]));
+#endif
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		tmp = lookup_widget(win_main, "join_button");
