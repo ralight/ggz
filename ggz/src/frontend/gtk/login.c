@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 3390 2002-02-17 09:16:18Z rgade $
+ * $Id: login.c 3686 2002-03-25 23:23:15Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -448,6 +448,8 @@ static void login_set_entries(Server server)
 
 
 
+
+
 GtkWidget*
 create_dlg_login (void)
 {
@@ -491,7 +493,7 @@ create_dlg_login (void)
   dlg_login = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_login), "dlg_login", dlg_login);
   gtk_window_set_title (GTK_WINDOW (dlg_login), _("Connect and Login"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_login), FALSE, FALSE, TRUE);
+  gtk_window_set_policy (GTK_WINDOW (dlg_login), FALSE, TRUE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_login)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_login), "dialog_vbox1", dialog_vbox1);
@@ -544,7 +546,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_label);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_label, FALSE, TRUE, 0);
-  gtk_widget_set_usize (profile_label, 55, -2);
+  gtk_widget_set_usize (profile_label, 68, -2);
   gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
   profile_combo = gtk_combo_new ();
@@ -591,7 +593,7 @@ create_dlg_login (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_label);
   gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, TRUE, 0);
-  gtk_widget_set_usize (server_label, 55, -2);
+  gtk_widget_set_usize (server_label, 68, -2);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
   host_entry = gtk_entry_new_with_max_length (256);
@@ -662,7 +664,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "user_label", user_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (user_label);
-  gtk_box_pack_start (GTK_BOX (username_box), user_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (username_box), user_label, TRUE, TRUE, 0);
   gtk_widget_set_usize (user_label, 62, -2);
   gtk_misc_set_alignment (GTK_MISC (user_label), 1, 0.5);
 
@@ -686,7 +688,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "pass_label", pass_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pass_label);
-  gtk_box_pack_start (GTK_BOX (password_box), pass_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (password_box), pass_label, TRUE, TRUE, 0);
   gtk_widget_set_usize (pass_label, 62, -2);
   gtk_misc_set_alignment (GTK_MISC (pass_label), 1, 0.5);
 
@@ -712,7 +714,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "normal_radio", normal_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (normal_radio);
-  gtk_box_pack_start (GTK_BOX (radio_box), normal_radio, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (radio_box), normal_radio, TRUE, TRUE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (normal_radio), TRUE);
 
   guest_radio = gtk_radio_button_new_with_label (login_type_group, _("Guest Login"));
@@ -721,7 +723,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "guest_radio", guest_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (guest_radio);
-  gtk_box_pack_start (GTK_BOX (radio_box), guest_radio, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (radio_box), guest_radio, TRUE, TRUE, 0);
 
   first_radio = gtk_radio_button_new_with_label (login_type_group, _("First-time Login"));
   login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (first_radio));
@@ -729,7 +731,7 @@ create_dlg_login (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_login), "first_radio", first_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (first_radio);
-  gtk_box_pack_start (GTK_BOX (radio_box), first_radio, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (radio_box), first_radio, TRUE, TRUE, 0);
 
   dialog_action_area1 = GTK_DIALOG (dlg_login)->action_area;
   gtk_object_set_data (GTK_OBJECT (dlg_login), "dialog_action_area1", dialog_action_area1);
@@ -800,3 +802,4 @@ create_dlg_login (void)
   gtk_widget_grab_default (connect_button);
   return dlg_login;
 }
+

@@ -21,7 +21,7 @@
 <widget>
   <class>GtkDialog</class>
   <name>dlg_info</name>
-  <width>342</width>
+  <width>424</width>
   <signal>
     <name>destroy</name>
     <handler>gtk_widget_destroyed</handler>
@@ -33,7 +33,7 @@
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
+  <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
 
   <widget>
@@ -84,6 +84,7 @@
 	    <last_modification_time>Sun, 05 Nov 2000 06:15:30 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>

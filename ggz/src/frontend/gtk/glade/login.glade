@@ -37,7 +37,7 @@
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
+  <allow_grow>True</allow_grow>
   <auto_shrink>True</auto_shrink>
 
   <widget>
@@ -165,7 +165,7 @@
 	      <widget>
 		<class>GtkLabel</class>
 		<name>profile_label</name>
-		<width>55</width>
+		<width>68</width>
 		<label>Profile: </label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
@@ -260,7 +260,7 @@
 	      <widget>
 		<class>GtkLabel</class>
 		<name>server_label</name>
-		<width>55</width>
+		<width>68</width>
 		<label>Server: </label>
 		<justify>GTK_JUSTIFY_CENTER</justify>
 		<wrap>False</wrap>
@@ -412,8 +412,8 @@
 		<ypad>0</ypad>
 		<child>
 		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
+		  <expand>True</expand>
+		  <fill>True</fill>
 		</child>
 	      </widget>
 
@@ -463,8 +463,8 @@
 		<ypad>0</ypad>
 		<child>
 		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
+		  <expand>True</expand>
+		  <fill>True</fill>
 		</child>
 	      </widget>
 
@@ -518,8 +518,8 @@
 	      <group>login_type</group>
 	      <child>
 		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
+		<expand>True</expand>
+		<fill>True</fill>
 	      </child>
 	    </widget>
 
@@ -538,8 +538,8 @@
 	      <group>login_type</group>
 	      <child>
 		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
+		<expand>True</expand>
+		<fill>True</fill>
 	      </child>
 	    </widget>
 
@@ -558,8 +558,8 @@
 	      <group>login_type</group>
 	      <child>
 		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
+		<expand>True</expand>
+		<fill>True</fill>
 	      </child>
 	    </widget>
 	  </widget>

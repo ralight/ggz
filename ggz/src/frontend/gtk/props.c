@@ -762,19 +762,13 @@ create_dlg_props (void)
   GtkWidget *Font_button;
   GtkWidget *chat_table;
   GtkWidget *ignore_check;
-  GtkWidget *wrap_check;
+  GtkWidget *sound_check;
   GtkWidget *indent_check;
   GtkWidget *timestamp_check;
-  GtkWidget *sound_check;
+  GtkWidget *wrap_check;
   GtkWidget *frame1;
   GtkWidget *vbox9;
   GtkWidget *color_table;
-  GSList *Chat_Color_group = NULL;
-  GtkWidget *white_radio;
-  GtkWidget *black_radio;
-  GtkWidget *label26;
-  GtkWidget *label25;
-  GtkWidget *label24;
   GtkObject *h_spin_adj;
   GtkWidget *h_spin;
   GtkObject *n_spin_adj;
@@ -784,6 +778,12 @@ create_dlg_props (void)
   GtkWidget *f_label;
   GtkWidget *h_label;
   GtkWidget *n_label;
+  GtkWidget *label26;
+  GtkWidget *label25;
+  GtkWidget *label24;
+  GSList *Chat_Color_group = NULL;
+  GtkWidget *black_radio;
+  GtkWidget *white_radio;
   GtkWidget *label2;
   GtkWidget *userinfo_box;
   GtkWidget *label16;
@@ -807,20 +807,20 @@ create_dlg_props (void)
   GtkWidget *label3;
   GtkWidget *vbox10;
   GtkWidget *table1;
-  GtkWidget *click_checkbutton;
   GtkWidget *hbox16;
   GtkWidget *label70;
   GtkWidget *browser_combo;
   GList *browser_combo_items = NULL;
   GtkWidget *browser_entry;
+  GtkWidget *click_checkbutton;
   GtkWidget *vbox11;
   GtkWidget *hbox17;
   GtkWidget *frame2;
   GtkWidget *table2;
   GSList *motd_group = NULL;
   GtkWidget *motd_all_radio;
-  GtkWidget *motd_important_radio;
   GtkWidget *motd_new_radio;
+  GtkWidget *motd_important_radio;
   GtkWidget *motd_none_radio;
   GtkWidget *label67;
   GtkWidget *dialog_action_area1;
@@ -832,7 +832,7 @@ create_dlg_props (void)
   dlg_props = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dlg_props", dlg_props);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, FALSE, TRUE);
+  gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, TRUE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_props)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dialog_vbox1", dialog_vbox1);
@@ -913,7 +913,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_label);
   gtk_box_pack_start (GTK_BOX (profile_box), profile_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (profile_label, 62, -2);
+  gtk_widget_set_usize (profile_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (profile_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
@@ -937,7 +937,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_label);
   gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (server_label, 62, -2);
+  gtk_widget_set_usize (server_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (server_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
@@ -991,7 +991,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (username_label);
   gtk_box_pack_start (GTK_BOX (username_box), username_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (username_label, 62, -2);
+  gtk_widget_set_usize (username_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (username_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (username_label), 1, 0.5);
 
@@ -1016,7 +1016,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (password_label);
   gtk_box_pack_start (GTK_BOX (password_box), password_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (password_label, 62, -2);
+  gtk_widget_set_usize (password_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (password_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (password_label), 1, 0.5);
 
@@ -1042,7 +1042,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (confirm_label);
   gtk_box_pack_start (GTK_BOX (confirm_box), confirm_label, FALSE, FALSE, 0);
-  gtk_widget_set_usize (confirm_label, 62, -2);
+  gtk_widget_set_usize (confirm_label, 100, -2);
   gtk_label_set_justify (GTK_LABEL (confirm_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (confirm_label), 1, 0.5);
 
@@ -1169,34 +1169,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (ignore_check);
   gtk_table_attach (GTK_TABLE (chat_table), ignore_check, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  wrap_check = gtk_check_button_new_with_label (_("Word Wrap"));
-  gtk_widget_ref (wrap_check);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "wrap_check", wrap_check,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (wrap_check);
-  gtk_table_attach (GTK_TABLE (chat_table), wrap_check, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  indent_check = gtk_check_button_new_with_label (_("Auto Indent"));
-  gtk_widget_ref (indent_check);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "indent_check", indent_check,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (indent_check);
-  gtk_table_attach (GTK_TABLE (chat_table), indent_check, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  timestamp_check = gtk_check_button_new_with_label (_("Timestamp Chats"));
-  gtk_widget_ref (timestamp_check);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "timestamp_check", timestamp_check,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (timestamp_check);
-  gtk_table_attach (GTK_TABLE (chat_table), timestamp_check, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   sound_check = gtk_check_button_new_with_label (_("Play Sounds"));
@@ -1205,7 +1178,34 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (sound_check);
   gtk_table_attach (GTK_TABLE (chat_table), sound_check, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  indent_check = gtk_check_button_new_with_label (_("Auto Indent"));
+  gtk_widget_ref (indent_check);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "indent_check", indent_check,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (indent_check);
+  gtk_table_attach (GTK_TABLE (chat_table), indent_check, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  timestamp_check = gtk_check_button_new_with_label (_("Timestamp Chats"));
+  gtk_widget_ref (timestamp_check);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "timestamp_check", timestamp_check,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (timestamp_check);
+  gtk_table_attach (GTK_TABLE (chat_table), timestamp_check, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  wrap_check = gtk_check_button_new_with_label (_("Word Wrap"));
+  gtk_widget_ref (wrap_check);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "wrap_check", wrap_check,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (wrap_check);
+  gtk_table_attach (GTK_TABLE (chat_table), wrap_check, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   frame1 = gtk_frame_new (_("Chat Color"));
@@ -1229,62 +1229,6 @@ create_dlg_props (void)
   gtk_widget_show (color_table);
   gtk_box_pack_start (GTK_BOX (vbox9), color_table, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (color_table), 3);
-
-  white_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("White Background"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (white_radio));
-  gtk_widget_ref (white_radio);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "white_radio", white_radio,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (white_radio);
-  gtk_table_attach (GTK_TABLE (color_table), white_radio, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 15, 0);
-
-  black_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Black Background"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (black_radio));
-  gtk_widget_ref (black_radio);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "black_radio", black_radio,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (black_radio);
-  gtk_table_attach (GTK_TABLE (color_table), black_radio, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 15, 0);
-
-  label26 = gtk_label_new (_("Normal Color"));
-  gtk_widget_ref (label26);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label26", label26,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label26);
-  gtk_table_attach (GTK_TABLE (color_table), label26, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 8, 0);
-  gtk_label_set_justify (GTK_LABEL (label26), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label26), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label26), 1, 0.5);
-
-  label25 = gtk_label_new (_("Highlight Color"));
-  gtk_widget_ref (label25);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label25", label25,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label25);
-  gtk_table_attach (GTK_TABLE (color_table), label25, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 7, 0);
-  gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label25), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label25), 1, 0.5);
-
-  label24 = gtk_label_new (_("Friend Color"));
-  gtk_widget_ref (label24);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label24", label24,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label24);
-  gtk_table_attach (GTK_TABLE (color_table), label24, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 7, 0);
-  gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label24), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label24), 1, 0.5);
 
   h_spin_adj = gtk_adjustment_new (1, 0, 15, 1, 1, 1);
   h_spin = gtk_spin_button_new (GTK_ADJUSTMENT (h_spin_adj), 1, 0);
@@ -1328,9 +1272,8 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (f_label);
   gtk_table_attach (GTK_TABLE (color_table), f_label, 3, 4, 0, 1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (f_label, 240, -2);
   gtk_misc_set_alignment (GTK_MISC (f_label), 7.45058e-09, 0.5);
 
   h_label = gtk_label_new (_("Chat color used when your name is typed"));
@@ -1339,7 +1282,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (h_label);
   gtk_table_attach (GTK_TABLE (color_table), h_label, 3, 4, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (h_label), 0, 0.5);
 
@@ -1349,9 +1292,65 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (n_label);
   gtk_table_attach (GTK_TABLE (color_table), n_label, 3, 4, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (n_label), 0, 0.5);
+
+  label26 = gtk_label_new (_("Normal Color"));
+  gtk_widget_ref (label26);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label26", label26,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label26);
+  gtk_table_attach (GTK_TABLE (color_table), label26, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 8, 0);
+  gtk_label_set_justify (GTK_LABEL (label26), GTK_JUSTIFY_LEFT);
+  gtk_label_set_line_wrap (GTK_LABEL (label26), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label26), 1, 0.5);
+
+  label25 = gtk_label_new (_("Highlight Color"));
+  gtk_widget_ref (label25);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label25", label25,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label25);
+  gtk_table_attach (GTK_TABLE (color_table), label25, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 7, 0);
+  gtk_label_set_justify (GTK_LABEL (label25), GTK_JUSTIFY_LEFT);
+  gtk_label_set_line_wrap (GTK_LABEL (label25), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label25), 1, 0.5);
+
+  label24 = gtk_label_new (_("Friend Color"));
+  gtk_widget_ref (label24);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label24", label24,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label24);
+  gtk_table_attach (GTK_TABLE (color_table), label24, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 7, 0);
+  gtk_label_set_justify (GTK_LABEL (label24), GTK_JUSTIFY_LEFT);
+  gtk_label_set_line_wrap (GTK_LABEL (label24), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label24), 1, 0.5);
+
+  black_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Black Background"));
+  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (black_radio));
+  gtk_widget_ref (black_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "black_radio", black_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (black_radio);
+  gtk_table_attach (GTK_TABLE (color_table), black_radio, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 15, 0);
+
+  white_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("White Background"));
+  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (white_radio));
+  gtk_widget_ref (white_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "white_radio", white_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (white_radio);
+  gtk_table_attach (GTK_TABLE (color_table), white_radio, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 15, 0);
 
   label2 = gtk_label_new (_("Chat"));
   gtk_widget_ref (label2);
@@ -1536,15 +1535,6 @@ create_dlg_props (void)
   gtk_widget_show (table1);
   gtk_box_pack_start (GTK_BOX (vbox10), table1, FALSE, FALSE, 0);
 
-  click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
-  gtk_widget_ref (click_checkbutton);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "click_checkbutton", click_checkbutton,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (click_checkbutton);
-  gtk_table_attach (GTK_TABLE (table1), click_checkbutton, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
   hbox16 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox16);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox16", hbox16,
@@ -1559,7 +1549,7 @@ create_dlg_props (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label70", label70,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label70);
-  gtk_box_pack_start (GTK_BOX (hbox16), label70, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox16), label70, TRUE, TRUE, 0);
   gtk_misc_set_padding (GTK_MISC (label70), 6, 0);
 
   browser_combo = gtk_combo_new ();
@@ -1590,6 +1580,15 @@ create_dlg_props (void)
   gtk_widget_show (browser_entry);
   gtk_entry_set_editable (GTK_ENTRY (browser_entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Galeon - New"));
+
+  click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
+  gtk_widget_ref (click_checkbutton);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "click_checkbutton", click_checkbutton,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (click_checkbutton);
+  gtk_table_attach (GTK_TABLE (table1), click_checkbutton, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   vbox11 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox11);
@@ -1626,17 +1625,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (motd_all_radio);
   gtk_table_attach (GTK_TABLE (table2), motd_all_radio, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  motd_important_radio = gtk_radio_button_new_with_label (motd_group, _("Display Important"));
-  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_important_radio));
-  gtk_widget_ref (motd_important_radio);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_important_radio", motd_important_radio,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (motd_important_radio);
-  gtk_table_attach (GTK_TABLE (table2), motd_important_radio, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   motd_new_radio = gtk_radio_button_new_with_label (motd_group, _("Display New"));
@@ -1646,7 +1635,17 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (motd_new_radio);
   gtk_table_attach (GTK_TABLE (table2), motd_new_radio, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  motd_important_radio = gtk_radio_button_new_with_label (motd_group, _("Display Important"));
+  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_important_radio));
+  gtk_widget_ref (motd_important_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "motd_important_radio", motd_important_radio,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (motd_important_radio);
+  gtk_table_attach (GTK_TABLE (table2), motd_important_radio, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   motd_none_radio = gtk_radio_button_new_with_label (motd_group, _("Display None"));
@@ -1656,7 +1655,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (motd_none_radio);
   gtk_table_attach (GTK_TABLE (table2), motd_none_radio, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   label67 = gtk_label_new (_("Options"));
@@ -1732,10 +1731,10 @@ create_dlg_props (void)
   gtk_signal_connect (GTK_OBJECT (Font_button), "clicked",
                       GTK_SIGNAL_FUNC (props_Font_button_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (white_radio), "toggled",
+  gtk_signal_connect (GTK_OBJECT (black_radio), "toggled",
                       GTK_SIGNAL_FUNC (props_color_type_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (black_radio), "toggled",
+  gtk_signal_connect (GTK_OBJECT (white_radio), "toggled",
                       GTK_SIGNAL_FUNC (props_color_type_toggled),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (button1), "clicked",

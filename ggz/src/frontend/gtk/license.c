@@ -62,7 +62,8 @@ static void license_realize(GtkWidget * widget, gpointer user_data)
 }
 
 
-static GtkWidget*
+
+GtkWidget*
 create_dlg_license (void)
 {
   GtkWidget *dlg_license;
@@ -78,7 +79,6 @@ create_dlg_license (void)
   gtk_object_set_data (GTK_OBJECT (dlg_license), "dlg_license", dlg_license);
   gtk_window_set_title (GTK_WINDOW (dlg_license), "License");
   GTK_WINDOW (dlg_license)->type = GTK_WINDOW_DIALOG;
-  gtk_window_set_policy (GTK_WINDOW (dlg_license), FALSE, FALSE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_license)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_license), "dialog_vbox1", dialog_vbox1);
@@ -89,7 +89,7 @@ create_dlg_license (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_license), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 10);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
@@ -97,7 +97,7 @@ create_dlg_license (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_license), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
-  gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, TRUE, TRUE, 0);
   gtk_widget_set_usize (scrolledwindow1, 440, 350);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 

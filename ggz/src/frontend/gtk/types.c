@@ -137,6 +137,8 @@ static void types_filter_button(GtkWidget *widget, gpointer data)
 
 
 
+
+
 GtkWidget*
 create_dlg_types (void)
 {
@@ -252,6 +254,8 @@ create_dlg_types (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_types), "filter_optionmenu", filter_optionmenu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_optionmenu);
+  gtk_toolbar_append_space (GTK_TOOLBAR (toolbar1));
+
   gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar1), filter_optionmenu, NULL, NULL);
   gtk_widget_set_usize (filter_optionmenu, 171, -2);
   filter_optionmenu_menu = gtk_menu_new ();
