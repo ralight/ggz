@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5339 2003-01-22 13:48:12Z dr_maux $
+#  $Id: Makefile.am 5667 2003-10-25 12:30:12Z dr_maux $
 
 INCLUDES = -I$(top_srcdir)/src/
-LDADD = $(top_builddir)/src/libggz.la
+LDADD = @LDADD@ $(top_builddir)/src/libggz.la
 
 noinst_PROGRAMS =	\
 	debugmsg	\
