@@ -181,9 +181,14 @@ changequote([,])dnl
 
 dnl Debug modes
 dnl ===========
+dnl This defines either DEBUG or NDEBUG.  We could provide a third option
+dnl where neither are defined.
 if test "$enable_debug" = yes; then
     AC_DEFINE(DEBUG)
     DFLAGS="DEBUG"
+else
+    AC_DEFINE(NDEBUG)
+    DFLAGS="NDEBUG"
 fi
 
 if test "$enable_debug_mem" = yes; then

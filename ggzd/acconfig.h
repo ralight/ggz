@@ -25,6 +25,7 @@
 #undef GAMEDIR
 #undef DATADIR
 #undef TMPDIR
+#undef NDEBUG
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
 #undef _BSD_SOURCE
