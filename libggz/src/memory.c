@@ -77,6 +77,15 @@ void * _ggz_malloc(const unsigned int size, char *tag, int line)
 {
 	void *new;
 
+	/* Sanity checks */
+	if(!tag)
+		tag = "<unknown>";
+	if(!size) {
+		ggz_error_msg("ggz_malloc: 0 byte malloc requested from %s/%d",
+			      tag, line);
+		return NULL;
+	}
+
 	/* Get a chunk of memory */
 	new = _ggz_allocate(size, tag, line);
 
@@ -91,6 +100,17 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 {
 	struct _memptr *targetmem;
 	void *new;
+
+	/* Sanity checks */
+	if(!tag)
+		tag = "<unknown>";
+	if(!size) {
+		ggz_error_msg("ggz_realloc: 0 bytes requested from %s/%d",
+			      tag, line);
+		ggz_error_msg("             freeing mem via ggz_free()");
+		_ggz_free(ptr, tag, line);
+		return NULL;
+	}
 
 	/* If ptr is NULL, treat this like a call to malloc */
 	if (ptr == NULL)
@@ -134,6 +154,10 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 int _ggz_free(const void *ptr, char *tag, int line)
 {
 	struct _memptr *prev, *targetmem;
+
+	/* Sanity checks */
+	if(!tag)
+		tag = "<unknown>";
 
 	/* Search through allocated memory for this chunk */
 	prev = NULL;
@@ -196,8 +220,12 @@ char * _ggz_strdup(const char *src, char *tag, int line)
 	unsigned len;
 	char *new;
 
+	/* Sanity checks */
+	if(!tag)
+		tag = "<unknown>";
+
 	if(src == NULL) {
-		ggz_error_msg("_ggz_strdup - NULL pointer from %s/%d",
+		ggz_error_msg("ggz_strdup: NULL pointer from %s/%d",
 			       tag, line);
 		return NULL;
 	}
