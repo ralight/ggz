@@ -28,6 +28,8 @@
 #include "protocols.h"
 #include <easysock.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #define SET(OPTION) (cbt_game.options & OPTION)
 
@@ -40,8 +42,13 @@ static int host = -1;
 // How many have done setup?
 static int done_setup = 0;
 
+// Odds of winning in random attack
+static int odd[9][2] = { {30, 70}, {35, 74}, {41, 78}, {49, 82}, {56, 85}, {64, 88}, {71, 91}, {77, 92}, {84, 95} };
+
+#define RANDOM (1+(int)(100.0*random()/(RAND_MAX+1.0)))
 
 void game_init() {
+  struct timeval tv;
 	cbt_game.map = NULL;
 	cbt_game.width = 0;
 	cbt_game.height = 0;
@@ -49,6 +56,10 @@ void game_init() {
 	cbt_game.turn = 0;
   cbt_game.options = 0;
   cbt_game.name = NULL;
+  // Intializes the random number generator w/ the current time
+  gettimeofday(&tv, NULL);
+  ggz_debug("Random number generator initialized w/ %d", (int)tv.tv_usec);
+  srandom((int)tv.tv_usec);
 }
 	
 int game_handle_ggz(int ggz_fd, int *p_fd) {
@@ -543,6 +554,40 @@ int game_handle_attack(int f_s, int from, int to) {
         t_u*=-1;
         break;
       }
+      // Random attack?
+      if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY && t_u != U_SPY) {
+        a = RANDOM;
+        ggz_debug("Random: %d\n", a);
+        if (f_u >= t_u) {
+          // Attacker is better then defender
+          if (a <= odd[f_u-t_u][0]) {
+            // Attacker won!
+            f_u *= -1;
+          } else if (a <= odd[f_u-t_u][1]) {
+            // Both died
+            f_u *= -1;
+            t_u *= -1;
+          } else {
+            // Defender won!
+            t_u *= -1;
+          }
+        } else {
+          // Defender is better!
+          if (a <= odd[t_u-f_u][0]) {
+            // Defender won!
+            t_u *= -1;
+          } else if (a <= odd[t_u-f_u][1]) {
+            // Both died
+            f_u *= -1;
+            t_u *= -1;
+          } else {
+            // Attacker won!
+            f_u *= -1;
+          }
+        }
+        break;
+      }
+      // Normal attack
 			if (f_u > t_u)
 				f_u *= -1;
 			else if (t_u > f_u)
@@ -553,6 +598,22 @@ int game_handle_attack(int f_s, int from, int to) {
 			}
 			break;
 		case U_MARSHALL:
+      if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY) {
+        a = RANDOM;
+        ggz_debug("Random: %d\n", a);
+        if (a <= odd[t_u-f_u][0]) {
+          // Marshall won!
+          t_u *= -1;
+        } else if (a <= odd[t_u-f_u][1]) {
+          // Both died
+          f_u *= -1;
+          t_u *= -1;
+        } else {
+          // Attacker won!
+          f_u *= -1;
+        }
+        break;
+      }
 			if (f_u == U_SPY) {
         if (SET(OPT_TERRORIST_SPY))
           t_u *= -1;
