@@ -143,13 +143,18 @@ function stats_team($id, $lookup)
 		$fullname = pg_result($res, $i, "fullname");
 		$icon = pg_result($res, $i, "icon");
 		$foundingdate = pg_result($res, $i, "foundingdate");
+		$founder = pg_result($res, $i, "founder");
 		$homepage = pg_result($res, $i, "homepage");
 
 		$date = date("d.m.Y", $foundingdate);
 
 		echo "Team name: $fullname.<br>\n";
 		echo "Founding date: $date.<br>\n";
+		echo "Founded by: <a href='/db/players/?lookup=$founder'>$founder</a>.<br>\n";
 		echo "Homepage: <a href='$homepage'>$homepage</a>.<br>\n";
+		echo "Team logo:<br>\n";
+		echo "<img src='$icon' height='64'>\n";
+		echo "<br clear='all'>\n";
 		echo "<br>\n";
 
 	}
