@@ -34,47 +34,50 @@
 #include <string.h>
 
 
-/* Callbacks for server events */
-static void server_login_ok(GGZEventID id, void*, void*);
-static void server_connect_fail(GGZEventID id, void*, void*);
-static void server_login_fail(GGZEventID id, void*, void*);
-static void server_chat_msg(GGZEventID id, void*, void*);
-static void server_chat_prvmsg(GGZEventID id, void*, void*);
-static void server_chat_beep(GGZEventID id, void*, void*);
-static void server_chat_announce(GGZEventID id, void*, void*);
-static void server_logout(GGZEventID id, void*, void*);
-static void server_room_enter(GGZEventID id, void*, void*);
-static void server_room_leave(GGZEventID id, void*, void*);
-static void server_list_rooms(GGZEventID id, void*, void*);
-static void server_list_players(GGZEventID id, void*, void*);
+/* Hooks for server events */
+static GGZHookReturn server_login_ok(GGZEventID id, void*, void*);
+static GGZHookReturn server_connect_fail(GGZEventID id, void*, void*);
+static GGZHookReturn server_login_fail(GGZEventID id, void*, void*);
+static GGZHookReturn server_chat_msg(GGZEventID id, void*, void*);
+static GGZHookReturn server_chat_prvmsg(GGZEventID id, void*, void*);
+static GGZHookReturn server_chat_beep(GGZEventID id, void*, void*);
+static GGZHookReturn server_chat_announce(GGZEventID id, void*, void*);
+static GGZHookReturn server_logout(GGZEventID id, void*, void*);
+static GGZHookReturn server_room_enter(GGZEventID id, void*, void*);
+static GGZHookReturn server_room_leave(GGZEventID id, void*, void*);
+static GGZHookReturn server_list_rooms(GGZEventID id, void*, void*);
+static GGZHookReturn server_list_players(GGZEventID id, void*, void*);
 
 
 void server_register(void)
 {
-	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, server_login_ok);
-	ggzcore_event_add_callback(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
-	ggzcore_event_add_callback(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
-	ggzcore_event_add_callback(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
-	ggzcore_event_add_callback(GGZ_SERVER_LIST_PLAYERS, server_list_players);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_MSG, server_chat_msg);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
-	ggzcore_event_add_callback(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
-	ggzcore_event_add_callback(GGZ_SERVER_LOGOUT, server_logout);
-	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, server_room_enter);
-	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
+	ggzcore_event_add_hook(GGZ_SERVER_LOGIN, server_login_ok);
+	ggzcore_event_add_hook(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
+	ggzcore_event_add_hook(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
+	ggzcore_event_add_hook(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
+	ggzcore_event_add_hook(GGZ_SERVER_LIST_PLAYERS, server_list_players);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_MSG, server_chat_msg);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
+	ggzcore_event_add_hook(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
+	ggzcore_event_add_hook(GGZ_SERVER_LOGOUT, server_logout);
+	ggzcore_event_add_hook(GGZ_SERVER_ROOM_ENTER, server_room_enter);
+	ggzcore_event_add_hook(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
 }
 
 
-static void server_login_ok(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_login_ok(GGZEventID id, void* event_data, 
+				     void* user_data)
 {
 #ifdef DEBUG
 	output_text("--- Connected to %s.", ggzcore_state_get_profile_host());
 #endif
 	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
+	return GGZ_HOOK_OK;
 }
 
-static void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_chat_msg(GGZEventID id, void* event_data, 
+				     void* user_data)
 {
 	char* player;
 	char* message;
@@ -82,9 +85,10 @@ static void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	output_chat(CHAT_MSG, player, message);
+	return GGZ_HOOK_OK;
 }
 
-static void server_chat_announce(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_chat_announce(GGZEventID id, void* event_data, void* user_data)
 {
 	char* player;
 	char* message;
@@ -92,9 +96,10 @@ static void server_chat_announce(GGZEventID id, void* event_data, void* user_dat
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	output_chat(CHAT_ANNOUNCE, player, message);
+	return GGZ_HOOK_OK;
 }
 
-static void server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 {
 	char* player;
 	char* message;
@@ -102,60 +107,69 @@ static void server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	output_chat(CHAT_PRVMSG, player, message);
+	return GGZ_HOOK_OK;
 }
 
-static void server_chat_beep(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_chat_beep(GGZEventID id, void* event_data, void* user_data)
 {
 	char* player;
 
 	player = ((char**)(event_data))[0];
 
 	output_text("--- You've been beeped by %s.\007", player);
+	return GGZ_HOOK_OK;
 }
 
-static void server_connect_fail(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_connect_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("--- Connection failed: %s", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
+	return GGZ_HOOK_OK;
 }
 
 
-static void server_login_fail(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("--- Connection failed: %s", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
+	return GGZ_HOOK_OK;
 }
 
 
-static void server_logout(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_logout(GGZEventID id, void* event_data, void* user_data)
 {
 #ifdef DEBUG
 	output_text("--- Disconnected");
 #endif
+	return GGZ_HOOK_OK;
 }
 
-static void server_room_enter(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_room_enter(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("--> %s entered the room.", event_data);
+	return GGZ_HOOK_OK;
 }
 
-static void server_room_leave(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_room_leave(GGZEventID id, void* event_data, void* user_data)
 {
 	output_text("<-- %s left the room.", event_data);
+	return GGZ_HOOK_OK;
 }
 
 
-static void server_list_rooms(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_list_rooms(GGZEventID id, void* event_data, void* user_data)
 {
 	output_rooms();
+	return GGZ_HOOK_OK;
 }
 
-static void server_list_players(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_list_players(GGZEventID id, void* event_data, void* user_data)
 {
 	output_players();
+	return GGZ_HOOK_OK;
 }
 

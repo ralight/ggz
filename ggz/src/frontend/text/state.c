@@ -37,24 +37,24 @@
 static GGZStateID ggz_state;
 
 
-/* Callback for state change events */
-static void state_change(GGZStateID id, void *state_data, void *user_data);
+/* Hook for state change events */
+static GGZHookReturn state_change(GGZStateID id, void *state_data, void *user_data);
 
 
 void state_register(void)
 {
-	ggzcore_state_add_callback(GGZ_STATE_OFFLINE, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_CONNECTING, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_ONLINE, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_LOGGING_IN, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_LOGGED_IN, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_BETWEEN_ROOMS, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_ENTERING_ROOM, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_IN_ROOM, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_JOINING_TABLE, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_AT_TABLE, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_LEAVING_TABLE, state_change);
-	ggzcore_state_add_callback(GGZ_STATE_LOGGING_OUT, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_OFFLINE, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_CONNECTING, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_ONLINE, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_LOGGING_IN, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_LOGGED_IN, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_BETWEEN_ROOMS, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_ENTERING_ROOM, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_IN_ROOM, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_JOINING_TABLE, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_AT_TABLE, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_LEAVING_TABLE, state_change);
+	ggzcore_state_add_hook(GGZ_STATE_LOGGING_OUT, state_change);
 }
 
 
@@ -102,10 +102,11 @@ char* state_get(void)
 }
 
 
-static void state_change(GGZStateID id, void *state_data, void *user_data)
+static GGZHookReturn state_change(GGZStateID id, void *state_data, void *user_data)
 {
 	ggz_state = id;
 	
 	output_status();
+	return GGZ_HOOK_OK;
 }
 
