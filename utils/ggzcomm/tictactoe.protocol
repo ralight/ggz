@@ -15,7 +15,7 @@
 	</definitions>
 	<client>
 		<event name="sndmove">
-			<data name="move" type="int"/>
+			<data name="move_c" type="int"/>
 		</event>
 		<event name="reqsync"/>
 	</client>
