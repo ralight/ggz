@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5996 2004-05-17 14:16:42Z josef $
+ * $Id: ggzdb.h 6405 2004-11-17 12:48:05Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
 
 /* Anytime structures change, bump the version id */
 /* Must be fewer than 7 characters. */
-#define GGZDB_VERSION_ID	"0.6"
+#define GGZDB_VERSION_ID	"0.7"
 
 /* For ggzdb_player_XXX */
 typedef struct {
@@ -62,6 +62,7 @@ typedef struct {
 	   that wouldn't easily allow tracking stats of bots. */
 	char player[MAX_USER_NAME_LEN + 1];
 	char game[MAX_GAME_NAME_LEN + 1];
+	int player_type;
 	int wins;
 	int losses;
 	int ties;

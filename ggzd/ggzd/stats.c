@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: stats.c 6405 2004-11-17 12:48:05Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -248,9 +248,8 @@ void report_statistics(int room, int gametype,
 		ggzdbPlayerEntry player;
 		GGZDBResult status;
 
-		if (report->types[i] == GGZ_SEAT_BOT)
-			continue;
-		else if (report->types[i] != GGZ_SEAT_PLAYER) {
+		if ((report->types[i] != GGZ_SEAT_PLAYER)
+		&&  (report->types[i] != GGZ_SEAT_BOT)) {
 			err_msg("Unknown player type %d in stats calc.",
 				report->types[i]);
 			return;
@@ -259,25 +258,33 @@ void report_statistics(int room, int gametype,
 		snprintf(player.handle, sizeof(player.handle),
 			 report->names[i]);
 
-		/* The player could have logged out - for instance if the
-		   game server asks for a forfeit for a player who abandoned a
-		   game.  So we need to look directly at the database... */
-		status = ggzdb_player_get(&player);
-		if (status == GGZDB_ERR_NOTFOUND) {
-			/* Currently we don't track stats on games if there
-			   are any guests at the table.  This should be
-			   the default behavior.  But maybe some games will
-			   want to allow it. */
-			dbg_msg(GGZ_DBG_STATS,
-				"Not tracking stats for guest player %s.",
-				report->names[i]);
-			return;
-		} else if (status != GGZDB_NO_ERROR) {
-			err_msg("Error %d accessing player %s for stats check",
-				status, player.handle);
-			return;
+		/* Find out player type */
+		if (report->types[i] == GGZ_SEAT_BOT) {
+			/* Bot player */
+			stats[i].player_type = GGZ_PLAYER_BOT;
+		} else if (report->types[i] == GGZ_SEAT_PLAYER) {
+			/* The player could have logged out - for instance if the
+			   game server asks for a forfeit for a player who abandoned a
+			   game.  So we need to look directly at the database... */
+			status = ggzdb_player_get(&player);
+			if (status == GGZDB_ERR_NOTFOUND) {
+				/* Guest player */
+				stats[i].player_type = GGZ_PLAYER_GUEST;
+			} else if (status != GGZDB_NO_ERROR) {
+				err_msg("Error %d accessing player %s for stats check",
+					status, player.handle);
+				return;
+			} else {
+				/* Registered player */
+				stats[i].player_type = GGZ_PLAYER_NORMAL;
+			}
 		}
-		/* Looks like the player exists and is registered.  Great! */
+
+		/* Currently we track all stats on games regardless of there being
+		   are any guests or bots at the table.  This should be
+		   the default behavior.  It could be made configurable (per-game)
+		   but the statistics tools could also handle this we we do not
+		   ever lose information. */
 	}
 
 	/* Retrieve the old stats. */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5996 2004-05-17 14:16:42Z josef $
+ * $Id: ggzdb_pgsql.c 6405 2004-11-17 12:48:05Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -223,7 +223,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		PQclear(res);
 
 		snprintf(query, sizeof(query), "CREATE TABLE matchplayers "
-			"(id serial, match int8, handle varchar(256))");
+			"(id serial, match int8, handle varchar(256), playertype varchar(256))");
 
 		res = PQexec(conn, query);
 
@@ -625,7 +625,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	PGresult *res;
 	char query[4096];
 	int rc = GGZDB_ERR_DB;
-	char *number;
+	char *number, *playertype;
 
 	conn = claimconnection();
 	if (!conn) {
@@ -646,11 +646,16 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 		number = PQgetvalue(res, 0, 0);
 	}
 
+	playertype = "";
+	if(stats->player_type == GGZ_PLAYER_GUEST) playertype = "guest";
+	else if(stats->player_type == GGZ_PLAYER_NORMAL) playertype = "registered";
+	else if(stats->player_type == GGZ_PLAYER_BOT) playertype = "bot";
+
 	snprintf(query, sizeof(query),
 		"INSERT INTO matchplayers "
-		"(match, handle) VALUES "
-		"(%s, '%s')",
-		number, stats->player);
+		"(match, handle, playertype) VALUES "
+		"(%s, '%s', '%s')",
+		number, stats->player, playertype);
 	PQclear(res);
 
 	res = PQexec(conn, query);
