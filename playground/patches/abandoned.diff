@@ -17,7 +17,7 @@ RCS file: /var/lib/cvs/ggzd/ggzd/net.c,v
 retrieving revision 1.116
 diff -u -r1.116 net.c
 --- ggzd/ggzd/net.c	23 Jan 2005 23:28:03 -0000	1.116
-+++ ggzd/ggzd/net.c	24 Jan 2005 20:19:02 -0000
++++ ggzd/ggzd/net.c	24 Jan 2005 22:22:54 -0000
 @@ -1646,6 +1646,10 @@
  				strcpy(table->seat_names[seat->index],
  				       seat->name);
@@ -37,13 +37,31 @@ diff -u -r1.116 net.c
  		name = seat->name;
  		break;
  	case GGZ_SEAT_OPEN:
+Index: ggzd/ggzd/stats.c
+===================================================================
+RCS file: /var/lib/cvs/ggzd/ggzd/stats.c,v
+retrieving revision 1.12
+diff -u -r1.12 stats.c
+--- ggzd/ggzd/stats.c	2 Jan 2005 11:26:32 -0000	1.12
++++ ggzd/ggzd/stats.c	24 Jan 2005 22:22:54 -0000
+@@ -256,8 +256,8 @@
+ 		if ((report->types[i] == GGZ_SEAT_BOT)
+ 		&&  (!bot_stats)) continue;
+ 
+-		if ((report->types[i] != GGZ_SEAT_PLAYER)
+-		&&  (report->types[i] != GGZ_SEAT_BOT)) {
++		if (report->types[i] != GGZ_SEAT_PLAYER
++		    && report->types[i] != GGZ_SEAT_BOT) {
+ 			err_msg("Unknown player type %d in stats calc.",
+ 				report->types[i]);
+ 			return;
 Index: ggzd/ggzdmod/ggzdmod.c
 ===================================================================
 RCS file: /var/lib/cvs/ggzd/ggzdmod/ggzdmod.c,v
 retrieving revision 1.118
 diff -u -r1.118 ggzdmod.c
 --- ggzd/ggzdmod/ggzdmod.c	24 Jan 2005 20:15:57 -0000	1.118
-+++ ggzd/ggzdmod/ggzdmod.c	24 Jan 2005 20:19:02 -0000
++++ ggzd/ggzdmod/ggzdmod.c	24 Jan 2005 22:22:54 -0000
 @@ -1350,6 +1350,7 @@
  		break;
  	case GGZ_SEAT_NONE:
@@ -52,13 +70,100 @@ diff -u -r1.118 ggzdmod.c
  		break;
  	}
  
+@@ -1647,24 +1648,54 @@
+ 
+ 
+ void ggzdmod_report_game(GGZdMod *ggzdmod,
+-			 int *teams,
+-			 GGZGameResult *results, int *scores)
++			 int *the_teams,
++			 GGZGameResult *the_results, int *the_scores)
+ {
+-	if (ggzdmod) {
+-		char *names[ggzdmod->num_seats];
++	if (ggzdmod && ggzdmod->type == GGZDMOD_GAME) {
+ 		GGZSeatType types[ggzdmod->num_seats];
+-		int p;
+-
++		char *names[ggzdmod->num_seats];
++		int teams[ggzdmod->num_seats];
++		GGZGameResult results[ggzdmod->num_seats];
++		int scores[ggzdmod->num_seats];
++		int p, r = 0;
++
++		/* Currently the values reported correspond to the seats
++		 * currently at the table.  However this could be changed
++		 * to allow the game to give us this info. */
+ 		for (p = 0; p < ggzdmod->num_seats; p++) {
+ 			GGZSeat seat = ggzdmod_get_seat(ggzdmod, p);
+-			types[p] = seat.type;
+-			if (seat.type == GGZ_SEAT_PLAYER
+-			    || seat.type == GGZ_SEAT_BOT)
+-				names[p] = seat.name;
+-			else {
+-				_ggzdmod_error(ggzdmod, "Invalid player.");
+-				return;
++			int usable = 0;
++
++			/* An ugly switch is used so if a new type is added
++			 * we'll get a warning. */
++			switch (seat.type) {
++			case GGZ_SEAT_PLAYER:
++			case GGZ_SEAT_ABANDONED:
++			case GGZ_SEAT_BOT:
++				usable = 1;
++				break;
++			case GGZ_SEAT_NONE:
++			case GGZ_SEAT_OPEN:
++			case GGZ_SEAT_RESERVED:
++				break;
++			}
++
++			if (!usable) continue;
++
++			types[r] = seat.type;
++			if (types[r] == GGZ_SEAT_ABANDONED) {
++				types[r] = GGZ_SEAT_PLAYER;
++			}
++			names[r] = seat.name;
++			if (seat.type == GGZ_SEAT_BOT
++			    && (!names[r] || names[r][0] == '\0')) {
++				/* Game may have already set the name; if not
++				   we do it here. */
++				names[r] = "AI";
+ 			}
++			teams[r] = the_teams[p];
++			results[r] = the_results[p];
++			scores[r] = the_scores[p];
+ 		}
+ 
+ 		_io_send_game_report(ggzdmod->fd,
+@@ -1702,12 +1733,12 @@
+ 			    int num_players, char **names, GGZSeatType *types,
+ 			    int *teams, GGZGameResult *results, int *scores)
+ {
+-	GGZdModGameReportData data = {num_players: num_players,
+-				      names: names,
+-				      types: types,
+-				      teams: teams,
+-				      results: results,
+-				      scores: scores};
++	GGZdModGameReportData data = {.num_players = num_players,
++				      .names = names,
++				      .types = types,
++				      .teams = teams,
++				      .results = results,
++				      .scores = scores};
+ 	call_handler(ggzdmod, GGZDMOD_EVENT_GAMEREPORT, &data);
+ }
+ 
 Index: ggzd/tests/basic.c
 ===================================================================
 RCS file: /var/lib/cvs/ggzd/tests/basic.c,v
 retrieving revision 1.13
 diff -u -r1.13 basic.c
 --- ggzd/tests/basic.c	28 Oct 2002 01:50:20 -0000	1.13
-+++ ggzd/tests/basic.c	24 Jan 2005 20:19:02 -0000
++++ ggzd/tests/basic.c	24 Jan 2005 22:22:54 -0000
 @@ -194,6 +194,8 @@
  		return "None";
  	case GGZ_SEAT_PLAYER: 
@@ -74,7 +179,7 @@ RCS file: /var/lib/cvs/ggzd/tests/logmod.c,v
 retrieving revision 1.10
 diff -u -r1.10 logmod.c
 --- ggzd/tests/logmod.c	11 Sep 2002 02:22:46 -0000	1.10
-+++ ggzd/tests/logmod.c	24 Jan 2005 20:19:02 -0000
++++ ggzd/tests/logmod.c	24 Jan 2005 22:22:54 -0000
 @@ -61,7 +61,9 @@
  		case GGZ_SEAT_PLAYER:
  			printf("Received player seat\n");
@@ -92,7 +197,7 @@ RCS file: /var/lib/cvs/ggz/game_clients/common/dlg_players.c,v
 retrieving revision 1.17
 diff -u -r1.17 dlg_players.c
 --- gtk-games/common/dlg_players.c	16 Nov 2004 05:20:59 -0000	1.17
-+++ gtk-games/common/dlg_players.c	24 Jan 2005 20:19:03 -0000
++++ gtk-games/common/dlg_players.c	24 Jan 2005 22:22:54 -0000
 @@ -132,6 +132,10 @@
  			status = _("Reserved");
  			name = seat.name;
@@ -110,7 +215,7 @@ RCS file: /var/lib/cvs/libggz/src/ggz_common.c,v
 retrieving revision 1.14
 diff -u -r1.14 ggz_common.c
 --- libggz/src/ggz_common.c	24 Jan 2005 06:03:21 -0000	1.14
-+++ libggz/src/ggz_common.c	24 Jan 2005 20:19:04 -0000
++++ libggz/src/ggz_common.c	24 Jan 2005 22:22:54 -0000
 @@ -41,6 +41,7 @@
  #define BOT_SEAT_NAME "bot"
  #define PLAYER_SEAT_NAME "player"
@@ -143,7 +248,7 @@ RCS file: /var/lib/cvs/libggz/src/ggz_common.h,v
 retrieving revision 1.22
 diff -u -r1.22 ggz_common.h
 --- libggz/src/ggz_common.h	20 Jan 2005 05:51:06 -0000	1.22
-+++ libggz/src/ggz_common.h	24 Jan 2005 20:19:04 -0000
++++ libggz/src/ggz_common.h	24 Jan 2005 22:22:54 -0000
 @@ -44,7 +44,8 @@
  	GGZ_SEAT_OPEN,		/**< The seat is open (unoccupied). */
  	GGZ_SEAT_BOT,		/**< The seat has a bot (AI) in it. */
