@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 	int optindex;
-	char opt;
+	int opt;
 
 	fd_set set;
 	struct timeval tv;

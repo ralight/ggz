@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 4868 2002-10-11 19:35:05Z jdorje $
+ * $Id: main.c 5316 2003-01-12 11:41:37Z dr_maux $
  *
  * Main loop
  *
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 		{"reverse", no_argument, 0, 'r'}
 	};
 	int optindex;
-	char option;
+	int option;
 	int opt_reverse = 0;
 
 	while(1)

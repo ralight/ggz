@@ -734,7 +734,7 @@ int main(int argc, char *argv[])
 {
 	int ret;
 	int optindex;
-	char opt;
+	int opt;
 	struct option options[] =
 	{
 		{"help", no_argument, 0, 'h'},

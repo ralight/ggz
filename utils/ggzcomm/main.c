@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 	int optindex;
-	char opt;
+	int opt;
 
 	/* Parse all options */
 	while(1)
