@@ -20,14 +20,21 @@ void gurumod_init(const char *datadir)
 /* Grubby's non-visual about dialog */
 Guru *gurumod_exec(Guru *message)
 {
-	int i;
+	int i, active;
 	char buffer[1024];
 	
 	i = 0;
+	active = 0;
 	while((message->list) && (message->list[i]))
 	{
+		/* Make sure people talk with grubby */
+		if((i == 0) && (!strcasecmp(message->list[i], message->guru)))
+		{
+			active = 1;
+		}
+
 		/* Let grubby tell about himself */
-		if((i == 1) && (!strcasecmp(message->list[i], "about")))
+		if((i == 1) && (!strcasecmp(message->list[i], "about")) && (active))
 		{
 			snprintf(buffer, 1024, _("I'm %s, your favorite chat bot!\n"
 					"I'm here to answer your question, and learn more about you.\n"
@@ -39,7 +46,7 @@ Guru *gurumod_exec(Guru *message)
 		}
 
 		/* Show all available commands, independent of active plugins */
-		if((i == 1) && (!strcasecmp(message->list[i], "help")))
+		if((i == 1) && (!strcasecmp(message->list[i], "help")) && (active))
 		{
 			message->message = _("This is the list of public commands I understand:\n"
 					"about: let me tell about myself\n"
