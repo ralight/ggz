@@ -67,6 +67,7 @@ char* string_cat(char *s1, char *s2)
 
 int main(void)
 {
+	char *g_path, *u_path;
 	GGZOptions opt;
 	struct pollfd fd[1] = {{STDIN_FILENO, POLLIN, 0}};
 
@@ -77,8 +78,15 @@ int main(void)
 
 	/* Setup options and initialize ggzcore lib */
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = string_cat(GGZCONFDIR, "/ggz-text.rc");
-        opt.user_conf = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
+	g_path = string_cat(GGZCONFDIR, "/ggz-text.rc");
+        u_path = string_cat(getenv("HOME"), "/.ggz/ggz-text.rc");
+	ggzcore_conf_initialize(g_path, u_path);
+	free(g_path);
+	free(u_path);
+
+	opt.debug_file = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-text.debug");
+	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL); 
+
 	ggzcore_init(opt);
 
 	/* Register for callbacks */
