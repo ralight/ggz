@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: common.c 2929 2001-12-18 04:06:09Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,8 +45,10 @@ static int handle_player_message();
 static int handle_cardlist_message();
 static int handle_game_message();
 
-static int ggzfd = -1;
-static int game_max_hand_size = 0;
+static struct {
+	int fd;
+	int max_hand_size;
+} game_internal;
 
 struct ggzcards_game_t ggzcards = { 0 };
 
@@ -66,13 +68,17 @@ int client_initialize(void)
 	ggz_debug_enable("core");
 #endif
 	ggz_debug_enable("core-error");
-	ggzfd = ggzmod_connect();
-	if (ggzfd < 0) {
+
+	game_internal.fd = -1;
+	game_internal.max_hand_size = 0;
+
+	game_internal.fd = ggzmod_connect();
+	if (game_internal.fd < 0) {
 		ggz_error_msg_exit("Couldn't connect to ggz.");
 	}
 	ggzcards.state = STATE_INIT;
 	ggz_debug("core", "Client initialized.");
-	return ggzfd;
+	return game_internal.fd;
 }
 
 
@@ -125,8 +131,8 @@ static void set_game_state(client_state_t state)
 static int handle_text_message(void)
 {
 	char *message, *mark;
-	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
-	    es_read_string_alloc(ggzfd, &message) < 0)
+	if (es_read_string_alloc(game_internal.fd, &mark) < 0 ||
+	    es_read_string_alloc(game_internal.fd, &message) < 0)
 		return -1;
 	table_set_text_message(mark, message);
 	free(message);		/* allocated by easysock */
@@ -145,15 +151,15 @@ static int handle_cardlist_message(void)
 	if (!cardlist || !lengths)
 		abort();
 
-	if (es_read_string_alloc(ggzfd, &mark) < 0)
+	if (es_read_string_alloc(game_internal.fd, &mark) < 0)
 		status = -1;
 
 	for (p = 0; p < ggzcards.num_players; p++) {
-		if (es_read_int(ggzfd, &lengths[p]))
+		if (es_read_int(game_internal.fd, &lengths[p]))
 			status = -1;
 		cardlist[p] = ggz_malloc(lengths[p] * sizeof(**cardlist));
 		for (i = 0; i < lengths[p]; i++)
-			if (read_card(ggzfd, &cardlist[p][i]) < 0)
+			if (read_card(game_internal.fd, &cardlist[p][i]) < 0)
 				status = -1;
 	}
 
@@ -176,8 +182,8 @@ static int handle_player_message(void)
 	int p;
 	char *message;
 
-	if (read_seat(ggzfd, &p) < 0 ||
-	    es_read_string_alloc(ggzfd, &message) < 0)
+	if (read_seat(game_internal.fd, &p) < 0 ||
+	    es_read_string_alloc(game_internal.fd, &message) < 0)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
 
@@ -203,7 +209,8 @@ static int handle_game_message(void)
 	int size, game, handled;
 	char *block;
 
-	if (es_read_int(ggzfd, &game) < 0 || es_read_int(ggzfd, &size) < 0)
+	if (es_read_int(game_internal.fd, &game) < 0
+	    || es_read_int(game_internal.fd, &size) < 0)
 		return -1;
 
 	/* Note: "size" refers to the size of the data block, not including
@@ -211,7 +218,7 @@ static int handle_game_message(void)
 	ggz_debug("core", "Received game message of size %d for game %d.",
 		  size, game);
 
-	handled = table_handle_game_message(ggzfd, game, size);
+	handled = table_handle_game_message(game_internal.fd, game, size);
 	if (handled < 0)
 		return -1;
 	assert(handled <= size);
@@ -220,7 +227,7 @@ static int handle_game_message(void)
 	if (size > 0) {
 		/* We read the block just to get it out of the way. */
 		block = ggz_malloc(size);
-		if (es_readn(ggzfd, block, size) < 0)
+		if (es_readn(game_internal.fd, block, size) < 0)
 			return -1;
 		ggz_free(block);
 	}
@@ -235,7 +242,7 @@ static int handle_message_global(void)
 	int opcode, status = 0;
 	game_message_t op;
 
-	if (read_opcode(ggzfd, &opcode) < 0)
+	if (read_opcode(game_internal.fd, &opcode) < 0)
 		return -1;
 
 	op = opcode;
@@ -266,7 +273,7 @@ static int handle_msg_gameover(void)
 {
 	int num_winners, i, *winners = NULL;
 
-	if (es_read_int(ggzfd, &num_winners) < 0)
+	if (es_read_int(game_internal.fd, &num_winners) < 0)
 		return -1;
 	assert(num_winners >= 0 && num_winners <= ggzcards.num_players);
 
@@ -274,7 +281,7 @@ static int handle_msg_gameover(void)
 		winners = ggz_malloc(num_winners * sizeof(*winners));
 
 	for (i = 0; i < num_winners; i++)
-		if (read_seat(ggzfd, &winners[i]) < 0)
+		if (read_seat(game_internal.fd, &winners[i]) < 0)
 			return -1;
 
 	table_handle_gameover(num_winners, winners);
@@ -298,7 +305,7 @@ static int handle_msg_players(void)
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
 	   the number of players is 0. */
-	if (es_read_int(ggzfd, &numplayers) < 0)
+	if (es_read_int(game_internal.fd, &numplayers) < 0)
 		return -1;
 	assert(numplayers >= 0);
 
@@ -318,7 +325,7 @@ static int handle_msg_players(void)
 			  "get_players: (re)allocating ggzcards.players.");
 		ggzcards.players =
 			ggz_malloc(numplayers * sizeof(*ggzcards.players));
-		game_max_hand_size = 0;	/* this forces reallocating later */
+		game_internal.max_hand_size = 0;	/* this forces reallocating later */
 	}
 
 	/* TODO: support for changing the number of players */
@@ -326,8 +333,8 @@ static int handle_msg_players(void)
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
 		GGZSeatType assign;
-		if (es_read_int(ggzfd, &assign) < 0 ||
-		    es_read_string_alloc(ggzfd, &t_name) < 0)
+		if (es_read_int(game_internal.fd, &assign) < 0 ||
+		    es_read_string_alloc(game_internal.fd, &t_name) < 0)
 			return -1;
 
 		table_alert_player(i, assign, t_name);
@@ -356,17 +363,17 @@ static void increase_max_hand_size(int max_hand_size)
 {
 	int p;
 
-	if (max_hand_size <= game_max_hand_size)	/* no problem */
+	if (max_hand_size <= game_internal.max_hand_size)	/* no problem */
 		return;
 
 	ggz_debug("core",
 		  "Expanding max_hand_size to allow for %d cards"
 		  " (previously max was %d).", max_hand_size,
-		  game_max_hand_size);
-	game_max_hand_size = max_hand_size;
+		  game_internal.max_hand_size);
+	game_internal.max_hand_size = max_hand_size;
 
 	/* Let the table know how big a hand might be. */
-	table_alert_hand_size(game_max_hand_size);
+	table_alert_hand_size(game_internal.max_hand_size);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
 #if 0
@@ -377,11 +384,11 @@ static void increase_max_hand_size(int max_hand_size)
 		   method were used instead!!). */
 		ggzcards.players[p].hand.card =
 			ggz_realloc(ggzcards.players[p].hand.card,
-				    game_max_hand_size *
+				    game_internal.max_hand_size *
 				    sizeof(*ggzcards.players[p].hand.card));
 #else
 		ggzcards.players[p].hand.card =
-			ggz_malloc(game_max_hand_size *
+			ggz_malloc(game_internal.max_hand_size *
 				   sizeof(*ggzcards.players[p].hand.card));
 #endif
 	}
@@ -398,12 +405,12 @@ static int handle_msg_hand(void)
 	assert(ggzcards.players);
 
 	/* first read the player whose hand it is */
-	if (read_seat(ggzfd, &player) < 0)
+	if (read_seat(game_internal.fd, &player) < 0)
 		return -1;
 	assert(player >= 0 && player < ggzcards.num_players);
 
 	/* Find out how many cards in this hand */
-	if (es_read_int(ggzfd, &hand_size) < 0)
+	if (es_read_int(game_internal.fd, &hand_size) < 0)
 		return -1;
 
 	/* Reallocate hand structures, if necessary */
@@ -415,7 +422,7 @@ static int handle_msg_hand(void)
 	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++)
-		if (read_card(ggzfd, &hand->card[i]) < 0)
+		if (read_card(game_internal.fd, &hand->card[i]) < 0)
 			return -1;
 
 	/* Finally, show the hand. */
@@ -440,13 +447,14 @@ static int handle_req_bid(void)
 	}
 
 	/* Determine the number of bidding choices we have */
-	if (es_read_int(ggzfd, &possible_bids) < 0)
+	if (es_read_int(game_internal.fd, &possible_bids) < 0)
 		return -1;
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
-		if (es_read_string_alloc(ggzfd, &bid_choices[i]) < 0)
+		if (es_read_string_alloc(game_internal.fd, &bid_choices[i]) <
+		    0)
 			return -1;
 	}
 
@@ -468,7 +476,7 @@ static int handle_req_bid(void)
 static int handle_req_play(void)
 {
 	/* Determine which hand we're supposed to be playing from. */
-	if (read_seat(ggzfd, &ggzcards.play_hand) < 0)
+	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0)
 		return -1;
 	assert(ggzcards.play_hand >= 0
 	       && ggzcards.play_hand < ggzcards.num_players);
@@ -487,7 +495,7 @@ static int handle_msg_badplay(void)
 	char *err_msg;
 
 	/* Read the error message for the bad play. */
-	if (es_read_string_alloc(ggzfd, &err_msg) < 0)
+	if (es_read_string_alloc(game_internal.fd, &err_msg) < 0)
 		return -1;
 
 	/* Restore the cards the way they should be. */
@@ -558,7 +566,8 @@ static int handle_msg_play(void)
 	hand_t *hand;
 
 	/* Read the card being played. */
-	if (read_seat(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
+	if (read_seat(game_internal.fd, &p) < 0
+	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
 
@@ -605,10 +614,11 @@ static int handle_msg_table(void)
 
 	assert(ggzcards.players);
 	for (p = 0; p < ggzcards.num_players; p++)
-		if (read_card(ggzfd, &ggzcards.players[p].table_card) < 0)
+		if (read_card
+		    (game_internal.fd, &ggzcards.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands 
+	/* TODO: verify that the table cards have been removed from the hands
 	 */
 
 	table_alert_table();
@@ -623,7 +633,7 @@ static int handle_msg_trick(void)
 	int p;
 
 	/* Read the trick winner */
-	if (read_seat(ggzfd, &p) < 0)
+	if (read_seat(game_internal.fd, &p) < 0)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
 
@@ -655,7 +665,7 @@ static int handle_req_options(void)
 	}
 
 	/* Read the number of options. */
-	if (es_read_int(ggzfd, &option_cnt) < 0)
+	if (es_read_int(game_internal.fd, &option_cnt) < 0)
 		return -1;
 	assert(option_cnt > 0);
 
@@ -666,13 +676,14 @@ static int handle_req_options(void)
 
 	/* Read all the options, their defaults, and the possible choices. */
 	for (i = 0; i < option_cnt; i++) {
-		if (es_read_int(ggzfd, &choice_cnt[i]) < 0 ||
-		    es_read_int(ggzfd, &defaults[i]) < 0)
+		if (es_read_int(game_internal.fd, &choice_cnt[i]) < 0 ||
+		    es_read_int(game_internal.fd, &defaults[i]) < 0)
 			return -1;	/* read the default */
 		option_choices[i] =
 			ggz_malloc(choice_cnt[i] * sizeof(**option_choices));
 		for (j = 0; j < choice_cnt[i]; j++)
-			if (es_read_string_alloc(ggzfd, &option_choices[i][j])
+			if (es_read_string_alloc
+			    (game_internal.fd, &option_choices[i][j])
 			    < 0)
 				return -1;
 	}
@@ -702,7 +713,7 @@ static int handle_req_options(void)
 /* A newgame message tells the server to start a new game. */
 int client_send_newgame(void)
 {
-	if (write_opcode(ggzfd, RSP_NEWGAME) < 0) {
+	if (write_opcode(game_internal.fd, RSP_NEWGAME) < 0) {
 		ggz_debug("core-error", "Couldn't send newgame.");
 		return -1;
 	}
@@ -714,7 +725,8 @@ int client_send_newgame(void)
 int client_send_bid(int bid)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(ggzfd, RSP_BID) < 0 || es_write_int(ggzfd, bid) < 0) {
+	if (write_opcode(game_internal.fd, RSP_BID) < 0
+	    || es_write_int(game_internal.fd, bid) < 0) {
 		ggz_debug("core-error", "Couldn't send bid.");
 		return -1;
 	}
@@ -727,10 +739,10 @@ int client_send_options(int option_cnt, int *options)
 {
 	int i, status = 0;
 
-	if (write_opcode(ggzfd, RSP_OPTIONS) < 0)
+	if (write_opcode(game_internal.fd, RSP_OPTIONS) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)
-		if (es_write_int(ggzfd, options[i]) < 0)
+		if (es_write_int(game_internal.fd, options[i]) < 0)
 			status = -1;
 
 	set_game_state(STATE_WAIT);
@@ -747,7 +759,8 @@ int client_send_options(int option_cnt, int *options)
 int client_send_play(card_t card)
 {
 	set_game_state(STATE_WAIT);
-	if (write_opcode(ggzfd, RSP_PLAY) < 0 || write_card(ggzfd, card) < 0) {
+	if (write_opcode(game_internal.fd, RSP_PLAY) < 0
+	    || write_card(game_internal.fd, card) < 0) {
 		ggz_debug("core-error", "Couldn't send play.");
 		return -1;
 	}
@@ -759,7 +772,7 @@ int client_send_play(card_t card)
 int client_send_sync_request(void)
 {
 	ggz_debug("core", "Sending sync request to server.");
-	if (write_opcode(ggzfd, REQ_SYNC) < 0) {
+	if (write_opcode(game_internal.fd, REQ_SYNC) < 0) {
 		ggz_debug("core-error", "Couldn't send sync request.");
 		return -1;
 	}
@@ -773,7 +786,7 @@ int client_handle_server(void)
 	int op, status = -1;
 
 	/* Read the opcode */
-	if (read_opcode(ggzfd, &op) < 0) {
+	if (read_opcode(game_internal.fd, &op) < 0) {
 		ggz_debug("core-error", "Couldn't read server opcode.");
 		return -1;
 	}
