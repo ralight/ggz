@@ -20,6 +20,9 @@
 		<h2>Email address</h2>
 		<input type="text" size="20" maxlength="30" name="input_email">
 		<br>
+		<h2>Encryption</h2>
+		<input type="checkbox" name="input_encryption">Send mail encrypted if possible
+		<br>
 		<input type="submit" size="20" value="Resend" class="button">
 	</form>
 	</div>

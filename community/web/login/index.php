@@ -19,6 +19,7 @@ $input_user = $_POST["input_user"];
 $input_pass = $_POST["input_pass"];
 $input_realname = $_POST["input_realname"];
 $input_email = $_POST["input_email"];
+$input_encryption = $_POST["input_encryption"];
 
 if (($input_user) && ($input_pass)) :
 	if ($input_email) :
@@ -27,7 +28,7 @@ if (($input_user) && ($input_pass)) :
 		Auth::login($input_user, $input_pass);
 	endif;
 elseif ($input_email) :
-	Auth::resend($input_email);
+	Auth::resend($input_email, $input_encryption);
 else :
 	Auth::logout();
 endif;
