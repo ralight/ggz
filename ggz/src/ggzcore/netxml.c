@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5341 2003-01-22 14:40:48Z dr_maux $
+ * $Id: netxml.c 5433 2003-02-22 05:40:33Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -28,17 +28,18 @@
 #  include <config.h>		/* Site-specific config */
 #endif
 
-#include <stdlib.h>
-#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <limits.h>
 #include <poll.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <expat.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
 
+#include <expat.h>
 #include <ggz.h>
 #include <ggz_common.h>
 
@@ -868,12 +869,17 @@ void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *element)
 	tls = ATTR(element, "TLS_SUPPORT");
 
 	chatlen = ggz_xmlelement_get_data(element);
-	/* If no chat length is specified, assume an unlimited
-	   (i.e. really large) length. */
-	net->chat_size = chatlen ? *chatlen : 60000;
+	if (chatlen) {
+		net->chat_size = *chatlen;
+		ggz_free(chatlen);
+	} else {
+		/* If no chat length is specified, assume an unlimited
+		   (i.e. really large) length. */
+		net->chat_size = chatlen ? *chatlen : UINT_MAX;
+	}
 
 	ggz_debug(GGZCORE_DBG_NET, 
-		  "%s(%s) : status %s: protocol %d: chat size %d tls: %s",
+		  "%s(%s) : status %s: protocol %d: chat size %u tls: %s",
 		  name, id, status, version, net->chat_size, tls);
 
 	/* FIXME: Do something with name, status */
