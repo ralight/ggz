@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5697 2003-12-04 08:12:45Z jdorje $
+dnl $Id: configure.ac 5704 2003-12-05 01:01:11Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -89,21 +89,10 @@ if test "$enable_gtk" = "yes"; then
 fi
 
 
-dnl Use -Wall if we have gcc.
-dnl =========================
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
-
-
 dnl Debug modes
 dnl ===========
 AC_GGZ_DEBUG
+
 
 dnl Various dirs
 dnl ============

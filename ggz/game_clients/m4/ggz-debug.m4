@@ -1,4 +1,5 @@
 # AC_GGZ_DEBUG
+# $Id: ggz-debug.m4 5704 2003-12-05 01:01:11Z jdorje $
 #
 # Check for debugging choices.  Sets $enable_debug, $enable_debug_gdb,
 # and $enable_debug_mem.
@@ -49,4 +50,15 @@ AC_DEFUN(AC_GGZ_DEBUG,
     DFLAGS="$DFLAGS DEBUG_MEM"
     LDADD="$LDADD -ldmalloc"
   fi
+
+  # Use -Wall if we have gcc.
+  # FIXME: Rewrite this to be comprehensible.
+  changequote(,)dnl
+  if test "x$GCC" = "xyes"; then
+    case " $CFLAGS " in
+    *[\ \	]-Wall[\ \	]*) ;;
+    *) CFLAGS="$CFLAGS -Wall" ;;
+    esac
+  fi
+  changequote([,])dnl
 ])

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5698 2003-12-04 08:22:11Z jdorje $
+dnl $Id: configure.ac 5704 2003-12-05 01:01:11Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -122,17 +122,6 @@ fi
 if test "$enable_gtk" = "yes"; then
   AC_MSG_ERROR([*** Can't build GTK frontend: GTK not found])
 fi
-
-dnl Use -Wall if we have gcc.
-dnl =========================
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
 
 
 dnl Debug modes
