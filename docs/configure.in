@@ -41,7 +41,8 @@ AC_OUTPUT(Makefile
 	spec/Makefile
 	overview/Makefile
 	server/Makefile
-	server/hosting/Makefile)
+	server/hosting/Makefile
+	articles/Makefile)
 
 dnl Report success
 dnl ==============
