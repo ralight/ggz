@@ -29,6 +29,7 @@
 #include "server.h"
 #include "table.h"
 #include "player.h"
+#include "lists.h"
 
 #include <stdlib.h>
 #include <string.h>

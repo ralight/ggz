@@ -30,7 +30,6 @@
 #include "event.h"
 #include "hook.h"
 #include "state.h"
-#include "roomlist.h"
 #include "room.h"
 
 #define GGZ_NUM_SERVER_EVENTS 13

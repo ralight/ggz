@@ -31,6 +31,7 @@
 #include "protocol.h"
 #include "net.h"
 #include "errno.h"
+#include "lists.h"
 
 #include <stdlib.h>
 #include <string.h>
