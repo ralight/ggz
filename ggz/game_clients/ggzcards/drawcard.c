@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4059 2002-04-23 07:36:00Z jdorje $
+ * $Id: drawcard.c 4062 2002-04-23 19:40:29Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -198,7 +198,6 @@ static void draw_domino_card(card_t card, int orientation,
                              int x, int y, GdkPixmap *image)
 {
 	const int h = get_card_height0() - 1;
-	const int w = get_card_width0() - 1;
 	const int spot_radius = (h) / 8;
 	const int spots[7][7][2] = { {},
 	                             { {h / 2,       h / 2} },
@@ -227,7 +226,7 @@ static void draw_domino_card(card_t card, int orientation,
 	const int xo = (orientation % 2 == 0) ? h : 0;
 	const int yo = (orientation % 2 == 0) ? 0 : h;
 	
-	assert(w == 2 * h);
+	assert(get_card_width0() - 1 == 2 * h);
 	
 	gdk_draw_rectangle(image,
 	                   show ? table_style->bg_gc[GTK_WIDGET_STATE(table)]
