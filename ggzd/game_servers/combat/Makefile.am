@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = combat.dsc combat.room
+
 SUBDIRS = .
 
 ggzdexecmod_PROGRAMS = ggzd.combat

@@ -1,5 +1,5 @@
 # This is the short name for the room
-Name = NetSpades - Example
+Name = NetSpades
 # This is the long descriptive name for the room
 Description = Example NetSpades room
 # The gametype should match up to the Name of an added game
