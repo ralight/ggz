@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4992 2002-10-22 16:40:17Z jdorje $
+ * $Id: netxml.c 5000 2002-10-22 20:17:36Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -170,7 +170,7 @@ static void _ggzcore_net_error(struct _GGZNet *net, char* message);
 static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 
 /* Utility functions */
-static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat);
+static int _ggzcore_net_send_table_seat(GGZNet *net, struct _GGZSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 	ggz__attribute((format(printf, 2, 3)));
@@ -503,23 +503,22 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 }
 
 
-static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat)
+static int _ggzcore_net_send_table_seat(GGZNet *net,
+					struct _GGZSeat *seat)
 {
-	int status = 0;
 	const char *type;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending seat info");
 	
 	type = ggz_seattype_to_string(seat->type);
 	
-	if (seat->name)
-		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
-				       seat->index,type, seat->name);
-	else
-		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
-				       seat->index, type);
-	
-	return status;
+	if (!seat->name)
+		return _ggzcore_net_send_line(net,
+					      "<SEAT NUM='%d' TYPE='%s'/>", 
+					      seat->index, type);
+	return _ggzcore_net_send_line(net, 
+				      "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
+				      seat->index,type, seat->name);
 }
 
 
@@ -551,32 +550,89 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net,
 }
 
 
-int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat)
+int _ggzcore_net_send_table_reseat(GGZNet *net,
+				   GGZReseatType opcode,
+				   int seat_num)
+{
+	const char *action = NULL;
+
+	switch (opcode) {
+	case GGZ_RESEAT_SIT:
+		action = "sit";
+		break;
+	case GGZ_RESEAT_STAND:
+		action = "stand";
+		seat_num = -1;
+		break;
+	case GGZ_RESEAT_MOVE:
+		action = "move";
+		if (seat_num < 0)
+			return -1;
+		break;
+	}
+
+	if (!action) return -1;
+
+	if (seat_num <= 0)
+		return _ggzcore_net_send_line(net,
+					      "<RESEAT ACTION='%s'/>",
+					      action);
+
+	return _ggzcore_net_send_line(net,
+				      "<RESEAT ACTION='%s' SEAT='%d'/>",
+				      action, seat_num);
+}
+
+
+int _ggzcore_net_send_table_seat_update(GGZNet *net, GGZTable *table,
+					struct _GGZSeat *seat)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Sending table seat update request");
-	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>",
+	_ggzcore_net_send_line(net,
+			       "<UPDATE TYPE='table' ACTION='seat' ROOM='%d'>",
 			       _ggzcore_room_get_id(table->room));
 	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>",
 			       table->id, table->num_seats);
 	_ggzcore_net_send_table_seat(net, seat);
 	_ggzcore_net_send_line(net, "</TABLE>");
-	_ggzcore_net_send_line(net, "</UPDATE>");	
-
-	return 0;
+	return _ggzcore_net_send_line(net, "</UPDATE>");
 }
 
 
 
-int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table, const char *desc)
+int _ggzcore_net_send_table_desc_update(GGZNet *net, GGZTable *table,
+					const char *desc)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Sending table description update request");
-	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
+	_ggzcore_net_send_line(net,
+			       "<UPDATE TYPE='table' ACTION='desc' ROOM='%d'>",
+			       _ggzcore_room_get_id(table->room));
 	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
 	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
 	_ggzcore_net_send_line(net, "</TABLE>");
-	_ggzcore_net_send_line(net, "</UPDATE>");	
+	return _ggzcore_net_send_line(net, "</UPDATE>");	
+}
 
-	return 0;
+
+int _ggzcore_net_send_table_boot_update(GGZNet *net, GGZTable *table,
+					struct _GGZSeat *seat)
+{
+	ggz_debug(GGZCORE_DBG_NET, "Sending boot of player %s.", seat->name);
+
+	if (!seat->name)
+		return -1;
+	seat->type = GGZ_SEAT_PLAYER;
+	seat->index = 0;
+
+	_ggzcore_net_send_line(net,
+			       "<UPDATE TYPE='table' ACTION='boot' ROOM='%d'>",
+			       _ggzcore_room_get_id(table->room));
+
+	_ggzcore_net_send_line(net, "<TABLE ID='%d' SEATS='1'>", table->id);
+	_ggzcore_net_send_table_seat(net, seat);
+	_ggzcore_net_send_line(net, "</TABLE>");
+
+	return _ggzcore_net_send_line(net, "</UPDATE>");
 }
 
 

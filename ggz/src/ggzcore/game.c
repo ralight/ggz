@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 4982 2002-10-22 04:25:36Z jdorje $
+ * $Id: game.c 5000 2002-10-22 20:17:36Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -345,21 +345,59 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *dat
 static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
 				     void *data)
 {
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	int seat_num = *(int*)data;
+	GGZReseatType op;
 
+	if (game->spectating)
+		op = GGZ_RESEAT_SIT;
+	else
+		op = GGZ_RESEAT_MOVE;
+
+	_ggzcore_net_send_table_reseat(net, op, seat_num);
 }
 
 
 static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
 				       void *data)
 {
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
 
+	_ggzcore_net_send_table_reseat(net, GGZ_RESEAT_STAND, -1);
 }
-
 
 static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
 				      void *data)
 {
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
+						     game->room_id);
+	GGZTable *table = _ggzcore_room_get_table_by_id(room, game->table_id);
+	char *name = data;
+	int i;
 
+	for (i = 0; i < table->num_seats; i++) {
+		struct _GGZSeat *seat = &table->seats[i];
+		if (seat->type != GGZ_SEAT_PLAYER
+		    || ggz_strcmp(seat->name, name))
+			continue;
+		_ggzcore_net_send_table_boot_update(net, table, seat);
+		return;
+	}
+
+	for (i = 0; i < table->num_spectator_seats; i++) {
+		struct _GGZSeat *seat = &table->spectator_seats[i];
+		if (ggz_strcmp(seat->name, name))
+			continue;
+		_ggzcore_net_send_table_boot_update(net, table, seat);
+		return;
+	}
+
+	/* If the player has already left, we won't find them and we'll
+	   end up down here. */
 }
 
 
