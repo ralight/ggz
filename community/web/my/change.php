@@ -29,15 +29,17 @@ if (($res) && (pg_numrows($res) == 1)) :
 	$gender = pg_result($res, 0, "gender");
 	$country = pg_result($res, 0, "country");
 	$pubkey = pg_result($res, 0, "pubkey");
+	$blogfeed = pg_result($res, 0, "blogfeed");
 endif;
 
 ?>
 
 <form action='settings.php?settings=1' method='POST'>
 <table>
-<tr><td>Photo:</td><td><input type='text' name='user_photo' value='<?php echo $photo; ?>'></td></tr>
 <tr><td>Real name:</td><td><input type='text' name='user_realname' value='<?php echo $realname; ?>'></td></tr>
 <tr><td>Email address:</td><td><input type='text' name='user_email' value='<?php echo $email; ?>'></td></tr>
+<tr><td>Photo:</td><td><input type='text' name='user_photo' value='<?php echo $photo; ?>'></td></tr>
+<tr><td>Blog feed URL:</td><td><input type='text' name='user_blogfeed' value='<?php echo $blogfeed; ?>'></td></tr>
 <tr><td>Gender:</td><td>
 	<!-- <input type='text' name='user_gender' value='<?php echo $gender; ?>'> -->
 	<select name='user_gender'>

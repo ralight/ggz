@@ -16,6 +16,7 @@ $user_gender = $_POST["user_gender"];
 $user_country = $_POST["user_country"];
 $user_password = $_POST["user_password"];
 $user_pubkey = $_POST["user_pubkey"];
+$user_blogfeed = $_POST["user_blogfeed"];
 
 $res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
 if (($res) && (pg_numrows($res) == 0)) :
@@ -33,7 +34,7 @@ if ($password) :
 endif;
 if ($settings) :
 	$res = pg_exec($id, "UPDATE userinfo SET ".
-		"photo = '$user_photo', gender = '$user_gender', country = '$user_country' " .
+		"photo = '$user_photo', gender = '$user_gender', country = '$user_country', blogfeed = '$user_blogfeed' " .
 		"WHERE handle = '$ggzuser'");
 	$res = pg_exec($id, "UPDATE users SET ".
 		"name = '$user_realname', email = '$user_email' " .
