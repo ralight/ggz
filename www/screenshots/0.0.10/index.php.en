@@ -58,5 +58,6 @@ The KDE chess game can install Knights and SVG themes
 </td><td bgcolor="#ffffa0">
 Gaim and Kopete bring GGZ to the IM community
 </td></tr>
+</table>
 
 <? include_once("../../site/footer.php"); ?>
