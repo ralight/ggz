@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4952 2002-10-19 19:03:33Z jdorje $
+ * $Id: ggzdmod.c 4983 2002-10-22 04:27:46Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1252,7 +1252,6 @@ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 		event = GGZDMOD_EVENT_LEAVE;
 	else {
 		event = GGZDMOD_EVENT_SEAT;
-		assert(0); /* not supported yet */
 	}
 
 	/* Invoke the handler. */
@@ -1279,7 +1278,6 @@ void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSpectator *seat)
 		event = GGZDMOD_EVENT_SPECTATOR_LEAVE;
 	else {
 		event = GGZDMOD_EVENT_SPECTATOR_SEAT;
-		assert(0); /* not supported yet */
 	}
 
 	/* Invoke the handler. */
