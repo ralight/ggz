@@ -1,4 +1,4 @@
-/* $Id: game.h 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: game.h 2080 2001-07-23 13:01:31Z jdorje $ */
 /*
  * File: game.h
  * Author: Rich Gade
@@ -35,7 +35,6 @@
 /* #define ANIMATION */
 
 extern void game_send_bid(int);
-extern void game_send_options(int option_cnt, int* options);
 extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
 

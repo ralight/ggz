@@ -1,4 +1,4 @@
-/* $Id: common.c 2078 2001-07-23 08:27:12Z jdorje $ */
+/* $Id: common.c 2080 2001-07-23 13:01:31Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -533,6 +533,9 @@ int client_send_bid(int bid)
 int client_send_options(int option_cnt, int *options)
 {
 	int i, status = 0;
+
+	client_debug("Sending options to server.");
+
 	if (es_write_int(ggzfd, WH_RSP_OPTIONS) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)

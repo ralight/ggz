@@ -1,4 +1,4 @@
-/* $Id: game.c 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: game.c 2080 2001-07-23 13:01:31Z jdorje $ */
 /*
  * File: game.c
  * Author: Rich Gade
@@ -45,19 +45,6 @@ void game_send_bid(int bid)
 	int status = client_send_bid(bid);
 
 	statusbar_message( _("Sending bid to server") );
-
-	assert(status == 0);
-}
-
-
-void game_send_options(int options_cnt, int* options)
-{
-	int status;
-	client_debug("Sending options to server.");
-
-	status = client_send_options(options_cnt, options);
-
-	statusbar_message( _("Sending options to server") );
 
 	assert(status == 0);
 }

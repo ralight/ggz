@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.c 2079 2001-07-23 11:35:01Z jdorje $ */
+/* $Id: dlg_bid.c 2080 2001-07-23 13:01:31Z jdorje $ */
 /*
  * File: dlg_bid.c
  * Author: Rich Gade
@@ -95,8 +95,10 @@ void dlg_option_toggled (GtkWidget *widget, gpointer data)
 
 void dlg_options_submit (GtkWidget *widget, gpointer data)
 {
-	game_send_options( option_count, options_selected );
-	g_free(options_selected);
+	client_send_options(option_count, options_selected);
+
+	statusbar_message( _("Sending options to server") );
+
 	options_selected = NULL;
 	option_count = 0;
 
