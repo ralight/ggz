@@ -166,6 +166,7 @@ static void parse_file(FILE *configfile)
 				err_sys_exit("parse_file: malloc error");
 			strcpy(strval, varvalue);
 			opt.game_dir = strval;
+			continue;
 		 }
 		/*** END GAMEDIR = DIR ***/
 
