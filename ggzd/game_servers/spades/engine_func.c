@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 4949 2002-10-19 00:34:05Z jdorje $
+ * $Id: engine_func.c 5513 2003-05-09 23:01:52Z dr_maux $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -52,7 +52,7 @@ static int open_seats;
 gameInfo_t gameInfo;
 
 /* log output flag*/
-int log = 1;
+int logflag = 1;
 
 /* Globals for card counting */
 int played[4];
@@ -280,13 +280,13 @@ void GetGameInfo( void ) {
 		ReadIntOrDie( gameInfo.playerSock[i], &status );
     
 		if( status == i ) {
-			if( log )
+			if( logflag )
 				dbg_msg("%s received player list", 
 					 gameInfo.players[i] );
 		}
 		else {
 			svNetClose();
-			if( log )
+			if( logflag )
 				dbg_msg("Error: player %d returned %d", i, 
 					 status);
 			Quit(-1);
@@ -310,7 +310,7 @@ void ReadOptions(void)
 		 gameInfo.opt.endGame, 
 		 gameInfo.opt.minBid);
 #endif
-	if (log) {
+	if (logflag) {
 		dbg_msg("Game ends at %d points", gameInfo.opt.endGame);
 		dbg_msg("Minimum bid of %d", gameInfo.opt.minBid);
 		if (gameInfo.opt.bitOpt & MSK_NILS)
@@ -392,11 +392,11 @@ void SendHands( Card hands[4][13] ) {
     ReadIntOrDie( gameInfo.playerSock[i], &status);
 
     if( status == i ) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "%s received hand", gameInfo.players[i] );
     }
     else {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Error: player %d returned %d", i, status);
       svNetClose();
       Quit(-1);
@@ -414,11 +414,11 @@ void SendLead( int lead ) {
     WriteIntOrDie( gameInfo.playerSock[i], lead );
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "%s received lead", gameInfo.players[i] );
     }
     else {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Error: player %d returned %d", i, status);
       svNetClose();
       Quit(-1);
@@ -432,10 +432,10 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
   int i, curPlayer, bid, bidStatus;
 
   bids[0] = bids[1] = bids[2] = bids[3] = BID_INVALID;
-  
+
   for( i=0; i<4; i++) {
     curPlayer=(lead+i)%4;
-    
+
     if( gameInfo.playerSock[curPlayer] == SOCK_COMP ) {
       bid = AIBid( curPlayer );
       bidStatus = 0;
@@ -443,14 +443,14 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
     else {
       bidStatus = -1;
     }
-    
+
     while( bidStatus != 0) {
       bidStatus = 0;
-      
+
       ggz_read_int_or_die(gameInfo.playerSock[curPlayer], &bid);
 
       if( bid < -1 || bid > 13 ) {
-	if( log )
+	if( logflag )
 	   dbg_msg("Invalid bid received for %s", gameInfo.players[curPlayer]);
 	bidStatus = -1;
       }
@@ -458,24 +458,24 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
       else if( i > 1 && ( (bid <=0 && (bids[(lead+i-2)%4] < gameInfo.opt.minBid) ) ||   
 			 (bid > 0 && (bid+bids[(lead+i-2)%4] < gameInfo.opt.minBid )))) {
 	
-	if( log )
+	if( logflag )
 	    dbg_msg( "Bid below min received for %s",
 		   gameInfo.players[curPlayer] );
 	bidStatus = -2;
       }
-      
+
       WriteIntOrDie( gameInfo.playerSock[curPlayer], bidStatus );
 
     } /* while (bidStatus != 0) */
-    
+
     if ( bid == BID_NIL) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Player %d bid nil", curPlayer );
       kneels[curPlayer] = 1;
       bids[curPlayer] = 0;
     }
     else {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Bid of %d received for %s", bid,
 		  gameInfo.players[curPlayer] );
       kneels[curPlayer] = 0;
@@ -496,12 +496,12 @@ void SendBid( int bid, int player ) {
       WriteIntOrDie( gameInfo.playerSock[i], bid );
       ReadIntOrDie( gameInfo.playerSock[i], &status );
       if( status == i ) {
-	if( log )
+	if( logflag )
 	    dbg_msg( "%s received %s's bid", 
 		   gameInfo.players[i], gameInfo.players[player] );
       }
       else {
-	if( log )
+	if( logflag )
 	    dbg_msg( "Error: player %d returned %d", i, status);
 	svNetClose();
 	Quit(-1);
@@ -546,7 +546,7 @@ void GetAndSendTricks( int lead, Card hands[4][13], Card trick[4],
 
       if( playedCard == BLANK_CARD ) {
 	badCard = -1;
-	if( log )
+	if( logflag )
 	  dbg_msg( "%s tried to replay a card",
 		  gameInfo.players[curPlayer] );
       }
@@ -557,7 +557,7 @@ void GetAndSendTricks( int lead, Card hands[4][13], Card trick[4],
 	for( j=0; j<13; j++ ) {
 	  if( card_suit_char(hands[curPlayer][j]) == leadSuit ) {
 	    badCard = -2;
-	    if( log ) {
+	    if( logflag ) {
 	      dbg_msg( "%s tried to renege with the %s",
 		      gameInfo.players[curPlayer], 
 		      card_name(playedCard,LONG_NAME) );
@@ -590,7 +590,7 @@ void PlayCard(int num, int index, Card hands[4][13], Card trick[4], int lead,
   Card card = hands[num][index];
 
 
-  if( log ) {
+  if( logflag ) {
     if( num == lead) {
       dbg_msg( "%s led the %s", gameInfo.players[num],
 	      card_name(card,LONG_NAME) );
@@ -675,12 +675,12 @@ void SendTrick( Card play, int player ) {
       WriteIntOrDie( gameInfo.playerSock[i], play );
       ReadIntOrDie( gameInfo.playerSock[i], &status );
       if( status == i ) {
-	if( log )
+	if( logflag )
 	    dbg_msg( "%s received %s's play", 
 		   gameInfo.players[i], gameInfo.players[player] );
       }
       else {
-	if( log )
+	if( logflag )
 	    dbg_msg( "Error: player %d returned %d", i, status);
 	svNetClose();
 	Quit(-1);
@@ -698,7 +698,7 @@ int CalcTrickWin( int lead, Card trick[4] ) {
     if( card_comp( trick[i], trick[win] ) > 0 )
       win = i;
   }
-  if( log )
+  if( logflag )
       dbg_msg( "%s won the trick", gameInfo.players[win] );
   
   return win;
@@ -734,12 +734,12 @@ void SendTallys( int winner, int tally[4] ) {
       WriteIntOrDie( gameInfo.playerSock[i], tally[j] );
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "%s received tally update", 
 		 gameInfo.players[i] );
     }
     else {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Error: player %d returned %d", i, status);
       svNetClose();
       Quit(-1);
@@ -775,25 +775,25 @@ int UpdateScores( int tally[4], int bids[4], int scores[2], int kneels[4],
 
   /*Check for kneeling*/
   for( i=0; i<4; i++) {
-    if( log )
+    if( logflag )
 	dbg_msg( "Checking for Player %d nil bids", i);
     if( kneels[i] == 1 ) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Player %d bid nil -", i);
       if( tally[i] == 0 ) {
-	if( log )
+	if( logflag )
 	    dbg_msg( "and made it." );
 	scores[ (i%2) ]+=100;
       }
       else {
-	if( log )
+	if( logflag )
 	    dbg_msg( "and lost it." );
 	scores[ (i%2) ]-=100;
       }
     }
   }
 
-  if( log )
+  if( logflag )
       dbg_msg( "Team 0: %d\tTeam 1: %d", scores[0], scores[1]);
 
   return ( (scores[0] >= gameInfo.opt.endGame || scores[1] >= gameInfo.opt.endGame)
@@ -828,11 +828,11 @@ void SendScores( int scores[2] ) {
 
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
-      if( log )
+      if( logflag )
 	  dbg_msg( "%s received Scores", gameInfo.players[i]);
     }
     else {
-      if( log )
+      if( logflag )
 	  dbg_msg( "Error: player %d returned %d", i, status);
       svNetClose();
       Quit(-1);
@@ -847,7 +847,7 @@ int QueryNewGame( void ) {
   
   /* Non-zero value for again means play again*/
   ReadIntOrDie( gameInfo.playerSock[0], &again );
-  if( log )
+  if( logflag )
       dbg_msg( "Play again: %d", again );
   WriteIntOrDie( gameInfo.playerSock[0], 0 );
   
@@ -878,11 +878,11 @@ void SendNewGame(int again)
 		WriteIntOrDie(gameInfo.playerSock[i], again);
 		ReadIntOrDie(gameInfo.playerSock[i], &status);
 		if (status == i) {
-			if (log)
+			if (logflag)
 				dbg_msg("%s received New Game Status", 
 					gameInfo.players[i]);
 		}
-		else if (log) {
+		else if (logflag) {
 			dbg_msg( "Error: player %d returned %d", i, status);
 			svNetClose();
 			Quit(-1);
