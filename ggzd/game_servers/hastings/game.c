@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3665 2002-03-24 21:55:44Z dr_maux $
+ * $Id: game.c 3666 2002-03-25 00:07:42Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -127,7 +127,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 	{
 		case HASTINGS_SND_MOVE:
 			if(game_handle_move(num) == 0)
-				game_update(HASTINGS_EVENT_MOVE, NULL);
+				game_update(HASTINGS_EVENT_MOVE, seat_data);
 			break;
 		case HASTINGS_REQ_INIT:
 			game_init(hastings_game.ggz);
@@ -561,13 +561,16 @@ int game_update(int event, void* data)
  		ggzdmod_log(hastings_game.ggz, "to square %d/%d\n",
 			hastings_game.move_dst_x, hastings_game.move_dst_y);
 
-		/* disallow dead bots to move (should not happen) */
-		if(hastings_game.move_src_x > -1)
+		/* disallow dead bots to move (should not happen), and prevent foreign knights to be moved */
+		if((hastings_game.move_src_x > -1)
+		&& (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == hastings_game.turn)
+		&& ((!data) || (*(int*)data == hastings_game.turn)))
 		{
 			hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] = -1;
 			hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] = hastings_game.turn;
 			game_send_move(hastings_game.turn);
 		}
+		else return -1;
 
 		if((victor = game_check_win()) < 0)
 		{
