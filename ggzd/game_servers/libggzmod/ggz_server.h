@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2228 2001-08-25 14:09:43Z jdorje $
+ * $Id: ggz_server.h 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,7 +39,7 @@ enum {
 };
 
 /** A GGZ seat; one spot at a table. */
-struct ggz_seat_t {
+struct ggzd_seat_t {
 	/** The seat assignment value */
 	int assign;
 	/** The name of the player at the seat */
@@ -49,21 +49,21 @@ struct ggz_seat_t {
 };
 
 /** The array of seats at the table */
-extern struct ggz_seat_t* ggz_seats;
+extern struct ggzd_seat_t* ggzd_seats;
 
 /** Sends a debugging message to ggzd to be logged.
  *  @param fmt a printf-style format string
  *  @param ... a printf-stype list of arguments
  *  @return 0 on success, -1 on failure */
-int ggzdmod_debug(const char *fmt, ...);
+int ggzd_debug(const char *fmt, ...);
 
-int ggzdmod_seats_open(void);
-int ggzdmod_seats_num(void);
-int ggzdmod_seats_bot(void);
-int ggzdmod_seats_reserved(void);
-int ggzdmod_seats_human(void);
+int ggzd_seats_open(void);
+int ggzd_seats_num(void);
+int ggzd_seats_bot(void);
+int ggzd_seats_reserved(void);
+int ggzd_seats_human(void);
 
-int ggzdmod_fd_max(void);
+int ggzd_fd_max(void);
 
 /*
  * libggzdmod currently allows for an event-driven interface:
@@ -73,38 +73,34 @@ int ggzdmod_fd_max(void);
  *    automatically by the GGZ loop.
  */
 
-enum {
+typedef enum {
 	GGZ_EVENT_LAUNCH	= 0,  /**< a game launch event from ggzd */
 	GGZ_EVENT_JOIN		= 1,  /**< a player join event from ggzd */
 	GGZ_EVENT_LEAVE		= 2,  /**< a player leave event from ggzd */
 	GGZ_EVENT_QUIT		= 3,  /**< a game over event from ggzd */
 	GGZ_EVENT_PLAYER	= 4,  /**< a message from a client/player */
 	GGZ_EVENT_TICK		= 5   /**< a passed-time event */
-};
+} ggzd_event_t;
 
-/* Set a handler for a specific event.
- * passing GGZ_EVENT_DEFAULT sets the handler for all unhandled events */
-/* NOTE that when the handler is called the ggzdmod event will
- * already have been handled from the GGZ end; you *don't* have to
- * call a ggzdmod event function from above */
-typedef int (*GGZHandler)(int event_id, void *handler_data);
-void ggzdmod_set_handler(int event_id, const GGZHandler handler);
+/* Set a handler for a specific event. */
+typedef int (*GGZDHandler)(ggzd_event_t event_id, void *handler_data);
+void ggzd_set_handler(ggzd_event_t event_id, const GGZDHandler handler);
 
 /* Setup functions */
-int ggzdmod_connect(void);
-int ggzdmod_disconnect(void);
+int ggzd_connect(void);
+int ggzd_disconnect(void);
 
 /* this function should be called when there's GGZ data ready
- * to be read */
-int ggzdmod_dispatch(void);
+ * to be read.  It calls the appropriate event handler. */
+int ggzd_dispatch(void);
 
 /* this function may not be a part of the final API */
-int ggzdmod_read_data(void);
+int ggzd_read_data(void);
 
 /* Open the ggz socket and wait for events,
  * calling handlers when necessary
  * Handles connect and disconnect also. */
-int ggzdmod_main(void);
+int ggzd_main(void);
 
 
 #endif /* __GGZ_SERVER_GGZ_H */

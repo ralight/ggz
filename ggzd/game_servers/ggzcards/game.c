@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2196 2001-08-23 09:24:47Z jdorje $
+ * $Id: game.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -86,7 +86,7 @@ int game_is_valid_game()
  */
 void game_init_game()
 {
-	ggzdmod_debug("ERROR: SERVER BUG: "
+	ggzd_debug("ERROR: SERVER BUG: "
 		      "game_launch not implemented for game %d.",
 		      game.which_game);
 }
@@ -208,7 +208,7 @@ void game_start_bidding()
  */
 int game_get_bid()
 {
-	ggzdmod_debug("ERROR: SERVER BUG: "
+	ggzd_debug("ERROR: SERVER BUG: "
 		      "game_get_bid called for unimplemented game.");
 	return -1;
 }
@@ -423,7 +423,7 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	ggzdmod_debug("SERVER not implemented: game_end_hand for game %d.",
+	ggzd_debug("SERVER not implemented: game_end_hand for game %d.",
 		      game.which_game);
 }
 

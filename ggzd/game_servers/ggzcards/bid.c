@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: bid.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -71,10 +71,10 @@ void add_sbid(char val, char suit, char spec)
  */
 int req_bid(player_t p)
 {
-	int i, fd = ggz_seats[p].fd, status = 0;
+	int i, fd = ggzd_seats[p].fd, status = 0;
 
-	ggzdmod_debug("Requesting a bid from player %d/%s; %d choices", p,
-		  ggz_seats[p].name, bid_count);
+	ggzd_debug("Requesting a bid from player %d/%s; %d choices", p,
+		  ggzd_seats[p].name, bid_count);
 
 	/* although the game_* functions probably track this data
 	   themselves, we track it here as well just in case. */
@@ -83,7 +83,7 @@ int req_bid(player_t p)
 	set_game_state(WH_STATE_WAIT_FOR_BID);
 	set_player_message(p);
 
-	if (ggz_seats[p].assign == GGZ_SEAT_BOT) {
+	if (ggzd_seats[p].assign == GGZ_SEAT_BOT) {
 		/* request a bid from the ai */
 		handle_bid_event(ai_get_bid(p, bids, bid_count));
 	} else {
@@ -102,7 +102,7 @@ int req_bid(player_t p)
 	}
 
 	if (status != 0)
-		ggzdmod_debug("ERROR: req_bid: status is %d.", status);
+		ggzd_debug("ERROR: req_bid: status is %d.", status);
 	return status;
 }
 
@@ -113,7 +113,7 @@ int req_bid(player_t p)
  */
 int rec_bid(player_t p, bid_t * bid)
 {
-	int fd = ggz_seats[p].fd, index;
+	int fd = ggzd_seats[p].fd, index;
 
 	if (es_read_int(fd, &index) < 0)
 		return -1;
@@ -124,21 +124,21 @@ int rec_bid(player_t p, bid_t * bid)
 
 	/* First of all, is this a valid bid? */
 	if (p != game.next_bid) {
-		ggzdmod_debug
+		ggzd_debug
 			("It's player %d/%s's turn to bid, not player %d/%s's.",
-			 game.next_bid, ggz_seats[game.next_bid].name, p,
-			 ggz_seats[p].name);
+			 game.next_bid, ggzd_seats[game.next_bid].name, p,
+			 ggzd_seats[p].name);
 		return -1;
 	} else if (!(game.state == WH_STATE_WAIT_FOR_BID ||
 		     (game.state == WH_STATE_WAITFORPLAYERS
 		      && game.saved_state == WH_STATE_WAIT_FOR_BID))) {
-		ggzdmod_debug("We're not currently waiting for a bid!");
+		ggzd_debug("We're not currently waiting for a bid!");
 		return -1;
 	}
 
 	*bid = bids[index];
 
-	ggzdmod_debug("Received bid choice %d from player %d/%s",
-		  index, p, ggz_seats[p].name);
+	ggzd_debug("Received bid choice %d from player %d/%s",
+		  index, p, ggzd_seats[p].name);
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: euchre.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -98,7 +98,7 @@ static void euchre_init_game()
 	for(p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
-		game.seats[s].ggz = &ggz_seats[p];
+		game.seats[s].ggz = &ggzd_seats[p];
 	}
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
@@ -161,7 +161,7 @@ static void euchre_start_playing()
 	game_start_playing();
 
 	/* maker is set in game_handle_bid */
-	set_global_message("", "%s is the maker in %s.", ggz_seats[EUCHRE.maker].name, suit_names[(int)game.trump]);
+	set_global_message("", "%s is the maker in %s.", ggzd_seats[EUCHRE.maker].name, suit_names[(int)game.trump]);
 	game.leader = (game.dealer + 1) % game.num_players;
 	/* resort/resend hand - this should probably be a function in itself... */
 	for(s=0; s<game.num_seats; s++) {

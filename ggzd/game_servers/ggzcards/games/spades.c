@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: spades.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -85,7 +85,7 @@ static void spades_init_game()
 	for(p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
-		game.seats[s].ggz = &ggz_seats[p];
+		game.seats[s].ggz = &ggzd_seats[p];
 	}
 	game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
 	game.target_score = 500;	/* adjustable by options */	
@@ -220,14 +220,14 @@ static void spades_end_hand()
 			}
 		} else
 			score = -10 * bid;
-		ggzdmod_debug("Team %d bid %d, took %d, earned %d.", (int)p, bid, tricks, score);
+		ggzd_debug("Team %d bid %d, took %d, earned %d.", (int)p, bid, tricks, score);
 		game.players[p].score += score;
 		game.players[p+2].score += score;
 	}
 	for (p=0; p<4; p++) {
 		if (game.players[p].bid.sbid.spec == SPADES_NIL) {
 			int score = (game.players[p].tricks == 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-			ggzdmod_debug("Player %d/%s earned %d for going nil.", (int)p, ggz_seats[p].name, score);
+			ggzd_debug("Player %d/%s earned %d for going nil.", (int)p, ggzd_seats[p].name, score);
 			game.players[p].score += score;
 			game.players[(p+2)%4].score += score;
 		}

@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
+ * $Id: game.h 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -103,5 +104,5 @@ extern struct lp_game_t game;
 extern void game_init(void);
 
 /* GGZ handler functions */
-extern int game_handle_ggz(int, void *);
-extern int game_handle_player(int, void*);
+extern int game_handle_ggz(ggzd_event_t, void *);
+extern int game_handle_player(ggzd_event_t, void*);

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2214 2001-08-24 02:54:33Z jdorje $
+ * $Id: game.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -61,7 +61,7 @@ struct timeval cronometer;
  *  CHESS_EVENT_FLAG: (int)time until now for move
  *  CHESS_EVENT_DRAW: (int)What to add to the draw char
  *  CHESS_EVENT_START: NULL */
-void game_update(int event_id, void *data) {
+int game_update(ggzd_event_t event_id, void *data) {
   int time, st;
   struct timeval now;
   switch (event_id) {
@@ -78,12 +78,12 @@ void game_update(int event_id, void *data) {
       /* Check for current state */
       if (game_info.state != CHESS_STATE_WAIT)
         break;
-      ggzdmod_debug("New player!");
+      ggzd_debug("New player!");
       /* Add to cgc */
       if (cgc_join_game(game, *(int*)data == 0 ? WHITE : BLACK) < 0)
         /* Boy, that's bad... */
-        return;
-      ggzdmod_debug("Protocol stuff");
+        return -1;
+      ggzd_debug("Protocol stuff");
       /* Send seat */
       game_send_seat(*(int *)data);
       /* Send players */
@@ -98,7 +98,7 @@ void game_update(int event_id, void *data) {
         game_send_time(*(int *)data);
       }
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggzdmod_seats_open() == 0)
+      if (game_info.clock_type >= 0 && ggzd_seats_open() == 0)
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_TIME:
@@ -115,12 +115,12 @@ void game_update(int event_id, void *data) {
       game_info.seconds[0] = *(int*)data & 0xFFFFFF;
       game_info.seconds[1] = *(int*)data & 0xFFFFFF;
       /* Send the time to everyone */
-      if (ggz_seats[0].assign == GGZ_SEAT_PLAYER)
+      if (ggzd_seats[0].assign == GGZ_SEAT_PLAYER)
         game_send_time(0);
-      if (ggz_seats[1].assign == GGZ_SEAT_PLAYER)
+      if (ggzd_seats[1].assign == GGZ_SEAT_PLAYER)
         game_send_time(1);
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggzdmod_seats_open() == 0)
+      if (game_info.clock_type >= 0 && ggzd_seats_open() == 0)
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_START:
@@ -140,10 +140,10 @@ void game_update(int event_id, void *data) {
       /* Check for state */
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      ggzdmod_debug("Move: %s", (char *)data);
+      ggzd_debug("Move: %s", (char *)data);
       /* Try to make the move via cgc */
       if ( !data || (st = cgc_make_move(game, (char *)data)) < 0) {
-        ggzdmod_debug("CGC status: %d", st);
+        ggzd_debug("CGC status: %d", st);
         game_send_move(NULL, 0);
         break;
       }
@@ -280,13 +280,14 @@ void game_update(int event_id, void *data) {
       break;
     case CHESS_EVENT_GAMEOVER:
       game_info.state = CHESS_STATE_DONE;
-      ggzdmod_debug("Game over!");
+      ggzd_debug("Game over!");
       game_send_gameover(*(char*)data);
       break;
     default:
-      ggzdmod_debug("Unknown event!!!");
+      ggzd_debug("Unknown event!!!");
       break;
   }
+  return 0;
 }
 
 /* game_handle_player(int id, int *seat)
@@ -301,49 +302,50 @@ void game_update(int event_id, void *data) {
  *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG
  *  CHESS_REQ_DRAW   -> Check if he hasn't done it yet, then trigger EVENT_DRAW
  *  */
-void game_handle_player(int id, int *seat) {
+int game_handle_player(ggzd_event_t id, void *seat_data) {
+  int *seat = seat_data;
   int fd, time;
   char op;
   void *data;
   struct timeval now;
 
   /* Is the seat valid? */
-  fd = ggz_seats[*seat].fd;
+  fd = ggzd_seats[*seat].fd;
   if (fd < 0)
-    return;
+    return -1;
 
-  ggzdmod_debug("Handling player");
+  ggzd_debug("Handling player");
 
   /* Get the opcode */
   if (es_read_char(fd, &op) < 0)
-    return;
+    return -1;
 
-  ggzdmod_debug("Received opcode %d", op);
+  ggzd_debug("Received opcode %d", op);
 
   /* What to do? */
   switch (op) {
     case CHESS_RSP_TIME:
-      ggzdmod_debug("Player sent a RSP_TIME");
+      ggzd_debug("Player sent a RSP_TIME");
       if (es_read_int(fd, &time) < 0)
-        return;
+        return -1;
       /* Check if this player is the host */
       if (*seat != game_info.host)
-        return;
-      ggzdmod_debug("Player sent the following time: %d", time);
+        return 0;
+      ggzd_debug("Player sent the following time: %d", time);
       /* Is it a valid time ? */
       if ((time >> 24) > 3) {
         game_update(CHESS_EVENT_TIME, NULL);
-        return;
+        return 0;
       }
       if ((time >> 24) > 0 && (time & 0xFFFFFF) <= 0) {
         game_update(CHESS_EVENT_TIME, NULL);
-        return;
+        return 0;
       }
       /* Ok, then trigger the event */
       game_update(CHESS_EVENT_TIME, &time);
       break;
     case CHESS_REQ_MOVE:
-      ggzdmod_debug("Player sent a REQ_MOVE");
+      ggzd_debug("Player sent a REQ_MOVE");
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK) {
         /* We don't use clocks! */
         data = malloc(sizeof(char) * 6);
@@ -381,7 +383,7 @@ void game_handle_player(int id, int *seat) {
         /* If first turn, there is no time! */
         if (game_info.turn == 0 || game_info.turn == 1)
           time = 0;
-        ggzdmod_debug("Move: %s\tTime: %d", data, time);
+        ggzd_debug("Move: %s\tTime: %d", data, time);
         *((int *)data + (6/sizeof(int)) + 1) = time;
       }
       /* Check if correct turn */
@@ -431,10 +433,11 @@ void game_handle_player(int id, int *seat) {
       game_update(CHESS_EVENT_DRAW, &id);
       break;
   }
+  return 0;
 }
 
 void game_send_seat(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_seats[seat].fd;
   if (fd < 0)
     return;
   if (es_write_char(fd, CHESS_MSG_SEAT) < 0 ||
@@ -447,19 +450,19 @@ void game_send_players() {
 	int i, j, fd;
 	
 	for (j = 0; j < 2; j++) {
-		if ( (fd = ggz_seats[j].fd) == -1)
+		if ( (fd = ggzd_seats[j].fd) == -1)
 			continue;
 
-		ggzdmod_debug("Sending player list to player %d", j);
+		ggzd_debug("Sending player list to player %d", j);
 
 		if (es_write_char(fd, CHESS_MSG_PLAYERS) < 0)
 			return;
 	
 		for (i = 0; i < 2; i++) {
-			if (es_write_char(fd, ggz_seats[i].assign) < 0)
+			if (es_write_char(fd, ggzd_seats[i].assign) < 0)
 				return;
-			if (ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0)
+			if (ggzd_seats[i].assign != GGZ_SEAT_OPEN
+			    && es_write_string(fd, ggzd_seats[i].name) < 0)
 				return;
 		}
 	}
@@ -470,7 +473,7 @@ void game_stop_cronometer() {
 }
 
 void game_request_time(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_seats[seat].fd;
 
   if (fd < 0)
     return;
@@ -479,7 +482,7 @@ void game_request_time(int seat) {
 }
 
 void game_send_time(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_seats[seat].fd;
 
   if (fd < 0)
     return;
@@ -494,7 +497,7 @@ void game_send_start() {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_seats[a].fd;
 
     if (fd < 0)
       continue;
@@ -507,7 +510,7 @@ void game_send_move(char *move, int time) {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_seats[a].fd;
     if (fd < 0)
       continue;
 
@@ -540,10 +543,10 @@ void game_send_move(char *move, int time) {
 void game_send_update() {
   int fd, a;
   for (a = 0; a < 2; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_seats[a].fd;
     if (fd < 0)
       return;
-    ggzdmod_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
+    ggzd_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
     if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
         es_write_int(fd, game_info.seconds[0]) < 0 ||
         es_write_int(fd, game_info.seconds[1]) < 0)
@@ -555,7 +558,7 @@ void game_send_gameover(char code) {
   int fd, a;
 
   for (a = 0; a < 2; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_seats[a].fd;
 
     if (fd < 0)
       continue;
@@ -566,7 +569,7 @@ void game_send_gameover(char code) {
 }
 
 void game_send_draw(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_seats[seat].fd;
 
   if (fd < 0)
     return;

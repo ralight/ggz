@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2197 2001-08-23 09:34:23Z jdorje $
+ * $Id: cards.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -107,7 +107,7 @@ void cards_create_deck(deck_type_t which_deck)
 		/* use a full 52-card deck */
 		break;
 	default:
-		ggzdmod_debug("Unknown deck %d.", which_deck);
+		ggzd_debug("Unknown deck %d.", which_deck);
 	}
 
 	/* Now generate an in-order deck */
@@ -125,7 +125,7 @@ void cards_create_deck(deck_type_t which_deck)
 				cardnum++;
 			}
 
-	ggzdmod_debug("Built a deck of size %d.", deck_size);
+	ggzd_debug("Built a deck of size %d.", deck_size);
 }
 
 int cards_deck_size()
@@ -136,7 +136,7 @@ int cards_deck_size()
 void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
-		ggzdmod_debug("ERROR: SERVER BUG: "
+		ggzd_debug("ERROR: SERVER BUG: "
 			      "cards_destroy_deck called on a NULL deck.");
 	free(gamedeck);
 	deck_size = 0;
@@ -151,7 +151,7 @@ void cards_shuffle_deck()
 	card_t temp;
 	int i, j;
 
-	ggzdmod_debug("Shuffling deck.");
+	ggzd_debug("Shuffling deck.");
 
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
@@ -179,15 +179,15 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	int c;
 	card_t card;
 
-	ggzdmod_debug("\tDealing out a hand of size %d.", handsize);
+	ggzd_debug("\tDealing out a hand of size %d.", handsize);
 
 	if (hand == NULL) {
-		ggzdmod_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
+		ggzd_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
 		exit(-1);
 	}
 
 	if (gamedeck == NULL) {
-		ggzdmod_debug("ERROR: SERVER BUG: "
+		ggzd_debug("ERROR: SERVER BUG: "
 			      "can't deal from NULL deck.");
 		exit(-1);
 	}
@@ -196,7 +196,7 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	hand->hand_size = hand->full_hand_size = handsize;
 	for (c = 0; c < hand->hand_size; c++) {
 		if (deck_ptr >= deck_size) {
-			ggzdmod_debug
+			ggzd_debug
 				("ERROR: SERVER BUG: "
 				 "too many cards being dealt out.");
 			exit(-1);
@@ -233,7 +233,7 @@ card_t cards_deal_card()
 {
 	card_t card;
 	if (deck_ptr >= deck_size) {
-		ggzdmod_debug
+		ggzd_debug
 			("ERROR: SERVER BUG: "
 			 "too many cards being handed out.");
 		exit(-1);

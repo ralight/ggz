@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Main loop
+ * $Id: main.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,14 +44,11 @@ int main(void)
 	/* FIXME: game_handle_ggz is useless; it just calls
 	 * another function right away.  That other function
 	 * should be the handler instead. --JDS */
-	ggzdmod_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzdmod_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzdmod_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzdmod_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz);
-	ggzdmod_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
+	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
+	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
+	ggzd_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz);
+	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-	if (ggzdmod_main() < 0)
-		return -1;
-
-	return 0;
+	return ggzd_main();
 }

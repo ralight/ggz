@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: types.h 2229 2001-08-25 14:52:34Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -58,7 +58,7 @@ struct game_seat_t
 {
 	hand_t hand;
 	card_t table;
-	struct ggz_seat_t *ggz;	/* ggz seat data; probably points to something in ggz_seats */
+	struct ggzd_seat_t *ggz;/* ggz seat data; probably points to something in ggz_seats */
 	char *pmessage;		/* the "player message" (really associated with a seat) */
 };
 typedef int seat_t;		/* just to make things clearer */

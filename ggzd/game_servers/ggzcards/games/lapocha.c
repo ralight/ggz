@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: lapocha.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -86,7 +86,7 @@ static void lapocha_init_game()
 	for(p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
-		game.seats[s].ggz = &ggz_seats[p];
+		game.seats[s].ggz = &ggzd_seats[p];
 	}
 	game.deck_type = GGZ_DECK_LAPOCHA;
 	game.max_hand_length = 10;
@@ -238,7 +238,7 @@ static void lapocha_end_hand()
 	player_t p;
 
 	for(p=0; p<game.num_players; p++) {
-		ggzdmod_debug("Player %d/%s got %d tricks on a bid of %d", p, ggz_seats[p].name,
+		ggzd_debug("Player %d/%s got %d tricks on a bid of %d", p, ggzd_seats[p].name,
 			  game.players[p].tricks, (int)game.players[p].bid.bid);
 		if(game.players[p].tricks == game.players[p].bid.bid)
 			game.players[p].score += 10 + (5 * game.players[p].bid.bid);

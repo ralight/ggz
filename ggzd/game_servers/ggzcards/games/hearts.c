@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2197 2001-08-23 09:34:23Z jdorje $
+ * $Id: hearts.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -88,7 +88,7 @@ static void hearts_init_game()
 	for (p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
-		game.seats[s].ggz = &ggz_seats[p];
+		game.seats[s].ggz = &ggzd_seats[p];
 	}
 	game.target_score = 100;
 
@@ -215,7 +215,7 @@ static void hearts_start_playing()
 	}
 
 	if (game.leader == -1) {
-		ggzdmod_debug("ERROR: SERVER BUG: " "nobody has a club.");
+		ggzd_debug("ERROR: SERVER BUG: " "nobody has a club.");
 		game.leader = (game.dealer + 1) % game.num_players;
 	}
 }
@@ -315,13 +315,13 @@ static void hearts_end_hand()
 
 		if (score == -26) {
 			snprintf(buf, sizeof(buf), "%s shot the moon.",
-				 ggz_seats[p].name);
+				 ggzd_seats[p].name);
 			max = 26;
 		} else if (fullscore > max) {
 			/* only the maximum player's score is written; this is less than ideal. */
 			max = fullscore;
 			snprintf(buf, sizeof(buf), "%s took %d points.",
-				 ggz_seats[p].name, fullscore);
+				 ggzd_seats[p].name, fullscore);
 		}
 	}
 	set_global_message("", "%s", buf);

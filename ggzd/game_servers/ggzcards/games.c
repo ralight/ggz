@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: games.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -90,7 +90,7 @@ int games_get_gametype(char *text)
 			return i;
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
-	ggzdmod_debug("Unknown game for '%s'.", text);
+	ggzd_debug("Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;
 }
 
@@ -99,7 +99,7 @@ void games_handle_gametype(int option)
 	game.which_game = game_types[option];
 
 	if (game.which_game < 0 || game.which_game >= num_games) {
-		ggzdmod_debug
+		ggzd_debug
 			("SERVER/CLIENT error: bad game type %d selected; using %d instead.",
 			 game.which_game, game_types[0]);
 		game.which_game = game_types[0];
@@ -122,11 +122,11 @@ int games_valid_game(int which_game)
  *   the reply is sent to games_handle_gametype, below. */
 int games_req_gametype()
 {
-	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1;
+	int fd = game.host >= 0 ? ggzd_seats[game.host].fd : -1;
 	int cnt = 0, i;
 	int status = 0;
 	if (fd == -1) {
-		ggzdmod_debug("ERROR: SERVER BUG: " "nonexistent host.");
+		ggzd_debug("ERROR: SERVER BUG: " "nonexistent host.");
 		return -1;
 	}
 
@@ -138,13 +138,13 @@ int games_req_gametype()
 	}
 
 	if (cnt == 0) {
-		ggzdmod_debug("ERROR: SERVER BUG: "
+		ggzd_debug("ERROR: SERVER BUG: "
 			  "no valid games in games_req_gametype.");
 		exit(-1);
 	}
 
 	if (cnt == 1) {
-		ggzdmod_debug("Just one valid game: choosing %d.", game_types[0]);
+		ggzd_debug("Just one valid game: choosing %d.", game_types[0]);
 		game.which_game = game_types[0];
 		init_game();
 		send_sync_all();
@@ -161,6 +161,6 @@ int games_req_gametype()
 			status = -1;
 
 	if (status != 0)
-		ggzdmod_debug("ERROR: games_req_gametype: status is %d.", status);
+		ggzd_debug("ERROR: games_req_gametype: status is %d.", status);
 	return status;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: bridge.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -110,7 +110,7 @@ static void bridge_init_game()
 	for(p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
-		game.seats[s].ggz = &ggz_seats[p];
+		game.seats[s].ggz = &ggzd_seats[p];
 	}
 
 	game.cumulative_scores = 0;
@@ -166,7 +166,7 @@ static int bridge_get_bid()
 static void bridge_handle_bid(bid_t bid)
 {
 	/* closely based on the Suaro code*/
-	ggzdmod_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
+	ggzd_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
 	
 	if (bid.sbid.spec == BRIDGE_PASS) {
 		BRIDGE.pass_count++;
@@ -184,7 +184,7 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.declarer = BRIDGE.opener[game.next_bid % 2][BRIDGE.contract_suit];
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 
-		ggzdmod_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
+		ggzd_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
 		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;
 		else
@@ -198,11 +198,11 @@ static void bridge_next_bid()
 	if (BRIDGE.pass_count == 4) {
 		/* done bidding */
 		if (BRIDGE.contract == 0) {
-			ggzdmod_debug("Four passes; redealing hand.");
+			ggzd_debug("Four passes; redealing hand.");
 			set_global_message("", "%s", "Everyone passed; redealing.");
 			set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 		} else {
-			ggzdmod_debug("Three passes; bidding is over.");
+			ggzd_debug("Three passes; bidding is over.");
 			game.bid_total = game.bid_count;
 			/* contract was determined in game_handle_bid */
 		}
@@ -319,10 +319,10 @@ static void bridge_set_score_message()
 #define BLANK_LINE len += snprintf(buf+len, sizeof(buf)-len, "%*s | %*s\n", widths[0], "", widths[1], "")
 
 	len = snprintf(buf, sizeof(buf), "%s/%s | %s/%s\n",
-		 ggz_seats[0].name, ggz_seats[2].name,
-		 ggz_seats[1].name, ggz_seats[3].name);
+		 ggzd_seats[0].name, ggzd_seats[2].name,
+		 ggzd_seats[1].name, ggzd_seats[3].name);
 	for(team=0; team<2; team++)
-		widths[team] = strlen(ggz_seats[team].name) + strlen(ggz_seats[team+2].name) + 1;
+		widths[team] = strlen(ggzd_seats[team].name) + strlen(ggzd_seats[team+2].name) + 1;
 
 	HORIZONTAL_LINE;
 	BLANK_LINE;
@@ -352,12 +352,12 @@ static void bridge_end_hand()
 	/* calculate tricks over book */
 	tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks - 6;
 
-	ggzdmod_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
+	ggzd_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract, tricks);
 
 	winning_team = (tricks >= BRIDGE.contract) ? BRIDGE.declarer % 2 : (BRIDGE.declarer+1) % 2;
 
 	snprintf(buf2, sizeof(buf2), "%s and %s get:\n",
-		 ggz_seats[winning_team].name, ggz_seats[winning_team+2].name);
+		 ggzd_seats[winning_team].name, ggzd_seats[winning_team+2].name);
 
 	if (tricks >= BRIDGE.contract) {
 		tricks_below = BRIDGE.contract;
@@ -443,9 +443,9 @@ static void bridge_end_hand()
 	BRIDGE.points_below_line[BRIDGE.game_count][winning_team] += points_below;
 
 	if (tricks >= BRIDGE.contract)
-		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.", ggz_seats[BRIDGE.declarer].name, points_above, points_below);
+		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.", ggzd_seats[BRIDGE.declarer].name, points_above, points_below);
 	else
-		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.", ggz_seats[BRIDGE.declarer].name, points_above);
+		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.", ggzd_seats[BRIDGE.declarer].name, points_above);
 
 	/* TODO: points for honors */
 

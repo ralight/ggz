@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: spades.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -242,7 +242,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			else {
 				p1 += 100;
 #ifdef DEBUG_BID
-				ggzdmod_debug
+				ggzd_debug
 					("AI-SPADES: Counting guaranteed spade as 100\n");
 #endif
 			}
@@ -261,7 +261,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		if (suitCount[SPADES] > 3) {
 			nilrisk += suitCount[SPADES] - 2;
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Inc. nilrisk for %d excess spades\n",
 				 suitCount[SPADES] - 2);
 #endif
@@ -274,7 +274,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				if (s != SPADES) {
 					nilrisk -= 2;
 #ifdef DEBUG_BID
-					ggzdmod_debug
+					ggzd_debug
 						("AI-SPADES: Dec. nilrisk for shortsuit in %s\n",
 						 suit_names[(int) s]);
 #endif
@@ -291,14 +291,14 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				continue;	/* for( s = 0; s < 4; s++ ) */
 			nilrisk += suitCount[(int) s] - count;	/* risky high cards */
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Inc. nilrisk for %d high %s\n",
+			ggzd_debug("AI-SPADES: Inc. nilrisk for %d high %s\n",
 				  suitCount[(int) s] - count,
 				  suit_names[(int) s]);
 #endif
 			if (count == 0) {	/* no low cards */
 				nilrisk++;
 #ifdef DEBUG_BID
-				ggzdmod_debug
+				ggzd_debug
 					("AI-SPADES: Inc. nilrisk for no low cards\n");
 #endif
 			}
@@ -309,7 +309,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				if (HasCard(num, c)) {
 					nilrisk += 2;
 #ifdef DEBUG_BID
-					ggzdmod_debug
+					ggzd_debug
 						("AI-SPADES: Inc. nilrisk for King of spades\n");
 #endif
 				}
@@ -317,7 +317,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				if (HasCard(num, c)) {
 					nilrisk += 1;
 #ifdef DEBUG_BID
-					ggzdmod_debug
+					ggzd_debug
 						("AI-SPADES: Inc. nilrisk for Queen of spades\n");
 #endif
 				}
@@ -327,7 +327,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king is riskier */
 #ifdef DEBUG_BID
-					ggzdmod_debug
+					ggzd_debug
 						("AI-SPADES: Inc. nilrisk by %d for King of %s\n",
 						 (suitCount[(int) s] <=
 						  2) ? 2 : 1,
@@ -339,7 +339,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace is riskiest */
 #ifdef DEBUG_BID
-					ggzdmod_debug
+					ggzd_debug
 						("AI-SPADES: Inc. nilrisk by %d for Ace of %s\n",
 						 (suitCount[(int) s] <=
 						  2) ? 3 : 2,
@@ -361,7 +361,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		if (HasCard(num, c) && suitCount[SPADES] >= 2) {
 			p1 += ((suitCount[SPADES] >= 3) ? 100 : 60);
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Counting King of Spades as %d\n",
 				 (suitCount[SPADES] >= 3) ? 100 : 60);
 #endif
@@ -371,7 +371,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		if (HasCard(num, c) && suitCount[SPADES] >= 3) {
 			p1 += ((suitCount[SPADES] >= 4) ? 100 : 30);
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Counting Queen of Spades as %d\n",
 				 (suitCount[SPADES] >= 4) ? 100 : 30);
 #endif
@@ -392,19 +392,19 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			p2 += 225;
 			count -= 2;
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Counting shortsuit as 225\n");
+			ggzd_debug("AI-SPADES: Counting shortsuit as 225\n");
 #endif
 		} else if (count >= 2) {
 			p2 += 190;
 			count -= 2;
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Counting shortsuit as 190\n");
+			ggzd_debug("AI-SPADES: Counting shortsuit as 190\n");
 #endif
 		} else {
 			p2 += 90;
 			count -= 1;
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Counting shortsuit as 90\n");
+			ggzd_debug("AI-SPADES: Counting shortsuit as 90\n");
 #endif
 		}
 	}
@@ -413,13 +413,13 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			p2 += 175;
 			count -= 2;
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Counting singleton as 175\n");
+			ggzd_debug("AI-SPADES: Counting singleton as 175\n");
 #endif
 		} else {
 			p2 += 90;
 			count -= 1;
 #ifdef DEBUG_BID
-			ggzdmod_debug("AI-SPADES: Counting singleton as 90\n");
+			ggzd_debug("AI-SPADES: Counting singleton as 90\n");
 #endif
 		}
 	}
@@ -427,7 +427,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		p2 += 75;
 		count -= 1;
 #ifdef DEBUG_BID
-		ggzdmod_debug("AI-SPADES: Counting doubleton as 75\n");
+		ggzd_debug("AI-SPADES: Counting doubleton as 75\n");
 #endif
 	}
 
@@ -437,13 +437,13 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		 */
 		p2 += (count - suitAvg[SPADES] - 1) * 80;
 #ifdef DEBUG_BID
-		ggzdmod_debug("AI-SPADES: Counting extra spades as %d\n",
+		ggzd_debug("AI-SPADES: Counting extra spades as %d\n",
 			  (count - suitAvg[SPADES] - 1) * 80);
 #endif
 	} else if (count == 0) {
 		p2 -= 30;	/* be wary of exhausting all trump */
 #ifdef DEBUG_BID
-		ggzdmod_debug
+		ggzd_debug
 			("AI-SPADES: Removing 30 points for exhausting spades(?)\n");
 #endif
 	}
@@ -454,7 +454,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	 */
 	points = (p1 > p2) ? p1 : p2;
 #ifdef DEBUG_BID
-	ggzdmod_debug("AI-SPADES: Spade points: %d\n", points);
+	ggzd_debug("AI-SPADES: Spade points: %d\n", points);
 #endif
 
 	/* --------------- OTHER SUITS -----------------
@@ -473,7 +473,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			if (HasCard(num, c)) {
 				points += prob;
 #ifdef DEBUG_BID
-				ggzdmod_debug
+				ggzd_debug
 					("AI-SPADES: Counting %s of %s as %d\n",
 					 face_names[(int) c.face],
 					 suit_names[(int) c.suit], prob);
@@ -493,7 +493,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	    game.players[(num + 3) % 4].bid.sbid.spec == SPADES_NIL) {
 		nilrisk -= 2;
 #ifdef DEBUG_BID
-		ggzdmod_debug
+		ggzd_debug
 			("AI-SPADES: Dec. nilrisk because opponent is kneeling\n");
 #endif
 	}
@@ -504,7 +504,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		|| (pard.sbid.val >= 3 + nilrisk))) {
 		bid.sbid.spec = SPADES_NIL;
 #ifdef DEBUG_BID
-		ggzdmod_debug("AI-SPADES: Bidding nil\n");
+		ggzd_debug("AI-SPADES: Bidding nil\n");
 #endif
 	}
 
@@ -518,20 +518,20 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		if (game.bid_count < 2) {
 			prob = 70;
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Adding 70 because partner hasn't bid\n");
 #endif
 		} else {
 			prob = 30;
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Adding 30 because partner has bidn\n");
 #endif
 		}
 
 		bid.sbid.val = (points + prob) / 100;
 #ifdef DEBUG_BID
-		ggzdmod_debug("AI-SPADES: Subtotal bid: %d\n", bid);
+		ggzd_debug("AI-SPADES: Subtotal bid: %d\n", bid);
 #endif
 
 		/*
@@ -568,14 +568,14 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			bid.sbid.val =
 				GSPADES.minimum_team_bid - pard.sbid.val;
 #ifdef DEBUG_BID
-			ggzdmod_debug
+			ggzd_debug
 				("AI-SPADES: Upping bid to meet minimum of %d\n",
 				 GSPADES.minimum_team_bid);
 #endif
 		}
 	}
 #ifdef DEBUG_BID
-	ggzdmod_debug("AI-SPADES: Final bid: %d\n", bid);
+	ggzd_debug("AI-SPADES: Final bid: %d\n", bid);
 #endif
 	return bid;
 }
@@ -618,9 +618,9 @@ static card_t get_play(player_t p, seat_t s)
 
 #ifdef DEBUG_PLAY
 	if (game.leader == num)
-		ggzdmod_debug("AI-SPADES: My lead\n");
+		ggzd_debug("AI-SPADES: My lead\n");
 	else
-		ggzdmod_debug("AI-SPADES: %s led. %s of %s is high \n",
+		ggzd_debug("AI-SPADES: %s led. %s of %s is high \n",
 			  suit_names[(int) suit],
 			  face_names[(int) hi_card.face],
 			  suit_names[(int) hi_card.suit]);
@@ -659,7 +659,7 @@ static card_t get_play(player_t p, seat_t s)
 		oppNeed = 0;
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: We need %d and they need %d\n", myNeed,
+	ggzd_debug("AI-SPADES: We need %d and they need %d\n", myNeed,
 		  oppNeed);
 #endif
 
@@ -680,7 +680,7 @@ static card_t get_play(player_t p, seat_t s)
 		agg = 100;
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Aggression set to %d\n", agg);
+	ggzd_debug("AI-SPADES: Aggression set to %d\n", agg);
 #endif
 
 
@@ -713,9 +713,9 @@ static card_t get_play(player_t p, seat_t s)
 	}
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Calculate %d:\n", num);
+	ggzd_debug("AI-SPADES: Calculate %d:\n", num);
 	for (i = 0; i < plays; i++)
-		ggzdmod_debug("AI-SPADES:  %s of %s,%d,%d\n",
+		ggzd_debug("AI-SPADES:  %s of %s,%d,%d\n",
 			  face_names[(int) play[i].card.face],
 			  suit_names[(int) play[i].card.suit], play[i].trick,
 			  play[i].future);
@@ -736,7 +736,7 @@ static card_t get_play(player_t p, seat_t s)
 		chosen = PlayNormal(num);
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Chosen play is %d\n", chosen);
+	ggzd_debug("AI-SPADES: Chosen play is %d\n", chosen);
 #endif
 
 
@@ -969,7 +969,7 @@ static int PlayNil(player_t p)
 	int i, chosen = -1;
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Strategy: play nil\n");
+	ggzd_debug("AI-SPADES: Strategy: play nil\n");
 #endif
 
 	/*
@@ -998,7 +998,7 @@ static int CoverNil(player_t p)
 	card_t high_card = game.seats[high].table;
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Strategy: cover nil\n");
+	ggzd_debug("AI-SPADES: Strategy: cover nil\n");
 #endif
 
 	/*
@@ -1199,7 +1199,7 @@ static int SetNil(int p)
 
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Strategy: set nil\n");
+	ggzd_debug("AI-SPADES: Strategy: set nil\n");
 #endif
 /*
    * If one of our opponents bid nil and either hasn't played or has played
@@ -1331,7 +1331,7 @@ static int PlayNormal(int p)
 	player_t pard = (p + 2) % 4;
 
 #ifdef DEBUG_PLAY
-	ggzdmod_debug("AI-SPADES: Strategy: play normal\n");
+	ggzd_debug("AI-SPADES: Strategy: play normal\n");
 #endif
 
 	/*

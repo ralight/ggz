@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 2227 2001-08-25 14:01:56Z jdorje $
+ * $Id: main.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -34,12 +34,6 @@ extern struct chess_info game_info;
 
 int main(void)
 {
-  /* Set the handlers */
-  ggzdmod_set_handler(GGZ_EVENT_LAUNCH, (GGZHandler)game_update);
-  ggzdmod_set_handler(GGZ_EVENT_JOIN, (GGZHandler)game_update);
-  ggzdmod_set_handler(GGZ_EVENT_LEAVE, (GGZHandler)game_update);
-  ggzdmod_set_handler(GGZ_EVENT_QUIT, (GGZHandler)game_update);
-  ggzdmod_set_handler(GGZ_EVENT_PLAYER, (GGZHandler)game_handle_player);
 
   /* Init the game info */
   game_info.clock_type = -1;
@@ -53,7 +47,14 @@ int main(void)
   /* White player starts ! */
   game_info.turn = 0;
 
-  ggzdmod_main();
+  /* Set the handlers */
+  ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_update);
+  ggzd_set_handler(GGZ_EVENT_JOIN, &game_update);
+  ggzd_set_handler(GGZ_EVENT_LEAVE, &game_update);
+  ggzd_set_handler(GGZ_EVENT_QUIT, &game_update);
+  ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+
+  ggzd_main();
   return 0;
 }
 

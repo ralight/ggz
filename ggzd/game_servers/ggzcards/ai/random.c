@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: random.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -94,7 +94,7 @@ static card_t get_play(player_t p, seat_t s)
 		error = game.funcs->verify_play(selection);
 		if (error == NULL)
 			return selection;
-		ggzdmod_debug
+		ggzd_debug
 			("random ai: card (%d %d %d) was invalid because %s.",
 			 selection.face, selection.suit, selection.deck,
 			 error);

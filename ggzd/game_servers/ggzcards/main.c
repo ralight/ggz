@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2222 2001-08-25 03:30:43Z jdorje $
+ * $Id: main.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -98,12 +98,12 @@ static char *get_option(const char *option_name, char **argv, int *i,
 static void es_error(const char *msg, const EsOpType op,
 		     const EsDataType data)
 {
-	ggzdmod_debug("ERROR: " "Bad easysock operation: %s.", msg);
+	ggzd_debug("ERROR: " "Bad easysock operation: %s.", msg);
 }
 
 static void es_exit(int result)
 {
-	ggzdmod_debug("ERROR: " "exiting because of easysock error.");
+	ggzd_debug("ERROR: " "exiting because of easysock error.");
 	exit(result);
 }
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 		char *option;
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
-			ggzdmod_debug("which_game set to %d.", which_game);
+			ggzd_debug("which_game set to %d.", which_game);
 		} else if ((option =
 			    get_option("--option", argv, &i, argc)) != NULL) {
 			/* argument is of the form --option=<option>:<value> */
@@ -135,11 +135,11 @@ int main(int argc, char **argv)
 			if (!*colon)
 				continue;
 			val = atoi(colon);
-			ggzdmod_debug("Set option '%s' to %d.", option, val);
+			ggzd_debug("Set option '%s' to %d.", option, val);
 			set_option(option, val);
 		} else {
 			/* bad option */
-			ggzdmod_debug("ERROR: bad options '%s'.", argv[i]);
+			ggzd_debug("ERROR: bad options '%s'.", argv[i]);
 		}
 	}
 
@@ -147,17 +147,12 @@ int main(int argc, char **argv)
 	srandom((unsigned) time(NULL));
 
 	/* set up handlers */
-	ggzdmod_set_handler(GGZ_EVENT_LAUNCH, &handle_launch_event);
-	ggzdmod_set_handler(GGZ_EVENT_JOIN, &handle_join_event);
-	ggzdmod_set_handler(GGZ_EVENT_LEAVE, &handle_leave_event);
+	ggzd_set_handler(GGZ_EVENT_LAUNCH, &handle_launch_event);
+	ggzd_set_handler(GGZ_EVENT_JOIN, &handle_join_event);
+	ggzd_set_handler(GGZ_EVENT_LEAVE, &handle_leave_event);
 	/* ggzdmod_set_handler(GGZ_EVENT_QUIT, &handle_gameover); */
-	ggzdmod_set_handler(GGZ_EVENT_PLAYER, &handle_player_event);
+	ggzd_set_handler(GGZ_EVENT_PLAYER, &handle_player_event);
 
 	/* Connect to GGZ server; main loop */
-	if (ggzdmod_main() < 0) {
-		ggzdmod_debug("Failed ggz_sock test.");
-		return -1;
-	}
-
-	return 0;
+	return ggzd_main();
 }

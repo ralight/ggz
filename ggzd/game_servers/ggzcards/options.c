@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2197 2001-08-23 09:34:23Z jdorje $
+ * $Id: options.c 2229 2001-08-25 14:52:34Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -104,7 +104,7 @@ void add_option(char *key, int num, int dflt, ...)
 	for (i = 0; i < num; i++) {
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
-			ggzdmod_debug("ERROR: SERVER BUG: "
+			ggzd_debug("ERROR: SERVER BUG: "
 				      "add_option: NULL option choice.");
 	}
 	va_end(ap);
@@ -116,18 +116,18 @@ void add_option(char *key, int num, int dflt, ...)
 
 void get_options()
 {
-	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1;
+	int fd = game.host >= 0 ? ggzd_seats[game.host].fd : -1;
 	int op, choice;
 
-	ggzdmod_debug("Entering get_options.");
+	ggzd_debug("Entering get_options.");
 
 	game.funcs->get_options();
 
 	if (pending_options == NULL) {
 		options_initted = 1;
-		ggzdmod_debug("get_options: no options to get.");
+		ggzd_debug("get_options: no options to get.");
 	} else if (fd == -1) {
-		ggzdmod_debug("ERROR: SERVER BUG: " "no connection to host.");
+		ggzd_debug("ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
 		es_write_int(fd, WH_REQ_OPTIONS);
@@ -144,9 +144,9 @@ void get_options()
 
 int rec_options(int num_options, int *options)
 {
-	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1, status = 0, i;
+	int fd = game.host >= 0 ? ggzd_seats[game.host].fd : -1, status = 0, i;
 	if (fd == -1) {
-		ggzdmod_debug("SERVER bug: unknown host in rec_options.");
+		ggzd_debug("SERVER bug: unknown host in rec_options.");
 		exit(-1);
 	}
 
@@ -155,7 +155,7 @@ int rec_options(int num_options, int *options)
 			status = options[i] = -1;
 
 	if (status != 0)
-		ggzdmod_debug("ERROR: rec_options: status is %d.", status);
+		ggzd_debug("ERROR: rec_options: status is %d.", status);
 	return status;
 }
 
@@ -164,7 +164,7 @@ void handle_options()
 	int options[pending_option_count], op;
 	struct pending_option_t *po = pending_options;
 
-	ggzdmod_debug("Entering handle_options.");
+	ggzd_debug("Entering handle_options.");
 	rec_options(pending_option_count, options);
 
 	for (op = 0; op < pending_option_count; op++) {
@@ -193,7 +193,7 @@ void finalize_options()
 		optext = game.funcs->get_option_text(opbuf, sizeof(opbuf),
 						     op->key, op->value);
 		if (optext == NULL) {
-			ggzdmod_debug("ERROR: SERVER BUG: "
+			ggzd_debug("ERROR: SERVER BUG: "
 				      "finalize_options: NULL optext returned for option (%s, %d).",
 				      op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
