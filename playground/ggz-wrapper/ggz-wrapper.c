@@ -38,7 +38,7 @@ int main(int argc, char **argv, char **envp) {
 	static char optstring[]="g:u:p:s:d:P:h";
 	int port;
 	port=5688;
-	char optch;
+	int optch;
 	while((optch=getopt(argc, argv, optstring))!=-1) {
 		switch(optch) {
 			case 'g':
