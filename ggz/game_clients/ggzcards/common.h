@@ -1,4 +1,4 @@
-/* $Id: common.h 2082 2001-07-23 23:38:03Z jdorje $ */
+/* $Id: common.h 2085 2001-07-24 00:30:45Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -26,43 +26,57 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-/** A card.
+/** @defgroup Card
+ *  Low-level definitions for dealing with "cards".
  *  @todo Should the specific values be handled as enumerations?
- */
+ *  @{ */
+
+/** Regular values for card faces.
+ *  @note Values 2-10 have their face value.
+ *  @see card_t::face */
+enum card_face_enum
+{
+	UNKNOWN_FACE = -1,	/**< An unknown face on a card */
+	JACK = 11,		/**< A "jack" card face */
+	QUEEN = 12,		/**< A "queen" card face */
+	KING = 13,		/**< A "king" card face */
+	ACE_HIGH = 14,		/**< An "ace" (high) card face */
+	ACE_LOW = 1,		/**< An "ace" (low) card face */
+	JOKER1 = 0,		/**< A "joker 1" card face */
+	JOKER2 = 1		/**< A "joker 2" card face */
+};
+
+/** Regular values for card suits.
+ *  @see card_t::suit */
+enum card_suit_enum
+{
+	UNKNOWN_SUIT = -1,	/**< An unknown suit of a card */
+	CLUBS = 0,		/**< The clubs (lowest) suit */
+	DIAMONDS = 1,		/**< The diamonds (second) suit */
+	HEARTS = 2,		/**< The hearts (third) suit */
+	SPADES = 3,		/**< The spades (highest) suit */
+	NO_SUIT = 4		/**< A no-suit used for jokers, etc. */
+};
+
+/** Regular values for card decks.
+ *  @note Values 0+ are used for normal known decks.
+ *  @see card_t::deck */
+enum card_deck_enum
+{
+	UNKNOWN_DECK = -1	/**< An unknown deck of a card */
+};
+
+/** A card. */
 typedef struct card_t
 {
-#define UNKNOWN_FACE -1	/**< An unknown face on a card */
-#define JACK 11		/**< A "jack" card face */
-#define QUEEN 12	/**< A "queen" card face */
-#define KING 13		/**< A "king" card face */
-#define ACE_HIGH 14	/**< An "ace" (high) card face */
-#define ACE_LOW 1	/**< An "ace" (low) card face */
-#define JOKER1 0	/**< A "joker 1" card face */
-#define JOKER2 1	/**< A "joker 2" card face */
 	/** The face of the card.
-	 *    - -1: unknown
-	 *    - 1-13: A-K
-	 *    - 14: A
-	 *    - for "NO_SUIT" suit, 0-1 are jokers */
-	char face;		/* -1: unknown, 1-13: A-K, 14: A
-				 * for "none" suit, 0-1 are jokers */
-
-#define UNKNOWN_SUIT -1
-#define CLUBS 0
-#define DIAMONDS 1
-#define HEARTS 2
-#define SPADES 3
-#define NO_SUIT 4
+	 *  @see card_face_enum */
+	char face;
 	/** The suit of the card.
-	 *    - -1: unknown
-	 *    - 0-3: clubs, diamonds, hearts, spades
-	 *    - 4: no suit */
+	 *  @see card_suit_enum */
 	char suit;
-
-#define UNKNOWN_DECK -1
 	/** The deck number of the card.
-	 *    - -1: unknown
-	 *    - 0+: the deck number */
+	 *  @see card_deck_enum */
 	char deck;
 }
 card_t;
@@ -70,9 +84,19 @@ card_t;
 /** An entirely unknown card. */
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
+/** @} end of Card group */
+
+
+/** @defgroup Player
+ *  A "player" as seen by the client is really just a seat at the
+ *  table, complete with a hand and everything.  It's not necessary
+ *  that a player actually be sitting at that seat - there may just be
+ *  a pile of cards.
+ *  @note We are always player 0.  The server will deal with all conversions.
+ *  @{ */
 
 /** Hand structure.
- *  @todo Should this be merted into struct seat_t?
+ *  @todo Should this be merged into struct seat_t?
  */
 struct hand_t
 {
@@ -89,6 +113,13 @@ typedef struct seat_t
 	struct hand_t hand;	/**< player's hand */
 }
 seat_t;
+
+/** @} end of Player group */
+
+
+/** @defgroup Game
+ *  Here we see global game data.
+ *  @{ */
 
 /** GGZCards client game states
  *  @note Any additional state data should be stored separately, while maintaining the state here. */
@@ -117,6 +148,8 @@ struct game_t
  *  about the ongoing game */
 extern struct game_t game;
 
+/** @} end of Game group */
+
 
 /** @defgroup Setup
  *  Setup functions to be called by the frontend
@@ -140,14 +173,22 @@ void client_quit();
 /** @} end of Setup */
 
 
+/** @defgroup Utility
+ *  Utility functions used throughout the code
+ *  @{ */
+
 /** Handles the debug message appropriately.
  *  @param fmt a printf-style format string.
  *  @param ... printf-style arguments. */
 void client_debug(const char *fmt, ...);
 
+/** @} end of Utility group */
+
 
 /** @defgroup Callbacks
- * Frontend-specific functions called by the common code.
+ * Frontend-specific functions called by the common code.  It is
+ * up to the frontend to define these functions appropriately.
+ * @note These can easily be changed so that they'll fit better with other frontends.
  * @{ */
 
 /** Handles a newgame request by calling client_send_newgame when
