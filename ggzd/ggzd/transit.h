@@ -1,11 +1,11 @@
 /*
- * File: table.h
+ * File: transit.h
  * Author: Brent Hendricks
  * Project: GGZ Server
- * Date: 1/9/00
- * Desc: Functions for handling tables
+ * Date: 3/26/00
+ * Desc: Functions for handling table transits
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 2000 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <datatypes.h>
-
-int table_launch(int p, TableInfo table, int* t_index);
-int table_join(int p, int t_index, int* t_fd);
-int table_leave(int p, int t_index);
-
-
-
+int transit_handle(int index, int fd);

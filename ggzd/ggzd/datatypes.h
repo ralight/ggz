@@ -85,6 +85,7 @@ typedef struct {
 	pthread_mutex_t state_lock;
 	int transit;
 	int transit_fd;
+	int transit_seat;
 	char transit_flag;
 	pthread_cond_t transit_cond;
 	pthread_mutex_t transit_lock;

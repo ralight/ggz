@@ -27,7 +27,9 @@ ggzd_SOURCES =	chat.c \
 		motd.c \
 		motd.h \
 		room.c \
-		room.h
+		room.h \
+		transit.c \
+		transit.h
 
 
 confdir = $(sysconfdir)

@@ -375,7 +375,8 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		if (status <= 0)
 			status = GGZ_REQ_TABLE_LEAVE;
 		else 
-			dbg_msg(GGZ_DBG_TABLE,"User to Game: %d bytes", status);
+			dbg_msg(GGZ_DBG_TABLE, "User to Game: %d bytes", 
+				status);
 		break;
 			
 	case REQ_CHAT:
@@ -731,8 +732,8 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	*t_fd = fds[1];
 
 	/* Fill remaining parameters */
-	table.state = GGZ_TABLE_CREATE;
-	table.transit_flag = GGZ_TRANSIT_CLEAR;
+	table.state = GGZ_TABLE_CREATED;
+	table.transit_flag = GGZ_TRANSIT_CLR;
 	table.pid = -1;
 	table.fd_to_game = -1;
 	table.player_fd[0] = fds[0];

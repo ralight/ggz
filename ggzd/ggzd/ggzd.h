@@ -83,17 +83,24 @@
 
 /* Table state values */
 #define GGZ_TABLE_ERROR     -1
-#define GGZ_TABLE_CREATE     0
-#define GGZ_TABLE_LAUNCH     1
+#define GGZ_TABLE_CREATED    0
+#define GGZ_TABLE_LAUNCHED   1
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
 
 /* Table joining values */
-#define GGZ_TRANSIT_OK    -1
-#define GGZ_TRANSIT_ERROR -2
-#define GGZ_TRANSIT_CLEAR  0
-#define GGZ_TRANSIT_JOIN   1
-#define GGZ_TRANSIT_LEAVE  2
+#define GGZ_TRANSIT_DIR    0x80
+#define GGZ_TRANSIT_JOIN   0x80
+#define GGZ_TRANSIT_LEAVE  0x00
+
+#define GGZ_TRANSIT_SENT   0x40
+#define GGZ_TRANSIT_RECV   0x20
+#define GGZ_TRANSIT_CLR    0x10
+
+#define GGZ_TRANSIT_STATUS 0x0f
+#define GGZ_TRANSIT_OK     0x00
+#define GGZ_TRANSIT_ERR  0x01
+
 
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1

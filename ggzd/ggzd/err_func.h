@@ -25,6 +25,7 @@
 #include <stdarg.h>
 
 #include <easysock.h>
+#include <datatypes.h>
 
 /* Log levels for log_msg */
 #define GGZ_LOG_ALWAYS		(unsigned) 0x0000
