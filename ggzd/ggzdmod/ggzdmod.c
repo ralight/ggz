@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2613 2001-10-24 19:23:09Z jdorje $
+ * $Id: ggzdmod.c 2614 2001-10-24 19:27:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -681,7 +681,7 @@ static int game_fork(_GGZdMod * ggzdmod, char **argv)
 				exit(-1);
 		}
 
-		/* FIXME: Close all other fd's and kill threads? */
+		/* FIXME: Close all other fd's? */
 		/* FIXME: Not necessary to close other fd's if we use
 		   CLOSE_ON_EXEC */
 		execv(argv[0], argv);	/* run game */
@@ -691,6 +691,7 @@ static int game_fork(_GGZdMod * ggzdmod, char **argv)
 		/* parent */
 		close(sfd[1]);
 
+		ggzdmod->fd = sfd[0];
 		ggzdmod->pid = pid;
 		/* That's all! */
 	}
