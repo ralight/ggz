@@ -190,8 +190,34 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	GGZRoom *room;
 	GGZTable *table;
 	GGZGameType *gt;
-	gint x, seats, status;
+	gint x, seats, status, bots;
 	gchar *widget_name;
+
+	/* Grab the number of seats */
+	tmp = lookup_widget(launch_dialog, "seats_combo");
+	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
+
+
+	/* Let's go bot counting....*/
+	bots = 0;
+	for( x = 0; x < seats; x++ )
+	{
+                widget_name = g_strdup_printf("seat%d_bot", (x+1));
+		tmp = lookup_widget(launch_dialog, widget_name);
+		g_free(widget_name);
+		if (GTK_TOGGLE_BUTTON(tmp)->active)
+			bots++;
+	}
+
+	room = ggzcore_server_get_cur_room(server);
+	gt = ggzcore_room_get_gametype(room);
+
+	if (! ggzcore_gametype_num_bots_is_valid(gt, bots)) {
+		msgbox(_("Invalid number of bots specified"), _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		
+		return;
+	}
+
 
 	/* Initialize a game module */
 	if (game_launch() < 0)
@@ -200,12 +226,8 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	/* Create a table for sending to the server */
 	table = ggzcore_table_new();
 
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
-	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "desc_entry");
 
-	room = ggzcore_server_get_cur_room(server);
-	gt = ggzcore_room_get_gametype(room);
 	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)), seats);
 
 	for( x = 0; x < seats; x++ )
