@@ -201,6 +201,9 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  break;
 
   case RSP_TABLE_LIST:
+          tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
+						   "table_tree"));
+	  gtk_clist_clear (GTK_CLIST (tmpWidget));
 	  es_read_int(source, &ibyte );
 	  count=ibyte;
 	  connect_msg("[RSP_TABLE_LIST] Table List Count %d\n", count);
@@ -230,6 +233,9 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  break;
 
   case RSP_USER_LIST:
+	  tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
+						   "player_list"));
+	  gtk_clist_clear (GTK_CLIST (tmpWidget));
 	  CheckReadInt(source, &ibyte );
 	  count=ibyte;
 	  connect_msg("[RSP_USER_LIST] User List Count %d\n", count);
@@ -373,15 +379,9 @@ int anon_login( void ) {
 /* Complete sync with server */
 static void server_sync()
 {
-        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
-						   "player_list"));
-	gtk_clist_clear (GTK_CLIST (tmpWidget));
 	es_write_int(opt.sock, REQ_USER_LIST);  
 	es_write_int(opt.sock, REQ_GAME_TYPES);  
 	es_write_char(opt.sock, 1);  
-        tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
-						   "table_tree"));
-	gtk_clist_clear (GTK_CLIST (tmpWidget));
 	es_write_int(opt.sock, REQ_TABLE_LIST);  
 	es_write_int(opt.sock, -1);  
 }
