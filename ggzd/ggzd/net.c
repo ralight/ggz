@@ -160,6 +160,8 @@ GGZNetIO* net_new(int fd, GGZPlayer *player)
 	net->dump_file = -1;
 	net->parsing = 0;
 	net->done = 0;
+	net->byte_count = 0;
+	net->tag_seen = 0;
 
         /* Init parser */
         if (!(net->parser = XML_ParserCreate(NULL)))
