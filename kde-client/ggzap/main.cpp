@@ -39,6 +39,7 @@ int main(int argc, char **argv)
 	zap = new GGZap();
 	if(args->isSet("module")) zap->setModule(args->getOption("module"));
 	if(args->isSet("frontend")) zap->setFrontend(args->getOption("frontend"));
+	zap->launch();
 	a->setMainWidget(zap);
 	return a->exec();
 }

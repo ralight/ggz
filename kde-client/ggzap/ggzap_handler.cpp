@@ -30,19 +30,30 @@ GGZapHandler::~GGZapHandler()
 		delete m_room;
 	}
 
+	shutdown();
 	detachServerCallbacks();
 	delete m_server;
 }
 
-void GGZapHandler::init(const char *modulename)
+void GGZapHandler::init()
 {
 	int result;
 
-	m_modulename = modulename;
+	if(!m_modulename) return;
 
 	m_server->setHost("localhost", 5688);
 	result = m_server->connect();
 	if(result == -1) emit signalState(connectfail);
+}
+
+void GGZapHandler::shutdown()
+{
+	m_server->logout();
+}
+
+void GGZapHandler::setModule(const char *modulename)
+{
+	m_modulename = modulename;
 }
 
 void GGZapHandler::setFrontend(const char *frontendtype)

@@ -9,7 +9,7 @@ be reconfigured.
 
 Wishlist for 0.0.5:
 - Skinnable user interface (like KDE noatun does)
-- Handle different game UI's (gtk, kde, ...), together with modsniff
+ALREADY DONE: Handle different game UI's (gtk, kde, ...), together with modsniff
 - KDE taskbar functionality, drag'n'drop of Zone files
 
 Josef

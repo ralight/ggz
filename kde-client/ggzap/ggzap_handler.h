@@ -14,9 +14,11 @@ class GGZapHandler : public QObject
 		GGZapHandler();
 		~GGZapHandler();
 
-		void init(const char *modulename);
+		void init();
+		void setModule(const char *modulename);
 		void setFrontend(const char *frontendtype);
 		void process();
+		void shutdown();
 
 		enum States
 		{

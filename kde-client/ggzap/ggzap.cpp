@@ -1,4 +1,5 @@
 #include "ggzap.h"
+#include "ggzap_tray.h"
 #include "ggzap_handler.h"
 
 #include <klocale.h>
@@ -12,12 +13,15 @@
 
 #include "config.h"
 
-GGZap::GGZap(QWidget *parent, char *name)
+GGZap::GGZap(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
 	QFrame *frame;
+	GGZapTray *tray;
+
+	tray = new GGZapTray(this, "GGZapTray");
 
 	frame = new QFrame(this);
 	frame->setFixedSize(64, 64);
@@ -42,6 +46,8 @@ GGZap::GGZap(QWidget *parent, char *name)
 	m_handler = new GGZapHandler();
 
 	connect(m_handler, SIGNAL(signalState(int)), SLOT(slotState(int)));
+	connect(tray, SIGNAL(signalLaunch(char*, char*)), SLOT(slotLaunch(char*, char*)));
+	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
 
 	startTimer(500);
 
@@ -52,6 +58,7 @@ GGZap::GGZap(QWidget *parent, char *name)
 
 GGZap::~GGZap()
 {
+	delete m_handler;
 }
 
 void GGZap::timerEvent(QTimerEvent *e)
@@ -61,8 +68,7 @@ void GGZap::timerEvent(QTimerEvent *e)
 
 void GGZap::setModule(const char *modulename)
 {
-	fat(m_connect);
-	m_handler->init(modulename);
+	m_handler->setModule(modulename);
 }
 
 void GGZap::setFrontend(const char *frontendtype)
@@ -72,7 +78,37 @@ void GGZap::setFrontend(const char *frontendtype)
 
 void GGZap::fat(QLabel *label)
 {
-	label->setText("<b>" + label->text() + "</b>");
+	if(!label->text().contains("<b>"))
+		label->setText("<b>" + label->text() + "</b>");
+}
+
+void GGZap::unfat(QLabel *label)
+{
+	if(label->text().contains("<b>"))
+		label->setText(label->text().mid(3, label->text().length() - 7));
+}
+
+void GGZap::slotLaunch(char *name, char *frontend)
+{
+	setModule(name);
+	setFrontend(frontend);
+	launch();
+}
+
+void GGZap::slotCancel()
+{
+	m_handler->shutdown();
+	unfat(m_start);
+	unfat(m_wait);
+	unfat(m_room);
+	unfat(m_login);
+	unfat(m_connect);
+}
+
+void GGZap::launch()
+{
+	fat(m_connect);
+	m_handler->init();
 }
 
 void GGZap::slotState(int state)
@@ -108,7 +144,7 @@ void GGZap::slotState(int state)
 			break;
 		case GGZapHandler::startfail:
 			KMessageBox::information(this, "Could not start the game!\nPlease make sure you have it installed.", "Error!");
-			exit(-1);
+			slotCancel();
 			break;
 	}
 }

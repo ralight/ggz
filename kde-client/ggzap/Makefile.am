@@ -8,11 +8,15 @@ bin_PROGRAMS = ggzap
 ggzap_SOURCES = \
 	main.cpp \
 	ggzap.cpp \
-	ggzap_handler.cpp
+	ggzap_tray.cpp \
+	ggzap_handler.cpp \
+	ggzap_game.cpp
 
 noinst_HEADERS = \
 	ggzap.h \
-	ggzap_handler.h
+	ggzap_tray.h \
+	ggzap_handler.h \
+	ggzap_game.h
 
 CXXFLAGS = @COMPILEOPTIONS@
 
@@ -24,6 +28,6 @@ INCLUDES = $(ggzcorepp_includes) $(all_includes)
 
 EXTRA_DIST = README
 
-pix_DATA = ggzap.png
+pix_DATA = ggzap.png tray.png
 pixdir = $(kde_datadir)/kggz/ggzap
 
