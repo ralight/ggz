@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3564 2002-03-16 02:55:52Z jdorje $
+ * $Id: main.c 3565 2002-03-16 04:46:48Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -104,6 +104,8 @@ int main (int argc, char *argv[])
 	g_free(user_conf);
 
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	
+	ggzcore_init(opt);
 
 #ifdef DEBUG
 	init_debug();
