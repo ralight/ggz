@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3621 2002-03-23 04:02:29Z bmh $
+ * $Id: client.c 3752 2002-04-05 17:10:43Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -142,7 +142,9 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
 {
 	GtkCList *tmp;
 
-	ggzcore_server_logout(server);
+	if (ggzcore_server_logout(server) < 0)
+		ggz_error_msg("Error logging out in "
+		              "client_disconnect_activate");
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -372,7 +374,9 @@ client_disconnect_button_clicked	(GtkButton	*button,
 {
 	GtkCList *tmp;
 
-	ggzcore_server_logout(server);
+	if (ggzcore_server_logout(server) < 0)
+		ggz_error_msg("Error logging out in "
+		              "client_disconnect_button_clicked");
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");

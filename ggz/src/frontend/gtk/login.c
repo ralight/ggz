@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 3751 2002-04-05 16:12:24Z jdorje $
+ * $Id: login.c 3752 2002-04-05 17:10:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -92,7 +92,8 @@ login_failed(void)
 	GtkWidget *tmp;
 	
 	/* First, disconnect from the server. */
-	ggzcore_server_logout(server);
+	if (ggzcore_server_logout(server) < 0)
+		ggz_error_msg("Error logging out in login_failed");
 
 	/* Re-enable the "connect" button and change it say "Login" */
 	tmp = lookup_widget(login_dialog, "connect_button");
@@ -272,7 +273,9 @@ static void login_connect_button_clicked(GtkButton *button, gpointer data)
 	/* otherwise disconnect then reconnect */
 	else {
 		/* FIXME: should popup modal "Are you sure?" */
-		ggzcore_server_logout(server);
+		if (ggzcore_server_logout(server) < 0)
+			ggz_error_msg("Error logging out in "
+			              "login_connect_button_clicked");
 		/* FIXME: should provide service to reconnect */
 	}
 }
@@ -282,7 +285,9 @@ static void login_cancel_button_clicked(GtkButton *button, gpointer data)
 {
 	/* If we're already connected, disconnect */
 	if (server) {
-		ggzcore_server_logout(server);
+		if (ggzcore_server_logout(server) < 0)
+			ggz_error_msg("Error logging out in "
+			              "login_cancel_button_clicked");
 	}
 	gtk_widget_destroy(login_dialog);
 	login_dialog = NULL;
