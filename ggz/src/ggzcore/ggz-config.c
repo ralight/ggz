@@ -48,6 +48,8 @@ static char *modicon = NULL;
 static char *modhelp = NULL;
 static char *fromfile = NULL;
 static int modforce = 0;
+static int moddest = 0;
+static char *destdir = NULL;
 static int install_mod = 0;
 static int remove_mod = 0;
 static int did_query = 0;
@@ -87,6 +89,9 @@ static const struct poptOption args[] = {
 
 	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
 	 "[INSTALL] (OPT) - overwrite an existing module"},
+
+	{"destdir",	'D',	POPT_ARG_NONE,	&moddest,	0,
+	 "[INSTALL] (OPT) - use $DESTDIR as offset to config file"},
 
 	POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
 };
@@ -247,12 +252,23 @@ int open_conffile(void)
 	char	*global_filename = "ggz.modules";
 	int	global;
 
-	global_pathname = malloc(strlen(GGZCONFDIR) + strlen(global_filename) + 2);
+	if(moddest)
+		global_pathname = malloc(strlen(destdir) +
+					 strlen(GGZCONFDIR) +
+					 strlen(global_filename) + 3);
+	else
+		global_pathname = malloc(strlen(GGZCONFDIR) +
+					 strlen(global_filename) + 2);
 	if(global_pathname == NULL) {
 		fprintf(stderr, "malloc failure\n");
 		return -1;
 	}
-	sprintf(global_pathname, "%s/%s", GGZCONFDIR, global_filename);
+
+	if(moddest)
+		sprintf(global_pathname, "%s/%s/%s", destdir,
+					  GGZCONFDIR, global_filename);
+	else
+		sprintf(global_pathname, "%s/%s", GGZCONFDIR, global_filename);
 
 	global = ggzcore_confio_parse(global_pathname, GGZ_CONFIO_RDONLY);
 	if(global < 0) {
@@ -426,6 +442,12 @@ int main(const int argc, const char **argv)
 	if(modname == NULL || modauthor == NULL || modui == NULL) {
 		fprintf(stderr, "Required arguments missing\n");
 		return 1;
+	}
+
+	if(moddest) {
+		destdir = getenv("DESTDIR");
+		if(destdir == NULL)
+			moddest = 0;
 	}
 
 	if(install_mod) {
