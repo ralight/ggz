@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3467 2002-02-25 13:53:31Z jdorje $
+ * $Id: ggz.h 3690 2002-03-26 09:15:10Z jdorje $
  * 
  * Header file for ggz componenets lib
  *
@@ -336,7 +336,8 @@ int ggz_conf_read_int	(int	handle,
  * @param argcp A pointer to an integer which will receive the number of
  * list entries read
  * @param argvp A pointer to a string array.  This will receive a value
- * pointing to a dynamically allocated array of string values.
+ * pointing to a dynamically allocated array of string values.  The
+ * list will be NULL-terminated.
  * @return 0 on success, -1 on failure
  * @note The array is allocated via standard ggz_malloc() calls and the
  * caller is expected to be responsible for calling ggz_free() on the string
@@ -727,45 +728,65 @@ void ggz_free_file_struct(GGZFile *file);
  */
 #define GGZ_SOCKET_DEBUG "socket"
 
-/****************************************************************************
- * Error function
+/** @brief An error type for the GGZ socket functions.
  *
- * Any error encountered in an easysock function will cause the error 
- * function to be called if one has been set.
- * 
- * Upon removal, the previous error function is returned
- *
- ***************************************************************************/
+ *  If there is a GGZ socket error, the registered error handler will be
+ *  called and will be given one of these error types.
+ */
 typedef enum {
-	GGZ_IO_CREATE,
-	GGZ_IO_READ,
-	GGZ_IO_WRITE,
-	GGZ_IO_ALLOCATE
+	GGZ_IO_CREATE,  /**< Error creating a socket. */
+	GGZ_IO_READ,    /**< Error reading from a socket. */
+	GGZ_IO_WRITE,   /**< Error writing to a socket. */
+	GGZ_IO_ALLOCATE /**< Error when the allocation limit is exceeded. */
 } GGZIOType;
 
+/** @brief A data type for the GGZ socket function error handler.
+ *
+ *  If there is a GGZ socket error, the registered error handler will be
+ *  called and will be given one of these error data types.
+ */
 typedef enum {
-	GGZ_DATA_NONE,
-	GGZ_DATA_CHAR,
-	GGZ_DATA_INT,
-	GGZ_DATA_STRING,
-	GGZ_DATA_FD
+	GGZ_DATA_NONE,   /**< No data is associated with the error. */
+	GGZ_DATA_CHAR,   /**< The error occurred while dealing with a char. */
+	GGZ_DATA_INT,    /**< The error occurred in dealing with an integer. */
+	GGZ_DATA_STRING, /**< The error occurred in dealing with a string. */
+	GGZ_DATA_FD      /**< Error while dealing with a file descriptor. */
 } GGZDataType;
 
-
-
-/****************************************************************************
- * Error function
+/** @brief An error function type.
  *
- * Any easysock function that generates an error will call this
- * function, if defined.  
- * 
- * Upon removal, the old error function is returned.
+ *  This function type will be called when there is an error in a GGZ
+ *  socket function.
  *
- ***************************************************************************/
-typedef void (*ggzIOError) (const char *, const GGZIOType, const GGZDataType);
+ *  @param msg The strerror message associated with the error.
+ *  @param type The type of error that occurred.
+ *  @param data Extra data associated with the error.
+ */
+typedef void (*ggzIOError) (const char * msg, const GGZIOType type,
+			    const GGZDataType data);
 			      
-
+/** @brief Set the ggz/easysock error handling function.
+ *
+ *  Any time an error occurs in a GGZ socket function, the registered error
+ *  handling function will be called.  Use this function to register a new
+ *  error function.  Any previous error function will be discarded.
+ *
+ *  @param func The new error-handling function.
+ *  @return 0
+ *  @todo Shouldn't this function return a void or ggzIOError?
+ */
 int ggz_set_io_error_func(ggzIOError func);
+
+/** @brief Remove the ggz/easysock error handling function.
+ *
+ *  The default behavior when a socket failure occurs in one of the GGZ socket
+ *  functions is to do nothing (outside of the function's return value).  This
+ *  may be overridden by registering an error handler with
+ *  ggz_set_io_error_func, but the behavior may be returned by calling this
+ *  function to remove the error handler.
+ *
+ *  @return The previous error-handling function, or NULL if none.
+ */
 ggzIOError ggz_remove_io_error_func(void);
 
 
@@ -793,7 +814,6 @@ int ggz_set_io_exit_func(ggzIOExit func);
  *  @return The old exit function (or NULL if none).
  */
 ggzIOExit ggz_remove_io_exit_func(void);
-
 
 /** @brief Get libggz's limit on memory allocation.
  *
@@ -875,7 +895,6 @@ void ggz_write_char_or_die(const int sock, const char data);
  */
 int ggz_read_char(const int sock, char *data);
 
-
 /** @brief Read a character value from the given socket, exiting on error.
  *
  *  @param sock The socket file descriptor to read from.
@@ -884,32 +903,44 @@ int ggz_read_char(const int sock, char *data);
  */
 void ggz_read_char_or_die(const int sock, char *data);
 
-
-/****************************************************************************
- * Reading/Writing an integer in network byte order
- * 
- * sock  :  socket fd
- * data  :  int for write.  pointer to int for read
- * 
- * Returns 0 if successful, -1 on error.
- ***************************************************************************/
+/** @brief Write an integer to the socket in network byte order.
+ *
+ *  ggz_write_int and ggz_read_int can be used to send an integer across a
+ *  socket.  The integer will be sent in network byte order, so the
+ *  functions may safely be used across a network.  Note, though, that it
+ *  is probably not safe to use this function to send structs or other
+ *  data that may use a different representation than a simple integer.
+ *
+ *  @param sock The socket to write to.
+ *  @param data The integer to write.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_write_int(const int sock, const int data);
+
+/** @brief Write an integer to the socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_write_int.
+ */
 void ggz_write_int_or_die(const int sock, const int data);
+
+/** @brief Read an integer from the socket in network byte order.
+ *  
+ *  @see ggz_write_int
+ *
+ *  @param sock The socket to write to.
+ *  @param data A pointer to an integer in which to place the data.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_read_int(const int sock, int *data);
+
+/** @brief Read an integer from the socket, exiting on error.
+ *
+ *  Aside from the error condition, this function is identical to
+ *  ggz_read_int.
+ */
 void ggz_read_int_or_die(const int sock, int *data);
 
-
-/****************************************************************************
- * Reading/Writing a char string
- * 
- * sock  : socket fd
- * data  : char string or address of char string for alloc func
- * fmt   : format string for sprintf-like behavior  
- * len   : length of user-provided data buffer in bytes
- * 
- * Returns 0 if successful, -1 on error.
- *
- ***************************************************************************/
 /** @brief Write a string to the given socket.
  *
  *  This function will write a full string to the given socket.  The string
@@ -1001,37 +1032,56 @@ int ggz_read_string_alloc(const int sock, char **data);
 void ggz_read_string_alloc_or_die(const int sock, char **data);
 
 
-/****************************************************************************
- * Reading/Writing a file descriptor
- * 
- * sock  : socket fd
- * data  : address of data to be read/written
- * n     : size of data (in bytes) to be read/written
- * 
- * Returns 0 on success, or -1 on error
+/** @brief Write a file descriptor to the given (local) socket.
  *
- * Many thanks to Richard Stevens and his wonderful books, from which
- * these functions come.
+ *  ggz_write_fd and ggz_read_fd handle the rather tricky task of sending
+ *  a file descriptor across a socket.  The FD is written with ggz_write_fd
+ *  and can be read at the other end by ggz_read_fd.  Note that this will
+ *  only work for local sockets (i.e. not over the network).  Many thanks to
+ *  Richard Stevens and his wonderful books, from which these functions come.
  *
- ***************************************************************************/
-int ggz_read_fd(const int sock, int *recvfd);
+ *  @param sock The socket to write to.
+ *  @param sendfd The FD to send across the socket.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_write_fd(const int sock, int sendfd);
 
-/****************************************************************************
- * Reading/Writing a byte sequence 
- * 
- * sock  : socket fd
- * data  : address of data to be read/written
- * n     : size of data (in bytes) to be read/written
- * 
- * Returns number of bytes processed, or -1 on error
+/** @brief Read a file descriptor from the given (local) socket.
+ *  
+ *  @see ggz_write_fd
  *
- * Many thanks to Richard Stevens and his wonderful books, from which
- * these functions come.
+ *  @param sock The socket to read from.
+ *  @param recvfd The FD that is read.
+ *  @return 0 on success, -1 on error.
+ **/
+int ggz_read_fd(const int sock, int *recvfd);
+
+
+/** @brief Write a sequence of bytes to the socket.
  *
- ***************************************************************************/
-int ggz_readn(const int sock, void *data, size_t n);
+ *  ggz_writen and ggz_readn are used to send an arbitrary quantity of raw
+ *  data across the a socket.  The data is written with ggz_writen and can
+ *  be read at the other end with ggz_readn.  Many thanks to Richard Stevens
+ *  and his wonderful books, from which these functions come.
+ *
+ *  @param sock The socket to write to.
+ *  @param vdata A pointer to the data to write.
+ *  @param n The number of bytes of data to write from vdata.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_writen(const int sock, const void *vdata, size_t n);
+
+/** @brief Read a sequence of bytes from the socket.
+ *
+ *  @see ggz_writen
+ *
+ *  @param sock The socket to read from.
+ *  @param data A pointer a buffer of size >= n in which to place the data.
+ *  @param n The number of bytes to read.
+ *  @return 0 on success, -1 on error.
+ *  @note You must know how much data you want _before_ calling this function.
+ */
+int ggz_readn(const int sock, void *data, size_t n);
 
 /** @} */
 
