@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2735 2001-11-13 10:19:24Z jdorje $
+ * $Id: euchre.c 2736 2001-11-13 11:18:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -215,7 +215,7 @@ static void euchre_start_playing(void)
 	for (s = 0; s < game.num_seats; s++) {
 		cards_sort_hand(&game.seats[s].hand);
 		for (p = 0; p < game.num_players; p++)
-			game.funcs->send_hand(p, s);
+			(void) game.funcs->send_hand(p, s);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: suaro.c 2736 2001-11-13 11:18:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -307,8 +307,8 @@ static void suaro_start_playing(void)
 		SUARO.kitty_revealed = 1;
 		for (p = 0; p < game.num_players; p++) {
 			/* resend the hands */
-			game.funcs->send_hand(p, s1);
-			game.funcs->send_hand(p, s2);
+			(void) game.funcs->send_hand(p, s1);
+			(void) game.funcs->send_hand(p, s2);
 		}
 
 	}

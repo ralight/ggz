@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: net.c 2736 2001-11-13 11:18:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -216,9 +216,10 @@ int send_sync(player_t p)
 		send_player_message(s, p);
 
 	/* Send out hands */
-	for (s = 0; s < game.num_seats; s++)
-		if (game.funcs->send_hand(p, s) < 0)
-			status = -1;
+	if (game.state != STATE_NOTPLAYING)
+		for (s = 0; s < game.num_seats; s++)
+			if (game.funcs->send_hand(p, s) < 0)
+				status = -1;
 
 	/* Send out table cards */
 	if (send_table(p) < 0)
@@ -325,8 +326,9 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 	if (fd == -1)		/* Don't send to a bot */
 		return 0;
 
-	if (game.seats[s].hand.hand_size == 0)
-		return 0;
+	/* We used to refuse to send hands of size 0, but some games may need 
+	   to do this! */
+	assert(game.state != STATE_NOTPLAYING);
 
 	/* The open_hands option causes everyone's hand to always be
 	   revealed. */

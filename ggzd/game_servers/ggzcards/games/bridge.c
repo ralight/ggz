@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: bridge.c 2736 2001-11-13 11:18:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -261,7 +261,7 @@ static void bridge_handle_play(card_t card)
 		BRIDGE.dummy_revealed = 1;
 		for (p = 0; p < game.num_players; p++) {
 			/* if (p == BRIDGE.dummy) continue; */
-			game.funcs->send_hand(p, dummy_seat);
+			(void) game.funcs->send_hand(p, dummy_seat);
 		}
 	}
 }

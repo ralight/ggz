@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: spades.c 2736 2001-11-13 11:18:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -233,7 +233,7 @@ static void spades_handle_bid(player_t p, bid_t bid)
 	   do. */
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
 		GSPADES.show_hand[p] = 1;
-		spades_send_hand(p, p);
+		(void) spades_send_hand(p, p);
 		if (bid.sbid.spec != SPADES_NO_BLIND)
 			game.bid_count++;	/* skip regular bid */
 	}
