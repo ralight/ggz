@@ -49,4 +49,11 @@ ggz_spades_SOURCES = card.c \
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_spades_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config -D --install --fromfile=spades.dsc --force
 
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=spades.dsc

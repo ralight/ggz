@@ -1,6 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = ttt.dsc
+GAME_DSC = ttt.dsc
+
+EXTRA_DIST = $(GAME_DSC)
 
 SUBDIRS = .
 
@@ -20,5 +22,10 @@ ggz_ttt_SOURCES = game.h \
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config -D --install --fromfile=$(GAME_DSC) --force
 
-
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=$(GAME_DSC)
