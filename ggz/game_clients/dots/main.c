@@ -218,7 +218,7 @@ static int get_players(void)
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(es_read_string(game.fd, (char*)&game.names[i], 9) <0)
+			if(es_read_string(game.fd, (char*)&game.names[i], 17)<0)
 				return -1;
 			temp = g_strdup_printf("   %s   ", game.names[i]);
 			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
