@@ -25,25 +25,6 @@
 #include "hand.h"
 #include "game.h" /* for ANIMATION */
 
-/* The following would be hell to change */
-#define CARDWIDTH	71
-#define CARDHEIGHT	96
-
-/* an interesting check of the code is to make this really big */
-#define XWIDTH		5
-
-/* #define WINDOW_WIDTH 469 */
-/* more cards will fit if you just change MAX_HAND_SIZE */
-#define HAND_WIDTH 	( (MAX_HAND_SIZE+3) * (CARDWIDTH/4.0) + 0.5 )
-#define TEXT_WIDTH	CARDHEIGHT
-
-#define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
-#define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
-
-/* this stuff shouldn't be static, since it would change with other than 4 players */
-#define WINDOW_WIDTH	( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH )
-#define WINDOW_HEIGHT	WINDOW_WIDTH
-
 extern void table_initialize(void);
 extern void table_handle_expose_event(GdkEventExpose *);
 extern void table_handle_click_event(GdkEventButton *);

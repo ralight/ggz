@@ -22,6 +22,7 @@ ggz_ggzcards_SOURCES = \
 	dlg_main.c dlg_main.h \
 	cb_main.c cb_main.h \
 	table.c table.h \
+	layout.c layout.h \
 	hand.c hand.h \
 	game.c game.h \
 	dlg_bid.c dlg_bid.h \
