@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 6280 2004-11-06 03:16:24Z jdorje $
+ * $Id: roomlist.c 6282 2004-11-06 04:22:21Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -171,18 +171,20 @@ static gboolean room_list_event(GtkWidget *widget, GdkEvent *event,
 				gpointer data)
 {
 	GdkEventButton *buttonevent = (GdkEventButton *) event;
+	GtkTreeView *tree = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(tree);
 	gboolean single_join;
 	GtkWidget *menu;
-	GtkWidget *tree = lookup_widget(win_main, "room_list");
-	GtkTreeSelection *select
-	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GGZRoom *room;
+	GtkTreePath *path = NULL;
 
-	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (!gtk_tree_view_get_path_at_pos(tree,
+					   buttonevent->x, buttonevent->y,
+					   &path, NULL, NULL, NULL)) {
 		return FALSE;
 	}
+	gtk_tree_model_get_iter(model, &iter, path);
 
 	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
 

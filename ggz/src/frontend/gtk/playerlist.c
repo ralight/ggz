@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6281 2004-11-06 03:58:52Z jdorje $
+ * $Id: playerlist.c 6282 2004-11-06 04:22:21Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -153,20 +153,22 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 	return mnu_player;
 }
 
-static gboolean client_player_list_event(GtkWidget * widget,
-					 GdkEvent * event, gpointer data)
+static gboolean player_list_event(GtkWidget *widget,
+				  GdkEvent *event, gpointer data)
 {
 	GdkEventButton *buttonevent = (GdkEventButton *) event;
-	GtkWidget *tree = lookup_widget(win_main, "player_list");
-	GtkTreeSelection *select
-	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-	GtkTreeModel *model;
+	GtkTreeView *tree = GTK_TREE_VIEW(widget);
+	GtkTreeModel *model = gtk_tree_view_get_model(tree);
 	GtkTreeIter iter;
 	static gchar *player = NULL;
+	GtkTreePath *path = NULL;
 
-	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+	if (!gtk_tree_view_get_path_at_pos(tree,
+					   buttonevent->x, buttonevent->y,
+					   &path, NULL, NULL, NULL)) {
 		return FALSE;
 	}
+	gtk_tree_model_get_iter(model, &iter, path);
 
 	if (player) g_free(player); /* Free the last invocation. */
 	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &player, -1);
@@ -375,8 +377,8 @@ GtkWidget *create_player_list(GtkWidget *window)
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
-	g_signal_connect(GTK_OBJECT(tree), "button-press-event",
-			   GTK_SIGNAL_FUNC(client_player_list_event), NULL);
+	g_signal_connect(tree, "button-press-event",
+			 GTK_SIGNAL_FUNC(player_list_event), NULL);
 
 	return tree;
 }
