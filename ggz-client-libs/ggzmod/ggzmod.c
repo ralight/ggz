@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6332 2004-11-12 00:14:36Z jdorje $
+ * $Id: ggzmod.c 6612 2005-01-08 18:18:04Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -727,8 +727,11 @@ int ggzmod_dispatch(GGZMod * ggzmod)
 	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
 	
 	status = select(ggzmod->fd + 1, &read_fd_set, NULL, NULL, &timeout);
-	
-	if (status <= 0) {
+
+	if (status == 0) {
+		/* Nothing to read. */
+		return 0;
+	} else if (status < 0) {
 		if (errno == EINTR)
 			return 0;
 		return -1;
