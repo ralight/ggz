@@ -1080,7 +1080,15 @@ static int player_list_tables(int p_index, int fd)
 
 	room = players.info[p_index].room;
 	
-	if( !global) {
+	if (!global) {
+		/* Don't send list if they're not in a room */
+		if (players.info[p_index].room == -1) {
+			if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+			    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
+				return GGZ_REQ_DISCONNECT;
+			return GGZ_REQ_FAIL;
+		}
+
 		/* Copy all tables w/o searching */
 		pthread_rwlock_rdlock(&tables.lock);
 		memcpy(my_tables, tables.info, sizeof(my_tables));
@@ -1089,14 +1097,14 @@ static int player_list_tables(int p_index, int fd)
 		/* And copy a list of tables we are interested in */
 		pthread_rwlock_rdlock(&chat_room[room].lock);
 		count = chat_room[room].table_count;
-		if( (t_list = calloc(count, sizeof(int))) == NULL) {
+		if ( (t_list = calloc(count, sizeof(int))) == NULL) {
 			pthread_rwlock_unlock(&chat_room[room].lock);
 			err_sys_exit("calloc error in player_list_tables()");
 		}
 		memcpy(t_list, chat_room[room].table_index, count*sizeof(int));
 		pthread_rwlock_unlock(&chat_room[room].lock);
 	} else {
-		/* Copy tables of interest to local list */
+		/* Copy all tables of interest to local list */
 		pthread_rwlock_rdlock(&tables.lock);
 		for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
 			if (tables.info[i].type_index != -1 
@@ -1114,24 +1122,24 @@ static int player_list_tables(int p_index, int fd)
 
 	for (k = 0; k < count; k++) {
 		/* Hack hack hack */
-		if(global)
+		if (global)
 			i = k;
 		else
 			i = t_list[k];
 		if (es_write_int(fd, my_tables[i].room) < 0)
 			return GGZ_REQ_DISCONNECT;
-		if(global) {
+		if (global) {
 			if(es_write_int(fd, indices[i]) < 0)
 				return GGZ_REQ_DISCONNECT;
 		} else {
 			if(es_write_int(fd, i) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
-		if(es_write_int(fd, my_tables[i].type_index) < 0
-		   || es_write_string(fd, my_tables[i].desc) < 0
-		   || es_write_char(fd, my_tables[i].state) < 0
-		   || es_write_int(fd, seats_num(my_tables[i])) < 0)
-		       return GGZ_REQ_DISCONNECT;
+		if (es_write_int(fd, my_tables[i].type_index) < 0
+		    || es_write_string(fd, my_tables[i].desc) < 0
+		    || es_write_char(fd, my_tables[i].state) < 0
+		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
+			return GGZ_REQ_DISCONNECT;
 
 		for (j = 0; j < seats_num(my_tables[i]); j++) {
 
