@@ -1,56 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6539 2004-12-21 11:31:40Z oojah $
+# $Id: Makefile.am 6542 2004-12-21 14:52:08Z josef $
 
 SUBDIRS = .
-
-XGETTEXT = xgettext
-MSGMERGE = msgmerge
-MSGFMT = msgfmt
 
 EXTRA_DIST = ggz-gtk.pot de.po es_AR.po pt_BR.po sv.po
 
 CATALOG = ggz-gtk
+POSOURCES = $(top_srcdir)/ggz-gtk/*.c
 
-messages:
-	$(XGETTEXT) -k_ -kN_ ../ggz-gtk/*.c -o $(CATALOG).pot
-	@for j in `ls -1 *.po`; do \
-		echo "process $$j"; \
-		$(MSGMERGE) $$j $(CATALOG).pot > .$$j 2>/dev/null; \
-		mv .$$j $$j; \
-	done
-
-all-local: translation-stamp
-
-translation-stamp:
-	@for j in $(top_srcdir)/po/*.po; do \
-		echo "convert $$j"; \
-		k=$$(basename $$j); \
-		country=`echo $$k | cut -d "." -f 1`; \
-		$(MSGFMT) -o $$country.mo $$j; \
-	done
-	touch translation-stamp
-
-clean-local:
-	@for j in $(top_builddir)/po/*.mo; do \
-		rm -f $$j; \
-	done
-	rm -f $(top_builddir)/po/translation-stamp
-
-install-data-local:
-	@for j in $(top_builddir)/po/*.mo; do \
-		k=$$(basename $$j); \
-		country=`echo $$k | cut -d "." -f 1`; \
-		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		echo "installing $$dir/$(CATALOG).mo ($$k)"; \
-		install -d $$dir; \
-		cp $$j $$dir/$(CATALOG).mo; \
-	done
-
-uninstall-local:
-	for j in $(top_srcdir)/po/*.po; do \
-		k=$$(basename $$j); \
-		country=`echo $$k | cut -d "." -f 1`; \
-		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		rm -f $$dir/$(CATALOG).mo; \
-	done
+include $(top_srcdir)/m4/i18n.mk
 
