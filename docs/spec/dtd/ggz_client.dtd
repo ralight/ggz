@@ -1,0 +1,61 @@
+<!-- ggz_client.dtd -->
+<!ELEMENT SESSION ((LANGUAGE*, LOGIN?, CHANNEL*, MOTD*, LIST*, PONG*, CHAT*, UPDATE*, JOIN*, LEAVE*, TLS_START*)*)>
+
+<!ELEMENT LANGUAGE (#PCDATA)>
+
+<!ELEMENT LOGIN (NAME, PASSWORD?)>
+<!ATTLIST LOGIN		TYPE		( normal | first | guest ) "guest">
+
+<!ELEMENT NAME (#PCDATA)>
+<!ELEMENT PASSWORD (#PCDATA)>
+
+<!ELEMENT CHANNEL EMPTY>
+<!ATTLIST CHANNEL	ID		CDATA #REQUIRED>
+
+<!ELEMENT MOTD EMPTY>
+
+<!ELEMENT PONG EMPTY>
+<!ATTLIST PONG		ID		CDATA #IMPLIED>
+
+<!ELEMENT CHAT (#PCDATA)>
+<!ATTLIST CHAT		TYPE		( announce | beep | normal | private | table ) "normal"
+			TO		CDATA #IMPLIED>
+
+<!ELEMENT LIST EMPTY>
+<!ATTLIST LIST		TYPE		( game | player | room | table ) "game"
+			FULL		( true | false ) "false" >
+
+<!ELEMENT ENTER EMPTY>
+<!ATTLIST ENTER		ROOM		CDATA #REQUIRED>
+
+<!ELEMENT JOIN EMPTY>
+<!ATTLIST JOIN		TABLE		CDATA #REQUIRED
+			SPECTATOR	( true | false ) "false" >
+
+<!ELEMENT LEAVE EMPTY>
+<!ATTLIST LEAVE		FORCE		( true | false ) "false"
+			SPECTATOR	( true | false ) "false">
+
+<!ELEMENT RESEAT EMPTY>
+<!ATTLIST RESEAT	ACTION		( move | sit | stand ) "move"
+			SEAT		CDATA #IMPLIED>
+
+<!ELEMENT LAUNCH (TABLE)>
+
+<!ELEMENT TABLE (DESC?, SEAT*)>
+<!ATTLIST TABLE		GAME		CDATA #IMPLIED
+			SEATS		CDATA #IMPLIED
+			ID		CDATA #IMPLIED>
+
+<!ELEMENT DESC (#PCDATA)>
+
+<!ELEMENT SEAT (#PCDATA)>
+<!ATTLIST SEAT		NUM		CDATA #REQUIRED
+			TYPE		( bot | open | player | reserved ) "open">
+
+<!ELEMENT UPDATE (TABLE)>
+<!ATTLIST UPDATE	TYPE		( table | unknown ) "table"
+			ACTION		( boot | desc | seat ) "boot"
+			ROOM		CDATA #REQUIRED>
+	
+<!ELEMENT TLS_START EMPTY>

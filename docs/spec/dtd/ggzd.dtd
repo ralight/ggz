@@ -1,0 +1,98 @@
+<!-- ggzd.dtd -->
+<!ELEMENT SESSION (SERVER+, (MOTD*, PING*, CHAT*, RESULT*, UPDATE*, JOIN*, LEAVE*)*)>
+
+<!ELEMENT SERVER (OPTIONS)>
+<!ATTLIST SERVER	ID		CDATA #REQUIRED
+			NAME		CDATA #REQUIRED
+			VERSION		CDATA #REQUIRED
+			STATUS		( ok | full ) "ok"
+			TLS_SUPPORT	( yes | no ) "no" >
+
+<!ELEMENT OPTIONS EMPTY>
+<!ATTLIST OPTIONS	CHATLEN		CDATA #REQUIRED>
+
+<!ELEMENT MOTD (#PCDATA)>
+<!ATTLIST MOTD 		PRIORITY	( high | low | normal ) "normal"> 
+
+<!ELEMENT PING EMPTY>
+<!ATTLIST PING		ID		CDATA #IMPLIED >
+
+<!ELEMENT CHAT (#PCDATA)>
+<!ATTLIST CHAT		TYPE		( announce | beep | normal | private | table ) "normal"
+			FROM		CDATA #REQUIRED>
+
+<!ELEMENT RESULT (PASSWORD | LIST)?>
+<!ATTLIST RESULT	ACTION		( chat | enter | launch | leave | list | login ) "chat"
+			<!--CODE		( ok | usr\ lookup | bad options | room full | table full | table empty | launch fail | join fail | no table | leave fail | leave forbidden | already logged in | not in room | at table | in transit | no permission | bad xml | seat assign fail | no channel ) "ok" > -->
+			CODE		CDATA #REQUIRED>
+
+<!ELEMENT PASSWORD (#PCDATA)>
+
+<!ELEMENT LIST	(GAME* | PLAYER* | ROOM* | TABLE*)?>
+<!ATTLIST LIST		TYPE		( game | player | room | table ) "game"
+			ROOM		CDATA #IMPLIED>
+
+<!ELEMENT GAME (PROTOCOL, ALLOW, ABOUT?, DESC?)>
+<!ATTLIST GAME		ID		CDATA #REQUIRED
+			NAME		CDATA #REQUIRED
+			VERSION		CDATA #REQUIRED>
+
+<!ELEMENT PROTOCOL EMPTY>
+<!ATTLIST PROTOCOL	ENGINE		CDATA #REQUIRED
+			VERSION		CDATA #REQUIRED>
+
+<!ELEMENT ALLOW EMPTY>
+<!ATTLIST ALLOW		PLAYERS		CDATA #REQUIRED
+			BOTS		CDATA #REQUIRED
+			SPECTATORS	( true | false ) "false">
+
+<!ELEMENT ABOUT EMPTY>
+<!ATTLIST ABOUT		AUTHOR		CDATA #REQUIRED
+			URL		CDATA #REQUIRED>
+
+<!ELEMENT DESC (#PCDATA)>
+
+<!ELEMENT ROOM (DESC?)>
+<!ATTLIST ROOM		ID		CDATA #REQUIRED
+			NAME		CDATA #REQUIRED
+			GAME		CDATA #REQUIRED>
+
+<!ELEMENT PLAYER EMPTY>
+<!ATTLIST PLAYER	ID		CDATA #REQUIRED
+			TYPE		( admin | guest | normal ) "normal"
+			TABLE		CDATA #IMPLIED
+			LAG		CDATA #IMPLIED
+			WINS		CDATA #IMPLIED
+			LOSSES		CDATA #IMPLIED
+			TIES		CDATA #IMPLIED
+			FORFEITS	CDATA #IMPLIED
+			RATING		CDATA #IMPLIED
+			RANKING		CDATA #IMPLIED
+			HIGHSCORE	CDATA #IMPLIED >
+
+<!ELEMENT TABLE (DESC?, SEAT*, SPECTATOR*)>
+<!ATTLIST TABLE		ID		CDATA #REQUIRED
+			SEATS		CDATA #IMPLIED
+			STATUS		CDATA #IMPLIED
+			GAME		CDATA #IMPLIED
+			SPECTATORS	CDATA #IMPLIED>
+
+<!ELEMENT SEAT (#PCDATA)>
+<!ATTLIST SEAT		NUM		CDATA #REQUIRED
+			TYPE		( bot | open | player | reserved ) "open" >
+
+<!ELEMENT SPECTATOR (#PCDATA)>
+<!ATTLIST SPECTATOR	NUM		CDATA #REQUIRED>
+
+<!ELEMENT UPDATE (TABLE | PLAYER)>
+<!ATTLIST UPDATE	TYPE		( player | table ) "player"
+			ACTION		( add | delete | desc | join | lag | leave | resize | seat | stats | status ) "add"
+			ROOM		CDATA #REQUIRED>
+
+<!ELEMENT JOIN EMPTY>
+<!ATTLIST JOIN		TABLE		CDATA #REQUIRED
+			SPECTATOR	( true | false ) "false">
+
+<!ELEMENT LEAVE EMPTY>
+<!ATTLIST LEAVE		PLAYER		CDATA #IMPLIED
+			REASON		( boot | gameerror | gameover | normal ) "normal">
