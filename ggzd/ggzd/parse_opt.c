@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 5080 2002-10-28 04:56:55Z jdorje $
+ * $Id: parse_opt.c 5335 2003-01-16 22:15:22Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -220,6 +220,10 @@ void parse_conf_file(void)
 		opt.admin_name = ggz_strdup(ADMIN_ERR);
 	if(!opt.admin_email)
 		opt.admin_email = ggz_strdup(ADMIN_ERR);
+
+	/* Database defaults */
+	if(!opt.dbhashing)
+		opt.dbhashing = ggz_strdup("plain");
 }
 
 
@@ -259,6 +263,7 @@ static void get_config_options(int ch)
 	opt.dbname = ggz_conf_read_string(ch, "General", "DatabaseName", NULL);
 	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
 	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
+	opt.dbhashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

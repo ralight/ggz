@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5261 2002-11-24 04:37:55Z jdorje $
+ * $Id: control.c 5335 2003-01-16 22:15:22Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -142,6 +142,12 @@ static void cleanup_data(void)
 	data_free(opt.admin_name);
 	data_free(opt.admin_email);
 	data_free(opt.server_name);
+
+	data_free(opt.dbhost);
+	data_free(opt.dbname);
+	data_free(opt.dbusername);
+	data_free(opt.dbpassword);
+	data_free(opt.dbhashing);
 
 	/* We don't bother with locking anything... */
 	for (i = 0; i < room_info.num_rooms; i++) {

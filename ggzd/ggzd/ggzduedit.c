@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/24/01
  * Desc: User database editor for ggzd server
- * $Id: ggzduedit.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzduedit.c 5335 2003-01-16 22:15:22Z dr_maux $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <getopt.h>
+#include <termios.h>
 
 #include "ggzdb.h"
 #include "ggzdb_proto.h"
@@ -40,7 +42,6 @@
 #include "perms.h"
 
 
-char *datadir = DATADIR;
 char lb[1024];
 ggzdbPlayerEntry pe;
 
@@ -365,27 +366,117 @@ static int main_menu(void)
 	return 1;
 }
 
+/* Password input mode, inspired by psql */
+void echomode(int echo)
+{
+	static struct termios t_orig;
+	struct termios t;
+	FILE *termin;
+
+	termin = fopen("/dev/tty", "r");
+	if(!termin) termin = stdin;
+
+	if(echo)
+	{
+		tcsetattr(fileno(termin), TCSAFLUSH, &t_orig);
+	}
+	else
+	{
+		tcgetattr(fileno(termin), &t);
+		t_orig = t;
+		t.c_lflag &= ~ECHO;
+		tcsetattr(fileno(termin), TCSAFLUSH, &t);
+	}
+}
 
 int main(int argc, char **argv)
 {
 	int	rc;
 	ggzdbConnection conn;
+	int opt, optindex;
+	char password[32];
+	struct option options[] = {
+		{"datadir", required_argument, 0, 'd'},
+		{"host", required_argument, 0, 'H'},
+		{"dbname", required_argument, 0, 'D'},
+		{"username", required_argument, 0, 'u'},
+		{"password", optional_argument, 0, 'p'},
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
+		{0, 0, 0, 0}
+	};
 
-	if(argc > 2) {
-		fprintf(stderr, "usage: ggzduedit [datadir]\n");
-		return 1;
+	conn.datadir = NULL;
+	conn.database = NULL;
+
+	while(1)
+	{
+		opt = getopt_long(argc, argv, "vhd:H:D:u:p::", options, &optindex);
+		if(opt == -1) break;
+		switch(opt)
+		{
+			case 'd':
+				conn.datadir = optarg;
+				break;
+			case 'D':
+				conn.database = optarg;
+				break;
+			case 'H':
+				conn.host = optarg;
+				break;
+			case 'u':
+				conn.username = optarg;
+				break;
+			case 'p':
+				if(!optarg)
+				{
+					printf("Password: ");
+					fflush(NULL);
+					echomode(0);
+					fgets(password, sizeof(password), stdin);
+					echomode(1);
+					optarg = password;
+				}
+				conn.password = optarg;
+				break;
+			case 'v':
+				printf("%s\n", VERSION);
+				exit(0);
+				break;
+			case 'h':
+				printf("GGZD user editor, version %s\n\n", VERSION);
+				printf("[-d | --datadir  <datadir> ] Directory for local database\n");
+				printf("[-D | --dbname   <dbname>  ] Name of the database\n");
+				printf("[-H | --host     <hostname>] Host of the database\n");
+				printf("[-u | --username <username>] Database user\n");
+				printf("[-p | --password [password]] Database password\n");
+				printf("[-h | --help               ] Display this help\n");
+				printf("[-v | --version            ] Display version number only\n");
+				exit(0);
+				break;
+			default:
+				fprintf(stderr, "Usage: %s [options]\n", argv[0]);
+				break;
+		}
 	}
-	if(argc == 2)
-		datadir = argv[1];
-	printf("GGZD user editor, version %s\n", VERSION);
-	printf("Using '%s' for data directory\n", datadir);
 
-	conn.datadir = datadir;
+	if(!conn.datadir) {
+		if(!conn.database) {
+			conn.datadir = DATADIR;
+		}
+	}
+
+	if(conn.datadir) {
+		printf("Using '%s' for data directory\n", conn.datadir);
+	} else {
+		printf("Using '%s' for database access\n", conn.database);
+	}
+
 	if((rc = _ggzdb_init(conn, 1)) != 0) {
 		fprintf(stderr, "_ggzdb_init() rc=%d\n", rc);
 		return 1;
 	}
-	if((rc = _ggzdb_init_player(datadir)) != 0) {
+	if((rc = _ggzdb_init_player(conn.datadir)) != 0) {
 		fprintf(stderr, "_ggzdb_init_player() rc=%d\n", rc);
 		return 1;
 	}

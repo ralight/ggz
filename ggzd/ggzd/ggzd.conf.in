@@ -48,6 +48,9 @@
 #DatabaseUsername = ggzd
 #DatabasePassword = ggzd
 
+# Database hashing: plain, md5, sha1 or ripemd160
+DatabaseHashing = plain
+
 ############################################################################
 # Logging Options
 ############################################################################

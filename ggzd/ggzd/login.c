@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: login.c 5335 2003-01-16 22:15:22Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -130,7 +130,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - no account", name);
 			name_ok = 0;
-		} else if(strcmp(password, db_pe.password)) {
+		} else if(ggzdb_compare_password(password, db_pe.password) != 1) {
 			dbg_msg(GGZ_DBG_CONNECTION,
 				"Unsuccessful login of %s - bad password",name);
 			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
@@ -223,7 +223,7 @@ static void login_generate_password(char *pw)
 
 
 static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
-				char *name,char *password)
+				char *name, char *password)
 {
 	/*  Initialize player entry */
 	login_generate_password(password);
