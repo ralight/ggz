@@ -147,7 +147,7 @@ void World::removePlayer(const char *name)
 		for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			if(&(*it) == p)
 			{
-				std::cout << "Erase him" << std::endl;
+				std::cout << "Erase him (" << p->name() << ")" << std::endl;
 				//m_playerlist.erase(it);
 				p->die();
 

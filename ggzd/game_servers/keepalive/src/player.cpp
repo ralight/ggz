@@ -125,10 +125,10 @@ void Player::die()
 	if(mkdir(graveyard.c_str(), S_IRWXU))
 	{
 		std::cout << "mkdir failed" << std::endl;
-		//return;
+		if(errno != EEXIST) return;
 	}
 	string grave = graveyard + m_username;
-	f.open(grave.c_str(), /*_IO_OUTPUT*/ios::out);
+	f.open(grave.c_str(), ios::out);
 	if(f.is_open())
 	{
 		//f << "username: " << m_username << endl;
@@ -175,11 +175,13 @@ char *Player::username()
 	return m_username;
 }
 
+// Return type: born, avatar, grave
 int Player::type()
 {
 	return m_type;
 }
 
+// Assign a new valid fd to a player
 void Player::revive(int fd)
 {
 	m_fd = fd;
