@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5080 2002-10-28 04:56:55Z jdorje $
+ * $Id: room.c 5085 2002-10-28 07:27:15Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -217,7 +217,10 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 	ggzdbPlayerGameStats stats;
 	int records, ratings;
 
-	if (game_type >= 0) {
+	/* Don't show stats for guest players at all.  Later it may be
+	   that some games will want to let guest players have stats. */
+	if (player_get_type(player) != GGZ_PLAYER_GUEST
+	    && game_type >= 0) {
 		pthread_rwlock_rdlock(&game_types[game_type].lock);
 		strcpy(stats.game, game_types[game_type].name);
 		records = game_types[game_type].stats_records;
@@ -229,6 +232,8 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 	
 	if (records || ratings) {
 		strcpy(stats.player, player->name);
+		/* FIXME: doing a DB lookup while we have a write-lock
+		   held on the room is bad! */
 		if (stats_lookup(&stats) != GGZ_OK) {
 			records = ratings = 0;
 		}

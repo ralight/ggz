@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5080 2002-10-28 04:56:55Z jdorje $
+ * $Id: stats.c 5085 2002-10-28 07:27:15Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -185,7 +185,8 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 
 	for (i = 0; i < num_players; i++) {
 		stats[i].rating = player_ratings[i];
-		printf("%s's rating becomes %f.\n", report->names[i],
+		dbg_msg(GGZ_DBG_STATS,
+			"%s's rating becomes %f.\n", report->names[i],
 		       stats[i].rating);
 	}
 }
@@ -231,10 +232,54 @@ void report_statistics(int room, int gametype,
 	if (!records && !ratings)
 		return;
 
+	/* Now see if this is a rated game. */
+	for (i = 0; i < report->num_players; i++) {
+		ggzdbPlayerEntry player;
+		GGZDBResult status;
+
+		if (report->types[i] == GGZ_SEAT_BOT)
+			continue;
+		else if (report->types[i] != GGZ_SEAT_PLAYER) {
+			err_msg("Unknown player type %d in stats calc.",
+				report->types[i]);
+			return;
+		}
+
+		snprintf(player.handle, sizeof(player.handle),
+			 report->names[i]);
+
+		/* The player could have logged out - for instance if the
+		   game server asks for a forfeit for a player who abandoned a
+		   game.  So we need to look directly at the database... */
+		status = ggzdb_player_get(&player);
+		if (status == GGZDB_ERR_NOTFOUND) {
+			/* Currently we don't track stats on games if there
+			   are any guests at the table.  This should be
+			   the default behavior.  But maybe some games will
+			   want to allow it. */
+			dbg_msg(GGZ_DBG_STATS,
+				"Not tracking stats for guest player %s.",
+				report->names[i]);
+			return;
+		} else if (status != GGZDB_NO_ERROR) {
+			err_msg("Error %d accessing player %s for stats check",
+				status, player.handle);
+			return;
+		}
+		/* Looks like the player exists and is registered.  Great! */
+	}
+
 	/* Retrieve the old stats. */
 	for (i = 0; i < report->num_players; i++) {
-		strcpy(stats[i].player, report->names[i]);
 		strcpy(stats[i].game, game_name);
+
+		if (report->types[i] == GGZ_SEAT_PLAYER) {
+			snprintf(stats[i].player, sizeof(stats[i].player),
+				 report->names[i]);
+		} else if (report->types[i] == GGZ_SEAT_BOT) {
+			snprintf(stats[i].player, sizeof(stats[i].player),
+				 "%d|%s", i, report->names[i]);
+		}
 
 		if (stats_lookup(&stats[i]) != GGZ_OK)
 			return;
