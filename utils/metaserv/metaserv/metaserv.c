@@ -40,7 +40,7 @@
 static DOM *configuration = NULL;
 static char *logfile = NULL;
 
-void log(const char *fmt, ...)
+static void log(const char *fmt, ...)
 {
 	FILE *f;
 	time_t t;
@@ -65,7 +65,7 @@ void log(const char *fmt, ...)
 	}
 }
 
-char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
+static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"query\">";
 	const char *footer = "</resultset>";
@@ -176,7 +176,7 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 	return ret;
 }
 
-int metaserv_auth(const char *username, const char *password, const char *capability, const char *realm)
+static int metaserv_auth(const char *username, const char *password, const char *capability, const char *realm)
 {
 	ELE *ele;
 #ifdef METASERV_OPTIMIZED
@@ -231,7 +231,7 @@ int metaserv_auth(const char *username, const char *password, const char *capabi
 	return 0;
 }
 
-char *meta_uri_host_internal(const char *uri)
+static char *meta_uri_host_internal(const char *uri)
 {
 	char *s;
 
@@ -245,7 +245,7 @@ char *meta_uri_host_internal(const char *uri)
 	return NULL;
 }
 
-int meta_uri_port_internal(const char *uri)
+static int meta_uri_port_internal(const char *uri)
 {
 	char *s;
 
@@ -263,7 +263,7 @@ int meta_uri_port_internal(const char *uri)
 	return 0;
 }
 
-int metaserv_notify(const char *username, const char *password, const char *uri, ELE *ele)
+static int metaserv_notify(const char *username, const char *password, const char *uri, ELE *ele)
 {
 	int fd, ret;
 	struct sockaddr_in sa;
@@ -320,7 +320,7 @@ int metaserv_notify(const char *username, const char *password, const char *uri,
 	return 1;
 }
 
-void metaserv_peers(ELE *ele)
+static void metaserv_peers(ELE *ele)
 {
 	int i, j;
 	ELE *el2, *el;
@@ -371,7 +371,7 @@ void metaserv_peers(ELE *ele)
 	}
 }
 
-char *metaserv_update(const char *class, const char *category, const char *username, const char *password, const char *uri, ATT **att, int atnum, const char *mode)
+static char *metaserv_update(const char *class, const char *category, const char *username, const char *password, const char *uri, ATT **att, int atnum, const char *mode)
 {
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"update\">";
 	const char *footer = "</resultset>";
@@ -506,7 +506,7 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 	return ret;
 }
 
-char *metaserv_xml(const char *uri)
+static char *metaserv_xml(const char *uri)
 {
 	DOM *query;
 	ATT **att;
@@ -631,7 +631,7 @@ char *metaserv_xml(const char *uri)
 	return ret;
 }
 
-char *metamagic(const char *rawuri)
+static char *metamagic(const char *rawuri)
 {
 	char *ret;
 	char *token;
@@ -679,7 +679,7 @@ char *metamagic(const char *rawuri)
 	return ret;
 }
 
-void metaserv_init()
+static void metaserv_init()
 {
 	log("Initialization");
 	configuration = minidom_load(METASERV_DIR "/metaservconf.xml");
@@ -687,13 +687,13 @@ void metaserv_init()
 	/*fflush(NULL);*/
 }
 
-void metaserv_shutdown()
+static void metaserv_shutdown()
 {
 	log("Shutdown");
 	minidom_free(configuration);
 }
 
-int metaserv_work()
+static int metaserv_work()
 {
 	char buffer[1024];
 	char *result;
