@@ -1,13 +1,14 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4669 2002-09-23 16:31:25Z jdorje $
+#  $Id: Makefile.am 4699 2002-09-25 16:11:16Z dr_maux $
+
+MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
 
 SUBDIRS = .
+DIST_SUBDIRS = $(MODULES)
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
-
-MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
 
 messages:
 	@for i in $(MODULES); do \
