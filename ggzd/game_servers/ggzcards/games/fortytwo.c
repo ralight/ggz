@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game functions for Forty-Two
- * $Id: fortytwo.c 4061 2002-04-23 17:27:15Z jdorje $
+ * $Id: fortytwo.c 4069 2002-04-23 22:43:51Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -37,6 +37,8 @@
 #include "games.h"
 #include "message.h"
 #include "team.h"
+
+#define DOUBLES_VALUE 7
 
 #define FORTYTWO ( *(fortytwo_game_t *)(game.specific) )
 typedef struct {
@@ -147,7 +149,10 @@ static int fortytwo_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 	case FORTYTWO_BID:
 		return snprintf(buf, buf_len, "%d", bid.sbid.val);
 	case FORTYTWO_TRUMP:
-		return snprintf(buf, buf_len, "%d", bid.sbid.suit);
+		return snprintf(buf, buf_len, "%s",
+		                bid.sbid.suit == DOUBLES_VALUE
+		                 ? "doubles"
+		                 : get_suit_name(bid.sbid.suit));
 	}
 	assert(FALSE);
 	return snprintf(buf, buf_len, " ");
@@ -164,7 +169,9 @@ static int fortytwo_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 		                "at x%d value.", bid.sbid.val);
 	case FORTYTWO_TRUMP:
 		return snprintf(buf, buf_len, "Choose %s as trump.",
-		                get_suit_name(bid.sbid.suit));
+		                bid.sbid.suit == DOUBLES_VALUE ?
+		                  "doubles" :
+		                  get_suit_name(bid.sbid.suit));
 	case FORTYTWO_BID:
 		return snprintf(buf, buf_len, "Contract to take %d points",
 		                bid.sbid.val);
@@ -183,6 +190,7 @@ static void fortytwo_get_bid(void)
 {
 	if (game.bid_count == game.num_players) {
 		bool suits[7];
+		bool has_doubles = FALSE;
 		char suit;
 		int c;
 		player_t p = game.next_bid = FORTYTWO.declarer;
@@ -196,11 +204,15 @@ static void fortytwo_get_bid(void)
 			card_t card = game.seats[p].hand.cards[c];
 			suits[(int)card.face] = TRUE;
 			suits[(int)card.suit] = TRUE;
+			if (card.suit == card.face)
+				has_doubles = TRUE;
 		}
 		
 		for (suit = 0; suit < 7; suit++)
 			if (suits[(int)suit])
 				add_sbid(0, suit, FORTYTWO_TRUMP);
+		if (has_doubles)
+			add_sbid(0, DOUBLES_VALUE, FORTYTWO_TRUMP);
 	} else {
 		char minbid = 30;
 		char val;
@@ -229,11 +241,12 @@ static void fortytwo_get_bid(void)
 static void set_trump(char suit)
 {
 	seat_t s;
+	const char *trump = suit == DOUBLES_VALUE ? "doubles"
+	                    : get_suit_name(game.trump);
 	
 	game.trump = suit;
-	set_global_message("Trump", "%s are trump.",
-	                   get_suit_name(game.trump));
-	set_global_message("", "Trump is %s.", get_suit_name(game.trump));
+	set_global_message("Trump", "%s are trump.", trump);
+	set_global_message("", "Trump is %s.", trump);
 	for (s = 0; s < game.num_seats; s++) {
 		player_t p;
 		cards_sort_hand(&game.seats[s].hand);
@@ -361,8 +374,12 @@ static card_t fortytwo_map_card(card_t card)
 		card = flop_suit(card);
 		
 	/* Doubles count high */
-	if (card.suit == card.face)
-		card.face = 7;
+	if (card.suit == card.face) {
+		if (game.trump == DOUBLES_VALUE)
+			card.suit = DOUBLES_VALUE;
+		else
+			card.face = DOUBLES_VALUE;
+	}
 
 	return card;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 04/21/2002
  * Desc: Game-dependent game data for Forty-Two (for use by AI)
- * $Id: fortytwo.h 4061 2002-04-23 17:27:15Z jdorje $
+ * $Id: fortytwo.h 4069 2002-04-23 22:43:51Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -22,7 +22,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 
 /* Special bid values for fortytwo (i.e. bid.sbid.spec) */
 enum {
