@@ -44,13 +44,19 @@
 
 // KDE includes
 #include <klocale.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
+#include <kstandarddirs.h>
+#include <ksimpleconfig.h>
+#include <kurl.h>
 
 // Qt includes
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qtabwidget.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qpixmap.h>
 
 // System includes
 #include <stdlib.h>
@@ -60,35 +66,70 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	KGGZCaption *title;
-	QVBoxLayout *vbox;
-	QHBoxLayout *hbox;
+	QVBoxLayout *vbox, *vbox1, *vbox2;
+	QHBoxLayout *hbox, *hbox2, *hbox3, *hbox4, *hbox5;
 	QPushButton *ok, *cancel;
-	QLabel *server;
+	QLabel *server, *country, *playername, *email, *homepage;
 	KGGZLineSeparator *sep;
+	QTabWidget *tabwidget;
+	QWidget *tab1, *tab2;
 
 	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify some environment variables here."), this);
 
-	server = new QLabel(i18n("Path to ggzd"), this);
-	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), this);
-	m_chatlog = new QCheckBox(i18n("Log chat conversation"), this);
-	m_speech = new QCheckBox(i18n("Enable text-to-speech (rsynth)"), this);
-	m_motd = new QCheckBox(i18n("Display MOTD upon login"), this);
+	tabwidget = new QTabWidget(this);
+	tab1 = new QWidget(tabwidget);
+	tab2 = new QWidget(tabwidget);
+	tabwidget->addTab(tab1, i18n("General"));
+	tabwidget->addTab(tab2, i18n("Personal"));
 
-	m_server = new QLineEdit(this);
+	server = new QLabel(i18n("Path to ggzd"), tab1);
+	m_startup = new QCheckBox(i18n("Show connection dialog on startup"), tab1);
+	m_chatlog = new QCheckBox(i18n("Log chat conversation"), tab1);
+	m_speech = new QCheckBox(i18n("Enable text-to-speech (rsynth)"), tab1);
+	m_motd = new QCheckBox(i18n("Display MOTD upon login"), tab1);
+
+	m_server = new QLineEdit(tab1);
+
+	country = new QLabel(i18n("Country"), tab2);
+	playername = new QLabel(i18n("Full name"), tab2);
+	email = new QLabel(i18n("Email"), tab2);
+	homepage = new QLabel(i18n("Homepage"), tab2);
+
+	m_playername = new QLineEdit(tab2);
+	m_homepage = new QLineEdit(tab2);
+	m_email = new QLineEdit(tab2);
+
+	countrybox = new QComboBox(tab2);
 
 	sep = new KGGZLineSeparator(this);
 
 	ok = new QPushButton(i18n("Save configuration"), this);
 	cancel = new QPushButton(i18n("Cancel"), this);
 
+	vbox1 = new QVBoxLayout(tab1, 5);
+	vbox1->add(server);
+	vbox1->add(m_server);
+	vbox1->add(m_startup);
+	vbox1->add(m_chatlog);
+	vbox1->add(m_speech);
+	vbox1->add(m_motd);
+	vbox2 = new QVBoxLayout(tab2, 5);
+	hbox3 = new QHBoxLayout(vbox2, 5);
+	hbox3->add(playername);
+	hbox3->add(m_playername);
+	hbox4 = new QHBoxLayout(vbox2, 5);
+	hbox4->add(email);
+	hbox4->add(m_email);
+	hbox5 = new QHBoxLayout(vbox2, 5);
+	hbox5->add(homepage);
+	hbox5->add(m_homepage);
+	hbox2 = new QHBoxLayout(vbox2, 5);
+	hbox2->add(country);
+	hbox2->add(countrybox);
+
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(title);
-	vbox->add(server);
-	vbox->add(m_server);
-	vbox->add(m_startup);
-	vbox->add(m_chatlog);
-	vbox->add(m_speech);
-	vbox->add(m_motd);
+	vbox->add(tabwidget);
 	vbox->add(sep);
 
 	hbox = new QHBoxLayout(vbox, 5);
@@ -98,10 +139,11 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
-	resize(330, 250);
+	resize(340, 260);
 	setCaption(i18n("Global Settings"));
 	show();
 
+	loadCountries();
 	loadSettings();
 }
 
@@ -121,6 +163,10 @@ void KGGZPrefEnv::slotAccept()
 	config->write("Preferences", "Chatlog", m_chatlog->isChecked());
 	config->write("Preferences", "Speech", m_speech->isChecked());
 	config->write("Preferences", "MOTD", m_motd->isChecked());
+	config->write("Personal", "Country", countrybox->currentText().latin1());
+	config->write("Personal", "Name", m_playername->text().latin1());
+	config->write("Personal", "Email", m_email->text().latin1());
+	config->write("Personal", "Homepage", m_homepage->text().latin1());
 	config->commit();
 
 	delete config;
@@ -134,6 +180,7 @@ void KGGZPrefEnv::loadSettings()
 	GGZCoreConfio *config;
 	char *server;
 	int startup, chatlog, speech, motd;
+	char *homepage, *email, *name, *country;
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
@@ -143,12 +190,56 @@ void KGGZPrefEnv::loadSettings()
 	speech = config->read("Preferences", "Speech", 0);
 	motd = config->read("Preferences", "MOTD", 1);
 
+	country = config->read("Personal", "Country", "");
+	name = config->read("Personal", "Name", "");
+	email = config->read("Personal", "Email", "");
+	homepage = config->read("Personal", "Homepage", "");
+
 	m_server->setText(server);
 	m_startup->setChecked(startup);
 	m_chatlog->setChecked(chatlog);
 	m_speech->setChecked(speech);
 	m_motd->setChecked(motd);
 
+	m_playername->setText(name);
+	m_email->setText(email);
+	m_homepage->setText(homepage);
+	for(int i = 0; i < countrybox->count(); i++)
+		if(countrybox->text(i) == country)
+		{
+			countrybox->setCurrentItem(i);
+			break;
+		}
+
 	delete config;
+}
+
+void KGGZPrefEnv::loadCountries()
+{
+	KStandardDirs d;
+	KURL u;
+	QStringList list;
+	QString name, region, path;
+
+	/*list = d.findAllResources("locale", QString("l10n/%1").arg("*.desktop"));
+	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
+	{
+		KSimpleConfig conf((*it));
+		conf.setGroup("KCM Locale");
+		name = conf.readEntry("Name");
+		countrybox->insertItem(name);
+	}*/
+
+	list = d.findAllResources("locale", "l10n/*/*.desktop");
+	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
+	{
+		KSimpleConfig conf((*it));
+		conf.setGroup("KCM Locale");
+		name = conf.readEntry("Name");
+		region = conf.readEntry("Region");
+		u = KURL((*it));
+		path = u.directory() + "/flag.png";
+		countrybox->insertItem(QPixmap(path), name /*+ " - - " + region*/);
+	}
 }
 

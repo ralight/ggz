@@ -40,6 +40,7 @@
 // Forward declarations
 class QCheckBox;
 class QLineEdit;
+class QComboBox;
 
 // KGGZPrefEnv: Global configuration
 class KGGZPrefEnv : public QWidget
@@ -62,6 +63,8 @@ class KGGZPrefEnv : public QWidget
 		private:
 			// Loads the configuration
 			void loadSettings();
+			// Fill country selection box
+			void loadCountries();
 
 			// The local ggzd binary
 			QLineEdit *m_server;
@@ -73,6 +76,14 @@ class KGGZPrefEnv : public QWidget
 			QCheckBox *m_speech;
 			// Display MOTD upon login
 			QCheckBox *m_motd;
+			// Player full name
+			QLineEdit *m_playername;
+			// Player homepage
+			QLineEdit *m_homepage;
+			// Player email
+			QLineEdit *m_email;
+			// Player country
+			QComboBox *countrybox;
 };
 
 #endif
