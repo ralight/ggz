@@ -54,9 +54,6 @@
 #include <fnmatch.h>
 #include <time.h>
 
-// buffer overflow??
-char m_buftmp[2048];
-
 // Constructor
 KGGZChat::KGGZChat(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -64,7 +61,6 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	QVBoxLayout *vbox1;
 	QLabel *label;
 
-	//input = new QLineEdit(this);
 	input = new KGGZChatLine(this);
 	input->setFixedHeight(20);
 	input->setEnabled(FALSE);
@@ -72,6 +68,7 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	label = new QLabel(i18n("Enter your message here:"), this);
 
 	output = new KTextBrowser(this);
+	output->setText("<table></table>");
 
 	vbox1 = new QVBoxLayout(this, 5);
 	vbox1->add(output);
@@ -79,9 +76,6 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	vbox1->add(input);
 
 	connect(input, SIGNAL(returnPressed()), SLOT(slotSend()));
-
-	for(int i = 0; i < 10; i++)
-		lag[i].lagid = 0;
 
 	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_ADMIN);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
@@ -99,24 +93,6 @@ KGGZChat::~KGGZChat()
 {
 }
 
-// Call takes lagid and returns it if valid, else -1 (e.g. buffer full)
-long KGGZChat::setLag(long lagid)
-{
-	if(lagid <= 0) return -1;
-	KGGZDEBUG("set %lu\n", lagid);
-	for(int i = 0; i < 10; i++)
-	{
-		if(lag[i].lagid == 0)
-		{
-			lag[i].lagid = lagid;
-			gettimeofday(&lag[i].lagtime, NULL);
-			return lagid;
-		}
-		KGGZDEBUG("--SET %lu on %i\n", lag[i].lagid, i);
-	}
-	return -1;
-}
-
 void KGGZChat::setLogging(int log)
 {
 	m_log = log;
@@ -125,38 +101,6 @@ void KGGZChat::setLogging(int log)
 void KGGZChat::setSpeech(int speech)
 {
 	m_speech = speech;
-}
-
-// Call takes lagid and returns time difference, or -1 on error
-long KGGZChat::getLag(long lagid)
-{
-	struct timeval tmp;
-	long ret;
-
-	if(lagid <= 0) return -1;
-	KGGZDEBUG("get %lu\n", lagid);
-	for(int i = 0; i < 10; i++)
-	{
-		if(lag[i].lagid == lagid)
-		{
-			lag[i].lagid = 0;
-			gettimeofday(&tmp, NULL);
-			ret = ((tmp.tv_sec - lag[i].lagtime.tv_sec) * 1000 + (tmp.tv_usec - lag[i].lagtime.tv_usec) / 1000);
-			KGGZDEBUG("--get FINAL %lu\n", ret);
-			return ret;
-		}
-		KGGZDEBUG("--get %lu on %i\n", lag[i].lagid, i);
-	}
-	return -1;
-}
-
-// TODO: real random()ized lag
-long KGGZChat::randomLag()
-{
-	static long x;
-
-	x += 247668;
-	return x;
 }
 
 // Send out a message or execute command
@@ -502,45 +446,11 @@ void KGGZChat::parse(char *text)
 		}
 	}
 	localbuf[j] = 0;
-	strcat(localbuf, "<br>");
+	strcat(localbuf, "</td></tr>");
 	KGGZDEBUG("Debug(4): |%s|\n", localbuf);
-	output->setText(output->text() + localbuf);
+	output->setText(output->text() + localbuf + "</table>");
 	output->setContentsPos(0, 32767);
 	logChat(QString(localbuf));
-}
-
-// Checks whether Lag test has been issued
-void KGGZChat::checkLag(const char *text)
-{
-	int i, k;
-	const char *c;
-	char tmpbuf[128];
-	long ms;
-
-	if(!text) return;
-	for(i = 0; i < (int)strlen(text); i++)
-	{
-		c = text + i;
-		if((c[0] == 'L') && (c[1] == 'A') && (c[2] == 'G') && (c[3] == 'I') && (c[4] == 'D'))
-		{
-			KGGZDEBUG("Recognized Lag-ID!\n");
-			k = 6;
-			while((c[k] >= '0') && (c[k] <= '9'))
-			{
-				tmpbuf[k - 6] = c[k];
-				k++;
-			}
-			tmpbuf[k - 6] = 0;
-			KGGZDEBUG("**tmpbuf is %s\n", tmpbuf);
-			ms = getLag(atoll(tmpbuf)); // transformed to store it somewhere
-			if(ms >= 0)
-				sprintf(tmpbuf, "/me does now know his lag (%li milliseconds)", ms);
-			else
-				sprintf(tmpbuf, "/me has not issued this lag-id!");
-			//ggzcore_event_enqueue(GGZ_CHAT, strdup(tmpbuf), free);
-			//ggzcore_room_chat(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()), GGZ_CHAT_NORMAL, NULL, strdup(tmpbuf));
-		}
-	}
 }
 
 // Log chat messages
@@ -610,44 +520,44 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
-			tmp = QString("<font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;&nbsp;</font>");
+			tmp = QString("<tr><td><font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
 			// Oh oh, Qt: that's your fault again (I'm happy with bug reports, eh)
 			//output->append(tmp);
-			output->setText(output->text() + tmp);
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
 			logChat(tmp);
 			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_OWN:
-			tmp = QString("<font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;&nbsp;</font>");
-			output->setText(output->text() + tmp);
+			tmp = QString("<tr><td><font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
 			logChat(tmp);
 			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_ADMIN:
-			tmp = QString("<font color=#ff0000>") + msg + QString("</font><br>");
-			output->setText(output->text() + tmp);
+			tmp = QString("<tr><td colspan=2><font color=#ff0000>") + msg + QString("</font></td></tr>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + msg + QString("</i></font><br>");
-			output->setText(output->text() + tmp);
+			tmp = QString("<tr><td colspan=2><font color=#%1><i>* ").arg(color) + QString(player) + msg + QString("</i></font></td></tr>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_ME:
-			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font><br>");
-			output->setText(output->text() + tmp);
+			tmp = QString("<tr><td colspan=2><font color=#%1><i>* ").arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_PERSONAL:
 			tmp = QString("<font color=#%1><b><i>").arg(color);
-			if(player) tmp += QString(player) + ":&nbsp;&nbsp;</i></b></font><font color=#b0b000><b><i>";
+			if(player) tmp += QString(player) + ":&nbsp;</i></b></font><font color=#b0b000><b><i>";
 			tmp += QString(plaintext(msg.latin1())) + QString("</i></b></font><br>");
-			output->setText(output->text() + tmp);
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);

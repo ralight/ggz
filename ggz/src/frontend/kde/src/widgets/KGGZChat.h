@@ -47,13 +47,6 @@
 // System includes
 #include <sys/time.h>
 
-// Structure for client-side lag measurement
-struct Lag
-{
-	long lagid;
-	struct timeval lagtime;
-};
-
 // KGGZ_Chatwidget: The name says it all
 class KGGZChat : public QWidget
 {
@@ -93,10 +86,6 @@ class KGGZChat : public QWidget
 
 	private:
 		void logChat(QString text);
-		long setLag(long lagid);
-		long getLag(long lagid);
-		long randomLag();
-		void checkLag(const char *text);
 		int separator(const char *c);
 		char *plaintext(const char *text);
 		void parse(char *text);
@@ -104,8 +93,6 @@ class KGGZChat : public QWidget
 		KTextBrowser *output;
 		//QLineEdit *input;
 		KGGZChatLine *input;
-		Lag lag[10];
-		int xlag;
 		int m_log;
 		int m_speech;
 };
