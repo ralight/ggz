@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4153 2002-05-05 00:42:40Z jdorje $
+ * $Id: common.c 4157 2002-05-05 06:57:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -732,6 +732,13 @@ void init_game()
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].hand.cards =
 			ggz_malloc(game.max_hand_length * sizeof(card_t));
+	}
+	
+	if (game.num_teams > 0) {
+		printf("Setting up teams.\n");
+		ggzd_set_num_teams(game.ggz, game.num_teams);
+		for (p = 0; p < game.num_players; p++)
+			ggzd_set_team(game.ggz, p, game.players[p].team);
 	}
 
 	set_global_message("", "%s", "");
