@@ -1,11 +1,116 @@
+Index: ggzcore/gametype.c
+===================================================================
+RCS file: /cvsroot/ggz/ggz/src/ggzcore/gametype.c,v
+retrieving revision 1.14
+diff -u -r1.14 gametype.c
+--- ggzcore/gametype.c	2 Mar 2002 21:15:00 -0000	1.14
++++ ggzcore/gametype.c	22 Aug 2002 07:08:30 -0000
+@@ -115,6 +115,15 @@
+ }
+ 
+ 
++int ggzcore_gametype_get_spectators_allowed(GGZGameType *type)
++{
++	if (!type)
++		return 0;
++
++	return _ggzcore_gametype_get_spectators_allowed(type);
++}
++
++
+ /* Verify that a paticular number of players/bots is valid */
+ int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num)
+ {
+@@ -153,15 +162,17 @@
+ 			    const char* version,
+ 			    const char* prot_engine,
+ 			    const char* prot_version,
+-			    const GGZAllowed allow_players, 
+-			    const GGZAllowed allow_bots,  
++			    const GGZAllowed allow_players,
++			    const GGZAllowed allow_bots,
++				const unsigned int spectators_allowed,
+ 			    const char* desc,
+-			    const char* author, 
++			    const char* author,
+ 			    const char *url)
+ {
+ 	gametype->id = id;
+ 	gametype->allow_players = allow_players;
+ 	gametype->allow_bots = allow_bots;
++	gametype->spectators_allowed = spectators_allowed;
+ 	
+ 	gametype->name = ggz_strdup(name);
+ 	gametype->version = ggz_strdup(version);
+@@ -273,6 +284,12 @@
+ }
+ 
+ 
++unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type)
++{
++	return type->spectators_allowed;
++}
++
++
+ /* Verify that a paticular number of players/bots is valid */
+ unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num)
+ {
+@@ -321,8 +338,8 @@
+ 
+ 	_ggzcore_gametype_init(new, src->id, src->name, src->version,
+ 			       src->prot_engine, src->prot_version,
+-			       src->allow_players, src->allow_bots, src->desc,
+-			       src->author, src->url);
++			       src->allow_players, src->allow_bots, src->spectators_allowed,
++				   src->desc, src->author, src->url);
+ 	
+ 	return (void*)new;
+ }
+Index: ggzcore/gametype.h
+===================================================================
+RCS file: /cvsroot/ggz/ggz/src/ggzcore/gametype.h,v
+retrieving revision 1.8
+diff -u -r1.8 gametype.h
+--- ggzcore/gametype.h	14 Jul 2001 03:34:17 -0000	1.8
++++ ggzcore/gametype.h	22 Aug 2002 07:08:30 -0000
+@@ -69,6 +69,9 @@
+ 
+ 	/* Bitmask of alowable numbers of bots */
+ 	GGZAllowed allow_bots;
++
++	/* Whether spectators are allowed or not */
++	unsigned int spectators_allowed;
+ 	
+ 	/* ID of this game on the server */
+ 	unsigned int id;
+@@ -85,8 +88,9 @@
+ 			    const char* version,
+ 			    const char* prot_engine,
+ 			    const char* prot_version,
+-			    const GGZAllowed allow_players, 
+-			    const GGZAllowed allow_bots,  
++			    const GGZAllowed allow_players,
++			    const GGZAllowed allow_bots,
++				unsigned int spectators_allowed,
+ 			    const char* desc,
+ 			    const char* author, 
+ 			    const char *url);
+@@ -112,6 +116,7 @@
+ /* Return the maximum number of allowed players/bots */
+ unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type);
+ unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type);
++unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type);
+ 
+ /* Verify that a paticular number of players/bots is valid */
+ unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num);
 Index: ggzcore/ggzcore.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggz/src/ggzcore/ggzcore.h,v
-retrieving revision 1.86
-diff -u -3 -p -r1.86 ggzcore.h
---- ggzcore/ggzcore.h	5 May 2002 21:13:29 -0000	1.86
-+++ ggzcore/ggzcore.h	20 May 2002 17:21:57 -0000
-@@ -584,6 +584,7 @@ int ggzcore_room_chat(GGZRoom *room,
+retrieving revision 1.88
+diff -u -r1.88 ggzcore.h
+--- ggzcore/ggzcore.h	5 Aug 2002 12:10:59 -0000	1.88
++++ ggzcore/ggzcore.h	22 Aug 2002 07:08:32 -0000
+@@ -599,6 +599,7 @@
  
  int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
  int ggzcore_room_join_table(GGZRoom *room, const unsigned int num);
@@ -13,14 +118,23 @@ diff -u -3 -p -r1.86 ggzcore.h
  int ggzcore_room_leave_table(GGZRoom *room, int force);
  
  
+@@ -672,6 +673,8 @@
+ /* Return the maximum number of allowed players/bots */
+ int ggzcore_gametype_get_max_players(GGZGameType *type);
+ int ggzcore_gametype_get_max_bots(GGZGameType *type);
++
++int ggzcore_gametype_get_spectators_allowed(GGZGameType *type);
+ 
+ /* Verify that a paticular number of players/bots is valid */
+ int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num);
 Index: ggzcore/net.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggz/src/ggzcore/net.h,v
 retrieving revision 1.29
-diff -u -3 -p -r1.29 net.h
+diff -u -r1.29 net.h
 --- ggzcore/net.h	5 May 2002 21:13:29 -0000	1.29
-+++ ggzcore/net.h	20 May 2002 17:21:57 -0000
-@@ -75,6 +75,7 @@ int _ggzcore_net_send_chat(struct _GGZNe
++++ ggzcore/net.h	22 Aug 2002 07:08:32 -0000
+@@ -75,6 +75,7 @@
  
  int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table);
  int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num);
@@ -31,11 +145,35 @@ diff -u -3 -p -r1.29 net.h
 Index: ggzcore/netxml.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggz/src/ggzcore/netxml.c,v
-retrieving revision 1.29
-diff -u -3 -p -r1.29 netxml.c
---- ggzcore/netxml.c	5 May 2002 21:13:29 -0000	1.29
-+++ ggzcore/netxml.c	20 May 2002 17:21:58 -0000
-@@ -513,6 +513,16 @@ int _ggzcore_net_send_table_join(struct 
+retrieving revision 1.30
+diff -u -r1.30 netxml.c
+--- ggzcore/netxml.c	5 Aug 2002 12:11:00 -0000	1.30
++++ ggzcore/netxml.c	22 Aug 2002 07:08:35 -0000
+@@ -97,10 +97,11 @@
+ typedef struct _GGZGameData {
+ 	char *prot_engine;
+ 	char *prot_version;
+-	GGZAllowed allow_players; 
+-	GGZAllowed allow_bots;  
++	GGZAllowed allow_players;
++	GGZAllowed allow_bots;
++	int spectators_allow;
+ 	char *desc;
+-	char *author; 
++	char *author;
+ 	char *url;
+ } GGZGameData;	
+ 
+@@ -141,7 +142,7 @@
+ /* Extra functions fot handling data associated with specific tags */
+ static void _ggzcore_net_list_insert(GGZXMLElement*, void*);
+ static void _ggzcore_net_game_set_protocol(GGZXMLElement*, char*, char *);
+-static void _ggzcore_net_game_set_allowed(GGZXMLElement*, GGZAllowed, GGZAllowed);
++static void _ggzcore_net_game_set_allowed(GGZXMLElement*, GGZAllowed, GGZAllowed, int);
+ static void _ggzcore_net_game_set_info(GGZXMLElement*, char*, char *);
+ static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
+ static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*);
+@@ -514,6 +515,16 @@
  	return status;
  }
  
@@ -52,23 +190,75 @@ diff -u -3 -p -r1.29 netxml.c
  
  int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force)
  {
-@@ -859,6 +869,8 @@ static void _ggzcore_net_handle_result(G
- 		else if  (strcmp(action, "launch") == 0)
+@@ -861,6 +872,8 @@
  			_ggzcore_room_set_table_launch_status(room, code);
  		else if  (strcmp(action, "join") == 0)
-+			_ggzcore_room_set_table_join_status(room, code);
-+		else if  (strcmp(action, "joinspectator") == 0)
  			_ggzcore_room_set_table_join_status(room, code);
++		else if  (strcmp(action, "joinspectator") == 0)
++			_ggzcore_room_set_table_join_status(room, code);
  		else if  (strcmp(action, "leave") == 0)
  			_ggzcore_room_set_table_leave_status(room, code);
+ 		else if  (strcmp(action, "chat") == 0) {
+@@ -1173,6 +1186,7 @@
+ 	char *prot_version = NULL;
+ 	GGZAllowed allow_players = 0;
+ 	GGZAllowed allow_bots = 0;
++	int spectators_allow = 0;
+ 	char *desc = NULL;
+ 	char *author = NULL;
+ 	char *url = NULL;
+@@ -1193,6 +1207,7 @@
+ 			prot_version = data->prot_version;
+ 			allow_players = data->allow_players;
+ 			allow_bots = data->allow_bots;
++			spectators_allow = data->spectators_allow;
+ 			desc = data->desc;
+ 			author = data->author;
+ 			url = data->url;
+@@ -1201,7 +1216,7 @@
+ 		type = _ggzcore_gametype_new();
+ 		_ggzcore_gametype_init(type, id, name, version, prot_engine,
+ 				       prot_version, allow_players,
+-				       allow_bots,  desc, author, url);
++				       allow_bots, spectators_allow, desc, author, url);
+ 
+ 		parent_tag = ggz_xmlelement_get_tag(parent);
+ 		
+@@ -1244,7 +1259,7 @@
+ }
+ 
+ 
+-static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed players, GGZAllowed bots)
++static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed players, GGZAllowed bots, int spectators)
+ {
+ 	struct _GGZGameData *data;
+ 	
+@@ -1258,6 +1273,7 @@
+ 	
+ 	data->allow_players = players;
+ 	data->allow_bots = bots;
++	data->spectators_allow = spectators;
+ }
+ 
+ 
+@@ -1321,7 +1337,8 @@
+ 	if (allow && parent) {
+ 		_ggzcore_net_game_set_allowed(parent, 
+ 						   safe_atoi(ggz_xmlelement_get_attr(allow, "PLAYERS")),
+-						   safe_atoi(ggz_xmlelement_get_attr(allow, "BOTS")));
++						   safe_atoi(ggz_xmlelement_get_attr(allow, "BOTS")),
++						   safe_atoi(ggz_xmlelement_get_attr(allow, "SPECTATORS")));
+ 
+ 	}
+ }
 Index: ggzcore/room.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggz/src/ggzcore/room.c,v
-retrieving revision 1.48
-diff -u -3 -p -r1.48 room.c
---- ggzcore/room.c	5 May 2002 21:13:29 -0000	1.48
-+++ ggzcore/room.c	20 May 2002 17:21:58 -0000
-@@ -285,6 +285,15 @@ int ggzcore_room_join_table(GGZRoom *roo
+retrieving revision 1.49
+diff -u -r1.49 room.c
+--- ggzcore/room.c	5 Aug 2002 12:11:00 -0000	1.49
++++ ggzcore/room.c	22 Aug 2002 07:08:36 -0000
+@@ -285,6 +285,15 @@
  }
  
  
@@ -84,7 +274,7 @@ diff -u -3 -p -r1.48 room.c
  int ggzcore_room_leave_table(GGZRoom *room, int force)
  {
  	if (room && room->server)
-@@ -882,6 +891,28 @@ int _ggzcore_room_join_table(struct _GGZ
+@@ -882,6 +891,28 @@
  
  	net = _ggzcore_server_get_net(room->server);
  	status = _ggzcore_net_send_table_join(net, num);
@@ -117,10 +307,10 @@ Index: ggzcore/room.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggz/src/ggzcore/room.h,v
 retrieving revision 1.23
-diff -u -3 -p -r1.23 room.h
+diff -u -r1.23 room.h
 --- ggzcore/room.h	21 Mar 2002 18:14:52 -0000	1.23
-+++ ggzcore/room.h	20 May 2002 17:21:58 -0000
-@@ -134,6 +134,7 @@ int _ggzcore_room_chat(struct _GGZRoom *
++++ ggzcore/room.h	22 Aug 2002 07:08:36 -0000
+@@ -134,6 +134,7 @@
  
  int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table);
  int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);
