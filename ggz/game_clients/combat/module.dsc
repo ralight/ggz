@@ -1,4 +1,5 @@
-[Combat]
+[ModuleInfo]
+Name = Combat
 Author = Ismael Orenstein
 Protocol = 1.0
 Version = 1.0

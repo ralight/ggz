@@ -6,6 +6,14 @@ SUBDIRS = . pixmaps maps
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ -I$(top_srcdir)/src/ggzcore
 
+install-data-local:
+	@$(NORMAL_INSTALL)
+	ggz-config --install --fromfile=module.dsc --force
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-ggz-config --remove --fromfile=module.dsc
+
 ggzexecmod_PROGRAMS = ggz.combat
 
 ggz_combat_SOURCES = combat.h \
