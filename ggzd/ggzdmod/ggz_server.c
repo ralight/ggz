@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: ggz_server.c 2781 2001-12-06 00:15:53Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -37,12 +37,12 @@ GGZdModState ggzd_get_state(void)
 	return ggzdmod_get_state(ggzdmod);
 }
 
-ggzd_assign_t ggzd_get_seat_status(int seat)
+GGZdModSeat ggzd_get_seat_status(int seat)
 {
 	return ggzdmod_get_seat(ggzdmod, seat).type;
 }
 
-int ggzd_set_seat_status(int seat, ggzd_assign_t status)
+int ggzd_set_seat_status(int seat, GGZdModSeat status)
 {
 	GGZSeat myseat = ggzdmod_get_seat(ggzdmod, seat);
 	myseat.type = status;
@@ -85,7 +85,7 @@ int ggzd_get_seats_num(void)
 	return ggzdmod_get_num_seats(ggzdmod);
 }
 
-int ggzd_get_seat_count(ggzd_assign_t status)
+int ggzd_get_seat_count(GGZdModSeat status)
 {
 	int i, count = 0;
 	for (i = 0; i < ggzdmod_get_num_seats(ggzdmod); i++)

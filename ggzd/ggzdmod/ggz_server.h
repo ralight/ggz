@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: ggz_server.h 2781 2001-12-06 00:15:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,11 +44,8 @@ extern "C" {
 	/* Return current state: CREATED, WAITING, PLAYING, DONE */
 	GGZdModState ggzd_get_state(void);
 
-	typedef GGZdModSeat ggzd_assign_t;
-
-
-	ggzd_assign_t ggzd_get_seat_status(int seat);
-	int ggzd_set_seat_status(int seat, ggzd_assign_t status);
+	GGZdModSeat ggzd_get_seat_status(int seat);
+	int ggzd_set_seat_status(int seat, GGZdModSeat status);
 
 	const char *ggzd_get_player_name(int seat);
 	int ggzd_set_player_name(int seat, char *name);
@@ -65,7 +62,7 @@ extern "C" {
 #define ggzd_seats_human() ggzd_get_seat_count(GGZ_SEAT_PLAYER)
 
 	int ggzd_get_seats_num(void);
-	int ggzd_get_seat_count(ggzd_assign_t status);
+	int ggzd_get_seat_count(GGZdModSeat status);
 	void ggzd_gameover(int status);
 	int ggzd_get_gameover(void);
 

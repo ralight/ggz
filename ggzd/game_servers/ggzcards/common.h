@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: common.h 2781 2001-12-06 00:15:53Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -201,7 +201,7 @@ extern struct game_t game;
 /* I made these when switching over to a new ggzdmod.  I don't think it's
    safe to access the data directly. */
 const char *get_seat_name(seat_t s);
-ggzd_assign_t get_seat_status(seat_t s);
+GGZdModSeat get_seat_status(seat_t s);
 
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);
