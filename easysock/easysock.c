@@ -407,7 +407,7 @@ int es_read_string(const int sock, char *message)
 	} 
 	
 	/* Guarantee string is NULL terminated */
-	message[size] = '\0';
+	/*message[size] = '\0';*/
 
 	_debug("Received \"%s\" : string\n", message);
 	return 0;
@@ -432,14 +432,14 @@ int es_read_string_alloc(const int sock, char **message)
 	if (es_read_int(sock, &size) < 0)
 		return -1;
 	
-	if ( (*message = (char *)malloc(size * sizeof(char))) == NULL) {
+	if ( (*message = (char *)malloc((size+1) * sizeof(char))) == NULL) {
 		_debug("Error: Not enough memory\n");
 		if (_err_func)
 			(*_err_func) (strerror(errno), ES_ALLOCATE, ES_STRING);
 		return -1;
 	}
 
-	memset(*message, 0, size);
+	memset(*message, 0, (size+1));
 
 	if ( (status = es_readn(sock, *message, size)) < 0) {
 		_debug("Error receiving string\n");
@@ -456,7 +456,7 @@ int es_read_string_alloc(const int sock, char **message)
 	} 
 
 	/* Guarantee string is NULL terminated */
-	(*message)[size] = '\0';
+	/*(*message)[size] = '\0';*/
 
 	_debug("Received \"%s\" : string\n", *message);
 	return 0;
