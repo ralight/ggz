@@ -141,6 +141,11 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 		KMessageBox::sorry(this, i18n("Not your turn yet."), i18n("Client message"));
 		return;
 	}
+	if(m_movelist.count())
+	{
+		KMessageBox::sorry(this, i18n("Moves are not finished yet."), i18n("Client message"));
+		return;
+	}
 
 	showStatus(i18n("Sending move"));
 
