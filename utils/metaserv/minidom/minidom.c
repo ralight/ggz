@@ -176,7 +176,7 @@ DOM *minidom_parse(const char *stream)
 {
 	DOM *dom;
 	char *cs;
-	unsigned int i;
+	unsigned int i, j;
 	int mark, lastmark;
 	char *token;
 	int error = 0;
@@ -220,6 +220,12 @@ DOM *minidom_parse(const char *stream)
 				/*printf("  --> content: %s\n", token);*/
 				cp->value = (char*)malloc(strlen(token) + 1);
 				strcpy(cp->value, token);
+
+				for(j = strlen(cp->value) - 1; (j > 0) && (cp->value[j] == ' '); j--)
+					cp->value[j] = 0;
+				for(j = 0; j < strlen(cp->value); j++)
+					if(cp->value[j] != ' ') break;
+				memmove(cp->value, cp->value + j, strlen(cp->value) - j + 1);
 			}
 		}
 		if(cs[i] == '>')
