@@ -19,6 +19,8 @@
 #ifndef TUXMAN_SERVER_H
 #define TUXMAN_SERVER_H
 
+#define TUXMANDATA "/usr/local/share/ggzd/tuxmanserv"
+
 // GGZ includes
 #include "ggzgameserver.h"
 

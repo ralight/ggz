@@ -3,10 +3,10 @@ Author = Robert Strobl
 Description = Server for Wolf Pacman/Tuxman
 Homepage = http://www.ftpnet.de/pacman/
 Name = Tuxman
-Version = 0.5.3
+Version = 0.7
 
 [LaunchInfo]
-ExecutablePath = /home/chemnitz/kde/localsys/usr/lib/ggzd/tuxmanserv
+ExecutablePath = /usr/local/lib/ggzd/tuxmanserv
 
 [Protocol]
 Engine = Tuxman

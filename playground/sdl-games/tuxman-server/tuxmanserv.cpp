@@ -49,12 +49,12 @@ void TuxmanServer::joinEvent(int player)
 {
 	std::cout << "Tuxman: joinEvent" << std::endl;
 
-	if(!join_lock)
+	if(join_lock)
 	{
 		close(fd(player));
 		return;
 	}
-	join_lock = false;
+	join_lock = true;
 	*net << Net::channel << fd(player);
 	*net << map_list;
 	*net << "default";
@@ -64,6 +64,8 @@ void TuxmanServer::joinEvent(int player)
 void TuxmanServer::leaveEvent(int player)
 {
 	std::cout << "Tuxman: leaveEvent" << std::endl;
+
+	join_lock = false;
 
 	// ouch :)
 	delete this;
@@ -90,6 +92,7 @@ void TuxmanServer::dataEvent(int player)
 			break;
 		case map_move:
 			*net >> &move;
+			std::cout << "got move: " << move << std::endl;
 			switch(move)
 			{
 				case move_up:
