@@ -22,13 +22,13 @@
 
 #include <ggz.h>
 
-#include "tictactoe.xpm"
+#include "ggz.xpm"
 
 #define HEADER "*** Command from the gaim-ggz plugin:"
 #define FOOTER "***"
 #define GGZWRAPPER "ggz-wrapper"
 #define GGZMODULECONFIG "/home/ggz/BUILD/etc/ggz.modules"
-#define SERVER "localhost"
+#define SERVER "live.ggzgamingzone.org"
 
 GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gchar **error, void *data) {
 	int argc,pid;
@@ -102,9 +102,22 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 	char **argvp;
 	char *gamename;
 
-	sg=gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-	icon=gaim_gtkconv_button_new(NULL,"Jeu","Pfff",gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
-	if(icon==NULL) {
+	GdkPixbuf *pixbuf;
+	GtkIconSet *iconset;
+	GtkIconFactory *factory;
+
+	factory = gtk_icon_factory_new();
+	gtk_icon_factory_add_default(factory);
+
+	pixbuf = gdk_pixbuf_new_from_xpm_data(ggz_xpm);
+	iconset = gtk_icon_set_new_from_pixbuf(pixbuf);
+	g_object_unref(G_OBJECT(pixbuf));
+	gtk_icon_factory_add (factory, "ggzicon", iconset);
+
+	sg = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+
+	icon = gaim_gtkconv_button_new("ggzicon", "Play Game", "Pfff", gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
+	if(icon == NULL) {
 		printf("Arf :/ \n");
 		return;
 	} else {
@@ -130,32 +143,15 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 	ggz_conf_close(handle);
 
 	//Menu général
-	gtk_signal_connect_object(GTK_OBJECT(icon), "event", GTK_SIGNAL_FUNC(PopMenu),GTK_OBJECT(menu));
-
+	gtk_signal_connect_object(GTK_OBJECT(icon), "event", GTK_SIGNAL_FUNC(PopMenu), GTK_OBJECT(menu));
 
 	//Fin menu
 	gtk_box_pack_start(GTK_BOX(bbox), icon, FALSE, FALSE, 0);
 	gtk_button_set_relief(GTK_BUTTON(icon), GTK_RELIEF_NONE);
-	gtk_tooltips_set_tip(gtkconv->tooltips, icon, g_strdup("Clickez sur ce bouton pour jouer à tictactoe avec votre correspondant"),0);
+	gtk_tooltips_set_tip(gtkconv->tooltips, icon, g_strdup("Clickez sur ce bouton pour jouer avec votre correspondant"), 0);
 	g_hash_table_insert(conv->data, g_strdup("icon"), icon);
 	gtk_size_group_add_widget(sg, icon);
 	gtk_box_reorder_child(GTK_BOX(bbox), icon, 7);
-
-
-	GdkPixbuf *pixbuf;
-	//GError *error;
-	GtkIconFactory *factory;
-	GtkIconSet *icon_set;
-
-
-	factory = gtk_icon_factory_new();
-	gtk_icon_factory_add_default(factory);
-	
-//	pixbuf=gdk_pixbuf_new_from_inline(24+5005, my_pixbuf, 1, &error);
-	pixbuf=gdk_pixbuf_new_from_xpm_data(tictactoe_xpm);
-	icon_set=gtk_icon_set_new_from_pixbuf (pixbuf);
-
-	gtk_icon_factory_add (factory, "Jeu", icon_set);
 
 	gtk_widget_show(icon);
 }
