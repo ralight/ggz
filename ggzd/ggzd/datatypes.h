@@ -88,6 +88,7 @@ typedef struct {
 	int reserve[MAX_TABLE_SIZE];
 	int player_fd[MAX_TABLE_SIZE];
 	void *options;
+	char desc[1024];
 } TableInfo;
 
 
