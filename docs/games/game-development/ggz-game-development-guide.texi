@@ -9,7 +9,7 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002 Josef Spillner
+Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net
 @end ifinfo
 
 @c Frontpage
@@ -21,7 +21,7 @@ Copyright (C) 2002 Josef Spillner
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2002 Josef Spillner
+Copyright @copyright{} 2002 Josef Spillner, dr_maux@users.sourceforge.net
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -33,7 +33,7 @@ Published under the GNU Free Documentation License.
 This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
 also available in postscript and HTML format.
 It describes how to develop game clients and servers which run over GGZ.
-See http://ggz.sourceforge.net for the latest edition.
+See http://ggz.sourceforge.net/docs/ for the latest edition.
 @end ifinfo
 
 @menu
@@ -64,7 +64,8 @@ server side (programming languages).
 
 @section Native GGZ Games ("internal")
 
-With more than a dozen games available, GGZ offers a solid bunch of different
+With more than a dozen games available, which can be played using nearly two
+dozen game clients, GGZ offers a solid bunch of different
 games by itself. They're all developed based on a client/server model.
 So how does that work?
 
@@ -73,12 +74,17 @@ game which he wants to play with some others. Technically, a table is created
 to hold that game, and the player is put onto that table, occupying one seat.
 The other available seats can be left empty, filled up with bots or used by
 other players. The quantity of each type is determined by the game server, for
-example, some games might not support bots (AI players) at all.
+example, some games might not support bots (AI players) at all, or it might
+support an unlimited number of players.
 
 @section Games which want to use GGZ ("external")
 
 External game work no different to internal ones. However, a few assumptions
-can be made: ...
+can be made, for example, most external game have been present before they got
+a GGZ mode, and are thus more complex in design.
+In the future, some GGZ game servers and clients will most likely also provide
+a standalone mode, just like some clients already do for local games,
+namely Muehle and KTicTacTux.
 
 @node Game Clients, Game Servers, The GGZ System, Top
 @chapter Game Clients
@@ -93,7 +99,8 @@ every player can be trusted, so it is a general agreement that the server is
 the trusted element and the clients are just there to convert the game data to
 a more human-friendly format.
 However, this shouldn't stop anybody of developing great game clients.
-Furthermore, there are some GGZ games which run without a server.
+Furthermore, there are some GGZ games which run without a server, or with a
+minimal server which leaves all checks to the game clients.
 
 @section Game Registry
 
@@ -121,12 +128,36 @@ Version = <version>
 The entries don't have to have any special values, except that the combination
 of protocol engine and protocol version is used to ensure the compatibility
 with any game server of this name. The frontend should be a common abbreviation
-like kde, gtk or sdl.
+like kde, gtk, qt or sdl.
 
 @section Client Toolkits
-@subsection KDE (C++)
-@subsection Gtk+ (C), Gtk-- (C++)
+@subsection KDE or Qt (C++)
+
+See @url{http://games.kde.org} for information about KDE game development.
+There is also a mailing list for this topic with information available at
+@url{http://mail.kde.org/mailman/listinfo/kde-games-devel}.
+
+The language bindings for KDE are also maturing, so there shouldn't be major
+obstacles coding a KDE game client in Ruby, Python, Perl or Java.
+
+You will most likely be interested in using Qt classes for OpenGL or sprite
+animations, so get yourself a copy of the Qt documentation.
+
+The GGZ games KReversi, KDots, KTicTacTux, Krosswater, Muehle, Keepalive,
+Koenig, Kamikaze and Copenhagen are have been written using KDE/Qt as development
+framework.
+
+@subsection Gtk+, Gnome (C), Gtk-- (C++)
+
+There are several useful libraries for Gtk+, including GtkGLArea.
+Examples of Gtk+ GGZ games are TicTacToe, NetSpades, LaPocha, Connect the Dots,
+Hastings, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
+
 @subsection SDL (C, C++, Python)
+
+SDL is a proven toolkit for game development, with tons of games already
+available. See @url{http://www.libsdl.org} for a list of them.
+The GGZ game Stalker has been written using SDL.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -152,6 +183,11 @@ The states in which a game server can be are:
 @item STATE_PLAYING
 @item STATE_DONE
 @end itemize
+
+In order to ease game development, the ggzdmod library has been written, which
+comes with extensive documentation.
+See @url{http://ggz.sourceforge.net/api/ggzdmod/html/ggzdmod_8h.html} for the
+online documentation, which is also available as man page (man 3 ggzdmod.h).
 
 @section Configuration Files
 
@@ -194,6 +230,9 @@ MaxPlayers = <maximum of players>
 MaxTables = <maximum of tables>
 @end verbatim
 
+Have a look at the current game server description files if there are open
+questions.
+
 @section Programming Language
 @subsection C Development
 
@@ -204,6 +243,8 @@ C programmers can use ggzdmod natively.
 For C++ developers there exist some choices in wrapping the ggzdmod library.
 For example, Krosswater uses the Zone library, and Muehle uses the
 GGZGameServer class, which are both wrappers for ggzdmod.
+In the latter case, you only need to inherit your main server class from
+GGZGameServer, and reimplement all of its protected event methods.
 
 @subsection Python Development
 
@@ -212,6 +253,8 @@ There is a python wrapper for ggzdmod: pyggzdmod.
 @subsection Ruby Development
 
 There is a ruby wrapper for ggzdmod: ruggzdmod.
+In the future, the GGZ server will also be available as a complete ruby
+implementation, which will come with a native game server interface.
 
 @node Programming Details, (dir), Game Servers, Top
 @chapter Programming Details
@@ -235,6 +278,8 @@ So a sample call may look like this:
 @command{ExecutablePath=/usr/local/ggz/lib/ggzwrap
 --exec=/usr/local/ggz/lib/tictactoe --fdin=3 --fdout=3}
 
+The GGZ Muehle game uses this one.
+
 @subsection ShadowBridge
 
 The KDE equivalent of ggzwrap can be used to debug network connections
@@ -250,12 +295,19 @@ A very easy and convenious library for those who don't need any fancy features
 for TCP connections. This library is part of GGZ and therefore always
 available. It has been merged into libggz, so all functions are prefixed with
 ggz_ now.
+See the documentation for libggz for more details.
 
 @subsection Qt (C++)
 
 Those game clients which use the Qt toolkit will most likely use the Qt network
 code as well. This has mostly to do with QSocket, QSocketNotifier and
-QDataStream.
+QDataStream, which are all very easy and intuitive to use.
+
+@subsection KDE (C++)
+
+KDE does provide very powerful networking mechanisms. There are not only
+classes like KSocket/KExtSocket, but also the DCOP library, and the KDE games
+library named libkdegames.
 
 @section Configuration
 
@@ -264,11 +316,15 @@ QDataStream.
 Many GGZ configurations are read and written using GGZConfIO. Formerly located
 in the ggzcore library, it is now part of libggz and consists of many
 ggz_conf_* functions.
+The details are again explained in the libggz documentation.
 
 @subsection Minidom (XML-Style)
 
 If you want to read or write XML data, while avoiding the overhead of a complex
-XML library, the GGZ project offers the minidom library.
+XML library, the GGZ project offers the minidom library, which you can find in
+utils/metaserv/minidom.
+Currently, both the GGZ meta server and the Copenhagen game server make use of
+this library.
 
 @c @printindex cp
 
