@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4476 2002-09-09 00:55:17Z jdorje $
+ * $Id: io.c 4947 2002-10-18 22:46:42Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -45,17 +45,12 @@
 /* Private IO reading functions */
 static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_req_join(GGZdMod *ggzdmod);
-static int _io_read_rsp_join(GGZdMod *ggzdmod);
 static int _io_read_req_leave(GGZdMod *ggzdmod);
-static int _io_read_rsp_leave(GGZdMod *ggzdmod);
 static int _io_read_req_spectator_join(GGZdMod *ggzdmod);
-static int _io_read_rsp_spectator_join(GGZdMod *ggzdmod);
 static int _io_read_req_spectator_leave(GGZdMod *ggzdmod);
-static int _io_read_rsp_spectator_leave(GGZdMod *ggzdmod);
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
 static int _io_read_req_seat(GGZdMod * ggzdmod);
-static int _io_read_rsp_seat(GGZdMod *ggzdmod);
 
 
 /* Functions for sending IO messages */
@@ -172,55 +167,6 @@ int _io_send_log(int fd, char *msg)
 }
 
 
-/* Functions for sending repsonses */
-int _io_respond_join(int fd, int status)
-{
-	if (ggz_write_int(fd, RSP_GAME_JOIN) < 0
-	    || ggz_write_char(fd, status) < 0)
-		return -1;
-	else
-		return 0;
-}
-
-
-int _io_respond_leave(int fd, int status)
-{
-	if (ggz_write_int(fd, RSP_GAME_LEAVE) < 0 
-	    || ggz_write_char(fd, status) < 0)
-		return -1;
-	else
-		return 0;
-}
-
-int _io_respond_spectator_join(int fd, int status)
-{
-	if (ggz_write_int(fd, RSP_GAME_SPECTATOR_JOIN) < 0
-	    || ggz_write_char(fd, status) < 0)
-		return -1;
-	else
-		return 0;
-}
-
-int _io_respond_spectator_leave(int fd, int status)
-{
-	if (ggz_write_int(fd, RSP_GAME_SPECTATOR_LEAVE) < 0 
-	    || ggz_write_char(fd, status) < 0)
-		return -1;
-	else
-		return 0;
-}
-
-
-int _io_respond_seat(int fd, int status)
-{
-	if (ggz_write_int(fd, RSP_GAME_SEAT) < 0
-	    || ggz_write_char(fd, status) < 0)
-		return -1;
-	else
-		return 0;
-}
-
-
 int _io_respond_state(int fd)
 {
 	return ggz_write_int(fd, RSP_GAME_STATE);
@@ -230,129 +176,39 @@ int _io_respond_state(int fd)
 /* Functions for reading messages */
 int _io_read_data(GGZdMod * ggzdmod)
 {
-	int op, status = 0;
+	int op;
 
 	if (ggz_read_int(ggzdmod->fd, &op) < 0)
 		return -1;
 
 	if (ggzdmod->type == GGZDMOD_GAME) {
-		switch (op) {
+		switch ((ControlToTable)op) {
 		case MSG_GAME_LAUNCH:
-			status = _io_read_req_launch(ggzdmod);
-			break;
+			return _io_read_req_launch(ggzdmod);
 		case REQ_GAME_JOIN:
-			status = _io_read_req_join(ggzdmod);
-			break;
+			return _io_read_req_join(ggzdmod);
 		case REQ_GAME_LEAVE:
-			status = _io_read_req_leave(ggzdmod);
-			break;
+			return _io_read_req_leave(ggzdmod);
 		case REQ_GAME_SEAT:
-			status = _io_read_req_seat(ggzdmod);
-			break;
+			return _io_read_req_seat(ggzdmod);
 		case REQ_GAME_SPECTATOR_JOIN:
-			status = _io_read_req_spectator_join(ggzdmod);
-			break;
+			return _io_read_req_spectator_join(ggzdmod);
 		case REQ_GAME_SPECTATOR_LEAVE:
-			status = _io_read_req_spectator_leave(ggzdmod);
-			break;
+			return _io_read_req_spectator_leave(ggzdmod);
 		case RSP_GAME_STATE:
 			_ggzdmod_handle_state_response(ggzdmod);
-			break;
-		default:
-			/* FIXME: unknown protocol error */
-			break;
+			return 0;
 		}
 	} else {
-		switch (op) {
-		case RSP_GAME_JOIN:
-			status = _io_read_rsp_join(ggzdmod);
-			break;
-		case RSP_GAME_LEAVE:
-			status = _io_read_rsp_leave(ggzdmod);
-			break;
-		case RSP_GAME_SEAT:
-			status = _io_read_rsp_seat(ggzdmod);
-			break;
-		case RSP_GAME_SPECTATOR_JOIN:
-			status = _io_read_rsp_spectator_join(ggzdmod);
-			break;
-		case RSP_GAME_SPECTATOR_LEAVE:
-			status = _io_read_rsp_spectator_leave(ggzdmod);
-			break;
+		switch ((TableToControl)op) {
 		case REQ_GAME_STATE:
-			status = _io_read_req_state(ggzdmod);
-			break;
+			return _io_read_req_state(ggzdmod);
 		case MSG_LOG:
-			status = _io_read_msg_log(ggzdmod);
-		default:
-			break;
+			return _io_read_msg_log(ggzdmod);
 		}
 	}
 
-	return status;
-}
-
-
-static int _io_read_rsp_join(GGZdMod *ggzdmod)
-{
-	char status;
-
-	if (ggz_read_char(ggzdmod->fd, &status) < 0)
-		return -1;
-	else
-		_ggzdmod_handle_join_response(ggzdmod, status);
-	
-	return 0;
-}
-
-
-static int _io_read_rsp_leave(GGZdMod * ggzdmod)
-{
-	char status;
-
-	if (ggz_read_char(ggzdmod->fd, &status) < 0)
-		return -1;
-	else
-		_ggzdmod_handle_leave_response(ggzdmod, status);
-	
-	return 0;
-}
-
-static int _io_read_rsp_spectator_join(GGZdMod *ggzdmod)
-{
-	char status;
-
-	if (ggz_read_char(ggzdmod->fd, &status) < 0)
-		return -1;
-	else
-		_ggzdmod_handle_spectator_join_response(ggzdmod, status);
-	
-	return 0;
-}
-
-
-static int _io_read_rsp_spectator_leave(GGZdMod * ggzdmod)
-{
-	char status;
-
-	if (ggz_read_char(ggzdmod->fd, &status) < 0)
-		return -1;
-	else
-		_ggzdmod_handle_spectator_leave_response(ggzdmod, status);
-	
-	return 0;
-}
-
-static int _io_read_rsp_seat(GGZdMod *ggzdmod)
-{
-	char status;
-
-	if (ggz_read_char(ggzdmod->fd, &status) < 0)
-		return -1;
-	else
-		_ggzdmod_handle_seat_response(ggzdmod, status);
-	
-	return 0;
+	return -1;
 }
 
 
@@ -367,7 +223,6 @@ static int _io_read_req_state(GGZdMod * ggzdmod)
 	
 	return 0;
 }
-
 
 
 static int _io_read_msg_log(GGZdMod * ggzdmod)

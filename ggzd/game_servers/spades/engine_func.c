@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 4935 2002-10-17 01:05:42Z jdorje $
+ * $Id: engine_func.c 4947 2002-10-18 22:46:42Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -224,11 +224,13 @@ void GetGameInfo( void ) {
 		switch(op) {
 		case REQ_GAME_JOIN:
 			ReadIntOrDie(gameInfo.ggz_sock, &seat);
+			if (gameInfo.playerSock[seat] != SOCK_INVALID) {
+				err_msg("Player joined on invalid seat %d.",
+					seat);
+				/* Not fatal - hopefully. */
+			}
 			readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
 			ggz_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
-			WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_JOIN);
-			status = 0;
-			write(gameInfo.ggz_sock, &status, 1);
 			dbg_msg("%s on %d in seat %d", gameInfo.players[seat]
 				,gameInfo.playerSock[seat], seat);
 			open_seats--;
@@ -238,15 +240,15 @@ void GetGameInfo( void ) {
 			for (i=0; i<4; i++)
 				if (!strcmp(name, gameInfo.players[i]))
 					break;
-			if (i == 4) /* Player not found */
-				status = -1;
-			else {
+			if (i == 4) {/* Player not found */
+				err_msg("Invalid player %s left game.",
+					name);
+				/* Not a fatal error, hopefully. */
+			} else {
 				gameInfo.playerSock[i] = SOCK_INVALID;
 				open_seats++;
 				status = 0;
 			}
-			WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LEAVE);
-			write(gameInfo.ggz_sock, &status, 1);
 			dbg_msg("Removed %s from seat %d",
 				gameInfo.players[i], i);
 			break;

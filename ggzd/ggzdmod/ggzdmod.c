@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4928 2002-10-15 02:23:36Z jdorje $
+ * $Id: ggzdmod.c 4947 2002-10-18 22:46:42Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -49,7 +49,6 @@
 #include "ggzdmod.h"
 #include "mod.h"
 #include "io.h"
-#include "protocol.h"
 
 
 /* This checks the ggzdmod object for validity.  It could do more checking if
@@ -1151,52 +1150,6 @@ void _ggzdmod_error(GGZdMod *ggzdmod, char* error)
 }
 
 
-void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status)
-{
-	if (status == 0)
-		call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, NULL);
-	else
-		_ggzdmod_error(ggzdmod, "Player failed to join");
-}
-
-
-void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status)
-{
-	if (status == 0)
-		call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &status);
-	else
-		_ggzdmod_error(ggzdmod, "Player failed to leave");
-}
-
-
-void _ggzdmod_handle_seat_response(GGZdMod * ggzdmod, char status)
-{
-	ggz_debug("GGZDMOD", "Handling RSP_GAME_SEAT");
-	if (status == 0)
-		call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, NULL);
-	else
-		_ggzdmod_error(ggzdmod, "Seat change failed");
-}
-
-
-void _ggzdmod_handle_spectator_join_response(GGZdMod * ggzdmod, char status)
-{
-	if (status == 0)
-		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, NULL);
-	else
-		_ggzdmod_error(ggzdmod, "Spectator failed to join");
-}
-
-
-void _ggzdmod_handle_spectator_leave_response(GGZdMod * ggzdmod, char status)
-{
-	if (status == 0)
-		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, NULL);
-	else
-		_ggzdmod_error(ggzdmod, "Spectator failed to leave");
-}
-
-
 void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
 {
 	_io_respond_state(ggzdmod->fd);
@@ -1345,10 +1298,6 @@ void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 		/* Free old_seat */
 		seat_free(old_seat);
 	}
-
-	/* Send response to GGZ */
-	if (_io_respond_join(ggzdmod->fd, status) < 0)
-		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 }
 
 
@@ -1394,9 +1343,6 @@ void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 		/* Delete old_seat */
 		seat_free(old_seat);
 	}
-
-	if (_io_respond_leave(ggzdmod->fd, status) < 0)
-		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 }
 
 
@@ -1428,9 +1374,6 @@ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat)
 
 	/* Free old_seat */
 	seat_free(old_seat);
- 
-	if (_io_respond_seat(ggzdmod->fd, 0) < 0)
-		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 }
 
 /* game-side event: spectator join event received from ggzd.  */
@@ -1463,10 +1406,6 @@ void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator)
 		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN,
 			     &old_spectator);
 	}
-
-	/* Send response to GGZ */
-	if (_io_respond_spectator_join(ggzdmod->fd, status) < 0)
-		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 }
 
 
@@ -1509,9 +1448,6 @@ void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name)
 		/* Delete the copy. */
 		spectator_free(oldspectator);
 	}
-
-	if (_io_respond_spectator_leave(ggzdmod->fd, status) < 0)
-		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: protocol.h 4947 2002-10-18 22:46:42Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -33,42 +33,6 @@
 
 /** Messages sent from the game server to the ggz server. */
 typedef enum {
-	/** @brief Signals the start of a RSP_GAME_JOIN packet.
-	 *
-	 *  The packet is composed of:
-	 *    - An integer containing RSP_GAME_JOIN.
-	 *    - A single byte (char) containing the status;
-	 *      a negative status indicates an error.
-	 *  The packet is sent in response to a REQ_GAME_JOIN, and
-	 *  indicates that the game server has handled the join event.
-	 */
-	RSP_GAME_JOIN,
-
-	/** @brief Signals the start of a RSP_GAME_LEAVE packet.
-	 *
-	 *  The packet is composed of:
-	 *    - An integer containing RSP_GAME_LEAVE.
-	 *    - A single byte (char) containing the status;
-	 *      a negative status indicates an error.
-	 *  The packet is sent in response to a REQ_GAME_LEAVE, and
-	 *  indicates that the game server has handled the leave event.
-	 */
-	RSP_GAME_LEAVE,
-
-	RSP_GAME_SPECTATOR_JOIN,
-	RSP_GAME_SPECTATOR_LEAVE,
-
-	/** @brief Signals the start of a RSP_GAME_SEAT packet.
-	 *
-	 *  The packet is composed of:
-	 *    - An integer containing RSP_GAME_SEAT.
-	 *    - A single byte (char) containing the status;
-	 *      a negative status indicates an error.
-	 *  The packet is sent in response to a REQ_GAME_SEAT, and
-	 *  indicates that the game server has handled the seat event.
-	 */
-	RSP_GAME_SEAT,
-
 	/** @brief Signals the start of a MSG_LOG packet.
 	 *
 	 *  The packet is composed of:

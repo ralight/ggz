@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 4519 2002-09-11 23:02:30Z jdorje $
+ * $Id: mod.h 4947 2002-10-18 22:46:42Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -64,11 +64,6 @@ struct GGZdMod {
 void _ggzdmod_error(GGZdMod *ggzdmod, char* error);
 
 /* GGZ side functions for handling various messages */
-void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status);
-void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status);
-void _ggzdmod_handle_seat_response(GGZdMod * ggzdmod, char status);
-void _ggzdmod_handle_spectator_join_response(GGZdMod * ggzdmod, char status);
-void _ggzdmod_handle_spectator_leave_response(GGZdMod * ggzdmod, char status);
 void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state);
 void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg);
 
