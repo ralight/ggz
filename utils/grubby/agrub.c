@@ -19,7 +19,7 @@
 #include <protocols.h>
 
 /* ~/.agrub version */
-#define FILE_VERSION "0.0.2"
+#define FILE_VERSION "0.0.3"
 
 #define DEFAULT_PORT 5687
 #define DEFAULT_HOSTNAME "localhost"
@@ -52,7 +52,16 @@ int player_greet = 0;
 int last_used = 0;
 int sig_logout = 0;
 
+
+
 #define MAX_KNOWN 50
+#define MAX_MESSAGES 4
+
+typedef struct {
+	char *msg_from;
+	char *msg;
+} smsg;
+
 struct {
 	char *name;
 	char *aka;
@@ -62,8 +71,8 @@ struct {
 	char *bday;
 	time_t last_seen;
 	char *last_room;
-	char *msg_from;
-	char *msg;
+	int msg_count;
+	smsg msg[MAX_MESSAGES];
 } known[MAX_KNOWN];
 int num_known = 0;
 
@@ -113,7 +122,7 @@ int main(const int argc, const char *argv[])
 	fd_set select_mux;
 	struct timeval timeout;
 	poptContext context;
-	int rc;
+	int rc, num;
 	char tmp[1024], *home;
 	char file[1024];
 	char ver[1024];
@@ -125,9 +134,9 @@ int main(const int argc, const char *argv[])
 		  = known[i].email
 		  = known[i].url
 		  = known[i].info
-		  = known[i].msg_from
-		  = known[i].msg
 		    = NULL;
+
+	known[i].msg_count=0;
 
 	context = poptGetContext(NULL, argc, argv, args, 0);
 	while((rc = poptGetNextOpt(context)) != -1) {
@@ -221,16 +230,13 @@ int main(const int argc, const char *argv[])
 				known[j].info = NULL;
 			printf("- %s",known[j].info);
 
-			if(!strcmp(ver,"0.0.2\n"))
-			{
-				fgets(tmp, 1024, grub_file);
-				tmp[strlen(tmp)-1] = '\0';
-				known[j].bday = malloc(strlen(tmp));
-				strcpy(known[j].bday, tmp);
-				if(!strcmp(known[j].bday,"NULL"))
-					known[j].bday = NULL;
-				printf("- %s",known[j].bday);
-			}
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].bday = malloc(strlen(tmp));
+			strcpy(known[j].bday, tmp);
+			if(!strcmp(known[j].bday,"NULL"))
+				known[j].bday = NULL;
+			printf("- %s",known[j].bday);
 
 			fgets(tmp, 1024, grub_file);
 			known[j].last_seen = atoi (tmp);
@@ -242,23 +248,28 @@ int main(const int argc, const char *argv[])
 			strcpy(known[j].last_room, tmp);
 			if(!strcmp(known[j].last_room,"NULL"))
 				known[j].last_room = NULL;
-			printf("- %s",known[j].last_room);
+			printf("- %s\n",known[j].last_room);
 
 			fgets(tmp, 1024, grub_file);
-			tmp[strlen(tmp)-1] = '\0';
-			known[j].msg_from = malloc(strlen(tmp));
-			strcpy(known[j].msg_from, tmp);
-			if(!strcmp(known[j].msg_from,"NULL"))
-				known[j].msg_from = NULL;
-			printf("- %s",known[j].msg_from);
+			num = atoi(tmp);
+			printf(">>> Messages: %d\n",num);
+			known[j].msg_count=num;
 
-			fgets(tmp, 1024, grub_file);
-			tmp[strlen(tmp)-1] = '\0';
-			known[j].msg = malloc(strlen(tmp));
-			strcpy(known[j].msg, tmp);
-			if(!strcmp(known[j].msg,"NULL"))
-				known[j].msg = NULL;
-			printf("- %s\n",known[j].msg);
+			for(i=0;i<num;i++)
+			{
+				fgets(tmp, 1024, grub_file);
+				tmp[strlen(tmp)-1] = '\0';
+				known[j].msg[i].msg_from = malloc(strlen(tmp));
+				strcpy(known[j].msg[i].msg_from, tmp);
+				printf("- %s",known[j].msg[i].msg_from);
+
+				fgets(tmp, 1024, grub_file);
+				tmp[strlen(tmp)-1] = '\0';
+				known[j].msg[i].msg = malloc(strlen(tmp));
+				strcpy(known[j].msg[i].msg, tmp);
+				printf("- %s\n",known[j].msg[i].msg);
+			}
+			printf("\n\n");
 		}
 		fclose(grub_file);
 	}
@@ -570,7 +581,7 @@ void do_logout(int on_sig)
 	FILE *grub_file;
 	char *home;
 	char file[1024];
-	int i;
+	int i, j;
 
 	/* Logout of GGZ server */
 	if(!on_sig)
@@ -631,14 +642,13 @@ void do_logout(int on_sig)
 			fprintf(grub_file, "%s\n", known[i].last_room);
 		else
 			fprintf(grub_file, "NULL\n");
-		if(known[i].msg_from != NULL)
-			fprintf(grub_file, "%s\n", known[i].msg_from);
-		else
-			fprintf(grub_file, "NULL\n");
-		if(known[i].msg != NULL)
-			fprintf(grub_file, "%s\n", known[i].msg);
-		else
-			fprintf(grub_file, "NULL\n");
+	
+		fprintf(grub_file, "%d\n", known[i].msg_count);
+		for (j=0;j<known[i].msg_count;j++)
+		{
+			fprintf(grub_file, "%s\n", known[i].msg[j].msg_from);
+			fprintf(grub_file, "%s\n", known[i].msg[j].msg);
+		}
 	}
 
 	fclose(grub_file);
@@ -650,7 +660,7 @@ void do_logout(int on_sig)
 
 void do_greet(char *name)
 {
-	int i;
+	int i,j;
 
 	if(!strcmp(name, bot_name)) {
 		free(name);
@@ -695,16 +705,23 @@ void do_greet(char *name)
 				bot_name);
 			send_chat(out_msg);
 		}
-		if(known[i].msg_from) {
-			sprintf(out_msg, "%s wanted me to tell you:",
-				known[i].msg_from);
+		if((random()%15) == 0) {
+			sprintf(out_msg,
+				"Hows it hanging?");
 			send_chat(out_msg);
-			sprintf(out_msg, "    '%s'", known[i].msg);
-			send_chat(out_msg);
-			known[i].msg_from = NULL;
-			free(known[i].msg);
-			known[i].msg = NULL;
 		}
+		for(j=0;j<known[i].msg_count;j++)
+		{
+			sprintf(out_msg, "%s wanted me to tell you:",
+				known[i].msg[j].msg_from);
+			send_chat(out_msg);
+			sprintf(out_msg, "    '%s'", known[i].msg[j].msg);
+			send_chat(out_msg);
+			known[i].msg[j].msg_from = NULL;
+			free(known[i].msg[j].msg);
+			known[i].msg[j].msg = NULL;
+		}
+		known[i].msg_count=0;
 		free(name);
 	}
 }
@@ -1039,17 +1056,19 @@ void queue_message(char *sender, char *command)
 		return;
 	}
 
-	if(known[i].msg_from) {
-		sprintf(out_msg, "Sorry %s, I already have a message for %s.",
-			disp_sender, command);
+	if(known[i].msg_count == MAX_MESSAGES) {
+		sprintf(out_msg, "Sorry %s, I already %d messages for %s.",
+			disp_sender, MAX_MESSAGES, command);
 		send_chat(out_msg);
 		return;
 	}
 
 	newstr = malloc(strlen(p)+1);
 	strcpy(newstr, p);
-	known[i].msg_from = disp_sender;
-	known[i].msg = newstr;
+	known[i].msg[known[i].msg_count].msg_from = disp_sender;
+	known[i].msg[known[i].msg_count].msg = newstr;
+	known[i].msg_count++;
+
 	disp_name = known[i].name;
 	if(known[i].aka)
 		disp_name = known[i].aka;
