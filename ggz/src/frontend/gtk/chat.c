@@ -84,8 +84,14 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 	switch(id)
 	{
 		case CHAT_MSG:
-			name = g_strdup_printf("<%s>", player);
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			if(!strncasecmp(message, "/me ", 4))
+			{
+				name = g_strdup_printf("%s %s", player, message+4);
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
+			} else {
+				name = g_strdup_printf("<%s>", player);
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			}
 			break;
 		case CHAT_PRVMSG:
 			name = g_strdup_printf(">%s<", player);
@@ -196,6 +202,7 @@ void chat_help(void)
 {
 	chat_display_message(CHAT_BEEP, "---", "Chat Commands");
 	chat_display_message(CHAT_BEEP, "---", "-------------");
+	chat_display_message(CHAT_BEEP, "---", "/me <action>");
 	chat_display_message(CHAT_BEEP, "---", "/msg <username> <message>");
 	chat_display_message(CHAT_BEEP, "---", "/beep <username>");
 }
