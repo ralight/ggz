@@ -130,7 +130,7 @@ class KGGZ : public QWidget
 		// Emitted if room changes
 		void signalLocation(const char *location);
 		// Emitted on activity changes
-		void signalActivity(bool activity);
+		void signalActivity(int activity);
 
 	public slots:
 		// Connect to a game server

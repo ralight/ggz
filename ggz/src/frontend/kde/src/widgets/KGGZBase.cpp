@@ -50,11 +50,12 @@
 KGGZBase::KGGZBase()
 : KMainWindow()
 {
-	int x, y, width, height;
+	int x, y, width, height, watcher;
 
 	tray = NULL;
 	m_about = NULL;
 	m_rooms = 0;
+	m_activity = 0;
 
 	KSimpleConfig konfig("kggzrc");
 	konfig.setGroup("kggzbase");
@@ -62,6 +63,7 @@ KGGZBase::KGGZBase()
 	y = konfig.readNumEntry("y");
 	width = konfig.readNumEntry("width");
 	height = konfig.readNumEntry("height");
+	watcher = konfig.readNumEntry("watcher");
 
 	statusBar()->insertItem(i18n("  Not connected  "), 1);
 	statusBar()->insertItem(i18n("  Loading...  "), 2);
@@ -145,13 +147,15 @@ KGGZBase::KGGZBase()
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
-	connect(kggz, SIGNAL(signalActivity(bool)), SLOT(slotActivity(bool)));
+	connect(kggz, SIGNAL(signalActivity(int)), SLOT(slotActivity(int)));
 
 	setCentralWidget(kggz);
 	setCaption(i18n("offline"));
 	if(x || y || width || height) setGeometry(x, y, width, height);
 	else setGeometry(KApplication::desktop()->width() / 2 - 250, KApplication::desktop()->height() / 2 - 225, 500, 441);
 	show();
+
+	if(watcher) slotMenu(MENU_GGZ_WATCHER);
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 
@@ -161,10 +165,13 @@ KGGZBase::KGGZBase()
 KGGZBase::~KGGZBase()
 {
 	KSimpleConfig konfig("kggzrc");
+	konfig.setGroup("kggzbase");
 	konfig.writeEntry("x", x());
 	konfig.writeEntry("y", y());
 	konfig.writeEntry("width", width());
 	konfig.writeEntry("height", height());
+	if(tray) konfig.writeEntry("watcher", 1);
+	else konfig.writeEntry("watcher", 0);
 }
 
 void KGGZBase::autoconnect(QString uri)
@@ -290,7 +297,7 @@ void KGGZBase::slotMenu(int id)
 				{
 					m_menu_ggz->setItemChecked(MENU_GGZ_WATCHER, true);
 					tray = new KSystemTray(this);
-					slotActivity(false);
+					slotActivity(0);
 					tray->show();
 				}
 			}
@@ -451,13 +458,21 @@ void KGGZBase::slotLocation(const char *location)
 	statusBar()->changeItem(QString("  ") + location + "  ", 3);
 }
 
-void KGGZBase::slotActivity(bool activity)
+void KGGZBase::slotActivity(int activity)
 {
+	if((activity > 0) && (activity <= m_activity)) return;
+
+	m_activity = activity;
+
 	if(tray)
 	{
-		if(activity)
+		if(activity == 2)
 		{
 			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_on.png"));
+		}
+		else if(activity == 1)
+		{
+			tray->setPixmap(QPixmap(KGGZ_DIRECTORY "/images/icons/watcher_room.png"));
 		}
 		else
 		{

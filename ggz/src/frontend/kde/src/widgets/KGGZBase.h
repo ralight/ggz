@@ -76,7 +76,7 @@ class KGGZBase : public KMainWindow
 		// Show room or outside of room message
 		void slotLocation(const char *location);
 		// Activity
-		void slotActivity(bool activity);
+		void slotActivity(int activity);
 
 	private:
 		// assign an icon to a menu item
@@ -142,6 +142,8 @@ class KGGZBase : public KMainWindow
 		int m_rooms;
 		// System tray watcher
 		KSystemTray *tray;
+		// The current activity status
+		int m_activity;
 };
 
 #endif

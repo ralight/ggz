@@ -743,8 +743,10 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
 
-	if(id != GGZCoreRoom::playerlag)
-		emit signalActivity(true);
+	if(id == GGZCoreRoom::chatevent)
+		emit signalActivity(2);
+	else if(id != GGZCoreRoom::playerlag)
+		emit signalActivity(1);
 
 	switch(id)
 	{
@@ -892,7 +894,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	KWallet::Wallet *w = NULL;
 #endif
 
-	emit signalActivity(true);
+	emit signalActivity(1);
 
 	switch(id)
 	{
@@ -1782,6 +1784,6 @@ void KGGZ::menuGameTeam()
 
 void KGGZ::showEvent(QShowEvent *e)
 {
-	emit signalActivity(false);
+	emit signalActivity(0);
 }
 
