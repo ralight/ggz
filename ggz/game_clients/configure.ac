@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6229 2004-10-28 06:25:43Z jdorje $
+dnl $Id: configure.ac 6231 2004-10-29 03:42:50Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -10,7 +10,7 @@ fi
 
 DEFAULT_PACKAGE="ggz-gtk-games"
 DEFAULT_VERSION="0.0.9"
-DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe"
+DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe"
 
 dnl If an override is present, use it
 dnl =================================
@@ -136,8 +136,6 @@ AC_CONFIG_FILES([Makefile
 	   tictactoe/module.dsc
 	   dots/Makefile
 	   dots/module.dsc
-	   lapocha/Makefile
-	   lapocha/module.dsc
 	   ggzcards/Makefile
 	   ggzcards/client/Makefile
 	   ggzcards/common/Makefile
