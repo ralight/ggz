@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 4874 2002-10-12 02:17:02Z jdorje $
+ * $Id: msgbox.c 4875 2002-10-12 05:41:55Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -903,9 +903,9 @@ static char * help[] = {
 MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MBModal modal)
 {
 	GtkWidget *dialogwindow;
-	GtkWidget *packingbox;
+	GtkWidget *vbox;
 	GtkWidget *buttonbox;
-	GtkWidget *packingbox3;
+	GtkWidget *hbox;
 	GtkWidget *icon = NULL;
 	GdkColormap *colormap;
 	GdkPixmap *pixmap = NULL;
@@ -921,11 +921,10 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	gtk_container_set_border_width (GTK_CONTAINER (dialogwindow), 10);
 	gtk_window_set_position (GTK_WINDOW(dialogwindow), GTK_WIN_POS_CENTER);
 
-	packingbox = gtk_vbox_new (FALSE, 5);
-	gtk_container_add (GTK_CONTAINER(dialogwindow), packingbox);
+	vbox = GTK_DIALOG(dialogwindow)->vbox;
 
-	packingbox3 = gtk_hbox_new (FALSE, 2);
-	dialogwidget = AddWidget (packingbox3, packingbox);
+	hbox = gtk_hbox_new (FALSE, 2);
+	dialogwidget = AddWidget (hbox, vbox);
 
 	if (itype == MSGBOX_STOP)
 	{
@@ -955,14 +954,15 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	if(icon) {
 		gdk_pixmap_unref (pixmap);
 		gdk_bitmap_unref (mask);
-		dialogwidget = AddWidget (icon, packingbox3);
+		dialogwidget = AddWidget (icon, hbox);
 		gtk_widget_set_usize(GTK_WIDGET(icon), 40, 40);
 	}
 
-	dialogwidget = AddWidget (gtk_label_new (textmessage), packingbox3);
-	dialogwidget = AddWidget (gtk_hseparator_new(), packingbox);
+	dialogwidget = AddWidget (gtk_label_new (textmessage), hbox);
+
 	buttonbox = gtk_hbutton_box_new();
-	dialogwidget = AddWidget (buttonbox, packingbox);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialogwindow)->action_area),
+			   buttonbox, FALSE, FALSE, 0);
 
 	btnok = gtk_button_new_with_label ("OK");
 	GTK_WIDGET_SET_FLAGS (btnok, GTK_CAN_DEFAULT);
