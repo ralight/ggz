@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4893 2002-10-12 21:04:43Z jdorje $
+ * $Id: main.c 4918 2002-10-14 22:35:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,6 +40,7 @@
 #include <ggzmod.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "game.h"
@@ -70,7 +71,8 @@ int main(int argc, char* argv[])
 
 	game_init();
 	display_board();
-	
+
+	init_player_list(game.ggzmod);
 	ggzmod_connect(game.ggzmod);
 	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
 

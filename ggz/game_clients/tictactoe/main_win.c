@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4895 2002-10-12 22:13:38Z jdorje $
+ * $Id: main_win.c 4918 2002-10-14 22:35:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -36,6 +37,7 @@
 #include <unistd.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 
 #include "main_win.h"
 #include "game.h"
@@ -144,9 +146,9 @@ static gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data
 }
 
 
-static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+static void game_resync(void)
 {
-	
+	assert(FALSE);
 }
 
 
@@ -252,24 +254,32 @@ static gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user
 
 static GtkWidget *create_menus(GtkWidget *window)
 {
-  GtkAccelGroup *accel_group;
-  GtkItemFactory *menu;
-  GtkItemFactoryEntry items[] = {
-    {_("/_Game"), NULL, NULL, 0, "<Branch>"},
-    {_("/Game/Re_sync"), NULL, game_resync, 0, NULL},
-    {_("/Game/_Quit"), "<ctrl>Q", game_exit, 0, NULL},
-    {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-    {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
-  };
-  const int num = sizeof(items) / sizeof(items[0]);
+	GtkWidget *menu_item;
+	GtkAccelGroup *accel_group;
+	GtkItemFactory *menu;
+	GtkItemFactoryEntry items[] = {
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+	};
+	const int num = sizeof(items) / sizeof(items[0]);
 
-  accel_group = gtk_accel_group_new();
+	accel_group = gtk_accel_group_new();
 
-  menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-  gtk_item_factory_create_items(menu, num, items, NULL);
-  gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(menu, num, items, NULL);
+	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
-  return gtk_item_factory_get_widget(menu, "<main>");
+	menu_item = gtk_item_factory_get_widget(menu,
+						_("<main>/Table/"
+						  "Sync with server"));
+	gtk_widget_set_sensitive(menu_item, FALSE);
+
+	return gtk_item_factory_get_widget(menu, "<main>");
 }
 
 
