@@ -53,7 +53,6 @@ int ggzcore_init(GGZOptions options)
 /*     	_ggzcore_module_init();*/
 
 	/* Setup the gametype linked list */
-	_ggzcore_gametype_list_clear();	
 	return 0;
 }
 

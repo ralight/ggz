@@ -381,6 +381,53 @@ int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table)
 }
 
 
+int _ggzcore_net_read_num_tables(const unsigned int fd, int *num)
+{
+	return es_read_int(fd, num);
+}
+
+
+int _ggzcore_net_read_table(const unsigned int fd, struct _GGZTable *table)
+{
+	int id, room, type, num, i, open = 0, bots = 0, seat;
+	char *player = NULL, *desc = NULL;
+	char state;
+	struct _GGZGameType *gametype;
+	
+
+	if (es_read_int(fd, &id) < 0
+	    || es_read_int(fd, &room) < 0
+	    || es_read_int(fd, &type) < 0
+	    || es_read_string_alloc(fd, &desc) < 0
+	    || es_read_char(fd, &state) < 0
+	    || es_read_int(fd, &num) < 0)
+		return -1;
+
+	open = 0;
+	for (i = 0; i < num; i++) {
+		if (es_read_int(fd, &seat) < 0)
+			return -1;
+		if (seat == GGZ_SEAT_PLAYER || seat == GGZ_SEAT_RESV) {
+			es_read_string_alloc(fd, &player);
+		}
+		if (seat == GGZ_SEAT_OPEN)
+			open++;
+		if (seat == GGZ_SEAT_COMP)
+			bots++;
+	}
+
+	ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", id);
+
+	/* FIXME: how do we get gametype without access to server? 
+	   gametype = _ggzcore_server_get_nth_gametype(server, type) */
+	gametype = NULL;
+
+	_ggzcore_table_init(table, id, gametype, state, num, open, bots, desc);
+
+	return -1;
+}
+
+
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status)
 {
 	if (es_read_char(fd, status) < 0)
@@ -511,46 +558,6 @@ int _ggzcore_net_read_update_tables(const unsigned int fd)
 #endif
 
 	return 0;
-}
-
-
-void _ggzcore_net_read_list_tables(const unsigned int fd)
-{
-	int total, id, room, type, num, i, x, open;
-	char *player = NULL, *desc = NULL;
-	char state;
-	int seat;
-	
-	/*_ggzcore_table_list_clear();*/
-		
-	if (es_read_int(fd, &total) < 0)
-		return;
-
-	for (i = 0; i < total; i++) {
-		es_read_int(fd, &id);
-		es_read_int(fd, &room);
-		es_read_int(fd, &type);
-		es_read_string_alloc(fd, &desc);
-		es_read_char(fd, &state);
-		es_read_int(fd, &num);
-
-		open = 0;
-		for (x = 0; x < num; x++) {
-			es_read_int(fd, &seat);
-			if (seat == GGZ_SEAT_PLAYER
-			    || seat == GGZ_SEAT_RESV) {
-				es_read_string_alloc(fd, &player);
-				free(player);
-			}
-			if (seat == GGZ_SEAT_OPEN)
-				open++;
-		}
-		/*_ggzcore_table_list_add(id, type, desc, state, num, open);*/
-		free(desc);
-		ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", id);
-	}
-
-	/*ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);*/
 }
 
 

@@ -149,6 +149,7 @@ typedef enum {
 
 typedef enum {
 	GGZ_PLAYER_LIST,
+	GGZ_TABLE_LIST,
 	GGZ_CHAT,
 	GGZ_ANNOUNCE,
 	GGZ_PRVMSG,
@@ -184,10 +185,11 @@ typedef enum {
 
 
 
-typedef struct _GGZServer GGZServer;
-typedef struct _GGZRoom   GGZRoom;
-typedef struct _GGZPlayer GGZPlayer;
-typedef struct _GGZTable  GGZTable;
+typedef struct _GGZServer   GGZServer;
+typedef struct _GGZRoom     GGZRoom;
+typedef struct _GGZPlayer   GGZPlayer;
+typedef struct _GGZTable    GGZTable;
+typedef struct _GGZGameType GGZGameType;
 
 /* Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(const char *host,
@@ -304,6 +306,15 @@ GGZTable*  ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
 
 char*     ggzcore_player_get_name(GGZPlayer *player);
 GGZTable* ggzcore_player_get_table(GGZPlayer *player);
+
+
+int          ggzcore_table_get_num(GGZTable *table);
+GGZGameType* ggzcore_table_get_type(GGZTable *table);
+char         ggzcore_table_get_state(GGZTable *table);
+int          ggzcore_table_get_seats(GGZTable *table);
+int          ggzcore_table_get_open(GGZTable *table);
+int          ggzcore_table_get_bots(GGZTable *table);
+char*        ggzcore_table_get_desc(GGZTable *table);
 
 typedef enum {
 	GGZ_SEAT_OPEN   = -1,
@@ -568,16 +579,6 @@ char* ggzcore_module_get_url(const unsigned int id);
 char* ggzcore_module_get_path(const unsigned int id);
 char* ggzcore_module_get_icon_path(const unsigned int id);
 char* ggzcore_module_get_help_path(const unsigned int id);
-
-
-/* These function are lookups to table information. All you need pass
-   is the table number.*/
-unsigned int ggzcore_table_get_num(void);
-int ggzcore_table_get_seats(int number);
-int ggzcore_table_get_open(int number);
-char *ggzcore_table_get_desc(int number);
-int *ggzcore_table_get_numbers(void);
-int ggzcore_table_get_gametype(int number);
 
 
 /* These function are lookups to gametype information. All you need pass

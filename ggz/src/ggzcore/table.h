@@ -27,17 +27,20 @@
 #ifndef __TABLE_H_
 #define __TABLE_H_
 
+#include "gametype.h"
+
+
 /* Table Information */
 struct _GGZTable {
  
         /* Table number */
-        int number;
+        int id;
  
         /* Game Type */
-        int type;
+	struct _GGZGameType *gametype;
 
         /* Table state */
-        char *state;
+        char state;
 
         /* Total seats */
         int seats;
@@ -46,7 +49,7 @@ struct _GGZTable {
         int open;
         
         /* Computer seats */
-        int computers;
+        int bots;
 
 	/* Table description */
 	char *desc;        
@@ -54,17 +57,24 @@ struct _GGZTable {
 
 
 
-void _ggzcore_table_list_clear(void);
+struct _ggzcore_list* _ggzcore_table_list_new(void);
 
-int _ggzcore_table_list_add(const int table, const int type, const char* desc, const char state, const int seats, const int open);
+void _ggzcore_table_init(struct _GGZTable *table, 
+			 const int id,
+			 struct _GGZGameType *gametype,
+			 const char state,
+			 const int seats,
+			 const int open,
+			 const int bots,
+			 const char *desc);
+	
 
-int _ggzcore_table_list_remove(const int number);
-
-int _ggzcore_table_list_join(const int number);
-
-int _ggzcore_table_list_leave(const int number);
-
-int _ggzcore_table_list_replace(const char* name, const int table);
-
+unsigned int          _ggzcore_table_get_num(struct _GGZTable *table);
+struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
+char                  _ggzcore_table_get_state(struct _GGZTable *table);
+int                   _ggzcore_table_get_seats(struct _GGZTable *table);
+int                   _ggzcore_table_get_open(struct _GGZTable *table);
+int                   _ggzcore_table_get_bots(struct _GGZTable *table);
+char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
 
 #endif /* __TABLE_H_ */

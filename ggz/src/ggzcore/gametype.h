@@ -24,7 +24,43 @@
  */
 
 
+#ifndef __GAMETYPE_H_
+#define __GAMETYPE_H_
 
+#if 0
+/* Structure describing specific game type */
+struct _GGZGameType {
+	
+	/* Name of the game */
+	char *name;
+
+	/* Version */
+	char *version;
+
+	/* Game description */
+	char *desc;
+
+	/* Author */
+	char *author;
+
+	/* Homepage for game */
+	char *url;
+
+	/* Bitmask of alowable numbers of players 
+	GGZAllowed allow_players;*/
+
+	/* Bitmask of alowable numbers of bots 
+	GGZAllowed allow_bots;*/
+	
+	/* ID of this game on the server (or -1 if not supported) */
+	int id;
+
+	/* FIXME: Some way of identifiying which module to run on the client */
+	/* possible use another id?  or perhaps a pointer would be best */
+};
+#endif
+
+#if 0
 void _ggzcore_gametype_list_clear(void);
 
 int _ggzcore_gametype_list_add(const unsigned int id, const char* name, const char* game,
@@ -36,3 +72,7 @@ int _ggzcore_gametype_list_remove(const unsigned int id);
 int _ggzcore_gametype_list_replace(const unsigned int id, const char* name, 
 			       const unsigned int game, const char* desc);
 
+#endif
+
+
+#endif /*__GAMETYPE_H_*/

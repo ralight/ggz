@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 /* 
  * The game type structure is meant to be a node in a linked list of
  * the game types on the server 
@@ -62,7 +63,6 @@ struct _GGZGameType {
 	/* Game website */
 	char *url;
 };
-
 
 /* List of game types on the server */
 static struct _ggzcore_list *gametype_list;
@@ -314,6 +314,5 @@ char** ggzcore_gametype_get_names(void)
 				
 	return names;
 }
-
 
 

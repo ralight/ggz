@@ -33,12 +33,6 @@
 #include <string.h>
 
 
-/* Local functions for manipulating player list */
-#if 0
-static void _ggzcore_player_list_print(void);
-static void _ggzcore_player_print(struct _GGZPlayer*);
-#endif
-
 /* Utility functions used by _ggzcore_list */
 static int   _ggzcore_player_compare(void* p, void* q);
 static void* _ggzcore_player_create(void* p);
@@ -97,77 +91,6 @@ GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 	return player->table;
 }
 
-#if 0
-void _ggzcore_player_list_clear(void)
-{
-	if (player_list)
-		_ggzcore_list_destroy(player_list);
-	
-	player_list = _ggzcore_list_create(_ggzcore_player_compare,
-					   _ggzcore_player_create,
-					   _ggzcore_player_destroy,
-					   0);
-	num_players = 0;
-}
-
-
-int _ggzcore_player_list_add(const char* name, const int table)
-{
-	int status;
-	struct _GGZPlayer player;
-
-	ggzcore_debug(GGZ_DBG_PLAYER, "Adding %s to player list", name);
-	
-	player.name = (char*)name;
-	player.table = table;
-
-	if ( (status = _ggzcore_list_insert(player_list, (void*)&player)) == 0)
-		num_players++;
-	_ggzcore_player_list_print();
-
-	return status;
-}
-
-
-int _ggzcore_player_list_remove(const char* name)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZPlayer player;
-
-	ggzcore_debug(GGZ_DBG_PLAYER, "Removing %s from player list", name);
-	
-	player.name = (char*)name;
-	if (!(entry = _ggzcore_list_search(player_list, &player)))
-		return -1;
-
-	_ggzcore_list_delete_entry(player_list, entry);
-	num_players--;
-	_ggzcore_player_list_print();
-
-	return 0;
-}
-
-
-int _ggzcore_player_list_replace(const char* name, const int table)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZPlayer data, *player;
-	
-	ggzcore_debug(GGZ_DBG_PLAYER, "Updating player info for %s", name);
-
-	data.name = (char*)name;
-	if (!(entry = _ggzcore_list_search(player_list, &data)))
-		return -1;
-
-	/* Update information */
-	player = _ggzcore_list_get_data(entry);
-	player->table = table;
-
-	_ggzcore_player_list_print();
-
-	return 0;
-}
-#endif
 
 /* Static functions internal to this file */
 
@@ -202,19 +125,3 @@ static void  _ggzcore_player_destroy(void* p)
 	free(p);
 }
 
-#if 0
-static void _ggzcore_player_list_print(void)
-{
-	struct _ggzcore_list_entry *cur;
-	
-	for (cur = _ggzcore_list_head(player_list); cur; cur = _ggzcore_list_next(cur))
-		_ggzcore_player_print(_ggzcore_list_get_data(cur));
-}
-
-
-static void _ggzcore_player_print(struct _GGZPlayer *player)
-{
-	ggzcore_debug(GGZ_DBG_PLAYER, "Player name: %s", player->name);
-	ggzcore_debug(GGZ_DBG_PLAYER, "Player table: %d", player->table);
-}
-#endif

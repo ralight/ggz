@@ -50,17 +50,8 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  struct _GGZTable *table);
 
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
+
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
-
-#if 0
-void _ggzcore_player_list_clear(void);
-
-int _ggzcore_player_list_add(const char* name, const int table);
-
-int _ggzcore_player_list_remove(const char* name);
-
-int _ggzcore_player_list_replace(const char* name, const int table);
-#endif 
 
 
 #endif /* __PLAYER_H_ */

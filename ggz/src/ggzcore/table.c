@@ -24,10 +24,11 @@
  */
 
 
-#include <config.h>
-#include <table.h>
-#include <lists.h>
-#include <msg.h>
+#include "config.h"
+#include "table.h"
+#include "lists.h"
+#include "msg.h"
+#include "ggzcore.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -37,125 +38,184 @@
  * the tables in the current room .
  */
 
-/* List of tables in current room */
-static struct _ggzcore_list *table_list;
-static unsigned int num_tables;
-
-/* Local functions for manipulating table list */
-static void _ggzcore_table_list_print(void);
-static void _ggzcore_table_print(struct _GGZTable*);
 
 /* Utility functions used by _ggzcore_list */
+static void _ggzcore_table_set(struct _GGZTable *table, 
+			       const int id,
+			       struct _GGZGameType *gametype,
+			       const char state,
+			       const int seats,
+			       const int open,
+			       const int bots,
+			       const char *desc);
+
 static int   _ggzcore_table_compare(void* p, void* q);
 static void* _ggzcore_table_create(void* p);
 static void  _ggzcore_table_destroy(void* p);
 
 
-void _ggzcore_table_list_clear(void)
+/* Publicly exported functions */
+
+
+int ggzcore_table_get_num(GGZTable *table)
 {
-	if (table_list)
-		_ggzcore_list_destroy(table_list);
-	
-	table_list = _ggzcore_list_create(_ggzcore_table_compare,
-					  _ggzcore_table_create,
-					  _ggzcore_table_destroy,
-					  0);
-	num_tables = 0;
-}
-
-
-int _ggzcore_table_list_add(const int table, const int type, const char* desc, const char state, const int seats, const int open)
-{
-	int status;
-	struct _GGZTable new_table;
-
-	ggzcore_debug(GGZ_DBG_TABLE, "Adding table number %d to table list", table);
-
-	new_table.number = table;
-	new_table.type = type;
-	new_table.seats = seats;
-	new_table.open = open;
-	new_table.computers = 0;
-	new_table.state = strdup(&state);
-	new_table.desc = strdup(desc);
-
-	status = _ggzcore_list_insert(table_list, (void*)&new_table);
-	if(status == 0)
-		num_tables++;
-	_ggzcore_table_list_print();
-
-	return 0;
-}
-
-
-int _ggzcore_table_list_remove(const int number)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZTable table;
-
-	ggzcore_debug(GGZ_DBG_TABLE, "Removing table number %d.", number);
-
-	table.number = number;
-	if (!(entry = _ggzcore_list_search(table_list, &table)))
+	if (!table)
 		return -1;
 
-	_ggzcore_list_delete_entry(table_list, entry);
-	num_tables--;
-	_ggzcore_table_list_print();
-
-	return 0;
+	return _ggzcore_table_get_num(table);
 }
 
 
-int _ggzcore_table_list_join(const int number)
+GGZGameType* ggzcore_table_get_type(GGZTable *table)
 {
-	struct _ggzcore_list_entry *entry;
-	struct _GGZTable data, *table;
+	if (!table)
+		return NULL;
 
-	ggzcore_debug(GGZ_DBG_TABLE, "Player joined table %d", number);
-
-	data.number = number;
-	if (!(entry = _ggzcore_list_search(table_list, &data)))
-		return -1;
-
-	/* Update information */
-	table = _ggzcore_list_get_data(entry);
-	table->open--;
-
-	_ggzcore_table_list_print();
-
-	return 0;
+	return _ggzcore_table_get_type(table);
 }
 
 
-int _ggzcore_table_list_leave(const int number)
+char ggzcore_table_get_state(GGZTable *table)
 {
-	struct _ggzcore_list_entry *entry;
-	struct _GGZTable data, *table;
-
-	ggzcore_debug(GGZ_DBG_TABLE, "Player left table %d", number);
-
-	data.number = number;
-	if (!(entry = _ggzcore_list_search(table_list, &data)))
+	if (!table)
 		return -1;
 
-	/* Update information */
-	table = _ggzcore_list_get_data(entry);
-	table->open++;
+	return _ggzcore_table_get_state(table);
+}
 
-	_ggzcore_table_list_print();
 
-	return 0;
+int ggzcore_table_get_seats(GGZTable *table)
+{
+	if (!table)
+		return -1;
+
+	return _ggzcore_table_get_seats(table);
+}
+
+     
+int ggzcore_table_get_open(GGZTable *table)
+{
+	if (!table)
+		return -1;
+
+	return _ggzcore_table_get_open(table);
+}
+
+     
+int  ggzcore_table_get_bots(GGZTable *table)
+{
+	if (!table)
+		return -1;
+
+	return _ggzcore_table_get_bots(table);
+}
+
+     
+char* ggzcore_table_get_desc(GGZTable *table)
+{
+	if (!table)
+		return NULL;
+
+	return _ggzcore_table_get_desc(table);
+}
+
+
+/* 
+ * Internal library functions (prototypes in table.h) 
+ * NOTE:All of these functions assume valid inputs!
+ */
+
+struct _ggzcore_list* _ggzcore_table_list_new(void)
+{
+	return _ggzcore_list_create(_ggzcore_table_compare,
+				    _ggzcore_table_create,
+				    _ggzcore_table_destroy,
+				    0);
+}
+
+void _ggzcore_table_init(struct _GGZTable *table, 
+			 const int id,
+			 struct _GGZGameType *gametype,
+			 const char state,
+			 const int seats,
+			 const int open,
+			 const int bots,
+			 const char *desc)
+{
+	_ggzcore_table_set(table, id, gametype, state, seats, open, bots, desc);
+}
+
+
+unsigned int _ggzcore_table_get_num(struct _GGZTable *table)
+{
+	return table->id;
+}
+
+
+struct _GGZGameType* _ggzcore_table_get_type(struct _GGZTable *table)
+{
+	return table->gametype;
+}
+
+
+char _ggzcore_table_get_state(struct _GGZTable *table)
+{
+	return table->state;
+}
+
+
+int _ggzcore_table_get_seats(struct _GGZTable *table)
+{
+	return table->seats;
+}
+
+
+int _ggzcore_table_get_open(struct _GGZTable *table)
+{
+	return table->open;
+}
+
+
+int _ggzcore_table_get_bots(struct _GGZTable *table)
+{
+	return table->bots;
+}
+
+
+char* _ggzcore_table_get_desc(struct _GGZTable *table)
+{
+	return table->desc;
+}
+
+
+/* Static functions internal to this file */
+
+static void _ggzcore_table_set(struct _GGZTable *table, 
+			       const int id,
+			       struct _GGZGameType *gametype,
+			       const char state,
+			       const int seats,
+			       const int open,
+			       const int bots,
+			       const char *desc)
+{
+	table->id = id;
+	table->gametype = gametype;
+	table->state = state;
+	table->seats = seats;
+	table->open = open;
+	table->bots = bots;
+	table->desc = strdup(desc);
 }
 
 
 static int _ggzcore_table_compare(void* p, void* q)
 {
-	if(((struct _GGZTable*)p)->number == ((struct _GGZTable*)q)->number)
+	if(((struct _GGZTable*)p)->id == ((struct _GGZTable*)q)->id)
 		return 0;
-	if(((struct _GGZTable*)p)->number > ((struct _GGZTable*)q)->number)
+	if(((struct _GGZTable*)p)->id > ((struct _GGZTable*)q)->id)
 		return 1;
-	if(((struct _GGZTable*)p)->number < ((struct _GGZTable*)q)->number)
+	if(((struct _GGZTable*)p)->id < ((struct _GGZTable*)q)->id)
 		return -1;
 
 	return 0;
@@ -169,13 +229,8 @@ static void* _ggzcore_table_create(void* p)
 	if (!(new = malloc(sizeof(struct _GGZTable))))
 		ggzcore_error_sys_exit("malloc failed in table_create");
 
-	new->number = src->number;
-	new->type = src->type;
-	new->seats = src->seats;
-	new->open = src->open;
-	new->computers = src->computers;
-	new->state = src->state;
-	new->desc = strdup(src->desc);
+	_ggzcore_table_set(new, src->id, src->gametype, src->state, src->seats,
+			   src->open, src->bots, src->desc);
 
 	return (void*)new;
 }
@@ -190,128 +245,4 @@ static void  _ggzcore_table_destroy(void* p)
 	free(p);
 }
 
-
-static void _ggzcore_table_list_print(void)
-{
-	struct _ggzcore_list_entry *cur;
-	
-	for (cur = _ggzcore_list_head(table_list); cur; cur = _ggzcore_list_next(cur))
-		_ggzcore_table_print(_ggzcore_list_get_data(cur));
-}
-
-
-static void _ggzcore_table_print(struct _GGZTable *table)
-{
-	ggzcore_debug(GGZ_DBG_TABLE, "Table number: %d", table->number);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table type: %d\n", table->type);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table seats: %d\n", table->seats);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table open: %d\n", table->open);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table computers: %d\n", table->computers);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table state: %d\n", table->state);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table desc: %s\n", table->desc);
-}
-
-
-
-/*
- * Lookup functions
- */
-
-unsigned int ggzcore_table_get_num(void)
-{
-	return num_tables;
-}
-
-int ggzcore_table_get_gametype(int number) 
-{
-        struct _ggzcore_list_entry *cur;
-        struct _GGZTable *table;
-
-        if (num_tables >= 0) {
-                cur = _ggzcore_list_head(table_list);
-                while (cur) {
-                        table = _ggzcore_list_get_data(cur);
-                        if(table->number == number)
-                                return table->type;
-                        cur = _ggzcore_list_next(cur);
-                }
-        }
-                
-	return -1;
-}
-
-int ggzcore_table_get_seats(int number) 
-{
-        struct _ggzcore_list_entry *cur;
-        struct _GGZTable *table;
-
-        if (num_tables >= 0) {
-                cur = _ggzcore_list_head(table_list);
-                while (cur) {
-                        table = _ggzcore_list_get_data(cur);
-                        if(table->number == number)
-                                return table->seats;
-                        cur = _ggzcore_list_next(cur);
-                }
-        }
-                
-	return -1;
-}
-
-int ggzcore_table_get_open(int number) 
-{
-        struct _ggzcore_list_entry *cur;
-        struct _GGZTable *table;
-
-        if (num_tables >= 0) {
-                cur = _ggzcore_list_head(table_list);
-                while (cur) {
-                        table = _ggzcore_list_get_data(cur);
-                        if(table->number == number)
-                                return table->open;
-                        cur = _ggzcore_list_next(cur);
-                }
-        }
-                
-	return -1;
-}
-
-char *ggzcore_table_get_desc(int number) 
-{
-        struct _ggzcore_list_entry *cur;
-        struct _GGZTable *table;
-
-        if (num_tables >= 0) {
-                cur = _ggzcore_list_head(table_list);
-                while (cur) {
-                        table = _ggzcore_list_get_data(cur);
-                        if(table->number == number)
-                                return table->desc;
-                        cur = _ggzcore_list_next(cur);
-                }
-        }
-                
-	return "";
-}
-
-int* ggzcore_table_get_numbers(void)
-{
-        int i = 0;
-        int *nums = NULL;
-        struct _ggzcore_list_entry *cur;
-        struct _GGZTable *table;
-        
-        if (num_tables >= 0) {
-                if (!(nums = calloc((num_tables + 1), sizeof(int*))))
-                        ggzcore_error_sys_exit("calloc() failed in table_get_numbers");
-                cur = _ggzcore_list_head(table_list);
-                while (cur) {
-                        table = _ggzcore_list_get_data(cur);
-                        nums[i++] = table->number;
-                        cur = _ggzcore_list_next(cur);
-                }
-        }
-
-        return nums;
-}
 

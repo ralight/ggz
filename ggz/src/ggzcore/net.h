@@ -73,11 +73,14 @@ int _ggzcore_net_read_room(const unsigned int fd,
 			   char **desc);
 
 void _ggzcore_net_read_list_types(const unsigned int fd);
-void _ggzcore_net_read_list_tables(const unsigned int fd);
 
 int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
 int _ggzcore_net_read_num_players(const unsigned int fd, int *num);
 int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table);
+
+int _ggzcore_net_read_num_tables(const unsigned int fd, int *num);
+int _ggzcore_net_read_table(const unsigned int fd, struct _GGZTable *table);
+
 int _ggzcore_net_read_chat(const unsigned int fd, 
 			   GGZChatOp *op, 
 			   char **name, 

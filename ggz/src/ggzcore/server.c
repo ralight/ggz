@@ -867,8 +867,6 @@ static void _ggzcore_server_handle_list_players(GGZServer *server)
 	struct _GGZPlayer player;
 	struct _GGZTable *table;
 
-	/* FIXME: Clear existing list (if any) 
-	   _ggzcore_player_list_clear();*/
 	players = _ggzcore_player_list_new();
 	
 	status = _ggzcore_net_read_num_players(server->fd, &num);
@@ -878,7 +876,12 @@ static void _ggzcore_server_handle_list_players(GGZServer *server)
 
 	for (i = 0; i < num; i++) {
 		status = _ggzcore_net_read_player(server->fd, &name, &t_index);
-		table = _ggzcore_room_get_nth_table(server->room, t_index);
+		if (t_index == -1)
+			table = NULL;
+		else {
+			/* FIXME:Gack! problem if table isn't there yet!! */
+			table = _ggzcore_room_get_nth_table(server->room, t_index);
+		}
 		_ggzcore_player_init(&player, name, table);
 		_ggzcore_list_insert(players, &player);
 		
@@ -922,13 +925,28 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 }
 
 
-/* completely bogus functions to avoid messiness */
 static void _ggzcore_server_handle_list_tables(GGZServer *server)
 {
-	_ggzcore_net_read_list_tables(server->fd);
+	int i, num, status;
+	struct _ggzcore_list *tables;
+	struct _GGZTable table;
+	
+	tables = _ggzcore_table_list_new();
+	
+	status = _ggzcore_net_read_num_tables(server->fd, &num);
+	/* FIXME: handle errors */
+	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d tables", num);
+	
+	for (i = 0; i < num; i++) {
+		status = _ggzcore_net_read_table(server->fd, &table); 
+		_ggzcore_list_insert(tables, &table);
+	}
+	
+	_ggzcore_room_set_table_list(server->room, num, tables);
 }
 
 
+/* completely bogus functions to avoid messiness */
 static void _ggzcore_server_handle_list_types(GGZServer *server)
 {
 	_ggzcore_net_read_list_types(server->fd);

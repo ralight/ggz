@@ -32,7 +32,7 @@
 #include "player.h"
 #include "table.h"
 
-#define GGZ_NUM_ROOM_EVENTS 8
+#define GGZ_NUM_ROOM_EVENTS 9
 
 /*
  * The GGZRoom struct manages information about a particular 
@@ -120,6 +120,10 @@ struct _GGZTable*  _ggzcore_room_get_nth_table(struct _GGZRoom *room,
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   struct _ggzcore_list *list);
+
+void _ggzcore_room_set_table_list(struct _GGZRoom *room,
+				  unsigned int count,
+				  struct _ggzcore_list *list);
 
 void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 
