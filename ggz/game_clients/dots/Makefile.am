@@ -1,9 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
+#  $Id: Makefile.am 5623 2003-07-17 02:27:09Z jdorje $
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) @GTK_CFLAGS@
+INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+		@GTK_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
 
@@ -27,6 +28,8 @@ ggz_dots_SOURCES =	cb_main.c	cb_main.h	\
 			main.c		main.h		\
 			support.c	support.h
 
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a $(LIB_GGZMOD)
-ggz_dots_LDFLAGS = $(GGZMOD_LDFLAGS)
+ggz_dots_LDADD =	@GTK_LIBS@ $(LDADD)			\
+			$(top_builddir)/common/libgtk-games.a	\
+			$(LIB_GGZMOD) $(LIB_GGZ)
+ggz_dots_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 

@@ -1,9 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5320 2003-01-12 11:53:56Z dr_maux $
+#  $Id: Makefile.am 5623 2003-07-17 02:27:09Z jdorje $
 
 SUBDIRS = libcgc bitmaps
 
-INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) @GTK_CFLAGS@
+INCLUDES = -I$(top_srcdir)/common $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
+		 @GTK_CFLAGS@
 
 EXTRA_DIST = module.dsc.in
 
@@ -28,6 +29,6 @@ ggz_chess_SOURCES =				\
 
 ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) libcgc/libcgc.a \
 			$(top_builddir)/common/libgtk-games.a \
-			$(LIB_GGZMOD)
-ggz_chess_LDFLAGS = $(GGZMOD_LDFLAGS)
+			$(LIB_GGZMOD) $(LIB_GGZ)
+ggz_chess_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5286 2002-12-15 10:13:29Z jdorje $
+# $Id: Makefile.am 5623 2003-07-17 02:27:09Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -8,7 +8,7 @@ SUBDIRS = common client .
 INCLUDES =	-I$(top_srcdir)/common/ \
 		-I$(top_srcdir)/ggzcards/common \
 		-I$(top_srcdir)/ggzcards/client \
-		$(GGZMOD_INCLUDES) \
+		$(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		@GTK_CFLAGS@
 
 install-data-local:
@@ -42,5 +42,5 @@ ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) \
 	$(top_builddir)/ggzcards/client/libclient.a \
 	$(top_builddir)/ggzcards/common/libcommon.a \
 	$(top_builddir)/ggzcards/client/libclient.a \
-	$(LIB_GGZMOD)
-ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS)
+	$(LIB_GGZMOD) $(LIB_GGZ)
+ggz_ggzcards_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
