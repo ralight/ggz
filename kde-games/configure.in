@@ -61,7 +61,14 @@ AC_OUTPUT(Makefile
 	keepalive/module.dsc
 	keepalive/src/Makefile
 	keepalive/pics/Makefile
-	man/Makefile)
+	man/Makefile
+	po/Makefile
+	po/KReversi/Makefile
+	po/ktictactux/Makefile
+	po/kdots/Makefile
+	po/krosswater/Makefile
+	po/muehle/Makefile
+	po/koenig/Makefile)
 
 dnl Report success
 dnl ==============
