@@ -22,7 +22,7 @@ GGZCoreGametype::GGZCoreGametype(GGZGameType *gametype)
 
 GGZCoreGametype::GGZCoreGametype()
 {
-	m_gametype = 0;
+	m_gametype = NULL;
 }
 
 GGZCoreGametype::~GGZCoreGametype()
