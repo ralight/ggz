@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: common.c 3288 2002-02-10 01:51:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -334,10 +334,14 @@ static int handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
+		int _assign;
 		GGZSeatType assign;
-		if (ggz_read_int(game_internal.fd, &assign) < 0 ||
+		
+		if (ggz_read_int(game_internal.fd, &_assign) < 0 ||
 		    ggz_read_string_alloc(game_internal.fd, &t_name) < 0)
 			return -1;
+			
+		assign = _assign;
 
 		game_alert_player(i, assign, t_name);
 
