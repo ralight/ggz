@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: games.c 3994 2002-04-15 09:52:12Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -105,23 +105,6 @@ void games_handle_gametype(int choice)
 		choice = 0;
 	}
 	game.data = game_data[choice];
-}
-
-
-
-/* game_valid_game returns a boolean, TRUE if the game is valid in the
-   current setup and false otherwise. */
-int games_get_game_id(char* game_name)
-{
-	int i;
-	
-	for (i = 0; i < NUM_GAMES; i++) {
-		if (strcmp(game_data[i]->name, game_name) == 0)
-			return i;
-	}
-	
-	assert(FALSE);
-	return -1;
 }
 
 /* This function requests the game type from the host client.  It's only

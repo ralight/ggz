@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: games.h 3994 2002-04-15 09:52:12Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -100,9 +100,6 @@ extern game_data_t *game_data[];
 game_data_t *games_get_gametype(char *game_name);	
 
 void games_handle_gametype(int choice);	/* set the game */
-
-/* Get the ID (index into game_data) of the game. */
-int games_get_game_id(char* game_name);
 
 int games_req_gametype();	/* what do you want to play today? */
 
