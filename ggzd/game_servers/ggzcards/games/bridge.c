@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: bridge.c 2967 2001-12-20 08:18:41Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -304,10 +304,6 @@ static void bridge_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-	/* 
-	   len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score:
-	   %d|%d\n", BRIDGE.points_above_line[p%2],
-	   BRIDGE.points_below_line[p%2]); */
 	put_player_message(s, "%s", "");
 	if (game.state != STATE_NEXT_BID) {
 		if (p == BRIDGE.declarer)

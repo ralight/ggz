@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: types.h 2967 2001-12-20 08:18:41Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -60,12 +60,6 @@ typedef struct {
 	int bid_count;		/* Number of bids in the array (some of the
 				   array may be unused) */
 } bid_data_t;
-
-/* all players have seats, but every seat doesn't necessarily have a player.
-   some seats may be dummies or kitties */
-/* the tricky thing is that GGZ knows only about _players_ while the client
-   game knows only about _seats_ */
-#define MAX_MESSAGE_LENGTH 100
 
 /* these are just used to make things more legible */
 typedef int player_t;
