@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: first.c 3389 2002-02-17 09:08:58Z rgade $
  *
  * This is the main program body for the GGZ client
  *
@@ -40,6 +40,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
 #include "client.h"
 #include "first.h"
 #include "ggzclient.h"
@@ -88,15 +89,18 @@ void first_create_or_raise(void)
 static void first_button_yes_activate(GtkButton *button, gpointer data)
 {
 	char *profiles, *curprofiles, name[17];
+	char *old;
 
 	first_generate_password(name);
+
 	/* Morat.net */
-	ggzcore_conf_write_string("Morat.net (Fast)", "Host", 
-		ggzcore_conf_read_string("Morat.net", "Host",
-					 "ggz.morat.net"));
-	ggzcore_conf_write_string("Morat.net (Fast)", "Login", 
-		ggzcore_conf_read_string("Morat.net (Fast)", "Login",
-					 name));
+	old = ggzcore_conf_read_string("Morat.net (Fast)", "Host",
+					"ggz.morat.net");
+	ggzcore_conf_write_string("Morat.net (Fast)", "Host", old);
+	ggz_free(old);
+	old = ggzcore_conf_read_string("Morat.net (Fast)", "Login", name);
+	ggzcore_conf_write_string("Morat.net (Fast)", "Login", old);
+	ggz_free(old);
 	ggzcore_conf_write_int("Morat.net (Fast)", "Port",
 		ggzcore_conf_read_int("Morat.net (Fast)", "Port",
 					 5688));
@@ -104,12 +108,13 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 		ggzcore_conf_read_int("Morat.net (Fast)", "Type",
 					 1));
 	/* Euro 1 */
-	ggzcore_conf_write_string("GGZ Europe (Fast)", "Host",
-		ggzcore_conf_read_string("GGZ Europe (Fast)", "Host",
-					 "ggz.snafu.de"));
-	ggzcore_conf_write_string("GGZ Europe (Fast)", "Login",
-		ggzcore_conf_read_string("GGZ Europe (Fast)", "Login",
-					 name));
+	old = ggzcore_conf_read_string("GGZ Europe (Fast)", "Host",
+					"ggz.snafu.de");
+	ggzcore_conf_write_string("GGZ Europe (Fast)", "Host", old);
+	ggz_free(old);
+	old = ggzcore_conf_read_string("GGZ Europe (Fast)", "Login", name);
+	ggzcore_conf_write_string("GGZ Europe (Fast)", "Login", old);
+	ggz_free(old);
 	ggzcore_conf_write_int("GGZ Europe (Fast)", "Port",
 		ggzcore_conf_read_int("GGZ Europe (Fast)", "Port",
 					 5688));
@@ -117,12 +122,14 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 		ggzcore_conf_read_int("GGZ Europe (Fast)", "Type",
 					 1));
 	/* Justin's Server */
-	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Host",
-		ggzcore_conf_read_string("CVS Developer Server (Slow)", "Host",
-					 "jzaun.com"));
-	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Login",
-		ggzcore_conf_read_string("CVS Developer Server (Slow)", "Login",
-					 name));
+	old = ggzcore_conf_read_string("CVS Developer Server (Slow)", "Host",
+					"jzaun.com");
+	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Host", old);
+	ggz_free(old);
+	old = ggzcore_conf_read_string("CVS Developer Server (Slow)", "Login",
+					name);
+	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Login", old);
+	ggz_free(old);
 	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Port",
 		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Port",
 					 5688));
@@ -131,12 +138,15 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 					 1));
 
 	/* Write-out list of servers */
-	curprofiles = ggzcore_conf_read_string("Servers", "ProfileList", "");
-	if(strcmp(curprofiles, ""))
+	curprofiles = ggzcore_conf_read_string("Servers", "ProfileList", NULL);
+	if(curprofiles) {
 		profiles = g_strdup_printf("%s Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)", curprofiles);
-	else
+		ggz_free(curprofiles);
+	} else
 		profiles = g_strdup_printf("Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)");
 	ggzcore_conf_write_string("Servers", "ProfileList", profiles);
+
+	g_free(profiles);
 
 	ggzcore_conf_commit();
 	gtk_widget_destroy(first_dialog);
