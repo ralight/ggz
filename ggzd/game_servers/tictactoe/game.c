@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4449 2002-09-07 22:06:41Z jdorje $
+ * $Id: game.c 4948 2002-10-19 00:04:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -178,16 +178,16 @@ static int seats_full(void)
 static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	int i, fd;
-	GGZSeat seat;
+	GGZSpectator *old_spectator = data;
 	GGZSpectator spectator;
 
-	spectator = ggzdmod_get_spectator(ggz, *(int*)data);
+	spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
 	fd = spectator.fd;
 
 	if (ggz_write_int(fd, TTT_MSG_PLAYERS) < 0)
 		return;
 	for (i = 0; i < 2; i++) {
-		seat = ggzdmod_get_seat(ttt_game.ggz, i);
+		GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, i);
 		if (ggz_write_int(fd, seat.type) < 0)
 			return;
 		if (seat.type != GGZ_SEAT_OPEN
