@@ -1,18 +1,16 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3687 2002-03-26 06:45:02Z jdorje $
+#  $Id: Makefile.am 4663 2002-09-23 09:06:38Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = . pixmaps
 
-INCLUDES = -I$(top_srcdir)/common/ @GTK_CFLAGS@
+INCLUDES = -I$(top_srcdir)/common/
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
-uninstall:
-	@$(NORMAL_UNINSTALL)
+uninstall-local:
 	-$(GGZ_CONFIG) --remove --modfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.ccheckers
