@@ -54,7 +54,7 @@ static void login_first_toggled(GtkToggleButton *togglebutton, gpointer data);
 static void login_get_entries(GtkButton *button, gpointer data);
 static void login_start_session(GtkButton *button, gpointer data);
 static void login_relogin(GtkButton *button, gpointer user_data);
-static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user_data);
+static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* user_data);
 static void login_set_entries(Server server);
 
 void
@@ -317,7 +317,7 @@ login_relogin                          (GtkButton       *button,
 }
 
 
-static GGZHookReturn login_reconnect(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn login_reconnect(GGZServerEvent id, void* event_data, void* user_data)
 {
 	/* Now that we're disconnected, login to new server */
 	/* FIXME: provide a destroy function that frees profile */
