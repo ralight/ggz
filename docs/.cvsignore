@@ -2,6 +2,7 @@ Makefile.in
 Makefile
 aclocal.m4
 build-stamp
+config.h.in
 config.cache
 config.guess
 config.log
