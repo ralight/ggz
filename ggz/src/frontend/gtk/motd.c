@@ -85,6 +85,8 @@ void motd_print_line(gchar *line)
         }
                                         
         temp_widget = gtk_object_get_data(GTK_OBJECT(motd_dialog), "motd_text");
+	gtk_text_freeze(GTK_TEXT(temp_widget));
+
         fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
         {
@@ -123,6 +125,7 @@ void motd_print_line(gchar *line)
         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                         &colors[color_index], NULL, out, -1);
 
+	gtk_text_thaw(GTK_TEXT(temp_widget));
 }
 
 
