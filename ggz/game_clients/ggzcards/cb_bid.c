@@ -26,19 +26,22 @@
 #  include <config.h>
 #endif
 
+/*
 #include <gtk/gtk.h>
 
 #include "cb_bid.h"
 #include "dlg_bid.h"
 #include "game.h"
+*/
 
-
+/* JDS: TODO: no longer needed... */
+/*
 void
 on_dlg_bid_submit_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
 
-	/* JDS: TODO: no longer needed... */
+	
 
 }
-
+*/
