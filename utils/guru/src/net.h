@@ -21,11 +21,12 @@ enum States
 	NET_INPUT
 };
 
-void net_connect(const char *host, int port, const char *name, const char *guestname, const char *logfile);
+void net_connect(const char *host, int port, const char *name, const char *guestname);
 void net_join(int room);
 int net_status();
 Guru *net_input();
 void net_output(Guru *output);
+void net_logfile(const char *logfile);
 
 #endif
 

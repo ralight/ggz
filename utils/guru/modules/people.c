@@ -16,6 +16,7 @@ grubby who is santa
 #include <stdlib.h>
 #include "gurumod.h"
 #include "player.h"
+#include <time.h>
 
 void gurumod_init()
 {
@@ -27,8 +28,71 @@ Guru *gurumod_exec(Guru *message)
 	char *realname, *name, *contact;
 	Player *p;
 	static char *info = NULL;
+	int firsttime;
 
 	if(!info) info = (char*)malloc(1024);
+
+	srand(time(NULL));
+
+	p = guru_player_lookup(message->player);
+	firsttime = 0;
+	if(!p)
+	{
+		firsttime = 1;
+		p = guru_player_new();
+		p->name = message->player;
+		p->firstseen = time(NULL);
+	}
+	p->lastseen = time(NULL);
+	guru_player_save(p);
+
+	if(!message->message)
+	{
+		if(message->type == GURU_ENTER)
+		{
+			if(!firsttime)
+			{
+				strcpy(info, "Nice to see you here again, ");
+				strcat(info, message->player);
+			}
+			else
+			{
+				strcpy(info, "Hi ");
+				strcat(info, message->player);
+				strcat(info, ", I'm guru. I have never seen you before here. Type 'guru help' to change this :)");
+			}
+			message->message = info;
+			message->type = GURU_CHAT;
+			return message;
+		}
+		if(message->type == GURU_LEAVE)
+		{
+			switch(rand() % 10)
+			{
+				case 0:
+					strcpy(info, "See you later, ");
+					strcat(info, message->player);
+					message->message = info;
+					break;
+				case 1:
+					message->message = "Have a nice rest.";
+					break;
+				case 2:
+					strcpy(info, message->player);
+					strcat(info, ": Don't stay away too long.");
+					message->message = info;
+					break;
+				case 3:
+					message->message = "Eh, why has he gone?";
+					break;
+				default:
+					message->message = NULL;
+			}
+			message->type = GURU_CHAT;
+			return message;
+		}
+	}
+
 	i = 0;
 	while((message->list) && (message->list[i])) i++;
 
@@ -54,7 +118,7 @@ Guru *gurumod_exec(Guru *message)
 			if(!p)
 			{
 				p = guru_player_new();
-				p->firstseen = 1; /* now() */
+				p->firstseen = time(NULL);
 				p->name = message->player;
 			}
 			if(realname) p->realname = realname;

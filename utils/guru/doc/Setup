@@ -13,6 +13,7 @@ logfile = /tmp/guruchatlog
  
 [guru]
 net = /usr/local/lib/libguru_netggz.so
+i18n = /usr/local/lib/libguru_i18n.so
 modules = self people badword programming exec simplereturn
   
 [modules]

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 
 /* Globals */
 int status = NET_NOOP;
@@ -42,7 +43,22 @@ void net_internal_init(const char *logfile)
 	opt.debug_file = "/tmp/doobadoo"; /* In ggzcore 0.0.5 this can be NULL, but we want to be save */
 	opt.debug_levels = 0;
 	ret = ggzcore_init(opt);
-	if(logfile) logstream = fopen(logfile, "a");
+}
+
+void net_logfile(const char *logfile)
+{
+	if(logfile)
+	{
+		if(!logstream) logstream = fopen(logfile, "a");
+	}
+	else
+	{
+		if(logstream)
+		{
+			fclose(logstream);
+			logstream = NULL;
+		}
+	}
 }
 
 void net_internal_queueadd(const char *player, const char *message, int type)
@@ -94,10 +110,8 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	queue[queuelen - 1] = NULL;
 }
 
-void net_connect(const char *host, int port, const char *name, const char *guestname, const char *logfile)
+void net_connect(const char *host, int port, const char *name, const char *guestname)
 {
-	net_internal_init(logfile);
-
 	guruname = (char*)name;
 	guruguestname = (char*)guestname;
 
@@ -214,11 +228,23 @@ GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
 
 GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data)
 {
+	char *player;
+
+	player = (char*)event_data;
+	printf(">> ENTER: %s\n", player);
+	net_internal_queueadd(player, NULL, GURU_ENTER);
+	status = NET_INPUT;
 	return GGZ_HOOK_OK;
 }
 
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data)
 {
+	char *player;
+
+	player = (char*)event_data;
+	printf("<< LEAVE: %s\n", player);
+	net_internal_queueadd(player, NULL, GURU_LEAVE);
+	status = NET_INPUT;
 	return GGZ_HOOK_OK;
 }
 
@@ -226,6 +252,9 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 {
 	char *player, *message;
 	int type;
+	char *roomname;
+	time_t t;
+	char *ts;
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
@@ -242,7 +271,12 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 	/* Logging here? */
 	if(logstream)
 	{
-		fprintf(logstream, "[%s]: %s\n", player, message);
+		roomname = "-";
+		if(room) roomname = ggzcore_room_get_name(room);
+		t = time(NULL);
+		ts = ctime(&t);
+		ts[strlen(ts) - 1] = 0;
+		fprintf(logstream, "%s (%s) [%s]: %s\n", ts, roomname, player, message);
 		fflush(logstream);
 	}
 	

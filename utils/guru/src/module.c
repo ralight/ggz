@@ -60,7 +60,8 @@ Gurucore *guru_module_init()
 	|| ((core->net_join = dlsym(core->nethandle, "net_join")) == NULL)
 	|| ((core->net_status = dlsym(core->nethandle, "net_status")) == NULL)
 	|| ((core->net_input = dlsym(core->nethandle, "net_input")) == NULL)
-	|| ((core->net_output = dlsym(core->nethandle, "net_output")) == NULL))
+	|| ((core->net_output = dlsym(core->nethandle, "net_output")) == NULL)
+	|| ((core->net_log = dlsym(core->nethandle, "net_logfile")) == NULL))
 	{
 		printf("ERROR: Couldn't find net functions\n");
 		exit(-1);
@@ -278,12 +279,12 @@ Guru *guru_module_work(Guru *message, int priority)
 		for(i = 0; i < modulecount; i++)
 		{
 			if(!functionlist[i]) continue;
-			message->message = strdup(savemsg);
+			if(savemsg) message->message = strdup(savemsg);
 			moresave = message->message;
 			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
 			func = functionlist[i];
 			ret = (func)(message);
-			free(moresave); /* EH?! */
+			if(savemsg) free(moresave); /* EH?! */
 			if((ret) && (ret->message))
 			{
 				printf("Debug: got %s\n", ret->message);

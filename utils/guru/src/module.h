@@ -12,11 +12,12 @@
 
 #include "gurumod.h"
 
-typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname, const char *logfile);
+typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
 typedef void (*netjoinfunc)(int room);
 typedef int (*netstatusfunc)();
 typedef Guru* (*netinputfunc)();
 typedef void (*netoutputfunc)(Guru *output);
+typedef void (*netlogfunc)(const char *logfile);
 
 typedef void (*i18ninitfunc)();
 typedef char* (*i18ntransfunc)(char *message);
@@ -36,6 +37,7 @@ struct gurucore_t
 	netstatusfunc net_status;
 	netinputfunc net_input;
 	netoutputfunc net_output;
+	netlogfunc net_log;
 	i18ninitfunc i18n_init;
 	i18ntransfunc i18n_translate;
 };
