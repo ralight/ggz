@@ -873,6 +873,10 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 				break;
 			}
 		}
+		else if (strcmp(action, "protocol") == 0) {
+			/* These are always errors */
+			_ggzcore_server_protocol_error(net->server, "Server didn't recognize one of our commands");
+		}
 	}
 }
 
