@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: protocol.h 2474 2001-09-14 00:29:19Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -164,7 +164,7 @@ int write_opcode(int fd, int op);
  *  @return 0 on success, negative value on failure. */
 int read_seat(int fd, int *seat);
 
-/** @breif Writes a seat number to the socket.
+/** @brief Writes a seat number to the socket.
  *  @param fd The file descriptor to which to write.
  *  @param seat The seat number.
  *  @return 0 on success, negative value on failure. */
