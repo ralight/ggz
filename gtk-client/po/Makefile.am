@@ -13,10 +13,11 @@ messages:
 	done
 
 install-data-local:
-	for j in `ls -1 *.po`; do \
-		country=`echo $$j | cut -d "." -f 1`; \
+	for j in $(top_srcdir)/po/*.po; do \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
 		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
-		echo "installing $$dir/ggz-gtk.mo ($$j)"; \
+		echo "installing $$dir/ggz-gtk.mo ($$k)"; \
 		install -d $$dir; \
 		$(MSGFMT) -o $$dir/ggz-gtk.mo $$j; \
 	done
