@@ -1,5 +1,5 @@
 /*
- * File: ai.c
+ * File: ai/spades.c
  * Author: Brent Hendricks
  * Project: GGZCards (NetSpades)
  * Date: 8/4/99
@@ -86,8 +86,6 @@ static int plays, high, agg, lastTrick;
 /* bitmask of played cards for each suit */
 static int played[4];
 
-
-static int ValidPlay(int, int);
 static void Calculate(player_t num, struct play*);
 static int SuitMap(seat_t, player_t, char );
 static int PlayNil(int );
@@ -646,7 +644,7 @@ static card_t get_play( player_t p, seat_t s)
 	 */
 	plays = 0;
 	for( i = 0; i < hand->hand_size; i++) {
-		if( ValidPlay(num, i) == 0 ) {
+		if( game.funcs->verify_play(hand->cards[i]) == NULL ) {
 			play[plays].card = hand->cards[i];
 			Calculate(num, &play[plays]);
 			plays++;
@@ -683,83 +681,6 @@ static card_t get_play( player_t p, seat_t s)
 			break;
 
 	return hand->cards[i];
-}
-
-
-static int ValidPlay(player_t p, int index) {
-
-	int i;
-	char suit = -1;
-	hand_t *hand = &game.seats[p].hand;
-	card_t card = hand->cards[index];
-
-	if (game.leader != p)
-		suit = game.seats[game.leader].table.suit;
-
-
-#if 0   /* we're not enforcing low club on first trick */
-  /*
-   * Low clubs must be the first trick.
-   */
-  if (S.prefClubTrick && S.p[p].card[12] >= 0) {
-    tmp = -1;
-    for (i = 0; i < 13; i++)
-      if (card_suit_num(S.p[p].card[i]) == 2)
-	if (tmp < 0 || S.p[p].card[i] < tmp)
-	  tmp = S.p[p].card[i];
-    if (tmp >= 0)
-      return (card == tmp) ? 0 : invalidLowClub;
-  }
-#endif
-
-
-	/*
-	 * Cannot lead trump until broken.
-	 */
-	if (suit < 0) {
-		if (game.must_break_trump && !game.trump_broken && card.suit == game.trump) {
-			for (i = 0; i < hand->hand_size; i++)
-				if (hand->cards[i].suit != game.trump)
-					return -1;
-		}
-		return 0;
-	}
-
-	/*
-	 * Must follow suit unless we lead
-	 */
-	if( suit != -1 && card.suit != suit ) {
-		for(i = 0; i < hand->hand_size; i++)
-			if( hand->cards[i].suit == suit)
-				return -1;
-	}
-
-
-
-#if 0   /* don't use this option either */
-  /*
-   * Must beat the highest card if possible.
-   */
-  if (S.prefMustBeat && CardCmp(card, high) <= 0) {
-    tmp = 0;
-    for (i = 0; i < 13 && S.p[p].card[i] >= 0; i++)
-      if (card_suit_num(S.p[p].card[i]) == suit) {
-	tmp++;
-	if (CardCmp(S.p[p].card[i], high) > 0)
-	  return invalidMustBeat;
-      }
-    if (tmp == 0) {
-      for (i = 0; i < 13 && S.p[p].card[i] >= 0; i++)
-	if (card_suit_num(S.p[p].card[i]) == 0 && CardCmp(S.p[p].card[i], high) > 0)
-	  return invalidMustBeat;
-    }
-  }
-#endif
-
-	/*
-	 * Valid!
-	*/
-	return 0;
 }
 
 
