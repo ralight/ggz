@@ -39,6 +39,7 @@ The internationalization guidelines are available in the ggz-docs package.
 $stats = array();
 $languages = array();
 $modules = array();
+$www = array();
 $module = "unknown";
 $repeat = 0;
 
@@ -63,6 +64,16 @@ while($a = fgets($f, 1024))
 		$repeat = 1;
 		$modules[$module] = 1;
 	endif;
+}
+fclose($f);
+
+$f = fopen("wwwstats.txt", "r");
+while($a = fgets($f, 1024))
+{
+	$wwwar = explode(" ", $a);
+	$lang = $wwwar[0];
+	$number = $wwwar[1];
+	$www[$lang] = $number;
 }
 fclose($f);
 
@@ -128,7 +139,29 @@ foreach($modules as $module => $foo)
 
 <i>HTML statistics</i><br>
 
-<br><br>
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<table class="list"><tr>
+<td>PHP page translations</td>
+
+<?php
+
+foreach($www as $lang => $number)
+{
+	echo "<td>$lang $number</td>";
+}
+
+?>
+
+</tr></table>
+
+</td>
+</tr>
+</table>
+
+<br>
 
 <i>Manpage statistics</i><br>
 
