@@ -748,7 +748,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Do actual launch of table */
 	status = table_launch(p_index, table, &t_index);
-
+	
 	if (status != 0) 
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Player %d's table launch failed with err %d", p_index,

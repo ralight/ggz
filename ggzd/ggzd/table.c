@@ -408,6 +408,8 @@ static int table_game_join(int index, int fd)
 	char status, flag;
 	int p, seat;
 
+	dbg_msg(GGZ_DBG_TABLE, "Table %d responded to join", index);
+
 	flag = tables.info[index].transit_flag;
 	if ( (flag & GGZ_TRANSIT_RECV)
 	     || !((flag & GGZ_TRANSIT_JOIN) && (flag & GGZ_TRANSIT_SENT)))
@@ -443,15 +445,19 @@ static int table_game_leave(int index, int fd)
 {
 	char status, flag;
 	int i, p;
+	int ret_val = 0;
+
+	dbg_msg(GGZ_DBG_TABLE, "Table %d responded to leave", index);
 	
 	flag = tables.info[index].transit_flag;
 	if ( (flag & GGZ_TRANSIT_RECV)
-	     || !((flag & GGZ_TRANSIT_LEAVE) && (flag & GGZ_TRANSIT_SENT)))
+	     || (flag & GGZ_TRANSIT_JOIN)
+	     || !(flag & GGZ_TRANSIT_SENT))
 		return -1;
 
 	if (es_read_char(fd, &status) < 0)
 		return -1;
-
+	
 	p = tables.info[index].transit;
 	tables.info[index].transit_flag |= GGZ_TRANSIT_RECV;
 	
@@ -465,16 +471,23 @@ static int table_game_leave(int index, int fd)
 				tables.info[index].seats[i] = GGZ_SEAT_OPEN;
 				break;
 			}
+
+		dbg_msg(GGZ_DBG_TABLE, "Player %d left table %d seat %d", p, 
+			index, i);
+
+		if (!seats_human(tables.info[index])) {
+			dbg_msg(GGZ_DBG_TABLE, "Table %d now empty: removing",
+				index);
+			ret_val = -1;
+		}
 		tables.timestamp = time(NULL);
 		pthread_rwlock_unlock(&tables.lock);
-		dbg_msg(GGZ_DBG_TABLE, "Player %d left table %d seat %d", p, i,
-			index);
 	}
 
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
 	pthread_mutex_unlock(&tables.info[index].transit_lock);
 
-	return 0;
+	return ret_val;
 }
 
 

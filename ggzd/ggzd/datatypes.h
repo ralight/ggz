@@ -86,7 +86,7 @@ typedef struct {
 	int transit;
 	int transit_fd;
 	int transit_seat;
-	char transit_flag;
+	unsigned char transit_flag;
 	pthread_cond_t transit_cond;
 	pthread_mutex_t transit_lock;
 	int fd_to_game;

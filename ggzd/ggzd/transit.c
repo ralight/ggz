@@ -52,20 +52,15 @@ static int   transit_leave(int index, int fd);
  */
 int transit_handle(int index, int fd)
 {
-	char flag, status;
+	unsigned char flag;
+	char status;
 	
 	pthread_mutex_lock(&tables.info[index].transit_lock);
 	flag = tables.info[index].transit_flag;
 
-	/* Already sent, and waiting for results */
-	if (flag & GGZ_TRANSIT_SENT) {
-		pthread_mutex_unlock(&tables.info[index].transit_lock);
-		return 0;
-	}
-	
-	if (flag & GGZ_TRANSIT_JOIN)
+	if (flag == GGZ_TRANSIT_JOIN )
 		status = transit_join(index, fd);
-	else if (flag & GGZ_TRANSIT_LEAVE)
+	else if (flag == GGZ_TRANSIT_LEAVE)
 		status = transit_leave(index, fd);
 	else {
 		pthread_mutex_unlock(&tables.info[index].transit_lock);
@@ -88,6 +83,8 @@ static int transit_join(int index, int t_fd)
 	int seats, i, p, fd[2];
 	char name[MAX_USER_NAME_LEN + 1];
 
+	dbg_msg(GGZ_DBG_TABLE, "Handling transit join for table %d", index);
+		
 	/* Find my seat or unoccupied one */
 	/* FIXME: look for reserved seat */
 	pthread_rwlock_rdlock(&tables.lock);
@@ -132,6 +129,8 @@ static int transit_leave(int index, int t_fd)
 	char name[MAX_USER_NAME_LEN + 1];
 	
 	p = tables.info[index].transit;
+
+	dbg_msg(GGZ_DBG_TABLE, "Handling transit leave for table %d", index);
 	
 	pthread_rwlock_rdlock(&players.lock);
 	strcpy(name, players.info[p].name);
