@@ -25,9 +25,9 @@
 
 void chat_init(void);
 int  chat_add(int p_index, char* msg);
-int  chat_remove(int c_index);
 char chat_check_unread(int p_index, int c_index);
+int  chat_check_num_unread(int p_index);
 void chat_mark_read(int p_index, int c_index);
-void chat_mark_all_unread(int c_index);
-
+void chat_mark_all_read(int p_index);
+void chat_get(int c_index, char* name, char* chat);
 

@@ -39,7 +39,7 @@
 #define MAX_GAME_TYPES 5
 #define MAX_TABLES  50
 #define MAX_USERS 500
-#define MAX_CHAT_LENGTH 512
+#define MAX_CHAT_LEN 512
 #define MAX_CHAT_BUFFER 32
 
 /* Bitmasks for allowable player numbers */
@@ -169,10 +169,11 @@ struct Users {
 
 /* A chat consists of the message and a flag of who hasn't read it*/
 typedef struct {
-	char msg[MAX_CHAT_LENGTH];
+	char msg[MAX_CHAT_LEN + 1];
 	int p_index;
-	char p_name[MAX_USER_NAME_LEN+1];
+	char p_name[MAX_USER_NAME_LEN + 1];
 	char unread[MAX_USERS];
+	int unread_count;
 } ChatInfo;
 
 
@@ -180,6 +181,7 @@ typedef struct {
 struct Chats {
 	ChatInfo info[MAX_CHAT_BUFFER];
 	int count;
+	int player_unread_count[MAX_USERS];
 	pthread_rwlock_t lock;
 };
 	
