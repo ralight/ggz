@@ -99,7 +99,7 @@ printf("FOUND player at %i with %s\n", list[i], list[i]->language);
 		}
 
 /* Force reload */
-handle = -1;
+//handle = -1;
 	
 	/* If not found, try to look him up */
 	if(handle == -1)

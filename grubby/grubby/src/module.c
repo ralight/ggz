@@ -48,6 +48,19 @@ Gurucore *guru_module_init()
 	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
 	core->logfile = ggzcore_confio_read_string(handler, "preferences", "logfile", NULL);
 
+	module = ggzcore_confio_read_string(handler, "guru", "player", NULL);
+	if(module)
+	{
+		printf("Loading core module PLAYER: %s... ", module);
+		fflush(NULL);
+		if(dlopen(module, RTLD_NOW | RTLD_GLOBAL)) printf("OK\n");
+		else
+		{
+			printf("ERROR: Not a shared library\n");
+			exit(-1);
+		}
+	}
+
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
 	fflush(NULL);

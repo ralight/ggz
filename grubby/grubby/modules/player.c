@@ -91,13 +91,18 @@ Player *guru_player_lookup(const char *name)
 	if(!name) return NULL;
 
 	/* Try to find player in cache */
+printf("LISTSIZE = %i\n", listsize);
 	for(i = 0; i < listsize; i++)
 		if((list[i]->name) && (!strcmp(list[i]->name, name)))
 		{
+printf("FOUND player at %i with %s\n", list[i], list[i]->language);
 			if(dup) return duplicate(list[i]);
 			return list[i];
 		}
 
+/* Force reload */
+handle = -1;
+	
 	/* If not found, try to look him up */
 	if(handle == -1)
 	{
@@ -123,14 +128,19 @@ Player *guru_player_lookup(const char *name)
 	p->contact = ggzcore_confio_read_string(handle, name, "CONTACT", NULL);
 	p->origin = NULL;
 
+	/* FIXME: cache is disabled until a shared memory instance is possible among the plugins */
+	/*
 	list = (Player**)realloc(list, ++listsize + 1);
 	list[listsize - 1] = p;
 	list[listsize] = NULL;
+	*/
 
 	/* If list grows too big, cut it down */
 	/* TODO!!! */
 
 	if(dup) return duplicate(p);
+printf("HANDLE: %i\n", handle);
+/*printf("CACHE player at %i (%i) with %s (%s)\n", list[i], p, list[i]->language, p->language);*/
 	return p;
 }
 

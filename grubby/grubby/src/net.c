@@ -197,7 +197,7 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 
 GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 {
-	ggzcore_server_list_rooms(server, -1, 0);
+	ggzcore_server_list_rooms(server, -1, 1);
 	return GGZ_HOOK_OK;
 }
 
@@ -222,6 +222,7 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 
 GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
 {
+printf("!! FAIL: %s\n", (char*)event_data);
 	status = NET_ERROR;
 	return GGZ_HOOK_OK;
 }
