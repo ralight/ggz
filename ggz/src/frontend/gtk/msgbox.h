@@ -48,7 +48,8 @@ typedef enum {
 typedef enum {
 	MSGBOX_NONE	= 1,
 	MSGBOX_STOP	= 2,
-	MSGBOX_INFO	= 3
+	MSGBOX_INFO	= 3,
+	MSGBOX_QUESTION	= 4
 }	MBIcon;
 
 typedef enum {
