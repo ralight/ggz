@@ -77,6 +77,7 @@ class ChessBoard : public QWidget
 		int activeColor;
 
 		QPixmap scalePixmap(const QPixmap&);
+		QPixmap svgPixmap(QString filename);
 };
 
 #endif

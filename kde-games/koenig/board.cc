@@ -30,6 +30,11 @@
 #include <qwmatrix.h>
 #include <qcursor.h>
 
+#ifdef HAVE_RSVG
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <librsvg/rsvg.h>
+#endif
+
 #include "board.h"
 #include "board.moc"
 
@@ -43,18 +48,18 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	// load figure pixmaps
 	QString pixmapdir = d.findResource("data", "koenig/pics/");
 
-	pixmaps[pawn_white] = QPixmap(pixmapdir + "pawn_w.svg.png");
-	pixmaps[pawn_black] = QPixmap(pixmapdir + "pawn_b.svg.png");
-	pixmaps[bishop_white] = QPixmap(pixmapdir + "bishop_w.svg.png");
-	pixmaps[bishop_black] = QPixmap(pixmapdir + "bishop_b.svg.png");
-	pixmaps[rook_white] = QPixmap(pixmapdir + "rook_w.svg.png");
-	pixmaps[rook_black] = QPixmap(pixmapdir + "rook_b.svg.png");
-	pixmaps[knight_white] = QPixmap(pixmapdir + "knight_w.svg.png");
-	pixmaps[knight_black] = QPixmap(pixmapdir + "knight_b.svg.png");
-	pixmaps[queen_white] = QPixmap(pixmapdir + "queen_w.svg.png");
-	pixmaps[queen_black] = QPixmap(pixmapdir + "queen_b.svg.png");
-	pixmaps[king_white] = QPixmap(pixmapdir + "king_w.svg.png");
-	pixmaps[king_black] = QPixmap(pixmapdir + "king_b.svg.png");
+	pixmaps[pawn_white] = svgPixmap(pixmapdir + "pawn_w.svg");
+	pixmaps[pawn_black] = svgPixmap(pixmapdir + "pawn_b.svg");
+	pixmaps[bishop_white] = svgPixmap(pixmapdir + "bishop_w.svg");
+	pixmaps[bishop_black] = svgPixmap(pixmapdir + "bishop_b.svg");
+	pixmaps[rook_white] = svgPixmap(pixmapdir + "rook_w.svg");
+	pixmaps[rook_black] = svgPixmap(pixmapdir + "rook_b.svg");
+	pixmaps[knight_white] = svgPixmap(pixmapdir + "knight_w.svg");
+	pixmaps[knight_black] = svgPixmap(pixmapdir + "knight_b.svg");
+	pixmaps[queen_white] = svgPixmap(pixmapdir + "queen_w.svg");
+	pixmaps[queen_black] = svgPixmap(pixmapdir + "queen_b.svg");
+	pixmaps[king_white] = svgPixmap(pixmapdir + "king_w.svg");
+	pixmaps[king_black] = svgPixmap(pixmapdir + "king_b.svg");
 
 	// I like QuickHacks ;)
 	mouseDrag = true;
@@ -65,6 +70,46 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 
 ChessBoard::~ChessBoard(void)
 {
+}
+
+QPixmap ChessBoard::svgPixmap(QString filename)
+{
+	QPixmap tmp;
+#ifdef HAVE_RSVG
+	GError *error = NULL;
+	const int width = 128;
+	const int height = 128;
+
+	g_type_init();
+	GdkPixbuf *buf = rsvg_pixbuf_from_file_at_size(filename.latin1(), width, height, &error);
+
+	if(buf)
+	{
+		guchar *foo = gdk_pixbuf_get_pixels(buf);
+		for(int i = 0; i < width; i++)
+			for(int j = 0; j < height; j++)
+			{
+				unsigned int pixel = *(unsigned int*)(foo + (j * width + i) * 4);
+				int a, r, g, b;
+				r = (pixel >> 24) & 0xFF;
+				g = (pixel >> 16) & 0xFF;
+				b = (pixel >> 8) & 0xFF;
+				a = (pixel >> 0) & 0xFF;
+				pixel = (a << 24) + (r << 16) + (g << 8) + (b << 0);
+				*(unsigned int*)(foo + (j * width + i) * 4) = pixel;
+			}
+
+		QImage im(gdk_pixbuf_get_pixels(buf), gdk_pixbuf_get_width(buf), gdk_pixbuf_get_height(buf),
+			gdk_pixbuf_get_bits_per_sample(buf) * 4, 0, 0, QImage::IgnoreEndian);
+		im.setAlphaBuffer(true);
+		tmp.convertFromImage(im);
+	}
+	else tmp = QPixmap(filename + ".png");
+#else
+	tmp = QPixmap(filename + ".png");
+#endif
+	if(tmp.isNull()) tmp = QPixmap(filename.replace("svg", "png"));
+	return tmp;
 }
 
 void ChessBoard::resetBoard(int color)

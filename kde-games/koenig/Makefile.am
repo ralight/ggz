@@ -1,6 +1,4 @@
-SUBDIRS = libcgc pics .
-
-bindir = $(ggzexecmoddir)
+SUBDIRS = libcgc pics pieces
 
 bin_PROGRAMS = koenig
 
@@ -23,10 +21,12 @@ noinst_HEADERS = \
 	options.h \
 	kexttabctl.h
 
-INCLUDES = -I$(top_srcdir)/koenig/libcgc $(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes)
+INCLUDES = -I$(top_srcdir)/koenig/libcgc \
+	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)
 
-koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries)
-koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a $(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
+koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries) $(RSVG_LDFLAGS)
+koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a \
+	$(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
 
 METASOURCES = AUTO
 
