@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4584 2002-09-16 06:51:32Z jdorje $
+ * $Id: table.c 4705 2002-09-25 21:46:41Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1425,6 +1425,13 @@ static GGZReturn table_launch_event(char* name,
 /* Free dynamically allocated memory associated with a table*/
 void table_free(GGZTable* table)
 {
+	if (table->transit_name) {
+		err_msg("table_free: transit still active for %s "
+			"at table %d in room %d.",
+			table->transit_name, table->index, table->room);
+		ggz_free(table->transit_name);
+	}
+
 #ifdef UNLIMITED_SEATS
 	if (table->num_seats > 0) {
 		ggz_free(table->seat_types);
@@ -1435,8 +1442,6 @@ void table_free(GGZTable* table)
 	if (table->max_num_spectators > 0)
 		ggz_free(table->spectators);
 #endif
-
-	/* FIXME: do we need to free transit too? */
 
 	if (table->ggzdmod)
 		ggzdmod_free(table->ggzdmod);
