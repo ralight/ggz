@@ -198,12 +198,12 @@ AC_MSG_CHECKING([for GGZ configuration tool: ggz-config])
 ac_ggz_config=NO
 ggz_config=""
 
-AC_ARG_WITH(ggz_config,
+AC_ARG_WITH(ggzconfig,
     [  --with-ggzconfig=DIR          path to ggz-config ],
     [  ac_ggz_config="$withval"
     ])
 
-AC_CACHE_VAL(ac_cv_have_ggz_config,
+AC_CACHE_VAL(ac_cv_have_ggzconfig,
 [
 ggz_config_dirs="$ac_ggz_config /usr/local/bin /usr/bin"
 
