@@ -110,8 +110,12 @@ do
       fi
       echo "Running automake --gnu $am_opt ..."
       automake --add-missing --gnu $am_opt
+      echo "Concatenating GGZ macros ..."
+      cat acinclude.ggz >> aclocal.m4
       echo "Running autoconf ..."
       autoconf
+      echo "Expanding Qt meta objects information"
+      perl am_edit
     )
   fi
 done
