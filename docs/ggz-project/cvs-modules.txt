@@ -24,15 +24,58 @@ We encourage everybody to contribute. If a directory contains really unstable
 sources, feel free to add it though (or let someone add it), because it can be
 excluded from the default build and enabled with ./configure --enable-unstable
 or similar techniques.
+If a directory doesn't compile easily, exclude it from the SUBDIRS variable in
+Makefile.am.
 
-Nobody has to mess around with configuration. You can safely concentrate on
-the coding itself, there are always friendly people who help with setting
-things up in an environment-independent way.
+-> Nobody has to mess around with configuration. You can safely concentrate on
+-> the coding itself, there are always friendly people who help with setting
+-> things up in an environment-independent way.
 
 Please provide readme files. The global readme is called README.GGZ and is
 included in all directories. All major applications should get their own
 files inside a module.
 
+Please don't import new modules without asking first. Modules should be
+self-contained, which means they're later used to create the packages. Make
+sure you don't introduce new unnecessary dependencies when importin sources.
+
+Please don't include configure's in sub directories, this is known to cause
+problems. It's better to have one configure process per module.
+
 Don't feel annoyed by these rules. They can be changed everytime if something
 is odd.
+
+Files to keep synchronized
+--------------------------
+all: README.GGZ (contains general setup information)
+all: acinclude.ggz
+kde: acinclude.kde
+games: libcgc files, protocol.h
+
+How to determine the setup, directories etc.
+--------------------------------------------
+We have some macros which do all the work. They're included in acinclude.ggz,
+and set up the include directories, library directories, library names, and
+other variables such as the configuration for client and server (ggzcore and
+ggzd).
+So please from now on use these macros, as they help to keep the configure.in
+files clean, and any problems can be solved in a centralized project-wide file.
+Their use is described in the file acinclude.ggz itself.
+
+How to test for (pre-)release quality
+-------------------------------------
+No, we don't have a QA-team yet :-)
+But the following should work for every package:
+./configure --prefix=/somewhere
+make
+make distcheck
+make dist
+debuild
+rpm --build (or what it's called)
+* check whether it compiles on different OS's or arch's
+* make sure the external libraries you reference aren't too new/old
+
+Josef
+written: June 8, 2001
+updated: September 9, 2001
 

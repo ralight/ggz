@@ -1,3 +1,5 @@
+/* This file needs a real update. See below for more unordered thoughts. */
+
 How to internationalize GGZ
 ---------------------------
 
@@ -38,4 +40,24 @@ Documentation: Feel free to translate as you like - we will be thankful for
 every bit! Especially for docs which have yet to be written ;)
 
 Other packages: No i18n yet, but this will change. Please hold on.
+
+New stuff
+---------
+
+Grubby is now also i18n'd, he spits out his word in whatever language you want.
+Just tell him where you're from.
+In order to make that happen for many people, the guru modules must be
+translated, and this is not so easy - in particular because most strings are
+assembled at run time.
+Maybe someone should try out new internationalization techniques here. I wish
+the C interface of gettext would perform perl variable substitution :)
+
+For the next release, it is very important to have an introductory file,
+preferably in HTML format, which tells all about the mainstream focus of GGZ,
+e.g. the games, the chat and so on. This could then placed as a link on the
+various international news sites.
+
+Josef
+written: 2001-06-02
+updated: 2001-09-09
 
