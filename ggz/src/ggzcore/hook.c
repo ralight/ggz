@@ -61,9 +61,7 @@ GGZHookList* _ggzcore_hook_list_init(const unsigned int id)
 {
 	GGZHookList *hooks;
 
-	if ( (hooks = calloc(1, sizeof(GGZHookList))) == NULL)
-		ggzcore_error_sys_exit("calloc() failed in _ggzcore_hook_list_init");
-	
+	hooks = ggzcore_malloc(sizeof(GGZHookList));
 	hooks->id = id;
 
 	return hooks;
@@ -103,8 +101,7 @@ int _ggzcore_hook_add_full(GGZHookList* list,
 {
 	struct _GGZHook *hook, *cur, *next;
 	
-	if ( (hook = calloc(1, sizeof(struct _GGZHook))) == NULL)
-		ggzcore_error_sys_exit("calloc() failed in ggzcore_hook_add_full");
+	hook = ggzcore_malloc(sizeof(struct _GGZHook));
 	
 	/* Assign unique ID */
 	hook->id = list->seq_id++;
@@ -139,7 +136,7 @@ void _ggzcore_hook_remove_all(GGZHookList *list)
 	while (next) {
 		cur = next;
 		next = cur->next;
-		free(cur);
+		ggzcore_free(cur);
 	}
 	list->hooks = NULL;
 }
@@ -251,7 +248,7 @@ GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList *list, void *event_data)
 void _ggzcore_hook_list_destroy(GGZHookList *list)
 {
 	_ggzcore_hook_remove_all(list);
-	free(list);
+	ggzcore_free(list);
 }
 
 
@@ -282,6 +279,6 @@ static void _ggzcore_hook_remove_actual(GGZHookList *list,
 	else
 		prev->next = hook->next;
 	
-	free(hook);
+	ggzcore_free(hook);
 }
 
