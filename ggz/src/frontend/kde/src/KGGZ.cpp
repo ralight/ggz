@@ -119,27 +119,10 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 		m_core = NULL;
 	}
 
-	m_config = new GGZCoreConf();
-	result = m_config->init(KGGZ_DIRECTORY "/kggzrc", QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1());
-	if(result == -1)
-	{
-		KGGZDEBUG("Critical: Could not open configuration file!\n");
-		m_config = NULL;
-		m_showmotd = 1;
-	}
-	else
-	{
-		// Read out configuration and setup things
-		if(m_config->read("Preferences", "Showdialog", 1))
-			menuConnect();
-		if(m_config->read("Preferences", "Chatlog", 0))
-			m_workspace->widgetChat()->setLogging(1);
-		if(m_config->read("Preferences", "Speech", 0))
-			m_workspace->widgetChat()->setSpeech(1);
-
-		m_showmotd = m_config->read("Preferences", "MOTD", 1);
-	}
-
+	m_config = NULL;
+	
+	readConfiguration(true);
+	
 	kggzroomcallback = new KGGZCallback(this, COLLECTOR_ROOM);
 	kggzservercallback = new KGGZCallback(this, COLLECTOR_SERVER);
 	kggzgamecallback = new KGGZCallback(this, COLLECTOR_GAME);
@@ -159,6 +142,39 @@ KGGZ::~KGGZ()
 	dispatcher();
 
 	exit(0);
+}
+
+void KGGZ::readConfiguration(bool immediate)
+{
+	int value, result;
+
+	KGGZDEBUGF("readconfiguration!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
+	if(m_config) delete m_config;
+	m_config = new GGZCoreConf();
+
+	result = m_config->init(KGGZ_DIRECTORY "/kggzrc", QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1());
+	if(result == -1)
+	{
+		KGGZDEBUG("Critical: Could not open configuration file!\n");
+		m_config = NULL;
+		m_showmotd = 1;
+	}
+	else
+	{
+		// Read out configuration and setup things
+		if(immediate)
+		{
+			if(m_config->read("Preferences", "Showdialog", 1))
+				menuConnect();
+		}
+		value = m_config->read("Preferences", "Chatlog", 0);
+		m_workspace->widgetChat()->setLogging(value);
+		value = m_config->read("Preferences", "Speech", 0);
+		m_workspace->widgetChat()->setSpeech(value);
+
+		m_showmotd = m_config->read("Preferences", "MOTD", 1);
+	}
 }
 
 void KGGZ::autoconnect(QString uri)
@@ -425,7 +441,7 @@ void KGGZ::timerEvent(QTimerEvent *e)
 
 void KGGZ::slotServerData()
 {
-	KGGZDEBUG("slotServerData\n");
+	//KGGZDEBUG("slotServerData\n");
 	if(kggzserver) kggzserver->dataRead();
 }
 
@@ -705,17 +721,16 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
-	char *chatsender = NULL, *chatmessage = NULL;
+	const char *chatsender = NULL, *chatmessage = NULL;
+	int chattype;
 	QString buffer;
 
 	switch(id)
 	{
-		case GGZCoreRoom::chatnormal:
-		case GGZCoreRoom::chatannounce:
-		case GGZCoreRoom::chatprivate:
-		case GGZCoreRoom::chatbeep:
-			chatsender = ((char**)data)[0];
-			chatmessage = ((char**)data)[1];
+		case GGZCoreRoom::chatevent:
+			chattype = ((GGZChatEventData*)data)->type;
+			chatsender = ((GGZChatEventData*)data)->sender;
+			chatmessage = ((GGZChatEventData*)data)->message;
 			KGGZDEBUG("Chat receives: %s from %s\n", chatmessage, chatsender);
 			if((!m_workspace) || (!m_workspace->widgetChat()))
 			{
@@ -735,35 +750,40 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			KGGZDEBUG("tablelist\n");
 			listTables();
 			break;
-		case GGZCoreRoom::chatnormal:
-			KGGZDEBUG("chatnormal\n");
-			if(strncmp(chatmessage, "/me ", 4) == 0)
+		case GGZCoreRoom::chatevent:
+			switch(chattype)
 			{
-				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ME);
+				case GGZCoreRoom::chatnormal:
+					KGGZDEBUG("chatnormal\n");
+					if(strncmp(chatmessage, "/me ", 4) == 0)
+					{
+						m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ME);
+					}
+					else
+					{
+						if(strcmp(chatsender, m_save_username) == 0)
+							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
+						else
+						{
+							KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
+							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
+						}
+					}
+					break;
+				case GGZCoreRoom::chatannounce:
+					KGGZDEBUG("chatannounce\n");
+					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ANNOUNCE);
+					break;
+				case GGZCoreRoom::chatprivate:
+					KGGZDEBUG("chatprivate\n");
+					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
+					break;
+				case GGZCoreRoom::chatbeep:
+					KGGZDEBUG("chatbeep\n");
+					m_workspace->widgetChat()->beep();
+					m_workspace->widgetChat()->receive(NULL, i18n("You have been beeped by %1.").arg(chatsender), KGGZChat::RECEIVE_PERSONAL);
+					break;
 			}
-			else
-			{
-				if(strcmp(chatsender, m_save_username) == 0)
-					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
-				else
-				{
-					KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
-					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
-				}
-			}
-			break;
-		case GGZCoreRoom::chatannounce:
-			KGGZDEBUG("chatannounce\n");
-			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ANNOUNCE);
-			break;
-		case GGZCoreRoom::chatprivate:
-			KGGZDEBUG("chatprivate\n");
-			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
-			break;
-		case GGZCoreRoom::chatbeep:
-			KGGZDEBUG("chatbeep\n");
-			m_workspace->widgetChat()->beep();
-			m_workspace->widgetChat()->receive(NULL, i18n("You have been beeped by %1.").arg(chatsender), KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
@@ -1101,10 +1121,7 @@ void KGGZ::attachRoomCallbacks()
 	KGGZDEBUG("== attaching hooks to room at %i\n", kggzroom);
 	kggzroom->addHook(GGZCoreRoom::playerlist, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::tablelist, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
-	kggzroom->addHook(GGZCoreRoom::chatnormal, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
-	kggzroom->addHook(GGZCoreRoom::chatannounce, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
-	kggzroom->addHook(GGZCoreRoom::chatprivate, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
-	kggzroom->addHook(GGZCoreRoom::chatbeep, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
+	kggzroom->addHook(GGZCoreRoom::chatevent, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::enter, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::leave, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
 	kggzroom->addHook(GGZCoreRoom::tableupdate, &KGGZ::hookOpenCollector, (void*)kggzroomcallback);
@@ -1122,10 +1139,7 @@ void KGGZ::detachRoomCallbacks()
 	KGGZDEBUG("== detaching hooks from room at %i\n", kggzroom);
 	kggzroom->removeHook(GGZCoreRoom::playerlist, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::tablelist, &KGGZ::hookOpenCollector);
-	kggzroom->removeHook(GGZCoreRoom::chatnormal, &KGGZ::hookOpenCollector);
-	kggzroom->removeHook(GGZCoreRoom::chatannounce, &KGGZ::hookOpenCollector);
-	kggzroom->removeHook(GGZCoreRoom::chatprivate, &KGGZ::hookOpenCollector);
-	kggzroom->removeHook(GGZCoreRoom::chatbeep, &KGGZ::hookOpenCollector);
+	kggzroom->removeHook(GGZCoreRoom::chatevent, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::enter, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::leave, &KGGZ::hookOpenCollector);
 	kggzroom->removeHook(GGZCoreRoom::tableupdate, &KGGZ::hookOpenCollector);
@@ -1646,7 +1660,14 @@ void KGGZ::menuPreferencesSettings()
 {
 	if(m_prefenv) delete m_prefenv;
 	m_prefenv = new KGGZPrefEnv(NULL, "KGGZPrefEnv");
+	connect(m_prefenv, SIGNAL(signalAccepted()), SLOT(slotAcceptedConfiguration()));
 	m_prefenv->show();
+}
+
+void KGGZ::slotAcceptedConfiguration()
+{
+	m_prefenv->hide();
+	readConfiguration(false);
 }
 
 void KGGZ::eventLeaveGame()

@@ -161,6 +161,8 @@ class KGGZ : public QWidget
 		void menuGameCancel();
 		// Invoke the team dialog
 		void menuGameTeam();
+		// Configuration dialog closed
+		void slotAcceptedConfiguration();
 
 		// Receive connection parameters
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode);
@@ -198,6 +200,9 @@ class KGGZ : public QWidget
 	private:
 		// ensure that KGGZ is in a proper state
 		void dispatcher();
+
+		// Read user settings
+		void readConfiguration(bool immediate);
 
 		// set up room callbacks
 		void attachRoomCallbacks();

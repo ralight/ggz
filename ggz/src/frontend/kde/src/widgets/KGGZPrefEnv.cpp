@@ -118,14 +118,15 @@ void KGGZPrefEnv::slotAccept()
 
 	config->write("Environment", "Server", m_server->text().latin1());
 	config->write("Preferences", "Showdialog", m_startup->isChecked());
-	config->write("Preferences", "Chatlog", m_startup->isChecked());
-	config->write("Preferences", "Speech", m_startup->isChecked());
+	config->write("Preferences", "Chatlog", m_chatlog->isChecked());
+	config->write("Preferences", "Speech", m_speech->isChecked());
 	config->write("Preferences", "MOTD", m_motd->isChecked());
 	config->commit();
 
 	delete config;
 
-	close();
+	emit signalAccepted();
+	//close();
 }
 
 void KGGZPrefEnv::loadSettings()

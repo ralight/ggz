@@ -55,6 +55,10 @@ class KGGZPrefEnv : public QWidget
 			// Accept changes
 			void slotAccept();
 
+		signals:
+			// Configuration saved
+			void signalAccepted();
+
 		private:
 			// Loads the configuration
 			void loadSettings();

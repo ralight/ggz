@@ -48,6 +48,14 @@ class GGZCoreRoom
 			playerlag = GGZ_PLAYER_LAG
 		};
 
+		enum ChatTypes
+		{
+			chatnormal = GGZ_CHAT_NORMAL,
+			chatannounce = GGZ_CHAT_ANNOUNCE,
+			chatprivate = GGZ_CHAT_PERSONAL,
+			chatbeep = GGZ_CHAT_BEEP
+		};
+
 		/**
 		 * Constructor */
 		GGZCoreRoom();
