@@ -11,6 +11,7 @@ AC_ARG_ENABLE(agrue,  [  --disable-agrue        Don't build AGRUE],, enable_agru
 AC_ARG_ENABLE(grubby, [  --disable-grubby       Don't build GRUBBY],, enable_grubby=yes)
 AC_ARG_ENABLE(gensec, [  --disable-gensec       Don't build GenSecure],, enable_gensec=yes)
 AC_ARG_ENABLE(guru,   [  --disable-guru         Dont' build Guru],, enable_guru=yes)
+AC_ARG_ENABLE(telggz, [  --disable-telggz       Dont' build TelGGZ],, enable_telggz=yes)
 AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 
 
@@ -123,6 +124,10 @@ if test "$enable_guru" = yes; then
 	SUBDIRS="$SUBDIRS guru"
 fi
 
+if test "$enable_guru" = yes; then
+	SUBDIRS="$SUBDIRS telggz"
+fi
+
 AC_SUBST(LDADD)
 AC_SUBST(grubby_LIBS)
 AC_SUBST(SUBDIRS)
@@ -136,5 +141,6 @@ AC_OUTPUT(Makefile
 		guru/Makefile
 		guru/src/Makefile
 		guru/modules/Makefile
+		telggz/Makefile
 		man/Makefile)
 
