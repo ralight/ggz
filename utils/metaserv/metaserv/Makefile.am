@@ -7,9 +7,10 @@ metaserv_LDADD = ../minidom/libminidom.a
 
 ggzmetaserv_SOURCES = server.c gensocket.c
 ggzmetaserv_LDFLAGS = -L/usr/local/lib
-ggzmetaserv_LDADD = -lgensecure
+#ggzmetaserv_LDADD = -lgensecure
+ggzmetaserv_LDADD = $(top_srcdir)/gensecure/src/libgensecure.la
 
-INCLUDES = -I../minidom -I/usr/local/ssl/include -I/usr/local/include
+INCLUDES = -I$(top_srcdir)/metaserv/minidom -I/usr/local/ssl/include -I/usr/local/include -I$(top_srcdir)/gensecure/src
 
 confdir = $(prefix)/share/metaserv
 conf_DATA = metaservconf.xml
