@@ -66,22 +66,22 @@ void info_create_or_raise(GGZRoom *room)
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
 		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_name(room));
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
 		gtk_widget_show(info_dialog);
 	}
 	else {
 		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
 		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_name(room));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
 		gdk_window_raise(info_dialog->window);
 	}
 }
