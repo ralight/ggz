@@ -25,6 +25,7 @@ KTicTacTuxProto::KTicTacTuxProto(KTicTacTux *game)
 	names[1][0] = 0;
 	stats[0] = 0;
 	stats[1] = 0;
+	num = -1;
 
 	mod = NULL;
 	fdcontrol = -1;
@@ -97,9 +98,16 @@ int KTicTacTuxProto::getMoveStatus()
 int KTicTacTuxProto::getOpponentMove()
 {
 	int move;
+	int nummove;
 
+	ggz_read_int(fd, &nummove);
 	ggz_read_int(fd, &move);
-	board[move % 3][move / 3] = opponent;
+	if(num < 0)
+	{
+		if(nummove == 0) board[move % 3][move / 3] = opponent;
+		else board[move % 3][move / 3] = player;
+	}
+	else board[move % 3][move / 3] = opponent;
 }
 
 // Oooops... volunteers :-)
@@ -111,7 +119,9 @@ int KTicTacTuxProto::getSync()
 	for(int i = 0; i < 9; i++)
 	{
 		ggz_read_char(fd, &space);
-		if(space >= 0) board[i % 3][i / 3] = space + 1;
+		if(space == 0) board[i % 3][i / 3] = opponent;
+		else if(space == 1) board[i % 3][i / 3] = player;
+		else board[i % 3][i / 3] = none;
 	}
 }
 
@@ -119,6 +129,7 @@ int KTicTacTuxProto::getSync()
 int KTicTacTuxProto::getGameOver()
 {
 	ggz_read_char(fd, &winner);
+printf("game over: %i\n", winner);
 }
 
 // Read statistics

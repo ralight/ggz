@@ -185,19 +185,26 @@ int KTicTacTux::gameOver()
 
 			conf = kapp->config();
 			conf->setGroup("Score");
-			if(m_winner == proto->opponent)
+			if((m_opponent == PLAYER_NETWORK) && (proto->num < 0))
 			{
-				m_score_opp++;
-				if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
-				else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
-				announce(i18n("You lost the game."));
+				announce(i18n("The game is over."));
 			}
 			else
 			{
-				m_score_you++;
-				if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
-				else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
-				announce(i18n("You are the winner!"));
+				if(m_winner == proto->opponent)
+				{
+					m_score_opp++;
+					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
+					else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
+					announce(i18n("You lost the game."));
+				}
+				else
+				{
+					m_score_you++;
+					if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
+					else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
+					announce(i18n("You are the winner!"));
+				}
 			}
 			emit signalGameOver();
 			return 1;
