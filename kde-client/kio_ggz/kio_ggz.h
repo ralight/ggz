@@ -2,7 +2,7 @@
 #define KIO_GGZ_H
 
 #include <kio/slavebase.h>
-#include <GGZCoreServer.h>
+#include "GGZCoreServer.h"
 
 class GGZCore;
 class GGZCoreServer;
