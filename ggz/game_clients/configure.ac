@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6659 2005-01-14 02:43:36Z jdorje $
+dnl $Id: configure.ac 6660 2005-01-14 02:55:18Z jdorje $
 
-AC_INIT
+AC_INIT([GGZ GTK games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
 
 if test -r $srcdir/package; then
@@ -53,6 +53,13 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
+# Special case for compiling on windows
+AC_CANONICAL_HOST
+case $host_os in
+  *mingw32* ) MINGW32=yes;;
+          * ) MINGW32=no;;
+esac
+
 dnl Compiling Options
 dnl =================
 
@@ -67,25 +74,33 @@ AC_GGZ_INTL
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+AC_HEADER_TIME
 AC_HEADER_DIRENT
 AC_HEADER_STDBOOL
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([fcntl.h libintl.h locale.h netdb.h netinet/in.h \
-                  sys/socket.h], [],
+AC_CHECK_HEADERS([fcntl.h libintl.h locale.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
-AC_CHECK_HEADERS([stdint.h])
+AC_CHECK_HEADERS([netdb.h netinet/in.h socket.h winsock.h sys/time.h \
+		  sys/socket.h stdint.h])
+
 
 # Check for library functions
 # ===========================
-AC_CHECK_FUNCS([localeconv memset mkdir setlocale socket strcasecmp \
-                strchr strdup strrchr strstr malloc realloc stat strtod \
-                bzero gethostbyname],
-               [], [AC_MSG_ERROR([cannot find required function])])
-AC_CHECK_FUNCS([sqrt floor]) # FIXME: these tests don't pass without -lm !!!
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
+# We don't use AC_FUNC_MALLOC or AC_FUNC_REALLOC.  See the manual.
+AC_CHECK_LIB(m, sqrt, [LIBS="$LIBS -lm"])
+AC_CHECK_LIB(socket, socket, [LIBS="$LIBS -lsocket"])
+AC_CHECK_LIB(nsl, gethostbyname, [LIBS="$LIBS -lnsl"])
+if test "$MINGW32" = "yes"; then
+  LIBS="$LIBS -lwsock32"
+fi
+
 AC_FUNC_STAT
 AC_FUNC_STRTOD
+AC_CHECK_FUNCS([localeconv memset mkdir setlocale strcasecmp \
+                strchr strdup strrchr strstr malloc realloc stat \
+	        sqrt floor],
+               [], [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([socket gethostbyname gettimeofday])
 
 
 dnl Check for gettext support
