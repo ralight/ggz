@@ -34,11 +34,10 @@ AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
 			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
              AC_MSG_RESULT(yes))
 
-dnl Check for msghdr member msg_control
-dnl ===================================
-AC_EGREP_HEADER(size_t msg_controllen, sys/socket.h, 
-		       AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL))
-
+dnl Check for msghdr member msg_controllen
+dnl ======================================
+AC_EGREP_HEADER(msg_controllen, sys/socket.h, AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL))
+				       
 
 dnl Check for library functions
 dnl ===========================
