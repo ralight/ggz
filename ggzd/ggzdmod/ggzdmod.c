@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: ggzdmod.c 4928 2002-10-15 02:23:36Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -68,7 +68,6 @@ static fd_set get_active_fd_set(GGZdMod * ggzdmod);
 static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
 static void _ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod,
 					    int num_spectators);
-static int strings_differ(char *s1, char *s2);
 static void set_state(GGZdMod * ggzdmod, GGZdModState state);
 static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
 static int send_game_launch(GGZdMod * ggzdmod);
@@ -491,19 +490,6 @@ int ggzdmod_set_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 	return 0;
 }
 
-/* returns 0 if s1 and s2 are the same, 1 otherwise.  NULL-safe. */
-static int strings_differ(char *s1, char *s2)
-{
-	if (s1 == NULL && s2 == NULL)
-		return 0;
-	if (s1 == NULL && s2 != NULL)
-		return 1;
-	if (s1 != NULL && s2 == NULL)
-		return 1;
-	return strcmp(s1, s2);
-}
-
-
 static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
 	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)",
@@ -588,7 +574,7 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 
 		/* we allow games to change the names of Bot players. */
 		if (oldseat.type != GGZ_SEAT_BOT
-		    && strings_differ(seat->name, oldseat.name))
+		    && ggz_strcmp(seat->name, oldseat.name))
 			return -1;
 	}
 
