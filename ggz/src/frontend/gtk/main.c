@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 5326 2003-01-12 12:27:43Z dr_maux $
+ * $Id: main.c 6351 2004-11-13 17:22:07Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -77,7 +77,9 @@ int main (int argc, char *argv[])
 	char *global_conf, *user_conf, *init_version;
 	
 #ifdef ENABLE_NLS
-	bindtextdomain("ggz-gtk", PACKAGE_LOCALE_DIR);
+	/* GTK2 always uses UTF-8 so we tell gettext to output its
+	 * translations in that. */
+	bindtextdomain("ggz-gtk", "UTF-8");
 	textdomain("ggz-gtk");
 	setlocale(LC_ALL, "");
 #endif

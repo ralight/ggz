@@ -2,7 +2,7 @@
  * File: ggzintl.c
  * Author: GGZ Development Team
  * Project: GGZ Gtk Games
- * $Id: ggzintl.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: ggzintl.c 6351 2004-11-13 17:22:07Z jdorje $
  *
  * This file contains common functions and data for i18n of the
  * gtk-games package.
@@ -35,7 +35,9 @@
 void ggz_intl_init(const char *modulename)
 {
 #ifdef ENABLE_NLS
-	bindtextdomain(modulename, LOCALEDIR);
+	/* GTK2 always uses UTF-8 so we tell gettext to output its
+	   translations in that. */
+	bindtextdomain(modulename, "UTF-8");
 	textdomain(modulename);
 	setlocale(LC_ALL, "");
 	ggz_debug("main", _("nls enabled: %s"), modulename);
