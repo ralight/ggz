@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 128 $</revnumber>
-	<date>$Date: 2000-03-04 09:05:49 -0800 (Sat, 04 Mar 2000) $</date>
+	<revnumber>$Revision: 173 $</revnumber>
+	<date>$Date: 2000-03-07 16:18:50 -0800 (Tue, 07 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -509,6 +509,29 @@
 	</para>
     
 	<para>
+	Four types of data are exchanged between GGZ-control and game servers:
+	<itemizedlist>
+	    <listitem>
+	      <para>chr: a 1-byte signed char</para>
+	    </listitem>
+	    <listitem>
+	      <para>int: a 4-byte signed integer in network byte order</para>
+	    </listitem>
+	    <listitem>
+	      <para>
+	      str: a multibyte null-terminated string preceeded by
+	      its length (including null-termination) as an integer.
+	    </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+               fd: a file descriptor passed via sendmsg() along with a
+               single byte of dummy data
+               </para>
+	  </itemizedlist>
+      </para>
+	
+	<para>
 	  The following is a complete list of messages between the
 	  game module and the control section of the server.  Again, I
 	  have chosen to intersperse game module requests with the
@@ -518,67 +541,39 @@
 	<para>
 	  Please note: the following is not written stone, merely a
 	  list of ideas.
-	  <itemizedlist>
-	    <listitem>
-	      <para>Game launch
-		<itemizedlist>
-		  <listitem>
-		    <para>init routine</para>
-		  </listitem>
-		  <listitem>
-		    <para>control sends first player code and socket</para>
-		  </listitem>
-		  <listitem>
-		    <para>
-		      control sends options and requested reservations
-		    </para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-	    </listitem>
-	    <listitem>
-	      <para>Alter reservations [?]
-		<itemizedlist>
-		  <listitem>
-		    <para>game notifies control of modifications</para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-	    </listitem>
-	    <listitem>
-	      <para>Join player to game
-		<itemizedlist>
-		  <listitem>
-		    <para>control sends player code and socket</para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-        </listitem>
-	    <listitem>
-	      <para>Release player from game
-		<itemizedlist>
-              <listitem>
-		    <para>game notifies control that player has left</para>
-		  </listitem>
-		  <listitem>
-		    <para>also note whether between games or during game</para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-	    </listitem
-	    <listitem>
-	      <para>Game end
-		<itemizedlist>
-		  <listitem>
-		    <para>release all players</para>
-		  </listitem>
-		  <listitem>
-		    <para>control then updates player statistics</para>
-		  </listitem>
-		</itemizedlist>
-	      </para>
-	    </listitem>
-	  </itemizedlist>
+
+          <programlisting role="pseudocode">
+          REQ_TABLE_LAUNCH
+            int: size of options data in bytes
+            (options data)
+            int: number of seats at table
+              sequence of
+	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV)
+  	        str: name of player (if assignment >=0 or == RESV)
+                fd:  file dscriptor of player (if assignment >= 0)
+          RSP_TABLE_LAUNCH
+            chr: success flag (0 if OK, -1 if error)
+          
+          REQ_TABLE_JOIN
+	    int: seat number
+  	    str: name of player
+            fd:  file dscriptor of player 
+          RSP_TABLE_JOIN
+            chr: success flag (0 if OK, -1 if error)
+
+          REQ_TABLE_LEAVE
+            str: name of player
+          RSP_TABLE_LEAVE
+            chr: success flag (0 if OK, -1 if error)
+
+          MSG_GAME_OVER
+            int: number of statistics
+            sequence of
+              int: player index
+              int: number of games won
+              int: number of games lost
+         </programlisting>
+
 	</para>
       </section>
   
@@ -717,6 +712,12 @@
 	  addition/deletion.  GGZ ill probably use libdb for
 	  this.  a SQL database is possible but probably not
 	  necessary, and just too much for our simple requirements.
+	</para>
+      </section>
+  
+      <section id="motd"><title>MOTD System</title>
+	<para>
+        This section documents the MOTD facility written by rich.
 	</para>
       </section>
   
