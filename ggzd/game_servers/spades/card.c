@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 3/24/98
+ * $Id: card.c 2261 2001-08-26 21:25:21Z jdorje $
  *
  * This file contains the functions which operate on the type card. See the
  * header file card.h for a better description of these functions.  
@@ -49,7 +50,7 @@ char card_suit_char( Card c) {
   case 1:  return 'C'; 
   case 2:  return 'D';
   case 3:  return 'S'; 
-  case BLANK_CARD : return -1;
+  default: return -1;
   }
 }
 
@@ -61,6 +62,7 @@ const char* card_suit_str( Card c ) {
   case 1:  return("Clubs");
   case 2:  return("Diamonds");
   case 3:  return("Spades");
+  default: return("[bad suit]");
   }
 }
 
@@ -121,6 +123,7 @@ const char* card_name( Card c, unsigned char format ) {
   case 49: return (format == SHORT_NAME) ? "QS" : "Queen of Spades"; 
   case 50: return (format == SHORT_NAME) ? "KS" : "King of Spades"; 
   case 51: return (format == SHORT_NAME) ? "AS" : "Ace of Spades";
+  default: return (format == SHORT_NAME) ? "??" : "[bad card num]";
   }
 }
 

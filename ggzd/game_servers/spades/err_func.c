@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
+ * $Id: err_func.c 2261 2001-08-26 21:25:21Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -26,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>

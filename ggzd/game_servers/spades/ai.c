@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 8/4/99
+ * $Id: ai.c 2261 2001-08-26 21:25:21Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -83,7 +84,7 @@ int AIBid( int num ) {
   int voids = 0, singletons = 0, doubletons = 0;
   int nilrisk = 99;
   
-  Card card;
+  /* Card card; */
 
   /* Partners's bid */
   pard = bids[(num+2)%4];
@@ -573,7 +574,8 @@ int AIPlay( int num, int lead ) {
   
 static int ValidPlay(int p, int index) {
 
-  int i, tmp, status = 0;
+  int i, status = 0;
+  /* int tmp; */
 
 
 #if 0   /* we're not enforcing low club on first trick */
@@ -646,7 +648,8 @@ static int ValidPlay(int p, int index) {
 
 static void Calculate(int num, struct play *play) {
 
-  int i, mask, r, o, map, s, count, danger, trump, n, cover, sCount;
+  int mask, r, o, map, s, count, danger, trump, n, cover, sCount;
+  /* int i; */
 
   /*
    * The scale for all likelihoods runs as follows:
@@ -872,8 +875,9 @@ static int PlayNil(int p) {
 
 static int CoverNil(int p) {
 
-  int i, chosen = -1, mask, r, danger = 0, sluff = 0, s;
+  int i, chosen = -1, mask, r, danger = 0, sluff = 0;
   int map[4];
+  int s = -1; /* avoid compiler warning */
 
 #ifdef DEBUG_PLAY
   printf("Strategy: cover nil\n");
@@ -1146,9 +1150,9 @@ static int SetNil(int p) {
       
 static int PlayNormal(int p ) {
 
-  int i, chosen = -1, n, r, s, tmp;
+  int i, chosen = -1, n, r, s;
   struct play pCard;
-  int pmap[4], omap[4];
+  /* int tmp, pmap[4], omap[4]; */
 
 #ifdef DEBUG_PLAY
   printf("Strategy: play normal\n");
