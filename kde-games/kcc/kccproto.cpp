@@ -140,7 +140,6 @@ int KCCProto::getOpponentMove()
 	int seat;
 	char x1, x2, y1, y2;
 	int ret = 0;
-	int tmp;
 
 	ret |= ggz_read_int(fd, &seat);
 	ret |= ggz_read_char(fd, &y1);

@@ -298,30 +298,30 @@ void KCC::slotNetwork()
 
 	switch(op)
 	{
-		case proto->cc_msg_seat:
+		case KCCProto::cc_msg_seat:
 			proto->getSeat();
 			kdDebug() << "*proto* got my seat: " << proto->num << endl;
 			break;
-		case proto->cc_msg_players:
+		case KCCProto::cc_msg_players:
 			proto->getPlayers();
 			proto->state = KCCProto::statewait;
 			emit signalScore(i18n("Network game"));
 			kdDebug() << "*proto* got players " << endl;
 			break;
-		case proto->cc_req_move:
+		case KCCProto::cc_req_move:
 			proto->state = KCCProto::statemove;
 			m_turn = proto->num;
 			emit signalStatus(i18n("Your move"));
 			kdDebug() << "*proto* move requested" << endl;
 			break;
-		case proto->cc_rsp_move:
+		case KCCProto::cc_rsp_move:
 			proto->getMoveStatus();
 			switch(proto->status)
 			{
-				case proto->errnone:
+				case KCCProto::errnone:
 					status = i18n("Move accepted");
 					break;
-				case proto->errstate:
+				case KCCProto::errstate:
 					status = i18n("Table not yet full");
 					break;
 				default:
@@ -342,7 +342,7 @@ void KCC::slotNetwork()
 			}
 			m_fx = -1;
 			break;
-		case proto->cc_msg_move:
+		case KCCProto::cc_msg_move:
 			kdDebug() << "*proto* msg_move" << endl;
 			proto->getOpponentMove();
 			//if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
@@ -352,11 +352,11 @@ void KCC::slotNetwork()
 			proto->board[proto->m_ox1][proto->m_oy1] = 1;
 			proto->board[proto->m_ox2][proto->m_oy2] = tmp;
 			break;
-		case proto->cc_msg_sync:
+		case KCCProto::cc_msg_sync:
 			proto->getSync();
 			kdDebug() << "*proto* sync" << endl;
 			break;
-		case proto->cc_msg_gameover:
+		case KCCProto::cc_msg_gameover:
 			proto->getGameOver();
 			kdDebug() << "*proto* gameover" << endl;
 			proto->state = KCCProto::statedone;

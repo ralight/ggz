@@ -103,8 +103,6 @@ KCC *KCCWin::kcc()
 // Handle menu stuff
 void KCCWin::slotMenu(int id)
 {
-	KConfig *conf;
-
 	// Standard menu entries
 	switch(id)
 	{
