@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3408 2002-02-18 06:05:24Z jdorje $
+ * $Id: main.c 3410 2002-02-18 08:18:59Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -58,9 +58,9 @@ int main (int argc, char *argv[])
 	char *global_conf, *user_conf, *debugfile, *init_version;
 	
 #ifdef DEBUG
-	char* debug_types[] = {"connection", NULL};
+	const char* debug_types[] = {"connection", NULL};
 #else /* DEBUG */
-	char* debug_types[] = NULL;
+	const char* debug_types[] = NULL;
 #endif /* DEBUG */
 
 #ifdef ENABLE_NLS
