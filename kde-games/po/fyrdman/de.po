@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.9\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-11-17 22:11+0100\n"
-"PO-Revision-Date: 2004-11-17 22:12+0100\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2004-12-15 01:59+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -203,7 +203,7 @@ msgstr "Zug außerhalb der zulässigen Grenzen"
 
 #: ../../fyrdman/mainwindow.cpp:430
 msgid "Performing sync..."
-msgstr "Führe Synchronisation aus"
+msgstr "Führe Synchronisation aus..."
 
 #: ../../fyrdman/levelselector.cpp:24
 msgid "Play"

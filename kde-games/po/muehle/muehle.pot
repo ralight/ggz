@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 17:44+0200\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,11 +47,13 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:83 ../../muehle/src/toplevel.cpp:89
 #: ../../muehle/src/toplevel.cpp:96 ../../muehle/src/toplevel.cpp:103
+#: ../../muehle/src/toplevel.cpp:99
 msgid "Game"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:175 ../../muehle/src/toplevel.cpp:185
 #: ../../muehle/src/toplevel.cpp:192 ../../muehle/src/toplevel.cpp:199
+#: ../../muehle/src/toplevel.cpp:205
 msgid "Game over"
 msgstr ""
 
@@ -59,8 +61,13 @@ msgstr ""
 msgid "Game spectator"
 msgstr ""
 
+#: ../../muehle/src/toplevel.cpp:60
+msgid "Get levels"
+msgstr ""
+
 #: ../../muehle/src/toplevel.cpp:81 ../../muehle/src/toplevel.cpp:87
 #: ../../muehle/src/toplevel.cpp:94 ../../muehle/src/toplevel.cpp:101
+#: ../../muehle/src/toplevel.cpp:97
 msgid "Give up"
 msgstr ""
 
@@ -70,6 +77,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:87 ../../muehle/src/toplevel.cpp:93
 #: ../../muehle/src/toplevel.cpp:100 ../../muehle/src/toplevel.cpp:107
+#: ../../muehle/src/toplevel.cpp:103
 msgid "Help"
 msgstr ""
 
@@ -99,11 +107,13 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:166 ../../muehle/src/toplevel.cpp:176
 #: ../../muehle/src/toplevel.cpp:183 ../../muehle/src/toplevel.cpp:190
+#: ../../muehle/src/toplevel.cpp:196
 msgid "Network game"
 msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:80 ../../muehle/src/toplevel.cpp:86
 #: ../../muehle/src/toplevel.cpp:93 ../../muehle/src/toplevel.cpp:100
+#: ../../muehle/src/toplevel.cpp:96
 msgid "Offer remis"
 msgstr ""
 
@@ -124,6 +134,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:85 ../../muehle/src/toplevel.cpp:91
 #: ../../muehle/src/toplevel.cpp:98 ../../muehle/src/toplevel.cpp:105
+#: ../../muehle/src/toplevel.cpp:101
 msgid "Player"
 msgstr ""
 
@@ -134,6 +145,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:47 ../../muehle/src/toplevel.cpp:53
 #: ../../muehle/src/toplevel.cpp:60 ../../muehle/src/toplevel.cpp:67
+#: ../../muehle/src/toplevel.cpp:63
 msgid "Quit"
 msgstr ""
 
@@ -152,6 +164,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:45 ../../muehle/src/toplevel.cpp:51
 #: ../../muehle/src/toplevel.cpp:58 ../../muehle/src/toplevel.cpp:65
+#: ../../muehle/src/toplevel.cpp:57
 msgid "Start new game"
 msgstr ""
 
@@ -179,6 +192,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:86 ../../muehle/src/toplevel.cpp:92
 #: ../../muehle/src/toplevel.cpp:99 ../../muehle/src/toplevel.cpp:106
+#: ../../muehle/src/toplevel.cpp:102
 msgid "Theme"
 msgstr ""
 
@@ -193,6 +207,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:84 ../../muehle/src/toplevel.cpp:90
 #: ../../muehle/src/toplevel.cpp:97 ../../muehle/src/toplevel.cpp:104
+#: ../../muehle/src/toplevel.cpp:100
 msgid "Variants"
 msgstr ""
 
@@ -203,6 +218,7 @@ msgstr ""
 
 #: ../../muehle/src/toplevel.cpp:91 ../../muehle/src/toplevel.cpp:97
 #: ../../muehle/src/toplevel.cpp:104 ../../muehle/src/toplevel.cpp:111
+#: ../../muehle/src/toplevel.cpp:107
 msgid "Welcome to Muehle."
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 17:44+0200\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,25 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../../koenig/themes.cc:87
+msgid "%1 (GGZ)"
+msgstr ""
+
+#: ../../koenig/themes.cc:85
+msgid "%1 (Knights theme)"
+msgstr ""
+
 #: ../../koenig/game.cc:224 ../../koenig/game.cc:253
 msgid "%1: from %2/%3 to %4/%5"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:70 ../../koenig/toplevel.cc:74
+#: ../../koenig/toplevel.cc:93
 msgid "(Koenig launched)"
+msgstr ""
+
+#: ../../koenig/themes.cc:40
+msgid "Available chess themes:"
 msgstr ""
 
 #: ../../koenig/game.cc:49 ../../koenig/game.cc:224 ../../koenig/game.cc:50
@@ -30,18 +43,22 @@ msgid "Black"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:53 ../../koenig/toplevel.cc:57
+#: ../../koenig/toplevel.cc:71
 msgid "Call flag"
 msgstr ""
 
 #: ../../koenig/board.cc:101 ../../koenig/board.cc:102
+#: ../../koenig/board.cc:185
 msgid "Chess Board - Black"
 msgstr ""
 
 #: ../../koenig/board.cc:103 ../../koenig/board.cc:104
+#: ../../koenig/board.cc:187
 msgid "Chess Board - No color assigned yet"
 msgstr ""
 
 #: ../../koenig/board.cc:99 ../../koenig/board.cc:100
+#: ../../koenig/board.cc:183
 msgid "Chess Board - White"
 msgstr ""
 
@@ -78,18 +95,22 @@ msgid "Clock: server-side."
 msgstr ""
 
 #: ../../koenig/toplevel.cc:82 ../../koenig/toplevel.cc:86
+#: ../../koenig/toplevel.cc:105
 msgid "Control Panel"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:57 ../../koenig/toplevel.cc:61
+#: ../../koenig/toplevel.cc:75
 msgid "Display board frame"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:211 ../../koenig/toplevel.cc:220
+#: ../../koenig/toplevel.cc:297
 msgid "Do you really want to quit?"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:180 ../../koenig/toplevel.cc:185
+#: ../../koenig/toplevel.cc:213
 msgid "Draw requested"
 msgstr ""
 
@@ -105,7 +126,12 @@ msgstr ""
 msgid "Game: started."
 msgstr ""
 
+#: ../../koenig/toplevel.cc:82
+msgid "Get themes"
+msgstr ""
+
 #: ../../koenig/toplevel.cc:78 ../../koenig/toplevel.cc:82
+#: ../../koenig/toplevel.cc:101
 msgid "Highscores"
 msgstr ""
 
@@ -130,18 +156,21 @@ msgid "Invalid network opcode!"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:73 ../../koenig/toplevel.cc:77
+#: ../../koenig/toplevel.cc:96
 msgid "Koenig Highscores"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:74 ../../koenig/toplevel.cc:78
+#: ../../koenig/toplevel.cc:97
 msgid "Local scores"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:149
+#: ../../koenig/toplevel.cc:149 ../../koenig/toplevel.cc:177
 msgid "Message from chess server"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:76 ../../koenig/toplevel.cc:80
+#: ../../koenig/toplevel.cc:99
 msgid "Messages"
 msgstr ""
 
@@ -150,6 +179,7 @@ msgid "Minutes:"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:77 ../../koenig/toplevel.cc:81
+#: ../../koenig/toplevel.cc:100
 msgid "Moves"
 msgstr ""
 
@@ -162,15 +192,17 @@ msgid "No clock"
 msgstr ""
 
 #: ../../koenig/options.cc:81 ../../koenig/toplevel.cc:110
-#: ../../koenig/toplevel.cc:114
+#: ../../koenig/toplevel.cc:114 ../../koenig/toplevel.cc:137
 msgid "Options"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:49 ../../koenig/toplevel.cc:53
+#: ../../koenig/toplevel.cc:67
 msgid "Quit"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:211 ../../koenig/toplevel.cc:220
+#: ../../koenig/toplevel.cc:297
 msgid "Quit game"
 msgstr ""
 
@@ -199,15 +231,21 @@ msgid "Request GGZ game explicitely"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:54 ../../koenig/toplevel.cc:58
+#: ../../koenig/toplevel.cc:72
 msgid "Request draw"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:52 ../../koenig/toplevel.cc:56
+#: ../../koenig/toplevel.cc:70
 msgid "Request sync"
 msgstr ""
 
 #: ../../koenig/options.cc:56
 msgid "Seconds:"
+msgstr ""
+
+#: ../../koenig/themes.cc:42
+msgid "Select"
 msgstr ""
 
 #: ../../koenig/options.cc:47
@@ -223,18 +261,26 @@ msgid "Server clock"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:60 ../../koenig/toplevel.cc:64
+#: ../../koenig/toplevel.cc:78
 msgid "Show chess board"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:59 ../../koenig/toplevel.cc:63
+#: ../../koenig/toplevel.cc:77
 msgid "Show move table"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:50 ../../koenig/toplevel.cc:54
+#: ../../koenig/toplevel.cc:68
 msgid "Show moves"
 msgstr ""
 
+#: ../../koenig/toplevel.cc:79
+msgid "Show theme selector"
+msgstr ""
+
 #: ../../koenig/toplevel.cc:56 ../../koenig/toplevel.cc:60
+#: ../../koenig/toplevel.cc:74
 msgid "Show warnings as message boxes"
 msgstr ""
 
@@ -251,11 +297,16 @@ msgid "TRANSLATOR-NAME"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:180 ../../koenig/toplevel.cc:185
+#: ../../koenig/toplevel.cc:213
 msgid "The other player requests a draw. Do you agree?"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:149
+#: ../../koenig/toplevel.cc:149 ../../koenig/toplevel.cc:177
 msgid "The server said:\n"
+msgstr ""
+
+#: ../../koenig/themes.cc:61
+msgid "Theme Selector"
 msgstr ""
 
 #: ../../koenig/main.cc:41
@@ -268,6 +319,7 @@ msgid "White"
 msgstr ""
 
 #: ../../koenig/toplevel.cc:75 ../../koenig/toplevel.cc:79
+#: ../../koenig/toplevel.cc:98
 msgid "Worldwide"
 msgstr ""
 

@@ -4,11 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.9\n"
+"Project-Id-Version: 0.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 17:44+0200\n"
-"PO-Revision-Date: 2002-04-10 17:20GMT\n"
-"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2002-12-15 01:59+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -104,7 +104,7 @@ msgstr "KDots Spielwiedergabe"
 #: ../../kdots/kdots_win.cpp:29 ../../kdots/kdots_win.cpp:30
 #: ../../kdots/kdots_win.cpp:32
 msgid "Launching KDots..."
-msgstr "Starte KDots"
+msgstr "Starte KDots..."
 
 #: ../../kdots/kdots.cpp:123 ../../kdots/kdots.cpp:130
 #: ../../kdots/kdots.cpp:140

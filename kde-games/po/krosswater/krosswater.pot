@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 17:44+0200\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,10 @@ msgstr ""
 #: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:280
 #: ../../krosswater/krosswater.cpp:292 ../../krosswater/krosswater.cpp:298
 msgid "Invalid move!"
+msgstr ""
+
+#: ../../krosswater/main.cpp:43
+msgid "Krosswater"
 msgstr ""
 
 #: ../../krosswater/krosswater.cpp:99 ../../krosswater/krosswater.cpp:104

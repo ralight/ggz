@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-13 17:44+0200\n"
-"PO-Revision-Date: 2002-04-10 18:11GMT\n"
-"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2004-012-15 01:59+0100\n"
+"Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,11 +46,13 @@ msgstr "Client-Meldung"
 
 #: ../../muehle/src/toplevel.cpp:83 ../../muehle/src/toplevel.cpp:89
 #: ../../muehle/src/toplevel.cpp:96 ../../muehle/src/toplevel.cpp:103
+#: ../../muehle/src/toplevel.cpp:99
 msgid "Game"
 msgstr "Spiel"
 
 #: ../../muehle/src/toplevel.cpp:175 ../../muehle/src/toplevel.cpp:185
 #: ../../muehle/src/toplevel.cpp:192 ../../muehle/src/toplevel.cpp:199
+#: ../../muehle/src/toplevel.cpp:205
 msgid "Game over"
 msgstr "Spiel vorbei"
 
@@ -58,8 +60,13 @@ msgstr "Spiel vorbei"
 msgid "Game spectator"
 msgstr "Spiel-Zuschauer"
 
+#: ../../muehle/src/toplevel.cpp:60
+msgid "Get levels"
+msgstr "Themen holen"
+
 #: ../../muehle/src/toplevel.cpp:81 ../../muehle/src/toplevel.cpp:87
 #: ../../muehle/src/toplevel.cpp:94 ../../muehle/src/toplevel.cpp:101
+#: ../../muehle/src/toplevel.cpp:97
 msgid "Give up"
 msgstr "Aufgeben"
 
@@ -69,6 +76,7 @@ msgstr "Viel Glueck."
 
 #: ../../muehle/src/toplevel.cpp:87 ../../muehle/src/toplevel.cpp:93
 #: ../../muehle/src/toplevel.cpp:100 ../../muehle/src/toplevel.cpp:107
+#: ../../muehle/src/toplevel.cpp:103
 msgid "Help"
 msgstr "Hilfe"
 
@@ -98,11 +106,13 @@ msgstr "Netzwerkfehler"
 
 #: ../../muehle/src/toplevel.cpp:166 ../../muehle/src/toplevel.cpp:176
 #: ../../muehle/src/toplevel.cpp:183 ../../muehle/src/toplevel.cpp:190
+#: ../../muehle/src/toplevel.cpp:196
 msgid "Network game"
 msgstr "Netzwerkspiel"
 
 #: ../../muehle/src/toplevel.cpp:80 ../../muehle/src/toplevel.cpp:86
 #: ../../muehle/src/toplevel.cpp:93 ../../muehle/src/toplevel.cpp:100
+#: ../../muehle/src/toplevel.cpp:96
 msgid "Offer remis"
 msgstr "Frage nach einem Unentschieden"
 
@@ -123,6 +133,7 @@ msgstr "Der Gegner ist dran"
 
 #: ../../muehle/src/toplevel.cpp:85 ../../muehle/src/toplevel.cpp:91
 #: ../../muehle/src/toplevel.cpp:98 ../../muehle/src/toplevel.cpp:105
+#: ../../muehle/src/toplevel.cpp:101
 msgid "Player"
 msgstr "Spieler"
 
@@ -133,6 +144,7 @@ msgstr "Bitte nimm einen der generischen Steine"
 
 #: ../../muehle/src/toplevel.cpp:47 ../../muehle/src/toplevel.cpp:53
 #: ../../muehle/src/toplevel.cpp:60 ../../muehle/src/toplevel.cpp:67
+#: ../../muehle/src/toplevel.cpp:63
 msgid "Quit"
 msgstr "Beenden"
 
@@ -151,12 +163,13 @@ msgstr "Server-Meldung"
 
 #: ../../muehle/src/toplevel.cpp:45 ../../muehle/src/toplevel.cpp:51
 #: ../../muehle/src/toplevel.cpp:58 ../../muehle/src/toplevel.cpp:65
+#: ../../muehle/src/toplevel.cpp:57
 msgid "Start new game"
 msgstr "Starte neues Spiel"
 
 #: ../../muehle/src/board.cpp:82 ../../muehle/src/board.cpp:84
 msgid "Starting new game."
-msgstr "Starte neues Spiel"
+msgstr "Starte neues Spiel."
 
 #: ../../muehle/src/main.cpp:47
 msgid "TRANSLATOR-EMAIL"
@@ -178,6 +191,7 @@ msgstr "Dir wurde noch keine Farbe vom Server zugewiesen."
 
 #: ../../muehle/src/toplevel.cpp:86 ../../muehle/src/toplevel.cpp:92
 #: ../../muehle/src/toplevel.cpp:99 ../../muehle/src/toplevel.cpp:106
+#: ../../muehle/src/toplevel.cpp:102
 msgid "Theme"
 msgstr "Thema"
 
@@ -192,6 +206,7 @@ msgstr "Dieses Spiel ist Teil der GGZ Gaming Zone."
 
 #: ../../muehle/src/toplevel.cpp:84 ../../muehle/src/toplevel.cpp:90
 #: ../../muehle/src/toplevel.cpp:97 ../../muehle/src/toplevel.cpp:104
+#: ../../muehle/src/toplevel.cpp:100
 msgid "Variants"
 msgstr "Varianten"
 
@@ -202,6 +217,7 @@ msgstr "Warte auf den Zug deines Gegners"
 
 #: ../../muehle/src/toplevel.cpp:91 ../../muehle/src/toplevel.cpp:97
 #: ../../muehle/src/toplevel.cpp:104 ../../muehle/src/toplevel.cpp:111
+#: ../../muehle/src/toplevel.cpp:107
 msgid "Welcome to Muehle."
 msgstr "Willkommen bei Muehle."
 
