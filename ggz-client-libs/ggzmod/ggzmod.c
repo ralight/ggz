@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4914 2002-10-14 21:59:49Z jdorje $
+ * $Id: ggzmod.c 4926 2002-10-15 01:39:35Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -706,12 +706,7 @@ static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state)
    indicates a serious (fatal) error. */
 static int send_game_launch(GGZMod * ggzmod)
 {
-	int i;
-
-	if (_io_send_launch_begin(ggzmod->fd,
-				  ggzmod->num_seats,
-				  ggzmod->num_spectator_seats) < 0)
-		return -1;
+	GGZListEntry *entry;
 
 	if (_io_send_player(ggzmod->fd,
 			    ggzmod->my_name,
@@ -719,16 +714,23 @@ static int send_game_launch(GGZMod * ggzmod)
 			    ggzmod->my_seat_num) < 0)
 		return -2;
 
-	for (i = 0; i < ggzmod->num_seats; i++) {
-		GGZSeat seat = ggzmod_get_seat(ggzmod, i);
-		if (_io_send_seat(ggzmod->fd, &seat) < 0)
+	for (entry = ggz_list_head(ggzmod->seats);
+	     entry;
+	     entry = ggz_list_next(entry)) {
+		GGZSeat *seat = ggz_list_get_data(entry);
+		if (_io_send_seat(ggzmod->fd, seat) < 0)
 			return -3;
 	}
-	for (i = 0; i < ggzmod->num_spectator_seats; i++) {
-		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(ggzmod, i);
-		if (_io_send_spectator_seat(ggzmod->fd, &seat) < 0)
+	for (entry = ggz_list_head(ggzmod->spectator_seats);
+	     entry;
+	     entry = ggz_list_next(entry)) {
+		GGZSpectatorSeat *seat = ggz_list_get_data(entry);
+		if (_io_send_spectator_seat(ggzmod->fd, seat) < 0)
 			return -4;
 	}
+
+	if (_io_send_launch(ggzmod->fd) < 0)
+		return -1;
 
 	/* If the server fd has already been set, send that too */
 	if (ggzmod->server_fd != -1)
@@ -849,13 +851,7 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	/* Is this right? has the gameover happened yet? */   
 }
 
-void _ggzmod_handle_launch_begin(GGZMod * ggzmod)
-{
-	/* Nothing */
-}
-				 
-
-void _ggzmod_handle_launch_end(GGZMod * ggzmod)
+void _ggzmod_handle_launch(GGZMod * ggzmod)
 {
 	/* Normally we let the game control its own state, but
 	   we control the transition from CREATED to WAITING. */

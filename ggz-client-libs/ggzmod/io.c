@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 4914 2002-10-14 21:59:49Z jdorje $
+ * $Id: io.c 4926 2002-10-15 01:39:35Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -52,12 +52,9 @@ static int _io_read_msg_spectator_seat(GGZMod *ggzmod);
 
 
 /* Functions for sending IO messages */
-int _io_send_launch_begin(int fd,
-			  int num_seats, int num_spectator_seats)
+int _io_send_launch(int fd)
 {
-	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0
-	    || ggz_write_int(fd, num_seats) < 0
-	    || ggz_write_int(fd, num_spectator_seats) < 0)
+	if (ggz_write_int(fd, MSG_GAME_LAUNCH) < 0)
 		return -1;
 
 	return 0;
@@ -171,35 +168,7 @@ static int _io_read_msg_state(GGZMod *ggzmod)
 
 static int _io_read_msg_launch(GGZMod *ggzmod)
 {
-	int num_seats, num_spectator_seats;
-	int op, i;
-
-	if (ggz_read_int(ggzmod->fd, &num_seats) < 0
-	    || ggz_read_int(ggzmod->fd, &num_spectator_seats) < 0)
-		return -1;
-
-	_ggzmod_handle_launch_begin(ggzmod);
-
-	if (ggz_read_int(ggzmod->fd, &op) < 0
-	    || op != MSG_GAME_PLAYER
-	    || _io_read_msg_player(ggzmod) < 0)
-		return -2;
-
-	for (i = 0; i < num_seats; i++) {
-		if (ggz_read_int(ggzmod->fd, &op) < 0
-		    || op != MSG_GAME_SEAT
-		    || _io_read_msg_seat(ggzmod) < 0)
-			return -3;
-	}
-
-	for (i = 0; i < num_spectator_seats; i++) {
-		if (ggz_read_int(ggzmod->fd, &op) < 0
-		    || op != MSG_GAME_SPECTATOR_SEAT
-		    || _io_read_msg_spectator_seat(ggzmod) < 0)
-			return -4;
-	}
-
-	_ggzmod_handle_launch_end(ggzmod);
+	_ggzmod_handle_launch(ggzmod);
 
 	return 0;
 }
