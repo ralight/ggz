@@ -1,6 +1,7 @@
 #!/bin/sh
 # GGZ Gaming Zone Maintenance Script
 # Announce a server restart
+# Run as user ggz
 
 ggz-cmd live.ggzgamingzone.org \
 	checkonline ***** \

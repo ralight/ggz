@@ -1,6 +1,7 @@
 #!/bin/sh
 # GGZ Gaming Zone Maintenance Script
 # Master start script
+# Run as user ggz
 
 export PATH=/home/ggz/ggz-usr/bin:$PATH
 

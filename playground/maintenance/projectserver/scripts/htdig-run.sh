@@ -1,6 +1,7 @@
 #!/bin/sh
 # GGZ Gaming Zone Maintenance Script
 # Creation of htdig search index
+# Run as root
 
 base=/var/www/ggz/mail
 

@@ -1,0 +1,9 @@
+- MySQL user creation:
+GRANT ALL PRIVILEGES ON mantis.* TO mantis@localhost IDENTIFIED BY 'xxx';
+
+- GGZ Hostmaster Key:
+/root/.gnupg (not on server for security reasons)
+
+- Cronjobs
+No mailman system cronjob, use root cronjob instead
+
