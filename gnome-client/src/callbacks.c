@@ -512,9 +512,9 @@ on_btnJoin_clicked                 (GtkButton       *button,
 	GtkTreeModel *model;
 	gint id, open, total;
 	gchar *desc;
-	char *name;
-	char *engine;
-	char *version;
+	const char *name;
+	const char *engine;
+	const char *version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
@@ -567,9 +567,9 @@ on_btnWatch_clicked                 (GtkButton       *button,
 	GtkTreeModel *model;
 	gint id, open, total;
 	gchar *desc;
-	char *name;
-	char *engine;
-	char *version;
+	const char *name;
+	const char *engine;
+	const char *version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
