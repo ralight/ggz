@@ -24,7 +24,8 @@ class Network(NetworkBase, NetworkInfo):
 
 		self.movequeue = []
 
-		self.sequence = -1
+		self.sequence = 0
+		self.peersequence = 0
 		self.command_ok = 0
 		self.command_deny = 1
 		self.command_newgame = 2
@@ -42,21 +43,20 @@ class Network(NetworkBase, NetworkInfo):
 		state = "start"
 		for c in chars:
 			byte = ord(c)
-			print "#MSG#", byte
+			#print "#MSG#", byte
 
 			if state == "start":
 				if byte & 0x80:
 					print "analyze error: start byte has high bit set"
 				else:
-					if self.sequence == -1:
-						self.sequence = byte & 0xFC
-					sequence = byte & 0xFC
-					if self.sequence != sequence:
+					fixedbits = byte & 0xFC
+					if fixedbits != 0:
 						print "analyze error: sequence changed"
 					else:
 						clientbit = (byte & 2) >> 1
 						serverbit = (byte & 1)
 						print "* clientbit, serverbit:", clientbit, serverbit
+						self.peersequence = serverbit
 				state = "checksum"
 			elif state == "checksum":
 				if byte & 0x80:
@@ -96,6 +96,14 @@ class Network(NetworkBase, NetworkInfo):
 							print "command error: newgame data corrupted"
 					elif basiccommand == self.command_query:
 						print "command: query"
+						if commandoptions == 9: # board size
+							self.sendcommand(self.command_answer, 19)
+						elif commandoptions == 8: # handicap
+							self.sendcommand(self.command_answer, 3)
+						elif commandoptions == 11: # colour
+							self.sendcommand(self.command_answer, 1) # 1=white, 2=black
+						else:
+							self.sendcommand(self.command_answer, 0)
 					elif basiccommand == self.command_answer:
 						print "command: answer"
 					elif basiccommand == self.command_move:
@@ -112,20 +120,18 @@ class Network(NetworkBase, NetworkInfo):
 
 	def newgame(self):
 		self.inputallowed = 1
+		# FIXME: send command_ok, or command_query?
 
-	def domove(self, frompos, topos):
-		#(x, y) = frompos
-		(x2, y2) = topos
+	def sendcommand(self, basiccommand, commandoptions):
+		print ">>>command", basiccommand
+		if basiccommand != self.command_ok:
+			self.sequence += 1
+		clientbit = self.sequence & 0x01
+		serverbit = self.peersequence & 0x01
+		c1 = (serverbit << 1) + clientbit  # sequence byte
+		print ">>>sequences", serverbit, clientbit
 
-		clientbit = 1
-		serverbit = 1
-		c1 = (clientbit << 1) + serverbit  # sequence byte
-
-		basiccommand = self.command_move
 		commandseparator = 0
-		p = 0 # black
-		i = (19 - y2) * 19 + x2 # O1: 14 (lower right...)
-		commandoptions = (p << 10) + i
 		c3 = 0x80 + (basiccommand << 4) + (commandseparator << 3) + ((commandoptions & 0x380) >> 7) # data byte 1
 		c4 = 0x80 + (commandoptions & 0x7F) # data byte 2
 
@@ -139,6 +145,17 @@ class Network(NetworkBase, NetworkInfo):
 		line += chr(c3)
 		line += chr(c4)
 		self.sendchars(line, len(line))
+
+	def domove(self, frompos, topos):
+		#(x, y) = frompos
+		(x2, y2) = topos
+
+		basiccommand = self.command_move
+		p = 0 # black
+		i = (19 - y2) * 19 + x2 # O1: 14 (lower right...)
+		commandoptions = (p << 10) + i
+
+		self.sendcommand(basiccommand, commandoptions)
 
 	def netmove(self):
 		if len(self.movequeue) == 0:
