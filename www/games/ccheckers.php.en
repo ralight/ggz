@@ -15,19 +15,26 @@ Board game for 2 to 6 players.
 
 <i>Chinese Checkers features</i><br>
 <ul>
-<li>Gtk+ game client
+<li>Gtk+ and KDE game clients
 <li>AI opponents available
 <li>supports statistics
 </ul>
 <br>
 
 <i>Chinese Checkers rules</i><br>
-The classic Chinese Checkers rule apply.
+The classic Chinese Checkers rules apply.
+Each turn, a player selects a route from one of his points to a hole,
+by either going to a hole next to the point, or jumping over other
+points if necessary. The goal is to place all points into the holes
+in the opposite edge of the star.
 
 </td><td valign="top">
 
 <i>Gtk+ client:</i><br>
 <img src="pics/ccheckers.png"><br>
+
+<i>KDE client:</i><br>
+<img src="pics/kcc.png"><br>
 
 </td>
 </tr>

@@ -1,0 +1,51 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Reversi</b><br>
+Brettspiel für 2 Spieler.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Merkmale von Reversi</i><br>
+<ul>
+<li>Clients für Gtk+ und KDE
+<li>KI-Gegner vorhanden
+<li>unterstützt Spielerbewertungen
+</ul>
+<br>
+
+<i>Regeln bei Reversi</i><br>
+Von der Startposition aus legen beide Spieler abwechselnd einen Stein
+auf das Brett. Das Ziel ist es, so viele Steine wie möglich zwischen
+dem neuen und einem anderen eigenen zu haben, so daß sie zu eigenen
+konvertiert werden.
+
+Das Spiel endet, wenn keine Steine mehr gesetzt werden können.
+Der Spieler mit den meisten Steinen auf dem Brett ist dann der Gewinner.
+
+</td><td valign="top">
+
+<i>Gtk+-Client:</i><br>
+<img src="pics/reversi.png"><br>
+
+<i>KDE-Client:</i><br>
+<img src="pics/kreversi.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
