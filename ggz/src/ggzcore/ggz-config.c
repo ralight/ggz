@@ -31,6 +31,7 @@
 #include "config.h"
 #include "ggzcore.h"
 #include "confio.h"
+#include "protocol.h"
 
 
 /* POPT Arguments Stuff */
@@ -38,16 +39,19 @@
 #define QUERY_GAMEDIR	2
 #define QUERY_VERSION	3
 #define QUERY_DATADIR	4
+#define QUERY_PVERSION	5
 static char *modname = NULL;
 static char *modversion = NULL;
+static char *modpengine = NULL;
+static char *modpversion = NULL;
+static char *modpsupport = NULL;
 static char *modexec = NULL;
 static char *modui = NULL;
-static char *modproto = NULL;
 static char *modauthor = NULL;
 static char *modurl = NULL;
 static char *modicon = NULL;
 static char *modhelp = NULL;
-static char *fromfile = NULL;
+static char *modfile = NULL;
 static int modforce = 0;
 static int moddest = 0;
 static char *destdir = NULL;
@@ -63,151 +67,174 @@ static const struct poptOption args[] = {
 	 "Query GGZDATADIR - location of game data directory"},
 	{"version",	'v',	POPT_ARG_NONE,	&did_query,	QUERY_VERSION,
 	 "Query VERSION - version identifier of ggzcore files"},
+	{"protocol",	'p',	POPT_ARG_NONE,	&did_query,	QUERY_PVERSION,
+	 "Query GGZ_CS_PROTO_VERSION - version of core protocol"},
+
 	{"install",	'\0',	POPT_ARG_NONE,	&install_mod,	0,
 	 "Install a module"},
 	{"remove",	'\0',	POPT_ARG_NONE,	&remove_mod,	0,
 	 "Remove a module"},
 
-	{"modname",	'\0',	POPT_ARG_STRING,	&modname,	0,
-	 "[INSTALL | REMOVE] (RQD) - set the game name", "NAME"},
-	{"modauthor",	'\0',	POPT_ARG_STRING,	&modauthor,	0,
-	 "[INSTALL | REMOVE] (RQD) - author of the module", "AUTHOR"},
-	{"modui",	'\0',	POPT_ARG_STRING,	&modui,		0,
-	 "[INSTALL | REMOVE] (RQD) - the modules UI setting", "<gtk | kde>"},
-	{"modexec",	'\0',	POPT_ARG_STRING,	&modexec,	0,
-	 "[INSTALL] (RQD) - set the executable filename", "FILENAME"},
-	{"modproto",	'\0',	POPT_ARG_STRING,	&modproto,	0,
-	 "[INSTALL] (RQD) - protocol version of module", "VERSION"},
-	{"modurl",	'\0',	POPT_ARG_STRING,	&modurl,	0,
-	 "[INSTALL] (RQD) - homepage to find the module", "URL"},
-	{"modversion",	'\0',	POPT_ARG_STRING,	&modversion,	0,
-	 "[INSTALL] (RQD) - set the module version", "VERSION"},
-	{"modicon",	'\0',	POPT_ARG_STRING,	&modicon,	0,
-	 "[INSTALL] (OPT) - set path to module icon", "FILENAME"},
-	{"modhelp",	'\0',	POPT_ARG_STRING,	&modhelp,	0,
-	 "[INSTALL] (OPT) - set path to main help file", "FILENAME"},
-
-	{"fromfile",	'\0',	POPT_ARG_STRING,	&fromfile,	0,
-	 "[INSTALL] - load RQD/OPT parameters from a file", "FILENAME"},
+	{"modfile",	'\0',	POPT_ARG_STRING,	&modfile,	0,
+	 "Specifies module installation file", "FILENAME"},
 
 	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
-	 "[INSTALL] (OPT) - overwrite an existing module"},
+	 "Install over an existing module"},
 
 	{"destdir",	'D',	POPT_ARG_NONE,	&moddest,	0,
-	 "[INSTALL] (OPT) - use $DESTDIR as offset to config file"},
+	 "Use $DESTDIR as offset to ggz.modules file"},
 
 	POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
 };
 
 
-void load_fromfile(void)
+int load_modfile(void)
 {
 	int from;
+	int status = 1;
 
-	from = ggzcore_confio_parse(fromfile, GGZ_CONFIO_RDONLY);
+	from = ggzcore_confio_parse(modfile, GGZ_CONFIO_RDONLY);
 
-	if(modname == NULL) 
-		modname = ggzcore_confio_read_string(from, "ModuleInfo",
-						     "Name", NULL);
-	if(modversion == NULL)
-		modversion = ggzcore_confio_read_string(from, "ModuleInfo",
-							"Version", NULL);
-	if(modexec == NULL)
-		modexec = ggzcore_confio_read_string(from, "ModuleInfo",
-						     "CommandLine", NULL);
-	if(modui == NULL)
-		modui = ggzcore_confio_read_string(from, "ModuleInfo",
-						   "Frontend", NULL);
-	if(modproto == NULL)
-		modproto = ggzcore_confio_read_string(from, "ModuleInfo",
-						      "Protocol", NULL);
-	if(modauthor == NULL)
-		modauthor = ggzcore_confio_read_string(from, "ModuleInfo",
-						       "Author", NULL);
+	modname = ggzcore_confio_read_string(from, "ModuleInfo",
+					     "Name", NULL);
+	if(modname == NULL) {
+		fprintf(stderr, "Critical: Module name not specified.\n");
+		status = 0;
+	}
+
+	modversion = ggzcore_confio_read_string(from, "ModuleInfo",
+						"Version", NULL);
+	if(modversion == NULL) {
+		fprintf(stderr, "Critical: Module version not specified.\n");
+		status = 0;
+	}
+
+	modexec = ggzcore_confio_read_string(from, "ModuleInfo",
+					     "CommandLine", NULL);
+	if(modexec == NULL) {
+		fprintf(stderr, "Critical: Executable not specified.\n");
+		status = 0;
+	}
+
+	modui = ggzcore_confio_read_string(from, "ModuleInfo",
+					   "Frontend", NULL);
+	if(modui == NULL) {
+		fprintf(stderr, "Critical: User interface not specified.\n");
+		status = 0;
+	}
+
+	modpengine = ggzcore_confio_read_string(from, "ModuleInfo",
+					        "ProtocolEngine", NULL);
+	if(modpengine == NULL) {
+		fprintf(stderr, "Critical: Protocol engine not specified.\n");
+		status = 0;
+	}
+
+	modpversion = ggzcore_confio_read_string(from, "ModuleInfo",
+						 "ProtocolVersion", NULL);
+	if(modpversion == NULL) {
+		fprintf(stderr, "Critical: Protocol version not specified.\n");
+		status = 0;
+	}
+
+	modauthor = ggzcore_confio_read_string(from, "ModuleInfo",
+					       "Author", NULL);
+	if(modauthor == NULL) {
+		fprintf(stderr, "Critical: Module author not specified.\n");
+		status = 0;
+	}
+
+	modurl = ggzcore_confio_read_string(from, "ModuleInfo",
+					    "Homepage", NULL);
 	if(modurl == NULL)
-		modurl = ggzcore_confio_read_string(from, "ModuleInfo",
-						    "Homepage", NULL);
-	if(modicon == NULL)
-		modicon = ggzcore_confio_read_string(from, "ModuleInfo",
-						     "IconPath", NULL);
-	if(modhelp == NULL)
-		modhelp = ggzcore_confio_read_string(from, "ModuleInfo",
-						     "HelpPath", NULL);
+		fprintf(stderr, "Warning: Module homepage not specified.\n");
+
+	modpsupport = ggzcore_confio_read_string(from, "ModuleInfo",
+						 "SupportedGames", NULL);
+	modicon = ggzcore_confio_read_string(from, "ModuleInfo",
+					     "IconPath", NULL);
+	modhelp = ggzcore_confio_read_string(from, "ModuleInfo",
+					     "HelpPath", NULL);
+
+	return status;
 }
 
 
-int purge_module_name(int global)
+int purge_engine_name(int global)
 {
 	int items;
-	char **name_list;
+	char **engine_list;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", "*GameList*",&items,&name_list);
+	ggzcore_confio_read_list(global, "Games", "*Engines*",
+				 &items, &engine_list);
 
 	for(index=0; index<items; index++)
-		if(!strcmp(name_list[index], modname))
+		if(!strcmp(engine_list[index], modpengine))
 			break;
 
 	if(index != items-1)
-		name_list[index] = name_list[items-1];
+		engine_list[index] = engine_list[items-1];
 	items--;
 
 	if(items != 0)
-		ggzcore_confio_write_list(global, "Games", "*GameList*",
-					  items, name_list);
+		ggzcore_confio_write_list(global, "Games", "*Engines*",
+					  items, engine_list);
 	else
-		ggzcore_confio_remove_key(global, "Games", "*GameList*");
+		ggzcore_confio_remove_key(global, "Games", "*Engines*");
 
 	return 0;
 }
 
 
-char *new_module_id(int global)
+char *new_engine_id(int global)
 {
-	char **name_list, **mod_list;
-	int names, mods;
+	char **engine_list, **engine_id_list;
+	int engines, ids;
 	int hi=0, t;
 	int i, j;
 	static char new_id[10];
 
-	ggzcore_confio_read_list(global, "Games", "*GameList*",&names,&name_list);
+	ggzcore_confio_read_list(global, "Games", "*Engines*",
+				 &engines, &engine_list);
 
-	for(i=0; i<names; i++) {
-		ggzcore_confio_read_list(global, "Games", name_list[i],
-						 &mods, &mod_list);
-		for(j=0; j<mods; j++) {
-			t = atoi(mod_list[j] + 1);
+	for(i=0; i<engines; i++) {
+		ggzcore_confio_read_list(global, "Games", engine_list[i],
+						 &ids, &engine_id_list);
+		for(j=0; j<ids; j++) {
+			t = atoi(engine_id_list[j] + 1);
 			if(t > hi)
 				hi = t;
 		}
 	}
 
-	snprintf(new_id, 10, "g%d", hi+1);
+	snprintf(new_id, 10, "p%d", hi+1);
 
 	return new_id;
 }
 
 
-char *get_module_id(int global)
+char *get_engine_id(int global)
 {
 	int items;
-	char **mod_list;
-	char *module_id=NULL;
+	char **engine_list;
+	char *engine_id=NULL;
 	char *author, *ui, *version;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", modname, &items, &mod_list);
+	ggzcore_confio_read_list(global, "Games", modpengine,
+				 &items, &engine_list);
 	if(items == 0)
 		return NULL;
 
 	for(index=0; index<items; index++) {
-		module_id = mod_list[index];
-		author = ggzcore_confio_read_string(global, module_id,
+		engine_id = engine_list[index];
+		author = ggzcore_confio_read_string(global, engine_id,
 						    "Author", NULL);
-		ui = ggzcore_confio_read_string(global, module_id,
+		ui = ggzcore_confio_read_string(global, engine_id,
 						"Frontend", NULL);
 		if(modversion) {
-			version = ggzcore_confio_read_string(global, module_id,
+			version = ggzcore_confio_read_string(global, engine_id,
 							     "Version", NULL);
 			if(!strcmp(author, modauthor) && !strcmp(ui, modui) &&
 			   !strcmp(version, modversion))
@@ -219,32 +246,33 @@ char *get_module_id(int global)
 	if(index >= items)
 		return NULL;
 	else
-		return module_id;
+		return engine_id;
 }
 
 
-void purge_module_id(int global, char *module_id)
+void purge_engine_id(int global, char *engine_id)
 {
 	int items;
-	char **mod_list;
+	char **engine_list;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", modname, &items, &mod_list);
+	ggzcore_confio_read_list(global, "Games", modpengine,
+				 &items, &engine_list);
 
 	for(index=0; index<items; index++)
-		if(!strcmp(mod_list[index], module_id))
+		if(!strcmp(engine_list[index], engine_id))
 			break;
 
 	if(index != items-1)
-		mod_list[index] = mod_list[items-1];
+		engine_list[index] = engine_list[items-1];
 	items--;
 
 	if(items != 0)
-		ggzcore_confio_write_list(global, "Games", modname,
-					  items, mod_list);
+		ggzcore_confio_write_list(global, "Games", modpengine,
+					  items, engine_list);
 	else {
-		ggzcore_confio_remove_key(global, "Games", modname);
-		purge_module_name(global);
+		ggzcore_confio_remove_key(global, "Games", modpengine);
+		purge_engine_name(global);
 	}
 }
 
@@ -291,23 +319,23 @@ int open_conffile(void)
 
 int remove_module(void)
 {
-	char	*module_id;
+	char	*engine_id;
 	int	global, rc;
 
 	if((global = open_conffile()) < 0)
 		return global;
 
-	module_id = get_module_id(global);
+	engine_id = get_engine_id(global);
 
-	if(module_id == NULL) {
+	if(engine_id == NULL) {
 		fprintf(stderr,"Warning: Tried to remove nonexistant module\n");
 		_ggzcore_confio_cleanup();
 		return -1;
 	}
 
-	rc = ggzcore_confio_remove_section(global, module_id);
+	rc = ggzcore_confio_remove_section(global, engine_id);
 	if(rc == 0) {
-		purge_module_id(global, module_id);
+		purge_engine_id(global, engine_id);
 		rc = ggzcore_confio_commit(global);
 	}
 
@@ -324,69 +352,75 @@ int remove_module(void)
 
 int install_module(void)
 {
-	char	*module_id;
+	char	*engine_id;
 	int	global, rc;
-	char	*mod_list, *game_list;
+	char	*engine_id_list, *engine_list;
 	char	bigstr[1024];
 
 	if((global = open_conffile()) < 0)
 		return global;
 
-	module_id = get_module_id(global);
+	engine_id = get_engine_id(global);
 	if(!modforce) {
-		if(module_id != NULL) {
+		if(engine_id != NULL) {
 			fprintf(stderr, "Cannot overwrite existing module\n");
 			_ggzcore_confio_cleanup();
 			return -1;
 		}
 	}
 
-	if(module_id == NULL) {
-		module_id = new_module_id(global);
+	if(engine_id == NULL) {
+		engine_id = new_engine_id(global);
 		modforce = 0;
 	}
 
-	rc = ggzcore_confio_write_string(global, module_id, "Name", modname);
+	rc = ggzcore_confio_write_string(global, engine_id, "Name", modname);
 	if(rc == 0) {
-		ggzcore_confio_write_string(global, module_id,
-					    "Protocol", modproto);
-		ggzcore_confio_write_string(global, module_id,
+		ggzcore_confio_write_string(global, engine_id,
+					    "ProtocolEngine", modpengine);
+		ggzcore_confio_write_string(global, engine_id,
+					    "ProtocolVersion", modpversion);
+		ggzcore_confio_write_string(global, engine_id,
 					    "Frontend", modui);
-		ggzcore_confio_write_string(global, module_id,
+		ggzcore_confio_write_string(global, engine_id,
 					    "Version", modversion);
-		ggzcore_confio_write_string(global, module_id,
+		ggzcore_confio_write_string(global, engine_id,
 					    "Author", modauthor);
-		ggzcore_confio_write_string(global, module_id,
+		ggzcore_confio_write_string(global, engine_id,
 					    "CommandLine", modexec);
-		ggzcore_confio_write_string(global, module_id,
+		ggzcore_confio_write_string(global, engine_id,
 					    "Homepage", modurl);
+		if(modpsupport)
+			ggzcore_confio_write_string(global, engine_id,
+						 "SupportedGames", modpsupport);
 		if(modicon)
-			ggzcore_confio_write_string(global, module_id,
+			ggzcore_confio_write_string(global, engine_id,
 						    "IconPath", modicon);
 		if(modhelp)
-			ggzcore_confio_write_string(global, module_id,
+			ggzcore_confio_write_string(global, engine_id,
 						    "HelpPath", modhelp);
 
-		mod_list = ggzcore_confio_read_string(global, "Games",
-						      modname, NULL);
-		if(mod_list == NULL && !modforce) {
+		engine_id_list = ggzcore_confio_read_string(global, "Games",
+						            modpengine, NULL);
+		if(engine_id_list == NULL && !modforce) {
 			ggzcore_confio_write_string(global, "Games",
-						    modname, module_id);
-			game_list = ggzcore_confio_read_string(global, "Games",
-						    "*GameList*", NULL);
-			if(game_list == NULL)
+						    modpengine, engine_id);
+			engine_list = ggzcore_confio_read_string(global,"Games",
+						    "*Engines*", NULL);
+			if(engine_list == NULL)
 				ggzcore_confio_write_string(global, "Games",
-						    "*GameList*", modname);
+						    "*Engines*", modpengine);
 			else {
 				snprintf(bigstr, 1024, "%s %s",
-					 game_list, modname);
+					 engine_list, modpengine);
 				ggzcore_confio_write_string(global, "Games",
-						    "*GameList*", bigstr);
+						    "*Engines*", bigstr);
 			}
 		} else if(!modforce) {
-			snprintf(bigstr, 1024, "%s %s", mod_list, module_id);
+			snprintf(bigstr, 1024, "%s %s",
+				 engine_id_list, engine_id);
 			ggzcore_confio_write_string(global, "Games",
-					    	modname, bigstr);
+					    	modpengine, bigstr);
 		}
 
 		rc = ggzcore_confio_commit(global);
@@ -413,16 +447,19 @@ int main(const int argc, const char **argv)
 		switch(rc) {
 			case QUERY_CONFIG:
 				printf("%s\n", GGZCONFDIR);
-				break;
+				return 0;
 			case QUERY_GAMEDIR:
 				printf("%s\n", GAMEDIR);
-				break;
+				return 0;
 			case QUERY_VERSION:
 				printf("%s\n", VERSION);
-				break;
+				return 0;
+			case QUERY_PVERSION:
+				printf("%d\n", GGZ_CS_PROTO_VERSION);
+				return 0;
 			case QUERY_DATADIR:
 				printf("%s\n", GGZDATADIR);
-				break;
+				return 0;
 			default:
 				fprintf(stderr, "%s: %s\n",
 					poptBadOption(context, 0),
@@ -441,11 +478,13 @@ int main(const int argc, const char **argv)
 		return 0;
 	}
 
-	if(fromfile != NULL)
-		load_fromfile();
+	if(modfile == NULL) {
+		fprintf(stderr, "Must specify module installation file.\n");
+		return 1;
+	}
 
-	if(modname == NULL || modauthor == NULL || modui == NULL) {
-		fprintf(stderr, "Required arguments missing\n");
+	if(!load_modfile()) {
+		fprintf(stderr, "Required installation file entries missing\n");
 		return 1;
 	}
 
@@ -455,14 +494,9 @@ int main(const int argc, const char **argv)
 			moddest = 0;
 	}
 
-	if(install_mod) {
-		if(modversion == NULL || modexec == NULL ||
-		   modproto == NULL || modurl == NULL) {
-			fprintf(stderr, "Required arguments missing\n");
-			return 1;
-		}
+	if(install_mod)
 		rc = install_module();
-	} else if(remove_mod)
+	else if(remove_mod)
 		rc = remove_module();
 
 	return rc;
