@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5041 2002-10-26 03:59:41Z jdorje $
+ * $Id: main_win.c 5045 2002-10-26 04:46:14Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -248,25 +248,19 @@ static gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user
 
 static GtkWidget *create_menus(GtkWidget *window)
 {
-	GtkWidget *menu_item;
-	GtkAccelGroup *accel_group;
-	GtkItemFactory *menu;
+	GtkWidget *menubar;
 	GtkItemFactoryEntry items[] = {
 		TABLE_MENU,
 		HELP_MENU
 	};
-	const int num = sizeof(items) / sizeof(items[0]);
 
-	accel_group = gtk_accel_group_new();
+	menubar = ggz_create_menus(window,
+				   items,
+				   sizeof(items) / sizeof(items[0]));
 
-	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-	gtk_item_factory_create_items(menu, num, items, NULL);
-	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+	set_menu_sensitive(TABLE_SYNC, FALSE);
 
-	menu_item = gtk_item_factory_get_widget(menu, TABLE_SYNC);
-	gtk_widget_set_sensitive(menu_item, FALSE);
-
-	return gtk_item_factory_get_widget(menu, "<main>");
+	return menubar;
 }
 
 
