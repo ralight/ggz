@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: client.c 4575 2002-09-16 04:36:11Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -55,7 +55,7 @@ extern Options opt;
 static uint32_t *banned_nets_a;
 static uint32_t *banned_nets_m;
 static int banned_nets_c;
-static int client_check_ip_ban_list(struct in_addr *sin);
+static GGZReturn client_check_ip_ban_list(struct in_addr *sin);
 static void* client_thread_init(void *arg_ptr);
 static GGZClient* client_new(int fd);
 static void client_loop(GGZClient* client);
@@ -141,7 +141,7 @@ static void* client_thread_init(void *arg_ptr)
 	if (rc < 0)
 		inet_ntop(AF_INET, &addr.sin_addr, client->addr, sizeof(client->addr));
  
-	if (client_check_ip_ban_list(&addr.sin_addr) < 0) {
+	if (client_check_ip_ban_list(&addr.sin_addr) != GGZ_OK) {
 		log_msg(GGZ_LOG_SECURITY,"IPBAN Connection not allowed from %s",
 			client->addr);
 		client_free(client);
@@ -363,14 +363,14 @@ void client_set_ip_ban_list(int count, char **list)
 }
 
 
-static int client_check_ip_ban_list(struct in_addr *sina)
+static GGZReturn client_check_ip_ban_list(struct in_addr *sina)
 {
 	int i;
 	for(i=0; i<banned_nets_c; i++) {
 		if(banned_nets_a[i] != 0
                    && (sina->s_addr & banned_nets_m[i]) == banned_nets_a[i])
-			return -1;
+			return GGZ_ERROR;
 	}
 
-	return 0;
+	return GGZ_OK;
 }
