@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3400 2002-02-17 13:10:57Z jdorje $
+ * $Id: game.c 3404 2002-02-17 15:16:39Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,8 +36,10 @@
 #include "common.h"
 
 #include "animation.h"
+#include "cb_main.h"
 #include "dlg_bid.h"
 #include "dlg_options.h"
+#include "dlg_players.h"
 #include "game.h"
 #include "layout.h"
 #include "main.h"
@@ -229,6 +231,9 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 	char *temp = NULL;
 
 	ggz_debug("main", "Handling player update for player %d.", player);
+
+	if (player_dialog != NULL)
+		update_player_dialog(player_dialog);
 
 	switch (status) {
 	case GGZ_SEAT_PLAYER:
